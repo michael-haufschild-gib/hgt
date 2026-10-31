@@ -31,7 +31,15 @@ Prime Mertens growth predicts logarithmic amplification for every fixed `r`. For
 
 For coprime conductors, the literal generator should obey `G(e_r F)=e_r G(F)+(G e_r)F`. Coherent prime packets supported above every prime dividing `r` may then have vanishing adjunction energy while their output approaches `e_r` in complete-period square mean. Finite sums would expose a full family of independent receiving charges.
 
+A precise stronger target is: every fixed finite conductor packet `F` is approximable by generator outputs `G U` with `L(U)` arbitrarily small. Choose a coherent prime packet `H` supported above all conductors of `F`, and put `U=FH`. Unique coprime conductor factorization predicts
+
+`L(FH)=L(F)M(H)+M(F)L(H)` and `G(FH)=F G(H)+(GF)H`.
+
+Complete-period product orthogonality then transfers `L(H)→0`, `G(H)→1` to `L(U)→0`, `G(U)→F`. Proving these literal product identities and the prime-tail charge construction would determine the entire finite receiving-charge space, rather than only parity. The positive structure to retain is the full arithmetic gradient with its exact square energy; summing all prime currents into one generator can lose this continuity.
+
 The product rule and explicit charge construction must be formalized before asserting this limit or any graph-closure classification. No statement about negative complete Weil states follows without the missing joint Gamma–pole–shell analysis.
+
+If both constant and parity charges are independently realizable at vanishing energy, they could cancel `G e_2=log 2·(1−e_2)` while leaving input near parity. Since parity has zero successor approximation error when the approximating packet is free, this would distinguish the aggregate generator from the individual dilation-square energy in joint rigidity. It would not contradict rigidity for the literal successor difference or the proved joint successor–dyadic square gap.
 
 ## Positive survivor
 

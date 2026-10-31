@@ -119,7 +119,7 @@ theorem abs_im_lt_half_of_riemannHeat_zero {z : ℂ} (hz : riemannHeat 0 z = 0) 
   rw [riemannHeat_zero] at hz
   have hstrip := (CrossRouteReceiverBridges.mem_zetaZeroConfig_carrier_iff_xi_eq_zero_and_strip.mp
     (CrossRouteReceiverBridges.mem_zetaZeroConfig_carrier_of_xi_eq_zero hz)).2
-  have hre : ((1 / 2 : ℂ) + I * z).re = 1 / 2 - z.im := by simp
+  have hre : ((1 / 2 : ℂ) + I * z).re = 1 / 2 - z.im := by simp; ring
   rw [hre] at hstrip
   rw [abs_lt]
   exact ⟨by linarith [hstrip.2], by linarith [hstrip.1]⟩
@@ -130,7 +130,9 @@ theorem re_ne_zero_of_riemannHeat_zero {z : ℂ} (hz : riemannHeat 0 z = 0) :
   intro hre
   rw [riemannHeat_zero] at hz
   have heq : (1 / 2 : ℂ) + I * z = ((1 / 2 - z.im : ℝ) : ℂ) := by
-    apply Complex.ext <;> simp [hre]
+    apply Complex.ext
+    · simp [hre]; ring
+    · simp [hre]
   rw [heq] at hz
   exact xi_ne_zero_of_ofReal (1 / 2 - z.im) hz
 
@@ -186,7 +188,7 @@ theorem zeroMult_riemannHeat_zero_eq_xi_order (z : ℂ) :
     zeroMult (riemannHeat 0) z = (analyticOrderAt xi ((1 / 2 : ℂ) + I * z)).toNat := by
   have hz : (((1 / 2 : ℂ) + I * z) - 1 / 2) * (-I) = z := by
     ring_nf; rw [I_sq]; ring
-  rw [riemannHeat_zero_eq_XiC, zeroMult, ← analyticOrderAt_XiC_centeredCoordinate, hz]
+  rw [DeBruijn.riemannHeat_zero_eq_XiC, zeroMult, ← analyticOrderAt_XiC_centeredCoordinate, hz]
 
 /-- **Exact unheated window accounting.** For every `T ∈ ℝ`, the nonreal zero count of `H_0` in
 `|Re z| < T` is exactly twice `xiStripWindowOffLineOrder T`. -/
@@ -244,7 +246,7 @@ theorem xiWindowNonrealZeroCount_eq_two_mul_offLineOrder (T : ℝ) :
       · rw [riemannHeat_zero, show (1 / 2 : ℂ) + I * ((ρ - 1 / 2) * (-I)) = ρ by
           ring_nf; rw [I_sq]; ring]
         exact hxi
-      · simp; exact sub_ne_zero.mpr hρne
+      · simp; intro h; apply hρne; linarith
       · simp [abs_of_pos hρpos, hltT]
       · simp [hρpos]
       · ring_nf; rw [I_sq]; ring
@@ -304,8 +306,9 @@ theorem xiHorizontalCollisionCharge_eq_offLineOrder_of_minimal_fibres
         · rw [Finset.mem_singleton.mp hw]; exact hρ_mem
     have hge3 : 3 ≤ xiHorizontalMultiplicity z.im := by
       calc 3 = ∑ w ∈ ({z, lineReflect z, ρ} : Finset ℂ), 1 := by
-            rw [Finset.sum_insert (by simp [hne1, hzne.symm]),
+            rw [Finset.sum_insert (by simp [hne1, hzne]),
               Finset.sum_insert (by simp [hne2]), Finset.sum_singleton]
+            rfl
         _ ≤ ∑ w ∈ ({z, lineReflect z, ρ} : Finset ℂ), (analyticOrderAt xi w).toNat := by
             refine Finset.sum_le_sum fun w hw => ?_
             have hwxi := (mem_stripHeightFinset.mp (hsub3 hw)).2.2.2
@@ -341,10 +344,10 @@ theorem eventually_nonrealZeroCount_le_collisionCharge_iff_rh_of_minimal_fibres
       obtain ⟨q, hq, rfl⟩ := Finset.mem_image.mp he
       have hq_im : (xiSpectralPoint q).im ≠ 0 := (Set.Finite.mem_toFinset hfin).mp hq
       have hle_sum : |(xiSpectralPoint q).re| + 1 ≤ ∑ w ∈ E, (|w.re| + 1) :=
-        Finset.single_le_sum (fun w _ => by positivity) he
+        Finset.single_le_sum (f := fun w : ℂ => |w.re| + 1) (fun _ _ => by positivity) he
       have hf1 : 0 < max (f t) 1 := lt_of_lt_of_le one_pos (le_max_right _ _)
       refine (Set.Finite.mem_toFinset _).mpr ⟨?_, hq_im, by dsimp only [T_max]; linarith⟩
-      rw [riemannHeat_zero_eq_XiC]
+      rw [DeBruijn.riemannHeat_zero_eq_XiC]
       exact XiC_xiSpectralPoint_eq_zero q
     have hZ_sub : (riemannHeat_zero_window_zeros_finite T_max).toFinset ⊆ E := by
       intro z hz
@@ -358,9 +361,12 @@ theorem eventually_nonrealZeroCount_le_collisionCharge_iff_rh_of_minimal_fibres
         simp only [xiSpectralPoint, hqs, s, ρ]
         ring_nf; rw [I_sq]; ring
       refine Finset.mem_image.mpr ⟨q.1, (Set.Finite.mem_toFinset hfin).mpr ?_, hsp⟩
-      rwa [hsp]
+      rw [Set.mem_setOf_eq, hsp]
+      exact hzim
     have hcard : hfin.toFinset.card = 2 * xiStripWindowOffLineOrder T_max := by
-      rw [card_nonrealCopies_eq_sum_zeroMult hfin, Finset.Subset.antisymm hE_sub hZ_sub,
+      rw [card_nonrealCopies_eq_sum_zeroMult hfin]
+      change ∑ e ∈ E, zeroMult (riemannHeat 0) e = 2 * xiStripWindowOffLineOrder T_max
+      rw [Finset.Subset.antisymm hE_sub hZ_sub,
         ← xiWindowNonrealZeroCount, xiWindowNonrealZeroCount_eq_two_mul_offLineOrder]
     have hO_eq := xiHorizontalCollisionCharge_eq_offLineOrder_of_minimal_fibres hmin (f t)
     have hft_le : f t ≤ T_max := by
@@ -389,8 +395,11 @@ theorem natDegree_inwardDriftCubic (A : ℝ) : (inwardDriftCubic A).natDegree = 
   have hexp : inwardDriftCubic A =
       X ^ 3 + C (-(3 * A + 1 / 2)) * X ^ 2 + C (3 * A ^ 2 + A + 4) * X +
         C (-(A ^ 3 + A ^ 2 / 2 + 4 * A + 2)) := by
-    unfold inwardDriftCubic; simp only [map_neg, map_add, map_mul, map_pow, map_ofNat, map_one,
-      map_div₀]; ring
+    unfold inwardDriftCubic
+    rw [show 3 * A ^ 2 + A + 4 = 3 * A ^ 2 + 2 * (1 / 2) * A + 4 by ring,
+      show A ^ 3 + A ^ 2 / 2 + 4 * A + 2 = A ^ 3 + (1 / 2) * A ^ 2 + 4 * A + 2 by ring]
+    simp only [map_neg, map_add, map_mul, map_pow, map_ofNat]
+    ring
   rw [hexp]
   compute_degree!
 
@@ -417,10 +426,8 @@ theorem map_inwardDriftCubic (A : ℝ) :
       (X - C (A : ℂ)) ^ 2 - C ((2 * I) ^ 2) by rw [C_pow]; ring]
     rw [mul_pow, I_sq, show ((2 : ℂ) ^ 2 * -1) = -4 by norm_num, C_neg, sub_neg_eq_add]
   rw [hpair, show C ((A : ℂ) + 1 / 2) = C (A : ℂ) + C (1 / 2) by rw [map_add]]
-  have h4 : (C (4 : ℂ) : ℂ[X]) = 4 := by norm_num
-  have h2 : (C (2 : ℂ) : ℂ[X]) = 2 := by norm_num
-  have hhalf : (C ((1 : ℂ) / 2) : ℂ[X]) = 2⁻¹ := by norm_num
-  rw [h4, h2, hhalf]
+  have h42 : (C (2 : ℂ) : ℂ[X]) = C 4 * C (1 / 2) := by rw [← map_mul]; norm_num
+  rw [h42]
   ring
 
 theorem polyHeat_quarter_inwardDriftCubic (A : ℝ) :
@@ -430,22 +437,25 @@ theorem polyHeat_quarter_inwardDriftCubic (A : ℝ) :
     have hexp : inwardDriftCubic A =
         X ^ 3 + C (-(3 * A + 1 / 2)) * X ^ 2 + C (3 * A ^ 2 + A + 4) * X +
           C (-(A ^ 3 + A ^ 2 / 2 + 4 * A + 2)) := by
-      unfold inwardDriftCubic; simp only [map_neg, map_add, map_mul, map_pow, map_ofNat, map_one,
-        map_div₀]; ring
+      unfold inwardDriftCubic
+      rw [show 3 * A ^ 2 + A + 4 = 3 * A ^ 2 + 2 * (1 / 2) * A + 4 by ring,
+        show A ^ 3 + A ^ 2 / 2 + 4 * A + 2 = A ^ 3 + (1 / 2) * A ^ 2 + 4 * A + 2 by ring]
+      simp only [map_neg, map_add, map_mul, map_pow, map_ofNat]
+      ring
     rw [hexp, Function.iterate_succ_apply', Function.iterate_one]
     simp only [derivative_add, derivative_mul, derivative_pow, derivative_X, derivative_C,
       Nat.cast_ofNat, mul_one, zero_mul, zero_add, add_zero, pow_one,
-      show (3 - 1 : ℕ) = 2 by rfl, show (2 - 1 : ℕ) = 1 by rfl, show (1 - 1 : ℕ) = 0 by rfl,
-      pow_zero]
-    ext n; simp only [coeff_add, coeff_sub, coeff_mul_X, coeff_C_mul, coeff_X, coeff_C]; split_ifs <;> ring
+      show (3 - 1 : ℕ) = 2 by rfl, show (2 - 1 : ℕ) = 1 by rfl]
+    ext n; simp only [coeff_add, coeff_sub, coeff_C_mul, coeff_X, coeff_C]; split_ifs <;> ring
   have hd4 : ∀ k ≥ 2, derivative^[2 * k] (inwardDriftCubic A) = 0 := fun k hk =>
     iterate_derivative_eq_zero (by rw [natDegree_inwardDriftCubic]; omega)
   unfold polyHeat
   rw [natDegree_inwardDriftCubic, Finset.sum_range_succ, Finset.sum_range_succ,
-    Finset.sum_range_succ, Finset.sum_range_succ, Finset.sum_range_zero]
-  rw [hd4 2 (by omega), hd4 3 (by omega), mul_zero, mul_zero, add_zero, add_zero]
-  simp only [zero_add, mul_zero, Function.iterate_zero_apply, pow_zero, Nat.factorial_zero,
-    Nat.cast_one, div_one, C_1, one_mul, mul_one, pow_one, Nat.factorial_one, hd2]
+    Finset.sum_range_succ, Finset.sum_range_succ, Finset.sum_range_zero,
+    hd4 2 (by omega), hd4 3 (by omega)]
+  simp only [zero_add, add_zero, mul_zero, Function.iterate_zero_apply, pow_zero,
+    Nat.factorial_zero, Nat.cast_one, div_one, C_1, one_mul, mul_one, pow_one,
+    Nat.factorial_one, hd2]
   unfold inwardDriftCubic
   ext n; simp only [coeff_add, coeff_sub, coeff_C_mul]; ring
 
@@ -467,14 +477,15 @@ theorem exists_polyHeat_nonreal_root_inward_drift {A : ℝ} (hA : 1 / 4 < A) :
     have h3 : (X - C (((A + 1 / 2 : ℝ) : ℂ))) ≠ 0 := X_sub_C_ne_zero _
     rw [roots_mul (mul_ne_zero h12 h3), roots_mul h12, roots_X_sub_C, roots_X_sub_C, roots_X_sub_C]
     have hA0 : 0 < A := by linarith
-    simp only [Multiset.singleton_add, Multiset.filter_cons, Multiset.filter_singleton]
     have hf1 : ¬ (((A : ℂ) + 2 * I).im ≠ 0 ∧ |((A : ℂ) + 2 * I).re| < A) := by
       simp [abs_of_pos hA0]
     have hf2 : ¬ (((A : ℂ) - 2 * I).im ≠ 0 ∧ |((A : ℂ) - 2 * I).re| < A) := by
       simp [abs_of_pos hA0]
     have hf3 : ¬ ((((A + 1 / 2 : ℝ) : ℂ)).im ≠ 0 ∧ |(((A + 1 / 2 : ℝ) : ℂ)).re| < A) := by
       simp
-    simp [hf1, hf2, hf3]
+    rw [Multiset.filter_add, Multiset.filter_add, Multiset.filter_singleton,
+      Multiset.filter_singleton, Multiset.filter_singleton, if_neg hf1, if_neg hf2, if_neg hf3]
+    simp only [add_zero, Multiset.card_zero]
   · -- At `t = 1/4`, locate the unique real shift root `w₁ ∈ (1/2, 1)` by IVT and factor explicitly
     set g : ℝ → ℝ := fun w => w ^ 3 - (1 / 2) * w ^ 2 + (5 / 2) * w - 7 / 4
     have hg_cont : ContinuousOn g (Icc (1 / 2) 1) := by fun_prop
@@ -529,12 +540,11 @@ theorem exists_polyHeat_nonreal_root_inward_drift {A : ℝ} (hA : 1 / 4 < A) :
       have hb_eq : b - w₁ = -(1 / 2 : ℝ) := by dsimp only [b]; ring
       have hc_eq : c - w₁ * b = (5 / 2 : ℝ) := by dsimp only [b, c]; ring
       have hhalf' : (C ((1 / 2 : ℝ) : ℂ) : ℂ[X]) = C ((w₁ - b : ℝ) : ℂ) := by
-        congr 1; push_cast; linarith
+        congr 2; linarith
       have h52' : (C ((5 / 2 : ℝ) : ℂ) : ℂ[X]) = C ((c - w₁ * b : ℝ) : ℂ) := by
-        congr 1; rw [hc_eq]
+        congr 2; linarith
       have h74' : (C ((7 / 4 : ℝ) : ℂ) : ℂ[X]) = C ((w₁ * c : ℝ) : ℂ) := by
-        congr 1; rw [hw₁_eq]
-      simp only [Complex.ofReal_div, Complex.ofReal_ofNat, Complex.ofReal_one] at hhalf' h52' h74'
+        congr 2; linarith
       rw [hhalf', h52', h74']
       simp only [Complex.ofReal_sub, Complex.ofReal_mul, map_sub, map_mul]
       ring
@@ -549,7 +559,9 @@ theorem exists_polyHeat_nonreal_root_inward_drift {A : ℝ} (hA : 1 / 4 < A) :
       simp [z₂, hv_pos.ne', abs_of_pos hAu_pos, hAu_lt]
     have ht3 : z₃.im ≠ 0 ∧ |z₃.re| < A := by
       simp [z₃, hv_pos.ne', abs_of_pos hAu_pos, hAu_lt]
-    simp [ht1, ht2, ht3]
+    rw [Multiset.filter_add, Multiset.filter_add, Multiset.filter_singleton,
+      Multiset.filter_singleton, Multiset.filter_singleton, if_neg ht1, if_pos ht2, if_pos ht3]
+    simp only [zero_add, Multiset.card_add, Multiset.card_singleton]
 
 /-! ## §3. Forward real-zero stability at `t ≥ 0` and moving-barrier windowed descent -/
 
@@ -559,11 +571,12 @@ theorem tendstoLocallyUniformly_riemannHeat_nhdsGT {t : ℝ} (ht : 0 ≤ t) :
     TendstoLocallyUniformly (fun s : ℝ => riemannHeat (max s 0)) (riemannHeat t) (𝓝[>] t) := by
   rcases eq_or_lt_of_le ht with rfl | htpos
   · exact tendstoLocallyUniformly_riemannHeat_max_zero
-  · refine tendstoLocallyUniformly_congr_eventually
-      ((tendstoLocallyUniformly_riemannHeat_nhds htpos).mono_filter nhdsWithin_le_nhds) ?_
-    filter_upwards [self_mem_nhdsWithin] with s hs z
-    have hs0 : 0 ≤ s := htpos.le.trans (Set.mem_Ioi.mp hs).le
-    simp [max_eq_left hs0]
+  · intro u hu x
+    obtain ⟨V, hV, hev⟩ := tendstoLocallyUniformly_riemannHeat_nhds htpos u hu x
+    refine ⟨V, hV, ?_⟩
+    filter_upwards [hev.filter_mono nhdsWithin_le_nhds, self_mem_nhdsWithin] with s hs hsgt y hy
+    have hs0 : 0 ≤ s := htpos.le.trans (Set.mem_Ioi.mp hsgt).le
+    simpa [max_eq_left hs0] using hs y hy
 
 /-- Right-sided disc-count stability at any `t ≥ 0` (including `t = 0`). -/
 theorem eventually_zeroSumBall_riemannHeat_eq_nhdsGT {t : ℝ} (ht : 0 ≤ t) (z₀ : ℂ) :
@@ -585,8 +598,7 @@ theorem eventually_zeroSumBall_riemannHeat_eq_nhdsGT {t : ℝ} (ht : 0 ≤ t) (z
   have h2 := eventually_ne_zero_on_sphere hdiff.continuous hconv hr.le hsph
   filter_upwards [h1, h2, self_mem_nhdsWithin] with s hs1 hs2 hsgt
   have hs0 : 0 ≤ s := ht.trans (Set.mem_Ioi.mp hsgt).le
-  have hFs : F s = riemannHeat s := by simp [F, max_eq_left hs0]
-  rw [hFs] at hs1 hs2
+  simp only [F, max_eq_left hs0] at hs1 hs2
   exact ⟨by rw [hs1, hcount], hs2⟩
 
 /-- **Real zeros stay real forward from `t ≥ 0` (including `t = 0`).** Around any real point `x₀`,
@@ -687,13 +699,13 @@ private theorem le_of_local_right_Ico_and_lsc_Ioc {N : ℝ → ℕ} {a b : ℝ} 
     refine ⟨⟨hac, hcb⟩, fun u hu => ?_⟩
     rcases lt_or_eq_of_le hu.2 with hlt | rfl
     · exact hbelow u ⟨hu.1, hlt⟩
-    · rcases lt_or_eq_of_le hac with hac' | rfl
+    · rcases lt_or_eq_of_le hac with hac' | heq
       · obtain ⟨δ, hδ, hl⟩ := hlsc c ⟨hac', hcb⟩
         set u' := max a (c - δ / 2)
         have hu'I : u' ∈ Ico a c := ⟨le_max_left _ _, max_lt hac' (by linarith)⟩
         exact (hl u' hu'I (lt_of_lt_of_le (by linarith) (le_max_right _ _))).trans (hbelow u' hu'I)
-      · exact le_rfl
-  rcases lt_or_eq_of_le hcb with hlt | rfl
+      · rw [← heq]
+  rcases lt_or_eq_of_le hcb with hlt | heq
   · exfalso
     obtain ⟨δ, hδ, hr⟩ := hright c ⟨hac, hlt⟩
     set c' := min b (c + δ / 2)
@@ -705,7 +717,8 @@ private theorem le_of_local_right_Ico_and_lsc_Ioc {N : ℝ → ℕ} {a b : ℝ} 
       · have hu2 : u < c + δ := lt_of_le_of_lt hu.2 (lt_of_le_of_lt (min_le_right _ _) (by linarith))
         exact (hr u ⟨huc, hu.2.trans (min_le_left _ _)⟩ hu2).trans (hcS.2 c ⟨hac, le_rfl⟩)
     exact not_lt.mpr (le_csSup hbdd hc'S) hcc'
-  · exact hcS.2 c ⟨hac, le_rfl⟩
+  · rw [← heq]
+    exact hcS.2 c ⟨hac, le_rfl⟩
 
 /-- Nonreal zero count of `H_s` (`s ≥ 0`) inside the horizontal window `|Re z| < X`. -/
 def riemannHeatWindowNonrealCount (s X : ℝ) : ℕ :=
@@ -911,7 +924,7 @@ theorem nonrealZeroCount_le_two_mul_collisionCharge_of_barrier {t : ℝ} (ht : 0
         have hdist_re : |(|e.re| - |w.re|)| ≤ ‖w - e‖ :=
           (abs_abs_sub_abs_le_abs_sub e.re w.re).trans
             (by rw [abs_sub_comm, ← Complex.sub_re]; exact Complex.abs_re_le_norm _)
-        have hwe_norm : ‖w - e‖ < η := (mem_ball.mp hwe).trans_le (hrη e)
+        have hwe_norm : ‖w - e‖ < η := (mem_ball_iff_norm.mp hwe).trans_le (hrη e)
         have hRs := (abs_lt.mp hs_R).2
         linarith [(abs_le.mp hdist_re).2]
       have heI : e ∈ E_in := Finset.mem_filter.mpr ⟨heA, he_im, he_in⟩
@@ -951,7 +964,9 @@ theorem nonrealZeroCount_le_two_mul_collisionCharge_of_barrier {t : ℝ} (ht : 0
     set Enr := (riemannHeat_nonreal_zeros_finite hs₁_pos).toFinset.filter (fun e => |e.re| < R s₁)
     rcases Enr.eq_empty_or_nonempty with hemp | hne
     · refine ⟨1, one_pos, fun s _ _ => ?_⟩
-      rw [riemannHeatWindowNonrealCount_pos hs₁_pos, show Enr = ∅ from hemp, Finset.sum_empty]
+      rw [riemannHeatWindowNonrealCount_pos hs₁_pos]
+      change ∑ z ∈ Enr, zeroMult (riemannHeat s₁) z ≤ _
+      rw [hemp, Finset.sum_empty]
       exact Nat.zero_le _
     · set η := Enr.inf' hne (fun e => R s₁ - |e.re|)
       have hη_pos : 0 < η := (Finset.lt_inf'_iff hne).mpr fun e he =>
@@ -969,7 +984,7 @@ theorem nonrealZeroCount_le_two_mul_collisionCharge_of_barrier {t : ℝ} (ht : 0
         have h1 : |(w - e).im| ≤ ‖w - e‖ := Complex.abs_im_le_norm _
         rw [Complex.sub_im, hw0, zero_sub, abs_neg] at h1
         have hr2 : r e ≤ |e.im| / 2 := (min_le_left _ _).trans (min_le_right _ _)
-        linarith [mem_ball.mp hw, abs_pos.mpr him]
+        linarith [mem_ball_iff_norm.mp hw, abs_pos.mpr him]
       have hdisj : ∀ e ∈ Enr, ∀ e' ∈ Enr, e ≠ e' → Disjoint (ball e (r e)) (ball e' (r e')) := by
         intro e he e' he' hne
         refine Set.disjoint_left.mpr fun w hw hw' => ?_
@@ -1023,7 +1038,7 @@ theorem nonrealZeroCount_le_two_mul_collisionCharge_of_barrier {t : ℝ} (ht : 0
         have hre_diff : |w.re| - |e.re| ≤ ‖w - e‖ :=
           (abs_sub_abs_le_abs_sub w.re e.re).trans
             (by rw [← Complex.sub_re]; exact Complex.abs_re_le_norm _)
-        have hwnorm : ‖w - e‖ < η / 3 := (mem_ball.mp hwb).trans_le hr_eta
+        have hwnorm : ‖w - e‖ < η / 3 := (mem_ball_iff_norm.mp hwb).trans_le hr_eta
         have hRs1 := (abs_lt.mp hs_R).1
         refine Finset.mem_filter.mpr ⟨(Set.Finite.mem_toFinset _).mpr ⟨hw0, hwim⟩, ?_⟩
         linarith
@@ -1082,7 +1097,7 @@ theorem nonrealZeroCount_le_two_mul_of_collisionCharge_bdd {M : ℕ}
     have hle := Finset.single_le_sum (f := fun w : ℂ => |w.re| + 1) (fun _ _ => by positivity) he
     refine (Set.Finite.mem_toFinset _).mpr ⟨?_, (Set.Finite.mem_toFinset hfin).mp hq, by
       dsimp only [T_K]; linarith⟩
-    rw [riemannHeat_zero_eq_XiC]
+    rw [DeBruijn.riemannHeat_zero_eq_XiC]
     exact XiC_xiSpectralPoint_eq_zero q
   have hcard_le : hfin.toFinset.card ≤ 2 * M := by
     rw [card_nonrealCopies_eq_sum_zeroMult hfin]
@@ -1122,7 +1137,7 @@ theorem exists_nonrealZeroCount_le_iff_exists_collisionCharge_le :
           · rw [riemannHeat_zero, show (1 / 2 : ℂ) + I * ((ρ - 1 / 2) * (-I)) = ρ by
               ring_nf; rw [I_sq]; ring]
             exact hxi
-          · simp; exact sub_ne_zero.mpr hne
+          · simp; intro h; apply hne; linarith
         have hle := Finset.single_le_sum (f := fun w : ℂ => |w.re| + 1) (fun _ _ => by positivity) hz_mem
         have hre : ((ρ - 1 / 2) * (-I)).re = ρ.im := by simp
         rw [hre] at hle
@@ -1232,8 +1247,6 @@ theorem xiHorizontalCollisionCharge_sub_le_two_mul_offLine {A B : ℝ} (hAB : A 
       _ = ∑ z ∈ Woff, ∑ ρ ∈ Wcrit.filter (fun ρ => z.im = ρ.im),
             (analyticOrderAt xi ρ).toNat * (analyticOrderAt xi z).toNat := by
           simp_rw [Finset.sum_filter]; rw [Finset.sum_comm]
-          refine Finset.sum_congr rfl fun _ _ => Finset.sum_congr rfl fun _ _ => ?_
-          split_ifs <;> rfl
       _ ≤ ∑ z ∈ Woff, K * (analyticOrderAt xi z).toNat := by
           refine Finset.sum_le_sum fun z hz => ?_
           rw [← Finset.sum_mul]
@@ -1249,8 +1262,10 @@ theorem xiHorizontalCollisionCharge_sub_le_two_mul_offLine {A B : ℝ} (hAB : A 
       _ = K * ∑ z ∈ Woff, (analyticOrderAt xi z).toNat := (Finset.mul_sum _ _ _).symm
   have hWoff_eq : Woff = SB.filter (fun ρ => A ≤ ρ.im ∧ ρ.re ≠ 1 / 2) := by
     ext ρ; simp [Woff, W, and_assoc]
-  rw [hsplit, ← hWoff_eq]
-  omega
+  change ∑ ρ ∈ W, xiCollisionTerm ρ =
+    (∑ ρ ∈ Wcrit, xiCollisionTerm ρ) + (∑ ρ ∈ Woff, xiCollisionTerm ρ) at hsplit
+  rw [hsplit, ← hWoff_eq, two_mul, add_mul]
+  exact add_le_add hcrit_le hoff_le
 
 /-- **Reverse dyadic finite-height heat-to-charge bound.** There exist absolute constants
 `c > 0`, `C₁ > 0`, `C₂ > 0`, and `X₀ ≥ 4096` such that for every `X ≥ X₀`, depth threshold
@@ -1332,6 +1347,7 @@ theorem exists_dyadicCollisionCharge_le_log_sq_mul_nonrealZeroCount_add_shallow 
     exact ⟨hXρ, hlt2X.le, hdρ⟩
   have hdeep_le := hdeep_thm X hXX₁ d hd hd2 t ht htX F_deep hF_prop
   rw [hcard_deep] at hdeep_le
+  push_cast at hdeep_le
   have hK_real : (K : ℝ) ≤ K_const * Real.log X := by
     have h1 : (K : ℝ) ≤ 2 * C_loc * Real.log X := Nat.floor_le (by positivity)
     dsimp only [K_const]; nlinarith [hlogX_ge1]

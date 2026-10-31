@@ -3,6 +3,8 @@ import GaloisForLFunctions.EdgeHodgeTheory.TheEdgeOfTheCompleteWeilFamily
 import GaloisForLFunctions.EdgeHodgeTheory.TheHorizonFlowAtFixedWidth
 import GaloisForLFunctions.EdgeHodgeTheory.TheFunctionFieldFlowIsTrivial
 import GaloisForLFunctions.EdgeHodgeTheory.TheEdgeIsAThresholdCurve
+import GaloisForLFunctions.EdgeHodgeTheory.TheIndexComputedByDeformation
+import GaloisForLFunctions.EdgeHodgeTheory.NoSofteningAtResolution
 
 /-!
 # Edge Hodge Theory of the Scaling Surface
@@ -10,5 +12,6 @@ import GaloisForLFunctions.EdgeHodgeTheory.TheEdgeIsAThresholdCurve
 Umbrella for the theory of the degenerating family of complete Weil matrices: integer invariants
 along paths of forms, the detection edge and its universal and RH regimes, the horizon flow at fixed
 width and its conserved charge, the edge as a threshold curve in the plane of resolutions, and the
-calibration over `𝔽_q`. See `EdgeHodgeTheory/README.md`.
+calibration over `𝔽_q`, the index computed by deformation, and the Künneth square at finite
+resolution. See `EdgeHodgeTheory/README.md`.
 -/

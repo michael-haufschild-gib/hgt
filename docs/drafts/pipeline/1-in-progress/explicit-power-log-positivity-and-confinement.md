@@ -3,14 +3,14 @@
 - **ID:** explicit-power-log-positivity-and-confinement
 - **Stage:** 1-in-progress
 - **Type:** CONJECTURE
-- **Source:** ../../../reports/review-3110/obstacles-summary.md, A1
+- **Source:** ../../../reports/review-3110/obstacles-summary.md, A1 at `dbc7d26186`
 - **Statement:** Replace the unspecified conductor-confinement constant by a proved explicit constant and sharpen the accuracy and overlap exponents in complete Weil positivity.
 
 ## Mathematical targets
 
 1. Explicit conductor confinement, uniformly in the horizon: squared projection error at most `η` for `log R ≤ C (K + 1) / η^p`, with numerical `C` and improved `p`.
 2. An explicit reverse defect gap and numerical positive overlap exponent.
-3. Optimized internal exponents and an explicit starting horizon for all-vector positivity.
+3. Optimized internal exponents for all-vector positivity.
 
 ## Existing bounds
 
@@ -35,7 +35,7 @@ Set `δ=η/8`. Choose `log P ≥ C₀(K+1)/δ`, `log A ≥ 2(K+L(P))/δ`, and
 `log R ≤ C₂(K+1)/η²`,
 `C₂ = 64[54(2(C₀+3)+2(log 4+4))+49]`.
 
-The reverse gap constant is consequently `256C₂`. Explicit conditioning, weighted approximation, and quadratic confinement compile with only `propext`, `Classical.choice`, and `Quot.sound`. Final direct audits remain pending.
+The reverse gap constant is consequently `256C₂`. Explicit conditioning, weighted approximation, and quadratic confinement compile with only `propext`, `Classical.choice`, and `Quot.sound`. Conditioning passed its final direct audit; the other two direct audits remain pending.
 
 ## Numerical prime coercivity
 
@@ -53,33 +53,30 @@ with standard axioms. Final direct audits remain pending.
 ## All-vector exponent
 
 Fixed squared projection tolerance `1/4` suffices. Enlarge `R` so
-`log R ≥ D[1+(B+4C_cross²)/b]c¹⁶`, where `D` is the explicit reverse-gap constant. Orthogonality gives `D_N(w)≥(log R/D−1)‖w‖²`; the polynomial reserve then gives `W(w)≥4C_cross²c⁶‖w‖²`. Since `‖u‖≤1`, completing a square yields `2|W(u,w)|−W(w)≤1/4`. Thus `log R≪c¹⁶` suffices without a shrinking projection tolerance.
+`log R ≥ D[1+(B+4C_cross²)/b]c¹⁶`, where `D` is the explicit reverse-gap constant.
+Orthogonality gives `D_N(w)≥(log R/D−1)‖w‖²`; the polynomial reserve gives
+`W(w)≥4C_cross²c⁶‖w‖²`. Completing a square pays the cross term by `1/4`.
+Thus `log R≪c¹⁶`, without a shrinking projection tolerance.
 
-Put `L=log N`, `Q=floor(L^(1/16))`, and `α<1/144`. Eventually `1+log R≤L^(6/25)`, since `16/144<19/80` and the constant is absorbed by `L^(1/400)`. The binding error exponents are
+Put `L=log N`. For `α<1/59`, choose
+`τ=(1−59α)/40`, `q=8α+τ`, `ν=min(τ/4,1/1000)`, and `k=ceil(1/τ)+1`.
+Use `Q=floor(L^q)` and the variable quotient cutoff below. The binding exponents are
 
-`5/16+24/144−1/2=−1/48`,
-`4/144−1/32=−1/288`,
-`2(6/25)−1/2=−1/50`.
+`4α−q/2=−τ/2≤−ν`,
+`5q+19α+1/k−1≤−35τ+1/k≤−34τ≤−ν`.
 
-All admit margin `L^(−1/500)`. High-packet prime coercivity contributes `¼log Q−O(1)`, which dominates `log c` since `1/64−α>0`. The existing all-vector reduction then retains its uniform `c⁻⁷` spectral floor. This strengthened positivity proof is written but not yet Lean-verified.
+The prime cross residual at the confinement cutoff need only satisfy
+`(1+log R)²/√L≤c³`, since the cross-bound already has this factor.
+Its growing term is `O(c²⁹/√L)`, which decays uniformly for `α≤1/59`.
+The low-band prime residual uses `log Q`, while its adjunction contribution
+costs `(1+log R)²/L`. Remaining errors decay with fixed positive margins.
+High-packet coercivity contributes `¼log Q−log c−O(1)`;
+`q/4−α=α+τ/4>0`.
 
-## Remaining mathematical work
-
-Complete Lean verification and umbrella wiring; optimize the overlap exponent and make the starting horizon explicit. The residual and confinement ceilings `1/19`, `1/16` concern stronger estimates beyond the present internal optimization. Other obstacles remain outside this card.
-
-The current prime-distribution input is not explicit: `DirichletLConductorUniformLogDerivative.exists_conductor_uniform_character_zero_gap` invokes `siegel_zero_free`. An explicit `N₀` therefore requires an effective zero-gap replacement, not merely extraction of eventual inequalities.
-
-An effective candidate uses `F(s)=ζ(s)L(s,χ)` for quadratic `χ`. Its coefficients
-are nonnegative, the coefficient at one is one, and `F(−2)=0`. Write
-`G(s)=F(s)−L(1,χ)/(s−1)`. On `|s−100|=120`, the periodic functional equation
-and existing Hurwitz bounds suggest `|G(s)|≤M₀q²²` with numerical `M₀`.
-The Taylor head grows by `34/33`, the tail decays by `17/20`, and
-`log(34/33)/log(20/17)≤20/99<9/44`. For
-`K=ceil(log((40/3)(M+1))/log(20/17))`, its tail is at most `1/2` and its head
-at most `e((40/3)(M+1))^(9/44)`. Thus the candidate explicit constant is
-`c=(3/2)/(e((40/3)(M₀+1))^(9/44))`, giving `L(1,χ)≥cq⁻⁹ᐟ²` and an effective
-real-zero gap of order `q⁻⁵`. Circle and Taylor proofs are drafted, not yet
-Lean-verified.
+The proposed result is all-vector positivity with the existing uniform `c⁻⁷`
+spectral floor for every `0<α<1/59`. The complete Lean proof is drafted;
+verification remains. The stronger structural ceilings `1/19` and `1/16`
+require improvements beyond these residual and overlap budgets.
 
 ## Direct prime-defect transfer
 
@@ -107,10 +104,9 @@ This removes the forced square-root logarithmic rate. The reciprocal row,
 actual upward row, and complete residual are formalized in
 `VariableCutoffConductorResiduals`; all axiom audits report standard axioms.
 
-After that transfer, `k=16`, `Q=floor(L^(1/8))`, and `α<1/68` fit the same
-positivity reduction: the residual is at most `3c⁵L^(−15/16)`, and
-`5/8+19/68−15/16<0`, `4/68−1/16<0`, `16/68<19/80`.
-This sharper all-vector exponent is not yet formalized.
+## Remaining work
+
+Verify the all-vector `1/59` proof and finish direct module audits.
 
 ## Gates
 

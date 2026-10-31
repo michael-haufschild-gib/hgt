@@ -197,7 +197,7 @@ theorem optimal_primeCenteredGenerator_constant_iff {Q : ℕ} (hQ : 2 ≤ Q) (C 
     have h := hC a
     rw [primeCenteredGenerator_period_sq, primeAdjunctionMass_primeOnly] at h
     simp only [a, ite_pow, one_pow, zero_pow two_ne_zero, mul_ite, mul_one, mul_zero,
-      sum_ite_eq', if_pos h2, ht] at h
+      sum_ite_eq', if_pos h2, ht, Nat.cast_ofNat] at h
     have hpos : 0 < 2 * Real.log 2 := mul_pos (by norm_num) (Real.log_pos (by norm_num))
     by_contra hc
     have hlt := mul_lt_mul_of_pos_right (lt_of_not_ge hc) hpos

@@ -2237,7 +2237,7 @@ private theorem rpow_pow_nat_eq {x α : ℝ} (hx : 0 ≤ x) (k : ℕ) :
 
 private theorem mode_geometry_and_overlap_width_bounds
     {N m : ℕ} {θ α A c : ℝ}
-    (hθ : θ < 1 / 2) (hα : α < 1 / 4)
+    (hθ0 : 0 < θ) (hθ : θ < 1 / 2) (hα : α < 1 / 4)
     (hN16 : 16 ≤ N) (hL200 : 200 ≤ Real.log N)
     (hLA4 : (4 : ℝ) ≤ Real.log N ^ A)
     (hMθ_sq : ⌊(N : ℝ) ^ θ⌋₊ * ⌊(N : ℝ) ^ θ⌋₊ ≤ N)
@@ -2321,8 +2321,7 @@ private theorem mode_geometry_and_overlap_width_bounds
           (m : ℝ) * m ≤ (N : ℝ) ^ θ * (N : ℝ) ^ θ := mul_le_mul hmR_θ hmR_θ hm0.le (by positivity)
           _ = (N : ℝ) ^ (2 * θ) := by rw [← Real.rpow_add hN0]; ring_nf
       have hge1 : 1 ≤ (N : ℝ) ^ (2 * θ) :=
-        Real.one_le_rpow (by exact_mod_cast hN1) (by linarith only [hm0, hmR_θ] : (0 : ℝ) ≤ 2 * θ)
-      -- Wait: `θ > 0` might not be passed here; let's use `0 ≤ 2 * θ` via `hmR_θ`? Even simpler: pass `hθ0 : 0 < θ`!
+        Real.one_le_rpow (by exact_mod_cast hN1) (by positivity)
       linarith only [h1, hge1]
     have hL_η : Real.log N ≤ (N : ℝ) ^ η_θ / η_θ := log_le_rpow_div_pos hN0 hη_θ
     have hrad_η : linearNearRowRadius c + 1 ≤ (17 / η_θ) * (N : ℝ) ^ η_θ := by
@@ -2345,193 +2344,46 @@ private theorem mode_geometry_and_overlap_width_bounds
       _ = N := hprod_eq
   exact ⟨hm_ge4, hmN_sq, hmR_ge_LA, hlogm_ge, hlogm_ge1, hc_le_L, hrad_N, hw3, hcN, hRNT_m⟩
 
-/-- **Diverging positive single-mode floor above polylogarithmic scales.**
-For every `C²` profile `φ` supported in `[0, 1]` with `0 < ∫ φ²`, every Bombieri–Vinogradov
-exponent `0 < θ < 1 / 2`, every power-of-logarithm overlap exponent `0 < α < 1 / 4`, and every
-`A > 8 * α`, eventually in `N`, for all `1 ≤ c ≤ (log N)^α` and all conductors
-`m ∈ Icc ⌈(log N)^A⌉₊ ⌊N^θ⌋₊`:
-```
-((1 - 2 * θ) / 4) * log m ≤ completeWeilEnergy φ c N (normalizedRamanujanHorizonVector m N).
-```
--/
-theorem eventually_completeWeilEnergy_mode_ge_log_above_polylog {φ : ℝ → ℝ}
+private theorem mode_main_scalar_and_universal_errors {φ : ℝ → ℝ}
     (hφ : ContDiff ℝ 2 φ) (hsupp : ∀ u, u ∉ Set.Icc 0 1 → φ u = 0)
-    (hM_int : 0 < ∫ u, φ u ^ 2) {θ α A : ℝ}
-    (hθ0 : 0 < θ) (hθ : θ < 1 / 2) (hα0 : 0 < α) (hα : α < 1 / 4) (hA : 8 * α < A) :
-    ∀ᶠ N : ℕ in atTop, ∀ c : ℝ, 1 ≤ c → c ≤ Real.log N ^ α →
-      ∀ m ∈ Icc ⌈Real.log N ^ A⌉₊ ⌊(N : ℝ) ^ θ⌋₊,
-        ((1 - 2 * θ) / 4) * Real.log m ≤
-          completeWeilEnergy φ c N (normalizedRamanujanHorizonVector m N) := by
-  have hA0 : 0 < A := by linarith only [hα0, hA]
-  have h1_2θ : 0 < 1 - 2 * θ := by linarith only [hθ]
-  let δ := (1 - 2 * θ) / 10
-  have hδ0 : 0 < δ := by dsimp only [δ]; positivity
-  obtain ⟨C_p1, hCp1, hp1⟩ := exists_renormalizedPrimeEnergy_mode_sub_le
-  obtain ⟨C_mid, hCmid, hmid⟩ := exists_overlapMatrix_midBand_inner_le hφ hsupp hM_int
-  obtain ⟨C_od, hCod, hod⟩ := exists_overlap_sub_downward_norm_le_of_mem_conductorSubspace
-    hφ hsupp hM_int
-  obtain ⟨C_ov1, hCov1, hov1⟩ := exists_overlapMatrix_mode_inner_le hφ hsupp hM_int
-  let K₀ := 152 * (∫ t, |φ t|) ^ 2 / (∫ t, φ t ^ 2)
-  have hK₀ : 0 ≤ K₀ := by dsimp only [K₀]; positivity
-  let C_pole := |atomPoleMomentErrorConstant φ| + 1
-  have hCpole : 0 < C_pole := by dsimp only [C_pole]; positivity
-  let C_nr := 40 * Real.sqrt (Real.log 4 + 4) * Real.exp 3
-  have hCnr : 0 < C_nr := by
-    dsimp only [C_nr]
-    have : 0 < Real.log 4 + 4 := by have := Real.log_nonneg (by norm_num : (1 : ℝ) ≤ 4); linarith
-    positivity
-  -- Exponents for eventual decay as `N → ∞` and `log N → ∞`.
-  let η_θ := (1 - 2 * θ) / 2
-  have hη_θ : 0 < η_θ := by dsimp only [η_θ]; linarith only [hθ]
-  let η_α := (1 / 4 - α) / 2
-  have hη_α : 0 < η_α := by dsimp only [η_α]; linarith only [hα]
-  let γ_A := A / 2 - 4 * α
-  have hγ_A : 0 < γ_A := by dsimp only [γ_A]; linarith only [hA]
-  let γ_od := 1 / 2 - 2 * α - η_α
-  have hγ_od : 0 < γ_od := by dsimp only [γ_od, η_α]; linarith only [hα]
-  have hlog : Tendsto (fun N : ℕ => Real.log (N : ℝ)) atTop atTop :=
-    Real.tendsto_log_atTop.comp tendsto_natCast_atTop_atTop
-  have hloglog : Tendsto (fun N : ℕ => Real.log (Real.log (N : ℝ))) atTop atTop :=
-    Real.tendsto_log_atTop.comp hlog
-  -- Thresholds on `log (log N)`, `log N`, and `N`.
-  let LL_min := max 2 (max ((8 * (|completeWeilSelfFinitePart φ 1| + 1) + 2) / A)
-    ((2 * C_p1 + 2) / (δ * A)))
-  let L_pow1 : ℝ := (2 * C_p1 / δ + 1) ^ (2 : ℝ)
-  let L_pow2 : ℝ := (200 / δ + 1) ^ (1 / (1 / 2 - α))
-  let L_pow3 : ℝ := (684 * (K₀ + 1) / δ + 1) ^ (1 / (1 - 2 * α))
-  let L_pow4 : ℝ := (1900 * (K₀ + 1) / δ + 25 * (2 * C_ov1 + C_nr) / δ + 1) ^ (1 / (1 - 2 * α))
-  let L_pow5 : ℝ := (152 * C_mid / δ + 1) ^ (1 / (1 - 3 * α))
-  let L_pow6 : ℝ := (152 * C_mid / δ + 1) ^ (1 / γ_A)
-  let L_pow7 : ℝ := (640 * C_od * Real.sqrt (1 + 1 / (2 * η_α)) / δ + 1) ^ (1 / γ_od)
-  let L_min := max 40 (max L_pow1 (max L_pow2 (max L_pow3 (max L_pow4 (max L_pow5 (max L_pow6 L_pow7))))))
-  have hN_rpow_θ : Tendsto (fun N : ℕ => (N : ℝ) ^ η_θ) atTop atTop :=
-    (tendsto_rpow_atTop hη_θ).comp tendsto_natCast_atTop_atTop
-  have hN_rpow_20 : Tendsto (fun N : ℕ => (N : ℝ) ^ (1 / 20 : ℝ)) atTop atTop :=
-    (tendsto_rpow_atTop (by norm_num : (0 : ℝ) < 1 / 20)).comp tendsto_natCast_atTop_atTop
-  have hN_rpow_5 : Tendsto (fun N : ℕ => (N : ℝ) ^ (1 / 5 : ℝ)) atTop atTop :=
-    (tendsto_rpow_atTop (by norm_num : (0 : ℝ) < 1 / 5)).comp tendsto_natCast_atTop_atTop
-  filter_upwards [eventually_conductorCutoff_bounds hθ0 hθ,
-    hloglog.eventually_ge_atTop LL_min,
-    hlog.eventually_ge_atTop L_min,
-    (hlog.Eventually (eventually_gt_atTop 0)),
-    ((tendsto_rpow_atTop hA0).comp hlog).eventually_ge_atTop 4,
-    hN_rpow_θ.eventually_ge_atTop (68 / η_θ + 1),
-    hN_rpow_20.eventually_ge_atTop 4,
-    hN_rpow_5.eventually_ge_atTop
-      (max (68 ^ 2 * 100 ^ 2 + 1)
-        (max (2 * C_pole / δ + 1)
-          (max (152 * C_mid * 10 ^ 6 / δ + 1)
-            (320000 * C_od / δ + 1)))),
-    eventually_ge_atTop 16]
-    with N hcut hLL hL _hLpos hLA4 hNη hN20 hN5 hN16
-  obtain ⟨_, hMθ_sq, _, hMθ_le, _⟩ := hcut
+    (hM_int : 0 < ∫ u, φ u ^ 2) {N m : ℕ} {θ α A δ C_p1 c : ℝ}
+    (hθ : θ < 1 / 2) (hα : α < 1 / 4) (hA0 : 0 < A) (hA : 8 * α < A) (hδ0 : 0 < δ)
+    (hCp1 : 0 < C_p1)
+    (hp1 : |renormalizedPrimeEnergy N (normalizedRamanujanHorizonVector m N) -
+        ramanujanAdjunctionEnergy m * ‖normalizedRamanujanHorizonVector m N‖ ^ 2| ≤
+      C_p1 * (1 + Real.log m / Real.sqrt (Real.log N)))
+    (hN4 : 4 ≤ N) (hL1 : 1 ≤ Real.log N) (hLL2 : 2 ≤ Real.log (Real.log N))
+    (hm2 : 2 ≤ m) (hmN_sq : m * m ≤ N)
+    (hlogm_ge : A * Real.log (Real.log N) ≤ Real.log m)
+    (hlogm_ge1 : 1 ≤ Real.log m)
+    (hv_sq_ge : 1 - 2 * θ ≤ ‖normalizedRamanujanHorizonVector m N‖ ^ 2)
+    (hc1 : 1 ≤ c) (hc_ub : c ≤ Real.log N ^ α) (hw3 : c / N ≤ 1 / 3) (hcN : c ≤ N)
+    (hLL_self : (8 * (|completeWeilSelfFinitePart φ 1| + 1) + 2) / A ≤ Real.log (Real.log N))
+    (hLL_p1 : (2 * C_p1 + 2) / (δ * A) ≤ Real.log (Real.log N))
+    (hL_p1 : (2 * C_p1 / δ + 1) ^ (2 : ℝ) ≤ Real.log N)
+    (hL_cen : (200 / δ + 1) ^ (1 / (1 / 2 - α)) ≤ Real.log N)
+    (hN5_pole : 2 * (|atomPoleMomentErrorConstant φ| + 1) / δ + 1 ≤ (N : ℝ) ^ (1 / 5 : ℝ)) :
+    (3 / 4) * (1 - 2 * θ) * Real.log m ≤
+        ramanujanAdjunctionEnergy m * ‖normalizedRamanujanHorizonVector m N‖ ^ 2 +
+          (completeWeilSelfFinitePart φ c - Real.eulerMascheroniConstant +
+            completeWeilSelfError φ c N) * ‖normalizedRamanujanHorizonVector m N‖ ^ 2 ∧
+      |renormalizedPrimeEnergy N (normalizedRamanujanHorizonVector m N) -
+          ramanujanAdjunctionEnergy m * ‖normalizedRamanujanHorizonVector m N‖ ^ 2| ≤
+        δ * Real.log m ∧
+      |⟪Matrix.toEuclideanLin (fullWeilCenterMatrix (completeWeilPoleShift φ c) N)
+          (normalizedRamanujanHorizonVector m N),
+        normalizedRamanujanHorizonVector m N⟫| ≤ δ * Real.log m ∧
+      |⟪Matrix.toEuclideanLin (fullWeilPoleErrorMatrix φ c N)
+          (normalizedRamanujanHorizonVector m N),
+        normalizedRamanujanHorizonVector m N⟫| ≤ δ * Real.log m := by
   have hN1 : 1 ≤ N := by omega
-  have hN2 : 2 ≤ N := by omega
-  have hN4 : 4 ≤ N := by omega
   have hN0 : (0 : ℝ) < N := by exact_mod_cast hN1
-  have hL40 : 40 ≤ Real.log N := (le_max_left _ _).trans hL
-  have hL1 : 1 ≤ Real.log N := by linarith only [hL40]
   have hL0 : 0 < Real.log N := zero_lt_one.trans_le hL1
   have hsL0 : 0 < Real.sqrt (Real.log N) := Real.sqrt_pos.mpr hL0
-  have hLL2 : 2 ≤ Real.log (Real.log N) := (le_max_left _ _).trans hLL
-  intro c hc1 hc_ub m hm_mem
   have hc0 : 0 < c := zero_lt_one.trans_le hc1
-  obtain ⟨hm_lo, hm_hi⟩ := mem_Icc.mp hm_mem
-  -- Basic conductor range facts: `4 ≤ m`, `m * m ≤ N`, `1 ≤ log m`.
-  have hm_ge4 : 4 ≤ m := by
-    have : 4 ≤ ⌈Real.log N ^ A⌉₊ := Nat.le_ceil.mp (by norm_num; exact hLA4)
-    omega
-  have hm2 : 2 ≤ m := by omega
-  have hm1 : 1 ≤ m := by omega
-  have hm0 : (0 : ℝ) < m := by exact_mod_cast hm1
-  have hmN_sq : m * m ≤ N := (Nat.mul_le_mul hm_hi hm_hi).trans hMθ_sq
-  have hm_le_N : m ≤ N := (Nat.le_mul_self m).trans hmN_sq
-  have hmR_ge_LA : Real.log N ^ A ≤ m := (Nat.le_ceil _).trans (by exact_mod_cast hm_lo)
-  have hlogm_ge : A * Real.log (Real.log N) ≤ Real.log m := by
-    have h := Real.log_le_log (Real.rpow_pos_of_pos hL0 A) hmR_ge_LA
-    rwa [Real.log_rpow hL0] at h
-  have hlogm_ge1 : 1 ≤ Real.log m := by
-    have hLA_ge4 : (4 : ℝ) ≤ m := by exact_mod_cast hm_ge4
-    have hlog4 : 1 ≤ Real.log (4 : ℝ) := by
-      have he : Real.exp 1 ≤ 4 := by linarith [Real.exp_one_lt_d9]
-      exact (Real.log_exp 1).symm.trans_le (Real.log_le_log (Real.exp_pos 1) he)
-    exact hlog4.trans (Real.log_le_log (by norm_num) hLA_ge4)
   have hlogm0 : 0 < Real.log m := zero_lt_one.trans_le hlogm_ge1
-  -- Overlap upper bounds: `c ≤ log N`, `c / N ≤ 1 / 3`, `4 * (rad + 1)^2 ≤ N`, `((m^2 + 1) * (rad + 1)) ≤ N`.
-  have hc_le_L : c ≤ Real.log N :=
-    hc_ub.trans ((Real.rpow_le_rpow_of_exponent_le hL1 (by linarith only [hα])).trans_eq
-      (Real.rpow_one _))
-  have hL_le_N5 : Real.log N ≤ 5 * (N : ℝ) ^ (1 / 5 : ℝ) := by
-    simpa only [one_div, inv_inv] using log_le_rpow_div_pos hN0 (by norm_num : (0 : ℝ) < 1 / 5)
-  have hrad_le : linearNearRowRadius c + 1 ≤ 17 * c := by
-    have he2 : Real.exp 2 ≤ 8 := by
-      have h1 : Real.exp 1 ≤ 14 / 5 := by linarith [Real.exp_one_lt_d9]
-      have h2 : Real.exp 2 = Real.exp 1 * Real.exp 1 := by rw [← Real.exp_add]; norm_num
-      nlinarith only [h1, h2, Real.exp_pos 1]
-    unfold linearNearRowRadius; nlinarith only [hc1, he2]
-  have hrad_N : 4 * (linearNearRowRadius c + 1) ^ 2 ≤ N := by
-    have h1 : 2 * (linearNearRowRadius c + 1) ≤ 34 * Real.log N := by linarith only [hrad_le, hc_le_L]
-    have h2 : 34 * Real.log N ≤ 170 * (N : ℝ) ^ (1 / 5 : ℝ) := by linarith only [hL_le_N5]
-    have h3 : (170 * (N : ℝ) ^ (1 / 5 : ℝ)) ^ 2 ≤ N := by
-      have hN5_1 : (68 ^ 2 * 100 ^ 2 + 1 : ℝ) ≤ (N : ℝ) ^ (1 / 5 : ℝ) :=
-        (le_max_left _ _).trans hN5
-      have hp : ((N : ℝ) ^ (1 / 5 : ℝ)) ^ 2 * (N : ℝ) ^ (1 / 5 : ℝ) ≤ N := by
-        have hsum : (N : ℝ) ^ (1 / 5 : ℝ) * (N : ℝ) ^ (1 / 5 : ℝ) * (N : ℝ) ^ (1 / 5 : ℝ) =
-            (N : ℝ) ^ (3 / 5 : ℝ) := by
-          rw [← Real.rpow_add hN0, ← Real.rpow_add hN0]; norm_num
-        rw [sq, hsum]
-        exact (Real.rpow_le_rpow_of_exponent_le (by exact_mod_cast hN1) (by norm_num : (3 / 5 : ℝ) ≤ 1)).trans_eq
-          (Real.rpow_one _)
-      have h170 : (170 : ℝ) ^ 2 ≤ 68 ^ 2 * 100 ^ 2 := by norm_num
-      nlinarith only [hN5_1, hp, h170, sq_nonneg ((N : ℝ) ^ (1 / 5 : ℝ))]
-    have h0 : 0 ≤ 2 * (linearNearRowRadius c + 1) := by unfold linearNearRowRadius; positivity
-    have hsq := pow_le_pow_left₀ h0 (h1.trans h2) 2
-    nlinarith only [hsq, h3]
-  have hw3 : c / N ≤ 1 / 3 := by
-    rw [div_le_iff₀ hN0]
-    have hrad0 : 0 ≤ linearNearRowRadius c := by unfold linearNearRowRadius; positivity
-    have hc_le_rad : 2 * c ≤ linearNearRowRadius c + 1 := by
-      have he2 : (1 : ℝ) ≤ Real.exp 2 := Real.one_le_exp (by norm_num)
-      unfold linearNearRowRadius; nlinarith only [hc1, he2]
-    nlinarith only [hrad_N, hc_le_rad, hrad0, hc1]
-  have hcN : c ≤ N := by have := (div_le_iff₀ hN0).mp hw3; linarith only [this, hc0]
-  have hRNT_m : ((m * m : ℕ) + 1 : ℝ) * (linearNearRowRadius c + 1) ≤ N := by
-    have hmR_θ : (m : ℝ) ≤ (N : ℝ) ^ θ := (by exact_mod_cast hm_hi : (m : ℝ) ≤ ⌊(N : ℝ) ^ θ⌋₊).trans hMθ_le
-    have hm2_2θ : ((m * m : ℕ) + 1 : ℝ) ≤ 2 * (N : ℝ) ^ (2 * θ) := by
-      have h1 : ((m * m : ℕ) : ℝ) ≤ (N : ℝ) ^ (2 * θ) := by
-        push_cast
-        calc
-          (m : ℝ) * m ≤ (N : ℝ) ^ θ * (N : ℝ) ^ θ := mul_le_mul hmR_θ hmR_θ hm0.le (by positivity)
-          _ = (N : ℝ) ^ (2 * θ) := by rw [← Real.rpow_add hN0]; ring_nf
-      have hge1 : 1 ≤ (N : ℝ) ^ (2 * θ) :=
-        Real.one_le_rpow (by exact_mod_cast hN1) (by positivity)
-      linarith only [h1, hge1]
-    have hL_η : Real.log N ≤ (N : ℝ) ^ η_θ / η_θ := log_le_rpow_div_pos hN0 hη_θ
-    have hrad_η : linearNearRowRadius c + 1 ≤ (17 / η_θ) * (N : ℝ) ^ η_θ := by
-      calc
-        linearNearRowRadius c + 1 ≤ 17 * Real.log N := by linarith only [hrad_le, hc_le_L]
-        _ ≤ 17 * ((N : ℝ) ^ η_θ / η_θ) := mul_le_mul_of_nonneg_left hL_η (by norm_num)
-        _ = (17 / η_θ) * (N : ℝ) ^ η_θ := by ring
-    have hprod_eq : (N : ℝ) ^ (2 * θ) * (N : ℝ) ^ η_θ * (N : ℝ) ^ η_θ = N := by
-      rw [← Real.rpow_add hN0, ← Real.rpow_add hN0]
-      have hexp : 2 * θ + η_θ + η_θ = 1 := by dsimp only [η_θ]; ring
-      rw [hexp, Real.rpow_one]
-    calc
-      ((m * m : ℕ) + 1 : ℝ) * (linearNearRowRadius c + 1) ≤
-          (2 * (N : ℝ) ^ (2 * θ)) * ((17 / η_θ) * (N : ℝ) ^ η_θ) :=
-        mul_le_mul hm2_2θ hrad_η (by unfold linearNearRowRadius; positivity) (by positivity)
-      _ = (34 / η_θ) * ((N : ℝ) ^ (2 * θ) * (N : ℝ) ^ η_θ) := by ring
-      _ ≤ (N : ℝ) ^ η_θ * ((N : ℝ) ^ (2 * θ) * (N : ℝ) ^ η_θ) :=
-        mul_le_mul_of_nonneg_right (by linarith only [hNη]) (by positivity)
-      _ = N := by rw [← hprod_eq]; ring
-  set v_m := normalizedRamanujanHorizonVector m N
-  obtain ⟨hv_sq_le, hv_norm_le⟩ := normalizedRamanujanHorizonVector_norm_sq_le_nineteen hm2 hmN_sq hL1
-  have hv_sq_ge : 1 - 2 * θ ≤ ‖v_m‖ ^ 2 :=
-    normalizedRamanujanHorizonVector_norm_sq_ge (mem_Icc.mpr ⟨hm1, hm_hi⟩) hN4 hMθ_le
-  -- Exact decomposition of `completeWeilEnergy φ c N v_m`.
-  have hdecomp := completeWeilMatrix_inner_eq_decomposition_at_every_overlap
-    hφ hsupp hM_int hc0 hN1 v_m
-  -- Step 1: Main positive scalar term `≥ (3 / 4) * (1 - 2 * θ) * log m`.
+  have h1_2θ : 0 < 1 - 2 * θ := by linarith only [hθ]
+  let v_m := normalizedRamanujanHorizonVector m N
   have hmain_lb :
       (3 / 4) * (1 - 2 * θ) * Real.log m ≤
         ramanujanAdjunctionEnergy m * ‖v_m‖ ^ 2 +
@@ -2550,14 +2402,13 @@ theorem eventually_completeWeilEnergy_mode_ge_log_above_polylog {φ : ℝ → �
         _ ≤ 1 := by norm_num
     have hlogc_le : Real.log c ≤ (1 / 8) * Real.log m := by
       have h1 : Real.log c ≤ α * Real.log (Real.log N) :=
-        (Real.log_le_log hc0 hc_ub).trans_eq (Real.log_rpow hL0)
+        (Real.log_le_log hc0 hc_ub).trans_eq (Real.log_rpow hL0 α)
       have h2 : α * Real.log (Real.log N) ≤ (A / 8) * Real.log (Real.log N) :=
         mul_le_mul_of_nonneg_right (by linarith only [hA]) (by linarith only [hLL2])
-      nlinarith only [h1, h2, hlogm_ge]
+      have h2' : (A / 8) * Real.log (Real.log N) = (1 / 8) * (A * Real.log (Real.log N)) := by ring
+      linarith only [h1, h2, h2', hlogm_ge]
     have hconst_le : |completeWeilSelfFinitePart φ 1| + 1 ≤ (1 / 8) * Real.log m := by
-      have hLL_r : (8 * (|completeWeilSelfFinitePart φ 1| + 1) + 2) / A ≤
-          Real.log (Real.log N) := (le_max_left _ _).trans ((le_max_right _ _).trans hLL)
-      have hmul := (div_le_iff₀ hA0).mp hLL_r
+      have hmul := (div_le_iff₀ hA0).mp hLL_self
       linarith only [hmul, hlogm_ge]
     have hscalar_lb : (3 / 4) * Real.log m ≤
         ramanujanAdjunctionEnergy m + completeWeilSelfFinitePart φ c -
@@ -2567,50 +2418,40 @@ theorem eventually_completeWeilEnergy_mode_ge_log_above_polylog {φ : ℝ → �
       have herr_lb := (abs_le.mp hself_err).1
       have hfin_lb := neg_abs_le (completeWeilSelfFinitePart φ 1)
       linarith only [hadj, herr_lb, hfin_lb, hlogc_le, hconst_le]
+    have hsc_nonneg : 0 ≤ ramanujanAdjunctionEnergy m + completeWeilSelfFinitePart φ c -
+        Real.eulerMascheroniConstant + completeWeilSelfError φ c N := by
+      linarith only [hscalar_lb, hlogm0]
     calc
       (3 / 4) * (1 - 2 * θ) * Real.log m = ((3 / 4) * Real.log m) * (1 - 2 * θ) := by ring
       _ ≤ (ramanujanAdjunctionEnergy m + completeWeilSelfFinitePart φ c -
             Real.eulerMascheroniConstant + completeWeilSelfError φ c N) * ‖v_m‖ ^ 2 :=
-        mul_le_mul hscalar_lb hv_sq_ge (by positivity) (by positivity)
+        mul_le_mul hscalar_lb hv_sq_ge h1_2θ.le hsc_nonneg
       _ = _ := by ring
-  -- Step 2: Error 1 (`renormalizedPrimeEnergy` discrepancy) `≤ δ * log m`.
   have herr_prime :
       |renormalizedPrimeEnergy N v_m - ramanujanAdjunctionEnergy m * ‖v_m‖ ^ 2| ≤
         δ * Real.log m := by
-    have hb := hp1 hm2 hmN_sq hL1
     have h1 : C_p1 ≤ (δ / 2) * Real.log m := by
-      have hLL_r : (2 * C_p1 + 2) / (δ * A) ≤ Real.log (Real.log N) :=
-        (le_max_right _ _).trans ((le_max_right _ _).trans hLL)
-      have hmul := (div_le_iff₀ (mul_pos hδ0 hA0)).mp hLL_r
+      have hmul := (div_le_iff₀ (mul_pos hδ0 hA0)).mp hLL_p1
       have hδm := mul_le_mul_of_nonneg_left hlogm_ge hδ0.le
-      nlinarith only [hmul, hδm]
+      have hmul_eq : δ * (A * Real.log (Real.log N)) = δ * A * Real.log (Real.log N) := by ring
+      linarith only [hmul, hδm, hmul_eq]
     have h2 : C_p1 / Real.sqrt (Real.log N) ≤ δ / 2 := by
-      have hL_r : L_pow1 ≤ Real.log N := (le_max_left _ _).trans ((le_max_right _ _).trans hL)
       have hsq : (2 * C_p1 / δ + 1) ^ 2 ≤ Real.log N := by
-        simpa only [L_pow1, Real.rpow_two] using hL_r
+        simpa only [Real.rpow_two] using hL_p1
       have hs : 2 * C_p1 / δ + 1 ≤ Real.sqrt (Real.log N) := by
         have h0 : 0 ≤ 2 * C_p1 / δ + 1 := by positivity
         nlinarith only [hsq, Real.sq_sqrt hL0.le, hsL0, h0]
       rw [div_le_iff₀ hsL0]
-      have hmul := (div_le_iff₀ hδ0).mp (by linarith only [hs] : 2 * C_p1 / δ ≤ Real.sqrt (Real.log N))
+      have hmul := (div_le_iff₀ hδ0).mp
+        (by linarith only [hs] : 2 * C_p1 / δ ≤ Real.sqrt (Real.log N))
       linarith only [hmul]
     calc
       _ ≤ C_p1 + (C_p1 / Real.sqrt (Real.log N)) * Real.log m := by
-        linarith only [hb, (by ring : C_p1 * (1 + Real.log m / Real.sqrt (Real.log N)) =
+        linarith only [hp1, (by ring : C_p1 * (1 + Real.log m / Real.sqrt (Real.log N)) =
           C_p1 + (C_p1 / Real.sqrt (Real.log N)) * Real.log m)]
       _ ≤ (δ / 2) * Real.log m + (δ / 2) * Real.log m :=
         add_le_add h1 (mul_le_mul_of_nonneg_right h2 hlogm0.le)
       _ = δ * Real.log m := by ring
-  -- Helper for `rpow` decay `x ^ β ≤ (1 / B)` when `x ≥ B ^ (1 / (-β))`.
-  have hrpow_inv_le : ∀ {B γ : ℝ}, 0 < B → 0 < γ →
-      (B + 1) ^ (1 / γ) ≤ Real.log N → Real.log N ^ (-γ) ≤ 1 / B := by
-    intro B γ hB hγ hL_ge
-    have h1 : B + 1 ≤ Real.log N ^ γ := by
-      have hp := Real.rpow_le_rpow (by positivity) hL_ge hγ.le
-      rwa [← Real.rpow_mul (by positivity), one_div_mul_cancel hγ.ne', Real.rpow_one] at hp
-    rw [Real.rpow_neg hL0.le, inv_eq_one_div]
-    exact one_div_le_one_div_of_le hB (by linarith only [h1])
-  -- Step 3: Error 2 (`fullWeilCenterMatrix`) `≤ δ * log m`.
   have herr_center :
       |⟪Matrix.toEuclideanLin (fullWeilCenterMatrix (completeWeilPoleShift φ c) N) v_m, v_m⟫| ≤
         δ * Real.log m := by
@@ -2620,10 +2461,8 @@ theorem eventually_completeWeilEnergy_mode_ge_log_above_polylog {φ : ℝ → �
       exact completeWeilPoleShift_le hφ.continuous hsupp hM_int hc0.le
     have h1m_le : 1 + Real.log m ≤ 2 * Real.log m := by linarith only [hlogm_ge1]
     have hc_sqrt : c / Real.sqrt (Real.log N) ≤ δ / 200 := by
-      have hL_r : L_pow2 ≤ Real.log N :=
-        (le_max_left _ _).trans ((le_max_right _ _).trans ((le_max_right _ _).trans hL))
-      have hdec := hrpow_inv_le (B := 200 / δ) (γ := 1 / 2 - α) (by positivity)
-        (by linarith only [hα]) hL_r
+      have hdec := rpow_neg_le_one_div_of_ge hL0 (B := 200 / δ) (γ := 1 / 2 - α)
+        (by positivity) (by linarith only [hα]) hL_cen
       have h1 : c / Real.sqrt (Real.log N) ≤ Real.log N ^ (-(1 / 2 - α)) := by
         rw [Real.sqrt_eq_rpow, show -(1 / 2 - α) = α - 1 / 2 by ring, Real.rpow_sub hL0]
         exact div_le_div_of_nonneg_right hc_ub (by positivity)
@@ -2639,18 +2478,18 @@ theorem eventually_completeWeilEnergy_mode_ge_log_above_polylog {φ : ℝ → �
       _ ≤ 200 * (δ / 200) * Real.log m :=
         mul_le_mul_of_nonneg_right (mul_le_mul_of_nonneg_left hc_sqrt (by norm_num)) hlogm0.le
       _ = δ * Real.log m := by ring
-  -- Step 4: Error 3 (`fullWeilPoleErrorMatrix`) `≤ δ * log m`.
   have herr_pole :
       |⟪Matrix.toEuclideanLin (fullWeilPoleErrorMatrix φ c N) v_m, v_m⟫| ≤ δ * Real.log m := by
     have hb := abs_fullWeilPoleErrorMatrix_mode_inner_le hφ hsupp hM_int hc0 hm2 hmN_sq hcN
+    let C_pole := |atomPoleMomentErrorConstant φ| + 1
+    have hCpole : 0 < C_pole := by dsimp only [C_pole]; positivity
     have hC_le : atomPoleMomentErrorConstant φ ≤ C_pole := by
       dsimp only [C_pole]; linarith [le_abs_self (atomPoleMomentErrorConstant φ)]
     have hc2_div : c ^ 2 / ((N : ℝ) * Real.log N) ≤ 1 / (N : ℝ) ^ (1 / 5 : ℝ) := by
       have hc2_L : c ^ 2 ≤ Real.log N := by
         calc
           c ^ 2 ≤ (Real.log N ^ α) ^ 2 := pow_le_pow_left₀ hc0.le hc_ub 2
-          _ = Real.log N ^ (2 * α) := by
-            rw [← Real.rpow_natCast _ 2, ← Real.rpow_mul hL0.le]; norm_num
+          _ = Real.log N ^ (2 * α) := by simpa only [Nat.cast_ofNat] using rpow_pow_nat_eq hL0.le 2
           _ ≤ Real.log N ^ (1 : ℝ) := Real.rpow_le_rpow_of_exponent_le hL1 (by linarith only [hα])
           _ = Real.log N := Real.rpow_one _
       have hN15 : (N : ℝ) ^ (1 / 5 : ℝ) ≤ N :=
@@ -2661,11 +2500,10 @@ theorem eventually_completeWeilEnergy_mode_ge_log_above_polylog {φ : ℝ → �
           div_le_div_of_nonneg_right hc2_L (by positivity)
         _ = 1 / (N : ℝ) := by field_simp [hN0.ne', hL0.ne']
         _ ≤ 1 / (N : ℝ) ^ (1 / 5 : ℝ) := one_div_le_one_div_of_le (by positivity) hN15
-    have hN5_pole : 2 * C_pole / δ + 1 ≤ (N : ℝ) ^ (1 / 5 : ℝ) :=
-      (le_max_left _ _).trans ((le_max_right _ _).trans hN5)
     have hsmall : 2 * C_pole * (1 / (N : ℝ) ^ (1 / 5 : ℝ)) ≤ δ := by
       rw [mul_one_div, div_le_iff₀ (by positivity)]
-      have := (div_le_iff₀ hδ0).mp (by linarith only [hN5_pole] : 2 * C_pole / δ ≤ (N : ℝ) ^ (1 / 5 : ℝ))
+      have := (div_le_iff₀ hδ0).mp
+        (by dsimp only [C_pole]; linarith only [hN5_pole] : 2 * C_pole / δ ≤ (N : ℝ) ^ (1 / 5 : ℝ))
       linarith only [this]
     calc
       _ ≤ 2 * atomPoleMomentErrorConstant φ * (c ^ 2 / ((N : ℝ) * Real.log N)) := by
@@ -2676,69 +2514,590 @@ theorem eventually_completeWeilEnergy_mode_ge_log_above_polylog {φ : ℝ → �
         mul_le_mul (by linarith only [hC_le]) hc2_div (by positivity) (by positivity)
       _ ≤ δ := hsmall
       _ ≤ δ * Real.log m := le_mul_of_one_le_right hδ0.le hlogm_ge1
-  -- Shared `c^2 ≤ log N ^ (2 α)` helper.
+  exact ⟨hmain_lb, herr_prime, herr_center, herr_pole⟩
+
+private theorem mode_overlap_midBand_regime_I {φ : ℝ → ℝ}
+    {N m : ℕ} {α A δ C_mid c : ℝ}
+    (hα : α < 1 / 4) (hA : 8 * α < A) (hδ0 : 0 < δ) (hCmid : 0 < C_mid)
+    (hmid_b : |⟪Matrix.toEuclideanLin (overlapMatrix φ c N)
+        (normalizedRamanujanHorizonVector m N),
+      normalizedRamanujanHorizonVector m N⟫| ≤
+      C_mid * (c ^ 2 * (1 + Real.log c) / Real.log N + c ^ 5 * Real.log N / N +
+        c ^ 4 / Real.sqrt ((m - 1 : ℕ) : ℝ) + c ^ 3 * (m : ℝ) ^ 4 / N) *
+        ‖normalizedRamanujanHorizonVector m N‖ ^ 2)
+    (hN1 : 1 ≤ N) (hL1 : 1 ≤ Real.log N) (hm4 : 4 ≤ m)
+    (hmR_20 : (m : ℝ) ≤ (N : ℝ) ^ (1 / 20 : ℝ))
+    (hmR_ge_LA : Real.log N ^ A ≤ m) (hlogm_ge1 : 1 ≤ Real.log m)
+    (hv_sq_le : ‖normalizedRamanujanHorizonVector m N‖ ^ 2 ≤ 19)
+    (hc1 : 1 ≤ c) (hc_ub : c ≤ Real.log N ^ α) (hc_le_L : c ≤ Real.log N)
+    (hL_mid1 : (152 * C_mid / δ + 1) ^ (1 / (1 - 3 * α)) ≤ Real.log N)
+    (hL_mid2 : (152 * C_mid / δ + 1) ^ (1 / (A / 2 - 4 * α)) ≤ Real.log N)
+    (hN5_mid : 152 * C_mid * 10 ^ 6 / δ + 1 ≤ (N : ℝ) ^ (1 / 5 : ℝ)) :
+    |⟪Matrix.toEuclideanLin (overlapMatrix φ c N)
+        (normalizedRamanujanHorizonVector m N),
+      normalizedRamanujanHorizonVector m N⟫| ≤ (3 / 4) * δ * Real.log m := by
+  have hN0 : (0 : ℝ) < N := by exact_mod_cast hN1
+  have hL0 : 0 < Real.log N := zero_lt_one.trans_le hL1
+  have hc0 : 0 < c := zero_lt_one.trans_le hc1
+  have hm0 : (0 : ℝ) < m := by exact_mod_cast (show 0 < m by omega)
+  let η_mid := δ / (152 * C_mid)
+  have ht1 : c ^ 2 * (1 + Real.log c) / Real.log N ≤ 2 * η_mid := by
+    have h1c : 1 + Real.log c ≤ 2 * c := by
+      have := Real.log_le_sub_one_of_pos hc0; linarith only [this, hc1]
+    have hc3_ub : c ^ 3 ≤ Real.log N ^ (3 * α) := by
+      calc
+        c ^ 3 ≤ (Real.log N ^ α) ^ 3 := pow_le_pow_left₀ hc0.le hc_ub 3
+        _ = Real.log N ^ (3 * α) := by simpa only [Nat.cast_ofNat] using rpow_pow_nat_eq hL0.le 3
+    have hc3 : c ^ 2 * (1 + Real.log c) / Real.log N ≤ 2 * Real.log N ^ (-(1 - 3 * α)) := by
+      calc
+        c ^ 2 * (1 + Real.log c) / Real.log N ≤ 2 * c ^ 3 / Real.log N :=
+          div_le_div_of_nonneg_right (by nlinarith only [h1c, sq_nonneg c]) hL0.le
+        _ = 2 * (c ^ 3 / Real.log N) := by ring
+        _ ≤ 2 * (Real.log N ^ (3 * α) / Real.log N) :=
+          mul_le_mul_of_nonneg_left (div_le_div_of_nonneg_right hc3_ub hL0.le) zero_le_two
+        _ = 2 * Real.log N ^ (-(1 - 3 * α)) := by
+          rw [show -(1 - 3 * α) = 3 * α - 1 by ring, Real.rpow_sub hL0, Real.rpow_one]
+    have hdec := rpow_neg_le_one_div_of_ge hL0 (B := 152 * C_mid / δ) (γ := 1 - 3 * α)
+      (by positivity) (by linarith only [hα]) hL_mid1
+    calc
+      _ ≤ 2 * (1 / (152 * C_mid / δ)) := hc3.trans (mul_le_mul_of_nonneg_left hdec zero_le_two)
+      _ = 2 * η_mid := by dsimp only [η_mid]; field_simp [hCmid.ne', hδ0.ne']
+  have hL_le_N10 : Real.log N ≤ 10 * (N : ℝ) ^ (1 / 10 : ℝ) := by
+    have h := log_le_rpow_div_pos hN0 (by norm_num : (0 : ℝ) < 1 / 10)
+    linarith only [h, (by ring : (N : ℝ) ^ (1 / 10 : ℝ) / (1 / 10) = 10 * (N : ℝ) ^ (1 / 10 : ℝ))]
+  have hN35_div : (N : ℝ) ^ (3 / 5 : ℝ) / N ≤ 1 / (N : ℝ) ^ (1 / 5 : ℝ) := by
+    rw [div_le_div_iff₀ hN0 (by positivity), one_mul]
+    calc
+      (N : ℝ) ^ (3 / 5 : ℝ) * (N : ℝ) ^ (1 / 5 : ℝ) = (N : ℝ) ^ (4 / 5 : ℝ) := by
+        rw [← Real.rpow_add hN0]; norm_num
+      _ ≤ (N : ℝ) ^ (1 : ℝ) :=
+        Real.rpow_le_rpow_of_exponent_le (by exact_mod_cast hN1) (by norm_num)
+      _ = N := Real.rpow_one _
+  have h10_6_N5 : (10 : ℝ) ^ 6 * (1 / (N : ℝ) ^ (1 / 5 : ℝ)) ≤ η_mid := by
+    rw [mul_one_div, div_le_iff₀ (by positivity)]
+    have hm := (div_le_iff₀ hδ0).mp
+      (by linarith only [hN5_mid] : 152 * C_mid * 10 ^ 6 / δ ≤ (N : ℝ) ^ (1 / 5 : ℝ))
+    have heq : η_mid * (N : ℝ) ^ (1 / 5 : ℝ) * (152 * C_mid) =
+        δ * (N : ℝ) ^ (1 / 5 : ℝ) := by
+      dsimp only [η_mid]; field_simp [hCmid.ne']
+    have h152 : 0 < 152 * C_mid := by positivity
+    nlinarith only [hm, heq, h152]
+  have ht2 : c ^ 5 * Real.log N / N ≤ η_mid := by
+    have hc5 : c ^ 5 * Real.log N ≤ 10 ^ 6 * (N : ℝ) ^ (3 / 5 : ℝ) := by
+      have h1 : c ≤ 10 * (N : ℝ) ^ (1 / 10 : ℝ) := hc_le_L.trans hL_le_N10
+      calc
+        c ^ 5 * Real.log N ≤
+            (10 * (N : ℝ) ^ (1 / 10 : ℝ)) ^ 5 * (10 * (N : ℝ) ^ (1 / 10 : ℝ)) :=
+          mul_le_mul (pow_le_pow_left₀ hc0.le h1 5) hL_le_N10 hL0.le (by positivity)
+        _ = 10 ^ 6 * ((N : ℝ) ^ (1 / 10 : ℝ)) ^ 6 := by ring
+        _ = 10 ^ 6 * (N : ℝ) ^ (3 / 5 : ℝ) := by
+          rw [← Real.rpow_natCast _ 6, ← Real.rpow_mul hN0.le]; congr 2; norm_num
+    calc
+      c ^ 5 * Real.log N / N ≤ (10 ^ 6 * (N : ℝ) ^ (3 / 5 : ℝ)) / N :=
+        div_le_div_of_nonneg_right hc5 hN0.le
+      _ = 10 ^ 6 * ((N : ℝ) ^ (3 / 5 : ℝ) / N) := by ring
+      _ ≤ 10 ^ 6 * (1 / (N : ℝ) ^ (1 / 5 : ℝ)) :=
+        mul_le_mul_of_nonneg_left hN35_div (by norm_num)
+      _ ≤ η_mid := h10_6_N5
+  have ht3 : c ^ 4 / Real.sqrt ((m - 1 : ℕ) : ℝ) ≤ 2 * η_mid := by
+    have hm1_ge : (1 / 4 : ℝ) * Real.log N ^ A ≤ ((m - 1 : ℕ) : ℝ) := by
+      have hnat : m ≤ 2 * (m - 1) := by omega
+      have hcast : (m : ℝ) ≤ 2 * ((m - 1 : ℕ) : ℝ) := by exact_mod_cast hnat
+      have hLA_pos : 0 ≤ Real.log N ^ A := by positivity
+      linarith only [hmR_ge_LA, hcast, hLA_pos]
+    have hsqrt_ge : (1 / 2 : ℝ) * Real.log N ^ (A / 2) ≤ Real.sqrt ((m - 1 : ℕ) : ℝ) := by
+      have hsq : ((1 / 2 : ℝ) * Real.log N ^ (A / 2)) ^ 2 = (1 / 4 : ℝ) * Real.log N ^ A := by
+        rw [mul_pow, ← Real.rpow_natCast (Real.log N ^ (A / 2)) 2, ← Real.rpow_mul hL0.le]
+        congr 1
+        · norm_num
+        · congr 1; ring
+      have hpos : 0 ≤ (1 / 2 : ℝ) * Real.log N ^ (A / 2) := by positivity
+      exact (Real.sqrt_sq hpos).symm.trans_le (Real.sqrt_le_sqrt (hsq.trans_le hm1_ge))
+    have hc4_ub : c ^ 4 ≤ Real.log N ^ (4 * α) := by
+      calc
+        c ^ 4 ≤ (Real.log N ^ α) ^ 4 := pow_le_pow_left₀ hc0.le hc_ub 4
+        _ = Real.log N ^ (4 * α) := by simpa only [Nat.cast_ofNat] using rpow_pow_nat_eq hL0.le 4
+    let γ_A := A / 2 - 4 * α
+    have hγ_A : 0 < γ_A := by dsimp only [γ_A]; linarith only [hA]
+    have hdec := rpow_neg_le_one_div_of_ge hL0 (B := 152 * C_mid / δ) (γ := γ_A)
+      (by positivity) hγ_A hL_mid2
+    calc
+      c ^ 4 / Real.sqrt ((m - 1 : ℕ) : ℝ) ≤
+          Real.log N ^ (4 * α) / ((1 / 2 : ℝ) * Real.log N ^ (A / 2)) :=
+        (div_le_div_of_nonneg_right hc4_ub (by positivity)).trans
+          (div_le_div_of_nonneg_left (by positivity) (by positivity) hsqrt_ge)
+      _ = 2 * (Real.log N ^ (4 * α) / Real.log N ^ (A / 2)) := by ring
+      _ = 2 * Real.log N ^ (-γ_A) := by
+        rw [← Real.rpow_sub hL0]; congr 2; dsimp only [γ_A]; ring
+      _ ≤ 2 * (1 / (152 * C_mid / δ)) := mul_le_mul_of_nonneg_left hdec zero_le_two
+      _ = 2 * η_mid := by dsimp only [η_mid]; field_simp [hCmid.ne', hδ0.ne']
+  have ht4 : c ^ 3 * (m : ℝ) ^ 4 / N ≤ η_mid := by
+    have hc3m4 : c ^ 3 * (m : ℝ) ^ 4 ≤ 10 ^ 6 * (N : ℝ) ^ (3 / 5 : ℝ) := by
+      have hc10 : c ≤ 10 * (N : ℝ) ^ (1 / 10 : ℝ) := hc_le_L.trans hL_le_N10
+      have hc3 : c ^ 3 ≤ 10 ^ 3 * (N : ℝ) ^ (3 / 10 : ℝ) := by
+        calc
+          c ^ 3 ≤ (10 * (N : ℝ) ^ (1 / 10 : ℝ)) ^ 3 := pow_le_pow_left₀ hc0.le hc10 3
+          _ = 10 ^ 3 * ((N : ℝ) ^ (1 / 10 : ℝ)) ^ 3 := by ring
+          _ = 10 ^ 3 * (N : ℝ) ^ (3 / 10 : ℝ) := by
+            rw [← Real.rpow_natCast _ 3, ← Real.rpow_mul hN0.le]; congr 2; norm_num
+      have hm4_pow : (m : ℝ) ^ 4 ≤ (N : ℝ) ^ (1 / 5 : ℝ) := by
+        calc
+          (m : ℝ) ^ 4 ≤ ((N : ℝ) ^ (1 / 20 : ℝ)) ^ 4 := pow_le_pow_left₀ hm0.le hmR_20 4
+          _ = (N : ℝ) ^ (1 / 5 : ℝ) := by
+            rw [← Real.rpow_natCast _ 4, ← Real.rpow_mul hN0.le]; congr 1; norm_num
+      have hhalf_35 : (N : ℝ) ^ (1 / 2 : ℝ) ≤ (N : ℝ) ^ (3 / 5 : ℝ) :=
+        Real.rpow_le_rpow_of_exponent_le (by exact_mod_cast hN1) (by norm_num)
+      calc
+        c ^ 3 * (m : ℝ) ^ 4 ≤ (10 ^ 3 * (N : ℝ) ^ (3 / 10 : ℝ)) * (N : ℝ) ^ (1 / 5 : ℝ) :=
+          mul_le_mul hc3 hm4_pow (by positivity) (by positivity)
+        _ = 10 ^ 3 * ((N : ℝ) ^ (3 / 10 : ℝ) * (N : ℝ) ^ (1 / 5 : ℝ)) := by ring
+        _ = 10 ^ 3 * (N : ℝ) ^ (1 / 2 : ℝ) := by rw [← Real.rpow_add hN0]; norm_num
+        _ ≤ 10 ^ 6 * (N : ℝ) ^ (3 / 5 : ℝ) :=
+          mul_le_mul (by norm_num) hhalf_35 (by positivity) (by norm_num)
+    calc
+      c ^ 3 * (m : ℝ) ^ 4 / N ≤ (10 ^ 6 * (N : ℝ) ^ (3 / 5 : ℝ)) / N :=
+        div_le_div_of_nonneg_right hc3m4 hN0.le
+      _ = 10 ^ 6 * ((N : ℝ) ^ (3 / 5 : ℝ) / N) := by ring
+      _ ≤ 10 ^ 6 * (1 / (N : ℝ) ^ (1 / 5 : ℝ)) :=
+        mul_le_mul_of_nonneg_left hN35_div (by norm_num)
+      _ ≤ η_mid := h10_6_N5
+  have hsum6 : c ^ 2 * (1 + Real.log c) / Real.log N + c ^ 5 * Real.log N / N +
+      c ^ 4 / Real.sqrt ((m - 1 : ℕ) : ℝ) + c ^ 3 * (m : ℝ) ^ 4 / N ≤ 6 * η_mid := by
+    linarith only [ht1, ht2, ht3, ht4]
+  calc
+    |⟪Matrix.toEuclideanLin (overlapMatrix φ c N)
+        (normalizedRamanujanHorizonVector m N),
+      normalizedRamanujanHorizonVector m N⟫| ≤
+        C_mid * (6 * η_mid) * 19 :=
+      hmid_b.trans (mul_le_mul
+        (mul_le_mul_of_nonneg_left hsum6 hCmid.le) hv_sq_le
+        (sq_nonneg _) (by positivity))
+    _ = (3 / 4) * δ := by dsimp only [η_mid]; field_simp [hCmid.ne']; ring
+    _ ≤ (3 / 4) * δ * Real.log m := le_mul_of_one_le_right (by positivity) hlogm_ge1
+
+private theorem mode_overlap_downward_regime_I {φ : ℝ → ℝ}
+    {N m : ℕ} {α δ C_od c : ℝ}
+    (hα : α < 1 / 4) (hδ0 : 0 < δ) (hCod : 0 < C_od)
+    (hod_b : ‖Matrix.toEuclideanLin (overlapMatrix φ c N)
+          (normalizedRamanujanHorizonVector m N) -
+        downwardPrimeVector φ c N (normalizedRamanujanHorizonVector m N)‖ ≤
+      C_od * (c ^ 2 * (1 + Real.log m) * Real.sqrt ((1 + Real.log c) / Real.log N) +
+        c ^ 2 * (m : ℝ) * Real.sqrt (Real.log N / N)) *
+        ‖normalizedRamanujanHorizonVector m N‖)
+    (hN1 : 1 ≤ N) (hL1 : 1 ≤ Real.log N) (hm2 : 2 ≤ m)
+    (hmR_20 : (m : ℝ) ≤ (N : ℝ) ^ (1 / 20 : ℝ))
+    (hlogm_ge1 : 1 ≤ Real.log m)
+    (hv_sq_le : ‖normalizedRamanujanHorizonVector m N‖ ^ 2 ≤ 19)
+    (hc1 : 1 ≤ c) (hc_ub : c ≤ Real.log N ^ α) (hc_le_L : c ≤ Real.log N)
+    (hL_od : (640 * C_od * Real.sqrt (1 + 1 / (2 * ((1 / 4 - α) / 2))) / δ + 1) ^
+        (1 / (1 / 2 - 2 * α - (1 / 4 - α) / 2)) ≤ Real.log N)
+    (hN5_od : 320000 * C_od / δ + 1 ≤ (N : ℝ) ^ (1 / 5 : ℝ)) :
+    2 * |⟪Matrix.toEuclideanLin (overlapMatrix φ c N)
+          (normalizedRamanujanHorizonVector m N) -
+        downwardPrimeVector φ c N (normalizedRamanujanHorizonVector m N),
+      normalizedRamanujanHorizonVector m N⟫| ≤ (1 / 4) * δ * Real.log m := by
+  have hN0 : (0 : ℝ) < N := by exact_mod_cast hN1
+  have hL0 : 0 < Real.log N := zero_lt_one.trans_le hL1
+  have hc0 : 0 < c := zero_lt_one.trans_le hc1
+  have hm0 : (0 : ℝ) < m := by exact_mod_cast (show 0 < m by omega)
+  have hlogm0 : 0 < Real.log m := zero_lt_one.trans_le hlogm_ge1
+  let v_m := normalizedRamanujanHorizonVector m N
+  let X := c ^ 2 * (1 + Real.log m) * Real.sqrt ((1 + Real.log c) / Real.log N)
+  let Y := c ^ 2 * (m : ℝ) * Real.sqrt (Real.log N / N)
+  have hcs : 2 * |⟪Matrix.toEuclideanLin (overlapMatrix φ c N) v_m -
+        downwardPrimeVector φ c N v_m, v_m⟫| ≤
+      38 * C_od * X + 38 * C_od * Y := by
+    have h1 := abs_real_inner_le_norm
+      (Matrix.toEuclideanLin (overlapMatrix φ c N) v_m - downwardPrimeVector φ c N v_m) v_m
+    have h2 : ‖Matrix.toEuclideanLin (overlapMatrix φ c N) v_m -
+          downwardPrimeVector φ c N v_m‖ * ‖v_m‖ ≤ C_od * (X + Y) * ‖v_m‖ ^ 2 := by
+      calc
+        _ ≤ (C_od * (X + Y) * ‖v_m‖) * ‖v_m‖ :=
+          mul_le_mul_of_nonneg_right hod_b (norm_nonneg _)
+        _ = C_od * (X + Y) * ‖v_m‖ ^ 2 := by ring
+    have hXY0 : 0 ≤ C_od * (X + Y) := by
+      dsimp only [X, Y]; have := Real.log_natCast_nonneg m; positivity
+    calc
+      2 * |⟪Matrix.toEuclideanLin (overlapMatrix φ c N) v_m -
+            downwardPrimeVector φ c N v_m, v_m⟫| ≤
+          2 * (C_od * (X + Y) * ‖v_m‖ ^ 2) :=
+        mul_le_mul_of_nonneg_left (h1.trans h2) zero_le_two
+      _ ≤ 2 * (C_od * (X + Y) * 19) :=
+        mul_le_mul_of_nonneg_left (mul_le_mul_of_nonneg_left hv_sq_le hXY0) zero_le_two
+      _ = 38 * C_od * X + 38 * C_od * Y := by ring
   have hc2_ub : c ^ 2 ≤ Real.log N ^ (2 * α) := by
     calc
       c ^ 2 ≤ (Real.log N ^ α) ^ 2 := pow_le_pow_left₀ hc0.le hc_ub 2
-      _ = Real.log N ^ (2 * α) := by
-        rw [← Real.rpow_natCast _ 2, ← Real.rpow_mul hL0.le]; norm_num
-  -- Split `m ≤ ⌊N^(1/20)⌋₊` vs `⌊N^(1/20)⌋₊ < m` for `separatedCross` and `overlap - nonRatio`.
+      _ = Real.log N ^ (2 * α) := by simpa only [Nat.cast_ofNat] using rpow_pow_nat_eq hL0.le 2
+  have hX_le : 38 * C_od * X ≤ (1 / 8) * δ * Real.log m := by
+    let η_α := (1 / 4 - α) / 2
+    have hη_α : 0 < η_α := by dsimp only [η_α]; linarith only [hα]
+    let γ_od := 1 / 2 - 2 * α - η_α
+    have hγ_od : 0 < γ_od := by dsimp only [γ_od, η_α]; linarith only [hα]
+    let K_α := 1 + 1 / (2 * η_α)
+    have hKα : 0 < K_α := by dsimp only [K_α]; positivity
+    have h1c_le : 1 + Real.log c ≤ K_α * Real.log N ^ (2 * η_α) := by
+      have hlc : Real.log c ≤ Real.log (Real.log N) := Real.log_le_log hc0 hc_le_L
+      have hll : Real.log (Real.log N) ≤ Real.log N ^ (2 * η_α) / (2 * η_α) :=
+        log_le_rpow_div_pos hL0 (by positivity)
+      have h1pow : 1 ≤ Real.log N ^ (2 * η_α) := Real.one_le_rpow hL1 (by positivity)
+      dsimp only [K_α]
+      have hdiv_eq : Real.log N ^ (2 * η_α) / (2 * η_α) =
+          (1 / (2 * η_α)) * Real.log N ^ (2 * η_α) := by ring
+      linarith only [hlc, hll, h1pow, hdiv_eq]
+    have hsqrt_le : Real.sqrt ((1 + Real.log c) / Real.log N) ≤
+        Real.sqrt K_α * Real.log N ^ (η_α - 1 / 2) := by
+      have hdiv : (1 + Real.log c) / Real.log N ≤
+          (Real.sqrt K_α * Real.log N ^ (η_α - 1 / 2)) ^ 2 := by
+        calc
+          (1 + Real.log c) / Real.log N ≤ (K_α * Real.log N ^ (2 * η_α)) / Real.log N :=
+            div_le_div_of_nonneg_right h1c_le hL0.le
+          _ = K_α * (Real.log N ^ (2 * η_α) / Real.log N) := by ring
+          _ = K_α * Real.log N ^ (2 * η_α - 1) := by rw [Real.rpow_sub hL0, Real.rpow_one]
+          _ = (Real.sqrt K_α * Real.log N ^ (η_α - 1 / 2)) ^ 2 := by
+            rw [mul_pow, Real.sq_sqrt hKα.le,
+              ← Real.rpow_natCast (Real.log N ^ (η_α - 1 / 2)) 2, ← Real.rpow_mul hL0.le]
+            congr 2; ring
+      exact (Real.sqrt_le_sqrt hdiv).trans_eq (Real.sqrt_sq (by positivity))
+    have hc2_sqrt : c ^ 2 * Real.sqrt ((1 + Real.log c) / Real.log N) ≤
+        Real.sqrt K_α * Real.log N ^ (-γ_od) := by
+      calc
+        c ^ 2 * Real.sqrt ((1 + Real.log c) / Real.log N) ≤
+            Real.log N ^ (2 * α) * (Real.sqrt K_α * Real.log N ^ (η_α - 1 / 2)) :=
+          mul_le_mul hc2_ub hsqrt_le (by positivity) (by positivity)
+        _ = Real.sqrt K_α * (Real.log N ^ (2 * α) * Real.log N ^ (η_α - 1 / 2)) := by ring
+        _ = Real.sqrt K_α * Real.log N ^ (-γ_od) := by
+          rw [← Real.rpow_add hL0]; congr 2; dsimp only [γ_od]; ring
+    have hdec := rpow_neg_le_one_div_of_ge hL0 (B := 640 * C_od * Real.sqrt K_α / δ)
+      (γ := γ_od) (by positivity) hγ_od hL_od
+    have h1m_le : 1 + Real.log m ≤ 2 * Real.log m := by linarith only [hlogm_ge1]
+    have hKs0 : 0 < Real.sqrt K_α := Real.sqrt_pos.mpr hKα
+    calc
+      38 * C_od * X =
+          38 * C_od * (c ^ 2 * Real.sqrt ((1 + Real.log c) / Real.log N)) *
+            (1 + Real.log m) := by dsimp only [X]; ring
+      _ ≤ 38 * C_od * (Real.sqrt K_α * Real.log N ^ (-γ_od)) * (2 * Real.log m) :=
+        mul_le_mul (mul_le_mul_of_nonneg_left hc2_sqrt (by positivity))
+          h1m_le (by positivity) (by positivity)
+      _ = 76 * C_od * Real.sqrt K_α * Real.log N ^ (-γ_od) * Real.log m := by ring
+      _ ≤ 76 * C_od * Real.sqrt K_α *
+            (1 / (640 * C_od * Real.sqrt K_α / δ)) * Real.log m :=
+        mul_le_mul_of_nonneg_right (mul_le_mul_of_nonneg_left hdec (by positivity)) hlogm0.le
+      _ = (76 / 640 : ℝ) * δ * Real.log m := by field_simp [hCod.ne', hKs0.ne', hδ0.ne']; ring
+      _ ≤ (1 / 8) * δ * Real.log m := by nlinarith only [hδ0, hlogm0]
+  have hY_le : 38 * C_od * Y ≤ (1 / 8) * δ * Real.log m := by
+    have hL_le_N10 : Real.log N ≤ 10 * (N : ℝ) ^ (1 / 10 : ℝ) := by
+      have h := log_le_rpow_div_pos hN0 (by norm_num : (0 : ℝ) < 1 / 10)
+      linarith only [h, (by ring : (N : ℝ) ^ (1 / 10 : ℝ) / (1 / 10) = 10 * (N : ℝ) ^ (1 / 10 : ℝ))]
+    have hY_ub : Y ≤ 1000 / (N : ℝ) ^ (1 / 5 : ℝ) := by
+      have hY_sq : Y ^ 2 ≤ (1000 / (N : ℝ) ^ (1 / 5 : ℝ)) ^ 2 := by
+        have hc10 : c ≤ 10 * (N : ℝ) ^ (1 / 10 : ℝ) := hc_le_L.trans hL_le_N10
+        have hc4L : c ^ 4 * Real.log N ≤ 10 ^ 5 * (N : ℝ) ^ (1 / 2 : ℝ) := by
+          calc
+            c ^ 4 * Real.log N ≤
+                (10 * (N : ℝ) ^ (1 / 10 : ℝ)) ^ 4 * (10 * (N : ℝ) ^ (1 / 10 : ℝ)) :=
+              mul_le_mul (pow_le_pow_left₀ hc0.le hc10 4) hL_le_N10 hL0.le (by positivity)
+            _ = 10 ^ 5 * ((N : ℝ) ^ (1 / 10 : ℝ)) ^ 5 := by ring
+            _ = 10 ^ 5 * (N : ℝ) ^ (1 / 2 : ℝ) := by
+              rw [← Real.rpow_natCast _ 5, ← Real.rpow_mul hN0.le]; congr 2; norm_num
+        have hm2_10 : (m : ℝ) ^ 2 ≤ (N : ℝ) ^ (1 / 10 : ℝ) := by
+          calc
+            (m : ℝ) ^ 2 ≤ ((N : ℝ) ^ (1 / 20 : ℝ)) ^ 2 := pow_le_pow_left₀ hm0.le hmR_20 2
+            _ = (N : ℝ) ^ (1 / 10 : ℝ) := by
+              rw [← Real.rpow_natCast _ 2, ← Real.rpow_mul hN0.le]; congr 1; norm_num
+        have hnum : c ^ 4 * (m : ℝ) ^ 2 * Real.log N ≤ 10 ^ 6 * (N : ℝ) ^ (3 / 5 : ℝ) := by
+          calc
+            c ^ 4 * (m : ℝ) ^ 2 * Real.log N = (c ^ 4 * Real.log N) * (m : ℝ) ^ 2 := by ring
+            _ ≤ (10 ^ 5 * (N : ℝ) ^ (1 / 2 : ℝ)) * (N : ℝ) ^ (1 / 10 : ℝ) :=
+              mul_le_mul hc4L hm2_10 (by positivity) (by positivity)
+            _ = 10 ^ 5 * ((N : ℝ) ^ (1 / 2 : ℝ) * (N : ℝ) ^ (1 / 10 : ℝ)) := by ring
+            _ = 10 ^ 5 * (N : ℝ) ^ (3 / 5 : ℝ) := by rw [← Real.rpow_add hN0]; norm_num
+            _ ≤ 10 ^ 6 * (N : ℝ) ^ (3 / 5 : ℝ) :=
+              mul_le_mul_of_nonneg_right (by norm_num) (by positivity)
+        have hdiv_sq : (N : ℝ) ^ (3 / 5 : ℝ) / N = (1 / (N : ℝ) ^ (1 / 5 : ℝ)) ^ 2 := by
+          have hsum : (N : ℝ) ^ (3 / 5 : ℝ) * ((N : ℝ) ^ (1 / 5 : ℝ)) ^ 2 = N := by
+            rw [← Real.rpow_natCast ((N : ℝ) ^ (1 / 5 : ℝ)) 2, ← Real.rpow_mul hN0.le,
+              ← Real.rpow_add hN0]
+            have hexp : (3 / 5 : ℝ) + 1 / 5 * (2 : ℕ) = 1 := by norm_num
+            rw [hexp, Real.rpow_one]
+          have hpos : (N : ℝ) ^ (1 / 5 : ℝ) ≠ 0 := (Real.rpow_pos_of_pos hN0 _).ne'
+          rw [← hsum]
+          field_simp [hpos]
+        calc
+          Y ^ 2 = (c ^ 4 * (m : ℝ) ^ 2 * Real.log N) / N := by
+            dsimp only [Y]; rw [mul_pow, mul_pow, Real.sq_sqrt (div_nonneg hL0.le hN0.le)]; ring
+          _ ≤ (10 ^ 6 * (N : ℝ) ^ (3 / 5 : ℝ)) / N := div_le_div_of_nonneg_right hnum hN0.le
+          _ = 10 ^ 6 * ((N : ℝ) ^ (3 / 5 : ℝ) / N) := by ring
+          _ = 10 ^ 6 * (1 / (N : ℝ) ^ (1 / 5 : ℝ)) ^ 2 := by rw [hdiv_sq]
+          _ = (1000 / (N : ℝ) ^ (1 / 5 : ℝ)) ^ 2 := by ring
+      exact (abs_le_of_sq_le_sq' hY_sq (by positivity)).2
+    have hsmall : 38 * C_od * (1000 / (N : ℝ) ^ (1 / 5 : ℝ)) ≤ (1 / 8) * δ := by
+      have hm := (div_le_iff₀ hδ0).mp
+        (by linarith only [hN5_od] : 320000 * C_od / δ ≤ (N : ℝ) ^ (1 / 5 : ℝ))
+      rw [show 38 * C_od * (1000 / (N : ℝ) ^ (1 / 5 : ℝ)) =
+        (38000 * C_od) / (N : ℝ) ^ (1 / 5 : ℝ) by ring, div_le_iff₀ (by positivity)]
+      nlinarith only [hm, hCod]
+    calc
+      38 * C_od * Y ≤ 38 * C_od * (1000 / (N : ℝ) ^ (1 / 5 : ℝ)) :=
+        mul_le_mul_of_nonneg_left hY_ub (by positivity)
+      _ ≤ (1 / 8) * δ := hsmall
+      _ ≤ (1 / 8) * δ * Real.log m := le_mul_of_one_le_right (by positivity) hlogm_ge1
+  linarith only [hcs, hX_le, hY_le]
+
+private theorem mode_sep_and_overlap_regime_II {φ : ℝ → ℝ}
+    (hφ : ContDiff ℝ 2 φ) (hsupp : ∀ u, u ∉ Set.Icc 0 1 → φ u = 0)
+    (hM_int : 0 < ∫ u, φ u ^ 2) {N m : ℕ} {α δ C_ov1 c : ℝ}
+    (hα : α < 1 / 4) (hδ0 : 0 < δ) (hCov1 : 0 < C_ov1)
+    (hov1_b : |⟪Matrix.toEuclideanLin (overlapMatrix φ c N)
+        (normalizedRamanujanHorizonVector m N),
+      normalizedRamanujanHorizonVector m N⟫| ≤ C_ov1 * c * (1 + Real.log c))
+    (hN1 : 1 ≤ N) (hL1 : 1 ≤ Real.log N) (hm2 : 2 ≤ m) (hmN_sq : m * m ≤ N)
+    (hm_high : ¬ m ≤ ⌊(N : ℝ) ^ (1 / 20 : ℝ)⌋₊)
+    (hv_sq_le : ‖normalizedRamanujanHorizonVector m N‖ ^ 2 ≤ 19)
+    (hc1 : 1 ≤ c) (hc_ub : c ≤ Real.log N ^ α) (hcN : c ≤ N)
+    (hL_r4 : (1900 * (152 * (∫ t, |φ t|) ^ 2 / (∫ t, φ t ^ 2) + 1) / δ +
+        25 * (2 * C_ov1 + 40 * Real.sqrt (Real.log 4 + 4) * Real.exp 3) / δ + 1) ^
+        (1 / (1 - 2 * α)) ≤ Real.log N) :
+    |⟪Matrix.toEuclideanLin (separatedCrossErrorMatrix φ c N)
+        (normalizedRamanujanHorizonVector m N),
+      normalizedRamanujanHorizonVector m N⟫| ≤ δ * Real.log m ∧
+      |⟪Matrix.toEuclideanLin (overlapMatrix φ c N)
+          (normalizedRamanujanHorizonVector m N),
+        normalizedRamanujanHorizonVector m N⟫ -
+        ⟪Matrix.toEuclideanLin (fullWeilNonRatioMatrix φ c N)
+          (normalizedRamanujanHorizonVector m N),
+        normalizedRamanujanHorizonVector m N⟫| ≤ δ * Real.log m := by
+  have hN0 : (0 : ℝ) < N := by exact_mod_cast hN1
+  have hL0 : 0 < Real.log N := zero_lt_one.trans_le hL1
+  have hc0 : 0 < c := zero_lt_one.trans_le hc1
+  let v_m := normalizedRamanujanHorizonVector m N
+  let K₀ := 152 * (∫ t, |φ t|) ^ 2 / (∫ t, φ t ^ 2)
+  have hK₀ : 0 ≤ K₀ := by dsimp only [K₀]; positivity
+  let C_nr := 40 * Real.sqrt (Real.log 4 + 4) * Real.exp 3
+  have hCnr : 0 < C_nr := by
+    dsimp only [C_nr]
+    have : 0 < Real.log 4 + 4 := by have := Real.log_nonneg (by norm_num : (1 : ℝ) ≤ 4); linarith
+    positivity
+  have hm_gt : (N : ℝ) ^ (1 / 20 : ℝ) ≤ m :=
+    (Nat.lt_floor_add_one _).le.trans
+      (by exact_mod_cast Nat.succ_le_of_lt (lt_of_not_ge hm_high))
+  have hlogm_25 : (1 / 25 : ℝ) * Real.log N ≤ Real.log m := by
+    have h20 : (1 / 20 : ℝ) * Real.log N ≤ Real.log m := by
+      have h := Real.log_le_log (by positivity) hm_gt
+      rwa [Real.log_rpow hN0 (1 / 20)] at h
+    linarith only [h20, hL0]
+  let B4 := 1900 * (K₀ + 1) / δ + 25 * (2 * C_ov1 + C_nr) / δ
+  have hB4 : 0 < B4 := by dsimp only [B4]; positivity
+  have hc2_ub : c ^ 2 ≤ Real.log N ^ (2 * α) := by
+    calc
+      c ^ 2 ≤ (Real.log N ^ α) ^ 2 := pow_le_pow_left₀ hc0.le hc_ub 2
+      _ = Real.log N ^ (2 * α) := by simpa only [Nat.cast_ofNat] using rpow_pow_nat_eq hL0.le 2
+  have hdec4 : c ^ 2 / Real.log N ≤ 1 / B4 := by
+    have hd := rpow_neg_le_one_div_of_ge hL0 (B := B4) (γ := 1 - 2 * α) hB4
+      (by linarith only [hα]) hL_r4
+    have hc2_div : c ^ 2 / Real.log N ≤ Real.log N ^ (-(1 - 2 * α)) := by
+      rw [show -(1 - 2 * α) = 2 * α - 1 by ring, Real.rpow_sub hL0, Real.rpow_one]
+      exact div_le_div_of_nonneg_right hc2_ub hL0.le
+    exact hc2_div.trans hd
+  have hsep_II :
+      |⟪Matrix.toEuclideanLin (separatedCrossErrorMatrix φ c N) v_m, v_m⟫| ≤ δ * Real.log m := by
+    have hcs := abs_real_inner_le_norm
+      (Matrix.toEuclideanLin (separatedCrossErrorMatrix φ c N) v_m) v_m
+    have hnorm := norm_separatedCrossErrorMatrix_le hφ hsupp hM_int hc0 hN1 v_m
+    have h1 : |⟪Matrix.toEuclideanLin (separatedCrossErrorMatrix φ c N) v_m, v_m⟫| ≤
+        76 * (K₀ + 1) * c ^ 2 := by
+      calc
+        _ ≤ (4 * K₀ * c ^ 2 * ‖v_m‖) * ‖v_m‖ :=
+          hcs.trans (mul_le_mul_of_nonneg_right hnorm (norm_nonneg _))
+        _ = 4 * K₀ * c ^ 2 * ‖v_m‖ ^ 2 := by ring
+        _ ≤ 4 * K₀ * c ^ 2 * 19 := mul_le_mul_of_nonneg_left hv_sq_le (by positivity)
+        _ = 76 * K₀ * c ^ 2 := by ring
+        _ ≤ 76 * (K₀ + 1) * c ^ 2 := mul_le_mul_of_nonneg_right (by linarith) (sq_nonneg c)
+    have hB4_ge : 1900 * (K₀ + 1) / δ ≤ B4 := by dsimp only [B4]; positivity
+    have hdiv_le : c ^ 2 / Real.log N ≤ δ / (1900 * (K₀ + 1)) :=
+      hdec4.trans ((one_div_le_one_div_of_le (by positivity) hB4_ge).trans_eq
+        (by field_simp [hδ0.ne', (show 1900 * (K₀ + 1) ≠ 0 by positivity)]))
+    calc
+      _ ≤ 76 * (K₀ + 1) * c ^ 2 := h1
+      _ = 1900 * (K₀ + 1) * (c ^ 2 / Real.log N) * ((1 / 25) * Real.log N) := by
+        field_simp [hL0.ne']; ring
+      _ ≤ 1900 * (K₀ + 1) * (δ / (1900 * (K₀ + 1))) * ((1 / 25) * Real.log N) :=
+        mul_le_mul_of_nonneg_right
+          (mul_le_mul_of_nonneg_left hdiv_le (by positivity)) (by positivity)
+      _ = δ * ((1 / 25) * Real.log N) := by
+        field_simp [(show 1900 * (K₀ + 1) ≠ 0 by positivity)]; ring
+      _ ≤ δ * Real.log m := mul_le_mul_of_nonneg_left hlogm_25 hδ0.le
+  have hov_II :
+      |⟪Matrix.toEuclideanLin (overlapMatrix φ c N) v_m, v_m⟫ -
+        ⟪Matrix.toEuclideanLin (fullWeilNonRatioMatrix φ c N) v_m, v_m⟫| ≤ δ * Real.log m := by
+    have hb2 := abs_fullWeilNonRatioMatrix_mode_inner_le hφ hsupp hM_int hm2 hmN_sq hL1 hc0 hcN
+    have h1c : 1 + Real.log c ≤ 2 * c := by
+      have := Real.log_le_sub_one_of_pos hc0; linarith only [this, hc1]
+    have hsum_c2 :
+        |⟪Matrix.toEuclideanLin (overlapMatrix φ c N) v_m, v_m⟫ -
+          ⟪Matrix.toEuclideanLin (fullWeilNonRatioMatrix φ c N) v_m, v_m⟫| ≤
+          (2 * C_ov1 + C_nr) * c ^ 2 := by
+      have hov_c2 : C_ov1 * c * (1 + Real.log c) ≤ 2 * C_ov1 * c ^ 2 := by
+        calc
+          C_ov1 * c * (1 + Real.log c) ≤ C_ov1 * c * (2 * c) :=
+            mul_le_mul_of_nonneg_left h1c (by positivity)
+          _ = 2 * C_ov1 * c ^ 2 := by ring
+      have hnr_c2 : C_nr * c ≤ C_nr * c ^ 2 :=
+        mul_le_mul_of_nonneg_left (by nlinarith only [hc1]) hCnr.le
+      exact (abs_sub _ _).trans
+        (by dsimp only [C_nr] at hnr_c2 ⊢; linarith only [hov1_b, hb2, hov_c2, hnr_c2])
+    have hB4_ge : 25 * (2 * C_ov1 + C_nr) / δ ≤ B4 := by dsimp only [B4]; positivity
+    have hdiv_le : c ^ 2 / Real.log N ≤ δ / (25 * (2 * C_ov1 + C_nr)) :=
+      hdec4.trans ((one_div_le_one_div_of_le (by positivity) hB4_ge).trans_eq
+        (by field_simp [hδ0.ne', (show 25 * (2 * C_ov1 + C_nr) ≠ 0 by positivity)]))
+    calc
+      _ ≤ (2 * C_ov1 + C_nr) * c ^ 2 := hsum_c2
+      _ = 25 * (2 * C_ov1 + C_nr) * (c ^ 2 / Real.log N) * ((1 / 25) * Real.log N) := by
+        field_simp [hL0.ne']; ring
+      _ ≤ 25 * (2 * C_ov1 + C_nr) * (δ / (25 * (2 * C_ov1 + C_nr))) *
+            ((1 / 25) * Real.log N) :=
+        mul_le_mul_of_nonneg_right
+          (mul_le_mul_of_nonneg_left hdiv_le (by positivity)) (by positivity)
+      _ = δ * ((1 / 25) * Real.log N) := by
+        field_simp [(show 25 * (2 * C_ov1 + C_nr) ≠ 0 by positivity)]; ring
+      _ ≤ δ * Real.log m := mul_le_mul_of_nonneg_left hlogm_25 hδ0.le
+  exact ⟨hsep_II, hov_II⟩
+
+/-- **Diverging positive single-mode floor above polylogarithmic scales.**
+For every `C²` profile `φ` supported in `[0, 1]` with `0 < ∫ φ²`, every Bombieri–Vinogradov
+exponent `0 < θ < 1 / 2`, every power-of-logarithm overlap exponent `0 < α < 1 / 4`, and every
+`A > 8 * α`, eventually in `N`, for all `1 ≤ c ≤ (log N)^α` and all conductors
+`m ∈ Icc ⌈(log N)^A⌉₊ ⌊N^θ⌋₊`:
+```
+((1 - 2 * θ) / 4) * log m ≤ completeWeilEnergy φ c N (normalizedRamanujanHorizonVector m N).
+```
+-/
+theorem eventually_completeWeilEnergy_mode_ge_log_above_polylog {φ : ℝ → ℝ}
+    (hφ : ContDiff ℝ 2 φ) (hsupp : ∀ u, u ∉ Set.Icc 0 1 → φ u = 0)
+    (hM_int : 0 < ∫ u, φ u ^ 2) {θ α A : ℝ}
+    (hθ0 : 0 < θ) (hθ : θ < 1 / 2) (hα0 : 0 < α) (hα : α < 1 / 4) (hA : 8 * α < A) :
+    ∀ᶠ N : ℕ in atTop, ∀ c : ℝ, 1 ≤ c → c ≤ Real.log N ^ α →
+      ∀ m ∈ Icc ⌈Real.log N ^ A⌉₊ ⌊(N : ℝ) ^ θ⌋₊,
+        ((1 - 2 * θ) / 4) * Real.log m ≤
+          completeWeilEnergy φ c N (normalizedRamanujanHorizonVector m N) := by
+  have hA0 : 0 < A := by linarith only [hα0, hA]
+  let δ := (1 - 2 * θ) / 10
+  have hδ0 : 0 < δ := by dsimp only [δ]; linarith only [hθ]
+  obtain ⟨C_p1, hCp1, hp1⟩ := exists_renormalizedPrimeEnergy_mode_sub_le
+  obtain ⟨C_mid, hCmid, hmid⟩ := exists_overlapMatrix_midBand_inner_le hφ hsupp hM_int
+  obtain ⟨C_od, hCod, hod⟩ := exists_overlap_sub_downward_norm_le_of_mem_conductorSubspace
+    hφ hsupp hM_int
+  obtain ⟨C_ov1, hCov1, hov1⟩ := exists_overlapMatrix_mode_inner_le hφ hsupp hM_int
+  let K₀ := 152 * (∫ t, |φ t|) ^ 2 / (∫ t, φ t ^ 2)
+  have hK₀ : 0 ≤ K₀ := by dsimp only [K₀]; positivity
+  have hlog : Tendsto (fun N : ℕ => Real.log (N : ℝ)) atTop atTop :=
+    Real.tendsto_log_atTop.comp tendsto_natCast_atTop_atTop
+  have hloglog : Tendsto (fun N : ℕ => Real.log (Real.log (N : ℝ))) atTop atTop :=
+    Real.tendsto_log_atTop.comp hlog
+  have hN_rpow_θ : Tendsto (fun N : ℕ => (N : ℝ) ^ ((1 - 2 * θ) / 2)) atTop atTop :=
+    (tendsto_rpow_atTop (by linarith only [hθ])).comp tendsto_natCast_atTop_atTop
+  have hN_rpow_5 : Tendsto (fun N : ℕ => (N : ℝ) ^ (1 / 5 : ℝ)) atTop atTop :=
+    (tendsto_rpow_atTop (by norm_num : (0 : ℝ) < 1 / 5)).comp tendsto_natCast_atTop_atTop
+  filter_upwards [eventually_conductorCutoff_bounds hθ0 hθ,
+    hloglog.eventually_ge_atTop 2,
+    hloglog.eventually_ge_atTop ((8 * (|completeWeilSelfFinitePart φ 1| + 1) + 2) / A),
+    hloglog.eventually_ge_atTop ((2 * C_p1 + 2) / (δ * A)),
+    hlog.eventually_ge_atTop 200,
+    hlog.eventually_ge_atTop ((2 * C_p1 / δ + 1) ^ (2 : ℝ)),
+    hlog.eventually_ge_atTop ((200 / δ + 1) ^ (1 / (1 / 2 - α))),
+    hlog.eventually_ge_atTop ((684 * (K₀ + 1) / δ + 1) ^ (1 / (1 - 2 * α))),
+    hlog.eventually_ge_atTop ((1900 * (K₀ + 1) / δ +
+      25 * (2 * C_ov1 + 40 * Real.sqrt (Real.log 4 + 4) * Real.exp 3) / δ + 1) ^
+      (1 / (1 - 2 * α))),
+    hlog.eventually_ge_atTop ((152 * C_mid / δ + 1) ^ (1 / (1 - 3 * α))),
+    hlog.eventually_ge_atTop ((152 * C_mid / δ + 1) ^ (1 / (A / 2 - 4 * α))),
+    hlog.eventually_ge_atTop
+      ((640 * C_od * Real.sqrt (1 + 1 / (2 * ((1 / 4 - α) / 2))) / δ + 1) ^
+        (1 / (1 / 2 - 2 * α - (1 / 4 - α) / 2))),
+    ((tendsto_rpow_atTop hA0).comp hlog).eventually_ge_atTop 4,
+    hN_rpow_θ.eventually_ge_atTop (34 / ((1 - 2 * θ) / 2) + 1),
+    hN_rpow_5.eventually_ge_atTop (68 ^ 2 * 100 ^ 2 + 1),
+    hN_rpow_5.eventually_ge_atTop (2 * (|atomPoleMomentErrorConstant φ| + 1) / δ + 1),
+    hN_rpow_5.eventually_ge_atTop (152 * C_mid * 10 ^ 6 / δ + 1),
+    hN_rpow_5.eventually_ge_atTop (320000 * C_od / δ + 1),
+    eventually_ge_atTop 16] with
+    N hcut hLL2 hLL_self hLL_p1 hL200 hL_p1 hL_cen hL_sep1 hL_r4 hL_mid1 hL_mid2 hL_od
+    hLA4 hNη hN5_rad hN5_pole hN5_mid hN5_od hN16
+  obtain ⟨_, hMθ_sq, _, hMθ_le, _⟩ := hcut
+  have hN1 : 1 ≤ N := by omega
+  have hN4 : 4 ≤ N := by omega
+  have hN0 : (0 : ℝ) < N := by exact_mod_cast hN1
+  have hL1 : 1 ≤ Real.log N := by linarith only [hL200]
+  have hL0 : 0 < Real.log N := zero_lt_one.trans_le hL1
+  intro c hc1 hc_ub m hm_mem
+  have hc0 : 0 < c := zero_lt_one.trans_le hc1
+  obtain ⟨hm_ge4, hmN_sq, hmR_ge_LA, hlogm_ge, hlogm_ge1, hc_le_L, hrad_N, hw3, hcN, hRNT_m⟩ :=
+    mode_geometry_and_overlap_width_bounds hθ0 hθ hα hN16 hL200 hLA4 hMθ_sq hMθ_le
+      hN5_rad hNη hc1 hc_ub hm_mem
+  have hm2 : 2 ≤ m := by omega
+  have hm1 : 1 ≤ m := by omega
+  have hm0 : (0 : ℝ) < m := by exact_mod_cast hm1
+  let v_m := normalizedRamanujanHorizonVector m N
+  obtain ⟨hv_sq_le, _⟩ := normalizedRamanujanHorizonVector_norm_sq_le_nineteen hm2 hmN_sq hL1
+  have hv_sq_ge : 1 - 2 * θ ≤ ‖v_m‖ ^ 2 :=
+    normalizedRamanujanHorizonVector_norm_sq_ge (mem_Icc.mpr ⟨hm1, (mem_Icc.mp hm_mem).2⟩)
+      hN4 hMθ_le
+  obtain ⟨hmain_lb, herr_prime, herr_center, herr_pole⟩ :=
+    mode_main_scalar_and_universal_errors hφ hsupp hM_int hθ hα hA0 hA hδ0 hCp1
+      (hp1 hm2 hmN_sq hL1) hN4 hL1 hLL2 hm2 hmN_sq hlogm_ge hlogm_ge1 hv_sq_ge
+      hc1 hc_ub hw3 hcN hLL_self hLL_p1 hL_p1 hL_cen hN5_pole
   have herr_sep_and_ov :
       |⟪Matrix.toEuclideanLin (separatedCrossErrorMatrix φ c N) v_m, v_m⟫| ≤ δ * Real.log m ∧
         |⟪Matrix.toEuclideanLin (overlapMatrix φ c N) v_m, v_m⟫ -
           ⟪Matrix.toEuclideanLin (fullWeilNonRatioMatrix φ c N) v_m, v_m⟫| ≤ δ * Real.log m := by
     by_cases hm_low : m ≤ ⌊(N : ℝ) ^ (1 / 20 : ℝ)⌋₊
-    · -- Regime I (`m ≤ ⌊N^(1/20)⌋₊`): `m^6 ≤ N`, `18 * (1 + log m) ≤ log N`.
-      have hmR_20 : (m : ℝ) ≤ (N : ℝ) ^ (1 / 20 : ℝ) :=
+    · have hmR_20 : (m : ℝ) ≤ (N : ℝ) ^ (1 / 20 : ℝ) :=
         (by exact_mod_cast hm_low : (m : ℝ) ≤ ⌊(N : ℝ) ^ (1 / 20 : ℝ)⌋₊).trans
           (Nat.floor_le (by positivity))
-      have hm6N : m ^ 6 ≤ N := by
-        have hR : ((m ^ 6 : ℕ) : ℝ) ≤ N := by
+      have hm4N : m ^ 4 ≤ N := by
+        have hR : ((m ^ 4 : ℕ) : ℝ) ≤ N := by
           push_cast
           calc
-            (m : ℝ) ^ 6 ≤ ((N : ℝ) ^ (1 / 20 : ℝ)) ^ 6 := pow_le_pow_left₀ hm0.le hmR_20 6
-            _ = (N : ℝ) ^ (6 / 20 : ℝ) := by
-              rw [← Real.rpow_natCast _ 6, ← Real.rpow_mul hN0.le]; norm_num
+            (m : ℝ) ^ 4 ≤ ((N : ℝ) ^ (1 / 20 : ℝ)) ^ 4 := pow_le_pow_left₀ hm0.le hmR_20 4
+            _ = (N : ℝ) ^ (1 / 5 : ℝ) := by
+              rw [← Real.rpow_natCast _ 4, ← Real.rpow_mul hN0.le]; congr 1; norm_num
             _ ≤ (N : ℝ) ^ (1 : ℝ) :=
               Real.rpow_le_rpow_of_exponent_le (by exact_mod_cast hN1) (by norm_num)
             _ = N := Real.rpow_one _
         exact_mod_cast hR
-      have hm4N : m ^ 4 ≤ N :=
-        (Nat.pow_le_pow_right (by omega) (by norm_num : 4 ≤ 6)).trans hm6N
       have hlog18 : 18 * (1 + Real.log m) ≤ Real.log N := by
         have hlm : Real.log m ≤ (1 / 20) * Real.log N :=
-          (Real.log_le_log hm0 hmR_20).trans_eq (Real.log_rpow hN0)
-        linarith only [hlm, hL40]
+          (Real.log_le_log hm0 hmR_20).trans_eq (Real.log_rpow hN0 (1 / 20))
+        linarith only [hlm, hL200]
       have hv_mem : v_m ∈ conductorSubspace m N :=
         mem_conductorSubspace_normalizedRamanujanHorizonVector (mem_Icc.mpr ⟨hm1, le_rfl⟩)
-      -- Regime I `separatedCrossErrorMatrix` bound:
       have hsep_I :
           |⟪Matrix.toEuclideanLin (separatedCrossErrorMatrix φ c N) v_m, v_m⟫| ≤ δ * Real.log m := by
         have hb := abs_separatedCrossErrorMatrix_inner_le_of_mem_conductorSubspace
           hφ hsupp hM_int hc0 hm2 hm4N hlog18 hv_mem
-        have hL_r : L_pow3 ≤ Real.log N :=
-          (le_max_left _ _).trans ((le_max_right _ _).trans
-            ((le_max_right _ _).trans ((le_max_right _ _).trans hL)))
-        have hdec := hrpow_inv_le (B := 684 * (K₀ + 1) / δ) (γ := 1 - 2 * α)
-          (by positivity) (by linarith only [hα]) hL_r
+        have hdec := rpow_neg_le_one_div_of_ge hL0 (B := 684 * (K₀ + 1) / δ) (γ := 1 - 2 * α)
+          (by positivity) (by linarith only [hα]) hL_sep1
+        have hc2_ub : c ^ 2 ≤ Real.log N ^ (2 * α) := by
+          calc
+            c ^ 2 ≤ (Real.log N ^ α) ^ 2 := pow_le_pow_left₀ hc0.le hc_ub 2
+            _ = Real.log N ^ (2 * α) := by simpa only [Nat.cast_ofNat] using rpow_pow_nat_eq hL0.le 2
         have hc2_div : c ^ 2 / Real.log N ≤ Real.log N ^ (-(1 - 2 * α)) := by
           rw [show -(1 - 2 * α) = 2 * α - 1 by ring, Real.rpow_sub hL0, Real.rpow_one]
           exact div_le_div_of_nonneg_right hc2_ub hL0.le
         calc
           _ ≤ 36 * K₀ * c ^ 2 / Real.log N * 19 :=
             hb.trans (mul_le_mul_of_nonneg_left hv_sq_le (by positivity))
-          _ ≤ 684 * (K₀ + 1) * (c ^ 2 / Real.log N) := by
-            nlinarith only [hK₀, (show 0 ≤ c ^ 2 / Real.log N by positivity)]
+          _ = 684 * K₀ * (c ^ 2 / Real.log N) := by ring
+          _ ≤ 684 * (K₀ + 1) * (c ^ 2 / Real.log N) :=
+            mul_le_mul_of_nonneg_right (by linarith) (by positivity)
           _ ≤ 684 * (K₀ + 1) * (1 / (684 * (K₀ + 1) / δ)) :=
             mul_le_mul_of_nonneg_left (hc2_div.trans hdec) (by positivity)
           _ = δ := by field_simp [(show 684 * (K₀ + 1) ≠ 0 by positivity), hδ0.ne']
           _ ≤ δ * Real.log m := le_mul_of_one_le_right hδ0.le hlogm_ge1
-      -- Regime I `overlapMatrix - fullWeilNonRatioMatrix` via `overlap_sub_nonRatio_inner_eq`:
       have hov_I :
           |⟪Matrix.toEuclideanLin (overlapMatrix φ c N) v_m, v_m⟫ -
             ⟪Matrix.toEuclideanLin (fullWeilNonRatioMatrix φ c N) v_m, v_m⟫| ≤ δ * Real.log m := by
         rw [overlap_sub_nonRatio_inner_eq hφ hsupp hM_int hc0 hN1 v_m]
-        -- 1) `|⟪overlapMatrix v_m, v_m⟫| ≤ δ / 2` via `exists_overlapMatrix_midBand_inner_le` at `Q₁ = m - 1`, `R₂ = m`.
         let a_m : ℕ → ℝ := fun k => if k = m then 1 else 0
         have hu_eq : (∑ k ∈ Icc 1 m, a_m k • normalizedRamanujanHorizonVector k N) = v_m := by
           simp [a_m, v_m, show m ∈ Icc 1 m from mem_Icc.mpr ⟨hm1, le_rfl⟩]
@@ -2748,310 +3107,12 @@ theorem eventually_completeWeilEnergy_mode_ge_log_above_polylog {φ : ℝ → �
           hc1 hc_le_L hw3 hrad_N hRNT_m ha0
         dsimp only at hmid_b
         rw [hu_eq] at hmid_b
-        -- Bound the four summands inside `hmid_b` each by `δ / (152 * C_mid)`.
-        let η_mid := δ / (152 * C_mid)
-        have hη_mid : 0 < η_mid := by dsimp only [η_mid]; positivity
-        have ht1 : c ^ 2 * (1 + Real.log c) / Real.log N ≤ 2 * η_mid := by
-          have h1c : 1 + Real.log c ≤ 2 * c := by
-            have := Real.log_le_sub_one_of_pos hc0; linarith only [this, hc1]
-          have hc3 : c ^ 2 * (1 + Real.log c) / Real.log N ≤ 2 * Real.log N ^ (-(1 - 3 * α)) := by
-            have hc3_ub : c ^ 3 ≤ Real.log N ^ (3 * α) := by
-              calc
-                c ^ 3 ≤ (Real.log N ^ α) ^ 3 := pow_le_pow_left₀ hc0.le hc_ub 3
-                _ = Real.log N ^ (3 * α) := by
-                  rw [← Real.rpow_natCast _ 3, ← Real.rpow_mul hL0.le]; norm_num
-            calc
-              c ^ 2 * (1 + Real.log c) / Real.log N ≤ 2 * c ^ 3 / Real.log N :=
-                div_le_div_of_nonneg_right
-                  (by nlinarith only [h1c, sq_nonneg c]) hL0.le
-              _ = 2 * (c ^ 3 / Real.log N) := by ring
-              _ ≤ 2 * (Real.log N ^ (3 * α) / Real.log N) :=
-                mul_le_mul_of_nonneg_left (div_le_div_of_nonneg_right hc3_ub hL0.le) zero_le_two
-              _ = 2 * Real.log N ^ (-(1 - 3 * α)) := by
-                rw [show -(1 - 3 * α) = 3 * α - 1 by ring, Real.rpow_sub hL0, Real.rpow_one]
-          have hL_r : L_pow5 ≤ Real.log N :=
-            (le_max_left _ _).trans ((le_max_right _ _).trans ((le_max_right _ _).trans
-              ((le_max_right _ _).trans ((le_max_right _ _).trans
-                ((le_max_right _ _).trans hL)))))
-          have hdec := hrpow_inv_le (B := 152 * C_mid / δ) (γ := 1 - 3 * α)
-            (by positivity) (by linarith only [hα]) hL_r
-          calc
-            _ ≤ 2 * (1 / (152 * C_mid / δ)) :=
-              hc3.trans (mul_le_mul_of_nonneg_left hdec zero_le_two)
-            _ = 2 * η_mid := by dsimp only [η_mid]; field_simp [hCmid.ne', hδ0.ne']
-        have hL_le_N10 : Real.log N ≤ 10 * (N : ℝ) ^ (1 / 10 : ℝ) := by
-          simpa only [one_div, inv_inv] using
-            log_le_rpow_div_pos hN0 (by norm_num : (0 : ℝ) < 1 / 10)
-        have hN35_div : (N : ℝ) ^ (3 / 5 : ℝ) / N ≤ 1 / (N : ℝ) ^ (1 / 5 : ℝ) := by
-          rw [div_le_div_iff₀ hN0 (by positivity), one_mul]
-          calc
-            (N : ℝ) ^ (3 / 5 : ℝ) * (N : ℝ) ^ (1 / 5 : ℝ) = (N : ℝ) ^ (4 / 5 : ℝ) := by
-              rw [← Real.rpow_add hN0]; norm_num
-            _ ≤ (N : ℝ) ^ (1 : ℝ) :=
-              Real.rpow_le_rpow_of_exponent_le (by exact_mod_cast hN1) (by norm_num)
-            _ = N := Real.rpow_one _
-        have h10_6_N5 : (10 : ℝ) ^ 6 * (1 / (N : ℝ) ^ (1 / 5 : ℝ)) ≤ η_mid := by
-          have hN5_mid : 152 * C_mid * 10 ^ 6 / δ + 1 ≤ (N : ℝ) ^ (1 / 5 : ℝ) :=
-            (le_max_left _ _).trans ((le_max_right _ _).trans ((le_max_right _ _).trans hN5))
-          rw [mul_one_div, div_le_iff₀ (by positivity)]
-          have hm := (div_le_iff₀ hδ0).mp
-            (by linarith only [hN5_mid] : 152 * C_mid * 10 ^ 6 / δ ≤ (N : ℝ) ^ (1 / 5 : ℝ))
-          have heq : η_mid * (N : ℝ) ^ (1 / 5 : ℝ) * (152 * C_mid) =
-              δ * (N : ℝ) ^ (1 / 5 : ℝ) := by
-            dsimp only [η_mid]; field_simp [hCmid.ne']
-          have h152 : 0 < 152 * C_mid := by positivity
-          nlinarith only [hm, heq, h152]
-        have ht2 : c ^ 5 * Real.log N / N ≤ η_mid := by
-          have hc5 : c ^ 5 * Real.log N ≤ 10 ^ 6 * (N : ℝ) ^ (3 / 5 : ℝ) := by
-            have h1 : c ≤ 10 * (N : ℝ) ^ (1 / 10 : ℝ) := hc_le_L.trans hL_le_N10
-            calc
-              c ^ 5 * Real.log N ≤
-                  (10 * (N : ℝ) ^ (1 / 10 : ℝ)) ^ 5 * (10 * (N : ℝ) ^ (1 / 10 : ℝ)) :=
-                mul_le_mul (pow_le_pow_left₀ hc0.le h1 5) hL_le_N10 hL0.le (by positivity)
-              _ = 10 ^ 6 * ((N : ℝ) ^ (1 / 10 : ℝ)) ^ 6 := by ring
-              _ = 10 ^ 6 * (N : ℝ) ^ (3 / 5 : ℝ) := by
-                rw [← Real.rpow_natCast _ 6, ← Real.rpow_mul hN0.le]; norm_num
-          calc
-            c ^ 5 * Real.log N / N ≤ (10 ^ 6 * (N : ℝ) ^ (3 / 5 : ℝ)) / N :=
-              div_le_div_of_nonneg_right hc5 hN0.le
-            _ = 10 ^ 6 * ((N : ℝ) ^ (3 / 5 : ℝ) / N) := by ring
-            _ ≤ 10 ^ 6 * (1 / (N : ℝ) ^ (1 / 5 : ℝ)) :=
-              mul_le_mul_of_nonneg_left hN35_div (by norm_num)
-            _ ≤ η_mid := h10_6_N5
-        have ht3 : c ^ 4 / Real.sqrt ((m - 1 : ℕ) : ℝ) ≤ 2 * η_mid := by
-          have hm1_ge : (1 / 4 : ℝ) * Real.log N ^ A ≤ ((m - 1 : ℕ) : ℝ) := by
-            have hnat : m ≤ 2 * (m - 1) := by omega
-            have hcast : (m : ℝ) ≤ 2 * ((m - 1 : ℕ) : ℝ) := by exact_mod_cast hnat
-            have hLA_pos : 0 ≤ Real.log N ^ A := by positivity
-            linarith only [hmR_ge_LA, hcast, hLA_pos]
-          have hsqrt_ge : (1 / 2 : ℝ) * Real.log N ^ (A / 2) ≤ Real.sqrt ((m - 1 : ℕ) : ℝ) := by
-            have hsq : ((1 / 2 : ℝ) * Real.log N ^ (A / 2)) ^ 2 = (1 / 4 : ℝ) * Real.log N ^ A := by
-              rw [mul_pow, ← Real.rpow_natCast (Real.log N ^ (A / 2)) 2, ← Real.rpow_mul hL0.le]
-              congr 2 <;> norm_num
-            have hpos : 0 ≤ (1 / 2 : ℝ) * Real.log N ^ (A / 2) := by positivity
-            exact (Real.sqrt_sq hpos).symm.trans_le (Real.sqrt_le_sqrt (hsq.trans_le hm1_ge))
-          have hc4_ub : c ^ 4 ≤ Real.log N ^ (4 * α) := by
-            calc
-              c ^ 4 ≤ (Real.log N ^ α) ^ 4 := pow_le_pow_left₀ hc0.le hc_ub 4
-              _ = Real.log N ^ (4 * α) := by
-                rw [← Real.rpow_natCast _ 4, ← Real.rpow_mul hL0.le]; norm_num
-          have hL_r : L_pow6 ≤ Real.log N :=
-            (le_max_left _ _).trans ((le_max_right _ _).trans ((le_max_right _ _).trans
-              ((le_max_right _ _).trans ((le_max_right _ _).trans
-                ((le_max_right _ _).trans ((le_max_right _ _).trans hL))))))
-          have hdec := hrpow_inv_le (B := 152 * C_mid / δ) (γ := γ_A)
-            (by positivity) hγ_A hL_r
-          calc
-            c ^ 4 / Real.sqrt ((m - 1 : ℕ) : ℝ) ≤
-                Real.log N ^ (4 * α) / ((1 / 2 : ℝ) * Real.log N ^ (A / 2)) :=
-              (div_le_div_of_nonneg_right hc4_ub (by positivity)).trans
-                (div_le_div_of_nonneg_left (by positivity) (by positivity) hsqrt_ge)
-            _ = 2 * (Real.log N ^ (4 * α) / Real.log N ^ (A / 2)) := by ring
-            _ = 2 * Real.log N ^ (-γ_A) := by
-              rw [← Real.rpow_sub hL0]; congr 2; dsimp only [γ_A]; ring
-            _ ≤ 2 * (1 / (152 * C_mid / δ)) := mul_le_mul_of_nonneg_left hdec zero_le_two
-            _ = 2 * η_mid := by dsimp only [η_mid]; field_simp [hCmid.ne', hδ0.ne']
-        have ht4 : c ^ 3 * (m : ℝ) ^ 4 / N ≤ η_mid := by
-          have hc3m4 : c ^ 3 * (m : ℝ) ^ 4 ≤ 10 ^ 6 * (N : ℝ) ^ (3 / 5 : ℝ) := by
-            have hc1 : c ≤ 10 * (N : ℝ) ^ (1 / 10 : ℝ) := hc_le_L.trans hL_le_N10
-            have hc3 : c ^ 3 ≤ 10 ^ 3 * (N : ℝ) ^ (3 / 10 : ℝ) := by
-              calc
-                c ^ 3 ≤ (10 * (N : ℝ) ^ (1 / 10 : ℝ)) ^ 3 := pow_le_pow_left₀ hc0.le hc1 3
-                _ = 10 ^ 3 * ((N : ℝ) ^ (1 / 10 : ℝ)) ^ 3 := by ring
-                _ = 10 ^ 3 * (N : ℝ) ^ (3 / 10 : ℝ) := by
-                  rw [← Real.rpow_natCast _ 3, ← Real.rpow_mul hN0.le]; norm_num
-            have hm4 : (m : ℝ) ^ 4 ≤ (N : ℝ) ^ (1 / 5 : ℝ) := by
-              calc
-                (m : ℝ) ^ 4 ≤ ((N : ℝ) ^ (1 / 20 : ℝ)) ^ 4 := pow_le_pow_left₀ hm0.le hmR_20 4
-                _ = (N : ℝ) ^ (1 / 5 : ℝ) := by
-                  rw [← Real.rpow_natCast _ 4, ← Real.rpow_mul hN0.le]; norm_num
-            have hhalf_35 : (N : ℝ) ^ (1 / 2 : ℝ) ≤ (N : ℝ) ^ (3 / 5 : ℝ) :=
-              Real.rpow_le_rpow_of_exponent_le (by exact_mod_cast hN1) (by norm_num)
-            calc
-              c ^ 3 * (m : ℝ) ^ 4 ≤ (10 ^ 3 * (N : ℝ) ^ (3 / 10 : ℝ)) * (N : ℝ) ^ (1 / 5 : ℝ) :=
-                mul_le_mul hc3 hm4 (by positivity) (by positivity)
-              _ = 10 ^ 3 * ((N : ℝ) ^ (3 / 10 : ℝ) * (N : ℝ) ^ (1 / 5 : ℝ)) := by ring
-              _ = 10 ^ 3 * (N : ℝ) ^ (1 / 2 : ℝ) := by rw [← Real.rpow_add hN0]; norm_num
-              _ ≤ 10 ^ 6 * (N : ℝ) ^ (3 / 5 : ℝ) :=
-                mul_le_mul (by norm_num) hhalf_35 (by positivity) (by norm_num)
-          calc
-            c ^ 3 * (m : ℝ) ^ 4 / N ≤ (10 ^ 6 * (N : ℝ) ^ (3 / 5 : ℝ)) / N :=
-              div_le_div_of_nonneg_right hc3m4 hN0.le
-            _ = 10 ^ 6 * ((N : ℝ) ^ (3 / 5 : ℝ) / N) := by ring
-            _ ≤ 10 ^ 6 * (1 / (N : ℝ) ^ (1 / 5 : ℝ)) :=
-              mul_le_mul_of_nonneg_left hN35_div (by norm_num)
-            _ ≤ η_mid := h10_6_N5
-        have hmid_le : |⟪Matrix.toEuclideanLin (overlapMatrix φ c N) v_m, v_m⟫| ≤
-            (3 / 4) * δ * Real.log m := by
-          have hsum6 : c ^ 2 * (1 + Real.log c) / Real.log N + c ^ 5 * Real.log N / N +
-              c ^ 4 / Real.sqrt ((m - 1 : ℕ) : ℝ) + c ^ 3 * (m : ℝ) ^ 4 / N ≤ 6 * η_mid := by
-            linarith only [ht1, ht2, ht3, ht4]
-          calc
-            |⟪Matrix.toEuclideanLin (overlapMatrix φ c N) v_m, v_m⟫| ≤
-                C_mid * (6 * η_mid) * 19 :=
-              hmid_b.trans (mul_le_mul
-                (mul_le_mul_of_nonneg_left hsum6 hCmid.le) hv_sq_le
-                (sq_nonneg _) (by positivity))
-            _ = (3 / 4) * δ := by
-              dsimp only [η_mid]; field_simp [hCmid.ne']; ring
-            _ ≤ (3 / 4) * δ * Real.log m :=
-              le_mul_of_one_le_right (by positivity) hlogm_ge1
-        -- 2) `2 * |⟪overlapMatrix v_m - downwardPrimeVector v_m, v_m⟫| ≤ (1 / 4) * δ * log m`.
-        have hod_le :
-            2 * |⟪Matrix.toEuclideanLin (overlapMatrix φ c N) v_m -
-                downwardPrimeVector φ c N v_m, v_m⟫| ≤
-              (1 / 4) * δ * Real.log m := by
-          have hod_b := hod hm2 hmN_sq hlog18 hc1 hw3 hRNT_m hv_mem
-          let X := c ^ 2 * (1 + Real.log m) * Real.sqrt ((1 + Real.log c) / Real.log N)
-          let Y := c ^ 2 * (m : ℝ) * Real.sqrt (Real.log N / N)
-          have hcs : 2 * |⟪Matrix.toEuclideanLin (overlapMatrix φ c N) v_m -
-                downwardPrimeVector φ c N v_m, v_m⟫| ≤
-              38 * C_od * X + 38 * C_od * Y := by
-            have h1 := abs_real_inner_le_norm
-              (Matrix.toEuclideanLin (overlapMatrix φ c N) v_m -
-                downwardPrimeVector φ c N v_m) v_m
-            have h2 : ‖Matrix.toEuclideanLin (overlapMatrix φ c N) v_m -
-                  downwardPrimeVector φ c N v_m‖ * ‖v_m‖ ≤
-                C_od * (X + Y) * ‖v_m‖ ^ 2 := by
-              calc
-                _ ≤ (C_od * (X + Y) * ‖v_m‖) * ‖v_m‖ :=
-                  mul_le_mul_of_nonneg_right hod_b (norm_nonneg _)
-                _ = C_od * (X + Y) * ‖v_m‖ ^ 2 := by ring
-            have hXY0 : 0 ≤ C_od * (X + Y) := by
-              dsimp only [X, Y]
-              have := Real.log_natCast_nonneg m
-              positivity
-            calc
-              2 * |⟪Matrix.toEuclideanLin (overlapMatrix φ c N) v_m -
-                    downwardPrimeVector φ c N v_m, v_m⟫| ≤
-                  2 * (C_od * (X + Y) * ‖v_m‖ ^ 2) :=
-                mul_le_mul_of_nonneg_left (h1.trans h2) zero_le_two
-              _ ≤ 2 * (C_od * (X + Y) * 19) :=
-                mul_le_mul_of_nonneg_left
-                  (mul_le_mul_of_nonneg_left hv_sq_le hXY0) zero_le_two
-              _ = 38 * C_od * X + 38 * C_od * Y := by ring
-          have hX_le : 38 * C_od * X ≤ (1 / 8) * δ * Real.log m := by
-            let K_α := 1 + 1 / (2 * η_α)
-            have hKα : 0 < K_α := by dsimp only [K_α]; positivity
-            have h1c_le : 1 + Real.log c ≤ K_α * Real.log N ^ (2 * η_α) := by
-              have hlc : Real.log c ≤ Real.log (Real.log N) := Real.log_le_log hc0 hc_le_L
-              have hll : Real.log (Real.log N) ≤ Real.log N ^ (2 * η_α) / (2 * η_α) :=
-                log_le_rpow_div_pos hL0 (by positivity)
-              have h1pow : 1 ≤ Real.log N ^ (2 * η_α) :=
-                Real.one_le_rpow hL1 (by positivity)
-              dsimp only [K_α]
-              have hdiv_eq : Real.log N ^ (2 * η_α) / (2 * η_α) =
-                  (1 / (2 * η_α)) * Real.log N ^ (2 * η_α) := by ring
-              linarith only [hlc, hll, h1pow, hdiv_eq]
-            have hsqrt_le : Real.sqrt ((1 + Real.log c) / Real.log N) ≤
-                Real.sqrt K_α * Real.log N ^ (η_α - 1 / 2) := by
-              have hdiv : (1 + Real.log c) / Real.log N ≤
-                  (Real.sqrt K_α * Real.log N ^ (η_α - 1 / 2)) ^ 2 := by
-                calc
-                  (1 + Real.log c) / Real.log N ≤ (K_α * Real.log N ^ (2 * η_α)) / Real.log N :=
-                    div_le_div_of_nonneg_right h1c_le hL0.le
-                  _ = K_α * (Real.log N ^ (2 * η_α) / Real.log N) := by ring
-                  _ = K_α * Real.log N ^ (2 * η_α - 1) := by
-                    rw [Real.rpow_sub hL0, Real.rpow_one]
-                  _ = (Real.sqrt K_α * Real.log N ^ (η_α - 1 / 2)) ^ 2 := by
-                    rw [mul_pow, Real.sq_sqrt hKα.le,
-                      ← Real.rpow_natCast (Real.log N ^ (η_α - 1 / 2)) 2,
-                      ← Real.rpow_mul hL0.le]
-                    congr 2; ring
-              exact (Real.sqrt_le_sqrt hdiv).trans_eq (Real.sqrt_sq (by positivity))
-            have hc2_sqrt : c ^ 2 * Real.sqrt ((1 + Real.log c) / Real.log N) ≤
-                Real.sqrt K_α * Real.log N ^ (-γ_od) := by
-              calc
-                c ^ 2 * Real.sqrt ((1 + Real.log c) / Real.log N) ≤
-                    Real.log N ^ (2 * α) * (Real.sqrt K_α * Real.log N ^ (η_α - 1 / 2)) :=
-                  mul_le_mul hc2_ub hsqrt_le (by positivity) (by positivity)
-                _ = Real.sqrt K_α * (Real.log N ^ (2 * α) * Real.log N ^ (η_α - 1 / 2)) := by ring
-                _ = Real.sqrt K_α * Real.log N ^ (-γ_od) := by
-                  rw [← Real.rpow_add hL0]; congr 2; dsimp only [γ_od]; ring
-            have hL_r : L_pow7 ≤ Real.log N :=
-              (le_max_right _ _).trans ((le_max_right _ _).trans ((le_max_right _ _).trans
-                ((le_max_right _ _).trans ((le_max_right _ _).trans
-                  ((le_max_right _ _).trans ((le_max_right _ _).trans hL))))))
-            have hdec := hrpow_inv_le (B := 640 * C_od * Real.sqrt K_α / δ) (γ := γ_od)
-              (by positivity) hγ_od hL_r
-            have h1m_le : 1 + Real.log m ≤ 2 * Real.log m := by linarith only [hlogm_ge1]
-            have hKs0 : 0 < Real.sqrt K_α := Real.sqrt_pos.mpr hKα
-            calc
-              38 * C_od * X =
-                  38 * C_od * (c ^ 2 * Real.sqrt ((1 + Real.log c) / Real.log N)) *
-                    (1 + Real.log m) := by dsimp only [X]; ring
-              _ ≤ 38 * C_od * (Real.sqrt K_α * Real.log N ^ (-γ_od)) * (2 * Real.log m) :=
-                mul_le_mul
-                  (mul_le_mul_of_nonneg_left hc2_sqrt (by positivity))
-                  h1m_le (by positivity) (by positivity)
-              _ = 76 * C_od * Real.sqrt K_α * Real.log N ^ (-γ_od) * Real.log m := by ring
-              _ ≤ 76 * C_od * Real.sqrt K_α *
-                    (1 / (640 * C_od * Real.sqrt K_α / δ)) * Real.log m :=
-                mul_le_mul_of_nonneg_right
-                  (mul_le_mul_of_nonneg_left hdec (by positivity)) hlogm0.le
-              _ = (76 / 640 : ℝ) * δ * Real.log m := by
-                field_simp [hCod.ne', hKs0.ne', hδ0.ne']; ring
-              _ ≤ (1 / 8) * δ * Real.log m := by nlinarith only [hδ0, hlogm0]
-          have hY_le : 38 * C_od * Y ≤ (1 / 8) * δ * Real.log m := by
-            have hY_ub : Y ≤ 1000 / (N : ℝ) ^ (1 / 5 : ℝ) := by
-              have hY_sq : Y ^ 2 ≤ (1000 / (N : ℝ) ^ (1 / 5 : ℝ)) ^ 2 := by
-                have hc4L : c ^ 4 * Real.log N ≤ 10 ^ 5 * (N : ℝ) ^ (1 / 2 : ℝ) := by
-                  have hc1 : c ≤ 10 * (N : ℝ) ^ (1 / 10 : ℝ) := hc_le_L.trans hL_le_N10
-                  calc
-                    c ^ 4 * Real.log N ≤
-                        (10 * (N : ℝ) ^ (1 / 10 : ℝ)) ^ 4 * (10 * (N : ℝ) ^ (1 / 10 : ℝ)) :=
-                      mul_le_mul (pow_le_pow_left₀ hc0.le hc1 4) hL_le_N10 hL0.le (by positivity)
-                    _ = 10 ^ 5 * ((N : ℝ) ^ (1 / 10 : ℝ)) ^ 5 := by ring
-                    _ = 10 ^ 5 * (N : ℝ) ^ (1 / 2 : ℝ) := by
-                      rw [← Real.rpow_natCast _ 5, ← Real.rpow_mul hN0.le]; norm_num
-                have hm2_10 : (m : ℝ) ^ 2 ≤ (N : ℝ) ^ (1 / 10 : ℝ) := by
-                  calc
-                    (m : ℝ) ^ 2 ≤ ((N : ℝ) ^ (1 / 20 : ℝ)) ^ 2 := pow_le_pow_left₀ hm0.le hmR_20 2
-                    _ = (N : ℝ) ^ (1 / 10 : ℝ) := by
-                      rw [← Real.rpow_natCast _ 2, ← Real.rpow_mul hN0.le]; norm_num
-                have hnum : c ^ 4 * (m : ℝ) ^ 2 * Real.log N ≤ 10 ^ 6 * (N : ℝ) ^ (3 / 5 : ℝ) := by
-                  calc
-                    c ^ 4 * (m : ℝ) ^ 2 * Real.log N = (c ^ 4 * Real.log N) * (m : ℝ) ^ 2 := by ring
-                    _ ≤ (10 ^ 5 * (N : ℝ) ^ (1 / 2 : ℝ)) * (N : ℝ) ^ (1 / 10 : ℝ) :=
-                      mul_le_mul hc4L hm2_10 (by positivity) (by positivity)
-                    _ = 10 ^ 5 * ((N : ℝ) ^ (1 / 2 : ℝ) * (N : ℝ) ^ (1 / 10 : ℝ)) := by ring
-                    _ = 10 ^ 5 * (N : ℝ) ^ (3 / 5 : ℝ) := by rw [← Real.rpow_add hN0]; norm_num
-                    _ ≤ 10 ^ 6 * (N : ℝ) ^ (3 / 5 : ℝ) :=
-                      mul_le_mul_of_nonneg_right (by norm_num) (by positivity)
-                have hdiv_sq : (N : ℝ) ^ (3 / 5 : ℝ) / N = (1 / (N : ℝ) ^ (1 / 5 : ℝ)) ^ 2 := by
-                  rw [one_div, inv_pow, ← Real.rpow_natCast _ 2, ← Real.rpow_mul hN0.le,
-                    div_eq_iff hN0.ne', inv_mul_eq_iff_eq_mul₀ (by positivity),
-                    ← Real.rpow_add hN0]
-                  norm_num
-                  exact (Real.rpow_one _).symm
-                calc
-                  Y ^ 2 = (c ^ 4 * (m : ℝ) ^ 2 * Real.log N) / N := by
-                    dsimp only [Y]
-                    rw [mul_pow, mul_pow, Real.sq_sqrt (div_nonneg hL0.le hN0.le)]
-                    ring
-                  _ ≤ (10 ^ 6 * (N : ℝ) ^ (3 / 5 : ℝ)) / N :=
-                    div_le_div_of_nonneg_right hnum hN0.le
-                  _ = 10 ^ 6 * ((N : ℝ) ^ (3 / 5 : ℝ) / N) := by ring
-                  _ = 10 ^ 6 * (1 / (N : ℝ) ^ (1 / 5 : ℝ)) ^ 2 := by rw [hdiv_sq]
-                  _ = (1000 / (N : ℝ) ^ (1 / 5 : ℝ)) ^ 2 := by ring
-              have hY0 : 0 ≤ Y := by dsimp only [Y]; positivity
-              have hrhs0 : 0 ≤ 1000 / (N : ℝ) ^ (1 / 5 : ℝ) := by positivity
-              nlinarith only [hY_sq, hY0, hrhs0]
-            have hN5_od : 320000 * C_od / δ + 1 ≤ (N : ℝ) ^ (1 / 5 : ℝ) :=
-              (le_max_right _ _).trans ((le_max_right _ _).trans ((le_max_right _ _).trans hN5))
-            have hsmall : 38 * C_od * (1000 / (N : ℝ) ^ (1 / 5 : ℝ)) ≤ (1 / 8) * δ := by
-              have hm := (div_le_iff₀ hδ0).mp
-                (by linarith only [hN5_od] : 320000 * C_od / δ ≤ (N : ℝ) ^ (1 / 5 : ℝ))
-              rw [show 38 * C_od * (1000 / (N : ℝ) ^ (1 / 5 : ℝ)) =
-                (38000 * C_od) / (N : ℝ) ^ (1 / 5 : ℝ) by ring,
-                div_le_iff₀ (by positivity)]
-              nlinarith only [hm, hCod]
-            calc
-              38 * C_od * Y ≤ 38 * C_od * (1000 / (N : ℝ) ^ (1 / 5 : ℝ)) :=
-                mul_le_mul_of_nonneg_left hY_ub (by positivity)
-              _ ≤ (1 / 8) * δ := hsmall
-              _ ≤ (1 / 8) * δ * Real.log m := le_mul_of_one_le_right (by positivity) hlogm_ge1
-          linarith only [hcs, hX_le, hY_le]
+        have hmid_le := mode_overlap_midBand_regime_I hα hA hδ0 hCmid hmid_b
+          hN1 hL1 hm_ge4 hmR_20 hmR_ge_LA hlogm_ge1 hv_sq_le hc1 hc_ub hc_le_L
+          hL_mid1 hL_mid2 hN5_mid
+        have hod_le := mode_overlap_downward_regime_I hα hδ0 hCod
+          (hod hm2 hmN_sq hlog18 hc1 hw3 hRNT_m hv_mem)
+          hN1 hL1 hm2 hmR_20 hlogm_ge1 hv_sq_le hc1 hc_ub hc_le_L hL_od hN5_od
         calc
           |-⟪Matrix.toEuclideanLin (overlapMatrix φ c N) v_m, v_m⟫ +
               2 * ⟪Matrix.toEuclideanLin (overlapMatrix φ c N) v_m -
@@ -3066,91 +3127,12 @@ theorem eventually_completeWeilEnergy_mode_ge_log_above_polylog {φ : ℝ → �
           _ ≤ (3 / 4) * δ * Real.log m + (1 / 4) * δ * Real.log m := add_le_add hmid_le hod_le
           _ = δ * Real.log m := by ring
       exact ⟨hsep_I, hov_I⟩
-    · -- Regime II (`⌊N^(1/20)⌋₊ < m`): `(1 / 20) * log N ≤ log m`, so `O(c^2)` errors are `≤ δ * log m`.
-      have hm_gt : (N : ℝ) ^ (1 / 20 : ℝ) ≤ m :=
-        (Nat.lt_floor_add_one _).le.trans
-          (by exact_mod_cast Nat.succ_le_of_lt (lt_of_not_ge hm_low))
-      have hlogm_25 : (1 / 25 : ℝ) * Real.log N ≤ Real.log m := by
-        have h20 : (1 / 20 : ℝ) * Real.log N ≤ Real.log m := by
-          have h := Real.log_le_log (by positivity) hm_gt
-          rwa [Real.log_rpow hN0] at h
-        linarith only [h20, hL0]
-      have hL_r4 : L_pow4 ≤ Real.log N :=
-        (le_max_left _ _).trans ((le_max_right _ _).trans ((le_max_right _ _).trans
-          ((le_max_right _ _).trans ((le_max_right _ _).trans hL))))
-      let B4 := 1900 * (K₀ + 1) / δ + 25 * (2 * C_ov1 + C_nr) / δ
-      have hB4 : 0 < B4 := by dsimp only [B4]; positivity
-      have hdec4 : c ^ 2 / Real.log N ≤ 1 / B4 := by
-        have hd := hrpow_inv_le (B := B4) (γ := 1 - 2 * α) hB4 (by linarith only [hα]) hL_r4
-        have hc2_div : c ^ 2 / Real.log N ≤ Real.log N ^ (-(1 - 2 * α)) := by
-          rw [show -(1 - 2 * α) = 2 * α - 1 by ring, Real.rpow_sub hL0, Real.rpow_one]
-          exact div_le_div_of_nonneg_right hc2_ub hL0.le
-        exact hc2_div.trans hd
-      have hsep_II :
-          |⟪Matrix.toEuclideanLin (separatedCrossErrorMatrix φ c N) v_m, v_m⟫| ≤ δ * Real.log m := by
-        have hcs := abs_real_inner_le_norm
-          (Matrix.toEuclideanLin (separatedCrossErrorMatrix φ c N) v_m) v_m
-        have hnorm := norm_separatedCrossErrorMatrix_le hφ hsupp hM_int hc0 hN1 v_m
-        have h1 : |⟪Matrix.toEuclideanLin (separatedCrossErrorMatrix φ c N) v_m, v_m⟫| ≤
-            76 * (K₀ + 1) * c ^ 2 := by
-          calc
-            _ ≤ (4 * K₀ * c ^ 2 * ‖v_m‖) * ‖v_m‖ :=
-              hcs.trans (mul_le_mul_of_nonneg_right hnorm (norm_nonneg _))
-            _ = 4 * K₀ * c ^ 2 * ‖v_m‖ ^ 2 := by ring
-            _ ≤ 4 * K₀ * c ^ 2 * 19 :=
-              mul_le_mul_of_nonneg_left hv_sq_le (by positivity)
-            _ ≤ 76 * (K₀ + 1) * c ^ 2 := by nlinarith only [hK₀, sq_nonneg c]
-        have hB4_ge : 1900 * (K₀ + 1) / δ ≤ B4 := by dsimp only [B4]; positivity
-        have hdiv_le : c ^ 2 / Real.log N ≤ δ / (1900 * (K₀ + 1)) :=
-          hdec4.trans ((one_div_le_one_div_of_le (by positivity) hB4_ge).trans_eq
-            (by field_simp [hδ0.ne', (show 1900 * (K₀ + 1) ≠ 0 by positivity)]))
-        calc
-          _ ≤ 76 * (K₀ + 1) * c ^ 2 := h1
-          _ = 1900 * (K₀ + 1) * (c ^ 2 / Real.log N) * ((1 / 25) * Real.log N) := by
-            field_simp [hL0.ne']; ring
-          _ ≤ 1900 * (K₀ + 1) * (δ / (1900 * (K₀ + 1))) * ((1 / 25) * Real.log N) :=
-            mul_le_mul_of_nonneg_right
-              (mul_le_mul_of_nonneg_left hdiv_le (by positivity)) (by positivity)
-          _ = δ * ((1 / 25) * Real.log N) := by
-            field_simp [(show 1900 * (K₀ + 1) ≠ 0 by positivity)]; ring
-          _ ≤ δ * Real.log m := mul_le_mul_of_nonneg_left hlogm_25 hδ0.le
-      have hov_II :
-          |⟪Matrix.toEuclideanLin (overlapMatrix φ c N) v_m, v_m⟫ -
-            ⟪Matrix.toEuclideanLin (fullWeilNonRatioMatrix φ c N) v_m, v_m⟫| ≤ δ * Real.log m := by
-        have hb1 := hov1 hm2 hL1 hc1 hc_le_L hw3 hRNT_m
-        have hb2 := abs_fullWeilNonRatioMatrix_mode_inner_le hφ hsupp hM_int hm2 hmN_sq hL1 hc0 hcN
-        have h1c : 1 + Real.log c ≤ 2 * c := by
-          have := Real.log_le_sub_one_of_pos hc0; linarith only [this, hc1]
-        have hsum_c2 :
-            |⟪Matrix.toEuclideanLin (overlapMatrix φ c N) v_m, v_m⟫ -
-              ⟪Matrix.toEuclideanLin (fullWeilNonRatioMatrix φ c N) v_m, v_m⟫| ≤
-              (2 * C_ov1 + C_nr) * c ^ 2 := by
-          have hov_c2 : C_ov1 * c * (1 + Real.log c) ≤ 2 * C_ov1 * c ^ 2 := by
-            calc
-              C_ov1 * c * (1 + Real.log c) ≤ C_ov1 * c * (2 * c) :=
-                mul_le_mul_of_nonneg_left h1c (by positivity)
-              _ = 2 * C_ov1 * c ^ 2 := by ring
-          have hnr_c2 : C_nr * c ≤ C_nr * c ^ 2 :=
-            mul_le_mul_of_nonneg_left (by nlinarith only [hc1]) hCnr.le
-          exact (abs_sub _ _).trans (by dsimp only [C_nr] at hnr_c2 ⊢; linarith only [hb1, hb2, hov_c2, hnr_c2])
-        have hB4_ge : 25 * (2 * C_ov1 + C_nr) / δ ≤ B4 := by dsimp only [B4]; positivity
-        have hdiv_le : c ^ 2 / Real.log N ≤ δ / (25 * (2 * C_ov1 + C_nr)) :=
-          hdec4.trans ((one_div_le_one_div_of_le (by positivity) hB4_ge).trans_eq
-            (by field_simp [hδ0.ne', (show 25 * (2 * C_ov1 + C_nr) ≠ 0 by positivity)]))
-        calc
-          _ ≤ (2 * C_ov1 + C_nr) * c ^ 2 := hsum_c2
-          _ = 25 * (2 * C_ov1 + C_nr) * (c ^ 2 / Real.log N) * ((1 / 25) * Real.log N) := by
-            field_simp [hL0.ne']; ring
-          _ ≤ 25 * (2 * C_ov1 + C_nr) * (δ / (25 * (2 * C_ov1 + C_nr))) *
-                ((1 / 25) * Real.log N) :=
-            mul_le_mul_of_nonneg_right
-              (mul_le_mul_of_nonneg_left hdiv_le (by positivity)) (by positivity)
-          _ = δ * ((1 / 25) * Real.log N) := by
-            field_simp [(show 25 * (2 * C_ov1 + C_nr) ≠ 0 by positivity)]; ring
-          _ ≤ δ * Real.log m := mul_le_mul_of_nonneg_left hlogm_25 hδ0.le
-      exact ⟨hsep_II, hov_II⟩
+    · exact mode_sep_and_overlap_regime_II hφ hsupp hM_int hα hδ0 hCov1
+        (hov1 hm2 hL1 hc1 hc_le_L hw3 hRNT_m)
+        hN1 hL1 hm2 hmN_sq hm_low hv_sq_le hc1 hc_ub hcN hL_r4
   obtain ⟨herr_sep, herr_ov⟩ := herr_sep_and_ov
-  -- Final assembly of `completeWeilEnergy φ c N v_m`.
+  have hdecomp := completeWeilMatrix_inner_eq_decomposition_at_every_overlap
+    hφ hsupp hM_int hc0 hN1 v_m
   have hE_eq : completeWeilEnergy φ c N v_m =
       renormalizedPrimeEnergy N v_m +
       (completeWeilSelfFinitePart φ c - Real.eulerMascheroniConstant +
@@ -3195,10 +3177,11 @@ theorem eventually_exceptionalConductors_above_polylog_empty {φ : ℝ → ℝ}
   rw [Finset.filter_eq_empty_iff]
   intro m hm hle
   have hm2 : 2 ≤ m := by
-    have : 2 ≤ ⌈Real.log N ^ A⌉₊ := Nat.le_ceil.mp (by norm_num; exact hLA2)
+    have h2R : (2 : ℝ) ≤ ⌈Real.log N ^ A⌉₊ := hLA2.trans (Nat.le_ceil _)
+    have h2c : 2 ≤ ⌈Real.log N ^ A⌉₊ := by exact_mod_cast h2R
     have hm_lo := (mem_Icc.mp hm).1
     omega
-  have hlogm : 0 < Real.log m := Real.log_pos (by exact_mod_cast hm2)
+  have hlogm : 0 < Real.log m := Real.log_pos (by exact_mod_cast (show 1 < m by omega))
   have h12θ : 0 < (1 - 2 * θ) / 4 := by linarith only [hθ]
   have hlb := hpos c hc1 hc_ub m hm
   linarith [mul_pos h12θ hlogm]

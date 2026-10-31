@@ -556,9 +556,8 @@ theorem sub_mul_rpow_neg_le {ℓ ℓ' a : ℝ} (hℓ : 0 < ℓ) (hle : ℓ ≤ �
     rw [show 1 - a = -(a - 1) by ring, Real.rpow_neg hℓ.le]
   have e2 : ℓ' ^ (1 - a) = Y⁻¹ := by
     rw [show 1 - a = -(a - 1) by ring, Real.rpow_neg hℓ'.le]
-  have e3 : (ℓ' ^ a)⁻¹ = Y⁻¹ / ℓ' := by
-    rw [show a = (a - 1) + 1 by ring, Real.rpow_add_one hℓ'.ne', sub_add_cancel, mul_inv,
-      div_eq_mul_inv]
+  have hYℓ : Y * ℓ' = ℓ' ^ a := by rw [← Real.rpow_add_one hℓ'.ne', sub_add_cancel]
+  have e3 : (ℓ' ^ a)⁻¹ = Y⁻¹ / ℓ' := by rw [← hYℓ, mul_inv, div_eq_mul_inv]
   rw [e1, e2, e3]
   have hlhs : (a - 1) * (ℓ' - ℓ) * (Y⁻¹ / ℓ') = D / Y := by
     simp only [D]; field_simp
@@ -583,71 +582,81 @@ theorem exists_abs_sub_rpow_le_of_wirsing {M L : ℕ → ℝ} {a K : ℝ} (hK : 
   have hT0 : ∀ N, 3 ≤ N → 0 ≤ T N := fun N hN =>
     Real.rpow_nonneg (by linarith [one_le_log_of_three_le hN]) _
   -- one step of the recursion
+  have ha0' : 0 < a - 1 := by linarith
   have hstepU : ∀ N, 3 ≤ N →
       (|U (N + 1)| ≤ |U N| + K * (a - 1)⁻¹ * (T N - T (N + 1))) ∧
-      |U (N + 1) - U N| ≤ (4 * |U N| + K) * (a - 1)⁻¹ * (T N - T (N + 1)) := by
+      |U (N + 1) - U N| ≤ (4 * |U N| + K) * (a - 1)⁻¹ * (T N - T (N + 1)) ∧
+      0 ≤ T N - T (N + 1) := by
     intro N hN
     have hℓ1 := one_le_log_of_three_le hN
     have hℓ0 : 0 < Real.log N := by linarith
     have h3 : (3 : ℝ) ≤ N := by exact_mod_cast hN
     have hN0 : (0 : ℝ) < N := by linarith
+    have hle : Real.log N ≤ Real.log ((N + 1 : ℕ) : ℝ) :=
+      Real.log_le_log hN0 (by push_cast; linarith)
+    have hδ1 : Real.log ((N + 1 : ℕ) : ℝ) - Real.log N ≤ 1 := by
+      rw [← Real.log_div (by positivity) hN0.ne']
+      refine (Real.log_le_sub_one_of_pos (by positivity)).trans ?_
+      rw [div_sub_one hN0.ne', div_le_one hN0]; push_cast; linarith
+    have htel := sub_mul_rpow_neg_le hℓ0 hle ha1 ha2
     set ℓ := Real.log N
     set ℓ' := Real.log ((N + 1 : ℕ) : ℝ)
     set δ := ℓ' - ℓ with hδ
-    have hδ0 : 0 ≤ δ := sub_nonneg.mpr (Real.log_le_log hN0 (by push_cast; linarith))
-    have hδ1 : δ ≤ 1 := by
-      have e : δ = Real.log (((N : ℝ) + 1) / N) := by
-        rw [hδ, Real.log_div (by positivity) hN0.ne']; push_cast; ring
-      rw [e]
-      refine (Real.log_le_sub_one_of_pos (by positivity)).trans ?_
-      rw [div_sub_one hN0.ne', add_sub_cancel_left, div_le_one hN0]; linarith
-    set σ := δ / ℓ
+    have htelT : (a - 1) * δ * (ℓ' ^ a)⁻¹ ≤ T N - T (N + 1) := htel
+    have hδ0 : 0 ≤ δ := sub_nonneg.mpr hle
+    have hℓ'0 : 0 < ℓ' := by linarith
+    have hℓ'a0 : 0 < ℓ' ^ a := Real.rpow_pos_of_pos hℓ'0 a
+    set σ := δ / ℓ with hσ
     have hσ0 : 0 ≤ σ := div_nonneg hδ0 hℓ0.le
-    have hσδ : σ ≤ δ := div_le_self hδ0 hℓ1
+    have hσℓ : σ * ℓ = δ := div_mul_cancel₀ δ hℓ0.ne'
+    have hσ1 : σ ≤ 1 := (div_le_self hδ0 hℓ1).trans hδ1
     set q := (1 + σ) ^ a
     have hq1 : 1 + a * σ ≤ q := one_add_mul_self_le_rpow_one_add (by linarith) ha1.le
     have hq2 : q ≤ 1 + a * σ + σ ^ 2 := one_add_rpow_le_second hσ0 ha1.le ha2
-    have hqpos : 0 < q := by nlinarith
-    have hℓ'eq : ℓ' = ℓ * (1 + σ) := by simp only [σ, δ]; field_simp; ring
-    have hℓ'a : ℓ' ^ a = ℓ ^ a * q := by rw [hℓ'eq, Real.mul_rpow hℓ0.le (by linarith)]
+    have haσ0 : 0 ≤ a * σ := mul_nonneg (by linarith) hσ0
+    have haσ : 0 ≤ 1 + a * σ := by linarith
+    have hqpos : 0 < q := by linarith
+    have hℓ'eq : ℓ' = ℓ * (1 + σ) := by linarith [hσℓ]
     have hℓa : 0 < ℓ ^ a := Real.rpow_pos_of_pos hℓ0 a
-    have hℓ'0 : 0 < ℓ' := by rw [hℓ'eq]; positivity
-    -- `U(N + 1) = U(N)(1 + aσ)/q + Eσ/(ℓ^a q)`
+    have hℓ'a : ℓ' ^ a = ℓ ^ a * q := by rw [hℓ'eq, Real.mul_rpow hℓ0.le (by linarith)]
+    have hDpos : 0 < ℓ ^ a * q := mul_pos hℓa hqpos
     set E := L N * ℓ - a * M N
     have hE : |E| ≤ K * ℓ := heq N hN
+    -- `U(N + 1) = U(N)(1 + aσ)/q + Eσ/(ℓ^a q)`
     have hrec : U (N + 1) = U N * ((1 + a * σ) / q) + E * σ / (ℓ ^ a * q) := by
       simp only [hU]
-      rw [hstep N hN, show ((N + 1 : ℕ) : ℝ) = ((N + 1 : ℕ) : ℝ) from rfl]
+      rw [hstep N hN]
       change (M N + L N * δ) / ℓ' ^ a = M N / ℓ ^ a * ((1 + a * σ) / q) + E * σ / (ℓ ^ a * q)
-      rw [hℓ'a]
-      simp only [E, σ]
+      rw [hℓ'a, ← hσℓ]
+      simp only [E]
       field_simp
       ring
-    -- the forcing term
+    -- the forcing term telescopes
     have hforce : |E * σ / (ℓ ^ a * q)| ≤ K * (a - 1)⁻¹ * (T N - T (N + 1)) := by
-      have htel := sub_mul_rpow_neg_le hℓ0 (by linarith : ℓ ≤ ℓ') ha1 ha2
       have h1 : |E * σ / (ℓ ^ a * q)| ≤ K * δ * (ℓ' ^ a)⁻¹ := by
-        rw [abs_div, abs_mul, abs_of_nonneg hσ0, abs_of_pos (by positivity), hℓ'a,
-          div_le_iff₀ (by positivity)]
+        rw [abs_div, abs_mul, abs_of_nonneg hσ0, abs_of_pos hDpos, hℓ'a, div_le_iff₀ hDpos,
+          inv_mul_cancel_right₀ hDpos.ne', ← hσℓ]
         calc |E| * σ ≤ K * ℓ * σ := mul_le_mul_of_nonneg_right hE hσ0
-          _ = K * δ * (ℓ ^ a * q)⁻¹ * (ℓ ^ a * q) := by
-              simp only [σ]; field_simp
+          _ = K * (σ * ℓ) := by ring
       refine h1.trans ?_
-      rw [show K * (a - 1)⁻¹ * (T N - T (N + 1)) = K * (a - 1)⁻¹ * (ℓ ^ (1 - a) - ℓ' ^ (1 - a))
-        from rfl]
-      have ha0 : 0 < a - 1 := by linarith
-      calc K * δ * (ℓ' ^ a)⁻¹ = K * (a - 1)⁻¹ * ((a - 1) * (ℓ' - ℓ) * (ℓ' ^ a)⁻¹) := by
-            field_simp
-        _ ≤ K * (a - 1)⁻¹ * (ℓ ^ (1 - a) - ℓ' ^ (1 - a)) :=
-            mul_le_mul_of_nonneg_left htel (mul_nonneg hK (inv_nonneg.mpr ha0.le))
+      calc K * δ * (ℓ' ^ a)⁻¹ = K * (a - 1)⁻¹ * ((a - 1) * δ * (ℓ' ^ a)⁻¹) := by
+            rw [show K * (a - 1)⁻¹ * ((a - 1) * δ * (ℓ' ^ a)⁻¹) =
+              K * δ * (ℓ' ^ a)⁻¹ * ((a - 1)⁻¹ * (a - 1)) by ring, inv_mul_cancel₀ ha0'.ne',
+              mul_one]
+        _ ≤ K * (a - 1)⁻¹ * (T N - T (N + 1)) :=
+            mul_le_mul_of_nonneg_left htelT (mul_nonneg hK (inv_nonneg.mpr ha0'.le))
     -- the drift: `0 ≤ 1 − (1 + aσ)/q ≤ σ² ≤ 4δ/ℓ'^a`
-    have hρ0 : 0 ≤ (1 + a * σ) / q := div_nonneg (by nlinarith) hqpos.le
+    have hρ0 : 0 ≤ (1 + a * σ) / q := div_nonneg haσ hqpos.le
     have hρ1 : (1 + a * σ) / q ≤ 1 := (div_le_one hqpos).mpr hq1
     have hρ2 : 1 - (1 + a * σ) / q ≤ σ ^ 2 := by
-      rw [sub_le_iff_le_add, ← sub_le_iff_le_add', le_div_iff₀ hqpos]
-      nlinarith [sq_nonneg σ]
+      rw [sub_le_comm, le_div_iff₀ hqpos]
+      calc (1 - σ ^ 2) * q ≤ (1 - σ ^ 2) * (1 + a * σ + σ ^ 2) :=
+            mul_le_mul_of_nonneg_left hq2 (by nlinarith)
+        _ ≤ 1 + a * σ := by
+            have h4 : 0 ≤ a * σ * σ ^ 2 := mul_nonneg haσ0 (sq_nonneg σ)
+            have h5 : 0 ≤ σ ^ 4 := pow_nonneg hσ0 4
+            nlinarith [h4, h5]
     have hσ4 : σ ^ 2 ≤ 4 * (a - 1)⁻¹ * (T N - T (N + 1)) := by
-      have htel := sub_mul_rpow_neg_le hℓ0 (by linarith : ℓ ≤ ℓ') ha1 ha2
       have hℓ'2 : ℓ' ^ a ≤ 4 * ℓ ^ 2 := by
         have hℓ'1 : 1 ≤ ℓ' := by linarith
         calc ℓ' ^ a ≤ ℓ' ^ (2 : ℝ) := Real.rpow_le_rpow_of_exponent_le hℓ'1 ha2
@@ -655,17 +664,18 @@ theorem exists_abs_sub_rpow_le_of_wirsing {M L : ℕ → ℝ} {a K : ℝ} (hK : 
           _ ≤ (2 * ℓ) ^ 2 := pow_le_pow_left₀ hℓ'0.le (by linarith) 2
           _ = 4 * ℓ ^ 2 := by ring
       have h1 : σ ^ 2 ≤ 4 * δ * (ℓ' ^ a)⁻¹ := by
-        rw [← div_eq_mul_inv, le_div_iff₀ (by positivity)]
+        rw [← div_eq_mul_inv, le_div_iff₀ hℓ'a0]
         calc σ ^ 2 * ℓ' ^ a ≤ σ ^ 2 * (4 * ℓ ^ 2) := mul_le_mul_of_nonneg_left hℓ'2 (sq_nonneg σ)
-          _ = 4 * δ * δ := by simp only [σ]; field_simp
+          _ = 4 * δ * δ := by rw [← hσℓ]; ring
           _ ≤ 4 * δ := by nlinarith
       refine h1.trans ?_
-      have ha0 : 0 < a - 1 := by linarith
-      calc 4 * δ * (ℓ' ^ a)⁻¹ = 4 * (a - 1)⁻¹ * ((a - 1) * (ℓ' - ℓ) * (ℓ' ^ a)⁻¹) := by
-            field_simp
+      calc 4 * δ * (ℓ' ^ a)⁻¹ = 4 * (a - 1)⁻¹ * ((a - 1) * δ * (ℓ' ^ a)⁻¹) := by
+            rw [show 4 * (a - 1)⁻¹ * ((a - 1) * δ * (ℓ' ^ a)⁻¹) =
+              4 * δ * (ℓ' ^ a)⁻¹ * ((a - 1)⁻¹ * (a - 1)) by ring, inv_mul_cancel₀ ha0'.ne',
+              mul_one]
         _ ≤ 4 * (a - 1)⁻¹ * (T N - T (N + 1)) :=
-            mul_le_mul_of_nonneg_left htel (by positivity)
-    constructor
+            mul_le_mul_of_nonneg_left htelT (by positivity)
+    refine ⟨?_, ?_, (mul_nonneg (mul_nonneg ha0'.le hδ0) (inv_nonneg.mpr hℓ'a0.le)).trans htelT⟩
     · rw [hrec]
       refine (abs_add_le _ _).trans (add_le_add ?_ hforce)
       rw [abs_mul, abs_of_nonneg hρ0]
@@ -673,7 +683,7 @@ theorem exists_abs_sub_rpow_le_of_wirsing {M L : ℕ → ℝ} {a K : ℝ} (hK : 
     · rw [hrec, show U N * ((1 + a * σ) / q) + E * σ / (ℓ ^ a * q) - U N =
         -(U N * (1 - (1 + a * σ) / q)) + E * σ / (ℓ ^ a * q) by ring]
       refine (abs_add_le _ _).trans ?_
-      rw [abs_neg, abs_mul, abs_of_nonneg (by linarith)]
+      rw [abs_neg, abs_mul, abs_of_nonneg (sub_nonneg.mpr hρ1)]
       calc |U N| * (1 - (1 + a * σ) / q) + |E * σ / (ℓ ^ a * q)|
           ≤ |U N| * (4 * (a - 1)⁻¹ * (T N - T (N + 1))) + K * (a - 1)⁻¹ * (T N - T (N + 1)) :=
             add_le_add (mul_le_mul_of_nonneg_left (hρ2.trans hσ4) (abs_nonneg _)) hforce
@@ -694,25 +704,9 @@ theorem exists_abs_sub_rpow_le_of_wirsing {M L : ℕ → ℝ} {a K : ℝ} (hK : 
   have hB0 : 0 ≤ B := (abs_nonneg _).trans (hUB 3 le_rfl)
   have hG0 : 0 ≤ G := mul_nonneg (by linarith) ha0.le
   have hdrift : ∀ N, 3 ≤ N → |U (N + 1) - U N| ≤ G * (T N - T (N + 1)) := fun N hN => by
-    have htel : 0 ≤ T N - T (N + 1) := by
-      have h := (hstepU N hN).2
-      have hc : 0 ≤ (4 * |U N| + K) * (a - 1)⁻¹ := mul_nonneg (by positivity) ha0.le
-      by_contra hneg
-      push Not at hneg
-      have : (4 * |U N| + K) * (a - 1)⁻¹ * (T N - T (N + 1)) < 0 := by
-        rcases hc.lt_or_eq with hc | hc
-        · exact mul_neg_of_pos_of_neg hc hneg
-        · have h0 := abs_nonneg (U (N + 1) - U N)
-          rw [← hc, zero_mul] at h
-          have hab : 4 * |U N| + K = 0 := by
-            rcases mul_eq_zero.mp hc.symm with h1 | h1
-            · exact h1
-            · exact absurd h1 ha0.ne'
-          linarith [abs_nonneg (U N)]
-      linarith [abs_nonneg (U (N + 1) - U N)]
-    refine (hstepU N hN).2.trans ?_
-    exact mul_le_mul_of_nonneg_right
-      (mul_le_mul_of_nonneg_right (by linarith [hUB N hN]) ha0.le) htel
+    obtain ⟨-, h2, h3⟩ := hstepU N hN
+    exact h2.trans (mul_le_mul_of_nonneg_right
+      (mul_le_mul_of_nonneg_right (by linarith [hUB N hN]) ha0.le) h3)
   -- the upper envelope `U + G T` decreases, the lower envelope `U − G T` increases
   have hV : ∀ N, 3 ≤ N → ∀ m, N ≤ m → U m + G * T m ≤ U N + G * T N := by
     intro N hN m hm
@@ -763,14 +757,20 @@ theorem exists_abs_sub_rpow_le_of_wirsing {M L : ℕ → ℝ} {a K : ℝ} (hK : 
       (L N * Real.log N - a * M N) + a * ((U N - c) * Real.log N ^ a) := by
     rw [hMU, hpa]; ring
   have hbound : |L N - a * c * Real.log N ^ (a - 1)| * Real.log N ≤ (a * G + K) * Real.log N := by
-    rw [← abs_of_pos hℓ0, ← abs_mul, hkey, abs_of_pos hℓ0]
-    refine (abs_add_le _ _).trans ?_
-    rw [abs_mul, abs_of_pos (by linarith : (0 : ℝ) < a), abs_mul, abs_of_pos hℓa]
     have h1 := heq N hN
     have h2 : a * (|U N - c| * Real.log N ^ a) ≤ a * (G * Real.log N) := by
-      rw [← hTa, ← mul_assoc]
-      exact mul_le_mul_of_nonneg_left (mul_le_mul_of_nonneg_right hUc hℓa.le) (by linarith)
-    nlinarith
+      refine mul_le_mul_of_nonneg_left ?_ (by linarith)
+      calc |U N - c| * Real.log N ^ a ≤ G * T N * Real.log N ^ a :=
+            mul_le_mul_of_nonneg_right hUc hℓa.le
+        _ = G * Real.log N := by rw [mul_assoc, hTa]
+    calc |L N - a * c * Real.log N ^ (a - 1)| * Real.log N
+        = |(L N - a * c * Real.log N ^ (a - 1)) * Real.log N| := by rw [abs_mul, abs_of_pos hℓ0]
+      _ = |(L N * Real.log N - a * M N) + a * ((U N - c) * Real.log N ^ a)| := by rw [hkey]
+      _ ≤ |L N * Real.log N - a * M N| + a * (|U N - c| * Real.log N ^ a) := by
+          refine (abs_add_le _ _).trans (add_le_add le_rfl (le_of_eq ?_))
+          rw [abs_mul, abs_of_pos (by linarith : (0 : ℝ) < a), abs_mul, abs_of_pos hℓa]
+      _ ≤ K * Real.log N + a * (G * Real.log N) := add_le_add h1 h2
+      _ = (a * G + K) * Real.log N := by ring
   exact le_of_mul_le_mul_right hbound hℓ0
 
 /-- **The Wirsing asymptotic for completely multiplicative `ω`.** If the prime mean is

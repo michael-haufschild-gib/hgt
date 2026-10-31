@@ -175,7 +175,9 @@ theorem coupling_inv_of_isHermKernel {K : G → ℂ} (hK : IsHermKernel K) (u : 
     coupling K u u⁻¹ = ((2 * ((K 1).re - (K u).re) : ℝ) : ℂ) := by
   obtain ⟨r, hr⟩ : ∃ r : ℝ, K 1 = r := ⟨_, isHermKernel_one_eq_re hK⟩
   rw [coupling, mul_inv_cancel, hK u, hr]
-  apply Complex.ext <;> simp <;> ring
+  apply Complex.ext
+  · simp; ring
+  · simp
 
 /-! ### The coupling Laplacian -/
 
@@ -227,6 +229,7 @@ theorem isHermKernel_lap {K : G → ℂ} (hK : IsHermKernel K) (a : G) : IsHermK
     have h1 : K (g⁻¹ * a) = conj (K (g * a⁻¹)) := by rw [← hK, mul_inv_rev, inv_inv, mul_comm]
     have h2 : K (g⁻¹ * a⁻¹) = conj (K (g * a)) := by rw [← hK, mul_inv_rev, mul_comm]
     simp only [lap, map_sub, map_mul, map_ofNat, h1, h2, hK g]
+    ring
 
 /-- The Gram form of `L_a K` on a family is the Gram form of `K` on the doubled family
 `x_i, x_i a` with coefficients `c_i, −c_i`. -/

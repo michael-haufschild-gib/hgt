@@ -104,6 +104,16 @@ The physical pole constraint is retained explicitly. [HarmonicPoleCentering.lean
 
 Operator norms and quadratic-form signs are different targets. The coherent constant output is orthogonal to prime-supported input under complete-period averaging. Its large norm alone does not force negative prime energy. The corpus's direct dilation-square coercivity illustrates why signed forms must be studied before replacing their interactions by norms.
 
+For prime-supported input, the exact output decomposition is
+
+`G F_a=P_Q(a)−Σ_p tameDifferent(p)a_p e_p`.
+
+Consequently `mean(GF_a)²=P_Q(a)²+Σ_p tameDifferent(p)²a_p²`, while `mean F_a·GF_a=−Σ_p tameDifferent(p)a_p²`. Removing the output constant gives the sharp cutoff-independent square bound
+
+`mean|GF_a−P_Q(a)|²≤(log 2/2)L_Q(a)`.
+
+Conductor two attains equality. [PrimeGeneratorOrthogonalRows.lean](PrimeGeneratorOrthogonalRows.lean) proves the decomposition and optimal constant. This bounded remainder is the positive counterpart to logarithmic coherent amplification. Its extension to composite conductor fibres requires separate analysis.
+
 ## Foundational mechanisms
 
 1. **Arithmetic differences before norms.** Expand the joint successor and dilation expressions, cancel exact divisor and torsion terms, and only then estimate the remaining signed expression.

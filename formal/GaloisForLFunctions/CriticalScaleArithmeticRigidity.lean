@@ -8,6 +8,7 @@ import GaloisForLFunctions.CriticalScaleArithmeticRigidity.PrimeGeneratorPole
 import GaloisForLFunctions.CriticalScaleArithmeticRigidity.HarmonicPoleCentering
 import GaloisForLFunctions.CriticalScaleArithmeticRigidity.PrimeCoherenceCalculus
 import GaloisForLFunctions.CriticalScaleArithmeticRigidity.SharpPrimeSector
+import GaloisForLFunctions.CriticalScaleArithmeticRigidity.PrimeGeneratorOrthogonalRows
 
 /-!
 # Arithmetic rigidity at critical scale

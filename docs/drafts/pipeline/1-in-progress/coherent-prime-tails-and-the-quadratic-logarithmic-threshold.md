@@ -29,3 +29,13 @@ The scalar residual costs at most `C(1+log Q)M`, while the excitation gap bounds
 ## Proof obligations and positive survivor
 
 Verify the prime jump formula, source positivity, exact constant row, annular packet representation, and scalar comparison in Lean. Check corpus novelty before claiming sharpness. If successful, the positive survivor is a matching source-relative upper and lower scale, with an explicit arithmetic extremizer; no complete-Weil route is retired by this prime-residual obstruction.
+
+## Stronger source-specific lower bound
+
+Centered divisibility has interval discrepancy at most one. With `B=B_Q−B_P` and `A'=Σ_(P<p≤Q)log p/(p−1)`, finite Abel summation gives
+
+`Σ_(n≤N) completedTail_Q(N/n,n)²/n ≥ H B²−2BA'/(floor(N/P)+1)`,
+
+where `H=Σ_(floor(N/P)<n≤N)1/n`. This removes the quadratic conductor loss from the coherent witness. Its dependency-closed proof and Lean draft are in `2-fully-proven/coherent-prime-tail-incidence-bound.md` and `PrimeIncidenceHarmonicWindows.lean`; verification remains pending.
+
+For `Q=P²,N≥P`, `H≥log P−log 2`, `B=log P+O(1)`, and `A'=log P+O(1)`. The boundary cost is quadratic logarithmic, while the retained term is cubic logarithmic. Formalizing this specialization and its scalar-residual transfer is now the sharpness target; the earlier polynomial horizon condition is unnecessary if the incidence bound passes.
