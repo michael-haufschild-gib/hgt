@@ -49,7 +49,8 @@ intersections, it gives `⟨P₀(O),P₁(O)⟩∩B=B(O)`.
 
 ## Lean status
 
-The exact adjacent integral vertex intersections are formalized. The generated-group
-intersection and torus-independence proofs await their direct Lean audit.
+The exact adjacent vertex intersections, generated-group intersection, `KHU`
+decomposition, torus-valuation independence and unipotent integrality criterion
+passed direct Lean and transitive axiom audits in `IntegralLoopBorelIntersection`.
 The actual restricted adelic carrier and its integral–Borel factorization also
 have written proofs awaiting audit.

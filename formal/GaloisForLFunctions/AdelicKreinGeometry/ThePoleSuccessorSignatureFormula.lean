@@ -313,4 +313,42 @@ theorem negIndex_poleSuccessor_eq (hs : 0 < s) (hv : ∃ u : K, 1 < v u) (hψ : 
     _ = negIndex (poleSuccessor v s ψ) := by
         rw [← hM]; norm_cast; omega
 
+/-! ### The real place: the trichotomy -/
+
+/-- `c|b|`, `c > 0`, is negative definite on every polar hyperplane: `κ₀ = ∞`. -/
+theorem polarIndex_mul_absRat {c : ℝ} (hc : 0 < c) :
+    polarIndex (fun m => (c : ℂ) * absRat m) = ⊤ := by
+  refine ENat.eq_top_iff_forall_ge.mpr fun n => ?_
+  set x : Fin (n + 1) → Multiplicative ℚ := fun a => Multiplicative.ofAdd (a : ℚ)
+  have hx : Function.Injective x := fun a b h => by
+    have := congrArg Multiplicative.toAdd h
+    simp only [x, toAdd_ofAdd] at this
+    exact Fin.ext (by exact_mod_cast this)
+  have e : gram (fun m => (c : ℂ) * absRat m) x = (c : ℂ) • gram absRat x := by
+    ext a b; simp [gram]
+  have hpos : IsPosDefOn (-gram (fun m => (c : ℂ) * absRat m) x)
+      (LinearMap.ker (totalMass (Fin (n + 1)))) := by
+    intro w hw hw0
+    rw [hermQuad_neg, e, hermQuad_smul]
+    have := hermQuad_gram_absRat_neg hx (c := w) hw hw0
+    nlinarith
+  have h := le_csSup (negIndexOn_bddAbove _ _) ⟨_, le_rfl, rfl, hpos⟩
+  rw [finrank_ker_totalMass] at h
+  exact (Nat.cast_le.mpr h).trans (negIndexOn_le_polarIndex _ x)
+
+/-- **The trichotomy at the real place**: `|a|^{1/2} + |a|^{−1/2} − c|a|^{−1/2}|b|` has index `1` for
+`c ≥ 0` and `∞` for `c < 0`. -/
+theorem negIndex_poleSuccessor_mul_negAbsRat (c : ℝ) :
+    negIndex (poleSuccessor Rat.AbsoluteValue.real 1 fun m => (c : ℂ) * negAbsRat m) =
+      if 0 ≤ c then 1 else ⊤ := by
+  split_ifs with hc
+  · exact negIndex_poleSuccessorState hc
+  · have hk : IsHermKernel fun m => (c : ℂ) * negAbsRat m := fun m => by
+      show (c : ℂ) * negAbsRat m⁻¹ = conj ((c : ℂ) * negAbsRat m)
+      rw [isHermKernel_negAbsRat m, map_mul, Complex.conj_ofReal]
+    have e : (fun m => (c : ℂ) * negAbsRat m) = fun m => ((-c : ℝ) : ℂ) * absRat m := by
+      funext m; simp [negAbsRat]
+    rw [negIndex_poleSuccessor_eq one_pos exists_one_lt_real (isConformal_negAbsRat c) hk, e,
+      polarIndex_mul_absRat (by linarith), top_add]
+
 end GaloisForLFunctions.AdelicKreinGeometry

@@ -50,8 +50,9 @@ factorizations inside each vertex. The existing
 `⟨P₀(O),P₁(O)⟩∩B=B(O)`. Both torus coordinates of `B(O)` must be
 proved to have valuation one, including the central coordinate.
 Both integral vertex identities passed direct Lean and transitive axiom audits in
-`IntegralAdjacentVertex`. The generated-group intersection and resulting torus
-independence are proved on paper; their Lean audit is pending.
+`IntegralAdjacentVertex`. The generated-group intersection, actual `KHU` decomposition, both torus
+valuation invariances and the exact unipotent coefficient-integrality criterion
+are audited in `IntegralLoopBorelIntersection`.
 
 ## Unipotent reduction mechanism
 
@@ -67,8 +68,9 @@ coordinate in the compact additive domain. The audited additive correction
 preserves a common finite exceptional-place set. Uniqueness follows from the
 trivial intersection of the diagonal field with the additive domain.
 Finite triangular translations then supply the proposed invariant quotient
-probability. The coefficient dependence, recursion and quotient identification
-still require Lean proofs.
+probability. The free coefficient stream, finite coefficient dependence and countable
+triangular probability theorem are audited. The full stream multiplication law,
+recursion and quotient identification still require Lean proofs.
 
 ## Convergence mechanism to test
 

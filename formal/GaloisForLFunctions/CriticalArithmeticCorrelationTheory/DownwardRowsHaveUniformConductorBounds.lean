@@ -19,10 +19,10 @@ open RenormalizedArithmeticPotentialTheory SpacingScaleHarmonicAnalysis Arithmet
 /-- The full divisor jet has a quadratic conductor envelope. -/
 private theorem abs_divisorJet_le_conductor_sq {m : ℕ} (hm : 0 < m) (n : ℕ) :
     |ramanujanLogDivisorJet m n| ≤ 2 * (m : ℝ) ^ 2 := by
-  have hλ : 0 ≤ ArithmeticFunction.vonMangoldt m := ArithmeticFunction.vonMangoldt_nonneg
+  have hmangoldt : 0 ≤ ArithmeticFunction.vonMangoldt m := ArithmeticFunction.vonMangoldt_nonneg
   have htri := abs_add_le (ramanujanLogDivisorJet m n - ArithmeticFunction.vonMangoldt m)
     (ArithmeticFunction.vonMangoldt m)
-  rw [sub_add_cancel, abs_of_nonneg hλ] at htri
+  rw [sub_add_cancel, abs_of_nonneg hmangoldt] at htri
   have henvelope := abs_ramanujanLogDivisorJet_sub_mean_le hm n
   have htot : (m.totient : ℝ) ≤ m := by exact_mod_cast Nat.totient_le m
   have hm0 : (0 : ℝ) < m := by exact_mod_cast hm
@@ -76,7 +76,7 @@ theorem exists_nearGammaDownwardCoefficient_uniform_conductor_bound {φ : ℝ �
     exact h
   have hcm : |ramanujanLagCoefficient m j| ≤ A :=
     (BiScaleUncertainty.SieveMoments.abs_ramanujanLagCoefficient_le_totient m j).trans
-      (by exact_mod_cast Nat.totient_le m)
+      (by dsimp only [A]; exact_mod_cast Nat.totient_le m)
   have hjb : |ramanujanLogDivisorJet m j| ≤ J := abs_divisorJet_le_conductor_sq hm j
   have hquot : (N : ℝ) / j ≤ B :=
     (div_le_iff₀ hj0).mpr (nearRow_geometry_small_width hc hn hj hw).2.2
@@ -186,7 +186,7 @@ theorem exists_fullNearGammaDownward_uniform_conductor_bound {φ : ℝ → ℝ}
       _ = B * (m.totient : ℝ) ^ 2 * c ^ 3 := by dsimp only [B]; ring
       _ ≤ B * (m : ℝ) ^ 4 * c ^ 5 := by
         have hm4 : (m.totient : ℝ) ^ 2 ≤ (m : ℝ) ^ 4 := by
-          convert ht2 using 1 <;> ring
+          simpa only [← pow_mul] using ht2
         exact mul_le_mul (mul_le_mul_of_nonneg_left hm4 hB) hc35
           (by positivity) (by positivity)
   rw [normalizedFullNearGammaDownwardVector_eq_sub hφ hsupp hc0]

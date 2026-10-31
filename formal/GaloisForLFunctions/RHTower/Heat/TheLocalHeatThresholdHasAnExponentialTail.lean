@@ -121,3 +121,6 @@ theorem eventually_volume_localHeatThreshold_gt_le_exp :
     linarith
 
 end RHTower.DeBruijn
+
+#print axioms RHTower.DeBruijn.exists_volume_localHeatThreshold_gt_le_exp
+#print axioms RHTower.DeBruijn.eventually_volume_localHeatThreshold_gt_le_exp
