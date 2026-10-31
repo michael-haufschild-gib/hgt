@@ -33,9 +33,9 @@ nonpositive eigenvector.
 
 ## Open inputs
 
-- Uniform harmonic comparison for the actual upward source.
-- Uniform polynomial conductor costs for every other residual component.
-- Combination with the finite-coordinate certificate and conductor floor.
+- Lean verification of the combined quartic conductor residual.
+- Lean verification of the finite-coordinate spectral transfer and actual Weil conclusion.
+- Final direct audits and umbrella imports.
 
 This target does not identify the agreement-shell square completion and does
 not settle Q2 or Q3.

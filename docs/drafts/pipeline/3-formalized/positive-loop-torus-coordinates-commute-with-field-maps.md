@@ -1,6 +1,6 @@
 # Positive-loop torus coordinates commute with field maps
 
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
 - **Parent:** [Elliptic unfolding](../1-in-progress/finite-field-eisenstein-unfolding.md).
 - **Statement:** Coefficient-field maps commute with the actual positive-loop
   splitting, preserve and reflect positive Borel, and map both intrinsic Borel torus
@@ -30,4 +30,4 @@ membership from the target field to the source field.
 
 `HTGeometry/LoopEisenstein/PositiveLoopFieldMap.lean`:
 `LoopSL2.fieldMap_positiveEmbedding`, `LoopSL2.borelFieldMap`,
-`LoopSL2.borelTorusHom_fieldMap`, `LoopSL2.fieldMap_mem_positiveBorel_iff`. Direct check pending.
+`LoopSL2.borelTorusHom_fieldMap`, `LoopSL2.fieldMap_mem_positiveBorel_iff`. Direct Lean check passed. All transitive axiom audits contain only `propext`, `Classical.choice`, `Quot.sound`.
