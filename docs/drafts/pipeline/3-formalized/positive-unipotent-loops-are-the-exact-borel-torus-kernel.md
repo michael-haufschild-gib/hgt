@@ -1,6 +1,6 @@
 # Positive unipotent loops are the exact Borel torus kernel
 
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
 - **Parent:** [Elliptic unfolding](../1-in-progress/finite-field-eisenstein-unfolding.md).
 - **Statement:** The positive unipotent subgroup is exactly the kernel of
   both intrinsic Borel torus coordinates. Coefficient-field maps preserve
@@ -22,4 +22,4 @@ their equality to one. The kernel characterization finishes the proof.
 
 `HTGeometry/LoopEisenstein/PositiveUnipotentFieldMap.lean`:
 `borelTorusHom_eq_one_iff`, `fieldMap_mem_positiveUnipotent_iff`.
-Direct check pending.
+Direct Lean check passed; both axiom audits contain only `propext`, `Classical.choice`, and `Quot.sound`.

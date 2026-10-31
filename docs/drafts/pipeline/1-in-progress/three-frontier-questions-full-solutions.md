@@ -10,7 +10,7 @@
 
 | Question | Required mathematical conclusion | Status |
 |---|---|---|
-| Q1 | All-vector logarithmic defect reserve for the complete Weil form; defect-relative conductor decomposition | Reserve formalized for each fixed overlap; prescribed growing-overlap horizon and conductor/shell decomposition open |
+| Q1 | All-vector logarithmic defect reserve for the complete Weil form; defect-relative conductor decomposition | Reserve formalized uniformly for `1≤c≤(log log N)^α`, every `0<α<1/16`; conductor/shell decomposition open |
 | Q1/A1 | Top-band joint cancellation, then top-band perturbations of Ramanujan modes | Formalized: actual Ramanujan witness coefficient is at most `Kφ mφ(m)G(1+log N)`, uniformly for `N≥8`, `1≤c≤N/4`; exact quadratic expansion and all direct Lean/axiom audits passed. [Proof](../3-formalized/nonpolar-ramanujan-top-band-cancellation.md) |
 | Q1/A2 | Growing Euler heads and joint head–pole–tail cancellation | Formalized: literal all-prime mixed source minus both polar terms is `o(√Y)` on detail–far-window witnesses, uniformly for bounded coefficients on fixed finite families |
 | Q1/O1 | Ramanujan–Plancherel decomposition of the shell block | Full agreement-shell identity open. [Two-conductor top band](../3-formalized/two-conductor-top-band-polar-channel.md), [finite adjunction spectrum](../3-formalized/finite-divisor-jet-adjunction-spectrum.md), and [signed-source smoothed square completion](../3-formalized/autocorrelation-divisor-jet-square-completion.md) formalized |
@@ -70,8 +70,24 @@ the shifted matrices. `exists_completeWeil_logarithmic_defect_reserve` proves
 `∃a,C>0, ∀c≥1, eventually N, ∀x`; direct Lean check and standard-axiom audit
 passed. Proof: `../3-formalized/logarithmic-reserve-by-shifting-the-prime-energy.md`.
 
-The constants are independent of `c`. The horizon is ineffective and depends
-on `c`; no prescribed growing-overlap claim follows without a separate rate.
+## Prescribed growing-overlap reserve
+
+The separate common-horizon argument now proves absolute `a,C>0` such that,
+for every `0<α<1/16`, eventually all `1≤c≤(log log N)^α` and all vectors satisfy
+`W_N(c,x)≥a c⁻⁷[D_N(x)−C log(2c)‖x‖²]`.
+The complete matrix itself is positive definite throughout the same range.
+
+The uniform conductor residual is
+`‖W_N(c)u_m−E_m(c)u_m‖²≤K m⁴[c⁵/log N+c¹⁰(log N/N)²+c³/√log N]`
+for every logarithmic conductor range. Exponential confinement gives a
+subpower-of-`log N` cutoff when `16α<1`; its summed residual is smaller than
+the common conductor floor. The same argument applies after shifting prime
+energy and adding the scalar logarithmic correction.
+
+[Positivity](../3-formalized/complete-weil-positivity-at-growing-iterated-log-overlap.md)
+and [logarithmic reserve](../3-formalized/logarithmic-defect-reserve-at-iterated-logarithmic-overlap.md)
+passed all direct Lean and standard-axiom audits; umbrella imports are present.
+The agreement-shell identity and RH-complete overlap remain open.
 
 ## Full-divisor resolvent identity
 

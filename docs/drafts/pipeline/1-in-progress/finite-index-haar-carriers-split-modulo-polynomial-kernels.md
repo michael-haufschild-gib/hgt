@@ -17,3 +17,9 @@ No paper proof or Lean theorem is claimed. The missing input is a relative decom
 The [finite affine orbit of period defects](../3-formalized/haar-period-defects-have-a-finite-affine-orbit.md) is formalized from unipotence and the isotropic fixed kernel. It supplies a covariant finite-dimensional correction space.
 
 A [cyclic averaging decomposition](bi-integer-invariant-haar-kernels-split-into-positive-and-slope-parts.md) is proposed for the resulting bi-integer-invariant carrier.
+
+## Uniqueness of the proposed decomposition
+
+The finite-rank term must equal the canonical polynomial correction: finite column rank gives polynomial translation fibres, while the positive Haar and slope terms are integer-invariant. The correction's difference and zero dilation reading determine it uniquely.
+
+After fixing this term, suppose `p+ψ∘slope=p′+ψ′∘slope`. The exact index law applied to `p′=p+(ψ−ψ′)∘slope` makes `ψ−ψ′` positive definite, since `p′` has index zero. Its value at identity is zero because both positive Haar terms have value one there. The positive-kernel norm bound forces `ψ=ψ′`, and hence `p=p′`. Thus existence would give a canonical triple; the monotone-limit construction is the remaining input.

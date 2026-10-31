@@ -21,6 +21,12 @@ Riemann–von Mangoldt remainder, the unit-window count, the critical proportion
 density with a `log T` slack, and the Lindelöf count (finitely many clusters above each `σ > ½`)
 survive; but at depth `δ = 1/(k+3)` the disc about `½ + δ + i exp(eᵏ)`
 holds `⌊eᵏ⌋` zeros against `C(eᵏ/(k+3) + 1)` (`not_localCountBound_superpose`).
+
+**What counting does give** (`volume_localCount_gt_le`, `eventually_volume_localCount_gt_le`).  For any
+configuration with Riemann–von Mangoldt, the heights `t ∈ [T, 2T]` violating the local count with
+constant `C` have measure `≤ T/(πC) + K`: each zero lies in the disc about `½ + δ + it` for `t` in an
+interval of length `≤ 2δ`, and Markov's inequality divides `2δ N(T − 1, 2T + 1)` by `Cδ log T`.  So
+counting gives the local count in density, never pointwise.
 -/
 
 open Complex Set Zeta23
@@ -447,13 +453,14 @@ theorem lindelofCount_superpose {Z : ZeroConfig} (h : LindelofCount Z) :
       exact_mod_cast (by linarith : (k : ℝ) < K)
     rcases hρC with ⟨k, rfl⟩ | ⟨k, rfl⟩
     · have hk := hsmall k hre
-      rw [clusterPoint_im] at hlo
+      have hlo' : T < (clusterPoint 1 k).im := hlo
+      rw [clusterPoint_im] at hlo'
       have : Real.exp (Real.exp k) ≤ Real.exp (Real.exp K) :=
         Real.exp_le_exp.mpr (Real.exp_le_exp.mpr (by exact_mod_cast hk.le))
       linarith
-    · rw [clusterPoint_re] at hre
+    · have hre' : σ ≤ (clusterPoint (-1) k).re := hre
+      rw [clusterPoint_re, neg_div] at hre'
       have : 0 < 1 / ((k : ℝ) + 3) := by positivity
-      rw [neg_div] at hre
       linarith
   rw [h0, add_zero]
   exact hT
@@ -480,6 +487,192 @@ theorem exists_zeroConfig_rvm_not_localCountBound :
     refine ⟨Nat.le_add_right _ _, ?_⟩
     rw [Nat.cast_add]
     linarith [clusterConfig_N_le T₁ T₂]
+
+/-! ## What counting does give: the local count in measure -/
+
+/-- On `t ∈ [T, 2T]` the disc count is a finite sum over the zeros of the window `(T − 1, 2T + 1]`. -/
+theorem discCount_eq_sum (Z : ZeroConfig) {δ T t : ℝ} (hδ : δ ≤ 1 / 2) (ht : t ∈ Icc T (2 * T)) :
+    discCount Z (((1 / 2 + δ : ℝ) : ℂ) + (t : ℂ) * I) δ =
+      ∑ ρ ∈ (Z.finite_window (T - 1) (2 * T + 1)).toFinset,
+        if ρ ∈ Metric.closedBall (((1 / 2 + δ : ℝ) : ℂ) + (t : ℂ) * I) δ then Z.mult ρ else 0 := by
+  set c : ℂ := ((1 / 2 + δ : ℝ) : ℂ) + (t : ℂ) * I with hc
+  have hsub : Z.carrier ∩ Metric.closedBall c δ ⊆
+      Z.carrier ∩ {ρ | T - 1 < ρ.im ∧ ρ.im ≤ 2 * T + 1} := by
+    intro z hz
+    refine ⟨hz.1, ?_⟩
+    have hd : ‖z - c‖ ≤ δ := by rw [← Complex.dist_eq]; exact Metric.mem_closedBall.mp hz.2
+    have h := (Complex.abs_im_le_norm (z - c)).trans hd
+    have hci : c.im = t := by simp [hc]
+    rw [Complex.sub_im, hci] at h
+    have := abs_le.mp (h.trans hδ)
+    exact ⟨by linarith [ht.1], by linarith [ht.2]⟩
+  have hfin := Z.finite_window (T - 1) (2 * T + 1)
+  have hfinB : (Z.carrier ∩ Metric.closedBall c δ).Finite := hfin.subset hsub
+  unfold discCount
+  rw [finsum_mem_eq_finite_toFinset_sum _ hfinB, ← Finset.sum_filter]
+  congr 1
+  ext ρ
+  simp only [Set.Finite.mem_toFinset, Finset.mem_filter]
+  exact ⟨fun h => ⟨hsub h, h.2⟩, fun h => ⟨h.1.1, h.2⟩⟩
+
+/-- **The local count holds in measure.**  For `0 < δ ≤ ½`, `C > 0`, `T > 1`, the heights
+`t ∈ [T, 2T]` whose disc about `½ + δ + it` holds more than `C(δ log t + 1)` zeros have measure at most
+`2N(T − 1, 2T + 1)/(C log T)`.  Each zero lies in the disc for a set of `t` of length `≤ 2δ`
+(Fubini), and Markov's inequality divides by `C(δ log T + 1) ≥ Cδ log T`. -/
+theorem volume_localCount_gt_le (Z : ZeroConfig) {δ C T : ℝ} (hδ0 : 0 < δ) (hδ : δ ≤ 1 / 2)
+    (hC : 0 < C) (hT : 1 < T) :
+    MeasureTheory.volume {t ∈ Icc T (2 * T) |
+        C * (δ * Real.log t + 1) < discCount Z (((1 / 2 + δ : ℝ) : ℂ) + (t : ℂ) * I) δ}
+      ≤ ENNReal.ofReal (2 * Z.N (T - 1) (2 * T + 1) / (C * Real.log T)) := by
+  set F := (Z.finite_window (T - 1) (2 * T + 1)).toFinset with hF
+  set c : ℝ → ℂ := fun t => ((1 / 2 + δ : ℝ) : ℂ) + (t : ℂ) * I with hc
+  set B : ℂ → Set ℝ := fun ρ => {t | ρ ∈ Metric.closedBall (c t) δ} with hBdef
+  have hcont : Continuous c := by rw [hc]; fun_prop
+  have hB : ∀ ρ, MeasurableSet (B ρ) := fun ρ =>
+    (isClosed_le (continuous_const.dist hcont) continuous_const).measurableSet
+  have hBsub : ∀ ρ, B ρ ⊆ Icc (ρ.im - δ) (ρ.im + δ) := by
+    intro ρ t ht
+    have hd : ‖ρ - c t‖ ≤ δ := by rw [← Complex.dist_eq]; exact Metric.mem_closedBall.mp ht
+    have h := (Complex.abs_im_le_norm (ρ - c t)).trans hd
+    have hci : (c t).im = t := by simp [hc]
+    rw [Complex.sub_im, hci] at h
+    have := abs_le.mp h
+    exact ⟨by linarith, by linarith⟩
+  set g : ℝ → ENNReal := fun t => ∑ ρ ∈ F, (B ρ).indicator (fun _ => (Z.mult ρ : ENNReal)) t with hg
+  have hgm : Measurable g := Finset.measurable_sum _ fun ρ _ => measurable_const.indicator (hB ρ)
+  have hcount : ∀ t ∈ Icc T (2 * T), ((discCount Z (c t) δ : ℕ) : ENNReal) = g t := by
+    intro t ht
+    rw [discCount_eq_sum Z hδ ht, hg, Nat.cast_sum]
+    refine Finset.sum_congr rfl fun ρ _ => ?_
+    simp only [Set.indicator_apply, hBdef, Set.mem_setOf_eq]
+    split_ifs <;> simp
+  have hint : ∫⁻ t in Icc T (2 * T), g t ≤ ∑ ρ ∈ F, (Z.mult ρ : ENNReal) * ENNReal.ofReal (2 * δ) := by
+    rw [hg, MeasureTheory.lintegral_finsetSum _ fun ρ _ => measurable_const.indicator (hB ρ)]
+    refine Finset.sum_le_sum fun ρ _ => ?_
+    rw [MeasureTheory.lintegral_indicator_const (hB ρ)]
+    gcongr
+    calc (MeasureTheory.volume.restrict (Icc T (2 * T))) (B ρ) ≤ MeasureTheory.volume (B ρ) :=
+          MeasureTheory.Measure.restrict_le_self _
+      _ ≤ MeasureTheory.volume (Icc (ρ.im - δ) (ρ.im + δ)) := MeasureTheory.measure_mono (hBsub ρ)
+      _ = ENNReal.ofReal (2 * δ) := by rw [Real.volume_Icc]; ring_nf
+  have hL : 0 < Real.log T := Real.log_pos hT
+  set M : ℝ := C * (δ * Real.log T + 1) with hM
+  have hM0 : 0 < M := by positivity
+  have hset : {t ∈ Icc T (2 * T) | C * (δ * Real.log t + 1) < discCount Z (c t) δ}
+      ⊆ {t | ENNReal.ofReal M ≤ g t} ∩ Icc T (2 * T) := by
+    rintro t ⟨ht, hlt⟩
+    refine ⟨?_, ht⟩
+    have hlog : Real.log T ≤ Real.log t := Real.log_le_log (by linarith) ht.1
+    have hMle : M ≤ (discCount Z (c t) δ : ℝ) := by
+      have : M ≤ C * (δ * Real.log t + 1) := by
+        rw [hM]; gcongr
+      linarith
+    show ENNReal.ofReal M ≤ g t
+    rw [← hcount t ht, ← ENNReal.ofReal_natCast]
+    exact ENNReal.ofReal_le_ofReal hMle
+  have hN : (Z.N (T - 1) (2 * T + 1) : ℝ) = ∑ ρ ∈ F, (Z.mult ρ : ℝ) := by
+    rw [ZeroConfig.N, ZeroConfig.window, finsum_mem_eq_finite_toFinset_sum _
+      (Z.finite_window (T - 1) (2 * T + 1)), Nat.cast_sum]
+  have hsumF : ∑ ρ ∈ F, (Z.mult ρ : ENNReal) * ENNReal.ofReal (2 * δ)
+      = ENNReal.ofReal (2 * δ * Z.N (T - 1) (2 * T + 1)) := by
+    rw [hN, Finset.mul_sum, ENNReal.ofReal_sum_of_nonneg fun ρ _ => by positivity]
+    refine Finset.sum_congr rfl fun ρ _ => ?_
+    rw [show ENNReal.ofReal (2 * δ * (Z.mult ρ : ℝ)) = ENNReal.ofReal (2 * δ) * (Z.mult ρ : ENNReal) by
+      rw [ENNReal.ofReal_mul (by positivity), ENNReal.ofReal_natCast], mul_comm]
+  calc MeasureTheory.volume {t ∈ Icc T (2 * T) | C * (δ * Real.log t + 1) < discCount Z (c t) δ}
+      ≤ MeasureTheory.volume ({t | ENNReal.ofReal M ≤ g t} ∩ Icc T (2 * T)) :=
+        MeasureTheory.measure_mono hset
+    _ = (MeasureTheory.volume.restrict (Icc T (2 * T))) {t | ENNReal.ofReal M ≤ g t} :=
+        (MeasureTheory.Measure.restrict_apply' measurableSet_Icc).symm
+    _ ≤ (∫⁻ t in Icc T (2 * T), g t) / ENNReal.ofReal M :=
+        MeasureTheory.meas_ge_le_lintegral_div hgm.aemeasurable
+          (by simpa using hM0) ENNReal.ofReal_ne_top
+    _ ≤ ENNReal.ofReal (2 * δ * Z.N (T - 1) (2 * T + 1)) / ENNReal.ofReal M := by
+        rw [← hsumF]; gcongr
+    _ = ENNReal.ofReal (2 * δ * Z.N (T - 1) (2 * T + 1) / M) :=
+        (ENNReal.ofReal_div_of_pos hM0).symm
+    _ ≤ ENNReal.ofReal (2 * Z.N (T - 1) (2 * T + 1) / (C * Real.log T)) := by
+        refine ENNReal.ofReal_le_ofReal ?_
+        have hN0 : (0 : ℝ) ≤ Z.N (T - 1) (2 * T + 1) := Nat.cast_nonneg _
+        rw [div_le_div_iff₀ hM0 (by positivity), hM]
+        nlinarith [mul_nonneg (mul_nonneg hN0 hδ0.le) hC.le]
+
+/-- Riemann–von Mangoldt bounds the window `(T − 1, 2T + 1]`:
+`N(T − 1, 2T + 1) ≤ (T/2π) log T + K log T` for all large `T`. -/
+theorem exists_N_window_le {Z : ZeroConfig} (hZ : RiemannVonMangoldt Z) :
+    ∃ K : ℝ, ∀ᶠ T in Filter.atTop,
+      (Z.N (T - 1) (2 * T + 1) : ℝ) ≤ T / (2 * Real.pi) * Real.log T + K * Real.log T := by
+  obtain ⟨C₀, T₀, hC₀⟩ := hZ.main
+  obtain ⟨A₀, hA₀, hloc⟩ := hZ.local_count
+  refine ⟨|C₀| + 4 * A₀, ?_⟩
+  filter_upwards [Filter.eventually_ge_atTop (max T₀ 3)] with T hT
+  have hT₀ : T₀ ≤ T := le_trans (le_max_left _ _) hT
+  have hT3 : 3 ≤ T := le_trans (le_max_right _ _) hT
+  have hL : 1 < Real.log T := by
+    rw [← Real.log_exp 1]
+    exact Real.log_lt_log (Real.exp_pos 1) (by linarith [Real.exp_one_lt_d9])
+  have hsplit : (Z.N (T - 1) (2 * T + 1) : ℝ) =
+      Z.N (T - 1) T + Z.N T (2 * T) + Z.N (2 * T) (2 * T + 1) := by
+    rw [Assembly.N_add Z (by linarith : T - 1 ≤ 2 * T) (by linarith),
+      Assembly.N_add Z (by linarith : T - 1 ≤ T) (by linarith)]
+    push_cast; ring
+  have h1 := hloc (T - 1)
+  rw [sub_add_cancel] at h1
+  have h3 := hloc (2 * T)
+  have h2 := hC₀ T hT₀
+  rw [abs_le] at h2
+  have hlog1 : Real.log (|T - 1| + 3) ≤ 2 * Real.log T := by
+    rw [abs_of_pos (by linarith), ← Real.log_rpow (by linarith)]
+    refine Real.log_le_log (by linarith) ?_
+    rw [show (T : ℝ) ^ (2 : ℝ) = T ^ 2 by norm_cast]; nlinarith
+  have hlog3 : Real.log (|2 * T| + 3) ≤ 2 * Real.log T := by
+    rw [abs_of_pos (by linarith), ← Real.log_rpow (by linarith)]
+    refine Real.log_le_log (by linarith) ?_
+    rw [show (T : ℝ) ^ (2 : ℝ) = T ^ 2 by norm_cast]; nlinarith
+  have hell : ell1 T ≤ Real.log T := by
+    have hl : l T ≤ Real.log T - Real.log (2 * Real.pi) := by
+      rw [l, Real.log_div (by linarith) (by positivity)]
+    have hlog2 : 2 * Real.log 2 - 1 ≤ Real.log (2 * Real.pi) := by
+      have h4 : 2 * Real.log 2 = Real.log 4 := by
+        rw [show (4 : ℝ) = 2 ^ 2 by norm_num, Real.log_pow]; norm_num
+      have : Real.log 4 ≤ Real.log (2 * Real.pi) + 1 := by
+        have := Real.log_le_sub_one_of_pos (show (0 : ℝ) < 4 / (2 * Real.pi) by positivity)
+        rw [Real.log_div (by norm_num) (by positivity)] at this
+        have h45 : 4 / (2 * Real.pi) ≤ 1 := by
+          rw [div_le_one (by positivity)]; linarith [Real.pi_gt_three]
+        linarith
+      linarith
+    rw [ell1]; linarith
+  have hC₀abs : C₀ ≤ |C₀| := le_abs_self C₀
+  have hT2π : 0 ≤ T / (2 * Real.pi) := by positivity
+  have hm := mul_le_mul_of_nonneg_left hell hT2π
+  have hL0 : 0 ≤ Real.log T := by linarith
+  nlinarith [mul_le_mul_of_nonneg_left hlog1 (by linarith : (0 : ℝ) ≤ A₀),
+    mul_le_mul_of_nonneg_left hlog3 (by linarith : (0 : ℝ) ≤ A₀),
+    mul_le_mul_of_nonneg_right hC₀abs hL0]
+
+/-- **Riemann–von Mangoldt gives the local count off a set of proportion `1/(πC)`.**  For every
+`0 < δ ≤ ½` and `C > 0` there is `K` with, for all large `T`,
+`|{t ∈ [T, 2T] : #disc(½ + δ + it, δ) > C(δ log t + 1)}| ≤ T/(πC) + K`. -/
+theorem eventually_volume_localCount_gt_le {Z : ZeroConfig} (hZ : RiemannVonMangoldt Z)
+    {δ C : ℝ} (hδ0 : 0 < δ) (hδ : δ ≤ 1 / 2) (hC : 0 < C) :
+    ∃ K : ℝ, ∀ᶠ T in Filter.atTop, MeasureTheory.volume {t ∈ Icc T (2 * T) |
+        C * (δ * Real.log t + 1) < discCount Z (((1 / 2 + δ : ℝ) : ℂ) + (t : ℂ) * I) δ}
+      ≤ ENNReal.ofReal (T / (Real.pi * C) + K) := by
+  obtain ⟨K, hK⟩ := exists_N_window_le hZ
+  refine ⟨2 * K / C, ?_⟩
+  filter_upwards [hK, Filter.eventually_ge_atTop (3 : ℝ)] with T hN hT3
+  have hL : 1 < Real.log T := by
+    rw [← Real.log_exp 1]
+    exact Real.log_lt_log (Real.exp_pos 1) (by linarith [Real.exp_one_lt_d9])
+  refine (volume_localCount_gt_le Z hδ0 hδ hC (by linarith)).trans (ENNReal.ofReal_le_ofReal ?_)
+  have hL0 : 0 < Real.log T := by linarith
+  rw [div_le_iff₀ (by positivity)]
+  have e : (T / (Real.pi * C) + 2 * K / C) * (C * Real.log T)
+      = 2 * (T / (2 * Real.pi) * Real.log T + K * Real.log T) := by
+    field_simp
+  rw [e]
+  linarith
 
 end
 

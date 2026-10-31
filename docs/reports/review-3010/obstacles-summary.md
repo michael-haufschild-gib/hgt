@@ -17,6 +17,8 @@ Companions: [route report](route-obstacles.md) · [walls ledger](walls-ledger.md
 - Below a fixed fraction of the atom spacing, for ζ and every sign twin, on every C² test supported near the logarithms.
 - On the complete prime/Gamma/polar atomic matrix at every fixed overlap c, where it rejects the Liouville twin and every cofinite flip.
 - On fixed conductor packets up to overlap (log N)^{1/19}.
+- On every coefficient vector for `1≤c≤(log log N)^α`, every `0<α<1/16`,
+  with an all-vector logarithmic defect reserve. [Proof and Lean audits](../../drafts/pipeline/3-formalized/logarithmic-defect-reserve-at-iterated-logarithmic-overlap.md).
 
 At fixed c the complete matrix is a solved operator: its low spectrum is spanned by Ramanujan conductor modes with energies E_m(c), explicit nonnegative Fourier tails.
 
@@ -86,7 +88,7 @@ Nobody knows how to produce these. Strength tags:
 | # | Problem | Strength | Corpus form |
 |---|---|---|---|
 | **B1** | Complete Weil positivity at RH-complete overlap | [RH] | Positivity eventually in N for c⁴/log N → ∞, or at every Kc*_N, c*_N ≍ L(log L)². Margin = synthesis error there. |
-| **B2** | Signed joint edge payment at a controlled horizon | [sub] | W ≥ ac⁻⁷(D − C log(2c)‖x‖²) is formalized for every fixed c, eventually in N, uniformly over vectors. A prescribed growing-overlap horizon and the agreement-shell decomposition remain open. |
+| **B2** | Signed joint edge payment at a controlled horizon | [sub] | W ≥ ac⁻⁷(D − C log(2c)‖x‖²) is formalized, eventually in N, uniformly over all vectors and `1≤c≤(log log N)^α`, every `0<α<1/16`. The agreement-shell decomposition and RH-complete overlap remain open. |
 | **B3** | Positive supersolution of the full arithmetic generator | [RH] | The odd Markov form is never subcritical; every obstruction is prime. |
 | **B4** | Rank-uniform theta / heat positivity | [RH] | Flux domination uniformly in rank; Λ_dBN = 0; all-degree Jensen. |
 | **B5** | A source law for the same-point side | [RH] | Force the two reconstructed orientations of the Ξ resolvent to agree, equivalently S = W, the Hecke defect = 0 or D(s) = 0. Explicit formulas compute only W. |
@@ -129,10 +131,13 @@ Nobody knows how to produce these. Strength tags:
 Concretely:
 
 - Is there, eventually in N and for every coefficient vector, a reserve W ≥ ac⁻⁷(D − C log(2c)‖x‖²)?
-- **Fixed-overlap answer: yes, formalized.** `exists_completeWeil_logarithmic_defect_reserve`
-  gives absolute `a,C>0` and `∀c≥1, eventually N, ∀x`. The horizon depends on `c`
-  and is ineffective; a prescribed growing-overlap schedule remains separate.
-  [Proof and Lean audit](../../drafts/pipeline/3-formalized/logarithmic-reserve-by-shifting-the-prime-energy.md).
+- **Answer: yes, including prescribed growing overlap, formalized.**
+  `exists_completeWeil_logarithmic_defect_reserve_iteratedLog` gives absolute
+  `a,C>0` and, for every `0<α<1/16`, one eventual horizon for all vectors and
+  all `1≤c≤(log log N)^α`. The complete matrix is also positive definite
+  throughout this range. [Reserve](../../drafts/pipeline/3-formalized/logarithmic-defect-reserve-at-iterated-logarithmic-overlap.md)
+  and [positivity](../../drafts/pipeline/3-formalized/complete-weil-positivity-at-growing-iterated-log-overlap.md)
+  passed direct Lean and transitive axiom audits. RH-complete overlap remains open.
 - Equivalently: is the complete matrix at overlap c a defect-relative perturbation of its conductor Hamiltonian Σ_m E_m(c)\|⟨x, u_m⟩\|², with O(log c) loss, once shells, Euler heads and pole are paid together?
 
 Why this question:

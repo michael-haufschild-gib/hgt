@@ -64,7 +64,7 @@ trivial intersection of the diagonal field with the additive domain.
 Finite triangular translations then supply the proposed invariant quotient
 probability. The free coefficient stream, strict triangular multiplication, coefficient-map
 naturality, subring descent and countable triangular probability theorem are
-audited. Uniform integrality of the recursive correction is audited: it introduces no new finite exceptional place. Normalization continuity and quotient identification remain.
+audited. Uniform integrality of the recursive correction is audited: it introduces no new finite exceptional place. Normalization continuity is also audited. The uniform coefficient group is now proved isomorphic to the actual restricted adelic positive unipotent group. The coefficient quotient is homeomorphic to the countable product of additive domains, with direct Lean and axiom audits. Normalized left multiplication preserves the actual product-domain Haar probability, with direct Lean and axiom audits. Arithmetic-intersection identification and transport to the literal loop quotient remain.
 
 ## Convergence mechanism to test
 

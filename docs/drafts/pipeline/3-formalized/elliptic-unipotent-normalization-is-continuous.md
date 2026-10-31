@@ -1,6 +1,6 @@
 # Elliptic unipotent normalization is continuous
 
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
 - **Parent:** [Elliptic unfolding](../1-in-progress/finite-field-eisenstein-unfolding.md).
 - **Statement:** Canonical unipotent normalization is continuous from the
   product of actual adele coefficient spaces to the product of additive
@@ -25,4 +25,4 @@ this map with normalization of the actual completed matrix.
 
 `ArithmeticEffectivityTheory/FiniteFieldEllipticUnipotentContinuity.lean`:
 `continuous_adeleUnipotentCorrectionValue`,
-`continuous_adeleUnipotentNormalization`. Direct check pending.
+`continuous_adeleUnipotentNormalization`. Direct Lean check passed; all three axiom audits contain only `propext`, `Classical.choice`, and `Quot.sound`.

@@ -1,6 +1,6 @@
 # Elliptic unipotent normalization is rationally invariant
 
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
 - **Parent:** [Elliptic unfolding](../1-in-progress/finite-field-eisenstein-unfolding.md).
 - **Statement:** Canonical reduction is invariant under right rational
   multiplication, fixes domain-valued matrices, and is triangular in the
@@ -25,4 +25,4 @@ the domain, so their normalized coordinates also differ by exactly `d`.
 
 `ArithmeticEffectivityTheory/FiniteFieldEllipticUnipotentNormalization.lean`:
 `adeleUnipotentReduced_mul_rational`, `adeleUnipotentReduced_of_domain`,
-`adeleUnipotentNormalization_coordinate_add`. Direct check pending.
+`adeleUnipotentNormalization_coordinate_add`. Direct Lean check passed; all three axiom audits contain only `propext`, `Classical.choice`, and `Quot.sound`.

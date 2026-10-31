@@ -10,7 +10,7 @@
 
 In the column representation, `v_1` is fixed by `T_1`; therefore `v_g` is fixed by `T_(slope g)`. Every rational translation acts periodically on each vector, since each vector is a finite sum of columns.
 
-Take `x=(T_b−1)y` and choose `m>0` with `T_b^m y=y`. Then `T_b^m x=x` and `Σ_(j<m)T_b^j x=0`. If `B(x,x)<0`, the vectors `w_i=D_(m^i)x` would be arbitrarily many orthogonal negative vectors. Indeed, for `i<j`, `T_(m^j b)` fixes `w_i`, while the sum of the first `m` iterates of `w_j` under that same translation is zero. Pairing with `w_i` therefore gives `m B(w_i,w_j)=0`. Finite negative index excludes this. Consequently `range(T_b−1)` is nonnegative, without spectral decomposition.
+Take `x=(T_b−1)y` and choose `m>0` with `T_b^m y=y`. Then `T_b^m x=x` and `Σ_(j<m)T_b^j x=0`. Set `U=D_(1/m)`, so `T_b U=U T_b^m`. Every `U^j x`, `j>0`, is fixed by `T_b` and hence orthogonal to `x`. Invariance makes all distinct `U^i x` mutually orthogonal with the same norm. A negative norm would contradict finite negative index. Consequently `range(T_b−1)` is nonnegative, without spectral decomposition.
 
 ## Finite cyclic averages
 
@@ -30,4 +30,6 @@ Every rational translation fixes `range(P_(b_n))` for all sufficiently large `n`
 
 ## Verification boundary
 
-The cyclic projection, moving-subspace positivity, and invariant monotone-limit arguments require complete paper and Lean audits. Combined with the formalized [zero-axis polynomial correction](../3-formalized/finite-index-periodic-affine-kernels-have-a-zero-axis-polynomial-correction.md), this would supply the full relative splitting; it is not yet a proved decomposition.
+Local periodicity, the orthogonal cyclic projections, and moving-subspace positivity are formalized in `BiarithmeticGeometry/Affine/PeriodicTranslations.lean`, `HeckeKreinToeplitz/Index/ColumnProjections.lean`, and `AdelicKreinGeometry/Haar/TranslationMovingPositivity.lean`, with direct audits and standard axiom closures.
+
+The nested-projection order, bounded monotone limit, affine invariance, and slope factorization remain to be formalized. Combined with the formalized [zero-axis polynomial correction](../3-formalized/finite-index-periodic-affine-kernels-have-a-zero-axis-polynomial-correction.md), these would supply the full relative splitting; it is not yet a proved decomposition.

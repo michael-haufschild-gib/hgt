@@ -42,6 +42,8 @@ The positive-slope subgroup has two cosets, represented by identity and dilation
 
 For the actual group `ℚ⁺ ⋉ (ℝ × 𝔸_f)`, embed rational translations by `b↦(0,b_f)` and retain rational dilations. This is an affine homomorphism because finite diagonal embedding is rational-linear. A rational diagonal belongs to `∏ₚℤₚ` exactly when its denominator is one: integrality at every height-one valuation implies membership in `ℤ`, and integers are integral everywhere. The critical finite Haar reading therefore pulls back to `1_ℤ`; the dilation reading is unchanged. Pullback cannot increase negative index, so the rational obstruction applies to this adelic group.
 
+The argument also covers every nonzero Haar multiple `c·1_ℤ`. Hermitian symmetry makes `c` real. For `c<0`, distinct rational translation cosets already give arbitrarily large negative diagonal Grams. For `c>0`, division by `c` preserves finite index and dilation continuity and normalizes the Haar reading.
+
 ## Verification boundary
 
 Formalized, with direct audits and standard axiom closures:
@@ -50,5 +52,8 @@ Formalized, with direct audits and standard axiom closures:
 - `HeckeKreinToeplitz/Index/ColumnInertia.lean`: every finite column-space Gram family retains the kernel's index bound.
 - `HeckeKreinToeplitz/Index/LocallyPeriodicProjection.lean`: fixed and moving vectors are complementary; the fixed projection equals every complete orbit average and commutes with the operator's commutant.
 - `HeckeKreinToeplitz/Index/ColumnProjections.lean`: fixed and moving vectors are orthogonal; the fixed projection is self-adjoint and its Gram entries are finite cyclic averages.
+- `BiarithmeticGeometry/Affine/PeriodicTranslations.lean`: right integer invariance makes every rational translation locally periodic on the column space, with period `den(b/a)` on a column of slope `a`.
+- `HeckeKreinToeplitz/Index/PeriodicDilationPositivity.lean`: if `t a=a t^m`, every `m`-periodic, zero-mean vector for `t` has nonnegative norm in a finite-index column representation.
+- `AdelicKreinGeometry/Haar/TranslationMovingPositivity.lean`: a finite-index integer-invariant affine kernel is nonnegative on every rational translation difference range.
 
-Required Lean results: local periodicity of affine translations; nonnegative moving subspaces; cyclic Hecke bound; projected Gram limit; positive-slope extension and the actual adelic restriction. The positive structural conclusions are the nonnegative moving subspaces and their finite cyclic bound. The stronger positive-plus-slope decomposition remains a separate conjecture.
+Required Lean results: cyclic Hecke bound; projected Gram limit; positive-slope extension and the actual adelic restriction. The positive structural conclusions are the nonnegative moving subspaces and their finite cyclic bound. The stronger positive-plus-slope decomposition remains a separate conjecture.

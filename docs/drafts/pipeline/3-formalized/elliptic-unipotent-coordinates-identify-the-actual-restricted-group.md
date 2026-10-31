@@ -1,6 +1,6 @@
 # Elliptic unipotent coordinates identify the actual restricted group
 
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
 - **Parent:** [Elliptic unfolding](../1-in-progress/finite-field-eisenstein-unfolding.md).
 - **Statement:** Completed unipotent matrices over the actual adele ring,
   with one common finite exceptional-place set for all coefficients, map
@@ -29,4 +29,4 @@ matrix. Hence decoding gives the required uniformly integral preimage.
 
 `ArithmeticEffectivityTheory/FiniteFieldEllipticUnipotentCarrier.lean`:
 `adelicUnipotentEmbedding_injective`, `adelicUnipotentEmbedding_surjective`.
-Direct check pending.
+The actual group isomorphism is `adelicUnipotentEquiv`. Direct Lean check passed; all three axiom audits contain only `propext`, `Classical.choice`, and `Quot.sound`.

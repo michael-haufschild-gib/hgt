@@ -16,7 +16,7 @@ noncomputable section
 
 /-- Evaluation of an actual adele at a finite place. -/
 def finiteAdeleEvaluation (v : FinitePlace) : Adeles →+* v.adicCompletion K :=
-  (RestrictedProduct.evalRingHom _ v).comp (RingHom.fst _ _)
+  (RestrictedProduct.evalRingHom _ v).comp (RingHom.fst FiniteAdeles InfinityCompletion)
 
 /-- Evaluate coefficients and take the canonical positive central lift. -/
 def unipotentLocalLoopMap {F : Type*} [Field F] (f : Adeles →+* F) :
@@ -61,19 +61,19 @@ def adelicUnipotentEmbedding : uniformlyIntegralUnipotent →* AdelicLoop where
     (⟨fun v => unipotentLocalLoopMap (finiteAdeleEvaluation v) g,
       ((mem_uniformlyIntegralUnipotent g).mp g.property).mono
         (fun v hv => unipotentLocalLoopMap_integral v g hv)⟩,
-      unipotentLocalLoopMap (RingHom.snd _ _) g)
+      unipotentLocalLoopMap (RingHom.snd FiniteAdeles InfinityCompletion) g)
   map_one' := by
     apply Prod.ext
     · apply RestrictedProduct.ext
       intro v
       exact (unipotentLocalLoopMap (finiteAdeleEvaluation v)).map_one
-    · exact (unipotentLocalLoopMap (RingHom.snd _ _)).map_one
+    · exact (unipotentLocalLoopMap (RingHom.snd FiniteAdeles InfinityCompletion)).map_one
   map_mul' g h := by
     apply Prod.ext
     · apply RestrictedProduct.ext
       intro v
       exact (unipotentLocalLoopMap (finiteAdeleEvaluation v)).map_mul g h
-    · exact (unipotentLocalLoopMap (RingHom.snd _ _)).map_mul g h
+    · exact (unipotentLocalLoopMap (RingHom.snd FiniteAdeles InfinityCompletion)).map_mul g h
 
 theorem adelicUnipotentEmbedding_mem (g : uniformlyIntegralUnipotent) :
     adelicUnipotentEmbedding g ∈ adelicPositiveUnipotent := by
@@ -81,13 +81,15 @@ theorem adelicUnipotentEmbedding_mem (g : uniformlyIntegralUnipotent) :
   · intro v
     exact ⟨unipotentCoefficientMap (finiteAdeleEvaluation v) g,
       (unipotentCoefficientMap (finiteAdeleEvaluation v) g).property, rfl⟩
-  · exact ⟨unipotentCoefficientMap (RingHom.snd _ _) g,
-      (unipotentCoefficientMap (RingHom.snd _ _) g).property, rfl⟩
+  · exact ⟨unipotentCoefficientMap (RingHom.snd FiniteAdeles InfinityCompletion) g,
+      (unipotentCoefficientMap (RingHom.snd FiniteAdeles InfinityCompletion) g).property, rfl⟩
 
-/-- No coefficient information is lost in the actual restricted central loop carrier. -/
-theorem adelicUnipotentEmbedding_injective : Function.Injective adelicUnipotentEmbedding := by
-  intro g h he
-  apply Subtype.ext
+/-- Finite and infinite local central lifts jointly distinguish every adele coefficient. -/
+theorem unipotentLocalLoopMap_ext (g h : unipotentCoefficientGroup Adeles)
+    (hf : ∀ v, unipotentLocalLoopMap (finiteAdeleEvaluation v) g =
+      unipotentLocalLoopMap (finiteAdeleEvaluation v) h)
+    (hi : unipotentLocalLoopMap (RingHom.snd FiniteAdeles InfinityCompletion : Adeles →+* InfinityCompletion) g =
+      unipotentLocalLoopMap (RingHom.snd FiniteAdeles InfinityCompletion) h) : g = h := by
   apply (unipotentCoefficientStreamEquiv Adeles).injective
   funext n
   apply Prod.ext
@@ -97,16 +99,30 @@ theorem adelicUnipotentEmbedding_injective : Function.Injective adelicUnipotentE
         unipotentCoefficientMap (finiteAdeleEvaluation v) h := by
       apply Subtype.ext
       exact LoopSL2.positiveEmbedding_injective (v.adicCompletion K)
-        (congrArg (fun z : AdelicLoop => z.1 v) he)
+        (hf v)
     have hs := congrArg
       (fun u => unipotentCoefficientStreamEquiv (v.adicCompletion K) u n) hm
-    simpa only [unipotentStream_map] using hs
-  · have hm : unipotentCoefficientMap (RingHom.snd _ _ : Adeles →+* InfinityCompletion) g =
-        unipotentCoefficientMap (RingHom.snd _ _) h := by
+    rw [unipotentStream_map, unipotentStream_map] at hs
+    change (unipotentCoefficientStreamEquiv Adeles g n).1 v =
+      (unipotentCoefficientStreamEquiv Adeles h n).1 v at hs
+    exact hs
+  · have hm : unipotentCoefficientMap (RingHom.snd FiniteAdeles InfinityCompletion : Adeles →+* InfinityCompletion) g =
+        unipotentCoefficientMap (RingHom.snd FiniteAdeles InfinityCompletion) h := by
       apply Subtype.ext
-      exact LoopSL2.positiveEmbedding_injective InfinityCompletion (congrArg Prod.snd he)
+      exact LoopSL2.positiveEmbedding_injective InfinityCompletion hi
     have hs := congrArg (fun u => unipotentCoefficientStreamEquiv InfinityCompletion u n) hm
-    simpa only [unipotentStream_map] using hs
+    rw [unipotentStream_map, unipotentStream_map] at hs
+    change (unipotentCoefficientStreamEquiv Adeles g n).2 =
+      (unipotentCoefficientStreamEquiv Adeles h n).2 at hs
+    exact hs
+
+/-- No coefficient information is lost in the actual restricted central loop carrier. -/
+theorem adelicUnipotentEmbedding_injective : Function.Injective adelicUnipotentEmbedding := by
+  intro g h he
+  apply Subtype.ext
+  exact unipotentLocalLoopMap_ext g h
+    (fun v => congrArg (fun z : AdelicLoop => z.1 v) he)
+    (congrArg (fun z : AdelicLoop => z.2) he)
 
 /-- Every actual restricted positive unipotent loop comes from one uniformly integral adele matrix. -/
 theorem adelicUnipotentEmbedding_surjective (g : adelicPositiveUnipotent) :
@@ -154,21 +170,31 @@ theorem adelicUnipotentEmbedding_surjective (g : adelicPositiveUnipotent) :
       (unipotentCoefficientMap (finiteAdeleEvaluation v) u) = g.1.1 v
     rw [hm]
     exact hev v
-  · have hm : unipotentCoefficientMap (RingHom.snd _ _ : Adeles →+* InfinityCompletion) u = uinf := by
+  · have hm : unipotentCoefficientMap (RingHom.snd FiniteAdeles InfinityCompletion : Adeles →+* InfinityCompletion) u = uinf := by
       apply (unipotentCoefficientStreamEquiv InfinityCompletion).injective
       funext n
       rw [unipotentStream_map]
       change (unipotentCoefficientStreamEquiv Adeles
         ((unipotentCoefficientStreamEquiv Adeles).symm x) n).2 = _
       rw [Equiv.apply_symm_apply]
-      rfl
     change LoopSL2.positiveEmbedding InfinityCompletion
-      (unipotentCoefficientMap (RingHom.snd _ _) u) = g.1.2
+      (unipotentCoefficientMap (RingHom.snd FiniteAdeles InfinityCompletion) u) = g.1.2
     rw [hm]
     exact hei
+
+/-- The uniform coefficient model and actual restricted unipotent carrier are isomorphic. -/
+def adelicUnipotentEquiv : uniformlyIntegralUnipotent ≃* adelicPositiveUnipotent :=
+  MulEquiv.ofBijective (adelicUnipotentEmbedding.codRestrict
+    adelicPositiveUnipotent adelicUnipotentEmbedding_mem) ⟨by
+      intro g h he
+      exact adelicUnipotentEmbedding_injective (congrArg Subtype.val he), by
+      intro g
+      obtain ⟨u, hu⟩ := adelicUnipotentEmbedding_surjective g
+      exact ⟨u, Subtype.ext hu⟩⟩
 
 end
 end GaloisForLFunctions.ArithmeticEffectivityTheory.FiniteFieldEllipticBase
 
 #print axioms GaloisForLFunctions.ArithmeticEffectivityTheory.FiniteFieldEllipticBase.adelicUnipotentEmbedding_injective
 #print axioms GaloisForLFunctions.ArithmeticEffectivityTheory.FiniteFieldEllipticBase.adelicUnipotentEmbedding_surjective
+#print axioms GaloisForLFunctions.ArithmeticEffectivityTheory.FiniteFieldEllipticBase.adelicUnipotentEquiv

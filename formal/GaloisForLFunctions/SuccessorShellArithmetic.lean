@@ -22,6 +22,8 @@ import GaloisForLFunctions.SuccessorShellArithmetic.Conductor.DivisorJetSpectrum
 import GaloisForLFunctions.SuccessorShellArithmetic.Conductor.RamanujanAutocorrelationWeights
 import GaloisForLFunctions.SuccessorShellArithmetic.Conductor.SmoothedDivisorJet
 import GaloisForLFunctions.SuccessorShellArithmetic.Conductor.ProfiledAdjunctionLagKernel
+import GaloisForLFunctions.SuccessorShellArithmetic.Conductor.HarmonicGramFinitePart
+import GaloisForLFunctions.SuccessorShellArithmetic.Conductor.HarmonicGramTorsionEnergy
 
 /-!
 # Successor-Shell Arithmetic
@@ -34,6 +36,7 @@ of the shells and its cancellation against the pole on the top band; overlap-uni
 for mean-zero periodic top-band perturbations, including every nonpolar Ramanujan mode; the exact
 finite divisor-jet square completion and adjunction spectrum, preserved by signed-source
 autocorrelation smoothing and compact source profiles on arbitrary real shifts; the twin defect as a
-successor-disagreement shell. See
+successor-disagreement shell; the exact harmonic Ramanujan Gram finite part as positive divisor-edge
+energy plus a scalar counterterm, equivalently Euler's scalar minus torsion intersection. See
 `SuccessorShellArithmetic/README.md`.
 -/

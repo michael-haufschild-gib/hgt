@@ -1,3 +1,4 @@
+import GaloisForLFunctions.HeckeKreinToeplitz.Index.PeriodicDilationPositivity
 import GaloisForLFunctions.HeckeKreinToeplitz.Index.ColumnProjections
 import GaloisForLFunctions.HeckeKreinToeplitz.Index.LocallyPeriodicProjection
 import GaloisForLFunctions.HeckeKreinToeplitz.Index.ColumnInertia

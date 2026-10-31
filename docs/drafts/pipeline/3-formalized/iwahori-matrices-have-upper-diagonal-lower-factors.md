@@ -1,6 +1,6 @@
 # Iwahori matrices have upper–diagonal–lower factors
 
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
 - **Parent:** [Polynomial Bruhat cells](../1-in-progress/affine-a1-bruhat-cells-have-one-polynomial-root-coordinate.md).
 - **Statement:** Every positive Iwahori matrix is `U(u)D(a)L(l)`, where
   `a` is a power-series unit and `l` has zero constant coefficient.
@@ -15,4 +15,4 @@ constant coefficient. This uses the actual power-series matrix group.
 ## Lean
 
 `HTGeometry/LoopEisenstein/OppositeIwahoriGauss.lean`:
-`exists_iwahori_upper_diagonal_lower`. Direct check pending.
+`exists_iwahori_upper_diagonal_lower`. Direct Lean check passed; the axiom audit contains only `propext`, `Classical.choice`, and `Quot.sound`.

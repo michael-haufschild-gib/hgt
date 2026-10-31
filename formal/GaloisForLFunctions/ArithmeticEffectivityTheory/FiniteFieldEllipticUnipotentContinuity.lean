@@ -47,9 +47,9 @@ theorem continuous_adeleUnipotentCorrectionValue (n : ℕ) :
     have hp : Continuous fun x : ℕ → Adeles => unipotentTriangularCorrection n
         (fun i => x i.val) (fun i => adeleEmbedding (adeleUnipotentCorrectionStream x i.val)) :=
       Continuous.comp
-        (f := fun p : (Fin n → Adeles) × (Fin n → Adeles) =>
+        (g := fun p : (Fin n → Adeles) × (Fin n → Adeles) =>
           unipotentTriangularCorrection n p.1 p.2)
-        (g := fun x : ℕ → Adeles => ((fun i : Fin n => x i.val),
+        (f := fun x : ℕ → Adeles => ((fun i : Fin n => x i.val),
           (fun i : Fin n => adeleEmbedding (adeleUnipotentCorrectionStream x i.val))))
         (continuous_unipotentTriangularCorrection (R := Adeles) n) (hf.prodMk hg)
     have ha : Continuous (adeleUnipotentTriangularInput n) := (continuous_apply n).add hp
@@ -68,9 +68,9 @@ theorem continuous_adeleUnipotentTriangularInput (n : ℕ) :
   have hp : Continuous fun x : ℕ → Adeles => unipotentTriangularCorrection n
       (fun i => x i.val) (fun i => adeleEmbedding (adeleUnipotentCorrectionStream x i.val)) :=
     Continuous.comp
-      (f := fun p : (Fin n → Adeles) × (Fin n → Adeles) =>
+      (g := fun p : (Fin n → Adeles) × (Fin n → Adeles) =>
         unipotentTriangularCorrection n p.1 p.2)
-      (g := fun x : ℕ → Adeles => ((fun i : Fin n => x i.val),
+      (f := fun x : ℕ → Adeles => ((fun i : Fin n => x i.val),
         (fun i : Fin n => adeleEmbedding (adeleUnipotentCorrectionStream x i.val))))
       (continuous_unipotentTriangularCorrection (R := Adeles) n) (hf.prodMk hg)
   exact (continuous_apply n).add hp

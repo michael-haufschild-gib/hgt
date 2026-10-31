@@ -65,9 +65,12 @@ Expanding the edge squares gives the prime-local Gram entries.
 
 ## Open inputs
 
-Formalize the finite-part identity and extract the individual Gram entries.
-The operator bound and full Weil agreement-shell identity remain unproved.
-Neither is assumed in the growing-overlap positivity argument.
+The divisor-edge finite part, its polarization, and the individual raw
+Gram entries passed Lean with only the standard three axioms in
+`SuccessorShellArithmetic/Conductor/HarmonicGramFinitePart.lean`.
+The final source audit, torsion identification, and operator bound remain.
+The full Weil agreement-shell identity remains unproved and is not assumed
+in the growing-overlap positivity argument.
 
 ## Torsion interpretation
 

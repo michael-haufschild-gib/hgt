@@ -17,7 +17,7 @@ Develop the field asked for in §2.6: answer its six questions as theorems or sh
 ## Status (formalized; each module checked with `lake --old env lean`, wired into `AdelicKreinGeometry.lean`)
 - A. Index calculus: `TheIndexOfAnInducedState`, `TheWitnessComplementIsPositive`, `MixingKillsNegativeSquares`, `TheIndexIsTwinBlind`.
 - B. Affine zero-or-infinity law and Kakutani index wall: `HeckeSupportedStatesHaveIndexZeroOrInfinity`.
-- C. Weil's affine extensions: `ThePontryaginExtensionsOfWeilsCorrelation`, `TheAdelicProductState`, `ArchimedeanContinuityAgainstHeightDecay`; `Haar/OneNegativeSquare` (another agent).
+- C. Weil's affine extensions: `ThePontryaginExtensionsOfWeilsCorrelation`, `TheAdelicProductState`, `ArchimedeanContinuityAgainstHeightDecay`, `WeilsCorrelationWithAnArchimedeanSuccessor` (positive survivor: `κ(K_ζ) ≤ κ ≤ κ(K_ζ) + 1` with successor `−c|b|`); `Haar/OneNegativeSquare` (another agent).
 - D. Signature calculus: `TheSignatureOfASeparableAssembly`, `NoFixedCountertermMakesThePrimeKernelPontryagin`. [A6 finite sieve is formalized](../3-formalized/matched-prime-form-hodge-index-uniform-in-the-sieve.md), with a horizon independent of the sieve; transfer to the complete Weil form remains open.
 - E. Conformal symmetry: `ConformalSymmetryNeedsANegativeSquare`, `StableConformalSuccessors`, `TheFunctionFieldConformalSuccessor`.
 - F. Additive index law: `TheAdditiveIndexLaw` (`ℤ/N`), `TheAdditiveIndexLawOnQModZ` (`ℚ/ℤ`), `TheRamanujanIndexLaw` (`κ = Σ_{A_d<0} φ(d)` for unit-invariant kernels and conductor-invariant successors).
