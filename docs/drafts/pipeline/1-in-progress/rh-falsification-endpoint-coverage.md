@@ -8,6 +8,7 @@
 | Mechanism | Exact witness | Lean owner |
 |---|---|---|
 | Anchored holomorphic dynamics | A nonanchor upper periodic point of the normalized Xi Donoghue map; period-one Gaussian stationary equation | `Bottcher/HalfPlane/XiDonoghueDynamics.lean` |
+| Heat spectral motion | A differentiable Ritz branch in any fixed finite polynomial space with nonnegative velocity at positive heat time | `arithmetic-positivity-theory/MomentFlow/XiRitzVelocity.lean`; actual source audited, generic final source check pending |
 
 ## Exclusions
 
@@ -28,7 +29,6 @@ strictly stronger obstruction.
 
 ## Active candidates
 
-- Heat Ritz velocity: arbitrary fixed finite polynomial trial spaces; exact negative residual norm.
 - Jensen differential jets: real translates, derivatives and real first-order factors; missing Xi necessity direction.
 - Strict Jensen roots: exclude repeated nonzero roots through real-factor extraction and multiplicity drop; proof incomplete.
 

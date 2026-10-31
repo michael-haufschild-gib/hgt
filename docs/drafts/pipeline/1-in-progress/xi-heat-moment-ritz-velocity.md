@@ -1,7 +1,7 @@
 # Xi heat-moment Ritz velocity
 
 - **Stage:** 1-in-progress
-- **Type:** CONJECTURE
+- **Type:** THEOREM; generic final source audit pending
 - **Statement:** A stationary or right-moving differentiable generalized eigenvalue branch of the actual finite Xi heat-moment pencil falsifies RH.
 
 ## Source and novelty question
@@ -27,9 +27,13 @@ The same identity holds in any fixed finite polynomial trial space: test the dif
 weak eigenvalue equation against `p`, and the original equation against `p'`.
 No simplicity assumption or monomial basis is required.
 
-## Required audits
+## Lean
 
-- Search for existing generalized heat eigenvalue monotonicity endpoints.
-- Verify the actual heat-moment positivity and derivative inputs in Lean.
-- Prove the exact finite variance identity without assuming spectral simplicity.
-- Formalize the closed existential witness implication to `¬ RiemannHypothesis`.
+- `HilbertMetric/MomentFlow/RitzVelocity.lean`: `ritz_velocity_identity`, `ritz_velocity_neg`.
+- `arithmetic-positivity-theory/MomentFlow/XiRitzVelocity.lean`:
+  `xiHeatRitz_velocity_neg_of_rh`,
+  `not_riemannHypothesis_of_xiHeatRitz_nonnegative_velocity`.
+
+Generic dependency build and actual Xi source audit pass; all printed transitive axioms are
+`propext`, `Classical.choice`, `Quot.sound`. Both modules are wired into their owning umbrellas.
+No umbrella build was run. The generic module still requires its final no-output-file check.

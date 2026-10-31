@@ -101,3 +101,4 @@ import GaloisForLFunctions.HilbertMetric.GaussianHarnack
 import GaloisForLFunctions.HilbertMetric.ProjectiveGramRegularization
 import GaloisForLFunctions.HilbertMetric.CrouzeixEvaluationEnergy
 import GaloisForLFunctions.HilbertMetric.SteinitzEvaluationInverse
+import GaloisForLFunctions.HilbertMetric.MomentFlow.RitzVelocity
