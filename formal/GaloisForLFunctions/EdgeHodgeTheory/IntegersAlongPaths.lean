@@ -114,6 +114,7 @@ theorem hermNegIndex_one : hermNegIndex (1 : Matrix ι ι ℂ) = 0 := by
   rw [h, negIndex_diagonal]
   simp
 
+omit [Fintype ι] in
 theorem straightPath_isHermitian {A : Matrix ι ι ℂ} (hA : A.IsHermitian) (t : ℝ) :
     (straightPath A t).IsHermitian := by
   unfold straightPath Matrix.IsHermitian
@@ -125,9 +126,9 @@ theorem conjTranspose_mul_straightPath_mul {A : Matrix ι ι ℂ} (hA : A.IsHerm
     (hA.eigenvectorUnitary : Matrix ι ι ℂ)ᴴ * straightPath A t *
         (hA.eigenvectorUnitary : Matrix ι ι ℂ) =
       diagonal fun i => (((1 - t) * hA.eigenvalues i + t : ℝ) : ℂ) := by
-  set U : Matrix ι ι ℂ := hA.eigenvectorUnitary
+  set U : Matrix ι ι ℂ := (hA.eigenvectorUnitary : Matrix ι ι ℂ)
   have hU : Uᴴ * U = 1 := by
-    rw [← Matrix.star_eq_conjTranspose]; exact Unitary.coe_star_mul_self _
+    rw [← Matrix.star_eq_conjTranspose]; exact Unitary.coe_star_mul_self hA.eigenvectorUnitary
   have hD := conjTranspose_mul_mul_eigenvectorUnitary hA
   unfold straightPath
   rw [Matrix.mul_add, Matrix.add_mul, Matrix.mul_smul, Matrix.smul_mul, Matrix.mul_smul,

@@ -31,7 +31,7 @@ Answer the questions of §2.6 with unconditional theorems (equivalences, classif
   `hodgeSeparates_iff_not_hasHyperplaneGap`, `hodgeSeparates_liouville`,
   `hodgeSeparates_of_harmonicSum_small`, `hodgeSeparates_primeFlip_iff`, `not_hodgeSeparates_of_correlation`,
   `hodgeSeparates_primeSetFlip_iff`, `hodgeSeparates_cofiniteFlip`, `hodgeSeparatesFrom_iff`,
-  `hodgeSeparates_or_probe_primeSetFlip`.
+  `hodgeSeparates_or_probe_primeSetFlip`, `hodgeSeparates_liouville_mul_primeSetFlip`.
 - Hadamard powers: `isPosDefKernel_mul`, `isPosDefKernel_pow`,
   `riemannHypothesis_iff_isPosDefKernel_zetaKernel_pow`, `negIndex_zetaKernel_le_negIndex_kunnethZeta`,
   `lindelof_of_negIndex_kunnethZeta_lt_top`, `quasiRH_of_negIndex_kunnethZeta_lt_top`,

@@ -44,7 +44,7 @@ The common zero fibre consists exactly of constant packets with matching approxi
 
 ## Scope and novelty
 
-The proof uses existing affine Ramanujan orthogonality and classical Möbius/totient facts. The proposed contribution is their joint, quantitative successor-transversality and pole-preserving dilation inequality, including all mixed packet coefficients and the sharp constant. Corpus searches found the constituent diagonalization, prime-dilation square energy, and gauge successor rigidity, but no such joint estimate.
+The successor Pythagorean identity, sharp three-quarters bound, equality modes three and six, and constant-plus-parity closure classification already belong to `BezoutValuationIncidence.OptimalSuccessorPredictionAndExactPhaseLoss` and `SharpSuccessorPhaseLossAndClosureClassification`. They are foundations, not new results of this programme. The added observation is the exact dyadic pole reading and its joint inequality with successor error. This is an elementary extension; the substantive target is a corresponding bound at finite horizons far shorter than the common period.
 
 This is a complete-period statement. It does not supply a growing-horizon bound when the horizon is shorter than the common period, and it does not identify these positive defects with the complete Weil form. Those transfers remain separate questions.
 

@@ -459,7 +459,8 @@ theorem abs_harmonicSum_liouville_mul_primeSetFlip_le {E : Set ℕ}
       gaugeHarmonicSum (cofiniteFlip (primeSetCutoff E N)) N := by
     unfold gaugeHarmonicSum
     refine Finset.sum_congr rfl fun n hn => ?_
-    rw [cofiniteFlip, primeSetFlip_eq_finiteFlip_of_le E (mem_Icc.mp hn).2]
+    rw [cofiniteFlip]
+    simp only [primeSetFlip_eq_finiteFlip_of_le E (mem_Icc.mp hn).2]
   rw [e]
   refine (cofiniteFlip_harmonicSum_abs_le (primeSetCutoff_primes E N) N).trans ?_
   exact div_le_div_of_nonneg_left (by norm_num) hE (primeSetHarmonicDensity_le_cutoff' E N)

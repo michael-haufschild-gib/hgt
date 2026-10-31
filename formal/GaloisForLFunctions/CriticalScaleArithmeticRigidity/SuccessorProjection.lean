@@ -41,7 +41,7 @@ theorem packetMean_sub (Q : ℕ) (f g : ℕ → ℝ) :
 
 theorem packetMean_sq_nonneg (Q : ℕ) (f : ℕ → ℝ) :
     0 ≤ packetMean Q (fun n => f n ^ 2) :=
-  div_nonneg (sum_nonneg fun n _ => sq_nonneg _) (Nat.cast_nonneg _)
+  div_nonneg (sum_nonneg fun _ _ => sq_nonneg _) (Nat.cast_nonneg _)
 
 /-- Dilation reaches the constant conductor exactly from divisors of its multiplier. -/
 theorem packetMean_dilate (Q : ℕ) (a : ℕ → ℝ) (k : ℕ) :
@@ -176,7 +176,8 @@ theorem packetMean_shift_error_eq_projection_add_leakage
   have hphi : (m.totient : ℝ) ≠ 0 := by
     exact_mod_cast (Nat.totient_pos.mpr (mem_Icc.mp hm).1).ne'
   unfold shiftProjection shiftLeakageWeight sieveLagMultiplier
-  field_simp [hphi] <;> ring
+  field_simp [hphi]
+  ring
 
 /-- Every conductor approximation pays the exact transverse energy. -/
 theorem packetMean_shift_error_ge_leakage (Q : ℕ) (a b : ℕ → ℝ) (h : ℕ) :
