@@ -2,6 +2,7 @@ import GaloisForLFunctions.RenormalizedIntersectionTheory.TheKunnethSquareOfWeil
 import GaloisForLFunctions.HeckeKreinToeplitz.TheWeilKernelIsKreinLangerOnTheFiniteStratum
 import GaloisForLFunctions.HeckeKreinToeplitz.LogarithmicCharactersAndTheArithmeticIndexFormula
 import GaloisForLFunctions.ArithmeticKreinLangerTheory.TheCollisionMassIsTheWaveNumber
+import GaloisForLFunctions.HeckeKreinToeplitz.TheIndexUnderRotationDampingAndCoalescence
 
 /-!
 # The Hadamard powers of Weil's kernel
@@ -112,6 +113,7 @@ open scoped ComplexConjugate
 open Zeta23
 open GaloisForLFunctions.ArithmeticCastelnuovoSeveri (cx rightZeros)
 open GaloisForLFunctions.BiScaleUncertainty.ChebyshevGauge (cubicSpline)
+open GaloisForLFunctions.SquareRootThreshold (temperedConfig_zetaZeroConfig)
 
 /-- **Every off-line zero carries a positive square.** On the finite stratum the positive index of
 Weil's kernel is at least its negative index. -/
@@ -126,10 +128,13 @@ theorem negIndex_zetaKernel_le_posIndex (hR : (rightZeros zetaZeroConfig).Finite
       cubicSpline_mem_realTests hR u
   -- the negated pairs are the on-line part plus `−K_ζ`
   set P : HeckeLattice → ℂ := fun u => ∑ ρ ∈ R, pairKernel (zeroChar (conj ρ)) (-conj (W ρ)) u
+  have hpair : ∀ (χ : HeckeLattice →* ℂ) (ω : ℂ) (u : HeckeLattice),
+      pairKernel χ (-ω) u = -pairKernel χ ω u := fun χ ω u => by
+    simp only [pairKernel, map_neg]; ring
   have hP : P = fun u => Kon u + -zetaKernel u := by
     funext u
     rw [hdec u]
-    simp only [P, pairKernel, map_neg, neg_mul, sum_add_distrib, sum_neg_distrib]
+    simp only [P, hpair, Finset.sum_neg_distrib]
     ring
   have hle : negIndex P ≤ posIndex zetaKernel := by
     rw [hP, posIndex]
@@ -144,14 +149,13 @@ theorem negIndex_zetaKernel_le_posIndex (hR : (rightZeros zetaZeroConfig).Finite
         have hm := (hR.mem_toFinset.mp (e j).2)
         simpa only [Complex.conj_re] using hm.2)
       (fun j => -conj (W (e j)))
-      (fun j => neg_ne_zero.mpr ((map_ne_zero _).mpr
+      (fun j => neg_ne_zero.mpr ((_root_.map_ne_zero _).mpr
         (ArithmeticKreinLangerTheory.Wsummand_ne_zero_of_rightZero (hR.mem_toFinset.mp (e j).2))))
     rw [← h]
     congr 1
     funext u
-    simp only [Pi.zero_apply, zero_add, P, conj_conj]
+    simp only [zero_add, P]
     rw [← R.sum_coe_sort, ← e.sum_comp]
-    rfl
   rw [negIndex_zetaKernel, hR.encard_eq_coe_toFinset_card, ← hcard]
   exact hle
 
@@ -162,7 +166,7 @@ theorem sq_negIndex_zetaKernel_le_negIndex_kunnethZeta :
   · have hκ : negIndex zetaKernel = (hR.toFinset.card : ℕ∞) := by
       rw [negIndex_zetaKernel, hR.encard_eq_coe_toFinset_card]
     set k := hR.toFinset.card
-    have hpos := (negIndex_zetaKernel_le_posIndex hR).trans_eq' hκ.symm
+    have hpos : (k : ℕ∞) ≤ posIndex zetaKernel := hκ ▸ negIndex_zetaKernel_le_posIndex hR
     rw [hκ]
     rcases Nat.eq_zero_or_pos k with hk | hk
     · simp [hk]
@@ -187,8 +191,9 @@ theorem sq_negIndex_zetaKernel_le_negIndex_kunnethZeta :
     exact_mod_cast le_add_right (Nat.mul_le_mul hx hy)
   · have htop : negIndex zetaKernel = ⊤ := by
       rw [negIndex_zetaKernel]; exact Set.encard_eq_top_iff.mpr hR
-    rw [htop, top_mul (by simp), top_le_iff, ← top_le_iff, ← htop]
-    exact negIndex_zetaKernel_le_negIndex_kunnethZeta
+    have h := negIndex_zetaKernel_le_negIndex_kunnethZeta
+    rw [htop] at h ⊢
+    exact le_top.trans h
 
 end Neutral
 

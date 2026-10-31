@@ -421,7 +421,7 @@ Each item is a mechanism that would create positivity or precision from structur
   - Every Hermitian kernel on `Aff(ℚ)` with a nonzero integer-Haar multiple and dilation reading continuous at one has infinite negative index. The zero-axis polynomial correction removes any integer-period defect before the cyclic Gram-limit argument. Extension by zero gives the same obstruction on `Aff⁺(ℚ)`. [Lean theorems and verification boundary](../../drafts/pipeline/1-in-progress/cyclic-haar-averages-force-infinite-index-at-continuous-dilations.md).
   - The Bost–Connes states are PD for β > 1 with Hecke exponent β/2 [S], and at s = 1/2 the Hecke state is the Haar state [L].
 - **Adelic obstruction:** on `ℚ⁺ ⋉ (ℝ × 𝔸_f)`, with rational scalars acting on both components, the actual nonzero finite-adelic Haar overlap coefficient and pure Weil dilation reading cannot coexist at finite index. The Haar integral and rational-affine restriction are formalized in `AdelicKreinGeometry/Haar/FiniteAdelicReading.lean` and `AdelicObstruction.lean`.
-- **Remaining positive survivor:** the canonical positive Haar, slope, and zero-axis polynomial decomposition, with its exact residual index, remains to be formalized.
+- **Positive survivor:** the [unique positive Haar, slope, and zero-axis polynomial decomposition](../../drafts/pipeline/3-formalized/finite-index-haar-carriers-split-modulo-polynomial-kernels.md) is formalized, with `κ(k)=κ(ψ∘slope+Q)≥κ(ψ)`. Sharp punctured-limit and subgroup boundary papers still await Lean audits.
 
 ## 2.6 Does crossing the walls need a new field?
 

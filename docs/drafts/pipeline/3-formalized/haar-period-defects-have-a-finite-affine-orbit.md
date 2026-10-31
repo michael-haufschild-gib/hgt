@@ -3,7 +3,7 @@
 - **ID:** HAAR-PERIOD-DEFECT-AFFINE-ORBIT
 - **Stage:** 3-formalized
 - **Type:** THEOREM (Lean verified)
-- **Parent:** [Relative Haar splitting](../1-in-progress/finite-index-haar-carriers-split-modulo-polynomial-kernels.md)
+- **Parent:** [Relative Haar splitting](finite-index-haar-carriers-split-modulo-polynomial-kernels.md)
 - **Statement:** For a Hermitian affine kernel with period-one translation reading and negative index at most `r`, the affine orbit of the period defect `v_(T_1)−v_1` spans a finite-dimensional invariant space `S`, with `dim S≤r²`. In particular, this applies to every integer Haar successor.
 
 ## Dependency-closed paper proof

@@ -3,7 +3,7 @@
 - **ID:** AFFINE-CANONICAL-POLYNOMIAL-CORRECTION
 - **Stage:** 3-formalized
 - **Type:** THEOREM
-- **Parent:** [Relative Haar splitting](../1-in-progress/finite-index-haar-carriers-split-modulo-polynomial-kernels.md)
+- **Parent:** [Relative Haar splitting](finite-index-haar-carriers-split-modulo-polynomial-kernels.md)
 - **Statement:** Every Hermitian finite-index affine kernel with period-one translation reading has a unique polynomial-fibre kernel `Q`, zero on dilations, such that `k−Q` is right invariant under integer translations. This `Q` is Hermitian, has finite column rank, and vanishes on translations. Consequently `k−Q` is Hermitian of finite negative index and invariant under integer translations on both sides, with both axis readings unchanged.
 
 ## Construction

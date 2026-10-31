@@ -3,7 +3,7 @@
 - **ID:** HAAR-BIINTEGER-POSITIVE-SLOPE-SPLITTING
 - **Stage:** 3-formalized
 - **Type:** THEOREM
-- **Parent:** [Relative Haar splitting](../1-in-progress/finite-index-haar-carriers-split-modulo-polynomial-kernels.md)
+- **Parent:** [Relative Haar splitting](finite-index-haar-carriers-split-modulo-polynomial-kernels.md)
 - **Statement:** Every Hermitian finite-index affine kernel `k` with integer Haar successor and invariance under integer translations on both sides admits a unique decomposition `k=p+ψ∘slope`, with `p` positive definite and having the same successor, and `ψ` Hermitian. The existing exact index law then gives `κ(k)=κ(ψ)`.
 
 ## Positivity of the moving subspaces

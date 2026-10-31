@@ -2429,6 +2429,9 @@ private lemma tsum_abs_thetaCuspSourceTerm_neg_le_exp_two {x : ℝ} (hx : 0 ≤ 
 thetaCuspFullSource` at fixed `κ > 0`. -/
 private lemma tendsto_partitionSymStripIntegral (r : ℕ) {κ : ℝ} (hκ : 0 < κ) {R : ℝ}
     (_hR : 0 ≤ R) :
+    (∀ N : ℕ, Integrable (fun x : ℝ =>
+      |x| ^ r * |partitionSymThetaSource N κ x - _root_.RHTower.thetaCuspFullSource x| *
+        Real.exp ((R + 1 / 2) * |x|))) ∧
     Tendsto (fun N : ℕ => ∫ x : ℝ,
       |x| ^ r * |partitionSymThetaSource N κ x - _root_.RHTower.thetaCuspFullSource x| *
         Real.exp ((R + 1 / 2) * |x|)) atTop (𝓝 0) := by
@@ -2641,14 +2644,17 @@ private lemma tendsto_partitionSymStripIntegral (r : ℕ) {κ : ℝ} (hκ : 0 < 
           (by dsimp [C₂]; positivity)) (Real.exp_pos _).le)
     rw [habs_rhs, hb_eq, add_mul]
     exact add_le_add hp1 hp2
+  have haesm : ∀ N : ℕ, AEStronglyMeasurable (fun x : ℝ =>
+      |x| ^ r * |partitionSymThetaSource N κ x - _root_.RHTower.thetaCuspFullSource x| *
+        Real.exp ((R + 1 / 2) * |x|)) := fun N =>
+    (((continuous_abs.pow r).mul
+      (((contDiff_partitionSymThetaSource N κ).continuous.sub
+        _root_.RHTower.contDiff_thetaCuspFullSource.continuous).abs)).mul
+      (Real.continuous_exp.comp (continuous_const.mul continuous_abs))).aestronglyMeasurable
+  refine ⟨fun N => Integrable.mono' hbound_int (haesm N) (Eventually.of_forall (hpt_dom N)), ?_⟩
   simpa only [integral_zero] using
-    tendsto_integral_of_dominated_convergence bound
-      (fun N => by
-        refine (((continuous_abs.pow r).mul
-          (((contDiff_partitionSymThetaSource N κ).continuous.sub
-            _root_.RHTower.contDiff_thetaCuspFullSource.continuous).abs)).mul
-          (Real.continuous_exp.comp (continuous_const.mul continuous_abs))).aestronglyMeasurable)
-      hbound_int hpt_dom (Eventually.of_forall hpt_tendsto)
+    tendsto_integral_of_dominated_convergence bound haesm hbound_int hpt_dom
+      (Eventually.of_forall hpt_tendsto)
 
 /-- **Uniform vertical-strip convergence of `partitionSymThetaAmplitude N κ → xi` and
 `-partitionSymThetaFirstMoment N κ → deriv xi` at any fixed `κ > 0`.** -/
@@ -2657,9 +2663,10 @@ theorem tendsto_partitionSymThetaAmplitude_xi_strip {κ : ℝ} (hκ : 0 < κ) {R
     ∀ᶠ N : ℕ in atTop, ∀ z : ℂ, |z.re| ≤ R →
       ‖partitionSymThetaAmplitude N κ z - _root_.RHTower.xi z‖ < ε ∧
       ‖-partitionSymThetaFirstMoment N κ z - deriv _root_.RHTower.xi z‖ < ε := by
-  have ht0 := (tendsto_partitionSymStripIntegral 0 hκ hR).eventually (gt_mem_nhds hε)
-  have ht1 := (tendsto_partitionSymStripIntegral 1 hκ hR).eventually (gt_mem_nhds hε)
-  filter_upwards [ht0, ht1] with N hN0 hN1 z hz
+  obtain ⟨hint0, htend0⟩ := tendsto_partitionSymStripIntegral 0 hκ hR
+  obtain ⟨hint1, htend1⟩ := tendsto_partitionSymStripIntegral 1 hκ hR
+  filter_upwards [htend0.eventually (gt_mem_nhds hε), htend1.eventually (gt_mem_nhds hε)]
+    with N hN0 hN1 z hz
   have hre : ∀ x : ℝ, ‖Complex.exp (((1 / 2 : ℂ) - z) * (x : ℂ))‖ ≤
       Real.exp ((R + 1 / 2) * |x|) := by
     intro x
@@ -2672,9 +2679,8 @@ theorem tendsto_partitionSymThetaAmplitude_xi_strip {κ : ℝ} (hκ : 0 < κ) {R
     rw [he]
     exact (le_abs_self _).trans ((abs_mul _ _).trans_le
       (mul_le_mul_of_nonneg_right h1 (abs_nonneg x)))
-  -- Amplitude difference bound.
-  have hamp_lt : ‖partitionSymThetaAmplitude N κ z - _root_.RHTower.xi z‖ < ε := by
-    rw [← bilateral_fullTheta_eq_xi]
+  constructor
+  · rw [← bilateral_fullTheta_eq_xi]
     have hpj : Integrable (fun x : ℝ =>
         (partitionSymThetaSource N κ x : ℂ) * Complex.exp (((1 / 2 : ℂ) - z) * (x : ℂ))) := by
       simpa only [pow_zero, one_mul, iteratedDeriv_zero] using
@@ -2688,16 +2694,975 @@ theorem tendsto_partitionSymThetaAmplitude_xi_strip {κ : ℝ} (hκ : 0 < κ) {R
     unfold partitionSymThetaAmplitude _root_.RHTower.bilateralLaplace
     simp only [_root_.RHTower.thetaCuspTiltSource_k]
     rw [← integral_sub hpj hfull]
-    have hmaj_int : Integrable (fun x : ℝ =>
-        |x| ^ 0 * |partitionSymThetaSource N κ x - _root_.RHTower.thetaCuspFullSource x| *
-          Real.exp ((R + 1 / 2) * |x|)) := by
-      -- Sum of the two individual norms is integrable.
-      refine (((hpj.sub hfull).norm).mono'
-        (((continuous_abs.pow 0).mul
-          (((contDiff_partitionSymThetaSource N κ).continuous.sub
-            _root_.RHTower.contDiff_thetaCuspFullSource.continuous).abs)).mul
-          (Real.continuous_exp.comp (continuous_const.mul continuous_abs))).aestronglyMeasurable
-        ?_).elim_left ?_ |> fun h => h
-      all_goals sorry
-  sorry
+    have hpt : ∀ x : ℝ,
+        ‖(partitionSymThetaSource N κ x : ℂ) * Complex.exp (((1 / 2 : ℂ) - z) * (x : ℂ)) -
+            (_root_.RHTower.thetaCuspFullSource x : ℂ) *
+              Complex.exp (((1 / 2 : ℂ) - z) * (x : ℂ))‖ ≤
+          |x| ^ 0 * |partitionSymThetaSource N κ x - _root_.RHTower.thetaCuspFullSource x| *
+            Real.exp ((R + 1 / 2) * |x|) := by
+      intro x
+      have hf : (partitionSymThetaSource N κ x : ℂ) * Complex.exp (((1 / 2 : ℂ) - z) * (x : ℂ)) -
+          (_root_.RHTower.thetaCuspFullSource x : ℂ) * Complex.exp (((1 / 2 : ℂ) - z) * (x : ℂ)) =
+          ((partitionSymThetaSource N κ x - _root_.RHTower.thetaCuspFullSource x : ℝ) : ℂ) *
+            Complex.exp (((1 / 2 : ℂ) - z) * (x : ℂ)) := by push_cast; ring
+      rw [hf, norm_mul, Complex.norm_real, Real.norm_eq_abs, pow_zero, one_mul]
+      exact mul_le_mul_of_nonneg_left (hre x) (abs_nonneg _)
+    exact (norm_integral_le_integral_norm _).trans_lt
+      ((integral_mono (hpj.sub hfull).norm (hint0 N) hpt).trans_lt hN0)
+  · have hrew : -partitionSymThetaFirstMoment N κ z - deriv _root_.RHTower.xi z =
+        thetaSourceFirstMoment z - partitionSymThetaFirstMoment N κ z := by
+      rw [thetaSourceFirstMoment_eq_neg_deriv_xi]; ring
+    rw [hrew, thetaSourceFirstMoment, partitionSymThetaFirstMoment]
+    have hfull1 : Integrable (fun x : ℝ =>
+        (x : ℂ) * (_root_.RHTower.thetaCuspFullSource x : ℂ) *
+          Complex.exp (((1 / 2 : ℂ) - z) * (x : ℂ))) := by
+      simpa only [pow_one, _root_.RHTower.thetaCuspTiltSource_k] using
+        _root_.RHTower.thetaCuspTiltSource.integrable_mul_exp ((1 / 2 : ℂ) - z) 1
+    have hpj1 : Integrable (fun x : ℝ =>
+        (x : ℂ) * (partitionSymThetaSource N κ x : ℂ) *
+          Complex.exp (((1 / 2 : ℂ) - z) * (x : ℂ))) := by
+      simpa only [pow_one, iteratedDeriv_zero] using
+        integrable_iteratedDeriv_partitionSym_mul_cexp N 0 hκ 1 z
+    rw [← integral_sub hfull1 hpj1]
+    have hpt1 : ∀ x : ℝ,
+        ‖(x : ℂ) * (_root_.RHTower.thetaCuspFullSource x : ℂ) *
+              Complex.exp (((1 / 2 : ℂ) - z) * (x : ℂ)) -
+            (x : ℂ) * (partitionSymThetaSource N κ x : ℂ) *
+              Complex.exp (((1 / 2 : ℂ) - z) * (x : ℂ))‖ ≤
+          |x| ^ 1 * |partitionSymThetaSource N κ x - _root_.RHTower.thetaCuspFullSource x| *
+            Real.exp ((R + 1 / 2) * |x|) := by
+      intro x
+      have hf : (x : ℂ) * (_root_.RHTower.thetaCuspFullSource x : ℂ) *
+            Complex.exp (((1 / 2 : ℂ) - z) * (x : ℂ)) -
+          (x : ℂ) * (partitionSymThetaSource N κ x : ℂ) *
+            Complex.exp (((1 / 2 : ℂ) - z) * (x : ℂ)) =
+          (x : ℂ) *
+            ((_root_.RHTower.thetaCuspFullSource x - partitionSymThetaSource N κ x : ℝ) : ℂ) *
+            Complex.exp (((1 / 2 : ℂ) - z) * (x : ℂ)) := by push_cast; ring
+      rw [hf, norm_mul, norm_mul, Complex.norm_real, Complex.norm_real,
+        Real.norm_eq_abs, Real.norm_eq_abs, abs_sub_comm, pow_one]
+      exact mul_le_mul_of_nonneg_left (hre x) (by positivity)
+    exact (norm_integral_le_integral_norm _).trans_lt
+      ((integral_mono (hfull1.sub hpj1).norm (hint1 N) hpt1).trans_lt hN1)
+
+/-- Window contour power sums of the Gaussian-partitioned Poisson–Jacobi prefix `(N, κ)`. -/
+def partitionSymWindowPowerSum (T : ℝ) (n N : ℕ) (κ : ℝ) (r : ℕ) : ℂ :=
+  (2 * Real.pi * I)⁻¹ *
+    _root_.RHTower.rectIntegral
+      (fun z => z ^ r *
+        (-partitionSymThetaFirstMoment N κ z / partitionSymThetaAmplitude N κ z))
+      (thetaWindowLowerLeft n) (thetaWindowUpperRight T n)
+
+/-- Window degree of the Gaussian-partitioned Poisson–Jacobi prefix `(N, κ)`. -/
+def partitionSymWindowDegree (T : ℝ) (n N : ℕ) (κ : ℝ) : ℕ :=
+  Nat.floor ((partitionSymWindowPowerSum T n N κ 0).re + 1 / 2)
+
+/-- Newton–Girard pair-difference polynomial of the Gaussian-partitioned prefix `(N, κ)`. -/
+def partitionSymDifferencePoly (T : ℝ) (n N : ℕ) (κ : ℝ) : Polynomial ℂ :=
+  pairDiffPoly (partitionSymWindowDegree T n N κ) (partitionSymWindowPowerSum T n N κ)
+
+/-- Base circle loop of the Gaussian-partitioned prefix `(N, κ)`. -/
+def partitionSymBaseLoop (T : ℝ) (n N : ℕ) (κ : ℝ) : C(HTGeometry.UnitCircle, ℂ) where
+  toFun u := (partitionSymDifferencePoly T n N κ).eval (zhukovskyLoop n u)
+  continuous_toFun :=
+    (partitionSymDifferencePoly T n N κ).continuous.comp (zhukovskyLoop n).continuous
+
+/-- Squared Zhukovsky Laurent loop of the Gaussian-partitioned prefix `(N, κ)`. -/
+def partitionSymLaurentLoop (T : ℝ) (n N : ℕ) (κ : ℝ) : C(HTGeometry.UnitCircle, ℂ) :=
+  partitionSymBaseLoop T n N κ ^ 2
+
+/-- Unimodular circle symbol of the Gaussian-partitioned prefix `(N, κ)`. -/
+def partitionSymCollisionSymbol (T : ℝ) (n N : ℕ) (κ : ℝ) : C(HTGeometry.UnitCircle, ℂ) :=
+  unitNormalizeSymbol (partitionSymLaurentLoop T n N κ)
+
+/-- Wiener–Hopf collision operator on `L²(ℝ)` attached to `(N, κ)`. -/
+def partitionSymCollisionOperator (T : ℝ) (n N : ℕ) (κ : ℝ) :
+    HTGeometry.L2Real →L[ℂ] HTGeometry.L2Real :=
+  HTGeometry.wienerHopfLift (partitionSymCollisionSymbol T n N κ)
+
+private lemma partitionSymWindowPowerSum_zero_is_int (T : ℝ) (n N : ℕ) {κ : ℝ} (hκ : 0 < κ)
+    (hne : ∀ t : ℝ, partitionSymThetaAmplitude N κ
+      (_root_.RHTower.rectangleBoundaryPath
+        (thetaWindowLowerLeft n) (thetaWindowUpperRight T n) t) ≠ 0) :
+    ∃ k : ℤ, partitionSymWindowPowerSum T n N κ 0 = (k : ℂ) := by
+  let D : _root_.RHTower.RectangleArgumentDatum :=
+    { F := partitionSymThetaAmplitude N κ
+      z₁ := thetaWindowLowerLeft n
+      z₂ := thetaWindowUpperRight T n
+      U := Set.univ
+      isOpen := isOpen_univ
+      differentiableOn := (differentiable_partitionSymThetaAmplitude N hκ).differentiableOn
+      path_mem := fun _ => Set.mem_univ _
+      ne_zero := hne }
+  obtain ⟨k, hk⟩ := D.toPhase.windingNumber_eq_intCast
+  refine ⟨k, ?_⟩
+  rw [D.windingNumber_toPhase] at hk
+  have hfun : (fun z : ℂ => z ^ 0 *
+        (-partitionSymThetaFirstMoment N κ z / partitionSymThetaAmplitude N κ z)) =
+      logDeriv (partitionSymThetaAmplitude N κ) := by
+    funext z
+    rw [pow_zero, one_mul, logDeriv_apply, (hasDerivAt_partitionSymThetaAmplitude N hκ z).deriv]
+  unfold partitionSymWindowPowerSum
+  rw [hfun]
+  simpa [D] using hk
+
+private lemma continuous_neg_partitionSymThetaFirstMoment (N : ℕ) {κ : ℝ} (hκ : 0 < κ) :
+    Continuous (fun z : ℂ => -partitionSymThetaFirstMoment N κ z) := by
+  have heq : (fun z : ℂ => -partitionSymThetaFirstMoment N κ z) =
+      deriv (partitionSymThetaAmplitude N κ) :=
+    funext fun z => ((hasDerivAt_partitionSymThetaAmplitude N hκ z).deriv).symm
+  rw [heq]
+  exact continuous_iff_continuousAt.mpr fun z =>
+    (((differentiable_partitionSymThetaAmplitude N hκ).differentiableOn.analyticOnNhd
+      isOpen_univ) z (Set.mem_univ z)).deriv.continuousAt
+
+private lemma boundary_re_abs_le_two (T : ℝ) (n : ℕ) (t : ℝ) :
+    |(_root_.RHTower.rectangleBoundaryPath
+        (thetaWindowLowerLeft n) (thetaWindowUpperRight T n) t).re| ≤ 2 := by
+  have hmem := _root_.RHTower.rectangleBoundaryPath_mem_reProdIm
+    (thetaWindowLowerLeft n) (thetaWindowUpperRight T n)
+    (thetaWindow_re_le T n) (thetaWindow_im_le T n) t
+  rw [uIcc_of_le (thetaWindow_re_le T n), Complex.mem_reProdIm,
+    thetaWindowLowerLeft_re, thetaWindowUpperRight_re] at hmem
+  exact abs_le.mpr ⟨by linarith [hmem.1.1], by linarith [hmem.1.2]⟩
+
+private lemma boundary_xi_ne_zero {T : ℝ} {n : ℕ} (hn : thetaWindowScale T ≤ n) (t : ℝ) :
+    _root_.RHTower.xi
+      (_root_.RHTower.rectangleBoundaryPath
+        (thetaWindowLowerLeft n) (thetaWindowUpperRight T n) t) ≠ 0 := by
+  intro hz0
+  set γt := _root_.RHTower.rectangleBoundaryPath
+    (thetaWindowLowerLeft n) (thetaWindowUpperRight T n) t
+  have hmemRect := _root_.RHTower.rectangleBoundaryPath_mem_reProdIm
+    (thetaWindowLowerLeft n) (thetaWindowUpperRight T n)
+    (thetaWindow_re_le T n) (thetaWindow_im_le T n) t
+  have hmemBox : γt ∈ thetaWindowOpenBox T n := thetaWindowRect_subset_openBox T n hmemRect
+  have hmemZ := xi_zero_in_openBox_mem_stripZeros hn hmemBox hz0
+  obtain ⟨h1, h2, h3, h4⟩ := stripZeros_strictly_inside_thetaWindow hn hmemZ
+  unfold _root_.RHTower.rectangleBoundaryPath _root_.RHTower.rectangleEdgePath at *
+  split_ifs at h1 h2 h3 h4
+  · exact h3.ne' (by simp [γt, _root_.RHTower.rectangleBoundaryPath,
+      _root_.RHTower.rectangleEdgePath, *])
+  · exact h2.ne (by simp [γt, _root_.RHTower.rectangleBoundaryPath,
+      _root_.RHTower.rectangleEdgePath, *])
+  · exact h4.ne (by simp [γt, _root_.RHTower.rectangleBoundaryPath,
+      _root_.RHTower.rectangleEdgePath, *])
+  · exact h1.ne' (by simp [γt, _root_.RHTower.rectangleBoundaryPath,
+      _root_.RHTower.rectangleEdgePath, *])
+
+/-- Convergence `N → ∞` of `partitionSymWindowPowerSum T n N κ r` to the exact `xi` power sum at
+any fixed `κ > 0`. -/
+theorem tendsto_partitionSymWindowPowerSum (T : ℝ) {n : ℕ} (hn : thetaWindowScale T ≤ n)
+    {κ : ℝ} (hκ : 0 < κ) (r : ℕ) :
+    Tendsto (fun N : ℕ => partitionSymWindowPowerSum T n N κ r) atTop
+      (𝓝 (∑ w ∈ (_root_.RHTower.stripZeros_finite T).toFinset,
+        ((analyticOrderAt _root_.RHTower.xi w).toNat : ℂ) * w ^ r)) := by
+  rw [← xi_rectIntegral_powerSum_eq_stripZeros_sum T hn r]
+  unfold partitionSymWindowPowerSum
+  refine Tendsto.const_mul _ ?_
+  set z₁ := thetaWindowLowerLeft n
+  set z₂ := thetaWindowUpperRight T n
+  set γ := _root_.RHTower.rectangleBoundaryPath z₁ z₂
+  set vel := _root_.RHTower.rectangleBoundaryVelocity z₁ z₂
+  have hγ_cont : Continuous γ := _root_.RHTower.continuous_rectangleBoundaryPath z₁ z₂
+  have hxi_cont : Continuous (fun t : ℝ => ‖_root_.RHTower.xi (γ t)‖) :=
+    (_root_.RHTower.xi_differentiable.continuous.comp hγ_cont).norm
+  obtain ⟨t₀, _, ht₀⟩ := isCompact_Icc.exists_isMinOn
+    (nonempty_Icc.mpr (zero_le_one : (0 : ℝ) ≤ 1)) hxi_cont.continuousOn
+  set μ : ℝ := ‖_root_.RHTower.xi (γ t₀)‖
+  have hμ : 0 < μ := norm_pos_iff.mpr (boundary_xi_ne_zero hn t₀)
+  have hmin : ∀ t : ℝ, μ ≤ ‖_root_.RHTower.xi (γ t)‖ := by
+    intro t
+    have hper : γ (Int.fract t) = γ t := by
+      simp [γ, _root_.RHTower.rectangleBoundaryPath, Int.fract_fract]
+    rw [← hper]
+    exact isMinOn_iff.mp ht₀ (Int.fract t) ⟨Int.fract_nonneg t, (Int.fract_lt_one t).le⟩
+  have hxi_deriv_cont : Continuous (deriv _root_.RHTower.xi) :=
+    continuousOn_univ.mp
+      ((_root_.RHTower.xi_differentiable.differentiableOn.deriv isOpen_univ).continuousOn)
+  obtain ⟨B_pow, hB_pow⟩ := isCompact_Icc.exists_bound_of_continuousOn
+    (hγ_cont.pow r).continuousOn
+  obtain ⟨B_xi, hB_xi⟩ := isCompact_Icc.exists_bound_of_continuousOn
+    (_root_.RHTower.xi_differentiable.continuous.comp hγ_cont).continuousOn
+  obtain ⟨B_dxi, hB_dxi⟩ := isCompact_Icc.exists_bound_of_continuousOn
+    (hxi_deriv_cont.comp hγ_cont).continuousOn
+  set M_pow : ℝ := max 1 B_pow
+  set M_xi : ℝ := max 1 B_xi
+  set M_dxi : ℝ := max 1 B_dxi
+  set L_vel : ℝ := 4 * (|z₂.re - z₁.re| + |z₂.im - z₁.im|)
+  have hM_pow_pos : 0 < M_pow := lt_of_lt_of_le zero_lt_one (le_max_left 1 B_pow)
+  have hM_dxi_pos : 0 < M_dxi := lt_of_lt_of_le zero_lt_one (le_max_left 1 B_dxi)
+  have hL_vel_nonneg : 0 ≤ L_vel := by positivity
+  have hxi_logDeriv_cont : Continuous (fun t : ℝ => (γ t) ^ r * logDeriv _root_.RHTower.xi (γ t)) :=
+    (hγ_cont.pow r).mul
+      ((hxi_deriv_cont.comp hγ_cont).div
+        (_root_.RHTower.xi_differentiable.continuous.comp hγ_cont)
+        (boundary_xi_ne_zero hn))
+  rw [← _root_.RHTower.integral_rectangleBoundary_eq_rectIntegral z₁ z₂ _ hxi_logDeriv_cont,
+    Metric.tendsto_atTop]
+  intro ε hε
+  set K_lip : ℝ := M_pow * ((M_xi + M_dxi + μ) / (μ ^ 2 / 2)) * (L_vel + 1)
+  have hK_lip_pos : 0 < K_lip := by positivity
+  set δ_err : ℝ := min (μ / 2) (ε / (2 * K_lip))
+  have hδ_pos : 0 < δ_err := lt_min (half_pos hμ) (by positivity)
+  obtain ⟨N₀, hN₀⟩ := eventually_atTop.mp
+    (tendsto_partitionSymThetaAmplitude_xi_strip hκ (by norm_num : (0 : ℝ) ≤ 2) hδ_pos)
+  refine ⟨N₀, fun N hN => ?_⟩
+  have hbd_all := fun t : ℝ => hN₀ N hN (γ t) (boundary_re_abs_le_two T n t)
+  have hamp_lower : ∀ t : ℝ, μ / 2 ≤ ‖partitionSymThetaAmplitude N κ (γ t)‖ := by
+    intro t
+    have h1 := hmin t
+    have h2 := (hbd_all t).1.trans_le (min_le_left _ _)
+    have htri := norm_sub_norm_le (_root_.RHTower.xi (γ t)) (partitionSymThetaAmplitude N κ (γ t))
+    rw [norm_sub_rev] at htri
+    linarith
+  have hamp_nz : ∀ t : ℝ, partitionSymThetaAmplitude N κ (γ t) ≠ 0 := by
+    intro t h0; have h := hamp_lower t; rw [h0, norm_zero] at h; linarith
+  let gN : ℂ → ℂ := fun z => z ^ r *
+    (-partitionSymThetaFirstMoment N κ z / partitionSymThetaAmplitude N κ z)
+  have hgN_cont : Continuous (fun t : ℝ => gN (γ t)) :=
+    (hγ_cont.pow r).mul
+      (((continuous_neg_partitionSymThetaFirstMoment N hκ).comp hγ_cont).div
+        (((differentiable_partitionSymThetaAmplitude N hκ).continuous).comp hγ_cont)
+        hamp_nz)
+  rw [← _root_.RHTower.integral_rectangleBoundary_eq_rectIntegral z₁ z₂ gN hgN_cont,
+    dist_eq_norm]
+  have hIntN := _root_.RHTower.intervalIntegrable_mul_rectangleBoundaryVelocity z₁ z₂ hgN_cont 0 1
+  have hIntXi := _root_.RHTower.intervalIntegrable_mul_rectangleBoundaryVelocity
+    z₁ z₂ hxi_logDeriv_cont 0 1
+  rw [← intervalIntegral.integral_sub hIntN hIntXi]
+  have hpt : ∀ t ∈ uIoc (0 : ℝ) 1,
+      ‖gN (γ t) * vel t - ((γ t) ^ r * logDeriv _root_.RHTower.xi (γ t)) * vel t‖ ≤
+        K_lip * δ_err := by
+    intro t ht
+    have htIcc : t ∈ Icc (0 : ℝ) 1 :=
+      Ioc_subset_Icc_self (by rwa [uIoc_of_le zero_le_one] at ht)
+    have hxi_nz : _root_.RHTower.xi (γ t) ≠ 0 := boundary_xi_ne_zero hn t
+    have hpow_le : ‖(γ t) ^ r‖ ≤ M_pow := (hB_pow t htIcc).trans (le_max_right 1 B_pow)
+    have hxi_le : ‖_root_.RHTower.xi (γ t)‖ ≤ M_xi :=
+      (hB_xi t htIcc).trans (le_max_right 1 B_xi)
+    have hdxi_le : ‖deriv _root_.RHTower.xi (γ t)‖ ≤ M_dxi :=
+      (hB_dxi t htIcc).trans (le_max_right 1 B_dxi)
+    have hvel_le : ‖vel t‖ ≤ L_vel + 1 :=
+      (_root_.RHTower.norm_rectangleBoundaryVelocity_le z₁ z₂ t).trans (by linarith)
+    set A_N := -partitionSymThetaFirstMoment N κ (γ t)
+    set B_N := partitionSymThetaAmplitude N κ (γ t)
+    set A := deriv _root_.RHTower.xi (γ t)
+    set B := _root_.RHTower.xi (γ t)
+    have hquot : A_N / B_N - A / B = ((A_N - A) * B + A * (B - B_N)) / (B_N * B) := by
+      rw [div_sub_div _ _ (hamp_nz t) hxi_nz]; congr 1; ring
+    have hdenom_pos : 0 < μ ^ 2 / 2 := by positivity
+    have hdenom_le : μ ^ 2 / 2 ≤ ‖B_N * B‖ := by
+      rw [norm_mul]
+      calc μ ^ 2 / 2 = (μ / 2) * μ := by ring
+        _ ≤ ‖B_N‖ * ‖B‖ := mul_le_mul (hamp_lower t) (hmin t) (by positivity) (norm_nonneg _)
+    have hnum_le : ‖(A_N - A) * B + A * (B - B_N)‖ ≤ (M_xi + M_dxi + μ) * δ_err := by
+      calc ‖(A_N - A) * B + A * (B - B_N)‖
+          ≤ ‖A_N - A‖ * ‖B‖ + ‖A‖ * ‖B_N - B‖ := by
+            refine (norm_add_le _ _).trans ?_
+            rw [norm_mul, norm_mul, norm_sub_rev B B_N]
+        _ ≤ δ_err * M_xi + M_dxi * δ_err :=
+            add_le_add
+              (mul_le_mul (hbd_all t).2.le hxi_le (norm_nonneg _) hδ_pos.le)
+              (mul_le_mul hdxi_le (hbd_all t).1.le (norm_nonneg _) hM_dxi_pos.le)
+        _ ≤ (M_xi + M_dxi + μ) * δ_err := by nlinarith
+    have hquot_le : ‖A_N / B_N - logDeriv _root_.RHTower.xi (γ t)‖ ≤
+        ((M_xi + M_dxi + μ) / (μ ^ 2 / 2)) * δ_err := by
+      rw [logDeriv_apply, hquot, norm_div]
+      calc ‖(A_N - A) * B + A * (B - B_N)‖ / ‖B_N * B‖
+          ≤ ((M_xi + M_dxi + μ) * δ_err) / (μ ^ 2 / 2) := by
+            have hBB_pos : 0 < ‖B_N * B‖ := lt_of_lt_of_le hdenom_pos hdenom_le
+            rw [div_le_div_iff₀ hBB_pos hdenom_pos]
+            exact mul_le_mul hnum_le hdenom_le hdenom_pos.le (by positivity)
+        _ = ((M_xi + M_dxi + μ) / (μ ^ 2 / 2)) * δ_err := by ring
+    have halg : gN (γ t) * vel t - ((γ t) ^ r * logDeriv _root_.RHTower.xi (γ t)) * vel t =
+        (γ t) ^ r * (A_N / B_N - logDeriv _root_.RHTower.xi (γ t)) * vel t := by
+      dsimp [gN]; ring
+    rw [halg, norm_mul, norm_mul]
+    calc ‖(γ t) ^ r‖ * ‖A_N / B_N - logDeriv _root_.RHTower.xi (γ t)‖ * ‖vel t‖
+        ≤ (M_pow * (((M_xi + M_dxi + μ) / (μ ^ 2 / 2)) * δ_err)) * (L_vel + 1) := by
+          refine mul_le_mul (mul_le_mul hpow_le hquot_le (norm_nonneg _) hM_pow_pos.le)
+            hvel_le (norm_nonneg _) (by positivity)
+      _ = K_lip * δ_err := by dsimp [K_lip]; ring
+  have hint_le := intervalIntegral.norm_integral_le_of_norm_le_const hpt
+  rw [show |(1 : ℝ) - 0| = 1 by norm_num, mul_one] at hint_le
+  have hlt_eps : K_lip * δ_err < ε := by
+    have hle : δ_err ≤ ε / (2 * K_lip) := min_le_right _ _
+    calc K_lip * δ_err ≤ K_lip * (ε / (2 * K_lip)) :=
+          mul_le_mul_of_nonneg_left hle hK_lip_pos.le
+      _ = ε / 2 := by field_simp [hK_lip_pos.ne']
+      _ < ε := half_lt_self hε
+  exact hint_le.trans_lt hlt_eps
+
+/-- **Asymptotic collision-operator stabilization (`N → ∞`) of the seam-smooth Poisson–Jacobi
+prefix at any fixed `κ > 0`.** -/
+theorem partitionSymCollisionOperator_eventually_eq_charge (T : ℝ) {n : ℕ}
+    (hn : thetaWindowScale T ≤ n) {κ : ℝ} (hκ : 0 < κ) :
+    ∀ᶠ N : ℕ in atTop,
+      partitionSymWindowPowerSum T n N κ 0 = (_root_.RHTower.xiStripWindowTotalOrder T : ℂ) ∧
+      partitionSymWindowDegree T n N κ = _root_.RHTower.xiStripWindowTotalOrder T ∧
+      (∀ u : HTGeometry.UnitCircle, partitionSymLaurentLoop T n N κ u ≠ 0) ∧
+      _root_.RHTower.windingNumber
+        (fun θ => partitionSymLaurentLoop T n N κ (HTGeometry.circleExp θ)) 0 (2 * Real.pi) =
+        (_root_.RHTower.xiHorizontalCollisionCharge T : ℤ) ∧
+      HTGeometry.fredholmIndex (partitionSymCollisionOperator T n N κ) =
+        (_root_.RHTower.xiHorizontalCollisionCharge T : ℤ) := by
+  -- Boundary nonvanishing and degree stabilization.
+  set γ := _root_.RHTower.rectangleBoundaryPath
+    (thetaWindowLowerLeft n) (thetaWindowUpperRight T n)
+  have hγ_cont : Continuous γ := _root_.RHTower.continuous_rectangleBoundaryPath _ _
+  obtain ⟨t₀, _, ht₀⟩ := isCompact_Icc.exists_isMinOn (nonempty_Icc.mpr (zero_le_one : (0 : ℝ) ≤ 1))
+    ((_root_.RHTower.xi_differentiable.continuous.comp hγ_cont).norm).continuousOn
+  set μ_b : ℝ := ‖_root_.RHTower.xi (γ t₀)‖
+  have hμ_b : 0 < μ_b := norm_pos_iff.mpr (boundary_xi_ne_zero hn t₀)
+  have hev_nz : ∀ᶠ N : ℕ in atTop, ∀ t : ℝ, partitionSymThetaAmplitude N κ (γ t) ≠ 0 := by
+    filter_upwards [tendsto_partitionSymThetaAmplitude_xi_strip hκ (by norm_num : (0 : ℝ) ≤ 2)
+      (half_pos hμ_b)] with N hN t h0
+    have hbd := (hN (γ t) (boundary_re_abs_le_two T n t)).1
+    rw [h0, zero_sub, norm_neg] at hbd
+    have hper : γ (Int.fract t) = γ t := by
+      simp [γ, _root_.RHTower.rectangleBoundaryPath, Int.fract_fract]
+    have hmin_t : μ_b ≤ ‖_root_.RHTower.xi (γ t)‖ := by
+      rw [← hper]
+      exact isMinOn_iff.mp ht₀ (Int.fract t) ⟨Int.fract_nonneg t, (Int.fract_lt_one t).le⟩
+    linarith
+  have hsum0 : (∑ w ∈ (_root_.RHTower.stripZeros_finite T).toFinset,
+      ((analyticOrderAt _root_.RHTower.xi w).toNat : ℂ) * w ^ 0) =
+      (_root_.RHTower.xiStripWindowTotalOrder T : ℂ) := by
+    simp [_root_.RHTower.xiStripWindowTotalOrder]
+  have htend0 := tendsto_partitionSymWindowPowerSum T hn hκ 0
+  rw [hsum0] at htend0
+  have hev_deg : ∀ᶠ N : ℕ in atTop,
+      partitionSymWindowPowerSum T n N κ 0 = (_root_.RHTower.xiStripWindowTotalOrder T : ℂ) ∧
+        partitionSymWindowDegree T n N κ = _root_.RHTower.xiStripWindowTotalOrder T := by
+    filter_upwards [hev_nz, (Metric.tendsto_nhds.mp htend0) (1 / 2 : ℝ) (by norm_num)]
+      with N hnz hdist
+    obtain ⟨k, hk⟩ := partitionSymWindowPowerSum_zero_is_int T n N hκ hnz
+    rw [hk, dist_eq_norm] at hdist
+    have hcast : (k : ℂ) - (_root_.RHTower.xiStripWindowTotalOrder T : ℂ) =
+        (((k - (_root_.RHTower.xiStripWindowTotalOrder T : ℤ)) : ℤ) : ℂ) := by push_cast; ring
+    rw [hcast, Complex.norm_intCast] at hdist
+    have habs : |(k : ℝ) - (_root_.RHTower.xiStripWindowTotalOrder T : ℝ)| < 1 / 2 := by
+      exact_mod_cast hdist
+    obtain ⟨h1, h2⟩ := abs_lt.mp habs
+    have hlt : ((k - (_root_.RHTower.xiStripWindowTotalOrder T : ℤ) : ℤ) : ℝ) < 1 := by
+      push_cast; linarith
+    have hgt : (-1 : ℝ) < ((k - (_root_.RHTower.xiStripWindowTotalOrder T : ℤ) : ℤ) : ℝ) := by
+      push_cast; linarith
+    have hk_eq : k = (_root_.RHTower.xiStripWindowTotalOrder T : ℤ) := by
+      have hlt' : k - (_root_.RHTower.xiStripWindowTotalOrder T : ℤ) < 1 := by exact_mod_cast hlt
+      have hgt' : -1 < k - (_root_.RHTower.xiStripWindowTotalOrder T : ℤ) := by exact_mod_cast hgt
+      omega
+    have hp0 : partitionSymWindowPowerSum T n N κ 0 =
+        (_root_.RHTower.xiStripWindowTotalOrder T : ℂ) := by
+      rw [hk, hk_eq]; norm_cast
+    refine ⟨hp0, ?_⟩
+    unfold partitionSymWindowDegree
+    rw [hp0, Complex.natCast_re]
+    exact (Nat.floor_eq_iff (by positivity)).mpr ⟨by linarith, by linarith⟩
+  -- Newton–Girard continuity on `zhukovskyLoop n`.
+  obtain ⟨hQ_nz, hQ_wind⟩ := exactWindowDifferencePoly_winding T hn
+  obtain ⟨u₀, _, hu₀⟩ := isCompact_univ.exists_isMinOn
+    ⟨HTGeometry.circleExp 0, Set.mem_univ _⟩
+    (((exactWindowDifferencePoly T).continuous.comp (zhukovskyLoop n).continuous).norm).continuousOn
+  set η : ℝ := ‖(exactWindowDifferencePoly T).eval (zhukovskyLoop n u₀)‖
+  have hη_pos : 0 < η := norm_pos_iff.mpr (hQ_nz u₀)
+  have hη_le : ∀ u : HTGeometry.UnitCircle,
+      η ≤ ‖(exactWindowDifferencePoly T).eval (zhukovskyLoop n u)‖ :=
+    fun u => isMinOn_iff.mp hu₀ u (Set.mem_univ u)
+  set M_ord := _root_.RHTower.xiStripWindowTotalOrder T
+  let s₀ : ℕ → ℂ := fun r => ∑ w ∈ (_root_.RHTower.stripZeros_finite T).toFinset,
+    ((analyticOrderAt _root_.RHTower.xi w).toNat : ℂ) * w ^ r
+  have htend_ps : ∀ K : ℕ, Tendsto
+      (fun N => pairDiffPowerSum M_ord (partitionSymWindowPowerSum T n N κ) K) atTop
+      (𝓝 (pairDiffPowerSum M_ord s₀ K)) := by
+    intro K
+    unfold pairDiffPowerSum; dsimp only
+    refine tendsto_finsetSum _ fun r _ => ?_
+    have h1 : Tendsto (fun N => if r = 0 then (M_ord : ℂ) else
+        partitionSymWindowPowerSum T n N κ r) atTop
+        (𝓝 (if r = 0 then (M_ord : ℂ) else s₀ r)) := by
+      by_cases hr : r = 0
+      · simp [hr]
+      · simpa [hr] using tendsto_partitionSymWindowPowerSum T hn hκ r
+    have h2 : Tendsto (fun N => if K - r = 0 then (M_ord : ℂ) else
+        partitionSymWindowPowerSum T n N κ (K - r)) atTop
+        (𝓝 (if K - r = 0 then (M_ord : ℂ) else s₀ (K - r))) := by
+      by_cases hKr : K - r = 0
+      · simp [hKr]
+      · simpa [hKr] using tendsto_partitionSymWindowPowerSum T hn hκ (K - r)
+    exact (h1.const_mul _).mul h2
+  have htend_elem : ∀ k : ℕ, Tendsto
+      (fun N => newtonElem (pairDiffPowerSum M_ord (partitionSymWindowPowerSum T n N κ)) k) atTop
+      (𝓝 (newtonElem (pairDiffPowerSum M_ord s₀) k)) := by
+    intro k
+    induction k using Nat.strong_induction_on with
+    | h k ih =>
+      rcases k with _ | k
+      · simp only [newtonElem, tendsto_const_nhds]
+      · simp only [newtonElem]
+        refine Tendsto.const_mul _ (tendsto_finsetSum _ fun j _ => ?_)
+        exact ((ih (k - j) (by omega)).const_mul ((-1 : ℂ) ^ j)).mul (htend_ps (j + 1))
+  have hsum_tendsto : Tendsto
+      (fun N : ℕ => ∑ k ∈ Finset.range (M_ord ^ 2 + 1),
+        ‖newtonElem (pairDiffPowerSum M_ord (partitionSymWindowPowerSum T n N κ)) k -
+          newtonElem (pairDiffPowerSum M_ord s₀) k‖ * 2 ^ (M_ord ^ 2 - k))
+      atTop (𝓝 0) := by
+    rw [show (0 : ℝ) = ∑ _k ∈ Finset.range (M_ord ^ 2 + 1), (0 : ℝ) by simp]
+    refine tendsto_finsetSum _ fun k _ => ?_
+    have hnorm : Tendsto
+        (fun N : ℕ =>
+          ‖newtonElem (pairDiffPowerSum M_ord (partitionSymWindowPowerSum T n N κ)) k -
+            newtonElem (pairDiffPowerSum M_ord s₀) k‖) atTop (𝓝 0) := by
+      simpa only [sub_self, norm_zero] using ((htend_elem k).sub tendsto_const_nhds).norm
+    simpa only [zero_mul] using hnorm.mul_const (2 ^ (M_ord ^ 2 - k))
+  filter_upwards [hev_deg, hsum_tendsto.eventually (gt_mem_nhds hη_pos)] with N hdeg hsum_lt
+  have happrox : ∀ u : HTGeometry.UnitCircle,
+      ‖(partitionSymDifferencePoly T n N κ).eval (zhukovskyLoop n u) -
+          (exactWindowDifferencePoly T).eval (zhukovskyLoop n u)‖ <
+        ‖(exactWindowDifferencePoly T).eval (zhukovskyLoop n u)‖ := by
+    intro u
+    have hpoly_eq : partitionSymDifferencePoly T n N κ =
+        newtonPoly (M_ord ^ 2) (pairDiffPowerSum M_ord (partitionSymWindowPowerSum T n N κ)) := by
+      unfold partitionSymDifferencePoly pairDiffPoly
+      rw [hdeg.2]
+    rw [hpoly_eq]
+    have hle_sum : ‖(newtonPoly (M_ord ^ 2)
+          (pairDiffPowerSum M_ord (partitionSymWindowPowerSum T n N κ))).eval (zhukovskyLoop n u) -
+        (exactWindowDifferencePoly T).eval (zhukovskyLoop n u)‖ ≤
+        ∑ k ∈ Finset.range (M_ord ^ 2 + 1),
+          ‖newtonElem (pairDiffPowerSum M_ord (partitionSymWindowPowerSum T n N κ)) k -
+            newtonElem (pairDiffPowerSum M_ord s₀) k‖ * 2 ^ (M_ord ^ 2 - k) := by
+      unfold exactWindowDifferencePoly pairDiffPoly newtonPoly
+      rw [Polynomial.eval_finsetSum, Polynomial.eval_finsetSum, ← Finset.sum_sub_distrib]
+      refine (norm_sum_le _ _).trans (Finset.sum_le_sum fun k _ => ?_)
+      simp only [Polynomial.eval_mul, Polynomial.eval_pow, Polynomial.eval_X, Polynomial.eval_C]
+      have hdiff : (-1 : ℂ) ^ k *
+          newtonElem (pairDiffPowerSum M_ord (partitionSymWindowPowerSum T n N κ)) k *
+          (zhukovskyLoop n u) ^ (M_ord ^ 2 - k) -
+          (-1 : ℂ) ^ k * newtonElem (pairDiffPowerSum M_ord s₀) k *
+          (zhukovskyLoop n u) ^ (M_ord ^ 2 - k) =
+          (-1 : ℂ) ^ k *
+            (newtonElem (pairDiffPowerSum M_ord (partitionSymWindowPowerSum T n N κ)) k -
+              newtonElem (pairDiffPowerSum M_ord s₀) k) *
+            (zhukovskyLoop n u) ^ (M_ord ^ 2 - k) := by ring
+      have hzhuk_le2 : ‖zhukovskyLoop n u‖ ≤ 2 := by
+        have h1 := norm_zhukovskyLoop_sub_half_le n u
+        have ha := (zhukovskyMajorAxis_lt_half n).le
+        have hb := zhukovskyMinorAxis_le_sixth n
+        have htri : ‖zhukovskyLoop n u‖ ≤ ‖zhukovskyLoop n u - (1 / 2 : ℂ)‖ + ‖(1 / 2 : ℂ)‖ := by
+          simpa using norm_add_le (zhukovskyLoop n u - (1 / 2 : ℂ)) (1 / 2 : ℂ)
+        have hhalf : ‖(1 / 2 : ℂ)‖ = (1 / 2 : ℝ) := by norm_num
+        linarith
+      rw [hdiff, norm_mul, norm_mul, norm_pow, norm_neg, norm_one, one_pow, one_mul, norm_pow]
+      exact mul_le_mul_of_nonneg_left
+        (pow_le_pow_left₀ (norm_nonneg _) hzhuk_le2 (M_ord ^ 2 - k)) (norm_nonneg _)
+    exact hle_sum.trans_lt (hsum_lt.trans_le (hη_le u))
+  obtain ⟨hL_nz, hL_wind⟩ := windingNumber_zhukovsky_poly_sq_of_approx n
+    (partitionSymDifferencePoly T n N κ) (exactWindowDifferencePoly T) hQ_nz happrox
+  have hL_nz' : ∀ u : HTGeometry.UnitCircle, partitionSymLaurentLoop T n N κ u ≠ 0 := hL_nz
+  have hwind_eq : _root_.RHTower.windingNumber
+      (fun θ => partitionSymLaurentLoop T n N κ (HTGeometry.circleExp θ)) 0 (2 * Real.pi) =
+      (_root_.RHTower.xiHorizontalCollisionCharge T : ℤ) := by
+    change _root_.RHTower.windingNumber
+      (fun θ => ((partitionSymDifferencePoly T n N κ).eval
+        (zhukovskyLoop n (HTGeometry.circleExp θ))) ^ 2) 0 (2 * Real.pi) = _
+    rw [hL_wind, hQ_wind]
+  have hfred : HTGeometry.fredholmIndex (partitionSymCollisionOperator T n N κ) =
+      (_root_.RHTower.xiHorizontalCollisionCharge T : ℤ) := by
+    unfold partitionSymCollisionOperator partitionSymCollisionSymbol
+    rw [fredholmIndex_wienerHopfLift_unitNormalizeSymbol,
+      circleWinding_unitNormalizeSymbol_of_ne_zero hL_nz', hwind_eq]
+  exact ⟨hdeg.1, hdeg.2, hL_nz', hwind_eq, hfred⟩
+
+/-! ### `κ → ∞` persistence of arbitrarily many off-line zeros -/
+
+/-- Explicit `O(κ^{-1/2})` uniform vertical-strip convergence of `partitionSymThetaAmplitude N κ`
+to `finiteThetaAmplitude N` as `κ → ∞` at fixed `N`. -/
+theorem norm_partitionSymThetaAmplitude_sub_finite_le_strip (N : ℕ) {R : ℝ} (hR : 0 ≤ R)
+    {κ : ℝ} (hκ : max 1 ((R + 2) ^ 2) ≤ κ) {z : ℂ} (hz : |z.re - 1 / 2| ≤ R) :
+    ‖partitionSymThetaAmplitude N κ z - _root_.RHTower.finiteThetaAmplitude N z‖ ≤
+      ((Real.exp 3 * thetaCuspSeedHalfGaussConst / Real.pi) +
+        (1 / 2 : ℝ) * _root_.RHTower.thetaCuspTiltDecayConstant (R + 1)) *
+        Real.sqrt (2 * Real.pi / κ) := by
+  have hκ_pos : 0 < κ := lt_of_lt_of_le zero_lt_one ((le_max_left _ _).trans hκ)
+  have hκ_sq : (R + 2) ^ 2 ≤ κ := (le_max_right _ _).trans hκ
+  let C_neg : ℝ := 2 * Real.exp 2 * thetaCuspSeedHalfGaussConst / Real.pi
+  let K_c : ℝ := (Real.exp 3 * thetaCuspSeedHalfGaussConst / Real.pi) +
+    (1 / 2 : ℝ) * _root_.RHTower.thetaCuspTiltDecayConstant (R + 1)
+  have hK_c_pos : 0 < K_c := by
+    dsimp [K_c]
+    have h1 : 0 < Real.exp 3 * thetaCuspSeedHalfGaussConst / Real.pi := by
+      positivity [thetaCuspSeedHalfGaussConst_pos]
+    have h2 : 0 < _root_.RHTower.thetaCuspTiltDecayConstant (R + 1) :=
+      _root_.RHTower.thetaCuspTiltDecayConstant_pos _
+    linarith
+  have hpj : Integrable (fun x : ℝ =>
+      (partitionSymThetaSource N κ x : ℂ) * Complex.exp (((1 / 2 : ℂ) - z) * (x : ℂ))) := by
+    simpa only [pow_zero, one_mul, iteratedDeriv_zero] using
+      integrable_iteratedDeriv_partitionSym_mul_cexp N 0 hκ_pos 0 z
+  have hfin : Integrable (fun x : ℝ =>
+      (_root_.RHTower.reflectedFiniteThetaSource (N + 1) x : ℂ) *
+        Complex.exp (((1 / 2 : ℂ) - z) * (x : ℂ))) := by
+    simpa only [_root_.RHTower.finiteThetaTiltSource] using
+      _root_.RHTower.integrable_bilateralLaplace
+        (_root_.RHTower.finiteThetaTiltSource N) ((1 / 2 : ℂ) - z)
+  have hgauss_int : Integrable (fun x : ℝ => Real.exp (-(κ / 2) * x ^ 2)) :=
+    integrable_exp_neg_mul_sq (by positivity)
+  have hgauss_val : (∫ x : ℝ, Real.exp (-(κ / 2) * x ^ 2)) = Real.sqrt (2 * Real.pi / κ) := by
+    have heven : ∀ x : ℝ, Real.exp (-(κ / 2) * (-x) ^ 2) = Real.exp (-(κ / 2) * x ^ 2) :=
+      fun x => by rw [neg_sq]
+    rw [HTGeometry.integral_even_eq_two_mul hgauss_int heven,
+      HTGeometry.integral_Ioi_gaussian (by positivity : 0 < κ / 2)]
+    have hdiv : Real.pi / (κ / 2) = 2 * Real.pi / κ := by field_simp [hκ_pos.ne']; ring
+    rw [hdiv]; ring
+  have hpt : ∀ x : ℝ,
+      ‖(partitionSymThetaSource N κ x : ℂ) * Complex.exp (((1 / 2 : ℂ) - z) * (x : ℂ)) -
+          (_root_.RHTower.reflectedFiniteThetaSource (N + 1) x : ℂ) *
+            Complex.exp (((1 / 2 : ℂ) - z) * (x : ℂ))‖ ≤
+        K_c * Real.exp (-(κ / 2) * x ^ 2) := by
+    intro x
+    have hf : (partitionSymThetaSource N κ x : ℂ) * Complex.exp (((1 / 2 : ℂ) - z) * (x : ℂ)) -
+        (_root_.RHTower.reflectedFiniteThetaSource (N + 1) x : ℂ) *
+          Complex.exp (((1 / 2 : ℂ) - z) * (x : ℂ)) =
+        ((partitionSymThetaSource N κ x - _root_.RHTower.reflectedFiniteThetaSource (N + 1) x :
+          ℝ) : ℂ) * Complex.exp (((1 / 2 : ℂ) - z) * (x : ℂ)) := by push_cast; ring
+    rw [hf, norm_mul, Complex.norm_real, Real.norm_eq_abs, Complex.norm_exp]
+    set y := |x|
+    have hy : 0 ≤ y := abs_nonneg x
+    have hy_sq : y ^ 2 = x ^ 2 := sq_abs x
+    have heven_diff :
+        |partitionSymThetaSource N κ x - _root_.RHTower.reflectedFiniteThetaSource (N + 1) x| =
+        |partitionSymThetaSource N κ y - _root_.RHTower.thetaCuspFiniteShellPrefix (N + 1) y| := by
+      have href : _root_.RHTower.reflectedFiniteThetaSource (N + 1) x =
+          _root_.RHTower.thetaCuspFiniteShellPrefix (N + 1) y := rfl
+      rw [href]
+      rcases le_or_gt 0 x with hx | hx
+      · rw [show y = x from abs_of_nonneg hx]
+      · rw [show y = -x from abs_of_neg hx, partitionSymThetaSource_even]
+    have hid : partitionSymThetaSource N κ y -
+          _root_.RHTower.thetaCuspFiniteShellPrefix (N + 1) y =
+        gaussianPartitionSwitch κ (-y) *
+          (_root_.RHTower.thetaCuspFiniteShellPrefix (N + 1) (-y) -
+            _root_.RHTower.thetaCuspFiniteShellPrefix (N + 1) y) := by
+      unfold partitionSymThetaSource
+      have hsw := gaussianPartitionSwitch_add_neg κ y
+      nlinarith
+    have hsw_bd := gaussianPartitionSwitch_neg_bounds hκ_pos hy
+    have hneg_le : |_root_.RHTower.thetaCuspFiniteShellPrefix (N + 1) (-y)| ≤
+        C_neg * Real.exp (2 * y) := by
+      unfold _root_.RHTower.thetaCuspFiniteShellPrefix
+      refine (Finset.abs_sum_le_sum_abs _ _).trans ?_
+      exact ((_root_.RHTower.summable_thetaCuspSourceTerm (-y)).abs.sum_le_tsum
+        (Finset.range (N + 2)) (fun _ _ => abs_nonneg _)).trans
+        (tsum_abs_thetaCuspSourceTerm_neg_le_exp_two hy)
+    have hpos_le : |_root_.RHTower.thetaCuspFiniteShellPrefix (N + 1) y| ≤
+        _root_.RHTower.thetaCuspFullSource y := by
+      have hnn : 0 ≤ _root_.RHTower.thetaCuspFiniteShellPrefix (N + 1) y :=
+        Finset.sum_nonneg fun m _ => _root_.RHTower.thetaCuspSourceTerm_nonneg_on_halfLine hy m
+      have hrel := (_root_.RHTower.thetaCuspFiniteShellPrefix_relative_tail (N + 1) hy).1
+      rw [abs_of_nonneg hnn]
+      linarith
+    have hdiff_le :
+        |partitionSymThetaSource N κ x - _root_.RHTower.reflectedFiniteThetaSource (N + 1) x| ≤
+          (1 / 2 : ℝ) * Real.exp (-κ * x ^ 2) *
+            (C_neg * Real.exp (2 * y) + _root_.RHTower.thetaCuspFullSource y) := by
+      rw [heven_diff, hid, abs_mul, abs_of_pos hsw_bd.1, ← hy_sq]
+      refine mul_le_mul hsw_bd.2 ?_ (abs_nonneg _) (by positivity)
+      exact (abs_sub _ _).trans (add_le_add hneg_le hpos_le)
+    have hre : (((1 / 2 : ℂ) - z) * (x : ℂ)).re ≤ R * y := by
+      have he : (((1 / 2 : ℂ) - z) * (x : ℂ)).re = (1 / 2 - z.re) * x := by simp
+      have habs : |1 / 2 - z.re| ≤ R := by rwa [abs_sub_comm]
+      rw [he]
+      exact (le_abs_self _).trans ((abs_mul _ _).trans_le
+        (mul_le_mul_of_nonneg_right habs hy))
+    have hp1 : (1 / 2 : ℝ) * Real.exp (-κ * x ^ 2) * (C_neg * Real.exp (2 * y)) *
+          Real.exp (R * y) ≤
+        (Real.exp 3 * thetaCuspSeedHalfGaussConst / Real.pi) *
+          Real.exp (-(κ / 2) * x ^ 2) := by
+      have hquad : -(κ / 2) * x ^ 2 + (R + 2) * y ≤ 1 := by
+        have h1 : -(κ / 2) * x ^ 2 + (R + 2) * y ≤ (R + 2) ^ 2 / (2 * κ) := by
+          rw [le_div_iff₀ (by positivity)]
+          nlinarith [sq_nonneg (κ * y - (R + 2)), hy_sq]
+        have h2 : (R + 2) ^ 2 / (2 * κ) ≤ 1 := by
+          rw [div_le_one (by positivity)]
+          linarith [hκ_sq, hκ_pos]
+        exact h1.trans h2
+      have hcomb : Real.exp (-κ * x ^ 2) * Real.exp (2 * y) * Real.exp (R * y) ≤
+          Real.exp 1 * Real.exp (-(κ / 2) * x ^ 2) := by
+        rw [← Real.exp_add, ← Real.exp_add, ← Real.exp_add]
+        apply Real.exp_le_exp.mpr
+        linarith
+      calc (1 / 2 : ℝ) * Real.exp (-κ * x ^ 2) * (C_neg * Real.exp (2 * y)) * Real.exp (R * y)
+          = ((1 / 2 : ℝ) * C_neg) *
+              (Real.exp (-κ * x ^ 2) * Real.exp (2 * y) * Real.exp (R * y)) := by ring
+        _ ≤ ((1 / 2 : ℝ) * C_neg) * (Real.exp 1 * Real.exp (-(κ / 2) * x ^ 2)) :=
+            mul_le_mul_of_nonneg_left hcomb (by dsimp [C_neg]; positivity [thetaCuspSeedHalfGaussConst_pos])
+        _ = (Real.exp 3 * thetaCuspSeedHalfGaussConst / Real.pi) *
+              Real.exp (-(κ / 2) * x ^ 2) := by
+            dsimp [C_neg]
+            have he3 : Real.exp 2 * Real.exp 1 = Real.exp 3 := by
+              rw [← Real.exp_add]; norm_num
+            calc (1 / 2 : ℝ) * (2 * Real.exp 2 * thetaCuspSeedHalfGaussConst / Real.pi) *
+                    (Real.exp 1 * Real.exp (-(κ / 2) * x ^ 2))
+                = ((Real.exp 2 * Real.exp 1) * thetaCuspSeedHalfGaussConst / Real.pi) *
+                    Real.exp (-(κ / 2) * x ^ 2) := by ring
+              _ = _ := by rw [he3]
+    have hp2 : (1 / 2 : ℝ) * Real.exp (-κ * x ^ 2) * _root_.RHTower.thetaCuspFullSource y *
+          Real.exp (R * y) ≤
+        (1 / 2 : ℝ) * _root_.RHTower.thetaCuspTiltDecayConstant (R + 1) *
+          Real.exp (-(κ / 2) * x ^ 2) := by
+      have hfull_le := _root_.RHTower.thetaCuspFullSource_le_tiltDecayConstant (R + 1) y
+      have habs_y : |y| = y := abs_of_nonneg hy
+      rw [habs_y] at hfull_le
+      have hprod_le : _root_.RHTower.thetaCuspFullSource y * Real.exp (R * y) ≤
+          _root_.RHTower.thetaCuspTiltDecayConstant (R + 1) := by
+        calc _root_.RHTower.thetaCuspFullSource y * Real.exp (R * y)
+            ≤ (_root_.RHTower.thetaCuspTiltDecayConstant (R + 1) *
+                Real.exp (-((R + 1) * y))) * Real.exp (R * y) :=
+              mul_le_mul_of_nonneg_right hfull_le (Real.exp_pos _).le
+          _ = _root_.RHTower.thetaCuspTiltDecayConstant (R + 1) * Real.exp (-y) := by
+              rw [mul_assoc, ← Real.exp_add]; congr 2; ring
+          _ ≤ _root_.RHTower.thetaCuspTiltDecayConstant (R + 1) :=
+              mul_le_of_le_one_right (_root_.RHTower.thetaCuspTiltDecayConstant_pos _).le
+                (Real.exp_le_one_iff.mpr (by linarith))
+      have hex_le : Real.exp (-κ * x ^ 2) ≤ Real.exp (-(κ / 2) * x ^ 2) :=
+        Real.exp_le_exp.mpr (by nlinarith [sq_nonneg x])
+      calc (1 / 2 : ℝ) * Real.exp (-κ * x ^ 2) * _root_.RHTower.thetaCuspFullSource y *
+              Real.exp (R * y)
+          = (1 / 2 : ℝ) * (_root_.RHTower.thetaCuspFullSource y * Real.exp (R * y)) *
+              Real.exp (-κ * x ^ 2) := by ring
+        _ ≤ (1 / 2 : ℝ) * _root_.RHTower.thetaCuspTiltDecayConstant (R + 1) *
+              Real.exp (-(κ / 2) * x ^ 2) := by
+            refine mul_le_mul (mul_le_mul_of_nonneg_left hprod_le (by norm_num)) hex_le
+              (Real.exp_pos _).le
+              (mul_nonneg (by norm_num) (_root_.RHTower.thetaCuspTiltDecayConstant_pos _).le)
+    calc |partitionSymThetaSource N κ x - _root_.RHTower.reflectedFiniteThetaSource (N + 1) x| *
+            Real.exp (((1 / 2 : ℂ) - z) * (x : ℂ)).re
+        ≤ ((1 / 2 : ℝ) * Real.exp (-κ * x ^ 2) *
+            (C_neg * Real.exp (2 * y) + _root_.RHTower.thetaCuspFullSource y)) *
+            Real.exp (R * y) :=
+          mul_le_mul hdiff_le (Real.exp_le_exp.mpr hre) (Real.exp_pos _).le (by positivity)
+      _ = (1 / 2 : ℝ) * Real.exp (-κ * x ^ 2) * (C_neg * Real.exp (2 * y)) * Real.exp (R * y) +
+            (1 / 2 : ℝ) * Real.exp (-κ * x ^ 2) * _root_.RHTower.thetaCuspFullSource y *
+              Real.exp (R * y) := by ring
+      _ ≤ K_c * Real.exp (-(κ / 2) * x ^ 2) := by
+          dsimp [K_c]; rw [add_mul]; exact add_le_add hp1 hp2
+  unfold partitionSymThetaAmplitude _root_.RHTower.finiteThetaAmplitude
+  rw [← integral_sub hpj hfin]
+  calc ‖∫ x : ℝ, ((partitionSymThetaSource N κ x : ℂ) * Complex.exp (((1 / 2 : ℂ) - z) * (x : ℂ)) -
+          (_root_.RHTower.reflectedFiniteThetaSource (N + 1) x : ℂ) *
+            Complex.exp (((1 / 2 : ℂ) - z) * (x : ℂ)))‖
+      ≤ ∫ x : ℝ, K_c * Real.exp (-(κ / 2) * x ^ 2) :=
+        (norm_integral_le_integral_norm _).trans
+          (integral_mono (hpj.sub hfin).norm (hgauss_int.const_mul K_c) hpt)
+    _ = K_c * Real.sqrt (2 * Real.pi / κ) := by
+        rw [MeasureTheory.integral_const_mul, hgauss_val]
+
+/-- Contrapositive Hurwitz/Rouché root-capture lemma on a disc: if `G w = 0`, `G ≠ 0` on
+`sphere w δ`, and `‖F ζ - G ζ‖ < ‖G ζ‖ / 2` on `sphere w δ`, then `F` has at least one zero inside
+`ball w δ`. -/
+private lemma exists_zero_in_ball_of_sphere_half_bound {F G : ℂ → ℂ} {w : ℂ} {δ : ℝ}
+    (hδ : 0 < δ) (hF : Differentiable ℂ F) (hG : Differentiable ℂ G)
+    (hGw : G w = 0)
+    (hG_sph : ∀ ζ ∈ Metric.sphere w δ, G ζ ≠ 0)
+    (happrox : ∀ ζ ∈ Metric.sphere w δ, ‖F ζ - G ζ‖ < ‖G ζ‖ / 2) :
+    ∃ z ∈ Metric.ball w δ, F z = 0 := by
+  by_contra hno
+  push_neg at hno
+  have hF_sph : ∀ ζ ∈ Metric.sphere w δ, ‖G ζ‖ / 2 < ‖F ζ‖ := by
+    intro ζ hζ
+    have h1 := happrox ζ hζ
+    have htri := norm_sub_norm_le (G ζ) (F ζ)
+    rw [norm_sub_rev] at htri
+    linarith
+  have hF_cb : ∀ z ∈ Metric.closedBall w δ, F z ≠ 0 := by
+    intro z hz
+    rcases lt_or_eq_of_le (Metric.mem_closedBall.mp hz) with hlt | heq
+    · exact hno z (Metric.mem_ball.mpr hlt)
+    · have hpos : 0 < ‖G z‖ / 2 := half_pos (norm_pos_iff.mpr (hG_sph z (Metric.mem_sphere.mpr heq)))
+      exact norm_pos_iff.mp (hpos.trans (hF_sph z (Metric.mem_sphere.mpr heq)))
+  have hslit : ∀ ζ ∈ Metric.sphere w δ, G ζ / F ζ ∈ Complex.slitPlane := by
+    intro ζ hζ
+    have hFz_pos : 0 < ‖F ζ‖ :=
+      (half_pos (norm_pos_iff.mpr (hG_sph ζ hζ))).trans (hF_sph ζ hζ)
+    have hFz_ne : F ζ ≠ 0 := norm_pos_iff.mp hFz_pos
+    have hq : G ζ / F ζ - 1 = (G ζ - F ζ) / F ζ := by field_simp [hFz_ne]
+    have hq_lt : ‖G ζ / F ζ - 1‖ < 1 := by
+      rw [hq, norm_div, div_lt_one hFz_pos, norm_sub_rev]
+      exact (happrox ζ hζ).trans (hF_sph ζ hζ)
+    have hre_lt : |(G ζ / F ζ - 1).re| < 1 := (Complex.abs_re_le_norm _).trans_lt hq_lt
+    rw [Complex.sub_re, Complex.one_re] at hre_lt
+    exact Complex.mem_slitPlane_iff.mpr (Or.inl (by linarith [(abs_lt.mp hre_lt).1]))
+  have hGw_ne := HTGeometry.zeroFree_ball_of_quotient_mem_slitPlane hδ (by linarith : δ < 2 * δ)
+    isOpen_univ (Set.subset_univ _) hG.differentiableOn hF.differentiableOn hF_cb hslit
+    w (Metric.mem_ball_self hδ)
+  exact hGw_ne hGw
+
+/-- **Persistence of arbitrarily many off-line zeros for `C^∞`-even super-polynomially decaying
+theta prefixes.**
+For every finite shell cutoff `N : ℕ`, every target cardinality `M : ℕ`, and every strip half-width
+`R : ℝ`, there exists `κ₀ > 0` such that for all `κ ≥ κ₀`, `partitionSymThetaAmplitude N κ` has at
+least `M` distinct complex zeros strictly outside `|z.re - 1 / 2| ≤ R`. -/
+theorem exists_kappa_offline_zeros_partitionSym (N M : ℕ) (R : ℝ) :
+    ∃ κ₀ : ℝ, 0 < κ₀ ∧ ∀ {κ : ℝ}, κ₀ ≤ κ →
+      ∃ S : Finset ℂ, S.card = M ∧
+        ∀ z ∈ S, partitionSymThetaAmplitude N κ z = 0 ∧ R < |z.re - 1 / 2| := by
+  rcases Nat.eq_zero_or_pos M with rfl | hM_pos
+  · exact ⟨1, zero_lt_one, fun _ => ⟨∅, Finset.card_empty, fun _ h => absurd h (Finset.notMem_empty _)⟩⟩
+  set R₀ : ℝ := max 0 R
+  obtain ⟨W, hW_sub, hW_card⟩ :=
+    (finiteThetaAmplitude_offline_zeros_outside_strip_infinite N R₀).exists_subset_card_eq M
+  have hW_ne : W.Nonempty := Finset.card_pos.mp (hW_card ▸ hM_pos)
+  let B_rad : ℝ := W.sup' hW_ne (fun w => ‖w‖) + 2
+  let Z_all : Finset ℂ := (finiteThetaAmplitude_zeros_closedBall_finite N 0 B_rad).toFinset
+  let P_pairs : Finset (ℂ × ℂ) := (Z_all ×ˢ Z_all).filter (fun p => p.1 ≠ p.2)
+  let δ₁ : ℝ := if h : P_pairs.Nonempty then (P_pairs.inf' h (fun p => dist p.1 p.2)) / 3 else 1
+  let δ₂ : ℝ := (W.inf' hW_ne (fun w => |w.re - 1 / 2| - R₀)) / 2
+  let δ : ℝ := min (1 / 2) (min δ₁ δ₂)
+  have hδ₁_pos : 0 < δ₁ := by
+    dsimp [δ₁]
+    split_ifs with h
+    · refine div_pos ?_ (by norm_num)
+      obtain ⟨p, hp, hp_eq⟩ := Finset.exists_mem_eq_inf' h (fun p => dist p.1 p.2)
+      rw [hp_eq]
+      exact dist_pos.mpr (Finset.mem_filter.mp hp).2
+    · exact zero_lt_one
+  have hδ₂_pos : 0 < δ₂ := by
+    dsimp [δ₂]
+    refine div_pos ?_ (by norm_num)
+    obtain ⟨w, hw, hw_eq⟩ := Finset.exists_mem_eq_inf' hW_ne (fun w => |w.re - 1 / 2| - R₀)
+    rw [hw_eq]
+    exact sub_pos.mpr (hW_sub hw).2
+  have hδ_pos : 0 < δ := lt_min (by norm_num) (lt_min hδ₁_pos hδ₂_pos)
+  have hδ_le_half : δ ≤ 1 / 2 := min_le_left _ _
+  have hδ_le_δ₁ : δ ≤ δ₁ := (min_le_right _ _).trans (min_le_left _ _)
+  have hδ_le_δ₂ : δ ≤ δ₂ := (min_le_right _ _).trans (min_le_right _ _)
+  have hw_mem_Zall : ∀ w ∈ W, w ∈ Z_all := by
+    intro w hw
+    apply (finiteThetaAmplitude_zeros_closedBall_finite N 0 B_rad).mem_toFinset.mpr
+    refine ⟨?_, (hW_sub hw).1⟩
+    rw [Metric.mem_closedBall, dist_zero_right]
+    have hsup := Finset.le_sup' (fun u => ‖u‖) hw
+    dsimp [B_rad]; linarith
+  have hG_sph_nz : ∀ w ∈ W, ∀ ζ ∈ Metric.sphere w δ,
+      _root_.RHTower.finiteThetaAmplitude N ζ ≠ 0 := by
+    intro w hw ζ hζ h0
+    have hζ_Z : ζ ∈ Z_all := by
+      apply (finiteThetaAmplitude_zeros_closedBall_finite N 0 B_rad).mem_toFinset.mpr
+      refine ⟨?_, h0⟩
+      rw [Metric.mem_closedBall, dist_zero_right]
+      have htri : ‖ζ‖ ≤ ‖w‖ + dist ζ w := by
+        simpa [dist_eq_norm] using norm_add_le w (ζ - w)
+      have hsup := Finset.le_sup' (fun u => ‖u‖) hw
+      rw [Metric.mem_sphere.mp hζ] at htri
+      dsimp [B_rad]; linarith
+    have hne : ζ ≠ w := by
+      intro heq; rw [heq, dist_self] at hζ; exact hδ_pos.ne (Metric.mem_sphere.mp hζ).symm
+    have hp_mem : (ζ, w) ∈ P_pairs :=
+      Finset.mem_filter.mpr ⟨Finset.mem_product.mpr ⟨hζ_Z, hw_mem_Zall w hw⟩, hne⟩
+    have hinf_le : δ₁ ≤ dist ζ w / 3 := by
+      dsimp [δ₁]; rw [dif_pos ⟨(ζ, w), hp_mem⟩]
+      exact div_le_div_of_nonneg_right (Finset.inf'_le (fun p => dist p.1 p.2) hp_mem) (by norm_num)
+    rw [Metric.mem_sphere.mp hζ] at hinf_le
+    linarith
+  -- Compact union of spheres `⋃ w ∈ W, sphere w δ`.
+  let K_sph : Set ℂ := ⋃ w ∈ (W : Set ℂ), Metric.sphere w δ
+  have hK_comp : IsCompact K_sph :=
+    W.finite_toSet.isCompact_biUnion fun w _ => isCompact_sphere w δ
+  obtain ⟨w₀, hw₀⟩ := hW_ne
+  have hK_ne : K_sph.Nonempty := by
+    refine ⟨w₀ + (δ : ℂ), Set.mem_iUnion₂.mpr ⟨w₀, hw₀, ?_⟩⟩
+    rw [Metric.mem_sphere, dist_eq_norm, add_sub_cancel_left, Complex.norm_real,
+      Real.norm_eq_abs, abs_of_pos hδ_pos]
+  obtain ⟨ζ₀, hζ₀_mem, hζ₀_min⟩ := hK_comp.exists_isMinOn hK_ne
+    (_root_.RHTower.differentiable_finiteThetaAmplitude N).continuous.norm.continuousOn
+  set μ : ℝ := ‖_root_.RHTower.finiteThetaAmplitude N ζ₀‖
+  have hμ_pos : 0 < μ := by
+    obtain ⟨w, hw, hsph⟩ := Set.mem_iUnion₂.mp hζ₀_mem
+    exact norm_pos_iff.mpr (hG_sph_nz w hw ζ₀ hsph)
+  let R₁ : ℝ := B_rad + 2
+  have hR₁_nn : 0 ≤ R₁ := by
+    dsimp [R₁, B_rad]
+    linarith [norm_nonneg w₀, Finset.le_sup' (fun u => ‖u‖) hw₀]
+  have hK_strip : ∀ ζ ∈ K_sph, |ζ.re - 1 / 2| ≤ R₁ := by
+    intro ζ hζ
+    obtain ⟨w, hw, hsph⟩ := Set.mem_iUnion₂.mp hζ
+    have htri : ‖ζ‖ ≤ ‖w‖ + δ := by
+      rw [← Metric.mem_sphere.mp hsph]
+      simpa [dist_eq_norm] using norm_add_le w (ζ - w)
+    have hsup := Finset.le_sup' (fun u => ‖u‖) hw
+    have hre := Complex.abs_re_le_norm ζ
+    have hsub := abs_sub ζ.re (1 / 2 : ℝ)
+    norm_num at hsub
+    dsimp [R₁, B_rad]; linarith
+  let K_c : ℝ := (Real.exp 3 * thetaCuspSeedHalfGaussConst / Real.pi) +
+    (1 / 2 : ℝ) * _root_.RHTower.thetaCuspTiltDecayConstant (R₁ + 1)
+  have hK_c_pos : 0 < K_c := by
+    dsimp [K_c]
+    have h1 : 0 < Real.exp 3 * thetaCuspSeedHalfGaussConst / Real.pi := by
+      positivity [thetaCuspSeedHalfGaussConst_pos]
+    have h2 : 0 < _root_.RHTower.thetaCuspTiltDecayConstant (R₁ + 1) :=
+      _root_.RHTower.thetaCuspTiltDecayConstant_pos _
+    linarith
+  let κ₀ : ℝ := max (max 1 ((R₁ + 2) ^ 2)) (2 * Real.pi * (2 * K_c / μ + 1) ^ 2)
+  have hκ₀_pos : 0 < κ₀ := lt_of_lt_of_le zero_lt_one
+    ((le_max_left _ _).trans (le_max_left _ _))
+  refine ⟨κ₀, hκ₀_pos, fun {κ} hκ => ?_⟩
+  have hκ_pos : 0 < κ := hκ₀_pos.trans_le hκ
+  have hκ_strip : max 1 ((R₁ + 2) ^ 2) ≤ κ := (le_max_left _ _).trans hκ
+  have hκ_err : K_c * Real.sqrt (2 * Real.pi / κ) < μ / 2 := by
+    have hκ_ge : 2 * Real.pi * (2 * K_c / μ + 1) ^ 2 ≤ κ := (le_max_right _ _).trans hκ
+    have hdiv_le : 2 * Real.pi / κ ≤ 1 / (2 * K_c / μ + 1) ^ 2 := by
+      rw [div_le_div_iff₀ hκ_pos (by positivity)]
+      linarith
+    have hsqrt_le : Real.sqrt (2 * Real.pi / κ) ≤ 1 / (2 * K_c / μ + 1) := by
+      have h1 := Real.sqrt_le_sqrt hdiv_le
+      rwa [Real.sqrt_div zero_le_one, Real.sqrt_one, Real.sqrt_sq (by positivity)] at h1
+    have hlt_inv : 1 / (2 * K_c / μ + 1) < μ / (2 * K_c) := by
+      have h1 : 1 / (2 * K_c / μ + 1) < 1 / (2 * K_c / μ) :=
+        one_div_lt_one_div_of_lt (by positivity) (by linarith)
+      rwa [one_div_div] at h1
+    calc K_c * Real.sqrt (2 * Real.pi / κ)
+        ≤ K_c * (1 / (2 * K_c / μ + 1)) := mul_le_mul_of_nonneg_left hsqrt_le hK_c_pos.le
+      _ < K_c * (μ / (2 * K_c)) := mul_lt_mul_of_pos_left hlt_inv hK_c_pos
+      _ = μ / 2 := by field_simp [hK_c_pos.ne']; ring
+  -- Capture one root of `partitionSymThetaAmplitude N κ` inside each disjoint disc `ball w δ`.
+  have hcapture : ∀ w ∈ W, ∃ z ∈ Metric.ball w δ, partitionSymThetaAmplitude N κ z = 0 := by
+    intro w hw
+    refine exists_zero_in_ball_of_sphere_half_bound hδ_pos
+      (differentiable_partitionSymThetaAmplitude N hκ_pos)
+      (_root_.RHTower.differentiable_finiteThetaAmplitude N)
+      (hW_sub hw).1 (hG_sph_nz w hw) fun ζ hζ => ?_
+    have hζ_mem : ζ ∈ K_sph := Set.mem_iUnion₂.mpr ⟨w, hw, hζ⟩
+    have hmin_ζ : μ ≤ ‖_root_.RHTower.finiteThetaAmplitude N ζ‖ :=
+      isMinOn_iff.mp hζ₀_min ζ hζ_mem
+    have hbd := norm_partitionSymThetaAmplitude_sub_finite_le_strip N hR₁_nn hκ_strip
+      (hK_strip ζ hζ_mem)
+    exact (hbd.trans_lt hκ_err).trans_le (by linarith)
+  let pick : ℂ → ℂ := fun w => if hw : w ∈ W then (hcapture w hw).choose else 0
+  have hpick_spec : ∀ w ∈ W,
+      pick w ∈ Metric.ball w δ ∧ partitionSymThetaAmplitude N κ (pick w) = 0 := by
+    intro w hw
+    dsimp [pick]; rw [dif_pos hw]
+    exact (hcapture w hw).choose_spec
+  have hpick_inj : Set.InjOn pick W := by
+    intro w₁ hw₁ w₂ hw₂ heq
+    by_contra hne
+    have hp_mem : (w₁, w₂) ∈ P_pairs :=
+      Finset.mem_filter.mpr
+        ⟨Finset.mem_product.mpr ⟨hw_mem_Zall w₁ hw₁, hw_mem_Zall w₂ hw₂⟩, hne⟩
+    have hsep : 3 * δ₁ ≤ dist w₁ w₂ := by
+      have h1 : δ₁ ≤ dist w₁ w₂ / 3 := by
+        dsimp [δ₁]; rw [dif_pos ⟨(w₁, w₂), hp_mem⟩]
+        exact div_le_div_of_nonneg_right
+          (Finset.inf'_le (fun p => dist p.1 p.2) hp_mem) (by norm_num)
+      linarith
+    have hb₁ : dist (pick w₁) w₁ < δ := Metric.mem_ball.mp (hpick_spec w₁ hw₁).1
+    have hb₂ : dist (pick w₂) w₂ < δ := Metric.mem_ball.mp (hpick_spec w₂ hw₂).1
+    rw [heq] at hb₁
+    have htri := dist_triangle_left w₁ w₂ (pick w₂)
+    linarith [hδ_le_δ₁]
+  refine ⟨W.image pick, (Finset.card_image_of_injOn hpick_inj).trans hW_card, fun z hz => ?_⟩
+  obtain ⟨w, hw, rfl⟩ := Finset.mem_image.mp hz
+  refine ⟨(hpick_spec w hw).2, ?_⟩
+  have hb : dist (pick w) w < δ := Metric.mem_ball.mp (hpick_spec w hw).1
+  have hre_diff : |(pick w).re - w.re| < δ := by
+    rw [dist_eq_norm] at hb
+    exact lt_of_le_of_lt (by simpa only [Complex.sub_re] using Complex.abs_re_le_norm (pick w - w)) hb
+  have hw_out : 2 * δ₂ ≤ |w.re - 1 / 2| - R₀ := by
+    have hinf := Finset.inf'_le (fun u => |u.re - 1 / 2| - R₀) hw
+    dsimp [δ₂]; linarith
+  have htri_re : |w.re - 1 / 2| - |(pick w).re - w.re| ≤ |(pick w).re - 1 / 2| := by
+    have h1 := abs_sub (w.re - 1 / 2) (w.re - (pick w).re)
+    have h2 : (w.re - 1 / 2) - (w.re - (pick w).re) = (pick w).re - 1 / 2 := by ring
+    have h3 : |w.re - (pick w).re| = |(pick w).re - w.re| := abs_sub_comm _ _
+    rw [h2, h3] at h1; linarith
+  have hR_le_R₀ : R ≤ R₀ := le_max_right 0 R
+  linarith [hδ_le_δ₂, hδ_pos]
+
+/-- **Failure of Laguerre–Pólya / Hermite–Biehler critical-line purity for `C^∞`-even
+Gaussian-partitioned Poisson–Jacobi prefixes (`κ ≥ κ₁`).** -/
+theorem exists_kappa_not_laguerrePolya_partitionSym (N : ℕ) :
+    ∃ κ₁ : ℝ, 0 < κ₁ ∧ ∀ {κ : ℝ}, κ₁ ≤ κ →
+      ¬ HTGeometry.LaguerrePolya
+        (fun z : ℂ => partitionSymThetaAmplitude N κ ((1 / 2 : ℂ) + I * z)) := by
+  obtain ⟨κ₀, hκ₀_pos, hcap⟩ := exists_kappa_offline_zeros_partitionSym N 1 0
+  let c₀ : ℝ := (5026 / 16875) * Real.exp (-Real.pi)
+  have hc₀_pos : 0 < c₀ := by dsimp [c₀]; positivity
+  let K_0 : ℝ := (Real.exp 3 * thetaCuspSeedHalfGaussConst / Real.pi) +
+    (1 / 2 : ℝ) * _root_.RHTower.thetaCuspTiltDecayConstant 1
+  have hK_0_pos : 0 < K_0 := by
+    dsimp [K_0]
+    have h1 : 0 < Real.exp 3 * thetaCuspSeedHalfGaussConst / Real.pi := by
+      positivity [thetaCuspSeedHalfGaussConst_pos]
+    have h2 : 0 < _root_.RHTower.thetaCuspTiltDecayConstant 1 :=
+      _root_.RHTower.thetaCuspTiltDecayConstant_pos 1
+    linarith
+  let κ₁ : ℝ := max κ₀ (max 4 (2 * Real.pi * (2 * K_0 / c₀ + 1) ^ 2))
+  have hκ₁_pos : 0 < κ₁ := hκ₀_pos.trans_le (le_max_left _ _)
+  refine ⟨κ₁, hκ₁_pos, fun {κ} hκ hLP => ?_⟩
+  have hκ_pos : 0 < κ := hκ₁_pos.trans_le hκ
+  obtain ⟨S, hS_card, hS_spec⟩ := hcap ((le_max_left _ _).trans hκ)
+  obtain ⟨w, hw_S⟩ := Finset.card_pos.mp (hS_card ▸ Nat.one_pos)
+  obtain ⟨hw_zero, hw_off⟩ := hS_spec w hw_S
+  -- Show `partitionSymThetaAmplitude N κ (1 / 2) ≠ 0` so the function is not identically zero.
+  have hhalf_ne : partitionSymThetaAmplitude N κ ((1 / 2 : ℂ) + I * 0) ≠ 0 := by
+    rw [mul_zero, add_zero]
+    intro h0
+    have hfin_ge : c₀ ≤ ‖_root_.RHTower.finiteThetaAmplitude N (1 / 2 : ℂ)‖ := by
+      have hre := finiteThetaAmplitude_re_ge_lowWindow N (z := (1 / 2 : ℂ)) (by simp) (by simp)
+      exact hre.trans ((le_abs_self _).trans (Complex.abs_re_le_norm _))
+    have hκ4 : max 1 ((0 + 2 : ℝ) ^ 2) ≤ κ := by
+      have h4 : (4 : ℝ) ≤ κ := (le_max_left _ _).trans ((le_max_right _ _).trans hκ)
+      norm_num; exact h4
+    have hbd := norm_partitionSymThetaAmplitude_sub_finite_le_strip N (le_rfl : (0 : ℝ) ≤ 0) hκ4
+      (z := (1 / 2 : ℂ)) (by simp)
+    rw [zero_add] at hbd
+    have hκ_ge : 2 * Real.pi * (2 * K_0 / c₀ + 1) ^ 2 ≤ κ :=
+      (le_max_right _ _).trans ((le_max_right _ _).trans hκ)
+    have hdiv_le : 2 * Real.pi / κ ≤ 1 / (2 * K_0 / c₀ + 1) ^ 2 := by
+      rw [div_le_div_iff₀ hκ_pos (by positivity)]; linarith
+    have hsqrt_le : Real.sqrt (2 * Real.pi / κ) ≤ 1 / (2 * K_0 / c₀ + 1) := by
+      have h1 := Real.sqrt_le_sqrt hdiv_le
+      rwa [Real.sqrt_div zero_le_one, Real.sqrt_one, Real.sqrt_sq (by positivity)] at h1
+    have hlt_inv : 1 / (2 * K_0 / c₀ + 1) < c₀ / (2 * K_0) := by
+      have h1 : 1 / (2 * K_0 / c₀ + 1) < 1 / (2 * K_0 / c₀) :=
+        one_div_lt_one_div_of_lt (by positivity) (by linarith)
+      rwa [one_div_div] at h1
+    have herr_lt : K_0 * Real.sqrt (2 * Real.pi / κ) < c₀ / 2 := by
+      calc K_0 * Real.sqrt (2 * Real.pi / κ)
+          ≤ K_0 * (1 / (2 * K_0 / c₀ + 1)) := mul_le_mul_of_nonneg_left hsqrt_le hK_0_pos.le
+        _ < K_0 * (c₀ / (2 * K_0)) := mul_lt_mul_of_pos_left hlt_inv hK_0_pos
+        _ = c₀ / 2 := by field_simp [hK_0_pos.ne']; ring
+    rw [h0, zero_sub, norm_neg] at hbd
+    linarith [hbd.trans_lt herr_lt]
+  set z₀ : ℂ := -I * (w - (1 / 2 : ℂ))
+  have hw_eq : (1 / 2 : ℂ) + I * z₀ = w := by
+    dsimp [z₀]; rw [← mul_assoc, mul_neg, I_mul_I, neg_neg, one_mul, add_sub_cancel]
+  have hz₀_zero : partitionSymThetaAmplitude N κ ((1 / 2 : ℂ) + I * z₀) = 0 := by
+    rw [hw_eq]; exact hw_zero
+  have him0 := HTGeometry.im_eq_zero_of_laguerrePolya hLP hhalf_ne hz₀_zero
+  have hz₀_im : z₀.im = -(w.re - 1 / 2) := by
+    dsimp [z₀]; simp [Complex.mul_im, Complex.sub_re]
+  rw [hz₀_im] at him0
+  have hre0 : |w.re - 1 / 2| = 0 := by rw [abs_eq_zero]; linarith
+  linarith [hw_off]
+
+end GaloisForLFunctions.ConjugateDiagonalGeometry
+
+end
+
+#print axioms GaloisForLFunctions.ConjugateDiagonalGeometry.finiteThetaAmplitude_offline_zeros_outside_strip_infinite
+#print axioms GaloisForLFunctions.ConjugateDiagonalGeometry.not_laguerrePolya_finiteThetaAmplitude_criticalLine
+#print axioms GaloisForLFunctions.ConjugateDiagonalGeometry.gaussMollifiedThetaAmplitude_eq
+#print axioms GaloisForLFunctions.ConjugateDiagonalGeometry.gaussMollifiedThetaAmplitude_superpolynomial_strip_decay
+#print axioms GaloisForLFunctions.ConjugateDiagonalGeometry.gaussMollifiedCollisionOperator_eq
+#print axioms GaloisForLFunctions.ConjugateDiagonalGeometry.iteratedDeriv_odd_partitionSymThetaSource_zero
+#print axioms GaloisForLFunctions.ConjugateDiagonalGeometry.partitionSymThetaAmplitude_superpolynomial_strip_decay
+#print axioms GaloisForLFunctions.ConjugateDiagonalGeometry.partitionSymCollisionOperator_eventually_eq_charge
+#print axioms GaloisForLFunctions.ConjugateDiagonalGeometry.exists_kappa_offline_zeros_partitionSym
+#print axioms GaloisForLFunctions.ConjugateDiagonalGeometry.exists_kappa_not_laguerrePolya_partitionSym
+
+
 

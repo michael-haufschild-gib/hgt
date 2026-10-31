@@ -3,7 +3,7 @@
 - **ID:** HAAR-PUNCTURED-DILATION-LIMITS
 - **Stage:** 1-in-progress
 - **Type:** CONJECTURE
-- **Source:** [Canonical Haar splitting](../1-in-progress/finite-index-haar-carriers-split-modulo-polynomial-kernels.md); `AdelicKreinGeometry/Haar/ContinuousDilationsNeedInfiniteIndex.lean`.
+- **Source:** [Canonical Haar splitting](../3-formalized/finite-index-haar-carriers-split-modulo-polynomial-kernels.md); `AdelicKreinGeometry/Haar/ContinuousDilationsNeedInfiniteIndex.lean`.
 - **Statement:** A complex number is the punctured real-topology limit at one of the positive-rational dilation reading of a Hermitian finite-index integer-Haar kernel exactly when it is real and nonpositive. The least possible index is zero for limit zero and one for every negative limit. Every such kernel has identity value one, so an existing punctured limit differs from it by at least one.
 
 ## Proof route

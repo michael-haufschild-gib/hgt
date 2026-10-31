@@ -24,4 +24,4 @@ Now let `W` be translation-invariant and totally isotropic. It is finite-dimensi
 
 `Index/ColumnForm.lean`, `Index/IsotropicSubspaces.lean`, `Affine/RationalCharacters.lean`, and `Affine/IsotropicTranslations.lean` pass direct Lean checks with only `propext`, `Classical.choice`, and `Quot.sound`. Endpoints: `finite_nonpositive_column_subspace`, `isotropic_translation_eigencharacter_eq_one`, `isotropic_translation_unipotent`, and `isotropic_translation_difference_pow_apply`.
 
-For Haar successors this controls the translation-period radical; it does not construct the [relative splitting](../1-in-progress/finite-index-haar-carriers-split-modulo-polynomial-kernels.md) or prove continuity of mixed coefficients.
+For Haar successors this controls the translation-period radical; it does not construct the [relative splitting](finite-index-haar-carriers-split-modulo-polynomial-kernels.md) or prove continuity of mixed coefficients.

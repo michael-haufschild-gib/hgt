@@ -3,7 +3,7 @@
 - **ID:** HAAR-POLYNOMIAL-INDEX-PRESERVATION
 - **Stage:** 3-formalized
 - **Type:** THEOREM
-- **Parent:** [Relative Haar splitting](../1-in-progress/finite-index-haar-carriers-split-modulo-polynomial-kernels.md)
+- **Parent:** [Relative Haar splitting](finite-index-haar-carriers-split-modulo-polynomial-kernels.md)
 - **Statement:** If `p` is positive definite with integer Haar successor and `h` is Hermitian with polynomial translation fibres on `Aff(ℚ)`, then `κ(p+h)=κ(h)`, including infinite index.
 
 ## Polynomial quadrature

@@ -3,7 +3,7 @@
 - **ID:** NONZERO-PROPER-SUBGROUP-RELATIVE-SPLIT
 - **Stage:** 0-backlog
 - **Type:** CONJECTURE
-- **Source:** [Integer Haar splitting](../1-in-progress/finite-index-haar-carriers-split-modulo-polynomial-kernels.md); [proper-subgroup index law](../1-in-progress/proper-subgroup-carriers-preserve-polynomial-fibre-indices.md).
+- **Source:** [Integer Haar splitting](../3-formalized/finite-index-haar-carriers-split-modulo-polynomial-kernels.md); [proper-subgroup index law](../1-in-progress/proper-subgroup-carriers-preserve-polynomial-fibre-indices.md).
 - **Statement:** For every nonzero proper additive subgroup `H<ℚ`, every Hermitian finite-index affine kernel with translation reading `1_H` has a unique decomposition `k=P+ψ∘slope+q`: `P` is positive with successor `1_H`, `ψ` is Hermitian with `ψ(1)=0`, and `q` is a finite-rank Hermitian polynomial-fibre kernel vanishing on translations and dilations. Moreover `κ(k)=κ(ψ∘slope+q)≥κ(ψ)`.
 
 ## Proof route

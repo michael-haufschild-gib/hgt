@@ -2,7 +2,7 @@
 
 - **ID:** HAAR-CYCLIC-AVERAGE-INFINITE-INDEX
 - **Stage:** 1-in-progress
-- **Type:** THEOREM (rational and adelic obstructions formalized; positive survivor open)
+- **Type:** THEOREM
 - **Parent:** [Finite-index Mautner rigidity](finite-index-mautner-rigidity-for-the-haar-successor.md)
 - **Statement:** A Hermitian rational affine kernel with integer Haar successor and a dilation reading continuous at one has infinite negative index.
 
@@ -59,4 +59,4 @@ Formalized, with direct audits and standard axiom closures:
 - `AdelicKreinGeometry/Haar/CyclicGramLimit.lean`: fixed-projection Grams converge to `J−I`. `BiarithmeticGeometry/Affine/NearIdentityGrids.lean` supplies the rational grids; `HeckeKreinToeplitz/Index/ConstantMatrixInertia.lean` supplies their limiting negative directions.
 - `AdelicKreinGeometry/Haar/CyclicHecke.lean`: squared moving-column correlations are bounded by the reciprocal denominator of the dilation ratio. Its inputs are cyclic orthogonal projections, moving-subspace positivity, Haar orbit norms, and Cauchy–Schwarz.
 
-The positive structural conclusions already proved are the nonnegative moving subspaces and their finite cyclic bound. The unique positive/slope/polynomial decomposition and its exact residual index remain to be formalized; the route stays open under the positive-survivor requirement.
+The [unique positive/slope/polynomial decomposition](../3-formalized/finite-index-haar-carriers-split-modulo-polynomial-kernels.md) and exact residual index are formalized. The remaining completed paper proofs concern [sharp punctured limits](finite-index-haar-dilation-limits-are-exactly-nonpositive.md), [subgroup-indicator classification](continuous-affine-dilations-classify-subgroup-indicator-successors.md), and [proper-subgroup polynomial index preservation](proper-subgroup-carriers-preserve-polynomial-fibre-indices.md); their Lean audits remain pending.
