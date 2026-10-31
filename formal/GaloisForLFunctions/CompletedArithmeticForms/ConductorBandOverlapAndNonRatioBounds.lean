@@ -2256,8 +2256,9 @@ theorem exists_overlapMatrix_midBand_inner_le {φ : ℝ → ℝ}
           simp only [mem_Ioc, mem_Icc] at *; omega
         have h2 : (∑ n ∈ Ioc K₀ (N - h), f_mode (n + h) ^ 2) ≤ ∑ k ∈ Icc 1 N, f_mode k ^ 2 := by
           have himg : (∑ n ∈ Ioc K₀ (N - h), f_mode (n + h) ^ 2) =
-              ∑ k ∈ (Ioc K₀ (N - h)).image (· + h), f_mode k ^ 2 :=
-            (Finset.sum_image fun x _ y _ hxy => by omega).symm
+              ∑ k ∈ (Ioc K₀ (N - h)).image (fun x => x + h), f_mode k ^ 2 :=
+            (Finset.sum_image (f := fun k => f_mode k ^ 2) (g := fun x => x + h)
+              fun x _ y _ hxy => by omega).symm
           rw [himg]
           refine sum_le_sum_of_subset_of_nonneg (fun k hk => ?_) fun _ _ _ => sq_nonneg _
           rcases mem_image.mp hk with ⟨n, hn, rfl⟩
@@ -2290,7 +2291,14 @@ theorem exists_overlapMatrix_midBand_inner_le {φ : ℝ → ℝ}
         _ ≤ ((E₂ + 1) * C_ker * c ^ 4 / (N : ℝ) ^ 2) * ((N : ℝ) * Real.log N * ‖u‖ ^ 2) :=
           mul_le_mul_of_nonneg_left hf_prod_sum (by positivity)
         _ = ((E₂ + 1) * C_ker * (c ^ 4 * Real.log N / N)) * ‖u‖ ^ 2 := by
-          field_simp [hN0.ne']
+          have hN_sq : c ^ 4 / (N : ℝ) ^ 2 * (N : ℝ) = c ^ 4 / N := by
+            rw [sq, ← div_div, div_mul_cancel₀ _ hN0.ne']
+          calc
+            ((E₂ + 1) * C_ker * c ^ 4 / (N : ℝ) ^ 2) * ((N : ℝ) * Real.log N * ‖u‖ ^ 2) =
+                (E₂ + 1) * C_ker * (c ^ 4 / (N : ℝ) ^ 2 * (N : ℝ)) * Real.log N * ‖u‖ ^ 2 := by
+              ring
+            _ = (E₂ + 1) * C_ker * (c ^ 4 / N) * Real.log N * ‖u‖ ^ 2 := by rw [hN_sq]
+            _ = ((E₂ + 1) * C_ker * (c ^ 4 * Real.log N / N)) * ‖u‖ ^ 2 := by ring
     calc
       |∑ h ∈ Icc 1 B, _| ≤
           ∑ _h ∈ Icc 1 B, ((E₂ + 1) * C_ker * (c ^ 4 * Real.log N / N)) * ‖u‖ ^ 2 :=
@@ -2563,16 +2571,16 @@ theorem exists_overlapMatrix_midBand_inner_le {φ : ℝ → ℝ}
   have hT2 : 0 ≤ T2 := by dsimp only [T2]; positivity
   have hT3 : 0 ≤ T3 := by dsimp only [T3]; positivity
   have hT4 : 0 ≤ T4 := by dsimp only [T4]; positivity
-  have hC1_le : C_1 ≤ C_mid := by dsimp only [C_mid]; positivity
-  have hC2_le : (2 / M_φ) * C_2 ≤ C_mid := by dsimp only [C_mid]; linarith [hC1_pos,
-    mul_nonneg (show 0 ≤ 2 / M_φ by positivity) hC3_nonneg,
-    mul_nonneg (show 0 ≤ 2 / M_φ by positivity) hC4_nonneg]
-  have hC3_le : (2 / M_φ) * C_3 ≤ C_mid := by dsimp only [C_mid]; linarith [hC1_pos,
-    mul_nonneg (show 0 ≤ 2 / M_φ by positivity) hC2_nonneg,
-    mul_nonneg (show 0 ≤ 2 / M_φ by positivity) hC4_nonneg]
-  have hC4_le : (2 / M_φ) * C_4 ≤ C_mid := by dsimp only [C_mid]; linarith [hC1_pos,
-    mul_nonneg (show 0 ≤ 2 / M_φ by positivity) hC2_nonneg,
-    mul_nonneg (show 0 ≤ 2 / M_φ by positivity) hC3_nonneg]
+  have h2M_nonneg : 0 ≤ 2 / M_φ := by positivity
+  have h2C2 : 0 ≤ (2 / M_φ) * C_2 := mul_nonneg h2M_nonneg hC2_nonneg
+  have h2C3 : 0 ≤ (2 / M_φ) * C_3 := mul_nonneg h2M_nonneg hC3_nonneg
+  have h2C4 : 0 ≤ (2 / M_φ) * C_4 := mul_nonneg h2M_nonneg hC4_nonneg
+  have hC_mid_eq : C_mid = C_1 + (2 / M_φ) * C_2 + (2 / M_φ) * C_3 + (2 / M_φ) * C_4 + 1 := by
+    dsimp only [C_mid]; ring
+  have hC1_le : C_1 ≤ C_mid := by linarith only [hC_mid_eq, h2C2, h2C3, h2C4]
+  have hC2_le : (2 / M_φ) * C_2 ≤ C_mid := by linarith only [hC_mid_eq, hC1_pos, h2C3, h2C4]
+  have hC3_le : (2 / M_φ) * C_3 ≤ C_mid := by linarith only [hC_mid_eq, hC1_pos, h2C2, h2C4]
+  have hC4_le : (2 / M_φ) * C_4 ≤ C_mid := by linarith only [hC_mid_eq, hC1_pos, h2C2, h2C3]
   rw [hinner_split]
   calc
     |(∑ n ∈ Icc 1 N, primeHorizonExtension u n *
