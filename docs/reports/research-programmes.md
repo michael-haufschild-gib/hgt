@@ -58,3 +58,4 @@
 - formal/GaloisForLFunctions/ArithmeticResonanceTheory/README.md
 - formal/GaloisForLFunctions/AdelicKreinGeometry/README.md
 - formal/GaloisForLFunctions/RenormalizedIntersectionTheory/README.md
+- formal/GaloisForLFunctions/EdgeHodgeTheory/README.md

@@ -118,13 +118,16 @@ lives, what Castelnuovo–Severi says, what a Künneth square adds, and what sep
    perturbation, which cannot remove infinitely many squares.
 
 **Selection.**
-17. Margin and Hodge defect are the same datum read two ways: a gap bounds the form on the
+17. The `2`-adic probe: multiplying a twin by the `2`-flip adds `2` to its flip set; on finite flip
+   sets the greatest gap drops strictly when a prime is added unless it is already maximal, and the
+   `2`-flip is submaximal, so the probed twin falls strictly below the `2`-flip's margin.
+18. Margin and Hodge defect are the same datum read two ways: a gap bounds the form on the
    hyperplane, hence kills the defect above `log N − γ − g`; a vector violating the gap is a negative
    direction of `D·1 − P_N(ω·)` on the hyperplane. Real forms extend to complex vectors through real
    and imaginary parts, because the pole functional has real coefficients.
 
 **Heat.**
-18. The heat kernel `K_t` is a finite sum of Jordan pair kernels at the nonreal right zeros of `H_t`;
+19. The heat kernel `K_t` is a finite sum of Jordan pair kernels at the nonreal right zeros of `H_t`;
    the archimedean glue adds one square, so the Hodge defect of `K_t` is the zero count, which only
    drops, by one per conjugate pair colliding on the real line.
 
@@ -153,11 +156,24 @@ lives, what Castelnuovo–Severi says, what a Künneth square adds, and what sep
 | Hodge index at iterated-logarithmic overlap; the Hodge index on `v_1^⊥` is RH at overlap `2(log N)^α` for every `α > 0` (smooth profiles) and every `α > 1/2` (tilted spline); it leaves at most one negative eigenvalue | `eventually_completeWeil_hodgeIndex_iteratedLog`, `riemannHypothesis_iff_completeWeil_hodgeIndex_rpow_log`, `riemannHypothesis_iff_unitBump_hodgeIndex_rpow_log`, `riemannHypothesis_iff_completeWeil_hodgeIndex_log`, `poleHyperplane_markov_nonneg_iff_hodgeIndex`, `eigenvalues_nonneg_or_of_nonneg_on_orthogonal` | unconditional; equivalences |
 | Schur product; every Hadamard power of `K_ζ` is RH | `isPosDefKernel_mul`, `isPosDefKernel_pow`, `riemannHypothesis_iff_isPosDefKernel_zetaKernel_pow`, `riemannHypothesis_iff_negIndex_zetaKernel_pow_eq_zero` | unconditional; equivalences |
 | Off-line zeros are neutral pairs: `κ(K_ζ) ≤ κ₊(K_ζ)` on the finite stratum; the Künneth square at least squares the index, `κ(K_ζ)² ≤ κ(K_ζ ⊠ K_ζ)`; a finite Künneth index is Lindelöf and a zero-free half-plane | `negIndex_zetaKernel_le_posIndex`, `sq_negIndex_zetaKernel_le_negIndex_kunnethZeta`, `negIndex_zetaKernel_le_negIndex_kunnethZeta`, `lindelof_of_negIndex_kunnethZeta_lt_top`, `quasiRH_of_negIndex_kunnethZeta_lt_top` | unconditional; implications |
-| The atomic Hodge index separates `ζ` from a sign gauge iff the gauge's margin is below `2 log 2`: separated are Liouville, every gauge with `S_N² = o(log N)`, every cofinite flip, the prime flips `p < 11`, and exactly those flips of an arbitrary prime set (finite or infinite) whose greatest gap is below `2 log 2`; not separated are the prime flips `p ≥ 11` and every gauge with `S_N/H_N → 1` | `hodgeSeparates_iff_not_hasHyperplaneGap`, `hodgeSeparates_primeSetFlip_iff`, `hodgeSeparates_cofiniteFlip`, `eventually_poleNegIndex_gauge_eq_zero_of_hasHyperplaneGap`, `frequently_one_le_poleNegIndex_gauge_of_not_hasHyperplaneGap`, `hodgeSeparates_liouville`, `hodgeSeparates_of_harmonicSum_small`, `hodgeSeparates_primeFlip_iff`, `not_hodgeSeparates_of_correlation` | unconditional |
+| The atomic Hodge index separates `ζ` from a sign gauge iff the gauge's margin is below `2 log 2`: separated are Liouville, every gauge with `S_N² = o(log N)`, every cofinite flip, the prime flips `p < 11`, and exactly those flips of an arbitrary prime set (finite or infinite) whose greatest gap is below `2 log 2`; not separated are the prime flips `p ≥ 11` and every gauge with `S_N/H_N → 1`. With the `2`-adic probe (the index measured against the `2`-flip of `ζ`) every nontrivial prime-set twin of positive harmonic density is separated | `hodgeSeparates_iff_not_hasHyperplaneGap`, `hodgeSeparates_primeSetFlip_iff`, `hodgeSeparates_cofiniteFlip`, `hodgeSeparatesFrom_iff`, `hodgeSeparates_or_probe_primeSetFlip`, `eventually_poleNegIndex_gauge_eq_zero_of_hasHyperplaneGap`, `frequently_one_le_poleNegIndex_gauge_of_not_hasHyperplaneGap`, `hodgeSeparates_liouville`, `hodgeSeparates_of_harmonicSum_small`, `hodgeSeparates_primeFlip_iff`, `not_hodgeSeparates_of_correlation` | unconditional |
 | The renormalized Hodge index is the Hodge index of the scaling surface, and a sign-free Serre-dual `h⁰` with quadratic Riemann–Roch growth exists iff it holds | `renormalizedHodgeIndex_ratCorr_iff_scalingSurface_hodgeIndex`, `renormalizedHodgeIndex_ratCorr_iff_exists_serreDual_h0` | equivalences |
 | Heat flow: Hodge defect of `K_t` = nonreal right zeros of `H_t` = pairs colliding after `t`; nonincreasing, jumps at collisions, zero for `t ≥ 1/8`; RH = Hodge index along the flow | `boostPolarIndex_heatDilationKernel`, `boostPolarIndex_heat_eq_sum_collisionPairs`, `antitoneOn_boostPolarIndex_heat`, `exists_left_boostPolarIndex_heat_eq_add_collisionPairs`, `renormalizedHodgeIndex_heat_of_eighth_le`, `riemannHypothesis_iff_forall_renormalizedHodgeIndex_heat`, `boostPolarIndex_ratCorr_lt_top_iff_bdd_heat` | unconditional; equivalence |
 
 ## 6. Tools
+
+The tools named in the founding question, and where they live:
+
+| Tool | Where | Use in RIT |
+|---|---|---|
+| Renormalized Pontryagin spaces with running counterterms and product-formula gluing | AdelicKreinGeometry (archimedean glue, gluing formula at every place); RIT (product-formula classification) | the glued state, the hyperplane index, the extremal weight |
+| Adelic shell decompositions, archimedean shell calculus | AdelicKreinGeometry (`TheShellDecompositionOfAPoleSuccessorForm`), RenormalizedArithmeticPotentialTheory (completed shell energies) | the complete Weil matrix at fixed overlap |
+| Ramanujan conductor frames beyond the square-root horizon | CompletedArithmeticForms (`RamanujanConductorFrames`), CriticalArithmeticCorrelationTheory | the pole class `v_1`, the conductor-2 excitation, confinement |
+| Index theorems for renormalized Toeplitz/Fredholm forms | HeckeKreinToeplitz (index = right zeros, Bohr series, hyperbolic pairs), HTGeometry (Wiener–Hopf index) | Hodge defects, positive squares, Künneth law |
+| Theta log-volumes as `h⁰` | ArithmeticOrientationGeometry (`TheThetaH0OfSpecZ`), SelectivePositivityAndThresholdLaws | the quadratic Riemann–Roch equivalence |
+| Loop-group Eisenstein series as global carriers | HTGeometry/LoopEisenstein (affine `A_1` Weyl sums with `ξ`-ratio coefficients) | not yet connected to the pairing |
+| The heat flow as a homotopy of Pontryagin spaces | AdelicKreinGeometry (`TheHeatDeformedArchimedeanState`); RIT (Hodge defects along the flow) | the collision quantum as an index |
+
 
 **Developed.**
 - Finset form of the Krein–Langer index formula (`negIndex_sum_pairKernel_eq_card`) and its use on
@@ -206,10 +222,10 @@ lives, what Castelnuovo–Severi says, what a Künneth square adds, and what sep
 2. The positive index of `K_ζ` on the infinite stratum (it is infinite on the finite stratum and
    for the on-line part); with it the Künneth square would be all-or-nothing by the same mechanism on
    both strata (the dichotomy itself is already proved).
-3. Twins outside both selection mechanisms: flips of an infinite prime set whose greatest gap is
-   the maximal `2 log 2`. The atomic Hodge index separates every other prime-set twin, the glued
-   test index every finite one; which infinite sets keep the maximal gap, and whether the glued test
-   index separates them, is open.
+3. Prime-set twins of harmonic density zero (`Σ_{p∈P} 1/p = ∞`) whose greatest gap is the maximal
+   `2 log 2`: the atomic Hodge index with its `2`-probe separates every nontrivial prime-set twin of
+   positive density, the glued test index every finite one; for density zero the cutoff
+   description of the gap is not available.
 
 ## 9. Traps
 
@@ -229,7 +245,7 @@ lives, what Castelnuovo–Severi says, what a Künneth square adds, and what sep
 | A finite but nonzero Künneth index is possible | The Künneth square is all-or-nothing: RH or infinitely many negative squares |
 | A Hadamard power or tensor square is an easier sign problem | Every Hadamard power is RH; a finite Künneth index already carries the finite stratum |
 | The Liouville twin escapes selection because it flips every prime | Its margin is `0`, so the atomic Hodge index separates it |
-| The atomic Hodge index separates every twin | It separates exactly the margins below `2 log 2`; flips of primes `≥ 11` keep `ζ`'s margin |
+| The atomic Hodge index separates every twin | It separates exactly the margins below `2 log 2`; flips of primes `≥ 11` keep `ζ`'s margin and need the `2`-adic probe |
 | The heat flow could create Hodge defect | The defect only drops, one per colliding pair |
 
 ## 10. Context
