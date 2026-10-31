@@ -129,7 +129,8 @@ theorem sum_cosetVec_mul_of_le {N d d' : ℕ} {C C' : F[X]} (hdd : d ≤ d') (hd
     push_cast
     rw [← Real.rpow_natCast, ← Real.rpow_add hq, ← Real.rpow_add hq]
     congr 1
-    rw [abs_of_nonpos (by exact_mod_cast sub_nonpos.mpr hdd)]
+    rw [abs_of_nonpos (by have : (d : ℝ) ≤ d' := by exact_mod_cast hdd
+                          linarith)]
     push_cast
     ring
   · rw [if_neg hmeet]
@@ -143,7 +144,6 @@ theorem sum_cosetVec_mul_of_le {N d d' : ℕ} {C C' : F[X]} (hdd : d ≤ d') (hd
     rw [hempty, Finset.card_empty]
     simp
 
-omit [DecidableEq F] in
 theorem inftyCommKernel_comm (d : ℕ) (C : F[X]) (d' : ℕ) (C' : F[X]) :
     inftyCommKernel d C d' C' = inftyCommKernel d' C' d C := by
   have h1 : (C - C' = 0 ∨ (C - C').natDegree ≤ max d' d) ↔
@@ -191,12 +191,18 @@ theorem inftyCommKernel_gram {n : ℕ} (d : Fin n → ℕ) (C : Fin n → F[X]) 
       simp only [S, star_sum, star_mul', Complex.star_def, Complex.conj_ofReal]
     rw [Complex.normSq_eq_conj_mul_self, ← Complex.star_def, hstar, Finset.sum_mul_sum]
     exact sum_congr rfl fun i _ => sum_congr rfl fun j _ => by ring
-  push_cast
-  simp_rw [hR, Finset.mul_sum, Finset.sum_mul]
-  rw [Finset.sum_comm]
-  refine sum_congr rfl fun i _ => ?_
-  rw [Finset.sum_comm]
-  exact sum_congr rfl fun j _ => sum_congr rfl fun v _ => by ring
+  set A : Fin n → (Fin (N + 1) → F) → ℂ := fun i v => ((cosetVec (d i) (C i) v : ℝ) : ℂ)
+  calc ∑ i, ∑ j, star (c i) * (∑ v, A i v * A j v) * c j
+      = ∑ i, ∑ j, ∑ v, star (c i) * A i v * (A j v * c j) := by
+        refine sum_congr rfl fun i _ => sum_congr rfl fun j _ => ?_
+        rw [Finset.mul_sum, Finset.sum_mul]
+        exact sum_congr rfl fun v _ => by ring
+    _ = ∑ i, ∑ v, ∑ j, star (c i) * A i v * (A j v * c j) :=
+        sum_congr rfl fun i _ => Finset.sum_comm
+    _ = ∑ v, ∑ i, ∑ j, star (c i) * A i v * (A j v * c j) := Finset.sum_comm
+    _ = ((∑ v : Fin (N + 1) → F, Complex.normSq (S v) : ℝ) : ℂ) := by
+        push_cast
+        exact sum_congr rfl fun v _ => (hR v).symm
 
 /-! ### The local Hecke state at infinity -/
 
@@ -265,6 +271,7 @@ theorem inftyHecke_half_of_poly {g : AffineGroupOf (RatFunc F)} {A A' C C' : F[X
     ring
   · rw [if_neg h, if_neg (mt hcond.mpr h)]; simp
 
+omit [Fintype F] [DecidableEq F] in
 /-- Clearing a denominator. -/
 theorem exists_poly_eq_mul (f : RatFunc F) {D : F[X]} (hD : f.denom ∣ D) :
     ∃ P : F[X], algebraMap F[X] (RatFunc F) P = algebraMap F[X] (RatFunc F) D * f := by
@@ -347,6 +354,7 @@ theorem isHermKernel_inftyHecke (s : ℝ) : IsHermKernel (inftyHecke (F := F) s)
 
 /-! ### Escape -/
 
+omit [Fintype F] [DecidableEq F] in
 theorem intDegree_X_pow (M : ℕ) : ((RatFunc.X : RatFunc F) ^ M).intDegree = M := by
   rw [← RatFunc.algebraMap_X, ← map_pow, intDegree_algebraMap, Polynomial.natDegree_X_pow]
 
@@ -441,8 +449,9 @@ theorem one_le_negIndex_inftyHecke {s : ℝ} (hs : s < 1 / 2) :
       simp [x, uX, slopeOf_mul, slopeOf_inv, slopeOf_dilationOf, slopeOf_translationOf]
     have hsh : shiftOf ((x none)⁻¹ * x (some e)) = RatFunc.C e := by
       simp only [x, Option.elim_none, Option.elim_some, shiftOf_mul, shiftOf_inv, slopeOf_inv,
-        slopeOf_dilationOf, shiftOf_dilationOf, shiftOf_translationOf, uX, Units.val_mk0]
-      field_simp
+        slopeOf_dilationOf, shiftOf_dilationOf, shiftOf_translationOf, uX, Units.val_mk0,
+        neg_zero, zero_div, add_zero]
+      exact mul_div_cancel_left₀ _ RatFunc.X_ne_zero
     have hC : (RatFunc.C e : RatFunc F).intDegree = 0 := RatFunc.intDegree_C e
     simp only [inftyHecke, hsl, hsh, hC, hXinv, y]
     rw [if_pos (by norm_num)]
@@ -496,8 +505,8 @@ theorem negIndex_inftyHecke (s : ℝ) :
     negIndex (inftyHecke (F := F) s) = if 1 / 2 ≤ s then 0 else ⊤ := by
   split_ifs with hs
   · exact (isPosDefKernel_inftyHecke hs).negIndex_eq_zero
-  · rcases negIndex_eq_zero_or_top_of_escape (isHermKernel_inftyHecke s) (inftyHecke_escape s)
-      with h | h
+  · rcases negIndex_eq_zero_or_top_of_escape (isHermKernel_inftyHecke (F := F) s)
+      (inftyHecke_escape (F := F) s) with h | h
     · have := one_le_negIndex_inftyHecke (F := F) (not_le.mp hs)
       rw [h] at this
       exact absurd this (by norm_num)

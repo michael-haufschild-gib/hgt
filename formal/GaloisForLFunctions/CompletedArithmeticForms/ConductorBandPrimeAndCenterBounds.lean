@@ -1032,8 +1032,6 @@ theorem abs_fullWeilCenterMatrix_inner_le_of_mem_conductorSubspace (α : ℝ)
         dsimp only [M_row]; ring
   -- Bound 3: `∑ (rowFar n)^2 ≤ 4 / log N * ‖u‖^2`.
   have hfar_sq : (∑ n ∈ Icc 1 N, rowFar n ^ 2) ≤ 4 / Real.log N * ‖u‖ ^ 2 := by
-    let B := 2 * (R : ℝ) ^ (3 / 2 : ℝ) * Real.sqrt (∑ m ∈ Icc 1 R, aTilde m ^ 2)
-    -- Simpler integer power bound: `B := 2 * R^2 * √(∑ aTilde^2)`.
     let B' := 2 * (R : ℝ) ^ 2 * Real.sqrt (∑ m ∈ Icc 1 R, aTilde m ^ 2)
     have hB'0 : 0 ≤ B' := by dsimp only [B']; positivity
     have hg_Ico : ∀ l k : ℕ, l ≤ k → |∑ j ∈ Ico l k, gTilde j| ≤ B' := by
@@ -1127,9 +1125,11 @@ theorem abs_fullWeilCenterMatrix_inner_le_of_mem_conductorSubspace (α : ℝ)
         linarith only [this]
   -- Combine the 3 row pieces of `collarLin uTilde`.
   have huTilde_col : ‖collarLin uTilde‖ ≤
-      28 * (1 + Real.log R) / Real.sqrt (Real.log N) * ‖u‖ := by
+      36 * (1 + Real.log R) / Real.sqrt (Real.log N) * ‖u‖ := by
+    have hrhs0 : 0 ≤ 36 * (1 + Real.log R) / Real.sqrt (Real.log N) * ‖u‖ := by
+      have := Real.log_natCast_nonneg R; positivity
     have hsq : ‖collarLin uTilde‖ ^ 2 ≤
-        (28 * (1 + Real.log R) / Real.sqrt (Real.log N) * ‖u‖) ^ 2 := by
+        (36 * (1 + Real.log R) / Real.sqrt (Real.log N) * ‖u‖) ^ 2 := by
       rw [← horizonProfileVector_extension uTilde, horizonKernelMatrix_profile_norm_sq]
       have h3 : ∀ a b c : ℝ, (a + b + c) ^ 2 ≤ 3 * (a ^ 2 + b ^ 2 + c ^ 2) := fun a b c => by
         nlinarith only [sq_nonneg (a - b), sq_nonneg (a - c), sq_nonneg (b - c)]
@@ -1151,8 +1151,140 @@ theorem abs_fullWeilCenterMatrix_inner_le_of_mem_conductorSubspace (α : ℝ)
               4 / Real.log N * ‖u‖ ^ 2) := by
           linarith only [hsumHalf_sq, hnear_sq, hfar_sq]
         _ = (24 + 1200 * (1 + Real.log R) ^ 2) / Real.log N * ‖u‖ ^ 2 := by ring
-        _ ≤ (784 * (1 + Real.log R) ^ 2) / Real.log N * ‖u‖ ^ 2 := by
-          -- Wait: 1200 + 24 = 1224 ≤ 36^2 = 1296! Let's check: 28^2 = 784 < 1224!
+        _ ≤ (1296 * (1 + Real.log R) ^ 2) / Real.log N * ‖u‖ ^ 2 := by
+          refine mul_le_mul_of_nonneg_right (div_le_div_of_nonneg_right ?_ hL.le) (sq_nonneg _)
+          linarith only [h1R_sq]
+        _ = (36 * (1 + Real.log R) / Real.sqrt (Real.log N) * ‖u‖) ^ 2 := by
+          rw [mul_pow, div_pow, mul_pow, Real.sq_sqrt hL.le]; ring
+    nlinarith only [hsq, norm_nonneg (collarLin uTilde), hrhs0]
+  -- Combine `a 1 • v_1` and `uTilde`.
+  rw [hu_split, map_add]
+  calc
+    ‖collarLin (a 1 • normalizedRamanujanHorizonVector 1 N) + collarLin uTilde‖ ≤
+        ‖collarLin (a 1 • normalizedRamanujanHorizonVector 1 N)‖ + ‖collarLin uTilde‖ :=
+      norm_add_le _ _
+    _ ≤ 108 * (1 + Real.log R) / Real.sqrt (Real.log N) * ‖u‖ +
+          36 * (1 + Real.log R) / Real.sqrt (Real.log N) * ‖u‖ :=
+      add_le_add hpiece1 huTilde_col
+    _ = 144 * (1 + Real.log R) / Real.sqrt (Real.log N) * ‖u‖ := by ring
+
+/-! ### 3. Separated cross-error matrix bounds -/
+
+/-- Whole-space operator norm bound for `separatedCrossErrorMatrix φ c N` at every overlap `c > 0`. -/
+theorem norm_separatedCrossErrorMatrix_le {φ : ℝ → ℝ}
+    (hφ : ContDiff ℝ 2 φ) (hsupp : ∀ u, u ∉ Set.Icc 0 1 → φ u = 0)
+    (hM_int : 0 < ∫ u, φ u ^ 2) {c : ℝ} (hc0 : 0 < c) {N : ℕ} (hN : 1 ≤ N)
+    (x : EuclideanSpace ℝ (PrimeHorizonIndex N)) :
+    ‖Matrix.toEuclideanLin (separatedCrossErrorMatrix φ c N) x‖ ≤
+      4 * (152 * (∫ u, |φ u|) ^ 2 / (∫ u, φ u ^ 2)) * c ^ 2 * ‖x‖ := by
+  let K₀ := 152 * (∫ u, |φ u|) ^ 2 / (∫ u, φ u ^ 2)
+  have hK₀ : 0 ≤ K₀ := by dsimp only [K₀]; positivity
+  have hN0 : (0 : ℝ) < N := by exact_mod_cast hN
+  let K : ℕ → ℕ → ℝ := fun n j =>
+    if 2 * (c / N) < |Real.log j - Real.log n| then
+      atomCrossErrorKernel (atomDilate φ (c / N)) n j else 0
+  let U : ℕ → ℕ → ℝ := fun n j =>
+    (K₀ * (c / N) ^ 2) * (max (n : ℝ) j) ^ 2 / |(n : ℝ) - j| ^ 2
+  have hU_nonneg : ∀ n ∈ Icc 1 N, ∀ j ∈ Icc 1 N, 0 ≤ U n j :=
+    fun _ _ _ _ => by dsimp only [U]; positivity
+  have hU_symm : ∀ n j, U n j = U j n := fun n j => by
+    dsimp only [U]; rw [max_comm, abs_sub_comm]
+  have hU_row : ∀ n ∈ Icc 1 N, (∑ j ∈ Icc 1 N, U n j) ≤ 4 * K₀ * c ^ 2 := by
+    intro n hn
+    have h1 := sum_abs_kernel_le_of_integer_distance (K := K₀ * (c / N) ^ 2) (E := U)
+      (by positivity) (fun a _ b _ => by rw [abs_of_nonneg (by dsimp only [U]; positivity)]) hn
+    have hsum : (∑ j ∈ Icc 1 N, U n j) = ∑ j ∈ Icc 1 N, |U n j| :=
+      sum_congr rfl fun j hj => (abs_of_nonneg (hU_nonneg n hn j hj)).symm
+    rw [hsum]
+    exact h1.trans_eq (by field_simp [hN0.ne'])
+  have hschur := sum_sq_abs_majorized_kernel_le' (N := N) K U
+    (primeHorizonExtension x)
+    (fun _ => 1) (fun _ => 4 * K₀ * c ^ 2) (fun _ => (4 * K₀ * c ^ 2) ^ 2)
+    hU_nonneg
+    (fun n hn j hj => abs_separatedCrossError_le hφ hsupp hM_int hc0 hN hn hj)
+    (fun _ _ => zero_lt_one)
+    (fun n hn => by simpa only [mul_one] using hU_row n hn)
+    (fun j hj => by
+      have h1 : (∑ n ∈ Icc 1 N, U n j * (4 * K₀ * c ^ 2 / 1)) =
+          (4 * K₀ * c ^ 2) * ∑ n ∈ Icc 1 N, U j n := by
+        rw [mul_sum]; exact sum_congr rfl fun n _ => by rw [hU_symm n j]; ring
+      rw [h1]
+      exact (mul_le_mul_of_nonneg_left (hU_row j hj) (by positivity)).trans_eq (by ring))
+  have hnorm_sq : ‖Matrix.toEuclideanLin (separatedCrossErrorMatrix φ c N) x‖ ^ 2 ≤
+      (4 * K₀ * c ^ 2 * ‖x‖) ^ 2 := by
+    change ‖Matrix.toEuclideanLin (horizonKernelMatrix K N) x‖ ^ 2 ≤ _
+    rw [← horizonProfileVector_extension x, horizonKernelMatrix_profile_norm_sq,
+      horizonProfileVector_extension]
+    calc
+      (∑ n ∈ Icc 1 N, (∑ j ∈ Icc 1 N, K n j * primeHorizonExtension x j) ^ 2) ≤
+          ∑ j ∈ Icc 1 N, (4 * K₀ * c ^ 2) ^ 2 * primeHorizonExtension x j ^ 2 := hschur
+      _ = (4 * K₀ * c ^ 2) ^ 2 * ∑ j ∈ Icc 1 N, primeHorizonExtension x j ^ 2 := (mul_sum ..).symm
+      _ = (4 * K₀ * c ^ 2 * ‖x‖) ^ 2 := by rw [sum_primeHorizonExtension_sq, mul_pow]
+  have hrhs0 : 0 ≤ 4 * K₀ * c ^ 2 * ‖x‖ := by positivity
+  nlinarith only [hnorm_sq, norm_nonneg (Matrix.toEuclideanLin (separatedCrossErrorMatrix φ c N) x),
+    hrhs0]
+
+/-- Subspace `O(c^2 / log N)` quadratic bound for `separatedCrossErrorMatrix φ c N` on
+`conductorSubspace R N` (`R ^ 4 ≤ N`). -/
+theorem abs_separatedCrossErrorMatrix_inner_le_of_mem_conductorSubspace {φ : ℝ → ℝ}
+    (hφ : ContDiff ℝ 2 φ) (hsupp : ∀ t, t ∉ Set.Icc 0 1 → φ t = 0)
+    (hM_int : 0 < ∫ t, φ t ^ 2) {c : ℝ} (hc0 : 0 < c)
+    {R N : ℕ} (hR : 2 ≤ R) (hRN4 : R ^ 4 ≤ N)
+    (hlog : 18 * (1 + Real.log R) ≤ Real.log N)
+    {u : EuclideanSpace ℝ (PrimeHorizonIndex N)} (hu : u ∈ conductorSubspace R N) :
+    |⟪Matrix.toEuclideanLin (separatedCrossErrorMatrix φ c N) u, u⟫| ≤
+      36 * (152 * (∫ t, |φ t|) ^ 2 / (∫ t, φ t ^ 2)) * c ^ 2 / Real.log N * ‖u‖ ^ 2 := by
+  let K₀ := 152 * (∫ t, |φ t|) ^ 2 / (∫ t, φ t ^ 2)
+  have hK₀ : 0 ≤ K₀ := by dsimp only [K₀]; positivity
+  have hN1 : 1 ≤ N := (pow_pos (by omega : 0 < R) 4).trans_le hRN4
+  have hN0 : (0 : ℝ) < N := by exact_mod_cast hN1
+  have hL : 0 < Real.log N := by
+    have hR0 := Real.log_natCast_nonneg R
+    linarith only [hlog, hR0]
+  let K : ℕ → ℕ → ℝ := fun n j =>
+    if 2 * (c / N) < |Real.log j - Real.log n| then
+      atomCrossErrorKernel (atomDilate φ (c / N)) n j else 0
+  have hmax_sq : ∀ x y : ℝ, (max x y) ^ 2 ≤ 2 * x * y + 2 * |x - y| ^ 2 := by
+    intro x y
+    rw [sq_abs]
+    rcases le_total x y with hxy | hyx
+    · rw [max_eq_right hxy]
+      nlinarith only [sq_nonneg (x - y), sq_nonneg x]
+    · rw [max_eq_left hyx]
+      nlinarith only [sq_nonneg (x - y), sq_nonneg y]
+  have hK_entry : ∀ n ∈ Icc 1 N, ∀ j ∈ Icc 1 N,
+      |K n j| ≤ 2 * K₀ * c ^ 2 *
+          (Real.sqrt ((n : ℝ) / N) * Real.sqrt ((j : ℝ) / N) / |(n : ℝ) - j| ^ 2) +
+        2 * K₀ * (c / N) ^ 2 := by
+    intro n hn j hj
+    by_cases hnj : n = j
+    · subst j
+      have hnot : ¬(2 * (c / N) < |Real.log n - Real.log n|) := by
+        rw [sub_self, abs_zero]; exact not_lt.mpr (by positivity)
+      dsimp only [K]
+      rw [if_neg hnot, abs_zero]
+      positivity
+    · have hd0 : 0 < |(n : ℝ) - j| ^ 2 :=
+        sq_pos_of_pos (abs_pos.mpr (sub_ne_zero.mpr (by exact_mod_cast hnj)))
+      have hb := abs_separatedCrossError_le hφ hsupp hM_int hc0 hN1 hn hj
+      calc
+        |K n j| ≤ (K₀ * (c / N) ^ 2) * (max (n : ℝ) j) ^ 2 / |(n : ℝ) - j| ^ 2 := hb
+        _ ≤ (K₀ * (c / N) ^ 2) * (2 * (n : ℝ) * j + 2 * |(n : ℝ) - j| ^ 2) / |(n : ℝ) - j| ^ 2 :=
+          div_le_div_of_nonneg_right
+            (mul_le_mul_of_nonneg_left (hmax_sq n j) (by positivity)) hd0.le
+        _ = 2 * K₀ * c ^ 2 *
+              (Real.sqrt ((n : ℝ) / N) * Real.sqrt ((j : ℝ) / N) / |(n : ℝ) - j| ^ 2) +
+            2 * K₀ * (c / N) ^ 2 := by
+          rw [← Real.sqrt_mul (by positivity)]
+          have hmul : ((n : ℝ) / N) * ((j : ℝ) / N) = ((n : ℝ) * j) / (N : ℝ) ^ 2 := by ring
+          rw [hmul, Real.sqrt_div (by positivity), Real.sqrt_sq hN0.le]
+          have hsnj : Real.sqrt ((n : ℝ) * j) = Real.sqrt n * Real.sqrt j :=
+            Real.sqrt_mul (Nat.cast_nonneg n) j
+          -- Wait: `(n : ℝ) * j = (Real.sqrt ((n : ℝ) * j))^2`? No, we don't have `√` on LHS!
+          -- Wait: on RHS we wrote `Real.sqrt (n / N) * Real.sqrt (j / N)`, whose product IS
+          -- `√(n * j) / N`, NOT `n * j / N^2`! Wait: check `(c / N)^2 * (n * j)`!
+          -- `(c / N)^2 * (n * j) = c^2 * (n / N) * (j / N)`, and since `n / N ≤ 1`? NO!
+          -- In `|u_n| * |u_j| * (n / N) * (j / N)`: `(n / N) * (j / N) ≤ √(n / N) * √(j / N)`!
           sorry
-    sorry
   sorry
+

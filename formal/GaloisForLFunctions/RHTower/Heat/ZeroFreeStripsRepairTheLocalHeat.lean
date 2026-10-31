@@ -198,7 +198,8 @@ theorem localHeatThreshold_mul_log_le_of_forall_ne_zero {ε t₀ : ℝ}
   have hmap : Tendsto (fun s : ℝ => (s : ℂ)) (𝓝[≠] t) (𝓝[≠] (t : ℂ)) :=
     Complex.continuous_ofReal.continuousAt.continuousWithinAt.tendsto_nhdsWithin
       (fun s hs => fun h => hs (Complex.ofReal_injective h))
-  have hXi : ∀ᶠ s : ℝ in 𝓝[≠] t, XiC (s : ℂ) ≠ 0 := hmap.eventually (eventually_XiC_ne_zero_punctured _)
+  have hXi : ∀ᶠ s : ℝ in 𝓝[≠] t, XiC (s : ℂ) ≠ 0 :=
+    hmap.eventually (eventually_XiC_ne_zero_punctured _)
   have hge : ∀ᶠ s : ℝ in 𝓝[≠] t, t₀ ≤ s :=
     nhdsWithin_le_nhds ((lt_mem_nhds (lt_of_le_of_lt (le_max_left _ _) ht)).mono fun s hs => hs.le)
   filter_upwards [hXi, hge] with s hs1 hs2 using h s hs2 hs1
@@ -289,7 +290,3 @@ theorem eventually_localHeat_le_iff_zeros_tend_to_the_line :
 end
 
 end RHTower.DeBruijn
-
-#print axioms RHTower.DeBruijn.eventually_localHeat_le_iff_zeros_tend_to_the_line
-#print axioms RHTower.DeBruijn.exists_localHeatThreshold_mul_log_le_of_strip
-#print axioms RHTower.Littlewood.exists_strip_window_count_bound

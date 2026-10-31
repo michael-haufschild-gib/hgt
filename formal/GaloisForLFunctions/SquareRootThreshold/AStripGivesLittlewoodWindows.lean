@@ -19,8 +19,8 @@ bound `|e^{−yu} − 1| ≤ |y|ℓe^{ℓ|y|}` under the integral near `x = 0`, 
 from it).
 
 **Strip window count** (`exists_strip_window_count_bound`).  If every zero of height `≥ T₀` has
-`|Re ρ − ½| ≤ d`, the errors sum to `c_k(ℓ)(d e^{2ℓd} C log T + O_{ℓ,T₀}(1))` by the weighted density
-`Σ m/(1 + (T − γ)²) ≤ C log T`, and Littlewood's argument gives, for large `T`,
+`|Re ρ − ½| ≤ d`, the errors sum to `c_k(ℓ)(d e^{2ℓd} C log T + O_{ℓ,T₀}(1))` by the weighted
+density `Σ m/(1 + (T − γ)²) ≤ C log T`, and Littlewood's argument gives, for large `T`,
 
   `ℓA² N(T − D/ℓ, T + D/ℓ) ≥ (E/2 − d e^{2ℓd} s(ℓ) C) log T − M`.
 -/
@@ -201,7 +201,8 @@ theorem norm_paperFT_cb_shift_sub_le {ℓ : ℝ} (hℓ : 0 < ℓ) (k : ℕ) (x :
       have : |y| ^ 2 ≤ |x| * |y| := by nlinarith [abs_nonneg y]
       linarith
     have h4 : (1 + |x|) ^ 2 ≤ 4 * x ^ 2 := by
-      nlinarith [sq_abs x, mul_nonneg (sub_nonneg.mpr hx.le) (by positivity : (0 : ℝ) ≤ 3 * |x| + 1)]
+      nlinarith [sq_abs x,
+        mul_nonneg (sub_nonneg.mpr hx.le) (by positivity : (0 : ℝ) ≤ 3 * |x| + 1)]
     have hterm1 : ‖-(paperFT (cb ℓ (k + 2)) z - paperFT (cb ℓ (k + 2)) x) / z ^ 2‖ *
         (1 + |x|) ^ 2 ≤ 4 * (|y| * ℓ * Real.exp (ℓ * |y|) * ∫ u, ‖cb ℓ (k + 2) u‖) := by
       rw [norm_div, norm_neg, norm_pow, div_mul_eq_mul_div, div_le_iff₀ hzn]

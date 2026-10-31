@@ -20,17 +20,17 @@ Let `d_H(q)` be the order of `q+H` in `ℚ/H`. It is positive and divides the or
 
 Consequently the column orbit under `T_b` has period `d_H(b/a)` and is orthonormal through that period. Its fixed projection has squared norm `1/d_H(b/a)`. If `c` is a natural multiple of `b`, the moving column of slope `c` is fixed by `T_c`. Averaging the other moving column over its `T_c` orbit leaves their pairing unchanged. The averaged moving norm is at most `1/d_H(c/a)`, because its discarded fixed-projection norm is nonnegative. Cauchy–Schwarz therefore bounds the squared moving pairing by `1/d_H(c/a)`.
 
-For finitely many indices and `N≥1`, choose `a_(N,i)=p^(N(i+1))/(p^(N(i+1))+1)`. These positive slopes tend to one, with pairwise valuation differences `N(i−j)`. A common step
+For `i<n`, set `e_i=(N+1)(i+1)`, `E=(N+1)(n+1)`, and choose
 
-`b_N=1/(p^N ∏_i (p^(N(i+1))+1))`
+`a_(N,i)=1+p^(-e_i)`, `b_N=p^(-E)`.
 
-makes every `a_(N,i)/b_N` a positive integer. Fixed diagonal norms tend to zero. For each off-diagonal pair, choose the orientation with negative valuation ratio; its moving pairing tends to zero. Continuity then gives the same projected Gram limit `J−I`, contradicting finite index.
+These positive slopes tend to one, and `a_(N,i)/b_N=p^E+p^(E−e_i)` is a positive integer. Their p-adic norms are `p^e_i`; thus `|b_N/a_(N,i)|_p≥p^(N+1)` and, for `i<j`, `|a_(N,j)/a_(N,i)|_p≥p^(N+1)`. The height bound gives `1/d_H(q)≤p^h/|q|_p`. Fixed diagonal norms and squared moving off-diagonal pairings are consequently bounded by `p^(h−N−1)`, which tends to zero. Continuity then gives the projected Gram limit `J−I`, contradicting finite index.
 
 ## Novelty and verification boundary
 
 The corpus supplies the integer-Haar obstruction, zero-axis polynomial correction, locally periodic projections, and the local Hecke index wall. The latter treats a specified Hecke kernel; it does not classify arbitrary finite-index carriers with a prescribed subgroup indicator.
 
-The finite-height and positive-endpoint lemmas, and the stronger saturation law, have complete Lean drafts pending checking. The quotient-order orbit formulas, prime-power grids, and generalized Gram limit still need Lean implementations. No complete Lean classification is claimed.
+The finite-height and norm bounds, positive endpoints, saturation law, quotient-order orbit formulas, and moving correlation bounds have complete Lean drafts pending checking. The prime-power grids and generalized Gram limit still need Lean implementations. No complete Lean classification is claimed.
 
 ## Gates
 
