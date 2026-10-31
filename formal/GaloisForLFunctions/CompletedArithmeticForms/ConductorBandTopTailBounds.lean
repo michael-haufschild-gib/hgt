@@ -46,7 +46,7 @@ theorem mem_conductorSubspace_normalizedRamanujanHorizonVector {m M N : ℕ}
 `conductorSubspace M N`. -/
 theorem sum_normalizedRamanujanHorizonVector_mem_conductorSubspace (M N : ℕ) (a : ℕ → ℝ) :
     (∑ m ∈ Icc 1 M, a m • normalizedRamanujanHorizonVector m N) ∈ conductorSubspace M N :=
-  Submodule.sum_mem _ fun m hm =>
+  Submodule.sum_mem _ fun _ hm =>
     Submodule.smul_mem _ _ (mem_conductorSubspace_normalizedRamanujanHorizonVector hm)
 
 /-- Conductor subspaces are monotone in the conductor cutoff. -/
@@ -66,9 +66,14 @@ theorem norm_sub_starProjection_sq_le {N : ℕ}
   have hmem : p - v ∈ K := K.sub_mem (K.starProjection_apply_mem x) hv
   have horth : ⟪x - p, p - v⟫ = 0 := K.starProjection_inner_eq_zero x (p - v) hmem
   have hdecomp : x - v = (x - p) + (p - v) := by abel
-  rw [hdecomp, ← real_inner_self_eq_norm_sq, inner_add_left, inner_add_right, inner_add_right,
-    real_inner_comm (p - v) (x - p), horth, real_inner_self_eq_norm_sq,
-    real_inner_self_eq_norm_sq]
+  have hexp : ‖x - v‖ ^ 2 = ‖x - p‖ ^ 2 + ‖p - v‖ ^ 2 := by
+    conv_lhs => rw [hdecomp]
+    rw [← real_inner_self_eq_norm_sq ((x - p) + (p - v)), inner_add_left, inner_add_right,
+      inner_add_right, horth]
+    have horth' : ⟪p - v, x - p⟫ = 0 := by rw [real_inner_comm, horth]
+    rw [horth', real_inner_self_eq_norm_sq, real_inner_self_eq_norm_sq]
+    ring
+  rw [hexp]
   nlinarith only [sq_nonneg ‖p - v‖]
 
 /-- Pythagorean decomposition for orthogonal projection on `EuclideanSpace ℝ (PrimeHorizonIndex N)`. -/
@@ -78,11 +83,11 @@ theorem norm_starProjection_sq_add_sub_sq {N : ℕ}
     ‖K.starProjection x‖ ^ 2 + ‖x - K.starProjection x‖ ^ 2 = ‖x‖ ^ 2 := by
   let p := K.starProjection x
   have horth : ⟪x - p, p⟫ = 0 := K.starProjection_inner_eq_zero x p (K.starProjection_apply_mem x)
+  have horth' : ⟪p, x - p⟫ = 0 := by rw [real_inner_comm, horth]
   have hdecomp : x = p + (x - p) := by abel
   conv_rhs => rw [hdecomp]
   rw [← real_inner_self_eq_norm_sq (p + (x - p)), inner_add_left, inner_add_right,
-    inner_add_right, real_inner_comm p (x - p), horth, real_inner_self_eq_norm_sq,
-    real_inner_self_eq_norm_sq]
+    inner_add_right, horth, horth', real_inner_self_eq_norm_sq, real_inner_self_eq_norm_sq]
   ring
 
 /-- Projecting onto a larger submodule `L` preserves orthogonality to any smaller `K ≤ L`. -/
@@ -93,10 +98,11 @@ theorem starProjection_mem_orthogonal_of_le {N : ℕ}
   rw [Submodule.mem_orthogonal]
   intro v hv
   have hx0 : ⟪v, x⟫ = 0 := (Submodule.mem_orthogonal K x).mp hx v hv
+  have hx0' : ⟪x, v⟫ = 0 := by rw [real_inner_comm, hx0]
   have hsub : ⟪x - L.starProjection x, v⟫ = 0 :=
     L.starProjection_inner_eq_zero x v (hKL hv)
-  rw [inner_sub_left, real_inner_comm x v, hx0, zero_sub, neg_eq_zero, real_inner_comm] at hsub
-  exact hsub
+  rw [inner_sub_left, hx0', zero_sub, neg_eq_zero] at hsub
+  rw [real_inner_comm, hsub]
 
 private theorem primeHorizonExtension_smul (N : ℕ) (s : ℝ)
     (x : EuclideanSpace ℝ (PrimeHorizonIndex N)) :
@@ -208,14 +214,13 @@ private theorem exists_quant_cutoffs {C₀ : ℝ} (hC₀ : 0 < C₀) :
   have hK1 : 0 < K + 1 := by linarith only [hK]
   have hinv1 : 1 ≤ 1 / δ := one_le_div hδ |>.mpr hδ1
   have hinv2 : 1 / δ ≤ 1 / δ ^ 2 := by
-    rw [one_div_le_one_div (sq_pos_of_pos hδ) hδ]
+    rw [div_le_div_iff₀ hδ (sq_pos_of_pos hδ)]
     nlinarith only [hδ.le, hδ1]
   have hinv3 : 1 / δ ^ 2 ≤ 1 / δ ^ 3 := by
-    rw [one_div_le_one_div (pow_pos hδ 3) (sq_pos_of_pos hδ)]
+    rw [div_le_div_iff₀ (sq_pos_of_pos hδ) (pow_pos hδ 3)]
     have hsq0 : 0 ≤ δ ^ 2 := sq_nonneg δ
     have hcube : δ ^ 3 = δ ^ 2 * δ := by ring
-    rw [hcube]
-    exact mul_le_of_le_one_right hsq0 hδ1
+    linarith only [mul_le_of_le_one_right hsq0 hδ1, hcube]
   obtain ⟨P, hP, hPlow, hPup⟩ := exists_nat_log_cutoff_quant
     (div_nonneg (mul_nonneg hC₀.le hK1.le) hδ.le)
   have hPR : (1 : ℝ) < P := by exact_mod_cast hP
@@ -267,7 +272,6 @@ private theorem exists_quant_cutoffs {C₀ : ℝ} (hC₀ : 0 < C₀) :
       _ = (B₃ / δ ^ 2) * (K + 1) := by
         dsimp only [B₃]
         field_simp [hδ.ne']
-        ring
   let z : ℝ := 2 * Real.log A + 2 * ladderConstant P + 4 +
     16 * (Real.log A + ladderConstant P) / δ
   have hfrac : 0 ≤ 16 * (Real.log A + ladderConstant P) / δ := by positivity
@@ -302,18 +306,21 @@ private theorem exists_quant_cutoffs {C₀ : ℝ} (hC₀ : 0 < C₀) :
   have hRbound : Real.log R ≤ C / δ ^ 3 * (K + 1) := by
     have hB₂0 : 0 ≤ B₂ := by dsimp only [B₂, B₁]; positivity
     have hB₃0 : 0 ≤ B₃ := by dsimp only [B₃]; positivity
-    have hA3 : Real.log A ≤ (B₃ / δ ^ 3) * (K + 1) :=
-      hAbound.trans (mul_le_mul_of_nonneg_right
-        (by simpa only [div_eq_mul_inv, one_div] using
-          mul_le_mul_of_nonneg_left hinv3 hB₃0) hK1.le)
-    have hL2 : ladderConstant P ≤ (B₂ / δ ^ 2) * (K + 1) :=
-      hLbound.trans (mul_le_mul_of_nonneg_right
-        (by simpa only [div_eq_mul_inv, one_div] using
-          mul_le_mul_of_nonneg_left hinv2 hB₂0) hK1.le)
-    have hL3 : ladderConstant P ≤ (B₂ / δ ^ 3) * (K + 1) :=
-      hL2.trans (mul_le_mul_of_nonneg_right
-        (by simpa only [div_eq_mul_inv, one_div] using
-          mul_le_mul_of_nonneg_left hinv3 hB₂0) hK1.le)
+    have hA3 : Real.log A ≤ (B₃ / δ ^ 3) * (K + 1) := by
+      refine hAbound.trans (mul_le_mul_of_nonneg_right ?_ hK1.le)
+      have hm := mul_le_mul_of_nonneg_left hinv3 hB₃0
+      linarith only [hm, (by ring : B₃ * (1 / δ ^ 2) = B₃ / δ ^ 2),
+        (by ring : B₃ * (1 / δ ^ 3) = B₃ / δ ^ 3)]
+    have hL2 : ladderConstant P ≤ (B₂ / δ ^ 2) * (K + 1) := by
+      refine hLbound.trans (mul_le_mul_of_nonneg_right ?_ hK1.le)
+      have hm := mul_le_mul_of_nonneg_left hinv2 hB₂0
+      linarith only [hm, (by ring : B₂ * (1 / δ) = B₂ / δ),
+        (by ring : B₂ * (1 / δ ^ 2) = B₂ / δ ^ 2)]
+    have hL3 : ladderConstant P ≤ (B₂ / δ ^ 3) * (K + 1) := by
+      refine hL2.trans (mul_le_mul_of_nonneg_right ?_ hK1.le)
+      have hm := mul_le_mul_of_nonneg_left hinv3 hB₂0
+      linarith only [hm, (by ring : B₂ * (1 / δ ^ 2) = B₂ / δ ^ 2),
+        (by ring : B₂ * (1 / δ ^ 3) = B₂ / δ ^ 3)]
     have hdiv : 16 * (Real.log A + ladderConstant P) / δ ≤
         ((16 * B₃ + 16 * B₂) / δ ^ 3) * (K + 1) := by
       have hsum : Real.log A + ladderConstant P ≤ ((B₃ + B₂) / δ ^ 2) * (K + 1) := by
@@ -327,7 +334,6 @@ private theorem exists_quant_cutoffs {C₀ : ℝ} (hC₀ : 0 < C₀) :
           div_le_div_of_nonneg_right (mul_le_mul_of_nonneg_left hsum (by norm_num)) hδ.le
         _ = ((16 * B₃ + 16 * B₂) / δ ^ 3) * (K + 1) := by
           field_simp [hδ.ne']
-          ring
     have h7 : (7 : ℝ) ≤ (7 / δ ^ 3) * (K + 1) := by
       have h13 : (1 : ℝ) ≤ 1 / δ ^ 3 := (hinv1.trans hinv2).trans hinv3
       have h1 : (1 : ℝ) ≤ (1 / δ ^ 3) * (K + 1) :=
@@ -566,9 +572,13 @@ theorem abs_norm_sum_normalizedRamanujanHorizonVector_sq_sub_le {Q N : ℕ}
       ∑ m ∈ Icc 1 Q, a m ^ 2| =
       |(∑ n ∈ Icc 1 N, (∑ m ∈ Icc 1 Q, a m * normalizedRamanujanMode m n) ^ 2 / (n : ℝ)) -
         Real.log N * ∑ m ∈ Icc 1 Q, a m ^ 2| / Real.log N := by
-    rw [norm_sum_normalizedRamanujanHorizonVector_sq, hsq_eq, ← abs_of_pos hL, ← abs_div]
-    congr 1
-    field_simp [hL.ne']
+    rw [norm_sum_normalizedRamanujanHorizonVector_sq, hsq_eq]
+    have heq : (∑ n ∈ Icc 1 N, (∑ m ∈ Icc 1 Q, a m * normalizedRamanujanMode m n) ^ 2 / (n : ℝ)) /
+          Real.log N - ∑ m ∈ Icc 1 Q, a m ^ 2 =
+        ((∑ n ∈ Icc 1 N, (∑ m ∈ Icc 1 Q, a m * normalizedRamanujanMode m n) ^ 2 / (n : ℝ)) -
+          Real.log N * ∑ m ∈ Icc 1 Q, a m ^ 2) / Real.log N := by
+      field_simp [hL.ne']
+    rw [heq, abs_div, abs_of_pos hL]
   rw [hdiv]
   have hγ : |Real.eulerMascheroniConstant| ≤ 1 := by
     rw [abs_le]
@@ -577,8 +587,11 @@ theorem abs_norm_sum_normalizedRamanujanHorizonVector_sq_sub_le {Q N : ℕ}
     have h2 := Real.eulerMascheroniConstant_lt_two_thirds
     constructor <;> linarith
   have hlog4 : Real.log (4 : ℝ) ≤ 2 := by
-    have h := Real.log_le_sub_one_of_pos (x := (4 : ℝ)) (by norm_num)
-    linarith only [h]
+    have h2 : Real.log (2 : ℝ) ≤ 1 := by
+      linarith only [Real.log_le_sub_one_of_pos (show (0 : ℝ) < 2 by norm_num)]
+    have h4 : (4 : ℝ) = 2 * 2 := by norm_num
+    rw [h4, Real.log_mul (by norm_num) (by norm_num)]
+    linarith only [h2]
   have hquad : (Q : ℝ) * ((Q : ℝ) - 1) / ((N : ℝ) + 1) ≤ 1 := by
     have h : (Q : ℝ) * Q ≤ N := by exact_mod_cast hQN
     rw [div_le_one (by positivity)]
@@ -626,13 +639,13 @@ theorem abs_inner_sum_normalizedRamanujanHorizonVector_of_orthog_le {Q N : ℕ}
   have ha'sq : (∑ m ∈ Icc 1 Q, a' m ^ 2) = 1 := by
     have h1 : (∑ m ∈ Icc 1 Q, a' m ^ 2) = A / A := by
       dsimp only [a', A]
-      rw [← sum_div]
+      rw [sum_div]
       exact sum_congr rfl fun m _ => by rw [div_pow, Real.sq_sqrt hAp.le]
     rw [h1, div_self hAp.ne']
   have hb'sq : (∑ m ∈ Icc 1 Q, b' m ^ 2) = 1 := by
     have h1 : (∑ m ∈ Icc 1 Q, b' m ^ 2) = B / B := by
       dsimp only [b', B]
-      rw [← sum_div]
+      rw [sum_div]
       exact sum_congr rfl fun m _ => by rw [div_pow, Real.sq_sqrt hBp.le]
     rw [h1, div_self hBp.ne']
   have horth' : (∑ m ∈ Icc 1 Q, a' m * b' m) = 0 := by
@@ -653,7 +666,7 @@ theorem abs_inner_sum_normalizedRamanujanHorizonVector_of_orthog_le {Q N : ℕ}
     have hexp : (∑ m ∈ Icc 1 Q, (a' m - b' m) ^ 2) =
         (∑ m ∈ Icc 1 Q, a' m ^ 2) + (∑ m ∈ Icc 1 Q, b' m ^ 2) -
           2 * ∑ m ∈ Icc 1 Q, a' m * b' m := by
-      rw [mul_sum, ← sum_sub_distrib, ← sum_add_distrib]
+      rw [mul_sum, ← sum_add_distrib, ← sum_sub_distrib]
       exact sum_congr rfl fun m _ => by ring
     rw [hexp, ha'sq, hb'sq, horth']
     norm_num
@@ -794,9 +807,11 @@ theorem low_band_norm_le_of_mem_orthogonal {Q R N : ℕ} (hQ1 : 1 ≤ Q) (hQR : 
     have := Real.log_natCast_nonneg R; positivity
   have hbound_sq : (1 / 2 : ℝ) * Real.sqrt (∑ m ∈ Icc 1 Q, a m ^ 2) ^ 2 ≤
       (18 * (1 + Real.log R) / Real.log N * ‖u‖) * Real.sqrt (∑ m ∈ Icc 1 Q, a m ^ 2) := by
-    rw [Real.sq_sqrt (sum_nonneg fun _ _ => sq_nonneg _), ← haLow_sq]
     calc
-      (1 / 2 : ℝ) * (∑ m ∈ Icc 1 R, aLow m ^ 2) ≤ ‖uLow‖ ^ 2 := hrieszLow.1
+      (1 / 2 : ℝ) * Real.sqrt (∑ m ∈ Icc 1 Q, a m ^ 2) ^ 2 =
+          (1 / 2 : ℝ) * ∑ m ∈ Icc 1 R, aLow m ^ 2 := by
+        rw [Real.sq_sqrt (sum_nonneg fun _ _ => sq_nonneg _), haLow_sq]
+      _ ≤ ‖uLow‖ ^ 2 := hrieszLow.1
       _ = |‖uLow‖ ^ 2| := (abs_of_nonneg (sq_nonneg _)).symm
       _ = |⟪uLow, uHigh⟫| := by rw [hself_eq, abs_neg]
       _ ≤ 9 * (1 + Real.log R) / Real.log N *
@@ -808,11 +823,16 @@ theorem low_band_norm_le_of_mem_orthogonal {Q R N : ℕ} (hQ1 : 1 ≤ Q) (hQR : 
         rw [haLow_sq]; ring
   have hsLow : Real.sqrt (∑ m ∈ Icc 1 Q, a m ^ 2) ≤
       36 * (1 + Real.log R) / Real.log N * ‖u‖ := by
-    by_cases hz : Real.sqrt (∑ m ∈ Icc 1 Q, a m ^ 2) = 0
-    · rw [hz]; positivity
-    · have hpos : 0 < Real.sqrt (∑ m ∈ Icc 1 Q, a m ^ 2) :=
-        lt_of_le_of_ne (Real.sqrt_nonneg _) (Ne.symm hz)
-      nlinarith only [hbound_sq, hpos]
+    let S := Real.sqrt (∑ m ∈ Icc 1 Q, a m ^ 2)
+    let M := 18 * (1 + Real.log R) / Real.log N * ‖u‖
+    change (1 / 2 : ℝ) * S ^ 2 ≤ M * S at hbound_sq
+    by_cases hz : S = 0
+    · change S ≤ _; rw [hz]; positivity
+    · have hpos : 0 < S := lt_of_le_of_ne (Real.sqrt_nonneg _) (Ne.symm hz)
+      have hhalf : (1 / 2 : ℝ) * S ≤ M := le_of_mul_le_mul_right
+        (by linarith only [hbound_sq, (by ring : (1 / 2 : ℝ) * S * S = (1 / 2 : ℝ) * S ^ 2)]) hpos
+      change S ≤ _
+      linarith only [hhalf, (by dsimp only [M]; ring : 2 * M = 36 * (1 + Real.log R) / Real.log N * ‖u‖)]
   refine ⟨hsLow, ?_⟩
   rw [huLow_eq]
   have hnorm_le : ‖uLow‖ ≤ (3 / 2 : ℝ) * Real.sqrt (∑ m ∈ Icc 1 Q, a m ^ 2) := by
@@ -912,8 +932,9 @@ theorem poleDefect_ge_of_supported_above {Q R N : ℕ} (hQ : 2 ≤ Q) (hQR : Q �
       have := Real.log_natCast_nonneg R; positivity
     calc
       |⟪y, v⟫| ≤ 9 * (1 + Real.log R) / Real.log N *
-          (Real.sqrt (∑ m ∈ Icc 1 R, a m ^ 2) * Real.sqrt (∑ m ∈ Icc 1 R, b' m ^ 2)) := by
-        linarith only [hoff.trans_eq (by ring)]
+          Real.sqrt (∑ m ∈ Icc 1 R, a m ^ 2) * Real.sqrt (∑ m ∈ Icc 1 R, b' m ^ 2) := hoff
+      _ = 9 * (1 + Real.log R) / Real.log N *
+          (Real.sqrt (∑ m ∈ Icc 1 R, a m ^ 2) * Real.sqrt (∑ m ∈ Icc 1 R, b' m ^ 2)) := by ring
       _ ≤ 9 * (1 + Real.log R) / Real.log N * (2 * ‖y‖ * ‖v‖) :=
         mul_le_mul_of_nonneg_left hprod_sqrt hcoef0
       _ = (18 * (1 + Real.log R) / Real.log N) * (‖y‖ * ‖v‖) := by ring
@@ -948,8 +969,10 @@ theorem sum_Ioc_packet_sq_le {R K N : ℕ} (hR : 2 ≤ R) (hRK : R * R ≤ K) (h
     (a : ℕ → ℝ) :
     (∑ n ∈ Ioc K N, (∑ m ∈ Icc 1 R, a m * ramanujanPoleProfile m n) ^ 2) ≤
       ((harmonic N : ℝ) - harmonic K + 2) * ∑ m ∈ Icc 1 R, a m ^ 2 := by
-  have hset : Ioc K N = Icc 1 N \ Icc 1 K := by
-    ext n; simp only [mem_Ioc, mem_sdiff, mem_Icc]; omega
+  have hK1 : 1 ≤ K := (Nat.mul_le_mul hR hR).trans hRK |>.trans' (by omega)
+  have hset : Ioc K N = Icc 1 N \ Icc 1 K := Finset.ext fun n => by
+    simp only [mem_Ioc, mem_sdiff, mem_Icc]
+    omega
   have hpole (X : ℕ) : (∑ n ∈ Icc 1 X, (∑ m ∈ Icc 1 R, a m * ramanujanPoleProfile m n) ^ 2) =
       ∑ n ∈ Icc 1 X, (∑ m ∈ Icc 1 R, a m * normalizedRamanujanMode m n) ^ 2 / (n : ℝ) := by
     refine sum_congr rfl fun n hn => ?_
@@ -959,10 +982,16 @@ theorem sum_Ioc_packet_sq_le {R K N : ℕ} (hR : 2 ≤ R) (hRK : R * R ≤ K) (h
       rw [sum_div]
       exact sum_congr rfl fun m _ => by rw [ramanujanPoleProfile, mul_div_assoc]
     rw [hs, div_pow, Real.sq_sqrt hn0.le]
+  have hsdiff :
+      (∑ n ∈ Icc 1 N \ Icc 1 K, (∑ m ∈ Icc 1 R, a m * ramanujanPoleProfile m n) ^ 2) +
+        ∑ n ∈ Icc 1 K, (∑ m ∈ Icc 1 R, a m * ramanujanPoleProfile m n) ^ 2 =
+      ∑ n ∈ Icc 1 N, (∑ m ∈ Icc 1 R, a m * ramanujanPoleProfile m n) ^ 2 :=
+    sum_sdiff (Icc_subset_Icc le_rfl hKN)
   have hdiff : (∑ n ∈ Ioc K N, (∑ m ∈ Icc 1 R, a m * ramanujanPoleProfile m n) ^ 2) =
       (∑ n ∈ Icc 1 N, (∑ m ∈ Icc 1 R, a m * normalizedRamanujanMode m n) ^ 2 / (n : ℝ)) -
         ∑ n ∈ Icc 1 K, (∑ m ∈ Icc 1 R, a m * normalizedRamanujanMode m n) ^ 2 / (n : ℝ) := by
-    rw [hset, eq_sub_iff_add_eq.mpr (sum_sdiff (Icc_subset_Icc le_rfl hKN)), hpole N, hpole K]
+    rw [hset, ← hpole N, ← hpole K]
+    linarith only [hsdiff]
   rw [hdiff]
   have hM : 0 ≤ ∑ m ∈ Icc 1 R, a m ^ 2 := sum_nonneg fun _ _ => sq_nonneg _
   have hqK : (R : ℝ) * ((R : ℝ) - 1) / ((K : ℝ) + 1) ≤ 1 := by
@@ -1130,14 +1159,19 @@ theorem sum_linear_moment_sq_le_of_mem_conductorSubspace {R N : ℕ} (hR : 2 ≤
       exact mul_le_mul_of_nonneg_right hrat (sq_nonneg _)
   have hsum := sum_le_sum hpoint
   rw [sum_add_distrib, ← mul_sum, ← sum_filter, sum_primeHorizonExtension_sq] at hsum
-  have htail := (le_div_iff₀ hL0).mpr (by
-    simpa only [mul_comm (Real.log N), mul_assoc] using
-      sum_quotient_tail_sq_le_of_mem_conductorSubspace hR hT1 hRN hlog hu)
+  have htail : (∑ n ∈ (Icc 1 N).filter (fun n : ℕ => (N : ℝ) / n < T),
+        primeHorizonExtension u n ^ 2) ≤
+      2 * (Real.log (2 * T) + 3) * ‖u‖ ^ 2 / Real.log N := by
+    rw [le_div_iff₀ hL0, mul_comm _ (Real.log N)]
+    exact sum_quotient_tail_sq_le_of_mem_conductorSubspace hR hT1 hRN hlog hu
   have h2T : Real.log (2 * T) ≤ Real.log (Real.log N) + 2 := by
     have h4L : 2 * T ≤ 4 * Real.log N := by dsimp only [T]; linarith only [hL1]
     have hlog4 : Real.log (4 : ℝ) ≤ 2 := by
-      have h := Real.log_le_sub_one_of_pos (x := (4 : ℝ)) (by norm_num)
-      linarith only [h]
+      have h2 : Real.log (2 : ℝ) ≤ 1 := by
+        linarith only [Real.log_le_sub_one_of_pos (show (0 : ℝ) < 2 by norm_num)]
+      have h4 : (4 : ℝ) = 2 * 2 := by norm_num
+      rw [h4, Real.log_mul (by norm_num) (by norm_num)]
+      linarith only [h2]
     calc
       Real.log (2 * T) ≤ Real.log (4 * Real.log N) := Real.log_le_log (by positivity) h4L
       _ = Real.log 4 + Real.log (Real.log N) := Real.log_mul (by norm_num) hL0.ne'

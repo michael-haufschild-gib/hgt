@@ -18,6 +18,10 @@ threshold. The finite head supplies the cell coordinate, while its tail
 and the other factors lie in the conjugated-Iwahori intersection. Uniqueness reduces to vanishing of a finite polynomial
 whose shifted parameter lies in the required positive-series ideal.
 
+The audited identity `B=projection⁻¹(Iwahori)` absorbs central discrepancies
+when lifting matrix representatives modulo Borel. Exact character triviality
+of residual unipotent factors remains necessary for periodization.
+
 Right cosets in `B w B/B` use `I(w⁻¹)`. Representatives `u w⁻¹`, indexed by
 `I(w)`, must be used when matching the existing Weyl-sum convention.
 
@@ -32,5 +36,6 @@ countability of the actual arithmetic coset set.
 Inversion intervals, both Iwahori Gauss factorizations and unique Weyl double-coset
 labels are audited. [Positive translations](../3-formalized/positive-affine-translations-have-finite-polynomial-cells.md)
 now have finite polynomial representatives of degree below `2n`, with direct
-Lean and axiom audits. Negative translations, reflections, uniqueness and
-arithmetic restriction remain unproved.
+Lean and axiom audits. Negative translations and both reflection families
+have [complete paper proofs and Lean implementations awaiting audit](../2-fully-proven/affine-monomial-cells-have-finite-polynomial-representatives.md).
+Uniqueness and arithmetic restriction remain unproved.

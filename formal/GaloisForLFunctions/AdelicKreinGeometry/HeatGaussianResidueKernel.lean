@@ -30,6 +30,7 @@ contour integration along `Im z = ∓1`:
 open Complex Polynomial Set Filter Topology MeasureTheory intervalIntegral
 open scoped ComplexConjugate BigOperators Interval
 open GaloisForLFunctions.HTGeometry GaloisForLFunctions.HeckeKreinToeplitz
+open GaloisForLFunctions.ArithmeticPositiveDuality
 open RHTower RHTower.DeBruijn
 
 noncomputable section
@@ -203,7 +204,7 @@ theorem tendsto_heatDilationKernel_nhds {t₁ : ℝ} (ht₁ : 0 < t₁) (v : pos
 /-- **Pointwise time continuity of the source-defined dilation kernel** across `(0, ∞)`. -/
 theorem continuousOn_heatDilationKernel (v : posUnits) :
     ContinuousOn (fun t => heatDilationKernel t v) (Ioi 0) :=
-  fun _ ht => (tendsto_heatDilationKernel_nhds ht v).continuousWithinAt
+  fun _ ht => (tendsto_heatDilationKernel_nhds ht v).mono_left nhdsWithin_le_nhds
 
 /-! ### Cleared analytic germs, residue polynomials, and Laurent evaluation -/
 
@@ -242,7 +243,9 @@ private theorem analyticAt_heatBaseGerm (t : ℝ) (u : ℂ) :
     have hden : u + (0 : ℂ) - w ≠ 0 := by
       rw [add_zero]
       exact sub_ne_zero.mpr hwu.symm
-    exact AnalyticAt.pow (AnalyticAt.div (by fun_prop) (by fun_prop) hden) _
+    have hnum_an : AnalyticAt ℂ (fun τ : ℂ => u + τ - conj w) 0 := by fun_prop
+    have hden_an : AnalyticAt ℂ (fun τ : ℂ => u + τ - w) 0 := by fun_prop
+    exact (hnum_an.div hden_an hden).pow _
   have h3 : AnalyticAt ℂ (fun τ : ℂ => cexp (-((u + τ) ^ 2))) 0 := by fun_prop
   exact (h1.mul h2).mul h3
 
@@ -263,7 +266,7 @@ private theorem heatBaseGerm_zero_ne_zero {t : ℝ} (ht : 0 < t) {u : ℂ}
     refine Finset.prod_ne_zero_iff.mpr fun w hw => pow_ne_zero _ ?_
     have hwu : w ≠ u := Finset.ne_of_mem_erase hw
     have hwneg : w.im < 0 := ((mem_heatRightZeroSet ht).mp (Finset.mem_of_mem_erase hw)).2
-    rw [add_zero, add_zero]
+    rw [add_zero]
     refine div_ne_zero ?_ (sub_ne_zero.mpr hwu.symm)
     intro h0
     have him := congrArg Complex.im h0
@@ -361,11 +364,13 @@ theorem heatResiduePoly_ne_zero {t : ℝ} (ht : 0 < t) {u : ℂ} (hu : u ∈ hea
     heatResiduePoly t u ≠ 0 := by
   set d := zeroMult (riemannHeat t) u - 1
   have hlead : (heatResiduePoly t u).coeff d ≠ 0 := by
-    rw [coeff_heatResiduePoly, if_pos le_rfl]
+    rw [coeff_heatResiduePoly]
+    dsimp only [d]
+    rw [if_pos le_rfl]
     simp only [Nat.choose_self, Nat.cast_one, one_mul, Nat.sub_self, iteratedDeriv_zero]
     refine div_ne_zero (mul_ne_zero (pow_ne_zero _ (neg_ne_zero.mpr I_ne_zero))
       (heatBaseGerm_zero_ne_zero ht hu)) ?_
-    exact Nat.cast_ne_zero.mpr d.factorial_ne_zero
+    exact Nat.cast_ne_zero.mpr (zeroMult (riemannHeat t) u - 1).factorial_ne_zero
   intro h0
   rw [h0, Polynomial.coeff_zero] at hlead
   exact hlead rfl
@@ -377,11 +382,13 @@ theorem natDegree_heatResiduePoly_add_one {t : ℝ} (ht : 0 < t) {u : ℂ}
     one_le_zeroMult_riemannHeat ht.le ((mem_heatRightZeroSet ht).mp hu).1
   set d := zeroMult (riemannHeat t) u - 1
   have hlead : (heatResiduePoly t u).coeff d ≠ 0 := by
-    rw [coeff_heatResiduePoly, if_pos le_rfl]
+    rw [coeff_heatResiduePoly]
+    dsimp only [d]
+    rw [if_pos le_rfl]
     simp only [Nat.choose_self, Nat.cast_one, one_mul, Nat.sub_self, iteratedDeriv_zero]
     refine div_ne_zero (mul_ne_zero (pow_ne_zero _ (neg_ne_zero.mpr I_ne_zero))
       (heatBaseGerm_zero_ne_zero ht hu)) ?_
-    exact Nat.cast_ne_zero.mpr d.factorial_ne_zero
+    exact Nat.cast_ne_zero.mpr (zeroMult (riemannHeat t) u - 1).factorial_ne_zero
   have hdeg_le : (heatResiduePoly t u).natDegree ≤ d := by
     rw [Polynomial.natDegree_le_iff_coeff_eq_zero]
     intro N hN
@@ -420,7 +427,7 @@ theorem laurentCoeff_heatBlaschke_eq_jordanForward {t : ℝ} (ht : 0 < t) {u : �
         (heatBaseGerm t u τ * cexp ((-I * (y : ℂ)) * τ))) 0 =
       cexp (-I * u * (y : ℂ)) *
         iteratedDeriv d (fun τ : ℂ => heatBaseGerm t u τ * cexp ((-I * (y : ℂ)) * τ)) 0 :=
-    iteratedDeriv_const_mul_field _ _
+    _root_.iteratedDeriv_const_mul_field _ _
   have hleibniz : iteratedDeriv d
       (fun τ : ℂ => heatBaseGerm t u τ * cexp ((-I * (y : ℂ)) * τ)) 0 =
       ∑ r ∈ Finset.range (d + 1),
@@ -463,7 +470,9 @@ private theorem analyticAt_heatIntegrand_of_notMem (t y : ℝ) {s : ℂ}
     unfold heatBlaschkeMeromorphic
     refine analyticAt_finset_prod _ _ s fun u hu => ?_
     have hsu : s - u ≠ 0 := sub_ne_zero.mpr fun heq => hs (heq ▸ hu)
-    exact AnalyticAt.pow (AnalyticAt.div (by fun_prop) (by fun_prop) hsu) _
+    have hnum_an : AnalyticAt ℂ (fun z : ℂ => z - conj u) s := by fun_prop
+    have hden_an : AnalyticAt ℂ (fun z : ℂ => z - u) s := by fun_prop
+    exact (hnum_an.div hden_an hsu).pow _
   have hG : AnalyticAt ℂ (heatGaussianWave y) s := by
     unfold heatGaussianWave; fun_prop
   exact hB.mul hG
@@ -498,7 +507,7 @@ private theorem tendsto_vIntegral_heatIntegrand_zero {t : ℝ} (ht : 0 < t) (y :
         1 / 2 ≤ ‖(((sgn * R : ℝ) : ℂ) + (τ : ℂ) * I) - u‖ := by
       intro u hu
       have hu_le : |u.re| ≤ ∑ w ∈ heatRightZeroSet t, |w.re| :=
-        Finset.single_le_sum (fun _ _ => abs_nonneg _) hu
+        Finset.single_le_sum (f := fun w : ℂ => |w.re|) (fun _ _ => abs_nonneg _) hu
       have hre_abs : |sgn * R - u.re| ≥ 1 := by
         have h1 : |sgn * R| - |u.re| ≤ |sgn * R - u.re| := abs_sub_abs_le_abs_sub _ _
         rw [abs_mul, hsgn, one_mul, abs_of_pos (by linarith : 0 < R)] at h1
@@ -562,7 +571,7 @@ theorem heatForwardDilation_eq_sum_laurentCoeff {t : ℝ} (ht : 0 < t) (v : posU
     rw [rectangle_mem_nhds_iff, hzR_re, hwR_re, hzR_im, hwR_im,
       Set.uIoo_of_lt (by linarith : -R < R), Set.uIoo_of_lt (by norm_num : (-1 : ℝ) < 1)]
     have hu_re : |u.re| ≤ ∑ w ∈ heatRightZeroSet t, |w.re| :=
-      Finset.single_le_sum (fun _ _ => abs_nonneg _) hu
+      Finset.single_le_sum (f := fun w : ℂ => |w.re|) (fun _ _ => abs_nonneg _) hu
     have hu_im : |u.im| < 1 / 2 :=
       abs_im_lt_half_of_riemannHeat_eq_zero ht ((mem_heatRightZeroSet ht).mp hu).1
     obtain ⟨hre1, hre2⟩ := abs_le.mp hu_re
@@ -573,24 +582,26 @@ theorem heatForwardDilation_eq_sum_laurentCoeff {t : ℝ} (ht : 0 < t) (v : posU
       heatLowerBlaschkeBoundary t r * heatGaussianWave y ((r : ℂ) - I) := by
     intro r
     have hc : (r : ℂ) + ((-1 : ℝ) : ℂ) * I = (r : ℂ) - I := by push_cast; ring
+    dsimp only [G]
     rw [hc, ← heatLowerBlaschkeBoundary_eq ht r]
   have htop_eq : ∀ r : ℝ, G ((r : ℂ) + ((1 : ℝ) : ℂ) * I) =
       heatUpperBlaschkeBoundary t r * heatGaussianWave y ((r : ℂ) + I) := by
     intro r
     have hc : (r : ℂ) + ((1 : ℝ) : ℂ) * I = (r : ℂ) + I := by push_cast; ring
+    dsimp only [G]
     rw [hc, ← heatUpperBlaschkeBoundary_eq ht r]
   have hbot_lim : Tendsto (fun R : ℝ => HIntegral G (-R) R (-1)) atTop
       (𝓝 (∫ r : ℝ, heatLowerBlaschkeBoundary t r * heatGaussianWave y ((r : ℂ) - I))) := by
     have h := intervalIntegral_tendsto_integral (integrable_heatLowerTerm ht y)
       tendsto_neg_atTop_atBot tendsto_id
     refine h.congr fun R => ?_
-    simp only [HIntegral, hbot_eq]
+    simp only [HIntegral, id_eq, hbot_eq]
   have htop_lim : Tendsto (fun R : ℝ => HIntegral G (-R) R 1) atTop
       (𝓝 (∫ r : ℝ, heatUpperBlaschkeBoundary t r * heatGaussianWave y ((r : ℂ) + I))) := by
     have h := intervalIntegral_tendsto_integral (integrable_heatUpperTerm ht y)
       tendsto_neg_atTop_atBot tendsto_id
     refine h.congr fun R => ?_
-    simp only [HIntegral, htop_eq]
+    simp only [HIntegral, id_eq, htop_eq]
   have hvR_lim : Tendsto (fun R : ℝ => VIntegral G R (-1) 1) atTop (𝓝 0) := by
     simpa [one_mul] using tendsto_vIntegral_heatIntegrand_zero ht y 1 (by norm_num)
   have hvnR_lim : Tendsto (fun R : ℝ => VIntegral G (-R) (-1) 1) atTop (𝓝 0) := by

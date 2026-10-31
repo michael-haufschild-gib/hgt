@@ -1032,7 +1032,7 @@ theorem twoScale_bifurcation_sharpness (n : ℕ) {ε : ℝ} (hε0 : 0 < ε) (hε
       have hre_le : (z - w).re ≤ 2 * Real.sqrt ε := by
         rcases Finset.mem_insert.mp hz with rfl | hz' <;>
         rcases Finset.mem_insert.mp hw with rfl | hw'
-        · simp; linarith
+        · simp
         · rw [Finset.mem_singleton.mp hw', hzMinus, hzPlus]
           simp only [Complex.sub_re, Complex.add_re, Complex.ofReal_re, h12]
           linarith
@@ -1040,7 +1040,7 @@ theorem twoScale_bifurcation_sharpness (n : ℕ) {ε : ℝ} (hε0 : 0 < ε) (hε
           simp only [Complex.sub_re, Complex.add_re, Complex.ofReal_re, h12]
           linarith
         · rw [Finset.mem_singleton.mp hz', Finset.mem_singleton.mp hw']
-          simp; linarith
+          simp
       have ha_pos : 0 < zhukovskyMajorAxis n := zhukovskyMajorAxis_pos n
       have hsub_lt : (z - w).re - 1 / 2 < -zhukovskyMajorAxis n := by
         unfold zhukovskyMajorAxis; linarith

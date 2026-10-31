@@ -3,6 +3,7 @@ import GaloisForLFunctions.RenormalizedIntersectionTheory.TheKunnethInertiaLaw
 import GaloisForLFunctions.RenormalizedIntersectionTheory.TheRenormalizedHodgeIndex
 import GaloisForLFunctions.RenormalizedIntersectionTheory.ThePoleClassIsTheGroundConductor
 import GaloisForLFunctions.RenormalizedIntersectionTheory.TheHodgeIndexHoldsAtEveryFixedOverlap
+import GaloisForLFunctions.RenormalizedIntersectionTheory.TheExtremalWeightIsDense
 
 /-!
 # Renormalized Intersection Theory of the Scaling Surface

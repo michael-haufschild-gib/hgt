@@ -96,7 +96,8 @@ theorem norm_paperFT_shift_sub_le {f : ℝ → ℂ} {a : ℝ} (ha : 0 ≤ a) (hf
   have hfac : f u * Complex.exp (I * ((x : ℂ) + (y : ℂ) * I) * (u : ℂ)) -
       f u * Complex.exp (I * (x : ℂ) * (u : ℂ)) =
       f u * Complex.exp (I * (x : ℂ) * (u : ℂ)) * (((Real.exp (-(y * u)) - 1 : ℝ)) : ℂ) := by
-    rw [hexp, Complex.exp_add]; push_cast; ring
+    rw [hexp, Complex.exp_add, Complex.ofReal_sub, Complex.ofReal_exp, Complex.ofReal_one]
+    ring
   rw [hfac, norm_mul, norm_mul, Complex.norm_exp, Complex.norm_real, Real.norm_eq_abs]
   have hre : (I * (x : ℂ) * (u : ℂ)).re = 0 := by
     simp only [mul_re, mul_im, I_re, I_im, ofReal_re, ofReal_im]; ring

@@ -719,3 +719,8 @@ theorem exists_zero_le_of_negIndex_archGlueAt_ratCorr_ne (hs0 : 0 < s) (hs1 : s 
 end Orbit
 
 end GaloisForLFunctions.AdelicKreinGeometry
+
+#print axioms GaloisForLFunctions.AdelicKreinGeometry.negIndex_archGlueAt_eq
+#print axioms GaloisForLFunctions.AdelicKreinGeometry.negIndex_archGlueAt_orbitCorr
+#print axioms GaloisForLFunctions.AdelicKreinGeometry.exists_zero_le_of_negIndex_archGlueAt_ratCorr_ne
+#print axioms GaloisForLFunctions.AdelicKreinGeometry.negIndex_archGlue_ratCorr_add_polePair

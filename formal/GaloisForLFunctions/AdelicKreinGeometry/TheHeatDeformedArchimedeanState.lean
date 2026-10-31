@@ -97,7 +97,7 @@ theorem tendsto_heatArchState_nhds {t₁ : ℝ} (ht₁ : 0 < t₁) (c : ℝ) (g 
 collisions. -/
 theorem continuousOn_heatArchState (c : ℝ) (g : AffineGroupQ) :
     ContinuousOn (fun t => heatArchState c t g) (Ioi 0) :=
-  fun _ ht => (tendsto_heatArchState_nhds ht c g).continuousWithinAt
+  fun _ ht => (tendsto_heatArchState_nhds ht c g).mono_left nhdsWithin_le_nhds
 
 /-! ### Finiteness and exact Pontryagin index at every `t > 0` -/
 
