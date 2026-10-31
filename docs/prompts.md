@@ -390,20 +390,18 @@ goal is met when 250 discharges could be made.
 
 
 ## update obstacles
-previously we had created these documents:
-- docs/reports/review-3010/walls-ledger.md
-- docs/reports/review-3010/route-obstacles.md
-- docs/reports/review-3010/route-unification-ledger.md
-- docs/reports/review-3010/obstacles-summary.md
+earlier today we created these documents:
+- docs/reports/review-3110/walls-ledger.md
+- docs/reports/review-3110/route-obstacles.md
+- docs/reports/review-3110/route-unification-ledger.md
+- docs/reports/review-3110/obstacles-summary.md
   
 read:
 - docs/reports/rh-current-frontier-map.md
 - docs/reports/rh-killed-routes.md
 
-supporting facts:
-- docs/reports/researchlogs/big-pictures.md
   
-create new versions of the reviews from scratch to reflect the current status quo and frontier of our research:
+update the review reflect the current status quo and frontier of our research taking into account all new lean proofs and changes done since the original reports were written:
 1. a complete report about each route and route candidate and what the hard mathematical obstacles are that block us from closing the route. split these into a) obstacles that we can solve and are "just work", and b) obstacles that are open mathematical problems nobody has a solution to
 2. then create a summary document that combines all the information and:
    2.1 lists all tasks / obstacles that we can solve and are "just work"
@@ -428,7 +426,7 @@ first collect information in a working log in logs/ - facts, not process or stat
 
 the reports are not diaries or history log, but status quo reports.
 
-create the new reports in folder docs/reports/review-3110/
+rewrite the reports in folder docs/reports/review-3110/ without history language or "this changed since last review".
 do not run builds. this is not a task to verify the work of other agents but to create consolidated reports and "big picture" interpretations on their research results.
 
 
@@ -492,11 +490,11 @@ do not run any builds. do not search the web. do not grep for sorry or other shi
 
 Do not use the hgtl7 skill.
 
-read and understand docs/reports/review-3010/reboot-final.md
+read and understand docs/reports/review-3110/obstacles-summary.md
 
-under "## 6. Research programme" it describes a research programme based on the findings in chapter "## 4. Solution shapes".
+under "## 2.6 Does closing RH need a new field?" it describes a new field/research programme called "renormalized intersection theory of the scaling surface".
 
-Your task: develop this research programme and do the actual research and formalization.
+Your task: develop this field/research programme and do the actual research and formalization.
 
 Follow the example of other research programmes: formal/GaloisForLFunctions/ArithmeticCastelnuovoSeveri or formal/GaloisForLFunctions/ArithmeticOrientationGeometry
 
@@ -612,9 +610,9 @@ Put all lean code for the answer into its own subfolder.
 
 Do not use the hgtl7 skill.
 
-read and understand docs/reports/review-3110/obstacles-summary.md and docs/reports/researchlogs/big-pictures.md
+read and understand docs/reports/review-3110/obstacles-summary.md
 
-the obstacles-summary document asks one question: Do multivariate, parity-selective integer auxiliaries (outside the Hecke algebra of a single prime) yield the prime number theorem upper bound `ψ(x) ≤ (1 + ε)x` by vanishing-order arguments alone, beating the univariate integer-Chebyshev ceiling (A9)?
+the obstacles-summary document asks one question/poses one challenge to us to solve: Prove that the complete Weil matrix is positive on all vectors for `1 ≤ c ≤ (log N)^α` for some fixed `α > 0`.
 
 Your task: find an answer/solution to this question and fully formalize it and its collaries unconditionally in lean.
 
@@ -640,6 +638,10 @@ always look at the big picture, try to understand what all our research is tryin
 8. Add helpful, crisp, not verbose comments to lean code to make clear what the code is about.
 
 Put lean code into the correct subfolder(s), do not bloat RHTower or HTGeometry folders more.
+
+Complementary documents:
+- docs/reports/rh-current-frontier-map.md
+- docs/reports/rh-killed-routes.md
 
 Make good use of the search tool for our lean corpus to find existing work and get leads for new ideas and solutions for your work.
 

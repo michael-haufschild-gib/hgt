@@ -54,7 +54,7 @@ private theorem monomial_squared_mul_series (n : ℕ) (t : PowerSeries F) :
     (((laurentXUnit F ^ n : (LaurentSeries F)ˣ) : LaurentSeries F) ^ 2) *
       (t : LaurentSeries F) =
         ((PowerSeries.X ^ (2 * n) * t : PowerSeries F) : LaurentSeries F) := by
-  rw [map_mul, map_pow, HahnSeries.ofPowerSeries_X, Units.val_pow, ← pow_mul]
+  rw [map_mul, map_pow, HahnSeries.ofPowerSeries_X, Units.val_pow_eq_pow_val, ← pow_mul]
   change (HahnSeries.single (1 : ℤ) (1 : F)) ^ (n * 2) * (t : LaurentSeries F) = _
   rw [Nat.mul_comm n 2]
 

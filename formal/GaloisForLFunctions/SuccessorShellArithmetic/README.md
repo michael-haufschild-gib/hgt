@@ -1,7 +1,7 @@
 # SuccessorShellArithmetic (SSh)
 
-Namespace `GaloisForLFunctions.SuccessorShellArithmetic`; umbrella `SuccessorShellArithmetic.lean`; 32 modules
-(6 root, `TopBand/` 11, `Conductor/` 15). All results unconditional; RH appears only inside equivalences.
+Namespace `GaloisForLFunctions.SuccessorShellArithmetic`; umbrella `SuccessorShellArithmetic.lean`; 33 modules
+(6 root, `TopBand/` 11, `Conductor/` 16). All results unconditional; RH appears only inside equivalences.
 
 ## 1. Motivation
 
@@ -44,6 +44,7 @@ Profile `φ` (`C²`, support `[0,1]`), `M = ∫φ²`, `q = (∫φ)²/M`, `G = �
 | Affine correlation | `Σ_(n<M)c_m(n)c_l(kn+h)` | `M c_l(h)` exactly when `m=l/gcd(l,k)`, zero otherwise |
 | Prime finite part | `⟨v_m,N,P_N v_l,N⟩−δ_ml log N`, `v_m,N=u_m/√(n log N)` | `−I(m,l)/√(φ(m)φ(l))−δ_ml(log m+τ(m))` |
 | Prime head and boundary | `primeConductorHeadPairing`, `primeConductorBoundaryFinitePart` | centered head limit `+I/√(φ(m)φ(l))−δ_ml(log m+τ(m))`; complementary boundary `−2I/√(φ(m)φ(l))` |
+| Power head | `primePowerHeadCutoff θ N` | cutoff `⌊N^θ⌋`; leading coefficient `θ(2−θ)δ_ml log N`; mixed torsion coefficient `1−2θ` |
 | Twin shell | `twinShellForm` | shell weighted by `ω(k)(1 − ω(km)ω(km + h))` |
 
 External: `nonRatioForm`, `atomDilate` (SSHA); `poleVector`, `poleDefect`, `completeWeilMatrix`,
@@ -129,6 +130,8 @@ External: `nonRatioForm`, `atomDilate` (SSHA); `poleVector`, `poleDefect`, `comp
 | Exact prime head at the full horizon; complementary boundary limit `−2I/√(φ(m)φ(l))` | `primeConductorHeadPairing_horizon`, `tendsto_primeConductorBoundaryFinitePart` | proved |
 | Prime logarithmic moment `Σ_(n≤N)Λ(n)log(n)/n=(log N)²/2+o(log N)` | `tendsto_primeHeadLogMoment_remainder` | proved |
 | Every exhausting head retains the centered torsion correction `I/√(φ(m)φ(l))−δ_ml(log m+τ(m))` | `tendsto_primeConductorGrowingHead_correction` | proved |
+| Power-head finite part `(1−2θ)I/√(φ(m)φ(l))−δ_ml[log m+τ(m)+2(1−θ)γ]`; square-root head diagonal | `tendsto_primeConductorPowerHead_finitePart`, `tendsto_primeConductorSqrtHead_finitePart` | proved |
+| Scalar-identity centering retains `(1−θ²)B_ml`; bands between powers carry `2(β−α)B_ml` | `tendsto_primeConductorPowerHead_renormalized`, `tendsto_primeConductorPowerBand_finitePart` | proved |
 | Reserve `W ≥ a c⁻⁷(D − C log(2c)S)`, uniformly for `1≤c≤(log log N)^α`, `0<α<1/16` | CACT `exists_completeWeil_logarithmic_defect_reserve_iteratedLog` | proved |
 
 ## 6. Tools
@@ -144,6 +147,7 @@ External: `nonRatioForm`, `atomDilate` (SSHA); `poleVector`, `poleDefect`, `comp
 - Exact harmonic finite parts, torsion identification, and a common quadratic tail at conductor scale `Q²/N`.
 - Exact affine conductor selection and full prime finite parts on every fixed finite packet.
 - Exact fixed-head limits and their complementary torsion boundary.
+- Exact power-cutoff and band finite parts, including square-root cancellation of mixed raw pairings.
 - Common complete-conductor residual bounds on every logarithmic conductor range.
 
 **To build**
@@ -179,7 +183,7 @@ External: `nonRatioForm`, `atomDilate` (SSHA); `poleVector`, `poleDefect`, `comp
 
 ## 9. Context
 
-**Uses** (import counts): RenormalizedArithmeticPotentialTheory 13, RHTower 9, SignedArithmeticHodgeTheory 2,
+**Uses** (import counts): RenormalizedArithmeticPotentialTheory 13, RHTower 10, SignedArithmeticHodgeTheory 2,
 HTGeometry 3, CriticalArithmeticCorrelationTheory 3, ArithmeticElectrostatics 1,
 SpacingScaleHarmonicAnalysis 1, CompletedArithmeticForms 1,
 BiScaleUncertainty 1, BezoutValuationIncidence 1, ArithmeticPositiveDuality 1, ArithmeticLorentzianGeometry 1,
