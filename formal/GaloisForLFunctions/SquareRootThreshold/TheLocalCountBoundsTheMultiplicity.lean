@@ -23,8 +23,8 @@ all zeros are critical.
 
 **The depth mass** (`not_offLineDepthLocallyBounded_superpose`).  The clusters of
 `CountingInputsDoNotBoundTheLocalCount` also violate every bound `Σ m (Re ρ − ½)²` over the windows
-`(S − 1, S + 1]`: a cluster carries `2⌊eᵏ⌋/(k + 3)² → ∞`.  So the depth-weighted local input does not
-follow from counting either.
+`(S − 1, S + 1]`: a cluster carries `2⌊eᵏ⌋/(k + 3)² → ∞`.  So the depth-weighted local input does
+not follow from counting either.
 -/
 
 open Complex Set Zeta23 Filter Topology
@@ -451,8 +451,6 @@ theorem not_offLineDepthLocallyBounded_superpose (Z : ZeroConfig) (W : ℝ) :
     · rw [clusterPoint_im, ← hT]; linarith
     · rw [clusterPoint_im, ← hT]; linarith
   have h1 := h T
-  rw [show T + 1 = T + 1 from rfl] at h1
-  have e1 : T - 1 = T - 1 := rfl
   unfold ZeroConfig.window at h1 hmem
   rw [finsum_mem_eq_finite_toFinset_sum _ hfin] at h1
   have h2 := Finset.single_le_sum (f := fun ρ => ((superpose Z clusterConfig).mult ρ : ℝ) *
@@ -467,9 +465,10 @@ theorem not_offLineDepthLocallyBounded_superpose (Z : ZeroConfig) (W : ℝ) :
       omega
     exact_mod_cast this
   have hre : ((clusterPoint 1 k).re - 1 / 2) ^ 2 = 1 / ((k : ℝ) + 3) ^ 2 := by
-    rw [clusterPoint_re]; ring
+    rw [clusterPoint_re, add_sub_cancel_left, div_pow, one_pow]
   have h4 : (⌊Real.exp k⌋₊ : ℝ) / ((k : ℝ) + 3) ^ 2 ≤
-      ((superpose Z clusterConfig).mult (clusterPoint 1 k) : ℝ) * ((clusterPoint 1 k).re - 1 / 2) ^ 2 := by
+      ((superpose Z clusterConfig).mult (clusterPoint 1 k) : ℝ)
+        * ((clusterPoint 1 k).re - 1 / 2) ^ 2 := by
     rw [hre, ← div_eq_mul_one_div]
     exact div_le_div_of_nonneg_right h3 (by positivity)
   linarith
