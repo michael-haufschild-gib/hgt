@@ -20,6 +20,11 @@ hypothesis together with counting inputs: at the tangency point it is a multipli
 off-line zeros, then `N(T, 2T) − N₀(T, 2T) ≤ M(T/2 + 1)` while Riemann–von Mangoldt gives
 `N(T, 2T) ≍ T log T`, so `N₀(T, 2T)/N(T, 2T) → 1`: the input of the lag family implies that almost
 all zeros are critical.
+
+**The depth mass** (`not_offLineDepthLocallyBounded_superpose`).  The clusters of
+`CountingInputsDoNotBoundTheLocalCount` also violate every bound `Σ m (Re ρ − ½)²` over the windows
+`(S − 1, S + 1]`: a cluster carries `2⌊eᵏ⌋/(k + 3)² → ∞`.  So the depth-weighted local input does not
+follow from counting either.
 -/
 
 open Complex Set Zeta23 Filter Topology
@@ -358,8 +363,9 @@ theorem tendsto_N0_div_N_of_offLineLocallyBounded {Z : ZeroConfig} {M : ℕ}
     have hNpos : 0 < (Z.N T (2 * T) : ℝ) :=
       lt_of_lt_of_le (by have := Real.log_pos hT; positivity) hN
     rw [div_le_one hNpos]
-    have := N_eq_N0_add_offLinePart Z T (2 * T)
-    exact_mod_cast (le_of_eq_of_le this.symm (Nat.le_add_right _ _) : Z.N0 T (2 * T) ≤ _)
+    have h := N_eq_N0_add_offLinePart Z T (2 * T)
+    have hle : Z.N0 T (2 * T) ≤ Z.N T (2 * T) := by rw [h]; exact Nat.le_add_right _ _
+    exact_mod_cast hle
   have hlower : ∀ᶠ T in atTop,
       1 - M * (T / 2 + 1) / (T / (4 * Real.pi) * Real.log T) ≤
         (Z.N0 T (2 * T) : ℝ) / Z.N T (2 * T) := by
@@ -380,9 +386,10 @@ theorem tendsto_N0_div_N_of_offLineLocallyBounded {Z : ZeroConfig} {M : ℕ}
   have hzero : Tendsto (fun T : ℝ => M * (T / 2 + 1) / (T / (4 * Real.pi) * Real.log T))
       atTop (𝓝 0) := by
     have hT : Tendsto (fun T : ℝ => (T / 2 + 1) / T) atTop (𝓝 (1 / 2)) := by
+      have hinv0 : Tendsto (fun T : ℝ => 1 / T) atTop (𝓝 0) := by
+        simpa only [one_div] using tendsto_inv_atTop_zero
       have h1 : Tendsto (fun T : ℝ => 1 / 2 + 1 / T) atTop (𝓝 (1 / 2 + 0)) :=
-        tendsto_const_nhds.add tendsto_inv_atTop_zero.congr' (by
-          filter_upwards [eventually_ne_atTop (0 : ℝ)] with T hT; simp)
+        tendsto_const_nhds.add hinv0
       rw [add_zero] at h1
       refine h1.congr' ?_
       filter_upwards [eventually_ne_atTop (0 : ℝ)] with T hT
@@ -399,6 +406,73 @@ theorem tendsto_N0_div_N_of_offLineLocallyBounded {Z : ZeroConfig} {M : ℕ}
       atTop (𝓝 1) := by
     simpa using (tendsto_const_nhds (x := (1 : ℝ))).sub hzero
   exact tendsto_of_tendsto_of_tendsto_of_le_of_le' hlim tendsto_const_nhds hlower hupper
+
+/-! ## The depth mass -/
+
+/-- The off-line depth mass `Σ m (Re ρ − ½)²` of every window `(S − 1, S + 1]` is at most `W`. -/
+def OffLineDepthLocallyBounded (Z : ZeroConfig) (W : ℝ) : Prop :=
+  ∀ S : ℝ, ∑ᶠ ρ ∈ Z.window (S - 1) (S + 1), (Z.mult ρ : ℝ) * (ρ.re - 1 / 2) ^ 2 ≤ W
+
+/-- **The clusters violate every depth-mass bound.** -/
+theorem not_offLineDepthLocallyBounded_superpose (Z : ZeroConfig) (W : ℝ) :
+    ¬ OffLineDepthLocallyBounded (superpose Z clusterConfig) W := by
+  intro h
+  -- `⌊eᵏ⌋/(k + 3)² > W` for large `k`
+  have hgrow : Tendsto (fun k : ℕ => (⌊Real.exp k⌋₊ : ℝ) / ((k : ℝ) + 3) ^ 2) atTop atTop := by
+    have h1 : Tendsto (fun k : ℕ => (Real.exp k - 1) / ((k : ℝ) + 3) ^ 2) atTop atTop := by
+      have hexp : Tendsto (fun x : ℝ => Real.exp x / (x + 3) ^ 2) atTop atTop := by
+        have := (Real.tendsto_exp_div_pow_atTop 2).comp (tendsto_atTop_add_const_right atTop 3
+          tendsto_id)
+        refine tendsto_atTop_mono' atTop ?_ ((this.const_mul_atTop (show (0 : ℝ) < Real.exp (-3)
+          by positivity)))
+        filter_upwards [eventually_ge_atTop (0 : ℝ)] with x hx
+        simp only [Function.comp, id]
+        rw [show Real.exp (x + 3) = Real.exp x * Real.exp 3 by rw [Real.exp_add]]
+        have he3 : Real.exp (-3) * Real.exp 3 = 1 := by rw [← Real.exp_add]; simp
+        have hx3 : 0 < (x + 3) ^ 2 := by positivity
+        rw [mul_div_assoc', mul_comm (Real.exp x), ← mul_assoc, he3, one_mul]
+      have hsub : Tendsto (fun x : ℝ => (Real.exp x - 1) / (x + 3) ^ 2) atTop atTop := by
+        refine tendsto_atTop_mono' atTop ?_ (tendsto_atTop_add_const_right atTop (-1) hexp)
+        filter_upwards [eventually_ge_atTop (0 : ℝ)] with x hx
+        have hx3 : 1 ≤ (x + 3) ^ 2 := by nlinarith
+        rw [sub_div]
+        have : 1 / (x + 3) ^ 2 ≤ 1 := by rw [div_le_one (by positivity)]; exact hx3
+        linarith
+      exact hsub.comp tendsto_natCast_atTop_atTop
+    refine tendsto_atTop_mono (fun k => ?_) h1
+    have := Nat.lt_floor_add_one (Real.exp k)
+    have hk : 0 < ((k : ℝ) + 3) ^ 2 := by positivity
+    exact div_le_div_of_nonneg_right (by linarith) hk.le
+  obtain ⟨k, hk⟩ := (hgrow.eventually_gt_atTop W).exists
+  obtain ⟨T, hT⟩ : ∃ T : ℝ, T = Real.exp (Real.exp k) := ⟨_, rfl⟩
+  have hfin := (superpose Z clusterConfig).finite_window (T - 1) (T + 1)
+  have hmem : clusterPoint 1 k ∈ (superpose Z clusterConfig).window (T - 1) (T + 1) := by
+    refine ⟨Or.inr (Or.inl ⟨k, rfl⟩), ?_, ?_⟩
+    · rw [clusterPoint_im, ← hT]; linarith
+    · rw [clusterPoint_im, ← hT]; linarith
+  have h1 := h T
+  rw [show T + 1 = T + 1 from rfl] at h1
+  have e1 : T - 1 = T - 1 := rfl
+  unfold ZeroConfig.window at h1 hmem
+  rw [finsum_mem_eq_finite_toFinset_sum _ hfin] at h1
+  have h2 := Finset.single_le_sum (f := fun ρ => ((superpose Z clusterConfig).mult ρ : ℝ) *
+      (ρ.re - 1 / 2) ^ 2) (fun ρ _ => by positivity) (hfin.mem_toFinset.mpr hmem)
+  have h3 : (⌊Real.exp k⌋₊ : ℝ) ≤ (superpose Z clusterConfig).mult (clusterPoint 1 k) := by
+    have hc : clusterPoint 1 k ∈ clusterConfig.carrier := Or.inl ⟨k, rfl⟩
+    have : ⌊Real.exp k⌋₊ ≤ (superpose Z clusterConfig).mult (clusterPoint 1 k) := by
+      show _ ≤ (if clusterPoint 1 k ∈ Z.carrier then Z.mult (clusterPoint 1 k) else 0)
+        + (if clusterPoint 1 k ∈ clusterConfig.carrier then
+          clusterConfig.mult (clusterPoint 1 k) else 0)
+      rw [if_pos hc, clusterConfig_mult]
+      omega
+    exact_mod_cast this
+  have hre : ((clusterPoint 1 k).re - 1 / 2) ^ 2 = 1 / ((k : ℝ) + 3) ^ 2 := by
+    rw [clusterPoint_re]; ring
+  have h4 : (⌊Real.exp k⌋₊ : ℝ) / ((k : ℝ) + 3) ^ 2 ≤
+      ((superpose Z clusterConfig).mult (clusterPoint 1 k) : ℝ) * ((clusterPoint 1 k).re - 1 / 2) ^ 2 := by
+    rw [hre, ← div_eq_mul_one_div]
+    exact div_le_div_of_nonneg_right h3 (by positivity)
+  linarith
 
 end
 

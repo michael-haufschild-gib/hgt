@@ -8,17 +8,15 @@
 
 ## Mathematical issue
 
-The proved obstruction `negIndex_eq_top_of_weil_haarSuccessor` assumes Hecke support. Removing that support assumption would also obstruct every adelic carrier whose restriction has these two readings. Weil's scalar dilation correlation already has the required continuity.
+The normalized case `c=1` is proved by `negIndex_eq_top_of_haar_continuous_dilation` in `AdelicKreinGeometry/Haar/FiniteIndexObstruction.lean`, with a direct Lean audit and standard axiom closure. It requires no Hecke support or integer-invariance premise. Weil's scalar dilation correlation has the required continuity.
 
 For a Haar successor, all vectors `v_{b+n}−v_b`, with `b∈ℚ` and `n∈ℤ`, span a totally isotropic translation-invariant space. Finite negative index bounds its dimension in the nondegenerate kernel quotient. The analogous radical of the dilation-cyclic space is also finite-dimensional. These are the only directions invisible to the positive-kernel Mautner argument.
 
-The canonical polynomial correction removes the finite period defect without changing either axis reading. The remaining problem is to exclude a finite-index bi-integer-invariant kernel with continuous dilation reading. The cyclic averaging route below uses its locally periodic translations.
-
-No paper proof or Lean theorem is claimed. The Hecke-supported no-go does not settle this conjecture or O5.
+The canonical polynomial correction removes the finite period defect without changing either axis reading. Cyclic averaging then excludes a finite-index bi-integer-invariant remainder with continuous dilation reading. Nonzero Haar scalings, the positive-slope subgroup, and the actual adelic restriction remain to be formalized before this route settles O5's stated carrier. Its positive structural decomposition is also unfinished.
 
 Without dilation continuity, Haar successors admit finite nonzero index: [the explicit state `haarState−4(log|affSlope|/log 2)²`](../3-formalized/the-haar-successor-admits-one-negative-square.md) has index exactly one. Its rank-one completion, Haar reading, failure of Hecke support, and dilation discontinuity are formalized.
 
-## Covariance gap
+## Remaining structural decomposition
 
 The corpus's finite-rank correction theorem gives functions on the group, not a covariant negative representation. For bounded kernels, [Kissin–Shulman–Turovskii, Theorem 5.1](https://arxiv.org/pdf/2005.02745) gives a difference of positive-definite functions with a finite-dimensional negative part. Its global boundedness assumption has not been deduced from the two prescribed readings. The [connected-group extension theory of Kissin–Shulman](https://repository.londonmet.ac.uk/8622/1/COHOMOLOGY%20and%20EXTENSIONS%20SUBMITTED%20EUROPEAN%20J.%20MATH..pdf) also requires topology absent from the abstract rational affine kernel. Neither theorem closes the mixed-coefficient gap.
 
@@ -36,4 +34,4 @@ The [relative splitting conjecture](finite-index-haar-carriers-split-modulo-poly
 
 The [full affine orbit of period defects](../3-formalized/haar-period-defects-have-a-finite-affine-orbit.md) is formalized: it is invariant and has dimension at most `r²` when the kernel has negative index at most `r`. Its [zero-axis polynomial correction](../3-formalized/finite-index-periodic-affine-kernels-have-a-zero-axis-polynomial-correction.md) is formalized, including uniqueness, Hermitian symmetry, both zero-axis identities, and finite index of the bi-integer-invariant remainder.
 
-The [finite cyclic averaging route](cyclic-haar-averages-force-infinite-index-at-continuous-dilations.md) proposes a direct obstruction for the resulting bi-integer-invariant remainder: nonnegative moving subspaces give a cyclic Hecke bound, while fixed-part Gram matrices converge to `J−I`. The positive-plus-slope decomposition is not needed for this proposed obstruction. Neither conclusion is yet formalized.
+The [finite cyclic averaging argument](cyclic-haar-averages-force-infinite-index-at-continuous-dilations.md) is formalized: nonnegative moving subspaces give a cyclic Hecke bound, while fixed-part Gram matrices converge to `J−I`. It proves the normalized obstruction independently of the positive-plus-slope decomposition. The latter remains the positive survivor to establish.

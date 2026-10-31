@@ -262,7 +262,7 @@ private theorem sum_sq_arithmeticPoleKernel_le {N : ℕ} (hlogN : 1 ≤ Real.log
 `nearRowIndices c N j`, each column `j` participates in at most `2 j R / N` near rows,
 cancelling `1 / j` identically. -/
 private theorem sum_near_div_sqrt_sq_le_profile {c : ℝ} (hc : 0 < c) {N : ℕ} (hN : 1 ≤ N)
-    (hw : c / N ≤ 1) (F : ℕ → ℕ → ℝ) (G : ℕ → ℝ) (hG : ∀ j ∈ Icc 1 N, 0 ≤ G j)
+    (hw : c / N ≤ 1) (F : ℕ → ℕ → ℝ) (G : ℕ → ℝ) (_hG : ∀ j ∈ Icc 1 N, 0 ≤ G j)
     (hFG : ∀ n ∈ Icc 1 N, ∀ j ∈ nearRowIndices c N n, |F n j| ≤ G j) :
     (∑ n ∈ Icc 1 N, (∑ j ∈ nearRowIndices c N n, F n j / Real.sqrt j) ^ 2) ≤
       4 * linearNearRowRadius c ^ 2 / N * ∑ j ∈ Icc 1 N, G j ^ 2 := by
@@ -348,8 +348,10 @@ private theorem sum_near_div_sqrt_sq_le_profile {c : ℝ} (hc : 0 < c) {N : ℕ}
       rw [← mul_sum, sum_comm]
       congr 1
       refine sum_congr rfl fun j _ => ?_
-      have hfilt : (Icc 1 N).filter (· ∈ nearRowIndices c N j) = nearRowIndices c N j :=
-        filter_eq_self.mpr fun n hn => (mem_filter.mp hn).1
+      have hfilt : (Icc 1 N).filter (· ∈ nearRowIndices c N j) = nearRowIndices c N j := by
+        ext n
+        simp only [mem_filter, and_iff_right_iff_imp]
+        exact fun hn => (mem_filter.mp hn).1
       rw [← sum_filter, hfilt, sum_const, nsmul_eq_mul, mul_comm]
     _ ≤ (2 * linearNearRowRadius c) * ∑ j ∈ Icc 1 N,
           (G j ^ 2 / j) * (2 * ((j : ℝ) * (linearNearRowRadius c / N))) := by
@@ -444,7 +446,7 @@ private theorem exists_sum_fullWeilCenter_norm_sq_le (φ : ℝ → ℝ) :
   -- Collar part of `fullWeilCenterMatrix α N` via weighted Schur (`w j = 1 / √j`).
   let Acollar : Matrix (PrimeHorizonIndex N) (PrimeHorizonIndex N) ℝ :=
     fun n j => (α / N) * archimedeanCenterKernel n j
-  have hH0 : 0 ≤ (harmonic N : ℝ) := by exact_mod_cast harmonic_nonneg N
+  have hH0 : 0 ≤ (harmonic N : ℝ) := by unfold harmonic; positivity
   have hH1 : 0 ≤ (harmonic N : ℝ) + 1 := by linarith only [hH0]
   have hH_le : (harmonic N : ℝ) + 1 ≤ 3 * Real.log N := by
     linarith [harmonic_le_one_add_log N, hlogN]
@@ -522,11 +524,15 @@ private theorem exists_sum_fullWeilCenter_norm_sq_le (φ : ℝ → ℝ) :
           (∑ n ∈ Icc 1 N,
             (∑ j ∈ Icc 1 N, archimedeanCenterKernel n j *
               (normalizedRamanujanMode m j / Real.sqrt j)) ^ 2) / Real.log N := by
-      have hsm : Acollar = (α / N) •
-          ((fun n j => archimedeanCenterKernel n j) :
-            Matrix (PrimeHorizonIndex N) (PrimeHorizonIndex N) ℝ) := rfl
-      rw [hsm, map_smul, LinearMap.smul_apply, norm_smul, mul_pow, Real.norm_eq_abs, sq_abs,
-        matrix_normalizedRamanujan_norm_sq, mul_div_assoc]
+      refine (matrix_normalizedRamanujan_norm_sq
+        (fun n j => (α / N) * archimedeanCenterKernel n j)).trans ?_
+      congr 1
+      rw [mul_sum]
+      refine sum_congr rfl fun n _ => ?_
+      rw [← mul_pow]
+      congr 1
+      rw [mul_sum]
+      exact sum_congr rfl fun j _ => by ring
     rw [hnorm_eq]
     calc
       (α / N) ^ 2 * (∑ n ∈ Icc 1 N,
@@ -536,7 +542,7 @@ private theorem exists_sum_fullWeilCenter_norm_sq_le (φ : ℝ → ℝ) :
         div_le_div_of_nonneg_right (mul_le_mul_of_nonneg_left (hschur.trans hmode_sum) (sq_nonneg _))
           hLN0.le
       _ = 18 * q ^ 2 * c ^ 2 * Real.log N := by
-        rw [div_pow, hα2]; field_simp [hN0.ne', hLN0.ne']
+        rw [div_pow, hα2]; field_simp [hN0.ne', hLN0.ne']; ring
   -- Split `Icc 1 M = insert 1 (Icc 2 M)`.
   have hunion : Icc 1 M = insert 1 (Icc 2 M) := by
     ext m; simp only [mem_Icc, mem_insert]; omega
@@ -1076,9 +1082,13 @@ private theorem exists_sum_exteriorDownward_norm_sq_le {φ : ℝ → ℝ}
         ∑ n ∈ Icc 1 N, regroupedExteriorDownwardPrimeRow g c N m n ^ 2 :=
       sum_congr rfl fun n hn =>
         congrArg (fun t : ℝ => t ^ 2) (downwardRamanujanRow_sub_interior_eq hc0 hn hgsupp m)
+    have hlhs_sum : (m.totient : ℝ)⁻¹ *
+        (∑ n ∈ S_row, regroupedExteriorDownwardPrimeRow g c N m n ^ 2) =
+        ∑ n ∈ S_row, (m.totient : ℝ)⁻¹ * regroupedExteriorDownwardPrimeRow g c N m n ^ 2 :=
+      mul_sum _ _ _
     rw [norm_smul, mul_pow, Real.norm_eq_abs, sq_abs, inv_pow, Real.sq_sqrt hφm.le,
       normalizedExteriorDownwardVector_norm_sq, hact_eq,
-      hrestrict, mul_div_assoc, mul_sum]
+      hrestrict, ← mul_div_assoc, hlhs_sum]
     refine (div_le_div_of_nonneg_right (sum_le_sum hrow_n) hLN0.le).trans ?_
     rw [sum_const, nsmul_eq_mul]
     exact (div_le_div_of_nonneg_right
@@ -1433,7 +1443,7 @@ private theorem exists_sum_upwardPrimeDefect_norm_sq_le {φ : ℝ → ℝ}
       field_simp [hsn.ne', hsj]
     rw [heq]
     refine div_le_div_of_nonneg_right ?_ hsn.le
-    have hup := up_row_le hw0.le hn1 K_lag
+    have hup := up_row_le (N := N) hw0.le hn1 K_lag
     have hexp32 : Real.exp (3 * w / 2) ≤ Real.exp 2 :=
       Real.exp_le_exp.mpr (by linarith only [hw1])
     calc
@@ -1445,7 +1455,7 @@ private theorem exists_sum_upwardPrimeDefect_norm_sq_le {φ : ℝ → ℝ}
       _ = R_up := by
         dsimp only [R_up, w]
         rw [show Real.exp 3 = Real.exp 2 * Real.exp 1 by rw [← Real.exp_add]; norm_num]
-        field_simp [hN0.ne']; ring
+        field_simp [hN0.ne']
   have hcol_U : ∀ j ∈ Icc 1 N,
       (∑ n ∈ Icc 1 N, U_mat n j * ((R_up / Real.sqrt n) / (1 / Real.sqrt j))) ≤
         4 * R_up * Real.exp 2 * w * Real.log N * j := by
@@ -1849,7 +1859,7 @@ theorem tendsto_completeWeil_residual_div_mul_log_sq_zero {φ : ℝ → ℝ}
       K_φ * ((1 + 1440 / θ ^ 6) * (1 / Real.log (N : ℝ)) +
         (c N ^ 2 / Real.log (N : ℝ)) + (c N ^ 2 / Real.log (N : ℝ)) ^ 2)) atTop (𝓝 0) := by
     have h1 := ((hinv_log.const_mul (1 + 1440 / θ ^ 6)).add hc_lim).add (hc_lim.pow 2)
-    simpa only [mul_zero, add_zero] using h1.const_mul K_φ
+    simpa only [mul_zero, add_zero, zero_pow (by decide : 2 ≠ 0)] using h1.const_mul K_φ
   refine squeeze_zero_norm' ?_ hmaj
   filter_upwards [eventually_conductorCutoff_bounds hθ0 hθ, hc1,
     hc_lim.eventually (ge_mem_nhds zero_lt_one),

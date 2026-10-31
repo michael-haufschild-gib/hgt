@@ -28,6 +28,13 @@ local instance (v : FinitePlace) : SecondCountableTopology (v.adicCompletionInte
   (Valued.isOpen_valuationSubring (v.adicCompletion K)).isOpenEmbedding_subtypeVal.isEmbedding.secondCountableTopology
 local instance (v : FinitePlace) :
     (Valued.v : Valuation (v.adicCompletion K) ℤᵐ⁰).IsNontrivial := inferInstance
+local instance (v : FinitePlace) : IsTopologicalAddGroup (v.adicCompletionIntegers K) :=
+  Topology.IsInducing.subtypeVal.topologicalAddGroup
+    (v.adicCompletionIntegers K).subtype.toAddMonoidHom
+local instance (S : Finset FinitePlace) : IsTopologicalAddGroup (FiniteCylinderTail S) :=
+  Pi.topologicalAddGroup
+local instance (S : Finset FinitePlace) : IsTopologicalAddGroup (FiniteCylinderFields S) :=
+  Pi.topologicalAddGroup
 local instance : MeasurableSpace InfinityCompletion := borel _
 local instance : BorelSpace InfinityCompletion := ⟨rfl⟩
 local instance : MeasurableAdd InfinityCompletion := ContinuousAdd.measurableAdd
@@ -35,6 +42,9 @@ local instance : MeasurableAdd Adeles := ContinuousAdd.measurableAdd
 
 abbrev EllipticCylinderCoordinates (S : Finset FinitePlace) :=
   (FiniteCylinderFields S × FiniteCylinderTail S) × InfinityCompletion
+
+local instance (S : Finset FinitePlace) : MeasurableAdd (EllipticCylinderCoordinates S) :=
+  ContinuousAdd.measurableAdd
 
 /-- Assemble the finite cylinder and the unrestricted infinity completion. -/
 def ellipticCylinderAssembly (S : Finset FinitePlace) : EllipticCylinderCoordinates S →+ Adeles where
@@ -71,7 +81,8 @@ private instance cylinderFieldsHaar_isAddHaar (S : Finset FinitePlace) :
     finiteCompletion_secondCountable v.1
   letI (v : S) : LocallyCompactSpace (v.1.adicCompletion K) :=
     finiteCompletion_locallyCompact v.1
-  letI (v : S) : SigmaCompactSpace (v.1.adicCompletion K) := inferInstance
+  letI (v : S) : SigmaCompactSpace (v.1.adicCompletion K) :=
+    sigmaCompactSpace_of_locallyCompact_secondCountable
   letI (v : S) : SigmaFinite (normalizedHaar (v.1.adicCompletion K)) := inferInstance
   exact Measure.pi.isAddHaarMeasure _
 
@@ -127,9 +138,12 @@ private theorem assembly_image_integralBox (S : Finset FinitePlace) :
 theorem ellipticCylinderProductHaar_integralBox (S : Finset FinitePlace) :
     ellipticCylinderProductHaar S (ellipticCylinderIntegralBox S) = 1 := by
   classical
+  have hf (v : S) : normalizedHaar (v.1.adicCompletion K)
+      (v.1.adicCompletionIntegers K : Set (v.1.adicCompletion K)) = 1 :=
+    normalizedHaar_integer (v.1.adicCompletion K)
   rw [ellipticCylinderProductHaar, ellipticCylinderIntegralBox,
     Measure.prod_prod, Measure.prod_prod, Measure.pi_pi]
-  simp only [normalizedHaar_integer, measure_univ, Finset.prod_const_one, mul_one]
+  simp only [hf, normalizedHaar_integer, measure_univ, Finset.prod_const_one, mul_one]
 
 /-- Pullback of ambient normalized Haar has the same normalization. -/
 theorem ellipticCylinderAmbientHaar_integralBox (S : Finset FinitePlace) :

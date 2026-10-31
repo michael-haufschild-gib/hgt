@@ -48,21 +48,8 @@ The argument also covers every nonzero Haar multiple `c·1_ℤ`. Hermitian symme
 
 Formalized, with direct audits and standard axiom closures:
 
-- The normalized zero-axis polynomial correction.
-- `HeckeKreinToeplitz/Index/ColumnInertia.lean`: every finite column-space Gram family retains the kernel's index bound.
-- `HeckeKreinToeplitz/Index/LocallyPeriodicProjection.lean`: fixed and moving vectors are complementary; the fixed projection equals every complete orbit average and commutes with the operator's commutant.
-- `HeckeKreinToeplitz/Index/ColumnProjections.lean`: fixed and moving vectors are orthogonal; the fixed projection is self-adjoint and its Gram entries are finite cyclic averages.
-- `BiarithmeticGeometry/Affine/PeriodicTranslations.lean`: right integer invariance makes every rational translation locally periodic on the column space, with period `den(b/a)` on a column of slope `a`.
-- `HeckeKreinToeplitz/Index/PeriodicDilationPositivity.lean`: if `t a=a t^m`, every `m`-periodic, zero-mean vector for `t` has nonnegative norm in a finite-index column representation.
-- `AdelicKreinGeometry/Haar/TranslationMovingPositivity.lean`: a finite-index integer-invariant affine kernel is nonnegative on every rational translation difference range.
-- `HeckeKreinToeplitz/Index/ColumnPositivity.lean`: Cauchy–Schwarz holds on every nonnegative column subspace.
-- `AdelicKreinGeometry/Haar/CyclicOrbits.lean`: complete Haar translation orbits are orthogonal with the Haar scalar as squared norm; normalized fixed projections have squared norm `1/den(b/a)`.
+- `AdelicKreinGeometry/Haar/FiniteIndexObstruction.lean`: `negIndex_eq_top_of_haar_continuous_dilation` proves the stated rational-affine obstruction without an integer-invariance premise, using the zero-axis polynomial correction.
+- `AdelicKreinGeometry/Haar/CyclicGramLimit.lean`: fixed-projection Grams converge to `J−I`. `BiarithmeticGeometry/Affine/NearIdentityGrids.lean` supplies the rational grids; `HeckeKreinToeplitz/Index/ConstantMatrixInertia.lean` supplies their limiting negative directions.
+- `AdelicKreinGeometry/Haar/CyclicHecke.lean`: squared moving-column correlations are bounded by the reciprocal denominator of the dilation ratio. Its inputs are cyclic orthogonal projections, moving-subspace positivity, Haar orbit norms, and Cauchy–Schwarz.
 
-- `AdelicKreinGeometry/Haar/CyclicHecke.lean`: squared moving-column correlations are bounded by the reciprocal denominator of the dilation ratio.
-- `BiarithmeticGeometry/Affine/NearIdentityGrids.lean`: near-identity grid points share a rational lattice with explicit orbit denominators; reciprocal denominators are bounded by distance from one.
-
-- `HeckeKreinToeplitz/Index/ConstantMatrixInertia.lean`: a constant perturbation of negative identity on `n+1` coordinates retains at least `n` negative directions.
-
-- `AdelicKreinGeometry/Haar/CyclicGramLimit.lean`: near-identity fixed-projection Grams converge to `J−I`; every integer-invariant Haar kernel with continuous dilation reading has infinite negative index.
-
-Required Lean results: removal of the integer-invariance restriction; positive-slope extension and the actual adelic restriction. The positive structural conclusions are the nonnegative moving subspaces and their finite cyclic bound. The stronger positive-plus-slope decomposition remains a separate conjecture.
+Required Lean results: nonzero Haar scalings, positive-slope extension, and the actual adelic restriction. The positive structural conclusions are the nonnegative moving subspaces and their finite cyclic bound. The stronger positive-plus-slope decomposition remains a separate conjecture.

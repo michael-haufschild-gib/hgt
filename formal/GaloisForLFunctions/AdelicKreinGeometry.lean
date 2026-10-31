@@ -1,3 +1,4 @@
+import GaloisForLFunctions.AdelicKreinGeometry.Haar.FiniteIndexObstruction
 import GaloisForLFunctions.AdelicKreinGeometry.Haar.CyclicGramLimit
 import GaloisForLFunctions.AdelicKreinGeometry.Haar.CyclicHecke
 import GaloisForLFunctions.AdelicKreinGeometry.Haar.CyclicOrbits
@@ -43,20 +44,25 @@ import GaloisForLFunctions.AdelicKreinGeometry.Haar.PowerKernels
 /-!
 # Adelic Krein Geometry
 
-Umbrella for indefinite harmonic analysis on the dilation–translation system of `ℚ`: the index of
-induced states, witness complements and escape, the affine zero-or-infinity law and the Kakutani
-wall as an index wall, the Pontryagin extensions of Weil's correlation, mixing and height decay,
-the signature formula of separable assemblies, conformal symmetry and its negative square,
-stable conformal successors and their function-field calibration, the pole as a Krein state of the
-affine group, the affine group of a field, conformal induction and the pole–successor states at every place
-of `ℚ` and at infinity of `F(X)`, with the signature formula `κ = κ₀(ψ) + 1` the shell decomposition of the local forms, Weil's correlation with an archimedean successor, additivity of local signatures over places, the archimedean gluing formula and the count of the zeros by Weil's archimedean state, prime towers glued at full index,
-twin-blindness of the index, the adelic product state, the running counterterm of the prime
-kernel, archimedean continuity against height decay, the additive and Ramanujan index laws on `ℤ/N` and `ℚ/ℤ`, and a Haar
-successor with one negative square. Positive integer-successor carriers
-preserve slope index; continuous dilations force infinite index for every such carrier with
-a slope correction. A mixed quadratic perturbation preserves both Haar axis readings while
-adding exactly three negative squares and unbounded mixed coefficients.
-A nonzero affine kernel vanishing on both axes has at least two negative squares.
-Every such kernel with finite index `r` has column-space dimension at most `r²`.
+Umbrella for the index theory of Hermitian states on the dilation–translation system of `ℚ` and of
+its places.
+
+* Index calculus on groups: induced states, witness complements and escape, mixing and height decay,
+  twin-blindness, block additivity.
+* Arithmetic types: the affine zero-or-infinity law, the Kakutani wall as an index wall, Weil's affine
+  extensions, the running counterterm of the prime kernel, archimedean continuity against height
+  decay, the adelic product state.
+* Additive side: the additive and Ramanujan index laws on `ℤ/N` and `ℚ/ℤ`, conditionally positive
+  successors (`−|b|`, `−|b|^s`, ultrametric `−|b|_v`, `−|·|_∞` on `F[X]`).
+* Conformal and pole structure: conformal symmetry costs one square; the pole as a Krein state;
+  conformal induction and the pole–successor states over any field and place, their signature formula
+  `κ = κ₀(ψ) + 1`, additivity over places, shell decompositions.
+* Gluing at the archimedean place: the boost-polar index, the gluing formula `κ = κ^{(½)}(K) + 1`, free
+  hyperplanes for sub-boost and periodic data, prime towers, and the count
+  `κ = #{zeros right of the line} + 1` for Weil's archimedean state and for Dirichlet L-functions.
+* Haar carriers (`Haar/`): index preservation by positive integer-successor carriers, axis-invisible
+  kernels and their degree and rank laws, period defects, and infinite index for every Haar kernel
+  with a continuous dilation reading.
+
 See `AdelicKreinGeometry/README.md`.
 -/
