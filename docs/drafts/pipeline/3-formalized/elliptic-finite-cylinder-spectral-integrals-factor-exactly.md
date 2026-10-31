@@ -1,7 +1,7 @@
 # Elliptic finite-cylinder spectral integrals factor exactly
 
 - **Stage:** 3-formalized
-- **Parent:** [Global radial integral](../2-fully-proven/elliptic-radial-kernels-integrate-to-the-global-zeta-ratio.md).
+- **Parent:** [Global radial integral](elliptic-radial-kernels-integrate-to-the-global-zeta-ratio.md).
 - **Statement:** Assembly maps the local cylinder product measure to actual
   adelic Haar restricted to that cylinder. For `Re(s)>0`, its radial spectral
   kernel is integrable and its integral is the finite product of the exact

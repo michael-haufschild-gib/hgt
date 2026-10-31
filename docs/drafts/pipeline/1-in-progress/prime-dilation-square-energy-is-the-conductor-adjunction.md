@@ -45,6 +45,13 @@ For the moment bound, put `V=floor(log_p Q)`. The entire matrix `E_(p^j)`
 is constant for `j≥V`. Earlier exponents have `j log p≤log Q`; the
 geometric tail has mean logarithm `V log p+log p/(p−1)≤log Q+1`.
 Thus the logarithmic bound holds in the order on positive quadratic forms.
+The same bound holds for every finite prime cutoff. A finite proof uses
+`(1-r)sum_(i<L)i r^i=r sum_(i<L)r^i−L r^L`, `r=1/p`.
+After the valuation saturates, this identity bounds each truncated tail's
+mean excess logarithm by `log p/(p−1)≤1`. Earlier exponents cost at most
+`log Q`. Distinct positive prime powers are injectively indexed by their
+prime and exponent, so the exact total square energy bounds the resulting
+finite sum.
 
 ## Norm transfer
 
@@ -59,8 +66,8 @@ rows satisfy exactly `N/n<k`, so the packet tail costs
 `1+log(2k)+16(1+log Q)`. The energy identity and logarithmic moment then
 pay both terms. Completed prime-row convergence removes the cutoff.
 
-Together with the proposed
-[uniform scalar estimate](scalar-prime-residuals-have-logarithmic-packet-cost.md),
+Together with the formalized
+[uniform scalar estimate](../3-formalized/scalar-prime-residuals-have-logarithmic-packet-cost.md),
 this gives the conjectured full arithmetic bound, for every `Q,N≥2`,
 
 `sum_(n≤N)[sum_(m≤Q)a_m ramanujanPrimeResidual(m,N,n)]²/log N`

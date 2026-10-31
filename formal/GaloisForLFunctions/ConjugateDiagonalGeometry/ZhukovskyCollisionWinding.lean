@@ -193,38 +193,41 @@ theorem zhukovskyLoop_circleExp (n : ℕ) (θ : ℝ) :
         ((zhukovskyMinorAxis n * Real.sin θ : ℝ) : ℂ) * I := by
   change zhukovskyMap n ((zhukovskyRadius n : ℂ) * Complex.exp ((θ : ℂ) * I)) = _
   unfold zhukovskyMap
-  have hr : ((zhukovskyRadius n : ℂ)) ≠ 0 :=
-    Complex.ofReal_ne_zero.mpr (zhukovskyRadius_pos n).ne'
   have hinv : ((zhukovskyRadius n : ℂ) * Complex.exp ((θ : ℂ) * I))⁻¹ =
-      (((zhukovskyRadius n)⁻¹ : ℝ) : ℂ) * Complex.exp (((-θ : ℝ) : ℂ) * I) := by
-    rw [mul_inv, ← Complex.ofReal_inv, ← Complex.exp_neg]
+      ((zhukovskyRadius n : ℂ))⁻¹ * Complex.exp ((-(θ : ℂ)) * I) := by
+    rw [mul_inv, ← Complex.exp_neg]
     congr 2
-    push_cast
     ring
   rw [hinv, Complex.exp_mul_I, Complex.exp_mul_I,
-    ← Complex.ofReal_cos, ← Complex.ofReal_sin,
-    ← Complex.ofReal_cos, ← Complex.ofReal_sin,
-    Real.cos_neg, Real.sin_neg]
+    Complex.cos_neg, Complex.sin_neg,
+    ← Complex.ofReal_cos, ← Complex.ofReal_sin]
   have hmaj : (((zhukovskyFocal n / 2) *
       (zhukovskyRadius n + (zhukovskyRadius n)⁻¹) : ℝ) : ℂ) = (zhukovskyMajorAxis n : ℂ) := by
     exact_mod_cast zhukovskyAxis_major_identity n
   have hmin : (((zhukovskyFocal n / 2) *
       (zhukovskyRadius n - (zhukovskyRadius n)⁻¹) : ℝ) : ℂ) = (zhukovskyMinorAxis n : ℂ) := by
     exact_mod_cast zhukovskyAxis_minor_identity n
-  push_cast at hmaj hmin ⊢
+  push_cast at hmaj hmin
+  rw [Complex.ofReal_mul, Complex.ofReal_mul]
   linear_combination (Real.cos θ : ℂ) * hmaj + (Real.sin θ : ℂ) * I * hmin
 
 theorem zhukovskyLoop_circleExp_re (n : ℕ) (θ : ℝ) :
     (zhukovskyLoop n (HTGeometry.circleExp θ)).re =
       1 / 2 + zhukovskyMajorAxis n * Real.cos θ := by
+  have h12 : (1 / 2 : ℂ).re = 1 / 2 := by norm_num
   rw [zhukovskyLoop_circleExp]
-  simp [Complex.add_re, Complex.mul_re]
+  simp only [Complex.add_re, Complex.ofReal_re, Complex.mul_re, Complex.I_re,
+    Complex.ofReal_im, Complex.I_im, h12]
+  ring
 
 theorem zhukovskyLoop_circleExp_im (n : ℕ) (θ : ℝ) :
     (zhukovskyLoop n (HTGeometry.circleExp θ)).im =
       zhukovskyMinorAxis n * Real.sin θ := by
+  have h12 : (1 / 2 : ℂ).im = 0 := by norm_num
   rw [zhukovskyLoop_circleExp]
-  simp [Complex.add_im, Complex.mul_im]
+  simp only [Complex.add_im, Complex.ofReal_im, Complex.mul_im, Complex.I_re,
+    Complex.ofReal_re, Complex.I_im, h12]
+  ring
 
 /-- Every point of `zhukovskyLoop n` lies on the level curve `zhukovskyEllipseForm n = 1`. -/
 theorem zhukovskyEllipseForm_loop (n : ℕ) (u : HTGeometry.UnitCircle) :
@@ -257,7 +260,11 @@ theorem norm_zhukovskyLoop_sub_half_le (n : ℕ) (u : HTGeometry.UnitCircle) :
     ‖zhukovskyLoop n u - (1 / 2 : ℂ)‖ ≤ zhukovskyMajorAxis n + zhukovskyMinorAxis n := by
   rw [← HTGeometry.circleExp_arg u]
   set θ := Complex.arg (u : ℂ)
-  rw [zhukovskyLoop_circleExp, add_sub_cancel_left]
+  have hsub : zhukovskyLoop n (HTGeometry.circleExp θ) - (1 / 2 : ℂ) =
+      ((zhukovskyMajorAxis n * Real.cos θ : ℝ) : ℂ) +
+        ((zhukovskyMinorAxis n * Real.sin θ : ℝ) : ℂ) * I := by
+    rw [zhukovskyLoop_circleExp]; ring
+  rw [hsub]
   calc ‖((zhukovskyMajorAxis n * Real.cos θ : ℝ) : ℂ) +
           ((zhukovskyMinorAxis n * Real.sin θ : ℝ) : ℂ) * I‖
       ≤ ‖((zhukovskyMajorAxis n * Real.cos θ : ℝ) : ℂ)‖ +
@@ -313,13 +320,17 @@ theorem windingNumber_zhukovsky_center (n : ℕ) :
   have hApos : ∀ σ, 0 < A σ := fun σ => by
     have h0 := clampUnit_nonneg σ
     have h1 := clampUnit_le_one σ
-    dsimp [A]
-    nlinarith
+    dsimp only [A]
+    rcases eq_or_lt_of_le h0 with hc0 | hcpos
+    · rw [← hc0]; linarith
+    · linarith [mul_nonneg (sub_nonneg.mpr h1) ha.le]
   have hBpos : ∀ σ, 0 < B σ := fun σ => by
     have h0 := clampUnit_nonneg σ
     have h1 := clampUnit_le_one σ
-    dsimp [B]
-    nlinarith
+    dsimp only [B]
+    rcases eq_or_lt_of_le h0 with hc0 | hcpos
+    · rw [← hc0]; linarith
+    · linarith [mul_nonneg (sub_nonneg.mpr h1) hb.le]
   let H : ℝ → ℝ → ℂ := fun σ θ =>
     ((A σ * Real.cos θ : ℝ) : ℂ) + ((B σ * Real.sin θ : ℝ) : ℂ) * I
   have hHc : Continuous (fun p : ℝ × ℝ => H p.1 p.2) := by
@@ -334,11 +345,15 @@ theorem windingNumber_zhukovsky_center (n : ℕ) :
   have hH0 : ∀ σ θ, H σ θ ≠ 0 := by
     intro σ θ hzero
     have hre : A σ * Real.cos θ = 0 := by
-      have := congrArg Complex.re hzero
-      simpa [H, Complex.add_re, Complex.mul_re] using this
+      have h := congrArg Complex.re hzero
+      simp only [H, Complex.add_re, Complex.ofReal_re, Complex.mul_re, Complex.I_re,
+        Complex.ofReal_im, Complex.I_im, Complex.zero_re] at h
+      linarith
     have him : B σ * Real.sin θ = 0 := by
-      have := congrArg Complex.im hzero
-      simpa [H, Complex.add_im, Complex.mul_im] using this
+      have h := congrArg Complex.im hzero
+      simp only [H, Complex.add_im, Complex.ofReal_im, Complex.mul_im, Complex.I_re,
+        Complex.ofReal_re, Complex.I_im, Complex.zero_im] at h
+      linarith
     have hcos : Real.cos θ = 0 := (mul_eq_zero.mp hre).resolve_left (hApos σ).ne'
     have hsin : Real.sin θ = 0 := (mul_eq_zero.mp him).resolve_left (hBpos σ).ne'
     have hcs := Real.cos_sq_add_sin_sq θ
@@ -346,15 +361,21 @@ theorem windingNumber_zhukovsky_center (n : ℕ) :
     norm_num at hcs
   have hHloop : ∀ σ, H σ 0 = H σ (2 * Real.pi) := by
     intro σ
-    simp [H, Real.cos_two_pi, Real.sin_two_pi]
+    dsimp only [H]
+    rw [Real.cos_zero, Real.sin_zero, Real.cos_two_pi, Real.sin_two_pi]
   have h0 : ∀ θ, H 0 θ = zhukovskyLoop n (HTGeometry.circleExp θ) - (1 / 2 : ℂ) := by
     intro θ
     rw [zhukovskyLoop_circleExp]
-    simp [H, A, B, clampUnit_zero]
+    dsimp only [H, A, B, a, b]
+    rw [clampUnit_zero]
+    simp only [sub_zero, one_mul, add_zero]
+    ring
   have h1 : ∀ θ, H 1 θ = ↑(1 : ℝ) * Complex.exp (I * (θ : ℂ)) := by
     intro θ
     rw [mul_comm I (θ : ℂ), Complex.exp_mul_I, ← Complex.ofReal_cos, ← Complex.ofReal_sin]
-    simp [H, A, B, clampUnit_one]
+    dsimp only [H, A, B]
+    rw [clampUnit_one]
+    simp only [sub_self, zero_mul, zero_add, one_mul, Complex.ofReal_one]
   rw [_root_.RHTower.windingNumber_of_homotopic H hHc hH0 hHloop h0 h1]
   exact _root_.RHTower.windingNumber_scaled_circle zero_lt_one
 
@@ -482,8 +503,8 @@ theorem windingNumber_zhukovsky_of_gt_one {n : ℕ} {d : ℂ}
   have hfact : (fun θ => zhukovskyLoop n (HTGeometry.circleExp θ) - dFar) =
       fun θ => ((1 / 2 : ℂ) - dFar) * q θ := by
     funext θ
-    dsimp [q]
-    field_simp [hfar_ne]
+    dsimp only [q]
+    rw [mul_add, mul_one, mul_div_cancel₀ _ hfar_ne]
     ring
   rw [hfact, _root_.RHTower.windingNumber_mul
     ⟨continuous_const, fun _ => hfar_ne, rfl⟩ ⟨hqc, hq_nz, hqclosed⟩,
@@ -630,11 +651,10 @@ theorem windingNumber_zhukovsky_pairDiffPoly_sq (Z : Finset ℂ) (m : ℂ → �
     exact pow_ne_zero _ (zhukovskyLoop_sub_ne_zero (hpair z hz w hw).1 u)
   refine ⟨hQ_nz, ?_⟩
   have hQ_loop : _root_.RHTower.IsLoop
-      (fun θ => Q.eval (zhukovskyLoop n (HTGeometry.circleExp θ))) 0 (2 * Real.pi) where
-    continuous := (Q.continuous.comp (zhukovskyLoop n).continuous).comp
-      HTGeometry.continuous_circleExp
-    nonzero θ := hQ_nz _
-    closed := by rw [← HTGeometry.circleExp_add_two_pi 0, zero_add]
+      (fun θ => Q.eval (zhukovskyLoop n (HTGeometry.circleExp θ))) 0 (2 * Real.pi) :=
+    ⟨(Q.continuous.comp (zhukovskyLoop n).continuous).comp HTGeometry.continuous_circleExp,
+      fun _ => hQ_nz _,
+      by rw [← HTGeometry.circleExp_add_two_pi 0, zero_add]⟩
   rw [_root_.RHTower.windingNumber_pow hQ_loop 2]
   have hfun : (fun θ => Q.eval (zhukovskyLoop n (HTGeometry.circleExp θ))) =
       fun θ => ∏ z ∈ Z, ∏ w ∈ Z,
@@ -692,17 +712,15 @@ theorem windingNumber_zhukovsky_poly_sq_of_approx (n : ℕ) (P Q : Polynomial �
     exact lt_irrefl _ h
   refine ⟨fun u => pow_ne_zero 2 (hP_nz u), ?_⟩
   have hP_loop : _root_.RHTower.IsLoop
-      (fun θ => P.eval (zhukovskyLoop n (HTGeometry.circleExp θ))) 0 (2 * Real.pi) where
-    continuous := (P.continuous.comp (zhukovskyLoop n).continuous).comp
-      HTGeometry.continuous_circleExp
-    nonzero θ := hP_nz _
-    closed := by rw [← HTGeometry.circleExp_add_two_pi 0, zero_add]
+      (fun θ => P.eval (zhukovskyLoop n (HTGeometry.circleExp θ))) 0 (2 * Real.pi) :=
+    ⟨(P.continuous.comp (zhukovskyLoop n).continuous).comp HTGeometry.continuous_circleExp,
+      fun _ => hP_nz _,
+      by rw [← HTGeometry.circleExp_add_two_pi 0, zero_add]⟩
   have hQ_loop : _root_.RHTower.IsLoop
-      (fun θ => Q.eval (zhukovskyLoop n (HTGeometry.circleExp θ))) 0 (2 * Real.pi) where
-    continuous := (Q.continuous.comp (zhukovskyLoop n).continuous).comp
-      HTGeometry.continuous_circleExp
-    nonzero θ := hQ_nz _
-    closed := by rw [← HTGeometry.circleExp_add_two_pi 0, zero_add]
+      (fun θ => Q.eval (zhukovskyLoop n (HTGeometry.circleExp θ))) 0 (2 * Real.pi) :=
+    ⟨(Q.continuous.comp (zhukovskyLoop n).continuous).comp HTGeometry.continuous_circleExp,
+      fun _ => hQ_nz _,
+      by rw [← HTGeometry.circleExp_add_two_pi 0, zero_add]⟩
   rw [_root_.RHTower.windingNumber_pow hP_loop 2, _root_.RHTower.windingNumber_pow hQ_loop 2]
   congr 1
   let q : ℝ → ℂ := fun θ =>
@@ -783,11 +801,11 @@ theorem circleWinding_unitNormalizeSymbol_of_ne_zero {Λ : C(HTGeometry.UnitCirc
   let r : ℝ → ℂ := fun θ => (‖Λ (HTGeometry.circleExp θ)‖ : ℂ)
   have hr_pos : ∀ θ, 0 < ‖Λ (HTGeometry.circleExp θ)‖ :=
     fun θ => norm_pos_iff.mpr (h _)
-  have hr_loop : _root_.RHTower.IsLoop r 0 (2 * Real.pi) where
-    continuous := Complex.continuous_ofReal.comp
-      (Λ.continuous.comp HTGeometry.continuous_circleExp).norm
-    nonzero θ := Complex.ofReal_ne_zero.mpr (hr_pos θ).ne'
-    closed := by simp only [r, ← HTGeometry.circleExp_add_two_pi 0, zero_add]
+  have hr_loop : _root_.RHTower.IsLoop r 0 (2 * Real.pi) :=
+    ⟨Complex.continuous_ofReal.comp
+        (Λ.continuous.comp HTGeometry.continuous_circleExp).norm,
+      fun θ => Complex.ofReal_ne_zero.mpr (hr_pos θ).ne',
+      by simp only [r, ← HTGeometry.circleExp_add_two_pi 0, zero_add]⟩
   have hr_wind : _root_.RHTower.windingNumber r 0 (2 * Real.pi) = 0 := by
     let L : ℝ → ℂ := fun θ => (Real.log ‖Λ (HTGeometry.circleExp θ)‖ : ℂ)
     have hLc : Continuous L := Complex.continuous_ofReal.comp
@@ -882,6 +900,61 @@ theorem bifurcationPoly_zero_roots (z : ℂ) :
   simp only [bifurcationPoly, Complex.ofReal_zero, Polynomial.eval_sub, Polynomial.eval_pow,
     Polynomial.eval_X, Polynomial.eval_C, sub_zero, sq_eq_zero_iff, sub_eq_zero]
 
+/-- If every pairwise difference `z - w` (`z, w ∈ Z`) lies strictly outside the `n`-th Zhukovsky
+ellipse, then the squared Newton–Girard difference polynomial is nonvanishing on `zhukovskyLoop n`
+and has winding number `0`. -/
+theorem windingNumber_zhukovsky_pairDiffPoly_sq_eq_zero_of_gt_one
+    (Z : Finset ℂ) (m : ℂ → ℕ) (n : ℕ)
+    (hext : ∀ z ∈ Z, ∀ w ∈ Z, 1 < zhukovskyEllipseForm n (z - w)) :
+    let Q := pairDiffPoly (∑ w ∈ Z, m w) (fun r => ∑ w ∈ Z, (m w : ℂ) * w ^ r)
+    (∀ u : HTGeometry.UnitCircle, Q.eval (zhukovskyLoop n u) ≠ 0) ∧
+      _root_.RHTower.windingNumber
+        (fun θ => (Q.eval (zhukovskyLoop n (HTGeometry.circleExp θ))) ^ 2) 0 (2 * Real.pi) = 0 := by
+  intro Q
+  have heval : ∀ x : ℂ, Q.eval x = ∏ z ∈ Z, ∏ w ∈ Z, (x - (z - w)) ^ (m z * m w) :=
+    fun x => eval_pairDiffPoly_eq_finset_prod Z id m rfl (fun _ _ _ => rfl) x
+  have hQ_nz : ∀ u : HTGeometry.UnitCircle, Q.eval (zhukovskyLoop n u) ≠ 0 := by
+    intro u
+    rw [heval]
+    refine Finset.prod_ne_zero_iff.mpr fun z hz => Finset.prod_ne_zero_iff.mpr fun w hw => ?_
+    exact pow_ne_zero _ (zhukovskyLoop_sub_ne_zero (hext z hz w hw).ne' u)
+  refine ⟨hQ_nz, ?_⟩
+  have hQ_loop : _root_.RHTower.IsLoop
+      (fun θ => Q.eval (zhukovskyLoop n (HTGeometry.circleExp θ))) 0 (2 * Real.pi) :=
+    ⟨(Q.continuous.comp (zhukovskyLoop n).continuous).comp HTGeometry.continuous_circleExp,
+      fun _ => hQ_nz _,
+      by rw [← HTGeometry.circleExp_add_two_pi 0, zero_add]⟩
+  rw [_root_.RHTower.windingNumber_pow hQ_loop 2]
+  have hfun : (fun θ => Q.eval (zhukovskyLoop n (HTGeometry.circleExp θ))) =
+      fun θ => ∏ z ∈ Z, ∏ w ∈ Z,
+        (zhukovskyLoop n (HTGeometry.circleExp θ) - (z - w)) ^ (m z * m w) := by
+    funext θ; exact heval _
+  have hinner_loop : ∀ z ∈ Z, ∀ w ∈ Z,
+      _root_.RHTower.IsLoop
+        (fun θ => (zhukovskyLoop n (HTGeometry.circleExp θ) - (z - w)) ^ (m z * m w))
+        0 (2 * Real.pi) := by
+    intro z hz w hw
+    have hl := isLoop_zhukovsky_sub (hext z hz w hw).ne'
+    exact ⟨hl.continuous.pow _, fun θ => pow_ne_zero _ (hl.nonzero θ), by simp only [hl.closed]⟩
+  have houter_loop : ∀ z ∈ Z,
+      _root_.RHTower.IsLoop
+        (fun θ => ∏ w ∈ Z, (zhukovskyLoop n (HTGeometry.circleExp θ) - (z - w)) ^ (m z * m w))
+        0 (2 * Real.pi) := by
+    intro z hz
+    refine ⟨continuous_finsetProd Z (fun w hw => (hinner_loop z hz w hw).continuous),
+      fun θ => Finset.prod_ne_zero_iff.mpr (fun w hw => (hinner_loop z hz w hw).nonzero θ),
+      Finset.prod_congr rfl (fun w hw => (hinner_loop z hz w hw).closed)⟩
+  rw [hfun, _root_.RHTower.windingNumber_prod Z _ houter_loop]
+  have hzero_sum : (∑ z ∈ Z, _root_.RHTower.windingNumber
+      (fun θ => ∏ w ∈ Z, (zhukovskyLoop n (HTGeometry.circleExp θ) - (z - w)) ^ (m z * m w))
+      0 (2 * Real.pi)) = 0 := by
+    refine Finset.sum_eq_zero fun z hz => ?_
+    rw [_root_.RHTower.windingNumber_prod Z _ (hinner_loop z hz)]
+    refine Finset.sum_eq_zero fun w hw => ?_
+    rw [_root_.RHTower.windingNumber_pow (isLoop_zhukovsky_sub (hext z hz w hw).ne') (m z * m w),
+      windingNumber_zhukovsky_of_gt_one (hext z hz w hw), mul_zero]
+  rw [hzero_sum, mul_zero]
+
 /-- **Two-scale bifurcation sharpness.** For `0 < ε < 1 / 4`, `bifurcationPoly ε` has two distinct
 roots `z₊ = 1 / 2 + √ε` and `z₋ = 1 / 2 - √ε` in `(0, 1)` at the same ordinate `0`:
 1. If `2 √ε < 1 / (2 * zhukovskyStage n)` (splitting smaller than a fixed stage `n`), then every
@@ -907,7 +980,22 @@ theorem twoScale_bifurcation_sharpness (n : ℕ) {ε : ℝ} (hε0 : 0 < ε) (hε
       _root_.RHTower.windingNumber
         (fun θ => (Q.eval (zhukovskyLoop n (HTGeometry.circleExp θ))) ^ 2)
         0 (2 * Real.pi) = 2) := by
-  intro zPlus zMinus Z Q
+  obtain ⟨zPlus, hzPlus⟩ : ∃ zPlus : ℂ, zPlus = (1 / 2 : ℂ) + (Real.sqrt ε : ℂ) := ⟨_, rfl⟩
+  obtain ⟨zMinus, hzMinus⟩ : ∃ zMinus : ℂ, zMinus = (1 / 2 : ℂ) - (Real.sqrt ε : ℂ) := ⟨_, rfl⟩
+  dsimp only
+  rw [← hzPlus, ← hzMinus]
+  obtain ⟨Z, hZ⟩ : ∃ Z : Finset ℂ, Z = {zMinus, zPlus} := ⟨_, rfl⟩
+  rw [← hZ]
+  obtain ⟨m, hm⟩ : ∃ m : ℂ → ℕ, m = fun _ => 1 := ⟨_, rfl⟩
+  obtain ⟨Q, hQ⟩ : ∃ Q : Polynomial ℂ,
+      Q = pairDiffPoly (∑ _w ∈ Z, 1) (fun r => ∑ w ∈ Z, (1 : ℂ) * w ^ r) := ⟨_, rfl⟩
+  rw [← hQ]
+  have hQ_m : Q = pairDiffPoly (∑ w ∈ Z, m w) (fun r => ∑ w ∈ Z, (m w : ℂ) * w ^ r) := by
+    rw [hQ, hm]
+    congr 1
+    funext r
+    simp only [Nat.cast_one]
+  have h12 : (1 / 2 : ℂ).re = 1 / 2 := by norm_num
   have hsqrt_pos : 0 < Real.sqrt ε := Real.sqrt_pos.mpr hε0
   have hsqrt_sq : (Real.sqrt ε : ℂ) ^ 2 = (ε : ℂ) := by
     rw [← Complex.ofReal_pow, Real.sq_sqrt hε0.le]
@@ -917,35 +1005,42 @@ theorem twoScale_bifurcation_sharpness (n : ℕ) {ε : ℝ} (hε0 : 0 < ε) (hε
       rw [show (1 / 4 : ℝ) = (1 / 2 : ℝ) ^ 2 by norm_num, Real.sqrt_sq (by norm_num)]
     linarith
   have hzPlus_root : (bifurcationPoly ε).eval zPlus = 0 := by
-    simp only [bifurcationPoly, zPlus, Polynomial.eval_sub, Polynomial.eval_pow,
+    rw [hzPlus]
+    simp only [bifurcationPoly, Polynomial.eval_sub, Polynomial.eval_pow,
       Polynomial.eval_X, Polynomial.eval_C, add_sub_cancel_left, hsqrt_sq, sub_self]
   have hzMinus_root : (bifurcationPoly ε).eval zMinus = 0 := by
-    simp only [bifurcationPoly, zMinus, Polynomial.eval_sub, Polynomial.eval_pow,
+    rw [hzMinus]
+    simp only [bifurcationPoly, Polynomial.eval_sub, Polynomial.eval_pow,
       Polynomial.eval_X, Polynomial.eval_C]
     have hsub : (1 / 2 : ℂ) - (Real.sqrt ε : ℂ) - (1 / 2 : ℂ) = -(Real.sqrt ε : ℂ) := by ring
     rw [hsub, neg_sq, hsqrt_sq, sub_self]
   have hne : zPlus ≠ zMinus := by
     intro h
     have hre := congrArg Complex.re h
-    simp only [zPlus, zMinus, Complex.add_re, Complex.sub_re, Complex.ofReal_re] at hre
-    have hre' : 1 / 2 + Real.sqrt ε = 1 / 2 - Real.sqrt ε := by simpa using hre
+    rw [hzPlus, hzMinus] at hre
+    simp only [Complex.add_re, Complex.sub_re, Complex.ofReal_re, h12] at hre
     linarith
-  have him_eq : zPlus.im = zMinus.im := by simp [zPlus, zMinus]
+  have him_eq : zPlus.im = zMinus.im := by
+    rw [hzPlus, hzMinus]
+    simp
   refine ⟨hzPlus_root, hzMinus_root, hne, him_eq, ?_, ?_⟩
   · -- Sub-resolution regime: `2 √ε < 1 / (2 s)` implies every difference is outside `E_n`.
     intro hsmall
-    have heval : ∀ x : ℂ, Q.eval x = ∏ z ∈ Z, ∏ w ∈ Z, (x - (z - w)) ^ (1 * 1) :=
-      fun x => eval_pairDiffPoly_eq_finset_prod Z id (fun _ => 1) rfl (fun _ _ _ => rfl) x
     have hext : ∀ z ∈ Z, ∀ w ∈ Z, 1 < zhukovskyEllipseForm n (z - w) := by
       intro z hz w hw
+      rw [hZ] at hz hw
       have hre_le : (z - w).re ≤ 2 * Real.sqrt ε := by
         rcases Finset.mem_insert.mp hz with rfl | hz' <;>
         rcases Finset.mem_insert.mp hw with rfl | hw'
-        · simp [zMinus]; linarith
-        · rw [Finset.mem_singleton.mp hw']; simp [zMinus, zPlus]; linarith
-        · rw [Finset.mem_singleton.mp hz']; simp [zMinus, zPlus]
+        · simp; linarith
+        · rw [Finset.mem_singleton.mp hw', hzMinus, hzPlus]
+          simp only [Complex.sub_re, Complex.add_re, Complex.ofReal_re, h12]
+          linarith
+        · rw [Finset.mem_singleton.mp hz', hzMinus, hzPlus]
+          simp only [Complex.sub_re, Complex.add_re, Complex.ofReal_re, h12]
+          linarith
         · rw [Finset.mem_singleton.mp hz', Finset.mem_singleton.mp hw']
-          simp [zPlus]; linarith
+          simp; linarith
       have ha_pos : 0 < zhukovskyMajorAxis n := zhukovskyMajorAxis_pos n
       have hsub_lt : (z - w).re - 1 / 2 < -zhukovskyMajorAxis n := by
         unfold zhukovskyMajorAxis; linarith
@@ -955,60 +1050,33 @@ theorem twoScale_bifurcation_sharpness (n : ℕ) {ε : ℝ} (hε0 : 0 < ε) (hε
         (one_lt_div (sq_pos_of_pos ha_pos)).mpr hsq
       have hnn : 0 ≤ (z - w).im ^ 2 / zhukovskyMinorAxis n ^ 2 := by positivity
       linarith
-    have hQ_nz : ∀ u : HTGeometry.UnitCircle, Q.eval (zhukovskyLoop n u) ≠ 0 := by
-      intro u
-      rw [heval]
-      refine Finset.prod_ne_zero_iff.mpr fun z hz => Finset.prod_ne_zero_iff.mpr fun w hw => ?_
-      simpa using zhukovskyLoop_sub_ne_zero (hext z hz w hw).ne' u
-    have hQ_loop : _root_.RHTower.IsLoop
-        (fun θ => Q.eval (zhukovskyLoop n (HTGeometry.circleExp θ))) 0 (2 * Real.pi) where
-      continuous := (Q.continuous.comp (zhukovskyLoop n).continuous).comp
-        HTGeometry.continuous_circleExp
-      nonzero θ := hQ_nz _
-      closed := by rw [← HTGeometry.circleExp_add_two_pi 0, zero_add]
-    rw [_root_.RHTower.windingNumber_pow hQ_loop 2]
-    have hfun : (fun θ => Q.eval (zhukovskyLoop n (HTGeometry.circleExp θ))) =
-        fun θ => ∏ z ∈ Z, ∏ w ∈ Z, (zhukovskyLoop n (HTGeometry.circleExp θ) - (z - w)) := by
-      funext θ
-      rw [heval]
-      refine Finset.prod_congr rfl fun z _ => Finset.prod_congr rfl fun w _ => pow_one _
-    have houter : ∀ z ∈ Z, _root_.RHTower.IsLoop
-        (fun θ => ∏ w ∈ Z, (zhukovskyLoop n (HTGeometry.circleExp θ) - (z - w)))
-        0 (2 * Real.pi) := by
-      intro z hz
-      refine ⟨continuous_finsetProd Z (fun w hw =>
-          (isLoop_zhukovsky_sub (hext z hz w hw).ne').continuous),
-        fun θ => Finset.prod_ne_zero_iff.mpr (fun w hw =>
-          (isLoop_zhukovsky_sub (hext z hz w hw).ne').nonzero θ),
-        Finset.prod_congr rfl (fun w hw =>
-          (isLoop_zhukovsky_sub (hext z hz w hw).ne').closed)⟩
-    rw [hfun, _root_.RHTower.windingNumber_prod Z _ houter]
-    have hzero_sum : (∑ z ∈ Z, _root_.RHTower.windingNumber
-        (fun θ => ∏ w ∈ Z, (zhukovskyLoop n (HTGeometry.circleExp θ) - (z - w)))
-        0 (2 * Real.pi)) = 0 := by
-      refine Finset.sum_eq_zero fun z hz => ?_
-      rw [_root_.RHTower.windingNumber_prod Z _
-        (fun w hw => isLoop_zhukovsky_sub (hext z hz w hw).ne')]
-      exact Finset.sum_eq_zero fun w hw => windingNumber_zhukovsky_of_gt_one (hext z hz w hw)
-    rw [hzero_sum, mul_zero]
+    rw [hQ_m]
+    exact (windingNumber_zhukovsky_pairDiffPoly_sq_eq_zero_of_gt_one Z m n hext).2
   · -- Resolved regime: `1 / (2 s) < 2 √ε` and `1 / (2 s) ≤ 1 / 2 - √ε` gives winding `2`.
     intro hres hmargin
     have hstrip : ∀ w ∈ Z, 1 / (2 * (zhukovskyStage n : ℝ)) ≤ w.re ∧ w.re < 1 := by
       intro w hw
+      rw [hZ] at hw
       rcases Finset.mem_insert.mp hw with rfl | hw'
-      · refine ⟨?_, ?_⟩ <;> (simp [zMinus]; linarith)
-      · rw [Finset.mem_singleton.mp hw']
-        refine ⟨?_, ?_⟩ <;> (simp [zPlus]; linarith)
+      · rw [hzMinus]
+        simp only [Complex.sub_re, Complex.ofReal_re, h12]
+        exact ⟨hmargin, by linarith⟩
+      · rw [Finset.mem_singleton.mp hw', hzPlus]
+        simp only [Complex.add_re, Complex.ofReal_re, h12]
+        exact ⟨by linarith, by linarith⟩
     have hre : ∀ z ∈ Z, ∀ w ∈ Z, w.re < z.re →
         1 / (2 * (zhukovskyStage n : ℝ)) < z.re - w.re := by
       intro z hz w hw hlt
+      rw [hZ] at hz hw
       rcases Finset.mem_insert.mp hz with rfl | hz' <;>
       rcases Finset.mem_insert.mp hw with rfl | hw'
       · exact absurd hlt (lt_irrefl _)
-      · rw [Finset.mem_singleton.mp hw'] at hlt
-        exfalso; simp [zMinus, zPlus] at hlt; linarith
-      · rw [Finset.mem_singleton.mp hz']
-        simpa [zMinus, zPlus] using hres
+      · rw [Finset.mem_singleton.mp hw', hzMinus, hzPlus] at hlt
+        simp only [Complex.sub_re, Complex.add_re, Complex.ofReal_re, h12] at hlt
+        linarith
+      · rw [Finset.mem_singleton.mp hz', hzMinus, hzPlus]
+        simp only [Complex.sub_re, Complex.add_re, Complex.ofReal_re, h12]
+        linarith
       · rw [Finset.mem_singleton.mp hz', Finset.mem_singleton.mp hw'] at hlt
         exact absurd hlt (lt_irrefl _)
     have him : ∀ z ∈ Z, ∀ w ∈ Z, z.im ≠ w.im →
@@ -1016,13 +1084,17 @@ theorem twoScale_bifurcation_sharpness (n : ℕ) {ε : ℝ} (hε0 : 0 < ε) (hε
       intro z hz w hw hne_im
       exfalso
       apply hne_im
+      rw [hZ] at hz hw
       rcases Finset.mem_insert.mp hz with rfl | hz' <;>
-      rcases Finset.mem_insert.mp hw with rfl | hw' <;>
-      simp_all [zMinus, zPlus]
-    have hwind := (windingNumber_zhukovsky_pairDiffPoly_sq Z (fun _ => 1) n hstrip hre him).2
-    rw [hwind]
+      rcases Finset.mem_insert.mp hw with rfl | hw'
+      · rfl
+      · rw [Finset.mem_singleton.mp hw']; exact him_eq.symm
+      · rw [Finset.mem_singleton.mp hz']; exact him_eq
+      · rw [Finset.mem_singleton.mp hz', Finset.mem_singleton.mp hw']
+    have hwind := (windingNumber_zhukovsky_pairDiffPoly_sq Z m n hstrip hre him).2
+    rw [hQ_m, hwind, hZ, hm]
     have hne_mp : zMinus ≠ zPlus := hne.symm
-    simp only [Z, Finset.sum_pair hne_mp]
+    simp only [Finset.sum_pair hne_mp]
     simp [hne, hne_mp, him_eq]
 
 end GaloisForLFunctions.ConjugateDiagonalGeometry

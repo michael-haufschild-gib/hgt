@@ -2,6 +2,7 @@ import GaloisForLFunctions.RenormalizedIntersectionTheory.TheGlobalPoleIsTheExtr
 import GaloisForLFunctions.RenormalizedIntersectionTheory.TheKunnethInertiaLaw
 import GaloisForLFunctions.RenormalizedIntersectionTheory.TheRenormalizedHodgeIndex
 import GaloisForLFunctions.RenormalizedIntersectionTheory.ThePoleClassIsTheGroundConductor
+import GaloisForLFunctions.RenormalizedIntersectionTheory.TheHodgeIndexHoldsAtEveryFixedOverlap
 
 /-!
 # Renormalized Intersection Theory of the Scaling Surface

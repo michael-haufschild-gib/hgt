@@ -1,6 +1,6 @@
 # Elliptic radial kernels integrate to the global zeta ratio
 
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
 - **Parent:** [Arithmetic unfolding](../1-in-progress/finite-field-eisenstein-unfolding.md).
 - **Statement:** For every complex `s` with `Re(s)>1`, the actual adelic radial
   kernel `K_s(a)=∏_v max(1,|a_v|)^(-s-1)` is absolutely integrable and
@@ -36,7 +36,9 @@ assumed and no sum/integral exchange precedes integrability.
 
 `ArithmeticEffectivityTheory/FiniteFieldEllipticGlobalSpectralIntegral.lean`:
 `ellipticAdeleSpectralKernel_integrable` and
-`integral_ellipticAdeleSpectralKernel`. Direct audit pending.
+`integral_ellipticAdeleSpectralKernel`. Direct Lean audit passed; both
+transitive axiom reports contain only `propext`, `Classical.choice`, and
+`Quot.sound`.
 
 Identifying this radial kernel with the actual loop Iwasawa section remains
 a separate input to arithmetic unfolding.

@@ -1018,10 +1018,12 @@ theorem exactWindowDifferencePoly_winding (T : ℝ) {n : ℕ} (hn : thetaWindowS
       linarith
     linarith
   obtain ⟨hQ_nz, hQ_wind⟩ := windingNumber_zhukovsky_pairDiffPoly_sq Z m n hstrip hre him
+  have hpoly_eq : exactWindowDifferencePoly T =
+      pairDiffPoly (∑ w ∈ Z, m w) (fun r => ∑ w ∈ Z, (m w : ℂ) * w ^ r) := by
+    unfold exactWindowDifferencePoly _root_.RHTower.xiStripWindowTotalOrder
+    rfl
+  rw [hpoly_eq]
   refine ⟨hQ_nz, ?_⟩
-  change _root_.RHTower.windingNumber
-      (fun θ => ((pairDiffPoly (∑ w ∈ Z, m w) (fun r => ∑ w ∈ Z, (m w : ℂ) * w ^ r)).eval
-        (zhukovskyLoop n (HTGeometry.circleExp θ))) ^ 2) 0 (2 * Real.pi) = _
   rw [hQ_wind, _root_.RHTower.xiHorizontalCollisionCharge_eq_sum_pairs,
     _root_.RHTower.xiHorizontalCollisionPairs, Finset.sum_filter, Finset.sum_product]
   push_cast

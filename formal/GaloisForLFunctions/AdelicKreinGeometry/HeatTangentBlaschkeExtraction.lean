@@ -107,8 +107,8 @@ theorem heatSourceEntire_I_mul_re_pos {t : ℝ} (ht : 0 ≤ t) (y : ℝ) :
     have hexp : I * (I * (y : ℂ)) * (x : ℂ) = ((-y * x : ℝ) : ℂ) := by
       calc I * (I * (y : ℂ)) * (x : ℂ) = (I * I) * (y : ℂ) * (x : ℂ) := by ring
         _ = ((-y * x : ℝ) : ℂ) := by rw [Complex.I_mul_I]; push_cast; ring
-    rw [hexp, ← Complex.ofReal_exp]
     dsimp only [h]
+    rw [hexp, ← Complex.ofReal_exp]
     push_cast
     rfl
   rw [heq, Complex.ofReal_re]
@@ -136,7 +136,7 @@ nonreal right zeros `{H_t(z) = 0, Re(1/2 + i z) > 1/2, Im(1/2 + i z) ≠ 0}`. -/
 theorem riemannHeat_eq_zero_and_im_neg_iff {t : ℝ} (ht : 0 ≤ t) (z : ℂ) :
     (riemannHeat t z = 0 ∧ z.im < 0) ↔
       (riemannHeat t z = 0 ∧ 1 / 2 < (1 / 2 + I * z).re ∧ (1 / 2 + I * z).im ≠ 0) := by
-  have hre : (1 / 2 + I * z).re = 1 / 2 - z.im := by simp
+  have hre : (1 / 2 + I * z).re = 1 / 2 - z.im := by simp [sub_eq_add_neg]
   have him : (1 / 2 + I * z).im = z.re := by simp
   rw [hre, him]
   constructor
@@ -340,7 +340,7 @@ private theorem tendsto_tangentReflectionTerm {u z : ℂ} (hu : u.im < 0) (hz : 
   filter_upwards [eventually_gt_atTop (0 : ℝ)] with R hR
   have hRc : (R : ℂ) ≠ 0 := Complex.ofReal_ne_zero.mpr hR.ne'
   have hconj : conj (u - (-I * (R : ℂ))) = conj u - I * (R : ℂ) := by
-    simp [Complex.conj_ofReal]
+    simp [Complex.conj_ofReal, sub_eq_add_neg]
   have hden_alg : (R : ℂ) ^ 2 - (conj u - I * (R : ℂ)) * (z - (-I * (R : ℂ))) =
       I * (R : ℂ) * (z - conj u) - conj u * z := by
     calc (R : ℂ) ^ 2 - (conj u - I * (R : ℂ)) * (z - (-I * (R : ℂ)))
@@ -351,7 +351,7 @@ private theorem tendsto_tangentReflectionTerm {u z : ℂ} (hu : u.im < 0) (hz : 
     field_simp [hRc]; ring
   have hD : (I * (z - conj u) - conj u * z * ((R : ℂ))⁻¹) * (R : ℂ) =
       I * (R : ℂ) * (z - conj u) - conj u * z := by
-    field_simp [hRc]; ring
+    field_simp [hRc]
   calc -(-I + conj u * ((R : ℂ))⁻¹) / (I * (z - conj u) - conj u * z * ((R : ℂ))⁻¹)
       = (-(-I + conj u * ((R : ℂ))⁻¹) * (R : ℂ)) /
           ((I * (z - conj u) - conj u * z * ((R : ℂ))⁻¹) * (R : ℂ)) :=
@@ -388,8 +388,9 @@ theorem tendsto_heatTangentPJ_atTop {t : ℝ} (ht : 0 < t) {z : ℂ} (hz_im : z.
       intro u hu
       have hu_im := ((mem_heatRightZeroSet ht).mp hu).2
       have hle : ‖u‖ ^ 2 / (-2 * u.im) ≤ ∑ w ∈ heatRightZeroSet t, ‖w‖ ^ 2 / (-2 * w.im) :=
-        Finset.single_le_sum (fun w hw => div_nonneg (sq_nonneg _)
-          (by have := ((mem_heatRightZeroSet ht).mp hw).2; linarith)) hu
+        Finset.single_le_sum (f := fun w : ℂ => ‖w‖ ^ 2 / (-2 * w.im))
+          (fun w hw => div_nonneg (sq_nonneg _)
+            (by have := ((mem_heatRightZeroSet ht).mp hw).2; linarith)) hu
       exact mem_ball_tangentDisc_of_gt hu_im (by linarith)
     have hz_ball : z ∈ ball c R := mem_ball_tangentDisc_of_gt hz_im (by linarith)
     have hdiv := divisor_riemannHeat_tangentDisc ht hR hball
@@ -428,8 +429,9 @@ theorem tendsto_heatTangentPJ_atTop {t : ℝ} (ht : 0 < t) {z : ℂ} (hz_im : z.
       · intro u hu
         rw [Function.mem_support] at hu
         by_contra hun
+        have hun' : u ∉ heatRightZeroSet t := Finset.mem_coe.not.mp hun
         apply hu
-        rw [hdiv u, if_neg hun, Int.cast_zero, zero_mul]
+        rw [hdiv u, if_neg hun', Int.cast_zero, zero_mul]
     rw [hfinsum] at hpj
     unfold heatTangentPJ
     rw [heatSourceEntire_eq_riemannHeat]
@@ -556,10 +558,16 @@ private theorem hasDerivAt_clog_blaschkeQuotient (σ : ℝ) {u : ℂ} (hu : |u.i
     simpa using ((Complex.ofRealCLM.hasDerivAt (x := σ)).sub_const I).sub_const (conj u)
   have hg₂ : HasDerivAt (fun x : ℝ => (x : ℂ) - I - u) 1 σ := by
     simpa using ((Complex.ofRealCLM.hasDerivAt (x := σ)).sub_const I).sub_const u
-  have hq := (hg₁.div hg₂ hb_ne).clog_real (blaschkeQuotient_mem_slitPlane σ hu)
-  convert hq using 1
-  field_simp [ha_ne, hb_ne]
-  ring
+  have hq : HasDerivAt
+      (fun x : ℝ => Complex.log (((x : ℂ) - I - conj u) / ((x : ℂ) - I - u)))
+      (((1 * ((σ : ℂ) - I - u) - ((σ : ℂ) - I - conj u) * 1) / ((σ : ℂ) - I - u) ^ 2) /
+        (((σ : ℂ) - I - conj u) / ((σ : ℂ) - I - u))) σ :=
+    (hg₁.div hg₂ hb_ne).clog_real (blaschkeQuotient_mem_slitPlane σ hu)
+  have hval : (((1 * ((σ : ℂ) - I - u) - ((σ : ℂ) - I - conj u) * 1) / ((σ : ℂ) - I - u) ^ 2) /
+      (((σ : ℂ) - I - conj u) / ((σ : ℂ) - I - u))) =
+      1 / ((σ : ℂ) - I - conj u) - 1 / ((σ : ℂ) - I - u) := by
+    field_simp [ha_ne, hb_ne]
+  rwa [hval] at hq
 
 private theorem integrable_blaschkeLogDerivTerm {u : ℂ} (hu : |u.im| ≤ 1 / 2) :
     Integrable (fun σ : ℝ => 1 / ((σ : ℂ) - I - conj u) - 1 / ((σ : ℂ) - I - u)) := by
@@ -598,18 +606,17 @@ private theorem integrable_blaschkeLogDerivTerm {u : ℂ} (hu : |u.im| ≤ 1 / 2
   have hab_pos : 0 < 1 + (σ - u.re) ^ 2 := by positivity
   have hab_norm : (1 + (σ - u.re) ^ 2) / 4 ≤ ‖a * b‖ := by
     rw [norm_mul]
+    have hnn : 0 ≤ (1 + (σ - u.re) ^ 2) / 4 := by positivity
     have hmul : ((1 + (σ - u.re) ^ 2) / 4) ^ 2 ≤ (‖a‖ * ‖b‖) ^ 2 := by
       rw [mul_pow]
-      have hnn : 0 ≤ (1 + (σ - u.re) ^ 2) / 4 := by positivity
       calc ((1 + (σ - u.re) ^ 2) / 4) ^ 2
           = ((1 + (σ - u.re) ^ 2) / 4) * ((1 + (σ - u.re) ^ 2) / 4) := sq _
         _ ≤ ‖a‖ ^ 2 * ‖b‖ ^ 2 := mul_le_mul ha_sq hb_sq hnn (sq_nonneg _)
-    nlinarith [norm_nonneg a, norm_nonneg b]
-  have hab_norm_pos : 0 < ‖a * b‖ := by linarith
+    exact (sq_le_sq₀ hnn (mul_nonneg (norm_nonneg a) (norm_nonneg b))).mp hmul
   calc ‖conj u - u‖ / ‖a * b‖
       ≤ ‖conj u - u‖ / ((1 + (σ - u.re) ^ 2) / 4) :=
         div_le_div_of_nonneg_left (norm_nonneg _) (by positivity) hab_norm
-    _ = (4 * ‖conj u - u‖) * (1 + (σ - u.re) ^ 2)⁻¹ := by field_simp [hab_pos.ne']; ring
+    _ = (4 * ‖conj u - u‖) * (1 + (σ - u.re) ^ 2)⁻¹ := by field_simp [hab_pos.ne']
 
 private theorem tendsto_clog_blaschkeQuotient_atTop {u : ℂ} (hu : |u.im| ≤ 1 / 2) :
     Tendsto (fun σ : ℝ => Complex.log (((σ : ℂ) - I - conj u) / ((σ : ℂ) - I - u)))
@@ -638,17 +645,15 @@ private theorem tendsto_clog_blaschkeQuotient_atTop {u : ℂ} (hu : |u.im| ≤ 1
         ≤ ‖u - conj u‖ / (σ - u.re) :=
           div_le_div_of_nonneg_left (norm_nonneg _) hpos hle_norm
       _ = ‖u - conj u‖ * (σ - u.re)⁻¹ := div_eq_mul_inv _ _
-  have hlog := (Complex.continuousAt_clog Complex.one_mem_slitPlane).tendsto.comp hq1
-  simpa [Function.comp_def, Complex.log_one] using hlog
+  simpa [Complex.log_one] using hq1.clog Complex.one_mem_slitPlane
 
 private theorem integral_Ioi_blaschkeLogDerivTerm (r : ℝ) {u : ℂ} (hu : |u.im| ≤ 1 / 2) :
     (∫ σ in Ioi r, (1 / ((σ : ℂ) - I - conj u) - 1 / ((σ : ℂ) - I - u))) =
       -Complex.log (((r : ℂ) - I - conj u) / ((r : ℂ) - I - u)) := by
-  have hftc := integral_Ioi_of_hasDerivAt_of_tendsto'
+  rw [integral_Ioi_of_hasDerivAt_of_tendsto' (a := r)
     (fun σ _ => hasDerivAt_clog_blaschkeQuotient σ hu)
     (integrable_blaschkeLogDerivTerm hu).integrableOn
-    (tendsto_clog_blaschkeQuotient_atTop hu)
-  simpa using hftc
+    (tendsto_clog_blaschkeQuotient_atTop hu), zero_sub]
 
 /-- **Lower horizontal boundary identification**: for every `t > 0` and `r ∈ ℝ`, the source-defined
 boundary value `heatLowerBlaschkeBoundary t r` equals `B_t(r − i)`. -/
@@ -706,8 +711,8 @@ theorem heatUpperBlaschkeBoundary_eq {t : ℝ} (ht : 0 < t) (r : ℝ) :
   rw [map_pow, ← inv_pow]
   congr 1
   rw [map_div₀, inv_div]
-  have h1 : conj ((r : ℂ) - I - u) = (r : ℂ) + I - conj u := by simp [Complex.conj_ofReal]; ring
-  have h2 : conj ((r : ℂ) - I - conj u) = (r : ℂ) + I - u := by simp [Complex.conj_ofReal]; ring
+  have h1 : conj ((r : ℂ) - I - u) = (r : ℂ) + I - conj u := by simp [Complex.conj_ofReal]
+  have h2 : conj ((r : ℂ) - I - conj u) = (r : ℂ) + I - u := by simp [Complex.conj_ofReal]
   rw [h1, h2]
 
 /-- Uniform modulus bound on `heatBlaschkeMeromorphic t z` whenever `‖z − u‖ ≥ 1/2` for all
@@ -829,6 +834,206 @@ private theorem norm_pow_sub_pow_le (a b : ℂ) (m : ℕ) {B : ℝ} (hB1 : 1 ≤
     (fun _ _ => ha) (fun _ _ => hb)
   simpa [Finset.prod_const, Finset.sum_const, nsmul_eq_mul] using h
 
+private def blaschkeTruncFactor (z₀ w : ℂ) : ℂ :=
+  if w.im < 0 then (z₀ - conj w) / (z₀ - w) else 1
+
+private theorem norm_blaschkeTruncFactor_le_three {z₀ w : ℂ} (hz₀ : |z₀.im| = 1)
+    (hw : |w.im| ≤ 1 / 2) : ‖blaschkeTruncFactor z₀ w‖ ≤ 3 := by
+  unfold blaschkeTruncFactor
+  split_ifs with hneg
+  · exact norm_blaschkeFactor_le_three hw (half_le_norm_sub_of_abs_im_eq_one hz₀ hw)
+  · norm_num
+
+private theorem continuousAt_blaschkeTruncFactor {z₀ e : ℂ} (hz₀ : |z₀.im| = 1)
+    (he : |e.im| < 1 / 2) : ContinuousAt (blaschkeTruncFactor z₀) e := by
+  have hg_cont : ContinuousAt (fun w : ℂ => (z₀ - conj w) / (z₀ - w)) e := by
+    refine ContinuousAt.div (by fun_prop) (by fun_prop) ?_
+    exact sub_ne_zero_of_abs_im_eq_one hz₀ he.le
+  rcases lt_trichotomy e.im 0 with hlt | heq | hgt
+  · have hev : blaschkeTruncFactor z₀ =ᶠ[𝓝 e] fun w : ℂ => (z₀ - conj w) / (z₀ - w) := by
+      filter_upwards [(isOpen_lt Complex.continuous_im continuous_const).mem_nhds hlt] with w hw
+      exact if_pos hw
+    exact hg_cont.congr hev.symm
+  · rw [Metric.continuousAt_iff] at hg_cont ⊢
+    intro ε hε
+    obtain ⟨δ, hδ, hδg⟩ := hg_cont ε hε
+    have hge1 : (z₀ - conj e) / (z₀ - e) = 1 := by
+      have hce : conj e = e := Complex.ext (by simp) (by simp [heq])
+      rw [hce, div_self (sub_ne_zero_of_abs_im_eq_one hz₀ he.le)]
+    have hhe1 : blaschkeTruncFactor z₀ e = 1 := if_neg (by linarith)
+    refine ⟨δ, hδ, fun w hw => ?_⟩
+    rw [hhe1]
+    unfold blaschkeTruncFactor
+    split_ifs with hwneg
+    · rw [← hge1]
+      exact hδg hw
+    · simp [hε]
+  · have hev : blaschkeTruncFactor z₀ =ᶠ[𝓝 e] fun _ : ℂ => (1 : ℂ) := by
+      filter_upwards [(isOpen_lt continuous_const Complex.continuous_im).mem_nhds hgt] with w hw
+      exact if_neg (not_lt.mpr hw.le)
+    exact continuousAt_const.congr hev.symm
+
+private theorem heatBlaschkeMeromorphic_eq_prod_superset {s : ℝ} (hs : 0 < s) (z₀ : ℂ)
+    {Z : Finset ℂ} (hsub : heatRightZeroSet s ⊆ Z) :
+    heatBlaschkeMeromorphic s z₀ =
+      ∏ w ∈ Z, (blaschkeTruncFactor z₀ w) ^ zeroMult (riemannHeat s) w := by
+  classical
+  unfold heatBlaschkeMeromorphic
+  have hcongr : (∏ u ∈ heatRightZeroSet s,
+      ((z₀ - conj u) / (z₀ - u)) ^ zeroMult (riemannHeat s) u) =
+      ∏ u ∈ heatRightZeroSet s, (blaschkeTruncFactor z₀ u) ^ zeroMult (riemannHeat s) u := by
+    refine Finset.prod_congr rfl fun u hu => ?_
+    have huneg := ((mem_heatRightZeroSet hs).mp hu).2
+    unfold blaschkeTruncFactor
+    rw [if_pos huneg]
+  rw [hcongr]
+  exact Finset.prod_subset hsub fun w _ hw_not => by
+    by_cases hw0 : riemannHeat s w = 0
+    · have hnotneg : ¬ w.im < 0 := fun hneg =>
+        hw_not ((mem_heatRightZeroSet hs).mpr ⟨hw0, hneg⟩)
+      unfold blaschkeTruncFactor
+      rw [if_neg hnotneg, one_pow]
+    · rw [zeroMult_riemannHeat_eq_zero hs.le hw0, pow_zero]
+
+private def clusterPerturbConst (N M : ℕ) : ℝ :=
+  ((3 : ℝ) ^ M) ^ N * (N : ℝ) * (((3 : ℝ) ^ M) ^ M * (M : ℝ) * ((3 : ℝ) ^ M * (M : ℝ)))
+
+private theorem clusterPerturbConst_nonneg (N M : ℕ) : 0 ≤ clusterPerturbConst N M := by
+  unfold clusterPerturbConst
+  positivity
+
+private theorem norm_prod_cluster_pow_sub_le (E : Finset ℂ) (W : ℂ → Finset ℂ)
+    (ms mt : ℂ → ℕ) (h : ℂ → ℂ) (M : ℕ) {η : ℝ} (hη : 0 ≤ η)
+    (hM : ∀ e ∈ E, mt e ≤ M)
+    (hsum : ∀ e ∈ E, ∑ w ∈ W e, ms w = mt e)
+    (h1 : ∀ e ∈ E, ∀ w ∈ W e, 1 ≤ ms w)
+    (hhe : ∀ e ∈ E, ‖h e‖ ≤ 3)
+    (hhw : ∀ e ∈ E, ∀ w ∈ W e, ‖h w‖ ≤ 3)
+    (hdiff : ∀ e ∈ E, ∀ w ∈ W e, ‖h w - h e‖ ≤ η) :
+    ‖(∏ e ∈ E, ∏ w ∈ W e, (h w) ^ ms w) - ∏ e ∈ E, (h e) ^ mt e‖ ≤
+      clusterPerturbConst E.card M * η := by
+  classical
+  have hB1 : (1 : ℝ) ≤ (3 : ℝ) ^ M := one_le_pow₀ (by norm_num)
+  have hB0 : (0 : ℝ) ≤ (3 : ℝ) ^ M := zero_le_one.trans hB1
+  have hBM0 : 0 ≤ ((3 : ℝ) ^ M) ^ M := pow_nonneg hB0 M
+  have hBN0 : 0 ≤ ((3 : ℝ) ^ M) ^ E.card := pow_nonneg hB0 E.card
+  have hM0 : (0 : ℝ) ≤ (M : ℝ) := Nat.cast_nonneg M
+  have hBMη0 : 0 ≤ (3 : ℝ) ^ M * (M : ℝ) * η := mul_nonneg (mul_nonneg hB0 hM0) hη
+  have hf_le : ∀ e ∈ E, ‖∏ w ∈ W e, (h w) ^ ms w‖ ≤ (3 : ℝ) ^ M := fun e he => by
+    calc ‖∏ w ∈ W e, (h w) ^ ms w‖
+        ≤ ∏ w ∈ W e, ‖(h w) ^ ms w‖ := Finset.norm_prod_le _ _
+      _ ≤ ∏ w ∈ W e, (3 : ℝ) ^ ms w := Finset.prod_le_prod (fun _ _ => norm_nonneg _) fun w hw => by
+          rw [norm_pow]; exact pow_le_pow_left₀ (norm_nonneg _) (hhw e he w hw) _
+      _ = (3 : ℝ) ^ ∑ w ∈ W e, ms w := Finset.prod_pow_eq_pow_sum _ _ _
+      _ = (3 : ℝ) ^ mt e := by rw [hsum e he]
+      _ ≤ (3 : ℝ) ^ M := pow_le_pow_right₀ (by norm_num) (hM e he)
+  have hg_le : ∀ e ∈ E, ‖(h e) ^ mt e‖ ≤ (3 : ℝ) ^ M := fun e he => by
+    rw [norm_pow]
+    exact (pow_le_pow_left₀ (norm_nonneg _) (hhe e he) _).trans
+      (pow_le_pow_right₀ (by norm_num) (hM e he))
+  have he_diff : ∀ e ∈ E,
+      ‖(∏ w ∈ W e, (h w) ^ ms w) - (h e) ^ mt e‖ ≤
+        ((3 : ℝ) ^ M) ^ M * (M : ℝ) * ((3 : ℝ) ^ M * (M : ℝ) * η) := fun e he => by
+    have hge_prod : (h e) ^ mt e = ∏ w ∈ W e, (h e) ^ ms w := by
+      rw [← hsum e he, ← Finset.prod_pow_eq_pow_sum]
+    rw [hge_prod]
+    have hWcard : (W e).card ≤ M := by
+      calc (W e).card = ∑ _w ∈ W e, 1 := Finset.card_eq_sum_ones _
+        _ ≤ ∑ w ∈ W e, ms w := Finset.sum_le_sum (h1 e he)
+        _ = mt e := hsum e he
+        _ ≤ M := hM e he
+    have hmw_le : ∀ w ∈ W e, ms w ≤ M := fun w hw =>
+      (Finset.single_le_sum (fun _ _ => Nat.zero_le _) hw).trans
+        ((hsum e he).le.trans (hM e he))
+    have hfw : ∀ w ∈ W e, ‖(h w) ^ ms w‖ ≤ (3 : ℝ) ^ M := fun w hw => by
+      rw [norm_pow]
+      exact (pow_le_pow_left₀ (norm_nonneg _) (hhw e he w hw) _).trans
+        (pow_le_pow_right₀ (by norm_num) (hmw_le w hw))
+    have hgw : ∀ w ∈ W e, ‖(h e) ^ ms w‖ ≤ (3 : ℝ) ^ M := fun w hw => by
+      rw [norm_pow]
+      exact (pow_le_pow_left₀ (norm_nonneg _) (hhe e he) _).trans
+        (pow_le_pow_right₀ (by norm_num) (hmw_le w hw))
+    have hw_diff : ∀ w ∈ W e, ‖(h w) ^ ms w - (h e) ^ ms w‖ ≤ (3 : ℝ) ^ M * (M : ℝ) * η :=
+      fun w hw => by
+        have hpow := norm_pow_sub_pow_le (h w) (h e) (ms w) (by norm_num : (1 : ℝ) ≤ 3)
+          (hhw e he w hw) (hhe e he)
+        have h3le : (3 : ℝ) ^ ms w ≤ (3 : ℝ) ^ M := pow_le_pow_right₀ (by norm_num) (hmw_le w hw)
+        have hm_cast : (ms w : ℝ) ≤ (M : ℝ) := by exact_mod_cast hmw_le w hw
+        calc ‖(h w) ^ ms w - (h e) ^ ms w‖
+            ≤ (3 : ℝ) ^ ms w * ((ms w : ℝ) * ‖h w - h e‖) := hpow
+          _ ≤ (3 : ℝ) ^ M * ((M : ℝ) * η) :=
+              mul_le_mul h3le
+                (mul_le_mul hm_cast (hdiff e he w hw) (norm_nonneg _) (Nat.cast_nonneg _))
+                (mul_nonneg (Nat.cast_nonneg _) (norm_nonneg _)) hB0
+          _ = (3 : ℝ) ^ M * (M : ℝ) * η := by ring
+    have hprod_W := norm_prod_sub_prod_le (W e) (fun w => (h w) ^ ms w) (fun w => (h e) ^ ms w)
+      hB1 hfw hgw
+    have hB_card : ((3 : ℝ) ^ M) ^ (W e).card ≤ ((3 : ℝ) ^ M) ^ M := pow_le_pow_right₀ hB1 hWcard
+    have hW_cast : ((W e).card : ℝ) ≤ (M : ℝ) := by exact_mod_cast hWcard
+    calc ‖(∏ w ∈ W e, (h w) ^ ms w) - ∏ w ∈ W e, (h e) ^ ms w‖
+        ≤ ((3 : ℝ) ^ M) ^ (W e).card * ∑ w ∈ W e, ‖(h w) ^ ms w - (h e) ^ ms w‖ := hprod_W
+      _ ≤ ((3 : ℝ) ^ M) ^ M * ∑ _w ∈ W e, ((3 : ℝ) ^ M * (M : ℝ) * η) :=
+          mul_le_mul hB_card (Finset.sum_le_sum hw_diff)
+            (Finset.sum_nonneg fun _ _ => norm_nonneg _) hBM0
+      _ = ((3 : ℝ) ^ M) ^ M * (((W e).card : ℝ) * ((3 : ℝ) ^ M * (M : ℝ) * η)) := by
+          rw [Finset.sum_const, nsmul_eq_mul]
+      _ ≤ ((3 : ℝ) ^ M) ^ M * ((M : ℝ) * ((3 : ℝ) ^ M * (M : ℝ) * η)) :=
+          mul_le_mul_of_nonneg_left (mul_le_mul_of_nonneg_right hW_cast hBMη0) hBM0
+      _ = ((3 : ℝ) ^ M) ^ M * (M : ℝ) * ((3 : ℝ) ^ M * (M : ℝ) * η) := by ring
+  have houter := norm_prod_sub_prod_le E (fun e => ∏ w ∈ W e, (h w) ^ ms w)
+    (fun e => (h e) ^ mt e) hB1 hf_le hg_le
+  calc ‖(∏ e ∈ E, ∏ w ∈ W e, (h w) ^ ms w) - ∏ e ∈ E, (h e) ^ mt e‖
+      ≤ ((3 : ℝ) ^ M) ^ E.card * ∑ e ∈ E, ‖(∏ w ∈ W e, (h w) ^ ms w) - (h e) ^ mt e‖ := houter
+    _ ≤ ((3 : ℝ) ^ M) ^ E.card *
+          ∑ _e ∈ E, (((3 : ℝ) ^ M) ^ M * (M : ℝ) * ((3 : ℝ) ^ M * (M : ℝ) * η)) :=
+        mul_le_mul_of_nonneg_left (Finset.sum_le_sum he_diff) hBN0
+    _ = clusterPerturbConst E.card M * η := by
+        rw [Finset.sum_const, nsmul_eq_mul]
+        unfold clusterPerturbConst
+        ring
+
+private theorem exists_enclosing_zeroFinset_riemannHeat {t₁ : ℝ} (ht₁ : 0 < t₁) :
+    ∃ (R : ℝ) (E : Finset ℂ), 0 < R ∧
+      (∀ w ∈ sphere (0 : ℂ) R, riemannHeat t₁ w ≠ 0) ∧
+      (∀ z, z ∈ E ↔ riemannHeat t₁ z = 0 ∧ ‖z‖ < R) ∧
+      (∀ s, t₁ / 2 ≤ s → ∀ z, riemannHeat s z = 0 → z.im ≠ 0 → ‖z‖ < R) := by
+  classical
+  have ht₀ : 0 < min (t₁ / 2) (1 / 8) := lt_min (by linarith) (by norm_num)
+  obtain ⟨X₀, hX₀⟩ := exists_riemannHeat_zeros_real_uniform (t₀ := min (t₁ / 2) (1 / 8)) ht₀
+  have hinside : ∀ s, t₁ / 2 ≤ s → ∀ z, riemannHeat s z = 0 → z.im ≠ 0 → ‖z‖ < max X₀ 0 + 1 := by
+    intro s hs z hz him
+    have ht₀_s : min (t₁ / 2) (1 / 8) ≤ s := (min_le_left _ _).trans hs
+    have hs0 : 0 < s := ht₀.trans_le ht₀_s
+    rcases le_or_gt s (1 / 8) with hs8 | hs8
+    · have hre : |z.re| < X₀ := lt_of_not_ge fun h => him (hX₀ s ⟨ht₀_s, hs8⟩ z hz h)
+      have him2 := abs_im_le_half_of_riemannHeat_eq_zero hs0 hz
+      have h3 := Complex.norm_le_abs_re_add_abs_im z
+      linarith [le_max_left X₀ 0]
+    · exact absurd (riemannHeat_zeros_real hs8.le hz) him
+  have han : AnalyticOnNhd ℂ (riemannHeat t₁) (closedBall 0 (max X₀ 0 + 2)) := fun z _ =>
+    (differentiable_riemannHeat ht₁.le).analyticAt z
+  have hfin := finite_zeros_closedBall han (fun z _ h =>
+    analyticOrderAt_riemannHeat_ne_top ht₁.le z (analyticOrderAt_eq_top.mpr h))
+  obtain ⟨R, hRI, hRn⟩ :=
+    (Set.Ioo_infinite (by linarith : max X₀ 0 + 1 < max X₀ 0 + 2)).exists_notMem_finset
+      (hfin.toFinset.image (fun z => ‖z‖))
+  have hRX : max X₀ 0 + 1 < R := hRI.1
+  have hRpos : 0 < R := by linarith [le_max_right X₀ 0]
+  have hsphR : ∀ w ∈ sphere (0 : ℂ) R, riemannHeat t₁ w ≠ 0 := by
+    intro w hw h0
+    rw [mem_sphere, dist_zero_right] at hw
+    apply hRn
+    refine Finset.mem_image.mpr ⟨w, ?_, hw⟩
+    rw [Set.Finite.mem_toFinset]
+    exact ⟨by rw [mem_closedBall, dist_zero_right]; linarith [hRI.2], h0⟩
+  refine ⟨R, hfin.toFinset.filter (fun z => ‖z‖ < R), hRpos, hsphR, ?_, ?_⟩
+  · intro z
+    rw [Finset.mem_filter, Set.Finite.mem_toFinset]
+    exact ⟨fun h => ⟨h.1.2, h.2⟩,
+      fun h => ⟨⟨by rw [mem_closedBall, dist_zero_right]; linarith [hRI.2], h.1⟩, h.2⟩⟩
+  · intro s hs z hz him
+    exact (hinside s hs z hz him).trans hRX
+
 /-- **Continuity of `heatBlaschkeMeromorphic s z₀` in `s ∈ (0, ∞)`** on the horizontal lines
 `|Im z₀| = 1`: as `s → t₁ > 0`, lower-half-plane zeros colliding on `ℝ` satisfy
 `(z₀ − w̄)/(z₀ − w) → (z₀ − x)/(z₀ − x) = 1`, while off-axis zeros conserve total multiplicity in
@@ -838,131 +1043,50 @@ theorem tendsto_heatBlaschkeMeromorphic_nhds {t₁ : ℝ} (ht₁ : 0 < t₁) {z�
     Tendsto (fun s => heatBlaschkeMeromorphic s z₀) (𝓝 t₁)
       (𝓝 (heatBlaschkeMeromorphic t₁ z₀)) := by
   classical
-  set h : ℂ → ℂ := fun w => if w.im < 0 then (z₀ - conj w) / (z₀ - w) else 1
-  have h_norm : ∀ w : ℂ, |w.im| ≤ 1 / 2 → ‖h w‖ ≤ 3 := by
-    intro w hw
-    dsimp only [h]
-    split_ifs with hneg
-    · exact norm_blaschkeFactor_le_three hw (half_le_norm_sub_of_abs_im_eq_one hz₀ hw)
-    · norm_num
-  have h_contAt : ∀ e : ℂ, |e.im| < 1 / 2 → ContinuousAt h e := by
-    intro e he
-    have hg_cont : ContinuousAt (fun w : ℂ => (z₀ - conj w) / (z₀ - w)) e := by
-      refine ContinuousAt.div (by fun_prop) (by fun_prop) ?_
-      exact sub_ne_zero_of_abs_im_eq_one hz₀ he.le
-    rcases lt_trichotomy e.im 0 with hlt | heq | hgt
-    · have hev : h =ᶠ[𝓝 e] fun w : ℂ => (z₀ - conj w) / (z₀ - w) := by
-        filter_upwards [(isOpen_lt Complex.continuous_im continuous_const).mem_nhds hlt] with w hw
-        exact if_pos hw
-      exact hg_cont.congr hev.symm
-    · rw [Metric.continuousAt_iff] at hg_cont ⊢
-      intro ε hε
-      obtain ⟨δ, hδ, hδg⟩ := hg_cont ε hε
-      have hge1 : (z₀ - conj e) / (z₀ - e) = 1 := by
-        have hce : conj e = e := Complex.ext (by simp) (by simp [heq])
-        rw [hce, div_self (sub_ne_zero_of_abs_im_eq_one hz₀ he.le)]
-      have hhe1 : h e = 1 := if_neg (by linarith)
-      refine ⟨δ, hδ, fun w hw => ?_⟩
-      rw [hhe1]
-      dsimp only [h]
-      split_ifs with hwneg
-      · rw [← hge1]
-        exact hδg hw
-      · simp [hε]
-    · have hev : h =ᶠ[𝓝 e] fun _ : ℂ => (1 : ℂ) := by
-        filter_upwards [(isOpen_lt continuous_const Complex.continuous_im).mem_nhds hgt] with w hw
-        exact if_neg (not_lt.mpr hw.le)
-      exact continuousAt_const.congr hev.symm
-  have h_prod_superset : ∀ {s : ℝ} (hs : 0 < s) {Z : Finset ℂ},
-      heatRightZeroSet s ⊆ Z →
-      heatBlaschkeMeromorphic s z₀ = ∏ w ∈ Z, (h w) ^ zeroMult (riemannHeat s) w := by
-    intro s hs Z hsub
-    unfold heatBlaschkeMeromorphic
-    have hcongr : (∏ u ∈ heatRightZeroSet s,
-        ((z₀ - conj u) / (z₀ - u)) ^ zeroMult (riemannHeat s) u) =
-        ∏ u ∈ heatRightZeroSet s, (h u) ^ zeroMult (riemannHeat s) u := by
-      refine Finset.prod_congr rfl fun u hu => ?_
-      have huneg := ((mem_heatRightZeroSet hs).mp hu).2
-      dsimp only [h]
-      rw [if_pos huneg]
-    rw [hcongr]
-    exact Finset.prod_subset hsub fun w _ hw_not => by
-      by_cases hw0 : riemannHeat s w = 0
-      · have hnotneg : ¬ w.im < 0 := fun hneg =>
-          hw_not ((mem_heatRightZeroSet hs).mpr ⟨hw0, hneg⟩)
-        dsimp only [h]
-        rw [if_neg hnotneg, one_pow]
-      · rw [zeroMult_riemannHeat_eq_zero hs.le hw0, pow_zero]
-  -- Uniform disc `|z| < R` containing all nonreal zeros for `s ≥ t₀`
-  set t₀ : ℝ := min (t₁ / 2) (1 / 8)
-  have ht₀ : 0 < t₀ := lt_min (by linarith) (by norm_num)
-  obtain ⟨X₀, hX₀⟩ := exists_riemannHeat_zeros_real_uniform (t₀ := t₀) ht₀
-  set X : ℝ := max X₀ 0 + 1
-  have hinside : ∀ s, t₀ ≤ s → ∀ z, riemannHeat s z = 0 → z.im ≠ 0 → ‖z‖ < X := by
-    intro s hs z hz him
-    have hs0 : 0 < s := ht₀.trans_le hs
-    rcases le_or_gt s (1 / 8) with hs8 | hs8
-    · have hre : |z.re| < X₀ := lt_of_not_ge fun h => him (hX₀ s ⟨hs, hs8⟩ z hz h)
-      have him2 := abs_im_le_half_of_riemannHeat_eq_zero hs0 hz
-      have h3 := Complex.norm_le_abs_re_add_abs_im z
-      linarith [le_max_left X₀ 0]
-    · exact absurd (riemannHeat_zeros_real hs8.le hz) him
-  have han : AnalyticOnNhd ℂ (riemannHeat t₁) (closedBall 0 (X + 1)) := fun z _ =>
-    (differentiable_riemannHeat ht₁.le).analyticAt z
-  have hfin := finite_zeros_closedBall han (fun z _ h =>
-    analyticOrderAt_riemannHeat_ne_top ht₁.le z (analyticOrderAt_eq_top.mpr h))
-  obtain ⟨R, hRI, hRn⟩ := (Set.Ioo_infinite (by linarith : X < X + 1)).exists_notMem_finset
-    (hfin.toFinset.image (fun z => ‖z‖))
-  have hRX : X < R := hRI.1
-  have hRpos : 0 < R := by linarith [le_max_right X₀ 0]
-  have hsphR : ∀ w ∈ sphere (0 : ℂ) R, riemannHeat t₁ w ≠ 0 := by
-    intro w hw h0
-    rw [mem_sphere, dist_zero_right] at hw
-    apply hRn
-    refine Finset.mem_image.mpr ⟨w, ?_, hw⟩
-    rw [Set.Finite.mem_toFinset]
-    exact ⟨by rw [mem_closedBall, dist_zero_right]; linarith [hRI.2], h0⟩
-  set E : Finset ℂ := hfin.toFinset.filter (fun z => ‖z‖ < R)
-  have hmemE : ∀ z, z ∈ E ↔ riemannHeat t₁ z = 0 ∧ ‖z‖ < R := by
-    intro z
-    rw [Finset.mem_filter, Set.Finite.mem_toFinset]
-    exact ⟨fun h => ⟨h.1.2, h.2⟩,
-      fun h => ⟨⟨by rw [mem_closedBall, dist_zero_right]; linarith [hRI.2], h.1⟩, h.2⟩⟩
-  have hZ₁_sub_E : heatRightZeroSet t₁ ⊆ E := by
-    intro z hz
+  obtain ⟨R, E, hRpos, hsphR, hmemE, hinsideR⟩ := exists_enclosing_zeroFinset_riemannHeat ht₁
+  have hZ₁_sub_E : heatRightZeroSet t₁ ⊆ E := fun z hz => by
     obtain ⟨hz0, hzneg⟩ := (mem_heatRightZeroSet ht₁).mp hz
-    have ht₀_le : t₀ ≤ t₁ := (min_le_left _ _).trans (by linarith)
-    exact (hmemE z).mpr ⟨hz0, (hinside t₁ ht₀_le z hz0 hzneg.ne).trans hRX⟩
-  set M₁ : ℕ := ∑ e ∈ E, zeroMult (riemannHeat t₁) e
-  set B : ℝ := (3 : ℝ) ^ M₁
-  have hB1 : 1 ≤ B := one_le_pow₀ (by norm_num)
-  set K : ℝ := B ^ E.card * (E.card : ℝ) * (B ^ M₁ * (M₁ : ℝ) * (B * (M₁ : ℝ)))
-  have hK0 : 0 ≤ K := by positivity
+    exact (hmemE z).mpr ⟨hz0, hinsideR t₁ (by linarith) z hz0 hzneg.ne⟩
+  obtain ⟨M₁, hM₁_def⟩ : ∃ M₁ : ℕ, M₁ = ∑ e ∈ E, zeroMult (riemannHeat t₁) e := ⟨_, rfl⟩
+  have he_le_M₁ : ∀ e ∈ E, zeroMult (riemannHeat t₁) e ≤ M₁ := fun e he => by
+    rw [hM₁_def]; exact Finset.single_le_sum (fun _ _ => Nat.zero_le _) he
+  clear hM₁_def
+  have hK0 : 0 ≤ clusterPerturbConst E.card M₁ := clusterPerturbConst_nonneg E.card M₁
   rw [Metric.tendsto_nhds]
   intro ε hε
-  set η : ℝ := ε / (K + 1)
-  have hη : 0 < η := div_pos hε (by linarith)
-  have hδe_ex : ∀ e ∈ E, ∃ δe > 0, ∀ w ∈ ball e δe, ‖h w - h e‖ ≤ η := by
+  obtain ⟨η, hη_def⟩ : ∃ η : ℝ, η = ε / (clusterPerturbConst E.card M₁ + 1) := ⟨_, rfl⟩
+  have hη : 0 < η := by rw [hη_def]; exact div_pos hε (by linarith)
+  have hKη_lt : clusterPerturbConst E.card M₁ * η < ε := by
+    rw [hη_def, mul_div_assoc', div_lt_iff₀ (by linarith)]
+    nlinarith
+  clear hη_def
+  have hδe_ex : ∀ e ∈ E, ∃ δe > 0, ∀ w ∈ ball e δe,
+      ‖blaschkeTruncFactor z₀ w - blaschkeTruncFactor z₀ e‖ ≤ η := by
     intro e he
     have he_im := abs_im_lt_half_of_riemannHeat_eq_zero ht₁ ((hmemE e).mp he).1
-    obtain ⟨δe, hδe, hprop⟩ := (Metric.continuousAt_iff.mp (h_contAt e he_im)) η hη
-    exact ⟨δe, hδe, fun w hw => (dist_eq_norm (h w) (h e) ▸ hprop (mem_ball.mp hw)).le⟩
+    obtain ⟨δe, hδe, hprop⟩ :=
+      (Metric.continuousAt_iff.mp (continuousAt_blaschkeTruncFactor hz₀ he_im)) η hη
+    exact ⟨δe, hδe, fun w hw => (dist_eq_norm (blaschkeTruncFactor z₀ w)
+      (blaschkeTruncFactor z₀ e) ▸ hprop (mem_ball.mp hw)).le⟩
   choose! δe hδe hδe_bound using hδe_ex
   choose ρ₀ hρ₀ hρ₀prop using fun e => eventually_zeroSumBall_riemannHeat_eq ht₁ e
   obtain ⟨d, hd, hdsep⟩ := exists_pos_sep E
-  let rad : ℂ → ℝ := fun e => min (min (ρ₀ e) (δe e / 2)) (min (d / 3) ((R - ‖e‖) / 2))
-  have hrad_pos : ∀ e ∈ E, 0 < rad e := by
-    intro e he
+  obtain ⟨rad, hrad_def⟩ : ∃ rad : ℂ → ℝ,
+      rad = fun e => min (min (ρ₀ e) (δe e / 2)) (min (d / 3) ((R - ‖e‖) / 2)) := ⟨_, rfl⟩
+  have hrad_pos : ∀ e ∈ E, 0 < rad e := fun e he => by
     have heR := ((hmemE e).mp he).2
+    rw [hrad_def]
     exact lt_min (lt_min (hρ₀ e) (half_pos (hδe e he))) (lt_min (by positivity) (by linarith))
-  have hrad_ρ₀ : ∀ e, rad e ≤ ρ₀ e := fun e =>
-    (min_le_left _ _).trans (min_le_left _ _)
-  have hrad_δe : ∀ e ∈ E, rad e < δe e := fun e he =>
-    lt_of_le_of_lt ((min_le_left _ _).trans (min_le_right _ _)) (half_lt_self (hδe e he))
-  have hrad_d : ∀ e, rad e ≤ d / 3 := fun e =>
-    (min_le_right _ _).trans (min_le_left _ _)
-  have hrad_R : ∀ e, rad e ≤ (R - ‖e‖) / 2 := fun e =>
-    (min_le_right _ _).trans (min_le_right _ _)
+  have hrad_ρ₀ : ∀ e, rad e ≤ ρ₀ e := fun e => by
+    rw [hrad_def]; exact (min_le_left _ _).trans (min_le_left _ _)
+  have hrad_δe : ∀ e ∈ E, rad e < δe e := fun e he => by
+    rw [hrad_def]
+    exact lt_of_le_of_lt ((min_le_left _ _).trans (min_le_right _ _)) (half_lt_self (hδe e he))
+  have hrad_d : ∀ e, rad e ≤ d / 3 := fun e => by
+    rw [hrad_def]; exact (min_le_right _ _).trans (min_le_left _ _)
+  have hrad_R : ∀ e, rad e ≤ (R - ‖e‖) / 2 := fun e => by
+    rw [hrad_def]; exact (min_le_right _ _).trans (min_le_right _ _)
+  clear hrad_def
   have hdisj : ∀ e ∈ E, ∀ e' ∈ E, e ≠ e' → Disjoint (ball e (rad e)) (ball e' (rad e')) := by
     intro e he e' he' hne
     refine Set.disjoint_left.mpr fun w hw hw' => ?_
@@ -999,8 +1123,7 @@ theorem tendsto_heatBlaschkeMeromorphic_nhds {t₁ : ℝ} (ht₁ : 0 < t₁) {z�
     rw [hZs, hZE]
   have hs_gt : ∀ᶠ s in 𝓝 t₁, t₁ / 2 < s := lt_mem_nhds (by linarith)
   filter_upwards [hbig, hsmall, hs_gt] with s ⟨hbs, hbsph⟩ hsm hs2
-  have ht₀_le_s : t₀ ≤ s := (min_le_left _ _).trans hs2.le
-  have hs0 : 0 < s := ht₀.trans_le ht₀_le_s
+  have hs0 : 0 < s := by linarith
   have hdiffs := differentiable_riemannHeat hs0.le
   obtain ⟨Zb, hZbb, hZbz, hZbs⟩ := exists_zeroSet_zeroSumBall hRpos (by linarith : R < 2 * R)
     isOpen_univ (subset_univ _) hdiffs.differentiableOn hbsph
@@ -1039,125 +1162,24 @@ theorem tendsto_heatBlaschkeMeromorphic_nhds {t₁ : ℝ} (ht₁ : 0 < t₁) {z�
     obtain ⟨hw0, hwneg⟩ := (mem_heatRightZeroSet hs0).mp hw
     have hwR : w ∈ ball (0 : ℂ) R := by
       rw [mem_ball, dist_zero_right]
-      exact (hinside s ht₀_le_s w hw0 hwneg.ne).trans hRX
+      exact hinsideR s hs2.le w hw0 hwneg.ne
     exact hcov ((hZbz w hwR).mp hw0)
   have hBs : heatBlaschkeMeromorphic s z₀ =
-      ∏ e ∈ E, ∏ w ∈ W e, (h w) ^ zeroMult (riemannHeat s) w := by
-    rw [h_prod_superset hs0 hZs_sub, Finset.prod_biUnion hWdisj]
+      ∏ e ∈ E, ∏ w ∈ W e, (blaschkeTruncFactor z₀ w) ^ zeroMult (riemannHeat s) w := by
+    rw [heatBlaschkeMeromorphic_eq_prod_superset hs0 z₀ hZs_sub, Finset.prod_biUnion hWdisj]
   have hBt₁ : heatBlaschkeMeromorphic t₁ z₀ =
-      ∏ e ∈ E, (h e) ^ zeroMult (riemannHeat t₁) e :=
-    h_prod_superset ht₁ hZ₁_sub_E
+      ∏ e ∈ E, (blaschkeTruncFactor z₀ e) ^ zeroMult (riemannHeat t₁) e :=
+    heatBlaschkeMeromorphic_eq_prod_superset ht₁ z₀ hZ₁_sub_E
   rw [dist_eq_norm, hBs, hBt₁]
-  have he_le_M₁ : ∀ e ∈ E, zeroMult (riemannHeat t₁) e ≤ M₁ := fun e he =>
-    Finset.single_le_sum (fun _ _ => Nat.zero_le _) he
-  have hf_le_B : ∀ e ∈ E, ‖∏ w ∈ W e, (h w) ^ zeroMult (riemannHeat s) w‖ ≤ B := by
-    intro e he
-    calc ‖∏ w ∈ W e, (h w) ^ zeroMult (riemannHeat s) w‖
-        ≤ ∏ w ∈ W e, ‖(h w) ^ zeroMult (riemannHeat s) w‖ := Finset.norm_prod_le _ _
-      _ ≤ ∏ w ∈ W e, (3 : ℝ) ^ zeroMult (riemannHeat s) w := by
-          refine Finset.prod_le_prod (fun _ _ => norm_nonneg _) fun w hw => ?_
-          rw [norm_pow]
-          have hw0 := (hWz e he w (hWb e he w hw)).mpr hw
-          exact pow_le_pow_left₀ (norm_nonneg _)
-            (h_norm w (abs_im_le_half_of_riemannHeat_eq_zero hs0 hw0)) _
-      _ = (3 : ℝ) ^ ∑ w ∈ W e, zeroMult (riemannHeat s) w := Finset.prod_pow_eq_pow_sum _ _ _
-      _ = (3 : ℝ) ^ zeroMult (riemannHeat t₁) e := by rw [hsum_e e he]
-      _ ≤ B := pow_le_pow_right₀ (by norm_num) (he_le_M₁ e he)
-  have hg_le_B : ∀ e ∈ E, ‖(h e) ^ zeroMult (riemannHeat t₁) e‖ ≤ B := by
-    intro e he
-    rw [norm_pow]
-    have he0 := ((hmemE e).mp he).1
-    calc ‖h e‖ ^ zeroMult (riemannHeat t₁) e
-        ≤ (3 : ℝ) ^ zeroMult (riemannHeat t₁) e :=
-          pow_le_pow_left₀ (norm_nonneg _)
-            (h_norm e (abs_im_le_half_of_riemannHeat_eq_zero ht₁ he0)) _
-      _ ≤ B := pow_le_pow_right₀ (by norm_num) (he_le_M₁ e he)
-  have he_diff : ∀ e ∈ E,
-      ‖(∏ w ∈ W e, (h w) ^ zeroMult (riemannHeat s) w) -
-          (h e) ^ zeroMult (riemannHeat t₁) e‖ ≤
-        B ^ M₁ * (M₁ : ℝ) * (B * (M₁ : ℝ) * η) := by
-    intro e he
-    have he0 := ((hmemE e).mp he).1
-    have hhe_norm : ‖h e‖ ≤ 3 := h_norm e (abs_im_le_half_of_riemannHeat_eq_zero ht₁ he0)
-    have hge_prod : (h e) ^ zeroMult (riemannHeat t₁) e =
-        ∏ w ∈ W e, (h e) ^ zeroMult (riemannHeat s) w := by
-      rw [← hsum_e e he, ← Finset.prod_pow_eq_pow_sum]
-    rw [hge_prod]
-    have hWcard : (W e).card ≤ M₁ := by
-      calc (W e).card = ∑ _w ∈ W e, 1 := Finset.card_eq_sum_ones _
-        _ ≤ ∑ w ∈ W e, zeroMult (riemannHeat s) w := Finset.sum_le_sum fun w hw =>
-            one_le_zeroMult_riemannHeat hs0.le ((hWz e he w (hWb e he w hw)).mpr hw)
-        _ = zeroMult (riemannHeat t₁) e := hsum_e e he
-        _ ≤ M₁ := he_le_M₁ e he
-    have hmw_le : ∀ w ∈ W e, zeroMult (riemannHeat s) w ≤ M₁ := fun w hw =>
-      (Finset.single_le_sum (fun _ _ => Nat.zero_le _) hw).trans
-        ((hsum_e e he).le.trans (he_le_M₁ e he))
-    have hfw : ∀ w ∈ W e, ‖(h w) ^ zeroMult (riemannHeat s) w‖ ≤ B := fun w hw => by
-      rw [norm_pow]
-      have hw0 := (hWz e he w (hWb e he w hw)).mpr hw
-      exact (pow_le_pow_left₀ (norm_nonneg _)
-        (h_norm w (abs_im_le_half_of_riemannHeat_eq_zero hs0 hw0)) _).trans
-        (pow_le_pow_right₀ (by norm_num) (hmw_le w hw))
-    have hgw : ∀ w ∈ W e, ‖(h e) ^ zeroMult (riemannHeat s) w‖ ≤ B := fun w hw => by
-      rw [norm_pow]
-      exact (pow_le_pow_left₀ (norm_nonneg _) hhe_norm _).trans
-        (pow_le_pow_right₀ (by norm_num) (hmw_le w hw))
-    have hw_diff : ∀ w ∈ W e,
-        ‖(h w) ^ zeroMult (riemannHeat s) w - (h e) ^ zeroMult (riemannHeat s) w‖ ≤
-          B * (M₁ : ℝ) * η := by
-      intro w hw
-      have hw0 := (hWz e he w (hWb e he w hw)).mpr hw
-      have hhw_norm : ‖h w‖ ≤ 3 := h_norm w (abs_im_le_half_of_riemannHeat_eq_zero hs0 hw0)
-      have hw_ball : w ∈ ball e (δe e) :=
-        ball_subset_ball (hrad_δe e he).le (hWb e he w hw)
-      have hpow := norm_pow_sub_pow_le (h w) (h e) (zeroMult (riemannHeat s) w)
-        (by norm_num : (1 : ℝ) ≤ 3) hhw_norm hhe_norm
-      have h3le : (3 : ℝ) ^ zeroMult (riemannHeat s) w ≤ B :=
-        pow_le_pow_right₀ (by norm_num) (hmw_le w hw)
-      have hm_cast : (zeroMult (riemannHeat s) w : ℝ) ≤ (M₁ : ℝ) := by exact_mod_cast hmw_le w hw
-      calc ‖(h w) ^ zeroMult (riemannHeat s) w - (h e) ^ zeroMult (riemannHeat s) w‖
-          ≤ (3 : ℝ) ^ zeroMult (riemannHeat s) w *
-              ((zeroMult (riemannHeat s) w : ℝ) * ‖h w - h e‖) := hpow
-        _ ≤ B * ((M₁ : ℝ) * η) :=
-            mul_le_mul h3le (mul_le_mul hm_cast (hδe_bound e he w hw_ball)
-              (norm_nonneg _) (Nat.cast_nonneg _)) (by positivity) (by positivity)
-        _ = B * (M₁ : ℝ) * η := by ring
-    have hprod_W := norm_prod_sub_prod_le (W e)
-      (fun w => (h w) ^ zeroMult (riemannHeat s) w)
-      (fun w => (h e) ^ zeroMult (riemannHeat s) w) hB1 hfw hgw
-    have hB_card : B ^ (W e).card ≤ B ^ M₁ := pow_le_pow_right₀ hB1 hWcard
-    have hW_cast : ((W e).card : ℝ) ≤ (M₁ : ℝ) := by exact_mod_cast hWcard
-    calc ‖(∏ w ∈ W e, (h w) ^ zeroMult (riemannHeat s) w) -
-            ∏ w ∈ W e, (h e) ^ zeroMult (riemannHeat s) w‖
-        ≤ B ^ (W e).card * ∑ w ∈ W e,
-            ‖(h w) ^ zeroMult (riemannHeat s) w - (h e) ^ zeroMult (riemannHeat s) w‖ := hprod_W
-      _ ≤ B ^ M₁ * ∑ _w ∈ W e, (B * (M₁ : ℝ) * η) :=
-          mul_le_mul hB_card (Finset.sum_le_sum hw_diff)
-            (Finset.sum_nonneg fun _ _ => norm_nonneg _) (by positivity)
-      _ = B ^ M₁ * (((W e).card : ℝ) * (B * (M₁ : ℝ) * η)) := by
-          rw [Finset.sum_const, nsmul_eq_mul]
-      _ ≤ B ^ M₁ * ((M₁ : ℝ) * (B * (M₁ : ℝ) * η)) :=
-          mul_le_mul_of_nonneg_left
-            (mul_le_mul_of_nonneg_right hW_cast (by positivity)) (by positivity)
-      _ = B ^ M₁ * (M₁ : ℝ) * (B * (M₁ : ℝ) * η) := by ring
-  have houter := norm_prod_sub_prod_le E
-    (fun e => ∏ w ∈ W e, (h w) ^ zeroMult (riemannHeat s) w)
-    (fun e => (h e) ^ zeroMult (riemannHeat t₁) e) hB1 hf_le_B hg_le_B
-  calc ‖(∏ e ∈ E, ∏ w ∈ W e, (h w) ^ zeroMult (riemannHeat s) w) -
-          ∏ e ∈ E, (h e) ^ zeroMult (riemannHeat t₁) e‖
-      ≤ B ^ E.card * ∑ e ∈ E,
-          ‖(∏ w ∈ W e, (h w) ^ zeroMult (riemannHeat s) w) -
-            (h e) ^ zeroMult (riemannHeat t₁) e‖ := houter
-    _ ≤ B ^ E.card * ∑ _e ∈ E, (B ^ M₁ * (M₁ : ℝ) * (B * (M₁ : ℝ) * η)) :=
-        mul_le_mul_of_nonneg_left (Finset.sum_le_sum he_diff) (by positivity)
-    _ = K * η := by
-        rw [Finset.sum_const, nsmul_eq_mul]
-        dsimp only [K]
-        ring
-    _ < ε := by
-        dsimp only [η]
-        rw [mul_div_assoc', div_lt_iff₀ (by linarith)]
-        nlinarith
+  refine (norm_prod_cluster_pow_sub_le E W (zeroMult (riemannHeat s))
+    (zeroMult (riemannHeat t₁)) (blaschkeTruncFactor z₀) M₁ hη.le he_le_M₁ hsum_e
+    (fun e he w hw => one_le_zeroMult_riemannHeat hs0.le ((hWz e he w (hWb e he w hw)).mpr hw))
+    (fun e he => norm_blaschkeTruncFactor_le_three hz₀
+      (abs_im_le_half_of_riemannHeat_eq_zero ht₁ ((hmemE e).mp he).1))
+    (fun e he w hw => norm_blaschkeTruncFactor_le_three hz₀
+      (abs_im_le_half_of_riemannHeat_eq_zero hs0 ((hWz e he w (hWb e he w hw)).mpr hw)))
+    (fun e he w hw => hδe_bound e he w
+      (ball_subset_ball (hrad_δe e he).le (hWb e he w hw)))).trans_lt hKη_lt
 
 theorem tendsto_heatLowerBlaschkeBoundary_nhds {t₁ : ℝ} (ht₁ : 0 < t₁) (r : ℝ) :
     Tendsto (fun s => heatLowerBlaschkeBoundary s r) (𝓝 t₁)

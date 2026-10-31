@@ -18,12 +18,16 @@ The glue is the stable boost coordinate `ℓ_s(w) = Σ w_i u_i^{−s/2}` (`boost
   dilations and the pair `1, x ↦ x + L` with weights `L^{−s/2}`, whose own form tends to `−2c`.
 * **Sub-boost data** (`negIndex_archGlueAt_eq_of_subBoost`): if `‖K(λ_N u)‖ λ_N^{−s/2} → 0`, then
   `κ^{(s/2)}(K) = κ(K)` and the gluing costs exactly one square.
-* **The absorbed pair moves with `s`** (`archGlueAt_stablePair`, `boostPolarIndexAt_stablePair`): the
-  pair `u^{s/2} + u^{−s/2}` glued at exponent `s` is the stable pole–successor state, of index `1`,
-  and its square is the boost coordinate itself: `κ^{(s/2)} = 0`. In the variable of the zeros the
+* **The gluing square is at most one** (`negIndex_archGlueAt_eq_or`): `κ(K) ≤ κ(Φ^{(s)}) ≤ κ(K) + 1`.
+* **The absorbed pair moves with `s`** (`archGlueAt_stablePair`, `negIndex_stablePair`,
+  `boostPolarIndexAt_stablePair`, `negIndex_archGlueAt_add_stablePair`): the pair `u^{s/2} + u^{−s/2}`
+  has one square, glued at exponent `s` it is the stable pole–successor state of index `1`, its form
+  vanishes on `ℓ_s = 0`, and the stable glue is blind to it at any strength. In the variable of the zeros the
   absorbed pair sits at `ρ = (1 ± s)/2`; only at the Hecke exponent `s = 1` is it the pole pair `{0, 1}`.
 * **Zero configurations** (`negIndex_archGlueAt_orbitCorr`): for a tempered configuration all of whose
-  points satisfy `Re ρ > (1 − s)/2`, the stable glued orbit kernel has index `κ(K_Z) + 1`.
+  points satisfy `Re ρ > (1 − s)/2`, the stable glued orbit kernel has index `κ(K_Z) + 1`. For `ζ`
+  the stable Weil index is `κ(K_ζ)` or `κ(K_ζ) + 1`, and a drop to `κ(K_ζ)` certifies a zero with
+  `Re ρ ≤ (1 − s)/2` (`exists_zero_le_of_negIndex_archGlueAt_ratCorr_ne`).
 -/
 
 open Complex Finset Filter Topology
@@ -32,7 +36,7 @@ open Zeta23
 open GaloisForLFunctions.HTGeometry GaloisForLFunctions.HeckeKreinToeplitz
 open GaloisForLFunctions.ArithmeticPositiveDuality
 open GaloisForLFunctions.ArithmeticCastelnuovoSeveri (cx cx_contDiff cx_hasCompactSupport)
-open GaloisForLFunctions.SquareRootThreshold (TemperedConfig)
+open GaloisForLFunctions.SquareRootThreshold (TemperedConfig temperedConfig_zetaZeroConfig)
 open GaloisForLFunctions.ArithmeticOrientationGeometry (seenRightZeros)
 
 noncomputable section
@@ -561,7 +565,7 @@ theorem hermQuad_gram_stablePair_of_boostMass {n : ℕ} (u : Fin n → posUnits)
   simp
 
 /-- **The stable pair is absorbed**: `κ^{(s/2)}(u^{s/2} + u^{−s/2}) = 0`. -/
-theorem boostPolarIndexAt_stablePair (hs0 : 0 < s) : boostPolarIndexAt s (stablePair s) = 0 :=
+theorem boostPolarIndexAt_stablePair : boostPolarIndexAt s (stablePair s) = 0 :=
   nonpos_iff_eq_zero.mp (iSup₂_le fun n u => by
     rw [negIndexOn_eq_zero_of_nonneg fun w hw =>
       (hermQuad_gram_stablePair_of_boostMass u (LinearMap.mem_ker.mp hw)).ge]
@@ -699,6 +703,18 @@ theorem negIndex_archGlueAt_orbitCorr (hs0 : 0 < s) (hs1 : s < 1) (hZ : Tempered
     boostPolarIndexAt_eq_negIndex_of_subBoost hK (fun N => twoPos ^ N)
       (tendsto_twoPos_pow_rpow_at hs0) (orbitCorr_subBoostAt hZ hf hpos), orbitCorr,
     negIndex_comp_of_surjective _ _ posUnitsToHecke_surjective, negIndex_orbitKernel Z hZ hf]
+
+/-- **A drop of the stable Weil index certifies a zero far from the line.** If Weil's correlation
+glued at exponent `s` does not pay the extra square, some zero of `ζ` has `Re ρ ≤ (1 − s)/2`. -/
+theorem exists_zero_le_of_negIndex_archGlueAt_ratCorr_ne (hs0 : 0 < s) (hs1 : s < 1) {c : ℝ}
+    (hc : 0 < c) (h : negIndex (archGlueAt s ratCorr c) ≠ negIndex zetaKernel + 1) :
+    ∃ ρ : zetaZeroConfig.carrier, (ρ : ℂ).re ≤ (1 - s) / 2 := by
+  by_contra hno
+  push Not at hno
+  apply h
+  rw [ratCorr_eq_orbitCorr, negIndex_archGlueAt_orbitCorr hs0 hs1 temperedConfig_zetaZeroConfig
+    cubicSpline_mem_realTests hno hc, zetaKernel,
+    negIndex_orbitKernel _ temperedConfig_zetaZeroConfig cubicSpline_mem_realTests]
 
 end Orbit
 

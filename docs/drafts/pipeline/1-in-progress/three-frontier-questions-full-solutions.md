@@ -138,11 +138,12 @@ with one absolute `C` for every `Q,N≥2` and every packet.
 [Exact scalar identity, finite part and final Lean audit](../3-formalized/undilated-prime-heads-have-a-uniform-torsion-finite-part.md).
 
 Packet mass on rows `N/n<T` is at most `[1+log(2T)+2L_Q]sum a_m²`,
-where `L_Q=6log Q+log4+5`.
-For every `epsilon>0`, the actual scalar prime-row residual has squared norm
-at most `[epsilon+2048(1+log Q)/log N]sum a_m²`, eventually at one common
-horizon for all packets. [Proof and final Lean audit](../3-formalized/conductor-packet-quotient-tails-cost-only-logarithms.md).
-The conductor-changing correction remains separate.
+where `L_Q=6log Q+log4+5`. [Quotient-tail proof and final Lean audit](../3-formalized/conductor-packet-quotient-tails-cost-only-logarithms.md).
+The actual scalar prime-row residual has squared norm at most
+`C(1+log Q)sum a_m²/log N`, with one absolute constant for all `Q,N≥2`.
+[Uniform norm proof and final Lean audit](../3-formalized/scalar-prime-residuals-have-logarithmic-packet-cost.md).
+The [conductor-changing square energy and logarithmic moment](prime-dilation-square-energy-is-the-conductor-adjunction.md)
+remain separate.
 
 ## Full-divisor resolvent identity
 

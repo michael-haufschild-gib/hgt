@@ -1,7 +1,7 @@
 # Elliptic local spectral products converge to the zeta ratio
 
 - **Stage:** 3-formalized
-- **Parent:** [Global radial integral](../2-fully-proven/elliptic-radial-kernels-integrate-to-the-global-zeta-ratio.md).
+- **Parent:** [Global radial integral](elliptic-radial-kernels-integrate-to-the-global-zeta-ratio.md).
 - **Statement:** For `Re(s)>1`, unordered finite products of the actual
   normalized local spectral integrals, including infinity, converge to
   `ζ_K(u)/ζ_K(u/3)`, where `u=exp(-s log 3)`.

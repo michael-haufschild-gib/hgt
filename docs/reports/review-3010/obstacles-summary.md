@@ -220,9 +220,10 @@ Subquestions:
   [Exact scalar and finite part, final Lean audit](../../drafts/pipeline/3-formalized/undilated-prime-heads-have-a-uniform-torsion-finite-part.md).
   Packet mass on rows `N/n<T` costs only `[1+log(2T)+2L_Q]sum a_m²`,
   where `L_Q=6log Q+log4+5`.
+  [Quotient-tail proof and final Lean audit](../../drafts/pipeline/3-formalized/conductor-packet-quotient-tails-cost-only-logarithms.md).
   The actual scalar prime-row residual has squared norm at most
-  `[epsilon+2048(1+log Q)/log N]sum a_m²` eventually, uniformly in every packet.
-  [Proof and final Lean audit](../../drafts/pipeline/3-formalized/conductor-packet-quotient-tails-cost-only-logarithms.md).
+  `C(1+log Q)sum a_m²/log N`, with one absolute constant for all `Q,N≥2`.
+  [Uniform norm proof and final Lean audit](../../drafts/pipeline/3-formalized/scalar-prime-residuals-have-logarithmic-packet-cost.md).
   The conductor-changing correction remains separate.
   The full Weil agreement-shell identity remains open.
 

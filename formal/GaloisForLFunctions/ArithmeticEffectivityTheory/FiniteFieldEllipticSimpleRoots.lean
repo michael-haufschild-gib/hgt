@@ -104,9 +104,11 @@ theorem exists_adelicFiniteNegativeRoot_iwasawa_values (a : Adeles) :
             (finiteBorelEvaluation v b) = (1, max 1 (Valued.v (a.1 v)))) ∧
         LoopSL2.borelValuationHom (Valued.v : Valuation InfinityCompletion ℤᵐ⁰)
           (infinityBorelEvaluation b) = (1, max 1 (Valued.v a.2)) := by
-  obtain ⟨k, b, he⟩ := exists_adelic_integral_borel (adelicFiniteNegativeRoot a)
-  exact ⟨k, b, he, adelicFiniteNegativeRoot_finite_values a k b he,
-    adelicFiniteNegativeRoot_infinity_values a k b he⟩
+  generalize hroot : adelicFiniteNegativeRoot a = g
+  obtain ⟨k, b, he⟩ := exists_adelic_integral_borel g
+  have he' : (k : AdelicLoop) * b = adelicFiniteNegativeRoot a := he.trans hroot.symm
+  exact ⟨k, b, he, adelicFiniteNegativeRoot_finite_values a k b he',
+    adelicFiniteNegativeRoot_infinity_values a k b he'⟩
 
 /-- Actual affine-root factors exist and have all their local torus valuations simultaneously. -/
 theorem exists_adelicAffineNegativeRoot_iwasawa_values (a : Adeles) :
@@ -118,9 +120,11 @@ theorem exists_adelicAffineNegativeRoot_iwasawa_values (a : Adeles) :
               (max 1 (Valued.v (a.1 v)), (max 1 (Valued.v (a.1 v)))⁻¹)) ∧
         LoopSL2.borelValuationHom (Valued.v : Valuation InfinityCompletion ℤᵐ⁰)
           (infinityBorelEvaluation b) = (max 1 (Valued.v a.2), (max 1 (Valued.v a.2))⁻¹) := by
-  obtain ⟨k, b, he⟩ := exists_adelic_integral_borel (adelicAffineNegativeRoot a)
-  exact ⟨k, b, he, adelicAffineNegativeRoot_finite_values a k b he,
-    adelicAffineNegativeRoot_infinity_values a k b he⟩
+  generalize hroot : adelicAffineNegativeRoot a = g
+  obtain ⟨k, b, he⟩ := exists_adelic_integral_borel g
+  have he' : (k : AdelicLoop) * b = adelicAffineNegativeRoot a := he.trans hroot.symm
+  exact ⟨k, b, he, adelicAffineNegativeRoot_finite_values a k b he',
+    adelicAffineNegativeRoot_infinity_values a k b he'⟩
 
 end
 end GaloisForLFunctions.ArithmeticEffectivityTheory.FiniteFieldEllipticBase
