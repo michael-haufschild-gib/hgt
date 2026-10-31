@@ -58,4 +58,6 @@ Formalized, with direct audits and standard axiom closures:
 - `HeckeKreinToeplitz/Index/ColumnPositivity.lean`: Cauchy–Schwarz holds on every nonnegative column subspace.
 - `AdelicKreinGeometry/Haar/CyclicOrbits.lean`: complete Haar translation orbits are orthogonal with the Haar scalar as squared norm; normalized fixed projections have squared norm `1/den(b/a)`.
 
-Required Lean results: cyclic Hecke bound; projected Gram limit; positive-slope extension and the actual adelic restriction. The positive structural conclusions are the nonnegative moving subspaces and their finite cyclic bound. The stronger positive-plus-slope decomposition remains a separate conjecture.
+- `AdelicKreinGeometry/Haar/CyclicHecke.lean`: squared moving-column correlations are bounded by the reciprocal denominator of the dilation ratio.
+
+Required Lean results: projected Gram limit; positive-slope extension and the actual adelic restriction. The positive structural conclusions are the nonnegative moving subspaces and their finite cyclic bound. The stronger positive-plus-slope decomposition remains a separate conjecture.

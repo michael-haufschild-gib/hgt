@@ -276,8 +276,11 @@ theorem clusterConfig_N0 (T₁ T₂ : ℝ) : clusterConfig.N0 T₁ T₂ = 0 := b
 
 /-! ## Riemann–von Mangoldt survives the clusters -/
 
-theorem riemannVonMangoldt_superpose {Z : ZeroConfig} (h : RiemannVonMangoldt Z) :
-    RiemannVonMangoldt (superpose Z clusterConfig) where
+/-- Riemann–von Mangoldt survives the superposition of a configuration whose window counts are
+`≤ 4 log(|T₂| + 3)`. -/
+theorem riemannVonMangoldt_superpose_of_N_le {Z W : ZeroConfig} (h : RiemannVonMangoldt Z)
+    (hW : ∀ T₁ T₂ : ℝ, (W.N T₁ T₂ : ℝ) ≤ 4 * Real.log (|T₂| + 3)) :
+    RiemannVonMangoldt (superpose Z W) where
   main := by
     obtain ⟨C, T₀, hC⟩ := h.main
     refine ⟨C + 8, max T₀ 3, fun T hT => ?_⟩
@@ -288,8 +291,8 @@ theorem riemannVonMangoldt_superpose {Z : ZeroConfig} (h : RiemannVonMangoldt Z)
       refine Real.log_le_log (by linarith) ?_
       rw [show (T : ℝ) ^ (2 : ℝ) = T ^ 2 by norm_cast]
       nlinarith
-    have hc := clusterConfig_N_le T (2 * T)
-    have hc0 : (0 : ℝ) ≤ clusterConfig.N T (2 * T) := Nat.cast_nonneg _
+    have hc := hW T (2 * T)
+    have hc0 : (0 : ℝ) ≤ W.N T (2 * T) := Nat.cast_nonneg _
     rw [N_superpose, Nat.cast_add]
     have h1 := hC T hT₀
     have hL0 : 0 ≤ Real.log T := Real.log_nonneg (by linarith)
@@ -305,10 +308,14 @@ theorem riemannVonMangoldt_superpose {Z : ZeroConfig} (h : RiemannVonMangoldt Z)
       have := abs_add_le t 1
       rw [abs_one] at this
       nlinarith [abs_nonneg t]
-    have hc := clusterConfig_N_le t (t + 1)
+    have hc := hW t (t + 1)
     have hL0 : 0 ≤ Real.log (|t| + 3) := Real.log_nonneg (by linarith [abs_nonneg t])
     rw [N_superpose, Nat.cast_add]
     nlinarith [hloc t]
+
+theorem riemannVonMangoldt_superpose {Z : ZeroConfig} (h : RiemannVonMangoldt Z) :
+    RiemannVonMangoldt (superpose Z clusterConfig) :=
+  riemannVonMangoldt_superpose_of_N_le h clusterConfig_N_le
 
 /-! ## The local count fails -/
 

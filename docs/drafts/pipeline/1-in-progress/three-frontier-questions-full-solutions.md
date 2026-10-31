@@ -89,6 +89,20 @@ and [logarithmic reserve](../3-formalized/logarithmic-defect-reserve-at-iterated
 passed all direct Lean and standard-axiom audits; umbrella imports are present.
 The agreement-shell identity and RH-complete overlap remain open.
 
+## Exact harmonic Gram component
+
+For `u_m=c_m/√φ(m)`, the harmonic Gram finite part is exactly
+`B_ml=γ·1_(m=l)−I(m,l)/√(φ(m)φ(l))`, where `I` is the torsion intersection.
+On every coefficient vector supported in `1≤m≤Q`, `Q≥2`,
+`|∑_(n≤N)(∑_m a_m u_m(n))²/n−H_N∑_m a_m²+T_Q(a)|`
+`≤Q(Q−1)/(N+1)∑_m a_m²`.
+Here `T_Q(a)=∑_(m,l≤Q)a_m a_l I(m,l)/√(φ(m)φ(l))`.
+
+The [exact finite part](../3-formalized/ramanujan-harmonic-gram-finite-parts-are-prime-local.md)
+and [uniform remainder](../3-formalized/harmonic-ramanujan-gram-has-a-logarithmic-operator-bound.md)
+passed all direct Lean and standard-axiom audits. These identify the harmonic
+Gram component; comparison with the complete prime, Gamma, and polar shell block remains open.
+
 ## Full-divisor resolvent identity
 
 At `Re s>1`, positivity of `Re(s−ρ)⁻¹` gives absolute convergence of

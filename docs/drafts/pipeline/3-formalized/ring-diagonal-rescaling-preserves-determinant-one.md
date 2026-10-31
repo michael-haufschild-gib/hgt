@@ -1,6 +1,6 @@
 # Ring diagonal rescaling preserves determinant one
 
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
 - **Parent:** [Elliptic unfolding](../1-in-progress/finite-field-eisenstein-unfolding.md).
 - **Statement:** Over every commutative ring, a unit acts on `SL₂` by
   multiplying the upper-right entry by that unit and the lower-left entry
@@ -19,4 +19,7 @@ units. Substitution of the two elementary matrices gives the root formulas.
 
 ## Lean
 
-`HTGeometry/LoopEisenstein/RingSL2DiagonalRescaling.lean`. Direct check pending.
+`HTGeometry/LoopEisenstein/RingSL2DiagonalRescaling.lean`. `ringSL2Rescale`, `ringSL2Rescale_inverse`, `ringSL2Rescale_map`,
+and both root formulas passed direct Lean checking. The homomorphism and
+map-compatibility axiom audits contain only `propext`, `Classical.choice`,
+and `Quot.sound`.

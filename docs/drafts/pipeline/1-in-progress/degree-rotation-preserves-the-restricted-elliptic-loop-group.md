@@ -22,5 +22,7 @@ rotation. Rotation by the inverse idele supplies the inverse map.
 ## Established inputs
 
 [Positive splitting and Borel-coordinate compatibility](../3-formalized/degree-rotation-preserves-positive-loop-spectral-coordinates.md)
-passed direct Lean and axiom audits. Ring diagonal rescaling is written;
-its direct check and the full integral-vertex proof remain.
+passed direct Lean and axiom audits. [Ring diagonal rescaling](../3-formalized/ring-diagonal-rescaling-preserves-determinant-one.md) and
+[rotation of both integral vertices](../3-formalized/degree-rotation-preserves-both-integral-loop-vertices.md) passed the same audits.
+The actual restricted adelic automorphism and Borel-character invariance
+are written; their direct audit remains.

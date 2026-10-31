@@ -27,8 +27,13 @@ satisfies `κ^{(½)}(K) ≤ κ(K) ≤ κ^{(½)}(K) + 1` (`boostPolarIndex_le_neg
   `κ^{(½)}(K_ζ) + 1`, so `ε = 1` in `κ(K_ζ) + ε` exactly when the negative squares of Weil's
   correlation are all carried on the hyperplane orthogonal to the boost character `u^{−1/2}`.
 
+* **Sub-boost data** (`boostPolarIndex_eq_negIndex_of_subBoost`, `negIndex_archGlue_eq_of_subBoost`):
+  if `‖K(λ_N u)‖ λ_N^{−1/2} → 0` along slopes `λ_N → ∞`, then `κ^{(½)}(K) = κ(K)` and the gluing
+  costs exactly one square, `κ = κ(K) + 1`.
+
 So the archimedean place glues by a hyperplane: the scalar gluing square of separable assemblies is
-replaced by the codimension-one constraint that the dilation data be orthogonal to the boost.
+replaced by the codimension-one constraint that the dilation data be orthogonal to the boost, and
+the constraint is free for data that grow slower than the boost.
 -/
 
 open Complex Finset Filter Topology
@@ -216,8 +221,8 @@ theorem add_one_le_negIndex_archGlue {K : posUnits → ℂ} (hK : IsHermKernel K
     simp [ρ, Complex.conj_ofReal]
   have hzero' : ∀ k, ∑ i, ρ i * BW i k = 0 := fun k => by
     rw [← hBW k]; exact sum_congr rfl fun i _ => mul_comm _ _
-  have hρ : ∀ i, ((slopePow Rat.AbsoluteValue.real 1 (D i))⁻¹ : ℂ) = ρ i := fun i => by
-    rw [hDpow, ← Complex.ofReal_inv, ← Real.rpow_neg (posUnits_val_pos _).le]
+  have hρ : ∀ i, (((slopePow Rat.AbsoluteValue.real 1 (D i))⁻¹ : ℝ) : ℂ) = ρ i := fun i => by
+    rw [hDpow, ← Real.rpow_neg (posUnits_val_pos _).le]
   -- entries of the cross blocks
   have hcross : ∀ k, Tendsto (fun N => (BWᴴ * C N * Sig N) k 0) atTop (𝓝 0) := by
     intro k
@@ -241,7 +246,8 @@ theorem add_one_le_negIndex_archGlue {K : posUnits → ℂ} (hK : IsHermKernel K
     simpa using hσc.mul_const (2 * ∑ i, conj (BW i k) * K ((u i)⁻¹))
   -- the other cross block is the adjoint, since `Φ` is Hermitian
   have hΦ : IsHermKernel Φ := fun g => by
-    have h1 : IsHermKernel fun g : AffineGroupQ => K (slopeAbs g) := hK.comp _
+    have h1 : ∀ g : AffineGroupQ, K (slopeAbs g⁻¹) = conj (K (slopeAbs g)) := fun g => by
+      rw [map_inv]; exact hK _
     have h2 := isHermKernel_conformalInduction (isConformal_negAbsRat c)
       (isHermKernel_ofReal_mul isHermKernel_negAbsRat c)
     show K (slopeAbs g⁻¹) + _ = conj (K (slopeAbs g) + _)
@@ -257,7 +263,7 @@ theorem add_one_le_negIndex_archGlue {K : posUnits → ℂ} (hK : IsHermKernel K
         ← Matrix.conjTranspose_mul, Matrix.conjTranspose_conjTranspose, Matrix.conjTranspose_apply,
         Complex.star_def, Matrix.mul_assoc]
     simp_rw [e]
-    simpa using (Complex.continuous_conj.tendsto 0).comp (hcross k)
+    simpa [Function.comp_def] using (Complex.continuous_conj.tendsto 0).comp (hcross k)
   -- the pair block tends to `−2c`
   have hpair : Tendsto (fun N => ((Sig N)ᴴ * E N * Sig N) 0 0) atTop
       (𝓝 ((-2 * c : ℝ) : ℂ)) := by
@@ -273,7 +279,7 @@ theorem add_one_le_negIndex_archGlue {K : posUnits → ℂ} (hK : IsHermKernel K
       have hinv : (translation ((N : ℚ) + 1))⁻¹ = translation (-((N : ℚ) + 1)) := by
         rw [eq_comm, ← mul_eq_one_iff_eq_inv, ← translation_add, neg_add_cancel, translation_zero]
       have e00 : Φ 1 = K 1 := by
-        simp only [Φ, archGlue, map_one, conformalInduction, shiftOf_one, affShift_one, hneg0,
+        simp only [Φ, archGlue, map_one, conformalInduction, shiftOf_one, hneg0,
           mul_zero, add_zero]
       have e01 : Φ (translation ((N : ℚ) + 1)) = K 1 - (c : ℂ) * ((N : ℂ) + 1) := by
         simp only [Φ, archGlue, slopeAbs_translation, conformalInduction, hsp, hsh, inv_one,
@@ -286,9 +292,9 @@ theorem add_one_le_negIndex_archGlue {K : posUnits → ℂ} (hK : IsHermKernel K
       have e11 : Φ (translation (-((N : ℚ) + 1)) * translation ((N : ℚ) + 1)) = K 1 := by
         rw [← translation_add, neg_add_cancel, translation_zero, e00]
       simp only [Matrix.mul_apply, Matrix.conjTranspose_apply, E, Sig, gram, T, Matrix.of_apply,
-        Fin.sum_univ_two, Fin.sum_univ_one, Complex.star_def, Complex.conj_ofReal,
-        Matrix.cons_val_zero, Matrix.cons_val_one, Matrix.head_cons, inv_one, one_mul, mul_one,
-        inv_mul_cancel, hinv, e00, e01, e10, e11]
+        Fin.sum_univ_two, Complex.star_def, Complex.conj_ofReal,
+        Matrix.cons_val_zero, Matrix.cons_val_one, inv_one, one_mul, mul_one,
+        hinv, e00, e01, e10, e11]
       push_cast
       ring
     have h3 : ∀ N : ℕ, σ N * σ N * ((N : ℝ) + 1) = 1 := fun N => by
@@ -311,7 +317,7 @@ theorem add_one_le_negIndex_archGlue {K : posUnits → ℂ} (hK : IsHermKernel K
   -- the limit has `r + 1` negative squares
   have hA : A = gram K u := by
     ext i j
-    simp only [A, gram, Matrix.of_apply, Φ, archGlue_inv_mul, hDslope, hDshift, sub_self, hneg0,
+    simp only [A, gram, Φ, archGlue_inv_mul, hDslope, hDshift, sub_self, hneg0,
       mul_zero, add_zero]
   have hH₀ : H₀.IsHermitian := by
     refine Matrix.IsHermitian.fromBlocks ?_ (by simp) ?_
@@ -377,5 +383,105 @@ theorem negIndex_archGlue_eq {K : posUnits → ℂ} (hK : IsHermKernel K) {c : �
 theorem negIndex_weilArchState_eq {c : ℝ} (hc : 0 < c) :
     negIndex (weilArchState c) = boostPolarIndex ratCorr + 1 := by
   rw [weilArchState_eq_archGlue, negIndex_archGlue_eq isHermKernel_ratCorr hc]
+
+/-! ### Sub-boost dilation data -/
+
+/-- **Sub-boost data are glued at full index.** If along slopes `λ_N` with `λ_N^{−1/2} → 0` the
+data grow slower than the boost, `‖K(λ_N u)‖ λ_N^{−1/2} → 0`, then `κ^{(½)}(K) = κ(K)`: a negative
+family dilated by `λ_N` and corrected at the slope `1` by the weight `−λ_N^{−1/2} ℓ` lies on `ℓ = 0`,
+and its compressed Gram matrices tend to the original ones. -/
+theorem boostPolarIndex_eq_negIndex_of_subBoost {K : posUnits → ℂ} (hK : IsHermKernel K)
+    (lam : ℕ → posUnits)
+    (hlam : Tendsto (fun N => ((((lam N : ℚˣ) : ℚ) : ℝ)) ^ (-(1 / 2 : ℝ))) atTop (𝓝 0))
+    (hgrow : ∀ u : posUnits, Tendsto (fun N => K (lam N * u) *
+      (((((lam N : ℚˣ) : ℚ) : ℝ) ^ (-(1 / 2 : ℝ)) : ℝ) : ℂ)) atTop (𝓝 0)) :
+    boostPolarIndex K = negIndex K := by
+  classical
+  refine le_antisymm (boostPolarIndex_le_negIndex K) (negIndex_le_iff.mpr fun n F => ?_)
+  set μ : ℕ → ℝ := fun N => ((((lam N : ℚˣ) : ℚ) : ℝ)) ^ (-(1 / 2 : ℝ))
+  set ρ : Fin n → ℝ := fun i => ((((F i : ℚˣ) : ℚ) : ℝ)) ^ (-(1 / 2 : ℝ))
+  set Fam : ℕ → Fin (n + 1) → posUnits := fun N => Fin.cons 1 fun i => lam N * F i
+  set L : ℕ → Matrix (Fin (n + 1)) (Fin n) ℂ := fun N => Matrix.of fun p j =>
+    Fin.cases (-((μ N * ρ j : ℝ) : ℂ)) (fun i => if i = j then (1 : ℂ) else 0) p
+  set M : ℕ → Matrix (Fin n) (Fin n) ℂ := fun N => (L N)ᴴ * gram K (Fam N) * L N
+  -- the entries
+  have hM : ∀ N i j, M N i j = K ((F i)⁻¹ * F j) - ((μ N * ρ i : ℝ) : ℂ) * K (lam N * F j) -
+      conj (K (lam N * F i)) * ((μ N * ρ j : ℝ) : ℂ) +
+      ((μ N * ρ i : ℝ) : ℂ) * ((μ N * ρ j : ℝ) : ℂ) * K 1 := by
+    intro N i j
+    have e1 : ∀ i j, (lam N * F i)⁻¹ * (lam N * F j) = (F i)⁻¹ * F j := fun i j => by group
+    have e2 : ∀ i, K (lam N * F i)⁻¹ = conj (K (lam N * F i)) := fun i => hK _
+    simp only [M, L, Fam, Matrix.mul_apply, Matrix.conjTranspose_apply, gram, Matrix.of_apply,
+      Fin.sum_univ_succ, Fin.cons_zero, Fin.cons_succ, Fin.cases_zero, Fin.cases_succ, e1, e2,
+      inv_one, one_mul, mul_one, Complex.star_def, map_neg, Complex.conj_ofReal, apply_ite conj,
+      map_one, map_zero, ite_mul, zero_mul, sum_ite_eq', mem_univ, if_true, mul_ite, mul_zero]
+    ring
+  have hconv : ∀ i j, Tendsto (fun N => M N i j) atTop (𝓝 (gram K F i j)) := by
+    intro i j
+    simp_rw [hM]
+    have hμc : Tendsto (fun N => ((μ N : ℝ) : ℂ)) atTop (𝓝 0) := by
+      simpa [Function.comp_def] using (Complex.continuous_ofReal.tendsto 0).comp hlam
+    have t1 : Tendsto (fun N => ((μ N * ρ i : ℝ) : ℂ) * K (lam N * F j)) atTop (𝓝 0) := by
+      have := (hgrow (F j)).const_mul ((ρ i : ℝ) : ℂ)
+      rw [mul_zero] at this
+      refine this.congr fun N => ?_
+      push_cast; ring
+    have t2 : Tendsto (fun N => conj (K (lam N * F i)) * ((μ N * ρ j : ℝ) : ℂ)) atTop (𝓝 0) := by
+      have := ((Complex.continuous_conj.tendsto 0).comp (hgrow (F i))).const_mul ((ρ j : ℝ) : ℂ)
+      simp only [Function.comp_def, map_zero, mul_zero] at this
+      refine this.congr fun N => ?_
+      simp only [map_mul, Complex.conj_ofReal]
+      push_cast; ring
+    have t3 : Tendsto (fun N => ((μ N * ρ i : ℝ) : ℂ) * ((μ N * ρ j : ℝ) : ℂ) * K 1) atTop (𝓝 0) := by
+      have := ((hμc.mul hμc).const_mul (((ρ i * ρ j : ℝ) : ℂ) * K 1))
+      rw [mul_zero, mul_zero] at this
+      refine this.congr fun N => ?_
+      push_cast; ring
+    have := ((tendsto_const_nhds (x := K ((F i)⁻¹ * F j))).sub t1).sub t2 |>.add t3
+    simpa [gram] using this
+  obtain ⟨N, hN⟩ := (eventually_le_hermNegIndex (gram_isHermitian hK F) hconv).exists
+  -- a negative subspace of `M N` lands on `ℓ = 0`
+  obtain ⟨W, hrank, hW⟩ := exists_isPosDefOn_finrank_eq_posIndex (-M N)
+  set bW := Module.finBasis ℂ W
+  set L' : (Fin (Module.finrank ℂ W) → ℂ) →ₗ[ℂ] (Fin (n + 1) → ℂ) :=
+    (L N).mulVecLin ∘ₗ W.subtype ∘ₗ bW.equivFun.symm.toLinearMap
+  have hroot : ∀ i, (((((lam N * F i : posUnits) : ℚˣ) : ℚ) : ℝ)) ^ (-(1 / 2 : ℝ)) = μ N * ρ i :=
+    fun i => by
+      simp only [Subgroup.coe_mul, Units.val_mul, Rat.cast_mul, μ, ρ]
+      exact Real.mul_rpow (posUnits_val_pos _).le (posUnits_val_pos _).le
+  have hV : ∀ a, L' a ∈ LinearMap.ker (boostMassU (Fam N)) := fun a => by
+    rw [LinearMap.mem_ker]
+    simp only [L', boostMassU, LinearMap.coe_mk, AddHom.coe_mk, LinearMap.coe_comp,
+      Function.comp_apply, Matrix.mulVecLin_apply, Fin.sum_univ_succ, Fam, Fin.cons_zero,
+      Fin.cons_succ, hroot, Matrix.mulVec, dotProduct, L, Matrix.of_apply, Fin.cases_zero,
+      Fin.cases_succ, ite_mul, one_mul, zero_mul, sum_ite_eq, mem_univ, if_true,
+      OneMemClass.coe_one, Units.val_one, Rat.cast_one, Real.one_rpow, Complex.ofReal_one, mul_one]
+    rw [← sum_add_distrib]
+    refine sum_eq_zero fun i _ => ?_
+    push_cast; ring
+  have hneg : ∀ a, a ≠ 0 → hermQuad (gram K (Fam N)) (L' a) < 0 := fun a ha => by
+    have hw0 : (bW.equivFun.symm a : Fin n → ℂ) ≠ 0 := fun h =>
+      ha (bW.equivFun.symm.injective (Subtype.ext (by rw [h, map_zero]; rfl)))
+    have hpos := hW _ (bW.equivFun.symm a).2 hw0
+    rw [hermQuad_neg] at hpos
+    simp only [L', LinearMap.coe_comp, Function.comp_apply, Matrix.mulVecLin_apply]
+    rw [← HTGeometry.hermQuad_rect_conjugate]
+    exact neg_pos.mp hpos
+  have h1 := card_le_negIndexOn_of_forall_neg (gram K (Fam N)) _ L' hV hneg
+  rw [Fintype.card_fin] at h1
+  have h2 : hermNegIndex (M N) = Module.finrank ℂ W := hrank.symm
+  calc (hermNegIndex (gram K F) : ℕ∞) ≤ (hermNegIndex (M N) : ℕ∞) := Nat.cast_le.mpr hN
+    _ ≤ (negIndexOn (gram K (Fam N)) (LinearMap.ker (boostMassU (Fam N))) : ℕ∞) :=
+        Nat.cast_le.mpr (h2 ▸ h1)
+    _ ≤ boostPolarIndex K := negIndexOn_le_boostPolarIndex K _
+
+/-- **Sub-boost data cost exactly one square more**: `κ(K(|a|) − c|a|^{−1/2}|b|) = κ(K) + 1`. -/
+theorem negIndex_archGlue_eq_of_subBoost {K : posUnits → ℂ} (hK : IsHermKernel K) {c : ℝ}
+    (hc : 0 < c) (lam : ℕ → posUnits)
+    (hlam : Tendsto (fun N => ((((lam N : ℚˣ) : ℚ) : ℝ)) ^ (-(1 / 2 : ℝ))) atTop (𝓝 0))
+    (hgrow : ∀ u : posUnits, Tendsto (fun N => K (lam N * u) *
+      (((((lam N : ℚˣ) : ℚ) : ℝ) ^ (-(1 / 2 : ℝ)) : ℝ) : ℂ)) atTop (𝓝 0)) :
+    negIndex (archGlue K c) = negIndex K + 1 := by
+  rw [negIndex_archGlue_eq hK hc, boostPolarIndex_eq_negIndex_of_subBoost hK lam hlam hgrow]
 
 end GaloisForLFunctions.AdelicKreinGeometry

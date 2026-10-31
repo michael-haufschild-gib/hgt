@@ -1,8 +1,8 @@
 # Ramanujan harmonic Gram finite parts are prime-local
 
-- **Stage:** 1-in-progress
+- **Stage:** 3-formalized
 - **Type:** THEOREM (Lean)
-- **Source:** `three-frontier-questions-full-solutions.md`, Q1/O1.
+- **Source:** [Q1/O1](../1-in-progress/three-frontier-questions-full-solutions.md).
 
 ## Exact finite part
 
@@ -66,5 +66,5 @@ Both final direct `lake --old env lean` checks passed; all sixteen axiom
 audits contain only `propext`, `Classical.choice`, and `Quot.sound`.
 Umbrella imports are present.
 
-The finite-horizon remainder is a separate target. The full Weil
-agreement-shell identity remains open.
+The [uniform finite-horizon remainder](harmonic-ramanujan-gram-has-a-logarithmic-operator-bound.md)
+is also formalized. The full Weil agreement-shell identity remains open.

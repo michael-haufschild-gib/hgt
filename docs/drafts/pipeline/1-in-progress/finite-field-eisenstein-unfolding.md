@@ -3,7 +3,7 @@
 - **ID:** `finite-field-eisenstein-unfolding`
 - **Stage:** 1-in-progress
 - **Type:** CLASSICAL BRIDGE / FORMALIZATION TARGET
-- **Status:** Arithmetic product formula, analytic Euler product, normalized additive quotient and actual loop Iwasawa characters formalized; unipotent quotient and unfolding remain.
+- **Status:** Arithmetic product formula, analytic Euler product, additive and actual unipotent quotient probabilities, and loop Iwasawa characters formalized; arithmetic unfolding remains.
 - **Completed work:** [Finite-field Weyl-sum noncancellation and arithmetic foundations](../3-formalized/finite-field-weyl-noncancellation-and-arithmetic-foundations.md).
 - **Arithmetic source:** [Finite-field zeta pole transfer](../3-formalized/finite-field-zeta-pole-transfer.md).
 
@@ -27,8 +27,8 @@ from a proved quotient normalization.
 
 ## Unproved dependencies
 
-- Unipotent quotient measure. The additive quotient has Haar probability and covolume one. Its continuous additive retraction and rational correction preserving every integral finite place are audited. The three-free-entry equivalence is audited over arbitrary commutative rings, including the adele ring; completed arithmetic reduction and invariant quotient probability remain.
-- Arithmetic coset parametrization. The actual restricted adelic loop group, faithful arithmetic embedding, integral–Borel factorization and spectral section with its transformation laws are audited. The Borel character is trivial on the actual arithmetic intersection.
+- Actual idele degree rotation. Positive Borel, both spectral coordinates and both integral vertices are preserved, with direct Lean and axiom audits. The restricted adelic automorphism is written; its direct audit remains.
+- Arithmetic coset parametrization. The independently defined actual arithmetic coset series and its right arithmetic invariance are audited. [Coset descent](../3-formalized/elliptic-eisenstein-summands-descend-to-actual-arithmetic-cosets.md). Finite root-cell parametrization and convergence remain.
 - Finite root-coordinate refinement of Bruhat cells, with compatible left/right conventions.
 - Local Iwasawa-character identification with the already proved radial Haar kernel.
 - Arithmetic coset-sum convergence and justified sum/integral exchanges giving unfolding.
@@ -48,23 +48,24 @@ Actual `KHU` decomposition, both torus valuation invariances and the exact
 unipotent coefficient-integrality criterion are audited in
 `IntegralLoopBorelIntersection`.
 
-## Unipotent reduction mechanism
+## Actual unipotent quotient
 
-Order free matrix coefficients as `b₀,c₁,a₁,b₁,c₂,a₂,…`.
-The three multiplication defects are
-`(a−1)B+b(D−1)`, `c(A−1)+(d−1)C`, `(a−1)(A−1)+bC`.
-Their zero constant terms make each defect depend only on earlier free
-coefficients. The fourth entry through degree `n` uses `a,c` through `n`
-and `b` below `n`.
+Order free coefficients as `b₀,c₁,a₁,b₁,c₂,a₂,…`. Multiplication defects
+use only earlier coordinates. Recursive right rational correction places
+every coordinate uniquely in the additive domain and preserves one common
+finite exceptional-place set. The uniform coefficient group is isomorphic
+to the actual restricted unipotent carrier, and its rational subgroup is
+exactly the actual arithmetic intersection.
 
-Recursive right multiplication by one completed rational matrix places every
-coordinate in the compact additive domain; existence and uniqueness are audited. The audited additive correction
-preserves a common finite exceptional-place set. Uniqueness follows from the
-trivial intersection of the diagonal field with the additive domain.
-Finite triangular translations then supply the proposed invariant quotient
-probability. The free coefficient stream, strict triangular multiplication, coefficient-map
-naturality, subring descent and countable triangular probability theorem are
-audited. Uniform integrality of the recursive correction is audited: it introduces no new finite exceptional place. Normalization continuity is also audited. The uniform coefficient group is now proved isomorphic to the actual restricted adelic positive unipotent group. The coefficient quotient is homeomorphic to the countable product of additive domains, with direct Lean and axiom audits. Normalized left multiplication preserves the actual product-domain Haar probability, with direct Lean and axiom audits. The arithmetic intersection is proved exactly equal to the uniformly integral rational coefficient subgroup. Transport of the invariant probability to the literal loop quotient remains.
+The literal quotient, with its coefficient quotient topology, is
+homeomorphic to the countable product of additive domains. Triangular
+normalization preserves product Haar probability; its transfer is invariant
+under actual quotient left multiplication. All statements passed direct
+Lean and axiom audits. [Proof and declarations](../3-formalized/actual-elliptic-unipotent-quotient-has-invariant-probability.md).
+
+This provides the quotient measure. Finite-cell periodization and the
+identification of local-integral products with the actual adelic integral
+remain necessary for unfolding.
 
 ## Convergence mechanism to test
 

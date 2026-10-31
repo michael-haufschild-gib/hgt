@@ -1,7 +1,7 @@
 # AdelicKreinGeometry (AKG)
 
-Namespace `GaloisForLFunctions.AdelicKreinGeometry`; umbrella `AdelicKreinGeometry.lean`; 34 modules
-(24 root, `Haar/` 10). All results unconditional; RH appears only inside equivalences.
+Namespace `GaloisForLFunctions.AdelicKreinGeometry`; umbrella `AdelicKreinGeometry.lean`; 35 modules
+(25 root, `Haar/` 10). All results unconditional; RH appears only inside equivalences.
 
 ## 1. Motivation
 
@@ -35,6 +35,7 @@ data can sit on a finite-index state with the integer successor.
 | Twists | `slopeChar` | unitary character of the slope |
 | Product state | `adelicWeilState` | `ratCorr(|a|)·haarState` |
 | Place assembly | `placeAssembly`, `boostChar` | `Σ_j` pole–successor states at places `v_j`; boost character `|u|_v^{s/2}` |
+| Archimedean gluing | `archGlue`, `boostMassU`, `boostPolarIndex` | `K(|a|) − c|a|^{−1/2}|b|`; `ℓ(w) = Σ w_i u_i^{−1/2}`; `κ^{(½)}(K)` = negative squares of `K` on `ℓ = 0` |
 | Archimedean Weil state | `weilArchState` | `ratCorr(|a|) − c|a|^{−1/2}|b|`: blind extension plus conformal induction of `−c|b|` |
 | Haar carriers | `haarOneNegativeSquare`, `affineLogTwo`, `mixedQuadraticKernel`, `haarMixedQuadraticState`, `mixedPowerKernel`, `mixedPowerPhase`, `haarMixedPowerState` | Haar ± log-slope or axis-invisible polynomial perturbations |
 | Period defects | `translationPeriodDefect`, `translationPeriodSpace`, `affinePeriodSpace` | `col(b + 1) − col(b)` and its affine orbit |
@@ -88,6 +89,9 @@ External: `negIndex`, `IsHermKernel`, `IsPosDefKernel`, `gram`, `zetaKernel`, `k
 13. Borel of `SL(2,ℝ)` preserves a signature `(1,1)` form: Gram `= Wᴴ h W` ⇒ one negative square.
 14. Product formula `∏_v |a|_v = 1`: local boosts multiply to 1 on `ℚ^×`; on dilations each boost pair is the
     pair kernel of its boost character, so a unit separating the characters gives one square per place.
+14b. The archimedean place glues by a hyperplane: on `ℓ = 0` the successor's form is nonnegative; a negative
+    subspace of `K` on `ℓ = 0` decouples from the pair `1, x ↦ x + L` (weights `L^{−1/2}`) because the successor
+    cross terms are `ψ(L)·ℓ = 0`, so `κ(K(|a|) − c|a|^{−1/2}|b|) = κ^{(½)}(K) + 1`.
 14a. Equivalence kernels are sums of squares of class sums; with the layer cake the local pole–successor form is
     a renormalized hyperbolic pair plus shell squares: `2Re(X̄Y) − cR|X|²` at `p` (balls), `2Re(X̄Y_R)` with
     `Y_R = Y − cΣ w_g|a_g|^{−1/2}(R − b_g)` at `∞` (half-lines `(−∞, t)`).
@@ -118,6 +122,7 @@ External: `negIndex`, `IsHermKernel`, `IsPosDefKernel`, `gram`, `zetaKernel`, `k
 | Haar carriers: one square off Hecke support (dilation discontinuous); every `κ ≥ 2` with both Haar axis readings; not positive + slope | `negIndex_haarOneNegativeSquare`, `negIndex_haarMixedPowerState`, `haarMixedQuadraticState_not_positive_add_slope` | proved |
 | Axis-invisible kernels: zero or `κ ≥ 2`; rank `≤ κ²`; fibres polynomial of degree `< κ` | `two_le_negIndex_of_zero_axes`, `rank_gram_le_square_of_zero_axes`, `exists_polynomial_translation_fibre_lt_index` | proved |
 | Integer successor of index `r`: affine period-defect space has dim `≤ r²` | `finite_affinePeriodSpace_of_integerSuccessor` | proved |
+| Archimedean gluing formula `κ(K(|a|) − c|a|^{−1/2}|b|) = κ^{(½)}(K) + 1`; for Weil `κ = κ^{(½)}(K_ζ) + 1` | `negIndex_archGlue_eq`, `negIndex_weilArchState_eq` | proved |
 | Weil's dilation data with the archimedean successor: `max(1, κ(K_ζ)) ≤ κ ≤ κ(K_ζ) + 1`; finite iff `κ(K_ζ)` is | `negIndex_weilArchState_le`, `le_negIndex_weilArchState`, `one_le_negIndex_weilArchState`, `negIndex_weilArchState_lt_top_iff` | proved |
 | Finite-index state with Weil's dilation data and integer successor (indefinite Mautner) | — | open |
 
@@ -127,7 +132,7 @@ External: `negIndex`, `IsHermKernel`, `IsPosDefKernel`, `gram`, `zetaKernel`, `k
 - Pontryagin index theory on groups: induction, witness complements, exact/approximate escape, block additivity,
   twist invariance, Krein compressions `Wᴴ h W`, conformal induction.
 - Local–global signature calculus: polar index, separable formula (shared pole), pole–successor formula `κ₀ + 1`,
-  additivity over places with distinct poles.
+  additivity over places with distinct poles, archimedean gluing by the boost hyperplane (`κ^{(½)} + 1`).
 - Indefinite Howe–Moore: mixing, height decay, near coincidence, dilution, Haar averaging.
 - Exact additive index laws on `ℤ/N`, `ℚ/ℤ` and for Ramanujan (unit-invariant) kernels.
 - Conditional positivity toolkit: min kernels, Poisson subordination, ultrametric layer cake, shell sums of squares.
@@ -147,7 +152,9 @@ External: `negIndex`, `IsHermKernel`, `IsPosDefKernel`, `gram`, `zetaKernel`, `k
 2. Is every Pontryagin state on `Aff(ℚ)` a positive state plus a coefficient of a finite-dimensional or conformally
    induced Pontryagin representation?
 3. Signature formula for the Weil kernel itself, which is neither tower-supported nor separable: what replaces the
-   scalar gluing square when the glue is the archimedean operator?
+   scalar gluing square when the glue is the archimedean operator? (Answered for the archimedean successor
+   `−c|b|`: the boost hyperplane, `κ = κ^{(½)}(K_ζ) + 1`; open: is `κ^{(½)}(K_ζ) = κ(K_ζ)`, i.e. do Weil's negative
+   squares avoid the boost character `u^{−1/2}`?)
 4. Glue the prime and archimedean parts of Weil's kernel to successors place by place, as the pole pair is glued to
    `−|b|`, and compute the index.
 5. Which additive invariant (count of negative conductor modes) could equal the number of off-line zeros?

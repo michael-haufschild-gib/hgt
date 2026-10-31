@@ -1,9 +1,9 @@
 # The harmonic Ramanujan Gram has a logarithmic operator bound
 
-- **Stage:** 1-in-progress
-- **Type:** THEOREM; final direct audits pending
+- **Stage:** 3-formalized
+- **Type:** THEOREM (Lean)
 - **Source:** `ramanujan-harmonic-gram-finite-parts-are-prime-local.md`; Q1/O1.
-- **Target:** A common finite-horizon Gram expansion for every conductor packet.
+- **Statement:** A common finite-horizon Gram expansion for every conductor packet.
 
 Let `u_m=c_m/sqrt(phi(m))`, `G_m,l(N)=sum_(n≤N)u_m(n)u_l(n)/n`,
 and `B_m,l=gamma·1_(m=l)−I(m,l)/sqrt(phi(m)phi(l))`.
@@ -47,6 +47,6 @@ The torsion counterterm controls the finite part by
 - `abs_harmonicGram_quadratic_torsion_remainder`;
 - `abs_harmonicGram_sub_log_mass_le`.
 
-All four proofs passed Lean with only `propext`, `Classical.choice`, and
-`Quot.sound`. The final direct source audit remains; umbrella import is present.
+The final direct `lake --old env lean` check passed. All four axiom audits
+contain only `propext`, `Classical.choice`, and `Quot.sound`; umbrella import is present.
 The complete Weil agreement-shell identity remains open.

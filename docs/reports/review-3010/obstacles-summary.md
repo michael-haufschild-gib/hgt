@@ -66,7 +66,7 @@ Each item has a working mechanism in the corpus and a proved smaller instance. N
 
 **Foundations and programmes.**
 
-- **A13. Actual elliptic product formula, analytic Euler product and additive quotient — formalized.** Every nonzero function on `y²=x³−x` over `𝔽₃` has finite place support and total normalized magnitude one in the [actual adelic completions](../../drafts/pipeline/3-formalized/elliptic-product-formula-uses-the-actual-adelic-completions.md). Actual closed-point counts identify the formal Euler product with the zeta series; the [unordered analytic product equals the nonzero zeta function on `|u|<1/3`](../../drafts/pipeline/3-formalized/elliptic-closed-places-give-the-analytic-euler-product.md). The [additive quotient has Haar probability and covolume one](../../drafts/pipeline/3-formalized/elliptic-adeles-have-a-volume-one-simple-pole-domain.md). All passed direct Lean and transitive axiom audits. [Actual idele spectral characters](../../drafts/pipeline/3-formalized/actual-elliptic-ideles-have-continuous-spectral-characters.md) are continuous and trivial on diagonal field units, with the same audits. [Actual loop Iwasawa sections](../../drafts/pipeline/3-formalized/actual-elliptic-loops-have-iwasawa-spectral-sections.md), their transformation laws and arithmetic-Borel triviality passed the same audits. Unipotent quotient and Eisenstein unfolding remain.
+- **A13. Actual elliptic product formula, analytic Euler product and additive quotient — formalized.** Every nonzero function on `y²=x³−x` over `𝔽₃` has finite place support and total normalized magnitude one in the [actual adelic completions](../../drafts/pipeline/3-formalized/elliptic-product-formula-uses-the-actual-adelic-completions.md). Actual closed-point counts identify the formal Euler product with the zeta series; the [unordered analytic product equals the nonzero zeta function on `|u|<1/3`](../../drafts/pipeline/3-formalized/elliptic-closed-places-give-the-analytic-euler-product.md). The [additive quotient has Haar probability and covolume one](../../drafts/pipeline/3-formalized/elliptic-adeles-have-a-volume-one-simple-pole-domain.md). All passed direct Lean and transitive axiom audits. [Actual idele spectral characters](../../drafts/pipeline/3-formalized/actual-elliptic-ideles-have-continuous-spectral-characters.md) are continuous and trivial on diagonal field units, with the same audits. [Actual loop Iwasawa sections](../../drafts/pipeline/3-formalized/actual-elliptic-loops-have-iwasawa-spectral-sections.md), their transformation laws and arithmetic-Borel triviality passed the same audits. The [literal unipotent arithmetic quotient](../../drafts/pipeline/3-formalized/actual-elliptic-unipotent-quotient-has-invariant-probability.md) has an invariant probability and a product-domain homeomorphism, with direct Lean and axiom audits. Eisenstein unfolding remains.
 - **A14. Full Ξ-divisor depth identity — formalized for `σ>1`.** `sub_mul_xiSamePointResolvent_sub_logDeriv` proves `(σ−1/2)S−Re(ξ′/ξ)=D`, with absolute convergence of both series and `D≥0`. The Euler and archimedean terms are also opened exactly. [Proof and Lean audit](../../drafts/pipeline/3-formalized/the-full-xi-resolvent-depth-identity.md).
 - **A15.** MC growing-modulus shell transfer is formalized: uniformly for `q≤(log Y)^A`, every logarithmic error rate `Cφ c/(log Y)^k` holds once `X≥2cY`; direct Lean and axiom audits passed. [Proof](../../drafts/pipeline/3-formalized/growing-conductor-reciprocal-shell-transfer.md). WL: support-size scalar-jet recovery is formalized for arbitrary prime families and arbitrary complex coefficients, at every complex base point. [Proof and Lean audit](../../drafts/pipeline/3-formalized/arbitrary-prime-support-is-detected-by-finitely-many-scalar-jets.md). CTF completion is formalized with horizon `Tₙ=(n+1)(Mₙ+1)²`, error at most `1/(n+1)` and the signed terminal correction retained. [Proof and Lean audit](../../drafts/pipeline/3-formalized/euler-completion-along-growing-source-cutoffs.md). All-order Euler/jet identities and multiplicity-to-jet vanishing are formalized. [Proof and Lean audit](../../drafts/pipeline/3-formalized/general-prime-logarithmic-higher-jet-transfer.md). Same-order mixed-jet recovery for three or more primes remains separate.
 
@@ -188,6 +188,13 @@ Subquestions:
   The lag charge remains positive with compact source profiles at arbitrary
   real shifts, including exact logarithmic positions.
   [Proof and Lean audit](../../drafts/pipeline/3-formalized/profiled-adjunction-lag-kernel.md).
+  The harmonic Gram finite part is exactly
+  `B_ml=γ·1_(m=l)−I(m,l)/√(φ(m)φ(l))`. For every coefficient vector through
+  `Q≥2`, its correction to `H_N∑a_m²` is the negative torsion pairing,
+  with absolute remainder at most `Q(Q−1)/(N+1)∑a_m²`.
+  [Finite part](../../drafts/pipeline/3-formalized/ramanujan-harmonic-gram-finite-parts-are-prime-local.md)
+  and [uniform remainder](../../drafts/pipeline/3-formalized/harmonic-ramanujan-gram-has-a-logarithmic-operator-bound.md)
+  passed direct Lean and standard-axiom audits.
   The full Weil agreement-shell identity remains open.
 
 **Q2. Is there a source law that makes the two orientations of the Ξ resolvent agree?**
@@ -313,6 +320,9 @@ Each item is a mechanism that would create positivity or precision from structur
   - The divisor collapse Λ∗1 = log is maximal exactly at the trivial gauge point [S].
   - A twin's prime-form defect is exactly the sum of its successor-disagreement shells, weighted by 1 − σ_h(km) ∈ {0, 2} [S].
   - On the top band the shells and the pole move by the same lattice-free quantity [S].
+  - The harmonic Gram component has an exact torsion finite part and an all-vector
+    remainder `Q(Q−1)/(N+1)` through conductor `Q`.
+    [Lean proof and audit](../../drafts/pipeline/3-formalized/harmonic-ramanujan-gram-has-a-logarithmic-operator-bound.md).
 - **The opportunity:** an exact identity
 
   W(x) = Σ_m E_m(c)\|⟨x, u_m⟩\|² + (sum of squares carried by agreement shells) − (edge remainder),

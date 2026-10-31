@@ -1,6 +1,6 @@
 # Actual elliptic unipotent quotient has invariant probability
 
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
 - **Parent:** [Elliptic unfolding](../1-in-progress/finite-field-eisenstein-unfolding.md).
 - **Statement:** The literal restricted adelic positive unipotent group modulo
   its actual arithmetic intersection, with its coefficient quotient topology,
@@ -28,4 +28,7 @@ is used.
 ## Lean
 
 `ArithmeticEffectivityTheory/FiniteFieldEllipticUnipotentAdelicQuotient.lean`.
-Direct check pending.
+`adelicUnipotentQuotientDomainHomeomorph`,
+`adelicUnipotentQuotientLeft_mk`, and
+`measurePreserving_adelicUnipotentQuotientLeft` passed direct Lean and
+transitive axiom audits. Only `propext`, `Classical.choice`, and `Quot.sound` occur.

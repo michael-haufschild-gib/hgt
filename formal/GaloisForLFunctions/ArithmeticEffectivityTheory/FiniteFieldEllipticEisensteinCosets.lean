@@ -1,5 +1,5 @@
 import GaloisForLFunctions.ArithmeticEffectivityTheory.FiniteFieldEllipticLoopCharacters
-import Mathlib.GroupTheory.Coset.Defs
+import Mathlib.GroupTheory.GroupAction.Quotient
 
 /-!
 # Arithmetic cosets and the actual elliptic Eisenstein summand
@@ -55,8 +55,37 @@ def ellipticEisensteinSummand (s t : ℂ) (g : AdelicLoop) : ArithmeticBorelCose
 def ellipticEisensteinSeries (s t : ℂ) (g : AdelicLoop) : ℂ :=
   ∑' c : ArithmeticBorelCosets, ellipticEisensteinSummand s t g c
 
+/-- Right arithmetic translation permutes the independently defined coset summands. -/
+theorem ellipticEisensteinSummand_right_arithmetic (s t : ℂ) (g : AdelicLoop)
+    (r : restrictedRationalLoop) (c : ArithmeticBorelCosets) :
+    ellipticEisensteinSummand s t (g * arithmeticLoopEmbedding r) c =
+      ellipticEisensteinSummand s t g
+        ((MulAction.toPerm r : Equiv.Perm ArithmeticBorelCosets) c) := by
+  induction c using Quotient.inductionOn with
+  | h a =>
+    change adelicIwasawaSection s t ((g * arithmeticLoopEmbedding r) * arithmeticLoopEmbedding a) =
+      adelicIwasawaSection s t (g * arithmeticLoopEmbedding (r * a))
+    apply congrArg (adelicIwasawaSection s t)
+    exact (mul_assoc g (arithmeticLoopEmbedding r) (arithmeticLoopEmbedding a)).trans
+      (congrArg (fun z : AdelicLoop => g * z) (arithmeticLoopEmbedding.map_mul r a).symm)
+
+/-- The actual arithmetic coset series is invariant under right arithmetic translation. -/
+theorem ellipticEisensteinSeries_right_arithmetic (s t : ℂ) (g : AdelicLoop)
+    (r : restrictedRationalLoop) :
+    ellipticEisensteinSeries s t (g * arithmeticLoopEmbedding r) = ellipticEisensteinSeries s t g := by
+  unfold ellipticEisensteinSeries
+  calc
+    _ = ∑' c : ArithmeticBorelCosets, ellipticEisensteinSummand s t g
+        ((MulAction.toPerm r : Equiv.Perm ArithmeticBorelCosets) c) :=
+      tsum_congr (ellipticEisensteinSummand_right_arithmetic s t g r)
+    _ = _ := (MulAction.toPerm r : Equiv.Perm ArithmeticBorelCosets).tsum_eq
+      (ellipticEisensteinSummand s t g)
+
 end
 end GaloisForLFunctions.ArithmeticEffectivityTheory.FiniteFieldEllipticBase
 
 #print axioms GaloisForLFunctions.ArithmeticEffectivityTheory.FiniteFieldEllipticBase.adelicIwasawaSection_arithmetic_coset
 #print axioms GaloisForLFunctions.ArithmeticEffectivityTheory.FiniteFieldEllipticBase.ellipticEisensteinSummand
+
+#print axioms GaloisForLFunctions.ArithmeticEffectivityTheory.FiniteFieldEllipticBase.ellipticEisensteinSummand_right_arithmetic
+#print axioms GaloisForLFunctions.ArithmeticEffectivityTheory.FiniteFieldEllipticBase.ellipticEisensteinSeries_right_arithmetic

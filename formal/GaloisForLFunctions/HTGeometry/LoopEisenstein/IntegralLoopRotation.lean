@@ -30,20 +30,9 @@ def powerSeriesConstantRescale (q : Fˣ) : PowerSeriesSL2 F →* PowerSeriesSL2 
       FiniteRingSl2.lower (PowerSeries.C ((q⁻¹ : Fˣ) : F) * p) :=
   ringSL2Rescale_lower (Units.map (PowerSeries.C (R := F)).toMonoidHom q) p
 
-/-- The Laurent parameter acquires exactly its coefficient-field scalar. -/
-theorem laurentUnitRotation_X (q : Fˣ) :
-    laurentUnitRotation q (laurentXUnit F) =
-      laurentConstantUnit F q * laurentXUnit F := by
-  apply Units.ext
-  change laurentRotation q (laurentXUnit F : LaurentSeries F) =
-    (laurentConstantUnit F q : LaurentSeries F) * (laurentXUnit F : LaurentSeries F)
-  rw [coe_laurentXUnit, ← HahnSeries.ofPowerSeries_X,
-    laurentRotation_powerSeries, PowerSeries.rescale_X, map_mul]
-  rfl
-
 private theorem rotation_shifted_upper_parameter (q : Fˣ) (p : PowerSeries F) :
-    laurentRotation q ((((laurentXUnit F)⁻¹ : (LaurentSeries F)ˣ) : LaurentSeries F) *
-      (p : LaurentSeries F)) =
+    laurentRotation q (((laurentXUnit F)⁻¹ : (LaurentSeries F)ˣ) : LaurentSeries F) *
+      laurentRotation q (p : LaurentSeries F) =
       (((laurentXUnit F)⁻¹ : (LaurentSeries F)ˣ) : LaurentSeries F) *
         ((PowerSeries.C ((q⁻¹ : Fˣ) : F) * PowerSeries.rescale (q : F) p : PowerSeries F) :
           LaurentSeries F) := by
@@ -55,20 +44,20 @@ private theorem rotation_shifted_upper_parameter (q : Fˣ) (p : PowerSeries F) :
   change laurentRotation q (((laurentXUnit F)⁻¹ : (LaurentSeries F)ˣ) : LaurentSeries F) =
     (((laurentXUnit F)⁻¹ : (LaurentSeries F)ˣ) : LaurentSeries F) *
       ((PowerSeries.C ((q⁻¹ : Fˣ) : F) : PowerSeries F) : LaurentSeries F) at hv
-  rw [map_mul, hv, laurentRotation_powerSeries, map_mul]
+  rw [hv, laurentRotation_powerSeries, map_mul]
   exact mul_assoc _ _ _
 
 private theorem rotation_shifted_lower_parameter (q : Fˣ) (p : PowerSeries F) :
-    laurentRotation q ((laurentXUnit F : LaurentSeries F) * (p : LaurentSeries F)) =
+    laurentRotation q (laurentXUnit F : LaurentSeries F) * laurentRotation q (p : LaurentSeries F) =
       (laurentXUnit F : LaurentSeries F) *
         ((PowerSeries.C (q : F) * PowerSeries.rescale (q : F) p : PowerSeries F) :
           LaurentSeries F) := by
   have hv := congrArg (fun u : (LaurentSeries F)ˣ => (u : LaurentSeries F))
-    (laurentUnitRotation_X q)
+    (laurentUnitRotation_X F q)
   change laurentRotation q (laurentXUnit F : LaurentSeries F) =
     ((PowerSeries.C (q : F) : PowerSeries F) : LaurentSeries F) *
       (laurentXUnit F : LaurentSeries F) at hv
-  rw [map_mul, hv, laurentRotation_powerSeries, map_mul]
+  rw [hv, laurentRotation_powerSeries, map_mul]
   ring
 
 /-- Rotation preserves every integral power-series coefficient at a valuation-unit scalar. -/
