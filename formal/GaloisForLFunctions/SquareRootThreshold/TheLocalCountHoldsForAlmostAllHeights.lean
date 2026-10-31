@@ -180,10 +180,11 @@ theorem eventually_volume_zeta_localCount_gt_le {δ C : ℝ} (hδ0 : 0 < δ) (h�
           discCount zetaZeroConfig (((1 / 2 + δ : ℝ) : ℂ) + (t : ℂ) * I) δ}
       ≤ ENNReal.ofReal (T / (C * Real.sqrt (δ * Real.log T))) := by
   obtain ⟨K, hK⟩ := exists_N_window_le riemannVonMangoldt_zeta
-  filter_upwards [hK, ZetaGateProductAFE.eventually_offLineMoment_le,
-    Filter.eventually_ge_atTop (30 * |K| + 21),
-    Real.tendsto_log_atTop.eventually_ge_atTop (1 : ℝ)] with T hNT hMom hT hL1
-  have hT1 : 1 < T := by linarith [abs_nonneg K]
+  obtain ⟨V₀, hV₀⟩ := Filter.eventually_atTop.mp ZetaGateProductAFE.eventually_offLineMoment_le
+  filter_upwards [hK, Filter.eventually_ge_atTop (30 * |K| + 21 + |V₀|),
+    Real.tendsto_log_atTop.eventually_ge_atTop (1 : ℝ)] with T hNT hT hL1
+  have hMom := hV₀ (2 * T + 1) (by linarith [le_abs_self V₀, abs_nonneg K, abs_nonneg V₀])
+  have hT1 : 1 < T := by linarith [abs_nonneg K, abs_nonneg V₀]
   have hL : 0 < Real.log T := by linarith
   set F := (zetaZeroConfig.finite_window (T - 1) (2 * T + 1)).toFinset with hF
   set S := ∑ ρ ∈ F, (zetaZeroConfig.mult ρ : ℝ) * (2 * Real.sqrt (2 * δ * max (ρ.re - 1 / 2) 0))
@@ -198,11 +199,11 @@ theorem eventually_volume_zeta_localCount_gt_le {δ C : ℝ} (hδ0 : 0 < δ) (h�
     have h2π : T / (2 * Real.pi) ≤ T / 6 := by
       rw [div_le_div_iff₀ (by positivity) (by norm_num)]; nlinarith [Real.pi_gt_three]
     have hKT : |K| * Real.log T ≤ T / 30 * Real.log T :=
-      mul_le_mul_of_nonneg_right (by linarith) hL.le
+      mul_le_mul_of_nonneg_right (by linarith [abs_nonneg V₀]) hL.le
     nlinarith [mul_le_mul_of_nonneg_right h2π hL.le, le_abs_self K]
   have hmom := (sum_mult_max_le_offLineMoment (T := T) (by linarith)).trans hMom
   have hmom' : ∑ ρ ∈ F, (zetaZeroConfig.mult ρ : ℝ) * max (ρ.re - 1 / 2) 0 ≤ 43 / 100 * T := by
-    linarith
+    linarith [abs_nonneg K, abs_nonneg V₀]
   have hmom0 : 0 ≤ ∑ ρ ∈ F, (zetaZeroConfig.mult ρ : ℝ) * max (ρ.re - 1 / 2) 0 :=
     Finset.sum_nonneg fun ρ _ => mul_nonneg (Nat.cast_nonneg _) (le_max_right _ _)
   have hN0 : 0 ≤ ∑ ρ ∈ F, (zetaZeroConfig.mult ρ : ℝ) := Finset.sum_nonneg fun ρ _ => Nat.cast_nonneg _
@@ -230,7 +231,10 @@ theorem eventually_volume_zeta_localCount_gt_le {δ C : ℝ} (hδ0 : 0 < δ) (h�
   calc S * (C * Real.sqrt (δ * Real.log T))
       ≤ T * Real.sqrt (δ * Real.log T) * (C * Real.sqrt (δ * Real.log T)) :=
         mul_le_mul_of_nonneg_right hSle (by positivity)
-    _ = T * (C * (δ * Real.log T)) := by rw [← hsq]; ring
+    _ = T * (C * (δ * Real.log T)) := by
+        rw [show T * Real.sqrt (δ * Real.log T) * (C * Real.sqrt (δ * Real.log T))
+          = T * C * (Real.sqrt (δ * Real.log T) * Real.sqrt (δ * Real.log T)) by ring, hsq]
+        ring
     _ ≤ T * (C * (δ * Real.log T + 1)) := by nlinarith
 
 end

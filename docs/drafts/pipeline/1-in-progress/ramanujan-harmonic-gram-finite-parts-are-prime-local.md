@@ -1,89 +1,70 @@
 # Ramanujan harmonic Gram finite parts are prime-local
 
 - **Stage:** 1-in-progress
-- **Type:** CONJECTURE
-- **Source:** `three-frontier-questions-full-solutions.md`, Q1/O1;
-  `../3-formalized/cact-growing-conductor-gram.md`.
-- **Target:** Identify the complete finite part of the harmonic Ramanujan
-  Gram, including every mixed conductor entry.
+- **Type:** THEOREM; final direct audits pending
+- **Source:** `three-frontier-questions-full-solutions.md`, Q1/O1.
 
-Let `u_m(n)=c_m(n)/sqrt(phi(m))` and
-`G_m,l(N)=sum_(1≤n≤N) u_m(n)u_l(n)/n`. For positive conductors, conjecture
+## Exact finite part
 
-`G_m,l(N) − 1_(m=l) log N → B_m,l`,
+For positive conductors, let `u_m(n)=c_m(n)/sqrt(phi(m))` and
+`G_m,l(N)=sum_(1≤n≤N)u_m(n)u_l(n)/n`. Then
 
-where
+`G_m,l(N)−1_(m=l) log N → B_m,l`
+`B_m,l=gamma·1_(m=l)−I(m,l)/sqrt(phi(m)phi(l))`,
 
-- `B_m,m = gamma − log m + tameDifferent(m)`;
-- `B_m,l = −log p sqrt(phi(m)/phi(l))` when `l=m p^k`, `p` prime, `k≥1`;
-- the symmetric value holds when `m=l p^k`;
-- every other mixed entry is zero.
+where `I` is the archimedean intersection of primitive torsion orbits.
+In particular:
 
-## Arithmetic mechanism
+- `B_m,m=gamma−log m+tameDifferent(m)`;
+- `B_m,mp^k=−log p sqrt(phi(m)/phi(mp^k))` for prime `p`, `k≥1`;
+- symmetry gives the reverse edge; every other mixed entry is zero.
 
-The divisor formula gives the exact finite Gram as
+For `M>0`, `F(n)=sum_(m|M) f_m c_m(n)`, and
+`mass=sum_(m|M)phi(m)f_m²`, the exact divisor-edge form is
 
-`sum_(d|m,e|l) mu(m/d)mu(l/e) gcd(d,e) H_floor(N/lcm(d,e)) / sqrt(phi(m)phi(l))`.
+`sum_(n≤N)F(n)²/n−mass log N`
+`→ (gamma−log M)mass+sum_(k|m|M)Lambda(m/k)phi(k)(f_m−f_k)²`.
 
-Its finite part is therefore `gamma·1_(m=l)` minus the same divisor
-sum weighted by `log(lcm(d,e))`. Prime factorization separates that
-logarithm into one local contribution at a time. Every remaining prime
-contributes the ordinary Ramanujan orthogonality factor. Thus two primes
-with different conductor valuations force zero. At the single differing
-prime, the local logarithmic factor is the totient of the lower power.
+Every finite conductor packet has finite part `gamma·mass−sum f_m f_l I(m,l)`.
+On conductors through `Q`, its absolute value is at most
+`[|gamma|+4 log Q+log 4+4]mass`.
 
-The resulting finite-part matrix should have norm `O(log(2Q))` on
-conductors up to `Q`: use Schur weights `1/sqrt(phi(m))`, divisor counting
-for downward entries and the prime Mertens sum for upward entries.
-This would retain cross-conductor cancellation absent from entrywise
-polynomial bounds. The norm bound and the full Weil agreement-shell
-identity remain separate targets.
+## Proof
 
-## Divisor-edge formulation
+For a gcd-class profile `V`, reciprocal inversion gives
+`V(gcd(M,n))=sum_(d|M)a_d c_d(n)`, with
+`a_d=M⁻¹sum_(j|M)V(M/j)c_j(M/d)`.
+The harmonic limits are `H_N−log N→gamma` and
+`sum_(n≤N)c_d(n)/n→−Lambda(d)` for `d>1`.
+The finite part is therefore `gamma a_1−sum_(d|M)a_d Lambda(d)`.
 
-For `M>0`, put `F(n)=sum_(m|M) f_m c_m(n)` and
-`mass=sum_(m|M) phi(m) f_m²`. The proposed exact limit is
-
-`sum_(n≤N) F(n)²/n − mass log N`
-`→ (gamma−log M) mass + sum_(k|m|M) Lambda(m/k) phi(k) (f_m−f_k)²`.
-
-For a gcd-class function `V`, reciprocal inversion gives
-`V(gcd(M,n))=sum_(d|M) a_d c_d(n)`, where
-`a_d=M⁻¹ sum_(j|M) V(M/j)c_j(M/d)`.
-The known harmonic limits are `H_N−log N→gamma` and
-`sum_(n≤N)c_d(n)/n→−Lambda(d)` for `d>1`. Thus the finite part is
-`gamma a_1−sum_(d|M)a_d Lambda(d)`.
-
-The exact downward convolution gives
+The exact downward convolution is
 `sum_(d|M)Lambda(d)c_j(M/d)=phi(j)[log M−log j−tameDifferent(j)]`.
-Consequently the gcd-class finite part is
-`M⁻¹ sum_(j|M)phi(j)V(M/j)[gamma−log M+log j+tameDifferent(j)]`.
-Taking `V=F²`, reciprocal Plancherel supplies the mass and the existing
-divisor-jet spectral identity supplies the edge energy. This is a closed
-paper proof using existing finite identities and harmonic limits.
-Expanding the edge squares gives the prime-local Gram entries.
+Thus the gcd-class finite part equals
+`M⁻¹sum_(j|M)phi(j)V(M/j)[gamma−log M+log j+tameDifferent(j)]`.
+For `V=F²`, reciprocal Plancherel gives the mass and the divisor-jet
+spectral identity gives the positive edge energy. Polarization and
+conductor indicator functions identify every mixed entry.
 
-## Open inputs
+The torsion self-intersection is `phi(m)[log m−tameDifferent(m)]`;
+its mixed entries are `I(m,mt)=phi(m)Lambda(t)`, `t>1`, and zero
+without a divisibility edge. These identify the sharp harmonic finite part.
+Entrywise nonnegative intersections bound the absolute signed pairing by
+the pairing of absolute coefficients. The logarithmic torsion counterterm
+then gives the stated operator bound.
 
-The divisor-edge finite part, its polarization, and the individual raw
-Gram entries passed Lean with only the standard three axioms in
-`SuccessorShellArithmetic/Conductor/HarmonicGramFinitePart.lean`.
-The final source audit, torsion identification, and operator bound remain.
-The full Weil agreement-shell identity remains unproved and is not assumed
-in the growing-overlap positivity argument.
+## Lean
 
-## Torsion interpretation
+Both modules lie in `SuccessorShellArithmetic/Conductor/`:
 
-The proposed entry formula is equivalently
-`B_m,l=gamma·1_(m=l)−I(m,l)/sqrt(phi(m)phi(l))`, where `I` is the
-archimedean intersection of primitive torsion orbits. Its diagonal is
-`I(m,m)=phi(m)[log m−tameDifferent(m)]`; its mixed entries obey the
-prime-power Hecke law. These two torsion identities already exist in Lean;
-identifying them with the sharp harmonic finite part is the new claim.
+- `HarmonicGramFinitePart.lean`: gcd-profile finite part, reciprocal
+  Plancherel, divisor-edge limit, polarization, diagonal and mixed raw entries.
+- `HarmonicGramTorsionEnergy.lean`: exact torsion identification, normalized
+  prime-power entries, finite-packet limit and logarithmic absolute bound.
 
-The existing logarithmic torsion counterterm and entrywise nonnegativity
-then bound the absolute finite-part form on conductors `≤Q` by
-`[|gamma|+4 log Q+log 4+4] sum phi(m)f_m²`.
-This identifies the proposed logarithmic operator bound with an existing
-torsion-energy estimate. The harmonic-to-torsion identity still needs Lean
-verification; finite-horizon remainder bounds remain separate.
+Both compiled; all sixteen axiom audits contain only `propext`,
+`Classical.choice`, and `Quot.sound`. Umbrella imports are present.
+Final direct no-olean source audits remain.
+
+The finite-horizon remainder is a separate target. The full Weil
+agreement-shell identity remains open.

@@ -1,6 +1,6 @@
 # Elliptic unipotent arithmetic intersection is exact
 
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
 - **Parent:** [Elliptic unfolding](../1-in-progress/finite-field-eisenstein-unfolding.md).
 - **Statement:** Under the actual adelic unipotent embedding, the
   arithmetic intersection is exactly the image of uniformly integral
@@ -26,4 +26,4 @@ its actual arithmetic image with the unipotent adelic embedding.
 ## Lean
 
 `ArithmeticEffectivityTheory/FiniteFieldEllipticUnipotentArithmetic.lean`:
-`adelicUnipotentEmbedding_mem_arithmetic_iff`. Direct check pending.
+`adelicUnipotentEmbedding_mem_arithmetic_iff`. Direct Lean check passed; the axiom audit contains only `propext`, `Classical.choice`, and `Quot.sound`.

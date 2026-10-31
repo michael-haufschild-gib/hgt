@@ -1,6 +1,6 @@
 # Elliptic unipotent coefficient quotient has invariant probability
 
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
 - **Parent:** [Elliptic unfolding](../1-in-progress/finite-field-eisenstein-unfolding.md).
 - **Statement:** The rational coefficient quotient carries a probability
   measure invariant under actual left multiplication by every uniformly
@@ -24,4 +24,5 @@ measure has total mass one.
 
 `ArithmeticEffectivityTheory/FiniteFieldEllipticUnipotentQuotientProbability.lean`:
 `unipotentCoefficientQuotientLeft_mk`,
-`measurePreserving_unipotentCoefficientQuotientLeft`. Direct check pending.
+`measurePreserving_unipotentCoefficientQuotientLeft`. Direct Lean and transitive axiom audits passed; only `propext`,
+`Classical.choice`, and `Quot.sound` occur.

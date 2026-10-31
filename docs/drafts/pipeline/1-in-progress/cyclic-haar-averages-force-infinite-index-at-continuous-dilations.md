@@ -55,5 +55,6 @@ Formalized, with direct audits and standard axiom closures:
 - `BiarithmeticGeometry/Affine/PeriodicTranslations.lean`: right integer invariance makes every rational translation locally periodic on the column space, with period `den(b/a)` on a column of slope `a`.
 - `HeckeKreinToeplitz/Index/PeriodicDilationPositivity.lean`: if `t a=a t^m`, every `m`-periodic, zero-mean vector for `t` has nonnegative norm in a finite-index column representation.
 - `AdelicKreinGeometry/Haar/TranslationMovingPositivity.lean`: a finite-index integer-invariant affine kernel is nonnegative on every rational translation difference range.
+- `HeckeKreinToeplitz/Index/ColumnPositivity.lean`: Cauchy–Schwarz holds on every nonnegative column subspace.
 
 Required Lean results: cyclic Hecke bound; projected Gram limit; positive-slope extension and the actual adelic restriction. The positive structural conclusions are the nonnegative moving subspaces and their finite cyclic bound. The stronger positive-plus-slope decomposition remains a separate conjecture.

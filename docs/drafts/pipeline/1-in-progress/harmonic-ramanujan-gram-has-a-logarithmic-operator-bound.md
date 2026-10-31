@@ -11,10 +11,10 @@ For positive conductors and `N≥1`, the proposed entry estimate is
 
 `|G_m,l(N)−1_(m=l) log N−B_m,l| ≤ 4ml/(N+1)+1_(m=l)/N`.
 
-Consequently, for every vector on conductors `1≤m≤Q`,
+For `Q≥2`, every vector on conductors `1≤m≤Q` satisfies
 
 `|sum_(n≤N)(sum_(m≤Q)a_m u_m(n))²/n−log N sum a_m²|`
-`≤ [|gamma|+4 log Q+log 4+4+4Q³/(N+1)+1/N] sum a_m²`.
+`≤ [|gamma|+4 log Q+log 4+4+Q(Q−1)/(N+1)+1/N] sum a_m²`.
 
 ## Proof mechanism
 
@@ -25,11 +25,13 @@ Abel summation bounds its harmonic tail by `4ml/(N+1)`. The exact
 harmonic-to-torsion limit identifies that tail's endpoint. The classical
 harmonic remainder contributes only the diagonal term `1/N`.
 
-The quadratic remainder is bounded by
-`4(sum m|a_m|)²/(N+1)≤4Q³ sum a_m²/(N+1)`.
+For the whole packet, the sharp two-sided large sieve gives
+`|sum_(A<n≤A+K) F(n)²−K sum a_m²|≤Q(Q−1)sum a_m²`.
+Abel summation of this signed discrepancy gives the stronger quadratic
+remainder `Q(Q−1)sum a_m²/(N+1)` directly.
 The torsion counterterm controls the finite part by
 `(|gamma|+4 log Q+log 4+4) sum a_m²`.
 
-The exact finite-part identity and this common remainder require Lean
-verification. This concerns the harmonic Gram, not the complete Weil
-agreement-shell identity.
+The exact finite-part and torsion identities passed Lean; their final
+direct source audits remain. The common remainder is under Lean verification.
+The complete Weil agreement-shell identity remains open.
