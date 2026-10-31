@@ -1,6 +1,6 @@
 # ArithmeticKreinLangerTheory (AKL)
 
-Namespace `GaloisForLFunctions.ArithmeticKreinLangerTheory`; umbrella `ArithmeticKreinLangerTheory.lean`; 21 modules. Every theorem is unconditional. RH appears only inside equivalences, and finite off-line support (`FiniteOffLine`, `negIndex zetaKernel < ⊤`) only as a stated hypothesis. 12 modules end with `#print axioms` lines.
+Namespace `GaloisForLFunctions.ArithmeticKreinLangerTheory`; umbrella `ArithmeticKreinLangerTheory.lean`; 24 modules. Every theorem is unconditional. RH appears only inside equivalences, and finite off-line support (`FiniteOffLine`, `negIndex zetaKernel < ⊤`) only as a stated hypothesis. 15 modules end with `#print axioms` lines.
 
 ## 1. Motivation
 
@@ -26,8 +26,10 @@ HeckeKreinToeplitz (HKT) made RH the statement `κ(K_ζ) = 0` for one Hermitian 
 | Function-field prime kernel | `primeKernelFq N`, `poleVec`, `divVec Q` | Weil prime kernel on monic polynomials of degree `≤ N`; `|f|^{−1/2}`; its restriction to multiples of `Q` |
 | Chebyshev ratio | `logChebRatio`, `chebWeight` | `log((30n)! n!/((15n)!(10n)!(6n)!))`; `g(a) ∈ {0, 1}` |
 | Pole of the Weyl sum | `poleParameter D i` | `Re = −½ + log|β_i|/log q` |
+| Gorshkov–Wirsing polynomials | `gorshkovPoly k`, `gorshkovRoots k` | degree-`2^k` integer polynomials certifying the `[0, 1]` Chebyshev cap |
+| Hecke–factorial stencil | `mvPolyToStencil`, `stepWeight`, `stencilSlope`, `ProducerSlopeSet` | integer ratios `∏ ⌊n/k⌋!^{c(k)}`, step weight `Σ c(k)⌊m/k⌋`, slope `−Σ c(k)(log k)/k`, normalized producer slopes |
 
-External: `negIndex`, `pairKernel`, `reflectChar`, `logChar`, `zeroChar`, `zetaKernel`, `orbitKernel`, `traceKernel`, `compress`, `hat` (HeckeKreinToeplitz); `CurveDatum`, `goldenDatum`, `rightZeros` (ArithmeticCastelnuovoSeveri); `HeckeLattice`, `primeElt`, `scale`, `heckeLogScale`, `primeTorus_kronecker_dense` (HTGeometry); `collisionMassAfter`, `FiniteOffLine`, `riemannHypothesis_splitHyperelliptic`, `PolarConfinement` (RHTower).
+External: `negIndex`, `pairKernel`, `reflectChar`, `logChar`, `zeroChar`, `zetaKernel`, `orbitKernel`, `traceKernel`, `compress`, `hat` (HeckeKreinToeplitz); `CurveDatum`, `goldenDatum`, `rightZeros` (ArithmeticCastelnuovoSeveri); `HeckeLattice`, `primeElt`, `scale`, `heckeLogScale`, `primeTorus_kronecker_dense` (HTGeometry); `collisionMassAfter`, `FiniteOffLine`, `riemannHypothesis_splitHyperelliptic`, `PolarConfinement`, `moebiusLogHarmonicPartial` (RHTower); `coprimeMoebiusHarmonicSum`, `exists_abs_sum_coprime_moebius_fract_le` (BezoutValuationIncidence).
 
 ## 3. Language
 
@@ -65,6 +67,7 @@ External: `negIndex`, `pairKernel`, `reflectChar`, `logChar`, `zeroChar`, `zetaK
 14. Geometric twins: one vertical shift is `−1` at ≤ 1 prime (unique factorization). By Kronecker, shifts converge to any unimodular completely multiplicative twist, so pointwise-closed shift-invariant statements contain every flip.
 15. Compressions: the Frobenius characteristic polynomial annihilates the trace kernel and certifies nothing. Euler compressors `δ₁ − cδ_p` with `|c| ≤ p^{−½}` never vanish on the strip, so they are index-neutral.
 16. Function-field ceiling: `P_N v = N v` exactly for the pole vector. With Schur's test, `D·1 − P_N ⪰ 0 ⇔ D ≥ N log q`. Multiples of `Q` give the second rung `N − deg Q`.
+17. Multivariate parity-selective stencils: Gorshkov–Wirsing resultants cap univariate integer polynomials on `[0, 1]` at `e^{−(87/100)n}`; single-prime Hecke stencils stop at `2 log 2`, `S`-supported stencils jump by `c(1)` at `P_S + 1` and stop above `1 + 1/((P_S+1)(P_S+2))`, and non-alternating stencils (`c(k) ≤ 0` for `k ≥ 2`) stop above `31/30` by Sylvester's `(1, 2, 6)` dual weights. With unbounded prime alphabets and sign alternation, Farkas duality pairs residue measures against `F_T(r) = −Σ_{b≤T} (μ(b)/b)(r mod b) + m(T)(r mod (T+1))`, which equals `1` on `[1, T]` by Möbius inversion and has global mass `→ 1` with vanishing sawtooth/Markov tails, reaching normalized slope `< 1 + ε` (`inf = 1`, `1` unattained).
 
 ## 5. Pillar theorems
 
@@ -98,6 +101,9 @@ External: `negIndex`, `pairKernel`, `reflectChar`, `logChar`, `zeroChar`, `zetaK
 | Fine towers resolve every finite family | `exists_scale_injective_logChar` | proved |
 | `ψ(x) ≥ 0.89x − O(log x)` by Chebyshev's ratio | `log_chebRatio_le_psi`, `psi_ge_of_chebyshev` | proved |
 | `κ(traceKernel)` = #pole classes right of `Re s = −½`; confinement ⇔ twist tower | `negIndex_traceKernel_eq_card_rightPoles`, `polarConfinement_iff_twistTower_upper` | proved |
+| Univariate & diagonal `[0, 1]` integer-Chebyshev ceiling (`> e^{−(87/100)n}`) | `exists_Ioo_gt_univariate_chebyshev_cap`, `sup_certified_log_inv_lt`, `exists_cube_gt_of_mvPolynomial_totalDegree_le` | proved |
+| Single-prime (`2 log 2`), `{2, 3}` (`< 23/20`), finite-prime (`> 1`), and parity-blind (`> 31/30`) stencil ceilings | `forall_stencilDen_dvd_stencilNum_iff`, `single_prime_hecke_slope_ge_two_log_two`, `psi_le_of_twoThreeStencil`, `finite_prime_alphabet_slope_gt_one`, `non_alternating_stencil_slope_gt` | proved |
+| Multivariate parity-selective auxiliaries reach `ψ(x) ≤ (1 + ε)x + C(log x)²`; `inf = 1`, `1 ∉ ProducerSlopeSet` | `exists_multivariate_parity_producer`, `exists_mvPolynomial_parity_producer`, `psi_le_one_add_eps_of_vanishing_order`, `isGLB_producerSlopeSet`, `one_notMem_producerSlopeSet` | proved |
 
 ## 6. Tools
 
@@ -111,6 +117,7 @@ External: `negIndex`, `pairKernel`, `reflectChar`, `logChar`, `zeroChar`, `zetaK
 - Schur's test with a positive eigenvector (`sum_mul_le_of_pos_eigenvector`, `atom_nonneg_iff`); exact Mertens over `𝔽_q[T]` (`powerSumW_one_eq`, `sum_primePower_weight_eq`).
 - Ledgers over `𝔽_q[X]` and `ℤ`; Chebyshev weight identity (`log_chebRatio_eq`).
 - Kronecker approximation of twins by vertical shifts (`exists_shifts_tendsto_unitaryTwist`).
+- Finite Fourier–Motzkin / Farkas duality (`finset_farkas`), upward rational rounding of divisor LPs (`exists_stencil_of_real_lp`), pronic slope series (`hasSum_stepWeight_div_pronic`), and balanced Möbius residue kernel (`moebiusResidueTest_eq_one`).
 
 **To build**
 - A producer over `ℤ`: an auxiliary integer of controlled size whose multiplicity on the odd Liouville class grows like Frobenius multiplicity, giving the odd-class upper count at precision `x^{½+ε}`.
@@ -144,6 +151,7 @@ External: `negIndex`, `pairKernel`, `reflectChar`, `logChar`, `zeroChar`, `zetaK
 | Weil positivity selects through the prime weights | It is pointwise-closed, so shift-invariant data cannot select; the pole and Gamma terms carry the selectivity |
 | Local Euler compressors can annihilate off-line pairs | For `|c| ≤ p^{−½}` they never vanish on the strip |
 | Prime towers are as good as fine towers | Prime towers alias (coarse grids); fine towers carry the index for every orbit kernel |
+| Finite-prime or sign-definite Hecke–factorial stencils reach slope `1` | `S`-supported stencils stop above `1 + 1/((P_S+1)(P_S+2))`; `c(k) ≤ 0` (`k ≥ 2`) stops above `31/30`; reaching `1 + ε` forces infinitely many primes and sign alternation, yet stops at exponent `1` because divisibility is parity-blind at `√x` |
 
 ## 9. Context
 
@@ -152,10 +160,11 @@ External: `negIndex`, `pairKernel`, `reflectChar`, `logChar`, `zeroChar`, `zetaK
 | Programme | Imports | What |
 |---|---|---|
 | HeckeKreinToeplitz | 26 | kernels, pairs, index formula, aliasing, compression, trace kernels, `K_ζ`, heat collisions, global law |
-| RHTower | 9 | Stepanov counts, hyperelliptic RH, Liouville laws, Gelfond–Schneider, `ξ` orders, Weil–Kloosterman, infinite symmetry |
+| RHTower | 10 | Stepanov counts, hyperelliptic RH, Liouville laws, Gelfond–Schneider, `ξ` orders, Weil–Kloosterman, infinite symmetry, Möbius logarithmic normalization |
 | HTGeometry | 2 | Kronecker density of prime phases |
 | ArithmeticCastelnuovoSeveri | 2 | upper Lefschetz bounds, Riemann–Roch for `ℤ` |
-| ArithmeticOfSquareRootPrecision | 1 | `log n!` bounds, Chebyshev transform |
+| ArithmeticOfSquareRootPrecision | 2 | `log n!` bounds, Chebyshev transform |
+| BezoutValuationIncidence | 1 | coprime Möbius harmonic and sawtooth cancellation |
 
 **Used by**: AdelicKreinGeometry (`StableConformalSuccessors`), ArithmeticGaugeTheory (`FactorialRatiosHaveChebyshevPrecision`), umbrella.
 

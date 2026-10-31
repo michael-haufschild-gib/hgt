@@ -33,11 +33,41 @@ open SignedArithmeticHodgeTheory RenormalizedArithmeticPotentialTheory
 
 /-! ## Section 1: Periodic interval sums on positive integers -/
 
+private theorem sum_union_le_of_nonneg {α : Type*} [DecidableEq α] {s t : Finset α} {f : α → ℝ}
+    (hf : ∀ x ∈ t, 0 ≤ f x) :
+    (∑ x ∈ s ∪ t, f x) ≤ (∑ x ∈ s, f x) + ∑ x ∈ t, f x := by
+  have heq : s ∪ t = s ∪ (t \ s) := by
+    ext x; simp only [Finset.mem_union, Finset.mem_sdiff]; tauto
+  have hdisj : Disjoint s (t \ s) := by
+    rw [Finset.disjoint_left]; intro x hxs hxt; exact (mem_sdiff.mp hxt).2 hxs
+  rw [heq, sum_union hdisj]
+  exact add_le_add le_rfl
+    (sum_le_sum_of_subset_of_nonneg (fun x hx => (mem_sdiff.mp hx).1) fun x hx _ => hf x hx)
+
+private theorem sum_biUnion_le_of_nonneg {α β : Type*} [DecidableEq α] [DecidableEq β]
+    (s : Finset α) (t : α → Finset β) {f : β → ℝ}
+    (hf : ∀ a ∈ s, ∀ x ∈ t a, 0 ≤ f x) :
+    (∑ x ∈ s.biUnion t, f x) ≤ ∑ a ∈ s, ∑ x ∈ t a, f x := by
+  induction s using Finset.induction_on with
+  | empty => simp
+  | insert a s ha ih =>
+    rw [biUnion_insert, sum_insert ha]
+    have h1 : (∑ x ∈ t a ∪ s.biUnion t, f x) ≤
+        (∑ x ∈ t a, f x) + ∑ x ∈ s.biUnion t, f x :=
+      sum_union_le_of_nonneg fun x hx => by
+        obtain ⟨b, hb, hxb⟩ := mem_biUnion.mp hx
+        exact hf b (mem_insert_of_mem hb) x hxb
+    exact h1.trans (add_le_add le_rfl (ih fun b hb => hf b (mem_insert_of_mem hb)))
+
+private theorem periodic_add_mul {α : Type*} {f : ℕ → α} {m : ℕ}
+    (hf : Function.Periodic f m) (k x : ℕ) : f (x + k * m) = f x := by
+  simpa only [Nat.cast_id] using hf.nat_mul k x
+
 /-- Shifting a complete period preserves the sum of an `m`-periodic sequence. -/
 theorem sum_Ico_periodic_eq {f : ℕ → ℝ} {m : ℕ} (hm : 0 < m) (hf : Function.Periodic f m)
     (a : ℕ) : (∑ n ∈ Ico a (a + m), f n) = ∑ r ∈ range m, f r := by
   induction a with
-  | zero => rw [Nat.zero_add, Ico_zero_eq_range]
+  | zero => refine sum_congr (by ext x; simp) fun _ _ => rfl
   | succ a ih =>
     have h1 : Ico a (a + m) = insert a (Ico (a + 1) (a + m)) := by
       ext x; simp only [mem_insert, mem_Ico]; omega
@@ -86,8 +116,9 @@ theorem sum_Ioc_le_mul_sum_Icc_of_periodic_pos {f : ℕ → ℝ} {m : ℕ} (hm :
       have hq1 : 1 ≤ n / m := Nat.div_pos (Nat.le_of_dvd hn hdvd) hm
       have hdecomp : n = m + (n / m - 1) * m := by
         have hmul := Nat.div_mul_cancel hdvd
-        have hq : (n / m - 1 + 1) * m = n := by omega
-        linarith [Nat.succ_mul (n / m - 1) m]
+        have hsub : n / m - 1 + 1 = n / m := by omega
+        rw [← hsub, Nat.succ_mul, Nat.add_comm] at hmul
+        exact hmul.symm
       rw [hmod, Nat.zero_add]
       conv_lhs => rw [hdecomp]
       exact hshift (n / m - 1) m hm
@@ -101,7 +132,7 @@ theorem sum_Ioc_le_mul_sum_Icc_of_periodic_pos {f : ℕ → ℝ} {m : ℕ} (hm :
       rw [h1, (hper (n % m) hr1).symm]
   have hg_nonneg : ∀ n, 0 ≤ g n := fun n => hnonneg (n % m + m) (by omega)
   have hIcc : (∑ r ∈ range m, g r) = ∑ n ∈ Icc 1 m, f n := by
-    have h0 : Icc 1 m = Ioc 0 m := by ext x; simp only [mem_Icc, mem_Ioc]; omega
+    have h0 : Icc 1 m = Ioc 0 (0 + m) := by ext x; simp only [mem_Icc, mem_Ioc]; omega
     rw [← sum_Ioc_periodic_eq hm hg_per 0, h0]
     exact sum_congr rfl fun n hn => (hfg n (mem_Ioc.mp hn).1).symm
   let K := (b - a) / m + 1
@@ -122,7 +153,7 @@ theorem sum_Ioc_le_mul_sum_Icc_of_periodic_pos {f : ℕ → ℝ} {m : ℕ} (hm :
     _ ≤ ∑ n ∈ (range K).biUnion (fun k => Ioc (a + k * m) (a + k * m + m)), g n :=
       sum_le_sum_of_subset_of_nonneg hcover fun n _ _ => hg_nonneg n
     _ ≤ ∑ k ∈ range K, ∑ n ∈ Ioc (a + k * m) (a + k * m + m), g n :=
-      sum_biUnion_le
+      sum_biUnion_le_of_nonneg _ _ fun _ _ n _ => hg_nonneg n
     _ = ∑ _k ∈ range K, ∑ n ∈ Icc 1 m, f n := by
       refine sum_congr rfl fun k _ => ?_
       rw [sum_Ioc_periodic_eq hm hg_per (a + k * m), hIcc]
@@ -290,8 +321,9 @@ private theorem sum_Ioc_mertens_ramanujan_sq_le {C₀ : ℝ} (hC₀ : 0 < C₀)
     have hdiv := Nat.div_add_mod (n - 1) m
     have hmod := Nat.mod_lt (n - 1) hm
     have hkm : k * m = m * ((n - 1) / m) := Nat.mul_comm _ _
+    have hsucc : (k + 1) * m = k * m + m := Nat.succ_mul k m
     exact mem_biUnion.mpr ⟨k, mem_Icc.mpr ⟨hk2, hkN⟩,
-      mem_Ioc.mpr ⟨by omega, le_min (by linarith [Nat.succ_mul k m]) hnN⟩⟩
+      mem_Ioc.mpr ⟨by omega, le_min (by omega) hnN⟩⟩
   have hblock_k : ∀ k ∈ Icc 2 (N / m),
       (∑ n ∈ Ioc (k * m) (min ((k + 1) * m) N), f n) ≤
         2 * C₀ ^ 2 * ∑ j ∈ Ioc ((k - 1) * m) (k * m), wL j := by
@@ -303,8 +335,9 @@ private theorem sum_Ioc_mertens_ramanujan_sq_le {C₀ : ℝ} (hC₀ : 0 < C₀)
       have heq : J_k = Ioc ((k - 1) * m) ((k - 1) * m + m) := by
         dsimp only [J_k]
         congr 1
-        have : k - 1 + 1 = k := by omega
-        linarith [Nat.succ_mul (k - 1) m]
+        rw [← Nat.succ_mul]
+        congr 1
+        omega
       rw [heq, Nat.card_Ioc]
       exact_mod_cast Nat.add_sub_cancel_left _ _
     -- For every `j ∈ J_k`, bound the `B_k` sum by `2 * C₀^2 * m * wL j`.
@@ -322,8 +355,9 @@ private theorem sum_Ioc_mertens_ramanujan_sq_le {C₀ : ℝ} (hC₀ : 0 < C₀)
         have hy : 0 < N / n := Nat.div_pos hnN hn0
         have hn3j : n ≤ 3 * j := by
           have hk3 : k + 1 ≤ 3 * (k - 1) := by omega
-          have hmul := Nat.mul_le_mul_right m hk3
-          have hj3 : 3 * ((k - 1) * m) < 3 * j := by omega
+          have hmul : (k + 1) * m ≤ 3 * ((k - 1) * m) := by
+            rw [← Nat.mul_assoc]
+            exact Nat.mul_le_mul_right m hk3
           omega
         have hcomp := companion_block_kernel_comparison hj0 (hj_hi.trans hn_lo.le) hn3j hnN
         have hden : 0 < 1 + Real.log ((N / n : ℕ) : ℝ) :=
@@ -374,6 +408,7 @@ private theorem sum_Ioc_mertens_ramanujan_sq_le {C₀ : ℝ} (hC₀ : 0 < C₀)
   have hdisj : Set.PairwiseDisjoint (↑(Icc 2 (N / m)) : Set ℕ)
       (fun k => Ioc ((k - 1) * m) (k * m)) := by
     intro k₁ hk₁ k₂ hk₂ hne
+    change Disjoint _ _
     rw [Finset.disjoint_left]
     intro j hj₁ hj₂
     obtain ⟨h1a, h1b⟩ := mem_Ioc.mp hj₁
@@ -390,8 +425,7 @@ private theorem sum_Ioc_mertens_ramanujan_sq_le {C₀ : ℝ} (hC₀ : 0 < C₀)
     obtain ⟨k, hk, hjk⟩ := mem_biUnion.mp hj
     obtain ⟨hk2, hkN⟩ := mem_Icc.mp hk
     obtain ⟨hj1, hj2⟩ := mem_Ioc.mp hjk
-    have hkm : k * m ≤ N := (Nat.mul_comm k m) ▸ Nat.mul_div_le N m |>.trans'
-      (Nat.mul_le_mul_left m hkN)
+    have hkm : k * m ≤ N := (Nat.mul_le_mul_right m hkN).trans (Nat.div_mul_le_self N m)
     have h1m : 1 ≤ (k - 1) * m + 1 := by omega
     exact mem_Icc.mpr ⟨by omega, hj2.trans hkm⟩
   have hblocks2 : (∑ n ∈ Ioc (2 * m) N, f n) ≤ 2 * C₀ ^ 2 * (1 + 2 * Real.pi ^ 2) := by
@@ -399,7 +433,8 @@ private theorem sum_Ioc_mertens_ramanujan_sq_le {C₀ : ℝ} (hC₀ : 0 < C₀)
       (∑ n ∈ Ioc (2 * m) N, f n) ≤
           ∑ n ∈ (Icc 2 (N / m)).biUnion (fun k => Ioc (k * m) (min ((k + 1) * m) N)), f n :=
         sum_le_sum_of_subset_of_nonneg hcover fun n _ _ => hf0 n
-      _ ≤ ∑ k ∈ Icc 2 (N / m), ∑ n ∈ Ioc (k * m) (min ((k + 1) * m) N), f n := sum_biUnion_le
+      _ ≤ ∑ k ∈ Icc 2 (N / m), ∑ n ∈ Ioc (k * m) (min ((k + 1) * m) N), f n :=
+        sum_biUnion_le_of_nonneg _ _ fun _ _ n _ => hf0 n
       _ ≤ ∑ k ∈ Icc 2 (N / m), 2 * C₀ ^ 2 * ∑ j ∈ Ioc ((k - 1) * m) (k * m), wL j :=
         sum_le_sum hblock_k
       _ = 2 * C₀ ^ 2 * ∑ k ∈ Icc 2 (N / m), ∑ j ∈ Ioc ((k - 1) * m) (k * m), wL j :=
@@ -414,7 +449,8 @@ private theorem sum_Ioc_mertens_ramanujan_sq_le {C₀ : ℝ} (hC₀ : 0 < C₀)
   calc
     (∑ n ∈ Ioc m N, f n) ≤ ∑ n ∈ Ioc m (min (2 * m) N) ∪ Ioc (2 * m) N, f n :=
       sum_le_sum_of_subset_of_nonneg hsplit_sub fun n _ _ => hf0 n
-    _ ≤ (∑ n ∈ Ioc m (min (2 * m) N), f n) + ∑ n ∈ Ioc (2 * m) N, f n := sum_union_le _ _
+    _ ≤ (∑ n ∈ Ioc m (min (2 * m) N), f n) + ∑ n ∈ Ioc (2 * m) N, f n :=
+      sum_union_le_of_nonneg fun n _ => hf0 n
     _ ≤ C₀ ^ 2 + 2 * C₀ ^ 2 * (1 + 2 * Real.pi ^ 2) := add_le_add hblock1 hblocks2
     _ = C₀ ^ 2 * (3 + 4 * Real.pi ^ 2) := by ring
 
@@ -581,7 +617,6 @@ private theorem tendsto_tail_normalizedPrimeCorrection {m : ℕ} (hm : 0 < m)
         ∑ t ∈ Ioc y T, ramanujanUpCorrectionTerm m n t := by
     rw [hrng, sum_insert hnot0, sum_union hdisj]
     simp [ramanujanUpCorrectionTerm]
-  dsimp only
   rw [hsum_split, ← sum_div]
   ring
 
@@ -600,7 +635,7 @@ private theorem normalizedPrimeCorrection_periodic_pos {m : ℕ} (hm : 0 < m) (y
     intro t
     unfold ramanujanUpCorrectionTerm
     have hmul : (n + m) * t = n * t + t * m := by ring
-    rw [hmul, hper_lag.nat_mul t (n * t), hper_lag n]
+    rw [hmul, periodic_add_mul hper_lag t (n * t), hper_lag n]
   have h1 := tendsto_tail_normalizedPrimeCorrection hm (by omega : 0 < n + m) y
   have h2 := tendsto_tail_normalizedPrimeCorrection hm hn y
   simp_rw [hterm] at h1
@@ -624,7 +659,7 @@ private theorem card_filter_mul_mod_le_gcd {m : ℕ} (hm : 0 < m) (t z : ℕ) :
     let t' := t / g
     have hm_eq : m' * g = m := Nat.div_mul_cancel (Nat.gcd_dvd_left m t)
     have ht_eq : t' * g = t := Nat.div_mul_cancel (Nat.gcd_dvd_right m t)
-    have hm'0 : 0 < m' := Nat.pos_of_mul_pos_left (hm_eq.symm ▸ hm)
+    have hm'0 : 0 < m' := Nat.div_pos (Nat.gcd_le_left t hm) hg0
     have hcop : m'.Coprime t' := Nat.coprime_div_gcd_div_gcd hg0
     have hdvd_diff : ∀ r ∈ F, m' ∣ r - r₀ := by
       intro r hr
@@ -632,11 +667,13 @@ private theorem card_filter_mul_mod_le_gcd {m : ℕ} (hm : 0 < m) (t z : ℕ) :
       have hr_mod : (r * t) % m = z := (mem_filter.mp hr).2
       have hdiv1 := Nat.div_add_mod (r * t) m
       have hdiv0 := Nat.div_add_mod (r₀ * t) m
-      rw [hr_mod, hr₀_mod] at hdiv1 hdiv0
+      rw [hr_mod] at hdiv1
+      rw [hr₀_mod] at hdiv0
       have hsub : (r - r₀) * t = m * (r * t / m - r₀ * t / m) := by
         rw [Nat.sub_mul, Nat.mul_sub_left_distrib]
         have hle_mul : r₀ * t ≤ r * t := Nat.mul_le_mul_right t hle
-        have hle_div : m * (r₀ * t / m) ≤ m * (r * t / m) := by omega
+        have hle_div : m * (r₀ * t / m) ≤ m * (r * t / m) :=
+          Nat.mul_le_mul_left m (Nat.div_le_div_right hle_mul)
         omega
       have hmdvd : m ∣ (r - r₀) * t := ⟨r * t / m - r₀ * t / m, hsub⟩
       have hgdvd : m' * g ∣ ((r - r₀) * t') * g := by
@@ -648,7 +685,7 @@ private theorem card_filter_mul_mod_le_gcd {m : ℕ} (hm : 0 < m) (t z : ℕ) :
       have hlt : r - r₀ < m' * g := by
         have hrm : r < m := mem_range.mp (mem_filter.mp hr).1
         omega
-      exact mem_range.mpr (Nat.div_lt_of_lt_mul (by rwa [Nat.mul_comm]))
+      exact mem_range.mpr (Nat.div_lt_of_lt_mul hlt)
     · intro r₁ hr₁ r₂ hr₂ heq
       have hle₁ : r₀ ≤ r₁ := Finset.min'_le F r₁ hr₁
       have hle₂ : r₀ ≤ r₂ := Finset.min'_le F r₂ hr₂
@@ -657,7 +694,8 @@ private theorem card_filter_mul_mod_le_gcd {m : ℕ} (hm : 0 < m) (t z : ℕ) :
       dsimp only at heq
       have hsub_eq : r₁ - r₀ = r₂ - r₀ := by rw [← hd₁, ← hd₂, heq]
       omega
-  · rw [Finset.not_nonempty_iff_eq_empty.mp hne, card_empty]
+  · change F.card ≤ _
+    rw [Finset.not_nonempty_iff_eq_empty.mp hne, card_empty]
     exact Nat.zero_le _
 
 /-- Period quadratic mass under lag dilation: `∑_{n=1}^m c̃_m(n * t)^2 ≤ gcd(m, t) * m`. -/
@@ -667,13 +705,14 @@ private theorem sum_Icc_normalizedRamanujanMode_mul_sq_le {m : ℕ} (hm : 0 < m)
   have hper : Function.Periodic (fun n => normalizedRamanujanMode m (n * t) ^ 2) m := by
     intro n
     dsimp only
-    rw [show (n + m) * t = n * t + t * m by ring, hper_base.nat_mul t (n * t)]
+    rw [show (n + m) * t = n * t + t * m by ring, periodic_add_mul hper_base t (n * t)]
   have h0 : Icc 1 m = Ioc 0 (0 + m) := by ext x; simp only [mem_Icc, mem_Ioc]; omega
   rw [h0, sum_Ioc_periodic_eq hm hper 0]
   have hmod_eq : ∀ r : ℕ, normalizedRamanujanMode m (r * t) =
       normalizedRamanujanMode m ((r * t) % m) := by
     intro r
-    conv_lhs => rw [← Nat.mod_add_div (r * t) m, Nat.mul_comm m _, hper_base.nat_mul _ _]
+    conv_lhs => rw [← Nat.mod_add_div (r * t) m, Nat.mul_comm m _,
+      periodic_add_mul hper_base (r * t / m) (r * t % m)]
   have hmaps : ∀ r ∈ range m, (r * t) % m ∈ range m :=
     fun r _ => mem_range.mpr (Nat.mod_lt _ hm)
   calc
@@ -805,7 +844,7 @@ private theorem sum_primeFactors_localMangoldtMass_mul_gcd_le {m : ℕ} (hm : 0 
         induction J with
         | zero => simp
         | succ J ih =>
-          rw [sum_range_succ, ih, pow_succ]
+          rw [Finset.sum_range_succ, ih, pow_succ]
           field_simp [hp0.ne', (show (p : ℝ) - 1 ≠ 0 by linarith only [hp2])]
           ring
       calc
@@ -830,12 +869,13 @@ private theorem sum_primeFactors_localMangoldtMass_mul_gcd_le {m : ℕ} (hm : 0 
       _ ≤ (∑ k ∈ range a, localMangoldtMass p (p ^ (k + 1)) * (Nat.gcd m (p ^ (k + 1)) : ℝ)) +
           ∑ k ∈ (range T).image (fun j => a + j),
             localMangoldtMass p (p ^ (k + 1)) * (Nat.gcd m (p ^ (k + 1)) : ℝ) :=
-        sum_union_le _ _
+        sum_union_le_of_nonneg fun k _ =>
+          mul_nonneg (localMangoldtMass_nonneg p _) (Nat.cast_nonneg _)
       _ ≤ (a : ℝ) * Real.log p + Real.log p := add_le_add hlow hhigh
       _ ≤ 2 * (a : ℝ) * Real.log p := by nlinarith only [haR, hlogp]
   have hfact_log : (∑ p ∈ m.primeFactors, (m.factorization p : ℝ) * Real.log p) = Real.log m := by
     have hprod : (∏ p ∈ m.primeFactors, ((p : ℝ) ^ (m.factorization p))) = (m : ℝ) := by
-      exact_mod_cast Nat.factorization_prod_pow_eq_self hm.ne'
+      exact_mod_cast Nat.prod_factorization_pow_eq_self hm.ne'
     rw [← hprod, Real.log_prod (fun p hp =>
       pow_ne_zero _ (by exact_mod_cast (Nat.prime_of_mem_primeFactors hp).ne_zero))]
     exact sum_congr rfl fun p _ => (Real.log_pow _ _).symm
@@ -871,17 +911,19 @@ private theorem sum_Icc_normalizedPrimeCorrection_sq_le {m y : ℕ} (hm : 0 < m)
     by_cases hpm : p ∣ m
     · have hmem : p ∈ m.primeFactors := Nat.mem_primeFactors.mpr ⟨hp, hpm, hm.ne'⟩
       have hmass : Λ (p ^ k) / ((p ^ k : ℕ) : ℝ) ≤ w (p ^ k) := by
-        have h := single_le_sum (fun q _ => localMangoldtMass_nonneg q (p ^ k)) hmem
-        simpa only [localMangoldtMass, if_pos (dvd_pow_self p hk.ne')] using h
+        dsimp only [w]
+        have h := single_le_sum (f := fun q => localMangoldtMass q (p ^ k))
+          (fun q _ => localMangoldtMass_nonneg q (p ^ k)) hmem
+        rwa [localMangoldtMass, if_pos (dvd_pow_self p hk.ne')] at h
       rw [mul_div_assoc, abs_mul, abs_div,
         abs_of_nonneg (show 0 ≤ Λ (p ^ k) from vonMangoldt_nonneg),
-        abs_of_nonneg (Nat.cast_nonneg _)]
+        abs_of_nonneg (show 0 ≤ ((p ^ k : ℕ) : ℝ) from Nat.cast_nonneg _)]
       exact mul_le_mul_of_nonneg_left hmass (abs_nonneg _)
     · have hmp : m.Coprime p := (hp.coprime_iff_not_dvd.mpr hpm).symm
-      rw [normalizedRamanujanMode_eq_coefficient hm, normalizedRamanujanMode_eq_coefficient hm,
-        ramanujanCoefficient_mul_lag_of_coprime (hmp.pow_right k), sub_self, zero_mul, zero_div,
-        abs_zero]
-      exact mul_nonneg (abs_nonneg _) (hw0 _)
+      have hdiff : normalizedRamanujanMode m (n * p ^ k) - normalizedRamanujanMode m n = 0 := by
+        rw [normalizedRamanujanMode_eq_coefficient hm, normalizedRamanujanMode_eq_coefficient hm,
+          ramanujanCoefficient_mul_lag_of_coprime (hmp.pow_right k), sub_self]
+      rw [hdiff, zero_mul, zero_div, abs_zero, zero_mul]
   -- Tail weight bound `∑_{t ∈ Ioc y T} w t ≤ 2 * log m / y`.
   have hw_tail : ∀ T : ℕ, (∑ t ∈ Ioc y T, w t) ≤ 2 * Real.log m / (y : ℝ) := by
     intro T
@@ -918,7 +960,7 @@ private theorem sum_Icc_normalizedPrimeCorrection_sq_le {m y : ℕ} (hm : 0 < m)
       _ ≤ ∑ p ∈ m.primeFactors, (2 * Real.log p / (y : ℝ)) :=
         sum_le_sum fun p hp => localMangoldtTail_le (Nat.prime_of_mem_primeFactors hp) hy
       _ = 2 * (∑ p ∈ m.primeFactors, Real.log p) / (y : ℝ) := by
-        rw [← sum_div, ← mul_sum]; ring
+        rw [← sum_div, ← mul_sum]
       _ ≤ 2 * Real.log m / (y : ℝ) :=
         div_le_div_of_nonneg_right (mul_le_mul_of_nonneg_left hlog_sum zero_le_two)
           (Nat.cast_nonneg y)
@@ -1001,8 +1043,9 @@ private theorem sum_Icc_normalizedPrimeCorrection_sq_le {m y : ℕ} (hm : 0 < m)
       _ = (∑ t ∈ Ioc y T, w t) *
             ∑ t ∈ Ioc y T, w t *
               ∑ n ∈ Icc 1 m, (normalizedRamanujanMode m (n * t) - normalizedRamanujanMode m n) ^ 2 := by
-        rw [← mul_sum, sum_comm]
+        rw [← mul_sum]
         congr 1
+        rw [Finset.sum_comm]
         exact sum_congr rfl fun t _ => (mul_sum _ _ _).symm
       _ ≤ (2 * Real.log m / (y : ℝ)) * (8 * (m : ℝ) * Real.log m) :=
         mul_le_mul (hw_tail T) hsecond
@@ -1014,7 +1057,7 @@ private theorem sum_Icc_normalizedPrimeCorrection_sq_le {m y : ℕ} (hm : 0 < m)
       ∑ n ∈ Icc 1 m,
         (-(∑ t ∈ Ioc y T, ramanujanUpCorrectionTerm m n t / Real.sqrt (m.totient : ℝ))) ^ 2)
       atTop (𝓝 (∑ n ∈ Icc 1 m, normalizedPrimeCorrection m y n ^ 2)) :=
-    tendsto_finset_sum _ fun n hn =>
+    tendsto_finsetSum _ fun n hn =>
       (tendsto_tail_normalizedPrimeCorrection hm (mem_Icc.mp hn).1 y).pow 2
   exact le_of_tendsto' hlim_sum hT_bound
 
@@ -1026,7 +1069,7 @@ private theorem sum_normalizedPrimeCorrection_sq_div_le {m N : ℕ}
       192 * (Real.log N) ^ 2 := by
   have hLN0 : 0 < Real.log N := zero_lt_one.trans_le hlogN
   have hmN : m ≤ N := (Nat.le_mul_self m).trans hmN_sq
-  have hN0 : 0 < N := hm.trans_le hmN
+  have hN0 : 0 < N := by omega
   have hNR : (0 : ℝ) < N := by exact_mod_cast hN0
   rcases eq_or_lt_of_le hm with rfl | hm2
   · -- `m = 1`: `log 1 = 0`, so every correction term is identically zero.
@@ -1036,14 +1079,17 @@ private theorem sum_normalizedPrimeCorrection_sq_div_le {m N : ℕ}
       have hy : 0 < N / n := Nat.div_pos (mem_Icc.mp hn).2 hn0
       have hb := abs_normalizedRamanujan_correction_le one_pos hn0 hy
       simp only [Nat.cast_one, Real.log_one, mul_zero, zero_div] at hb
-      have hz : normalizedPrimeCorrection 1 (N / n) n = 0 :=
-        abs_nonpos_iff.mp hb
+      have hz : normalizedPrimeCorrection 1 (N / n) n = 0 := by
+        unfold normalizedPrimeCorrection
+        rw [Nat.cast_one, Real.log_one]
+        exact abs_nonpos_iff.mp hb
       rw [hz, zero_pow (by decide), zero_div]
     rw [sum_eq_zero hzero]
     positivity
   · -- `m ≥ 2`: split `Icc 1 N = Icc 1 (N / m) ∪ Ioc (N / m) N`.
     have hNm_le : N / m ≤ N := Nat.div_le_self N m
     have hunion : Icc 1 N = Icc 1 (N / m) ∪ Ioc (N / m) N := by
+      have := Nat.zero_le (N / m)
       ext n; simp only [mem_Icc, mem_union, mem_Ioc]; omega
     have hdisj : Disjoint (Icc 1 (N / m)) (Ioc (N / m) N) := by
       rw [Finset.disjoint_left]; intro n hn1 hn2; simp only [mem_Icc, mem_Ioc] at hn1 hn2; omega
@@ -1099,7 +1145,7 @@ private theorem sum_normalizedPrimeCorrection_sq_div_le {m N : ℕ}
             div_le_div_of_nonneg_right
               (mul_le_mul_of_nonneg_right (mul_le_mul_of_nonneg_left hmnN (by norm_num))
                 (sq_nonneg _)) (sq_nonneg _)
-          _ = 64 * (Real.log m) ^ 2 / N := by field_simp [hNR.ne']; ring
+          _ = 64 * (Real.log m) ^ 2 / N := by field_simp [hNR.ne']
       have hcard_le : ((N / m : ℕ) : ℝ) ≤ N := by exact_mod_cast hNm_le
       calc
         (∑ n ∈ Icc 1 (N / m), normalizedPrimeCorrection m (N / n) n ^ 2 / (n : ℝ)) ≤
@@ -1135,6 +1181,7 @@ private theorem sum_normalizedPrimeCorrection_sq_div_le {m N : ℕ}
     have hdisj_y : Set.PairwiseDisjoint (↑(Icc 1 (m - 1)) : Set ℕ)
         (fun y => Ioc (N / (y + 1)) (N / y)) := by
       intro y₁ hy₁ y₂ hy₂ hne
+      change Disjoint _ _
       rw [Finset.disjoint_left]
       intro n hn₁ hn₂
       obtain ⟨h1a, h1b⟩ := mem_Ioc.mp hn₁
@@ -1182,23 +1229,27 @@ private theorem sum_normalizedPrimeCorrection_sq_div_le {m N : ℕ}
           have hmul := Nat.mul_le_mul_right (y + 1) this
           omega
         have hle_4 : N ≤ 4 * y * n := by
-          have hy2 : y + 1 ≤ 2 * y := by omega
-          have hmul := Nat.mul_le_mul_left n hy2
-          omega
+          have hy4 : y + 1 ≤ 4 * y := by omega
+          calc
+            N ≤ n * (y + 1) := hle_n
+            _ ≤ n * (4 * y) := Nat.mul_le_mul_left n hy4
+            _ = 4 * y * n := by ring
         rw [div_le_div_iff₀ hnR hNR, one_mul]
         exact_mod_cast hle_4
       -- Periodicity bound on `∑_{n ∈ I_y} normalizedPrimeCorrection m y n ^ 2`.
       have hper_bound : (∑ n ∈ I_y, normalizedPrimeCorrection m y n ^ 2) ≤
           ((I_y.card : ℝ) / m + 1) * (16 * (m : ℝ) * (Real.log m) ^ 2 / y) := by
-        have h1 := sum_Ioc_le_mul_sum_Icc_of_periodic_pos hm (fun _ _ => sq_nonneg _)
+        have h1 := sum_Ioc_le_mul_sum_Icc_of_periodic_pos
+          (f := fun n => normalizedPrimeCorrection m y n ^ 2) hm (fun _ _ => sq_nonneg _)
           (fun n hn => by rw [normalizedPrimeCorrection_periodic_pos hm y hn])
           (N / (y + 1)) (N / y)
         have hcard_eq : N / y - N / (y + 1) = I_y.card := (Nat.card_Ioc _ _).symm
         rw [hcard_eq] at h1
         have hdiv_le : (((I_y.card / m + 1 : ℕ) : ℝ)) ≤ (I_y.card : ℝ) / m + 1 := by
           push_cast
-          have h := (le_div_iff₀ hmR).mpr (by exact_mod_cast Nat.div_mul_le_self I_y.card m)
-          linarith only [h]
+          have hmul : ((I_y.card / m : ℕ) : ℝ) * m ≤ I_y.card := by
+            exact_mod_cast Nat.div_mul_le_self I_y.card m
+          linarith [(le_div_iff₀ hmR).mpr hmul]
         exact h1.trans (mul_le_mul hdiv_le (sum_Icc_normalizedPrimeCorrection_sq_le hm hy1)
           (sum_nonneg fun _ _ => sq_nonneg _) (by positivity))
       calc
@@ -1220,6 +1271,7 @@ private theorem sum_normalizedPrimeCorrection_sq_div_le {m N : ℕ}
       obtain ⟨y, hyI, hny⟩ := mem_biUnion.mp hn
       obtain ⟨hy1, _⟩ := mem_Icc.mp hyI
       obtain ⟨hn_lo, hn_hi⟩ := mem_Ioc.mp hny
+      have := Nat.zero_le (N / (y + 1))
       exact mem_Icc.mpr ⟨by omega, hn_hi.trans (Nat.div_le_self N y)⟩
     have hsum_cards : (∑ y ∈ Icc 1 (m - 1), ((Ioc (N / (y + 1)) (N / y)).card : ℝ)) ≤ N := by
       have hnat : (∑ y ∈ Icc 1 (m - 1), (Ioc (N / (y + 1)) (N / y)).card) ≤ N := by
@@ -1362,7 +1414,7 @@ theorem exists_fullPrimeMatrix_levelOfDistribution :
       _ = (2 * C₁ + 384) * M * (Real.log N) ^ 2 := by ring
   rw [sum_congr rfl hnorm_eq, ← sum_div]
   exact (div_le_div_of_nonneg_right hraw_total hLN0.le).trans_eq
-    (by field_simp [hLN0.ne']; ring)
+    (by field_simp [hLN0.ne'])
 
 #print axioms exists_fullPrimeMatrix_levelOfDistribution
 

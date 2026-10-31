@@ -154,10 +154,12 @@
 | 28 | A1 for almost all heights: for `ζ`, failures with constant `C` occupy `≤ T/(C√(δ log T))` of `[T, 2T]` (tangent disc + Cauchy–Schwarz + explicit off-line first moment) | A1 | formalized: `3-formalized/the-local-count-holds-for-almost-all-heights.md` |
 | 29 | A1 at the tangency point is bounded multiplicity: A1 ⇒ `m(ρ) ≤ C` for critical zeros; `ζ` plus critical clusters (RvM, same off-line counts, critical when `ζ` is) violates A1 for every `C` | A1 | formalized: `3-formalized/the-local-count-bounds-the-multiplicity.md` |
 | 30 | Local de Bruijn–Newman constant `Λ_X`: `Λ = sup_X Λ_X`, RH iff `Λ_X ≡ 0`, `c depth²/log X ≤ Λ_X ≤ (2/3 + ε)/log X` | B/WD | formalized: `3-formalized/the-local-de-bruijn-newman-constant.md` |
+| 31 | Comparison of the flows: `Λ_X ≤ M` on `|X − t| ≤ 1` ⇒ `λ_t ≤ M log(t + 1)/(3c)` (cone defect #13 + #30 lower bound) | B/WD | formalized: same card as #30 |
+| 32 | `λ_t = 0` on lower density `433/500` (was `29/50`) | B | formalized: card of #24; the slice-coefficient density is in corpus (`eventually_volume_sliceCoeff_nonneg_ge_upper`, Selberg-weight moment `67/1000`), #32 is its translation through #19 |
 | C2 | Two primes: transverse ladders, joint cone | C2 | already in corpus: `ThePrimeKernelIsASumOfTransverseTowers` (`P = Σ_p L_p`, ladders meet in one point), `TheLocalFormsDoNotSum` (no `C` bounds the sum; pole direction grows like `log M`), `TheSquareRootPriceOfSeparateTowers` (separate towers pay `√M`, the joint structure `log M`) |
 | A4 | Budget `1/18` at `λ = 4/3` needs `F(α) ≤ Υ ≤ 2` with zero slope on `[1, 4/3]` (`calibration_five_models_four_thirds`), i.e. a power saving `X^{−1/4}` in `Σ_{h ≤ X^{1/4}} Σ Λ(n)Λ(n+h)` | A4 | open (Montgomery pair correlation `α > 1`, open under RH too); no formal survivor beyond the corpus calibration; best fraction from unsigned upper sieves `9Υ/8 ≥ 9/8` of the budget (calibration), the spectral form needs `Υ ≤ 2` |
 | D | Prose-only claims restated to their Lean content | D | done: `ContourCrossingObstruction`, `CorrelationBoundsCountNotLocation`, `DiscriminantIsRealitySensitive`, `higherMoment_rudnick_sarnak_cap`, `ThePoleModeMeetsTheZerosOnlyAtTheHorizon`, `QuantizationTurnsWindowsIntoPoints` |
 
 ## Log
 - 2026-10-30 — created; conjectures 1–3 formalized.
-- 2026-10-31 — #4 found in corpus; WP-D docstrings; #5–#8 formalized; A4 analysed; #9, #12 found in corpus; #10, #11, #13–#17, #19–#30 formalized; #18, C2 in corpus.
+- 2026-10-31 — #4 found in corpus; WP-D docstrings; #5–#8 formalized; A4 analysed; #9, #12 found in corpus; #10, #11, #13–#17, #19–#32 formalized; #18, C2 in corpus.

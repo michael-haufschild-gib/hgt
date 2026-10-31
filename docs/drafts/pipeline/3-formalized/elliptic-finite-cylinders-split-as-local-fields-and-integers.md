@@ -1,11 +1,12 @@
 # Elliptic finite cylinders split as local fields and integers
 
-- **Stage:** 2-fully-proven
-- **Parent:** [Actual Haar products](../1-in-progress/elliptic-adelic-haar-has-exact-finite-cylinder-products.md).
+- **Stage:** 3-formalized
+- **Parent:** [Actual Haar products](../2-fully-proven/elliptic-adelic-haar-has-exact-finite-cylinder-products.md).
 - **Statement:** For every finite set `S` of actual elliptic finite places,
   the finite adeles integral outside `S` form an open additive subgroup,
   additively homeomorphic to the product of the completed fields in `S`
-  and the compact product of integer rings outside `S`.
+  and the compact product of integer rings outside `S`. These subgroups
+  increase with `S` and exhaust the finite adeles.
 
 ## Proof
 
@@ -21,6 +22,8 @@ is continuous. Coordinate evaluation also proves continuity of the inverse.
 The cylinder is open because all outside-place integer conditions define
 an open subset of the restricted product. The outside integer product is
 compact by the audited local compactness and Tychonoff's theorem.
+Inclusion is immediate when `S` enlarges. Every finite adele has a finite
+set of nonintegral places, which supplies a cylinder containing it.
 
 This identifies topology and groups. Haar-product normalization is a
 separate assertion.
@@ -29,4 +32,6 @@ separate assertion.
 
 `ArithmeticEffectivityTheory/FiniteFieldEllipticFiniteCylinders.lean`:
 `finiteAdeleCylinderHomeomorph`, `finiteAdeleCylinder_isOpen`,
-`finiteCylinderTail_compact`. Direct audit pending.
+`finiteCylinderTail_compact`, `finiteAdeleCylinder_mono`,
+`exists_mem_finiteAdeleCylinder`. Direct Lean audit passed. All three transitive axiom audits contain only
+`propext`, `Classical.choice`, and `Quot.sound`.

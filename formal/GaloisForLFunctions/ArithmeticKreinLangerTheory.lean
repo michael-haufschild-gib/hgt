@@ -19,6 +19,9 @@ import GaloisForLFunctions.ArithmeticKreinLangerTheory.TheFunctionFieldCeilingIs
 import GaloisForLFunctions.ArithmeticKreinLangerTheory.FineTowersHaveUnboundedNyquistWindows
 import GaloisForLFunctions.ArithmeticKreinLangerTheory.ChebyshevsProducerPassesTheIntegerChebyshevCap
 import GaloisForLFunctions.ArithmeticKreinLangerTheory.ThePolarDivisorCountsTheIndex
+import GaloisForLFunctions.ArithmeticKreinLangerTheory.TheUnivariateIntegerChebyshevCeiling
+import GaloisForLFunctions.ArithmeticKreinLangerTheory.FinitePrimeHeckeAuxiliaryObstructions
+import GaloisForLFunctions.ArithmeticKreinLangerTheory.MultivariateParityAuxiliariesReachTheMainTerm
 
 /-!
 # Arithmetic Krein–Langer theory
@@ -36,7 +39,10 @@ Umbrella for the local-to-global theory of Krein–Langer kernels on groups with
   number of pole classes of the affine Weyl sum right of the critical hyperplane.
 * **Producers and parity.** The quadratic twist and the twist tower over `𝔽_q`; the parity form of
   the global law over `ℤ`; compressions as receivers; the Bézout ledger of both producers and its
-  multiplicity caps; Chebyshev's divisibility producer past the integer Chebyshev cap; divisibility is parity-blind; Stepanov's order over `𝔽_q`, producer to index
+  multiplicity caps; Chebyshev's divisibility producer past the integer Chebyshev cap; the univariate
+  integer-Chebyshev ceiling on `[0, 1]`, the single-prime, finite-prime, and parity-blind
+  Hecke–factorial ceilings, and multivariate parity-selective integer producers reaching the main term
+  `ψ(x) ≤ (1 + ε) x + C (log x)²` by vanishing order alone; divisibility is parity-blind; Stepanov's order over `𝔽_q`, producer to index
   zero; the parity twin over `ℤ` is a vertical shift on one prime tower, on no two primes, and in the
   Bohr closure; pointwise-closed statements that hold for every vertical shift hold for every unitary
   twist, the flips `ω_p` included.

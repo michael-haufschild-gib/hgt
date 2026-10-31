@@ -23,19 +23,32 @@ local instance (v : FinitePlace) : CompactSpace (Integer (v.adicCompletion K)) :
 local instance : MeasurableSpace InfinityCompletion := borel _
 local instance : BorelSpace InfinityCompletion := ⟨rfl⟩
 
+private theorem toNNReal_base_congr {q r : ℝ≥0} (hq : q ≠ 0) (hr : r ≠ 0)
+    (h : q = r) (z : ℤᵐ⁰) :
+    WithZeroMulInt.toNNReal hq z = WithZeroMulInt.toNNReal hr z := by
+  subst r
+  rfl
+
 /-- Actual finite-place magnitude is the additive Haar change-of-variables factor. -/
 theorem finiteCompletion_distribHaarChar (v : FinitePlace) (u : (v.adicCompletion K)ˣ) :
     distribHaarChar (v.adicCompletion K) u = finiteCompletionMagnitude v (u : v.adicCompletion K) := by
   have hrange : WithZero.exp (-1 : ℤ) ∈
       Set.range (Valued.v : Valuation (v.adicCompletion K) ℤᵐ⁰) := by
     refine ⟨algebraMap K (v.adicCompletion K) (HTGeometry.placeUniformizer K v), ?_⟩
-    rw [HeightOneSpectrum.valuedAdicCompletion_eq_valuation', HTGeometry.placeUniformizer_valuation]
+    exact (HeightOneSpectrum.valuedAdicCompletion_eq_valuation' (v := v)
+      (HTGeometry.placeUniformizer K v)).trans (HTGeometry.placeUniformizer_valuation K v)
   have h := distribHaarChar_eq_residueMagnitude (v.adicCompletion K) hrange u
   have hcard : Nat.card (Residue (v.adicCompletion K)) =
       Nat.card (RingOfIntegers ⧸ v.asIdeal) :=
     Nat.card_congr (finiteCompletionResidueEquiv v).toEquiv
-  rw [hcard] at h
-  exact h
+  have hq₀ : (Nat.card (Residue (v.adicCompletion K)) : ℝ≥0) ≠ 0 := by
+    exact_mod_cast (Nat.card_ne_zero.mpr ⟨inferInstance, inferInstance⟩ :
+      Nat.card (Residue (v.adicCompletion K)) ≠ 0)
+  have hq : (Nat.card (RingOfIntegers ⧸ v.asIdeal) : ℝ≥0) ≠ 0 := by
+    rwa [hcard] at hq₀
+  change distribHaarChar (v.adicCompletion K) u =
+    WithZeroMulInt.toNNReal hq (Valued.v (u : v.adicCompletion K))
+  exact h.trans (toNNReal_base_congr hq₀ hq (by exact_mod_cast hcard) _)
 
 /-- The actual infinity Haar modulus uses residue cardinality three. -/
 theorem infinityCompletion_distribHaarChar (u : InfinityCompletionˣ) :
@@ -47,8 +60,13 @@ theorem infinityCompletion_distribHaarChar (u : InfinityCompletionˣ) :
     exact infinityValuation_parameter
   have h := distribHaarChar_eq_residueMagnitude InfinityCompletion hrange u
   have hcard : Nat.card (Residue InfinityCompletion) = 3 := infinityCompletionResidue_card
-  rw [hcard] at h
-  exact h
+  have hq₀ : (Nat.card (Residue InfinityCompletion) : ℝ≥0) ≠ 0 := by
+    exact_mod_cast (Nat.card_ne_zero.mpr ⟨inferInstance, inferInstance⟩ :
+      Nat.card (Residue InfinityCompletion) ≠ 0)
+  have hq : (3 : ℝ≥0) ≠ 0 := by norm_num
+  change distribHaarChar InfinityCompletion u =
+    WithZeroMulInt.toNNReal hq (Valued.v (u : InfinityCompletion))
+  exact h.trans (toNNReal_base_congr hq₀ hq (by exact_mod_cast hcard) _)
 
 end
 end GaloisForLFunctions.ArithmeticEffectivityTheory.FiniteFieldEllipticBase

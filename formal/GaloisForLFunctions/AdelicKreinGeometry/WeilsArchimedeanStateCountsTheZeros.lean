@@ -1,6 +1,7 @@
 import GaloisForLFunctions.AdelicKreinGeometry.TheArchimedeanGluingFormula
 import GaloisForLFunctions.ArithmeticCastelnuovoSeveri.TemperedConfigurationPontryaginLaw
 import GaloisForLFunctions.SquareRootThreshold.ZetaSmallApertureHeightWindowPositivity
+import GaloisForLFunctions.SquareRootThreshold.DirichletLFunctionTwoBumpCriterion
 import Mathlib.Analysis.Normed.Group.Tannery
 
 /-!
@@ -33,7 +34,7 @@ open GaloisForLFunctions.BiScaleUncertainty.ChebyshevGauge (cubicSpline contDiff
   hasCompactSupport_cubicSpline)
 open GaloisForLFunctions.ArithmeticCastelnuovoSeveri (cx cx_contDiff cx_hasCompactSupport)
 open GaloisForLFunctions.SquareRootThreshold (TemperedConfig temperedConfig_zetaZeroConfig)
-open GaloisForLFunctions.ArithmeticOrientationGeometry (seenRightZeros)
+open GaloisForLFunctions.ArithmeticOrientationGeometry (seenRightZeros seenRightZeros_cubicSpline)
 
 noncomputable section
 
@@ -189,5 +190,16 @@ theorem negIndex_weilArchState_eq_rightZeros {c : ℝ} (hc : 0 < c) :
     negIndex (weilArchState c) =
       (ArithmeticCastelnuovoSeveri.rightZeros zetaZeroConfig).encard + 1 := by
   rw [negIndex_weilArchState_eq_add_one hc, negIndex_zetaKernel]
+
+/-! ### Dirichlet L-functions -/
+
+/-- **The archimedean state of `L(s, χ)` counts its zeros**: for a primitive character `χ` modulo
+`q > 1`, `κ(K_{χ}(|a|) − c|a|^{−1/2}|b|) = #{zeros of L(s, χ) right of the critical line} + 1`. -/
+theorem negIndex_archGlue_dirichlet {q : ℕ} [NeZero q] {χ : DirichletCharacter ℂ q} (hq : 1 < q)
+    (hprim : χ.IsPrimitive) {c : ℝ} (hc : 0 < c) :
+    negIndex (archGlue (orbitCorr (ThmE.LZeros (ThmE.LSeam_of hq hprim)) cubicSpline) c) =
+      {ρ ∈ (ThmE.LZeros (ThmE.LSeam_of hq hprim)).carrier | 1 / 2 < ρ.re}.encard + 1 := by
+  rw [negIndex_archGlue_orbitCorr (SquareRootThreshold.temperedConfig_LZeros hq hprim)
+    cubicSpline_mem_realTests (fun ρ => ρ.2.2.1) hc, seenRightZeros_cubicSpline]
 
 end GaloisForLFunctions.AdelicKreinGeometry

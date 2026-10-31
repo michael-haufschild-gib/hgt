@@ -1,5 +1,6 @@
 import GaloisForLFunctions.RHTower.Heat.TheLocalHeatThreshold
 import GaloisForLFunctions.RHTower.SpeiserShadowExponentialDensity
+import GaloisForLFunctions.RHTower.ZetaOffLineMomentUpperConsequences
 
 /-!
 # The local heat threshold has Selberg's exponential tail
@@ -16,6 +17,11 @@ So `λ_t log² t` has an exponential tail in `√·` on average: `λ_t ≍ 1/log
 the heights with `λ_t > κ/log U` have measure `≪ U exp(−√(3κ log U)/2400) + log² U`
 (`eventually_volume_localHeatThreshold_gt_le_exp`), a rate for the density statement
 `eventually_volume_localHeatThreshold_gt_le`.
+
+**The zero set** (`eventually_volume_localHeatThreshold_eq_zero_ge_selberg`).  `λ_t = 0` on a set
+of lower density `433/500`: outside the shadows `[Im ρ − δ, Im ρ + δ]` of the off-line zeros every
+slice coefficient is `≥ 0` (`eventually_volume_sliceCoeff_nonneg_ge_upper`, from the Selberg-weight
+moment `Σ m (Re ρ − ½) ≤ (67/1000) V`), and `λ_t > 0` iff some coefficient is negative.
 
 **Mean value** (`exists_integral_localHeatThreshold_le`).  `∫_{U/4+2}^{U/2−2} λ_t dt ≤ C U/log² U`.
 The layer-cake bound (`setIntegral_le_layers`) over the layers `λ_j = (j + 2)²/(3L²)`,
@@ -127,6 +133,17 @@ theorem eventually_volume_localHeatThreshold_gt_le_exp :
       have := mul_le_mul_of_nonneg_left hT hA
       nlinarith
     linarith
+
+/-- **`λ_t = 0` on lower density `433/500`.**  For all large `V`, the heights `t ∈ [0, V]` with
+`λ_t = 0` have measure at least `(433/500) V − 67/1000`. -/
+theorem eventually_volume_localHeatThreshold_eq_zero_ge_selberg :
+    ∀ᶠ V in atTop, ENNReal.ofReal (433 / 500 * V - 67 / 1000) ≤
+      volume {t ∈ Icc (0 : ℝ) V | localHeatThreshold t = 0} := by
+  filter_upwards [eventually_volume_sliceCoeff_nonneg_ge_upper] with V hV
+  refine hV.trans (measure_mono fun t ht => ⟨ht.1, ?_⟩)
+  refine le_antisymm (not_lt.mp fun h => ?_) (localHeatThreshold_nonneg t)
+  obtain ⟨n, hn⟩ := (localHeatThreshold_pos_iff t).mp h
+  exact absurd (Complex.nonneg_iff.mp (ht.2 n)).1 (not_le.mpr hn)
 
 /-! ## The mean value -/
 

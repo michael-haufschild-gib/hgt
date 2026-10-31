@@ -107,6 +107,11 @@ finite part `⟨v_m,N,P_N v_l,N⟩−1_(m=l)log N`
 `→−I(m,l)/√(φ(m)φ(l))−1_(m=l)[log m+tameDifferent(m)]`.
 Its diagonal is `−2log m`; finite polarization gives every fixed packet's
 quadratic limit. [Proof and final Lean audit](../3-formalized/prime-conductor-finite-parts-retain-the-torsion-boundary.md).
+The centered fixed-prime head instead tends to
+`+I(m,l)/√(φ(m)φ(l))−1_(m=l)[log m+tameDifferent(m)]`;
+its complementary boundary tends to `−2I(m,l)/√(φ(m)φ(l))`.
+The exact head/full-matrix identity and both ordered limits passed final
+Lean and standard-axiom audits. [Proof](../3-formalized/prime-conductor-heads-and-tails-have-opposite-torsion-limits.md).
 The complete Gamma, pole, and successor-shell identity remains open.
 
 The [affine period identity](../3-formalized/affine-shell-correlations-select-conductor-quotients.md)

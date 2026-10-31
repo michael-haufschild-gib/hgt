@@ -16,7 +16,7 @@ noncomputable section
 /-- Finite adeles integral outside a prescribed finite set. -/
 def finiteAdeleCylinder (S : Finset FinitePlace) : AddSubgroup FiniteAdeles where
   carrier := {a | ∀ v, v ∉ S → a v ∈ v.adicCompletionIntegers K}
-  zero_mem' v _ := zero_mem _
+  zero_mem' _ _ := zero_mem _
   add_mem' ha hb v hv := add_mem (ha v hv) (hb v hv)
   neg_mem' ha v hv := neg_mem (ha v hv)
 
@@ -81,6 +81,21 @@ def finiteCylinderAssembly (S : Finset FinitePlace) :
     unfold cylinderAssemblyFunction
     split <;> rfl
 
+/-- Assembly retains each unrestricted field coordinate. -/
+theorem finiteCylinderAssembly_apply_mem (S : Finset FinitePlace)
+    (x : FiniteCylinderFields S × FiniteCylinderTail S) (v : S) :
+    (finiteCylinderAssembly S x : FiniteAdeles) v.1 = x.1 v := by
+  change cylinderAssemblyFunction S x v.1 = x.1 v
+  rw [cylinderAssemblyFunction, dif_pos v.property]
+
+/-- Assembly retains each integral tail coordinate. -/
+theorem finiteCylinderAssembly_apply_notMem (S : Finset FinitePlace)
+    (x : FiniteCylinderFields S × FiniteCylinderTail S)
+    (v : {v : FinitePlace // v ∉ S}) :
+    (finiteCylinderAssembly S x : FiniteAdeles) v.1 = (x.2 v : v.1.adicCompletion K) := by
+  change cylinderAssemblyFunction S x v.1 = (x.2 v : v.1.adicCompletion K)
+  rw [cylinderAssemblyFunction, dif_neg v.property]
+
 /-- The cylinder has precisely the expected finite-field and integral-tail coordinates. -/
 def finiteAdeleCylinderEquiv (S : Finset FinitePlace) :
     FiniteCylinderFields S × FiniteCylinderTail S ≃+ finiteAdeleCylinder S where
@@ -112,14 +127,17 @@ private theorem continuous_cylinderPrincipalAssembly (S : Finset FinitePlace) :
   change Continuous (fun x => cylinderAssemblyFunction S x v)
   classical
   by_cases hv : v ∈ S
-  · have h := (continuous_apply ⟨v, hv⟩).comp
-      (continuous_fst : Continuous (Prod.fst :
-        FiniteCylinderFields S × FiniteCylinderTail S → FiniteCylinderFields S))
-    simpa only [Function.comp_apply, cylinderAssemblyFunction, dif_pos hv] using h
-  · have h := continuous_subtype_val.comp ((continuous_apply ⟨v, hv⟩).comp
-      (continuous_snd : Continuous (Prod.snd :
-        FiniteCylinderFields S × FiniteCylinderTail S → FiniteCylinderTail S)))
-    simpa only [Function.comp_apply, cylinderAssemblyFunction, dif_neg hv] using h
+  · simp only [cylinderAssemblyFunction, dif_pos hv]
+    exact Continuous.comp
+      (f := (Prod.fst : FiniteCylinderFields S × FiniteCylinderTail S → FiniteCylinderFields S))
+      (g := fun p : FiniteCylinderFields S => p ⟨v, hv⟩)
+      (continuous_apply (⟨v, hv⟩ : S)) continuous_fst
+  · simp only [cylinderAssemblyFunction, dif_neg hv]
+    exact Continuous.comp
+      (f := fun p : FiniteCylinderFields S × FiniteCylinderTail S => p.2 ⟨v, hv⟩)
+      (g := (Subtype.val : v.adicCompletionIntegers K → v.adicCompletion K))
+      continuous_subtype_val
+      ((continuous_apply (⟨v, hv⟩ : {v : FinitePlace // v ∉ S})).comp continuous_snd)
 
 /-- Coordinate assembly is a homeomorphism for the actual restricted-product topology. -/
 def finiteAdeleCylinderHomeomorph (S : Finset FinitePlace) :
@@ -145,8 +163,27 @@ theorem finiteAdeleCylinder_isOpen (S : Finset FinitePlace) :
   RestrictedProduct.isOpen_forall_imp_mem
     (fun v : FinitePlace => Valued.isOpen_valuationSubring (v.adicCompletion K))
 
+/-- Enlarging the exceptional-place set enlarges its finite-adele cylinder. -/
+theorem finiteAdeleCylinder_mono {S T : Finset FinitePlace} (h : S ⊆ T) :
+    finiteAdeleCylinder S ≤ finiteAdeleCylinder T := by
+  intro a ha v hv
+  exact ha v (fun hs => hv (h hs))
+
+/-- Every actual finite adele belongs to a cylinder with finitely many unrestricted places. -/
+theorem exists_mem_finiteAdeleCylinder (a : FiniteAdeles) :
+    ∃ S : Finset FinitePlace, a ∈ finiteAdeleCylinder S := by
+  classical
+  have hbad : {v : FinitePlace | a v ∉ v.adicCompletionIntegers K}.Finite := by
+    rw [← Filter.eventually_cofinite]
+    exact a.2
+  refine ⟨hbad.toFinset, ?_⟩
+  intro v hv
+  by_contra hn
+  exact hv (hbad.mem_toFinset.mpr hn)
+
 end
 end GaloisForLFunctions.ArithmeticEffectivityTheory.FiniteFieldEllipticBase
 
 #print axioms GaloisForLFunctions.ArithmeticEffectivityTheory.FiniteFieldEllipticBase.finiteAdeleCylinderHomeomorph
 #print axioms GaloisForLFunctions.ArithmeticEffectivityTheory.FiniteFieldEllipticBase.finiteAdeleCylinder_isOpen
+#print axioms GaloisForLFunctions.ArithmeticEffectivityTheory.FiniteFieldEllipticBase.exists_mem_finiteAdeleCylinder

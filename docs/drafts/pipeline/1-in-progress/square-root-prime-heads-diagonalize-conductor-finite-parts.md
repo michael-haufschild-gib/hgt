@@ -3,7 +3,7 @@
 - **Stage:** 1-in-progress
 - **Type:** CONJECTURE
 - **Source:** [Q1/O1](three-frontier-questions-full-solutions.md);
-  [prime boundary](prime-conductor-heads-and-tails-have-opposite-torsion-limits.md).
+  [prime boundary](../3-formalized/prime-conductor-heads-and-tails-have-opposite-torsion-limits.md).
 
 Let `v_m,N(n)=c_m(n)/sqrt(phi(m)n log N)` and let `P_N^(K)` be the
 literal prime matrix restricted to dilation ratios at most `K`.
@@ -21,6 +21,13 @@ term is `theta(2−theta)1_(m=l)log N` and the finite part is
 The square-root head is the unique interior scale with zero mixed torsion
 coefficient. This is a statement about the actual truncated form on fixed
 conductor pairs; it asserts no norm quasimode law or growing-packet estimate.
+
+The corresponding scalar-identity renormalization has finite part
+`lambda_m delta_ml+(1−theta²)B_ml`, where
+`lambda_m=gamma+log m+tameDifferent(m)`.
+Thus only the full cutoff removes the extra harmonic Gram term.
+The predicted finite part of the band between powers `alpha` and `beta`,
+after removing its diagonal main term, is `2(beta−alpha)B_ml`.
 
 ## Proposed proof
 
@@ -41,5 +48,7 @@ The remaining terms are
 Mertens gives `A(K)=log K−gamma+o(1)`; Abel summation gives
 `B(K)=(log K)^2/2+o(log K)`. Substitution yields the stated finite parts.
 
-The moving-cutoff domination and weighted Mertens limit still need Lean
-formalization. The full Gamma, pole, and successor-shell comparison remains open.
+The [weighted Mertens limit](../3-formalized/prime-head-logarithmic-moment.md)
+passed final Lean and standard-axiom audits. Moving-cutoff domination and
+the combined finite-part law still need Lean verification.
+The full Gamma, pole, and successor-shell comparison remains open.

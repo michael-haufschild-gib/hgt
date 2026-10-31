@@ -202,6 +202,9 @@ Subquestions:
   part `−I(m,l)/√(φ(m)φ(l))−1_(m=l)[log m+tameDifferent(m)]` after removing
   `1_(m=l)log N`; in particular its diagonal is `−2log m`.
   [Exact packet limit and Lean audit](../../drafts/pipeline/3-formalized/prime-conductor-finite-parts-retain-the-torsion-boundary.md).
+  The centered fixed-prime head has the opposite torsion sign; the
+  complementary boundary has ordered limit `−2I(m,l)/√(φ(m)φ(l))`.
+  [Exact cutoff identity and Lean audit](../../drafts/pipeline/3-formalized/prime-conductor-heads-and-tails-have-opposite-torsion-limits.md).
   The full Weil agreement-shell identity remains open.
 
 **Q2. Is there a source law that makes the two orientations of the Ξ resolvent agree?**

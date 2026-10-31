@@ -14,9 +14,15 @@ Riemann–von Mangoldt, adds no off-line zero (the off-line counts `N − N₀` 
 configuration is critical whenever `ζ` is), changes every window count by `≤ 4 log(|T₂| + 3)`, and
 violates the local count for every constant.  So the local count does not follow from the Riemann
 hypothesis together with counting inputs: at the tangency point it is a multiplicity statement.
+
+**The off-line local bound forces a critical proportion one**
+(`tendsto_N0_div_N_of_offLineLocallyBounded`).  If every window `(S − 1, S + 1]` holds at most `M`
+off-line zeros, then `N(T, 2T) − N₀(T, 2T) ≤ M(T/2 + 1)` while Riemann–von Mangoldt gives
+`N(T, 2T) ≍ T log T`, so `N₀(T, 2T)/N(T, 2T) → 1`: the input of the lag family implies that almost
+all zeros are critical.
 -/
 
-open Complex Set Zeta23
+open Complex Set Zeta23 Filter Topology
 
 namespace RHTower.LocalCountFalsifier
 
@@ -218,6 +224,181 @@ theorem exists_zeroConfig_rvm_rh_not_localCountBound :
     have hgeR : (⌊Real.exp k⌋₊ : ℝ) ≤ (superpose zetaZeroConfig criticalClusterConfig).mult
         (criticalPoint k) := by exact_mod_cast hge
     linarith [le_abs_self C]
+
+/-! ## The off-line local bound forces a critical proportion one -/
+
+/-- The off-line part of a zero configuration. -/
+def offLinePart (Z : ZeroConfig) : ZeroConfig where
+  carrier := Z.carrier ∩ {ρ | ρ.re ≠ 1 / 2}
+  mult := Z.mult
+  one_le_mult := fun ρ h => Z.one_le_mult ρ h.1
+  strip := fun ρ h => Z.strip ρ h.1
+  reflect_mem := by
+    rintro ρ ⟨h1, h2⟩
+    refine ⟨Z.reflect_mem ρ h1, ?_⟩
+    show (reflect ρ).re ≠ 1 / 2
+    have : (reflect ρ).re = 1 - ρ.re := by simp [reflect]
+    rw [this]
+    intro h; exact h2 (by linarith)
+  mult_reflect := fun ρ h => Z.mult_reflect ρ h.1
+  finite_window := fun T₁ T₂ =>
+    (Z.finite_window T₁ T₂).subset fun ρ hρ => ⟨hρ.1.1, hρ.2⟩
+
+/-- `N = N₀ + N_off`. -/
+theorem N_eq_N0_add_offLinePart (Z : ZeroConfig) (T₁ T₂ : ℝ) :
+    Z.N T₁ T₂ = Z.N0 T₁ T₂ + (offLinePart Z).N T₁ T₂ := by
+  have hfin := Z.finite_window T₁ T₂
+  have hsplit : Z.window T₁ T₂ = Z.window T₁ T₂ ∩ ZeroConfig.onLine ∪
+      (offLinePart Z).window T₁ T₂ := by
+    ext ρ
+    simp only [ZeroConfig.window, offLinePart, ZeroConfig.onLine, Set.mem_union, Set.mem_inter_iff,
+      Set.mem_setOf_eq]
+    tauto
+  have hdisj : Disjoint (Z.window T₁ T₂ ∩ ZeroConfig.onLine) ((offLinePart Z).window T₁ T₂) := by
+    rw [Set.disjoint_left]
+    rintro ρ ⟨-, h1⟩ ⟨⟨-, h2⟩, -⟩
+    exact h2 h1
+  calc Z.N T₁ T₂ = ∑ᶠ ρ ∈ Z.window T₁ T₂, Z.mult ρ := rfl
+    _ = ∑ᶠ ρ ∈ Z.window T₁ T₂ ∩ ZeroConfig.onLine ∪ (offLinePart Z).window T₁ T₂, Z.mult ρ := by
+        rw [← hsplit]
+    _ = ∑ᶠ ρ ∈ Z.window T₁ T₂ ∩ ZeroConfig.onLine, Z.mult ρ
+          + ∑ᶠ ρ ∈ (offLinePart Z).window T₁ T₂, Z.mult ρ :=
+        finsum_mem_union hdisj (hfin.subset Set.inter_subset_left)
+          ((offLinePart Z).finite_window T₁ T₂)
+    _ = Z.N0 T₁ T₂ + (offLinePart Z).N T₁ T₂ := rfl
+
+/-- The off-line windows of length `2` add up: `N_off(a, a + 2k) ≤ kM`. -/
+theorem offLinePart_N_le {Z : ZeroConfig} {M : ℕ} (hM : OffLineLocallyBounded Z M) (a : ℝ) :
+    ∀ k : ℕ, (offLinePart Z).N a (a + 2 * k) ≤ k * M
+  | 0 => by
+    simp only [Nat.cast_zero, mul_zero, add_zero, zero_mul, nonpos_iff_eq_zero]
+    unfold ZeroConfig.N ZeroConfig.window
+    refine finsum_mem_of_eqOn_zero fun ρ hρ => ?_
+    exact absurd hρ.2.2 (not_le.mpr hρ.2.1)
+  | k + 1 => by
+    have h1 := offLinePart_N_le hM a k
+    have hadd := Assembly.N_add (offLinePart Z) (a := a) (b := a + 2 * k) (c := a + 2 * ↑(k + 1))
+      (by have : (0 : ℝ) ≤ k := Nat.cast_nonneg k; linarith) (by push_cast; linarith)
+    have h2 : (offLinePart Z).N (a + 2 * k) (a + 2 * ↑(k + 1)) ≤ M := by
+      have := hM (a + 2 * k + 1)
+      have e1 : a + 2 * k + 1 - 1 = a + 2 * k := by ring
+      have e2 : a + 2 * k + 1 + 1 = a + 2 * ↑(k + 1) := by push_cast; ring
+      rw [e1, e2] at this
+      refine le_of_eq_of_le ?_ this
+      unfold ZeroConfig.N ZeroConfig.window
+      refine finsum_mem_congr ?_ fun _ _ => rfl
+      ext ρ
+      simp only [offLinePart, Set.mem_inter_iff, Set.mem_setOf_eq]
+      tauto
+    rw [hadd]
+    nlinarith
+
+/-- **The off-line local bound forces a critical proportion one.**  If every window `(S − 1, S + 1]`
+holds at most `M` off-line zeros and Riemann–von Mangoldt holds, then `N₀(T, 2T)/N(T, 2T) → 1`. -/
+theorem tendsto_N0_div_N_of_offLineLocallyBounded {Z : ZeroConfig} {M : ℕ}
+    (hM : OffLineLocallyBounded Z M) (hZ : RiemannVonMangoldt Z) :
+    Tendsto (fun T => (Z.N0 T (2 * T) : ℝ) / Z.N T (2 * T)) atTop (𝓝 1) := by
+  obtain ⟨C, T₀, hC⟩ := hZ.main
+  -- `N_off(T, 2T) ≤ M(T/2 + 1)`
+  have hoff : ∀ T : ℝ, 0 ≤ T →
+      ((offLinePart Z).N T (2 * T) : ℝ) ≤ M * (T / 2 + 1) := by
+    intro T hT
+    set k := ⌈T / 2⌉₊ with hk
+    have hk1 : T / 2 ≤ k := Nat.le_ceil _
+    have hk2 : (k : ℝ) < T / 2 + 1 := Nat.ceil_lt_add_one (by linarith)
+    have hmono : (offLinePart Z).N T (2 * T) ≤ (offLinePart Z).N T (T + 2 * k) := by
+      rw [Assembly.N_add (offLinePart Z) (a := T) (b := 2 * T) (c := T + 2 * k) (by linarith)
+        (by linarith)]
+      exact Nat.le_add_right _ _
+    have h := offLinePart_N_le hM T k
+    have : ((offLinePart Z).N T (2 * T) : ℝ) ≤ k * M := by exact_mod_cast hmono.trans h
+    nlinarith [(Nat.cast_nonneg M : (0 : ℝ) ≤ M)]
+  -- `N(T, 2T) ≥ (T/4π) log T` for large `T`
+  have hlog : Tendsto (fun T : ℝ => Real.log T) atTop atTop := Real.tendsto_log_atTop
+  have hNlow : ∀ᶠ T in atTop, T / (4 * Real.pi) * Real.log T ≤ (Z.N T (2 * T) : ℝ) := by
+    have hratio : Tendsto (fun T : ℝ => C * Real.log T / T) atTop (𝓝 0) := by
+      have := (Real.isLittleO_log_id_atTop).tendsto_div_nhds_zero
+      simpa [mul_div_assoc] using this.const_mul C
+    filter_upwards [eventually_ge_atTop (max T₀ (2 * Real.pi * Real.exp 8)),
+      hratio.eventually (gt_mem_nhds (show (0 : ℝ) < 1 / (8 * Real.pi) by positivity))]
+      with T hT hr
+    have hT₀ : T₀ ≤ T := le_trans (le_max_left _ _) hT
+    have hTe : 2 * Real.pi * Real.exp 8 ≤ T := le_trans (le_max_right _ _) hT
+    have hT0 : 0 < T := lt_of_lt_of_le (by positivity) hTe
+    have h1 := (abs_le.mp (hC T hT₀)).1
+    -- `ell1 T ≥ log T − 2 log(2π)` and `log(T/2π) ≥ 8`
+    have hl : l T = Real.log T - Real.log (2 * Real.pi) := by
+      rw [l, Real.log_div hT0.ne' (by positivity)]
+    have hlT : 8 ≤ l T := by
+      rw [l, ← Real.log_exp 8]
+      exact Real.log_le_log (Real.exp_pos 8) (by rw [le_div_iff₀ (by positivity)]; linarith)
+    have hell : Real.log T / 2 + 2 ≤ ell1 T := by
+      have h2 : (0 : ℝ) ≤ 2 * Real.log 2 - 1 := by
+        have := Real.log_two_gt_d9; linarith
+      have hlog2π : Real.log (2 * Real.pi) ≤ 3 * Real.log 2 := by
+        rw [show (3 : ℝ) * Real.log 2 = Real.log (2 ^ 3) by rw [Real.log_pow]; norm_num]
+        exact Real.log_le_log (by positivity) (by nlinarith [Real.pi_lt_d2])
+      have hlog2 := Real.log_two_gt_d9
+      rw [ell1]
+      linarith
+    have hCl : C * Real.log T ≤ T / (8 * Real.pi) := by
+      rw [div_lt_iff₀ hT0] at hr
+      have e8 : 1 / (8 * Real.pi) * T = T / (8 * Real.pi) := by ring
+      linarith
+    have hmain : T / (2 * Real.pi) * ell1 T ≥ T / (2 * Real.pi) * (Real.log T / 2 + 2) :=
+      mul_le_mul_of_nonneg_left hell (by positivity)
+    have e : T / (2 * Real.pi) * (Real.log T / 2 + 2) = T / (4 * Real.pi) * Real.log T
+        + T / Real.pi := by field_simp; ring
+    have hTπ : T / (8 * Real.pi) ≤ T / Real.pi := by
+      rw [div_le_div_iff₀ (by positivity) (by positivity)]; nlinarith [Real.pi_pos]
+    linarith
+  -- squeeze `1 − M(T/2 + 1)/((T/4π) log T) ≤ N₀/N ≤ 1`
+  have hupper : ∀ᶠ T in atTop, (Z.N0 T (2 * T) : ℝ) / Z.N T (2 * T) ≤ 1 := by
+    filter_upwards [hNlow, eventually_gt_atTop (1 : ℝ)] with T hN hT
+    have hNpos : 0 < (Z.N T (2 * T) : ℝ) :=
+      lt_of_lt_of_le (by have := Real.log_pos hT; positivity) hN
+    rw [div_le_one hNpos]
+    have := N_eq_N0_add_offLinePart Z T (2 * T)
+    exact_mod_cast (le_of_eq_of_le this.symm (Nat.le_add_right _ _) : Z.N0 T (2 * T) ≤ _)
+  have hlower : ∀ᶠ T in atTop,
+      1 - M * (T / 2 + 1) / (T / (4 * Real.pi) * Real.log T) ≤
+        (Z.N0 T (2 * T) : ℝ) / Z.N T (2 * T) := by
+    filter_upwards [hNlow, eventually_gt_atTop (1 : ℝ)] with T hN hT
+    have hL := Real.log_pos hT
+    have hD : 0 < T / (4 * Real.pi) * Real.log T := by positivity
+    have hNpos : 0 < (Z.N T (2 * T) : ℝ) := lt_of_lt_of_le hD hN
+    have hsplit : (Z.N0 T (2 * T) : ℝ) = Z.N T (2 * T) - (offLinePart Z).N T (2 * T) := by
+      have := N_eq_N0_add_offLinePart Z T (2 * T)
+      rw [this]; push_cast; ring
+    rw [hsplit, sub_div, div_self hNpos.ne']
+    have hO := hoff T (by linarith)
+    have hO0 : (0 : ℝ) ≤ (offLinePart Z).N T (2 * T) := Nat.cast_nonneg _
+    have : ((offLinePart Z).N T (2 * T) : ℝ) / Z.N T (2 * T)
+        ≤ M * (T / 2 + 1) / (T / (4 * Real.pi) * Real.log T) :=
+      div_le_div₀ (by positivity) hO hD hN
+    linarith
+  have hzero : Tendsto (fun T : ℝ => M * (T / 2 + 1) / (T / (4 * Real.pi) * Real.log T))
+      atTop (𝓝 0) := by
+    have hT : Tendsto (fun T : ℝ => (T / 2 + 1) / T) atTop (𝓝 (1 / 2)) := by
+      have h1 : Tendsto (fun T : ℝ => 1 / 2 + 1 / T) atTop (𝓝 (1 / 2 + 0)) :=
+        tendsto_const_nhds.add tendsto_inv_atTop_zero.congr' (by
+          filter_upwards [eventually_ne_atTop (0 : ℝ)] with T hT; simp)
+      rw [add_zero] at h1
+      refine h1.congr' ?_
+      filter_upwards [eventually_ne_atTop (0 : ℝ)] with T hT
+      field_simp
+    have hinv := tendsto_inv_atTop_zero.comp hlog
+    have h := (hT.mul hinv).const_mul (4 * Real.pi * M)
+    rw [mul_zero, mul_zero] at h
+    refine h.congr' ?_
+    filter_upwards [eventually_gt_atTop (1 : ℝ)] with T hT
+    have hL := Real.log_pos hT
+    simp only [Function.comp]
+    field_simp
+  have hlim : Tendsto (fun T : ℝ => 1 - M * (T / 2 + 1) / (T / (4 * Real.pi) * Real.log T))
+      atTop (𝓝 1) := by
+    simpa using (tendsto_const_nhds (x := (1 : ℝ))).sub hzero
+  exact tendsto_of_tendsto_of_tendsto_of_le_of_le' hlim tendsto_const_nhds hlower hupper
 
 end
 

@@ -1,7 +1,7 @@
 # AdelicKreinGeometry (AKG)
 
-Namespace `GaloisForLFunctions.AdelicKreinGeometry`; umbrella `AdelicKreinGeometry.lean`; 36 modules
-(26 root, `Haar/` 10). All results unconditional; RH appears only inside equivalences.
+Namespace `GaloisForLFunctions.AdelicKreinGeometry`; umbrella `AdelicKreinGeometry.lean`; 41 modules
+(27 root, `Haar/` 14). All results unconditional; RH appears only inside equivalences.
 
 ## 1. Motivation
 
@@ -95,11 +95,13 @@ External: `negIndex`, `IsHermKernel`, `IsPosDefKernel`, `gram`, `zetaKernel`, `k
 16. The archimedean place glues by a hyperplane: on `ℓ = 0` the successor's form is nonnegative; a negative
     subspace of `K` on `ℓ = 0` decouples from the pair `1, x ↦ x + L` (weights `L^{−1/2}`) because the successor
     cross terms are `ψ(L)·ℓ = 0`, so `κ(K(|a|) − c|a|^{−1/2}|b|) = κ^{(½)}(K) + 1`.
-17. On the zero side `ratCorr(u) = Σ_ρ u^{1/2−ρ} w_ρ` with summable weights; `u^{−1/2}|u^{1/2−ρ}| = u^{−Re ρ}` and
+17. Data invariant under a dilation `v₀ ≠ 1` (a prime tower is invariant under every other prime): `F` and
+    `v₀F` with weights `c`, `−v₀^{1/2}c` lie on `ℓ = 0` and carry `(1 − v₀^{1/2})²Q_F(c)`, so the hyperplane is free.
+18. On the zero side `ratCorr(u) = Σ_ρ u^{1/2−ρ} w_ρ` with summable weights; `u^{−1/2}|u^{1/2−ρ}| = u^{−Re ρ}` and
     `Re ρ > 0`, so dominated convergence makes Weil's correlation sub-boost and the gluing hyperplane free.
 
 **E. Axis-invisible kernels**
-18. Zero set of an index-≤1 kernel is a subgroup; axes generate `Aff(ℚ)`. Translation columns span `≤ κ`
+19. Zero set of an index-≤1 kernel is a subgroup; axes generate `Aff(ℚ)`. Translation columns span `≤ κ`
     dimensions with unipotent action ⇒ polynomial fibres of degree `< κ`, Gram rank `≤ κ²`; hyperbolic features
     give `κ ≤ d + 1` for `γ(1 − a^{−d})b^d`; dilation rescaling keeps `κ` under positive additions.
 
@@ -120,12 +122,13 @@ External: `negIndex`, `IsHermKernel`, `IsPosDefKernel`, `gram`, `zetaKernel`, `k
 | Pole state of `Aff(ℚ)` has `κ = 1`; conformal induction keeps `κ` | `negIndex_poleState`, `negIndex_conformalInduction` | proved |
 | Pole–successor signature formula `κ = κ₀(ψ) + 1`; index one at the real place, every `p`, and `∞` of `F(X)` | `negIndex_poleSuccessor_eq`, `negIndex_poleSuccessorState`, `negIndex_padicPoleSuccessor`, `negIndex_inftyPoleSuccessor` | proved |
 | Local signatures add over distinct places: a place assembly has `κ = k` (separating unit); `∞` and `p` give `κ = 2` | `negIndex_placeAssembly_eq`, `negIndex_real_add_padic` | proved |
+| Prime towers glue at full index: `κ(k(v_p(a)) − c|a|^{−1/2}|b|) = κ(k) + 1`; dilation-periodic data have `κ^{(½)} = κ` | `negIndex_archGlue_tower`, `boostPolarIndex_eq_negIndex_of_periodic` | proved |
 | Shell decomposition: local pole–successor form `= 2Re(X̄Y) − cR|X|² + c∫_0^R Σ_B |shell sum|²` at `p`, `= 2Re(X̄Y_R) + 2c∫_L^R |T_t|²` at `∞` | `hermQuad_gram_poleSuccessor_negUltra_eq`, `hermQuad_gram_poleSuccessorState_eq`, `hermQuad_gram_negUltra_eq`, `hermQuad_gram_negAbsRat_eq` | proved |
 | Haar carriers: one square off Hecke support (dilation discontinuous); every `κ ≥ 2` with both Haar axis readings; not positive + slope | `negIndex_haarOneNegativeSquare`, `negIndex_haarMixedPowerState`, `haarMixedQuadraticState_not_positive_add_slope` | proved |
 | Axis-invisible kernels: zero or `κ ≥ 2`; rank `≤ κ²`; fibres polynomial of degree `< κ` | `two_le_negIndex_of_zero_axes`, `rank_gram_le_square_of_zero_axes`, `exists_polynomial_translation_fibre_lt_index` | proved |
 | Integer successor of index `r`: affine period-defect space has dim `≤ r²` | `finite_affinePeriodSpace_of_integerSuccessor` | proved |
 | Archimedean gluing formula `κ(K(|a|) − c|a|^{−1/2}|b|) = κ^{(½)}(K) + 1`; for Weil `κ = κ^{(½)}(K_ζ) + 1`; sub-boost data (`‖K(λu)‖ = o(λ^{1/2})`) give `κ(K) + 1` | `negIndex_archGlue_eq`, `negIndex_weilArchState_eq`, `negIndex_archGlue_eq_of_subBoost` | proved |
-| **Weil's archimedean state counts the zeros**: `κ(ratCorr(|a|) − c|a|^{−1/2}|b|) = #{zeros right of the line} + 1` | `negIndex_weilArchState_eq_rightZeros`, `negIndex_weilArchState_eq_add_one`, `ratCorr_subBoost` | proved |
+| **Weil's archimedean state counts the zeros**: `κ(ratCorr(|a|) − c|a|^{−1/2}|b|) = #{zeros right of the line} + 1`; for every tempered configuration without zeros on `Re ρ = 0`, and for every primitive Dirichlet `L(s, χ)` | `negIndex_weilArchState_eq_rightZeros`, `negIndex_archGlue_orbitCorr`, `negIndex_archGlue_dirichlet`, `orbitCorr_subBoost` | proved |
 | Weil's dilation data with the archimedean successor: `max(1, κ(K_ζ)) ≤ κ ≤ κ(K_ζ) + 1`; finite iff `κ(K_ζ)` is | `negIndex_weilArchState_le`, `le_negIndex_weilArchState`, `one_le_negIndex_weilArchState`, `negIndex_weilArchState_lt_top_iff` | proved |
 | Finite-index state with Weil's dilation data and integer successor (indefinite Mautner) | — | open |
 
@@ -187,7 +190,25 @@ External: `negIndex`, `IsHermKernel`, `IsPosDefKernel`, `gram`, `zetaKernel`, `k
 | Poles at different places glue like a shared pole | They add: `κ(Φ_∞ + Φ_p) = 2` |
 | Weil's dilation data forbids a nonconstant successor at finite index | Only the integer one: with `−c|b|` the index is `κ(K_ζ) + ε`, `ε ∈ {0, 1}` |
 
-## 9. Context
+## 9. Success criteria and contributions
+
+The field is real, not a reformulation, when it has: intrinsic objects defined from `ℤ` without zeros (Hecke
+support, height, polar and boost-polar indices, conformal successors, point vectors, shells); a local signature
+theorem at each place and a gluing theorem (separable formula, pole–successor formula `κ₀ + 1`, additivity over
+places, archimedean gluing `κ^{(½)} + 1`); an additive–multiplicative comparison proved as an identity (the Gram
+identities of the pole–successor and archimedean states; for Weil's data the index identity
+`κ = #{zeros right of the line} + 1`); a conformal substitute for Frobenius (the pole–successor state); calibration
+over `𝔽_q(T)` (conformal successor and pole–successor state at `∞`; the Hecke wall there is open); selectivity (index
+laws are twin-blind; the archimedean states of distinct L-functions count their own zeros); edge control (running
+counterterms: the prime kernel needs `log N − γ`, the local shell forms carry `cR`; a null cone in the Weil limit
+is open).
+
+A **contribution** is an unconditional theorem about Hermitian forms of finite negative index on a stated group,
+assembly or place: it names its local data and its glue, computes, bounds or excludes an index (a new RH equivalence
+is not a contribution by itself), states what it gives for twins and over `𝔽_q`, and records the positive survivor
+of every no-go.
+
+## 10. Context
 
 **Uses** (import counts): HeckeKreinToeplitz 17, ArithmeticPositiveDuality 7, HTGeometry 3, BiarithmeticGeometry 2,
 RHTower 1, RenormalizedArithmeticPotentialTheory 1, ArithmeticLorentzianGeometry 1, ArithmeticKreinLangerTheory 1.
@@ -204,7 +225,7 @@ RHTower 1, RenormalizedArithmeticPotentialTheory 1, ArithmeticLorentzianGeometry
 | BiarithmeticGeometry | Affine translation unipotence and polynomial coefficients for period defects and fibres |
 | HilbertianExplicitFormulas, ArithmeticPolarization | Explicit formulas read only Weil's form; AKG tests the additive side as an index carrier |
 
-## 10. Big picture
+## 11. Big picture
 
 AKG turns the question "what positive object could carry both arithmetic operations" into an index question, and
 the answer is sharply constrained. Every natural arithmetic state, whether supported on integers, decaying in

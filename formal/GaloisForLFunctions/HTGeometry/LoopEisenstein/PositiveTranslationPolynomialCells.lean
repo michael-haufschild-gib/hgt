@@ -15,7 +15,8 @@ noncomputable section
 
 private theorem upper_scaled_diagonal {L : Type*} [Field L] (v : Lˣ) (t : L) :
     sl2Upper ((v : L) ^ 2 * t) * sl2Diagonal v = sl2Diagonal v * sl2Upper t := by
-  have hv : (v : L) * ((v⁻¹ : Lˣ) : L) = 1 := v.val_inv
+  have hv : (v : L) * ((v⁻¹ : Lˣ) : L) = 1 := by
+    rw [← Units.val_mul, mul_inv_cancel, Units.val_one]
   apply Matrix.SpecialLinearGroup.ext
   intro i j
   fin_cases i <;> fin_cases j <;>
@@ -25,7 +26,8 @@ private theorem upper_scaled_diagonal {L : Type*} [Field L] (v : Lˣ) (t : L) :
 
 private theorem lower_diagonal_scaled {L : Type*} [Field L] (v : Lˣ) (t : L) :
     sl2Lower t * sl2Diagonal v = sl2Diagonal v * sl2Lower ((v : L) ^ 2 * t) := by
-  have hv : (v : L) * ((v⁻¹ : Lˣ) : L) = 1 := v.val_inv
+  have hv : (v : L) * ((v⁻¹ : Lˣ) : L) = 1 := by
+    rw [← Units.val_mul, mul_inv_cancel, Units.val_one]
   apply Matrix.SpecialLinearGroup.ext
   intro i j
   fin_cases i <;> fin_cases j <;>

@@ -1,6 +1,7 @@
 import GaloisForLFunctions.RHTower.KiKimLeeTwoThirdsHorizon
 import GaloisForLFunctions.RHTower.Heat.HeatZeroDisplacement
 import GaloisForLFunctions.RHTower.DeBruijnNewmanHalfBound
+import GaloisForLFunctions.RHTower.Heat.TheLocalHeatThreshold
 
 /-!
 # The local de Bruijn–Newman constant
@@ -26,6 +27,11 @@ the heat after which the de Bruijn flow is real-rooted in the unit window about 
 So `c · depth²/log X ≤ Λ_X ≤ (2/3 + ε)/log X`: the de Bruijn pincer has the shape of the slice
 pincer (`TheLocalHeatThreshold`), and `Λ_X → 0`.  The global constant `Λ` is a supremum over bounded
 heights.
+
+**Comparison** (`exists_localHeatThreshold_le_localNewmanConstant`).  If `Λ_X ≤ M` for
+`|X − t| ≤ 1`, then `λ_t ≤ M log(t + 1)/(3c)`: a zero strictly inside its depth cone at `t` has its
+ordinate within `½` of `t`, and the lower bound above caps its depth² by `M log(t + 1)/c`; the
+cone-defect bound (`localHeatThreshold_le_of_cone`) then repairs the slice.
 -/
 
 open Complex Filter Topology Set
@@ -185,6 +191,56 @@ theorem exists_le_localNewmanConstant_of_offLine_zero :
   have hsq : (ρ.re - 1 / 2) ^ 2 = d ^ 2 := by rw [hd, sq_abs]
   rw [hsq]
   exact le_localNewmanConstant_of_nonreal hw hwim hwre
+
+/-- **The slice threshold is at most `log t` times the local de Bruijn–Newman constant.**  There
+is `c > 0` with: if `Λ_X ≤ M` for every `|X − t| ≤ 1` and `t` is large, then
+`λ_t ≤ M log(t + 1)/(3c)`. -/
+theorem exists_localHeatThreshold_le_localNewmanConstant :
+    ∃ c : ℝ, 0 < c ∧ ∃ X₀ : ℝ, ∀ t M : ℝ, X₀ + 1 ≤ t → 0 ≤ M →
+      (∀ X : ℝ, |X - t| ≤ 1 → localNewmanConstant X ≤ M) →
+        localHeatThreshold t ≤ Real.log (t + 1) * M / (3 * c) := by
+  obtain ⟨c, hc, X₀, hX₀, h⟩ := exists_le_localNewmanConstant_of_offLine_zero
+  refine ⟨c, hc, X₀, fun t M ht hM hloc => ?_⟩
+  have hL : 0 < Real.log (t + 1) := Real.log_pos (by linarith)
+  refine localHeatThreshold_le_of_cone (by positivity) fun q => ?_
+  have hre : (xiSpectralPoint q).re = (q.1 : ℂ).im := by simp [xiSpectralPoint]
+  have him : (xiSpectralPoint q).im = -((q.1 : ℂ).re - 1 / 2) := by simp [xiSpectralPoint]
+  rw [hre, him, neg_sq]
+  have h3 : 3 * (Real.log (t + 1) * M / (3 * c)) = Real.log (t + 1) * M / c := by
+    field_simp
+  rw [h3]
+  rcases le_or_gt (((q.1 : ℂ).re - 1 / 2) ^ 2) (((q.1 : ℂ).im - t) ^ 2) with hcone | hcone
+  · have : 0 ≤ Real.log (t + 1) * M / c := by positivity
+    linarith
+  -- inside the cone: the ordinate is within `½` of `t` and the zero is off the line
+  have hρ := xi_eq_zero_of_mem_divisor_support q.1
+  have hre1 : (q.1 : ℂ).re < 1 := by
+    by_contra hge; push Not at hge; exact xi_ne_zero_of_one_le_re hge hρ
+  have hre0 : 0 < (q.1 : ℂ).re := by
+    by_contra hle
+    have h1 : xi (1 - (q.1 : ℂ)) = 0 := by rw [xi_one_sub, hρ]
+    exact xi_ne_zero_of_one_le_re
+      (by simp only [Complex.sub_re, Complex.one_re]; linarith only [not_lt.mp hle]) h1
+  have hdepth : ((q.1 : ℂ).re - 1 / 2) ^ 2 < 1 / 4 := by nlinarith
+  have hγ : |(q.1 : ℂ).im - t| < 1 / 2 := by
+    have : ((q.1 : ℂ).im - t) ^ 2 < 1 / 4 := by linarith
+    rw [abs_lt]; constructor <;> nlinarith
+  have hne : (q.1 : ℂ).re ≠ 1 / 2 := fun he => by
+    rw [he, sub_self] at hcone
+    nlinarith [sq_nonneg ((q.1 : ℂ).im - t)]
+  have hγX : X₀ ≤ (q.1 : ℂ).im := by have := abs_lt.mp hγ; linarith
+  have hlow := h (q.1 : ℂ) hρ hγX hne
+  have hup := hloc (q.1 : ℂ).im (by linarith [abs_nonneg ((q.1 : ℂ).im - t)])
+  have hLγ : 0 < Real.log (q.1 : ℂ).im := Real.log_pos (by linarith)
+  have hlogle : Real.log (q.1 : ℂ).im ≤ Real.log (t + 1) :=
+    Real.log_le_log (by linarith) (by have := abs_lt.mp hγ; linarith)
+  have h4 : c * ((q.1 : ℂ).re - 1 / 2) ^ 2 ≤ M * Real.log (q.1 : ℂ).im := by
+    have := hlow.trans hup
+    rwa [div_le_iff₀ hLγ] at this
+  have h5 : ((q.1 : ℂ).re - 1 / 2) ^ 2 ≤ Real.log (t + 1) * M / c := by
+    rw [le_div_iff₀ hc]
+    nlinarith [mul_le_mul_of_nonneg_left hlogle hM]
+  nlinarith [sq_nonneg ((q.1 : ℂ).im - t)]
 
 end
 

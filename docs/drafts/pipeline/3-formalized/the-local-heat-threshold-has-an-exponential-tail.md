@@ -9,13 +9,15 @@
   `|{t ∈ [T₁ + ½, T₂ − ½] : λ_t > κ²/(3L²)}| ≤ A(T₂ − T₁)e^{−κ/2400} + K L²`.
   Corollary: for every `κ > 0`, eventually
   `|{t ∈ [U/4 + 2, U/2 − 2] : λ_t > κ/log U}| ≤ A U exp(−√(3κ log U)/2400) + K log² U`.
-  Mean value: `∫_{U/4+2}^{U/2−2} λ_t dt ≤ C U/log² U` for all large `U`.
+  Mean value: `∫_{U/4+2}^{U/2−2} λ_t dt ≤ C U/log² U` for all large `U`. Zero set: for all large `V`,
+  `|{t ∈ [0, V] : λ_t = 0}| ≥ (433/500) V − 67/1000`.
 
 ## Lean
 Module `RHTower/Heat/TheLocalHeatThresholdHasAnExponentialTail.lean` (namespace `RHTower.DeBruijn`):
 `exists_shadow_of_lt_localHeatThreshold`, `exists_volume_localHeatThreshold_gt_le_exp`,
 `eventually_volume_localHeatThreshold_gt_le_exp`, `le_add_sum_layers`, `setIntegral_le_layers`,
-`sum_layer_exp_le`, `layer_sum_le`, `exists_integral_localHeatThreshold_le`.
+`sum_layer_exp_le`, `layer_sum_le`, `exists_integral_localHeatThreshold_le`,
+`eventually_volume_localHeatThreshold_eq_zero_ge_selberg`.
 Axioms: `propext`, `Classical.choice`, `Quot.sound`.
 
 ## Gates
@@ -38,6 +40,11 @@ Mean value. `λ_t` is lower semicontinuous, hence measurable, and `0 ≤ λ_t �
 `∫ λ_t ≤ λ_0 ΔT + Σ_j (λ_{j+1} − λ_j)(AΔT e^{−(j+2)/2400} + KL²)`. Here `λ_{j+1} − λ_j = (2j + 5)/(3L²)` for
 `j < N` and `Σ_j (2j + 5)e^{−(j+2)/2400} ≤ 18 · 2400³` (`e^y ≥ y³/6`, telescoping); the top layer has
 weight `≤ 1/12` and `e^{−(N+2)/2400} ≤ e^{−L/9600} ≤ L^{−2}`; the `KL²` terms total `≤ KL²/12 ≤ U/L²`.
+
+Zero set. The corpus gives every slice coefficient `≥ 0` on measure `≥ (433/500) V − 67/1000`
+(`eventually_volume_sliceCoeff_nonneg_ge_upper`: shadows of the off-line zeros bounded by the
+Selberg-weight moment `67/1000`), and `λ_t > 0` iff some coefficient is negative
+(`localHeatThreshold_pos_iff`).
 
 ## What it changes (B)
 `λ_t` is a depth² gauge in distribution as well as pointwise: it inherits the exponential depth law

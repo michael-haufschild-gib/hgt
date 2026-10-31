@@ -677,27 +677,27 @@ theorem stencilSlope_nonneg {c : ℕ →₀ ℤ} (hc0 : c 0 = 0) (hbal : IsBalan
   set E := stencilErrorConst c
   have hE : 0 ≤ E := stencilErrorConst_nonneg c
   obtain ⟨N, hN1, hNlt⟩ : ∃ N : ℕ, 1 ≤ N ∧ stencilSlope c * (N : ℝ) + E * (1 + Real.log N) < 0 := by
-    set M := Nat.ceil ((2 * E + 2) / (-stencilSlope c)) + 2
+    set M := Nat.ceil ((3 * E + 2) / (-stencilSlope c)) + 2
     have hM1 : 1 ≤ M := by omega
     refine ⟨M ^ 2, Nat.one_le_pow 2 M hM1, ?_⟩
     have hM_pos : (0 : ℝ) < M := by exact_mod_cast (by omega : 0 < M)
-    have hM_ge : (2 * E + 2) / (-stencilSlope c) ≤ M :=
+    have hM_ge : (3 * E + 2) / (-stencilSlope c) ≤ M :=
       (Nat.le_ceil _).trans (by exact_mod_cast Nat.le_add_right _ 2)
     have hM2 : (2 : ℝ) ≤ M := by exact_mod_cast Nat.le_add_left 2 _
     have hlogM : Real.log ((M ^ 2 : ℕ) : ℝ) ≤ 2 * M := by
       rw [Nat.cast_pow, Real.log_pow, Nat.cast_ofNat]
       have := Real.log_le_sub_one_of_pos hM_pos
       linarith
-    have hmul : 2 * E + 2 ≤ (M : ℝ) * (-stencilSlope c) :=
+    have hmul : 3 * E + 2 ≤ (M : ℝ) * (-stencilSlope c) :=
       (div_le_iff₀ (by linarith)).mp hM_ge
-    have hmulM : (2 * E + 2) * (M : ℝ) ≤ (M : ℝ) * (-stencilSlope c) * (M : ℝ) :=
+    have hmulM : (3 * E + 2) * (M : ℝ) ≤ (M : ℝ) * (-stencilSlope c) * (M : ℝ) :=
       mul_le_mul_of_nonneg_right hmul hM_pos.le
     have hElog : E * (1 + Real.log ((M ^ 2 : ℕ) : ℝ)) ≤ E * (1 + 2 * (M : ℝ)) :=
       mul_le_mul_of_nonneg_left (by linarith) hE
     have hcast_sq : stencilSlope c * ((M ^ 2 : ℕ) : ℝ) = -((M : ℝ) * (-stencilSlope c) * (M : ℝ)) := by
       rw [Nat.cast_pow]; ring
-    have h2M : E * (1 + 2 * (M : ℝ)) < (2 * E + 2) * (M : ℝ) := by
-      have hid : (2 * E + 2) * (M : ℝ) - E * (1 + 2 * (M : ℝ)) =
+    have h2M : E * (1 + 2 * (M : ℝ)) < (3 * E + 2) * (M : ℝ) := by
+      have hid : (3 * E + 2) * (M : ℝ) - E * (1 + 2 * (M : ℝ)) =
           E * ((M : ℝ) - 1) + 2 * (M : ℝ) := by ring
       have hEm : 0 ≤ E * ((M : ℝ) - 1) := mul_nonneg hE (by linarith)
       linarith
@@ -1170,7 +1170,7 @@ theorem single_prime_hecke_slope_ge {c : ℕ →₀ ℤ} {p₀ K m R : ℕ} (hp�
       rw [ne_eq, div_eq_one_iff_eq hp0.ne']
       linarith
     rw [geom_sum_eq hne, one_div_pow, mul_div_assoc',
-      div_eq_div_iff (show (1 : ℝ) / p₀ - 1 ≠ 0 by linarith) (show (p₀ : ℝ) - 1 ≠ 0 by linarith)]
+      div_eq_div_iff (sub_ne_zero.mpr hne) (show (p₀ : ℝ) - 1 ≠ 0 by linarith)]
     have hp_inv : (p₀ : ℝ) * (1 / (p₀ : ℝ) - 1) = 1 - (p₀ : ℝ) := by
       rw [mul_sub, mul_one_div_cancel hp0.ne', mul_one]
     rw [mul_assoc, hp_inv]

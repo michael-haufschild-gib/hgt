@@ -1,6 +1,6 @@
 # Discrete local Haar modulus is residue-normalized valuation
 
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
 - **Parent:** [Actual elliptic moduli](elliptic-local-haar-moduli-equal-normalized-magnitudes.md).
 - **Statement:** For a nontrivially integer-valued field with compact integer
   ring and `exp(-1)` in its valuation range, additive Haar modulus of every
@@ -25,4 +25,5 @@ actual uniformizers in the elliptic specialization.
 ## Lean
 
 `HTGeometry/LoopEisenstein/DiscreteHaarMagnitude.lean`:
-`distribHaarChar_eq_residueMagnitude`. Direct audit pending.
+`distribHaarChar_eq_residueMagnitude`. Direct Lean and transitive axiom audits passed; dependencies are exactly
+`propext`, `Classical.choice`, and `Quot.sound`.

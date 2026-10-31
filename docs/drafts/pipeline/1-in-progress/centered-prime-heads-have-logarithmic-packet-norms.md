@@ -1,0 +1,28 @@
+# Centered prime heads have logarithmic packet norms
+
+- **Stage:** 1-in-progress
+- **Type:** CONJECTURE
+- **Source:** [Q1/O1](three-frontier-questions-full-solutions.md);
+  [affine selection](../3-formalized/affine-shell-correlations-select-conductor-quotients.md);
+  [head boundary](../3-formalized/prime-conductor-heads-and-tails-have-opposite-torsion-limits.md).
+
+Let `D_ml(k)` be the normalized complete-period mean of `c_m(n)c_l(kn)`
+and set
+
+`S_K(m,l)=sum_(k<K)Lambda(k)/k [D_ml(k)+D_lm(k)−2delta_ml]`.
+
+For every `Q,K` and real coefficients, conjecture the uniform bound
+
+`|sum_(m,l≤Q) a_m a_l S_K(m,l)|`
+`≤[6log Q+log4+4] sum_(m≤Q)a_m²`.
+
+Affine selection makes each `D_ml(k)` nonnegative and each diagonal entry
+either zero or one. For distinct conductors, partial head means therefore
+increase from zero to `I(m,l)/sqrt(phi(m)phi(l))`. Centered diagonal means
+decrease from zero to `−2tameDifferent(m)`.
+
+These entrywise intervals bound the absolute packet form by the torsion
+pairing on absolute coefficients plus `2sum tameDifferent(m)a_m²`.
+The proved torsion bound costs `4log Q+log4+4`; the tame term costs `2log Q`.
+The assertion concerns complete-period means. Transfer to moving finite
+horizons remains separate.

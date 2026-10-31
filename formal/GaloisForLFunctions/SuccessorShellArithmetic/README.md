@@ -1,7 +1,7 @@
 # SuccessorShellArithmetic (SSh)
 
-Namespace `GaloisForLFunctions.SuccessorShellArithmetic`; umbrella `SuccessorShellArithmetic.lean`; 29 modules
-(6 root, `TopBand/` 11, `Conductor/` 12). All results unconditional; RH appears only inside equivalences.
+Namespace `GaloisForLFunctions.SuccessorShellArithmetic`; umbrella `SuccessorShellArithmetic.lean`; 31 modules
+(6 root, `TopBand/` 11, `Conductor/` 14). All results unconditional; RH appears only inside equivalences.
 
 ## 1. Motivation
 
@@ -43,6 +43,7 @@ Profile `φ` (`C²`, support `[0,1]`), `M = ∫φ²`, `q = (∫φ)²/M`, `G = �
 | Harmonic Gram | `Σ_(n≤N)u_m(n)u_l(n)/n`, `u_m=c_m/√φ(m)` | finite part `γδ_ml−I(m,l)/√(φ(m)φ(l))`, with torsion intersection `I` |
 | Affine correlation | `Σ_(n<M)c_m(n)c_l(kn+h)` | `M c_l(h)` exactly when `m=l/gcd(l,k)`, zero otherwise |
 | Prime finite part | `⟨v_m,N,P_N v_l,N⟩−δ_ml log N`, `v_m,N=u_m/√(n log N)` | `−I(m,l)/√(φ(m)φ(l))−δ_ml(log m+τ(m))` |
+| Prime head and boundary | `primeConductorHeadPairing`, `primeConductorBoundaryFinitePart` | centered head limit `+I/√(φ(m)φ(l))−δ_ml(log m+τ(m))`; complementary boundary `−2I/√(φ(m)φ(l))` |
 | Twin shell | `twinShellForm` | shell weighted by `ω(k)(1 − ω(km)ω(km + h))` |
 
 External: `nonRatioForm`, `atomDilate` (SSHA); `poleVector`, `poleDefect`, `completeWeilMatrix`,
@@ -95,9 +96,11 @@ External: `nonRatioForm`, `atomDilate` (SSHA); `poleVector`, `poleDefect`, `comp
     This selects every mixed entry of the complete-period affine packet form.
 15. The full prime-row residual vanishes in norm. Pairing it with a conductor mode and retaining the
     harmonic Gram finite part gives the exact prime finite part, including diagonal `−2log m`.
+16. Period averaging of the completed upward correction gives the positive torsion head.
+    Fixed-dilation harmonic averaging preserves it; subtracting from the full prime form leaves `−2I`.
 
 **E. Gauge**
-16. For completely multiplicative sign `ω`: `ω(k) − ω(m)ω(n) = ω(k)(1 − ω(km)ω(n))`, zero on ratio pairs.
+17. For completely multiplicative sign `ω`: `ω(k) − ω(m)ω(n) = ω(k)(1 − ω(km)ω(n))`, zero on ratio pairs.
 
 ## 5. Pillar theorems
 
@@ -122,6 +125,8 @@ External: `nonRatioForm`, `atomDilate` (SSHA); `poleVector`, `poleDefect`, `comp
 | Uniform quadratic tail `Q(Q−1)/(N+1)` times mass; logarithmic finite-horizon Gram budget | `abs_harmonicGram_quadratic_torsion_remainder`, `abs_harmonicGram_sub_log_mass_le` | proved |
 | Affine shell correlation selects `m=l/gcd(l,k)`; exact finite packet expansion | `sum_range_ramanujanLagCoefficient_mul_affine`, `sum_range_ramanujanPacket_mul_affine` | proved |
 | Full prime finite part `−I/√(φ(m)φ(l))−δ_ml(log m+τ(m))`; exact packet polarization | `tendsto_primeConductorPairing_finitePart`, `tendsto_primeConductorPacket_finitePart` | proved |
+| Exact prime head at the full horizon; complementary boundary limit `−2I/√(φ(m)φ(l))` | `primeConductorHeadPairing_horizon`, `tendsto_primeConductorBoundaryFinitePart` | proved |
+| Prime logarithmic moment `Σ_(n≤N)Λ(n)log(n)/n=(log N)²/2+o(log N)` | `tendsto_primeHeadLogMoment_remainder` | proved |
 | Reserve `W ≥ a c⁻⁷(D − C log(2c)S)`, uniformly for `1≤c≤(log log N)^α`, `0<α<1/16` | CACT `exists_completeWeil_logarithmic_defect_reserve_iteratedLog` | proved |
 
 ## 6. Tools
@@ -136,6 +141,7 @@ External: `nonRatioForm`, `atomDilate` (SSHA); `poleVector`, `poleDefect`, `comp
 - Positive source/profile autocorrelation weights and smoothed square completion.
 - Exact harmonic finite parts, torsion identification, and a common quadratic tail at conductor scale `Q²/N`.
 - Exact affine conductor selection and full prime finite parts on every fixed finite packet.
+- Exact fixed-head limits and their complementary torsion boundary.
 - Common complete-conductor residual bounds on every logarithmic conductor range.
 
 **To build**
@@ -171,8 +177,8 @@ External: `nonRatioForm`, `atomDilate` (SSHA); `poleVector`, `poleDefect`, `comp
 
 ## 9. Context
 
-**Uses** (import counts): RenormalizedArithmeticPotentialTheory 10, RHTower 5, SignedArithmeticHodgeTheory 2,
-HTGeometry 2, CriticalArithmeticCorrelationTheory 3, ArithmeticElectrostatics 1,
+**Uses** (import counts): RenormalizedArithmeticPotentialTheory 12, RHTower 8, SignedArithmeticHodgeTheory 2,
+HTGeometry 3, CriticalArithmeticCorrelationTheory 3, ArithmeticElectrostatics 1,
 SpacingScaleHarmonicAnalysis 1, CompletedArithmeticForms 1,
 BiScaleUncertainty 1, BezoutValuationIncidence 1, ArithmeticPositiveDuality 1, ArithmeticLorentzianGeometry 1,
 ArithmeticIntersectionTheory 1.

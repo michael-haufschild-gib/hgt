@@ -63,4 +63,6 @@ Formalized, with direct audits and standard axiom closures:
 
 - `HeckeKreinToeplitz/Index/ConstantMatrixInertia.lean`: a constant perturbation of negative identity on `n+1` coordinates retains at least `n` negative directions.
 
-Required Lean results: projected Gram limit; positive-slope extension and the actual adelic restriction. The positive structural conclusions are the nonnegative moving subspaces and their finite cyclic bound. The stronger positive-plus-slope decomposition remains a separate conjecture.
+- `AdelicKreinGeometry/Haar/CyclicGramLimit.lean`: near-identity fixed-projection Grams converge to `J−I`; every integer-invariant Haar kernel with continuous dilation reading has infinite negative index.
+
+Required Lean results: removal of the integer-invariance restriction; positive-slope extension and the actual adelic restriction. The positive structural conclusions are the nonnegative moving subspaces and their finite cyclic bound. The stronger positive-plus-slope decomposition remains a separate conjecture.

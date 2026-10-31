@@ -67,7 +67,9 @@ Lean and axiom audits. [Proof and declarations](../3-formalized/actual-elliptic-
 
 This provides the quotient measure. [Scalar additive periodization](../3-formalized/elliptic-additive-haar-periodizes-over-the-actual-function-field.md)
 over the actual function field is also audited, including nonnegative Tonelli
-unfolding. Relative finite-cell periodization and the identification of local-integral products with the actual adelic integral
+unfolding. [Actual local Haar moduli](../3-formalized/elliptic-local-haar-moduli-equal-normalized-magnitudes.md)
+equal the normalized finite-place and infinity magnitudes, with direct Lean
+and axiom audits. Relative finite-cell periodization and the identification of local-integral products with the actual adelic integral
 remain necessary for unfolding.
 
 ## Convergence mechanism to test
