@@ -518,7 +518,7 @@ theorem isPosDefKernel_heckeState_of_local {s : ℝ} (hs : 1 / 2 ≤ s) :
     show heckeState s ((x a)⁻¹ * x b) =
       ∏ ℓ ∈ Finset.univ.biUnion F, localHecke ℓ s ((x a)⁻¹ * x b)
     exact heckeState_eq_prod_localHecke s ((x a)⁻¹ * x b) hS
-      (Finset.subset_biUnion_of_mem F (Finset.mem_univ (a, b)))
+      (Finset.subset_biUnion_of_mem F (x := (a, b)) (Finset.mem_univ _))
   rw [e]
   exact (posSemidef_gram_iff hP.1).mp hP n x
 

@@ -12,6 +12,10 @@ For `Q,N≥2`, put `M=sum_(m≤Q)a_m²`, `v_m,N=u_m/sqrt(n log N)`,
 `|<sum a_m v_m,N,P_N sum a_m v_m,N>−log N·M+T+L|`
 `≤C[(1+log Q)²/log N+Q⁴/(N^(1/4)log N)]M`.
 
+The harmonic Gram finite part would then cancel the same torsion term in
+`<sum a_m v_m,N,[(log N)I−P_N]sum a_m v_m,N>`, leaving
+`sum a_m²[gamma+log m+tau(m)]` with the same error after enlarging `C`.
+
 ## Proposed mechanism
 
 Let `D_k` be exact conductor dilation and `E_k=D_k−I`. The centered

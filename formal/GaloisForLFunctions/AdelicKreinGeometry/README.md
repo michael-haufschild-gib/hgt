@@ -391,4 +391,5 @@ square needs a carrier that escapes nothing. A reformulation is not a reduction.
 - Haar carriers (`Haar/`): `OneNegativeSquare`, `IndexPreservation`, `ContinuousDilationsNeedInfiniteIndex`,
   `MixedPolynomialPerturbation`, `AxisInvisibility`, `FiniteRankPerturbations`, `PolynomialPerturbations`,
   `PowerKernels`, `PeriodDefects`, `PolynomialCorrection`, `TranslationMovingPositivity`, `CyclicOrbits`,
-  `CyclicHecke`, `CyclicGramLimit`, `FiniteIndexObstruction`, `ScaledHaarObstruction`.
+  `CyclicHecke`, `CyclicGramLimit`, `FiniteIndexObstruction`, `ScaledHaarObstruction`,
+  `PositiveAffineObstruction`.

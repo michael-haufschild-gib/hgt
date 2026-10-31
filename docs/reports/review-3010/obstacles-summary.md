@@ -404,9 +404,9 @@ Each item is a mechanism that would create positivity or precision from structur
 - **The situation:** all inter-prime coupling passes through the archimedean place (route-unification ledger §3, Reading 3).
 - **What the corpus rules out:**
   - On Aff(ℚ) the integer successor cannot carry Weil's correlation positively: they are spectrally singular, and a ℤ-periodic successor with continuous dilation part is constant [S].
-  - Every Hermitian kernel on `Aff(ℚ)` with a nonzero integer-Haar multiple and dilation reading continuous at one has infinite negative index. The zero-axis polynomial correction removes any integer-period defect before the cyclic Gram-limit argument. [Lean theorem and verification boundary](../../drafts/pipeline/1-in-progress/cyclic-haar-averages-force-infinite-index-at-continuous-dilations.md).
+  - Every Hermitian kernel on `Aff(ℚ)` with a nonzero integer-Haar multiple and dilation reading continuous at one has infinite negative index. The zero-axis polynomial correction removes any integer-period defect before the cyclic Gram-limit argument. Extension by zero gives the same obstruction on `Aff⁺(ℚ)`. [Lean theorems and verification boundary](../../drafts/pipeline/1-in-progress/cyclic-haar-averages-force-infinite-index-at-continuous-dilations.md).
   - The Bost–Connes states are PD for β > 1 with Hecke exponent β/2 [S], and at s = 1/2 the Hecke state is the Haar state [L].
-- **The remaining scope:** an adelic state whose archimedean dilation part is Weil's correlation and whose finite-adelic part is the Haar state at the critical temperature. The rational-affine obstruction is proved; its positive-slope and actual adelic restrictions, and the positive structural decomposition exposed by the obstruction, remain to be formalized.
+- **The remaining scope:** an adelic state whose archimedean dilation part is Weil's correlation and whose finite-adelic part is the Haar state at the critical temperature. The rational-affine obstruction is proved for full and positive slopes; the actual adelic restriction and positive structural decomposition remain to be formalized.
 
 ## 2.6 Does crossing the walls need a new field?
 

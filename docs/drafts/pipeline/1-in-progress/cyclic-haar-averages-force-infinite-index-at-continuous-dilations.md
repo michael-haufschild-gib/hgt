@@ -51,9 +51,10 @@ The argument also covers every nonzero Haar multiple `c·1_ℤ`. Hermitian symme
 Formalized, with direct audits and standard axiom closures:
 
 - `BiarithmeticGeometry/Affine/PositiveAffineIndex.lean` and `PositiveAffineAction.lean`: positive slopes have index two; injective rational-linear translation maps induce injective positive affine homomorphisms.
+- `AdelicKreinGeometry/Haar/PositiveAffineObstruction.lean`: `negIndex_posAffine_eq_top_of_nonzero_haar_continuous_dilation` transfers the obstruction to positive slopes by extension with index bound `2r`.
 - `AdelicKreinGeometry/Haar/ScaledHaarObstruction.lean`: every nonzero Haar multiple has infinite index with continuous dilations. Negative scalars already have infinite translation index; positive scalars normalize to the integer successor.
 - `AdelicKreinGeometry/Haar/FiniteIndexObstruction.lean`: `negIndex_eq_top_of_haar_continuous_dilation` proves the stated rational-affine obstruction without an integer-invariance premise, using the zero-axis polynomial correction.
 - `AdelicKreinGeometry/Haar/CyclicGramLimit.lean`: fixed-projection Grams converge to `J−I`. `BiarithmeticGeometry/Affine/NearIdentityGrids.lean` supplies the rational grids; `HeckeKreinToeplitz/Index/ConstantMatrixInertia.lean` supplies their limiting negative directions.
 - `AdelicKreinGeometry/Haar/CyclicHecke.lean`: squared moving-column correlations are bounded by the reciprocal denominator of the dilation ratio. Its inputs are cyclic orthogonal projections, moving-subspace positivity, Haar orbit norms, and Cauchy–Schwarz.
 
-Required Lean results: positive-slope extension and the actual adelic restriction. The positive structural conclusions are the nonnegative moving subspaces and their finite cyclic bound. The stronger positive-plus-slope decomposition remains a separate conjecture.
+Required Lean results: the actual finite-adelic Haar coefficient and the adelic restriction. The positive structural conclusions are the nonnegative moving subspaces and their finite cyclic bound. The stronger positive-plus-slope decomposition remains a separate conjecture.

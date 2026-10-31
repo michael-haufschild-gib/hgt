@@ -1,3 +1,4 @@
+import GaloisForLFunctions.AdelicKreinGeometry.Haar.PositiveAffineObstruction
 import GaloisForLFunctions.AdelicKreinGeometry.Haar.ScaledHaarObstruction
 import GaloisForLFunctions.AdelicKreinGeometry.Haar.FiniteIndexObstruction
 import GaloisForLFunctions.AdelicKreinGeometry.Haar.CyclicGramLimit

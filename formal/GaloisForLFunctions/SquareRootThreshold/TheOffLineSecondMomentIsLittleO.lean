@@ -13,8 +13,9 @@ So the off-line first moment `Σ m (Re ρ − ½)₊ ≤ (67/1000) V` sits at de
 
 **Deep zeros** (`tendsto_offLineCountBeyond_div`, `eventually_volume_deepWindow_le`).  For every
 fixed depth `d₀ > 0` the zeros with `Re ρ ≥ ½ + d₀` number `o(V)`, so the window centres
-`S ∈ [T − 1, 2T + 1]` whose window `|Im ρ − S| ≤ 1` holds a zero of depth `≥ d₀` have measure `o(T)`:
-the deep-companion input of the lag family holds, with no companion at all, for almost all heights.
+`S ∈ [T − 1, 2T + 1]` whose window `|Im ρ − S| ≤ 1` holds a zero of depth `≥ d₀` have measure
+`o(T)`: the deep-companion input of the lag family holds, with no companion at all, for almost all
+heights.
 
 **Proof.**  For `x ≤ ½`, `x₊² ≤ ½ (x − d)₊ + d x₊` (`sq_max_le_half_tail_add`): below `d` use
 `x ≤ d`, above it `x(x − d) ≤ ½(x − d)`.  With `d = R/log V`, the tail law with Selberg's mollifier
@@ -23,7 +24,7 @@ the deep-companion input of the lag family holds, with no companion at all, for 
 makes `d Σ m x₊ ≤ (67/1000) R V/log V = o(V)`.
 -/
 
-open Filter Topology
+open Filter Topology Set
 
 namespace RHTower
 
@@ -135,18 +136,14 @@ theorem tendsto_offLineSecondMoment_div :
 
 /-! ## Deep zeros -/
 
-/-- The tail is antitone in the shift. -/
-theorem offLineTail_anti {d d' : ℝ} (h : d ≤ d') (V : ℝ) : offLineTail d' V ≤ offLineTail d V :=
-  Finset.sum_le_sum fun z _ => mul_le_mul_of_nonneg_left
-    (max_le_max (by linarith) le_rfl) (Nat.cast_nonneg _)
-
 /-- **Deep zeros are `o(V)`.**  For `d₀ > 0`, `#{Re ρ ≥ ½ + d₀, 0 < Im ρ ≤ V} = o(V)`. -/
 theorem tendsto_offLineCountBeyond_div {d₀ : ℝ} (hd₀ : 0 < d₀) :
     Tendsto (fun V => offLineCountBeyond d₀ V / V) atTop (𝓝 0) := by
   rw [Metric.tendsto_atTop]
   intro ε hε
   obtain ⟨R, hR0, hRg⟩ : ∃ R : ℝ, 0 < R ∧ selbergTailRate R < ε * d₀ := by
-    obtain ⟨R, hR⟩ := (tendsto_selbergTailRate.eventually (gt_mem_nhds (by positivity))).and
+    obtain ⟨R, hR⟩ := (tendsto_selbergTailRate.eventually
+      (gt_mem_nhds (show (0 : ℝ) < ε * d₀ by positivity))).and
       (eventually_gt_atTop (0 : ℝ)) |>.exists
     exact ⟨R, hR.2, hR.1⟩
   have hev : ∀ᶠ V in atTop, offLineCountBeyond d₀ V ≤ ε / 2 * V := by
@@ -158,7 +155,7 @@ theorem tendsto_offLineCountBeyond_div {d₀ : ℝ} (hd₀ : 0 < d₀) :
       rw [div_le_iff₀ hL0]; rw [div_le_iff₀ hd₀] at hL; linarith
     have h1 := mul_offLineCountBeyond_le_offLineTail (d₀ / 2) V
     rw [show 2 * (d₀ / 2) = d₀ by ring] at h1
-    have h2 := offLineTail_anti hshift V
+    have h2 := offLineTail_anti hshift (T := V)
     have hπ : (1 : ℝ) ≤ 4 * Real.pi := by linarith [Real.pi_gt_three]
     have h3 : offLineTail (R / Real.log V) V ≤ 2 * ε * d₀ * V / (4 * Real.pi) := by
       rw [le_div_iff₀ (by positivity)]; linarith
