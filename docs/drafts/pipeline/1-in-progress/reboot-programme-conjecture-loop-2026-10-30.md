@@ -9,6 +9,14 @@
 
 ## Working picture
 
+- **Synthesis.** Every instrument here (heat threshold, lag family, census) is an exact gauge of three
+  pointwise quantities: the depth of the zeros near `t`, the off-line count in the tangent lens, and
+  the critical multiplicity at the tangency point. All three are invisible to counting inputs (#26,
+  #29); the first two hold on sets of heights of density one (#24, #28), and the third is open even
+  under RH (#29). The method constants are
+  the floors of their input classes (size: `4μ(½) = 2/3`; Lindelöf: `½` de Bruijn). A proof of a
+  zero-free strip from these instruments needs one of the three pointwise, and that needs the
+  explicit formula at scale `δ`.
 - **Heat is a depth²/count gauge.** Pincer: `(Re ρ − ½)²/200 ≤ λ_{Im ρ} log Im ρ ≤ 2/3 + ε` (#6, #20). At height `t`, local depth `δ`, local count `N(t, ·)`:
   detection at `λ ≤ δ²/(200 log t)` uniformly in `δ` (#1), repair at `λ ≥ 128δ²/N(t, √2δ)` (#3), a
   central cluster realizes the order `δ²` (#2), and the regular cosh model has exact threshold
@@ -145,10 +153,11 @@
 | 27 | Positive survivor of #26: counting gives A1 in density, `vol{t ∈ [T, 2T] : A1 fails with C} ≤ T/(πC) + K` for every configuration with RvM | A1 | formalized: same card as #26 |
 | 28 | A1 for almost all heights: for `ζ`, failures with constant `C` occupy `≤ T/(C√(δ log T))` of `[T, 2T]` (tangent disc + Cauchy–Schwarz + explicit off-line first moment) | A1 | formalized: `3-formalized/the-local-count-holds-for-almost-all-heights.md` |
 | 29 | A1 at the tangency point is bounded multiplicity: A1 ⇒ `m(ρ) ≤ C` for critical zeros; `ζ` plus critical clusters (RvM, same off-line counts, critical when `ζ` is) violates A1 for every `C` | A1 | formalized: `3-formalized/the-local-count-bounds-the-multiplicity.md` |
+| 30 | Local de Bruijn–Newman constant `Λ_X`: `Λ = sup_X Λ_X`, RH iff `Λ_X ≡ 0`, `c depth²/log X ≤ Λ_X ≤ (2/3 + ε)/log X` | B/WD | formalized: `3-formalized/the-local-de-bruijn-newman-constant.md` |
 | C2 | Two primes: transverse ladders, joint cone | C2 | already in corpus: `ThePrimeKernelIsASumOfTransverseTowers` (`P = Σ_p L_p`, ladders meet in one point), `TheLocalFormsDoNotSum` (no `C` bounds the sum; pole direction grows like `log M`), `TheSquareRootPriceOfSeparateTowers` (separate towers pay `√M`, the joint structure `log M`) |
 | A4 | Budget `1/18` at `λ = 4/3` needs `F(α) ≤ Υ ≤ 2` with zero slope on `[1, 4/3]` (`calibration_five_models_four_thirds`), i.e. a power saving `X^{−1/4}` in `Σ_{h ≤ X^{1/4}} Σ Λ(n)Λ(n+h)` | A4 | open (Montgomery pair correlation `α > 1`, open under RH too); no formal survivor beyond the corpus calibration; best fraction from unsigned upper sieves `9Υ/8 ≥ 9/8` of the budget (calibration), the spectral form needs `Υ ≤ 2` |
 | D | Prose-only claims restated to their Lean content | D | done: `ContourCrossingObstruction`, `CorrelationBoundsCountNotLocation`, `DiscriminantIsRealitySensitive`, `higherMoment_rudnick_sarnak_cap`, `ThePoleModeMeetsTheZerosOnlyAtTheHorizon`, `QuantizationTurnsWindowsIntoPoints` |
 
 ## Log
 - 2026-10-30 — created; conjectures 1–3 formalized.
-- 2026-10-31 — #4 found in corpus; WP-D docstrings; #5–#8 formalized; A4 analysed; #9, #12 found in corpus; #10, #11, #13–#17, #19–#29 formalized; #18, C2 in corpus.
+- 2026-10-31 — #4 found in corpus; WP-D docstrings; #5–#8 formalized; A4 analysed; #9, #12 found in corpus; #10, #11, #13–#17, #19–#30 formalized; #18, C2 in corpus.

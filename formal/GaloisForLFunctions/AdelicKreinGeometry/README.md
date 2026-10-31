@@ -1,7 +1,7 @@
 # AdelicKreinGeometry (AKG)
 
-Namespace `GaloisForLFunctions.AdelicKreinGeometry`; umbrella `AdelicKreinGeometry.lean`; 35 modules
-(25 root, `Haar/` 10). All results unconditional; RH appears only inside equivalences.
+Namespace `GaloisForLFunctions.AdelicKreinGeometry`; umbrella `AdelicKreinGeometry.lean`; 36 modules
+(26 root, `Haar/` 10). All results unconditional; RH appears only inside equivalences.
 
 ## 1. Motivation
 
@@ -89,15 +89,17 @@ External: `negIndex`, `IsHermKernel`, `IsPosDefKernel`, `gram`, `zetaKernel`, `k
 13. Borel of `SL(2,ℝ)` preserves a signature `(1,1)` form: Gram `= Wᴴ h W` ⇒ one negative square.
 14. Product formula `∏_v |a|_v = 1`: local boosts multiply to 1 on `ℚ^×`; on dilations each boost pair is the
     pair kernel of its boost character, so a unit separating the characters gives one square per place.
-14b. The archimedean place glues by a hyperplane: on `ℓ = 0` the successor's form is nonnegative; a negative
-    subspace of `K` on `ℓ = 0` decouples from the pair `1, x ↦ x + L` (weights `L^{−1/2}`) because the successor
-    cross terms are `ψ(L)·ℓ = 0`, so `κ(K(|a|) − c|a|^{−1/2}|b|) = κ^{(½)}(K) + 1`.
-14a. Equivalence kernels are sums of squares of class sums; with the layer cake the local pole–successor form is
+15. Equivalence kernels are sums of squares of class sums; with the layer cake the local pole–successor form is
     a renormalized hyperbolic pair plus shell squares: `2Re(X̄Y) − cR|X|²` at `p` (balls), `2Re(X̄Y_R)` with
     `Y_R = Y − cΣ w_g|a_g|^{−1/2}(R − b_g)` at `∞` (half-lines `(−∞, t)`).
+16. The archimedean place glues by a hyperplane: on `ℓ = 0` the successor's form is nonnegative; a negative
+    subspace of `K` on `ℓ = 0` decouples from the pair `1, x ↦ x + L` (weights `L^{−1/2}`) because the successor
+    cross terms are `ψ(L)·ℓ = 0`, so `κ(K(|a|) − c|a|^{−1/2}|b|) = κ^{(½)}(K) + 1`.
+17. On the zero side `ratCorr(u) = Σ_ρ u^{1/2−ρ} w_ρ` with summable weights; `u^{−1/2}|u^{1/2−ρ}| = u^{−Re ρ}` and
+    `Re ρ > 0`, so dominated convergence makes Weil's correlation sub-boost and the gluing hyperplane free.
 
 **E. Axis-invisible kernels**
-15. Zero set of an index-≤1 kernel is a subgroup; axes generate `Aff(ℚ)`. Translation columns span `≤ κ`
+18. Zero set of an index-≤1 kernel is a subgroup; axes generate `Aff(ℚ)`. Translation columns span `≤ κ`
     dimensions with unipotent action ⇒ polynomial fibres of degree `< κ`, Gram rank `≤ κ²`; hyperbolic features
     give `κ ≤ d + 1` for `γ(1 − a^{−d})b^d`; dilation rescaling keeps `κ` under positive additions.
 
@@ -123,6 +125,7 @@ External: `negIndex`, `IsHermKernel`, `IsPosDefKernel`, `gram`, `zetaKernel`, `k
 | Axis-invisible kernels: zero or `κ ≥ 2`; rank `≤ κ²`; fibres polynomial of degree `< κ` | `two_le_negIndex_of_zero_axes`, `rank_gram_le_square_of_zero_axes`, `exists_polynomial_translation_fibre_lt_index` | proved |
 | Integer successor of index `r`: affine period-defect space has dim `≤ r²` | `finite_affinePeriodSpace_of_integerSuccessor` | proved |
 | Archimedean gluing formula `κ(K(|a|) − c|a|^{−1/2}|b|) = κ^{(½)}(K) + 1`; for Weil `κ = κ^{(½)}(K_ζ) + 1`; sub-boost data (`‖K(λu)‖ = o(λ^{1/2})`) give `κ(K) + 1` | `negIndex_archGlue_eq`, `negIndex_weilArchState_eq`, `negIndex_archGlue_eq_of_subBoost` | proved |
+| **Weil's archimedean state counts the zeros**: `κ(ratCorr(|a|) − c|a|^{−1/2}|b|) = #{zeros right of the line} + 1` | `negIndex_weilArchState_eq_rightZeros`, `negIndex_weilArchState_eq_add_one`, `ratCorr_subBoost` | proved |
 | Weil's dilation data with the archimedean successor: `max(1, κ(K_ζ)) ≤ κ ≤ κ(K_ζ) + 1`; finite iff `κ(K_ζ)` is | `negIndex_weilArchState_le`, `le_negIndex_weilArchState`, `one_le_negIndex_weilArchState`, `negIndex_weilArchState_lt_top_iff` | proved |
 | Finite-index state with Weil's dilation data and integer successor (indefinite Mautner) | — | open |
 
@@ -153,11 +156,12 @@ External: `negIndex`, `IsHermKernel`, `IsPosDefKernel`, `gram`, `zetaKernel`, `k
    induced Pontryagin representation?
 3. Signature formula for the Weil kernel itself, which is neither tower-supported nor separable: what replaces the
    scalar gluing square when the glue is the archimedean operator? (Answered for the archimedean successor
-   `−c|b|`: the boost hyperplane, `κ = κ^{(½)}(K_ζ) + 1`, and `κ^{(½)} = κ` for data growing slower than the boost;
-   open: the growth `‖K_ζ(λu)‖ = o(λ^{1/2})` of Weil's correlation, which would give `κ = κ(K_ζ) + 1`.)
+   `−c|b|`: the boost hyperplane, `κ = κ^{(½)}(K_ζ) + 1`; Weil's correlation is sub-boost because `Re ρ > 0`, so the
+   hyperplane is free and `κ = κ(K_ζ) + 1` exactly.)
 4. Glue the prime and archimedean parts of Weil's kernel to successors place by place, as the pole pair is glued to
    `−|b|`, and compute the index.
-5. Which additive invariant (count of negative conductor modes) could equal the number of off-line zeros?
+5. Which additive invariant (count of negative conductor modes) could equal the number of off-line zeros? (An
+   affine one exists: the index of Weil's archimedean state minus one. Open: a purely additive one.)
 6. Exact sum-of-squares decomposition of the complete Weil form indexed by successor-agreement shells (the local
    pole–successor forms have one, with the running counterterm `cR` on the pole coordinate).
 
@@ -209,6 +213,9 @@ nonzero index needs a carrier that never escapes, and over `ℚ` that carrier is
 `0, ∞` of the projective line, which appears at every place as a boost on the multiplicative side glued to a
 conformal successor on the additive side, at the price of exactly one square. Index calculus is also twin-blind,
 so it cannot by itself select `ζ`.
+
+Glued at the archimedean place instead of the integers, Weil's dilation data cost nothing extra: the state
+`ratCorr(|a|) − c|a|^{−1/2}|b|` has exactly one negative square more than there are zeros right of the critical line.
 
 For the RH effort this locates the missing object precisely. Weil's correlation can be extended to the affine
 group without extra cost only by making the successor blind; attaching the integer successor while keeping Weil's

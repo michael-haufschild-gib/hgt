@@ -1,7 +1,7 @@
 # Actual elliptic ideles rotate restricted loops
 
-- **Stage:** 2-fully-proven
-- **Parent:** [Restricted elliptic rotation](../1-in-progress/degree-rotation-preserves-the-restricted-elliptic-loop-group.md).
+- **Stage:** 3-formalized
+- **Parent:** [Restricted elliptic rotation](degree-rotation-preserves-the-restricted-elliptic-loop-group.md).
 - **Statement:** Every idele defines an automorphism of the actual restricted
   central loop group. It preserves positive Borel and fixes its two idele
   coordinates, hence every Borel spectral character.
@@ -22,4 +22,6 @@ coordinates. Their spectral character is therefore unchanged as well.
 ## Lean
 
 `ArithmeticEffectivityTheory/FiniteFieldEllipticLoopRotation.lean`.
-Direct check pending.
+`adelicDegreeRotation` and `adelicBorelCharacter_rotation` passed direct
+Lean and transitive axiom audits; only `propext`, `Classical.choice`, and
+`Quot.sound` occur.

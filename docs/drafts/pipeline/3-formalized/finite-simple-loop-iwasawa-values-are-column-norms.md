@@ -1,6 +1,6 @@
 # Finite simple loop Iwasawa values are column norms
 
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
 - **Parent:** [Elliptic unfolding](../1-in-progress/finite-field-eisenstein-unfolding.md).
 - **Statement:** For every coefficient-field `SL₂` matrix `g`, every actual
   integral–Borel factorization of its finite simple loop embedding has
@@ -28,4 +28,7 @@ and `borelValuationHom_iwasawa_unique`; no new analytic premise is introduced.
 
 ## Lean
 
-`HTGeometry/LoopEisenstein/FiniteSimpleIwasawaValues.lean`. Direct check pending.
+`HTGeometry/LoopEisenstein/FiniteSimpleIwasawaValues.lean`:
+`exists_valued_sl2_integral_upper`, `finiteSL2Embedding_iwasawa_values`,
+`finiteLowerRoot_iwasawa_values`. Direct Lean and transitive axiom audits
+passed; only `propext`, `Classical.choice`, and `Quot.sound` occur.

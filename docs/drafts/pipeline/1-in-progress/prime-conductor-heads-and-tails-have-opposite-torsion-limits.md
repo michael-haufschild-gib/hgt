@@ -6,8 +6,8 @@
 
 For positive conductors `m,l`, set `delta=1_(m=l)`,
 `d=sqrt(phi(m)phi(l))`, `v_m,N(n)=c_m(n)/sqrt(phi(m)n log N)`,
-and `A_K=sum_(k≤K)Lambda(k)/k`. Let `H_K,N(m,l)` be the literal
-prime-matrix pairing restricted to dilation ratios `k≤K`.
+and `A_K=sum_(k<K)Lambda(k)/k`. Let `H_K,N(m,l)` be the literal
+prime-matrix pairing restricted to dilation ratios `k<K`.
 The proposed exact boundary laws are
 
 `lim_K lim_N [H_K,N−2delta A_K]`

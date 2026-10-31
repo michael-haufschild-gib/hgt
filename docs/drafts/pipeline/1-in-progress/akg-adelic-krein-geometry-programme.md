@@ -17,7 +17,7 @@ Develop the field asked for in §2.6: answer its six questions as theorems or sh
 ## Status (formalized; each module checked with `lake --old env lean`, wired into `AdelicKreinGeometry.lean`)
 - A. Index calculus: `TheIndexOfAnInducedState`, `TheWitnessComplementIsPositive`, `MixingKillsNegativeSquares`, `TheIndexIsTwinBlind`.
 - B. Affine zero-or-infinity law and Kakutani index wall: `HeckeSupportedStatesHaveIndexZeroOrInfinity`.
-- C. Weil's affine extensions: `ThePontryaginExtensionsOfWeilsCorrelation`, `TheAdelicProductState`, `ArchimedeanContinuityAgainstHeightDecay`, `WeilsCorrelationWithAnArchimedeanSuccessor` (positive survivor: `κ(K_ζ) ≤ κ ≤ κ(K_ζ) + 1` with successor `−c|b|`), `TheArchimedeanGluingFormula` (`κ = κ^{(½)}(K) + 1`; `κ^{(½)} = κ` for sub-boost data); `Haar/OneNegativeSquare` (another agent).
+- C. Weil's affine extensions: `ThePontryaginExtensionsOfWeilsCorrelation`, `TheAdelicProductState`, `ArchimedeanContinuityAgainstHeightDecay`, `WeilsCorrelationWithAnArchimedeanSuccessor` (positive survivor: `κ(K_ζ) ≤ κ ≤ κ(K_ζ) + 1` with successor `−c|b|`), `TheArchimedeanGluingFormula` (`κ = κ^{(½)}(K) + 1`; `κ^{(½)} = κ` for sub-boost data), `WeilsArchimedeanStateCountsTheZeros` (`κ(weilArchState) = #rightZeros + 1`, axioms: propext, choice, Quot.sound); `Haar/OneNegativeSquare` (another agent).
 - D. Signature calculus: `TheSignatureOfASeparableAssembly`, `NoFixedCountertermMakesThePrimeKernelPontryagin`. [A6 finite sieve is formalized](../3-formalized/matched-prime-form-hodge-index-uniform-in-the-sieve.md), with a horizon independent of the sieve; transfer to the complete Weil form remains open.
 - E. Conformal symmetry: `ConformalSymmetryNeedsANegativeSquare`, `StableConformalSuccessors`, `TheFunctionFieldConformalSuccessor`.
 - F. Additive index law: `TheAdditiveIndexLaw` (`ℤ/N`), `TheAdditiveIndexLawOnQModZ` (`ℚ/ℤ`), `TheRamanujanIndexLaw` (`κ = Σ_{A_d<0} φ(d)` for unit-invariant kernels and conductor-invariant successors).
@@ -27,7 +27,7 @@ Develop the field asked for in §2.6: answer its six questions as theorems or sh
 ## Open
 - General indefinite Mautner theorem: negative parts of infinite rank modulo slope data.
 - Krein–Langer structure on `Aff(ℚ)`: positive part plus finite-dimensional or conformally induced Pontryagin coefficients?
-- Weil's prime and archimedean parts glued to successors as the pole is glued to `−|b|`; non-separable gluing for the complete Weil form; the sub-boost growth `‖ratCorr(λu)‖ = o(λ^{1/2})`, which gives `κ(weilArchState) = κ(K_ζ) + 1`.
+- Weil's prime and archimedean parts glued to successors as the pole is glued to `−|b|`; non-separable gluing for the complete Weil form.
 - Calibration over `𝔽_q(T)`: the Hecke wall on `Aff(𝔽_q(T))`.
 - Q5 additive carrier of the collision charge; Q6 shell sum-of-squares for the complete Weil form.
 
@@ -55,3 +55,5 @@ Develop the field asked for in §2.6: answer its six questions as theorems or sh
 **Archimedean gluing `κ(K(|a|) − c|a|^{−1/2}|b|) = κ^{(½)}(K) + 1`.** Gram form `= Q_K(w; |a|) + Q_ψ(w|a|^{−1/2}; b)`; the mass of the second weights is `ℓ(w) = Σ w|a|^{−1/2}`. Upper: on `ℓ = 0`, `Q_ψ ≥ 0`. Lower: `W ⊂ ker ℓ` negative for `K` on dilations `u_i` (shift 0) and the pair `1, x ↦ x + L` with weights `L^{−1/2}`: `K`-cross terms `O(L^{−1/2})`, `ψ`-cross terms `ψ(±L)·ℓ(w) = 0`, pair form `(4K(1) − 2cL)/L → −2c`.
 
 **Sub-boost criterion.** Dilate a negative family `F` by `λ_N` and add the slope `1` with weight `−λ_N^{−1/2}ℓ_F(c)`: the result lies on `ℓ = 0`; the compressed Gram entries are `K(F_i⁻¹F_j) − μρ_i K(λF_j) − μρ_j conj K(λF_i) + μ²ρ_iρ_j K(1)`, `μ = λ_N^{−1/2}`, which tend to `gram K F` when `K(λ_N u)μ → 0`.
+
+**Weil's correlation is sub-boost.** `ratCorr(u) = Σ_ρ e^{−(log u)(ρ−1/2)} w_ρ`, `Σ‖w_ρ‖ < ∞` (tempered, spline `C²` compact). At `u = 2^N v` times `2^{−N/2}` the term has modulus `e^{−N log 2·Re ρ − log v (Re ρ − 1/2)}‖w_ρ‖ ≤ e^{|log v|/2}‖w_ρ‖` and tends to `0` since `Re ρ > 0`; Tannery's theorem gives `→ 0`.

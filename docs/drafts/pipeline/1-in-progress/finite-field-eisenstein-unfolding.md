@@ -27,10 +27,9 @@ from a proved quotient normalization.
 
 ## Unproved dependencies
 
-- Actual idele degree rotation. Positive Borel, both spectral coordinates and both integral vertices are preserved, with direct Lean and axiom audits. The restricted adelic automorphism is written; its direct audit remains.
 - Arithmetic coset parametrization. The independently defined actual arithmetic coset series and its right arithmetic invariance are audited. [Coset descent](../3-formalized/elliptic-eisenstein-summands-descend-to-actual-arithmetic-cosets.md). Finite root-cell parametrization and convergence remain.
 - Finite root-coordinate refinement of Bruhat cells, with compatible left/right conventions.
-- Local Iwasawa-character identification with the already proved radial Haar kernel.
+- Local Iwasawa-character identification with the radial Haar kernel. [Finite simple loop values](../3-formalized/finite-simple-loop-iwasawa-values-are-column-norms.md) are audited: central valuation one and finite valuation equal to the first-column norm. Normalized character identification and the affine simple root remain.
 - Arithmetic coset-sum convergence and justified sum/integral exchanges giving unfolding.
 
 The simple-pole additive domain, quotient topology and covolume are formalized
@@ -40,7 +39,10 @@ The unordered analytic Euler product over actual closed places equals the
 nonzero curve zeta function throughout `|u|<1/3`, with the same audits.
 Actual idele magnitudes and their continuous complex spectral characters are
 formalized and trivial on diagonal field units. Actual loop-factorization
-independence and arithmetic-Borel triviality are also audited. Bruhat-coordinate
+independence and arithmetic-Borel triviality are also audited.
+[Every actual idele rotates the restricted loop group](../3-formalized/actual-elliptic-ideles-rotate-restricted-loops.md), preserving Borel and both spectral coordinates, with the same audits.
+[Actual degree ideles](../3-formalized/elliptic-degree-parameters-are-actual-ideles.md)
+realize magnitude `3^d` and logarithmic parameter `d log 3`, with the same audits. Bruhat-coordinate
 identification and unfolding remain unproved targets.
 
 The full coefficient-integral local loop group satisfies `K∩B=B(O)`.
@@ -63,8 +65,9 @@ normalization preserves product Haar probability; its transfer is invariant
 under actual quotient left multiplication. All statements passed direct
 Lean and axiom audits. [Proof and declarations](../3-formalized/actual-elliptic-unipotent-quotient-has-invariant-probability.md).
 
-This provides the quotient measure. Finite-cell periodization and the
-identification of local-integral products with the actual adelic integral
+This provides the quotient measure. [Scalar additive periodization](../3-formalized/elliptic-additive-haar-periodizes-over-the-actual-function-field.md)
+over the actual function field is also audited, including nonnegative Tonelli
+unfolding. Relative finite-cell periodization and the identification of local-integral products with the actual adelic integral
 remain necessary for unfolding.
 
 ## Convergence mechanism to test

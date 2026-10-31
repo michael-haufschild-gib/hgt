@@ -1,7 +1,7 @@
 # SuccessorShellArithmetic (SSh)
 
-Namespace `GaloisForLFunctions.SuccessorShellArithmetic`; umbrella `SuccessorShellArithmetic.lean`; 27 modules
-(6 root, `TopBand/` 11, `Conductor/` 10). All results unconditional; RH appears only inside equivalences.
+Namespace `GaloisForLFunctions.SuccessorShellArithmetic`; umbrella `SuccessorShellArithmetic.lean`; 29 modules
+(6 root, `TopBand/` 11, `Conductor/` 12). All results unconditional; RH appears only inside equivalences.
 
 ## 1. Motivation
 
@@ -41,6 +41,8 @@ Profile `φ` (`C²`, support `[0,1]`), `M = ∫φ²`, `q = (∫φ)²/M`, `G = �
 | Source weights | `ramanujanAutocorrelationWeight`, `ramanujanProfileWeight`, `finiteSourceSmoothing` | `φ(k)^{−1}Σ a_i a_j c_k(|i−j|)` (profiled: × `autocorr φ(θ_j − θ_i)`) |
 | Weighted energy | `weightedDivisorJetEnergy` | divisor-jet energy with weight `b(k)` on the lower conductor |
 | Harmonic Gram | `Σ_(n≤N)u_m(n)u_l(n)/n`, `u_m=c_m/√φ(m)` | finite part `γδ_ml−I(m,l)/√(φ(m)φ(l))`, with torsion intersection `I` |
+| Affine correlation | `Σ_(n<M)c_m(n)c_l(kn+h)` | `M c_l(h)` exactly when `m=l/gcd(l,k)`, zero otherwise |
+| Prime finite part | `⟨v_m,N,P_N v_l,N⟩−δ_ml log N`, `v_m,N=u_m/√(n log N)` | `−I(m,l)/√(φ(m)φ(l))−δ_ml(log m+τ(m))` |
 | Twin shell | `twinShellForm` | shell weighted by `ω(k)(1 − ω(km)ω(km + h))` |
 
 External: `nonRatioForm`, `atomDilate` (SSHA); `poleVector`, `poleDefect`, `completeWeilMatrix`,
@@ -89,9 +91,13 @@ External: `nonRatioForm`, `atomDilate` (SSHA); `poleVector`, `poleDefect`, `comp
 13. Reciprocal inversion and the harmonic limit `Σ c_m(n)/n→−Λ(m)` identify the sharp Gram finite part
     with divisor-edge energy and torsion intersection. The two-sided large sieve and Abel summation
     give quadratic remainder `Q(Q−1)/(N+1)` times coefficient mass.
+14. Affine Fourier resonance requires `z w^k=1`; the exact order of `w^k` is `l/gcd(l,k)`.
+    This selects every mixed entry of the complete-period affine packet form.
+15. The full prime-row residual vanishes in norm. Pairing it with a conductor mode and retaining the
+    harmonic Gram finite part gives the exact prime finite part, including diagonal `−2log m`.
 
 **E. Gauge**
-14. For completely multiplicative sign `ω`: `ω(k) − ω(m)ω(n) = ω(k)(1 − ω(km)ω(n))`, zero on ratio pairs.
+16. For completely multiplicative sign `ω`: `ω(k) − ω(m)ω(n) = ω(k)(1 − ω(km)ω(n))`, zero on ratio pairs.
 
 ## 5. Pillar theorems
 
@@ -114,6 +120,8 @@ External: `nonRatioForm`, `atomDilate` (SSHA); `poleVector`, `poleDefect`, `comp
 | Sharp harmonic finite part `(γ−log M)mass+E_M(f)` for divisor packets; exact mixed entries | `tendsto_divisorPacket_sq_harmonic_finitePart`, `tendsto_ramanujan_mul_harmonic_of_ne` | proved |
 | Harmonic finite part = Euler scalar minus torsion intersection; absolute norm `≤ |γ|+4log Q+log4+4` | `tendsto_ramanujanPacket_harmonic_torsion`, `abs_harmonicGram_finitePart_le_log` | proved |
 | Uniform quadratic tail `Q(Q−1)/(N+1)` times mass; logarithmic finite-horizon Gram budget | `abs_harmonicGram_quadratic_torsion_remainder`, `abs_harmonicGram_sub_log_mass_le` | proved |
+| Affine shell correlation selects `m=l/gcd(l,k)`; exact finite packet expansion | `sum_range_ramanujanLagCoefficient_mul_affine`, `sum_range_ramanujanPacket_mul_affine` | proved |
+| Full prime finite part `−I/√(φ(m)φ(l))−δ_ml(log m+τ(m))`; exact packet polarization | `tendsto_primeConductorPairing_finitePart`, `tendsto_primeConductorPacket_finitePart` | proved |
 | Reserve `W ≥ a c⁻⁷(D − C log(2c)S)`, uniformly for `1≤c≤(log log N)^α`, `0<α<1/16` | CACT `exists_completeWeil_logarithmic_defect_reserve_iteratedLog` | proved |
 
 ## 6. Tools
@@ -127,6 +135,7 @@ External: `nonRatioForm`, `atomDilate` (SSHA); `poleVector`, `poleDefect`, `comp
 - Divisor-jet algebra: conductor expansion, Plancherel, power deformation, reciprocity, finite adjunction spectrum.
 - Positive source/profile autocorrelation weights and smoothed square completion.
 - Exact harmonic finite parts, torsion identification, and a common quadratic tail at conductor scale `Q²/N`.
+- Exact affine conductor selection and full prime finite parts on every fixed finite packet.
 - Common complete-conductor residual bounds on every logarithmic conductor range.
 
 **To build**
@@ -162,7 +171,7 @@ External: `nonRatioForm`, `atomDilate` (SSHA); `poleVector`, `poleDefect`, `comp
 
 ## 9. Context
 
-**Uses** (import counts): RenormalizedArithmeticPotentialTheory 9, RHTower 5, SignedArithmeticHodgeTheory 2,
+**Uses** (import counts): RenormalizedArithmeticPotentialTheory 10, RHTower 5, SignedArithmeticHodgeTheory 2,
 HTGeometry 2, CriticalArithmeticCorrelationTheory 3, ArithmeticElectrostatics 1,
 SpacingScaleHarmonicAnalysis 1, CompletedArithmeticForms 1,
 BiScaleUncertainty 1, BezoutValuationIncidence 1, ArithmeticPositiveDuality 1, ArithmeticLorentzianGeometry 1,
@@ -194,6 +203,8 @@ Paying the shells by themselves is provably expensive, while joint payment with 
 divisor-jet work exposes the finite algebra behind that cancellation as a positive divisor-graph energy with
 explicit spectrum, positive even after arbitrary signed smoothing. The harmonic Gram finite part is exactly
 this energy plus its scalar counterterm, equivalently Euler's scalar minus torsion intersection.
+The full prime pairing retains the negative torsion intersection, with diagonal `−2log m` after removing
+its logarithmic divergence. Complete-period affine correlations identify the precise conductor transitions.
 The remaining gap is identification: proving
 that the true complete Weil shell block is such a completion, including its horizon boundary, for vectors off
 the conductor span at larger overlap. That joint signed estimate is the central missing input to wider confinement.

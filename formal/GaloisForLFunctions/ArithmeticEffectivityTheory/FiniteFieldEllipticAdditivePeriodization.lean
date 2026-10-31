@@ -21,6 +21,7 @@ def diagonalAdelesEquiv : K ≃+ diagonalAdeles where
   left_inv := adeleRationalProjection_diagonal
   right_inv z := by
     obtain ⟨w, hw⟩ := z.property
+    change adeleEmbedding w = (z : Adeles) at hw
     apply Subtype.ext
     change adeleEmbedding (adeleRationalProjection (z : Adeles)) = (z : Adeles)
     rw [← hw, adeleRationalProjection_diagonal]
@@ -42,6 +43,7 @@ theorem ellipticAdditiveDomain_isAddFundamentalDomain :
     simpa only [map_neg, sub_eq_add_neg, add_comm] using hz
   · intro g hg
     obtain ⟨w, hw⟩ := g.property
+    change adeleEmbedding w = (g : Adeles) at hw
     have hwD : a - adeleEmbedding (-w) ∈ ellipticAdditiveDomain := by
       change (g : Adeles) + a ∈ ellipticAdditiveDomain at hg
       rw [← hw] at hg
@@ -53,7 +55,8 @@ theorem ellipticAdditiveDomain_isAddFundamentalDomain :
 private theorem lintegral_domainHaar (f : Adeles → ℝ≥0∞) :
     (∫⁻ d : ellipticAdditiveDomain, f (d : Adeles) ∂ellipticDomainHaar) =
       ∫⁻ a in (ellipticAdditiveDomain : Set Adeles), f a ∂adeleHaar := by
-  have hm := ellipticAdditiveDomain_isOpen.isOpenEmbedding_subtypeVal.measurableEmbedding
+  have hm : MeasurableEmbedding (Subtype.val : ellipticAdditiveDomain → Adeles) :=
+    ellipticAdditiveDomain_isOpen.isOpenEmbedding_subtypeVal.measurableEmbedding
   have h := hm.lintegral_map (μ := ellipticDomainHaar) f
   have hr : Set.range (Subtype.val : ellipticAdditiveDomain → Adeles) =
       (ellipticAdditiveDomain : Set Adeles) := by
@@ -65,8 +68,11 @@ private theorem lintegral_domainHaar (f : Adeles → ℝ≥0∞) :
       exact ⟨⟨a, ha⟩, rfl⟩
   change (∫⁻ a, f a ∂Measure.map (Subtype.val : ellipticAdditiveDomain → Adeles)
     (Measure.comap (Subtype.val : ellipticAdditiveDomain → Adeles) adeleHaar)) = _ at h
-  rw [hm.map_comap, hr] at h
-  exact h.symm
+  have he : Measure.map (Subtype.val : ellipticAdditiveDomain → Adeles)
+      (Measure.comap (Subtype.val : ellipticAdditiveDomain → Adeles) adeleHaar) =
+        adeleHaar.restrict (ellipticAdditiveDomain : Set Adeles) :=
+    (hm.map_comap adeleHaar).trans (congrArg adeleHaar.restrict hr)
+  exact h.symm.trans (congrArg (fun μ : Measure Adeles => ∫⁻ a, f a ∂μ) he)
 
 /-- Exact Haar decomposition as the sum of all rational translates of the compact domain. -/
 theorem lintegral_adeleHaar_eq_tsum_domain (f : Adeles → ℝ≥0∞) :

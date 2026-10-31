@@ -64,23 +64,23 @@ theorem factorization_heckeDivisor (s : PrimeVar →₀ ℕ) (p : PrimeVar) :
     (heckeDivisor s).factorization p.1 = s p := by
   classical
   rw [heckeDivisor, Finsupp.prod,
-    Nat.factorization_prod fun q _ => (pow_pos q.2.pos _).ne']
-  simp only [Finsupp.coe_finset_sum, sum_apply, Nat.factorization_pow, Finsupp.smul_apply,
-    smul_eq_mul]
+    Nat.factorization_prod fun q _ => (pow_pos q.2.pos _).ne',
+    Finsupp.finsetSum_apply]
+  simp only [Nat.factorization_pow, Finsupp.smul_apply, smul_eq_mul]
   by_cases hp : p ∈ s.support
   · rw [sum_eq_single p]
     · rw [p.2.factorization_self, mul_one]
     · intro q _ hqp
       have hne : q.1 ≠ p.1 := fun h => hqp (Subtype.ext h)
-      rw [Nat.factorization_eq_zero_of_not_dvd (fun hd => hne ((Nat.prime_dvd_prime_iff_eq p.2 q.2).mp hd).symm),
-        mul_zero]
+      rw [Nat.factorization_eq_zero_of_not_dvd
+        (fun hd => hne ((Nat.prime_dvd_prime_iff_eq p.2 q.2).mp hd).symm), mul_zero]
     · intro h; exact absurd hp h
   · rw [Finsupp.notMem_support_iff.mp hp, sum_eq_zero]
     intro q hq
     have hqp : q ≠ p := fun h => hp (h ▸ hq)
     have hne : q.1 ≠ p.1 := fun h => hqp (Subtype.ext h)
-    rw [Nat.factorization_eq_zero_of_not_dvd (fun hd => hne ((Nat.prime_dvd_prime_iff_eq p.2 q.2).mp hd).symm),
-      mul_zero]
+    rw [Nat.factorization_eq_zero_of_not_dvd
+      (fun hd => hne ((Nat.prime_dvd_prime_iff_eq p.2 q.2).mp hd).symm), mul_zero]
 
 theorem heckeDivisor_injective : Function.Injective heckeDivisor := by
   intro s₁ s₂ h
@@ -95,22 +95,23 @@ def divisorMonomial (k : ℕ) : PrimeVar →₀ ℕ :=
 theorem divisorMonomial_apply (k : ℕ) (q : PrimeVar) :
     divisorMonomial k q = k.factorization q.1 := by
   classical
-  rw [divisorMonomial, Finsupp.finset_sum_apply]
+  rw [divisorMonomial, Finsupp.finsetSum_apply]
   by_cases hq : q.1 ∈ k.primeFactors
   · rw [sum_eq_single ⟨q.1, hq⟩]
     · simp
     · intro p _ hpq
-      have hne : (⟨p.1, Nat.prime_of_mem_primeFactors p.2⟩ : PrimeVar) ≠ q := fun h =>
-        hpq (Subtype.ext (congrArg Subtype.val h))
-      simp [Finsupp.single_eq_of_ne hne]
+      have hne : q ≠ ⟨p.1, Nat.prime_of_mem_primeFactors p.2⟩ := fun h => by
+        have hv : p.1 = q.1 := (congrArg Subtype.val h).symm
+        exact hpq (Subtype.ext hv)
+      exact Finsupp.single_eq_of_ne hne
     · intro h; exact absurd (mem_attach _ _) h
   · rw [sum_eq_zero]
-    · symm
-      rwa [Finsupp.notMem_support_iff, ← Nat.support_factorization] at hq
+    · have hq' : q.1 ∉ k.factorization.support := by rwa [Nat.support_factorization]
+      exact (Finsupp.notMem_support_iff.mp hq').symm
     · intro p _
-      have hne : (⟨p.1, Nat.prime_of_mem_primeFactors p.2⟩ : PrimeVar) ≠ q := fun h =>
+      have hne : q ≠ ⟨p.1, Nat.prime_of_mem_primeFactors p.2⟩ := fun h =>
         hq (congrArg Subtype.val h ▸ p.2)
-      simp [Finsupp.single_eq_of_ne hne]
+      exact Finsupp.single_eq_of_ne hne
 
 theorem heckeDivisor_divisorMonomial {k : ℕ} (hk : 0 < k) :
     heckeDivisor (divisorMonomial k) = k := by
@@ -136,25 +137,25 @@ def stencilToMvPoly (c : ℕ →₀ ℤ) : MvPolynomial PrimeVar ℤ :=
 
 theorem mvPolyToStencil_zero_apply (Q : MvPolynomial PrimeVar ℤ) :
     mvPolyToStencil Q 0 = 0 := by
-  rw [mvPolyToStencil, Finsupp.finset_sum_apply, sum_eq_zero]
+  rw [mvPolyToStencil, Finsupp.finsetSum_apply, sum_eq_zero]
   intro s _
-  exact Finsupp.single_eq_of_ne (heckeDivisor_pos s).ne'
+  exact Finsupp.single_eq_of_ne (heckeDivisor_pos s).ne
 
 theorem mvPolyToStencil_apply_heckeDivisor (Q : MvPolynomial PrimeVar ℤ) (s : PrimeVar →₀ ℕ) :
     mvPolyToStencil Q (heckeDivisor s) = Q.coeff s := by
   classical
-  rw [mvPolyToStencil, Finsupp.finset_sum_apply]
+  rw [mvPolyToStencil, Finsupp.finsetSum_apply]
   by_cases hs : s ∈ Q.support
   · rw [sum_eq_single s]
     · simp
     · intro t _ hts
-      exact Finsupp.single_eq_of_ne (fun h => hts (heckeDivisor_injective h))
+      exact Finsupp.single_eq_of_ne (fun h => hts (heckeDivisor_injective h.symm))
     · intro h; exact absurd hs h
   · rw [sum_eq_zero]
     · exact (MvPolynomial.notMem_support_iff.mp hs).symm
     · intro t ht
       have hts : t ≠ s := fun h => hs (h ▸ ht)
-      exact Finsupp.single_eq_of_ne (fun h => hts (heckeDivisor_injective h))
+      exact Finsupp.single_eq_of_ne (fun h => hts (heckeDivisor_injective h.symm))
 
 theorem stencilToMvPoly_mvPolyToStencil (Q : MvPolynomial PrimeVar ℤ) :
     stencilToMvPoly (mvPolyToStencil Q) = Q := by
@@ -177,7 +178,8 @@ theorem stencilToMvPoly_mvPolyToStencil (Q : MvPolynomial PrimeVar ℤ) :
     · intro h; exact absurd hk h
   · rw [sum_eq_zero]
     · have hz : mvPolyToStencil Q k = 0 := Finsupp.notMem_support_iff.mp hk
-      rwa [mvPolyToStencil_apply_heckeDivisor] at hz
+      rw [mvPolyToStencil_apply_heckeDivisor] at hz
+      exact hz.symm
     · intro m hm
       by_cases hm0 : m = 0
       · simp [hm0]
@@ -299,8 +301,7 @@ theorem factorization_stencilNum_sub_stencilDen (c : ℕ →₀ ℤ) (n : ℕ) {
     rw [stencilNum, Nat.factorization_prod fun k _ => by
       split_ifs
       · exact (pow_pos (Nat.factorial_pos _) _).ne'
-      · exact one_ne_zero]
-    simp only [Finsupp.coe_finset_sum, sum_apply]
+      · exact one_ne_zero, Finsupp.finsetSum_apply]
     refine sum_congr rfl fun k _ => ?_
     split_ifs with hck
     · rw [Nat.factorization_pow, Finsupp.smul_apply, smul_eq_mul, Nat.factorization_def _ hp]
@@ -310,19 +311,16 @@ theorem factorization_stencilNum_sub_stencilDen (c : ℕ →₀ ℤ) (n : ℕ) {
     rw [stencilDen, Nat.factorization_prod fun k _ => by
       split_ifs
       · exact (pow_pos (Nat.factorial_pos _) _).ne'
-      · exact one_ne_zero]
-    simp only [Finsupp.coe_finset_sum, sum_apply]
+      · exact one_ne_zero, Finsupp.finsetSum_apply]
     refine sum_congr rfl fun k _ => ?_
     split_ifs with hck
     · rw [Nat.factorization_pow, Finsupp.smul_apply, smul_eq_mul, Nat.factorization_def _ hp]
     · simp
-  rw [hnum_fac, hden_fac]
-  push_cast
-  rw [← sum_sub_distrib]
+  rw [hnum_fac, hden_fac, Nat.cast_sum, Nat.cast_sum, ← sum_sub_distrib]
   have hcoef : ∀ k ∈ c.support,
-      (((if 0 < c k then (c k).toNat else 0 : ℕ) : ℤ) * (padicValNat p ((n / k).factorial) : ℤ) -
-        ((if c k < 0 then (-c k).toNat else 0 : ℕ) : ℤ) * (padicValNat p ((n / k).factorial) : ℤ)) =
-      c k * ∑ i ∈ Ico 1 (n + 1), ((n / p ^ i) / k : ℕ) := by
+      ((((if 0 < c k then (c k).toNat else 0) * padicValNat p ((n / k).factorial) : ℕ) : ℤ) -
+        (((if c k < 0 then (-c k).toNat else 0) * padicValNat p ((n / k).factorial) : ℕ) : ℤ)) =
+      ∑ i ∈ Ico 1 (n + 1), c k * (((n / p ^ i) / k : ℕ) : ℤ) := by
     intro k _
     have hlog : Nat.log p (n / k) < n + 1 := nat_log_lt_succ p (n / k) n (Nat.div_le_self n k)
     rw [padicValNat_factorial hlog]
@@ -331,19 +329,17 @@ theorem factorization_stencilNum_sub_stencilDen (c : ℕ →₀ ℤ) (n : ℕ) {
     rw [hsum_eq]
     have hck_split : (((if 0 < c k then (c k).toNat else 0 : ℕ) : ℤ) -
         ((if c k < 0 then (-c k).toNat else 0 : ℕ) : ℤ)) = c k := by
-      rcases lt_trichotomy 0 (c k) with hpos | rfl | hneg
+      rcases lt_trichotomy 0 (c k) with hpos | hzero | hneg
       · rw [if_pos hpos, if_neg (by omega)]; omega
-      · simp
+      · rw [← hzero]; simp
       · rw [if_neg (by omega), if_pos hneg]; omega
-    push_cast
-    rw [← sub_mul, hck_split]
-  rw [sum_congr rfl hcoef]
-  simp only [stepWeight, mul_sum]
-  exact sum_comm
+    rw [Nat.cast_mul, Nat.cast_mul, ← sub_mul, hck_split, Nat.cast_sum, mul_sum]
+  rw [sum_congr rfl hcoef, sum_comm]
+  rfl
 
 /-- **Exact integrality characterization.** `stencilDen c n ∣ stencilNum c n` holds for all `n`
 if and only if `0 ≤ stepWeight c m` for every `m ≥ 1`. -/
-theorem forall_stencilDen_dvd_stencilNum_iff {c : ℕ →₀ ℤ} (hc0 : c 0 = 0) :
+theorem forall_stencilDen_dvd_stencilNum_iff {c : ℕ →₀ ℤ} :
     (∀ n : ℕ, stencilDen c n ∣ stencilNum c n) ↔ ∀ m : ℕ, 1 ≤ m → 0 ≤ stepWeight c m := by
   constructor
   · intro hdvd m hm
@@ -421,6 +417,7 @@ theorem pow_dvd_stencilInt_of_prime_mem_Ioc {c : ℕ →₀ ℤ} {m B n p : ℕ}
     rw [Nat.div_lt_iff_lt_mul hp.pos]
     have hlt := (Nat.div_lt_iff_lt_mul hB).mp hp1
     rwa [mul_comm] at hlt
+  have hn_pos : 0 < n := lt_of_lt_of_le hp.pos hp2
   have hn1 : 1 ∈ Ico 1 (n + 1) := mem_Ico.mpr ⟨le_rfl, by omega⟩
   have hsingle : stepWeight c (n / p ^ 1) ≤ ∑ i ∈ Ico 1 (n + 1), stepWeight c (n / p ^ i) :=
     single_le_sum (fun i _ => hstep _) hn1
@@ -488,10 +485,10 @@ theorem log_stencilInt_eq_sum {c : ℕ →₀ ℤ} (hstep : ∀ r : ℕ, 0 ≤ s
   refine sum_congr rfl fun k _ => ?_
   rw [← sub_mul]
   congr 1
-  rcases lt_trichotomy 0 (c k) with hpos | rfl | hneg
+  rcases lt_trichotomy 0 (c k) with hpos | hzero | hneg
   · rw [if_pos hpos, if_neg (by omega), sub_zero]
     exact_mod_cast Int.toNat_of_nonneg hpos.le
-  · simp
+  · rw [← hzero]; simp
   · rw [if_neg (by omega), if_pos hneg, zero_sub]
     have : ((-c k).toNat : ℤ) = -c k := Int.toNat_of_nonneg (by omega)
     have hR : ((-c k).toNat : ℝ) = -(c k : ℝ) := by exact_mod_cast this
@@ -522,7 +519,8 @@ theorem log_stencilInt_eq_vonMangoldt {c : ℕ →₀ ℤ} (hc0 : c 0 = 0)
   refine sum_congr rfl fun d _ => ?_
   rw [← mul_sum]
   congr 1
-  simp [stepWeight, Int.cast_sum]
+  rw [stepWeight, Int.cast_sum]
+  exact sum_congr rfl fun k _ => by rw [Int.cast_mul, Int.cast_natCast]
 
 /-- **Prime-power ledger (`ψ`).** Under `stepWeight c ≥ 0` and `stepWeight c ≥ m` on `[1, B)`,
 `m (ψ(n) - ψ(n/B)) ≤ log(stencilInt c n)`. -/
@@ -543,7 +541,7 @@ theorem psi_sub_le_log_stencilInt {c : ℕ →₀ ℤ} {m B : ℕ} (hc0 : c 0 = 
       ≤ ∑ d ∈ Ioc (n / B) n, vonMangoldtWeight d * (stepWeight c (n / d) : ℝ) := by
         refine sum_le_sum fun d hd => ?_
         obtain ⟨hd1, hd2⟩ := mem_Ioc.mp hd
-        have hd_pos : 0 < d := by omega
+        have hd_pos : 0 < d := lt_of_le_of_lt (Nat.zero_le _) hd1
         have hnd_ge : 1 ≤ n / d := (Nat.one_le_div_iff hd_pos).mpr hd2
         have hnd_lt : n / d < B := by
           rw [Nat.div_lt_iff_lt_mul hd_pos]
@@ -553,7 +551,8 @@ theorem psi_sub_le_log_stencilInt {c : ℕ →₀ ℤ} {m B : ℕ} (hc0 : c 0 = 
           exact_mod_cast hwin (n / d) (mem_Ico.mpr ⟨hnd_ge, hnd_lt⟩)
         have hΛ : 0 ≤ vonMangoldtWeight d := ArithmeticFunction.vonMangoldt_nonneg
         change (m : ℝ) * vonMangoldtWeight d ≤ _
-        nlinarith
+        rw [mul_comm]
+        exact mul_le_mul_of_nonneg_left hm_le hΛ
     _ ≤ ∑ d ∈ Ioc 0 n, vonMangoldtWeight d * (stepWeight c (n / d) : ℝ) := by
         refine sum_le_sum_of_subset_of_nonneg (Ioc_subset_Ioc_left (Nat.zero_le _)) fun d _ _ => ?_
         exact mul_nonneg ArithmeticFunction.vonMangoldt_nonneg (by exact_mod_cast hstep _)
@@ -576,6 +575,7 @@ theorem abs_log_div_factorial_sub_le {n k : ℕ} (hn : 1 ≤ n) (hk : 1 ≤ k) :
       rw [show Real.log n - Real.log k - 1 = Real.log n + (-(Real.log k + 1)) by ring]
       refine (abs_add_le _ _).trans ?_
       rw [abs_of_nonneg hlogn, abs_neg, abs_of_nonneg (by linarith)]
+      linarith
     calc |(n : ℝ) / k| * |Real.log n - Real.log k - 1|
         ≤ 1 * (Real.log n + Real.log k + 1) := mul_le_mul hnk1 habs (abs_nonneg _) zero_le_one
       _ ≤ 3 + Real.log k + 2 * Real.log n := by linarith
@@ -588,10 +588,10 @@ theorem abs_log_div_factorial_sub_le {n k : ℕ} (hn : 1 ≤ n) (hk : 1 ≤ k) :
     have hqt : (q : ℝ) ≤ t := Nat.cast_div_le
     have htq1 : t < (q : ℝ) + 1 := by
       rw [div_lt_iff₀ hk0]
-      have hlt : n < k * (q + 1) := by
-        have := Nat.lt_mul_div_succ n hk
-        rwa [mul_comm] at this
-      exact_mod_cast hlt
+      have hlt_nat : n < (q + 1) * k := by
+        rw [mul_comm]
+        exact Nat.lt_mul_div_succ n hk
+      exact_mod_cast hlt_nat
     have htn : t ≤ n := div_le_self hn0.le (by exact_mod_cast hk)
     have ht0 : 0 < t := div_pos hn0 hk0
     have hlogt0 : 0 ≤ Real.log t := Real.log_nonneg (le_trans (by exact_mod_cast hq1) hqt)
@@ -615,13 +615,16 @@ theorem abs_log_div_factorial_sub_le {n k : ℕ} (hn : 1 ≤ n) (hk : 1 ≤ k) :
           (t - q) * Real.log t + (q * (Real.log t - Real.log q) - (t - q)) := by ring
       rw [hid]
       have h1 : 0 ≤ (t - q) * Real.log t := mul_nonneg (by linarith) hlogt0
-      have h2 : (t - q) * Real.log t ≤ Real.log n := by nlinarith
+      have h2 : (t - q) * Real.log t ≤ Real.log n := by
+        calc (t - q) * Real.log t ≤ 1 * Real.log t := mul_le_mul_of_nonneg_right (by linarith) hlogt0
+          _ = Real.log t := one_mul _
+          _ ≤ Real.log n := hlogt_le
       rw [abs_le]
       constructor <;> linarith [hqlog.1, hqlog.2]
     rw [← hlogt_eq, show t * (Real.log t - 1) = t * Real.log t - t by ring]
     calc |Real.log (q.factorial : ℕ) - (t * Real.log t - t)|
         = |(Real.log (q.factorial : ℕ) - (q * Real.log q - q)) -
-            ((t * Real.log t - t) - (q * Real.log q - q))| := by ring_nf
+            ((t * Real.log t - t) - (q * Real.log q - q))| := by congr 1; ring
       _ ≤ |Real.log (q.factorial : ℕ) - (q * Real.log q - q)| +
             |(t * Real.log t - t) - (q * Real.log q - q)| := abs_sub _ _
       _ ≤ (1 + Real.log n) + (1 + Real.log n) := add_le_add hstirl hmain_diff
@@ -664,7 +667,8 @@ theorem abs_log_stencilInt_sub_slope_le {c : ℕ →₀ ℤ} (hc0 : c 0 = 0) (hb
   refine (mul_le_mul_of_nonneg_left (abs_log_div_factorial_sub_le hn hk1) (abs_nonneg _)).trans ?_
   rw [mul_assoc]
   refine mul_le_mul_of_nonneg_left ?_ (abs_nonneg _)
-  nlinarith
+  have hprod : 0 ≤ Real.log k * Real.log n := mul_nonneg hlogk hlogn
+  linarith
 
 /-- The slope of a balanced nonnegative stencil is nonnegative. -/
 theorem stencilSlope_nonneg {c : ℕ →₀ ℤ} (hc0 : c 0 = 0) (hbal : IsBalanced c)
@@ -672,29 +676,35 @@ theorem stencilSlope_nonneg {c : ℕ →₀ ℤ} (hc0 : c 0 = 0) (hbal : IsBalan
   by_contra! hneg
   set E := stencilErrorConst c
   have hE : 0 ≤ E := stencilErrorConst_nonneg c
-  -- Choose `n ≥ 2` large enough that `stencilSlope c * n + E * (1 + log n) < 0`
-  have hlim : Tendsto (fun n : ℕ => stencilSlope c * (n : ℝ) + E * (1 + Real.log n)) atTop (𝓝 (-1)) → False := fun _ => trivial
-  clear hlim
-  -- Elementary bound `log n ≤ √n` via `log x ≤ x - 1` applied to `√n`
-  obtain ⟨N, hN⟩ : ∃ N : ℕ, 1 ≤ N ∧ stencilSlope c * (N : ℝ) + E * (1 + Real.log N) < 0 := by
+  obtain ⟨N, hN1, hNlt⟩ : ∃ N : ℕ, 1 ≤ N ∧ stencilSlope c * (N : ℝ) + E * (1 + Real.log N) < 0 := by
     set M := Nat.ceil ((2 * E + 2) / (-stencilSlope c)) + 2
-    refine ⟨M ^ 2, by positivity, ?_⟩
-    have hM_pos : (0 : ℝ) < M := by positivity
+    have hM1 : 1 ≤ M := by omega
+    refine ⟨M ^ 2, Nat.one_le_pow 2 M hM1, ?_⟩
+    have hM_pos : (0 : ℝ) < M := by exact_mod_cast (by omega : 0 < M)
     have hM_ge : (2 * E + 2) / (-stencilSlope c) ≤ M :=
       (Nat.le_ceil _).trans (by exact_mod_cast Nat.le_add_right _ 2)
     have hM2 : (2 : ℝ) ≤ M := by exact_mod_cast Nat.le_add_left 2 _
     have hlogM : Real.log ((M ^ 2 : ℕ) : ℝ) ≤ 2 * M := by
-      push_cast
-      rw [Real.log_pow, Nat.cast_ofNat]
+      rw [Nat.cast_pow, Real.log_pow, Nat.cast_ofNat]
       have := Real.log_le_sub_one_of_pos hM_pos
       linarith
-    have hmul : 2 * E + 2 ≤ (-stencilSlope c) * M := (div_le_iff₀ (by linarith)).mp hM_ge
-    push_cast
-    have hsq : (-stencilSlope c) * M * M ≤ (-stencilSlope c) * (M : ℝ) ^ 2 := by ring_nf; le_rfl
-    nlinarith [mul_le_mul_of_nonneg_right hmul hM_pos.le]
+    have hmul : 2 * E + 2 ≤ (M : ℝ) * (-stencilSlope c) :=
+      (div_le_iff₀ (by linarith)).mp hM_ge
+    have hmulM : (2 * E + 2) * (M : ℝ) ≤ (M : ℝ) * (-stencilSlope c) * (M : ℝ) :=
+      mul_le_mul_of_nonneg_right hmul hM_pos.le
+    have hElog : E * (1 + Real.log ((M ^ 2 : ℕ) : ℝ)) ≤ E * (1 + 2 * (M : ℝ)) :=
+      mul_le_mul_of_nonneg_left (by linarith) hE
+    have hcast_sq : stencilSlope c * ((M ^ 2 : ℕ) : ℝ) = -((M : ℝ) * (-stencilSlope c) * (M : ℝ)) := by
+      rw [Nat.cast_pow]; ring
+    have h2M : E * (1 + 2 * (M : ℝ)) < (2 * E + 2) * (M : ℝ) := by
+      have hid : (2 * E + 2) * (M : ℝ) - E * (1 + 2 * (M : ℝ)) =
+          E * ((M : ℝ) - 1) + 2 * (M : ℝ) := by ring
+      have hEm : 0 ≤ E * ((M : ℝ) - 1) := mul_nonneg hE (by linarith)
+      linarith
+    linarith
   have hlog_ge : 0 ≤ Real.log (stencilInt c N : ℝ) :=
     Real.log_nonneg (by exact_mod_cast stencilInt_pos_of_nonneg hstep N)
-  have habs := (abs_le.mp (abs_log_stencilInt_sub_slope_le hc0 hbal hstep hN.1)).2
+  have habs := (abs_le.mp (abs_log_stencilInt_sub_slope_le hc0 hbal hstep hN1)).2
   linarith
 
 /-- **General vanishing-order upper producer.** If `c` is balanced, `stepWeight c ≥ 0` everywhere,
@@ -723,17 +733,15 @@ theorem psi_le_of_stepWeight_producer {c : ℕ →₀ ℤ} {m B : ℕ} (hc0 : c 
     · have hpsi := psi_sub_le_log_stencilInt hc0 hstep hwin (by omega) n
       have hst := (abs_le.mp (abs_log_stencilInt_sub_slope_le hc0 hbal hstep hn)).2
       have hmax : max n 1 = n := max_eq_left hn
-      rw [hmax, le_div_iff₀ hm0, div_mul_eq_mul_div, div_mul_eq_mul_div]
-      -- clear `/ m` cleanly:
-      linarith [show (Chebyshev.psi n - Chebyshev.psi (n / B : ℕ)) * m ≤
-        stencilSlope c * n + E * (1 + Real.log n) by linarith]
-  -- Choose `C > 0` absorbing `(E / m) * K * (1 + log x)` into `C * (log x)^2` on `x ≥ 2`
+      rw [hmax, show (stencilSlope c / m) * (n : ℝ) + (E / m) * (1 + Real.log n) =
+        (stencilSlope c * n + E * (1 + Real.log n)) / m by ring, le_div_iff₀ hm0]
+      linarith
   have hlog2_pos : 0 < Real.log 2 := Real.log_pos one_lt_two
   have hlogB_pos : 0 < Real.log B := Real.log_pos hB1
   refine ⟨(E / m + 1) * (1 / Real.log B + 2 / Real.log 2) * (1 / Real.log 2 + 1), by positivity,
     fun x hx => ?_⟩
   set N := ⌊x⌋₊
-  have hN1 : 1 ≤ N := Nat.le_floor (by linarith)
+  have hN1 : 1 ≤ N := Nat.le_floor (by norm_num; linarith)
   have hNx : (N : ℝ) ≤ x := Nat.floor_le (by linarith)
   have hlogx_ge : Real.log 2 ≤ Real.log x := Real.log_le_log (by norm_num) hx
   have hlogx_pos : 0 < Real.log x := lt_of_lt_of_le hlog2_pos hlogx_ge
@@ -763,24 +771,28 @@ theorem psi_le_of_stepWeight_producer {c : ℕ →₀ ℤ} {m B : ℕ} (hc0 : c 
             push_cast; exact div_le_div_of_nonneg_right hNx (pow_nonneg hB0.le j)
         _ = x * (1 / (B : ℝ)) ^ j := by rw [one_div, inv_pow, div_eq_mul_inv]
     have hlog_le : Real.log (max (N / B ^ j) 1 : ℕ) ≤ Real.log x := by
-      have hm_le : (max (N / B ^ j) 1 : ℝ) ≤ x := by
-        push_cast
-        exact max_le ((Nat.cast_le.mpr (Nat.div_le_self N _)).trans hNx) (by linarith)
+      have hm_le : ((max (N / B ^ j) 1 : ℕ) : ℝ) ≤ x := by
+        rw [Nat.cast_max]
+        exact max_le ((Nat.cast_le.mpr (Nat.div_le_self N _)).trans hNx) (by norm_num; linarith)
       exact Real.log_le_log (by positivity) hm_le
     refine hb.trans (add_le_add ?_ ?_)
     · exact mul_le_mul_of_nonneg_left hnb_le (div_nonneg hslope0 hm0.le)
     · exact mul_le_mul_of_nonneg_left (by linarith) (div_nonneg hE0 hm0.le)
   have hgeom : ∑ j ∈ range K, (1 / (B : ℝ)) ^ j ≤ 1 / (1 - 1 / (B : ℝ)) := by
-    have hne : (1 / (B : ℝ)) - 1 ≠ 0 := by linarith
+    have hne : (1 / (B : ℝ)) ≠ 1 := by linarith
     rw [geom_sum_eq hne]
     have hpow0 : 0 ≤ (1 / (B : ℝ)) ^ K := by positivity
-    rw [show ((1 / (B : ℝ)) ^ K - 1) / (1 / (B : ℝ) - 1) =
-      (1 - (1 / (B : ℝ)) ^ K) / (1 - 1 / (B : ℝ)) by ring]
+    have hrew : ((1 / (B : ℝ)) ^ K - 1) / (1 / (B : ℝ) - 1) =
+        (1 - (1 / (B : ℝ)) ^ K) / (1 - 1 / (B : ℝ)) := by
+      rw [div_eq_div_iff (by linarith) h1B.ne']
+      ring
+    rw [hrew]
     exact div_le_div_of_nonneg_right (by linarith) h1B.le
   have hK_le : (K : ℝ) ≤ (1 / Real.log B + 2 / Real.log 2) * Real.log x := by
-    have hpow_le : B ^ Nat.log B N ≤ N := Nat.pow_log_le_self B hN1.ne'
-    have hpow_leR : (B : ℝ) ^ Nat.log B N ≤ x :=
-      (by exact_mod_cast hpow_le : ((B ^ Nat.log B N : ℕ) : ℝ) ≤ N).trans hNx
+    have hpow_le : B ^ Nat.log B N ≤ N := Nat.pow_log_le_self B (by omega : N ≠ 0)
+    have hpow_leR : (B : ℝ) ^ Nat.log B N ≤ x := by
+      rw [← Nat.cast_pow]
+      exact (Nat.cast_le.mpr hpow_le).trans hNx
     have hlog_le : (Nat.log B N : ℝ) * Real.log B ≤ Real.log x := by
       have := Real.log_le_log (pow_pos hB0 _) hpow_leR
       rwa [Real.log_pow] at this
@@ -813,7 +825,9 @@ theorem psi_le_of_stepWeight_producer {c : ℕ →₀ ℤ} {m B : ℕ} (hc0 : c 
     _ = (stencilSlope c / ((m : ℝ) * (1 - 1 / (B : ℝ)))) * x +
           ((E / m + 1) * (1 / Real.log B + 2 / Real.log 2) * (1 / Real.log 2 + 1)) *
             (Real.log x) ^ 2 := by
-        congr 1 <;> ring
+        congr 1
+        · field_simp [hm0.ne', h1B.ne']
+        · ring
 
 /-! ### Pronic slope series and palindromic duality -/
 
@@ -826,14 +840,16 @@ private lemma hasSum_pronic_inv :
     induction R with
     | zero => simp
     | succ R ih =>
-      rw [sum_range_succ, ih]
+      rw [Finset.sum_range_succ, ih]
       have h1 : (R : ℝ) + 1 ≠ 0 := by positivity
       have h2 : (R : ℝ) + 2 ≠ 0 := by positivity
       push_cast
       field_simp
       ring
   simp_rw [htel]
-  simpa using tendsto_const_nhds.sub tendsto_one_div_add_atTop_nhds_zero_nat
+  have h := (tendsto_const_nhds (x := (1 : ℝ))).sub tendsto_one_div_add_atTop_nhds_zero_nat
+  rw [sub_zero] at h
+  exact h.congr fun R => by simp [one_div]
 
 private lemma natCast_mod_succ_sub_mod (d j : ℕ) (hd : 0 < d) :
     (((j + 1) % d : ℕ) : ℝ) - ((j % d : ℕ) : ℝ) = 1 - if d ∣ j + 1 then (d : ℝ) else 0 := by
@@ -862,7 +878,7 @@ private lemma sum_range_dvd_succ_div (d K : ℕ) (hd : 0 < d) :
   induction K with
   | zero => simp
   | succ K ih =>
-    rw [Nat.mul_succ, sum_range_add, ih, sum_range_succ]
+    rw [Nat.mul_succ, sum_range_add, ih, Finset.sum_range_succ]
     congr 1
     rw [sum_eq_single (d - 1)]
     · rw [if_pos (by
@@ -872,7 +888,7 @@ private lemma sum_range_dvd_succ_div (d K : ℕ) (hd : 0 < d) :
         exact dvd_mul_right d (K + 1))]
       have hdR : (0 : ℝ) < d := by exact_mod_cast hd
       have hcast : ((d * K + (d - 1) : ℕ) : ℝ) + 1 = d * ((K : ℝ) + 1) := by
-        rw [show d * K + (d - 1) = d * K + d - 1 by omega, Nat.cast_sub (by nlinarith)]
+        rw [show d * K + (d - 1) = d * K + d - 1 by omega, Nat.cast_sub (by omega)]
         push_cast; ring
       rw [hcast]
       field_simp
@@ -883,9 +899,13 @@ private lemma sum_range_dvd_succ_div (d K : ℕ) (hd : 0 < d) :
       have h2 : d ∣ a + 1 := by
         have : d ∣ d * K + (a + 1) := by rwa [← add_assoc]
         exact (Nat.dvd_add_right (dvd_mul_right d K)).mp this
-      have := Nat.le_of_dvd (by omega) h2
       obtain ⟨c, hc⟩ := h2
-      rcases c with _ | _ | c <;> [omega; omega; nlinarith]
+      rcases c with _ | _ | c
+      · omega
+      · omega
+      · have hge : d * 2 ≤ d * (c + 1 + 1) := Nat.mul_le_mul_left d (by omega)
+        rw [← hc] at hge
+        omega
     · intro h; exact absurd (mem_range.mpr (by omega)) h
 
 /-- Exact pronic series for `((r % d) / d) / (r (r + 1))`. -/
@@ -911,7 +931,7 @@ theorem hasSum_mod_div_pronic {d : ℕ} (hd : 1 ≤ d) :
     | zero => simp [A]
     | succ R ih =>
       simp only [A] at ih ⊢
-      rw [sum_range_succ, sum_range_succ, ih]
+      rw [Finset.sum_range_succ, Finset.sum_range_succ, ih]
       have h1 : (R : ℝ) + 1 ≠ 0 := by positivity
       have h2 : (R : ℝ) + 2 ≠ 0 := by positivity
       push_cast; field_simp; ring
@@ -970,8 +990,9 @@ theorem stepWeight_eq_sum_mod {c : ℕ →₀ ℤ} (hc0 : c 0 = 0) (hbal : IsBal
     have hkR : (k : ℝ) ≠ 0 := Nat.cast_ne_zero.mpr hk0
     have hdiv : (k : ℝ) * ((r / k : ℕ) : ℝ) + ((r % k : ℕ) : ℝ) = r := by
       exact_mod_cast Nat.div_add_mod r k
-    field_simp [hkR]
-    linarith
+    have hdiv' : ((r / k : ℕ) : ℝ) = ((r : ℝ) - ((r % k : ℕ) : ℝ)) / k := by
+      rw [eq_div_iff hkR]; linarith
+    rw [hdiv']; ring
   rw [stepWeight, Int.cast_sum]
   have hcast : ∀ k ∈ c.support, ((c k * (r / k : ℕ) : ℤ) : ℝ) = (c k : ℝ) * ((r / k : ℕ) : ℝ) :=
     fun _ _ => by push_cast; rfl
@@ -1015,19 +1036,22 @@ theorem stepWeight_reflect_add {c : ℕ →₀ ℤ} (hc0 : c 0 = 0) (hbal : IsBa
   have hterm : ∀ k ∈ c.support, ((L - 1 - r) / k : ℕ) + (r / k : ℕ) = L / k - 1 := by
     intro k hk
     have hk0 : k ≠ 0 := fun h => by subst h; exact Finsupp.mem_support_iff.mp hk hc0
+    have hk_pos : 0 < k := Nat.pos_of_ne_zero hk0
     obtain ⟨m, rfl⟩ := hL k hk
-    have hm0 : 0 < m := by omega
-    have h1 := Nat.div_add_mod r k
-    have h2 := Nat.mod_lt r (Nat.pos_of_ne_zero hk0)
-    have hrew : k * m - 1 - r = (k - 1 - r % k) + k * (m - 1 - r / k) := by omega
-    have hdiv1 : (k * m - 1 - r) / k = m - 1 - r / k := by
-      rw [hrew, Nat.add_mul_div_left _ _ (Nat.pos_of_ne_zero hk0),
-        Nat.div_eq_of_lt (by omega), zero_add]
-    have hdivL : k * m / k = m := Nat.mul_div_right m (Nat.pos_of_ne_zero hk0)
-    have hle : r / k ≤ m - 1 := by
-      have : k * (r / k) ≤ r := Nat.mul_div_le r k
-      nlinarith
-    omega
+    rcases Nat.eq_zero_or_pos m with rfl | hm0
+    · simp at hr
+    · have h1 := Nat.div_add_mod r k
+      have h2 := Nat.mod_lt r hk_pos
+      have hlt_div : r / k < m := (Nat.div_lt_iff_lt_mul hk_pos).mpr (by rwa [mul_comm])
+      have hle : r / k ≤ m - 1 := by omega
+      have hkm : k * m = k * (m - 1 - r / k) + k * (r / k) + k := by
+        zify [hle, hm0]; ring
+      have hrew : k * m - 1 - r = (k - 1 - r % k) + k * (m - 1 - r / k) := by omega
+      have hlt_rem : k - 1 - r % k < k := by omega
+      have hdiv1 : (k * m - 1 - r) / k = m - 1 - r / k := by
+        rw [hrew, Nat.add_mul_div_left _ _ hk_pos, Nat.div_eq_of_lt hlt_rem, zero_add]
+      have hdivL : k * m / k = m := Nat.mul_div_right m hk_pos
+      omega
   have hR : ((stepWeight c (L - 1 - r) + stepWeight c r : ℤ) : ℝ) =
       ((-∑ k ∈ c.support, c k : ℤ) : ℝ) := by
     simp only [stepWeight, ← sum_add_distrib, ← mul_add, Int.cast_sum, Int.cast_neg]
@@ -1035,20 +1059,24 @@ theorem stepWeight_reflect_add {c : ℕ →₀ ℤ} (hc0 : c 0 = 0) (hbal : IsBa
         ∑ k ∈ c.support, ((L : ℝ) * ((c k : ℝ) / k) - (c k : ℝ)) := by
       refine sum_congr rfl fun k hk => ?_
       have hk0 : k ≠ 0 := fun h => by subst h; exact Finsupp.mem_support_iff.mp hk hc0
+      have hk_pos : 0 < k := Nat.pos_of_ne_zero hk0
       have hkR : (k : ℝ) ≠ 0 := Nat.cast_ne_zero.mpr hk0
       have ht := hterm k hk
       obtain ⟨m, hm⟩ := hL k hk
+      have hm0 : 0 < m := by
+        rcases Nat.eq_zero_or_pos m with rfl | hpos
+        · simp [hm] at hr
+        · exact hpos
       have hLk : ((L / k : ℕ) : ℝ) = (L : ℝ) / k := by
-        rw [hm, Nat.mul_div_right m (Nat.pos_of_ne_zero hk0)]
+        rw [hm, Nat.mul_div_right m hk_pos]
         push_cast; field_simp [hkR]
       have hge1 : 1 ≤ L / k := by
-        rw [hm, Nat.mul_div_right m (Nat.pos_of_ne_zero hk0)]
+        rw [hm, Nat.mul_div_right m hk_pos]
         omega
-      push_cast
       have htR : (((L - 1 - r) / k : ℕ) : ℝ) + ((r / k : ℕ) : ℝ) = ((L / k : ℕ) : ℝ) - 1 := by
         have := congrArg (Nat.cast (R := ℝ)) ht
         rwa [Nat.cast_add, Nat.cast_sub hge1, Nat.cast_one] at this
-      rw [htR, hLk]
+      rw [Int.cast_mul, Int.cast_add, Int.cast_natCast, Int.cast_natCast, htR, hLk]
       ring
     rw [hsum, sum_sub_distrib, ← mul_sum, hbal, mul_zero, zero_sub]
   exact_mod_cast hR
@@ -1138,11 +1166,14 @@ theorem single_prime_hecke_slope_ge {c : ℕ →₀ ℤ} {p₀ K m R : ℕ} (hp�
           exact div_nonneg (by exact_mod_cast hstep _) (by positivity)
   have hgeom : ∑ r ∈ range R, (1 / (p₀ : ℝ)) ^ r =
       (1 - 1 / (p₀ : ℝ) ^ R) * ((p₀ : ℝ) / ((p₀ : ℝ) - 1)) := by
-    have hne : (1 / (p₀ : ℝ)) - 1 ≠ 0 := by
-      intro h; have : (1 : ℝ) = p₀ := by field_simp at h; linarith
+    have hne : (1 / (p₀ : ℝ)) ≠ 1 := by
+      rw [ne_eq, div_eq_one_iff_eq hp0.ne']
       linarith
-    rw [geom_sum_eq hne, one_div, inv_pow, ← one_div]
-    field_simp [hp0.ne', (show (p₀ : ℝ) - 1 ≠ 0 by linarith)]
+    rw [geom_sum_eq hne, one_div_pow, mul_div_assoc',
+      div_eq_div_iff (show (1 : ℝ) / p₀ - 1 ≠ 0 by linarith) (show (p₀ : ℝ) - 1 ≠ 0 by linarith)]
+    have hp_inv : (p₀ : ℝ) * (1 / (p₀ : ℝ) - 1) = 1 - (p₀ : ℝ) := by
+      rw [mul_sub, mul_one_div_cancel hp0.ne', mul_one]
+    rw [mul_assoc, hp_inv]
     ring
   rw [hgeom] at hge
   rw [le_div_iff₀ (mul_pos hm0 h1pR)]
@@ -1155,10 +1186,11 @@ theorem prime_mul_log_div_sub_one_ge {p : ℕ} (hp : p.Prime) :
     2 * Real.log 2 ≤ (p : ℝ) * Real.log p / ((p : ℝ) - 1) := by
   rcases eq_or_lt_of_le hp.two_le with rfl | hp3
   · norm_num
-  · have hpR : (3 : ℝ) ≤ p := by exact_mod_cast hp3
+  · have hp3' : 3 ≤ p := hp3
+    have hpR : (3 : ℝ) ≤ p := by exact_mod_cast hp3'
     have hsub : (0 : ℝ) < (p : ℝ) - 1 := by linarith
     rw [le_div_iff₀ hsub]
-    rcases eq_or_lt_of_le hp3 with rfl | hp4
+    rcases eq_or_lt_of_le hp3' with rfl | hp4
     · -- `p = 3`: show `4 log 2 ≤ 3 log 3`, i.e. `16 ≤ 27`
       push_cast
       have hlt : Real.log ((2 : ℝ) ^ 4) ≤ Real.log ((3 : ℝ) ^ 3) :=
@@ -1168,13 +1200,18 @@ theorem prime_mul_log_div_sub_one_ge {p : ℕ} (hp : p.Prime) :
       linarith
     · -- `p ≥ 4`: `log p ≥ log 4 = 2 log 2`, so `p log p ≥ 2 p log 2 > 2 (p - 1) log 2`
       have hlog4 : 2 * Real.log 2 ≤ Real.log p := by
+        have h4p : (2 : ℝ) ^ 2 ≤ p := by
+          rw [show (2 : ℝ) ^ 2 = 4 by norm_num]
+          exact_mod_cast hp4
         have hlt : Real.log ((2 : ℝ) ^ 2) ≤ Real.log p :=
-          Real.log_le_log (by norm_num) (by exact_mod_cast hp4 : (4 : ℝ) ≤ p)
+          Real.log_le_log (by norm_num) h4p
         rw [Real.log_pow] at hlt
         norm_num at hlt
         exact hlt
       have hl2 : 0 < Real.log 2 := Real.log_pos one_lt_two
-      nlinarith
+      have hmul : (p : ℝ) * (2 * Real.log 2) ≤ (p : ℝ) * Real.log p :=
+        mul_le_mul_of_nonneg_left hlog4 (by linarith)
+      linarith
 
 /-- **Universal single-prime Hecke ceiling (`2 log 2`).** -/
 theorem single_prime_hecke_slope_ge_two_log_two {c : ℕ →₀ ℤ} {p₀ K m R : ℕ} (hp₀ : p₀.Prime)
@@ -1192,6 +1229,13 @@ def twoThreeStencil : ℕ →₀ ℤ :=
   Finsupp.single 1 1 - Finsupp.single 2 1 - Finsupp.single 3 1 -
     Finsupp.single 4 1 + Finsupp.single 12 1
 
+private lemma twoThreeStencil_apply (k : ℕ) :
+    twoThreeStencil k =
+      (if 1 = k then 1 else 0) - (if 2 = k then 1 else 0) -
+        (if 3 = k then 1 else 0) - (if 4 = k then 1 else 0) +
+        (if 12 = k then 1 else 0) := by
+  simp [twoThreeStencil, Finsupp.single_apply]
+
 private lemma twoThreeStencil_support_subset :
     twoThreeStencil.support ⊆ ({1, 2, 3, 4, 12} : Finset ℕ) := by
   intro k hk
@@ -1200,42 +1244,36 @@ private lemma twoThreeStencil_support_subset :
   simp only [mem_insert, mem_singleton, not_or] at hnot
   obtain ⟨h1, h2, h3, h4, h12⟩ := hnot
   apply hk'
-  simp [twoThreeStencil, Finsupp.single_eq_of_ne (Ne.symm h1),
-    Finsupp.single_eq_of_ne (Ne.symm h2), Finsupp.single_eq_of_ne (Ne.symm h3),
-    Finsupp.single_eq_of_ne (Ne.symm h4), Finsupp.single_eq_of_ne (Ne.symm h12)]
+  rw [twoThreeStencil_apply, if_neg (Ne.symm h1), if_neg (Ne.symm h2),
+    if_neg (Ne.symm h3), if_neg (Ne.symm h4), if_neg (Ne.symm h12)]
+  norm_num
 
 theorem twoThreeStencil_zero : twoThreeStencil 0 = 0 := by
-  simp [twoThreeStencil]
+  norm_num [twoThreeStencil_apply]
 
 theorem isBalanced_twoThreeStencil : IsBalanced twoThreeStencil := by
-  rw [IsBalanced, ← sum_subset twoThreeStencil_support_subset
+  rw [IsBalanced, sum_subset twoThreeStencil_support_subset
     (fun k _ hk => by rw [Finsupp.notMem_support_iff.mp hk]; simp)]
-  simp only [sum_insert (by decide : (1 : ℕ) ∉ ({2, 3, 4, 12} : Finset ℕ)),
-    sum_insert (by decide : (2 : ℕ) ∉ ({3, 4, 12} : Finset ℕ)),
-    sum_insert (by decide : (3 : ℕ) ∉ ({4, 12} : Finset ℕ)),
-    sum_insert (by decide : (4 : ℕ) ∉ ({12} : Finset ℕ)), sum_singleton]
-  have v1 : twoThreeStencil 1 = 1 := by decide
-  have v2 : twoThreeStencil 2 = -1 := by decide
-  have v3 : twoThreeStencil 3 = -1 := by decide
-  have v4 : twoThreeStencil 4 = -1 := by decide
-  have v12 : twoThreeStencil 12 = 1 := by decide
-  rw [v1, v2, v3, v4, v12]
-  norm_num
+  simp only [sum_insert (by simp : (1 : ℕ) ∉ ({2, 3, 4, 12} : Finset ℕ)),
+    sum_insert (by simp : (2 : ℕ) ∉ ({3, 4, 12} : Finset ℕ)),
+    sum_insert (by simp : (3 : ℕ) ∉ ({4, 12} : Finset ℕ)),
+    sum_insert (by simp : (4 : ℕ) ∉ ({12} : Finset ℕ)), sum_singleton]
+  norm_num [twoThreeStencil_apply]
 
 theorem stepWeight_twoThreeStencil_eq (r : ℕ) :
     stepWeight twoThreeStencil r =
       (r : ℤ) - (r / 2 : ℕ) - (r / 3 : ℕ) - (r / 4 : ℕ) + (r / 12 : ℕ) := by
-  rw [stepWeight, ← sum_subset twoThreeStencil_support_subset
+  rw [stepWeight, sum_subset twoThreeStencil_support_subset
     (fun k _ hk => by rw [Finsupp.notMem_support_iff.mp hk]; simp)]
-  simp only [sum_insert (by decide : (1 : ℕ) ∉ ({2, 3, 4, 12} : Finset ℕ)),
-    sum_insert (by decide : (2 : ℕ) ∉ ({3, 4, 12} : Finset ℕ)),
-    sum_insert (by decide : (3 : ℕ) ∉ ({4, 12} : Finset ℕ)),
-    sum_insert (by decide : (4 : ℕ) ∉ ({12} : Finset ℕ)), sum_singleton]
-  have v1 : twoThreeStencil 1 = 1 := by decide
-  have v2 : twoThreeStencil 2 = -1 := by decide
-  have v3 : twoThreeStencil 3 = -1 := by decide
-  have v4 : twoThreeStencil 4 = -1 := by decide
-  have v12 : twoThreeStencil 12 = 1 := by decide
+  simp only [sum_insert (by simp : (1 : ℕ) ∉ ({2, 3, 4, 12} : Finset ℕ)),
+    sum_insert (by simp : (2 : ℕ) ∉ ({3, 4, 12} : Finset ℕ)),
+    sum_insert (by simp : (3 : ℕ) ∉ ({4, 12} : Finset ℕ)),
+    sum_insert (by simp : (4 : ℕ) ∉ ({12} : Finset ℕ)), sum_singleton]
+  have v1 : twoThreeStencil 1 = 1 := by norm_num [twoThreeStencil_apply]
+  have v2 : twoThreeStencil 2 = -1 := by norm_num [twoThreeStencil_apply]
+  have v3 : twoThreeStencil 3 = -1 := by norm_num [twoThreeStencil_apply]
+  have v4 : twoThreeStencil 4 = -1 := by norm_num [twoThreeStencil_apply]
+  have v12 : twoThreeStencil 12 = 1 := by norm_num [twoThreeStencil_apply]
   rw [v1, v2, v3, v4, v12, Nat.div_one]
   ring
 
@@ -1262,17 +1300,17 @@ theorem stepWeight_twoThreeStencil_window :
 theorem twoThreeStencil_normalized_slope :
     stencilSlope twoThreeStencil / ((1 : ℝ) * (1 - 1 / (4 : ℝ))) =
       (10 / 9 : ℝ) * Real.log 2 + (1 / 3 : ℝ) * Real.log 3 := by
-  rw [stencilSlope, ← sum_subset twoThreeStencil_support_subset
+  rw [stencilSlope, sum_subset twoThreeStencil_support_subset
     (fun k _ hk => by rw [Finsupp.notMem_support_iff.mp hk]; simp)]
-  simp only [sum_insert (by decide : (1 : ℕ) ∉ ({2, 3, 4, 12} : Finset ℕ)),
-    sum_insert (by decide : (2 : ℕ) ∉ ({3, 4, 12} : Finset ℕ)),
-    sum_insert (by decide : (3 : ℕ) ∉ ({4, 12} : Finset ℕ)),
-    sum_insert (by decide : (4 : ℕ) ∉ ({12} : Finset ℕ)), sum_singleton]
-  have v1 : twoThreeStencil 1 = 1 := by decide
-  have v2 : twoThreeStencil 2 = -1 := by decide
-  have v3 : twoThreeStencil 3 = -1 := by decide
-  have v4 : twoThreeStencil 4 = -1 := by decide
-  have v12 : twoThreeStencil 12 = 1 := by decide
+  simp only [sum_insert (by simp : (1 : ℕ) ∉ ({2, 3, 4, 12} : Finset ℕ)),
+    sum_insert (by simp : (2 : ℕ) ∉ ({3, 4, 12} : Finset ℕ)),
+    sum_insert (by simp : (3 : ℕ) ∉ ({4, 12} : Finset ℕ)),
+    sum_insert (by simp : (4 : ℕ) ∉ ({12} : Finset ℕ)), sum_singleton]
+  have v1 : twoThreeStencil 1 = 1 := by norm_num [twoThreeStencil_apply]
+  have v2 : twoThreeStencil 2 = -1 := by norm_num [twoThreeStencil_apply]
+  have v3 : twoThreeStencil 3 = -1 := by norm_num [twoThreeStencil_apply]
+  have v4 : twoThreeStencil 4 = -1 := by norm_num [twoThreeStencil_apply]
+  have v12 : twoThreeStencil 12 = 1 := by norm_num [twoThreeStencil_apply]
   rw [v1, v2, v3, v4, v12]
   have l4 : Real.log 4 = 2 * Real.log 2 := by
     rw [show (4 : ℝ) = 2 ^ 2 by norm_num, Real.log_pow]; norm_num
@@ -1290,7 +1328,7 @@ theorem twoThreeStencil_slope_lt :
   rw [Real.log_div (by norm_num) (by norm_num), show (9 : ℝ) = 3 ^ 2 by norm_num,
     show (8 : ℝ) = 2 ^ 3 by norm_num, Real.log_pow, Real.log_pow] at h98
   norm_num at h98
-  exact ⟨by nlinarith [Real.log_two_lt_d9, h98], by nlinarith [Real.log_two_gt_d9]⟩
+  exact ⟨by linarith [Real.log_two_lt_d9, h98], by linarith [Real.log_two_gt_d9]⟩
 
 /-- **Unconditional `{2, 3}` upper producer beating `2 log 2`.** -/
 theorem psi_le_of_twoThreeStencil :
@@ -1301,7 +1339,8 @@ theorem psi_le_of_twoThreeStencil :
     le_rfl (by norm_num : 2 ≤ 4) stepWeight_twoThreeStencil_window
   refine ⟨C, hC, fun x hx => (hpsi x hx).trans ?_⟩
   have hlt := twoThreeStencil_slope_lt.1
-  nlinarith
+  have hmul := mul_le_mul_of_nonneg_right hlt.le (by linarith : (0 : ℝ) ≤ x)
+  linarith
 
 /-! ### Ceiling 2: Universal finite-prime coprime jump obstruction (`> 1`) -/
 
@@ -1332,20 +1371,22 @@ theorem stepWeight_coprime_jump {S : Finset ℕ} {c : ℕ →₀ ℤ} (hc0 : c 0
     have hdiv := Nat.div_add_mod q k
     have hlt := Nat.mod_lt q (Nat.pos_of_ne_zero hk0)
     have hrew : q - 1 = (q % k - 1) + k * (q / k) := by omega
+    have hlt' : q % k - 1 < k := by omega
     rw [hrew, Nat.add_mul_div_left _ _ (Nat.pos_of_ne_zero hk0),
-      Nat.div_eq_of_lt (by omega), zero_add]
+      Nat.div_eq_of_lt (a := q % k - 1) hlt', zero_add]
   rw [stepWeight, stepWeight, ← sum_sub_distrib]
   by_cases h1 : 1 ∈ c.support
   · rw [sum_eq_single 1]
-    · rw [Nat.div_one, Nat.div_one, show (q : ℤ) - ((q - 1 : ℕ) : ℤ) = 1 by omega]
-      ring
+    · rw [Nat.div_one, Nat.div_one, ← mul_sub]
+      have hq1 : (q : ℤ) - ((q - 1 : ℕ) : ℤ) = 1 := by omega
+      rw [hq1, mul_one]
     · intro k hk hk1
-      rw [hdiff k hk hk1, sub_self, mul_zero]
+      rw [← mul_sub, hdiff k hk hk1, sub_self, mul_zero]
     · intro h; exact absurd h1 h
   · rw [Finsupp.notMem_support_iff.mp h1, sum_eq_zero]
     intro k hk
     have hk1 : k ≠ 1 := fun h => h1 (h ▸ hk)
-    rw [hdiff k hk hk1, sub_self, mul_zero]
+    rw [← mul_sub, hdiff k hk hk1, sub_self, mul_zero]
 
 /-- **Universal finite-prime alphabet obstruction.** For any finite set `S` of primes with
 `P_S = ∏_{p ∈ S} p`, every balanced `S`-supported integer producer has normalized slope strictly
@@ -1363,7 +1404,6 @@ theorem finite_prime_alphabet_slope_gt_one {S : Finset ℕ} (hSp : ∀ p ∈ S, 
   have hcop : Nat.Coprime q₀ P := by simp [q₀]
   have hjump := stepWeight_coprime_jump hc0 hS hq0_ge hcop
   have hg1 : (m : ℤ) ≤ stepWeight c 1 := hwin 1 (mem_Ico.mpr ⟨le_rfl, hB⟩)
-  -- Excess at `q₀` (`j₀ = q₀ - 1 = P`): `stepWeight c q₀ ≥ m + m * 1_{1 ≤ q₀ < B}`
   have hexcess : (m : ℝ) + (if q₀ < B then (m : ℝ) else 0) ≤ (stepWeight c q₀ : ℝ) := by
     split_ifs with hqB
     · have hprev : (m : ℤ) ≤ stepWeight c (q₀ - 1) :=
@@ -1375,14 +1415,12 @@ theorem finite_prime_alphabet_slope_gt_one {S : Finset ℕ} (hSp : ∀ p ∈ S, 
       have : (m : ℤ) ≤ stepWeight c q₀ := by omega
       have hR : (m : ℝ) ≤ (stepWeight c q₀ : ℝ) := by exact_mod_cast this
       linarith
-  -- Compare pronic series term-by-term against the base indicator on `[1, B)` plus `j₀ = P`
   have hhas := hasSum_stepWeight_div_pronic hc0 hbal
   set N := max B (q₀ + 1)
   have hpartial_le : ∑ j ∈ range N,
       (stepWeight c (j + 1) : ℝ) / (((j : ℝ) + 1) * ((j : ℝ) + 2)) ≤ stencilSlope c :=
     hhas.summable.sum_le_tsum (range N) (fun j _ => div_nonneg (by exact_mod_cast hstep _) (by positivity))
       |>.trans_eq hhas.tsum_eq
-  -- Base indicator sum on `j ∈ range (B - 1)` (`r = j + 1 ∈ Ico 1 B`) equals `m * (1 - 1 / B)`
   have hbase_tel : ∑ j ∈ range (B - 1), (m : ℝ) / (((j : ℝ) + 1) * ((j : ℝ) + 2)) =
       (m : ℝ) * (1 - 1 / (B : ℝ)) := by
     have htel : ∀ R : ℕ, ∑ j ∈ range R, (1 : ℝ) / (((j : ℝ) + 1) * ((j : ℝ) + 2)) =
@@ -1391,7 +1429,7 @@ theorem finite_prime_alphabet_slope_gt_one {S : Finset ℕ} (hSp : ∀ p ∈ S, 
       induction R with
       | zero => simp
       | succ R ih =>
-        rw [sum_range_succ, ih]
+        rw [Finset.sum_range_succ, ih]
         have h1 : (R : ℝ) + 1 ≠ 0 := by positivity
         have h2 : (R : ℝ) + 2 ≠ 0 := by positivity
         push_cast; field_simp; ring
@@ -1427,7 +1465,7 @@ theorem finite_prime_alphabet_slope_gt_one {S : Finset ℕ} (hSp : ∀ p ∈ S, 
         have hj' : j + 1 < B := by have := mem_range.mp hj; omega
         rw [if_pos hj']
       · intro j _ hjnot
-        have hj' : ¬ j + 1 < B := by have := mem_range.mt hjnot; omega
+        have hj' : ¬ j + 1 < B := by have := mt mem_range.mpr hjnot; omega
         rw [if_neg hj', zero_div]
     have h2 : ∑ j ∈ range N, (if j = P then (m : ℝ) else 0) / (((j : ℝ) + 1) * ((j : ℝ) + 2)) =
         (m : ℝ) / (((P : ℝ) + 1) * ((P : ℝ) + 2)) := by
@@ -1455,8 +1493,27 @@ theorem finite_prime_alphabet_slope_gt_one {S : Finset ℕ} (hSp : ∀ p ∈ S, 
         (m : ℝ) * (1 - 1 / (B : ℝ)) +
           ((m : ℝ) / (((P : ℝ) + 1) * ((P : ℝ) + 2))) * (1 - 1 / (B : ℝ)) := by ring
     rw [hrew]
-    nlinarith
+    linarith [mul_lt_of_lt_one_right hpos_term h1B_lt]
   exact hstrict.trans_le hslope_ge
+
+/-- **Strict main-term gap for every individual stencil.** Because `c.support` is finite, every
+balanced integer producer `(c, m, B)` is supported on a finite prime alphabet, so its normalized
+vanishing-order slope is strictly greater than `1`. -/
+theorem one_lt_normalized_slope_of_producer {c : ℕ →₀ ℤ} {m B : ℕ} (hc0 : c 0 = 0)
+    (hbal : IsBalanced c) (hstep : ∀ r : ℕ, 0 ≤ stepWeight c r)
+    (hm : 1 ≤ m) (hB : 2 ≤ B) (hwin : ∀ r ∈ Ico 1 B, (m : ℤ) ≤ stepWeight c r) :
+    1 < stencilSlope c / ((m : ℝ) * (1 - 1 / (B : ℝ))) := by
+  classical
+  set S := c.support.biUnion Nat.primeFactors
+  have hSp : ∀ p ∈ S, p.Prime := fun p hp => by
+    obtain ⟨k, _, hp'⟩ := mem_biUnion.mp hp
+    exact Nat.prime_of_mem_primeFactors hp'
+  have hS : IsPrimeAlphabetSupported S c := fun k hk p hp hpk => by
+    have hk0 : k ≠ 0 := fun h => by subst h; exact Finsupp.mem_support_iff.mp hk hc0
+    exact mem_biUnion.mpr ⟨k, hk, Nat.mem_primeFactors.mpr ⟨hp, hpk, hk0⟩⟩
+  have hgt := finite_prime_alphabet_slope_gt_one hSp hc0 hbal hS hstep hm hB hwin
+  have hpos : 0 < 1 / (((∏ p ∈ S, p : ℕ) : ℝ) + 1) / (((∏ p ∈ S, p : ℕ) : ℝ) + 2) := by positivity
+  linarith
 
 /-! ### Ceiling 3: Parity-blind / non-alternating multinomial obstruction (`> 31 / 30`) -/
 
@@ -1486,7 +1543,7 @@ private lemma sylvester_three_point_le_log {k : ℕ} (hk : 2 ≤ k) :
     have hlog7 : Real.log 7 ≤ Real.log k :=
       Real.log_le_log (by norm_num) (by exact_mod_cast hk7)
     linarith
-  · push_neg at hk7
+  · have hk7' : k < 7 := lt_of_not_ge hk7
     interval_cases k
     · norm_num
     · norm_num
@@ -1549,21 +1606,21 @@ theorem non_alternating_stencil_slope_gt {c : ℕ →₀ ℤ} {m B : ℕ} (hc0 :
   have hstep_S2 : ∀ r : ℕ, (stepWeight c r : ℝ) =
       ∑ k ∈ S2, (-(c k : ℝ) / k) * ((r % k : ℕ) : ℝ) := by
     intro r
-    rw [stepWeight_eq_sum_mod hc0 hbal r, ← sum_subset (filter_subset _ c.support)]
+    rw [stepWeight_eq_sum_mod hc0 hbal r, ← sum_subset (filter_subset (fun k => 2 ≤ k) c.support)]
     intro k hk hknot
     have hk0 : k ≠ 0 := fun h => by subst h; exact Finsupp.mem_support_iff.mp hk hc0
     have hk1 : k = 1 := by
-      simp only [S2, mem_filter, hk, true_and, not_le] at hknot
+      simp only [mem_filter, hk, true_and, not_le] at hknot
       omega
     subst hk1
-    simp
+    rw [Nat.mod_one, Nat.cast_zero, mul_zero]
   have hslope_S2 : stencilSlope c = ∑ k ∈ S2, (-(c k : ℝ) / k) * Real.log k := by
-    rw [stencilSlope, ← sum_subset (filter_subset _ c.support)]
+    rw [stencilSlope, ← sum_subset (filter_subset (fun k => 2 ≤ k) c.support)]
     · refine sum_congr rfl fun k _ => by ring
     · intro k hk hknot
       have hk0 : k ≠ 0 := fun h => by subst h; exact Finsupp.mem_support_iff.mp hk hc0
       have hk1 : k = 1 := by
-        simp only [S2, mem_filter, hk, true_and, not_le] at hknot
+        simp only [mem_filter, hk, true_and, not_le] at hknot
         omega
       subst hk1
       simp
@@ -1592,7 +1649,12 @@ theorem non_alternating_stencil_slope_gt {c : ℕ →₀ ℤ} {m B : ℕ} (hc0 :
         _ = stencilSlope c := hslope_S2.symm
     rw [lt_div_iff₀ (mul_pos hm0 h1B)]
     push_cast at hle ⊢
-    nlinarith
+    have hlt' : (31 / 30 : ℝ) * ((m : ℝ) * (1 / 2)) < (m : ℝ) * Real.log 2 := by
+      rw [show (31 / 30 : ℝ) * ((m : ℝ) * (1 / 2)) = (m : ℝ) * ((31 / 30) / 2) by ring]
+      exact mul_lt_mul_of_pos_left (by linarith) hm0
+    have heq' : (31 / 30 : ℝ) * ((m : ℝ) * (1 - 1 / 2)) = (31 / 30 : ℝ) * ((m : ℝ) * (1 / 2)) := by
+      ring
+    linarith
   · by_cases hB6 : B ≤ 6
     · -- `3 ≤ B ≤ 6`: `(w_1, w_2)` gives `stencilSlope c ≥ m * (log 2 + log 3) / 2`
       have hw1 : (m : ℝ) ≤ ∑ k ∈ S2, (-(c k : ℝ) / k) * ((1 % k : ℕ) : ℝ) := by
@@ -1625,7 +1687,15 @@ theorem non_alternating_stencil_slope_gt {c : ℕ →₀ ℤ} {m B : ℕ} (hc0 :
           one_div_le_one_div_of_le hB0 (by exact_mod_cast hB6)
         linarith
       rw [lt_div_iff₀ (mul_pos hm0 h1B)]
-      nlinarith
+      have hstep1 : (31 / 30 : ℝ) * ((m : ℝ) * (1 - 1 / (B : ℝ))) ≤
+          (m : ℝ) * ((31 / 30) * (5 / 6)) := by
+        rw [show (31 / 30 : ℝ) * ((m : ℝ) * (1 - 1 / (B : ℝ))) =
+          (m : ℝ) * ((31 / 30) * (1 - 1 / (B : ℝ))) by ring]
+        exact mul_le_mul_of_nonneg_left (by linarith) hm0.le
+      have hstep2 : (m : ℝ) * ((31 / 30) * (5 / 6)) <
+          (m : ℝ) * ((Real.log 2 + Real.log 3) / 2) :=
+        mul_lt_mul_of_pos_left (by linarith) hm0
+      linarith
     · -- `B ≥ 7`: `(w_1, w_2, w_6)` gives `stencilSlope c ≥ m * log(504) / 6`
       have hB7 : 7 ≤ B := by omega
       have hw1 : (m : ℝ) ≤ ∑ k ∈ S2, (-(c k : ℝ) / k) * ((1 % k : ℕ) : ℝ) := by
@@ -1669,7 +1739,14 @@ theorem non_alternating_stencil_slope_gt {c : ℕ →₀ ℤ} {m B : ℕ} (hc0 :
         have : 0 < 1 / (B : ℝ) := by positivity
         linarith
       rw [lt_div_iff₀ (mul_pos hm0 h1B)]
-      nlinarith
+      have hstep1 : (31 / 30 : ℝ) * ((m : ℝ) * (1 - 1 / (B : ℝ))) < (m : ℝ) * (31 / 30) := by
+        rw [show (31 / 30 : ℝ) * ((m : ℝ) * (1 - 1 / (B : ℝ))) =
+          (m : ℝ) * ((31 / 30) * (1 - 1 / (B : ℝ))) by ring]
+        exact mul_lt_mul_of_pos_left (by linarith) hm0
+      have hstep2 : (m : ℝ) * (31 / 30) <
+          (m : ℝ) * (Real.log 2 / 2 + Real.log 3 / 3 + Real.log 7 / 6) :=
+        mul_lt_mul_of_pos_left hb_B7 hm0
+      linarith
 
 /-- **Sign-alternation necessity.** Any balanced integer stencil reaching normalized slope
 `≤ 31 / 30` must have both positive and negative coefficients on `k ≥ 2`. -/
@@ -1688,7 +1765,8 @@ theorem exists_sign_alternation_of_slope_le {c : ℕ →₀ ℤ} {m B : ℕ} (hc
     have hle0 : ∑ k ∈ c.support, (-(c k : ℝ) / k) * ((1 % k : ℕ) : ℝ) ≤ 0 := by
       refine sum_nonpos fun k hk => ?_
       have hk0 : k ≠ 0 := fun h => by subst h; exact Finsupp.mem_support_iff.mp hk hc0
-      rcases eq_or_lt_of_le (Nat.pos_of_ne_zero hk0) with rfl | hk2
+      have hk1 : 1 ≤ k := Nat.pos_of_ne_zero hk0
+      rcases eq_or_lt_of_le hk1 with rfl | hk2
       · simp
       · have hck : 0 ≤ (c k : ℝ) := by exact_mod_cast hnonneg k hk2
         have h1 : -(c k : ℝ) / k ≤ 0 := div_nonpos_of_nonpos_of_nonneg (by linarith) (by positivity)
@@ -1701,6 +1779,7 @@ theorem exists_sign_alternation_of_slope_le {c : ℕ →₀ ℤ} {m B : ℕ} (hc
 #print axioms single_prime_hecke_slope_ge_two_log_two
 #print axioms psi_le_of_twoThreeStencil
 #print axioms finite_prime_alphabet_slope_gt_one
+#print axioms one_lt_normalized_slope_of_producer
 #print axioms non_alternating_stencil_slope_gt
 #print axioms exists_sign_alternation_of_slope_le
 

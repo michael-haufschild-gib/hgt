@@ -1,6 +1,6 @@
 # Elliptic additive Haar periodizes over the actual function field
 
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
 - **Parent:** [Arithmetic unfolding](../1-in-progress/finite-field-eisenstein-unfolding.md).
 - **Statement:** For every measurable nonnegative function `f` on the actual
   elliptic adeles, `∫_A f = ∫_D Σ_(z∈K) f(z+d)`, with the audited Haar
@@ -28,4 +28,5 @@ not part of this statement.
 `ArithmeticEffectivityTheory/FiniteFieldEllipticAdditivePeriodization.lean`:
 `ellipticAdditiveDomain_isAddFundamentalDomain`,
 `lintegral_adeleHaar_eq_tsum_domain`, `lintegral_adeleHaar_periodization`.
-Direct audit pending.
+Direct Lean and transitive axiom audits passed; dependencies are exactly
+`propext`, `Classical.choice`, and `Quot.sound`.

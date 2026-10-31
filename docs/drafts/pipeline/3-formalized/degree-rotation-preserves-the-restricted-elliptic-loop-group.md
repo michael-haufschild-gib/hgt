@@ -1,7 +1,7 @@
 # Degree rotation preserves the restricted elliptic loop group
 
-- **Stage:** 1-in-progress
-- **Parent:** [Elliptic unfolding](finite-field-eisenstein-unfolding.md).
+- **Stage:** 3-formalized
+- **Parent:** [Elliptic unfolding](../1-in-progress/finite-field-eisenstein-unfolding.md).
 - **Statement:** Every actual idele acts by degree rotation on the restricted
   central loop group. Positive Borel and both intrinsic Borel torus
   coordinates are preserved. No arithmetic-group invariance is asserted.
@@ -24,5 +24,6 @@ rotation. Rotation by the inverse idele supplies the inverse map.
 [Positive splitting and Borel-coordinate compatibility](../3-formalized/degree-rotation-preserves-positive-loop-spectral-coordinates.md)
 passed direct Lean and axiom audits. [Ring diagonal rescaling](../3-formalized/ring-diagonal-rescaling-preserves-determinant-one.md) and
 [rotation of both integral vertices](../3-formalized/degree-rotation-preserves-both-integral-loop-vertices.md) passed the same audits.
-The actual restricted adelic automorphism and Borel-character invariance
-are written; their direct audit remains.
+The [actual restricted adelic automorphism and Borel-character invariance](actual-elliptic-ideles-rotate-restricted-loops.md) passed direct Lean and transitive axiom audits.
+Their capstones are `adelicDegreeRotation` and `adelicBorelCharacter_rotation`;
+only `propext`, `Classical.choice`, and `Quot.sound` occur.

@@ -81,3 +81,4 @@ import GaloisForLFunctions.HTGeometry.LoopEisenstein.PositiveUnipotentFieldMap
 import GaloisForLFunctions.HTGeometry.LoopEisenstein.PositiveLoopRotation
 import GaloisForLFunctions.HTGeometry.LoopEisenstein.RingSL2DiagonalRescaling
 import GaloisForLFunctions.HTGeometry.LoopEisenstein.IntegralLoopRotation
+import GaloisForLFunctions.HTGeometry.LoopEisenstein.FiniteSimpleIwasawaValues

@@ -89,7 +89,7 @@ and [logarithmic reserve](../3-formalized/logarithmic-defect-reserve-at-iterated
 passed all direct Lean and standard-axiom audits; umbrella imports are present.
 The agreement-shell identity and RH-complete overlap remain open.
 
-## Exact harmonic Gram component
+## Exact harmonic and prime components
 
 For `u_m=c_m/√φ(m)`, the harmonic Gram finite part is exactly
 `B_ml=γ·1_(m=l)−I(m,l)/√(φ(m)φ(l))`, where `I` is the torsion intersection.
@@ -100,8 +100,19 @@ Here `T_Q(a)=∑_(m,l≤Q)a_m a_l I(m,l)/√(φ(m)φ(l))`.
 
 The [exact finite part](../3-formalized/ramanujan-harmonic-gram-finite-parts-are-prime-local.md)
 and [uniform remainder](../3-formalized/harmonic-ramanujan-gram-has-a-logarithmic-operator-bound.md)
-passed all direct Lean and standard-axiom audits. These identify the harmonic
-Gram component; comparison with the complete prime, Gamma, and polar shell block remains open.
+passed all direct Lean and standard-axiom audits.
+
+For `v_m,N=u_m/√(n log N)`, the literal full prime matrix also has the exact
+finite part `⟨v_m,N,P_N v_l,N⟩−1_(m=l)log N`
+`→−I(m,l)/√(φ(m)φ(l))−1_(m=l)[log m+tameDifferent(m)]`.
+Its diagonal is `−2log m`; finite polarization gives every fixed packet's
+quadratic limit. [Proof and final Lean audit](../3-formalized/prime-conductor-finite-parts-retain-the-torsion-boundary.md).
+The complete Gamma, pole, and successor-shell identity remains open.
+
+The [affine period identity](../3-formalized/affine-shell-correlations-select-conductor-quotients.md)
+is exact: `∑_(n<M)c_m(n)c_l(kn+h)=1_(m=l/gcd(l,k)) M c_l(h)` for positive
+conductors dividing `M`. Its finite-packet expansion retains every mixed entry.
+The logarithmic horizon boundary is separate.
 
 ## Full-divisor resolvent identity
 

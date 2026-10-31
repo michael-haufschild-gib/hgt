@@ -195,6 +195,13 @@ Subquestions:
   [Finite part](../../drafts/pipeline/3-formalized/ramanujan-harmonic-gram-finite-parts-are-prime-local.md)
   and [uniform remainder](../../drafts/pipeline/3-formalized/harmonic-ramanujan-gram-has-a-logarithmic-operator-bound.md)
   passed direct Lean and standard-axiom audits.
+  Complete-period affine correlations also have an exact conductor rule:
+  `∑_(n<M)c_m(n)c_l(kn+h)=1_(m=l/gcd(l,k)) M c_l(h)`, with every mixed
+  packet entry retained. [Proof and Lean audit](../../drafts/pipeline/3-formalized/affine-shell-correlations-select-conductor-quotients.md).
+  For `v_m,N=c_m/√(φ(m)n log N)`, the literal full prime pairing has finite
+  part `−I(m,l)/√(φ(m)φ(l))−1_(m=l)[log m+tameDifferent(m)]` after removing
+  `1_(m=l)log N`; in particular its diagonal is `−2log m`.
+  [Exact packet limit and Lean audit](../../drafts/pipeline/3-formalized/prime-conductor-finite-parts-retain-the-torsion-boundary.md).
   The full Weil agreement-shell identity remains open.
 
 **Q2. Is there a source law that makes the two orientations of the Ξ resolvent agree?**

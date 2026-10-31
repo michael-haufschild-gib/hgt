@@ -41,6 +41,7 @@ finite divisor-jet square completion and adjunction spectrum, preserved by signe
 autocorrelation smoothing and compact source profiles on arbitrary real shifts; the twin defect as a
 successor-disagreement shell; the exact harmonic Ramanujan Gram finite part as positive divisor-edge
 energy plus a scalar counterterm, equivalently Euler's scalar minus torsion intersection;
-the uniform quadratic tail at the square-root conductor scale. See
+the uniform quadratic tail at the square-root conductor scale; exact affine conductor selection;
+the full prime-matrix finite part on every fixed finite conductor packet. See
 `SuccessorShellArithmetic/README.md`.
 -/
