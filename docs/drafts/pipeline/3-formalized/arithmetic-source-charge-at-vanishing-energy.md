@@ -1,9 +1,10 @@
 # Arithmetic source charge at vanishing energy
 
 - **ID:** critical-rigidity-vanishing-energy-charge
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
 - **Type:** THEOREM
-- **Lean:** `CriticalScaleArithmeticRigidity/VanishingEnergyCharge.lean` — pending check
+- **Lean:** `CriticalScaleArithmeticRigidity/VanishingEnergyCharge.lean`, `normalizedPrimeCharge_response_and_energy`, `exists_harmonic_neutral_arbitrarily_small_energy_charge`
+- **Audit:** direct Lean check passed; only `propext`, `Classical.choice`, `Quot.sound`.
 
 ## Statement
 

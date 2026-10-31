@@ -148,8 +148,7 @@ private theorem abs_arithmeticPoleKernel_mode_le {m N : ℕ} (hm : 2 ≤ m) (hN 
     rw [primeHorizonExtension_coe _ ⟨j, hj⟩]
     change ((Real.sqrt (Real.log N))⁻¹ * (normalizedRamanujanMode m j / Real.sqrt j)) /
       Real.sqrt j = _
-    rw [div_div, ← sq, Real.sq_sqrt hj0.le]
-    ring
+    rw [mul_div_assoc, div_div, ← sq, Real.sq_sqrt hj0.le]
   have hfact :
       (∑ n ∈ Icc 1 N, ∑ j ∈ Icc 1 N, v n * v j * arithmeticPoleKernel n j) =
         (2 / Real.log N) * (∑ n ∈ Icc 1 N, normalizedRamanujanMode m n) *
@@ -531,7 +530,7 @@ private theorem abs_fullWeilCenterMatrix_mode_inner_le (α : ℝ) {m N : ℕ}
             rw [abs_of_nonpos (sub_nonpos.mpr hjge), neg_sub]
         -- Bound the three reciprocal sums by `1`, `1`, and `2` respectively!
         have hb_lo : |∑ j ∈ Icc 1 (n - m), a j / ((n : ℝ) - j)| ≤ 1 := by
-          have h := abs_sum_Icc_div_sub_gap_le (by omega : 1 ≤ m) hB
+          have h := abs_sum_Icc_div_sub_gap_le (n := n) (by omega : 1 ≤ m) hB
           rwa [div_self hm0.ne'] at h
         have hb_hi : |∑ j ∈ Icc (n + m) N, a j / ((j : ℝ) - n)| ≤ 1 := by
           by_cases hnmN : N < n + m
@@ -857,9 +856,21 @@ private theorem abs_fullWeilCenterMatrix_mode_inner_le (α : ℝ) {m N : ℕ}
           mul_le_mul hv25 hcol_sq (sum_nonneg fun _ _ => sq_nonneg _) (by positivity)
         _ = (95 * |α| * (1 + Real.log m) / Real.sqrt (Real.log N)) ^ 2 := by ring
     exact abs_le.mpr (abs_le_of_sq_le_sq' hsq_le (by positivity))
-  linarith only [abs_sub ((α / N) * ∑ n ∈ Icc 1 N, ∑ j ∈ Icc 1 N, v n * v j * arithmeticPoleKernel n j)
-    (∑ n ∈ Icc 1 N, v n * row_col n), hpole_part, hcol_part,
-    (show 0 ≤ |α| * (1 + Real.log m) / Real.sqrt (Real.log N) by positivity)]
+  change |((α / N) * ∑ n ∈ Icc 1 N, ∑ j ∈ Icc 1 N, v n * v j * arithmeticPoleKernel n j) -
+    (∑ n ∈ Icc 1 N, v n * row_col n)| ≤ _
+  calc
+    |((α / N) * ∑ n ∈ Icc 1 N, ∑ j ∈ Icc 1 N, v n * v j * arithmeticPoleKernel n j) -
+        (∑ n ∈ Icc 1 N, v n * row_col n)| ≤
+        |(α / N) * ∑ n ∈ Icc 1 N, ∑ j ∈ Icc 1 N, v n * v j * arithmeticPoleKernel n j| +
+          |∑ n ∈ Icc 1 N, v n * row_col n| := by
+      rw [sub_eq_add_neg, ← abs_neg (∑ n ∈ Icc 1 N, v n * row_col n)]
+      exact abs_add_le _ _
+    _ ≤ 2 * |α| * (1 + Real.log m) / Real.sqrt (Real.log N) +
+          95 * |α| * (1 + Real.log m) / Real.sqrt (Real.log N) :=
+      add_le_add hpole_part hcol_part
+    _ ≤ 100 * |α| * (1 + Real.log m) / Real.sqrt (Real.log N) := by
+      have h0 : 0 ≤ |α| * (1 + Real.log m) / Real.sqrt (Real.log N) := by positivity
+      linarith only [h0]
 
 /-! ## Section 3: Single-Mode Prime-Matrix Residual Bound Across All Conductors `m * m ≤ N` -/
 
@@ -2193,8 +2204,10 @@ private theorem abs_fullWeilNonRatioMatrix_mode_inner_le {φ : ℝ → ℝ}
       _ ≤ (8 * R_up * Real.exp 2 * c * Real.log N) / Real.log N :=
         div_le_div_of_nonneg_right (hschur.trans hmode_sum) hL0.le
       _ = 16 * L₄ * Real.exp 5 * c ^ 2 := by
-        dsimp only [R_up]; field_simp [hL0.ne']
-        rw [show Real.exp 3 * Real.exp 2 = Real.exp 5 by rw [← Real.exp_add]; norm_num]; ring
+        have hexp32 : Real.exp 3 * Real.exp 2 = Real.exp 5 := by rw [← Real.exp_add]; norm_num
+        dsimp only [R_up]
+        rw [mul_div_cancel_right₀ _ hL0.ne']
+        linear_combination 16 * L₄ * c ^ 2 * hexp32
       _ ≤ 16 * L₄ * Real.exp 6 * c ^ 2 :=
         mul_le_mul_of_nonneg_right (mul_le_mul_of_nonneg_left hexp56 (by positivity)) (sq_nonneg _)
       _ = (4 * Real.sqrt L₄ * Real.exp 3 * c) ^ 2 := by
@@ -2218,8 +2231,8 @@ private theorem abs_fullWeilNonRatioMatrix_mode_inner_le {φ : ℝ → ℝ}
 
 private theorem log_le_rpow_div_pos {x δ : ℝ} (hx : 0 < x) (hδ : 0 < δ) :
     Real.log x ≤ x ^ δ / δ := by
-  rw [le_div_iff₀ hδ, mul_comm, Real.rpow_def_of_pos hx]
-  linarith [Real.add_one_le_exp (δ * Real.log x)]
+  rw [le_div_iff₀ hδ, Real.rpow_def_of_pos hx]
+  linarith [Real.add_one_le_exp (Real.log x * δ)]
 
 private theorem rpow_neg_le_one_div_of_ge {L B γ : ℝ}
     (hL0 : 0 < L) (hB : 0 < B) (hγ : 0 < γ) (hL_ge : (B + 1) ^ (1 / γ) ≤ L) :
@@ -2591,7 +2604,7 @@ private theorem mode_overlap_midBand_regime_I {φ : ℝ → ℝ}
           mul_le_mul (pow_le_pow_left₀ hc0.le h1 5) hL_le_N10 hL0.le (by positivity)
         _ = 10 ^ 6 * ((N : ℝ) ^ (1 / 10 : ℝ)) ^ 6 := by ring
         _ = 10 ^ 6 * (N : ℝ) ^ (3 / 5 : ℝ) := by
-          rw [← Real.rpow_natCast _ 6, ← Real.rpow_mul hN0.le]; congr 2; norm_num
+          rw [rpow_pow_nat_eq hN0.le 6]; congr 2; norm_num
     calc
       c ^ 5 * Real.log N / N ≤ (10 ^ 6 * (N : ℝ) ^ (3 / 5 : ℝ)) / N :=
         div_le_div_of_nonneg_right hc5 hN0.le
@@ -2639,7 +2652,7 @@ private theorem mode_overlap_midBand_regime_I {φ : ℝ → ℝ}
           c ^ 3 ≤ (10 * (N : ℝ) ^ (1 / 10 : ℝ)) ^ 3 := pow_le_pow_left₀ hc0.le hc10 3
           _ = 10 ^ 3 * ((N : ℝ) ^ (1 / 10 : ℝ)) ^ 3 := by ring
           _ = 10 ^ 3 * (N : ℝ) ^ (3 / 10 : ℝ) := by
-            rw [← Real.rpow_natCast _ 3, ← Real.rpow_mul hN0.le]; congr 2; norm_num
+            rw [rpow_pow_nat_eq hN0.le 3]; congr 2; norm_num
       have hm4_pow : (m : ℝ) ^ 4 ≤ (N : ℝ) ^ (1 / 5 : ℝ) := by
         calc
           (m : ℝ) ^ 4 ≤ ((N : ℝ) ^ (1 / 20 : ℝ)) ^ 4 := pow_le_pow_left₀ hm0.le hmR_20 4
@@ -2783,7 +2796,7 @@ private theorem mode_overlap_downward_regime_I {φ : ℝ → ℝ}
       _ ≤ 76 * C_od * Real.sqrt K_α *
             (1 / (640 * C_od * Real.sqrt K_α / δ)) * Real.log m :=
         mul_le_mul_of_nonneg_right (mul_le_mul_of_nonneg_left hdec (by positivity)) hlogm0.le
-      _ = (76 / 640 : ℝ) * δ * Real.log m := by field_simp [hCod.ne', hKs0.ne', hδ0.ne']; ring
+      _ = (76 / 640 : ℝ) * δ * Real.log m := by field_simp [hCod.ne', hKs0.ne', hδ0.ne']
       _ ≤ (1 / 8) * δ * Real.log m := by nlinarith only [hδ0, hlogm0]
   have hY_le : 38 * C_od * Y ≤ (1 / 8) * δ * Real.log m := by
     have hL_le_N10 : Real.log N ≤ 10 * (N : ℝ) ^ (1 / 10 : ℝ) := by
@@ -2799,12 +2812,12 @@ private theorem mode_overlap_downward_regime_I {φ : ℝ → ℝ}
               mul_le_mul (pow_le_pow_left₀ hc0.le hc10 4) hL_le_N10 hL0.le (by positivity)
             _ = 10 ^ 5 * ((N : ℝ) ^ (1 / 10 : ℝ)) ^ 5 := by ring
             _ = 10 ^ 5 * (N : ℝ) ^ (1 / 2 : ℝ) := by
-              rw [← Real.rpow_natCast _ 5, ← Real.rpow_mul hN0.le]; congr 2; norm_num
+              rw [rpow_pow_nat_eq hN0.le 5]; congr 2; norm_num
         have hm2_10 : (m : ℝ) ^ 2 ≤ (N : ℝ) ^ (1 / 10 : ℝ) := by
           calc
             (m : ℝ) ^ 2 ≤ ((N : ℝ) ^ (1 / 20 : ℝ)) ^ 2 := pow_le_pow_left₀ hm0.le hmR_20 2
             _ = (N : ℝ) ^ (1 / 10 : ℝ) := by
-              rw [← Real.rpow_natCast _ 2, ← Real.rpow_mul hN0.le]; congr 1; norm_num
+              rw [rpow_pow_nat_eq hN0.le 2]; congr 1; norm_num
         have hnum : c ^ 4 * (m : ℝ) ^ 2 * Real.log N ≤ 10 ^ 6 * (N : ℝ) ^ (3 / 5 : ℝ) := by
           calc
             c ^ 4 * (m : ℝ) ^ 2 * Real.log N = (c ^ 4 * Real.log N) * (m : ℝ) ^ 2 := by ring
@@ -2816,13 +2829,13 @@ private theorem mode_overlap_downward_regime_I {φ : ℝ → ℝ}
               mul_le_mul_of_nonneg_right (by norm_num) (by positivity)
         have hdiv_sq : (N : ℝ) ^ (3 / 5 : ℝ) / N = (1 / (N : ℝ) ^ (1 / 5 : ℝ)) ^ 2 := by
           have hsum : (N : ℝ) ^ (3 / 5 : ℝ) * ((N : ℝ) ^ (1 / 5 : ℝ)) ^ 2 = N := by
-            rw [← Real.rpow_natCast ((N : ℝ) ^ (1 / 5 : ℝ)) 2, ← Real.rpow_mul hN0.le,
-              ← Real.rpow_add hN0]
-            have hexp : (3 / 5 : ℝ) + 1 / 5 * (2 : ℕ) = 1 := by norm_num
+            rw [rpow_pow_nat_eq hN0.le 2, ← Real.rpow_add hN0]
+            have hexp : (3 / 5 : ℝ) + (2 : ℕ) * (1 / 5 : ℝ) = 1 := by norm_num
             rw [hexp, Real.rpow_one]
-          have hpos : (N : ℝ) ^ (1 / 5 : ℝ) ≠ 0 := (Real.rpow_pos_of_pos hN0 _).ne'
-          rw [← hsum]
-          field_simp [hpos]
+          have hpos : ((N : ℝ) ^ (1 / 5 : ℝ)) ^ 2 ≠ 0 :=
+            pow_ne_zero 2 (Real.rpow_pos_of_pos hN0 _).ne'
+          rw [one_div_pow, div_eq_div_iff hN0.ne' hpos, one_pow]
+          linarith only [hsum]
         calc
           Y ^ 2 = (c ^ 4 * (m : ℝ) ^ 2 * Real.log N) / N := by
             dsimp only [Y]; rw [mul_pow, mul_pow, Real.sq_sqrt (div_nonneg hL0.le hN0.le)]; ring
@@ -2913,7 +2926,7 @@ private theorem mode_sep_and_overlap_regime_II {φ : ℝ → ℝ}
         _ ≤ 4 * K₀ * c ^ 2 * 19 := mul_le_mul_of_nonneg_left hv_sq_le (by positivity)
         _ = 76 * K₀ * c ^ 2 := by ring
         _ ≤ 76 * (K₀ + 1) * c ^ 2 := mul_le_mul_of_nonneg_right (by linarith) (sq_nonneg c)
-    have hB4_ge : 1900 * (K₀ + 1) / δ ≤ B4 := by dsimp only [B4]; positivity
+    have hB4_ge : 1900 * (K₀ + 1) / δ ≤ B4 := le_add_of_nonneg_right (by positivity)
     have hdiv_le : c ^ 2 / Real.log N ≤ δ / (1900 * (K₀ + 1)) :=
       hdec4.trans ((one_div_le_one_div_of_le (by positivity) hB4_ge).trans_eq
         (by field_simp [hδ0.ne', (show 1900 * (K₀ + 1) ≠ 0 by positivity)]))
@@ -2925,7 +2938,7 @@ private theorem mode_sep_and_overlap_regime_II {φ : ℝ → ℝ}
         mul_le_mul_of_nonneg_right
           (mul_le_mul_of_nonneg_left hdiv_le (by positivity)) (by positivity)
       _ = δ * ((1 / 25) * Real.log N) := by
-        field_simp [(show 1900 * (K₀ + 1) ≠ 0 by positivity)]; ring
+        field_simp [(show 1900 * (K₀ + 1) ≠ 0 by positivity)]
       _ ≤ δ * Real.log m := mul_le_mul_of_nonneg_left hlogm_25 hδ0.le
   have hov_II :
       |⟪Matrix.toEuclideanLin (overlapMatrix φ c N) v_m, v_m⟫ -
@@ -2946,20 +2959,20 @@ private theorem mode_sep_and_overlap_regime_II {φ : ℝ → ℝ}
         mul_le_mul_of_nonneg_left (by nlinarith only [hc1]) hCnr.le
       exact (abs_sub _ _).trans
         (by dsimp only [C_nr] at hnr_c2 ⊢; linarith only [hov1_b, hb2, hov_c2, hnr_c2])
-    have hB4_ge : 25 * (2 * C_ov1 + C_nr) / δ ≤ B4 := by dsimp only [B4]; positivity
+    have hB4_ge : 25 * (2 * C_ov1 + C_nr) / δ ≤ B4 := le_add_of_nonneg_left (by positivity)
     have hdiv_le : c ^ 2 / Real.log N ≤ δ / (25 * (2 * C_ov1 + C_nr)) :=
       hdec4.trans ((one_div_le_one_div_of_le (by positivity) hB4_ge).trans_eq
         (by field_simp [hδ0.ne', (show 25 * (2 * C_ov1 + C_nr) ≠ 0 by positivity)]))
     calc
       _ ≤ (2 * C_ov1 + C_nr) * c ^ 2 := hsum_c2
       _ = 25 * (2 * C_ov1 + C_nr) * (c ^ 2 / Real.log N) * ((1 / 25) * Real.log N) := by
-        field_simp [hL0.ne']; ring
+        field_simp [hL0.ne']
       _ ≤ 25 * (2 * C_ov1 + C_nr) * (δ / (25 * (2 * C_ov1 + C_nr))) *
             ((1 / 25) * Real.log N) :=
         mul_le_mul_of_nonneg_right
           (mul_le_mul_of_nonneg_left hdiv_le (by positivity)) (by positivity)
       _ = δ * ((1 / 25) * Real.log N) := by
-        field_simp [(show 25 * (2 * C_ov1 + C_nr) ≠ 0 by positivity)]; ring
+        field_simp [(show 25 * (2 * C_ov1 + C_nr) ≠ 0 by positivity)]
       _ ≤ δ * Real.log m := mul_le_mul_of_nonneg_left hlogm_25 hδ0.le
   exact ⟨hsep_II, hov_II⟩
 
@@ -3123,7 +3136,7 @@ theorem eventually_completeWeilEnergy_mode_ge_log_above_polylog {φ : ℝ → �
           _ = |⟪Matrix.toEuclideanLin (overlapMatrix φ c N) v_m, v_m⟫| +
                 2 * |⟪Matrix.toEuclideanLin (overlapMatrix φ c N) v_m -
                   downwardPrimeVector φ c N v_m, v_m⟫| := by
-            rw [abs_neg, abs_mul, abs_of_pos zero_lt_two]
+            rw [abs_neg, abs_mul, show |(2 : ℝ)| = 2 by norm_num]
           _ ≤ (3 / 4) * δ * Real.log m + (1 / 4) * δ * Real.log m := add_le_add hmid_le hod_le
           _ = δ * Real.log m := by ring
       exact ⟨hsep_I, hov_I⟩

@@ -36,7 +36,7 @@ both the valuation-retraction sense and the `S`-truncated explicit-formula sense
 -/
 
 open Complex Finset Filter Topology MeasureTheory
-open scoped ComplexConjugate Real
+open scoped ComplexConjugate Real Classical
 open Zeta23
 open GaloisForLFunctions.HTGeometry GaloisForLFunctions.HeckeKreinToeplitz
 open GaloisForLFunctions.ArithmeticPositiveDuality
@@ -400,11 +400,11 @@ theorem sTruncatedCorr_eq_ratCorr_of_abs_logPos_le {B : ℝ} {S : Finset Nat.Pri
     · simp [vonMangoldtS, truncWeight, vonMangoldtWeight, hΛ]
     · by_cases hs : IsSPrimePow S n
       · simp [vonMangoldtS, truncWeight, hs, vonMangoldtWeight]
-      · obtain ⟨k, _, hk_pos, p, hp_le, hnp, hp⟩ :=
-          (isPrimePow_nat_iff_bounded_log n).mp
+      · obtain ⟨p, hp_le, k, _, hp, hk_pos, hpn⟩ :=
+          (isPrimePow_nat_iff_bounded n).mp
             (ArithmeticFunction.vonMangoldt_ne_zero_iff.mp hΛ)
         have hp_not_S : (⟨p, hp⟩ : Nat.Primes) ∉ S := fun hmem =>
-          hs ⟨⟨p, hp⟩, hmem, k, hk_pos, hnp⟩
+          hs ⟨⟨p, hp⟩, hmem, k, hk_pos, hpn.symm⟩
         have hp_not_box : (⟨p, hp⟩ : Nat.Primes) ∉ primeBox (⌊Real.exp (B + 8)⌋₊ + 1) :=
           fun hmem => hp_not_S (hS hmem)
         rw [mem_primeBox, not_lt] at hp_not_box
@@ -444,7 +444,7 @@ theorem gram_archGlue_sTruncatedCorr_eq_weilArchState {L : ℝ} {S : Finset Nat.
     gram (archGlue (sTruncatedCorr S) c) g = gram (weilArchState c) g := by
   ext i j
   rw [weilArchState_eq_archGlue]
-  simp only [gram, archGlue_inv_mul]
+  simp only [gram, archGlue, map_mul, map_inv]
   congr 1
   refine sTruncatedCorr_eq_ratCorr_of_abs_logPos_le hS ?_
   rw [logPos_inv_mul]

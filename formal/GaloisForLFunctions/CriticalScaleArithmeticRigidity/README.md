@@ -114,6 +114,12 @@ Consequently `mean(GF_a)²=P_Q(a)²+Σ_p tameDifferent(p)²a_p²`, while `mean F
 
 Conductor two attains equality. [PrimeGeneratorOrthogonalRows.lean](PrimeGeneratorOrthogonalRows.lean) proves the decomposition and optimal constant. This bounded remainder is the positive counterpart to logarithmic coherent amplification. Its extension to composite conductor fibres requires separate analysis.
 
+The coherent charge can survive even when input energy vanishes. For every prescribed real `t`, tolerance `ε>0`, and lower cutoff `R`, some `Q≥max(R,2)` works simultaneously for every `N≥1`: an actual harmonic-pole-neutral packet satisfies
+
+`L_Q(a)<ε`, `mean G_Q(a)=t`, and `mean|G_Q(a)−t|²<ε`.
+
+The explicit unprojected coefficients are `(t/B_Q)sqrt(p−1)/p` on primes, with energy `t²/B_Q`. [VanishingEnergyCharge.lean](VanishingEnergyCharge.lean) proves the construction and its preservation by the physical pole projection. Thus convergence in adjunction energy alone loses receiving-charge data. A source-preserving limiting theory must retain those data or prove their cancellation inside the complete signed form. The output convergence here uses complete-period means; transfer to growing physical horizons and nonconstant receiving modes requires further theorems.
+
 ## Foundational mechanisms
 
 1. **Arithmetic differences before norms.** Expand the joint successor and dilation expressions, cancel exact divisor and torsion terms, and only then estimate the remaining signed expression.

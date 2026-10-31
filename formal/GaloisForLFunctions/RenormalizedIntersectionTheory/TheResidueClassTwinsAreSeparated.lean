@@ -11,7 +11,9 @@ the flipped primes the relative logarithmic density `1/φ(q)`
 (`exists_abs_primeSetLogMass_residueClassPrimes_sub_le`), and the Wirsing bound applies:
 
 * `|Σ_{n ≤ N} ω(n)/n| ≪ (log N)^{b − 1}` for every `b ≥ 1`, `b > 2 − 2/φ(q)`
-  (`exists_abs_gaugeHarmonicSum_residueClassFlip_le`);
+  (`exists_abs_gaugeHarmonicSum_residueClassFlip_le`), and for `φ(q) > 2` the asymptotic
+  `Σ_{n ≤ N} ω(n)/n = C (log N)^{1 − 2/φ(q)} + O(1)`
+  (`exists_abs_gaugeHarmonicSum_residueClassFlip_sub_rpow_le`);
 * for `φ(q) < 4` (`q = 3, 4, 6`, and `q = 1, 2`) the twin has margin `0` and the atomic Hodge index
   separates it from `ζ` (`hodgeSeparates_residueClassFlip`); in particular the twins flipping the
   primes `≡ 1 (mod 4)` or the primes `≡ 3 (mod 4)`.
@@ -77,6 +79,19 @@ theorem exists_abs_gaugeHarmonicSum_residueClassFlip_le {q : ℕ} [NeZero q] {r 
       |gaugeHarmonicSum (primeSetFlip (residueClassPrimes q r)) N| ≤ A * Real.log N ^ (b - 1) := by
   obtain ⟨C, hC⟩ := exists_abs_primeSetLogMass_residueClassPrimes_sub_le hr
   exact exists_abs_gaugeHarmonicSum_primeSetFlip_le _ hC hb1 hb
+
+/-- **The Wirsing asymptotic for residue-class twins.** For `φ(q) > 2`,
+`Σ_{n ≤ N} ω(n)/n = C (log N)^{1 − 2/φ(q)} + O(1)`. -/
+theorem exists_abs_gaugeHarmonicSum_residueClassFlip_sub_rpow_le {q : ℕ} [NeZero q]
+    (hq : 2 < q.totient) {r : ZMod q} (hr : IsUnit r) :
+    ∃ c G : ℝ, ∀ N, 3 ≤ N →
+      |gaugeHarmonicSum (primeSetFlip (residueClassPrimes q r)) N -
+        c * Real.log N ^ (1 - 2 * (q.totient : ℝ)⁻¹)| ≤ G := by
+  obtain ⟨C, hC⟩ := exists_abs_primeSetLogMass_residueClassPrimes_sub_le hr
+  have hφ : (3 : ℝ) ≤ q.totient := by exact_mod_cast hq
+  refine exists_abs_gaugeHarmonicSum_primeSetFlip_sub_rpow_le _ ?_ hC
+  rw [inv_lt_comm₀ (by linarith) (by norm_num)]
+  linarith
 
 /-- **Residue-class twins of totient below `4` are separated by the atomic Hodge index.** -/
 theorem hodgeSeparates_residueClassFlip {q : ℕ} [NeZero q] (hq : q.totient < 4) {r : ZMod q}

@@ -9,6 +9,7 @@ import GaloisForLFunctions.CriticalScaleArithmeticRigidity.HarmonicPoleCentering
 import GaloisForLFunctions.CriticalScaleArithmeticRigidity.PrimeCoherenceCalculus
 import GaloisForLFunctions.CriticalScaleArithmeticRigidity.SharpPrimeSector
 import GaloisForLFunctions.CriticalScaleArithmeticRigidity.PrimeGeneratorOrthogonalRows
+import GaloisForLFunctions.CriticalScaleArithmeticRigidity.VanishingEnergyCharge
 
 /-!
 # Arithmetic rigidity at critical scale

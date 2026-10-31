@@ -10,7 +10,7 @@
 
 1. Explicit conductor confinement, uniformly in the horizon: squared projection error at most `η` for `log R ≤ C (K + 1) / η^p`, with numerical `C` and improved `p`.
 2. An explicit reverse defect gap and numerical positive overlap exponent.
-3. Optimized internal exponents for all-vector positivity.
+3. Optimize all-vector positivity toward the stated `1/19` residual and `1/16` confinement ceilings.
 
 ## Existing bounds
 
@@ -73,10 +73,12 @@ costs `(1+log R)²/L`. Remaining errors decay with fixed positive margins.
 High-packet coercivity contributes `¼log Q−log c−O(1)`;
 `q/4−α=α+τ/4>0`.
 
-The proposed result is all-vector positivity with the existing uniform `c⁻⁷`
-spectral floor for every `0<α<1/59`. The complete Lean proof is drafted;
-verification remains. The stronger structural ceilings `1/19` and `1/16`
-require improvements beyond these residual and overlap budgets.
+All-vector positivity with the uniform `c⁻⁷` spectral floor is proved in Lean
+for every `0<α<1/59`. The main module passed its direct audit; all six public
+axiom checks report only `propext`, `Classical.choice`, and `Quot.sound`.
+The literal Weil nonnegativity and `c⁻²³` prime-defect reserve follow with the
+same exponent. The stronger structural ceilings `1/19` and `1/16` require
+improvements beyond these residual and overlap budgets.
 
 ## Direct prime-defect transfer
 
@@ -106,10 +108,21 @@ actual upward row, and complete residual are formalized in
 
 ## Remaining work
 
-Verify the all-vector `1/59` proof and finish direct module audits.
+Finish direct support-module audits. The ceiling exponents remain unattained.
+`ConductorScaleControlsTheCompletedEnergy` already proves the stronger floor
+`κ(m/φ(m)) min(1,(m/c)⁷)`. Using it can remove the uniform `c¹⁴` loss from
+conductors above `c`; the remaining high-packet residual then costs `Q⁵c⁵/L`.
+Current high-band overlap still costs `c⁴/√Q`, and the prime cross bound costs
+`(1+log R)²/√L`. These estimates need sharper treatment to reach `1/19`.
+
+The proposed weighted residual bound is
+`Σ_(m≤Q) ‖r_m‖²/E_m(c)² ≤ K(c¹⁴+Q⁵)·rate`.
+Indeed `m⁴/E_m(c)² ≤ κ⁻²(c¹⁴/m¹⁰+m⁴)`, and `Σ_(m≥1)m⁻¹⁰≤2`.
+The Lean proof is drafted but unverified. This separates the low-conductor
+condition `19α<1` from the high-conductor condition `5q+5α<1`.
 
 ## Gates
 
 - [x] Precise target and source dependencies identified.
-- [ ] Dependency-closed proof of the strengthened bounds.
+- [x] Dependency-closed proof of the strengthened bounds.
 - [ ] Lean formalization, direct file audit, and transitive axiom audit.

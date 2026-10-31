@@ -910,6 +910,31 @@ theorem exists_abs_gaugeHarmonicSum_primeSetFlip_le_const (P : Set ℕ) {κ C : 
     (by rw [abs_lt]; constructor <;> linarith)
   exact ⟨A, fun N hN => by simpa using hA N hN⟩
 
+/-- A relative logarithmic density is nonnegative. -/
+theorem nonneg_of_primeSetLogMass (P : Set ℕ) {κ C : ℝ}
+    (hP : ∀ n, 1 ≤ n → |primeSetLogMass P n - κ * Real.log n| ≤ C) : 0 ≤ κ := by
+  by_contra hκ
+  rw [not_le] at hκ
+  obtain ⟨n, hn1, hnX⟩ := ((eventually_ge_atTop 1).and
+    ((Real.tendsto_log_atTop.comp tendsto_natCast_atTop_atTop).eventually_gt_atTop
+      (C / -κ))).exists
+  rw [Function.comp_apply, div_lt_iff₀ (by linarith)] at hnX
+  have hmass : 0 ≤ primeSetLogMass P n :=
+    sum_nonneg fun k _ => div_nonneg (Real.log_natCast_nonneg k) (Nat.cast_nonneg k)
+  have h2 := (abs_le.mp (hP n hn1)).2
+  nlinarith
+
+/-- **The Wirsing asymptotic for flip twins.** If the flipped primes have relative logarithmic
+density `κ < 1/2`, then `Σ_{n ≤ N} ω_P(n)/n = C (log N)^{1 − 2κ} + O(1)`. -/
+theorem exists_abs_gaugeHarmonicSum_primeSetFlip_sub_rpow_le (P : Set ℕ) {κ C : ℝ}
+    (hκ : κ < 1 / 2) (hP : ∀ n, 1 ≤ n → |primeSetLogMass P n - κ * Real.log n| ≤ C) :
+    ∃ c G : ℝ, ∀ N, 3 ≤ N →
+      |gaugeHarmonicSum (primeSetFlip P) N - c * Real.log N ^ (1 - 2 * κ)| ≤ G := by
+  have hκ0 := nonneg_of_primeSetLogMass P hP
+  exact exists_abs_gaugeHarmonicSum_sub_rpow_le
+    (fun a b ha hb => (primeSetFlip_isSignGauge P).mul ha hb) (abs_primeSetFlip_le P)
+    (fun n hn => abs_primeMean_primeSetFlip_sub_le P hP hn) (by linarith) (by linarith)
+
 /-- **The atomic Hodge index separates every flip twin of relative density `κ > 1/4`.** The Wirsing
 bound gives `L(N)² = o(log N)`, so the twin has margin `0`. -/
 theorem hodgeSeparates_primeSetFlip_of_primeSetLogMass (P : Set ℕ) {κ C : ℝ} (hκ : 1 / 4 < κ)

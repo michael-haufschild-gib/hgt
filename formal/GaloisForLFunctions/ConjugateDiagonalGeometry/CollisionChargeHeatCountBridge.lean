@@ -457,7 +457,8 @@ theorem polyHeat_quarter_inwardDriftCubic (A : ℝ) :
     Nat.factorial_zero, Nat.cast_one, div_one, C_1, one_mul, mul_one, pow_one,
     Nat.factorial_one, hd2]
   unfold inwardDriftCubic
-  ext n; simp only [coeff_add, coeff_sub, coeff_C_mul]; ring
+  rw [← C_1]
+  ext n; simp only [coeff_add, coeff_sub, coeff_C_mul, coeff_C]; split_ifs <;> ring
 
 /-- **Calogero–Moser inward-drift theorem.** For every height `A > 1/4`, `inwardDriftCubic A` has
 `0` nonreal roots in the open strip `|Re z| < A`, whereas `polyHeat (1/4) (inwardDriftCubic A)` has
@@ -484,8 +485,8 @@ theorem exists_polyHeat_nonreal_root_inward_drift {A : ℝ} (hA : 1 / 4 < A) :
     have hf3 : ¬ ((((A + 1 / 2 : ℝ) : ℂ)).im ≠ 0 ∧ |(((A + 1 / 2 : ℝ) : ℂ)).re| < A) := by
       simp
     rw [Multiset.filter_add, Multiset.filter_add, Multiset.filter_singleton,
-      Multiset.filter_singleton, Multiset.filter_singleton, if_neg hf1, if_neg hf2, if_neg hf3]
-    simp only [add_zero, Multiset.card_zero]
+      Multiset.filter_singleton, Multiset.filter_singleton, if_neg hf1, if_neg hf2, if_neg hf3,
+      Multiset.empty_eq_zero, add_zero, add_zero, Multiset.card_zero]
   · -- At `t = 1/4`, locate the unique real shift root `w₁ ∈ (1/2, 1)` by IVT and factor explicitly
     set g : ℝ → ℝ := fun w => w ^ 3 - (1 / 2) * w ^ 2 + (5 / 2) * w - 7 / 4
     have hg_cont : ContinuousOn g (Icc (1 / 2) 1) := by fun_prop
@@ -560,8 +561,9 @@ theorem exists_polyHeat_nonreal_root_inward_drift {A : ℝ} (hA : 1 / 4 < A) :
     have ht3 : z₃.im ≠ 0 ∧ |z₃.re| < A := by
       simp [z₃, hv_pos.ne', abs_of_pos hAu_pos, hAu_lt]
     rw [Multiset.filter_add, Multiset.filter_add, Multiset.filter_singleton,
-      Multiset.filter_singleton, Multiset.filter_singleton, if_neg ht1, if_pos ht2, if_pos ht3]
-    simp only [zero_add, Multiset.card_add, Multiset.card_singleton]
+      Multiset.filter_singleton, Multiset.filter_singleton, if_neg ht1, if_pos ht2, if_pos ht3,
+      Multiset.card_add, Multiset.card_add, Multiset.card_empty, Multiset.card_singleton,
+      Multiset.card_singleton]
 
 /-! ## §3. Forward real-zero stability at `t ≥ 0` and moving-barrier windowed descent -/
 

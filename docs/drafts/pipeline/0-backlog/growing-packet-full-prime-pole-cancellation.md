@@ -1,7 +1,7 @@
 # Growing-packet full prime–pole cancellation
 
 - **ID:** growing-packet-full-prime-pole-cancellation
-- **Stage:** 1-in-progress
+- **Stage:** 0-backlog
 - **Type:** CONJECTURE
 - **Source:** ../../../reports/review-3110/obstacles-summary.md, A2 at `dbc7d26186`
 - **Statement:** For some explicit `c>0`, the full prime–pole remainder tends uniformly to zero on bounded-coefficient packets with both cell indices at most `exp(c√log Y)`.

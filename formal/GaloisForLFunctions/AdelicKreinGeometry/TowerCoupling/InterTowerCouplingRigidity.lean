@@ -36,7 +36,7 @@ Every finite prime set `S` defines a valuation retraction `projS S : posUnits �
 -/
 
 open Complex Finset Filter Topology
-open scoped ComplexConjugate Real
+open scoped ComplexConjugate Real Classical
 open Zeta23
 open GaloisForLFunctions.HTGeometry GaloisForLFunctions.HeckeKreinToeplitz
 open GaloisForLFunctions.ArithmeticPositiveDuality
@@ -113,14 +113,15 @@ theorem projS_idem (S : Finset Nat.Primes) (u : posUnits) :
 theorem projS_eq_self_of_primeSupp_subset {S : Finset Nat.Primes} {u : posUnits}
     (hu : primeSupp ((u : ℚˣ) : ℚ) ⊆ S) : projS S u = u := by
   apply Subtype.ext; apply Units.ext
-  have hval : (((projS S u : posUnits) : ℚˣ) : ℚ) =
-      ∏ p ∈ S, ((p : ℕ) : ℚ) ^ padicValRat p ((u : ℚˣ) : ℚ) := by
+  let φ : posUnits →* ℚ := (Units.coeHom ℚ).comp posUnits.subtype
+  have hval : φ (projS S u) = ∏ p ∈ S, ((p : ℕ) : ℚ) ^ padicValRat p ((u : ℚˣ) : ℚ) := by
     simp only [projS, sectionS, MonoidHom.comp_apply, MonoidHom.coe_mk, OneHom.coe_mk,
-      valS_apply, toAdd_ofAdd]
-    rw [← S.prod_coe_sort fun p => primeUnit p ^ padicValRat p ((u : ℚˣ) : ℚ)]
-    simp [primeUnit]
-  rw [hval]
-  exact prod_zpow_padicValRat u.2 hu
+      valS_apply, toAdd_ofAdd, map_prod]
+    rw [← S.prod_coe_sort fun p => ((p : ℕ) : ℚ) ^ padicValRat (p : ℕ) ((u : ℚˣ) : ℚ)]
+    refine Finset.prod_congr rfl fun p _ => ?_
+    simp only [φ, MonoidHom.comp_apply, Subgroup.coe_subtype, Units.coeHom_apply,
+      Subgroup.coe_zpow, Units.val_zpow_eq_zpow_val, primeUnit, Units.val_mk0]
+  exact hval.trans (prod_zpow_padicValRat u.2 hu)
 
 theorem projS_primeUnit_zpow {S : Finset Nat.Primes} {p : Nat.Primes} (hp : p ∈ S) (d : ℤ) :
     projS S (primeUnit p ^ d) = primeUnit p ^ d := by
@@ -151,11 +152,12 @@ theorem projS_periodic (S : Finset Nat.Primes) :
       change towerVal ((p : Nat.Primes) : ℕ) (primeUnit ⟨q, hq⟩) = 1
       rw [primeUnit_eq_primePos]
       have h := towerVal_primePos ⟨q, hq⟩ (p : Nat.Primes)
-      have hne : (⟨q, hq⟩ : Nat.Primes) ≠ (p : Nat.Primes) :=
+      have hne : ¬ ((⟨q, hq⟩ : Nat.Primes) = (p : Nat.Primes)) :=
         fun e => hqS (by rw [e]; exact p.2)
-      rw [if_neg hne, ofAdd_zero] at h
-      exact h
-    simp only [projS, MonoidHom.comp_apply, map_mul, hv, one_mul]
+      split_ifs at h with h'
+      · exact absurd h' hne
+      · rw [h, ofAdd_zero]
+    rw [projS, MonoidHom.comp_apply, MonoidHom.comp_apply, map_mul, hv, one_mul]
 
 /-! ### Coupled, axial, and inter-tower coupling kernels -/
 
@@ -293,27 +295,30 @@ theorem interTowerCoupling_mul_primeUnit {S : Finset Nat.Primes} {p q : Nat.Prim
     rw [map_mul, projS_primeUnit_zpow hp, projS_primeUnit_zpow hq]
   have hax : axialAssembly S K (primeUnit p ^ a * primeUnit q ^ b) =
       K (primeUnit p ^ a) + K (primeUnit q ^ b) - K 1 := by
+    let pS : S := ⟨p, hp⟩
+    let qS : S := ⟨q, hq⟩
     simp only [axialAssembly, towerAssembly, Function.comp_apply, separable, map_mul, Pi.mul_apply]
-    have hne : (⟨p, hp⟩ : S) ≠ ⟨q, hq⟩ := fun h => hpq (congrArg Subtype.val h)
-    rw [← add_sum_erase univ _ (mem_univ (⟨p, hp⟩ : S)),
-      ← add_sum_erase (univ.erase ⟨p, hp⟩) _ (mem_erase.mpr ⟨hne.symm, mem_univ _⟩)]
-    have hp_val : valS S (primeUnit p ^ a) ⟨p, hp⟩ * valS S (primeUnit q ^ b) ⟨p, hp⟩ =
+    have hne : pS ≠ qS := fun h => hpq (congrArg Subtype.val h)
+    rw [← add_sum_erase univ _ (mem_univ pS),
+      ← add_sum_erase (univ.erase pS) _ (mem_erase.mpr ⟨hne.symm, mem_univ qS⟩)]
+    have hp_val : valS S (primeUnit p ^ a) pS * valS S (primeUnit q ^ b) pS =
         Multiplicative.ofAdd a := by
-      rw [valS_primeUnit_zpow S hp a ⟨p, hp⟩, if_pos rfl,
-        valS_primeUnit_zpow S hq b ⟨p, hp⟩, if_neg hne, mul_one]
-    have hq_val : valS S (primeUnit p ^ a) ⟨q, hq⟩ * valS S (primeUnit q ^ b) ⟨q, hq⟩ =
+      rw [valS_primeUnit_zpow S hp a pS, if_pos rfl,
+        valS_primeUnit_zpow S hq b pS, if_neg hne, mul_one]
+    have hq_val : valS S (primeUnit p ^ a) qS * valS S (primeUnit q ^ b) qS =
         Multiplicative.ofAdd b := by
-      rw [valS_primeUnit_zpow S hp a ⟨q, hq⟩, if_neg hne.symm,
-        valS_primeUnit_zpow S hq b ⟨q, hq⟩, if_pos rfl, one_mul]
-    have hrest : ∑ r ∈ (univ.erase ⟨p, hp⟩).erase ⟨q, hq⟩,
+      rw [valS_primeUnit_zpow S hp a qS, if_neg hne.symm,
+        valS_primeUnit_zpow S hq b qS, if_pos rfl, one_mul]
+    have hrest : ∑ r ∈ (univ.erase pS).erase qS,
         (K (primeUnit (r : Nat.Primes) ^ Multiplicative.toAdd
           (valS S (primeUnit p ^ a) r * valS S (primeUnit q ^ b) r)) - K 1) = 0 := by
       refine sum_eq_zero fun r hr => ?_
-      have hrq : r ≠ ⟨q, hq⟩ := (mem_erase.mp hr).1
-      have hrp : r ≠ ⟨p, hp⟩ := (mem_erase.mp (mem_erase.mp hr).2).1
+      have hrq : r ≠ qS := (mem_erase.mp hr).1
+      have hrp : r ≠ pS := (mem_erase.mp (mem_erase.mp hr).2).1
       rw [valS_primeUnit_zpow S hp a r, if_neg hrp, valS_primeUnit_zpow S hq b r, if_neg hrq,
         one_mul, toAdd_one, zpow_zero, sub_self]
     rw [hp_val, hq_val, hrest, toAdd_ofAdd, toAdd_ofAdd]
+    simp only [pS, qS]
     ring
   rw [interTowerCoupling, coupledAssembly, Function.comp_apply, hproj, hax, coprimeCrossDiff]
   ring
@@ -334,7 +339,7 @@ theorem coprimeCrossDiff_towerAssembly_eq_zero (S : Finset Nat.Primes)
   have hsum : ∑ p : S,
       (k p (valS S u p * valS S v p) - k p (valS S u p) - k p (valS S v p) + k p 1) = 0 :=
     sum_eq_zero fun p _ => hterm p
-  simp only [sum_add_distrib, sum_sub_distrib, Pi.mul_apply, Pi.one_apply] at hsum
+  simp only [sum_add_distrib, sum_sub_distrib] at hsum
   exact hsum
 
 /-- Rank-two subgroup of `posUnits` generated by two primes. -/
@@ -391,10 +396,10 @@ private theorem eq_mul_of_add_of_continuous {ψ : ℝ → ℂ} (hcont : Continuo
     ψ x = (x : ℂ) * ψ 1 := by
   let Ψ : ℝ →+ ℂ := AddMonoidHom.mk' ψ hadd
   have hnat : ∀ n : ℕ, ψ (n : ℝ) = (n : ℂ) * ψ 1 := fun n => by
-    have h := map_nsmul Ψ 1 n
+    have h := map_nsmul Ψ n (1 : ℝ)
     simpa [Ψ, nsmul_eq_mul] using h
   have hint : ∀ z : ℤ, ψ (z : ℝ) = (z : ℂ) * ψ 1 := fun z => by
-    have h := map_zsmul Ψ 1 z
+    have h := map_zsmul Ψ z (1 : ℝ)
     simpa [Ψ, zsmul_eq_mul] using h
   have hrat : ∀ q : ℚ, ψ (q : ℝ) = ((q : ℝ) : ℂ) * ψ 1 := fun q => by
     have hden_ne : (q.den : ℂ) ≠ 0 := Nat.cast_ne_zero.mpr q.den_ne_zero
@@ -402,14 +407,19 @@ private theorem eq_mul_of_add_of_continuous {ψ : ℝ → ℂ} (hcont : Continuo
     have hmul : (q.den : ℝ) * (q : ℝ) = (q.num : ℝ) := by
       rw [Rat.cast_def, mul_div_cancel₀ _ hden_r]
     have h1 : (q.den : ℂ) * ψ (q : ℝ) = ψ (q.num : ℝ) := by
-      have := map_nsmul Ψ (q : ℝ) q.den
+      have := map_nsmul Ψ q.den (q : ℝ)
       simp only [Ψ, AddMonoidHom.mk'_apply, nsmul_eq_mul, hmul] at this
       exact this.symm
-    rw [hint q.num] at h1
-    rw [eq_div_iff hden_ne |>.mpr (by linear_combination h1), Rat.cast_def]
+    have h2 : ψ (q : ℝ) = ψ (q.num : ℝ) / (q.den : ℂ) :=
+      (eq_div_iff hden_ne).mpr (by linear_combination h1)
+    rw [h2, hint q.num, Rat.cast_def]
     push_cast
     ring
-  exact congrFun (Rat.denseRange_cast.equalizer hcont (by fun_prop) (funext hrat)) x
+  have hcl : IsClosed {y : ℝ | ψ y = (y : ℂ) * ψ 1} :=
+    isClosed_eq hcont (Complex.continuous_ofReal.mul continuous_const)
+  have hsub : Set.range (Rat.cast : ℚ → ℝ) ⊆ {y : ℝ | ψ y = (y : ℂ) * ψ 1} := by
+    rintro _ ⟨q, rfl⟩; exact hrat q
+  exact (hcl.closure_subset_iff.mpr hsub) (Rat.denseRange_cast x)
 
 /-- Log-moment linear functional `w ↦ Σ_i w_i log u_i`. -/
 private def logMass {n : ℕ} (x : Fin n → posUnits) : (Fin n → ℂ) →ₗ[ℂ] ℂ where
@@ -487,11 +497,16 @@ theorem negIndex_le_two_of_coprimeCrossDiff_eq_zero {Φ : ℝ → ℂ} (hΦ : Co
       F (logPos uv.1, logPos uv.2) = 0 := fun ⟨u, v⟩ => by
     have h := hvan u u.2 v v.2
     simpa [F, coprimeCrossDiff, logPos_mul, logPos_one] using h
-  have hF_eq : F = 0 := hd_prod.equalizer hFc continuous_const (funext hF_zero_on)
+  have hF_eq : ∀ xy : ℝ × ℝ, F xy = 0 := fun xy => by
+    have hcl : IsClosed {z : ℝ × ℝ | F z = 0} := isClosed_eq hFc continuous_const
+    have hsub : (Set.range fun uv : twoPrimeUnits p q × twoPrimeUnits r s =>
+        (logPos uv.1, logPos uv.2)) ⊆ {z : ℝ × ℝ | F z = 0} := by
+      rintro _ ⟨uv, rfl⟩; exact hF_zero_on uv
+    exact (hcl.closure_subset_iff.mpr hsub) (hd_prod xy)
   set ψ : ℝ → ℂ := fun x => Φ x - Φ 0
   have hψc : Continuous ψ := hΦ.sub continuous_const
   have hψ_add : ∀ x y : ℝ, ψ (x + y) = ψ x + ψ y := fun x y => by
-    have hxy : F (x, y) = 0 := congrFun hF_eq (x, y)
+    have hxy : F (x, y) = 0 := hF_eq (x, y)
     simp only [F, ψ] at hxy ⊢
     linear_combination hxy
   have haff : ∀ x : ℝ, Φ x = Φ 0 + (x : ℂ) * (Φ 1 - Φ 0) := fun x => by
@@ -510,14 +525,11 @@ theorem weilTest_translate_eq_transl (y : ℝ) (g : ℝ → ℂ) :
     EF.weilTest (ArithmeticCastelnuovoSeveri.translate y g) g =
       RHTower.WeilSpectral.transl y (EF.weilTest g g) := by
   funext x
-  rw [RHTower.WeilSpectral.weilTest_apply, RHTower.WeilSpectral.transl,
-    RHTower.WeilSpectral.weilTest_apply,
-    ← MeasureTheory.integral_add_right_eq_self (μ := MeasureTheory.volume)
-      (fun u : ℝ => g (u - y) * conj (g (u - x))) y]
-  refine MeasureTheory.integral_congr_ae (Eventually.of_forall fun u => ?_)
-  simp only [ArithmeticCastelnuovoSeveri.translate, add_sub_cancel_right]
-  congr 2
-  ring
+  have h := ArithmeticCastelnuovoSeveri.weilTest_translate y 0 g g x
+  have h0 : ArithmeticCastelnuovoSeveri.translate 0 g = g := by
+    funext t; simp [ArithmeticCastelnuovoSeveri.translate]
+  rw [h0, sub_zero] at h
+  exact h
 
 /-- Continuity of the cubic-spline Weil correlation `splineCorr` on `ℝ`. -/
 theorem continuous_splineCorr : Continuous splineCorr := by
@@ -550,6 +562,9 @@ theorem negIndex_or_posIndex_ratCorr_eq_top :
     rw [negIndex_ratCorr, negIndex_zetaKernel]
     exact Set.encard_eq_top_iff.mpr hinf
 
+private theorem prime_ne {p q : Nat.Primes} (h : (p : ℕ) ≠ (q : ℕ)) : p ≠ q :=
+  fun e => h (congrArg Subtype.val e)
+
 def prime2 : Nat.Primes := ⟨2, Nat.prime_two⟩
 def prime3 : Nat.Primes := ⟨3, Nat.prime_three⟩
 def prime5 : Nat.Primes := ⟨5, by norm_num⟩
@@ -562,8 +577,8 @@ theorem exists_coprimeCrossDiff_ratCorr_ne_zero :
       coprimeCrossDiff ratCorr u v ≠ 0 := by
   by_contra hall
   push Not at hall
-  have hpq : prime2 ≠ prime3 := Subtype.ne_of_val_ne (by norm_num [prime2, prime3])
-  have hrs : prime5 ≠ prime7 := Subtype.ne_of_val_ne (by norm_num [prime5, prime7])
+  have hpq : prime2 ≠ prime3 := prime_ne (by norm_num [prime2, prime3])
+  have hrs : prime5 ≠ prime7 := prime_ne (by norm_num [prime5, prime7])
   have hΦ : Continuous fun x : ℝ => splineCorr (-x) :=
     continuous_splineCorr.comp continuous_neg
   obtain ⟨_, hneg, hpos⟩ := negIndex_le_two_of_coprimeCrossDiff_eq_zero hΦ hpq hrs hall
@@ -586,26 +601,23 @@ theorem not_tendsto_towerAssembly_ratCorr {ι : Type*} {l : Filter ι} [l.NeBot]
     (((htend (u * v)).sub (htend u)).sub (htend v)).add (htend 1)
   have hzero : ∀ i, coprimeCrossDiff (towerAssembly (S i) (k i)) u v = 0 := fun i =>
     coprimeCrossDiff_towerAssembly_twoPrimeUnits
-      (Subtype.ne_of_val_ne (by norm_num [prime2, prime5]))
-      (Subtype.ne_of_val_ne (by norm_num [prime2, prime7]))
-      (Subtype.ne_of_val_ne (by norm_num [prime3, prime5]))
-      (Subtype.ne_of_val_ne (by norm_num [prime3, prime7]))
+      (prime_ne (by norm_num [prime2, prime5]))
+      (prime_ne (by norm_num [prime2, prime7]))
+      (prime_ne (by norm_num [prime3, prime5]))
+      (prime_ne (by norm_num [prime3, prime7]))
       (S i) (k i) hu hv
   simp_rw [hzero] at hlim
   exact hne (tendsto_nhds_unique tendsto_const_nhds hlim).symm
 
 /-! ### Untruncated axial replication blow-up on the non-RH finite stratum -/
 
-theorem polarIndex_sub_const {k : Multiplicative ℤ → ℂ} (hk : IsHermKernel k) {z : ℂ}
-    (hz : conj z = z) : polarIndex (fun m => k m - z) = polarIndex k := by
-  have hk' : IsHermKernel fun m => k m - z := fun m => by
-    show k m⁻¹ - z = conj (k m - z)
-    rw [hk m, map_sub, hz]
+theorem polarIndex_sub_const (k : Multiplicative ℤ → ℂ) (z : ℂ) :
+    polarIndex (fun m => k m - z) = polarIndex k := by
   have hsd : secondDiff (fun m => k m - z) = secondDiff k := by
-    have heq : (fun m => k m - z) = fun m => k m + (-z) := funext fun _ => sub_eq_add_neg _ _
-    rw [heq, secondDiff_add, secondDiff_const]
-    funext m; simp
-  rw [polarIndex_eq_negIndex_secondDiff hk', polarIndex_eq_negIndex_secondDiff hk, hsd]
+    funext m
+    have heq : (fun x => k x - z) = fun x => k x + (-z) := funext fun _ => sub_eq_add_neg _ _
+    rw [heq, secondDiff_add, secondDiff_const, add_zero]
+  rw [polarIndex_eq_negIndex_secondDiff, polarIndex_eq_negIndex_secondDiff, hsd]
 
 theorem ratCorr_one_conj : conj (ratCorr 1) = ratCorr 1 := by
   simpa using (isHermKernel_ratCorr 1).symm
@@ -643,33 +655,25 @@ theorem negIndex_archGlue_axialAssembly_ratCorr_ge {S : Finset Nat.Primes} (hS :
       isHermKernel_zetaKernel.comp _
     have h1 := haxis n
     rw [← ratCorr_prime_axis_eq_zetaKernel (p : Nat.Primes)] at h1
+    dsimp only at h1
     simp only [k, map_sub]
     rw [h1]
     split_ifs <;> simp [ratCorr_one_conj]
   have hpol_ge : ∀ p : S, ((p : Nat.Primes) : ℕ) ∉ zetaBlindPrimes → 1 ≤ polarIndex (k p) := by
     intro p hnb
-    have haxis_herm :
-        IsHermKernel (fun n : Multiplicative ℤ =>
-          ratCorr (primeUnit (p : Nat.Primes) ^ Multiplicative.toAdd n)) := by
-      rw [ratCorr_prime_axis_eq_zetaKernel]
-      exact isHermKernel_zetaKernel.comp _
-    have hc_conj : conj (if (p : Nat.Primes) = p₀ then (0 : ℂ) else ratCorr 1) =
-        if (p : Nat.Primes) = p₀ then 0 else ratCorr 1 := by
-      split_ifs <;> simp [ratCorr_one_conj]
     have hpol_eq : polarIndex (k p) = polarIndex
         (zetaKernel ∘ zpowersHom HeckeLattice (primeElt (p : Nat.Primes).2)) := by
       rw [show k p = fun n => ratCorr (primeUnit (p : Nat.Primes) ^ Multiplicative.toAdd n) -
         (if (p : Nat.Primes) = p₀ then 0 else ratCorr 1) from rfl,
-        polarIndex_sub_const haxis_herm hc_conj, ratCorr_prime_axis_eq_zetaKernel]
+        polarIndex_sub_const, ratCorr_prime_axis_eq_zetaKernel]
     rw [hpol_eq]
     have hle := negIndex_le_polarIndex_add_one
       (zetaKernel ∘ zpowersHom HeckeLattice (primeElt (p : Nat.Primes).2))
     rw [negIndex_zetaKernel_prime_eq hR (p : Nat.Primes).2 hnb, ← hm_eq] at hle
-    have h2le : (2 : ℕ∞) ≤ polarIndex
+    have h2le : (1 : ℕ∞) + 1 ≤ polarIndex
         (zetaKernel ∘ zpowersHom HeckeLattice (primeElt (p : Nat.Primes).2)) + 1 :=
       (Nat.cast_le.mpr hm2).trans hle
-    exact WithTop.le_of_add_le_add_right (ENat.coe_ne_top 1)
-      (by simpa [show (2 : ℕ∞) = 1 + 1 from rfl] using h2le)
+    exact WithTop.le_of_add_le_add_right (ENat.coe_ne_top 1) h2le
   rw [axialAssembly_eq_towerAssembly_of_nonempty hp₀ ratCorr]
   have hlo := towerSignature_lower S hk_herm hc
   refine le_trans ?_ hlo
@@ -678,6 +682,7 @@ theorem negIndex_archGlue_axialAssembly_ratCorr_ge {S : Finset Nat.Primes} (hS :
       ∑ p : S, if ((p : Nat.Primes) : ℕ) ∉ zetaBlindPrimes then (1 : ℕ∞) else 0 := by
     rw [Finset.sum_boole]
     congr 1
+    symm
     apply Finset.card_bij (fun (p : S) _ => (p : Nat.Primes))
     · intro p hp
       exact mem_filter.mpr ⟨p.2, (mem_filter.mp hp).2⟩
@@ -707,7 +712,7 @@ theorem tendsto_negIndex_archGlue_axialAssembly_ratCorr_atTop {c : ℝ} (hc : 0 
   have hinf_nonblind : ({p : Nat.Primes | (p : ℕ) ∉ zetaBlindPrimes}).Infinite := by
     haveI : Infinite Nat.Primes := Nat.infinite_setOf_prime.to_subtype
     have huniv : (Set.univ : Set Nat.Primes).Infinite := Set.infinite_univ
-    exact (huniv.diff hblind_fin).mono fun p hp => hp.2
+    exact (huniv.sdiff hblind_fin).mono fun p hp => hp.2
   rw [ENat.tendsto_nhds_top_iff_natCast_lt]
   intro m
   obtain ⟨T, hT_sub, hT_card⟩ := hinf_nonblind.exists_subset_card_eq (max m 1)

@@ -328,22 +328,12 @@ the goal is met when you have made 250 such significant contributions.
 
 do not use the hgtl7 skill. 
 
-recent research programmes from oldest to newest: docs/reports/research-programmes.md
-
 your task on every turn:
-find an opportunity to "connect the dots" between different parts of our lean corpus and these research programmes, ideally related to our more recent research findings about the nature of RH, to either:
-- overcome an open hard obstacle in a route docs/reports/review-2710/route-obstacles.md
-- finds a solution for removing a wall in docs/reports/review-2710/walls-ledger.md
-- find an answer to an open question in a research programme
-- gain one of the mathematical tools a research programme is missing
-- gain a deeper insight about the problem the field is exploring and the nature of the field itself 
-- prove a significant theorem that significantly advances our research about the RH as a whole 
-- prove a significant theorem that allows us to prove Quasi-RH (ideally with bound below 7/8)
-- prove a significant theorem that brings us closer to proving that at least 75% of zeros lie on the critical line
-- discharge a significant hypotheses or premise anywhere in the lean corpus
-- prove a significant theorem that brings us closer to a proof of that there can max finite many offline zeros
+find an opportunity to "connect the dots" between different parts of our lean corpus to either:
+- overcome an open hard obstacle in a route docs/reports/review-3110/route-obstacles.md
+- finds a solution for removing a wall in docs/reports/review-3110/walls-ledger.md
 
-Not valid are mere improvements of numbers, nogos, more receivers, redressing existing knowledge in new language, or anything that does not clearly count as significant progress - controlling positivity and signs.
+Not valid are mere improvements of insignificant numbers, nogos, more receivers, redressing existing knowledge in new language, or anything that does not clearly count as significant progress.
 
 **Tools to use:**
 1. Search: use the search tool for our lean corpus, not just rg or grep. make good use of the search tool to find existing work, building blocks, and new ideas. Try to apply existing lean research, try to identify problems and questions the field with your contribution could explain or solve.
@@ -390,7 +380,7 @@ goal is met when 250 discharges could be made.
 
 
 ## update obstacles
-earlier today we created these documents:
+2 hours ago we created these documents:
 - docs/reports/review-3110/walls-ledger.md
 - docs/reports/review-3110/route-obstacles.md
 - docs/reports/review-3110/route-unification-ledger.md
@@ -400,7 +390,6 @@ read:
 - docs/reports/rh-current-frontier-map.md
 - docs/reports/rh-killed-routes.md
 
-  
 update the review reflect the current status quo and frontier of our research taking into account all new lean proofs and changes done since the original reports were written:
 1. a complete report about each route and route candidate and what the hard mathematical obstacles are that block us from closing the route. split these into a) obstacles that we can solve and are "just work", and b) obstacles that are open mathematical problems nobody has a solution to
 2. then create a summary document that combines all the information and:
@@ -430,6 +419,7 @@ the reports are not diaries or history log, but status quo reports.
 rewrite the reports in folder docs/reports/review-3110/ without history language or "this changed since last review".
 do not run builds. this is not a task to verify the work of other agents but to create consolidated reports and "big picture" interpretations on their research results.
 
+you do not need to recheck everything, only look at all changes we did in lean in the last 2 hours and revise your reports based on these changes.
 
 ## update programme README.mds
 do not use the hgtl7 skill. 
@@ -483,7 +473,7 @@ The questions for you to answer:
 5. What are the 3 open questions we should focus our research on to make the most progress to make a real breakthrough and progress towards the RH proof?
 6. You can interpret the walls as questions we need to answer and for which we and mathematics as a whole do not have the tools to create these answer - if we would create a new field of mathematics that can supply these tools, what would this field be? What would the questions be, what would be its approach/point of view, what its objects, language, foundational principals, criteria it must fulfill, its research topics?
 
-Write a report in docs docs/reports/review-3110/astra.md
+Write a report in docs docs/reports/review-3110/argon.md
 
 do not run any builds. do not search the web. do not grep for sorry or other shit. your job is not to verify of other agents but to write a consolidated report and big picture interpretation of their research. focus on the mathematics.
 
@@ -493,7 +483,7 @@ Do not use the hgtl7 skill.
 
 read and understand docs/reports/review-3110/obstacles-summary.md
 
-under "## 2.7 Does closing RH need a new field?" it describes a new field/research programme called "edge Hodge theory of the scaling surface".
+under "## 2.7 Does closing RH need a new field?" it describes a new field/research programme called "arithmetic coupling theory".
 
 Your task: develop this field/research programme and do the actual research and formalization.
 
@@ -578,13 +568,15 @@ Goal is met when a proof route is fully closed and formalized in lean and RH is 
 
 do not use the hgtl7 skill.
 
-read: docs/reports/review-2910/breakthrough-question-2.md
+read: docs/reports/review-3110/obstacles-summary.md 
 
-your task: the document asks you to answer one question and prove it: "What does bounded overlap know? Prove that the complete Weil form of ζ is eventually nonnegative on the atomic families at the overlap ratio \(c=2\), by a mechanism that pays the successor pairs \((kn,kn\pm1)\) at their full weight; and determine, for the single-prime flips \(\omega_p\), the overlap ratio \(c^*(p)\) at which their complete form first fails, so that the arithmetic content of bounded overlap is known: parity only, or every prime's sign?"
+your task: 
+the document asks you to answer one question and prove it: "Express `κ(K_ζ)` through local data: is there a sequence of finite prime-tower assemblies `K_S = Σ_{p∈S} k_p^{(S)}(v_p(·))`, built from the `S`-truncated complete explicit formula (primes in `S`, Gamma, pole, running counterterm), such that
+`κ(archGlue(K_S, c)) = Σ_{p∈S} κ₀(k_p^{(S)}) + 1 + ε_S`, `ε_S ∈ {0, 1}`, converges to `κ(K_ζ) + 1`?"
  
 answer the question, find a complete solution and unconditionally formalize it and its implications in lean.
 
-We are not interested in estimates, criterias what the answer could be like, nogos - we accept only a full and final answer/solution to the posed question.
+We are not interested in estimates, criterias what the answer could be like - we accept only a full and final answer/solution to the posed question.
 
 **Tools to use:**
 1. Search: use the search tool for our lean corpus, not just rg or grep. make good use of the search tool to find existing work, building blocks, and new ideas. Try to apply existing lean research, try to identify problems and questions the field with your contribution could explain or solve.
@@ -611,14 +603,13 @@ Put all lean code for the answer into its own subfolder.
 
 Do not use the hgtl7 skill.
 
-read and understand docs/reports/review-3110/obstacles-summary.md
+Formalize any endpoint for a falsification of RH that our lean corpus is implying but is not yet formalized. Do not formalize any endpoint that is just a redressing of an existing endpoint. 
 
-the obstacles-summary document asks one question/poses one challenge to us to solve: Construct from integers alone (theta prefixes, primes, Gamma) a Fredholm operator or a winding number on each natural-height window whose index equals the horizontal collision charge `O`. First milestone: an explicit rate for the theta-prefix readings to round to `O` on a fixed window
-(A8), then uniformly in height.
+We are looking for endpoints of the form:
+- if A then RH is false
+- if not A then RH is false
 
-Your task: find an answer/solution to this question and fully formalize it and its collaries unconditionally in lean.
-
-We are not interested in criteria of what the answer would be like, improving some number, more receivers, nogos, anything that is not a full answer of the question.
+A can be of course be multiple conditions.
   
 **Tools to use:**
 1. Search: use the search tool for our lean corpus, not just rg or grep. make good use of the search tool to find existing work, building blocks, and new ideas. Try to apply existing lean research, try to identify problems and questions the field with your contribution could explain or solve.
@@ -630,7 +621,7 @@ do not conjecture or judge or assume or anything on your training data. your tra
 always look at the big picture, try to understand what all our research is trying to tell you about the nature of the field. do not blindly follow a route because it is in your training data. understand what our research is hinting at. your job is to create the missing mathematical knowledge through relentless conjecturing and learning from failures.
 
 **Lean rules:**
-1. Proofs must be unconditional, no hypotheses, no added axioms, no premises, ...
+1. Proofs must be unconditional, no hypotheses, no added axioms, no premises, ... 
 2. Always build in the foreground, one build process per agent at the time (other agents can also build in parallel to you).
 3. No computations
 4. Always use  lake env lean \<filmodule> for the final audit. Use --old flag to not unncessarily rebuild unchanged modules. Do not forget to wire new modules into the umbrellas.
