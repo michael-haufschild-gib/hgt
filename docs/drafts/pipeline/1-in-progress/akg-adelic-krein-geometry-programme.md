@@ -22,10 +22,10 @@ Develop the field asked for in §2.6: answer its six questions as theorems or sh
 - E. Conformal symmetry: `ConformalSymmetryNeedsANegativeSquare`, `StableConformalSuccessors`, `TheFunctionFieldConformalSuccessor`.
 - F. Additive index law: `TheAdditiveIndexLaw` (`ℤ/N`), `TheAdditiveIndexLawOnQModZ` (`ℚ/ℤ`), `TheRamanujanIndexLaw` (`κ = Σ_{A_d<0} φ(d)` for unit-invariant kernels and conductor-invariant successors).
 - G. One state, two actions: `ThePoleIsAKreinStateOfTheAffineGroup`, `TheAffineGroupOfAField`, `TheHeckeBoostAndTheConformalSuccessorAreOneState` (conformal induction, pole–successor law for any field and absolute value), `EveryPlaceCarriesAPoleSuccessorState` (ultrametric successors, `p`-adic states, the place at infinity of `F(X)`), `ThePoleSuccessorSignatureFormula` (`κ = κ₀(ψ) + 1`), `TheShellDecompositionOfAPoleSuccessorForm` (renormalized pair plus shell squares, at `p` and at `∞`), `LocalSignaturesAddOverDistinctPlaces` (`κ = k` for `k` separated places).
-- H. Haar carriers (another agent): `Haar/IndexPreservation`, `Haar/ContinuousDilationsNeedInfiniteIndex`, `Haar/AxisInvisibility`, `Haar/PolynomialPerturbations`, `Haar/FiniteRankPerturbations`, `Haar/PowerKernels`, `Haar/MixedPolynomialPerturbation`.
+- H. Haar carriers: `Haar/IndexPreservation`, `Haar/ContinuousDilationsNeedInfiniteIndex`, `Haar/AxisInvisibility`, `Haar/PolynomialPerturbations`, `Haar/FiniteRankPerturbations`, `Haar/PowerKernels`, `Haar/MixedPolynomialPerturbation`. `Haar/PolynomialCorrection`, `Haar/CyclicGramLimit`, `Haar/FiniteIndexObstruction`, and `Haar/ScaledHaarObstruction` prove infinite index for every Hermitian rational-affine kernel with a nonzero integer-Haar multiple and continuous dilation reading; positive-slope and actual adelic extensions remain unverified.
 
 ## Open
-- General indefinite Mautner theorem: negative parts of infinite rank modulo slope data.
+- The unique decomposition of finite-index Haar kernels into positive Haar, slope, and zero-axis polynomial parts.
 - Krein–Langer structure on `Aff(ℚ)`: positive part plus finite-dimensional or conformally induced Pontryagin coefficients?
 - Weil's prime and archimedean parts glued to successors as the pole is glued to `−|b|`; non-separable gluing for the complete Weil form.
 - Calibration over `𝔽_q(T)`: the Hecke wall on `Aff(𝔽_q(T))`.

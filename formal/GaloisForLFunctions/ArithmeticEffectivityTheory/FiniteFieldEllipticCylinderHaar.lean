@@ -19,9 +19,20 @@ open HTGeometry.DiscreteValuationHaar
 open scoped WithZero WithZeroMulInt ENNReal NNReal
 noncomputable section
 
+private theorem topological_measurable_add {A : Type*} [AddGroup A]
+    [TopologicalSpace A] [IsTopologicalAddGroup A] [MeasurableSpace A] [BorelSpace A] :
+    MeasurableAdd A := ContinuousAdd.measurableAdd
+
+private theorem product_measurable_add {A B : Type*} [Add A] [Add B]
+    [MeasurableSpace A] [MeasurableSpace B] [MeasurableAdd A] [MeasurableAdd B] :
+    MeasurableAdd (A × B) where
+  measurable_const_add c := (measurable_fst.const_add c.1).prodMk
+    (measurable_snd.const_add c.2)
+  measurable_add_const c := (measurable_fst.add_const c.1).prodMk
+    (measurable_snd.add_const c.2)
+
 local instance (v : FinitePlace) : MeasurableSpace (v.adicCompletion K) := borel _
 local instance (v : FinitePlace) : BorelSpace (v.adicCompletion K) := ⟨rfl⟩
-local instance (v : FinitePlace) : MeasurableAdd (v.adicCompletion K) := ContinuousAdd.measurableAdd
 local instance (v : FinitePlace) : CompactSpace (Integer (v.adicCompletion K)) :=
   finiteCompletionInteger_compact v
 local instance (v : FinitePlace) : SecondCountableTopology (v.adicCompletionIntegers K) :=
@@ -31,10 +42,39 @@ local instance (v : FinitePlace) :
 local instance (v : FinitePlace) : IsTopologicalAddGroup (v.adicCompletionIntegers K) :=
   Topology.IsInducing.subtypeVal.topologicalAddGroup
     (v.adicCompletionIntegers K).subtype.toAddMonoidHom
-local instance (S : Finset FinitePlace) : IsTopologicalAddGroup (FiniteCylinderTail S) :=
+local instance (S : Finset FinitePlace) :
+    IsTopologicalAddGroup ((v : {v : FinitePlace // v ∉ S}) → v.1.adicCompletionIntegers K) :=
   Pi.topologicalAddGroup
-local instance (S : Finset FinitePlace) : IsTopologicalAddGroup (FiniteCylinderFields S) :=
-  Pi.topologicalAddGroup
+private abbrev actualFieldTopAdd (v : FinitePlace) : IsTopologicalAddGroup (v.adicCompletion K) := by
+  letI : IsTopologicalRing (v.adicCompletion K) := Valued.instIsTopologicalRing
+  exact IsTopologicalRing.to_topologicalAddGroup
+private abbrev actualIntegerAddGroup (v : FinitePlace) : AddCommGroup (v.adicCompletionIntegers K) :=
+  inferInstance
+private abbrev actualIntegerAdd (v : FinitePlace) : Add (v.adicCompletionIntegers K) :=
+  inferInstance
+attribute [local instance] actualFieldTopAdd actualIntegerAddGroup actualIntegerAdd
+
+local instance (v : FinitePlace) : SigmaCompactSpace (v.adicCompletion K) := by
+  letI := finiteCompletion_secondCountable v
+  letI := finiteCompletion_locallyCompact v
+  exact sigmaCompactSpace_of_locallyCompact_secondCountable
+local instance (v : FinitePlace) : (normalizedHaar (v.adicCompletion K)).IsAddHaarMeasure :=
+  normalizedHaar_isAddHaar (v.adicCompletion K)
+local instance (v : FinitePlace) : SigmaFinite (normalizedHaar (v.adicCompletion K)) := inferInstance
+local instance (S : Finset FinitePlace) : IsTopologicalAddGroup (FiniteCylinderFields S) := by
+  letI (v : S) : IsTopologicalAddGroup (v.1.adicCompletion K) := actualFieldTopAdd v.1
+  exact Pi.topologicalAddGroup
+local instance (v : FinitePlace) : MeasurableAdd (v.adicCompletionIntegers K) :=
+  topological_measurable_add
+local instance (S : Finset FinitePlace) : MeasurableAdd (FiniteCylinderFields S) := by
+  letI (v : S) : MeasurableAdd (v.1.adicCompletion K) := ContinuousAdd.measurableAdd
+  exact Pi.measurableAdd
+local instance (S : Finset FinitePlace) : MeasurableAdd (FiniteCylinderTail S) := by
+  letI (v : {v : FinitePlace // v ∉ S}) : Add (v.1.adicCompletionIntegers K) :=
+    actualIntegerAdd v.1
+  letI (v : {v : FinitePlace // v ∉ S}) : MeasurableAdd (v.1.adicCompletionIntegers K) :=
+    inferInstance
+  exact Pi.measurableAdd
 local instance : MeasurableSpace InfinityCompletion := borel _
 local instance : BorelSpace InfinityCompletion := ⟨rfl⟩
 local instance : MeasurableAdd InfinityCompletion := ContinuousAdd.measurableAdd
@@ -43,8 +83,10 @@ local instance : MeasurableAdd Adeles := ContinuousAdd.measurableAdd
 abbrev EllipticCylinderCoordinates (S : Finset FinitePlace) :=
   (FiniteCylinderFields S × FiniteCylinderTail S) × InfinityCompletion
 
+local instance (S : Finset FinitePlace) :
+    MeasurableAdd (FiniteCylinderFields S × FiniteCylinderTail S) := product_measurable_add
 local instance (S : Finset FinitePlace) : MeasurableAdd (EllipticCylinderCoordinates S) :=
-  ContinuousAdd.measurableAdd
+  product_measurable_add
 
 /-- Assemble the finite cylinder and the unrestricted infinity completion. -/
 def ellipticCylinderAssembly (S : Finset FinitePlace) : EllipticCylinderCoordinates S →+ Adeles where
@@ -88,8 +130,15 @@ private instance cylinderFieldsHaar_isAddHaar (S : Finset FinitePlace) :
 
 instance ellipticCylinderProductHaar_isAddHaar (S : Finset FinitePlace) :
     (ellipticCylinderProductHaar S).IsAddHaarMeasure := by
-  unfold ellipticCylinderProductHaar
-  infer_instance
+  letI (v : {v : FinitePlace // v ∉ S}) : AddCommGroup (v.1.adicCompletionIntegers K) :=
+    actualIntegerAddGroup v.1
+  letI (v : {v : FinitePlace // v ∉ S}) : Add (v.1.adicCompletionIntegers K) :=
+    actualIntegerAdd v.1
+  letI (v : S) : SigmaFinite (normalizedHaar (v.1.adicCompletion K)) := inferInstance
+  letI : ((Measure.pi fun v : S => normalizedHaar (v.1.adicCompletion K)).prod
+      (CompactAbelian.haarProb (FiniteCylinderTail S))).IsAddHaarMeasure :=
+    Measure.prod.instIsAddHaarMeasure _ _
+  exact Measure.prod.instIsAddHaarMeasure _ _
 
 /-- Pullback of the actual ambient Haar measure along open cylinder assembly. -/
 def ellipticCylinderAmbientHaar (S : Finset FinitePlace) : Measure (EllipticCylinderCoordinates S) :=
@@ -138,6 +187,7 @@ private theorem assembly_image_integralBox (S : Finset FinitePlace) :
 theorem ellipticCylinderProductHaar_integralBox (S : Finset FinitePlace) :
     ellipticCylinderProductHaar S (ellipticCylinderIntegralBox S) = 1 := by
   classical
+  letI (v : S) : SigmaFinite (normalizedHaar (v.1.adicCompletion K)) := inferInstance
   have hf (v : S) : normalizedHaar (v.1.adicCompletion K)
       (v.1.adicCompletionIntegers K : Set (v.1.adicCompletion K)) = 1 :=
     normalizedHaar_integer (v.1.adicCompletion K)

@@ -179,11 +179,14 @@ theorem eventually_abs_completedConductorEnergy_sub_theta_log_le {φ : ℝ → �
   -- Show `2 ≤ ⌊δ * M⌋₊`, hence `3 ≤ m`, `0 < m`, and `m ≠ 1`.
   have hfl_ge2 : 2 ≤ ⌊δ * (⌊(N : ℝ) ^ θ⌋₊ : ℝ)⌋₊ := by
     refine Nat.le_floor ?_
+    push_cast
     have h1 : 4 ≤ δ * (N : ℝ) ^ θ := by
       have := mul_le_mul_of_nonneg_left hNθ_δ hδ0.le
       have h4 : δ * (4 / δ) = 4 := by field_simp [hδ0.ne']
       linarith only [this, h4]
-    nlinarith only [hfl_half, h1, hδ0]
+    have h2 : (δ * (N : ℝ) ^ θ) / 2 ≤ δ * (⌊(N : ℝ) ^ θ⌋₊ : ℝ) := by
+      simpa only [mul_div_assoc] using mul_le_mul_of_nonneg_left hfl_half hδ0.le
+    linarith only [h1, h2]
   have hm0 : 0 < m := by omega
   have hm_ne1 : m ≠ 1 := by omega
   -- Exact decomposition of `completedConductorEnergy φ (c N) m - E₀` for `m ≠ 1`.
@@ -207,7 +210,8 @@ theorem eventually_abs_completedConductorEnergy_sub_theta_log_le {φ : ℝ → �
     have h := Real.log_le_log (by positivity) hm_lb
     rw [Real.log_mul (by positivity) (by positivity), Real.log_rpow hN0] at h
     linarith only [h, neg_abs_le (Real.log (δ / 2)), h_piece_δ]
-  have hlogm_le' : Real.log m - E₀ ≤ (η / 5) * E₀ := by linarith only [hlogm_le, hη0, hE₀_pos]
+  have hlogm_le' : Real.log m - E₀ ≤ (η / 5) * E₀ :=
+    (sub_nonpos.mpr hlogm_le).trans (by positivity)
   -- Bound `tameDifferent m` via prime-divisor splitting at `K`.
   have htame_nonneg : 0 ≤ tameDifferent m :=
     SelectiveMultiscaleArithmeticPositivity.tameDifferent_nonneg m
@@ -226,12 +230,15 @@ theorem eventually_abs_completedConductorEnergy_sub_theta_log_le {φ : ℝ → �
   have hshell : |shellCorrection φ (c N) m| ≤ (η / 5) * E₀ :=
     (abs_shellCorrection_le_linear hφ hsupp hM_int hm0 hc0).trans h_piece_cL4
   -- Combine all five terms.
+  change |completedConductorEnergy φ (c N) m - E₀| ≤ η * E₀
   rw [hdecomp, abs_le]
   obtain ⟨hs1, hs2⟩ := abs_le.mp h_piece_self
   obtain ⟨hl1, hl2⟩ := abs_le.mp h_piece_logc
   obtain ⟨hsh1, hsh2⟩ := abs_le.mp hshell
-  exact ⟨by linarith only [hlogm_ge, hs1, hl2, htame_nonneg, hsh2, hη0, hE₀_pos],
-    by linarith only [hlogm_le', hs2, hl1, htame_le, hsh1]⟩
+  have h5eq : 5 * ((η / 5) * E₀) = η * E₀ := by ring
+  have hηE_pos : 0 < (η / 5) * E₀ := by positivity
+  exact ⟨by linarith only [hlogm_ge, hs1, hl2, htame_nonneg, hsh2, h5eq, hηE_pos],
+    by linarith only [hlogm_le', hs2, hl1, htame_le, hsh1, h5eq]⟩
 
 /-! ## Section 2: Unconditional Conductor-Average Positivity, Census, and Negative-Index Laws -/
 
@@ -322,7 +329,7 @@ theorem tendsto_completeWeil_conductorAverage_atTop {φ : ℝ → ℝ}
         refine sum_le_sum fun m hm => ?_
         exact mul_le_mul (hE_top m hm)
           (normalizedRamanujanHorizonVector_norm_sq_ge (hsub hm) hN4 hfl_le)
-          (by linarith only [hθ]) (by positivity)
+          (by linarith only [hθ]) ((mul_pos (half_pos hθ0) hLN0).le.trans (hE_top m hm))
       _ ≤ ∑ m ∈ Icc 1 M,
             completedConductorEnergy φ (c N) m * ‖normalizedRamanujanHorizonVector m N‖ ^ 2 :=
         sum_le_sum_of_subset_of_nonneg hsub hnonneg
@@ -435,7 +442,7 @@ theorem tendsto_nonpositive_conductor_fraction_zero {φ : ℝ → ℝ}
     have heps : 0 < (b / 2) * (γ ^ 2 / 6) := by positivity
     filter_upwards [eventually_conductorCutoff_bounds hθ0 hθ,
       eventually_completedConductorEnergy_ge_on_Ioc hφ hsupp hM_int hθ0 hθ hc1 hc_lim hδ0,
-      hres.eventually (lt_mem_nhds heps),
+      hres.eventually (gt_mem_nhds heps),
       eventually_ge_atTop 4] with N hcut hE_high hres_lt hN4
     obtain ⟨hM2, hMN, _, hfl_le, hLN_exp⟩ := hcut
     let M := ⌊(N : ℝ) ^ θ⌋₊
@@ -486,7 +493,7 @@ theorem tendsto_nonpositive_conductor_fraction_zero {φ : ℝ → ℝ}
                   ‖normalizedRamanujanHorizonVector m N‖ ^ 2 :=
               mul_le_mul (hE_high m hm_Ioc)
                 (normalizedRamanujanHorizonVector_norm_sq_ge hm_Icc hN4 hfl_le)
-                (by linarith only [hθ]) (by positivity)
+                (by linarith only [hθ]) ((mul_pos (half_pos hθ0) hLN0).le.trans (hE_high m hm_Ioc))
         have hinner_ge : γ * Real.log N ≤
             ‖completeWeilConductorResidual φ (c N) N m‖ *
               ‖normalizedRamanujanHorizonVector m N‖ := by
@@ -578,7 +585,7 @@ theorem tendsto_completeWeil_conductorSubspace_negIndex_div_zero {φ : ℝ → �
     filter_upwards [eventually_conductorCutoff_bounds hθ0 hθ,
       eventually_abs_completedConductorEnergy_sub_theta_log_le hφ hsupp hM_int hθ0 hθ hc1 hc_lim
         hδ0 hη0,
-      hres.eventually (lt_mem_nhds heps),
+      hres.eventually (gt_mem_nhds heps),
       eventually_ge_atTop 4] with N hcut hE_conc hres_lt hN4
     obtain ⟨hM2, hMN, _, hfl_le, hLN_exp⟩ := hcut
     let M := ⌊(N : ℝ) ^ θ⌋₊

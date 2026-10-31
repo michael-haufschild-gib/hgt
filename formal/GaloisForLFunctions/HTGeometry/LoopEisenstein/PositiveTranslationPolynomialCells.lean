@@ -15,8 +15,7 @@ noncomputable section
 
 private theorem upper_scaled_diagonal {L : Type*} [Field L] (v : Lˣ) (t : L) :
     sl2Upper ((v : L) ^ 2 * t) * sl2Diagonal v = sl2Diagonal v * sl2Upper t := by
-  have hv : (v : L) * ((v⁻¹ : Lˣ) : L) = 1 := by
-    rw [← Units.val_mul, mul_inv_cancel, Units.val_one]
+  have hv : (v : L) * (v : L)⁻¹ = 1 := mul_inv_cancel₀ v.ne_zero
   apply Matrix.SpecialLinearGroup.ext
   intro i j
   fin_cases i <;> fin_cases j <;>
@@ -26,8 +25,7 @@ private theorem upper_scaled_diagonal {L : Type*} [Field L] (v : Lˣ) (t : L) :
 
 private theorem lower_diagonal_scaled {L : Type*} [Field L] (v : Lˣ) (t : L) :
     sl2Lower t * sl2Diagonal v = sl2Diagonal v * sl2Lower ((v : L) ^ 2 * t) := by
-  have hv : (v : L) * ((v⁻¹ : Lˣ) : L) = 1 := by
-    rw [← Units.val_mul, mul_inv_cancel, Units.val_one]
+  have hv : (v : L) * (v : L)⁻¹ = 1 := mul_inv_cancel₀ v.ne_zero
   apply Matrix.SpecialLinearGroup.ext
   intro i j
   fin_cases i <;> fin_cases j <;>
@@ -89,6 +87,7 @@ theorem exists_upper_polynomial_translation_cell (n : ℕ) (g : SL2 (LaurentSeri
         (sl2Diagonal_powerSeriesUnit_mem_laurentIwahori F a))
       (lower_series_mem F _ hl')
   refine ⟨p, PowerSeries.degree_trunc_lt u (2 * n), j, hj, ?_⟩
+  change FiniteRingSl2.upper u * powerSeriesDiagonal F a * FiniteRingSl2.lower l = g₀ at he
   rw [← he, map_mul, map_mul, powerSeriesSL2Map_upper,
     powerSeriesSL2Map_diagonal, powerSeriesSL2Map_lower]
   have huc : (u : LaurentSeries F) = ((p : PowerSeries F) : LaurentSeries F) +

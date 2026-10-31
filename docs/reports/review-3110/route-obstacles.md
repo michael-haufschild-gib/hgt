@@ -1,14 +1,15 @@
 # Route obstacles — status quo
 
-Scope: the 32 live routes, 17 standalone candidates and the PW-B branch of the frontier map, checked
-against the Lean corpus. For every route: what is established, the obstacles that are **(A) just
-work** (known mathematics, finite computation, effectivisation, bookkeeping), and the obstacles that
-are **(B) open mathematics** (no known solution).
+Scope: the 33 live routes, the 16 standalone candidates and the PW-B branch of the frontier map
+(checkpoint `a5440dc8`), checked against the Lean corpus. For every route: what is established, the
+obstacles that are **(A) just work** (known mathematics, finite computation, effectivisation,
+bookkeeping, formal closure), and the obstacles that are **(B) open mathematics** (no known solution).
 
-Legend. `[L]` theorem in the Lean corpus (statement read). `[map]` status from the frontier map
-without a Lean statement read here. Strength of a B-item: **RH** = equivalent to RH; **≥qRH** =
-implies a zero-free half-plane `Re s > ½ + α` (quasi-RH) and Lindelöf; **sub** = strictly weaker
-than RH or of unknown strength. Wall labels Σ/Π/Γ refer to `walls-ledger.md`.
+Legend. `[L]` Lean theorem (statement read). `[S]` result recorded at source/paper level in the
+frontier map. `[map]` frontier-map status without a statement read here. Strength of a B-item:
+**RH** = equivalent to RH; **≥qRH** = implies Lindelöf and a zero-free half-plane `Re s > ½ + α`;
+**sub** = strictly weaker than RH or of unknown strength. Wall labels Σ/Π/Γ refer to
+`walls-ledger.md`.
 
 ## 0. Hardness calibration (applies to every route)
 
@@ -16,121 +17,131 @@ than RH or of unknown strength. Wall labels Σ/Π/Γ refer to `walls-ledger.md`.
 |---|---|---|
 | `κ(K_ζ) = #` right zeros, already on any two-prime sublattice; RH ⇔ `κ = 0` ⇔ `κ ≤ 1` | HKT `TheFiniteIndexStratumOfZetaIsLindelofDeep` [L] | every route that ends in an index count ends in the same integer |
 | `κ < ∞` ⇔ finitely many off-line zeros ⇔ bounded heat counts ⇒ Lindelöf + zero-free half-plane | same [L] | every **finite-index / finite-support waypoint is ≥qRH** |
-| Fixed aperture, fixed rank, fixed overlap `c` are never RH-complete; RH-complete thresholds: tilted spline `c = (log N)^α, α > ¼`; smooth profiles `(log N)^ε`; Gevrey-2 `(log log N)^{α>2}`; Steklov/sinc `L(log L)²`, `L = log log N` | CACT, SSHA `TheCriticalExponent`, `TheGevreyProfile` [L] | fixed-resolution positivity is always **sub** |
-| One-sided count `ψ(x) − x ≤ C√x log²x` ⇔ RH; section supply beating the large-sieve ceiling at rate `e^{2βr}` ⇔ zero width `≤ β` | ACP `TheStepanovCountIsTheSign`, SPTL `SerreDualScalingCohomology…` [L] | every **exponent improvement on the count side is quasi-RH** |
-| The Krein index is twin-blind (`κ(k·χ) = κ(k)`) | AKG `TheIndexIsTwinBlind` [L] | index calculus alone can never select ζ; selection must use dilation data (pole, Gamma) |
-| Heat: an off-line pair of depth `δ` survives to `κ = tL ≈ δ`; size-only reality horizon `≥ ½`; Weyl floor `2/3 = 4μ(½)` | Heat `AnOffLinePairSurvives…`, `KiKimLeeTwoThirdsHorizon` [L] | pointwise heat horizons below `½` are ≈ zero-width statements (**≥qRH**) |
+| Archimedean Weil state: `κ(ratCorr(|a|) − c|a|^{−½}|b|) = κ(K_ζ) + 1` for every `c > 0` | AKG `WeilsArchimedeanStateCountsTheZeros` [L] | RH ⇔ index one for one explicit affine state ⇔ Weil Gram `≥ 0` on the boost hyperplane |
+| Boost hyperplane `Σ w_n n^{−½} = 0` = orthogonal complement of the pole-conductor vector `v_1`; `v_1` is the ground state of the complete Weil matrix | AKG `boostMassU`; RAPT `ramanujanPoleProfile`; CACT `TheCompleteWeilGroundStateIsThePole` [L] | SC and the complete-Weil cluster are one sign problem: positivity on `v_1^⊥` |
+| Fixed aperture, rank and overlap are never RH-complete; RH-complete overlaps: tilted spline `2(log N)^{α>¼}`, smooth `(log N)^ε`, Gevrey-2 `(log log N)^{>2}`, Steklov/sinc `K L(log L)²` | CACT, SSHA [L] | fixed-resolution positivity is always **sub** |
+| One-sided count `ψ(x) − x ≤ C√x log²x` ⇔ RH; section shortfall at rate `e^{2βr}` ⇔ zero width `≤ β` | ACP, SPTL [L] | every **exponent gain on the count side is quasi-RH** |
+| The Krein index is invariant under unitary twists; the glued archimedean index is invariant under the pole weight | AKG `TheIndexIsTwinBlind`, `TheGluingSquareIsSharp` [L] | index calculus cannot select ζ, and the glued state cannot use the pole to select |
+| Pointwise local count bounds critical multiplicities; counting inputs give it only in density | SRT `TheLocalCountBoundsTheMultiplicity`, `CountingInputsDoNotBoundTheLocalCount` [L] | local-count hypotheses are not implied by RH; they are off the RH critical path |
+| Heat: depth-`δ` pair survives to `κ = tL ≈ δ`; size-only horizon `≥ ½`; Weyl floor `2/3 = 4μ(½)` | Heat [L] | pointwise heat horizons below `½` are ≈ zero-width statements (**≥qRH**) |
 
 ## 1. Shared obstacle blocks
 
-Most routes share one of five engines. Their obstacles are listed once here and referenced below.
+### S1. Complete Weil matrix at growing overlap (HF, SRT, AIP, ACS-atomic, SC, CHMD-index, RW/EWU/OWU through the ground minimum)
 
-### S1. Complete Weil matrix at growing overlap (HF, SRT, AIP, CHMD, ACS-atomic, SC, RW, EWU, OWU, ACT)
+Established:
+- all vectors, complete positivity for `1 ≤ c ≤ (log log N)^α`, `α < 1/16` [L] (CACT `TheCompleteWeilMatrixIsPositiveAtIteratedLogarithmicOverlap`); the logarithmic reserve `W ≥ ac⁻⁷(D_N − C log(2c)‖x‖²)` holds on the same range with absolute `a, C` [L] (CACT `TheCompleteWeilLogarithmicReserveSurvivesGrowingOverlap`);
+- fixed packets: positive for `c ≤ (log N)^{<1/48}` [L] and `(log N)^{<1/19}` [L];
+- conductor averages at RH-complete overlap: for `M = ⌊N^θ⌋`, `θ < ½`, `c²/log N → 0` (includes `2(log N)^α`, `¼ < α < ½`): `Σ_{m≤M}‖(W − E_m)v_m‖² / Σ E_m² → 0`, conductor-average energy `→ ∞`, nonpositive-conductor fraction `→ 0`, `κ(W|span{v_m : m ≤ M}) = o(M)` [S] (CAF `CompleteWeilResidualLevelOfDistribution`, `CompleteWeilConductorAveragePositivity`, `PrimeResidualLevelOfDistribution`);
+- Ramanujan conductor frames for `M² ≤ N`: Riesz bounds `1 − 2θ` and `6`, Gram off-diagonal only along prime-power divisibility [S] (CAF `RamanujanConductorFrames`);
+- low spectrum localized on low conductors; the unique lowest eigenvalue tends to the pole energy `E_1(c) ≍ c⁻⁷` with eigenvector near `v_1`, at every fixed `c` and along diagonal schedules [L] (RAPT, CACT);
+- harmonic and prime finite parts: torsion-intersection energy plus one counterterm; full prime form `−T − D`, centered heads `+T − D`, boundary `−2T` [L] (SSH `Conductor/*`);
+- conductor-uniform residual for `m ≤ (log N)^A`; joint top-band shell–pole cancellation; full prime window cancels the `√Y` head pole on fixed packets [L].
 
-Established [L]:
-- fixed `c`, all vectors: logarithmic reserve `(a/c⁷)(D_N − C log(2c)‖x‖²) ≤ W`, horizon eventual in `c` (CACT `ShiftingThePrimeEnergyGivesALogarithmicDefectReserve`);
-- explicit polynomial-cost reserve at every `N ≥ cutoff(c)` (CACT `TheCompleteWeilReserveHasPolynomialOverlapCost`);
-- fixed conductor packets positive for `1 ≤ c ≤ (log log N)^A` (every `A`) and for `c ≤ (log N)^A`, `A < 1/48` (CACT `FixedConductorPacketsStayPositiveAtGrowingOverlap`); `α < 1/19` on fixed packets (SSH) [map];
-- complete signed residual uniform in conductor: `‖(W − E_m)v_m‖² ≤ K m⁴(c⁵/log N + c¹⁰(log N/N)² + c³/√log N)` for all `m ≤ (log N)^A` (CACT `CompleteConductorResidualsAreUniformOnLogarithmicFamilies`); downward rows `≤ C m⁴c⁵/log N` (CACT `DownwardRowsHaveUniformConductorBounds`);
-- joint top-band shell–pole cancellation; growing Euler head alone has unbounded index; the full prime window cancels the `√Y` head pole on fixed packets (SSH, AID) [L].
-
-Reach accounting (inference from the exponents above): a residual term `c^a/(log N)^b` against the
-floor `E_1(c)² ≍ c⁻¹⁴` allows `c ≤ (log N)^{b/(a+14)}`. The `c⁵/log N` term gives `1/19` (the SSH
-exponent), the `c³/√log N` term `1/34`. The RH-complete schedule `α > ¼` needs `b > (a+14)/4`.
+Location of the remaining sign problem (inference from the anchors): zero detectors have long Möbius
+transforms (RAPT `TheZerosSeeEveryAtomicVectorThroughItsMobiusHorizons`), so under ¬RH the negative
+vector at RH-complete overlap has large prime defect and violates the logarithmic reserve. Averages
+and the low-conductor block are not where RH sits; the confinement of negative vectors to low
+conductors is.
 
 | | Obstacle |
 |---|---|
-| A1 | Effective horizon for the fixed-`c` logarithmic reserve (any explicit `N₀(c)`) |
-| A2 | All-vector positivity at iterated-log overlap: combine A1 with the uniform residual range `m ≤ (log N)^A` |
-| A3 | Attribute each of the eight residual terms to its source (prime sum vs. horizon/top band); replace prime-sum errors by classical zero-free-region errors |
-| A4 | Growing-packet relative remainder for the full-window head-pole cancellation, packets up to `exp(c√log Y)` (window PNT with de la Vallée Poussin error) |
-| A5 | Single-`K` completeness of the Steklov/sinc schedule at the critical scale `K L(log L)²` |
+| A1 | Lean closure of the `[S]` conductor-average results: level of distribution, conductor-average positivity, Riesz frames |
+| A2 | Exceptional conductors inside the Siegel–Walfisz range: show the `o(M)` exceptional set avoids `m ≤ (log N)^A` using the individual uniform residual bound |
+| A3 | Growing-packet head-pole cancellation, packets up to `exp(c√log Y)` (window PNT with classical error) |
+| A4 | Growing-conductor control of the undilated hyperbolic term and moving-head packet norms (the `−2T` boundary retained) |
+| A5 | Single-`K` completeness of the Steklov/sinc schedule at `K L(log L)²` |
 | B1 | Positivity on an RH-complete schedule — **RH** (Σ1) |
-| B2 | Horizon exponent `K < 4` in `N ≥ exp(c^K)` for the log reserve, or residual saving `b > (a+14)/4`; under ¬RH at least one fails — one of them carries the RH content (**open which**) |
-| B3 | Conductor uniformity beyond the Siegel–Walfisz range `m ≤ (log N)^A` — **sub**, Π9 |
+| B2 | Confinement / logarithmic reserve beyond `(log log N)^{1/16}`: polynomial instead of exponential conductor confinement (**sub** below `¼`; **RH** on RH-complete schedules) |
+| B3 | Exceptional conductors beyond `(log N)^A`: individual residual control — **sub**, Π9 |
+| B4 | Square-root conductor barrier: frames and residual averages for conductors `N^{½} < m ≤ N` — **sub** (Elliott–Halberstam-type) |
+| B5 | Full-complement / mixed Schur payment below the decaying floor — Σ1 |
 
-### S2. Index / finite off-line support (HKT, AKLT, AID, SRT towers, CHMD index branch)
+### S2. Index / finite off-line support (HKT, AKLT, AID, SRT towers, CHMD index, SC)
 
 Established [L]: index = right-zero count; finite stratum TFAE; converse Krein–Langer for orbit
 kernels; complete cells capture every finite index; transverse energy pays each negative square;
-source work `≤ 2` cofinally ⇒ RH (AID `TheSourceWorkHasAClosedQuantumThreshold`).
+source work `≤ 2` cofinally ⇒ RH; collision mass `= 2(κ + multiplicity excess)` on the finite
+stratum; `κ ≤ sup` horizontal collision charge; archimedean state index `κ_ζ + 1`.
 
 | | Obstacle |
 |---|---|
-| A6 | Effective capture stage: the complete-cell matrices capture every finite Weil index (AID `TheCompleteCellsCaptureEveryFiniteIndex`) without an explicit stage; make the stage explicit in terms of the zero packet |
-| B4 | Any arithmetic index ceiling uniform in resolution — **≥qRH** (Σ5) |
-| B5 | General converse Krein–Langer for kernels not presented by a zero configuration — **sub** |
+| A6 | Explicit capture stage for complete-cell indices (AID `TheCompleteCellsCaptureEveryFiniteIndex`) |
+| B6 | Any arithmetic index ceiling uniform in resolution — **≥qRH** (Σ5) |
+| B7 | General converse Krein–Langer for kernels not presented by a zero configuration — **sub** |
 
-### S3. Heat flow / collision charge (WD, LA, TH, TT, HCF, HEF receivers)
+### S3. Heat flow / collision charge (WD, LA, TH, TT, HCF; HEF receivers)
 
-Established [L]: `E(t)` monotone with dissipation `E(b) + 2∫N ≤ E(a)`; energy majorization for
-`8St < 1`; local threshold `λ_t ≍ depth²/local count`, `{λ_t > 0}` null ⇔ RH, `{λ_t > κ/log U}` has
-measure `o(U)`, `λ_t = 0` on lower density `29/50`; heat pincer `δ²/200 ≤ λ log ≤ 67/100`; reality
-horizon `2πe^{(2/3+ε)/t}` and nonreal count `≤ C₀R log R`; deep copies in `[X,2X]` `≤ C log X·N(t)` at
-`t log X ≤ c`; growth ladder: `N(t) ≤ exp(At^{−a})` ⇒ `X^{o(1)}` deep counts for `a < ¼` (log⁴
-persistence) [L], for `a < 1` with inverse-log persistence [map]; collision charge `O ∈ 2ℕ`, RH ⇔ `O < 2` on every window; Gauss–Hodge prime current summable
-⇔ `O = 0`; theta-prefix readings converge and round to `O`.
+Established [L]: `E(t)` monotone with dissipation; energy majorization for `8St < 1`; slice threshold
+`λ_t ≍ depth²/local count`, `{λ_t > 0}` null ⇔ RH, `λ_t = 0` on lower density `≥ 433/500`,
+exponential upper tail and mean `≤ CU/log²U`; flow threshold `Λ_X` (local de Bruijn–Newman
+constant): `Λ = sup_X Λ_X`, RH ⇔ every `Λ_X = 0`, `c d²/log X ≤ Λ_X ≤ (2/3+ε)/log X`; reality horizon
+`2πe^{(2/3+ε)/t}`; deep copies `≤ C log X·N(t)` at `t log X ≤ c`; `N(t) ≤ exp(At^{−a})` gives `X^{o(1)}`
+deep counts (`a < ¼` [L], `a < 1` [map]); collision charge `O ∈ 2ℕ`, RH ⇔ `O < 2` per window; prime
+current summable ⇔ `O = 0`; theta-prefix readings round to `O`; local count for density-one heights
+for ζ.
 
 | | Obstacle |
 |---|---|
-| A7 | Lower the Weyl floor `2/3 = 4μ(½)` by formalising a stronger subconvexity exponent (calibration only) |
-| A8 | Effective rounding rate of theta-prefix collision readings on a fixed window (Gaussian tail errors are explicit) |
-| B6 | Subcritical heat count `a < 1` — **sub**, stronger than the density hypothesis |
-| B7 | Pointwise horizon constant `< ½` — ≈ zero width, **≥qRH** |
-| B8 | Source-side bound `O < 2` on every window — **RH** (Σ8) |
-| B9 | Uniform window rounding (rate independent of height) — **sub**, needs zero-spacing control |
+| A7 | Formalise a stronger subconvexity exponent to lower the Weyl floor `2/3 = 4μ(½)` (calibration) |
+| A8 | Effective rounding rate of theta-prefix collision readings on a fixed window |
+| B8 | Subcritical heat count `a < 1` — **sub**, stronger than the density hypothesis |
+| B9 | Pointwise horizon constant `< ½` — **≥qRH** |
+| B10 | Source-side bound `O < 2` on every window — **RH** (Σ8) |
+| B11 | Every `Λ_X = 0`, in particular at bounded heights — **RH** |
+| B12 | Uniform rounding of collision readings (rate independent of height) — **sub**, needs zero-spacing control |
 
 ### S4. Counts and producers (WL, MC, PBM, RB, JAS, CTF, ACS-effectivity)
 
-Established [L]: one-sided count ⇔ RH (several receivers: `ψ`, `π`/li, Mertens, Turán, Riesz,
-majorant); prime-error budget ⇒ purity and `S ≥ 2 + γ − log 4π`; Abel slope ⇔ RH + simple; theta `h⁰`
-has exact linear Riemann–Roch but satisfies the quadratic Riemann inequality on no polar surface;
-Hecke auxiliaries see only the critical lattice; `K`-monomial auxiliaries vanish to order `< K`;
-coprime Möbius sawtooth sums save only `(1 + log t)^{−3}`.
+Established [L]: one-sided count ⇔ RH (several receivers); prime-error budget ⇒ purity,
+`S ≥ 2 + γ − log 4π`; theta `h⁰` has linear RR and no quadratic Riemann inequality on any polar
+surface; integer Hecke stencils: integrality ⇔ step weight `≥ 0`; every individual producer has slope
+`> 1`; ceilings `2 log 2` (single prime), `1 + 1/((P+1)(P+2))` (finite alphabet), `31/30`
+(parity-blind), `exp(−0.87n)` (univariate sup norm); growing-alphabet alternating parity-selective
+producers reach slope `1 + ε` and `ψ, θ ≤ (1+ε)x + C_ε log²x` (AKLT
+`MultivariateParityAuxiliariesReachTheMainTerm`).
 
 | | Obstacle |
 |---|---|
-| A9 | Formalise the univariate integer-Chebyshev ceiling (classical) to calibrate how far single-variable integer auxiliaries can push the producer |
-| A10 | Same-order mixed-jet recovery for `≥ 3` primes |
-| B10 | Any unconditional source input at square-root precision — **RH** (Π2) |
-| B11 | Parity-selective auxiliary of controlled height beyond the factorial Landau class (`(2 log 2 − ε)mn`) — **sub** if it does not improve exponents |
-| B12 | Characteristic-0 quadratic effectivity (surface `h⁰` with Hilbert–Samuel growth) — **RH** (Π11) |
+| A9 | Same-order mixed-jet recovery for `≥ 3` primes |
+| A10 | Explicit `ε ↦ (support, coefficients, C_ε)` dependence of the main-term producer |
+| B13 | ε-uniform producer: error terms of zero-free-region strength from vanishing order — **sub**; square-root precision — **RH** (Π3) |
+| B14 | Any unconditional source input at square-root precision — **RH** (Π2) |
+| B15 | Characteristic-0 quadratic effectivity — **RH** (Π11) |
 
-### S5. Carriers and selection (SC, AKG, APD, PW-B, Γ-candidates)
+### S5. Carriers, gluing and selection (SC, AKG, APD, PW-B, Γ-candidates)
 
 Established [L]: Hecke-supported and escaping states have `κ ∈ {0, ∞}`; pole–successor `κ = κ₀ + 1`
-per place; separable assembly `Σκ₀ ≤ κ ≤ Σκ₀ + 1`; no fixed counterterm makes the prime kernel
-Pontryagin; archimedean continuity against height decay ⇒ `κ = ∞`; Weil extensions: blind is
-index-minimal, Hecke-supported finite index ⇒ RH, Haar successor ⇒ `κ = ∞`; shell decomposition of
-the pole–successor form (renormalized hyperbolic pair + shell squares, counterterm `cR` running with
-the cutoff); finite-dimensional unitary rational affine representations factor through the slope.
+per place; separable assembly `Σκ₀ ≤ κ ≤ Σκ₀ + 1`; distinct places do not glue (`k` places give
+`κ = k`; real + p-adic gives 2); archimedean gluing by a hyperplane, `κ(Φ_{K,c}) = κ^{(½)}(K) + 1`;
+prime towers glue at full index; the gluing square is sharp and pole-blind; every Hermitian rational
+affine Haar kernel with continuous dilation has `κ = ∞`; finite-dimensional unitary rational affine
+representations factor through the slope.
 
 | | Obstacle |
 |---|---|
 | A11 | Remove `XiZeroCopy` from the PW-B theta instantiation where it is notational |
-| B13 | Classification of finite-index states on `Aff(ℚ)` with dilation reading continuous at `1` (are they slope pull-backs?) — **sub** (Γ7) |
-| B14 | Zero-independent selection of ζ at the trivial gauge point — **RH** (Γ1) |
+| B16 | One-square global state from coupled local states (product-formula coupling on principal units) — **sub** (Σ11) |
+| B17 | Zero-independent selection at the trivial gauge point — **RH** (Γ1) |
 
 ## 2. Live routes
 
-### WL — prime lag / Weil–Li energy (prime explicit-formula family)
-Established: critical-energy, linear prime-error and one-sided `√x log²x` criteria; genus-slope ⇔ RH +
-simple; budget `≥ 2 + γ − log 4π`; `Count(a)` iff `a − 1 ∈ 𝒬`; Chebyshev–Stirling split; arithmetic
-Bézout and exact divisibility from approximate Frobenius vanishing; Landau window cost
-`(2 log 2 − ε)mn`; Adams support `≥ 2^{qr}`; scalar jets `k < r`; Hecke auxiliaries critical-only.
+### WL — prime lag / Weil–Li energy
+Established: critical-energy, linear prime-error and one-sided `√x log²x` criteria; genus slope ⇔ RH +
+simple; `Count(a)` iff `a − 1 ∈ 𝒬`; Chebyshev–Stirling split; arithmetic Bézout; Landau window cost
+`(2 log 2 − ε)mn`; Adams `2^{qr}`; scalar jets; block S4 producers up to the main term [L].
 - A: A9, A10.
-- B: actual one-sided prime-error bound (**RH**, Π1); B11; joint Möbius-moment / Mertens / sawtooth payment at square-root precision (**RH**, Π5); auxiliaries outside a single-prime Hecke algebra whose vanishing beats the support–order law (**sub**, Π3).
+- B: actual one-sided prime-error bound (**RH**, Π1); B13; joint Möbius-moment / Mertens / sawtooth payment at square-root precision (**RH**, Π5).
 
 ### RW — restricted Weil ground minimum
-Established: `μ(A) ≥ 0` for all `A` ⇔ RH; signed Gårding finite index; floors `≥ mass/5000` to `181/500`
-and `≥ mass/8000` on `(181/500, A₊)`, `A₊ < ½`; `μ(A) ≤ K exp((11/2)A − πe^{2(A−2)})` (no uniform floor).
-- A: certified positivity past the two-prime aperture `½ log 3` (prime 3 enters at `2r = log 3`); fixed-`A` low-mode / collar bookkeeping.
-- B: all-aperture sign (**RH**, Σ1); a uniform gap at unbounded aperture is a no-go.
+Established: `μ(A) ≥ 0` for all `A` ⇔ RH; RH ⇔ zeros approach the line ∧ `μ₀` subexponentially bounded below; attained excess `Θ` forces `μ₀(B) ≤ −c'e^{2ΘB}/B³` [L]; floors `≥ mass/5000` to `181/500`, `≥ mass/8000` up to `A₊ < ½`; no uniform floor.
+- A: certified positivity past the two-prime aperture `r ≥ ½ log 3`.
+- B: all-aperture sign (**RH**, Σ1); a subexponential floor for `μ₀` (**≥qRH** given zeros approaching the line).
 
 ### FU — Fourier/Abel prime scheduling
-Established: completed Abel moment bounded above ⇒ RH (receiver).
+Established: completed Abel moment bounded above ⇒ RH.
 - A: none identified.
-- B: joint bound of seed, drift, prior, cross-block and endpoint terms (**RH**, Σ1).
+- B: joint bound of seed, drift, prior, cross-block and endpoint terms (**RH**, Σ).
 
 ### CFC — first-clock sine coefficient
 Established: RH ⇔ coefficient `≥ −C` on the aperture tail; unbounded below under ¬RH.
@@ -148,48 +159,39 @@ Established: each fixed order positive at large shifts.
 - B: all-order / all-shift positivity (**RH**, Σ4).
 
 ### MC — Möbius cancellation
-Established: half-power dictionaries; `Θ ≥ ½`, Haar-a.e. exponent `½`, RH iff the trivial point is
-typical; Chebyshev energy = nonnegative cyclotomic remainder; far modes `≤ 288N√(N+1)`; near modes at
-primitive conductor `≥ (N+1)/⌈√(N+1)⌉`; uniform Dirichlet zero-free region and Siegel for `q ≤ (log x)^A`;
-reciprocal shells `≤ Cc/(log Y)^k`; `M = o(√x)` false.
-- A: none beyond the Siegel–Walfisz range (done).
-- B: moving-scale half-power cancellation (**RH**, Π2); near-band cyclotomic energy `O(N^{3/2+ε})` at `K = ⌈√(N+1)⌉` (closes the 3/4 strip, **≥qRH**); finite-prime clock head/leaf signed cancellation (Σ); trivial-point typicality (**RH**, Γ1).
+Established: half-power dictionaries; `Θ ≥ ½`, Haar-a.e. `½`, RH iff the trivial point is typical; nonnegative cyclotomic remainder; far modes `≤ 288N√(N+1)`; near modes at primitive conductor `≥ (N+1)/⌈√(N+1)⌉`; uniform Dirichlet inputs and every inverse-log rate for `q ≤ (log x)^A` at one horizon; conductor-averaged large sieve for rough packets; finite prime-clock density cancellation [L].
+- A: none beyond the Siegel–Walfisz range.
+- B: moving-scale half-power cancellation (**RH**, Π2); near-band cyclotomic energy `O(N^{3/2+ε})` (closes the 3/4 strip, **≥qRH**); finite-prime clock head/leaf signed cancellation (Σ); trivial-point typicality (**RH**, Γ1).
 
 ### TT — theta seam / Wold
 Established: seam, tail, Wold receivers; `t < ½` boundedness threshold; truncated theta transform `= −seed·B_N(ρ)` at zeros.
 - A: none.
 - B: all-test directed covariance or complete odd positivity (**RH**, Σ).
 
-### LA — Laguerre/Jensen
-Established: every fixed ξ-Jensen degree eventually real-rooted; `λ_T` facts of S3; Vitali blow-up: a real-zero entire family converging pointwise to `Ξ` on a uniqueness set and locally bounded forces RH (`XiCRealZeroVitaliBlowup`) [L].
-- A: explicit horizon for each fixed degree.
-- B: all-degree / all-height coefficient signs (**RH**, Σ4); Jensen hyperbolicity is nonselective — needs a Γ input.
+### LA — Laguerre/Jensen and local heat
+Established: every fixed Jensen degree eventually real-rooted; block S3; Vitali blow-up (a normal real-zero approximant family of `Ξ` forces RH) [L].
+- A: explicit horizon per fixed degree; A7.
+- B: all-degree / all-height signs (**RH**, Σ4); density-one control leaves exceptional heights and shrinking scales (**sub**); linear detection needs microscopic local counts, which counting inputs cannot give pointwise (arithmetic input required, **sub**).
 
 ### TG — transgression / central gap
-Established: transgression and central-gap receivers.
+Established: receivers.
 - A: none.
 - B: matrix-complete decomposition with integer trace `< 1` (**RH**, Σ8).
 
 ### HF — Hodge/Hecke/complete cells
-Established: block S1; bounded-overlap complete positivity; full Weil index `≤ R + A` for `R` coarse cells (dimension of readouts); theta-prefix collision reconstruction.
+Established: block S1; full Weil index `≤ R + A` for `R` coarse cells; theta-prefix collision reconstruction; noncompact resolvent reading at `s = 4`.
 - A: A1–A5.
-- B: B1, B2, B3.
+- B: B1–B5.
 
 ### CHMD — causal hyperbolic–modular duality
-Established [L]: RH ⇔ `⟨Rw, w⟩ ≤ ½‖w‖²` on the odd sector ⇔ no odd eigenvector above `½`
-(`CHMDOddSectorCriterion`); prime wave `O(e^{|u|/2})` unconditionally with uniformly bounded pole and
-archimedean waves (`CHMDStage22…`); Haar source: every piece except the first-prime coarse layer has
-uniform finite index — cubes and higher, prime-two mixed, squares + odd higher, entire square source,
-full Haar prime source after a finite head, multiplier tails Gamma-small (AID); one Gamma mean graph
-pays the prime-two mixed block; prime-edge Gamma keeps `1 − log 2/log 3` of divisor energy; growing
-Euler head alone unbounded; full prime window cancels `√Y` on fixed packets.
-- A: A4; fixed-cell first-prime / coarse / polar cost bookkeeping.
-- B: uniform coarse-size control (finite index, **≥qRH**, Σ5); full wave or odd-sector sign (**RH**, Σ3); joint positivity of non-arithmetic Gamma graph + signed diagonal + prime reserve + roots + poles (Σ1).
+Established [L]: RH ⇔ `R ≤ ½` on the odd sector ⇔ no odd eigenvector above `½`; prime wave `O(e^{|u|/2})` with bounded pole and archimedean waves; Haar source: every piece except the first-prime coarse layer has uniform finite index; Gamma mean graph pays the prime-two mixed block; prime-edge Gamma keeps `1 − log 2/log 3` of divisor energy; growing Euler head alone unbounded; full prime window cancels `√Y` on fixed packets.
+- A: A3; fixed-cell first-prime / coarse / polar cost bookkeeping.
+- B: uniform coarse-size control (finite index, **≥qRH**); full wave / odd-sector sign (**RH**, Σ3); joint positivity of non-arithmetic Gamma graph + signed diagonal + prime reserve + roots + poles (Σ1).
 
 ### TH — theta Hankel ranks
-Established: rank-7 center Hankel strict; rank 8 PSD; `I₇(a) ≥ 0` for `0 < a < ½`; native odd-four seam compensated at `r_c = log(5/π)`; heated orthant signs all ranks; all-rank signed-center positivity ⇔ RH.
-- A: rank-8 strictness; ranks 9, 10 (finite computations).
-- B: all-rank sign (**RH**, Σ4); signed local flux paid uniformly in rank (Σ4).
+Established: rank 7 strict; rank 8 PSD; `I₇(a) ≥ 0` for `0 < a < ½`; heated orthant signs all ranks; all-rank signed-center positivity ⇔ RH.
+- A: rank-8 strictness; ranks 9, 10.
+- B: all-rank sign (**RH**, Σ4); signed local flux uniformly in rank (Σ4).
 
 ### RN — renewal
 Established: compact cone-positive renewal operator with exact regularized determinant.
@@ -199,15 +201,15 @@ Established: compact cone-positive renewal operator with exact regularized deter
 ### WD — Ward / collision / heat
 Established: block S3.
 - A: A7, A8; localized dissipation bookkeeping.
-- B: B6, B7, B8, B9; vanishing global depth energy as `t ↓ 0` (**RH**); tower branch needs an arithmetic index ceiling (**≥qRH**).
+- B: B8–B12; vanishing global depth energy as `t ↓ 0` (**RH**); tower branch arithmetic index ceiling (**≥qRH**).
 
 ### LI — guarded history zeros
-Established: guarded history-zero set `Z_S` finite; RH ⇔ `Z_S = ∅`; under ¬RH the last zero has odd order.
+Established: `Z_S` finite; RH ⇔ `Z_S = ∅`; under ¬RH the last zero has odd order.
 - A: none.
 - B: pay the outside budget at guarded zeros (Σ).
 
 ### SZ — Suzuki / Ward defect
-Established: ¬RH ⇒ cofinally unbounded below; finite packets: reflected current + negative-light Gram = positive-light Gram; the complete Abel clock has negative finite-cutoff pairings.
+Established: ¬RH ⇒ cofinally unbounded below; finite packet identity reflected current + negative-light Gram = positive-light Gram; negative finite-cutoff pairings of the complete Abel clock.
 - A: none.
 - B: uniform lower bound after complete source assembly (Σ).
 
@@ -222,22 +224,22 @@ Established: positivity at growing logarithmic prime budget.
 - B: square-root power budget (**RH**, Π).
 
 ### CTF — completion transfer
-Established: Euler completion error `≤ 1/(n+1)`; full and finite-source energies have the same limits.
+Established: Euler completion error `≤ 1/(n+1)`; equal limits of full and finite-source energies.
 - A: none.
-- B: full-source energy decay by signed covariance cancellation (Π); the receiver needs `B X^ε` in the inner cutoff `X < M` (Π).
+- B: full-source energy decay by signed covariance cancellation (Π); `B X^ε` receiver in the inner cutoff (Π).
 
 ### HCF — two-grid Hankel
-Established: positivity on both `log 2`/`log 3` grids with polar cancellation ⇔ RH; one grid alone aliases.
+Established: both `log 2`/`log 3` grids with polar cancellation ⇔ RH; one grid aliases.
 - A: fixed-degree checks.
 - B: both grid signs at every degree and height (**RH**, Σ4).
 
 ### XN — Newton dynamics
-Established: RH ⇔ ξ-Newton source margin on discs (`XiNewtonDiscSourceMargin`) [L].
+Established: RH ⇔ ξ-Newton source margin on discs [L].
 - A: none.
 - B: cover every zero with nonnegative margin (**RH**, Γ).
 
 ### BAG — Bagchi recurrence
-Established: RH ⇔ disc recurrence on every closed disc of the strip; Voronin universality on discs, compacts and connected-complement compacts [L].
+Established: RH ⇔ disc recurrence on every closed disc of the strip; Voronin universality on discs and compacts [L].
 - A: none.
 - B: returns near every right-strip point including potential zeros (**RH**, Γ1).
 
@@ -252,7 +254,7 @@ Established: transverse-charge decay criterion; transverse energy pays each nega
 - B: rank-uniform arithmetic transverse-energy decay (Σ4).
 
 ### OWU — odd Weil selectivity
-Established: for every `r > 27/50` a smooth odd test on `[−r, r]` has `W_ζ > mass/25` and `W_Liouville < −3 mass/10`.
+Established: for every `r > 27/50` one smooth odd test on `[−r, r]` has `W_ζ > mass/25` and `W_Liouville < −3 mass/10` [map].
 - A: positivity on all odd tests slightly beyond `27/50` (shared with RW).
 - B: all-test / all-aperture odd sign (**RH**, Σ1); companion-forcing certificates and the conductor horizon are incompatible (no-go).
 
@@ -262,14 +264,14 @@ Established: convergence at every `σ > ½` ⇔ RH.
 - B: coefficient cancellation (**RH**, Π).
 
 ### RB — Robin / Nicolas
-Established: large counterexamples require growing prime(-power) cores (`RobinMovingValuationDefect`) [L]; colossally abundant reduction [L].
+Established: large counterexamples require growing prime(-power) cores; colossally abundant reduction [L].
 - A: none.
 - B: square-root remainder on primorials (**RH**, Π).
 
 ### SRT — square-root threshold / zero visibility
-Established: depth-gap visibility law: positivity at aperture `a` forces every depth-`δ` zero to have a companion of comparable depth within `R` (`DepthGapVisibilityLaw`) [L]; unsigned depth sampling at one aperture controls squared depths on every unit window [L]; Steklov full index for `β > 2`; tilted-spline spans `α < 1/19`.
-- A: A5; explicit horizons.
-- B: B1; tower branch arithmetic index ceiling (**≥qRH**).
+Established: block S1; depth-gap visibility law; unsigned depth sampling at one aperture controls squared depths; local count: pointwise ⇒ bounded critical multiplicity, not implied by counting or RH, true for density-one heights for ζ; off-line local bound ⇒ critical fraction `→ 1` [L]; Steklov full index for `β > 2`.
+- A: A1, A5; explicit horizons.
+- B: B1; tower branch arithmetic index ceiling (**≥qRH**); unattained-depth detection (Σ5).
 
 ### ACT — collar transport
 Established: explicit collar-shift threshold pays every modulus outside nine atom-dominated moduli.
@@ -277,20 +279,33 @@ Established: explicit collar-shift threshold pays every modulus outside nine ato
 - B: one fixed shift paying every profile including exterior primes (Σ1).
 
 ### AIP — arithmetic incidence positivity
-Established: all-aperture allocation receiver; full Weil index `≤ R + A`; full-prime window cancellation on fixed packets.
-- A: mixed Schur debit on fixed blocks.
-- B: all-aperture allocation (**RH**); mixed Schur debit from tail energy uniformly (Σ1).
+Established: block S1; all-aperture allocation receiver; full Weil index `≤ R + A`.
+- A: A1–A4; mixed Schur debit on fixed blocks.
+- B: all-aperture allocation (**RH**); B2–B5.
 
 ### ACS — arithmetic Castelnuovo–Severi
-Established [L]: RH ⇔ effectivity ⇔ no abundant class ⇔ Hodge index ⇔ section count; the base theta
-`h⁰` does not extend (linear RR, fails the quadratic Riemann inequality on every polar surface,
-including the scaling surface regardless of RH); degree-only effectivity exists iff Hodge index;
-graded strip: zero width `≤ σ` ⇔ sign-free shortfall at rate `e^{2βr}`; F₃ elliptic curve: Euler
-product, quotient Haar, adele Haar, idele characters, restricted central loop group, nonzero spectral
-section on it; loop Eisenstein: affine A₁ Weyl sum, finite-field Weyl poles, naturality and
-continuity of unipotent streams and Borel torus coordinates.
-- A: F₃ automorphic chain — unipotent quotient measure, Eisenstein series on the restricted loop group, absolute convergence, constant term (function-field mathematics); atomic branch A1–A5.
-- B: characteristic-0 quadratic effectivity (**RH**, Π11); a conformal correspondence over ℤ with bounded self-intersection (Rosati) (**RH**, Γ10); census displacement — projection may erase displacement (Π8); confinement needs lower counts (Π).
+Established [L]: RH ⇔ effectivity ⇔ Hodge index ⇔ section count; the base theta `h⁰` does not extend;
+graded strip ⇔ zero width; atomic branch = block S1. F₃ elliptic curve: Euler product, quotient and
+adele Haar, Haar periodization, degree ideles (magnitude `3^d`), finite cylinders exhausting the
+finite adeles, local Haar = normalized magnitude, local spherical integrals
+`(1 − q^{−s−1})/(1 − q^{−s})` on `Re s > 0`, restricted central loop group with idele rotation,
+unipotent carrier = arithmetic intersection, unipotent arithmetic quotient with invariant
+probability, nonzero spectral section, arithmetic Eisenstein series defined on Borel cosets and
+right-arithmetic invariant; rotated series and constant-term integral [S]; polynomial cells of
+degree `< 2n` [S].
+- A: global Haar change of variables; spectral-section / local-kernel matching and analytic admissibility; absolute convergence; complete Bruhat unfolding; constant-term evaluation (function-field loop-group mathematics); atomic A1–A5.
+- B: characteristic-0 quadratic effectivity (**RH**, Π11); a conformal correspondence over ℤ with bounded self-intersection (**RH**, Γ10); census displacement — projection may erase displacement (Π8); confinement needs lower counts (Π).
+
+### SC — Stokes/Witt–Krein / archimedean successor
+Path: `φ_c(a, b) = ratCorr(|a|) − c|a|^{−½}|b|` → `κ(φ_c) ≤ 1` → `κ_ζ = 0` → RH.
+Established [L]: `κ(φ_c) = κ^{(½)}(K_ζ) + 1 = κ_ζ + 1 = #` right zeros `+ 1` for every `c > 0`; same for
+tempered zero configurations and primitive Dirichlet L-functions; the gluing formula for every
+Hermitian `K`; sub-boost and periodic data glue at full index; prime towers glue at `κ + 1`; the
+glued index is blind to the pole weight; separated places keep one square each; every Haar
+successor with continuous dilation has `κ = ∞`; zero-axis and polynomial-correction structure of
+finite-index Haar kernels.
+- A: instantiate the configuration theorem for the zeros of the heat-deformed `H_t` (finitely many nonreal zeros for `t > 0`): a finite-index archimedean state for every `t > 0` with index `#` nonreal right zeros of `H_t` `+ 1`.
+- B: independent `κ(φ_c) ≤ 1`, equivalently Weil Gram `≥ 0` on `v_1^⊥` (**RH**, Σ1); coupled non-Haar local–global assembly with one square (B16, **sub**); growing-conductor index payment (Σ1).
 
 ## 3. Candidates
 
@@ -309,16 +324,15 @@ continuity of unipotent streams and Borel torus coordinates.
 | PCS | singular co-shift | — | source-natural wall annihilation; shift ≠ dilation (Γ) |
 | PTR | photonic lossless stack, unit port gap | — | prime-faithful port; lossless realization needs infinitely many resonances (Σ6) |
 | RFHM | support grade, reversible sewing inverse-covariant | — | symmetry-breaking law (Γ) |
-| SC | block S5 [L] | — | B13; source-defined nonseparable carrier with Weil dilation, visible successor and controlled index; local–global gluing with a running counterterm (Γ7, Σ10) |
 | SEC | essential norm = seam jump | — | pre-divisor compactness at zeros (Γ5) |
 | W1C | finite Lee–Yang + Ising receiver; Vitali blow-up obstruction [L] | — | couplings converging to Riemann's measure (Σ6) |
 | WBF | genealogy Gram | — | any arithmetic coupling (Γ5) |
-| PW-B | native action on source data | A11 | zero-independent selection (B14) |
+| PW-B | native action on source data | A11 | zero-independent selection (B17) |
 
-## 4. Obstacle count by wall
+## 4. Decisive wall per route
 
-| Wall | Routes whose decisive B-item lies there |
+| Wall | Routes |
 |---|---|
-| Σ (critical sign) | RW, FU, CFC, RP, PA, TT, LA, TG, HF, CHMD, TH, RN, WD, LI, SZ, EWU, GTA, OWU, SRT, ACT, AIP, HCF; FEL, MSC, EGC, PTR, W1C |
+| Σ (critical sign) | RW, FU, CFC, RP, PA, TT, LA, TG, HF, CHMD, TH, RN, WD, LI, SZ, EWU, GTA, OWU, SRT, ACT, AIP, HCF, SC; FEL, MSC, EGC, PTR, W1C |
 | Π (square-root precision) | WL, MC, PBM, RB, JAS, CTF, ACS-effectivity; IRK |
-| Γ (selection) | BAG, XN, PM, MC (typicality), ACS (Rosati); APF, BSH, CDC, DR, EWJ, HJ, PCS, RFHM, SC, SEC, WBF, PW-B |
+| Γ (selection) | BAG, XN, PM, MC (typicality), ACS (Rosati), SC (gluing); APF, BSH, CDC, DR, EWJ, HJ, PCS, RFHM, SEC, WBF, PW-B |

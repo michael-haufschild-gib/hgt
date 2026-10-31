@@ -1,284 +1,285 @@
 # Obstacles summary — status quo
 
 Companion to `route-obstacles.md` (per route), `walls-ledger.md` (walls) and
-`route-unification-ledger.md` (core problems). Item labels `A*`, `B*`, `S*` refer to
-`route-obstacles.md`; wall labels to `walls-ledger.md`. `[L]` = Lean anchor read.
+`route-unification-ledger.md` (core problems). Labels `A*`, `B*`, `S*` refer to `route-obstacles.md`,
+wall labels to `walls-ledger.md`. `[L]` Lean anchor read; `[S]` source-level result in the frontier
+map.
 
-## Picture in five lines
+## Picture
 
-1. All routes read one integer, the index `κ` of Weil's correlation on the dilations of `Aff(ℚ)`; RH
-   is `κ = 0`. Sign (Σ), count (Π) and selection (Γ) are three readings of `κ`.
-2. Estimates reach a quantified ceiling: on the complete Weil matrix every residual saves only powers
-   of `log N`, and the floor decays like `c⁻⁷`; positivity is proved up to overlap `(log N)^{1/19}` on
-   fixed packets, RH needs `(log N)^{α>¼}` (Σ1c, Π10).
-3. Every finite-index or finite-support waypoint already implies Lindelöf and a zero-free half-plane;
-   every exponent gain on a count is a quasi-RH statement (Σ5, Π11).
-4. The signature calculus is complete locally (one square per place, separable assemblies, finite
-   sieves) and provably blind globally: twin-invariant, zero-or-infinity for Hecke-supported carriers,
-   infinite for continuous archimedean dilation against height decay, and unable to tell ℤ from
-   `𝔽_q[T]` (Σ9, Γ3, Γ9, Γ10).
-5. What is missing is one object carrying two of the three readings at once — the role the Frobenius
-   graph plays over `𝔽_q`.
+1. Every route reads one integer: the index `κ` of Weil's correlation on the dilations of `Aff(ℚ)`.
+   The archimedean Weil state `φ_c` has index exactly `κ + 1`, so RH is an index-one statement for an
+   explicit affine state — equivalently, positivity of the Weil Gram form on the hyperplane
+   orthogonal to the pole conductor `v_1`, which is the ground state of the complete Weil matrix.
+2. On the complete Weil matrix the sign problem is localized. Conductor averages are positive at
+   RH-complete overlap [S]; the low-conductor block is the pole ground state [L]; all vectors are
+   positive up to overlap `(log log N)^{<1/16}` [L]. What remains is confinement of negative vectors
+   to low conductors beyond that range, a set of `o(N^θ)` exceptional conductors, and the conductors
+   above the square-root horizon `N^{½}`, where zero detectors live.
+3. Every finite-index waypoint implies Lindelöf and a zero-free half-plane; every exponent gain on a
+   count is quasi-RH; the pointwise local count is not even implied by RH.
+4. The signature calculus is complete locally and blind globally: twin-invariant, pole-blind after
+   archimedean gluing, zero-or-infinity for supported carriers, one square per place for separated
+   local poles. The global pole of ζ is not an assembly of local poles at two or more places.
+5. Integer producers reach the PNT main term; their precision is the convergence rate of
+   `Σ μ(b) log b/b`, so square-root precision is the Möbius problem in dual form.
 
 ## 2.1 Obstacles that are just work
 
-Known mathematics, finite computation, effectivisation or bookkeeping. Ordered by leverage.
-
-| # | Task | Routes served | Why it is work, not research |
+| # | Task | Routes served | Why it is work |
 |---|---|---|---|
-| 1 | Effective horizon for the fixed-`c` logarithmic reserve: explicit `N₀(c)` of any size (A1) | HF, SRT, AIP, CHMD, ACS, SC | expected source of the eventuality: limits of prime sums, which have explicit error terms (a horizon `exp(c^K)` with `K < 4` is Q1, not work) |
-| 2 | All-vector complete positivity at iterated-log overlap (A2) | same | combine 1 with the conductor-uniform residual for `m ≤ (log N)^A` [L] |
-| 3 | Attribute the eight residual terms (prime sum vs horizon / top band) and insert de la Vallée Poussin errors in the prime-sum terms (A3) | same | bookkeeping on proven bounds; decides the exponents in Σ1c |
-| 4 | Growing-packet head-pole cancellation, packets up to `exp(c√log Y)` (A4) | CHMD, HF, AIP | window PNT with classical error, summed over growing families |
-| 5 | Single-`K` completeness of the Steklov/sinc schedule at `K L(log L)²` (A5) | SRT, HF | synthesis error at a fixed explicit scale |
-| 6 | Explicit capture stage for complete-cell indices (A6) | AID, HF, CHMD | effectivise an existing compactness transfer |
-| 7 | Formalise a stronger subconvexity exponent to lower the heat floor `2/3 = 4μ(½)` (A7) | WD, LA | known exponent; calibration of the heat horizon only |
-| 8 | Effective rounding of theta-prefix collision readings on a fixed window (A8) | WD, TG, HF | explicit Gaussian tail errors |
-| 9 | Univariate integer-Chebyshev ceiling (A9) | WL | classical; fixes the ceiling of single-variable auxiliaries |
-| 10 | Same-order mixed-jet recovery for `≥ 3` primes (A10) | WL, ACS | algebra of Dirichlet jets |
-| 11 | `XiZeroCopy`-free PW-B theta instantiation where it is notational (A11) | PW-B | rewriting |
-| 12 | F₃ automorphic chain: unipotent quotient measure, Eisenstein series on the restricted elliptic loop group, absolute convergence, constant term | ACS | function-field loop-group theory |
-| 13 | Certified Weil positivity past the two-prime aperture (`r ≥ ½ log 3`), odd and full | RW, EWU, OWU, CHMD | finite-aperture problem; prolate / certified numerics |
-| 14 | Theta Hankel rank-8 strictness, ranks 9 and 10 | TH | finite computations |
-| 15 | Explicit thresholds: Hausdorff shifts per order (PA), Jensen degree horizons (LA), fixed-degree two-grid checks (HCF) | PA, LA, HCF | effectivise eventual statements |
-| 16 | The nine atom-dominated moduli of the collar shift | ACT | finite case analysis |
-| 17 | Mixed Schur debit on fixed blocks; first-prime / coarse / polar costs on fixed cells | AIP, CHMD | fixed-dimensional estimates |
+| 1 | Lean closure of the `[S]` conductor-average results: level of distribution, conductor-average positivity, Ramanujan Riesz frames (A1) | HF, SRT, AIP, ACS, SC | proofs exist at source level |
+| 2 | Exceptional conductors inside the Siegel–Walfisz range: the `o(M)` exceptional set avoids `m ≤ (log N)^A` (A2) | same | individual uniform residual bound is proved there |
+| 3 | Growing-packet head-pole cancellation, packets up to `exp(c√log Y)` (A3) | CHMD, HF, AIP | window PNT with classical error |
+| 4 | Growing-conductor control of the undilated hyperbolic term; moving-head packet norms, keeping the `−2T` boundary (A4) | HF, SRT, AIP | estimates on explicit finite parts |
+| 5 | Single-`K` completeness of the Steklov/sinc schedule at `K L(log L)²` (A5) | SRT, HF | synthesis error at one explicit scale |
+| 6 | Explicit capture stage for complete-cell indices (A6) | AID, HF, CHMD | effectivise a compactness transfer |
+| 7 | Stronger subconvexity exponent to lower the heat floor `2/3 = 4μ(½)` (A7) | WD, LA | known exponent; calibration |
+| 8 | Effective rounding of theta-prefix collision readings on a fixed window (A8) | WD, TG, HF | explicit Gaussian tails |
+| 9 | Same-order mixed-jet recovery for `≥ 3` primes (A9) | WL, ACS | Dirichlet-jet algebra |
+| 10 | Explicit `ε ↦ (support, coefficients, C_ε)` for the main-term producer (A10) | WL | quantify the Farkas / rounding construction |
+| 11 | `XiZeroCopy`-free PW-B theta instantiation where notational (A11) | PW-B | rewriting |
+| 12 | Heat-deformed archimedean state: configuration theorem for the zeros of `H_t`, `t > 0` | SC, WD | instance of a proved theorem |
+| 13 | F₃ automorphic chain: global Haar change of variables, spectral-section / local-kernel matching, absolute convergence, Bruhat unfolding, constant-term evaluation | ACS | function-field loop-group mathematics |
+| 14 | Certified Weil positivity past the two-prime aperture `r ≥ ½ log 3`, odd and full | RW, EWU, OWU, CHMD | finite aperture; certified numerics |
+| 15 | Theta Hankel rank-8 strictness, ranks 9 and 10 | TH | finite computations |
+| 16 | Explicit thresholds: Hausdorff shifts (PA), Jensen degree horizons (LA), two-grid fixed degrees (HCF) | PA, LA, HCF | effectivise eventual statements |
+| 17 | The nine atom-dominated moduli of the collar shift | ACT | finite case analysis |
+| 18 | Mixed Schur debit on fixed blocks; first-prime / coarse / polar costs on fixed cells | AIP, CHMD | fixed-dimensional estimates |
 
 ## 2.2 Open mathematical obstacles
 
-Strength: **RH** equivalent to RH; **≥qRH** implies Lindelöf and a zero-free half-plane; **sub**
-strictly weaker or unknown.
+Strength: **RH**; **≥qRH** (implies Lindelöf and a zero-free half-plane); **sub**.
 
 ### Σ — critical sign
 | # | Problem | Strength | Routes |
 |---|---|---|---|
-| Σ-1 | Complete Weil positivity on an RH-complete schedule (B1) | RH | HF, SRT, AIP, ACT, ACS, SC, RW, EWU, OWU |
-| Σ-2 | Which link of the complete-Weil chain carries RH: horizon exponent `K < 4` or residual saving `b > (a+14)/4` (B2) | open which; one is ≥ RH-hard | same |
-| Σ-3 | Odd-sector bound `R ≤ ½` / positive supersolution at the half threshold | RH | CHMD, TT |
-| Σ-4 | All-rank / all-degree sign of theta, heat and Jensen Hankels | RH | TH, LA, HCF, PA, GTA |
-| Σ-5 | An arithmetic index ceiling uniform in resolution (B4) | ≥qRH | CHMD, SRT, WD, AID |
-| Σ-6 | Heat count `N(t) ≤ exp(At^{−a})`, `a < 1` (B6) | sub (beyond the density hypothesis) | WD |
-| Σ-7 | Source-side collision charge `< 2` on every window (B8) | RH | WD, TG |
-| Σ-8 | Lower bounds for scheduled prime energies (FU, CFC, RP, SZ, LI, FEL) | RH | scheduled-sum face |
-| Σ-9 | Spectral reality of a realized operator: renewal, photonic port, Lee–Yang couplings | RH | RN, PTR, W1C, PM |
-| Σ-10 | Infinite assembly with a running counterterm (Σ10) | RH | SC, AKG, HF |
-| Σ-11 | Joint positivity of non-arithmetic Gamma graph + signed diagonal + prime reserve + poles | Σ-strength unknown | CHMD, AID |
+| Σ-1 | Positivity on an RH-complete schedule / on `v_1^⊥` (B1, SC) | RH | HF, SRT, AIP, ACT, ACS, SC, RW, EWU, OWU |
+| Σ-2 | Polynomial conductor confinement: logarithmic reserve beyond `(log log N)^{1/16}` (B2) | sub below `¼`; RH at RH-complete overlap | same |
+| Σ-3 | Full-complement / mixed Schur payment below the floor (B5) | Σ1 | same |
+| Σ-4 | Odd-sector bound `R ≤ ½` | RH | CHMD, TT |
+| Σ-5 | All-rank / all-degree theta, heat, Jensen signs | RH | TH, LA, HCF, PA, GTA |
+| Σ-6 | Arithmetic index ceiling uniform in resolution (B6) | ≥qRH | CHMD, SRT, WD, AID |
+| Σ-7 | Subcritical heat count `a < 1` (B8) | sub | WD |
+| Σ-8 | Source-side collision charge `< 2`; every `Λ_X = 0` (B10, B11) | RH | WD, TG |
+| Σ-9 | Lower bounds for scheduled prime energies | RH | FU, CFC, RP, SZ, LI, FEL |
+| Σ-10 | Spectral reality of a realized operator | RH | RN, PTR, W1C, PM |
+| Σ-11 | One-square coupled assembly of local pole states (B16) | sub | SC, AKG |
+| Σ-12 | Joint positivity of non-arithmetic Gamma graph + signed diagonal + prime reserve + poles | unknown | CHMD, AID |
 
 ### Π — square-root precision
 | # | Problem | Strength | Routes |
 |---|---|---|---|
-| Π-1 | Unconditional one-sided count at square-root precision (B10) | RH | WL, PBM, RB, JAS, CTF |
-| Π-2 | Moving-scale half-power Möbius cancellation; near-band cyclotomic energy `O(N^{3/2+ε})` | RH; ≥qRH | MC |
-| Π-3 | Parity-selective integer auxiliaries beyond the Landau class (B11) | sub | WL |
-| Π-4 | Characteristic-0 quadratic effectivity on the scaling surface (B12) | RH | ACS |
-| Π-5 | Conductor uniformity beyond `(log x)^A` (B3) | sub | HF, MC, CACT |
-| Π-6 | Breaking the logarithmic-saving barrier for any sign-relevant residual (Π10) | sub | complete-Weil cluster |
-| Π-7 | 100% census; census displacement survives projection | sub | ACS, SRT, IGP |
-| Π-8 | Theta-prefix rounding uniform in height (B9) | sub | WD |
+| Π-1 | Unconditional one-sided count at square-root precision (B14) | RH | WL, PBM, RB, JAS, CTF |
+| Π-2 | ε-uniform producer (B13): zero-free-region error is **sub**; square-root error is **RH** | sub / RH | WL |
+| Π-3 | Moving-scale half-power Möbius cancellation; near-band cyclotomic energy | RH; ≥qRH | MC |
+| Π-4 | Characteristic-0 quadratic effectivity (B15) | RH | ACS |
+| Π-5 | Exceptional conductors beyond `(log N)^A` (B3) | sub | HF, MC, CAF |
+| Π-6 | Square-root conductor barrier: control of conductors `N^{½} < m ≤ N` (B4) | sub | HF, SRT, AIP, SC |
+| Π-7 | 100% census; pointwise local count | sub | ACS, SRT, IGP, LA, WD |
 
 ### Γ — selection
 | # | Problem | Strength | Routes |
 |---|---|---|---|
-| Γ-1 | Zero-independent selection at the trivial gauge point (B14) | RH | MC, BAG, XN, PM, PW-B |
-| Γ-2 | Finite-index `Aff(ℚ)` states with continuous dilation reading: classification (B13) | sub | SC, AKG, APD |
-| Γ-3 | Hecke invariance of the collided form | RH | AP, CDG |
-| Γ-4 | Pre-divisor sections / potentials coupled to Ξ (BSH, CDC, HJ, SEC, PCS, RFHM, DR, EWJ, APF, WBF) | RH | Γ-candidates |
-| Γ-5 | A conformal correspondence over ℤ whose factor is not archimedean size, with bounded self-intersection | RH | ACS, ALG |
+| Γ-1 | Zero-independent selection at the trivial gauge point (B17) | RH | MC, BAG, XN, PM, PW-B |
+| Γ-2 | Hecke invariance of the collided form | RH | AP, CDG |
+| Γ-3 | Pre-divisor sections / potentials coupled to Ξ | RH | BSH, CDC, HJ, SEC, PCS, RFHM, DR, EWJ, APF, WBF |
+| Γ-4 | A conformal correspondence over ℤ whose factor is not archimedean size, with bounded self-intersection | RH | ACS |
+| Γ-5 | Selection input on `v_1^⊥` (the glued state is pole-blind; selection must come from Gamma and prime data) | RH-coupled | SC |
 
 ## 2.3 The three questions to answer next
 
-**Q1. Where does the RH content sit in the complete-Weil chain?**
-The chain is: reserve (negative vectors have small defect) → approximation (small defect ⇒ low
-conductors) → quasimodes (low conductors have positive completed energy with small residual). Every
-link is a theorem at fixed `c`; at `c = (log N)^α` the reach is `α < b/(a+14)` from the residual
-exponents, and the log reserve's horizon is ineffective in `c`. Under ¬RH, at `α > ¼`, some link must
-fail. Determine which: (i) an effective horizon `N ≥ exp(c^K)` with `K < 4`, or (ii) a residual
-saving `b > (a+14)/4` on the dominant term. If the dominant residual term is a horizon/top-band term
-with a matching lower bound, the cluster HF/SRT/AIP/CHMD/ACS-atomic/SC has a proved ceiling below RH;
-if it is a prime-sum term (improvable by classical error terms), the RH content sits in the horizon
-effectivity of the logarithmic reserve — an effectivity statement, not a precision statement. Either
-answer re-plans the largest route cluster. Starting
-points: A1, A3; CACT `CompleteConductorResidualsAreUniformOnLogarithmicFamilies`,
-`ShiftingThePrimeEnergyGivesALogarithmicDefectReserve`.
+**Q1. Can exponential conductor confinement be replaced by polynomial confinement?**
+Negative unit vectors of the complete Weil matrix are captured by conductors `m ≤ exp(O(c¹⁶))`; with
+the logarithmic reserve this becomes logarithmic growth only while `c ≤ (log log N)^{<1/16}`, which is
+exactly where all-vector positivity is proved [L]. A capture by `m ≤ c^K` at overlap `c` would put
+every negative vector inside the conductor range where individual residuals are controlled (`m ≤
+(log N)^A`) for `c = (log N)^α` with `α` small — all-vector positivity at a power of `log N`. Under ¬RH
+confinement must fail somewhere below `α = ¼`, because zero detectors have long Möbius transforms
+(RAPT `TheZerosSeeEveryAtomicVectorThroughItsMobiusHorizons`). Determining the largest unconditional
+`α` locates the RH content of the HF/SRT/AIP/ACS/SC cluster precisely. Starting points: CACT
+`TheCompleteWeilLogarithmicReserveSurvivesGrowingOverlap`, `NegativeWeilPacketsHaveExponentialConductorCutoffs`,
+RAPT `BoundedPrimeDefectHasAnExponentialConductorCutoff`.
 
-**Q2. Are all finite-index Hermitian states on `Aff(ℚ)` with dilation reading continuous at `1`
-pulled back from the slope?**
-Known [L]: Hecke-supported, separable and integer-successor carriers with continuous dilation have
-`κ = ∞`; finite-dimensional unitary representations factor through the slope; finite column rank
-forces polynomial translation fibres; kernels vanishing on both axes have `κ = 0` or `≥ 2`. A
-classification theorem would close the carrier question on `Aff(ℚ)`: either every finite-index state
-with continuous (Weil-type) dilation is translation-blind — then a selecting carrier must live on a
-larger group (`Aff(𝔸)`, the loop groups of ACS), and SC/AKG/APD hand over to the automorphic branch
-— or an exceptional state exists, which is the first candidate carrier with Weil dilation, visible
-successor and finite index. The question is strictly weaker than RH and is pure harmonic analysis on
-`Aff(ℚ)`.
+**Q2. Are the exceptional conductors and the super-square-root conductors harmless?**
+The level of distribution leaves `o(N^θ)` nonpositive conductors and says nothing about `N^{½} < m ≤ N`.
+Two sub-questions decide the remaining layers of Σ1: (a) does every exceptional conductor carry an
+exceptional character (a Siegel-type zero) — the complete-Weil face of exceptional moduli — so that
+it can be removed by the uniform Dirichlet inputs, or is the exceptional set empty above `(log N)^A`
+for structural reasons? (b) do the large completed energies `E_m(c) ≥ log(m/c) ≥ ½ log N − log c` make
+the form coercive on the super-square-root conductors without a frame there (an
+Elliott–Halberstam-type input would otherwise be needed)? Starting points: CAF
+`CompleteWeilConductorAveragePositivity`, `RamanujanConductorFrames`; RAPT
+`TheConductorEnergyKeepsALogarithmicReserve`.
 
-**Q3. Does the complete Weil residual admit a level of distribution?**
-Prove a mean-value bound `Σ_{m ≤ N^θ} ‖(W − E_m(c))v_m‖² ≤ (small) · Σ_m E_m(c)²` for some `θ > 0` at
-overlap on an RH-complete schedule — the Bombieri–Vinogradov analogue for the complete Weil matrix. By
-min–max, the negative index is then bounded by the number of exceptional conductors plus the
-high-defect complement (controlled by the reserve), giving `κ(W_N) = o(#modes)`: the first sign
-statement at RH-complete resolution. Large-sieve and dispersion tools apply to averages, not to
-individual conductors, so this question moves part of Σ-1 into the regime where unconditional
-mathematics works. No averaged residual statement exists in the corpus.
+**Q3. Is the global pole a product-formula coupling of local poles?**
+Local pole–successor states at distinct places keep one square each (`κ = k`), real + p-adic gives 2,
+and boosts multiply to `1` only on principal units [L]. A Hermitian state on `Aff(ℚ)` built from the
+local states at `∞` and finitely many primes, coupled through the product formula on principal units,
+with exactly one negative square, would be the first finite-place model of the one-square global
+state that RH requires (`κ(φ_c) = 1`); a proof that no such coupling exists would show the global
+pole is irreducibly global and close local–global assembly as a strategy. The question involves no
+zeros and is strictly weaker than RH. Starting points: AKG `LocalSignaturesAddOverDistinctPlaces`,
+`TheSignatureOfASeparableAssembly`, `TheShellDecompositionOfAPoleSuccessorForm`.
 
 ## 2.4 A wildly different route
 
-**The weight route (tensor-power amplification over a family).** Over `𝔽_q`, Deligne's proof of
-purity uses neither a critical sign nor square-root precision. It needs (i) a crude bound
-`|α| ≤ q^{w/2 + 1/2}` with a loss independent of the weight `w`, obtained from nonnegative-coefficient
-(Rankin-square) L-functions and their first real pole (Landau); (ii) tensor powers: applied to the
-`k`-th tensor power, of weight `kw`, the same fixed loss gives `|α|^k ≤ q^{kw/2 + 1/2}`, so the loss
-disappears as `k → ∞`; (iii) a family (a lisse sheaf on a curve), so that tensor powers are again
-arithmetic objects with Euler products, with big monodromy controlling their top cohomology.
+**The weight route (tensor-power amplification over a family).** Over `𝔽_q`, purity is proved by
+(i) a crude bound `|α| ≤ q^{w/2 + 1/2}` with a loss independent of the weight, from a Rankin square
+with nonnegative coefficients and Landau's theorem; (ii) tensor powers, of weight `kw`, for which the
+same loss gives `|α|^k ≤ q^{kw/2 + 1/2}`, so the loss disappears as `k → ∞`; (iii) a family (a lisse
+sheaf on a curve) so that tensor powers are again arithmetic objects with Euler products, with big
+monodromy controlling their top cohomology. No critical sign and no square-root estimate is used.
 
-Over ℤ the route reads: build arithmetic objects `Z_k` whose spectrum contains `ρ₁ + … + ρ_k` (the
-`k`-th tensor power of the zeros), with an Euler product, and prove for them a crude zero-free bound
-`Re ≤ k/2 + C` with `C` independent of `k`. Then `k Re ρ ≤ k/2 + C` for every `k` gives `Re ρ ≤ ½`.
+Over ℤ the route reads: construct arithmetic objects `Z_k` whose spectrum contains `ρ₁ + … + ρ_k`, with
+an Euler product, and prove a crude bound `Re ≤ k/2 + C` with `C` independent of `k`; then
+`k Re ρ ≤ k/2 + C` for all `k` gives `Re ρ ≤ ½`.
 
-Why it avoids the three walls:
-- **Σ**: the only positivity used is nonnegativity of Dirichlet coefficients of a Rankin square and
-  Landau's theorem — trivially true and far from the critical sign; the corpus already holds the
-  sign-free mechanisms (`ZetaMultipleLandauZeroFree`, `FiniteOffLineLandau` [L]) and the abstract
-  inertia version (bounded negative index over all tensor degrees ⇔ positivity,
-  `TensorPolarizationAmplification` [L]).
-- **Π**: no estimate needs square-root precision; any fixed loss is amplified away. The killed route
-  "no extra exponent at fixed total support" does not apply, because the weight grows with `k` while
-  the loss stays fixed.
+How it avoids the walls:
+- **Σ**: the only positivity is nonnegativity of Dirichlet coefficients and Landau's theorem (corpus:
+  `ZetaMultipleLandauZeroFree`, `FiniteOffLineLandau` [L]); the abstract inertia version exists —
+  bounded negative index over all tensor degrees ⇔ positivity (`TensorPolarizationAmplification`
+  [L]). The archimedean state `φ_c` always carries its successor square, so the amplification must act
+  on `K_ζ` restricted to `v_1^⊥`, not on `φ_c`.
+- **Π**: any fixed loss is amplified away; the dead "no extra exponent at fixed total support" does not
+  apply because the weight grows with `k`.
 - **Γ**: weights select. The Liouville twin `ζ(2s)/ζ(s)` is mixed (zeros from `ζ(2s)`, poles from
-  `ζ(s)`); a weight formalism rejects it structurally, and Davenport–Heilbronn combinations have no
-  Euler product to tensor.
+  `ζ(s)`); Davenport–Heilbronn combinations have no Euler product to tensor.
 
-The wall it faces instead is a **realization wall**: the arithmetic tensor powers. Over `𝔽_q` they are
-the cohomology of `C^k` and their L-functions are point counts on `C^k`. Over ℤ the analogue is the
-scaling surface `Spec ℤ × Spec ℤ` and its powers (ACS) with a Künneth formula whose H² carries
-`ρ + ρ'`; the zeta-regularized "tensor products" built from the zeros exist analytically but have no
-known Euler product. The corpus has neither tensor powers of the Weil form nor a Künneth statement
-beyond point-count positivity. The route is far from every live route: no positivity on a test cone,
-no count, no gauge selection — only a crude bound, an amplification and an existence question.
+Its own wall is **realization**: Euler-product tensor powers of the spectrum of ζ. Over `𝔽_q` they are
+the cohomology of `C^k`; over ℤ the analogue is the scaling surface and its powers (ACS) with a
+Künneth formula whose H² carries `ρ + ρ'`. The corpus contains neither arithmetic tensor powers of the
+Weil form nor a Künneth statement beyond point-count positivity.
 
 ## 2.5 Breakthrough questions below RH and quasi-RH
 
-### 2.5.1 Whole programme — positivity on average
-**Question.** Is the complete Weil form nonnegative *on average over conductors* at RH-complete
-resolution: does a level of distribution `θ > 0` hold for the complete residuals (Q3), so that
-`κ(W_N) = o(#conductor modes)`?
-- **Below RH / quasi-RH**: an averaged statement allows infinitely many off-line zeros of any depth,
-  as Bombieri–Vinogradov allows GRH failures.
-- **Advance**: the first sign information on the complete source at the resolution where positivity is
-  RH; converts Σ-1 into an averaged Π-problem where large-sieve technology works; an index bound
-  `o(#modes)` reads as a census statement produced by positivity, linking the U-Σ cluster with the
-  census face.
+### 2.5.1 Whole programme — complete Weil positivity at a power of `log N`
+**Question.** Prove that the complete Weil matrix is positive on all vectors for `1 ≤ c ≤ (log N)^α`
+for some fixed `α > 0`.
+- **Below RH / quasi-RH**: RH-completeness starts at `α > ¼`; below it no test family is known to be
+  RH-complete, and no implication to a zero-free region is known.
+- **Advance**: the first all-vector positivity theorem at a power of `log N` for the full source (all
+  primes, poles, Gamma); it needs exactly Q1 (polynomial confinement) plus the individual residual
+  bounds already proved for `m ≤ (log N)^A`, and it would quantify how far below `¼` unconditional
+  methods reach — the distance between the proved region and RH becomes a single exponent.
 
-### 2.5.2 Route WD — an integer realization of the collision charge
+### 2.5.2 Route SC — the heat-deformed archimedean state as a Pontryagin homotopy
+**Question.** Build the archimedean state `φ_c^{(t)}` from the Gaussian-weighted theta kernel of
+`H_t` (source data only) and prove: `κ(φ_c^{(t)})` is finite for every `t > 0`, equals the number of
+nonreal right zeros of `H_t` plus one, is lower semicontinuous and nonincreasing in `t`, and changes
+only at collisions, by one per collided pair.
+- **Below RH**: an identity and a monotonicity statement; it fixes no index value.
+- **Advance**: SC becomes a continuous family of finite-index Pontryagin spaces `Π_{κ(t)}` converging to
+  `φ_c`, so Krein-space perturbation theory (stability of the index under compact or small
+  perturbations) applies, and RH becomes: no index jump on `(0, Λ]`. It joins SC's index-one
+  formulation with WD's collision counting in one source-defined object.
+
+### 2.5.3 Route WD — an integer realization of the collision charge
 **Question.** Construct from integers alone (theta prefixes, primes, Gamma) a Fredholm operator or a
 winding number on each natural-height window whose index equals the horizontal collision charge `O`.
-First milestone: an explicit rate for the theta-prefix readings to round to `O` on a fixed window (A8),
-then uniformly in height.
-- **Below RH / quasi-RH**: an identity between an index and `O`; it says nothing about `O`'s value.
-- **Advance**: WD's remaining obstacle is a source-side bound `O < 2`. With an index realization the
-  required precision is integrality (error `< 1`), not square-root precision, and homotopy invariance
-  becomes available: the heat flow itself is a homotopy along which an index can change only when a
-  zero crosses the window boundary. It joins WD with APF and IRK, which lack exactly such an integral
-  source count.
+First milestone: an explicit rate for the theta-prefix readings to round to `O` on a fixed window
+(A8), then uniformly in height.
+- **Below RH / quasi-RH**: an identity between an index and `O`.
+- **Advance**: the required precision becomes integrality (error `< 1`) instead of square-root
+  precision, and homotopy invariance becomes available along the heat flow; the theta-cusp causal
+  Hardy index (one-dimensional defect = winding charge) shows the mechanism exists for a single
+  resonance.
 
-### 2.5.3 Route ACS — RH for `y² = x³ − x` over `𝔽₃` through the loop Eisenstein series
-**Question.** On the restricted central loop group of the elliptic curve over `𝔽₃` (built [L]),
-compute the constant term of the loop Eisenstein series and show that its convergence and positivity
-force the Weil bound `|α| = √3`, without Frobenius acting on cohomology.
+### 2.5.4 Route ACS — RH for `y² = x³ − x` over `𝔽₃` through the loop Eisenstein series
+**Question.** On the restricted central loop group of the curve, where the arithmetic Eisenstein series
+and its constant-term integral are defined, prove absolute convergence, unfold, evaluate the constant
+term as a ratio of `ζ_E`-values, and show that convergence and positivity force `|α| = √3` without
+Frobenius acting on cohomology.
 - **Below RH**: RH for this curve is a theorem; the question asks for a new proof by the automorphic
   ACS mechanism.
-- **Advance**: decides whether the automorphic branch is a producer or only a receiver. A positive
-  answer isolates the exact step where the finite field's quantized conformal factor enters (Γ10) and
-  gives the template the characteristic-0 loop group must follow; a negative answer retires the
-  automorphic branch with a precise obstruction. All objects up to the Eisenstein series are in the
-  corpus; the constant term is the first missing one.
+- **Advance**: decides whether the automorphic branch produces or only receives; a positive answer
+  isolates the step where the quantized conformal factor `q = 3` enters (Γ10) and gives the template
+  for the characteristic-0 loop group.
 
-### 2.5.4 Route WL — a parity-selective producer at the main term
-**Question.** Do multivariate, parity-selective integer auxiliaries (outside the Hecke algebra of a
-single prime) yield the prime number theorem upper bound `ψ(x) ≤ (1 + ε)x` by vanishing-order
-arguments alone, beating the univariate integer-Chebyshev ceiling (A9)?
-- **Below RH / quasi-RH**: PNT is known; the question concerns the mechanism and keeps the exponent at
-  `1`, so it is not a quasi-RH statement (Π11).
-- **Advance**: WL's producer branch currently stops at Chebyshev strength (`ψ ≥ 0.89x`) and at the
-  Landau factorial cost. Reaching the main term would be the first evidence that integer auxiliaries
-  with parity selection carry information beyond the classical integer-Chebyshev barrier — the
-  `ℤ`-analogue of the step where Stepanov's auxiliary beats the trivial count. A proof that they cannot
-  would close the producer branch and leave WL a receiver.
+### 2.5.5 Route WL — a producer with zero-free-region precision
+**Question.** Do parity-selective integer auxiliaries, with support and coefficients controlled
+uniformly as `ε ↓ 0`, give `ψ(x) ≤ x + O(x exp(−c√log x))` by vanishing order alone?
+- **Below RH / quasi-RH**: the classical zero-free-region error term; the exponent stays `1`.
+- **Advance**: the main-term producer [L] has error `C_ε log²x` only for fixed `ε`, and its Farkas dual
+  ties the slope gap to the convergence rate of `Σ μ(b) log b/b`. A uniform producer would show that
+  integrality can encode analytic information about ζ near `Re s = 1`; a proof that it cannot would
+  bound every integer-auxiliary producer at PNT strength and leave WL a receiver.
 
-### 2.5.5 Route CHMD — the odd-sector ground state at the two-prime aperture
-**Question.** Prove nonnegative Doob energy — equivalently `⟨Rw, w⟩ ≤ ½‖w‖²` — for every odd compact
-test supported in `[−r, r]` with `r = 0.55` (so that `log 2` and `log 3` both enter, `2r > log 3`),
-using the CHMD Doob/nodal decomposition and the Gamma-graph payment of the prime-two and prime-three
-blocks.
+### 2.5.6 Route CHMD — the odd-sector ground state at the two-prime aperture
+**Question.** Prove nonnegative Doob energy — `⟨Rw, w⟩ ≤ ½‖w‖²` — for every odd compact test supported in
+`[−r, r]` with `r = 0.55` (`2r > log 3`, so primes 2 and 3 both enter), using the Doob/nodal
+decomposition and the Gamma-graph payment of the prime-two and prime-three blocks.
 - **Below RH**: fixed aperture is never RH-complete.
 - **Advance**: for every `r > 27/50` one odd test has `W_ζ > mass/25` and `W_Liouville < −3 mass/10`
-  (OWU, frontier map); positivity on *all* odd tests at `r = 0.55` would be the first theorem in which
-  a full test space is both positive for ζ and selective against the twin, with two interacting prime
-  atoms paid by the non-arithmetic Gamma graph — the joint payment CHMD lacks (Σ-11), at the smallest
-  scale where it is nontrivial. The proved floors stop below `½`.
+  [map]; positivity on all odd tests at `r = 0.55` would be the first theorem in which a full test
+  space is positive for ζ and selective against the twin, with two interacting prime atoms paid by the
+  non-arithmetic Gamma graph — the joint payment CHMD lacks (Σ-12), at its smallest nontrivial scale.
 
 ## 2.6 Does closing RH need a new field?
 
-**Assessment: yes.** Each existing language is provably insufficient on its own:
-- *Estimates* stop at overlap `(log N)^{1/19}` while RH needs `(log N)^{α>¼}`; every count-side
-  exponent gain is quasi-RH (Σ1c, Π10, Π11).
-- *Index calculus* is local-complete and global-blind: twin-invariant, zero-or-infinity for supported
-  carriers, infinite for continuous archimedean dilation against height decay, indifferent between ℤ
-  and `𝔽_q[T]` (Γ3, Γ9, Γ10); and any finite index is already ≥qRH (Σ5).
-- *Effectivity geometry* has an exact linear Riemann–Roch for the base and no quadratic one for the
+**Assessment: yes.** Each existing language is provably insufficient alone:
+- *Estimates* give positivity to `(log log N)^{<1/16}` for all vectors and to `(log N)^{<1/19}` on fixed
+  packets; averages reach RH-complete overlap only on conductor averages; the remaining layers are
+  confinement, exceptional conductors and super-square-root conductors (Σ1c, Σ1g, Σ1h).
+- *Index calculus* is local-complete and global-blind: twin-invariant, pole-blind after archimedean
+  gluing, zero-or-infinity for supported carriers, one square per separated place; any finite index is
+  already ≥qRH (Σ5, Σ11, Γ3, Γ11).
+- *Effectivity geometry* has an exact linear Riemann–Roch for the base and none quadratic for the
   surface (Π-4).
+- *Integer producers* reach the main term and inherit Möbius precision in dual form (Π3).
 - *Heat and realization* convert the sign into an equally hard reality statement (Σ5, Σ6, Σ8).
 
-The signature theory required by Σ9 and Γ7 exists as adelic Krein geometry; its theorems
-locate the gap precisely: per place the pole costs one square and positivity off the pole is an
-identity, but the infinite assembly needs a counterterm that runs with the cutoff, and selection must
-come from dilation data. The missing field is the geometry in which that running counterterm is
-canonical and the archimedean dilation acts like a Frobenius.
+The signature theory required by local–global questions exists as adelic Krein geometry; its theorems
+pin the gap down: the archimedean place glues by one hyperplane (`v_1^⊥`), distinct places do not glue,
+and the global pole is not an assembly of local poles. The missing field is the geometry in which the
+places are coupled through the product formula, the horizon counterterm is canonical, and the
+archimedean dilation acts like a Frobenius.
 
 **Working name: renormalized intersection theory of the scaling surface.**
 
-*What it is about.* Intersection theory on `Spec ℤ × Spec ℤ` (the scaling surface) where the
-Frobenius graph of `C × C` is replaced by the continuous family of scaling correspondences `Γ_u`,
-`u ∈ ℝ_{>0}`, whose intersection numbers with the diagonal are the explicit formula and whose
-self-intersections diverge and must be renormalized by a running counterterm (`log N − γ`).
+*What it is about.* Intersection theory on `Spec ℤ × Spec ℤ` (the scaling surface) where the Frobenius
+graph of `C × C` is replaced by the continuous family of scaling correspondences `Γ_u`, `u ∈ ℝ_{>0}`,
+whose intersection numbers with the diagonal are the explicit formula, whose self-intersections
+diverge and are renormalized by a running counterterm (`log N − γ`), and whose local terms at all places
+are coupled through the product formula.
 
-*What it would be like.* Arakelov geometry with a continuous Frobenius: local terms are
-shell decompositions (sums of squares over agreement shells at finite places, dyadic Haar cells at the
-real place), global terms are renormalized pairings, and the central theorem is a renormalized Hodge
-index theorem.
+*What it would be like.* Arakelov geometry with a continuous Frobenius: local terms are shell
+decompositions (agreement shells at finite places, dyadic Haar cells and tails at the real place),
+the archimedean place enters as a hyperplane constraint (the boost hyperplane), global terms are
+renormalized pairings, and the central theorem is a renormalized Hodge index theorem on the
+pole-orthogonal hyperplane.
 
 *Criteria it must meet.*
-1. Calibration: over `𝔽_q` it reproduces Weil's RH with the quantized factor `q`; on the golden datum
-   it fails where the Hodge index fails.
-2. Positivity by identity: the sign of the renormalized pairing comes from a sum-of-squares identity
-   uniform in the cutoff, not from estimates.
-3. Quadratic Riemann–Roch: a sign-free `h⁰` on the scaling surface with Hilbert–Samuel growth (not a
-   function of the degree alone).
-4. Canonical renormalization: counterterms run with the cutoff and their finite parts are intrinsic
-   (as `γ` in `log N − γ`); index statements pass to the renormalized limit.
-5. One topology for both readings: the archimedean dilation reading and the finite-adelic height decay
-   are simultaneously continuous (removing Γ9).
-6. Integrality: intersection numbers and indices are integers, so precision `< 1` suffices (Σ8).
-7. Zero-independence and twin sensitivity: built from integers and adeles only, and reading the pole
-   and Gamma data that separate ζ from its twins.
+1. Calibration: over `𝔽_q` it reproduces Weil's RH with the quantized factor `q`; on the golden datum it
+   fails where the Hodge index fails.
+2. Positivity by identity on `v_1^⊥`: a sum-of-squares identity uniform in the cutoff, not an estimate.
+3. Confinement as a theorem: negative directions of the renormalized pairing are supported on finitely
+   many conductors, with polynomial dependence on the resolution.
+4. Product-formula gluing: local pole states at all places combine into exactly one global square.
+5. Quadratic Riemann–Roch: a sign-free `h⁰` on the scaling surface with Hilbert–Samuel growth.
+6. One topology for both readings: archimedean dilation and finite-adelic height decay continuous
+   together (removing Γ9).
+7. Integrality: indices and intersection numbers are integers, so precision `< 1` suffices (Σ8).
+8. Zero-independence and twin sensitivity: built from integers and adeles, reading Gamma and prime data
+   (the pole alone is invisible on `v_1^⊥`).
 
 *Questions it must answer.*
 - What is the renormalized self-intersection `Γ_u · Γ_u`, and does a Castelnuovo–Severi inequality hold
   for it?
-- On the orthogonal complement of the hyperbolic pole–successor plane, is the renormalized pairing
-  definite (renormalized Hodge index)?
-- What is `h⁰` on the scaling surface, and what is its Serre dual?
-- Which finite-index states on `Aff(ℚ)` or `Aff(𝔸)` carry Weil's dilation (Q2)?
-- Is the collision quantum `O` an intersection number?
-- Is there a Künneth formula whose H² carries `ρ + ρ'` with an Euler product (the weight route, 2.4)?
+- On `v_1^⊥`, is the renormalized pairing definite (renormalized Hodge index)?
+- How do local pole states couple through principal units to give one square (Q3)?
+- Why are negative directions confined to low conductors, and with which dependence (Q1)?
+- What is `h⁰` on the scaling surface, and its Serre dual?
+- Is the collision quantum `O` an intersection number or an index?
+- Is there a Künneth formula whose H² carries `ρ + ρ'` with an Euler product (2.4)?
 
-*Tools it aims to develop.* Renormalized Pontryagin spaces with running counterterms; adelic shell
-decompositions with an archimedean shell calculus; index theorems for renormalized Toeplitz/Fredholm
-forms; theta log-volumes as `h⁰`; loop-group Eisenstein series over ℚ as global carriers; the heat flow
-as a homotopy preserving renormalized indices.
+*Tools it aims to develop.* Renormalized Pontryagin spaces with running counterterms and
+product-formula gluing; adelic shell decompositions with an archimedean shell calculus; conductor
+(Ramanujan) frames beyond the square-root horizon; index theorems for renormalized Toeplitz/Fredholm
+forms; theta log-volumes as `h⁰`; loop-group Eisenstein series as global carriers; the heat flow as a
+homotopy of Pontryagin spaces.
 
-*Objects, language, mechanisms.* The adele class space and the scaling surface; the correspondences
-`Γ_u`; pole–successor hyperbolic planes and conformal successors; agreement shells; renormalized
-pairings and counterterms; collided and Weil forms as the positive and the equivariant reading of one
-pairing; collision quanta; tensor powers of `H¹(Spec ℤ)`.
+*Objects, language, mechanisms.* The adele class space and the scaling surface; correspondences `Γ_u`;
+pole–successor hyperbolic planes, conformal successors and the boost hyperplane; agreement shells and
+Ramanujan conductors; renormalized pairings and counterterms; collided and Weil forms as the positive
+and the equivariant reading of one pairing; collision quanta; tensor powers of `H¹(Spec ℤ)`.

@@ -1,6 +1,6 @@
 # Elliptic adelic Haar has exact finite-cylinder products
 
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
 - **Parent:** [Arithmetic unfolding](../1-in-progress/finite-field-eisenstein-unfolding.md).
 - **Statement:** On the open subgroup integral outside any finite place set
   `S`, actual adelic Haar pulls back to normalized Haar on the completed
@@ -34,4 +34,5 @@ remain separate assertions.
 
 `ArithmeticEffectivityTheory/FiniteFieldEllipticCylinderHaar.lean`:
 `ellipticCylinderAssembly_isOpenEmbedding`,
-`ellipticCylinderAmbientHaar_eq_product`. Direct audit pending.
+`ellipticCylinderAmbientHaar_eq_product`. Direct Lean and transitive axiom audits passed; only `propext`,
+`Classical.choice`, and `Quot.sound` occur.

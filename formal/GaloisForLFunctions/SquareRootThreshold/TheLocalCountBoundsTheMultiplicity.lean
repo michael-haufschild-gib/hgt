@@ -420,10 +420,9 @@ def AlmostOffLineLocallyBounded (Z : ZeroConfig) (M : ℕ) : Prop :=
   ∀ ε : ℝ, 0 < ε → ∀ᶠ T in atTop, MeasureTheory.volume
     {S ∈ Icc (T - 1) (2 * T + 1) | M < (offLinePart Z).N (S - 1) (S + 1)} ≤ ENNReal.ofReal (ε * T)
 
-/-- **Fubini over the window centre.**  For `T ≥ 1`,
-`2 N_off(T, 2T) ≤ ∫_{T−1}^{2T+1} N_off(S − 1, S + 1) dS`, and the integrand is a finite sum of
-indicators of intervals. -/
-theorem two_mul_offLine_N_le_integral (Z : ZeroConfig) {T : ℝ} (hT : 1 ≤ T) :
+/-- **Fubini over the window centre.**  `2 N_off(T, 2T) ≤ ∫_{T−1}^{2T+1} N_off(S − 1, S + 1) dS`,
+and the integrand is a finite sum of indicators of intervals. -/
+theorem two_mul_offLine_N_le_integral (Z : ZeroConfig) (T : ℝ) :
     ∃ g : ℝ → ℝ, Measurable g ∧ (∀ S ∈ Icc (T - 1) (2 * T + 1),
       g S = (offLinePart Z).N (S - 1) (S + 1)) ∧
       MeasureTheory.IntegrableOn g (Icc (T - 1) (2 * T + 1)) ∧
@@ -496,8 +495,10 @@ theorem two_mul_offLine_N_le_integral (Z : ZeroConfig) {T : ℝ} (hT : 1 ≤ T) 
     have hsub : Ico (ρ.im - 1) (ρ.im + 1) ⊆ B ρ ∩ Icc (T - 1) (2 * T + 1) := fun S hS =>
       ⟨hS, by linarith [hS.1], by linarith [hS.2]⟩
     have hvol : (2 : ℝ) ≤ MeasureTheory.volume.real (B ρ ∩ Icc (T - 1) (2 * T + 1)) := by
-      have := MeasureTheory.measureReal_mono hsub
-        ((MeasureTheory.measure_mono Set.inter_subset_right).trans_lt measure_Icc_lt_top).ne
+      have hfinv : MeasureTheory.volume (B ρ ∩ Icc (T - 1) (2 * T + 1)) ≠ ⊤ :=
+        ((MeasureTheory.measure_mono Set.inter_subset_right).trans_lt
+          (measure_Icc_lt_top (μ := MeasureTheory.volume))).ne
+      have := MeasureTheory.measureReal_mono hsub hfinv
       rw [Real.volume_real_Ico_of_le (by linarith)] at this
       linarith
     nlinarith [(Nat.cast_nonneg (W.mult ρ) : (0 : ℝ) ≤ W.mult ρ)]
@@ -513,7 +514,7 @@ theorem tendsto_N0_div_N_of_almostOffLineLocallyBounded {Z : ZeroConfig} {M : �
         ≤ M * (T + 2) + 2 * A₀ * Real.log (2 * T + 4) * (ε * T) := by
     intro ε hε
     filter_upwards [hM ε hε, eventually_ge_atTop (1 : ℝ)] with T hbad hT
-    obtain ⟨g, hgm, hgS, hgi, hfub⟩ := two_mul_offLine_N_le_integral Z hT
+    obtain ⟨g, hgm, hgS, hgi, hfub⟩ := two_mul_offLine_N_le_integral Z T
     set B : ℝ := 2 * A₀ * Real.log (2 * T + 4) with hBdef
     have hB0 : 0 ≤ B := by
       have : 0 ≤ Real.log (2 * T + 4) := Real.log_nonneg (by linarith)

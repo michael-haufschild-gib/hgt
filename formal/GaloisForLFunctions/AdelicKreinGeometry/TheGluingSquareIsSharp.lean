@@ -40,7 +40,8 @@ theorem negIndex_le_negIndex_archGlue (K : posUnits → ℂ) (c : ℝ) :
     negIndex K ≤ negIndex (archGlue K c) := by
   have e : archGlue K c ∘ (dilation.comp posUnits.subtype) = K :=
     funext fun u => archGlue_dilation K c u
-  simpa [e] using negIndex_comp_le (archGlue K c) (dilation.comp posUnits.subtype)
+  calc negIndex K = negIndex (archGlue K c ∘ (dilation.comp posUnits.subtype)) := by rw [e]
+    _ ≤ negIndex (archGlue K c) := negIndex_comp_le _ _
 
 /-- **The gluing square is at most one**: `κ(K) ≤ κ(K(|a|) − c|a|^{−1/2}|b|) ≤ κ(K) + 1`. -/
 theorem negIndex_archGlue_eq_or (K : posUnits → ℂ) {c : ℝ} (hc : 0 ≤ c) :
@@ -96,6 +97,9 @@ theorem hermQuad_gram_polePair_of_boostMass {n : ℕ} (u : Fin n → posUnits) {
 
 private def four : posUnits := ⟨Units.mk0 4 (by norm_num), show (0 : ℚ) < 4 by norm_num⟩
 
+private theorem polePair_one : polePair 1 = ((2 : ℝ) : ℂ) := by
+  rw [polePair]; norm_num
+
 private theorem polePair_four : polePair four = ((5 / 2 : ℝ) : ℂ) := by
   have h : (((four : ℚˣ) : ℚ) : ℝ) = (2 : ℝ) ^ (2 : ℝ) := by
     rw [Real.rpow_two]; norm_num [four]
@@ -110,7 +114,7 @@ theorem negIndex_polePair : negIndex polePair = 1 := by
   · -- slopes `1, 4` with weights `1, −1`: `2 + 2 − 5/2 − 5/2 < 0`
     have hneg : hermQuad (gram polePair ![1, four]) ![1, -1] < 0 := by
       rw [hermQuad_gram]
-      simp [Fin.sum_univ_two, polePair_inv, polePair_four, polePair]
+      simp [Fin.sum_univ_two, polePair_inv, polePair_four, polePair_one]
       norm_num
     have h1 := one_le_negIndexOn (V := ⊤) Submodule.mem_top hneg
     exact le_trans (by exact_mod_cast h1.trans (negIndexOn_le_hermNegIndex _ ⊤))
@@ -140,6 +144,7 @@ theorem boostPolarIndex_add_polePair (K : posUnits → ℂ) (t : ℝ) :
 
 theorem isHermKernel_add_polePair {K : posUnits → ℂ} (hK : IsHermKernel K) (t : ℝ) :
     IsHermKernel fun u => K u + t * polePair u := fun u => by
+  show K u⁻¹ + t * polePair u⁻¹ = conj (K u + t * polePair u)
   rw [hK u, isHermKernel_polePair u, map_add, map_mul, Complex.conj_ofReal]
 
 /-- **The glued index is blind to the pole terms.** -/
