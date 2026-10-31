@@ -6,6 +6,7 @@ import GaloisForLFunctions.AdelicKreinGeometry.Haar.FiniteIndexObstruction
 import GaloisForLFunctions.AdelicKreinGeometry.Haar.CyclicGramLimit
 import GaloisForLFunctions.AdelicKreinGeometry.Haar.CyclicHecke
 import GaloisForLFunctions.AdelicKreinGeometry.Haar.CyclicOrbits
+import GaloisForLFunctions.AdelicKreinGeometry.Haar.GeneralOrbits
 import GaloisForLFunctions.AdelicKreinGeometry.Haar.TranslationMovingPositivity
 import GaloisForLFunctions.AdelicKreinGeometry.Haar.PolynomialCorrection
 import GaloisForLFunctions.AdelicKreinGeometry.Haar.PeriodDefects

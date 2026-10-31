@@ -1,6 +1,6 @@
 # Elliptic Godement coefficients have uniform exponential bounds
 
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
 - **Parent:** [Arithmetic unfolding](../1-in-progress/finite-field-eisenstein-unfolding.md).
 - **Statement:** Every actual finite-field Weyl coefficient is bounded
   exponentially in inversion length throughout each fixed Godement chamber.
@@ -38,8 +38,9 @@ simple-coroot real parts greater than one.
 
 `ArithmeticEffectivityTheory/FiniteFieldEllipticWeylConvergence.lean`:
 `norm_arithmeticZetaRatio_le_majorant`, `finiteFieldCoefficient_norm_le_exp`,
-`summable_norm_finiteFieldWeylTerm`, and
-`finiteFieldWeylSum_eq_two_series_chamber`. Direct audit pending.
+`summable_norm_finiteFieldWeylTerm_of_re_gt_one`, and
+`finiteFieldWeylSum_eq_two_series_of_re_gt_one`. Direct Lean and transitive axiom audits passed.
+Only `propext`, `Classical.choice`, and `Quot.sound` occur.
 
 This proves convergence of the independently defined Weyl side. Arithmetic
 cell parametrization and equality with the Eisenstein constant term remain

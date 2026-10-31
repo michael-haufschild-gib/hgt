@@ -80,6 +80,12 @@ is absolutely convergent for `Re(s)>1` and equals the global zeta ratio,
 with the same audits. Relative finite-cell periodization and identification
 with the loop Iwasawa section remain necessary for unfolding.
 
+The [actual Weyl series converges absolutely throughout the full Godement chamber](../3-formalized/elliptic-godement-coefficients-have-uniform-exponential-bounds.md).
+The global radial integral uniformly bounds each root factor; exponential
+coefficient growth is dominated by Gaussian degree decay. Direct Lean and
+axiom audits passed. This does not prove arithmetic coset-sum convergence
+or the constant-term identity.
+
 ## Convergence mechanism to test
 
 Unfold the nonnegative real-parameter series with Tonelli before claiming

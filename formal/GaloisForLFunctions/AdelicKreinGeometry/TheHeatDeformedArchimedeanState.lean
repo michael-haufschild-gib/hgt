@@ -193,6 +193,7 @@ theorem lowerSemicontinuousOn_negIndex_heatArchState (c : ℝ) :
 theorem antitoneOn_negIndex_heatArchState {c : ℝ} (hc : 0 < c) :
     AntitoneOn (fun t => negIndex (heatArchState c t)) (Ioi 0) := by
   intro s hs t ht hst
+  dsimp only
   rw [negIndex_heatArchState_eq_nonrealZeroCount hc hs,
     negIndex_heatArchState_eq_nonrealZeroCount hc ht]
   exact Nat.cast_le.mpr (Nat.add_le_add_right
@@ -237,8 +238,8 @@ theorem heatCollisionPairs_eq_zero_iff_realMultipleZeros_eq_empty (t : ℝ) :
       have h2 := two_le_zeroMult_riemannHeat h.1.le hz0 hd
       have hz_zero := h0 z hz
       omega
-    · rintro rfl
-      simp
+    · intro hemp
+      simp [hemp]
   · have hemp : realMultipleZeros t = ∅ := by
       rw [realMultipleZeros, dif_neg h]
     simp [heatCollisionPairs, hemp]
@@ -313,11 +314,13 @@ theorem eventually_negIndex_heatArchState_eq_iff_collisionPairs_eq_zero {c : ℝ
     have hdist : dist s t < ε := by
       rw [Real.dist_eq, show s - t = -η by ring, abs_neg, abs_of_pos hη]
       have : min δ ε ≤ ε := min_le_right _ _
+      dsimp only [η]
       linarith
     have hs_gt : t - δ < s := by
       have : min δ ε ≤ δ := min_le_left _ _
+      dsimp only [s, η]
       linarith
-    have hs_lt : s < t := by linarith
+    have hs_lt : s < t := by dsimp only [s]; linarith
     have heq1 := hball hdist
     have heq2 := hL s hs_gt hs_lt
     rw [heq1, negIndex_heatArchState_eq hc ht] at heq2
@@ -525,7 +528,7 @@ theorem negIndex_weilArchState_lt_top_iff_bdd {c : ℝ} (hc : 0 < c) :
       exact lt_of_le_of_lt le_self_add h
     obtain ⟨hfin, -, hev⟩ := eventually_collisionMassAfter_eq_index hζ
     set K := hfin.toFinset.card + ∑ ρ ∈ hfin.toFinset, (ArithmeticOrientationGeometry.xiMult ρ - 1)
-    obtain ⟨δ, hδ, hball⟩ := Metric.eventually_nhdsWithin_iff.mp hev
+    obtain ⟨δ, hδ, hball⟩ := Metric.eventually_nhds_iff.mp (eventually_nhdsWithin_iff.mp hev)
     set t₀ := δ / 2
     have ht₀ : 0 < t₀ := by positivity
     have hK_eq : ∀ s, 0 < s → s < δ → negIndex (heatArchState c s) = ((K + 1 : ℕ) : ℕ∞) := by
@@ -533,7 +536,7 @@ theorem negIndex_weilArchState_lt_top_iff_bdd {c : ℝ} (hc : 0 < c) :
       have hdist : dist s 0 < δ := by
         rw [Real.dist_eq, sub_zero, abs_of_pos hs0]
         exact hsδ
-      have hcoll := hball (mem_Ioi.mpr hs0) hdist
+      have hcoll := hball hdist (mem_Ioi.mpr hs0)
       rw [← nonrealZeroCount_eq_collisionMassAfter hs0,
         ← two_mul_heatRightZeroMultiplicity s] at hcoll
       have hm : heatRightZeroMultiplicity s = K := by omega
@@ -556,38 +559,18 @@ theorem negIndex_weilArchState_lt_top_iff_bdd {c : ℝ} (hc : 0 < c) :
       exact ENat.coe_ne_top (k + 1) htop_weil
     have hev := (tendsto_atTop.mp (tendsto_collisionMassAfter_of_negIndex_eq_top htop_ζ))
       (2 * (M + 1))
-    obtain ⟨δ, hδ, hball⟩ := Metric.eventually_nhdsWithin_iff.mp hev
+    obtain ⟨δ, hδ, hball⟩ := Metric.eventually_nhds_iff.mp (eventually_nhdsWithin_iff.mp hev)
     set t₀ := δ / 2
     have ht₀ : 0 < t₀ := by positivity
     have hdist : dist t₀ 0 < δ := by
       rw [Real.dist_eq, sub_zero, abs_of_pos ht₀]
       dsimp [t₀]; linarith
-    have hcoll := hball (mem_Ioi.mpr ht₀) hdist
+    have hcoll := hball hdist (mem_Ioi.mpr ht₀)
     rw [← nonrealZeroCount_eq_collisionMassAfter ht₀,
       ← two_mul_heatRightZeroMultiplicity t₀] at hcoll
     have hbound := hM t₀ ht₀
     rw [negIndex_heatArchState_eq hc ht₀] at hbound
     have hnat : heatRightZeroMultiplicity t₀ + 1 ≤ M := by exact_mod_cast hbound
     omega
-
-#print axioms isHermKernel_heatArchState
-#print axioms continuousOn_heatArchState
-#print axioms negIndex_heatArchState_lt_top
-#print axioms negIndex_heatArchState_eq
-#print axioms negIndex_heatArchState_eq_nonrealZeroCount
-#print axioms negIndex_heatArchState_eq_card_of_simple
-#print axioms lowerSemicontinuousAt_negIndex_heatArchState
-#print axioms lowerSemicontinuousOn_negIndex_heatArchState
-#print axioms antitoneOn_negIndex_heatArchState
-#print axioms exists_right_negIndex_heatArchState_eq
-#print axioms exists_left_negIndex_heatArchState_eq_add_collisionPairs
-#print axioms eventually_negIndex_heatArchState_eq_iff_realMultipleZeros_eq_empty
-#print axioms negIndex_heatArchState_eq_add_interval_collisionPairs
-#print axioms negIndex_heatArchState_eq_iff_forall_realMultipleZeros_eq_empty
-#print axioms negIndex_heatArchState_eq_one_of_eighth_le
-#print axioms riemannHypothesis_iff_forall_negIndex_heatArchState_eq_one
-#print axioms riemannHypothesis_iff_negIndex_heatArchState_const
-#print axioms negIndex_weilArchState_le_liminf_heatArchState
-#print axioms negIndex_weilArchState_lt_top_iff_bdd
 
 end GaloisForLFunctions.AdelicKreinGeometry

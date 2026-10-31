@@ -232,6 +232,28 @@ theorem finiteFieldWeylSum_eq_two_series_chamber (p : ℂ × ℂ) (t z r : ℝ) 
   exact Summable.tsum_sum (summable_norm_finiteFieldTranslation p t z r).of_norm
     (summable_norm_finiteFieldReflection p t z r).of_norm
 
+/-- Absolute convergence holds at every parameter in the full Godement chamber. -/
+theorem summable_norm_finiteFieldWeylTerm_of_re_gt_one (lam : ℂ × ℂ)
+    (h₀ : 1 < lam.1.re) (h₁ : 1 < lam.2.re) (t z r : ℝ) :
+    Summable (fun w : Weyl => ‖finiteFieldWeylTerm lam t z r w‖) := by
+  have h : lam ∈ Set.range godementParameter := by
+    rw [range_godementParameter]
+    exact ⟨h₀, h₁⟩
+  obtain ⟨p, rfl⟩ := h
+  exact summable_norm_finiteFieldWeylTerm p t z r
+
+/-- The two-series identity holds throughout the full Godement chamber. -/
+theorem finiteFieldWeylSum_eq_two_series_of_re_gt_one (lam : ℂ × ℂ)
+    (h₀ : 1 < lam.1.re) (h₁ : 1 < lam.2.re) (t z r : ℝ) :
+    finiteFieldWeylSum lam t z r =
+      (∑' m : ℤ, finiteFieldWeylTerm lam t z r (.r m)) +
+        ∑' m : ℤ, finiteFieldWeylTerm lam t z r (.sr m) := by
+  have h : lam ∈ Set.range godementParameter := by
+    rw [range_godementParameter]
+    exact ⟨h₀, h₁⟩
+  obtain ⟨p, rfl⟩ := h
+  exact finiteFieldWeylSum_eq_two_series_chamber p t z r
+
 end
 
 end GaloisForLFunctions.HTGeometry.LoopEisenstein.AffineA1
@@ -239,3 +261,8 @@ end GaloisForLFunctions.HTGeometry.LoopEisenstein.AffineA1
 #print axioms GaloisForLFunctions.ArithmeticEffectivityTheory.FiniteFieldEllipticBase.norm_arithmeticZetaRatio_le_majorant
 #print axioms GaloisForLFunctions.HTGeometry.LoopEisenstein.AffineA1.finiteFieldCoefficient_norm_le_exp
 #print axioms GaloisForLFunctions.HTGeometry.LoopEisenstein.AffineA1.summable_norm_finiteFieldWeylTerm
+
+#print axioms GaloisForLFunctions.HTGeometry.LoopEisenstein.AffineA1.finiteFieldWeylSum_eq_two_series_chamber
+
+#print axioms GaloisForLFunctions.HTGeometry.LoopEisenstein.AffineA1.summable_norm_finiteFieldWeylTerm_of_re_gt_one
+#print axioms GaloisForLFunctions.HTGeometry.LoopEisenstein.AffineA1.finiteFieldWeylSum_eq_two_series_of_re_gt_one

@@ -73,5 +73,12 @@ this gives the conjectured full arithmetic bound, for every `Q,N≥2`,
 `sum_(n≤N)[sum_(m≤Q)a_m ramanujanPrimeResidual(m,N,n)]²/log N`
 `≤C(1+log Q)³ sum a_m²/log N`.
 
-The exact square identity, moment bound, and norm transfer remain unproved
-in Lean. The complete Weil shell and pole residuals remain separate.
+The divisor-packet and normalized square identities are formalized as
+`hasSum_primeDilationPacket_sq` and `hasSum_primeConductorDilationJump_sq`.
+`Conductor.PrimeConductorDilationEnergy` passed its direct production audit;
+all six capstones depend only on `propext`, `Classical.choice`, and `Quot.sound`.
+Umbrella import present.
+The finite and full logarithmic moment bounds, including summability,
+are Lean-checked in `PrimeConductorDilationMoments`.
+Norm transfer awaits Lean verification.
+The complete Weil shell and pole residuals remain separate.

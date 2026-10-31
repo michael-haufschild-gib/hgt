@@ -35,6 +35,7 @@ import GaloisForLFunctions.SuccessorShellArithmetic.Conductor.PrimeConductorLogM
 import GaloisForLFunctions.SuccessorShellArithmetic.Conductor.PrimeConductorGrowingCorrection
 import GaloisForLFunctions.SuccessorShellArithmetic.Conductor.PrimeConductorPowerHeads
 import GaloisForLFunctions.SuccessorShellArithmetic.Conductor.PrimeConductorHeadNorm
+import GaloisForLFunctions.SuccessorShellArithmetic.Conductor.PrimeConductorDilationEnergy
 import GaloisForLFunctions.SuccessorShellArithmetic.Conductor.PrimeConductorUndilatedNorm
 
 /-!
@@ -56,6 +57,7 @@ the opposite torsion limits of fixed prime heads and their complementary boundar
 the half-square asymptotic of the prime head's logarithmic moment;
 the exact finite parts at every power cutoff and their diagonal square-root head;
 the exact dilation reduction of prime heads and their logarithmic centered period-mean norm;
+the exact prime-dilation square energy in normalized conductor coordinates;
 the undilated torsion finite part with a uniform squared-logarithmic packet error;
 the invariant centered torsion correction at every exhausting prime cutoff. See
 `SuccessorShellArithmetic/README.md`.

@@ -122,6 +122,21 @@ private theorem infinityLogValue_max (x : InfinityCompletion) :
     infinityLogValue (max 1 (Valued.v x)) = infinityCompletionLogHeight x :=
   normalizedValueLog_max _ _ (by norm_num) _
 
+private theorem finite_borelCoordinate_log (i : Bool) (b : adelicPositiveBorel)
+    (v : FinitePlace) :
+    Real.log (finiteCompletionMagnitude v (((adelicBorelCoordinate i b : Ideles) : Adeles).1 v) : ℝ) =
+      finiteLogValue v
+        (if i then (LoopSL2.borelValuationHom Valued.v (finiteBorelEvaluation v b)).2
+          else (LoopSL2.borelValuationHom Valued.v (finiteBorelEvaluation v b)).1) := by
+  cases i <;> rfl
+
+private theorem infinity_borelCoordinate_log (i : Bool) (b : adelicPositiveBorel) :
+    Real.log (infinityCompletionMagnitude (((adelicBorelCoordinate i b : Ideles) : Adeles).2) : ℝ) =
+      infinityLogValue
+        (if i then (LoopSL2.borelValuationHom Valued.v (infinityBorelEvaluation b)).2
+          else (LoopSL2.borelValuationHom Valued.v (infinityBorelEvaluation b)).1) := by
+  cases i <;> rfl
+
 private theorem log_borelCoordinate (i : Bool) (b : adelicPositiveBorel) :
     Real.log (ideleMagnitude (adelicBorelCoordinate i b) : ℝ) =
       (∑ᶠ v : FinitePlace, finiteLogValue v
@@ -129,9 +144,12 @@ private theorem log_borelCoordinate (i : Bool) (b : adelicPositiveBorel) :
           else (LoopSL2.borelValuationHom Valued.v (finiteBorelEvaluation v b)).1)) +
       infinityLogValue
         (if i then (LoopSL2.borelValuationHom Valued.v (infinityBorelEvaluation b)).2
-          else (LoopSL2.borelValuationHom Valued.v (infinityBorelEvaluation b)).1) := by
-  rw [log_ideleMagnitude_eq_finsum]
-  cases i <;> rfl
+          else (LoopSL2.borelValuationHom Valued.v (infinityBorelEvaluation b)).1) :=
+  (log_ideleMagnitude_eq_finsum (adelicBorelCoordinate i b)).trans
+    (congrArg₂ (fun x y : ℝ => x + y)
+      (congrArg (fun f : FinitePlace → ℝ => ∑ᶠ v, f v)
+        (funext (finite_borelCoordinate_log i b)))
+      (infinity_borelCoordinate_log i b))
 
 private theorem section_eq_of_borelCharacter (s t : ℂ) (g : AdelicLoop) (z : ℂ)
     (h : ∀ k : adelicIntegralLoop, ∀ b : adelicPositiveBorel,
@@ -234,3 +252,7 @@ end GaloisForLFunctions.ArithmeticEffectivityTheory.FiniteFieldEllipticBase
 
 #print axioms GaloisForLFunctions.ArithmeticEffectivityTheory.FiniteFieldEllipticBase.integral_adelicIwasawaSection_finiteNegativeRoot
 #print axioms GaloisForLFunctions.ArithmeticEffectivityTheory.FiniteFieldEllipticBase.integral_adelicIwasawaSection_affineNegativeRoot
+
+#print axioms GaloisForLFunctions.ArithmeticEffectivityTheory.FiniteFieldEllipticBase.adelicIwasawaSection_finiteNegativeRoot_integrable
+
+#print axioms GaloisForLFunctions.ArithmeticEffectivityTheory.FiniteFieldEllipticBase.adelicIwasawaSection_affineNegativeRoot_integrable

@@ -1,11 +1,11 @@
 # Elliptic idele Haar modulus is the global magnitude
 
-- **Stage:** 1-in-progress
-- **Parent:** [Arithmetic unfolding](finite-field-eisenstein-unfolding.md).
-- **Target:** For every actual idele `u`, its additive Haar modulus on the
+- **Stage:** 2-fully-proven
+- **Parent:** [Arithmetic unfolding](../1-in-progress/finite-field-eisenstein-unfolding.md).
+- **Statement:** For every actual idele `u`, its additive Haar modulus on the
   elliptic adeles equals `ideleMagnitude u`.
 
-## Reduction
+## Proof
 
 Choose a finite set `S` containing every finite place where `u` has nonunit
 valuation. Both `u` and `u⁻¹` preserve each integral local ball outside `S`.
@@ -18,7 +18,8 @@ local magnitudes. Their product is the actual idele magnitude because every
 omitted factor is one. Since `O_A` has Haar mass one, the Haar-character
 ratio formula identifies the global modulus with this product.
 
-## Remaining proof obligations
+## Lean
 
-Formalize the scaled-box coordinate identity and its finite-product measure.
-No new product formula or quotient normalization is assumed.
+`ArithmeticEffectivityTheory/FiniteFieldEllipticIdeleHaar.lean`:
+`adeleHaar_idele_smul_integralAdeles` and `adele_distribHaarChar`.
+Direct audit pending. No product formula or quotient normalization is assumed.

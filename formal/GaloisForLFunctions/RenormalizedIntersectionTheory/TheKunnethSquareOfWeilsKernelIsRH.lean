@@ -16,6 +16,9 @@ Weil's kernel `K_ζ(u) = W(B, B(· − log u))` on `ℚ_{>0}` (cubic spline `B`)
 * **Weil's kernel has a positive square** (`riemannHypothesis_of_posIndex_zetaKernel_eq_zero`): if
   `K_ζ` had none, `−K_ζ` would be positive definite, hence bounded by `−K_ζ(1)`; the scales `log q`,
   `q ∈ ℚ_{>0}`, are dense, so `F` and the spline orbit would be bounded, which is zero width `0`.
+* **Bounded is RH** (`riemannHypothesis_of_norm_zetaKernel_le`), hence **Castelnuovo–Severi for the
+  rational scaling correspondences is RH** (`riemannHypothesis_iff_castelnuovoSeveri`):
+  `‖K_ζ(u)‖ ≤ K_ζ(1)` at every `u ∈ ℚ_{>0}`.
 * **The Künneth square is RH** (`riemannHypothesis_iff_negIndex_kunnethZeta_eq_zero`):
   `K_ζ ⊠ K_ζ` on `ℚ_{>0} × ℚ_{>0}` is positive definite iff RH holds.
 
@@ -62,9 +65,12 @@ theorem continuous_splineSeries : Continuous splineSeries := by
   intro t₀
   set R := |t₀| + 1
   have hon : ContinuousOn splineSeries (Metric.ball t₀ 1) := by
-    refine continuousOn_tsum (u := fun τ => Real.exp (R / 2) *
+    refine continuousOn_tsum (f := fun (τ : zetaZeroConfig.carrier) (t : ℝ) =>
+        cexp ((t : ℂ) * ((τ : ℂ) - 1 / 2)) *
+          zetaZeroConfig.Wsummand (cx cubicSpline) (cx cubicSpline) τ)
+      (u := fun τ : zetaZeroConfig.carrier => Real.exp (R / 2) *
         ‖zetaZeroConfig.Wsummand (cx cubicSpline) (cx cubicSpline) τ‖)
-      (fun τ => by fun_prop) (hsum.mul_left _) fun τ t ht => ?_
+      (fun τ => Continuous.continuousOn (by fun_prop)) (hsum.mul_left _) fun τ t ht => ?_
     have hstrip := zetaZeroConfig.strip τ.1 τ.2
     have ht' : |t| ≤ R := by
       have := Metric.mem_ball.mp ht
@@ -83,18 +89,10 @@ theorem continuous_splineSeries : Continuous splineSeries := by
       _ = R / 2 := by ring
   exact hon.continuousAt (Metric.ball_mem_nhds t₀ one_pos)
 
-/-- **Weil's kernel has a positive square**, unless RH holds. -/
-theorem riemannHypothesis_of_posIndex_zetaKernel_eq_zero (h : posIndex zetaKernel = 0) :
-    RiemannHypothesis := by
-  -- `−K_ζ` is positive definite, hence bounded
-  have hherm : IsHermKernel fun u => -zetaKernel u := fun u => by
-    simp only [isHermKernel_zetaKernel u, map_neg]
-  have hpd : IsPosDefKernel fun u => -zetaKernel u := (isPosDefKernel_iff hherm).mpr h
-  set C := (-zetaKernel 1).re
-  have hbd : ∀ u : HeckeLattice, ‖splineSeries (-Real.log ((u : ℚ) : ℝ))‖ ≤ C := fun u => by
-    rw [← zetaKernel_eq_splineSeries, ← norm_neg]
-    exact hpd.norm_le u
-  -- density of the rational scales extends the bound to every real scale
+/-- **A bounded Weil kernel forces RH.** The rational scales are dense and the spline series is
+continuous, so a bound on `ℚ_{>0}` bounds the whole spline orbit: zero width `0`. -/
+theorem riemannHypothesis_of_norm_zetaKernel_le {C : ℝ}
+    (hbd : ∀ u : HeckeLattice, ‖zetaKernel u‖ ≤ C) : RiemannHypothesis := by
   have hall : ∀ t : ℝ, ‖splineSeries t‖ ≤ C := by
     intro t
     by_contra hgt
@@ -114,14 +112,38 @@ theorem riemannHypothesis_of_posIndex_zetaKernel_eq_zero (h : posIndex zetaKerne
       rw [Real.dist_eq]
       show |-Real.log (q : ℝ) - t| < δ
       rw [abs_lt]; constructor <;> linarith
-    exact absurd (hbd ⟨q, hq0⟩) (not_le.mpr (hball hd))
-  -- bounded spline orbit = zero width zero
+    have hk := hbd ⟨q, hq0⟩
+    rw [zetaKernel_eq_splineSeries] at hk
+    exact absurd hk (not_le.mpr (hball hd))
   have hrate : SquareRootThreshold.zetaZeroWidth ≤ 0 := by
     refine (zeta_splineOrbit_rate_iff_zetaZeroWidth_le le_rfl).mp ⟨C, fun t _ => ?_⟩
     rw [zero_mul, Real.exp_zero, mul_one, orbitCorr_splineCycle_eq]
     exact (Complex.abs_re_le_norm _).trans (hall t)
   exact SquareRootThreshold.riemannHypothesis_iff_zetaZeroWidth_eq_zero.mpr
     (le_antisymm hrate SquareRootThreshold.zetaZeroWidth_nonneg)
+
+/-- **Castelnuovo–Severi for the rational scaling correspondences is RH**: the Hasse–Weil bound
+`‖Γ_u · Γ_1‖ ≤ Γ_1 · Γ_1`, i.e. `‖K_ζ(u)‖ ≤ K_ζ(1)`, at every rational scale `u`. -/
+theorem riemannHypothesis_iff_castelnuovoSeveri :
+    RiemannHypothesis ↔ ∀ u : HeckeLattice, ‖zetaKernel u‖ ≤ (zetaKernel 1).re := by
+  constructor
+  · intro h u
+    have hpd : IsPosDefKernel zetaKernel :=
+      (isPosDefKernel_iff isHermKernel_zetaKernel).mpr
+        (riemannHypothesis_iff_negIndex_zetaKernel_eq_zero.mp h)
+    exact hpd.norm_le u
+  · exact riemannHypothesis_of_norm_zetaKernel_le
+
+/-- **Weil's kernel has a positive square**, unless RH holds: if `K_ζ` had none, `−K_ζ` would be
+positive definite and `K_ζ` bounded. -/
+theorem riemannHypothesis_of_posIndex_zetaKernel_eq_zero (h : posIndex zetaKernel = 0) :
+    RiemannHypothesis := by
+  have hherm : IsHermKernel fun u => -zetaKernel u := fun u => by
+    simp only [isHermKernel_zetaKernel u, map_neg]
+  have hpd : IsPosDefKernel fun u => -zetaKernel u := (isPosDefKernel_iff hherm).mpr h
+  refine riemannHypothesis_of_norm_zetaKernel_le (C := (-zetaKernel 1).re) fun u => ?_
+  rw [← norm_neg]
+  exact hpd.norm_le u
 
 /-- **The Künneth square of Weil's kernel is positive definite iff RH holds.** -/
 theorem riemannHypothesis_iff_negIndex_kunnethZeta_eq_zero :

@@ -211,7 +211,6 @@ theorem thetaWindowLowerLeft_re (n : ℕ) : (thetaWindowLowerLeft n).re = -1 / 2
 theorem thetaWindowLowerLeft_im (n : ℕ) :
     (thetaWindowLowerLeft n).im = -(1 / (2 * (zhukovskyStage n : ℝ))) := by
   simp [thetaWindowLowerLeft]
-  ring
 
 @[simp]
 theorem thetaWindowUpperRight_re (T : ℝ) (n : ℕ) :
@@ -578,7 +577,7 @@ theorem xi_rectIntegral_powerSum_eq_stripZeros_sum (T : ℝ) {n : ℕ} (hn : the
       have hprod_eq : (fun z => ∏ w ∈ Z.erase w₀, (z - w) ^ m₀ w) =
           ∏ w ∈ Z.erase w₀, fun z => (z - w) ^ m₀ w := by
         funext z
-        exact (Finset.prod_apply z (Z.erase w₀) _).symm
+        rw [Finset.prod_apply]
       rw [hprod_eq]
       exact Finset.analyticAt_prod (Z.erase w₀) this
     have hG0 : G w₀ ≠ 0 := by
@@ -1256,3 +1255,4 @@ end GaloisForLFunctions.ConjugateDiagonalGeometry
 #print axioms GaloisForLFunctions.ConjugateDiagonalGeometry.integerThetaCollisionOperator_index_and_winding_eq_charge
 #print axioms GaloisForLFunctions.ConjugateDiagonalGeometry.riemannHypothesis_iff_forall_nat_integerThetaCollisionIndex_eq_zero
 #print axioms GaloisForLFunctions.ConjugateDiagonalGeometry.riemannHypothesis_iff_forall_nat_integerThetaCollisionIndex_lt_two
+#print axioms GaloisForLFunctions.ConjugateDiagonalGeometry.riemannHypothesis_iff_forall_integerThetaCollisionIndex_eq_zero_at_thresholds

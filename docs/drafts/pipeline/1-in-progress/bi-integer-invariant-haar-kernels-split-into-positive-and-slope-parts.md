@@ -36,4 +36,6 @@ Local periodicity, the orthogonal cyclic projections, and moving-subspace positi
 
 `HeckeKreinToeplitz/Index/ProjectionFunctoriality.lean` and `ProjectionOrder.lean` formalize intertwining, nested powers, and the resulting order of nonnegative moving forms, with direct audits and standard axiom closures.
 
+`AdelicKreinGeometry/Haar/GeneralOrbits.lean` proves the reciprocal-denominator projection norm for every affine column, with a direct audit and standard axiom closure.
+
 Boundedness of the Haar moving forms, affine invariance, and slope factorization remain to be formalized. Combined with the formalized [zero-axis polynomial correction](../3-formalized/finite-index-periodic-affine-kernels-have-a-zero-axis-polynomial-correction.md), these would supply the full relative splitting; it is not yet a proved decomposition.
