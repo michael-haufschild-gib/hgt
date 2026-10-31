@@ -3675,8 +3675,8 @@ theorem exists_kappa_offline_zeros_partitionSym (N M : ℕ) (R : ℝ) :
     have hinf := Finset.inf'_le (fun u => |u.re - 1 / 2| - R₀) hw
     dsimp [δ₂]; linarith
   have htri_re : |w.re - 1 / 2| - |(pick w).re - w.re| ≤ |(pick w).re - 1 / 2| := by
-    have h1 := abs_sub (w.re - 1 / 2) (w.re - (pick w).re)
-    have h2 : (w.re - 1 / 2) - (w.re - (pick w).re) = (pick w).re - 1 / 2 := by ring
+    have h1 := abs_add_le ((pick w).re - 1 / 2) (w.re - (pick w).re)
+    have h2 : ((pick w).re - 1 / 2) + (w.re - (pick w).re) = w.re - 1 / 2 := by ring
     have h3 : |w.re - (pick w).re| = |(pick w).re - w.re| := abs_sub_comm _ _
     rw [h2, h3] at h1; linarith
   have hR_le_R₀ : R ≤ R₀ := le_max_right 0 R
@@ -3736,7 +3736,7 @@ theorem exists_kappa_not_laguerrePolya_partitionSym (N : ℕ) :
       calc K_0 * Real.sqrt (2 * Real.pi / κ)
           ≤ K_0 * (1 / (2 * K_0 / c₀ + 1)) := mul_le_mul_of_nonneg_left hsqrt_le hK_0_pos.le
         _ < K_0 * (c₀ / (2 * K_0)) := mul_lt_mul_of_pos_left hlt_inv hK_0_pos
-        _ = c₀ / 2 := by field_simp [hK_0_pos.ne']; ring
+        _ = c₀ / 2 := by field_simp [hK_0_pos.ne']
     rw [h0, zero_sub, norm_neg] at hbd
     linarith [hbd.trans_lt herr_lt]
   set z₀ : ℂ := -I * (w - (1 / 2 : ℂ))

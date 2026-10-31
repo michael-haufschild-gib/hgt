@@ -42,7 +42,9 @@ dilation readings are discontinuous. The
 [quadratic example](../3-formalized/mixed-polynomial-affine-perturbations-preserve-both-axis-readings.md)
 shows why the finite-rank term cannot be omitted.
 
-Completed paper proofs of [sharp punctured limits](finite-index-haar-dilation-limits-are-exactly-nonpositive.md),
-[subgroup-indicator classification](continuous-affine-dilations-classify-subgroup-indicator-successors.md),
+The [sharp punctured-limit classification](../3-formalized/finite-index-haar-dilation-limits-are-exactly-nonpositive.md)
+is formalized: possible limits are real `L≤0`, with minimum index zero at `L=0`
+and one at `L<0`. Completed paper proofs of
+[subgroup-indicator classification](continuous-affine-dilations-classify-subgroup-indicator-successors.md)
 and [proper-subgroup polynomial index preservation](proper-subgroup-carriers-preserve-polynomial-fibre-indices.md)
-still await Lean audits. These are the remaining positive-boundary formalizations.
+still await Lean audits.

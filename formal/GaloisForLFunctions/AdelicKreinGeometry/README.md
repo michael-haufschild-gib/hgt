@@ -62,7 +62,8 @@ at edges with a counterterm of nontrivial null cone.
    (rationals near `1` have large denominators), Haar averaging over rational translates, and polynomial
    corrections with zero axis readings. Every finite-index integer-Haar kernel has a unique split
    `k=p+ψ∘slope+Q`, with positive Haar `p`, Hermitian slope `ψ`, and finite-rank polynomial `Q` vanishing
-   on both axes. Its exact index is `κ(k)=κ(ψ∘slope+Q)≥κ(ψ)`.
+   on both axes. Its exact index is `κ(k)=κ(ψ∘slope+Q)≥κ(ψ)`. Punctured dilation limits are exactly
+   real `L≤0`, with minimum index zero at zero and one at every negative limit.
 3. **The pole carries a finite nonzero index.** The pole pair `|u|^{1/2} + |u|^{−1/2}` of Weil's kernel extends to
    an index-one state of the whole affine group whose successor is `2 − c|b|`. It is the hyperbolic pair of the
    fixed points `0, ∞` of `ℙ¹(ℚ)`: a boost on `×` glued to a conformal successor on `+`, with the boost exponent
@@ -500,3 +501,4 @@ square needs a carrier that escapes nothing. A reformulation is not a reduction.
 - Canonical Haar splitting and residual index (`Haar/`): `GeneralOrbits`, `TranslationProjections`,
   `TranslationForms`, `MovingLimit`, `PositivePart`, `PositiveSlopeSplit`, `SplittingUniqueness`,
   `RelativeSplit`, `PolynomialIndexPreservation`, `Classification`.
+- Sharp Haar dilation limits (`Haar/`): `PuncturedLimits`, `SharpDilationLimits`.

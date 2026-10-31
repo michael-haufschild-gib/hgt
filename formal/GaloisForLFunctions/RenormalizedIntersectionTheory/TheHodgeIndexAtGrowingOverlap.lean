@@ -136,48 +136,44 @@ theorem completeWeil_eigenvalues_nonneg_or_of_hodgeIndex {c : ℝ} {N : ℕ}
 
 /-! ### The Hodge index at logarithmic overlap is RH -/
 
-section Logarithmic
+section Profiles
 
 open SpacingScaleHarmonicAnalysis ArithmeticElectrostatics
 
-theorem tiltedUnitSpline_nonneg (u : ℝ) : 0 ≤ φ₀ u := by
-  unfold tiltedUnitSpline atomDilate
-  exact BiScaleUncertainty.ChebyshevGauge.splineProbe_nonneg _
+variable {φ : ℝ → ℝ} (hφ : ContDiff ℝ 2 φ) (hsupp : ∀ u, u ∉ Set.Icc 0 1 → φ u = 0)
 
-theorem integral_tiltedUnitSpline_pos : 0 < ∫ u, φ₀ u :=
-  lt_of_le_of_ne (MeasureTheory.integral_nonneg tiltedUnitSpline_nonneg)
-    (Ne.symm integral_tiltedUnitSpline_ne_zero)
-
-/-- The lower pole moment of a dilated atom is positive. -/
-theorem poleMoment_atomDilate_pos {w : ℝ} (hw : 0 < w) :
-    0 < ∫ u, atomDilate φ₀ w u * Real.exp (-(u / 2)) := by
-  obtain ⟨hg2, hgs, hgc⟩ := atomDilate_facts contDiff_tiltedUnitSpline tiltedUnitSpline_eq_zero hw
-  have hi1 : MeasureTheory.Integrable (fun u => Real.exp (-(w / 2)) * atomDilate φ₀ w u) :=
+include hφ hsupp in
+/-- The lower pole moment of a dilated nonnegative atom is positive. -/
+theorem poleMoment_atomDilate_pos_of (hnn : ∀ u, 0 ≤ φ u) (hint : 0 < ∫ u, φ u) {w : ℝ}
+    (hw : 0 < w) : 0 < ∫ u, atomDilate φ w u * Real.exp (-(u / 2)) := by
+  obtain ⟨hg2, hgs, hgc⟩ := atomDilate_facts hφ hsupp hw
+  have hi1 : MeasureTheory.Integrable (fun u => Real.exp (-(w / 2)) * atomDilate φ w u) :=
     (hg2.continuous.integrable_of_hasCompactSupport hgc).const_mul _
-  have hi2 : MeasureTheory.Integrable (fun u => atomDilate φ₀ w u * Real.exp (-(u / 2))) :=
+  have hi2 : MeasureTheory.Integrable (fun u => atomDilate φ w u * Real.exp (-(u / 2))) :=
     (hg2.continuous.mul (by fun_prop)).integrable_of_hasCompactSupport hgc.mul_right
-  have hle : ∫ u, Real.exp (-(w / 2)) * atomDilate φ₀ w u ≤
-      ∫ u, atomDilate φ₀ w u * Real.exp (-(u / 2)) := by
+  have hle : ∫ u, Real.exp (-(w / 2)) * atomDilate φ w u ≤
+      ∫ u, atomDilate φ w u * Real.exp (-(u / 2)) := by
     refine MeasureTheory.integral_mono hi1 hi2 fun u => ?_
     by_cases hu : u ∈ Set.Icc 0 w
-    · have h0 : 0 ≤ atomDilate φ₀ w u := tiltedUnitSpline_nonneg _
+    · have h0 : 0 ≤ atomDilate φ w u := hnn _
       have he : Real.exp (-(w / 2)) ≤ Real.exp (-(u / 2)) :=
         Real.exp_le_exp.mpr (by linarith [hu.2])
       nlinarith
     · simp only [hgs u hu, mul_zero, zero_mul, le_refl]
   rw [MeasureTheory.integral_const_mul, integral_atomDilate hw] at hle
-  exact lt_of_lt_of_le (by have := integral_tiltedUnitSpline_pos; positivity) hle
+  exact lt_of_lt_of_le (by positivity) hle
 
-/-- **The continuous pole hyperplane is the harmonic hyperplane** for the recentred atoms: if the
-lower pole moment of the atomic test vanishes, so does `Σ_{n ≤ N} y_n/√n`. -/
-theorem harmonic_eq_zero_of_poleMomentNeg_eq_zero {w : ℝ} (hw : 0 < w) (N : ℕ) (y : ℕ → ℝ)
-    (h0 : poleMomentNeg (atomicTest N y (dilate (2 / w) (recentredProfile φ₀))) = 0) :
-    ∑ n ∈ Icc 1 N, y n / Real.sqrt n = 0 := by
-  set k := w * ∫ u, φ₀ u
-  have hk : 0 < k := mul_pos hw integral_tiltedUnitSpline_pos
-  obtain ⟨hg2, hgs, -⟩ := atomDilate_facts contDiff_tiltedUnitSpline tiltedUnitSpline_eq_zero hw
-  set A := atomicTest N (fun n => y n / k) (atomDilate φ₀ w)
-  have hT : atomicTest N y (dilate (2 / w) (recentredProfile φ₀)) =
+include hφ hsupp in
+/-- **The pole moment of a recentred atomic test** is a fixed multiple of the harmonic sum
+`Σ_{n ≤ N} y_n/√n`. -/
+theorem poleMomentNeg_recentred {w : ℝ} (hw : 0 < w) (N : ℕ) (y : ℕ → ℝ) :
+    poleMomentNeg (atomicTest N y (dilate (2 / w) (recentredProfile φ))) =
+      Real.exp (-(1 / 2) * -(w / 2)) * ((∫ u, atomDilate φ w u * Real.exp (-(u / 2))) *
+        ((∑ n ∈ Icc 1 N, y n / Real.sqrt n) / (w * ∫ u, φ u))) := by
+  set k := w * ∫ u, φ u
+  obtain ⟨hg2, hgs, -⟩ := atomDilate_facts hφ hsupp hw
+  set A := atomicTest N (fun n => y n / k) (atomDilate φ w)
+  have hT : atomicTest N y (dilate (2 / w) (recentredProfile φ)) =
       fun u => A (u - -(w / 2)) := by
     funext u
     unfold A atomicTest
@@ -190,17 +186,114 @@ theorem harmonic_eq_zero_of_poleMomentNeg_eq_zero {w : ℝ} (hw : 0 < w) (N : �
   have hshift := SelectiveMultiscaleArithmeticPositivity.integral_shift_mul_exp A (-(w / 2))
     (-(1 / 2))
   simp only [show ∀ u : ℝ, -(1 / 2) * u = -(u / 2) from fun u => by ring] at hshift
-  rw [poleMomentNeg, hT, hshift, hmA] at h0
-  have hsum : ∑ n ∈ Icc 1 N, y n / k / Real.sqrt n = (∑ n ∈ Icc 1 N, y n / Real.sqrt n) / k := by
-    rw [sum_div]
-    exact sum_congr rfl fun n _ => by ring
-  rw [hsum] at h0
-  have hm := poleMoment_atomDilate_pos hw
-  have hS : (∑ n ∈ Icc 1 N, y n / Real.sqrt n) / k = 0 := by
-    rcases mul_eq_zero.mp h0 with h | h
-    · exact absurd h (Real.exp_pos _).ne'
-    · exact (mul_eq_zero.mp h).resolve_left hm.ne'
-  exact (div_eq_zero_iff.mp hS).resolve_right hk.ne'
+  rw [poleMomentNeg, hT, hshift, hmA, sum_div]
+  congr 2
+  exact sum_congr rfl fun n _ => by ring
+
+/-- The pairing with the pole conductor is the harmonic sum of the extended coefficients. -/
+theorem inner_normalizedRamanujanHorizonVector_one {N : ℕ}
+    (x : EuclideanSpace ℝ (PrimeHorizonIndex N)) :
+    ⟪x, normalizedRamanujanHorizonVector 1 N⟫ = (Real.sqrt (Real.log N))⁻¹ *
+      ∑ n ∈ Icc 1 N, primeHorizonExtension x n / Real.sqrt n := by
+  rw [normalizedRamanujanHorizonVector, real_inner_smul_right,
+    EuclideanSpace.inner_eq_star_dotProduct]
+  change (Real.sqrt (Real.log N))⁻¹ * ∑ n : PrimeHorizonIndex N, ramanujanPoleProfile 1 n * x n = _
+  congr 1
+  rw [← Finset.sum_coe_sort (Icc 1 N)]
+  refine sum_congr rfl fun n _ => ?_
+  simp only [ramanujanPoleProfile, normalizedRamanujanMode, ramanujanMode_one, Nat.totient_one,
+    Nat.cast_one, Real.sqrt_one, div_one, primeHorizonExtension_coe]
+  ring
+
+include hφ hsupp in
+/-- **One hyperplane, two readings.** At a horizon `N ≥ 2` and overlap `c > 0`, the Markov form is
+nonnegative on the recentred atomic tests in the pole hyperplane `m₋ = 0` iff the complete Weil
+energy is nonnegative on `v_1^⊥`. -/
+theorem poleHyperplane_markov_nonneg_iff_hodgeIndex (hnn : ∀ u, 0 ≤ φ u)
+    (hint : 0 < ∫ u, φ u) (hM : 0 < ∫ u, φ u ^ 2) {c : ℝ} (hc : 0 < c) {N : ℕ} (hN : 2 ≤ N) :
+    (∀ y : ℕ → ℝ, poleMomentNeg (atomicTest N y (dilate (2 / (c / N)) (recentredProfile φ))) = 0 →
+        0 ≤ markovQuad (atomicTest N y (dilate (2 / (c / N)) (recentredProfile φ)))) ↔
+      ∀ x : EuclideanSpace ℝ (PrimeHorizonIndex N), ⟪x, normalizedRamanujanHorizonVector 1 N⟫ = 0 →
+        0 ≤ completeWeilEnergy φ c N x := by
+  have hN1 : 1 ≤ N := by omega
+  have hw : 0 < c / N := div_pos hc (by positivity)
+  have hlog : 0 < Real.sqrt (Real.log N) := Real.sqrt_pos.mpr (Real.log_pos (by exact_mod_cast hN))
+  set k := c / N * ∫ u, φ u
+  have hk : 0 < k := mul_pos hw hint
+  have hm := poleMoment_atomDilate_pos_of hφ hsupp hnn hint hw
+  have hG : 0 < ∫ u, atomDilate φ (c / N) u ^ 2 := by
+    rw [integral_atomDilate_sq hw]; exact mul_pos hw hM
+  have hφS := contDiff_recentredProfile hφ
+  have hφ1 := vanishesOff_recentredProfile hsupp
+  -- the Markov form is Weil's form on the pole hyperplane
+  have hmarkov : ∀ y : ℕ → ℝ,
+      poleMomentNeg (atomicTest N y (dilate (2 / (c / N)) (recentredProfile φ))) = 0 →
+      markovQuad (atomicTest N y (dilate (2 / (c / N)) (recentredProfile φ))) =
+        weilQuad (atomicTest N y (dilate (2 / (c / N)) (recentredProfile φ))) := fun y hy => by
+    obtain ⟨hT2, hTc⟩ := atomicTest_dilate_mem hφS hφ1 (show 0 < 2 / (c / N) by positivity) N y
+    rw [markovQuad_eq hT2 hTc, hy, zero_mul, mul_zero, sub_zero]
+  -- the pole moment vanishes exactly on the harmonic hyperplane
+  have hpole : ∀ y : ℕ → ℝ,
+      poleMomentNeg (atomicTest N y (dilate (2 / (c / N)) (recentredProfile φ))) = 0 ↔
+        ∑ n ∈ Icc 1 N, y n / Real.sqrt n = 0 := fun y => by
+    rw [poleMomentNeg_recentred hφ hsupp hw]
+    constructor
+    · intro h
+      rcases mul_eq_zero.mp h with h | h
+      · exact absurd h (Real.exp_pos _).ne'
+      · exact (div_eq_zero_iff.mp ((mul_eq_zero.mp h).resolve_left hm.ne')).resolve_right hk.ne'
+    · intro h; rw [h, zero_div, mul_zero, mul_zero]
+  constructor
+  · intro H x hx
+    rw [completeWeilEnergy, completeWeilMatrix_inner_eq_weilQuad hφ hsupp hc hN1]
+    refine div_nonneg ?_ hG.le
+    set y : ℕ → ℝ := fun n => primeHorizonExtension x n * k
+    have hy : poleMomentNeg (atomicTest N y (dilate (2 / (c / N)) (recentredProfile φ))) = 0 := by
+      rw [hpole]
+      rw [inner_normalizedRamanujanHorizonVector_one] at hx
+      have hs := (mul_eq_zero.mp hx).resolve_left (inv_ne_zero hlog.ne')
+      have e : ∑ n ∈ Icc 1 N, y n / Real.sqrt n =
+          k * ∑ n ∈ Icc 1 N, primeHorizonExtension x n / Real.sqrt n := by
+        rw [mul_sum]; exact sum_congr rfl fun n _ => by simp only [y]; ring
+      rw [e, hs, mul_zero]
+    have h := H y hy
+    rw [hmarkov y hy, weilQuad_atomicTest_dilate_recentred hw] at h
+    simpa only [y, mul_div_cancel_right₀ _ hk.ne'] using h
+  · intro H y hy
+    rw [hmarkov y hy, weilQuad_atomicTest_dilate_recentred hw, atomicTest_restrict]
+    set x : EuclideanSpace ℝ (PrimeHorizonIndex N) :=
+      WithLp.toLp 2 (fun n : PrimeHorizonIndex N => y n / k)
+    have hx : ⟪x, normalizedRamanujanHorizonVector 1 N⟫ = 0 := by
+      rw [inner_normalizedRamanujanHorizonVector_one]
+      have e : ∑ n ∈ Icc 1 N, primeHorizonExtension x n / Real.sqrt n =
+          (∑ n ∈ Icc 1 N, y n / Real.sqrt n) / k := by
+        rw [sum_div]
+        refine sum_congr rfl fun n hn => ?_
+        simp only [x, primeHorizonExtension, dif_pos hn]
+        ring
+      rw [e, (hpole y).mp hy, zero_div, mul_zero]
+    have h := H x hx
+    rw [completeWeilEnergy, completeWeilMatrix_inner_eq_weilQuad hφ hsupp hc hN1] at h
+    exact (div_nonneg_iff.mp h).elim (fun h' => h'.1) fun h' => absurd h'.2 (not_le.mpr hG)
+
+end Profiles
+
+section Logarithmic
+
+open SpacingScaleHarmonicAnalysis ArithmeticElectrostatics
+
+theorem tiltedUnitSpline_nonneg (u : ℝ) : 0 ≤ φ₀ u := by
+  unfold tiltedUnitSpline atomDilate
+  exact BiScaleUncertainty.ChebyshevGauge.splineProbe_nonneg _
+
+theorem integral_tiltedUnitSpline_pos : 0 < ∫ u, φ₀ u :=
+  lt_of_le_of_ne (MeasureTheory.integral_nonneg tiltedUnitSpline_nonneg)
+    (Ne.symm integral_tiltedUnitSpline_ne_zero)
+
+theorem kappa_log_eq (α : ℝ) : (fun N : ℕ => 2 / (2 * Real.log N ^ α / N)) =
+    fun N : ℕ => (N : ℝ) / Real.log N ^ α := by
+  funext N
+  rw [div_div_eq_mul_div, mul_div_mul_left _ _ two_ne_zero]
 
 /-- **The renormalized Hodge index at logarithmic overlap is RH.** For `α > 1/2`, RH holds iff,
 eventually in `N`, the complete Weil energy of the tilted unit spline at overlap `2(log N)^α` is
@@ -209,51 +302,85 @@ theorem riemannHypothesis_iff_completeWeil_hodgeIndex_log {α : ℝ} (hα : 1 / 
     RiemannHypothesis ↔ ∀ᶠ N : ℕ in atTop, ∀ x : EuclideanSpace ℝ (PrimeHorizonIndex N),
       ⟪x, normalizedRamanujanHorizonVector 1 N⟫ = 0 →
         0 ≤ completeWeilEnergy φ₀ (2 * Real.log N ^ α) N x := by
-  refine ⟨eventually_completeWeil_hodgeIndex_log_of_RH (by linarith), fun H => ?_⟩
-  have hκeq : (fun N : ℕ => 2 / (2 * Real.log N ^ α / N)) =
-      fun N : ℕ => (N : ℝ) / Real.log N ^ α := by
-    funext N
-    rw [div_div_eq_mul_div, mul_div_mul_left _ _ two_ne_zero]
   have hκ : OverlapGrowth fun N : ℕ => 2 / (2 * Real.log N ^ α / N) := by
-    rw [hκeq]; exact overlapGrowth_log hα
-  have hφ2 := contDiff_recentredProfile contDiff_tiltedUnitSpline
-  have hφ1 := vanishesOff_recentredProfile tiltedUnitSpline_eq_zero
-  refine (riemannHypothesis_iff_poleHyperplane_atomicFamilies_nonneg hκ hφ2 hφ1
-    (integral_recentredProfile integral_tiltedUnitSpline_ne_zero)).mpr ?_
-  filter_upwards [H, eventually_ge_atTop 2] with N hN hN2 y hy
+    rw [kappa_log_eq]; exact overlapGrowth_log hα
+  rw [riemannHypothesis_iff_poleHyperplane_atomicFamilies_nonneg hκ
+    (contDiff_recentredProfile contDiff_tiltedUnitSpline)
+    (vanishesOff_recentredProfile tiltedUnitSpline_eq_zero)
+    (integral_recentredProfile integral_tiltedUnitSpline_ne_zero)]
+  refine eventually_congr ?_
+  filter_upwards [eventually_ge_atTop 2] with N hN2
   have hlog : 0 < Real.log N := Real.log_pos (by exact_mod_cast hN2)
-  set c := 2 * Real.log N ^ α
-  have hc : 0 < c := by positivity
-  have hN1 : 1 ≤ N := by omega
-  have hw : 0 < c / N := div_pos hc (by positivity)
-  obtain ⟨hT2, hTc⟩ := atomicTest_dilate_mem hφ2 hφ1 (show 0 < 2 / (c / N) by positivity) N y
-  rw [markovQuad_eq hT2 hTc, hy, zero_mul, mul_zero, sub_zero]
-  have hsum := harmonic_eq_zero_of_poleMomentNeg_eq_zero hw N y hy
-  set k := c / N * ∫ u, φ₀ u
-  have hk : 0 < k := mul_pos hw integral_tiltedUnitSpline_pos
-  rw [weilQuad_atomicTest_dilate_recentred hw, atomicTest_restrict]
-  set x : EuclideanSpace ℝ (PrimeHorizonIndex N) :=
-    WithLp.toLp 2 (fun n : PrimeHorizonIndex N => y n / k)
-  have hx : ⟪x, normalizedRamanujanHorizonVector 1 N⟫ = 0 := by
-    rw [normalizedRamanujanHorizonVector, real_inner_smul_right,
-      EuclideanSpace.inner_eq_star_dotProduct]
-    change (Real.sqrt (Real.log N))⁻¹ *
-      ∑ n : PrimeHorizonIndex N, ramanujanPoleProfile 1 n * (y n / k) = 0
-    have e : ∑ n : PrimeHorizonIndex N, ramanujanPoleProfile 1 n * (y n / k) =
-        (∑ n ∈ Icc 1 N, y n / Real.sqrt n) / k := by
-      rw [sum_div, ← Finset.sum_coe_sort (Icc 1 N)]
-      refine sum_congr rfl fun n _ => ?_
-      simp only [ramanujanPoleProfile, normalizedRamanujanMode, ramanujanMode_one, Nat.totient_one,
-        Nat.cast_one, Real.sqrt_one, div_one]
-      ring
-    rw [e, hsum, zero_div, mul_zero]
-  have h := hN x hx
-  rw [completeWeilEnergy, completeWeilMatrix_inner_eq_weilQuad contDiff_tiltedUnitSpline
-    tiltedUnitSpline_eq_zero hc hN1] at h
-  have hG : 0 < ∫ u, atomDilate φ₀ (c / N) u ^ 2 := by
-    rw [integral_atomDilate_sq hw]; exact mul_pos hw integral_tiltedUnitSpline_sq_pos
-  exact (div_nonneg_iff.mp h).elim (fun h' => h'.1) fun h' => absurd h'.2 (not_le.mpr hG)
+  exact poleHyperplane_markov_nonneg_iff_hodgeIndex contDiff_tiltedUnitSpline
+    tiltedUnitSpline_eq_zero tiltedUnitSpline_nonneg integral_tiltedUnitSpline_pos
+    integral_tiltedUnitSpline_sq_pos (by positivity) hN2
 
 end Logarithmic
+
+/-! ### Every power of the logarithm -/
+
+section EveryRoot
+
+open SpacingScaleHarmonicAnalysis ArithmeticElectrostatics
+
+/-- **For a smooth profile the Hodge index at every power of the logarithm is RH.** For every
+`C^∞` nonnegative profile on `[0, 1]` with positive mass and every `α > 0`, RH holds iff eventually
+the complete Weil energy at overlap `2(log N)^α` is nonnegative on `v_1^⊥`. -/
+theorem riemannHypothesis_iff_completeWeil_hodgeIndex_rpow_log {φ : ℝ → ℝ} (hφ : ContDiff ℝ ∞ φ)
+    (hsupp : ∀ u, u ∉ Set.Icc 0 1 → φ u = 0) (hnn : ∀ u, 0 ≤ φ u) (hint : 0 < ∫ u, φ u)
+    (hM : 0 < ∫ u, φ u ^ 2) {α : ℝ} (hα : 0 < α) :
+    RiemannHypothesis ↔ ∀ᶠ N : ℕ in atTop, ∀ x : EuclideanSpace ℝ (PrimeHorizonIndex N),
+      ⟪x, normalizedRamanujanHorizonVector 1 N⟫ = 0 →
+        0 ≤ completeWeilEnergy φ (2 * Real.log N ^ α) N x := by
+  have hφ2 : ContDiff ℝ 2 φ := hφ.of_le (by exact_mod_cast le_top)
+  set q : ℕ := ⌈1 / α⌉₊ + 1
+  have hq : 1 < (q : ℝ) * α := by
+    have h1 : 1 / α ≤ ⌈1 / α⌉₊ := Nat.le_ceil _
+    have h2 : (1 : ℝ) = 1 / α * α := by field_simp
+    have : (q : ℝ) = ⌈1 / α⌉₊ + 1 := by simp [q]
+    rw [this]; nlinarith
+  have hκ : OverlapGrowthPow q fun N : ℕ => 2 / (2 * Real.log N ^ α / N) := by
+    rw [kappa_log_eq]; exact overlapGrowthPow_log hα hq
+  have hφS : ContDiff ℝ ∞ (recentredProfile φ) := by
+    unfold recentredProfile
+    exact (hφ.comp ((contDiff_id.add contDiff_const).div_const _)).div_const _
+  rw [riemannHypothesis_iff_poleHyperplane_atomicFamilies_nonneg_of_growthPow hκ hφS
+    (vanishesOff_recentredProfile hsupp) (integral_recentredProfile hint.ne')]
+  refine eventually_congr ?_
+  filter_upwards [eventually_ge_atTop 2] with N hN2
+  have hlog : 0 < Real.log N := Real.log_pos (by exact_mod_cast hN2)
+  exact poleHyperplane_markov_nonneg_iff_hodgeIndex hφ2 hsupp hnn hint hM (by positivity) hN2
+
+/-- A smooth bump on `[0, 1]`, equal to one on `[1/4, 3/4]`. -/
+def unitBump : ContDiffBump (1 / 2 : ℝ) := ⟨1 / 4, 1 / 2, by norm_num, by norm_num⟩
+
+theorem unitBump_eq_zero (u : ℝ) (hu : u ∉ Set.Icc 0 1) : unitBump u = 0 := by
+  rw [← Function.notMem_support, unitBump.support_eq]
+  intro h
+  rw [Metric.mem_ball, Real.dist_eq, abs_lt] at h
+  exact hu ⟨by linarith [h.1], by linarith [h.2]⟩
+
+theorem integral_unitBump_sq_pos : 0 < ∫ u, unitBump u ^ 2 := by
+  have hc : Continuous fun u => unitBump u ^ 2 := (unitBump.contDiff (n := 0)).continuous.pow 2
+  have hcs : HasCompactSupport fun u => unitBump u ^ 2 :=
+    unitBump.hasCompactSupport.comp_left (by norm_num)
+  rw [MeasureTheory.integral_pos_iff_support_of_nonneg (fun u => sq_nonneg _)
+    (hc.integrable_of_hasCompactSupport hcs)]
+  have hs : Function.support (fun u => unitBump u ^ 2) = Metric.ball (1 / 2 : ℝ) (1 / 2) := by
+    rw [← unitBump.support_eq]
+    ext u
+    simp [Function.mem_support]
+  rw [hs]
+  exact Metric.measure_ball_pos _ _ (by norm_num)
+
+/-- **The Hodge index at every power of the logarithm is RH**, for the smooth unit bump. -/
+theorem riemannHypothesis_iff_unitBump_hodgeIndex_rpow_log {α : ℝ} (hα : 0 < α) :
+    RiemannHypothesis ↔ ∀ᶠ N : ℕ in atTop, ∀ x : EuclideanSpace ℝ (PrimeHorizonIndex N),
+      ⟪x, normalizedRamanujanHorizonVector 1 N⟫ = 0 →
+        0 ≤ completeWeilEnergy unitBump (2 * Real.log N ^ α) N x :=
+  riemannHypothesis_iff_completeWeil_hodgeIndex_rpow_log unitBump.contDiff unitBump_eq_zero
+    (fun _ => unitBump.nonneg) unitBump.integral_pos integral_unitBump_sq_pos hα
+
+end EveryRoot
 
 end GaloisForLFunctions.RenormalizedIntersectionTheory
