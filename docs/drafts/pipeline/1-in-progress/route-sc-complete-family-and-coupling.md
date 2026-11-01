@@ -55,6 +55,11 @@ This supplies the requested upper-time calibration at the classical bound;
 its transitive axiom audit remains to be checked here. The subcritical count,
 uniform count, and no-jump obligations remain separate.
 
+`exists_nonrealZeroCount_and_collisionMass_le_twoThirds` bounds the count by
+`C·R(t)·log(2+3R(t))`, where `R(t)=max(X₀,2π·exp((2/3+ε)/t))+1`.
+The `2/3` improves the coefficient of `1/t`, not its power; this does not
+supply the requested `exp(A·t^(−a))` with `a<1`.
+
 ## Cone obstruction
 
 The existing double-pole argument requires an attained maximal real part.

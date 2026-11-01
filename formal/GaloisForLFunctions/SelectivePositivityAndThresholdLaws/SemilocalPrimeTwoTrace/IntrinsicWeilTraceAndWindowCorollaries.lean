@@ -122,40 +122,27 @@ theorem ccmPolarOddOperator_isTraceClass (a : SuzukiPositiveAperture) :
     ContinuousLinearMap.IsTraceClass (ccmPolarOddOperator a) :=
   smul_rankOne_isTraceClass 2 (ccmPolarSinhVector a) (ccmPolarSinhVector a)
 
-theorem inner_ccmPolarCoshVector_left (a : SuzukiPositiveAperture)
-    (x : suzukiApertureHilbert a) :
-    inner ℂ (ccmPolarCoshVector a) x =
-      ((1 / 2 : ℝ) : ℂ) *
-        (inner ℂ (ccmPolarApertureVector a (1 / 2)) x +
-          inner ℂ (ccmPolarApertureVector a (-1 / 2)) x) := by
-  rw [ccmPolarCoshVector, inner_smul_left, inner_add_left, Complex.conj_ofReal]
-
-theorem inner_ccmPolarSinhVector_left (a : SuzukiPositiveAperture)
-    (x : suzukiApertureHilbert a) :
-    inner ℂ (ccmPolarSinhVector a) x =
-      ((1 / 2 : ℝ) : ℂ) *
-        (inner ℂ (ccmPolarApertureVector a (1 / 2)) x -
-          inner ℂ (ccmPolarApertureVector a (-1 / 2)) x) := by
-  rw [ccmPolarSinhVector, inner_smul_left, inner_sub_left, Complex.conj_ofReal]
+theorem rankOne_symm_eq_two_smul_half {H : Type*} [NormedAddCommGroup H]
+    [InnerProductSpace ℂ H] [CompleteSpace H] (u v : H) :
+    InnerProductSpace.rankOne ℂ u v + InnerProductSpace.rankOne ℂ v u =
+      (2 : ℂ) • InnerProductSpace.rankOne ℂ (((1 / 2 : ℝ) : ℂ) • (u + v))
+          (((1 / 2 : ℝ) : ℂ) • (u + v)) -
+        (2 : ℂ) • InnerProductSpace.rankOne ℂ (((1 / 2 : ℝ) : ℂ) • (u - v))
+          (((1 / 2 : ℝ) : ℂ) • (u - v)) := by
+  refine ContinuousLinearMap.ext fun f => ext_inner_right ℂ fun g => ?_
+  simp only [clm_add_apply, clm_sub_apply, clm_smul_apply,
+    InnerProductSpace.rankOne_apply, inner_add_left, inner_sub_left, inner_smul_left,
+    map_add, map_sub, map_mul, map_ofNat, Complex.conj_ofReal]
+  push_cast
+  ring
 
 /-- **Exact Krein `(+1, -1)` decomposition of `ccmPolarOperator a`:**
 the source polar operator is the difference `2 |c₊⟩⟨c₊| - 2 |c₋⟩⟨c₋|` of two positive trace-class
 rank-one operators aligned with the even (`cosh`) and odd (`sinh`) pole moments. -/
 theorem ccmPolarOperator_eq_even_sub_odd (a : SuzukiPositiveAperture) :
-    ccmPolarOperator a = ccmPolarEvenOperator a - ccmPolarOddOperator a := by
-  refine ContinuousLinearMap.ext fun f => ext_inner_right ℂ fun g => ?_
-  rw [ccmPolarOperator, clm_add_apply, clm_sub_apply,
-    ccmPolarEvenOperator, ccmPolarOddOperator, clm_smul_apply, clm_smul_apply,
-    InnerProductSpace.rankOne_apply, InnerProductSpace.rankOne_apply,
-    InnerProductSpace.rankOne_apply, InnerProductSpace.rankOne_apply,
-    inner_add_left, inner_sub_left,
-    inner_smul_left, inner_smul_left, inner_smul_left, inner_smul_left,
-    inner_smul_left, inner_smul_left, map_ofNat,
-    inner_ccmPolarCoshVector_left, inner_ccmPolarCoshVector_left,
-    inner_ccmPolarSinhVector_left, inner_ccmPolarSinhVector_left,
-    map_mul, map_mul, Complex.conj_ofReal, map_add, map_sub]
-  push_cast
-  ring
+    ccmPolarOperator a = ccmPolarEvenOperator a - ccmPolarOddOperator a :=
+  rankOne_symm_eq_two_smul_half
+    (ccmPolarApertureVector a (1 / 2)) (ccmPolarApertureVector a (-1 / 2))
 
 /-! ## 2. Intrinsic operator-trace rewriting and exact positivity equivalences -/
 

@@ -39,8 +39,8 @@ In particular, `C` acts isometrically on the actual upper half-plane.
 
 The diagonal matrix acts by `z↦λ²z`. The metric inequality
 `dist(log Im z,log Im w)≤dist(z,w)` gives
-`dist(z,λ²z)≥log(λ²)=2 log λ`. On the imaginary axis equality holds,
-because equal real parts give equality in that metric inequality.
+`dist(z,λ²z)≥log(λ²)=2 log λ`. At `z=i` equality holds,
+because the two points have equal real parts.
 Conjugation by `C` transports the bound and its attaining point to `A`.
 The displacement range therefore has least element `2 log λ`, so its
 infimum is this number.

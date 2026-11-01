@@ -1,4 +1,5 @@
 import GaloisForLFunctions.RenormalizedIntersectionTheory.GaussMayerPrimitiveOrbitTrace
+import GaloisForLFunctions.RenormalizedIntersectionTheory.GaussMayerHyperbolicLength
 import Mathlib.Analysis.SpecialFunctions.Complex.LogBounds
 
 /-! The actual Mayer determinant as an absolutely convergent product over
@@ -300,5 +301,54 @@ theorem signed_determinant_one_eq_eulerProduct {w : ℂ} (hw : 2 < w.re) :
 #print axioms exists_signed_determinant_eulerProduct
 #print axioms signed_determinant_eulerProduct_on_closed_unit
 #print axioms signed_determinant_one_eq_eulerProduct
+
+/-- Actual Euler weights expressed through the displacement-defined translation length. -/
+theorem orbitWeight_eq_translationLength (w z : ℂ) (c : Orbit) (m : ℕ) :
+    orbitWeight w z c m = z^(2*cycleLength c) *
+      exp (-(w/2+(m : ℂ))*(MayerHyperbolicLength.orbitTranslationLength c : ℂ)) := by
+  have hl : 0 < multiplier c := zero_lt_one.trans (multiplier_gt_one c)
+  rw [orbitWeight,MayerHyperbolicLength.orbitTranslationLength_eq,
+    Complex.cpow_def_of_ne_zero (Complex.ofReal_ne_zero.mpr hl.ne')]
+  apply congrArg (fun v : ℂ => z^(2*cycleLength c)*exp v)
+  rw [← Complex.ofReal_log hl.le]
+  push_cast
+  ring
+
+/-- The local determinant product uses the geometric parameter `s=w/2`. -/
+theorem exists_signed_determinant_translationLength_eulerProduct {w : ℂ} (hw : 1 < w.re) :
+    ∃ R > 0, ∀ z : ℂ, ‖z‖ < R →
+      determinant w (zero_lt_one.trans hw) z * determinant w (zero_lt_one.trans hw) (-z) =
+        ∏' c : Orbit, ∏' m : ℕ,
+          (1-z^(2*cycleLength c) *
+            exp (-(w/2+(m : ℂ))*(MayerHyperbolicLength.orbitTranslationLength c : ℂ))) := by
+  obtain ⟨R,hR,h⟩ := exists_signed_determinant_eulerProduct hw
+  refine ⟨R,hR,fun z hz => ?_⟩
+  simpa only [orbitWeight_eq_translationLength] using (h z hz).2.2
+
+/-- The length-normalized product holds on the closed unit spectral disk. -/
+theorem signed_determinant_translationLength_eulerProduct_on_closed_unit {w z : ℂ}
+    (hw : 2 < w.re) (hz : ‖z‖ ≤ 1) :
+    determinant w (show 0 < w.re by linarith only [hw]) z *
+      determinant w (show 0 < w.re by linarith only [hw]) (-z) =
+      ∏' c : Orbit, ∏' m : ℕ,
+        (1-z^(2*cycleLength c) *
+          exp (-(w/2+(m : ℂ))*(MayerHyperbolicLength.orbitTranslationLength c : ℂ))) := by
+  simpa only [orbitWeight_eq_translationLength] using
+    (signed_determinant_eulerProduct_on_closed_unit hw hz).2.2
+
+/-- At spectral parameter one, each factor is `1-exp(-(w/2+m)L_c)`. -/
+theorem signed_determinant_one_eq_translationLength_eulerProduct {w : ℂ} (hw : 2 < w.re) :
+    determinant w (show 0 < w.re by linarith only [hw]) 1 *
+      determinant w (show 0 < w.re by linarith only [hw]) (-1) =
+      ∏' c : Orbit, ∏' m : ℕ,
+        (1-exp (-(w/2+(m : ℂ))*(MayerHyperbolicLength.orbitTranslationLength c : ℂ))) := by
+  have h := signed_determinant_translationLength_eulerProduct_on_closed_unit
+    (z := 1) hw (by simpa only [norm_one] using (le_refl (1 : ℝ)))
+  simpa only [one_pow,one_mul] using h
+
+#print axioms orbitWeight_eq_translationLength
+#print axioms exists_signed_determinant_translationLength_eulerProduct
+#print axioms signed_determinant_translationLength_eulerProduct_on_closed_unit
+#print axioms signed_determinant_one_eq_translationLength_eulerProduct
 
 end GaloisForLFunctions.RenormalizedIntersectionTheory.MayerOrbitProduct

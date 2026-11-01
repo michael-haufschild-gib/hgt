@@ -29,6 +29,7 @@ open GaloisForLFunctions.HTGeometry GaloisForLFunctions.ArithmeticCastelnuovoSev
   GaloisForLFunctions.SpacingScaleHarmonicAnalysis
 
 namespace GaloisForLFunctions.RenormalizedIntersectionTheory
+
 private theorem real_compression_energy {ι J : Type*} [Fintype ι] [Fintype J]
     (A : EuclideanSpace ℝ J →ₗ[ℝ] EuclideanSpace ℝ J)
     (v : ι → EuclideanSpace ℝ J) (M : ℝ) (c : ι → ℝ) :
@@ -36,12 +37,14 @@ private theorem real_compression_energy {ι J : Type*} [Fintype ι] [Fintype J]
       M * ⟪A (∑ i, c i • v i), ∑ i, c i • v i⟫ := by
   simp only [dotProduct, mulVec, map_sum, map_smul, sum_inner, inner_sum,
     real_inner_smul_left, real_inner_smul_right, Finset.mul_sum]
+  rw [Finset.sum_comm]
   apply sum_congr rfl
   intro i _
   apply sum_congr rfl
   intro j _
   ring
 
+/-- Real and imaginary coefficients give two vectors in the same positive hyperplane. -/
 private theorem compression_index_le_one {ι J : Type*} [Fintype ι] [Fintype J]
     (A : EuclideanSpace ℝ J →ₗ[ℝ] EuclideanSpace ℝ J)
     (v : ι → EuclideanSpace ℝ J) (p : EuclideanSpace ℝ J)
@@ -67,7 +70,8 @@ private theorem compression_index_le_one {ι J : Type*} [Fintype ι] [Fintype J]
     simpa only [ℓ, LinearMap.coe_mk, AddHom.coe_mk, Complex.im_sum, Complex.mul_im,
       Complex.ofReal_re, Complex.ofReal_im, mul_zero, zero_add, Complex.zero_im,
       sum_inner, real_inner_smul_left] using h
-  change 0 ≤ hermQuad ((fun i j => M * ⟪A (v i), v j⟫ : Matrix ι ι ℝ).map (↑)) c
+  change 0 ≤ hermQuad (Matrix.map (fun i j => M * ⟪A (v i), v j⟫)
+    (fun r : ℝ => (r : ℂ))) c
   rw [hermQuad_map_ofReal, real_compression_energy, real_compression_energy]
   exact add_nonneg (mul_nonneg hM (hpos _ hr)) (mul_nonneg hM (hpos _ hi))
 

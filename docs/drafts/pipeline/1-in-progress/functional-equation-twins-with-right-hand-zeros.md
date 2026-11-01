@@ -4,36 +4,38 @@
 - **Stage:** 1-in-progress
 - **Type:** CONJECTURE
 - **Wall:** Γ15; degree-three functional-equation twins.
-- **Statement:** For every coefficient cutoff `N` and real bound `B`, an entire reflection-even perturbation of the completed `ζ³` preserves the coefficients below `N` and has a real zero beyond `max(B,3)`.
+- **Statement:** For every `N`, `k` and real `B`, a normalized Dirichlet series matching `ζ³` below `N` has a completion with `k` distinct real zeros beyond `max(B,3)`, the same functional equation and the same principal parts.
 
-## Proof target
+## Proof
 
-Choose a nonzero polynomial-growth coefficient sequence from
-`gammaRCube_theta_relations_vanishing_below`. Its entire completion `E` satisfies
-`E(1-s)=E(s)`. Dirichlet uniqueness supplies a real `σ>max(B,3)` with `E(σ)≠0`.
-Then `Λ(s)³−Λ(σ)³ E(s)/E(σ)` has the required zero, reflection law and unchanged
-principal parts. Scaling the coefficients preserves their vanishing initial segment.
+The family in `gammaRCube_theta_relations_vanishing_below (max N 2)` has independent
+coefficients vanishing below `max(N,2)` and growth `O(n²)`. Its completions `E_j`
+are entire, satisfy `E_j(1-s)=E_j(s)`, and have absolutely convergent Dirichlet
+representations on `Re s>3`.
 
-The target is an existence theorem with no analytic premise. It does not assert a
-degree-one twin or positivity of the new coefficients. Degree-one rigidity is already
-formalized in `HTGeometry.HamburgerFunctionalEquation`.
+Restrict any `k` members to `σ>max(B,3)`. A zero linear combination there gives an
+eventually zero Dirichlet series because `Γ_ℝ(σ)≠0`. Dirichlet uniqueness forces its
+coefficients to vanish; independence forces every scalar to vanish. Thus these
+restrictions are independent. The evaluation-minor theorem supplies distinct `σ_i`
+with invertible matrix `P_ij=E_j(σ_i)`.
 
-## Gates
+Solve `Pc=−(Λ(σ_i)³)_i`. Then `F=Λ³+Σc_j E_j` vanishes at every `σ_i`.
+The perturbation is entire and reflection-even. Its coefficient prefix vanishes,
+including the coefficient at `1`, so the new series is normalized and matches the
+prescribed prefix. A finite sum preserves absolute convergence on `Re s>3`.
 
-- [x] Corpus inputs identified; exact degree and coefficient class fixed.
-- [ ] Dependency-closed paper proof and nonzero Dirichlet-completion bridge.
+## Scope
+
+The result gives neither a uniform rightmost-zero bound nor a uniform count of
+right-hand real zeros across this fixed-prefix functional-equation class. The
+points are chosen by the proof; they are not an arbitrary prescribed tuple.
+The twin may depend on `k` and `B`.
+
+No analytic premise is added. Coefficients are complex; coefficient positivity,
+finite order and the Selberg Euler-product axioms are not established. This is
+degree three; degree-one rigidity is formalized in `HTGeometry.HamburgerFunctionalEquation`.
+
+## Verification
+
+- [x] Dependency-closed paper proof.
 - [ ] Lean leaf check, transitive axiom audit, umbrella import.
-
-## Finite-zero interpolation
-
-**Conjecture:** For every `N`, `B` and `k`, one such twin has `k` distinct real zeros
-beyond `max(B,3)`. Thus finite coefficient data give neither a uniform rightmost-zero
-bound nor a uniform count of right-hand real zeros in this functional-equation class.
-
-Take `k` independent theta perturbations. Their restrictions to any real right ray
-remain independent: a vanishing linear combination gives a vanishing Dirichlet series,
-hence zero coefficients. The corpus evaluation-minor theorem supplies `k` distinct
-points with invertible evaluation matrix. Solve against the negative values of `Λ³`.
-The resulting finite linear combination preserves the coefficient prefix and all
-principal parts. The interpolation points are chosen by the proof; they are not an
-arbitrary prescribed tuple.
