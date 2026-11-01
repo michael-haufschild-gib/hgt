@@ -62,7 +62,7 @@ becomes visible (non-ratio lags), and that the pole is the only correction RH al
 
 **D. Synthesis ⇒ RH equivalences**
 9. Weil's form is continuous in the Lévy norm: perturbation of size ε, Lipschitz K moves Q by O(ε√log(K/ε)).
-10. Log-lattice gaps ≤ 1/n₀. Cell weights: error O(k/n₀ + 1/k); trapezoid: O((k/n₀)² + 1/k); Euler–Maclaurin weights F(log n − c)/n: O((k/n₀)^p + 1/k) for every p (log tower T_{j+1} = T_j' − (j+1)T_j); Gevrey profiles with p ≍ log log k: O(1/log²k + 1/k).
+10. Log-lattice gaps ≤ 1/n₀. Cell weights: error O(k/n₀ + 1/k); trapezoid: O((k/n₀)² + 1/k); Euler–Maclaurin weights F(log n − c)/n: O((k/n₀)^p + 1/k) for every p for smooth profiles (log tower T_{j+1} = T_j' − (j+1)T_j); Gevrey profiles with p ≍ log log k: O(1/log²k + 1/k). The tilted cubic spline has fourth-order error O((k/n₀)^4 + 1/k), via smooth regularizations with bounded fourth-derivative L¹ norms.
 11. Hence for each order: if Q < 0 on some test, Q < 0 on atomic families eventually ⇒ RH ⇔ eventual positivity; the same transfer holds for every stable form (twists, Markov form, pole hyperplane after a vanishing bump correction).
 
 **E. The pole and the zeros**
@@ -81,6 +81,7 @@ becomes visible (non-ratio lags), and that the pole is the only correction RH al
 | Fixed width (unbounded overlap) ⇔ RH; neg. index = # right zeros | `riemannHypothesis_iff_splineAtomic_negIndex_eq_zero_of_width`, `zeta_splineAtomic_negIndex_law` | proved |
 | Critical exponent 1; overlap (log N)^{½+ε} | `riemannHypothesis_iff_atomicFamilies_nonneg`, `riemannHypothesis_iff_atomicFamilies_nonneg_log` | proved |
 | Fourth root; every root (log N)^ε | `riemannHypothesis_iff_atomicFamilies_nonneg_log_quarter`, `riemannHypothesis_iff_atomicFamilies_nonneg_log_pos` | proved |
+| Tilted spline: every K(log N)^{1/8} ⇔ RH, full space and pole hyperplane | `riemannHypothesis_iff_tiltedSpline_completeWeil_nonneg_every_eighthRoot_multiple`, `riemannHypothesis_iff_tiltedSpline_pole_nonneg_every_eighthRoot_multiple` | proved |
 | (log log N)^{1+ε} window (Denjoy–Carleman) | `riemannHypothesis_iff_gevreyProfile_nonneg_loglog`, `exists_dcProfile_loglog` | proved |
 | Gauge: twist seen ⇔ not Weil positive | `atomicFamilies_negative_iff_of_growthPow`, `liouville_atomicFamilies_negative_of_growthPow` | proved |
 | Markov fails under overlap; pole hyperplane ⇔ RH | `markov_atomicFamilies_negative_of_growthPow`, `riemannHypothesis_iff_poleHyperplane_atomicFamilies_nonneg_of_growthPow` | proved |

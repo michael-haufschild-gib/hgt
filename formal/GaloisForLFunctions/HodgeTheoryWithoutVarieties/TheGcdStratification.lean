@@ -43,15 +43,20 @@ theorem quadratic_gcd_stratification {ι : Type*} [Fintype ι] {N : ℕ} (v : ι
     (hv : ∀ i, v i ∈ Icc 1 N) (W : ι → ι → ℝ) (x : ι → ℝ) :
     ∑ i, ∑ j, W i j * x i * x j =
       ∑ g ∈ Icc 1 N, ∑ i, ∑ j, if Nat.gcd (v i) (v j) = g then W i j * x i * x j else 0 := by
-  rw [sum_comm]
-  refine sum_congr rfl fun i _ => ?_
-  rw [sum_comm]
-  refine sum_congr rfl fun j _ => ?_
-  have hg : Nat.gcd (v i) (v j) ∈ Icc 1 N := by
-    have h1 := mem_Icc.mp (hv i)
-    exact mem_Icc.mpr ⟨Nat.gcd_pos_of_pos_left _ (by omega),
-      (Nat.gcd_le_left _ (by omega)).trans h1.2⟩
-  rw [sum_ite_eq (Icc 1 N) (Nat.gcd (v i) (v j)), if_pos hg]
+  symm
+  calc ∑ g ∈ Icc 1 N, ∑ i, ∑ j, (if Nat.gcd (v i) (v j) = g then W i j * x i * x j else 0)
+      = ∑ i, ∑ g ∈ Icc 1 N, ∑ j, (if Nat.gcd (v i) (v j) = g then W i j * x i * x j else 0) :=
+        sum_comm
+    _ = ∑ i, ∑ j, ∑ g ∈ Icc 1 N,
+          (if Nat.gcd (v i) (v j) = g then W i j * x i * x j else 0) :=
+        sum_congr rfl fun i _ => sum_comm
+    _ = ∑ i, ∑ j, W i j * x i * x j := by
+        refine sum_congr rfl fun i _ => sum_congr rfl fun j _ => ?_
+        have hg : Nat.gcd (v i) (v j) ∈ Icc 1 N := by
+          have h1 := mem_Icc.mp (hv i)
+          exact mem_Icc.mpr ⟨Nat.gcd_pos_of_pos_left _ (by omega),
+            (Nat.gcd_le_left _ (by omega)).trans h1.2⟩
+        rw [sum_ite_eq (Icc 1 N) (Nat.gcd (v i) (v j)), if_pos hg]
 
 /-! ### Symmetric matrices are determined by their quadratic forms -/
 
@@ -83,7 +88,7 @@ def starMap {d N : ℕ} (hd : 0 < d) (a : PrimeHorizonIndex (N / d)) : PrimeHori
     rw [mul_comm]; exact this⟩⟩
 
 theorem starMap_injective {d N : ℕ} (hd : 0 < d) : Function.Injective (starMap (N := N) hd) :=
-  fun a b h => Subtype.ext (Nat.eq_of_mul_eq_mul_left hd (congrArg Subtype.val h))
+  fun _ _ h => Subtype.ext (Nat.eq_of_mul_eq_mul_left hd (congrArg Subtype.val h))
 
 theorem starEmbed_starMap {d N : ℕ} (hd : 0 < d)
     (y : EuclideanSpace ℝ (PrimeHorizonIndex (N / d))) (a : PrimeHorizonIndex (N / d)) :
@@ -107,8 +112,8 @@ theorem starEmbed_eq_zero {d N : ℕ} (hd : 0 < d)
   · rfl
 
 /-- The quadratic form of a star embedding is the form of the restricted matrix. -/
-theorem qf_starEmbed {d N : ℕ} (hd : 0 < d) (A : Matrix (PrimeHorizonIndex N) (PrimeHorizonIndex N) ℝ)
-    (y : EuclideanSpace ℝ (PrimeHorizonIndex (N / d))) :
+theorem qf_starEmbed {d N : ℕ} (hd : 0 < d)
+    (A : Matrix (PrimeHorizonIndex N) (PrimeHorizonIndex N) ℝ) (y : EuclideanSpace ℝ (PrimeHorizonIndex (N / d))) :
     qf A (fun n => starEmbed d N y n) =
       qf (A.submatrix (starMap hd) (starMap hd)) (fun a => y a) := by
   simp only [qf, bil, dotProduct, Matrix.mulVec, Matrix.submatrix_apply]
@@ -157,8 +162,9 @@ theorem completeWeilEnergy_gcd_stratification {φ : ℝ → ℝ} (hφ : EdgeHodg
   have hgN : g ≤ N := (mem_Icc.mp hg).2
   have hpull : ∀ a : PrimeHorizonIndex (N / g), starPull g N x a = x (starMap hg0 a) := by
     intro a
-    simp only [starPull, PiLp.toLp_apply, starMap, primeHorizonExtension,
-      dif_pos (starMap hg0 a).2]
+    simp only [starPull, PiLp.toLp_apply, primeHorizonExtension]
+    rw [dif_pos (show g * (a : ℕ) ∈ Icc 1 N from (starMap hg0 a).2)]
+    rfl
   have hentry := fun a b => congrFun (congrFun
     (completeWeilMatrix_submatrix_starMap hφ hc hg0 hgN) a) b
   -- Pairs with `gcd = g` are the star images of coprime pairs.

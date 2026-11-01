@@ -9,6 +9,9 @@ import GaloisForLFunctions.HodgeTheoryWithoutVarieties.TheDepthOfAStarIsItsEnerg
 import GaloisForLFunctions.HodgeTheoryWithoutVarieties.TheEulerProductTensorizes
 import GaloisForLFunctions.HodgeTheoryWithoutVarieties.TheLefschetzCandidates
 import GaloisForLFunctions.HodgeTheoryWithoutVarieties.TheMoebiusGluingOfStars
+import GaloisForLFunctions.HodgeTheoryWithoutVarieties.TheRenormalizedFormIsGluedFromItsStars
+import GaloisForLFunctions.HodgeTheoryWithoutVarieties.TheGcdStratification
+import GaloisForLFunctions.HodgeTheoryWithoutVarieties.TheShellBalanceOnTheCoherentSector
 
 /-!
 # Hodge Theory without Varieties over ℤ
@@ -18,5 +21,8 @@ and the transport of Hodge–Riemann along connected families; stars as lower ho
 flux and the self-similar counterterm that selects `Λ`; stars of the complete Weil family and local
 Hodge–Riemann on deep stars; the Liouville property; the nerve of the star cover; the links of the
 dilation complex; the depth law of stars; the Künneth step for spectral gaps; the three Lefschetz
-candidates; the Möbius gluing of the stars. See `HodgeTheoryWithoutVarieties/README.md`.
+candidates; the Möbius gluing of the stars, the recursion of the renormalized prime form over
+the nerve, the gcd stratification of the complete Weil family, and the shell balance law on the
+coherent sector.
+See `HodgeTheoryWithoutVarieties/README.md`.
 -/

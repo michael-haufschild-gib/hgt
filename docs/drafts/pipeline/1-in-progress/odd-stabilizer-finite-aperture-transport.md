@@ -54,7 +54,8 @@ parts of the literal model transport.
 
 ## Decay-preserving logarithmic transport
 
-A stronger phase estimate may avoid the global Lipschitz loss. Write
+A [formalized phase estimate](../3-formalized/decay-preserving-cosine-transport.md)
+avoids the global Lipschitz loss. Write
 `Ωhat_T(θ)=T K(Tθ)`. Fourth-order decay for the transform of `tΩ_T(t)`
 gives `|Ωhat_T′(θ)|≤min(C T²,D T⁻²/θ⁴)`. On
 `h/m≤1`, the logarithmic frequency lies between `h/(2m)` and `h/m`.
@@ -67,8 +68,24 @@ envelope `min(u,u⁻³)` are `O(m/T)`: both are bounded by a constant times
 uniformly in the aperture. At bandwidth two, the global raw error would be
 `O(T log²T)`. Keeping the vanishing taper at the upper endpoint gives
 boundary cost `O(Xθ² log Q)`. With `θ=T^(-7/12)`, both the cubic tail and
-this boundary term have power savings. These derivative and transport
-claims remain to be formalized.
+this boundary term have power savings. The derivative, phase and lattice-mass
+bounds are formalized with seven standard-axiom audits and a passing final
+direct check. Literal weighted-row and global boundary transport remain open.
+
+For the scaled profile, put `κ(v)=v u(v−1)^4` and choose derivative suprema
+`M₄≥sup|(u⁴)⁽⁴⁾|`, `Mκ≥sup|κ⁽⁴⁾|`. Compact support supplies both.
+The identity `tΩ_T(t)=Tκ(t/T)` gives the candidate uniform transport constant
+`C=42+6M₄+192Mκ` for T≥1. Indeed, on the extended support interval,
+`M₀≤3T`, `M₁≤9T²`, `D₄≤3M₄/T³`, and `D₁≤3Mκ/T²`.
+This would make the literal row error at most `O(Q)C/T`, uniformly over
+every R with `2R≤m`, without an unspecified analytic hypothesis.
+
+For the linear taper, symmetrizing ordered pairs introduces the difference
+`g(log(m+h))−g(log m)=−log(1+h/m)`. Its absolute row sum should be at most
+`4O(Q)(M₀/T+16T³D₄)/T`. The logarithmic frequency lies in `[h/(2m),h/m]`;
+mass and fourth-derivative bounds give a summable reciprocal-square envelope.
+This first-moment estimate controls taper variation without a global factor
+`log X`.
 
 ## Formalized aperture and fixed-base consequences
 

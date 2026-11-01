@@ -142,6 +142,8 @@ everything else unconditionally.
 | Horizon coefficient `−Ωhat(0)/2`; positive complete and finite rows arbitrarily close beyond the horizon | `tendsto_stabilizerLinearRow_horizon_div_log`, `exists_positive_stabilizerLinearRow`, `exists_eventually_positive_finite_stabilizerRow` | unconditional; fixed-cutoff negative-row shortcut false |
 | C⁴ aperture tail `≤2O(Q)D₄(m/2)⁴/R³`; row envelope `≤4D₄m⁴` independent of Q | `abs_stabilizerLinearRow_truncation_le`, `abs_stabilizerLinearRow_le`, `abs_sum_stabilizerLinearRow_le` | unconditional |
 | Fixed-base limits: row/log Q→0; primitive correction/log Q→`Ωhat(0)/(2πm)` | `tendsto_stabilizerLinearRow_fixed_div_log_zero`, `tendsto_stabilizerSpatialDual_fixed_div_log` | unconditional; differs from moving horizon |
+| Logarithmic phase error `≤min(M₁x²,16D₁/x²)` for `0<x≤1` | `abs_cosTransform_log_sub_linear_le` | unconditional; Fourier decay retained |
+| Positive-frequency lattice mass `≤2m(M₀/T+T³D₄)` | `sum_abs_cosTransform_even_lattice_le` | unconditional; no additive height term |
 | Unsigned inner-lobe divergence | `sum_Icc_abs_cosTransform_ge_inner_lobe` | unconditional (no-go) |
 | Parity-twin survival line; closed-form germ limits; Λ erased on the cone | `parityTwinPair_unrestricted_vs_evenShift_survivalCone`, `tendsto_shiftedMode_ramanujanGerm_closedForm`, `quad_torsionAlignedLimit_eq_neg_cyclotomicHarmonic_on_cone` | unconditional |
 | PSD cyclotomic-harmonic kernel; IR relocation | `cyclotomicHarmonicKernel_nonneg`, `completedTwinKernel_infrared_survivalCone_eq_zero` | unconditional |

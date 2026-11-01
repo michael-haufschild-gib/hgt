@@ -61,6 +61,10 @@ The [C⁴ aperture bounds](../3-formalized/odd-stabilizer-aperture-and-fixed-bas
 now control finite linear tails and short rows. At a fixed base the row/log Q
 limit is zero, and the primitive correction/log Q limit is `Ωhat(0)/(2πm)`.
 These seven theorems pass audits and the final direct check.
+The [decay-preserving phase and lattice bounds](../3-formalized/decay-preserving-cosine-transport.md)
+are also formalized: logarithmic phase error retains inverse-square decay,
+and positive-frequency mass has no additive height term. Literal pair-weight,
+taper and boundary transport remain open.
 
 ## Fixed-cutoff primitive-sample calculation
 

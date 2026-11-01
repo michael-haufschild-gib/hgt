@@ -258,13 +258,17 @@ theorem hasSum_rectTheta_sub_one {y t : ℝ} (hy : y ≠ 0) (ht : 0 < t) :
   have hprod := h1.mul h2 (h1.summable.mul_of_nonneg h2.summable (fun _ => (Real.exp_pos _).le)
     (fun _ => (Real.exp_pos _).le))
   have hu := hprod.update (0 : ℤ × ℤ) 0
-  have hu' : HasSum (Function.update (fun x : ℤ × ℤ => Real.exp (-π * t * (x.1 : ℝ) ^ 2) *
-      Real.exp (-π * (y ^ 2 * t) * (x.2 : ℝ) ^ 2)) 0 0) (rectTheta y t - 1) := by
-    convert hu using 1
-    rw [rectTheta, thetaSum_eq_evenKernel ht, thetaSum_eq_evenKernel hpos]
+  have e : rectTheta y t - 1 = 0 - Real.exp (-π * t * (((0 : ℤ × ℤ).1 : ℤ) : ℝ) ^ 2) *
+      Real.exp (-π * (y ^ 2 * t) * (((0 : ℤ × ℤ).2 : ℤ) : ℝ) ^ 2) +
+      HurwitzZeta.evenKernel 0 t * HurwitzZeta.evenKernel 0 (y ^ 2 * t) := by
+    unfold rectTheta
+    rw [thetaSum_eq_evenKernel ht, thetaSum_eq_evenKernel hpos]
     simp only [Prod.fst_zero, Prod.snd_zero, Int.cast_zero, ne_eq, OfNat.ofNat_ne_zero,
       not_false_eq_true, zero_pow, mul_zero, Real.exp_zero, mul_one]
     ring
+  have hu' : HasSum (Function.update (fun x : ℤ × ℤ => Real.exp (-π * t * (x.1 : ℝ) ^ 2) *
+      Real.exp (-π * (y ^ 2 * t) * (x.2 : ℝ) ^ 2)) 0 0) (rectTheta y t - 1) := by
+    rw [e]; exact hu
   refine hu'.congr_fun fun i => ?_
   by_cases hi : i = 0
   · simp [hi]

@@ -6,81 +6,67 @@
 
 ## Target
 
-Classify the actual even Gauss words under conjugacy in `SL₂(ℤ)`, including
-proper powers, and prove that they represent every positive-trace hyperbolic
-conjugacy class. The existing word matrices have determinant `(-1)^k`;
-cyclic rotation through one digit uses a determinant-minus-one conjugator.
-Thus ordinary digit necklaces cannot be identified with modular classes
-without an orientation and primitivity audit.
+Classify the actual even Gauss words under `SL₂(ℤ)` conjugacy and proper
+powers, and prove that they represent every positive-trace hyperbolic class.
+The literal Gauss matrices have determinant `(-1)^k`; one-digit cyclic
+rotation uses a determinant-minus-one conjugator. Ordinary digit necklaces
+therefore require an orientation audit.
 
-## Proposed proof
+## Certified matrix classification
 
-Let `L=(1,1;0,1)` and `R=(1,0;1,1)`. Two consecutive positive Gauss digits
-satisfy `M_a M_b=R^a L^b`. Euclidean subtraction now gives a certified unique expression of every
-nonnegative determinant-one integer matrix as a word in `L,R`.
+Let `L=(1,1;0,1)` and `R=(1,0;1,1)`. Every nonnegative determinant-one
+integer matrix has a unique word in `L,R`. For strictly positive words:
 
-For strictly positive matrices `A,B` and an integral determinant-one
-intertwiner `CA=BC`, the expanding eigendirections suggest that one of
-`CA^n` and `-CA^n` is eventually strictly positive. For nonnegative determinant-one intertwiners, the exact cyclic word
-classification is certified. Euclidean prefix cancellation also proves that
-commuting nonnegative unimodular matrices are powers of one word. Extending
-these results to arbitrary integral conjugators and roots remains open.
+1. Integral determinant-one conjugacy is exactly cyclic word splitting.
+2. An integral determinant-one `k`th root exists exactly when the word is a
+   repetition of one whole word `k` times.
+3. Every integral determinant-one matrix with trace greater than two is
+   conjugate to a strictly positive word, with explicit inverse integral
+   determinant-one change-of-basis matrices.
 
-For a general integral matrix with trace greater than two, choose an
-oriented unimodular rational cone around its attracting irrational ray.
-Certified mediant subdivision preserves the determinant and gives adjacent slopes
-with interval width at most `1/(n+1)`: adjacent denominators stay positive,
-their sum grows by at least one, and their product is at least their sum
-minus one. For the expanding fixed slope `x`, write `λ=cx+d>1`, `μ=λ⁻¹`.
-The exact identity
-`f(y)−x = μ(y−x)/(cy+d)` sends any sufficiently small bracket strictly
-inside itself, since `cy+d>μ>0`. Conjugation by its two primitive
-boundary vectors therefore gives a strictly positive integer matrix; this
-hyperbolic reduction is now certified.
+Euclidean row subtraction proves unique generation. Mediant subdivision
+gives arbitrarily narrow adjacent unimodular rational brackets around every
+irrational slope, with width at most `1/(n+1)`. For the expanding slope `x`,
+`λ=cx+d>1`, `μ=λ⁻¹`, the exact identity
+`f(y)−x=μ(y−x)/(cy+d)` maps a small bracket strictly inside itself.
+Its boundary basis gives a strictly positive conjugate.
 
-Finally translate cyclic runs back to the actual Gauss digits, retaining
-even rotation and the possible square of an odd primitive Gauss word.
-Conjugacy classes of a matrix and its inverse must also be counted explicitly
-before passing to any convention for oriented or unoriented geodesics.
+For positive `A,B` and an arbitrary integral unimodular intertwiner `CA=BC`,
+normalized powers converge to the positive rank-one expanding projection.
+Its image under `C` has one strict sign, so one of `CA^n` and `-CA^n` is
+strictly positive for all sufficiently large `n`. Free-word cancellation
+then gives cyclic splitting. For a root `B^k=A`, a signed positive shift
+`D=±BA^n` satisfies `D^(2k)=A^(2(nk+1))`. The common-word-root theorem and
+word lengths force the source word to be a `k`fold repetition.
 
-## Audit and gaps
+## Lean certificates
 
-The corpus supplies the literal word matrices, fractional-linear action,
-real periodic points, expanding quadratic multipliers, and absolutely
-convergent power traces. Local searches did not surface a primitive modular
-coding theorem. Mathlib supplies continued-fraction determinant and error
-formulas; these alone do not prove this classification.
+Modules in `RenormalizedIntersectionTheory`:
 
-Classification under arbitrary integral conjugacy and the primitive modular
-bridge remain unproved here. In particular, no full conjugacy classification, root,
-geodesic, Selberg-product, or scattering identity is assumed. The target is
-an exact matrix coding bridge for the existing source, not a definition of
-Selberg zeta by the desired Fredholm determinant.
+- `GaussMayerPositiveMatrixCoding.lean`: unique nonnegative words, cyclic
+  splitting for nonnegative intertwiners, common roots of commuting words.
+- `GaussMayerUnimodularRationalCones.lean`:
+  `exists_unimodular_rational_cone`, quantitative bracket bounds.
+- `GaussMayerHyperbolicReduction.lean`:
+  `exists_positive_integral_conjugate`, expanding-slope identities.
+- `GaussMayerPositiveConjugators.lean`:
+  `eventually_intertwiner_one_sign`, `exists_positive_intertwiner`.
+- `GaussMayerIntegralWordConjugacy.lean`:
+  `integral_intertwiner_iff_cyclic_split`, `integral_root_iff_word_power`,
+  `exists_integral_word_conjugate`.
 
-## Certified building blocks
+All five direct production checks pass without diagnostics. Their
+6+3+9+11+4 transitive axiom audits use only standard axioms. Umbrella imports
+wired. These certify the matrix classification, not the full Gauss target.
 
-Modules in `RenormalizedIntersectionTheory`, namespace `MayerCoding`:
+## Remaining bridge
 
-- `GaussMayerPositiveMatrixCoding.lean`: `exists_matrixWord`,
-  `matrixWord_injective`, `cyclic_split_of_intertwiner`,
-  `positive_intertwiner_iff_cyclic_split`, `commuting_words_common_root`,
-  `commuting_matrices_common_root`.
-- `GaussMayerUnimodularRationalCones.lean`: `rationalBracket_spec`,
-  `rationalBracket_width`, `exists_unimodular_rational_cone`.
+Two positive Gauss digits satisfy `M_a M_b=R^a L^b`; the actual `wordMatrix`
+uses reversed digit order. Translate alternating positive runs into that
+literal source, prove cyclic classification with even digit rotations, and
+retain even-word primitivity: the square of an odd primitive Gauss word can
+be primitive in `SL₂(ℤ)`.
 
-The cone theorem gives, for every irrational `x` and every `ε>0`, integers
-`p,q,r,s` with positive `q,s`, `ps−rq=1`, and
-`r/s<x<p/q`, `p/q−r/s<ε`. The constructive unit-interval brackets have width
-at most `1/(n+1)`.
-
-`GaussMayerHyperbolicReduction.lean`, namespace `MayerHyperbolic`, proves
-`exists_positive_integral_conjugate`: every integral determinant-one matrix
-with trace greater than two has a strictly positive integral conjugate,
-with explicit determinant-one inverse change-of-basis matrices. Its proof
-also certifies irrationality of the expanding multiplier and slope, and
-the exact projective displacement identity above.
-
-All three direct production checks pass without diagnostics. Six word,
-three cone, and nine hyperbolic transitive axiom audits use only standard axioms.
-Umbrella imports wired. These are foundations for the target classification;
-the full conjecture above is not certified.
+Matrix/inverse conjugacy and oriented versus unoriented multiplicities must
+also be audited before a geodesic or Selberg-product identity. No such
+identity, scattering normalization, or resonance exclusion is assumed.

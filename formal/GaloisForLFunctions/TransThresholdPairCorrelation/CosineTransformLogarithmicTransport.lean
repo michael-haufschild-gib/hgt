@@ -140,7 +140,8 @@ theorem abs_cosTransform_log_sub_linear_le {Ω : ℝ → ℝ} {a b x : ℝ}
         he.trans (mul_le_mul_of_nonneg_right (min_le_right _ _) (sq_nonneg x))
       _ = _ := by field_simp [hx.ne']; ring
 
-private theorem sum_inverse_square_affine_le {α : ℝ} (hα : 0 < α) (R : ℕ) :
+/-- A positive affine reciprocal-square lattice is bounded by its telescoping integral scale. -/
+theorem sum_inverse_square_affine_le {α : ℝ} (hα : 0 < α) (R : ℕ) :
     (∑ n ∈ range R, 1 / (1 + α * ((n : ℝ) + 1))^2) ≤ 1 / α := by
   have hpt (n : ℕ) : 1 / (1 + α * ((n : ℝ) + 1))^2 ≤
       (1 / α) * (1 / (1 + α * n) - 1 / (1 + α * (n + 1 : ℕ))) := by
