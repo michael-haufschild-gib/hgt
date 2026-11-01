@@ -93,11 +93,13 @@ theorem epsteinLambda_dual_eight {s : ℂ} (hs : 1 < s.re) :
     have hbase : Real.pi * rectForm 8 p.swap = 64 * (Real.pi * rectForm (1 / 8) p) := by
       rw [hQ]
       ring
-    rw [epsteinTerm, epsteinTerm, if_neg hp, if_neg hswap, mul_one,
-      hbase, Complex.ofReal_mul, Complex.mul_cpow_ofReal_nonneg (by norm_num) hq.le]
-    norm_num only [Complex.ofReal_ofNat]
+    have hfactor : (((Real.pi * rectForm 8 p.swap : ℝ) : ℂ) ^ s) =
+        (64 : ℂ) ^ s * (((Real.pi * rectForm (1 / 8) p : ℝ) : ℂ) ^ s) := by
+      rw [hbase, Complex.ofReal_mul]
+      simpa only [Complex.ofReal_ofNat] using
+        Complex.mul_cpow_ofReal_nonneg (a := 64) (by norm_num) hq.le s
+    rw [epsteinTerm, epsteinTerm, if_neg hp, if_neg hswap, mul_one, hfactor]
     field_simp [h64, hpow]
-    <;> ring
   have hswapSum : (∑' p : ℤ × ℤ, epsteinTerm 8 s p.swap) =
       epsteinLambda 8 (by norm_num) s :=
     ((Equiv.prodComm ℤ ℤ).tsum_eq (epsteinTerm 8 s)).trans
@@ -139,7 +141,7 @@ theorem numerator_eq (s : ℂ) (hs0 : s ≠ 0) (hs1 : s ≠ 1) :
   rw [numerator, completed, epstein_eight_eq]
   have h1s : 1 - s ≠ 0 := sub_ne_zero.mpr hs1.symm
   field_simp [hs0, h1s]
-  <;> ring
+  ring
 
 @[simp] theorem numerator_zero : numerator 0 = 1 / 2 := by
   norm_num [numerator]
@@ -151,17 +153,17 @@ theorem orderOneEnvelope_numerator : OrderOneEnvelope numerator := by
   have hpow : OrderOneEnvelope (fun s : ℂ => (8 : ℂ) ^ s) := by
     refine ((orderOneEnvelope_natCast_cpow_neg (n := 8) (by norm_num)).comp_affine
       (-1) 0).congr fun s => ?_
-    simp only [mul_neg_one, neg_mul, one_mul, add_zero, neg_neg]
+    norm_num only [neg_mul, one_mul, add_zero, neg_neg, Nat.cast_ofNat]
   have hpoly : OrderOneEnvelope (fun s : ℂ => s * (s - 1)) := by
-    simpa only [Polynomial.eval_mul, Polynomial.eval_sub, Polynomial.eval_X,
-      Polynomial.eval_one] using
-      orderOneEnvelope_polynomial (Polynomial.X * (Polynomial.X - 1) : Polynomial ℂ)
+    refine (orderOneEnvelope_polynomial
+      (Polynomial.X * (Polynomial.X - 1) : Polynomial ℂ)).congr fun z => ?_
+    simp only [Polynomial.eval_mul, Polynomial.eval_sub, Polynomial.eval_X, Polynomial.eval_one]
   have hcorrection : OrderOneEnvelope (fun s : ℂ => -(s - 1) + s / 8) := by
-    simpa only [Polynomial.eval_add, Polynomial.eval_neg, Polynomial.eval_sub,
+    refine (orderOneEnvelope_polynomial (-(Polynomial.X - 1) + Polynomial.X *
+      Polynomial.C (8⁻¹ : ℂ))).congr fun z => ?_
+    simp only [Polynomial.eval_add, Polynomial.eval_neg, Polynomial.eval_sub,
       Polynomial.eval_X, Polynomial.eval_one, Polynomial.eval_mul, Polynomial.eval_C,
-      div_eq_mul_inv] using
-      orderOneEnvelope_polynomial (-(Polynomial.X - 1) + Polynomial.X *
-        Polynomial.C (8⁻¹ : ℂ))
+      div_eq_mul_inv]
   refine ((hpow.const_mul (1 / 2)).mul
     ((hpoly.mul (orderOneEnvelope_epsteinLambda_zero (by norm_num : (0 : ℝ) < 8))).add
       hcorrection)).congr fun s => ?_
@@ -185,7 +187,6 @@ theorem completed_eq_gamma_lSeries {s : ℂ} (hs : 1 < s.re) :
     rw [← Complex.mul_cpow_ofReal_nonneg (by positivity) Real.pi_pos.le, hbase]
   rw [completed, epsteinLambda_eight_eq_lSeries hs, ← hscale]
   field_simp [hπpow]
-  <;> ring
 
 private theorem reciprocal_scales (s : ℂ) :
     ((Real.pi / 8 : ℝ) : ℂ) ^ s * ((8 / Real.pi : ℝ) : ℂ) ^ s = 1 := by
@@ -278,7 +279,6 @@ theorem lSeries_eq_continuation {s : ℂ} (hs : 1 < s.re) :
   rw [continuation_value, regularized_eq_mul_lSeries hs]
   change LSeries (fun n => (coeff n : ℂ)) s = _
   field_simp [hs1]
-  <;> ring
 
 theorem regularized_conjugate (s : ℂ) : star (regularized (star s)) = regularized s := by
   have hcoeff : RHTower.selbergArithmeticFunctionConjugate arithmeticCoeffs = arithmeticCoeffs := by
@@ -358,7 +358,6 @@ private theorem representedCompleted_eq (s : ℂ) (hs0 : s ≠ 0) (hs1 : s ≠ 1
       (((8 / Real.pi : ℝ) : ℂ) ^ s * ((Real.pi / 8 : ℝ) : ℂ) ^ s) *
         (s * Complex.Gamma s * (Complex.Gamma (s + 1))⁻¹) * completed s := by
           field_simp [sub_ne_zero.mpr hs1, hΓ1]
-          <;> ring
     _ = completed s := by rw [hscale', hcancel, one_mul, one_mul]
 
 private theorem completed_one_sub_rightHalfPlane {s : ℂ} (hs : 1 < s.re) :
@@ -385,7 +384,7 @@ theorem numerator_one_sub (s : ℂ) : numerator (1 - s) = numerator s := by
   have hR := Complex.analyticOnNhd_univ_iff_differentiable.mp analytic_numerator
   have hreflect : AnalyticOnNhd ℂ (fun z : ℂ => numerator (1 - z)) univ :=
     Complex.analyticOnNhd_univ_iff_differentiable.mpr
-      (hR.comp (differentiable_const.sub differentiable_id))
+      (hR.comp ((differentiable_const (1 : ℂ)).sub differentiable_id))
   have hopen : IsOpen {z : ℂ | 1 < z.re} := isOpen_lt continuous_const continuous_re
   have htwo : (2 : ℂ) ∈ {z : ℂ | 1 < z.re} := by norm_num
   have hlocal : (fun z : ℂ => numerator (1 - z)) =ᶠ[𝓝 (2 : ℂ)] numerator := by
@@ -425,7 +424,7 @@ theorem functionalEquation :
   have hd : Differentiable ℂ reciprocalGammaEntire := Complex.differentiable_one_div_Gamma
   have hg : AnalyticOnNhd ℂ g univ :=
     Complex.analyticOnNhd_univ_iff_differentiable.mpr
-      (hd.mul (hd.comp (differentiable_const.sub differentiable_id)))
+      (hd.mul (hd.comp ((differentiable_const (1 : ℂ)).sub differentiable_id)))
   have hgzero : ¬ Set.EqOn g 0 univ := by
     intro h
     have hΓ : Complex.Gamma (1 / 2 : ℂ) ≠ 0 :=
@@ -469,7 +468,7 @@ def extendedClass : RHTower.ExtendedSelbergClass where
   coeff_ne_zero := by
     intro h
     have h1 := congrArg (fun f : ArithmeticFunction ℂ => f 1) h
-    simpa using h1
+    simp at h1
   lSeriesSummable := fun _ hs => (lSeriesSummable_and_eq hs).1
   continuation := continuation
   lSeries_eq_value := fun _ hs => lSeries_eq_continuation hs
@@ -477,13 +476,20 @@ def extendedClass : RHTower.ExtendedSelbergClass where
   functionalEquation := functionalEquation
 
 theorem extendedClass_degree : extendedClass.presentationDegree = 2 := by
-  norm_num [RHTower.ExtendedSelbergClass.presentationDegree, extendedClass,
-    gammaData, RHTower.SelbergGammaData.degree]
+  change 2 * ∑ _j : Fin 1, (1 : ℝ) = 2
+  norm_num
 
 theorem extendedClass_conductor : extendedClass.presentationConductor = 256 := by
   change gammaData.conductor = 256
-  norm_num [RHTower.SelbergGammaData.conductor, RHTower.SelbergGammaData.degree,
-    gammaData, Real.rpow_two] <;> field_simp [Real.pi_ne_zero] <;> ring
+  have hdegree : gammaData.degree = 2 := by
+    change 2 * ∑ _j : Fin 1, (1 : ℝ) = 2
+    norm_num
+  rw [RHTower.SelbergGammaData.conductor, hdegree]
+  change (2 * Real.pi) ^ (2 : ℝ) * (8 / Real.pi) ^ 2 *
+    (∏ _j : Fin 1, (1 : ℝ) ^ (2 * (1 : ℝ))) = 256
+  norm_num [Real.rpow_two]
+  field_simp [Real.pi_ne_zero]
+  ring
 
 /-- The completion has a real zero strictly between the critical line and its pole. -/
 theorem completed_has_offLine_zero :
@@ -526,6 +532,3 @@ theorem exists_positive_ramanujan_counterexample :
     exact_mod_cast h
 
 end GaloisForLFunctions.SelbergClass.PositiveEpstein
-
-#print axioms GaloisForLFunctions.SelbergClass.PositiveEpstein.exists_positive_ramanujan_counterexample
-#print axioms GaloisForLFunctions.SelbergClass.PositiveEpstein.extendedClass_conductor

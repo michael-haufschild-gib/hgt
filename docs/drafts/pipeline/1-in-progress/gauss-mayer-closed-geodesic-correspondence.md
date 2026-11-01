@@ -54,5 +54,12 @@ not dense. The real subgroup dichotomy gives the cyclic lattice, whose
 generator can be chosen positive. The direct Lean check and all nine
 transitive axiom audits passed with only the standard three axioms.
 
-Primitive return matrices, phase equivalence, the cycle bijection, and the
-geodesic-indexed determinant product remain to be formalized.
+`GaussMayerGeodesicCentralizer.common_return_phase` proves that two real
+frames with the same nonzero integral return lie on the same modular flow
+orbit. Their relative frame centralizes a nontrivial diagonal element,
+so is a diagonal time or its negative; the integral central element `−I`
+removes the sign. The centralizer module passed its direct check and seven
+standard-axiom audits.
+
+Primitive-return classification, integral conjugacy of flow orbits, the cycle
+bijection, and the geodesic-indexed determinant product remain to be formalized.

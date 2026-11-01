@@ -20,6 +20,9 @@ They all lie on the critical line exactly when `0≤A≤2√p`.
 At equality they are double. For `A>2√p`, two reflected vertical arithmetic
 progressions leave the line. For `p=2`, `A=17/6`, the roots are `−3/2` and `−4/3`,
 so both progressions lie strictly inside the critical strip.
+For `A=9/2`, the roots are `−4` and `−1/2`; the zero
+`2+iπ/log 2` directly contradicts the full carrier's exponential Euler identity
+on `Re s>1`.
 
 For any `ρ>1/2`, choosing `A=p^ρ+p^(1−ρ)` gives logarithmic coefficients
 `b(p^k)=[1+(-1)^(k+1)(p^(ρk)+p^((1−ρ)k))]/k`.

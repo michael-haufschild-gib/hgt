@@ -65,6 +65,24 @@ theorem exists_eigenbasis (A : SL(2, ℝ)) (l μ : ℝ)
     field_simp [hg]
     ring
 
+/-- The expanding root of the determinant-one characteristic polynomial
+gives a real eigenframe with reciprocal diagonal entries. -/
+theorem exists_expanding_eigenbasis (A : SL(2, ℝ)) (l : ℝ)
+    (hl : 1 < l) (hc : A 1 0 ≠ 0)
+    (hroot : l^2-(A 0 0+A 1 1)*l+1=0) :
+    ∃ C : SL(2, ℝ), A*C=C*diagonalElement l l⁻¹
+      (mul_inv_cancel₀ (zero_lt_one.trans hl).ne') := by
+  have hl0 := zero_lt_one.trans hl
+  have hp := mul_inv_cancel₀ hl0.ne'
+  have ht : l+l⁻¹=A 0 0+A 1 1 := by
+    apply mul_right_cancel₀ hl0.ne'
+    rw [add_mul,inv_mul_cancel₀ hl0.ne']
+    nlinarith only [hroot]
+  have hμ : l⁻¹ < 1 := (inv_lt_one₀ hl0).mpr hl
+  have hg : l-l⁻¹ ≠ 0 := (sub_pos.mpr (hμ.trans hl)).ne'
+  exact exists_eigenbasis A l l⁻¹ hp ht hc hg
+
 #print axioms exists_eigenbasis
+#print axioms exists_expanding_eigenbasis
 
 end GaloisForLFunctions.RenormalizedIntersectionTheory.MayerRealEigenbasis

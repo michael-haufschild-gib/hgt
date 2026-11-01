@@ -72,13 +72,7 @@ private theorem minimum_of_eigenbasis (A : SL(2, ℝ)) (l : ℝ)
     IsLeast (Set.range (fun z : ℍ => dist z (A • z))) (2*Real.log l) := by
   have hl0 := zero_lt_one.trans hl
   have hp := mul_inv_cancel₀ hl0.ne'
-  have ht : l+l⁻¹=A 0 0+A 1 1 := by
-    apply mul_right_cancel₀ hl0.ne'
-    rw [add_mul,inv_mul_cancel₀ hl0.ne']
-    nlinarith only [hroot]
-  have hμ : l⁻¹ < 1 := (inv_lt_one₀ hl0).mpr hl
-  have hg : l-l⁻¹ ≠ 0 := (sub_pos.mpr (hμ.trans hl)).ne'
-  obtain ⟨C,hC⟩ := exists_eigenbasis A l l⁻¹ hp ht hc hg
+  obtain ⟨C,hC⟩ := exists_expanding_eigenbasis A l hl hc hroot
   have hdist (z : ℍ) : dist (C • z) (A • (C • z)) =
       dist z (diagonalElement l l⁻¹ hp • z) := by
     rw [← mul_smul,hC,mul_smul,dist_smul]

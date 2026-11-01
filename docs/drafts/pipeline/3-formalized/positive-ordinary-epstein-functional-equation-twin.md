@@ -1,21 +1,21 @@
 # A positive ordinary Dirichlet twin from a rectangular lattice
 
 - **ID:** positive-ordinary-epstein-functional-equation-twin
-- **Stage:** 1-in-progress
-- **Type:** CONJECTURE
+- **Stage:** 3-formalized
+- **Type:** THEOREM (Lean)
 - **Wall:** Γ15; positivity-constrained functional-equation twins.
 - **Statement:** The normalized representation series
   `D(s)=½Σ_(m,n)≠0 (m²+64n²)⁻ˢ` has nonnegative ordinary Dirichlet coefficients,
   coefficient `a(1)=1`, absolute convergence on `Re s>1`, a self-dual completion
   `F(s)=(8/π)ˢ Γ(s)D(s)` with simple poles at `0,1`, and a real zero in `(½,1)`.
-  Its coefficients are not multiplicative.
+  It belongs to the extended Selberg class, has degree two and conductor `256`,
+  and satisfies every Ramanujan power bound. Its coefficients are not multiplicative.
 
-## Existing inputs and missing bridges
+## Proof
 
 `LatticeSectionTheory.epsteinLambda_eight_has_offLine_zero` supplies the zero.
 `hasSum_epsteinLambda` supplies the lattice-indexed Dirichlet representation and
-`epsteinLambda_one_sub` the paired functional equation. These do not yet state
-the ordinary integer-indexed series or its scalar functional equation.
+`epsteinLambda_one_sub` the paired functional equation.
 
 Group lattice points by `m²+64n²`; each fiber is finite. Half its cardinality is
 nonnegative and its first value is one. The fibers at `5` and `13` are empty,
@@ -54,12 +54,29 @@ The existing real zero `σ∈(1/2,1)` of `Λ_8` is also a zero of `D`, since the
 Gamma and exponential factors are nonzero there. The obstruction at `5·13`
 excludes coefficient multiplicativity.
 
-## Lean scope
+## Lean certificate
 
-`PositiveEpsteinCoefficients.lean` checks: nonnegative normalized coefficients,
-nonmultiplicativity at `5·13`, absolute convergence on `Re s>1`, exact grouping
-by the quadratic norm, and every Ramanujan power bound.
+Namespace: `GaloisForLFunctions.SelbergClass.PositiveEpstein`.
 
-The identification with the Epstein completion, scalar functional equation, and
-finite-order regularization remain under formalization. Membership in the
-extended Selberg class with Ramanujan bounds is not yet certified.
+- `exists_positive_ramanujan_counterexample`: unconditional normalized,
+  nonnegative Ramanujan member of `RHTower.ExtendedSelbergClass`, with
+  nonmultiplicative coefficients and a real zero in `(1/2,1)`.
+- `extendedClass_conductor`: conductor `256`.
+- `numerator_one_sub`, `numerator_zero`, `numerator_one`: reflection and the
+  exact pole-cleared endpoint values.
+- `orderOneEnvelope_regularized`, `regularized_one`: entire order-one envelope
+  and residue numerator `H(1)=π/16`.
+
+Leaf: `formal/GaloisForLFunctions/SelbergClass/PositiveEpsteinCompletion.lean`;
+coefficient and growth proofs are in its two sibling imports. Wired into
+`SelbergClass.lean`.
+
+The leaf passed `lake --old env lean`. The counterexample and conductor
+axiom audits contain only `[propext, Classical.choice, Quot.sound]`.
+
+## Selection boundary
+
+Nonnegative counting coefficients and Ramanujan bounds do not repair selection
+by the functional equation. The positive arithmetic content is the exact
+ordinary norm-fiber decomposition, its divisor bound, and its finite-order
+continuation. The Euler-product-constrained case of Γ15 remains open.

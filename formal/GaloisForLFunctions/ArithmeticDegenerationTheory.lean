@@ -7,6 +7,8 @@ import GaloisForLFunctions.ArithmeticDegenerationTheory.TheRescaledLimitTensoriz
 import GaloisForLFunctions.ArithmeticDegenerationTheory.TheSubthresholdBlockIsUniformlyJordan
 import GaloisForLFunctions.ArithmeticDegenerationTheory.TheMertensFunctionIsAGluingDeterminant
 import GaloisForLFunctions.ArithmeticDegenerationTheory.CompleteDegenerationSelectsZeta
+import GaloisForLFunctions.ArithmeticDegenerationTheory.TheMonodromyIsEventuallyIdempotent
+import GaloisForLFunctions.ArithmeticDegenerationTheory.TheScalingFormOfTheDegeneration
 
 /-!
 # Arithmetic Degeneration Theory
@@ -17,6 +19,7 @@ spline; the limiting mixed structure of the finite family and its inheritance ra
 monodromy acting on conductors by valuation lowering; weight strings and the tensor law of the
 limiting polarization; the uniform Jordan law on the subthreshold block; the Mertens function as
 the gluing determinant at the pole; complete degeneration as the signature of `ζ` among its
-prime-flip twins.
+prime-flip twins; the eventual idempotence of the monodromy; the exact scaling form of the
+degeneration and inherited polarization on fixed packets.
 See `ArithmeticDegenerationTheory/README.md`.
 -/

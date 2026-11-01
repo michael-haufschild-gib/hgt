@@ -54,6 +54,14 @@ critical line. `two_prime_alias_bound_in_Δ` gives joint phase separation
 Neither controls residue cancellation while real parts approach an unattained
 supremum. A comparison involving the width gap and zero height remains missing.
 
+Positive weights alone do not remove this obstruction: the concrete
+`CircleQuadraturePositive.pcoef` and `ppoint` have positive weights summable
+to every positive power, distinct nodes of modulus at least `5/4`, and all
+positive integer moments zero. The symmetric single-prime Wolff configuration
+also has locally finite ordinates and positive scalar Toeplitz Grams despite
+off-line support. These are single-clock obstructions, not counterexamples to
+the two-prime zeta cone claim.
+
 ## Other boundaries
 
 The finite-sieve Hodge theorem concerns the matched prime form after a scalar

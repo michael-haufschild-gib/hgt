@@ -1,6 +1,6 @@
 # Selective Positivity and Threshold Laws (SPTL)
 
-Namespace `GaloisForLFunctions.SelectivePositivityAndThresholdLaws`; umbrella `SelectivePositivityAndThresholdLaws.lean`; 10 modules (including `SemilocalPrimeTwoTrace/*`).
+Namespace `GaloisForLFunctions.SelectivePositivityAndThresholdLaws`; umbrella `SelectivePositivityAndThresholdLaws.lean`; 12 modules (including `SemilocalPrimeTwoTrace/*`).
 Everything is unconditional; RH appears only inside proved equivalences.
 
 ## 1. Motivation
@@ -35,6 +35,8 @@ as a boundary law plus a refutation witness on a battery of fake weights.
 | Valuation-shell log operator | `primeValuationLogOperator p m`, `primeTwoLogOperator m` | `(log p)(P_{ℤ_p} − U^m P_{ℤ_p} U^{−m})` on `ℓ²(ℤ)` with `opTrace = m log p` |
 | Single-prime semilocal family | `primeSingleSemilocalFamily p` | CCM remainder family retaining only prime powers `p^m` (`m ≥ 1`) |
 | Polar Krein split | `ccmPolarEvenOperator a`, `ccmPolarOddOperator a` | `ccmPolarOperator a = 2|c₊⟩⟨c₊| − 2|c₋⟩⟨c₋|` on `suzukiApertureHilbert a` |
+| Weighted / multi-prime semilocal families | `weightedPrimeFamily w`, `primeSetSemilocalFamily P`, `finitePrimeSetSemilocalFamily S` | Arbitrary-weight and `{∞} ∪ P` / `{∞} ∪ S` aperture-compatible CCM remainder families |
+| Finite-prime collapse constants | `finitePrimeCollapseConst r`, `finitePrimeCollapseCoeff r`, `finitePrimeZeroCrossingCeiling r` | Cardinality-only constants for `energy A ≤ C_r − c_r e^A` (`A ≥ 4`) and zero-crossing ceiling |
 
 ## 3. Language
 
@@ -95,6 +97,7 @@ as a boundary law plus a refutation witness on a battery of fake weights.
 | Positive `2`-adic logarithmic trace (`opTrace = m log 2`) and exact `{∞, 2}` trace identity on `(0, ½log3]` | `primeTwoLogOperator_isPositive`, `opTrace_primeTwoLogOperator`, `ccmRestrictedWeilSourceQuadratic_eq_semilocalPrimeTwoTrace_of_le_halfLogThree`, `primeSingleSemilocalFamily_two_energy_eq_literal_of_le_halfLogThree` | proved |
 | Semilocal `{∞, 2}` positivity obstructions: unglued Sonin non-positivity, bilateral prime-`2` indefiniteness, multiplicative tensor no-go, half-integer lattice collapse & forced zero crossing, no positive `{∞, 2}` operator-trace carrier | `not_isPositive_ccmSoninGenericPartAt_one`, `neither_sign_isPositive_ccmFinitePrimeOperator_primeTwo_window`, `no_multiplicative_tensor_factorization_primeTwo_window`, `exists_aperture_primeFree_and_singleSemilocal_energy_lt`, `exists_primeTwoSemilocal_zero_crossing`, `no_positive_operator_trace_carrier_for_primeTwoSemilocal` | proved |
 | Intrinsic operator-trace equivalence, unconditional positivity through `181/500 > ½log2`, upgraded `zetaContactAperture` / all-profile Hodge / Künneth / `l2SourceCone` RR, and `½log3` equivalence (`question_Q6_complete_resolution`) | `ccmPolarOperator_eq_even_sub_odd`, `isPositive_ccmRestrictedWeilZeroFormOperator_iff_opTrace_nonneg`, `isPositive_ccmRestrictedWeilZeroFormOperator_of_le_threeHundredSixtyTwoThousandths`, `threeHundredSixtyTwoThousandths_le_zetaContactAperture`, `scalingSubsurface_all_hodgeIndex_of_le_threeHundredSixtyTwoThousandths`, `kunneth_effectivity_realTestsAt_of_le_threeHundredSixtyTwoThousandths`, `l2SourceCone_realTestsAt_riemannRoch_of_le_threeHundredSixtyTwoThousandths`, `question_Q6_complete_resolution` | proved |
+| Arbitrary finite-prime `{∞} ∪ S` `−Θ(e^A)` ground-energy collapse (uniform in `|S|` and arbitrary weights on `S`-prime-powers), forced zero crossings (`½log2 < a_S ≤ A_max(|S|)`, `181/500 < a_S` if `2 ∈ S`), positive-trace carrier no-go, quantitative prime lower bound `r < (visiblePrimes A).card`, `(1 + ε)` short-interval syndeticity, and infinitude of primes from bounded-below energy | `weightedPrimeFamily_energy_le_neg_exp_of_finitePrimePowers`, `finitePrimeSetSemilocal_energy_le_neg_exp`, `not_exists_sublinear_exp_lower_bound_for_finitePrimeSetSemilocal`, `exists_finitePrimeSetSemilocal_zero_crossing`, `exists_finitePrimeSetSemilocal_zero_crossing_of_two_mem`, `no_positive_operator_trace_carrier_for_finitePrimeSetSemilocal`, `card_visiblePrimes_gt_of_groundEnergy_nonneg`, `eventually_exists_primePow_in_short_interval_of_primeSetSemilocal_bddBelow`, `infinite_primes_of_primeSetSemilocal_energy_bddBelow`, `finite_prime_semilocal_complete_resolution` | proved |
 
 ## 6. Tools
 
