@@ -2,7 +2,7 @@
 
 - **Stage:** 1-in-progress
 - **Type:** CONJECTURE
-- **Parent:** [negative-unit real nonvanishing](gauss-mayer-negative-unit-real-nonvanishing.md).
+- **Parent:** [negative-unit real nonvanishing](../3-formalized/gauss-mayer-negative-unit-real-nonvanishing.md).
 
 ## Target
 
@@ -26,9 +26,9 @@ Selberg/scattering comparison.
 
 The checked response gives `(I+R)u=1` and `u(0)=0`. Hence `F²=0`,
 `(I+R)F=P`, and `I+R+tP=(I+R)(I+tF)`. The unipotent factor has inverse
-`I−tF`. Negative-unit determinant nonvanishing is still an open parent
-input. Once proved, the actual source Fredholm invertibility theorem and
-this factorization give invertibility of `I+R`, without assuming it.
+`I−tF`. Negative-unit determinant nonvanishing is certified. The actual source
+Fredholm invertibility theorem and this factorization should now give
+invertibility of `I+R`, without assuming it.
 
 Openness of the unit group and analytic Banach-algebra inversion would
 make `G` holomorphic near one. On `Re w>0`, the response is the negative
@@ -44,7 +44,7 @@ surface this source inverse formula or its Laurent residue. Mathlib's
 `analyticAt_inverse` supplies analytic inversion at a proved unit;
 `meromorphicOrderAt_mul_of_ne_zero` preserves order under an analytic unit.
 
-Discharge parent nonvanishing first, then actual operator factorization,
+Parent nonvanishing is certified. Remaining obligations: actual operator factorization,
 unit construction, analytic dependence, nonzero residue, and signed-product
 order. No complex half-plane invertibility or scattering identification
 may be assumed.

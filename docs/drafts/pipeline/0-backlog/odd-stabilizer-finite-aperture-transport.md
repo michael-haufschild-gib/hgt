@@ -31,6 +31,9 @@ errors have matching power saving `T^(-1/6)` before logarithmic factors.
 
 Rows with `mθ` bounded and rows near the upper pair endpoint require separate
 bounds. The estimate `|parityStabilizerWeight|≤2O(Q)` alone can lose a
-logarithm on those short rows; retain their arithmetic lag dependence.
+logarithm on those short rows. The corpus supplies
+`abs_singularSeriesTerm_le` and `Σ μ²(q)/φ(q)²≤16`, giving the candidate
+uniform bound `|parityStabilizerWeight Q h|≤32σ(h)` for h≥1.
+This removes the conductor logarithm when the lag stays bounded.
 Even complete model transport leaves the actual signed prime-minus-model
 discrepancy unproved.

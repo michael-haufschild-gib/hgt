@@ -7,77 +7,50 @@
 ## Exact obstruction
 
 On the disc algebra `|z−1|≤3/2`, let
-`L_{s,N}f(z)=Σ_{n=1}^N(n+z)^(−2s)f(1/(n+z))`.
-For every nontrivial zeta zero `ρ`, with `s=ρ/2`,
+`L_{s,N}f(z)=Σ_{n=1}^N(n+z)^(-2s)f(1/(n+z))`.
+For every nontrivial zeta zero `ρ`, at `s=ρ/2`,
 
 `‖L_{s,N}‖/N^(1−Re ρ) → 1/|1−ρ| > 0`.
 
-Thus these raw finite-alphabet cutoffs diverge in operator norm at every
-actual zeta scattering target, including critical zeros. Ordinary branch
-convergence cannot distinguish critical from off-critical resonances there.
+These raw cutoffs diverge in operator norm at every actual zeta scattering
+target, including critical zeros. Ordinary branch convergence cannot
+separate critical and off-critical resonances. This retires only the
+uncorrected operator-limit shortcut.
 
-This obstruction concerns these uncorrected cutoffs only. It does not exclude
-Padé approximants, corrected cutoffs, the continued Mayer operator, nuclearity,
-Fredholm comparisons, or the full scattering route.
+## Strongest positive survivors
 
-## Positive survivor
+- **Actual operator:** For `Re s>0`, `s≠1/2`, subtracting
+  `N^(1−2s)P/(1−2s)`, `Pf=f(0)1`, gives norm convergence with error
+  `O(N^(-2 Re s))`. On `0<Re s<1/2`, this leading correction is unique
+  among bounded corrections of the same power scale. The corrected source
+  agrees with the ordinary sum for `Re s>1/2`. [Proof and certificate](../3-formalized/gauss-mayer-renormalized-cutoff-operator.md).
+- **Actual determinants:** With `w=2s`, `a_N=Σ_{n≤N}n^(-w)`, and
+  `D=A+ζB`, the genuine finite-branch determinants obey `E_N−a_NB→A`
+  for every `Re w>0` and every spectral parameter. In `0<Re w<1`,
+  raw determinant convergence is equivalent to `B=0`; otherwise its
+  exact norm-growth coefficient is `|B|/|1−w|` at scale `N^(1−Re w)`.
+  [Exact finite part and certificate](../3-formalized/gauss-mayer-raw-determinant-finite-part.md).
+- **Negative unit:** The exact successor response makes `B(w,−1)=0`
+  throughout `Re w>0`; raw determinants therefore converge even where
+  raw operator norms diverge. Their limit is holomorphic through one
+  and nonzero for every positive real `w`. [Cancellation](../3-formalized/gauss-mayer-negative-unit-pole-cancellation.md),
+  [raw limit](../3-formalized/gauss-mayer-raw-negative-unit-determinants.md),
+  [real nonvanishing](../3-formalized/gauss-mayer-negative-unit-real-nonvanishing.md).
+- **Positive real coefficient:** `B(w,λ)≠0` for real `w>0`,
+  `0<λ<(3/2)^w`; `D(w,1)` has a genuine simple pole at one.
+  [Source cone, complementary determinant, and certificate](../3-formalized/gauss-mayer-positive-real-pole-coefficient.md).
 
-For `Re s>0`, `s≠1/2`, subtracting the explicit constant-mode operator
-`N^(1−2s)/(1−2s) · [f↦f(0)·1]` gives operator-norm convergence with error
-`O(N^(−2 Re s))`. On `0<Re s<1/2`, this leading coefficient is forced among
-all bounded-operator subtractions of the same power scale. The corrected
-operator equals the usual absolutely convergent branch sum for `Re s>1/2`.
+## New insight and status
 
-[Exact theorem, constants, paper proof, and Lean certificate](../3-formalized/gauss-mayer-renormalized-cutoff-operator.md).
-Both obstruction and positive survivor are formalized in
-`RenormalizedIntersectionTheory/GaussMayerCutoffRenormalization.lean`;
-the final direct check and transitive axiom audits passed with only
-`propext`, `Classical.choice`, and `Quot.sound`.
+The scalar coefficient `B`, not raw operator-norm convergence, determines
+raw determinant convergence. Negative-unit cancellation and positive-unit
+noncancellation occur in the same actual source family.
 
-The corrected operator also has a certified order-zero nuclear expansion and
-geometric finite-rank error bound: [paper proof and Lean certificate](../3-formalized/gauss-mayer-renormalized-nuclear-expansion.md). This strengthens the positive
-survivor without supplying a scattering determinant identity.
-
-Its [global determinant](../3-formalized/gauss-mayer-source-fredholm-determinant.md)
-is now certified as the entire limit of actual coefficient determinants, with
-an explicit error and zeros exactly at failure of invertibility of the
-original Banach operator. Selberg/scattering comparison remains open.
-
-The [actual fixed-point trace](../3-formalized/gauss-mayer-fixed-point-trace.md)
-is also certified, including the countable branch/diagonal interchange.
-Its corrected scalar series continues normally to `Re w>−1`, with explicit
-summand bound `(|w|+1)n^(−Re w−2)`. [Every power trace](../3-formalized/gauss-mayer-countable-word-traces.md)
-is now identified with its absolutely convergent countable word sum on
-`Re w>1`, including integral multipliers and the parity-sensitive shift law.
-Primitive geodesic coding and the scattering identity remain open.
-
-[Source-parameter holomorphy](../3-formalized/gauss-mayer-source-parameter-holomorphy.md)
-is also certified for the actual operator and determinant, together with the
-operator's nonzero rank-one residue at `w=1`. The
-[exact determinant pole theorem](../3-formalized/gauss-mayer-rank-one-determinant-pole.md)
-now gives `D=A+ζB`, residue `B(1,λ)`, and removability exactly at its closed
-discrete countable zero set. Its derivative at `λ=0` is `−1`.
-
-[Successor cancellation](../3-formalized/gauss-mayer-negative-unit-pole-cancellation.md)
-now proves `det(I+R(w)+tP)=det(I+R(w))` throughout `Re w>0` for every `t`.
-Thus the actual negative-unit source determinant is holomorphic through one,
-despite the operator pole. Its paper proof and all thirteen production axiom
-audits are complete. The raw finite-branch determinants themselves now
-[converge at `λ=−1`](../3-formalized/gauss-mayer-raw-negative-unit-determinants.md),
-including at every actual zeta parameter where the raw operator norms diverge.
-The exact finite shear, uniform nuclear control, and operator/matrix transport
-are Lean-certified with thirteen clean production axiom audits. The obstruction
-therefore concerns operator convergence, not this negative-unit determinant limit.
-
-The [exact finite part](../3-formalized/gauss-mayer-raw-determinant-finite-part.md)
-now resolves every spectral parameter: `E_N−a_NB→A` on `Re w>0`.
-In the critical strip, raw determinant convergence is equivalent to `B=0`,
-with limit `D=A`; otherwise the exact norm-growth coefficient is
-`|B|/|1−w|`. The actual double-centered branch bound and complementary
-Fredholm identity are formalized, with eighteen clean source axiom audits.
-
-The [positive real coefficient theorem](../3-formalized/gauss-mayer-positive-real-pole-coefficient.md)
-now proves `B(w,λ)≠0` for real `w>0`, `0<λ<(3/2)^w`, and a genuine
-simple source pole at `λ=1`. Its actual derivative-cone and complementary
-determinant proofs pass all 29 production axiom audits. Complex-source
-resonance exclusion remains open.
+All named survivors have dependency-closed paper proofs, direct Lean
+checks, umbrella imports, and transitive audits containing only `propext`,
+`Classical.choice`, and `Quot.sound`. The source's
+[order-zero nuclear expansion](../3-formalized/gauss-mayer-renormalized-nuclear-expansion.md)
+and [global determinant/invertibility identity](../3-formalized/gauss-mayer-source-fredholm-determinant.md)
+supply the actual operator framework. Primitive geodesic coding,
+Selberg/scattering comparison, and complex-source resonance exclusion remain
+open. The full scattering paradigm is not retired.

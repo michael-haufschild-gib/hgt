@@ -51,6 +51,9 @@ lives, what Castelnuovo–Severi says, what a Künneth square adds, and what sep
 | Critical zeros seen by the spline; on-line configuration | `criticalSeen`, `zetaOnLine` | zeros `1/2 + iγ` with `B̂(γ) ≠ 0`; the on-line part of `K_ζ` as a Bohr series |
 | Band poles of the loop-Eisenstein factor | `reflectionPoles` | zeros of `Λ(s + 1)` with `−1/2 < Re s < 0` |
 | Heat dilation kernel | `AdelicKreinGeometry.heatDilationKernel` | the correlation of `H_t`, glued as `heatArchState` |
+| Rough gauge, smooth part | `roughGauge`, `smoothPart` | `ω` restricted to `Q`-rough integers; the `Q`-smooth part of `n` |
+| Smooth-fibre subspace | `smoothFibreSpace` | vectors whose pole gauge `√n u_n` depends only on the `Q`-smooth part of `n` |
+| Renormalized prime energy, ground below `t`, excited resolvent | `primeEnergy`, `IsGroundBelow`, `excitedResolvent` | `Q_N(w) = (log N − γ)|w|² − ⟨P_N w, w⟩`; one eigenvalue, all others `≥ γ + t`; `Σ_{i≠i₀} ⟨v, e_i⟩²/(E_i − γ − s)` |
 
 ## 3. Language
 
@@ -158,6 +161,25 @@ lives, what Castelnuovo–Severi says, what a Künneth square adds, and what sep
    `∏_{p∈P, p≤X}(1 + (4/(p − 1)) e^{−σ p log p/(p − 1)})`; Abel summation of a lower logarithmic density
    `1/4` makes them `≫ σ^{−1}`, and the dyadic sum over `σ = 2^{−j}` diverges.
 
+**Spectral weight at zero density.**
+24. The Wirsing bound is uniform in the roughness: for the `Q`-rough part of a flip twin,
+   `|S_Q(Y)| ≤ A(log Y/log Q)^β + B` with `A, B` independent of `Q`; the integrating factor
+   `Î/(log Y)^{1+β}` turns the Levin–Fainleib inequality for the running maximum into a telescoping
+   sum. The Wirsing constant is positive: a bounded `S_N` bounds the Dirichlet series at `1 + σ`, whose
+   Euler product is `≥ exp Σ_p ω(p)p^{−1−σ} → ∞`; so `c_N ≍ (log N)^{−2κ}`.
+25. Peeling one prime at a time, `S_p(X) = S_{p+1}(X) + (ω(p)/p) S_p(X/p)`, makes the rough mean at a
+   fixed scale `T` a constant multiple `c_N/δ_F` of the full mean on every `T`-smooth fibre up to
+   `N^ε`; Rankin's bound discards the rest. So the twin is `(c_N/δ_F)` times the finite flip of
+   `F = P ∩ [1, T)` on the `T`-smooth fibres, up to `o(c_N)`.
+26. The smooth-fibre subspaces are nested; the rough Poincaré inequality bounds
+   `|(1 − P_Q) w|² ≤ (K/log Q) D_N(w)` and the uniform Wirsing bound gives
+   `|P_Q ω⃗|² ≪ (log N)^{1−4κ}(log Q)^{4κ}`. On the scales `T^{2^j}` the telescoped error is geometric
+   because `2κ < 1/2`: the rough fluctuations cost `(log T)^{2κ−1/2} c_N √D_N(w)`.
+27. The finite flip carries the excited resolvent `δ_F² W_F(s) ≤ δ_F² W_P(s)`; the three pieces add to
+   `⟨w, v_P⟩² ≤ c_N²(W_P(s) + o(1))(Q_N(w) − s|w|²)` off the ground state. The same estimate on the
+   excited part of the pole vector puts the ground coordinate of `v_P` at `c_N(1 + o(1))`, and a vector
+   orthogonal to `v_P` then has nonnegative energy above `s` when `W_P(s) ≤ 1/s`.
+
 ## 5. Pillar theorems
 
 | Pillar | Lean | Status |
@@ -188,6 +210,7 @@ lives, what Castelnuovo–Severi says, what a Künneth square adds, and what sep
 | The loop-Eisenstein intertwining factor `Λ(s)/Λ(s+1)` has exactly `κ^{(½)}(K_ζ)` denominator zeros in the band `−1/2 < Re s < 0`; the Hodge index is their absence | `boostPolarIndex_ratCorr_eq_encard_reflectionPoles`, `renormalizedHodgeIndex_iff_reflectionPoles_eq_empty`, `riemannHypothesis_iff_reflectionPoles_eq_empty` | unconditional; equivalences |
 | Wirsing for twins: `L(N) log N = (1 + β)M(N) + O(log N)`; `|L(N)| ≪ (log N)^{b−1}` for `b > |1 + β|`; `L(N) = C(log N)^β + O(1)` for `0 < β ≤ 1`; a flip of relative logarithmic density `κ` has `L(N) = C(log N)^{1−2κ} + O(1)` for `κ < 1/2`, bounded `L` for `κ > 1/2`, and is separated for `κ > 1/4`; residue-class twins with `φ(q) < 4`, among them the flips of the primes `≡ 1` and `≡ 3 mod 4`, are separated | `exists_abs_wirsing_equation_le`, `exists_abs_gaugeHarmonicSum_le_rpow`, `exists_abs_gaugeHarmonicSum_sub_rpow_le`, `exists_abs_gaugeHarmonicSum_primeSetFlip_sub_rpow_le`, `exists_abs_gaugeHarmonicSum_primeSetFlip_le_const`, `hodgeSeparates_primeSetFlip_of_primeSetLogMass`, `exists_abs_primeSetLogMass_residueClassPrimes_sub_le`, `exists_abs_gaugeHarmonicSum_residueClassFlip_sub_rpow_le`, `hodgeSeparates_residueClassFlip`, `hodgeSeparates_primeSetFlip_one_mod_four`, `hodgeSeparates_primeSetFlip_three_mod_four` | unconditional |
 | Conductor series: a finite packet above `1/s` separates a prime-set twin at any density, and at positive density separation is exactly a positive secular value; a lower logarithmic density `≥ 1/4` makes the packets unbounded and separates, residue-class twins with `φ(q) ≤ 4` included (the primes `≡ 1 mod 5`); flipping `2` separates; with the `2`-adic probe every nontrivial prime-set twin is separated | `hodgeSeparates_primeSetFlip_of_packet`, `hodgeSeparates_primeSetFlip_iff_secular_pos`, `exists_packet_gt_of_lowerLogDensity`, `hodgeSeparates_primeSetFlip_of_lowerLogDensity`, `hodgeSeparates_residueClassFlip_of_totient_le_four`, `hodgeSeparates_primeSetFlip_one_mod_five`, `hodgeSeparates_primeSetFlip_of_two_mem`, `hodgeSeparates_or_probe_every_primeSetFlip` | unconditional |
+| Spectral weight of a zero-density twin at precision `c_N²`: for relative logarithmic density `κ ∈ (0, 1/4)`, off the ground state `⟨w, v_P⟩² ≤ c_N²(W + ε)(Q_N(w) − s|w|²)` eventually, `W` a bound for the partial sums of the conductor series; partial sums `≤ 1/s` on `(0, 2 log 2)` give the maximal margin `2 log 2`; such a twin is separated iff some finite conductor packet exceeds `1/s`. Inputs: the uniform rough Wirsing bound, the positive Wirsing constant, the fixed-scale defect, the multiscale projection bound, the excited resolvent of a finite flip | `eventually_inner_sq_le_conductorSeries`, `primeSetFlip_hasHyperplaneGap_of_conductorSeries`, `hodgeSeparates_primeSetFlip_iff_packet`, `exists_abs_gaugeHarmonicSum_roughGauge_le`, `exists_pos_mul_rpow_le_gaugeHarmonicSum_primeSetFlip`, `eventually_fixedScaleDefect_le`, `exists_abs_inner_twin_sub_starProjection_le`, `eventually_excitedResolvent_finiteFlip_le` | unconditional |
 | Heat flow: Hodge defect of `K_t` = nonreal right zeros of `H_t` = pairs colliding after `t`; nonincreasing, jumps at collisions, zero for `t ≥ 1/8`; RH = Hodge index along the flow | `boostPolarIndex_heatDilationKernel`, `boostPolarIndex_heat_eq_sum_collisionPairs`, `antitoneOn_boostPolarIndex_heat`, `exists_left_boostPolarIndex_heat_eq_add_collisionPairs`, `renormalizedHodgeIndex_heat_of_eighth_le`, `riemannHypothesis_iff_forall_renormalizedHodgeIndex_heat`, `boostPolarIndex_ratCorr_lt_top_iff_bdd_heat` | unconditional; equivalence |
 
 ## 6. Tools
@@ -228,10 +251,12 @@ The tools named in the founding question, and where they live:
   a prime mean: the Levin–Fainleib equation and the Bernoulli envelopes.
 - The Laplace–Euler bound for squarefree conductor packets: dyadic exponentials, multiplicative
   weights, additive energies and Abel summation of a lower logarithmic density.
+- Spectral weight at precision `c_N²`: the Wirsing bound uniform in the roughness, positivity of the
+  Wirsing constant through the Euler product, one-prime peeling at a fixed scale with a Rankin tail,
+  nested smooth-fibre projections with the rough Poincaré inequality, and the excited resolvent of
+  a finite flip.
 
 **To build.**
-- Resolvent control of the twisted horizon vector at scale `c_N²` at zero Euler density: the
-  maximal-margin side of the conductor-series criterion.
 - A function-field version of the extremal-weight gluing theorem (the quantization of its exponents
   is proved).
 
@@ -248,7 +273,7 @@ The tools named in the founding question, and where they live:
 | Is the collision quantum an index? | Yes: along the heat flow the Hodge defect of `K_t` is the number of conjugate pairs colliding after time `t`, and it drops by one per colliding pair. At `t = 0` the hyperplane index is bounded by the largest horizontal collision charge and, on the finite stratum, the collision mass is twice the index plus the multiplicity excess (HKT). |
 | What separates `ℤ` from `𝔽_q[T]`? | Density of the extremal weight: dense exponents for two primes, a lattice over one prime and over `𝔽_q[T]`. |
 | Why are negative directions confined to low conductors? | At fixed overlap: the low spectrum lives on the low conductors (`RenormalizedArithmeticPotentialTheory.TheLowCompleteWeilSpectrumLivesOnTheLowConductors`), the pole class carries the bottom and the hyperplane sits a gap above it. At iterated-logarithmic overlap the Hodge index holds. At `(log N)^α`, `α < 1/19`, it holds on fixed and slowly growing conductor packets, and on all of `v_1^⊥` it is RH for every `α > 0` with a smooth profile: confinement uniform over packets at any power of the logarithm is exactly the missing sign. |
-| Does the pairing select `ζ` among its twins? | Yes. The glued test index is `κ(K_ζ) + 1` for `ζ` and `∞` for every finite flip twin. At atomic resolution the Hodge index separates `ζ` from a sign gauge exactly when the gauge's margin is below `2 log 2`: the Liouville twin, every cofinite flip, every gauge with `S_N² = o(log N)`, the prime flips `p < 11`, and every prime-set twin of submaximal greatest gap. Measured against the `2`-flip (the `2`-adic probe) it separates every nontrivial prime-set twin of positive harmonic density, the flips of primes `≥ 11` included, and it separates every twin flipping all primes outside a set of positive harmonic density. Among the flips of sets `P` for which both `Σ_{p∈P} 1/p` and `Σ_{p∉P} 1/p` diverge, every one that flips `2`, whose flipped primes have lower logarithmic density at least `1/4` (residue classes with `φ(q) ≤ 4`), or that carries a conductor packet above `1/s` is separated, and the `2`-adic probe separates every nontrivial prime-set twin. Open: zero-density twins without `2` whose packets all stay below `1/s` (numerically one unit class mod `7` without `2`), for which the convergent secular series predicts the maximal margin. |
+| Does the pairing select `ζ` among its twins? | Yes. The glued test index is `κ(K_ζ) + 1` for `ζ` and `∞` for every finite flip twin. At atomic resolution the Hodge index separates `ζ` from a sign gauge exactly when the gauge's margin is below `2 log 2`: the Liouville twin, every cofinite flip, every gauge with `S_N² = o(log N)`, the prime flips `p < 11`, and every prime-set twin of submaximal greatest gap. Measured against the `2`-flip (the `2`-adic probe) it separates every nontrivial prime-set twin of positive harmonic density, the flips of primes `≥ 11` included, and it separates every twin flipping all primes outside a set of positive harmonic density. Among the flips of sets `P` for which both `Σ_{p∈P} 1/p` and `Σ_{p∉P} 1/p` diverge, every one that flips `2`, whose flipped primes have lower logarithmic density at least `1/4` (residue classes with `φ(q) ≤ 4`), or that carries a conductor packet above `1/s` is separated, and the `2`-adic probe separates every nontrivial prime-set twin. For a relative logarithmic density `κ ∈ (0, 1/4)` the criterion is exact: separated iff some finite conductor packet exceeds `1/s` for some `s ∈ (0, 2 log 2)`; otherwise the margin is the maximal `2 log 2`. Open: which side a given set falls on (the unit class mod `7` without `2` is numerically below `1/s`). |
 | Is there a global carrier of the sign? | The loop Eisenstein series: the intertwining factor `Λ(s)/Λ(s+1)` of its constant term has exactly as many denominator zeros in the band `−1/2 < Re s < 0` as the pairing has negative squares on the pole-orthogonal hyperplane. |
 | Is the heat flow a homotopy of glued states? | Yes: the Hodge defect of `K_t` is the number of nonreal right zeros of `H_t`; it is nonincreasing, drops by one per colliding pair, vanishes for `t ≥ 1/8`; RH is the Hodge index along the whole flow, and finite defect at `t = 0` is bounded defect along the flow. |
 | What is `h⁰` on the scaling surface, and its Serre dual? | On the base, the theta log-volume `h⁰` of `Spec ℤ` with exact linear Riemann–Roch (`ArithmeticOrientationGeometry.TheThetaH0OfSpecZ`). On the surface, a sign-free `h⁰` with Serre dual `h¹ = h⁰(K − ·)`, quadratic Riemann–Roch growth and subquadratic degree-zero growth exists iff the renormalized Hodge index holds (`renormalizedHodgeIndex_ratCorr_iff_exists_serreDual_h0`): it is the same datum as the sign, so it cannot be built before the sign is proved. |
@@ -262,14 +287,13 @@ The tools named in the founding question, and where they live:
 2. The positive index of `K_ζ` on the infinite stratum (it is infinite on the finite stratum and
    for the on-line part); with it the Künneth square would be all-or-nothing by the same mechanism on
    both strata (the dichotomy itself is already proved).
-3. The maximal-margin side at zero Euler density. A prime-set twin is separated when one conductor
-   packet exceeds `1/s`, at any density, and at positive density only then. At zero density with
-   `2 ∉ P` and every packet below `1/s` (numerically one unit class mod `7` without `2`, density `1/6`)
-   the secular series converges and predicts the maximal margin `2 log 2`. Proving it needs the actual
-   resolvent of the twisted horizon vector at scale `c_N² ≍ (log N)^{−4κ}`: beyond finitely many
-   conductor eigenlines its spectral mass must sit at energies `≫ c_N^{−2}`. With
-   `L − γ − P_N = D − M_err`, `D` the Dirichlet form of the multiplicative graph, this is an upper bound
-   on `⟨ω_⊥, (D − M_err − s)^{−1} ω_⊥⟩`, i.e. Thomson flows of small energy for the twisted charge.
+3. Margins of prime-set twins beyond a regular density. For a relative logarithmic density
+   `κ ∈ (0, 1/4)` with `O(1)` error the excited spectral weight of `v_P` is at most
+   `c_N²(W_P(s) + o(1))`, so separation is exactly a finite packet above `1/s`; a lower density
+   `≥ 1/4` separates. Open: sets with only `o(log n)` regularity or oscillating density (the rough
+   Wirsing bound needs the `O(1)` prime mean), the matching lower bound `c_N^{−2}ρ_N → W_P(s)` for the
+   excited resolvent, and a proof that the unit class mod `7` without `2` keeps every packet
+   below `1/s`.
 
 ## 9. Traps
 

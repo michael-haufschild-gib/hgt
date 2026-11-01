@@ -132,9 +132,9 @@ theorem coprime_weilPrimeKernel_eq {m n : ℕ} (hm : 1 ≤ m) (hn : 1 ≤ n) (x 
   rcases eq_or_lt_of_le hm with rfl | hm2
   · rcases eq_or_lt_of_le hn with rfl | hn2
     · simp [weilPrimeKernel_one_one]
-    · simp [Nat.coprime_one_left, show n ≠ 1 by omega]
+    · simp [show n ≠ 1 by omega]
   · rcases eq_or_lt_of_le hn with rfl | hn2
-    · simp [Nat.coprime_one_right, show m ≠ 1 by omega, weilPrimeKernel_comm m 1]; ring
+    · simp [show m ≠ 1 by omega, weilPrimeKernel_comm m 1]; ring
     · rw [if_neg (by omega : m ≠ 1), if_neg (by omega : n ≠ 1), add_zero]
       split_ifs with h
       · rw [weilPrimeKernel_eq_zero_of_coprime hm2 hn2 h]; ring
@@ -170,16 +170,16 @@ theorem atomicWeilForm_moebius_recursion (N : ℕ) (x : ℕ → ℝ) :
         (if (i : ℕ) = 1 then g j else 0) = ∑ k ∈ Icc 1 N, g k := by
       intro g
       rcases Nat.eq_zero_or_pos N with rfl | hN
-      · simp
+      · have h0 : ∀ i : Icc 1 0, False := fun i => by have := mem_Icc.mp i.2; omega
+        rw [sum_eq_zero fun i _ => (h0 i).elim, sum_eq_zero fun k hk => by
+          have := mem_Icc.mp hk; omega]
       · rw [sum_eq_single (⟨1, mem_Icc.mpr ⟨le_rfl, hN⟩⟩ : Icc 1 N)]
-        · simp only [if_pos rfl]
+        · simp only
           exact sum_coe_sort (Icc 1 N) g
         · intro b _ hb
           refine sum_eq_zero fun j _ => if_neg fun h => hb (Subtype.ext h)
         · simp
-    rw [hsum (fun k => weilPrimeKernel 1 k * x 1 * x k), hsum (fun k => weilPrimeKernel 1 k * x 1 * x k),
-      mul_sum]
-    rw [← sum_add_distrib]
+    rw [hsum (fun k => weilPrimeKernel 1 k * x 1 * x k), mul_sum, ← sum_add_distrib]
     exact sum_congr rfl fun k _ => by ring
   · refine sum_congr rfl fun d hd => ?_
     have hd0 : 0 < d := by have := (mem_Icc.mp hd).1; omega
@@ -187,6 +187,63 @@ theorem atomicWeilForm_moebius_recursion (N : ℕ) (x : ℕ → ℝ) :
     rw [← atomicWeilForm_starRestrict hd0, hform]
     refine sum_congr rfl fun i _ => sum_congr rfl fun j _ => ?_
     simp only [starRestrict]
-    split_ifs <;> ring
+
+
+/-! ### The complete Weil family is glued from lower resolutions -/
+
+/-- The pullback of a horizon vector to the star of `d`, read at horizon `⌊N/d⌋`. -/
+def starPull (d N : ℕ) (x : EuclideanSpace ℝ (PrimeHorizonIndex N)) :
+    EuclideanSpace ℝ (PrimeHorizonIndex (N / d)) :=
+  WithLp.toLp 2 fun a => primeHorizonExtension x (d * a)
+
+/-- Embedding the pullback back into the star is the restriction to the multiples of `d`. -/
+theorem starEmbed_starPull {d N : ℕ} (hd : 0 < d) (x : EuclideanSpace ℝ (PrimeHorizonIndex N)) :
+    (fun n : PrimeHorizonIndex N => starEmbed d N (starPull d N x) n) =
+      fun n : PrimeHorizonIndex N => if d ∣ (n : ℕ) then x n else 0 := by
+  funext n
+  simp only [starEmbed, starPull]
+  split_ifs with h
+  · obtain ⟨a, ha⟩ := h
+    have hn := mem_Icc.mp n.2
+    have ha1 : 1 ≤ a := by
+      rcases Nat.eq_zero_or_pos a with rfl | h0
+      · simp at ha; omega
+      · exact h0
+    have haM : a ≤ N / d := (Nat.le_div_iff_mul_le hd).mpr (by rw [mul_comm, ← ha]; exact hn.2)
+    rw [ha, Nat.mul_div_cancel_left a hd]
+    simp only [primeHorizonExtension, dif_pos (mem_Icc.mpr ⟨ha1, haM⟩)]
+    rw [← ha, dif_pos n.2]
+  · rfl
+
+/-- **The Möbius gluing of the complete Weil family.** `W_{c,N}(x)` is its coprime part plus the
+signed sum of the families at the star resolutions `(c⌊N/d⌋/N, ⌊N/d⌋)`, `2 ≤ d ≤ N`, applied to the
+pullbacks of `x`. -/
+theorem completeWeilEnergy_moebius_gluing {φ : ℝ → ℝ} (hφ : EdgeHodgeTheory.Admissible φ) {c : ℝ}
+    (hc : 0 < c) (N : ℕ) (x : EuclideanSpace ℝ (PrimeHorizonIndex N)) :
+    completeWeilEnergy φ c N x =
+      ∑ i : PrimeHorizonIndex N, ∑ j : PrimeHorizonIndex N,
+        (if Nat.Coprime (i : ℕ) j then completeWeilMatrix φ c N i j * x i * x j else 0) +
+        ∑ d ∈ Icc 2 N, -(ArithmeticFunction.moebius d : ℝ) *
+          completeWeilEnergy φ (starOverlap c N d) (N / d) (starPull d N x) := by
+  have hqf : ∀ y : EuclideanSpace ℝ (PrimeHorizonIndex N), completeWeilEnergy φ c N y =
+      ∑ i : PrimeHorizonIndex N, ∑ j : PrimeHorizonIndex N,
+        completeWeilMatrix φ c N i j * y i * y j := by
+    intro y
+    rw [completeWeilEnergy_eq_qf, qf, bil, dotProduct]
+    refine sum_congr rfl fun i _ => ?_
+    rw [Matrix.mulVec, dotProduct, mul_sum]
+    exact sum_congr rfl fun j _ => by ring
+  rw [hqf, quadratic_moebius_gluing (N := N) (fun i : PrimeHorizonIndex N => (i : ℕ))
+    (fun i => i.2) (completeWeilMatrix φ c N) (fun i => x i)]
+  congr 1
+  refine sum_congr rfl fun d hd => ?_
+  have hd0 : 0 < d := by have := (mem_Icc.mp hd).1; omega
+  have hdN : d ≤ N := (mem_Icc.mp hd).2
+  rw [← completeWeilEnergy_starEmbed hφ.contDiff hφ.supp hc hd0 hdN, hqf]
+  have hr : ∀ n : PrimeHorizonIndex N,
+      starEmbed d N (starPull d N x) n = if d ∣ (n : ℕ) then x n else 0 :=
+    fun n => congrFun (starEmbed_starPull hd0 x) n
+  simp only [hr]
+  refine sum_congr rfl fun i _ => sum_congr rfl fun j _ => by ring
 
 end GaloisForLFunctions.HodgeTheoryWithoutVarieties

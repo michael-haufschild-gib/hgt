@@ -11,14 +11,18 @@ whole content is HL on the positive locus.
   critical overlap `c*_φ(N)` of the profile `φ`. At `c*_φ` the profile tail energy, which is both
   the margin of the complete form and its synthesis error, equals the Weil weight `1/log N`.
   - Below `c*_φ` lies the **rough regime**. The synthesizable radius `½ log K + O(1)` is negative
-    there, so the family carries no aperture [D from L]. Positivity there uses only classical prime
-    distribution (moduli `q ≤ (log x)^A`) and is consistent with every off-line zero that the
-    classical zero-free regions allow [D].
+    there, so no fixed test is synthesized [D from L]. Positivity there uses only classical prime
+    distribution (moduli `q ≤ (log x)^A`). No corpus receiver turns it into a statement about
+    zeros; whether `N`-dependent vectors can see zeros there is open.
   - At `K·c*_φ` the family synthesizes every smooth test of radius `½ log K + O(1)`. RH is
     positivity at every `K`, i.e. Weil positivity at every aperture.
-  - At fixed aperture `a`, an isolated off-line pair of depth `δ` at height `ξ` is invisible exactly
-    when `ξ ≥ 2π exp(2π S_δ(a))`, `S_δ(a) = sinh(2δa)/(2δ) − a`. Positivity at one aperture is a
-    zero-free box. Unbounded aperture is RH.
+  - The aperture floor dies doubly exponentially: `μ(A) ≤ K exp((11/2)A − πe^{2(A−2)})`,
+    unconditionally, and every positive aperture transport must lose at a doubly exponential rate
+    [L]. No estimate with polynomial or exponential loss reaches all apertures.
+  - In the RVM model an isolated off-line pair of depth `δ` at height `ξ` is seen at aperture `a`
+    iff `S_δ(a) = sinh(2δa)/(2δ) − a > (1/2π)log(ξ/2π)` [L].
+  - The scaling surface turns Σ into geometry: RH ⇔ an effectivity with the Riemann–Roch and ample
+    axioms exists; positivity-defined cones fail the Riemann–Roch axiom [L].
 - **Π** is the precision of two prime statistics.
   - The one-point statistic is the smoothed prime error in multiplicative windows. It equals Weil's
     kernel and the inter-tower coupling.
@@ -42,7 +46,7 @@ re-read; `[D]` derived here from `[L]` statements, not formalized.
 
 | Wall | Status | Strength | Content |
 |---|---|---|---|
-| Σ1 All-aperture positivity | Sharpened | RH | Denjoy–Carleman and sinc profiles: RH ⇔ eventual positivity at every bounded multiple `K·c*_N`; every divergent multiple is a receiver; one `K` sees every `C²` test of radius `R` with `24eB⌈1+e^{2(R+1)}⌉ < K/(32e)` [L]. Restricted Weil ground minimum: `μ(A) ≥ 0 ∀A` ⇔ RH; floors through radius `181/500` and at an explicit `A₊ > 181/500` [M/L]. The isolated-pair visibility law `S_δ(a) > (1/2π)log(ξ/2π)` holds [L]. Aperture–height duality [D]: positivity at aperture `a` excludes exactly the pairs below `2π exp(2π S_δ(a))`. |
+| Σ1 All-aperture positivity | Sharpened | RH | Denjoy–Carleman and sinc profiles: RH ⇔ eventual positivity at every bounded multiple `K·c*_N`; every divergent multiple is a receiver; one `K` sees every `C²` test of radius `R` with `24eB⌈1+e^{2(R+1)}⌉ < K/(32e)` [L]. Restricted Weil ground minimum: `μ(A) ≥ 0 ∀A` ⇔ RH; floors through radius `181/500` and at an explicit `A₊ > 181/500` [M/L]. Unconditional ceiling `μ(A) ≤ K exp((11/2)A − πe^{2(A−2)})` for `A ≥ 3`; no positive floor along any unbounded aperture sequence; any positive transport loses doubly exponentially [L]. The isolated-pair visibility law `S_δ(a) > (1/2π)log(ξ/2π)` holds in the RVM model [L]. |
 | Σ1a Critical overlap | Sharpened | — | Denjoy–Carleman: `c*_N ≍ L(log L)²`, `L = loglog N`, where `μ_B(c)² log N = 1` [L]. Sinc: `τ(c*) log N = 1`, same order [L]. Quasi-analytic boundary: no nonzero compact Gevrey-≤1 profile exists, so receivers stop at `(loglog N)^{1+ε}` [L]. Tilted spline: receiver proved for `α > ¼` by second-order synthesis [L]. With `|φ̂(ξ)| ≍ ξ⁻⁴`, fourth-order synthesis would place its critical overlap at `(log N)^{1/8}` [D]. |
 | Σ1b Rough regime, tilted spline | Partially solved | sub | All vectors, `1 ≤ c ≤ (log N)^α`, every `α < 1/16`: matrix `≥ κ/(2c⁷)`, literal `weilQuad ≥ 0`, pole-defect reserve [L]. Complement of conductors `≤ N^θ` coercive for `α < 1/9`; global negative index `≤ N^θ` [L]. Bounded-energy vectors confined to `log R' ≤ C c¹¹ + log Q₁` [L]. Fixed finite and polylogarithmic conductor packets for `α < 1/8` via linear-in-`c` bilinear residuals [U]. Binding term: quadratic single-conductor residual `c²(1+log c)³/log N` against floor² `c⁻¹⁴`. |
 | Σ1c Joint shell–pole payment | Open | sub | Separate shell payment is sharp at `c²/ε`, i.e. `c⁹` at `ε = c⁻⁷` [L]. Joint top-band coefficient `O_φ(G(c + log N))` [L]. All-vector positivity at the spline's critical overlap needs confinement exponent `≤ 8` [D]; the current exponent `11` comes from separate payment. |
@@ -52,7 +56,7 @@ re-read; `[D]` derived here from `[L]` statements, not formalized.
 | Σ1g Haar / Gamma graph | Partially solved | sub | Growing-packet prime–pole cancellation to `exp(√log Y/23040000)` [M]. Index `≤ R + A` for `R` coarse cells [M]. Growing Euler head alone unbounded [M]. Open: joint non-arithmetic Gamma graph + signed diagonal + roots + poles. |
 | Σ1h Rough regime, smooth profiles | Partially solved | sub | Every `C²` profile without real Fourier zeros has edge `→ ∞` [L]. One `C^∞` profile carries the unconditional edge divergence and the every-power hyperplane receiver; no rate [L]. Expected reach `ε·c*_N` with profile constants [D]. |
 | Σ2 Edge, zero modes, hard Lefschetz | Sharpened | RH | HR ∧ HL ⇔ strict HR; transport needs HL only on the HR locus; losing HR forces a primitive zero mode [L]. Liouville ⇔ HL; RH ⇔ HL on the PSD locus along `1 ≤ c ≤ 2(log N)^β`, `β > ½` [U]. A finite first edge is PSD with a zero mode [L]. Under ¬RH, tilted crossings occur i.o. in `[(log N)^α, 2(log N)^{¼+}]` [L, Lean `α < 1/59`; `1/16` available]. |
-| Σ3 Star renormalization | Partially solved | — (descent); RH (ascent) | The star of `d` is the family at `(c⌊N/d⌋/N, ⌊N/d⌋)`; star embedding is an isometry for every weight [L]. Positivity descends to every star; negative directions first appear at the top of the divisor lattice [L]. Deep stars are positive [L]. Möbius renormalization identity [D]: `W_{c,N} = −Σ_{d≥2} μ(d)·(star form of d) + W^{cop}`. The coprime coupling `W^{cop}` is archimedean + poles + row-one primes + successor shells between coprime atoms. Ascent (stars ⇒ HL at the top) is open. |
+| Σ3 Star renormalization | Partially solved | — (descent); RH (ascent) | The star of `d` is the family at `(c⌊N/d⌋/N, ⌊N/d⌋)`; star embedding is an isometry for every weight [L]. Positivity descends to every star; negative directions first appear at the top of the divisor lattice [L]. Deep stars are positive [L]. The counterterm is self-similar on stars exactly for generalized von Mangoldt weights [L]. Ascent (stars ⇒ HL at the top) has no arithmetic mechanism: the gcd/Möbius decomposition of a form into star pieces holds for every symmetric matrix on ℕ [D]. |
 | Σ4 Finite index / heat count | Sharpened | ≥qRH (`K_ζ`); RH (`K_ζ⊠K_ζ`) | `κ < ∞` ⇔ bounded `N(t)` ⇔ bounded `O(T)` ⇒ Lindelöf + half-plane [L/M]. No softening at any resolution [L]. |
 | Σ5 Collision quantum / heat homotopy | Sharpened | RH | `O ∈ 2ℕ`; RH ⇔ `O < 2` per window; horizon defect `≤ κ ≤ sup O`; all `O ≤ 1` ⇒ RH [L]. Heat state `κ(φ_c^{(t)}) = N(t)/2 + 1`, RH ⇔ constant [M]. |
 | Σ6 Rank / degree uniformity | Partially solved | RH | Rank 7 strict, rank 8 PSD [M]; fixed Jensen degree eventually hyperbolic [M]; PF₃₇ at the centre [L]; RH ⇒ simple roots of reversed Xi Jensen sections [M]. |
@@ -66,7 +70,7 @@ re-read; `[D]` derived here from `[L]` statements, not formalized.
 | Σ14 Deformation to a positive model | No-go as free input | — | Crossing-free path `A → I` ⇔ `A` PD [M]; Kähler-package transport is exact and free [L]. The content is HL. |
 | Σ15 Separable assemblies | Classified (no-go) | — | Blind to coupling when truncated, overcount when untruncated [M]. |
 | Σ16 Prime–pole coherence / packet identity | Solved (as identity) | — | `B_Q² ≤ S_Q L_Q` sharp [M]. Complete form on packets = jump squares + affine incidence squares + bounded diagonal − shell degree + boundary terms [M]. Shell degree is the only overlap-growing non-square term. |
-| Σ17 Inter-tower coupling | Solved (as equivalence) | RH | Coupling ≍ kernel; RH ⇔ bounded coupling on one `⟨p⟩×⟨q⟩` [L]; rate = width [M]; cone ⇒ RH or unattained width [L]. |
+| Σ17 Inter-tower coupling | Solved (as equivalence) | RH | Coupling ≍ kernel; RH ⇔ bounded coupling on one `⟨p⟩×⟨q⟩` [L]; rate = width [M]; cone ⇒ RH or unattained width [L]. Attainment of `Θ` implies `Θ < 1` (no zeros on `Re s = 1`), so excluding the unattained alternative outright is ≥qRH; "bounded cone coupling ⇒ RH" as a pure implication is sub [D]. The same alternative appears in tower detection [L] and PM escape tightness [M]. |
 | Σ18 Exact SOS on a two-prime lattice | Open | RH | Weil's dilation form on boost-mass-zero vectors of one two-prime lattice as a sum of squares of coupling differences. |
 | Σ19 Loop-Eisenstein band poles | Open | RH | `κ_Hodge = #` band poles of `Λ(s)/Λ(s+1)` [M]; noncancellation mechanism missing. |
 | Σ20 Scheduled prime sums | Open | RH | Lower bounds for prime-scheduled energies (FU, CFC, RP, SZ, LI, FEL, EGC) [M]. |
@@ -83,11 +87,11 @@ re-read; `[D]` derived here from `[L]` statements, not formalized.
 | Π5 Conjugate diagonal (Hecke defect) | Sharpened | sub → ≥qRH → RH | Prime polynomial carries `O(1/log T)` of the defect; counts + linear explicit formula cannot bound it [L]. Dyadic means `O_c(log U)` for `c < 22/51`, `O(U^η)` for `c < 2/3` [L]. Mean `o(log U)` ⇔ 100% critical-scale clustering [L]. Fixed-scale `O(1)` ⇔ corridor (≥qRH) [L]. One constant over dyadic scales ⇔ RH, also as a zero-coordinate-free finite-theta statement [L]. Bare prime polynomial grows like `e^L/L²` at anti-nodal ordinates even under RH [L]. |
 | Π6 Averages versus all heights | Sharpened | — | Almost all unit windows are free of zeros at depth `≥ (6/5)loglog T/log T` [L]. Local count holds for density-one heights; right-half depth moment `o(V)` [M]. A density envelope admits a singleton count, so density never excludes one zero [M]. |
 | Π7 Census / local count | Partially solved | sub / LH | Simple critical `≥ 0.67250071` [L]; dichotomy: `N₀ ≥ 7N/10` or many simple off-line zeros within `A/log T` [M]; prime surplus `≤ N/18` would give 75% [M]. |
-| Π8 Depth visibility | Sharpened | — | Isolated pair visible at aperture `a` iff `S_δ(a) > (1/2π)log(ξ/2π)`; archimedean domination blind at every depth [L]; clusters hide depth from heat [M]. Aperture–height duality [D]. |
+| Π8 Depth visibility | Sharpened | — | Isolated pair visible at aperture `a` iff `S_δ(a) > (1/2π)log(ξ/2π)`; archimedean domination blind at every depth [L]; clusters hide depth from heat [M]. In the model, positivity at aperture `a` excludes isolated pairs below `2π exp(2π S_δ(a))` [D]; clusters are not covered. |
 | Π9 Exceptional moduli | Partially solved | sub | Uniform zero-free region and Siegel for `q ≤ (log x)^A`; every inverse-log rate at one horizon [M]. |
 | Π10 Frequency localization | Sharpened | ≥qRH (¾ strip); RH | Every band `K = ⌈N^δ⌉` retains the infimal exponent `2Θ`; far energy `≤ N^{2Θ+ε}/K` [L]. |
-| Π11 Quadratic RR | Solved (as equivalence) | RH | Renormalized Hodge index ⇔ Serre-dual `h⁰` with quadratic RR [M]. Construction open. |
-| Π12 Subconvexity / heat floor | Partially solved | sub | `ζ(5/6+it) ≪ t^{2/53} log t` [L]; `μ(½) ≤ 33/200` [U]; heat floor `4μ(½)`: `2/3`, and `33/50` from `33/200` [D]. |
+| Π11 Quadratic RR / effectivity | Solved (as equivalence) | RH | Renormalized Hodge index ⇔ Serre-dual `h⁰` with quadratic RR along rays and subquadratic degree-zero growth [L]. Scaling surface: RH ⇔ an effectivity with RR and ample axioms; positivity cones fail RR [L]. Theta `h⁰` gives RR on `Spec ℤ` and on the pole plane by Poisson summation [L]. Missing: RR for classes with a test component. Refuted: finite readings + mass, positive counts, determinant data, Boolean sections, majorants, polar box minus `ψ`, finitely many degrees [L/M]. |
+| Π12 Subconvexity / heat floor | Partially solved | sub | `ζ(5/6+it) ≪ t^{2/53} log t` [L]; `μ(½) ≤ 33/200` [U]. Heat floor `2/3` from three pieces of the Ki–Kim–Lee strip profile; the `w ≥ 3/14` piece (via `μ(5/7) ≤ 1/14`) is certified only for `c > 2/3` [L]. A lower floor needs every piece to improve. |
 | Π13 Gap-dependent detection scale | Sharpened | sub | Stopping certificate sound, eventually complete; admissible stage depends on divisor separation [M]. |
 | Π14 Amplifier rank | No-go (finite support) | — | Growing losses `e^{2kλ}` keep radius `Be^λ` [M]. |
 | Π15 Critical-scale residual sign | Sharpened | RH (all `K`) | At `c*_φ` margin = synthesis error = `1/log N` [L]. The sharp literal prime residual scale is `(log Q)²/log N` [M]. No absolute residual bound decides the sign at `K·c*_φ`; only signed cancellation can [D]. |
@@ -125,9 +129,12 @@ re-read; `[D]` derived here from `[L]` statements, not formalized.
 | bounded `K_ζ` ⇔ bounded coupling ⇔ no edge ⇔ RH | RIT, ACPL [L] |
 | RH ⇔ HL on the PSD locus along the overlap flow; Liouville = HL | HWV `TheLiouvilleProperty` [U] (transport: `TheKahlerPackage` [L]) |
 | overlap multiple `K·c*` ↔ test radius `½ log K + O(1)` | TM `ReceiverRate` [L] |
-| aperture `a` ↔ zero-free box below `2π exp(2π S_δ(a))` | ACS visibility law [L]; [D] |
+| aperture floor `μ(A) ≤ K exp((11/2)A − πe^{2(A−2)})`; positive transport loses doubly exponentially | ArithmeticCompensationTheory `TheApertureFloorMustDecayDoublyExponentially` [L] |
+| isolated pair visible at aperture `a` iff `S_δ(a) > (1/2π)log(ξ/2π)` (RVM model) | ACS visibility law [L] |
+| RH ⇔ an effectivity of the scaling surface with RR and ample axioms; Castelnuovo–Severi defect = Weil's form | ArithmeticCastelnuovoSeveri `TheScalingSurface` [L] |
+| theta `h⁰`: RR on `Spec ℤ` and on the pole plane by Poisson summation; `Λ(s)` = Mellin generating function of `h⁰` | ArithmeticOrientationGeometry `TheThetaH0OfSpecZ` [L] |
 | star of `d` ↔ lower horizon `(c⌊N/d⌋/N, ⌊N/d⌋)`; counterterm flux `log d` ↔ `Λ ∗ 1 = log` | HWV [L] |
-| `W = −Σ_{d≥2} μ(d)·(star forms) + W^{cop}` | [D] (Möbius inversion on gcd + star isometry [L]) |
+| first rung: finite Hodge defect ⇔ bounded heat counts ⇔ bounded collision charges; ⇒ `Θ < 1`; RH = defect `< 2` | ArithmeticOrientationGeometry `TheIndexExit` [L] |
 | complete form on packets = jump squares + affine incidence squares + bounded diagonal − shell degree + boundary | ACPL [M] |
 | `κ(φ_c^{(t)}) − 1 = N(t)/2` = future collision pairs | AKG, RIT [M] |
 | collision charge = Fredholm index; horizon defect `≤ sup O` | CDG [M]; EHT [L] |
@@ -146,6 +153,6 @@ re-read; `[D]` derived here from `[L]` statements, not formalized.
 | Π (15) | 2 (Π1, Π11) | 4 (Π3, Π7, Π9, Π12) | 7 (Π4, Π5, Π6, Π8, Π10, Π13, Π15) | 1 (Π2) | 1 (Π14) | — |
 | Γ (18) | 4 (Γ2, Γ6, Γ7, Γ18) | 2 (Γ5, Γ12) | 3 (Γ8, Γ10, Γ16) | 3 (Γ1, Γ4, Γ15) | 5 (Γ3, Γ9, Γ11, Γ13, Γ14) | 1 (Γ17) |
 
-Strength of the open walls: RH — Σ1, Σ2, Σ5, Σ7, Σ8, Σ18, Σ19, Σ20, Π2, Π4, Π15, Γ1, Γ4, Γ5, Γ8,
-Γ16; ≥qRH — Σ4 (`K_ζ`), Π5 (fixed scale), Π10 (¾ strip); sub — Σ1b–Σ1h, Σ3 (rough regime), Π3,
+Strength of the open walls: RH — Σ1, Σ2, Σ3 (ascent), Σ5, Σ7, Σ8, Σ18, Σ19, Σ20, Π2, Π4, Π11 (construction), Π15, Γ1, Γ4, Γ5, Γ8,
+Γ16; ≥qRH — Σ4 (`K_ζ`), Π5 (fixed scale), Π10 (¾ strip); sub — Σ1b–Σ1h, Π3,
 Π5 (mean `o(log U)`), Π7, Π9, Π12, Π13, Γ12, Γ15.

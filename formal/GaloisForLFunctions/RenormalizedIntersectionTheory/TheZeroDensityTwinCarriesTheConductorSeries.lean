@@ -205,6 +205,11 @@ theorem inner_gaugeVector_gaugeVector (N : ℕ) (h g : ℕ → ℝ) :
   simp only [horizonExtend, dif_pos hn, gaugeVector, WithLp.ofLp_toLp]
   rw [mul_div_cancel₀ _ (Real.sqrt_pos.mpr hn0).ne']
 
+theorem norm_poleUnit {N : ℕ} (hN : 1 ≤ N) : ‖poleUnit N‖ = 1 := by
+  have h := finiteFlipHorizonVector_norm_sq ∅ hN
+  have h0 := norm_nonneg (poleUnit N)
+  exact le_antisymm (by nlinarith) (by nlinarith)
+
 /-- `⟨b̂, v_P⟩ = c_N`. -/
 theorem inner_poleUnit_primeSetHorizonVector (P : Set ℕ) {N : ℕ} (hN : 1 ≤ N) :
     ⟪poleUnit N, primeSetHorizonVector P N⟫ = harmonicCorrelation (primeSetFlip P) N := by
@@ -684,7 +689,7 @@ theorem primeEnergy_sub_split (N : ℕ) (s : ℝ) (i₀ : PrimeHorizonIndex N)
 /-- **The ground coordinate of `v`.** If the excited estimate holds off the ground with constant
 `c²(W + ε)`, the ground energy is within `ε₀` of `0`, `‖b‖ = 1`, `⟨b, v⟩ = c` and `Q_N(b) ≤ ε₀`, then
 `|⟨e_{i₀}, v⟩| ≥ c (1 − √(2ε₀(W + ε)))`. -/
-theorem ground_coord_ge {N : ℕ} {i₀ : PrimeHorizonIndex N} {s t W ε ε₀ c : ℝ} (hs0 : 0 ≤ s)
+theorem ground_coord_ge {N : ℕ} {i₀ : PrimeHorizonIndex N} {s W ε ε₀ c : ℝ} (hs0 : 0 ≤ s)
     (hc : 0 ≤ c) (hWε : 0 ≤ W + ε) (hε₀ : 0 ≤ ε₀) {v b : EuclideanSpace ℝ (PrimeHorizonIndex N)}
     (hlam : |fullPrimeEnergyEigenvalue N i₀ - γ| ≤ ε₀)
     (hmain : ∀ w : EuclideanSpace ℝ (PrimeHorizonIndex N), ⟪w, primeEigen N i₀⟫ = 0 →
@@ -763,7 +768,7 @@ theorem le_primeEnergy_of_perp {N : ℕ} {i₀ : PrimeHorizonIndex N} {s t W ε 
     s * ‖u‖ ^ 2 ≤ primeEnergy N u := by
   set e := primeEigen N i₀
   set θ' := Real.sqrt (2 * ε₀ * (W + ε))
-  have hev := ground_coord_ge (t := t) hs0 hc.le hWε hε₀ hlam hmain hb hbv hpole
+  have hev := ground_coord_ge hs0 hc.le hWε hε₀ hlam hmain hb hbv hpole
   have hθpos : 0 < 1 - θ' := by linarith
   set a := ⟪u, e⟫
   set w := u - a • e
@@ -793,6 +798,149 @@ theorem le_primeEnergy_of_perp {N : ℕ} {i₀ : PrimeHorizonIndex N} {s t W ε 
   linarith only [hsplitu, hfin]
 
 end Margin
+
+
+section Classification
+
+open GaloisForLFunctions.SelectiveMultiscaleArithmeticPositivity (ramanujanAdjunctionEnergy_one)
+
+/-- **The zero-density twins of a convergent conductor series keep the maximal margin.** If `P` has
+relative log density `κ ∈ (0, 1/4)` and every partial sum of `Σ_{m≥2} w_P(m)/(E_m − γ − s)` is at most
+`1/s` for every `s ∈ (0, 2 log 2)`, the flip twin has hyperplane gap `2 log 2`. -/
+theorem primeSetFlip_hasHyperplaneGap_of_conductorSeries (P : Set ℕ) {κ C : ℝ} (hκ0 : 0 < κ)
+    (hκ : κ < 1 / 4) (hP : ∀ n, 1 ≤ n → |primeSetLogMass P n - κ * Real.log n| ≤ C)
+    (hsec : ∀ s, 0 < s → s < 2 * Real.log 2 → ∀ K, ∑ k ∈ range K,
+      primeSetSpectralWeight P (k + 2) / (ramanujanAdjunctionEnergy (k + 2) - γ - s) ≤ 1 / s) :
+    HasHyperplaneGap (primeSetFlip P) (2 * Real.log 2) := by
+  intro ε hε
+  have hl2 : 0 < Real.log 2 := Real.log_pos (by norm_num)
+  set s := 2 * Real.log 2 - min ε (Real.log 2)
+  have hmin0 : 0 < min ε (Real.log 2) := lt_min hε hl2
+  have hminl : min ε (Real.log 2) ≤ Real.log 2 := min_le_right _ _
+  have hs0 : 0 < s := by simp only [s]; linarith
+  have hs2 : s < 2 * Real.log 2 := by simp only [s]; linarith
+  have hsε : 2 * Real.log 2 - ε ≤ s := by simp only [s]; linarith [min_le_left ε (Real.log 2)]
+  set t := (s + 2 * Real.log 2) / 2
+  have hst : s < t := by simp only [t]; linarith
+  have ht2 : t < 2 * Real.log 2 := by simp only [t]; linarith
+  have ht0 : 0 < t := hs0.trans hst
+  set W := 1 / t
+  -- the partial sums at `s` are dominated by those at `t`
+  have hW : ∀ K, ∑ k ∈ range K, primeSetSpectralWeight P (k + 2) /
+      (ramanujanAdjunctionEnergy (k + 2) - γ - s) ≤ W := by
+    intro K
+    refine le_trans (sum_le_sum fun k _ => ?_) (hsec t ht0 ht2 K)
+    have hgap := conductorEnergy_gap (m := k + 2) (by omega)
+    have hden : 0 < ramanujanAdjunctionEnergy (k + 2) - γ - t := by linarith
+    refine div_le_div_of_nonneg_left ?_ hden (by linarith)
+    exact div_nonneg (sq_nonneg _) (Nat.cast_nonneg _)
+  -- the margin parameters
+  have hsW : s * W < 1 := by
+    simp only [W]; rw [mul_one_div, div_lt_one ht0]; exact hst
+  set m := 1 - s * W
+  have hm0 : 0 < m := by simp only [m]; linarith
+  have hm1 : m ≤ 1 := by simp only [m, W]; have : 0 ≤ s * (1 / t) := by positivity
+                         linarith
+  set ε' := m / (4 * s)
+  have hε' : 0 < ε' := by positivity
+  set X := W + ε'
+  have hX : 0 < X := by positivity
+  set ε₀ := min (m / (8 * X)) ((m / 8) ^ 2 / (2 * X))
+  have hε₀ : 0 < ε₀ := lt_min (by positivity) (by positivity)
+  have hε₀1 : ε₀ * X ≤ m / 8 := by
+    have := min_le_left (m / (8 * X)) ((m / 8) ^ 2 / (2 * X))
+    rw [le_div_iff₀ (by positivity)] at this; linarith
+  have hε₀2 : 2 * ε₀ * X ≤ (m / 8) ^ 2 := by
+    have := min_le_right (m / (8 * X)) ((m / 8) ^ 2 / (2 * X))
+    rw [le_div_iff₀ (by positivity)] at this; linarith
+  have hθ' : Real.sqrt (2 * ε₀ * X) ≤ m / 8 := by
+    rw [Real.sqrt_le_left (by positivity)]; exact hε₀2
+  have hθ1 : Real.sqrt (2 * ε₀ * X) < 1 := by linarith
+  have hcond : (s + ε₀) * X ≤ (1 - Real.sqrt (2 * ε₀ * X)) ^ 2 := by
+    have hsX : s * X = s * W + m / 4 := by
+      simp only [X, ε']; field_simp
+    have hsq : 1 - 2 * Real.sqrt (2 * ε₀ * X) ≤ (1 - Real.sqrt (2 * ε₀ * X)) ^ 2 := by
+      nlinarith [sq_nonneg (Real.sqrt (2 * ε₀ * X))]
+    have : (s + ε₀) * X = s * X + ε₀ * X := by ring
+    simp only [m] at hm0 hθ' hε₀1 hsX
+    nlinarith
+  -- eventual facts
+  have hground := eventually_exists_ground ht0 ht2 hε₀
+  have hmain := eventually_inner_sq_le_conductorSeries P hκ0 hκ hP hs0 hst ht2 hW hε'
+  have hpole := eventually_primeEnergy_poleUnit_le hε₀
+  obtain ⟨c', hc', N₂, hN₂⟩ :=
+    exists_pos_mul_rpow_le_gaugeHarmonicSum_primeSetFlip P (by linarith : κ < 1 / 2) hP
+  obtain ⟨N₀, hN₀⟩ := eventually_atTop.mp (hground.and (hmain.and (hpole.and
+    (eventually_ge_atTop (max N₂ 3)))))
+  refine ⟨N₀, fun N hN x hx => ?_⟩
+  obtain ⟨⟨i₀, hg, hlam⟩, hmainN, hpoleN, hNN⟩ := hN₀ N hN
+  have hN3 : 3 ≤ N := (le_max_right _ _).trans hNN
+  have hL1 : 1 ≤ Real.log N := one_le_log_of_three_le hN3
+  -- `c_N > 0`
+  have hcpos : 0 < harmonicCorrelation (primeSetFlip P) N := by
+    have hS := hN₂ N ((le_max_left _ _).trans hNN)
+    have hH0 : 0 < gaugeHarmonicSum (fun _ => (1 : ℝ)) N :=
+      gaugeHarmonicSum_one_pos (by omega)
+    have : 0 < c' * Real.log N ^ (1 - 2 * κ) :=
+      mul_pos hc' (Real.rpow_pos_of_pos (by linarith) _)
+    exact div_pos (this.trans_le hS) hH0
+  -- the twisted test vector `u = ω x`
+  set u : EuclideanSpace ℝ (PrimeHorizonIndex N) :=
+    WithLp.toLp 2 fun i => primeSetFlip P i * x i
+  have hext : ∀ n ∈ Icc 1 N, horizonExtend u n = primeSetFlip P n * x n := by
+    intro n hn; simp only [horizonExtend, dif_pos hn, u]
+  have hu : ⟪u, primeSetHorizonVector P N⟫ = 0 := by
+    rw [primeSetHorizonVector_eq, real_inner_smul_right, real_inner_comm, inner_gaugeVector_eq]
+    have e : ∑ n ∈ Icc 1 N, primeSetFlip P n * (Real.sqrt n * horizonExtend u n) / n =
+        ∑ n ∈ Icc 1 N, x n / Real.sqrt n := by
+      refine sum_congr rfl fun n hn => ?_
+      have hn0 : (0 : ℝ) < n := by exact_mod_cast (mem_Icc.mp hn).1
+      have hs := Real.mul_self_sqrt hn0.le
+      have hs0 := (Real.sqrt_pos.mpr hn0).ne'
+      rw [hext n hn, ← mul_assoc, mul_comm (primeSetFlip P n), mul_assoc, ← mul_assoc
+        (primeSetFlip P n), primeSetFlip_mul_self, one_mul, div_eq_div_iff hn0.ne' hs0,
+        mul_comm (Real.sqrt n) (x n), mul_assoc, hs]
+    rw [e, hx, mul_zero]
+  have hmarg := le_primeEnergy_of_perp hs0.le hst hg hcpos hX.le hε₀.le hlam
+    (fun w hw => hmainN i₀ hg w hw) (norm_poleUnit (by omega))
+    (inner_poleUnit_primeSetHorizonVector P (by omega)) hpoleN hθ1 hcond u hu
+  have hform : atomicWeilForm N (fun n => primeSetFlip P n * x n) =
+      ⟪Matrix.toEuclideanLin (fullPrimeMatrix N) u, u⟫ := by
+    rw [← atomicWeilForm_horizonExtend_eq_inner]
+    exact atomicWeilForm_congr fun n hn => (hext n hn).symm
+  have hmass : ‖u‖ ^ 2 = ∑ n ∈ Icc 1 N, x n ^ 2 := by
+    rw [← sum_sq_horizonExtend]
+    refine sum_congr rfl fun n hn => ?_
+    rw [hext n hn, mul_pow, sq (primeSetFlip P n), primeSetFlip_mul_self, one_mul]
+  rw [hform, ← hmass]
+  unfold primeEnergy at hmarg
+  have hnn : 0 ≤ ‖u‖ ^ 2 := sq_nonneg _
+  nlinarith
+
+/-- **Classification of the flip twins of relative log density `κ ∈ (0, 1/4)`.** The atomic Hodge index
+separates `ω_P` from `ζ` iff some finite packet of conductors `m ≥ 2` has
+`Σ w_P(m)/(E_m − γ − s) > 1/s` for some `s ∈ (0, 2 log 2)`. -/
+theorem hodgeSeparates_primeSetFlip_iff_packet (P : Set ℕ) {κ C : ℝ} (hκ0 : 0 < κ)
+    (hκ : κ < 1 / 4) (hP : ∀ n, 1 ≤ n → |primeSetLogMass P n - κ * Real.log n| ≤ C) :
+    HodgeSeparates (primeSetFlip P) ↔ ∃ s, 0 < s ∧ s < 2 * Real.log 2 ∧ ∃ S : Finset ℕ,
+      (∀ m ∈ S, 2 ≤ m) ∧ 1 / s < ∑ m ∈ S, primeSetSpectralWeight P m /
+        (ramanujanAdjunctionEnergy m - γ - s) := by
+  constructor
+  · intro hsep
+    by_contra hno
+    push Not at hno
+    have hsec : ∀ s, 0 < s → s < 2 * Real.log 2 → ∀ K, ∑ k ∈ range K,
+        primeSetSpectralWeight P (k + 2) / (ramanujanAdjunctionEnergy (k + 2) - γ - s) ≤ 1 / s := by
+      intro s hs hs2 K
+      have h := hno s hs hs2 ((range K).image (· + 2)) (fun m hm => by
+        obtain ⟨k, -, rfl⟩ := mem_image.mp hm; omega)
+      rwa [sum_image fun a _ b _ h => by omega] at h
+    exact (hodgeSeparates_iff_not_hasHyperplaneGap (primeSetFlip_mul_self P)).mp hsep
+      (primeSetFlip_hasHyperplaneGap_of_conductorSeries P hκ0 hκ hP hsec)
+  · rintro ⟨s, hs, hs2, S, hS, h⟩
+    exact hodgeSeparates_primeSetFlip_of_packet P hs hs2 S hS h
+
+end Classification
 
 
 end GaloisForLFunctions.RenormalizedIntersectionTheory

@@ -34,12 +34,15 @@ CSAR = CriticalScaleArithmeticRigidity, BOT = Bottcher.
 | Kähler package: HR ∧ HL ⇔ strict HR; HR transports wherever HL holds on the HR locus; losing HR forces a primitive zero mode; RH ⇔ HL on the PSD locus along `1 ≤ c ≤ 2(log N)^β`, `β > ½`; Liouville = HL | HWV `TheKahlerPackage` [L]; `TheLiouvilleProperty` [U] | deformation costs nothing; all content is nondegeneracy |
 | Edge: RH ⇔ no edge; a finite first edge is PSD with a zero mode; no edge ⇔ bounded coupling; under ¬RH tilted crossings i.o. in `[(log N)^α, 2(log N)^{¼+}]` | EHT `TheEdgeIsACrossing`, `TheEdgeOfTheCompleteWeilFamily` [L] (Lean `α < 1/59`) | RH ⇔ the overlap flow never acquires a zero mode on `v₁^⊥` |
 | Critical overlap: for Denjoy–Carleman profiles `c*_N ≍ L(log L)²`, where tail energy = margin = synthesis error = `1/log N`; RH ⇔ positivity at every `K·c*_N`; `K` sees radius `½ log K + O(1)`; receivers stop at the quasi-analytic boundary `(loglog N)^{1+ε}` | TM `ReceiverRate/TheCriticalOverlapIsLogLogTimesLogSquared`, `ABoundedOverlapRateSeesASemilocalWindow`; HKT `TheReceiversEndAtTheQuasiAnalyticBoundary` [L] | the overlap axis is the aperture axis |
-| Visibility law: an isolated off-line pair (depth `δ`, height `ξ`, RVM background) is seen at aperture `a` iff `S_δ(a) = sinh(2δa)/(2δ) − a > (1/2π)log(ξ/2π)` | ACS `ArchimedeanDominationIsBlindAtEveryDepth` [L] | positivity at aperture `a` is a zero-free box below `2π exp(2π S_δ(a))` [D] |
+| Visibility law: an isolated off-line pair (depth `δ`, height `ξ`, RVM background) is seen at aperture `a` iff `S_δ(a) = sinh(2δa)/(2δ) − a > (1/2π)log(ξ/2π)` | ACS `ArchimedeanDominationIsBlindAtEveryDepth` [L] | in the model, positivity at aperture `a` excludes isolated pairs below `2π exp(2π S_δ(a))` [D]; clusters are not covered |
+| Aperture floor: `μ(A) ≤ K exp((11/2)A − πe^{2(A−2)})` for `A ≥ 3`, unconditionally; no positive floor along unbounded apertures; positive transport loses doubly exponentially | ArithmeticCompensationTheory `TheApertureFloorMustDecayDoublyExponentially` [L] | no estimate with polynomial or exponential loss reaches all apertures; producers must be exact, quantized or structural |
+| Scaling surface: cycles `aH + bV + f`, `f·g = B(f)A(g) + A(f)B(g) − Re W(f,g)`; RH ⇔ an effectivity with RR and ample axioms; positivity cones fail RR; quadratic RR ⇔ renormalized Hodge index; theta `h⁰` gives RR on `Spec ℤ` and the pole plane | ArithmeticCastelnuovoSeveri `TheScalingSurface`; RIT `TheQuadraticRiemannRochIsTheRenormalizedHodgeIndex`; ArithmeticOrientationGeometry `TheThetaH0OfSpecZ` [L] | the geometric producer is reduced to one missing datum: RR for classes with a test component |
+| First rung: finite Hodge defect ⇔ bounded heat counts ⇔ bounded collision charges ⇒ `Θ < 1`; RH = defect `< 2` | ArithmeticOrientationGeometry `TheIndexExit` [L] | quantization: RH is an integer below `2` |
 | Rough regime, tilted spline: all vectors `1 ≤ c ≤ (log N)^α`, `α < 1/16`, floor `κ/(2c⁷)`; complement coercive `α < 1/9`; confinement `log R' ≤ Cc¹¹ + log Q₁`; packets `α < 1/8` | CACT `CompleteWeilPositivityBelowOneSixteenth`, `AsymmetricTwoRegionConductorReserve` [L]; `BilinearConductorResidualsAndOneEighthPackets` [U] | under ¬RH the tilted edge lies in `[(log N)^{1/16}, 2(log N)^{¼+}]` i.o. [D] |
 | Receivers: tilted full space `α > ¼`, hyperplane `α > ½` (synthesis of order 2); smooth profiles on `v₁^⊥` at every `α > 0`; sinc/DC at `K·c*_N` | SSHA `TheSecondOrderSynthesis`, `TheOverlapLawAtEveryRoot`; RIT `riemannHypothesis_iff_unitBump_hodgeIndex_rpow_log` [L] | the receiver threshold is a synthesis-accuracy threshold |
 | Packet identity: complete form on atoms `F(n)/√n` = `J_N + ½A_N` + bounded diagonal − `Σ d_n F²` + boundary terms; `log N − γ` cancels the prime diagonal through `Λ ∗ 1 = log` | ACPL [M] | the shell degree `d_n` is the only overlap-growing non-square term |
 | Stars: star of `d` = family at `(c⌊N/d⌋/N, ⌊N/d⌋)`, isometric for every weight; positivity descends; deep stars positive; counterterm flux `log d`; self-similar flux only for generalized von Mangoldt weights | HWV `StarsAreLowerHorizons`, `StarsOfTheCompleteWeilFamily`, `TheDivisorIdentitySelects` [L] | renormalization structure exists; ascent is open |
-| Möbius renormalization: `W_{c,N} = −Σ_{d≥2} μ(d)·(star form of d) + W^{cop}`, unique exact star decomposition; `W^{cop}` = archimedean + poles + row-one primes + successor shells on coprime atoms | Möbius inversion on `gcd` + star isometry [D] | local-to-global positivity is a Möbius-cancellation statement |
+| Unattained width: the cone, tower-detection and escape receivers leave the alternative "`Θ` not attained"; attainment implies `Θ < 1` (no zeros on `Re s = 1`) | ACPL, AKLT [L]; PM escape [M]; [D] | excluding the alternative outright is ≥qRH; only pure implications are sub |
 | Hecke defect: prime polynomial carries `O(1/log T)` of it; counts + linear explicit formula cannot bound it; means `O_c(log U)` (`c < 22/51`); `o(log U)` ⇔ 100% critical-scale clustering; fixed scale ⇔ corridor (≥qRH); one constant over dyadic scales ⇔ RH | CDG `LogScaleHeckeDefect/*` [L] | WD needs an input beyond counts and the linear explicit formula |
 | Selection: every nontrivial prime-set flip separated; diagonal coupling recovers flips; Frobenius at infinity ⇔ RH; partner saturation of resonant states ⇔ critical | RIT, ACPL [M]; EHT `FrobeniusAtInfinity`, RHTower `EisensteinResonantPartnerAngle` [L] | selection among prime flips closed; selection is a margin |
 | Paths: crossing-free path `A → I` ⇔ `A` PD; axial→coupled homotopy degenerate at `t = 0` | EHT, ACPL [M] | deformation needs noncrossing proved from the source |
@@ -72,7 +75,7 @@ Established:
 |---|---|
 | A1 | Fourth-order synthesis for the tilted spline. Its third derivative has bounded variation, so the Euler–Maclaurin synthesis of the smooth case (`TheEulerMaclaurinSynthesis`) applies with the Stieltjes remainder to order `4`. Expected receiver: RH ⇔ eventual positivity at `K(log N)^{1/8}` for every `K` (`α > 1/8`), plus the hyperplane analogue [D]. |
 | A2 | Finish the bilinear conductor-residual theorem: positivity on fixed finite conductor packets and coercivity on polylogarithmic conductor subspaces for `α < 1/8` [U]. |
-| A3 | Run the rough-regime proof for a Denjoy–Carleman or sinc profile up to `ε·c*_N`. At `ε·c*_N` the floor is `(log N)^{−O(ε)}` while every residual is polynomial in `c ≍ loglog N` [D]. |
+| A3 | Run the rough-regime proof for a tilted Denjoy–Carleman profile without real Fourier zeros up to `ε·c*_N` (sinc itself has real Fourier zeros, which break the Gamma-reserve input). At `ε·c*_N` the floor is `(log N)^{−O(ε)}` while every residual is polynomial in `c ≍ loglog N` [D]. |
 | A4 | Edge dictionary for one off-line pair: compose the visibility law with the `K ↔ ½ log K` transfer. In the RVM model this gives edge `≲ C e^{2a(ρ)}·c*_N`, with `a(ρ)` the visibility aperture of `ρ` [D]. |
 | A5 | Propagate the `1/16` exponent into the EHT edge-window and crossing theorems (Lean uses `powerLogPositivityExponent = 1/59`). |
 | A6 | Explicit horizon `N₀` for the `1/16` theorem (the theorem is eventual). |
@@ -104,7 +107,7 @@ Established [L unless marked]:
 |---|---|
 | A13 | Quantitative star range: explicit `M₀` and `α*` in `exists_star_positive_tiltedUnitSpline`, and the list of stars not yet in the universal regime at a given `(c, N)`. |
 | B8 | HL on the positive locus of the overlap flow (a source-defined noncrossing mechanism) — **RH** (Σ2). |
-| B9 | Star ascent: on primitive zero modes the coprime coupling dominates the Möbius-signed star sum — **RH** at all overlaps; **sub** inside the rough regime (Σ3). |
+| B9 | Star ascent: positivity of all proper stars ⇒ HL at the top. No arithmetic mechanism is known; the gcd/Möbius decomposition into star pieces holds for every symmetric matrix — **RH** (Σ3). |
 | B10 | Emptiness of the loop-Eisenstein band poles by a noncancellation theorem — **RH** (Σ19). |
 
 ### S3. Index and finite off-line support
@@ -142,7 +145,7 @@ Established:
 
 | | Obstacle |
 |---|---|
-| A14 | Integrate `μ(½) ≤ 33/200` [U] and transfer it to the heat floor `4μ(½) = 33/50` (size-only repair model is sharp at `2θ`). |
+| A14 | Integrate `μ(½) ≤ 33/200` [U] and re-derive the Ki–Kim–Lee threshold. The floor `2/3` has three pieces; the `w ≥ 3/14` piece (via `μ(5/7) ≤ 1/14`) is certified only for `c > 2/3` [L], so a lower floor needs that piece improved as well. |
 | A15 | Certified de Bruijn–Newman upper bound in corpus normalization as an index-one heat time. |
 | A16 | One Lean statement: `ΔO(T) = o(log T)` ⇒ off-line sparsity ⇒ Lindelöf (pieces exist). |
 | A17 | Computable stopping prefix: certified interval bounds replacing compact minima. |
@@ -156,7 +159,8 @@ Established:
 | B19 | Dyadic mean `o(log U)` at one `c < 22/51`, equivalently 100% of zeros within `κ/log T` for every `κ > 0` — **sub** (Π5). |
 | B20 | `E_γ(c log T) = O(1)` on unit windows at one fixed `c` — **≥qRH**. |
 | B21 | One constant for `E_γ` at every dyadic scale; equivalently uniform finite-theta aperture readings — **RH** (Γ4, Π5). |
-| B22 | An arithmetic input beyond counts and the linear explicit formula that controls the conjugate diagonal — method obstacle; first output **sub**. |
+| B22 | An arithmetic input beyond counts and the linear explicit formula that controls the conjugate diagonal — method obstacle; first output **sub**. Every pointwise bound `E_γ(c log T) ≤ T^η` forces depth `≤ η/(2c)`, so pointwise steps are ≥qRH [D]. |
+| B40 | Height-uniform quantized reading: boundary-modulus or ordinate-separation lower bounds that stabilize the integer-theta collision index at a prefix polynomial in height — logically independent of RH. |
 
 ### S5. Counts and producers
 Routes: WL, MC, PBM, RB, JAS, CTF, ACS-effectivity; census.
@@ -175,7 +179,8 @@ Established:
 | A20 | Census: the cosine prime Gram certificate on the same window as the pinching credit [U]; stabilizer calibration at `β = 2`. |
 | B23 | `ε`-uniform producer: zero-free-region error **sub**; square-root error **RH** (Π3). |
 | B24 | Any unconditional source input at square-root precision — **RH** (Π2). |
-| B25 | Characteristic-0 quadratic effectivity: an unconditional Serre-dual `h⁰` — **RH** (Π11). |
+| B25 | An effectivity of the scaling surface with the Riemann–Roch and ample axioms (an unconditional Serre-dual `h⁰` with quadratic RR) — **RH** (Π11). |
+| B39 | An arithmetic effectivity (lattice-count `h⁰`, Poisson Serre duality) on the prime-free cycles `aH + bV + f`, `supp f ⊂ (−½ log 2, ½ log 2)`; derive prime-free Weil positivity from RR — **sub**. |
 | B26 | Near-band cyclotomic energy `O(N^{3/2+ε})` on a positive-power band — **≥qRH** (Π10). |
 | B27 | Signed prime surplus `S ≤ (1/18 + o(1))N` at bandwidth `4/3`, or `E(1/9) ≤ 4` — **sub** (Π7). |
 
@@ -197,7 +202,8 @@ Established:
 | A21 | `𝔽_q(X)` calibration: local walls at higher-degree places, global Hecke product formula, archimedean Weil state of a curve. |
 | A22 | `𝔽₃` loop chain: measure-compatible unfolding, Eisenstein convergence, constant term. |
 | B28 | Bounded coupling on one two-prime lattice — **RH** (Σ17). |
-| B29 | Cone attainment: bounded coupling on `⟨p⟩₊ × ⟨q⟩₊` excludes the unattained-width alternative — **sub**. |
+| B29 | "Bounded coupling on `⟨p⟩₊ × ⟨q⟩₊` ⇒ RH" as a pure implication — **sub**. Excluding unattained width outright implies `Θ < 1` (**≥qRH**). |
+| B41 | Zero–one law `κ ∈ {0, ∞}`: a finite Hodge defect is zero. With the first rung it gives RH — **sub**. |
 | B30 | Zero-independent selection at the trivial gauge point — **RH** (Γ1). |
 | B31 | Frobenius at infinity as an operator: a conformal correspondence of factor `≠ 1`, or a Hecke similitude of the collided form — **RH** (Γ4). |
 | B32 | Unimodular gauges with `S_N/H_N → 1`; functional-equation twins without Euler product; zero-density flip twins at `κ = 0` — **sub** (Γ12, Γ15). |
@@ -219,7 +225,7 @@ Established:
 |---|---|
 | A23 | General-`λ` complementary finite-part limit for the Mayer determinant; primitive-geodesic coding and the Mayer–Selberg identity `Z(s) = D(2s,1)·D(2s,−1)` up to the regularization (known mathematics, formalization heavy). |
 | B33 | Off-line resonance exclusion (zero-selecting scattering rigidity) — **RH** (Γ4, Σ8). |
-| B34 | A zero-free region for ζ near `Re s = 1` from the Mayer operator and the Maass–Selberg relations alone, without the Euler product — **sub**. |
+| B34 | A Hermitian (Lewis–Zagier type) structure on eigenfunctions of the regularized Mayer operator `R(w)` near the Maass line `Re w = 1`, including the scattering sector, giving a zero-free region near `Re s = 1` — **sub**. Cone or contraction methods cannot separate eigenvalue ±1 on the line (dense Maass events) from just left of it. |
 | B35 | Source-faithful realization: prime-faithful lossless port (PTR), centred Ising limit (W1C), directed renewal sign (RN) — **RH** (Σ8). |
 
 ### Route-specific items
@@ -251,8 +257,8 @@ Established:
 - `μ(A) ≥ 0` ∀A ⇔ RH; floors `≥ mass/5000` to `181/500` [M];
 - explicit `A₊ > 181/500` with floor `≥ mass/8000`, via the one-prime dilation modulus [L/M];
 - a multiple `K` of the critical overlap sees radius `½ log K + O(1)` [L]; visibility law [L].
-- RW is the aperture axis of C1: positivity at aperture `A` is a zero-free box below
-  `2π exp(2π S_δ(A))` [D].
+- RW is the aperture axis of C1. Its floor must die doubly exponentially in the aperture [L], so an
+  all-aperture sign cannot come from transported estimates.
 - A: A12; A4.
 - B: B1 (all-aperture sign, **RH**); subexponential floor for `μ₀` (**≥qRH**); the depth-weighted
   branch needs an all-window mass bound (**≥qRH**).
@@ -285,8 +291,6 @@ Established:
 - cyclotomic remainder `≥ 0`; far modes `≤ 288N√(N+1)` [M];
 - every band `K = ⌈N^δ⌉` retains `2Θ`; far energy `≤ N^{2Θ+ε}/K` [L];
 - Dirichlet inputs uniform for `q ≤ (log x)^A`; producers at the main term [M].
-- Seam [D]: the unique exact star decomposition of the complete Weil form has weights `−μ(d)`, so
-  local-to-global positivity on the Hodge side is a Möbius-cancellation statement on star energies.
 - A: none beyond the Siegel–Walfisz range.
 - B: moving-scale half-power cancellation (B24, **RH**); B26 (**≥qRH**); head/leaf signed
   cancellation of finite prime clocks (Σ); B30 (**RH**).
@@ -324,7 +328,8 @@ Established:
 - packet identities [M]; Frobenius at infinity ⇔ RH [L];
 - Kähler package, stars, divisor identity [L]; Liouville = HL [U].
 - A: A1–A13; A27.
-- B: B1–B10; Hecke invariance of the collided form (B31, **RH**); RR branch B25 (**RH**).
+- B: B1–B10; Hecke invariance of the collided form (B31, **RH**); RR branch B25 (**RH**) with its
+  prime-free first case B39 (**sub**).
 
 ### CHMD — causal hyperbolic–modular duality
 Established:
@@ -472,7 +477,7 @@ Established:
 - quantitative complete-cell source transfer at rate `N^{−1/2}` [L];
 - `𝔽₃` elliptic adelic chain to `ζ_E(u)/ζ_E(u/3)` and Weyl-series convergence [M].
 - A: A21, A22; S1 A-items.
-- B: B25 (**RH**); a conformal correspondence over ℤ with factor `≠ 1` (B31, **RH**); census
+- B: B25 (**RH**) and B39 (**sub**); a conformal correspondence over ℤ with factor `≠ 1` (B31, **RH**); census
   displacement (B27); B1–B7; B10.
 
 ### SC — Stokes/Witt–Krein / archimedean successor
@@ -533,11 +538,12 @@ critical overlap, smooth-bump packets of the complete family realize ratCorr Gra
 | Π, conjugate diagonal | WD (Hecke defect), census |
 | Γ, selection / Frobenius at infinity | BAG, XN, PM (partner saturation), MC (typicality), ACS (conformal correspondence), HF (Hecke similitude); APF, BSH, CDC, DR, EWJ, HJ, PCS, RFHM, SEC, WBF; PW-B (retired) |
 
-Inside Σ the complete-family routes share one axis. Below the critical overlap of their profile
-(rough regime) every positivity theorem is consistent with off-line zeros. The tilted-spline
-exponents `1/16` (all vectors), `1/11` (confinement), `1/9` (complement), `1/8` (packets; expected
-critical overlap) and `¼` (proved receiver) belong to this regime and to the profile, not to ζ. At
-`K·c*` the family is Weil's form at radius `½ log K`, and positivity there is a zero-free box. SC and
+Inside Σ the complete-family routes share one axis. Below the receiver threshold of their profile
+(rough regime) no corpus receiver turns positivity into a statement about zeros. The tilted-spline
+exponents `1/16` (all vectors), `1/11` (confinement), `1/9` (complement), `1/8` (packets) and `¼`
+(proved receiver) belong to the profile. At `K·c*` the family is Weil's form at radius `½ log K`,
+whose floor must die doubly exponentially in the aperture: the sign has to come from an exact
+producer (effectivity / Riemann–Roch on the scaling surface) or a quantized one. SC and
 WD each carry a second, Π-type target: SC the window prime error read through the coupling, WD the
 conjugate-diagonal Hecke defect. PM's open core is the same involution as HF's Hecke similitude and
 WD's dyadic constant: Frobenius at infinity.

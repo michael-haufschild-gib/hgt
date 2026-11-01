@@ -206,13 +206,13 @@ theorem superharmonic_rect_verticalMean_le_linear {Φ : ℂ → ℝ} {σ_R T₁ 
       intro s hs
       have hs_mem : s ∈ Icc (1 / 2) σ_R := ⟨hs.1, hs.2.trans (ht.2.trans hx.2)⟩
       have hddI_zero : (∫ y in T₁..T₂, Bottcher.dderiv Φ I ((s : ℂ) + (y : ℂ) * I)) = 0 := by
-        have hftc_y := integral_eq_sub_of_hasDerivAt
+        have hftc_y := integral_eq_sub_of_hasDerivAt (a := T₁) (b := T₂)
           (f := fun y : ℝ => fderiv ℝ Φ ((s : ℂ) + (y : ℂ) * I) I)
           (f' := fun y : ℝ => Bottcher.dderiv Φ I ((s : ℂ) + (y : ℂ) * I))
           (fun y _ => hasDerivAt_vert_real
             ((contDiffAt_fderiv_apply hΦ.contDiffAt I).differentiableAt one_ne_zero))
           ((show Continuous fun y : ℝ => Bottcher.dderiv Φ I ((s : ℂ) + (y : ℂ) * I) from
-            hddI_cont.comp (cont_vert_pt s)).intervalIntegrable _ _)
+            hddI_cont.comp (cont_vert_pt s)).intervalIntegrable T₁ T₂)
         rw [hftc_y, htop s hs_mem, hbot s hs_mem, sub_zero]
       have hlap_eq : (∫ y in T₁..T₂, Δ Φ ((s : ℂ) + (y : ℂ) * I)) =
           ∫ y in T₁..T₂, Bottcher.dderiv Φ 1 ((s : ℂ) + (y : ℂ) * I) := by
@@ -242,7 +242,7 @@ theorem superharmonic_rect_verticalMean_le_linear {Φ : ℂ → ℝ} {σ_R T₁ 
       have hcont_inner : Continuous (fun s : ℝ =>
           ∫ y in T₁..T₂, Bottcher.dderiv Φ 1 ((s : ℂ) + (y : ℂ) * I)) :=
         intervalIntegral.continuous_parametric_intervalIntegral_of_continuous' (μ := volume)
-          (f := fun s y => Bottcher.dderiv Φ 1 ((s : ℂ) + (y : ℂ) * I))
+          (f := fun (s : ℝ) (y : ℝ) => Bottcher.dderiv Φ 1 ((s : ℂ) + (y : ℂ) * I))
           (show Continuous (Function.uncurry fun s y : ℝ =>
             Bottcher.dderiv Φ 1 ((s : ℂ) + (y : ℂ) * I)) from hdd1_cont.comp hpair_cont) T₁ T₂
       simpa using integral_mono_on (μ := volume) ht.1 (hcont_inner.intervalIntegrable _ _)
@@ -252,7 +252,8 @@ theorem superharmonic_rect_verticalMean_le_linear {Φ : ℂ → ℝ} {σ_R T₁ 
     have hcD_h : Continuous (fun y : ℝ => fderiv ℝ Φ (((1 / 2 : ℝ) : ℂ) + (y : ℂ) * I) 1) :=
       hD1_cont.comp (cont_vert_pt (1 / 2))
     have hsub_int := intervalIntegral.integral_sub
-      (hcD_t.intervalIntegrable T₁ T₂) (hcD_h.intervalIntegrable T₁ T₂)
+      (hcD_t.intervalIntegrable (μ := volume) T₁ T₂)
+      (hcD_h.intervalIntegrable (μ := volume) T₁ T₂)
     linarith [hsub_int, hint_diff, hrhs_nonpos]
   have hftc_x : ∀ y ∈ Icc T₁ T₂,
       Φ ((x : ℂ) + (y : ℂ) * I) =
@@ -281,7 +282,7 @@ theorem superharmonic_rect_verticalMean_le_linear {Φ : ℂ → ℝ} {σ_R T₁ 
   have hcont_t : Continuous (fun t : ℝ =>
       ∫ y in T₁..T₂, fderiv ℝ Φ ((t : ℂ) + (y : ℂ) * I) 1) :=
     intervalIntegral.continuous_parametric_intervalIntegral_of_continuous' (μ := volume)
-      (f := fun t y => fderiv ℝ Φ ((t : ℂ) + (y : ℂ) * I) 1)
+      (f := fun (t : ℝ) (y : ℝ) => fderiv ℝ Φ ((t : ℂ) + (y : ℂ) * I) 1)
       (show Continuous (Function.uncurry fun t y : ℝ =>
         fderiv ℝ Φ ((t : ℂ) + (y : ℂ) * I) 1) from hD1_cont.comp hpair_cont) T₁ T₂
   calc (∫ t in (1 / 2)..x, ∫ y in T₁..T₂, fderiv ℝ Φ ((t : ℂ) + (y : ℂ) * I) 1)
@@ -371,7 +372,8 @@ theorem depthKernel_eq_abscissa_integral {L x : ℝ} (_hx : 1 / 2 ≤ x) :
     have hch := (Real.hasDerivAt_cosh _).comp σ hlin
     have hsub : HasDerivAt (fun t : ℝ => x - t) (0 - 1) σ :=
       (hasDerivAt_const σ x).sub (hasDerivAt_id σ)
-    exact (((hsh.const_mul (4 * L)).mul hsub).add (hch.const_mul 2)).congr_deriv (by ring)
+    exact (((hsh.const_mul (4 * L)).mul hsub).add (hch.const_mul 2)).congr_deriv
+      (by simp only [Function.comp_apply]; ring)
   have hint : IntervalIntegrable
       (fun σ : ℝ => 8 * L ^ 2 * Real.cosh (2 * L * (σ - 1 / 2)) * (x - σ)) volume (1 / 2) x :=
     (by fun_prop : Continuous fun σ : ℝ =>
@@ -1090,7 +1092,8 @@ theorem contDiffAt_and_laplacian_log_norm_eq_zero {G : ℂ → ℂ} {z : ℂ}
   have hright := (radialZero_contDiffAt hne).laplacian_CLM_comp_left
     (l := Complex.ofRealCLM) (x := G z)
   change Δ (Complex.ofRealCLM ∘ (radialLogPotential 0 ∘ G)) z = _ at hc
-  rw [hleft, hright, radialZero_laplacian_eq_zero hne] at hc
+  rw [hleft, hright] at hc
+  simp only [Function.comp_apply, radialZero_laplacian_eq_zero hne, map_zero, mul_zero] at hc
   have hc' : ((Δ (radialLogPotential 0 ∘ G) z : ℝ) : ℂ) = 0 := by simpa using hc
   exact_mod_cast hc'
 
@@ -1439,7 +1442,7 @@ theorem exists_wide_zetaOffLine_hinge_add_mollifierCredit_le :
       obtain ⟨hre, him⟩ := Complex.mem_reProdIm.mp hwmem
       rw [uIcc_of_le (by norm_num : (1 / 2 : ℝ) ≤ 15 / 2)] at hre
       refine (hZ' w).mpr ⟨Complex.mem_reProdIm.mpr ⟨by rw [huIccx]; exact ⟨hwre, hre.2⟩, him⟩, ?_⟩
-      rw [← hΨdef, hwzero, mul_zero]
+      simp only [hFdef, hwzero, mul_zero]
     · have hre := (Complex.mem_reProdIm.mp ((hZ' w).mp hw).1).1
       rw [huIccx] at hre
       exact mul_nonneg (Nat.cast_nonneg _) (sub_nonneg.mpr hre.1)
@@ -1567,7 +1570,7 @@ theorem exists_shellDepthSum_add_mollifierCredit_le_abscissa_source_integral :
         ∑ w ∈ ZΨ, ((analyticOrderAt Ψ w).toNat : ℝ) * max (w.re - σ) 0) :=
       continuous_finsetSum _ fun w _ => by fun_prop
     exact hKw_cont.mul (continuous_const.mul (hsum1.add hsum2))
-  have hint_ineq := integral_mono_on (by norm_num : (1 / 2 : ℝ) ≤ 1)
+  have hint_ineq := integral_mono_on (μ := volume) (by norm_num : (1 / 2 : ℝ) ≤ 1)
     (hlhs_cont.intervalIntegrable _ _) (hrhs_cont.intervalIntegrable_of_Icc (by norm_num))
     fun σ hσ => mul_le_mul_of_nonneg_left (hptw σ hσ).2
       (mul_nonneg (by positivity) (Real.cosh_pos _).le)
@@ -1698,7 +1701,8 @@ private theorem rpow_neg_interp_arbitrary_le {Z S θ θ_Y θ_X r σR u : ℝ}
     refine Real.exp_le_exp.mpr ?_
     have hmul_u : r * u ≤ θ * q := by
       dsimp [q, lam]
-      rw [← mul_div_assoc θ, le_div_iff₀ hden]
+      rw [show θ * ((2 * σR - 4) * (u / (σR - 1 / 2))) =
+        (θ * (2 * σR - 4) * u) / (σR - 1 / 2) by ring, le_div_iff₀ hden]
       nlinarith only [hrate_ineq, hu0]
     nlinarith only [hmul_u, hL]
   have he : 0 ≤ S ^ (θ * -q) := Real.rpow_nonneg hS0.le _
@@ -2118,15 +2122,157 @@ theorem exists_twoLength_mollified_meanSquare_arbitrary_exponents
         ((∫ t in T₁..T₂, ‖hbMollifiedTail X ((σ₀ : ℂ) + (t : ℂ) * I)‖ ^ 2) +
           ∫ t in T₁..T₂, ‖hbMollifiedTail Y ((σ₀ : ℂ) + (t : ℂ) * I)‖ ^ 2) ≤
       (T₂ - T₁) * (A₀ * Real.exp (-(r * u * Real.log S))) := by
-    have hpos_T : 0 ≤ T₂ - T₁ := sub_nonneg.mpr hT12
-    have hexp_pos : 0 ≤ Real.exp (-(r * u * Real.log S)) := (Real.exp_pos _).le
-    have hprod_nn : 0 ≤ (T₂ - T₁) * Real.exp (-(r * u * Real.log S)) := mul_nonneg hpos_T hexp_pos
-    have hK2 : 0 ≤ K_gap ^ 2 := sq_nonneg K_gap
-    dsimp [u] at hhead hprod_nn
-    dsimp [A₀, u]
-    nlinarith only [hhead, hfX, hfY, hK2, hprod_nn]
+    dsimp [u] at hhead ⊢
+    have hsum_le := add_le_add (mul_le_mul_of_nonneg_left hhead zero_le_two)
+      (mul_le_mul_of_nonneg_left (add_le_add hfX hfY) (by positivity : 0 ≤ 4 * K_gap ^ 2))
+    refine hsum_le.trans ?_
+    have hnn : 0 ≤ (T₂ - T₁) * Real.exp (-(r * (σ₀ - 1 / 2) * Real.log S)) :=
+      mul_nonneg (sub_nonneg.mpr hT12) (Real.exp_pos _).le
+    have hid : (T₂ - T₁) * (A₀ * Real.exp (-(r * (σ₀ - 1 / 2) * Real.log S))) =
+        2 * ((T₂ - T₁) * (4 / g₀ ^ 2 * Real.exp (-(r * (σ₀ - 1 / 2) * Real.log S)))) +
+          4 * K_gap ^ 2 *
+            ((T₂ - T₁) * (4 * Real.exp 2 * (CLX + 8 * Real.exp 2) *
+                Real.exp (-(r * (σ₀ - 1 / 2) * Real.log S))) +
+              (T₂ - T₁) * (4 * Real.exp 2 * (CLY + 8 * Real.exp 2) *
+                Real.exp (-(r * (σ₀ - 1 / 2) * Real.log S)))) +
+          (T₂ - T₁) * Real.exp (-(r * (σ₀ - 1 / 2) * Real.log S)) := by
+      dsimp [A₀]; ring
+    linarith only [hid, hnn]
   dsimp [u] at hcomb
   linarith only [hM1, hcross, hmono, hcomb]
+
+private theorem abscissa_main_exp_integral_le
+    {A₀ c δ_c V S L T₁ T₂ : ℝ}
+    (hA₀ : 0 < A₀) (hc0 : 0 < c) (hδ_pos : 0 < δ_c) (hV_pos : 0 < V)
+    (hLV_pos : 0 < Real.log V) (hLS_pos : 0 < Real.log S)
+    (hLV_le_LS : Real.log V ≤ Real.log S) (hlen_pos : 0 < T₂ - T₁) (hlen_hi : T₂ - T₁ ≤ V)
+    (hL_eq : L = c * Real.log V) :
+    (∫ σ in (1 / 2)..1,
+      4 * A₀ * L ^ 2 * (T₂ - T₁) * Real.exp (-(δ_c * Real.log S * (σ - 1 / 2)))) ≤
+      (12 * A₀ * c ^ 2 / δ_c) * V * Real.log V := by
+  have hderiv_exp : ∀ σ : ℝ,
+      HasDerivAt (fun t : ℝ => -(1 / (δ_c * Real.log S)) *
+        Real.exp (-(δ_c * Real.log S * (t - 1 / 2))))
+        (Real.exp (-(δ_c * Real.log S * (σ - 1 / 2)))) σ := by
+    intro σ
+    have hlin : HasDerivAt (fun t : ℝ => -(δ_c * Real.log S * (t - 1 / 2)))
+        (-(δ_c * Real.log S)) σ :=
+      (((hasDerivAt_id σ).sub_const (1 / 2)).const_mul (δ_c * Real.log S)).neg.congr_deriv (by ring)
+    have hexp := ((Real.hasDerivAt_exp _).comp σ hlin).const_mul (-(1 / (δ_c * Real.log S)))
+    exact hexp.congr_deriv (by field_simp [hδ_pos.ne', hLS_pos.ne'])
+  rw [intervalIntegral.integral_const_mul,
+    integral_eq_sub_of_hasDerivAt (fun σ _ => hderiv_exp σ)
+      ((by fun_prop : Continuous _).intervalIntegrable _ _)]
+  simp only [sub_self, mul_zero, neg_zero, Real.exp_zero, mul_one]
+  have hsub_le : -(1 / (δ_c * Real.log S)) * Real.exp (-(δ_c * Real.log S * (1 - 1 / 2))) -
+      (-(1 / (δ_c * Real.log S))) ≤ 1 / (δ_c * Real.log S) := by
+    have hpos_e : 0 ≤ (1 / (δ_c * Real.log S)) * Real.exp (-(δ_c * Real.log S * (1 - 1 / 2))) := by
+      positivity
+    linarith only [hpos_e]
+  calc 4 * A₀ * L ^ 2 * (T₂ - T₁) *
+        (-(1 / (δ_c * Real.log S)) * Real.exp (-(δ_c * Real.log S * (1 - 1 / 2))) -
+          -(1 / (δ_c * Real.log S)))
+      ≤ 4 * A₀ * L ^ 2 * (T₂ - T₁) * (1 / (δ_c * Real.log S)) :=
+        mul_le_mul_of_nonneg_left hsub_le (by positivity)
+    _ ≤ 4 * A₀ * (c * Real.log V) ^ 2 * V * (1 / (δ_c * Real.log V)) := by
+        rw [hL_eq]
+        refine mul_le_mul (mul_le_mul_of_nonneg_left hlen_hi (by positivity))
+          (one_div_le_one_div_of_le (by positivity)
+            (mul_le_mul_of_nonneg_left hLV_le_LS hδ_pos.le))
+          (by positivity) (by positivity)
+    _ = 4 * (A₀ * c ^ 2 * V * Real.log V / δ_c) := by
+        field_simp [hδ_pos.ne', hLV_pos.ne']
+    _ ≤ 12 * (A₀ * c ^ 2 * V * Real.log V / δ_c) := by
+        have hpos_main : 0 ≤ A₀ * c ^ 2 * V * Real.log V / δ_c := by positivity
+        linarith only [hpos_main]
+    _ = (12 * A₀ * c ^ 2 / δ_c) * V * Real.log V := by ring
+
+private theorem abscissa_cross_cosh_integral_le
+    {c δ_c θ_X C K V S L : ℝ}
+    (hc0 : 0 < c) (hδ_pos : 0 < δ_c) (hθX_pos : 0 < θ_X) (hC : 0 < C) (hK : 0 < K)
+    (hV_pos : 0 < V) (hS1 : 1 < S) (hLV_ge1 : 1 ≤ Real.log V)
+    (hL_nn : 0 ≤ L) (hL_le_cS : L ≤ c * Real.log S)
+    (hS_eq : S = (3 / 2 : ℝ) * V)
+    (hexp_id : c + (θ_X + 1 / 2 + δ_c / 4) + δ_c / 4 = 1 - δ_c / 2)
+    (hlog_S : 1 * (1 + Real.log S) ≤ S ^ (δ_c / 4))
+    (hcross_S : 8 * c * (120 + C + 5 * K) * S ^ (1 - δ_c / 2) ≤ S ^ (1 : ℝ)) :
+    (∫ σ in (1 / 2)..1,
+      8 * L ^ 2 * Real.cosh (2 * L * (σ - 1 / 2)) *
+        (60 * S ^ (θ_X + 1 / 2) + C + 5 * K * Real.log S)) ≤
+      4 * V * Real.log V := by
+  have hS_pos : 0 < S := zero_lt_one.trans hS1
+  have hLS_pos : 0 < Real.log S := Real.log_pos hS1
+  have hderiv_ch : ∀ σ : ℝ,
+      HasDerivAt (fun t : ℝ => 4 * L * Real.sinh (2 * L * (t - 1 / 2)))
+        (8 * L ^ 2 * Real.cosh (2 * L * (σ - 1 / 2))) σ := by
+    intro σ
+    have hlin : HasDerivAt (fun t : ℝ => 2 * L * (t - 1 / 2)) (2 * L) σ :=
+      (((hasDerivAt_id σ).sub_const (1 / 2)).const_mul (2 * L)).congr_deriv (by ring)
+    have hsh := ((Real.hasDerivAt_sinh _).comp σ hlin).const_mul (4 * L)
+    exact hsh.congr_deriv (by ring)
+  rw [intervalIntegral.integral_mul_const,
+    integral_eq_sub_of_hasDerivAt (fun σ _ => hderiv_ch σ)
+      ((by fun_prop : Continuous _).intervalIntegrable _ _)]
+  simp only [sub_self, mul_zero, Real.sinh_zero, sub_zero,
+    show (1 : ℝ) - 1 / 2 = 1 / 2 by norm_num, show 2 * L * (1 / 2) = L by ring]
+  have hsh_nn : 0 ≤ Real.sinh L := by
+    rw [Real.sinh_eq]
+    have h1 : Real.exp (-L) ≤ 1 := Real.exp_le_one_iff.mpr (by linarith only [hL_nn])
+    have h2 : 1 ≤ Real.exp L := Real.one_le_exp hL_nn
+    linarith only [h1, h2]
+  have h4sinh : 4 * L * Real.sinh L ≤ 2 * c * Real.log S * S ^ c := by
+    have hsh : Real.sinh L ≤ Real.exp L / 2 := by
+      rw [Real.sinh_eq]
+      have hpos : 0 < Real.exp (-L) := Real.exp_pos _
+      linarith only [hpos]
+    have hexpL : Real.exp L ≤ S ^ c := by
+      rw [Real.rpow_def_of_pos hS_pos, mul_comm]
+      exact Real.exp_le_exp.mpr hL_le_cS
+    calc 4 * L * Real.sinh L ≤ 4 * (c * Real.log S) * (S ^ c / 2) := by
+          refine mul_le_mul (by linarith only [hL_le_cS])
+            (hsh.trans (by linarith only [hexpL])) hsh_nn (by positivity)
+      _ = 2 * c * Real.log S * S ^ c := by ring
+  have herr_sum : 60 * S ^ (θ_X + 1 / 2) + C + 5 * K * Real.log S ≤
+      (120 + C + 5 * K) * S ^ (θ_X + 1 / 2 + δ_c / 4) := by
+    have h1_pow : 1 ≤ S ^ (θ_X + 1 / 2) :=
+      Real.one_le_rpow hS1.le (by linarith only [hθX_pos])
+    have h1_d : 1 ≤ S ^ (δ_c / 4) := Real.one_le_rpow hS1.le (by positivity)
+    have hadd_p : S ^ (θ_X + 1 / 2) * S ^ (δ_c / 4) = S ^ (θ_X + 1 / 2 + δ_c / 4) :=
+      (Real.rpow_add hS_pos _ _).symm
+    have hp1 : S ^ (θ_X + 1 / 2) ≤ S ^ (θ_X + 1 / 2 + δ_c / 4) := by
+      rw [← hadd_p]; exact le_mul_of_one_le_right (Real.rpow_nonneg hS_pos.le _) h1_d
+    have hp2 : 1 ≤ S ^ (θ_X + 1 / 2 + δ_c / 4) := h1_pow.trans hp1
+    have hlogS_pow : Real.log S ≤ S ^ (δ_c / 4) := by linarith only [hlog_S]
+    have hp3 : Real.log S ≤ S ^ (θ_X + 1 / 2 + δ_c / 4) := by
+      calc Real.log S ≤ 1 * S ^ (δ_c / 4) := by linarith only [hlogS_pow]
+        _ ≤ S ^ (θ_X + 1 / 2) * S ^ (δ_c / 4) :=
+            mul_le_mul_of_nonneg_right h1_pow (Real.rpow_nonneg hS_pos.le _)
+        _ = S ^ (θ_X + 1 / 2 + δ_c / 4) := hadd_p
+    nlinarith only [hC, hK, hp1, hp2, hp3]
+  have hlogS_pow : Real.log S ≤ S ^ (δ_c / 4) := by linarith only [hlog_S]
+  have hprod_S : (2 * c * Real.log S * S ^ c) *
+      ((120 + C + 5 * K) * S ^ (θ_X + 1 / 2 + δ_c / 4)) ≤
+      8 * c * (120 + C + 5 * K) * S ^ (1 - δ_c / 2) := by
+    have hm1 : Real.log S * S ^ c * S ^ (θ_X + 1 / 2 + δ_c / 4) ≤
+        S ^ (δ_c / 4) * S ^ c * S ^ (θ_X + 1 / 2 + δ_c / 4) :=
+      mul_le_mul_of_nonneg_right
+        (mul_le_mul_of_nonneg_right hlogS_pow (Real.rpow_nonneg hS_pos.le _))
+        (Real.rpow_nonneg hS_pos.le _)
+    have hm2 : S ^ (δ_c / 4) * S ^ c * S ^ (θ_X + 1 / 2 + δ_c / 4) = S ^ (1 - δ_c / 2) := by
+      rw [← Real.rpow_add hS_pos, ← Real.rpow_add hS_pos]
+      congr 1; linarith only [hexp_id]
+    rw [hm2] at hm1
+    have hpos_const : 0 ≤ 2 * c * (120 + C + 5 * K) := by positivity
+    have hm3 := mul_le_mul_of_nonneg_left hm1 hpos_const
+    have hnn_pow : 0 ≤ c * (120 + C + 5 * K) * S ^ (1 - δ_c / 2) := by positivity
+    linarith only [hm3, hnn_pow]
+  have hstep := mul_le_mul h4sinh herr_sum
+    (by positivity) (by positivity)
+  have hS_le : 8 * c * (120 + C + 5 * K) * S ^ (1 - δ_c / 2) ≤ 4 * V * Real.log V := by
+    have h1 : S ^ (1 : ℝ) = (3 / 2) * V := by rw [Real.rpow_one, hS_eq]
+    rw [h1] at hcross_S
+    nlinarith only [hcross_S, hLV_ge1, hV_pos]
+  exact (hstep.trans hprod_S).trans hS_le
 
 /-- **Pure continuous abscissa-integrated shell collapse (`0 < c < 1/4`):**
 for every `0 < c < 1/4`, integrating `exists_shellDepthSum_add_mollifierCredit_le_abscissa_source_integral`
@@ -2321,7 +2467,8 @@ theorem exists_pure_abscissa_mollified_shellDepthSum_le_log_quarter
       nlinarith only [hK, hlogT₂, hlogMb]
     have h8_nn : 0 ≤ 8 * L ^ 2 * Real.cosh (2 * L * (σ - 1 / 2)) :=
       mul_nonneg (by positivity) (Real.cosh_pos _).le
-    have hstep := mul_le_mul_of_nonneg_left (add_le_add (add_le_add hm_half le_rfl) hK_err) h8_nn
+    have hstep := mul_le_mul_of_nonneg_left
+      (add_le_add (add_le_add hm_half (le_rfl : C ≤ C)) hK_err) h8_nn
     have hmain_step : 8 * L ^ 2 * Real.cosh (2 * L * (σ - 1 / 2)) *
         ((T₂ - T₁) / 2 * A₀ * Real.exp (-(r * (σ - 1 / 2) * Real.log S))) ≤
         4 * A₀ * L ^ 2 * (T₂ - T₁) * Real.exp (-(δ_c * Real.log S * (σ - 1 / 2))) := by
@@ -2338,111 +2485,11 @@ theorem exists_pure_abscissa_mollified_shellDepthSum_le_log_quarter
     exact ((by fun_prop : Continuous fun σ : ℝ =>
       8 * L ^ 2 * Real.cosh (2 * L * (σ - 1 / 2))).continuousOn).mul
       (((continuousOn_const.mul hlog).add continuousOn_const).add continuousOn_const)
-  have hrhs1_int : (∫ σ in (1 / 2)..1,
-      4 * A₀ * L ^ 2 * (T₂ - T₁) * Real.exp (-(δ_c * Real.log S * (σ - 1 / 2)))) ≤
-      (12 * A₀ * c ^ 2 / δ_c) * V * Real.log V := by
-    have hderiv_exp : ∀ σ : ℝ,
-        HasDerivAt (fun t : ℝ => -(1 / (δ_c * Real.log S)) *
-          Real.exp (-(δ_c * Real.log S * (t - 1 / 2))))
-          (Real.exp (-(δ_c * Real.log S * (σ - 1 / 2)))) σ := by
-      intro σ
-      have hlin : HasDerivAt (fun t : ℝ => -(δ_c * Real.log S * (t - 1 / 2)))
-          (-(δ_c * Real.log S)) σ := by
-        simpa using (((hasDerivAt_id σ).sub_const (1 / 2)).const_mul (δ_c * Real.log S)).neg
-      have hexp := ((Real.hasDerivAt_exp _).comp σ hlin).const_mul (-(1 / (δ_c * Real.log S)))
-      exact hexp.congr_deriv (by field_simp [hδ_pos.ne', hLS_pos.ne']; ring)
-    rw [integral_const_mul, integral_eq_sub_of_hasDerivAt (fun σ _ => hderiv_exp σ)
-      ((by fun_prop : Continuous _).intervalIntegrable _ _)]
-    simp only [sub_self, mul_zero, neg_zero, Real.exp_zero, mul_one]
-    have hsub_le : -(1 / (δ_c * Real.log S)) * Real.exp (-(δ_c * Real.log S * (1 - 1 / 2))) -
-        (-(1 / (δ_c * Real.log S))) ≤ 1 / (δ_c * Real.log S) := by
-      have : 0 ≤ (1 / (δ_c * Real.log S)) * Real.exp (-(δ_c * Real.log S * (1 - 1 / 2))) := by
-        positivity
-      linarith
-    calc 4 * A₀ * L ^ 2 * (T₂ - T₁) *
-          (-(1 / (δ_c * Real.log S)) * Real.exp (-(δ_c * Real.log S * (1 - 1 / 2))) -
-            -(1 / (δ_c * Real.log S)))
-        ≤ 4 * A₀ * L ^ 2 * (T₂ - T₁) * (1 / (δ_c * Real.log S)) :=
-          mul_le_mul_of_nonneg_left hsub_le (by positivity)
-      _ ≤ 4 * A₀ * (c * Real.log V) ^ 2 * V * (1 / (δ_c * Real.log V)) := by
-          dsimp [L]
-          refine mul_le_mul (mul_le_mul_of_nonneg_left hlen_hi (by positivity))
-            (one_div_le_one_div_of_le (by positivity)
-              (mul_le_mul_of_nonneg_left hLV_le_LS hδ_pos.le))
-            (by positivity) (by positivity)
-      _ = (4 * A₀ * c ^ 2 / δ_c) * V * Real.log V := by
-          field_simp [hδ_pos.ne', hLV_pos.ne']; ring
-      _ ≤ (12 * A₀ * c ^ 2 / δ_c) * V * Real.log V := by
-          have : 0 ≤ (A₀ * c ^ 2 / δ_c) * V * Real.log V := by positivity
-          linarith
-  have hrhs2_int : (∫ σ in (1 / 2)..1,
-      8 * L ^ 2 * Real.cosh (2 * L * (σ - 1 / 2)) *
-        (60 * S ^ (θ_X + 1 / 2) + C + 5 * K * Real.log S)) ≤
-      4 * V * Real.log V := by
-    have hderiv_ch : ∀ σ : ℝ,
-        HasDerivAt (fun t : ℝ => 4 * L * Real.sinh (2 * L * (t - 1 / 2)))
-          (8 * L ^ 2 * Real.cosh (2 * L * (σ - 1 / 2))) σ := by
-      intro σ
-      have hlin : HasDerivAt (fun t : ℝ => 2 * L * (t - 1 / 2)) (2 * L) σ := by
-        simpa using ((hasDerivAt_id σ).sub_const (1 / 2)).const_mul (2 * L)
-      have hsh := ((Real.hasDerivAt_sinh _).comp σ hlin).const_mul (4 * L)
-      exact hsh.congr_deriv (by ring)
-    rw [integral_mul_const, integral_eq_sub_of_hasDerivAt (fun σ _ => hderiv_ch σ)
-      ((by fun_prop : Continuous _).intervalIntegrable _ _)]
-    simp only [sub_self, mul_zero, Real.sinh_zero, sub_zero,
-      show (1 : ℝ) - 1 / 2 = 1 / 2 by norm_num, show 2 * L * (1 / 2) = L by ring]
-    have h4sinh : 4 * L * Real.sinh L ≤ 2 * c * Real.log S * S ^ c := by
-      have hsh : Real.sinh L ≤ Real.exp L / 2 := by
-        rw [Real.sinh_eq]; linarith [Real.exp_pos (-L)]
-      have hexpL : Real.exp L ≤ S ^ c := by
-        rw [Real.rpow_def_of_pos hS_pos, mul_comm]
-        exact Real.exp_le_exp.mpr hL_le_cS
-      calc 4 * L * Real.sinh L ≤ 4 * (c * Real.log S) * (S ^ c / 2) := by
-            refine mul_le_mul (by linarith) (hsh.trans (by linarith))
-              (sinh_nonneg_of_nonneg_aux hL_nn) (by positivity)
-        _ = 2 * c * Real.log S * S ^ c := by ring
-    have herr_sum : 60 * S ^ (θ_X + 1 / 2) + C + 5 * K * Real.log S ≤
-        (120 + C + 5 * K) * S ^ (θ_X + 1 / 2 + δ_c / 4) := by
-      have hlog1 : 1 * (1 + Real.log S) ≤ S ^ (δ_c / 4) := hlog_S
-      have h1_pow : 1 ≤ S ^ (θ_X + 1 / 2) := Real.one_le_rpow hS1.le (by linarith)
-      have h1_d : 1 ≤ S ^ (δ_c / 4) := Real.one_le_rpow hS1.le (by positivity)
-      have hadd_p : S ^ (θ_X + 1 / 2) * S ^ (δ_c / 4) = S ^ (θ_X + 1 / 2 + δ_c / 4) :=
-        (Real.rpow_add hS_pos _ _).symm
-      have hp1 : S ^ (θ_X + 1 / 2) ≤ S ^ (θ_X + 1 / 2 + δ_c / 4) := by
-        rw [← hadd_p]; exact le_mul_of_one_le_right (Real.rpow_nonneg hS_pos.le _) h1_d
-      have hp2 : 1 ≤ S ^ (θ_X + 1 / 2 + δ_c / 4) := h1_pow.trans hp1
-      have hp3 : Real.log S ≤ S ^ (θ_X + 1 / 2 + δ_c / 4) := by
-        have : Real.log S ≤ S ^ (δ_c / 4) := by linarith
-        calc Real.log S ≤ 1 * S ^ (δ_c / 4) := by linarith
-          _ ≤ S ^ (θ_X + 1 / 2) * S ^ (δ_c / 4) :=
-              mul_le_mul_of_nonneg_right h1_pow (Real.rpow_nonneg hS_pos.le _)
-          _ = S ^ (θ_X + 1 / 2 + δ_c / 4) := hadd_p
-      nlinarith [hC, hK, hp1, hp2, hp3]
-    have hlogS_pow : Real.log S ≤ S ^ (δ_c / 4) := by linarith [hlog_S]
-    have hexp_id : c + (θ_X + 1 / 2 + δ_c / 4) + δ_c / 4 = 1 - δ_c / 2 := by
-      dsimp [θ_X, δ_c]; ring
-    have hprod_S : (2 * c * Real.log S * S ^ c) *
-        ((120 + C + 5 * K) * S ^ (θ_X + 1 / 2 + δ_c / 4)) ≤
-        8 * c * (120 + C + 5 * K) * S ^ (1 - δ_c / 2) := by
-      have hm1 : Real.log S * S ^ c * S ^ (θ_X + 1 / 2 + δ_c / 4) ≤
-          S ^ (δ_c / 4) * S ^ c * S ^ (θ_X + 1 / 2 + δ_c / 4) :=
-        mul_le_mul_of_nonneg_right
-          (mul_le_mul_of_nonneg_right hlogS_pow (Real.rpow_nonneg hS_pos.le _))
-          (Real.rpow_nonneg hS_pos.le _)
-      have hm2 : S ^ (δ_c / 4) * S ^ c * S ^ (θ_X + 1 / 2 + δ_c / 4) = S ^ (1 - δ_c / 2) := by
-        rw [← Real.rpow_add hS_pos, ← Real.rpow_add hS_pos]
-        congr 1; linarith [hexp_id]
-      rw [hm2] at hm1
-      have hpos_const : 0 ≤ 2 * c * (120 + C + 5 * K) := by positivity
-      have hm3 := mul_le_mul_of_nonneg_left hm1 hpos_const
-      have hnn_pow : 0 ≤ c * (120 + C + 5 * K) * S ^ (1 - δ_c / 2) := by positivity
-      linarith
-    have hstep := mul_le_mul h4sinh herr_sum (by positivity) (by positivity)
-    have hS_le : 8 * c * (120 + C + 5 * K) * S ^ (1 - δ_c / 2) ≤ 4 * V * Real.log V := by
-      have h1 : S ^ (1 : ℝ) = (3 / 2) * V := by rw [Real.rpow_one]; rfl
-      rw [h1] at hcross_S
-      nlinarith [hcross_S, hLV_ge1, hV_pos]
-    exact (hstep.trans hprod_S).trans hS_le
+  have hrhs1_int := abscissa_main_exp_integral_le hA₀ hc0 hδ_pos hV_pos hLV_pos hLS_pos
+    hLV_le_LS hlen_pos hlen_hi (rfl : L = c * Real.log V)
+  have hrhs2_int := abscissa_cross_cosh_integral_le hc0 hδ_pos (hθY.trans hYX_exp) hC hK
+    hV_pos hS1 hLV_ge1 hL_nn hL_le_cS (rfl : S = (3 / 2 : ℝ) * V)
+    (by dsimp [θ_X, δ_c]; ring) hlog_S hcross_S
   have hint_total : (∫ σ in (1 / 2)..1,
       8 * L ^ 2 * Real.cosh (2 * L * (σ - 1 / 2)) *
         ((T₂ - T₁) / 2 * Real.log (Msq σ / (T₂ - T₁)) + C +
@@ -2455,25 +2502,27 @@ theorem exists_pure_abscissa_mollified_shellDepthSum_le_log_quarter
         8 * L ^ 2 * Real.cosh (2 * L * (σ - 1 / 2)) *
           (60 * S ^ (θ_X + 1 / 2) + C + 5 * K * Real.log S))
         volume (1 / 2) 1 := (by fun_prop : Continuous _).intervalIntegrable _ _
-    have hmono := integral_mono_on (by norm_num : (1 / 2 : ℝ) ≤ 1)
+    have hmono := integral_mono_on (μ := volume) (by norm_num : (1 / 2 : ℝ) ≤ 1)
       (hlhs_int_cont.intervalIntegrable_of_Icc (by norm_num)) (h1.add h2) hint_ptw
-    rw [integral_add h1 h2] at hmono
-    linarith [hmono, hrhs1_int, hrhs2_int]
+    rw [intervalIntegral.integral_add h1 h2] at hmono
+    linarith only [hmono, hrhs1_int, hrhs2_int]
   have hmid_shell : shellDepthSum T₁ T₂ L ≤
       ((12 * A₀ * c ^ 2 / δ_c + 4) / Real.pi) * V * Real.log V := by
     have hpi_pos : 0 < Real.pi := Real.pi_pos
     rw [div_mul_eq_mul_div, div_mul_eq_mul_div, le_div_iff₀ hpi_pos]
-    linarith [hceil, hcred_nn, hint_total]
+    linarith only [hceil, hcred_nn, hint_total]
+  clear hMsq_all hMsq_cont hMsq_pos hint_ptw hlhs_int_cont hrhs1_int hrhs2_int
+    hint_total hceil hcred_nn ZΨ hZΨ_fin hΨne hΨana Msq Ψ
   have hend_bound : shellDepthSum V T₁ L + shellDepthSum T₂ (2 * V) L ≤ 2 * V * Real.log V := by
     have hdk_end : ∀ z : ℂ, |z.re - 1 / 2| ≤ 1 / 2 → depthKernel L (z.re - 1 / 2) ≤ V ^ c := by
       intro z hz
       rw [← depthKernel_abs_depth, depthKernel_eq_four_sinh_sq]
-      have harg : |z.re - 1 / 2| * L ≤ L / 2 := by nlinarith
+      have harg : |z.re - 1 / 2| * L ≤ L / 2 := by nlinarith only [hz, hL_nn]
       have hsh : Real.sinh (|z.re - 1 / 2| * L) ≤ Real.exp (L / 2) / 2 := by
         rw [Real.sinh_eq]
         have h1 : Real.exp (|z.re - 1 / 2| * L) ≤ Real.exp (L / 2) := Real.exp_le_exp.mpr harg
         have h2 : 0 < Real.exp (-(|z.re - 1 / 2| * L)) := Real.exp_pos _
-        linarith
+        linarith only [h1, h2]
       have hsh_nn : 0 ≤ Real.sinh (|z.re - 1 / 2| * L) :=
         sinh_nonneg_of_nonneg_aux (mul_nonneg (abs_nonneg _) hL_nn)
       have hsq := pow_le_pow_left₀ hsh_nn hsh 2
@@ -2493,11 +2542,11 @@ theorem exists_pure_abscissa_mollified_shellDepthSum_le_log_quarter
         intro z hz
         obtain ⟨h0, h1, _, _, _⟩ := mem_stripFinsetPos.mp (Finset.mem_filter.mp hz).1
         exact mul_le_mul_of_nonneg_left
-          (hdk_end z (abs_le.mpr ⟨by linarith, by linarith⟩)) (Nat.cast_nonneg _)
+          (hdk_end z (abs_le.mpr ⟨by linarith only [h0], by linarith only [h1]⟩)) (Nat.cast_nonneg _)
       have hsum_ord := shortShell_orderSum_le_log ha0 hab hba
       have hlog_b : Real.log (b + 4) ≤ 3 * Real.log V := by
         have h1 : Real.log (b + 4) ≤ Real.log (V ^ (3 : ℕ)) :=
-          Real.log_le_log (by positivity) (by nlinarith [hV60])
+          Real.log_le_log (by positivity) (by nlinarith only [hb2V, hV60])
         rw [Real.log_pow] at h1; push_cast at h1; exact h1
       calc shellDepthSum a b L
           ≤ ∑ z ∈ shellZeros a b, ((analyticOrderAt xi z).toNat : ℝ) * V ^ c :=
@@ -2508,24 +2557,26 @@ theorem exists_pure_abscissa_mollified_shellDepthSum_le_log_quarter
             mul_le_mul_of_nonneg_right hsum_ord (Real.rpow_nonneg hV_pos.le _)
         _ ≤ (64 * (|xiLineTwoLogDerivConstant| + 4) * V ^ (c + δ_c / 4)) * Real.log V := by
             have hvc : V ^ c ≤ V ^ (c + δ_c / 4) :=
-              Real.rpow_le_rpow_of_exponent_le (by linarith) (by positivity)
+              Real.rpow_le_rpow_of_exponent_le (by linarith only [hV60]) (by positivity)
             have hc_abs : 0 ≤ |xiLineTwoLogDerivConstant| := abs_nonneg _
             have hbr : |xiLineTwoLogDerivConstant| + Real.log (b + 4) ≤
                 (|xiLineTwoLogDerivConstant| + 4) * Real.log V := by
-              nlinarith [hlog_b, hLV_ge1, hc_abs]
+              nlinarith only [hlog_b, hLV_ge1, hc_abs]
             have hm := mul_le_mul (mul_le_mul_of_nonneg_left hbr (by norm_num : (0 : ℝ) ≤ 16))
               hvc (Real.rpow_nonneg hV_pos.le _) (by positivity)
-            nlinarith [hm, Real.rpow_nonneg hV_pos.le (c + δ_c / 4), hLV_ge1, hc_abs]
+            have hv_nn : 0 ≤ V ^ (c + δ_c / 4) := Real.rpow_nonneg hV_pos.le (c + δ_c / 4)
+            nlinarith only [hm, hv_nn, hLV_ge1, hc_abs]
         _ ≤ V * Real.log V := by
             have hv1 : V ^ (1 : ℝ) = V := Real.rpow_one V
             rw [hv1] at hend_V
             exact mul_le_mul_of_nonneg_right hend_V hLV_pos.le
-    exact add_le_add (hcap V T₁ hV_pos.le hT₁_lo.le (by linarith) (by linarith))
-      (hcap T₂ (2 * V) (by linarith) hT₂_hi.le le_rfl (by linarith))
+    exact add_le_add
+      (hcap V T₁ hV_pos.le hT₁_lo.le (by linarith only [hT₁_hi, hV60]) (by linarith only [hT₁_lo, hT₁_hi]))
+      (hcap T₂ (2 * V) (by linarith only [hT₂_lo, hV60]) hT₂_hi.le le_rfl (by linarith only [hT₂_lo, hT₂_hi]))
   rw [shellDepthSum_split hT₁_lo.le (hT12.le.trans hT₂_hi.le),
     shellDepthSum_split hT12.le hT₂_hi.le]
   dsimp [K_c]
-  linarith [hmid_shell, hend_bound]
+  linarith only [hmid_shell, hend_bound]
 where
   sinh_nonneg_of_nonneg_aux {x : ℝ} (hx : 0 ≤ x) : 0 ≤ Real.sinh x := by
     rw [Real.sinh_eq]

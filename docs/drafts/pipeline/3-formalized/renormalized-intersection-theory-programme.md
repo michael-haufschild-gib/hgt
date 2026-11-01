@@ -57,11 +57,16 @@ Answer the questions of §2.6 with unconditional theorems (equivalences, classif
 - Conductor series: `hodgeSeparates_primeSetFlip_of_packet`, `hodgeSeparates_primeSetFlip_iff_secular_pos`,
   `exists_packet_gt_of_lowerLogDensity`, `hodgeSeparates_primeSetFlip_of_lowerLogDensity`,
   `hodgeSeparates_residueClassFlip_of_totient_le_four`, `hodgeSeparates_primeSetFlip_one_mod_five`.
+- Spectral weight at precision `c_N²`: `eventually_inner_sq_le_conductorSeries`,
+  `primeSetFlip_hasHyperplaneGap_of_conductorSeries`, `hodgeSeparates_primeSetFlip_iff_packet`,
+  `exists_abs_gaugeHarmonicSum_roughGauge_le`, `exists_pos_mul_rpow_le_gaugeHarmonicSum_primeSetFlip`,
+  `eventually_fixedScaleDefect_le`, `exists_abs_inner_twin_sub_starProjection_le`,
+  `eventually_excitedResolvent_finiteFlip_le`.
 
 ## Open
 Hodge index on schedules between `(log log N)^{<1/16}` (proved) and `(log N)^{α}`, every `α > 0` (= RH); positive index of `K_ζ` on the infinite stratum;
 infinite flip sets of maximal margin (invisible to the atomic Hodge index, not finite flips);
-zero-density flip twins without `2` whose conductor packets stay below `1/s` (maximal-margin side).
+prime-set twins without an `O(1)`-regular relative logarithmic density (for `κ ∈ (0, 1/4)` separation is exactly a packet above `1/s`); which side the unit class mod `7` without `2` falls on.
 
 ## Log
 - 2026-10-31 — created; formalized pillars listed above

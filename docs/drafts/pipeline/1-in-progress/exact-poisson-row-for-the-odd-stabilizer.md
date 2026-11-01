@@ -41,8 +41,10 @@ The primitive `q=7, n=1` sample contributes `7/36` to the packet
 correction; every other primitive contribution is nonnegative. Its negative diagonal is
 `−(23/12)∫Ω≥−23/192`, so the complete signed row is at least
 `43/576>0`. Such Ω is `u(16τ−31/2)` for a canonical smooth profile u
-of collar 1/8. This falsifies negative-row cancellation beyond the sharp
-dual horizon; it does not falsify the actual prime-pair conjecture.
+of collar 1/8. The same construction works for every support radius `0<δ≤1/32`
+around 1, retaining the lower bound 43/576. Positive rows therefore occur
+arbitrarily close beyond the horizon. This falsifies universal negative-row
+cancellation; it does not falsify the actual prime-pair conjecture.
 
 ## Mechanism
 

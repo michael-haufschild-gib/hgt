@@ -2,7 +2,7 @@
 
 - **ID:** rit-zero-density-margin
 - **Stage:** 3-formalized
-- **Type:** THEOREM (Lean) + open converse
+- **Type:** THEOREM (Lean)
 - **Programme:** RenormalizedIntersectionTheory, open topic 3
 - **Statement (target classification):** for a prime set `P` with zero Euler density
   (`Σ_{p∈P} 1/p = ∞`), with conductor weights `w_P(m) = (μ * ω_P)(m)²/φ(m)` and energies
@@ -12,8 +12,11 @@
 ## Status of the two directions
 - **⇐ (separation)**: from `ArithmeticCountingPositivity.primeSet_partial_secular_le_of_gap`
   (a gap above `s` bounds every finite packet sum by `1/s`, no density assumption).
-- **⇒ (maximal margin when the series stays ≤ 1/s)**: open at zero density (ACP open question 2);
-  proved at positive density (`primeSetFlip_hasHyperplaneGap_iff_secular`).
+- **⇒ (maximal margin when the series stays ≤ 1/s)**: proved at positive density
+  (`primeSetFlip_hasHyperplaneGap_iff_secular`) and at relative logarithmic density `κ ∈ (0, 1/4)`
+  with `O(1)` error (`primeSetFlip_hasHyperplaneGap_of_conductorSeries`, card
+  `zero-density-twin-spectral-weight.md`); a lower density `≥ 1/4` makes the series diverge.
+  Classification for `κ ∈ (0, 1/4)`: `hodgeSeparates_primeSetFlip_iff_packet`.
 
 ## Proof of divergence for lower logarithmic density ≥ 1/4
 Hypothesis: `Σ_{p∈P, p≤n} log p/p ≥ (1/4) log n − C` for all `n ≥ 1`.
@@ -40,19 +43,11 @@ Hypothesis: `Σ_{p∈P, p≤n} log p/p ≥ (1/4) log n − C` for all `n ≥ 1`.
 `exists_packet_gt_of_lowerLogDensity`, `hodgeSeparates_primeSetFlip_of_lowerLogDensity`,
 `hodgeSeparates_residueClassFlip_of_totient_le_four`, `hodgeSeparates_primeSetFlip_one_mod_five`.
 
-## Converse (open)
-Needs `R_N(s)/c_N² → −1/s + W_P(s)` for the actual resolvent at zero density: the spectral mass of
-the horizon vector above bounded energies must sit at energies `≫ c_N^{−2}`.
-- Exact reformulation: `L − γ − P_N(x) = D(y) − Σ err_n y_n²/n`, `y_n = √n x_n`,
-  `D(y) = Σ_{m,t} Λ(t)/(mt) (y_m − y_{mt})²`, `err_n = Σ_{t≤N/n} Λ(t)/t − log(N/n) + γ`. With
-  `u = α·1 + z`, `z ⊥ 1`, the gap `s` is `⟨ŵ_⊥, (G − s)^{−1} ŵ_⊥⟩ ≤ c_N²/s (1 + o(1))`, `G = D − M_err`
-  on `1^⊥`; the `err` cross terms are `O(1/(c_N √log N))`, negligible exactly when `S_N² ≫ log N`.
-- Variationally the packet part is exact (quasimode inner products, as in the inheritance proof); the
-  missing input is `⟨ŵ_h, G_h^{−1} ŵ_h⟩ = o(c_N²)` on the complement of a finite packet. Bounded-window
-  tools give only `≤ 1/T`. Upper bounds would follow from Thomson flows of energy `o(c_N²)` for the
-  twisted charge `(ω(n) − c_N)/n` on the multiplicative graph.
-- Heuristic size of the bulk: the incoherent part of `ŵ` has energy `≍ κ log N` and contributes
-  `≍ (log log N)/log N ≪ c_N²` when `κ < 1/4`.
+## Converse
+Proved for `κ ∈ (0, 1/4)` by the spectral-weight estimate
+`⟨w, v_P⟩² ≤ c_N²(W_P(s) + o(1))(Q_N(w) − s|w|²)` off the ground state
+(`eventually_inner_sq_le_conductorSeries`); see `zero-density-twin-spectral-weight.md`. Open: prime
+sets without a relative logarithmic density at `O(1)` precision.
 
 ## Log
-- 2026-11-01 — card created; separation side formalized; converse open
+- 2026-11-01 — card created; separation side and converse for `κ < 1/4` formalized

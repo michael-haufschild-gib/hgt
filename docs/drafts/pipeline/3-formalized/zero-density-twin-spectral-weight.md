@@ -1,8 +1,8 @@
 # Spectral weight of a zero-density twin at precision c_N²
 
 - **ID:** rit-zero-density-spectral-weight
-- **Stage:** 1-in-progress
-- **Type:** THEOREM (paper), formalization in progress
+- **Stage:** 3-formalized
+- **Type:** THEOREM (Lean)
 - **Programme:** RenormalizedIntersectionTheory, open topic 3 (ACP open question 2 for `κ < 1/4`)
 - **Statement:** Let `P` have relative log density `κ ∈ (0, 1/4)`:
   `|Σ_{p∈P, p≤n} log p/p − κ log n| ≤ C`. Let `e_0` be the ground eigenvector of the prime matrix,
@@ -71,7 +71,7 @@ because `Q_N(b̂) → 0`). With `W_P(s) < 1/s` (strict by monotonicity), `Q − 
 ## Gates
 - [x] 0 → 1  in-progress
 - [x] 1 → 2  paper proof above (dependency-closed on corpus inputs listed below)
-- [ ] 2 → 3  formalized
+- [x] 2 → 3  formalized: `formal/GaloisForLFunctions/RenormalizedIntersectionTheory/TheZeroDensityTwinCarriesTheConductorSeries.lean` and its five input modules
 
 ## Corpus inputs
 RAPT: `sum_Icc_eq_smooth_rough`, `sum_fibreVar_le`, `exists_harmonicVar_le_glauberForm_rough`,
@@ -81,13 +81,30 @@ RAPT: `sum_Icc_eq_smooth_rough`, `sum_fibreVar_le`, `exists_harmonicVar_le_glaub
 ACP: `tendsto_finiteFlipFiniteResolvent`, `exists_finiteFlip_conductor_eigenline`,
 `eventually_fullPrime_ground_count_one`. RIT: Wirsing module. Mathlib: smooth-number Euler products.
 
-## Lean plan (RenormalizedIntersectionTheory)
-1. `TheRoughWirsingBoundIsUniform` (Step 1) — compiled
-2. `TheWirsingConstantOfAFlipTwinIsPositive` (Step 2) — compiled
-3. `TheRoughMeanAtAFixedScale` (Step 3) — compiled
-4. `TheMultiscaleProjectionBound` (Step 4) — compiled
-5. `TheExcitedResolventOfAFiniteFlip` (Step 5) — compiled
-6. `TheZeroDensityTwinCarriesTheConductorSeries` (Step 6, gap theorem, classification)
+## Lean declarations (RenormalizedIntersectionTheory)
+In Lean the ground state is any eigenvector `e_{i₀}` with `IsGroundBelow N t i₀` (every other
+eigenvalue `≥ γ + t`), `s < t < 2 log 2`, and `W` bounds the partial sums of `W_P(s)`.
+1. `TheRoughWirsingBoundIsUniform` (Step 1): `exists_abs_gaugeHarmonicSum_roughGauge_le`,
+   `le_of_sharp_wirsing`, `exists_roughHarmonic_ge`, `exists_sum_smoothSet_inv_le`.
+2. `TheWirsingConstantOfAFlipTwinIsPositive` (Step 2):
+   `exists_pos_abs_gaugeHarmonicSum_primeSetFlip_sub_rpow_le`,
+   `exists_pos_mul_rpow_le_gaugeHarmonicSum_primeSetFlip`, `not_bddAbove_gaugeHarmonicSum`,
+   `exp_le_tsum_twistedDirichletHom`, `primeSum_rpow_ge`.
+3. `TheRoughMeanAtAFixedScale` (Step 3): `gaugeHarmonicSum_roughGauge_prime`,
+   `exists_abs_roughSum_sub_le`, `exists_abs_roughHarmonic_sub_le`, `exists_sum_smoothSet_tail_le`,
+   `eventually_fixedScaleDefect_le`.
+4. `TheMultiscaleProjectionBound` (Step 4): `smoothFibreSpace`, `abs_inner_sub_starProjection_le`,
+   `exists_norm_sub_starProjection_sq_le`, `exists_norm_starProjection_twin_sq_le`,
+   `exists_abs_inner_twin_sub_starProjection_le`.
+5. `TheExcitedResolventOfAFiniteFlip` (Step 5): `primeEnergy`, `IsGroundBelow`,
+   `excitedResolvent`, `inner_sq_le_excited`, `eventually_exists_ground`,
+   `eventually_excitedResolvent_finiteFlip_le`.
+6. `TheZeroDensityTwinCarriesTheConductorSeries` (Step 6): `eventually_inner_sq_le_conductorSeries`,
+   `primeSetFlip_hasHyperplaneGap_of_conductorSeries`, `hodgeSeparates_primeSetFlip_iff_packet`.
+
+## Open
+The matching lower bound `c_N^{−2} ρ_N → W_P(s)` for the excited resolvent; densities with only
+`o(log n)` error; deciding the packet inequality for a given set (the unit class mod `7` without `2`).
 
 ## Log
-- 2026-11-01 — created; paper proof complete; formalization started
+- 2026-11-01 — created; formalized

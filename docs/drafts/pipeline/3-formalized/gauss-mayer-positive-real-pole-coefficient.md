@@ -12,7 +12,8 @@ For the actual source determinant `D(w,λ)=A(w,λ)+ζ(w)B(w,λ)`,
 
 This interval includes every `0<λ≤1`. In particular, `B(1,1)≠0`, so
 `w↦D(w,1)` has meromorphic order exactly `−1` at one. The previously
-certified negative-unit cancellation has `B(w,−1)=0` throughout `Re w>0`.
+certified negative-unit cancellation has `B(w,−1)=0` throughout `Re w>0`. Its remaining
+determinant is [nonzero on the positive real source axis](gauss-mayer-negative-unit-real-nonvanishing.md).
 
 ## Proof
 

@@ -68,7 +68,7 @@ family. The generic rank-one update and geometric Fredholm consumers
 already existed; the successor telescope and its source transport discharge
 their inputs. No literature-priority claim is made.
 
-The removable value and its possible vanishing order are not determined.
+The removable value is [nonzero on the positive real source axis](gauss-mayer-negative-unit-real-nonvanishing.md), including at one.
 The [positive-unit source pole](gauss-mayer-positive-real-pole-coefficient.md)
 is now proved genuine and simple. Primitive modular coding, Selberg/scattering
 comparison, and off-critical resonance exclusion remain open. No RH conclusion follows.

@@ -32,22 +32,26 @@ theorem tendsto_stabilizerLinearRow_horizon_div_log {Ω : ℝ → ℝ} {a b : �
   have hm : 0 < b * (Q : ℝ) / π := by positivity
   have hhor : (Q : ℝ) * b ≤ π * (b * Q / π) := by
     apply le_of_eq
-    field_simp
-    ring
+    field_simp <;> ring
   rw [stabilizerLinearRow_eq_neg_of_horizon Q ha hab hm hhor hΩ hsupp]
   ring
 
-private theorem exists_narrow_unit_window : ∃ Ω : ℝ → ℝ,
+private theorem exists_narrow_unit_window {δ : ℝ} (hδ : 0 < δ) : ∃ Ω : ℝ → ℝ,
     (∀ k : ℕ, ContDiff ℝ k Ω) ∧ (∀ u, 0 ≤ Ω u) ∧ (∀ u, Ω u ≤ 1) ∧
-    (∀ u, u ∉ Set.Icc (31 / 32 : ℝ) (33 / 32) → Ω u = 0) ∧ Ω 1 = 1 := by
+    (∀ u, u ∉ Set.Icc (1 - δ) (1 + δ) → Ω u = 0) ∧ Ω 1 = 1 := by
   obtain ⟨u, hu⟩ := exists_windowProfile (ε₁ := (1 / 8 : ℝ)) (by norm_num) (by norm_num)
-  refine ⟨fun t => u (16 * t - 31 / 2), fun k => (hu.smooth k).comp (by fun_prop),
+  refine ⟨fun t => u ((t - 1) / (2 * δ) + 1 / 2),
+    fun k => (hu.smooth k).comp (by fun_prop),
     fun t => hu.nonneg _, fun t => hu.le_one _, ?_, ?_⟩
   · intro t ht
     apply hu.zero_of
     intro h
     apply ht
-    constructor <;> linarith [h.1, h.2]
+    have hlo : -(1 / 2 : ℝ) ≤ (t - 1) / (2 * δ) := by linarith [h.1]
+    have hhi : (t - 1) / (2 * δ) ≤ (1 / 2 : ℝ) := by linarith [h.2]
+    rw [le_div_iff₀ (by positivity)] at hlo
+    rw [div_le_iff₀ (by positivity)] at hhi
+    constructor <;> linarith
   · apply hu.one_of
     norm_num
 
@@ -106,23 +110,25 @@ private theorem stabilizerSpatialDual_seven_ge {Ω : ℝ → ℝ} {A : ℝ}
   linarith
 
 /-- A smooth nonnegative window gives a strictly positive complete stabilizer
-row at cutoff seven. Fixed-cutoff negative cancellation fails beyond the support horizon. -/
-theorem exists_positive_stabilizerLinearRow : ∃ Ω : ℝ → ℝ,
+row at cutoff seven, arbitrarily close to the support horizon. Fixed-cutoff
+negative cancellation fails as soon as primitive spatial samples can survive. -/
+theorem exists_positive_stabilizerLinearRow {δ : ℝ} (hδ : 0 < δ) (hδ1 : δ ≤ 1 / 32) :
+    ∃ Ω : ℝ → ℝ,
     (∀ k : ℕ, ContDiff ℝ k Ω) ∧ (∀ u, 0 ≤ Ω u) ∧ (∀ u, Ω u ≤ 1) ∧
-    (∀ u, u ∉ Set.Icc (31 / 32 : ℝ) (33 / 32) → Ω u = 0) ∧ Ω 1 = 1 ∧
+    (∀ u, u ∉ Set.Icc (1 - δ) (1 + δ) → Ω u = 0) ∧ Ω 1 = 1 ∧
     (43 / 576 : ℝ) ≤ stabilizerLinearRow 7 Ω (7 / π) := by
-  obtain ⟨Ω, hΩ, hn, hle, hsp, h1⟩ := exists_narrow_unit_window
+  obtain ⟨Ω, hΩ, hn, hle, hsp, h1⟩ := exists_narrow_unit_window hδ
   refine ⟨Ω, hΩ, hn, hle, hsp, h1, ?_⟩
-  have hsupp : ∀ u, Ω u ≠ 0 → |u| ≤ (33 / 32 : ℝ) := by
+  have hsupp : ∀ u, Ω u ≠ 0 → |u| ≤ 1 + δ := by
     intro u hu
-    have hmem : u ∈ Set.Icc (31 / 32 : ℝ) (33 / 32) := by
+    have hmem : u ∈ Set.Icc (1 - δ) (1 + δ) := by
       by_contra h
       exact hu (hsp u h)
     rw [abs_of_nonneg (by linarith [hmem.1])]
     exact hmem.2
   have hmass : cosTransform Ω 0 ≤ (1 / 16 : ℝ) := by
     rw [cosTransform_zero_eq_integral]
-    have h := window_integral_le_length (by norm_num : (31 / 32 : ℝ) ≤ 33 / 32) hn hle hsp
+    have h := window_integral_le_length (by linarith : 1 - δ ≤ 1 + δ) hn hle hsp
     linarith
   have hdual := stabilizerSpatialDual_seven_ge hsupp hn h1
   rw [stabilizerLinearRow_eq_dual (m := 7 / π) 7 (by positivity) (hΩ 2) hsupp, odd_totient_sum_seven]
@@ -137,7 +143,9 @@ theorem exists_eventually_positive_finite_stabilizerRow : ∃ Ω : ℝ → ℝ,
     ∃ R₀ : ℕ, ∀ R ≥ R₀, (43 / 1152 : ℝ) ≤
       ∑ n ∈ Finset.range R, parityStabilizerWeight 7 (2 * (n + 1)) *
         cosTransform Ω (((2 * (n + 1) : ℕ) : ℝ) / (7 / π)) := by
-  obtain ⟨Ω, hΩ, hn, hle, hsp, h1, hrow⟩ := exists_positive_stabilizerLinearRow
+  obtain ⟨Ω, hΩ, hn, hle, hsp, h1, hrow⟩ :=
+    exists_positive_stabilizerLinearRow (δ := (1 / 32 : ℝ)) (by norm_num) le_rfl
+  norm_num at hsp
   refine ⟨Ω, hΩ, hn, hle, hsp, h1, ?_⟩
   have hsupp : ∀ u, Ω u ≠ 0 → |u| ≤ (33 / 32 : ℝ) := by
     intro u hu

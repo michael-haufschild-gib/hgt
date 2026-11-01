@@ -232,7 +232,7 @@ def stabilizerSpatialDual (Q : ℕ) (Ω : ℝ → ℝ) (m : ℝ) : ℝ :=
   ∑ q ∈ (Finset.Icc 1 Q).filter (fun q => q % 2 = 1),
     (RHTower.Sieve.sqfreeTotientInv q / (q.totient : ℝ)) * ramanujanSpatialDual q Ω m
 
-/-- The absolutely convergent complete linear row of the parity stabilizer. -/
+/-- The complete linear row of the parity stabilizer. -/
 def stabilizerLinearRow (Q : ℕ) (Ω : ℝ → ℝ) (m : ℝ) : ℝ :=
   ∑' n : ℕ, parityStabilizerWeight Q (2 * (n + 1)) *
     cosTransform Ω (((2 * (n + 1) : ℕ) : ℝ) / m)
@@ -463,8 +463,8 @@ theorem ramanujanSpatialDual_eq_zero_iff {Ω : ℝ → ℝ} {A m : ℝ} {q : ℕ
   have hqR : (0 : ℝ) < q := by exact_mod_cast hq
   have hs0 := summable_spatial_lattice (L := π * m / q) (by positivity) hsupp
   have hs : Summable F := by
-    simpa only [F, Set.indicator_apply, Set.mem_setOf_eq] using
-      hs0.indicator {n : ℤ | n.natAbs.Coprime q}
+    refine (hs0.indicator {n : ℤ | n.natAbs.Coprime q}).congr fun n => ?_
+    simp only [Set.indicator_apply, Set.mem_setOf_eq, F]
   have hn : ∀ n, 0 ≤ F n := by
     intro n
     dsimp only [F]
@@ -518,8 +518,8 @@ theorem primitive_sample_le_ramanujanSpatialDual {Ω : ℝ → ℝ} {A m : ℝ} 
   have hqR : (0 : ℝ) < q := by exact_mod_cast hq
   have hs0 := summable_spatial_lattice (L := π * m / q) (by positivity) hsupp
   have hs : Summable F := by
-    simpa only [F, Set.indicator_apply, Set.mem_setOf_eq] using
-      hs0.indicator {j : ℤ | j.natAbs.Coprime q}
+    refine (hs0.indicator {j : ℤ | j.natAbs.Coprime q}).congr fun j => ?_
+    simp only [Set.indicator_apply, Set.mem_setOf_eq, F]
   have hnonneg (j : ℤ) : 0 ≤ F j := by
     dsimp only [F]
     split_ifs

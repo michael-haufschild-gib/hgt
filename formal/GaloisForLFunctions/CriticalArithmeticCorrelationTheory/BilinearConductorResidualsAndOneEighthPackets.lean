@@ -320,7 +320,7 @@ private theorem exists_primeResidual_bilinear_bound :
   · have hu0 : Matrix.toEuclideanLin (fullPrimeMatrix 0) (normalizedRamanujanHorizonVector m 0) -
         (Real.log (0 : ℕ) - ramanujanAdjunctionEnergy m) • normalizedRamanujanHorizonVector m 0 = 0 := by
       ext ⟨n, hn⟩
-      simp [PrimeHorizonIndex] at hn
+      simp at hn
     rw [hu0, inner_zero_left, abs_zero, Nat.cast_zero, Real.log_zero, div_zero]
   have hcoord : ∀ n : PrimeHorizonIndex N,
       (Matrix.toEuclideanLin (fullPrimeMatrix N) (normalizedRamanujanHorizonVector m N) -
@@ -691,7 +691,7 @@ private theorem fullWeilCenter_residual_bilinear_bound (α : ℝ) {m l N : ℕ}
             ((α / N) * ((N : ℝ) / Real.sqrt (n : ℕ) + Real.sqrt (n : ℕ) *
               ((harmonic N : ℝ) - ((harmonic (N - n) : ℝ) + harmonic (N + n)) / 2 +
                 3 / (4 * ((n : ℕ) : ℝ)))) - α * (1 / Real.sqrt (n : ℕ))) := by ring
-      rw [hfactor, hcanc, div_eq_inv_mul]
+      rw [hfactor, hcanc]; dsimp only [B_row]; ring
     have hp := abs_inner_of_coord_eq_div_sqrt_log hk r₁ B_row hr1_coord
     let b_bdry : ℕ → ℝ := fun n =>
       (harmonic N : ℝ) - ((harmonic (N - n) : ℝ) + harmonic (N + n)) / 2 + 3 / (4 * (n : ℝ))
@@ -917,14 +917,15 @@ private theorem fullWeilCenter_residual_bilinear_bound (α : ℝ) {m l N : ℕ}
     · obtain ⟨c_w, -, rfl⟩ := (mem_conductorSubspace_iff (M := 1) (N := N) (x := w)).mp hw
       have h1_sum : (∑ k ∈ Icc 1 1, c_w k • normalizedRamanujanHorizonVector k N) = c_w 1 • v₁ := by
         rw [Icc_self, sum_singleton]
-      rw [h1_sum, real_inner_smul_left, real_inner_comm v₁, h_iv1, mul_zero]
+      rw [h1_sum, real_inner_smul_left, real_inner_comm v₁ (x - (⟪x, v₁⟫ / ‖v₁‖ ^ 2) • v₁),
+        h_iv1, mul_zero]
     · have hpyth : ‖x - (⟪x, v₁⟫ / ‖v₁‖ ^ 2) • v₁‖ ^ 2 ≤ ‖x‖ ^ 2 := by
         rw [norm_sub_sq_real, norm_smul, Real.norm_eq_abs, mul_pow, sq_abs,
           real_inner_smul_right, mul_comm (⟪x, v₁⟫ / ‖v₁‖ ^ 2)]
         have hc1 : (⟪x, v₁⟫ / ‖v₁‖ ^ 2) ^ 2 * ‖v₁‖ ^ 2 = ⟪x, v₁⟫ ^ 2 / ‖v₁‖ ^ 2 := by
           field_simp [hv1_sq_pos.ne']
         have hc2 : 2 * (⟪x, v₁⟫ * (⟪x, v₁⟫ / ‖v₁‖ ^ 2)) = 2 * (⟪x, v₁⟫ ^ 2 / ‖v₁‖ ^ 2) := by
-          field_simp [hv1_sq_pos.ne']; ring
+          field_simp [hv1_sq_pos.ne']
         have hpos_q : 0 ≤ ⟪x, v₁⟫ ^ 2 / ‖v₁‖ ^ 2 := div_nonneg (sq_nonneg _) hv1_sq_pos.le
         linarith only [hc1, hc2, hpos_q]
       have h := Real.sqrt_le_sqrt hpyth
@@ -1035,11 +1036,16 @@ private theorem fullWeilCenter_residual_bilinear_bound (α : ℝ) {m l N : ℕ}
       dsimp only [r₁]
       rw [inner_sub_left, real_inner_smul_left, hum_v1, mul_zero, sub_zero, hs]
     have hc_v1 : C_op v₁ = r₁ + α • v₁ := by dsimp only [r₁]; abel
-    conv_lhs => rw [hvm_eq, hvl_eq]
-    rw [map_add, map_smul, inner_add_left, inner_add_right, inner_add_right,
-      real_inner_smul_left, real_inner_smul_right, real_inner_smul_right,
-      hsym_um, hc_v1, inner_add_left, real_inner_smul_left, real_inner_comm v₁ v_l]
-    ring
+    have ht1 : ⟪C_op u_m, v_l⟫ = ⟪C_op u_m, u_l⟫ + β_l * ⟪r₁, u_m⟫ := by
+      rw [hvl_eq, inner_add_right, real_inner_smul_right, hsym_um]
+    have ht2 : ⟪C_op v₁, v_l⟫ = ⟪r₁, v_l⟫ + α * ⟪v_l, v₁⟫ := by
+      rw [hc_v1, inner_add_left, real_inner_smul_left, real_inner_comm v₁ v_l]
+    calc
+      ⟪C_op v_m, v_l⟫ = ⟪C_op u_m, v_l⟫ + β_m * ⟪C_op v₁, v_l⟫ := by
+        conv_lhs => rw [hvm_eq]
+        rw [map_add, map_smul, inner_add_left, real_inner_smul_left]
+      _ = ⟪C_op u_m, u_l⟫ + β_l * ⟪r₁, u_m⟫ + β_m * ⟪r₁, v_l⟫ + α * β_m * ⟪v_l, v₁⟫ := by
+        rw [ht1, ht2]; ring
   have hlogl_div : (1 + Real.log l) / Real.log N ≤ 2 := by
     have hlL : Real.log (l : ℝ) ≤ Real.log N :=
       Real.log_le_log (by exact_mod_cast (show 0 < l by omega)) (by exact_mod_cast hlN)
@@ -2830,7 +2836,10 @@ private theorem exists_upward_bilinear_variable_rate {φ : ℝ → ℝ}
           ramanujanLagCoefficient m n * shellCorrection φ c m) / Real.sqrt n + _) / 2
         ring
       rw [hrow, abs_div, show |(2 : ℝ)| = 2 by norm_num, div_div, mul_comm (2 : ℝ)]
-      have htri := div_le_div_of_nonneg_right (abs_add_le _ _) (Real.sqrt_nonneg n)
+      have htri := div_le_div_of_nonneg_right
+        (abs_add_le (shiftedReciprocalUpwardRowError φ c id N m n)
+          (shiftedReciprocalUpwardRowError φ c (reflectedAffineShift m) N m n))
+        (Real.sqrt_nonneg (n : ℝ))
       rw [add_div] at htri
       exact (div_le_div_of_nonneg_right htri zero_le_two).trans_eq
         (by rw [div_div, div_div, add_div])
@@ -2856,8 +2865,8 @@ private theorem exists_upward_bilinear_variable_rate {φ : ℝ → ℝ}
         (∑ n ∈ Icc 1 N, |b n| / Real.sqrt n) + ∑ n ∈ Icc 1 N, |r n| / Real.sqrt n := by
       rw [← sum_add_distrib]
       exact sum_le_sum fun n _ => by
-        rw [← add_div]
-        exact div_le_div_of_nonneg_right (abs_add_le (b n) (r n)) (Real.sqrt_nonneg n)
+        simpa only [add_div] using
+          div_le_div_of_nonneg_right (abs_add_le (b n) (r n)) (Real.sqrt_nonneg (n : ℝ))
     have hc35 : c ^ 3 ≤ c ^ 5 * Real.log N :=
       (pow_le_pow_right₀ hc (by norm_num : 3 ≤ 5)).trans
         (le_mul_of_one_le_right (by positivity) hlog)
@@ -3148,7 +3157,11 @@ theorem exists_completeWeil_bilinear_conductor_residual_variable_rate {φ : ℝ 
         simpa only [pow_one] using hrate_c1 (by norm_num : 1 ≤ 2)
       have h2 := hrate_sub (by norm_num : 1 ≤ 2) (by norm_num : 2 ≤ 5)
       linarith only [h1, h2]
-    exact (hb.trans_eq (by dsimp only [M_ml]; ring)).trans
+    have h1 : Cd * Real.sqrt ((m : ℝ) * l) * (1 + Real.log m) *
+        (c * (1 + Real.log c) / Real.log N + c ^ 2 / (N : ℝ)) =
+        (Cd * M_ml) * (c * (1 + Real.log c) / Real.log N + c ^ 2 / (N : ℝ)) := by
+      dsimp only [M_ml]; ring
+    exact (hb.trans_eq h1).trans
       ((mul_le_mul_of_nonneg_left hr_sum (by positivity)).trans_eq (by ring))
   have hn' : |⟪nearCenterVector φ c N m, v_l⟫| ≤ Cn * M_ml * R := by
     refine (hnear m l hm hl c hc N hN1 htwo_c).trans ?_
@@ -3191,6 +3204,7 @@ theorem exists_completeWeil_bilinear_conductor_residual_variable_rate {φ : ℝ 
     _ ≤ K * M_ml * R :=
       mul_le_mul_of_nonneg_right
         (mul_le_mul_of_nonneg_right (by dsimp only [K]; linarith only) hMml0) hR0
+    _ = K * Real.sqrt ((m : ℝ) * l) * (1 + Real.log m) * R := by dsimp only [M_ml]; ring
 
 /-- Specialization of `exists_completeWeil_bilinear_conductor_residual_variable_rate` to
 `tiltedUnitSpline`. -/
@@ -3286,9 +3300,9 @@ private theorem conductor_log_sq_inv_energy_weight_le {c : ℝ} (hc : 1 ≤ c) {
           ((m : ℝ) * (4 * (m : ℝ))) / (κ * ((m : ℝ) / c) ^ 7) :=
         (div_le_div_of_nonneg_right (mul_le_mul_of_nonneg_left hlog_sq hm0.le)
           (completedConductorEnergy_nonneg contDiff_tiltedUnitSpline tiltedUnitSpline_eq_zero
-            integral_tiltedUnitSpline_sq_pos hc0 m)).trans
+            integral_tiltedUnitSpline_sq_pos hc0 hm)).trans
           (div_le_div_of_nonneg_left (by positivity) (by positivity) henergy_lower)
-      _ = (4 * c ^ 7 / (m : ℝ) ^ 5) / κ := by field_simp [hκ.ne', hm0.ne', hc0.ne']; ring
+      _ = (4 * c ^ 7 / (m : ℝ) ^ 5) / κ := by field_simp [hκ.ne', hm0.ne', hc0.ne']
       _ ≤ (4 * c ^ 7 / (m : ℝ) ^ 2) / κ :=
         div_le_div_of_nonneg_right
           (div_le_div_of_nonneg_left (by positivity) (sq_pos_of_pos hm0) hm25) hκ.le
@@ -3404,7 +3418,7 @@ theorem exists_tiltedUnitSpline_quadratic_inv_energy_residual_sum_le :
       have hmQ : (m : ℝ) ≤ Q := by exact_mod_cast (mem_Icc.mp hm).2
       exact div_le_div_of_nonneg_right (hN m hm1 (hmQ.trans hQ) c hc hwidth)
         (completedConductorEnergy_nonneg contDiff_tiltedUnitSpline tiltedUnitSpline_eq_zero
-          integral_tiltedUnitSpline_sq_pos hc0 m)
+          integral_tiltedUnitSpline_sq_pos hc0 hm1)
     _ = (K₀ * r) * ∑ m ∈ Icc 1 Q,
           (m : ℝ) * (1 + Real.log m) ^ 2 / completedConductorEnergy tiltedUnitSpline c m := by
       rw [mul_sum]
@@ -3466,9 +3480,9 @@ theorem exists_tiltedUnitSpline_bilinear_relative_residual_sum_le :
     have hb := hN m hm1 (hmQ.trans hQ) l hl1 (hlQ.trans hQ) c hc hwidth
     have hsq := pow_le_pow_left₀ (abs_nonneg _) hb 2
     have hEm0 := completedConductorEnergy_nonneg contDiff_tiltedUnitSpline
-      tiltedUnitSpline_eq_zero integral_tiltedUnitSpline_sq_pos hc0 m
+      tiltedUnitSpline_eq_zero integral_tiltedUnitSpline_sq_pos hc0 hm1
     have hEl0 := completedConductorEnergy_nonneg contDiff_tiltedUnitSpline
-      tiltedUnitSpline_eq_zero integral_tiltedUnitSpline_sq_pos hc0 l
+      tiltedUnitSpline_eq_zero integral_tiltedUnitSpline_sq_pos hc0 hl1
     refine (div_le_div_of_nonneg_right hsq (mul_nonneg hEm0 hEl0)).trans_eq ?_
     rw [mul_pow, mul_pow, mul_pow, Real.sq_sqrt (by positivity)]
     ring
@@ -3486,7 +3500,9 @@ theorem exists_tiltedUnitSpline_bilinear_relative_residual_sum_le :
       one_le_pow₀ (by linarith [Real.log_natCast_nonneg Q])
     have hQle : (Q : ℝ) ^ 2 ≤ (Q : ℝ) ^ 2 * (1 + Real.log Q) ^ 2 :=
       le_mul_of_one_le_right (sq_nonneg _) h1Q
-    have hb : 2 * c ^ 7 + (Q : ℝ) ^ 2 ≤ 2 * W := by dsimp only [W]; linarith only [hQle]
+    have hb : 2 * c ^ 7 + (Q : ℝ) ^ 2 ≤ 2 * W := by
+      dsimp only [W]
+      linarith only [hQle, mul_nonneg (sq_nonneg (Q : ℝ)) (sq_nonneg (1 + Real.log Q))]
     exact (div_le_div_of_nonneg_right hb hκ.le).trans_eq (by ring)
   calc
     _ ≤ ∑ m ∈ Icc 1 Q, ∑ l ∈ Icc 1 Q, (K₀ ^ 2 * r ^ 2) *
@@ -3504,7 +3520,7 @@ theorem exists_tiltedUnitSpline_bilinear_relative_residual_sum_le :
         (mul_le_mul (hsum1.trans hW1) (hsum2.trans hW2)
           (sum_nonneg fun l hl => div_nonneg (Nat.cast_nonneg l)
             (completedConductorEnergy_nonneg contDiff_tiltedUnitSpline tiltedUnitSpline_eq_zero
-              integral_tiltedUnitSpline_sq_pos hc0 l))
+              integral_tiltedUnitSpline_sq_pos hc0 (mem_Icc.mp hl).1))
           (by dsimp only [W]; positivity))
         (by positivity)
     _ = (16 * K₀ ^ 2 / κ ^ 2) * W ^ 2 * r ^ 2 := by ring
@@ -3516,7 +3532,7 @@ Whenever the polarized Gram factor and the relative bilinear residual double sum
 small, `spectralFloorWeilMatrix c N` retains at least one-quarter of the full completed conductor
 energy sum `(1 / 4) * ∑_{m=1}^Q E_m(c) * a_m^2`. -/
 theorem spectralFloorWeilMatrix_subspace_inner_ge_of_bilinear_budget
-    {Q N : ℕ} {c : ℝ} (hQ1 : 1 ≤ Q) (hMN : max 2 Q * max 2 Q ≤ N)
+    {Q N : ℕ} {c : ℝ} (_hQ1 : 1 ≤ Q) (hMN : max 2 Q * max 2 Q ≤ N)
     (hL0 : 0 < Real.log (N : ℝ)) (hc1 : 1 ≤ c)
     (hgram_small : 9 * (2 * (|completeWeilSelfFinitePart tiltedUnitSpline 1| + 5) /
         tiltedSplineSpectralFloorConstant + 1) *
@@ -3568,11 +3584,13 @@ theorem spectralFloorWeilMatrix_subspace_inner_ge_of_bilinear_budget
       dsimp only [y, y_diag]
       rw [map_sum, ← sum_add_distrib]
       refine sum_congr rfl fun m _ => ?_
-      rw [map_smul, smul_smul, ← smul_add]
-      congr 1
-      have hres := spectralFloorWeilMatrix_residual_eq c m N
-      dsimp only [r_vec, Etil, E, s, κ] at hres ⊢
-      rw [← hres]; abel
+      have hres : Matrix.toEuclideanLin (spectralFloorWeilMatrix c N)
+          (normalizedRamanujanHorizonVector m N) =
+          Etil m • normalizedRamanujanHorizonVector m N + r_vec m := by
+        have h := spectralFloorWeilMatrix_residual_eq c m N
+        dsimp only [r_vec, Etil, E, s, κ] at h ⊢
+        rw [← h]; abel
+      rw [map_smul, hres, smul_add, smul_smul, mul_comm (a m) (Etil m)]
     rw [hact, inner_add_left]
     congr 1
     dsimp only [y]
@@ -3607,33 +3625,33 @@ theorem spectralFloorWeilMatrix_subspace_inner_ge_of_bilinear_budget
     let d' : ℕ → ℝ := fun m => if m ≤ Q then Etil m * a m else 0
     have hy_eq : (∑ m ∈ Icc 1 M_Q, a' m • normalizedRamanujanHorizonVector m N) = y := by
       dsimp only [y, a']
-      symm
-      refine sum_subset (Icc_subset_Icc_right hQ_MQ) fun m hm hnot => ?_
-      have hnQ : ¬ m ≤ Q := fun h => hnot (mem_Icc.mpr ⟨(mem_Icc.mp hm).1, h⟩)
-      simp only [if_neg hnQ, zero_smul]
+      refine (sum_subset (Icc_subset_Icc_right hQ_MQ) fun m hm hnot => ?_).symm.trans
+        (sum_congr rfl fun m hm => ?_)
+      · have hnQ : ¬ m ≤ Q := fun h => hnot (mem_Icc.mpr ⟨(mem_Icc.mp hm).1, h⟩)
+        simp only [if_neg hnQ, zero_smul]
+      · rw [if_pos (mem_Icc.mp hm).2]
     have hyd_eq : (∑ m ∈ Icc 1 M_Q, d' m • normalizedRamanujanHorizonVector m N) = y_diag := by
       dsimp only [y_diag, d']
-      symm
-      refine sum_subset (Icc_subset_Icc_right hQ_MQ) fun m hm hnot => ?_
-      have hnQ : ¬ m ≤ Q := fun h => hnot (mem_Icc.mpr ⟨(mem_Icc.mp hm).1, h⟩)
-      simp only [if_neg hnQ, zero_smul]
+      refine (sum_subset (Icc_subset_Icc_right hQ_MQ) fun m hm hnot => ?_).symm.trans
+        (sum_congr rfl fun m hm => ?_)
+      · have hnQ : ¬ m ≤ Q := fun h => hnot (mem_Icc.mpr ⟨(mem_Icc.mp hm).1, h⟩)
+        simp only [if_neg hnQ, zero_smul]
+      · rw [if_pos (mem_Icc.mp hm).2]
     have hS_eq : (∑ m ∈ Icc 1 M_Q, d' m * a' m) = S := by
       dsimp only [S, d', a']
-      symm
-      refine (sum_congr rfl fun m hm => ?_).trans
-        (sum_subset (Icc_subset_Icc_right hQ_MQ) fun m hm hnot => ?_).symm
-      · rw [if_pos (mem_Icc.mp hm).2, if_pos (mem_Icc.mp hm).2]; ring
+      refine (sum_subset (Icc_subset_Icc_right hQ_MQ) fun m hm hnot => ?_).symm.trans
+        (sum_congr rfl fun m hm => ?_)
       · have hnQ : ¬ m ≤ Q := fun h => hnot (mem_Icc.mpr ⟨(mem_Icc.mp hm).1, h⟩)
         simp only [if_neg hnQ, zero_mul]
+      · rw [if_pos (mem_Icc.mp hm).2, if_pos (mem_Icc.mp hm).2]; ring
     have hd_sq : (∑ m ∈ Icc 1 M_Q, d' m ^ 2) ≤ C_E * (1 + Real.log (M_Q : ℝ)) * S := by
       have heq : (∑ m ∈ Icc 1 M_Q, d' m ^ 2) = ∑ m ∈ Icc 1 Q, Etil m ^ 2 * a m ^ 2 := by
         dsimp only [d']
-        symm
-        refine (sum_congr rfl fun m hm => ?_).trans
-          (sum_subset (Icc_subset_Icc_right hQ_MQ) fun m hm hnot => ?_).symm
-        · rw [if_pos (mem_Icc.mp hm).2]; ring
+        refine (sum_subset (Icc_subset_Icc_right hQ_MQ) fun m hm hnot => ?_).symm.trans
+          (sum_congr rfl fun m hm => ?_)
         · have hnQ : ¬ m ≤ Q := fun h => hnot (mem_Icc.mpr ⟨(mem_Icc.mp hm).1, h⟩)
-          simp only [if_neg hnQ, zero_pow (by decide)]
+          rw [if_neg hnQ]; norm_num
+        · rw [if_pos (mem_Icc.mp hm).2]; ring
       rw [heq, mul_sum]
       refine sum_le_sum fun m hm => ?_
       have hub := hEtil_ub m hm
@@ -3644,18 +3662,18 @@ theorem spectralFloorWeilMatrix_subspace_inner_ge_of_bilinear_budget
     have ha_sq : (∑ m ∈ Icc 1 M_Q, a' m ^ 2) ≤ (2 * c ^ 7 / κ) * S := by
       have heq : (∑ m ∈ Icc 1 M_Q, a' m ^ 2) = ∑ m ∈ Icc 1 Q, a m ^ 2 := by
         dsimp only [a']
-        symm
-        refine (sum_congr rfl fun m hm => by rw [if_pos (mem_Icc.mp hm).2]).trans
-          (sum_subset (Icc_subset_Icc_right hQ_MQ) fun m hm hnot => ?_).symm
-        have hnQ : ¬ m ≤ Q := fun h => hnot (mem_Icc.mpr ⟨(mem_Icc.mp hm).1, h⟩)
-        simp only [if_neg hnQ, zero_pow (by decide)]
+        refine (sum_subset (Icc_subset_Icc_right hQ_MQ) fun m hm hnot => ?_).symm.trans
+          (sum_congr rfl fun m hm => ?_)
+        · have hnQ : ¬ m ≤ Q := fun h => hnot (mem_Icc.mpr ⟨(mem_Icc.mp hm).1, h⟩)
+          rw [if_neg hnQ]; norm_num
+        · rw [if_pos (mem_Icc.mp hm).2]
       rw [heq, mul_sum]
       refine sum_le_sum fun m hm => ?_
       have hge := hEtil_ge_s m hm
       have h1 : a m ^ 2 ≤ (1 / s) * (Etil m * a m ^ 2) := by
         rw [one_div_mul_eq_div, le_div_iff₀ hs_pos, mul_comm]
         exact mul_le_mul_of_nonneg_right hge (sq_nonneg _)
-      exact h1.trans_eq (by dsimp only [s]; field_simp [hκ.ne', hc0.ne']; ring)
+      exact h1.trans_eq (by dsimp only [s]; field_simp [hκ.ne', hc0.ne'])
     have hprod_sqrt : Real.sqrt (∑ m ∈ Icc 1 M_Q, d' m ^ 2) *
         Real.sqrt (∑ m ∈ Icc 1 M_Q, a' m ^ 2) ≤
         (2 * C_E / κ + 1) * (1 + Real.log (M_Q : ℝ)) * c ^ 4 * S := by
@@ -3725,7 +3743,8 @@ theorem spectralFloorWeilMatrix_subspace_inner_ge_of_bilinear_budget
         dsimp only [u]
         rw [div_pow, Real.sq_sqrt hprod_pos.le]
         have hprod_le : E m * E l ≤ 4 * (Etil m * Etil l) := by
-          have h := mul_le_mul (hE_le_2Etil m hm) (hE_le_2Etil l hl) hEl_pos.le (by positivity)
+          have h := mul_le_mul (hE_le_2Etil m hm) (hE_le_2Etil l hl) hEl_pos.le
+            (mul_nonneg zero_le_two (hEtil_pos m hm).le)
           linarith only [h]
         have hdiv : 1 / (Etil m * Etil l) ≤ 4 / (E m * E l) := by
           rw [div_le_div_iff₀ hprod_pos (mul_pos hEm_pos hEl_pos), one_mul]
@@ -3873,9 +3892,12 @@ theorem eventually_tiltedUnitSpline_polylog_conductorSubspace_energy_ge
   have hwidth : 4 * (Real.exp 1 + 3) ^ 2 * c ^ 2 ≤ (N : ℝ) := by
     have he1 : Real.exp 1 ≤ 3 := by have := Real.exp_one_lt_d9; linarith
     have h144 : 4 * (Real.exp 1 + 3) ^ 2 ≤ 144 := by nlinarith only [he1, Real.exp_pos 1]
-    have hc2_L : c ^ 2 ≤ L := (hcpow 2).trans (by
-      simpa only [Real.rpow_one] using
-        Real.rpow_le_rpow_of_exponent_le hL1 (by norm_num; linarith only [hα8]))
+    have hc2_L : c ^ 2 ≤ L := by
+      calc
+        c ^ 2 ≤ L ^ (((2 : ℕ) : ℝ) * α) := hcpow 2
+        _ ≤ L ^ (1 : ℝ) := Real.rpow_le_rpow_of_exponent_le hL1
+          (by push_cast; linarith only [hα8])
+        _ = L := Real.rpow_one L
     have h144_L7 : (144 : ℝ) ≤ L ^ 7 :=
       (by norm_num : (144 : ℝ) ≤ 4 ^ 7).trans (pow_le_pow_left₀ (by norm_num) hL4 7)
     calc
@@ -3887,13 +3909,15 @@ theorem eventually_tiltedUnitSpline_polylog_conductorSubspace_energy_ge
   have hMN : max 2 Q₁ * max 2 Q₁ ≤ N := by
     rw [hMQ_eq]
     have hQ_sq : (Q₁ : ℝ) ^ 2 ≤ L := by
-      have hp := pow_le_pow_left₀ (Nat.cast_nonneg Q₁) hQ_le 2
-      have he : (L ^ q) ^ (2 : ℕ) = L ^ (2 * q) := by
-        rw [← Real.rpow_natCast, ← Real.rpow_mul hL0.le]; congr 1; ring
-      exact (hp.trans_eq he).trans (by
-        simpa only [Real.rpow_one] using
-          Real.rpow_le_rpow_of_exponent_le hL1 (by linarith only [hq_half]))
-    have hLN : L ≤ (N : ℝ) := (by simpa only [pow_one] using pow_le_pow_right₀ hL1 (by norm_num : 1 ≤ 8)).trans hL8_pow
+      calc
+        (Q₁ : ℝ) ^ 2 ≤ (L ^ q) ^ (2 : ℕ) := pow_le_pow_left₀ (Nat.cast_nonneg Q₁) hQ_le 2
+        _ = L ^ (2 * q) := by
+          rw [← Real.rpow_natCast, ← Real.rpow_mul hL0.le]; congr 1; ring
+        _ ≤ L ^ (1 : ℝ) := Real.rpow_le_rpow_of_exponent_le hL1
+          (by linarith only [hq_half])
+        _ = L := Real.rpow_one L
+    have hLN : L ≤ (N : ℝ) :=
+      (show L ≤ L ^ 8 by simpa only [pow_one] using pow_le_pow_right₀ hL1 (by norm_num : 1 ≤ 8)).trans hL8_pow
     have hcast : ((Q₁ * Q₁ : ℕ) : ℝ) ≤ (N : ℝ) := by
       simpa only [sq, Nat.cast_mul] using hQ_sq.trans hLN
     exact_mod_cast hcast
@@ -3936,8 +3960,7 @@ theorem eventually_tiltedUnitSpline_polylog_conductorSubspace_energy_ge
             (mul_le_mul hHQsq hc4 (by positivity) (by positivity)) hL0.le) hCgram_pos.le
       _ = C_gram * L ^ (2 * ν + 4 * α - 1) := by
         congr 1
-        rw [← Real.rpow_add hL0, ← Real.rpow_sub hL0, Real.rpow_one]
-        congr 1; ring
+        rw [← Real.rpow_add hL0, Real.rpow_sub hL0, Real.rpow_one]
       _ ≤ C_gram * L ^ (-ν) :=
         mul_le_mul_of_nonneg_left (Real.rpow_le_rpow_of_exponent_le hL1 hexp_g) hCgram_pos.le
       _ = (1 / 4 : ℝ) * ((4 * C_gram) * L ^ (-ν)) := by ring
@@ -3988,7 +4011,7 @@ theorem eventually_tiltedUnitSpline_polylog_conductorSubspace_energy_ge
             (L ^ α * L ^ (2 * ν) * L ^ (1 / (k : ℝ))) / L :=
           div_le_div_of_nonneg_right hnum hL0.le
         _ = L ^ (α + 2 * ν + 1 / (k : ℝ) - 1) := by
-          rw [← Real.rpow_add hL0, ← Real.rpow_add hL0, ← Real.rpow_sub hL0, Real.rpow_one]
+          rw [← Real.rpow_add hL0, ← Real.rpow_add hL0, Real.rpow_sub hL0, Real.rpow_one]
     have ht1 : c ^ 7 * r_lead ≤ L ^ (-ν) := by
       calc
         c ^ 7 * r_lead ≤ L ^ ((7 : ℝ) * α) * L ^ (α + 2 * ν + 1 / (k : ℝ) - 1) :=
@@ -4022,7 +4045,8 @@ theorem eventually_tiltedUnitSpline_polylog_conductorSubspace_energy_ge
         _ ≤ 4 * L ^ (-ν) := by linarith only [ht1, ht2]
     have hWr0 : 0 ≤ W * r_full := by dsimp only [W, r_full]; positivity
     have hLν_le1 : L ^ (-ν) ≤ 1 := by
-      simpa only [Real.rpow_zero] using Real.rpow_le_rpow_of_exponent_le hL1 (by linarith only [hν])
+      simpa only [Real.rpow_zero] using
+        Real.rpow_le_rpow_of_exponent_le hL1 (show -ν ≤ 0 by linarith only [hν])
     have hLν_sq : (L ^ (-ν)) ^ 2 ≤ L ^ (-ν) := by
       rw [sq]; exact mul_le_of_le_one_right (by positivity) hLν_le1
     have h1024 : 1024 * K_bilin ≤ L ^ ν := le_trans (le_max_right _ _) hν_big
@@ -4068,17 +4092,20 @@ theorem eventually_tiltedUnitSpline_fixed_conductorSubspace_energy_ge_below_one_
   have hy_eq : (∑ m ∈ Icc 1 M₀, a m • normalizedRamanujanHorizonVector m N) =
       ∑ m ∈ Icc 1 Q₁, a' m • normalizedRamanujanHorizonVector m N := by
     dsimp only [a']
-    refine (sum_congr rfl fun m hm => by rw [if_pos (mem_Icc.mp hm).2]).trans
-      (sum_subset (Icc_subset_Icc_right hMQ) fun m hm hnot => ?_)
-    have hnM : ¬ m ≤ M₀ := fun h => hnot (mem_Icc.mpr ⟨(mem_Icc.mp hm).1, h⟩)
-    simp only [if_neg hnM, zero_smul]
+    symm
+    refine (sum_subset (Icc_subset_Icc_right hMQ) fun m hm hnot => ?_).symm.trans
+      (sum_congr rfl fun m hm => ?_)
+    · have hnM : ¬ m ≤ M₀ := fun h => hnot (mem_Icc.mpr ⟨(mem_Icc.mp hm).1, h⟩)
+      simp only [if_neg hnM, zero_smul]
+    · rw [if_pos (mem_Icc.mp hm).2]
   have hfloor := hpolyN c hc1 hcup a'
   rw [← hy_eq, spectralFloorWeilMatrix_inner] at hfloor
   have hnonneg : 0 ≤ (1 / 4 : ℝ) *
       (∑ m ∈ Icc 1 Q₁, completedConductorEnergy tiltedUnitSpline c m * a' m ^ 2) :=
-    mul_nonneg (by norm_num) (sum_nonneg fun m _ =>
+    mul_nonneg (by norm_num) (sum_nonneg fun m hm =>
       mul_nonneg (completedConductorEnergy_nonneg contDiff_tiltedUnitSpline
-        tiltedUnitSpline_eq_zero integral_tiltedUnitSpline_sq_pos hc0 m) (sq_nonneg _))
+        tiltedUnitSpline_eq_zero integral_tiltedUnitSpline_sq_pos hc0 (mem_Icc.mp hm).1)
+        (sq_nonneg _))
   linarith only [hfloor, hnonneg]
 
 /-- **Strict positivity on every fixed finite conductor packet up to `1 / 8`.** -/
