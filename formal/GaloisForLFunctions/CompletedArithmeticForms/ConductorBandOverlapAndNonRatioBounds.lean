@@ -28,7 +28,7 @@ conductor subspaces `conductorSubspace R N`:
   `|⟪overlapMatrix v_A, v_B⟫|` by `O(c (1 + log c)) ‖v_A‖ ‖v_B‖`. On packets supported on
   `(Q_1, R_2]`, log-kernel linearization and telescoping summation by parts over `m * l`-periodic
   autocorrelations suppress `|⟪overlapMatrix u, u⟫|` to
-  `O(c^2 (1 + log c) / log N + c^5 log N / N + c^4 / √Q_1 + c^3 R_2^4 / N) ‖u‖^2`.
+  `O(c^2 (1 + log c) / log N + c^5 log N / N + c^3 / √Q_1 + c^3 R_2^4 / N) ‖u‖^2`.
 -/
 
 noncomputable section
@@ -2544,7 +2544,7 @@ private theorem midBandLinearizedSum_eq_mean_add_osc (φ : ℝ → ℝ) (R₂ N 
     · rw [if_neg (Ne.symm hlm), if_neg hlm, mul_zero, zero_mul]
   rw [sum_congr rfl hdiag, sum_ite_eq', if_pos hm]
 
-private theorem exists_midBand_mean_sum_le {φ : ℝ → ℝ}
+private theorem exists_midBand_mean_sum_le_cubic {φ : ℝ → ℝ}
     (hφ : ContDiff ℝ 2 φ) (hsupp : ∀ t, t ∉ Set.Icc 0 1 → φ t = 0)
     (hM : 0 < ∫ t, φ t ^ 2) :
     ∃ C_3 : ℝ, 0 ≤ C_3 ∧
@@ -2553,7 +2553,7 @@ private theorem exists_midBand_mean_sum_le {φ : ℝ → ℝ}
         1 ≤ c → 4 * (linearNearRowRadius c + 1) ^ 2 ≤ N →
       ∀ {a : ℕ → ℝ}, (∀ m ∈ Icc 1 Q₁, a m = 0) →
         |midBandMeanSum φ R₂ N c a| ≤
-          C_3 * (c ^ 4 / Real.sqrt Q₁) *
+          C_3 * (c ^ 3 / Real.sqrt Q₁) *
             ‖∑ m ∈ Icc 1 R₂, a m • normalizedRamanujanHorizonVector m N‖ ^ 2 := by
   have hG_le : ∀ t, |shellAutocorr φ t| ≤ ∫ t, φ t ^ 2 := abs_shellAutocorr_le hφ hsupp
   refine ⟨8 * (2 * Real.exp 2) ^ 3 * (2 * Real.exp 2 + 1) * (∫ t, φ t ^ 2),
@@ -2609,85 +2609,112 @@ private theorem exists_midBand_mean_sum_le {φ : ℝ → ℝ}
             midBandLinearizedWeight φ c N h n| ≤
         a m ^ 2 *
           (2 * (2 * Real.exp 2) ^ 2 * (2 * Real.exp 2 + 1) * (∫ t, φ t ^ 2) *
-            (c ^ 3 / Real.sqrt Q₁)) := by
+            (c ^ 2 / Real.sqrt Q₁)) := by
     intro h hh m hm
     obtain ⟨hh1, hhB⟩ := mem_Icc.mp hh
     obtain ⟨hm1, _⟩ := mem_Icc.mp hm
     rcases le_or_gt m Q₁ with hmQ | hmQ
     · rw [ha0 m (mem_Icc.mpr ⟨hm1, hmQ⟩), sq, zero_mul, zero_mul, zero_mul, abs_zero, zero_mul]
-    · have hφ0 : (0 : ℝ) < m.totient := Nat.cast_pos.mpr (Nat.totient_pos.mpr hm1)
-      have htot_inv : 1 / (m.totient : ℝ) ≤ 2 / Real.sqrt Q₁ := by
-        have hnat : Q₁ ≤ 4 * m.totient ^ 2 := by
-          have h2 := nat_le_two_mul_totient_sq m
-          omega
-        have hcast : (Q₁ : ℝ) ≤ (2 * (m.totient : ℝ)) ^ 2 := by
-          have hc' : (Q₁ : ℝ) ≤ ((4 * m.totient ^ 2 : ℕ) : ℝ) := Nat.cast_le.mpr hnat
-          push_cast at hc'
-          linarith only [hc', (by ring : (2 * (m.totient : ℝ)) ^ 2 = 4 * (m.totient : ℝ) ^ 2)]
-        have hsqrt : Real.sqrt Q₁ ≤ 2 * (m.totient : ℝ) := by
-          calc
-            Real.sqrt Q₁ ≤ Real.sqrt ((2 * (m.totient : ℝ)) ^ 2) := Real.sqrt_le_sqrt hcast
-            _ = 2 * (m.totient : ℝ) := Real.sqrt_sq (by positivity)
-        rw [div_le_div_iff₀ hφ0 hsQ1]
-        linarith only [hsqrt]
-      have hlag_le : |ramanujanLagCoefficient m h| ≤ (2 * Real.exp 2) ^ 2 * c ^ 2 := by
-        have h1 := abs_ramanujanLagCoefficient_le_lag_sq m hh1
-        have hh_le : (h : ℝ) ≤ (2 * Real.exp 2) * c := (Nat.cast_le.mpr hhB).trans hB_le
-        have hp := pow_le_pow_left₀ (Nat.cast_nonneg h) hh_le 2
-        rw [mul_pow] at hp
-        exact h1.trans hp
-      have hdiv_le : |ramanujanLagCoefficient m h / (m.totient : ℝ)| ≤
-          2 * (2 * Real.exp 2) ^ 2 * c ^ 2 / Real.sqrt Q₁ := by
-        rw [abs_div, abs_of_pos hφ0, div_eq_mul_one_div]
+    · let g := Nat.gcd m h
+      let t := m / g
+      have hg : 0 < g := Nat.gcd_pos_of_pos_left h hm1
+      have ht : 0 < t := Nat.div_pos (Nat.le_of_dvd hm1 (Nat.gcd_dvd_left m h)) hg
+      have hφ0 : (0 : ℝ) < t.totient := Nat.cast_pos.mpr (Nat.totient_pos.mpr ht)
+      have hB1 : (1 : ℝ) ≤ 2 * Real.exp 2 := by
+        have he := Real.one_le_exp (by norm_num : (0 : ℝ) ≤ 2)
+        linarith only [he]
+      have hh_le : (h : ℝ) ≤ (2 * Real.exp 2) * c :=
+        (Nat.cast_le.mpr hhB).trans hB_le
+      have hmg : (m : ℝ) = (t : ℝ) * g := by
+        exact_mod_cast (Nat.div_mul_cancel (Nat.gcd_dvd_left m h)).symm
+      have htbound : (t : ℝ) ≤ 2 * (t.totient : ℝ) ^ 2 := by
+        exact_mod_cast nat_le_two_mul_totient_sq t
+      have hgh : (g : ℝ) ≤ h := by exact_mod_cast Nat.gcd_le_right m hh1
+      have hX1 : (1 : ℝ) ≤ 2 * (2 * Real.exp 2) ^ 2 * c := by
+        have hBsq : (1 : ℝ) ≤ (2 * Real.exp 2) ^ 2 := one_le_pow₀ hB1
+        nlinarith only [hBsq, hc1, mul_le_mul hBsq hc1 zero_le_one (by positivity)]
+      have hBX : 2 * (2 * Real.exp 2) * c ≤ 2 * (2 * Real.exp 2) ^ 2 * c := by
+        have hBB : 2 * Real.exp 2 ≤ (2 * Real.exp 2) ^ 2 := by
+          nlinarith only [hB1]
+        nlinarith only [mul_le_mul_of_nonneg_right hBB (zero_le_one.trans hc1)]
+      have hcast : (Q₁ : ℝ) ≤ (2 * (2 * Real.exp 2) ^ 2 * c * t.totient) ^ 2 := by
         calc
-          |ramanujanLagCoefficient m h| * (1 / (m.totient : ℝ)) ≤
-              ((2 * Real.exp 2) ^ 2 * c ^ 2) * (2 / Real.sqrt Q₁) :=
-            mul_le_mul hlag_le htot_inv (by positivity) (by positivity)
-          _ = 2 * (2 * Real.exp 2) ^ 2 * c ^ 2 / Real.sqrt Q₁ := by ring
+          _ ≤ (m : ℝ) := by exact_mod_cast (Nat.le_of_lt hmQ)
+          _ = (t : ℝ) * g := hmg
+          _ ≤ (2 * (t.totient : ℝ) ^ 2) * h :=
+            mul_le_mul htbound hgh (Nat.cast_nonneg g) (by positivity)
+          _ ≤ (2 * (t.totient : ℝ) ^ 2) * ((2 * Real.exp 2) * c) :=
+            mul_le_mul_of_nonneg_left hh_le (by positivity)
+          _ = (2 * (2 * Real.exp 2) * c) * (t.totient : ℝ) ^ 2 := by ring
+          _ ≤ (2 * (2 * Real.exp 2) ^ 2 * c) * (t.totient : ℝ) ^ 2 :=
+            mul_le_mul_of_nonneg_right hBX (sq_nonneg _)
+          _ ≤ (2 * (2 * Real.exp 2) ^ 2 * c) ^ 2 * (t.totient : ℝ) ^ 2 := by
+            apply mul_le_mul_of_nonneg_right _ (sq_nonneg _)
+            nlinarith only [hX1]
+          _ = _ := by ring
+      have hsqrt : Real.sqrt Q₁ ≤ 2 * (2 * Real.exp 2) ^ 2 * c * t.totient := by
+        calc
+          _ ≤ Real.sqrt ((2 * (2 * Real.exp 2) ^ 2 * c * t.totient) ^ 2) :=
+            Real.sqrt_le_sqrt hcast
+          _ = _ := Real.sqrt_sq (by positivity)
+      have htot_inv : 1 / (t.totient : ℝ) ≤
+          2 * (2 * Real.exp 2) ^ 2 * c / Real.sqrt Q₁ := by
+        rw [div_le_div_iff₀ hφ0 hsQ1, one_mul]
+        exact hsqrt
+      have hmu : |moebiusReal t| ≤ 1 := by
+        unfold moebiusReal
+        exact_mod_cast (ArithmeticFunction.abs_moebius_le_one (n := t))
+      have hdiv_le : |ramanujanLagCoefficient m h / (m.totient : ℝ)| ≤
+          2 * (2 * Real.exp 2) ^ 2 * c / Real.sqrt Q₁ := by
+        change |sieveLagMultiplier m h| ≤ _
+        rw [sieveLagMultiplier_eq_moebius_totient_quotient]
+        change |moebiusReal t / (t.totient : ℝ)| ≤ _
+        rw [abs_div, abs_of_pos hφ0]
+        exact (div_le_div_of_nonneg_right hmu hφ0.le).trans htot_inv
       rw [abs_mul, abs_mul, abs_of_nonneg (sq_nonneg _), mul_assoc]
       refine mul_le_mul_of_nonneg_left ?_ (sq_nonneg _)
       calc
         |ramanujanLagCoefficient m h / (m.totient : ℝ)| *
             |∑ n ∈ Ioc ⌊(N : ℝ) / (linearNearRowRadius c + 1)⌋₊ (N - h),
               midBandLinearizedWeight φ c N h n| ≤
-            (2 * (2 * Real.exp 2) ^ 2 * c ^ 2 / Real.sqrt Q₁) *
+            (2 * (2 * Real.exp 2) ^ 2 * c / Real.sqrt Q₁) *
               ((2 * Real.exp 2 + 1) * (∫ t, φ t ^ 2) * c) :=
           mul_le_mul hdiv_le (hw_sum h hh) (abs_nonneg _) (by positivity)
         _ = 2 * (2 * Real.exp 2) ^ 2 * (2 * Real.exp 2 + 1) * (∫ t, φ t ^ 2) *
-              (c ^ 3 / Real.sqrt Q₁) := by ring
+              (c ^ 2 / Real.sqrt Q₁) := by ring
   have hper_h : ∀ h ∈ Icc 1 ⌊linearNearRowRadius c⌋₊,
       |∑ m ∈ Icc 1 R₂, a m ^ 2 * (ramanujanLagCoefficient m h / (m.totient : ℝ)) *
           ∑ n ∈ Ioc ⌊(N : ℝ) / (linearNearRowRadius c + 1)⌋₊ (N - h),
             midBandLinearizedWeight φ c N h n| ≤
         (8 * (2 * Real.exp 2) ^ 2 * (2 * Real.exp 2 + 1) * (∫ t, φ t ^ 2) *
-          (c ^ 3 / Real.sqrt Q₁)) *
+          (c ^ 2 / Real.sqrt Q₁)) *
             ‖∑ m ∈ Icc 1 R₂, a m • normalizedRamanujanHorizonVector m N‖ ^ 2 := by
     intro h hh
     have hK_pos :
         0 ≤ 2 * (2 * Real.exp 2) ^ 2 * (2 * Real.exp 2 + 1) * (∫ t, φ t ^ 2) *
-          (c ^ 3 / Real.sqrt Q₁) := by
+          (c ^ 2 / Real.sqrt Q₁) := by
       have hc0 : 0 ≤ c := zero_le_one.trans hc1
       positivity
     calc
       |∑ m ∈ Icc 1 R₂, _| ≤
           ∑ m ∈ Icc 1 R₂, a m ^ 2 *
             (2 * (2 * Real.exp 2) ^ 2 * (2 * Real.exp 2 + 1) * (∫ t, φ t ^ 2) *
-              (c ^ 3 / Real.sqrt Q₁)) :=
+              (c ^ 2 / Real.sqrt Q₁)) :=
         (abs_sum_le_sum_abs _ _).trans (sum_le_sum (hm_term h hh))
       _ = (∑ m ∈ Icc 1 R₂, a m ^ 2) *
             (2 * (2 * Real.exp 2) ^ 2 * (2 * Real.exp 2 + 1) * (∫ t, φ t ^ 2) *
-              (c ^ 3 / Real.sqrt Q₁)) := by rw [← sum_mul]
+              (c ^ 2 / Real.sqrt Q₁)) := by rw [← sum_mul]
       _ ≤ (4 * ‖∑ m ∈ Icc 1 R₂, a m • normalizedRamanujanHorizonVector m N‖ ^ 2) *
             (2 * (2 * Real.exp 2) ^ 2 * (2 * Real.exp 2 + 1) * (∫ t, φ t ^ 2) *
-              (c ^ 3 / Real.sqrt Q₁)) :=
+              (c ^ 2 / Real.sqrt Q₁)) :=
         mul_le_mul_of_nonneg_right ha_riesz hK_pos
       _ = (8 * (2 * Real.exp 2) ^ 2 * (2 * Real.exp 2 + 1) * (∫ t, φ t ^ 2) *
-            (c ^ 3 / Real.sqrt Q₁)) *
+            (c ^ 2 / Real.sqrt Q₁)) *
               ‖∑ m ∈ Icc 1 R₂, a m • normalizedRamanujanHorizonVector m N‖ ^ 2 := by ring
   unfold midBandMeanSum
   have hRHS_pos :
       0 ≤ (8 * (2 * Real.exp 2) ^ 2 * (2 * Real.exp 2 + 1) * (∫ t, φ t ^ 2) *
-        (c ^ 3 / Real.sqrt Q₁)) *
+        (c ^ 2 / Real.sqrt Q₁)) *
           ‖∑ m ∈ Icc 1 R₂, a m • normalizedRamanujanHorizonVector m N‖ ^ 2 := by
     have hc0 : 0 ≤ c := zero_le_one.trans hc1
     positivity
@@ -2695,21 +2722,21 @@ private theorem exists_midBand_mean_sum_le {φ : ℝ → ℝ}
     |∑ h ∈ Icc 1 ⌊linearNearRowRadius c⌋₊, _| ≤
         ∑ _h ∈ Icc 1 ⌊linearNearRowRadius c⌋₊,
           (8 * (2 * Real.exp 2) ^ 2 * (2 * Real.exp 2 + 1) * (∫ t, φ t ^ 2) *
-            (c ^ 3 / Real.sqrt Q₁)) *
+            (c ^ 2 / Real.sqrt Q₁)) *
               ‖∑ m ∈ Icc 1 R₂, a m • normalizedRamanujanHorizonVector m N‖ ^ 2 :=
       (abs_sum_le_sum_abs _ _).trans (sum_le_sum hper_h)
     _ = (⌊linearNearRowRadius c⌋₊ : ℝ) *
           ((8 * (2 * Real.exp 2) ^ 2 * (2 * Real.exp 2 + 1) * (∫ t, φ t ^ 2) *
-            (c ^ 3 / Real.sqrt Q₁)) *
+            (c ^ 2 / Real.sqrt Q₁)) *
               ‖∑ m ∈ Icc 1 R₂, a m • normalizedRamanujanHorizonVector m N‖ ^ 2) := by
       rw [sum_const, Nat.card_Icc, Nat.add_sub_cancel, nsmul_eq_mul]
     _ ≤ ((2 * Real.exp 2) * c) *
           ((8 * (2 * Real.exp 2) ^ 2 * (2 * Real.exp 2 + 1) * (∫ t, φ t ^ 2) *
-            (c ^ 3 / Real.sqrt Q₁)) *
+            (c ^ 2 / Real.sqrt Q₁)) *
               ‖∑ m ∈ Icc 1 R₂, a m • normalizedRamanujanHorizonVector m N‖ ^ 2) :=
       mul_le_mul_of_nonneg_right hB_le hRHS_pos
     _ = 8 * (2 * Real.exp 2) ^ 3 * (2 * Real.exp 2 + 1) * (∫ t, φ t ^ 2) *
-          (c ^ 4 / Real.sqrt Q₁) *
+          (c ^ 3 / Real.sqrt Q₁) *
           ‖∑ m ∈ Icc 1 R₂, a m • normalizedRamanujanHorizonVector m N‖ ^ 2 := by ring
 
 private theorem exists_midBand_osc_sum_le {φ : ℝ → ℝ}
@@ -2851,7 +2878,7 @@ private theorem exists_midBand_osc_sum_le {φ : ℝ → ℝ}
 
 /-- Quadratic-form bound on `overlapMatrix φ c N` for intermediate-band packets
 `u = ∑_{m=1}^{R₂} a_m v_m` vanishing on `1 ≤ m ≤ Q₁`. -/
-theorem exists_overlapMatrix_midBand_inner_le {φ : ℝ → ℝ}
+theorem exists_overlapMatrix_midBand_inner_le_cubic {φ : ℝ → ℝ}
     (hφ : ContDiff ℝ 2 φ) (hsupp : ∀ t, t ∉ Set.Icc 0 1 → φ t = 0)
     (hM : 0 < ∫ t, φ t ^ 2) :
     ∃ C_mid : ℝ, 0 < C_mid ∧
@@ -2865,11 +2892,11 @@ theorem exists_overlapMatrix_midBand_inner_le {φ : ℝ → ℝ}
         |⟪Matrix.toEuclideanLin (overlapMatrix φ c N) u, u⟫| ≤
           C_mid * (c ^ 2 * (1 + Real.log c) / Real.log N +
             c ^ 5 * Real.log N / N +
-            c ^ 4 / Real.sqrt Q₁ +
+            c ^ 3 / Real.sqrt Q₁ +
             c ^ 3 * (R₂ : ℝ) ^ 4 / N) * ‖u‖ ^ 2 := by
   obtain ⟨C_1, hC1_pos, hsub_le⟩ := exists_midBand_subKernel_sum_le hφ hsupp hM
   obtain ⟨C_2, hC2_nonneg, herr_le⟩ := exists_midBand_lag_sub_linearized_le hφ hsupp hM
-  obtain ⟨C_3, hC3_nonneg, hmean_le⟩ := exists_midBand_mean_sum_le hφ hsupp hM
+  obtain ⟨C_3, hC3_nonneg, hmean_le⟩ := exists_midBand_mean_sum_le_cubic hφ hsupp hM
   obtain ⟨C_4, hC4_nonneg, hosc_le⟩ := exists_midBand_osc_sum_le hφ hsupp hM
   refine ⟨C_1 + (2 / ∫ t, φ t ^ 2) * C_2 + (2 / ∫ t, φ t ^ 2) * C_3 +
       (2 / ∫ t, φ t ^ 2) * C_4 + 1, by positivity, ?_⟩
@@ -2928,7 +2955,7 @@ theorem exists_overlapMatrix_midBand_inner_le {φ : ℝ → ℝ}
   have hS_lag_le :
       |midBandLagSum φ R₂ N c a| ≤
         (C_2 * (c ^ 5 * Real.log N / N) +
-          C_3 * (c ^ 4 / Real.sqrt Q₁) +
+          C_3 * (c ^ 3 / Real.sqrt Q₁) +
           C_4 * (c ^ 3 * (R₂ : ℝ) ^ 4 / N)) *
             ‖∑ m ∈ Icc 1 R₂, a m • normalizedRamanujanHorizonVector m N‖ ^ 2 := by
     have hid : midBandLagSum φ R₂ N c a =
@@ -2962,7 +2989,7 @@ theorem exists_overlapMatrix_midBand_inner_le {φ : ℝ → ℝ}
                   (∑ m ∈ Icc 1 R₂, a m • normalizedRamanujanHorizonVector m N) j)| ≤
         (2 / ∫ t, φ t ^ 2) *
           (C_2 * (c ^ 5 * Real.log N / N) +
-            C_3 * (c ^ 4 / Real.sqrt Q₁) +
+            C_3 * (c ^ 3 / Real.sqrt Q₁) +
             C_4 * (c ^ 3 * (R₂ : ℝ) ^ 4 / N)) *
             ‖∑ m ∈ Icc 1 R₂, a m • normalizedRamanujanHorizonVector m N‖ ^ 2 := by
     rw [hlead_eq,
@@ -2975,14 +3002,14 @@ theorem exists_overlapMatrix_midBand_inner_le {φ : ℝ → ℝ}
           |midBandLagSum φ R₂ N c a| ≤
         2 * (1 / ∫ t, φ t ^ 2) *
           ((C_2 * (c ^ 5 * Real.log N / N) +
-            C_3 * (c ^ 4 / Real.sqrt Q₁) +
+            C_3 * (c ^ 3 / Real.sqrt Q₁) +
             C_4 * (c ^ 3 * (R₂ : ℝ) ^ 4 / N)) *
             ‖∑ m ∈ Icc 1 R₂, a m • normalizedRamanujanHorizonVector m N‖ ^ 2) :=
         mul_le_mul (mul_le_mul_of_nonneg_left hL_scale_le zero_le_two)
           hS_lag_le (abs_nonneg _) (by positivity)
       _ = (2 / ∫ t, φ t ^ 2) *
             (C_2 * (c ^ 5 * Real.log N / N) +
-              C_3 * (c ^ 4 / Real.sqrt Q₁) +
+              C_3 * (c ^ 3 / Real.sqrt Q₁) +
               C_4 * (c ^ 3 * (R₂ : ℝ) ^ 4 / N)) *
               ‖∑ m ∈ Icc 1 R₂, a m • normalizedRamanujanHorizonVector m N‖ ^ 2 := by ring
   have h2M_nonneg : 0 ≤ 2 / ∫ t, φ t ^ 2 := by positivity
@@ -2992,7 +3019,7 @@ theorem exists_overlapMatrix_midBand_inner_le {φ : ℝ → ℝ}
   have hT1 : 0 ≤ c ^ 2 * (1 + Real.log c) / Real.log N := by
     have := Real.log_nonneg hc1; positivity
   have hT2 : 0 ≤ c ^ 5 * Real.log N / N := by positivity
-  have hT3 : 0 ≤ c ^ 4 / Real.sqrt Q₁ := by positivity
+  have hT3 : 0 ≤ c ^ 3 / Real.sqrt Q₁ := by positivity
   have hT4 : 0 ≤ c ^ 3 * (R₂ : ℝ) ^ 4 / N := by positivity
   rw [hinner_split]
   refine (abs_add_le _ _).trans ((add_le_add hI_sub hI_lead).trans ?_)
@@ -3001,19 +3028,19 @@ theorem exists_overlapMatrix_midBand_inner_le {φ : ℝ → ℝ}
         ‖∑ m ∈ Icc 1 R₂, a m • normalizedRamanujanHorizonVector m N‖ ^ 2 +
       (2 / ∫ t, φ t ^ 2) *
         (C_2 * (c ^ 5 * Real.log N / N) +
-          C_3 * (c ^ 4 / Real.sqrt Q₁) +
+          C_3 * (c ^ 3 / Real.sqrt Q₁) +
           C_4 * (c ^ 3 * (R₂ : ℝ) ^ 4 / N)) *
         ‖∑ m ∈ Icc 1 R₂, a m • normalizedRamanujanHorizonVector m N‖ ^ 2 =
       (C_1 * (c ^ 2 * (1 + Real.log c) / Real.log N) +
         ((2 / ∫ t, φ t ^ 2) * C_2) * (c ^ 5 * Real.log N / N) +
-        ((2 / ∫ t, φ t ^ 2) * C_3) * (c ^ 4 / Real.sqrt Q₁) +
+        ((2 / ∫ t, φ t ^ 2) * C_3) * (c ^ 3 / Real.sqrt Q₁) +
         ((2 / ∫ t, φ t ^ 2) * C_4) * (c ^ 3 * (R₂ : ℝ) ^ 4 / N)) *
         ‖∑ m ∈ Icc 1 R₂, a m • normalizedRamanujanHorizonVector m N‖ ^ 2 := by ring
     _ ≤ ((C_1 + (2 / ∫ t, φ t ^ 2) * C_2 + (2 / ∫ t, φ t ^ 2) * C_3 +
           (2 / ∫ t, φ t ^ 2) * C_4 + 1) *
         (c ^ 2 * (1 + Real.log c) / Real.log N +
           c ^ 5 * Real.log N / N +
-          c ^ 4 / Real.sqrt Q₁ +
+          c ^ 3 / Real.sqrt Q₁ +
           c ^ 3 * (R₂ : ℝ) ^ 4 / N)) *
         ‖∑ m ∈ Icc 1 R₂, a m • normalizedRamanujanHorizonVector m N‖ ^ 2 := by
       refine mul_le_mul_of_nonneg_right ?_ (sq_nonneg _)
@@ -3022,9 +3049,34 @@ theorem exists_overlapMatrix_midBand_inner_le {φ : ℝ → ℝ}
           (2 / ∫ t, φ t ^ 2) * C_4 + 1) *
         (c ^ 2 * (1 + Real.log c) / Real.log N +
           c ^ 5 * Real.log N / N +
-          c ^ 4 / Real.sqrt Q₁ +
+          c ^ 3 / Real.sqrt Q₁ +
           c ^ 3 * (R₂ : ℝ) ^ 4 / N) *
         ‖∑ m ∈ Icc 1 R₂, a m • normalizedRamanujanHorizonVector m N‖ ^ 2 := by ring
+
+/-- The cubic overlap estimate also supplies the coarser quartic bound. -/
+theorem exists_overlapMatrix_midBand_inner_le {φ : ℝ → ℝ}
+    (hφ : ContDiff ℝ 2 φ) (hsupp : ∀ t, t ∉ Set.Icc 0 1 → φ t = 0)
+    (hM : 0 < ∫ t, φ t ^ 2) :
+    ∃ C_mid : ℝ, 0 < C_mid ∧
+      ∀ {Q₁ R₂ N : ℕ} {c : ℝ},
+        2 ≤ Q₁ → Q₁ ≤ R₂ → R₂ * R₂ ≤ N → 18 * (1 + Real.log R₂) ≤ Real.log N →
+        1 ≤ c → c ≤ Real.log N → c / N ≤ 1 / 3 →
+        4 * (linearNearRowRadius c + 1) ^ 2 ≤ N →
+        ((R₂ * R₂ : ℕ) + 1 : ℝ) * (linearNearRowRadius c + 1) ≤ N →
+      ∀ {a : ℕ → ℝ}, (∀ m ∈ Icc 1 Q₁, a m = 0) →
+        let u := ∑ m ∈ Icc 1 R₂, a m • normalizedRamanujanHorizonVector m N
+        |⟪Matrix.toEuclideanLin (overlapMatrix φ c N) u, u⟫| ≤
+          C_mid * (c ^ 2 * (1 + Real.log c) / Real.log N +
+            c ^ 5 * Real.log N / N +
+            c ^ 4 / Real.sqrt Q₁ +
+            c ^ 3 * (R₂ : ℝ) ^ 4 / N) * ‖u‖ ^ 2 := by
+  obtain ⟨C, hC, hbound⟩ := exists_overlapMatrix_midBand_inner_le_cubic hφ hsupp hM
+  refine ⟨C, hC, ?_⟩
+  intro Q₁ R₂ N c hQ hQR hRN hlog hc hcL hw hrad hsize a ha
+  have h := hbound hQ hQR hRN hlog hc hcL hw hrad hsize ha
+  refine h.trans ?_
+  gcongr
+  norm_num
 
 end GaloisForLFunctions.CompletedArithmeticForms
 
@@ -3038,3 +3090,5 @@ end
 #print axioms GaloisForLFunctions.CompletedArithmeticForms.exists_upwardPrimeVector_norm_le_of_mem_conductorSubspace
 #print axioms GaloisForLFunctions.CompletedArithmeticForms.exists_overlapMatrix_inner_le_of_mem_conductorSubspace
 #print axioms GaloisForLFunctions.CompletedArithmeticForms.exists_overlapMatrix_midBand_inner_le
+
+#print axioms GaloisForLFunctions.CompletedArithmeticForms.exists_overlapMatrix_midBand_inner_le_cubic

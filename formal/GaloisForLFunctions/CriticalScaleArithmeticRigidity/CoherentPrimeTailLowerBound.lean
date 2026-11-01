@@ -46,7 +46,7 @@ theorem highPrimeCoherentSource_packet_eq {Q : ℕ} (hQ : 1 ≤ Q) (P n : ℕ) :
   by_cases hP : P < p
   · simp only [if_pos hP]
     by_cases hn : p ∣ n <;> simp only [hn, if_true, if_false]
-    all_goals field_simp [hp0, hpm] <;> ring
+    all_goals (field_simp [hp0, hpm]; ring)
   · simp only [if_neg hP, zero_mul, zero_add]
 
 theorem highPrimeSourceCoefficients_one (P Q : ℕ) :
@@ -93,7 +93,7 @@ theorem highPrimeSource_le_row_tail {P N n : ℕ} (hP : 0 < P)
     (hn : N / P < n) (Q : ℕ) :
     highPrimeCoherentSource P Q n ≤
       completedPrimeDilationTail Q (primeOnly primePoleWitness) (N / n) n := by
-  have hn0 : 0 < n := by omega
+  have hn0 : 0 < n := (Nat.zero_le (N / P)).trans_lt hn
   have hN := (Nat.div_lt_iff_lt_mul hP).mp hn
   have hy : N / n < P := (Nat.div_lt_iff_lt_mul hn0).mpr (by simpa only [Nat.mul_comm] using hN)
   exact highPrimeCoherentSource_le_completedTail hy.le Q n
@@ -108,7 +108,9 @@ theorem coherentPrimeTail_annular_lower {P Q : ℕ} (hP : 0 < P) (hQ : 2 ≤ Q) 
   have hA : N / P ≤ N := Nat.div_le_self N P
   have hframe := highPrimeCoherentSource_annular_lower hQ P (N / P) (N - N / P)
   rw [Nat.add_sub_of_le hA] at hframe
-  refine hframe.trans ((sum_le_sum fun n hn => ?_).trans ?_)
+  refine hframe.trans ((sum_le_sum
+    (g := fun n => completedPrimeDilationTail Q (primeOnly primePoleWitness) (N / n) n ^ 2 /
+      (n : ℝ)) fun n hn => ?_).trans ?_)
   · have hnA : N / P < n := by have := (mem_Icc.mp hn).1; omega
     have hsource := highPrimeSource_le_row_tail hP hnA Q
     have hpos := highPrimeCoherentSource_nonneg P Q n
@@ -117,7 +119,9 @@ theorem coherentPrimeTail_annular_lower {P Q : ℕ} (hP : 0 < P) (hQ : 2 ≤ Q) 
     exact div_le_div_of_nonneg_right (by nlinarith only [hprod]) (Nat.cast_nonneg n)
   · apply sum_le_sum_of_subset_of_nonneg
     · intro n hn
-      exact mem_Icc.mpr ⟨by have := (mem_Icc.mp hn).1; omega, (mem_Icc.mp hn).2⟩
+      exact mem_Icc.mpr
+        ⟨(Nat.succ_le_succ (Nat.zero_le (N / P))).trans (mem_Icc.mp hn).1,
+          (mem_Icc.mp hn).2⟩
     · intro n _ _
       exact div_nonneg (sq_nonneg _) (Nat.cast_nonneg n)
 

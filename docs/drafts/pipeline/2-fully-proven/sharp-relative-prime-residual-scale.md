@@ -27,7 +27,7 @@ The source-specific incidence theorem yields
 
 `Σ tail²/n ≥ H B²−2BA'/(a+1) ≥ l³/8−66l²`.
 
-The exact scalar comparison gives `ΣR²≥(1/2)Σtail²/n−C(1+log Q)M`. The excitation gap and coherent energy identity give `2log 2·M≤L=B_Q≤3l`. Since `1+log Q≤3l`, the scalar term is at most `[9C/(2log 2)]l². Thus
+The exact scalar comparison gives `ΣR²≥(1/2)Σtail²/n−C(1+log Q)M`. The excitation gap and coherent energy identity give `2log 2·M≤L=B_Q≤3l`. Since `1+log Q≤3l`, the scalar term is at most `[9C/(2log 2)]l²`. Thus
 
 `ΣR²≥l³/16−D l²`, where `D=33+9C/(2log 2)`.
 

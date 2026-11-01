@@ -142,7 +142,7 @@ theorem highPrimeSource_sub_mean_eq (P Q n : ℕ) :
   by_cases hP : P < p
   · simp only [if_pos hP, centeredDivisibility]
     by_cases hn : p ∣ n <;> simp only [hn, if_true, if_false]
-    all_goals field_simp [hp0, hpm] <;> ring
+    all_goals (field_simp [hp0, hpm]; ring)
   · simp only [if_neg hP, sub_self, neg_zero]
 
 /-- Coherent prime incidence has a source-specific harmonic error independent of `Q²`. -/
@@ -204,7 +204,9 @@ theorem coherentPrimeTail_incidence_lower {P : ℕ} (hP : 0 < P) (Q N : ℕ) :
   have hA : N / P ≤ N := Nat.div_le_self N P
   have hsource := highPrimeSource_harmonic_sq_lower P Q (N / P) (N - N / P)
   rw [Nat.add_sub_of_le hA] at hsource
-  refine hsource.trans ((sum_le_sum fun n hn => ?_).trans ?_)
+  refine hsource.trans ((sum_le_sum
+    (g := fun n => completedPrimeDilationTail Q (primeOnly primePoleWitness) (N / n) n ^ 2 /
+      (n : ℝ)) fun n hn => ?_).trans ?_)
   · have hnA : N / P < n := by have := (mem_Icc.mp hn).1; omega
     have ht := highPrimeSource_le_row_tail hP hnA Q
     have hpos := highPrimeCoherentSource_nonneg P Q n
@@ -212,7 +214,9 @@ theorem coherentPrimeTail_incidence_lower {P : ℕ} (hP : 0 < P) (Q N : ℕ) :
     exact div_le_div_of_nonneg_right (by nlinarith only [hprod]) (Nat.cast_nonneg n)
   · apply sum_le_sum_of_subset_of_nonneg
     · intro n hn
-      exact mem_Icc.mpr ⟨by have := (mem_Icc.mp hn).1; omega, (mem_Icc.mp hn).2⟩
+      exact mem_Icc.mpr
+        ⟨(Nat.succ_le_succ (Nat.zero_le (N / P))).trans (mem_Icc.mp hn).1,
+          (mem_Icc.mp hn).2⟩
     · intro n _ _
       exact div_nonneg (sq_nonneg _) (Nat.cast_nonneg n)
 

@@ -27,8 +27,7 @@ open Complex Filter Topology
 open scoped ComplexConjugate
 open Zeta23
 open GaloisForLFunctions.HTGeometry GaloisForLFunctions.HeckeKreinToeplitz
-open GaloisForLFunctions.ArithmeticCastelnuovoSeveri (cx realTests translate paperFT_translate
-  rightZeros)
+open GaloisForLFunctions.ArithmeticCastelnuovoSeveri (cx realTests paperFT_translate rightZeros)
 open GaloisForLFunctions.ArithmeticOrientationGeometry (Sees seenRightZeros)
 open GaloisForLFunctions.SquareRootThreshold (TemperedConfig)
 open GaloisForLFunctions.BiScaleUncertainty.ChebyshevGauge (cubicSpline)
@@ -66,20 +65,25 @@ theorem paperFT_mixedDiff {f : ℝ → ℝ} (hf : f ∈ realTests) (α β : ℝ)
   set g := cx f
   have hgc : Continuous g := (ArithmeticCastelnuovoSeveri.cx_contDiff hf.1).continuous
   have hgs : HasCompactSupport g := ArithmeticCastelnuovoSeveri.cx_hasCompactSupport hf.2
-  have hT : ∀ c : ℝ, MeasureTheory.Integrable fun u : ℝ => translate c g u * cexp (I * z * u) :=
+  have hT : ∀ c : ℝ, MeasureTheory.Integrable fun u : ℝ => ArithmeticCastelnuovoSeveri.translate c g u * cexp (I * z * u) :=
     fun c => integrable_paperFT_kernel (hgc.comp (continuous_id.sub continuous_const))
       (hgs.comp_homeomorph (Homeomorph.subRight c)) z
   have hsplit : (fun u : ℝ => cx (mixedDiff α β f) u * cexp (I * z * u)) = fun u =>
-      translate (α + β) g u * cexp (I * z * u) - translate α g u * cexp (I * z * u) -
-        translate β g u * cexp (I * z * u) + g u * cexp (I * z * u) := by
+      ArithmeticCastelnuovoSeveri.translate (α + β) g u * cexp (I * z * u) - ArithmeticCastelnuovoSeveri.translate α g u * cexp (I * z * u) -
+        ArithmeticCastelnuovoSeveri.translate β g u * cexp (I * z * u) + g u * cexp (I * z * u) := by
     funext u
-    simp only [ArithmeticCastelnuovoSeveri.cx, mixedDiff, translate, g, sub_sub]
+    simp only [ArithmeticCastelnuovoSeveri.cx, mixedDiff, ArithmeticCastelnuovoSeveri.translate, g, sub_sub]
     push_cast
     ring
-  rw [paperFT, hsplit, MeasureTheory.integral_add (((hT _).sub (hT _)).sub (hT _))
-      (integrable_paperFT_kernel hgc hgs z),
-    MeasureTheory.integral_sub ((hT _).sub (hT _)) (hT _),
-    MeasureTheory.integral_sub (hT _) (hT _)]
+  have iAB : MeasureTheory.Integrable fun u : ℝ =>
+      ArithmeticCastelnuovoSeveri.translate (α + β) g u * cexp (I * z * u) -
+        ArithmeticCastelnuovoSeveri.translate α g u * cexp (I * z * u) := (hT _).sub (hT _)
+  have iABC : MeasureTheory.Integrable fun u : ℝ =>
+      ArithmeticCastelnuovoSeveri.translate (α + β) g u * cexp (I * z * u) -
+        ArithmeticCastelnuovoSeveri.translate α g u * cexp (I * z * u) -
+          ArithmeticCastelnuovoSeveri.translate β g u * cexp (I * z * u) := iAB.sub (hT _)
+  rw [paperFT, hsplit, MeasureTheory.integral_add iABC (integrable_paperFT_kernel hgc hgs z),
+    MeasureTheory.integral_sub iAB (hT _), MeasureTheory.integral_sub (hT _) (hT _)]
   rw [← paperFT, ← paperFT, ← paperFT, ← paperFT, paperFT_translate, paperFT_translate,
     paperFT_translate]
   push_cast
@@ -108,7 +112,13 @@ theorem sees_mixedDiff_iff {f : ℝ → ℝ} (hf : f ∈ realTests) {α β : ℝ
   have hM : ∀ z : ℂ, z.im ≠ 0 → (cexp (I * z * α) - 1) * (cexp (I * z * β) - 1) ≠ 0 :=
     fun z hz => mul_ne_zero (sub_ne_zero.mpr (cexp_I_mul_ne_one hz hα))
       (sub_ne_zero.mpr (cexp_I_mul_ne_one hz hβ))
-  simp only [Sees, paperFT_mixedDiff hf, mul_ne_zero_iff, hM _ him, hM _ him', true_and]
+  unfold Sees
+  rw [paperFT_mixedDiff hf, paperFT_mixedDiff hf]
+  constructor
+  · rintro ⟨h1, h2⟩
+    exact ⟨right_ne_zero_of_mul h1, right_ne_zero_of_mul h2⟩
+  · rintro ⟨h1, h2⟩
+    exact ⟨mul_ne_zero (hM _ him) h1, mul_ne_zero (hM _ him') h2⟩
 
 theorem seenRightZeros_mixedDiff (Z : ZeroConfig) {f : ℝ → ℝ} (hf : f ∈ realTests) {α β : ℝ}
     (hα : α ≠ 0) (hβ : β ≠ 0) : seenRightZeros Z (mixedDiff α β f) = seenRightZeros Z f := by
@@ -209,29 +219,28 @@ theorem orbitKernel_mixedDiff (Z : ZeroConfig) (hZ : TemperedConfig Z) {f : ℝ 
   rw [Wsummand_mixedDiff Z hf]
   set s : ℂ := (ρ : ℂ) - 1 / 2
   simp only [W]
-  have e : ∀ x y : ℂ, cexp (x + y) = cexp x * cexp y := Complex.exp_add
   push_cast
-  have h1 : cexp (-(t : ℂ) * s) * cexp ((t : ℂ) * s) = 1 := by
-    rw [← Complex.exp_add]; ring_nf; exact Complex.exp_zero
-  set A := cexp ((α : ℂ) * s)
-  set A' := cexp (-((α : ℂ) * s))
-  set B := cexp ((β : ℂ) * s)
-  set B' := cexp (-((β : ℂ) * s))
-  set T := cexp (-(t : ℂ) * s)
-  have hA : cexp (-(((t : ℂ) + α) * s)) = T * A' := by rw [← Complex.exp_add]; ring_nf
-  have hA2 : cexp (-(((t : ℂ) + -α) * s)) = T * A := by rw [← Complex.exp_add]; ring_nf
-  have hB : cexp (-(((t : ℂ) + β) * s)) = T * B' := by rw [← Complex.exp_add]; ring_nf
-  have hB2 : cexp (-(((t : ℂ) + -β) * s)) = T * B := by rw [← Complex.exp_add]; ring_nf
-  have hAB : cexp (-(((t : ℂ) + α + β) * s)) = T * A' * B' := by
-    rw [← Complex.exp_add, ← Complex.exp_add]; ring_nf
-  have hAB2 : cexp (-(((t : ℂ) + α + -β) * s)) = T * A' * B := by
-    rw [← Complex.exp_add, ← Complex.exp_add]; ring_nf
-  have hAB3 : cexp (-(((t : ℂ) + -α + β) * s)) = T * A * B' := by
-    rw [← Complex.exp_add, ← Complex.exp_add]; ring_nf
-  have hAB4 : cexp (-(((t : ℂ) + -α + -β) * s)) = T * A * B := by
-    rw [← Complex.exp_add, ← Complex.exp_add]; ring_nf
-  have hT : cexp (-(t : ℂ) * s) = T := rfl
-  rw [hA, hA2, hB, hB2, hAB, hAB2, hAB3, hAB4]
+  have e1 : cexp (-((t : ℂ) + α) * s) = cexp (-(t : ℂ) * s) * cexp (-((α : ℂ) * s)) := by
+    rw [← Complex.exp_add]; congr 1; ring
+  have e2 : cexp (-((t : ℂ) + -α) * s) = cexp (-(t : ℂ) * s) * cexp ((α : ℂ) * s) := by
+    rw [← Complex.exp_add]; congr 1; ring
+  have e3 : cexp (-((t : ℂ) + β) * s) = cexp (-(t : ℂ) * s) * cexp (-((β : ℂ) * s)) := by
+    rw [← Complex.exp_add]; congr 1; ring
+  have e4 : cexp (-((t : ℂ) + -β) * s) = cexp (-(t : ℂ) * s) * cexp ((β : ℂ) * s) := by
+    rw [← Complex.exp_add]; congr 1; ring
+  have e5 : cexp (-((t : ℂ) + α + β) * s) =
+      cexp (-(t : ℂ) * s) * cexp (-((α : ℂ) * s)) * cexp (-((β : ℂ) * s)) := by
+    rw [← Complex.exp_add, ← Complex.exp_add]; congr 1; ring
+  have e6 : cexp (-((t : ℂ) + α + -β) * s) =
+      cexp (-(t : ℂ) * s) * cexp (-((α : ℂ) * s)) * cexp ((β : ℂ) * s) := by
+    rw [← Complex.exp_add, ← Complex.exp_add]; congr 1; ring
+  have e7 : cexp (-((t : ℂ) + -α + β) * s) =
+      cexp (-(t : ℂ) * s) * cexp ((α : ℂ) * s) * cexp (-((β : ℂ) * s)) := by
+    rw [← Complex.exp_add, ← Complex.exp_add]; congr 1; ring
+  have e8 : cexp (-((t : ℂ) + -α + -β) * s) =
+      cexp (-(t : ℂ) * s) * cexp ((α : ℂ) * s) * cexp ((β : ℂ) * s) := by
+    rw [← Complex.exp_add, ← Complex.exp_add]; congr 1; ring
+  rw [e1, e2, e3, e4, e5, e6, e7, e8]
   ring
 
 /-! ### Coupling completeness for `ζ` -/
@@ -242,8 +251,10 @@ theorem scale_ne_zero {a : HeckeLattice} (ha : a ≠ 1) : scale heckeLogScale a 
 /-- **The coupling form of `ζ` carries the whole index**: `κ(L_a L_b K_ζ) = κ(K_ζ)` for `a, b ≠ 1`. -/
 theorem negIndex_lap_lap_zetaKernel {a b : HeckeLattice} (ha : a ≠ 1) (hb : b ≠ 1) :
     negIndex (lap a (lap b zetaKernel)) = negIndex zetaKernel := by
-  rw [zetaKernel, ← orbitKernel_mixedDiff _ temperedConfig_zetaZeroConfig cubicSpline_mem_realTests,
-    negIndex_orbitKernel_mixedDiff _ temperedConfig_zetaZeroConfig cubicSpline_mem_realTests
+  rw [zetaKernel, ← orbitKernel_mixedDiff _ SquareRootThreshold.temperedConfig_zetaZeroConfig
+      cubicSpline_mem_realTests,
+    negIndex_orbitKernel_mixedDiff _ SquareRootThreshold.temperedConfig_zetaZeroConfig
+      cubicSpline_mem_realTests
       (scale_ne_zero ha) (scale_ne_zero hb)]
 
 /-- **RH is positivity of the coupling form**, for any pair of scales `a, b ≠ 1`. -/

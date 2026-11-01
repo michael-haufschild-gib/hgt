@@ -77,6 +77,10 @@ import GaloisForLFunctions.AdelicKreinGeometry.Haar.AxisInvisibility
 import GaloisForLFunctions.AdelicKreinGeometry.Haar.FiniteRankPerturbations
 import GaloisForLFunctions.AdelicKreinGeometry.Haar.PolynomialPerturbations
 import GaloisForLFunctions.AdelicKreinGeometry.Haar.PowerKernels
+import GaloisForLFunctions.AdelicKreinGeometry.TowerCoupling.PolarSecondDifference
+import GaloisForLFunctions.AdelicKreinGeometry.TowerCoupling.STruncatedExplicitTowers
+import GaloisForLFunctions.AdelicKreinGeometry.TowerCoupling.InterTowerCouplingRigidity
+import GaloisForLFunctions.AdelicKreinGeometry.TowerCoupling.CoupledTowerSignatureFormula
 
 /-!
 # Adelic Krein Geometry
@@ -111,6 +115,16 @@ its places.
 * Haar carriers (`Haar/`): index preservation by positive integer-successor carriers, axis-invisible
   kernels and their degree and rank laws, period defects, and infinite index for every Haar kernel
   with a continuous dilation reading.
+* Tower coupling (`TowerCoupling/`): exact polar second-difference identity `κ₀(k) = κ(Δ²k)` and
+  `{0, 1, ⊤}` polar trichotomy on `ℤ`; impossibility of capturing `κ(K_ζ) + 1` via separable
+  `S`-truncated explicit-formula prime-tower assemblies (finite local polar indices count only pole
+  shares and are blind to `S`-primes and Gamma; pole-retaining cubic-spline assemblies diverge
+  `≥ |S| + 1 → ⊤`; pole-free assemblies lie in `{1, 2, ⊤}` whereas `κ(weilArchState c) ≠ 2`;
+  diagonal counterterms collapse both `Λ` and its single-prime flip to glued index `1`); coprime
+  cross-difference rigidity blocking pointwise approximation of `ratCorr` by arbitrary separable
+  tower assemblies and forcing axial replication blow-up on `0 < κ(K_ζ) < ⊤`; and two unconditional
+  coupled local-to-global signature formulas (`coupledAssembly S ratCorr` for `|S| ≥ 2`, and
+  window-coupled `sTruncatedCorr S` with zero counterterm on `|log |slope|| ≤ L`, `S ⊇ windowPrimes L`).
 
 See `AdelicKreinGeometry/README.md`.
 -/

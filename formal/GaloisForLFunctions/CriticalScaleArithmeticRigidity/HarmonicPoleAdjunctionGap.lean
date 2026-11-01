@@ -1,7 +1,6 @@
 import GaloisForLFunctions.CriticalScaleArithmeticRigidity.AdjunctionResidualCoercivity
 import GaloisForLFunctions.CriticalScaleArithmeticRigidity.HarmonicPoleCentering
 import GaloisForLFunctions.CompletedArithmeticForms.PrimePacketCoercivity
-import GaloisForLFunctions.RenormalizedIntersectionTheory.ThePoleClassIsTheGroundConductor
 
 /-!
 # Adjunction control on the actual harmonic pole hyperplane
@@ -27,10 +26,12 @@ theorem horizonPacket_inner_pole_eq_harmonicSum (Q N : ℕ) (a : ℕ → ℝ) :
       normalizedRamanujanHorizonVector 1 N⟫ =
         SelectiveMultiscaleArithmeticPositivity.harmonicSum N (conductorHorizonProfile Q a) /
           Real.log N := by
+  have hpole (n : ℕ) : ramanujanPoleProfile 1 n = (Real.sqrt n)⁻¹ := by
+    simp [ramanujanPoleProfile, normalizedRamanujanMode, ramanujanMode_one]
   have hsum : (∑ m ∈ Icc 1 Q, a m *
       ∑ n ∈ Icc 1 N, ramanujanPoleProfile m n * ramanujanPoleProfile 1 n) =
         SelectiveMultiscaleArithmeticPositivity.harmonicSum N (conductorHorizonProfile Q a) := by
-    simp only [mul_sum, RenormalizedIntersectionTheory.ramanujanPoleProfile_one,
+    simp only [mul_sum, hpole,
       SelectiveMultiscaleArithmeticPositivity.harmonicSum, conductorHorizonProfile,
       normalizedConductorPacket]
     rw [sum_comm]

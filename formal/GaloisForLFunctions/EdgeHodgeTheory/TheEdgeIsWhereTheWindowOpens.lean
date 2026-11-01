@@ -35,7 +35,7 @@ open Filter Topology
 namespace GaloisForLFunctions.EdgeHodgeTheory
 
 open SpacingScaleHarmonicAnalysis ArithmeticElectrostatics RenormalizedArithmeticPotentialTheory
-open TransMetzlerWeilPositivity (sincCriticalOverlap sincTailConst sincProfile)
+open TransMetzlerWeilPositivity (sincCriticalOverlap sincTailConst sincProfile dcScale)
 
 /-- **The balance of ground energy and quantum, for the sinc profile.** -/
 theorem sinc_edge_balance :
@@ -75,7 +75,7 @@ theorem profile_covariance_of_the_edge :
 /-! ### The threshold curve in width coordinates -/
 
 theorem tendsto_log_inv_nhdsGT : Tendsto (fun w : ℝ => Real.log (1 / w)) (𝓝[>] 0) atTop := by
-  simpa only [one_div] using Real.tendsto_log_atTop.comp tendsto_inv_nhdsGT_zero
+  exact (Real.tendsto_log_atTop.comp tendsto_inv_nhdsGT_zero).congr fun w => by simp [one_div]
 
 /-- **The threshold exceeds a log-power multiple of the hyperbola.** For `0 < α < α*`, for all
 small widths `w` the tilted-spline atom of width `w` is below threshold at a horizon
@@ -144,7 +144,7 @@ theorem frequently_horizonThreshold_le_of_not_rh (hRH : ¬ RiemannHypothesis) {�
     exact hRH ((riemannHypothesis_iff_eventually_positiveAt_log admissible_tiltedUnitSpline hβ).mpr
       (H.mono fun _ h => not_not.mp h))
   refine (hfreq.and_eventually ((eventually_ge_atTop 2).and
-    (eventually_one_le_two_mul_rpow_log (by linarith)))).mono fun N ⟨hneg, hN2, hc1⟩ => ?_
+    (eventually_one_le_two_mul_rpow_log (β := β) (by linarith)))).mono fun N ⟨hneg, hN2, hc1⟩ => ?_
   have hN : 1 ≤ N := by omega
   rw [positiveAt_iff_lt_horizonThreshold admissible_tiltedUnitSpline (by linarith) hN] at hneg
   exact not_lt.mp hneg

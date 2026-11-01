@@ -56,7 +56,7 @@ theorem not_hasHyperplaneGap_probe_without_density {P : Set ℕ} (h2 : 2 ∉ P)
     rw [mem_singleton] at hq
     subst q
     simp only [G, primeSetCutoff, mem_filter, Nat.mem_primesLE, Set.mem_insert_iff]
-    exact ⟨⟨le_max_right _ _, Nat.prime_two⟩, Or.inl rfl⟩
+    exact ⟨⟨le_max_right _ _, Nat.prime_two⟩, Or.inl True.intro⟩
   have hstrict : ({2} : Finset ℕ) ⊂ G := by
     rw [ssubset_iff_of_subset hsub]
     refine ⟨p, ?_, ?_⟩

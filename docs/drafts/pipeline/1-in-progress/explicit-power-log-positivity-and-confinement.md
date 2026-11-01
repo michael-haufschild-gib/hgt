@@ -118,15 +118,16 @@ Current high-band overlap still costs `c⁴/√Q`, and the prime cross bound cos
 The proposed weighted residual bound is
 `Σ_(m≤Q) ‖r_m‖²/E_m(c)² ≤ K(c¹⁴+Q⁵)·rate`.
 Indeed `m⁴/E_m(c)² ≤ κ⁻²(c¹⁴/m¹⁰+m⁴)`, and `Σ_(m≥1)m⁻¹⁰≤2`.
-The Lean proof is drafted but unverified. This separates the low-conductor
+`ConductorWeightedResiduals` passed Lean with standard axioms. This separates the low-conductor
 condition `19α<1` from the high-conductor condition `5q+5α<1`.
 
 The full tail reserve permits cross bound `C_cross√(c⁹)`, since the reverse gap
 already gives `W(w)≥4C_cross²c⁹‖w‖²`. With the cubic prime residual below,
-its prime condition is `c³⁹/L→0`. Put `τ=(1−45α)/20`, `q=8α+τ`,
-`ν=min(τ/4,1/1000)`, and `k=ceil(1/τ)+1`. Then `4α−q/2≤−ν`,
-`5q+5α+1/k−1≤−ν`, and `19α+1/k−1≤−ν`. These give the candidate range
-`α<1/45`. The main proof and its new transfers are not yet verified.
+its prime condition is `c³⁹/L→0`. The exact lag quotient and the square-root
+totient bound reduce the overlap loss to `c³/√Q`. Taking `q=1/6`, `k=32`,
+and `ν=1/1000` gives `3α−q/2≤−ν`, `5q+5α+1/k−1≤−ν`, and
+`19α+1/k−1≤−ν` for `α<1/39`. The candidate main proof and new transfers
+are drafted, not Lean-verified.
 
 `SuccessorShellArithmetic.Conductor.PrimeConductorResidualNorm` contains
 `exists_primeResidual_packet_sq_le`: the complete prime packet residual costs
@@ -134,11 +135,37 @@ its prime condition is `c³⁹/L→0`. Put `τ=(1−45α)/20`, `q=8α+τ`,
 first logarithmic moment before completing the common scalar Mertens row.
 This improves the fourth power used by the present orthogonal cross bound.
 Its source is available; the dependency build and cross-bound transfer remain.
+`CriticalScaleArithmeticRigidity.SharpPrimeResidualScale` proves that the
+quadratic logarithmic relative residual cost is attained. Sharpening the
+full residual norm alone cannot remove that loss; a projected cross estimate
+must retain cancellation or a stronger confinement mechanism.
 
-The exact normalized lag quotient and the explicit Mertens bound give the
-candidate estimate `|c_m(h)|/φ(m) ≤ 512(h/m)^(3/4)`. Replacing the crude
-harmonic interval mass `O(c)` by `O(1+log c)` would reduce the overlap mean
-to `O(c^(7/4)(1+log c)/Q^(3/4))`. The coefficient proof is drafted, unverified.
+The cubic overlap proof uses `t=m/gcd(m,h)`, `t≤2φ(t)²`, and `gcd(m,h)≤h`.
+For `m>Q` and `h≤Bc`, this gives `|c_m(h)|/φ(m)≤2B²c/√Q`.
+The weight sum costs one further factor `c`, and summing the `O(c)` lags
+therefore costs `c³/√Q`. The cubic theorem passed its scratch audit with standard axioms;
+production compilation remains pending.
+
+The separate source `PolynomialConductorComplementCoercivityAndSharpenedOverlap`
+contains a linear conductor residual and a defect-localized prime cross estimate.
+It announces `2/71`, but currently lacks the final positivity theorem; no such
+improvement is being treated as verified.
+
+The near cancellation has additional support: its output vanishes whenever
+`linearNearRowRadius(c)·n<N`. Packet mass on the remaining terminal interval
+is `O((1+log c)/log N)`. Pairing against that restricted mass should strengthen
+its quadratic bound to
+`O(c²(1+log R)(1+log c)/log N+c²R√(log N/N))‖u‖²`.
+The support and quadratic transfer are drafted in Lean, not yet checked.
+
+The center collar also has a candidate quadratic gain. Put
+`y_n=√(n/N)u_n`; its squared mass is at most `4‖u‖²/log N`.
+The reciprocal-sum half is bounded by the existing Hilbert-matrix theorem;
+the truncated reciprocal-difference kernel has row sum `O(1+log R)`.
+The far mean-zero row is pointwise `O(√n/(N√log N))‖u‖`.
+The leaked constant coefficient is `O((1+log R)/log N)‖u‖`, and its collar
+pairing against a packet is bounded independently of `N`. Together these give
+the proposed center bound `O(c(1+log R)/log N)‖u‖²`. Lean transfer remains.
 
 ## Gates
 

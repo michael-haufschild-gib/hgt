@@ -33,7 +33,6 @@ squares minus an exact Mertens term (`primeDilationForm_incidencePacket`).
 -/
 
 open Finset ArithmeticFunction
-open scoped ArithmeticFunction.vonMangoldt
 
 noncomputable section
 
@@ -75,7 +74,7 @@ theorem mem_dilationPairs {N : ℕ} {p : ℕ × ℕ} :
 /-- Dilation pairs are fibred over the base point: `(k, n)` with `k ≤ ⌊N/n⌋`. -/
 theorem sum_dilationPairs_eq (N : ℕ) (g : ℕ → ℕ → ℝ) :
     ∑ p ∈ dilationPairs N, g p.1 p.2 = ∑ n ∈ Icc 1 N, ∑ k ∈ Icc 1 (N / n), g k n := by
-  have hset : dilationPairs N = (Icc 1 N).sigma (fun n => Icc 1 (N / n)) |>.map
+  have hset : dilationPairs N = ((Icc 1 N).sigma (fun n => Icc 1 (N / n))).map
       ⟨fun x => (x.2, x.1), fun x y h => by
         simp only [Prod.mk.injEq] at h; exact Sigma.ext h.2 (heq_of_eq h.1)⟩ := by
     ext ⟨k, n⟩
@@ -182,8 +181,15 @@ theorem incidencePacket_dilation_jump {P : Finset ℕ} (hP : ∀ p ∈ P, p.Prim
   have hterm : ∀ p ∈ P, b p * ((if p ∣ k * n then 1 else 0) - 1 / p) -
       b p * ((if p ∣ n then 1 else 0) - 1 / p) =
         if p = k.minFac then (if ¬p ∣ n then b p else 0) else 0 := fun p hp => by
-    rw [prime_dvd_mul_iff_of_isPrimePow hk (hP p hp)]
-    by_cases h1 : p = k.minFac <;> by_cases h2 : p ∣ n <;> simp [h1, h2]
+    have hiff := prime_dvd_mul_iff_of_isPrimePow hk (hP p hp) n
+    by_cases h1 : p = k.minFac
+    · have hkn : p ∣ k * n := hiff.mpr (Or.inl h1)
+      by_cases h2 : p ∣ n
+      · rw [if_pos hkn, if_pos h2, if_pos h1, if_neg (not_not.mpr h2)]; ring
+      · rw [if_pos hkn, if_neg h2, if_pos h1, if_pos h2]; ring
+    · by_cases h2 : p ∣ n
+      · rw [if_pos (hiff.mpr (Or.inr h2)), if_pos h2, if_neg h1]; ring
+      · rw [if_neg (fun h => (hiff.mp h).elim h1 h2), if_neg h2, if_neg h1]; ring
   rw [sum_congr rfl hterm, sum_ite_eq']
   by_cases hm : k.minFac ∈ P <;> by_cases hd : k.minFac ∣ n <;> simp [hm, hd]
 

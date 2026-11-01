@@ -298,6 +298,10 @@ at edges with a counterterm of nontrivial null cone.
 | **The archimedean Weil form is a shell identity**: `Q_Φ = Q_K(slopes) + 2c∫|tail sums|² − 2c Re(ℓ̄ Σβ(R − b))`; on `ℓ = 0` Weil's dilation form plus shell squares | `hermQuad_gram_archGlue_shell`, `hermQuad_gram_weilArchState_shell` |
 | **The gluing formula at every place**: `κ(K(|a|) + |a|_v^{−s/2}ψ(b)) = κ_v(K) + 1` for every place `v` and gluing successor `ψ`; **Weil's correlation glued at any prime** has `κ = #rightZeros + 1` | `negIndex_glueAt_eq`, `negIndex_glueAt_eq_of_subBoost`, `negIndex_glueAt_padic_orbitCorr`, `negIndex_weilPadicState_eq_rightZeros`, `negIndex_glueAt_padic_dirichlet` |
 | **Signature formula for prime towers**: `Σ_{p∈S} κ₀(k_p) + 1 ≤ κ(Σ_p k_p(v_p(|a|)) − c|a|^{−1/2}|b|) ≤ Σ_{p∈S} κ₀(k_p) + 2` | `towerSignature_lower`, `towerSignature_upper`, `valS_surjective`, `towerAssembly_periodic` |
+| **Polar second-difference identity and trichotomy on `ℤ`**: `κ₀(k) = κ(Δ²k)`; `Δ²g → 0` gives `κ₀(pairKernel (valChar r) ω + g) ∈ {0, 1, ⊤}` | `polarIndex_eq_negIndex_secondDiff`, `polarIndex_pairKernel_add_of_secondDiff_tendsto` |
+| **No separable `S`-truncated explicit-formula tower formula for `κ(K_ζ) + 1`**: finite `κ₀ ∈ {0, 1}` sees only pole shares; pole-retaining spline assemblies diverge `≥ |S| + 1 → ⊤`; pole-free assemblies lie in `{1, 2, ⊤}` (`κ(weilArchState c) ≠ 2`); diagonal counterterms collapse both `Λ` and `primeFlipWeight q` to `1` | `negIndex_archGlue_sTruncatedAssembly`, `tendsto_negIndex_archGlue_poleRetaining_atTop`, `not_tendsto_negIndex_archGlue_poleFree_of_finite_pos`, `exists_prime_flip_obstruction` |
+| **Inter-tower coupling rigidity**: `coupledAssembly S K = axialAssembly S K + interTowerCoupling S K`; vanishing `coprimeCrossDiff` on `⟨2, 3⟩ × ⟨5, 7⟩` forces `K(u) = a + b log u` (`κ, κ₊ ≤ 2`); no separable `towerAssembly` net tends pointwise to `ratCorr`; `axialAssembly S ratCorr` blows up to `⊤` on `0 < κ(K_ζ) < ⊤` | `coupledAssembly_eq_axial_add_interTower`, `towerAssembly_eq_axialAssembly_of_agrees`, `negIndex_le_two_of_coprimeCrossDiff_eq_zero`, `exists_coprimeCrossDiff_ratCorr_ne_zero`, `not_tendsto_towerAssembly_ratCorr`, `tendsto_negIndex_archGlue_axialAssembly_ratCorr_atTop` |
+| **Coupled `S`-tower and window-coupled explicit-formula signature formulas**: `κ(archGlue(coupledAssembly S ratCorr, c)) = κ(K_ζ) + 1` for all `|S| ≥ 2` (and for `orbitCorr Z f`, Dirichlet `L(s, χ)`); fixed-`S` `sTruncatedCorr S` has `κ ∈ {1, ⊤}`, whereas `S ⊇ windowPrimes L` gives `gram (archGlue (sTruncatedCorr S) c) g = gram (weilArchState c) g` on `|log |slope|| ≤ L` with zero counterterm and `⨆_L = κ(K_ζ) + 1` | `negIndex_archGlue_coupledAssembly_ratCorr`, `negIndex_archGlue_coupledAssembly_orbitCorr`, `negIndex_archGlue_coupledAssembly_dirichlet`, `negIndex_archGlue_sTruncatedCorr_mem`, `gram_archGlue_sTruncatedCorr_eq_weilArchState`, `negIndex_weilArchState_eq_iSup_windowPrimes` |
 | **The readings add**: `κ(Φ) = κ^{(½)}(K) + κ(Φ|_+)`, `κ(Φ|_+) = 1`; for Weil's state `κ = κ(Φ|_×) + κ(Φ|_+) = #rightZeros + 1` | `negIndex_archGlue_translation`, `negIndex_archGlue_eq_add_readings`, `negIndex_weilArchState_eq_add_readings`, `negIndex_weilArchState_sub_translation` |
 | **The glue absorbs exactly its own pair**: `κ(u^{±s'/2} glued at s) = 1` if `s' = s`, else `2`; at `s = 1` only the pole pair is absorbed | `negIndex_archGlueAt_stablePair_eq`, `boostPolarIndexAt_stablePair_of_ne`, `negIndex_archGlue_stablePair_of_ne` |
 | **Stable gluing formula** `κ(K(|a|) − c|a|^{−s/2}|b|^s) = κ^{(s/2)}(K) + 1`, `0 < s < 1`; absorbed pair `u^{±s/2}`; zero configurations with `Re ρ > (1 − s)/2` give `κ(K_Z) + 1`; a drop for `ζ` certifies a zero with `Re ρ ≤ (1 − s)/2` | `negIndex_archGlueAt_eq`, `negIndex_archGlueAt_eq_or`, `boostPolarIndexAt_stablePair`, `negIndex_archGlueAt_orbitCorr`, `exists_zero_le_of_negIndex_archGlueAt_ratCorr_ne` |
@@ -315,16 +319,22 @@ at edges with a counterterm of nontrivial null cone.
 ## 7. Questions
 
 1. **Is there a signature formula `κ(K_ζ) = Σ_p (local defect) − (archimedean gluing)`?**
-   *Answered for the glue.* Local constituents sharing the pole glue with at most one square (separable
+   *Answered: no for separable prime-tower assemblies; yes for coupled finite-`S` assemblies and window-coupled `S`-truncations.*
+   Local constituents sharing the pole glue with at most one square (separable
    assemblies); a conformal successor glues to its pole with exactly one (`κ₀ + 1`); distinct places add; the
    archimedean place glues dilation data by the boost hyperplane, `κ^{(½)}(K) + 1`, and for prime towers and for
    Weil's correlation the hyperplane is free, so the archimedean term is exactly one square. For finitely many
-   prime towers this gives the signature formula `κ = Σ_p κ₀(k_p) + 1 + ε`, `ε ∈ {0, 1}`: local defects, one
-   archimedean square and at most one pole square; the pole terms
-   contribute nothing to it at any strength, and every prime glues Weil's correlation the same way, with one square
-   and the same zero count. For the Hecke states the local–global law is a product formula with
-   identical local walls at every prime. *Open*: the decomposition of `κ(K_ζ)` itself into prime defects; the Weil
-   kernel is neither tower-supported nor separable.
+   prime towers this gives `κ = Σ_p κ₀(k_p) + 1 + ε`, `ε ∈ {0, 1}`. However, no sequence of separable
+   prime-tower assemblies `K_S = Σ_{p∈S} k_p^{(S)}(v_p(·))` built from the `S`-truncated explicit formula
+   captures `κ(K_ζ) + 1`: `κ₀(k) = κ(Δ²k)` and `Σ_{n≥2} |Λ_S(n)|/√n < ∞` force every finite `κ₀(k_p^{(S)}) ∈ {0, 1}`
+   to count only local pole shares (zero contribution from `S`-primes and Gamma), pole-retaining cubic-spline
+   assemblies diverge `≥ |S| + 1 → ⊤`, pole-free assemblies lie in `{1, 2, ⊤}` whereas `κ(weilArchState c) ≠ 2`,
+   diagonal counterterms collapse both `Λ` and `primeFlipWeight q` to `1`, and arbitrary separable assemblies
+   annihilate `coprimeCrossDiff` on `⟨2, 3⟩ × ⟨5, 7⟩` and never converge pointwise to `ratCorr`. Retaining
+   inter-tower coupling restores two exact unconditional formulas: `κ(archGlue(coupledAssembly S ratCorr, c)) =
+   κ(K_ζ) + 1` for every `|S| ≥ 2`, and `gram (archGlue (sTruncatedCorr S) c) g = gram (weilArchState c) g` on
+   `|log |slope(g_i)|| ≤ L` whenever `S ⊇ windowPrimes L` (`p ≤ ⌊e^{2L+8}⌋₊`) with zero counterterm, whose
+   supremum over `L` equals `κ(K_ζ) + 1`.
 2. **Do the matched local Hodge indices share one positive direction for every finite sieve, and what obstructs the
    infinite assembly?** *Yes*, uniformly in the sieve
    (`RenormalizedArithmeticPotentialTheory.eventually_sieveHodgeGram_one_positive_direction`); the counterterm
@@ -358,7 +368,7 @@ at edges with a counterterm of nontrivial null cone.
 | Tool | Developed | To develop |
 |---|---|---|
 | Pontryagin index theory on groups | induction, witness complements, escape, mixing, block additivity, twist invariance, Krein compressions, conformal induction | Krein–Langer structure on `Aff(ℚ)` |
-| Local–global signature calculus | polar index, separable formula, pole–successor formula, additivity over places, boost-polar index and archimedean gluing | prime-local defects of the Weil kernel; non-separable glue |
+| Local–global signature calculus | polar index and `κ₀(k) = κ(Δ²k)`, separable formula, pole–successor formula, additivity over places, boost-polar index and archimedean gluing, `coupledAssembly` (`|S| ≥ 2`), window-coupled `sTruncatedCorr` (`S ⊇ windowPrimes L`), coprime cross-difference rigidity | Schur-complement positivity for non-separable coupled forms |
 | Kakutani–Hellinger dichotomies | the Kakutani wall as an index wall; zero-or-infinity laws as index zero–one laws; local walls at every prime and their Schur assembly; the local wall at `∞` of `𝔽_q(X)` | local walls at the places of higher degree of `𝔽_q(X)` and their product |
 | Mautner / Howe–Moore phenomena | subgroup-indicator classification at continuous dilations; canonical integer-Haar decomposition; exact polynomial index laws for every proper rational successor | relative splitting for general nonzero proper rational successors |
 | Bost–Connes / KMS at the critical temperature | Hecke states at every exponent and their index wall | states below `β = 1` |
@@ -371,8 +381,10 @@ at edges with a counterterm of nontrivial null cone.
 
 ## 9. Open research topics
 
-1. **Prime-local defects.** Decompose `κ(K_ζ)` into contributions of the prime towers glued by the archimedean
-   hyperplane, and compare them with the matched local Hodge indices.
+1. **Non-separable Schur positivity.** Separable prime-tower assemblies never capture `κ(K_ζ) + 1`
+   (`TowerCoupling/`), whereas `coupledAssembly S ratCorr` (`|S| ≥ 2`) and window-coupled `sTruncatedCorr S`
+   (`S ⊇ windowPrimes L`) carry the exact index `κ(K_ζ) + 1` with zero counterterm. Open: transfer uniform
+   finite-sieve Hodge positivity to the non-separable inter-tower coupling form `interTowerCoupling S ratCorr`.
 2. **Krein–Langer structure on `Aff(ℚ)`.** Is every Pontryagin state a positive state plus coefficients of
    finite-dimensional or conformally induced Pontryagin representations? Known pieces: pole–successor states, the
    Borel's `Sym^d` (mixed power kernels), archimedean Weil states.
@@ -418,6 +430,9 @@ at edges with a counterterm of nontrivial null cone.
 | Only the archimedean place can glue Weil's dilation data | every prime glues them at full index too |
 | Index laws select `ζ` | they are twin-blind; only the dilation data select |
 | The matched local Hodge indices assemble on `ℚ_{>0}` | every fixed counterterm leaves infinitely many squares |
+| `S`-truncated explicit-formula prime towers see zeros | `Σ_{n≥2} |Λ_S(n)|/√n < ∞` mixes `S`-primes and Gamma to `0`; finite `κ₀ ∈ {0, 1}` counts only local pole shares |
+| Separable prime-tower assemblies approximate `ratCorr` | every `towerAssembly` kills `coprimeCrossDiff` on `⟨2, 3⟩ × ⟨5, 7⟩`, which forces an affine-in-`log` limit of inertia `≤ 2` |
+| Fixed-`S` `sTruncatedCorr S` approaches `κ(K_ζ) + 1` globally | unbounded slope height mixes `Λ_S` to `κ ∈ {1, ⊤}`; coupling `S ⊇ windowPrimes L` to slope height `≤ L` gives `κ(K_ζ) + 1` with zero counterterm |
 | Finite index is a positive state plus slope data | the Haar mixed quadratic state and the pole–successor states are not |
 | A new RH equivalence is progress | a contribution computes, bounds or excludes an index |
 
@@ -457,8 +472,9 @@ line plus one square for the place. The second bridge is the gluing at a place, 
 2. *a local signature theorem at each place and a global gluing theorem*: the pole–successor formula at every
    place, additivity over places, the separable and archimedean gluing formulas; for the Hecke family the local
    wall at every prime and the product formula; for finitely many prime towers the signature formula
-   `Σ_p κ₀(k_p) + 1 ≤ κ ≤ Σ_p κ₀(k_p) + 2`. Met for the glue, the Hecke family and finite tower assemblies; the
-   prime-local decomposition of `κ(K_ζ)` is open.
+   `Σ_p κ₀(k_p) + 1 ≤ κ ≤ Σ_p κ₀(k_p) + 2`. Met: separable prime-tower decompositions of `κ(K_ζ) + 1` are
+   unconditionally excluded (`TowerCoupling/`), and replaced by the exact coupled `S`-valuation formula (`|S| ≥ 2`)
+   and the zero-counterterm window-coupled `S`-truncated explicit formula (`S ⊇ windowPrimes L`).
 3. *an additive–multiplicative comparison proved as an identity*: the Gram identities of the pole–successor and
    archimedean states, the index identity `κ = #{zeros right of the line} + 1`, and its splitting
    `κ(Φ) = κ(Φ|_×) + κ(Φ|_+)` into the multiplicative and the additive reading. Met for the archimedean
@@ -502,6 +518,8 @@ square needs a carrier that escapes nothing. A reformulation is not a reduction.
   `HeatGaussianResidueKernel`, `TheHeatDeformedArchimedeanState`, `TheStableGluingFormula`,
   `TheGlueAbsorbsExactlyItsOwnPair`, `TheIndexWallOverAFunctionField`, `TheTwoReadingsAdd`,
   `ASignatureFormulaForPrimeTowers`, `TheGluingFormulaAtEveryPlace`, `TheArchimedeanWeilFormIsAShellIdentity`.
+- Tower coupling and `S`-truncated explicit formulas (`TowerCoupling/`): `PolarSecondDifference`,
+  `STruncatedExplicitTowers`, `InterTowerCouplingRigidity`, `CoupledTowerSignatureFormula`.
 - Haar carriers (`Haar/`): `OneNegativeSquare`, `IndexPreservation`, `ContinuousDilationsNeedInfiniteIndex`,
   `MixedPolynomialPerturbation`, `AxisInvisibility`, `FiniteRankPerturbations`, `PolynomialPerturbations`,
   `PowerKernels`, `PeriodDefects`, `PolynomialCorrection`, `TranslationMovingPositivity`, `CyclicOrbits`,

@@ -49,6 +49,9 @@ import GaloisForLFunctions.ArithmeticCountingPositivity.PrimeCountsDetermineEver
 
 import GaloisForLFunctions.ArithmeticCountingPositivity.EveryPrimePatternHasItsFullArithmeticResolvent
 
+import GaloisForLFunctions.ArithmeticCountingPositivity.RelativePrimePatternCoordinates
+import GaloisForLFunctions.ArithmeticCountingPositivity.EveryPrimePatternInheritsFiniteCutoffUpperBounds
+
 /-!
 # Arithmetic Counting Positivity
 

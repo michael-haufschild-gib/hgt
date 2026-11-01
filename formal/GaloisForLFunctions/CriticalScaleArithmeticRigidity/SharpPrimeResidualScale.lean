@@ -39,7 +39,7 @@ theorem harmonic_quotient_annulus_ge_log_sub_log_two {P N : ℕ}
     Real.log_le_log (mul_pos haR hpR) (by exact_mod_cast hmul)
   rw [Real.log_mul haR.ne' hpR.ne', Real.log_mul two_ne_zero hnR.ne'] at hlog
   have hsum := _root_.RHTower.Sieve.log_sub_le_sum_Icc_one_div
-    (m := N / P + 1) (n := N) (by omega) (by omega)
+    (m := N / P + 1) (n := N) (Nat.succ_le_succ (Nat.zero_le (N / P))) (by omega)
   linarith only [hlog, hsum]
 
 private theorem primeWitness_mass_gap (Q : ℕ) :

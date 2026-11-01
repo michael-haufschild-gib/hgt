@@ -412,7 +412,7 @@ theorem sTruncatedCorr_eq_ratCorr_of_abs_logPos_le {B : ℝ} {S : Finset Nat.Pri
         have hp_not_box : pP ∉ primeBox (⌊Real.exp (B + 8)⌋₊ + 1) :=
           fun hmem => hp_not_S (hS hmem)
         have hp_ge : ⌊Real.exp (B + 8)⌋₊ + 1 ≤ p :=
-          not_lt.mp (hp_not_box ∘ mem_primeBox.mpr)
+          not_lt.mp fun hlt => hp_not_box ((mem_primeBox (p := pP)).mpr hlt)
         have hexp_lt : Real.exp (B + 8) < (n : ℝ) :=
           (Nat.lt_floor_add_one (Real.exp (B + 8))).trans_le
             (by exact_mod_cast hp_ge.trans hp_le)
