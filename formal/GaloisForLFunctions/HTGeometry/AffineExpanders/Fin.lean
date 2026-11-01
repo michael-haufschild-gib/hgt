@@ -2,8 +2,7 @@
   # Fin Arithmetic Helpers
 
   Reusable `Fin` encode/decode lemmas for product-type indexing.
-  Used by graph constructions in `Graph/Regular.lean` and `ZigZag.lean` that represent
-  `Fin n × Fin d` as `Fin (n * d)` via `j * d + i` encoding.
+  The encoding represents `Fin n × Fin d` as `Fin (n * d)` via `j * d + i`.
 -/
 
 import Mathlib.Data.Fin.Basic

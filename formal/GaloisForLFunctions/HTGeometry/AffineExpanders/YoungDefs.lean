@@ -297,7 +297,7 @@ lemma shearS1Inv_snd (n α₁ α₂ : ℕ) : (shearS1Inv n α₁ α₂).2 = α�
 
 These eliminate all `%` from `zmodDist(shear(...))` in one rewrite step,
 converting to `if/min` expressions that `split_ifs <;> omega` can close.
-Shared across all 11 expensive case-analysis theorems below. -/
+The resulting cases are linear arithmetic. -/
 
 /-- Eliminates outer `%` from `min ((a + n - δ) % n) (n - (a + n - δ) % n)`. -/
 theorem zd_sub (n a δ : ℕ) (ha : a < n) (hδ : δ < n) :

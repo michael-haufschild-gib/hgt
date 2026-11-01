@@ -1,7 +1,7 @@
 # RH proof-route frontier
 
 **RH open · 33 live routes · 16 candidates.**
-**Corpus checkpoint:** `6ab8ce67b5935dda699b015461722573804f622b`.
+**Corpus checkpoint:** `a7443c4e62d3203811aafe8adeff9ad9157d2529`.
 
 Live = source observable + proved RH-sufficient receiver + explicit open estimate. Candidate = missing independent source mechanism/landing.
 Evidence: [L] integrated, source-reviewed; [S] unfinished/unintegrated, unverified; [K] individual Lean + standard-only transitive-axiom audit. Untagged established facts: [L].
@@ -171,9 +171,9 @@ Evidence: [L] integrated, source-reviewed; [S] unfinished/unintegrated, unverifi
 ### PM — Physical-model Haar approximation (FZZ-P)
 
 - **Path:** Global Haar approximation / cofinal damping ε↓0 / every escape limit visible → RH.
-- **Established:** Escape receivers; regularized Gauss–Mayer operator/determinant and primitive coding. Real-parameter negative-unit determinant nonvanishing.
-- **Open:** Cofinal complete-energy control and exclusion of escape; scattering branch needs trace/product multiplicities, faithful ζ identification and complex resonance exclusion.
-- **Sources:** CP:TheEscapeCompletenessCriterion; ACG:RHIsTheVisibilityOfEveryEscapeState; RIT:GaussMayerPrimitiveOrientation.
+- **Established:** Escape receivers; regularized Gauss–Mayer determinant; primitive coding with pair-root/rotation multiplicities. Exact even-word exponential and determinant nonvanishing for Re w>2, |z|≤1; D(w,−1)≠0 for real w>0.
+- **Open:** Cofinal complete-energy control and exclusion of escape. Scattering: multiplier rotation/power laws and convergent primitive-cycle regrouping, then faithful ζ identification and critical-strip resonance exclusion.
+- **Sources:** CP:TheEscapeCompletenessCriterion; ACG:RHIsTheVisibilityOfEveryEscapeState; RIT:GaussMayerPrimitiveOrientation; RIT:GaussMayerPrimitivePairCycles; RIT:GaussMayerUnitEvenWordDeterminant.
 
 <a id="jas"></a>
 ### JAS — Joint ancestry
@@ -283,9 +283,9 @@ Evidence: [L] integrated, source-reviewed; [S] unfinished/unintegrated, unverifi
 ### ACS — Arithmetic Castelnuovo–Severi effectivity
 
 - **Path:** Arithmetic effectivity / Rosati heights / bounded Weil coupling → Hodge → RH.
-- **Established:** Exact receivers; finite-grid-blind Künneth effectivity at every aperture; shared atomic positivity below. Bidegree-only counts already require Hodge sign.
+- **Established:** Exact receivers; finite-grid-blind Künneth effectivity at every aperture. Prime-free jump count gives h¹_prim≥‖f‖²/8 for support radius≤1/2000. Shared atomic positivity below; bidegrees alone require Hodge sign.
 - **Open:** Independent primitive sign-producing count beyond bidegrees; pay constrained modes/mixed coupling. Alternatives: actual bounded coupling or finite product-group tensor index.
-- **Sources:** G:ExactArithmeticSourceEffectivity; LST:RiemannRochOutsideAFiniteDivisorAtEveryDegree; RIT:TheKunnethSquareOfWeilsKernelIsRH.
+- **Sources:** G:ExactArithmeticSourceEffectivity; LST:RiemannRochOutsideAFiniteDivisorAtEveryDegree; LST:ThePrimitiveH1OfPrimeFreeCyclesIsAJumpCount; RIT:TheKunnethSquareOfWeilsKernelIsRH.
 
 <a id="inter-tower-coupling"></a><a id="coupled-tower-signature"></a><a id="sc"></a>
 ### SC — Stokes/Witt–Krein / archimedean successor
@@ -327,7 +327,7 @@ Promotion requires the missing independent source mechanism/landing below; an un
 |---|---|
 | Tilted spline, eventually uniformly 1≤c≤(log N)^α, 0<α<1/9: full matrix≥κ/(2c⁷)I; W≥bc⁻⁸D_N. Deep stars inherit positivity. Spectral-floor sublevel has D_N≤C log(2c)‖x‖² [L]. | RH iff eventual full/pole-hyperplane sign at every 2K(log N)^(1/8), K>0. Close the full-space rate gap. |
 | Mid-band V_⌊N^θ⌋∩V_⌊(log N)^q⌋^⊥ coercive for α<1/4, q>3α, 0<θ≤1/4096 [L]. | This omits low conductors and terminal complement. Their mixed terms remain unpaid at the RH rate. |
-| Zero-free logarithmic profile positive through explicit ε₀L(log L)², L=loglog N; reciprocal-floor power budget sharp at ε₀ [L]. | Reach every fixed positive multiple. Larger multiples exceed this budget, not necessarily positivity; improve the floor/residual estimate. Sinc comparison uses a different profile. |
+| Zero-free logarithmic profile positive through explicit ε₀L(log L)², L=loglog N. Some reciprocal-floor budget with 0<α≤1/128 works at coefficient K iff K≤ε₀ [L]. | Reach every fixed positive multiple; tuning within current budgets cannot suffice. Improve the floor/residual estimate. Sinc comparison uses a different profile. |
 | Smooth nonnegative unit-bump pole-hyperplane receiver at every α>0 [L]. | Prove actual sign at any positive-power overlap rate. |
 | Prime-defect decomposition and sharp relative residual scale (log Q)²/log N [L]. | Full Gamma/pole/row-potential comparison; a prime-defect gap alone is not complete-Weil positivity. |
 

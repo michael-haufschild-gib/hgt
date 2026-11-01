@@ -26,9 +26,16 @@ unless the proved inverse-class criterion identifies them.
 1. **Certified:** The actual signed determinant product equals its even-word
    trace exponential near zero, with absolute summation over all lengths and
    words. [Paper proof and Lean certificate](../3-formalized/gauss-mayer-even-word-determinant.md).
-2. Decompose every nonempty pair word into a primitive cycle and a repetition.
-   Prove that a repetition of a primitive pair word of length `ℓ` has exactly
-   `ℓ` distinct pair rotations. Ordinary digit primitivity is incorrect.
+2. **Primitive-word classification certified:** every nonempty word has a
+   primitive root; positive powers preserve minimal rotation period. Two
+   primitive powers are cyclically equivalent exactly when their roots are
+   cyclically equivalent and their exponents agree. A primitive word of length
+   `ℓ` has exactly `ℓ` distinct rotations.
+   `GaussMayerPrimitivePairCycles.lean` passed ten production axiom audits.
+   `GaussMayerPrimitiveCycleIndex.lean` gives the exact global bijection
+   `word ↔ (primitive cycle c, repetition r≥1, position i<ℓ(c))`, with word
+   length `rℓ(c)`; all four production audits passed. The exact source-word
+   bijection still requires verification. Ordinary digit primitivity is incorrect.
 3. Prove multiplier invariance under pair rotation and the exact power law
    under repetition. Reindex the absolutely convergent even-word trace series:
    its coefficient `1/n` must become `1/r` for a primitive cycle repeated `r`

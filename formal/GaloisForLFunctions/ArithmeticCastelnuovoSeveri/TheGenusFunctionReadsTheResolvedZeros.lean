@@ -12,18 +12,10 @@ there: a zero of multiplicity `m` is one constraint, not `m`, and two zeros clos
 resolution of the threshold are one constraint up to an error the threshold absorbs.
 
 **Main theorem** (`nearRadical_at_level_of_net`). Let `S` be a finite set of zeros such that every
-zero of height `≤ T` lies within `δ` of `S` (a `δ`-net), with `δ L ≤ 1` and `δ` below an explicit
-margin. Then the Hodge-class tests at level `L` contain a subspace `V` with
+zero of height `≤ T` lies within `δ` of `S` (a `δ`-net), with `δ L ≤ 1`. Then the Hodge-class
+tests at level `L` contain a subspace `V` with
 `dim V ≥ (2 − η)e^{2L} + (2N(0,T) + c₀ − #S)` and
-`‖W(f,f)‖ ≤ (exp(−η²e^{2L}/(300L)) + δ·Q·e^{9L}) ∫|f|²` on `V`, `Q` polynomial in `L`.
-
-Two readings (`zeta_near_radical_count_distinct`, `zeta_near_radical_count_of_net`):
-* `S` = all distinct zeros of height `≤ T`, `δ = 0`: `dim V ≥ (2 − η)e^{2L} + 2(N(0,T) − N_d(0,T))`
-  at the threshold `exp(−η²e^{2L}/(300L))`. The multiplicity excess `N − N_d` enlarges the near
-  radical.
-* `S` any `exp(−η²e^{2L}/(100L))`-net of the zeros of height `≤ T`:
-  `dim V ≥ (2 − η)e^{2L} + 2N(0,T) − #S` at threshold `2 exp(−η²e^{2L}/(300L))`. Zeros closer than
-  `exp(−η²e^{2L}/(100L))` enlarge the near radical as well.
+`‖W(f,f)‖ ≤ (exp(−η²e^{2L}/(300L)) + δ·Q(L)·e^{9L}) ∫|f|²` on `V`, `Q` polynomial in `L`.
 
 Mechanism. The constraint map evaluates `f̂_c` on `S` instead of on all low zeros. An unconstrained
 low zero `ρ` lies within `δ` of a constrained `s ∈ S`, and the strip Lipschitz bound
@@ -68,7 +60,7 @@ theorem norm_paperFT_sub_le_of_support {f : ℝ → ℂ} {U : ℝ} (hf : Integra
     (hf.norm.mul_const (2 * ‖z - w‖ * U * Real.exp (|w.im| * U)))
     (Eventually.of_forall fun u => ?_)).trans (le_of_eq (by rw [integral_mul_const]; ring))
   by_cases hu : U < |u|
-  · rw [hfs u hu, zero_mul, zero_mul, sub_zero, norm_zero, norm_zero, zero_mul]; positivity
+  · simp [hfs u hu]
   · push Not at hu
     have hsplit : cexp (I * z * u) = cexp (I * w * u) * cexp (I * (z - w) * u) := by
       rw [← Complex.exp_add]; congr 1; ring
@@ -88,6 +80,40 @@ theorem norm_paperFT_sub_le_of_support {f : ℝ → ℂ} {U : ℝ} (hf : Integra
     calc ‖f u‖ * ‖cexp (I * w * u)‖ * ‖cexp (I * (z - w) * u) - 1‖
         ≤ ‖f u‖ * Real.exp (|w.im| * U) * (2 * (‖z - w‖ * U)) := by gcongr
       _ = ‖f u‖ * (2 * ‖z - w‖ * U * Real.exp (|w.im| * U)) := by ring
+
+/-- **Product bound near a constrained zero.** If `f̂(w) = 0`, `‖z − w‖ ≤ δ`, `δU ≤ 1`, and both
+`z`, `w` lie in the strip `|Im| ≤ 1/2`, then `‖f̂(z)‖ ‖f̂(z̄)‖ ≤ 2δU e^{U} (∫‖f‖)²`. -/
+theorem norm_paperFT_mul_le_of_near_zero {f : ℝ → ℂ} {U δ : ℝ} (hU : 0 ≤ U) (hf : Integrable f)
+    (hfs : ∀ u, U < |u| → f u = 0) {z w : ℂ} (hz : |z.im| ≤ 1 / 2) (hw : |w.im| ≤ 1 / 2)
+    (hzw : ‖z - w‖ ≤ δ) (hδU : δ * U ≤ 1) (h0 : paperFT f w = 0) :
+    ‖paperFT f z‖ * ‖paperFT f ((starRingEnd ℂ) z)‖ ≤
+      2 * δ * U * Real.exp U * (∫ u, ‖f u‖) ^ 2 := by
+  have hfI0 : 0 ≤ ∫ u, ‖f u‖ := integral_nonneg fun _ => norm_nonneg _
+  have hzwU : ‖z - w‖ * U ≤ 1 := (mul_le_mul_of_nonneg_right hzw hU).trans hδU
+  have hexp : Real.exp (|w.im| * U) ≤ Real.exp (U / 2) :=
+    Real.exp_le_exp.mpr (by nlinarith)
+  have hv1 : ‖paperFT f z‖ ≤ 2 * δ * U * Real.exp (U / 2) * ∫ u, ‖f u‖ := by
+    have h := norm_paperFT_sub_le_of_support hf hfs hzwU
+    rw [h0, sub_zero] at h
+    refine h.trans ?_
+    gcongr
+  have hv2 : ‖paperFT f ((starRingEnd ℂ) z)‖ ≤ Real.exp (U / 2) * ∫ u, ‖f u‖ := by
+    refine (norm_paperFT_le_of_support hf hfs _).trans ?_
+    have hexp' : Real.exp (|((starRingEnd ℂ) z).im| * U) ≤ Real.exp (U / 2) := by
+      rw [Complex.conj_im, abs_neg]; exact Real.exp_le_exp.mpr (by nlinarith)
+    gcongr
+  calc ‖paperFT f z‖ * ‖paperFT f ((starRingEnd ℂ) z)‖
+      ≤ (2 * δ * U * Real.exp (U / 2) * ∫ u, ‖f u‖) * (Real.exp (U / 2) * ∫ u, ‖f u‖) :=
+        mul_le_mul hv1 hv2 (norm_nonneg _) (by positivity)
+    _ = 2 * δ * U * (Real.exp (U / 2) * Real.exp (U / 2)) * (∫ u, ‖f u‖) ^ 2 := by ring
+    _ = 2 * δ * U * Real.exp U * (∫ u, ‖f u‖) ^ 2 := by rw [← Real.exp_add, add_halves]
+
+/-- `γ_ρ − γ_s = (ρ − s)/i` has the norm of `ρ − s`. -/
+theorem norm_gammaOf_sub (ρ s : ℂ) : ‖gammaOf ρ - gammaOf s‖ = ‖ρ - s‖ := by
+  have e : gammaOf ρ - gammaOf s = (ρ - s) / I := by unfold gammaOf; ring
+  rw [e, norm_div, Complex.norm_I, div_one]
+
+/-! ### The plateau and the plateau tests -/
 
 /-- The box plateau has norm at most `1`: it is a probability average of `boxPower`, whose norm
 is at most `1`. -/
@@ -128,32 +154,93 @@ theorem integral_norm_le_of_support {b : ℝ → ℂ} {U : ℝ} (hU : 0 ≤ U) (
           Real.volume_real_Icc_of_le (by linarith)]
         ring
 
+/-- `‖p_c(u)‖ ≤ Σ|c_j|` for the band trigonometric polynomial. -/
+theorem norm_bandTrigPoly_le (ℓ : ℝ) (k₀ : ℕ) (c : Fin (2 * k₀ + 1) → ℂ) (u : ℝ) :
+    ‖bandTrigPoly ℓ k₀ c u‖ ≤ ∑ j, ‖c j‖ := by
+  unfold bandTrigPoly
+  refine (norm_sum_le _ _).trans (Finset.sum_le_sum fun j _ => ?_)
+  rw [norm_mul, Complex.norm_exp]
+  have : (I * (trigFreq ℓ k₀ j : ℂ) * (u : ℂ)).re = 0 := by simp
+  rw [this, Real.exp_zero, mul_one]
+
+/-- The plateau test `f_c = b · p_c` is integrable when `b` is. -/
+theorem integrable_trigTest {b : ℝ → ℂ} (hb : Integrable b) (ℓ : ℝ) (k₀ : ℕ)
+    (c : Fin (2 * k₀ + 1) → ℂ) : Integrable (trigTest b ℓ k₀ c) :=
+  hb.mul_bdd (continuous_bandTrigPoly ℓ k₀ c).aestronglyMeasurable
+    (Eventually.of_forall (norm_bandTrigPoly_le ℓ k₀ c))
+
 /-- `∫‖f_c‖ ≤ (Σ|c_j|) ∫‖b‖` for the plateau test `f_c = b · p_c`. -/
 theorem integral_norm_trigTest_le {b : ℝ → ℂ} (hb : Integrable b) (ℓ : ℝ) (k₀ : ℕ)
     (c : Fin (2 * k₀ + 1) → ℂ) :
     ∫ u, ‖trigTest b ℓ k₀ c u‖ ≤ (∑ j, ‖c j‖) * ∫ u, ‖b u‖ := by
-  have hpoly : ∀ u : ℝ, ‖bandTrigPoly ℓ k₀ c u‖ ≤ ∑ j, ‖c j‖ := by
-    intro u
-    unfold bandTrigPoly
-    refine (norm_sum_le _ _).trans (Finset.sum_le_sum fun j _ => ?_)
-    rw [norm_mul, Complex.norm_exp]
-    have : (I * (trigFreq ℓ k₀ j : ℂ) * (u : ℂ)).re = 0 := by simp
-    rw [this, Real.exp_zero, mul_one]
-  have hint : Integrable (trigTest b ℓ k₀ c) :=
-    hb.mul_bdd (continuous_bandTrigPoly ℓ k₀ c).aestronglyMeasurable
-      (Eventually.of_forall hpoly)
   calc ∫ u, ‖trigTest b ℓ k₀ c u‖ ≤ ∫ u, ‖b u‖ * ∑ j, ‖c j‖ := by
-        refine integral_mono hint.norm (hb.norm.mul_const _) fun u => ?_
+        refine integral_mono (integrable_trigTest hb ℓ k₀ c).norm (hb.norm.mul_const _)
+          fun u => ?_
         simp only [trigTest, norm_mul]
-        exact mul_le_mul_of_nonneg_left (hpoly u) (norm_nonneg _)
+        exact mul_le_mul_of_nonneg_left (norm_bandTrigPoly_le ℓ k₀ c u) (norm_nonneg _)
     _ = (∑ j, ‖c j‖) * ∫ u, ‖b u‖ := by rw [integral_mul_const, mul_comm]
+
+/-- Far-field product bound for a plateau test: for `|Re x| > T` in the strip,
+`‖f̂_c(x)‖ ‖f̂_c(x̄)‖ ≤ ((Σ|c_j|) B)² / (1 + |Re x| − T)³`. -/
+theorem norm_paperFT_trigTest_mul_le_of_far {b : ℝ → ℂ} {U ℓ T Δ B : ℝ} (hb : Integrable b)
+    (hbs : ∀ u, U < |u| → b u = 0) (hℓ : 0 < ℓ) {k₀ : ℕ} (hΩ : k₀ * π / ℓ + Δ ≤ T)
+    (hΔ : 1 ≤ Δ) (hB : 0 ≤ B)
+    (hdec : ∀ w : ℂ, |w.im| ≤ 1 / 2 → Δ ≤ |w.re| → ‖paperFT b w‖ ≤ B / w.re ^ 2)
+    (c : Fin (2 * k₀ + 1) → ℂ) {x : ℂ} (hx : |x.im| ≤ 1 / 2) (hT : T < |x.re|) :
+    ‖paperFT (trigTest b ℓ k₀ c) x‖ * ‖paperFT (trigTest b ℓ k₀ c) ((starRingEnd ℂ) x)‖ ≤
+      ((∑ j, ‖c j‖) * B) ^ 2 / (1 + (|x.re| - T)) ^ 3 := by
+  have hx' : |((starRingEnd ℂ) x).im| ≤ 1 / 2 := by rw [Complex.conj_im, abs_neg]; exact hx
+  have hT' : T < |((starRingEnd ℂ) x).re| := by rw [Complex.conj_re]; exact hT
+  have hv1 := norm_paperFT_trigTest_far_le hb hbs hℓ hΩ hΔ hB hdec c hx hT
+  have hv2 := norm_paperFT_trigTest_far_le hb hbs hℓ hΩ hΔ hB hdec c hx' hT'
+  rw [Complex.conj_re] at hv2
+  set D := 1 + (|x.re| - T) with hD
+  have hD1 : 1 ≤ D := by rw [hD]; linarith
+  have hK0 : 0 ≤ ((∑ j, ‖c j‖) * B) ^ 2 := by positivity
+  calc ‖paperFT (trigTest b ℓ k₀ c) x‖ * ‖paperFT (trigTest b ℓ k₀ c) ((starRingEnd ℂ) x)‖
+      ≤ ((∑ j, ‖c j‖) * B / D ^ 2) * ((∑ j, ‖c j‖) * B / D ^ 2) :=
+        mul_le_mul hv1 hv2 (norm_nonneg _) (by positivity)
+    _ = ((∑ j, ‖c j‖) * B) ^ 2 / D ^ 4 := by rw [div_mul_div_comm]; congr 1 <;> ring
+    _ ≤ ((∑ j, ‖c j‖) * B) ^ 2 / D ^ 3 := by
+        apply div_le_div_of_nonneg_left hK0 (by positivity)
+        calc D ^ 3 = D ^ 3 * 1 := by ring
+          _ ≤ D ^ 3 * D := by gcongr
+          _ = D ^ 4 := by ring
+
+/-! ### Two weight comparisons for the unit-window zero sums -/
+
+/-- For `|x| ≤ T`, the weight `(1 + |x − T|)^{-3}` is at least `(1 + 2T)^{-3}`. -/
+theorem one_div_pow_three_le_of_abs_le {x T : ℝ} (hx : |x| ≤ T) :
+    1 / (1 + 2 * T) ^ 3 ≤ 1 / (1 + |x - T|) ^ 3 := by
+  have hT : 0 ≤ T := le_trans (abs_nonneg x) hx
+  apply one_div_le_one_div_of_le (by positivity)
+  apply pow_le_pow_left₀ (by positivity)
+  have := abs_le.mp hx
+  have : |x - T| ≤ 2 * T := by rw [abs_le]; constructor <;> linarith
+  linarith
+
+/-- For `|x| > T ≥ 0`, `(1 + (|x| − T))^{-3} ≤ (1 + |x − T|)^{-3} + (1 + |x + T|)^{-3}`. -/
+theorem one_div_pow_three_le_add {x T : ℝ} (hT : 0 ≤ T) (hx : T < |x|) :
+    1 / (1 + (|x| - T)) ^ 3 ≤ 1 / (1 + |x - T|) ^ 3 + 1 / (1 + |x - -T|) ^ 3 := by
+  rcases lt_or_gt_of_ne (show x ≠ 0 by intro h; rw [h, abs_zero] at hx; linarith) with hneg | hpos
+  · have e : 1 + (|x| - T) = 1 + |x - -T| := by
+      rw [abs_of_neg hneg, sub_neg_eq_add, abs_of_nonpos (by rw [abs_of_neg hneg] at hx; linarith)]
+      ring
+    rw [e]
+    have : 0 ≤ 1 / (1 + |x - T|) ^ 3 := by positivity
+    linarith
+  · have e : 1 + (|x| - T) = 1 + |x - T| := by
+      rw [abs_of_pos hpos, abs_of_nonneg (by rw [abs_of_pos hpos] at hx; linarith)]
+    rw [e]
+    have : 0 ≤ 1 / (1 + |x - -T|) ^ 3 := by positivity
+    linarith
 
 /-! ### Weil energy of a plateau test constrained on a net of the low zeros -/
 
 /-- **Weil energy of a plateau test constrained on a `δ`-net of the low zeros.** If `f̂_c`
 vanishes at `γ_s` for every `s ∈ S ⊆ 𝒵` and every zero of height `≤ T` lies within `δ` of `S`
-(`δ U ≤ 1`, `b` vanishing off `[−U, U]`), then
-`‖W(f_c, f_c)‖ ≤ ((Σ|c_j|)² B² + (1 + 2T)³ · 2δU e^{U} ((Σ|c_j|) ∫‖b‖)²) · 48 A₀ log(T + 3)`.
+(`0 ≤ δ`, `δ U ≤ 1`, `b` vanishing off `[−U, U]`), then
+`‖W(f_c, f_c)‖ ≤ ((Σ|c_j|)² B² + (1 + 2T)³ · 2δU e^{U} (∫‖b‖)² (Σ|c_j|)²) · 48 A₀ log(T + 3)`.
 The first term is the contribution of the zeros above `T` (far-field decay of `f̂_c`), the second
 that of the unconstrained zeros below `T` (strip Lipschitz bound). -/
 theorem norm_W_trigTest_le_of_net {A₀ : ℝ} (hA₀ : 1 ≤ A₀)
@@ -168,31 +255,33 @@ theorem norm_W_trigTest_le_of_net {A₀ : ℝ} (hA₀ : 1 ≤ A₀)
     (hc : ∀ s ∈ S, paperFT (trigTest b ℓ k₀ c) (gammaOf s) = 0) :
     ‖zetaZeroConfig.W (trigTest b ℓ k₀ c) (trigTest b ℓ k₀ c)‖ ≤
       (((∑ j, ‖c j‖) * B) ^ 2 +
-        (1 + 2 * T) ^ 3 * (2 * δ * U * Real.exp U * ((∑ j, ‖c j‖) * ∫ u, ‖b u‖) ^ 2)) *
+        (1 + 2 * T) ^ 3 * (2 * δ * U * Real.exp U * (∫ u, ‖b u‖) ^ 2 * (∑ j, ‖c j‖) ^ 2)) *
         (48 * A₀ * Real.log (T + 3)) := by
   have hT0 : 0 ≤ T := by
     have : 0 ≤ (k₀ : ℝ) * π / ℓ := by positivity
     linarith
   set f := trigTest b ℓ k₀ c with hf
-  set K := ((∑ j, ‖c j‖) * B) ^ 2 with hK
-  set K' := (1 + 2 * T) ^ 3 * (2 * δ * U * Real.exp U * ((∑ j, ‖c j‖) * ∫ u, ‖b u‖) ^ 2)
-    with hK'
-  have hK0 : 0 ≤ K := by positivity
-  have hK'0 : 0 ≤ K' := by positivity
-  -- integrability and support of the test
-  have hfint : Integrable f := by
-    have hpoly : ∀ u : ℝ, ‖bandTrigPoly ℓ k₀ c u‖ ≤ ∑ j, ‖c j‖ := by
-      intro u
-      unfold bandTrigPoly
-      refine (norm_sum_le _ _).trans (Finset.sum_le_sum fun j _ => ?_)
-      rw [norm_mul, Complex.norm_exp]
-      have : (I * (trigFreq ℓ k₀ j : ℂ) * (u : ℂ)).re = 0 := by simp
-      rw [this, Real.exp_zero, mul_one]
-    exact hb.mul_bdd (continuous_bandTrigPoly ℓ k₀ c).aestronglyMeasurable
-      (Eventually.of_forall hpoly)
+  have hfint : Integrable f := integrable_trigTest hb ℓ k₀ c
   have hfs : ∀ u, U < |u| → f u = 0 := fun u hu => by simp [hf, trigTest, hbs u hu]
   have hfI : ∫ u, ‖f u‖ ≤ (∑ j, ‖c j‖) * ∫ u, ‖b u‖ := integral_norm_trigTest_le hb ℓ k₀ c
   have hfI0 : 0 ≤ ∫ u, ‖f u‖ := integral_nonneg fun _ => norm_nonneg _
+  set K := ((∑ j, ‖c j‖) * B) ^ 2 with hK
+  set K' := (1 + 2 * T) ^ 3 * (2 * δ * U * Real.exp U * (∫ u, ‖b u‖) ^ 2 * (∑ j, ‖c j‖) ^ 2)
+    with hK'
+  have hK0 : 0 ≤ K := by positivity
+  have hK'0 : 0 ≤ K' := by positivity
+  -- the product bound at an unconstrained low zero, in the weight `(1 + 2T)^{-3}`
+  have hlowprod : 2 * δ * U * Real.exp U * (∫ u, ‖f u‖) ^ 2 ≤ K' * (1 / (1 + 2 * T) ^ 3) := by
+    have e : K' * (1 / (1 + 2 * T) ^ 3) =
+        2 * δ * U * Real.exp U * (∫ u, ‖b u‖) ^ 2 * (∑ j, ‖c j‖) ^ 2 := by
+      rw [hK', mul_comm, ← mul_assoc, one_div_mul_cancel (by positivity), one_mul]
+    rw [e]
+    have hsq : (∫ u, ‖f u‖) ^ 2 ≤ ((∑ j, ‖c j‖) * ∫ u, ‖b u‖) ^ 2 :=
+      pow_le_pow_left₀ hfI0 hfI 2
+    calc 2 * δ * U * Real.exp U * (∫ u, ‖f u‖) ^ 2
+        ≤ 2 * δ * U * Real.exp U * ((∑ j, ‖c j‖) * ∫ u, ‖b u‖) ^ 2 :=
+          mul_le_mul_of_nonneg_left hsq (by positivity)
+      _ = 2 * δ * U * Real.exp U * (∫ u, ‖b u‖) ^ 2 * (∑ j, ‖c j‖) ^ 2 := by ring
   obtain ⟨hs₁, hle₁⟩ := window_tsum_le zetaZeroConfig hA₀ hloc T
   obtain ⟨hs₂, hle₂⟩ := window_tsum_le zetaZeroConfig hA₀ hloc (-T)
   set g : zetaZeroConfig.carrier → ℝ := fun ρ =>
@@ -208,126 +297,43 @@ theorem norm_W_trigTest_le_of_net {A₀ : ℝ} (hA₀ : 1 ≤ A₀)
       exact ⟨h.2.1, h.2.2⟩
     have hm : (0 : ℝ) ≤ zetaZeroConfig.mult ρ := Nat.cast_nonneg _
     have hIm : |(gammaOf (ρ : ℂ)).im| ≤ 1 / 2 := (WeilEF.abs_gammaOf_im_lt hstrip').le
-    have hIm' : |((starRingEnd ℂ) (gammaOf (ρ : ℂ))).im| ≤ 1 / 2 := by
-      rw [Complex.conj_im, abs_neg]; exact hIm
     have hre1 : (gammaOf (ρ : ℂ)).re = (ρ : ℂ).im := WeilEF.gammaOf_re _
-    have hre2 : ((starRingEnd ℂ) (gammaOf (ρ : ℂ))).re = (ρ : ℂ).im := by
-      rw [Complex.conj_re, WeilEF.gammaOf_re]
-    have hw : 0 ≤ 1 / (1 + |(ρ : ℂ).im - T|) ^ 3 + 1 / (1 + |(ρ : ℂ).im - -T|) ^ 3 := by
-      positivity
+    have hw0 : 0 ≤ 1 / (1 + |(ρ : ℂ).im - T|) ^ 3 := by positivity
+    have hw0' : 0 ≤ 1 / (1 + |(ρ : ℂ).im - -T|) ^ 3 := by positivity
+    have hgρ : g ρ = (zetaZeroConfig.mult ρ : ℝ) *
+        ((K + K') * (1 / (1 + |(ρ : ℂ).im - T|) ^ 3 + 1 / (1 + |(ρ : ℂ).im - -T|) ^ 3)) := by
+      simp only [hg]; ring
     unfold ZeroConfig.Wsummand
-    rw [norm_mul, norm_mul, Complex.norm_natCast, RCLike.norm_conj]
+    rw [norm_mul, norm_mul, Complex.norm_natCast, RCLike.norm_conj, mul_assoc, hgρ]
+    apply mul_le_mul_of_nonneg_left _ hm
     by_cases hlow : |(ρ : ℂ).im| ≤ T
     · -- an unconstrained low zero: within `δ` of a constrained one
       obtain ⟨s, hsS, hρs⟩ := hnet ρ hmem hlow
-      have hsmem : s ∈ zetaZeroConfig.carrier := hS hsS
       have hsstrip : 0 < s.re ∧ s.re < 1 := by
-        have h : IsNontrivialZero s := hsmem
+        have h : IsNontrivialZero s := hS hsS
         exact ⟨h.2.1, h.2.2⟩
       have hsIm : |(gammaOf s).im| ≤ 1 / 2 := (WeilEF.abs_gammaOf_im_lt hsstrip).le
-      have hγ : ‖gammaOf (ρ : ℂ) - gammaOf s‖ = ‖(ρ : ℂ) - s‖ := by
-        have e : gammaOf (ρ : ℂ) - gammaOf s = ((ρ : ℂ) - s) / I := by
-          unfold gammaOf; ring
-        rw [e, norm_div, Complex.norm_I, div_one]
-      have hγδ : ‖gammaOf (ρ : ℂ) - gammaOf s‖ * U ≤ 1 := by
-        rw [hγ]
-        exact (mul_le_mul_of_nonneg_right hρs hU).trans hδU
-      have hv1 : ‖paperFT f (gammaOf (ρ : ℂ))‖ ≤
-          2 * δ * U * Real.exp (U / 2) * ∫ u, ‖f u‖ := by
-        have h := norm_paperFT_sub_le_of_support hfint hfs hγδ
-        rw [hc s hsS, sub_zero] at h
-        refine h.trans ?_
-        have hexp : Real.exp (|(gammaOf s).im| * U) ≤ Real.exp (U / 2) :=
-          Real.exp_le_exp.mpr (by nlinarith)
-        rw [hγ]
-        gcongr
-      have hv2 : ‖paperFT f ((starRingEnd ℂ) (gammaOf (ρ : ℂ)))‖ ≤
-          Real.exp (U / 2) * ∫ u, ‖f u‖ := by
-        refine (norm_paperFT_le_of_support hfint hfs _).trans ?_
-        gcongr
-        nlinarith
-      have hprod : ‖paperFT f (gammaOf (ρ : ℂ))‖ *
-          ‖paperFT f ((starRingEnd ℂ) (gammaOf (ρ : ℂ)))‖ ≤
-            2 * δ * U * Real.exp U * ((∑ j, ‖c j‖) * ∫ u, ‖b u‖) ^ 2 := by
-        calc ‖paperFT f (gammaOf (ρ : ℂ))‖ * ‖paperFT f ((starRingEnd ℂ) (gammaOf (ρ : ℂ)))‖
-            ≤ (2 * δ * U * Real.exp (U / 2) * ∫ u, ‖f u‖) *
-                (Real.exp (U / 2) * ∫ u, ‖f u‖) :=
-              mul_le_mul hv1 hv2 (norm_nonneg _) (by positivity)
-          _ = 2 * δ * U * (Real.exp (U / 2) * Real.exp (U / 2)) * (∫ u, ‖f u‖) ^ 2 := by ring
-          _ = 2 * δ * U * Real.exp U * (∫ u, ‖f u‖) ^ 2 := by
-              rw [← Real.exp_add]; ring_nf
-          _ ≤ 2 * δ * U * Real.exp U * ((∑ j, ‖c j‖) * ∫ u, ‖b u‖) ^ 2 := by
-              gcongr
-      -- `(1 + |Im ρ − T|)³ ≤ (1 + 2T)³` for `|Im ρ| ≤ T`
-      have hD : 1 / (1 + 2 * T) ^ 3 ≤ 1 / (1 + |(ρ : ℂ).im - T|) ^ 3 := by
-        apply one_div_le_one_div_of_le (by positivity)
-        apply pow_le_pow_left₀ (by positivity)
-        have := abs_le.mp hlow
-        have : |(ρ : ℂ).im - T| ≤ 2 * T := by rw [abs_le]; constructor <;> linarith
-        linarith
-      have hK'eq : K' * (1 / (1 + 2 * T) ^ 3) =
-          2 * δ * U * Real.exp U * ((∑ j, ‖c j‖) * ∫ u, ‖b u‖) ^ 2 := by
-        rw [hK']; field_simp
-      calc (zetaZeroConfig.mult ρ : ℝ) * ‖paperFT f (gammaOf (ρ : ℂ))‖ *
-            ‖paperFT f ((starRingEnd ℂ) (gammaOf (ρ : ℂ)))‖
-          = (zetaZeroConfig.mult ρ : ℝ) * (‖paperFT f (gammaOf (ρ : ℂ))‖ *
-            ‖paperFT f ((starRingEnd ℂ) (gammaOf (ρ : ℂ)))‖) := by ring
-        _ ≤ (zetaZeroConfig.mult ρ : ℝ) * (K' * (1 / (1 + 2 * T) ^ 3)) := by
-            rw [hK'eq]; exact mul_le_mul_of_nonneg_left hprod hm
-        _ ≤ (zetaZeroConfig.mult ρ : ℝ) * (K' * (1 / (1 + |(ρ : ℂ).im - T|) ^ 3 +
-              1 / (1 + |(ρ : ℂ).im - -T|) ^ 3)) := by
-            have : 0 ≤ 1 / (1 + |(ρ : ℂ).im - -T|) ^ 3 := by positivity
-            gcongr
-            linarith
-        _ ≤ (zetaZeroConfig.mult ρ : ℝ) * ((K + K') * (1 / (1 + |(ρ : ℂ).im - T|) ^ 3 +
-              1 / (1 + |(ρ : ℂ).im - -T|) ^ 3)) := by gcongr; linarith
-        _ = g ρ := by simp only [hg]; ring
+      have hρs' : ‖gammaOf (ρ : ℂ) - gammaOf s‖ ≤ δ := by rw [norm_gammaOf_sub]; exact hρs
+      have hprod := norm_paperFT_mul_le_of_near_zero hU hfint hfs hIm hsIm hρs' hδU (hc s hsS)
+      have h1 := one_div_pow_three_le_of_abs_le hlow
+      calc ‖paperFT f (gammaOf (ρ : ℂ))‖ * ‖paperFT f ((starRingEnd ℂ) (gammaOf (ρ : ℂ)))‖
+          ≤ K' * (1 / (1 + 2 * T) ^ 3) := hprod.trans hlowprod
+        _ ≤ K' * (1 / (1 + |(ρ : ℂ).im - T|) ^ 3) := mul_le_mul_of_nonneg_left h1 hK'0
+        _ ≤ (K + K') * (1 / (1 + |(ρ : ℂ).im - T|) ^ 3 + 1 / (1 + |(ρ : ℂ).im - -T|) ^ 3) := by
+            nlinarith [mul_nonneg hK0 hw0, mul_nonneg hK0 hw0', mul_nonneg hK'0 hw0']
     · -- a zero above `T`: far-field decay
       push Not at hlow
-      have hv1 := norm_paperFT_trigTest_far_le hb hbs hℓ hΩ hΔ hB hdec c hIm
+      have hprod := norm_paperFT_trigTest_mul_le_of_far hb hbs hℓ hΩ hΔ hB hdec c hIm
         (by rw [hre1]; exact hlow)
-      have hv2 := norm_paperFT_trigTest_far_le hb hbs hℓ hΩ hΔ hB hdec c hIm'
-        (by rw [hre2]; exact hlow)
-      rw [hre1] at hv1; rw [hre2] at hv2
-      set D := 1 + (|(ρ : ℂ).im| - T) with hD
-      have hD1 : 1 ≤ D := by rw [hD]; linarith
-      have hprod : ‖paperFT f (gammaOf (ρ : ℂ))‖ *
-          ‖paperFT f ((starRingEnd ℂ) (gammaOf (ρ : ℂ)))‖ ≤ K / D ^ 3 := by
-        calc ‖paperFT f (gammaOf (ρ : ℂ))‖ * ‖paperFT f ((starRingEnd ℂ) (gammaOf (ρ : ℂ)))‖
-            ≤ ((∑ j, ‖c j‖) * B / D ^ 2) * ((∑ j, ‖c j‖) * B / D ^ 2) :=
-              mul_le_mul hv1 hv2 (norm_nonneg _) (by positivity)
-          _ = K / D ^ 4 := by rw [hK, div_mul_div_comm]; congr 1 <;> ring
-          _ ≤ K / D ^ 3 := by
-              apply div_le_div_of_nonneg_left hK0 (by positivity)
-              calc D ^ 3 = D ^ 3 * 1 := by ring
-                _ ≤ D ^ 3 * D := by gcongr
-                _ = D ^ 4 := by ring
-      have hDsplit : 1 / D ^ 3 ≤ 1 / (1 + |(ρ : ℂ).im - T|) ^ 3 +
-          1 / (1 + |(ρ : ℂ).im - -T|) ^ 3 := by
-        rcases lt_or_gt_of_ne (show (ρ : ℂ).im ≠ 0 by
-          intro h; rw [h, abs_zero] at hlow; linarith) with hneg | hpos
-        · have e : D = 1 + |(ρ : ℂ).im - -T| := by
-            rw [hD, abs_of_neg hneg, sub_neg_eq_add, abs_of_nonpos (by
-              rw [abs_of_neg hneg] at hlow; linarith)]; ring
-          rw [e]
-          have : 0 ≤ 1 / (1 + |(ρ : ℂ).im - T|) ^ 3 := by positivity
-          linarith
-        · have e : D = 1 + |(ρ : ℂ).im - T| := by
-            rw [hD, abs_of_pos hpos, abs_of_nonneg (by rw [abs_of_pos hpos] at hlow; linarith)]
-          rw [e]
-          have : 0 ≤ 1 / (1 + |(ρ : ℂ).im - -T|) ^ 3 := by positivity
-          linarith
-      calc (zetaZeroConfig.mult ρ : ℝ) * ‖paperFT f (gammaOf (ρ : ℂ))‖ *
-            ‖paperFT f ((starRingEnd ℂ) (gammaOf (ρ : ℂ)))‖
-          = (zetaZeroConfig.mult ρ : ℝ) * (‖paperFT f (gammaOf (ρ : ℂ))‖ *
-            ‖paperFT f ((starRingEnd ℂ) (gammaOf (ρ : ℂ)))‖) := by ring
-        _ ≤ (zetaZeroConfig.mult ρ : ℝ) * (K / D ^ 3) := mul_le_mul_of_nonneg_left hprod hm
-        _ = (zetaZeroConfig.mult ρ : ℝ) * (K * (1 / D ^ 3)) := by ring
-        _ ≤ (zetaZeroConfig.mult ρ : ℝ) * (K * (1 / (1 + |(ρ : ℂ).im - T|) ^ 3 +
-              1 / (1 + |(ρ : ℂ).im - -T|) ^ 3)) := by gcongr
-        _ ≤ (zetaZeroConfig.mult ρ : ℝ) * ((K + K') * (1 / (1 + |(ρ : ℂ).im - T|) ^ 3 +
-              1 / (1 + |(ρ : ℂ).im - -T|) ^ 3)) := by gcongr; linarith
-        _ = g ρ := by simp only [hg]; ring
+      rw [hre1] at hprod
+      have hsplit := one_div_pow_three_le_add hT0 hlow
+      calc ‖paperFT f (gammaOf (ρ : ℂ))‖ * ‖paperFT f ((starRingEnd ℂ) (gammaOf (ρ : ℂ)))‖
+          ≤ K / (1 + (|(ρ : ℂ).im| - T)) ^ 3 := hprod
+        _ = K * (1 / (1 + (|(ρ : ℂ).im| - T)) ^ 3) := by ring
+        _ ≤ K * (1 / (1 + |(ρ : ℂ).im - T|) ^ 3 + 1 / (1 + |(ρ : ℂ).im - -T|) ^ 3) :=
+            mul_le_mul_of_nonneg_left hsplit hK0
+        _ ≤ (K + K') * (1 / (1 + |(ρ : ℂ).im - T|) ^ 3 + 1 / (1 + |(ρ : ℂ).im - -T|) ^ 3) := by
+            nlinarith [mul_nonneg hK'0 hw0, mul_nonneg hK'0 hw0']
   have hsum' : Summable fun ρ : zetaZeroConfig.carrier => ‖zetaZeroConfig.Wsummand f f ρ‖ :=
     Summable.of_nonneg_of_le (fun _ => norm_nonneg _) hpt hgs
   unfold ZeroConfig.W
@@ -342,7 +348,7 @@ theorem norm_W_trigTest_le_of_net {A₀ : ℝ} (hA₀ : 1 ≤ A₀)
         mul_le_mul_of_nonneg_left (add_le_add hle₁ hle₂) (by linarith)
     _ = (K + K') * (48 * A₀ * Real.log (T + 3)) := by ring
 
-/-! ### Arithmetic of the net margin -/
+/-! ### Arithmetic of the level parameters and of the net margin -/
 
 /-- Polynomials of any degree lose against `e^{2L}`. -/
 theorem eventually_mul_pow_le_exp {K : ℝ} (hK : 0 < K) (c : ℝ) (n : ℕ) :
@@ -357,6 +363,48 @@ theorem eventually_mul_pow_le_exp {K : ℝ} (hK : 0 < K) (c : ℝ) (n : ℕ) :
     (mul_le_mul_of_nonneg_right (le_abs_self c) (by positivity)).trans
       (mul_le_mul_of_nonneg_left h1 (abs_nonneg c))
   linarith
+
+/-- Size bounds of the level parameters `ℓ = L − η/8`, `T = 2πe^{2ℓ}`, `k ≤ (T − Δ)ℓ/π`. -/
+theorem level_bounds {η L ℓ T Δ k : ℝ} (hη0 : 0 < η) (hη1 : η ≤ 1) (hL : 1 ≤ L)
+    (hℓ : ℓ = L - η / 8) (hT : T = 2 * π * Real.exp (2 * ℓ))
+    (hΔ : Δ = π * η * Real.exp (2 * L) / (8 * L)) (hk : k ≤ (T - Δ) * ℓ / π) :
+    7 / 8 ≤ ℓ ∧ 0 ≤ T ∧ T ≤ 2 * π * Real.exp (2 * L) ∧
+      2 * k + 1 ≤ 5 * L * Real.exp (2 * L) ∧
+      0 ≤ Real.log (T + 3) ∧ Real.log (T + 3) ≤ 3 + 2 * L := by
+  have hpi := Real.pi_pos
+  have hpi4 := Real.pi_lt_d2
+  have hE := Real.exp_pos (2 * L)
+  have hE1 : 1 ≤ Real.exp (2 * L) := Real.one_le_exp (by linarith)
+  have hℓ7 : 7 / 8 ≤ ℓ := by rw [hℓ]; linarith
+  have hℓL : ℓ ≤ L := by rw [hℓ]; linarith
+  have hΔ0 : 0 ≤ Δ := by rw [hΔ]; positivity
+  have hTle : T ≤ 2 * π * Real.exp (2 * L) := by rw [hT]; gcongr
+  have hT0 : 0 ≤ T := by rw [hT]; positivity
+  have hk2 : 2 * k + 1 ≤ 5 * L * Real.exp (2 * L) := by
+    have h1 : k ≤ T * ℓ / π := by
+      refine hk.trans ?_
+      apply div_le_div_of_nonneg_right _ hpi.le
+      nlinarith
+    have h2 : T * ℓ / π ≤ 2 * L * Real.exp (2 * L) := by
+      rw [div_le_iff₀ hpi]
+      have : T * ℓ ≤ (2 * π * Real.exp (2 * L)) * L :=
+        mul_le_mul hTle hℓL (by linarith) (by positivity)
+      nlinarith
+    nlinarith
+  have hlog : Real.log (T + 3) ≤ 3 + 2 * L := by
+    have h1 : T + 3 ≤ 10 * Real.exp (2 * L) := by nlinarith
+    have h2 : Real.log (T + 3) ≤ Real.log (10 * Real.exp (2 * L)) :=
+      Real.log_le_log (by linarith) h1
+    rw [Real.log_mul (by norm_num) hE.ne', Real.log_exp] at h2
+    have h3 : Real.log 10 < 3 := by
+      rw [Real.log_lt_iff_lt_exp (by norm_num)]
+      have := Real.exp_one_gt_d9
+      have h4 : Real.exp 3 = Real.exp 1 * Real.exp 1 * Real.exp 1 := by
+        rw [← Real.exp_add, ← Real.exp_add]; norm_num
+      nlinarith
+    linarith
+  have hlog0 : 0 ≤ Real.log (T + 3) := Real.log_nonneg (by linarith)
+  exact ⟨hℓ7, hT0, hTle, hk2, hlog0, hlog⟩
 
 /-- The polynomial factor of the net term: `Q(L) = 5268480 · A₀ · L⁴ · (3 + 2L)`. -/
 def netPoly (A₀ L : ℝ) : ℝ := 5268480 * A₀ * L ^ 4 * (3 + 2 * L)
@@ -391,7 +439,6 @@ theorem net_margin_arith {L ℓ T A₀ k Ib δ : ℝ} (hL : 1 ≤ L) (hℓ : 7 /
       (48 * A₀ * Real.log (T + 3)) ≤
       (5 * L * Real.exp (2 * L)) * ((2744 * Real.exp (2 * L) ^ 3) *
         (2 * δ * L * Real.exp L * (4 * L ^ 2))) * (48 * A₀ * (3 + 2 * L)) := by
-    have hQ0 : 0 ≤ (1 + 2 * T) ^ 3 := by positivity
     have hR0 : 0 ≤ 2 * δ * L * Real.exp L * Ib ^ 2 := by positivity
     have hS0 : 0 ≤ 48 * A₀ * Real.log (T + 3) := by positivity
     have hQR : (1 + 2 * T) ^ 3 * (2 * δ * L * Real.exp L * Ib ^ 2) ≤
@@ -416,6 +463,33 @@ theorem net_margin_arith {L ℓ T A₀ k Ib δ : ℝ} (hL : 1 ≤ L) (hℓ : 7 /
     rw [← hexp, netPoly]; ring
   linarith
 
+/-- **Energy assembly.** From the two-term energy bound, Cauchy–Schwarz on the coefficients, the
+bulk lower bound and the two margin inequalities, `W ≤ (ε₁ + ε₂) I₂`. -/
+theorem energy_assembly {W Σc B Q R Sg k ℓ I₂ ε₁ ε₂ : ℝ}
+    (hW : W ≤ ((Σc * B) ^ 2 + Q * (R * Σc ^ 2)) * Sg)
+    (hS : Σc ^ 2 ≤ (2 * k + 1) * (I₂ / (2 * ℓ))) (hQ : 0 ≤ Q) (hR : 0 ≤ R)
+    (hSg : 0 ≤ Sg) (hI : 0 ≤ I₂)
+    (hmarg : (2 * k + 1) * B ^ 2 * Sg / (2 * ℓ) ≤ ε₁)
+    (hnet : (2 * k + 1) * (Q * R) * Sg / (2 * ℓ) ≤ ε₂) :
+    W ≤ (ε₁ + ε₂) * I₂ := by
+  have hB2 : 0 ≤ B ^ 2 := sq_nonneg B
+  have h1 : (Σc * B) ^ 2 * Sg ≤ ε₁ * I₂ := by
+    calc (Σc * B) ^ 2 * Sg = Σc ^ 2 * (B ^ 2 * Sg) := by ring
+      _ ≤ ((2 * k + 1) * (I₂ / (2 * ℓ))) * (B ^ 2 * Sg) :=
+          mul_le_mul_of_nonneg_right hS (mul_nonneg hB2 hSg)
+      _ = ((2 * k + 1) * B ^ 2 * Sg / (2 * ℓ)) * I₂ := by ring
+      _ ≤ ε₁ * I₂ := mul_le_mul_of_nonneg_right hmarg hI
+  have h2 : Q * (R * Σc ^ 2) * Sg ≤ ε₂ * I₂ := by
+    calc Q * (R * Σc ^ 2) * Sg = Σc ^ 2 * (Q * R * Sg) := by ring
+      _ ≤ ((2 * k + 1) * (I₂ / (2 * ℓ))) * (Q * R * Sg) :=
+          mul_le_mul_of_nonneg_right hS (mul_nonneg (mul_nonneg hQ hR) hSg)
+      _ = ((2 * k + 1) * (Q * R) * Sg / (2 * ℓ)) * I₂ := by ring
+      _ ≤ ε₂ * I₂ := mul_le_mul_of_nonneg_right hnet hI
+  calc W ≤ ((Σc * B) ^ 2 + Q * (R * Σc ^ 2)) * Sg := hW
+    _ = (Σc * B) ^ 2 * Sg + Q * (R * Σc ^ 2) * Sg := by ring
+    _ ≤ ε₁ * I₂ + ε₂ * I₂ := add_le_add h1 h2
+    _ = (ε₁ + ε₂) * I₂ := by ring
+
 /-! ### The near radical at a fixed level, constrained on a net -/
 
 /-- The constraint map: the values of `f̂_c` on the finite set `S` and at `±i/2`. -/
@@ -428,6 +502,24 @@ def netConstraint (b : ℝ → ℂ) (ℓ : ℝ) (k₀ : ℕ) (S : Finset ℂ) :
     simp only [Pi.add_apply, add_mul, Finset.sum_add_distrib, Prod.mk_add_mk]; rfl
   map_smul' a c := by
     ext ρ <;> simp [Finset.mul_sum, mul_assoc]
+
+/-- The kernel of the net constraint map has dimension at least `2k₀ + 1 − (#S + 2)`. -/
+theorem finrank_ker_netConstraint_ge (b : ℝ → ℂ) (ℓ : ℝ) (k₀ : ℕ) (S : Finset ℂ) :
+    ((2 * k₀ + 1 : ℕ) : ℝ) - ((S.card + 2 : ℕ) : ℝ) ≤
+      (Module.finrank ℂ (LinearMap.ker (netConstraint b ℓ k₀ S)) : ℝ) := by
+  set Λ := netConstraint b ℓ k₀ S
+  have hrn := LinearMap.finrank_range_add_finrank_ker Λ
+  have hcod : Module.finrank ℂ ((S → ℂ) × (ℂ × ℂ)) = S.card + 2 := by
+    rw [Module.finrank_prod, Module.finrank_prod, Module.finrank_fintype_fun_eq_card,
+      Module.finrank_self, Fintype.card_coe]
+  have hrange : Module.finrank ℂ (LinearMap.range Λ) ≤ S.card + 2 := by
+    rw [← hcod]; exact Submodule.finrank_le _
+  have hdim : Module.finrank ℂ (Fin (2 * k₀ + 1) → ℂ) = 2 * k₀ + 1 := by simp
+  rw [hdim] at hrn
+  have : 2 * k₀ + 1 ≤ S.card + 2 + Module.finrank ℂ (LinearMap.ker Λ) := by omega
+  have h' : ((2 * k₀ + 1 : ℕ) : ℝ) ≤ ((S.card + 2 : ℕ) : ℝ) +
+      (Module.finrank ℂ (LinearMap.ker Λ) : ℝ) := by exact_mod_cast this
+  linarith
 
 /-- **The near radical at a fixed level, constrained on a net.** Under the size conditions
 `(C1)–(C5)` of `RHTower.sharpCount_at_level`, for every finite set `S` of zeros such that every zero
@@ -476,6 +568,7 @@ theorem nearRadical_at_level_of_net {η L A₀ CR T₁ δ : ℝ} {c₀ : ℕ} (h
   obtain ⟨N, hNdef⟩ : ∃ N : ℕ, N = ⌊η / 8 * Δ / (8 * Real.exp 1)⌋₊ := ⟨_, rfl⟩
   have hN1 : 1 ≤ N := by
     rw [hNdef]; exact Nat.le_floor (by rw [hNeq]; exact_mod_cast hC3)
+  have hNpos : (0 : ℝ) < N := by exact_mod_cast hN1
   have hNle : (N : ℝ) ≤ η / 8 * Δ / (8 * Real.exp 1) := by
     rw [hNdef]; exact Nat.floor_le (by positivity)
   have hNgt : η / 8 * Δ / (8 * Real.exp 1) - 1 < N := by
@@ -486,7 +579,7 @@ theorem nearRadical_at_level_of_net {η L A₀ CR T₁ δ : ℝ} {c₀ : ℕ} (h
   rw [← hℓ] at hb1
   have hbs : ∀ u, L < |u| → b u = 0 := fun u hu => hb0 u hu.le
   have hbnorm : ∀ u, ‖b u‖ ≤ 1 := fun u =>
-    norm_boxPlateau_le_one (by positivity) (by positivity) N u
+    norm_boxPlateau_le_one (div_pos (by positivity) (by positivity)) (by positivity) N u
   have hbI : ∫ u, ‖b u‖ ≤ 2 * L :=
     integral_norm_le_of_support (by linarith) hbint hbnorm hbs
   have hbI0 : 0 ≤ ∫ u, ‖b u‖ := integral_nonneg fun _ => norm_nonneg _
@@ -540,20 +633,7 @@ theorem nearRadical_at_level_of_net {η L A₀ CR T₁ δ : ℝ} {c₀ : ℕ} (h
   · -- dimension count: `2k₀ + 1` coefficients, `#S + 2` constraints
     have hequiv := Submodule.equivMapOfInjective Φ hΦinj (LinearMap.ker Λ)
     rw [← hequiv.finrank_eq]
-    have hrn := LinearMap.finrank_range_add_finrank_ker Λ
-    have hcod : Module.finrank ℂ ((S → ℂ) × (ℂ × ℂ)) = S.card + 2 := by
-      rw [Module.finrank_prod, Module.finrank_prod, Module.finrank_fintype_fun_eq_card,
-        Module.finrank_self, Fintype.card_coe]
-    have hrange : Module.finrank ℂ (LinearMap.range Λ) ≤ S.card + 2 := by
-      rw [← hcod]; exact Submodule.finrank_le _
-    have hdim : Module.finrank ℂ (Fin (2 * k₀ + 1) → ℂ) = 2 * k₀ + 1 := by simp
-    rw [hdim] at hrn
-    have hker : ((2 * k₀ + 1 : ℕ) : ℝ) - ((S.card + 2 : ℕ) : ℝ) ≤
-        (Module.finrank ℂ (LinearMap.ker Λ) : ℝ) := by
-      have : 2 * k₀ + 1 ≤ S.card + 2 + Module.finrank ℂ (LinearMap.ker Λ) := by omega
-      have h' : ((2 * k₀ + 1 : ℕ) : ℝ) ≤ ((S.card + 2 : ℕ) : ℝ) +
-          (Module.finrank ℂ (LinearMap.ker Λ) : ℝ) := by exact_mod_cast this
-      linarith
+    have hker := finrank_ker_netConstraint_ge b ℓ k₀ S
     have hTT₁ : T₁ ≤ T := by rw [hT, hℓ]; exact hC5
     have hcnt := hcount T hTT₁
     have harith := sharpCount_dim_arith (k := (k₀ : ℝ)) (c₀ := (c₀ : ℝ)) hη0 hη1 hL hℓ hT hΔ
@@ -574,7 +654,8 @@ theorem nearRadical_at_level_of_net {η L A₀ CR T₁ δ : ℝ} {c₀ : ℕ} (h
       have h1 := congrFun (Prod.mk_eq_zero.mp hΛc).1 ⟨s, hs⟩
       simpa using h1
     have hSc : (S : Set ℂ) ⊆ zetaZeroConfig.carrier := fun s hs => hS s hs
-    have hnet' : ∀ ρ ∈ zetaZeroConfig.carrier, |ρ.im| ≤ T → ∃ s ∈ (S : Set ℂ), ‖ρ - s‖ ≤ δ := by
+    have hnet' : ∀ ρ ∈ zetaZeroConfig.carrier, |ρ.im| ≤ T →
+        ∃ s ∈ (S : Set ℂ), ‖ρ - s‖ ≤ δ := by
       intro ρ hρ hρT
       obtain ⟨s, hs, h⟩ := hnet ρ hρ hρT
       exact ⟨s, hs, h⟩
@@ -596,90 +677,23 @@ theorem nearRadical_at_level_of_net {η L A₀ CR T₁ δ : ℝ} {c₀ : ℕ} (h
     have hmarg' : (2 * k₀ + 1 : ℝ) * B ^ 2 * (48 * A₀ * Real.log (T + 3)) / (2 * ℓ) ≤
         Real.exp (-(η ^ 2 * Real.exp (2 * L) / (300 * L))) := by
       rw [hBdef]; exact hmarg
-    -- the net term
-    have hℓ7 : 7 / 8 ≤ ℓ := by rw [hℓ]; linarith
-    have hT0 : 0 ≤ T := by rw [hT]; positivity
-    have hTle : T ≤ 2 * π * Real.exp (2 * L) := by
-      rw [hT]; gcongr; rw [hℓ]; linarith
-    have hk2 : 2 * (k₀ : ℝ) + 1 ≤ 5 * L * Real.exp (2 * L) := by
-      have h1 : (k₀ : ℝ) ≤ T * ℓ / π := by
-        refine hk₀le.trans ?_
-        apply div_le_div_of_nonneg_right _ hpi.le
-        nlinarith
-      have h2 : T * ℓ / π ≤ 2 * L * Real.exp (2 * L) := by
-        rw [div_le_iff₀ hpi]
-        have hℓL : ℓ ≤ L := by rw [hℓ]; linarith
-        have : T * ℓ ≤ (2 * π * Real.exp (2 * L)) * L :=
-          mul_le_mul hTle hℓL hℓpos.le (by positivity)
-        nlinarith
-      nlinarith
-    have hlog : Real.log (T + 3) ≤ 3 + 2 * L := by
-      have hE1 : 1 ≤ Real.exp (2 * L) := Real.one_le_exp (by linarith)
-      have h1 : T + 3 ≤ 10 * Real.exp (2 * L) := by nlinarith [Real.pi_lt_d2]
-      have h2 : Real.log (T + 3) ≤ Real.log (10 * Real.exp (2 * L)) :=
-        Real.log_le_log (by linarith) h1
-      rw [Real.log_mul (by norm_num) hE.ne', Real.log_exp] at h2
-      have h3 : Real.log 10 < 3 := by
-        rw [Real.log_lt_iff_lt_exp (by norm_num)]
-        have := Real.exp_one_gt_d9
-        have h4 : Real.exp 3 = Real.exp 1 * Real.exp 1 * Real.exp 1 := by
-          rw [← Real.exp_add, ← Real.exp_add]; norm_num
-        nlinarith
-      linarith
-    have hlog0 : 0 ≤ Real.log (T + 3) := Real.log_nonneg (by linarith)
+    obtain ⟨hℓ7, hT0, hTle, hk2, hlog0, hlog⟩ :=
+      level_bounds (k := (k₀ : ℝ)) hη0 hη1 hL hℓ hT hΔ hk₀le
     have hnetm := net_margin_arith (k := (k₀ : ℝ)) (Ib := ∫ u, ‖b u‖) hL hℓ7 hk2
       (by positivity) hT0 hTle hlog0 hlog hA₀ hbI0 hbI hδ
     set I₂ := ∫ u, ‖trigTest b ℓ k₀ c u‖ ^ 2 with hI₂
     have hI0 : 0 ≤ I₂ := integral_nonneg fun _ => by positivity
-    have hS0 : 0 ≤ ∑ j, ‖c j‖ ^ 2 := Finset.sum_nonneg fun _ _ => by positivity
-    have hlogT0 : 0 ≤ 48 * A₀ * Real.log (T + 3) := by
-      have : 0 ≤ A₀ := by linarith
-      positivity
     have hS' : (∑ j, ‖c j‖) ^ 2 ≤ (2 * k₀ + 1 : ℝ) * (I₂ / (2 * ℓ)) := by
       refine hCS.trans ?_
       have : ∑ j, ‖c j‖ ^ 2 ≤ I₂ / (2 * ℓ) := by
         rw [le_div_iff₀ (by positivity)]; linarith
       exact mul_le_mul_of_nonneg_left this (by positivity)
+    have hlogT0 : 0 ≤ 48 * A₀ * Real.log (T + 3) := by
+      have : 0 ≤ A₀ := by linarith
+      positivity
     show ‖zetaZeroConfig.W (Φ c) (Φ c)‖ ≤ _
     have hΦc : Φ c = trigTest b ℓ k₀ c := rfl
     rw [hΦc]
-    -- split the energy bound into the far-field and net terms
-    have hfar : ((∑ j, ‖c j‖) * B) ^ 2 * (48 * A₀ * Real.log (T + 3)) ≤
-        Real.exp (-(η ^ 2 * Real.exp (2 * L) / (300 * L))) * I₂ := by
-      calc ((∑ j, ‖c j‖) * B) ^ 2 * (48 * A₀ * Real.log (T + 3))
-          = (∑ j, ‖c j‖) ^ 2 * B ^ 2 * (48 * A₀ * Real.log (T + 3)) := by ring
-        _ ≤ ((2 * k₀ + 1 : ℝ) * (I₂ / (2 * ℓ))) * B ^ 2 * (48 * A₀ * Real.log (T + 3)) := by
-            gcongr
-        _ = ((2 * k₀ + 1 : ℝ) * B ^ 2 * (48 * A₀ * Real.log (T + 3)) / (2 * ℓ)) * I₂ := by
-            ring
-        _ ≤ Real.exp (-(η ^ 2 * Real.exp (2 * L) / (300 * L))) * I₂ :=
-            mul_le_mul_of_nonneg_right hmarg' hI0
-    have hnear : (1 + 2 * T) ^ 3 * (2 * δ * L * Real.exp L * ((∑ j, ‖c j‖) * ∫ u, ‖b u‖) ^ 2) *
-        (48 * A₀ * Real.log (T + 3)) ≤ δ * (netPoly A₀ L * Real.exp (9 * L)) * I₂ := by
-      calc (1 + 2 * T) ^ 3 * (2 * δ * L * Real.exp L * ((∑ j, ‖c j‖) * ∫ u, ‖b u‖) ^ 2) *
-            (48 * A₀ * Real.log (T + 3))
-          = (∑ j, ‖c j‖) ^ 2 * ((1 + 2 * T) ^ 3 * (2 * δ * L * Real.exp L * (∫ u, ‖b u‖) ^ 2) *
-            (48 * A₀ * Real.log (T + 3))) := by ring
-        _ ≤ ((2 * k₀ + 1 : ℝ) * (I₂ / (2 * ℓ))) *
-            ((1 + 2 * T) ^ 3 * (2 * δ * L * Real.exp L * (∫ u, ‖b u‖) ^ 2) *
-            (48 * A₀ * Real.log (T + 3))) := by
-            gcongr
-        _ = ((2 * k₀ + 1 : ℝ) * ((1 + 2 * T) ^ 3 * (2 * δ * L * Real.exp L * (∫ u, ‖b u‖) ^ 2)) *
-            (48 * A₀ * Real.log (T + 3)) / (2 * ℓ)) * I₂ := by ring
-        _ ≤ δ * (netPoly A₀ L * Real.exp (9 * L)) * I₂ :=
-            mul_le_mul_of_nonneg_right hnetm hI0
-    calc ‖zetaZeroConfig.W (trigTest b ℓ k₀ c) (trigTest b ℓ k₀ c)‖
-        ≤ (((∑ j, ‖c j‖) * B) ^ 2 +
-            (1 + 2 * T) ^ 3 * (2 * δ * L * Real.exp L * ((∑ j, ‖c j‖) * ∫ u, ‖b u‖) ^ 2)) *
-            (48 * A₀ * Real.log (T + 3)) := hW
-      _ = ((∑ j, ‖c j‖) * B) ^ 2 * (48 * A₀ * Real.log (T + 3)) +
-          (1 + 2 * T) ^ 3 * (2 * δ * L * Real.exp L * ((∑ j, ‖c j‖) * ∫ u, ‖b u‖) ^ 2) *
-            (48 * A₀ * Real.log (T + 3)) := by ring
-      _ ≤ Real.exp (-(η ^ 2 * Real.exp (2 * L) / (300 * L))) * I₂ +
-          δ * (netPoly A₀ L * Real.exp (9 * L)) * I₂ := add_le_add hfar hnear
-      _ = (Real.exp (-(η ^ 2 * Real.exp (2 * L) / (300 * L))) +
-          δ * (netPoly A₀ L * Real.exp (9 * L))) * I₂ := by ring
-
-end
+    exact energy_assembly hW hS' (by positivity) (by positivity) hlogT0 hI0 hmarg' hnetm
 
 end GaloisForLFunctions.ArithmeticCastelnuovoSeveri

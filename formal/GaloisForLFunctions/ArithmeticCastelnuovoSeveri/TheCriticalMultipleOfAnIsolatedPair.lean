@@ -4,9 +4,9 @@ import GaloisForLFunctions.ArithmeticCastelnuovoSeveri.AnIsolatedPairIsVisibleAb
 /-!
 # The critical multiple of an isolated pair
 
-The coordinate `K = exp(2a)` turns the exact aperture visibility law into a
-power law in the local Riemann–von Mangoldt density. Once `δL ≥ 16`, the first
-visible multiple lies between `(4δL)^(1/δ)` and `(6δL+1)^(1/δ)`.
+The coordinate `K = exp(2a)` turns the aperture visibility law into the exact
+edge `exp(min(x/δ,L))`, where `sinh x - x = 2δL`. Once `δL ≥ 16`, this edge
+lies between `(4δL)^(1/δ)` and `(6δL+1)^(1/δ)`.
 -/
 
 noncomputable section
@@ -196,7 +196,7 @@ theorem rvmPairEdge_exact {γ δ : ℝ} (hγ : 2 * π < γ) (hδ : 0 < δ)
       exact hh.trans sinh_sub_id_strictMono.le_iff_le
     have hcompare : δ * log K ≤ x ↔ K ≤ exp (x / δ) := by
       rw [mul_comm δ, ← le_div_iff₀ hδ, log_le_iff_le_exp hK0]
-    rw [hcond, hcompare]
+    simp only [hcond, hcompare]
   -- Above Nyquist, a difference of translates kills the lattice and exposes the pair.
   have hlaw : ∀ K : ℝ, 1 < K →
       rvmPairIndex hγ hδ hδ' K =
@@ -207,8 +207,7 @@ theorem rvmPairEdge_exact {γ δ : ℝ} (hγ : 2 * π < γ) (hδ : 0 < δ)
         rw [← log_le_iff_le_exp (zero_lt_one.trans hK), le_min_iff,
           log_le_iff_le_exp (zero_lt_one.trans hK), log_le_iff_le_exp (zero_lt_one.trans hK)]
         exact and_iff_left hKL
-      rw [hcut]
-      exact hlocal K hK hKL
+      simpa only [hcut] using hlocal K hK hKL
     have ha : rvmLocalDensity γ / 2 < log K / 2 := by
       have hh := log_lt_log (exp_pos _) (lt_of_not_ge hKL)
       rw [log_exp] at hh

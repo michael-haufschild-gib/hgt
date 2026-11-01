@@ -25,7 +25,7 @@ theorem norm_mgg_centered_le (n : ℕ)
   have hPP : meanCLM ((n + 3) * (n + 3))
       (meanCLM ((n + 3) * (n + 3)) f) =
       meanCLM ((n + 3) * (n + 3)) f := by
-    change (meanCLM _ * meanCLM _) f = _
+    change (meanCLM ((n + 3) * (n + 3)) * meanCLM ((n + 3) * (n + 3))) f = _
     rw [meanCLM_idempotent]
   have heq : ((mgg (n + 3)).walkCLM - meanCLM ((n + 3) * (n + 3)))
       (f - meanCLM ((n + 3) * (n + 3)) f) =

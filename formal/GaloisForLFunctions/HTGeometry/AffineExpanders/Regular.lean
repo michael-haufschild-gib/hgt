@@ -4,8 +4,7 @@
   Lean formalization of `d`-regular graphs via rotation maps,
   their normalized adjacency matrices, and spectral gap (operator norm).
 
-  Graph squaring is in `Square.lean`; the complete graph is in
-  `Complete.lean`.
+  Graph squaring is in `Square.lean`.
 -/
 
 import GaloisForLFunctions.HTGeometry.AffineExpanders.Fin
