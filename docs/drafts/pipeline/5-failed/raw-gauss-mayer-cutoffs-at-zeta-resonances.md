@@ -75,3 +75,9 @@ In the critical strip, raw determinant convergence is equivalent to `B=0`,
 with limit `D=A`; otherwise the exact norm-growth coefficient is
 `|B|/|1−w|`. The actual double-centered branch bound and complementary
 Fredholm identity are formalized, with eighteen clean source axiom audits.
+
+The [positive real coefficient theorem](../3-formalized/gauss-mayer-positive-real-pole-coefficient.md)
+now proves `B(w,λ)≠0` for real `w>0`, `0<λ<(3/2)^w`, and a genuine
+simple source pole at `λ=1`. Its actual derivative-cone and complementary
+determinant proofs pass all 29 production axiom audits. Complex-source
+resonance exclusion remains open.

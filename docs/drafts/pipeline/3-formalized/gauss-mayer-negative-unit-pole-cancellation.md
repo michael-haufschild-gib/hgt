@@ -69,8 +69,9 @@ already existed; the successor telescope and its source transport discharge
 their inputs. No literature-priority claim is made.
 
 The removable value and its possible vanishing order are not determined.
-The parameter `λ=1`, primitive modular coding, Selberg/scattering comparison,
-and off-critical resonance exclusion remain open. No RH conclusion follows.
+The [positive-unit source pole](gauss-mayer-positive-real-pole-coefficient.md)
+is now proved genuine and simple. Primitive modular coding, Selberg/scattering
+comparison, and off-critical resonance exclusion remain open. No RH conclusion follows.
 
 The [finite successor shear](gauss-mayer-raw-negative-unit-determinants.md)
 also proves convergence of the genuine raw finite-branch determinants at

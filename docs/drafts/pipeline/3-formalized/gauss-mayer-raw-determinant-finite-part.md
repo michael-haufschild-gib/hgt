@@ -111,3 +111,6 @@ the critical strip, beyond the already certified negative-unit parameter.
 This supplies neither determinant nonvanishing nor a scattering identity,
 and it does not establish RH. Finite branch cutoffs and finite Cauchy
 matrix sections remain distinct throughout.
+
+The [positive real coefficient theorem](gauss-mayer-positive-real-pole-coefficient.md)
+now proves `B(w,λ)≠0` for real `w>0`, `0<λ<(3/2)^w`.

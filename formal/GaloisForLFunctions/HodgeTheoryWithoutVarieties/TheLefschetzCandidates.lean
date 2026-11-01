@@ -55,11 +55,11 @@ theorem not_rh_gluing_failure (hRH : ¬ RiemannHypothesis) {α β : ℝ} (hα : 
     (∃ M₀ : ℕ, ∀ (c : ℝ) (N d : ℕ), 0 < c → 0 < d → d ≤ N → M₀ ≤ N / d →
       1 ≤ starOverlap c N d → starOverlap c N d < Real.log (N / d : ℕ) ^ α →
       ∀ y : EuclideanSpace ℝ (PrimeHorizonIndex (N / d)),
-        0 ≤ completeWeilEnergy tiltedUnitSpline c N (starEmbed d N y)) ∧
-    ∃ᶠ N : ℕ in atTop, ¬ PositiveAt tiltedUnitSpline (2 * Real.log N ^ β) N := by
+        0 ≤ completeWeilEnergy SpacingScaleHarmonicAnalysis.tiltedUnitSpline c N (starEmbed d N y)) ∧
+    ∃ᶠ N : ℕ in atTop, ¬ PositiveAt SpacingScaleHarmonicAnalysis.tiltedUnitSpline (2 * Real.log N ^ β) N := by
   refine ⟨exists_star_positive_tiltedUnitSpline hα hα', fun H => hRH ?_⟩
   exact (riemannHypothesis_iff_eventually_positiveAt_log admissible_tiltedUnitSpline hβ).mpr
-    (not_frequently.mp H |>.mono fun _ h => not_not.mp h)
+    (H.mono fun _ h => not_not.mp h)
 
 /-- **Without RH the overlap flow has primitive zero modes.** For `β > 1/2`, infinitely often some
 overlap `c ∈ [1, 2(log N)^β]` carries a hyperplane-positive complete Weil form of the tilted spline
@@ -67,8 +67,8 @@ that is degenerate on the primitive part. -/
 theorem frequently_exists_primitive_zero_mode_of_not_rh (hRH : ¬ RiemannHypothesis) {β : ℝ}
     (hβ : 1 / 2 < β) :
     ∃ᶠ N : ℕ in atTop, ∃ c ∈ Set.Icc 1 (2 * Real.log N ^ β),
-      HyperplanePositiveAt tiltedUnitSpline c N ∧
-        ¬ HardLefschetz (completeWeilMatrix tiltedUnitSpline c N) (poleClass N) := by
+      HyperplanePositiveAt SpacingScaleHarmonicAnalysis.tiltedUnitSpline c N ∧
+        ¬ HardLefschetz (completeWeilMatrix SpacingScaleHarmonicAnalysis.tiltedUnitSpline c N) (poleClass N) := by
   intro H
   refine hRH ((riemannHypothesis_iff_liouville_along_the_overlap_flow hβ).mpr ?_)
   filter_upwards [H] with N hN c hc hpos
