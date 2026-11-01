@@ -39,6 +39,20 @@ arc length, independent of the symbolic coding.
 No periodic-flow classification or least-period theorem is assumed. The
 independent scattering comparison remains a separate obligation.
 
+For surjectivity, a positive integral return is conjugate to an actual
+nonempty pair word. Extract its primitive whole-word root `v` and repetition
+`n`. The root's canonical frame returns under the same powered matrix at
+time `nL_v`. Positive diagonal return time is determined by trace, since
+`x+x⁻¹=y+y⁻¹` with `x,y>1` gives `(x−y)(xy−1)=0`. Equal-return phase
+uniqueness then identifies the original geometric orbit with the root's
+orbit. This avoids a separate classification of shortest integral returns.
+
+For reversal, use `J=[[0,−1],[1,0]]`. The relation `Ja_t=a_(−t)J`
+reverses diagonal time, and a return `γ` becomes `γ⁻¹` at the same positive
+time. Since `J²=−I`, reversal squares to the identity on the integral
+quotient. The proved inverse-conjugacy criterion and equal-return phase
+uniqueness identify this geometric operation with the inverse-cycle map.
+
 ## Certified return-time law
 
 `RenormalizedIntersectionTheory/GaussMayerGeodesicFlow.lean` constructs the
@@ -61,5 +75,15 @@ so is a diagonal time or its negative; the integral central element `−I`
 removes the sign. The centralizer module passed its direct check and seven
 standard-axiom audits.
 
-Primitive-return classification, integral conjugacy of flow orbits, the cycle
-bijection, and the geodesic-indexed determinant product remain to be formalized.
+`GaussMayerPrimitiveGeodesicReturns.cycleFrame_periods` proves that every
+primitive cycle has an actual modular eigenframe whose return group is
+exactly `L_cℤ`; `cycleFrame_least_period` identifies `L_c` as its least
+positive return. The explicit determinant-one eigenbasis supplies the
+return at `L_c=2 log λ_c`. If the positive period generator were `T` with
+`L_c=nT` and `n>1`, its integral return matrix would be an `n`th root of
+the actual cycle matrix, contradicting the proved whole-pair root
+classification. The direct check and seven standard-axiom audits passed.
+
+Integral conjugacy of flow orbits, surjectivity onto all periodic orbits,
+geometric orientation reversal, and the geodesic-indexed determinant
+product remain to be formalized.

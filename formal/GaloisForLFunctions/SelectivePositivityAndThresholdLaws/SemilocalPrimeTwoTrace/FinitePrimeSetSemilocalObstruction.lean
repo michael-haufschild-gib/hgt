@@ -57,6 +57,26 @@ namespace GaloisForLFunctions.SelectivePositivityAndThresholdLaws.SemilocalPrime
 
 /-! ## 1. Unrestricted weighted prime remainder families -/
 
+theorem clm_zero_smul {E F : Type*} [SeminormedAddCommGroup E] [SeminormedAddCommGroup F]
+    [NormedSpace ℂ E] [NormedSpace ℂ F] (A : E →L[ℂ] F) :
+    (0 : ℂ) • A = 0 := by
+  ext x
+  exact zero_smul ℂ (A x)
+
+theorem clm_sum_smul {E F ι : Type*} [SeminormedAddCommGroup E] [SeminormedAddCommGroup F]
+    [NormedSpace ℂ E] [NormedSpace ℂ F] (s : Finset ι) (c : ι → ℂ) (A : E →L[ℂ] F) :
+    (∑ i ∈ s, c i) • A = ∑ i ∈ s, c i • A := by
+  classical
+  induction s using Finset.induction_on with
+  | empty => rw [Finset.sum_empty, Finset.sum_empty, clm_zero_smul]
+  | @insert i s hi ih =>
+      rw [Finset.sum_insert hi, Finset.sum_insert hi]
+      ext x
+      rw [AbstractToolkit.clm_smul_apply, AbstractToolkit.clm_add_apply,
+        AbstractToolkit.clm_smul_apply, add_smul]
+      congr 1
+      exact congrArg (fun T : E →L[ℂ] F => T x) ih
+
 /-- Congruence of `CCMRemainderFamily.Q` at aperture `a` when bounded remainders agree. -/
 theorem ccmRemainderFamily_Q_eq_of_B_eq (F₁ F₂ : CCMRemainderFamily)
     (a : SuzukiPositiveAperture) (he : F₁.B a = F₂.B a)
@@ -182,9 +202,10 @@ theorem weightedPrimeFamily_B_congr {w₁ w₂ : ℕ → ℝ} {a : SuzukiPositiv
 
 /-! ## 2. Semilocal `P`-smooth / `P`-prime-power families, bridges, and multi-prime trace laws -/
 
+open Classical in
 /-- Semilocal von Mangoldt weight retaining integers whose prime factors all belong to `P`. -/
 def semilocalVonMangoldt (P : Set ℕ) (n : ℕ) : ℝ :=
-  by classical exact if ∀ p ∈ n.primeFactors, p ∈ P then (ArithmeticFunction.vonMangoldt n : ℝ) else 0
+  if ∀ p ∈ n.primeFactors, p ∈ P then (ArithmeticFunction.vonMangoldt n : ℝ) else 0
 
 theorem primeFactors_prime_pow_eq {p k : ℕ} (hp : p.Prime) (hk : 1 ≤ k) :
     (p ^ k).primeFactors = {p} := by
@@ -211,19 +232,21 @@ theorem smooth_iff_primePow_of_isPrimePow {P : Set ℕ} {n : ℕ} (hn : IsPrimeP
     have hqp : q = p := (Nat.prime_dvd_prime_iff_eq hq hp).mp (hq.dvd_of_dvd_pow hdvd)
     rwa [← hqp]
 
+open Classical in
 /-- **Identity of `P`-smooth and `P`-prime-power von Mangoldt truncations:**
 since `Λ(n) = 0` off prime powers, restricting to integers whose prime factors lie in `P` equals
 restricting to prime powers `p^k` (`p ∈ P`, `p` prime, `k ≥ 1`). -/
 theorem semilocalVonMangoldt_eq_primePow_ite (P : Set ℕ) (n : ℕ) :
     semilocalVonMangoldt P n =
-      by classical exact
-        if (∃ p ∈ P, p.Prime ∧ ∃ k : ℕ, 1 ≤ k ∧ p ^ k = n) then
-          (ArithmeticFunction.vonMangoldt n : ℝ)
-        else 0 := by
-  classical
+      if (∃ p ∈ P, p.Prime ∧ ∃ k : ℕ, 1 ≤ k ∧ p ^ k = n) then
+        (ArithmeticFunction.vonMangoldt n : ℝ)
+      else 0 := by
   unfold semilocalVonMangoldt
   by_cases hn : IsPrimePow n
-  · rw [if_congr (smooth_iff_primePow_of_isPrimePow hn) rfl rfl]
+  · have hiff := smooth_iff_primePow_of_isPrimePow (P := P) hn
+    by_cases h1 : ∀ p ∈ n.primeFactors, p ∈ P
+    · rw [if_pos h1, if_pos (hiff.mp h1)]
+    · rw [if_neg h1, if_neg (mt hiff.mpr h1)]
   · have hzero : ArithmeticFunction.vonMangoldt n = 0 :=
       ArithmeticFunction.vonMangoldt_eq_zero_iff.mpr hn
     rw [hzero]
@@ -242,8 +265,12 @@ theorem semilocalVonMangoldt_eq_inter_primes (P : Set ℕ) (n : ℕ) :
     semilocalVonMangoldt P n = semilocalVonMangoldt (P ∩ {p : ℕ | p.Prime}) n := by
   classical
   unfold semilocalVonMangoldt
-  refine if_congr ⟨fun h p hp => ⟨h p hp, (Nat.mem_primeFactors.mp hp).1⟩,
-    fun h p hp => (h p hp).1⟩ rfl rfl
+  have hiff : (∀ p ∈ n.primeFactors, p ∈ P) ↔
+      (∀ p ∈ n.primeFactors, p ∈ P ∩ {p : ℕ | p.Prime}) :=
+    ⟨fun h p hp => ⟨h p hp, (Nat.mem_primeFactors.mp hp).1⟩, fun h p hp => (h p hp).1⟩
+  by_cases h1 : ∀ p ∈ n.primeFactors, p ∈ P
+  · rw [if_pos h1, if_pos (hiff.mp h1)]
+  · rw [if_neg h1, if_neg (mt hiff.mpr h1)]
 
 theorem semilocalVonMangoldt_eq_zero_of_no_primes {P : Set ℕ} (hP : ∀ p ∈ P, ¬ p.Prime) (n : ℕ) :
     semilocalVonMangoldt P n = 0 := by
@@ -287,7 +314,7 @@ theorem primeSetSemilocalFamily_B_eq_primeFree_of_no_primes {P : Set ℕ}
   have hzero : ccmWeightedPrimeOperator (semilocalVonMangoldt P) a = 0 := by
     unfold ccmWeightedPrimeOperator
     refine Finset.sum_eq_zero fun n _ => ?_
-    rw [semilocalVonMangoldt_eq_zero_of_no_primes hP n, Complex.ofReal_zero, zero_smul]
+    rw [semilocalVonMangoldt_eq_zero_of_no_primes hP n, Complex.ofReal_zero, clm_zero_smul]
   rw [hzero, sub_zero]
 
 @[simp] theorem finitePrimeSetSemilocalFamily_empty_B (a : SuzukiPositiveAperture) :
@@ -349,7 +376,8 @@ theorem semilocalVonMangoldt_finset_eq_sum_filter_prime (S : Finset ℕ) (n : �
         simpa using hne
   · have hzero : ∀ P : Set ℕ, semilocalVonMangoldt P n = 0 := fun P => by
       unfold semilocalVonMangoldt
-      rw [ArithmeticFunction.vonMangoldt_eq_zero_iff.mpr hn, if_t_t]
+      rw [ArithmeticFunction.vonMangoldt_eq_zero_iff.mpr hn]
+      split_ifs <;> rfl
     rw [hzero]
     exact (Finset.sum_eq_zero fun p _ => hzero _).symm
 
@@ -361,6 +389,7 @@ theorem ccmWeightedPrimeOperator_singleton_eq_ccmPrimePowerOperator {p : ℕ} (h
   classical
   set M : ℕ := Nat.floor (Real.exp (2 * a.1))
   set J : Finset ℕ := (Finset.Icc 1 M).filter (fun m => p ^ m ≤ M)
+  have hJ_sub : J ⊆ Finset.Icc 1 M := Finset.filter_subset _ _
   have hp2 : 2 ≤ p := hp.two_le
   have hpow_ge2 : ∀ {m : ℕ}, 1 ≤ m → 2 ≤ p ^ m := fun {m} hm1 =>
     calc 2 ≤ p ^ 1 := by rw [pow_one]; exact hp2
@@ -369,7 +398,7 @@ theorem ccmWeightedPrimeOperator_singleton_eq_ccmPrimePowerOperator {p : ℕ} (h
       ∑ m ∈ J, ((ArithmeticFunction.vonMangoldt (p ^ m) : ℝ) : ℂ) •
         ccmPrimeTransportOperator a (p ^ m) := by
     unfold ccmPrimePowerOperator
-    rw [← Finset.sum_subset (Finset.filter_subset _ _)]
+    rw [← Finset.sum_subset hJ_sub]
     · refine Finset.sum_congr rfl fun m hmJ => ?_
       obtain ⟨hmI, hpm⟩ := Finset.mem_filter.mp hmJ
       have hm1 : 1 ≤ m := (Finset.mem_Icc.mp hmI).1
@@ -407,7 +436,7 @@ theorem ccmWeightedPrimeOperator_singleton_eq_ccmPrimePowerOperator {p : ℕ} (h
       have hk_lt : k < q ^ k := lt_of_lt_of_le k.lt_two_pow_self (Nat.pow_le_pow_left hp2 k)
       have hkJ : k ∈ J := Finset.mem_filter.mpr ⟨Finset.mem_Icc.mpr ⟨hk1, by omega⟩, hqk_le⟩
       exact hnImg (Finset.mem_image.mpr ⟨k, hkJ, rfl⟩)
-    rw [hzero, Complex.ofReal_zero, zero_smul]
+    rw [hzero, Complex.ofReal_zero, clm_zero_smul]
 
 /-- **Exact finite-prime block decomposition:** for any `S : Finset ℕ`, the `{∞} ∪ S` weighted
 prime operator is the sum of the single-prime operators `ccmPrimePowerOperator p a` over primes in
@@ -422,7 +451,7 @@ theorem ccmWeightedPrimeOperator_finset_eq_sum_ccmPrimePowerOperator (S : Finset
     unfold ccmWeightedPrimeOperator
     rw [Finset.sum_comm]
     refine Finset.sum_congr rfl fun n _ => ?_
-    rw [semilocalVonMangoldt_finset_eq_sum_filter_prime S n, Complex.ofReal_sum, Finset.sum_smul]
+    rw [semilocalVonMangoldt_finset_eq_sum_filter_prime S n, Complex.ofReal_sum, clm_sum_smul]
   rw [hlhs]
   exact Finset.sum_congr rfl fun p hp =>
     ccmWeightedPrimeOperator_singleton_eq_ccmPrimePowerOperator (Finset.mem_filter.mp hp).2 a
@@ -559,42 +588,69 @@ theorem ccmVisiblePrimeBlock_prime_pow_eq {p m : ℕ} (hp : p.Prime) (hm : 1 ≤
     have hlog : 2 * a.1 < Real.log ((p ^ m : ℕ) : ℝ) := two_mul_lt_log_of_notMem hp2 hmem
     rw [ccmPrimeTransportOperator_eq_zero_of_two_mul_le_log a hlog.le, clm_smul_zero]
 
-theorem inner_ccmPrimePowerOperator_eq_sum_valuationLogTrace (p : Nat.Primes)
+theorem inv_mul_sqrt_mul_opTrace_primeValuationLogOperator {p m : ℕ}
+    (hp : p.Prime) (hm : 1 ≤ m) :
+    (((1 / ((m : ℝ) * Real.sqrt ((p ^ m : ℕ) : ℝ)) : ℝ) : ℂ) *
+      ContinuousLinearMap.opTrace (primeValuationLogOperator p m)) =
+      ((ArithmeticFunction.vonMangoldt (p ^ m) : ℝ) : ℂ) *
+        ((1 / Real.sqrt ((p ^ m : ℕ) : ℝ) : ℝ) : ℂ) := by
+  have hvm : (ArithmeticFunction.vonMangoldt (p ^ m) : ℝ) = Real.log (p : ℝ) :=
+    (ArithmeticFunction.vonMangoldt_apply_pow (by omega)).trans
+      (ArithmeticFunction.vonMangoldt_apply_prime hp)
+  have hm0 : (m : ℂ) ≠ 0 := Nat.cast_ne_zero.mpr (by omega)
+  rw [opTrace_primeValuationLogOperator, hvm]
+  push_cast
+  field_simp [hm0]
+
+theorem inner_ccmVisiblePrimeBlock_prime_pow_eq_valuationLogTrace {p m : ℕ}
+    (hp : p.Prime) (hm : 1 ≤ m) (a : SuzukiPositiveAperture)
+    (f : suzukiApertureHilbert a) :
+    inner ℂ (ccmVisiblePrimeBlock a (p ^ m) f) f =
+      (((1 / ((m : ℝ) * Real.sqrt ((p ^ m : ℕ) : ℝ)) : ℝ) : ℂ) *
+        ContinuousLinearMap.opTrace (primeValuationLogOperator p m)) *
+        ContinuousLinearMap.opTrace
+          (ccmApertureCompression a
+            (ccmSymmetricLogTranslation (Real.log ((p ^ m : ℕ) : ℝ))) ∘L
+            InnerProductSpace.rankOne ℂ f f) := by
+  have hS : IsSelfAdjoint
+      (ccmApertureCompression a
+        (ccmSymmetricLogTranslation (Real.log ((p ^ m : ℕ) : ℝ)))) :=
+    ccmApertureCompression_isSelfAdjoint a (ccmSymmetricLogTranslation_isSelfAdjoint _)
+  have hlhs : inner ℂ (ccmVisiblePrimeBlock a (p ^ m) f) f =
+      (((ArithmeticFunction.vonMangoldt (p ^ m) : ℝ) : ℂ) *
+        ((1 / Real.sqrt ((p ^ m : ℕ) : ℝ) : ℝ) : ℂ)) *
+        inner ℂ (ccmApertureCompression a
+          (ccmSymmetricLogTranslation (Real.log ((p ^ m : ℕ) : ℝ))) f) f := by
+    rw [ccmVisiblePrimeBlock_prime_pow_eq hp hm a, ccmPrimeTransportOperator,
+      clm_smul_apply, clm_smul_apply, inner_smul_left, inner_smul_left,
+      Complex.conj_ofReal, Complex.conj_ofReal, mul_assoc]
+  rw [hlhs, ← inv_mul_sqrt_mul_opTrace_primeValuationLogOperator hp hm,
+    ← opTrace_comp_rankOne_self_of_isSelfAdjoint hS f]
+
+theorem re_inner_ccmPrimePowerOperator_eq_sum_valuationLogTrace {p : ℕ} (hp : p.Prime)
     (a : SuzukiPositiveAperture) (f : suzukiApertureHilbert a) :
-    inner ℂ (ccmPrimePowerOperator p.1 a f) f =
+    (inner ℂ (ccmPrimePowerOperator p a f) f).re =
       ∑ m ∈ Finset.Icc 1 (Nat.floor (Real.exp (2 * a.1))),
-        soninSemilocalLogPrimePowerCoefficient (p, m - 1) *
-          ContinuousLinearMap.opTrace (primeValuationLogOperator p.1 m) *
+        ((((1 / ((m : ℝ) * Real.sqrt ((p ^ m : ℕ) : ℝ)) : ℝ) : ℂ) *
+          ContinuousLinearMap.opTrace (primeValuationLogOperator p m)) *
           ContinuousLinearMap.opTrace
             (ccmApertureCompression a
-              (ccmSymmetricLogTranslation (Real.log ((p.1 ^ m : ℕ) : ℝ))) ∘L
-              InnerProductSpace.rankOne ℂ f f) := by
+              (ccmSymmetricLogTranslation (Real.log ((p ^ m : ℕ) : ℝ))) ∘L
+              InnerProductSpace.rankOne ℂ f f)).re := by
   unfold ccmPrimePowerOperator
-  rw [AbstractToolkit.inner_clm_sum_left]
+  rw [AbstractToolkit.re_inner_clm_sum_left]
   refine Finset.sum_congr rfl fun m hm => ?_
-  have hm1 : 1 ≤ m := (Finset.mem_Icc.mp hm).1
-  have hm_sub : m - 1 + 1 = m := Nat.sub_add_cancel hm1
-  have htr := soninEulerCoeff_mul_opTrace_primeValuationLogOperator (p, m - 1)
-  dsimp only at htr
-  rw [hm_sub] at htr
-  have hS : IsSelfAdjoint
-      (ccmApertureCompression a (ccmSymmetricLogTranslation (Real.log ((p.1 ^ m : ℕ) : ℝ)))) :=
-    ccmApertureCompression_isSelfAdjoint a (ccmSymmetricLogTranslation_isSelfAdjoint _)
-  rw [ccmVisiblePrimeBlock_prime_pow_eq p.2 hm1 a, ccmPrimeTransportOperator,
-    clm_smul_apply, clm_smul_apply, inner_smul_left, inner_smul_left,
-    Complex.conj_ofReal, Complex.conj_ofReal,
-    opTrace_comp_rankOne_self_of_isSelfAdjoint hS f, htr]
-  push_cast
-  ring
+  exact congrArg Complex.re
+    (inner_ccmVisiblePrimeBlock_prime_pow_eq_valuationLogTrace hp (Finset.mem_Icc.mp hm).1 a f)
 
 /-- **Exact multi-prime `{∞} ∪ S` valuation-shell operator-trace identity:**
-for any `S : Finset ℕ`, `a : SuzukiPositiveAperture`, and `u : CCMArchimedeanFormDomain a` with
-aperture image `f = ccmArchimedeanFormToAperture a u`, `(finitePrimeSetSemilocalFamily S).Q a u`
-equals the archimedean integral plus polar trace minus the sum over `p ∈ S` (`p` prime) and
-`1 ≤ m ≤ ⌊e^{2a}⌋` of the Euler coefficient times the trace of the positive `p`-adic shell operator
-`primeValuationLogOperator p m` (`opTrace = m log p`) times the compressed `log(p^m)`-shift trace
-(and equals `ccmRestrictedWeilSourceQuadratic a u` throughout `0 < a ≤ ½ log q₀` whenever `S`
-contains all primes `< q₀`). -/
+for any `S : Finset ℕ`, `a : SuzukiPositiveAperture`, and `u : CCMArchimedeanFormDomain a`,
+`(finitePrimeSetSemilocalFamily S).Q a u` equals the archimedean integral plus polar trace minus
+the sum over `p ∈ S.filter Nat.Prime` and `1 ≤ m ≤ ⌊e^{2a}⌋` of the Euler weight `1 / (m √(p^m))`
+times the trace of the positive `p`-adic shell operator `primeValuationLogOperator p m`
+(`opTrace = m log p`) times the compressed `log(p^m)`-shift trace (and equals
+`ccmRestrictedWeilSourceQuadratic a u` throughout `0 < a ≤ ½ log q₀` whenever `S` contains all
+primes `< q₀`). -/
 theorem finitePrimeSetSemilocalFamily_Q_eq_multiPrimeValuationTrace (S : Finset ℕ)
     (a : SuzukiPositiveAperture) (u : CCMArchimedeanFormDomain a) :
     (finitePrimeSetSemilocalFamily S).Q a u =
@@ -602,28 +658,38 @@ theorem finitePrimeSetSemilocalFamily_Q_eq_multiPrimeValuationTrace (S : Finset 
         (ContinuousLinearMap.opTrace (ccmPolarOperator a ∘L
           InnerProductSpace.rankOne ℂ (ccmArchimedeanFormToAperture a u)
             (ccmArchimedeanFormToAperture a u))).re -
-        ∑ p ∈ (S.filter Nat.Prime).attach,
+        ∑ p ∈ S.filter Nat.Prime,
           ∑ m ∈ Finset.Icc 1 (Nat.floor (Real.exp (2 * a.1))),
-            (soninSemilocalLogPrimePowerCoefficient
-              (⟨p.1, (Finset.mem_filter.mp p.2).2⟩, m - 1) *
-              ContinuousLinearMap.opTrace (primeValuationLogOperator p.1 m) *
+            ((((1 / ((m : ℝ) * Real.sqrt ((p ^ m : ℕ) : ℝ)) : ℝ) : ℂ) *
+              ContinuousLinearMap.opTrace (primeValuationLogOperator p m)) *
               ContinuousLinearMap.opTrace
                 (ccmApertureCompression a
-                  (ccmSymmetricLogTranslation (Real.log ((p.1 ^ m : ℕ) : ℝ))) ∘L
+                  (ccmSymmetricLogTranslation (Real.log ((p ^ m : ℕ) : ℝ))) ∘L
                   InnerProductSpace.rankOne ℂ (ccmArchimedeanFormToAperture a u)
                     (ccmArchimedeanFormToAperture a u))).re := by
-  set f := ccmArchimedeanFormToAperture a u
   have hQ : (finitePrimeSetSemilocalFamily S).Q a u =
       primeFreeFamily.Q a u -
-        (inner ℂ (ccmWeightedPrimeOperator (semilocalVonMangoldt (S : Set ℕ)) a f) f).re :=
+        (inner ℂ (ccmWeightedPrimeOperator (semilocalVonMangoldt (S : Set ℕ)) a
+          (ccmArchimedeanFormToAperture a u)) (ccmArchimedeanFormToAperture a u)).re :=
     weightedPrimeFamily_Q_eq_primeFree_sub _ a u
-  rw [hQ, primeFreeFamily_Q_eq, polarPart_eq_opTrace_re,
-    ccmWeightedPrimeOperator_finset_eq_sum_ccmPrimePowerOperator,
-    AbstractToolkit.re_inner_clm_sum_left, ← Finset.sum_attach (S.filter Nat.Prime)]
-  congr 1
-  refine Finset.sum_congr rfl fun p _ => ?_
-  rw [inner_ccmPrimePowerOperator_eq_sum_valuationLogTrace
-    ⟨p.1, (Finset.mem_filter.mp p.2).2⟩ a f, Complex.re_sum]
+  have hsum :
+      (inner ℂ (ccmWeightedPrimeOperator (semilocalVonMangoldt (S : Set ℕ)) a
+        (ccmArchimedeanFormToAperture a u)) (ccmArchimedeanFormToAperture a u)).re =
+        ∑ p ∈ S.filter Nat.Prime,
+          ∑ m ∈ Finset.Icc 1 (Nat.floor (Real.exp (2 * a.1))),
+            ((((1 / ((m : ℝ) * Real.sqrt ((p ^ m : ℕ) : ℝ)) : ℝ) : ℂ) *
+              ContinuousLinearMap.opTrace (primeValuationLogOperator p m)) *
+              ContinuousLinearMap.opTrace
+                (ccmApertureCompression a
+                  (ccmSymmetricLogTranslation (Real.log ((p ^ m : ℕ) : ℝ))) ∘L
+                  InnerProductSpace.rankOne ℂ (ccmArchimedeanFormToAperture a u)
+                    (ccmArchimedeanFormToAperture a u))).re := by
+    rw [ccmWeightedPrimeOperator_finset_eq_sum_ccmPrimePowerOperator,
+      AbstractToolkit.re_inner_clm_sum_left]
+    refine Finset.sum_congr rfl fun p hp => ?_
+    exact re_inner_ccmPrimePowerOperator_eq_sum_valuationLogTrace
+      (Finset.mem_filter.mp hp).2 a (ccmArchimedeanFormToAperture a u)
+  rw [hQ, primeFreeFamily_Q_eq, polarPart_eq_opTrace_re, hsum]
 
 /-! ## 3. Parametric antisymmetric gap probe and the multiplicative syndeticity law -/
 
@@ -756,7 +822,7 @@ theorem weightedPrimeFamily_energy_le_of_log_gap {δ : ℝ} (hδ : 0 < δ) (w : 
     unfold ccmWeightedPrimeOperator
     refine AbstractToolkit.re_inner_clm_sum_eq_zero_of_forall _ _ f f fun n hn => ?_
     by_cases hwn : w n = 0
-    · rw [hwn, Complex.ofReal_zero, zero_smul, AbstractToolkit.clm_zero_apply,
+    · rw [hwn, Complex.ofReal_zero, clm_zero_smul, AbstractToolkit.clm_zero_apply,
         inner_zero_left, Complex.zero_re]
     · have hn2 : 2 ≤ n := (Finset.mem_Icc.mp hn).1
       have hlogn : (1 / 2 : ℝ) < Real.log n := half_lt_log_of_two_le hn2
@@ -991,11 +1057,11 @@ theorem eventually_exists_primePow_in_short_interval_of_primeSetSemilocal_bddBel
 
 /-! ## 4. Constructive `Finset` pigeonhole avoidance and cardinality-only `-Θ(e^A)` collapse -/
 
+open Classical in
 /-- Exponents `k ≥ 1` of `p ≥ 2` whose half-logarithm `k (log p)/2` enters `(M - 1/8, M + 9/8)`. -/
 def activeExponents (M : ℝ) (p : ℕ) : Finset ℕ :=
-  by classical exact
-    (Finset.Icc 1 (Nat.floor (max 0 (4 * M + 5)))).filter
-      (fun k => M - 1 / 8 < (k : ℝ) * Real.log p / 2 ∧ (k : ℝ) * Real.log p / 2 < M + 9 / 8)
+  (Finset.Icc 1 (Nat.floor (max 0 (4 * M + 5)))).filter
+    (fun k => M - 1 / 8 < (k : ℝ) * Real.log p / 2 ∧ (k : ℝ) * Real.log p / 2 < M + 9 / 8)
 
 theorem mem_activeExponents_of_close {M L δ : ℝ} (hML : M ≤ L) (hLM : L ≤ M + 1)
     (hδ : δ ≤ 1 / 32) {p k : ℕ} (hp : 2 ≤ p) (hk : 1 ≤ k)
@@ -1303,54 +1369,54 @@ theorem not_exists_sublinear_exp_lower_bound_for_weightedFinitePrimePowers (S : 
     ¬ ∃ C : ℝ, ∀ A : SuzukiPositiveAperture,
       -(C * Real.exp (θ * A.1)) ≤ (weightedPrimeFamily w).energy A := by
   rintro ⟨C, hC⟩
-  set θ₊ : ℝ := max 0 θ
-  have hθ₊_nonneg : 0 ≤ θ₊ := le_max_left _ _
-  have hθ₊_lt : θ₊ < 1 := max_lt zero_lt_one hθ
-  have hgap_pos : 0 < 1 - θ₊ := sub_pos.mpr hθ₊_lt
+  set θ0 : ℝ := max 0 θ
+  have hθ0_nonneg : 0 ≤ θ0 := le_max_left _ _
+  have hθ0_lt : θ0 < 1 := max_lt zero_lt_one hθ
+  have hgap_pos : 0 < 1 - θ0 := sub_pos.mpr hθ0_lt
   set C' : ℝ := max 0 C
   have hC'_nonneg : 0 ≤ C' := le_max_left _ _
   set K : ℝ := max 0 (finitePrimeCollapseConst S.card)
   have hK_nonneg : 0 ≤ K := le_max_left _ _
   have hc := finitePrimeCollapseCoeff_pos S.card
-  set A_val : ℝ := max 4 (((K + C' + 1) / finitePrimeCollapseCoeff S.card) / (1 - θ₊))
+  set A_val : ℝ := max 4 (((K + C' + 1) / finitePrimeCollapseCoeff S.card) / (1 - θ0))
   let A : SuzukiPositiveAperture := ⟨A_val, lt_of_lt_of_le (by norm_num) (le_max_left _ _)⟩
   have hA4 : 4 ≤ A.1 := le_max_left _ _
   have hcol := weightedPrimeFamily_energy_le_neg_exp_of_finitePrimePowers S.card S le_rfl w hw A hA4
-  have hlow : -(C' * Real.exp (θ₊ * A.1)) ≤ (weightedPrimeFamily w).energy A := by
+  have hlow : -(C' * Real.exp (θ0 * A.1)) ≤ (weightedPrimeFamily w).energy A := by
     have h1 : C * Real.exp (θ * A.1) ≤ C' * Real.exp (θ * A.1) :=
       mul_le_mul_of_nonneg_right (le_max_right _ _) (Real.exp_pos _).le
-    have h2 : C' * Real.exp (θ * A.1) ≤ C' * Real.exp (θ₊ * A.1) :=
+    have h2 : C' * Real.exp (θ * A.1) ≤ C' * Real.exp (θ0 * A.1) :=
       mul_le_mul_of_nonneg_left
         (Real.exp_le_exp.mpr (mul_le_mul_of_nonneg_right (le_max_right _ _) A.2.le)) hC'_nonneg
     exact le_trans (by linarith) (hC A)
   have hineq : finitePrimeCollapseCoeff S.card * Real.exp A.1 ≤
-      K + C' * Real.exp (θ₊ * A.1) := by
+      K + C' * Real.exp (θ0 * A.1) := by
     have hK : finitePrimeCollapseConst S.card ≤ K := le_max_right _ _
     linarith only [hcol, hlow, hK]
-  have hmul := mul_le_mul_of_nonneg_right hineq (Real.exp_pos (-(θ₊ * A.1))).le
-  have hlhs : finitePrimeCollapseCoeff S.card * Real.exp A.1 * Real.exp (-(θ₊ * A.1)) =
-      finitePrimeCollapseCoeff S.card * Real.exp ((1 - θ₊) * A.1) := by
+  have hmul := mul_le_mul_of_nonneg_right hineq (Real.exp_pos (-(θ0 * A.1))).le
+  have hlhs : finitePrimeCollapseCoeff S.card * Real.exp A.1 * Real.exp (-(θ0 * A.1)) =
+      finitePrimeCollapseCoeff S.card * Real.exp ((1 - θ0) * A.1) := by
     rw [mul_assoc, ← Real.exp_add]
     congr 2; ring
-  have hrhs : (K + C' * Real.exp (θ₊ * A.1)) * Real.exp (-(θ₊ * A.1)) ≤ K + C' := by
+  have hrhs : (K + C' * Real.exp (θ0 * A.1)) * Real.exp (-(θ0 * A.1)) ≤ K + C' := by
     rw [add_mul, mul_assoc, ← Real.exp_add, add_neg_cancel, Real.exp_zero, mul_one]
-    have hexp_le1 : Real.exp (-(θ₊ * A.1)) ≤ 1 :=
-      Real.exp_le_one_iff.mpr (by nlinarith [A.2, hθ₊_nonneg])
-    have hKle : K * Real.exp (-(θ₊ * A.1)) ≤ K * 1 :=
+    have hexp_le1 : Real.exp (-(θ0 * A.1)) ≤ 1 :=
+      Real.exp_le_one_iff.mpr (by nlinarith [A.2, hθ0_nonneg])
+    have hKle : K * Real.exp (-(θ0 * A.1)) ≤ K * 1 :=
       mul_le_mul_of_nonneg_left hexp_le1 hK_nonneg
     linarith only [hKle]
-  have hexp_lb : (1 - θ₊) * A.1 + 1 ≤ Real.exp ((1 - θ₊) * A.1) :=
-    Real.add_one_le_exp ((1 - θ₊) * A.1)
-  have hAval_ge : ((K + C' + 1) / finitePrimeCollapseCoeff S.card) / (1 - θ₊) ≤ A.1 :=
+  have hexp_lb : (1 - θ0) * A.1 + 1 ≤ Real.exp ((1 - θ0) * A.1) :=
+    Real.add_one_le_exp ((1 - θ0) * A.1)
+  have hAval_ge : ((K + C' + 1) / finitePrimeCollapseCoeff S.card) / (1 - θ0) ≤ A.1 :=
     le_max_right _ _
-  have hprod_ge : (K + C' + 1) / finitePrimeCollapseCoeff S.card ≤ (1 - θ₊) * A.1 := by
+  have hprod_ge : (K + C' + 1) / finitePrimeCollapseCoeff S.card ≤ (1 - θ0) * A.1 := by
     have := (div_le_iff₀ hgap_pos).mp hAval_ge
-    linarith [mul_comm A.1 (1 - θ₊)]
-  have hc_prod : K + C' + 1 ≤ finitePrimeCollapseCoeff S.card * ((1 - θ₊) * A.1) := by
+    linarith [mul_comm A.1 (1 - θ0)]
+  have hc_prod : K + C' + 1 ≤ finitePrimeCollapseCoeff S.card * ((1 - θ0) * A.1) := by
     have := (div_le_iff₀ hc).mp hprod_ge
-    linarith [mul_comm ((1 - θ₊) * A.1) (finitePrimeCollapseCoeff S.card)]
-  have hc_exp : finitePrimeCollapseCoeff S.card * ((1 - θ₊) * A.1 + 1) ≤
-      finitePrimeCollapseCoeff S.card * Real.exp ((1 - θ₊) * A.1) :=
+    linarith [mul_comm ((1 - θ0) * A.1) (finitePrimeCollapseCoeff S.card)]
+  have hc_exp : finitePrimeCollapseCoeff S.card * ((1 - θ0) * A.1 + 1) ≤
+      finitePrimeCollapseCoeff S.card * Real.exp ((1 - θ0) * A.1) :=
     mul_le_mul_of_nonneg_left hexp_lb hc.le
   rw [hlhs] at hmul
   linarith [hmul.trans hrhs, hc_prod, hc_exp, hc]
@@ -1612,14 +1678,13 @@ theorem finite_prime_semilocal_complete_resolution :
           (ContinuousLinearMap.opTrace (ccmPolarOperator a ∘L
             InnerProductSpace.rankOne ℂ (ccmArchimedeanFormToAperture a u)
               (ccmArchimedeanFormToAperture a u))).re -
-          ∑ p ∈ (S.filter Nat.Prime).attach,
+          ∑ p ∈ S.filter Nat.Prime,
             ∑ m ∈ Finset.Icc 1 (Nat.floor (Real.exp (2 * a.1))),
-              (soninSemilocalLogPrimePowerCoefficient
-                (⟨p.1, (Finset.mem_filter.mp p.2).2⟩, m - 1) *
-                ContinuousLinearMap.opTrace (primeValuationLogOperator p.1 m) *
+              ((((1 / ((m : ℝ) * Real.sqrt ((p ^ m : ℕ) : ℝ)) : ℝ) : ℂ) *
+                ContinuousLinearMap.opTrace (primeValuationLogOperator p m)) *
                 ContinuousLinearMap.opTrace
                   (ccmApertureCompression a
-                    (ccmSymmetricLogTranslation (Real.log ((p.1 ^ m : ℕ) : ℝ))) ∘L
+                    (ccmSymmetricLogTranslation (Real.log ((p ^ m : ℕ) : ℝ))) ∘L
                     InnerProductSpace.rankOne ℂ (ccmArchimedeanFormToAperture a u)
                       (ccmArchimedeanFormToAperture a u))).re) ∧
     (∀ (r : ℕ) (S : Finset ℕ), S.card ≤ r →

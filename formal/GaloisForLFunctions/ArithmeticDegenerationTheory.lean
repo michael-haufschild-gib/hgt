@@ -9,6 +9,7 @@ import GaloisForLFunctions.ArithmeticDegenerationTheory.TheMertensFunctionIsAGlu
 import GaloisForLFunctions.ArithmeticDegenerationTheory.CompleteDegenerationSelectsZeta
 import GaloisForLFunctions.ArithmeticDegenerationTheory.TheMonodromyIsEventuallyIdempotent
 import GaloisForLFunctions.ArithmeticDegenerationTheory.TheScalingFormOfTheDegeneration
+import GaloisForLFunctions.ArithmeticDegenerationTheory.TheBranchesAndTheWeightsSeparate
 
 /-!
 # Arithmetic Degeneration Theory
@@ -20,6 +21,7 @@ monodromy acting on conductors by valuation lowering; weight strings and the ten
 limiting polarization; the uniform Jordan law on the subthreshold block; the Mertens function as
 the gluing determinant at the pole; complete degeneration as the signature of `ζ` among its
 prime-flip twins; the eventual idempotence of the monodromy; the exact scaling form of the
-degeneration and inherited polarization on fixed packets.
+degeneration and inherited polarization on fixed packets; the separation of branches (scaling
+function) and weights (Jordan coefficient).
 See `ArithmeticDegenerationTheory/README.md`.
 -/

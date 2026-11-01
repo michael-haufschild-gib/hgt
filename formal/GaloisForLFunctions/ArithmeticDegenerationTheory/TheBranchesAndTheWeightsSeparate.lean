@@ -30,21 +30,16 @@ open RenormalizedArithmeticPotentialTheory.CompletedShell SpacingScaleHarmonicAn
 /-- Coprimality to `m` depends only on the prime factors of `m`. -/
 theorem coprime_iff_of_primeFactors_eq {m m' : ℕ} (hm : m ≠ 0) (hm' : m' ≠ 0)
     (h : m.primeFactors = m'.primeFactors) (n : ℕ) : Nat.Coprime m n ↔ Nat.Coprime m' n := by
-  have key : ∀ {a b : ℕ}, a ≠ 0 → b.primeFactors = a.primeFactors → Nat.Coprime a n →
+  have key : ∀ {a b : ℕ}, b ≠ 0 → b.primeFactors = a.primeFactors → Nat.Coprime a n →
       Nat.Coprime b n := by
-    intro a b ha hab hcop
+    intro a b hb hab hcop
     refine Nat.coprime_of_dvd fun k hk hkb hkn => ?_
-    by_cases hb : b = 0
-    · subst hb
-      simp at hab
-      exact ha (by simpa using hab.symm)
     have hka : k ∣ a := by
       have : k ∈ b.primeFactors := hk.mem_primeFactors hkb hb
       rw [hab] at this
       exact (Nat.mem_primeFactors.mp this).2.1
-    exact hk.one_lt.ne' (Nat.eq_one_of_self_dvd_one (by
-      rw [← Nat.Coprime.gcd_eq_one hcop]; exact Nat.dvd_gcd hka hkn))
-  exact ⟨key hm h.symm, key hm' h⟩
+    exact hk.not_dvd_one (by rw [← Nat.Coprime.gcd_eq_one hcop]; exact Nat.dvd_gcd hka hkn)
+  exact ⟨key hm' h.symm, key hm h⟩
 
 /-- **The scaling function reads only the branches.** Two conductors with the same prime factors
 have the same scaling function. -/

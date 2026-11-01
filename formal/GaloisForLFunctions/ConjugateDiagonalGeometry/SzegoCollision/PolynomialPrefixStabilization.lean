@@ -58,7 +58,6 @@ private lemma zhukovskyEllipseForm_eq_of_six_le {k : ℕ} (hk : 6 ≤ k) (d : �
     unfold zhukovskyMajorAxis
     rw [hstage]
     field_simp [hk_pos.ne']
-    ring
   have hmin : zhukovskyMinorAxis k = 1 / (k : ℝ) := by
     unfold zhukovskyMinorAxis
     rw [hstage]
@@ -79,7 +78,7 @@ theorem zhukovskyEllipseForm_second_diff_ge {n : ℕ} (hn : 7 ≤ n) (d : ℂ) :
   have hn2 : 6 ≤ n + 1 := by omega
   rw [zhukovskyEllipseForm_eq_of_six_le hn1 d, zhukovskyEllipseForm_eq_of_six_le hn0 d,
     zhukovskyEllipseForm_eq_of_six_le hn2 d]
-  have hcast_sub : ((n - 1 : ℕ) : ℝ) = (n : ℝ) - 1 := Nat.cast_sub (by omega)
+  have hcast_sub : ((n - 1 : ℕ) : ℝ) = (n : ℝ) - 1 := Nat.cast_sub (show 1 ≤ n by omega)
   have hcast_add : ((n + 1 : ℕ) : ℝ) = (n : ℝ) + 1 := by push_cast; ring
   rw [hcast_sub, hcast_add]
   have hn7 : (7 : ℝ) ≤ (n : ℝ) := by exact_mod_cast hn
@@ -158,7 +157,7 @@ private lemma first_diff_mono_of_second_diff {f : ℕ → ℝ} {S₀ S_max : ℕ
       have hstep := hconv (m₁ + k + 1) (by omega) (by omega)
       have hsub : m₁ + k + 1 - 1 = m₁ + k := by omega
       rw [hsub] at hstep
-      linarith [ih hk_lt]
+      linarith [ih (by omega) hk_lt]
 
 /-- Lower telescoping bound when the initial forward difference is nonnegative. -/
 private lemma diff_ge_first_step_of_nonneg {f : ℕ → ℝ} {S₀ S_max : ℕ} {κ : ℝ}
@@ -235,9 +234,10 @@ theorem card_filter_abs_sub_lt_le_two_of_second_diff {f : ℕ → ℝ} {S₀ S_m
     (hκ : 0 < κ)
     (hconv : ∀ n : ℕ, S₀ < n → n < S_max → κ ≤ f (n - 1) - 2 * f n + f (n + 1)) :
     ((Finset.Icc S₀ S_max).filter (fun n => |f n - 1| < κ / 4)).card ≤ 2 := by
+  set A := (Finset.Icc S₀ S_max).filter (fun n => |f n - 1| < κ / 4)
   by_contra hgt
   obtain ⟨n₁, h1, n₂, h2, n₃, h3, h12, h23⟩ :=
-    exists_three_strict_mono_of_three_le_card (by omega : 3 ≤ _)
+    exists_three_strict_mono_of_three_le_card (show 3 ≤ A.card by omega)
   obtain ⟨hI1, hf1⟩ := Finset.mem_filter.mp h1
   obtain ⟨hI2, hf2⟩ := Finset.mem_filter.mp h2
   obtain ⟨hI3, hf3⟩ := Finset.mem_filter.mp h3
@@ -331,15 +331,19 @@ theorem card_filter_zhukovskyEllipseForm_near_one_le_two {S₀ S_max : ℕ}
     rw [← hκ4]
     exact card_filter_abs_sub_lt_le_two_of_second_diff hκ_pos hconv
   · -- Every `n ∈ Icc S₀ S_max` has `zhukovskyEllipseForm n d ≤ 1 / 2`, so the filter is empty!
-    push_neg at hex
+    simp only [not_exists, not_and, not_lt] at hex
     have hempty : (Finset.Icc S₀ S_max).filter
         (fun n => |zhukovskyEllipseForm n d - 1| < 1 / (8 * (S_max : ℝ) ^ 3)) = ∅ := by
       rw [Finset.filter_eq_empty_iff]
       intro n hn hlt
       have hle := hex n hn
       have hsmall : 1 / (8 * (S_max : ℝ) ^ 3) < 1 / 2 := by
+        have hS3 : (216 : ℝ) ≤ (S_max : ℝ) ^ 3 := by
+          have hp := pow_le_pow_left₀ (by norm_num : (0 : ℝ) ≤ 6) hS_pos 3
+          norm_num at hp
+          exact hp
         rw [div_lt_div_iff₀ (by positivity) (by norm_num)]
-        nlinarith [hS_pos]
+        linarith
       have habs := (abs_lt.mp hlt).1
       linarith
     rw [hempty, Finset.card_empty]
@@ -368,12 +372,12 @@ theorem exists_natStage_avoiding_zhukovsky_ellipses (S : ℕ) (P : Finset ℂ) :
     rw [Nat.card_Icc]
     dsimp only [S_max]
     omega
-  have hsdiff_pos : 0 < ((Finset.Icc S₀ S_max) \ P.biUnion bad).card := by
-    have hlt : (P.biUnion bad).card < (Finset.Icc S₀ S_max).card := by omega
-    have hle := Finset.card_sdiff_add_card (Finset.Icc S₀ S_max) (P.biUnion bad)
+  have hex_good : ∃ n_star ∈ Finset.Icc S₀ S_max, n_star ∉ P.biUnion bad := by
+    by_contra hall
+    simp only [not_exists, not_and, Classical.not_not] at hall
+    have hle := Finset.card_le_card hall
     omega
-  obtain ⟨n_star, hn_mem⟩ := Finset.card_pos.mp hsdiff_pos
-  obtain ⟨hn_Icc, hn_not_bad⟩ := Finset.mem_sdiff.mp hn_mem
+  obtain ⟨n_star, hn_Icc, hn_not_bad⟩ := hex_good
   refine ⟨n_star, hn_Icc, fun d hd => ?_⟩
   by_contra hlt
   exact hn_not_bad (Finset.mem_biUnion.mpr ⟨d, hd, Finset.mem_filter.mpr ⟨hn_Icc, not_le.mp hlt⟩⟩)
@@ -399,6 +403,8 @@ theorem norm_zhukovskyLoop_sub_ge_of_ellipse_gap {n : ℕ} {d : ℂ} {η : ℝ}
   · have hz_form : zhukovskyEllipseForm n z = 1 := zhukovskyEllipseForm_loop n u
     set a := zhukovskyMajorAxis n
     set b := zhukovskyMinorAxis n
+    have ha_pos : 0 < a := zhukovskyMajorAxis_pos n
+    have hb_pos : 0 < b := zhukovskyMinorAxis_pos n
     have ha_ge : 5 / 12 ≤ a := five_twelfths_le_zhukovskyMajorAxis n
     have ha_lt : a < 1 / 2 := zhukovskyMajorAxis_lt_half n
     have hb_eq : b = 1 / s := rfl
@@ -410,33 +416,36 @@ theorem norm_zhukovskyLoop_sub_ge_of_ellipse_gap {n : ℕ} {d : ℂ} {η : ℝ}
       rw [h]; exact Complex.abs_im_le_norm (z - d)
     have hz_re_le : |z.re - 1 / 2| ≤ a := by
       have h1 : (z.re - 1 / 2) ^ 2 / a ^ 2 ≤ 1 := by
-        rw [← hz_form]; unfold zhukovskyEllipseForm
-        have hnn : 0 ≤ z.im ^ 2 / b ^ 2 := by positivity
-        dsimp only [a, b]; linarith
-      have h2 : (z.re - 1 / 2) ^ 2 ≤ a ^ 2 := (div_le_one (by positivity)).mp h1
+        have hnn : 0 ≤ z.im ^ 2 / b ^ 2 := div_nonneg (sq_nonneg _) (sq_nonneg _)
+        calc (z.re - 1 / 2) ^ 2 / a ^ 2
+            ≤ (z.re - 1 / 2) ^ 2 / a ^ 2 + z.im ^ 2 / b ^ 2 := le_add_of_nonneg_right hnn
+          _ = zhukovskyEllipseForm n z := rfl
+          _ = 1 := hz_form
+      have h2 : (z.re - 1 / 2) ^ 2 ≤ a ^ 2 := (div_le_one (sq_pos_of_pos ha_pos)).mp h1
       have h3 : |z.re - 1 / 2| ≤ |a| := sq_le_sq.mp h2
-      rwa [abs_of_pos (zhukovskyMajorAxis_pos n)] at h3
+      rwa [abs_of_pos ha_pos] at h3
     have hz_im_le : |z.im| ≤ b := by
       have h1 : z.im ^ 2 / b ^ 2 ≤ 1 := by
-        rw [← hz_form]; unfold zhukovskyEllipseForm
-        have hnn : 0 ≤ (z.re - 1 / 2) ^ 2 / a ^ 2 := by positivity
-        dsimp only [a, b]; linarith
-      have h2 : z.im ^ 2 ≤ b ^ 2 := (div_le_one (by positivity)).mp h1
+        have hnn : 0 ≤ (z.re - 1 / 2) ^ 2 / a ^ 2 := div_nonneg (sq_nonneg _) (sq_nonneg _)
+        calc z.im ^ 2 / b ^ 2
+            ≤ (z.re - 1 / 2) ^ 2 / a ^ 2 + z.im ^ 2 / b ^ 2 := le_add_of_nonneg_left hnn
+          _ = zhukovskyEllipseForm n z := rfl
+          _ = 1 := hz_form
+      have h2 : z.im ^ 2 ≤ b ^ 2 := (div_le_one (sq_pos_of_pos hb_pos)).mp h1
       have h3 : |z.im| ≤ |b| := sq_le_sq.mp h2
-      rwa [abs_of_pos (zhukovskyMinorAxis_pos n)] at h3
+      rwa [abs_of_pos hb_pos] at h3
     have hδ_sixth : δ ≤ 1 / 6 := hsmall.le.trans (one_div_le_one_div_of_le (by norm_num) hs6)
     have hre_sum : |(z.re - 1 / 2) + (d.re - 1 / 2)| ≤ 7 / 6 := by
       have h1 : |d.re - 1 / 2| ≤ |z.re - 1 / 2| + |(z.re - 1 / 2) - (d.re - 1 / 2)| := by
-        have ht := abs_sub_le (d.re - 1 / 2) (z.re - 1 / 2) 0
-        rw [sub_zero, sub_zero, abs_sub_comm] at ht
-        exact ht
+        calc |d.re - 1 / 2|
+            = |(z.re - 1 / 2) - ((z.re - 1 / 2) - (d.re - 1 / 2))| := by ring_nf
+          _ ≤ |z.re - 1 / 2| + |(z.re - 1 / 2) - (d.re - 1 / 2)| := abs_sub _ _
       have h2 := abs_add_le (z.re - 1 / 2) (d.re - 1 / 2)
       linarith
     have him_sum : |z.im + d.im| ≤ 3 / s := by
       have h1 : |d.im| ≤ |z.im| + |z.im - d.im| := by
-        have ht := abs_sub_le d.im z.im 0
-        rw [sub_zero, sub_zero, abs_sub_comm] at ht
-        exact ht
+        calc |d.im| = |z.im - (z.im - d.im)| := by ring_nf
+          _ ≤ |z.im| + |z.im - d.im| := abs_sub _ _
       have h2 := abs_add_le z.im d.im
       rw [hb_eq] at hz_im_le
       have h3 : 1 / s + 1 / s + 1 / s = 3 / s := by ring
@@ -445,7 +454,7 @@ theorem norm_zhukovskyLoop_sub_ge_of_ellipse_gap {n : ℕ} {d : ℂ} {η : ℝ}
       have hf : (z.re - 1 / 2) ^ 2 - (d.re - 1 / 2) ^ 2 =
           ((z.re - 1 / 2) - (d.re - 1 / 2)) * ((z.re - 1 / 2) + (d.re - 1 / 2)) := by ring
       have ha_sq : (25 / 144 : ℝ) ≤ a ^ 2 := by nlinarith
-      rw [hf, abs_mul, div_le_iff₀ (by positivity : 0 < a ^ 2)]
+      rw [hf, abs_mul, div_le_iff₀ (sq_pos_of_pos ha_pos)]
       have hm : |(z.re - 1 / 2) - (d.re - 1 / 2)| * |(z.re - 1 / 2) + (d.re - 1 / 2)| ≤
           δ * (7 / 6) :=
         mul_le_mul hre_diff hre_sum (abs_nonneg _) (norm_nonneg _)
@@ -461,7 +470,7 @@ theorem norm_zhukovskyLoop_sub_ge_of_ellipse_gap {n : ℕ} {d : ℂ} {η : ℝ}
           ≤ (δ * (3 / s)) * s ^ 2 :=
             mul_le_mul_of_nonneg_right
               (mul_le_mul him_diff him_sum (abs_nonneg _) (norm_nonneg _)) (sq_nonneg s)
-        _ = δ * (3 * s) := by field_simp [hs_pos.ne']; ring
+        _ = δ * (3 * s) := by field_simp [hs_pos.ne']
     have hform_diff : |zhukovskyEllipseForm n d - 1| ≤ δ * (7 * s) := by
       rw [← hz_form, abs_sub_comm]
       unfold zhukovskyEllipseForm
@@ -473,8 +482,8 @@ theorem norm_zhukovskyLoop_sub_ge_of_ellipse_gap {n : ℕ} {d : ℂ} {η : ℝ}
       rw [hsplit]
       have htri := abs_add_le (((z.re - 1 / 2) ^ 2 - (d.re - 1 / 2) ^ 2) / zhukovskyMajorAxis n ^ 2)
         ((z.im ^ 2 - d.im ^ 2) / zhukovskyMinorAxis n ^ 2)
-      rw [abs_div, abs_div, abs_of_pos (by positivity : 0 < zhukovskyMajorAxis n ^ 2),
-        abs_of_pos (by positivity : 0 < zhukovskyMinorAxis n ^ 2)] at htri
+      rw [abs_div, abs_div, abs_of_pos (sq_pos_of_pos (zhukovskyMajorAxis_pos n)),
+        abs_of_pos (sq_pos_of_pos (zhukovskyMinorAxis_pos n))] at htri
       have h7s : 168 / 25 + 3 * s ≤ 7 * s := by linarith
       have hδ_nn : 0 ≤ δ := norm_nonneg _
       nlinarith
@@ -534,11 +543,11 @@ private lemma choose_le_two_pow (n k : ℕ) : Nat.choose n k ≤ 2 ^ n := by
       rcases k with _ | k <;> simp
   | succ n ih =>
       rcases k with _ | k
-      · simp
+      · simp only [Nat.choose_zero_right]
+        exact Nat.one_le_two_pow
       · rw [Nat.choose_succ_succ, pow_succ]
-        have h1 := ih k
-        have h2 := ih (k + 1)
-        omega
+        change n.choose k + n.choose (k + 1) ≤ 2 ^ n * 2
+        linarith [ih k, ih (k + 1)]
 
 private lemma sum_range_choose_real (n : ℕ) :
     ∑ r ∈ Finset.range (n + 1), (Nat.choose n r : ℝ) = 2 ^ n := by
@@ -961,6 +970,69 @@ theorem polyZhukovskyLaurentLoop_apply (n : ℕ) (P : Polynomial ℂ) (u : HTGeo
     polyZhukovskyLaurentLoop n P u = (P.eval (zhukovskyLoop n u)) ^ 2 := by
   rw [polyZhukovskyLaurentLoop, ContinuousMap.coe_pow, Pi.pow_apply, polyZhukovskyBaseLoop_apply]
 
+private lemma exists_unitCircle_zhukovskyLoop_eq {n : ℕ} {d : ℂ}
+    (hform : zhukovskyEllipseForm n d = 1) :
+    ∃ u : HTGeometry.UnitCircle, zhukovskyLoop n u = d := by
+  set a := zhukovskyMajorAxis n
+  set b := zhukovskyMinorAxis n
+  have ha_ne : a ≠ 0 := (zhukovskyMajorAxis_pos n).ne'
+  have hb_ne : b ≠ 0 := (zhukovskyMinorAxis_pos n).ne'
+  let ζ : ℂ := (((d.re - 1 / 2) / a : ℝ) : ℂ) + (((d.im / b : ℝ) : ℂ) * I)
+  have hζ_norm : ‖ζ‖ = 1 := by
+    have hsq : ‖ζ‖ ^ 2 = 1 := by
+      rw [← Complex.normSq_eq_norm_sq]
+      dsimp only [ζ]
+      simp only [Complex.normSq_apply, Complex.add_re, Complex.ofReal_re, Complex.mul_re,
+        Complex.I_re, Complex.ofReal_im, Complex.I_im, Complex.add_im, Complex.mul_im]
+      unfold zhukovskyEllipseForm at hform
+      dsimp only [a, b]
+      linarith [div_pow (d.re - 1 / 2) a 2, div_pow d.im b 2]
+    exact (pow_eq_one_iff_of_nonneg (norm_nonneg ζ) two_ne_zero).mp hsq
+  let u : HTGeometry.UnitCircle := ⟨ζ, mem_sphere_zero_iff_norm.mpr hζ_norm⟩
+  refine ⟨u, ?_⟩
+  have hu_inv : ζ⁻¹ = star ζ := unitCircle_inv_eq_star u
+  have hmaj := zhukovskyAxis_major_identity n
+  have hmin := zhukovskyAxis_minor_identity n
+  have hζ_star : star ζ = (((d.re - 1 / 2) / a : ℝ) : ℂ) - (((d.im / b : ℝ) : ℂ) * I) := by
+    dsimp only [ζ]
+    simp [sub_eq_add_neg]
+  change (1 / 2 : ℂ) + ((zhukovskyFocal n : ℂ) / 2) *
+    ((zhukovskyRadius n : ℂ) * ζ + ((zhukovskyRadius n : ℂ) * ζ)⁻¹) = d
+  rw [mul_inv, hu_inv, hζ_star, ← Complex.ofReal_inv]
+  dsimp only [ζ]
+  have hmaj_re : (zhukovskyFocal n / 2) * (zhukovskyRadius n + (zhukovskyRadius n)⁻¹) *
+      ((d.re - 1 / 2) / a) = d.re - 1 / 2 := by
+    rw [hmaj]; exact mul_div_cancel₀ _ ha_ne
+  have hmin_im : (zhukovskyFocal n / 2) * (zhukovskyRadius n - (zhukovskyRadius n)⁻¹) *
+      (d.im / b) = d.im := by
+    rw [hmin]; exact mul_div_cancel₀ _ hb_ne
+  calc (1 / 2 : ℂ) + ((zhukovskyFocal n : ℂ) / 2) *
+        ((zhukovskyRadius n : ℂ) *
+            ((((d.re - 1 / 2) / a : ℝ) : ℂ) + ((d.im / b : ℝ) : ℂ) * I) +
+          (((zhukovskyRadius n)⁻¹ : ℝ) : ℂ) *
+            ((((d.re - 1 / 2) / a : ℝ) : ℂ) - ((d.im / b : ℝ) : ℂ) * I))
+      = (((1 / 2 + (zhukovskyFocal n / 2) * (zhukovskyRadius n + (zhukovskyRadius n)⁻¹) *
+          ((d.re - 1 / 2) / a) : ℝ) : ℂ)) +
+        ((((zhukovskyFocal n / 2) * (zhukovskyRadius n - (zhukovskyRadius n)⁻¹) *
+          (d.im / b) : ℝ) : ℂ)) * I := by
+          push_cast; ring
+    _ = ((d.re : ℝ) : ℂ) + ((d.im : ℝ) : ℂ) * I := by
+          rw [hmaj_re, hmin_im]
+          congr 1; push_cast; ring
+    _ = d := Complex.re_add_im d
+
+private lemma wienerHopfLift_hardyPlus_mul' {U : C(HTGeometry.UnitCircle, ℂ)}
+    (hU : HTGeometry.hankelPlus U = 0) (V : C(HTGeometry.UnitCircle, ℂ)) :
+    HTGeometry.wienerHopfLift (U * V) =
+      HTGeometry.wienerHopfLift U * HTGeometry.wienerHopfLift V := by
+  rw [HTGeometry.wienerHopfLift_mul, hU, zero_mul, sub_zero]
+
+private lemma wienerHopfLift_mul_star_hardyPlus' (U : C(HTGeometry.UnitCircle, ℂ))
+    {V : C(HTGeometry.UnitCircle, ℂ)} (hV : HTGeometry.hankelPlus V = 0) :
+    HTGeometry.wienerHopfLift (U * star V) =
+      HTGeometry.wienerHopfLift U * HTGeometry.wienerHopfLift (star V) := by
+  rw [HTGeometry.wienerHopfLift_mul, HTGeometry.hankelMinus_star, hV, star_zero, mul_zero, sub_zero]
+
 /-- Nonvanishing of `(P ∘ J_n)²` on `UnitCircle` forces ellipse nondegeneracy of every positive-order
 root difference `z - w` (`z, w ∈ Z`). -/
 theorem ellipse_nondegenerate_of_prod_eval_ne_zero {P : Polynomial ℂ} {Z : Finset ℂ}
@@ -1123,25 +1195,25 @@ theorem exists_birkhoffSzego_of_prod_eval {P : Polynomial ℂ} {Z : Finset ℂ}
   let B_un_inv := HTGeometry.wienerHopfLift (star (circlePolyInv H2 hH2_out))
   have hA_un_R : A_un * A_un_inv = 1 := by
     dsimp only [A_un, A_un_inv]
-    rw [← wienerHopfLift_hardyPlus_mul (hankelPlus_circlePoly_eq_zero G2),
+    rw [← wienerHopfLift_hardyPlus_mul' (hankelPlus_circlePoly_eq_zero G2),
       circlePoly_mul_inv, HTGeometry.wienerHopfLift_one]
   have hA_un_L : A_un_inv * A_un = 1 := by
     dsimp only [A_un, A_un_inv]
-    rw [← wienerHopfLift_hardyPlus_mul (hankelPlus_circlePolyInv_eq_zero G2 hG2_out),
+    rw [← wienerHopfLift_hardyPlus_mul' (hankelPlus_circlePolyInv_eq_zero G2 hG2_out),
       circlePolyInv_mul, HTGeometry.wienerHopfLift_one]
   have hB_un_R : B_un * B_un_inv = 1 := by
     dsimp only [B_un, B_un_inv]
-    rw [← wienerHopfLift_mul_star_hardyPlus _ (hankelPlus_circlePolyInv_eq_zero H2 hH2_out),
+    rw [← wienerHopfLift_mul_star_hardyPlus' _ (hankelPlus_circlePolyInv_eq_zero H2 hH2_out),
       ← star_mul, circlePolyInv_mul, star_one, HTGeometry.wienerHopfLift_one]
   have hB_un_L : B_un_inv * B_un = 1 := by
     dsimp only [B_un, B_un_inv]
-    rw [← wienerHopfLift_mul_star_hardyPlus _ (hankelPlus_circlePoly_eq_zero H2),
+    rw [← wienerHopfLift_mul_star_hardyPlus' _ (hankelPlus_circlePoly_eq_zero H2),
       ← star_mul, circlePoly_mul_inv, star_one, HTGeometry.wienerHopfLift_one]
   have hWH_un_eq : HTGeometry.wienerHopfLift Λ =
       A_un * HTGeometry.cayleyWienerHopf ^ (2 * k) * B_un := by
     rw [hlaurent_eq, mul_assoc (circlePoly G2),
-      wienerHopfLift_hardyPlus_mul (hankelPlus_circlePoly_eq_zero G2),
-      wienerHopfLift_mul_star_hardyPlus _ (hankelPlus_circlePoly_eq_zero H2),
+      wienerHopfLift_hardyPlus_mul' (hankelPlus_circlePoly_eq_zero G2),
+      wienerHopfLift_mul_star_hardyPlus' _ (hankelPlus_circlePoly_eq_zero H2),
       HTGeometry.wienerHopfLift_circleCoord_pow, ← mul_assoc]
   obtain ⟨_, _, _, _, hunit_un⟩ :=
     fredholm_and_kernel_of_sandwiched_cayleyPow hA_un_R hA_un_L hB_un_R hB_un_L (2 * k)
@@ -1156,35 +1228,35 @@ theorem exists_birkhoffSzego_of_prod_eval {P : Polynomial ℂ} {Z : Finset ℂ}
     HTGeometry.wienerHopfLift (star (circlePoly g₀))
   have hg_R : HTGeometry.wienerHopfLift (circlePoly g₀) *
       HTGeometry.wienerHopfLift (circlePolyInv g₀ hg₀_out) = 1 := by
-    rw [← wienerHopfLift_hardyPlus_mul (hankelPlus_circlePoly_eq_zero g₀),
+    rw [← wienerHopfLift_hardyPlus_mul' (hankelPlus_circlePoly_eq_zero g₀),
       circlePoly_mul_inv, HTGeometry.wienerHopfLift_one]
   have hg_L : HTGeometry.wienerHopfLift (circlePolyInv g₀ hg₀_out) *
       HTGeometry.wienerHopfLift (circlePoly g₀) = 1 := by
-    rw [← wienerHopfLift_hardyPlus_mul (hankelPlus_circlePolyInv_eq_zero g₀ hg₀_out),
+    rw [← wienerHopfLift_hardyPlus_mul' (hankelPlus_circlePolyInv_eq_zero g₀ hg₀_out),
       circlePolyInv_mul, HTGeometry.wienerHopfLift_one]
   have hh_R : HTGeometry.wienerHopfLift (circlePoly h₀) *
       HTGeometry.wienerHopfLift (circlePolyInv h₀ hh₀_out) = 1 := by
-    rw [← wienerHopfLift_hardyPlus_mul (hankelPlus_circlePoly_eq_zero h₀),
+    rw [← wienerHopfLift_hardyPlus_mul' (hankelPlus_circlePoly_eq_zero h₀),
       circlePoly_mul_inv, HTGeometry.wienerHopfLift_one]
   have hh_L : HTGeometry.wienerHopfLift (circlePolyInv h₀ hh₀_out) *
       HTGeometry.wienerHopfLift (circlePoly h₀) = 1 := by
-    rw [← wienerHopfLift_hardyPlus_mul (hankelPlus_circlePolyInv_eq_zero h₀ hh₀_out),
+    rw [← wienerHopfLift_hardyPlus_mul' (hankelPlus_circlePolyInv_eq_zero h₀ hh₀_out),
       circlePolyInv_mul, HTGeometry.wienerHopfLift_one]
   have hsg_R : HTGeometry.wienerHopfLift (star (circlePoly g₀)) *
       HTGeometry.wienerHopfLift (star (circlePolyInv g₀ hg₀_out)) = 1 := by
-    rw [← wienerHopfLift_mul_star_hardyPlus _ (hankelPlus_circlePolyInv_eq_zero g₀ hg₀_out),
+    rw [← wienerHopfLift_mul_star_hardyPlus' _ (hankelPlus_circlePolyInv_eq_zero g₀ hg₀_out),
       ← star_mul, circlePolyInv_mul, star_one, HTGeometry.wienerHopfLift_one]
   have hsg_L : HTGeometry.wienerHopfLift (star (circlePolyInv g₀ hg₀_out)) *
       HTGeometry.wienerHopfLift (star (circlePoly g₀)) = 1 := by
-    rw [← wienerHopfLift_mul_star_hardyPlus _ (hankelPlus_circlePoly_eq_zero g₀),
+    rw [← wienerHopfLift_mul_star_hardyPlus' _ (hankelPlus_circlePoly_eq_zero g₀),
       ← star_mul, circlePoly_mul_inv, star_one, HTGeometry.wienerHopfLift_one]
   have hsh_R : HTGeometry.wienerHopfLift (star (circlePoly h₀)) *
       HTGeometry.wienerHopfLift (star (circlePolyInv h₀ hh₀_out)) = 1 := by
-    rw [← wienerHopfLift_mul_star_hardyPlus _ (hankelPlus_circlePolyInv_eq_zero h₀ hh₀_out),
+    rw [← wienerHopfLift_mul_star_hardyPlus' _ (hankelPlus_circlePolyInv_eq_zero h₀ hh₀_out),
       ← star_mul, circlePolyInv_mul, star_one, HTGeometry.wienerHopfLift_one]
   have hsh_L : HTGeometry.wienerHopfLift (star (circlePolyInv h₀ hh₀_out)) *
       HTGeometry.wienerHopfLift (star (circlePoly h₀)) = 1 := by
-    rw [← wienerHopfLift_mul_star_hardyPlus _ (hankelPlus_circlePoly_eq_zero h₀),
+    rw [← wienerHopfLift_mul_star_hardyPlus' _ (hankelPlus_circlePoly_eq_zero h₀),
       ← star_mul, circlePoly_mul_inv, star_one, HTGeometry.wienerHopfLift_one]
   have hA_nm_R : A_nm * A_nm_inv = 1 := by
     dsimp only [A_nm, A_nm_inv]
@@ -1256,10 +1328,10 @@ theorem exists_birkhoffSzego_of_prod_eval {P : Polynomial ℂ} {Z : Finset ℂ}
   have hWH_nm_eq : T_op = A_nm * HTGeometry.cayleyWienerHopf ^ (2 * k) * B_nm := by
     dsimp only [T_op, A_nm, B_nm]
     rw [hsym_eq,
-      wienerHopfLift_hardyPlus_mul (hankelPlus_circlePoly_eq_zero g₀),
-      wienerHopfLift_hardyPlus_mul (hankelPlus_circlePolyInv_eq_zero h₀ hh₀_out),
-      wienerHopfLift_mul_star_hardyPlus _ (hankelPlus_circlePoly_eq_zero h₀),
-      wienerHopfLift_mul_star_hardyPlus _ (hankelPlus_circlePolyInv_eq_zero g₀ hg₀_out),
+      wienerHopfLift_hardyPlus_mul' (hankelPlus_circlePoly_eq_zero g₀),
+      wienerHopfLift_hardyPlus_mul' (hankelPlus_circlePolyInv_eq_zero h₀ hh₀_out),
+      wienerHopfLift_mul_star_hardyPlus' _ (hankelPlus_circlePoly_eq_zero h₀),
+      wienerHopfLift_mul_star_hardyPlus' _ (hankelPlus_circlePolyInv_eq_zero g₀ hg₀_out),
       HTGeometry.wienerHopfLift_circleCoord_pow]
     noncomm_ring
   obtain ⟨_, _, _, hind_nm, hunit_nm⟩ :=
@@ -1352,7 +1424,9 @@ theorem exists_strip_xi_and_deriv_bound :
     unfold RiemannGaussian.xiLogLinearScale
     have h1 : ‖(z.re : ℂ)‖ + 1 ≤ 3 := by
       rw [Complex.norm_real, Real.norm_eq_abs]; linarith
-    refine mul_le_mul h1 ?_ (by positivity) (by norm_num)
+    have hlog_nn : 0 ≤ 1 + Real.log (‖(z.re : ℂ)‖ + 1) :=
+      add_nonneg zero_le_one (Real.log_nonneg (by linarith [norm_nonneg (z.re : ℂ)]))
+    refine mul_le_mul h1 ?_ hlog_nn (by norm_num)
     exact add_le_add le_rfl (Real.log_le_log (by positivity) (by linarith))
   have hamp : ‖_root_.RHTower.xi z‖ ≤ B_amp := by
     have h0 : ‖_root_.RHTower.finiteThetaAmplitude 0 z‖ ≤
@@ -1563,8 +1637,10 @@ theorem rectIntegral_shifted_powerSum_perturbation {z₁ z₂ c : ℂ} {μ R H_s
   have hint_le := intervalIntegral.norm_integral_le_of_norm_le_const hpt
   rw [show |(1 : ℝ) - 0| = 1 by norm_num, mul_one] at hint_le
   have h2pi_inv : ‖(2 * Real.pi * I : ℂ)⁻¹‖ ≤ 1 / 6 := by
-    rw [norm_inv, norm_mul, norm_mul, Complex.norm_ofNat, Complex.norm_real,
-      Real.norm_eq_abs, abs_of_pos Real.pi_pos, Complex.norm_I, mul_one]
+    have hnorm : ‖(2 * Real.pi * I : ℂ)‖ = 2 * Real.pi := by
+      rw [norm_mul, norm_mul, Complex.norm_ofNat, Complex.norm_real,
+        Real.norm_eq_abs, abs_of_pos Real.pi_pos, Complex.norm_I, mul_one]
+    rw [norm_inv, hnorm, ← one_div]
     exact one_div_le_one_div_of_le (by norm_num) (by linarith [Real.pi_gt_three])
   calc ‖(2 * Real.pi * I : ℂ)⁻¹‖ * ‖∫ t in (0 : ℝ)..1, (gN (γ t) * vel t - gXi (γ t) * vel t)‖
       ≤ (1 / 6) *
@@ -1679,7 +1755,6 @@ theorem exists_all_nat_burnol_good_height :
               ‖_root_.RHTower.xi ((-1 / 2 : ℂ) + (y : ℂ) * I)‖) := by
   obtain ⟨H₀, c_bdry, K_bdry, hH₀9, hc_bdry, hc_bdry_le, hburnol⟩ :=
     exists_burnol_horizontal_and_vertical_xi_lower
-  obtain ⟨c_vert, N_vert, hc_vert, hvert⟩ := exists_xi_vertical_lower_bound
   let c_low : ℝ := (5026 / 16875) * Real.exp (-Real.pi)
   have hc_low_pos : 0 < c_low := by dsimp only [c_low]; positivity
   -- High regime `m ≥ Nat.ceil H₀`: absorb `T_star ^ K_bdry` into `exp((1 / 10) * T_star)`.
@@ -1703,123 +1778,98 @@ theorem exists_all_nat_burnol_good_height :
           c_m * Real.exp (-((m + 1 : ℕ) : ℝ)) ≤
             ‖_root_.RHTower.xi ((-1 / 2 : ℂ) + (y : ℂ) * I)‖) := by
     intro m
-    by_cases hm_low : m ≤ 2
-    · -- On `m ∈ {0, 1, 2}`, `T_m := m + 1 / 2 ≤ 5 / 2 ≤ 61 / 20`, so `xi_re_ge_lowWindow` applies!
-      let T_m : ℝ := (m : ℝ) + 1 / 2
-      have hTm_le : T_m ≤ 5 / 2 := by
-        dsimp only [T_m]
-        have : (m : ℝ) ≤ 2 := by exact_mod_cast hm_low
-        linarith
-      have hTm_ge : 1 / 2 ≤ T_m := by dsimp only [T_m]; positivity
-      have hexp_le1 : Real.exp (-((m + 1 : ℕ) : ℝ)) ≤ 1 :=
-        Real.exp_le_one_iff.mpr (by positivity)
-      refine ⟨T_m, c_low, hc_low_pos, by dsimp [T_m]; linarith, by dsimp [T_m]; linarith, hTm_ge,
-        fun x hx1 hx2 => ?_, fun y hy => ?_⟩
-      · calc c_low * Real.exp (-((m + 1 : ℕ) : ℝ))
-            ≤ c_low * 1 := mul_le_mul_of_nonneg_left hexp_le1 hc_low_pos.le
-          _ = c_low := mul_one _
-          _ ≤ ‖_root_.RHTower.xi ((x : ℂ) + (T_m : ℂ) * I)‖ :=
-              (xi_re_ge_lowWindow
-                (by simp; exact abs_le.mpr ⟨by linarith, by linarith⟩)
-                (by simp; rw [abs_of_pos (by linarith)]; linarith)).trans (Complex.re_le_norm _)
-      · have hy61 : |y| ≤ 61 / 20 := by linarith
-        have h1 : c_low * Real.exp (-((m + 1 : ℕ) : ℝ)) ≤ c_low := by
-          nlinarith [hc_low_pos, hexp_le1]
-        exact ⟨h1.trans ((xi_re_ge_lowWindow (by simp; norm_num) (by simp; exact hy61)).trans
-          (Complex.re_le_norm _)),
-          h1.trans ((xi_re_ge_lowWindow (by simp; norm_num) (by simp; exact hy61)).trans
-          (Complex.re_le_norm _))⟩
-    · -- `3 ≤ m`: pick a zero-free ordinate `T_m ∈ (m, m + 1)` by finite pigeonhole, then take
-      -- compact minimums along `[-1, 2] + i * T_m` and `{-1/2, 3/2} + i * [-T_m, T_m]`.
-      have hm3 : 3 ≤ m := by omega
-      let Y : Finset ℝ :=
-        ((_root_.RHTower.stripZeros_finite ((m + 2 : ℕ) : ℝ)).toFinset).image Complex.im
-      let cand : ℕ → ℝ := fun j =>
-        (m : ℝ) + ((j + 1 : ℕ) : ℝ) / ((Y.card + 2 : ℕ) : ℝ)
-      have hcand_inj : Function.Injective cand := by
-        intro j₁ j₂ heq
-        dsimp only [cand] at heq
-        have hden : (0 : ℝ) < ((Y.card + 2 : ℕ) : ℝ) := by positivity
-        have h1 : ((j₁ + 1 : ℕ) : ℝ) / ((Y.card + 2 : ℕ) : ℝ) =
-            ((j₂ + 1 : ℕ) : ℝ) / ((Y.card + 2 : ℕ) : ℝ) := by linarith
-        have h2 : ((j₁ + 1 : ℕ) : ℝ) = ((j₂ + 1 : ℕ) : ℝ) :=
-          (div_left_inj' hden.ne').mp h1
-        have h3 : j₁ + 1 = j₂ + 1 := Nat.cast_injective h2
-        omega
-      let C_set : Finset ℝ := (Finset.range (Y.card + 1)).image cand
-      have hC_card : C_set.card = Y.card + 1 := by
-        rw [Finset.card_image_of_injective _ hcand_inj, Finset.card_range]
-      have hsdiff : 0 < (C_set \ Y).card := by
-        have hle := Finset.card_sdiff_add_card C_set Y
-        omega
-      obtain ⟨T_m, hTm_sdiff⟩ := Finset.card_pos.mp hsdiff
-      obtain ⟨hTm_C, hTm_notY⟩ := Finset.mem_sdiff.mp hTm_sdiff
-      obtain ⟨j₀, hj₀, rfl⟩ := Finset.mem_image.mp hTm_C
-      have hj₀_lt : j₀ < Y.card + 1 := Finset.mem_range.mp hj₀
-      have hden_pos : (0 : ℝ) < ((Y.card + 2 : ℕ) : ℝ) := by positivity
-      have hfrac_pos : 0 < ((j₀ + 1 : ℕ) : ℝ) / ((Y.card + 2 : ℕ) : ℝ) := by positivity
-      have hfrac_lt1 : ((j₀ + 1 : ℕ) : ℝ) / ((Y.card + 2 : ℕ) : ℝ) < 1 := by
-        rw [div_lt_one hden_pos]
+    -- Pick a zero-free ordinate `T_m ∈ (m + 1 / 2, m + 1)` by finite pigeonhole, then take
+    -- compact minimums along `[-1, 2] + i * T_m` and `{-1/2, 3/2} + i * [-T_m, T_m]`.
+    let Y : Finset ℝ :=
+      ((_root_.RHTower.stripZeros_finite ((m + 2 : ℕ) : ℝ)).toFinset).image Complex.im
+    let cand : ℕ → ℝ := fun j =>
+      (m : ℝ) + 1 / 2 + ((j + 1 : ℕ) : ℝ) / (2 * ((Y.card + 2 : ℕ) : ℝ))
+    have hcand_inj : Function.Injective cand := by
+      intro j₁ j₂ heq
+      dsimp only [cand] at heq
+      have hden : (0 : ℝ) < 2 * ((Y.card + 2 : ℕ) : ℝ) := by positivity
+      have h1 : ((j₁ + 1 : ℕ) : ℝ) / (2 * ((Y.card + 2 : ℕ) : ℝ)) =
+          ((j₂ + 1 : ℕ) : ℝ) / (2 * ((Y.card + 2 : ℕ) : ℝ)) := by linarith
+      have h2 : ((j₁ + 1 : ℕ) : ℝ) = ((j₂ + 1 : ℕ) : ℝ) :=
+        (div_left_inj' hden.ne').mp h1
+      have h3 : j₁ + 1 = j₂ + 1 := Nat.cast_injective h2
+      omega
+    let C_set : Finset ℝ := (Finset.range (Y.card + 1)).image cand
+    have hC_card : C_set.card = Y.card + 1 := by
+      rw [Finset.card_image_of_injective _ hcand_inj, Finset.card_range]
+    have hex_T : ∃ T_m ∈ C_set, T_m ∉ Y := by
+      by_contra hall
+      simp only [not_exists, not_and, Classical.not_not] at hall
+      have hle := Finset.card_le_card hall
+      omega
+    obtain ⟨T_m, hTm_C, hTm_notY⟩ := hex_T
+    obtain ⟨j₀, hj₀, rfl⟩ := Finset.mem_image.mp hTm_C
+    have hj₀_lt : j₀ < Y.card + 1 := Finset.mem_range.mp hj₀
+    have hden_pos : (0 : ℝ) < 2 * ((Y.card + 2 : ℕ) : ℝ) := by positivity
+    have hfrac_pos : 0 < ((j₀ + 1 : ℕ) : ℝ) / (2 * ((Y.card + 2 : ℕ) : ℝ)) := by positivity
+    have hfrac_lt_half : ((j₀ + 1 : ℕ) : ℝ) / (2 * ((Y.card + 2 : ℕ) : ℝ)) < 1 / 2 := by
+      rw [div_lt_div_iff₀ hden_pos (by norm_num)]
+      have hlt_nat : ((j₀ + 1 : ℕ) : ℝ) < ((Y.card + 2 : ℕ) : ℝ) := by
         exact_mod_cast (show j₀ + 1 < Y.card + 2 by omega)
-      have hTm_gt : (m : ℝ) < cand j₀ := by dsimp only [cand]; linarith
-      have hTm_lt : cand j₀ < (m : ℝ) + 1 := by dsimp only [cand]; linarith
-      have hTm_ge3 : (3 : ℝ) ≤ cand j₀ := by
-        have : (3 : ℝ) ≤ (m : ℝ) := by exact_mod_cast hm3
-        linarith
-      -- `xi` never vanishes on `[-1, 2] + i * cand j₀`.
-      have hhor_nz : ∀ x ∈ Icc (-1 : ℝ) 2,
-          _root_.RHTower.xi ((x : ℂ) + (cand j₀ : ℂ) * I) ≠ 0 := by
-        intro x _ h0
-        set w : ℂ := (x : ℂ) + (cand j₀ : ℂ) * I
-        obtain ⟨hw0, hw1⟩ := _root_.RHTower.xi_zero_re_mem_open_unit h0
-        have hw_im : w.im = cand j₀ := by simp [w]
-        have hw_strip : w ∈ (_root_.RHTower.stripZeros_finite ((m + 2 : ℕ) : ℝ)).toFinset := by
-          apply (_root_.RHTower.stripZeros_finite ((m + 2 : ℕ) : ℝ)).mem_toFinset.mpr
-          refine ⟨⟨hw0, hw1, by rw [hw_im]; linarith, ?_⟩, h0⟩
-          rw [hw_im]; push_cast; linarith
-        exact hTm_notY (Finset.mem_image.mpr ⟨w, hw_strip, hw_im⟩)
-      have hhor_cont : ContinuousOn
-          (fun x : ℝ => ‖_root_.RHTower.xi ((x : ℂ) + (cand j₀ : ℂ) * I)‖) (Icc (-1 : ℝ) 2) :=
-        (_root_.RHTower.xi_differentiable.continuous.comp
-          (Complex.continuous_ofReal.add continuous_const)).norm.continuousOn
-      obtain ⟨x₀, hx₀, hx₀_min⟩ :=
-        isCompact_Icc.exists_isMinOn (nonempty_Icc.mpr (by norm_num)) hhor_cont
-      have hμ_hor_pos : 0 < ‖_root_.RHTower.xi ((x₀ : ℂ) + (cand j₀ : ℂ) * I)‖ :=
-        norm_pos_iff.mpr (hhor_nz x₀ hx₀)
-      -- Vertical lines `Re z = 3 / 2` and `Re z = -1 / 2` never vanish anywhere!
-      have hvert_r_nz : ∀ y : ℝ, _root_.RHTower.xi ((3 / 2 : ℂ) + (y : ℂ) * I) ≠ 0 := by
-        intro y h0
-        have h1 := (_root_.RHTower.xi_zero_re_mem_open_unit h0).2
-        simp at h1; linarith
-      have hvert_l_nz : ∀ y : ℝ, _root_.RHTower.xi ((-1 / 2 : ℂ) + (y : ℂ) * I) ≠ 0 := by
-        intro y h0
-        have h1 := (_root_.RHTower.xi_zero_re_mem_open_unit h0).1
-        simp at h1; linarith
-      have hne_y : (Icc (-cand j₀) (cand j₀)).Nonempty := nonempty_Icc.mpr (by linarith)
-      obtain ⟨y₁, _, hy₁_min⟩ := isCompact_Icc.exists_isMinOn hne_y
-        ((_root_.RHTower.xi_differentiable.continuous.comp
-          (continuous_const.add (Complex.continuous_ofReal.mul continuous_const))).norm.continuousOn)
-      obtain ⟨y₂, _, hy₂_min⟩ := isCompact_Icc.exists_isMinOn hne_y
-        ((_root_.RHTower.xi_differentiable.continuous.comp
-          (continuous_const.add (Complex.continuous_ofReal.mul continuous_const))).norm.continuousOn)
-      let μ_m : ℝ := min ‖_root_.RHTower.xi ((x₀ : ℂ) + (cand j₀ : ℂ) * I)‖
-        (min ‖_root_.RHTower.xi ((3 / 2 : ℂ) + (y₁ : ℂ) * I)‖
-             ‖_root_.RHTower.xi ((-1 / 2 : ℂ) + (y₂ : ℂ) * I)‖)
-      have hμ_m_pos : 0 < μ_m :=
-        lt_min hμ_hor_pos (lt_min (norm_pos_iff.mpr (hvert_r_nz y₁))
-          (norm_pos_iff.mpr (hvert_l_nz y₂)))
-      refine ⟨cand j₀, μ_m * Real.exp ((m + 1 : ℕ) : ℝ), by positivity,
-        hTm_gt.le, hTm_lt.le, by linarith, fun x hx1 hx2 => ?_, fun y hy => ?_⟩
-      · have hexp_cancel : μ_m * Real.exp ((m + 1 : ℕ) : ℝ) * Real.exp (-((m + 1 : ℕ) : ℝ)) = μ_m := by
-          rw [mul_assoc, ← Real.exp_add, add_neg_cancel, Real.exp_zero, mul_one]
-        rw [hexp_cancel]
-        exact (min_le_left _ _).trans (isMinOn_iff.mp hx₀_min x ⟨hx1, hx2⟩)
-      · have hexp_cancel : μ_m * Real.exp ((m + 1 : ℕ) : ℝ) * Real.exp (-((m + 1 : ℕ) : ℝ)) = μ_m := by
-          rw [mul_assoc, ← Real.exp_add, add_neg_cancel, Real.exp_zero, mul_one]
-        rw [hexp_cancel]
-        have hy_mem : y ∈ Icc (-cand j₀) (cand j₀) := abs_le.mp hy
-        exact ⟨((min_le_left _ _).trans (min_le_right _ _)).trans (isMinOn_iff.mp hy₁_min y hy_mem),
-          ((min_le_right _ _).trans (min_le_right _ _)).trans (isMinOn_iff.mp hy₂_min y hy_mem)⟩
+      linarith
+    have hm_nn : (0 : ℝ) ≤ (m : ℝ) := Nat.cast_nonneg m
+    have hTm_gt : (m : ℝ) + 1 / 2 < cand j₀ := by dsimp only [cand]; linarith
+    have hTm_lt : cand j₀ < (m : ℝ) + 1 := by dsimp only [cand]; linarith
+    have hTm_half : (1 / 2 : ℝ) ≤ cand j₀ := by linarith
+    -- `xi` never vanishes on `[-1, 2] + i * cand j₀`.
+    have hhor_nz : ∀ x ∈ Icc (-1 : ℝ) 2,
+        _root_.RHTower.xi ((x : ℂ) + (cand j₀ : ℂ) * I) ≠ 0 := by
+      intro x _ h0
+      set w : ℂ := (x : ℂ) + (cand j₀ : ℂ) * I
+      obtain ⟨hw0, hw1⟩ := _root_.RHTower.xi_zero_re_mem_open_unit h0
+      have hw_im : w.im = cand j₀ := by simp [w]
+      have hw_strip : w ∈ (_root_.RHTower.stripZeros_finite ((m + 2 : ℕ) : ℝ)).toFinset := by
+        apply (_root_.RHTower.stripZeros_finite ((m + 2 : ℕ) : ℝ)).mem_toFinset.mpr
+        refine ⟨⟨hw0, hw1, by rw [hw_im]; linarith, ?_⟩, h0⟩
+        rw [hw_im]; push_cast; linarith
+      exact hTm_notY (Finset.mem_image.mpr ⟨w, hw_strip, hw_im⟩)
+    let f_hor : ℝ → ℝ := fun x => ‖_root_.RHTower.xi ((x : ℂ) + (cand j₀ : ℂ) * I)‖
+    have hhor_cont : ContinuousOn f_hor (Icc (-1 : ℝ) 2) :=
+      (_root_.RHTower.xi_differentiable.continuous.comp
+        (Complex.continuous_ofReal.add continuous_const)).norm.continuousOn
+    obtain ⟨x₀, hx₀, hx₀_min⟩ :=
+      isCompact_Icc.exists_isMinOn (nonempty_Icc.mpr (by norm_num)) hhor_cont
+    have hμ_hor_pos : 0 < f_hor x₀ := norm_pos_iff.mpr (hhor_nz x₀ hx₀)
+    have hvert_r_nz : ∀ y : ℝ, _root_.RHTower.xi ((3 / 2 : ℂ) + (y : ℂ) * I) ≠ 0 := by
+      intro y h0
+      have h1 := (_root_.RHTower.xi_zero_re_mem_open_unit h0).2
+      simp at h1; linarith
+    have hvert_l_nz : ∀ y : ℝ, _root_.RHTower.xi ((-1 / 2 : ℂ) + (y : ℂ) * I) ≠ 0 := by
+      intro y h0
+      have h1 := (_root_.RHTower.xi_zero_re_mem_open_unit h0).1
+      simp at h1; linarith
+    have hne_y : (Icc (-cand j₀) (cand j₀)).Nonempty := nonempty_Icc.mpr (by linarith)
+    let f_r : ℝ → ℝ := fun y => ‖_root_.RHTower.xi ((3 / 2 : ℂ) + (y : ℂ) * I)‖
+    let f_l : ℝ → ℝ := fun y => ‖_root_.RHTower.xi ((-1 / 2 : ℂ) + (y : ℂ) * I)‖
+    have hfr_cont : ContinuousOn f_r (Icc (-cand j₀) (cand j₀)) :=
+      (_root_.RHTower.xi_differentiable.continuous.comp
+        (continuous_const.add (Complex.continuous_ofReal.mul continuous_const))).norm.continuousOn
+    have hfl_cont : ContinuousOn f_l (Icc (-cand j₀) (cand j₀)) :=
+      (_root_.RHTower.xi_differentiable.continuous.comp
+        (continuous_const.add (Complex.continuous_ofReal.mul continuous_const))).norm.continuousOn
+    obtain ⟨y₁, _, hy₁_min⟩ := isCompact_Icc.exists_isMinOn hne_y hfr_cont
+    obtain ⟨y₂, _, hy₂_min⟩ := isCompact_Icc.exists_isMinOn hne_y hfl_cont
+    let μ_m : ℝ := min (f_hor x₀) (min (f_r y₁) (f_l y₂))
+    have hμ_m_pos : 0 < μ_m :=
+      lt_min hμ_hor_pos (lt_min (norm_pos_iff.mpr (hvert_r_nz y₁))
+        (norm_pos_iff.mpr (hvert_l_nz y₂)))
+    refine ⟨cand j₀, μ_m * Real.exp ((m + 1 : ℕ) : ℝ), by positivity,
+      by linarith, hTm_lt.le, hTm_half, fun x hx1 hx2 => ?_, fun y hy => ?_⟩
+    · have hexp_cancel : μ_m * Real.exp ((m + 1 : ℕ) : ℝ) * Real.exp (-((m + 1 : ℕ) : ℝ)) = μ_m := by
+        rw [mul_assoc, ← Real.exp_add, add_neg_cancel, Real.exp_zero, mul_one]
+      rw [hexp_cancel]
+      exact (min_le_left _ _).trans (isMinOn_iff.mp hx₀_min x ⟨hx1, hx2⟩)
+    · have hexp_cancel : μ_m * Real.exp ((m + 1 : ℕ) : ℝ) * Real.exp (-((m + 1 : ℕ) : ℝ)) = μ_m := by
+        rw [mul_assoc, ← Real.exp_add, add_neg_cancel, Real.exp_zero, mul_one]
+      rw [hexp_cancel]
+      have hy_mem : y ∈ Icc (-cand j₀) (cand j₀) := abs_le.mp hy
+      exact ⟨((min_le_left _ _).trans (min_le_right _ _)).trans (isMinOn_iff.mp hy₁_min y hy_mem),
+        ((min_le_right _ _).trans (min_le_right _ _)).trans (isMinOn_iff.mp hy₂_min y hy_mem)⟩
   choose T_fin c_fin hc_fin_pos hT_fin_lo hT_fin_hi hT_fin_half hT_fin_hor hT_fin_vert using hsingle
   -- High regime `m ≥ M₀`: use `hburnol (m : ℝ)`.
   have hhigh : ∀ m : ℕ, M₀ ≤ m → ∃ T_star : ℝ,
@@ -2018,8 +2068,9 @@ theorem pairDiffPoly_rouche_stabilization_core
     rw [show (z - c) - (w - c) = z - w by ring]
   have hS_ge6 : (6 : ℝ) ≤ (S_max : ℝ) := by exact_mod_cast (hn6.trans hnS)
   have hη_pos : 0 < 1 / (8 * (S_max : ℝ) ^ 3) := by positivity
-  have hη_le1 : 1 / (8 * (S_max : ℝ) ^ 3) ≤ 1 :=
-    div_le_one_of_le₀ (by nlinarith [hS_ge6]) (by positivity)
+  have hη_le1 : 1 / (8 * (S_max : ℝ) ^ 3) ≤ 1 := by
+    have hS3_ge1 : (1 : ℝ) ≤ (S_max : ℝ) ^ 3 := one_le_pow₀ (by linarith)
+    exact div_le_one_of_le₀ (by linarith) (by positivity)
   have hell_ne1 : ∀ z ∈ Z_xi, ∀ w ∈ Z_xi, zhukovskyEllipseForm n_star (z - w) ≠ 1 := by
     intro z hz w hw h1
     have hg := havoid z hz w hw
@@ -2038,7 +2089,7 @@ theorem pairDiffPoly_rouche_stabilization_core
     have hstep : (56 * (S_max : ℝ) ^ 4)⁻¹ ≤
         (1 / (8 * (S_max : ℝ) ^ 3)) / (7 * (n_star : ℝ)) := by
       have hn_pos : (0 : ℝ) < (n_star : ℝ) := by exact_mod_cast (show 0 < n_star by omega)
-      rw [one_div_div, ← one_div, one_div_le_one_div (by positivity) (by positivity)]
+      rw [div_div, one_div, inv_le_inv₀ (by positivity) (by positivity)]
       calc 8 * (S_max : ℝ) ^ 3 * (7 * (n_star : ℝ))
           ≤ 8 * (S_max : ℝ) ^ 3 * (7 * (S_max : ℝ)) :=
             mul_le_mul_of_nonneg_left (by linarith) (by positivity)
@@ -2056,8 +2107,9 @@ theorem pairDiffPoly_rouche_stabilization_core
       rw [norm_prod]
       exact Finset.prod_congr rfl fun w _ => norm_pow _ _
     rw [hprod_norm]
+    have hS4_ge1 : (1 : ℝ) ≤ (S_max : ℝ) ^ 4 := one_le_pow₀ (by linarith)
     exact pow_sum_sq_le_prod_pow (by positivity)
-      (inv_le_one_of_one_le₀ (by nlinarith [hS_ge6])) (hpair_lo u)
+      (inv_le_one_of_one_le₀ (by linarith)) (hpair_lo u)
   -- Upper bound `‖P_N.eval (zhukovskyLoop n_star u) - Q_xi.eval (zhukovskyLoop n_star u)‖`.
   have happrox : ∀ u : HTGeometry.UnitCircle,
       ‖P_N.eval (zhukovskyLoop n_star u) - Q_xi.eval (zhukovskyLoop n_star u)‖ <
@@ -2070,7 +2122,9 @@ theorem pairDiffPoly_rouche_stabilization_core
           (pairDiffPoly 0 s_xi).eval (zhukovskyLoop n_star u) := by
         simp [pairDiffPoly, newtonPoly, newtonElem]
       rw [hPN0, hQX0, h1, sub_self, norm_zero]
-      exact norm_pos_iff.mpr (hQ_nz u)
+      have hQ_nz_u := hQ_nz u
+      rw [hQX0] at hQ_nz_u
+      exact norm_pos_iff.mpr hQ_nz_u
     · have hd1 : 1 ≤ d := Nat.pos_of_ne_zero hd_ne
       have hd1_real : (1 : ℝ) ≤ (d : ℝ) := by exact_mod_cast hd1
       set ε_lip : ℝ := (4 * (2 * M_strip + 1) * H_span / μ ^ 2) * thetaStripTailBound N
@@ -2147,16 +2201,17 @@ theorem pairDiffPoly_rouche_stabilization_core
       have hpos_pow : 0 < (56 * (S_max : ℝ) ^ 4) ^ (d ^ 2) := by positivity
       have hlt_inv : 4 * ε_lip * ((d : ℝ) ^ 4) * (8 * (2 * R)) ^ (d ^ 2) <
           ((56 * (S_max : ℝ) ^ 4)⁻¹) ^ (d ^ 2) := by
-        rw [inv_pow]
-        exact (lt_inv_of_mul_lt_one_right (by positivity) hprod_lt).trans_le le_rfl
+        rw [inv_pow, ← one_div]
+        exact (lt_div_iff₀ hpos_pow).mpr hprod_lt
       exact (hlip.trans_lt hlt_inv).trans_le (hQ_lo u)
   obtain ⟨hPN_sq_nz, hPN_wind⟩ := windingNumber_zhukovsky_poly_sq_of_approx n_star P_N Q_xi
     hQ_nz happrox
   refine ⟨hamp_nz, hs0_eq, hfloor, hPN_sq_nz, ?_⟩
-  rw [hPN_wind, hQ_wind, Nat.cast_sum]
-  rw [Finset.mul_sum]
+  rw [hPN_wind, hQ_wind]
+  congr 1
+  rw [Nat.cast_sum]
   refine Finset.sum_congr rfl fun z _ => ?_
-  rw [Nat.cast_sum, Finset.mul_sum]
+  rw [Nat.cast_sum]
   refine Finset.sum_congr rfl fun w _ => ?_
   by_cases hlt : zhukovskyEllipseForm n_star (z - w) < 1 <;> simp [hlt, mult, mul_assoc]
 
@@ -2222,9 +2277,13 @@ theorem integerThetaCollisionOperator_polynomial_stabilization :
       (_root_.RHTower.thetaAmplitudeEnvelope_nonneg 2)
     linarith
   let K_pre : ℝ := 8 * (2 * M_strip + 1) * C_env / c_good ^ 2 + 1
-  have hK_pre1 : 1 ≤ K_pre := by dsimp only [K_pre]; positivity
+  have hK_pre1 : 1 ≤ K_pre := by dsimp only [K_pre]; exact le_add_of_nonneg_left (by positivity)
   let K_base : ℝ := 896 * (6 + 2 * C_loc ^ 2) ^ 4
-  have hK_base1 : 1 ≤ K_base := by dsimp only [K_base]; nlinarith [hC_loc1]
+  have hK_base1 : 1 ≤ K_base := by
+    dsimp only [K_base]
+    have hp : (1 : ℝ) ≤ (6 + 2 * C_loc ^ 2) ^ 4 := one_le_pow₀ (by nlinarith)
+    linarith
+  have hCloc4 : (1 : ℝ) ≤ (C_loc + 1) ^ 4 := one_le_pow₀ (by linarith)
   let B_tot : ℝ :=
     (1 + |Real.log (2 * C_env / c_good)|) +
     (3 + Real.log (2 * K_pre)) +
@@ -2232,9 +2291,7 @@ theorem integerThetaCollisionOperator_polynomial_stabilization :
   have hB_tot_pos : 2 ≤ B_tot := by
     dsimp only [B_tot]
     have h1 : 0 ≤ Real.log (2 * K_pre) := Real.log_nonneg (by linarith)
-    have h2 : 0 ≤ Real.log (4 * K_pre * (C_loc + 1) ^ 4) := by
-      have : (1 : ℝ) ≤ (C_loc + 1) ^ 4 := by nlinarith
-      exact Real.log_nonneg (by nlinarith)
+    have h2 : 0 ≤ Real.log (4 * K_pre * (C_loc + 1) ^ 4) := Real.log_nonneg (by nlinarith)
     have h3 : 0 ≤ Real.log K_base := Real.log_nonneg hK_base1
     have h4 : 0 ≤ C_loc ^ 2 * (Real.log K_base + 17) := by positivity
     linarith [abs_nonneg (Real.log (2 * C_env / c_good))]
@@ -2298,7 +2355,10 @@ theorem integerThetaCollisionOperator_polynomial_stabilization :
     exact hstep.trans (havoid_P (z - w) hmem)
   refine ⟨T_star, n_star, hT_lo, hT_hi, hn_Icc, ?_⟩
   set δ_n : ℝ := 1 / (2 * (zhukovskyStage n_star : ℝ))
-  have hδ_pos : 0 < δ_n := by dsimp only [δ_n]; exact one_div_pos.mpr (by positivity)
+  have hδ_pos : 0 < δ_n := by
+    dsimp only [δ_n]
+    have hs_pos : 0 < (zhukovskyStage n_star : ℝ) := zhukovskyStage_pos n_star
+    exact one_div_pos.mpr (by positivity)
   have hδ_le : δ_n ≤ 1 / 12 := by
     dsimp only [δ_n]
     exact one_div_le_one_div_of_le (by norm_num)
@@ -2324,7 +2384,8 @@ theorem integerThetaCollisionOperator_polynomial_stabilization :
   have hμ_le1 : μ ≤ 1 := by
     dsimp only [μ]
     calc c_good * Real.exp (-((m + 1 : ℕ) : ℝ))
-        ≤ 1 * 1 := mul_le_mul hc_good_le1 (Real.exp_le_one_iff.mpr (by positivity))
+        ≤ 1 * 1 := mul_le_mul hc_good_le1
+          (Real.exp_le_one_iff.mpr (neg_nonpos.mpr (Nat.cast_nonneg _)))
           (Real.exp_pos _).le zero_le_one
       _ = 1 := one_mul 1
   have hμ_bdry : ∀ t : ℝ, μ ≤ ‖_root_.RHTower.xi (_root_.RHTower.rectangleBoundaryPath z₁ z₂ t)‖ := by
@@ -2339,7 +2400,8 @@ theorem integerThetaCollisionOperator_polynomial_stabilization :
     rcases rectangleBoundaryPath_on_edges' z₁ z₂ t with h1 | h2 | h3 | h4
     · rw [← hw_eq, h1, hz₁_re]; push_cast; exact (hT_vert w.im him_abs).2
     · rw [← hw_eq, h2, hz₂_re]; push_cast; exact (hT_vert w.im him_abs).1
-    · have hexp1 : Real.exp (-((m + 1 : ℕ) : ℝ)) ≤ 1 := Real.exp_le_one_iff.mpr (by positivity)
+    · have hexp1 : Real.exp (-((m + 1 : ℕ) : ℝ)) ≤ 1 :=
+        Real.exp_le_one_iff.mpr (neg_nonpos.mpr (Nat.cast_nonneg _))
       have hμ_low : μ ≤ (5026 / 16875) * Real.exp (-Real.pi) := by
         dsimp only [μ]; nlinarith [hc_good_pos, hc_good_le_low]
       exact hμ_low.trans ((xi_re_ge_lowWindow
@@ -2403,6 +2465,7 @@ theorem integerThetaCollisionOperator_polynomial_stabilization :
     rw [abs_of_pos hre0, abs_of_nonneg hy0] at hn
     dsimp only [R]; push_cast; linarith
   -- Now verify the exponential tail budget for all `N ≥ K_cum * (m + 1) * (Nat.ceil L + 1) ^ 2`.
+  dsimp only
   intro N hN
   set L : ℝ := Real.log ((m + S + 4 : ℕ) : ℝ)
   have hL_ge1 : 1 ≤ L := by
@@ -2461,9 +2524,7 @@ theorem integerThetaCollisionOperator_polynomial_stabilization :
       have hB_part : (1 + |Real.log (2 * C_env / c_good)|) ≤ B_tot := by
         dsimp only [B_tot]
         have h1 : 0 ≤ Real.log (2 * K_pre) := Real.log_nonneg (by linarith)
-        have h2 : 0 ≤ Real.log (4 * K_pre * (C_loc + 1) ^ 4) :=
-          Real.log_nonneg (by have : (1 : ℝ) ≤ (C_loc + 1) ^ 4 := by nlinarith
-                             nlinarith)
+        have h2 : 0 ≤ Real.log (4 * K_pre * (C_loc + 1) ^ 4) := Real.log_nonneg (by nlinarith)
         have h3 : 0 ≤ C_loc ^ 2 * (Real.log K_base + 17) :=
           mul_nonneg (sq_nonneg _) (by linarith [Real.log_nonneg hK_base1])
         linarith
@@ -2511,9 +2572,7 @@ theorem integerThetaCollisionOperator_polynomial_stabilization :
     have hexp_arg : 3 * ((m + 1 : ℕ) : ℝ) - ((N + 1 : ℕ) : ℝ) ^ 2 ≤ -Real.log (2 * K_pre) := by
       have hB_part : 3 + Real.log (2 * K_pre) ≤ B_tot := by
         dsimp only [B_tot]
-        have h2 : 0 ≤ Real.log (4 * K_pre * (C_loc + 1) ^ 4) :=
-          Real.log_nonneg (by have : (1 : ℝ) ≤ (C_loc + 1) ^ 4 := by nlinarith
-                             nlinarith)
+        have h2 : 0 ≤ Real.log (4 * K_pre * (C_loc + 1) ^ 4) := Real.log_nonneg (by nlinarith)
         have h3 : 0 ≤ C_loc ^ 2 * (Real.log K_base + 17) :=
           mul_nonneg (sq_nonneg _) (by linarith [Real.log_nonneg hK_base1])
         linarith [abs_nonneg (Real.log (2 * C_env / c_good))]
@@ -2649,12 +2708,19 @@ theorem integerThetaCollisionOperator_polynomial_stabilization :
     have h_m1L_P4 : ((m + 1 : ℕ) : ℝ) * L ≤ P4 := by
       dsimp only [P4]
       have hsq : ((m + 1 : ℕ) : ℝ) ≤ ((m + 1 : ℕ) : ℝ) ^ 2 := by nlinarith
-      have hl3 : L ≤ L ^ 4 := by nlinarith [sq_nonneg L, sq_nonneg (L - 1)]
+      have hl3 : L ≤ L ^ 4 := by
+        have hL3 : (1 : ℝ) ≤ L ^ 3 := one_le_pow₀ hL_ge1
+        calc L = L * 1 := (mul_one L).symm
+          _ ≤ L * L ^ 3 := mul_le_mul_of_nonneg_left hL3 (by linarith)
+          _ = L ^ 4 := by ring
       exact mul_le_mul hsq hl3 (by linarith) (by positivity)
     have h_L3_P4 : ((m + 1 : ℕ) : ℝ) ^ 2 * L ^ 3 ≤ P4 := by
       dsimp only [P4]
-      exact mul_le_mul_of_nonneg_left (by nlinarith [pow_nonneg (by linarith : 0 ≤ L) 3])
-        (by positivity)
+      have hL34 : L ^ 3 ≤ L ^ 4 := by
+        calc L ^ 3 = L ^ 3 * 1 := (mul_one _).symm
+          _ ≤ L ^ 3 * L := mul_le_mul_of_nonneg_left hL_ge1 (by positivity)
+          _ = L ^ 4 := by ring
+      exact mul_le_mul_of_nonneg_left hL34 (by positivity)
     have hsum_P4 :
         Real.log (4 * K_pre * (C_loc + 1) ^ 4) +
           3 * ((m + 1 : ℕ) : ℝ) + 4 * ((m + 1 : ℕ) : ℝ) * L +
@@ -2668,9 +2734,7 @@ theorem integerThetaCollisionOperator_polynomial_stabilization :
           Real.log_nonneg (show 1 ≤ 2 * K_pre by linarith)]
       have h1 : Real.log (4 * K_pre * (C_loc + 1) ^ 4) ≤
           Real.log (4 * K_pre * (C_loc + 1) ^ 4) * P4 := by
-        have hnn : 0 ≤ Real.log (4 * K_pre * (C_loc + 1) ^ 4) :=
-          Real.log_nonneg (by have : (1 : ℝ) ≤ (C_loc + 1) ^ 4 := by nlinarith
-                             nlinarith)
+        have hnn : 0 ≤ Real.log (4 * K_pre * (C_loc + 1) ^ 4) := Real.log_nonneg (by nlinarith)
         nlinarith
       have h2 : C_loc ^ 2 * (Real.log K_base + 17) * (((m + 1 : ℕ) : ℝ) ^ 2 * L ^ 3) ≤
           C_loc ^ 2 * (Real.log K_base + 17) * P4 :=
@@ -2941,7 +3005,7 @@ theorem centeredThetaDifferencePoly_real_and_loop_symmetric {y₁ y₂ : ℝ} (h
         (fun z' hz' => ⟨1 - star z', (hrefl_mem z').mpr hz', by simp⟩)
         (fun z _ => ?_)
       have hmz : mult (1 - star z) = mult z :=
-        analyticOrderAt_finiteThetaAmplitude_one_sub_conj N z
+        congrArg ENat.toNat (analyticOrderAt_finiteThetaAmplitude_one_sub_conj N z)
       rw [hmz]
       refine Finset.prod_bij (fun w _ => 1 - star w)
         (fun w hw => (hrefl_mem w).mpr hw)
@@ -2949,7 +3013,7 @@ theorem centeredThetaDifferencePoly_real_and_loop_symmetric {y₁ y₂ : ℝ} (h
         (fun w' hw' => ⟨1 - star w', (hrefl_mem w').mpr hw', by simp⟩)
         (fun w _ => ?_)
       have hmw : mult (1 - star w) = mult w :=
-        analyticOrderAt_finiteThetaAmplitude_one_sub_conj N w
+        congrArg ENat.toNat (analyticOrderAt_finiteThetaAmplitude_one_sub_conj N w)
       rw [hmw, show star z - star w = (1 - star w) - (1 - star z) by ring]
     rw [hreidx, Finset.prod_comm]
     exact Finset.prod_congr rfl fun _ _ => Finset.prod_congr rfl fun _ _ => by rw [mul_comm]
@@ -3058,7 +3122,8 @@ theorem zhukovskyEllipseForm_gt_one_of_re_margin :
     have hz_ub := (abs_lt.mp hz).2
     have hw_lb := (abs_lt.mp hw).1
     have hdiff_lt : (z - w).re < 1 / (2 * s) := by
-      have h1 : (z - w).re = (z.re - 1 / 2) - (w.re - 1 / 2) := by simp
+      rw [Complex.sub_re]
+      have h24 : 1 / (4 * s) + 1 / (4 * s) = 1 / (2 * s) := by ring
       linarith
     have hgt_a : zhukovskyMajorAxis n < 1 / 2 - (z - w).re := by rw [ha_eq]; linarith
     have hsq_gt : zhukovskyMajorAxis n ^ 2 < ((z - w).re - 1 / 2) ^ 2 := by
@@ -3079,10 +3144,13 @@ theorem zhukovskyEllipseForm_gt_one_of_re_margin :
     have hz_ub := (abs_le.mp hz).2
     have hw_lb := (abs_le.mp hw).1
     have hdiff_le : (z - w).re ≤ 1 / (4 * (n : ℝ)) := by
-      have h1 : (z - w).re = (z.re - 1 / 2) - (w.re - 1 / 2) := by simp
+      rw [Complex.sub_re]
+      have h84 : 1 / (8 * (n : ℝ)) + 1 / (8 * (n : ℝ)) = 1 / (4 * (n : ℝ)) := by ring
       linarith
     have hge_a : zhukovskyMajorAxis n + 1 / (4 * (n : ℝ)) ≤ 1 / 2 - (z - w).re := by
-      rw [ha_eq]; linarith
+      rw [ha_eq]
+      have h24 : 1 / (2 * (n : ℝ)) - 1 / (4 * (n : ℝ)) = 1 / (4 * (n : ℝ)) := by ring
+      linarith
     have hsq_ge : zhukovskyMajorAxis n ^ 2 + zhukovskyMajorAxis n / (2 * (n : ℝ)) ≤
         ((z - w).re - 1 / 2) ^ 2 := by
       have h1 : ((z - w).re - 1 / 2) ^ 2 = (1 / 2 - (z - w).re) ^ 2 := by ring
@@ -3099,15 +3167,20 @@ theorem zhukovskyEllipseForm_gt_one_of_re_margin :
         rw [le_div_iff₀ (sq_pos_of_pos ha_pos)]
         have h_an : (1 / (n : ℝ)) * zhukovskyMajorAxis n ^ 2 ≤
             zhukovskyMajorAxis n / (2 * (n : ℝ)) := by
-          rw [div_eq_mul_inv, show (2 * (n : ℝ))⁻¹ = (1 / 2) * (1 / (n : ℝ)) by field_simp]
-          nlinarith
+          calc (1 / (n : ℝ)) * zhukovskyMajorAxis n ^ 2
+              = (1 / (n : ℝ)) * zhukovskyMajorAxis n * zhukovskyMajorAxis n := by ring
+            _ ≤ (1 / (n : ℝ)) * zhukovskyMajorAxis n * (1 / 2) :=
+                mul_le_mul_of_nonneg_left ha_lt.le (by positivity)
+            _ = zhukovskyMajorAxis n / (2 * (n : ℝ)) := by ring
         linarith
       linarith
     refine ⟨by linarith [one_div_pos.mpr hn_pos], ?_⟩
     rw [abs_of_pos (by linarith [one_div_pos.mpr hn_pos])]
     have hn6_r : (6 : ℝ) ≤ (n : ℝ) := by exact_mod_cast hn6
-    have hcube : 1 / (8 * (n : ℝ) ^ 3) ≤ 1 / (n : ℝ) :=
-      one_div_le_one_div_of_le hn_pos (by nlinarith)
+    have hcube : 1 / (8 * (n : ℝ) ^ 3) ≤ 1 / (n : ℝ) := by
+      refine one_div_le_one_div_of_le hn_pos ?_
+      have hn2 : (1 : ℝ) ≤ (n : ℝ) ^ 2 := one_le_pow₀ (by linarith)
+      nlinarith
     linarith
 
 /-- **Off-line horizontal collision detection lemma.**
@@ -3145,35 +3218,32 @@ theorem two_le_collision_sum_of_offLine_in_band {Z : Finset ℂ} {mult : ℂ →
   have ha_eq : zhukovskyMajorAxis n = 1 / 2 - 1 / (2 * (zhukovskyStage n : ℝ)) := rfl
   have habs_lt : |(z₀ - w₀).re - 1 / 2| < zhukovskyMajorAxis n := by
     rw [hdiff_re, ha_eq, abs_lt]
+    have h24 : 2 * (1 / (4 * (zhukovskyStage n : ℝ))) = 1 / (2 * (zhukovskyStage n : ℝ)) := by ring
     exact ⟨by linarith, by linarith⟩
   have hform_lt1 : zhukovskyEllipseForm n (z₀ - w₀) < 1 := by
     unfold zhukovskyEllipseForm
-    rw [hdiff_im, sq, zero_mul, zero_div, add_zero, div_lt_one (sq_pos_of_pos ha_pos)]
+    rw [hdiff_im, show (0 : ℝ) ^ 2 / zhukovskyMinorAxis n ^ 2 = 0 by ring,
+      add_zero, div_lt_one (sq_pos_of_pos ha_pos)]
     have hsq := sq_lt_sq.mpr (by rwa [abs_of_pos ha_pos] : |(z₀ - w₀).re - 1 / 2| < |zhukovskyMajorAxis n|)
     exact hsq
-  have hterm_ge1 : (1 : ℤ) ≤
-      (mult z₀ : ℤ) * (mult w₀ : ℤ) *
-        (if zhukovskyEllipseForm n (z₀ - w₀) < 1 then 1 else 0) := by
+  let term : ℂ → ℂ → ℤ := fun z w =>
+    (mult z : ℤ) * (mult w : ℤ) * (if zhukovskyEllipseForm n (z - w) < 1 then 1 else 0)
+  have hterm_nn : ∀ z w : ℂ, 0 ≤ term z w := fun z w => by
+    dsimp only [term]
+    split_ifs <;> positivity
+  have hterm_ge1 : (1 : ℤ) ≤ term z₀ w₀ := by
+    dsimp only [term]
     rw [if_pos hform_lt1, mul_one]
     have h1 : (1 : ℤ) ≤ (mult z₀ : ℤ) := by exact_mod_cast hmult_pos z₀ hz₀_mem
     have h2 : (1 : ℤ) ≤ (mult w₀ : ℤ) := by exact_mod_cast hmult_pos w₀ hw₀_mem
     nlinarith
-  have hinner_ge : (1 : ℤ) ≤
-      ∑ w ∈ Z, (mult z₀ : ℤ) * (mult w : ℤ) *
-        (if zhukovskyEllipseForm n (z₀ - w) < 1 then 1 else 0) :=
-    hterm_ge1.trans (Finset.single_le_sum
-      (fun w _ => by
-        by_cases h : zhukovskyEllipseForm n (z₀ - w) < 1
-        · rw [if_pos h, mul_one]; positivity
-        · rw [if_neg h, mul_zero]) hw₀_mem)
-  have houter_ge : (1 : ℤ) ≤
-      ∑ z ∈ Z, ∑ w ∈ Z, (mult z : ℤ) * (mult w : ℤ) *
-        (if zhukovskyEllipseForm n (z - w) < 1 then 1 else 0) :=
-    hinner_ge.trans (Finset.single_le_sum
-      (fun z _ => Finset.sum_nonneg fun w _ => by
-        by_cases h : zhukovskyEllipseForm n (z - w) < 1
-        · rw [if_pos h, mul_one]; positivity
-        · rw [if_neg h, mul_zero]) hz₀_mem)
+  have hinner_ge : (1 : ℤ) ≤ ∑ w ∈ Z, term z₀ w :=
+    hterm_ge1.trans (Finset.single_le_sum (f := fun w => term z₀ w)
+      (fun w _ => hterm_nn z₀ w) hw₀_mem)
+  have houter_ge : (1 : ℤ) ≤ ∑ z ∈ Z, ∑ w ∈ Z, term z w :=
+    hinner_ge.trans (Finset.single_le_sum (f := fun z => ∑ w ∈ Z, term z w)
+      (fun z _ => Finset.sum_nonneg fun w _ => hterm_nn z w) hz₀_mem)
+  dsimp only [term] at houter_ge
   linarith
 
 /-- Elementary sub-Gaussian bound `(Real.log ((m + 5 : ℕ) : ℝ))² ≤ 16 * Real.sqrt ((m + 5 : ℕ) : ℝ)`. -/
@@ -3199,6 +3269,15 @@ private lemma log_sq_le_sixteen_sqrt_add_five (m : ℕ) :
       ≤ (4 * q) ^ 2 := pow_le_pow_left₀ hlog_nn hlog_x 2
     _ = 16 * (q ^ 2) := by ring
     _ = 16 * Real.sqrt x := by dsimp only [q]; rw [Real.sq_sqrt (Real.sqrt_nonneg x)]
+
+private lemma sum_biUnion_le_sum_nat {α β : Type*} [DecidableEq α] [DecidableEq β]
+    (s : Finset α) (t : α → Finset β) (f : β → ℕ) :
+    ∑ x ∈ s.biUnion t, f x ≤ ∑ a ∈ s, ∑ x ∈ t a, f x := by
+  induction s using Finset.induction_on with
+  | empty => simp
+  | @insert a s ha ih =>
+      rw [Finset.biUnion_insert, Finset.sum_insert ha]
+      exact (Finset.sum_union_le (f := f)).trans (Nat.add_le_add_left ih _)
 
 /-- **Optimal `Θ(√m)` Burnol-bracketed unit-window stabilization (`centeredTheta_sqrtPrefix_stabilization`).**
 There exist an absolute prefix constant `C_unit ≥ 1`, Burnol good-height brackets
@@ -3326,17 +3405,19 @@ theorem centeredTheta_sqrtPrefix_stabilization :
         refine abs_le.mpr ⟨?_, hrect.2.2⟩
         have hT2_ge2 : (2 : ℝ) ≤ T_good (m + 2) := by linarith [hy₂_lo, Nat.cast_nonneg (α := ℝ) m]
         linarith [hrect.2.1, hy₁_bds.1]
-      have hm2_eq : ((m + 2 + 1 : ℕ) : ℝ) = ((m + 3 : ℕ) : ℝ) := by push_cast; ring
+      have hm2_nat : m + 2 + 1 = m + 3 := by omega
+      rw [hm2_nat] at hT2_hor hT2_vert
       rcases rectangleBoundaryPath_on_edges'
           (centeredWindowLowerLeft (y₁ m)) (centeredWindowUpperRight (y₂ m)) t with h1 | h2 | h3 | h4
       · rw [← hw_eq, h1, centeredWindowLowerLeft_re]; push_cast
-        simpa only [hm2_eq] using (hT2_vert w.im him_abs).2
+        exact (hT2_vert w.im him_abs).2
       · rw [← hw_eq, h2, centeredWindowUpperRight_re]; push_cast
-        simpa only [hm2_eq] using (hT2_vert w.im him_abs).1
+        exact (hT2_vert w.im him_abs).1
       · rw [← hw_eq, h3, centeredWindowLowerLeft_im]
         dsimp only [y₁]
         split_ifs with hm1
-        · have hexp1 : Real.exp (-((m + 3 : ℕ) : ℝ)) ≤ 1 := Real.exp_le_one_iff.mpr (by positivity)
+        · have hexp1 : Real.exp (-((m + 3 : ℕ) : ℝ)) ≤ 1 :=
+            Real.exp_le_one_iff.mpr (neg_nonpos.mpr (Nat.cast_nonneg _))
           have hμ_low : c_good * Real.exp (-((m + 3 : ℕ) : ℝ)) ≤
               (5026 / 16875) * Real.exp (-Real.pi) := by nlinarith [hc_good_pos, hc_good_le_low]
           exact hμ_low.trans ((xi_re_ge_lowWindow
@@ -3352,7 +3433,8 @@ theorem centeredTheta_sqrtPrefix_stabilization :
           exact (mul_le_mul_of_nonneg_left hexp_le hc_good_pos.le).trans
             (hhor_m2 w.re (by linarith [hrect.1.1]) (by linarith [hrect.1.2]))
       · rw [← hw_eq, h4, centeredWindowUpperRight_im]
-        simpa only [hm2_eq, y₂] using hT2_hor w.re (by linarith [hrect.1.1]) (by linarith [hrect.1.2])
+        dsimp only [y₂]
+        exact hT2_hor w.re (by linarith [hrect.1.1]) (by linarith [hrect.1.2])
     have hZ_iff : ∀ w : ℂ, w ∈ Z_xi m ↔
         (0 < w.re ∧ w.re < 1 ∧ y₁ m < w.im ∧ w.im < y₂ m) ∧ _root_.RHTower.xi w = 0 := by
       intro w
@@ -3381,6 +3463,7 @@ theorem centeredTheta_sqrtPrefix_stabilization :
       obtain ⟨⟨hr0, hr1, hy_lo, hy_hi⟩, hw0⟩ := (hZ_iff w).mp hw
       rw [hZ_iff]
       refine ⟨⟨by simp; linarith, by simp; linarith, by simpa using hy_lo, by simpa using hy_hi⟩, ?_⟩
+      change _root_.RHTower.xi (1 - (starRingEnd ℂ) w) = 0
       rw [_root_.RHTower.xi_one_sub, _root_.RHTower.xi_conj, hw0, map_zero]
     -- Bound total multiplicity in `Z_xi m` by covering with the 5 unit windows `m - 2 .. m + 2`.
     have hd_bound : ((∑ w ∈ Z_xi m, (analyticOrderAt _root_.RHTower.xi w).toNat : ℕ) : ℝ) ≤
@@ -3406,12 +3489,10 @@ theorem centeredTheta_sqrtPrefix_stabilization :
         have hk_lo : m - 2 ≤ k := by
           by_cases hm2 : m ≤ 2
           · omega
-          · have : ((m - 2 : ℕ) : ℝ) - 1 < (k : ℝ) := by
-              rw [Nat.cast_sub (by omega)]
-              linarith [hy₁_bds.2.2]
-            have hlt : (m - 2) < k + 1 := by
-              have h1 : ((m - 2 : ℕ) : ℝ) < ((k + 1 : ℕ) : ℝ) := by push_cast; linarith
-              exact Nat.cast_lt.mp h1
+          · have hsub2 : ((m - 2 : ℕ) : ℝ) = (m : ℝ) - 2 := Nat.cast_sub (show 2 ≤ m by omega)
+            have h1 : ((m - 2 : ℕ) : ℝ) < ((k + 1 : ℕ) : ℝ) := by
+              rw [hsub2]; push_cast; linarith [hy₁_bds.2.2]
+            have hlt : m - 2 < k + 1 := Nat.cast_lt.mp h1
             omega
         exact Finset.mem_biUnion.mpr ⟨k, Finset.mem_Icc.mpr ⟨hk_lo, hk_hi⟩,
           mem_xiUnitWindowZeros.mpr
@@ -3420,7 +3501,10 @@ theorem centeredTheta_sqrtPrefix_stabilization :
       have hsum_le_nat :
           (∑ w ∈ Z_xi m, (analyticOrderAt _root_.RHTower.xi w).toNat) ≤
             ∑ k ∈ Finset.Icc (m - 2) (m + 2), xiUnitWindowOrder (k : ℝ) :=
-        (Finset.sum_le_sum_of_subset hZ_sub_U5).trans Finset.sum_biUnion_le
+        (Finset.sum_le_sum_of_subset hZ_sub_U5).trans
+          (sum_biUnion_le_sum_nat (Finset.Icc (m - 2) (m + 2))
+            (fun k => xiUnitWindowZeros (k : ℝ))
+            (fun w => (analyticOrderAt _root_.RHTower.xi w).toNat))
       have hcard_Icc : (Finset.Icc (m - 2) (m + 2)).card ≤ 5 := by
         rw [Nat.card_Icc]; omega
       calc ((∑ w ∈ Z_xi m, (analyticOrderAt _root_.RHTower.xi w).toNat : ℕ) : ℝ)
@@ -3449,8 +3533,7 @@ theorem centeredTheta_sqrtPrefix_stabilization :
                   _ ≤ x * x ^ 5 := mul_le_mul_of_nonneg_right hx5 (by positivity)
                   _ = x ^ 6 := by ring
               have hl := Real.log_le_log (by positivity) hpow56
-              rw [Real.log_pow, Real.log_pow] at hl
-              push_cast at hl
+              rw [Real.log_pow, Real.log_pow, Nat.cast_ofNat, Nat.cast_ofNat] at hl
               linarith
             have h1 := mul_le_mul hc5
               (mul_le_mul_of_nonneg_left hlog6 (by linarith : 0 ≤ C_loc))
@@ -3469,9 +3552,13 @@ theorem centeredTheta_sqrtPrefix_stabilization :
       (_root_.RHTower.thetaAmplitudeEnvelope_nonneg 2)
     linarith
   let K_pre_u : ℝ := 20 * (2 * M_strip + 1) * C_env / c_good ^ 2 + 1
-  have hK_pre_u1 : 1 ≤ K_pre_u := by dsimp only [K_pre_u]; positivity
+  have hK_pre_u1 : 1 ≤ K_pre_u := by dsimp only [K_pre_u]; exact le_add_of_nonneg_left (by positivity)
   let K_base_u : ℝ := 3584 * (6 + 32 * C_d ^ 2) ^ 4
-  have hK_base_u1 : 1 ≤ K_base_u := by dsimp only [K_base_u]; nlinarith [hC_d6]
+  have hK_base_u1 : 1 ≤ K_base_u := by
+    dsimp only [K_base_u]
+    have hp : (1 : ℝ) ≤ (6 + 32 * C_d ^ 2) ^ 4 := one_le_pow₀ (by nlinarith)
+    linarith
+  have hCd4 : (1 : ℝ) ≤ (C_d + 1) ^ 4 := one_le_pow₀ (by linarith)
   let B_unit : ℝ :=
     (1 + |Real.log (2 * C_env / c_good)|) +
     (2 + Real.log (2 * K_pre_u)) +
@@ -3479,9 +3566,7 @@ theorem centeredTheta_sqrtPrefix_stabilization :
   have hB_unit2 : 2 ≤ B_unit := by
     dsimp only [B_unit]
     have h1 : 0 ≤ Real.log (2 * K_pre_u) := Real.log_nonneg (by linarith)
-    have h2 : 0 ≤ Real.log (4 * K_pre_u * (C_d + 1) ^ 4) :=
-      Real.log_nonneg (by have : (1 : ℝ) ≤ (C_d + 1) ^ 4 := by nlinarith
-                         nlinarith)
+    have h2 : 0 ≤ Real.log (4 * K_pre_u * (C_d + 1) ^ 4) := Real.log_nonneg (by nlinarith)
     have h3 : 0 ≤ 16 * C_d ^ 2 * (Real.log K_base_u + 4) :=
       mul_nonneg (by positivity) (by linarith [Real.log_nonneg hK_base_u1])
     linarith [abs_nonneg (Real.log (2 * C_env / c_good))]
@@ -3528,7 +3613,8 @@ theorem centeredTheta_sqrtPrefix_stabilization :
   have hμ_le1 : μ ≤ 1 := by
     dsimp only [μ]
     calc c_good * Real.exp (-((m + 3 : ℕ) : ℝ))
-        ≤ 1 * 1 := mul_le_mul hc_good_le1 (Real.exp_le_one_iff.mpr (by positivity))
+        ≤ 1 * 1 := mul_le_mul hc_good_le1
+          (Real.exp_le_one_iff.mpr (neg_nonpos.mpr (Nat.cast_nonneg _)))
           (Real.exp_pos _).le zero_le_one
       _ = 1 := one_mul 1
   have hbox_rad : ∀ w : ℂ, -1 / 2 ≤ w.re → w.re ≤ 3 / 2 → y₁ m ≤ w.im → w.im ≤ y₂ m →
@@ -3614,9 +3700,7 @@ theorem centeredTheta_sqrtPrefix_stabilization :
       have hB_part : 1 + |Real.log (2 * C_env / c_good)| ≤ B_unit := by
         dsimp only [B_unit]
         have h1 : 0 ≤ Real.log (2 * K_pre_u) := Real.log_nonneg (by linarith)
-        have h2 : 0 ≤ Real.log (4 * K_pre_u * (C_d + 1) ^ 4) :=
-          Real.log_nonneg (by have : (1 : ℝ) ≤ (C_d + 1) ^ 4 := by nlinarith
-                             nlinarith)
+        have h2 : 0 ≤ Real.log (4 * K_pre_u * (C_d + 1) ^ 4) := Real.log_nonneg (by nlinarith)
         have h3 : 0 ≤ 16 * C_d ^ 2 * (Real.log K_base_u + 4) :=
           mul_nonneg (by positivity) (by linarith [Real.log_nonneg hK_base_u1])
         linarith
@@ -3665,9 +3749,7 @@ theorem centeredTheta_sqrtPrefix_stabilization :
     have hexp_arg : 2 * X - ((N + 1 : ℕ) : ℝ) ^ 2 ≤ -Real.log (2 * K_pre_u) := by
       have hB_part : 2 + Real.log (2 * K_pre_u) ≤ B_unit := by
         dsimp only [B_unit]
-        have h2 : 0 ≤ Real.log (4 * K_pre_u * (C_d + 1) ^ 4) :=
-          Real.log_nonneg (by have : (1 : ℝ) ≤ (C_d + 1) ^ 4 := by nlinarith
-                             nlinarith)
+        have h2 : 0 ≤ Real.log (4 * K_pre_u * (C_d + 1) ^ 4) := Real.log_nonneg (by nlinarith)
         have h3 : 0 ≤ 16 * C_d ^ 2 * (Real.log K_base_u + 4) :=
           mul_nonneg (by positivity) (by linarith [Real.log_nonneg hK_base_u1])
         linarith [abs_nonneg (Real.log (2 * C_env / c_good))]
@@ -3816,8 +3898,7 @@ theorem centeredTheta_sqrtPrefix_stabilization :
         linarith [abs_nonneg (Real.log (2 * C_env / c_good)),
           Real.log_nonneg (show 1 ≤ 2 * K_pre_u by linarith)]
       have hlog4K_nn : 0 ≤ Real.log (4 * K_pre_u * (C_d + 1) ^ 4) :=
-        Real.log_nonneg (by have : (1 : ℝ) ≤ (C_d + 1) ^ 4 := by nlinarith
-                           nlinarith)
+        Real.log_nonneg (by nlinarith)
       have hmul := mul_le_mul_of_nonneg_right hB_sub (by linarith : 0 ≤ X)
       nlinarith
     obtain ⟨_, _, hdeg_N, hPN_nz, hPN_wind⟩ :=

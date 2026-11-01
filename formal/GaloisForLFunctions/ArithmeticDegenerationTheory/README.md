@@ -172,7 +172,10 @@ reaches the receiver; beyond it the energies grow like `log m` (pure part, RAPT
 scaling function `R_m` averages one profile function `g(y) = y⁷T(y)` over the shells prime to `m`;
 `R_m → 1` at the degenerating end uniformly in `m`, and `0 ≤ R_m(x) ≤ Cx` at the pure end. On fixed
 packets the form inherits the Jordan polarization with arbitrarily small loss, uniformly in the
-coefficients.
+coefficients. The two factors read different data: `R_m` depends only on the prime factors of `m`
+(the branches of the cone it lies on), `J(m)` on the valuations (the positions in the strings). A
+whole `p`-tower degenerates along the single function `R_p`:
+`c⁷E_{p^a}(c) = J(1)[8]_p p^{7(a−1)} R_p(c/p^a)`.
 
 **I. Gluing at the pole.** The divisibility form `[i ∣ j]` on `1..N` is unipotent (determinant `1`,
 inverse the Möbius form). Gluing every vertex to the pole — replacing the pole column by `𝟙` — gives
@@ -209,6 +212,7 @@ not a margin; it does not decide the sign of `ζ`.
 | Is the conductor filtration the weight filtration? | Yes in the rescaled sense: along each tower the Jordan coefficient is a weight string (`[8]_p`, then `p⁷` per step); the polarization tensorizes over the primes. | `jordanCoefficient_tower`, `jordanCoefficient_mul_of_coprime`, `jordanCoefficient_prime_pow` |
 | Where is the inheritance radius? | Exactly at the RH exponent `1/8`: below it the rescaled extension data vanish; at its multiples positivity is RH. | `inheritance_radius` |
 | Is the limit exact on growing blocks? | On the whole subthreshold block `m ≤ c/X(ε)`, uniformly; exactly, the degeneration has the scaling form `E_m(c) = J(m)c⁻⁷R_m(c/m)` with `R_m → 1` (degenerating end) and `R_m(x) ≤ Cx` (pure end), uniformly in `m`. | `uniform_jordan_law`, `rpow_seven_mul_completedConductorEnergy_eq_scaling`, `abs_scalingFunction_sub_one_le`, `scalingFunction_le` |
+| What do the two factors of the degeneration see? | The scaling function sees only the branches (prime support), the Jordan coefficient only the weights (valuations); a tower degenerates along one scaling function. | `scalingFunction_eq_of_primeFactors_eq`, `completedConductorEnergy_prime_pow_eq` |
 | What kind of monodromy is it? | Eventually idempotent, not quasi-unipotent: on a `p`-string of length `v`, `D_p^{v+1} = D_p^v`; the nilpotent length is the valuation. | `ramanujanLagCoefficient_prime_pow_mul`, `dilation_eventually_idempotent`, `ramanujanLagCoefficient_mul_of_dvd` |
 | Does the limit see the zeros, and does it select `ζ`? | It does not see the zeros: it is computed from the profile's tail and the arithmetic of the conductor; zeros enter at the quantum `1/log N`. It does select `ζ` among prime-flip twins by structure: only `ζ` degenerates completely; every flip degenerates to a nonzero indefinite form and has no rescaled limit. | `tendsto_rpow_mul_completedConductorEnergy`; `primeFlip_degenerates_indefinitely`, `tendsto_rescaled_packetEnergy_primeFlip`, `tendsto_rescaled_packetEnergy_vonMangoldt` |
 | Is there a signature/determinant invariant refining the nerve's Euler characteristic? | The Mertens function is the determinant of the pole gluing of the divisibility form and the signature of the coprimality form; RH is half-power growth of either; unconditionally the gluing determinant oscillates at `±c√N`. | `det_redhefferMatrix`, `riemannHypothesis_iff_det_redhefferMatrix`, `det_redhefferMatrix_omega_pm_sqrt`; RHTower `finiteMobiusCoprimeSignature_eq_sum_Icc` |
@@ -226,6 +230,7 @@ not a margin; it does not decide the sign of `ζ`.
 | Uniform Jordan law on the subthreshold block | `uniform_jordan_law`, `tendsto_ratio_of_subthreshold` | proved |
 | Exact scaling form; both ends of the scaling function; inherited polarization with small loss | `rpow_seven_mul_completedConductorEnergy_eq_scaling`, `abs_scalingFunction_sub_one_le`, `scalingFunction_le`, `eventually_inherited_polarization` | proved |
 | Eventually idempotent monodromy | `ramanujanLagCoefficient_prime_pow_mul`, `dilation_eventually_idempotent`, `ramanujanLagCoefficient_mul_of_dvd` | proved |
+| Branches and weights separate; a tower degenerates along one scaling function | `scalingFunction_eq_of_primeFactors_eq`, `completedConductorEnergy_prime_pow_eq` | proved |
 | Mertens function = gluing determinant at the pole; square-root oscillation | `det_redhefferMatrix`, `det_redhefferMatrix_eq_nerveEulerChar`, `riemannHypothesis_iff_det_redhefferMatrix`, `det_redhefferMatrix_omega_pm_sqrt` | proved; equivalence |
 | Complete degeneration selects `ζ` among prime-flip twins | `tendsto_packetEnergy_atTop`, `packetEnergy_vonMangoldt`, `primeFlip_degenerates_indefinitely`, `tendsto_rescaled_packetEnergy_primeFlip` | proved |
 

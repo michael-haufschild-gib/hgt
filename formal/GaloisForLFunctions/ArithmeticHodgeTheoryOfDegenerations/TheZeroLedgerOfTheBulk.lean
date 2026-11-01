@@ -192,7 +192,8 @@ theorem tendsto_packetLedger {ρ : ℂ} (hρ0 : 0 < ρ.re) (hρ1 : ρ.re < 1) (E
     field_simp
   rw [hnorm]
   simp only [X, Y]
-  linear_combination (-(U ^ 2 / (ρ * (1 - ρ)))) * hpow
+  simp only [div_mul_eq_div_div] at hval ⊢
+  linear_combination (-(U ^ 2 / ρ / (1 - ρ))) * hpow - hval
 
 /-- `Re 1/(ρ(1 − ρ)) > 0` on the open strip. -/
 theorem re_inv_mul_one_sub_pos {ρ : ℂ} (hρ0 : 0 < ρ.re) (hρ1 : ρ.re < 1) :
@@ -246,7 +247,6 @@ theorem log_div_mul_bulkLedger (Z : ZeroConfig) {φ : ℝ → ℝ} (hφ : Contin
   simp only [map_mul, Complex.conj_ofReal]
   push_cast
   field_simp
-  ring
 
 /-- **Bulk zero ledger.** Along every overlap schedule with `c_N/N → 0`, a point `ρ` of the open
 strip contributes `(c_N/log N) m_ρ ((∫φ)²/∫φ²) y_1²/(ρ(1 − ρ)) + o(c_N/log N)` to the normalized
@@ -259,8 +259,8 @@ theorem tendsto_bulkLedger (Z : ZeroConfig) {φ : ℝ → ℝ} (hφ : Continuous
       (𝓝 ((Z.mult ρ : ℂ) * (((∫ u, φ u) ^ 2 / ∫ u, φ u ^ 2 : ℝ) : ℂ) *
         (((poleCoefficient E y ^ 2 : ℝ) : ℂ) / (ρ * (1 - ρ))))) := by
   have hF : Continuous (paperFT (cx φ)) :=
-    (RHTower.EvenSector.differentiable_paperFT_of_compact (by unfold cx; fun_prop)
-      (by simpa [cx] using hφc.comp_left Complex.ofReal_zero)).continuous
+    (RHTower.EvenSector.differentiable_paperFT_of_compact (Complex.continuous_ofReal.comp hφ)
+      (hφc.comp_left Complex.ofReal_zero)).continuous
   have hw : Tendsto (fun N : ℕ => ((c N / N : ℝ) : ℂ)) atTop (𝓝 0) := by
     simpa using hcN.ofReal
   have h1 : Tendsto (fun N : ℕ => paperFT (cx φ) (((c N / N : ℝ) : ℂ) * gammaOf ρ)) atTop
@@ -307,6 +307,5 @@ theorem tendsto_bulkLedger_criticalCurve (Z : ZeroConfig) {φ : ℝ → ℝ} (h�
   rw [← mul_assoc, ← Complex.ofReal_mul]
   congr 2
   field_simp
-  ring
 
 end GaloisForLFunctions.ArithmeticHodgeTheoryOfDegenerations
