@@ -60,6 +60,11 @@ Continuation across the boundary does not by itself isolate residues of an
 infinite accumulating pole series. A quantitative lower weight versus joint
 two-prime spacing estimate remains necessary for that argument.
 
+`two_prime_alias_bound_in_Δ` supplies the arithmetic separation
+`|Δ log p−2πk₁| log q + |Δ log q−2πk₂| log p ≥ c·min(|Δ|,(2+|Δ|)^(−C))`.
+It controls the two phase clocks, but does not bound cancellation of spline
+residues as their real parts approach an unattained supremum.
+
 ## Gates
 
 - [x] Exact requested scope recorded.

@@ -1,5 +1,7 @@
 import GaloisForLFunctions.TransMetzlerWeilPositivity.ReceiverRate.ABoundedOverlapRateSeesASemilocalWindow
-import GaloisForLFunctions.RenormalizedIntersectionTheory.TheHodgeIndexAtGrowingOverlap
+import GaloisForLFunctions.RenormalizedArithmeticPotentialTheory.BoundedPrimeEnergyHasFiniteRamanujanCoordinates
+import GaloisForLFunctions.HeckeKreinToeplitz.TheMarginIsTheWidthOfTheIndexOneWindow
+import GaloisForLFunctions.RenormalizedIntersectionTheory.TheRenormalizedHodgeIndex
 import GaloisForLFunctions.AdelicKreinGeometry.ThePontryaginExtensionsOfWeilsCorrelation
 import GaloisForLFunctions.HeckeKreinToeplitz.BoundedIndexIsClosedUnderPointwiseLimits
 
@@ -109,6 +111,19 @@ theorem riemannHypothesis_iff_steklovUnitProfile_hodgeIndex_critical :
     exact riemannHypothesis_iff_negIndex_zetaKernel_eq_zero.mpr
       (negIndex_zetaKernel_le_one_iff.mp hκ)
 
+/-- The boost-mass-zero condition on rational Weil Grams is exactly the
+complete-family pole-hyperplane condition at all fixed critical multiples. -/
+theorem ratCorr_hyperplane_nonneg_iff_steklovUnitProfile_hodgeIndex_critical :
+    (∀ (n : ℕ) (u : Fin n → ArithmeticPositiveDuality.posUnits) (w : Fin n → ℂ),
+      boostMassU u w = 0 → 0 ≤ hermQuad (gram ArithmeticPositiveDuality.ratCorr u) w) ↔
+      ∀ K : ℝ, 1 ≤ K → ∀ᶠ N : ℕ in atTop,
+        ∀ x : EuclideanSpace ℝ (PrimeHorizonIndex N),
+          ⟪x, normalizedRamanujanHorizonVector 1 N⟫ = 0 →
+            0 ≤ completeWeilEnergy steklovUnitProfile (2 * K * dcScale N) N x :=
+  riemannHypothesis_iff_hyperplane_nonneg.symm.trans
+    riemannHypothesis_iff_steklovUnitProfile_hodgeIndex_critical
+
 end GaloisForLFunctions.RenormalizedIntersectionTheory
 
 #print axioms GaloisForLFunctions.RenormalizedIntersectionTheory.riemannHypothesis_iff_steklovUnitProfile_hodgeIndex_critical
+#print axioms GaloisForLFunctions.RenormalizedIntersectionTheory.ratCorr_hyperplane_nonneg_iff_steklovUnitProfile_hodgeIndex_critical

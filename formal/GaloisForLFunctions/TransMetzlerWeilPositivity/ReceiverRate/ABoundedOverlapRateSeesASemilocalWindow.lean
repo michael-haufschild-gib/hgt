@@ -847,8 +847,8 @@ private theorem integral_sq_pos {φ : ℝ → ℝ} (hφ : Continuous φ)
     (hc : HasCompactSupport φ) (hint : (∫ u, φ u) ≠ 0) :
     0 < ∫ u, φ u ^ 2 := by
   have hcont : Continuous (fun u : ℝ => φ u ^ 2) := hφ.pow 2
-  have hsupp : HasCompactSupport (fun u : ℝ => φ u ^ 2) := by
-    simpa only [sq] using (hc.mul_right (f' := φ))
+  have hsupp : HasCompactSupport (fun u : ℝ => φ u ^ 2) :=
+    hc.comp_left (g := fun t : ℝ => t ^ 2) (zero_pow (by decide))
   have hi : Integrable (fun u : ℝ => φ u ^ 2) :=
     hcont.integrable_of_hasCompactSupport hsupp
   refine lt_of_le_of_ne (integral_nonneg fun u => sq_nonneg _) ?_
