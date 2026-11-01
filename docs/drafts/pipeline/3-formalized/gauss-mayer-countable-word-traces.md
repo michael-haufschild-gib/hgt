@@ -82,5 +82,7 @@ A single branch has determinant `−1`; the direct `PSL₂(ℤ)` comparison
 uses even words. Dropping parity changes both displayed identities.
 The word sums here are proved on `Re w>1`. [Source-parameter holomorphy](gauss-mayer-source-parameter-holomorphy.md)
 of the actual determinant is now certified on `Re w>0`, away from one.
-Primitive geodesic coding, the Selberg/scattering comparison, and resonance
-exclusion remain open. No RH conclusion follows.
+[Primitive modular coding](gauss-mayer-modular-primitive-coding.md) now
+classifies actual even words under integral conjugacy and proper powers,
+including the inverse-class involution. Geometric geodesic identification,
+the Selberg/scattering comparison, and resonance exclusion remain open. No RH conclusion follows.

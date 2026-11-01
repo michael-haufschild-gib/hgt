@@ -1,16 +1,16 @@
 # Primitive modular coding of the actual Gauss words
 
-- **Stage:** 1-in-progress
-- **Type:** CONJECTURE
-- **Parent:** [actual countable word traces](../3-formalized/gauss-mayer-countable-word-traces.md).
+- **Stage:** 3-formalized
+- **Type:** Theorem
+- **Parent:** [actual countable word traces](gauss-mayer-countable-word-traces.md).
 
 ## Target
 
 Classify the actual even Gauss words under `SL₂(ℤ)` conjugacy and proper
 powers, and prove that they represent every positive-trace hyperbolic class.
 The literal Gauss matrices have determinant `(-1)^k`; one-digit cyclic
-rotation uses a determinant-minus-one conjugator. Ordinary digit necklaces
-therefore require an orientation audit.
+rotation uses a determinant-minus-one conjugator. The classification retains
+this parity and identifies the inverse-class involution explicitly.
 
 ## Certified actual Gauss classification
 
@@ -71,21 +71,28 @@ Modules in `RenormalizedIntersectionTheory`:
   `evenWordMatrix_root_iff`, `exists_evenWordMatrix_intertwiner`,
   `single_digit_square_primitive`.
 
-All six direct production checks pass without diagnostics. Their
-6+3+9+11+4+18 transitive axiom audits use only standard axioms. Umbrella
-imports wired. The actual Gauss classification is certified; the explicit
-matrix-inverse orientation audit below remains open.
+- `GaussMayerPrimitiveOrientation.lean`, namespace `MayerOrientation`:
+  `integralInverse_spec`, `adjugate_intertwiner_iff_transpose`,
+  `actualPairedMatrix_reversedPairs`, `actualPairedMatrix_inverse_spec`,
+  `actualPairedMatrix_inverse_conjugacy_iff`.
 
-## Remaining orientation audit
+All seven direct production checks pass without diagnostics. Their
+56 transitive axiom audits use only `propext`, `Classical.choice`, and
+`Quot.sound`. Umbrella imports wired.
 
-The source uses reversed digit order; `M_a M_b=R^a L^b` and uniqueness of
+## Actual digit bridge and inverse classes
+
+The source uses reversed digit order; `M_a M_b=R^(a+1) L^(b+1)` and uniqueness of
 positive alternating runs now connect it exactly to the matrix classification.
 A conjugacy cut producing another aligned word must cut at a whole run-pair
 boundary. Repeated words inherit the same first and last generator, giving
 the exact whole-pair root classification.
 
-For `J=(0,−1;1,0)`, the proposed inverse-class audit uses
+For `J=(0,−1;1,0)`, exact multiplication gives
 `J A⁻¹ J⁻¹=Aᵀ`. Gauss digit matrices are symmetric, so transpose reverses
-digit order. Formalize this exact involution and its cyclic-pair criterion.
+digit order. On pair sequences this is `ps.reverse.map (a,b ↦ (b,a))`.
+The inverse of the actual matrix of `ps` is integrally conjugate to the
+actual matrix of `qs` exactly when `qs` is a cyclic rotation of that reversed
+pair sequence. The explicit adjugate is proved to be the two-sided inverse.
 No oriented/unoriented geodesic identification, Selberg-product identity,
 scattering normalization, or resonance exclusion is assumed.

@@ -139,7 +139,8 @@ Weil's sign convention, Hodge–Riemann = `W ≥ 0` on primitive vectors.
     (`markovPair_star_nonpos_of_lt`), and the pole rows are nonnegative
     (`starPoleRow_nonneg`). The Lorentzian sign hypothesis therefore holds on the stars of depth
     beyond the overlap and fails across the shallow ones, where ALG's Metzler threshold `1` is
-    exceeded.
+    exceeded. On a deep star, ALG's trickle-down below the spacing therefore applies to the
+    lower-resolution family that the star is isometric to.
 13. *Depth and conductor are dual.* RAPT's completed conductor energy is
     `E_m(c) = φ(m)⁻¹ Σ_{d ∣ m} μ(m/d) d E(c/d)`: the conductor-`m` mode is governed by the pole
     energy at the star overlaps `c/d` of the divisors of `m`. Stars and conductors degenerate in the
@@ -161,8 +162,9 @@ Weil's sign convention, Hodge–Riemann = `W ≥ 0` on primitive vectors.
     through polarization `eq_of_qf_eq`). Hence
     `W_{c,N}(x) = Σ_{g ≤ N} Cop(W_{c⌊N/g⌋/N, ⌊N/g⌋})(x(g·))` (`completeWeilEnergy_gcd_stratification`).
     A coprime pair is diagonal only at the root (`coprime_self_iff`), so each stratum is an
-    off-diagonal form. Every successor pair `(n, n+1)` lies in the top stratum, and an affine shell
-    `(n, kn+h)` lies in the stratum `gcd(n, h)`.
+    off-diagonal form. Every successor pair `(n, n+1)` lies in the top stratum
+    (`successor_coprime`), and an affine shell `(n, kn+h)` lies in the stratum `gcd(n, h)`
+    (`gcd_affine_shell`).
 17. *The renormalized prime form is glued from its stars.* With `Σ_{d∣n} μ(d) log d = −Λ(n)`, the
     star counterterms add up at `n` to `log N − γ − Λ(n)` up to floor defects
     (`sum_star_counterterms`). The missing `Λ` completes the cone of the root to a sum of squares:
@@ -234,7 +236,7 @@ Weil's sign convention, Hodge–Riemann = `W ≥ 0` on primitive vectors.
 | **Lefschetz operator.** Dilation generator, overlap derivative or coupling Laplacian? | **Dilation**: HL is free (an isometric embedding of a lower resolution). It transports positivity downward and creates none: every deep star is positive, yet without RH the whole form fails infinitely often. **Overlap flow**: HL on its HR locus over `[1, 2(log N)^β]` is exactly RH, and without RH primitive zero modes appear infinitely often. **Coupling Laplacian**: HL is free for `t > 0` and the index is `κ(K_ζ)` throughout, but the base point `t = 0` is the zero form. No candidate is a free Lefschetz operator with an HR base point. | `dilation_transports_downward`, `not_rh_gluing_failure`, `riemannHypothesis_iff_liouville_along_the_overlap_flow`, `frequently_exists_primitive_zero_mode_of_not_rh`, `couplingLaplacian_transports_the_index` |
 | **Shell degree.** Is there a Lefschetz-type decomposition paying it jointly with the pole? | Yes on every finite conductor sector at fixed overlap. RAPT's repayment writes the shell-completed conductor energy as `(2/(Mφ(m))) Σ_{(a,m)=1} (m/a) ∫_{ac/m}^∞ |φ̂|²`, graded by the coprime shell index `a` and positive term by term. It degenerates, `E_m(c) → 0`, in the order of the conductors, and by depth–conductor duality in the order of the stars. On the coherent sector the balance of affine energy against shell degree is exact shell by shell: surplus `b_p²/p²` for primes coprime to the shell, a deficit for primes dividing the shift, and exactly zero on average over a complete period of shifts. Joint payment has no margin in the bulk. Its sign is set by the distribution of the shell shifts modulo the packet primes and by the ratios sharing primes with the packet. Uniform joint payment is therefore an estimate (review Σ-3), not an identity. | RAPT `hasSum_completedConductorEnergy`, `tendsto_completedConductorEnergy_atTop`; `shellBalance_eq`, `shellBalance_of_coprime`, `sum_shellBalance_eq_zero` |
 | **Base point and path.** Can the universal regime be the base point and the overlap flow the path? | Yes, and the mechanism is exact. The universal regime gives positive definiteness at overlap `1`. Transport needs HL only on the HR locus. The resulting criterion, the Liouville property along the overlap flow, is equivalent to RH. | `hodgeRiemann_transport_on`, `hyperplanePositiveAt_of_liouville`, `riemannHypothesis_iff_liouville_along_the_overlap_flow` |
-| **Function-field model.** Buildings, Ramanujan complexes, or Frobenius on commensurable towers? | Frobenius on commensurable towers: the degree lattice of the curve. There the links are complete, stars are translates, and the selection identity holds, since `Λ_C ∗ 1 = deg · log q` is additive. The flow stabilizes at window `2g` (EHT, ACS Pontryagin law). Garland-type local-to-global statements concern spectral gaps of Laplacians. Their exact arithmetic counterpart, the Euler-product Künneth step, gives the gap `2 log 2` of the dilation Laplacian, not Weil positivity. Buildings are therefore not the model of the Hodge index. | `degreeLink_adj`, `gap_prod_ge`, `towerEnergy_valuationStep`; EHT `windowEdge_le_card`; ACS `pontryagin_law_curve` |
+| **Function-field model.** Buildings, Ramanujan complexes, or Frobenius on commensurable towers? | Frobenius on commensurable towers: the degree lattice of the curve. There the links are complete, stars are translates, and the selection identity holds, since `Λ_C ∗ 1 = deg · log q` is additive. The flow stabilizes at window `2g` (EHT, ACS Pontryagin law). Garland-type local-to-global statements concern spectral gaps of Laplacians. Their exact arithmetic counterpart, the Euler-product Künneth step, gives the gap `2 log 2` of the dilation Laplacian, not Weil positivity. Buildings model the spectral-gap part of the package, not its Hodge index. | `degreeLink_adj`, `gap_prod_ge`, `towerEnergy_valuationStep`; EHT `windowEdge_le_card`; ACS `pontryagin_law_curve` |
 | **Liouville test.** Must a primitive zero mode at the first failure have vanishing jump and affine energies? | Vanishing jump energy alone forces it to be zero, so the Liouville property is exactly HL on the positive locus. Along the overlap flow it is equivalent to RH, and without RH it fails infinitely often. The positive survivor is ACoT's localization: primitive zero modes have bounded jump energy and lie in a finite conductor sector. | `liouvilleAt_iff_hardLefschetz`, `riemannHypothesis_iff_liouville_along_the_overlap_flow`, `frequently_exists_primitive_zero_mode_of_not_rh`; ACoT `jumpEnergy_add_half_affine_le_of_nonpos` |
 
 ## 6. Pillar theorems
@@ -288,13 +290,11 @@ Weil's sign convention, Hodge–Riemann = `W ≥ 0` on primitive vectors.
 - Sign gauge on stars: gaps of star atoms, separated Markov pairs, nonnegative pole rows.
 
 **To build.**
-- A gluing inequality for the coprime part `W_cop` against the Möbius-signed star terms, with a
-  constant independent of `N`.
-- The layered Künneth step for the complete Weil family: the archimedean part does not preserve
+- Control of the top coprime stratum by the strata below, with constants independent of `N`
+  (open topic 1).
+- The layered Künneth step for the complete Weil family. The archimedean part does not preserve
   valuation layers, so the layers of a prime are coupled through the successor pairs as well as
   through the `p`-towers.
-- A trickle-down statement on deep stars assembled from the sign gauge, the pole rows and the
-  star law.
 
 ## 8. Open research topics
 
@@ -392,12 +392,11 @@ is benign: each level contributes a root defect, a sum of squares, and unwinding
 ground-state identity. What is not benign is the top coprime stratum of the complete form. It holds
 every successor pair and the coprime shells: the additive coupling of the multiplicative towers.
 
-Every RH-free statement in the package is proved: local positivity, flux, transport and the
-recursions. RH reappears in three equivalent places:
+The RH-free parts of the package are proved: local positivity, flux, transport and the recursions.
+RH reappears as an exact equivalence in two places:
 - the hard Lefschetz property of the overlap flow;
-- the half-power growth of the nerve's Euler characteristic;
-- positivity of the top coprime stratum against the strata below, with level-independent
-  constants.
+- the half-power growth of the nerve's Euler characteristic.
 
-The last is the inductive step that Hodge theory without varieties supplies where it works. Over
-`ℤ` it has a precise target: the successor and archimedean coupling of coprime atoms.
+The open inductive step is positivity of the top coprime stratum against the strata below, with
+level-independent constants. It is the step that Hodge theory without varieties supplies where it
+works. Over `ℤ` it has a precise target: the successor and archimedean coupling of coprime atoms.

@@ -93,11 +93,11 @@ theorem sum_abs_sub_gaugeHarmonicSum_div_le_absHarmonic (N : ℕ) :
   linarith [absHarmonic_nonneg ω (N / (N - 1 + 1))]
 
 /-- **Abel summation of the prime terms against `W`.** -/
-theorem abs_primePart_sub_le_absHarmonic (hbd : ∀ n, |ω n| ≤ 1) {β C : ℝ}
-    (hA : ∀ n, 1 ≤ n → |primeMean ω n - β * Real.log n| ≤ C) {N : ℕ} (hN : 1 ≤ N) :
+theorem abs_primePart_sub_le_absHarmonic (hbd : ∀ n, |ω n| ≤ 1) {β C : ℝ} {N : ℕ} (hN : 1 ≤ N)
+    (hA : ∀ n, 1 ≤ n → n ≤ N → |primeMean ω n - β * Real.log n| ≤ C) :
     |∑ k ∈ Icc 1 N with k.Prime, ω k * Real.log k / k * gaugeHarmonicSum ω (N / k) -
         β * logWeightSum ω N| ≤ C * (1 + absHarmonic ω N) := by
-  have hC : 0 ≤ C := (abs_nonneg _).trans (hA 1 le_rfl)
+  have hC : 0 ≤ C := (abs_nonneg _).trans (hA 1 le_rfl hN)
   set a : ℕ → ℝ := fun k => if k.Prime then ω k * Real.log k / k else 0
   set g : ℕ → ℝ := fun i => a (i + 1) - β * (Real.log ((i + 1 : ℕ) : ℝ) - Real.log (i : ℝ))
   set f : ℕ → ℝ := fun i => gaugeHarmonicSum ω (N / (i + 1))
@@ -112,10 +112,10 @@ theorem abs_primePart_sub_le_absHarmonic (hbd : ∀ n, |ω n| ≤ 1) {β C : ℝ
     rw [sum_sub_distrib, ← mul_sum]
     push_cast
     rw [sum_range_log_succ_sub, primeMean, sum_filter, sumIcc_eq_sumRange]
-  have hGb : ∀ n, |∑ i ∈ range n, g i| ≤ C := fun n => by
+  have hGb : ∀ n, n ≤ N → |∑ i ∈ range n, g i| ≤ C := fun n hnN => by
     rcases Nat.eq_zero_or_pos n with rfl | hn
     · simp [hC]
-    · rw [hG]; exact hA n hn
+    · rw [hG]; exact hA n hn hnN
   rw [hsplit, sum_range_by_parts]
   have hf1 : |f (N - 1)| ≤ 1 := by
     simp only [f, Nat.sub_add_cancel hN, Nat.div_self hN]
@@ -127,11 +127,12 @@ theorem abs_primePart_sub_le_absHarmonic (hbd : ∀ n, |ω n| ≤ 1) {β C : ℝ
         ∑ i ∈ range (N - 1), (f (i + 1) - f i) • ∑ j ∈ range (i + 1), g j|
       ≤ |f (N - 1)| * C + ∑ i ∈ range (N - 1), |f (i + 1) - f i| * C := by
         refine (abs_sub _ _).trans (add_le_add ?_ ((abs_sum_le_sum_abs _ _).trans
-          (sum_le_sum fun i _ => ?_)))
+          (sum_le_sum fun i hi => ?_)))
         · rw [smul_eq_mul, abs_mul]
-          exact mul_le_mul_of_nonneg_left (hGb N) (abs_nonneg _)
+          exact mul_le_mul_of_nonneg_left (hGb N le_rfl) (abs_nonneg _)
         · rw [smul_eq_mul, abs_mul]
-          exact mul_le_mul_of_nonneg_left (hGb _) (abs_nonneg _)
+          exact mul_le_mul_of_nonneg_left (hGb _ (by have := mem_range.mp hi; omega))
+            (abs_nonneg _)
     _ ≤ 1 * C + absHarmonic ω N * C := by
         rw [← sum_mul]
         refine add_le_add (mul_le_mul_of_nonneg_right hf1 hC)
@@ -151,7 +152,7 @@ theorem nonprime_const_nonneg :
 `|L(N) log N − (1 + β) M(N)| ≤ (C + C') (1 + W(N)) + 2|β|`. -/
 theorem abs_wirsing_equation_le_absHarmonic
     (hmul : ∀ a b, a ≠ 0 → b ≠ 0 → ω (a * b) = ω a * ω b) (hbd : ∀ n, |ω n| ≤ 1) {β C : ℝ}
-    (hA : ∀ n, 1 ≤ n → |primeMean ω n - β * Real.log n| ≤ C) {N : ℕ} (hN : 1 ≤ N) :
+    {N : ℕ} (hN : 1 ≤ N) (hA : ∀ n, 1 ≤ n → n ≤ N → |primeMean ω n - β * Real.log n| ≤ C) :
     |gaugeHarmonicSum ω N * Real.log N - (1 + β) * polarMoment ω N| ≤
       (C + (2 * (Real.log 4 + 4) + (8 + RHTower.Mertens.mertensTail))) *
         (1 + absHarmonic ω N) + 2 * |β| := by
@@ -188,7 +189,7 @@ theorem abs_wirsing_equation_le_absHarmonic
     refine (sum_le_sum hterm).trans ?_
     rw [← sum_mul]
     exact mul_le_mul_of_nonneg_right (sum_vonMangoldt_nonprime_le hN) hW
-  have hab := abs_primePart_sub_le_absHarmonic ω hbd hA hN
+  have hab := abs_primePart_sub_le_absHarmonic ω hbd hN hA
   have hpm := abs_polarMoment_sub_logWeightSum_le hbd hN
   have heq : gaugeHarmonicSum ω N * Real.log N - (1 + β) * polarMoment ω N =
       (∑ k ∈ Icc 1 N with k.Prime, ω k * Real.log k / k * gaugeHarmonicSum ω (N / k) -
@@ -199,7 +200,7 @@ theorem abs_wirsing_equation_le_absHarmonic
   rw [heq]
   have hβ : |β * (polarMoment ω N - logWeightSum ω N)| ≤ 2 * |β| := by
     rw [abs_mul, mul_comm]; exact mul_le_mul_of_nonneg_right hpm (abs_nonneg _)
-  have hC : 0 ≤ C := (abs_nonneg _).trans (hA 1 le_rfl)
+  have hC : 0 ≤ C := (abs_nonneg _).trans (hA 1 le_rfl hN)
   calc _ ≤ |∑ k ∈ Icc 1 N with k.Prime, ω k * Real.log k / k * gaugeHarmonicSum ω (N / k) -
           β * logWeightSum ω N| +
         |∑ d ∈ Icc 1 N with ¬ d.Prime, Λ d * (ω d / d) * gaugeHarmonicSum ω (N / d)| +
@@ -275,11 +276,12 @@ theorem roughHarmonic_le_one_of_lt {Q n : ℕ} (h : n < Q) : roughHarmonic Q n �
           fun _ _ _ => by positivity
     _ = 1 := by simp
 
-/-- The prime mean of the rough gauge is `β log n` up to `2C + β log Q`. -/
-theorem abs_primeMean_roughGauge_sub_le {β C : ℝ} (hβ : 0 ≤ β)
-    (hA : ∀ n, 1 ≤ n → |primeMean ω n - β * Real.log n| ≤ C) {Q : ℕ} (hQ : 2 ≤ Q) {n : ℕ}
-    (hn : 1 ≤ n) :
-    |primeMean (roughGauge Q ω) n - β * Real.log n| ≤ 2 * C + β * Real.log Q := by
+/-- The prime mean of the rough gauge is `β log n` up to `2C(1 + log n)^α + β log Q`. -/
+theorem abs_primeMean_roughGauge_sub_le {β C α : ℝ} (hβ : 0 ≤ β) (hα : 0 ≤ α)
+    (hA : ∀ n, 1 ≤ n → |primeMean ω n - β * Real.log n| ≤ C * (1 + Real.log n) ^ α) {Q : ℕ}
+    (hQ : 2 ≤ Q) {n : ℕ} (hn : 1 ≤ n) :
+    |primeMean (roughGauge Q ω) n - β * Real.log n| ≤
+      2 * (C * (1 + Real.log n) ^ α) + β * Real.log Q := by
   set m := min n (Q - 1)
   have hm1 : 1 ≤ m := le_min hn (by omega)
   -- the primes below `Q` are exactly those up to `m`
@@ -304,8 +306,14 @@ theorem abs_primeMean_roughGauge_sub_le {β C : ℝ} (hβ : 0 ≤ β)
         exact ⟨⟨h.1.1, h.1.2, by have := h.2.2; omega⟩, h.2.1⟩
       · intro h
         exact ⟨⟨h.1.1, h.1.2.1⟩, h.2, by have := h.1.2.2; omega⟩
+  have hC : 0 ≤ C := by simpa using (abs_nonneg _).trans (hA 1 le_rfl)
   have h1 := hA n hn
-  have h2 := hA m hm1
+  have h2 : |primeMean ω m - β * Real.log m| ≤ C * (1 + Real.log n) ^ α := by
+    refine (hA m hm1).trans (mul_le_mul_of_nonneg_left (Real.rpow_le_rpow
+      (by linarith [Real.log_natCast_nonneg m]) ?_ hα) hC)
+    have := Real.log_le_log (by exact_mod_cast (show 0 < m by omega))
+      (show (m : ℝ) ≤ n by exact_mod_cast (show m ≤ n by omega))
+    linarith
   have hlogm : 0 ≤ Real.log m := Real.log_natCast_nonneg m
   have hmQ : Real.log m ≤ Real.log Q :=
     Real.log_le_log (by exact_mod_cast hm1) (by exact_mod_cast (show m ≤ Q by omega))

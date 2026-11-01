@@ -37,6 +37,17 @@ namespace GaloisForLFunctions.HodgeTheoryWithoutVarieties
 /-- A coprime pair on the diagonal is the root: `gcd(n, n) = 1 ⇔ n = 1`. -/
 theorem coprime_self_iff (n : ℕ) : Nat.Coprime n n ↔ n = 1 := Nat.coprime_self n
 
+/-- **An affine shell lies in the stratum of its shift**: `gcd(n, kn + h) = gcd(n, h)`. -/
+theorem gcd_affine_shell (n k h : ℕ) : Nat.gcd n (k * n + h) = Nat.gcd n h := by
+  rw [add_comm]
+  exact Nat.gcd_add_mul_right_right n h k
+
+/-- **Every successor pair lies in the top stratum**: `gcd(n, n + 1) = 1`. -/
+theorem successor_coprime (n : ℕ) : Nat.Coprime n (n + 1) := by
+  have := gcd_affine_shell n 1 1
+  rw [one_mul, Nat.gcd_one_right] at this
+  exact this
+
 /-- **The gcd stratification of a quadratic form.** For values `v i ∈ [1, N]`, every form is the
 sum over `g ≤ N` of its pairs with `gcd = g`. -/
 theorem quadratic_gcd_stratification {ι : Type*} [Fintype ι] {N : ℕ} (v : ι → ℕ)

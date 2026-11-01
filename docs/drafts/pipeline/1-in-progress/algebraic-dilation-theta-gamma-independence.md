@@ -48,8 +48,11 @@ uniqueness at infinitely many prime logarithms should make these jet rows
 span every finite packet even after deleting finitely many primes.
 Polarization would then kill the top homogeneous relation.
 
-This needs an actual convergent Fourier-coefficient extraction theorem and
-its polynomial-product justification. Logarithmic derivatives are
+The corpus already proves absolutely convergent product expansion
+(`ExponentialSeriesAlgebra.prod_expSeriesCarrier`) and coefficient extraction
+with frequency collisions (`ExponentialSeriesFiberwise.fiberAmplitude_eq_zero_of_expSeriesCarrier_eq_zero`).
+The missing bridge is the actual log-derivative jet expansion, its summability,
+and the Baker-separated prime-fiber and top-degree polarization argument. Logarithmic derivatives are
 meromorphic in the upper half-plane, so they cannot be inserted as analytic
 representatives into the physical Gamma receiver. Transfer their differential
 independence to the actual zeta dilates in rotated right-half-plane germs,
