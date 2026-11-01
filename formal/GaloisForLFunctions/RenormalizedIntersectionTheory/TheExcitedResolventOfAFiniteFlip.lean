@@ -52,7 +52,6 @@ theorem primeEnergy_eq_sum (N : ℕ) (w : EuclideanSpace ℝ (PrimeHorizonIndex 
 theorem norm_sq_eq_sum_eigen (N : ℕ) (w : EuclideanSpace ℝ (PrimeHorizonIndex N)) :
     ‖w‖ ^ 2 = ∑ i, ⟪w, primeEigen N i⟫ ^ 2 := by
   rw [← (fullPrimeMatrix_isHermitian N).eigenvectorBasis.sum_sq_inner_left w]
-  exact sum_congr rfl fun i _ => by rw [real_inner_comm]
 
 theorem inner_eq_sum_eigen (N : ℕ) (w v : EuclideanSpace ℝ (PrimeHorizonIndex N)) :
     ⟪w, v⟫ = ∑ i, ⟪w, primeEigen N i⟫ * ⟪v, primeEigen N i⟫ := by
@@ -153,7 +152,7 @@ theorem eventually_exists_ground {t : ℝ} (ht : 0 < t) (ht2 : t < 2 * Real.log 
   have hcount := hshift.eventually (eventually_fullPrime_ground_count_one ht ht2)
   refine shift_eventually ?_
   filter_upwards [hnear, hcount] with N hN hc
-  rw [Metric.mem_closedBall, Real.dist_eq, sub_zero] at hN
+  rw [Real.dist_eq, sub_zero] at hN
   have hlt : fullPrimeEnergyEigenvalue (N + 1) (idx N) < γ + t := by
     have := (abs_le.mp (hN.trans (min_le_right _ _))).2; linarith
   exact ⟨idx N, isGroundBelow_of_card_one hc hlt, hN.trans (min_le_left _ _)⟩
@@ -182,11 +181,12 @@ theorem eventually_excitedResolvent_finiteFlip_le (F : Finset ℕ) (hF : ∀ p �
     field_simp; ring
   rw [hval] at hlim
   have hev := hlim.eventually (ge_mem_nhds (lt_add_of_pos_right _ hε))
-  have hnear := (hE.sub_const γ).eventually (Metric.ball_mem_nhds (0 : ℝ) (show 0 < t by linarith))
+  have hE0 := hE.sub_const γ
+  rw [sub_self] at hE0
+  have hnear := hE0.eventually (Metric.ball_mem_nhds (0 : ℝ) (show 0 < t by linarith))
   refine shift_eventually ?_
   filter_upwards [hev, hnear] with N hN hnN i₀ hg
-  rw [sub_self] at hnN
-  rw [Metric.mem_ball, Real.dist_eq, sub_zero] at hnN
+  rw [Real.dist_eq, sub_zero] at hnN
   -- the eigenline `idx N` is the ground `i₀`
   have hidx : idx N = i₀ := by
     by_contra hne
@@ -201,6 +201,7 @@ theorem eventually_excitedResolvent_finiteFlip_le (F : Finset ℕ) (hF : ∀ p �
     rw [finiteFlipFiniteResolvent, ← add_sum_erase _ _ (mem_univ (idx N))]
     rfl
   rw [hsplit] at hN
+  simp only [Pi.div_apply, primeEigen] at hN
   linarith
 
 end GaloisForLFunctions.RenormalizedIntersectionTheory

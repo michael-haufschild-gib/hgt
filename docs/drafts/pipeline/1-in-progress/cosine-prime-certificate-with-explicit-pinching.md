@@ -34,3 +34,13 @@ that same window at every step.
 
 The resulting signed surplus bound remains the arithmetic problem; replacing
 it by an unsigned factor-two envelope is excluded by the phase-resonance example.
+
+## Endpoint conjecture
+
+The same certificate should extend to every fixed `0<λ≤2`. At λ=2,
+`θ₀=O(log T)` but its hat-unit normalization `θ₀/(aL)` is bounded.
+The perturbation loss is then `O(1+√F)`, where F is the normalized prime
+Frobenius square. When the proposed lower bound is positive, its retained
+surplus forces `F=O(N)`; otherwise the conclusion is trivial. Thus this loss
+is `o(N)` without requiring `θ₀→0`. The wide trace error is `O(√X+log T)=O(T)`,
+also `o(N)`. Endpoint transport is not yet formalized.

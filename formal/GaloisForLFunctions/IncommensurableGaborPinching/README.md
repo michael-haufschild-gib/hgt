@@ -61,6 +61,7 @@ External (Zeta23): `kc` `k_c(t) = c² − ((c − t)₊)²`, `Pmat`, `xsq`, `ran
 | Non-lattice floor of the MT kernel | `one_div_250_le_abs_mtKernel`, `exists_pair_mtKernel_ge_of_triple` | proved |
 | Bulk grid overlap ≈ kernel | `eventually_pairGridOverlap_atD_close` | proved |
 | Arbitrary-bandwidth cosine sampling | `pairGridOverlap_cosineParams_error`, `eventually_pairGridOverlap_cosineParams_close` | proved |
+| Wide local estimates and complex-strip Fourier decay for independent cosine shape and bandwidth | `cosineParams_eventually_localHypsCoreW`, `cosineParams_phiHat_decay` | proved |
 | Explicit actual credit `1/[200(10+720π²λ²)²]` at every fixed positive bandwidth | `zetaCosine_explicit_disjointPairs`, `zetaCosine_explicit_rankTrace` | proved, unconditional |
 | Exact kernel degeneracy classification | `mtKernel_additive_zero_triple_iff` | proved |
 | Explicit all-frequency weighted triple floor | `cotangentLineResidual_triple_floor`, `mtKernel_explicit_triple_floor` | proved |

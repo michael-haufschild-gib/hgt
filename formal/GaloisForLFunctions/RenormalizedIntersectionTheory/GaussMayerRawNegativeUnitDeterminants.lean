@@ -124,7 +124,8 @@ theorem norm_centeredTail {w : ℂ} (hw : 0 < w.re) (N : ℕ) :
   exact norm_branch_weight_sub_le hw (Nat.succ_pos _) z.property
 
 
-private def degreeBound : ℝ := ∑' j : ℕ, ((j : ℝ)+1)*(8/9 : ℝ)^j
+/-- A geometric majorant for linear growth of rescaled Cauchy monomials. -/
+def degreeBound : ℝ := ∑' j : ℕ, ((j : ℝ)+1)*(8/9 : ℝ)^j
 
 private theorem degree_summable : Summable (fun j : ℕ => ((j : ℝ)+1)*(8/9 : ℝ)^j) := by
   have h1 := summable_pow_mul_geometric_of_norm_lt_one 1
@@ -137,10 +138,11 @@ private theorem degree_summable : Summable (fun j : ℕ => ((j : ℝ)+1)*(8/9 : 
   rw [he]
   exact h1.add h0
 
-private theorem degreeBound_nonneg : 0 ≤ degreeBound :=
+theorem degreeBound_nonneg : 0 ≤ degreeBound :=
   tsum_nonneg fun j => mul_nonneg (by positivity) (pow_nonneg (by norm_num) _)
 
-private theorem degree_bound (j : ℕ) :
+/-- Linear monomial growth is absorbed by the fixed geometric rate. -/
+theorem degree_bound (j : ℕ) :
     ((j : ℝ)+1)*balanceRadius⁻¹^j ≤ degreeBound*rate^j := by
   have hj : ((j : ℝ)+1)*(8/9 : ℝ)^j ≤ degreeBound := by
     have hs := sum_le_hasSum ({j} : Finset ℕ)
@@ -213,7 +215,7 @@ theorem finiteRemainder_geometric {w : ℂ} (hw : 0 < w.re) (N : ℕ) :
 open GeomFredholm
 
 /-- Uniform geometric tails turn entrywise convergence into Fredholm convergence. -/
-private theorem tendsto_fdet_of_uniform_geometric
+theorem tendsto_fdet_of_uniform_geometric
     {A : ℕ → ℕ → ℕ → ℂ} {M : ℕ → ℕ → ℂ} {C η : ℝ}
     (hA : ∀ᶠ n in atTop, GeomDecay (A n) C η)
     (hentry : ∀ i j, Tendsto (fun n => A n i j) atTop (𝓝 (M i j))) (lam : ℂ) :
@@ -409,7 +411,8 @@ theorem eventually_correctedOperator_geometric {w : ℂ} (hw : 0 < w.re) :
     (mul_nonneg (pow_nonneg rate_bounds.1 _) hB)
   exact (add_le_add ((finiteRemainder_geometric hw N).bound i j) hproj).trans_eq (by ring)
 
-private theorem operatorMatrix_tendsto
+/-- Operator-norm convergence gives entrywise convergence of the actual Cauchy matrices. -/
+theorem operatorMatrix_tendsto
     {T : ℕ → DiscSpace →L[ℂ] DiscSpace} {R : DiscSpace →L[ℂ] DiscSpace}
     (hT : Tendsto T atTop (𝓝 R)) (i j : ℕ) :
     Tendsto (fun N => MayerPole.operatorMatrix (T N) i j) atTop (𝓝 (MayerPole.operatorMatrix R i j)) := by
@@ -438,7 +441,8 @@ theorem correctedDeterminant_tendsto {w : ℂ} (hw : 0 < w.re) :
 def rawMatrix (w : ℂ) (hw : 0 < w.re) (N : ℕ) : ℕ → ℕ → ℂ :=
   MayerPole.operatorMatrix (cutoff w hw N)
 
-private theorem rawMatrix_decomposition {w : ℂ} (hw : 0 < w.re) (N i j : ℕ) :
+/-- The genuine finite Cauchy matrix retains exactly its finite scalar constant mode. -/
+theorem rawMatrix_decomposition {w : ℂ} (hw : 0 < w.re) (N i j : ℕ) :
     rawMatrix w hw N i j = MayerPole.operatorMatrix (finiteRemainder w N) i j +
       scalarPart w N * MayerPole.projectionMatrix i j := by
   unfold rawMatrix

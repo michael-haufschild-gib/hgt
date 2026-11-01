@@ -45,13 +45,30 @@ Uniform geometric continuity already gives `A_N→A`.
 
 ## Open proof obligations
 
-- Exact finite-section compression identity and passage to Fredholm limits.
+- [x] Exact finite-section compression identity and passage to Fredholm limits.
 - Actual double-centered branch and geometric tail bounds.
-- Dimension-independent determinant perturbation bound.
+- [x] Dimension-independent determinant perturbation bound.
 - Finite-part limit and exact convergence classification.
 
 Corpus searches returned affine source determinants, uniform geometric
 remainder estimates, rank-one determinant identities, and multilinear
-perturbation estimates. No checked result yet discharges the three new
-inputs above. Scratch formalization has begun; no certificate is claimed.
+perturbation estimates. The perturbation input below is certified; the actual double-centered tails are not yet certified.
 No literature-priority or resonance-exclusion claim is made.
+
+## Certified perturbation input
+
+`GaussMayerDeterminantPerturbation.lean` proves
+`|fdet(M,λ)−fdet(N,λ)|≤δ|λ|S² exp(|λ|CS²)` when both matrices have
+common entry bound `Cη^(i+j)` and their difference has bound `δη^(i+j)`,
+with `S=(1−η)⁻¹`. Row replacement proves a bound uniform in finite-section
+size; convergence passes it to the Fredholm limit. No inverse is required.
+Direct production check passed; three audits contain only the standard
+three axioms. Actual branch-tail inputs remain open.
+
+`GaussMayerComplementaryDeterminant.lean` proves the exact identity
+`fdet(M+tP,λ)=fdet(M,λ)−tλ fdet(C,λ)`, where
+`P_{ij}=1_{i=0}q_j`, `q_0=1`, and
+`C_{ij}=M_{i+1,j+1}−M_{i+1,0}q_{j+1}`. A triangular shear gives the
+finite identity; geometric convergence passes it to the Fredholm limit.
+Direct production check passed; five audits contain only the standard
+three axioms. The actual Mayer compression still needs identification.

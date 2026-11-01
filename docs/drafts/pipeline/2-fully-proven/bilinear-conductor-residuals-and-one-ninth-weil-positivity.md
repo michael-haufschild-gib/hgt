@@ -1,7 +1,7 @@
 # Bilinear Conductor Residuals, Sub-One-Eighth Packet Positivity, and Unconditional All-Vector Weil Positivity Below 1/9
 
 - **ID:** bilinear-conductor-residuals-and-one-ninth-weil-positivity
-- **Stage:** 1-in-progress
+- **Stage:** 2-fully-proven
 - **Type:** THEOREM (paper)
 - **Source:** docs/reports/review-3110/obstacles-summary.md · Q1 / Σ-2 / Σ-3
 - **Statement:** Across all eight explicit-formula channels, the complete-Weil conductor residual pairing satisfies $|\langle W_{\varphi,c,N} v_{m,N} - E_\varphi(c,m) v_{m,N},\, v_{l,N}\rangle| \le K \sqrt{ml}(1 + \log m)\big(c(1 + \log c)^2 (\log N)^{1/k}/\log N + c^5 \log N / N\big)$, rendering `completeWeilMatrix tiltedUnitSpline c N` positive definite on every fixed finite conductor packet and coercive on polylogarithmic conductor subspaces across $1 \le c \le (\log N)^\alpha$ for all $0 < \alpha < 1/8$; combined with a homogeneous four-band orthogonal decomposition $V_{Q_1} \oplus (V_{R_0} \cap V_{Q_1}^\perp) \oplus (V_{R_1} \cap V_{R_0}^\perp) \oplus V_{R_1}^\perp$ that eliminates sublevel confinement, `completeWeilMatrix tiltedUnitSpline c N` is unconditionally positive definite on all vectors across $1 \le c \le (\log N)^\alpha$ for all $0 < \alpha < 1/9$.
