@@ -78,3 +78,7 @@ The new contribution is the finite-family Gamma coefficient separation
 and its actual-source application to all integer dilations. The arithmetic
 carrier independence and theta differential-algebraic base change are
 existing inputs. No priority beyond the audited corpus is claimed.
+
+The [rational-dilation extension](rational-dilation-theta-gamma-independence.md)
+now covers all positive rational scales and classifies both expanding and
+contracting rational Mahler orbits.

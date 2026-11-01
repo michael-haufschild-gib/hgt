@@ -49,9 +49,12 @@ At heat coefficient `133/200`, their limiting saddle gaps are respectively
   finite Abel bounds `exists_norm_sum_directWeight_mul_le` and
   `exists_norm_sum_dualWeight_mul_le`. Differentiating the Mellin power cancels
   the kernel's denominator; positive and negative contours control variation.
-- Pending: finite critical-line AFE transfer, the `5/6` line bound, all four
-  strip profiles, and the order-uniform heat conclusion.
+- Checked: the complete `5/6` line estimate
+  `norm_riemannZeta_fiveSixths_le`, with constant `10^7`, exponent `2/53`
+  and logarithmic factor for `t ≥ 8`.
+- Pending: finite critical-line AFE transfer, all four strip profiles,
+  and the order-uniform heat conclusion.
 
 The published Bourgain pair in `BourgainLogExponentPair` is a target with an
-unproved analytic premise, not an available subconvexity theorem. Neither new
-zeta exponent nor the heat conclusion is yet certified.
+unproved analytic premise, not an available subconvexity theorem. The critical-line
+sub-Weyl exponent and heat conclusion are not yet certified.

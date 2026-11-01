@@ -12,7 +12,7 @@ field `ℂ(s)⟨Γ,θ₂,θ₃,θ₄,E₂⟩`. This excludes the proposed nonlin
 algebraic differential–Mahler equation in this coefficient class.
 
 It does not exclude arbitrary variable period coefficients, special-value
-relations, noninteger dilation parameters, or an independently specified
+relations, irrational dilation parameters, or an independently specified
 Böttcher realization outside this class.
 
 ## Positive survivor
@@ -34,3 +34,6 @@ The production module passed its direct Lean check without diagnostics;
 all five transitive axiom audits use only `propext`, `Classical.choice`,
 `Quot.sound`. Both the obstruction and the stronger positive survivor are
 formalized, with the actual analytic representatives identified.
+
+Positive rational multipliers, including contracting orbits, are now covered by the
+[sharp rational boundary](rational-differential-mahler-theta-gamma-shortcut.md).
