@@ -1,8 +1,8 @@
 # An isolated pair is visible immediately above Nyquist
 
 - **ID:** isolated-pair-visible-immediately-above-nyquist
-- **Stage:** 2-fully-proven
-- **Type:** THEOREM (paper)
+- **Stage:** 3-formalized
+- **Type:** THEOREM (Lean)
 - **Source:** `review-0111/obstacles-summary.md`, A3.
 - **Statement:** For every `L>0`, `0<δ≤1/2`, height `γ`, and aperture
   `a>L/2`, the doubled on-line lattice with the single reflected pair
@@ -30,4 +30,12 @@ Together with the exact sub-Nyquist law, this gives the global edge
 ## Gates
 
 - [x] Dependency-closed paper proof.
-- [ ] Exact Lean theorem and transitive axiom audit.
+- [x] Exact Lean theorem, direct compilation, standard-axiom audit, umbrella import.
+
+## Lean
+
+`ArithmeticCastelnuovoSeveri/AnIsolatedPairIsVisibleAboveNyquist.lean` proves
+`exists_isolatedPair_test_eq_neg_two_above_nyquist` and
+`hodgeDefectAt_isolatedPair_eq_one_of_nyquist_lt`.
+Direct `lake --old env lean` audit passes; both declarations depend only
+on `propext`, `Classical.choice`, and `Quot.sound`. Umbrella import present.

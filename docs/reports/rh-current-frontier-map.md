@@ -1,7 +1,7 @@
 # RH proof-route frontier
 
 **RH open · 33 live routes · 16 candidates.**
-**Corpus checkpoint:** `a7443c4e62d3203811aafe8adeff9ad9157d2529`.
+**Corpus checkpoint:** `1dacb26ad6a0b85bd95c84befe339f5de39ca82a`.
 
 Live = source observable + proved RH-sufficient receiver + explicit open estimate. Candidate = missing independent source mechanism/landing.
 Evidence: [L] integrated, source-reviewed; [S] unfinished/unintegrated, unverified; [K] individual Lean + standard-only transitive-axiom audit. Untagged established facts: [L].
@@ -171,9 +171,9 @@ Evidence: [L] integrated, source-reviewed; [S] unfinished/unintegrated, unverifi
 ### PM — Physical-model Haar approximation (FZZ-P)
 
 - **Path:** Global Haar approximation / cofinal damping ε↓0 / every escape limit visible → RH.
-- **Established:** Escape receivers; regularized Gauss–Mayer determinant; primitive coding with pair-root/rotation multiplicities. Exact even-word exponential and determinant nonvanishing for Re w>2, |z|≤1; D(w,−1)≠0 for real w>0.
-- **Open:** Cofinal complete-energy control and exclusion of escape. Scattering: multiplier rotation/power laws and convergent primitive-cycle regrouping, then faithful ζ identification and critical-strip resonance exclusion.
-- **Sources:** CP:TheEscapeCompletenessCriterion; ACG:RHIsTheVisibilityOfEveryEscapeState; RIT:GaussMayerPrimitiveOrientation; RIT:GaussMayerPrimitivePairCycles; RIT:GaussMayerUnitEvenWordDeterminant.
+- **Established:** Escape receivers; regularized Gauss–Mayer determinant; exact word↔(primitive cycle, repetition, root position) indexing. Actual even-source-word bridge [S]. Even-word exponential and determinant nonvanishing for Re w>2, |z|≤1; D(w,−1)≠0 for real w>0.
+- **Open:** Cofinal complete-energy control and exclusion of escape. Scattering: multiplier rotation/power laws and convergent weighted Euler-product regrouping, then faithful ζ identification and critical-strip resonance exclusion.
+- **Sources:** CP:TheEscapeCompletenessCriterion; ACG:RHIsTheVisibilityOfEveryEscapeState; RIT:GaussMayerPrimitiveCycleIndex; RIT:GaussMayerEvenWordIndex [S]; RIT:GaussMayerUnitEvenWordDeterminant.
 
 <a id="jas"></a>
 ### JAS — Joint ancestry
@@ -346,6 +346,8 @@ Sources: CACT:CollectivePacketCoercivityAndLogarithmicConfinement; SSHA:EveryEig
 
 PW-B: [retired source-uniform extinction mechanism](rh-killed-routes.md#kr-pwb); surviving critical-line detector feeds PM/scattering. ISC-polar, BVI and ART: support, not independent live routes. [Other killed mechanisms and retired aliases](rh-killed-routes.md).
 
+ADT: HF/ACS support. Regular spectral-tail hypothesis ⇒ Jordan-totient rescaled limits [S]; critical-scale positivity inheritance open. Source: ADT:RegularTailsGiveJordanTotientLimits.
+
 ## Source locator
 
 `K:Module` = `formal/GaloisForLFunctions/<directory>/Module.lean`. Search exact names with `scripts/formal_tools.py research "<name>" --mode lexical`; inspect Lean statements for full scope.
@@ -385,4 +387,4 @@ PW-B: [retired source-uniform extinction mechanism](rh-killed-routes.md#kr-pwb);
 | EHT | EdgeHodgeTheory | CSAR | CriticalScaleArithmeticRigidity |
 | BOT | Bottcher | HM | HilbertMetric |
 | ACPL | ArithmeticCouplingTheory | HWV | HodgeTheoryWithoutVarieties |
-| LST | LatticeSectionTheory | — | — |
+| LST | LatticeSectionTheory | ADT | ArithmeticDegenerationTheory |

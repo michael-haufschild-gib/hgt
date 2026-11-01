@@ -1,4 +1,5 @@
 import GaloisForLFunctions.TransMetzlerWeilPositivity.SuperGevreyCriticalGrowth
+import GaloisForLFunctions.EffectiveArithmeticHodgeTheory.TheExplicitSchedulesReachTheIndex
 
 /-!
 # A bounded overlap rate sees a semilocal window
@@ -360,6 +361,78 @@ theorem nonneg_of_atomicFamilies_nonneg_of_rate {Φ : (ℝ → ℝ) → ℝ} (h�
   obtain ⟨N, ⟨x, hx⟩, hN⟩ := (hfr.and_eventually H).exists
   exact absurd (hN x) (not_le.mpr hx)
 
+/-- One bounded overlap rate synthesizes an entire smooth family with a common
+translation; every entry of its complete Weil Gram converges. -/
+theorem exists_dcLogSynthesis_family_gram_limit_of_rate {ι : Type*}
+    {φ : ℝ → ℝ} (hφ : ContDiff ℝ ∞ φ) (hφ1 : VanishesOff φ) (hφint : ∫ s, φ s = 1)
+    {A Bφ : ℝ} (hBφ : 0 ≤ Bφ)
+    (hA : ∀ q, ∫ t, |iteratedDeriv q φ t| ≤ A * Bφ ^ q * dcLogWeight q)
+    {κ : ℕ → ℝ} (hk : Tendsto κ atTop atTop) {K : ℝ} (hK1 : 1 ≤ K)
+    (hK : ∀ᶠ N : ℕ in atTop, K ≤ dcRate κ N)
+    {F : ι → ℝ → ℝ} {R M b : ℝ} (hR : 0 ≤ R) (hM : 0 ≤ M) (hb : 0 ≤ b)
+    (hF : ∀ i, ContDiff ℝ ∞ (F i)) (hFR : ∀ i, SupportedIn R (F i))
+    (hFM : ∀ i l u, |iteratedDeriv l (F i) u| ≤ M * b ^ l * dcLogWeight l)
+    (hRK : 24 * Bφ * blockSize R * Real.exp 1 < K) :
+    ∃ x : ℕ → ι → ℕ → ℝ, ∀ i j,
+      Tendsto (fun n => ArithmeticCastelnuovoSeveri.weilGram
+        (fun p => (ArithmeticFunction.vonMangoldt p : ℝ))
+        (fun a => ArithmeticCastelnuovoSeveri.cx
+          (atomicTest (n * blockSize R) (x n a) (dilate (κ (n * blockSize R)) φ))) i j)
+        atTop (𝓝 (ArithmeticCastelnuovoSeveri.weilGram
+          (fun p => (ArithmeticFunction.vonMangoldt p : ℝ))
+          (fun a => ArithmeticCastelnuovoSeveri.cx (F a)) i j)) := by
+  classical
+  let B := blockSize R
+  have hB : 1 ≤ B := one_le_blockSize R
+  have hA0 : 0 ≤ A := by
+    have h := (integral_nonneg fun t => abs_nonneg (iteratedDeriv 0 φ t)).trans (hA 0)
+    simpa only [pow_zero, mul_one, dcLogWeight_zero] using h
+  have hex : ∀ n i, ∃ (x : ℕ → ℝ) (D : ℝ → ℝ),
+      2 ≤ n → 1 ≤ κ (n * B) →
+      atomicTest (n * B) x (dilate (κ (n * B)) φ) =
+        (fun u => F i (u - (Real.log n + R)) + D (u - (Real.log n + R))) ∧
+      ContDiff ℝ 2 D ∧ SupportedIn (R + 1) D ∧
+      (∀ u, |D u| ≤ dcSynthErr M b A Bφ (κ (n * B)) (∫ s, |φ s|)
+        (gevOrder (κ (n * B))) n) ∧
+      ∀ u v, |D u - D v| ≤ emLip (fun l => M * b ^ l * dcLogWeight l)
+        (fun q => ∫ s, |iteratedDeriv q φ s|) (κ (n * B)) n * |u - v| := by
+    intro n i
+    by_cases hn : 2 ≤ n
+    · by_cases hkn : 1 ≤ κ (n * B)
+      · obtain ⟨x, D, h⟩ := exists_dcLogSynthesis hφ hφ1 hφint (hF i) (hFR i)
+          hM hb hBφ (hFM i) hA hn hkn (gevOrder (κ (n * B)))
+        exact ⟨x, D, fun _ _ => h⟩
+      · exact ⟨0, 0, fun _ h => (hkn h).elim⟩
+    · exact ⟨0, 0, fun h _ => (hn h).elim⟩
+  choose x D hD using hex
+  have hNB : Tendsto (fun n : ℕ => n * B) atTop atTop :=
+    tendsto_atTop_mono (fun n => Nat.le_mul_of_pos_right n hB) tendsto_id
+  have hev := (eventually_ge_atTop 2).and (hNB.eventually (hk.eventually_ge_atTop 1))
+  obtain ⟨he, hV⟩ := tendsto_dcLogSynthesis_of_rate hk hK1 hK hB
+    (M := M) (b := b) (A := A) (Bφ := Bφ) (A0 := ∫ s, |φ s|)
+    (mul_nonneg hM hA0) hb hBφ hRK
+    (fun l => M * b ^ l * dcLogWeight l)
+    (fun q => ∫ s, |iteratedDeriv q φ s|) (R + 1)
+  refine ⟨x, fun i j => ?_⟩
+  apply EffectiveArithmeticHodgeTheory.tendsto_weilGram_of_perturbation
+    (F := F) (R' := R + 1) (by linarith only [hR])
+    (fun i => (hF i).of_le (natCast_le_infty 2))
+    (fun i => hasCompactSupport_of_vanishes (hFR i))
+    (fun i => EffectiveArithmeticHodgeTheory.supportedIn_mono (hFR i) (by linarith))
+    (Dn := D) (c := fun n => Real.log n + R)
+    (e := fun n => dcSynthErr M b A Bφ (κ (n * B)) (∫ s, |φ s|)
+      (gevOrder (κ (n * B))) n)
+    (LD := fun n => emLip (fun l => M * b ^ l * dcLogWeight l)
+      (fun q => ∫ s, |iteratedDeriv q φ s|) (κ (n * B)) n)
+    (k := fun n => κ (n * B))
+  · filter_upwards [hev] with n hn i
+    exact (hD n i hn.1 hn.2).1
+  · filter_upwards [hev] with n hn i
+    exact ⟨(hD n i hn.1 hn.2).2.1, (hD n i hn.1 hn.2).2.2.1,
+      (hD n i hn.1 hn.2).2.2.2.1, (hD n i hn.1 hn.2).2.2.2.2, hn.2⟩
+  · exact he
+  · exact hV
+
 /-! ### Length coordinates -/
 
 private theorem loglog_atTop :
@@ -506,3 +579,5 @@ theorem steklovDCProfile_window {K : ℝ} (hK1 : 1 ≤ K)
     integral_abs_iteratedDeriv_steklovDCProfile_le hcN hK1 hrate H hg hR hgR (by linarith)
 
 end GaloisForLFunctions.TransMetzlerWeilPositivity
+
+#print axioms GaloisForLFunctions.TransMetzlerWeilPositivity.exists_dcLogSynthesis_family_gram_limit_of_rate

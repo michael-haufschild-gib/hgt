@@ -89,6 +89,7 @@ theorem norm_paperFT_mul_le_of_near_zero {f : ℝ → ℂ} {U δ : ℝ} (hU : 0 
     ‖paperFT f z‖ * ‖paperFT f ((starRingEnd ℂ) z)‖ ≤
       2 * δ * U * Real.exp U * (∫ u, ‖f u‖) ^ 2 := by
   have hfI0 : 0 ≤ ∫ u, ‖f u‖ := integral_nonneg fun _ => norm_nonneg _
+  have hδ : 0 ≤ δ := le_trans (norm_nonneg _) hzw
   have hzwU : ‖z - w‖ * U ≤ 1 := (mul_le_mul_of_nonneg_right hzw hU).trans hδU
   have hexp : Real.exp (|w.im| * U) ≤ Real.exp (U / 2) :=
     Real.exp_le_exp.mpr (by nlinarith)
@@ -265,11 +266,12 @@ theorem norm_W_trigTest_le_of_net {A₀ : ℝ} (hA₀ : 1 ≤ A₀)
   have hfs : ∀ u, U < |u| → f u = 0 := fun u hu => by simp [hf, trigTest, hbs u hu]
   have hfI : ∫ u, ‖f u‖ ≤ (∑ j, ‖c j‖) * ∫ u, ‖b u‖ := integral_norm_trigTest_le hb ℓ k₀ c
   have hfI0 : 0 ≤ ∫ u, ‖f u‖ := integral_nonneg fun _ => norm_nonneg _
-  set K := ((∑ j, ‖c j‖) * B) ^ 2 with hK
-  set K' := (1 + 2 * T) ^ 3 * (2 * δ * U * Real.exp U * (∫ u, ‖b u‖) ^ 2 * (∑ j, ‖c j‖) ^ 2)
-    with hK'
-  have hK0 : 0 ≤ K := by positivity
-  have hK'0 : 0 ≤ K' := by positivity
+  obtain ⟨K, hK⟩ : ∃ K : ℝ, K = ((∑ j, ‖c j‖) * B) ^ 2 := ⟨_, rfl⟩
+  obtain ⟨K', hK'⟩ : ∃ K' : ℝ, K' =
+    (1 + 2 * T) ^ 3 * (2 * δ * U * Real.exp U * (∫ u, ‖b u‖) ^ 2 * (∑ j, ‖c j‖) ^ 2) := ⟨_, rfl⟩
+  rw [← hK, ← hK']
+  have hK0 : 0 ≤ K := by rw [hK]; positivity
+  have hK'0 : 0 ≤ K' := by rw [hK']; positivity
   -- the product bound at an unconstrained low zero, in the weight `(1 + 2T)^{-3}`
   have hlowprod : 2 * δ * U * Real.exp U * (∫ u, ‖f u‖) ^ 2 ≤ K' * (1 / (1 + 2 * T) ^ 3) := by
     have e : K' * (1 / (1 + 2 * T) ^ 3) =
@@ -320,12 +322,12 @@ theorem norm_W_trigTest_le_of_net {A₀ : ℝ} (hA₀ : 1 ≤ A₀)
           ≤ K' * (1 / (1 + 2 * T) ^ 3) := hprod.trans hlowprod
         _ ≤ K' * (1 / (1 + |(ρ : ℂ).im - T|) ^ 3) := mul_le_mul_of_nonneg_left h1 hK'0
         _ ≤ (K + K') * (1 / (1 + |(ρ : ℂ).im - T|) ^ 3 + 1 / (1 + |(ρ : ℂ).im - -T|) ^ 3) := by
-            nlinarith [mul_nonneg hK0 hw0, mul_nonneg hK0 hw0', mul_nonneg hK'0 hw0']
+            linarith [mul_nonneg hK0 hw0, mul_nonneg hK0 hw0', mul_nonneg hK'0 hw0']
     · -- a zero above `T`: far-field decay
       push Not at hlow
       have hprod := norm_paperFT_trigTest_mul_le_of_far hb hbs hℓ hΩ hΔ hB hdec c hIm
         (by rw [hre1]; exact hlow)
-      rw [hre1] at hprod
+      rw [hre1, ← hK] at hprod
       have hsplit := one_div_pow_three_le_add hT0 hlow
       calc ‖paperFT f (gammaOf (ρ : ℂ))‖ * ‖paperFT f ((starRingEnd ℂ) (gammaOf (ρ : ℂ)))‖
           ≤ K / (1 + (|(ρ : ℂ).im| - T)) ^ 3 := hprod
@@ -333,7 +335,7 @@ theorem norm_W_trigTest_le_of_net {A₀ : ℝ} (hA₀ : 1 ≤ A₀)
         _ ≤ K * (1 / (1 + |(ρ : ℂ).im - T|) ^ 3 + 1 / (1 + |(ρ : ℂ).im - -T|) ^ 3) :=
             mul_le_mul_of_nonneg_left hsplit hK0
         _ ≤ (K + K') * (1 / (1 + |(ρ : ℂ).im - T|) ^ 3 + 1 / (1 + |(ρ : ℂ).im - -T|) ^ 3) := by
-            nlinarith [mul_nonneg hK'0 hw0, mul_nonneg hK'0 hw0']
+            linarith [mul_nonneg hK'0 hw0, mul_nonneg hK'0 hw0']
   have hsum' : Summable fun ρ : zetaZeroConfig.carrier => ‖zetaZeroConfig.Wsummand f f ρ‖ :=
     Summable.of_nonneg_of_le (fun _ => norm_nonneg _) hpt hgs
   unfold ZeroConfig.W
@@ -465,28 +467,28 @@ theorem net_margin_arith {L ℓ T A₀ k Ib δ : ℝ} (hL : 1 ≤ L) (hℓ : 7 /
 
 /-- **Energy assembly.** From the two-term energy bound, Cauchy–Schwarz on the coefficients, the
 bulk lower bound and the two margin inequalities, `W ≤ (ε₁ + ε₂) I₂`. -/
-theorem energy_assembly {W Σc B Q R Sg k ℓ I₂ ε₁ ε₂ : ℝ}
-    (hW : W ≤ ((Σc * B) ^ 2 + Q * (R * Σc ^ 2)) * Sg)
-    (hS : Σc ^ 2 ≤ (2 * k + 1) * (I₂ / (2 * ℓ))) (hQ : 0 ≤ Q) (hR : 0 ≤ R)
+theorem energy_assembly {W Sc B Q R Sg k ℓ I₂ ε₁ ε₂ : ℝ}
+    (hW : W ≤ ((Sc * B) ^ 2 + Q * (R * Sc ^ 2)) * Sg)
+    (hS : Sc ^ 2 ≤ (2 * k + 1) * (I₂ / (2 * ℓ))) (hQ : 0 ≤ Q) (hR : 0 ≤ R)
     (hSg : 0 ≤ Sg) (hI : 0 ≤ I₂)
     (hmarg : (2 * k + 1) * B ^ 2 * Sg / (2 * ℓ) ≤ ε₁)
     (hnet : (2 * k + 1) * (Q * R) * Sg / (2 * ℓ) ≤ ε₂) :
     W ≤ (ε₁ + ε₂) * I₂ := by
   have hB2 : 0 ≤ B ^ 2 := sq_nonneg B
-  have h1 : (Σc * B) ^ 2 * Sg ≤ ε₁ * I₂ := by
-    calc (Σc * B) ^ 2 * Sg = Σc ^ 2 * (B ^ 2 * Sg) := by ring
+  have h1 : (Sc * B) ^ 2 * Sg ≤ ε₁ * I₂ := by
+    calc (Sc * B) ^ 2 * Sg = Sc ^ 2 * (B ^ 2 * Sg) := by ring
       _ ≤ ((2 * k + 1) * (I₂ / (2 * ℓ))) * (B ^ 2 * Sg) :=
           mul_le_mul_of_nonneg_right hS (mul_nonneg hB2 hSg)
       _ = ((2 * k + 1) * B ^ 2 * Sg / (2 * ℓ)) * I₂ := by ring
       _ ≤ ε₁ * I₂ := mul_le_mul_of_nonneg_right hmarg hI
-  have h2 : Q * (R * Σc ^ 2) * Sg ≤ ε₂ * I₂ := by
-    calc Q * (R * Σc ^ 2) * Sg = Σc ^ 2 * (Q * R * Sg) := by ring
+  have h2 : Q * (R * Sc ^ 2) * Sg ≤ ε₂ * I₂ := by
+    calc Q * (R * Sc ^ 2) * Sg = Sc ^ 2 * (Q * R * Sg) := by ring
       _ ≤ ((2 * k + 1) * (I₂ / (2 * ℓ))) * (Q * R * Sg) :=
           mul_le_mul_of_nonneg_right hS (mul_nonneg (mul_nonneg hQ hR) hSg)
       _ = ((2 * k + 1) * (Q * R) * Sg / (2 * ℓ)) * I₂ := by ring
       _ ≤ ε₂ * I₂ := mul_le_mul_of_nonneg_right hnet hI
-  calc W ≤ ((Σc * B) ^ 2 + Q * (R * Σc ^ 2)) * Sg := hW
-    _ = (Σc * B) ^ 2 * Sg + Q * (R * Σc ^ 2) * Sg := by ring
+  calc W ≤ ((Sc * B) ^ 2 + Q * (R * Sc ^ 2)) * Sg := hW
+    _ = (Sc * B) ^ 2 * Sg + Q * (R * Sc ^ 2) * Sg := by ring
     _ ≤ ε₁ * I₂ + ε₂ * I₂ := add_le_add h1 h2
     _ = (ε₁ + ε₂) * I₂ := by ring
 

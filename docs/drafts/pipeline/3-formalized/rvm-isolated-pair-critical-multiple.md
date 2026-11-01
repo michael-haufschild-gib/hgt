@@ -1,8 +1,8 @@
 # Critical multiple of one isolated pair in the RVM model
 
 - **ID:** rvm-isolated-pair-critical-multiple
-- **Stage:** 2-fully-proven
-- **Type:** THEOREM (paper)
+- **Stage:** 3-formalized
+- **Type:** THEOREM (Lean)
 - **Source:** `docs/reports/review-0111/obstacles-summary.md`, A3.
 - **Statement:** Set `L=log(γ/(2π))/(2π)`, `0<δ≤1/2`, `γ>2π`.
   At `1<K≤exp L`, the degree-`log K/2` Hodge defect is zero exactly when
@@ -49,4 +49,12 @@ finite-horizon identification for the actual zeta configuration.
 ## Gates
 
 - [x] Dependency-closed paper proof.
-- [ ] Exact Lean theorem, direct compilation, standard-axiom audit, umbrella import.
+- [x] Exact Lean theorem, direct compilation, standard-axiom audit, umbrella import.
+
+## Lean
+
+`ArithmeticCastelnuovoSeveri/TheCriticalMultipleOfAnIsolatedPair.lean` proves
+`rvmPairIndex_eq`, `rvmPairIndex_eq_zero_of_le_lower`,
+`rvmPairIndex_eq_one_of_upper_lt`, `rvmPairEdge_bounds`, and `rvmPairEdge_exact`.
+Direct `lake --old env lean` audit passes; all five declarations depend only
+on `propext`, `Classical.choice`, and `Quot.sound`. Umbrella import present.

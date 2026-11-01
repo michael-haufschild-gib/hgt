@@ -33,7 +33,7 @@ of an exponent `0<α≤1/128` paying every overlap through `K·dcScale N`
 is equivalent to `K≤1/[103424(8π/3+3000)]`. Sufficiency uses `α=1/128`.
 For necessity, a larger `K` exceeds `α/B` for every allowed exponent;
 the exact asymptotic above contradicts its budget at `c=K·dcScale N`.
-This last classification is awaiting its direct Lean audit.
+The classification passes its direct Lean and transitive axiom audits.
 
 ## Gates
 
@@ -49,8 +49,9 @@ This last classification is awaiting its direct Lean audit.
 
 `TheLogarithmicProfileIsPositiveBelowCriticalOverlap.lean` proves
 `zeroFreeLogProfile_completeWeilMatrix_posDef_explicit_critical_overlap`,
-its exact-sinc counterpart, and
-`zeroFreeLogProfile_spectral_budget_fails_above_explicit_multiple`.
+its exact-sinc counterpart,
+`zeroFreeLogProfile_spectral_budget_fails_above_explicit_multiple`, and
+`zeroFreeLogProfile_absolute_budget_iff`.
 Both direct `lake --old env lean` checks pass. All audited declarations
 depend only on `propext`, `Classical.choice`, and `Quot.sound`.
 

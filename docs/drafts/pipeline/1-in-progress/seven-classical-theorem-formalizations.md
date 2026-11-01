@@ -38,10 +38,19 @@ Required audit: transitive short-interval input and the entire ordinary-correlat
 then partial summation for logarithmic Liouville cancellation. The comparator challenge's
 placeholders are specification files, not reusable proofs. Möbius cancellation needs its own
 dependency check. No result from this candidate has been integrated or kernel-verified locally.
-The complete `TwoPoint/Main.lean` local closure contains 1465 files; its static scan found no
-placeholders, native evaluation, or raised limits. Nine external imports remain to audit:
-three OAI Egyptian-fraction/Jacobsthal modules, three `PrimeNumberTheoremAnd.Erdos970`
-modules, and three `StrongPNT.Erdos970` modules. Static cleanliness is not proof verification.
+The complete non-mathlib closure contains 1559 modules: 1538 OAI, 14
+`PrimeNumberTheoremAnd`, and 7 `StrongPNT`. Its static scan found no placeholders,
+native evaluation, custom axioms, or raised limits. The two dependency patches add
+substantial analytic proofs and belong to the audit; their names do not make them
+mere compatibility changes. Static cleanliness is not proof verification.
+No source package from this candidate is retained in the corpus. Reuse is limited to
+needed proof arguments, rebuilt on existing corpus definitions. No cancellation endpoint
+from this candidate is certified.
+
+The ordinary-to-logarithmic transfer already exists in the corpus:
+`RHTower.pm_tendsto_harmonic_average_of_mean` states that Cesàro convergence of a
+real sequence implies its logarithmic mean has the same limit. Its use for Liouville
+requires the actual ordinary-correlation theorem, not an assumed cancellation interface.
 
 [Huang's mock-theta formalization](https://infsup.com/en/breaking-through-mock-theta/)
 proves a formal Hahn-series identity, expressly without analytic convergence or modular forms;

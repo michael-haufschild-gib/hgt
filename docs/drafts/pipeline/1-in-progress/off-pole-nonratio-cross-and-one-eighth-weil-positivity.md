@@ -40,5 +40,23 @@ frequencies `|t| > T₀` are paid by `archForm` with a `(log N)^{1/3}` gain and 
 **How it fails.** If the PNT error at the needed uniformity in `c` and `T₀` is not `o(c^{−1})`
 relative to the main term, or if `w ⊥ V_{R₁}` leaves an off-pole residual with Schur-tight column.
 
-## Log
-- 2026-11-01 — created; `1/9` result formalized (card `3-formalized/bilinear-conductor-residuals-and-one-ninth-weil-positivity.md`).
+## Global orthogonality and the coherent cross term
+
+The actual condition is `w ⟂ v₁` before the prefix–terminal split. Neither
+piece is separately pole-orthogonal. If `p=P v₁` and `q=S v₁`, then
+`⟨Pw,p⟩=−⟨Sw,q⟩`; hence
+`|⟨Pw,p/‖p‖⟩|≤(‖q‖/‖p‖)‖Sw‖`.
+For cutoff `M≈N/c`, the ratio is `O(sqrt(log c/log N))`.
+
+A second candidate is therefore an input-pole decomposition
+`NR_PT = a ⊗ (p/‖p‖) + E`, with
+`‖a‖=O(c sqrt(log N))` and `‖E‖²=O(c·polylog(c)·log N)`.
+Global orthogonality would reduce the coherent cross payment to
+`O(c sqrt(log c))‖Sw‖²`; the terminal reserve then asks only for
+`c⁸ sqrt(log c)=o(log N)`. The remainder has the desired eighth-power
+Schur cost. The divisor-jet cancellation with the near-Gamma row is the
+available source identity for identifying `a`.
+
+This decomposition is unproved. The earlier output-pole projection alone
+does not supply it; the coherent output need not be proportional to `q`.
+Band–terminal and inverse-energy residual improvements remain required.
