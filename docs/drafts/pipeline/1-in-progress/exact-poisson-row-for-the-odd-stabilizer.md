@@ -37,8 +37,8 @@ sufficient horizon inequality alone.
 
 A concrete full-packet counterexample is available at `Q=7`, `m=7/π`:
 choose smooth `0≤Ω≤1` supported in `[31/32,33/32]` with Ω(1)=1.
-Among all odd q≤7 and d|q, only `q=d=7, k=1` survives. The packet
-correction is exactly `7/36`. Its negative diagonal is
+The primitive `q=7, n=1` sample contributes `7/36` to the packet
+correction; every other primitive contribution is nonnegative. Its negative diagonal is
 `−(23/12)∫Ω≥−23/192`, so the complete signed row is at least
 `43/576>0`. Such Ω is `u(16τ−31/2)` for a canonical smooth profile u
 of collar 1/8. This falsifies negative-row cancellation beyond the sharp
@@ -59,8 +59,11 @@ bounds a truncation at `r≈mθ` by
 `O(m (Tθ)^(1−k) Σ_{q≤Q} μ²(q)/φ(q))`.
 This can handle `θ=T^(−1+η)` at fixed bandwidth by choosing k sufficiently
 large. The existing one-derivative baseline bound alone loses a power at
-this aperture. Actual logarithmic phase, pair weights, and row-dependent
-versus fixed conductor cutoffs still require transport.
+this aperture. The corpus already proves `coalescent_term_linearization_bound`, including
+the logarithmic phase and square-root pair weight. At bandwidth 4/3,
+fourth-order Fourier decay and this quadratic phase error have compatible
+power savings at aperture `T^(-5/6)`. Summing those bounds with the actual
+taper, aperture, boundary and fixed conductor cutoff still requires transport.
 
 ## Logarithmic calibration
 

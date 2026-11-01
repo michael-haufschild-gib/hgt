@@ -48,3 +48,4 @@ a source Fredholm determinant, and the fixed-point trace of the Gauss–Mayer op
 import GaloisForLFunctions.RenormalizedIntersectionTheory.GaussMayerRawDeterminantFinitePart
 import GaloisForLFunctions.RenormalizedIntersectionTheory.GaussMayerDerivativeCone
 import GaloisForLFunctions.RenormalizedIntersectionTheory.GaussMayerPositivePoleCoefficient
+import GaloisForLFunctions.RenormalizedIntersectionTheory.GaussMayerNegativeUnitRigidity

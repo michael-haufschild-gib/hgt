@@ -681,67 +681,95 @@ theorem primeEnergy_sub_split (N : ℕ) (s : ℝ) (i₀ : PrimeHorizonIndex N)
   refine sum_congr rfl fun i hi => ?_
   rw [hcoord i, if_neg (Ne.symm (ne_of_mem_erase hi)), mul_zero, sub_zero]
 
-/-- **The maximal margin at one horizon.** If the excited estimate holds with constant
-`c_N²(W + ε)` off the ground, the ground energy is within `ε₀` of `0`, the pole has energy at most `ε₀`
-and `(s + ε₀)(W + ε) ≤ (1 − θ')²`, `θ' = √(2ε₀(W + ε)) < 1`, then `Q_N(u) ≥ s|u|²` on `v^⊥`. -/
-theorem le_primeEnergy_of_perp {N : ℕ} {i₀ : PrimeHorizonIndex N} {s t W ε ε₀ c : ℝ}
-    (hst : s < t) (hg : IsGroundBelow N t i₀) {v : EuclideanSpace ℝ (PrimeHorizonIndex N)}
-    (hc : 0 < c) (hWε : 0 ≤ W + ε) (hε₀ : 0 ≤ ε₀)
+/-- **The ground coordinate of `v`.** If the excited estimate holds off the ground with constant
+`c²(W + ε)`, the ground energy is within `ε₀` of `0`, `‖b‖ = 1`, `⟨b, v⟩ = c` and `Q_N(b) ≤ ε₀`, then
+`|⟨e_{i₀}, v⟩| ≥ c (1 − √(2ε₀(W + ε)))`. -/
+theorem ground_coord_ge {N : ℕ} {i₀ : PrimeHorizonIndex N} {s t W ε ε₀ c : ℝ} (hs0 : 0 ≤ s)
+    (hc : 0 ≤ c) (hWε : 0 ≤ W + ε) (hε₀ : 0 ≤ ε₀) {v b : EuclideanSpace ℝ (PrimeHorizonIndex N)}
     (hlam : |fullPrimeEnergyEigenvalue N i₀ - γ| ≤ ε₀)
     (hmain : ∀ w : EuclideanSpace ℝ (PrimeHorizonIndex N), ⟪w, primeEigen N i₀⟫ = 0 →
       ⟪w, v⟫ ^ 2 ≤ c ^ 2 * (W + ε) * (primeEnergy N w - s * ‖w‖ ^ 2))
-    {b : EuclideanSpace ℝ (PrimeHorizonIndex N)} (hb : ‖b‖ = 1) (hbv : ⟪b, v⟫ = c)
-    (hpole : primeEnergy N b ≤ ε₀) (hθ : Real.sqrt (2 * ε₀ * (W + ε)) < 1)
+    (hb : ‖b‖ = 1) (hbv : ⟪b, v⟫ = c) (hpole : primeEnergy N b ≤ ε₀) :
+    c * (1 - Real.sqrt (2 * ε₀ * (W + ε))) ≤ |⟪primeEigen N i₀, v⟫| := by
+  set e := primeEigen N i₀
+  set α := ⟪b, e⟫
+  set w₀ := b - α • e
+  have he : ‖e‖ = 1 := norm_primeEigen N i₀
+  have hw₀ : ⟪w₀, e⟫ = 0 := by
+    simp only [w₀, inner_sub_left, real_inner_smul_left, real_inner_self_eq_norm_sq, he]; ring
+  have hα1 : |α| ≤ 1 := by
+    have := abs_real_inner_le_norm b e; rwa [hb, he, mul_one] at this
+  have hα : α ^ 2 ≤ 1 := by rw [← sq_abs]; nlinarith [abs_nonneg α]
+  have hsplitb := primeEnergy_sub_split N s i₀ b
+  rw [hb, one_pow, mul_one] at hsplitb
+  have hl := (abs_le.mp hlam).1
+  have h1 : (s - (fullPrimeEnergyEigenvalue N i₀ - γ)) * α ^ 2 ≤ (s + ε₀) * α ^ 2 :=
+    mul_le_mul_of_nonneg_right (by linarith) (sq_nonneg α)
+  have h2 : (s + ε₀) * α ^ 2 ≤ s + ε₀ := mul_le_of_le_one_right (by linarith) hα
+  have hGw₀ : primeEnergy N w₀ - s * ‖w₀‖ ^ 2 ≤ 2 * ε₀ := by
+    have e1 : primeEnergy N w₀ - s * ‖w₀‖ ^ 2 = primeEnergy N b - s -
+        (fullPrimeEnergyEigenvalue N i₀ - γ - s) * α ^ 2 := by
+      change _ = primeEnergy N b - s - (fullPrimeEnergyEigenvalue N i₀ - γ - s) * ⟪b, e⟫ ^ 2
+      linarith [hsplitb]
+    rw [e1]
+    linarith only [h1, h2, hpole]
+  have hw₀v : |⟪w₀, v⟫| ≤ c * Real.sqrt (2 * ε₀ * (W + ε)) := by
+    have h := Real.abs_le_sqrt ((hmain w₀ hw₀).trans
+      (mul_le_mul_of_nonneg_left hGw₀ (mul_nonneg (sq_nonneg c) hWε)))
+    rwa [show c ^ 2 * (W + ε) * (2 * ε₀) = c ^ 2 * (2 * ε₀ * (W + ε)) by ring,
+      Real.sqrt_mul (sq_nonneg c), Real.sqrt_sq hc] at h
+  have hbsplit : c = α * ⟪e, v⟫ + ⟪w₀, v⟫ := by
+    rw [← hbv]; simp only [w₀, inner_sub_left, real_inner_smul_left]; ring
+  have hαe : |α * ⟪e, v⟫| ≤ |⟪e, v⟫| := by
+    rw [abs_mul]; exact mul_le_of_le_one_left (abs_nonneg _) hα1
+  have htri := abs_add_le (α * ⟪e, v⟫) ⟪w₀, v⟫
+  rw [← hbsplit, abs_of_nonneg hc] at htri
+  linarith only [htri, hαe, hw₀v]
+
+/-- The final real inequality: with `G ≥ 0`, `a²(1 − θ')² ≤ (W + ε) G`,
+`(s + ε₀)(W + ε) ≤ (1 − θ')²`, `1 − θ' > 0` and `|λ| ≤ ε₀`, `(λ − s) a² + G ≥ 0`. -/
+theorem split_nonneg {a G W ε ε₀ s θ' lam : ℝ} (hs : 0 ≤ s) (hε₀ : 0 ≤ ε₀) (hG : 0 ≤ G)
+    (hθ : 0 < 1 - θ') (ha : a ^ 2 * (1 - θ') ^ 2 ≤ (W + ε) * G)
+    (hcond : (s + ε₀) * (W + ε) ≤ (1 - θ') ^ 2) (hlam : |lam| ≤ ε₀) :
+    0 ≤ (lam - s) * a ^ 2 + G := by
+  have hθ2 : 0 < (1 - θ') ^ 2 := by positivity
+  have h5 : (s + ε₀) * (a ^ 2 * (1 - θ') ^ 2) ≤ (s + ε₀) * ((W + ε) * G) :=
+    mul_le_mul_of_nonneg_left ha (by linarith)
+  have h6 : (s + ε₀) * ((W + ε) * G) ≤ (1 - θ') ^ 2 * G := by
+    rw [← mul_assoc]; exact mul_le_mul_of_nonneg_right hcond hG
+  have hsa : (s + ε₀) * a ^ 2 ≤ G := by
+    have h7 : ((s + ε₀) * a ^ 2) * (1 - θ') ^ 2 ≤ G * (1 - θ') ^ 2 := by
+      calc ((s + ε₀) * a ^ 2) * (1 - θ') ^ 2 = (s + ε₀) * (a ^ 2 * (1 - θ') ^ 2) := by ring
+        _ ≤ (1 - θ') ^ 2 * G := h5.trans h6
+        _ = G * (1 - θ') ^ 2 := by ring
+    exact le_of_mul_le_mul_right h7 hθ2
+  have hl := (abs_le.mp hlam).1
+  have h8 : -(s + ε₀) * a ^ 2 ≤ (lam - s) * a ^ 2 :=
+    mul_le_mul_of_nonneg_right (by linarith) (sq_nonneg a)
+  linarith only [hsa, h8]
+
+/-- **The maximal margin at one horizon.** Under the hypotheses of `ground_coord_ge` with `c > 0`,
+`θ' = √(2ε₀(W + ε)) < 1` and `(s + ε₀)(W + ε) ≤ (1 − θ')²`, `Q_N(u) ≥ s|u|²` for all `u ⊥ v`. -/
+theorem le_primeEnergy_of_perp {N : ℕ} {i₀ : PrimeHorizonIndex N} {s t W ε ε₀ c : ℝ}
+    (hs0 : 0 ≤ s) (hst : s < t) (hg : IsGroundBelow N t i₀)
+    {v b : EuclideanSpace ℝ (PrimeHorizonIndex N)} (hc : 0 < c) (hWε : 0 ≤ W + ε) (hε₀ : 0 ≤ ε₀)
+    (hlam : |fullPrimeEnergyEigenvalue N i₀ - γ| ≤ ε₀)
+    (hmain : ∀ w : EuclideanSpace ℝ (PrimeHorizonIndex N), ⟪w, primeEigen N i₀⟫ = 0 →
+      ⟪w, v⟫ ^ 2 ≤ c ^ 2 * (W + ε) * (primeEnergy N w - s * ‖w‖ ^ 2))
+    (hb : ‖b‖ = 1) (hbv : ⟪b, v⟫ = c) (hpole : primeEnergy N b ≤ ε₀)
+    (hθ : Real.sqrt (2 * ε₀ * (W + ε)) < 1)
     (hcond : (s + ε₀) * (W + ε) ≤ (1 - Real.sqrt (2 * ε₀ * (W + ε))) ^ 2)
     (u : EuclideanSpace ℝ (PrimeHorizonIndex N)) (hu : ⟪u, v⟫ = 0) :
     s * ‖u‖ ^ 2 ≤ primeEnergy N u := by
   set e := primeEigen N i₀
-  set lam := fullPrimeEnergyEigenvalue N i₀ - γ
   set θ' := Real.sqrt (2 * ε₀ * (W + ε))
-  have hθ'0 : 0 ≤ θ' := Real.sqrt_nonneg _
-  -- the ground coordinate of `v`: `|⟨e, v⟩| ≥ c (1 − θ')`
-  set α := ⟪b, e⟫
-  set w₀ := b - α • e
-  have hw₀ : ⟪w₀, e⟫ = 0 := by
-    simp only [w₀, inner_sub_left, real_inner_smul_left, real_inner_self_eq_norm_sq, norm_primeEigen,
-      e]; ring
-  have hα : α ^ 2 ≤ 1 := by
-    have := abs_real_inner_le_norm b e
-    rw [hb, norm_primeEigen, mul_one] at this
-    have h0 := abs_nonneg α
-    nlinarith [sq_abs α]
-  have hsplitb := primeEnergy_sub_split N s i₀ b
-  rw [hb] at hsplitb
-  have hGw₀ : primeEnergy N w₀ - s * ‖w₀‖ ^ 2 ≤ 2 * ε₀ := by
-    have hl := (abs_le.mp hlam).1
-    have : -(lam - s) * α ^ 2 ≤ (s + ε₀) * 1 := by
-      have : 0 ≤ s + ε₀ ∨ s + ε₀ < 0 := le_or_gt 0 _
-      nlinarith [sq_nonneg α]
-    change primeEnergy N b - s * 1 ^ 2 = lam - s * α ^ 2 + _ at hsplitb
-    linarith
-  have hw₀v := hmain w₀ hw₀
-  have hw₀v' : |⟪w₀, v⟫| ≤ c * θ' := by
-    have h := hw₀v.trans (mul_le_mul_of_nonneg_left hGw₀ (by positivity))
-    have : c ^ 2 * (W + ε) * (2 * ε₀) = (c * θ') ^ 2 := by
-      rw [mul_pow, Real.sq_sqrt (by positivity)]; ring
-    rw [this] at h
-    exact abs_le_of_sq_le_sq' h (by positivity) |> fun h' => abs_le.mpr ⟨h'.1, h'.2⟩
-  have hbsplit : c = α * ⟪e, v⟫ + ⟪w₀, v⟫ := by
-    rw [← hbv]; simp only [w₀, inner_sub_left, real_inner_smul_left]; ring
-  have hev : c * (1 - θ') ≤ |⟪e, v⟫| := by
-    have hαe : |α * ⟪e, v⟫| ≤ |⟪e, v⟫| := by
-      rw [abs_mul]
-      have : |α| ≤ 1 := by rw [← sq_le_one_iff_abs_le_one]; exact hα
-      exact mul_le_of_le_one_left (abs_nonneg _) this
-    have := abs_add_le (α * ⟪e, v⟫) ⟪w₀, v⟫
-    rw [← hbsplit, abs_of_pos hc] at this
-    linarith [(abs_le.mp hw₀v').2]
-  -- split `u` along the ground
+  have hev := ground_coord_ge (t := t) hs0 hc.le hWε hε₀ hlam hmain hb hbv hpole
+  have hθpos : 0 < 1 - θ' := by linarith
   set a := ⟪u, e⟫
   set w := u - a • e
+  have he : ‖e‖ = 1 := norm_primeEigen N i₀
   have hw : ⟪w, e⟫ = 0 := by
-    simp only [w, inner_sub_left, real_inner_smul_left, real_inner_self_eq_norm_sq, norm_primeEigen,
-      e]; ring
+    simp only [w, inner_sub_left, real_inner_smul_left, real_inner_self_eq_norm_sq, he]; ring
   have hsplitu := primeEnergy_sub_split N s i₀ u
   set G := primeEnergy N w - s * ‖w‖ ^ 2
   have hG0 : 0 ≤ G := le_trans (mul_nonneg (by linarith) (sq_nonneg _))
@@ -750,35 +778,19 @@ theorem le_primeEnergy_of_perp {N : ℕ} {i₀ : PrimeHorizonIndex N} {s t W ε 
     have : ⟪u, v⟫ = a * ⟪e, v⟫ + ⟪w, v⟫ := by
       simp only [w, inner_sub_left, real_inner_smul_left]; ring
     linarith
-  -- `a² (1 − θ')² ≤ (W + ε) G`
-  have hθpos : 0 < 1 - θ' := by linarith
   have ha : a ^ 2 * (1 - θ') ^ 2 ≤ (W + ε) * G := by
     have h1 : (c * (1 - θ')) ^ 2 ≤ ⟪e, v⟫ ^ 2 := by
       rw [← sq_abs ⟪e, v⟫]; exact pow_le_pow_left₀ (by positivity) hev 2
     have h2 : a ^ 2 * ⟪e, v⟫ ^ 2 ≤ c ^ 2 * (W + ε) * G := by
       rw [← mul_pow, huv, neg_sq]; exact hmain w hw
-    have h3 : a ^ 2 * (c * (1 - θ')) ^ 2 ≤ a ^ 2 * ⟪e, v⟫ ^ 2 :=
-      mul_le_mul_of_nonneg_left h1 (sq_nonneg a)
-    have h4 : c ^ 2 * (a ^ 2 * (1 - θ') ^ 2) ≤ c ^ 2 * ((W + ε) * G) := by nlinarith
+    have h4 : c ^ 2 * (a ^ 2 * (1 - θ') ^ 2) ≤ c ^ 2 * ((W + ε) * G) := by
+      calc c ^ 2 * (a ^ 2 * (1 - θ') ^ 2) = a ^ 2 * (c * (1 - θ')) ^ 2 := by ring
+        _ ≤ a ^ 2 * ⟪e, v⟫ ^ 2 := mul_le_mul_of_nonneg_left h1 (sq_nonneg a)
+        _ ≤ c ^ 2 * (W + ε) * G := h2
+        _ = c ^ 2 * ((W + ε) * G) := by ring
     exact le_of_mul_le_mul_left h4 (by positivity)
-  have hsa : (s + ε₀) * a ^ 2 ≤ G := by
-    have h5 : (s + ε₀) * (a ^ 2 * (1 - θ') ^ 2) ≤ (s + ε₀) * ((W + ε) * G) :=
-      mul_le_mul_of_nonneg_left ha (by
-        have : 0 ≤ s ∨ s < 0 := le_or_gt 0 s
-        rcases this with h | h
-        · positivity
-        · exfalso
-          have : (s + ε₀) * (W + ε) ≥ 0 := by
-            nlinarith [hcond, sq_nonneg (1 - θ')]
-          nlinarith)
-    have h6 : (s + ε₀) * ((W + ε) * G) ≤ (1 - θ') ^ 2 * G := by
-      rw [← mul_assoc]; exact mul_le_mul_of_nonneg_right hcond hG0
-    have h7 : (s + ε₀) * a ^ 2 * (1 - θ') ^ 2 ≤ G * (1 - θ') ^ 2 := by nlinarith
-    exact le_of_mul_le_mul_right h7 (by positivity)
-  have hl := (abs_le.mp hlam).1
-  have : (lam - s) * a ^ 2 ≥ -(s + ε₀) * a ^ 2 := by nlinarith [sq_nonneg a]
-  change primeEnergy N u - s * ‖u‖ ^ 2 = lam - s * a ^ 2 + G at hsplitu
-  nlinarith
+  have hfin := split_nonneg hs0 hε₀ hG0 hθpos ha hcond hlam
+  linarith only [hsplitu, hfin]
 
 end Margin
 

@@ -48,9 +48,9 @@ theorem sum_divisors_moebius (g : ℕ) :
   push_cast at h
   rw [h]
 
-/-- **Möbius over common divisors**: for `m, n ∈ [1, N]`,
+/-- **Möbius over common divisors**: for `m ∈ [1, N]` and every `n`,
 `Σ_{d ≤ N, d ∣ m, d ∣ n} μ(d) = [gcd(m, n) = 1]`. -/
-theorem sum_moebius_common_divisors {N m n : ℕ} (hm : m ∈ Icc 1 N) (hn : n ∈ Icc 1 N) :
+theorem sum_moebius_common_divisors {N m : ℕ} (hm : m ∈ Icc 1 N) (n : ℕ) :
     ∑ d ∈ Icc 1 N, (if d ∣ m ∧ d ∣ n then (ArithmeticFunction.moebius d : ℝ) else 0) =
       if Nat.Coprime m n then 1 else 0 := by
   have hm0 : m ≠ 0 := by have := (mem_Icc.mp hm).1; omega
@@ -86,8 +86,8 @@ theorem quadratic_moebius_gluing {ι : Type*} [Fintype ι] {N : ℕ} (v : ι →
         (if d ∣ v i ∧ d ∣ v j then (ArithmeticFunction.moebius d : ℝ) else 0) *
           (W i j * x i * x j) := by
       intro d _
-      by_cases h1 : d ∣ v i <;> by_cases h2 : d ∣ v j <;> simp [h1, h2] <;> ring
-    rw [sum_congr rfl hd, ← sum_mul, sum_moebius_common_divisors (hv i) (hv j)]
+      by_cases h1 : d ∣ v i <;> by_cases h2 : d ∣ v j <;> simp [h1, h2]
+    rw [sum_congr rfl hd, ← sum_mul, sum_moebius_common_divisors (hv i) (v j)]
     split_ifs <;> ring
   have hcop : ∑ i, ∑ j, (if Nat.Coprime (v i) (v j) then W i j * x i * x j else 0) =
       ∑ d ∈ Icc 1 N, (ArithmeticFunction.moebius d : ℝ) *
@@ -108,5 +108,85 @@ theorem quadratic_moebius_gluing {ι : Type*} [Fintype ι] {N : ℕ} (v : ι →
     simp only [ArithmeticFunction.moebius_apply_one, Int.cast_one, one_dvd, if_true, one_mul,
       neg_mul, sum_neg_distrib]
     ring
+
+
+/-! ### The prime form is a cone glued to its stars -/
+
+theorem weilPrimeKernel_one_one : weilPrimeKernel 1 1 = 0 := by
+  simp [weilPrimeKernel]
+
+/-- Coprime pairs of Weil's prime kernel contain the vertex `1`. -/
+theorem weilPrimeKernel_eq_zero_of_coprime {m n : ℕ} (hm : 2 ≤ m) (hn : 2 ≤ n)
+    (h : Nat.Coprime m n) : weilPrimeKernel m n = 0 := by
+  unfold weilPrimeKernel
+  rw [if_neg, if_neg]
+  · rintro ⟨hdvd, -⟩; have := Nat.Coprime.eq_one_of_dvd h.symm hdvd; omega
+  · rintro ⟨hdvd, -⟩; have := Nat.Coprime.eq_one_of_dvd h hdvd; omega
+
+/-- On a pair of the horizon the coprime part of Weil's prime kernel is the cone of the vertex `1`.
+-/
+theorem coprime_weilPrimeKernel_eq {m n : ℕ} (hm : 1 ≤ m) (hn : 1 ≤ n) (x : ℕ → ℝ) :
+    (if Nat.Coprime m n then weilPrimeKernel m n * x m * x n else 0) =
+      (if m = 1 then weilPrimeKernel 1 n * x 1 * x n else 0) +
+        (if n = 1 then weilPrimeKernel 1 m * x 1 * x m else 0) := by
+  rcases eq_or_lt_of_le hm with rfl | hm2
+  · rcases eq_or_lt_of_le hn with rfl | hn2
+    · simp [weilPrimeKernel_one_one]
+    · simp [Nat.coprime_one_left, show n ≠ 1 by omega]
+  · rcases eq_or_lt_of_le hn with rfl | hn2
+    · simp [Nat.coprime_one_right, show m ≠ 1 by omega, weilPrimeKernel_comm m 1]; ring
+    · rw [if_neg (by omega : m ≠ 1), if_neg (by omega : n ≠ 1), add_zero]
+      split_ifs with h
+      · rw [weilPrimeKernel_eq_zero_of_coprime hm2 hn2 h]; ring
+      · rfl
+
+/-- **The prime form is a cone glued to its stars.**
+`P_N(x) = 2x₁ Σ_{k ≤ N} P(1, k) x_k + Σ_{2 ≤ d ≤ N} (−μ(d)) P_{⌊N/d⌋}(x(d·))`. -/
+theorem atomicWeilForm_moebius_recursion (N : ℕ) (x : ℕ → ℝ) :
+    atomicWeilForm N x = 2 * x 1 * ∑ k ∈ Icc 1 N, weilPrimeKernel 1 k * x k +
+      ∑ d ∈ Icc 2 N, -(ArithmeticFunction.moebius d : ℝ) *
+        atomicWeilForm (N / d) (starPullback d x) := by
+  have hform : ∀ y : ℕ → ℝ, atomicWeilForm N y =
+      ∑ i : Icc 1 N, ∑ j : Icc 1 N, weilPrimeKernel i j * y i * y j := by
+    intro y
+    rw [atomicWeilForm, ← sum_coe_sort (Icc 1 N)]
+    refine sum_congr rfl fun i _ => ?_
+    rw [← sum_coe_sort (Icc 1 N)]
+    exact sum_congr rfl fun j _ => by ring
+  have hglue := quadratic_moebius_gluing (N := N) (fun i : Icc 1 N => (i : ℕ)) (fun i => i.2)
+    (fun i j => weilPrimeKernel i j) (fun i => x i)
+  rw [hform, hglue]
+  congr 1
+  · -- the coprime part is the cone of the vertex `1`
+    have hcone : ∀ i j : Icc 1 N,
+        (if Nat.Coprime (i : ℕ) j then weilPrimeKernel i j * x i * x j else 0) =
+          (if (i : ℕ) = 1 then weilPrimeKernel 1 j * x 1 * x j else 0) +
+            (if (j : ℕ) = 1 then weilPrimeKernel 1 i * x 1 * x i else 0) := fun i j =>
+      coprime_weilPrimeKernel_eq (mem_Icc.mp i.2).1 (mem_Icc.mp j.2).1 x
+    simp only [hcone, sum_add_distrib]
+    rw [sum_comm (s := univ) (t := univ) (f := fun i j : Icc 1 N =>
+      if (j : ℕ) = 1 then weilPrimeKernel 1 i * x 1 * x i else 0)]
+    have hsum : ∀ g : ℕ → ℝ, ∑ i : Icc 1 N, ∑ j : Icc 1 N,
+        (if (i : ℕ) = 1 then g j else 0) = ∑ k ∈ Icc 1 N, g k := by
+      intro g
+      rcases Nat.eq_zero_or_pos N with rfl | hN
+      · simp
+      · rw [sum_eq_single (⟨1, mem_Icc.mpr ⟨le_rfl, hN⟩⟩ : Icc 1 N)]
+        · simp only [if_pos rfl]
+          exact sum_coe_sort (Icc 1 N) g
+        · intro b _ hb
+          refine sum_eq_zero fun j _ => if_neg fun h => hb (Subtype.ext h)
+        · simp
+    rw [hsum (fun k => weilPrimeKernel 1 k * x 1 * x k), hsum (fun k => weilPrimeKernel 1 k * x 1 * x k),
+      mul_sum]
+    rw [← sum_add_distrib]
+    exact sum_congr rfl fun k _ => by ring
+  · refine sum_congr rfl fun d hd => ?_
+    have hd0 : 0 < d := by have := (mem_Icc.mp hd).1; omega
+    congr 1
+    rw [← atomicWeilForm_starRestrict hd0, hform]
+    refine sum_congr rfl fun i _ => sum_congr rfl fun j _ => ?_
+    simp only [starRestrict]
+    split_ifs <;> ring
 
 end GaloisForLFunctions.HodgeTheoryWithoutVarieties

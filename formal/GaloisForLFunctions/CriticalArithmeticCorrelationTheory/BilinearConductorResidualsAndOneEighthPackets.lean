@@ -111,7 +111,7 @@ private theorem norm_normalizedRamanujanHorizonVector_le_two_of_log_le
     have hm_mem : m ∈ Icc 1 M := mem_Icc.mpr ⟨hm, hmM⟩
     rw [sum_eq_single m]
     · simp only [a, ite_true, one_pow]
-    · intro k _ hkm; simp only [a, if_neg hkm, zero_pow (by decide)]
+    · intro k _ hkm; simp only [a, if_neg hkm]; norm_num
     · intro hnot; exact absurd hm_mem hnot
   have hr := (half_and_three_halves_riesz_of_log_le hM hM2 hlog a).2
   rw [hvec, ha_sq, mul_one] at hr
@@ -318,8 +318,9 @@ private theorem exists_primeResidual_bilinear_bound :
   intro m l N hm hl
   rcases Nat.eq_zero_or_pos N with rfl | hN0
   · have hu0 : Matrix.toEuclideanLin (fullPrimeMatrix 0) (normalizedRamanujanHorizonVector m 0) -
-        (Real.log (0 : ℕ) - ramanujanAdjunctionEnergy m) • normalizedRamanujanHorizonVector m 0 = 0 :=
-      Subsingleton.elim _ _
+        (Real.log (0 : ℕ) - ramanujanAdjunctionEnergy m) • normalizedRamanujanHorizonVector m 0 = 0 := by
+      ext ⟨n, hn⟩
+      simp [PrimeHorizonIndex] at hn
     rw [hu0, inner_zero_left, abs_zero, Nat.cast_zero, Real.log_zero, div_zero]
   have hcoord : ∀ n : PrimeHorizonIndex N,
       (Matrix.toEuclideanLin (fullPrimeMatrix N) (normalizedRamanujanHorizonVector m N) -
@@ -372,7 +373,18 @@ private theorem exists_primeResidual_bilinear_bound :
         nlinarith only [sq_nonneg (1 - Real.log y)]
       have hprod := mul_le_mul_of_nonneg_left h2sq
         (Real.exp_pos (-c_M * Real.sqrt (Real.log y))).le
-      nlinarith only [hprod, hL2, he_le1]
+      calc
+        Real.exp (-c_M * Real.sqrt (Real.log y)) * (1 + Real.log y) ^ 2 ≤
+            2 * Real.exp (-c_M * Real.sqrt (Real.log y)) +
+              2 * ((Real.log y) ^ 2 * Real.exp (-c_M * Real.sqrt (Real.log y))) := by
+          linarith only [hprod,
+            (by ring : Real.exp (-c_M * Real.sqrt (Real.log y)) * (2 + 2 * (Real.log y) ^ 2) =
+              2 * Real.exp (-c_M * Real.sqrt (Real.log y)) +
+                2 * ((Real.log y) ^ 2 * Real.exp (-c_M * Real.sqrt (Real.log y))))]
+        _ ≤ 2 * 1 + 2 * (24 / c_M ^ 4) := add_le_add
+          (mul_le_mul_of_nonneg_left he_le1 zero_le_two)
+          (mul_le_mul_of_nonneg_left hL2 zero_le_two)
+        _ = 2 + 48 / c_M ^ 4 := by ring
     have hinv_wt : 1 / (y : ℝ) * (1 + Real.log y) ^ 2 ≤ 4 := by
       have h1 : 1 + Real.log (y : ℝ) ≤ 2 * Real.sqrt (y : ℝ) := one_add_log_le_two_sqrt hy
       have hsq := pow_le_pow_left₀ (by positivity) h1 2
@@ -462,13 +474,13 @@ private theorem exists_primeResidual_bilinear_bound :
         have := Real.log_natCast_nonneg (N / n); positivity
       have hinv_cmp : 1 / (1 + Real.log ((N / n : ℕ) : ℝ)) ^ 2 ≤
           2 * (1 + (1 / (2 * Real.pi) * Real.log ((n : ℝ) / N)) ^ 2)⁻¹ := by
-        rw [ ← two_div, div_le_div_iff₀ hlog_pos hkpos]
+        rw [← div_eq_mul_inv, div_le_div_iff₀ hlog_pos hkpos, one_mul]
         linarith only [hker_cmp n hn]
       have hprof_le : SignedArithmeticHodgeTheory.primeMertensRemainderProfile (N / n) ≤
           2 * C_env * (1 + (1 / (2 * Real.pi) * Real.log ((n : ℝ) / N)) ^ 2)⁻¹ := by
         calc
-          _ ≤ C_env * (1 / (1 + Real.log ((N / n : ℕ) : ℝ)) ^ 2) := by
-            simpa only [div_eq_mul_one_div] using henv (N / n) hy
+          _ ≤ C_env / (1 + Real.log ((N / n : ℕ) : ℝ)) ^ 2 := henv (N / n) hy
+          _ = C_env * (1 / (1 + Real.log ((N / n : ℕ) : ℝ)) ^ 2) := div_eq_mul_one_div _ _
           _ ≤ C_env * (2 * (1 + (1 / (2 * Real.pi) * Real.log ((n : ℝ) / N)) ^ 2)⁻¹) :=
             mul_le_mul_of_nonneg_left hinv_cmp hC_env.le
           _ = _ := by ring
@@ -639,9 +651,8 @@ private theorem fullWeilCenter_residual_bilinear_bound (α : ℝ) {m l N : ℕ}
       have hn0 : (0 : ℝ) < (n : ℕ) := by exact_mod_cast (mem_Icc.mp hn).1
       have hmode1 : ∀ j : ℕ, ramanujanPoleProfile 1 j = 1 / Real.sqrt j := by
         intro j
-        simp only [ramanujanPoleProfile, normalizedRamanujanMode_eq_coefficient zero_lt_one,
-          Nat.totient_one, Nat.cast_one, Real.sqrt_one, div_one,
-          BiScaleUncertainty.SieveMoments.ramanujanLagCoefficient_one]
+        rw [ramanujanPoleProfile, normalizedRamanujanMode, ramanujanMode_one,
+          Nat.totient_one, Nat.cast_one, Real.sqrt_one, div_one]
       change (Matrix.toEuclideanLin (fullWeilCenterMatrix α N)
           ((Real.sqrt (Real.log N))⁻¹ • ramanujanHorizonVector 1 N)) n -
         α * ((Real.sqrt (Real.log N))⁻¹ * ramanujanPoleProfile 1 n) = _
@@ -652,7 +663,7 @@ private theorem fullWeilCenter_residual_bilinear_bound (α : ℝ) {m l N : ℕ}
               (Real.sqrt i / Real.sqrt j + Real.sqrt j / Real.sqrt i - archimedeanCenterKernel i j)) N)
             (horizonProfileVector (ramanujanPoleProfile 1) N)) n) -
         α * ((Real.sqrt (Real.log N))⁻¹ * ramanujanPoleProfile 1 n) = _
-      rw [horizonKernelMatrix_profile_apply, hmode1 n]
+      rw [horizonKernelMatrix_apply_profile, hmode1 n]
       have hsum_eq : (∑ j ∈ Icc 1 N,
           (α / N) * (Real.sqrt (n : ℕ) / Real.sqrt j + Real.sqrt j / Real.sqrt (n : ℕ) -
             archimedeanCenterKernel n j) * ramanujanPoleProfile 1 j) =
@@ -712,6 +723,7 @@ private theorem fullWeilCenter_residual_bilinear_bound (α : ℝ) {m l N : ℕ}
         _ = 2 * (N : ℝ) - harmonic N + 4 * (N : ℝ) := by
           rw [sum_add_distrib, HTGeometry.sum_sq_harmonic_boundary_tails,
             sum_const, Nat.card_Icc, Nat.add_sub_cancel, nsmul_eq_mul]
+          ring
         _ ≤ 6 * (N : ℝ) := by linarith only [hhar_nonneg]
     have hb_l1 : (∑ n ∈ Icc 1 N, |b_bdry n|) ≤ 3 * (N : ℝ) := by
       have hcs := Finset.sum_mul_sq_le_sq_mul_sq (Icc 1 N) (fun n => |b_bdry n|) (fun _ => (1 : ℝ))
@@ -731,12 +743,12 @@ private theorem fullWeilCenter_residual_bilinear_bound (α : ℝ) {m l N : ℕ}
         have hsn : 0 < Real.sqrt (n : ℝ) := Real.sqrt_pos.mpr hn0
         dsimp only [B_row, b_bdry]
         rw [abs_mul, abs_mul, abs_div, abs_of_pos hN0, abs_of_pos hsn]
-        field_simp [hsn.ne', hN0.ne']; ring
+        field_simp [hsn.ne', hN0.ne']
       rw [sum_congr rfl hpt, ← mul_sum]
       calc
         (|α| / N) * (∑ n ∈ Icc 1 N, |b_bdry n|) ≤ (|α| / N) * (3 * (N : ℝ)) :=
           mul_le_mul_of_nonneg_left hb_l1 (by positivity)
-        _ = 3 * |α| := by field_simp [hN0.ne']; ring
+        _ = 3 * |α| := by field_simp [hN0.ne']
     calc
       |⟪r₁, normalizedRamanujanHorizonVector k N⟫| ≤
           Real.sqrt k / Real.log N * (3 * |α|) :=
@@ -768,23 +780,21 @@ private theorem fullWeilCenter_residual_bilinear_bound (α : ℝ) {m l N : ℕ}
             (Real.log N)⁻¹ * (normalizedRamanujanMode k n / ((n : ℕ) : ℝ)) := by
         intro n
         have hn0 : (0 : ℝ) < (n : ℕ) := by exact_mod_cast (mem_Icc.mp n.2).1
-        rw [real_inner_eq_re_inner ℝ, RCLike.inner_apply, conj_trivial, RCLike.re_to_real]
-        change ((Real.sqrt (Real.log N))⁻¹ * (1 * normalizedRamanujanMode 1 n / Real.sqrt (n : ℕ))) *
-          ((Real.sqrt (Real.log N))⁻¹ * (normalizedRamanujanMode k n / Real.sqrt (n : ℕ))) = _
-        have hm1_val : normalizedRamanujanMode 1 n = 1 := by
-          simp only [normalizedRamanujanMode_eq_coefficient zero_lt_one, Nat.totient_one,
-            Nat.cast_one, Real.sqrt_one, div_one,
-            BiScaleUncertainty.SieveMoments.ramanujanLagCoefficient_one]
-        rw [hm1_val]
+        have hv1 : normalizedRamanujanHorizonVector 1 N n =
+            (Real.sqrt (Real.log N))⁻¹ * (1 / Real.sqrt (n : ℕ)) := by
+          change (Real.sqrt (Real.log N))⁻¹ * ramanujanPoleProfile 1 n = _
+          rw [ramanujanPoleProfile, normalizedRamanujanMode, ramanujanMode_one,
+            Nat.totient_one, Nat.cast_one, Real.sqrt_one, div_one]
+        have hvk : normalizedRamanujanHorizonVector k N n =
+            (Real.sqrt (Real.log N))⁻¹ * (normalizedRamanujanMode k n / Real.sqrt (n : ℕ)) := rfl
+        rw [real_inner_eq_re_inner ℝ, RCLike.inner_apply, conj_trivial, RCLike.re_to_real, hv1, hvk]
         have hsqL : (Real.sqrt (Real.log N))⁻¹ * (Real.sqrt (Real.log N))⁻¹ = (Real.log N)⁻¹ := by
           rw [← mul_inv, Real.mul_self_sqrt hL0.le]
         have hsqn : Real.sqrt (n : ℕ) * Real.sqrt (n : ℕ) = ((n : ℕ) : ℝ) :=
           Real.mul_self_sqrt hn0.le
         calc
-          ((Real.sqrt (Real.log N))⁻¹ * (1 * 1 / Real.sqrt (n : ℕ))) *
-              ((Real.sqrt (Real.log N))⁻¹ * (normalizedRamanujanMode k n / Real.sqrt (n : ℕ))) =
-            ((Real.sqrt (Real.log N))⁻¹ * (Real.sqrt (Real.log N))⁻¹) *
-              (normalizedRamanujanMode k n / (Real.sqrt (n : ℕ) * Real.sqrt (n : ℕ))) := by ring
+          _ = ((Real.sqrt (Real.log N))⁻¹ * (Real.sqrt (Real.log N))⁻¹) *
+                (normalizedRamanujanMode k n / (Real.sqrt (n : ℕ) * Real.sqrt (n : ℕ))) := by ring
           _ = (Real.log N)⁻¹ * (normalizedRamanujanMode k n / ((n : ℕ) : ℝ)) := by rw [hsqL, hsqn]
       rw [sum_congr rfl fun n _ => hpt n, ← mul_sum]
       congr 1
@@ -802,11 +812,15 @@ private theorem fullWeilCenter_residual_bilinear_bound (α : ℝ) {m l N : ℕ}
         (normalizedRamanujanHorizonVector m N), normalizedRamanujanHorizonVector 1 N⟫ =
         ⟪r₁, normalizedRamanujanHorizonVector m N⟫ +
           α * ⟪normalizedRamanujanHorizonVector m N, normalizedRamanujanHorizonVector 1 N⟫ := by
-      have h1 := hsym (normalizedRamanujanHorizonVector 1 N) (normalizedRamanujanHorizonVector m N)
-      rw [real_inner_comm (normalizedRamanujanHorizonVector 1 N)] at h1
+      have h1 : ⟪Matrix.toEuclideanLin (fullWeilCenterMatrix α N)
+          (normalizedRamanujanHorizonVector m N), normalizedRamanujanHorizonVector 1 N⟫ =
+          ⟪Matrix.toEuclideanLin (fullWeilCenterMatrix α N)
+            (normalizedRamanujanHorizonVector 1 N), normalizedRamanujanHorizonVector m N⟫ := by
+        rw [hsym (normalizedRamanujanHorizonVector m N) (normalizedRamanujanHorizonVector 1 N),
+          real_inner_comm]
       dsimp only [r₁]
       rw [inner_sub_left, real_inner_smul_left,
-        real_inner_comm (normalizedRamanujanHorizonVector 1 N) (normalizedRamanujanHorizonVector m N)]
+        real_inner_comm (normalizedRamanujanHorizonVector m N) (normalizedRamanujanHorizonVector 1 N)]
       linarith only [h1]
     rw [hid_l1]
     have ht1 := hr1_pair hm
@@ -828,7 +842,9 @@ private theorem fullWeilCenter_residual_bilinear_bound (α : ℝ) {m l N : ℕ}
             2 * |α| * Real.sqrt m * (1 + Real.log m) / Real.log N =
             5 * |α| * Real.sqrt m * (1 + Real.log m) / Real.log N)]
       _ ≤ 9700 * |α| * Real.sqrt m * (1 + Real.log m) / Real.log N :=
-        div_le_div_of_nonneg_right (by nlinarith only [abs_nonneg α, Real.sqrt_nonneg m, h1m]) hL0.le
+        div_le_div_of_nonneg_right (by
+          have hnn : 0 ≤ |α| * Real.sqrt m * (1 + Real.log m) := by positivity
+          linarith only [hnn]) hL0.le
   -- Step 5: `m ≥ 2` and `l ≥ 2`: orthogonalize against `v_1` and polarize on `V_M ∩ (V_1)ᗮ`.
   have hl2 : 2 ≤ l := by omega
   let v₁ := normalizedRamanujanHorizonVector 1 N
@@ -844,7 +860,7 @@ private theorem fullWeilCenter_residual_bilinear_bound (α : ℝ) {m l N : ℕ}
     have he1_sq : (∑ k ∈ Icc 1 M, e₁ k ^ 2) = 1 := by
       rw [sum_eq_single 1]
       · simp only [e₁, ite_true, one_pow]
-      · intro k _ hk; simp only [e₁, if_neg hk, zero_pow (by decide)]
+      · intro k _ hk; simp only [e₁, if_neg hk]; norm_num
       · intro hnot; exact absurd (mem_Icc.mpr ⟨le_rfl, by omega⟩) hnot
     have hr := (half_and_three_halves_riesz_of_log_le hM2 hMM_N hlog e₁).1
     rw [hvec1, he1_sq, mul_one] at hr
@@ -897,7 +913,7 @@ private theorem fullWeilCenter_residual_bilinear_bound (α : ℝ) {m l N : ℕ}
     have h_iv1 : ⟪x - (⟪x, v₁⟫ / ‖v₁‖ ^ 2) • v₁, v₁⟫ = 0 := by
       rw [inner_sub_left, real_inner_smul_left, real_inner_self_eq_norm_sq,
         div_mul_cancel₀ _ hv1_sq_pos.ne', sub_self]
-    refine ⟨Submodule.mem_orthogonal.mpr fun w hw => ?_, ?_⟩
+    refine ⟨(Submodule.mem_orthogonal _ _).mpr fun w hw => ?_, ?_⟩
     · obtain ⟨c_w, -, rfl⟩ := (mem_conductorSubspace_iff (M := 1) (N := N) (x := w)).mp hw
       have h1_sum : (∑ k ∈ Icc 1 1, c_w k • normalizedRamanujanHorizonVector k N) = c_w 1 • v₁ := by
         rw [Icc_self, sum_singleton]
@@ -959,8 +975,8 @@ private theorem fullWeilCenter_residual_bilinear_bound (α : ℝ) {m l N : ℕ}
       α hM2 hMN4 hlog hm_mem' hm_orth'
     have hpol : 4 * ⟪C_op u_m', u_l'⟫ =
         ⟪C_op (u_m' + u_l'), u_m' + u_l'⟫ - ⟪C_op (u_m' - u_l'), u_m' - u_l'⟫ := by
-      have hs := hsym u_l' u_m'
-      rw [real_inner_comm u_l'] at hs
+      have hs : ⟪C_op u_l', u_m'⟫ = ⟪C_op u_m', u_l'⟫ := by
+        rw [hsym u_l' u_m', real_inner_comm]
       simp only [map_add, map_sub, inner_add_left, inner_add_right, inner_sub_left, inner_sub_right]
       linarith only [hs]
     have hsum_norms : ‖u_m' + u_l'‖ ^ 2 + ‖u_m' - u_l'‖ ^ 2 = 4 := by
@@ -981,7 +997,7 @@ private theorem fullWeilCenter_residual_bilinear_bound (α : ℝ) {m l N : ℕ}
     have hscale : ⟪C_op u_m, u_l⟫ = (‖u_m‖ * ‖u_l‖) * ⟪C_op u_m', u_l'⟫ := by
       dsimp only [u_m', u_l']
       rw [map_smul, real_inner_smul_left, real_inner_smul_right]
-      field_simp [hnm_pos.ne', hnl_pos.ne']; ring
+      field_simp [hnm_pos.ne', hnl_pos.ne']
     have hlogM_le : 1 + Real.log (M : ℝ) ≤ 2 * Real.sqrt l * (1 + Real.log m) := by
       have hM_eq : M = max m l := max_eq_right (le_trans hm2 (le_max_left m l))
       rw [hM_eq]
@@ -1011,15 +1027,13 @@ private theorem fullWeilCenter_residual_bilinear_bound (α : ℝ) {m l N : ℕ}
       ⟪C_op u_m, u_l⟫ + β_l * ⟪r₁, u_m⟫ + β_m * ⟪r₁, v_l⟫ + α * β_m * ⟪v_l, v₁⟫ := by
     have hvm_eq : v_m = u_m + β_m • v₁ := by dsimp only [u_m]; abel
     have hvl_eq : v_l = u_l + β_l • v₁ := by dsimp only [u_l]; abel
-    have hum_v1 : ⟪v₁, u_m⟫ = 0 := Submodule.inner_left_of_mem_orthogonal
+    have hum_v1 : ⟪v₁, u_m⟫ = 0 := (Submodule.mem_orthogonal _ _).mp hum_orth v₁
       (mem_conductorSubspace_normalizedRamanujanHorizonVector (mem_Icc.mpr ⟨le_rfl, le_rfl⟩))
-      hum_orth
     have hsym_um : ⟪C_op u_m, v₁⟫ = ⟪r₁, u_m⟫ := by
-      have hs := hsym v₁ u_m
-      rw [real_inner_comm v₁] at hs
+      have hs : ⟪C_op u_m, v₁⟫ = ⟪C_op v₁, u_m⟫ := by
+        rw [hsym u_m v₁, real_inner_comm]
       dsimp only [r₁]
-      rw [inner_sub_left, real_inner_smul_left, hum_v1, mul_zero, sub_zero, hs.symm,
-        real_inner_comm]
+      rw [inner_sub_left, real_inner_smul_left, hum_v1, mul_zero, sub_zero, hs]
     have hc_v1 : C_op v₁ = r₁ + α • v₁ := by dsimp only [r₁]; abel
     conv_lhs => rw [hvm_eq, hvl_eq]
     rw [map_add, map_smul, inner_add_left, inner_add_right, inner_add_right,
@@ -1098,8 +1112,8 @@ private theorem fullWeilCenter_residual_bilinear_bound (α : ℝ) {m l N : ℕ}
   rw [hdecomp]
   have htri4 : |⟪C_op u_m, u_l⟫ + β_l * ⟪r₁, u_m⟫ + β_m * ⟪r₁, v_l⟫ + α * β_m * ⟪v_l, v₁⟫| ≤
       |⟪C_op u_m, u_l⟫| + |β_l * ⟪r₁, u_m⟫| + |β_m * ⟪r₁, v_l⟫| + |α * β_m * ⟪v_l, v₁⟫| := by
-    refine (abs_add_le _ _).trans (add_le_add_right ?_ _)
-    exact (abs_add_le _ _).trans (add_le_add_right (abs_add_le _ _) _)
+    refine (abs_add_le _ _).trans (add_le_add ?_ le_rfl)
+    exact (abs_add_le _ _).trans (add_le_add (abs_add_le _ _) le_rfl)
   have hsum4 : |⟪C_op u_m, u_l⟫| + |β_l * ⟪r₁, u_m⟫| + |β_m * ⟪r₁, v_l⟫| + |α * β_m * ⟪v_l, v₁⟫| ≤
       4948 * |α| * Real.sqrt ((m : ℝ) * l) * (1 + Real.log m) / Real.log N := by
     linarith only [huu_bound, hb1, hb2, hb3,
@@ -1110,7 +1124,9 @@ private theorem fullWeilCenter_residual_bilinear_bound (α : ℝ) {m l N : ℕ}
         4948 * |α| * Real.sqrt ((m : ℝ) * l) * (1 + Real.log m) / Real.log N)]
   exact (htri4.trans hsum4).trans
     (div_le_div_of_nonneg_right
-      (by nlinarith only [abs_nonneg α, Real.sqrt_nonneg ((m : ℝ) * l), h1m]) hL0.le)
+      (by
+        have hnn : 0 ≤ |α| * Real.sqrt ((m : ℝ) * l) * (1 + Real.log m) := by positivity
+        linarith only [hnn]) hL0.le)
 
 /-- **Channel 4 (Separated cross error):** Pairing the pointwise `O(√m * c * √n / N + √m * c^2 / N)`
 row envelope with `v_l` yields `O(√(m l) * c / log N)` whenever `c^2 ≤ N`. -/
@@ -1143,7 +1159,7 @@ private theorem exists_crossError_bilinear_bound {φ : ℝ → ℝ}
     change (Real.sqrt (Real.log N))⁻¹ *
       ((Matrix.toEuclideanLin (horizonKernelMatrix E_ker N)
         (horizonProfileVector (ramanujanPoleProfile m) N)) n) = _
-    rw [horizonKernelMatrix_profile_apply, div_eq_inv_mul]
+    rw [horizonKernelMatrix_apply_profile, div_eq_inv_mul]
     rfl
   have hrow_abs : ∀ n ∈ Icc 1 N,
       |row_x n| ≤
@@ -1389,10 +1405,13 @@ private theorem exists_crossError_bilinear_bound {φ : ℝ → ℝ}
     have hs2 : (4 * K₀ * Real.sqrt m * c ^ 2 / N) * (∑ n ∈ Icc 1 N, 1 / Real.sqrt (n : ℝ)) ≤
         8 * K₀ * Real.sqrt m * c := by
       have hc2_div : c ^ 2 / (N : ℝ) * (2 * Real.sqrt N) ≤ 2 * c := by
-        have hsqN : Real.sqrt N * Real.sqrt N = (N : ℝ) := Real.mul_self_sqrt hN0.le
         rw [div_mul_eq_mul_div, div_le_iff₀ hN0]
-        have hm1 := mul_le_mul_of_nonneg_left hc_sqrt (show 0 ≤ 2 * c * Real.sqrt N by positivity)
-        nlinarith only [hm1, hsqN]
+        calc
+          c ^ 2 * (2 * Real.sqrt N) = (2 * c * Real.sqrt N) * c := by ring
+          _ ≤ (2 * c * Real.sqrt N) * Real.sqrt N :=
+            mul_le_mul_of_nonneg_left hc_sqrt (by positivity)
+          _ = 2 * c * (Real.sqrt N * Real.sqrt N) := by ring
+          _ = 2 * c * N := by rw [Real.mul_self_sqrt hN0.le]
       calc
         (4 * K₀ * Real.sqrt m * c ^ 2 / N) * (∑ n ∈ Icc 1 N, 1 / Real.sqrt (n : ℝ)) ≤
             (4 * K₀ * Real.sqrt m * c ^ 2 / N) * (2 * Real.sqrt N) :=
@@ -1570,7 +1589,8 @@ private theorem exists_poleError_bilinear_bound {φ : ℝ → ℝ}
       rw [Real.sqrt_mul (Nat.cast_nonneg m)]; ring
     _ ≤ (8 * C_p + 1) * Real.sqrt ((m : ℝ) * l) * c ^ 2 * Real.log N / N := by
       apply div_le_div_of_nonneg_right _ hN0.le
-      nlinarith only [Real.sqrt_nonneg ((m : ℝ) * l), sq_nonneg c, hL0.le]
+      have hnn : 0 ≤ Real.sqrt ((m : ℝ) * l) * c ^ 2 * Real.log N := by positivity
+      linarith only [hnn]
 
 /-- **Channel 6 (Near-gamma downward source):** The near-band row is bounded pointwise by
 `O((c / N) * K_{m,c} * √n)`, summing against `1 / √n` to `O(c * K_{m,c})`, while the exterior
@@ -1721,7 +1741,7 @@ private theorem exists_downward_bilinear_bound {φ : ℝ → ℝ}
       have hn0 : (0 : ℝ) < n := by exact_mod_cast (mem_Icc.mp hn).1
       have hsn : 0 < Real.sqrt (n : ℝ) := Real.sqrt_pos.mpr hn0
       let rad_n := (n : ℝ) * (linearNearRowRadius c / N)
-      have hrad0 : 0 ≤ rad_n := by unfold linearNearRowRadius at *; dsimp only [rad_n]; positivity
+      have hrad0 : 0 ≤ rad_n := by dsimp only [rad_n]; unfold linearNearRowRadius; positivity
       have hcard_n : ((nearRowIndices c N n).card : ℝ) ≤ 2 * rad_n := by
         have hsub : nearRowIndices c N n ⊆
             (Icc 1 N).filter (fun j => j ≠ n ∧ |(j : ℝ) - n| ≤ rad_n) := by
@@ -1867,7 +1887,7 @@ private theorem exists_downward_bilinear_bound {φ : ℝ → ℝ}
       have heq : (∑ n ∈ Icc 1 N, |actualExteriorDownwardRow g N m n| / Real.sqrt n) =
           ∑ n ∈ Icc 1 N, |regroupedExteriorDownwardPrimeRow g c N m n| / Real.sqrt n :=
         sum_congr rfl fun n hn => by
-          rw [downwardRamanujanRow_sub_interior_eq hc0 hn hgsupp m]
+          rw [actualExteriorDownwardRow, downwardRamanujanRow_sub_interior_eq hc0 hn hgsupp m]
       rw [heq]
       symm
       refine sum_subset (filter_subset _ _) fun n hn hnS => ?_
@@ -1935,7 +1955,13 @@ private theorem exists_downward_bilinear_bound {φ : ℝ → ℝ}
       Real.sqrt ((m : ℝ) * l) := by
     have hst : 0 < Real.sqrt (m.totient : ℝ) := Real.sqrt_pos.mpr htot_pos
     have hid : (Real.sqrt (m.totient : ℝ))⁻¹ * (m.totient : ℝ) = Real.sqrt (m.totient : ℝ) := by
-      rw [← Real.sq_sqrt htot_pos.le]; field_simp [hst.ne']
+      have hsq : Real.sqrt (m.totient : ℝ) * Real.sqrt (m.totient : ℝ) = (m.totient : ℝ) :=
+        Real.mul_self_sqrt htot_pos.le
+      calc
+        (Real.sqrt (m.totient : ℝ))⁻¹ * (m.totient : ℝ) =
+            (Real.sqrt (m.totient : ℝ))⁻¹ *
+              (Real.sqrt (m.totient : ℝ) * Real.sqrt (m.totient : ℝ)) := by rw [hsq]
+        _ = Real.sqrt (m.totient : ℝ) := inv_mul_cancel_left₀ hst.ne' _
     rw [← mul_assoc, hid, ← Real.sqrt_mul (Nat.cast_nonneg _)]
     exact Real.sqrt_le_sqrt (mul_le_mul_of_nonneg_right htot_le (Nat.cast_nonneg l))
   let rate_d := c * (1 + Real.log c) / Real.log N + c ^ 2 / (N : ℝ)
@@ -2241,7 +2267,8 @@ private theorem exists_nearCenter_bilinear_bound (φ : ℝ → ℝ) :
           (by linarith [Real.log_nonneg (show 1 ≤ 2 * (R_c + 1) by linarith)]) (by positivity)
       _ = (4 * A_nc * C_R1 * C_R2) * Real.sqrt m * c * (1 + Real.log c) ^ 2 := by ring
       _ ≤ (4 * A_nc * C_R1 * C_R2 + 1) * Real.sqrt m * c * (1 + Real.log c) ^ 2 := by
-        nlinarith only [Real.sqrt_nonneg m, hc0.le, sq_nonneg (1 + Real.log c)]
+        have hnn : 0 ≤ Real.sqrt m * c * (1 + Real.log c) ^ 2 := by positivity
+        linarith only [hnn]
   have hp := abs_inner_of_coord_eq_div_sqrt_log hl (nearCenterVector φ c N m) row_nc (fun _ => rfl)
   refine (hp.trans (mul_le_mul_of_nonneg_left hsum_nc (by positivity))).trans_eq ?_
   rw [Real.sqrt_mul (Nat.cast_nonneg m)]; ring
@@ -2487,8 +2514,14 @@ private theorem exists_upward_bilinear_variable_rate {φ : ℝ → ℝ}
           (Real.sqrt (Ca * d ^ 6) * (m.totient : ℝ) * c ^ 5 * (Real.log N / N)) ^ 2 := by
         rw [hua_sq_eq]
         refine hb.trans_eq ?_
-        rw [mul_pow, mul_pow, mul_pow, Real.sq_sqrt (by dsimp only [d]; positivity)]
-        ring
+        have hcd : (Real.sqrt (Ca * d ^ 6)) ^ 2 = Ca * d ^ 6 :=
+          Real.sq_sqrt (by dsimp only [d]; positivity)
+        calc
+          Ca * (m.totient : ℝ) ^ 2 * c ^ 4 * (d * c) ^ 6 * (Real.log N / N) ^ 2 =
+              (Ca * d ^ 6) * (m.totient : ℝ) ^ 2 * c ^ 10 * (Real.log N / N) ^ 2 := by ring
+          _ = (Real.sqrt (Ca * d ^ 6)) ^ 2 * (m.totient : ℝ) ^ 2 * c ^ 10 *
+                (Real.log N / N) ^ 2 := by rw [hcd]
+          _ = (Real.sqrt (Ca * d ^ 6) * (m.totient : ℝ) * c ^ 5 * (Real.log N / N)) ^ 2 := by ring
       have h := Real.sqrt_le_sqrt hsq
       rwa [Real.sqrt_sq (norm_nonneg _), Real.sqrt_sq (by positivity)] at h
     have hnorm_vl : ‖normalizedRamanujanHorizonVector l N‖ ≤ 2 * Real.sqrt l := by
@@ -2529,7 +2562,9 @@ private theorem exists_upward_bilinear_variable_rate {φ : ℝ → ℝ}
         · rw [if_pos hex]
           have h := (abs_sum_le_sum_abs _ (Icc 1 B)).trans
             (sum_le_sum fun h _ => abs_linearizedUpwardOffset_sub_reciprocal_le hφ hsupp c N m n k h)
-          simpa only [L_val, sum_const, nsmul_eq_mul, Nat.card_Icc, Nat.add_sub_cancel] using h
+          refine h.trans_eq ?_
+          simp only [L_val, sum_const, nsmul_eq_mul, Nat.card_Icc, Nat.add_sub_cancel]
+          ring
         · rw [if_neg hex]
           have hz : (∑ h ∈ Icc 1 B, (linearizedUpwardOffset φ c N m n k h -
               reciprocalUpwardOffset φ c N m n k h)) = 0 := by
@@ -2794,7 +2829,7 @@ private theorem exists_upward_bilinear_variable_rate {φ : ℝ → ℝ}
         change _ = ((affinePrimeShellCorrectionOfShift m n id φ c ((N : ℝ) / n) -
           ramanujanLagCoefficient m n * shellCorrection φ c m) / Real.sqrt n + _) / 2
         ring
-      rw [hrow, abs_div, abs_of_pos zero_lt_two, div_div, mul_comm (2 : ℝ)]
+      rw [hrow, abs_div, show |(2 : ℝ)| = 2 by norm_num, div_div, mul_comm (2 : ℝ)]
       have htri := div_le_div_of_nonneg_right (abs_add_le _ _) (Real.sqrt_nonneg n)
       rw [add_div] at htri
       exact (div_le_div_of_nonneg_right htri zero_le_two).trans_eq
@@ -2822,7 +2857,7 @@ private theorem exists_upward_bilinear_variable_rate {φ : ℝ → ℝ}
       rw [← sum_add_distrib]
       exact sum_le_sum fun n _ => by
         rw [← add_div]
-        exact div_le_div_of_nonneg_right (abs_add_le _ _) (Real.sqrt_nonneg n)
+        exact div_le_div_of_nonneg_right (abs_add_le (b n) (r n)) (Real.sqrt_nonneg n)
     have hc35 : c ^ 3 ≤ c ^ 5 * Real.log N :=
       (pow_le_pow_right₀ hc (by norm_num : 3 ≤ 5)).trans
         (le_mul_of_one_le_right (by positivity) hlog)
@@ -2863,7 +2898,13 @@ private theorem exists_upward_bilinear_variable_rate {φ : ℝ → ℝ}
       Real.sqrt ((m : ℝ) * l) := by
     have hst : 0 < Real.sqrt (m.totient : ℝ) := Real.sqrt_pos.mpr htot_pos
     have hid : (Real.sqrt (m.totient : ℝ))⁻¹ * (m.totient : ℝ) = Real.sqrt (m.totient : ℝ) := by
-      rw [← Real.sq_sqrt htot_pos.le]; field_simp [hst.ne']
+      have hsq : Real.sqrt (m.totient : ℝ) * Real.sqrt (m.totient : ℝ) = (m.totient : ℝ) :=
+        Real.mul_self_sqrt htot_pos.le
+      calc
+        (Real.sqrt (m.totient : ℝ))⁻¹ * (m.totient : ℝ) =
+            (Real.sqrt (m.totient : ℝ))⁻¹ *
+              (Real.sqrt (m.totient : ℝ) * Real.sqrt (m.totient : ℝ)) := by rw [hsq]
+        _ = Real.sqrt (m.totient : ℝ) := inv_mul_cancel_left₀ hst.ne' _
     rw [← mul_assoc, hid, ← Real.sqrt_mul (Nat.cast_nonneg _)]
     exact Real.sqrt_le_sqrt (mul_le_mul_of_nonneg_right htot_le (Nat.cast_nonneg l))
   have hsum_ab := (abs_add_le _ _).trans (add_le_add ha_bilin hbr_bilin)
@@ -2973,8 +3014,9 @@ theorem exists_completeWeil_bilinear_conductor_residual_variable_rate {φ : ℝ 
     have hM4 : (M : ℝ) ^ 4 ≤ 16 * Real.log (N : ℝ) ^ (4 * A + 4) := by
       have hp := pow_le_pow_left₀ (Nat.cast_nonneg M) hM_le_2LA 4
       have he : (2 * Real.log (N : ℝ) ^ A) ^ (4 : ℕ) = 16 * Real.log (N : ℝ) ^ (4 * A) := by
-        rw [mul_pow, ← Real.rpow_natCast, ← Real.rpow_mul hL0.le]
-        norm_num; ring_nf
+        rw [mul_pow, show (2 : ℝ) ^ (4 : ℕ) = 16 by norm_num,
+          ← Real.rpow_natCast (Real.log (N : ℝ) ^ A) 4, ← Real.rpow_mul hL0.le]
+        congr 1; ring
       exact (hp.trans_eq he).trans (mul_le_mul_of_nonneg_left
         (Real.rpow_le_rpow_of_exponent_le hL1 (by linarith only : 4 * A ≤ 4 * A + 4)) (by norm_num))
     have hL_sqrtN : Real.log (N : ℝ) ^ (4 * A + 4) ≤ Real.sqrt N := by
@@ -3002,7 +3044,7 @@ theorem exists_completeWeil_bilinear_conductor_residual_variable_rate {φ : ℝ 
     have hlogL_le : Real.log L ≤ 2 * Real.sqrt L := by
       have h1 := Real.log_le_sub_one_of_pos (Real.sqrt_pos.mpr hL0)
       have h2 : Real.log L = 2 * Real.log (Real.sqrt L) := by
-        rw [← Real.sq_sqrt hL0.le, Real.log_pow]; ring
+        rw [Real.log_sqrt hL0.le]; ring
       linarith only [h1, h2]
     have hM0 : (0 : ℝ) < M := by positivity
     have hlogM_le : 1 + Real.log (M : ℝ) ≤ 2 * (A + 2) * Real.sqrt L := by
@@ -3026,9 +3068,10 @@ theorem exists_completeWeil_bilinear_conductor_residual_variable_rate {φ : ℝ 
   have h2Bc_N : 2 * (Real.exp 1 + 2) * c ≤ (N : ℝ) := by
     have he := Real.exp_pos 1
     have hcoef : 2 * (Real.exp 1 + 2) ≤ 4 * (Real.exp 1 + 3) ^ 2 := by nlinarith only [he]
-    have hc2 : c ≤ c ^ 2 := by nlinarith only [hc]
+    have h1 : 2 * (Real.exp 1 + 2) * c ≤ 2 * (Real.exp 1 + 2) * c ^ 2 :=
+      mul_le_mul_of_nonneg_left (by nlinarith only [hc]) (by positivity)
     have h := mul_le_mul_of_nonneg_right hcoef (sq_nonneg c)
-    nlinarith only [h, hc2, hlarge]
+    linarith only [h1, h, hlarge]
   have htwo_c : 2 * c ≤ (N : ℝ) := by nlinarith only [h2Bc_N, Real.exp_pos 1, hc0]
   have hcN : c ≤ (N : ℝ) := by linarith only [htwo_c, hc0]
   have hrate_c1 : ∀ {a : ℕ}, a ≤ 2 → c * (1 + Real.log c) ^ a / Real.log N ≤ R :=

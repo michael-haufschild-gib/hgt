@@ -33,11 +33,18 @@ of `f'/h_w` by `τ_w<1`; hence `f=c f_w`. The exact identity
 `Rf_w=1−f_w` forces `c=0`. Transport this source exclusion through the
 actual remainder's Hilbert factorization and Fredholm determinant.
 
+## Certified source input
+
+`GaussMayerNegativeUnitRigidity.lean` proves the strict negative real
+constant-response derivative, unit-mass source bounds, and forced vanishing
+at zero. `MayerNegativePole.negative_derivative_eigen_response` proves the
+stronger response classification above; `remainder_negative_eigen_eq_zero`
+excludes a nonzero `−1` eigenfunction of the actual remainder. Direct
+production check and all five transitive axiom audits pass with only
+`propext`, `Classical.choice`, and `Quot.sound`.
+
 ## Open obligations
 
-Strict real negativity of the actual constant-response derivative;
-source minimum/maximum argument; negative-eigenmode rigidity; exact
-remainder determinant/eigenvector transport. No premise may replace these.
-The corpus search found cancellation and holomorphy, but no theorem
-asserting this nonvanishing. No complex-source or scattering exclusion
-is claimed.
+Complete the actual remainder determinant/eigenvector transport. The
+source rigidity is certified, but `D(w,−1)≠0` is not yet certified.
+No complex-source or scattering exclusion is claimed.
