@@ -2591,6 +2591,75 @@ theorem exists_dyadicMean_polynomialTheta_subpower_up_to_two_thirds
 
 /-! ## §6. Unconditional almost-all unit-window `(6/5) log(log T) / log T` zero-free corridor -/
 
+/-- Pure scalar algebra converting the Barban–Vehov bound at `a_U = (25/22) * Real.log (Real.log U)`
+into an upper bound on `2 * W_sum`. -/
+private theorem barbanVehov_loglog_count_algebra {U A K L_S a_U T₁ T₂ W_sum : ℝ}
+    (hU_pos : 0 < U) (hA : 0 < A) (hK : 0 ≤ K)
+    (hlog50 : 50 ≤ Real.log U) (hll_pos : 0 < Real.log (Real.log U))
+    (hLS_pos : 0 < L_S) (hLS_le_1add : L_S ≤ 1 + Real.log U) (hLS_le_2logU : L_S ≤ 2 * Real.log U)
+    (ha_eq : a_U = (25 / 22 : ℝ) * Real.log (Real.log U)) (ha_lo : 1 ≤ a_U)
+    (hlen : T₂ - T₁ ≤ U)
+    (hbv : 2 * Real.pi * ((a_U / L_S) * W_sum) ≤
+      (T₂ - T₁) * (A * Real.exp (-(22 / 25 * a_U))) + K * L_S) :
+    2 * W_sum ≤ (2 * A / 3) * U / Real.log (Real.log U) + 2 * K * (1 + Real.log U) ^ 3 := by
+  have hexp_a : Real.exp (-(22 / 25 * a_U)) = (Real.log U)⁻¹ := by
+    have harg : -(22 / 25 * a_U) = -Real.log (Real.log U) := by rw [ha_eq]; ring
+    rw [harg, Real.exp_neg, Real.exp_log (by linarith : 0 < Real.log U)]
+  rw [hexp_a] at hbv
+  have hrhs_le : (T₂ - T₁) * (A * (Real.log U)⁻¹) + K * L_S ≤ U * A / Real.log U + K * L_S := by
+    have h1 : (T₂ - T₁) * (A * (Real.log U)⁻¹) ≤ U * (A * (Real.log U)⁻¹) :=
+      mul_le_mul_of_nonneg_right hlen (mul_nonneg hA.le (inv_nonneg.mpr (by linarith)))
+    rw [show U * A / Real.log U = U * (A * (Real.log U)⁻¹) by ring]
+    exact add_le_add h1 le_rfl
+  have hbv' := hbv.trans hrhs_le
+  have hden_pos : 0 < Real.pi * a_U := mul_pos Real.pi_pos (by linarith)
+  have hm_div := mul_le_mul_of_nonneg_left hbv' (div_nonneg hLS_pos.le hden_pos.le)
+  have hlhs_simp : (L_S / (Real.pi * a_U)) * (2 * Real.pi * ((a_U / L_S) * W_sum)) =
+      2 * W_sum := by
+    calc (L_S / (Real.pi * a_U)) * (2 * Real.pi * ((a_U / L_S) * W_sum))
+        = (2 * W_sum) * ((Real.pi * a_U) / (Real.pi * a_U)) * (L_S / L_S) := by ring
+      _ = 2 * W_sum := by rw [div_self hden_pos.ne', div_self hLS_pos.ne', mul_one, mul_one]
+  rw [hlhs_simp, mul_add] at hm_div
+  have hlogU_ne : Real.log U ≠ 0 := by linarith
+  have hterm1 : (L_S / (Real.pi * a_U)) * (U * A / Real.log U) ≤
+      (2 * A / 3) * U / Real.log (Real.log U) := by
+    have hnum : L_S * (U * A / Real.log U) ≤ 2 * A * U := by
+      calc L_S * (U * A / Real.log U)
+          ≤ (2 * Real.log U) * (U * A / Real.log U) :=
+            mul_le_mul_of_nonneg_right hLS_le_2logU
+              (div_nonneg (mul_nonneg hU_pos.le hA.le) (by linarith))
+        _ = (2 * A * U) * (Real.log U / Real.log U) := by ring
+        _ = 2 * A * U := by rw [div_self hlogU_ne, mul_one]
+    have hden_ge : 3 * Real.log (Real.log U) ≤ Real.pi * a_U := by
+      have hpi3 : (3 : ℝ) ≤ Real.pi := Real.pi_gt_three.le
+      have ha_ge : Real.log (Real.log U) ≤ a_U := by rw [ha_eq]; linarith
+      exact mul_le_mul hpi3 ha_ge hll_pos.le Real.pi_pos.le
+    calc (L_S / (Real.pi * a_U)) * (U * A / Real.log U)
+        = (L_S * (U * A / Real.log U)) / (Real.pi * a_U) := by ring
+      _ ≤ (2 * A * U) / (Real.pi * a_U) := div_le_div_of_nonneg_right hnum hden_pos.le
+      _ ≤ (2 * A * U) / (3 * Real.log (Real.log U)) :=
+          div_le_div_of_nonneg_left (by positivity) (by positivity) hden_ge
+      _ = (2 * A / 3) * U / Real.log (Real.log U) := by ring
+  have hterm2 : (L_S / (Real.pi * a_U)) * (K * L_S) ≤ 2 * K * (1 + Real.log U) ^ 3 := by
+    have hden1 : 1 ≤ Real.pi * a_U := by
+      calc (1 : ℝ) ≤ 3 * 1 := by norm_num
+        _ ≤ Real.pi * a_U := mul_le_mul Real.pi_gt_three.le ha_lo zero_le_one Real.pi_pos.le
+    have h1 : (L_S / (Real.pi * a_U)) * (K * L_S) ≤ K * L_S ^ 2 := by
+      rw [show (L_S / (Real.pi * a_U)) * (K * L_S) = (K * L_S ^ 2) / (Real.pi * a_U) by ring]
+      exact div_le_self (by positivity) hden1
+    have hsq : L_S ^ 2 ≤ (1 + Real.log U) ^ 3 := by
+      have h2 : L_S ^ 2 ≤ (1 + Real.log U) ^ 2 := pow_le_pow_left₀ hLS_pos.le hLS_le_1add 2
+      have h23 : (1 + Real.log U) ^ 2 ≤ (1 + Real.log U) ^ 3 :=
+        pow_le_pow_right₀ (by linarith) (by omega)
+      exact h2.trans h23
+    calc (L_S / (Real.pi * a_U)) * (K * L_S)
+        ≤ K * L_S ^ 2 := h1
+      _ ≤ K * (1 + Real.log U) ^ 3 := mul_le_mul_of_nonneg_left hsq hK
+      _ ≤ 2 * K * (1 + Real.log U) ^ 3 := by
+          have : 0 ≤ K * (1 + Real.log U) ^ 3 := mul_nonneg hK (by positivity)
+          linarith
+  exact hm_div.trans (add_le_add hterm1 hterm2)
+
 /-- **Unconditional Almost-All Unit-Window `(6/5) log(log T) / log T` Corridor
 (`eventually_volume_badLogLogCorridor_unitWindows_le`).**
 All unit windows `[T, T + 1)` (`T ∈ [U, 2U]`) outside an exceptional set of Lebesgue measure
@@ -2602,8 +2671,8 @@ theorem eventually_volume_badLogLogCorridor_unitWindows_le :
           (6 / 5 : ℝ) * Real.log (Real.log T) / Real.log T ≤ |ρ.re - 1 / 2|} ≤
         ENNReal.ofReal (C_bad * U / Real.log (Real.log U)) := by
   obtain ⟨A, K, hA, hK, hbv_ev⟩ := exists_selberg_criticalGate_nearLine_zeroDensity
-  obtain ⟨K_ll, _, hll⟩ := exists_one_add_log_pow_le_rpow 1 (by positivity : (0 : ℝ) < 1 / 2)
-  obtain ⟨K_log4, _, hlog4⟩ := exists_one_add_log_pow_le_rpow 4 (by positivity : (0 : ℝ) < 1 / 2)
+  obtain ⟨K_ll, hK_ll, hll⟩ := exists_one_add_log_pow_le_rpow 1 (by positivity : (0 : ℝ) < 1 / 2)
+  obtain ⟨K_log4, hK_log4, hlog4⟩ := exists_one_add_log_pow_le_rpow 4 (by positivity : (0 : ℝ) < 1 / 2)
   set M_poly : ℝ := 2 * K + 32 * (|xiLineTwoLogDerivConstant| + 5)
   have hMpoly_pos : 0 < M_poly := by
     dsimp [M_poly]
@@ -2643,7 +2712,7 @@ theorem eventually_volume_badLogLogCorridor_unitWindows_le :
       (by linarith : M_poly * K_log4 ≤ U ^ (1 / 2 : ℝ))
       (Real.rpow_nonneg hU_pos.le (1 / 2))
     have hU_sq : U ^ (1 / 2 : ℝ) * U ^ (1 / 2 : ℝ) = U := by
-      rw [← Real.rpow_add hU_pos]; norm_num; exact Real.rpow_one U
+      rw [← Real.rpow_add hU_pos]; norm_num
     linarith [hm1, hm2, hU_sq]
   filter_upwards [ht_32.eventually hbv_ev,
     Real.tendsto_log_atTop.eventually_ge_atTop 50,
@@ -2680,7 +2749,6 @@ theorem eventually_volume_badLogLogCorridor_unitWindows_le :
       (Real.rpow_nonneg (by linarith : 0 ≤ Real.log U) (1 / 2))
     have hlog_sq : (Real.log U) ^ (1 / 2 : ℝ) * (Real.log U) ^ (1 / 2 : ℝ) = Real.log U := by
       rw [← Real.rpow_add (by linarith : 0 < Real.log U)]; norm_num
-      exact Real.rpow_one _
     rw [hlog_sq] at hm
     linarith
   set b_U : ℝ := (51 / 50 : ℝ) * (a_U / L_S)
@@ -2716,12 +2784,12 @@ theorem eventually_volume_badLogLogCorridor_unitWindows_le :
             div_le_div_of_nonneg_right
               (mul_le_mul_of_nonneg_left hllT_ge (by norm_num)) (by positivity)
         _ ≤ (6 / 5 : ℝ) * Real.log (Real.log T) / Real.log T :=
-            div_le_div_of_nonneg_left (by positivity) (by linarith) hlogT_le
+            div_le_div_of_nonneg_left (mul_nonneg (by norm_num) (by linarith)) (by linarith) hlogT_le
     rw [mem_xiUnitWindowZeros, Set.Finite.mem_toFinset] at hρ_win
-    obtain ⟨⟨⟨h0, h1, him0, him_lt⟩, hxi⟩, him_ge⟩ := hρ_win
+    obtain ⟨⟨⟨h0, h1, _him0, him_lt⟩, hxi⟩, him_ge⟩ := hρ_win
     have hρ_B : ρ ∈ B_U := Finset.mem_filter.mpr
-      ⟨Finset.mem_filter.mpr ⟨mem_stripFinsetPos.mpr ⟨h0, h1, him0, by linarith [hT.2], hxi⟩,
-        by linarith [hT.1]⟩, hb_le_T.trans hρ_re⟩
+      ⟨Finset.mem_filter.mpr ⟨mem_stripFinsetPos.mpr ⟨h0, h1, by linarith [hT.1, him_ge],
+        by linarith [hT.2], hxi⟩, by linarith [hT.1]⟩, hb_le_T.trans hρ_re⟩
     exact Set.mem_biUnion hρ_B ⟨by linarith, him_ge⟩
   -- 2. Bound `(B_U.card : ℝ)` via `exists_selberg_criticalGate_nearLine_zeroDensity` + end-caps
   obtain ⟨T₁, hT₁, T₂, hT₂, hbv_S⟩ := hbv_U
@@ -2769,14 +2837,25 @@ theorem eventually_volume_badLogLogCorridor_unitWindows_le :
       have h2 := shortShell_orderSum_le_log hW₁ h12 hlen
       have hlogW : Real.log (W₂ + 4) ≤ 4 + Real.log U := by
         calc Real.log (W₂ + 4) ≤ Real.log (4 * U) :=
-              Real.log_le_log (by positivity) (by linarith)
+              Real.log_le_log (by linarith) (by linarith)
           _ = Real.log 4 + Real.log U := Real.log_mul (by norm_num) hU_pos.ne'
-          _ ≤ 4 + Real.log U := by
-              have : Real.log ((2 : ℝ) ^ (2 : ℕ)) ≤ 2 := by
-                rw [Real.log_pow]; push_cast; linarith [Real.log_two_lt_d9]
-              norm_num at this; linarith
-      have h13 : 1 + Real.log U ≤ (1 + Real.log U) ^ 3 := by nlinarith [hlog50]
-      nlinarith [h1, h2, hlogW, h13, abs_nonneg xiLineTwoLogDerivConstant]
+          _ ≤ 4 + Real.log U := by linarith [log_four_le_two]
+      have h13 : 1 + Real.log U ≤ (1 + Real.log U) ^ 3 :=
+        le_self_pow₀ (by linarith) (by norm_num)
+      calc (∑ z ∈ (shellZeros W₁ W₂).filter (fun z => b_U ≤ |z.re - 1 / 2|),
+              ((analyticOrderAt xi z).toNat : ℝ))
+          ≤ 16 * (|xiLineTwoLogDerivConstant| + Real.log (W₂ + 4)) := h1.trans h2
+        _ ≤ 16 * (|xiLineTwoLogDerivConstant| + (4 + Real.log U)) :=
+            mul_le_mul_of_nonneg_left (add_le_add le_rfl hlogW) (by norm_num)
+        _ ≤ 16 * ((|xiLineTwoLogDerivConstant| + 5) * (1 + Real.log U)) := by
+            refine mul_le_mul_of_nonneg_left ?_ (by norm_num)
+            rw [add_mul]
+            have h1_le := le_mul_of_one_le_right (abs_nonneg xiLineTwoLogDerivConstant)
+              (by linarith : 1 ≤ 1 + Real.log U)
+            linarith
+        _ ≤ 16 * ((|xiLineTwoLogDerivConstant| + 5) * (1 + Real.log U) ^ 3) :=
+            mul_le_mul_of_nonneg_left (mul_le_mul_of_nonneg_left h13 (by positivity)) (by norm_num)
+        _ = 16 * (|xiLineTwoLogDerivConstant| + 5) * (1 + Real.log U) ^ 3 := by ring
     have hcap1 := hcap_ord (U - 1) T₁ (by linarith) (by linarith) (by linarith) (by linarith)
     have hcap2 := hcap_ord T₂ (2 * U + 1) (by linarith) (by linarith) (by linarith) le_rfl
     -- Middle shell `(T₁, T₂]` via `shellOrderSum_abs_ge_eq_two_mul_right` + Barban–Vehov
@@ -2787,68 +2866,24 @@ theorem eventually_volume_badLogLogCorridor_unitWindows_le :
       have hsh_win := shellRight_orderSum_le_windowZeros hT₁_pos hT₁2 hb_pos.le
       have hbv_inst := hbv_S a_U ha_lo ha_hi (windowZeros T₁ T₂)
         (mem_windowZeros_iff hT₁_pos hT₁2)
-      set W_sum : ℝ := ∑ w ∈ (windowZeros T₁ T₂).filter (fun w => 1 / 2 + b_U ≤ w.re),
-        ((analyticOrderAt riemannZeta w).toNat : ℝ)
-      have hbv_W : 2 * Real.pi * ((a_U / L_S) * W_sum) ≤
-          (T₂ - T₁) * (A * Real.exp (-(22 / 25 * a_U))) + K * L_S := hbv_inst
-      have hexp_a : Real.exp (-(22 / 25 * a_U)) = (Real.log U)⁻¹ := by
-        have harg : -(22 / 25 * a_U) = -Real.log (Real.log U) := by dsimp [a_U]; ring
-        rw [harg, Real.exp_neg, Real.exp_log (by linarith : 0 < Real.log U)]
-      rw [hexp_a] at hbv_W
-      have hlen_U : T₂ - T₁ ≤ U := by linarith
-      have hrhs_le : (T₂ - T₁) * (A * (Real.log U)⁻¹) + K * L_S ≤
-          U * A / Real.log U + K * L_S := by
-        have h1 : (T₂ - T₁) * (A * (Real.log U)⁻¹) ≤ U * (A * (Real.log U)⁻¹) :=
-          mul_le_mul_of_nonneg_right hlen_U (by positivity)
-        simpa only [mul_div_assoc, div_eq_mul_inv] using add_le_add h1 le_rfl
-      have hbv_W' := hbv_W.trans hrhs_le
-      have hden_pos : 0 < Real.pi * a_U := mul_pos Real.pi_pos (by linarith)
-      have hm_div := mul_le_mul_of_nonneg_left hbv_W'
-        (div_nonneg hLS_pos.le hden_pos.le)
-      have hlhs_simp : (L_S / (Real.pi * a_U)) * (2 * Real.pi * ((a_U / L_S) * W_sum)) =
-          2 * W_sum := by
-        have h1 : Real.pi ≠ 0 := Real.pi_pos.ne'
-        have h2 : a_U ≠ 0 := by linarith
-        have h3 : L_S ≠ 0 := hLS_pos.ne'
-        field_simp; ring
-      rw [hlhs_simp, mul_add] at hm_div
-      have hterm1 : (L_S / (Real.pi * a_U)) * (U * A / Real.log U) ≤
-          (2 * A / 3) * U / Real.log (Real.log U) := by
-        have hnum : L_S * (U * A / Real.log U) ≤ 2 * A * U := by
-          have hm := mul_le_mul_of_nonneg_right hLS_le_2logU
-            (by positivity : 0 ≤ U * A / Real.log U)
-          have hcancel : (2 * Real.log U) * (U * A / Real.log U) = 2 * A * U := by
-            have : Real.log U ≠ 0 := by linarith
-            field_simp; ring
-          linarith
-        have hden_ge : 3 * Real.log (Real.log U) ≤ Real.pi * a_U := by
-          have hpi3 : (3 : ℝ) ≤ Real.pi := Real.pi_gt_three.le
-          have ha_ge : Real.log (Real.log U) ≤ a_U := by dsimp [a_U]; linarith
-          exact mul_le_mul hpi3 ha_ge hll_pos.le Real.pi_pos.le
-        calc (L_S / (Real.pi * a_U)) * (U * A / Real.log U)
-            = (L_S * (U * A / Real.log U)) / (Real.pi * a_U) := by ring
-          _ ≤ (2 * A * U) / (Real.pi * a_U) := div_le_div_of_nonneg_right hnum hden_pos.le
-          _ ≤ (2 * A * U) / (3 * Real.log (Real.log U)) :=
-              div_le_div_of_nonneg_left (by positivity) (by positivity) hden_ge
-          _ = (2 * A / 3) * U / Real.log (Real.log U) := by ring
-      have hterm2 : (L_S / (Real.pi * a_U)) * (K * L_S) ≤ 2 * K * (1 + Real.log U) ^ 3 := by
-        have hden1 : 1 ≤ Real.pi * a_U := by
-          have := Real.pi_gt_three
-          nlinarith [ha_lo]
-        have h1 : (L_S / (Real.pi * a_U)) * (K * L_S) ≤ K * L_S ^ 2 := by
-          rw [show (L_S / (Real.pi * a_U)) * (K * L_S) = (K * L_S ^ 2) / (Real.pi * a_U) by ring]
-          exact div_le_self (by positivity) hden1
-        have hsq : L_S ^ 2 ≤ (1 + Real.log U) ^ 3 := by
-          have h2 : L_S ^ 2 ≤ (1 + Real.log U) ^ 2 :=
-            pow_le_pow_left₀ hLS_pos.le hLS_le_1add 2
-          have h23 : (1 + Real.log U) ^ 2 ≤ (1 + Real.log U) ^ 3 := by nlinarith [hlog50]
-          exact h2.trans h23
-        nlinarith [h1, hsq, hK]
-      have h2sh := mul_le_mul_of_nonneg_left hsh_win zero_le_two
-      linarith [h2sh, hm_div, hterm1, hterm2]
+      have h2W := barbanVehov_loglog_count_algebra hU_pos hA hK hlog50 hll_pos
+        hLS_pos hLS_le_1add hLS_le_2logU rfl ha_lo (by linarith : T₂ - T₁ ≤ U) hbv_inst
+      exact (mul_le_mul_of_nonneg_left hsh_win zero_le_two).trans h2W
     have htot_B : ∑ z ∈ B_U, ((analyticOrderAt xi z).toNat : ℝ) ≤
         (2 * A / 3) * U / Real.log (Real.log U) + M_poly * (1 + Real.log U) ^ 3 := by
-      rw [hsplit_B]; dsimp [M_poly]; linarith [hcap1, hcap2, hmid_le]
+      rw [hsplit_B]
+      calc (∑ z ∈ (shellZeros (U - 1) T₁).filter (fun z => b_U ≤ |z.re - 1 / 2|),
+              ((analyticOrderAt xi z).toNat : ℝ)) +
+            (∑ z ∈ (shellZeros T₁ T₂).filter (fun z => b_U ≤ |z.re - 1 / 2|),
+              ((analyticOrderAt xi z).toNat : ℝ)) +
+            (∑ z ∈ (shellZeros T₂ (2 * U + 1)).filter (fun z => b_U ≤ |z.re - 1 / 2|),
+              ((analyticOrderAt xi z).toNat : ℝ))
+          ≤ 16 * (|xiLineTwoLogDerivConstant| + 5) * (1 + Real.log U) ^ 3 +
+              ((2 * A / 3) * U / Real.log (Real.log U) + 2 * K * (1 + Real.log U) ^ 3) +
+              16 * (|xiLineTwoLogDerivConstant| + 5) * (1 + Real.log U) ^ 3 :=
+            add_le_add (add_le_add hcap1 hmid_le) hcap2
+        _ = (2 * A / 3) * U / Real.log (Real.log U) + M_poly * (1 + Real.log U) ^ 3 := by
+            dsimp [M_poly]; ring
     have hdiv_pos : 0 < U / Real.log (Real.log U) := by positivity
     calc (B_U.card : ℝ)
         ≤ (2 * A / 3) * U / Real.log (Real.log U) + M_poly * (1 + Real.log U) ^ 3 :=

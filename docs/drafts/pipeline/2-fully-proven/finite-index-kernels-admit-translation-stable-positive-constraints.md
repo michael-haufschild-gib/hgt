@@ -100,9 +100,9 @@ subspace, or spectral hypothesis is assumed in the kernel statement.
 
 ## Lean status
 
-`SignedOrthogonalComplements`, `RadicalHilbertComplement`, and
-`RadicalQuotientIsometries` pass Lean;
+`SignedOrthogonalComplements`, `RadicalHilbertComplement`,
+`RadicalQuotientIsometries`, `CommonEigenlineModuloRadical`, and
+`MaximalInvariantNonpositiveSubspace` pass Lean;
 their printed axiom audits contain only `propext`, `Classical.choice`,
-and `Quot.sound`. The common line modulo the radical, maximal invariant
-nonpositive subspace, finite pairing space, and kernel capstones are drafted
-and awaiting verification. No contribution is counted from these drafts.
+and `Quot.sound`. The finite pairing space and kernel capstones are drafted
+and awaiting verification. No contribution is counted before these pass.

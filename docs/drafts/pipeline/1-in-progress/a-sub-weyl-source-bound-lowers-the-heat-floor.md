@@ -18,8 +18,8 @@ The fifth-derivative dual estimate has leading correlation term
 `T^(11/82) N^(5/82)`, equal to `T^(27/164)` at `N=sqrt(T)`.
 The existing `kth_derivative_test` at order five contributes secondary
 correlation term `(Th)^(5/8) N^(-13/16)`. After differencing this gives
-weighted term `T^(75/328) N^(-173/1312)`. Use trivial bounds below `T^(33/100)`, the direct fourth-derivative test
-up to `T^(2/5)`, the fourth-derivative dual route up to `T^(97/200)`,
+weighted term `T^(75/328) N^(-173/1312)`. Use trivial bounds below `t^(33/100)`, the direct fourth-derivative test
+up to `t^(2/5)`, the fourth-derivative dual route up to `T^(97/200)`,
 and the fifth-derivative dual route up to `T^(101/200)`. Every contribution
 is at most `T^(33/200)`. The direct fourth-derivative interval is necessary:
 the dual route's `TH/N²` error is too large near `N=T^(33/100)`.
@@ -40,15 +40,18 @@ fourth-derivative main term meet at `N=T^(15/53)`, both with exponent
 At heat coefficient `133/200`, their limiting saddle gaps are respectively
 `8803/4000000`, `6/845`, `161/28090`, `459/70225`, all positive.
 
-## Unproved inputs
+## Formalization
 
-- Application of the fifth-derivative test to the actual dual phase, with every
-  secondary term controlled.
-- Scale-difference bounds for the exact dual AFE weight. A mean-value
+- Checked: the actual fifth dual derivative, its weighted exponential sum,
+  stationary-phase correlation bound, and uniform Weyl differencing, ending in
+  `ArithmeticHarmonicAnalysis.norm_prefix_sq_le_fifthWeyl`.
+- Pending: the exponent comparisons and short-block splice; scale-difference
+  bounds for the exact dual AFE weight. A mean-value
   estimate cancels the Mellin denominator before integration; positive and
   negative contours then give the required dyadic variation.
-- Critical-line zeta transfer and calibration of all four strip profiles.
+- Pending: finite critical-line AFE transfer, the `5/6` line bound, all four
+  strip profiles, and the order-uniform heat conclusion.
 
 The published Bourgain pair in `BourgainLogExponentPair` is a target with an
-unproved analytic premise, not an available subconvexity theorem. No new Lean
-result is claimed here.
+unproved analytic premise, not an available subconvexity theorem. Neither new
+zeta exponent nor the heat conclusion is yet certified.

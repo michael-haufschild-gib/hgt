@@ -143,7 +143,7 @@ variable {E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E]
 theorem norm_sub_starProjection_le {U : Submodule ℝ E} [U.HasOrthogonalProjection] (y : E)
     {x : E} (hx : x ∈ U) : ‖y - U.starProjection y‖ ≤ ‖y - x‖ := by
   rw [Submodule.starProjection_minimal]
-  exact ciInf_le ⟨0, fun _ ⟨_, h⟩ => h ▸ norm_nonneg _⟩ ⟨x, hx⟩
+  exact ciInf_le ⟨0, by rintro _ ⟨x, rfl⟩; exact norm_nonneg _⟩ ⟨x, hx⟩
 
 /-- `|⟨w, z − P z⟩| ≤ |w − P w| |z|`. -/
 theorem abs_inner_sub_starProjection_le_one {U : Submodule ℝ E} [U.HasOrthogonalProjection]
@@ -157,9 +157,10 @@ theorem abs_inner_sub_starProjection_le_one {U : Submodule ℝ E} [U.HasOrthogon
   refine (abs_real_inner_le_norm _ _).trans (mul_le_mul_of_nonneg_left ?_ (norm_nonneg _))
   simpa using norm_sub_starProjection_le z (zero_mem U)
 
-/-- **Projected mass from a test bound**: if `⟨z, v⟩² ≤ M |v|²` on `U`, then `|P z|² ≤ M`. -/
+/-- **Projected mass from a test bound**: if `⟨z, v⟩² ≤ M |v|²` on `U` (`M ≥ 0`), then `|P z|² ≤ M`. -/
 theorem norm_starProjection_sq_le {U : Submodule ℝ E} [U.HasOrthogonalProjection] (z : E)
-    {M : ℝ} (hM : ∀ v ∈ U, ⟪z, v⟫ ^ 2 ≤ M * ‖v‖ ^ 2) : ‖U.starProjection z‖ ^ 2 ≤ M := by
+    {M : ℝ} (hM0 : 0 ≤ M) (hM : ∀ v ∈ U, ⟪z, v⟫ ^ 2 ≤ M * ‖v‖ ^ 2) :
+    ‖U.starProjection z‖ ^ 2 ≤ M := by
   set p := U.starProjection z
   have hp : ⟪z, p⟫ = ‖p‖ ^ 2 := by
     have h0 : ⟪z - p, p⟫ = 0 := Submodule.starProjection_inner_eq_zero z p (U.starProjection_apply_mem z)
@@ -167,9 +168,7 @@ theorem norm_starProjection_sq_le {U : Submodule ℝ E} [U.HasOrthogonalProjecti
   have h := hM p (U.starProjection_apply_mem z)
   rw [hp] at h
   rcases (sq_nonneg ‖p‖).eq_or_lt with h' | h'
-  · have hM0 : 0 ≤ M := by
-      have := hM 0 (zero_mem U); simp at this; nlinarith [sq_nonneg ‖z‖]
-    rw [← h']; exact hM0
+  · rw [← h']; exact hM0
   · nlinarith
 
 /-- **Telescoping over nested projections.** For `K 0 ≤ K 1 ≤ ⋯`,

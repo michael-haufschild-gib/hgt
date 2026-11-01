@@ -50,7 +50,7 @@ theorem exists_maximal_dimension_invariant_nonpositive [FiniteDimensional ℂ E]
   let P (n : ℕ) := ∃ U : Submodule ℂ (H × E),
     IsBiInvariant T U ∧ IsNonpositiveSubspace U ∧ finrank ℂ U = n
   have h0 : P 0 := by
-    refine ⟨⊥, ?_, ?_, finrank_bot⟩
+    refine ⟨⊥, ?_, ?_, finrank_bot ℂ (H × E)⟩
     · intro i v hv
       have hz := (Submodule.mem_bot ℂ).mp hv
       subst v
@@ -103,6 +103,7 @@ theorem isNonpositiveSubspace_sup_span (U : Submodule ℂ (H × E))
   obtain ⟨u, hu, z, hz, rfl⟩ := Submodule.mem_sup.mp hv
   obtain ⟨c, rfl⟩ := Submodule.mem_span_singleton.mp hz
   have horth (u : U) : pairing s (U.subtype u) = 0 := by
+    change pairing s (u : H × E) = 0
     rw [← pairing_conj_symm, (mem_signedOrthogonal U s).mp ho u u.property, map_zero]
   have h := pairing_adjoinVector_self U.subtype s horth ⟨u, hu⟩ c
   change pairing (u + c • s) (u + c • s) = _ at h
