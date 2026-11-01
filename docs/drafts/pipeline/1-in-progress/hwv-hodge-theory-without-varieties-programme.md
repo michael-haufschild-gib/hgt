@@ -10,13 +10,13 @@
 
 ## Goal
 A fourth producer type (exact local-to-global positivity with nondegeneracy) for Weil's form on
-`v₁^⊥`. Lean folder `formal/GaloisForLFunctions/HodgeTheoryWithoutVarieties/` (17 modules), umbrella
+`v₁^⊥`. Lean folder `formal/GaloisForLFunctions/HodgeTheoryWithoutVarieties/` (19 modules), umbrella
 `HodgeTheoryWithoutVarieties.lean` (wired into `MainTheorems.lean`), README there.
 
 ## Gates
 - [x] 0 → 1  in-progress: README, questions fixed
 - [x] 1 → 2  paper proofs of the pillars (all pillars are proved directly in Lean)
-- [x] 2 → 3  formalized: 17 modules, each checked with `lake --old env lean`
+- [x] 2 → 3  formalized: 19 modules, each checked with `lake --old env lean`
 
 ## Status of the six review questions (answers in README §5)
 - Links: stars (exact lower horizons); simplicial links split into towers.
@@ -28,7 +28,8 @@ A fourth producer type (exact local-to-global positivity with nondegeneracy) for
 - Liouville: Liouville = HL; ⇔ RH along the overlap flow.
 
 ## Open (README §8)
-- Top coprime stratum (successor/archimedean coupling of coprime atoms), level-independent.
+- Top coprime stratum: the constant at the eighth root (card `hwv-cross-conductor-pairings.md`);
+  whole space from `(log N)^{1/9}` to `(log N)^{1/8}`.
 - Local HR on shallow stars (d ≲ c).
 - Quadratic invariant of the nerve refining the Mertens Euler characteristic.
 - Successor and shell strata; layered Künneth for the complete family.
@@ -40,3 +41,4 @@ A fourth producer type (exact local-to-global positivity with nondegeneracy) for
   prime, sign gauge on deep stars.
 - 2026-11-01 — +1 module: conductors are Möbius-glued stars (finite-horizon completed conductor
   energy).
+- 2026-11-01 — +2 modules: lcm grading and conductor basis; cross-conductor pairings.

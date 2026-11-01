@@ -9,6 +9,7 @@ gives the explicit choice `ε = α/(4B)` for exponent `α`.
 -/
 
 noncomputable section
+set_option autoImplicit false
 
 open Filter Topology
 

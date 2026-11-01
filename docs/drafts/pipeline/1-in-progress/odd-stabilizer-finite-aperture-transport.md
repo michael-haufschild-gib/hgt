@@ -68,3 +68,18 @@ At `X≤T²`, `θ=T^(−7/12)`, the proposed raw errors are
 
 All should be `o(T log³T)`. Global primitive-sample calibration and the
 actual signed prime-minus-model bound remain separate open inputs.
+
+## Primitive spatial quadrature
+
+Existing right-endpoint Lipschitz quadrature suffices. For
+`F(x)=g(log x)Ω(cx)`, x≥1, the proved taper Lipschitz bound and fixed-profile
+bound `Lip(Ω)≤M/T` give `Lip(F)≤2+LMc/T`. At odd mesh two, with
+`N=ceil(T/c)`, the error from half the integral is at most
+`4T/c+(4+6M)L` when L≥1 and 0<c≤2T.
+
+Only frequencies `c=πn/q≤2T` contribute. Summing `Tq/n+L` over these
+frequencies and then over A(q)=μ²(q)/φ(q)² uses the existing arithmetic
+first-moment bound and costs `O(T(1+L+log(QT))(1+log Q))`.
+This gives the intended `O(T log²T)` at polynomial cutoff, without a global
+bounded-variation extension. Support truncation, quadrature assembly and
+weighted coprime-harmonic transport remain to be formalized.

@@ -10,26 +10,33 @@
 ## Goal
 Positivity of the top coprime stratum against the strata below with `N`-independent constants.
 
-## Approach
-1. Möbius over the divisor lattice: only pairs with `lcm(e, e') = m` enter the `m`-th Möbius
-   difference of the star pole energies (lcm law).
-2. Cross pairing = energy × Gram channel + residual channel; Gram channel explicit `O(1/log N)`
-   (corpus harmonic Gram remainder).
-3. Uniform range: every diagonal conductor margin, all `m ≤ N`, in the universal regime (corpus
-   all-conductor floor).
-4. Boundary: star poles and conductors are bases of the horizon, so the whole cross-pairing matrix
-   over all conductors is the complete form in another basis; its positivity on the pole
-   hyperplane at logarithmic overlap is RH (RIT).
+## Status (tilted unit spline, overlap `c = (log N)^α`)
+- Relative bound (residual channel / `√(E_e E_{e'})`), conductors up to `(log N)^A`:
+  `O(c⁸ (log N)^{−1+ε})`, so below the margins for every `α < 1/8`
+  (`exists_relative_conductorDeviation_sum_le`, from CACT bilinear residuals).
+- Whole space below `1/9`: every conductor family, lcm margins for all `m ≤ N`
+  (`eventually_conductorGram_ge_floor`, `eventually_lcmCrossPairings_le_margin`).
+- Each fixed conductor below `1/8` (`eventually_lcmCrossPairings_le_margin_below_one_eighth`).
+- RH ⇔ conductor Gram over all conductors PSD at every `2K(log N)^{1/8}`
+  (`riemannHypothesis_iff_conductorGram_nonneg_eighthRoot`).
+- Mean square: residual channels `o(Σ E_e²)` for `e ≤ N^θ`, all `α < 1/2`
+  (`tendsto_conductorDeviation_rhComplete`).
+- Exact identities: lcm law (`sum_moebius_starPoleEnergy_completeWeil`,
+  `totient_mul_conductorEnergy_eq_lcm`); conductors are a basis (`eq_sum_conductorCoordinate`).
 
-## No-go closure (mandatory when falsified)
-- **Exact killing theorem/mechanism:** entrywise (Gershgorin) control over all conductors cannot
-  hold at the top band: there the conductor vectors are local and overlap-`c` neighbours couple at
-  diagonal size. Quadratic control over all conductors is RH.
-- **Strongest positive survivor:** lcm law; uniform diagonal margins for all conductors in the
-  universal regime; explicit Gram channel.
-- **New insight:** the generic threshold comes from the boundary layer `N/n ≤ T` (Mertens remainder
-  `R(N/n) = O(1)` there), not from the PNT error in the bulk.
-- **Status:** see Log.
+## Open
+- The constant at the eighth root: the leading `c/log N` term of the bilinear residual against
+  the margin constant `κ₀`, at `c⁸ ≍ log N`.
+- Whole space from `1/9` to `1/8`: the complement of the polylogarithmic conductor subspaces.
+
+## No-go closure
+- **Exact killing theorem/mechanism:** the generic relative bound has the RH exponent `1/8`;
+  at every multiple of `(log N)^{1/8}` quadratic control over all conductors is RH.
+- **Strongest positive survivor:** lcm law, conductor basis, relative bound for every `α < 1/8`,
+  whole space below `1/9`, mean square past `1/8`.
+- **New insight:** what remains is a constant, not an exponent; averages cannot decide because
+  the mean square is carried by the large margins.
+- **Status:** modules `TheConductorGramIsGradedByTheLcm`, `TheCrossConductorPairings`.
 
 ## Log
-- 2026-11-01 — created.
+- 2026-11-01 — created; two HWV modules.

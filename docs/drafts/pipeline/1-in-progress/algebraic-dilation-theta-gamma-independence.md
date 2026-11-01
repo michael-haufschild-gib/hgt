@@ -9,80 +9,73 @@
 All actual functions `ζ(rs)`, indexed by positive real algebraic `r`, are
 jointly differentially algebraically independent over
 `ℂ(s)⟨Γ,θ₂,θ₃,θ₄,E₂⟩` in the common upper-end meromorphic field.
-This would extend the exact differential–Mahler obstruction from rational
-to algebraic multipliers, with `q=1` the repeated-coordinate exception.
+This would extend the differential–Mahler obstruction to every positive
+algebraic multiplier `q≠1`; `q=1` repeats the same coordinate.
 
-## Source and missing proof
+## Certified inputs
 
-The rational theorem clears a finite packet's denominators and transports
-integer-dilation jets to a physical line. That mechanism does not cover
-irrational algebraic dilations.
+1. **Prime-jet separation.**
+   `ArithmeticHarmonicAnalysis/PositiveDilationPrimeJetSeparation.lean`
+   proves cofinite prime-jet independence for every finite packet of distinct
+   positive **real** dilations. Its
+   `multilinearMap_eq_zero_of_distinct_primeJets` detects arbitrary multilinear
+   forms using distinct primes outside any finite exclusion set.
 
-The corpus contains unconditional algebraic-coefficient independence of
-prime logarithms (`BakerIteration.primeLog_algIndep`) and the physical-line
-Gamma separation theorem. A finite algebraic dilation packet has a finite
-rational span. Baker independence can separate prime frequencies in each
-basis direction; rational dependencies among the dilations remain explicit.
+2. **Exact algebraic frequency collisions.**
+   `ArithmeticHarmonicAnalysis/AlgebraicPrimeFrequencyRigidity.lean`
+   proves that a frequency on `D` distinct primes with positive algebraic
+   weights has no representation by fewer prime terms. Every representation
+   with at most `D` terms permutes the same prime–weight pairs
+   (`primeLog_short_representation`, `atom_tuple_frequency_iff`).
+   Baker independence balances weights prime by prime; positivity identifies
+   supports, and cardinality forces one term per prime.
 
-The unresolved step is joint algebraic independence of the actual physical
-jets on a line of absolute convergence. It must handle those rational
-dependencies, rather than assuming all scaled prime frequencies independent.
-After that, existing physical Gamma separation and theta differential-algebraic
-base change would apply. Their analytic representatives and chain factors
-must remain in the physical variable.
+3. **Actual analytic coefficients.**
+   `ArithmeticHarmonicAnalysis/DilatedVonMangoldtJets.lean` proves, for
+   `F_r(s)=−r ζ'(rs)/ζ(rs)` and `rσ>1`, the absolutely convergent expansion
 
-## Certified coefficient separation
+   ```text
+   F_r^(k)(σ+it) = Σ_p Σ_(m≥1)
+     r (−mr)^k (log p)^(k+1) exp(−σmr log p) exp(−itmr log p).
+   ```
 
-`ArithmeticHarmonicAnalysis/PositiveDilationPrimeJetSeparation.lean` proves
-cofinite prime-jet independence for every finite packet of distinct positive
-real dilations. Its `multilinearMap_eq_zero_of_distinct_primeJets` extends the
-law to arbitrary multilinear forms tested on distinct primes outside any
-finite exclusion set. All five direct production axiom audits use only the
-standard three axioms; umbrella import wired. This is a coefficient theorem,
-not yet joint independence of the actual analytic functions.
+   `source_jet_line_eq_expSeries`, `summable_norm_primeAmplitude`, and
+   `primeAmplitude_eq` identify the literal jets, their summability, and their
+   exact coefficients. Prime-power reindexing is explicit.
 
-## Candidate prime-frequency argument
+All three modules have direct production checks and umbrella imports.
+Their 21 public axiom audits use only the standard three axioms.
+These inputs do not yet prove joint independence of the analytic functions.
 
-For a finite dilation packet, use the actual logarithmic derivatives
-`F_r(s)=−(ζ(rs))′/ζ(rs)=r Σ_p Σ_{m≥1} log(p) p^(−mrs)` on a common
-right half-plane. A constant polynomial relation of degree `d` can be tested
-at a frequency supported on `d` distinct primes. Baker separation forbids
-outside primes; positivity of the dilations forces exactly one factor per
-prime, isolating the top homogeneous part.
+## Remaining bridge
 
-At prime frequency `α log p`, the `(r,k)` jet coefficient, after removing
-common nonzero factors, is `r (−α)^k (log p)^k` when `α/r` is a positive
-integer, and zero otherwise. Order the distinct dilation values `α`.
-The incidence matrix is triangular with nonzero diagonal; polynomial
-uniqueness at infinitely many prime logarithms should make these jet rows
-span every finite packet even after deleting finitely many primes.
-Polarization would then kill the top homogeneous relation.
+Embed each actual prime-power series into common atoms `(p,α)`, with positive
+algebraic exponent `α`. At a target atom `(p,r_j)`, the coefficient is the
+normalized prime-jet row times the common nonzero factor
+`log(p) exp(−σr_j log p)`. Integer-multiple incidence between dilations must
+remain explicit; the full set of scaled prime frequencies is not independent.
 
-The exact frequency statement needed is sharper than global independence of
-all scaled prime logs: if `D` target terms use distinct primes and positive
-algebraic weights, every representation by at most `D` positive algebraic
-prime terms has exactly `D` terms and permutes the same prime–weight pairs.
-Baker gives equality of total weight at each prime. Positivity gives equal
-prime supports; cardinality forces one term per target prime, and weight
-balance identifies each exponent. The cofinite prime-jet law then extends to
-all multilinear forms by currying one slot and excluding its prime from the
-remaining slots. The multilinear coefficient law above is certified. The Baker frequency
-classification and its analytic application remain under formalization.
+For a polynomial relation of maximal degree `D`, extract a frequency on `D`
+distinct primes. The certified collision law kills every lower-degree term
+and reduces each degree-`D` contribution to a finite permutation sum. This is
+a symmetric multilinear form in the normalized prime-jet rows. Their
+separation forces the form to vanish; its diagonal is `D!` times the top
+homogeneous polynomial, contradicting a nonzero top coefficient.
+The common-atom, polynomial, and actual jet-independence bridges are drafted
+but not yet certified.
 
-The corpus already proves absolutely convergent product expansion
+The corpus already supplies absolutely convergent product expansion
 (`ExponentialSeriesAlgebra.prod_expSeriesCarrier`) and coefficient extraction
-with frequency collisions (`ExponentialSeriesFiberwise.fiberAmplitude_eq_zero_of_expSeriesCarrier_eq_zero`).
-The actual undilated jet identity is already proved in
-`XiCollapseDirichletLeg.iteratedDeriv_zetaLogDeriv_eq_LSeries`; argument
-scaling has an unconditional chain rule. The missing bridge transports these
-jets to common positive-algebraic prime atoms with absolute summability, then
-uses the Baker-separated prime fibers and top-degree polarization. Logarithmic derivatives are
-meromorphic in the upper half-plane, so they cannot be inserted as analytic
-representatives into the physical Gamma receiver. Transfer their differential
-independence to the actual zeta dilates in rotated right-half-plane germs,
-then recover physical zeta-jet independence before Gamma separation.
-`CoordinatewiseDifferentialFamilyMatroid.differentialIndependent_deriv_div_self_iff`
-already supplies the abstract family transfer.
+with collisions (`ExponentialSeriesFiberwise.fiberAmplitude_eq_zero_of_expSeriesCarrier_eq_zero`).
+No entire-series convergence assumption is needed.
 
-No theorem or stronger Mahler exclusion is claimed yet. Special-value
+After actual jet independence, pass through rotated right-half-plane germs.
+`CoordinatewiseDifferentialFamilyMatroid.differentialIndependent_deriv_div_self_iff`
+transfers independence to the actual zeta dilates. Recover physical zeta-jet
+independence by analytic continuation, then apply physical Gamma separation
+and theta differential-algebraic base change. Rotation factors remain
+explicit; Gamma stays in the physical variable. Logarithmic derivatives
+cannot themselves serve as analytic representatives in the upper half-plane.
+
+The full target and stronger Mahler exclusion remain unproved. Special-value
 relations and other nonlinear realizations remain outside this conjecture.

@@ -13,13 +13,14 @@ The resulting profile has unit mass, support in `[0,1]`, and derivative bounds
 -/
 
 noncomputable section
+set_option autoImplicit false
 
-open MeasureTheory Filter Topology
+open MeasureTheory Filter Topology Zeta23
 open scoped ContDiff FourierTransform
 
 namespace GaloisForLFunctions.TransMetzlerWeilPositivity
 
-open SpacingScaleHarmonicAnalysis ArithmeticElectrostatics
+open SpacingScaleHarmonicAnalysis ArithmeticElectrostatics ArithmeticCastelnuovoSeveri
 
 /-- Unit-mass normalization of the scale-averaged sinc autocorrelation. -/
 def zeroFreeLogProfile (x : ℝ) : ℝ :=
@@ -45,7 +46,8 @@ theorem hasCompactSupport_zeroFreeLogProfile : HasCompactSupport zeroFreeLogProf
   hasCompactSupport_of_unitSupport zeroFreeLogProfile_eq_zero
 
 theorem integral_zeroFreeLogProfile : ∫ x, zeroFreeLogProfile x = 1 := by
-  rw [zeroFreeLogProfile, integral_sub_right_eq_self (dilate 8 averagedSincProfile) (1 / 2),
+  change (∫ x, dilate 8 averagedSincProfile (x - 1 / 2)) = 1
+  rw [integral_sub_right_eq_self (dilate 8 averagedSincProfile) (1 / 2),
     integral_dilate (by norm_num : (0 : ℝ) < 8), integral_averagedSincProfile]
 
 /-- Affine normalization preserves the logarithmic derivative class. -/
@@ -131,7 +133,8 @@ theorem eventually_zeroFreeLogProfile_band_floor :
   have heq : zeroFreeLogBandFloor c =
       Real.exp (-(101 * sincTailConst *
         ((c / (16 * Real.pi)) / Real.log (c / (16 * Real.pi)) ^ 2))) ^ 2 := by
-    rw [zeroFreeLogBandFloor, pow_two, ← Real.exp_add]
+    rw [zeroFreeLogBandFloor]
+    rw [pow_two (Real.exp _), ← Real.exp_add]
     congr 1
     ring
   rw [heq]

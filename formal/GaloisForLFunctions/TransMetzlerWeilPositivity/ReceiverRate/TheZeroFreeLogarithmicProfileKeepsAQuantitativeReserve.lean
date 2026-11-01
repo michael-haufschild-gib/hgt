@@ -11,13 +11,14 @@ The physical Gram bound costs only a constant times `c` when `c ≤ N`.
 -/
 
 noncomputable section
+set_option autoImplicit false
 
-open MeasureTheory Filter Topology Finset
+open MeasureTheory Filter Topology Finset Zeta23
 open scoped ContDiff
 
 namespace GaloisForLFunctions.TransMetzlerWeilPositivity
 
-open SpacingScaleHarmonicAnalysis ArithmeticElectrostatics CriticalArithmeticCorrelationTheory
+open SpacingScaleHarmonicAnalysis ArithmeticElectrostatics ArithmeticCastelnuovoSeveri CriticalArithmeticCorrelationTheory
   RenormalizedArithmeticPotentialTheory ArithmeticPositivityTheory
   RenormalizedArithmeticPotentialTheory.CompletedShell
 

@@ -1,16 +1,18 @@
 # Hodge Theory without Varieties over ℤ (HWV)
 
 Namespace `GaloisForLFunctions.HodgeTheoryWithoutVarieties`; umbrella `HodgeTheoryWithoutVarieties.lean`;
-17 modules. In the review this field was called *the arithmetic Kähler package*. Everything is
+19 modules. In the review this field was called *the arithmetic Kähler package*. Everything is
 unconditional. Theorems named `riemannHypothesis_iff_*` are equivalences and are not proofs of RH.
 
 ## 1. Motivation
 
 Every positivity producer in the corpus has one of three types, and each type has a proved limit.
 
-- **Estimates** stop at the detection edge. The universal regime of the complete Weil family ends at
-  overlap `(log N)^{1/19}`. A statement proved without zero information also holds for data with
-  off-line zeros, so it cannot cross their edge (EHT).
+- **Estimates** stop at the detection edge. The complete Weil family is unconditionally positive up
+  to overlap `(log N)^{1/9}` on the whole space and up to `(log N)^{1/8}` on polylogarithmic
+  conductor subspaces. At every multiple of `(log N)^{1/8}` its positivity is RH. A statement proved
+  without zero information also holds for data with off-line zeros, so it cannot cross their edge
+  (EHT).
 - **Counts** stop short of square-root precision.
 - **Selectors** separate `ζ` from its twins, but each is a margin on a partial form.
 
@@ -234,6 +236,34 @@ Weil's sign convention, Hodge–Riemann = `W ≥ 0` on primitive vectors.
     (`eq_zero_of_atomicTest_eq_zero`), and Weil's form is positive definite under RH
     (`completeWeilEnergy_pos_of_riemannHypothesis`, `hardLefschetz_of_riemannHypothesis`).
 
+**H. Conductors** (`TheConductorGramIsGradedByTheLcm`, `TheCrossConductorPairings`).
+30. *Only pairs of the same lcm interact.* The pairs of divisors of `d` are partitioned by their lcm,
+    so Möbius inversion of the star pole energies selects the conductor pairs of lcm `m`:
+    `Σ_{d∣m} μ(m/d) d W_{c_d,⌊N/d⌋}(pole) = Σ_{lcm(e,e')=m} √(φ(e)φ(e')) ⟨W r_e, r_{e'}⟩`
+    (`sum_moebius_starPoleEnergy_completeWeil`). The only correction to the finite-horizon conductor
+    energy is the cross pairings of lcm `m` (`totient_mul_conductorEnergy_eq_lcm`). For a prime `p`
+    these are the pole couplings `(1, p)` and `(p, 1)`.
+31. *Star poles and conductors are bases.* Writing `√n x_n = Σ_{d∣n} a_d` with
+    `a_d = Σ_{k∣d} μ(d/k)√k x_k` expands every packet in the star poles, and hence in the Ramanujan
+    packets of the conductors `e ≤ N` (`eq_sum_starCoordinate_starPole`,
+    `eq_sum_conductorCoordinate`). The conductor Gram over all `e ≤ N` is the whole form
+    (`forall_qf_nonneg_iff_conductorGram`).
+32. *Two channels and their regimes.* Each cross pairing splits as
+    `⟨W r̂_e, r̂_{e'}⟩ = E_e⟨r̂_e, r̂_{e'}⟩ + ⟨ρ_e, r̂_{e'}⟩` (`inner_completeWeil_conductors`):
+    a Gram channel and a residual channel. Relative to the margins `E_e E_{e'}`, the residual
+    channels of all conductor pairs up to a power of `log N` are `O(c⁸(log N)^{−1+ε})`
+    (`exists_relative_conductorDeviation_sum_le`). The exponent `7` comes from the margin
+    `E_e(c) ≥ κ₀ min(1, (e/c)⁷)`, the `1` from the bilinear rate. Positivity follows below
+    `(log N)^{1/9}` on the whole space, for every conductor family and in lcm form for every `m ≤ N`
+    (`eventually_conductorGram_ge_floor`, `eventually_lcmCrossPairings_le_margin`). Below
+    `(log N)^{1/8}` it follows for each fixed conductor
+    (`eventually_lcmCrossPairings_le_margin_below_one_eighth`). At every overlap `2K(log N)^{1/8}`,
+    positivity of the conductor Gram over all conductors is RH
+    (`riemannHypothesis_iff_conductorGram_nonneg_eighthRoot`). Unweighted, the Hilbert–Schmidt mass
+    of the residual channels is `o(Σ_e E_e²)` for `e ≤ N^θ` at every overlap `2(log N)^α`,
+    `α < 1/2`, past the RH exponent (`tendsto_conductorDeviation_rhComplete`). That mean square is
+    carried by the large margins.
+
 ## 5. Questions and answers
 
 | Question | Answer | Lean |
@@ -267,6 +297,9 @@ Weil's sign convention, Hodge–Riemann = `W ≥ 0` on primitive vectors.
 | Künneth step at the horizon: layers of a prime | `dilationForm_layers` | proved |
 | Sign gauge (Metzler) on deep stars | `markovPair_star_nonpos`, `markovPair_star_nonpos_of_lt` | proved |
 | Conductors are Möbius-glued stars; finite-horizon completed conductor energy | `ramanujanPoleProfile_eq_sum_starPole`, `starPole_eq_sum_ramanujanPoleProfile`, `starPoleEnergy_eq_conductorGram`, `totient_mul_conductorEnergy_eq` | proved |
+| Only pairs of the same lcm interact; star poles and conductors are bases | `sum_moebius_starPoleEnergy_completeWeil`, `totient_mul_conductorEnergy_eq_lcm`, `eq_sum_conductorCoordinate`, `forall_qf_nonneg_iff_conductorGram` | proved |
+| Cross-conductor pairings below the margins: relative bound to the eighth root; lcm margins below `1/9` (all `m ≤ N`) and `1/8` (fixed `m`); mean square past the RH exponent | `exists_relative_conductorDeviation_sum_le`, `eventually_lcmCrossPairings_le_margin`, `eventually_lcmCrossPairings_le_margin_below_one_eighth`, `tendsto_conductorDeviation_rhComplete` | proved |
+| RH ⇔ positivity of the conductor Gram over all conductors at every `2K(log N)^{1/8}` | `riemannHypothesis_iff_conductorGram_nonneg_eighthRoot` | equivalence |
 | Liouville = HL; RH ⇔ Liouville along the overlap flow | `liouvilleAt_iff_hardLefschetz`, `riemannHypothesis_iff_liouville_along_the_overlap_flow` | proved; equivalence |
 | Lefschetz trichotomy | `not_rh_gluing_failure`, `frequently_exists_primitive_zero_mode_of_not_rh`, `couplingLaplacian_transports_the_index` | proved |
 
@@ -297,6 +330,8 @@ Weil's sign convention, Hodge–Riemann = `W ≥ 0` on primitive vectors.
 - Sign gauge on stars: gaps of star atoms, separated Markov pairs, nonnegative pole rows.
 - Star–conductor duality: star poles, star coefficients, Gram expansions (`bil_sum_left`,
   `bil_sum_right`, `qf_sum`), conductor Grams, Möbius inversion of divisor sums.
+- Conductor basis: lcm pairs, star and conductor coordinates, the two channels of a cross pairing,
+  Bessel's inequality for the conductor frame.
 
 **To build.**
 - Control of the top coprime stratum by the strata below, with constants independent of `N`
@@ -317,14 +352,24 @@ Weil's sign convention, Hodge–Riemann = `W ≥ 0` on primitive vectors.
      (`totient_mul_conductorEnergy_eq`). In the limit the Gram correction vanishes and the
      combination `φ(m)⁻¹ Σ_{d∣m} μ(m/d) d E(c/d)` is RAPT's repayment, a sum of positive Fourier
      integrals over the shells coprime to `m`.
-   - *What is left* is uniformity in `N`. Three residual families sit in the top stratum: Mertens
-     remainders at shifted horizons `R(⌊(N−h)/n⌋)` with floor defects, archimedean cross errors,
-     and the shift-distribution terms of the shells (`sum_shellBalance_eq_zero`: zero in the mean).
-     They must be `o(E_m(c))` uniformly in the conductors kept by localization, and
-     `E_m(c) ≍ E(c/m) → 0`.
-   - *Generic bounds* give the universal regime `(log N)^{1/19}`. Beyond it, only an identity can
-     help. At RH-complete overlap the Mertens remainders are needed at square-root precision in
-     multiplicative windows, which is equivalent to RH (ACoT: coupling = kernel = window error).
+   - *Where the bounds stand.* Only cross pairings of lcm `m` correct the conductor-`m` energy
+     (`totient_mul_conductorEnergy_eq_lcm`). Relative to the margins, the cross pairings and
+     residuals of all conductors up to a power of `log N` are `O(c⁸(log N)^{−1+ε})`
+     (`exists_relative_conductorDeviation_sum_le`). They stay below the margins for every
+     `α < 1/8`, and the whole space is positive below `(log N)^{1/9}`.
+   - *The exponent is the RH exponent.* At every overlap `2K(log N)^{1/8}`, positivity of the
+     conductor Gram over all conductors is RH
+     (`riemannHypothesis_iff_conductorGram_nonneg_eighthRoot`). What is left is therefore not an
+     exponent but a constant. At `c⁸ ≍ log N` the generic relative bound stops decaying, and
+     positivity at every `K` needs the exact leading term of the bilinear residual, of order
+     `c/log N`, against the margin constant `κ₀`. Its arithmetic sources in the top stratum are the
+     Mertens remainders at shifted horizons `R(⌊(N−h)/n⌋)` with floor defects, the archimedean cross
+     errors, and the shift-distribution terms of the shells (`sum_shellBalance_eq_zero`: zero in
+     the mean). Separately, the whole space must be brought from `1/9` to `1/8`, i.e. the
+     complement of the polylogarithmic conductor subspaces.
+   - *Averages do not decide.* Unweighted, the residual channels are `o(Σ_e E_e²)` past the RH
+     exponent (`tendsto_conductorDeviation_rhComplete`). The content is in the weighting by the
+     smallest margins `E(c/e)`, `e ≲ c`.
    - The only prime-dependent parts of the top stratum are the root cone and the coprime shells.
      The archimedean part is the same for every twin, so the control must use the `Λ`-weights of
      the shells.

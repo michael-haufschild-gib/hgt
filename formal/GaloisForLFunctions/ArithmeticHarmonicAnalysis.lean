@@ -48,3 +48,5 @@ Adams fixed-locus constraints, theta–Gamma differential independence,
 logarithmic phase estimates, and zeta subconvexity.
 -/
 import GaloisForLFunctions.ArithmeticHarmonicAnalysis.PositiveDilationPrimeJetSeparation
+import GaloisForLFunctions.ArithmeticHarmonicAnalysis.AlgebraicPrimeFrequencyRigidity
+import GaloisForLFunctions.ArithmeticHarmonicAnalysis.DilatedVonMangoldtJets

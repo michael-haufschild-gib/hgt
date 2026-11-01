@@ -375,7 +375,7 @@ private theorem intervalIntegrable_mul_tailCount (S : Finset ℂ) (m : ℂ → �
       (fun u : ℝ => if 1 / 2 + u ≤ w.re then m w * g u else 0) volume a b := by
     intro w _
     rcases lt_or_ge (w.re - 1 / 2) a with hlt_a | hge_a
-    · refine intervalIntegrable_const.congr fun u hu => ?_
+    · refine (intervalIntegrable_const (c := (0 : ℝ))).congr fun u hu => ?_
       rw [uIoc_of_le hab] at hu
       exact (if_neg (by linarith only [hlt_a, hu.1])).symm
     · rcases le_or_gt b (w.re - 1 / 2) with hle_b | hlt_b
@@ -389,11 +389,12 @@ private theorem intervalIntegrable_mul_tailCount (S : Finset ℂ) (m : ℂ → �
             exact (if_pos (by linarith only [hu.2])).symm
         have h2 : IntervalIntegrable (fun u : ℝ => if 1 / 2 + u ≤ w.re then m w * g u else 0)
             volume (w.re - 1 / 2) b :=
-          intervalIntegrable_const.congr fun u hu => by
+          (intervalIntegrable_const (c := (0 : ℝ))).congr fun u hu => by
             rw [uIoc_of_le hlt_b.le] at hu
             exact (if_neg (by linarith only [hu.1])).symm
         exact h1.trans h2
-  exact IntervalIntegrable.sum (μ := volume) (a := a) (b := b) S hterm
+  exact (IntervalIntegrable.sum (μ := volume) (a := a) (b := b) S hterm).congr
+    fun u _ => Finset.sum_apply u S _
 
 /-! ## §2. Arbitrary-rate Selberg–Barban–Vehov near-line zero density -/
 
@@ -592,12 +593,12 @@ identically across the entire continuous abscissa interval. -/
 private theorem scaleII_continuous_laplace_band_le
     {V S A K r ε η_r c' L T₁ T₂ L_S lam_c δ₁ M : ℝ}
     (hV_pos : 0 < V) (hS1 : 1 < S) (hA : 0 < A) (hK : 0 < K)
-    (hr0 : 0 < r) (hε : 0 < ε) (hη_pos : 0 < η_r) (hc0 : 0 < c')
+    (hr0 : 0 < r) (hε : 0 < ε) (_ : 0 < η_r) (hc0 : 0 < c')
     (hL0 : 0 ≤ L) (hL_le_LS : L ≤ c' * L_S)
     (hT₁_pos : 0 < T₁) (hT12 : T₁ ≤ T₂) (hlen_hi : T₂ - T₁ ≤ V)
     (hLS_eq : L_S = Real.log S) (hLS_pos : 0 < L_S)
     (hlam_eq : lam_c = r - 2 * c' * (1 + ε)) (hlam_pos : 0 < lam_c)
-    (hδ₁_pos : 0 < δ₁) (hδ₁_le1 : δ₁ ≤ 1)
+    (_ : 0 < δ₁) (hδ₁_le1 : δ₁ ≤ 1)
     (h2cb_le : 2 * c' * ((1 + ε) * δ₁) ≤ η_r / 2)
     (hM1 : 1 ≤ M) (hM_hi : M ≤ δ₁ * L_S)
     (hbv_win : ∀ a : ℝ, 1 ≤ a → a ≤ δ₁ * L_S →
@@ -835,8 +836,10 @@ private theorem scaleII_continuous_laplace_band_le
             ((analyticOrderAt xi z).toNat : ℝ)) ≤
           (2 * (1 + ε) * c' ^ 2 * L_S ^ 2 * Real.exp (2 * c' * L_S * u)) *
             (V * A * Real.exp (-(r * L_S / (1 + ε) * u)) + K * S ^ (1 - η_r)) := by
-        have hm1 := mul_le_mul_of_nonneg_right hsh_le
-          (Finset.sum_nonneg fun _ _ => Nat.cast_nonneg _)
+        have hcnt_nn : 0 ≤ ∑ z ∈ (shellZeros T₁ T₂).filter (fun z => 1 / 2 + u ≤ z.re),
+            ((analyticOrderAt xi z).toNat : ℝ) :=
+          Finset.sum_nonneg fun _ _ => Nat.cast_nonneg _
+        have hm1 := mul_le_mul_of_nonneg_right hsh_le hcnt_nn
         have hm2 := mul_le_mul_of_nonneg_left huN_le
           (by positivity : 0 ≤ 8 * c' ^ 2 * L_S ^ 2 * Real.exp (2 * c' * L_S * u))
         have hid_u : 8 * c' ^ 2 * L_S ^ 2 * u * Real.exp (2 * c' * L_S * u) *
@@ -1066,7 +1069,7 @@ private theorem exists_shellDepthSum_of_arbitraryRate_input
     {c' r_c ε_c A_c K_c η_c lam_c : ℝ}
     (hc0 : 0 < c') (hc' : c' < 1 / 2)
     (hr0 : 0 < r_c) (hε0 : 0 < ε_c) (hε1 : ε_c ≤ 1)
-    (hA : 0 < A_c) (hK : 0 < K_c) (hη_pos : 0 < η_c) (hη_lt : η_c < 1 / 2)
+    (hA : 0 < A_c) (hK : 0 < K_c) (hη_pos : 0 < η_c) (_ : η_c < 1 / 2)
     (hlam_eq : lam_c = r_c - 2 * c' * (1 + ε_c)) (hlam_pos : 0 < lam_c)
     (hbv_ev : ∀ᶠ S : ℝ in atTop,
       ∃ T₁ ∈ Ioo (2 * S / 3) (2 * S / 3 + 1),
@@ -1283,7 +1286,13 @@ private theorem exists_shellDepthSum_of_arbitraryRate_input
           (by positivity) zero_le_one
       have hm2 := mul_le_mul_of_nonneg_left hm1
         (by positivity : 0 ≤ 2 * ((8 * (1 + ε_c) ^ 2 * A_c / lam_c) * c' ^ 2))
-      exact hm2.trans_eq (by dsimp [K_II]; ring)
+      calc 2 * ((8 * (1 + ε_c) ^ 2 * A_c / lam_c) * c' ^ 2 *
+              Real.exp (-(lam_c / 2 * 1)) * (V * L_S))
+          = 2 * ((8 * (1 + ε_c) ^ 2 * A_c / lam_c) * c' ^ 2) *
+              (Real.exp (-(lam_c / 2 * 1)) * (V * L_S)) := by ring
+        _ ≤ 2 * ((8 * (1 + ε_c) ^ 2 * A_c / lam_c) * c' ^ 2) *
+              (1 * (V * (2 * Real.log V))) := hm2
+        _ = K_II * c' ^ 2 * V * Real.log V := by dsimp [K_II]; ring
     have herr_II : 2 * ((4 * (1 + ε_c) ^ 2 * K_c) * c' ^ 2 * L_S ^ 2 * S ^ (1 - η_c / 2)) ≤
         c' ^ 2 * V * Real.log V := by
       have hLS2 : L_S ^ 2 ≤ K_log2 * S ^ (η_c / 4) :=
@@ -3642,7 +3651,9 @@ private theorem nearLine_exp_density_of_dyadicMean_unitWindowDepthCharge
     have hUL : U₁ * Real.log U₁ ≤ V * Real.log V :=
       mul_le_mul hU₁_le_V (Real.log_le_log hU₁_pos hU₁_le_V)
         (by linarith only [hLV_ge2, hlogU₁_ge]) hV_pos.le
-    exact (h1.trans hm).trans ((mul_le_mul_of_nonneg_left hUL hK_c.le).trans_eq (by ring))
+    have hm' : (∫ T in Icc U₁ (2 * U₁), unitWindowDepthCharge T (c' * Real.log T)) ≤
+        K_c * (U₁ * Real.log U₁) := hm.trans_eq (by ring)
+    exact (h1.trans hm').trans (mul_le_mul_of_nonneg_left hUL hK_c.le)
   have hsh_U₂ : shellDepthSum (U₂ + 1) (2 * U₂) L₁ ≤ K_c * (V * Real.log V) := by
     have hmono := shellDepthSum_mono_scale hL₁_nn hL₁_le_L₂ (V₁ := U₂ + 1) (V₂ := 2 * U₂)
     have h1 := shellDepthSum_le_dyadicIntegral_unitWindowDepthCharge
@@ -3716,7 +3727,7 @@ private theorem nearLine_exp_density_of_dyadicMean_unitWindowDepthCharge
   have hrhs : w_ra⁻¹ * (2 * K_c * (V * Real.log V)) =
       A_r * (V * Real.log V) * Real.exp (-(r * a)) := by
     dsimp [w_ra, A_r]
-    rw [Real.exp_neg]
+    rw [Real.exp_neg (r * a)]
     field_simp [h1mr_pos.ne', (Real.exp_pos (r * a)).ne']
   rwa [hlhs, hrhs] at hm
 
@@ -3993,8 +4004,9 @@ theorem dyadicMean_log_bound_iff_nearLine_exp_density_tfae
     have hU_lin : 2 * C_lin + 1 ≤ U := (le_max_right _ _).trans hU_big
     have hU_pos : 0 < U := by linarith only [hU4]
     have hlog1 : 1 ≤ Real.log U := one_le_log_of_four_le' hU4
-    have hdiff := (abs_sub_comm _ _ ▸ (le_abs_self _)).trans
-      (hpoly_diff U c hU4 hc_pos.le (by linarith only [hc_lt, hc_hi]))
+    have hdiff0 := hpoly_diff U c hU4 hc_pos.le (by linarith only [hc_lt, hc_hi])
+    rw [abs_sub_comm] at hdiff0
+    have hdiff := (le_abs_self _).trans hdiff0
     have hle_sum := sub_le_iff_le_add'.mp hdiff
     have hm := mul_le_mul_of_nonneg_left hle_sum (by positivity : 0 ≤ 1 / U)
     rw [mul_add] at hm

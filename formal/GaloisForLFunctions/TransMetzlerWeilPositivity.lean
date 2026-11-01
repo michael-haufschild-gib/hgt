@@ -26,6 +26,7 @@ import GaloisForLFunctions.TransMetzlerWeilPositivity.ReceiverRate.TheSincProfil
 import GaloisForLFunctions.TransMetzlerWeilPositivity.ReceiverRate.TheSincProfileHasALogLogTail
 import GaloisForLFunctions.TransMetzlerWeilPositivity.ReceiverRate.TheSincProfileHasAnExactCriticalOverlap
 import GaloisForLFunctions.TransMetzlerWeilPositivity.ReceiverRate.ScaleAveragingRemovesFourierZeros
+import GaloisForLFunctions.TransMetzlerWeilPositivity.ReceiverRate.TheScaleAveragedSincProfile
 
 /-!
 # Trans-Metzler Complete Weil Positivity and the Overlap-Ratio Phase Diagram

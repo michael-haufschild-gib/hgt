@@ -225,7 +225,6 @@ private theorem exists_fourier_sincProfile_ne_zero_between {a b : ℝ} (hab : a 
     rw [RHTower.WeilDeletion.fourier_eq_paperFT]
     dsimp only [G]
     congr 1
-    push_cast
     ring
   by_contra hn
   push Not at hn

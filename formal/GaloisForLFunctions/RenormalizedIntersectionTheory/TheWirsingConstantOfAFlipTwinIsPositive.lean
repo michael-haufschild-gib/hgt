@@ -641,6 +641,10 @@ theorem exists_powerAbel_le {α : ℝ} (hα0 : 0 ≤ α) (hα1 : α < 1) :
               have h5 := mul_nonneg h2 hpX
               linarith
       linarith
+  have e1 : (2 : ℝ) / Real.log 2 = 2 * (1 / Real.log 2) := by ring
+  have e2 : (3 : ℝ) / Real.log 2 = 3 * (1 / Real.log 2) := by ring
+  rw [e1] at htelα
+  rw [e2]
   linarith
 
 /-- **Abel summation with a power error.** If `primeMean ε n ≥ β log n − C (1 + log n)^α` and `g ≥ 0`
@@ -769,8 +773,10 @@ theorem sum_logIncrement_rpow_div_log_ge {K X : ℕ} (hK : 3 ≤ K) (hKX : K ≤
       have hd0 : 0 ≤ Real.log k - Real.log ((k : ℝ) - 1) :=
         sub_nonneg.mpr (Real.log_le_log (by linarith) (by linarith))
       have hd : Real.log k - Real.log ((k : ℝ) - 1) ≤ 1 / ((k : ℝ) - 1) := by
+        have hk1 : (k : ℝ) - 1 ≠ 0 := by linarith
         rw [← Real.log_div (by linarith) (by linarith)]
-        refine (Real.log_le_sub_one_of_pos (by positivity)).trans (le_of_eq ?_)
+        refine (Real.log_le_sub_one_of_pos (div_pos (by linarith) (by linarith))).trans
+          (le_of_eq ?_)
         field_simp; ring
       have hd2 : (Real.log k - Real.log ((k : ℝ) - 1)) ^ 2 ≤ (1 / ((k : ℝ) - 1)) ^ 2 :=
         pow_le_pow_left₀ hd0 hd 2
@@ -781,11 +787,11 @@ theorem sum_logIncrement_rpow_div_log_ge {K X : ℕ} (hK : 3 ≤ K) (hKX : K ≤
       rw [hcast]
       have hsqb : (1 / ((k : ℝ) - 1)) ^ 2 ≤ 1 / ((k : ℝ) - 1 - 1) - 1 / ((k : ℝ) - 1) := by
         rw [div_sub_div _ _ (by linarith) (by linarith), div_pow, one_pow,
-          div_le_div_iff₀ (by positivity) (by nlinarith)]
+          div_le_div_iff₀ (pow_pos (by linarith) 2) (by nlinarith)]
         nlinarith
       calc (Real.log k - Real.log ((k : ℝ) - 1)) ^ 2 / (Real.log ((k : ℝ) - 1) * Real.log k) ≤
             (1 / ((k : ℝ) - 1)) ^ 2 / Real.log 2 ^ 2 :=
-            div_le_div₀ (by positivity) hd2 (by positivity) hden
+            div_le_div₀ (by positivity) hd2 (pow_pos hl2 2) hden
         _ ≤ (1 / ((k : ℝ) - 1 - 1) - 1 / ((k : ℝ) - 1)) / Real.log 2 ^ 2 :=
             div_le_div_of_nonneg_right hsqb (by positivity)
         _ = _ := by ring
@@ -796,9 +802,10 @@ theorem sum_logIncrement_rpow_div_log_ge {K X : ℕ} (hK : 3 ≤ K) (hKX : K ≤
           have hK1 : (0 : ℝ) < (K : ℝ) - 1 := by
             have : (3 : ℝ) ≤ K := by exact_mod_cast hK
             linarith
-          have : 0 ≤ 1 / Real.log 2 ^ 2 * (1 / ((K : ℝ) - 1)) := by positivity
-          push_cast
-          norm_num
+          have h2 : ((2 : ℕ) : ℝ) - 1 = 1 := by norm_num
+          rw [h2, div_one, mul_one]
+          have : 0 ≤ 1 / Real.log 2 ^ 2 * (1 / ((K : ℝ) - 1)) :=
+            mul_nonneg (by positivity) (one_div_nonneg.mpr hK1.le)
           linarith
   have hσlog : σ * ∑ k ∈ Icc 3 K, (Real.log k - Real.log ((k : ℝ) - 1)) ≤ 1 := by
     have := mul_le_mul_of_nonneg_left hlog hσ0.le
@@ -972,7 +979,7 @@ theorem exists_primeSum_rpow_ge_rpow {ε : ℕ → ℝ} {β C α : ℝ} (hβ : 0
 theorem not_le_rpow_gaugeHarmonicSum {ε : ℕ → ℝ} (hε : IsSignGauge ε) {β C α : ℝ}
     (hα0 : 0 ≤ α) (hαβ : α < β) (hα1 : α < 1)
     (hA : ∀ n, 1 ≤ n → |primeMean ε n - β * Real.log n| ≤ C * (1 + Real.log n) ^ α) (G : ℝ) :
-    ∃ N, G * (1 + Real.log N) ^ α < gaugeHarmonicSum ε N := by
+    ∃ N : ℕ, G * (1 + Real.log N) ^ α < gaugeHarmonicSum ε N := by
   by_contra hcon
   push Not at hcon
   set G' := max G 1
