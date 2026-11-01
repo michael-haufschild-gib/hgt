@@ -54,17 +54,23 @@ to control the imaginary part.
 
 The complementary Fredholm identity would then give the proposed nonvanishing.
 
+## Certified source input
+
+`GaussMayerDerivativeCone.lean` proves the actual derivative series, positive
+minorization, exact residual mass `τ_w=(3/2)^(-w)`, compact-extremum
+contraction, and injectivity of interval restriction. Its theorem
+`MayerPositive.derivative_eigen_eq_zero` proves that `f(0)=0` and
+`(R(w)f)'=μ f'` on `[0,1]`, with real `μ>τ_w`, force `f=0`.
+The source proof uses monotonicity and bounded derivative evaluation;
+no integral or assumed positive-operator interface is needed. Direct Lean
+check and 19 transitive axiom audits pass with only the standard three axioms.
+
 ## Open obligations
 
-Actual derivative series and interval integral realization; common-measure
-minorization and oscillation contraction; injectivity of derivative restriction
-on functions vanishing at zero; determinant/eigenvalue transport for the
-compressed operator. None may be assumed as an interface.
-
-The corpus search surfaced the actual response and complementary determinant
-identity, but no checked theorem discharges this positive-kernel mechanism.
-No proof or RH conclusion is claimed. Complex source parameters are outside
-this proposed positivity argument.
+Identify the actual compressed Hilbert matrix with the complementary
+Fredholm determinant and transport its eigenvectors to `K`. This bridge
+is still required for `B(w,λ)≠0`. Complex source parameters and RH remain
+outside the certified conclusion.
 
 ## Checked source leads
 

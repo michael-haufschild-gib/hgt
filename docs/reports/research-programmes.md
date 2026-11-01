@@ -61,3 +61,4 @@
 - formal/GaloisForLFunctions/EdgeHodgeTheory/README.md
 - formal/GaloisForLFunctions/CriticalScaleArithmeticRigidity/README.md
 - formal/GaloisForLFunctions/ArithmeticCouplingTheory/README.md
+- formal/GaloisForLFunctions/HodgeTheoryWithoutVarieties/README.md

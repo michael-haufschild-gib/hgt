@@ -60,3 +60,4 @@ import GaloisForLFunctions.IncommensurableGaborPinching
 import GaloisForLFunctions.ShallowCauchyPrimeEnergy
 import GaloisForLFunctions.TransMetzlerWeilPositivity
 import GaloisForLFunctions.RenormalizedIntersectionTheory
+import GaloisForLFunctions.HodgeTheoryWithoutVarieties

@@ -46,3 +46,4 @@ for native scattering energies, together with operator-norm renormalization, nuc
 a source Fredholm determinant, and the fixed-point trace of the Gauss–Mayer operator. See `RenormalizedIntersectionTheory/README.md`.
 -/
 import GaloisForLFunctions.RenormalizedIntersectionTheory.GaussMayerRawDeterminantFinitePart
+import GaloisForLFunctions.RenormalizedIntersectionTheory.GaussMayerDerivativeCone

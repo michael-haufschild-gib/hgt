@@ -57,4 +57,4 @@ Both exact production leaves pass `lake --old env lean`; umbrella imports are pr
 
 ## Remaining
 
-Matched prime-side certificate and signed discrepancy bound for the identical cosine window.
+The [matched prime-side certificate](cosine-prime-certificate-with-explicit-pinching.md) is proved through bandwidth two. An actual signed surplus upper bound for the identical cosine window remains open.

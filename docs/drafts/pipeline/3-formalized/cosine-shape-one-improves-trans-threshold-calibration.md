@@ -50,5 +50,4 @@ All six transitive axiom audits contain only `propext`, `Classical.choice`, and
 
 ## Remaining
 
-Matched prime-Gram certificate and signed prime-pair discrepancy estimate for this
-same cosine window. The coefficient computation does not bound either quantity.
+The [matched prime-Gram certificate](cosine-prime-certificate-with-explicit-pinching.md) is proved for `0<λ≤2`. The actual signed prime surplus still needs an upper bound.

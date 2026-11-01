@@ -1,9 +1,9 @@
 # Uniform conductor error in the signed odd-stabilizer model
 
-- **Stage:** 1-in-progress
-- **Type:** CANDIDATE / SIGNED MODEL ERROR
+- **Stage:** 3-formalized
+- **Type:** THEOREM / SIGNED MODEL ERROR
 - **Route:** Argon §4.1.
-- **Parent:** [Literal model calibration](parity-stabilizer-logarithmic-coalescent-calibration.md).
+- **Parent:** [Literal model calibration](../1-in-progress/parity-stabilizer-logarithmic-coalescent-calibration.md).
 
 ## Target
 
@@ -35,6 +35,30 @@ the uniform bound. No prime-pair discrepancy estimate follows from this
 model error bound. Logarithmic-phase transport and model main-term
 summation remain separate inputs.
 
+## Logarithmic main term
+
+Let `F(Q)=Σ_{q≤Q} μ²(q)/φ(q)` and O(Q) be the odd-conductor sum.
+The exact parity identity gives `F(Q)≤2O(Q)≤F(2Q)`. The corpus theorem
+`F(Q)/log Q→1` and `log(2Q)/log Q→1` therefore give `O(Q)/log Q→1/2`.
+The conductor error above is bounded while this signed main coefficient grows
+logarithmically. Endpoint and finite-aperture errors remain explicit.
+
 ## Lean
 
-Formalization pending. No analytic premise is to be added to the model theorem.
+`TransThresholdPairCorrelation/OddStabilizerPoissonHorizon.lean` proves:
+
+- `sum_odd_sqfree_sigma2_totient_sq_le`;
+- `poissonHorizon_conductor_error_le`;
+- `abs_dynamic_poissonHorizon_row_add_le`;
+- `tendsto_sum_odd_sqfreeTotientInv_div_log_half`.
+
+All four transitive axiom audits contain only `propext`, `Classical.choice`,
+and `Quot.sound`. The exact production leaf passes `lake --old env lean`;
+its umbrella import is present.
+
+## Remaining
+
+This estimates rows at `Q=floor(m/b)`. The literal model fixes Q across rows.
+Its additional dual terms and actual logarithmic-phase transport remain open.
+The [exact C² Poisson row](../1-in-progress/exact-poisson-row-for-the-odd-stabilizer.md)
+would sharpen the horizon and remove the cotangent error.

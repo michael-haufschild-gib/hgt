@@ -1,6 +1,6 @@
 # The actual cosine prime certificate through bandwidth two
 
-- **Stage:** 1-in-progress
+- **Stage:** 3-formalized
 - **Type:** THEOREM / ACTUAL PRIME-GRAM TRANSPORT
 - **Route:** Argon §4.1.
 - **Parents:** [Actual pinching](../3-formalized/trans-threshold-cosine-pinching-credit.md), [cosine coefficient](../3-formalized/cosine-shape-one-improves-trans-threshold-calibration.md).
@@ -57,8 +57,7 @@ gives `NII=o(N)`. Absorb these errors. This also proves the endpoint λ=2.
   `zetaCosine_two_surplus_certificate`.
 
 All fourteen public theorem audits use only `propext`, `Classical.choice`,
-and `Quot.sound`. The analytic bridge and prime-Gram leaf pass final direct checks;
-the surplus-criterion leaf awaits its final direct check. Umbrella imports are present.
+and `Quot.sound`. All three exact production leaves pass `lake --old env lean`. Umbrella imports are present.
 
 ## Remaining
 

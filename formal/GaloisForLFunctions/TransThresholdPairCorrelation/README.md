@@ -1,6 +1,6 @@
 # TransThresholdPairCorrelation (TTPC)
 
-Namespace `GaloisForLFunctions.TransThresholdPairCorrelation`; umbrella `TransThresholdPairCorrelation.lean`; 20 modules.
+Namespace `GaloisForLFunctions.TransThresholdPairCorrelation`; umbrella `TransThresholdPairCorrelation.lean`.
 A zero-proportion programme, not an RH route. Analytic inputs come from the `Zeta23` lake package
 (`Zeta23.paperInputs_zeta`: explicit formula, Riemann–von Mangoldt, Chebyshev, Montgomery–Vaughan, Γ-facts;
 `gammaFacts`), which is a proved object, and from `RHTower` Gram infrastructure.
@@ -32,7 +32,7 @@ everything else unconditionally.
 | Coalescent surplus | `coalSum(Ω_T, g, X, T^{−1+η})/(aL)²` | `coalescentSurplus`, `primeCoalescentSurplus`, `oddEvenShiftPrimeCoalescentSurplus` |
 | Budget predicates | certificate and surplus `≤ (β+ε)N(T,2T)` | `CoalescentSurplusAtMost`, `PrimeCoalescentSurplusAtMost` |
 | Ramanujan / singular series | `c_q(h)`, weight `μ²(q)/φ(q)` | `ramanujanLagCoefficient` (BVI), `RHTower.Sieve.sqfreeTotientInv` |
-| Stabilizer model | parity-locked `2Σ_{q odd}(μ²/φ²)(q)c_q(h)`; model and centred discrepancy | `parityStabilizerWeight`, `stabilizerModelOddCoalSum`, `stabilizerDiscrepancyOddCoalSum` |
+| Stabilizer model | parity-locked `2Σ_{q odd}(μ²/φ²)(q)c_q(h)`; literal model and retained discrepancy | `parityStabilizerWeight`, `stabilizerModelOddCoalSum`, `stabilizerDiscrepancyOddCoalSum` |
 | Parity-twin germs | odd core of an order; cyclotomic digamma/harmonic kernels; odd-frequency torsion energy | `oddCore`, `cyclotomicDigamma`, `cyclotomicHarmonic`, `oddTorsionEnergy` |
 
 ## 3. Language
@@ -131,9 +131,13 @@ everything else unconditionally.
 | Narrow-strip exchange rate: gain `δ(2−(3E−4)δ)/(3(1+δ)²)` | `narrowStrip_beats_two_thirds_iff`, `narrowStrip_optimal_delta_gain` | identities |
 | **Smooth-weighted certificate**: eventually `(29/36 − 32πε₁ − ε)N(T,2T) − coalescentSurplus ≤ N₀*(T,2T)` | `zeta_coalescent_certificate_four_thirds`, `zeta_coalescent_certificate` | unconditional |
 | Simple-zero form: `(29/36 − ε)N − coalescentSurplus + M_off ≤ N₀ˢ`; prime-only version for `0 < η < 1/3` | `zeta_coalescent_certificate_simple_and_offLineMultiple`, `zeta_primeCoalescent_certificate_simple_and_offLineMultiple` | unconditional |
+| Actual shape-one cosine certificate for `0<λ≤2`: `(Hcos(λ)+δλ−ε)N−Sλ≤N0simple`, `δλ=1/[200(10+720π²λ²)²]` | `zetaCosine_surplus_certificate` | unconditional; signed surplus retained |
+| Explicit cosine coefficients `3/4+79/1250+δ(4/3)` and `5/6+43/3750+δ(2)` | `zetaCosine_fourThirds_surplus_certificate`, `zetaCosine_two_surplus_certificate` | unconditional; signed surplus retained |
+| Raw odd-pair model mean `β/2`; actual prime-minus-model mean `1−β/2` | `StabilizerIncompletePeriods.lean`, `StabilizerPrimeRectangleDiscrepancy.lean` | raw rectangles only |
 | Off-line ceiling `S_off + 2M_off ≤ (7/36 + ε)N + primeCoalescentSurplus` | `offLineSimple_add_two_offLineMultiple_le_seven_thirtySixths_add_primeCoalescentSurplus` | unconditional |
 | Coalescent surplus = odd primes at even shifts, up to `O(T^{−1/3+η}N)` | `primeCoalSum_eq_oddEvenShiftPrimeCoalSum`, `coalescentSurplusAtMost_iff_primeCoalescentSurplusAtMost` | unconditional |
 | Parity-locked singular series transfers to negative Ward–Mertens repulsion | `abs_sum_full_evenShift_singularSeries_cosTransform_add_le`, `abs_sum_dynamic_poissonHorizon_singularSeries_add_le` | unconditional |
+| Odd conductor cost `Σ μ²σ₂/φ²≤64Q`; horizon error `≤64Ωhat(0)`; odd main sum `∼(1/2)log Q` | `sum_odd_sqfree_sigma2_totient_sq_le`, `abs_dynamic_poissonHorizon_row_add_le`, `tendsto_sum_odd_sqfreeTotientInv_div_log_half` | unconditional; endpoint errors retained |
 | Unsigned inner-lobe divergence | `sum_Icc_abs_cosTransform_ge_inner_lobe` | unconditional (no-go) |
 | Parity-twin survival line; closed-form germ limits; Λ erased on the cone | `parityTwinPair_unrestricted_vs_evenShift_survivalCone`, `tendsto_shiftedMode_ramanujanGerm_closedForm`, `quad_torsionAlignedLimit_eq_neg_cyclotomicHarmonic_on_cone` | unconditional |
 | PSD cyclotomic-harmonic kernel; IR relocation | `cyclotomicHarmonicKernel_nonneg`, `completedTwinKernel_infrared_survivalCone_eq_zero` | unconditional |
@@ -156,6 +160,8 @@ everything else unconditionally.
   `harmonicFn` asymptotics, pole-node erasure.
 
 **To build.**
+- An actual signed upper bound for `zetaCosineFrobSurplus`; the matched certificate is proved through `λ=2`.
+- A literal stabilizer-model calibration under the signed logarithmic kernel. The raw scalar `1/4` has mean `1/8`; scalar two has unit raw mean.
 - A signed estimate for `stabilizerDiscrepancyOddCoalSum` on odd primes at even shifts within `T^{−1+η}`.
 - A sieve that keeps lobe signs (`1_ℙ(m)1_ℙ(m+2r)` against the signed coalescent kernel).
 - Transfer from the height-averaged prime-pair sum to `F(α)` on `(1, 1+δ]`.
@@ -209,15 +215,12 @@ everything else unconditionally.
 
 ## 10. Big picture
 
-TTPC turns a vague statement — "the explicit formula cannot see past `X = T`" — into a single,
-explicitly named quantity. Everything an analytic method can pay for is paid: the archimedean side, poles,
-end effects, grid aliasing, far prime pairs, sum frequencies, prime powers, the prime 2. What is left is the
-signed correlation of odd primes at even gaps within relative distance `T^{−1}`, measured against a kernel
-whose sign oscillates. That quantity is exactly the pair-correlation/Hardy–Littlewood content of the primes
-at the scale where zeros and primes are in uncertainty balance. The programme's lesson for RH research:
-the obstruction is not missing analysis but missing arithmetic — size-only tools (sieves, Hilbert
-inequalities, positive majorants, survival-cone positivity) provably cannot reach it, because the true
-answer is a small negative number (`−1/144`) produced by repulsion, and every unsigned bound overshoots by
-a constant factor. Any proof that moves past `2/3`, and a fortiori any RH route that runs through the
-explicit formula, must supply signed prime-pair information at the square-root scale; TTPC tells it the
-exact form, unit, and budget.
+TTPC isolates the signed prime correlation required beyond the unconditional bandwidth range.
+The smooth box certificate retains a coalescent surplus; the shape-one cosine certificate now
+retains its matching Frobenius surplus and explicit pinching credit through bandwidth two.
+Neither source surplus has the upper bound needed for 75% simple critical zeros.
+
+The affine HL/GUE calibration predicts a negative coalescent contribution. It is not yet an
+evaluation of the literal finite Ramanujan model, whose raw normalization and conductor cutoff
+must be retained. Unsigned factor-two bounds alone cannot replace the signed input: smooth
+densities arbitrarily close to one can have logarithmically divergent phase-weighted discrepancy.
