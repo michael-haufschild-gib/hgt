@@ -264,41 +264,55 @@ gets an explicit form. Either answer ends the estimate stage of these routes.
 
 ## 2.4 A wildly different route
 
-**One candidate: transport Deligne's theorem to `ℤ` by a `q → 1` limit of varieties over finite
-fields (an `𝔽₁` approximation route).**
+**Verdict: the literal Euler-product proposal fails; a centered-numerator variant remains an
+unconstructed approximation route.** It does not yet escape the selection problem.
 
-Idea. Find varieties `X_n` over `𝔽_{q_n}` and affine reparametrizations `s ↦ a_n s + b_n` such that
-the normalized zeta functions `L_n(s) = Z_{X_n}(q_n^{−(a_n s + b_n)})`, completed suitably:
-1. converge to `ξ(s)` on `Re s > 1` (their Euler products converge to ζ's);
-2. are locally uniformly bounded on the strip.
+For a smooth projective curve,
+`Z_C(t) = P_C(t)/((1-t)(1-qt))`, with reciprocal roots of `P_C` of modulus `√q`.
+Under `u = as+b`, `a > 0`, centering the zeros at `Re s = 1/2` forces `b = (1-a)/2`.
+The ordinary Euler product then converges only on
 
-Each `L_n` has its zeros on one line by Weil–Deligne. By Vitali the convergence extends to the strip,
-and by Hurwitz the limit `ξ` has real zeros.
+`Re s > σ_E = (1+a)/(2a)`.
 
-Why it is far from every corpus route:
-- No positivity, estimate or selector over `ℤ` is produced. The sign is imported from a proved
-  theorem in positive characteristic, where it comes from counts (Q1's object exists there).
-- Square-root precision is automatic for each approximant. Selection of ζ is convergence of Euler
-  products, not a margin.
-- The receiver (normal real-zero approximants force RH) is in the corpus (W1C, PTR, heat flow);
-  every corpus source of approximants is analytic or physical. The geometric source is absent.
-- The ART realization no-gos (finite graphs, Hölder systems, the archimedean obstruction to finite
-  virtual realizations, prime-length rigidity) concern exact realizations of ζ, not limits.
+Write `h = a log q`. The proposed effective `q → 1` means **`h → 0`**, not merely `a → 0`.
+Since `q ≥ 2`, this forces `a → 0` and `σ_E → ∞`. Thus those Euler products cannot converge on
+the fixed half-plane `Re s > 1`. More generally, centering weight `w` for a variety of dimension
+`d` gives `(σ_E - 1/2)h = (d-w/2)log q` [L: parameter identity]. Pole removal permits analytic
+continuation; it does not extend the domain of the original positive Euler product.
 
-Its own walls (not Σ/Π/Γ):
-- *Frequency lattice.* `Z_X(q^{−s})` is periodic with period `2π/log q`; the rescaling `a_n → 0`
-  makes the effective base `q_n^{a_n} → 1`. Closed points of degree `d` number `≈ q^d/d`; to mimic
-  primes in log-norm `x = a_n d log q_n` the counts must thin to `e^x/x`, which needs varieties of
-  effective dimension `a_n → 0`. No such objects exist; this is the `𝔽₁` problem.
-- *Independence.* Real-rooted approximants of `ξ` exist iff RH (Laguerre–Pólya), so the approximants
-  must be produced from arithmetic alone, never selected by the zeros.
-- *Uniform strip bounds.* Local boundedness needs zero counts of the approximants uniform in `n`.
+**What survives.** Set `z = s-1/2`. Pairing the curve's conjugate Frobenius eigenvalues and
+centering its numerator gives, for an explicit positive scalar normalization,
 
-A model-theoretic variant (ultraproducts of curves over `𝔽_p`, which live over pseudo-finite fields
-of characteristic `0`) transfers only bounded-genus first-order statements; ζ needs unbounded genus.
+`F_n(z) = A_n ∏_{j=1}^{g_n}(cosh(h_n z) - cos θ_{n,j})`, `A_n > 0`.
 
-The route is open at its first step. It is the one direction where none of the three walls is met
-in the form the corpus meets them.
+Every factor has nonnegative even Taylor coefficients. Hence
+`|F_n(z)| ≤ F_n(R)` whenever `|z| ≤ R` [L]. Pointwise convergence for every real `R > 1/2`
+therefore already supplies local boundedness on the whole plane [L]. Vitali and Hurwitz then
+give RH if the limit is the specified normalization of `ξ(1/2+z)`; their receiver and blow-up
+alternative already exist in `RHTower/XiCRealZeroVitaliBlowup.lean` [L].
+
+**Open core:** construct the curves, scales and scalar normalizations from arithmetic, and prove
+that real-axis convergence. No such construction is supplied here. Numerator convergence is a
+different requirement from convergence of the original Euler products. The existing ART no-gos
+exclude exact finite realizations, not this limit.
+
+**Corrections to the original proposal.**
+- Deligne gives one line per cohomological weight, not one line for every variety's full zeta
+  function. Use curves or a specified pure factor. The desired zeros of `ξ(s)` lie on `Re s=1/2`;
+  those of `Ξ(t)=ξ(1/2+it)` are real.
+- Vitali requires a common connected open domain containing a uniqueness set and the target
+  strip. Bounds only inside `0 < Re s < 1` do not supply the missing boundary neighborhoods.
+- Zero counts alone do not bound amplitudes (`exp(nz²)` has no zeros and equals one at zero).
+  For the centered products above the real-axis bound supplies the required control directly.
+- The fractional-dimension argument is not a no-go for normalized limits: it omits the affine
+  shift and uses point-count asymptotics without uniform control as genus grows.
+- Pseudofinite-field transfer concerns first-order statements. It supplies neither analytic
+  convergence nor identification with `ξ`; “only bounded genus” is not its precise limitation.
+
+The `𝔽₁` analogy itself is established literature: Connes–Consani already recover the completed
+zeta through a `q → 1` counting-distribution formalism. This does not construct a sequence of
+finite-field varieties to which Deligne and Hurwitz apply. Sources, exact scope and Lean
+declarations: [route audit](../../drafts/pipeline/5-failed/finite-field-euler-approximation-route-audit.md).
 
 ## 2.5 Breakthrough questions below RH and quasi-RH
 

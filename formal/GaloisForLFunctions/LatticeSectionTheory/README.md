@@ -43,6 +43,7 @@ classification of which lattice counts can and cannot touch the second part.
 | Split series | `splitSeries`, `splitTerm` | `Z⁺(s,u) = Σ_{m,n≥1}(e^{2u}m² + e^{−2u}n²)^{−s}` |
 | Isotropic cone count | `coneCount`, `coneMellinValue` | `C(t) = Σ_{m,n≥1} e^{−2πtmn}`; `Γ(σ)(2π)^{−σ}ζ(σ)²` |
 | Low-frequency divisor | ACS `lowBlindTests`, `lowGrid` | tests of aperture `a` vanishing at `i/2` and on the grid `D_a` |
+| Jump count, pole cross term | `jumpCount`, `poleCross` | `J(f) = ∫_0^∞(A_f(0) − A_f(x)) e^{x/2}/sinh x dx`, `A_f` the autocorrelation; `∫ 2cosh(x/2)A_f` |
 | Hecke correspondence | ACS `heckeCorrespondence` | `T_a = √a ψ_a` |
 
 ## 3. Language
@@ -129,16 +130,22 @@ classification of which lattice counts can and cannot touch the second part.
     RH, nonnegativity of the primitive `h¹`, effectivity of the Künneth count, convergence of all
     primitive Siegel counts and "fewer than two right zeros" are one statement.
 
-**G. Prime-free cycles and the finite divisor.**
+**G. Prime-free cycles, jump counts, and the finite divisor.**
 16. On all tests of aperture `≤ 3/10` and on ample-orthogonal smooth tests of aperture
     `≤ (log 2 + 1/50)/2` (the prime-free window `½ log 2` and past the prime 2) the Künneth count is
     an effectivity function; on any test subsurface its effectivity is Weil positivity there.
-17. At every degree `a > 0`, outside the `2#D_a + 2` real conditions of the low-frequency divisor,
+17. On a prime-free test (`2a < log 2`) the primitive `h¹` is a count: `W(f,f) = Ω(0)‖f‖² + J(f) +
+    2·poleCross`, where `J(f) = ½∫_0^∞∫(f(u) − f(u+x))²du · e^{x/2}/sinh x dx ≥ 0` counts the jumps of
+    `f` with the Lévy weight of the Gamma factor and `Ω(0) = −(log π + 3 log 2 + γ + π/2)`. A test
+    supported in `[−a, a]` jumps to `0` across every gap `x > 2a`, so `J(f) ≥ ‖f‖²(log(1/2a) −
+    (1 − 2a)/2)`. For `a ≤ 1/2000` these exterior jumps pay `|Ω(0)| < 5.373` and the pole term:
+    `W(f,f) ≥ ‖f‖²/4` follows from the count, with no estimate of the Weil form.
+18. At every degree `a > 0`, outside the `2#D_a + 2` real conditions of the low-frequency divisor,
     the Künneth count is an effectivity and the primitive `h¹` is coercive:
     `h¹_prim ≥ ½ c_a ∫f²`, `c_a = (10 + 68e^a)(1 − 1/π)`. This is what replaces finite genus.
 
 **H. Calibration over `𝔽_q`.**
-18. On Frobenius windows of a curve datum the Künneth count is effective on every window iff the
+19. On Frobenius windows of a curve datum the Künneth count is effective on every window iff the
     datum is unitary; the golden fake fails on some window. In genus one the primitive `h¹` of the
     graph of `m − nF` is `deg(m − nF) = m² − amn + qn²`, and for `1 − F` it is the number of points:
     over a curve the primitive `h¹` is the degree of a correspondence, i.e. a count.
@@ -163,10 +170,11 @@ classification of which lattice counts can and cannot touch the second part.
 | Hecke similitude of the primitive `h¹` | `primitiveH1_heckeCorrespondence`, `eulerChar_heckeCorrespondence`, `primitiveH1_heckeCorrespondence_nonneg_iff` | proved |
 | Index readings: RH ⇔ primitive `h¹ ≥ 0` ⇔ Künneth effective ⇔ primitive Siegel counts converge ⇔ fewer than two right zeros | `riemannHypothesis_primitiveH1_tfae`, `forall_primitiveH1_nonneg_iff` | equivalences |
 | Prime-free effectivity | `kunneth_effectivity_realTestsAt`, `kunneth_effectivity_primitiveSmoothRealTestsAt`, `kunneth_effectivity_scalingSubsurface_iff` | proved |
+| The primitive `h¹` of a prime-free cycle is a jump count; positivity from the count for `a ≤ 1/2000` | `weilPair_eq_jumpCount_of_primeFree`, `jumpCount_ge`, `abs_poleCross_le`, `jumpCount_derivation_of_primeFree_positivity`, `primitiveH1_ge_of_jumpCount` | proved |
 | Riemann–Roch outside a finite divisor at every degree | `kunneth_effectivity_lowBlindTests`, `kunneth_primitive_h1_ge`, `exists_ne_zero_lowBlindTests` | proved |
 | `𝔽_q` calibration | `unitary_iff_forall_window_kunneth`, `goldenDatum_not_forall_window_kunneth`, `genusOne_kunneth_h1_graphCycle`, `genusOne_kunneth_h1_frobenius` | proved |
 
-## 6. Tools
+## 6. Tools (developed, and to develop)
 
 **Used from the corpus.**
 - Gaussian lattice Poisson summation in every rank (`HTGeometry/GaussianLatticeTheta`).
@@ -187,8 +195,10 @@ classification of which lattice counts can and cannot touch the second part.
   kernel, the archimedean constant `K(s,w)`.
 - Isotropic cone counts, their Mellin transforms, and the pole-order obstruction for FE-pairs.
 - Index readings of the primitive `h¹` as one TFAE (sections, Siegel counts, index exit).
+- The jump-count form of the primitive `h¹` on prime-free cycles, exterior-jump lower bounds, the
+  Lévy-weight inequality `e^{x/2}/sinh x ≥ 1/x − 1/2`.
 
-## 7. Questions and answers
+## 7. Questions the programme answers
 
 | Question | Answer |
 |---|---|
@@ -198,18 +208,19 @@ classification of which lattice counts can and cannot touch the second part.
 | Why `ζ` and not an Epstein zeta? | Definite counts are fakes (`exists_epsteinLambda_eq_zero`); the split plane at a fixed boost `|u| > 1` is one of them (`exists_boost_offLine_zero`), while the self-dual point `u = 0` is not (`epsteinLambda_one_neg`): the boost creates the fakes. Only the boost transform carries the Euler product, `K ζ(s+w)ζ(s−w)` (`integral_splitSeries_mul_exp_eq_zeta`). |
 | What is the effectivity of a Hecke correspondence? | On the pole plane a boost by `½ log p` (`hyperbolicPlane_siegelMajorant_hecke`); on the primitive part a similitude of ratio its degree (`primitiveH1_heckeCorrespondence`). It never changes the sign. |
 | What replaces finite genus over `ℤ`? | The base is genus one for Riemann–Roch and the Künneth part is finite and bounded on degree levels. The infinite part lives in the primitive `h¹`, and at each degree it is controlled outside a finite divisor of `2#D_a + 2` conditions (`kunneth_primitive_h1_ge`): the genus of `ℤ` is a finite divisor at every degree, unbounded in the degree. |
-| Q1: an effectivity on prime-free cycles? | Yes: the Künneth count, positive, Poisson-dual, quadratic Riemann inequality, bounded on degree levels, on all tests of aperture `≤ 3/10` and on ample-orthogonal tests past `½ log 2` (`kunneth_effectivity_realTestsAt`, `kunneth_effectivity_primitiveSmoothRealTestsAt`). Its Riemann inequality is equivalent to prime-free Weil positivity; deriving that positivity from a count of the primitive `h¹` is the open core. |
+| Q1: an effectivity on prime-free cycles, and prime-free positivity from Riemann–Roch? | The Künneth count is positive, Poisson-dual, satisfies the quadratic Riemann inequality and is bounded on degree levels on all tests of aperture `≤ 3/10` and on ample-orthogonal tests past `½ log 2` (`kunneth_effectivity_realTestsAt`, `kunneth_effectivity_primitiveSmoothRealTestsAt`). Its `h¹` is the Künneth part plus the primitive part, and on prime-free cycles the primitive part is a jump count plus a constant and a pole term (`weilPair_eq_jumpCount_of_primeFree`). Up to aperture `1/2000` the count alone forces positivity (`jumpCount_derivation_of_primeFree_positivity`); between `1/2000` and `½ log 2` the positivity is known from estimates (to `3/10` for all tests) and its derivation from the count is open. |
 | Q2: how do the primes enter `χ` without breaking the Riemann inequality? | Through `x² = 2(x·H)(x·V) − δ`: `χ` contains the explicit formula only via the primitive part, and the Riemann inequality of any bidegree count is then the Hodge index. Every count built from the base is blind to them. |
 | Q3: is the Hodge defect an integer reading of `h¹`? | Yes as an index: the number of negative directions of the primitive `h¹ = ½δ` is the Hodge defect, which ACS (`pontryagin_law`) and AOG (`zeta_orientationIndex_law`) identify with the distinct right zeros; it is even, and every reading of it below `2` — by sections, by Siegel counts, by the index exit — is the same statement (`riemannHypothesis_primitiveH1_tfae`). A height-uniform reading remains open (B40). |
 | Does any of this select `ζ` among fakes? | The soft laws do not: Epstein fakes, golden curve. Selection appears exactly where the theory reaches the primitive `h¹` (`goldenDatum_not_forall_window_kunneth`) or the boost transform. |
 
 ## 8. Open research topics
 
-1. **The primitive `h¹` as a count.** A nonnegative quantity defined from counting and equal to
-   `½W(f, f)` by an identity, first on prime-free tests. The corpus proves prime-free positivity
-   through a Lévy decomposition of the archimedean collar (jump squares plus a pointwise
-   potential); turning that decomposition into a count valid on the whole prime-free window, with
-   all parities, is the first target.
+1. **The primitive `h¹` as a count.** On prime-free tests it is a jump count plus the constant
+   `Ω(0)‖f‖²` plus a pole term, and the exterior jumps force positivity up to aperture `1/2000`. The
+   exterior charge `½∫f(x)²(W(a − x) + W(a + x))dx`, `W(t) = ∫_t^∞ e^{x/2}/sinh x`, would reach about
+   `a ≈ 0.03`; the whole prime-free window `½ log 2` needs the interior jumps (a Poincaré inequality
+   for the Lévy form on an interval) and the sign structure of the pole term (`+2A²` on even tests,
+   `−2A²` on odd ones). Beyond the prime-free window the count must contain the prime comb.
 2. **One two-prime Hecke lattice.** The primitive `h¹` on `⟨p⟩ × ⟨q⟩` as a sum of squares of coupling
    differences at every window size (B7).
 3. **Indefinite counts with characteristics.** Zwegers–Vignéras thetas of the Hecke lattice cut by
@@ -235,9 +246,9 @@ classification of which lattice counts can and cannot touch the second part.
 | Künneth Riemann–Roch is progress on the sign | Its Künneth part is positive for free; the primitive part is untouched |
 | A count built from the base can see the sign | Bidegree counts are constant on primitive classes |
 | Hecke operators can push the primitive `h¹` positive | They rescale it by their degree |
-| Prime-free effectivity is derived from Riemann–Roch | It is equivalent to prime-free positivity, which is proved by Lévy estimates |
+| Prime-free effectivity is derived from Riemann–Roch | It is equivalent to prime-free positivity; the jump count derives that positivity only up to aperture `1/2000`; the rest is by Lévy estimates |
 
-## 10. Context
+## 10. Place in the research and relation to other programmes
 
 | Programme | Relation |
 |---|---|
@@ -249,7 +260,7 @@ classification of which lattice counts can and cannot touch the second part.
 | `HTGeometry` | lattice Poisson summation in every rank |
 | `RHTower` (Lévy windows) | prime-free positivity by Lévy potentials: the only count-like representation of the primitive `h¹` known |
 
-## 11. Success criteria and contributions
+## 11. Success criteria and criteria for contributions
 
 The programme is complete when the primitive `h¹` is realized as a count — on the prime-free
 subsurface first, then one prime at a time — or when it is proved that no lattice count can realize

@@ -1,4 +1,5 @@
 import GaloisForLFunctions.ArithmeticCastelnuovoSeveri.DoublyLogarithmicVisibilityAndExcludedDepthLaw
+import GaloisForLFunctions.ArithmeticCastelnuovoSeveri.AnIsolatedPairIsVisibleAboveNyquist
 
 /-!
 # The critical multiple of an isolated pair
@@ -139,9 +140,108 @@ theorem rvmPairEdge_bounds {γ δ : ℝ} (hγ : 2 * π < γ) (hδ : 0 < δ)
     intro ε hε
     exact csInf_le hbelow (hmem ε hε)
 
+/-- The pair signal root determines the edge, capped at the lattice Nyquist aperture. -/
+theorem rvmPairEdge_exact {γ δ : ℝ} (hγ : 2 * π < γ) (hδ : 0 < δ)
+    (hδ' : δ ≤ 1 / 2) :
+    ∃! x : ℝ, 0 < x ∧ sinh x - x = 2 * δ * rvmLocalDensity γ ∧
+      rvmPairEdge hγ hδ hδ' = exp (min (x / δ) (rvmLocalDensity γ)) ∧
+      ∀ K : ℝ, 1 < K →
+        rvmPairIndex hγ hδ hδ' K =
+          if K ≤ exp (min (x / δ) (rvmLocalDensity γ)) then 0 else 1 := by
+  have hL := rvmLocalDensity_pos hγ
+  let t := δ * rvmLocalDensity γ
+  let u := max 16 t
+  have ht : 0 < t := mul_pos hδ hL
+  have htu : t ≤ u := le_max_right _ _
+  have hu : 0 < u := ht.trans_le htu
+  have he : 6 * u + 1 < exp u := by
+    have hh := exp_lt_exp.mpr (log_six_mul_add_one_lt (show 16 ≤ u from le_max_left _ _))
+    rwa [exp_log (by positivity : 0 < 6 * u + 1)] at hh
+  have hn : exp (-u) ≤ 1 := by
+    simpa only [exp_zero] using exp_le_exp.mpr (show -u ≤ 0 by linarith only [hu])
+  have htop : 2 * t < sinh u - u := by
+    rw [sinh_eq]
+    linarith only [he, hn, htu]
+  obtain ⟨x, _, hx⟩ := intermediate_value_Icc hu.le
+    (continuous_sinh.sub continuous_id).continuousOn
+    (show 2 * t ∈ Icc (sinh 0 - 0) (sinh u - u) from
+      ⟨by simpa only [sinh_zero, sub_zero] using (mul_pos (by norm_num : (0 : ℝ) < 2) ht).le,
+        htop.le⟩)
+  change sinh x - x = 2 * t at hx
+  have hx0 : 0 < x := sinh_sub_id_strictMono.lt_iff_lt.mp (by
+    rw [hx, sinh_zero, sub_zero]
+    positivity)
+  have hE1 : 1 < exp (min (x / δ) (rvmLocalDensity γ)) :=
+    one_lt_exp_iff.mpr (lt_min (div_pos hx0 hδ) hL)
+  -- Below the Nyquist aperture, strict monotonicity solves the exact visibility inequality.
+  have hlocal : ∀ K : ℝ, 1 < K → K ≤ exp (rvmLocalDensity γ) →
+      rvmPairIndex hγ hδ hδ' K = if K ≤ exp (x / δ) then 0 else 1 := by
+    intro K hK hKL
+    have hK0 := zero_lt_one.trans hK
+    have ha := div_pos (log_pos hK) (by norm_num : (0 : ℝ) < 2)
+    have haL : log K / 2 ≤ rvmLocalDensity γ / 2 := by
+      have hh := log_le_log hK0 hKL
+      rw [log_exp] at hh
+      linarith only [hh]
+    unfold rvmPairIndex
+    rw [hodgeDefectAt_isolatedPair (rvmLocalDensity_pos hγ) hδ hδ' γ ha haL]
+    have hcond : sinh (2 * δ * (log K / 2)) / δ ≤
+        2 * rvmLocalDensity γ + 2 * (log K / 2) ↔ δ * log K ≤ x := by
+      rw [show 2 * δ * (log K / 2) = δ * log K by ring, div_le_iff₀ hδ]
+      have hh : sinh (δ * log K) ≤ (2 * rvmLocalDensity γ + 2 * (log K / 2)) * δ ↔
+          sinh (δ * log K) - δ * log K ≤ sinh x - x := by
+        rw [hx]
+        dsimp only [t]
+        constructor <;> intro h <;> nlinarith only [h]
+      exact hh.trans sinh_sub_id_strictMono.le_iff_le
+    have hcompare : δ * log K ≤ x ↔ K ≤ exp (x / δ) := by
+      rw [mul_comm δ, ← le_div_iff₀ hδ, log_le_iff_le_exp hK0]
+    rw [hcond, hcompare]
+  -- Above Nyquist, a difference of translates kills the lattice and exposes the pair.
+  have hlaw : ∀ K : ℝ, 1 < K →
+      rvmPairIndex hγ hδ hδ' K =
+        if K ≤ exp (min (x / δ) (rvmLocalDensity γ)) then 0 else 1 := by
+    intro K hK
+    by_cases hKL : K ≤ exp (rvmLocalDensity γ)
+    · have hcut : K ≤ exp (min (x / δ) (rvmLocalDensity γ)) ↔ K ≤ exp (x / δ) := by
+        rw [← log_le_iff_le_exp (zero_lt_one.trans hK), le_min_iff,
+          log_le_iff_le_exp (zero_lt_one.trans hK), log_le_iff_le_exp (zero_lt_one.trans hK)]
+        exact and_iff_left hKL
+      rw [hcut]
+      exact hlocal K hK hKL
+    have ha : rvmLocalDensity γ / 2 < log K / 2 := by
+      have hh := log_lt_log (exp_pos _) (lt_of_not_ge hKL)
+      rw [log_exp] at hh
+      linarith only [hh]
+    have hcut : ¬ K ≤ exp (min (x / δ) (rvmLocalDensity γ)) := fun hh =>
+      hKL (hh.trans (exp_le_exp.mpr (min_le_right _ _)))
+    rw [if_neg hcut]
+    exact hodgeDefectAt_isolatedPair_eq_one_of_nyquist_lt hL hδ hδ' γ ha
+  have hedge : rvmPairEdge hγ hδ hδ' = exp (min (x / δ) (rvmLocalDensity γ)) := by
+    have hset : {K : ℝ | 1 < K ∧ rvmPairIndex hγ hδ hδ' K = 1} =
+        Ioi (exp (min (x / δ) (rvmLocalDensity γ))) := by
+      ext K
+      constructor
+      · rintro ⟨hK, hi⟩
+        rw [hlaw K hK] at hi
+        by_contra hh
+        have hle : K ≤ exp (min (x / δ) (rvmLocalDensity γ)) := le_of_not_gt hh
+        rw [if_pos hle] at hi
+        exact zero_ne_one hi
+      · intro hK
+        have hK1 := hE1.trans hK
+        exact ⟨hK1, by rw [hlaw K hK1, if_neg (not_le.mpr hK)]⟩
+    unfold rvmPairEdge
+    rw [hset, csInf_Ioi]
+  refine ⟨x, ⟨hx0, ?_, hedge, hlaw⟩, fun y hy => ?_⟩
+  · simpa only [t, mul_assoc] using hx
+  · apply sinh_sub_id_strictMono.injective
+    exact hy.2.1.trans (by simpa only [t, mul_assoc] using hx.symm)
+
 end GaloisForLFunctions.ArithmeticCastelnuovoSeveri
 
 #print axioms GaloisForLFunctions.ArithmeticCastelnuovoSeveri.rvmPairIndex_eq
 #print axioms GaloisForLFunctions.ArithmeticCastelnuovoSeveri.rvmPairIndex_eq_zero_of_le_lower
 #print axioms GaloisForLFunctions.ArithmeticCastelnuovoSeveri.rvmPairIndex_eq_one_of_upper_lt
 #print axioms GaloisForLFunctions.ArithmeticCastelnuovoSeveri.rvmPairEdge_bounds
+#print axioms GaloisForLFunctions.ArithmeticCastelnuovoSeveri.rvmPairEdge_exact

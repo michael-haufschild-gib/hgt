@@ -67,8 +67,10 @@ theorem eventually_logarithmicSpectralControl_le_log_rpow_sharp {B α : ℝ}
         logarithmicSpectralControl B c ≤ Real.log (N : ℝ) ^ α := by
   have hlog : Tendsto (fun N : ℕ => Real.log (N : ℝ)) atTop atTop :=
     Real.tendsto_log_atTop.comp tendsto_natCast_atTop_atTop
-  have hLL := Real.tendsto_log_atTop.comp hlog
-  have hLLL := Real.tendsto_log_atTop.comp hLL
+  have hLL : Tendsto (fun N : ℕ => Real.log (Real.log (N : ℝ))) atTop atTop :=
+    Real.tendsto_log_atTop.comp hlog
+  have hLLL : Tendsto (fun N : ℕ => Real.log (Real.log (Real.log (N : ℝ))))
+      atTop atTop := Real.tendsto_log_atTop.comp hLL
   filter_upwards [hLL.eventually_ge_atTop (Real.exp 1),
     hLL.eventually_ge_atTop (B ^ 2 / α ^ 2),
     hLLL.eventually_ge_atTop (max 1 (4 * B / α)), hlog.eventually_gt_atTop 0]
@@ -82,7 +84,8 @@ theorem eventually_logarithmicSpectralControl_le_log_rpow_sharp {B α : ℝ}
     have h2 := (div_le_iff₀ hα).mp ((le_max_right _ _).trans hlogL)
     nlinarith only [h2, mul_le_mul_of_nonneg_left
       (show Real.log (Real.log (Real.log (N : ℝ))) ≤
-        Real.log (Real.log (Real.log (N : ℝ))) ^ 2 by nlinarith only [h1]) hα.le]
+        Real.log (Real.log (Real.log (N : ℝ))) ^ 2 by
+          nlinarith only [h1, sq_nonneg (Real.log (Real.log (Real.log (N : ℝ))) - 1)]) hα.le]
   have he := logarithmicExponent_le_of_sharp_overlap_bound hB hα hL hBL' hlogL' hc
     (by simpa only [dcScale, mul_assoc] using hcup)
   unfold logarithmicSpectralControl
@@ -119,14 +122,17 @@ theorem tendsto_logarithmicExponent_critical_ratio (B : ℝ) {K : ℝ} (hK : 0 <
         Real.log (Real.log (N : ℝ))) atTop (𝓝 (B * K)) := by
   have hlog : Tendsto (fun N : ℕ => Real.log (N : ℝ)) atTop atTop :=
     Real.tendsto_log_atTop.comp tendsto_natCast_atTop_atTop
-  have hLL := Real.tendsto_log_atTop.comp hlog
+  have hLL : Tendsto (fun N : ℕ => Real.log (Real.log (N : ℝ))) atTop atTop :=
+    Real.tendsto_log_atTop.comp hlog
   have hr := (tendsto_log_critical_schedule_ratio hK).comp hLL
   have hlim : Tendsto (fun N : ℕ => (B * K) /
       (Real.log (K * Real.log (Real.log (N : ℝ)) *
         Real.log (Real.log (Real.log (N : ℝ))) ^ 2) /
           Real.log (Real.log (Real.log (N : ℝ)))) ^ 2) atTop (𝓝 (B * K)) := by
-    simpa only [one_pow, div_one, Function.comp_def] using
-      tendsto_const_nhds.div (hr.pow 2) (by norm_num : (1 : ℝ) ^ 2 ≠ 0)
+    convert (tendsto_const_nhds (x := B * K)).div (hr.pow 2)
+      (by norm_num : (1 : ℝ) ^ 2 ≠ 0) using 1
+    · rfl
+    · simp only [one_pow, div_one]
   apply hlim.congr'
   filter_upwards [hLL.eventually_gt_atTop (1 : ℝ)] with N hL
   have hL0 := zero_lt_one.trans hL
@@ -134,7 +140,6 @@ theorem tendsto_logarithmicExponent_critical_ratio (B : ℝ) {K : ℝ} (hK : 0 <
   dsimp only [dcScale]
   rw [div_pow, div_div]
   field_simp [hL0.ne', hl0.ne']
-  <;> ring
 
 /-- A larger coefficient fails the same absolute spectral budget eventually. -/
 theorem eventually_log_rpow_lt_logarithmicSpectralControl {B α K : ℝ}
@@ -146,8 +151,10 @@ theorem eventually_log_rpow_lt_logarithmicSpectralControl {B α K : ℝ}
     simpa only [mul_comm] using hh
   have hlog : Tendsto (fun N : ℕ => Real.log (N : ℝ)) atTop atTop :=
     Real.tendsto_log_atTop.comp tendsto_natCast_atTop_atTop
+  have hLLlim : Tendsto (fun N : ℕ => Real.log (Real.log (N : ℝ))) atTop atTop :=
+    Real.tendsto_log_atTop.comp hlog
   filter_upwards [(tendsto_logarithmicExponent_critical_ratio B hK).eventually_const_lt hαBK,
-    (Real.tendsto_log_atTop.comp hlog).eventually_gt_atTop 0,
+    hLLlim.eventually_gt_atTop 0,
     hlog.eventually_gt_atTop 0] with N hratio hLL hL
   have hh := (lt_div_iff₀ hLL).mp hratio
   unfold logarithmicSpectralControl

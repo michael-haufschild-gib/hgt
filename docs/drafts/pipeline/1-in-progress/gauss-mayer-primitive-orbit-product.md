@@ -23,8 +23,9 @@ unless the proved inverse-class criterion identifies them.
 
 ## Exact missing mathematics
 
-1. Identify the global determinant with its locally convergent trace exponent,
-   including the first trace and the sign cancellation in `D(w,z)D(w,−z)`.
+1. **Certified:** The actual signed determinant product equals its even-word
+   trace exponential near zero, with absolute summation over all lengths and
+   words. [Paper proof and Lean certificate](../3-formalized/gauss-mayer-even-word-determinant.md).
 2. Decompose every nonempty pair word into a primitive cycle and a repetition.
    Prove that a repetition of a primitive pair word of length `ℓ` has exactly
    `ℓ` distinct pair rotations. Ordinary digit primitivity is incorrect.
@@ -32,42 +33,31 @@ unless the proved inverse-class criterion identifies them.
    under repetition. Reindex the absolutely convergent even-word trace series:
    its coefficient `1/n` must become `1/r` for a primitive cycle repeated `r`
    times. Expand `(1−λ_c^(−2r))⁻¹` and sum the logarithmic factor series.
-4. Supply a source estimate extending convergence to `z=1` for `Re w>2`;
-   the existing fixed-length digit bound alone does not imply this.
+4. **Certified:** Exact Gauss-word probability gives geometric absolute trace
+   decay for `Re w>2`. The even-word identity now holds throughout `|z|≤1`,
+   including `z=1`; the full word series converges absolutely and the actual
+   determinant has no spectral zero in this disk.
+   [Continuation proof and Lean certificate](../3-formalized/gauss-mayer-unit-even-word-determinant.md).
 
 The local Hilbert–Schmidt exponential determinant is a convergent-series
 representation only near zero. Its totalized exponential cannot replace the
 global Fredholm determinant away from that domain.
 
-## Source estimate to formalize
+## Certified source probability and decay
 
-For the real branch map, `h(x)=1/(1+x)` satisfies `L₂h=h` on `[0,1]`
-by the telescoping series `Σ_(a≥1) 1/((a+x)(a+x+1))=1/(1+x)`.
-An even word of length `2n` has bottom-right matrix entry `d≥2^n`:
-each pair multiplies the positive denominator by at least two. Since
-`1/2≤h≤1`, iteration gives `Σ_words d⁻²≤2`. Its expanding multiplier
-satisfies `λ≥d`; therefore, for real `σ>2`,
+The bottom-row weight `P=1/[d(c+d)]` has total mass one over all words of
+every fixed length. Its exact successor telescope and `0≤c≤d` give
+`Σ d⁻²≤2`. Each digit pair doubles the denominator, so `d≥2^n` at length
+`2n`. The actual expanding multiplier satisfies `λ≥d`.
 
-```text
-Σ_words λ^(−σ)/(1−λ⁻²) ≤ (8/3) 2^(−n(σ−2)).
-```
-
-This would supply absolute convergence of the complete even-word logarithm
-at `|z|≤1`. An equivalent matrix-only telescope uses the bottom row `(c,d)`:
-`P=1/[d(c+d)]`. Appending a Gauss digit on the right gives
-`(c,d)↦(d,c+(a+1)d)` and
-
-```text
-Σ_(a≥0) 1/[(c+(a+1)d)(c+(a+2)d)] = 1/[d(c+d)].
-```
-
-Thus the exact word probability has total mass one at every length. The
-certified inequality `0≤c≤d` gives `d⁻²≤2P`, avoiding an auxiliary analytic
-realization of the harmonic function. Denominator growth and the complete
-trace bound remain proof obligations, not yet Lean-certified results.
+For `Re w>2`, `q=exp(−(Re w−2)log 2)∈(0,1)` and the complete absolute
+trace mass at length `2n+2` is at most `(8/3)q^(n+1)`.
+[Paper proof and nine clean production audits](../3-formalized/gauss-mayer-word-probability-and-trace-decay.md).
 
 ## Scope
 
 This is the missing determinant-to-modular-cycle bridge. It does not yet
 identify geometric geodesic lengths, prove the scattering normalization, or
-exclude complex resonances. No product identity is certified yet.
+exclude complex resonances. The local determinant-to-even-word identity is
+certified through the closed unit disk for `Re w>2`; primitive-cycle
+reindexing and the Euler product remain open.

@@ -223,6 +223,38 @@ theorem zeroFreeLogProfile_spectral_budget_fails_above_explicit_multiple {K : �
     (zeroFreeLogPositivityMultiple_pos.trans hK)
   rwa [zeroFreeLogPositivityMultiple_eq] at hK
 
+/-- The explicit coefficient is the largest one compatible with any power budget
+allowed by the current conductor estimates, whose exponent is at most `1/128`. -/
+theorem zeroFreeLogProfile_absolute_budget_iff (K : ℝ) :
+    (∃ α : ℝ, 0 < α ∧ α ≤ 1 / 128 ∧
+      ∀ᶠ N : ℕ in atTop, ∀ c : ℝ, Real.exp 1 ≤ c → c ≤ K * dcScale N →
+        logarithmicSpectralControl logarithmicReserveRate c ≤ Real.log (N : ℝ) ^ α) ↔
+      K ≤ zeroFreeLogPositivityMultiple := by
+  constructor
+  · rintro ⟨α, hα, hαmax, hbudget⟩
+    by_contra hK
+    have hKgt := lt_of_not_ge hK
+    have hKpos := zeroFreeLogPositivityMultiple_pos.trans hKgt
+    have hlarge : α / logarithmicReserveRate < K := by
+      rw [zeroFreeLogPositivityMultiple_eq] at hKgt
+      exact (div_le_div_of_nonneg_right hαmax logarithmicReserveRate_pos.le).trans_lt hKgt
+    have hfail := eventually_log_rpow_lt_logarithmicSpectralControl
+      logarithmicReserveRate_pos hKpos hlarge
+    obtain ⟨N, hN, hfailN, hscale⟩ :=
+      (hbudget.and (hfail.and (dcScale_atTop.eventually_ge_atTop (Real.exp 1 / K)))).exists
+    have hc : Real.exp 1 ≤ K * dcScale N := by
+      have hh := (div_le_iff₀ hKpos).mp hscale
+      simpa only [mul_comm] using hh
+    exact (not_le_of_gt hfailN) (hN (K * dcScale N) hc le_rfl)
+  · intro hK
+    refine ⟨1 / 128, by norm_num, le_rfl, ?_⟩
+    rw [zeroFreeLogPositivityMultiple_eq] at hK
+    filter_upwards [eventually_logarithmicSpectralControl_le_log_rpow_sharp
+      logarithmicReserveRate_pos (by norm_num : (0 : ℝ) < 1 / 128),
+      dcScale_atTop.eventually_ge_atTop 0] with N hN hscale
+    intro c hc hcup
+    exact hN c hc (hcup.trans (mul_le_mul_of_nonneg_right hK hscale))
+
 /-- The complete family is positive up to the explicit logarithmic multiple. -/
 theorem zeroFreeLogProfile_completeWeilMatrix_posDef_explicit_critical_overlap :
     ∀ᶠ N : ℕ in atTop, ∀ c : ℝ, 1 ≤ c →
@@ -293,6 +325,7 @@ end GaloisForLFunctions.TransMetzlerWeilPositivity
 #print axioms GaloisForLFunctions.TransMetzlerWeilPositivity.exists_zeroFreeLogProfile_positive_power_budget
 #print axioms GaloisForLFunctions.TransMetzlerWeilPositivity.zeroFreeLogPositivityMultiple_pos
 #print axioms GaloisForLFunctions.TransMetzlerWeilPositivity.zeroFreeLogProfile_spectral_budget_fails_above_explicit_multiple
+#print axioms GaloisForLFunctions.TransMetzlerWeilPositivity.zeroFreeLogProfile_absolute_budget_iff
 #print axioms GaloisForLFunctions.TransMetzlerWeilPositivity.zeroFreeLogProfile_completeWeilMatrix_posDef_explicit_critical_overlap
 #print axioms GaloisForLFunctions.TransMetzlerWeilPositivity.zeroFreeLogProfile_completeWeilMatrix_posDef_explicit_sincCritical_overlap
 #print axioms GaloisForLFunctions.TransMetzlerWeilPositivity.exists_zeroFreeLogProfile_completeWeilMatrix_posDef_critical_overlap
