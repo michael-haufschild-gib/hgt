@@ -76,8 +76,9 @@ theorem conductorDirichlet_eq (e N : ℕ) (s : ℂ) :
     rw [sum_filter]
     refine sum_congr rfl fun n _ => ?_
     split_ifs <;> push_cast <;> ring
-  rw [hfil, RenormalizedArithmeticPotentialTheory.sum_Icc_filter_dvd hd1, mul_sum, mul_sum]
-  refine sum_congr rfl fun k _ => ?_
+  rw [hfil, RenormalizedArithmeticPotentialTheory.sum_Icc_filter_dvd hd1 N
+    (fun n => (moebiusReal (e / d) : ℂ) * (((d : ℝ) : ℂ) * ((n : ℝ) : ℂ) ^ (s - 1))), mul_sum]
+  refine Finset.sum_congr rfl fun k _ => ?_
   rw [natCast_mul_cpow_sub_one hd1]
   ring
 
@@ -98,7 +99,7 @@ theorem horizonTerm_eq_sum (e N : ℕ) (s : ℂ) :
     intro d hd
     have hd0 : (0 : ℝ) < d := by exact_mod_cast Nat.pos_of_mem_divisors hd
     rw [mul_assoc, ← Complex.mul_cpow_ofReal_nonneg hd0.le (div_nonneg (Nat.cast_nonneg N) hd0.le),
-      mul_div_cancel₀ _ hd0.ne']
+      ← Complex.ofReal_mul, mul_div_cancel₀ _ hd0.ne']
     ring
   rw [sum_congr rfl hterm, ← sum_mul]
   have hμ := congrArg (fun r : ℝ => (r : ℂ)) (sum_divisors_moebiusReal e)
@@ -126,7 +127,7 @@ theorem tendsto_floor_cpow_sub {s : ℂ} (hs1 : s.re < 1) {d : ℕ} (hd : 1 ≤ 
   have hfl : ⌊(N : ℝ) / d⌋₊ = N / d := Nat.floor_div_eq_div N d
   have hM : (1 : ℝ) ≤ (N : ℝ) / d := by
     rw [le_div_iff₀ (by exact_mod_cast hd), one_mul]
-    exact_mod_cast (Nat.le_div_iff_mul_le (by omega)).mp hN.2 |>.trans_eq' (one_mul d).symm
+    exact_mod_cast (Nat.one_le_div_iff (by omega)).mp hN.2
   have h := RHTower.norm_cpow_natFloor_sub_cpow_le (s := s) hM (by rw [hfl]; exact hN.1)
   rw [hfl] at h
   simpa only [Complex.ofReal_natCast] using h
@@ -151,7 +152,7 @@ theorem tendsto_conductorDirichlet_sub_horizonTerm {s : ℂ} (hs0 : 0 < s.re) (h
     ring
   simp_rw [hrw]
   rw [jordanC, mul_sum]
-  refine tendsto_finset_sum _ fun d hd => ?_
+  refine tendsto_finsetSum _ fun d hd => ?_
   have hd1 : 1 ≤ d := Nat.pos_of_mem_divisors hd
   have hlim : Tendsto (fun N : ℕ => riemannZeta (1 - s) +
       (((N / d : ℕ) : ℝ) ^ s - (((N : ℝ) / d : ℝ) : ℂ) ^ s) / s +
@@ -160,7 +161,7 @@ theorem tendsto_conductorDirichlet_sub_horizonTerm {s : ℂ} (hs0 : 0 < s.re) (h
       ((RHTower.tendsto_zetaStripError hw0 hw1).comp (Nat.tendsto_div_const_atTop (by omega))))
   rw [zero_div, add_zero, add_zero] at hlim
   have := hlim.const_mul ((moebiusReal (e / d) : ℂ) * ((d : ℝ) : ℂ) ^ s)
-  convert this using 1
+  convert this using 2
   ring
 
 /-- **At a zero.** If `ζ(1 − s) = 0` on the open strip, the conductor Dirichlet polynomial is its

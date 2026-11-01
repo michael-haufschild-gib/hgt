@@ -35,8 +35,8 @@ is the attained displacement minimum `L_c=2 log λ_c`, so each factor is
 `1−z^(2ℓ(c)) exp(−(w/2+m)L_c)`. The certified
 [inverse-orientation multiplicities](../3-formalized/gauss-mayer-inverse-orientation-multiplicities.md)
 regroup these factors with exponent one for self-inverse classes and two
-otherwise. Closed-geodesic identification and actual scattering comparison
-remain open.
+otherwise. [Closed-geodesic identification](gauss-mayer-closed-geodesic-correspondence.md)
+and actual scattering comparison remain open.
 
 ## Operator convention
 
@@ -45,11 +45,13 @@ operator `MayerCutoff.regularized = ζ(w)P + remainderSum`, with eigenvalue
 `z⁻¹`. It does not identify the spectrum of the holomorphic remainder alone.
 The faithful scattering comparison must preserve this distinction.
 
-The inspected `SelbergEisensteinScatteringEntry.phiσ` is an actual constant
-term, proved holomorphic for `Re s>1/2`, `s≠1`. Its arithmetic factor contains
-the Möbius Dirichlet series at `2s`. Those theorems do not continue this
-literal series into `Re(2s)<1`; the required meromorphic continuation and
-Mayer comparison remain separate analytic obligations.
+`SelbergEisensteinCriticalLine.phiExt` continues the actual constant-term
+entry `phiσ` by finite sums of reciprocal Dirichlet L-functions, with equality
+on `Re s>1/2`. The independent level-one completed Poincaré constant term is
+also certified in `ThetaCuspHawkingBMEisensteinActualZeroFourierCoefficient`:
+its two coefficients are `Λ(2s)` and `Λ(2s−1)`. These source results supply
+the scattering normalization; comparison with the Mayer determinant remains
+unproved.
 
 ## Escape receiver boundary
 

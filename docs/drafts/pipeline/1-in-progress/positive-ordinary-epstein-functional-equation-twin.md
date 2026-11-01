@@ -56,6 +56,10 @@ excludes coefficient multiplicativity.
 
 ## Lean scope
 
-The ordinary-series bridge, scalar functional equation, and finite-order
-regularization are being formalized. Membership in the extended Selberg class
-with Ramanujan bounds is not yet certified.
+`PositiveEpsteinCoefficients.lean` checks: nonnegative normalized coefficients,
+nonmultiplicativity at `5·13`, absolute convergence on `Re s>1`, exact grouping
+by the quadratic norm, and every Ramanujan power bound.
+
+The identification with the Epstein completion, scalar functional equation, and
+finite-order regularization remain under formalization. Membership in the
+extended Selberg class with Ramanujan bounds is not yet certified.
