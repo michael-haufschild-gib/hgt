@@ -56,6 +56,13 @@ also gives a uniform Lipschitz constant two and endpoint variation `C O(Q)/T`.
 Aperture reindexing, global primitive-correction summation, cosine-taper
 compatibility and actual signed prime discrepancy remain open.
 
+The [uniform coprime-harmonic average](../3-formalized/coprime-harmonic-conductor-average.md)
+bounds the all-conductor weighted error by `36864(1+log Q)` for arbitrary
+positive horizons. Its supporting logarithmic moment is at most 576.
+Weighted taper summation, odd-base quadrature and the
+[logarithmic square mean](odd-stabilizer-log-square-mean.md) remain to complete
+the global model calculation.
+
 ## Completion gates
 
 - [ ] Each route's arithmetic conjecture proved or precisely falsified.

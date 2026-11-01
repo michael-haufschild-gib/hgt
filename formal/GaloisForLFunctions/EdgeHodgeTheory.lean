@@ -12,6 +12,7 @@ import GaloisForLFunctions.EdgeHodgeTheory.IntegerReadingsAsEdgeDetectors
 import GaloisForLFunctions.EdgeHodgeTheory.TheDeterminantAlongTheFlow
 import GaloisForLFunctions.EdgeHodgeTheory.TheEdgeIsACrossing
 import GaloisForLFunctions.EdgeHodgeTheory.ASmoothProfileCarriesBothEdgeRegimes
+import GaloisForLFunctions.EdgeHodgeTheory.EdgeBelowOneNinth
 
 /-!
 # Edge Hodge Theory of the Scaling Surface

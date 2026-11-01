@@ -197,7 +197,8 @@ theorem fourier_scaleAverage {f : ℝ → ℝ} (hf : Continuous f) (hfi : Integr
       ((2 * p.1 / (1 + p.1 ^ 2) : ℝ) * (f (p.2 / (1 + p.1 ^ 2)) : ℂ)))
     have hdcont : Continuous (fun p : ℝ × ℝ => 1 + p.1 ^ 2) :=
       continuous_const.add (continuous_fst.pow 2)
-    have hc := (continuous_const.mul continuous_fst).div hdcont (fun p => (hd p.1).ne')
+    have hc : Continuous (fun p : ℝ × ℝ => 2 * p.1 / (1 + p.1 ^ 2)) :=
+      (continuous_const.mul continuous_fst).div hdcont (fun p => (hd p.1).ne')
     have hx := continuous_snd.div hdcont (fun p => (hd p.1).ne')
     have hchar : Continuous (fun p : ℝ × ℝ => (Real.fourierChar (-(p.2 * ξ)) : ℂ)) := by
       fun_prop

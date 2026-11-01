@@ -31,7 +31,7 @@ theorem sincProfile_nonneg (x : ℝ) : 0 ≤ sincProfile x := by
     induction m with
     | zero => exact hβ
     | succ m ih => exact havg ih (sincRadius_pos m)
-  apply le_of_tendsto (tendstoUniformly_boxSeq.tendsto_at x)
+  apply ge_of_tendsto (tendstoUniformly_boxSeq.tendsto_at x)
   apply Filter.Eventually.of_forall
   intro M
   apply hbox (m := M + 1)
@@ -78,6 +78,7 @@ theorem sincCorrelation_vanishesOff : ∀ x, 2 < |x| → sincCorrelation x = 0 :
   apply integral_eq_zero_of_ae
   apply Filter.Eventually.of_forall
   intro u
+  change sincProfile u * sincProfile (u + x) = 0
   by_cases hu : 1 < |u|
   · rw [sincProfile_vanishesOff u hu, zero_mul]
   · have hux : 1 < |u + x| := by
@@ -101,8 +102,9 @@ theorem fourier_sincCorrelation (ξ : ℝ) :
     funext sincCorrelation_eq_integral
   simp_rw [RHTower.WeilDeletion.fourier_eq_paperFT]
   rw [heq, BiScaleUncertainty.ChebyshevGauge.paperFT_autocorr
-    contDiff_sincProfile.continuous hasCompactSupport_sincProfile,
-    Complex.conj_ofReal, Complex.mul_conj, Complex.normSq_eq_norm_sq]
+    contDiff_sincProfile.continuous hasCompactSupport_sincProfile]
+  simp only [map_neg, map_mul, Complex.conj_ofReal, map_ofNat,
+    Complex.mul_conj, Complex.normSq_eq_norm_sq]
 
 theorem iteratedDeriv_sincCorrelation (q : ℕ) :
     iteratedDeriv q sincCorrelation =
@@ -137,10 +139,12 @@ theorem abs_iteratedDeriv_sincCorrelation_le (q : ℕ) (x : ℝ) :
     _ ≤ ∫ u, |sincProfile (-u)| * B := by
       apply integral_mono hi (integrable_sincProfile.comp_neg.abs.mul_const B)
       intro u
+      change |sincProfile (-u) * iteratedDeriv q sincProfile (x - u)| ≤ |sincProfile (-u)| * B
       rw [abs_mul]
       exact mul_le_mul_of_nonneg_left (abs_iteratedDeriv_sincProfile_le q _) (abs_nonneg _)
     _ = B := by
-      rw [integral_mul_const, integral_neg_eq_self, integral_abs_sincProfile, one_mul]
+      rw [integral_mul_const, integral_neg_eq_self (fun u => |sincProfile u|),
+        integral_abs_sincProfile, one_mul]
 
 /-- The unit-mass scale average, supported in `[-4,4]`. -/
 def averagedSincProfile : ℝ → ℝ := scaleAverage sincCorrelation
@@ -151,8 +155,9 @@ theorem contDiff_averagedSincProfile : ContDiff ℝ ∞ averagedSincProfile :=
 theorem averagedSincProfile_nonneg (x : ℝ) : 0 ≤ averagedSincProfile x :=
   scaleAverage_nonneg sincCorrelation_nonneg x
 
-theorem averagedSincProfile_vanishesOff : ∀ x, 4 < |x| → averagedSincProfile x = 0 :=
-  scaleAverage_vanishesOff (by norm_num : (0 : ℝ) ≤ 2) sincCorrelation_vanishesOff
+theorem averagedSincProfile_vanishesOff : ∀ x, 4 < |x| → averagedSincProfile x = 0 := by
+  simpa only [averagedSincProfile, show (2 : ℝ) * 2 = 4 by norm_num] using
+    scaleAverage_vanishesOff (by norm_num : (0 : ℝ) ≤ 2) sincCorrelation_vanishesOff
 
 theorem hasCompactSupport_averagedSincProfile : HasCompactSupport averagedSincProfile :=
   hasCompactSupport_of_vanishes averagedSincProfile_vanishesOff
@@ -191,13 +196,16 @@ theorem fourier_averagedSincProfile (ξ : ℝ) :
 
 private theorem fourier_sincProfile_zero :
     𝓕 (fun x => (sincProfile x : ℂ)) 0 = 1 := by
-  rw [HTGeometry.fourier_zero_eq_integral, integral_ofReal, integral_sincProfile,
+  have he : (∫ x, (sincProfile x : ℂ)) = ((∫ x, sincProfile x : ℝ) : ℂ) := integral_ofReal
+  rw [HTGeometry.fourier_zero_eq_integral, he, integral_sincProfile,
     Complex.ofReal_one]
 
 /-- Unit mass is unchanged by the average of normalized dilations. -/
 theorem integral_averagedSincProfile : ∫ x, averagedSincProfile x = 1 := by
   have h := fourier_averagedSincProfile 0
-  rw [HTGeometry.fourier_zero_eq_integral, integral_ofReal] at h
+  have he : (∫ x, (averagedSincProfile x : ℂ)) =
+      ((∫ x, averagedSincProfile x : ℝ) : ℂ) := integral_ofReal
+  rw [HTGeometry.fourier_zero_eq_integral, he] at h
   simp only [scaleBandAverage, mul_zero, fourier_sincProfile_zero, norm_one, one_pow,
     mul_one] at h
   rw [intervalIntegral.integral_const_mul, integral_id] at h
@@ -212,7 +220,7 @@ private theorem exists_fourier_sincProfile_ne_zero_between {a b : ℝ} (hab : a 
     (_root_.RHTower.EvenSector.differentiable_paperFT_of_compact
       (Complex.continuous_ofReal.comp contDiff_sincProfile.continuous)
       (hasCompactSupport_sincProfile.comp_left Complex.ofReal_zero)).comp
-        (differentiable_const.mul differentiable_id)
+        (by fun_prop : Differentiable ℂ (fun z : ℂ => (-(2 * Real.pi) : ℂ) * z))
   have he (u : ℝ) : G (u : ℂ) = 𝓕 (fun x => (sincProfile x : ℂ)) u := by
     rw [RHTower.WeilDeletion.fourier_eq_paperFT]
     dsimp only [G]
@@ -220,7 +228,7 @@ private theorem exists_fourier_sincProfile_ne_zero_between {a b : ℝ} (hab : a 
     push_cast
     ring
   by_contra hn
-  push_neg at hn
+  push Not at hn
   have hz := HTGeometry.entire_eq_zero_of_vanishing_on_real_interval
     (t₀ := (a + b) / 2) hd (show 0 < (b - a) / 2 by linarith only [hab])
     (fun u hu => by
@@ -305,3 +313,8 @@ theorem eventually_fourier_averagedSincProfile_band_ge :
   nlinarith only [h]
 
 end GaloisForLFunctions.TransMetzlerWeilPositivity
+
+#print axioms GaloisForLFunctions.TransMetzlerWeilPositivity.integral_averagedSincProfile
+#print axioms GaloisForLFunctions.TransMetzlerWeilPositivity.integral_abs_iteratedDeriv_averagedSincProfile_le
+#print axioms GaloisForLFunctions.TransMetzlerWeilPositivity.fourier_averagedSincProfile_ne_zero
+#print axioms GaloisForLFunctions.TransMetzlerWeilPositivity.eventually_fourier_averagedSincProfile_band_ge

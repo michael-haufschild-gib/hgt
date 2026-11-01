@@ -47,3 +47,4 @@ Arithmetic support, successor reconstruction, prime-phase resolution,
 Adams fixed-locus constraints, theta–Gamma differential independence,
 logarithmic phase estimates, and zeta subconvexity.
 -/
+import GaloisForLFunctions.ArithmeticHarmonicAnalysis.PositiveDilationPrimeJetSeparation

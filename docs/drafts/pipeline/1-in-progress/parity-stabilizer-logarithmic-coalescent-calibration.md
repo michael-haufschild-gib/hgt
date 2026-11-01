@@ -93,12 +93,14 @@ The odd logarithmic mean predicts the leading term
 `−β(∫Ω)(log Q)³/(12π)`. Thus scalar 1/4 would retain one eighth of the
 unit-mean scalar-two model term. This asymptotic is not yet proved.
 
-Required arithmetic estimate:
-`|H_q(N)−(φ(q)/q)log N|≤Σ_{d|q}(1+log d)/d`.
-Möbius expansion and the ordinary floor-harmonic bounds give this estimate;
-its conductor average should be logarithmic. The proved linear conductor
-mean controls both `Σ qμ²(q)/φ(q)²=O(log Q)` and convergence of
-`Σ μ²(q)(1+log q)/φ(q)²` by partial summation. These estimates are intended
-to make the raw errors `O(T log²T)`, below the proposed `T log³T` main term.
-Quadrature, weighted-harmonic averaging, aperture reindexing and global
-summation remain to be formalized before asserting the model calibration.
+The [coprime-harmonic conductor average](../3-formalized/coprime-harmonic-conductor-average.md)
+is formalized for arbitrary positive horizons N(q):
+`Σ_{q≤Q}qμ²(q)/φ(q)² · |H_q(N(q))−(φ(q)/q)log N(q)|≤36864(1+log Q)`.
+Its pointwise divisor bound is uniform even when N<q; the supporting
+logarithmic moment is `Σ μ²(q)(1+log q)/φ(q)²≤576`.
+
+Weighted taper summation and odd-base quadrature remain to convert this into
+raw error `O(T log²T)`. The [odd logarithmic square moment](odd-stabilizer-log-square-mean.md)
+should supply coefficient 1/6 from the existing odd mean 1/2. Aperture
+reindexing and global summation also remain open before asserting the model
+calibration.

@@ -27,8 +27,9 @@ Corpus state: `5c51362a92` plus working tree.
    powers, the Künneth square, glued index one, quadratic Riemann–Roch on the scaling surface: each is
    RH [L]. A crossing-free deformation to a positive model exists iff the form is positive [L].
 4. **The edge is a defined invariant.** RH ⇔ the complete Weil family of any admissible profile has
-   no edge; without RH the edge is `≤ 2(log N)^β` infinitely often for every `β > ¼` [L]. The
-   tilted-spline edge is `≥ (log N)^{α}` for every `α < 1/144` and tends to `∞` unconditionally [L].
+   no edge; without RH the edge is `≤ 2(log N)^β` infinitely often for every `β > ¼` [L] (for the
+   tilted spline every `β > 1/8` [L]). The tilted-spline edge is `≥ (log N)^{α}` for every
+   `α < 1/9` and tends to `∞` unconditionally [L].
    The edge is a threshold curve in the plane of resolutions; over a curve it is `≤ 2g` [S].
 5. **Above polylogarithmic conductors the complete form is coercive mode by mode.** For
    `(log N)^A ≤ m ≤ N^θ`, `θ < ½`, `α < ¼`, `A > 8α`, every Ramanujan mode has energy
@@ -62,7 +63,7 @@ Corpus state: `5c51362a92` plus working tree.
 
 | # | Task | Routes served | Why it is work |
 |---|---|---|---|
-| A1 | Explicit horizon `N₀` for the `1/144` theorem; optimise its internal exponents up to the method optimum `≈ 1/114` | HF, SRT, AIP, ACS, SC | proved mechanism; constants |
+| A1 | Explicit horizon `N₀` for the `1/9` theorem | HF, SRT, AIP, ACS, SC | proved mechanism; constants |
 | A2 | Exact complete Weil energy on prime-incidence packets (incidence coordinates make generator, jumps and tails explicit nonnegative counts) | HF, SRT, AIP, ACS | finite arithmetic computation with Gamma and poles retained |
 | A3 | Single-`K` completeness of the Steklov/sinc schedule at `K L(log L)²` | SRT, HF | synthesis error at one explicit scale |
 | A4 | Compare CSAR rigidity and relative residual energies with the complete Weil energy on fixed and slowly growing packets | HF, SRT, AIP, ACS | fixed-dimensional comparison |
@@ -94,8 +95,8 @@ Strength: **RH**; **≥qRH** (Lindelöf + zero-free half-plane); **LH** (Lindel�
 | # | Problem | Strength | Routes |
 |---|---|---|---|
 | Σ-1 | Positivity on `v₁^⊥` across the detection edge | RH | HF, SRT, AIP, ACT, ACS, SC, RW, EWU, OWU, CHMD |
-| Σ-2 | Signed estimate on the subthreshold block beating the residual-versus-floor exponent `19` | sub | same |
-| Σ-3 | Defect bound below `c¹⁶` for nonpositive vectors | sub; RH at RH-complete overlap | same |
+| Σ-2 | Signed estimate on the subthreshold block beating the residual-versus-floor exponent: closed by bilinear 8-channel residuals, packets `α < 1/8` [L]. Remaining: inverse-energy residual sum `≪ c⁹/log N` → `c⁸` | sub | same |
+| Σ-3 | Defect bound below `c¹⁶`: bypassed by four-band split `Q₁ < exp((log N)^½) < N^θ₁`, all-vector positivity `α < 1/9` [L]. Remaining: two-region reserve gap `K c⁹ ≤ θ₁ log N` and band–terminal cross `c⁹/log N` → `c⁸` | sub; RH at RH-complete overlap | same |
 | Σ-4 | Mertens cancellation of the coherent prime pole by the pole/Gamma/counterterm part of the complete form | sub | HF, SRT, AIP, ACS |
 | Σ-5 | Localization of near-edge negative directions in the coherent prime sector | sub | same |
 | Σ-6 | Bounded inter-tower coupling of `ratCorr` | RH [D] | SC, AKG |

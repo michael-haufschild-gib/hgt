@@ -10,13 +10,13 @@
 
 ## Goal
 A fourth producer type (exact local-to-global positivity with nondegeneracy) for Weil's form on
-`v₁^⊥`. Lean folder `formal/GaloisForLFunctions/HodgeTheoryWithoutVarieties/` (16 modules), umbrella
+`v₁^⊥`. Lean folder `formal/GaloisForLFunctions/HodgeTheoryWithoutVarieties/` (17 modules), umbrella
 `HodgeTheoryWithoutVarieties.lean` (wired into `MainTheorems.lean`), README there.
 
 ## Gates
 - [x] 0 → 1  in-progress: README, questions fixed
 - [x] 1 → 2  paper proofs of the pillars (all pillars are proved directly in Lean)
-- [x] 2 → 3  formalized: 16 modules, each checked with `lake --old env lean`
+- [x] 2 → 3  formalized: 17 modules, each checked with `lake --old env lean`
 
 ## Status of the six review questions (answers in README §5)
 - Links: stars (exact lower horizons); simplicial links split into towers.
@@ -38,3 +38,5 @@ A fourth producer type (exact local-to-global positivity with nondegeneracy) for
 - 2026-11-01 — 11 modules formalized; README v2 with answers and pillars.
 - 2026-11-01 — +5 modules: renormalized recursion, gcd stratification, shell balance, layers of a
   prime, sign gauge on deep stars.
+- 2026-11-01 — +1 module: conductors are Möbius-glued stars (finite-horizon completed conductor
+  energy).

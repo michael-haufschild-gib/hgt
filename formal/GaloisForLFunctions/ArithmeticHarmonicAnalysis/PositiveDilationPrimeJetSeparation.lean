@@ -196,29 +196,32 @@ theorem multilinearMap_eq_zero_of_distinct_primeJets (r : ι → ℝ) (hr : ∀ 
       intro j0 p0 hp0 hp0S
       apply ih _ (insert p0 S)
       intro j p hp hpinj hpS
-      have hpcons : ∀ k : Fin (D+1), Nat.Prime ((Fin.cons p0 p) k) := by
+      have hpneq : ∀ k, p k ≠ p0 := fun k he =>
+        hpS k (mem_insert.mpr (Or.inl he))
+      have hpout : ∀ k, p k ∉ S := fun k hk => hpS k (mem_insert_of_mem hk)
+      have hpcons : ∀ k : Fin (D+1), Nat.Prime ((Fin.cons p0 p : Fin (D+1) → ℕ) k) := by
         intro k
-        exact Fin.cases (motive := fun k => Nat.Prime ((Fin.cons p0 p) k)) hp0 hp k
-      have hconsinj : Function.Injective (Fin.cons p0 p) := by
+        exact Fin.cases (motive := fun k => Nat.Prime ((Fin.cons p0 p : Fin (D+1) → ℕ) k)) hp0 hp k
+      have hconsinj : Function.Injective (Fin.cons p0 p : Fin (D+1) → ℕ) := by
         intro a b hab
         revert hab
         refine Fin.cases ?_ (fun a => ?_) a
         · refine Fin.cases ?_ (fun b => ?_) b
           · intro _; rfl
           · intro hab
-            exact False.elim ((not_mem_insert.mp (hpS b)).1 hab.symm)
+            exact False.elim (hpneq b hab.symm)
         · refine Fin.cases ?_ (fun b => ?_) b
           · intro hab
-            exact False.elim ((not_mem_insert.mp (hpS a)).1 hab)
+            exact False.elim (hpneq a hab)
           · intro hab
             exact congrArg Fin.succ (hpinj hab)
-      have hpconsS : ∀ k, (Fin.cons p0 p) k ∉ S :=
-        Fin.cases hp0S (fun k => (not_mem_insert.mp (hpS k)).2)
-      have hz := h (Fin.cons j0 j) (Fin.cons p0 p) hpcons hconsinj hpconsS
+      have hpconsS : ∀ k, (Fin.cons p0 p : Fin (D+1) → ℕ) k ∉ S :=
+        Fin.cases hp0S hpout
+      have hz := h (Fin.cons j0 j : Fin (D+1) → ι) (Fin.cons p0 p : Fin (D+1) → ℕ) hpcons hconsinj hpconsS
       change M (Fin.cons (primeJetVector r J j0 p0)
         (fun k => primeJetVector r J (j k) (p k))) = 0
       have he : (fun k : Fin (D+1) => primeJetVector r J
-          ((Fin.cons j0 j) k) ((Fin.cons p0 p) k)) =
+          ((Fin.cons j0 j : Fin (D+1) → ι) k) ((Fin.cons p0 p : Fin (D+1) → ℕ) k)) =
           Fin.cons (primeJetVector r J j0 p0)
             (fun k => primeJetVector r J (j k) (p k)) := by
         funext k

@@ -58,6 +58,19 @@ open ArithmeticPolarization SquareRootThreshold
 
 /-! ## §1. Shell counting, `XiZeroCopy` deep-shell lifting, and step-tail integrability -/
 
+private theorem sinh_nonneg_of_nonneg {x : ℝ} (hx : 0 ≤ x) : 0 ≤ Real.sinh x := by
+  rw [Real.sinh_eq]
+  have h1 : Real.exp (-x) ≤ 1 := Real.exp_le_one_iff.mpr (by linarith only [hx])
+  have h2 : 1 ≤ Real.exp x := Real.one_le_exp hx
+  linarith only [h1, h2]
+
+private theorem sinh_mono_nonneg {x y : ℝ} (_hx : 0 ≤ x) (hxy : x ≤ y) :
+    Real.sinh x ≤ Real.sinh y := by
+  rw [Real.sinh_eq, Real.sinh_eq]
+  have h1 : Real.exp x ≤ Real.exp y := Real.exp_le_exp.mpr hxy
+  have h2 : Real.exp (-y) ≤ Real.exp (-x) := Real.exp_le_exp.mpr (by linarith only [hxy])
+  linarith only [h1, h2]
+
 private theorem one_le_log_of_four_le' {V : ℝ} (hV : 4 ≤ V) : 1 ≤ Real.log V := by
   have h2 := Real.log_two_gt_d9
   have h4_eq : (2 : ℝ) ^ (2 : ℕ) = 4 := by norm_num
@@ -358,26 +371,29 @@ private theorem intervalIntegrable_mul_tailCount (S : Finset ℂ) (m : ℂ → �
     refine Finset.sum_congr rfl fun w _ => ?_
     split_ifs <;> ring
   rw [hrew]
-  refine IntervalIntegrable.sum S fun w _ => ?_
-  rcases lt_or_ge (w.re - 1 / 2) a with hlt_a | hge_a
-  · refine intervalIntegrable_const.congr fun u hu => ?_
-    rw [uIoc_of_le hab] at hu
-    exact (if_neg (by linarith only [hlt_a, hu.1])).symm
-  · rcases le_or_gt b (w.re - 1 / 2) with hle_b | hlt_b
-    · refine ((hg.const_mul (m w)).intervalIntegrable (μ := volume) a b).congr fun u hu => ?_
+  have hterm : ∀ w ∈ S, IntervalIntegrable
+      (fun u : ℝ => if 1 / 2 + u ≤ w.re then m w * g u else 0) volume a b := by
+    intro w _
+    rcases lt_or_ge (w.re - 1 / 2) a with hlt_a | hge_a
+    · refine intervalIntegrable_const.congr fun u hu => ?_
       rw [uIoc_of_le hab] at hu
-      exact (if_pos (by linarith only [hle_b, hu.2])).symm
-    · have h1 : IntervalIntegrable (fun u : ℝ => if 1 / 2 + u ≤ w.re then m w * g u else 0)
-          volume a (w.re - 1 / 2) :=
-        ((hg.const_mul (m w)).intervalIntegrable (μ := volume) a (w.re - 1 / 2)).congr fun u hu => by
-          rw [uIoc_of_le hge_a] at hu
-          exact (if_pos (by linarith only [hu.2])).symm
-      have h2 : IntervalIntegrable (fun u : ℝ => if 1 / 2 + u ≤ w.re then m w * g u else 0)
-          volume (w.re - 1 / 2) b :=
-        intervalIntegrable_const.congr fun u hu => by
-          rw [uIoc_of_le hlt_b.le] at hu
-          exact (if_neg (by linarith only [hu.1])).symm
-      exact h1.trans h2
+      exact (if_neg (by linarith only [hlt_a, hu.1])).symm
+    · rcases le_or_gt b (w.re - 1 / 2) with hle_b | hlt_b
+      · refine ((hg.const_mul (m w)).intervalIntegrable (μ := volume) a b).congr fun u hu => ?_
+        rw [uIoc_of_le hab] at hu
+        exact (if_pos (by linarith only [hle_b, hu.2])).symm
+      · have h1 : IntervalIntegrable (fun u : ℝ => if 1 / 2 + u ≤ w.re then m w * g u else 0)
+            volume a (w.re - 1 / 2) :=
+          ((hg.const_mul (m w)).intervalIntegrable (μ := volume) a (w.re - 1 / 2)).congr fun u hu => by
+            rw [uIoc_of_le hge_a] at hu
+            exact (if_pos (by linarith only [hu.2])).symm
+        have h2 : IntervalIntegrable (fun u : ℝ => if 1 / 2 + u ≤ w.re then m w * g u else 0)
+            volume (w.re - 1 / 2) b :=
+          intervalIntegrable_const.congr fun u hu => by
+            rw [uIoc_of_le hlt_b.le] at hu
+            exact (if_neg (by linarith only [hu.1])).symm
+        exact h1.trans h2
+  exact IntervalIntegrable.sum (μ := volume) (a := a) (b := b) S hterm
 
 /-! ## §2. Arbitrary-rate Selberg–Barban–Vehov near-line zero density -/
 
@@ -452,12 +468,9 @@ theorem exists_selberg_arbitraryRate_nearLine_zeroDensity
   let Δ : ℝ := ε₁ * (a / Real.log S)
   have ha_div_pos : 0 < a / Real.log S := div_pos (by linarith only [ha1]) hLS_pos
   have ha_sum_le : (1 + ε₁) * (a / Real.log S) ≤ 1 / 4 := by
-    have hm := (div_le_iff₀ hLS_pos).mpr ha_hi
-    have hpos : 0 < 4 * (1 + ε₁) := by positivity
-    have hm2 := (le_div_iff₀' hpos).mp (by
-      simpa [div_mul_eq_mul_div, mul_comm] using ha_div_pos.le.trans_eq rfl |>.trans (by
-        rw [div_le_iff₀ hLS_pos]; exact ha_hi))
-    linarith only [hm2]
+    have hm : a / Real.log S ≤ 1 / (4 * (1 + ε₁)) := (div_le_iff₀ hLS_pos).mpr ha_hi
+    have h1ε_pos : 0 < 1 + ε₁ := by positivity
+    exact (mul_le_mul_of_nonneg_left hm h1ε_pos.le).trans_eq (by field_simp [h1ε_pos.ne'])
   have hσ₀_mem : σ₀ ∈ Icc (1 / 2 : ℝ) 1 := by
     refine ⟨by dsimp [σ₀]; linarith only [ha_div_pos], ?_⟩
     have hnn : 0 ≤ ε₁ * (a / Real.log S) := mul_nonneg hε₁_pos.le ha_div_pos.le
@@ -468,9 +481,10 @@ theorem exists_selberg_arbitraryRate_nearLine_zeroDensity
       ‖riemannZeta ((σ₀ : ℂ) + (t : ℂ) * I) *
         edPoly (twoLengthCoeff X Y) (Finset.Icc 1 X) ((σ₀ : ℂ) + (t : ℂ) * I)‖ ^ 2) ≤ Msq_ub := by
     have hm := hMsq_all σ₀ hσ₀_mem
-    have harg : (σ₀ - 1 / 2) * Real.log S = a := by
-      dsimp [σ₀]; field_simp [hLS_pos.ne']
-    simpa only [Msq_ub, mul_assoc, harg] using hm
+    have hsub : σ₀ - 1 / 2 = a / Real.log S := by dsimp [σ₀]; ring
+    have harg : r * (σ₀ - 1 / 2) * Real.log S = r * a := by
+      rw [hsub]; field_simp [hLS_pos.ne']
+    rwa [harg] at hm
   have hzd_inst := hzd (twoLengthCoeff X Y) X hX1
     (twoLengthCoeff_one (by omega) hYX)
     (fun n hn => norm_twoLengthCoeff_le (by omega) hYX hn)
@@ -496,7 +510,7 @@ theorem exists_selberg_arbitraryRate_nearLine_zeroDensity
     rw [hdiv_eq] at hsub1 ⊢
     have hm := mul_le_mul_of_nonneg_left hsub1 (by positivity : 0 ≤ (T₂ - T₁) / 2)
     have h60 : (T₂ - T₁) / 2 * (120 * S ^ (θ_X + 1 / 2) / (T₂ - T₁)) =
-        60 * S ^ (θ_X + 1 / 2) := by field_simp [hlen_pos.ne']
+        60 * S ^ (θ_X + 1 / 2) := by field_simp [hlen_pos.ne']; ring
     linarith only [hm, h60]
   have herr_pow : 60 * S ^ (θ_X + 1 / 2) + C_zd + K_zd * (Real.log T₂ + Real.log ((X : ℝ) ^ (5 : ℕ))) ≤
       (60 + (C_zd + 5 * K_zd) * K_log1) * S ^ (1 - η_r) := by
@@ -507,7 +521,7 @@ theorem exists_selberg_arbitraryRate_nearLine_zeroDensity
     have h1log : (1 + Real.log S) ≤ K_log1 * S ^ η_r := by
       simpa only [pow_one] using hlog1 S hS1.le
     have hS_sub : S ^ (θ_X + 1 / 2) ≤ S ^ (1 - η_r) :=
-      Real.rpow_le_rpow_of_exponent_le hS1.le (by dsimp [η_r]; linarith only [hη_pos])
+      Real.rpow_le_rpow_of_exponent_le hS1.le (by dsimp [η_r]; linarith only [hθX])
     have hS_eta : S ^ η_r ≤ S ^ (1 - η_r) :=
       Real.rpow_le_rpow_of_exponent_le hS1.le (by linarith only [hη_lt])
     have hCK_pow : C_zd + 5 * K_zd * Real.log S ≤ (C_zd + 5 * K_zd) * K_log1 * S ^ (1 - η_r) := by

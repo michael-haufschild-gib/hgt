@@ -1,7 +1,7 @@
 # Hodge Theory without Varieties over ℤ (HWV)
 
 Namespace `GaloisForLFunctions.HodgeTheoryWithoutVarieties`; umbrella `HodgeTheoryWithoutVarieties.lean`;
-16 modules. In the review this field was called *the arithmetic Kähler package*. Everything is
+17 modules. In the review this field was called *the arithmetic Kähler package*. Everything is
 unconditional. Theorems named `riemannHypothesis_iff_*` are equivalences and are not proofs of RH.
 
 ## 1. Motivation
@@ -141,10 +141,16 @@ Weil's sign convention, Hodge–Riemann = `W ≥ 0` on primitive vectors.
     beyond the overlap and fails across the shallow ones, where ALG's Metzler threshold `1` is
     exceeded. On a deep star, ALG's trickle-down below the spacing therefore applies to the
     lower-resolution family that the star is isometric to.
-13. *Depth and conductor are dual.* RAPT's completed conductor energy is
-    `E_m(c) = φ(m)⁻¹ Σ_{d ∣ m} μ(m/d) d E(c/d)`: the conductor-`m` mode is governed by the pole
-    energy at the star overlaps `c/d` of the divisors of `m`. Stars and conductors degenerate in the
-    same order, by `c ↦ c/d`.
+13. *Depth and conductor are dual* (`TheConductorsAreMoebiusGluedStars`). Ramanujan packets are
+    Möbius combinations of star poles, `r_m = Σ_{d∣m} μ(m/d)d/√φ(m) · pole|_{dℕ}`
+    (`ramanujanPoleProfile_eq_sum_starPole`). Conversely,
+    `pole|_{dℕ} = Σ_{e∣d} √φ(e)/d · r_e` (`starPole_eq_sum_ramanujanPoleProfile`). With the star law,
+    `d · W_{c⌊N/d⌋/N, ⌊N/d⌋}(pole)` is the conductor Gram of the divisors of `d` at every horizon
+    (`starPoleEnergy_eq_conductorGram`). Möbius inversion gives the exact finite-horizon form of
+    RAPT's completed conductor energy (`totient_mul_conductorEnergy_eq`):
+    `φ(m)⟨W r_m, r_m⟩ = Σ_{d∣m} μ(m/d) d W_{c_d,⌊N/d⌋}(pole) − (off-diagonal conductor Gram)`.
+    Stars and conductors degenerate in the same order, by `c ↦ c/d`. RAPT's limit gluing is the
+    Möbius dual of the star law.
 
 **D. Gluing** (`TheMoebiusGluingOfStars`, `TheGcdStratification`,
 `TheRenormalizedFormIsGluedFromItsStars`, `TheNerveOfTheStarCover`, `TheLinksSplitIntoTowers`).
@@ -260,6 +266,7 @@ Weil's sign convention, Hodge–Riemann = `W ≥ 0` on primitive vectors.
 | Shell balance law on the coherent sector; exact balance in the mean | `shellBalance_eq`, `shellBalance_of_coprime`, `sum_shellBalance_eq_zero` | proved |
 | Künneth step at the horizon: layers of a prime | `dilationForm_layers` | proved |
 | Sign gauge (Metzler) on deep stars | `markovPair_star_nonpos`, `markovPair_star_nonpos_of_lt` | proved |
+| Conductors are Möbius-glued stars; finite-horizon completed conductor energy | `ramanujanPoleProfile_eq_sum_starPole`, `starPole_eq_sum_ramanujanPoleProfile`, `starPoleEnergy_eq_conductorGram`, `totient_mul_conductorEnergy_eq` | proved |
 | Liouville = HL; RH ⇔ Liouville along the overlap flow | `liouvilleAt_iff_hardLefschetz`, `riemannHypothesis_iff_liouville_along_the_overlap_flow` | proved; equivalence |
 | Lefschetz trichotomy | `not_rh_gluing_failure`, `frequently_exists_primitive_zero_mode_of_not_rh`, `couplingLaplacian_transports_the_index` | proved |
 
@@ -288,6 +295,8 @@ Weil's sign convention, Hodge–Riemann = `W ≥ 0` on primitive vectors.
   independence over a period, the shell balance per shell and averaged over shifts.
 - Layer calculus of a prime: weight splitting, valuation layers as stars of `p^a`.
 - Sign gauge on stars: gaps of star atoms, separated Markov pairs, nonnegative pole rows.
+- Star–conductor duality: star poles, star coefficients, Gram expansions (`bil_sum_left`,
+  `bil_sum_right`, `qf_sum`), conductor Grams, Möbius inversion of divisor sums.
 
 **To build.**
 - Control of the top coprime stratum by the strata below, with constants independent of `N`
@@ -302,11 +311,12 @@ Weil's sign convention, Hodge–Riemann = `W ≥ 0` on primitive vectors.
    root cone `−2x₁ Σ_k Λ(k)k^{−1/2}x_k`, the archimedean couplings of coprime atoms (center kernel
    and the near overlap of successor pairs), and the coprime shells `(n, kn+h)`, `gcd(n, h) = 1`.
    - *Solved by identities.* The root cone is completed to the root defect by `Λ ∗ 1 = log`
-     (`renormalizedPrimeForm_moebius_recursion`). In the limit structure the Möbius gluing is
-     RAPT's repayment. A Ramanujan packet `c_m(n) = Σ_{d∣(m,n)} μ(m/d)d` is the Möbius combination
-     of the pole packets of the stars `d ∣ m`, and its energy
-     `φ(m)⁻¹ Σ_{d∣m} μ(m/d) d E(c/d)` collapses to a sum of positive Fourier integrals over the
-     shells coprime to `m`.
+     (`renormalizedPrimeForm_moebius_recursion`). A Ramanujan packet is the Möbius combination of
+     the pole packets of the stars `d ∣ m`. At every horizon its energy is the Möbius combination of
+     the star pole energies at the star resolutions, minus the off-diagonal conductor Gram
+     (`totient_mul_conductorEnergy_eq`). In the limit the Gram correction vanishes and the
+     combination `φ(m)⁻¹ Σ_{d∣m} μ(m/d) d E(c/d)` is RAPT's repayment, a sum of positive Fourier
+     integrals over the shells coprime to `m`.
    - *What is left* is uniformity in `N`. Three residual families sit in the top stratum: Mertens
      remainders at shifted horizons `R(⌊(N−h)/n⌋)` with floor defects, archimedean cross errors,
      and the shift-distribution terms of the shells (`sum_shellBalance_eq_zero`: zero in the mean).

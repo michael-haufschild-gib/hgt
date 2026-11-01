@@ -26,6 +26,21 @@ Autocorrelation and averaging dilations `1≤s≤2` preserve the logarithmic
 Denjoy–Carleman derivative class. Translate and dilate `g` to `[0,1]`.
 This replaces the qualitative tilt by a profile with a quantitative floor.
 
+For `φ(x)=8g(8(x−1/2))`, the derivative bound is
+`‖φ⁽q⁾‖₁≤32·96^q·dcLogWeight(q)` and
+`|paperFT φ(r)|=|ĝ(r/(16π))|`. Put
+`b(c)=exp(-202C·(c/(16π))/log²(c/(16π)))` and `M=∫φ²`.
+For sufficiently large `c`, the band `[c,101c]` has squared-transform floor
+`b(c)`. The Montgomery–Vaughan band estimate gives Gamma coefficient
+`24cb(c)/(πM)` with physical mass cost `O(c)`, uniformly for `N≥c`.
+Every completed conductor energy has floor `2cb(2πc)/M`.
+
+Both inverse floors and polynomial overlap costs are eventually bounded by
+powers of `T(c)=exp(Bc/log²c)` for a fixed `B>0`. The spectral argument must
+retain this auxiliary bound separately from actual overlap. For sufficiently
+small `ε>0`, `c≤ε L(log L)²` implies `T(c)≤(log N)^α`, where the existing
+power-of-logarithm assembly requires `α<1/59`.
+
 ## Remaining proof obligations
 
 1. Prove the scale-averaged autocorrelation's smoothness, derivative bounds,

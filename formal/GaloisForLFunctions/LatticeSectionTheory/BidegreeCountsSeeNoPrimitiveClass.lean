@@ -66,17 +66,22 @@ theorem riemannInequality_bidegree_iff (Φ : ℝ → ℝ → ℝ) (χ₀ : ℝ) 
     refine ⟨fun x hH hV => ?_, fun a b => ?_⟩
     · by_contra hpos
       push Not at hpos
-      set c := Φ 0 0 + Φ (-0) (-0) - χ₀
-      set t : ℝ := Real.sqrt ((2 * |c| + 2) / S.pair x x)
-      have ht : t ^ 2 = (2 * |c| + 2) / S.pair x x :=
-        Real.sq_sqrt (div_nonneg (by positivity) hpos.le)
+      -- a bidegree count is constant on primitive classes, while `χ(t x)` grows like `t²`
+      have hconst : ∀ y : E, S.pair y S.H = 0 → S.pair y S.V = 0 →
+          bidegreeCount S Φ y + bidegreeCount S Φ (0 - y) =
+            bidegreeCount S Φ 0 + bidegreeCount S Φ (0 - 0) := by
+        intro y hyH hyV
+        simp only [bidegreeCount, zero_sub, map_neg, LinearMap.neg_apply, hyH, hyV, map_zero,
+          LinearMap.zero_apply, neg_zero, sub_zero]
+      set K := bidegreeCount S Φ 0 + bidegreeCount S Φ (0 - 0) - χ₀ with hK
+      obtain ⟨t, ht⟩ : ∃ t : ℝ, t ^ 2 * S.pair x x = 2 * |K| + 2 :=
+        ⟨Real.sqrt ((2 * |K| + 2) / S.pair x x), by
+          rw [Real.sq_sqrt (div_nonneg (by positivity) hpos.le), div_mul_cancel₀ _ hpos.ne']⟩
       have h := hRI (t • x)
-      simp only [bidegreeCount, eulerChar, zero_sub, map_neg, map_smul, LinearMap.neg_apply,
-        LinearMap.smul_apply, smul_eq_mul, hH, hV, mul_zero, sub_zero] at h
-      have hq : t ^ 2 * S.pair x x = 2 * |c| + 2 := by rw [ht, div_mul_cancel₀ _ hpos.ne']
-      have : t * (t * S.pair x x) = t ^ 2 * S.pair x x := by ring
-      have hc : c = Φ 0 0 + Φ (-0) (-0) - χ₀ := rfl
-      nlinarith [le_abs_self c]
+      rw [hconst (t • x) (by simp [hH]) (by simp [hV]), eulerChar_smul] at h
+      simp only [map_zero, mul_zero, sub_zero] at h
+      have := le_abs_self K
+      linarith
     · -- evaluate on the pole-plane class `bH + aV`, of bidegree `(a, b)`
       have h := hRI (b • S.H + a • S.V)
       simp only [bidegreeCount, eulerChar, zero_sub, map_neg, map_add, map_smul,

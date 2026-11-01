@@ -31,6 +31,16 @@ After that, existing physical Gamma separation and theta differential-algebraic
 base change would apply. Their analytic representatives and chain factors
 must remain in the physical variable.
 
+## Certified coefficient separation
+
+`ArithmeticHarmonicAnalysis/PositiveDilationPrimeJetSeparation.lean` proves
+cofinite prime-jet independence for every finite packet of distinct positive
+real dilations. Its `multilinearMap_eq_zero_of_distinct_primeJets` extends the
+law to arbitrary multilinear forms tested on distinct primes outside any
+finite exclusion set. All five direct production axiom audits use only the
+standard three axioms; umbrella import wired. This is a coefficient theorem,
+not yet joint independence of the actual analytic functions.
+
 ## Candidate prime-frequency argument
 
 For a finite dilation packet, use the actual logarithmic derivatives
@@ -56,8 +66,8 @@ Baker gives equality of total weight at each prime. Positivity gives equal
 prime supports; cardinality forces one term per target prime, and weight
 balance identifies each exponent. The cofinite prime-jet law then extends to
 all multilinear forms by currying one slot and excluding its prime from the
-remaining slots. These two exact lemmas are being formalized; the full
-independence theorem remains open.
+remaining slots. The multilinear coefficient law above is certified. The Baker frequency
+classification and its analytic application remain under formalization.
 
 The corpus already proves absolutely convergent product expansion
 (`ExponentialSeriesAlgebra.prod_expSeriesCarrier`) and coefficient extraction
