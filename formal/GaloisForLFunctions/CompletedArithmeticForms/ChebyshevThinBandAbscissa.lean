@@ -5,7 +5,7 @@ import GaloisForLFunctions.CompletedArithmeticForms.ChebyshevCyclotomicIntrinsic
 
 The far packet has a strict exponent saving at the intrinsic abscissa.
 Consequently every band `K = ceil(N^δ)`, `δ > 0`, has the same infimum
-energy exponent `2Θ` as the full cyclotomic remainder.
+among energy exponents at least one, namely `2Θ`, as the full remainder.
 -/
 
 noncomputable section
@@ -94,7 +94,7 @@ private theorem powerBand_exponent_lower {δ r C : ℝ} (hδ : 0 < δ)
     hA hs1 hE
   linarith only [hΘ, hsΘ]
 
-/-- An arbitrarily thin positive-power band has the full intrinsic energy abscissa. -/
+/-- Among exponents at least one, every positive-power band has energy abscissa `2Θ`. -/
 theorem chebyshevPowerBand_exponent_inf (δ : ℝ) (hδ : 0 < δ) :
     sInf {r : ℝ | 1 ≤ r ∧ ∃ C : ℝ, 0 ≤ C ∧ ∀ N : ℕ, 2 ≤ N →
       chebyshevPowerBand δ N ≤ C * (N : ℝ) ^ r} = 2 * zetaZeroAbscissa := by

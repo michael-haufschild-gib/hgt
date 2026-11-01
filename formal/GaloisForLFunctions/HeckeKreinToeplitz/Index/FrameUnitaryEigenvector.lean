@@ -29,7 +29,7 @@ theorem exists_point_nonorthogonal
     (hw : w ≠ 0) (hwq : (FiniteNegative.pairing w w).re ≤ 0) :
     ∃ g : G, FiniteNegative.pairing w (embedding hk e he hp (kernelColumnPoint k g)) ≠ 0 := by
   by_contra hn
-  push_neg at hn
+  push Not at hn
   let L : kernelColumnSpan k →ₗ[ℂ] ℂ :=
     { toFun := fun v => FiniteNegative.pairing w (embedding hk e he hp v)
       map_add' := fun v t => by rw [map_add, FiniteNegative.pairing_add_right]
@@ -79,7 +79,7 @@ theorem exists_unitary_nonpositive_eigenvector (hm : 0 < m)
     rw [Real.norm_of_nonneg (mul_nonneg hC (norm_nonneg _))]
     exact FiniteNegative.norm_pairing_le w (u z)
   have h0 : FiniteNegative.pairing w (u 0) ≠ 0 := by
-    simpa only [u, b, add_zero] using hg
+    simpa [u, b] using hg
   have hshift (z : ℤ) : action hq v hv hpos (Multiplicative.ofAdd 1) (u z) = u (z + 1) := by
     dsimp only [u]
     rw [action_point]

@@ -8,9 +8,9 @@
 | Route | Exact unresolved input | Verified qualification |
 |---|---|---|
 | 3A, projected shift moments | Signed fourth-moment aggregate for actual detector windows, followed by source transport | New literal integer-interval family has power-sized excess even at cube-root cardinality. Exact line-occupancy fourth-moment floor and sharp box-occupancy bounds distinguish the surviving two-coordinate window problem. |
-| 3B, cyclotomic near band | Moving-conductor near-band energy at exponent `5/3+ε` or `3/2+ε` | Far-tail estimate alone does not supply either strip. |
+| 3B, cyclotomic near band | Moving-conductor near-band energy at exponent `5/3+ε` or `3/2+ε` | Every positive-power band retains energy abscissa `2Θ` among exponents at least one. Either target strip is equivalent to its near-band bound at any such cutoff. |
 | 3.4, JAS consequence | Unconditional quasi-RH plus remaining dressed positivity | Receiver is already formalized; neither premise is discharged by the report. |
-| 4.1, centered sieve and pinching | Signed prime-pair discrepancy and positive pinching credit at bandwidth above one | Numerical factor-two calibration is not an arithmetic estimate. |
+| 4.1, centered sieve and pinching | Matched cosine prime-side certificate and signed prime-pair discrepancy | Densities arbitrarily close to one can have logarithmically divergent signed discrepancy. Actual disjoint-pair pinching is now positive at every fixed positive bandwidth, including `4/3`. |
 | 4.2, seven-center source | Literal finite phase-preserving source majorant | Receiver alone does not prove its source bound. |
 | 4.3, two grids / fourth moment | Uniform slack density, or actual Gram fourth-moment upper bound | Non-simultaneous exact locking does not by itself imply a uniform quantitative gap. |
 
@@ -20,9 +20,15 @@
 
 The actual cached detector `ProbeGramCommon.jointExtension` retains Eisenstein lattice variables, fixed ray data, ideal characters, and a global extension factor. The interval counterexample does not identify that full source with its obstruction. No improved detector exponent follows yet. The balanced-box fourth moment and composite-conductor transport remain open.
 
-## Next conjecture: route 3B near-band localization
+## Route 3B: intrinsic near-band localization
 
-The actual coefficient is `(ψ(j−1)−(j−1))/(j sqrt(j−1))`. Its cyclotomic packet is a Fourier transform of coefficient prefixes, not a bare prime exponential sum. Test whether a fixed collection of low modes already detects the zero-width obstruction; this would distinguish genuine moving-conductor cancellation from mere reduction of mode count. Sources: `ChebyshevCyclotomicCompletion`, `ChebyshevCyclotomicTail`, and `CyclotomicCoercivity.prefixPacket_difference`. No such fixed-mode theorem is asserted yet.
+The [power-band theorem](../3-formalized/arbitrarily-thin-power-bands-retain-chebyshev-zero-width.md) is formalized: `Far(N,K)≪ε N^(2Θ+ε)/K`, and every fixed band `K=ceil(N^δ)`, `δ>0`, retains energy abscissa `2Θ` among exponents at least one. All eight theorem audits use standard axioms; both leaves pass and are wired. Either target strip is equivalent to its near-band subpower bound at any positive power cutoff. No actual improved energy estimate, fixed-mode theorem, or logarithmic-band theorem is asserted.
+
+## Route 4.1: phase-resonance obstruction
+
+The [Frullani resonance family](../3-formalized/frullani-sieve-phase-resonance.md) is formalized: smooth densities arbitrarily close to one, with exact mean one and bounded ordinary interval discrepancy, can have centered signed Frullani integral `(t/2)log R+O(1)`. Even reflection preserves the positive-lag obstruction. All eleven public theorems pass standard-axiom audits; the leaf passes and is wired. This falsifies the unsigned-sieve inference; the actual prime-pair route remains open. The positive survivor is the exact logarithmic residue of the phase-weighted density error.
+
+The [cosine-kernel additive rigidity theorem](../3-formalized/cosine-kernel-additive-rigidity.md) gives no additive triple of kernel zeros at nondegenerate cosine parameters, compact triple floors, and an exact degeneracy classification. Its six theorem audits use standard axioms. The [actual pinching theorem](../3-formalized/trans-threshold-cosine-pinching-credit.md) now gives positive disjoint-pair credit at every fixed positive bandwidth and an actual finite-zero-Gram rank–trace corollary. Its eight theorem audits use standard axioms. The [matching cosine coefficient](../3-formalized/cosine-shape-one-improves-trans-threshold-calibration.md) is also formalized: its limiting rate improves the box coefficient by at least `43λ/7500` for `λ≥1`, leaving margin `79/1250` above three quarters at `4/3`. All six theorem audits use standard axioms; the production leaf passes and is wired. The [matching prime-Gram certificate](../0-backlog/cosine-prime-certificate-with-explicit-pinching.md) and signed prime-pair source estimate remain open.
 
 ## Completion gates
 

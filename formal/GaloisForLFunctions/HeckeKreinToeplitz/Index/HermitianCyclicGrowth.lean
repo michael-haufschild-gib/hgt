@@ -24,8 +24,10 @@ theorem integerGrowth_of_hermitian_natural_bound {k : Multiplicative ℤ → ℂ
     HasSubexponentialIntegerGrowth (fun z => k (Multiplicative.ofAdd z)) := by
   intro ε hε
   obtain ⟨C, hC⟩ := h ε hε
-  have hC0 : 0 ≤ C := (norm_nonneg _).trans (by simpa using hC 0)
+  have hC0 : 0 ≤ C := (norm_nonneg (k (Multiplicative.ofAdd (0 : ℤ)))).trans
+    (by simpa using hC 0)
   refine ⟨C, hC0, fun z => ?_⟩
+  change ‖k (Multiplicative.ofAdd z)‖ ≤ C * Real.exp (ε * |(z : ℝ)|)
   have hz : ∃ n : ℕ, z = (n : ℤ) ∨ z = -(n : ℤ) := by
     cases z with
     | ofNat n => exact ⟨n, Or.inl rfl⟩

@@ -22,10 +22,15 @@ namespace GaloisForLFunctions.HeckeKreinToeplitz
 private theorem cyclicKernelFilter_subexponential {k : Multiplicative ℤ → ℂ}
     (hsub : HasSubexponentialIntegerGrowth (fun z => k (Multiplicative.ofAdd z))) (a : ℂ) :
     HasSubexponentialIntegerGrowth (fun z => cyclicKernelFilter k a (Multiplicative.ofAdd z)) := by
+  change HasSubexponentialIntegerGrowth (fun z => 2 * k (Multiplicative.ofAdd z) -
+    a * k (Multiplicative.ofAdd (-1 + z)) - conj a * k (Multiplicative.ofAdd (z + 1)))
   have hp := (hsub.translate 1).smul (conj a)
   have hn := (hsub.translate (-1)).smul a
   have h := ((hsub.smul (2 : ℂ)).sub hn).sub hp
-  simpa only [cyclicKernelFilter, smul_eq_mul, add_comm 1] using h
+  convert h using 1
+  funext z
+  simp only [smul_eq_mul]
+  rw [add_comm (1 : ℤ) z]
 
 private theorem cyclicKernelFilter_second_difference (k : Multiplicative ℤ → ℂ)
     {a : ℂ} (ha : ‖a‖ = 1) (n : ℕ) :
@@ -43,7 +48,6 @@ private theorem cyclicKernelFilter_second_difference (k : Multiplicative ℤ →
       Multiplicative.ofAdd ((n + 2 : ℕ) : ℤ) := by
     change Multiplicative.ofAdd (((n + 1 : ℕ) : ℤ) + 1) = _
     congr 1
-    omega
   rw [cyclicKernelFilter, hl, hr]
   have hc := conj_mul_self_of_norm_eq_one ha
   linear_combination (a * k (Multiplicative.ofAdd (n : ℤ)) -
@@ -53,11 +57,12 @@ private theorem polynomial_bound_of_posDef (k : Multiplicative ℤ → ℂ)
     (hk : IsPosDefKernel k) (d : ℕ) :
     ∃ C : ℝ, 0 ≤ C ∧ ∀ n : ℕ,
       ‖k (Multiplicative.ofAdd (n : ℤ))‖ ≤ C * ((n : ℝ) + 1) ^ d := by
-  have hC : 0 ≤ (k 1).re := (norm_nonneg _).trans (hk.norm_le 1)
+  have hC : 0 ≤ (k 1).re := (norm_nonneg (k 1)).trans (hk.norm_le 1)
   refine ⟨(k 1).re, hC, fun n => (hk.norm_le _).trans ?_⟩
+  have hn : (0 : ℝ) ≤ n := Nat.cast_nonneg n
   have hp : (1 : ℝ) ≤ ((n : ℝ) + 1) ^ d := by
     simpa only [one_pow] using pow_le_pow_left₀ (by norm_num : (0 : ℝ) ≤ 1)
-      (by linarith only [Nat.cast_nonneg n] : (1 : ℝ) ≤ n + 1) d
+      (by linarith only [hn] : (1 : ℝ) ≤ n + 1) d
   simpa only [mul_one] using mul_le_mul_of_nonneg_left hp hC
 
 /-- A subexponential integer kernel of negative index at most `r` has growth degree at most `2r`. -/

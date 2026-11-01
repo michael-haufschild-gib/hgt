@@ -388,10 +388,11 @@ at edges with a counterterm of nontrivial null cone.
 2. **Krein–Langer structure on `Aff(ℚ)`.** Is every Pontryagin state a positive state plus coefficients of
    finite-dimensional or conformally induced Pontryagin representations? Known pieces: pole–successor states, the
    Borel's `Sym^d` (mixed power kernels), archimedean Weil states.
-3. **Relative splitting for rational subgroup successors.** The integer-Haar case has a unique positive,
-   slope and zero-axis polynomial split with exact residual index. The
-   [extension to general nonzero proper subgroups](../../../docs/drafts/pipeline/0-backlog/nonzero-proper-subgroup-carriers-have-a-canonical-relative-split.md)
-   remains open.
+3. **Relative splitting for rational subgroup successors.** *Answered:* for every nonzero proper
+   `H < ℚ`, a finite-index Hermitian kernel with translation reading `1_H` splits uniquely as a
+   positive `1_H` carrier, a Hermitian slope kernel and a finite-rank zero-axis polynomial kernel,
+   with `κ(k) = κ(ψ ∘ slope + q) ≥ κ(ψ)` (`Haar/SubgroupRelativeSplit`,
+   `exists_unique_subgroup_relative_split`; [card](../../../docs/drafts/pipeline/3-formalized/nonzero-proper-subgroup-carriers-have-a-canonical-relative-split.md)).
 4. **Purely additive counters.** An index on the translations alone that equals the number of zeros right of the
    line, or a proof that none exists among natural classes.
 5. **Calibration over `𝔽_q(T)`.** The local wall at the place `∞` holds. Open: the places of higher degree, the

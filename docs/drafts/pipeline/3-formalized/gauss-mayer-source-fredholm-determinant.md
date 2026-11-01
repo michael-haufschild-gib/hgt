@@ -103,7 +103,8 @@ This closes the actual-operator/global-determinant bridge using a fixed
 Cauchy realization. Geometric matrix determinants and the Hilbert spectral
 theorem are reused. No literature-novelty claim is made.
 
-The Selberg/scattering identity, dependence on the parameter `w`, and
-source-specific exclusion of off-critical resonances remain separate
-obligations. The totalized value at `w=1` is not a removal of the analytic
-pole. No RH conclusion follows from the determinant's existence.
+[Source-parameter holomorphy](gauss-mayer-source-parameter-holomorphy.md)
+is now certified, together with the operator's genuine rank-one residue.
+Determinant pole order, the Selberg/scattering identity, and source-specific
+exclusion of off-critical resonances remain separate obligations. No RH
+conclusion follows from the determinant's existence.

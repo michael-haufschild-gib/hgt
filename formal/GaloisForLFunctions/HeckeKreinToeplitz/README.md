@@ -62,6 +62,8 @@ Index one on any abelian group: completing the positive column complement gives 
 
 Bounded kernels: finite translate corrections give uniformly bounded Fejér measure pairs. Compactness produces a signed torus spectrum; L² density extends the repaired form to indicators. A positive mass floor forces finite negative support, and correction-map injectivity gives exactly `κ` negative atoms.
 
+Finite index and cyclic growth: on any group, a Hermitian kernel with `κ≤r` and cyclic subexponential growth has cyclic growth at most degree `2r`. Complete the positive column factor, obtain a nonpositive eigenvector from a weakly compact invariant graph, and force its eigenvalue onto the unit circle using orbit growth. Its unitary second-difference filter lowers the index; two discrete integrations per negative square give the degree bound.
+
 **B. Topology and deformation**
 9. Closedness: pointwise kernel convergence gives entrywise Gram convergence, and negative-definite subspaces persist, so `{κ ≤ m}` is closed.
 10. Restriction and compression never raise `κ`. A compression multiplies the weight of a pair by `P̂(χ) conj P̂(χ^†)`.

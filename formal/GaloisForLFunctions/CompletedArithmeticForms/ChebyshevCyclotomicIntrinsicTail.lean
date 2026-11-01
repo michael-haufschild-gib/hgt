@@ -61,8 +61,8 @@ theorem chebyshevConductor_mass_subpower (ε : ℝ) (hε : 0 < ε) :
       _ ≤ (C * (N : ℝ) ^ (zetaZeroAbscissa - 1 / 2 + ε / 2)) / j := by
         apply div_le_div_of_nonneg_right _ hjp.le
         apply mul_le_mul_of_nonneg_left _ hC
-        exact Real.rpow_le_rpow hmp.le (by exact_mod_cast
-          (Nat.sub_le j 1).trans (mem_Icc.mp hj).2) he
+        have hjN : j - 1 ≤ N := (Nat.sub_le j 1).trans (mem_Icc.mp hj).2
+        exact Real.rpow_le_rpow hmp.le (by exact_mod_cast hjN) he
       _ = _ := by ring
   have hlog : 1 + Real.log (N : ℝ) ≤ (1 + 2 / ε) * (N : ℝ) ^ (ε / 2) := by
     have h1 : 1 ≤ (N : ℝ) ^ (ε / 2) := Real.one_le_rpow hN1 (by positivity)
@@ -83,7 +83,8 @@ theorem chebyshevConductor_mass_subpower (ε : ℝ) (hε : 0 < ε) :
         ((Sieve.sum_Icc_one_div_le_one_add_log N).trans hlog) (by positivity)
     _ = _ := by
       rw [show zetaZeroAbscissa - 1 / 2 + ε =
-        (zetaZeroAbscissa - 1 / 2 + ε / 2) + ε / 2 by ring, Real.rpow_add hNp]
+        (zetaZeroAbscissa - 1 / 2 + ε / 2) + ε / 2 by ring,
+        Real.rpow_add hNp (zetaZeroAbscissa - 1 / 2 + ε / 2) (ε / 2)]
       ring
 
 private theorem packet_mode_mass_bound (Q k : ℕ) (a : ℕ → ℝ)
@@ -95,7 +96,9 @@ private theorem packet_mode_mass_bound (Q k : ℕ) (a : ℕ → ℝ)
   let P := prefixPacket Q a ζ
   let A := ∑ j ∈ Ico 1 Q, |a j|
   let r : ℝ := (min k (Q - k) : ℕ)
-  have hr : 0 < r := by exact_mod_cast lt_min hk0 (Nat.sub_pos_of_lt hkQ)
+  have hr : 0 < r := by
+    dsimp [r]
+    exact_mod_cast lt_min hk0 (Nat.sub_pos_of_lt hkQ)
   have hQ : (0 : ℝ) < Q := by exact_mod_cast hk0.trans hkQ
   have hA : 0 ≤ A := sum_nonneg fun _ _ => abs_nonneg _
   have hζ : ‖ζ‖ = 1 := norm_cyclotomicMode Q k
@@ -121,7 +124,7 @@ private theorem packet_mode_mass_bound (Q k : ℕ) (a : ℕ → ℝ)
   have hplus : ‖(1 + ζ) * P‖ ≤ 2 * ‖P‖ := by
     rw [norm_mul]
     apply mul_le_mul_of_nonneg_right _ (norm_nonneg P)
-    simpa only [norm_one, hζ] using norm_add_le (1 : ℂ) ζ
+    simpa only [norm_one, hζ, one_add_one_eq_two] using norm_add_le (1 : ℂ) ζ
   have hscaled : r * ‖(1 + ζ) * P‖ ≤ (Q : ℝ) * A := by
     have h := mul_le_mul_of_nonneg_left hplus hr.le
     nlinarith only [h, hP]
@@ -175,8 +178,6 @@ theorem chebyshevCyclotomicFar_le_mass (N : ℕ) {K : ℕ} (hK : 1 ≤ K) :
   let A := ∑ j ∈ Icc 1 N, |chebyshevConductorCoeff j|
   have hmass : (∑ j ∈ Ico 1 (N + 1), |chebyshevConductorCoeff j|) = A := by
     congr 1
-    ext j
-    simp
   have hb := sum_le_sum (s := S) (fun k hk => packet_mode_mass_bound (N + 1) k
     chebyshevConductorCoeff (mem_Ico.mp (mem_filter.mp hk).1).1
       (mem_Ico.mp (mem_filter.mp hk).1).2)
@@ -209,7 +210,7 @@ theorem chebyshevCyclotomicFar_subpower (ε : ℝ) (hε : 0 < ε) :
       apply div_le_div_of_nonneg_right _ (by positivity)
       exact mul_le_mul_of_nonneg_right (by linarith only [hN1]) (sq_nonneg _)
     _ = _ := by
-      rw [mul_pow, ← Real.rpow_natCast_mul hNp.le]
+      rw [mul_pow, ← Real.rpow_mul_natCast hNp.le]
       rw [show 2 * zetaZeroAbscissa + ε =
         1 + (zetaZeroAbscissa - 1 / 2 + ε / 2) * (2 : ℕ) by ring,
         Real.rpow_add hNp, Real.rpow_one]

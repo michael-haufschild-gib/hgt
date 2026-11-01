@@ -32,7 +32,8 @@ private theorem weilQuad_realTest (f : realTests) : weilQuad f.1 = realWeilForm 
   rw [zeta_W_eq_weilFullFunctional (cx_contDiff f.2.1) (cx_hasCompactSupport f.2.2)]
   rfl
 
-private theorem completeCell_limit_pair (f g : realTests) :
+/-- Polarization of the complete real quadratic form is its literal bilinear pairing. -/
+theorem completeCell_limit_pair (f g : realTests) :
     (weilQuad (fun u => f.1 u + g.1 u) - weilQuad (fun u => f.1 u - g.1 u)) / 4 =
       realWeilForm f g := by
   change (weilQuad (f + g).1 - weilQuad (f - g).1) / 4 = _

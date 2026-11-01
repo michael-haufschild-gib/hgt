@@ -1,7 +1,7 @@
 # Every positive-power cyclotomic band retains the zero width
 
-- **Stage:** 1-in-progress
-- **Type:** THEOREM (paper)
+- **Stage:** 3-formalized
+- **Type:** THEOREM
 - **Source:** Argon §3B; `ChebyshevCyclotomicTail`, `QuasiRHQuotientHeadAndFiniteContactAbscissaLaw`.
 - **Statement:** For every δ>0, the infimum of energy exponents r≥1 of the actual Chebyshev near band at `K=ceil(N^δ)` is `2Θ`, where Θ is the actual zeta zero abscissa.
 
@@ -40,5 +40,14 @@ does not supply either estimate. Fixed finite bands and subpower-growing bands a
 
 - [x] Corpus search: existing far tail uses only the trivial coefficient envelope.
 - [x] Dependency-closed paper proof above.
-- [ ] Lean formalization of intrinsic tail, exact band exponent, and target-strip corollaries.
-- [ ] Focused checks, standard-axiom audits, umbrella wiring.
+- [x] Lean formalization of intrinsic tail, exact band exponent, and target-strip corollaries.
+- [x] Focused checks, standard-axiom audits, umbrella wiring.
+
+`CompletedArithmeticForms/ChebyshevCyclotomicIntrinsicTail.lean` proves
+`chebyshevConductor_mass_subpower`, `chebyshevCyclotomicFar_le_mass`, and
+`chebyshevCyclotomicFar_subpower`. `ChebyshevThinBandAbscissa.lean` proves
+`chebyshevPowerBand_subpower`, `chebyshevPowerBand_exponent_inf`,
+`chebyshevPowerBand_subpower_iff`, and the two target-strip equivalences.
+Both exact production leaves pass `lake --old env lean`; all eight public
+theorem audits contain only `propext`, `Classical.choice`, and `Quot.sound`.
+Both leaves are imported by `CompletedArithmeticForms.lean`.

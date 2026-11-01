@@ -12,6 +12,7 @@ import GaloisForLFunctions.ArithmeticHarmonicAnalysis.VerticalJetsMissTransverse
 import GaloisForLFunctions.ArithmeticHarmonicAnalysis.TwoPrimeHomogeneousLogRigidity
 import GaloisForLFunctions.ArithmeticHarmonicAnalysis.AlgebraicVerticalFirstJets
 import GaloisForLFunctions.ArithmeticHarmonicAnalysis.JacobiThetaGammaCoefficientBoundary
+import GaloisForLFunctions.ArithmeticHarmonicAnalysis.IntegerDilationThetaGammaIndependence
 import GaloisForLFunctions.ArithmeticHarmonicAnalysis.HigherVerticalJets
 import GaloisForLFunctions.ArithmeticHarmonicAnalysis.FiniteScalarJetsDetectArbitraryPrimeSupport
 import GaloisForLFunctions.ArithmeticHarmonicAnalysis.DyadicSuccessorRigidity
@@ -23,5 +24,5 @@ import GaloisForLFunctions.ArithmeticHarmonicAnalysis.FiniteField.CoordinateBoxL
 # Arithmetic harmonic analysis at critical resolution
 
 Arithmetic support, successor reconstruction, prime-phase resolution, and
-Adams fixed-locus constraints.
+Adams fixed-locus constraints, and theta–Gamma differential independence.
 -/

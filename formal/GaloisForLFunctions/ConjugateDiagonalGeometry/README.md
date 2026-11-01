@@ -1,6 +1,6 @@
 # Conjugate-Diagonal Geometry (CDG)
 
-Namespace `GaloisForLFunctions.ConjugateDiagonalGeometry`; umbrella `ConjugateDiagonalGeometry.lean`; 61 modules. All results
+Namespace `GaloisForLFunctions.ConjugateDiagonalGeometry`; umbrella `ConjugateDiagonalGeometry.lean`; 63 modules. All results
 unconditional; every reading is evaluated on the actual zeta divisor with multiplicities, without simplicity, separation or
 zero-free hypotheses.
 
@@ -99,6 +99,8 @@ amplitudes and their first moments — with explicit error certificates. The com
 | Super-polynomial decay of $E_\gamma(c\log T)$ under `FiniteOffLine` (any prime cutoff) | `exists_heckeDefect_log_le_div_pow_of_finiteOffLine`, `exists_heckeDefect_log_le_primePolynomial_any_cutoff_of_finiteOffLine` | proved |
 | Log-scale 5-way TFAE, all-$c$ scale rigidity, positive-sign separation, and Lindelöf corridor | `heckeDefect_log_unitWindow_tfae`, `unitWindowDepthCharge_log_iff_of_pos`, `eventually_heckeDefect_le_pos_re_primePolynomial_iff`, `zerosApproachLine_and_lindelof_of_heckeDefect_log_bound` | proved |
 | Zero-avoiding pole-nodal dyadic equivalence with $\mathrm{RH}$ | `exists_poleNodal_ordinate_in_Icc`, `riemannHypothesis_iff_dyadic_heckeDefect_le_primePolynomial` | proved |
+| Zero-coordinate-free finite-theta pole-nodal dyadic 6-way equivalence with $\mathrm{RH}$ and anti-nodal sharpness | `riemannHypothesis_finiteTheta_poleNodal_dyadic_tfae`, `exists_antinodal_primePolynomial_exp_growth_of_riemannHypothesis` | proved |
+| Three-scale sieve-mollified dyadic collapse ($c<22/51$), almost-all $\frac65\frac{\log\log T}{\log T}$ corridor, and 4-way $o(\log U)$ TFAE | `exists_dyadicMean_corridor_and_polynomialTheta_le_log`, `eventually_volume_badLogLogCorridor_unitWindows_le`, `dyadicMean_corridor_and_polynomialTheta_littleO_log_tfae` | proved |
 
 ## 6. Tools
 
@@ -120,12 +122,13 @@ amplitudes and their first moments — with explicit error certificates. The com
   `exists_uniform_finiteTheta_compact_current_error`, `tendsto_thetaTestStage_error`,
   `abs_finiteThetaProductSourceReading_sub_finitePair_le`, `exists_finiteTheta_pair_current_error`.
 - Collisions: `horizontalCollisionGaussian_error`, `exists_xiWindowGaussianPairSum_error`, `finiteThetaCollisionReading_error`.
-- Log-scale defect vs. prime polynomial: `exists_depthKernel_scale_transfer`, `exists_norm_tr_twist_baseBump_le_pow`,
-  `unitWindow_depthCharge_le_heckeDefect`, `normSq_tr_twist_heckeAvgBump_le_of_sep_strip`,
-  `exists_abs_re_archPart_heckeAvgBump_log_le`, `unitWindow_integral_normSq_tr_twist_heckeAvgBump_le`.
+- Log-scale defect, finite-theta aperture schedules, and sieve-mollified shells: `exists_depthKernel_scale_transfer`,
+  `exists_norm_tr_twist_baseBump_le_pow`, `unitWindow_depthCharge_le_heckeDefect`, `normSq_tr_twist_heckeAvgBump_le_of_sep_strip`,
+  `exists_abs_re_archPart_heckeAvgBump_log_le`, `unitWindow_integral_normSq_tr_twist_heckeAvgBump_le`,
+  `exists_polynomialReading_sub_heckeDefect_le_log_div`, `eulerFactor_verticalZeros_depthKernel_ge`, `exists_shellDepthSum_le_mul_log`.
 
 **To build**
-- An unconditional uniform bound on the prime-free logarithmic corridor charge $\sum_{\rho\in W(T)} m_\rho k(c\log T,\delta_\rho)$ ($\Pi_{F_{c\log T}}$ self-absorbs by $O(1/\log T)$ across $[T,T+1)$), or a single additive constant across dyadic scales $L_k=2^k c_0\log T$ (equivalent to $\mathrm{RH}$).
+- Upgrade dyadic-mean $O(\log U)$ control ($0<c<22/51$) to pointwise-in-$T$ $O(1)$ control on $\operatorname{unitWindowDepthCharge}(T,c\log T)$, or prove $o(\log U)$ dyadic-mean decay (equivalent to $100\%$ critical-scale clustering), or establish a single additive constant across dyadic scales $L_k=2^k c_0\log T$ on `finiteThetaSourceMomentReading` (equivalent to $\mathrm{RH}$).
 - An arithmetic correspondence acting as conjugation on the divisor (Frobenius at infinity), linking $(\rho,\bar\rho)$ to $(\rho,1-\rho)$.
 - A structural bound $\Delta\le D$ uniform in depth and aperture.
 - Bounds on the collision charge (below two) from the finite theta reading.
@@ -133,7 +136,7 @@ amplitudes and their first moments — with explicit error certificates. The com
 
 ## 7. Open questions
 
-1. Is there a prime-side estimate of the Hecke defect at logarithmic scale, i.e. a zero-density statement read through $E$?
+1. Can the dyadic-mean $O(\log U)$ bound on `polynomialThetaSourceMomentReading` at $c<22/51$ be upgraded to $o(\log U)$ (hence $100\%$ critical-scale clustering) or extended beyond the Barban–Vehov gate $22/51$?
 2. What arithmetic structure realizes conjugation on the zero divisor, so that the collided form becomes a Weil form?
 3. Can the finite theta collision reading be bounded independently of the divisor, giving simplicity-type information?
 4. Can the zero detector be pushed below the zero spacing (radius $\ll1/\log T$) with polynomial resources?
@@ -155,6 +158,8 @@ amplitudes and their first moments — with explicit error certificates. The com
 | Zero detection needs isolated zeros | Bracketing by integer multiplicity needs no separation |
 | $\Pi_{F_{c\log T}}$ of length $T^{2c}$ pays for unbounded $E_\gamma(c\log T)$ on $[T,T+1)$ | Unit-window Plancherel forces $\int_T^{T+1}\|\Pi\|d\gamma\le C_1(c)+O(1/\log T)\int_T^{T+1}E_\gamma d\gamma$; $\Pi$ eliminates itself |
 | Fixed-$c$ uniform bound on $[T,T+1)$ implies $\mathrm{RH}$ | Holds for every fixed $c>0$ on $\mathrm{FiniteOffLine}\wedge\neg\mathrm{RH}$ via $C_c^\infty$ rapid decay; $\mathrm{RH}$ requires coupling dyadic scales $2^k c_0\log T$ at pole-nodal ordinates |
+| Direct two-sided Euler-product mollification bounds symmetric `depthKernel` | Every Euler factor $1-m^{-s}$ ($m\ge2$) vanishes on $\Re s=0$ with spacing $2\pi/\log m$ and `depthKernel` $>T^c-2$; `lineReflect` folding onto $\Re\rho>1/2$ is mandatory |
+| $\Pi_{F_L}$ can be dropped across all $\gamma\in[T,T+1]$ in the dyadic `RH` criterion | Even under $\mathrm{RH}$, anti-nodal ordinates in $[T,T+1]$ force $\|\Pi_{F_L}\|\ge c_T e^L/L^2$; existential unit-window selection of `finiteThetaSourceMomentReading` drops $\Pi_{F_L}$ cleanly |
 
 ## 9. Context
 

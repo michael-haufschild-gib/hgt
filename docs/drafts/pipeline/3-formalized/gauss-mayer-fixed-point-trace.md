@@ -87,6 +87,7 @@ formula is reused; the countable regularization, absolute interchange,
 and extended scalar convergence are proved here. No literature-novelty
 claim is made.
 
-This establishes the first trace only. Higher powers, primitive geodesic
-coding, the Selberg/scattering determinant identity, and exclusion of
-off-critical resonances remain open obligations. No RH conclusion follows.
+This establishes the first trace. [Countable word traces](gauss-mayer-countable-word-traces.md)
+now supply every higher power on `Re w>1`. Primitive geodesic coding, the
+Selberg/scattering determinant identity, and exclusion of off-critical
+resonances remain open obligations. No RH conclusion follows.

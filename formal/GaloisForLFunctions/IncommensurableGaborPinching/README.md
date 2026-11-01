@@ -1,6 +1,6 @@
 # Incommensurable Gabor Pinching (IGP)
 
-Namespace `GaloisForLFunctions.IncommensurableGaborPinching`; umbrella `IncommensurableGaborPinching.lean`; 3 modules.
+Namespace `GaloisForLFunctions.IncommensurableGaborPinching`; umbrella `IncommensurableGaborPinching.lean`.
 The flagship theorems for `ζ` are unconditional. They are built on the `Zeta23` library (Alpöge–Furman Theorem D:
 zero-side Gram, seams, `paperInputs_zeta`, `zetaZeroConfig`); the abstract lemmas take Zeta23's parameter packages
 (`PhiHatConj`, `PoissonSq`, `TailInputs`, `P.Valid`) as hypotheses, discharged for `ζ` in the flagship statements.
@@ -60,6 +60,10 @@ External (Zeta23): `kc` `k_c(t) = c² − ((c − t)₊)²`, `Pmat`, `xsq`, `ran
 | Lemma R with disjoint-pair Schur–Jensen slack | `rank_trace_mult_k_disjointPairs`, `seamA_mult2_disjointPairs`, `seamA_mult3_disjointPairs` | proved |
 | Non-lattice floor of the MT kernel | `one_div_250_le_abs_mtKernel`, `exists_pair_mtKernel_ge_of_triple` | proved |
 | Bulk grid overlap ≈ kernel | `eventually_pairGridOverlap_atD_close` | proved |
+| Arbitrary-bandwidth cosine sampling | `pairGridOverlap_cosineParams_error`, `eventually_pairGridOverlap_cosineParams_close` | proved |
+| Positive actual pair credit at every fixed positive bandwidth | `zetaCosine_positive_disjointPairs`, `zetaCosine_positive_rankTrace` | proved, unconditional |
+| Exact kernel degeneracy classification | `mtKernel_additive_zero_triple_iff` | proved |
+| Shape-one diagonal coefficient above the box rate for `λ ≥ 1` | `shapeOneCosineRate_ge_box`, `cosineWindowRate_fourThirds_eventually` | proved; prime surplus remains separate |
 | Macroscopic slack `≥ 10⁻⁸N(T,2T)` | `eventually_exists_disjointPairs_slack` | proved |
 | Simple critical proportion `≥ HD(1) + 10⁻⁸` | `beyond_HD_one_simple_critical_cumulative`, `simple_critical_proportion_ge_67250071` | proved, unconditional |
 | Distinct zeros `≥ GD(1) + ½·10⁻⁸` | `beyond_GD_one_distinct_cumulative` | proved, unconditional |
@@ -82,7 +86,7 @@ External (Zeta23): `kc` `k_c(t) = c² − ((c − t)₊)²`, `Pmat`, `xsq`, `ran
 ## 7. Open questions
 
 1. What is the true macroscopic off-diagonal energy of simple critical zeros under the MT window?
-2. Can the slack be carried past `λ = 1` (trans-threshold pair correlation)?
+2. Positive zero-side pair slack now holds for every fixed `λ > 0`. Can its matching signed prime-side source be bounded past `λ = 1`?
 3. Which windows maximize `diagonal gain + pinching slack`?
 4. Does the same Gram geometry give gains in other rank–trace zero-density arguments?
 
@@ -114,7 +118,7 @@ External (Zeta23): `kc` `k_c(t) = c² − ((c − t)₊)²`, `Pmat`, `xsq`, `ran
 | Neighbour | Relation |
 |---|---|
 | ArithmeticCastelnuovoSeveri | rank–trace inertia and `HD(1)` bounds in the scaling-surface setting |
-| TransThresholdPairCorrelation | pair correlation beyond `λ = 1`; IGP works at `λ < 1` |
+| TransThresholdPairCorrelation | pair correlation beyond `λ = 1`; IGP supplies positive pair credit at every fixed bandwidth |
 | ArithmeticLorentzianGeometry | Gram slack as a signature cost |
 
 ## 10. Big picture
