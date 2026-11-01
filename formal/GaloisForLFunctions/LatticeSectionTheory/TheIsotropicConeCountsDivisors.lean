@@ -66,17 +66,20 @@ theorem summable_coneCount {t : ℝ} (ht : 0 < t) :
 def coneMellinValue (σ : ℝ) : ℝ :=
   Real.Gamma σ * (2 * π) ^ (-σ) * (∑' m : ℕ, ((m : ℝ) + 1) ^ (-σ)) ^ 2
 
+theorem one_div_coneWeight_rpow (σ : ℝ) (i : ℕ × ℕ) :
+    1 / coneWeight i ^ σ = (2 * π) ^ (-σ) * (((i.1 : ℝ) + 1) ^ (-σ) * ((i.2 : ℝ) + 1) ^ (-σ)) := by
+  have ha : (0 : ℝ) < (i.1 : ℝ) + 1 := by positivity
+  have hb : (0 : ℝ) < (i.2 : ℝ) + 1 := by positivity
+  rw [coneWeight, Real.mul_rpow (x := 2 * π) (by positivity) (mul_pos ha hb).le,
+    Real.mul_rpow (x := (i.1 : ℝ) + 1) ha.le hb.le, Real.rpow_neg (by positivity),
+    Real.rpow_neg ha.le, Real.rpow_neg hb.le, one_div, mul_inv, mul_inv]
+
 theorem coneTerm_eq (σ : ℝ) (i : ℕ × ℕ) :
     Complex.Gamma (σ : ℂ) * 1 / ((coneWeight i : ℝ) : ℂ) ^ (σ : ℂ) =
       ((Real.Gamma σ * (2 * π) ^ (-σ) *
         (((i.1 : ℝ) + 1) ^ (-σ) * ((i.2 : ℝ) + 1) ^ (-σ)) : ℝ) : ℂ) := by
   rw [Complex.Gamma_ofReal, ← Complex.ofReal_cpow (coneWeight_pos i).le, mul_one,
-    ← Complex.ofReal_div]
-  congr 1
-  rw [coneWeight, Real.mul_rpow (by positivity) (by positivity),
-    Real.mul_rpow (by positivity) (by positivity), Real.rpow_neg (by positivity),
-    Real.rpow_neg (by positivity), Real.rpow_neg (by positivity)]
-  field_simp
+    ← Complex.ofReal_div, mul_assoc, ← one_div_coneWeight_rpow, mul_one_div]
 
 /-- **The Mellin transform of the isotropic count** is `Γ(σ)(2π)^{−σ}ζ(σ)²` for `σ > 1`. -/
 theorem mellin_coneCount {σ : ℝ} (hσ : 1 < σ) :
@@ -85,26 +88,32 @@ theorem mellin_coneCount {σ : ℝ} (hσ : 1 < σ) :
   have hprod : Summable fun i : ℕ × ℕ => ((i.1 : ℝ) + 1) ^ (-σ) * ((i.2 : ℝ) + 1) ^ (-σ) :=
     hps.mul_of_nonneg hps (fun _ => Real.rpow_nonneg (by positivity) _)
       (fun _ => Real.rpow_nonneg (by positivity) _)
-  have hM := hasSum_mellin (a := fun _ : ℕ × ℕ => (1 : ℂ)) (p := coneWeight) (F := fun t =>
-    (coneCount t : ℂ)) (s := (σ : ℂ)) (fun i => Or.inr (coneWeight_pos i))
-    (by simp; linarith) (fun t ht => ?_) ?_
-  · refine hM.unique ?_
-    have hval : HasSum (fun i : ℕ × ℕ => Real.Gamma σ * (2 * π) ^ (-σ) *
-        (((i.1 : ℝ) + 1) ^ (-σ) * ((i.2 : ℝ) + 1) ^ (-σ))) (coneMellinValue σ) := by
-      rw [coneMellinValue, sq, tsum_mul_tsum_of_summable_norm
-        (summable_norm_iff.mpr hps) (summable_norm_iff.mpr hps)]
-      exact hprod.hasSum.mul_left _
-    exact ((Complex.hasSum_ofReal.mpr hval).congr_fun fun i => coneTerm_eq σ i).congr_fun
-      fun i => (coneTerm_eq σ i).symm ▸ rfl
-  · have h := (summable_coneCount ht).hasSum
-    refine (Complex.hasSum_ofReal.mpr h).congr_fun fun i => ?_
-    simp
-  · refine (hprod.mul_left ((2 * π) ^ (-σ))).congr fun i => ?_
-    simp only [norm_one, Complex.ofReal_re, one_div]
-    rw [coneWeight, Real.mul_rpow (by positivity) (by positivity),
-      Real.mul_rpow (by positivity) (by positivity), Real.rpow_neg (by positivity),
-      Real.rpow_neg (by positivity), Real.rpow_neg (by positivity)]
-    field_simp
+  have hF : ∀ t ∈ Ioi (0 : ℝ), HasSum (fun i : ℕ × ℕ => (1 : ℂ) * (Real.exp (-coneWeight i * t) : ℂ))
+      (coneCount t : ℂ) := by
+    intro t ht
+    refine (Complex.hasSum_ofReal.mpr (summable_coneCount ht).hasSum).congr_fun fun i => ?_
+    rw [one_mul]
+  have hsum : Summable fun i : ℕ × ℕ => ‖(1 : ℂ)‖ / coneWeight i ^ ((σ : ℂ).re) := by
+    refine (hprod.mul_left ((2 * π) ^ (-σ))).congr fun i => ?_
+    rw [norm_one, Complex.ofReal_re, one_div_coneWeight_rpow]
+  have hM : HasSum (fun i : ℕ × ℕ => Complex.Gamma (σ : ℂ) * 1 / ((coneWeight i : ℝ) : ℂ) ^ (σ : ℂ))
+      (mellin (fun t => (coneCount t : ℂ)) (σ : ℂ)) :=
+    hasSum_mellin (fun i => Or.inr (coneWeight_pos i))
+      (by rw [Complex.ofReal_re]; linarith) hF hsum
+  have hval : HasSum (fun i : ℕ × ℕ => Real.Gamma σ * (2 * π) ^ (-σ) *
+      (((i.1 : ℝ) + 1) ^ (-σ) * ((i.2 : ℝ) + 1) ^ (-σ))) (coneMellinValue σ) := by
+    have e : (∑' m : ℕ, ((m : ℝ) + 1) ^ (-σ)) ^ 2 =
+        ∑' i : ℕ × ℕ, ((i.1 : ℝ) + 1) ^ (-σ) * ((i.2 : ℝ) + 1) ^ (-σ) := by
+      rw [sq, tsum_mul_tsum_of_summable_norm]
+      · exact summable_norm_iff.mpr hps
+      · exact summable_norm_iff.mpr hps
+    unfold coneMellinValue
+    rw [e]
+    exact hprod.hasSum.mul_left _
+  have hval' : HasSum (fun i : ℕ × ℕ => Complex.Gamma (σ : ℂ) * 1 /
+      ((coneWeight i : ℝ) : ℂ) ^ (σ : ℂ)) (coneMellinValue σ : ℂ) :=
+    (Complex.hasSum_ofReal.mpr hval).congr_fun fun i => coneTerm_eq σ i
+  exact hM.unique hval'
 
 /-! ### The double pole -/
 
@@ -113,7 +122,10 @@ theorem tendsto_ofReal_nhdsGT_one : Tendsto (fun σ : ℝ => (σ : ℂ)) (𝓝[>
   refine tendsto_nhdsWithin_of_tendsto_nhds_of_eventually_within _
     (Complex.continuous_ofReal.tendsto' 1 1 (by simp) |>.mono_left nhdsWithin_le_nhds) ?_
   filter_upwards [self_mem_nhdsWithin] with σ hσ
-  exact fun h => (ne_of_gt (show (1 : ℝ) < σ from hσ)) (by exact_mod_cast h)
+  rw [Set.mem_compl_iff, Set.mem_singleton_iff]
+  intro h
+  have h1 : σ = 1 := by exact_mod_cast h
+  exact (ne_of_gt (show (1 : ℝ) < σ from hσ)) h1
 
 /-- The real `p`-series has residue `1` at `σ = 1`. -/
 theorem tendsto_sub_one_mul_pSeries :
@@ -158,7 +170,8 @@ theorem tendsto_sq_mul_Λ (P : WeakFEPair ℂ) :
     simp only [Complex.ofReal_one, smul_eq_mul] at hres
     have h1 := hres.comp tendsto_ofReal_nhdsGT_one
     have h2 : Tendsto (fun σ : ℝ => (σ : ℂ) - 1) (𝓝[>] 1) (𝓝 0) := by
-      have := (Complex.continuous_ofReal.sub continuous_const).tendsto (1 : ℝ)
+      have hc : Continuous fun σ : ℝ => (σ : ℂ) - 1 := Complex.continuous_ofReal.sub continuous_const
+      have := hc.tendsto 1
       simp only [Complex.ofReal_one, sub_self] at this
       exact this.mono_left nhdsWithin_le_nhds
     have := h2.mul h1
@@ -172,8 +185,11 @@ theorem tendsto_sq_mul_Λ (P : WeakFEPair ℂ) :
         exact_mod_cast h.symm))
     have hc : ContinuousAt (fun s : ℂ => (s - 1) ^ 2 * P.Λ s) 1 :=
       ((continuous_id.sub continuous_const).pow 2).continuousAt.mul hdiff.continuousAt
-    have := hc.tendsto.comp ((Complex.continuous_ofReal.tendsto (1 : ℝ)).mono_left
-      nhdsWithin_le_nhds)
+    have hof : Tendsto (fun σ : ℝ => (σ : ℂ)) (𝓝[>] 1) (𝓝 (1 : ℂ)) := by
+      have := (Complex.continuous_ofReal.tendsto (1 : ℝ)).mono_left
+        (nhdsWithin_le_nhds (s := Set.Ioi (1 : ℝ)))
+      simpa using this
+    have := hc.tendsto.comp hof
     simp only [Complex.ofReal_one, sub_self, ne_eq, OfNat.ofNat_ne_zero, not_false_eq_true,
       zero_pow, zero_mul] at this
     exact this

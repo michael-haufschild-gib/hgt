@@ -740,6 +740,60 @@ theorem eventually_powerLog_low_band_and_coercivity_gap
     linarith only [hlogc, hq_scaled, hll_scaled]
   exact ⟨hc_59, hgram, hres_sum, hbudget, hcoerc_gap⟩
 
+/-- The same horizon bounds hold for any smaller actual overlap. -/
+theorem rpow_horizon_L_smallness_bounds_of_le_envelope {Q₁ R' N : ℕ} {c T C_R C_small H_res α q ν : ℝ}
+    (hα128 : α ≤ 1 / 128) (hqmax : q ≤ 1 / 5)
+    (hν : 0 < ν) (hν1000 : ν ≤ 1 / 1000) (hsep : 4 * α - q / 2 ≤ -ν)
+    (hN1 : 1 ≤ N) (hQ₁2 : 2 ≤ Q₁) (hQR' : Q₁ ≤ R')
+    (hc1 : 1 ≤ c) (hcT : c ≤ T) (hCR0 : 0 < C_R) (hCsmall0 : 0 < C_small) (hH0 : 0 < H_res)
+    (hL2000 : 2000 ≤ Real.log (N : ℝ))
+    (hHL : H_res ≤ Real.log (N : ℝ))
+    (hLX : Real.log (N : ℝ) ≤ (N : ℝ) ^ (1 / 36 : ℝ))
+    (hL45 : 36 ≤ Real.log (N : ℝ) ^ (7 / 10 : ℝ))
+    (hCR_L : 2 * C_R + 2 ≤ Real.log (N : ℝ) ^ (1 / 400 : ℝ))
+    (hCs_L : 20 * C_small + 3 ≤ Real.log (N : ℝ) ^ ν)
+    (hQ_le : (Q₁ : ℝ) ≤ Real.log (N : ℝ) ^ q)
+    (hQ_quarter : (1 / 4 : ℝ) * Real.log (N : ℝ) ^ q ≤ (Q₁ : ℝ))
+    (hTα : T ≤ Real.log (N : ℝ) ^ α)
+    (hR'_log : Real.log (R' : ℝ) ≤ C_R * T ^ 16 + Real.log (Q₁ : ℝ)) :
+    c ≤ Real.log (N : ℝ) ∧
+    36 * (1 + Real.log (R' : ℝ)) ≤ Real.log (N : ℝ) ∧
+    R' ^ 6 ≤ N ∧
+    18 * (1 + Real.log (R' : ℝ)) ≤ Real.log (N : ℝ) ∧
+    ((R' * R' : ℕ) + 1 : ℝ) * (linearNearRowRadius c + 1) ≤ (N : ℝ) ∧
+    ((R' * R' : ℕ) + 1 : ℝ) * (c * Real.exp 1 + 1) ≤ (N : ℝ) ∧
+    (1 + Real.log (R' : ℝ)) / Real.sqrt (Real.log (N : ℝ)) ≤ 1 ∧
+    (1 + Real.log (R' : ℝ)) ^ 2 / Real.sqrt (Real.log (N : ℝ)) ≤ 1 ∧
+    (R' : ℝ) * Real.sqrt (Real.log (N : ℝ) / (N : ℝ)) ≤ 1 ∧
+    C_small * (c * (1 + Real.log c) * (1 + Real.log (R' : ℝ)) / Real.log (N : ℝ) +
+      ((1 + Real.log (R' : ℝ)) ^ 2 / Real.log (N : ℝ) + (1 + Real.log (Q₁ : ℝ)) ^ 2 / Real.sqrt (Real.log (N : ℝ))) +
+      c * (1 + Real.log (R' : ℝ)) / Real.sqrt (Real.log (N : ℝ)) +
+      c ^ 2 / Real.log (N : ℝ) +
+      c ^ 2 * (1 + Real.log (R' : ℝ)) * Real.sqrt ((1 + Real.log c) / Real.log (N : ℝ)) +
+      c ^ 2 * (R' : ℝ) * Real.sqrt (Real.log (N : ℝ) / (N : ℝ)) +
+      c ^ 5 * Real.log (N : ℝ) / (N : ℝ) +
+      c ^ 4 / Real.sqrt (Q₁ : ℝ) +
+      c ^ 3 * (R' : ℝ) ^ 4 / (N : ℝ) +
+      c ^ 2 * (1 + Real.log c) / Real.log (N : ℝ)) ≤ 1 := by
+  have hT1 := hc1.trans hcT
+  obtain ⟨hTL, hlog36, hR6N, hlog18, _, _, hdiv1, hdiv2, hRsqrt, hsmall⟩ :=
+    rpow_horizon_L_smallness_bounds hα128 hqmax hν hν1000 hsep hN1 hQ₁2 hQR'
+      hT1 hCR0 hCsmall0 hH0 hL2000 hHL hLX hL45 hCR_L hCs_L hQ_le hQ_quarter hTα hR'_log
+  have hcL := hcT.trans hTL
+  obtain ⟨_, _, _, _, _, hlin, hup, _, _, _⟩ :=
+    rpow_horizon_N_bounds hN1 (hQ₁2.trans hQR') hc1 hH0 hL2000 hHL hLX hcL hlog36
+  refine ⟨hcL, hlog36, hR6N, hlog18, hlin, hup, hdiv1, hdiv2, hRsqrt, ?_⟩
+  have hc0 := zero_lt_one.trans_le hc1
+  have hT0 := hc0.trans_le hcT
+  have hlogc := Real.log_nonneg hc1
+  have hlogT := Real.log_nonneg hT1
+  have hlogmono := Real.log_le_log hc0 hcT
+  have hlogN := Real.log_natCast_nonneg N
+  have hlogR := Real.log_natCast_nonneg R'
+  have hlogQ := Real.log_natCast_nonneg Q₁
+  apply le_trans ?_ hsmall
+  gcongr
+
 end GaloisForLFunctions.TransMetzlerWeilPositivity.LogarithmicConductorSplit
 
 #print axioms GaloisForLFunctions.TransMetzlerWeilPositivity.LogarithmicConductorSplit.rpow_horizon_L_smallness_bounds

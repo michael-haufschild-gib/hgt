@@ -33,7 +33,9 @@ theorem scaled_logarithmic_ratio_le {d c : ℝ} (hd : 1 ≤ d) (hc : 1 < c)
     linarith only [hlog]
   have hldiv : 0 < Real.log (c / d) := by linarith only [hlc, hhalf]
   have hsquare : Real.log c ^ 2 ≤ 4 * Real.log (c / d) ^ 2 := by
-    nlinarith only [hhalf, hlc, hldiv]
+    calc
+      Real.log c ^ 2 ≤ (2 * Real.log (c / d)) ^ 2 := pow_le_pow_left₀ hlc.le hhalf 2
+      _ = 4 * Real.log (c / d) ^ 2 := by ring
   have hcd : c / d ≤ c := div_le_self hc0.le hd
   apply (div_le_div_iff₀ (sq_pos_of_pos hldiv) (sq_pos_of_pos hlc)).mpr
   calc

@@ -34,7 +34,7 @@ theorem logarithmicExponent_le_of_overlap_bound {B α L c : ℝ}
   have hlL : 1 ≤ Real.log L := by
     have h := Real.log_le_log (Real.exp_pos 1) hL
     simpa only [Real.log_exp] using h
-  have hden : 0 < Real.log c ^ 2 := by positivity
+  have hden : 0 < Real.log c ^ 2 := sq_pos_of_pos (zero_lt_one.trans_le hlc)
   rcases le_total (c ^ 2) L with hsmall | hlarge
   · have hαc := mul_le_mul_of_nonneg_left hsmall (sq_nonneg α)
     have hscaled : α * (B * c) ≤ α * (α * L) := by
@@ -45,7 +45,10 @@ theorem logarithmicExponent_le_of_overlap_bound {B α L c : ℝ}
       have h := Real.log_le_log hL0 hlarge
       simpa only [Real.log_pow, Nat.cast_ofNat] using h
     have hsquare : Real.log L ^ 2 ≤ 4 * Real.log c ^ 2 := by
-      nlinarith only [hlog, hlc, hlL]
+      calc
+        Real.log L ^ 2 ≤ (2 * Real.log c) ^ 2 :=
+          pow_le_pow_left₀ (zero_lt_one.trans_le hlL).le hlog 2
+        _ = 4 * Real.log c ^ 2 := by ring
     have hscale := mul_le_mul_of_nonneg_left hsquare
       (show 0 ≤ (α / (4 * B)) * L by positivity)
     have hcb : c ≤ (α / (4 * B)) * L * (4 * Real.log c ^ 2) := hcup.trans hscale

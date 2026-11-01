@@ -41,6 +41,19 @@ retain this auxiliary bound separately from actual overlap. For sufficiently
 small `ε>0`, `c≤ε L(log L)²` implies `T(c)≤(log N)^α`, where the existing
 power-of-logarithm assembly requires `α<1/59`.
 
+Take `α=1/256`, low-conductor exponent `q=1/16`, and quotient parameter `k=8`.
+The complete form retains `aT⁻⁷` of the prime defect at mass cost `CT⁹` once
+`N≥HT⁸`. Thus bounded-energy vectors have defect `O(T¹⁶)` and admit a
+conductor cutoff with `log R≤C_R T¹⁶+log Q`, `Q=⌊(log N)^q⌋`.
+For large `N`, `1+log R≤(log N)^(1/4)`, so the orthogonal cross error is
+bounded independently of actual overlap. The residual budget is controlled by
+`5q+19α+1/k<1`; intermediate-band leakage by `8α<q`; and the coercivity
+gap by `q/4>α`. These inequalities hold for the stated parameters.
+The resulting proposed critical coefficient is
+`ε=(1/256)/(4B)`, with `B=808C`. Bounded overlaps use the existing uniform
+zero-free-profile theorem. The complete Lean proof chain is drafted; its
+dependency checks remain incomplete.
+
 ## Remaining proof obligations
 
 1. Prove the scale-averaged autocorrelation's smoothness, derivative bounds,

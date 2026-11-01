@@ -74,8 +74,10 @@ theorem paperFT_zeroFreeLogProfile (z : ℂ) :
       Complex.exp (Complex.I * z * (1 / 2)) *
         Zeta23.paperFT (cx averagedSincProfile) (z / 8) := by
   change Zeta23.paperFT (fun x => (dilate 8 averagedSincProfile (x - 1 / 2) : ℂ)) z = _
-  rw [_root_.RHTower.paperFT_comp_sub (fun u => (dilate 8 averagedSincProfile u : ℂ)) (1 / 2) z,
-    paperFT_massPreservingDilate (by norm_num)]
+  rw [_root_.RHTower.paperFT_comp_sub (fun u => (dilate 8 averagedSincProfile u : ℂ)) (1 / 2) z]
+  change Complex.exp (Complex.I * z * ((1 / 2 : ℝ) : ℂ)) *
+    paperFT (cx (dilate 8 averagedSincProfile)) z = _
+  rw [paperFT_massPreservingDilate (by norm_num : (0 : ℝ) < 8)]
   norm_num
 
 /-- Translation only changes phase; real conjugation selects positive Fourier frequencies. -/
@@ -87,8 +89,10 @@ theorem norm_paperFT_zeroFreeLogProfile (r : ℝ) :
       rw [paperFT_zeroFreeLogProfile, norm_mul, Complex.norm_exp]
       simp
     _ = ‖Zeta23.paperFT (cx averagedSincProfile) (-((r : ℂ) / 8))‖ := by
-      rw [_root_.RHTower.EvenSector.paperFT_ofReal_neg_conj]
-      simp [cx]
+      change ‖paperFT (fun u => (averagedSincProfile u : ℂ)) ((r : ℂ) / 8)‖ =
+        ‖paperFT (fun u => (averagedSincProfile u : ℂ)) (-((r : ℂ) / 8))‖
+      rw [_root_.RHTower.EvenSector.paperFT_ofReal_neg_conj averagedSincProfile ((r : ℂ) / 8)]
+      simp [map_ofNat]
     _ = _ := by
       rw [RHTower.WeilDeletion.fourier_eq_paperFT]
       congr 2

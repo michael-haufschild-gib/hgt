@@ -145,22 +145,35 @@ theorem abs_log_rpow_sub_log_div_rpow_le {β : ℝ} (hβ0 : 0 < β) (hβ1 : β �
   have := Real.rpow_le_rpow (sub_nonneg.mpr hlq) hdiff hβ0.le
   linarith
 
-/-- **The fixed-scale rough asymptotic.** If `|S(Y) − c (log Y)^β| ≤ G` for all `Y`, then for every
-`T` there is `G_T` with `|S_T(Y) − c Π_{p<T}(1 − ω(p)/p) (log Y)^β| ≤ G_T` for all `Y`. -/
+/-- **The fixed-scale rough asymptotic.** If `|S(Y) − c (log Y)^β| ≤ G (1 + log Y)^α` for all `Y`,
+`α ≥ 0`, then for every `T` there is `G_T` with
+`|S_T(Y) − c Π_{p<T}(1 − ω(p)/p) (log Y)^β| ≤ G_T (1 + log Y)^α` for all `Y`. -/
 theorem exists_abs_roughSum_sub_le
     (hmul : ∀ a b, a ≠ 0 → b ≠ 0 → ω (a * b) = ω a * ω b) (hbd : ∀ n, |ω n| ≤ 1)
-    {β c G : ℝ} (hβ0 : 0 < β) (hβ1 : β ≤ 1)
-    (hS : ∀ Y : ℕ, |gaugeHarmonicSum ω Y - c * Real.log Y ^ β| ≤ G) (T : ℕ) :
+    {β c G α : ℝ} (hβ0 : 0 < β) (hβ1 : β ≤ 1) (hα : 0 ≤ α)
+    (hS : ∀ Y : ℕ, |gaugeHarmonicSum ω Y - c * Real.log Y ^ β| ≤ G * (1 + Real.log Y) ^ α)
+    (T : ℕ) :
     ∃ G' : ℝ, ∀ Y : ℕ, |gaugeHarmonicSum (roughGauge T ω) Y -
-      c * (∏ p ∈ Nat.primesBelow T, (1 - ω p / p)) * Real.log Y ^ β| ≤ G' := by
+      c * (∏ p ∈ Nat.primesBelow T, (1 - ω p / p)) * Real.log Y ^ β| ≤
+        G' * (1 + Real.log Y) ^ α := by
   induction T with
   | zero => exact ⟨G, fun Y => by simpa [roughGauge_zero] using hS Y⟩
   | succ T ih =>
     obtain ⟨G', hG'⟩ := ih
+    have hG'0 : 0 ≤ G' := by simpa using (abs_nonneg _).trans (hG' 0)
     by_cases hT : T.Prime
     · set a := c * ∏ p ∈ Nat.primesBelow T, (1 - ω p / p)
       have hT1 : (1 : ℝ) ≤ T := by exact_mod_cast hT.one_lt.le
       refine ⟨G' + G' + |a| * Real.log (2 * T) ^ β, fun Y => ?_⟩
+      have hPY : 1 ≤ (1 + Real.log Y) ^ α :=
+        Real.one_le_rpow (by linarith [Real.log_natCast_nonneg Y]) hα
+      have hmono : (1 + Real.log ((Y / T : ℕ) : ℝ)) ^ α ≤ (1 + Real.log Y) ^ α := by
+        refine Real.rpow_le_rpow (by linarith [Real.log_natCast_nonneg (Y / T)]) ?_ hα
+        rcases Nat.eq_zero_or_pos (Y / T) with h0 | h0
+        · rw [h0, Nat.cast_zero, Real.log_zero]; linarith [Real.log_natCast_nonneg Y]
+        · have := Real.log_le_log (by exact_mod_cast h0)
+            (show ((Y / T : ℕ) : ℝ) ≤ Y by exact_mod_cast Nat.div_le_self Y T)
+          linarith
       have hprod : c * ∏ p ∈ Nat.primesBelow (T + 1), (1 - ω p / p) = a * (1 - ω T / T) := by
         rw [Nat.primesBelow_succ, if_pos hT, prod_insert (fun h =>
           (Nat.lt_irrefl T) (Nat.mem_primesBelow.mp h).1)]
@@ -170,7 +183,7 @@ theorem exists_abs_roughSum_sub_le
       have hωT : |ω T / T| ≤ 1 := by
         rw [abs_div, Nat.abs_cast, div_le_one (by linarith)]; exact (hbd T).trans hT1
       have h1 := hG' Y
-      have h2 := hG' (Y / T)
+      have h2 := (hG' (Y / T)).trans (mul_le_mul_of_nonneg_left hmono hG'0)
       have h3 := abs_log_rpow_sub_log_div_rpow_le hβ0 hβ1 hT.one_lt.le Y
       have e : gaugeHarmonicSum (roughGauge (T + 1) ω) Y - a * (1 - ω T / T) * Real.log Y ^ β =
           (gaugeHarmonicSum (roughGauge T ω) Y - a * Real.log Y ^ β) -
@@ -180,7 +193,7 @@ theorem exists_abs_roughSum_sub_le
         rw [hpeel]; ring
       rw [e]
       have hb2 : |ω T / T * (gaugeHarmonicSum (roughGauge T ω) (Y / T) -
-          a * Real.log ((Y / T : ℕ) : ℝ) ^ β)| ≤ G' := by
+          a * Real.log ((Y / T : ℕ) : ℝ) ^ β)| ≤ G' * (1 + Real.log Y) ^ α := by
         rw [abs_mul]; nlinarith [abs_nonneg (gaugeHarmonicSum (roughGauge T ω) (Y / T) -
           a * Real.log ((Y / T : ℕ) : ℝ) ^ β), abs_nonneg (ω T / T)]
       have hb3 : |ω T / T * a * (Real.log Y ^ β - Real.log ((Y / T : ℕ) : ℝ) ^ β)| ≤
@@ -189,12 +202,18 @@ theorem exists_abs_roughSum_sub_le
         have := mul_le_mul hωT h3 (abs_nonneg _) zero_le_one
         nlinarith [abs_nonneg a, abs_nonneg (ω T / T), abs_nonneg (Real.log Y ^ β -
           Real.log ((Y / T : ℕ) : ℝ) ^ β)]
+      have hb3' : |a| * Real.log (2 * T) ^ β ≤ |a| * Real.log (2 * T) ^ β * (1 + Real.log Y) ^ α :=
+        le_mul_of_one_le_right (mul_nonneg (abs_nonneg a)
+          (Real.rpow_nonneg (Real.log_nonneg (by linarith)) _)) hPY
       calc _ ≤ |gaugeHarmonicSum (roughGauge T ω) Y - a * Real.log Y ^ β| +
             |ω T / T * (gaugeHarmonicSum (roughGauge T ω) (Y / T) -
               a * Real.log ((Y / T : ℕ) : ℝ) ^ β)| +
             |ω T / T * a * (Real.log Y ^ β - Real.log ((Y / T : ℕ) : ℝ) ^ β)| :=
             (abs_add_le _ _).trans (add_le_add (abs_sub _ _) le_rfl)
-        _ ≤ G' + G' + |a| * Real.log (2 * T) ^ β := add_le_add (add_le_add h1 hb2) hb3
+        _ ≤ G' * (1 + Real.log Y) ^ α + G' * (1 + Real.log Y) ^ α +
+            |a| * Real.log (2 * T) ^ β * (1 + Real.log Y) ^ α :=
+            add_le_add (add_le_add h1 hb2) (hb3.trans hb3')
+        _ = (G' + G' + |a| * Real.log (2 * T) ^ β) * (1 + Real.log Y) ^ α := by ring
     · refine ⟨G', fun Y => ?_⟩
       rw [roughGauge_succ_of_not_prime hT, Nat.primesBelow_succ, if_neg hT]
       exact hG' Y
@@ -228,15 +247,16 @@ theorem abs_harmonic_sub_log_le (Y : ℕ) :
 theorem exists_abs_roughHarmonic_sub_le (T : ℕ) :
     ∃ G : ℝ, ∀ Y : ℕ, |roughHarmonic T Y -
       (∏ p ∈ Nat.primesBelow T, (1 - 1 / (p : ℝ))) * Real.log Y| ≤ G := by
-  have hS : ∀ Y : ℕ, |gaugeHarmonicSum (fun _ => (1 : ℝ)) Y - 1 * Real.log Y ^ (1 : ℝ)| ≤ 1 := by
+  have hS : ∀ Y : ℕ, |gaugeHarmonicSum (fun _ => (1 : ℝ)) Y - 1 * Real.log Y ^ (1 : ℝ)| ≤
+      1 * (1 + Real.log Y) ^ (0 : ℝ) := by
     intro Y
-    rw [Real.rpow_one, one_mul]
+    rw [Real.rpow_one, one_mul, Real.rpow_zero, one_mul]
     exact abs_harmonic_sub_log_le Y
   obtain ⟨G, hG⟩ := exists_abs_roughSum_sub_le (ω := fun _ => (1 : ℝ)) (fun _ _ _ _ => by ring)
-    (fun _ => by simp) one_pos le_rfl hS T
+    (fun _ => by simp) one_pos le_rfl le_rfl hS T
   refine ⟨G, fun Y => ?_⟩
   have h := hG Y
-  rw [gaugeHarmonicSum_roughGauge_one, Real.rpow_one, one_mul] at h
+  rw [gaugeHarmonicSum_roughGauge_one, Real.rpow_one, one_mul, Real.rpow_zero, mul_one] at h
   simpa [one_div] using h
 
 end Peeling
@@ -587,13 +607,55 @@ theorem defect_sq_div_le_high {δ H S SN R a L : ℝ} (ha : 0 < a) (hδ0 : 0 ≤
         mul_le_mul_of_nonneg_right (mul_le_mul_of_nonneg_left hpoly (by positivity))
           (by positivity)
 
+/-- The errors of the fixed-scale defect at horizon `L = log N`: with `K₀ = cB + 2G₁ + cG₂ + G₀B + G₀G₂`
+and `4K₀/θ ≤ L^{β−α}`, the power-weighted errors satisfy
+`cB + 2G₁(1 + L)^α + cG₂ + G₀(1 + L)^α B + G₀(1 + L)^α G₂ ≤ (θ/2) L^β`. -/
+theorem defect_error_le {c B G₁ G₂ G₀ θ L β α : ℝ} (hc : 0 ≤ c) (hB : 0 ≤ B) (hG₁ : 0 ≤ G₁)
+    (hG₂ : 0 ≤ G₂) (hG₀ : 0 ≤ G₀) (hθ : 0 < θ) (hL1 : 1 ≤ L) (hα : 0 ≤ α) (hα1 : α ≤ 1)
+    (hbig : 4 * (c * B + 2 * G₁ + c * G₂ + G₀ * B + G₀ * G₂) / θ ≤ L ^ (β - α)) :
+    c * B + 2 * (G₁ * (1 + L) ^ α) + c * G₂ + G₀ * (1 + L) ^ α * B + G₀ * (1 + L) ^ α * G₂ ≤
+      θ / 2 * L ^ β := by
+  set K₀ := c * B + 2 * G₁ + c * G₂ + G₀ * B + G₀ * G₂
+  set P := (1 + L) ^ α
+  have hP1 : 1 ≤ P := Real.one_le_rpow (by linarith) hα
+  have hP2 : P ≤ 2 * L ^ α := by
+    calc P ≤ (2 * L) ^ α := Real.rpow_le_rpow (by linarith) (by linarith) hα
+      _ = 2 ^ α * L ^ α := Real.mul_rpow (by norm_num) (by linarith)
+      _ ≤ 2 * L ^ α := mul_le_mul_of_nonneg_right
+          (by calc (2 : ℝ) ^ α ≤ 2 ^ (1 : ℝ) := Real.rpow_le_rpow_of_exponent_le (by norm_num) hα1
+                _ = 2 := Real.rpow_one 2) (Real.rpow_nonneg (by linarith) _)
+  have hK₀0 : 0 ≤ K₀ := by positivity
+  have h1 : c * B + 2 * (G₁ * P) + c * G₂ + G₀ * P * B + G₀ * P * G₂ ≤ K₀ * P := by
+    have hcB : c * B ≤ c * B * P := le_mul_of_one_le_right (mul_nonneg hc hB) hP1
+    have hcG : c * G₂ ≤ c * G₂ * P := le_mul_of_one_le_right (mul_nonneg hc hG₂) hP1
+    have e : K₀ * P = c * B * P + 2 * (G₁ * P) + c * G₂ * P + G₀ * P * B + G₀ * P * G₂ := by
+      simp only [K₀]; ring
+    linarith
+  have h2 : K₀ * P ≤ 2 * K₀ * L ^ α := by
+    calc K₀ * P ≤ K₀ * (2 * L ^ α) := mul_le_mul_of_nonneg_left hP2 hK₀0
+      _ = 2 * K₀ * L ^ α := by ring
+  have hsplit : L ^ β = L ^ α * L ^ (β - α) := by
+    rw [← Real.rpow_add (by linarith)]; congr 1; ring
+  have hLα0 : 0 ≤ L ^ α := Real.rpow_nonneg (by linarith) _
+  rw [div_le_iff₀ hθ] at hbig
+  have h4 : 2 * K₀ * L ^ α ≤ θ / 2 * L ^ β := by
+    rw [hsplit]
+    have := mul_le_mul_of_nonneg_left hbig hLα0
+    calc 2 * K₀ * L ^ α = (4 * K₀) * L ^ α / 2 := by ring
+      _ ≤ (L ^ (β - α) * θ) * L ^ α / 2 := by
+          have := mul_le_mul_of_nonneg_right hbig hLα0; linarith
+      _ = θ / 2 * (L ^ α * L ^ (β - α)) := by ring
+  linarith
+
 /-- **The fixed-scale defect.** For a flip twin of relative log density `κ ∈ (0, 1/2)` and fixed
 `T ≥ 3`, with `δ_T` the Euler density of the flipped primes below `T`,
 `Σ_{a ≤ N, T-smooth} (δ_T H_N S_T(N/a) − S_N F_T(N/a))²/(a F_T(N/a)) ≤ ε δ_T² H_N S_N²` eventually.
 Equivalently, the `T`-rough means `S_T/F_T` on the fibres equal `c_N/δ_T` up to `o(c_N)` in the
 harmonic `L²` sense. -/
-theorem eventually_fixedScaleDefect_le (P : Set ℕ) {κ C : ℝ} (hκ0 : 0 < κ) (hκ : κ < 1 / 2)
-    (hP : ∀ n, 1 ≤ n → |primeSetLogMass P n - κ * Real.log n| ≤ C) {T : ℕ} (hT : 3 ≤ T)
+theorem eventually_fixedScaleDefect_le (P : Set ℕ) {κ C α : ℝ} (hκ0 : 0 < κ) (hα : 0 ≤ α)
+    (hακ : α < 1 - 2 * κ)
+    (hP : ∀ n, 1 ≤ n → |primeSetLogMass P n - κ * Real.log n| ≤ C * (1 + Real.log n) ^ α)
+    {T : ℕ} (hT : 3 ≤ T)
     {ε : ℝ} (hε : 0 < ε) :
     ∃ N₀ : ℕ, ∀ N, N₀ ≤ N →
       ∑ a ∈ smoothSet T N, (flipDensityBelow (primeSetFlip P) T *
@@ -607,15 +669,24 @@ theorem eventually_fixedScaleDefect_le (P : Set ℕ) {κ C : ℝ} (hκ0 : 0 < κ
   set β := 1 - 2 * κ with hβdef
   have hβ0 : 0 < β := by linarith
   have hβ1 : β ≤ 1 := by linarith
+  have hαβ : α < β := hακ
+  have hα1 : α ≤ 1 := by linarith
   have h1β : 1 - β = 2 * κ := by ring
   have hmul : ∀ a b, a ≠ 0 → b ≠ 0 → ω (a * b) = ω a * ω b :=
     fun a b ha hb => (primeSetFlip_isSignGauge P).mul ha hb
   have hbd : ∀ n, |ω n| ≤ 1 := abs_primeSetFlip_le P
   have hlT : 1 ≤ Real.log T := one_le_log_of_three_le hT
   -- the global asymptotic with positive constant, extended to all `Y`
-  obtain ⟨c, G₃, hc, hcG⟩ := exists_pos_abs_gaugeHarmonicSum_primeSetFlip_sub_rpow_le P hκ hP
-  set G₀ := max G₃ (2 + c)
-  have hSall : ∀ Y : ℕ, |gaugeHarmonicSum ω Y - c * Real.log Y ^ β| ≤ G₀ := by
+  obtain ⟨c, G₃, hc, hcG⟩ :=
+    exists_pos_abs_gaugeHarmonicSum_primeSetFlip_sub_rpow_le P hκ0.le hα hακ hP
+  set G₀ := max |G₃| (2 + c)
+  have hP1 : ∀ Y : ℕ, 1 ≤ (1 + Real.log Y) ^ α := fun Y =>
+    Real.one_le_rpow (by linarith [Real.log_natCast_nonneg Y]) hα
+  have hlog1 : ∀ Y : ℕ, Real.log Y ^ α ≤ (1 + Real.log Y) ^ α := fun Y =>
+    Real.rpow_le_rpow (Real.log_natCast_nonneg Y) (by linarith) hα
+  have hG₀0 : 0 ≤ G₀ := (abs_nonneg _).trans (le_max_left _ _)
+  have hSall : ∀ Y : ℕ, |gaugeHarmonicSum ω Y - c * Real.log Y ^ β| ≤
+      G₀ * (1 + Real.log Y) ^ α := by
     intro Y
     rcases lt_or_ge Y 3 with hY | hY
     · have hb := abs_gaugeHarmonicSum_le ω hbd Y
@@ -627,11 +698,14 @@ theorem eventually_fixedScaleDefect_le (P : Set ℕ) {κ C : ℝ} (hκ0 : 0 < κ
           linarith [Real.add_one_le_exp (1 : ℝ)]
       have hp0 : 0 ≤ Real.log Y ^ β := Real.rpow_nonneg (Real.log_natCast_nonneg Y) _
       have hp1 : Real.log Y ^ β ≤ 1 := Real.rpow_le_one (Real.log_natCast_nonneg Y) hlY hβ0.le
-      have := le_max_right G₃ (2 + c)
+      have := le_max_right |G₃| (2 + c)
+      have hGP := le_mul_of_one_le_right hG₀0 (hP1 Y)
       rw [abs_le] at hb ⊢
       constructor <;> nlinarith
-    · exact (hcG Y hY).trans (le_max_left _ _)
-  obtain ⟨G₁, hG₁⟩ := exists_abs_roughSum_sub_le hmul hbd hβ0 hβ1 hSall T
+    · refine (hcG Y hY).trans ?_
+      exact mul_le_mul ((le_abs_self G₃).trans (le_max_left _ _)) (hlog1 Y)
+        (Real.rpow_nonneg (Real.log_natCast_nonneg Y) _) hG₀0
+  obtain ⟨G₁, hG₁⟩ := exists_abs_roughSum_sub_le hmul hbd hβ0 hβ1 hα hSall T
   obtain ⟨G₂, hG₂⟩ := exists_abs_roughHarmonic_sub_le T
   set A := c * ∏ p ∈ Nat.primesBelow T, (1 - ω p / p)
   set B := ∏ p ∈ Nat.primesBelow T, (1 - 1 / (p : ℝ))
@@ -642,14 +716,15 @@ theorem eventually_fixedScaleDefect_le (P : Set ℕ) {κ C : ℝ} (hκ0 : 0 < κ
     have hp2 : (2 : ℝ) ≤ p := by exact_mod_cast (Nat.mem_primesBelow.mp hp).2.two_le
     have : 1 / (p : ℝ) ≤ 1 := by rw [div_le_one (by linarith)]; linarith
     linarith
-  have hG₀ : 0 ≤ G₀ := (abs_nonneg _).trans (hSall 0)
-  have hG₁0 : 0 ≤ G₁ := (abs_nonneg _).trans (hG₁ 0)
+  have hG₀ : 0 ≤ G₀ := hG₀0
+  have hG₁0 : 0 ≤ G₁ := by simpa using (abs_nonneg _).trans (hG₁ 0)
   have hG₂0 : 0 ≤ G₂ := (abs_nonneg _).trans (hG₂ 0)
   set K₀ := c * B + 2 * G₁ + c * G₂ + G₀ * B + G₀ * G₂
   obtain ⟨c₀, hc₀, hR⟩ := exists_roughHarmonic_ge
   obtain ⟨Ks, hKs, hsm⟩ := exists_sum_smoothSet_inv_le
   obtain ⟨KR, hKR, htail⟩ := exists_sum_smoothSet_tail_le T
-  obtain ⟨c', hc', N₂, hN₂⟩ := exists_pos_mul_rpow_le_gaugeHarmonicSum_primeSetFlip P hκ hP
+  obtain ⟨c', hc', N₂, hN₂⟩ :=
+    exists_pos_mul_rpow_le_gaugeHarmonicSum_primeSetFlip P hκ0.le hα hακ hP
   -- the low-fibre tolerance `θ` and the cutoff exponent `η`
   set θ := Real.sqrt (ε * δ ^ 2 * c' ^ 2 * c₀ / (4 * Ks * Real.log T ^ 2))
   have hθ0 : 0 < θ := Real.sqrt_pos.mpr (by positivity)
@@ -678,7 +753,8 @@ theorem eventually_fixedScaleDefect_le (P : Set ℕ) {κ C : ℝ} (hκ0 : 0 < κ
   -- eventual size conditions on `L = log N`
   have hL : Tendsto (fun N : ℕ => Real.log N) atTop atTop :=
     Real.tendsto_log_atTop.comp tendsto_natCast_atTop_atTop
-  have hLβ : Tendsto (fun N : ℕ => Real.log N ^ β) atTop atTop := (tendsto_rpow_atTop hβ0).comp hL
+  have hLβ : Tendsto (fun N : ℕ => Real.log N ^ (β - α)) atTop atTop :=
+    (tendsto_rpow_atTop (by linarith)).comp hL
   have hexp : Tendsto (fun N : ℕ => Real.log N ^ 3 * Real.exp (-(η * Real.log N / 2))) atTop
       (𝓝 0) := by
     have h := (Real.tendsto_pow_mul_exp_neg_atTop_nhds_zero 3).comp
@@ -691,7 +767,7 @@ theorem eventually_fixedScaleDefect_le (P : Set ℕ) {κ C : ℝ} (hκ0 : 0 < κ
   have hsmallT : 0 < ε * δ ^ 2 * c' ^ 2 / 2 / (64 * KR + 1) := by positivity
   obtain ⟨N₀, hN₀⟩ := eventually_atTop.mp ((eventually_ge_atTop (max 3 N₂)).and
     ((hL.eventually_ge_atTop (max (Real.log 2 / η) (max (2 * Real.log 2) 1))).and
-      ((hLβ.eventually_ge_atTop (2 * K₀ / θ)).and
+      ((hLβ.eventually_ge_atTop (4 * K₀ / θ)).and
         (hexp.eventually (ge_mem_nhds hsmallT)))))
   refine ⟨N₀, fun N hN => ?_⟩
   obtain ⟨hN3, hLbig, hLβbig, hexpN⟩ := hN₀ N hN
@@ -701,8 +777,8 @@ theorem eventually_fixedScaleDefect_le (P : Set ℕ) {κ C : ℝ} (hκ0 : 0 < κ
   have hLη : Real.log 2 ≤ η * L := by
     have := (le_max_left _ _).trans hLbig
     rwa [div_le_iff₀ hη0, mul_comm] at this
-  have hK₀L : K₀ ≤ θ / 2 * L ^ β := by
-    rw [div_le_iff₀ hθ0] at hLβbig; linarith
+  set Pα := (1 + L) ^ α
+  have hK₀L := defect_error_le hc.le hB0 hG₁0 hG₂0 hG₀ hθ0 hL1 hα hα1 hLβbig
   set SN := gaugeHarmonicSum ω N
   set H := gaugeHarmonicSum (fun _ => (1 : ℝ)) N
   have hH := abs_harmonic_sub_log_le N
@@ -714,7 +790,9 @@ theorem eventually_fixedScaleDefect_le (P : Set ℕ) {κ C : ℝ} (hκ0 : 0 < κ
   have hSNH : SN ≤ H :=
     (le_abs_self SN).trans ((abs_gaugeHarmonicSum_le_absHarmonic ω N).trans
       (absHarmonic_le_harmonic hbd N))
-  have hSN' : |SN - c * L ^ β| ≤ G₀ := (hcG N hN3').trans (le_max_left _ _)
+  have hSN' : |SN - c * L ^ β| ≤ G₀ * Pα :=
+    (hcG N hN3').trans (mul_le_mul ((le_abs_self G₃).trans (le_max_left _ _)) (hlog1 N)
+      (Real.rpow_nonneg (by linarith) _) hG₀0)
   -- the target is at least `ε δ² c'² L (L^β)²`
   have htarget : ε * δ ^ 2 * c' ^ 2 * L * (L ^ β) ^ 2 ≤ ε * δ ^ 2 * H * SN ^ 2 := by
     have h1 : c' ^ 2 * (L ^ β) ^ 2 ≤ SN ^ 2 := by
@@ -737,8 +815,11 @@ theorem eventually_fixedScaleDefect_le (P : Set ℕ) {κ C : ℝ} (hκ0 : 0 < κ
     have hY0 : (0 : ℝ) < ((N / a : ℕ) : ℝ) := by exact_mod_cast hY1
     have hℓL : Real.log ((N / a : ℕ) : ℝ) ≤ L :=
       Real.log_le_log hY0 hYN
+    have hG₁a : |gaugeHarmonicSum (roughGauge T ω) (N / a) - A * Real.log ((N / a : ℕ) : ℝ) ^ β| ≤
+        G₁ * Pα := (hG₁ (N / a)).trans (mul_le_mul_of_nonneg_left
+          (Real.rpow_le_rpow (by linarith [Real.log_natCast_nonneg (N / a)]) (by linarith) hα) hG₁0)
     have hD := abs_defect_le_low hβ0 hβ1 h1β hκ0 hη0 (Real.log_natCast_nonneg _) hℓL hL1 hLℓ
-      hc.le hB0 hδ0.le hδ1 hAδ (hG₁ (N / a)) (hG₂ (N / a)) hSN' hH hcBη hK₀L
+      hc.le hB0 hδ0.le hδ1 hAδ hG₁a (hG₂ (N / a)) hSN' hH hcBη hK₀L
     have hlY : Real.log ((N / a : ℕ) : ℝ) ≤ Real.log (((N / a : ℕ) : ℝ) + 1) :=
       Real.log_le_log hY0 (lt_add_one _).le
     have hRY : c₀ * L / (2 * Real.log T) ≤ roughHarmonic T (N / a) :=
