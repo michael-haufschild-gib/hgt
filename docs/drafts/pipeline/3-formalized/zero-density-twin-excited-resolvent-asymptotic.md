@@ -1,10 +1,11 @@
 # Excited resolvent of a zero-density twin: the asymptotic `ρ_N ~ c_N² W_P(s)`
 
 - **ID:** rit-zero-density-resolvent-asymptotic
-- **Stage:** 1-in-progress
-- **Type:** THEOREM (paper)
+- **Stage:** 3-formalized
+- **Type:** THEOREM (Lean)
 - **Programme:** RenormalizedIntersectionTheory, open topic 3
-- **Statement:** Let `P` have relative log density `κ ∈ (0, 1/4)` (`O(1)` error), `0 < s < t < 2 log 2`,
+- **Statement:** Let `P` have relative log density `κ ∈ (0, 1/4)` with error `O((1 + log n)^α)`,
+  `0 ≤ α < 1 − 2κ` (card `power-regular-density-twins.md`), `0 < s < t < 2 log 2`,
   `ρ_N = Σ_{i≠i₀} ⟨v_P, e_i⟩²/(E_i − γ − s)` the excited resolvent off the ground `e_{i₀}` (every other
   energy `≥ γ + t`). Then `W_P(s) = Σ_{m≥2} w_P(m)/(E_m − γ − s) < ∞` and `ρ_N/c_N² → W_P(s)`.
 
@@ -49,7 +50,21 @@ upper bound: for `x ≥ x₀ > 0`, `1/x ≤ 2e Σ_{j≥0} σ_j e^{−σ_j x}`, `
 ## Gates
 - [x] 0 → 1  in-progress
 - [x] 1 → 2  paper proof above
-- [ ] 2 → 3  formalized
+- [x] 2 → 3  formalized: `RenormalizedIntersectionTheory/TheZeroDensityTwinCarriesTheConductorSeries.lean`
+  (Steps A–E), `TheConductorSeriesConvergesBelowAQuarter.lean` (Step F and the unconditional forms),
+  `TheExcitedResolventOfAFiniteFlip.lean` (Step B)
+
+## Lean declarations
+- Step A: `exists_scale_inner_primeSetHorizonVector_sub_le`, `abs_inner_primeSetHorizonVector_sub_le`.
+- Step B: `eventually_abs_excitedResolvent_finiteFlip_sub_le`.
+- Step C–D: `excitedResolventVector`, `inner_excitedResolventVector_self`,
+  `primeEnergy_sub_excitedResolventVector`, `sq_sub_le_of_test`, `packet_le_finiteFlipSecular`,
+  `eventually_packet_le_excitedResolvent`.
+- Step E: `eventually_excitedResolvent_le_conductorSeries`, `eventually_abs_excitedResolvent_div_sub_le`.
+- Step F: `exists_sum_primeSetCutoff_rpow_le`, `sum_conductorLaplace_le`, `inv_le_dyadic`,
+  `summable_conductorSeries`.
+- Unconditional: `eventually_abs_excitedResolvent_div_sub_conductorSeries_le`,
+  `eventually_inner_sq_le_tsum_conductorSeries`, `hodgeSeparates_primeSetFlip_iff_conductorSeries`.
 
 ## Log
-- 2026-11-01 — created
+- 2026-11-01 — created; formalized

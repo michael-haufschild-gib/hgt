@@ -103,8 +103,9 @@ eigenvalue `≥ γ + t`), `s < t < 2 log 2`, and `W` bounds the partial sums of 
    `primeSetFlip_hasHyperplaneGap_of_conductorSeries`, `hodgeSeparates_primeSetFlip_iff_packet`.
 
 ## Open
-The matching lower bound `c_N^{−2} ρ_N → W_P(s)` for the excited resolvent; densities with only
-`o(log n)` error; deciding the packet inequality for a given set (the unit class mod `7` without `2`).
+Densities regular only to `o(log n)` without a power saving below `1 − 2κ`
+(`power-regular-density-twins.md`); deciding `W_P(s) ≤ 1/s` for a given set (the unit class mod `7`
+without `2`). The matching lower bound is `zero-density-twin-excited-resolvent-asymptotic.md`.
 
 ## Log
 - 2026-11-01 — created; formalized

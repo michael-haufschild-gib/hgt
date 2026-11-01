@@ -56,17 +56,22 @@ algebraic multiplier `q≠1`; `q=1` repeats the same coordinate.
    equal-length fibers are exactly finite permutation sums. No convergence
    assumption is required for these finite-fiber identities.
 
-All five modules have direct production checks and umbrella imports.
-Their 33 public axiom audits use only the standard three axioms.
+6. **Actual common-atom expansion.**
+   `ArithmeticHarmonicAnalysis/AlgebraicDilationAtoms.lean` embeds every
+   prime-power series into atoms `(p,α)` with positive algebraic `α`, preserving
+   absolute summability and the literal analytic jets. At `(p,r_j)`,
+   `atomAmplitude_eq_primeJet` gives the normalized prime-jet row times
+   `log(p) exp(−σr_j log p)`, which is nonzero. Positive-integer incidence
+   between dilation parameters is retained exactly.
+
+All six modules have direct production checks and umbrella imports.
+Their 42 public axiom audits use only the standard three axioms.
 These inputs do not yet prove joint independence of the analytic functions.
 
 ## Remaining bridge
 
-Embed each actual prime-power series into common atoms `(p,α)`, with positive
-algebraic exponent `α`. At a target atom `(p,r_j)`, the coefficient is the
-normalized prime-jet row times the common nonzero factor
-`log(p) exp(−σr_j log p)`. Integer-multiple incidence between dilations must
-remain explicit; the full set of scaled prime frequencies is not independent.
+The full set of scaled prime frequencies is not independent; the exact
+collision classification must be used in the product expansion.
 
 For a polynomial relation of maximal degree `D`, extract a frequency on `D`
 distinct primes. The certified collision law kills every lower-degree term
@@ -74,9 +79,8 @@ and reduces each degree-`D` contribution to a finite permutation sum. This is
 a symmetric multilinear form in the normalized prime-jet rows. Their
 separation forces the form to vanish; its diagonal is `D!` times the top
 homogeneous polynomial, contradicting a nonzero top coefficient.
-The common-atom expansion passes its scratch check; its production audit is
-pending. Exact polynomial frequency extraction and the actual jet-independence
-bridge are drafted but not yet certified.
+Exact polynomial frequency extraction and the actual jet-independence bridge
+are drafted but not yet certified.
 
 The corpus already supplies absolutely convergent product expansion
 (`ExponentialSeriesAlgebra.prod_expSeriesCarrier`) and coefficient extraction

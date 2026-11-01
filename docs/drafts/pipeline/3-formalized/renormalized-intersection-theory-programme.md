@@ -62,11 +62,17 @@ Answer the questions of §2.6 with unconditional theorems (equivalences, classif
   `exists_abs_gaugeHarmonicSum_roughGauge_le`, `exists_pos_mul_rpow_le_gaugeHarmonicSum_primeSetFlip`,
   `eventually_fixedScaleDefect_le`, `exists_abs_inner_twin_sub_starProjection_le`,
   `eventually_excitedResolvent_finiteFlip_le`.
+- Resolvent asymptotic: `eventually_packet_le_excitedResolvent`,
+  `eventually_abs_excitedResolvent_div_sub_conductorSeries_le`, `summable_conductorSeries`,
+  `eventually_inner_sq_le_tsum_conductorSeries`, `hodgeSeparates_primeSetFlip_iff_conductorSeries`.
+- Power-regular densities: `exists_abs_gaugeHarmonicSum_sub_rpow_le_rpow`,
+  `exists_abs_sub_rpow_le_of_wirsing_rpow`, `not_le_rpow_gaugeHarmonicSum`,
+  `exists_primeSum_rpow_ge_rpow`, `le_of_sharp_wirsing`, `defect_error_le`.
 
 ## Open
 Hodge index on schedules between `(log log N)^{<1/16}` (proved) and `(log N)^{α}`, every `α > 0` (= RH); positive index of `K_ζ` on the infinite stratum;
 infinite flip sets of maximal margin (invisible to the atomic Hodge index, not finite flips);
-prime-set twins without an `O(1)`-regular relative logarithmic density (for `κ ∈ (0, 1/4)` separation is exactly a packet above `1/s`); which side the unit class mod `7` without `2` falls on.
+prime-set twins whose relative logarithmic density is regular only to `o(log n)` without a power saving below `1 − 2κ` (with such a saving, separation is exactly `W_P(s) > 1/s`); which side the unit class mod `7` without `2` falls on.
 
 ## Log
 - 2026-10-31 — created; formalized pillars listed above

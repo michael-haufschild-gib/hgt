@@ -46,8 +46,9 @@ Hypothesis: `Σ_{p∈P, p≤n} log p/p ≥ (1/4) log n − C` for all `n ≥ 1`.
 ## Converse
 Proved for `κ ∈ (0, 1/4)` by the spectral-weight estimate
 `⟨w, v_P⟩² ≤ c_N²(W_P(s) + o(1))(Q_N(w) − s|w|²)` off the ground state
-(`eventually_inner_sq_le_conductorSeries`); see `zero-density-twin-spectral-weight.md`. Open: prime
-sets without a relative logarithmic density at `O(1)` precision.
+(`eventually_inner_sq_le_conductorSeries`); see `zero-density-twin-spectral-weight.md`; also for a
+density error `O((1 + log n)^α)`, `α < 1 − 2κ` (`power-regular-density-twins.md`). Open: densities
+regular only to `o(log n)` without such a power saving.
 
 ## Log
 - 2026-11-01 — card created; separation side and converse for `κ < 1/4` formalized
