@@ -1050,10 +1050,10 @@ theorem prefixGlobalStripZeroBound_upper :
         Real.log_nonneg (by linarith [norm_nonneg (z.re : ℂ)])
       have hB_nn : 0 ≤ B_rad * sN ^ 2 := by nlinarith
       refine mul_le_mul hre_le ?_ (by linarith) hB_nn
-      exact add_le_add_left
+      exact add_le_add le_rfl
         (Real.log_le_log
           (add_pos_of_nonneg_of_pos (add_nonneg (norm_nonneg _) zero_le_one) zero_lt_one)
-          (add_le_add hre_le le_rfl)) 1
+          (add_le_add hre_le le_rfl))
     calc ‖_root_.RHTower.finiteThetaAmplitude N z‖
         ≤ ‖RiemannGaussian.riemannXi (z.re : ℂ)‖ := norm_finiteThetaAmplitude_le_riemannXi_re N z
       _ ≤ Real.exp (A_xi * RiemannGaussian.xiLogLinearScale (‖(z.re : ℂ)‖ + 1)) :=
@@ -1654,7 +1654,9 @@ theorem exists_xi_vertical_lower_bound :
           exact mul_le_mul_of_nonneg_left hG_ge hpi_rpow_pos.le
   refine ⟨hright, ?_⟩
   have hsym : 1 - ((-1 / 2 : ℂ) + (y : ℂ) * I) = (starRingEnd ℂ) s := by
-    apply Complex.ext <;> simp [s, map_ofNat] <;> norm_num
+    apply Complex.ext
+    · simp [s, map_ofNat]; norm_num
+    · simp [s, map_ofNat]
   have hnorm_eq : ‖_root_.RHTower.xi ((-1 / 2 : ℂ) + (y : ℂ) * I)‖ = ‖_root_.RHTower.xi s‖ := by
     rw [← _root_.RHTower.xi_one_sub, hsym, _root_.RHTower.xi_conj, norm_conj]
   rwa [hnorm_eq]

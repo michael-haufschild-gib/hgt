@@ -1,8 +1,8 @@
 # Functional-equation twins with arbitrarily right-hand zeros
 
 - **ID:** functional-equation-twins-with-right-hand-zeros
-- **Stage:** 1-in-progress
-- **Type:** CONJECTURE
+- **Stage:** 3-formalized
+- **Type:** THEOREM (Lean)
 - **Wall:** Γ15; degree-three functional-equation twins.
 - **Statement:** For every `N`, `k` and real `B`, a normalized Dirichlet series matching `ζ³` below `N` has a completion with `k` distinct real zeros beyond `max(B,3)`, the same functional equation and the same principal parts.
 
@@ -31,11 +31,18 @@ right-hand real zeros across this fixed-prefix functional-equation class. The
 points are chosen by the proof; they are not an arbitrary prescribed tuple.
 The twin may depend on `k` and `B`.
 
-No analytic premise is added. Coefficients are complex; coefficient positivity,
-finite order and the Selberg Euler-product axioms are not established. This is
-degree three; degree-one rigidity is formalized in `HTGeometry.HamburgerFunctionalEquation`.
+No analytic premise is added. Coefficients are complex. Membership in the extended
+Selberg class is not established: convergence on `Re s>1` and finite order remain
+unproved. Coefficient positivity is also unproved. This is degree three;
+degree-one rigidity is formalized in `HTGeometry.HamburgerFunctionalEquation`.
 
 ## Verification
 
 - [x] Dependency-closed paper proof.
-- [ ] Lean leaf check, transitive axiom audit, umbrella import.
+- [x] Lean leaf check, transitive axiom audit, umbrella import.
+
+Lean declarations in `GaloisForLFunctions.SelbergClass`:
+`exists_cubic_twin_with_many_right_hand_zeros` and
+`exists_cubic_twin_with_right_hand_zero`, in
+`formal/GaloisForLFunctions/SelbergClass/FunctionalEquationTwinsWithRightHandZeros.lean`.
+Both depend only on `propext`, `Classical.choice`, and `Quot.sound`.

@@ -77,6 +77,8 @@ programme umbrella imports the module.
 ## Scope
 
 Cycles use the existing integral conjugacy and primitive-root classification.
-No additional identification with inverse classes is imposed. Geometric
-geodesic lengths, the Selberg/scattering normalization, and resonance
-exclusion are not conclusions of this theorem.
+No additional identification with inverse classes is imposed. The
+[translation-length theorem](gauss-mayer-hyperbolic-translation-length.md) identifies
+`L_c` with the actual displacement minimum and rewrites the factors as
+`1−z^(2ℓ(c)) exp(−(w/2+m)L_c)`. Closed-geodesic multiplicities, independent
+Selberg/scattering comparison, and resonance exclusion remain open.

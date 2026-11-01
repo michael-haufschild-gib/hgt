@@ -16,7 +16,7 @@ function:
 where `R_N(i, j) = [i ∣ j ∨ j = 1]` is Redheffer's matrix. The mechanism is Cramer's rule: the
 determinant of the glued matrix is the pole coordinate of `Z⁻¹𝟙`, the row sum of the Möbius form at
 the pole. Hence (`riemannHypothesis_iff_det_redhefferMatrix`) RH is the half-power growth of the
-gluing determinant, and unconditionally it is `Ω±(√N)` through the nerve (HWV).
+gluing determinant, and unconditionally it is `Ω±(√N)` (`det_redhefferMatrix_omega_pm_sqrt`).
 
 ADT reading: the local divisibility structure is unipotent, and the whole arithmetic of `μ` is
 created by one rank-one gluing at the pole, as the archimedean place glues the scaling data through
@@ -215,5 +215,21 @@ theorem riemannHypothesis_iff_det_redhefferMatrix :
       positivity
     · rw [← det_redhefferMatrix_eq_nerveEulerChar N hN]
       exact h N hN
+
+/-- **The gluing determinant oscillates at the square-root scale**: it exceeds `c√N` and falls
+below `−c√N` for arbitrarily large `N`. The rescaled determinant `det R_N/√N` has no limit. -/
+theorem det_redhefferMatrix_omega_pm_sqrt :
+    ∃ c : ℝ, 0 < c ∧ (∀ N₀ : ℕ, ∃ N ≥ N₀, ∃ hN : 1 ≤ N, c * Real.sqrt N < (redhefferMatrix N).det) ∧
+      ∀ N₀ : ℕ, ∃ N ≥ N₀, ∃ hN : 1 ≤ N, (redhefferMatrix N).det < -(c * Real.sqrt N) := by
+  obtain ⟨c, hc, hplus, hminus⟩ := HodgeTheoryWithoutVarieties.nerveEulerChar_omega_pm_sqrt
+  refine ⟨c, hc, fun N₀ => ?_, fun N₀ => ?_⟩
+  · obtain ⟨N, hN, h⟩ := hplus (max N₀ 1)
+    have h1 : 1 ≤ N := le_trans (le_max_right _ _) hN
+    exact ⟨N, le_trans (le_max_left _ _) hN, h1, by
+      rw [det_redhefferMatrix_eq_nerveEulerChar N h1]; exact_mod_cast h⟩
+  · obtain ⟨N, hN, h⟩ := hminus (max N₀ 1)
+    have h1 : 1 ≤ N := le_trans (le_max_right _ _) hN
+    exact ⟨N, le_trans (le_max_left _ _) hN, h1, by
+      rw [det_redhefferMatrix_eq_nerveEulerChar N h1]; exact_mod_cast h⟩
 
 end GaloisForLFunctions.ArithmeticDegenerationTheory

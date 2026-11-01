@@ -3,16 +3,27 @@
 The 33 live routes and 16 candidates are faces of three core problems — **U-Σ** (sign), **U-Π**
 (precision and production), **U-Γ** (selection). The three are readings of one even integer,
 `κ = κ(K_ζ)`: the negative index of Weil's correlation on the dilations of `ℚ`, read on the
-pole-orthogonal hyperplane `v₁^⊥`. Four further unifications organize them:
+pole-orthogonal hyperplane `v₁^⊥`. Five further unifications organize them:
 
 - **One axis.** Every sign face lives on the degree axis: the overlap multiple `K` of the atomic
   families, the radius `½ log K` of the tests they synthesize, the aperture of the restricted Weil
   minimum and the degree of a class on the scaling surface are one coordinate `a` [L].
-- **One regime.** Along that axis the complete family is a degenerating polarized family. Below the
-  critical exponent it converges, after rescaling, to the Jordan-totient form and inherits its
-  positivity; at the critical exponent its extension data reach the size of the limit and carry the
-  zeros [L/D]. The constant-factor wall, hard Lefschetz on the positive locus and the receiver
-  scale are this one regime.
+- **One language: degenerations (ADT).** Along that axis the complete family is a degenerating
+  polarized family with the dilation semigroup as monodromy. Below the critical exponent it
+  converges, after rescaling, to the Jordan-totient form — a zero-blind tensor product of weight
+  strings over the primes — and inherits its positivity; at the critical exponent its extension
+  data reach the size of the limit and carry the zeros [L/D]. The constant-factor wall, hard
+  Lefschetz on the positive locus, the top stratum and the receiver scale are this one regime: the
+  sign of RH is the sign of the second-order term of the degeneration.
+- **One gluing.** The local structure is unipotent (the divisibility form); one rank-one gluing at
+  the pole creates the whole arithmetic of `μ` (Redheffer `det = M(N)` = nerve Euler
+  characteristic = coprimality signature) and the one extra negative square of the glued state
+  (`κ + 1`) [L/S]. The one-point precision wall (C7) and the gluing wall (C2, C12) are two readings
+  of this gluing.
+- **One edge logic.** Statements proved without zero information stop below the edge of the
+  off-line data; only an identity, an inherited polarization or an integer with a structural bound
+  crosses it. The classes below sort by which carrier they would need: identity/polarization (C1,
+  C2, C4, C12), count (C13, C7), quantized integer (C3, C11), structural selection (C8–C10).
 - **One stratum.** Positivity is never local or semilocal: no `{∞,p}` family carries it, links of
   the dilation complex are disconnected, and every unpaid coupling lies in the top gcd stratum,
   reached only through the archimedean place [L/S].
@@ -35,11 +46,12 @@ statements.
 | Bounded kernel | RH ⇔ `‖K_ζ(u)‖ ≤ Re K_ζ(1)` ∀u (Castelnuovo–Severi at rational scales) | RIT `riemannHypothesis_iff_castelnuovoSeveri` [L] |
 | Coupling | RH ⇔ bounded `K(uv) − K(u) − K(v) + K(1)` on one `⟨p⟩×⟨q⟩`; coupling ≡ kernel with absolute constants; local Hyers–Ulam stability | ACPL [L] |
 | Window prime error | `K_ζ(u)` = smoothed prime error in a fixed-length multiplicative window at `u`, normalized by `√u` | HKT [L]; reading [D] |
-| Glued state | `κ(φ_c) = κ + 1` at `∞` and every prime; two primes with bounded translations carry it | AKG [L] |
+| Glued state | `κ(φ_c) = κ + 1` at `∞` and every prime; two primes with bounded translations carry it; its ratCorr Grams are complete-matrix compressions at a fixed critical multiple, and RH ⇔ pole-hyperplane positivity at every fixed critical multiple | AKG, TM, RIT [L] |
+| Gluing determinant | divisibility form unipotent; pole gluing gives Redheffer `det = M(N)` = nerve `χ̃`; coprimality form signature `M(N)` | ADT, HWV, RHTower [L/S] |
 | Primitive part | boost hyperplane = `v₁^⊥` = Markov = harmonic hyperplane; `v₁` = ground state = Kähler class | RIT, HWV [L] |
 | Markov form | `W = V_N‖g‖² + J(g) + ½⟨c,g⟩² − ½⟨s,g⟩²`; jump measure archimedean + prime atoms, creation potential `V_N`; RH ⇔ sinh-capacity bound | RHTower `WeilMarkovPoleCapacity` [L] |
 | Kähler package | HR transports wherever HL holds; Liouville = HL; RH ⇔ HL on the PSD locus; no free Lefschetz operator | HWV [L] |
-| Degeneration | rescaled limit = Jordan-totient form `J₈(m)/φ(m)` below `1/8`; extension data vanish there; inheritance radius `1/8` = receiver; dilations lower conductors; weight strings `p⁷`, `[8]_p` | ADT [L/S] |
+| Degeneration | rescaled limit = Jordan-totient form `J₈(m)/φ(m)` below `1/8` (`1/(β+1)` in general); tensor law; uniform on the subthreshold block; zero-blind; extension data vanish below the radius and carry the zeros at it; inheritance radius = receiver; dilations lower conductors; weight strings `p⁷`, `[8]_p` | ADT [L/S] |
 | Edge | RH ⇔ no edge; a finite edge is PSD with a zero mode; under ¬RH the tilted-spline edge lies in `[(log N)^{1/9−}, 2(log N)^{1/8+}]` infinitely often | EHT [L] |
 | Overlap = aperture = degree | at `c*` margin = synthesis error = `1/log N`; `K·c*` sees radius `½ log K − O(1)`; RH ⇔ every fixed `K` | TM `ReceiverRate` [L] |
 | Constant-factor wall | relative residuals decay iff `c⁸ = o(log N)`; at the receiver scale only the exact leading term of the extension data decides | HWV `TheCrossConductorPairings`, ADT [L] |
@@ -53,11 +65,11 @@ statements.
 | Stars and strata | star of `d` ≅ family at `(c⌊N/d⌋/N, ⌊N/d⌋)`; `W = Σ_g Cop(W at the star of g)`; successor + archimedean coupling in `g = 1`; links disconnected; nerve `χ̃ = −M(N)` | HWV [L] |
 | Packet identity | Mertens polarization; complete form = jump squares + affine incidence squares + bounded diagonal − shell degree + boundary; coprime successor gap | ACPL, CSAR [L] |
 | Heat | `κ(φ_c^{(t)}) − 1 = N(t)/2` = future collision pairs | AKG, RIT [L] |
-| Quantum | collision charge = Fredholm index = Wiener–Hopf index; index `0` ⇔ outer Szegő factorization ⇔ disk-unit sectoriality; `κ ≤ sup O`; RH ⇔ `O < 2` per window | CDG, EHT [L] |
+| Quantum | collision charge = Fredholm index = Wiener–Hopf index; index `0` ⇔ outer Szegő factorization ⇔ disk-unit sectoriality; `κ ≤ sup O`; RH ⇔ `O < 2` per window; separation-free stabilization at prefix `Θ(√m)`; `Θ(√m)`-prefix Szegő positivity ⇔ inverse-log corridor (log resolution) / RH (polynomial resolution) | CDG, EHT [L/P] |
 | Hecke defect | means ↔ near-line density rates; `o(log U)` ⇔ critical-scale clustering; fixed scale ⇔ corridor; one constant over dyadic scales ⇔ RH | CDG [L] |
 | Frobenius at infinity | `σ(ρ) = 1 − ρ̄`; RH ⇔ `σ` trivial ⇔ Hecke similitude of the collided form; `κ = #` moved zeros | EHT [L] |
 | Partner angle | resonant states of `ρ` and `1 − ρ̄`: `cos² = 4Reρ(1 − Reρ)`, saturated iff `Re ρ = ½` | RHTower [L] |
-| Mayer determinant | `D(w,λ) = A + ζB`; real-`w` cone; signed product = exp of even-word traces; primitive coding of hyperbolic classes | RIT [L] |
+| Mayer determinant | `D(w,λ) = A + ζB`; real-`w` cone; signed product = exp of even-word traces = Euler product over primitive digit-pair cycles with hyperbolic translation lengths; primitive coding of hyperbolic classes | RIT [L] |
 | Künneth | `κ(K_ζ⊠K_ζ) ∈ {0, ∞}`; no softening at any horizon | RIT, EHT [L] |
 | Finite-index constraints | `κ ≤ r` ⇔ translation-stable positive constraints of dimension `≤ r` | HKT [L] |
 | Selection | every prime-set flip separated (zero-density twins below `1/4` included); self-similar flux only for generalized von Mangoldt weights | RIT, ACP, HWV [L] |
@@ -92,6 +104,22 @@ complete-family routes (C1), the glued state (C2) through the ratCorr Grams, the
 (C5), the gluing face (C12) and the Riemann–Roch routes (C13) all read the sign along this
 coordinate.
 
+## 0.2 The degeneration dictionary
+
+Every class below reads one object of the degenerating family `W_{φ,c,N}` (ADT).
+
+| ADT object | Statement | Classes / routes reading it |
+|---|---|---|
+| Variation over the resolution `(c, N)` | complete Weil matrices; overlap multiple = aperture = degree | C1 (HF, SRT, AIP, ACT, ACS-atomic, RW, EWU, OWU) |
+| Monodromy | dilation `n ↦ pn` lowers conductors; one branch per prime, glued at `∞` | C12 (stars, layers of a prime), C6 (prime schedules) |
+| Weight filtration and graded pieces | conductor towers; Jordan coefficients `J(m) > 0`, tensor law over primes | C1, C12 |
+| Rescaled limit (nilpotent orbit) | Jordan-totient form below `1/(β+1)`; zero-blind | C1 inherited regime; EHT limit structure |
+| Extension data | cross-conductor channels in the top coprime stratum; vanish below the radius, carry the zeros at it | C12 (HL, top stratum), C1 (constant-factor wall), C2 (pole-hyperplane compressions) |
+| One negative square | the pole gluing: glued index `κ + 1`; Redheffer `det = M(N)` | C2 (SC), C7 (MC, WL), C12 |
+| Carriers through the edge | counts (sections, naive heights), traces (semilocal, CCM), quantized readings (window index) | C13, C4/RW (traces), C3/C11 (integers) |
+| Function fields | finite monodromy, detection by window `2g`, Stepanov count | calibration of every class |
+| Fakes | golden datum, prime flips, Liouville twin, Epstein lattices | C8–C10 (selection) |
+
 ## 1. Equivalence classes of routes
 
 Routes in one class compute the same quantity; a theorem in one class transfers to the others
@@ -100,17 +128,17 @@ through the listed identity.
 | Class | Common quantity | Routes | Identity joining them |
 |---|---|---|---|
 | C1 Degree axis / complete family | positivity of the complete Weil family at `K·c*`, equivalently Weil positivity at radius `½ log K` | HF, SRT, AIP, ACT, ACS-atomic; RW, EWU, OWU, MSC | `W_{φ,c,N}` PSD ⇔ `N < h(atom_{c/N})`; block synthesis `K ↔ e^{2R}`; degeneration with inheritance radius = receiver; degree laws [L] |
-| C2 Glued state | `κ(φ_c) − 1` on the boost hyperplane | SC, AKG-gluing, RIT-Künneth | `κ(φ_c) = 1 + κ_boost`; boost mass `= √(log N)⟨x, v₁⟩` [L]; ratCorr Grams = complete-family packet Grams at a fixed critical multiple [S] — joins C1 |
-| C3 Heat / collision integer | `N(t)/2`, `O(T)`, `ΔO`, window index | WD-charge, SC-heat, LA-heat, TG, HEF | heat index = future collisions; bounded `N` ⇔ bounded `O`; `κ ≤ sup O`; window index = Wiener–Hopf index [L] — joins C1 |
+| C2 Glued state | `κ(φ_c) − 1` on the boost hyperplane | SC, AKG-gluing, RIT-Künneth | `κ(φ_c) = 1 + κ_boost`; ratCorr Grams = complete-matrix compressions at a fixed critical multiple; RH ⇔ pole-hyperplane positivity at every fixed critical multiple (inertia + evenness) [L] — a face of C1 |
+| C3 Heat / collision integer | `N(t)/2`, `O(T)`, `ΔO`, window index | WD-charge, SC-heat, LA-heat, TG, HEF | heat index = future collisions; bounded `N` ⇔ bounded `O`; `κ ≤ sup O`; window index = Wiener–Hopf index; sectoriality at polynomial resolution and prefix `Θ(√m)` ⇔ RH [L/P] — joins C1 |
 | C4 Odd / Markov sector | odd-sector Doob energy `R ≤ ½`; sinh-capacity | CHMD, TT, AID, SAHT | Markov hyperplane = `v₁^⊥`; Weil form = Markov form + pole plane [L] — joins C1 |
 | C5 Rank / degree uniformity | all-rank Hankel, all-degree Jensen, PF signs; Laguerre–Pólya property of `ξ` | TH, HCF, PA, GTA, LA-Jensen; ART (centered approximation) | heated Hankel inertia counts off-line pairs at matched rank [L]; centered curve products close into the Laguerre–Pólya class [L/D] |
 | C6 Scheduled prime sums | lower bound of a prime-scheduled energy | FU, CFC, RP, SZ, LI, FEL, EGC | explicit-formula functionals bounded below ⇔ RH [L] |
-| C7 Window precision | `ψ(x) − x`, `M(x)`, windowed prime error, inter-tower coupling, nerve Euler characteristic | WL, MC, PBM, RB, JAS, CTF, SC-coupling | `Count(a)` iff `a − 1 ∈ 𝒬`; coupling ≡ kernel = window error; `χ̃(nerve) = −M(N)` [L/D] |
+| C7 Window precision | `ψ(x) − x`, `M(x)`, windowed prime error, inter-tower coupling, nerve Euler characteristic, Redheffer determinant | WL, MC, PBM, RB, JAS, CTF, SC-coupling | `Count(a)` iff `a − 1 ∈ 𝒬`; coupling ≡ kernel = window error; `χ̃(nerve) = −M(N) = −det R_N` [L/S] — the determinant reading of the C2/C12 pole gluing |
 | C8 Selection / typicality | the trivial gauge point among twins | MC-typicality, BAG, XN, PM-selection | RH ⇔ trivial point typical [L] |
-| C9 Realization | spectral reality of a constructed operator | RN, PTR, W1C, PM-Mayer | Vitali: normal real-zero approximants force RH; Mayer determinant `D = A + ζB` with even-word trace formula [L] |
+| C9 Realization | spectral reality of a constructed operator | RN, PTR, W1C, PM-Mayer | Vitali: normal real-zero approximants force RH; Mayer determinant `D = A + ζB` with primitive-orbit Euler product in hyperbolic-length form [L] |
 | C10 Pre-divisor | a section or potential defined before the divisor | APF, BSH, CDC, DR, EWJ, HJ, PCS, RFHM, SEC, WBF | each needs a zero-independent forcing (Γ5) |
 | C11 Conjugate diagonal | non-holomorphic depth functionals: Hecke defect, fibre multiplicity, same-point quantum, local counts, pair surplus | WD-Hecke, census, HEF, SRT-local count, IGP, TTPC | `H(γ) ≤` prime polynomial `+ 4E_γ(L)`; `O ∈ 2ℕ`; means ↔ near-line density; census = signed pair surplus [L] |
-| C12 Hodge–Lefschetz / gluing | HL on the positive locus; star descent; top gcd stratum; inheritance past the critical exponent | HF-Hodge, ACS-Hodge, RIT renormalized index, EHT zero modes, TG paths | Liouville = HL; transport free; star isometry; gcd stratification; no semilocal carrier; limit polarization inherited exactly to `1/8` [L/S] |
+| C12 Hodge–Lefschetz / gluing / degeneration | HL on the positive locus; star descent; top gcd stratum; the second-order term of the degeneration | HF-Hodge, ACS-Hodge, ADT, RIT renormalized index, EHT zero modes, TG paths | Liouville = HL; transport free; star isometry; gcd stratification; no semilocal carrier; limit polarization inherited exactly to `1/8`; extension data in the top coprime stratum [L/S] |
 | C13 Sections, correspondences and heights | a count-valued primitive `h¹`; a naive height on the integral correspondence ring | ACS-effectivity, HF-RR, RIT quadratic RR, IRK | universal floor law; Künneth `h¹`; jump-count reading of prime-free cycles; Rosati ⇔ orbit Hodge ⇔ naive height; Lefschetz trace of correctors [L] |
 
 C1, C2, C3, C4 and C12 compute one sign on one hyperplane: C1 along the degree axis, C2 on the
@@ -131,9 +159,10 @@ polarization through the critical exponent; no zero mode on `v₁^⊥` [L/D].
 
 | Layer | Status | Anchor |
 |---|---|---|
-| Inherited regime, tilted spline | all vectors `α < 1/9` with logarithmic confinement and reserve `c^{−8}`; packets `α < 1/8`; mid-band packets `α < 1/4`; top self-form `O(c log c)`; binding term `c⁹` split cross payment | CACT [L] |
+| Inherited regime, tilted spline | all vectors `α < 1/9` with logarithmic confinement and reserve `c^{−8}`; packets `α < 1/8`; mid-band packets `α < 1/4`; top self-form `O(c log c)`; binding terms three `c⁹` payments; prefix–terminal block = rank-one coherent part + shifted-correlation remainder | CACT [L/S] |
 | Inherited regime, smooth profiles | logarithmic profile positive on `[1, ε₀·c*]`, budget sharp; every profile without real Fourier zeros has edge `→ ∞` | TM, EHT [L] |
-| Degeneration | Jordan-totient limit; extension data vanish below `1/8`; dilation monodromy; weight strings | ADT [L/S] |
+| Degeneration | Jordan-totient limit; tensor law; uniform subthreshold law; extension data vanish below `1/8`; dilation monodromy; weight strings; open: second order at the critical curve, threshold block `m ≍ c` | ADT [L/S] |
+| Gluing | divisibility form unipotent; pole gluing = Redheffer `det = M(N)`; coprimality signature `M(N)`; glued index `κ + 1` | ADT, AKG [L/S] |
 | Critical overlap | Denjoy–Carleman / sinc `c* ≍ L(log L)²`; tilted spline `(log N)^{1/8}`; receivers at every fixed multiple; ratCorr Grams realized at a fixed multiple | TM, SSHA, AKG [L/S] |
 | Constant-factor wall | relative residuals `O(1)` at the receiver scale; only the exact leading term of the extension data decides | HWV, ADT [L] |
 | Degree laws | ceiling; near radical `≈ 2e^{2a}`; genus function reading resolved zeros; finite divisor; visibility; isolated-pair edge; companions | ArithmeticCompensationTheory, RHTower, ACS [L] |
@@ -234,7 +263,9 @@ correspondence algebra, i.e. a naive height on the integral Rosati form.
 |---|---|---|
 | Σ: one hyperplane | glued index, complete-Weil sign, Markov criterion, renormalized Hodge index and HR of the Kähler package are positivity on `v₁^⊥` | SC, HF, SRT, AIP, ACS, CHMD, RIT, HWV |
 | Σ: one axis | overlap multiple = synthesis blocks = radius = degree = aperture | HF, SRT, AIP, RW, EHT, TM, ACS, LST [L] |
-| Σ: one regime | inherited regime (estimates, Jordan-totient limit) below the critical exponent; extension data of the order of the limit at it; constant-factor wall = HL = top gcd stratum there | CACT, TM, HWV, SSHA, ADT, EHT [L/D] |
+| Σ: one regime | inherited regime (estimates, Jordan-totient limit) below the critical exponent; extension data of the order of the limit at it; constant-factor wall = HL = top gcd stratum = second-order term there | CACT, TM, HWV, SSHA, ADT, EHT [L/D] |
+| Σ ∩ Π: one gluing | Redheffer `det = M(N)`, nerve `χ̃`, coprimality signature and the glued index `κ + 1` are one rank-one gluing at the pole; half-power growth of the determinant is RH | ADT, HWV, AKG, MC [L/S] |
+| Σ: glued state = complete family | ratCorr Grams are complete-matrix compressions at a fixed critical multiple; RH ⇔ pole-hyperplane positivity at every fixed critical multiple | SC, TM, RIT [L] |
 | Σ ∩ Π: degree laws | ceiling, near radical blind below the Landau height, finite divisor; each degree finite-dimensional, all degrees RH | RW, ACS, RHTower, ArithmeticCompensationTheory [L]; [D] |
 | Π: resolution axis | the genus function reads distinct resolved zeros; its upper law is almost-all simplicity, independent of the sign | ACS, RW [L] |
 | Σ: zero modes | a finite edge is a zero mode of a PSD form; successor + dyadic rigidity confines incidence kernels to constants; Liouville = HL | EHT, CSAR, ACPL, HWV |
@@ -243,7 +274,7 @@ correspondence algebra, i.e. a naive height on the integral Rosati form.
 | Σ ∩ Π ∩ Γ: correspondences | a naive height on correspondences would give sign (Hodge index), precision (Castelnuovo–Severi) and selection (graph classes) at once, as over `𝔽_q`; the algebra, the theorem of the square and the Lefschetz trace exist over `ℤ` | ACS, LST, AOG, AET, ACP, RIT, HF, SC [L/D] |
 | Σ ∩ Π: counts at small radius | on prime-free cycles the primitive `h¹` is a Lévy jump count to radius `1/64`; over `𝔽_q` the Stepanov count pays it | LST [L] |
 | Σ ∩ Π: unattained width | cone, tower and escape receivers leave "`Θ` not attained"; attainment implies `Θ < 1` | ACPL, AKLT, PM [L/D] |
-| Σ ∩ Π: quantization | RH = an even integer `< 2`; window index = Wiener–Hopf index, index `0` ⇔ outer Szegő factorization; readings stabilize only at prefixes `≥ c√T` | WD, TG, SC, HKT [L/S] |
+| Σ ∩ Π: quantization | RH = an even integer `< 2`; window index = Wiener–Hopf index, index `0` ⇔ outer Szegő factorization; prefixes `≥ c√T` necessary and `Θ(√m)` sufficient on unit windows without separation input; logarithmic resolution ⇔ inverse-log corridor, polynomial resolution ⇔ RH | WD, TG, SC, HKT [L/P] |
 | Σ ∩ Π: critical-scale residual | at `c*` margin = residual; the sign needs signed cancellation of the extension data | HF, SRT, AIP, TM, CSAR, HWV, ADT [L/D] |
 | Σ ∩ Π: kernel = coupling = window error | bounded kernel, bounded coupling, no edge, window PNT at `√` precision are one statement | SC, ACPL, EHT, WL, HKT |
 | Σ ∩ Π: conductor levels | residual control in the Siegel–Walfisz range; single modes to `N^θ`, `θ < ½`; above `√N` Elliott–Halberstam type | CACT, CAF, MC |
@@ -266,16 +297,16 @@ correspondence algebra, i.e. a naive height on the integral Rosati form.
 | RW, EWU, OWU | Σ (Γ) | C1 | the degree axis itself; semilocal trace; selectivity |
 | FU, CFC, RP, SZ, LI | Σ | C6 | scheduled prime sums |
 | PA, TH, LA, HCF, GTA | Σ | C5 | rank / degree sign (Laguerre–Pólya) |
-| MC | Π (Γ) | C7, C8 | Möbius cancellation; band localization; typicality |
+| MC | Π (Γ) | C7, C8 | Möbius cancellation; Redheffer determinant of the pole gluing; band localization; typicality |
 | TT | Σ | C4 | odd / directed covariance |
 | TG | Σ | C3, C12 | quantum; source-defined HL along paths |
-| HF | Σ (Π, Γ) | C1, C12, C13 | complete family at the critical exponent; degeneration; Kähler package; stars and strata; correspondences and heights |
+| HF | Σ (Π, Γ) | C1, C12, C13 | complete family at the critical exponent; ADT degeneration and second-order term; Kähler package; stars and strata; correspondences and heights |
 | SRT, AIP, ACT | Σ (Π) | C1 | complete atomic matrix; edge; zero modes |
 | SC | Σ, Π (Γ) | C2, C7, C3 | glued state = complete-family packets at a fixed critical multiple; coupling = window error; heat homotopy |
 | CHMD | Σ | C4, C1 | Haar / Doob / odd sector; Markov form |
 | RN | Σ | C9 | realization |
-| WD | Σ, Π | C3, C11 | window index (Wiener–Hopf); Hecke-defect / density ladder |
-| PM | Γ (Σ) | C8, C9 | Mayer determinant and word traces; resonant states; partner saturation |
+| WD | Σ, Π | C3, C11 | window index (Wiener–Hopf), sectoriality at polynomial resolution; Hecke-defect / density ladder |
+| PM | Γ (Σ) | C8, C9 | Mayer determinant, primitive-orbit Euler product; resonant states; partner saturation |
 | JAS, CTF, PBM, RB | Π | C7 | one-sided count |
 | XN, BAG | Γ | C8 | typicality / recurrence |
 | ACS | Π (Σ, Γ) | C13, C1, C12 | count-valued primitive `h¹`; naive heights; genus function; atomic; curve calibration |
@@ -296,11 +327,11 @@ connected; its primitive `h¹` of a graph is the degree of a correspondence, a n
 | Needed | Present over `ℤ` | Missing |
 |---|---|---|
 | Positivity by identity | packet identity; Mertens polarization; local pole–successor forms; archimedean form on `ℓ = 0` = dilation form + shell squares; Markov form; matched prime form with one positive direction on every finite sieve; star isometry; gcd stratification; coprime successor gap | an identity for the shell degree jointly with the pole; an SOS identity for the dilation form on one two-prime lattice; payment of the top gcd stratum |
-| Positivity uniform in degree | inherited regime with Jordan-totient limit; rough regime to `ε₀·c*`; Weil floors through radius `181/500`; receivers at every `K·c*`; coercivity off the finite divisor at every degree | the extension data at the critical exponent; a mechanism exact on the near radical (the ceiling and the near radical exclude estimates there) |
+| Positivity uniform in degree | inherited regime with Jordan-totient limit; rough regime to `ε₀·c*`; Weil floors through radius `181/500`; receivers at every `K·c*`; coercivity off the finite divisor at every degree | the second-order term of the degeneration at the critical curve and its polarization; a mechanism exact on the near radical (the ceiling and the near radical exclude estimates there) |
 | Nondegeneracy (HL) | Kähler transport; Liouville = HL; star descent; deep stars positive; inheritance of the limit polarization below `1/8` | HL on the positive locus; inheritance through the critical exponent; a cross-tower gap through the archimedean channel |
 | Gluing | exact gcd stratification; Möbius gluing of stars; two-prime cyclic orbit carries the defect | a global payment of the top stratum (no local or semilocal carrier exists) |
 | Precision | one-sided count ⇔ RH; kernel = coupling = window error; producers to the main term; Hecke means `O(log U)` on `(0, ½)`; near-line density at rates `< 1`; census certificate | square-root input for one-point windows; near-line density at rate `≥ 1` and clustering; the pair surplus beyond bandwidth one |
 | Count from geometry | theta `h⁰` with RR on `Spec ℤ` and the pole plane; scaling surface with RH ⇔ effectivity; Künneth `h¹`; jump-count reading of prime-free cycles; boost transform restoring the Euler product; correspondence algebra with λ-ring, theorem of the square and Lefschetz traces; Tate's limit law | a naive height on `ℤ[ℚ_{>0}^×]` at bounded distance from the Rosati form; a section theory whose primitive `h¹` is a count past the first prime, on lattices of growing rank, with a logarithmic Serre duality for the split surface |
 | Genus | near radical `≥ 2e^{2a}`; genus function reading resolved zeros; finite divisor at every degree | the identification of the genus function with the `h¹` of the section theory; its upper law is almost-all simplicity (independent of RH) |
 | Canonical selector | every prime-set flip separated; coupling diagonal; gauge fixing; self-similar counterterm; modular surface for PM | Frobenius at infinity as an operator: Rosati positivity / naive height, a conformal correspondence of factor `≠ 1`, a Hecke similitude of the collided form, or partner saturation |
-| Integrality with homotopy invariance | collision charge as Fredholm / Wiener–Hopf index; heat index as Pontryagin homotopy; index constant on nondegenerate paths | a source-defined sectorial multiplier on every window, or a source-defined noncrossing mechanism; a separation input for prefix stabilization |
+| Integrality with homotopy invariance | collision charge as Fredholm / Wiener–Hopf index; heat index as Pontryagin homotopy; index constant on nondegenerate paths; polynomial-prefix stabilization without separation input [P] | a source-defined sectorial multiplier on every window at polynomial resolution, or a source-defined noncrossing mechanism |

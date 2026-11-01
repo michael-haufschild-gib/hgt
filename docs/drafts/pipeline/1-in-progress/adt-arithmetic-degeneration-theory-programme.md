@@ -26,8 +26,16 @@ no-go with survivor, or unconditional theorem), build its tools. Folder
 6. Two-projection structure of the archimedean trace carrier `1 − P − P̂`.
 7. Selectivity of the limit (twins, fakes), calibration over `𝔽_q`.
 
-## Lean modules
-RegularTailsGiveJordanTotientLimits (checks clean), TheTiltedSplineHasARegularTail (in progress).
+## Lean modules (all check with `lake --old env lean`, wired into the umbrella and MainTheorems)
+RegularTailsGiveJordanTotientLimits, TheTiltedSplineHasARegularTail, TheLimitingMixedStructure,
+TheDilationsLowerTheConductor, TheWeightStringsOfTheRescaledLimit,
+TheRescaledLimitTensorizesOverThePrimes, TheSubthresholdBlockIsUniformlyJordan,
+TheMertensFunctionIsAGluingDeterminant, CompleteDegenerationSelectsZeta.
 
 ## Open
-see README §9.
+- Second-order rescaled limit at the critical curve `c⁸ ≍ log N` on fixed packets: deterministic
+  `O(c/log N)` corrections versus the zero-dependent part.
+- Threshold block `m ≍ c` and its coupling to the pure block (whole-space `1/9 → 1/8`).
+- Twists with non-summable defect (Liouville, cofinite flips); lattice fakes.
+- Carriers: semilocal trace at `2`; Voronoi duality of the cone count.
+- README §9 for the full list.

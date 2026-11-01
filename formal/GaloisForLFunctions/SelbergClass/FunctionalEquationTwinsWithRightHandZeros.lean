@@ -1,6 +1,7 @@
 import GaloisForLFunctions.RHTower.GammaRCubeFunctionalEquationAbundance
 import GaloisForLFunctions.RHTower.TwinRigidityOffLineZero
 import GaloisForLFunctions.HTGeometry.EvaluationMinorGeneralDomain
+import GaloisForLFunctions.HTGeometry.ExpandedEvaluationSetSampling
 import Mathlib.NumberTheory.LSeries.Injectivity
 
 /-!
@@ -11,6 +12,8 @@ segment of its Dirichlet coefficients do not impose a zero-free right half-plane
 Dirichlet uniqueness preserves independence of entire theta perturbations on every
 real right ray. A nonsingular evaluation matrix then permits simultaneous cancellation
 at arbitrarily many distinct points beyond any fixed bound.
+The identity theorem also permits arbitrarily many zeros in a fixed disk inside
+the right half of the critical strip, at any prescribed height.
 -/
 
 noncomputable section
@@ -110,6 +113,95 @@ private theorem independent_on_real_ray {k : ℕ} (e : Fin k → ℕ → ℂ)
 /-- The coefficients of the cube of the Riemann zeta function. -/
 def cubicZetaCoeffs (n : ℕ) : ℂ := RHTower.TwinRigidity.zetaPowCoeff 3 n
 
+/-- Finite linear combinations of entire reflection-even perturbations preserve
+normalization, the coefficient prefix, and the principal parts of the cubic completion. -/
+private theorem exists_cubic_twin_combination (N k : ℕ) (e : Fin k → ℕ → ℂ)
+    (E : Fin k → ℂ → ℂ)
+    (hfam : ∀ j,
+      (∀ n, n + 1 < max N 2 → e j n = 0) ∧
+      (∃ C : ℝ, ∀ n, ‖e j n‖ ≤ C * ((n : ℝ) + 1) ^ 2) ∧
+      Differentiable ℂ (E j) ∧ (∀ s, E j (1 - s) = E j s) ∧
+      (∀ s : ℂ, 3 < s.re → E j s = LSeries (dirichletCoeffs (e j)) s * Gammaℝ s ^ 3))
+    (c : Fin k → ℂ) :
+    ∃ a : ℕ → ℂ, ∃ F : ℂ → ℂ,
+      a 1 = 1 ∧ (∀ n, n < N → a n = cubicZetaCoeffs n) ∧
+      (∀ s : ℂ, 3 < s.re → LSeriesSummable a s) ∧
+      Differentiable ℂ (fun s => F s - completedRiemannZeta s ^ 3) ∧
+      (∀ s, F (1 - s) = F s) ∧
+      (∀ s : ℂ, 3 < s.re → F s = LSeries a s * Gammaℝ s ^ 3) ∧
+      ∀ s, F s = completedRiemannZeta s ^ 3 + ∑ j, c j * E j s := by
+  classical
+  have heSum (j : Fin k) (s : ℂ) (hs : 3 < s.re) :
+      LSeriesSummable (dirichletCoeffs (e j)) s := by
+    obtain ⟨C, hC⟩ := (hfam j).2.1
+    exact summable_dirichletCoeffs hC hs
+  have heRep (j : Fin k) (s : ℂ) (hs : 3 < s.re) :
+      E j s = LSeries (dirichletCoeffs (e j)) s * Gammaℝ s ^ 3 :=
+    (hfam j).2.2.2.2 s hs
+  let b : ℕ → ℂ := ∑ j, c j • dirichletCoeffs (e j)
+  let a : ℕ → ℂ := cubicZetaCoeffs + b
+  let F : ℂ → ℂ := fun s => completedRiemannZeta s ^ 3 + ∑ j, c j * E j s
+  have hbSum (s : ℂ) (hs : 3 < s.re) : LSeriesSummable b s :=
+    LSeriesSummable.sum fun j _ => (heSum j s hs).smul (c j)
+  have hbRep (s : ℂ) (hs : 3 < s.re) :
+      (∑ j, c j * E j s) = LSeries b s * Gammaℝ s ^ 3 := by
+    dsimp only [b]
+    rw [LSeries_sum (fun j _ => (heSum j s hs).smul (c j)), Finset.sum_mul]
+    apply Finset.sum_congr rfl
+    intro j _
+    rw [LSeries_smul, heRep j s hs]
+    ring
+  have hcoeff (n : ℕ) (hn : n < max N 2) : a n = cubicZetaCoeffs n := by
+    have hb : b n = 0 := by
+      dsimp only [b]
+      rw [Finset.sum_apply]
+      apply Finset.sum_eq_zero
+      intro j _
+      cases n with
+      | zero => simp only [Pi.smul_apply, dirichletCoeffs, smul_zero]
+      | succ n => simp only [Pi.smul_apply, dirichletCoeffs,
+          (hfam j).1 n hn, smul_zero]
+    change cubicZetaCoeffs n + b n = cubicZetaCoeffs n
+    rw [hb, add_zero]
+  refine ⟨a, F, ?_, ?_, ?_, ?_, ?_, ?_, ?_⟩
+  · rw [hcoeff 1 (by omega)]
+    simp only [cubicZetaCoeffs, RHTower.TwinRigidity.zetaPowCoeff_one, Complex.ofReal_one]
+  · intro n hn
+    exact hcoeff n (hn.trans_le (le_max_left N 2))
+  · intro s hs
+    have hz : LSeriesSummable cubicZetaCoeffs s :=
+      (RHTower.TwinRigidity.lseries_zetaPowCoeff 3 (by linarith)).1
+    exact hz.add (hbSum s hs)
+  · have heq : (fun s => F s - completedRiemannZeta s ^ 3) =
+        ∑ j, (fun s => c j * E j s) := by
+      funext s
+      simp only [Finset.sum_apply]
+      dsimp only [F]
+      ring
+    rw [heq]
+    exact Differentiable.sum
+      (fun (j : Fin k) _ => ((hfam j).2.2.1).const_mul (c j))
+  · intro s
+    dsimp only [F]
+    rw [completedRiemannZeta_one_sub]
+    congr 1
+    apply Finset.sum_congr rfl
+    intro j _
+    exact congrArg (fun z : ℂ => c j * z) ((hfam j).2.2.2.1 s)
+  · intro s hs
+    have hz := RHTower.TwinRigidity.lseries_zetaPowCoeff 3 (s := s) (by linarith)
+    have hzSum : LSeriesSummable cubicZetaCoeffs s := hz.1
+    have hzVal : LSeries cubicZetaCoeffs s = riemannZeta s ^ 3 := hz.2
+    have hs0 : s ≠ 0 := by intro h; simp only [h, zero_re] at hs; linarith
+    have hG := Gammaℝ_ne_zero_of_re_pos (s := s) (by linarith)
+    have hZ : completedRiemannZeta s = riemannZeta s * Gammaℝ s := by
+      rw [riemannZeta_def_of_ne_zero hs0, div_mul_cancel₀ _ hG]
+    dsimp only [F, a]
+    rw [LSeries_add hzSum (hbSum s hs), hzVal, hbRep s hs, hZ, mul_pow]
+    ring
+  · intro s
+    rfl
+
 /-- For every finite coefficient prefix and every real bound, a normalized twin of
 `ζ³` has arbitrarily many distinct real zeros beyond that bound. The same functional
 equation and principal parts survive, with absolute Dirichlet convergence on `Re s > 3`.
@@ -140,65 +232,9 @@ theorem exists_cubic_twin_with_many_right_hand_zeros (N k : ℕ) (B : ℝ) :
   have hunit : IsUnit P := (Matrix.isUnit_iff_isUnit_det P).mpr hdet
   obtain ⟨c, hc⟩ := Matrix.mulVec_surjective_iff_isUnit.mpr hunit
     (fun i => -(completedRiemannZeta (points i : ℝ) ^ 3))
-  let b : ℕ → ℂ := ∑ j, c j • dirichletCoeffs (e j)
-  let a : ℕ → ℂ := cubicZetaCoeffs + b
-  let F : ℂ → ℂ := fun s => completedRiemannZeta s ^ 3 + ∑ j, c j * E j s
-  have hbSum (s : ℂ) (hs : 3 < s.re) : LSeriesSummable b s :=
-    LSeriesSummable.sum fun j _ => (heSum j s hs).smul (c j)
-  have hbRep (s : ℂ) (hs : 3 < s.re) :
-      (∑ j, c j * E j s) = LSeries b s * Gammaℝ s ^ 3 := by
-    dsimp only [b]
-    rw [LSeries_sum (fun j _ => (heSum j s hs).smul (c j)), Finset.sum_mul]
-    apply Finset.sum_congr rfl
-    intro j _
-    rw [LSeries_smul, heRep j s hs]
-    ring
-  have hcoeff (n : ℕ) (hn : n < max N 2) : a n = cubicZetaCoeffs n := by
-    have hb : b n = 0 := by
-      dsimp only [b]
-      rw [Finset.sum_apply]
-      apply Finset.sum_eq_zero
-      intro j _
-      cases n with
-      | zero => simp only [Pi.smul_apply, dirichletCoeffs, smul_zero]
-      | succ n => simp only [Pi.smul_apply, dirichletCoeffs, e,
-          (hfam (j : ℕ)).1 n hn, smul_zero]
-    change cubicZetaCoeffs n + b n = cubicZetaCoeffs n
-    rw [hb, add_zero]
-  refine ⟨a, F, fun j => points j, ?_, ?_, ?_, ?_, ?_, ?_, ?_, ?_⟩
-  · rw [hcoeff 1 (by omega)]
-    simp only [cubicZetaCoeffs, RHTower.TwinRigidity.zetaPowCoeff_one, Complex.ofReal_one]
-  · intro n hn
-    exact hcoeff n (hn.trans_le (le_max_left N 2))
-  · intro s hs
-    have hz : LSeriesSummable cubicZetaCoeffs s :=
-      (RHTower.TwinRigidity.lseries_zetaPowCoeff 3 (by linarith)).1
-    exact hz.add (hbSum s hs)
-  · have heq : (fun s => F s - completedRiemannZeta s ^ 3) =
-        fun s => ∑ j, c j * E j s := by
-      funext s
-      dsimp only [F]
-      ring
-    rw [heq]
-    exact Differentiable.sum fun j _ => ((hfam (j : ℕ)).2.2.1).const_mul (c j)
-  · intro s
-    dsimp only [F]
-    rw [completedRiemannZeta_one_sub]
-    congr 1
-    apply Finset.sum_congr rfl
-    intro j _
-    exact congrArg (fun z : ℂ => c j * z) ((hfam (j : ℕ)).2.2.2.1 s)
-  · intro s hs
-    have hz := RHTower.TwinRigidity.lseries_zetaPowCoeff 3 (s := s) (by linarith)
-    have hzSum : LSeriesSummable cubicZetaCoeffs s := hz.1
-    have hzVal : LSeries cubicZetaCoeffs s = riemannZeta s ^ 3 := hz.2
-    have hs0 : s ≠ 0 := by intro h; simp only [h, zero_re] at hs; linarith
-    have hG := Gammaℝ_ne_zero_of_re_pos (s := s) (by linarith)
-    have hZ : completedRiemannZeta s = riemannZeta s * Gammaℝ s := by
-      rw [riemannZeta_def_of_ne_zero hs0, div_mul_cancel₀ _ hG]
-    dsimp only [F, a]
-    rw [LSeries_add hzSum (hbSum s hs), hzVal, hbRep s hs, hZ, mul_pow]
-    ring
+  obtain ⟨a, F, ha, hp, hs, hd, hf, hr, hformula⟩ :=
+    exists_cubic_twin_combination N k e E (fun j => hfam j) c
+  refine ⟨a, F, fun j => points j, ha, hp, hs, hd, hf, hr, ?_, ?_⟩
   · intro i j hij
     exact hinj (Subtype.ext hij)
   · intro i
@@ -207,9 +243,70 @@ theorem exists_cubic_twin_with_many_right_hand_zeros (N k : ℕ) (B : ℝ) :
     have hcancel : (∑ j, c j * E j (points i : ℝ)) =
         -(completedRiemannZeta (points i : ℝ) ^ 3) := by
       simpa only [Matrix.mulVec, dotProduct, hP, mul_comm] using hi
-    dsimp only [F]
-    rw [hcancel, add_neg_cancel]
+    rw [hformula, hcancel, add_neg_cancel]
 
+/-- A normalized twin with any prescribed coefficient prefix can have arbitrarily
+many distinct zeros in a disk strictly inside the right half of the critical strip.
+The disk's height is arbitrary, while its radius and horizontal location are fixed. -/
+theorem exists_cubic_twin_with_many_critical_strip_zeros (N k : ℕ) (T : ℝ) :
+    ∃ a : ℕ → ℂ, ∃ F : ℂ → ℂ, ∃ z : Fin k → ℂ,
+      a 1 = 1 ∧ (∀ n, n < N → a n = cubicZetaCoeffs n) ∧
+      (∀ s : ℂ, 3 < s.re → LSeriesSummable a s) ∧
+      Differentiable ℂ (fun s => F s - completedRiemannZeta s ^ 3) ∧
+      (∀ s, F (1 - s) = F s) ∧
+      (∀ s : ℂ, 3 < s.re → F s = LSeries a s * Gammaℝ s ^ 3) ∧
+      Function.Injective z ∧ ∀ j,
+        ‖z j - (3 / 4 + (T : ℂ) * I)‖ < 1 / 8 ∧
+        1 / 2 < (z j).re ∧ (z j).re < 1 ∧ F (z j) = 0 := by
+  classical
+  obtain ⟨es, Es, hind, hfam⟩ := exists_entire_perturbation_family (max N 2)
+  let e : Fin k → ℕ → ℂ := fun j => es j
+  let E : Fin k → ℂ → ℂ := fun j => Es j
+  have hi : LinearIndependent ℂ e := hind.comp Fin.val Fin.val_injective
+  have heSum (j : Fin k) (s : ℂ) (hs : 3 < s.re) :
+      LSeriesSummable (dirichletCoeffs (e j)) s := by
+    obtain ⟨C, hC⟩ := (hfam (j : ℕ)).2.1
+    exact summable_dirichletCoeffs hC hs
+  have heRep (j : Fin k) (s : ℂ) (hs : 3 < s.re) :
+      E j s = LSeries (dirichletCoeffs (e j)) s * Gammaℝ s ^ 3 :=
+    (hfam (j : ℕ)).2.2.2.2 s hs
+  have hEind : LinearIndependent ℂ E := by
+    rw [Fintype.linearIndependent_iff]
+    intro c hc
+    apply (Fintype.linearIndependent_iff.mp
+      (independent_on_real_ray e E hi heSum heRep 0)) c
+    funext x
+    have hx := congrFun hc ((x : ℝ) : ℂ)
+    simpa only [Finset.sum_apply, Pi.smul_apply, Pi.zero_apply] using hx
+  let center : ℂ := 3 / 4 + (T : ℂ) * I
+  let S : Set ℂ := Metric.ball center (1 / 8)
+  have hcenter : center ∈ S := Metric.mem_ball_self (by norm_num)
+  have hrestrict : LinearIndependent ℂ (fun j => Set.restrict S (E j)) :=
+    HTGeometry.linearIndependent_restrict_of_entire E
+      (fun j => Complex.analyticOnNhd_univ_iff_differentiable.mpr (hfam j).2.2.1)
+      hEind (HTGeometry.frequently_mem_of_isOpen Metric.isOpen_ball hcenter)
+  obtain ⟨points, P, hinj, hdet, hP⟩ :=
+    HTGeometry.exists_injective_evaluation_minor_of_linearIndependent _ hrestrict
+  have hunit : IsUnit P := (Matrix.isUnit_iff_isUnit_det P).mpr hdet
+  obtain ⟨c, hc⟩ := Matrix.mulVec_surjective_iff_isUnit.mpr hunit
+    (fun i => -(completedRiemannZeta (points i : ℂ) ^ 3))
+  obtain ⟨a, F, ha, hp, hs, hd, hf, hr, hformula⟩ :=
+    exists_cubic_twin_combination N k e E (fun j => hfam j) c
+  refine ⟨a, F, fun j => points j, ha, hp, hs, hd, hf, hr, ?_, ?_⟩
+  · intro i j hij
+    exact hinj (Subtype.ext hij)
+  · intro i
+    have hdist : ‖(points i : ℂ) - center‖ < 1 / 8 := by
+      simpa only [S, Metric.mem_ball, dist_eq_norm] using (points i).property
+    have hreal := (Complex.abs_re_le_norm ((points i : ℂ) - center)).trans_lt hdist
+    have hmid : center.re = 3 / 4 := by simp [center]
+    rw [Complex.sub_re, hmid, abs_lt] at hreal
+    refine ⟨hdist, by linarith only [hreal.1], by linarith only [hreal.2], ?_⟩
+    have hi := congrFun hc i
+    have hcancel : (∑ j, c j * E j (points i : ℂ)) =
+        -(completedRiemannZeta (points i : ℂ) ^ 3) := by
+      simpa only [Matrix.mulVec, dotProduct, hP, Set.restrict, mul_comm] using hi
+    rw [hformula, hcancel, add_neg_cancel]
 
 /-- A normalized twin agreeing with any finite prefix of `ζ³` can have a real zero
 arbitrarily far to the right while retaining the completed functional equation and poles. -/

@@ -1,7 +1,7 @@
 # RH proof-route frontier
 
 **RH open · 33 live routes · 16 candidates.**
-**Corpus checkpoint:** `feb51bdaf75bb844a99a56e513538e667e405906`.
+**Corpus checkpoint:** `b4bf677c5627ef6ce93aa74366256775bb8efdf3`.
 
 Live = source observable + proved RH-sufficient receiver + explicit open estimate. Candidate = missing independent source mechanism/landing.
 Evidence: [L] integrated, source-reviewed; [S] unfinished/unintegrated, unverified; [K] individual Lean + standard-only transitive-axiom audit. Untagged established facts: [L].
@@ -171,9 +171,9 @@ Evidence: [L] integrated, source-reviewed; [S] unfinished/unintegrated, unverifi
 ### PM — Physical-model Haar approximation (FZZ-P)
 
 - **Path:** Global Haar approximation / cofinal damping ε↓0 / every escape limit visible → RH.
-- **Established:** Escape receivers; regularized Gauss–Mayer determinant. D(w,z)D(w,−z)=exp(−J): actual primitive-cycle/repetition logarithm J absolutely converges near z=0 for Re w>1, on |z|≤1 for Re w>2. D(w,−1)≠0 for real w>0.
-- **Open:** Cofinal complete-energy control/exclusion of escape. Scattering: geometric-mode Euler product (paper only), faithful ζ/scattering identification and critical-strip resonance exclusion.
-- **Sources:** CP:TheEscapeCompletenessCriterion; ACG:RHIsTheVisibilityOfEveryEscapeState; RIT:GaussMayerPrimitiveOrbitTrace; RIT:GaussMayerUnitEvenWordDeterminant.
+- **Established:** Escape receivers; actual Mayer product D(w,z)D(w,−z)=∏_(c,m≥0)(1−z^(2ℓ_c)exp(−(w/2+m)L_c)), L_c=2logλ_c the attained hyperbolic translation length. Absolute convergence near z=0 for Re w>1, on |z|≤1 for Re w>2. D(w,−1)≠0 for real w>0.
+- **Open:** Cofinal complete-energy control/exclusion of escape. Faithful ζ/Selberg-scattering identification, including geodesic multiplicities/normalization, and critical-strip resonance exclusion.
+- **Sources:** CP:TheEscapeCompletenessCriterion; ACG:RHIsTheVisibilityOfEveryEscapeState; RIT:GaussMayerPrimitiveOrbitProduct; RIT:GaussMayerUnitEvenWordDeterminant.
 
 <a id="jas"></a>
 ### JAS — Joint ancestry
@@ -291,8 +291,8 @@ Evidence: [L] integrated, source-reviewed; [S] unfinished/unintegrated, unverifi
 ### SC — Stokes/Witt–Krein / archimedean successor
 
 - **Path:** Actual glued affine Weil index≤1 at any place → RH.
-- **Established:** Exact glued index=κ_ζ+1; matched coupled-source exhaustion and tensor/coupling receivers. Exact complete-matrix realization of finite rational Grams: shared frontier. Finite ordinary index gives finite off-line support only.
-- **Open:** Independent glued index≤1, height-matched Gram ceiling or uniform dense-lattice coupling. Exact matching/differencing supplies no sign or index reduction.
+- **Established:** Exact glued index=κ_ζ+1; coupled-source exhaustion and tensor/coupling receivers. Complete-matrix Gram realization and critical-overlap pole-hyperplane receiver: shared frontier. Finite ordinary index gives finite off-line support only.
+- **Open:** Independent glued index≤1, pole-hyperplane sign at every fixed critical multiple, or uniform dense-lattice coupling. Matching/differencing supplies no sign or index reduction.
 - **Sources:** AKG:TheGluingFormulaAtEveryPlace; AKG:TowerCoupling/CoupledTowerSignatureFormula; RIT:TheHadamardPowersOfWeilsKernel.
 
 ## Route candidates
@@ -329,12 +329,13 @@ Promotion requires the missing independent source mechanism/landing below; an un
 | Fixed conductors: c_N⁷G_N(e,e′)→δ_ee′ C J₈(e)/ϕ(e), C>0, when c_N→∞ and c_N≤(log N)^α, α<1/8; each fixed nonzero finite packet eventually positive [L]. | Growing-conductor/mixed-complement control at every K(log N)^(1/8); fixed-packet positivity supplies no uniform full-family sign. |
 | Individual conductor energies: c⁷E_m(c)/J(m)→1 uniformly as c/m→∞, J(m)=C J₈(m)/ϕ(m). Limiting coefficients satisfy J(1)J(ab)=J(a)J(b) for coprime a,b [S]. | Finite-horizon mixed entries, transition m≈c and full complement at RH overlap. Scalar uniformity/multiplicativity does not establish complete-matrix positivity/factorization. |
 | Mid-band V_⌊N^θ⌋∩V_⌊(log N)^q⌋^⊥ coercive for α<1/4, q>3α, 0<θ≤1/4096 [L]. | This omits low conductors and terminal complement. Their mixed terms remain unpaid at the RH rate. |
+| Top block n>N/L_c, L_c=linearDefectCutoff(c)≈c: ratio+non-ratio prime self-form costs O(c(1+log c)) per atom-normalized coefficient mass, c≥1, N≥L_c [S]. | Head/top mixed terms and complete Gamma/pole balance; this self-form bound does not improve the full-matrix positivity range. |
 | Zero-free logarithmic profile positive through explicit ε₀L(log L)², L=loglog N. Some reciprocal-floor budget with 0<α≤1/128 works at coefficient K iff K≤ε₀ [L]. | Reach every fixed positive multiple; tuning within current budgets cannot suffice. Improve the floor/residual estimate. Sinc comparison uses a different profile. |
-| Every finite rational correlation Gram is an entrywise limit of positive atom-mass × compressions of the literal complete Steklov matrix at one family-dependent 2KL(log L)², L=loglog N [L]. | Actual complete-matrix sign at the required K. Approximation supplies neither sign nor a family-uniform K. |
+| Finite rational Grams are positive-mass-weighted complete Steklov matrix compression limits at family-dependent 2KL(log L)², L=loglog N. RH iff eventual pole-hyperplane sign at every fixed K≥1: compression index≤1 plus even ζ index; moment-preserving approximation unnecessary [L]. | Actual pole-hyperplane sign for every K≥1. Approximation supplies neither sign nor a family-uniform K. |
 | Smooth nonnegative unit-bump pole-hyperplane receiver at every α>0 [L]. | Prove actual sign at any positive-power overlap rate. |
 | Prime-defect decomposition and sharp relative residual scale (log Q)²/log N. Coprime-successor window energy≥(K−Q(Q−1))×nonconstant packet mass for K≥Q(Q−1), gcd(p,Q!)=1 [L]. | Full Gamma/pole/row-potential comparison; successor/prime-defect gaps alone are not complete-Weil positivity. |
 
-Sources: CACT:CollectivePacketCoercivityAndLogarithmicConfinement; SSHA:EveryEighthRootMultipleReceivesTheTiltedSpline; HWV:StarsOfTheCompleteWeilFamily; RIT:TheHodgeIndexAtGrowingOverlap; RAPT:ThePhysicalPrimeKernelRetainsThePoleDefect; CSAR:SharpPrimeResidualScale; CSAR:CoprimeSuccessorGap; ADT:TheLimitingMixedStructure; ADT:TheSubthresholdBlockIsUniformlyJordan [S]; ADT:TheRescaledLimitTensorizesOverThePrimes [S]. Logarithmic profile: TM:ReceiverRate/TheLogarithmicProfileIsPositiveBelowCriticalOverlap; TM:ReceiverRate/SharpLogarithmicOverlapBudget; TM:ReceiverRate/ABoundedOverlapRateSeesASemilocalWindow.
+Sources: CACT:CollectivePacketCoercivityAndLogarithmicConfinement; CACT:TheTopPrimeSelfFormCostsOnlyALogarithm [S]; SSHA:EveryEighthRootMultipleReceivesTheTiltedSpline; HWV:StarsOfTheCompleteWeilFamily; RIT:TheHodgeIndexAtGrowingOverlap; RAPT:ThePhysicalPrimeKernelRetainsThePoleDefect; CSAR:SharpPrimeResidualScale; CSAR:CoprimeSuccessorGap; ADT:TheLimitingMixedStructure; ADT:TheSubthresholdBlockIsUniformlyJordan [S]; ADT:TheRescaledLimitTensorizesOverThePrimes [S]. Logarithmic profile: TM:ReceiverRate/TheLogarithmicProfileIsPositiveBelowCriticalOverlap; TM:ReceiverRate/SharpLogarithmicOverlapBudget; TM:ReceiverRate/ABoundedOverlapRateSeesASemilocalWindow; RIT:TheHodgeIndexAtCriticalOverlap.
 
 <a id="external-literature"></a>
 ### Scope guards

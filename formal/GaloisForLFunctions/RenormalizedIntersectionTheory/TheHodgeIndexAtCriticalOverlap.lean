@@ -1,4 +1,4 @@
-import GaloisForLFunctions.TransMetzlerWeilPositivity.ReceiverRate.ABoundedOverlapRateSeesASemilocalWindow
+import GaloisForLFunctions.TransMetzlerWeilPositivity.ReceiverRate.EveryFiniteGramFitsOneCriticalOverlap
 import GaloisForLFunctions.RenormalizedArithmeticPotentialTheory.BoundedPrimeEnergyHasFiniteRamanujanCoordinates
 import GaloisForLFunctions.HeckeKreinToeplitz.TheMarginIsTheWidthOfTheIndexOneWindow
 import GaloisForLFunctions.RenormalizedIntersectionTheory.TheRenormalizedHodgeIndex
@@ -13,8 +13,9 @@ one fixed multiple of `loglog N · (logloglog N)²`. Positivity on the pole
 hyperplane bounds each compression's negative index by one. Lower
 semicontinuity and the evenness of the zeta index then force RH.
 
-The multiple can depend on the finite family. The equivalence therefore
-quantifies over every fixed multiple; it asserts no universal multiple.
+The Steklov profile requires quantification over every fixed multiple.
+The Beurling profile realizes all families at the same multiple `2`, giving
+the corresponding equivalence at one universal critical overlap.
 -/
 
 set_option autoImplicit false
@@ -129,7 +130,65 @@ theorem ratCorr_hyperplane_nonneg_iff_steklovUnitProfile_hodgeIndex_critical :
   riemannHypothesis_iff_hyperplane_nonneg.symm.trans
     riemannHypothesis_iff_steklovUnitProfile_hodgeIndex_critical
 
+/-- Positivity on the pole hyperplane at the universal critical overlap is RH. -/
+theorem riemannHypothesis_iff_beurlingUnitProfile_hodgeIndex_universal_critical :
+    RiemannHypothesis ↔ ∀ᶠ N : ℕ in atTop,
+      ∀ x : EuclideanSpace ℝ (PrimeHorizonIndex N),
+        ⟪x, normalizedRamanujanHorizonVector 1 N⟫ = 0 →
+          0 ≤ completeWeilEnergy beurlingUnitProfile (2 * dcScale N) N x := by
+  constructor
+  · intro hRH
+    filter_upwards [eventually_ge_atTop 1, dcScale_atTop.eventually_gt_atTop 0]
+      with N hN hS
+    have hc : 0 < 2 * dcScale N :=
+      mul_pos two_pos hS
+    have hw : 0 < 2 * dcScale N / N := div_pos hc (by exact_mod_cast hN)
+    have hφ : ContDiff ℝ 2 beurlingUnitProfile :=
+      contDiff_beurlingUnitProfile.of_le (natCast_le_infty 2)
+    have hfull := (forall_completeWeilEnergy_nonneg_iff hφ beurlingUnitProfile_eq_zero
+      integral_beurlingUnitProfile_sq_pos (by rw [integral_beurlingUnitProfile]; norm_num)
+      hc hN).mpr (fun y => by
+        obtain ⟨h2, hcomp⟩ := atomicTest_dilate_mem (contDiff_recentredProfile hφ)
+          (vanishesOff_recentredProfile beurlingUnitProfile_eq_zero) (div_pos two_pos hw) N y
+        exact RHTower.WeilSpectral.riemannHypothesis_iff_real_weilPositive.mp hRH _ h2 hcomp)
+    exact fun x _ => hfull x
+  · intro H
+    have hκ : negIndex ArithmeticPositiveDuality.ratCorr ≤ 1 := by
+      apply negIndex_le_iff.mpr
+      intro n q
+      obtain ⟨N, hN, v, hv⟩ :=
+        exists_ratCorr_completeWeil_gram_limit_at_universal_critical_overlap q
+      have hlim := eventually_le_hermNegIndex (gram_isHermitian isHermKernel_ratCorr q) hv
+      have hb : ∀ᶠ m : ℕ in atTop,
+          hermNegIndex (fun i j => (((∫ u, atomDilate beurlingUnitProfile
+            (2 * dcScale (N m) / N m) u ^ 2) *
+            ⟪(completeWeilMatrix beurlingUnitProfile (2 * dcScale (N m)) (N m)).toEuclideanLin
+              (v m i), v m j⟫ : ℝ) : ℂ)) ≤ 1 := by
+        filter_upwards [hN.eventually H] with m hm
+        exact compression_index_le_one _ (v m) (normalizedRamanujanHorizonVector 1 (N m))
+          (integral_nonneg fun u => sq_nonneg _) hm
+      obtain ⟨m, hm, hm'⟩ := (hlim.and hb).exists
+      exact_mod_cast hm.trans hm'
+    rw [negIndex_ratCorr] at hκ
+    exact riemannHypothesis_iff_negIndex_zetaKernel_eq_zero.mpr
+      (negIndex_zetaKernel_le_one_iff.mp hκ)
+
+/-- The boost-mass-zero condition on rational Weil Grams is exactly the
+complete-family pole-hyperplane condition at the fixed critical multiple `2`. -/
+theorem ratCorr_hyperplane_nonneg_iff_beurlingUnitProfile_hodgeIndex_universal_critical :
+    (∀ (n : ℕ) (u : Fin n → ArithmeticPositiveDuality.posUnits) (w : Fin n → ℂ),
+      boostMassU u w = 0 → 0 ≤ hermQuad (gram ArithmeticPositiveDuality.ratCorr u) w) ↔
+      ∀ᶠ N : ℕ in atTop,
+        ∀ x : EuclideanSpace ℝ (PrimeHorizonIndex N),
+          ⟪x, normalizedRamanujanHorizonVector 1 N⟫ = 0 →
+            0 ≤ completeWeilEnergy beurlingUnitProfile (2 * dcScale N) N x :=
+  riemannHypothesis_iff_hyperplane_nonneg.symm.trans
+    riemannHypothesis_iff_beurlingUnitProfile_hodgeIndex_universal_critical
+
 end GaloisForLFunctions.RenormalizedIntersectionTheory
 
 #print axioms GaloisForLFunctions.RenormalizedIntersectionTheory.riemannHypothesis_iff_steklovUnitProfile_hodgeIndex_critical
 #print axioms GaloisForLFunctions.RenormalizedIntersectionTheory.ratCorr_hyperplane_nonneg_iff_steklovUnitProfile_hodgeIndex_critical
+
+#print axioms GaloisForLFunctions.RenormalizedIntersectionTheory.riemannHypothesis_iff_beurlingUnitProfile_hodgeIndex_universal_critical
+#print axioms GaloisForLFunctions.RenormalizedIntersectionTheory.ratCorr_hyperplane_nonneg_iff_beurlingUnitProfile_hodgeIndex_universal_critical

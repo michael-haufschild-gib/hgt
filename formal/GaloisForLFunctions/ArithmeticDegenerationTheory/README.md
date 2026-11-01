@@ -66,6 +66,7 @@ is therefore a second-order phenomenon of the degeneration.
 | distance to the nilpotent orbit | relative residual `≍ c^{β+1}/log N` | HWV `exists_relative_conductorDeviation_sum_le` |
 | `SL₂`-orbit | pole pair of the boost–successor plane, blind on `v₁^⊥` | RIT, AKG |
 | one negative square of the period domain | the pole: gluing determinant, glued index `κ + 1` | `det_redhefferMatrix`; AKG |
+| degeneration of a family of fibres | twists: the limit tends to an overlap-independent form `F_λ`; `F_Λ = 0` | `tendsto_packetEnergy_atTop`, `twistLimitEnergy_vonMangoldt` |
 | function fields | finite monodromy, trivial flow, detection by window `2g` | EHT, ACS |
 
 ## 3. Objects
@@ -88,6 +89,7 @@ is therefore a second-order phenomenon of the degeneration.
 | Trace carriers | RHTower CCM `ccmArchimedeanWeilDistribution`, Sonin cutoffs | positivity as a trace |
 | Section counts | LST `primitiveH1`, `kunnethH0`, `coneCount` | positivity as a count |
 | Quantized readings | EHT `horizonDefect`; RHTower `xiHorizontalCollisionCharge` | positivity as an integer |
+| Twisted limit structure | RAPT `packetEnergy`, `twistLimitEnergy`, `primeFlipWeight` | `Σ β_m² E_m(c) + F_λ(y)` |
 | Fakes | ACS `goldenDatum`; LST Epstein lattices; prime-flip and Liouville twins | the control |
 
 ## 4. Language
@@ -134,6 +136,9 @@ integrable weight contributes its mean, so `c⁷ T(c) → A_φ = (4/π)⁷/(16π
 identity (RAPT); `c⁷ E_e → J(e)`; HWV bounds the extension data relative to the margins by
 `O((c⁸(1 + log c)² (log N)^{1/k}/log N)²)`. Along every schedule `c ≤ (log N)^α`, `α < 1/8`, the
 rescaled form converges entrywise to the Jordan form, and every fixed packet inherits its positivity.
+The first-order non-orthogonality of the packets is itself carried by the monodromy: the `1/log N`
+off-diagonal of the exact Gram law joins a conductor only to its tower neighbours `m p^k`
+(CompletedArithmeticForms `normalizedRamanujanHorizonVector_gram_exact`).
 
 **E. The inheritance radius is the RH exponent.** Below `1/8` the rescaled extension data vanish on
 every fixed pair of conductors; at every multiple of `(log N)^{1/8}` positivity of the conductor Gram
@@ -175,6 +180,14 @@ Riemann–Roch; Künneth `h¹ = h¹_K + ½δ`; bidegree counts blind; collision 
 defects. A count carries the sign only if it reads the primitive part; an integer only with a
 structural bound below `2`.
 
+**L. Complete degeneration selects `ζ`.** For a twist `λ` with summable defect the fixed-overlap
+limit on Ramanujan packets is `Σ β_m² E_m(c) + F_λ(y)` with `F_λ` independent of the overlap (RAPT).
+As `c → ∞` it tends to `F_λ`, not to `0`. For `λ = Λ` the defect vanishes and the degeneration is
+complete, with the Jordan rescaled limit. For a prime flip, `F_{ω_p}` is positive on the pole packet
+(`4 log p Σ_j p^{-(2j+1)}`) and negative on some unit packet: the twin degenerates to an indefinite
+form of weight zero, and its rescaled energy tends to `−∞`. Selection here is an identity (`d_Λ = 0`),
+not a margin; it does not decide the sign of `ζ`.
+
 ## 6. Questions and answers
 
 | Question | Answer | Lean |
@@ -184,8 +197,8 @@ structural bound below `2`.
 | Is the conductor filtration the weight filtration? | Yes in the rescaled sense: along each tower the Jordan coefficient is a weight string (`[8]_p`, then `p⁷` per step); the polarization tensorizes over the primes. | `jordanCoefficient_tower`, `jordanCoefficient_mul_of_coprime`, `jordanCoefficient_prime_pow` |
 | Where is the inheritance radius? | Exactly at the RH exponent `1/8`: below it the rescaled extension data vanish; at its multiples positivity is RH. | `inheritance_radius` |
 | Is the limit exact on growing blocks? | On the whole subthreshold block `m ≤ c/X(ε)`, uniformly. | `uniform_jordan_law` |
-| Does the limit select `ζ`? | No: it is computed from the profile's tail and the arithmetic of the conductor; zeros enter at the quantum `1/log N`. Selection must come from the second-order structure. | `tendsto_rpow_mul_completedConductorEnergy` (no zero data in the statement) |
-| Is there a signature/determinant invariant refining the nerve's Euler characteristic? | The Mertens function is the determinant of the pole gluing of the divisibility form and the signature of the coprimality form; RH is half-power growth of either. | `det_redhefferMatrix`, `riemannHypothesis_iff_det_redhefferMatrix`; RHTower `finiteMobiusCoprimeSignature_eq_sum_Icc` |
+| Does the limit see the zeros, and does it select `ζ`? | It does not see the zeros: it is computed from the profile's tail and the arithmetic of the conductor; zeros enter at the quantum `1/log N`. It does select `ζ` among prime-flip twins by structure: only `ζ` degenerates completely; every flip degenerates to a nonzero indefinite form and has no rescaled limit. | `tendsto_rpow_mul_completedConductorEnergy`; `primeFlip_degenerates_indefinitely`, `tendsto_rescaled_packetEnergy_primeFlip`, `tendsto_rescaled_packetEnergy_vonMangoldt` |
+| Is there a signature/determinant invariant refining the nerve's Euler characteristic? | The Mertens function is the determinant of the pole gluing of the divisibility form and the signature of the coprimality form; RH is half-power growth of either; unconditionally the gluing determinant oscillates at `±c√N`. | `det_redhefferMatrix`, `riemannHypothesis_iff_det_redhefferMatrix`, `det_redhefferMatrix_omega_pm_sqrt`; RHTower `finiteMobiusCoprimeSignature_eq_sum_Icc` |
 
 ## 7. Pillar theorems
 
@@ -198,7 +211,8 @@ structural bound below `2`.
 | Monodromy: dilation lowers the conductor; commuting cone | `ramanujanLagCoefficient_prime_mul_eq`, `ramanujanPoleProfile_prime_mul`, `conductorLower_comm`, `dilationWeight_cocycle` | proved |
 | Weight strings and tensor law of the limiting polarization | `sum_divisors_moebius_lowering`, `jordanCoefficient_tower`, `jordanCoefficient_mul_of_coprime`, `jordanCoefficient_prime_pow` | proved |
 | Uniform Jordan law on the subthreshold block | `uniform_jordan_law`, `tendsto_ratio_of_subthreshold` | proved |
-| Mertens function = gluing determinant at the pole | `det_redhefferMatrix`, `det_redhefferMatrix_eq_nerveEulerChar`, `riemannHypothesis_iff_det_redhefferMatrix` | proved; equivalence |
+| Mertens function = gluing determinant at the pole; square-root oscillation | `det_redhefferMatrix`, `det_redhefferMatrix_eq_nerveEulerChar`, `riemannHypothesis_iff_det_redhefferMatrix`, `det_redhefferMatrix_omega_pm_sqrt` | proved; equivalence |
+| Complete degeneration selects `ζ` among prime-flip twins | `tendsto_packetEnergy_atTop`, `packetEnergy_vonMangoldt`, `primeFlip_degenerates_indefinitely`, `tendsto_rescaled_packetEnergy_primeFlip` | proved |
 
 ## 8. Tools
 
@@ -211,10 +225,11 @@ structural bound below `2`.
 - Möbius lowering lemma for Möbius transforms homogeneous along a tower.
 - Lowering maps of conductors and their cone.
 - Divisibility/Möbius/Redheffer matrices and the Cramer-rule gluing determinant.
+- Large-overlap limits of twisted limit structures.
 
 **To build.**
 - Second-order rescaled limit at the critical curve `c⁸ ≍ log N`.
-- Rescaled limits for twisted weights (prime-flip and Liouville twins).
+- Rescaled limits for twists with non-summable defect (the Liouville twin, cofinite flips).
 - Uniform limiting structure on growing blocks including the extension data (Riesz control of the
   packets on blocks `m ≤ Q_N`).
 - The pure block `m ≫ c` as a polarized piece with its own asymptotics.
@@ -252,6 +267,7 @@ structural bound below `2`.
 | A trace identity is a positivity statement | The archimedean middle operator `1 − P − P̂` is negative on time-limited vectors |
 | Local unipotent structure glues freely | One rank-one gluing at the pole creates the Mertens function |
 | Soft laws select | Every soft law holds on the fakes |
+| Selecting `ζ` by its limit decides the sign | Complete degeneration separates `ζ` from its flips by an identity; the sign of `ζ` sits in the second-order term |
 
 ## 11. Context
 
@@ -276,7 +292,7 @@ structural bound below `2`.
 | Positivity on `v₁^⊥` past the universal regime by an edge-valid mechanism | Open; ADT locates it in the second-order limit at the critical curve |
 | A count or trace equal to `½W` on a growing family, starting with the prime-free window | Open (CCM trace identity at `∞`; pole terms not yet carried) |
 | A gluing theorem with one negative square and an exact coupling | Determinant form at the pole: Redheffer; signature form: coprime inertia; AKG index `κ + 1` |
-| Exact behaviour on the fakes | Rescaled limit is zero-blind (stated as a trap); twin limits open |
+| Exact behaviour on the fakes | Prime-flip twins: incomplete degeneration to an indefinite form, no rescaled limit (proved); the limit is zero-blind; Liouville twin and lattice fakes open |
 
 ## 13. What counts as a contribution
 

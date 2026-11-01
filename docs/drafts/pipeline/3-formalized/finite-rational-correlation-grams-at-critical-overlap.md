@@ -55,3 +55,27 @@ universal multiple or exact pole-moment preservation is asserted.
 
 Direct leaf audit passed. All six declarations depend only on
 `propext`, `Classical.choice`, and `Quot.sound`. Existing umbrella import includes the leaf.
+
+## Hyperplane consequence
+
+For the fixed unit Steklov profile, RH is equivalent to eventual nonnegativity
+on the pole hyperplane at `2K·dcScale N` for **every** `K≥1`.
+Equivalently, this complete-family condition is positivity of every rational
+Weil Gram on its boost-mass-zero hyperplane.
+
+A form nonnegative on one real hyperplane has complex negative index at most
+one: real and imaginary coefficients both lie in the same hyperplane.
+Compression and entrywise Gram limits preserve this bound. The resulting
+bound `κ(ratCorr)≤1` forces `κ(K_ζ)=0` by the zeta index parity law. Conversely,
+RH makes every complete Weil energy nonnegative. No exact preservation of
+pole moments by the packet approximation is needed.
+
+`RenormalizedIntersectionTheory/TheHodgeIndexAtCriticalOverlap.lean`:
+
+- `riemannHypothesis_iff_steklovUnitProfile_hodgeIndex_critical`.
+- `ratCorr_hyperplane_nonneg_iff_steklovUnitProfile_hodgeIndex_critical`.
+
+Direct leaf audit passed with only `propext`, `Classical.choice`, and
+`Quot.sound`; the leaf is wired into its umbrella. This does not prove
+positivity at the critical scale or replace all fixed multiples by one
+universal multiple.

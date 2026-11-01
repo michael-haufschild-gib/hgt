@@ -44,15 +44,45 @@ packet approximation to preserve the pole moment. Lean inputs:
 `hermQuad_map_ofReal`, `hermNegIndex_le_negIndexOn_ker_add_one`,
 `eventually_le_hermNegIndex`, `negIndex_ratCorr`, `negIndex_zetaKernel_le_one_iff`.
 The resulting receiver quantifies over every fixed critical multiple.
-Its formalization in `RenormalizedIntersectionTheory/TheHodgeIndexAtCriticalOverlap.lean`
-is awaiting direct verification.
+`riemannHypothesis_iff_steklovUnitProfile_hodgeIndex_critical` and
+`ratCorr_hyperplane_nonneg_iff_steklovUnitProfile_hodgeIndex_critical` in
+`RenormalizedIntersectionTheory/TheHodgeIndexAtCriticalOverlap.lean` pass direct
+Lean verification with only `propext`, `Classical.choice`, and `Quot.sound`.
+The leaf is wired into its umbrella. Positivity at this scale and a single
+universal multiple remain unproved.
+
+## Universal-multiple conjecture
+
+Construct one smooth unit profile `ψ`, supported in `[-1,1]`, with
+`∀ B>0, ∃ A, ∀q, ∫|ψ⁽q⁾| ≤ A·B^q·q!·log(q+3)^(2q)`.
+The synthesis threshold is `K>24e·B·blockSize(R+1)`, while `A` affects only
+the error constant. Choosing `B` after the finite support radius `R` would
+therefore realize every rational Gram at the same `K=1` with this fixed profile.
+
+Candidate construction: Steklov averages with telescoping radii
+`r_j=(1/√log(j+3)−1/√log(j+4))/8`. The sum is at most `1/8`.
+The log increment bound and rationalization of the square roots give
+`r_j≥1/(16(j+4)·log(j+4)·√log(j+4))`. Consequently,
+`∏_{j<q}r_j⁻¹ ≤ (64/√log(q+3))^q·dcLogWeight(q)`.
+Uniform derivative limits give the displayed profile estimate; the
+factor `64/√log(q+3)` tends to zero and finitely many derivative orders are
+absorbed into `A`. This changes the profile, not the complete Weil form or
+the prescribed critical scale.
+
+`AProfileAtEveryLogarithmicType.lean` formalizes the radius bound, nonnegative
+smooth limit, unit mass, and `exists_beurlingDCProfile_bound`. Compilation and
+the displayed transitive axiom audits pass with only `propext`,
+`Classical.choice`, and `Quot.sound`. The universal-multiple complete Gram
+realization and hyperplane equivalence await verification.
 
 ## Heat calibration
 
 `negIndex_heatArchState_eq_one_of_eighth_le` already gives index one for
 every `c>0` and `t≥1/8` in `TheHeatDeformedArchimedeanState.lean`.
 This supplies the requested upper-time calibration at the classical bound;
-its transitive axiom audit remains to be checked here. The subcritical count,
+its transitive axiom audit uses only `propext`, `Classical.choice`, and
+`Quot.sound`. The same audit passes for
+`riemannHypothesis_iff_negIndex_heatArchState_const`. The subcritical count,
 uniform count, and no-jump obligations remain separate.
 
 `exists_nonrealZeroCount_and_collisionMass_le_twoThirds` bounds the count by
@@ -73,9 +103,17 @@ two-prime spacing estimate remains necessary for that argument.
 It controls the two phase clocks, but does not bound cancellation of spline
 residues as their real parts approach an unattained supremum.
 
+`le_norm_paperFT_upow` already gives the spline transform bound
+`(|sinh(Im z)|/‖z‖)^4 ≤ |B̂(z)|`. Thus polynomial nonvanishing away from the
+critical line is available. The missing comparison concerns approach to the
+width supremum versus height and cancellation; neither this bound nor the
+two-prime separation estimate supplies it.
+
 ## Gates
 
 - [x] Exact requested scope recorded.
-- [ ] Complete-family realization and hyperplane equivalence audited.
+- [x] Complete-family realization at family-dependent multiples and the all-multiples hyperplane equivalence audited.
+- [ ] A single universal critical multiple, if required by obligation 1.
+- [x] Existing heat calibration audited at `t≥1/8`.
 - [ ] Remaining source estimates proved.
 - [ ] Exact Lean statements, direct checks, standard-only axiom audits, umbrella imports.

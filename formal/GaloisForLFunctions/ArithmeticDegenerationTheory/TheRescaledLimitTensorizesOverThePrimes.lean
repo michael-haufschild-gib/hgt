@@ -25,6 +25,7 @@ independent weight filtrations, and the archimedean place enters only through th
 noncomputable section
 
 open Finset ArithmeticFunction
+open scoped ArithmeticFunction.Moebius
 
 namespace GaloisForLFunctions.ArithmeticDegenerationTheory
 
@@ -105,7 +106,6 @@ theorem jordanCoefficient_prime_pow {p : ℕ} (hp : p.Prime) {a : ℕ} (ha : 1 �
     ring
   have hJ := jordanTotient_prime_pow hp 8 ha
   simp only [jordanCoefficient, Nat.totient_one, Nat.cast_one, jordanTotient_one, div_one, mul_one]
-  push_cast at hJ ⊢
   rw [hJ, ht, pInteger]
   have e : (p : ℝ) ^ ((8 : ℝ) * (a - 1 : ℕ)) = (p : ℝ) ^ (7 * (a - 1)) * (p : ℝ) ^ (a - 1) := by
     rw [← pow_add, show 7 * (a - 1) + (a - 1) = 8 * (a - 1) by ring, ← Real.rpow_natCast]
