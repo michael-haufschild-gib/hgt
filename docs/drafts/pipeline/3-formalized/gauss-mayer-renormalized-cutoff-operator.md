@@ -29,8 +29,10 @@ not just rank-one candidates.
 
 Every nontrivial zeta zero `ρ` has `0<Re ρ<1`. Consequently the raw cutoffs at
 Mayer parameter `s=ρ/2` diverge, including at critical zeros. This rules out
-uncorrected branch truncations at those targets. It does not rule out Padé
-approximants, the continued Mayer operator, or source-specific resonance exclusion.
+convergence of the uncorrected truncations as bounded operators. Their
+[negative-unit Fredholm determinants nevertheless converge](gauss-mayer-raw-negative-unit-determinants.md).
+Padé approximants, the continued Mayer operator, and source-specific resonance
+exclusion remain outside the obstruction.
 
 ## Proof
 

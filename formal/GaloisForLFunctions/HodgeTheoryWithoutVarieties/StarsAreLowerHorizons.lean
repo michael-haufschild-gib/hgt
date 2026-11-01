@@ -38,7 +38,6 @@ the star is the renormalized form at `⌊N/d⌋` plus `(log N − log ⌊N/d⌋)
 noncomputable section
 
 open Finset ArithmeticFunction
-open scoped ArithmeticFunction.vonMangoldt
 open GaloisForLFunctions.ArithmeticCouplingTheory GaloisForLFunctions.ArithmeticElectrostatics
   GaloisForLFunctions.ArithmeticEffectivityTheory
 
@@ -218,8 +217,8 @@ theorem dilationForm_starRestrict (lam : ℕ → ℝ) {d : ℕ} (hd : 0 < d) (N 
     refine sum_congr rfl fun q _ => ?_
     have hdd : d ∣ d * q.2 := dvd_mul_right d q.2
     have hkd : d ∣ q.1 * (d * q.2) := dvd_mul_of_dvd_right hdd q.1
-    simp only [starRestrict, starPullback, if_pos hdd, if_pos hkd,
-      show q.1 * (d * q.2) = d * (q.1 * q.2) by ring]
+    simp only [starRestrict, starPullback, if_pos hdd, if_pos hkd]
+    rw [show q.1 * (d * q.2) = d * (q.1 * q.2) by ring]
     push_cast
     have hd' : (d : ℝ) ≠ 0 := by exact_mod_cast hd.ne'
     by_cases hq : (q.2 : ℝ) = 0
@@ -237,10 +236,9 @@ theorem degreeDiagonal_starRestrict (lam : ℕ → ℝ) {d : ℕ} (hd : 0 < d) (
   · rw [degreeDiagonal, ← sum_add_distrib, mul_sum]
     refine sum_congr rfl fun a _ => ?_
     simp only [starRestrict, starPullback, if_pos (dvd_mul_right d a), starFlux,
-      Nat.div_div_eq_div_mul, mul_comm d a]
+      Nat.div_div_eq_div_mul]
     push_cast
     have hd' : (d : ℝ) ≠ 0 := by exact_mod_cast hd.ne'
-    rw [mul_comm a d]
     by_cases ha : (a : ℝ) = 0
     · simp [ha]
     · field_simp

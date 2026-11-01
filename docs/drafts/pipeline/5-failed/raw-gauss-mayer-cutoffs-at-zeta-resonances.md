@@ -62,5 +62,9 @@ discrete countable zero set. Its derivative at `λ=0` is `−1`.
 now proves `det(I+R(w)+tP)=det(I+R(w))` throughout `Re w>0` for every `t`.
 Thus the actual negative-unit source determinant is holomorphic through one,
 despite the operator pole. Its paper proof and all thirteen production axiom
-audits are complete. Convergence of the raw finite-branch determinants is
-[the next separate conjecture](../1-in-progress/gauss-mayer-raw-negative-unit-determinants.md).
+audits are complete. The raw finite-branch determinants themselves now
+[converge at `λ=−1`](../3-formalized/gauss-mayer-raw-negative-unit-determinants.md),
+including at every actual zeta parameter where the raw operator norms diverge.
+The exact finite shear, uniform nuclear control, and operator/matrix transport
+are Lean-certified with thirteen clean production axiom audits. The obstruction
+therefore concerns operator convergence, not this negative-unit determinant limit.

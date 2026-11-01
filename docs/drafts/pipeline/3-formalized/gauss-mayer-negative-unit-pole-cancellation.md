@@ -71,3 +71,7 @@ their inputs. No literature-priority claim is made.
 The removable value and its possible vanishing order are not determined.
 The parameter `λ=1`, primitive modular coding, Selberg/scattering comparison,
 and off-critical resonance exclusion remain open. No RH conclusion follows.
+
+The [finite successor shear](gauss-mayer-raw-negative-unit-determinants.md)
+also proves convergence of the genuine raw finite-branch determinants at
+`λ=−1`, despite divergence of the raw operators on `0<Re w<1`.

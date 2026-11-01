@@ -14,7 +14,8 @@ A scalar β multiplying this weight therefore has mean β/2 in the full
 `2M × 2M` integer rectangle. Unit mean forces β=2. The literal scalar 1/4 in
 `stabilizerModelOddCoalSum` gives mean 1/8. Factorial periods discharge the
 period condition for every cutoff. Removing coordinate one and the diagonal gives
-exact mass `2M²−4M−(M−2)W_Q(0)`.
+exact mass `2M²−4M−(M−2)W_Q(0)`. The general row/column/diagonal deletion
+identity is exported without a period assumption.
 
 ## Proof
 
@@ -33,10 +34,10 @@ signed coalescent kernel. They do not falsify the actual narrow-aperture prime-p
 conjecture: the kernel can cancel constant errors.
 
 Incomplete periods, growing cutoffs, and comparison with actual prime weights are
-[separate targets](../1-in-progress/stabilizer-incomplete-periods-and-prime-comparison.md).
+[also formalized](../3-formalized/stabilizer-incomplete-periods-and-prime-comparison.md).
 
 ## Lean
 
-`TransThresholdPairCorrelation/StabilizerPeriodNormalization.lean`: seven public
+`TransThresholdPairCorrelation/StabilizerPeriodNormalization.lean`: eight public
 theorems, focused production check passed, umbrella import present. All transitive
 axiom audits contain only `propext`, `Classical.choice`, and `Quot.sound`.

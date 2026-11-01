@@ -42,13 +42,13 @@ At heat coefficient `133/200`, their limiting saddle gaps are respectively
 
 ## Formalization
 
-- Checked: the actual fifth dual derivative, its weighted exponential sum,
-  stationary-phase correlation bound, and uniform Weyl differencing, ending in
-  `ArithmeticHarmonicAnalysis.norm_prefix_sq_le_fifthWeyl`.
-- Pending: the exponent comparisons and short-block splice; scale-difference
-  bounds for the exact dual AFE weight. A mean-value
-  estimate cancels the Mellin denominator before integration; positive and
-  negative contours then give the required dyadic variation.
+- Checked: the actual fifth dual derivative, weighted exponential sum,
+  stationary-phase correlation, exponent comparisons and short-block splice,
+  ending in `ArithmeticHarmonicAnalysis.norm_criticalBlock_le_subWeyl_short_all`.
+- Checked: scale differences for the exact dual AFE weight and the resulting
+  finite Abel bounds `exists_norm_sum_directWeight_mul_le` and
+  `exists_norm_sum_dualWeight_mul_le`. Differentiating the Mellin power cancels
+  the kernel's denominator; positive and negative contours control variation.
 - Pending: finite critical-line AFE transfer, the `5/6` line bound, all four
   strip profiles, and the order-uniform heat conclusion.
 

@@ -375,9 +375,9 @@ theorem sum_roughInterval_eq_gaugeHarmonicSum (Q X : ℕ) (f : ℕ → ℝ) :
   split_ifs <;> simp
 
 /-- The real inequality behind the projected twin mass: with `|S| ≤ A u^β + B`, `R ≥ 1`,
-`R ≥ c₀ u`, `0 ≤ u ≤ U`, `1 ≤ U`, `1/2 ≤ β ≤ 1`: `S²/R ≤ (2A² + 2B²)(1 + 1/c₀) U^{2β−1}`. -/
+`R ≥ c₀ u`, `0 ≤ u ≤ U`, `1 ≤ U`, `β ≥ 1/2`: `S²/R ≤ (2A² + 2B²)(1 + 1/c₀) U^{2β−1}`. -/
 theorem sq_div_le_of_rough_bound {A B c₀ β S R u U : ℝ} (hA : 0 ≤ A) (hB : 0 ≤ B) (hc₀ : 0 < c₀)
-    (hβ : 1 / 2 ≤ β) (hβ1 : β ≤ 1) (hu : 0 ≤ u) (huU : u ≤ U) (hU : 1 ≤ U)
+    (hβ : 1 / 2 ≤ β) (hu : 0 ≤ u) (huU : u ≤ U) (hU : 1 ≤ U)
     (hS : |S| ≤ A * u ^ β + B) (hR1 : 1 ≤ R) (hRu : c₀ * u ≤ R) :
     S ^ 2 / R ≤ (2 * A ^ 2 + 2 * B ^ 2) * (1 + 1 / c₀) * U ^ (2 * β - 1) := by
   have hR0 : 0 < R := by linarith
@@ -415,7 +415,8 @@ theorem sq_div_le_of_rough_bound {A B c₀ β S R u U : ℝ} (hA : 0 ≤ A) (hB 
           rw [hpow]
           refine div_le_div_of_nonneg_right (add_le_add le_rfl ?_) hc₀.le
           rw [div_le_iff₀ hu0]
-          nlinarith [sq_nonneg B]
+          have hprod : 1 ≤ u ^ (2 * β - 1) * u := by nlinarith
+          nlinarith [mul_le_mul_of_nonneg_left hprod (by positivity : (0 : ℝ) ≤ 2 * B ^ 2)]
       _ = (2 * A ^ 2 + 2 * B ^ 2) * (1 / c₀) * u ^ (2 * β - 1) := by ring
       _ ≤ (2 * A ^ 2 + 2 * B ^ 2) * (1 + 1 / c₀) * U ^ (2 * β - 1) := by
           refine mul_le_mul (mul_le_mul_of_nonneg_left (by linarith) (by positivity)) hmono
@@ -471,12 +472,14 @@ theorem exists_norm_starProjection_twin_sq_le (P : Set ℕ) {κ C : ℝ} (hκ0 :
       rw [mul_div_assoc']
       refine div_le_div_of_nonneg_right (mul_le_mul_of_nonneg_left ?_ hc₀.le) (by linarith)
       exact Real.log_le_log hY0 (by linarith)
-    have h := sq_div_le_of_rough_bound hA0 hB0 hc₀ (by linarith) (by linarith) hu huU hU
+    have h := sq_div_le_of_rough_bound hA0 hB0 hc₀ (by linarith) hu huU hU
       (hW Q hQ Y) (one_le_roughHarmonic Q hY1) hRu
     rw [show 2 * (1 - 2 * κ) - 1 = 1 - 4 * κ by ring] at h
-    rw [div_mul_eq_div_div, div_div_eq_mul_div, mul_comm (1 / (a : ℝ)), ← div_eq_mul_one_div]
-    rw [mul_comm, ← div_div]
-    exact div_le_div_of_nonneg_right h ha0.le
+    have hR0 : (0 : ℝ) < roughHarmonic Q Y := lt_of_lt_of_le one_pos (one_le_roughHarmonic Q hY1)
+    calc gaugeHarmonicSum (roughGauge Q ω) Y ^ 2 / (a * roughHarmonic Q Y) =
+          1 / a * (gaugeHarmonicSum (roughGauge Q ω) Y ^ 2 / roughHarmonic Q Y) := by
+          field_simp
+      _ ≤ 1 / a * (K₁ * U ^ (1 - 4 * κ)) := mul_le_mul_of_nonneg_left h (by positivity)
   have hM : ∀ v ∈ smoothFibreSpace Q N, ⟪gaugeVector N ω, v⟫ ^ 2 ≤
       (K₁ * U ^ (1 - 4 * κ) * (Ks * Real.log Q)) * ‖v‖ ^ 2 := by
     intro v hv
@@ -500,6 +503,186 @@ theorem exists_norm_starProjection_twin_sq_le (P : Set ℕ) {κ C : ℝ} (hκ0 :
     _ = K₁ * Ks * Real.log N ^ (1 - 4 * κ) * Real.log Q ^ (4 * κ) := by rw [e]; ring
 
 end Twin
+
+
+section Multiscale
+
+open GaloisForLFunctions.ArithmeticCountingPositivity (primeSetFlip)
+
+theorem norm_gaugeVector_sq (P : Set ℕ) (N : ℕ) :
+    ‖gaugeVector N (primeSetFlip P)‖ ^ 2 = ∑ n ∈ Icc 1 N, 1 / (n : ℝ) := by
+  rw [norm_sq_eq_sum_poleGauge]
+  refine sum_congr rfl fun n hn => ?_
+  have hn0 : (0 : ℝ) < n := by exact_mod_cast (mem_Icc.mp hn).1
+  have hs0 : Real.sqrt n ≠ 0 := (Real.sqrt_pos.mpr hn0).ne'
+  simp only [horizonExtend, dif_pos hn, gaugeVector, WithLp.ofLp_toLp]
+  rw [mul_div_cancel₀ _ hs0, sq, primeSetFlip_mul_self]
+
+/-- `Σ_{j<J} r^{j+1} ≤ r/(1 − r)` for `0 ≤ r < 1`. -/
+theorem sum_range_pow_succ_le {r : ℝ} (hr0 : 0 ≤ r) (hr1 : r < 1) (J : ℕ) :
+    ∑ j ∈ range J, r ^ (j + 1) ≤ r / (1 - r) := by
+  have h := geom_sum_mul r J
+  have hs : ∑ j ∈ range J, r ^ j ≤ 1 / (1 - r) := by
+    rw [le_div_iff₀ (by linarith)]
+    have : 0 ≤ r ^ J := pow_nonneg hr0 J
+    nlinarith
+  simp only [pow_succ, ← sum_mul]
+  rw [div_eq_mul_one_div, mul_comm]
+  exact mul_le_mul_of_nonneg_left hs hr0
+
+/-- One scale of the multiscale sum: `P² ≤ K' X^a λ^{1−a}` and `W² ≤ (Kp/(λ/2)) D` give
+`P W ≤ √(2K'Kp) X^{a/2} λ^{−a/2} √D`. -/
+theorem mul_le_of_scale {P W K' Kp X lam D a : ℝ} (hP0 : 0 ≤ P) (hW0 : 0 ≤ W) (hK' : 0 ≤ K')
+    (hKp : 0 ≤ Kp) (hX : 0 ≤ X) (hlam : 0 < lam) (hD : 0 ≤ D)
+    (hPb : P ^ 2 ≤ K' * X ^ a * lam ^ (1 - a)) (hWb : W ^ 2 ≤ Kp / (lam / 2) * D) :
+    P * W ≤ Real.sqrt (2 * K' * Kp) * X ^ (a / 2) * lam ^ (-(a / 2)) * Real.sqrt D := by
+  have hrhs : 0 ≤ Real.sqrt (2 * K' * Kp) * X ^ (a / 2) * lam ^ (-(a / 2)) * Real.sqrt D := by
+    have := Real.rpow_nonneg hX (a / 2); have := (Real.rpow_pos_of_pos hlam (-(a / 2))).le
+    positivity
+  rw [← pow_le_pow_iff_left₀ (mul_nonneg hP0 hW0) hrhs two_ne_zero]
+  have hXa : (X ^ (a / 2)) ^ 2 = X ^ a := by
+    rw [← Real.rpow_natCast, ← Real.rpow_mul hX]; norm_num
+  have hla : (lam ^ (-(a / 2))) ^ 2 = lam ^ (-a) := by
+    rw [← Real.rpow_natCast, ← Real.rpow_mul hlam.le]; norm_num
+  have hl1 : lam ^ (1 - a) = lam * lam ^ (-a) := by
+    rw [sub_eq_add_neg, Real.rpow_add hlam, Real.rpow_one]
+  rw [mul_pow, mul_pow, mul_pow, mul_pow, Real.sq_sqrt (by positivity), Real.sq_sqrt hD, hXa, hla]
+  have hPW := mul_le_mul hPb hWb (sq_nonneg _) (by
+    have := Real.rpow_nonneg hX a; have := Real.rpow_nonneg hlam.le (1 - a); positivity)
+  calc P ^ 2 * W ^ 2 ≤ K' * X ^ a * lam ^ (1 - a) * (Kp / (lam / 2) * D) := hPW
+    _ = 2 * K' * Kp * X ^ a * lam ^ (-a) * D := by
+        rw [hl1]; field_simp
+
+/-- `(2^{j+1} L)^q = (2^q)^{j+1} L^q`. -/
+theorem two_pow_mul_rpow {L : ℝ} (hL : 0 ≤ L) (q : ℝ) (j : ℕ) :
+    ((2 : ℝ) ^ (j + 1) * L) ^ q = ((2 : ℝ) ^ q) ^ (j + 1) * L ^ q := by
+  have h2 : ((2 : ℝ) ^ (j + 1)) ^ q = ((2 : ℝ) ^ q) ^ (j + 1) := by
+    rw [← Real.rpow_natCast (2 : ℝ) (j + 1), ← Real.rpow_mul (by norm_num), mul_comm,
+      Real.rpow_mul (by norm_num), Real.rpow_natCast]
+  rw [Real.mul_rpow (by positivity) hL, h2]
+
+/-- **The multiscale bound.** For a flip twin of relative log density `κ ∈ (0, 1/4)` there are
+`K₁, K₂` with, for `3 ≤ T ≤ N` and every `u`,
+`|⟨u, ω⃗ − P_T ω⃗⟩| ≤ (K₁ (log N)^{1/2 − 2κ} (log T)^{2κ − 1/2} + K₂) √D_N(u)`. The scales
+`Q_j = T^{2^j}` telescope; scale `j` costs `≪ (log N)^{1/2−2κ} (2^j log T)^{2κ−1/2}`, a geometric
+series, and the top scale `Q_J > √N` costs `O(1)`. -/
+theorem exists_abs_inner_twin_sub_starProjection_le (P : Set ℕ) {κ C : ℝ} (hκ0 : 0 < κ)
+    (hκ : κ < 1 / 4) (hP : ∀ n, 1 ≤ n → |primeSetLogMass P n - κ * Real.log n| ≤ C) :
+    ∃ K₁ K₂ : ℝ, 0 ≤ K₁ ∧ 0 ≤ K₂ ∧ ∀ T N : ℕ, 3 ≤ T → T ≤ N →
+      ∀ u : EuclideanSpace ℝ (PrimeHorizonIndex N),
+        |⟪u, gaugeVector N (primeSetFlip P) -
+          (smoothFibreSpace T N).starProjection (gaugeVector N (primeSetFlip P))⟫| ≤
+          (K₁ * Real.log N ^ (1 / 2 - 2 * κ) * Real.log T ^ (2 * κ - 1 / 2) + K₂) *
+            Real.sqrt (poleDefect N (horizonExtend u)) := by
+  obtain ⟨Kp, hKp, hPoinc⟩ := exists_norm_sub_starProjection_sq_le
+  obtain ⟨K', hK', hmass⟩ := exists_norm_starProjection_twin_sq_le P hκ0.le hκ.le hP
+  set r := (2 : ℝ) ^ (2 * κ - 1 / 2)
+  have hr0 : 0 ≤ r := by positivity
+  have hr1 : r < 1 := Real.rpow_lt_one_of_one_lt_of_neg (by norm_num) (by linarith)
+  refine ⟨Real.sqrt (2 * K' * Kp) * (r / (1 - r)), 2 * Real.sqrt Kp,
+    mul_nonneg (Real.sqrt_nonneg _) (div_nonneg hr0 (by linarith)), by positivity,
+    fun T N hT hTN u => ?_⟩
+  set ω := gaugeVector N (primeSetFlip P)
+  set D := poleDefect N (horizonExtend u)
+  have hD : 0 ≤ D := RenormalizedArithmeticPotentialTheory.poleDefect_nonneg N _
+  set L := Real.log T
+  have hL1 : 1 ≤ L := one_le_log_of_three_le hT
+  have hN3 : 3 ≤ N := hT.trans hTN
+  have hLN1 : 1 ≤ Real.log N := one_le_log_of_three_le hN3
+  -- the scales `Q_j = T^{2^j}` and the top index `J`
+  set K : ℕ → Submodule ℝ (EuclideanSpace ℝ (PrimeHorizonIndex N)) :=
+    fun j => smoothFibreSpace (T ^ 2 ^ j) N
+  have hKmono : ∀ j, K j ≤ K (j + 1) := fun j =>
+    smoothFibreSpace_mono (Nat.pow_le_pow_right (by omega) (Nat.pow_le_pow_right (by norm_num)
+      (Nat.le_succ j)))
+  set J := Nat.log 2 (Nat.log T N)
+  have hlogTN : Nat.log T N ≠ 0 := (Nat.log_pos (by omega) hTN).ne'
+  have hscaleN : ∀ j, j ≤ J → T ^ 2 ^ j ≤ N := fun j hj =>
+    (Nat.pow_le_pow_right (by omega) ((Nat.pow_le_pow_right (by norm_num) hj).trans
+      (Nat.pow_log_le_self 2 hlogTN))).trans (Nat.pow_log_le_self T (by omega))
+  have htop : (N : ℝ) < (T : ℝ) ^ 2 ^ (J + 1) := by
+    have h1 := Nat.lt_pow_succ_log_self (show 1 < T by omega) N
+    have h2 := Nat.lt_pow_succ_log_self (show 1 < 2 by norm_num) (Nat.log T N)
+    exact_mod_cast h1.trans_le (Nat.pow_le_pow_right (by omega) h2)
+  have hlogQ : ∀ j, Real.log ((T ^ 2 ^ j : ℕ) : ℝ) = (2 : ℝ) ^ j * L := fun j => by
+    push_cast; rw [Real.log_pow]; push_cast; ring
+  have hK0 : K 0 = smoothFibreSpace T N := by simp [K]
+  -- the telescoping bound
+  have htel := abs_inner_sub_starProjection_le K hKmono ω u J
+  rw [hK0] at htel
+  refine htel.trans ?_
+  -- each intermediate scale
+  have hterm : ∀ j ∈ range J, ‖(K (j + 1)).starProjection ω‖ * ‖u - (K j).starProjection u‖ ≤
+      Real.sqrt (2 * K' * Kp) * Real.log N ^ (1 / 2 - 2 * κ) * L ^ (2 * κ - 1 / 2) *
+        r ^ (j + 1) * Real.sqrt D := by
+    intro j hj
+    have hjJ : j + 1 ≤ J := mem_range.mp hj
+    have hQ3 : 3 ≤ T ^ 2 ^ (j + 1) :=
+      hT.trans (Nat.le_self_pow (by positivity) T)
+    have hQ3' : 2 ≤ T ^ 2 ^ j := le_trans (by omega) (Nat.le_self_pow (by positivity) T)
+    have hlam : 0 < (2 : ℝ) ^ (j + 1) * L := by positivity
+    have hPb : ‖(K (j + 1)).starProjection ω‖ ^ 2 ≤
+        K' * Real.log N ^ (1 - 4 * κ) * ((2 : ℝ) ^ (j + 1) * L) ^ (1 - (1 - 4 * κ)) := by
+      have h := hmass (T ^ 2 ^ (j + 1)) N hQ3 (hscaleN (j + 1) hjJ)
+      rw [hlogQ] at h
+      rw [show 1 - (1 - 4 * κ) = 4 * κ by ring]
+      exact h
+    have hWb : ‖u - (K j).starProjection u‖ ^ 2 ≤ Kp / ((2 : ℝ) ^ (j + 1) * L / 2) * D := by
+      have h := hPoinc (T ^ 2 ^ j) N hQ3' u
+      rw [hlogQ] at h
+      rw [show (2 : ℝ) ^ (j + 1) * L / 2 = 2 ^ j * L by ring]
+      exact h
+    have h := mul_le_of_scale (norm_nonneg _) (norm_nonneg _) hK' hKp (by linarith) hlam hD hPb hWb
+    rw [two_pow_mul_rpow (by linarith), show (1 - 4 * κ) / 2 = 1 / 2 - 2 * κ by ring,
+      show -(1 / 2 - 2 * κ) = 2 * κ - 1 / 2 by ring] at h
+    calc _ ≤ _ := h
+      _ = Real.sqrt (2 * K' * Kp) * Real.log N ^ (1 / 2 - 2 * κ) * L ^ (2 * κ - 1 / 2) *
+            r ^ (j + 1) * Real.sqrt D := by ring
+  -- the top scale
+  have hlast : ‖ω‖ * ‖u - (K J).starProjection u‖ ≤ 2 * Real.sqrt Kp * Real.sqrt D := by
+    have hω2 : ‖ω‖ ^ 2 ≤ 2 * Real.log N := by
+      rw [norm_gaugeVector_sq]
+      have h := hsum_le N
+      unfold hsum at h
+      simp only [one_div]
+      linarith
+    have hQJ : 2 ≤ T ^ 2 ^ J := le_trans (by omega) (Nat.le_self_pow (by positivity) T)
+    have hW := hPoinc (T ^ 2 ^ J) N hQJ u
+    rw [hlogQ] at hW
+    have hlamJ : Real.log N / 2 ≤ (2 : ℝ) ^ J * L := by
+      have h := Real.log_lt_log (by positivity) htop
+      rw [Real.log_pow] at h
+      push_cast at h
+      rw [pow_succ] at h
+      linarith
+    have hW' : ‖u - (K J).starProjection u‖ ^ 2 ≤ 2 * Kp / Real.log N * D := by
+      refine hW.trans (mul_le_mul_of_nonneg_right ?_ hD)
+      rw [div_le_div_iff₀ (by positivity) (by linarith)]
+      nlinarith
+    have hrhs : 0 ≤ 2 * Real.sqrt Kp * Real.sqrt D := by positivity
+    rw [← pow_le_pow_iff_left₀ (mul_nonneg (norm_nonneg _) (norm_nonneg _)) hrhs two_ne_zero,
+      mul_pow, mul_pow, mul_pow, Real.sq_sqrt hKp, Real.sq_sqrt hD]
+    calc ‖ω‖ ^ 2 * ‖u - (K J).starProjection u‖ ^ 2 ≤ 2 * Real.log N * (2 * Kp / Real.log N * D) :=
+          mul_le_mul hω2 hW' (sq_nonneg _) (by linarith)
+      _ = 2 ^ 2 * Kp * D := by field_simp
+  have hgeo := sum_range_pow_succ_le hr0 hr1 J
+  have hpos : 0 ≤ Real.sqrt (2 * K' * Kp) * Real.log N ^ (1 / 2 - 2 * κ) * L ^ (2 * κ - 1 / 2) *
+      Real.sqrt D := by
+    have := Real.rpow_nonneg (by linarith : (0 : ℝ) ≤ Real.log N) (1 / 2 - 2 * κ)
+    have := Real.rpow_nonneg (by linarith : (0 : ℝ) ≤ L) (2 * κ - 1 / 2)
+    positivity
+  calc _ ≤ ∑ j ∈ range J, Real.sqrt (2 * K' * Kp) * Real.log N ^ (1 / 2 - 2 * κ) *
+          L ^ (2 * κ - 1 / 2) * r ^ (j + 1) * Real.sqrt D + 2 * Real.sqrt Kp * Real.sqrt D :=
+        add_le_add (sum_le_sum hterm) hlast
+    _ = Real.sqrt (2 * K' * Kp) * Real.log N ^ (1 / 2 - 2 * κ) * L ^ (2 * κ - 1 / 2) *
+          Real.sqrt D * ∑ j ∈ range J, r ^ (j + 1) + 2 * Real.sqrt Kp * Real.sqrt D := by
+        rw [mul_sum]; congr 1; refine sum_congr rfl fun j _ => by ring
+    _ ≤ Real.sqrt (2 * K' * Kp) * Real.log N ^ (1 / 2 - 2 * κ) * L ^ (2 * κ - 1 / 2) *
+          Real.sqrt D * (r / (1 - r)) + 2 * Real.sqrt Kp * Real.sqrt D :=
+        add_le_add (mul_le_mul_of_nonneg_left hgeo hpos) le_rfl
+    _ = _ := by ring
+
+end Multiscale
 
 
 end GaloisForLFunctions.RenormalizedIntersectionTheory

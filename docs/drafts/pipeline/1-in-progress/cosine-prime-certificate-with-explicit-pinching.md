@@ -1,6 +1,6 @@
 # The actual cosine prime certificate with pinching
 
-- **Stage:** 0-backlog
+- **Stage:** 1-in-progress
 - **Type:** CANDIDATE / ACTUAL PRIME-GRAM TRANSPORT
 - **Route:** Argon §4.1.
 - **Parents:** [Actual pinching](../3-formalized/trans-threshold-cosine-pinching-credit.md), [cosine coefficient](../3-formalized/cosine-shape-one-improves-trans-threshold-calibration.md).
@@ -26,7 +26,8 @@ through the tail seam. The existing trans-threshold certificate uses a box windo
 Keep the archimedean diagonal moment b and prime lag moment J in the generic
 continuous-form expansion. `ThmD.PP.sumA2g_close` supplies the window moment
 partial summation; the existing box proof instead replaces these moments by
-one and one third. The shape-one admissible window has a uniform derivative
+one and one third. A generic `AdmWindow` supplies `LocalHypsCoreW` without the bandwidth cap.
+The shape-one admissible window has a uniform derivative
 constant, so its frozen, height-dependent profile must be transported through
 the generic local-window and tail bounds. Retain the coalescent prime sum with
 that same window at every step.
