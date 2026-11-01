@@ -15,6 +15,8 @@ import GaloisForLFunctions.HodgeTheoryWithoutVarieties.TheShellBalanceOnTheCoher
 import GaloisForLFunctions.HodgeTheoryWithoutVarieties.TheLayersOfAPrime
 import GaloisForLFunctions.HodgeTheoryWithoutVarieties.TheSignGaugeOnDeepStars
 import GaloisForLFunctions.HodgeTheoryWithoutVarieties.TheConductorsAreMoebiusGluedStars
+import GaloisForLFunctions.HodgeTheoryWithoutVarieties.TheConductorGramIsGradedByTheLcm
+import GaloisForLFunctions.HodgeTheoryWithoutVarieties.TheCrossConductorPairings
 
 /-!
 # Hodge Theory without Varieties over ℤ
@@ -27,6 +29,7 @@ dilation complex; the depth law of stars; the Künneth step for spectral gaps; t
 candidates; the Möbius gluing of the stars, the recursion of the renormalized prime form over
 the nerve, the gcd stratification of the complete Weil family, the shell balance law on the
 coherent sector, the layers of a prime (the Künneth step at the horizon), the sign gauge on
-deep stars, and the Möbius duality between conductors and stars.
+deep stars, the Möbius duality between conductors and stars, its lcm grading, and the
+cross-conductor pairings.
 See `HodgeTheoryWithoutVarieties/README.md`.
 -/

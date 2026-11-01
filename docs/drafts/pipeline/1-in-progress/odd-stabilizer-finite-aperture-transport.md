@@ -47,11 +47,12 @@ is only `O(wT log²T)`.
 
 Put `N=floor X` and `R_m=(min(N,floor(m exp θ))−m)/2`, using
 natural subtraction and division. This directly retains both literal cutoffs.
-The exact ordered-pair identity should express the model as
-`(1/(4π))Σ_{odd 3≤m≤N}[2g(log m)logRow(m,R_m)+taperVariation(m,R_m)]`.
-The corresponding global taper-anchoring error should be at most
-`C floor(X) O(Q)/T` for fixed smooth height profiles and `θ≤log 2`.
-These exact source identities and their global bound await Lean verification.
+The [exact ordered-pair identity](../3-formalized/literal-stabilizer-model-row-decomposition.md)
+is formalized:
+`model=(1/(4π))Σ_{odd 3≤m≤N}[2g(log m)logRow(m,R_m)+taperVariation(m,R_m)]`.
+The global taper-anchoring error is at most `C floor(X) O(Q)/T` for fixed
+smooth height profiles and `θ≤log 2`. All three audits use standard axioms;
+the final direct leaf check passes.
 
 For `θ≤log 2`, `2R_m≤m`. Bulk bases `m≤X exp(−θ)` see the full aperture;
 if `mθ≥4`, its length is at least `mθ/4`. Short bases number `O(θ⁻¹)`.

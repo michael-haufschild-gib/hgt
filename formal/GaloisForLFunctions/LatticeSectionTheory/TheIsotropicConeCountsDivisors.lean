@@ -190,8 +190,7 @@ theorem tendsto_sq_mul_Λ (P : WeakFEPair ℂ) :
         (nhdsWithin_le_nhds (s := Set.Ioi (1 : ℝ)))
       simpa using this
     have := hc.tendsto.comp hof
-    simp only [Complex.ofReal_one, sub_self, ne_eq, OfNat.ofNat_ne_zero, not_false_eq_true,
-      zero_pow, zero_mul] at this
+    simp only [sub_self, ne_eq, OfNat.ofNat_ne_zero, not_false_eq_true, zero_pow, zero_mul] at this
     exact this
 
 /-- **The isotropic count is not Poisson-dual.** No weak FE-pair has the Mellin transform of the

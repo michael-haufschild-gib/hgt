@@ -147,6 +147,7 @@ everything else unconditionally.
 | Literal logarithmic row retains `π spatialDual−Ωhat(0)O(Q)/m`, error `≤O(Q)C_T/T+O(Q)D₄m³/(8R³)` | `abs_stabilizerLogarithmicRow_sub_dual_le` | unconditional; square-root weight retained |
 | Fixed smooth profiles: row `≤C O(Q)`, taper moment `≤C O(Q)/T`, dual error `≤C O(Q)[T⁻¹+(m/(TR))³]` | `SmoothProfileLogarithmicTransport.lean` | unconditional; constants supplied by compact profile derivatives |
 | Actual standard taper: Lipschitz constant two and endpoint variation `≤C O(Q)/T` | `StabilizerTaperTransport.lean` | uniform in taper length, collar and monotone transition profile |
+| Literal ordered-pair model = finite logarithmic rows + taper variation; global anchoring error `≤C floor(X) O(Q)/T` | `StabilizerModelRowDecomposition.lean` | exact aperture and upper cutoff; `θ≤log 2` for the bound |
 | Coprime-harmonic errors: `Σ_{q≤Q}qμ²/φ² · |Hq(Nq)−φ(q)log(Nq)/q|≤36864(1+log Q)` | `CoprimeHarmonicConductorAverage.lean` | arbitrary positive horizons; all conductors |
 | Unsigned inner-lobe divergence | `sum_Icc_abs_cosTransform_ge_inner_lobe` | unconditional (no-go) |
 | Parity-twin survival line; closed-form germ limits; Λ erased on the cone | `parityTwinPair_unrestricted_vs_evenShift_survivalCone`, `tendsto_shiftedMode_ramanujanGerm_closedForm`, `quad_torsionAlignedLimit_eq_neg_cyclotomicHarmonic_on_cone` | unconditional |

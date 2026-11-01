@@ -6,6 +6,7 @@ import GaloisForLFunctions.LatticeSectionTheory.TheSiegelMajorantIsTheHodgeIndex
 import GaloisForLFunctions.LatticeSectionTheory.TheBoostTransformRestoresTheEulerProduct
 import GaloisForLFunctions.LatticeSectionTheory.BidegreeCountsSeeNoPrimitiveClass
 import GaloisForLFunctions.LatticeSectionTheory.TheCalibrationOverFiniteFields
+import GaloisForLFunctions.LatticeSectionTheory.TheIsotropicConeCountsDivisors
 
 /-!
 # Lattice Section Theory

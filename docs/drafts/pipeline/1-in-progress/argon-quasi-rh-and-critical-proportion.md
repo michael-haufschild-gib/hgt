@@ -53,8 +53,10 @@ dual error is `≤C O(Q)[T⁻¹+(m/(TR))³]`, its row is bounded by `C O(Q)`, an
 its logarithmic taper moment by `C O(Q)/T`. All eight audits and both final
 direct checks pass. [Actual standard taper transport](../3-formalized/actual-smooth-taper-stabilizer-transport.md)
 also gives a uniform Lipschitz constant two and endpoint variation `C O(Q)/T`.
-Aperture reindexing, global primitive-correction summation, cosine-taper
-compatibility and actual signed prime discrepancy remain open.
+The [literal pair decomposition](../3-formalized/literal-stabilizer-model-row-decomposition.md)
+retains both finite cutoffs and bounds global taper variation by
+`C floor(X) O(Q)/T`. Global primitive-correction summation, boundary estimates,
+cosine-taper compatibility and actual signed prime discrepancy remain open.
 
 The [uniform coprime-harmonic average](../3-formalized/coprime-harmonic-conductor-average.md)
 bounds the all-conductor weighted error by `36864(1+log Q)` for arbitrary

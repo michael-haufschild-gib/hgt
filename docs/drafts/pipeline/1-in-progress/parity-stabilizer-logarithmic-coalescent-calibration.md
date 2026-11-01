@@ -70,7 +70,9 @@ is now formalized: fixed smooth profiles have signed dual error
 `C O(Q)/T`. All eight audits and both final direct checks pass. The
 [actual standard taper](../3-formalized/actual-smooth-taper-stabilizer-transport.md)
 has Lipschitz constant two and endpoint variation `C O(Q)/T`, uniformly in
-length and collar. Aperture reindexing and global boundary summation remain open.
+length and collar. The [literal pair reindexing](../3-formalized/literal-stabilizer-model-row-decomposition.md)
+now retains both aperture and upper cutoff exactly, with global taper error
+`C floor(X) O(Q)/T`. Global boundary summation remains open.
 
 ## Fixed-cutoff primitive-sample calculation
 
@@ -102,5 +104,5 @@ logarithmic moment is `Σ μ²(q)(1+log q)/φ(q)²≤576`.
 Weighted taper summation and odd-base quadrature remain to convert this into
 raw error `O(T log²T)`. The [odd logarithmic square moment](odd-stabilizer-log-square-mean.md)
 should supply coefficient 1/6 from the existing odd mean 1/2. Aperture
-reindexing and global summation also remain open before asserting the model
+boundary estimates and global summation remain open before asserting the model
 calibration.

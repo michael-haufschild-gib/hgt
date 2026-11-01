@@ -68,7 +68,7 @@ theorem eventually_zeroFreeLogProfile_archForm_reserve :
         ((c / N) * ∫ u, zeroFreeLogProfile u ^ 2) * (∑ n ∈ Icc 1 N, x n ^ 2) := by
     unfold zeroFreeLogGammaReserve
     field_simp [Real.pi_ne_zero, hNR.ne', hM.ne']
-    <;> ring
+    ring
   rw [hcoef] at hbandTerm
   have hB : 1 + 2 * Real.exp 1 * c ≤ (1 + 2 * Real.exp 1) * c := by
     nlinarith only [hc]

@@ -43,8 +43,15 @@ algebraic multiplier `q≠1`; `q=1` repeats the same coordinate.
    `primeAmplitude_eq` identify the literal jets, their summability, and their
    exact coefficients. Prime-power reindexing is explicit.
 
-All three modules have direct production checks and umbrella imports.
-Their 21 public axiom audits use only the standard three axioms.
+4. **Coefficient-preserving polarization.**
+   `ArithmeticHarmonicAnalysis/DilationPolynomialPolarization.lean`
+   constructs the symmetric multilinear form of each homogeneous component.
+   Its diagonal is the component times the nonzero permutation count;
+   `polynomialMultilinear_ne_zero` preserves every nonzero supported coefficient,
+   including degree zero.
+
+All four modules have direct production checks and umbrella imports.
+Their 30 public axiom audits use only the standard three axioms.
 These inputs do not yet prove joint independence of the analytic functions.
 
 ## Remaining bridge
@@ -61,8 +68,8 @@ and reduces each degree-`D` contribution to a finite permutation sum. This is
 a symmetric multilinear form in the normalized prime-jet rows. Their
 separation forces the form to vanish; its diagonal is `D!` times the top
 homogeneous polynomial, contradicting a nonzero top coefficient.
-The common-atom, polynomial, and actual jet-independence bridges are drafted
-but not yet certified.
+The common-atom expansion, exact polynomial frequency extraction, and actual
+jet-independence bridges are drafted but not yet certified.
 
 The corpus already supplies absolutely convergent product expansion
 (`ExponentialSeriesAlgebra.prod_expSeriesCarrier`) and coefficient extraction

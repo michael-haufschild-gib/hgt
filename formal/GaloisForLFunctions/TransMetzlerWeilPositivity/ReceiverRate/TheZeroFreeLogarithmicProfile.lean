@@ -98,7 +98,7 @@ theorem norm_paperFT_zeroFreeLogProfile (r : ℝ) :
       congr 2
       push_cast
       field_simp [Real.pi_ne_zero]
-      <;> ring
+      ring
 
 theorem paperFT_zeroFreeLogProfile_ne_zero (r : ℝ) :
     Zeta23.paperFT (cx zeroFreeLogProfile) (r : ℂ) ≠ 0 := by

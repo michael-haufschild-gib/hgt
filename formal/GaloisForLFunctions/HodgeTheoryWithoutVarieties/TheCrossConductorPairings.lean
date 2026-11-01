@@ -38,8 +38,8 @@ channel. The bounds below depend on the overlap regime; the tilted unit spline h
 * **Quadratic control over all conductors at the eighth root is RH**
   (`riemannHypothesis_iff_conductorGram_nonneg_eighthRoot`). The conductors `e ≤ N` are a basis of
   the horizon, so positivity of their Gram is positivity of the complete form. At every overlap
-  `2K(log N)^{1/8}` that is RH. The exponent of the relative bound is therefore the RH exponent;
-  at `c⁸ ≍ log N` the relative cross pairings are of order one and only their exact size decides.
+  `2K(log N)^{1/8}` that is RH. The exponent of the relative bound is therefore the RH exponent.
+  At `c⁸ ≍ log N` the generic bound stops decaying, and only the exact leading term decides.
 * **Mean square, beyond the eighth root** (`sum_sq_conductorDeviation_le`,
   `tendsto_conductorDeviation_rhComplete`). Bessel's inequality for the conductor frame (upper
   Riesz bound `6`) bounds the Hilbert–Schmidt mass of the residual channels by `6 Σ_e ‖ρ_e‖²`. By
@@ -54,6 +54,7 @@ noncomputable section
 open Finset Filter Topology
 open scoped RealInnerProductSpace
 open GaloisForLFunctions.RenormalizedArithmeticPotentialTheory
+  GaloisForLFunctions.RenormalizedArithmeticPotentialTheory.CompletedShell
   GaloisForLFunctions.ArithmeticLorentzianGeometry GaloisForLFunctions.SpacingScaleHarmonicAnalysis
 open GaloisForLFunctions.CompletedArithmeticForms (completeWeilConductorResidual conductorSubspace
   mem_conductorSubspace_normalizedRamanujanHorizonVector ramanujanConductor_upper_riesz
@@ -88,7 +89,7 @@ theorem completeWeilEnergy_sum_conductors (φ : ℝ → ℝ) (c : ℝ) (N : ℕ)
           normalizedRamanujanHorizonVector e' N⟫ := by
   rw [completeWeilEnergy, map_sum, sum_inner]
   refine sum_congr rfl fun e _ => ?_
-  rw [map_smul, inner_sum, mul_sum]
+  rw [map_smul, inner_sum]
   refine sum_congr rfl fun e' _ => ?_
   rw [real_inner_smul_left, real_inner_smul_right]
   ring

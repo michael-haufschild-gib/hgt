@@ -422,10 +422,12 @@ theorem sq_div_le_of_rough_bound {A B c₀ β S R u U : ℝ} (hA : 0 ≤ A) (hB 
           refine mul_le_mul (mul_le_mul_of_nonneg_left (by linarith) (by positivity)) hmono
             (by linarith) hK0
 
-/-- **Projected mass of a flip twin.** For relative log density `κ ≤ 1/4` there is `K'` with
+/-- **Projected mass of a flip twin.** For relative log density `κ ≤ 1/4` with error
+`O((1 + log n)^α)`, `α < 1 − 2κ`, there is `K'` with
 `|P_Q ω⃗|² ≤ K' (log N)^{1−4κ} (log Q)^{4κ}` for `3 ≤ Q ≤ N`. -/
-theorem exists_norm_starProjection_twin_sq_le (P : Set ℕ) {κ C : ℝ} (hκ0 : 0 ≤ κ)
-    (hκ : κ ≤ 1 / 4) (hP : ∀ n, 1 ≤ n → |primeSetLogMass P n - κ * Real.log n| ≤ C) :
+theorem exists_norm_starProjection_twin_sq_le (P : Set ℕ) {κ C α : ℝ} (hκ0 : 0 ≤ κ)
+    (hκ : κ ≤ 1 / 4) (hα : 0 ≤ α) (hακ : α < 1 - 2 * κ)
+    (hP : ∀ n, 1 ≤ n → |primeSetLogMass P n - κ * Real.log n| ≤ C * (1 + Real.log n) ^ α) :
     ∃ K' : ℝ, 0 ≤ K' ∧ ∀ Q N : ℕ, 3 ≤ Q → Q ≤ N →
       ‖(smoothFibreSpace Q N).starProjection (gaugeVector N (primeSetFlip P))‖ ^ 2 ≤
         K' * Real.log N ^ (1 - 4 * κ) * Real.log Q ^ (4 * κ) := by
@@ -434,7 +436,7 @@ theorem exists_norm_starProjection_twin_sq_le (P : Set ℕ) {κ C : ℝ} (hκ0 :
     fun a b ha hb => (primeSetFlip_isSignGauge P).mul ha hb
   have hbd : ∀ n, |ω n| ≤ 1 := abs_primeSetFlip_le P
   obtain ⟨A, B, hA0, hB0, hW⟩ := exists_abs_gaugeHarmonicSum_roughGauge_le (β := 1 - 2 * κ) hmul hbd
-    (by linarith) (by linarith) (fun n hn => abs_primeMean_primeSetFlip_sub_le P hP hn)
+    (by linarith) (by linarith) hα hακ (fun n hn => abs_primeMean_primeSetFlip_sub_le_rpow P hα hP hn)
   obtain ⟨c₀, hc₀, hR⟩ := exists_roughHarmonic_ge
   obtain ⟨Ks, hKs, hsm⟩ := exists_sum_smoothSet_inv_le
   set K₁ := (2 * A ^ 2 + 2 * B ^ 2) * (1 + 1 / c₀)
@@ -561,13 +563,15 @@ theorem two_pow_mul_rpow {L : ℝ} (hL : 0 ≤ L) (q : ℝ) (j : ℕ) :
       Real.rpow_mul (by norm_num), Real.rpow_natCast]
   rw [Real.mul_rpow (by positivity) hL, h2]
 
-/-- **The multiscale bound.** For a flip twin of relative log density `κ ∈ (0, 1/4)` there are
+/-- **The multiscale bound.** For a flip twin of relative log density `κ ∈ (0, 1/4)` with error
+`O((1 + log n)^α)`, `α < 1 − 2κ`, there are
 `K₁, K₂` with, for `3 ≤ T ≤ N` and every `u`,
 `|⟨u, ω⃗ − P_T ω⃗⟩| ≤ (K₁ (log N)^{1/2 − 2κ} (log T)^{2κ − 1/2} + K₂) √D_N(u)`. The scales
 `Q_j = T^{2^j}` telescope; scale `j` costs `≪ (log N)^{1/2−2κ} (2^j log T)^{2κ−1/2}`, a geometric
 series, and the top scale `Q_J > √N` costs `O(1)`. -/
-theorem exists_abs_inner_twin_sub_starProjection_le (P : Set ℕ) {κ C : ℝ} (hκ0 : 0 < κ)
-    (hκ : κ < 1 / 4) (hP : ∀ n, 1 ≤ n → |primeSetLogMass P n - κ * Real.log n| ≤ C) :
+theorem exists_abs_inner_twin_sub_starProjection_le (P : Set ℕ) {κ C α : ℝ} (hκ0 : 0 < κ)
+    (hκ : κ < 1 / 4) (hα : 0 ≤ α) (hακ : α < 1 - 2 * κ)
+    (hP : ∀ n, 1 ≤ n → |primeSetLogMass P n - κ * Real.log n| ≤ C * (1 + Real.log n) ^ α) :
     ∃ K₁ K₂ : ℝ, 0 ≤ K₁ ∧ 0 ≤ K₂ ∧ ∀ T N : ℕ, 3 ≤ T → T ≤ N →
       ∀ u : EuclideanSpace ℝ (PrimeHorizonIndex N),
         |⟪u, gaugeVector N (primeSetFlip P) -
@@ -575,7 +579,7 @@ theorem exists_abs_inner_twin_sub_starProjection_le (P : Set ℕ) {κ C : ℝ} (
           (K₁ * Real.log N ^ (1 / 2 - 2 * κ) * Real.log T ^ (2 * κ - 1 / 2) + K₂) *
             Real.sqrt (poleDefect N (horizonExtend u)) := by
   obtain ⟨Kp, hKp, hPoinc⟩ := exists_norm_sub_starProjection_sq_le
-  obtain ⟨K', hK', hmass⟩ := exists_norm_starProjection_twin_sq_le P hκ0.le hκ.le hP
+  obtain ⟨K', hK', hmass⟩ := exists_norm_starProjection_twin_sq_le P hκ0.le hκ.le hα hακ hP
   set r := (2 : ℝ) ^ (2 * κ - 1 / 2)
   have hr0 : 0 ≤ r := by positivity
   have hr1 : r < 1 := Real.rpow_lt_one_of_one_lt_of_neg (by norm_num) (by linarith)
