@@ -1,3 +1,4 @@
+import GaloisForLFunctions.EdgeHodgeTheory.EdgeBelowOneNinth
 import GaloisForLFunctions.EdgeHodgeTheory.TheEdgeOfTheCompleteWeilFamily
 import GaloisForLFunctions.EffectiveArithmeticHodgeTheory.TheExplicitSchedulesReachTheIndex
 import GaloisForLFunctions.SpacingScaleHarmonicAnalysis.TheGevreyWindow
@@ -364,11 +365,11 @@ theorem edge_is_a_crossing {φ : ℝ → ℝ} (hφ : Admissible φ) {N : ℕ} (h
   crossing_of_firstFailure (A := fun c => completeWeilMatrix φ c N) he hedge
     (continuousAt_completeWeilMatrix_apply hφ hN (by linarith))
 
-/-- **Without RH the edge is a zero mode.** For `0 < α < α*` and `β > 1/4`, infinitely often the
+/-- **Without RH the edge is a zero mode.** For `0 < α < 1/9` and `β > 1/4`, infinitely often the
 complete Weil form of the tilted spline has a zero mode at an overlap `c ∈ [(log N)^α, 2(log N)^β]`
 at which it is still positive semidefinite. -/
 theorem frequently_zero_mode_in_window_of_not_rh (hRH : ¬ RiemannHypothesis) {α β : ℝ}
-    (hα : 0 < α) (hα' : α < CriticalArithmeticCorrelationTheory.powerLogPositivityExponent)
+    (hα : 0 < α) (hα' : α < CriticalArithmeticCorrelationTheory.oneNinthPowerLogExponent)
     (hβ : 1 / 4 < β) :
     ∃ᶠ N : ℕ in atTop, ∃ c : ℝ, Real.log N ^ α ≤ c ∧ c ≤ 2 * Real.log N ^ β ∧
       PositiveAt tiltedUnitSpline c N ∧
@@ -376,7 +377,7 @@ theorem frequently_zero_mode_in_window_of_not_rh (hRH : ¬ RiemannHypothesis) {�
         completeWeilEnergy tiltedUnitSpline c N x = 0 := by
   have hlog : Tendsto (fun N : ℕ => Real.log N ^ α) atTop atTop :=
     (tendsto_rpow_atTop hα).comp (Real.tendsto_log_atTop.comp tendsto_natCast_atTop_atTop)
-  refine ((frequently_edge_mem_window_of_not_riemannHypothesis hRH hα hα' hβ).and_eventually
+  refine ((frequently_edge_mem_window_of_not_riemannHypothesis_below_one_ninth hRH hα hα' hβ).and_eventually
     ((hlog.eventually_gt_atTop 1).and (eventually_ge_atTop 1))).mono
       fun N ⟨⟨hlow, hup⟩, h1, hN⟩ => ?_
   have hne : edge tiltedUnitSpline N ≠ ⊤ := ne_top_of_le_ne_top ENNReal.ofReal_ne_top hup
@@ -394,3 +395,5 @@ theorem frequently_zero_mode_in_window_of_not_rh (hRH : ¬ RiemannHypothesis) {�
   exact ⟨e, hlowe, hupe, hpsd, hzero⟩
 
 end GaloisForLFunctions.EdgeHodgeTheory
+
+#print axioms GaloisForLFunctions.EdgeHodgeTheory.frequently_zero_mode_in_window_of_not_rh

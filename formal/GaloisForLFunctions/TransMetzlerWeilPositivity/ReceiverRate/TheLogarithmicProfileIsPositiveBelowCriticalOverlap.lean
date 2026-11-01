@@ -1,4 +1,5 @@
 import GaloisForLFunctions.TransMetzlerWeilPositivity.ReceiverRate.TheLogarithmicConductorSplitFitsTheHorizon
+import GaloisForLFunctions.TransMetzlerWeilPositivity.ReceiverRate.SharpLogarithmicOverlapBudget
 import GaloisForLFunctions.CriticalArithmeticCorrelationTheory.EveryProfileWithoutRealFourierZerosIsUniformlyPositiveOnBoundedOverlap
 
 /-!
@@ -26,11 +27,11 @@ private theorem smooth_profile : ContDiff ℝ 2 zeroFreeLogProfile :=
 /-- Large overlaps are positive whenever their reciprocal Fourier floor fits the power budget. -/
 theorem exists_zeroFreeLogProfile_positive_power_budget :
     ∃ A : ℝ, ∀ᶠ N : ℕ in atTop, ∀ c : ℝ, A ≤ c →
-      logarithmicSpectralControl logarithmicReserveRate c ≤ Real.log (N : ℝ) ^ (1 / 256 : ℝ) →
+      logarithmicSpectralControl logarithmicReserveRate c ≤ Real.log (N : ℝ) ^ (1 / 128 : ℝ) →
         (completeWeilMatrix zeroFreeLogProfile c N).PosDef := by
   classical
-  let α : ℝ := 1 / 256
-  let q : ℝ := 1 / 16
+  let α : ℝ := 1 / 128
+  let q : ℝ := 1 / 8
   let ν : ℝ := 1 / 1000
   let k : ℕ := 8
   have hα : 0 < α := by norm_num [α]
@@ -199,18 +200,28 @@ theorem exists_zeroFreeLogProfile_positive_power_budget :
 
 /-- Explicit multiple of `loglog N · (logloglog N)²` paid by the reciprocal-floor budget. -/
 def zeroFreeLogPositivityMultiple : ℝ :=
-  1 / (827392 * (8 * Real.pi / 3 + 3000))
+  1 / (103424 * (8 * Real.pi / 3 + 3000))
 
 theorem zeroFreeLogPositivityMultiple_pos : 0 < zeroFreeLogPositivityMultiple := by
   unfold zeroFreeLogPositivityMultiple
   positivity
 
 private theorem zeroFreeLogPositivityMultiple_eq :
-    zeroFreeLogPositivityMultiple = (1 / 256 : ℝ) / (4 * logarithmicReserveRate) := by
+    zeroFreeLogPositivityMultiple = (1 / 128 : ℝ) / logarithmicReserveRate := by
   unfold zeroFreeLogPositivityMultiple logarithmicReserveRate sincTailConst
   rw [div_div]
   congr 1
   ring
+
+/-- Larger multiples eventually exceed the reciprocal-floor power budget used here. -/
+theorem zeroFreeLogProfile_spectral_budget_fails_above_explicit_multiple {K : ℝ}
+    (hK : zeroFreeLogPositivityMultiple < K) :
+    ∀ᶠ N : ℕ in atTop,
+      Real.log (N : ℝ) ^ (1 / 128 : ℝ) <
+        logarithmicSpectralControl logarithmicReserveRate (K * dcScale N) := by
+  apply eventually_log_rpow_lt_logarithmicSpectralControl logarithmicReserveRate_pos
+    (zeroFreeLogPositivityMultiple_pos.trans hK)
+  rwa [zeroFreeLogPositivityMultiple_eq] at hK
 
 /-- The complete family is positive up to the explicit logarithmic multiple. -/
 theorem zeroFreeLogProfile_completeWeilMatrix_posDef_explicit_critical_overlap :
@@ -224,8 +235,8 @@ theorem zeroFreeLogProfile_completeWeilMatrix_posDef_explicit_critical_overlap :
     smooth_profile zeroFreeLogProfile_eq_zero paperFT_zeroFreeLogProfile_ne_zero hK
   rw [zeroFreeLogPositivityMultiple_eq]
   filter_upwards [hlarge, hbounded,
-    eventually_logarithmicSpectralControl_le_log_rpow logarithmicReserveRate_pos
-      (by norm_num : (0 : ℝ) < 1 / 256)] with N hlargeN hboundedN hbudgetN
+    eventually_logarithmicSpectralControl_le_log_rpow_sharp logarithmicReserveRate_pos
+      (by norm_num : (0 : ℝ) < 1 / 128)] with N hlargeN hboundedN hbudgetN
   intro c hc hcup
   by_cases hcK : c ≤ K
   · exact hboundedN c hc hcK
@@ -281,6 +292,7 @@ end GaloisForLFunctions.TransMetzlerWeilPositivity
 
 #print axioms GaloisForLFunctions.TransMetzlerWeilPositivity.exists_zeroFreeLogProfile_positive_power_budget
 #print axioms GaloisForLFunctions.TransMetzlerWeilPositivity.zeroFreeLogPositivityMultiple_pos
+#print axioms GaloisForLFunctions.TransMetzlerWeilPositivity.zeroFreeLogProfile_spectral_budget_fails_above_explicit_multiple
 #print axioms GaloisForLFunctions.TransMetzlerWeilPositivity.zeroFreeLogProfile_completeWeilMatrix_posDef_explicit_critical_overlap
 #print axioms GaloisForLFunctions.TransMetzlerWeilPositivity.zeroFreeLogProfile_completeWeilMatrix_posDef_explicit_sincCritical_overlap
 #print axioms GaloisForLFunctions.TransMetzlerWeilPositivity.exists_zeroFreeLogProfile_completeWeilMatrix_posDef_critical_overlap

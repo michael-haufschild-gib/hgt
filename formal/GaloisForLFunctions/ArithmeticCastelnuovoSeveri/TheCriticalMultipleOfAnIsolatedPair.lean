@@ -102,7 +102,8 @@ theorem rvmPairIndex_eq_one_of_upper_lt {γ δ K : ℝ} (hγ : 2 * π < γ)
   have hone := hodgeDefectAt_isolatedPair_rvmDensity_eq_one hγ hδ hδ'
     ha (min_le_right _ _)
   have hmono := hodgeDefectAt_mono
-    (isolatedPairConfig (rvmLocalDensity_pos hγ) hδ hδ' γ) (min_le_left _ _)
+    (isolatedPairConfig (rvmLocalDensity_pos hγ) hδ hδ' γ)
+    (min_le_left (log K / 2) (rvmLocalDensity γ / 2))
   change hodgeDefectAt _ a ≤ rvmPairIndex hγ hδ hδ' K at hmono
   rw [hone] at hmono
   apply le_antisymm ?_ hmono
@@ -131,8 +132,9 @@ theorem rvmPairEdge_bounds {γ δ : ℝ} (hγ : 2 * π < γ) (hδ : 0 < δ)
     by_contra hlt
     have hz := rvmPairIndex_eq_zero_of_le_lower hγ hδ hδ' hdeep hK.1
       (le_of_lt (lt_of_not_ge hlt))
-    rw [hz] at hK
-    exact zero_ne_one hK.2
+    have hone := hK.2
+    rw [hz] at hone
+    exact zero_ne_one hone
   · apply le_of_forall_pos_le_add
     intro ε hε
     exact csInf_le hbelow (hmem ε hε)

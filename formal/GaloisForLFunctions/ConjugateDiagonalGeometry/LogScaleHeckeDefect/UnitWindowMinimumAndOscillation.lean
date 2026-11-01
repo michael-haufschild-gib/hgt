@@ -2,6 +2,7 @@ import GaloisForLFunctions.ConjugateDiagonalGeometry.LogScaleHeckeDefect.HalfGat
 import GaloisForLFunctions.ArithmeticOrientationGeometry.TheIndexExit
 import Mathlib.Analysis.Calculus.ParametricIntegral
 import Mathlib.Analysis.Calculus.LocalExtr.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.ArctanDeriv
 
 /-!
 # Unit-Window Minimum Selection, Ordinate Oscillation Calculus, and Separation Classification
@@ -1608,10 +1609,14 @@ theorem eventually_heckeDefect_compactTest_le_of_unitWindowDepthCharge_le
       simp only [Nat.cast_zero, add_zero] at hadj_N
       rw [hadj_N] at hm_sum
       have hpi : (∫ u in (T / 2)..(T / 2 + (N : ℝ)), 1 / (1 + (u - γ) ^ 2)) ≤ Real.pi := by
-        rw [intervalIntegral.integral_of_le
-            (by linarith only [(Nat.cast_nonneg N : (0 : ℝ) ≤ N)]),
-          MeasureTheory.integral_Icc_eq_integral_Ioc]
-        exact integral_Icc_inv_one_add_sq_sub_le_pi (T / 2) (T / 2 + (N : ℝ)) γ
+        rw [integral_eq_sub_of_hasDerivAt
+          (f := fun u : ℝ => Real.arctan (u - γ))
+          (fun u _ => (((hasDerivAt_id' u).sub_const γ).arctan).congr_deriv (mul_one _))
+          ((continuous_const.div (by fun_prop) fun _ => by positivity).intervalIntegrable
+            (μ := volume) _ _)]
+        have hhi := Real.arctan_lt_pi_div_two (T / 2 + (N : ℝ) - γ)
+        have hlo := Real.neg_pi_div_two_lt_arctan (T / 2 - γ)
+        linarith only [hhi, hlo]
       exact (hsub.trans_eq hbi).trans (hm_sum.trans
         (mul_le_mul_of_nonneg_left hpi (by positivity)))
     exact h1.trans ((mul_le_mul_of_nonneg_left hbi_le hM₀_pos.le).trans_eq (by ring))

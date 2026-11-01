@@ -1,3 +1,4 @@
+import GaloisForLFunctions.CriticalArithmeticCorrelationTheory.TelescopedConductorSplitAndOneNinthWeilPositivity
 import GaloisForLFunctions.EdgeHodgeTheory.TheEdgeIsACrossing
 import GaloisForLFunctions.HodgeTheoryWithoutVarieties.TheKahlerPackage
 import GaloisForLFunctions.HodgeTheoryWithoutVarieties.StarsAreLowerHorizons
@@ -46,8 +47,7 @@ open GaloisForLFunctions.ArithmeticCouplingTheory GaloisForLFunctions.Arithmetic
   GaloisForLFunctions.SpacingScaleHarmonicAnalysis GaloisForLFunctions.ArithmeticElectrostatics
 
 open GaloisForLFunctions.CriticalArithmeticCorrelationTheory
-  (eventually_tiltedUnitSpline_completeWeilMatrix_posDef_powerLog powerLogPositivityExponent
-    powerLogPositivityExponent_pos)
+  (eventually_tiltedUnitSpline_completeWeilMatrix_posDef_log_one_tenth)
 
 namespace GaloisForLFunctions.HodgeTheoryWithoutVarieties
 
@@ -291,19 +291,19 @@ theorem riemannHypothesis_iff_liouville_along_the_overlap_flow {β : ℝ} (hβ :
     exact hardLefschetz_of_riemannHypothesis hRH admissible_tiltedUnitSpline
       (one_pos.trans_le hc.1) hN
   · intro H
-    have hα := powerLogPositivityExponent_pos
     refine (RenormalizedIntersectionTheory.riemannHypothesis_iff_completeWeil_hodgeIndex_log
       hβ).mpr ?_
     have hlog1 : ∀ᶠ N : ℕ in atTop, 1 ≤ Real.log N :=
       (Real.tendsto_log_atTop.comp tendsto_natCast_atTop_atTop).eventually_ge_atTop 1
-    have hpd0 := eventually_tiltedUnitSpline_completeWeilMatrix_posDef_powerLog
-      (α := powerLogPositivityExponent / 2) (by linarith) (by linarith)
+    have hpd0 := eventually_tiltedUnitSpline_completeWeilMatrix_posDef_log_one_tenth
     filter_upwards [H, hpd0, hlog1, eventually_one_le_two_mul_rpow_log (by linarith : (0 : ℝ) ≤ β),
       eventually_ge_atTop 1] with N hN hpd hlogN htop hN1
     have hbase : HyperplanePositiveAt tiltedUnitSpline 1 N := fun x _ =>
       RenormalizedIntersectionTheory.energy_nonneg_of_posDef (completeWeilMatrix_isHermitian _ _ _)
-        (hpd 1 le_rfl (Real.one_le_rpow hlogN (by linarith))) x
+        (hpd 1 le_rfl (Real.one_le_rpow hlogN (by norm_num))) x
     exact hyperplanePositiveAt_of_liouville admissible_tiltedUnitSpline hN1 one_pos htop hbase hN
       _ ⟨htop, le_rfl⟩
 
 end GaloisForLFunctions.HodgeTheoryWithoutVarieties
+
+#print axioms GaloisForLFunctions.HodgeTheoryWithoutVarieties.riemannHypothesis_iff_liouville_along_the_overlap_flow

@@ -1,3 +1,4 @@
+import GaloisForLFunctions.CriticalArithmeticCorrelationTheory.TelescopedConductorSplitAndOneNinthWeilPositivity
 import GaloisForLFunctions.RenormalizedIntersectionTheory.TheHodgeIndexAtGrowingOverlap
 import GaloisForLFunctions.CriticalArithmeticCorrelationTheory.TheCompleteWeilMatrixIsPositiveAtPowerOfLogOverlap
 import GaloisForLFunctions.RenormalizedArithmeticPotentialTheory.EveryFlippedPrimeIsSeenAtLargeOverlap
@@ -20,9 +21,9 @@ and the **twin edge** is the edge of a twisted weight (`twinEdge`).
   edge.
 * **The universal regime of the tilted spline** (`eventually_ofReal_rpow_log_le_edge_tiltedUnitSpline`,
   `tendsto_edge_tiltedUnitSpline`): unconditionally the edge is eventually at least `(log N)^α` for
-  every `α` below the power-log exponent `α*`, so it tends to `∞`.
+  every `0 < α < 1/9`, so it tends to `∞`.
 * **The edge window** (`frequently_edge_mem_window_of_not_riemannHypothesis`): without RH the edge
-  of the tilted spline lies in `[(log N)^α, 2(log N)^β]`, `α < α*`, `β > 1/4`, infinitely often.
+  of the tilted spline lies in `[(log N)^α, 2(log N)^β]`, `α < 1/9`, `β > 1/4`, infinitely often.
   Either the edge is `∞` everywhere, or it is a function of `N` between two powers of `log N`.
 * **The hyperplane edge** (`edge_le_hyperplaneEdge`, `frequently_hyperplaneEdge_le_of_smooth`):
   it is at least the edge; without RH it is at most `2(log N)^β` infinitely often for every
@@ -230,11 +231,11 @@ theorem edge_dichotomy {φ : ℝ → ℝ} (hφ : Admissible φ) :
 /-! ### The universal regime of the tilted spline -/
 
 /-- **Universal regime.** Unconditionally, the edge of the tilted spline is eventually at least
-`(log N)^α` for every `0 < α < α*`. -/
+`(log N)^α` for every `0 < α < 1/9`. -/
 theorem eventually_ofReal_rpow_log_le_edge_tiltedUnitSpline {α : ℝ} (hα : 0 < α)
-    (hα' : α < CriticalArithmeticCorrelationTheory.powerLogPositivityExponent) :
+    (hα' : α < CriticalArithmeticCorrelationTheory.oneNinthPowerLogExponent) :
     ∀ᶠ N : ℕ in atTop, ENNReal.ofReal (Real.log N ^ α) ≤ edge tiltedUnitSpline N := by
-  filter_upwards [CriticalArithmeticCorrelationTheory.eventually_tiltedUnitSpline_completeWeilMatrix_posDef_powerLog
+  filter_upwards [CriticalArithmeticCorrelationTheory.eventually_tiltedUnitSpline_completeWeilMatrix_posDef_below_one_ninth
     hα hα'] with N hN
   refine ofReal_le_firstFailure_iff.mpr fun c hc hca x => ?_
   exact RenormalizedIntersectionTheory.energy_nonneg_of_posDef (completeWeilMatrix_isHermitian _ _ _)
@@ -242,17 +243,17 @@ theorem eventually_ofReal_rpow_log_le_edge_tiltedUnitSpline {α : ℝ} (hα : 0 
 
 /-- The edge of the tilted spline tends to `∞`, unconditionally. -/
 theorem tendsto_edge_tiltedUnitSpline : Tendsto (edge tiltedUnitSpline) atTop (𝓝 ⊤) := by
-  have hα := CriticalArithmeticCorrelationTheory.powerLogPositivityExponent_pos
+  have hα := CriticalArithmeticCorrelationTheory.oneNinthPowerLogExponent_pos
   have hlog : Tendsto (fun N : ℕ => Real.log N ^
-      (CriticalArithmeticCorrelationTheory.powerLogPositivityExponent / 2)) atTop atTop :=
+      (CriticalArithmeticCorrelationTheory.oneNinthPowerLogExponent / 2)) atTop atTop :=
     (tendsto_rpow_atTop (by linarith)).comp (Real.tendsto_log_atTop.comp tendsto_natCast_atTop_atTop)
   exact tendsto_nhds_top_mono (ENNReal.tendsto_ofReal_atTop.comp hlog)
     (eventually_ofReal_rpow_log_le_edge_tiltedUnitSpline (by linarith) (by linarith))
 
 /-- **The edge window.** Without RH, the edge of the tilted spline lies in `[(log N)^α, 2(log N)^β]`
-infinitely often, for every `0 < α < α*` and `β > 1/4`. -/
+infinitely often, for every `0 < α < 1/9` and `β > 1/4`. -/
 theorem frequently_edge_mem_window_of_not_riemannHypothesis (hRH : ¬ RiemannHypothesis)
-    {α β : ℝ} (hα : 0 < α) (hα' : α < CriticalArithmeticCorrelationTheory.powerLogPositivityExponent)
+    {α β : ℝ} (hα : 0 < α) (hα' : α < CriticalArithmeticCorrelationTheory.oneNinthPowerLogExponent)
     (hβ : 1 / 4 < β) :
     ∃ᶠ N : ℕ in atTop, ENNReal.ofReal (Real.log N ^ α) ≤ edge tiltedUnitSpline N ∧
       edge tiltedUnitSpline N ≤ ENNReal.ofReal (2 * Real.log N ^ β) :=
@@ -322,3 +323,7 @@ theorem twinEdge_vonMangoldt_eq_edge {φ : ℝ → ℝ} (hφ : Admissible φ) {N
     (firstFailure_mono fun _ hc h => (positiveAt_iff_twinPositiveAt hφ (by linarith) hN).mp h)
 
 end GaloisForLFunctions.EdgeHodgeTheory
+
+#print axioms GaloisForLFunctions.EdgeHodgeTheory.eventually_ofReal_rpow_log_le_edge_tiltedUnitSpline
+#print axioms GaloisForLFunctions.EdgeHodgeTheory.tendsto_edge_tiltedUnitSpline
+#print axioms GaloisForLFunctions.EdgeHodgeTheory.frequently_edge_mem_window_of_not_riemannHypothesis

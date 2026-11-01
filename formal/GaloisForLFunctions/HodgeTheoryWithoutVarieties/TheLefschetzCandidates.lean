@@ -1,3 +1,4 @@
+import GaloisForLFunctions.EdgeHodgeTheory.EdgeBelowOneNinth
 import GaloisForLFunctions.HodgeTheoryWithoutVarieties.StarsOfTheCompleteWeilFamily
 import GaloisForLFunctions.HodgeTheoryWithoutVarieties.TheLiouvilleProperty
 import GaloisForLFunctions.ArithmeticCouplingTheory.TheCouplingHomotopyIsCrossingFree
@@ -46,12 +47,12 @@ theorem dilation_transports_downward {φ : ℝ → ℝ} (hφ : Admissible φ) {c
     PositiveAt φ (starOverlap c N d) (N / d) :=
   positiveAt_div hφ.contDiff hφ.supp hc hd hdN h
 
-/-- **Without RH the gluing fails while the deep stars stay positive.** For `α < α*` and
+/-- **Without RH the gluing fails while the deep stars stay positive.** For `α < 1/9` and
 `β > 1/4`: unconditionally there is `M₀` such that every star of depth `⌊N/d⌋ ≥ M₀` at overlap
 `c⌊N/d⌋/N ∈ [1, (log ⌊N/d⌋)^α)` is positive; and without RH the whole complete Weil form of the
 tilted spline fails positivity at overlap `2(log N)^β` for infinitely many `N`. -/
 theorem not_rh_gluing_failure (hRH : ¬ RiemannHypothesis) {α β : ℝ} (hα : 0 < α)
-    (hα' : α < CriticalArithmeticCorrelationTheory.powerLogPositivityExponent) (hβ : 1 / 4 < β) :
+    (hα' : α < CriticalArithmeticCorrelationTheory.oneNinthPowerLogExponent) (hβ : 1 / 4 < β) :
     (∃ M₀ : ℕ, ∀ (c : ℝ) (N d : ℕ), 0 < c → 0 < d → d ≤ N → M₀ ≤ N / d →
       1 ≤ starOverlap c N d → starOverlap c N d < Real.log (N / d : ℕ) ^ α →
       ∀ y : EuclideanSpace ℝ (PrimeHorizonIndex (N / d)),
@@ -59,9 +60,18 @@ theorem not_rh_gluing_failure (hRH : ¬ RiemannHypothesis) {α β : ℝ} (hα : 
           (starEmbed d N y)) ∧
     ∃ᶠ N : ℕ in atTop,
       ¬ PositiveAt SpacingScaleHarmonicAnalysis.tiltedUnitSpline (2 * Real.log N ^ β) N := by
-  refine ⟨exists_star_positive_tiltedUnitSpline hα hα', fun H => hRH ?_⟩
-  exact (riemannHypothesis_iff_eventually_positiveAt_log admissible_tiltedUnitSpline hβ).mpr
-    (H.mono fun _ h => not_not.mp h)
+  constructor
+  · obtain ⟨M₀, hM₀⟩ := eventually_atTop.mp
+      (CriticalArithmeticCorrelationTheory.eventually_tiltedUnitSpline_completeWeilMatrix_posDef_below_one_ninth
+        hα hα')
+    refine ⟨M₀, fun c N d hc hd hdN hM h1 hlt y => ?_⟩
+    rw [completeWeilEnergy_starEmbed admissible_tiltedUnitSpline.contDiff
+      admissible_tiltedUnitSpline.supp hc hd hdN]
+    exact RenormalizedIntersectionTheory.energy_nonneg_of_posDef
+      (completeWeilMatrix_isHermitian _ _ _) (hM₀ (N / d) hM _ h1 hlt.le) y
+  · intro H
+    exact hRH ((riemannHypothesis_iff_eventually_positiveAt_log admissible_tiltedUnitSpline hβ).mpr
+      (H.mono fun _ h => not_not.mp h))
 
 /-- **Without RH the overlap flow has primitive zero modes.** For `β > 1/2`, infinitely often some
 overlap `c ∈ [1, 2(log N)^β]` carries a hyperplane-positive complete Weil form of the tilted spline
@@ -93,3 +103,5 @@ theorem couplingLaplacian_transports_the_index {p q : ℕ} (hp : p.Prime) (hq : 
     riemannHypothesis_iff_negIndex_zetaKernel_eq_zero⟩
 
 end GaloisForLFunctions.HodgeTheoryWithoutVarieties
+
+#print axioms GaloisForLFunctions.HodgeTheoryWithoutVarieties.not_rh_gluing_failure

@@ -1,3 +1,4 @@
+import GaloisForLFunctions.CriticalArithmeticCorrelationTheory.TelescopedConductorSplitAndOneNinthWeilPositivity
 import GaloisForLFunctions.EdgeHodgeTheory.TheEdgeOfTheCompleteWeilFamily
 import GaloisForLFunctions.RenormalizedArithmeticPotentialTheory.ThePoleConductorMinimizesTheCompletedEnergy
 import GaloisForLFunctions.CriticalArithmeticCorrelationTheory.MacroscopicOverlapPositivityAtEveryOverlap
@@ -20,7 +21,7 @@ energies `E_m(c)` (CACT). The **limit structure** is the Ramanujan-graded form
   the corrections that carry the zeros.
 * **Inherited in the universal regime, degenerate in the RH regime** (`tiltedSpline_inheritance_and_degeneration`):
   for the tilted spline the form dominates a polynomial floor `K/c⁷` throughout `1 ≤ c ≤ (log N)^α`,
-  `α < α*`, while at the RH-complete schedules `2(log N)^β`, `β > 1/4`, the ground energy tends to `0`
+  `α < 1/9`, while at the RH-complete schedules `2(log N)^β`, `β > 1/4`, the ground energy tends to `0`
   and positivity is RH.
 * **The `SL₂`-type structure is blind on the hyperplane**: the pole pair, the Krein state of the
   boost–successor plane, can be added with any weight without changing the Hodge index on the pole
@@ -93,11 +94,11 @@ theorem tendsto_two_mul_rpow_log {β : ℝ} (hβ : 0 < β) :
     two_pos
 
 /-- **Inherited in the universal regime, degenerate in the RH regime.** For the tilted spline:
-throughout `1 ≤ c ≤ (log N)^α`, `α < α*`, the form dominates the polynomial floor `K/(2c⁷)`; at the
+throughout `1 ≤ c ≤ (log N)^α`, `α < 1/9`, the form dominates the polynomial floor `K/(2c⁷)`; at the
 schedules `2(log N)^β`, `β > 1/4`, the ground energy of the limit tends to `0` and eventual
 positivity is RH. -/
 theorem tiltedSpline_inheritance_and_degeneration {α β : ℝ} (hα : 0 < α)
-    (hα' : α < CriticalArithmeticCorrelationTheory.powerLogPositivityExponent) (hβ : 1 / 4 < β) :
+    (hα' : α < CriticalArithmeticCorrelationTheory.oneNinthPowerLogExponent) (hβ : 1 / 4 < β) :
     (∀ᶠ N : ℕ in atTop, ∀ c : ℝ, 1 ≤ c → c ≤ Real.log N ^ α →
       ∀ x : EuclideanSpace ℝ (PrimeHorizonIndex N),
         (CriticalArithmeticCorrelationTheory.tiltedSplineSpectralFloorConstant / (2 * c ^ 7)) *
@@ -105,9 +106,11 @@ theorem tiltedSpline_inheritance_and_degeneration {α β : ℝ} (hα : 0 < α)
     Tendsto (fun N : ℕ => completedConductorEnergy tiltedUnitSpline (2 * Real.log N ^ β) 1) atTop
       (𝓝 0) ∧
     (RiemannHypothesis ↔ ∀ᶠ N : ℕ in atTop, PositiveAt tiltedUnitSpline (2 * Real.log N ^ β) N) :=
-  ⟨CriticalArithmeticCorrelationTheory.eventually_tiltedUnitSpline_completeWeilEnergy_ge_spectral_floor_powerLog
+  ⟨CriticalArithmeticCorrelationTheory.eventually_tiltedUnitSpline_completeWeilEnergy_ge_spectral_floor_below_one_ninth
       hα hα',
     tendsto_ground_comp admissible_tiltedUnitSpline (tendsto_two_mul_rpow_log (by linarith)),
     riemannHypothesis_iff_eventually_positiveAt_log admissible_tiltedUnitSpline hβ⟩
 
 end GaloisForLFunctions.EdgeHodgeTheory
+
+#print axioms GaloisForLFunctions.EdgeHodgeTheory.tiltedSpline_inheritance_and_degeneration

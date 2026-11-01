@@ -1,7 +1,7 @@
 # RH proof-route frontier
 
 **RH open · 33 live routes · 16 candidates.**
-**Corpus checkpoint:** `9dc033f6f4cfc5c40c1fc3c56ad81caebb91cbcd`.
+**Corpus checkpoint:** `6ab8ce67b5935dda699b015461722573804f622b`.
 
 Live = source observable + proved RH-sufficient receiver + explicit open estimate. Candidate = missing independent source mechanism/landing.
 Evidence: [L] integrated, source-reviewed; [S] unfinished/unintegrated, unverified; [K] individual Lean + standard-only transitive-axiom audit. Untagged established facts: [L].
@@ -147,9 +147,9 @@ Evidence: [L] integrated, source-reviewed; [S] unfinished/unintegrated, unverifi
 ### WD — Ward orientation and horizontal collision
 
 - **Path:** Source current → collision charge<2; alternatively one shared all-dyadic-scale defect bound → RH.
-- **Established:** Exact collision/index and dyadic theta receivers; extremizer attainment/asymptotics. Mean defect O_c(log U), c<1/2; little-o iff critical-scale clustering. Min/mean/sup/C² extensions [S].
+- **Established:** Exact collision/index receivers; RH iff one shared bound controls dyadic unit-window min/mean/sup/C² readings. Mean-sup O_c(log U), c<1/2; little-o mean iff critical-scale clustering. Extremizer attainment/asymptotics.
 - **Open:** Actual bound uniform in every height and dyadic scale. Fixed-c control allows finite exceptions; averaged corridors allow exceptional heights and shallow zeros. Little-o/clustering remains unproved.
-- **Sources:** CDG:LogScaleHeckeDefect/FiniteThetaPoleNodalRHEquivalence; CDG:LogScaleHeckeDefect/HalfGateClosureAndDensityEquivalence; CDG:LogScaleHeckeDefect/UnitWindowMinimumAndOscillation [S].
+- **Sources:** CDG:LogScaleHeckeDefect/FiniteThetaPoleNodalRHEquivalence; CDG:LogScaleHeckeDefect/HalfGateClosureAndDensityEquivalence; CDG:LogScaleHeckeDefect/UnitWindowMinimumAndOscillation.
 
 <a id="li"></a>
 ### LI — Paired Li and prime–Gamma balances
@@ -325,13 +325,13 @@ Promotion requires the missing independent source mechanism/landing below; an un
 
 | Established | RH-complete target / obstacle |
 |---|---|
-| Tilted spline, eventually uniformly 1≤c≤(log N)^α, 0<α<1/9: full matrix≥κ/(2c⁷)I; W≥bc⁻⁸D_N. Spectral-floor sublevel has D_N≤C log(2c)‖x‖² [L]. | RH iff eventual full/pole-hyperplane sign at every 2K(log N)^(1/8), K>0. Close the full-space rate gap. |
+| Tilted spline, eventually uniformly 1≤c≤(log N)^α, 0<α<1/9: full matrix≥κ/(2c⁷)I; W≥bc⁻⁸D_N. Deep stars inherit positivity. Spectral-floor sublevel has D_N≤C log(2c)‖x‖² [L]. | RH iff eventual full/pole-hyperplane sign at every 2K(log N)^(1/8), K>0. Close the full-space rate gap. |
 | Mid-band V_⌊N^θ⌋∩V_⌊(log N)^q⌋^⊥ coercive for α<1/4, q>3α, 0<θ≤1/4096 [L]. | This omits low conductors and terminal complement. Their mixed terms remain unpaid at the RH rate. |
-| Zero-free logarithmic profile positive through one ε·L(log L)², L=loglog N [L]. | Receivers require every fixed positive multiple, not one small ε. Its comparison threshold belongs to a different sinc profile. |
+| Zero-free logarithmic profile positive through explicit ε₀L(log L)², L=loglog N; reciprocal-floor power budget sharp at ε₀ [L]. | Reach every fixed positive multiple. Larger multiples exceed this budget, not necessarily positivity; improve the floor/residual estimate. Sinc comparison uses a different profile. |
 | Smooth nonnegative unit-bump pole-hyperplane receiver at every α>0 [L]. | Prove actual sign at any positive-power overlap rate. |
 | Prime-defect decomposition and sharp relative residual scale (log Q)²/log N [L]. | Full Gamma/pole/row-potential comparison; a prime-defect gap alone is not complete-Weil positivity. |
 
-Sources: CACT:CollectivePacketCoercivityAndLogarithmicConfinement; SSHA:EveryEighthRootMultipleReceivesTheTiltedSpline; RIT:TheHodgeIndexAtGrowingOverlap; RAPT:ThePhysicalPrimeKernelRetainsThePoleDefect; CSAR:SharpPrimeResidualScale. Logarithmic profile: TM:ReceiverRate/TheLogarithmicProfileIsPositiveBelowCriticalOverlap.
+Sources: CACT:CollectivePacketCoercivityAndLogarithmicConfinement; SSHA:EveryEighthRootMultipleReceivesTheTiltedSpline; HWV:StarsOfTheCompleteWeilFamily; RIT:TheHodgeIndexAtGrowingOverlap; RAPT:ThePhysicalPrimeKernelRetainsThePoleDefect; CSAR:SharpPrimeResidualScale. Logarithmic profile: TM:ReceiverRate/TheLogarithmicProfileIsPositiveBelowCriticalOverlap; TM:ReceiverRate/SharpLogarithmicOverlapBudget.
 
 <a id="external-literature"></a>
 ### Scope guards

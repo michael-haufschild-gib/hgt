@@ -1,3 +1,4 @@
+import GaloisForLFunctions.EdgeHodgeTheory.EdgeBelowOneNinth
 import GaloisForLFunctions.EdgeHodgeTheory.TheEdgeOfTheCompleteWeilFamily
 import GaloisForLFunctions.HodgeTheoryWithoutVarieties.StarsAreLowerHorizons
 
@@ -22,7 +23,7 @@ horizon `⌊N/d⌋` translated by `log d`, with the same width. That width is th
   upwards.
 * **local Hodge–Riemann on deep stars** (`exists_star_positive_tiltedUnitSpline`): for the tilted
   spline there is a horizon `M₀` such that at every resolution `(c, N)` the star of every `d` with
-  `⌊N/d⌋ ≥ M₀` and `1 ≤ c⌊N/d⌋/N < (log⌊N/d⌋)^α`, `α < α*`, is positive. The stars of `d` beyond
+  `⌊N/d⌋ ≥ M₀` and `1 ≤ c⌊N/d⌋/N < (log⌊N/d⌋)^α`, `α < 1/9`, is positive. The stars of `d` beyond
   a polylogarithm of the overlap sink into the universal regime.
 -/
 
@@ -167,17 +168,17 @@ theorem hyperplanePositiveAt_div {φ : ℝ → ℝ} (hφ : ContDiff ℝ 2 φ)
   rw [RenormalizedIntersectionTheory.inner_normalizedRamanujanHorizonVector_one,
     sum_starEmbed_div_sqrt hd, hy, mul_zero, mul_zero]
 
-/-- **Local Hodge–Riemann on deep stars.** For the tilted spline and every `α < α*` there is a
+/-- **Local Hodge–Riemann on deep stars.** For the tilted spline and every `α < 1/9` there is a
 horizon `M₀` such that, at every resolution `(c, N)`, the complete Weil form is nonnegative on the
 star of every `d` with `⌊N/d⌋ ≥ M₀` and `1 ≤ c⌊N/d⌋/N < (log ⌊N/d⌋)^α`. -/
 theorem exists_star_positive_tiltedUnitSpline {α : ℝ} (hα : 0 < α)
-    (hα' : α < CriticalArithmeticCorrelationTheory.powerLogPositivityExponent) :
+    (hα' : α < CriticalArithmeticCorrelationTheory.oneNinthPowerLogExponent) :
     ∃ M₀ : ℕ, ∀ (c : ℝ) (N d : ℕ), 0 < c → 0 < d → d ≤ N → M₀ ≤ N / d →
       1 ≤ starOverlap c N d → starOverlap c N d < Real.log (N / d : ℕ) ^ α →
       ∀ y : EuclideanSpace ℝ (PrimeHorizonIndex (N / d)),
         0 ≤ completeWeilEnergy tiltedUnitSpline c N (starEmbed d N y) := by
   obtain ⟨M₀, hM₀⟩ :=
-    eventually_atTop.mp (eventually_ofReal_rpow_log_le_edge_tiltedUnitSpline hα hα')
+    eventually_atTop.mp (eventually_ofReal_rpow_log_le_edge_tiltedUnitSpline_below_one_ninth hα hα')
   refine ⟨M₀, fun c N d hc hd hdN hM h1 hlt y => ?_⟩
   rw [completeWeilEnergy_starEmbed admissible_tiltedUnitSpline.contDiff
     admissible_tiltedUnitSpline.supp hc hd hdN]
@@ -190,3 +191,5 @@ theorem exists_star_positive_tiltedUnitSpline {α : ℝ} (hα : 0 < α)
   exact hpos y
 
 end GaloisForLFunctions.HodgeTheoryWithoutVarieties
+
+#print axioms GaloisForLFunctions.HodgeTheoryWithoutVarieties.exists_star_positive_tiltedUnitSpline

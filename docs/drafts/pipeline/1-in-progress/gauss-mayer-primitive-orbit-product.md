@@ -39,6 +39,33 @@ The local Hilbert–Schmidt exponential determinant is a convergent-series
 representation only near zero. Its totalized exponential cannot replace the
 global Fredholm determinant away from that domain.
 
+## Source estimate to formalize
+
+For the real branch map, `h(x)=1/(1+x)` satisfies `L₂h=h` on `[0,1]`
+by the telescoping series `Σ_(a≥1) 1/((a+x)(a+x+1))=1/(1+x)`.
+An even word of length `2n` has bottom-right matrix entry `d≥2^n`:
+each pair multiplies the positive denominator by at least two. Since
+`1/2≤h≤1`, iteration gives `Σ_words d⁻²≤2`. Its expanding multiplier
+satisfies `λ≥d`; therefore, for real `σ>2`,
+
+```text
+Σ_words λ^(−σ)/(1−λ⁻²) ≤ (8/3) 2^(−n(σ−2)).
+```
+
+This would supply absolute convergence of the complete even-word logarithm
+at `|z|≤1`. An equivalent matrix-only telescope uses the bottom row `(c,d)`:
+`P=1/[d(c+d)]`. Appending a Gauss digit on the right gives
+`(c,d)↦(d,c+(a+1)d)` and
+
+```text
+Σ_(a≥0) 1/[(c+(a+1)d)(c+(a+2)d)] = 1/[d(c+d)].
+```
+
+Thus the exact word probability has total mass one at every length. The
+certified inequality `0≤c≤d` gives `d⁻²≤2P`, avoiding an auxiliary analytic
+realization of the harmonic function. Denominator growth and the complete
+trace bound remain proof obligations, not yet Lean-certified results.
+
 ## Scope
 
 This is the missing determinant-to-modular-cycle bridge. It does not yet

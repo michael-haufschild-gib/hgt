@@ -1,3 +1,4 @@
+import GaloisForLFunctions.CriticalArithmeticCorrelationTheory.TelescopedConductorSplitAndOneNinthWeilPositivity
 import GaloisForLFunctions.EdgeHodgeTheory.TheEdgeIsAThresholdCurve
 import GaloisForLFunctions.TransMetzlerWeilPositivity.ReceiverRate.TheSincProfileHasAnExactCriticalOverlap
 import GaloisForLFunctions.HeckeKreinToeplitz.TheReceiversEndAtTheQuasiAnalyticBoundary
@@ -23,7 +24,7 @@ exact Fourier-tail units; EHT reads it as the opening of a window.
   at Gevrey class `≤ 1`, so the descent of the RH regime stops at the quasi-analytic boundary.
 * **The threshold curve hugs the hyperbola** (`eventually_lt_horizonThreshold_powerLog`,
   `frequently_horizonThreshold_le_of_not_rh`): for the tilted spline the detection horizon at
-  width `w` exceeds `(log 1/w)^α / (2w)` for small `w`, unconditionally (`α < α*`), and without RH it
+  width `w` exceeds `(log 1/w)^α / (2w)` for small `w`, unconditionally (`α < 1/9`), and without RH it
   is at most `N` at the widths `2(log N)^β/N` infinitely often (`β > 1/4`). In the plane of
   resolutions the edge lies between two log-power multiples of the hyperbola `wN = 1`.
 -/
@@ -77,15 +78,15 @@ theorem profile_covariance_of_the_edge :
 theorem tendsto_log_inv_nhdsGT : Tendsto (fun w : ℝ => Real.log (1 / w)) (𝓝[>] 0) atTop := by
   exact (Real.tendsto_log_atTop.comp tendsto_inv_nhdsGT_zero).congr fun w => by simp [one_div]
 
-/-- **The threshold exceeds a log-power multiple of the hyperbola.** For `0 < α < α*`, for all
+/-- **The threshold exceeds a log-power multiple of the hyperbola.** For `0 < α < 1/9`, for all
 small widths `w` the tilted-spline atom of width `w` is below threshold at a horizon
 `N ≥ (log 1/w)^α / (2w)`. -/
 theorem eventually_lt_horizonThreshold_powerLog {α : ℝ} (hα : 0 < α)
-    (hα' : α < CriticalArithmeticCorrelationTheory.powerLogPositivityExponent) :
+    (hα' : α < CriticalArithmeticCorrelationTheory.oneNinthPowerLogExponent) :
     ∀ᶠ w in 𝓝[>] (0 : ℝ), ∃ N : ℕ, Real.log (1 / w) ^ α / (2 * w) ≤ N ∧
       (N : ℕ∞) < horizonThreshold (atomDilate tiltedUnitSpline w) := by
   obtain ⟨N₀, hN₀⟩ := eventually_atTop.mp
-    (CriticalArithmeticCorrelationTheory.eventually_tiltedUnitSpline_completeWeilMatrix_posDef_powerLog
+    (CriticalArithmeticCorrelationTheory.eventually_tiltedUnitSpline_completeWeilMatrix_posDef_below_one_ninth
       hα hα')
   have hL : ∀ᶠ w in 𝓝[>] (0 : ℝ), 2 ≤ Real.log (1 / w) ^ α :=
     ((tendsto_rpow_atTop hα).comp tendsto_log_inv_nhdsGT).eventually_ge_atTop 2
@@ -150,3 +151,5 @@ theorem frequently_horizonThreshold_le_of_not_rh (hRH : ¬ RiemannHypothesis) {�
   exact not_lt.mp hneg
 
 end GaloisForLFunctions.EdgeHodgeTheory
+
+#print axioms GaloisForLFunctions.EdgeHodgeTheory.eventually_lt_horizonThreshold_powerLog
