@@ -687,7 +687,7 @@ and `(s + ε₀)(W + ε) ≤ (1 − θ')²`, `θ' = √(2ε₀(W + ε)) < 1`, th
 theorem le_primeEnergy_of_perp {N : ℕ} {i₀ : PrimeHorizonIndex N} {s t W ε ε₀ c : ℝ}
     (hst : s < t) (hg : IsGroundBelow N t i₀) {v : EuclideanSpace ℝ (PrimeHorizonIndex N)}
     (hc : 0 < c) (hWε : 0 ≤ W + ε) (hε₀ : 0 ≤ ε₀)
-    (hλ : |fullPrimeEnergyEigenvalue N i₀ - γ| ≤ ε₀)
+    (hlam : |fullPrimeEnergyEigenvalue N i₀ - γ| ≤ ε₀)
     (hmain : ∀ w : EuclideanSpace ℝ (PrimeHorizonIndex N), ⟪w, primeEigen N i₀⟫ = 0 →
       ⟪w, v⟫ ^ 2 ≤ c ^ 2 * (W + ε) * (primeEnergy N w - s * ‖w‖ ^ 2))
     {b : EuclideanSpace ℝ (PrimeHorizonIndex N)} (hb : ‖b‖ = 1) (hbv : ⟪b, v⟫ = c)
@@ -713,7 +713,7 @@ theorem le_primeEnergy_of_perp {N : ℕ} {i₀ : PrimeHorizonIndex N} {s t W ε 
   have hsplitb := primeEnergy_sub_split N s i₀ b
   rw [hb] at hsplitb
   have hGw₀ : primeEnergy N w₀ - s * ‖w₀‖ ^ 2 ≤ 2 * ε₀ := by
-    have hl := (abs_le.mp hλ).1
+    have hl := (abs_le.mp hlam).1
     have : -(lam - s) * α ^ 2 ≤ (s + ε₀) * 1 := by
       have : 0 ≤ s + ε₀ ∨ s + ε₀ < 0 := le_or_gt 0 _
       nlinarith [sq_nonneg α]
@@ -775,7 +775,7 @@ theorem le_primeEnergy_of_perp {N : ℕ} {i₀ : PrimeHorizonIndex N} {s t W ε 
       rw [← mul_assoc]; exact mul_le_mul_of_nonneg_right hcond hG0
     have h7 : (s + ε₀) * a ^ 2 * (1 - θ') ^ 2 ≤ G * (1 - θ') ^ 2 := by nlinarith
     exact le_of_mul_le_mul_right h7 (by positivity)
-  have hl := (abs_le.mp hλ).1
+  have hl := (abs_le.mp hlam).1
   have : (lam - s) * a ^ 2 ≥ -(s + ε₀) * a ^ 2 := by nlinarith [sq_nonneg a]
   change primeEnergy N u - s * ‖u‖ ^ 2 = lam - s * a ^ 2 + G at hsplitu
   nlinarith
