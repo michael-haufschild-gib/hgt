@@ -303,15 +303,16 @@ theorem exists_fullPrimeWindowRemainder_growing_packet_rate :
     calc
       _ ≤ C * ((M : ℝ) + 1) * e + 8 / (Y : ℝ) := h
       _ ≤ C * ((M : ℝ) + 1) * e + 8 * ((M : ℝ) + 1) * e :=
-        add_le_add_left htail _
+        _root_.add_le_add (le_refl (C * ((M : ℝ) + 1) * e)) htail
       _ = (C + 8) * ((M : ℝ) + 1) * e := by ring
-  have hsub : S ⊆ (Icc 1 M).product (Icc 1 M) := by
+  have hsub : S ⊆ ((Icc 1 M) ×ˢ (Icc 1 M)) := by
     intro p hp
     obtain ⟨ha, haM, hb, hbM⟩ := hS p hp
-    exact mem_product.mpr ⟨mem_Icc.mpr ⟨ha, haM⟩, mem_Icc.mpr ⟨hb, hbM⟩⟩
+    exact _root_.Finset.mem_product.mpr
+      ⟨mem_Icc.mpr ⟨ha, haM⟩, mem_Icc.mpr ⟨hb, hbM⟩⟩
   have hcardNat : S.card ≤ M * M := by
-    simpa only [Finset.card_product, Nat.card_Icc, Nat.add_sub_cancel] using
-      Finset.card_le_card hsub
+    simpa only [_root_.Finset.card_product, Nat.card_Icc, Nat.add_sub_cancel] using
+      _root_.Finset.card_le_card hsub
   have hcard : (S.card : ℝ) ≤ ((M : ℝ) + 1) ^ 2 := by
     have hc' : (S.card : ℝ) ≤ (M : ℝ) * M := by exact_mod_cast hcardNat
     have hM0 := Nat.cast_nonneg (α := ℝ) M

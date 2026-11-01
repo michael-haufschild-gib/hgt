@@ -23,20 +23,20 @@ variable {H : Type*} [NormedAddCommGroup H] [InnerProductSpace ℂ H] [CompleteS
 include hT in
 /-- A positive-dimensional negative factor forces a nonpositive eigenvector. -/
 theorem exists_nonpositive_eigenvector (hm : 0 < m) :
-    ∃ (w : H × EuclideanSpace ℂ (Fin m)) (λ : ℂ),
-      w ≠ 0 ∧ λ ≠ 0 ∧ (pairing w w).re ≤ 0 ∧ T w = λ • w := by
+    ∃ (w : H × EuclideanSpace ℂ (Fin m)) (a : ℂ),
+      w ≠ 0 ∧ a ≠ 0 ∧ (pairing w w).re ≤ 0 ∧ T w = a • w := by
   letI : Nonempty (Fin m) := ⟨⟨0, hm⟩⟩
   obtain ⟨A, hA, D, hD⟩ := exists_invariant_contraction_graph T hT
-  obtain ⟨λ, hλ⟩ := Module.End.exists_eigenvalue D.toLinearMap
-  obtain ⟨x, hx⟩ := hλ.exists_hasEigenvector
-  have hDx : D x = λ • x := Module.End.mem_eigenspace_iff.mp hx.1
+  obtain ⟨a, ha⟩ := Module.End.exists_eigenvalue D.toLinearMap
+  obtain ⟨x, hx⟩ := ha.exists_hasEigenvector
+  have hDx : D x = a • x := Module.End.mem_eigenspace_iff.mp hx.1
   have hw : (A x, x) ≠ (0 : H × EuclideanSpace ℂ (Fin m)) :=
     fun h => hx.2 (congrArg Prod.snd h)
-  have hλ0 : λ ≠ 0 := by
+  have ha0 : a ≠ 0 := by
     intro he
     rw [he, zero_smul] at hDx
     exact hx.2 (D.injective (hDx.trans (map_zero D).symm))
-  refine ⟨(A x, x), λ, hw, hλ0, (pairing_self_nonpos_iff _).mpr (hA x), ?_⟩
+  refine ⟨(A x, x), a, hw, ha0, (pairing_self_nonpos_iff _).mpr (hA x), ?_⟩
   rw [hD, hDx, map_smul]
   rfl
 

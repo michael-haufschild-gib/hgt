@@ -21,6 +21,7 @@ import GaloisForLFunctions.RenormalizedIntersectionTheory.ScatteringAlgebraicRea
 import GaloisForLFunctions.RenormalizedIntersectionTheory.GaussMayerCutoffRenormalization
 import GaloisForLFunctions.RenormalizedIntersectionTheory.GaussMayerNuclearExpansion
 import GaloisForLFunctions.RenormalizedIntersectionTheory.GaussMayerFredholmDeterminant
+import GaloisForLFunctions.RenormalizedIntersectionTheory.GaussMayerFixedPointTrace
 import GaloisForLFunctions.RenormalizedIntersectionTheory.TheWirsingBoundForFlipTwins
 import GaloisForLFunctions.RenormalizedIntersectionTheory.TheResidueClassTwinsAreSeparated
 import GaloisForLFunctions.RenormalizedIntersectionTheory.TheConductorSeriesSeparatesTheZeroDensityTwins
@@ -34,5 +35,6 @@ Hadamard powers of Weil's kernel, the renormalized Hodge index on the pole-ortho
 fixed and growing overlap, the pole class as the ground conductor of the complete Weil matrix,
 selection of `ζ` among its twins by the glued index, by alignment and by the Wirsing asymptotic of
 their harmonic sums, the heat flow as a homotopy of Hodge defects, and rational and algebraic reality rigidity
-for native scattering energies, and operator-norm renormalization of Gauss–Mayer branch cutoffs. See `RenormalizedIntersectionTheory/README.md`.
+for native scattering energies, together with operator-norm renormalization, nuclear expansion,
+a source Fredholm determinant, and the fixed-point trace of the Gauss–Mayer operator. See `RenormalizedIntersectionTheory/README.md`.
 -/

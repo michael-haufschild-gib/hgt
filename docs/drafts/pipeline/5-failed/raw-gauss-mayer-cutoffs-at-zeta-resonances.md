@@ -42,3 +42,9 @@ Its [global determinant](../3-formalized/gauss-mayer-source-fredholm-determinant
 is now certified as the entire limit of actual coefficient determinants, with
 an explicit error and zeros exactly at failure of invertibility of the
 original Banach operator. Selberg/scattering comparison remains open.
+
+The [actual fixed-point trace](../3-formalized/gauss-mayer-fixed-point-trace.md)
+is also certified, including the countable branch/diagonal interchange.
+Its corrected scalar series continues normally to `Re w>−1`, with explicit
+summand bound `(|w|+1)n^(−Re w−2)`. Higher trace powers and the scattering
+identity remain open.

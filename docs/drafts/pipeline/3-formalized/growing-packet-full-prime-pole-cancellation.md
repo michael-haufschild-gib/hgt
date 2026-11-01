@@ -1,16 +1,28 @@
 # Growing-packet full prime–pole cancellation
 
 - **ID:** growing-packet-full-prime-pole-cancellation
-- **Stage:** 1-in-progress
-- **Type:** CANDIDATE
+- **Stage:** 3-formalized
+- **Type:** THEOREM (Lean)
 - **Source:** ../../../reports/review-3110/obstacles-summary.md, A2 at `dbc7d26186`
-- **Statement:** For some explicit `c>0`, the full prime–pole remainder divided by `√Y` tends uniformly to zero on bounded-coefficient packets with both cell indices at most `exp(c√log Y)`.
+- **Statement:** The full prime–pole remainder divided by `√Y` tends uniformly to zero on bounded-coefficient packets with both cell indices at most `exp(√log Y/23040000)`.
+
+## Uniform bound
+
+There is `C>0` such that, eventually in `Y`, for every
+`M≤exp(√log Y/23040000)`, every finite `S⊆{1,…,M}²`, and every coefficient
+family with `|c_ab|≤B`,
+
+`|Σ_(a,b)∈S c_ab fullPrimeWindowRemainder(Y,a,b)|`
+
+`≤ C|B| exp(−√log Y/7680000)`.
+
+The threshold and `C` are independent of the packet and coefficients.
 
 ## Existing inputs
 
 `TheFullPrimeWindowCancelsTheGrowingHeadPole` identifies the literal all-prime mixed source and proves cancellation for each fixed finite packet. `Sieve.ChebyshevSharpSelfRateOne.exists_abs_sum_vonMangoldt_sub_self_kappa_one_rate` gives unconditional error `B x exp(−√log x/960000)`.
 
-## Proposed proof
+## Proof
 
 Use the existing Suzuki prime hinge `F(t)=Σ_(n≤exp t) Λ(n)n⁻¹ᐟ²(t−log n)`.
 `SuzukiScrewGrowthBound.abs_suzukiPrimeErrorIntegral_le`, applied to the explicit
@@ -28,22 +40,32 @@ after normalization, independently of the cell indices.
 For detail and window indices at most `M`, all hinge arguments lie between
 `log Y−log(M+1)` and `log Y+log(M+1)`. The resulting normalized pair error is
 `≤C(M+1)exp(−(δ/2)√log Y)+8/Y`. Summing bounded coefficients over at most
-`M²` pairs costs `(M+1)³`. The candidate explicit packet exponent is
+`M²` pairs costs `(M+1)³`. The explicit packet exponent is
 `c=δ/12=1/23040000`; the resulting error decays as
 `O(exp(−(δ/4)√log Y))`.
 
 The exact Euler-source identity transfers this bound to any common physical
 horizon `X` with `M≤X` and `Y(M+1)≤X+1`.
 
-`ArithmeticIndexDescent.QuantitativePrimeHinges` proves
-`exists_screwPrimeSum_explicit_classical_rate`; its direct Lean audit passed
-with only standard axioms. `PrimeWindowHingeIdentities` also passed its direct
-audit: ten exact-source and endpoint identities, including
-`fullPrimeWindowCoupling_haar_sub_main_eq`.
-The uniform pair and packet estimates still require compiler verification.
+## Lean declarations and audit
+
+- `ArithmeticIndexDescent.QuantitativePrimeHinges`:
+  `exists_screwPrimeSum_explicit_classical_rate`.
+- `ArithmeticIndexDescent.PrimeWindowHingeIdentities`:
+  `fullPrimeWindowCoupling_haar_eq_hinges`,
+  `fullPrimeWindowCoupling_haar_sub_main_eq`.
+- `ArithmeticIndexDescent.GrowingPacketPrimePoleCancellation`:
+  `exists_fullPrimeWindowRemainder_uniform_pair_rate`,
+  `exists_fullPrimeWindowRemainder_growing_packet_rate`,
+  `fullPrimeWindowRemainder_uniform_growing_packets`,
+  `allPrimesMixedSource_uniform_growing_packets`.
+
+All three modules passed direct Lean checks without warnings and are wired into
+the programme umbrella. All fifteen public axiom audits use only `propext`,
+`Classical.choice`, and `Quot.sound`; no proof holes or resource-limit overrides.
 
 ## Gates
 
 - [x] Exact source and unconditional analytic input identified.
-- [ ] Uniform quantitative window and packet estimates proved.
-- [ ] Lean formalization, direct file audit, and transitive axiom audit.
+- [x] Uniform quantitative window and packet estimates proved.
+- [x] Lean formalization, direct file audit, and transitive axiom audit.

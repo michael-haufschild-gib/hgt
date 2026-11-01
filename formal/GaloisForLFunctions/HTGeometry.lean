@@ -17630,3 +17630,4 @@ import GaloisForLFunctions.HTGeometry.SimplexFixedPoint
 import GaloisForLFunctions.HTGeometry.ProductCompactConvexFixedPoint
 import GaloisForLFunctions.HTGeometry.WeakHilbertCompactness
 import GaloisForLFunctions.HTGeometry.WeakContractionBall
+import GaloisForLFunctions.HTGeometry.SubexponentialIntegerGrowth

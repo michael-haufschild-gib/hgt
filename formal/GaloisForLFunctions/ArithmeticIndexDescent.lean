@@ -120,3 +120,4 @@ Completed Weil forms, finite presentations, transverse energy and arithmetic sou
 import GaloisForLFunctions.ArithmeticIndexDescent.TheFullPrimeWindowCancelsTheGrowingHeadPole
 import GaloisForLFunctions.ArithmeticIndexDescent.QuantitativePrimeHinges
 import GaloisForLFunctions.ArithmeticIndexDescent.PrimeWindowHingeIdentities
+import GaloisForLFunctions.ArithmeticIndexDescent.GrowingPacketPrimePoleCancellation

@@ -47,7 +47,7 @@ theorem pairing_adjoinVector_self (v : V) (t : ℂ) :
   change pairing (F v + t • w) (F v + t • w) = _
   simp only [pairing_add_left, pairing_add_right, pairing_smul_left, pairing_smul_right,
     ho, pairing_family_vector F w ho, mul_zero, zero_add, add_zero]
-  rw [← mul_assoc, ← Complex.normSq_eq_conj_mul_self]
+  rw [← mul_assoc, mul_comm t (conj t), ← Complex.normSq_eq_conj_mul_self]
 
 variable (hF : ∀ v, v ≠ 0 → (pairing (F v) (F v)).re < 0)
     (hw : w ≠ 0) (hwq : (pairing w w).re ≤ 0)
@@ -57,7 +57,7 @@ theorem adjoinVector_nonpositive (z : V × ℂ) :
     (pairing (adjoinVector F w z) (adjoinVector F w z)).re ≤ 0 := by
   have hn : (pairing (F z.1) (F z.1)).re ≤ 0 := by
     by_cases hz : z.1 = 0
-    · simp only [hz, map_zero, pairing, inner_zero_left, sub_self, Complex.zero_re, le_refl]
+    · simp [hz, pairing]
     · exact (hF z.1 hz).le
   rw [pairing_adjoinVector_self F w ho z.1 z.2, Complex.add_re, Complex.mul_re,
     Complex.ofReal_re, Complex.ofReal_im, zero_mul, sub_zero]
@@ -70,8 +70,10 @@ theorem adjoinVector_eq_zero (z : V × ℂ) (hz : adjoinVector F w z = 0) : z = 
     have hpair : pairing (F z.1) (F z.1) = 0 := by
       have he := congrArg (pairing (F z.1)) hz
       change pairing (F z.1) (F z.1 + z.2 • w) = pairing (F z.1) 0 at he
-      simpa only [pairing_add_right, pairing_smul_right, pairing_family_vector F w ho,
-        mul_zero, add_zero, pairing, inner_zero_right, sub_self] using he
+      rw [pairing_add_right, pairing_smul_right, pairing_family_vector F w ho,
+        mul_zero, add_zero] at he
+      have hzero : pairing (F z.1) (0 : H × E) = 0 := by simp [pairing]
+      exact he.trans hzero
     by_contra hv
     have hn := hF z.1 hv
     rw [hpair, Complex.zero_re] at hn

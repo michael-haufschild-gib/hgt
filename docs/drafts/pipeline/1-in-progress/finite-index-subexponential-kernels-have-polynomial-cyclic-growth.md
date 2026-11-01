@@ -45,13 +45,19 @@ action. The weak Hilbert fixed-point theorem gives an invariant maximal
 nonpositive graph. `Index/InvariantNegativeGraph.lean` passes its direct
 Lean check and axiom audit.
 
-A nonzero eigenvector `w` on that graph is nonpositive. Each negative
+`Index/NonpositiveFiniteIndexEigenvector.lean` formally extracts a nonzero
+nonpositive eigenvector when `m>0`; its axiom audit is clean. Each negative
 coordinate of the completed cyclic orbit is a finite sum of translates
 of the original kernel; preservation of the square then bounds its full
-norm subexponentially in both time directions. Pairing `w` with the cyclic
-vector is nonzero: otherwise it annihilates the dense cyclic column span.
-The eigenfunctional grows geometrically in one time direction whenever
-`|λ|≠1`, contradicting the orbit bound. Thus `|λ|=1`.
+norm subexponentially in both time directions. Density and nondegeneracy supply a column `eₐ` with `B(w,eₐ)≠0`;
+translating its integer orbit preserves the subexponential bound.
+Writing `f(z)=B(w,T^z eₐ)`, invariance gives
+`conjugate(λ) f(z+1)=f(z)`. Hence
+`f(-n)=conjugate(λ)^n f(0)` and
+`f(n)=(conjugate(λ)⁻¹)^n f(0)`.
+HKT `coeff_eq_zero_of_norm_le`, with one node and any growth rate strictly
+between `1` and that node's modulus, excludes modulus greater than one in
+both formulas. Thus `|λ|=1`.
 
 Now `(T-λ)v` is orthogonal to `w`. Every strictly negative finite-dimensional
 subspace `V` of this orthogonal space satisfies `dim V+1≤m`: adjoining `w`
@@ -59,6 +65,9 @@ gives an injective nonpositive family `V × ℂ → H × ℂ^m`, whose negative
 projection is injective. To check independence, pair a vanishing linear
 combination with its `V` component; strict negativity kills that component,
 then `w≠0` kills its scalar coefficient. This includes null `w`.
+`Index/FiniteNegativeIndexDrop` and `Index/FiniteNegativeCoefficients`
+formalize this dimension loss and its transfer to orbit-kernel negative
+index; both pass Lean and standard-axiom audits.
 
 Consequently the filtered coefficient
 `q(n)=2k(n)-λk(n-1)-conjugate(λ)k(n+1)` has index at most `r-1`.
