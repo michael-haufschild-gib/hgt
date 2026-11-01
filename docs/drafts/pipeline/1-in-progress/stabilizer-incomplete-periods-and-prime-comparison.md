@@ -28,5 +28,7 @@ or actual-prime rectangle comparison was found.
 
 ## Status
 
-Paper argument identified; Lean proof and dependency audit required. The growth
-regime and prime comparison remain conjectural until their exact limits are proved.
+`StabilizerIncompletePeriods.lean` proves the four finite estimates and the
+square-scale bound `|Mean(Q,Q²,β)−β/2|≤4|β|/Q`. Its square-scale limit is also
+proved; the leaf compiles and is wired. Transitive axiom audits and final direct
+source check remain. Actual prime comparison is drafted and under Lean checking.

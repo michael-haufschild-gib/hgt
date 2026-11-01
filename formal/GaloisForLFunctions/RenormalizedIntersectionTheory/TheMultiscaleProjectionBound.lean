@@ -325,7 +325,7 @@ theorem exists_norm_sub_starProjection_sq_le :
       have hi0 : (0 : ℝ) < (i : ℕ) := by exact_mod_cast (mem_Icc.mp i.2).1
       have hs := Real.mul_self_sqrt hi0.le
       have hs0 : Real.sqrt (i : ℕ) ≠ 0 := (Real.sqrt_pos.mpr hi0).ne'
-      simp only [v, PiLp.sub_apply, WithLp.ofLp_toLp]
+      simp only [v, PiLp.sub_apply]
       calc (u i - m (smoothPart Q i) / Real.sqrt i) ^ 2 =
             (Real.sqrt i * u i - m (smoothPart Q i)) ^ 2 / (Real.sqrt i * Real.sqrt i) := by
             field_simp
@@ -360,6 +360,146 @@ theorem exists_norm_sub_starProjection_sq_le :
   linarith
 
 end Fibres
+
+
+section Twin
+
+open GaloisForLFunctions.ArithmeticCountingPositivity (primeSetFlip)
+
+/-- The rough sum over `R(Q, X)` is the harmonic sum of the rough gauge. -/
+theorem sum_roughInterval_eq_gaugeHarmonicSum (Q X : ℕ) (f : ℕ → ℝ) :
+    ∑ b ∈ roughInterval Q X, f b / b = gaugeHarmonicSum (roughGauge Q f) X := by
+  unfold gaugeHarmonicSum roughInterval roughGauge
+  rw [sum_filter]
+  refine sum_congr rfl fun n _ => ?_
+  split_ifs <;> simp
+
+/-- The real inequality behind the projected twin mass: with `|S| ≤ A u^β + B`, `R ≥ 1`,
+`R ≥ c₀ u`, `0 ≤ u ≤ U`, `1 ≤ U`, `1/2 ≤ β ≤ 1`: `S²/R ≤ (2A² + 2B²)(1 + 1/c₀) U^{2β−1}`. -/
+theorem sq_div_le_of_rough_bound {A B c₀ β S R u U : ℝ} (hA : 0 ≤ A) (hB : 0 ≤ B) (hc₀ : 0 < c₀)
+    (hβ : 1 / 2 ≤ β) (hβ1 : β ≤ 1) (hu : 0 ≤ u) (huU : u ≤ U) (hU : 1 ≤ U)
+    (hS : |S| ≤ A * u ^ β + B) (hR1 : 1 ≤ R) (hRu : c₀ * u ≤ R) :
+    S ^ 2 / R ≤ (2 * A ^ 2 + 2 * B ^ 2) * (1 + 1 / c₀) * U ^ (2 * β - 1) := by
+  have hR0 : 0 < R := by linarith
+  have hUp : 1 ≤ U ^ (2 * β - 1) := Real.one_le_rpow hU (by linarith)
+  have hS2 : S ^ 2 ≤ 2 * A ^ 2 * (u ^ β) ^ 2 + 2 * B ^ 2 := by
+    have h0 : 0 ≤ A * u ^ β + B := by positivity
+    have := pow_le_pow_left₀ (abs_nonneg S) hS 2
+    rw [sq_abs] at this
+    nlinarith [sq_nonneg (A * u ^ β - B)]
+  have hK0 : 0 ≤ (2 * A ^ 2 + 2 * B ^ 2) * (1 + 1 / c₀) := by positivity
+  rcases le_or_gt u 1 with hu1 | hu1
+  · have hpow : (u ^ β) ^ 2 ≤ 1 := by
+      have := Real.rpow_le_one hu hu1 (by linarith : 0 ≤ β)
+      nlinarith [Real.rpow_nonneg hu β]
+    calc S ^ 2 / R ≤ S ^ 2 := div_le_self (sq_nonneg _) hR1
+      _ ≤ 2 * A ^ 2 + 2 * B ^ 2 := by nlinarith
+      _ ≤ (2 * A ^ 2 + 2 * B ^ 2) * (1 + 1 / c₀) * 1 := by
+          rw [mul_one]; exact le_mul_of_one_le_right (by positivity) (by
+            have : 0 ≤ 1 / c₀ := by positivity
+            linarith)
+      _ ≤ _ := mul_le_mul_of_nonneg_left hUp hK0
+  · have hu0 : 0 < u := by linarith
+    -- `(u^β)²/u = u^{2β−1} ≤ U^{2β−1}`
+    have hpow : (u ^ β) ^ 2 / u = u ^ (2 * β - 1) := by
+      rw [← Real.rpow_natCast, ← Real.rpow_mul hu, ← Real.rpow_sub_one hu0.ne']
+      norm_num; ring_nf
+    have hmono : u ^ (2 * β - 1) ≤ U ^ (2 * β - 1) := Real.rpow_le_rpow hu huU (by linarith)
+    have hone : 1 ≤ u ^ (2 * β - 1) := Real.one_le_rpow hu1.le (by linarith)
+    have hcu : 0 < c₀ * u := by positivity
+    calc S ^ 2 / R ≤ S ^ 2 / (c₀ * u) := div_le_div_of_nonneg_left (sq_nonneg _) hcu hRu
+      _ ≤ (2 * A ^ 2 * (u ^ β) ^ 2 + 2 * B ^ 2) / (c₀ * u) :=
+          div_le_div_of_nonneg_right hS2 hcu.le
+      _ = (2 * A ^ 2 * ((u ^ β) ^ 2 / u) + 2 * B ^ 2 / u) / c₀ := by field_simp
+      _ ≤ (2 * A ^ 2 * u ^ (2 * β - 1) + 2 * B ^ 2 * u ^ (2 * β - 1)) / c₀ := by
+          rw [hpow]
+          refine div_le_div_of_nonneg_right (add_le_add le_rfl ?_) hc₀.le
+          rw [div_le_iff₀ hu0]
+          nlinarith [sq_nonneg B]
+      _ = (2 * A ^ 2 + 2 * B ^ 2) * (1 / c₀) * u ^ (2 * β - 1) := by ring
+      _ ≤ (2 * A ^ 2 + 2 * B ^ 2) * (1 + 1 / c₀) * U ^ (2 * β - 1) := by
+          refine mul_le_mul (mul_le_mul_of_nonneg_left (by linarith) (by positivity)) hmono
+            (by linarith) hK0
+
+/-- **Projected mass of a flip twin.** For relative log density `κ ≤ 1/4` there is `K'` with
+`|P_Q ω⃗|² ≤ K' (log N)^{1−4κ} (log Q)^{4κ}` for `3 ≤ Q ≤ N`. -/
+theorem exists_norm_starProjection_twin_sq_le (P : Set ℕ) {κ C : ℝ} (hκ0 : 0 ≤ κ)
+    (hκ : κ ≤ 1 / 4) (hP : ∀ n, 1 ≤ n → |primeSetLogMass P n - κ * Real.log n| ≤ C) :
+    ∃ K' : ℝ, 0 ≤ K' ∧ ∀ Q N : ℕ, 3 ≤ Q → Q ≤ N →
+      ‖(smoothFibreSpace Q N).starProjection (gaugeVector N (primeSetFlip P))‖ ^ 2 ≤
+        K' * Real.log N ^ (1 - 4 * κ) * Real.log Q ^ (4 * κ) := by
+  set ω := primeSetFlip P
+  have hmul : ∀ a b, a ≠ 0 → b ≠ 0 → ω (a * b) = ω a * ω b :=
+    fun a b ha hb => (primeSetFlip_isSignGauge P).mul ha hb
+  have hbd : ∀ n, |ω n| ≤ 1 := abs_primeSetFlip_le P
+  obtain ⟨A, B, hA0, hB0, hW⟩ := exists_abs_gaugeHarmonicSum_roughGauge_le (β := 1 - 2 * κ) hmul hbd
+    (by linarith) (by linarith) (fun n hn => abs_primeMean_primeSetFlip_sub_le P hP hn)
+  obtain ⟨c₀, hc₀, hR⟩ := exists_roughHarmonic_ge
+  obtain ⟨Ks, hKs, hsm⟩ := exists_sum_smoothSet_inv_le
+  set K₁ := (2 * A ^ 2 + 2 * B ^ 2) * (1 + 1 / c₀)
+  have hK₁ : 0 ≤ K₁ := by positivity
+  refine ⟨K₁ * Ks, by positivity, fun Q N hQ hQN => ?_⟩
+  have hlQ : 1 ≤ Real.log Q := one_le_log_of_three_le hQ
+  have hlN : Real.log Q ≤ Real.log N :=
+    Real.log_le_log (by positivity) (by exact_mod_cast hQN)
+  set U := Real.log N / Real.log Q
+  have hU : 1 ≤ U := by rw [le_div_iff₀ (by linarith)]; linarith
+  -- per-fibre bound
+  have hfib : ∀ a ∈ smoothSet Q N,
+      (∑ b ∈ roughInterval Q (N / a), ω (a * b) / b) ^ 2 / (a * roughHarmonic Q (N / a)) ≤
+        1 / a * (K₁ * U ^ (1 - 4 * κ)) := by
+    intro a ha
+    obtain ⟨ha1, haN, -⟩ := mem_smoothSet.mp ha
+    have ha0 : (0 : ℝ) < a := by exact_mod_cast ha1
+    have hY1 : 1 ≤ N / a := (Nat.le_div_iff_mul_le (by omega)).mpr (by omega)
+    have hF : ∑ b ∈ roughInterval Q (N / a), ω (a * b) / b =
+        ω a * gaugeHarmonicSum (roughGauge Q ω) (N / a) := by
+      rw [← sum_roughInterval_eq_gaugeHarmonicSum, mul_sum]
+      refine sum_congr rfl fun b hb => ?_
+      have hb1 := (mem_roughInterval.mp hb).1
+      rw [hmul a b (by omega) (by omega)]; ring
+    have hω2 : ω a ^ 2 = 1 := by rw [sq]; exact primeSetFlip_mul_self P a
+    rw [hF, mul_pow, hω2, one_mul]
+    set Y := N / a
+    have hY0 : (0 : ℝ) < Y := by exact_mod_cast hY1
+    set u := Real.log Y / Real.log Q
+    have hu : 0 ≤ u := div_nonneg (Real.log_natCast_nonneg _) (by linarith)
+    have huU : u ≤ U := div_le_div_of_nonneg_right
+      (Real.log_le_log hY0 (by exact_mod_cast Nat.div_le_self N a)) (by linarith)
+    have hRu : c₀ * u ≤ roughHarmonic Q Y := by
+      refine le_trans ?_ (hR Q hQ Y)
+      rw [mul_div_assoc']
+      refine div_le_div_of_nonneg_right (mul_le_mul_of_nonneg_left ?_ hc₀.le) (by linarith)
+      exact Real.log_le_log hY0 (by linarith)
+    have h := sq_div_le_of_rough_bound hA0 hB0 hc₀ (by linarith) (by linarith) hu huU hU
+      (hW Q hQ Y) (one_le_roughHarmonic Q hY1) hRu
+    rw [show 2 * (1 - 2 * κ) - 1 = 1 - 4 * κ by ring] at h
+    rw [div_mul_eq_div_div, div_div_eq_mul_div, mul_comm (1 / (a : ℝ)), ← div_eq_mul_one_div]
+    rw [mul_comm, ← div_div]
+    exact div_le_div_of_nonneg_right h ha0.le
+  have hM : ∀ v ∈ smoothFibreSpace Q N, ⟪gaugeVector N ω, v⟫ ^ 2 ≤
+      (K₁ * U ^ (1 - 4 * κ) * (Ks * Real.log Q)) * ‖v‖ ^ 2 := by
+    intro v hv
+    refine (inner_sq_le_of_mem_smoothFibreSpace ω hv).trans ?_
+    rw [mul_comm _ (‖v‖ ^ 2)]
+    refine mul_le_mul_of_nonneg_left ?_ (sq_nonneg _)
+    refine (sum_le_sum hfib).trans ?_
+    rw [← sum_mul, mul_comm]
+    exact mul_le_mul_of_nonneg_left (hsm Q hQ N) (by positivity)
+  have hproj := norm_starProjection_sq_le (gaugeVector N ω) (by positivity) hM
+  refine hproj.trans (le_of_eq ?_)
+  -- `U^{1−4κ} log Q = (log N)^{1−4κ} (log Q)^{4κ}`
+  have hlQ0 : 0 < Real.log Q := by linarith
+  have e : U ^ (1 - 4 * κ) * Real.log Q = Real.log N ^ (1 - 4 * κ) * Real.log Q ^ (4 * κ) := by
+    rw [Real.div_rpow (by linarith) hlQ0.le, div_mul_eq_mul_div, mul_div_assoc]
+    congr 1
+    rw [div_eq_iff (Real.rpow_pos_of_pos hlQ0 _).ne', ← Real.rpow_add hlQ0]
+    simp
+  calc K₁ * U ^ (1 - 4 * κ) * (Ks * Real.log Q) = K₁ * Ks * (U ^ (1 - 4 * κ) * Real.log Q) := by
+        ring
+    _ = K₁ * Ks * Real.log N ^ (1 - 4 * κ) * Real.log Q ^ (4 * κ) := by rw [e]; ring
+
+end Twin
 
 
 end GaloisForLFunctions.RenormalizedIntersectionTheory
