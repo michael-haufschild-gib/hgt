@@ -21,7 +21,7 @@ root classification should identify these cycles with primitive positive-trace
 hyperbolic integral determinant-one classes. Inverse classes remain distinct
 unless the proved inverse-class criterion identifies them.
 
-## Exact missing mathematics
+## Certified results and remaining gap
 
 1. **Certified:** The actual signed determinant product equals its even-word
    trace exponential near zero, with absolute summation over all lengths and
@@ -39,13 +39,20 @@ unless the proved inverse-class criterion identifies them.
    gives half-length `rℓ(c)` and literal trace term
    `z^(2rℓ(c))/(rℓ(c)) · (λ_c^r)^(−w)/(1−(λ_c^r)⁻²)`.
    [Paper proof and ten production audits](../3-formalized/gauss-mayer-primitive-orbit-words.md).
-   Analytic reindexing must change `1/(rℓ(c))` to `1/r`, expand
-   `(1−λ_c^(−2r))⁻¹`, and sum the logarithmic factor series.
+
 4. **Certified:** Exact Gauss-word probability gives geometric absolute trace
    decay for `Re w>2`. The even-word identity now holds throughout `|z|≤1`,
    including `z=1`; the full word series converges absolutely and the actual
    determinant has no spectral zero in this disk.
    [Continuation proof and Lean certificate](../3-formalized/gauss-mayer-unit-even-word-determinant.md).
+5. **Certified:** finite rotation sums cancel `ℓ(c)` exactly, preserving
+   absolute mass. The resulting primitive-cycle logarithm is
+   `J(w,z)=Σ_c Σ_(r≥1) z^(2rℓ(c))/r · (λ_c^r)^(−w)/(1−(λ_c^r)⁻²)`.
+   It converges absolutely and satisfies `D(w,z)D(w,−z)=exp(−J(w,z))`
+   near zero for `Re w>1`, and throughout `|z|≤1` for `Re w>2`.
+   [Paper proof and both production audits](../3-formalized/gauss-mayer-primitive-orbit-logarithm.md).
+6. **Open:** expand `(1−λ_c^(−2r))⁻¹`, justify the logarithmic factor
+   summation, and identify the convergent Euler product.
 
 The local Hilbert–Schmidt exponential determinant is a convergent-series
 representation only near zero. Its totalized exponential cannot replace the
@@ -64,9 +71,6 @@ trace mass at length `2n+2` is at most `(8/3)q^(n+1)`.
 
 ## Scope
 
-This is the missing determinant-to-modular-cycle bridge. It does not yet
-identify geometric geodesic lengths, prove the scattering normalization, or
-exclude complex resonances. The local determinant-to-even-word identity is
-certified through the closed unit disk for `Re w>2`. Primitive-cycle
-multiplicities, multiplier laws and exact source terms are certified;
-analytic reindexing and the Euler product remain open.
+Primitive-cycle trace regrouping is certified on the source domains above.
+The Euler product remains unproved. Geometric geodesic lengths, scattering
+normalization, and critical-strip resonance exclusion remain separate gaps.

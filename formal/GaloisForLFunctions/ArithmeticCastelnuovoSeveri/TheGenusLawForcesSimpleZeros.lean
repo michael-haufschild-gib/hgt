@@ -27,8 +27,8 @@ and even one per cluster of zeros closer than the resolution of the threshold. H
   `N(0,T) − N^s(0,T) ≤ 2ηT`, i.e. all but `o(T)` of the zeros of `ζ` up to height `T` are simple,
   and the proportion of simple zeros tends to `1` (at rate `O(1/log T)`).
 * `cover_deficiency_le_of_genus_law`: the genus law gives, for every finite set `S` of zeros within
-  `exp(−η²T/(40 log T))` of every zero of height `≤ T`, `#S ≥ 2N(0,T) − ηT`: all but `o(T)` zeros
-  are simple *and* isolated at the scale `exp(−η²T/(40 log T))`.
+  `exp(−η²T/(20 log T))` of every zero of height `≤ T`, `#S ≥ 2N(0,T) − ηT`: all but `o(T)` zeros
+  are simple *and* isolated at the scale `exp(−η²T/(20 log T))`.
 
 The unconditional knowledge in the corpus is that at least two thirds of the zeros are simple and
 critical (`RHTower.two_thirds_simpleCritical_epsilon`); the genus law would raise this to all but
@@ -633,9 +633,3 @@ theorem cover_deficiency_le_of_genus_law {η : ℝ} (hη0 : 0 < η) (hη1 : η �
   linarith
 
 end GaloisForLFunctions.ArithmeticCastelnuovoSeveri
-
-#print axioms GaloisForLFunctions.ArithmeticCastelnuovoSeveri.exists_nearRadical_blind
-#print axioms GaloisForLFunctions.ArithmeticCastelnuovoSeveri.genusFunction_ge_of_net
-#print axioms GaloisForLFunctions.ArithmeticCastelnuovoSeveri.multiplicity_excess_le_of_genus_law
-#print axioms GaloisForLFunctions.ArithmeticCastelnuovoSeveri.tendsto_simple_ratio_of_genusLaw
-#print axioms GaloisForLFunctions.ArithmeticCastelnuovoSeveri.cover_deficiency_le_of_genus_law

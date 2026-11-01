@@ -76,25 +76,47 @@ Band–terminal and inverse-energy residual improvements remain required.
   for Mellin-smooth `y` (`|ξ| ≲ 1`) and for destructive-overlap `y` (local period `< c`, where
   `φ̂(wξ)` is small). It is `≈ c log|t|` per unit mass at Mellin frequency `|t| ≪ N/c`.
 
-## Route (open steps)
+## Proof plan (paper; `α < 1/8`, `δ = d/c⁷`, `k₁ ≍ θ₁ log N`)
 
-1. Split terminal `y` at Mellin frequency `T₀ = exp(C c log c)`. The high part is paid by
-   `c log T₀ ≥ C' c² log c` against the trivial `‖NR_PT‖² ≍ c² log N log c` (open: the arch
-   inequality per Mellin band, including destructive-overlap patterns).
-2. Low part: `NR_PTᵀ y_low = (coherent)·p + O(PNT error)` row by row. Rows `m ≤ N/X₀`,
-   `log X₀ ≍ (log N)^{1/4}`: Route-T twisted Chebyshev (zero-free width
-   `≳ (log t)^{−9/10}(log log t)^{−2}`, `RHTower.Sieve.exists_norm_partialSum_vonMangoldtTwist_routeT_uniform`)
-   gives relative error `exp(−log X/(log T₀)^{0.9+})`. Remaining rows cost `c² log X₀/log c` in total.
-   Open: near-orthogonality across Mellin bands on the discrete prefix (Gallagher type).
-3. Band–terminal cross: band vectors carry only `log Q₁` reserve, so the high-frequency trade of
-   step 1 does not pay it; needs the coherent structure of `NR_PT` on conductor packets (open).
-4. `y–z` Schur: localize `r_m` on the terminal and pay `|⟨r₁, z_S⟩|²` with the terminal reserve:
-   `c²/log N ≤ c^{−7} · κ log N/c⁷` is `c⁸ ≲ log N` (needs the reserve of step 1 inside the Schur).
-5. Elementary: the tail–tail column is
-   `Σ_{k ≤ eL} Λ(k)(2ec/k + 1) = O(c(1 + log c))` (multiples of `k` in a window), not `O(c²)`.
+The `1/9` proof needs `c⁹ ≲ log N` in exactly three places: the far two-region reserve, the
+band–far cross, and the `V_{Q₁}`–complement Schur. Each is replaced as follows.
+
+**T1. Far reserve.** For `w ∈ V_{R₁}^⊥`, `w = x + y` (prefix `[1,M]`, top `S = (M,N]`):
+`E(w) = arch(f)/G − prime(f)/G` (pole term zero), and
+`prime(f) = prime(f_x) + prime(f_y) + 2⟨f_y, f_z⟩`, `z = a ∗ x`, `a_k = Λ(k)k^{−1/2}`
+(the prime translate of an atomic test is the atomic test of the Dirichlet convolution).
+- Prefix block `≥ (7/8)D_M − O(c)P` (separated atoms); top self-prime `≤ C c(1+log c) S`
+  (multiples of `k` in a window); top arch `≥ (log T − C)·HM_T(f_y) + (δ/2) log N · S − C c S`,
+  `HM_T = (1/2πG)∫_{|r|≥T}|f̂_y|²`.
+- Cross, coherent part: `x = α p̂ + x_⊥`, `|α| ≤ ‖q‖‖y‖` from `w ⊥ v₁`; costs `O(c log c) S`.
+- Cross, remainder: `z_⊥ = ρ·(a ∗ x_⊥)` (`ρ` smooth log-cutoff, `=1` where `f_y` lives),
+  `Π` = log-smoothing at scale `1/T₁` (`Πv(n) = Σ v(n')K(log n/n')/n'`). `Πz_⊥` loses its
+  coherent part exactly (`Σ_m x_⊥(m)m^{−1/2} = 0`); rows `n/m ≥ K'` pay the PNT error
+  `exp(−c₀√log X)` (`RHTower.exists_psi_error_eventually`) times `T₁`, rows `n/m < K'` are
+  averaged: `‖Πz_⊥‖² ≲ (log K')² P`, `log K' ≍ (log T₁)²`. High part: `f̂_{z−Πz}` is
+  `(1 − K̂(r)) f̂_z` up to Euler–Maclaurin error (`RHTower.sum_Ioc_floor_eq_integral`), small
+  below `T = T₁/c⁵`; above `T` it is paid by `HM_T(f_y)` at cost `(c log N log c/log T) P`.
+  With `log T₁ ≍ C c log c` every cost is `≤ k₁P/16 + c^{6+o(1)}/log N · S`.
+- Conclusion: `E(w) ≥ (k₁/4)P + (b k₁/(2c⁷))S` whenever `c⁸ (log c)^A ≤ ε log N`.
+
+**T2. Band–far cross.** In `⟨W u, w⟩` the upward term `⟨Up u, w⟩` splits by rows: prefix rows
+pay with `k₁ P_w`; top rows read only `u|_S` (`Up(u)(n)` reads near `kn`), and `Up: S → S` has
+Schur norm `O(c √log c)`, while `‖u|_S‖² ≤ (B/log N)‖u‖²`
+(`harmonicConductorPacket_terminal_le`). Cost `c⁹(log c)²/log² N`.
+
+**T3. `V_{Q₁}`–complement Schur.** Split each residual `r_m` at row `N/X_*`,
+`log X_* = (log N)^{1/8}`. Deep rows: near/downward channels vanish, the others decay
+(Mertens-level `1/log(N/n)` for the upward and ratio sources), so
+`Σ_{n ≤ N/X_*} r_m(n)² ≲ m(1+log m)² c^{2+o(1)}/(log N · log X_*)`. Top rows pair with
+`‖u|_{(N/X_*,N]}‖² ≤ (log X_*/log N)‖u‖²` for bands and with the far top reserve for `w`.
+
+**T4. Assembly.** Four blocks `y, u₀, u₁, w` with the corpus band coercivities and band–band
+cross, replacing the three `c⁹` inputs above.
 
 ## No-go closure
 - **Killed:** terminal-pole-orthogonal smallness of `NR_PT` (counterexample above).
 - **Positive survivor:** rank-one coherent structure `NR_PT ≈ σ â ⊗ p̂ + E`; exact prefix-pole
   column law from `Σ_{k|n} Λ(k) = log n`; target `‖E‖² ≤ c (log N)^{1+δ}`.
-- **Status:** paper only; no Lean.
+- **Status:** proof plan T1–T4 above; Lean in progress (CACT modules listed below as built).
+
+## Lean modules

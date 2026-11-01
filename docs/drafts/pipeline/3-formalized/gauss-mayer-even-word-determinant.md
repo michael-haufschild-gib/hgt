@@ -57,8 +57,9 @@ RenormalizedIntersectionTheory umbrella imports the module.
 The global Fredholm construction and fixed-length word trace formula already
 existed. The contribution is their source-level parity identity with absolute
 summation across all lengths. The exponent is identified with the global
-determinant only on its proved convergence neighborhood. Primitive-cycle
-reindexing, geometric length identification, scattering normalization, and
-critical-strip resonance exclusion remain separate obligations.
+determinant only on its proved convergence neighborhood.
+[Primitive-cycle regrouping](gauss-mayer-primitive-orbit-logarithm.md) is certified.
+The Euler product, geometric length identification, scattering normalization,
+and critical-strip resonance exclusion remain separate obligations.
 [Convergence and continuation at `z=1`](gauss-mayer-unit-even-word-determinant.md)
 are certified for `Re w>2`.

@@ -38,6 +38,8 @@ README in the folder.
   exterior jumps force `W ≥ ‖f‖²/4` for aperture `≤ 1/2000`.
 - `TheExteriorJumpsOfAPrimeFreeCycle`: `A_f(x) ≤ ½‖f‖²` for gaps `x ≥ a`; count-derived positivity
   `W ≥ ‖f‖²/20` for aperture `≤ 1/64`.
+- `TheStepanovCountPaysThePrimitiveH1OverFiniteFields`: hyperelliptic curves of every genus — Künneth
+  effectivity and primitive `h¹ ≥ 0` on every window, from Stepanov's count.
 
 ## Open core
 Primitive `h¹ = ½W(f,f)` as a nonnegative count. Prime-free: the jump-count identity is formalized
@@ -46,4 +48,4 @@ and forces positivity up to aperture `1/64`; exterior charge `½∫f²(W(a−x)+
 sign structure (`+2A²` even, `−2A²` odd). Beyond the window: the prime comb in the count.
 
 ## Log
-- 2026-11-01 — created with README first draft; pillars formalized (15 modules).
+- 2026-11-01 — created with README first draft; pillars formalized (16 modules).

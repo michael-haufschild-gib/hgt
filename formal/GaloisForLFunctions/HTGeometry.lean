@@ -17633,4 +17633,5 @@ import GaloisForLFunctions.HTGeometry.WeakContractionBall
 import GaloisForLFunctions.HTGeometry.SubexponentialIntegerGrowth
 import GaloisForLFunctions.HTGeometry.PolynomialTwistedDifferences
 import GaloisForLFunctions.HTGeometry.FiniteWeightedHilbertSpace
-import GaloisForLFunctions.HTGeometry.AffineExpanders.Family
+import GaloisForLFunctions.HTGeometry.AffineExpanders.Contraction
+import GaloisForLFunctions.HTGeometry.SquarefreePrimeComplex

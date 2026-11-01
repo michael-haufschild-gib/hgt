@@ -1,44 +1,41 @@
 # Margulis–Gabber–Galil affine expanders
 
 - **Stage:** 3-formalized
-- **Type:** THEOREM (Lean), classical literature
-- **Statement:** The eight affine shear/translation edges on `(ℤ/nℤ)²`, `n ≥ 3`,
-  have normalized walk `W` satisfying `‖W − P‖ ≤ 5√2/8 < 1`, with `P` the mean projection.
-- **Source:** [girving/aks](https://github.com/girving/aks),
-  `c7fb62ed80a4a610f87f34db0082cadbd7c00c9f`; Apache-2.0.
+- **Statement:** On `(ℤ/nℤ)²`, `n ≥ 3`, the eight-edge normalized affine walk satisfies
+  `‖Wf − mean(f)‖₂ ≤ (5√2/8) ‖f − mean(f)‖₂`, with `5√2/8 < 1`.
 
 ## Objects and proof
 
-The four forward maps are `(x+2y,y)`, `(x,2x+y)`, `(x+2y+1,y)`,
-and `(x,2x+y+1)`, modulo `n`; the other four are their inverses.
-Repeated edges and loops are counted by ports. Vertices use the bijection
-`(x,y) ↦ xn+y` from `Fin n × Fin n` to `Fin (n*n)`.
+Vertices are `ZMod n × ZMod n`. The forward maps are `(x+2y,y)`, `(x,y+2x)`,
+`(x+2y+1,y)`, `(x,y+2x+1)`; the other four are their inverses.
+`mggAffineKernel` is their symmetric bistochastic matrix average, retaining loops
+and edge multiplicities.
 
-1. `mgg_rot_involution` proves edge reversal. Consequently the walk is self-adjoint,
-   preserves constants, and preserves the mean.
-2. `mgg_walkCLM_inner_eq_corr` pairs forward and inverse edges. For the unnormalized
-   finite Fourier transform, `parseval_2d` gives energy factor `n²`; the four
-   `dft2d_comp_shear*` identities identify affine pullbacks with dual shears and phases.
-3. `norm_one_add_ω_inv` turns each phase pair into `2|cos(πa/n)|`.
-   The reciprocal weight is `√2` toward smaller axis distance, `√2/2` toward larger
-   distance, and `1` for incomparable points. `pointwiseCondition_forall` proves the
-   bound `5√2/2` at every nonzero frequency by the diamond and complementary cases.
-   `young_assembly` sums the reciprocal Young inequalities, giving `5√2/4` times energy.
-4. Mean zero removes the zero Fourier mode. Parseval and walk normalization yield
-   `|⟨f,Wf⟩| ≤ (5√2/8)‖f‖²`. Polarization and orthogonal centering give
-   `spectralGap_mgg`. Here `spectralGap` denotes the nonconstant spectral radius.
-5. Since `(√2)²=2`, `5√2/8<1`. `norm_mgg_centered_le` gives the corresponding
-   contraction for every centered function without a cancellation premise.
+1. Pairing inverse permutations expresses the quadratic form as one quarter of
+   the four forward correlations.
+2. `cyclicPairFourier` applies the corpus cyclic Fourier transform in each coordinate.
+   Parseval gives factor `n²`; affine pullbacks become dual shears with translation
+   phases of modulus `2|cos(πa/n)|`.
+3. Reciprocal edge weights, determined by distance to the axes, have row bound
+   `5√2/2` off zero. Summed reciprocal Young inequalities give correlation bound
+   `5√2/4`. Mean zero removes the zero frequency; normalization gives quadratic
+   bound `5√2/8`.
+4. Restriction to the finite zero-sum subspace and the symmetric Rayleigh norm
+   formula give Euclidean contraction. Centering uses the existing `finiteMean`.
+
+The pointwise residue estimate adapts the argument in
+[girving/aks, Young.lean](https://github.com/girving/aks/blob/c7fb62ed80a4a610f87f34db0082cadbd7c00c9f/AKS/MGG/Young.lean).
+The Fourier transform, Schur inequality, matrix kernel, and centering are integrated
+with existing corpus definitions.
 
 ## Lean endpoints
 
-Directory: `formal/GaloisForLFunctions/HTGeometry/AffineExpanders/`.
+Namespace `GaloisForLFunctions.HTGeometry`:
 
-- `AffineExpanders.spectralGap_mgg`: bound for every `n ≥ 3`.
-- `AffineExpanders.mgg_expander_family`: uniform family indexed by `n+3`, including strict bound below one.
-- `AffineExpanders.norm_mgg_centered_le`: `‖Wf−Pf‖ ≤ (5√2/8)‖f−Pf‖`.
+- `mggAffineMatrix_quadratic_le`: absolute zero-sum quadratic bound.
+- `mggAffine_centered_norm_le`: contraction about the finite mean for `n ≥ 3`.
+- `mggAffine_expander_family`: unconditional family at modulus `n+3`, including strict bound below one.
 
-All dependency modules compile at default limits. Final check:
-`lake --old env lean GaloisForLFunctions/HTGeometry/AffineExpanders/Audit.lean`.
-Guarded transitive axiom lists contain only `propext`, `Classical.choice`, `Quot.sound`.
-Imported by `HTGeometry.lean`; no umbrella build. No mathematical novelty claimed.
+Modules: `HTGeometry/AffineExpanders/QuadraticBound.lean` and `Contraction.lean`.
+`Audit.lean` guards their transitive axiom lists: only `propext`, `Classical.choice`,
+`Quot.sound`. All checks use default elaboration limits. Imported by `HTGeometry.lean`.

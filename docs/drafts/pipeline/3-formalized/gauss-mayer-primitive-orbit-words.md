@@ -79,6 +79,6 @@ transitive axiom audits contain only `propext`, `Classical.choice`, and
 ## Scope
 
 This identifies the actual summands in primitive-orbit coordinates.
-Summing the finite rotation fibers, expanding the geometric denominator,
-and justifying the resulting Euler product remain separate analytic steps.
-No geodesic-length or scattering normalization is asserted.
+[Finite rotation sums and absolute regrouping](gauss-mayer-primitive-orbit-logarithm.md)
+are certified. Geometric denominator expansion and the Euler product remain
+unproved. No geodesic-length or scattering normalization is asserted.

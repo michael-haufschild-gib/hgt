@@ -64,8 +64,8 @@ private theorem nonRatio_entry_le_windows {φ : ℝ → ℝ} (hφ : ContDiff ℝ
   intro k hk
   have hd := (le_abs_self _).trans (abs_nonRatio_term_le hg.continuous hgc hgs k j n)
   have hu := (le_abs_self _).trans (abs_nonRatio_term_le hg.continuous hgc hgs k n j)
-  have h := mul_le_mul_of_nonneg_left (add_le_add hd hu) (vonMangoldtAtom_nonneg' k)
-  convert h using 1 <;> ring
+  have h := mul_le_mul_of_nonneg_left (add_le_add hd hu) (RHTower.vonMangoldtAtom_nonneg' k)
+  convert h using 1; ring
 
 /-- The shell degree is the Schur row with pole weights, divided by its row index. -/
 theorem nat_mul_shellDegree_eq_weighted_row (φ : ℝ → ℝ) (c : ℝ) (N : ℕ)
@@ -101,7 +101,9 @@ theorem nat_mul_shellDegree_le_nonRatioRow {φ : ℝ → ℝ} (hφ : ContDiff �
           ∑ j ∈ Icc 1 N, Real.sqrt ((n : ℝ) / j) * upInd (c / N) k n j) +
         ∑ k ∈ range K, RHTower.vonMangoldtAtom k *
           ∑ j ∈ Icc 1 N, Real.sqrt ((n : ℝ) / j) * upInd (c / N) k j n := by
-      rw [sum_coe_sort]
+      rw [sum_coe_sort (Icc 1 N) (fun j : ℕ => Real.sqrt ((n : ℝ) / j) *
+        ∑ k ∈ range K, RHTower.vonMangoldtAtom k *
+          (upInd (c / N) k n j + upInd (c / N) k j n))]
       simp only [mul_sum, ← sum_add_distrib]
       rw [sum_comm]
       exact sum_congr rfl fun k _ => sum_congr rfl fun j _ => by ring
@@ -148,9 +150,10 @@ theorem shellDegree_packet_payment_le {φ : ℝ → ℝ} (hφ : ContDiff ℝ 2 �
         2 * Real.exp (3 / 2) * c * ((n : ℝ) / N) * (Real.log n + 1)) / n :=
     (le_div_iff₀ hn0).mpr (by simpa only [mul_comm] using h)
   have hp := mul_le_mul_of_nonneg_right hd (sq_nonneg (F n))
-  convert hp using 1 <;> field_simp [hn0.ne', hN0.ne'] <;> ring
+  convert hp using 1; field_simp [hn0.ne', hN0.ne']
 
 end GaloisForLFunctions.ArithmeticCouplingTheory
 
 #print axioms GaloisForLFunctions.ArithmeticCouplingTheory.nat_mul_shellDegree_le_explicit
+#print axioms GaloisForLFunctions.ArithmeticCouplingTheory.shellDegree_nonneg
 #print axioms GaloisForLFunctions.ArithmeticCouplingTheory.shellDegree_packet_payment_le

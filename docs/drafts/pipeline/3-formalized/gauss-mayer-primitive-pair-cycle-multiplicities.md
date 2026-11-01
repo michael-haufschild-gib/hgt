@@ -81,7 +81,8 @@ transitive axiom audits contain only `propext`, `Classical.choice`, and
 ## Scope
 
 These are the multiplicities required to turn the trace coefficient
-`1/(rℓ(c))` into `1/r`. Multiplier power laws and analytic regrouping are
-separate steps. Primitivity here is whole-pair primitivity, as required by
+`1/(rℓ(c))` into `1/r`. [Multiplier laws and source terms](gauss-mayer-primitive-orbit-words.md)
+and [absolute regrouping](gauss-mayer-primitive-orbit-logarithm.md) are certified.
+Primitivity here is whole-pair primitivity, as required by
 the certified integral determinant-one root classification; ordinary
 single-digit primitivity would give incorrect multiplicities.

@@ -74,5 +74,6 @@ The branch matrices, fixed points, trace formula, and one-dimensional
 reciprocal telescope already existed. The source contribution is their
 exact word probability law and its trace bound uniform in word length.
 [Continuation to the closed unit spectral disk](gauss-mayer-unit-even-word-determinant.md)
-is certified. Primitive-cycle product reindexing remains open.
+and [primitive-cycle logarithm regrouping](gauss-mayer-primitive-orbit-logarithm.md)
+are certified. The Euler product remains unproved.
 No scattering identity or resonance exclusion is claimed.

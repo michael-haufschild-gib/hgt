@@ -1,21 +1,21 @@
-import GaloisForLFunctions.HTGeometry.AffineExpanders.Family
+import GaloisForLFunctions.HTGeometry.AffineExpanders.Contraction
 
 /-! # Kernel dependency checks for the affine expander family -/
 
 /--
-info: 'AffineExpanders.spectralGap_mgg' depends on axioms: [propext, Classical.choice, Quot.sound]
+info: 'GaloisForLFunctions.HTGeometry.mggAffineMatrix_quadratic_le' depends on axioms: [propext, Classical.choice, Quot.sound]
 -/
 #guard_msgs in
-#print axioms AffineExpanders.spectralGap_mgg
+#print axioms GaloisForLFunctions.HTGeometry.mggAffineMatrix_quadratic_le
 
 /--
-info: 'AffineExpanders.mgg_expander_family' depends on axioms: [propext, Classical.choice, Quot.sound]
+info: 'GaloisForLFunctions.HTGeometry.mggAffine_centered_norm_le' depends on axioms: [propext, Classical.choice, Quot.sound]
 -/
 #guard_msgs in
-#print axioms AffineExpanders.mgg_expander_family
+#print axioms GaloisForLFunctions.HTGeometry.mggAffine_centered_norm_le
 
 /--
-info: 'AffineExpanders.norm_mgg_centered_le' depends on axioms: [propext, Classical.choice, Quot.sound]
+info: 'GaloisForLFunctions.HTGeometry.mggAffine_expander_family' depends on axioms: [propext, Classical.choice, Quot.sound]
 -/
 #guard_msgs in
-#print axioms AffineExpanders.norm_mgg_centered_le
+#print axioms GaloisForLFunctions.HTGeometry.mggAffine_expander_family

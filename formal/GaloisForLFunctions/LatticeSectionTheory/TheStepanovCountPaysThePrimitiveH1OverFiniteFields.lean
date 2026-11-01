@@ -49,9 +49,9 @@ theorem hyperelliptic_kunneth_effectivity (W : Finset ℕ) :
 window. -/
 theorem hyperelliptic_primitiveH1_nonneg (W : Finset ℕ) (x : SpanCycle) :
     0 ≤ primitiveH1 ((hyperellipticDatum hF hsq hodd).windowSurface W) x := by
-  have h := ((hyperellipticDatum hF hsq hodd).windowSurface W).castelnuovoSeveri_iff_defect_nonneg.mp
-    (((hyperellipticDatum hF hsq hodd).windowSurface W).hodgeIndex_iff_castelnuovoSeveri.mp
-      (hyperelliptic_window_hodgeIndex hF hsq hodd W)) x
+  set S := (hyperellipticDatum hF hsq hodd).windowSurface W
+  have h := S.castelnuovoSeveri_iff_defect_nonneg.mp
+    (S.hodgeIndex_iff_castelnuovoSeveri.mp (hyperelliptic_window_hodgeIndex hF hsq hodd W)) x
   rw [primitiveH1_eq]
   linarith
 

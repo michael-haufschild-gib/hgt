@@ -1,6 +1,6 @@
 # Selective Positivity and Threshold Laws (SPTL)
 
-Namespace `GaloisForLFunctions.SelectivePositivityAndThresholdLaws`; umbrella `SelectivePositivityAndThresholdLaws.lean`; 6 modules.
+Namespace `GaloisForLFunctions.SelectivePositivityAndThresholdLaws`; umbrella `SelectivePositivityAndThresholdLaws.lean`; 10 modules (including `SemilocalPrimeTwoTrace/*`).
 Everything is unconditional; RH appears only inside proved equivalences.
 
 ## 1. Motivation
@@ -32,6 +32,9 @@ as a boundary law plus a refutation witness on a battery of fake weights.
 | Escape symbol | `escapeLaplaceSymbol ε s` | ζ(s)(ζ(s+ε)⁻¹ − Re ζ(1+ε)⁻¹)/s |
 | Catalan separators | `catalanSuccessorSquareForm`, `catalanKroneckerTwistDefect` | w(2)w(4); squared phase deviation on {2,3} |
 | Continuum tower test | `edgeTowerBump A`, `dyadicH1NormSq` | odd narrow bumps near ±(A−1); ∫F² + ∫F'² |
+| Valuation-shell log operator | `primeValuationLogOperator p m`, `primeTwoLogOperator m` | `(log p)(P_{ℤ_p} − U^m P_{ℤ_p} U^{−m})` on `ℓ²(ℤ)` with `opTrace = m log p` |
+| Single-prime semilocal family | `primeSingleSemilocalFamily p` | CCM remainder family retaining only prime powers `p^m` (`m ≥ 1`) |
+| Polar Krein split | `ccmPolarEvenOperator a`, `ccmPolarOddOperator a` | `ccmPolarOperator a = 2|c₊⟩⟨c₊| − 2|c₋⟩⟨c₋|` on `suzukiApertureHilbert a` |
 
 ## 3. Language
 
@@ -89,6 +92,9 @@ as a boundary law plus a refutation witness on a battery of fake weights.
 | Multi-modulus Ramanujan split of primeCoalSum | `multiModulus_ramanujan_primeCoalSum_split` | proved |
 | Escape symbol pole split; RH ⇔ positive (⇔ full) gauge mass of every escape state | `escapeLaplaceSymbol_pole_and_visibility_laws` | proved |
 | No sub-exponential H¹ floor (σ < ½) on continuum towers; pole-neutralized floor ⇔ width | `not_continuumPrimeTower_subexponential_dyadicH1`, `continuum_poleNeutralized_width_equivalence` | proved |
+| Positive `2`-adic logarithmic trace (`opTrace = m log 2`) and exact `{∞, 2}` trace identity on `(0, ½log3]` | `primeTwoLogOperator_isPositive`, `opTrace_primeTwoLogOperator`, `ccmRestrictedWeilSourceQuadratic_eq_semilocalPrimeTwoTrace_of_le_halfLogThree`, `primeSingleSemilocalFamily_two_energy_eq_literal_of_le_halfLogThree` | proved |
+| Semilocal `{∞, 2}` positivity obstructions: unglued Sonin non-positivity, bilateral prime-`2` indefiniteness, multiplicative tensor no-go, half-integer lattice collapse & forced zero crossing, no positive `{∞, 2}` operator-trace carrier | `not_isPositive_ccmSoninGenericPartAt_one`, `neither_sign_isPositive_ccmFinitePrimeOperator_primeTwo_window`, `no_multiplicative_tensor_factorization_primeTwo_window`, `exists_aperture_primeFree_and_singleSemilocal_energy_lt`, `exists_primeTwoSemilocal_zero_crossing`, `no_positive_operator_trace_carrier_for_primeTwoSemilocal` | proved |
+| Intrinsic operator-trace equivalence, unconditional positivity through `181/500 > ½log2`, upgraded `zetaContactAperture` / all-profile Hodge / Künneth / `l2SourceCone` RR, and `½log3` equivalence (`question_Q6_complete_resolution`) | `ccmPolarOperator_eq_even_sub_odd`, `isPositive_ccmRestrictedWeilZeroFormOperator_iff_opTrace_nonneg`, `isPositive_ccmRestrictedWeilZeroFormOperator_of_le_threeHundredSixtyTwoThousandths`, `threeHundredSixtyTwoThousandths_le_zetaContactAperture`, `scalingSubsurface_all_hodgeIndex_of_le_threeHundredSixtyTwoThousandths`, `kunneth_effectivity_realTestsAt_of_le_threeHundredSixtyTwoThousandths`, `l2SourceCone_realTestsAt_riemannRoch_of_le_threeHundredSixtyTwoThousandths`, `question_Q6_complete_resolution` | proved |
 
 ## 6. Tools
 

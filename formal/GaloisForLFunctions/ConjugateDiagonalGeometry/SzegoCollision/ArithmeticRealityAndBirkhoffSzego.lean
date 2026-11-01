@@ -1229,7 +1229,6 @@ theorem exists_zhukovsky_outer_factorization_of_gt_one {n : ℕ} {d : ℂ}
           (1 - (z_p / (ρ : ℂ))⁻¹ * (u : ℂ)) *
           (1 - star (u : ℂ) * (z_p⁻¹ / (ρ : ℂ))) := by
           rw [inv_mul_cancel₀ hρ_ne, hu_mul_star, one_mul, one_mul]
-          ring
 
 /-- **Interior Zhukovsky factor outer splitting (`E_n(d) < 1`).**
 When `d` lies strictly inside the `n`-th Zhukovsky ellipse, `zhukovskyLoop n u - d` factors on

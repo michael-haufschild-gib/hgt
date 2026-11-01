@@ -61,3 +61,4 @@ import GaloisForLFunctions.ShallowCauchyPrimeEnergy
 import GaloisForLFunctions.TransMetzlerWeilPositivity
 import GaloisForLFunctions.RenormalizedIntersectionTheory
 import GaloisForLFunctions.HodgeTheoryWithoutVarieties
+import GaloisForLFunctions.ArithmeticDegenerationTheory

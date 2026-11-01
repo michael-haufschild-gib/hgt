@@ -13,6 +13,7 @@ import GaloisForLFunctions.LatticeSectionTheory.TheIndexReadingsOfThePrimitiveH1
 import GaloisForLFunctions.LatticeSectionTheory.TheSelfDualPointHasNoRealZeros
 import GaloisForLFunctions.LatticeSectionTheory.ThePrimitiveH1OfPrimeFreeCyclesIsAJumpCount
 import GaloisForLFunctions.LatticeSectionTheory.TheExteriorJumpsOfAPrimeFreeCycle
+import GaloisForLFunctions.LatticeSectionTheory.TheStepanovCountPaysThePrimitiveH1OverFiniteFields
 
 /-!
 # Lattice Section Theory
@@ -21,6 +22,7 @@ Umbrella for the theory of sections of the scaling surface as Gaussian lattice c
 Riemann–Roch and the rank law; the Künneth Riemann–Roch and the primitive `h¹`; bidegree blindness;
 definite counts and their Epstein fakes, the self-dual point; the split plane, Siegel majorants,
 boosts, the isotropic cone; Hecke similitudes and index readings of the primitive `h¹`; prime-free
-cycles as jump counts and Riemann–Roch outside a finite divisor; calibration over `𝔽_q`.
+cycles as jump counts and Riemann–Roch outside a finite divisor; calibration over `𝔽_q` and the
+Stepanov count for hyperelliptic curves.
 See `LatticeSectionTheory/README.md`.
 -/

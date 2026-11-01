@@ -124,7 +124,8 @@ theorem tendsto_log_cube_div_natCast :
     Tendsto (fun N : ℕ => Real.log N ^ 3 / (N : ℝ)) atTop (𝓝 0) := by
   have h := (Real.tendsto_pow_log_div_mul_add_atTop 1 0 3 one_ne_zero).comp
     tendsto_natCast_atTop_atTop
-  simpa using h
+  refine h.congr fun N => ?_
+  simp [Function.comp]
 
 /-! ## The extension data vanish after rescaling -/
 
@@ -177,21 +178,14 @@ theorem tendsto_rescaled_conductorDeviation {α : ℝ} (hα : α < 1 / 8) {c : �
           _ = L ^ (12 * α) := by rw [← Real.rpow_natCast, ← Real.rpow_mul hL0.le]; ring_nf
           _ ≤ L ^ (2 : ℝ) := Real.rpow_le_rpow_of_exponent_le hLN (by linarith)
           _ = L ^ 2 := Real.rpow_two L
-      have hNpos : (0 : ℝ) < N := by
-        have : (1 : ℝ) ≤ L := hLN
-        by_contra h
-        push_neg at h
-        have : (N : ℝ) = 0 := le_antisymm h (Nat.cast_nonneg N)
-        simp [L, this] at hLN
       have hk0 : 0 ≤ L ^ (1 / (k : ℝ)) := by positivity
       have e1 : c N ^ 7 * (c N * (1 + Real.log (c N)) ^ 2 * L ^ (1 / (k : ℝ)) / L) =
           c N ^ 8 * (1 + Real.log (c N)) ^ 2 * L ^ (1 / (k : ℝ)) / L := by ring
       have e2 : c N ^ 7 * (c N ^ 5 * L / N) = c N ^ 12 * L / N := by ring
       rw [mul_add, e1, e2]
       gcongr
-      · exact hc8
-      · calc c N ^ 12 * L ≤ L ^ 2 * L := by gcongr
-          _ = L ^ 3 := by ring
+      calc c N ^ 12 * L ≤ L ^ 2 * L := by gcongr
+        _ = L ^ 3 := by ring
   -- extract the `(e, e')` entry from the relative sum
   have hJe := (tendsto_rpow_seven_mul_completedConductorEnergy_jordan e).comp hc
   have hJe' := (tendsto_rpow_seven_mul_completedConductorEnergy_jordan e').comp hc
@@ -358,7 +352,7 @@ theorem eventually_pos_of_rescaled_limit {α : ℝ} (hα : α < 1 / 8) {c : ℕ 
   have hpos : 0 < ∑ e ∈ S, jordanCoefficient e * b e ^ 2 := by
     obtain ⟨e₀, he₀, hb₀⟩ := hb
     refine sum_pos' (fun e he => mul_nonneg (jordanCoefficient_pos (hS e he)).le (sq_nonneg _))
-      ⟨e₀, he₀, mul_pos (jordanCoefficient_pos (hS e₀ he₀)) (pow_pos_of_ne_zero' hb₀)⟩
+      ⟨e₀, he₀, mul_pos (jordanCoefficient_pos (hS e₀ he₀)) (lt_of_le_of_ne (sq_nonneg _) (Ne.symm (pow_ne_zero 2 hb₀)))⟩
   filter_upwards [(tendsto_rescaled_packet hα hc hcα hS b).eventually (lt_mem_nhds hpos),
     hc.eventually_gt_atTop 0] with N hN hcN
   have hc7 : 0 < c N ^ (7 : ℝ) := Real.rpow_pos_of_pos hcN _

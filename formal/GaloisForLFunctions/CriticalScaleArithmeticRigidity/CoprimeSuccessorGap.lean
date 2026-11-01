@@ -86,6 +86,7 @@ theorem affinePacketEnergy_coprime_successor_eq {Q p : ℕ}
   have hdiff : Function.Periodic
       (fun n => (conductorPacket Q a (n + 1) - conductorPacket Q a n) ^ 2) Q.factorial := by
     intro n
+    dsimp only
     rw [show n + Q.factorial + 1 = (n + 1) + Q.factorial by omega, hper, hper]
   have hs := sum_range_comp_mul_of_coprime (Nat.factorial_pos Q) hp hdiff
   have he := congrArg (fun t : ℝ => t / (Q.factorial : ℝ)) hs

@@ -151,7 +151,10 @@ classification of which lattice counts can and cannot touch the second part.
 19. On Frobenius windows of a curve datum the Künneth count is effective on every window iff the
     datum is unitary; the golden fake fails on some window. In genus one the primitive `h¹` of the
     graph of `m − nF` is `deg(m − nF) = m² − amn + qn²`, and for `1 − F` it is the number of points:
-    over a curve the primitive `h¹` is the degree of a correspondence, i.e. a count.
+    over a curve the primitive `h¹` is the degree of a correspondence, i.e. a count. For the curves
+    `y² = f(x)` of every genus over every finite field of odd characteristic the primitive `h¹` is
+    nonnegative on every window because of two counts — Stepanov's auxiliary sections and
+    `|τ|² = q` — so the function-field version of the open core is solved by counting.
 
 ## 5. Pillar theorems
 
@@ -177,6 +180,7 @@ classification of which lattice counts can and cannot touch the second part.
 | Exterior jumps across gaps `≥ a`; positivity from the count for `a ≤ 1/64` | `autocorr_le_half_of_le`, `archLevySinhWeight_ge_exp`, `jumpCount_ge_exterior`, `exteriorJumps_derivation_of_primeFree_positivity`, `primitiveH1_ge_of_exteriorJumps` | proved |
 | Riemann–Roch outside a finite divisor at every degree | `kunneth_effectivity_lowBlindTests`, `kunneth_primitive_h1_ge`, `exists_ne_zero_lowBlindTests` | proved |
 | `𝔽_q` calibration | `unitary_iff_forall_window_kunneth`, `goldenDatum_not_forall_window_kunneth`, `genusOne_kunneth_h1_graphCycle`, `genusOne_kunneth_h1_frobenius` | proved |
+| Stepanov counts pay the primitive `h¹` of hyperelliptic curves of every genus | `hyperelliptic_window_hodgeIndex`, `hyperelliptic_kunneth_effectivity`, `hyperelliptic_primitiveH1_nonneg` | proved |
 
 ## 6. Tools (developed, and to develop)
 
@@ -186,6 +190,8 @@ classification of which lattice counts can and cannot touch the second part.
 - Polar surfaces, scaling surface, subsurfaces, Hecke correspondences, curve data, golden datum,
   low-frequency divisor (ACS); the effectivity calculus (AET).
 - Mathlib's Mellin FE-pairs (`WeakFEPair`), `hasSum_mellin`, Eisenstein-series summability.
+- Stepanov's count and the Gauss-sum modulus for hyperelliptic curves (AET
+  `hyperellipticDatum_unitary`); the Lévy identity of the Weil form (BiScaleUncertainty).
 
 **Developed in LST.**
 - Slope calculus of lattice counts: positivity, monotonicity, Banaszczyk's inequality, asymptotic

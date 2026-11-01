@@ -139,6 +139,21 @@ theorem clm_smul_comp {H : Type*} [NormedAddCommGroup H] [InnerProductSpace ℂ 
   ext x
   rfl
 
+theorem clm_smul_apply {H : Type*} [NormedAddCommGroup H] [InnerProductSpace ℂ H]
+    (c : ℂ) (A : H →L[ℂ] H) (x : H) : (c • A) x = c • A x := rfl
+
+theorem clm_neg_apply {H : Type*} [NormedAddCommGroup H] [InnerProductSpace ℂ H]
+    (A : H →L[ℂ] H) (x : H) : (-A) x = -A x := rfl
+
+theorem clm_add_apply {H : Type*} [NormedAddCommGroup H] [InnerProductSpace ℂ H]
+    (A B : H →L[ℂ] H) (x : H) : (A + B) x = A x + B x := rfl
+
+theorem clm_sub_apply {H : Type*} [NormedAddCommGroup H] [InnerProductSpace ℂ H]
+    (A B : H →L[ℂ] H) (x : H) : (A - B) x = A x - B x := rfl
+
+theorem clm_one_apply {H : Type*} [NormedAddCommGroup H] [InnerProductSpace ℂ H]
+    (x : H) : (1 : H →L[ℂ] H) x = x := rfl
+
 /-- Compressed symmetric log-translation vanishes identically whenever `2a ≤ h`. -/
 theorem ccmApertureCompression_symmetricLogTranslation_eq_zero_of_two_mul_le
     (a : SuzukiPositiveAperture) {h : ℝ} (hh : 2 * a.1 ≤ h) :
@@ -463,6 +478,63 @@ theorem opTrace_comp_rankOne_self_of_isSelfAdjoint {H : Type*} [NormedAddCommGro
   rw [opTrace_comp_rankOne]
   exact (hR.isSymmetric f f).symm
 
+theorem primeFreeFamily_Q_sub_literal_eq_finitePrime (a : SuzukiPositiveAperture)
+    (u : CCMArchimedeanFormDomain a) :
+    primeFreeFamily.Q a u = ccmRestrictedWeilSourceQuadratic a u +
+      (inner ℂ (ccmFinitePrimeOperator a (ccmArchimedeanFormToAperture a u))
+        (ccmArchimedeanFormToAperture a u)).re := by
+  rw [CCMRemainderFamily.Q_eq_form_re, ← ccmRestrictedWeilForm_self_re_eq_source]
+  show (inner ℂ u u + inner ℂ (ccmRestrictedWeilBoundedRemainder a
+    (ccmArchimedeanFormToAperture a u) +
+    ccmFinitePrimeOperator a (ccmArchimedeanFormToAperture a u))
+    (ccmArchimedeanFormToAperture a u)).re = _
+  rw [inner_add_left, ← add_assoc, Complex.add_re]
+  rfl
+
+theorem polarPart_eq_opTrace_re (a : SuzukiPositiveAperture)
+    (u : CCMArchimedeanFormDomain a) :
+    polarPart a u =
+      (ContinuousLinearMap.opTrace (ccmPolarOperator a ∘L
+        InnerProductSpace.rankOne ℂ (ccmArchimedeanFormToAperture a u)
+          (ccmArchimedeanFormToAperture a u))).re := by
+  rw [opTrace_comp_rankOne_self_of_isSelfAdjoint (ccmPolarOperator_isSelfAdjoint a)
+    (ccmArchimedeanFormToAperture a u), inner_ccmPolarOperator]
+  rfl
+
+theorem primeTwo_log_mul_inv_sqrt_eq_euler_mul_opTrace :
+    (Real.log 2 : ℂ) * ((1 / Real.sqrt 2 : ℝ) : ℂ) =
+      soninSemilocalLogPrimePowerCoefficient (twoPrime, 0) *
+        ContinuousLinearMap.opTrace (primeTwoLogOperator 1) := by
+  have htr := soninEulerCoeff_mul_opTrace_primeTwoLogOperator 0
+  simp only [zero_add, pow_one, Nat.cast_ofNat] at htr
+  rw [ArithmeticFunction.vonMangoldt_apply_prime Nat.prime_two] at htr
+  rw [htr]
+  push_cast
+  ring
+
+theorem inner_ccmFinitePrimeOperator_eq_primeTwoLogTrace_mul_opTrace
+    {a : SuzukiPositiveAperture} (ha : a.1 ≤ Real.log 3 / 2)
+    (f : suzukiApertureHilbert a) :
+    inner ℂ (ccmFinitePrimeOperator a f) f =
+      soninSemilocalLogPrimePowerCoefficient (twoPrime, 0) *
+        ContinuousLinearMap.opTrace (primeTwoLogOperator 1) *
+        ContinuousLinearMap.opTrace
+          (ccmApertureCompression a (ccmSymmetricLogTranslation (Real.log 2)) ∘L
+            InnerProductSpace.rankOne ℂ f f) := by
+  have hS : IsSelfAdjoint
+      (ccmApertureCompression a (ccmSymmetricLogTranslation (Real.log 2))) :=
+    ccmApertureCompression_isSelfAdjoint a
+      (ccmSymmetricLogTranslation_isSelfAdjoint (Real.log 2))
+  have hlhs : inner ℂ (ccmFinitePrimeOperator a f) f =
+      ((Real.log 2 : ℂ) * ((1 / Real.sqrt 2 : ℝ) : ℂ)) *
+        inner ℂ (ccmApertureCompression a (ccmSymmetricLogTranslation (Real.log 2)) f) f := by
+    rw [ccmFinitePrimeOperator_eq_primeTwo_of_le_halfLogThree ha,
+      ccmPrimeTransportOperator, Nat.cast_ofNat, clm_smul_apply, clm_smul_apply,
+      inner_smul_left, inner_smul_left, Complex.conj_ofReal, Complex.conj_ofReal]
+    ring
+  rw [hlhs, primeTwo_log_mul_inv_sqrt_eq_euler_mul_opTrace,
+    opTrace_comp_rankOne_self_of_isSelfAdjoint hS f]
+
 /-- **Exact `{∞, 2}` operator-trace identity through `½ log 3`.**
 For every aperture `0 < a ≤ ½ log 3` and every form vector `u : CCMArchimedeanFormDomain a` with
 aperture image `f = ccmArchimedeanFormToAperture a u`, the literal restricted Weil quadratic form
@@ -482,44 +554,10 @@ theorem ccmRestrictedWeilSourceQuadratic_eq_semilocalPrimeTwoTrace_of_le_halfLog
             (ccmApertureCompression a (ccmSymmetricLogTranslation (Real.log 2)) ∘L
               InnerProductSpace.rankOne ℂ (ccmArchimedeanFormToAperture a u)
                 (ccmArchimedeanFormToAperture a u))).re := by
-  set f := ccmArchimedeanFormToAperture a u
-  have hQ : primeFreeFamily.Q a u = ccmRestrictedWeilSourceQuadratic a u +
-      (inner ℂ (ccmFinitePrimeOperator a f) f).re := by
-    rw [CCMRemainderFamily.Q_eq_form_re, ← ccmRestrictedWeilForm_self_re_eq_source]
-    show (inner ℂ u u + inner ℂ (ccmRestrictedWeilBoundedRemainder a f +
-      ccmFinitePrimeOperator a f) f).re = _
-    rw [inner_add_left, ← add_assoc, Complex.add_re]
-    rfl
-  have hpol : polarPart a u =
-      (ContinuousLinearMap.opTrace (ccmPolarOperator a ∘L
-        InnerProductSpace.rankOne ℂ f f)).re := by
-    rw [opTrace_comp_rankOne_self_of_isSelfAdjoint (ccmPolarOperator_isSelfAdjoint a) f,
-      inner_ccmPolarOperator]
-    rfl
-  set c : ℂ := soninSemilocalLogPrimePowerCoefficient (twoPrime, 0) *
-      ContinuousLinearMap.opTrace (primeTwoLogOperator 1)
-  set S : suzukiApertureHilbert a →L[ℂ] suzukiApertureHilbert a :=
-      ccmApertureCompression a (ccmSymmetricLogTranslation (Real.log 2))
-  have hpr1 : inner ℂ (ccmFinitePrimeOperator a f) f =
-      ContinuousLinearMap.opTrace (ccmFinitePrimeOperator a ∘L InnerProductSpace.rankOne ℂ f f) :=
-    (opTrace_comp_rankOne_self_of_isSelfAdjoint (ccmFinitePrimeOperator_isSelfAdjoint a) f).symm
-  have hpr2 : ContinuousLinearMap.opTrace
-      (ccmFinitePrimeOperator a ∘L InnerProductSpace.rankOne ℂ f f) =
-      ContinuousLinearMap.opTrace ((c • S) ∘L InnerProductSpace.rankOne ℂ f f) :=
-    congrArg (fun T : suzukiApertureHilbert a →L[ℂ] suzukiApertureHilbert a =>
-      ContinuousLinearMap.opTrace (T ∘L InnerProductSpace.rankOne ℂ f f))
-      (ccmFinitePrimeOperator_eq_primeTwoLogTrace_of_le_halfLogThree ha)
-  have hpr3 : ContinuousLinearMap.opTrace ((c • S) ∘L InnerProductSpace.rankOne ℂ f f) =
-      c * ContinuousLinearMap.opTrace (S ∘L InnerProductSpace.rankOne ℂ f f) := by
-    have hcomp : (c • S) ∘L InnerProductSpace.rankOne ℂ f f =
-        c • (S ∘L InnerProductSpace.rankOne ℂ f f) :=
-      clm_smul_comp c S (InnerProductSpace.rankOne ℂ f f)
-    exact (congrArg ContinuousLinearMap.opTrace hcomp).trans
-      (RHTower.opTrace_smul c (S ∘L InnerProductSpace.rankOne ℂ f f))
-  have hpr : inner ℂ (ccmFinitePrimeOperator a f) f =
-      c * ContinuousLinearMap.opTrace (S ∘L InnerProductSpace.rankOne ℂ f f) :=
-    hpr1.trans (hpr2.trans hpr3)
-  linarith [primeFreeFamily_Q_eq a u, hQ, hpol, congrArg Complex.re hpr]
+  linarith [primeFreeFamily_Q_eq a u, primeFreeFamily_Q_sub_literal_eq_finitePrime a u,
+    polarPart_eq_opTrace_re a u,
+    congrArg Complex.re (inner_ccmFinitePrimeOperator_eq_primeTwoLogTrace_mul_opTrace ha
+      (ccmArchimedeanFormToAperture a u))]
 
 /-- Combined `{∞, 2}` trace-identity package: pairs the Connes–Consani archimedean Sonin cutoff
 trace formula `-W_∞(g★ ⋆ g) = Tr(ϑ(g)(1 - P₁ - P̂₁)ϑ(g)†)` with the positive `2`-adic logarithmic

@@ -136,7 +136,7 @@ theorem opTrace_ccmSoninGenericPartAt_one_smallSupportNonneg_lt_zero :
           ContinuousLinearMap.adjoint
             (ccmIntegratedScaling
               (ccmSchwartzLogKernel smallSupportNonnegLogTest.toSchwartzMap)))).re < 0 := by
-  set ε := min ccmSoninSmallSupportRadius 1
+  let ε := min ccmSoninSmallSupportRadius 1
   have hε : 0 < ε := lt_min ccmSoninSmallSupportRadius_pos zero_lt_one
   have hε₀ : ε ≤ ccmSoninSmallSupportRadius := min_le_left _ _
   have hsupp : ∀ x, ε ≤ |x| → smallSupportNonnegLogTest x = 0 := by
@@ -350,7 +350,7 @@ theorem not_isPositive_neg_ccmPrimeTransportOperator {p : ℕ} (hp : 2 ≤ p)
   intro hpos
   obtain ⟨u₊, _, hgt, _⟩ := exists_pos_and_neg_ccmPrimeTransportOperator hp ha
   have hge := hpos.2 (ccmArchimedeanFormToAperture a u₊)
-  rw [ContinuousLinearMap.reApplyInnerSelf, neg_apply, inner_neg_left] at hge
+  rw [ContinuousLinearMap.reApplyInnerSelf, clm_neg_apply, inner_neg_left] at hge
   change 0 ≤ -(inner ℂ (ccmPrimeTransportOperator a p (ccmArchimedeanFormToAperture a u₊))
     (ccmArchimedeanFormToAperture a u₊)).re at hge
   linarith
@@ -368,7 +368,7 @@ theorem neither_sign_isPositive_ccmFinitePrimeOperator_primeTwo_window
   constructor
   · intro hpos
     have hge := hpos.2 (ccmArchimedeanFormToAperture a u₋)
-    rw [ContinuousLinearMap.reApplyInnerSelf, smul_apply, inner_smul_left,
+    rw [ContinuousLinearMap.reApplyInnerSelf, clm_smul_apply, inner_smul_left,
       Complex.conj_ofReal] at hge
     change 0 ≤ ((Real.log 2 : ℂ) *
       inner ℂ (ccmPrimeTransportOperator a 2 (ccmArchimedeanFormToAperture a u₋))
@@ -377,8 +377,8 @@ theorem neither_sign_isPositive_ccmFinitePrimeOperator_primeTwo_window
     nlinarith
   · intro hpos
     have hge := hpos.2 (ccmArchimedeanFormToAperture a u₊)
-    rw [ContinuousLinearMap.reApplyInnerSelf, neg_apply,
-      smul_apply, inner_neg_left, inner_smul_left, Complex.conj_ofReal] at hge
+    rw [ContinuousLinearMap.reApplyInnerSelf, clm_neg_apply,
+      clm_smul_apply, inner_neg_left, inner_smul_left, Complex.conj_ofReal] at hge
     change 0 ≤ -((Real.log 2 : ℂ) *
       inner ℂ (ccmPrimeTransportOperator a 2 (ccmArchimedeanFormToAperture a u₊))
         (ccmArchimedeanFormToAperture a u₊)).re at hge
@@ -439,7 +439,7 @@ theorem no_multiplicative_tensor_factorization_primeTwo_window
       rw [inner_add_left, ← add_assoc, Complex.add_re]
       rfl
     rw [ccmFinitePrimeOperator_eq_primeTwo_of_le_halfLogThree ha3,
-      smul_apply, inner_smul_left, Complex.conj_ofReal] at hdiff
+      clm_smul_apply, inner_smul_left, Complex.conj_ofReal] at hdiff
     have hre : (((Real.log 2 : ℂ) * inner ℂ (ccmPrimeTransportOperator a 2
         (ccmArchimedeanFormToAperture a u₊)) (ccmArchimedeanFormToAperture a u₊))).re =
         Real.log 2 * (inner ℂ (ccmPrimeTransportOperator a 2
@@ -643,7 +643,7 @@ theorem exists_aperture_primeFree_and_singleSemilocal_energy_lt (p : ℕ) (K : �
       have hk1 : 1 ≤ k := (Finset.mem_Icc.mp hk).1
       unfold ccmVisiblePrimeBlock
       split_ifs
-      · rw [smul_apply, inner_smul_left, hprime_zero k hk1, mul_zero, Complex.zero_re]
+      · rw [clm_smul_apply, inner_smul_left, hprime_zero k hk1, mul_zero, Complex.zero_re]
       · rw [zero_apply, inner_zero_left, Complex.zero_re]
     unfold ccmPrimePowerOperator
     revert hterm_zero
@@ -718,8 +718,8 @@ theorem exists_aperture_primeFree_and_singleSemilocal_energy_lt (p : ℕ) (K : �
           (inner ℂ (ccmPolarOperator b₀ f) f).re := by
       unfold CCMRemainderFamily.Q CCMRemainderFamily.diagonal
       change ‖v‖ ^ 2 + (inner ℂ (ccmPrimeFreeRemainder b₀ f) f).re = _
-      rw [ccmPrimeFreeRemainder_eq_scalar_add_polar, add_apply,
-        smul_apply, one_apply_eq_self, inner_add_left,
+      rw [ccmPrimeFreeRemainder_eq_scalar_add_polar, clm_add_apply,
+        clm_smul_apply, clm_one_apply, inner_add_left,
         inner_smul_left, star_ccmArchimedeanRemainderScalar, Complex.add_re]
       ring
     rw [hform, hpol_re]
@@ -847,7 +847,7 @@ theorem no_positive_operator_trace_carrier_for_primeTwoSemilocal {H : Type*}
   let b : SuzukiPositiveAperture := ⟨A₀, hA₀⟩
   have hb_neg : (primeSingleSemilocalFamily 2).energy b < 0 :=
     lt_trans (hneg b le_rfl).2 (by norm_num)
-  set u := (primeSingleSemilocalFamily 2).normalizedGround b
+  let u := (primeSingleSemilocalFamily 2).normalizedGround b
   have hQ_neg : (primeSingleSemilocalFamily 2).Q b u < 0 := by
     rwa [(primeSingleSemilocalFamily 2).normalizedGround_Q]
   have hge := opTrace_re_nonneg_of_isPositive (hpos b u)

@@ -54,6 +54,6 @@ RenormalizedIntersectionTheory umbrella imports the module.
 ## Scope
 
 This closes continuation of the source trace logarithm to spectral parameter
-one. Primitive pair-cycle regrouping and the Euler product remain separate
-obligations. This far-right zero-free region gives no critical-strip resonance
-exclusion or scattering normalization.
+one. [Primitive pair-cycle regrouping](gauss-mayer-primitive-orbit-logarithm.md)
+is certified; the Euler product remains unproved. This far-right zero-free
+region gives no critical-strip resonance exclusion or scattering normalization.
