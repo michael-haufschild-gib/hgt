@@ -196,7 +196,7 @@ theorem isPositive_ccmRestrictedWeilZeroFormOperator_iff_groundEnergy_nonneg
       sq_pos_of_pos (norm_pos_iff.mpr hu)
     by_contra hneg
     push Not at hneg
-    nlinarith
+    linarith only [hge, mul_neg_of_neg_of_pos hneg hnorm]
   · intro hμ
     refine ⟨(ccmRestrictedWeilZeroFormOperator_isSelfAdjoint a).isSymmetric, fun u => ?_⟩
     rw [ContinuousLinearMap.reApplyInnerSelf]
@@ -228,7 +228,7 @@ theorem isPositive_ccmRestrictedWeilZeroFormOperator_iff_opTrace_nonneg
       sq_pos_of_pos (norm_pos_iff.mpr hu)
     by_contra hneg
     push Not at hneg
-    nlinarith
+    linarith only [hge, mul_neg_of_neg_of_pos hneg hnorm]
 
 /-- Whenever `ccmRestrictedWeilZeroFormOperator a` is positive, every bounded operator sandwich
 `Ψ† ∘L ccmRestrictedWeilZeroFormOperator a ∘L Ψ` is positive with nonnegative real trace. -/

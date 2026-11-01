@@ -822,7 +822,7 @@ theorem integral_steklovUnitProfile : ∫ u, steklovUnitProfile u = 1 := by
     funext u
     congr 1
     ring
-  rw [h, Measure.integral_comp_div]
+  rw [h, Measure.integral_comp_div (fun t : ℝ => steklovDCProfile (t - 1)) (1 / 2 : ℝ)]
   simp only [sub_eq_add_neg, integral_add_right_eq_self, integral_steklovDCProfile]
   norm_num
 
@@ -842,7 +842,7 @@ def completePacketVector (φ : ℝ → ℝ) (c : ℝ) (N : ℕ) (x : ℕ → ℝ
 private theorem integral_sq_pos {φ : ℝ → ℝ} (hφ : Continuous φ)
     (hc : HasCompactSupport φ) (hint : (∫ u, φ u) ≠ 0) :
     0 < ∫ u, φ u ^ 2 := by
-  have hi := (hφ.pow 2).integrable_of_hasCompactSupport
+  have hi : Integrable (fun u : ℝ => φ u ^ 2) := (hφ.pow 2).integrable_of_hasCompactSupport
     (hc.comp_left (g := fun t : ℝ => t ^ 2) (by norm_num))
   refine lt_of_le_of_ne (integral_nonneg fun u => sq_nonneg _) ?_
   intro he

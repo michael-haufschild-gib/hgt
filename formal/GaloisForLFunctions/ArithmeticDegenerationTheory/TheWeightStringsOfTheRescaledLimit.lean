@@ -133,7 +133,10 @@ theorem pInteger_eq_geom {p : ℕ} (hp : p.Prime) :
   have hp1 : (p : ℝ) - 1 ≠ 0 := by
     have : (2 : ℝ) ≤ p := by exact_mod_cast hp.two_le
     linarith
-  rw [pInteger, geom_sum_eq (by have : (2 : ℝ) ≤ p := by exact_mod_cast hp.two_le; linarith)]
+  have hne : (p : ℝ) ≠ 1 := by
+    have : (2 : ℝ) ≤ p := by exact_mod_cast hp.two_le
+    exact (by linarith : (1 : ℝ) < p).ne'
+  rw [pInteger, geom_sum_eq hne]
   norm_cast
 
 /-- **The weight string of the rescaled limit.** Along the `p`-tower, the Jordan coefficient of the

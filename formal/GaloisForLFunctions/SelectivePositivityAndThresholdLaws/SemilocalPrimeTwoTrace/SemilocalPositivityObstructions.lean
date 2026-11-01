@@ -527,6 +527,65 @@ theorem primeSingleSemilocalFamily_energy_eq_primeFree_of_le_halfLogTwo (p : ℕ
   rw [ccmRemainderFamily_energy_eq_literal_of_B_eq (primeSingleSemilocalFamily p) a he,
     primeFreeFamily_energy_eq_literal_of_le_halfLogTwo ha]
 
+private theorem clm_zero_apply {E F : Type*} [SeminormedAddCommGroup E] [SeminormedAddCommGroup F]
+    [NormedSpace ℂ E] [NormedSpace ℂ F] (x : E) :
+    (0 : E →L[ℂ] F) x = 0 := rfl
+
+theorem re_inner_ccmPrimePowerOperator_eq_zero_of_transport_zero
+    (q : ℕ) (a : SuzukiPositiveAperture) (f : suzukiApertureHilbert a)
+    (hzero : ∀ k : ℕ, 1 ≤ k → inner ℂ (ccmPrimeTransportOperator a (q ^ k) f) f = 0) :
+    (inner ℂ (ccmPrimePowerOperator q a f) f).re = 0 := by
+  have hterm_zero : ∀ k ∈ Finset.Icc 1 (Nat.floor (Real.exp (2 * a.1))),
+      (inner ℂ (ccmVisiblePrimeBlock a (q ^ k) f) f).re = 0 := by
+    intro k hk
+    have hk1 : 1 ≤ k := (Finset.mem_Icc.mp hk).1
+    unfold ccmVisiblePrimeBlock
+    split_ifs
+    · rw [clm_smul_apply, inner_smul_left, hzero k hk1, mul_zero, Complex.zero_re]
+    · rw [clm_zero_apply, inner_zero_left, Complex.zero_re]
+  unfold ccmPrimePowerOperator
+  revert hterm_zero
+  generalize Finset.Icc 1 (Nat.floor (Real.exp (2 * a.1))) = s
+  intro hterm_zero
+  induction s using Finset.induction_on with
+  | empty =>
+      rw [Finset.sum_empty, clm_zero_apply, inner_zero_left, Complex.zero_re]
+  | @insert k s hk ih =>
+      rw [Finset.sum_insert hk, clm_add_apply, inner_add_left, Complex.add_re,
+        hterm_zero k (Finset.mem_insert_self k s),
+        ih (fun m hm => hterm_zero m (Finset.mem_insert_of_mem hm)), add_zero]
+
+theorem primeFreeFamily_Q_expand (a : SuzukiPositiveAperture) (v : CCMArchimedeanFormDomain a) :
+    primeFreeFamily.Q a v =
+      ‖v‖ ^ 2 +
+        (ccmArchimedeanRemainderScalar *
+          inner ℂ (ccmArchimedeanFormToAperture a v) (ccmArchimedeanFormToAperture a v)).re +
+        (inner ℂ (ccmPolarOperator a (ccmArchimedeanFormToAperture a v))
+          (ccmArchimedeanFormToAperture a v)).re := by
+  unfold CCMRemainderFamily.Q CCMRemainderFamily.diagonal
+  change ‖v‖ ^ 2 +
+    (inner ℂ (ccmPrimeFreeRemainder a (ccmArchimedeanFormToAperture a v))
+      (ccmArchimedeanFormToAperture a v)).re = _
+  rw [ccmPrimeFreeRemainder_eq_scalar_add_polar, clm_add_apply, clm_smul_apply, clm_one_apply,
+    inner_add_left, inner_smul_left, star_ccmArchimedeanRemainderScalar, Complex.add_re]
+  ring
+
+theorem primeSingleSemilocalFamily_Q_eq_primeFree_sub (p : ℕ) (a : SuzukiPositiveAperture)
+    (v : CCMArchimedeanFormDomain a) :
+    (primeSingleSemilocalFamily p).Q a v =
+      primeFreeFamily.Q a v -
+        (inner ℂ (ccmPrimePowerOperator p a (ccmArchimedeanFormToAperture a v))
+          (ccmArchimedeanFormToAperture a v)).re := by
+  unfold CCMRemainderFamily.Q CCMRemainderFamily.diagonal
+  change ‖v‖ ^ 2 +
+    (inner ℂ ((ccmPrimeFreeRemainder a - ccmPrimePowerOperator p a)
+      (ccmArchimedeanFormToAperture a v)) (ccmArchimedeanFormToAperture a v)).re =
+    ‖v‖ ^ 2 +
+      (inner ℂ (ccmPrimeFreeRemainder a (ccmArchimedeanFormToAperture a v))
+        (ccmArchimedeanFormToAperture a v)).re - _
+  rw [clm_sub_apply, inner_sub_left, Complex.sub_re]
+  ring
+
 /-- **Simultaneous prime-power evasion and unbounded negative ground energy.**
 Along the half-integer lattice `L_M = ((2M + 1)/4) log p` (`p ≥ 2`), an antisymmetric translated
 centre bump annihilates every prime-power shift `p^k` (`k ≥ 1`) simultaneously while driving the
@@ -535,54 +594,65 @@ polar form below any real bound `K`. Consequently both `primeFreeFamily.energy` 
 theorem exists_aperture_primeFree_and_singleSemilocal_energy_lt (p : ℕ) (K : ℝ) :
     ∃ A₀ : ℝ, 0 < A₀ ∧ ∀ b : SuzukiPositiveAperture, A₀ ≤ b.1 →
       primeFreeFamily.energy b < K ∧ (primeSingleSemilocalFamily p).energy b < K := by
-  set q : ℕ := max p 2
-  have hq : 2 ≤ q := le_max_right p 2
+  obtain ⟨q, hq_def⟩ : ∃ q : ℕ, q = max p 2 := ⟨_, rfl⟩
+  have hq : 2 ≤ q := by rw [hq_def]; exact le_max_right p 2
   have hlogq_half : (1 / 2 : ℝ) < Real.log q := half_lt_log_of_two_le hq
   have hlogq : 0 < Real.log q := lt_trans (by norm_num) hlogq_half
   let a₀ : SuzukiPositiveAperture := ⟨1 / 16, by norm_num⟩
-  set r₀ : ℝ := 1 / 32
-  have hr₀ : 0 < r₀ := by norm_num
-  have hc₀ : Metric.closedBall (0 : ℝ) r₀ ⊆ Ioo (-a₀.1) a₀.1 := by
+  have hr₀ : (0 : ℝ) < 1 / 32 := by norm_num
+  have hc₀ : Metric.closedBall (0 : ℝ) (1 / 32) ⊆ Ioo (-a₀.1) a₀.1 := by
     intro x hx
     rw [Metric.mem_closedBall, Real.dist_eq, sub_zero, abs_le] at hx
     change -(1 / 16 : ℝ) < x ∧ x < 1 / 16
-    dsimp [r₀] at hx
     constructor <;> linarith [hx.1, hx.2]
-  set u₀ := (bumpInteriorSource a₀ 0 r₀ hr₀ hc₀).toCCMFormVector
-  set f₀ := ccmArchimedeanFormToAperture a₀ u₀
-  have hf₀_ne : f₀ ≠ 0 := bumpFormVector_aperture_ne_zero a₀ r₀ hr₀ hc₀
+  obtain ⟨u₀, hu₀⟩ : ∃ u₀ : CCMArchimedeanFormDomain a₀,
+      u₀ = (bumpInteriorSource a₀ 0 (1 / 32) hr₀ hc₀).toCCMFormVector := ⟨_, rfl⟩
+  obtain ⟨f₀, hf₀⟩ : ∃ f₀ : suzukiApertureHilbert a₀,
+      f₀ = ccmArchimedeanFormToAperture a₀ u₀ := ⟨_, rfl⟩
+  have hf₀_ne : f₀ ≠ 0 := by
+    rw [hf₀, hu₀]
+    exact bumpFormVector_aperture_ne_zero a₀ (1 / 32) hr₀ hc₀
   have hf₀_pos : 0 < ‖f₀‖ ^ 2 := sq_pos_of_pos (norm_pos_iff.mpr hf₀_ne)
-  set mPos := polarBumpMoment 0 r₀ hr₀ (1 / 2)
-  set mNeg := polarBumpMoment 0 r₀ hr₀ (-1 / 2)
-  have hmPos : 0 < mPos := lt_of_lt_of_le (mul_pos (Real.exp_pos _) (polarBumpMass_pos 0 r₀ hr₀))
-    (le_polarBumpMoment 0 r₀ hr₀ (1 / 2))
-  have hmNeg : 0 < mNeg := lt_of_lt_of_le (mul_pos (Real.exp_pos _) (polarBumpMass_pos 0 r₀ hr₀))
-    (le_polarBumpMoment 0 r₀ hr₀ (-1 / 2))
+  obtain ⟨mPos, hmPos_def⟩ : ∃ mPos : ℝ, mPos = polarBumpMoment 0 (1 / 32) hr₀ (1 / 2) := ⟨_, rfl⟩
+  obtain ⟨mNeg, hmNeg_def⟩ : ∃ mNeg : ℝ, mNeg = polarBumpMoment 0 (1 / 32) hr₀ (-1 / 2) := ⟨_, rfl⟩
+  have hmPos : 0 < mPos := by
+    rw [hmPos_def]
+    exact lt_of_lt_of_le (mul_pos (Real.exp_pos _) (polarBumpMass_pos 0 (1 / 32) hr₀))
+      (le_polarBumpMoment 0 (1 / 32) hr₀ (1 / 2))
+  have hmNeg : 0 < mNeg := by
+    rw [hmNeg_def]
+    exact lt_of_lt_of_le (mul_pos (Real.exp_pos _) (polarBumpMass_pos 0 (1 / 32) hr₀))
+      (le_polarBumpMoment 0 (1 / 32) hr₀ (-1 / 2))
   have hmprod : 0 < mPos * mNeg := mul_pos hmPos hmNeg
-  set C₀ : ℝ := 4 * ‖u₀‖ ^ 2 + |2 * gammaHardyPhaseRate 0 - 1| * (4 * ‖f₀‖ ^ 2)
-  set target : ℝ := max 1 ((C₀ - K * (2 * ‖f₀‖ ^ 2) + 1) / (2 * (mPos * mNeg)))
-  have htarget_pos : 0 < target := lt_of_lt_of_le zero_lt_one (le_max_left _ _)
+  obtain ⟨C₀, hC₀⟩ : ∃ C₀ : ℝ,
+      C₀ = 4 * ‖u₀‖ ^ 2 + |2 * gammaHardyPhaseRate 0 - 1| * (4 * ‖f₀‖ ^ 2) := ⟨_, rfl⟩
+  obtain ⟨target, htarget_def⟩ : ∃ target : ℝ,
+      target = max 1 ((C₀ - K * (2 * ‖f₀‖ ^ 2) + 1) / (2 * (mPos * mNeg))) := ⟨_, rfl⟩
+  have htarget_pos : 0 < target := by
+    rw [htarget_def]
+    exact lt_of_lt_of_le zero_lt_one (le_max_left _ _)
   obtain ⟨M, hM⟩ := exists_nat_gt (4 * Real.sqrt target / Real.log q)
-  set L : ℝ := ((2 * (M : ℝ) + 1) / 4) * Real.log q
+  obtain ⟨L, hL_def⟩ : ∃ L : ℝ, L = ((2 * (M : ℝ) + 1) / 4) * Real.log q := ⟨_, rfl⟩
   have hL_pos : 0 < L := by
+    rw [hL_def]
     have : 0 < (2 * (M : ℝ) + 1) / 4 := by positivity
     exact mul_pos this hlogq
   have hL_ge : (1 / 4 : ℝ) * Real.log q ≤ L := by
-    change (1 / 4 : ℝ) * Real.log q ≤ ((2 * (M : ℝ) + 1) / 4) * Real.log q
+    rw [hL_def]
     have hM0 : (0 : ℝ) ≤ M := Nat.cast_nonneg M
     have : (1 / 4 : ℝ) ≤ (2 * (M : ℝ) + 1) / 4 := by linarith
     exact mul_le_mul_of_nonneg_right this hlogq.le
   let b₀ : SuzukiPositiveAperture := ⟨a₀.1 + L, by linarith [a₀.2]⟩
   have habPos : a₀.1 + |L| ≤ b₀.1 := by rw [abs_of_pos hL_pos]
   have habNeg : a₀.1 + |-L| ≤ b₀.1 := by rw [abs_neg, abs_of_pos hL_pos]
-  set v := ccmArchimedeanFormTranslate (-L) habNeg u₀ - ccmArchimedeanFormTranslate L habPos u₀
-  set f := ccmArchimedeanFormToAperture b₀ v
+  obtain ⟨v, hv⟩ : ∃ v : CCMArchimedeanFormDomain b₀,
+      v = ccmArchimedeanFormTranslate (-L) habNeg u₀ - ccmArchimedeanFormTranslate L habPos u₀ :=
+    ⟨_, rfl⟩
+  obtain ⟨f, hf⟩ : ∃ f : suzukiApertureHilbert b₀,
+      f = ccmArchimedeanFormToAperture b₀ v := ⟨_, rfl⟩
   have hf_coe : (f : SoninL2) = logTranslationCLM (-L) f₀.1 - logTranslationCLM L f₀.1 := by
-    change ((ccmArchimedeanFormToAperture b₀
-      (ccmArchimedeanFormTranslate (-L) habNeg u₀ -
-        ccmArchimedeanFormTranslate L habPos u₀) : suzukiApertureHilbert b₀) : SoninL2) = _
-    rw [map_sub, Submodule.coe_sub, ccmArchimedeanFormTranslate_physical,
-      ccmArchimedeanFormTranslate_physical]
+    rw [hf, hv, map_sub, Submodule.coe_sub, ccmArchimedeanFormTranslate_physical,
+      ccmArchimedeanFormTranslate_physical, ← hf₀]
   -- Exact orthogonality of the two shifted packets gives `‖f‖^2 = 2 ‖f₀‖^2`.
   have horth : inner ℂ (logTranslationCLM (-L) f₀.1) (logTranslationCLM L f₀.1) = 0 := by
     rw [inner_logTranslationCLM (-L), neg_neg, logTranslationCLM_add_apply]
@@ -601,7 +671,7 @@ theorem exists_aperture_primeFree_and_singleSemilocal_energy_lt (p : ℕ) (K : �
           (logTranslationCLM (-L) f₀.1 - logTranslationCLM L f₀.1)).re :=
       (CCMRemainderFamily.re_inner_self _).symm
     rw [h1, inner_sub_left, inner_sub_right, inner_sub_right, horth, horth',
-      sub_zero, zero_sub, neg_neg, Complex.add_re,
+      sub_zero, zero_sub, sub_neg_eq_add, Complex.add_re,
       CCMRemainderFamily.re_inner_self, CCMRemainderFamily.re_inner_self,
       norm_logTranslationCLM (-L), norm_logTranslationCLM L]
     ring
@@ -609,9 +679,9 @@ theorem exists_aperture_primeFree_and_singleSemilocal_energy_lt (p : ℕ) (K : �
   have hprime_zero : ∀ k : ℕ, 1 ≤ k →
       inner ℂ (ccmPrimeTransportOperator b₀ (q ^ k) f) f = 0 := by
     intro k hk
-    set h := Real.log ((q ^ k : ℕ) : ℝ)
+    obtain ⟨h, hh_def⟩ : ∃ h : ℝ, h = Real.log ((q ^ k : ℕ) : ℝ) := ⟨_, rfl⟩
     have hh_eq : h = (k : ℝ) * Real.log q := by
-      dsimp [h]; rw [Nat.cast_pow, Real.log_pow]
+      rw [hh_def, Nat.cast_pow, Real.log_pow]
     have hk1 : (1 : ℝ) ≤ (k : ℝ) := by exact_mod_cast hk
     have hh_gt : (1 / 2 : ℝ) < h := by
       rw [hh_eq]
@@ -634,7 +704,7 @@ theorem exists_aperture_primeFree_and_singleSemilocal_energy_lt (p : ℕ) (K : �
           exact_mod_cast Int.one_le_abs hodd_ne
         have hdiff_eq : h + -L - L =
             (((2 * (k : ℤ) - 2 * (M : ℤ) - 1 : ℤ) : ℝ) / 2) * Real.log q := by
-          rw [hh_eq]; dsimp [L]; push_cast; ring
+          rw [hh_eq, hL_def]; push_cast; ring
         rw [hdiff_eq, abs_mul, abs_div, abs_of_pos (by norm_num : (0 : ℝ) < 2), abs_of_pos hlogq]
         change 2 * (1 / 16 : ℝ) ≤ |((2 * (k : ℤ) - 2 * (M : ℤ) - 1 : ℤ) : ℝ)| / 2 * Real.log q
         have hge1 : (1 / 2 : ℝ) * Real.log q ≤
@@ -655,42 +725,22 @@ theorem exists_aperture_primeFree_and_singleSemilocal_energy_lt (p : ℕ) (K : �
     have hneg_zero : inner ℂ (logTranslationCLM (-h) f.1) f.1 = 0 := by
       rw [inner_logTranslationCLM (-h), neg_neg]
       exact inner_eq_zero_symm.mpr hshift_zero
-    rw [inner_ccmPrimeTransportOperator, hshift_zero, hneg_zero, add_zero, mul_zero]
-  have hpower_re_zero : (inner ℂ (ccmPrimePowerOperator q b₀ f) f).re = 0 := by
-    have hterm_zero : ∀ k ∈ Finset.Icc 1 (Nat.floor (Real.exp (2 * b₀.1))),
-        (inner ℂ (ccmVisiblePrimeBlock b₀ (q ^ k) f) f).re = 0 := by
-      intro k hk
-      have hk1 : 1 ≤ k := (Finset.mem_Icc.mp hk).1
-      unfold ccmVisiblePrimeBlock
-      split_ifs
-      · rw [clm_smul_apply, inner_smul_left, hprime_zero k hk1, mul_zero, Complex.zero_re]
-      · rw [zero_apply, inner_zero_left, Complex.zero_re]
-    unfold ccmPrimePowerOperator
-    revert hterm_zero
-    generalize Finset.Icc 1 (Nat.floor (Real.exp (2 * b₀.1))) = s
-    intro hterm_zero
-    induction s using Finset.induction_on with
-    | empty =>
-        rw [Finset.sum_empty, zero_apply, inner_zero_left, Complex.zero_re]
-    | @insert k s hk ih =>
-        rw [Finset.sum_insert hk, add_apply, inner_add_left, Complex.add_re,
-          hterm_zero k (Finset.mem_insert_self k s),
-          ih (fun m hm => hterm_zero m (Finset.mem_insert_of_mem hm)), add_zero]
+    rw [inner_ccmPrimeTransportOperator, ← hh_def, hshift_zero, hneg_zero, add_zero, mul_zero]
+  have hpower_re_zero : (inner ℂ (ccmPrimePowerOperator q b₀ f) f).re = 0 :=
+    re_inner_ccmPrimePowerOperator_eq_zero_of_transport_zero q b₀ f hprime_zero
   -- Polar evaluation on `v` gives `-2 (e^{L/2} - e^{-L/2})^2 mPos mNeg`.
-  have hpol₀_plus : inner ℂ (ccmPolarApertureVector a₀ (1 / 2)) (ccmArchimedeanFormToAperture a₀ u₀) =
-      (mPos : ℂ) := inner_polar_bumpInteriorSource a₀ 0 r₀ hr₀ hc₀ (1 / 2)
-  have hpol₀_minus : inner ℂ (ccmPolarApertureVector a₀ (-1 / 2)) (ccmArchimedeanFormToAperture a₀ u₀) =
-      (mNeg : ℂ) := inner_polar_bumpInteriorSource a₀ 0 r₀ hr₀ hc₀ (-1 / 2)
+  have hpol₀_plus : inner ℂ (ccmPolarApertureVector a₀ (1 / 2)) f₀ = (mPos : ℂ) := by
+    rw [hf₀, hu₀, hmPos_def]
+    exact inner_polar_bumpInteriorSource a₀ 0 (1 / 32) hr₀ hc₀ (1 / 2)
+  have hpol₀_minus : inner ℂ (ccmPolarApertureVector a₀ (-1 / 2)) f₀ = (mNeg : ℂ) := by
+    rw [hf₀, hu₀, hmNeg_def]
+    exact inner_polar_bumpInteriorSource a₀ 0 (1 / 32) hr₀ hc₀ (-1 / 2)
   have hpol_plus : inner ℂ (ccmPolarApertureVector b₀ (1 / 2)) f =
       (((Real.exp (L / 2) - Real.exp (-L / 2)) * mPos : ℝ) : ℂ) := by
-    change inner ℂ (ccmPolarApertureVector b₀ (1 / 2))
-      (ccmArchimedeanFormToAperture b₀
-        (ccmArchimedeanFormTranslate (-L) habNeg u₀ -
-          ccmArchimedeanFormTranslate L habPos u₀)) = _
-    rw [map_sub, inner_sub_right,
+    rw [hf, hv, map_sub, inner_sub_right,
       inner_polar_ccmArchimedeanFormTranslate (-L) habNeg (1 / 2) u₀,
       inner_polar_ccmArchimedeanFormTranslate L habPos (1 / 2) u₀,
-      hpol₀_plus]
+      ← hf₀, hpol₀_plus]
     have h1 : -(1 / 2 : ℝ) * -L = L / 2 := by ring
     have h2 : -(1 / 2 : ℝ) * L = -L / 2 := by ring
     rw [h1, h2]
@@ -698,14 +748,10 @@ theorem exists_aperture_primeFree_and_singleSemilocal_energy_lt (p : ℕ) (K : �
     ring
   have hpol_minus : inner ℂ (ccmPolarApertureVector b₀ (-1 / 2)) f =
       (((Real.exp (-L / 2) - Real.exp (L / 2)) * mNeg : ℝ) : ℂ) := by
-    change inner ℂ (ccmPolarApertureVector b₀ (-1 / 2))
-      (ccmArchimedeanFormToAperture b₀
-        (ccmArchimedeanFormTranslate (-L) habNeg u₀ -
-          ccmArchimedeanFormTranslate L habPos u₀)) = _
-    rw [map_sub, inner_sub_right,
+    rw [hf, hv, map_sub, inner_sub_right,
       inner_polar_ccmArchimedeanFormTranslate (-L) habNeg (-1 / 2) u₀,
       inner_polar_ccmArchimedeanFormTranslate L habPos (-1 / 2) u₀,
-      hpol₀_minus]
+      ← hf₀, hpol₀_minus]
     have h1 : -(-1 / 2 : ℝ) * -L = -L / 2 := by ring
     have h2 : -(-1 / 2 : ℝ) * L = L / 2 := by ring
     rw [h1, h2]
@@ -719,10 +765,13 @@ theorem exists_aperture_primeFree_and_singleSemilocal_energy_lt (p : ℕ) (K : �
   -- Bound `primeFreeFamily.Q b₀ v` and `(primeSingleSemilocalFamily p).Q b₀ v`.
   have hv_norm : ‖v‖ ^ 2 ≤ 4 * ‖u₀‖ ^ 2 := by
     have htri : ‖v‖ ≤ 2 * ‖u₀‖ := by
-      calc ‖v‖ ≤ ‖ccmArchimedeanFormTranslate (-L) habNeg u₀‖ +
-            ‖ccmArchimedeanFormTranslate L habPos u₀‖ := norm_sub_le _ _
+      rw [hv]
+      calc ‖ccmArchimedeanFormTranslate (-L) habNeg u₀ -
+              ccmArchimedeanFormTranslate L habPos u₀‖
+          ≤ ‖ccmArchimedeanFormTranslate (-L) habNeg u₀‖ +
+              ‖ccmArchimedeanFormTranslate L habPos u₀‖ := norm_sub_le _ _
         _ = ‖u₀‖ + ‖u₀‖ := by
-            rw [norm_ccmArchimedeanFormTranslate, norm_ccmArchimedeanFormTranslate]
+              rw [norm_ccmArchimedeanFormTranslate, norm_ccmArchimedeanFormTranslate]
         _ = 2 * ‖u₀‖ := by ring
     calc ‖v‖ ^ 2 ≤ (2 * ‖u₀‖) ^ 2 := pow_le_pow_left₀ (norm_nonneg _) htri 2
       _ = 4 * ‖u₀‖ ^ 2 := by ring
@@ -737,71 +786,65 @@ theorem exists_aperture_primeFree_and_singleSemilocal_energy_lt (p : ℕ) (K : �
           mul_le_mul_of_nonneg_left (by linarith [hf₀_pos]) (abs_nonneg _)
   have hQ_pf : primeFreeFamily.Q b₀ v ≤
       C₀ - 2 * (Real.exp (L / 2) - Real.exp (-L / 2)) ^ 2 * (mPos * mNeg) := by
-    have hform : primeFreeFamily.Q b₀ v =
-        ‖v‖ ^ 2 + (ccmArchimedeanRemainderScalar * inner ℂ f f).re +
-          (inner ℂ (ccmPolarOperator b₀ f) f).re := by
-      unfold CCMRemainderFamily.Q CCMRemainderFamily.diagonal
-      change ‖v‖ ^ 2 + (inner ℂ (ccmPrimeFreeRemainder b₀ f) f).re = _
-      rw [ccmPrimeFreeRemainder_eq_scalar_add_polar, clm_add_apply,
-        clm_smul_apply, clm_one_apply, inner_add_left,
-        inner_smul_left, star_ccmArchimedeanRemainderScalar, Complex.add_re]
-      ring
-    have hC₀ : C₀ = 4 * ‖u₀‖ ^ 2 + |2 * gammaHardyPhaseRate 0 - 1| * (4 * ‖f₀‖ ^ 2) := rfl
+    have hform := primeFreeFamily_Q_expand b₀ v
+    rw [← hf] at hform
     rw [hform, hpol_re, hC₀]
-    linarith [hv_norm, hscal_le]
+    linarith only [hv_norm, hscal_le]
   -- Compare `Real.exp (L / 2) - Real.exp (-L / 2)` with `L / 2 > Real.sqrt target`.
   have hexp_ge : L / 2 ≤ Real.exp (L / 2) - Real.exp (-L / 2) := by
     have h1 : L / 2 + 1 ≤ Real.exp (L / 2) := Real.add_one_le_exp (L / 2)
-    have h2 : Real.exp (-L / 2) ≤ 1 := Real.exp_le_one_iff.mpr (by linarith)
-    linarith
+    have h2 : Real.exp (-L / 2) ≤ 1 := Real.exp_le_one_iff.mpr (by linarith only [hL_pos])
+    linarith only [h1, h2]
   have hL_half_gt : Real.sqrt target < L / 2 := by
     have hM' : 4 * Real.sqrt target < (M : ℝ) * Real.log q := (div_lt_iff₀ hlogq).mp hM
-    have hL_eq : L / 2 = ((2 * (M : ℝ) + 1) / 8) * Real.log q := by dsimp [L]; ring
+    have hL_eq : L / 2 = ((2 * (M : ℝ) + 1) / 8) * Real.log q := by rw [hL_def]; ring
     rw [hL_eq]
+    have hM0 : (0 : ℝ) ≤ M := Nat.cast_nonneg M
     have hcoef : (M : ℝ) * Real.log q < (2 * (M : ℝ) + 1) * Real.log q :=
-      mul_lt_mul_of_pos_right (by linarith [Nat.cast_nonneg (α := ℝ) M]) hlogq
-    linarith
+      mul_lt_mul_of_pos_right (by linarith only [hM0]) hlogq
+    linarith only [hM', hcoef]
   have hsq_gt : target < (Real.exp (L / 2) - Real.exp (-L / 2)) ^ 2 := by
     calc target = Real.sqrt target ^ 2 := (Real.sq_sqrt htarget_pos.le).symm
       _ < (L / 2) ^ 2 := pow_lt_pow_left₀ hL_half_gt (Real.sqrt_nonneg _) (by norm_num)
       _ ≤ (Real.exp (L / 2) - Real.exp (-L / 2)) ^ 2 :=
           pow_le_pow_left₀ (by positivity) hexp_ge 2
-  have htarget_ge : (C₀ - K * (2 * ‖f₀‖ ^ 2) + 1) / (2 * (mPos * mNeg)) ≤ target :=
-    le_max_right _ _
+  have htarget_ge : (C₀ - K * (2 * ‖f₀‖ ^ 2) + 1) / (2 * (mPos * mNeg)) ≤ target := by
+    rw [htarget_def]
+    exact le_max_right _ _
   have hQ_lt : primeFreeFamily.Q b₀ v < K * ‖f‖ ^ 2 := by
     rw [hf_norm_sq]
     have hmul : C₀ - K * (2 * ‖f₀‖ ^ 2) + 1 <
         2 * (Real.exp (L / 2) - Real.exp (-L / 2)) ^ 2 * (mPos * mNeg) := by
-      have h1 := (div_le_iff₀ (by positivity : 0 < 2 * (mPos * mNeg))).mp htarget_ge
-      nlinarith [hsq_gt, hmprod]
-    linarith [hQ_pf]
+      have hpos2 : 0 < 2 * (mPos * mNeg) := by positivity
+      have h1 : C₀ - K * (2 * ‖f₀‖ ^ 2) + 1 ≤ target * (2 * (mPos * mNeg)) :=
+        (div_le_iff₀ hpos2).mp htarget_ge
+      have h2 : target * (2 * (mPos * mNeg)) <
+          (Real.exp (L / 2) - Real.exp (-L / 2)) ^ 2 * (2 * (mPos * mNeg)) :=
+        mul_lt_mul_of_pos_right hsq_gt hpos2
+      calc C₀ - K * (2 * ‖f₀‖ ^ 2) + 1
+          ≤ target * (2 * (mPos * mNeg)) := h1
+        _ < (Real.exp (L / 2) - Real.exp (-L / 2)) ^ 2 * (2 * (mPos * mNeg)) := h2
+        _ = 2 * (Real.exp (L / 2) - Real.exp (-L / 2)) ^ 2 * (mPos * mNeg) := by ring
+    linarith only [hQ_pf, hmul]
+  have hnorm_pos : 0 < ‖f‖ ^ 2 := by rw [hf_norm_sq]; positivity
   have henergy_pf_lt : primeFreeFamily.energy b₀ < K := by
     have hray := primeFreeFamily.energy_mul_formNorm_sq_le b₀ v
-    have hnorm_pos : 0 < ‖f‖ ^ 2 := by rw [hf_norm_sq]; positivity
+    rw [← hf] at hray
     exact lt_of_mul_lt_mul_right (lt_of_le_of_lt hray hQ_lt) hnorm_pos.le
   have henergy_single_lt : (primeSingleSemilocalFamily p).energy b₀ < K := by
-    rcases lt_or_ge p 2 with hp2 | hp2
-    · have hB : (primeSingleSemilocalFamily p).B b₀ = primeFreeFamily.B b₀ := by
-        change ccmPrimeFreeRemainder b₀ - ccmPrimePowerOperator p b₀ = ccmPrimeFreeRemainder b₀
-        rw [ccmPrimePowerOperator_of_lt_two hp2 b₀, sub_zero]
-      have hQeq : (primeSingleSemilocalFamily p).Q b₀ v = primeFreeFamily.Q b₀ v := by
-        unfold CCMRemainderFamily.Q CCMRemainderFamily.diagonal
-        rw [hB]
-      have hray := (primeSingleSemilocalFamily p).energy_mul_formNorm_sq_le b₀ v
-      rw [hQeq] at hray
-      have hnorm_pos : 0 < ‖f‖ ^ 2 := by rw [hf_norm_sq]; positivity
-      exact lt_of_mul_lt_mul_right (lt_of_le_of_lt hray hQ_lt) hnorm_pos.le
-    · have hqp : q = p := max_eq_left hp2
-      have hQeq : (primeSingleSemilocalFamily p).Q b₀ v = primeFreeFamily.Q b₀ v := by
-        unfold CCMRemainderFamily.Q CCMRemainderFamily.diagonal
-        change ‖v‖ ^ 2 + (inner ℂ ((ccmPrimeFreeRemainder b₀ - ccmPrimePowerOperator p b₀) f) f).re =
-          ‖v‖ ^ 2 + (inner ℂ (ccmPrimeFreeRemainder b₀ f) f).re
-        rw [← hqp, sub_apply, inner_sub_left, Complex.sub_re,
-          hpower_re_zero, sub_zero]
-      have hray := (primeSingleSemilocalFamily p).energy_mul_formNorm_sq_le b₀ v
-      rw [hQeq] at hray
-      have hnorm_pos : 0 < ‖f‖ ^ 2 := by rw [hf_norm_sq]; positivity
-      exact lt_of_mul_lt_mul_right (lt_of_le_of_lt hray hQ_lt) hnorm_pos.le
+    have hsub := primeSingleSemilocalFamily_Q_eq_primeFree_sub p b₀ v
+    rw [← hf] at hsub
+    have hQeq : (primeSingleSemilocalFamily p).Q b₀ v = primeFreeFamily.Q b₀ v := by
+      rcases lt_or_ge p 2 with hp2 | hp2
+      · rw [ccmPrimePowerOperator_of_lt_two hp2 b₀, clm_zero_apply, inner_zero_left,
+          Complex.zero_re, sub_zero] at hsub
+        exact hsub
+      · have hqp : q = p := by rw [hq_def]; exact max_eq_left hp2
+        rw [← hqp, hpower_re_zero, sub_zero] at hsub
+        exact hsub
+    have hray := (primeSingleSemilocalFamily p).energy_mul_formNorm_sq_le b₀ v
+    rw [← hf, hQeq] at hray
+    exact lt_of_mul_lt_mul_right (lt_of_le_of_lt hray hQ_lt) hnorm_pos.le
   refine ⟨b₀.1, b₀.2, fun b hb => ⟨?_, ?_⟩⟩
   · exact lt_of_le_of_lt (primeFreeFamily.energy_antitone hb) henergy_pf_lt
   · exact lt_of_le_of_lt ((primeSingleSemilocalFamily p).energy_antitone hb) henergy_single_lt

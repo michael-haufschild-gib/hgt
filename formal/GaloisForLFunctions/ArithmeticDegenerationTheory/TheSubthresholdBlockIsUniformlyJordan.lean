@@ -39,7 +39,7 @@ theorem jordanCoefficient_eq_coprime {m : ℕ} (hm : 0 < m) :
   have hM := integral_tiltedUnitSpline_sq_pos
   unfold jordanCoefficient
   field_simp
-  linear_combination (2 * tiltedTailConstant) * h
+  linear_combination tiltedTailConstant * h
 
 /-- **The uniform Jordan law on the subthreshold block.** -/
 theorem uniform_jordan_law {ε : ℝ} (hε : 0 < ε) :
@@ -129,6 +129,6 @@ theorem tendsto_ratio_of_subthreshold {ι : Type*} {l : Filter ι} {c : ι → �
       jordanCoefficient (m i) - 1 = (c i ^ (7 : ℝ) * completedConductorEnergy tiltedUnitSpline (c i)
         (m i) - jordanCoefficient (m i)) / jordanCoefficient (m i) by field_simp,
     abs_div, abs_of_pos hJ, div_lt_iff₀ hJ]
-  linarith
+  exact lt_of_le_of_lt h (by nlinarith)
 
 end GaloisForLFunctions.ArithmeticDegenerationTheory
