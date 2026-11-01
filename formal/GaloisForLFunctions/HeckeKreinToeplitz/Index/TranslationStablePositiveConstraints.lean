@@ -58,6 +58,8 @@ theorem exists_translation_stable_positive_constraints {r : ℕ}
     funext g
     have hz : z (h * g) = T h (z g) := by
       exact (NegativeFrame.action_point hk e he hp h g).symm
+    change FiniteNegative.pairing (u : H × EuclideanSpace ℂ (Fin m)) (z (h * g)) =
+      FiniteNegative.pairing ((T h).symm u) (z g)
     rw [hz]
     have hh := hT h ((T h).symm u) (z g)
     rw [(T h).apply_symm_apply] at hh
@@ -70,6 +72,8 @@ theorem exists_translation_stable_positive_constraints {r : ℕ}
       have hfu : (fun g => FiniteNegative.pairing u (z g)) ∈ Φ :=
         (hΦ _).mpr ⟨⟨u, hu⟩, rfl⟩
       have hmass := hc _ hfu
+      change (∑ i, c i * FiniteNegative.pairingLinear u
+        (E (kernelColumnPoint k (x i)))) = 0 at hmass
       change FiniteNegative.pairingLinear u (E v) = 0
       simpa only [v, map_sum, map_smul, smul_eq_mul] using hmass
     have h := hpU (E v) ho
@@ -91,11 +95,15 @@ theorem negIndex_le_of_finite_positive_constraints {r : ℕ}
   let L : (G → ℂ) →ₗ[ℂ] ((Fin n → ℂ) →ₗ[ℂ] ℂ) :=
     { toFun f := Fintype.linearCombination ℂ (fun i => f (x i))
       map_add' f g := by
-        ext c
+        apply LinearMap.ext
+        intro c
         simp only [Fintype.linearCombination_apply, Pi.add_apply, mul_add,
           smul_eq_mul, Finset.sum_add_distrib, LinearMap.add_apply]
       map_smul' a f := by
-        ext c
+        apply LinearMap.ext
+        intro c
+        change (Fintype.linearCombination ℂ (fun i => a * f (x i))) c =
+          a * (Fintype.linearCombination ℂ (fun i => f (x i))) c
         simp only [Fintype.linearCombination_apply, Pi.smul_apply, smul_eq_mul,
           LinearMap.smul_apply, Finset.mul_sum]
         apply Finset.sum_congr rfl
@@ -108,7 +116,8 @@ theorem negIndex_le_of_finite_positive_constraints {r : ℕ}
       have hz : L f c = 0 := by
         have heq : f = ∑ i, b.repr f₀ i • (b i : G → ℂ) := by
           have he := congrArg Φ.subtype (b.sum_repr f₀)
-          simpa only [map_sum, map_smul] using he.symm
+          simp only [map_sum, map_smul] at he
+          exact he.symm
         rw [heq, map_sum]
         simp only [map_smul, LinearMap.sum_apply, LinearMap.smul_apply, hc,
           smul_zero, Finset.sum_const_zero]

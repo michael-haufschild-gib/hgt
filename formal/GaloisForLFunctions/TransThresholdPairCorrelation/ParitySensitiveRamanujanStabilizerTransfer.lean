@@ -810,8 +810,8 @@ theorem parityStabilizerWeight_two_mul (Q r : ℕ) :
 
 /-- The parity-locked `Q`-modulus singular-series model sum over distinct coalescent odd integers
 `3 ≤ n, m ≤ X` (`n % 2 = 1`, `m % 2 = 1`): replaces the prime-pair weight `acoef n * acoef m` in
-`oddEvenShiftPrimeCoalSum` by `parityStabilizerWeight Q (Nat.dist n m) / √(n * m)` (with factor
-`1 / 4` matching the odd-integer density `(1 / 2)²` whose product with `2` reproduces `1 / 2`). -/
+`oddEvenShiftPrimeCoalSum` by `(1/4) parityStabilizerWeight Q (Nat.dist n m) / √(n * m)`.
+The raw arithmetic weight has complete-period mean `1/8` in full integer rectangles. -/
 def stabilizerModelOddCoalSum (Q : ℕ) (Ω g : ℝ → ℝ) (X θ₀ : ℝ) : ℝ :=
   (1 / π) * ∑ n ∈ primeRange X, ∑ m ∈ primeRange X,
     if 3 ≤ n ∧ 3 ≤ m ∧ n % 2 = 1 ∧ m % 2 = 1 ∧ n ≠ m ∧ |Real.log n - Real.log m| ≤ θ₀
@@ -819,8 +819,8 @@ def stabilizerModelOddCoalSum (Q : ℕ) (Ω g : ℝ → ℝ) (X θ₀ : ℝ) : �
         (Real.sqrt n * Real.sqrt m)) * g (Real.log m) * cosTransform Ω (Real.log n - Real.log m)
     else 0
 
-/-- The centered stabilizer discrepancy of `oddEvenShiftPrimeCoalSum` relative to the `Q`-modulus
-parity-locked Ramanujan model on coalescent odd integer pairs `3 ≤ n, m ≤ X`. -/
+/-- The signed difference between `oddEvenShiftPrimeCoalSum` and the `Q`-modulus
+Ramanujan model on coalescent odd integer pairs `3 ≤ n, m ≤ X`. -/
 def stabilizerDiscrepancyOddCoalSum (Q : ℕ) (Ω g : ℝ → ℝ) (X θ₀ : ℝ) : ℝ :=
   (1 / π) * ∑ n ∈ primeRange X, ∑ m ∈ primeRange X,
     if 3 ≤ n ∧ 3 ≤ m ∧ n % 2 = 1 ∧ m % 2 = 1 ∧ n ≠ m ∧ |Real.log n - Real.log m| ≤ θ₀
@@ -829,7 +829,7 @@ def stabilizerDiscrepancyOddCoalSum (Q : ℕ) (Ω g : ℝ → ℝ) (X θ₀ : �
           (Real.sqrt n * Real.sqrt m)) * g (Real.log m) * cosTransform Ω (Real.log n - Real.log m)
     else 0
 
-/-- **Exact Stabilizer-Centered Decomposition of `oddEvenShiftPrimeCoalSum`.**
+/-- **Exact Stabilizer Decomposition of `oddEvenShiftPrimeCoalSum`.**
 For every modulus cutoff `Q : ℕ`, window `Ω`, taper weight `g`, prime cutoff `X`, and aperture `θ₀`,
 `oddEvenShiftPrimeCoalSum` decomposes identically into `stabilizerModelOddCoalSum Q` plus
 `stabilizerDiscrepancyOddCoalSum Q`. -/

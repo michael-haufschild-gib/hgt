@@ -38,7 +38,9 @@
 
 **Theorem A9, exact determinant pole:** The actual determinant is `D=A+ζB`, with coefficients holomorphic through `w=1` and entire in `λ`. Its residue is exactly `B(1,λ)`; the source singularity is removable iff this vanishes, and otherwise has order `−1`. Throughout `Re w>0`, `B(w,0)=0` and `∂λB(w,0)=−1`. Cancellation parameters form a closed discrete countable set, and every sufficiently small nonzero `λ` gives a genuine simple pole. [Paper proof and certified declarations](../3-formalized/gauss-mayer-rank-one-determinant-pole.md); all fourteen production audits use only the standard three axioms.
 
-**Conjecture A10:** The actual response `f_w(z)=1−(1+z)^(−w)` should satisfy `(I+R(w))f_w=1` and `f_w(0)=0` throughout `Re w>0`. Its rank-one update would force `B(w,−1)=0` and holomorphy of the actual negative-unit determinant through one. [Principal-power telescope and Hilbert transport](gauss-mayer-negative-unit-pole-cancellation.md).
+**Theorem A10, successor cancellation:** For every `Re w>0`, the actual response `f_w(z)=1−(1+z)^(−w)` satisfies `(I+R(w))f_w=1` and `f_w(0)=0`. Exact Hilbert transport and cancellation of the rank-one trace exponential prove `det(I+R(w)+tP)=det(I+R(w))` for every complex `t`. Hence `B(w,−1)=0`, and the actual determinant at `λ=−1` is holomorphic throughout this half-plane, including its assigned value at one. [Paper proof and certified declarations](../3-formalized/gauss-mayer-negative-unit-pole-cancellation.md); all thirteen production audits use only the standard three axioms. Its value at one, the parameter `λ=1`, and the scattering comparison remain open.
+
+**Conjecture A11:** The genuine finite-branch determinants `det(I+L_N(w))` converge to `D(w,−1)` for every `Re w>0`, even where the raw operators diverge. The finite successor telescope supplies an exact determinant-one shear; the degree-linear remainder bound supplies uniform geometric nuclear control. [Exact identity and remaining transport](gauss-mayer-raw-negative-unit-determinants.md).
 
 ## B. Böttcher and arithmetic period rigidity
 

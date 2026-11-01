@@ -1,13 +1,13 @@
 # Translation-stable positive constraints at finite index
 
-- **Stage:** 2-fully-proven on paper; Lean incomplete.
-- **Type:** THEOREM (paper).
+- **Stage:** 3-formalized.
+- **Type:** THEOREM (Lean-verified).
 - **Source:** B9 in `docs/reports/review-3110/route-obstacles.md`.
 - **Statement:** A Hermitian kernel on an abelian group has negative index
   at most `r` iff there is a translation-invariant space `Φ` of scalar
   functions, of dimension at most `r`, such that every finite coefficient
   vector annihilating `Φ` has nonnegative kernel quadratic form.
-- **Count:** Not counted until formalized.
+- **Count:** Contribution 7.
 
 ## Mathematical gain and novelty
 
@@ -100,9 +100,20 @@ subspace, or spectral hypothesis is assumed in the kernel statement.
 
 ## Lean status
 
+All six paper-proof steps are formalized in HKT `Index/`:
 `SignedOrthogonalComplements`, `RadicalHilbertComplement`,
-`RadicalQuotientIsometries`, `CommonEigenlineModuloRadical`, and
-`MaximalInvariantNonpositiveSubspace` pass Lean;
-their printed axiom audits contain only `propext`, `Classical.choice`,
-and `Quot.sound`. The finite pairing space and kernel capstones are drafted
-and awaiting verification. No contribution is counted before these pass.
+`RadicalQuotientIsometries`, `CommonEigenlineModuloRadical`,
+`MaximalInvariantNonpositiveSubspace`, `FinitePairingFunctionSpaces`, and
+`TranslationStablePositiveConstraints`.
+
+The structural theorem is
+`FiniteNegative.exists_invariant_nonpositive_with_nonnegative_complement`.
+The kernel capstones are `exists_translation_stable_positive_constraints`
+and `negIndex_le_iff_translation_stable_positive_constraints`.
+All seven modules pass Lean; the final kernel module passes a direct check.
+Transitive axiom audits contain only `propext`, `Classical.choice`, and
+`Quot.sound`. No placeholders or proof-limit overrides; umbrella wired.
+
+The functions define annihilator constraints. This does not assert a
+positive repair by their squared moduli; general unbounded spectral
+decomposition remains open.

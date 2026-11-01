@@ -64,6 +64,8 @@ Bounded kernels: finite translate corrections give uniformly bounded Fejér meas
 
 Finite index and cyclic growth: on any group, a Hermitian kernel with `κ≤r` and cyclic subexponential growth has cyclic growth at most degree `2r`. Complete the positive column factor, obtain a nonpositive eigenvector from a weakly compact invariant graph, and force its eigenvalue onto the unit circle using orbit growth. Its unitary second-difference filter lowers the index; two discrete integrations per negative square give the degree bound.
 
+Finite index on abelian groups: a maximal invariant nonpositive subspace has nonnegative signed orthogonal complement. Otherwise, a common nonpositive line in its radical quotient enlarges it. Pairings against this finite subspace give a translation-invariant function space of dimension at most `r` whose annihilator is nonnegative on every finite Gram restriction. Conversely, evaluation against a basis bounds the negative index by `r`. This equivalence requires no growth or countability assumption; general unbounded spectral decomposition remains open.
+
 **B. Topology and deformation**
 9. Closedness: pointwise kernel convergence gives entrywise Gram convergence, and negative-definite subspaces persist, so `{κ ≤ m}` is closed.
 10. Restriction and compression never raise `κ`. A compression multiplies the weight of a pair by `P̂(χ) conj P̂(χ^†)`.

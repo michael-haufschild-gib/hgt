@@ -77,6 +77,7 @@ constructed source determinant. General finite determinant multilinearity,
 normal convergence, and analytic zero isolation are existing inputs.
 No literature-priority claim is made.
 
-The argument does not decide whether particular nonzero spectral parameters
-such as `λ=±1` cancel. Primitive modular coding, Selberg/scattering comparison,
-and exclusion of off-critical resonances remain open. No RH conclusion follows.
+The successor response now proves [cancellation at `λ=−1` throughout the source
+half-plane](gauss-mayer-negative-unit-pole-cancellation.md). The parameter `λ=1`,
+primitive modular coding, Selberg/scattering comparison, and exclusion of
+off-critical resonances remain open. No RH conclusion follows.

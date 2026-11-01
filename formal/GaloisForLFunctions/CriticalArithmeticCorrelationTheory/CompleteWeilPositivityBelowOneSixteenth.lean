@@ -1060,7 +1060,12 @@ private theorem eventually_powerLog_quadratic_low_band_and_gap
         _ ≤ c ^ 2 * ((1 + Real.log c) ^ 3 * L ^ (1 / (k : ℝ))) / L :=
           div_le_div_of_nonneg_right (le_mul_of_one_le_right (sq_nonneg c) h1) hL0.le
         _ = c ^ 2 * (1 + Real.log c) ^ 3 * L ^ (1 / (k : ℝ)) / L := by ring
-    linarith only [ht2]
+    calc
+      c ^ 2 * (1 + Real.log c) ^ 3 * L ^ (1 / (k : ℝ)) / L + c ^ 10 * (L / (N : ℝ)) ^ 2 ≤
+          c ^ 2 * (1 + Real.log c) ^ 3 * L ^ (1 / (k : ℝ)) / L +
+            c ^ 2 * (1 + Real.log c) ^ 3 * L ^ (1 / (k : ℝ)) / L :=
+        add_le_add le_rfl ht2
+      _ = 2 * c ^ 2 * (1 + Real.log c) ^ 3 * L ^ (1 / (k : ℝ)) / L := by ring
   have hQpow : (Q₁ : ℝ) ^ 2 ≤ L ^ (2 * q) := by
     have hh := pow_le_pow_left₀ (Nat.cast_nonneg Q₁) hQ_le 2
     have he : (L ^ q) ^ (2 : ℕ) = L ^ (2 * q) := by
@@ -1219,7 +1224,7 @@ theorem eventually_tiltedUnitSpline_spectralFloorWeilMatrix_posDef_below_one_six
   obtain ⟨_, hwidth, _, _, _, _, _, _, _, _⟩ :=
     rpow_horizon_N_bounds (by omega : 1 ≤ N) hQ2 hc1 hL2000 hLX hcL hlog36_Q
   have hQQ_N : Q₁ * Q₁ ≤ N := by
-    have hh := (Nat.pow_le_pow_right (by omega : 0 < Q₁) (by norm_num : 2 ≤ 4)).trans hQ4_N
+    have hh := (Nat.pow_le_pow_right (zero_lt_two.trans_le hQ2) (by norm_num : 2 ≤ 4)).trans hQ4_N
     simpa only [sq] using hh
   let rate := c ^ 2 * (1 + Real.log c) ^ 3 * L ^ (1 / (k : ℝ)) / L + c ^ 10 * (L / (N : ℝ)) ^ 2
   have hrate0 : 0 ≤ rate := by
@@ -1251,7 +1256,9 @@ theorem eventually_tiltedUnitSpline_spectralFloorWeilMatrix_posDef_below_one_six
       have hh := mul_le_mul_of_nonneg_right
         (mul_le_mul (mul_le_mul_of_nonneg_left hmQ' hK_res.le) hHsq
           (sq_nonneg _) (by positivity)) hrate0
-      exact (hresN m hm1 hmL c hc1 hwidth).trans (by simpa only [mul_assoc] using hh)
+      have hNm := hresN m hm1 hmL c hc1 hwidth
+      change _ ≤ K_res * ((m : ℝ) * (1 + Real.log m) ^ 2) * rate at hNm
+      exact (hNm.trans_eq (by ring)).trans hh
     have hsum := sum_le_sum hterm
     rw [sum_const, nsmul_eq_mul, Nat.card_Icc, Nat.add_sub_cancel] at hsum
     exact (hsum.trans_eq (by ring : (Q₁ : ℝ) *
@@ -1576,6 +1583,7 @@ theorem eventually_tiltedUnitSpline_all_conductors_pos_below_one_sixteenth
       _ ≤ completeWeilEnergy tiltedUnitSpline c N (normalizedRamanujanHorizonVector m N) := hf
   refine ⟨hpos_all, Finset.filter_eq_empty_iff.mpr fun m hm hle => ?_⟩
   have hlb := hpos_all m hm
+  have hL0 : 0 < Real.log (N : ℝ) := Real.log_pos (by exact_mod_cast (show 1 < N by omega))
   have hgt : 0 < tiltedSplineSpectralFloorConstant / (2 * c ^ 7 * Real.log (N : ℝ)) :=
     div_pos tiltedSplineSpectralFloorConstant_pos (by positivity)
   linarith only [hlb, hle, hgt]

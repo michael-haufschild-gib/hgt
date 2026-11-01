@@ -20,8 +20,8 @@ The existing `kth_derivative_test` at order five contributes secondary
 correlation term `(Th)^(5/8) N^(-13/16)`. After differencing this gives
 weighted term `T^(75/328) N^(-173/1312)`. Use trivial bounds below `t^(33/100)`, the direct fourth-derivative test
 up to `t^(2/5)`, the fourth-derivative dual route up to `T^(97/200)`,
-and the fifth-derivative dual route up to `T^(101/200)`. Every contribution
-is at most `T^(33/200)`. The direct fourth-derivative interval is necessary:
+and the fifth-derivative dual route up to `T^(101/200)`. Each interval gives
+`O(t^(33/200))`. The direct fourth-derivative interval is necessary:
 the dual route's `TH/N²` error is too large near `N=T^(33/100)`.
 The fourth-derivative dual bound already exists in
 `RHTower/ZetaWeylCorrelationBound`; its differencing is implemented in
@@ -35,7 +35,7 @@ Beyond `N=T^(101/200)`, both weights pay `sqrt(t)/N`, giving block exponent
 `O(log t)`. No second stationary-phase transformation is needed.
 
 At `Re s=5/6`, the generic fifth-derivative secondary term and the sharp
-fourth-derivative main term meet at `N=T^(15/53)`, both with exponent
+fourth-derivative main term meet at `N=t^(15/53)`, both with exponent
 `2/53`. The resulting slice slopes are `3/100`, `3/13`, `23/53`, `29/53`.
 At heat coefficient `133/200`, their limiting saddle gaps are respectively
 `8803/4000000`, `6/845`, `161/28090`, `459/70225`, all positive.

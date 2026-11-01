@@ -27,6 +27,7 @@ private theorem pairing_submodule_basis_sum {ι : Type*} [Fintype ι]
   rw [map_sum]
   rw [hermitianForm_sum_right isHermitianForm_reverse_pairing]
   simp only [map_smul, pairing_smul_left]
+  rfl
 
 /-- Pairings against a finite subspace form a finite-dimensional function space. -/
 theorem exists_finite_pairing_function_space
