@@ -101,27 +101,30 @@ theorem sum_star_diagonal (N : ℕ) (x : ℕ → ℝ) (c : ℕ → ℝ) :
     have hd0 : 0 < d := by have := (mem_Icc.mp hd).1; omega
     rw [sum_Icc_star hd0 N (fun n => if d ∣ n then x n ^ 2 else 0) fun n hn => if_neg hn]
     exact sum_congr rfl fun a _ => by simp [starPullback]
-  rw [sum_congr rfl fun d hd => by rw [hstar d hd], ]
+  have hL : ∑ d ∈ Icc 2 N, c d * ∑ a ∈ Icc 1 (N / d), starPullback d x a ^ 2 =
+      ∑ d ∈ Icc 2 N, c d * ∑ n ∈ Icc 1 N, (if d ∣ n then x n ^ 2 else 0) :=
+    sum_congr rfl fun d hd => by rw [hstar d hd]
+  rw [hL]
   simp only [mul_sum]
   rw [sum_comm]
   refine sum_congr rfl fun n hn => ?_
-  rw [← filter_Icc_two_dvd hn, sum_filter, mul_sum]
+  rw [← filter_Icc_two_dvd hn, sum_filter]
   exact sum_congr rfl fun d _ => by split_ifs <;> ring
 
 /-- **The renormalized prime form is glued from its stars.** -/
-theorem renormalizedPrimeForm_moebius_recursion (N : ℕ) (x : ℕ → ℝ) :
+theorem renormalizedPrimeForm_moebius_recursion {N : ℕ} (hN : 1 ≤ N) (x : ℕ → ℝ) :
     renormalizedPrimeForm N x =
       rootDefect N x - mertensRemainder N * x 1 ^ 2 - starFloorTerm N x +
         ∑ d ∈ Icc 2 N, -(μ d : ℝ) * renormalizedPrimeForm (N / d) (starPullback d x) := by
-  rcases Nat.eq_zero_or_pos N with rfl | hN
-  · simp [renormalizedPrimeForm, rootDefect, starFloorTerm, mertensRemainder, mertensSum,
-      atomicWeilForm]
   -- Express each star's prime form through its renormalized form and regroup the diagonals.
   have hstars : ∑ d ∈ Icc 2 N, -(μ d : ℝ) * atomicWeilForm (N / d) (starPullback d x) =
       ∑ n ∈ Icc 1 N, x n ^ 2 * ∑ d ∈ n.divisors.erase 1,
           -(μ d : ℝ) * (Real.log (N / d : ℕ) - Real.eulerMascheroniConstant) -
         ∑ d ∈ Icc 2 N, -(μ d : ℝ) * renormalizedPrimeForm (N / d) (starPullback d x) := by
-    rw [← sum_star_diagonal N x, ← sum_sub_distrib]
+    have hdiag := sum_star_diagonal N x
+      (fun d => -(μ d : ℝ) * (Real.log (N / d : ℕ) - Real.eulerMascheroniConstant))
+    simp only at hdiag
+    rw [← hdiag, ← sum_sub_distrib]
     refine sum_congr rfl fun d _ => ?_
     rw [renormalizedPrimeForm]
     ring
@@ -130,11 +133,8 @@ theorem renormalizedPrimeForm_moebius_recursion (N : ℕ) (x : ℕ → ℝ) :
     rw [rootDefect, mertensSum, mul_sum, sum_mul, ← sum_sub_distrib, ← sum_add_distrib]
     refine sum_congr rfl fun k hk => ?_
     have hk0 : (0 : ℝ) < k := by exact_mod_cast (mem_Icc.mp hk).1
-    have hs : Real.sqrt k * Real.sqrt k = k := Real.mul_self_sqrt hk0.le
-    have hs0 : Real.sqrt k ≠ 0 := (Real.sqrt_pos.mpr hk0).ne'
-    rw [weilPrimeKernel_one_left]
-    field_simp
-    rw [← hs]
+    have hk' : Real.sqrt k ^ 2 = k := Real.sq_sqrt hk0.le
+    rw [weilPrimeKernel_one_left, sub_sq, div_pow, hk']
     ring
   have hcoef : ∀ n ∈ Icc 1 N, x n ^ 2 * ∑ d ∈ n.divisors.erase 1,
         -(μ d : ℝ) * (Real.log (N / d : ℕ) - Real.eulerMascheroniConstant) =

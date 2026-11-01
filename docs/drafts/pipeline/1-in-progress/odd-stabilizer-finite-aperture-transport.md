@@ -69,3 +69,12 @@ uniformly in the aperture. At bandwidth two, the global raw error would be
 boundary cost `O(Xθ² log Q)`. With `θ=T^(-7/12)`, both the cubic tail and
 this boundary term have power savings. These derivative and transport
 claims remain to be formalized.
+
+## Fixed-base consequence to audit
+
+The conductor-independent bound predicts `row_Q(m)/log Q→0` for fixed m>0.
+Combining this with the exact Poisson identity and the odd logarithmic mean
+would give `spatialDual_Q(m)/log Q→Ωhat(0)/(2πm)`.
+Thus, at a fixed base, the primitive correction cancels the entire leading
+negative diagonal; along the moving support horizon the normalized row instead
+tends to `−Ωhat(0)/2`. This consequence still needs its Lean proof.
