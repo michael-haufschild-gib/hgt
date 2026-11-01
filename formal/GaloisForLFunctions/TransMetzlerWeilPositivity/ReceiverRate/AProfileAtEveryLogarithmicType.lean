@@ -470,5 +470,6 @@ theorem exists_beurlingDCProfile_bound {B : ℝ} (hB : 0 < B) :
 end GaloisForLFunctions.TransMetzlerWeilPositivity
 
 #print axioms GaloisForLFunctions.TransMetzlerWeilPositivity.contDiff_beurlingDCProfile
+#print axioms GaloisForLFunctions.TransMetzlerWeilPositivity.beurlingDCProfile_nonneg
 #print axioms GaloisForLFunctions.TransMetzlerWeilPositivity.integral_beurlingDCProfile
 #print axioms GaloisForLFunctions.TransMetzlerWeilPositivity.exists_beurlingDCProfile_bound

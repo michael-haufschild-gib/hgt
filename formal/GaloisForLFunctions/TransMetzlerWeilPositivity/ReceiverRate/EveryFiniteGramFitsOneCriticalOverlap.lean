@@ -117,9 +117,9 @@ theorem exists_ratCorr_gram_approximation_at_universal_critical_overlap
     simpa only [div_self hS.ne'] using hN
   have hRK : 24 * b * blockSize (R + 1) * Real.exp 1 < 1 := by
     have he : 24 * b * blockSize (R + 1) * Real.exp 1 = 1 / 2 := by
-      dsimp only [b, B]
-      field_simp
-      ring
+      change 24 * (1 / (48 * (B : ℝ) * Real.exp 1)) * B * Real.exp 1 = 1 / 2
+      field_simp [hB0.ne']
+      norm_num
     rw [he]
     norm_num
   have hgram (i j : ι) : weilGram vonMangoldtWeight (fun a => cx (F a)) i j =

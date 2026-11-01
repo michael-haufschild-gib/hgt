@@ -39,7 +39,8 @@ private theorem hasProd_fiber (w z : ℂ) (q : UnorientedOrbit × ℕ) :
       1-orbitWeight w z p.val.1 p.val.2) (factor w z q.1 q.2 ^ multiplicity q.1) := by
   have hc : HasProd (fun _ : ↥(orientations q.1) => factor w z q.1 q.2)
       (factor w z q.1 q.2 ^ multiplicity q.1) := by
-    simpa only [Finset.prod_const,Finset.card_univ,Fintype.card_coe,multiplicity] using
+    simpa only [Finset.prod_const,Finset.card_univ,Fintype.card_coe,
+      MayerInverseCycles.multiplicity] using
       (hasProd_fintype (fun _ : ↥(orientations q.1) => factor w z q.1 q.2))
   apply (fiberEquiv q).hasProd_iff.mp
   apply hc.congr_fun
