@@ -7,67 +7,74 @@ package `(W_{c,N}, v₁)`.
 
 - **Σ** is the sign of the complete Weil form on `v₁^⊥`. It lives on one axis: the degree `a`, which
   is the test radius and `½ log K` for the overlap multiple `K·c*` of the atomic families.
-  - Below a small multiple of the critical overlap the sign is proved by estimates (rough regime).
-  - From `c*` on, residual and margin are of the same order; only an exact leading term decides
-    (constant-factor wall).
+  - Below the critical exponent the complete family is a degenerating family whose rescaled limit
+    is a positive diagonal form (the Jordan-totient form); the limit polarization is inherited, and
+    the sign is proved by estimates.
+  - At the critical exponent the extension data of the degeneration are of the order of the limit;
+    they carry the zeros, and only an exact leading term decides (constant-factor wall).
   - At each degree the form is coercive off a finite divisor, but it carries a near radical of
     `≈ 2e^{2a}` directions with doubly exponentially small energy, blind to every zero below the
     Landau height `2πe^{2a}`.
-  - Deformation along the overlap flow is free; its content is hard Lefschetz, i.e. gluing of the
-    stars across the coprime stratum.
+  - Positivity is not carried by any semilocal piece and not by any local gluing: it is a glued
+    property whose unpaid part sits in the top gcd stratum, reached only through the archimedean
+    place. Deformation along the overlap flow is free; its content is hard Lefschetz.
 - **Π** is the precision of three prime statistics and the production of an exact count:
   - the one-point windowed prime error (= Weil's kernel = the inter-tower coupling);
   - the conjugate diagonal (Hecke defect), whose mean ladder is a near-line density ladder;
   - the signed prime-pair surplus beyond bandwidth one (census);
-  - the count-valued primitive `h¹` of the scaling surface (Riemann–Roch).
+  - the count-valued primitive `h¹` of the scaling surface (Riemann–Roch), equivalently a naive
+    height on the integral correspondence ring.
 - **Γ** is closed for every prime-set flip. What remains is Frobenius at infinity, the identity of
   the reflection pairing `ρ ↔ 1 − ρ` with the conjugation pairing `ρ ↔ ρ̄`. It has four RH-equivalent
-  readings and a fifth form: Rosati positivity of the correspondence algebra over `ℤ`.
+  readings and a fifth form: Rosati positivity of the correspondence algebra over `ℤ`, equivalently
+  a naive height (or a midpoint-convex log-count) at bounded distance from the integral Rosati form.
 
 Status: **Solved** (the face is a theorem), **Partially solved**, **Sharpened** (open, with its exact
 form a theorem), **Open**, **No-go** (the mechanism is refuted), **Classified** (answered by a
 classification theorem). Strength: **RH**, **≥qRH** (implies a zero-free half-plane and Lindelöf),
-**LH**, **sub**. Evidence: `[L]` Lean; `[S]` Lean in progress; `[D]` derived here from Lean
-statements.
+**LH**, **sub**, **indep.** (not implied by RH; no implication to RH known). Evidence: `[L]` Lean;
+`[S]` Lean in the working tree or unintegrated; `[D]` derived here from Lean statements.
 
 ## Σ — critical sign
 
 | Wall | Status | Strength | Content |
 |---|---|---|---|
-| Σ1 All-aperture positivity (degree axis) | Sharpened | RH | RH ⇔ eventual positivity at every bounded multiple `K·c*` for Denjoy–Carleman, sinc, Steklov and logarithmic profiles; every divergent multiple is a receiver; a bounded multiple synthesizes radius-`R` tests on the block `[N/B, N]`, `B ≈ e^{2R+2}`, so it sees radius `½ log K − O(1)` [L]. Restricted Weil ground minimum: `μ(A) ≥ 0 ∀A` ⇔ RH; floors through radius `181/500` and at `A₊ > 181/500` [L]. Ceiling `μ(A) ≤ K exp((11/2)A − πe^{2(A−2)})`, no positive floor along unbounded apertures [L]. |
-| Σ1a Critical overlap and receivers | Solved | — | Denjoy–Carleman: `c*_N ≍ L(log L)²`, where margin = synthesis error = `1/log N`; sinc: exact critical overlap of the same order; quasi-analytic boundary for compact Gevrey-`≤ 1` profiles [L]. Tilted spline: fourth-order synthesis; RH ⇔ eventual positivity at every `K(log N)^{1/8}`, also on the pole hyperplane; every exponent `> 1/8` is a receiver [L]. |
-| Σ1b Rough regime, tilted spline | Partially solved | sub | All vectors and every single conductor positive for `1 ≤ c ≤ (log N)^α`, `α < 1/9`, floor `κ/(2c⁷)`, reserve `(b/c²³)·poleDefect` [L]. Fixed and polylogarithmic conductor packets for `α < 1/8` [L]. Collective mid-band packets to `α < 1/4` and logarithmic defect confinement [S]. Binding term: the `c⁹` split cross payment against the `log N` reserve; the receiver needs `c⁸ ≍ K⁸ log N` [D]. Under ¬RH the edge lies in `[(log N)^{1/9−}, 2(log N)^{1/8+}]` infinitely often [L]. |
-| Σ1c Joint shell–pole payment | Open | sub | Separate shell payment sharp at `c²/ε` (`c⁹` at `ε = c⁻⁷`); joint top-band coefficient `O_φ(G(c + log N))` [L]. All-vector positivity at the spline's receiver needs confinement exponent `≤ 8` [D]. |
+| Σ1 All-aperture positivity (degree axis) | Sharpened | RH | RH ⇔ eventual positivity at every bounded multiple `K·c*` for Denjoy–Carleman, sinc, Steklov and logarithmic profiles; every divergent multiple is a receiver; a bounded multiple synthesizes radius-`R` tests on the block `[N/B, N]`, `B = ⌈1 + e^{2R+2}⌉`, so it sees radius `½ log K − O(1)` [L]. Restricted Weil ground minimum: `μ(A) ≥ 0 ∀A` ⇔ RH; floors through radius `181/500` [L]. The restricted form is the trace of the zero-form operator against `|u⟩⟨u|`; operator positivity at `a` ⇔ `μ(a) ≥ 0`; operator positive on `0 < a ≤ 181/500`; exact `{∞,2}` trace identity through `½ log 3`, where positivity ⇔ the single-prime (`p = 2`) family energy `≥ 0` [S]. Ceiling `μ(A) ≤ K exp((11/2)A − πe^{2(A−2)})`, no positive floor along unbounded apertures [L]. |
+| Σ1a Critical overlap and receivers | Solved | — | Denjoy–Carleman: `c*_N ≍ L(log L)²`, where margin = synthesis error = `1/log N`; sinc: exact critical overlap of the same order; quasi-analytic boundary for compact Gevrey-`≤ 1` profiles [L]. Tilted spline: RH ⇔ eventual positivity at every `K(log N)^{1/8}`, also on the pole hyperplane; every exponent `> 1/8` is a receiver [L]. Every finite rational correlation Gram is a limit of complete Steklov packet Grams at one family-dependent multiple of the critical overlap [L]; the smooth Steklov profile on `[0,1]` realizes them at a fixed multiple chosen for the finite family [S]. |
+| Σ1b Rough regime, tilted spline | Partially solved | sub | All vectors, `1 ≤ c ≤ (log N)^α`, `α < 1/9`: `W ≥ (a₀/c⁷)(poleDefect − C log(2c)‖x‖²) + (κ₀/(2c⁷))‖x‖²`; sublevel confinement `poleDefect ≤ C log(2c)‖x‖²`; all-vector defect reserve `c^{−8}` [L]. Fixed and polylogarithmic packets for `α < 1/8` [L]. Collective mid-band packets `V_{⌊N^θ⌋} ⊓ V_{⌊(log N)^q⌋}^⊥` coercive for `α < 1/4`, `q > 3α`, `θ ≤ 1/4096`, with the Riesz sandwich `(3/4)·adjunction ≤ poleDefect ≤ (3/2)·adjunction` [L]. Prime self-form of the overlapping top costs `O(c(1 + log c))` [L]. Binding term: the `c⁹` split cross payment against the `log N` reserve; the receiver needs `c⁸ ≍ K⁸ log N` [D]. Under ¬RH the edge lies in `[(log N)^{1/9−}, 2(log N)^{1/8+}]` infinitely often [L]. |
+| Σ1c Joint shell–pole payment | Open | sub | Separate shell payment sharp at `c²/ε` (`c⁹` at `ε = c⁻⁷`); joint top-band coefficient `O_φ(G(c + log N))` [L]. Shell degree: weighted non-ratio row `= n·d_n`; upward prime windows `O(c)`, downward divisor windows `O(c(n/N)(1 + log n))` [L]. All-vector positivity at the receiver needs confinement exponent `≤ 8` [D]. |
 | Σ1d Low-conductor spans | Partially solved | sub | Single modes `(log N)^A ≤ m ≤ N^θ` coercive for every `C²` profile [L]; nonpositive directions localize in a finite conductor sector at fixed overlap and in a `P`-smooth sector (`log P ≍ c¹⁶/η`) at growing overlap [L]. Spans below `(log N)^A` open. |
 | Σ1e Square-root conductor barrier | Open | sub | Frames and residual averages need `m² ≤ N`; above `√N` an Elliott–Halberstam-type input. |
 | Σ1f Defect-only confinement | No-go | — | `Q < 2^k` witnesses [L]. |
 | Σ1g Haar / Gamma graph | Partially solved | sub | Growing-packet prime–pole cancellation to `exp(√log Y/23040000)`; index `≤ R + A` for `R` coarse cells; growing Euler head alone unbounded [L]. Open: joint non-arithmetic Gamma graph + signed diagonal + roots + poles. |
-| Σ1h Rough regime, smooth profiles | Solved (to `ε·c*`) | sub | Every `C²` profile without real Fourier zeros has edge `→ ∞` [L]. The zero-free logarithmic profile is positive definite for `1 ≤ c ≤ ε·c*` [L]. |
-| Σ1i Constant-factor wall | Sharpened | RH (all `K`); sub (fixed `K`) | Relative cross-conductor residuals over `e, e′ ≤ Q` are `O((c⁷ + Q²(1+log Q)²)²·rate²)` and decay iff `c⁸ = o((log N)^{1−ε})`; at the receiver scale only the exact leading term decides; the Hilbert–Schmidt residual mass stays `o(Σ E_e²)` past the RH exponent but cannot see small margins [L]. No converse transfer from finite-aperture positivity to a fixed multiple is known. |
-| Σ2 Edge, zero modes, hard Lefschetz | Sharpened | RH | HR ∧ HL ⇔ strict HR; transport needs HL only on the HR locus; losing HR forces a primitive zero mode; Liouville ⇔ HL; RH ⇔ HL on the PSD locus along `1 ≤ c ≤ 2(log N)^β`, `β > ½` [L]. A finite first edge is PSD with a zero mode [L]. |
-| Σ3 Star renormalization | Partially solved | — (descent); RH (ascent) | Star of `d` = family at `(c⌊N/d⌋/N, ⌊N/d⌋)`, isometric for every weight; positivity descends; deep stars positive; depth law `log d − C₀`, sharp `log d − ε`, primitive `log d + 2log 2 − ε`; Metzler sign on stars of depth `d ≳ c`; counterterm self-similar exactly for generalized von Mangoldt weights [L]. |
-| Σ3a Coprime stratum | Sharpened | RH | gcd stratification `W = Σ_g Cop(W at the star of g)`, each stratum off-diagonal and indefinite; every successor pair and the archimedean overlap of consecutive atoms lie in `g = 1`; local positivity of stars says nothing about the top stratum [L]. Conductor ↔ star duality; conductor Gram graded by the lcm; conductor Gram PSD at every `2K(log N)^{1/8}` ⇔ RH [L]. |
-| Σ4 Finite index / heat count | Sharpened | ≥qRH (`K_ζ`); RH (`K_ζ⊠K_ζ`) | `κ < ∞` ⇔ bounded `N(t)` ⇔ bounded `O(T)` ⇔ all high zeros critical ⇒ `Θ < 1` [L]. No softening at any resolution [L]. |
-| Σ5 Collision quantum / heat homotopy | Sharpened | RH | `O ∈ 2ℕ`; RH ⇔ `O < 2` per window; `κ ≤ sup O`; heat state `κ(φ_c^{(t)}) = N(t)/2 + 1` [L]. |
-| Σ6 Rank / degree uniformity | Partially solved | RH | Rank 7 strict, rank 8 PSD; fixed Jensen degree eventually hyperbolic; PF₃₇ at the centre; RH ⇒ simple roots of reversed Xi Jensen sections [L]. |
-| Σ7 Odd / Markov sector | Open | RH | RH ⇔ `R ≤ ½` on odd vectors [L]. |
-| Σ8 Realization | Open | RH | Lossless realization needs infinitely many resonances; normal real-zero approximants force RH (Vitali) [L]. Gauss–Mayer determinant `D = A + ζB`; real-`w` derivative cone, `B ≠ 0` for small real `λ`, `D(w,−1) ≠ 0`; primitive coding of hyperbolic `SL₂(ℤ)` classes [L]. Trace identity and resonance exclusion open. |
+| Σ1h Rough regime, smooth profiles | Solved (to `ε₀·c*`) | sub | Every `C²` profile without real Fourier zeros has edge `→ ∞` [L]. The zero-free logarithmic profile is positive definite for `1 ≤ c ≤ ε₀ L(log L)²` [L]. The budget `exp(Bc/log²c) ≤ (log N)^α` holds uniformly exactly up to `(α/B)L(log L)²`; `ε₀ = 1/(128B)`, `B = 808(8π/3 + 3000)` [L]. |
+| Σ1i Constant-factor wall | Sharpened | RH (all `K`); sub (fixed `K`) | Relative cross-conductor residuals are `O((c⁸(1 + log c)²(log N)^{1/k}/log N)²)` and decay iff `c⁸ = o((log N)^{1−ε})` [L]. Limiting mixed structure: along `c_N → ∞`, `c_N ≤ (log N)^α`, `α < 1/8`, `c_N⁷⟨W r_e, r_{e′}⟩ → δ_{ee′} J(e)`, `J(e) = (2A_φ/M) ζ(8) J₈(e)/φ(e) > 0`, the rescaled extension data tend to `0`, fixed packets are eventually positive; at every multiple of `(log N)^{1/8}` conductor-Gram positivity is RH (inheritance radius exactly `1/8`) [L]. At the receiver scale the extension data are of the order of the limit and only their exact leading term decides [D]. No converse transfer from finite-aperture positivity to a fixed multiple is known. |
+| Σ2 Edge, zero modes, hard Lefschetz | Sharpened | RH | HR ∧ HL ⇔ strict HR; transport needs HL only on the HR locus; losing HR forces a primitive zero mode; Liouville ⇔ HL; RH ⇔ HL on the PSD locus along `1 ≤ c ≤ 2(log N)^β`, `β > ½` [L]. A finite first edge is PSD with a zero mode [L]. The fixed-overlap limit form `Σ E_m(c) y_m²` has ground state the pole conductor and degenerates to `0` along every growing schedule [L]. |
+| Σ3 Star renormalization and dilation monodromy | Partially solved | — (descent); RH (ascent) | Star of `d` = family at `(c⌊N/d⌋/N, ⌊N/d⌋)`, isometric for every weight; positivity descends; deep stars positive; depth law `log d − C₀`, sharp `log d − ε`, primitive `log d + 2log 2 − ε`; Metzler sign on stars of depth `d ≳ c`; counterterm self-similar exactly for generalized von Mangoldt weights [L]. Prime dilation lowers the conductor: `c_m(pn) = w_p(m) c_{ℓ_p m}(n)`, `w_p = 1, p − 1, p`; lowerings commute and fix only the pole conductor [L]; along a `p`-tower the limit coefficient is a weight string, `J(m) = p⁷J(m/p)` (`p² ∣ m`), `[8]_p J(m/p)` (`p ∥ m`) [S]. |
+| Σ3a Coprime stratum | Sharpened | RH | gcd stratification `W = Σ_g Cop(W at the star of g)`, each stratum off-diagonal and indefinite; every successor pair and the archimedean overlap of consecutive atoms lie in `g = 1`; local positivity of stars says nothing about the top stratum [L]. Conductor ↔ star duality; conductor Gram graded by the lcm; conductor Gram PSD at every `2K(log N)^{1/8}` ⇔ RH [L]. Coprime successor gap: period energy of a packet minus its successor `≥` its nonconstant mass, preserved by unit dilation, transferred to every window beyond `K ≥ Q(Q−1)` [L]. |
+| Σ4 Finite index / heat count | Sharpened | ≥qRH (`K_ζ`); RH (`K_ζ⊠K_ζ`) | `κ < ∞` ⇔ bounded `N(t)` ⇔ bounded `O(T)` ⇔ all high zeros critical ⇒ `Θ < 1` [L]. `κ ≤ r` ⇔ translation-stable positive constraints of dimension `≤ r` [L]. No softening at any resolution [L]. |
+| Σ5 Collision quantum / heat homotopy | Sharpened | RH | `O ∈ 2ℕ`; RH ⇔ `O < 2` per window; `κ ≤ sup O`; heat state `κ(φ_c^{(t)}) = N(t)/2 + 1` [L]. Per stabilized window: index `< 2` ⇔ index `0` ⇔ `L²(ℝ)` invertibility of the Wiener–Hopf lift ⇔ outer Birkhoff–Zhukovsky–Szegő factorization of the collision loop ⇔ Devinatz–Widom disk-unit sectoriality [L]. |
+| Σ6 Rank / degree uniformity | Partially solved | RH | Rank 7 strict, rank 8 PSD; fixed Jensen degree eventually hyperbolic; PF₃₇ at the centre; RH ⇒ simple roots of reversed Xi Jensen sections [L]. Approximation by RH-true centered curve products closes into this wall (Σ26) [D]. |
+| Σ7 Odd / Markov sector | Open | RH | RH ⇔ `R ≤ ½` on odd vectors [L]. Weil's form is a Markov form plus the pole plane: `W = V_N‖g‖² + J(g) + ½⟨c,g⟩² − ½⟨s,g⟩²`, `J` the archimedean-plus-prime jump energy with nonnegative jump measure, `V_N = Ω(0) − 2Σ_{n≤N} Λ(n)/√n` a constant creation potential; RH ⇔ the sinh-capacity bound at every level [L]. |
+| Σ8 Realization | Open | RH | Lossless realization needs infinitely many resonances; normal real-zero approximants force RH (Vitali) [L]. Gauss–Mayer: `D = A + ζB`; real-`w` derivative cone, `B ≠ 0` for small real `λ`, `D(w,−1) ≠ 0`; `D(w,z)D(w,−z) = exp(−Σ even-word traces)` near `z = 0` for `Re w > 1` and on `|z| ≤ 1` for `Re w > 2`, where `D(w,z) ≠ 0`; even Gauss words code the hyperbolic `SL₂(ℤ)` classes [L]. Selberg-zeta Euler product, scattering identification and resonance exclusion open. |
 | Σ9 Explicit image / resolvent | Partially solved | RH in strip | Depth identity for `σ > 1`; theta–prime expression at `s = 4` [L]. |
-| Σ10 Local signatures and gluing | Solved | — | `κ(φ_c) = κ + 1` at `∞` and every prime; readings add; dilation form + shell squares on boost mass zero [L]. |
+| Σ10 Local signatures and gluing | Solved | — | `κ(φ_c) = κ + 1` at `∞` and every prime; readings add; dilation form + shell squares on boost mass zero [L]. Two primes with translations in `ℤ[1/qr]` (and a fixed three-prime core) carry the full affine index `κ + 1` [L]. |
 | Σ11 Product-formula gluing of the global pole | Classified | — | Sum of local poles `|S|` squares; tensor `2^{|S|−1}`; renormalized infinite product `∞`; extremal weight = archimedean pole on `S`-units [L]. |
 | Σ12 Running counterterm / star flux | Solved | — | `log N − γ` cancels the prime diagonal through `Λ ∗ 1 = log`; on every star the counterterm pays exactly the flux `log d` [L]. |
 | Σ13 Tensor amplification | No-go | — | `K_ζ^n` PD ⇔ RH; `n₋(G⊗G) = 2n₊n₋` at every horizon [L]. |
 | Σ14 Deformation to a positive model | No-go as free input | — | Crossing-free path `A → I` ⇔ `A` PD; Kähler transport exact and free [L]. |
 | Σ15 Separable assemblies | Classified (no-go) | — | Blind when truncated, non-convergent pointwise when untruncated [L]. |
-| Σ16 Prime–pole coherence / packet identity | Solved (as identity) | — | Mertens polarization `P_N(F) = Σ F²/n(ψ₁(⌊N/n⌋) + log n) − J_N(F)`; complete form = jump squares + affine incidence squares + bounded diagonal − shell degree + boundary; `B_Q² ≤ S_Q L_Q` sharp [L]. |
+| Σ16 Prime–pole coherence / packet identity | Solved (as identity) | — | Mertens polarization `P_N(F) = Σ F²/n(ψ₁(⌊N/n⌋) + log n) − J_N(F)`; complete form = jump squares + affine incidence squares + bounded diagonal − shell degree + boundary; the shell degree is the only term growing with the overlap; `B_Q² ≤ S_Q L_Q` sharp [L]. |
 | Σ17 Inter-tower coupling | Solved (as equivalence) | RH | Coupling ≡ kernel with absolute constants; RH ⇔ bounded coupling on one `⟨p⟩×⟨q⟩`; rate = width; local Hyers–Ulam stability; cone ⇒ RH or unattained width; finite stratum ⇒ RH [L]. |
-| Σ18 Exact SOS on a two-prime lattice | Open | RH | Weil's dilation form on boost-mass-zero vectors of one two-prime lattice as a sum of squares of coupling differences. |
+| Σ18 Exact SOS on a two-prime lattice | Open | RH | Weil's dilation form on boost-mass-zero vectors of one two-prime lattice as a sum of squares of coupling differences. The Hecke orbit of one spectrally generic test under `ℤ log p + ℤ log q` carries the full Hodge defect [L]. |
 | Σ19 Loop-Eisenstein band poles | Open | RH | `κ_Hodge = #` band poles of `Λ(s)/Λ(s+1)`; noncancellation mechanism missing [L]. |
 | Σ20 Scheduled prime sums | Open | RH | Lower bounds for prime-scheduled energies (FU, CFC, RP, SZ, LI, FEL, EGC) [L]. |
 | Σ21 Extension / carrier | Classified | — | Escape, mixing, height decay ⇒ `κ ∈ {0, ∞}`; continuous-dilation carriers reading `1_H` exist iff `H ∈ {{0}, ℚ}`; unique proper-subgroup split [L]. |
 | Σ22 Lefschetz operators | Classified | — | Dilation: HL trivial, transports positivity downward only. Overlap flow: HL on the HR locus is RH. Coupling Laplacian: HL for `t > 0`, base point `t = 0` is the zero form. No candidate is free [L]. |
 | Σ23 Connected links | No-go | — | Links of the dilation complex are disconnected (distinct prime towers never adjacent); every link over a curve with a rational point is complete. Garland / trickle-down unavailable over `ℤ`; coprime atoms couple only through the archimedean place [L]. |
-| Σ24 Finite divisor | Solved | — | At every degree `a`, `Re W ≥ (10 + 68e^a)(1 − 1/π)‖f‖²` on tests vanishing at `i/2` and on a finite grid `D_a`; Hodge defect at degree `a` finite (doubly exponential bound); over `𝔽_q` it is `0` or `∞`; the golden fake admits no finite divisor beyond `log 5/2` [L]. |
+| Σ24 Finite divisor | Solved | — | At every degree `a`, `Re W ≥ (10 + 68e^a)(1 − 1/π)‖f‖²` on tests vanishing at `i/2` and on a finite grid `D_a`; Hodge defect at degree `a` finite (doubly exponential bound); over `𝔽_q` it is `0` or `∞` (lag-formula configurations jump from `0` to `∞`); the golden fake admits no finite divisor beyond `log 5/2` [L]. |
+| Σ25 Semilocal positive carriers | No-go | — | No `{∞, p}` semilocal family carries positivity: the unglued archimedean Sonin operator is not positive; the prime-`p` transport block is indefinite for `a > ½ log p`; on `(½ log 2, ½ log 3]` the full form is neither a multiple of the prime-free form nor a positive-degree homogeneous multiplicative factorization over it; along `b_M = 1/16 + ((2M+1)/4) log p` an antisymmetric bump pair kills every shift `p^k` while its polar energy tends to `−∞`, so prime-free and single-prime ground energies cross zero with a Friedrichs zero mode [S]. Survivor: exact `{∞,2}` trace identity through `½ log 3` with the positive valuation-shell operator `K_2(m)`, `Tr = m log 2`, and the Krein `(+1,−1)` split of the polar block [L/S]. |
+| Σ26 Approximation by RH-true objects | Classified | — | Centered curve numerators `A Π(cosh(hz) − cos θ_j)` have nonnegative even Taylor coefficients, so pointwise convergence on a real half-line gives local boundedness on `ℂ`; the Euler domain of a centered approximation is `½ + 1/(2a) → ∞` [L]. Their closure class is the Laguerre–Pólya class in `iz`; real-axis convergence to `ξ(½ + x)` is the Stieltjes / Laguerre–Pólya moment property of the Taylor coefficients of `ξ` at `½`, i.e. Σ6 [D]. |
 
 ## Π — precision and production
 
@@ -75,42 +82,42 @@ statements.
 |---|---|---|---|
 | Π1 Global law | Solved (as equivalence) | RH | `ψ(x) − x ≤ C√x log²x` ⇔ RH ⇔ `κ = 0`; prime-star nerve reduced Euler characteristic `−M(N)`, RH ⇔ `|χ̃| = O(N^{½+δ})` [L]. |
 | Π2 Deciding input | Open | RH | No unconditional source input at square-root precision. |
-| Π3 Producer cost | Partially solved | sub / RH | Growing-alphabet producers reach `ψ, θ ≤ (1+ε)x + C_ε log²x`; every individual producer has slope `> 1` [L]. Open: `ε`-uniform error. |
+| Π3 Producer cost | Partially solved | sub / RH | Multivariate parity-selective producers reach `ψ, θ ≤ (1+ε)x + C_ε log²x`; every individual producer has slope `> 1`; univariate integer-Chebyshev ceiling `exp(−0.87n)` [L]. Open: `ε`-uniform error. |
 | Π4 Window precision (kernel = coupling) | Sharpened | RH | Weil's kernel is the smoothed prime error in fixed-length multiplicative windows; coupling ≡ kernel [L/D]. |
-| Π5 Conjugate diagonal (Hecke defect) | Sharpened | sub → ≥qRH → RH | Prime polynomial carries `O(1/log T)` of the defect; counts + linear explicit formula cannot bound it [L]. Dyadic means `O_c(log U)`: `c < 22/51` [L], `c < 1/2` [S]; `O(U^η)` for `c < 2/3` [L]. `O_c(log U)` for all `c < c*` ⇔ near-line density rate `r` for all `r < 2c*`, `c* ≤ 2/3` [S]. Mean `o(log U)` ⇔ 100% critical-scale clustering. Fixed scale ⇔ corridor (≥qRH). One constant over dyadic scales ⇔ RH [L]. |
-| Π6 Averages versus all heights | Sharpened | — | Almost all unit windows zero-free at depth `≥ (1 + ε)loglog T/log T` [S] (`6/5` [L]); right-half depth moment `o(V)`; a density envelope admits a singleton count [L]. |
+| Π5 Conjugate diagonal (Hecke defect) | Sharpened | sub → ≥qRH → RH | Prime polynomial carries `O(1/log T)` of the defect; counts + linear explicit formula cannot bound it [L]. Dyadic means `O_c(log U)` for every `c < 1/2` (also for the unit-window supremum), `K_c ≤ K_*c²` on `c ≤ 1/5` [L]; `O(U^η)` for `c < 2/3` [L]. `O_c(log U)` for all `c < c*` ⇔ near-line density rate `r` for all `r < 2c*`, every `c* ≤ 2/3`; near-line density holds at every rate `r < 1` [L]. Mean `o(log U)` ⇔ 100% critical-scale clustering [L]. Fixed scale ⇔ corridor (≥qRH). One constant over dyadic scales ⇔ RH [L]. |
+| Π6 Averages versus all heights | Sharpened | — | Almost all unit windows zero-free at depth `(1 + ε)loglog T/log T` [L]; right-half depth moment `o(V)`; a density envelope admits a singleton count [L]. Under finite off-line support with ¬RH, fixed-`c` unit-window jets tend to `0` while every dyadic reading is unbounded [L]. |
 | Π7 Census / pair surplus | Partially solved | sub / LH | Simple critical `≥ 0.67250071` [L]. Cosine certificate on `λ ∈ (0, 2]`: `(R_cos(λ) + δ_λ − ε)N − S_cos ≤ N₀ˢ`, `R_cos(4/3) ≥ 3/4 + 79/1250`, `R_cos(2) ≥ 5/6 + 43/3750` [L]. Open: the signed prime-pair surplus `S_cos` beyond bandwidth one. |
-| Π8 Depth visibility | Sharpened | — | Isolated pair visible at aperture `a` iff `S_δ(a) > (1/2π)log(ξ/2π)`; archimedean domination blind at every depth; finite-aperture positivity forces companions of deep isolated zeros [L]. Clusters are not excluded [D]. |
+| Π8 Depth visibility | Sharpened | — | Isolated pair visible at aperture `a` iff `S_δ(a) > (1/2π)log(ξ/2π)`; archimedean domination blind at every depth; finite-aperture positivity forces companions of deep isolated zeros [L]. In the multiple `K = e^{2a}` below Nyquist: index `0` iff `(K^δ − K^{−δ})/(2δ) ≤ 2L_γ + log K`; edge `exp(min(x/δ, L))`, `sinh x − x = 2δL`, between `(4δL)^{1/δ}` and `(6δL+1)^{1/δ}` for `δL ≥ 16`; above Nyquist a lattice-difference test has energy exactly `−2` [L]. Clusters are not excluded [D]. |
 | Π9 Exceptional moduli | Partially solved | sub | Uniform zero-free region and Siegel for `q ≤ (log x)^A`; every inverse-log rate at one horizon [L]. |
 | Π10 Frequency localization | Sharpened | ≥qRH (¾ strip); RH | Every band `K = ⌈N^δ⌉` retains the infimal exponent `2Θ` [L]. |
 | Π11a Cone effectivity | No-go (classified) | — | On any polar surface, an ample cone of nonnegative degree satisfies the RR axiom iff it contains the open positive cone and the Hodge index holds; on an orbit, RR ⇔ orientation [L]. |
-| Π11b Bidegree counts | No-go | — | Counts built from the base by its own operations are functions of `(x·H, x·V)`; their primitive `h¹` is `½δ` whatever they are; RI ⇔ Hodge index + pole-plane RI [L]. Künneth effectivity on prime-free cycles and off the finite divisor holds, imported from estimates [L]. |
+| Π11b Bidegree counts | No-go | — | Counts built from the base by its own operations are functions of `(x·H, x·V)`; their primitive `h¹` is `½δ` whatever they are; RI ⇔ Hodge index + pole-plane RI [L]. Künneth effectivity on prime-free cycles and off the finite divisor holds, imported from estimates [L]; all-profile Künneth effectivity and Hodge index through radius `181/500` [S]. |
 | Π11c Fixed-rank counts | No-go | — | Fixed-rank lattice counts with bounded `h⁰(·, 0)` and degree `≤ α + β|x·A|` violate RI on every polar surface [L]. |
-| Π11d Definite counts | No-go | — | `ℤ ⊕ yℤ`, `y > e²` (e.g. `y = 8`): positive count, Poisson duality, FE, simple poles, positive Dirichlet series, real zero in `(½, 1)` [L]. |
+| Π11d Definite counts | No-go | — | `ℤ ⊕ yℤ`, `y > e²` (e.g. `y = 8`): positive count, Poisson duality, FE, simple poles, positive Dirichlet series, real zero in `(½, 1)` [L]. The self-dual point `ℤ ⊕ ℤ` has `Λ₁(σ) < 0` on `(0,1)`: the fakes are created by the boost [L]. |
 | Π11e Siegel majorants | No-go as producer | — | `P_u ≥ 0` on every class ⇔ Hodge index; every primitive Gaussian count of the scaling surface converges ⇔ RH; split plane at fixed boost is a rectangular lattice with fakes for `|u| > 1` [L]. |
 | Π11f Logarithmic duality of the split surface | Open | sub | Isotropic cone count `= Γ(σ)(2π)^{−σ}ζ(σ)²`, double pole `1/(2π)`, no weak FE-pair; boost average of majorants = cone count [L]. The completion must carry the logarithm of the pole-plane RR `h⁰(D) − h⁰(D^∨) = log(D²/2)`. |
 | Π11g Boost transform | Solved (identity) | — | `∫Z⁺(s,u)e^{2wu}du = K(s,w)ζ(s+w)ζ(s−w)`; the boost-equivariant part of the split count carries the Euler product [L]. |
-| Π11h Count-valued primitive `h¹` | Open | RH | Künneth RR `h_K(x) + h_K(−x) = ½x² + h¹_K + ½δ`; RI on the scaling surface ⇔ RH; Hecke correspondences scale primitive `h¹`; over curves primitive `h¹` of a graph = degree of the correspondence (`N₁` for `1 − F`) [L]. Missing: a count reading the test component, on lattices of growing rank, with `h¹_prim = ½W ≥ 0` by construction. |
+| Π11h Count-valued primitive `h¹` | Open (solved at small radius) | RH | Künneth RR `h_K(x) + h_K(−x) = ½x² + h¹_K + ½δ`; RI on the scaling surface ⇔ RH; Hecke correspondences scale primitive `h¹`; over curves primitive `h¹` of a graph = degree of the correspondence (`N₁` for `1 − F`) [L]. Prime-free cycles: `W = Ω(0)‖f‖² + J(f) + pole term`, `J(f) = ½∫∫(f(u) − f(u+x))² du w(x)dx ≥ 0`, `w(x) = e^{x/2}/sinh x` (the Lévy–Khintchine jump count of the Gamma factor); the count alone gives `W ≥ ‖f‖²/20` and `h¹_prim ≥ ‖f‖²/40` at radius `≤ 1/64` [L]. Over `𝔽_q` the Stepanov count gives Künneth effectivity and `h¹_prim ≥ 0` on every Frobenius window of every odd-characteristic hyperelliptic curve [L]. Missing: the count reading on the whole prime-free window (interior jumps, pole term), past the first Hecke graph, and on lattices of growing rank. |
 | Π12 Subconvexity / heat floor | Partially solved | sub | `μ(½) ≤ 33/200`, `μ(5/6) ≤ 2/53` [L]; every even heated slice coefficient positive at `(133/200)/log|t|` [L]; flow threshold `(2/3 + ε)/log X` [L]. |
-| Π13 Gap-dependent detection / prefix scale | Sharpened | sub | Stopping certificate sound and eventually complete; admissible stage depends on divisor separation; the first stabilized prefix exceeds `N₀` once a window holds more zeros than prefix `N₀` has in the strip [L]. |
+| Π13 Prefix scale of quantized readings | Sharpened | indep. | Stopping certificate sound and eventually complete; admissible stage depends on divisor separation [L]. Theta prefixes: strip zero multiplicity `Θ(N² log N)`, zero-free in the strip above height `C(N+2)²`; the first artifact-free prefix is `≥ c√T` unconditionally [S]. A polynomial upper bound needs a separation input. |
 | Π14 Amplifier rank | No-go (finite support) | — | Growing losses `e^{2kλ}` keep radius `Be^λ` [L]. |
 | Π15 Critical-scale residual sign | Sharpened | RH (all `K`) | Margin = synthesis error = `1/log N` at `c*`; sharp literal prime residual scale `(log Q)²/log N` [L]; generic relative bounds stop decaying at the receiver scale (Σ1i) [L]. Only signed cancellation decides [D]. |
-| Π16 Genus function (near radical) | Partially solved | sub | Near radical at level `a`: dimension `≥ (2 − η)e^{2a}`, energy `≤ exp(−η²e^{2a}/(300a))`, tests blind to all zeros below `2πe^{2a}` [L]; upper bound by the doubly exponential grid count [L]. Over `𝔽_q` the exact radical is infinite beyond the genus aperture [L]. Open: the upper Landau–Widom half `(2 + o(1))e^{2a}`. |
+| Π16 Genus function | Sharpened | indep. | Near radical at level `a`: dimension `≥ (2 − η)e^{2a}`, energy `≤ exp(−η²e^{2a}/(300a))`, blind to all zeros below `2πe^{2a}` [L]. The genus function counts distinct resolved zeros: `g ≥ (2 − η)e^{2L} + 2(N(0,T) − N_d(0,T))` and `g(L, 2ε) ≥ (2 − η)e^{2L} + 2N(0,T) − #S` for every net `S` of the low zeros at scale `exp(−η²e^{2L}/(100L))` [L]. The genus law `g ≤ (2 + η)e^{2a}` at one `η` gives `N − N^s ≤ 2ηT` (almost all zeros simple, rate `1/log T`) and all but `o(T)` zeros isolated at scale `exp(−η²T/(20 log T))` [L]. Over `𝔽_q` the exact radical is infinite beyond the genus aperture [L]. |
 
 ## Γ — selection
 
 | Wall | Status | Strength | Content |
 |---|---|---|---|
 | Γ1 Trivial gauge point | Open | RH | `Θ ≥ ½`, Haar-a.e. `½`; RH ⇔ trivial point typical [L]. |
-| Γ2 Prime-set flips | Solved | — | Ordinary or two-adic atomic margin separates every nontrivial prime pattern; coupling diagonal recovers flip sets; zero-density twins of relative density `κ ∈ (0, 1/4)` separated iff the conductor series exceeds `1/s` [L]. |
+| Γ2 Prime-set flips | Solved | — | Ordinary or two-adic atomic margin separates every nontrivial prime pattern; coupling diagonal recovers flip sets; every finite flip set has an exact resolution threshold; zero-density twins of relative density `κ ∈ (0, 1/4)` separated iff the conductor series exceeds `1/s` [L]. |
 | Γ3 Twin-blindness of soft structure | No-go (complete) | — | Krein index invariant under unitary twists; pointwise-closed classes contain every unitary twist [L]. |
 | Γ4 Frobenius at infinity | Open | RH | `σ(ρ) = 1 − ρ̄` fixes exactly the line; RH ⇔ `σ` trivial ⇔ every Hecke translation a similitude of the collided form ⇔ one constant for the dyadic Hecke defects ⇔ partner saturation of resonant states [L]. |
 | Γ5 Source identification / pre-divisor | Partially solved | RH | Integer counting + full-cone positivity ⇒ `λ = Λ` and RH; pre-divisor sections need zero-independent forcing [L]. |
 | Γ6 Boundary sign / coherence | Solved | — | Pole boundary sign separates ζ from size-equivalent twins [L]. |
 | Γ7 Affine carrier with Weil dilation | Solved | — | Gluing at a place; subgroup classification [L]. |
-| Γ8 Poisson rigidity | Sharpened | RH | Positive tent-self-dual measures with gap are Dirac combs; zero-side positivity = RH [L]. |
+| Γ8 Poisson rigidity | Sharpened | RH | Positive tent-self-dual measures with gap are Dirac combs; zero-side positivity = RH [S]. |
 | Γ9 Archimedean continuity vs height decay | No-go | — | Continuous dilation against a decaying finite-adelic reading ⇒ `κ = ∞` [L]. |
-| Γ10 Function-field indistinguishability | Sharpened | — | Local index walls identical over `𝔽_q(X)`; curve edge `≤ 2g`; Frobenius conformal with factor `q`, Hecke dilations boosts; Künneth effectivity on every Frobenius window ⇔ unitarity; links complete over curves, disconnected over `ℤ`; finite divisor over `ℤ`, none for fakes [L]. |
+| Γ10 Function-field indistinguishability | Sharpened | — | Local index walls identical over `𝔽_q(X)`; curve edge `≤ 2g`; Frobenius conformal with factor `q`, Hecke dilations boosts; Künneth effectivity on every Frobenius window ⇔ unitarity, and holds by the Stepanov count; links complete over curves, disconnected over `ℤ`; finite divisor over `ℤ`, none for fakes [L]. |
 | Γ11 Pole-blindness of the glue | No-go | — | Simple pole absorbed, double pole costs a square [L]. |
 | Γ12 General gauges | Partially solved | sub | Entrywise-nonnegative gauges only on archimedean characters; twisted Selberg source forces `ω(p) = 1` [L]. Open: unimodular gauges with `S_N/H_N → 1`; zero-density twins at `κ = 0`. |
 | Γ13 Source-uniform extinction | No-go | — | Fails at `3/4 + i` [L]. |
@@ -119,47 +126,48 @@ statements.
 | Γ16 Selection–sign gap | Sharpened | RH | Every selector (atomic pole index, two-adic probe, Metzler gauge, twisted Selberg source, coupling diagonal, finite-flip edges, star flux, conductor series) is a margin, index or counterterm identity on a partial form [L]. |
 | Γ17 Scattering recentering | Classified (no-go) | — | A rational map real at infinitely many points of the critical parabola is constant; an algebraic relation real infinitely often on the parabola and on `(¼, ∞)` is a horizontal line [L]. |
 | Γ18 Divisor-identity selection | Solved (selection) | — | Self-similar star flux iff generalized von Mangoldt; among completely multiplicative twists `Λω` only `ω ≡ 1` [L]. |
-| Γ19 Correspondence algebra over `ℤ` | Sharpened | RH | Correspondences = finitely supported measures on scales; Hecke graphs satisfy Lefschetz, adjunction and `T_gT_g′ = e^{s(g)}`; Rosati positivity ⇔ orbit Hodge index; Lefschetz trace of a corrector = primitive energy; eventual Hasse–Weil ⇒ Hasse–Weil. All identities hold on the golden fake; positivity is the orientation [L]. |
+| Γ19 Correspondence algebra over `ℤ` | Sharpened | RH | Correspondences = finitely supported measures on scales; Hecke graphs satisfy Lefschetz, adjunction and `T_gT_g′ = e^{s(g)}`; λ-ring with Adams operators = scaling action; the theorem of the square holds on every polar surface (normalized graphs, degree = `½δ`); Rosati positivity ⇔ orbit Hodge index ⇔ every normalized Hecke graph has nonnegative degree; Lefschetz trace of a corrector = primitive energy; eventual Hasse–Weil ⇒ Hasse–Weil [L]. Tate's limit law: Rosati positivity at a cycle ⇔ its integral Rosati form has a naive height ⇔ it has a midpoint-convex function at bounded distance; for ζ, RH ⇔ every cycle has one; in genus one a naive height exists iff Hasse holds, the golden datum has none [L]. All algebraic identities hold on the golden fake; positivity is the orientation. |
 
 ## Bridges
 
 | Bridge | Anchor |
 |---|---|
-| `κ(K_ζ)` = right zeros = Hodge defect = band poles of `Λ(s)/Λ(s+1)` = zeros moved by `σ`; even; RH ⇔ `κ < 2` | HKT, RIT, EHT `FrobeniusAtInfinity`, AOG `TheIndexExit` [L] |
-| `κ(φ_c) = κ + 1` at every place | AKG [L] |
+| `κ(K_ζ)` = right zeros = Hodge defect = band poles of `Λ(s)/Λ(s+1)` = zeros moved by `σ`; even; RH ⇔ `κ < 2`; the Hecke orbit of one generic test carries all of it | HKT, RIT, EHT `FrobeniusAtInfinity`, AOG `TheIndexExit`, ACS `TheHodgeDefectIsCyclic` [L] |
+| `κ(φ_c) = κ + 1` at every place; two primes with bounded translations carry it | AKG [L] |
 | boost hyperplane = `v₁^⊥` = Markov = harmonic hyperplane = primitive part | RIT, HWV [L] |
 | bounded `K_ζ` ⇔ bounded coupling ⇔ no edge ⇔ RH | RIT, ACPL [L] |
 | overlap multiple `K·c*` ↔ synthesis blocks `e^{2R}` ↔ radius `½ log K` ↔ degree `a` | TM `ReceiverRate` [L] |
-| tilted spline: rough regime `1/9`, receiver `1/8`; logarithmic profile: rough regime `ε·c*`, receiver `K·c*` | CACT, SSHA, TM [L] |
-| relative residual decays iff `c⁸ = o(log N)`; exact leading term at the receiver scale | HWV `TheCrossConductorPairings` [L] |
-| aperture ceiling `exp((11/2)a − πe^{2(a−2)})` ↔ near radical `(2 − η)e^{2a}` blind below `2πe^{2a}` ↔ finite divisor `D_a` | ArithmeticCompensationTheory, RHTower `SharpWeilNearRadicalCount`, ACS [L] |
-| isolated pair visible iff `S_δ(a) > (1/2π)log(ξ/2π)`; companions forced at finite aperture | ACS, RHTower `IsolatedDeepZeroWeilDetection` [L] |
+| tilted spline: rough regime `1/9`, inheritance radius and receiver `1/8`; logarithmic profile: rough regime `ε₀·c*`, receiver `K·c*` | CACT, ADT, SSHA, TM [L] |
+| rescaled limit = Jordan-totient form `J_{β+1}(m)/φ(m) = m^β Π_{p∣m} ζ_p(1)/ζ_p(β+1)`; extension data vanish below `1/8` and carry the zeros at it | ADT [L]; reading [D] |
+| aperture ceiling ↔ near radical `(2 − η)e^{2a}` blind below `2πe^{2a}` ↔ finite divisor `D_a` ↔ genus function counting distinct resolved zeros | ArithmeticCompensationTheory, RHTower `SharpWeilNearRadicalCount`, ACS [L] |
+| isolated pair visible iff `S_δ(a) > (1/2π)log(ξ/2π)`; edge `≈ (cδ log γ)^{1/δ}` in the multiple; companions forced at finite aperture | ACS, RHTower `IsolatedDeepZeroWeilDetection` [L] |
+| Weil form = Markov form (archimedean + prime jumps, creation potential `V_N`) + pole plane; on prime-free cycles the jump part is the Lévy–Khintchine count of the Gamma factor | RHTower `WeilMarkovPoleCapacity`, LST [L] |
 | RH ⇔ HL on the PSD locus; Liouville = HL; no free Lefschetz operator | HWV [L] |
-| `W = Σ_g Cop(W at the star of g)`; successor and archimedean coupling in `g = 1`; links disconnected; nerve `χ̃ = −M(N)` | HWV [L] |
+| `W = Σ_g Cop(W at the star of g)`; successor and archimedean coupling in `g = 1`; links disconnected; nerve `χ̃ = −M(N)`; no semilocal positive carrier | HWV, SP [L/S] |
 | RH ⇔ effectivity with RR and ample axioms; cone RR ⇔ Hodge (universal floor law); orbit RR ⇔ orientation | ACS, AOG [L] |
 | theta `h⁰` RR on `Spec ℤ` and the pole plane; `Λ(s)` = Mellin of `e^{h⁰} − 1` | AOG `TheThetaH0OfSpecZ` [L] |
-| Künneth `h¹` = count part + `½δ`; primitive `h¹` over curves = degree of the correspondence | LST [L] |
-| boost average of the split count = `K ζ(s+w)ζ(s−w)`; isotropic count = `ζ²` | LST [L] |
-| Rosati positivity ⇔ orbit Hodge index; Lefschetz trace of correctors = primitive energy | AOG [L] |
+| Künneth `h¹` = count part + `½δ`; primitive `h¹` over curves = degree of the correspondence; Stepanov count pays it over `𝔽_q` | LST [L] |
+| Rosati positivity ⇔ orbit Hodge index ⇔ naive height on the integral Rosati form ⇔ midpoint-convex log-count | AOG, AET, ACP [L] |
 | first rung: finite Hodge defect ⇔ bounded heat counts ⇔ bounded collision charges ⇒ `Θ < 1` | AOG `TheIndexExit` [L] |
-| collision charge = Fredholm index; `κ ≤ sup O` | CDG, EHT [L] |
-| Hecke-defect means ↔ near-line density rates (`r < 2c*`, `c* ≤ 2/3`); `o(log U)` ⇔ critical-scale clustering; dyadic-uniform ⇔ RH | CDG [L/S] |
+| collision charge = Fredholm index = Wiener–Hopf index; index `0` ⇔ outer Szegő factorization ⇔ disk-unit sectoriality; `κ ≤ sup O` | CDG, EHT [L] |
+| Hecke-defect means ↔ near-line density rates (`r < 2c*`, `c* ≤ 2/3`); `o(log U)` ⇔ critical-scale clustering; dyadic-uniform ⇔ RH | CDG [L] |
 | partner saturation of resonant states ⇔ `Re ρ = ½` | RHTower `EisensteinResonantPartnerAngle` [L] |
-| Mayer determinant `D = A + ζB`; real-`w` cone; primitive coding | RIT `GaussMayer*` [L] |
-| finite index `≤ r` ⇔ translation-stable positive constraints of dimension `≤ r` | HKT `Index` [L] |
+| Mayer determinant `D = A + ζB`; signed product = exp of even-word traces; primitive coding | RIT [L] |
 | curve: bounded coupling ⇔ unitary ⇔ Castelnuovo–Severi on the Frobenius span; Künneth effectivity ⇔ unitarity | ACPL, LST [L] |
+| centered curve products ↔ Laguerre–Pólya closure ↔ Hankel / Jensen signs | ART [L]; reading [D] |
 
 ## Status counts
 
 | Family | Solved | Partially solved | Sharpened | Open | No-go | Classified |
 |---|---|---|---|---|---|---|
-| Σ (34) | 7 (Σ1a, Σ1h, Σ10, Σ12, Σ16, Σ17, Σ24) | 6 (Σ1b, Σ1d, Σ1g, Σ3, Σ6, Σ9) | 6 (Σ1, Σ1i, Σ2, Σ3a, Σ4, Σ5) | 7 (Σ1c, Σ1e, Σ7, Σ8, Σ18, Σ19, Σ20) | 4 (Σ1f, Σ13, Σ14, Σ23) | 4 (Σ11, Σ15, Σ21, Σ22) |
-| Π (23) | 2 (Π1, Π11g) | 5 (Π3, Π7, Π9, Π12, Π16) | 7 (Π4, Π5, Π6, Π8, Π10, Π13, Π15) | 3 (Π2, Π11f, Π11h) | 6 (Π11a–e, Π14) | — |
+| Σ (36) | 7 (Σ1a, Σ1h, Σ10, Σ12, Σ16, Σ17, Σ24) | 6 (Σ1b, Σ1d, Σ1g, Σ3, Σ6, Σ9) | 6 (Σ1, Σ1i, Σ2, Σ3a, Σ4, Σ5) | 7 (Σ1c, Σ1e, Σ7, Σ8, Σ18, Σ19, Σ20) | 5 (Σ1f, Σ13, Σ14, Σ23, Σ25) | 5 (Σ11, Σ15, Σ21, Σ22, Σ26) |
+| Π (23) | 2 (Π1, Π11g) | 4 (Π3, Π7, Π9, Π12) | 8 (Π4, Π5, Π6, Π8, Π10, Π13, Π15, Π16) | 3 (Π2, Π11f, Π11h) | 6 (Π11a–e, Π14) | — |
 | Γ (19) | 4 (Γ2, Γ6, Γ7, Γ18) | 2 (Γ5, Γ12) | 4 (Γ8, Γ10, Γ16, Γ19) | 3 (Γ1, Γ4, Γ15) | 5 (Γ3, Γ9, Γ11, Γ13, Γ14) | 1 (Γ17) |
 
 Strength of the open walls:
-- **RH:** Σ1, Σ1i (all `K`), Σ2, Σ3 (ascent), Σ3a, Σ5, Σ7, Σ8, Σ18, Σ19, Σ20, Π2, Π4, Π11h, Π15,
-  Γ1, Γ4, Γ5, Γ8, Γ16, Γ19.
+- **RH:** Σ1, Σ1i (all `K`), Σ2, Σ3 (ascent), Σ3a, Σ5, Σ6, Σ7, Σ8, Σ18, Σ19, Σ20, Π2, Π4, Π11h,
+  Π15, Γ1, Γ4, Γ5, Γ8, Γ16, Γ19.
 - **≥qRH:** Σ4 (`K_ζ`), Π5 (fixed scale), Π10 (¾ strip).
 - **sub:** Σ1b–Σ1g, Σ1i (fixed `K`), Π3, Π5 (mean `o(log U)`, density rate `≥ 1`), Π7, Π9, Π11f,
-  Π12, Π13, Π16, Γ12, Γ15.
+  Π11h (fixed degree), Π12, Γ12, Γ15.
+- **indep.:** Π13 (polynomial prefix scale), Π16 (genus law; implies almost all zeros simple).

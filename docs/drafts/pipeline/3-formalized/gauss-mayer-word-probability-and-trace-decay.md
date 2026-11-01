@@ -2,7 +2,7 @@
 
 - **Stage:** 3-formalized
 - **Type:** Theorem
-- **Parent:** [primitive modular orbit product](../1-in-progress/gauss-mayer-primitive-orbit-product.md).
+- **Parent:** [primitive modular orbit product](gauss-mayer-primitive-orbit-product.md).
 
 ## Theorem
 
@@ -75,5 +75,5 @@ reciprocal telescope already existed. The source contribution is their
 exact word probability law and its trace bound uniform in word length.
 [Continuation to the closed unit spectral disk](gauss-mayer-unit-even-word-determinant.md)
 and [primitive-cycle logarithm regrouping](gauss-mayer-primitive-orbit-logarithm.md)
-are certified. The Euler product remains unproved.
+and the [Euler product](gauss-mayer-primitive-orbit-product.md) are certified.
 No scattering identity or resonance exclusion is claimed.

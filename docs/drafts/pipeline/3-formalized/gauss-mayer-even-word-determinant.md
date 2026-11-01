@@ -2,7 +2,7 @@
 
 - **Stage:** 3-formalized
 - **Type:** Theorem
-- **Parent:** [primitive modular orbit product](../1-in-progress/gauss-mayer-primitive-orbit-product.md).
+- **Parent:** [primitive modular orbit product](gauss-mayer-primitive-orbit-product.md).
 
 ## Theorem
 
@@ -59,7 +59,8 @@ existed. The contribution is their source-level parity identity with absolute
 summation across all lengths. The exponent is identified with the global
 determinant only on its proved convergence neighborhood.
 [Primitive-cycle regrouping](gauss-mayer-primitive-orbit-logarithm.md) is certified.
-The Euler product, geometric length identification, scattering normalization,
-and critical-strip resonance exclusion remain separate obligations.
+The [Euler product](gauss-mayer-primitive-orbit-product.md) is certified.
+Geometric length identification, scattering normalization, and critical-strip
+resonance exclusion remain separate obligations.
 [Convergence and continuation at `z=1`](gauss-mayer-unit-even-word-determinant.md)
 are certified for `Re w>2`.

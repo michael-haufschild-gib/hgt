@@ -2,7 +2,7 @@
 
 - **Stage:** 3-formalized
 - **Type:** Theorem
-- **Parent:** [primitive modular orbit product](../1-in-progress/gauss-mayer-primitive-orbit-product.md).
+- **Parent:** [primitive modular orbit product](gauss-mayer-primitive-orbit-product.md).
 
 ## Theorem
 

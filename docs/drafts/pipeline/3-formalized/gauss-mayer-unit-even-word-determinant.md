@@ -2,7 +2,7 @@
 
 - **Stage:** 3-formalized
 - **Type:** Theorem
-- **Parent:** [primitive modular orbit product](../1-in-progress/gauss-mayer-primitive-orbit-product.md).
+- **Parent:** [primitive modular orbit product](gauss-mayer-primitive-orbit-product.md).
 - **Inputs:** [local even-word identity](gauss-mayer-even-word-determinant.md), [source trace decay](gauss-mayer-word-probability-and-trace-decay.md).
 
 ## Theorem
@@ -55,5 +55,5 @@ RenormalizedIntersectionTheory umbrella imports the module.
 
 This closes continuation of the source trace logarithm to spectral parameter
 one. [Primitive pair-cycle regrouping](gauss-mayer-primitive-orbit-logarithm.md)
-is certified; the Euler product remains unproved. This far-right zero-free
+and the [Euler product](gauss-mayer-primitive-orbit-product.md) are certified. This far-right zero-free
 region gives no critical-strip resonance exclusion or scattering normalization.

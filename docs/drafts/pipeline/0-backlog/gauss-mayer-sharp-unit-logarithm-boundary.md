@@ -74,5 +74,5 @@ all require Lean formalization.
 
 This would classify the exact convergence threshold of the literal word
 logarithm. It would not exclude complex resonances in the critical strip.
-The [primitive-orbit product](../1-in-progress/gauss-mayer-primitive-orbit-product.md)
-remains the active source-identification problem.
+The [primitive-orbit product](../3-formalized/gauss-mayer-primitive-orbit-product.md)
+is certified on its stated convergence domains.

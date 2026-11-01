@@ -392,7 +392,7 @@ theorem neither_sign_isPositive_ccmFinitePrimeOperator_primeTwo_window
       inner ℂ (ccmPrimeTransportOperator a 2 (ccmArchimedeanFormToAperture a uNeg))
         (ccmArchimedeanFormToAperture a uNeg)).re at hge
     rw [Complex.re_ofReal_mul] at hge
-    nlinarith
+    linarith only [hge, mul_neg_of_pos_of_neg hlog2 hlt]
   · intro hpos
     have hge := hpos.2 (ccmArchimedeanFormToAperture a uPos)
     rw [ContinuousLinearMap.reApplyInnerSelf, clm_neg_apply,
@@ -401,7 +401,7 @@ theorem neither_sign_isPositive_ccmFinitePrimeOperator_primeTwo_window
       inner ℂ (ccmPrimeTransportOperator a 2 (ccmArchimedeanFormToAperture a uPos))
         (ccmArchimedeanFormToAperture a uPos)).re at hge
     rw [Complex.re_ofReal_mul] at hge
-    nlinarith
+    linarith only [hge, mul_pos hlog2 hgt]
 
 /-- **Multiplicative pure-tensor factorization no-go on `(½ log 2, ½ log 3]`.**
 At every aperture in `(½ log 2, ½ log 3]` (in particular `halfLogThreeAperture`), the restricted
@@ -440,7 +440,7 @@ theorem no_multiplicative_tensor_factorization_primeTwo_window
     have hc1 : c = 1 := by
       have h0 := hc u₀
       rw [hu₀_lit, hu₀_pf] at h0
-      nlinarith
+      exact mul_left_cancel₀ henergy_pos.ne' (by linarith only [h0])
     subst hc1
     obtain ⟨uPos, _, hgt, _⟩ :=
       exists_pos_and_neg_ccmPrimeTransportOperator (by norm_num : 2 ≤ 2) (by simpa using ha2)
@@ -463,7 +463,7 @@ theorem no_multiplicative_tensor_factorization_primeTwo_window
         Real.log 2 * (inner ℂ (ccmPrimeTransportOperator a 2
           (ccmArchimedeanFormToAperture a uPos)) (ccmArchimedeanFormToAperture a uPos)).re :=
       Complex.re_ofReal_mul _ _
-    nlinarith
+    linarith only [heq, hdiff, hre, mul_pos hlog2 hgt]
   · rintro ⟨d, τ₂, hd, hhom, hfac⟩
     have h1 := hfac u₀
     have h2 := hfac (((2 : ℝ) : ℂ) • u₀)
@@ -477,12 +477,14 @@ theorem no_multiplicative_tensor_factorization_primeTwo_window
     have habs2 : |(2 : ℝ)| = 2 := abs_of_pos (by norm_num)
     rw [hu₀_lit, hu₀_pf] at h1
     rw [hnorm2, habs2, hu₀_lit, hu₀_pf] at h2
-    have hpow : (4 : ℝ) ≤ (2 : ℝ) ^ (2 * d) := by
+    have hpow_ge : (4 : ℝ) ≤ (2 : ℝ) ^ (2 * d) := by
       calc (4 : ℝ) = (2 : ℝ) ^ (2 : ℕ) := by norm_num
         _ ≤ (2 : ℝ) ^ (2 * d) := pow_le_pow_right₀ (by norm_num) (by omega)
-    have hτ_one : τ₂ u₀ = 1 := by nlinarith
+    have hτ_one : τ₂ u₀ = 1 := mul_left_cancel₀ henergy_pos.ne' (by linarith only [h1])
     rw [hτ_one, mul_one] at h2
-    nlinarith
+    have h4pos : 0 < 4 * primeFreeFamily.energy a_tiny := mul_pos (by norm_num) henergy_pos
+    have hpow_one : (2 : ℝ) ^ (2 * d) = 1 := mul_left_cancel₀ h4pos.ne' (by linarith only [h2])
+    linarith only [hpow_one, hpow_ge]
 
 /-! ## 4. Half-integer prime-lattice collapse and forced zero crossings -/
 
@@ -797,12 +799,10 @@ theorem exists_aperture_primeFree_and_singleSemilocal_energy_lt (p : ℕ) (K : �
     linarith only [h1, h2]
   have hL_half_gt : Real.sqrt target < L / 2 := by
     have hM' : 4 * Real.sqrt target < (M : ℝ) * Real.log q := (div_lt_iff₀ hlogq).mp hM
-    have hL_eq : L / 2 = ((2 * (M : ℝ) + 1) / 8) * Real.log q := by rw [hL_def]; ring
+    have hL_eq : L / 2 = (1 / 4) * ((M : ℝ) * Real.log q) + (1 / 8) * Real.log q := by
+      rw [hL_def]; ring
     rw [hL_eq]
-    have hM0 : (0 : ℝ) ≤ M := Nat.cast_nonneg M
-    have hcoef : (M : ℝ) * Real.log q < (2 * (M : ℝ) + 1) * Real.log q :=
-      mul_lt_mul_of_pos_right (by linarith only [hM0]) hlogq
-    linarith only [hM', hcoef]
+    linarith only [hM', hlogq]
   have hsq_gt : target < (Real.exp (L / 2) - Real.exp (-L / 2)) ^ 2 := by
     calc target = Real.sqrt target ^ 2 := (Real.sq_sqrt htarget_pos.le).symm
       _ < (L / 2) ^ 2 := pow_lt_pow_left₀ hL_half_gt (Real.sqrt_nonneg _) (by norm_num)
@@ -840,7 +840,8 @@ theorem exists_aperture_primeFree_and_singleSemilocal_energy_lt (p : ℕ) (K : �
           Complex.zero_re, sub_zero] at hsub
         exact hsub
       · have hqp : q = p := by rw [hq_def]; exact max_eq_left hp2
-        rw [← hqp, hpower_re_zero, sub_zero] at hsub
+        rw [hqp] at hpower_re_zero
+        rw [hpower_re_zero, sub_zero] at hsub
         exact hsub
     have hray := (primeSingleSemilocalFamily p).energy_mul_formNorm_sq_le b₀ v
     rw [← hf, hQeq] at hray

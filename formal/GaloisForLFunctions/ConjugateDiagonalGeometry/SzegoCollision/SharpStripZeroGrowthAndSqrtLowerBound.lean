@@ -458,7 +458,7 @@ theorem norm_finiteThetaAmplitude_cusp_remainder_gaussian_le (N : ℕ) {z : ℂ}
         -- Direct compact/exponential domination on `(0, ∞)` using `abs_thetaCuspPolynomialAtom`:
         let q := (2 : ℕ)
         let C_maj := _root_.RHTower.thetaCuspGaussianConstant
-          (_root_.RHTower.thetaCuspWeightedPolynomial P₃ (q + 1))
+          (_root_.RHTower.thetaCuspWeightedPolynomial P₃ q)
         have hdom : IntegrableOn (fun x : ℝ => (2 * C_maj) * Real.exp (-x)) (Ioi (0 : ℝ)) := by
           have h1 := integrableOn_exp_mul_Ioi (by norm_num : (-1 : ℝ) < 0) 0
           exact (h1.congr_fun (fun x _ => by ring_nf) measurableSet_Ioi).const_mul _
@@ -483,7 +483,7 @@ theorem norm_finiteThetaAmplitude_cusp_remainder_gaussian_le (N : ℕ) {z : ℂ}
             (by rw [abs_mul, abs_of_nonneg hx0]; exact mul_le_mul_of_nonneg_right hq hx0)
         have hex2 : ‖Complex.exp (-w * (x : ℂ))‖ ≤ Real.exp ((q : ℝ) * x) := by
           rw [Complex.norm_exp]; apply Real.exp_le_exp.mpr
-          have hre : (-w * (x : ℂ)).re = -(z.re - 1 / 2) * x := by simp [w]; ring
+          have hre : (-w * (x : ℂ)).re = -(z.re - 1 / 2) * x := by simp [w]
           rw [hre]
           have hq : |z.re - 1 / 2| ≤ (q : ℝ) := hz.trans (by norm_num [q])
           exact (le_abs_self _).trans
@@ -492,24 +492,26 @@ theorem norm_finiteThetaAmplitude_cusp_remainder_gaussian_le (N : ℕ) {z : ℂ}
             2 * Real.exp ((q : ℝ) * x) := (norm_sub_le _ _).trans (by linarith)
         have hatom_le : Real.exp ((q : ℝ) * x) * |_root_.RHTower.thetaCuspPolynomialAtom P₃ m x| ≤
             C_maj * Real.exp (-x) := by
-          have hw_eq := _root_.RHTower.exp_nat_mul_thetaCuspPolynomialAtom_eq P₃ (q + 1) m x
-          have hgauss := _root_.RHTower.abs_thetaCuspPolynomialAtom_le_gaussianConstant
-            (_root_.RHTower.thetaCuspWeightedPolynomial P₃ (q + 1)) hm1 hx0
+          have hgauss := _root_.RHTower.exp_natSucc_mul_abs_thetaCuspPolynomialAtom_le
+            P₃ q hx0 (by omega : 0 < m)
+          have hCmaj_nn : 0 ≤ C_maj :=
+            nonneg_of_mul_nonneg_left ((by positivity).trans hgauss) (Real.exp_pos _)
+          have hexp_le1 : Real.exp (-(Real.pi / 2) * (m : ℝ) ^ (2 : ℕ)) ≤ 1 :=
+            Real.exp_le_one_iff.mpr (by nlinarith [Real.pi_pos, sq_nonneg (m : ℝ)])
+          have hstep : Real.exp (((q + 1 : ℕ) : ℝ) * x) *
+              |_root_.RHTower.thetaCuspPolynomialAtom P₃ m x| ≤ C_maj :=
+            hgauss.trans ((mul_le_mul_of_nonneg_left hexp_le1 hCmaj_nn).trans_eq (mul_one _))
           have hrew : Real.exp ((q : ℝ) * x) * |_root_.RHTower.thetaCuspPolynomialAtom P₃ m x| =
-              Real.exp (-x) * (Real.exp (((q + 1 : ℕ) : ℝ) * x) *
-                |_root_.RHTower.thetaCuspPolynomialAtom P₃ m x|) := by
+              (Real.exp (((q + 1 : ℕ) : ℝ) * x) *
+                |_root_.RHTower.thetaCuspPolynomialAtom P₃ m x|) * Real.exp (-x) := by
             push_cast
             calc Real.exp ((q : ℝ) * x) * |_root_.RHTower.thetaCuspPolynomialAtom P₃ m x|
-                = (Real.exp (-x) * Real.exp (((q : ℝ) + 1) * x)) *
+                = (Real.exp (((q : ℝ) + 1) * x) * Real.exp (-x)) *
                     |_root_.RHTower.thetaCuspPolynomialAtom P₃ m x| := by
                   rw [← Real.exp_add]; congr 2; ring
               _ = _ := by ring
-          rw [hrew, ← abs_of_pos (Real.exp_pos (((q + 1 : ℕ) : ℝ) * x)), ← abs_mul, hw_eq]
-          calc Real.exp (-x) *
-                  |_root_.RHTower.thetaCuspPolynomialAtom
-                    (_root_.RHTower.thetaCuspWeightedPolynomial P₃ (q + 1)) m x|
-              ≤ Real.exp (-x) * C_maj := mul_le_mul_of_nonneg_left hgauss (Real.exp_pos _).le
-            _ = C_maj * Real.exp (-x) := mul_comm _ _
+          rw [hrew]
+          exact mul_le_mul_of_nonneg_right hstep (Real.exp_pos _).le
         rw [norm_mul, Complex.norm_real, Real.norm_eq_abs]
         calc ‖Complex.exp (w * (x : ℂ)) - Complex.exp (-w * (x : ℂ))‖ *
                 |_root_.RHTower.thetaCuspPolynomialAtom P₃ m x|
@@ -866,7 +868,7 @@ theorem norm_finiteThetaAmplitude_le_riemannXi_re (N : ℕ) (z : ℂ) :
   have hxi_re : (_root_.RHTower.xi (z.re : ℂ)).re =
       ∫ x : ℝ, _root_.RHTower.thetaCuspFullSource x * Real.exp ((1 / 2 - z.re) * x) := by
     rw [← bilateral_fullTheta_eq_xi (z.re : ℂ), _root_.RHTower.bilateralLaplace]
-    change Complex.reCLM (∫ x : ℝ, _root_.RHTower.thetaCuspTiltSource x *
+    change Complex.reCLM (∫ x : ℝ, (_root_.RHTower.thetaCuspTiltSource.k x : ℂ) *
       Complex.exp (((1 / 2 : ℂ) - (z.re : ℂ)) * (x : ℂ))) = _
     rw [← Complex.reCLM.integral_comp_comm hint_full]
     refine MeasureTheory.integral_congr_ae (Eventually.of_forall fun x => ?_)
@@ -1047,7 +1049,9 @@ theorem prefixGlobalStripZeroBound_upper :
       have hB_nn : 0 ≤ B_rad * sN ^ 2 := by nlinarith
       refine mul_le_mul hre_le ?_ (by linarith) hB_nn
       exact add_le_add_left
-        (Real.log_le_log (by linarith [norm_nonneg (z.re : ℂ)]) (by linarith)) 1
+        (Real.log_le_log
+          (add_pos_of_nonneg_of_pos (add_nonneg (norm_nonneg _) zero_le_one) zero_lt_one)
+          (add_le_add_right hre_le 1)) 1
     calc ‖_root_.RHTower.finiteThetaAmplitude N z‖
         ≤ ‖RiemannGaussian.riemannXi (z.re : ℂ)‖ := norm_finiteThetaAmplitude_le_riemannXi_re N z
       _ ≤ Real.exp (A_xi * RiemannGaussian.xiLogLinearScale (‖(z.re : ℂ)‖ + 1)) :=
@@ -1648,9 +1652,9 @@ theorem exists_xi_vertical_lower_bound :
           exact mul_le_mul_of_nonneg_left hG_ge hpi_rpow_pos.le
   refine ⟨hright, ?_⟩
   have hsym : 1 - ((-1 / 2 : ℂ) + (y : ℂ) * I) = (starRingEnd ℂ) s := by
-    apply Complex.ext
-    · simp [s]; norm_num
-    · simp [s]
+    have hs_eq : s = ((3 / 2 : ℝ) : ℂ) + (y : ℂ) * I := by dsimp [s]; norm_num
+    rw [hs_eq]
+    apply Complex.ext <;> simp <;> norm_num
   have hnorm_eq : ‖_root_.RHTower.xi ((-1 / 2 : ℂ) + (y : ℂ) * I)‖ = ‖_root_.RHTower.xi s‖ := by
     rw [← _root_.RHTower.xi_one_sub, hsym, _root_.RHTower.xi_conj, norm_conj]
   rwa [hnorm_eq]
@@ -1662,6 +1666,7 @@ across `x ∈ [-1, 2]` by `c_bdry * T_*^{-K_bdry} * exp(-(π / 4) T_*)`, while t
 `x = -1 / 2` and `x = 3 / 2` satisfy the same bound at every `|y| ≤ T_*`. -/
 theorem exists_burnol_horizontal_and_vertical_xi_lower :
     ∃ (H₀ c_bdry : ℝ) (K_bdry : ℕ), 9 ≤ H₀ ∧ 0 < c_bdry ∧
+      c_bdry ≤ (5026 / 16875) * Real.exp (-Real.pi) ∧
       ∀ H : ℝ, H₀ ≤ H → ∃ T_star : ℝ, H ≤ T_star ∧ T_star ≤ H + 1 ∧
         (∀ x : ℝ, -1 ≤ x → x ≤ 2 →
           c_bdry * (T_star ^ K_bdry)⁻¹ * Real.exp (-(Real.pi / 4) * T_star) ≤
@@ -1678,7 +1683,7 @@ theorem exists_burnol_horizontal_and_vertical_xi_lower :
   let c_bdry : ℝ := min c_low c_vert
   have hc_bdry : 0 < c_bdry := lt_min hc_low hc_vert
   let K_bdry : ℕ := N_vert + M_bur
-  refine ⟨max 9 n0_bur, c_bdry, K_bdry, le_max_left 9 _, hc_bdry, ?_⟩
+  refine ⟨max 9 n0_bur, c_bdry, K_bdry, le_max_left 9 _, hc_bdry, min_le_left _ _, ?_⟩
   intro H hH
   obtain ⟨T_star, hHT, hTH, hratio⟩ := hbur H (le_trans (le_max_right 9 _) hH)
   have hH9 : 9 ≤ H := le_trans (le_max_left 9 _) hH
@@ -1687,6 +1692,7 @@ theorem exists_burnol_horizontal_and_vertical_xi_lower :
   refine ⟨T_star, hHT, hTH, ?_, ?_⟩
   · intro x hx1 hx2
     have hhor := (hratio (3 / 2) x (by norm_num) (by norm_num) hx1 hx2).1
+    push_cast at hhor
     have hv := (hvert T_star (by rw [abs_of_pos (by linarith)]; linarith)).1
     rw [abs_of_pos (by linarith : 0 < T_star)] at hv
     have hTM_pos : 0 < T_star ^ M_bur := by positivity
@@ -1714,7 +1720,7 @@ theorem exists_burnol_horizontal_and_vertical_xi_lower :
       have hbase_le : c_bdry * (T_star ^ K_bdry)⁻¹ * Real.exp (-(Real.pi / 4) * T_star) ≤ c_low := by
         calc c_bdry * (T_star ^ K_bdry)⁻¹ * Real.exp (-(Real.pi / 4) * T_star)
             ≤ c_low * 1 * 1 := by
-              refine mul_le_mul ?_ hexp1 (Real.exp_pos _).le hc_low.le
+              refine mul_le_mul ?_ hexp1 (Real.exp_pos _).le (by positivity)
               exact mul_le_mul (min_le_left _ _) hinv1 (by positivity) hc_low.le
           _ = c_low := by ring
       have hlow_r : c_low ≤ ‖_root_.RHTower.xi ((3 / 2 : ℂ) + (y : ℂ) * I)‖ :=
@@ -1767,6 +1773,122 @@ theorem one_le_prefixGlobalStripZeroBound (N : ℕ) : 1 ≤ prefixGlobalStripZer
       (f := fun w => (analyticOrderAt (_root_.RHTower.finiteThetaAmplitude N) w).toNat)
       (fun _ _ => Nat.zero_le _) hw₀_mem)
 
+private lemma rectangleBoundaryPath_on_edges (z₁ z₂ : ℂ) (t : ℝ) :
+    (_root_.RHTower.rectangleBoundaryPath z₁ z₂ t).re = z₁.re ∨
+    (_root_.RHTower.rectangleBoundaryPath z₁ z₂ t).re = z₂.re ∨
+    (_root_.RHTower.rectangleBoundaryPath z₁ z₂ t).im = z₁.im ∨
+    (_root_.RHTower.rectangleBoundaryPath z₁ z₂ t).im = z₂.im := by
+  unfold _root_.RHTower.rectangleBoundaryPath _root_.RHTower.rectangleEdgePath
+  split_ifs
+  · right; right; left; simp
+  · right; left; simp
+  · right; right; right; simp
+  · left; simp
+
+/-- Rectangle Rouché zero-count transfer on `R_{T_win, 0}` with `T_win = T_star + 1 / 12`:
+if `finiteThetaAmplitude N` strictly approximates `xi` on `∂R_{T_win, 0}`, then
+`xiZeroCount (T_star - 1) ≤ prefixGlobalStripZeroBound N`. -/
+private lemma xiZeroCount_le_prefixGlobalStripZeroBound_of_rouche (N : ℕ) {T_star T_win : ℝ}
+    (hT1 : 1 ≤ T_star) (hT_win_pos : 0 ≤ T_win)
+    (hT_win_eq : T_win = T_star + 1 / (2 * (zhukovskyStage 0 : ℝ)))
+    (hbdry_xi : ∀ t : ℝ, _root_.RHTower.xi
+      (_root_.RHTower.rectangleBoundaryPath
+        (thetaWindowLowerLeft 0) (thetaWindowUpperRight T_win 0) t) ≠ 0)
+    (hrouche : ∀ t : ℝ,
+      ‖_root_.RHTower.finiteThetaAmplitude N
+          (_root_.RHTower.rectangleBoundaryPath
+            (thetaWindowLowerLeft 0) (thetaWindowUpperRight T_win 0) t) -
+        _root_.RHTower.xi
+          (_root_.RHTower.rectangleBoundaryPath
+            (thetaWindowLowerLeft 0) (thetaWindowUpperRight T_win 0) t)‖ <
+        ‖_root_.RHTower.xi
+          (_root_.RHTower.rectangleBoundaryPath
+            (thetaWindowLowerLeft 0) (thetaWindowUpperRight T_win 0) t)‖) :
+    (_root_.RHTower.xiZeroCount (T_star - 1) : ℝ) ≤ (prefixGlobalStripZeroBound N : ℝ) := by
+  have hbdry_A : ∀ t : ℝ, _root_.RHTower.finiteThetaAmplitude N
+      (_root_.RHTower.rectangleBoundaryPath
+        (thetaWindowLowerLeft 0) (thetaWindowUpperRight T_win 0) t) ≠ 0 := by
+    intro t h0
+    have hr := hrouche t
+    rw [h0, zero_sub, norm_neg] at hr
+    exact lt_irrefl _ hr
+  have heq_int := rectIntegral_logDeriv_eq_of_norm_sub_lt
+    _root_.RHTower.xi_differentiable
+    (_root_.RHTower.differentiable_finiteThetaAmplitude N)
+    (thetaWindowLowerLeft 0) (thetaWindowUpperRight T_win 0) hrouche
+  have hrhs_eq : (2 * Real.pi * I)⁻¹ *
+      _root_.RHTower.rectIntegral (logDeriv (_root_.RHTower.finiteThetaAmplitude N))
+        (thetaWindowLowerLeft 0) (thetaWindowUpperRight T_win 0) =
+      (integerThetaWindowDegree T_win 0 N : ℂ) := by
+    have hbdry0 : ∀ t : ℝ, finiteThetaShellPencil N 0
+        (_root_.RHTower.rectangleBoundaryPath
+          (thetaWindowLowerLeft 0) (thetaWindowUpperRight T_win 0) t) ≠ 0 := by
+      simpa only [finiteThetaShellPencil_zero] using hbdry_A
+    obtain ⟨hp0, hd0⟩ := pencilWindowDegree_eq_sum T_win 0 N ⟨le_rfl, zero_le_one⟩ hbdry0
+    rw [pencilWindowDegree_zero] at hd0
+    rw [← hd0] at hp0
+    rw [← hp0]
+    unfold pencilWindowPowerSum
+    congr 1
+    refine congrFun (congrFun (congrArg _root_.RHTower.rectIntegral ?_)
+      (thetaWindowLowerLeft 0)) (thetaWindowUpperRight T_win 0)
+    funext z
+    rw [pow_zero, one_mul, finiteThetaShellPencil_zero, finiteThetaPencilFirstMoment_zero,
+      logDeriv_apply, _root_.RHTower.deriv_finiteThetaAmplitude]
+  obtain ⟨Z_xi, hZ_xi_mem, hlhs_eq⟩ := entire_rectIntegral_mul_logDeriv_eq_sum
+    (_root_.RHTower.xi_analyticOnNhd Set.univ) _root_.RHTower.xi_orderAt_ne_top
+    (g := fun _ => (1 : ℂ)) (fun _ _ => analyticAt_const)
+    (thetaWindow_re_le T_win 0) (thetaWindow_im_le T_win 0) hbdry_xi
+  have hg1 : (fun z : ℂ => (1 : ℂ) * logDeriv _root_.RHTower.xi z) = logDeriv _root_.RHTower.xi :=
+    funext fun _ => one_mul _
+  have hsum1 : (∑ w ∈ Z_xi, ((analyticOrderAt _root_.RHTower.xi w).toNat : ℂ) * 1) =
+      ((∑ w ∈ Z_xi, (analyticOrderAt _root_.RHTower.xi w).toNat : ℕ) : ℂ) := by
+    rw [Nat.cast_sum]
+    exact Finset.sum_congr rfl fun _ _ => mul_one _
+  rw [hg1, hsum1] at hlhs_eq
+  have hcount_eq : ∑ w ∈ Z_xi, (analyticOrderAt _root_.RHTower.xi w).toNat =
+      integerThetaWindowDegree T_win 0 N := by
+    rw [hlhs_eq, hrhs_eq] at heq_int
+    exact Nat.cast_injective heq_int
+  have hdeg_le := integerThetaWindowDegree_le_globalStripZeroBound T_win 0 N hbdry_A
+  have hT_sub_pos : 0 ≤ T_star - 1 := by linarith
+  have hinj : Set.InjOn (fun ρ : _root_.RHTower.XiDivisorSupport => (ρ : ℂ))
+      ↑(_root_.RHTower.xiSupportsPos (T_star - 1)) :=
+    fun _ _ _ _ h => Subtype.ext h
+  have hz₁_re : (thetaWindowLowerLeft 0).re = -1 / 2 := thetaWindowLowerLeft_re 0
+  have hz₂_re : (thetaWindowUpperRight T_win 0).re = 3 / 2 := thetaWindowUpperRight_re T_win 0
+  have hz₁_im : (thetaWindowLowerLeft 0).im = -1 / 12 := by
+    rw [thetaWindowLowerLeft_im, show (zhukovskyStage 0 : ℝ) = 6 by unfold zhukovskyStage; norm_num]
+    norm_num
+  have hz₂_im : (thetaWindowUpperRight T_win 0).im = T_star := by
+    rw [thetaWindowUpperRight_im, max_eq_right hT_win_pos, hT_win_eq]
+    ring
+  have hsub_Z : (_root_.RHTower.xiSupportsPos (T_star - 1)).image
+      (fun ρ : _root_.RHTower.XiDivisorSupport => (ρ : ℂ)) ⊆ Z_xi := by
+    intro w hw
+    obtain ⟨ρ, hρ, rfl⟩ := Finset.mem_image.mp hw
+    obtain ⟨habs, hpos⟩ := _root_.RHTower.mem_xiSupportsPos.mp hρ
+    have hz0 := _root_.RHTower.xi_eq_zero_of_mem_divisor_support ρ
+    obtain ⟨hre0, hre1⟩ := _root_.RHTower.xi_zero_re_mem_open_unit hz0
+    rw [hZ_xi_mem, hz₁_re, hz₂_re, hz₁_im, hz₂_im]
+    exact ⟨⟨by linarith, by linarith, by linarith, by linarith [(abs_le.mp habs).2]⟩, hz0⟩
+  have h1 : _root_.RHTower.xiZeroCount (T_star - 1) ≤
+      ((∑ w ∈ Z_xi, (analyticOrderAt _root_.RHTower.xi w).toNat : ℕ) : ℤ) := by
+    rw [_root_.RHTower.xiZeroCount_eq_pos_sum hT_sub_pos, Nat.cast_sum]
+    calc ∑ ρ ∈ _root_.RHTower.xiSupportsPos (T_star - 1),
+            (_root_.RHTower.xiSupportMultiplicity ρ : ℤ)
+        = ∑ w ∈ (_root_.RHTower.xiSupportsPos (T_star - 1)).image
+              (fun ρ : _root_.RHTower.XiDivisorSupport => (ρ : ℂ)),
+            ((analyticOrderAt _root_.RHTower.xi w).toNat : ℤ) := by
+          rw [Finset.sum_image hinj]
+          exact Finset.sum_congr rfl fun ρ _ => by
+            rw [_root_.RHTower.xiSupportMultiplicity_eq_analyticOrderAt_toNat]
+      _ ≤ ∑ w ∈ Z_xi, ((analyticOrderAt _root_.RHTower.xi w).toNat : ℤ) :=
+          Finset.sum_le_sum_of_subset_of_nonneg hsub_Z fun _ _ _ => Nat.cast_nonneg _
+  have h2 : (∑ w ∈ Z_xi, (analyticOrderAt _root_.RHTower.xi w).toNat) ≤
+      prefixGlobalStripZeroBound N := hcount_eq.trans_le hdeg_le
+  exact_mod_cast h1.trans (Int.ofNat_le.mpr h2)
+
 /-- **Sharp `Ω(N² log N)` lower bound on `prefixGlobalStripZeroBound N`.**
 Applying rectangle Rouché on `[-1 / 2, 3 / 2] × [-1 / 12, T_*]` at a Burnol good height
 `T_* ∈ [(N + 1)², (N + 1)² + 1]` proves `c₀ * (N + 1)² * log(N + 2) ≤ prefixGlobalStripZeroBound N`
@@ -1775,7 +1897,7 @@ theorem prefixGlobalStripZeroBound_lower :
     ∃ c₀ : ℝ, 0 < c₀ ∧ ∀ N : ℕ,
       c₀ * ((N + 1 : ℕ) : ℝ) ^ 2 * Real.log ((N + 2 : ℕ) : ℝ) ≤
         (prefixGlobalStripZeroBound N : ℝ) := by
-  obtain ⟨H₀, c_bdry, K_bdry, hH₀9, hc_bdry, hburnol⟩ :=
+  obtain ⟨H₀, c_bdry, K_bdry, hH₀9, hc_bdry, hc_bdry_le, hburnol⟩ :=
     exists_burnol_horizontal_and_vertical_xi_lower
   obtain ⟨T_rvm, hT_rvm4, hrvm⟩ :=
     _root_.RHTower.exists_xiZeroCount_close (1 / (4 * Real.pi)) (by positivity)
@@ -1789,7 +1911,7 @@ theorem prefixGlobalStripZeroBound_lower :
     _root_.RHTower.thetaAmplitudeEnvelope 2 * Real.exp 1
   have hC_tail_nn : 0 ≤ C_tail :=
     mul_nonneg (mul_nonneg _root_.RHTower.thetaCuspIntegerTailConstant_nonneg
-      (_root_.RHTower.thetaAmplitudeEnvelope_pos 2).le) (Real.exp_pos 1).le
+      (_root_.RHTower.thetaAmplitudeEnvelope_nonneg 2)) (Real.exp_pos 1).le
   let H_thresh : ℝ := max H₀
     (max (T_rvm + 2) (max 16 (10 * Real.log ((2 * C_tail + 1) / c_exp) + 2)))
   let N_min : ℕ := Nat.ceil H_thresh + 1
@@ -1824,15 +1946,12 @@ theorem prefixGlobalStripZeroBound_lower :
       norm_num
     set T_win : ℝ := T_star + δ₀
     have hT_win_pos : 0 ≤ T_win := by dsimp [T_win]; rw [hδ₀_val]; linarith
-    set z₁ : ℂ := thetaWindowLowerLeft 0
-    set z₂ : ℂ := thetaWindowUpperRight T_win 0
-    have hz₁_re : z₁.re = -1 / 2 := thetaWindowLowerLeft_re 0
-    have hz₂_re : z₂.re = 3 / 2 := thetaWindowUpperRight_re T_win 0
-    have hz₁_im : z₁.im = -δ₀ := thetaWindowLowerLeft_im 0
-    have hz₂_im : z₂.im = T_star := by
+    have hz₁_re : (thetaWindowLowerLeft 0).re = -1 / 2 := thetaWindowLowerLeft_re 0
+    have hz₂_re : (thetaWindowUpperRight T_win 0).re = 3 / 2 := thetaWindowUpperRight_re T_win 0
+    have hz₁_im : (thetaWindowLowerLeft 0).im = -δ₀ := thetaWindowLowerLeft_im 0
+    have hz₂_im : (thetaWindowUpperRight T_win 0).im = T_star := by
       rw [thetaWindowUpperRight_im, max_eq_right hT_win_pos]
       dsimp only [T_win, δ₀]; ring
-    -- Lower bound `‖xi (γ t)‖ ≥ c_exp * exp(-(9 / 10) * T_star)` on `∂R_{T_win, 0}`.
     have hpow_absorb : T_star ^ K_bdry ≤ C_pow * Real.exp ((1 / 10) * T_star) := by
       set u : ℝ := T_star / (10 * (K_pos : ℝ))
       have hu0 : 0 ≤ u := by dsimp [u]; positivity
@@ -1854,33 +1973,33 @@ theorem prefixGlobalStripZeroBound_lower :
       have hinv : (C_pow * Real.exp ((1 / 10) * T_star))⁻¹ ≤ (T_star ^ K_bdry)⁻¹ :=
         inv_anti₀ (by positivity) hpow_absorb
       have hpi_lt : Real.pi / 4 ≤ 4 / 5 := by linarith [Real.pi_lt_d2]
+      have hexp_split : Real.exp (-(9 / 10) * T_star) =
+          (Real.exp ((1 / 10) * T_star))⁻¹ * Real.exp (-(4 / 5) * T_star) := by
+        rw [← Real.exp_neg, ← Real.exp_add]
+        congr 1; ring
       calc c_exp * Real.exp (-(9 / 10) * T_star)
           = c_bdry * (C_pow * Real.exp ((1 / 10) * T_star))⁻¹ * Real.exp (-(4 / 5) * T_star) := by
+            rw [hexp_split, mul_inv]
             dsimp only [c_exp, div_eq_mul_inv]
-            rw [mul_inv, ← Real.exp_neg, mul_assoc, mul_assoc, ← Real.exp_add]
-            congr 2; ring
+            ring
         _ ≤ c_bdry * (T_star ^ K_bdry)⁻¹ * Real.exp (-(Real.pi / 4) * T_star) := by
             refine mul_le_mul ?_ (Real.exp_le_exp.mpr (by nlinarith))
               (Real.exp_pos _).le (by positivity)
             exact mul_le_mul_of_nonneg_left hinv hc_bdry.le
     have hxi_bdry : ∀ t : ℝ,
         c_exp * Real.exp (-(9 / 10) * T_star) ≤
-          ‖_root_.RHTower.xi (_root_.RHTower.rectangleBoundaryPath z₁ z₂ t)‖ := by
+          ‖_root_.RHTower.xi (_root_.RHTower.rectangleBoundaryPath
+            (thetaWindowLowerLeft 0) (thetaWindowUpperRight T_win 0) t)‖ := by
       intro t
-      set w := _root_.RHTower.rectangleBoundaryPath z₁ z₂ t
-      have hrect_mem := _root_.RHTower.rectangleBoundaryPath_mem_reProdIm z₁ z₂
+      set w := _root_.RHTower.rectangleBoundaryPath
+        (thetaWindowLowerLeft 0) (thetaWindowUpperRight T_win 0) t
+      have hrect_mem := _root_.RHTower.rectangleBoundaryPath_mem_reProdIm
+        (thetaWindowLowerLeft 0) (thetaWindowUpperRight T_win 0)
         (thetaWindow_re_le T_win 0) (thetaWindow_im_le T_win 0) t
       rw [uIcc_of_le (thetaWindow_re_le T_win 0), uIcc_of_le (thetaWindow_im_le T_win 0),
         Complex.mem_reProdIm, hz₁_re, hz₂_re, hz₁_im, hz₂_im] at hrect_mem
-      have hedge : w.re = z₁.re ∨ w.re = z₂.re ∨ w.im = z₁.im ∨ w.im = z₂.im := by
-        unfold _root_.RHTower.rectangleBoundaryPath _root_.RHTower.rectangleEdgePath at *
-        change (_root_.RHTower.rectangleBoundaryPath z₁ z₂ t).re = _ ∨ _
-        unfold _root_.RHTower.rectangleBoundaryPath _root_.RHTower.rectangleEdgePath
-        split_ifs
-        · exact Or.inr (Or.inr (Or.inl (by simp)))
-        · exact Or.inr (Or.inl (by simp))
-        · exact Or.inr (Or.inr (Or.inr (by simp)))
-        · exact Or.inl (by simp)
+      have hedge := rectangleBoundaryPath_on_edges
+        (thetaWindowLowerLeft 0) (thetaWindowUpperRight T_win 0) t
       have hw_eq : ((w.re : ℂ) + (w.im : ℂ) * I) = w := Complex.re_add_im w
       have him_abs : |w.im| ≤ T_star := by
         rw [abs_le]
@@ -1888,8 +2007,10 @@ theorem prefixGlobalStripZeroBound_lower :
       refine hbase_ge.trans ?_
       rcases hedge with h1 | h2 | h3 | h4
       · rw [← hw_eq, h1, hz₁_re]
+        push_cast
         exact (hvert w.im him_abs).2
       · rw [← hw_eq, h2, hz₂_re]
+        push_cast
         exact (hvert w.im him_abs).1
       · have hc_low : c_bdry * (T_star ^ K_bdry)⁻¹ * Real.exp (-(Real.pi / 4) * T_star) ≤
             (5026 / 16875) * Real.exp (-Real.pi) := by
@@ -1899,21 +2020,29 @@ theorem prefixGlobalStripZeroBound_lower :
           calc c_bdry * (T_star ^ K_bdry)⁻¹ * Real.exp (-(Real.pi / 4) * T_star)
               ≤ ((5026 / 16875) * Real.exp (-Real.pi)) * 1 * 1 := by
                 refine mul_le_mul ?_ hexp1 (Real.exp_pos _).le (by positivity)
-                exact mul_le_mul (min_le_left _ _) hinv1 (by positivity) (by positivity)
+                exact mul_le_mul hc_bdry_le hinv1 (by positivity) (by positivity)
             _ = (5026 / 16875) * Real.exp (-Real.pi) := by ring
         exact hc_low.trans ((xi_re_ge_lowWindow
           (by rw [abs_le]; exact ⟨by linarith [hrect_mem.1.1], by linarith [hrect_mem.1.2]⟩)
-          (by rw [h3, hz₁_im, hδ₀_val]; norm_num)).trans (Complex.re_le_norm _))
+          (by change |(_root_.RHTower.rectangleBoundaryPath _ _ t).im| ≤ 3;
+              rw [h3, hz₁_im, hδ₀_val]; norm_num)).trans (Complex.re_le_norm _))
       · rw [← hw_eq, h4, hz₂_im]
         exact hhor w.re (by linarith [hrect_mem.1.1]) (by linarith [hrect_mem.1.2])
-    -- Rouché domination `‖finiteThetaAmplitude N (γ t) - xi (γ t)‖ < ‖xi (γ t)‖`.
     have hrouche : ∀ t : ℝ,
-        ‖_root_.RHTower.finiteThetaAmplitude N (_root_.RHTower.rectangleBoundaryPath z₁ z₂ t) -
-            _root_.RHTower.xi (_root_.RHTower.rectangleBoundaryPath z₁ z₂ t)‖ <
-          ‖_root_.RHTower.xi (_root_.RHTower.rectangleBoundaryPath z₁ z₂ t)‖ := by
+        ‖_root_.RHTower.finiteThetaAmplitude N
+            (_root_.RHTower.rectangleBoundaryPath
+              (thetaWindowLowerLeft 0) (thetaWindowUpperRight T_win 0) t) -
+          _root_.RHTower.xi
+            (_root_.RHTower.rectangleBoundaryPath
+              (thetaWindowLowerLeft 0) (thetaWindowUpperRight T_win 0) t)‖ <
+          ‖_root_.RHTower.xi
+            (_root_.RHTower.rectangleBoundaryPath
+              (thetaWindowLowerLeft 0) (thetaWindowUpperRight T_win 0) t)‖ := by
       intro t
-      set w := _root_.RHTower.rectangleBoundaryPath z₁ z₂ t
-      have hrect_mem := _root_.RHTower.rectangleBoundaryPath_mem_reProdIm z₁ z₂
+      set w := _root_.RHTower.rectangleBoundaryPath
+        (thetaWindowLowerLeft 0) (thetaWindowUpperRight T_win 0) t
+      have hrect_mem := _root_.RHTower.rectangleBoundaryPath_mem_reProdIm
+        (thetaWindowLowerLeft 0) (thetaWindowUpperRight T_win 0)
         (thetaWindow_re_le T_win 0) (thetaWindow_im_le T_win 0) t
       rw [uIcc_of_le (thetaWindow_re_le T_win 0), Complex.mem_reProdIm, hz₁_re, hz₂_re] at hrect_mem
       have hw_re2 : |w.re| ≤ 2 :=
@@ -1929,7 +2058,8 @@ theorem prefixGlobalStripZeroBound_lower :
                 _root_.RHTower.thetaAmplitudeEnvelope 2 := htail
           _ ≤ _root_.RHTower.thetaCuspIntegerTailConstant * (Real.exp 1 * Real.exp (-T_star)) *
                 _root_.RHTower.thetaAmplitudeEnvelope 2 := by
-              refine mul_le_mul_of_nonneg_right ?_ (_root_.RHTower.thetaAmplitudeEnvelope_pos 2).le
+              refine mul_le_mul_of_nonneg_right ?_
+                (_root_.RHTower.thetaAmplitudeEnvelope_nonneg 2)
               exact mul_le_mul_of_nonneg_left hexp_H _root_.RHTower.thetaCuspIntegerTailConstant_nonneg
           _ = C_tail * Real.exp (-T_star) := by dsimp only [C_tail]; ring
       have hT_log : 10 * Real.log ((2 * C_tail + 1) / c_exp) < T_star := by
@@ -1941,108 +2071,43 @@ theorem prefixGlobalStripZeroBound_lower :
           rw [Real.log_div hc_exp_pos.ne' (by positivity)]
           rw [Real.log_div (by positivity) hc_exp_pos.ne'] at hT_log
           linarith
-        simpa only [Real.exp_log (div_pos hc_exp_pos (by positivity))] using
-          Real.exp_lt_exp.mpr hlt
+        rw [← Real.exp_log (div_pos hc_exp_pos (by positivity))]
+        exact Real.exp_lt_exp.mpr hlt
       have hstrict : C_tail * Real.exp (-T_star) < c_exp * Real.exp (-(9 / 10) * T_star) := by
+        have hexp_sum : Real.exp (-(1 / 10) * T_star) * Real.exp (-(9 / 10) * T_star) =
+            Real.exp (-T_star) := by
+          rw [← Real.exp_add]; congr 1; ring
         calc C_tail * Real.exp (-T_star)
-            ≤ (2 * C_tail + 1) * Real.exp (-(1 / 10) * T_star) * Real.exp (-(9 / 10) * T_star) := by
-              rw [mul_assoc, ← Real.exp_add, show -(1 / 10) * T_star + -(9 / 10) * T_star = -T_star by ring]
-              exact mul_le_mul_of_nonneg_right (by linarith) (Real.exp_pos _).le
+            ≤ (2 * C_tail + 1) * Real.exp (-T_star) :=
+              mul_le_mul_of_nonneg_right (by linarith) (Real.exp_pos _).le
+          _ = (2 * C_tail + 1) * Real.exp (-(1 / 10) * T_star) * Real.exp (-(9 / 10) * T_star) := by
+              rw [mul_assoc, hexp_sum]
           _ < (2 * C_tail + 1) * (c_exp / (2 * C_tail + 1)) * Real.exp (-(9 / 10) * T_star) := by
               refine mul_lt_mul_of_pos_right ?_ (Real.exp_pos _)
               exact mul_lt_mul_of_pos_left hexp_tenth (by positivity)
           _ = c_exp * Real.exp (-(9 / 10) * T_star) := by
               rw [mul_div_cancel₀ _ (by positivity)]
       exact (htail_T.trans_lt hstrict).trans_le (hxi_bdry t)
-    have hbdry_A : ∀ t : ℝ,
-        _root_.RHTower.finiteThetaAmplitude N (_root_.RHTower.rectangleBoundaryPath z₁ z₂ t) ≠ 0 := by
-      intro t h0
-      have hr := hrouche t
-      rw [h0, zero_sub, norm_neg] at hr
-      exact lt_irrefl _ hr
-    have hbdry_xi : ∀ t : ℝ,
-        _root_.RHTower.xi (_root_.RHTower.rectangleBoundaryPath z₁ z₂ t) ≠ 0 := by
+    have hbdry_xi : ∀ t : ℝ, _root_.RHTower.xi
+        (_root_.RHTower.rectangleBoundaryPath
+          (thetaWindowLowerLeft 0) (thetaWindowUpperRight T_win 0) t) ≠ 0 := by
       intro t h0
       have hb := hxi_bdry t
       rw [h0, norm_zero] at hb
       exact not_lt.mpr hb (by positivity)
-    -- Apply `rectIntegral_logDeriv_eq_of_norm_sub_lt`.
-    have heq_int := rectIntegral_logDeriv_eq_of_norm_sub_lt
-      _root_.RHTower.xi_differentiable
-      (_root_.RHTower.differentiable_finiteThetaAmplitude N) z₁ z₂ hrouche
-    -- Identify the RHS with `integerThetaWindowDegree T_win 0 N ≤ prefixGlobalStripZeroBound N`.
-    have hrhs_eq : (2 * Real.pi * I)⁻¹ *
-        _root_.RHTower.rectIntegral (logDeriv (_root_.RHTower.finiteThetaAmplitude N)) z₁ z₂ =
-        (integerThetaWindowDegree T_win 0 N : ℂ) := by
-      have hbdry0 : ∀ t : ℝ, finiteThetaShellPencil N 0
-          (_root_.RHTower.rectangleBoundaryPath z₁ z₂ t) ≠ 0 := by
-        simpa only [finiteThetaShellPencil_zero] using hbdry_A
-      obtain ⟨hp0, hd0⟩ := pencilWindowDegree_eq_sum T_win 0 N ⟨le_rfl, zero_le_one⟩ hbdry0
-      rw [pencilWindowDegree_zero] at hd0
-      rw [← hd0] at hp0
-      rw [← hp0]
-      unfold pencilWindowPowerSum
-      congr 1
-      refine congrFun (congrFun (congrArg _root_.RHTower.rectIntegral ?_) z₁) z₂
-      funext z
-      rw [pow_zero, one_mul, finiteThetaShellPencil_zero, finiteThetaPencilFirstMoment_zero,
-        logDeriv_apply, _root_.RHTower.deriv_finiteThetaAmplitude]
-    -- Identify the LHS with the sum of `(analyticOrderAt xi w).toNat` inside `R_{T_win, 0}`.
-    obtain ⟨Z_xi, hZ_xi_mem, hlhs_eq⟩ := entire_rectIntegral_mul_logDeriv_eq_sum
-      (_root_.RHTower.xi_analyticOnNhd Set.univ) _root_.RHTower.xi_orderAt_ne_top
-      (fun _ _ => analyticAt_const) (thetaWindow_re_le T_win 0) (thetaWindow_im_le T_win 0)
-      hbdry_xi
-    have hlhs_eq' : (2 * Real.pi * I)⁻¹ *
-        _root_.RHTower.rectIntegral (logDeriv _root_.RHTower.xi) z₁ z₂ =
-        ((∑ w ∈ Z_xi, (analyticOrderAt _root_.RHTower.xi w).toNat : ℕ) : ℂ) := by
-      simpa only [one_mul, mul_one, Nat.cast_sum] using hlhs_eq
-    have hcount_eq : ∑ w ∈ Z_xi, (analyticOrderAt _root_.RHTower.xi w).toNat =
-        integerThetaWindowDegree T_win 0 N := by
-      rw [hlhs_eq', hrhs_eq] at heq_int
-      exact Nat.cast_injective heq_int
-    have hdeg_le := integerThetaWindowDegree_le_globalStripZeroBound T_win 0 N hbdry_A
-    -- Every zero in `xiSupportsPos (T_star - 1)` lies in `Z_xi`.
-    have hT_sub_pos : 0 ≤ T_star - 1 := by linarith
-    have hinj : Set.InjOn (fun ρ : _root_.RHTower.XiDivisorSupport => (ρ : ℂ))
-        ↑(_root_.RHTower.xiSupportsPos (T_star - 1)) :=
-      fun _ _ _ _ h => Subtype.ext h
-    have hsub_Z : (_root_.RHTower.xiSupportsPos (T_star - 1)).image
-        (fun ρ : _root_.RHTower.XiDivisorSupport => (ρ : ℂ)) ⊆ Z_xi := by
-      intro w hw
-      obtain ⟨ρ, hρ, rfl⟩ := Finset.mem_image.mp hw
-      obtain ⟨habs, hpos⟩ := _root_.RHTower.mem_xiSupportsPos.mp hρ
-      have hz0 := _root_.RHTower.xi_eq_zero_of_mem_divisor_support ρ
-      obtain ⟨hre0, hre1⟩ := _root_.RHTower.xi_zero_re_mem_open_unit hz0
-      rw [hZ_xi_mem]
-      rw [hz₁_re, hz₂_re, hz₁_im, hz₂_im, hδ₀_val]
-      exact ⟨⟨by linarith, by linarith, by linarith, by linarith [(abs_le.mp habs).2]⟩, hz0⟩
-    have hzeroCount_le : (_root_.RHTower.xiZeroCount (T_star - 1) : ℝ) ≤
-        (prefixGlobalStripZeroBound N : ℝ) := by
-      have h1 : _root_.RHTower.xiZeroCount (T_star - 1) ≤
-          ((∑ w ∈ Z_xi, (analyticOrderAt _root_.RHTower.xi w).toNat : ℕ) : ℤ) := by
-        rw [_root_.RHTower.xiZeroCount_eq_pos_sum hT_sub_pos, Nat.cast_sum]
-        calc ∑ ρ ∈ _root_.RHTower.xiSupportsPos (T_star - 1),
-                (_root_.RHTower.xiSupportMultiplicity ρ : ℤ)
-            = ∑ w ∈ (_root_.RHTower.xiSupportsPos (T_star - 1)).image
-                  (fun ρ : _root_.RHTower.XiDivisorSupport => (ρ : ℂ)),
-                ((analyticOrderAt _root_.RHTower.xi w).toNat : ℤ) := by
-              rw [Finset.sum_image hinj]
-              exact Finset.sum_congr rfl fun ρ _ => by
-                rw [_root_.RHTower.xiSupportMultiplicity_eq_analyticOrderAt_toNat]
-          _ ≤ ∑ w ∈ Z_xi, ((analyticOrderAt _root_.RHTower.xi w).toNat : ℤ) :=
-              Finset.sum_le_sum_of_subset_of_nonneg hsub_Z fun _ _ _ => Nat.cast_nonneg _
-      have h2 : (∑ w ∈ Z_xi, (analyticOrderAt _root_.RHTower.xi w).toNat) ≤
-          prefixGlobalStripZeroBound N := hcount_eq.trans_le hdeg_le
-      exact_mod_cast h1.trans (Int.ofNat_le.mpr h2)
-    -- Apply Riemann–von Mangoldt at `T_star - 1 ≥ T_rvm`.
+    have hzeroCount_le := xiZeroCount_le_prefixGlobalStripZeroBound_of_rouche N hT1 hT_win_pos rfl
+      hbdry_xi hrouche
     have hT_rvm_le : T_rvm ≤ T_star - 1 := by
       have h1 : T_rvm + 2 ≤ H_thresh := (le_max_left _ _).trans (le_max_right H₀ _)
       linarith [hH_thresh, hHT]
     have hclose := hrvm (T_star - 1) hT_rvm_le
     have hrvm_low : (1 / (4 * Real.pi)) * ((T_star - 1) * Real.log (T_star - 1)) ≤
         (_root_.RHTower.xiZeroCount (T_star - 1) : ℝ) := by
-      have h := (abs_le.mp hclose).1
-      linarith
+      have hquarter : 1 / (2 * Real.pi) * ((T_star - 1) * Real.log (T_star - 1)) -
+          1 / (4 * Real.pi) * ((T_star - 1) * Real.log (T_star - 1)) =
+          (1 / (4 * Real.pi)) * ((T_star - 1) * Real.log (T_star - 1)) := by
+        field_simp [Real.pi_ne_zero]; ring
+      linarith [(abs_le.mp hclose).1, hquarter]
     have hT_half : (1 / 2) * H ≤ T_star - 1 := by linarith [hT16, hHT]
     have hlog_ge : Real.log ((N + 2 : ℕ) : ℝ) ≤ Real.log (T_star - 1) := by
       apply Real.log_le_log (by exact_mod_cast (show 0 < N + 2 by omega))
@@ -2199,7 +2264,11 @@ theorem firstArtifactFreePrefix_sqrt_lower_bound :
     have hclose := hrvm (T - 1) hT_rvm_le
     have h1 : (1 / (4 * Real.pi)) * ((T - 1) * Real.log (T - 1)) ≤
         (_root_.RHTower.xiZeroCount (T - 1) : ℝ) := by
-      linarith [(abs_le.mp hclose).1]
+      have hquarter : 1 / (2 * Real.pi) * ((T - 1) * Real.log (T - 1)) -
+          1 / (4 * Real.pi) * ((T - 1) * Real.log (T - 1)) =
+          (1 / (4 * Real.pi)) * ((T - 1) * Real.log (T - 1)) := by
+        field_simp [Real.pi_ne_zero]; ring
+      linarith [(abs_le.mp hclose).1, hquarter]
     have h2 : (_root_.RHTower.xiZeroCount (T - 1) : ℝ) ≤
         (_root_.RHTower.xiStripWindowTotalOrder T : ℝ) := by
       have hz := xiZeroCount_le_xiStripWindowTotalOrder (T := T - 1) (by linarith)

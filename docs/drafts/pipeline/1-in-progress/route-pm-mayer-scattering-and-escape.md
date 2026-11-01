@@ -8,7 +8,7 @@
 
 | Task | Required mathematical result | Status |
 |---|---|---|
-| Mayer 1 | Exact Mayer–Selberg product, oriented/unoriented multiplicities, geometric lengths, and scattering normalization | Primitive-pair logarithm certified; Euler product and geometric/scattering identifications open |
+| Mayer 1 | Exact Mayer–Selberg product, oriented/unoriented multiplicities, geometric lengths, and scattering normalization | Primitive-pair Euler product certified; geometric/scattering identifications open |
 | Mayer 2 | Faithful equivalence between actual right-strip zeta zeros and scattering-sector eigenvalue events | Open; operator and parameter conventions must be identified exactly |
 | Mayer 3 | Actual Hermitian structure including scattering, recovering a classical zero-free region from transfer positivity | Open |
 | Mayer 4 | Separation of cusp events from scattering events by that form | Open |
@@ -19,20 +19,19 @@
 | Escape c | Exterior tightness excluding escape to infinite height | Open |
 | Escape d | Cofinal complete-energy bounds, equivalently visibility of every actual subcritical cofactor limit | Open; RH-complete |
 
-## First unresolved source identity
+## Certified primitive-orbit product
 
-The [certified primitive-orbit logarithm](../3-formalized/gauss-mayer-primitive-orbit-logarithm.md)
-is absolutely convergent near spectral parameter zero for `Re w>1`, and on
-`|z|≤1` for `Re w>2`. Its literal summands are
+The [actual primitive-orbit Euler product](../3-formalized/gauss-mayer-primitive-orbit-product.md)
+is absolutely convergent near `z=0` for `Re w>1`, and throughout `|z|≤1`
+for `Re w>2`, including `z=1`:
 
 ```text
-z^(2rℓ(c))/r · (λ_c^r)^(−w)/(1−(λ_c^r)⁻²).
+D(w,z)D(w,−z) = ∏_c ∏_(m≥0) (1−z^(2ℓ(c)) λ_c^(−w−2m)).
 ```
 
-Expand the positive geometric denominator, justify absolute interchange with
-cycle and repetition sums, and exponentiate the Taylor logarithm. The target
-is the [actual primitive-orbit Euler product](gauss-mayer-primitive-orbit-product.md).
-This alone does not identify a scattering determinant or exclude resonances.
+The joint product has the same value and summable absolute deviations from
+one. Geometric lengths, oriented/unoriented multiplicities, and the actual
+scattering comparison remain unproved.
 
 ## Operator convention
 

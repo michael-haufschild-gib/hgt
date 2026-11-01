@@ -1,9 +1,9 @@
 # Primitive-orbit Euler product of the actual Mayer determinant
 
-- **Stage:** 2-fully-proven
-- **Type:** THEOREM (paper; Lean formalization required)
-- **Parent:** [PM tasks](../1-in-progress/route-pm-mayer-scattering-and-escape.md).
-- **Input:** [certified primitive-orbit logarithm](../3-formalized/gauss-mayer-primitive-orbit-logarithm.md).
+- **Stage:** 3-formalized
+- **Type:** Theorem
+- **Parents:** [three approaches, A](../1-in-progress/argon-three-orthogonal-rh-approaches.md), [PM tasks](../1-in-progress/route-pm-mayer-scattering-and-escape.md).
+- **Inputs:** [primitive-orbit logarithm](gauss-mayer-primitive-orbit-logarithm.md), [primitive modular coding](gauss-mayer-modular-primitive-coding.md).
 
 ## Statement
 
@@ -19,7 +19,7 @@ For each `Re w>1`, this holds on some neighborhood of `z=0`. For
 over `(c,m)` converges to the same value, and the sum of absolute deviations
 of its factors from one is finite.
 
-## Proof [PROVED HERE]
+## Proof
 
 Fix a point in either stated domain, shrinking the local neighborhood so
 that `|z|≤1`. Put
@@ -59,6 +59,20 @@ For each fixed cycle, its logarithm subseries converges absolutely, so its
 mode product exists. Product Fubini identifies the nested cycle/mode
 product with the joint product. Substitution of the certified source
 determinant identity proves the statement.
+
+## Lean certificate
+
+Module: `RenormalizedIntersectionTheory/GaussMayerPrimitiveOrbitProduct.lean`.
+Namespace: `GaloisForLFunctions.RenormalizedIntersectionTheory.MayerOrbitProduct`.
+
+- `orbitWeight`: literal deviation from one in each Euler factor.
+- `exists_signed_determinant_eulerProduct`: local absolute convergence and actual determinant identity for `Re w>1`.
+- `signed_determinant_eulerProduct_on_closed_unit`: joint and nested products throughout `|z|≤1` for `Re w>2`.
+- `signed_determinant_one_eq_eulerProduct`: specialization at `z=1`.
+
+Direct production check passed without diagnostics. All three transitive axiom
+audits contain only `propext`, `Classical.choice`, and `Quot.sound`. The
+programme umbrella imports the module.
 
 ## Scope
 

@@ -380,17 +380,17 @@ goal is met when 250 discharges could be made.
 
 
 ## update obstacles
-2 hours ago we created these documents:
-- docs/reports/review-3110/walls-ledger.md
-- docs/reports/review-3110/route-obstacles.md
-- docs/reports/review-3110/route-unification-ledger.md
-- docs/reports/review-3110/obstacles-summary.md
+earlier we created these documents:
+- docs/reports/review-0111/walls-ledger.md
+- docs/reports/review-0111/route-obstacles.md
+- docs/reports/review-0111/route-unification-ledger.md
+- docs/reports/review-0111/obstacles-summary.md
   
 read:
 - docs/reports/rh-current-frontier-map.md
 - docs/reports/rh-killed-routes.md
 
-update the review reflect the current status quo and frontier of our research taking into account all new lean proofs and changes done since the original reports were written:
+write new reviews to reflect the current status quo and frontier of our research taking into account all new lean proofs and changes done since the original reports were written:
 1. a complete report about each route and route candidate and what the hard mathematical obstacles are that block us from closing the route. split these into a) obstacles that we can solve and are "just work", and b) obstacles that are open mathematical problems nobody has a solution to
 2. then create a summary document that combines all the information and:
    2.1 lists all tasks / obstacles that we can solve and are "just work"
@@ -399,12 +399,14 @@ update the review reflect the current status quo and frontier of our research ta
    2.4 suggest if you see any opportunity for a wildy different route that is not at all like all the routes we have and does not face the same walls our existing routes and candidates face. say if you see none. the wildly different route does not have to be closed yet, just show that there could possibly be a wildly different route to the rh proof far away from our current routes.
    2.5 ideate and describe a breakthrough question that is less "hard" than proving RH or quasi-RH and would bring a real advance and breakthrough in:
    2.5.1 our RH proof research as a whole
-   2.5.2 route SC
+   2.5.2 route PM
    2.5.3 route WD
+   2.5.4 route HF
    2.6 ideate and describe a breakthrough question that would clearly open wide the path to the RH proof for:
    2.6.1 our RH proof research as a whole
-   2.6.2 route SC
+   2.6.2 route PM
    2.6.3 route WD
+   2.6.4 route HF
    2.7 ideates whether solving all obstacles to reach the RH proof would require a new field of mathematics, what this field would be about, what it would be like, what criteria it must meet, what questions it must answer, what tools it aims to develop, what objects and language and mechanisms it must be built on or would aim to discover
 3. based on that an updated wall-ledger where walls have changed, were solved, or new walls were added.
 4. also provide a new version of the route-unification-ledger.md which shows which routes are just different faces of the same problem similar to the wall-ledger unifies all walls into 3 core problem families.
@@ -416,10 +418,9 @@ first collect information in a working log in logs/ - facts, not process or stat
 
 the reports are not diaries or history log, but status quo reports.
 
-rewrite the reports in folder docs/reports/review-3110/ without history language or "this changed since last review".
+replace the reports in folder docs/reports/review-0111/ without history language or "this changed since last review".
 do not run builds. this is not a task to verify the work of other agents but to create consolidated reports and "big picture" interpretations on their research results.
 
-you do not need to recheck everything, only look at all changes we did in lean in the last 2 hours and revise your reports based on these changes.
 
 ## update programme README.mds
 do not use the hgtl7 skill. 
@@ -453,9 +454,9 @@ do not run any builds. do not read anything outside the formal/ folder. do not r
 Read the following documents:
 1. Route ledger: docs/reports/rh-current-frontier-map.md
 2. Failed/Killed approaches: docs/reports/rh-killed-routes.md
-3. Unification of the routes: docs/reports/review-3110/route-unification-ledger.md
-4. Hard obstacles: docs/reports/review-3110/route-obstacles.md
-5. The hard obstacles (Walls) we have identified and not overcome: docs/reports/review-3110/walls-ledger.md
+3. Unification of the routes: docs/reports/review-0111/route-unification-ledger.md
+4. Hard obstacles: docs/reports/review-0111/route-obstacles.md
+5. The hard obstacles (Walls) we have identified and not overcome: docs/reports/review-0111/walls-ledger.md
    
 and read the current research programmes from oldest to newest: docs/reports/research-programmes.md
     
@@ -468,12 +469,23 @@ Keep a log file in logs/ for your research to note down facts and findings, sinc
 The questions for you to answer:
 1. Do you see any opportunity for a new proof mechanism or route that circumvents the walls or destroy a wall?
 2. Do you see any approach for an RH proof that is wildly different to all the routes and candidates we have so far, going a wildly different way not even touching the walls the existing routes face?
-3. Do you see any opportunity to prove Quasi-RH with improved values other to 1/8 < ... < 7/8?
-4. Do you see any opportunity to prove that at least 75% of zeros lie on the critical line?
+3. ideate and describe a breakthrough question that is less "hard" than proving RH or quasi-RH and would bring a real advance and breakthrough in:
+   3.1 our RH proof research as a whole
+   3.2 route PM
+   3.3 route MC
+   3.4 route WD
+   3.5 route HF
+4. ideate and describe a breakthrough question that would clearly open wide the path to the RH proof for:
+   4.1 our RH proof research as a whole
+   4.2 route PM
+   4.3 route MC
+   4.4 route WD
+   4.5 route HF
 5. What are the 3 open questions we should focus our research on to make the most progress to make a real breakthrough and progress towards the RH proof?
-6. You can interpret the walls as questions we need to answer and for which we and mathematics as a whole do not have the tools to create these answer - if we would create a new field of mathematics that can supply these tools, what would this field be? What would the questions be, what would be its approach/point of view, what its objects, language, foundational principals, criteria it must fulfill, its research topics?
+6. What is the one question the is less hard than proving RH or quasiRH outright and would, when answered, bring a real breakthrough and push the door wide open for us for finding the RH proof?
+7. You can interpret the walls as questions we need to answer and for which we and mathematics as a whole do not have the tools to create these answer - if we would create a new field of mathematics that can supply these tools, what would this field be? What would the questions be, what would be its approach/point of view, what its objects, language, foundational principals, criteria it must fulfill, its research topics?
 
-Write a report in docs docs/reports/review-3110/argon.md
+Write a report in docs docs/reports/review-0111/fable.md
 
 do not run any builds. do not search the web. do not grep for sorry or other shit. your job is not to verify of other agents but to write a consolidated report and big picture interpretation of their research. focus on the mathematics.
 
@@ -481,9 +493,9 @@ do not run any builds. do not search the web. do not grep for sorry or other shi
 
 Do not use the hgtl7 skill.
 
-read and understand docs/reports/review-3110/obstacles-summary.md
+read and understand docs/reports/review-0111/fable.md
 
-under "## 2.7 Does closing RH need a new field?" it describes a new field/research programme called "arithmetic coupling theory".
+under "## 8. Q7 — The field the walls are asking for" it describes a new field/research programme 
 
 Your task: develop this field/research programme and do the actual research and formalization.
 
@@ -568,15 +580,16 @@ Goal is met when a proof route is fully closed and formalized in lean and RH is 
 
 do not use the hgtl7 skill.
 
-read: docs/reports/review-3110/obstacles-summary.md 
+read: docs/reports/review-0111/fable.md
 
-your task: 
-the document asks you to answer one question and prove it: "Express `κ(K_ζ)` through local data: is there a sequence of finite prime-tower assemblies `K_S = Σ_{p∈S} k_p^{(S)}(v_p(·))`, built from the `S`-truncated complete explicit formula (primes in `S`, Gamma, pole, running counterterm), such that
-`κ(archGlue(K_S, c)) = Σ_{p∈S} κ₀(k_p^{(S)}) + 1 + ε_S`, `ε_S ∈ {0, 1}`, converges to `κ(K_ζ) + 1`?"
- 
-answer the question, find a complete solution and unconditionally formalize it and its implications in lean.
+under ### 5.4 Route WD -> Q4.4 — A height-uniform integer reading with a source bound, it asks for a "door opener":
+"The collision charge is the Fredholm index of a Wiener–Hopf operator whose symbol is built from integer-theta data; RH is index `< 2` per window `[L]`; the stopping prefix depends on zero separation (Π13). "
 
-We are not interested in estimates, criterias what the answer could be like - we accept only a full and final answer/solution to the posed question.
+where the door opener would be: "a realization of the charge as the index of an operator whose symbol is *nonvanishing on the circle for an arithmetic reason* (a Szegő-type positivity of the integer-theta symbol), giving a height-uniform bound below `2`. Its ≥qRH sub-step: the fixed-scale Hecke-defect bound `E_γ(c log T) = O(1)`, which already gives the inverse-logarithmic corridor and Lindelöf `[L]`"
+
+your task: answer the question, find a complete solution for the "door opener" and unconditionally formalize it and its implications and collaries in lean.
+
+We are not interested in estimates, criterias what the answer could be like, what is not the answer, busywork - we accept only a full and final answer/solution to the posed door opener question.
 
 **Tools to use:**
 1. Search: use the search tool for our lean corpus, not just rg or grep. make good use of the search tool to find existing work, building blocks, and new ideas. Try to apply existing lean research, try to identify problems and questions the field with your contribution could explain or solve.
@@ -597,19 +610,19 @@ always look at the big picture, try to understand what all our research is tryin
 7. Optimize lean code. No raising heartbeat hacks.
 8. Add helpful, crisp, not verbose comments to lean code to make clear what the code is about.
 
-Put all lean code for the answer into its own subfolder.
+Put all lean code for the answer into relevant subfolders to not bloat RHTower and HTGeometry folders further.
 
 ## argon single task open question
 
 Do not use the hgtl7 skill.
 
-Formalize any endpoint for a falsification of RH that our lean corpus is implying but is not yet formalized. Do not formalize any endpoint that is just a redressing of an existing endpoint. 
+read and understand route MC from docs/reports/rh-current-frontier-map.md
 
-We are looking for endpoints of the form:
-- if A then RH is false
-- if not A then RH is false
+read this todo list for closing route MC docs/reports/review-0111/route-MC.md
 
-A can be of course be multiple conditions.
+your task: work step by step through the todos in docs/reports/review-0111/route-MC.md and bring each step to a full and final solution and formalization.
+
+we are not interested in busywork, redressing of existing knowledge, building unnecessary lean infrastructure. stay focused on the task and tackle the actual problems. do not just write lean code for the sake of doing something. solve the actual problems.
   
 **Tools to use:**
 1. Search: use the search tool for our lean corpus, not just rg or grep. make good use of the search tool to find existing work, building blocks, and new ideas. Try to apply existing lean research, try to identify problems and questions the field with your contribution could explain or solve.
@@ -632,13 +645,43 @@ always look at the big picture, try to understand what all our research is tryin
 
 Put lean code into the correct subfolder(s), do not bloat RHTower or HTGeometry folders more.
 
-Complementary documents:
-- docs/reports/rh-current-frontier-map.md
-- docs/reports/rh-killed-routes.md
+## Walls
 
-Make good use of the search tool for our lean corpus to find existing work and get leads for new ideas and solutions for your work.
+Do not use the hgtl7 skill.
 
-Do keep changes in the README.md informative and crips - it is a foundational document describing the programme as a whole, it is not a history log or theorem/module ledger or diary.
+read the wall ledger (a wall is a mathematical obstacle in our research): docs/reports/review-0111/walls-ledger.md
+
+on every turn:
+conjecture, derive, formalize a way to either
+- turn an open or sharpened wall into partially solved or solved.
+- turn a partially solved wall into a solved wall.
+ 
+we are not interested in busywork, redressing of existing knowledge, building unnecessary lean infrastructure. you turn walls not solved yet into solved walls or you are wasting time and token.
+  
+**Tools to use:**
+1. Search: use the search tool for our lean corpus, not just rg or grep. make good use of the search tool to find existing work, building blocks, and new ideas. Try to apply existing lean research, try to identify problems and questions the field with your contribution could explain or solve.
+
+2. Conjecture loop: use an endless loop of conjecture -> succeed and move to next conjecture or fail and learn from it and move to next conjecture. never stop conjecturing no matter how often you fail.
+
+do not conjecture or judge or assume or anything on your training data. your training data is outdated. use the search tool for our lean corpus to understand what the true frontier and true open questions are.
+
+always look at the big picture, try to understand what all our research is trying to tell you about the nature of the field. do not blindly follow a route because it is in your training data. understand what our research is hinting at. your job is to create the missing mathematical knowledge through relentless conjecturing and learning from failures.
+
+**Lean rules:**
+1. Proofs must be unconditional, no hypotheses, no added axioms, no premises, ... 
+2. Always build in the foreground, one build process per agent at the time (other agents can also build in parallel to you).
+3. No computations
+4. Always use  lake env lean \<filmodule> for the final audit. Use --old flag to not unncessarily rebuild unchanged modules. Do not forget to wire new modules into the umbrellas.
+5. do not run full builds. check ins that are needed, wirefinished modules into their umbrella but do not run full umbrella builds.
+6. make sure you don't leave staleclean up after yourself.
+7. Optimize lean code. No raising heartbeat hacks.
+8. Add helpful, crisp, not verbose comments to lean code to make clear what the code is about.
+
+Put lean code into the correct subfolder(s), do not bloat RHTower or HTGeometry folders more.
+
+Do not use the wall ledger as diary. Only update status, do not add more.
+
+Goal is met when there are no more open or partially solved or sharpened walls.
 
 ## Deep understanding
 

@@ -2,7 +2,7 @@
 
 - **Stage:** 3-formalized
 - **Type:** Theorem
-- **Parent:** [primitive modular orbit product](../1-in-progress/gauss-mayer-primitive-orbit-product.md).
+- **Parent:** [primitive modular orbit product](gauss-mayer-primitive-orbit-product.md).
 - **Input:** [actual primitive-coordinate traces](gauss-mayer-primitive-orbit-words.md).
 
 ## Theorem
@@ -60,6 +60,6 @@ programme umbrella imports the module.
 ## Scope
 
 This completes the countable primitive-cycle regrouping, including its exact
-`1/r` coefficient. Expanding the geometric denominator and identifying the
-Euler factors remain separate steps. No geometric length, scattering identity,
+`1/r` coefficient. Geometric denominator expansion and the
+[Euler product](gauss-mayer-primitive-orbit-product.md) are also certified. No geometric length, scattering identity,
 or critical-strip resonance exclusion is asserted.

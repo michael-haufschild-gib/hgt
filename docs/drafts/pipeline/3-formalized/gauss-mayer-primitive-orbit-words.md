@@ -2,7 +2,7 @@
 
 - **Stage:** 3-formalized
 - **Type:** Theorem
-- **Parent:** [primitive modular orbit product](../1-in-progress/gauss-mayer-primitive-orbit-product.md).
+- **Parent:** [primitive modular orbit product](gauss-mayer-primitive-orbit-product.md).
 - **Inputs:** [primitive pair-cycle multiplicities](gauss-mayer-primitive-pair-cycle-multiplicities.md), [actual word traces](gauss-mayer-countable-word-traces.md).
 
 ## Theorem
@@ -80,5 +80,4 @@ transitive axiom audits contain only `propext`, `Classical.choice`, and
 
 This identifies the actual summands in primitive-orbit coordinates.
 [Finite rotation sums and absolute regrouping](gauss-mayer-primitive-orbit-logarithm.md)
-are certified. Geometric denominator expansion and the Euler product remain
-unproved. No geodesic-length or scattering normalization is asserted.
+and the [Euler product](gauss-mayer-primitive-orbit-product.md) are certified. No geodesic-length or scattering normalization is asserted.

@@ -35,6 +35,23 @@ Lean candidate: `TransMetzlerWeilPositivity/ReceiverRate/ABoundedOverlapRateSees
 Direct compilation and axiom audit pending. Exact preservation of the boost
 hyperplane is not yet supplied by this Gram limit.
 
+The global hyperplane implication can instead pass through inertia: positivity
+on one real hyperplane bounds the complexified matrix index by one; compression
+and finite-Gram limits retain that bound. The rational Weil index equals the
+zeta index, whose nonzero values are at least two. This avoids requiring the
+packet approximation to preserve the pole moment. Lean inputs:
+`hermQuad_map_ofReal`, `hermNegIndex_le_negIndexOn_ker_add_one`,
+`eventually_le_hermNegIndex`, `negIndex_ratCorr`, `negIndex_zetaKernel_le_one_iff`.
+The resulting receiver quantifies over every fixed critical multiple.
+
+## Heat calibration
+
+`negIndex_heatArchState_eq_one_of_eighth_le` already gives index one for
+every `c>0` and `t≥1/8` in `TheHeatDeformedArchimedeanState.lean`.
+This supplies the requested upper-time calibration at the classical bound;
+its transitive axiom audit remains to be checked here. The subcritical count,
+uniform count, and no-jump obligations remain separate.
+
 ## Cone obstruction
 
 The existing double-pole argument requires an attained maximal real part.
