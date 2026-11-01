@@ -138,7 +138,10 @@ private theorem packet_mode_mass_bound (Q k : ℕ) (a : ℕ → ℝ)
     · dsimp [r]
       rw [min_eq_right h]
       exact le_add_of_nonneg_left (by positivity)
-  exact hmode.trans ((mul_le_mul_of_nonneg_left hinv (by positivity)).trans_eq (by ring))
+  calc
+    _ ≤ (Q : ℝ) ^ 2 * A ^ 2 / r ^ 2 := hmode
+    _ = ((Q : ℝ) ^ 2 * A ^ 2) * (1 / r ^ 2) := by ring
+    _ ≤ _ := mul_le_mul_of_nonneg_left hinv (by positivity)
 
 /-- The far packet costs conductor divided by bandwidth times the squared coefficient mass. -/
 theorem chebyshevCyclotomicFar_le_mass (N : ℕ) {K : ℕ} (hK : 1 ≤ K) :

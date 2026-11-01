@@ -49,7 +49,10 @@ Lean check and axiom audit.
 nonpositive eigenvector when `m>0`; its axiom audit is clean. Each negative
 coordinate of the completed cyclic orbit is a finite sum of translates
 of the original kernel; preservation of the square then bounds its full
-norm subexponentially in both time directions. Density and nondegeneracy supply a column `eₐ` with `B(w,eₐ)≠0`;
+norm subexponentially in both time directions. This orbit bound is verified
+in `Index/FrameOrbitSubexponential`, using HTGeometry
+`SubexponentialIntegerGrowth`. Density and nondegeneracy supply a column
+`eₐ` with `B(w,eₐ)≠0`;
 translating its integer orbit preserves the subexponential bound.
 Writing `f(z)=B(w,T^z eₐ)`, invariance gives
 `conjugate(λ) f(z+1)=f(z)`. Hence
@@ -57,7 +60,9 @@ Writing `f(z)=B(w,T^z eₐ)`, invariance gives
 `f(n)=(conjugate(λ)⁻¹)^n f(0)`.
 HKT `coeff_eq_zero_of_norm_le`, with one node and any growth rate strictly
 between `1` and that node's modulus, excludes modulus greater than one in
-both formulas. Thus `|λ|=1`.
+both formulas. Thus `|λ|=1`. The scalar recurrence theorem is verified in
+`Index/SubexponentialScalarRecurrence`; its application to the eigenvector
+is drafted in `Index/FrameUnitaryEigenvector`.
 
 Now `(T-λ)v` is orthogonal to `w`. Every strictly negative finite-dimensional
 subspace `V` of this orthogonal space satisfies `dim V+1≤m`: adjoining `w`
