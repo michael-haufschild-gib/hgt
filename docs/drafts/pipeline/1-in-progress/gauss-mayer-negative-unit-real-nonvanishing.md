@@ -5,6 +5,14 @@
 - **Parent:** [negative-unit cancellation](../3-formalized/gauss-mayer-negative-unit-pole-cancellation.md).
 - **Target:** For every real `w>0`, `D(w,−1)=A(w,−1)≠0`, including `w=1`.
 
+## Stronger source target
+
+Prove that every actual derivative eigenfunction satisfying
+`(R(w)f)'=−f'` on `[0,1]` is `f=c f_w`, without assuming `f(0)=0`.
+The constant-response derivative and extrema must first force that value
+to vanish. The actual operator equation `Rf=−f` then forces `c=0`.
+This is a source rigidity statement, not an assumed positive-kernel interface.
+
 ## Source mechanism
 
 The checked cancellation theorem proves equality and holomorphy, not

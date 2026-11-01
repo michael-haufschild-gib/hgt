@@ -34,7 +34,6 @@ open CompletedArithmeticForms RenormalizedArithmeticPotentialTheory
   RenormalizedArithmeticPotentialTheory.CompletedShell
   SpacingScaleHarmonicAnalysis ArithmeticElectrostatics
   BezoutValuationIncidence SuccessorShellArithmetic
-  CriticalScaleArithmeticRigidity
 
 /-- Sub-one-eighth power-of-logarithm overlap ceiling `1 / 8` for fixed finite conductor packets
 and polylogarithmic conductor subspaces. -/
@@ -61,7 +60,7 @@ private theorem one_add_log_le_two_sqrt {m : ℕ} (hm : 0 < m) :
   have hlog : Real.log (Real.sqrt (m : ℝ)) ≤ Real.sqrt (m : ℝ) - 1 :=
     Real.log_le_sub_one_of_pos hsm0
   have hid : Real.log (m : ℝ) = 2 * Real.log (Real.sqrt (m : ℝ)) := by
-    rw [← Real.sq_sqrt hm0.le, Real.log_pow]; ring
+    rw [Real.log_sqrt hm0.le]; ring
   linarith only [hlog, hid]
 
 private theorem norm_sq_normalizedRamanujanHorizonVector_le {m N : ℕ}
@@ -3913,11 +3912,153 @@ theorem eventually_tiltedUnitSpline_polylog_conductorSubspace_energy_ge
           completedConductorEnergy tiltedUnitSpline c l)) ≤ 1 / 64 := by
     have hraw := hbilinN c hc1 hwidth Q₁ hQ_le
     let r_lead := c * (1 + Real.log c) ^ 2 * L ^ (1 / (k : ℝ)) / L
+    have hr_lead0 : 0 ≤ r_lead := by
+      dsimp only [r_lead]
+      have : 0 ≤ 1 + Real.log c := by linarith [Real.log_nonneg hc1]
+      positivity
     have hr_sub : c ^ 5 * L / (N : ℝ) ≤ r_lead := by
-      have hc5_N : c ^ 5 * L ≤ 1 / L := by
-        -- Wait: `c^5 * L * L ≤ L^7 ≤ N`! Let's prove `c ^ 5 * L / N ≤ 1 / L`!
-        sorry
-      sorry
-    sorry
+      have hc5_invL : c ^ 5 * L / (N : ℝ) ≤ 1 / L := by
+        rw [div_le_div_iff₀ hN0 hL0, one_mul]
+        have hc5_L5 : c ^ 5 ≤ L ^ 5 := pow_le_pow_left₀ hc0.le hcL 5
+        have hL78 : L ^ 7 ≤ L ^ 8 := pow_le_pow_right₀ hL1 (by norm_num : 7 ≤ 8)
+        calc
+          c ^ 5 * L * L ≤ L ^ 5 * L * L :=
+            mul_le_mul_of_nonneg_right (mul_le_mul_of_nonneg_right hc5_L5 hL0.le) hL0.le
+          _ = L ^ 7 := by ring
+          _ ≤ (N : ℝ) := hL78.trans hL8_pow
+      have hinvL_lead : 1 / L ≤ r_lead := by
+        dsimp only [r_lead]
+        apply div_le_div_of_nonneg_right _ hL0.le
+        have h1c_sq : 1 ≤ (1 + Real.log c) ^ 2 :=
+          one_le_pow₀ (by linarith [Real.log_nonneg hc1])
+        have hs1 : 1 ≤ L ^ (1 / (k : ℝ)) := Real.one_le_rpow hL1 (by positivity)
+        exact one_le_mul_of_one_le_of_one_le (one_le_mul_of_one_le_of_one_le hc1 h1c_sq) hs1
+      exact hc5_invL.trans hinvL_lead
+    have hr_lead_ub : r_lead ≤ L ^ (α + 2 * ν + 1 / (k : ℝ) - 1) := by
+      dsimp only [r_lead]
+      have hnum : c * (1 + Real.log c) ^ 2 * L ^ (1 / (k : ℝ)) ≤
+          L ^ α * L ^ (2 * ν) * L ^ (1 / (k : ℝ)) :=
+        mul_le_mul_of_nonneg_right
+          (mul_le_mul hcup hVcsq (sq_nonneg _) (by positivity)) (by positivity)
+      calc
+        c * (1 + Real.log c) ^ 2 * L ^ (1 / (k : ℝ)) / L ≤
+            (L ^ α * L ^ (2 * ν) * L ^ (1 / (k : ℝ))) / L :=
+          div_le_div_of_nonneg_right hnum hL0.le
+        _ = L ^ (α + 2 * ν + 1 / (k : ℝ) - 1) := by
+          rw [← Real.rpow_add hL0, ← Real.rpow_add hL0, ← Real.rpow_sub hL0, Real.rpow_one]
+    have ht1 : c ^ 7 * r_lead ≤ L ^ (-ν) := by
+      calc
+        c ^ 7 * r_lead ≤ L ^ ((7 : ℝ) * α) * L ^ (α + 2 * ν + 1 / (k : ℝ) - 1) :=
+          mul_le_mul (hcpow 7) hr_lead_ub hr_lead0 (by positivity)
+        _ = L ^ (8 * α + 2 * ν + 1 / (k : ℝ) - 1) := by
+          rw [← Real.rpow_add hL0]; congr 1; ring
+        _ ≤ L ^ (-ν) := Real.rpow_le_rpow_of_exponent_le hL1 hexp1
+    have ht2 : (Q₁ : ℝ) ^ 2 * (1 + Real.log Q₁) ^ 2 * r_lead ≤ L ^ (-ν) := by
+      have hQ2_pow : (Q₁ : ℝ) ^ 2 ≤ L ^ (2 * q) := by
+        have hp := pow_le_pow_left₀ (Nat.cast_nonneg Q₁) hQ_le 2
+        have he : (L ^ q) ^ (2 : ℕ) = L ^ (2 * q) := by
+          rw [← Real.rpow_natCast, ← Real.rpow_mul hL0.le]; congr 1; ring
+        exact hp.trans_eq he
+      calc
+        (Q₁ : ℝ) ^ 2 * (1 + Real.log Q₁) ^ 2 * r_lead ≤
+            (L ^ (2 * q) * L ^ (2 * ν)) * L ^ (α + 2 * ν + 1 / (k : ℝ) - 1) :=
+          mul_le_mul (mul_le_mul hQ2_pow hHQsq (sq_nonneg _) (by positivity))
+            hr_lead_ub hr_lead0 (by positivity)
+        _ = L ^ (α + 2 * q + 4 * ν + 1 / (k : ℝ) - 1) := by
+          rw [← Real.rpow_add hL0, ← Real.rpow_add hL0]; congr 1; ring
+        _ ≤ L ^ (-ν) := Real.rpow_le_rpow_of_exponent_le hL1 hexp2
+    let W := c ^ 7 + (Q₁ : ℝ) ^ 2 * (1 + Real.log Q₁) ^ 2
+    let r_full := r_lead + c ^ 5 * L / (N : ℝ)
+    have hWr_le : W * r_full ≤ 4 * L ^ (-ν) := by
+      have hr2 : r_full ≤ 2 * r_lead := by dsimp only [r_full]; linarith only [hr_sub]
+      have hW0 : 0 ≤ W := by dsimp only [W]; positivity
+      calc
+        W * r_full ≤ W * (2 * r_lead) := mul_le_mul_of_nonneg_left hr2 hW0
+        _ = 2 * (c ^ 7 * r_lead + (Q₁ : ℝ) ^ 2 * (1 + Real.log Q₁) ^ 2 * r_lead) := by
+          dsimp only [W]; ring
+        _ ≤ 4 * L ^ (-ν) := by linarith only [ht1, ht2]
+    have hWr0 : 0 ≤ W * r_full := by dsimp only [W, r_full]; positivity
+    have hLν_le1 : L ^ (-ν) ≤ 1 := by
+      simpa only [Real.rpow_zero] using Real.rpow_le_rpow_of_exponent_le hL1 (by linarith only [hν])
+    have hLν_sq : (L ^ (-ν)) ^ 2 ≤ L ^ (-ν) := by
+      rw [sq]; exact mul_le_of_le_one_right (by positivity) hLν_le1
+    have h1024 : 1024 * K_bilin ≤ L ^ ν := le_trans (le_max_right _ _) hν_big
+    calc
+      _ ≤ K_bilin * W ^ 2 * r_full ^ 2 := hraw
+      _ = K_bilin * (W * r_full) ^ 2 := by ring
+      _ ≤ K_bilin * (4 * L ^ (-ν)) ^ 2 :=
+        mul_le_mul_of_nonneg_left (pow_le_pow_left₀ hWr0 hWr_le 2) hK_bilin.le
+      _ = 16 * K_bilin * (L ^ (-ν)) ^ 2 := by ring
+      _ ≤ 16 * K_bilin * L ^ (-ν) :=
+        mul_le_mul_of_nonneg_left hLν_sq (by positivity)
+      _ = (1 / 64 : ℝ) * ((1024 * K_bilin) * L ^ (-ν)) := by ring
+      _ ≤ (1 / 64 : ℝ) * (L ^ ν * L ^ (-ν)) :=
+        mul_le_mul_of_nonneg_left (mul_le_mul_of_nonneg_right h1024 (by positivity)) (by norm_num)
+      _ = 1 / 64 := by rw [hmul_ν, mul_one]
   exact spectralFloorWeilMatrix_subspace_inner_ge_of_bilinear_budget hQ1 hMN hL0 hc1
     hgram_small hbilin_small a
+
+/-- **Sub-one-eighth spectral floor on every fixed finite conductor packet (`Σ-2` closed up to `1 / 8`).**
+For every fixed conductor cutoff `M₀ : ℕ` and every `0 < α < 1 / 8`, eventually in `N`,
+`completeWeilEnergy tiltedUnitSpline c N` dominates `(κ₀ / (2 c^7)) * ‖y‖^2` on the entire packet
+subspace `conductorSubspace M₀ N` across `1 ≤ c ≤ (log N)^α`. -/
+theorem eventually_tiltedUnitSpline_fixed_conductorSubspace_energy_ge_below_one_eighth
+    (M₀ : ℕ) {α : ℝ} (hα : 0 < α) (hα_lt : α < oneEighthPowerLogExponent) :
+    ∀ᶠ N : ℕ in atTop, ∀ c : ℝ, 1 ≤ c → c ≤ Real.log (N : ℝ) ^ α →
+      ∀ y ∈ conductorSubspace M₀ N,
+        (tiltedSplineSpectralFloorConstant / (2 * c ^ 7)) * ‖y‖ ^ 2 ≤
+          completeWeilEnergy tiltedUnitSpline c N y := by
+  have hα8 : α < 1 / 8 := hα_lt
+  have hq : (0 : ℝ) < 1 / 4 := by norm_num
+  have hαq : α + 2 * (1 / 4 : ℝ) < 1 := by linarith only [hα8]
+  have hLlim : Tendsto (fun N : ℕ => Real.log (N : ℝ)) atTop atTop :=
+    Real.tendsto_log_atTop.comp tendsto_natCast_atTop_atTop
+  filter_upwards [eventually_tiltedUnitSpline_polylog_conductorSubspace_energy_ge hα hα_lt hq hαq,
+    ((tendsto_rpow_atTop hq).comp hLlim).eventually_ge_atTop (M₀ : ℝ)] with N hpolyN hM_le
+  dsimp only [Function.comp_def] at hM_le
+  let Q₁ := ⌊Real.log (N : ℝ) ^ (1 / 4 : ℝ)⌋₊
+  have hMQ : M₀ ≤ Q₁ := Nat.le_floor hM_le
+  intro c hc1 hcup y hy
+  have hc0 : 0 < c := zero_lt_one.trans_le hc1
+  obtain ⟨a, -, rfl⟩ := (mem_conductorSubspace_iff (M := M₀) (N := N) (x := y)).mp hy
+  let a' : ℕ → ℝ := fun m => if m ≤ M₀ then a m else 0
+  have hy_eq : (∑ m ∈ Icc 1 M₀, a m • normalizedRamanujanHorizonVector m N) =
+      ∑ m ∈ Icc 1 Q₁, a' m • normalizedRamanujanHorizonVector m N := by
+    dsimp only [a']
+    refine (sum_congr rfl fun m hm => by rw [if_pos (mem_Icc.mp hm).2]).trans
+      (sum_subset (Icc_subset_Icc_right hMQ) fun m hm hnot => ?_)
+    have hnM : ¬ m ≤ M₀ := fun h => hnot (mem_Icc.mpr ⟨(mem_Icc.mp hm).1, h⟩)
+    simp only [if_neg hnM, zero_smul]
+  have hfloor := hpolyN c hc1 hcup a'
+  rw [← hy_eq, spectralFloorWeilMatrix_inner] at hfloor
+  have hnonneg : 0 ≤ (1 / 4 : ℝ) *
+      (∑ m ∈ Icc 1 Q₁, completedConductorEnergy tiltedUnitSpline c m * a' m ^ 2) :=
+    mul_nonneg (by norm_num) (sum_nonneg fun m _ =>
+      mul_nonneg (completedConductorEnergy_nonneg contDiff_tiltedUnitSpline
+        tiltedUnitSpline_eq_zero integral_tiltedUnitSpline_sq_pos hc0 m) (sq_nonneg _))
+  linarith only [hfloor, hnonneg]
+
+/-- **Strict positivity on every fixed finite conductor packet up to `1 / 8`.** -/
+theorem eventually_tiltedUnitSpline_fixed_conductorSubspace_pos_below_one_eighth
+    (M₀ : ℕ) {α : ℝ} (hα : 0 < α) (hα_lt : α < oneEighthPowerLogExponent) :
+    ∀ᶠ N : ℕ in atTop, ∀ c : ℝ, 1 ≤ c → c ≤ Real.log (N : ℝ) ^ α →
+      ∀ y ∈ conductorSubspace M₀ N, y ≠ 0 →
+        0 < completeWeilEnergy tiltedUnitSpline c N y := by
+  filter_upwards [eventually_tiltedUnitSpline_fixed_conductorSubspace_energy_ge_below_one_eighth
+    M₀ hα hα_lt] with N hN c hc1 hcup y hy hy0
+  have hc0 : 0 < c := zero_lt_one.trans_le hc1
+  have hpos : 0 < (tiltedSplineSpectralFloorConstant / (2 * c ^ 7)) * ‖y‖ ^ 2 :=
+    mul_pos (div_pos tiltedSplineSpectralFloorConstant_pos (by positivity))
+      (sq_pos_of_pos (norm_pos_iff.mpr hy0))
+  exact hpos.trans_le (hN c hc1 hcup y hy)
+
+end GaloisForLFunctions.CriticalArithmeticCorrelationTheory
+
+#print axioms GaloisForLFunctions.CriticalArithmeticCorrelationTheory.exists_completeWeil_bilinear_conductor_residual_variable_rate
+#print axioms GaloisForLFunctions.CriticalArithmeticCorrelationTheory.exists_tiltedUnitSpline_bilinear_conductor_residual_variable_rate
+#print axioms GaloisForLFunctions.CriticalArithmeticCorrelationTheory.exists_tiltedUnitSpline_quadratic_inv_energy_residual_sum_le
+#print axioms GaloisForLFunctions.CriticalArithmeticCorrelationTheory.exists_tiltedUnitSpline_bilinear_relative_residual_sum_le
+#print axioms GaloisForLFunctions.CriticalArithmeticCorrelationTheory.eventually_tiltedUnitSpline_polylog_conductorSubspace_energy_ge
+#print axioms GaloisForLFunctions.CriticalArithmeticCorrelationTheory.eventually_tiltedUnitSpline_fixed_conductorSubspace_energy_ge_below_one_eighth
+#print axioms GaloisForLFunctions.CriticalArithmeticCorrelationTheory.eventually_tiltedUnitSpline_fixed_conductorSubspace_pos_below_one_eighth
+
