@@ -9,6 +9,7 @@ import GaloisForLFunctions.LatticeSectionTheory.TheCalibrationOverFiniteFields
 import GaloisForLFunctions.LatticeSectionTheory.TheIsotropicConeCountsDivisors
 import GaloisForLFunctions.LatticeSectionTheory.RiemannRochOutsideAFiniteDivisorAtEveryDegree
 import GaloisForLFunctions.LatticeSectionTheory.HeckeCorrespondencesAreSimilitudesOfThePrimitiveH1
+import GaloisForLFunctions.LatticeSectionTheory.TheIndexReadingsOfThePrimitiveH1
 
 /-!
 # Lattice Section Theory

@@ -58,9 +58,10 @@ dependency checks remain incomplete.
 
 The profile, derivative bound, Fourier floor, Gamma reserve, conductor floor,
 reciprocal-floor power bound, and complete prime-defect reserve pass Lean with
-standard axioms only.
+standard axioms only. Low-conductor decoupling and the cubic orthogonal
+cross-pairing bound also pass.
 
-1. Check the drafted conductor-band decoupling, spectral confinement, and residual
+1. Check the drafted spectral confinement, conductor-band coercivity, and residual
    assembly with actual overlap bounded by the auxiliary parameter `T`.
 2. Check the concrete positivity theorem and its exact `sincCriticalOverlap`
    corollary without analytic assumptions.

@@ -64,28 +64,26 @@ algebraic multiplier `q≠1`; `q=1` repeats the same coordinate.
    `log(p) exp(−σr_j log p)`, which is nonzero. Positive-integer incidence
    between dilation parameters is retained exactly.
 
-All six modules have direct production checks and umbrella imports.
-Their 42 public axiom audits use only the standard three axioms.
+7. **Exact polynomial coefficient extraction.**
+   `ArithmeticHarmonicAnalysis/AlgebraicDilationPolynomialCoefficients.lean`
+   expands every finite polynomial as one absolutely convergent exponential
+   series. At a frequency on `D` distinct primes, with every supported monomial
+   of degree at most `D`, `polynomial_fiber` identifies its coefficient with
+   the degree-`D` symmetric multilinear form. A vanishing relation annihilates
+   that form on every distinct-prime atom packet.
+
+All seven modules have direct production checks and umbrella imports.
+Their 48 public axiom audits use only the standard three axioms.
 These inputs do not yet prove joint independence of the analytic functions.
 
 ## Remaining bridge
 
-The full set of scaled prime frequencies is not independent; the exact
-collision classification must be used in the product expansion.
-
-For a polynomial relation of maximal degree `D`, extract a frequency on `D`
-distinct primes. The certified collision law kills every lower-degree term
-and reduces each degree-`D` contribution to a finite permutation sum. This is
-a symmetric multilinear form in the normalized prime-jet rows. Their
-separation forces the form to vanish; its diagonal is `D!` times the top
-homogeneous polynomial, contradicting a nonzero top coefficient.
-Exact polynomial frequency extraction and the actual jet-independence bridge
-are drafted but not yet certified.
-
-The corpus already supplies absolutely convergent product expansion
-(`ExponentialSeriesAlgebra.prod_expSeriesCarrier`) and coefficient extraction
-with collisions (`ExponentialSeriesFiberwise.fiberAmplitude_eq_zero_of_expSeriesCarrier_eq_zero`).
-No entire-series convergence assumption is needed.
+Combine the certified top-degree coefficient identity with the nonzero decay
+factors and prime-jet separation. A nonzero polynomial relation of maximal
+degree `D` would force its symmetric degree-`D` form to vanish identically,
+contradicting `polynomialMultilinear_ne_zero`. This final actual jet-independence
+bridge is drafted but not yet certified. The argument retains frequency
+collisions and requires only absolute convergence of the actual line series.
 
 After actual jet independence, pass through rotated right-half-plane germs.
 `CoordinatewiseDifferentialFamilyMatroid.differentialIndependent_deriv_div_self_iff`

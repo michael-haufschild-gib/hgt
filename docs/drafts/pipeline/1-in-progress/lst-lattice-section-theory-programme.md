@@ -10,33 +10,35 @@
 
 ## Goal
 Answer the 2.7 questions with Lean theorems; isolate the primitive `h¹` as the single missing count.
-Lean folder `formal/GaloisForLFunctions/LatticeSectionTheory/`, umbrella `LatticeSectionTheory.lean`.
+Lean folder `formal/GaloisForLFunctions/LatticeSectionTheory/`, umbrella `LatticeSectionTheory.lean`,
+README in the folder.
 
 ## Gates
-- [x] 0 → 1  in-progress: README first draft, pillar list
-- [ ] 1 → 2  paper proofs of the pillars (below)
-- [ ] 2 → 3  Lean modules for each pillar, checked with `lake --old env lean`
+- [x] 0 → 1  in-progress
+- [x] 1 → 2  paper proofs of the pillars (below)
+- [x] 2 → 3  Lean modules for the pillars, each checked with `lake --old env lean`
+- [ ] open core: primitive `h¹` as a count (stays in 1-in-progress)
 
-## Pillars and paper proofs
+## Formalized (module → content)
+- `TheSlopeOfALatticeCountIsItsRank`: Poisson RR for every rank, Banaszczyk slope law, rank law.
+- `TheKunnethRiemannRoch`: `h¹ = h¹_K + ½δ`; Künneth effectivity ⇔ Hodge index; ⇔ RH on ζ.
+- `BidegreeCountsSeeNoPrimitiveClass`: bidegree blindness; prime-free effectivity (≤ 3/10 all tests;
+  ample-orthogonal ≤ (log 2 + 1/50)/2).
+- `RiemannRochOutsideAFiniteDivisorAtEveryDegree`: effectivity + coercive primitive `h¹` off `D_a`.
+- `TheRectangularLatticeCount`, `DefiniteCountsHaveOffLineZeros`: Epstein FE-pair, Dirichlet
+  series, real zero in (½,1) for `y > e²` and `y < e^{−2}`.
+- `TheSiegelMajorantIsTheHodgeIndex`: majorant ⇔ HI; Siegel counts converge ⇔ RH; boosts `|u|>1`
+  fake; Hecke = boost.
+- `TheBoostTransformRestoresTheEulerProduct`: `∫Z⁺e^{2wu} = Kζ(s+w)ζ(s−w)`.
+- `TheIsotropicConeCountsDivisors`: cone count `Γ(2π)^{−σ}ζ²`, double pole, not Poisson-dual,
+  Siegel–Weil identity.
+- `HeckeCorrespondencesAreSimilitudesOfThePrimitiveH1`, `TheIndexReadingsOfThePrimitiveH1`,
+  `TheCalibrationOverFiniteFields`.
 
-1. **Lattice Riemann–Roch + slope law.** HTGeometry `latticeTheta_inversion` gives
-   `θ_L(t) = c t^{−r/2} θ_{L*}(1/t)`. Monotonicity of `θ_{L*}` gives `θ_L(t) ≤ (t'/t)^{r/2} θ_L(t')`
-   for `t ≤ t'`, i.e. `h⁰(L,d) − h⁰(L,d') ≤ r(d − d')`.
-2. **Künneth RR.** `u = h⁰(−a)`, `v = h⁰(−b)`, `h⁰(a) = a + u`, `h⁰(b) = b + v`:
-   `h⁰(a)h⁰(b) + uv − ab = v·h⁰(a) + u·h⁰(b) > 0`. With `x² = 2ab − δ(x,x)` (`a = x·H`, `b = x·V`):
-   `h(x) + h(−x) − ½x² = h¹_K + ½δ`. RI ⇔ HI (scale primitive `x` by `n`). Degree levels: base
-   count `≤ 3 exp(−π e^{−2d})` for `d ≤ 0`.
-3. **Epstein fake.** `θ_y(t) = θ(t)θ(y²t)`, `θ_y(1/t) = (t/y) θ_{1/y}(t)`.
-   `Λ_y(s) = ∫_1^∞(θ_y−1)t^{s−1} + y^{−1}∫_1^∞(θ_{1/y}−1)t^{−s} + 1/(y(s−1)) − 1/s`.
-   At `s = ½`: `θ_{1/y}(t) − 1 ≥ θ(t/y²) − 1 ≥ y t^{−1/2} − 1` on `[1, y²]`, so the dual term
-   `≥ 2 log y − 2 + 2/y`; total `> 0` for `y > e²`. As `s → 1⁻`, `1/(y(s−1)) → −∞`, other terms
-   bounded. IVT ⇒ zero in `(½, 1)`.
-4. **Siegel majorant.** `A = H + V`: `(x·A)² − x² = a² + b² + δ(x,x)`. Convergence of
-   `Σ e^{−πtQ(n)}` on `ℤ^k` ⇔ `Q` positive definite (negative or null rational direction ⇒
-   infinitely many terms bounded below).
-5. **Boost selection.** `∫(Ae^{2u} + Be^{−2u})^{−s}e^{2wu}du = ½(AB)^{−s/2}(B/A)^{w/2} c₀(s,w)`,
-   `c₀ = ∫_0^∞ (y + 1/y)^{−s} y^{w−1} dy`; Tonelli over `m, n ≥ 1`.
-6. **Primitive index** = negative index of `δ` on primitive part = Hodge defect (ACS Pontryagin).
+## Open core
+Primitive `h¹ = ½W(f,f)` as a nonnegative count by an identity on prime-free tests. Known
+count-like representation: the Lévy decomposition of the archimedean collar (RHTower WeilLevy*),
+positivity by a pointwise potential bound; not an identity on the whole window.
 
 ## Log
-- 2026-11-01 — created in 1-in-progress with README first draft
+- 2026-11-01 — created with README first draft; pillars formalized (12 modules).

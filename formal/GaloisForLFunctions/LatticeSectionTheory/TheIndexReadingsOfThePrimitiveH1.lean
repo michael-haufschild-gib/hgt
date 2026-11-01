@@ -46,7 +46,7 @@ theorem riemannHypothesis_primitiveH1_tfae (u : ℝ) {t : ℝ} (ht : 0 < t) :
         ∀ x : ScalingCycle, scalingSurface.pair x scalingSurface.H = 0 →
           scalingSurface.pair x scalingSurface.V = 0 → x ≠ 0 →
             Summable (siegelTerm scalingSurface u t x),
-        (rightZeros zetaZeroConfig).encard < 2 ] := by
+        (rightZeros Zeta23.zetaZeroConfig).encard < 2 ] := by
   tfae_have 1 ↔ 2 :=
     scalingSurface_hodgeIndex_iff.symm.trans (forall_primitiveH1_nonneg_iff scalingSurface).symm
   tfae_have 1 ↔ 3 := riemannHypothesis_iff_kunneth_effectivity

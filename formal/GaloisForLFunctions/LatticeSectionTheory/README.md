@@ -98,7 +98,8 @@ classification of which lattice counts can and cannot touch the second part.
 9. On the real axis `Λ_y(σ) = M_y(σ) − 1/σ − y⁻¹/(1 − σ)` with a nonnegative Mellin integral.
    Since `θ(t) ≥ t^{−1/2}`, the dual count gives `M_y(½) ≥ 2 log y − 2 + 2/y`, so
    `Λ_y(½) ≥ 2 log y − 4 > 0` for `y > e²`, while the pole term drives `Λ_y → −∞` at `1⁻`: a real
-   zero in `(½, 1)`. `ℤ ⊕ 8ℤ` is a fake.
+   zero in `(½, 1)`. By the functional equation the same holds for `y < e^{−2}`. `ℤ ⊕ 8ℤ` is a
+   fake.
 
 **E. The split plane: majorants, boosts, cone.**
 10. Siegel majorant: `P_u(x) = e^{2u}(x·H)² + e^{−2u}(x·V)² + δ(x,x)`. `P_u ≥ 0` ⇔ Hodge index. The
@@ -106,7 +107,7 @@ classification of which lattice counts can and cannot touch the second part.
     `θ(tP_u(x))`; on the scaling surface all primitive ones converge iff RH. A Gaussian Poisson
     summation of the Lorentzian lattice presupposes the sign.
 11. On the pole plane the majorant at boost `u` is `e^{−2u}Q_{e^{2u}}`: a fixed boost is a
-    rectangular lattice, fake for `u > 1`. The index-`p` sublattice `ℤH ⊕ pℤV` at boost `u` is `p`
+    rectangular lattice, fake for `|u| > 1`. The index-`p` sublattice `ℤH ⊕ pℤV` at boost `u` is `p`
     times the lattice at boost `u + ½ log p`: Hecke is a boost.
 12. Each split term `(m²e^{2u} + n²e^{−2u})^{−s}e^{2wu}` is the translate by `½ log(n/m)` of one
     kernel times `m^{−(s+w)}n^{−(s−w)}`. Integrating over the boost line forgets the translations:
@@ -118,21 +119,24 @@ classification of which lattice counts can and cannot touch the second part.
     Siegel–Weil in miniature: the boost average of the majorant counts is the cone count up to
     archimedean factors.
 
-**F. Hecke and the primitive part.**
+**F. Hecke, the primitive part, and its index.**
 14. `T_a` sends the bidegree `(b₁, b₂)` to `(b₁, ab₂)` (boost and scaling) and multiplies the
     primitive `h¹` and `χ` by `a`: a similitude of ratio the degree, like `deg(φψ) = deg φ deg ψ`.
     The sign of the primitive `h¹` is invariant under the whole Hecke monoid.
+15. The number of negative directions of the primitive `h¹` is the Hodge defect, an even integer.
+    RH, nonnegativity of the primitive `h¹`, effectivity of the Künneth count, convergence of all
+    primitive Siegel counts and "fewer than two right zeros" are one statement.
 
 **G. Prime-free cycles and the finite divisor.**
-15. On all tests of aperture `≤ 3/10` and on ample-orthogonal smooth tests of aperture
+16. On all tests of aperture `≤ 3/10` and on ample-orthogonal smooth tests of aperture
     `≤ (log 2 + 1/50)/2` (the prime-free window `½ log 2` and past the prime 2) the Künneth count is
     an effectivity function; on any test subsurface its effectivity is Weil positivity there.
-16. At every degree `a > 0`, outside the `2#D_a + 2` real conditions of the low-frequency divisor,
+17. At every degree `a > 0`, outside the `2#D_a + 2` real conditions of the low-frequency divisor,
     the Künneth count is an effectivity and the primitive `h¹` is coercive:
     `h¹_prim ≥ ½ c_a ∫f²`, `c_a = (10 + 68e^a)(1 − 1/π)`. This is what replaces finite genus.
 
 **H. Calibration over `𝔽_q`.**
-17. On Frobenius windows of a curve datum the Künneth count is effective on every window iff the
+18. On Frobenius windows of a curve datum the Künneth count is effective on every window iff the
     datum is unitary; the golden fake fails on some window. In genus one the primitive `h¹` of the
     graph of `m − nF` is `deg(m − nF) = m² − amn + qn²`, and for `1 − F` it is the number of points:
     over a curve the primitive `h¹` is the degree of a correspondence, i.e. a count.
@@ -148,12 +152,13 @@ classification of which lattice counts can and cannot touch the second part.
 | Künneth effectivity ⇔ Hodge index; pole plane unconditional; scaling surface ⇔ RH | `kunneth_effectivity_iff`, `kunnethH0_degreeBounded`, `hyperbolicPlane_kunneth_effectivity`, `riemannHypothesis_iff_kunneth_effectivity` | proved; equivalence |
 | Bidegree blindness | `bidegree_h1_eq`, `riemannInequality_bidegree_iff`, `kunneth_polePlaneRiemannInequality` | proved |
 | Two-dimensional Poisson; Epstein FE-pair; Dirichlet series | `rectTheta_inv`, `rectFEPair`, `epsteinLambda_one_sub`, `differentiableAt_epsteinLambda`, `hasSum_epsteinLambda` | proved |
-| Epstein fakes: real zero in `(½,1)` for `y > e²`; `ℤ ⊕ 8ℤ` | `exists_epsteinLambda_eq_zero`, `epsteinLambda_eight_has_offLine_zero`, `epsteinLambda_half_re_ge` | proved |
+| Epstein fakes: a positive centre forces a real zero in `(½,1)`; this holds for `y > e²` and `y < e^{−2}`; `ℤ ⊕ 8ℤ` | `exists_epsteinLambda_eq_zero_of_half_pos`, `exists_epsteinLambda_eq_zero`, `exists_epsteinLambda_eq_zero_of_lt`, `epsteinLambda_eight_has_offLine_zero`, `epsteinLambda_half_re_ge` | proved |
 | Siegel majorant law; convergence ⇔ positivity; scaling surface ⇔ RH | `siegelMajorant_eq`, `siegelMajorant_nonneg_iff_hodgeIndex`, `summable_siegelTerm_iff`, `riemannHypothesis_iff_forall_summable_siegelTerm` | proved; equivalence |
 | Fixed boosts are rectangular and fake; Hecke is a boost | `hyperbolicPlane_siegelMajorant`, `exists_boost_offLine_zero`, `hyperbolicPlane_siegelMajorant_hecke` | proved |
 | Boost transform `= K(s,w)ζ(s+w)ζ(s−w)`; Hecke character | `integral_splitSeries_mul_exp`, `integral_splitSeries_mul_exp_eq_zeta`, `boostConstant_pos`, `integral_boost_translate` | proved |
 | Cone count `Γ(σ)(2π)^{−σ}ζ(σ)²`, double pole, not Poisson-dual; Siegel–Weil | `mellin_coneCount`, `tendsto_sq_mul_coneMellin`, `tendsto_sq_mul_Λ`, `not_exists_FEPair_coneCount`, `siegelWeil_splitPlane` | proved |
 | Hecke similitude of the primitive `h¹` | `primitiveH1_heckeCorrespondence`, `eulerChar_heckeCorrespondence`, `primitiveH1_heckeCorrespondence_nonneg_iff` | proved |
+| Index readings: RH ⇔ primitive `h¹ ≥ 0` ⇔ Künneth effective ⇔ primitive Siegel counts converge ⇔ fewer than two right zeros | `riemannHypothesis_primitiveH1_tfae`, `forall_primitiveH1_nonneg_iff` | equivalences |
 | Prime-free effectivity | `kunneth_effectivity_realTestsAt`, `kunneth_effectivity_primitiveSmoothRealTestsAt`, `kunneth_effectivity_scalingSubsurface_iff` | proved |
 | Riemann–Roch outside a finite divisor at every degree | `kunneth_effectivity_lowBlindTests`, `kunneth_primitive_h1_ge`, `exists_ne_zero_lowBlindTests` | proved |
 | `𝔽_q` calibration | `unitary_iff_forall_window_kunneth`, `goldenDatum_not_forall_window_kunneth`, `genusOne_kunneth_h1_graphCycle`, `genusOne_kunneth_h1_frobenius` | proved |
@@ -178,6 +183,7 @@ classification of which lattice counts can and cannot touch the second part.
 - Boost transforms: the translated-kernel identity `splitTerm_eq`, integrability of the boost
   kernel, the archimedean constant `K(s,w)`.
 - Isotropic cone counts, their Mellin transforms, and the pole-order obstruction for FE-pairs.
+- Index readings of the primitive `h¹` as one TFAE (sections, Siegel counts, index exit).
 
 ## 7. Questions and answers
 
@@ -191,7 +197,7 @@ classification of which lattice counts can and cannot touch the second part.
 | What replaces finite genus over `ℤ`? | The base is genus one for Riemann–Roch and the Künneth part is finite and bounded on degree levels. The infinite part lives in the primitive `h¹`, and at each degree it is controlled outside a finite divisor of `2#D_a + 2` conditions (`kunneth_primitive_h1_ge`): the genus of `ℤ` is a finite divisor at every degree, unbounded in the degree. |
 | Q1: an effectivity on prime-free cycles? | Yes: the Künneth count, positive, Poisson-dual, quadratic Riemann inequality, bounded on degree levels, on all tests of aperture `≤ 3/10` and on ample-orthogonal tests past `½ log 2` (`kunneth_effectivity_realTestsAt`, `kunneth_effectivity_primitiveSmoothRealTestsAt`). Its Riemann inequality is equivalent to prime-free Weil positivity; deriving that positivity from a count of the primitive `h¹` is the open core. |
 | Q2: how do the primes enter `χ` without breaking the Riemann inequality? | Through `x² = 2(x·H)(x·V) − δ`: `χ` contains the explicit formula only via the primitive part, and the Riemann inequality of any bidegree count is then the Hodge index. Every count built from the base is blind to them. |
-| Q3: is the Hodge defect an integer reading of `h¹`? | Yes as an index: the number of negative directions of the primitive `h¹ = ½δ` is the Hodge defect, which ACS (`pontryagin_law`) and AOG (`zeta_orientationIndex_law`) identify with the distinct right zeros; it is even and RH is `< 2` (AOG). A height-uniform reading of it remains open. |
+| Q3: is the Hodge defect an integer reading of `h¹`? | Yes as an index: the number of negative directions of the primitive `h¹ = ½δ` is the Hodge defect, which ACS (`pontryagin_law`) and AOG (`zeta_orientationIndex_law`) identify with the distinct right zeros; it is even, and every reading of it below `2` — by sections, by Siegel counts, by the index exit — is the same statement (`riemannHypothesis_primitiveH1_tfae`). A height-uniform reading remains open (B40). |
 | Does any of this select `ζ` among fakes? | The soft laws do not: Epstein fakes, golden curve. Selection appears exactly where the theory reaches the primitive `h¹` (`goldenDatum_not_forall_window_kunneth`) or the boost transform. |
 
 ## 8. Open research topics
@@ -208,15 +214,17 @@ classification of which lattice counts can and cannot touch the second part.
 4. **The degree of a correspondence of `Spec ℤ` as a kernel count**, the analogue of
    `deg(m − nF) = #ker(m − nF)`.
 5. **Height-uniform readings of the primitive index** (B40).
-6. **The whole boost line.** Which boosts give fakes, and how the zeros of `Λ_{e^{2u}}` move as `u`
-   runs from `0` (the Gaussian integers) to `1`.
+6. **The whole boost line.** Every boost `|u| > 1` is a fake. The centre value is
+   `2(log y − log 4π + γ)` up to exponentially small terms, so the true threshold is near
+   `y ≈ 7.01` (Bateman–Grosswald) against the proved `e² ≈ 7.39`; how the real zeros of `Λ_{e^{2u}}`
+   enter `(½, 1)` as `u` leaves `0` (the Gaussian integers) is open.
 
 ## 9. Traps
 
 | Trap | Truth |
 |---|---|
 | A two-dimensional Poisson summation is surface Serre duality | Definite binary counts have it and are fakes |
-| The split plane with a fixed metric is the split surface | It is a rectangular definite lattice, fake beyond boost `1` |
+| The split plane with a fixed metric is the split surface | It is a rectangular definite lattice, fake for every boost `|u| > 1` |
 | The sum of two base `h⁰` is a surface `h⁰` | Its Euler characteristic is `log(D²/2)`; the product is quadratic |
 | A bigger lattice gives a surface `h⁰` | Bounded rank means at most linear growth |
 | Lorentzian Poisson duality can produce the sign | The Siegel majorant is positive exactly under the Hodge index |

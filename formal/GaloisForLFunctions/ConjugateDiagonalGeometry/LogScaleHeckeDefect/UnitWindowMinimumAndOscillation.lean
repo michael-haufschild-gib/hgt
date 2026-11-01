@@ -951,7 +951,7 @@ theorem unitWindow_sSup_le_mean_add_l1_deriv {g : ℝ → ℝ} (T : ℝ)
     (hg_diff : Differentiable ℝ g) (hg'_cont : Continuous (deriv g)) :
     sSup (g '' Icc T (T + 1)) ≤
       (∫ γ in Icc T (T + 1), g γ) + (∫ γ in Icc T (T + 1), |deriv g γ|) := by
-  obtain ⟨⟨γ_min, hγ_min, _, _⟩, hmin_le_mean, _⟩ :=
+  obtain ⟨⟨γ_min, hγ_min, hmin_eq, _⟩, hmin_le_mean, _⟩ :=
     exists_unitWindow_sInf_eq_and_le_mean_le_sSup T hg_diff.continuous.continuousOn
   have hne : (g '' Icc T (T + 1)).Nonempty := ⟨g T, T, ⟨le_rfl, by linarith⟩, rfl⟩
   refine csSup_le hne ?_
@@ -975,14 +975,6 @@ theorem unitWindow_sSup_le_mean_add_l1_deriv {g : ℝ → ℝ} (T : ℝ)
   rw [hftc] at hnorm
   have hdiff_le : g γ - g γ_min ≤ ∫ u in Icc T (T + 1), |deriv g u| :=
     (le_abs_self _).trans hnorm
-  have hmin_val : g γ_min ≤ ∫ u in Icc T (T + 1), g u := by
-    obtain ⟨⟨γ₀, hγ₀, h0_eq, h0_le⟩, hlo, _⟩ :=
-      exists_unitWindow_sInf_eq_and_le_mean_le_sSup T hg_diff.continuous.continuousOn
-    -- note `γ_min` is the chosen witness with `sInf = g γ_min`
-    exact (csInf_le (isCompact_Icc.image_of_continuousOn hg_diff.continuous.continuousOn).bddBelow
-      ⟨γ_min, hγ_min, rfl⟩) |>.trans_eq rfl |>.trans hmin_le_mean
-  -- WAIT: `csInf_le` gives `sInf ≤ g γ_min`, whereas `γ_min` was chosen with `sInf = g γ_min`!
-  -- Let's extract `hmin_eq` cleanly in the `obtain` above so `g γ_min = sInf ≤ ∫ g`!
-  linarith
+  have hmin_val : g γ_min ≤ ∫ u in Icc T (T + 1), g u := hmin_eq ▸ hmin_le_mean
+  linarith only [hdiff_le, hmin_val]
 
-/-! Wait — let's double-check lines 522-555 before proceeding! No, we are inside `write_file`! Let's fix that `obtain` right now before submitting `write_file`! -/
