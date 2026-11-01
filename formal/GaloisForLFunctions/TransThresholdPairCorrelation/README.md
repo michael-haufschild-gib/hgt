@@ -138,6 +138,8 @@ everything else unconditionally.
 | Coalescent surplus = odd primes at even shifts, up to `O(T^{−1/3+η}N)` | `primeCoalSum_eq_oddEvenShiftPrimeCoalSum`, `coalescentSurplusAtMost_iff_primeCoalescentSurplusAtMost` | unconditional |
 | Parity-locked singular series transfers to negative Ward–Mertens repulsion | `abs_sum_full_evenShift_singularSeries_cosTransform_add_le`, `abs_sum_dynamic_poissonHorizon_singularSeries_add_le` | unconditional |
 | Odd conductor cost `Σ μ²σ₂/φ²≤64Q`; horizon error `≤64Ωhat(0)`; odd main sum `∼(1/2)log Q` | `sum_odd_sqfree_sigma2_totient_sq_le`, `abs_dynamic_poissonHorizon_row_add_le`, `tendsto_sum_odd_sqfreeTotientInv_div_log_half` | unconditional; endpoint errors retained |
+| Exact C² Poisson row and primitive-sample equality criterion; sharp horizon `Qb≤πm` | `stabilizerLinearRow_eq_dual`, `ramanujanSpatialDual_eq_primitive`, `stabilizerLinearRow_eq_neg_iff` | unconditional |
+| Horizon coefficient `−Ωhat(0)/2`; positive complete and finite rows arbitrarily close beyond the horizon | `tendsto_stabilizerLinearRow_horizon_div_log`, `exists_positive_stabilizerLinearRow`, `exists_eventually_positive_finite_stabilizerRow` | unconditional; fixed-cutoff negative-row shortcut false |
 | Unsigned inner-lobe divergence | `sum_Icc_abs_cosTransform_ge_inner_lobe` | unconditional (no-go) |
 | Parity-twin survival line; closed-form germ limits; Λ erased on the cone | `parityTwinPair_unrestricted_vs_evenShift_survivalCone`, `tendsto_shiftedMode_ramanujanGerm_closedForm`, `quad_torsionAlignedLimit_eq_neg_cyclotomicHarmonic_on_cone` | unconditional |
 | PSD cyclotomic-harmonic kernel; IR relocation | `cyclotomicHarmonicKernel_nonneg`, `completedTwinKernel_infrared_survivalCone_eq_zero` | unconditional |

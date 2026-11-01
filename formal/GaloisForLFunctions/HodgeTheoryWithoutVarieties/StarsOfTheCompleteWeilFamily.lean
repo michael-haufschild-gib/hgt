@@ -176,7 +176,8 @@ theorem exists_star_positive_tiltedUnitSpline {α : ℝ} (hα : 0 < α)
       1 ≤ starOverlap c N d → starOverlap c N d < Real.log (N / d : ℕ) ^ α →
       ∀ y : EuclideanSpace ℝ (PrimeHorizonIndex (N / d)),
         0 ≤ completeWeilEnergy tiltedUnitSpline c N (starEmbed d N y) := by
-  obtain ⟨M₀, hM₀⟩ := eventually_atTop.mp (eventually_ofReal_rpow_log_le_edge_tiltedUnitSpline hα hα')
+  obtain ⟨M₀, hM₀⟩ :=
+    eventually_atTop.mp (eventually_ofReal_rpow_log_le_edge_tiltedUnitSpline hα hα')
   refine ⟨M₀, fun c N d hc hd hdN hM h1 hlt y => ?_⟩
   rw [completeWeilEnergy_starEmbed admissible_tiltedUnitSpline.contDiff
     admissible_tiltedUnitSpline.supp hc hd hdN]

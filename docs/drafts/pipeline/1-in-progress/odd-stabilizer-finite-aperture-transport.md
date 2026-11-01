@@ -1,6 +1,6 @@
 # Finite aperture transport for the literal odd-conductor row
 
-- **Stage:** 0-backlog
+- **Stage:** 1-in-progress
 - **Type:** CANDIDATE
 - **Route:** Argon §4.1.
 - **Parent:** [Literal model calibration](../1-in-progress/parity-stabilizer-logarithmic-coalescent-calibration.md).
@@ -37,3 +37,35 @@ uniform bound `|parityStabilizerWeight Q h|≤32σ(h)` for h≥1.
 This removes the conductor logarithm when the lag stays bounded.
 Even complete model transport leaves the actual signed prime-minus-model
 discrepancy unproved.
+
+## Conductor-independent short rows
+
+Oddness gives `c_q(2r)=c_q(r)`. The divisor formula bounds `|c_q(r)|≤r²`,
+and `Σ μ²(q)/φ(q)²≤16`, hence `|parityStabilizerWeight Q (2r)|≤32r²`.
+Fourth-order decay then gives, for every finite truncation and the complete row,
+
+`|row|≤4D₄m⁴`, independently of Q.
+
+Indeed each absolute summand is at most `2D₄m⁴/r²`, and
+`Σ_{r≥1}r⁻²≤2`. Together with the cubic aperture-tail bound, this covers both
+short rows and bulk truncation without paying an extra conductor logarithm.
+The logarithmic phase, taper variation and upper pair boundary remain separate
+parts of the literal model transport.
+
+## Decay-preserving logarithmic transport
+
+A stronger phase estimate may avoid the global Lipschitz loss. Write
+`Ωhat_T(θ)=T K(Tθ)`. Fourth-order decay for the transform of `tΩ_T(t)`
+gives `|Ωhat_T′(θ)|≤min(C T²,D T⁻²/θ⁴)`. On
+`h/m≤1`, the logarithmic frequency lies between `h/(2m)` and `h/m`.
+The phase error is therefore bounded by
+`m⁻¹ min(Cu²,16D/u²)`, `u=Th/m`.
+
+The positive lattice sums of this envelope and the corresponding weight-error
+envelope `min(u,u⁻³)` are `O(m/T)`: both are bounded by a constant times
+`(1+u)⁻²`, whose lattice sum telescopes. This predicts row error `O(1/T)`,
+uniformly in the aperture. At bandwidth two, the global raw error would be
+`O(T log²T)`. Keeping the vanishing taper at the upper endpoint gives
+boundary cost `O(Xθ² log Q)`. With `θ=T^(-7/12)`, both the cubic tail and
+this boundary term have power savings. These derivative and transport
+claims remain to be formalized.

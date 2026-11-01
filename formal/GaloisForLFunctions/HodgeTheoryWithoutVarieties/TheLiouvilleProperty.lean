@@ -28,9 +28,9 @@ vanishing dilation-jump energy.
 * **RH is the Liouville property along the overlap flow**
   (`riemannHypothesis_iff_liouville_along_the_overlap_flow`). Under RH Weil's form is positive
   definite on nonzero tests, so the complete Weil matrix has no zero modes at all
-  (`completeWeilEnergy_pos_of_riemannHypothesis`). Conversely, the universal regime supplies the base
-  point at overlap `1`, and the Liouville property up to `2(log N)^β`, `β > 1/2`, transports the
-  hyperplane positivity to the RH receiver of RIT.
+  (`completeWeilEnergy_pos_of_riemannHypothesis`). Conversely, the universal regime supplies the
+  base point at overlap `1`, and the Liouville property up to `2(log N)^β`, `β > 1/2`, transports
+  the hyperplane positivity to the RH receiver of RIT.
 
 So the Liouville test of the review is not softer than RH: the deformation mechanism itself is
 exact and costs nothing, and the entire content sits in the nondegeneracy of the form on the
@@ -44,6 +44,10 @@ open scoped RealInnerProductSpace
 open GaloisForLFunctions.ArithmeticCouplingTheory GaloisForLFunctions.ArithmeticLorentzianGeometry
   GaloisForLFunctions.EdgeHodgeTheory GaloisForLFunctions.RenormalizedArithmeticPotentialTheory
   GaloisForLFunctions.SpacingScaleHarmonicAnalysis GaloisForLFunctions.ArithmeticElectrostatics
+
+open GaloisForLFunctions.CriticalArithmeticCorrelationTheory
+  (eventually_tiltedUnitSpline_completeWeilMatrix_posDef_powerLog powerLogPositivityExponent
+    powerLogPositivityExponent_pos)
 
 namespace GaloisForLFunctions.HodgeTheoryWithoutVarieties
 
@@ -120,7 +124,8 @@ theorem eq_zero_of_poleDefect_eq_zero_of_primitive {N : ℕ} (hN : 2 ≤ N)
     calc a * (1 / Real.sqrt n) / Real.sqrt n = a * (1 / (Real.sqrt n * Real.sqrt n)) := by ring
       _ = a * (1 / n) := by rw [Real.mul_self_sqrt hn0.le]
   have hH : 0 < ∑ n ∈ Icc 1 N, (1 : ℝ) / n :=
-    sum_pos (fun n hn => by have := (mem_Icc.mp hn).1; positivity) ⟨1, mem_Icc.mpr ⟨le_rfl, by omega⟩⟩
+    sum_pos (fun n hn => by have := (mem_Icc.mp hn).1; positivity)
+      ⟨1, mem_Icc.mpr ⟨le_rfl, by omega⟩⟩
   rw [hsum] at hprim
   have ha : a = 0 := by
     have hs : (Real.sqrt (Real.log N))⁻¹ ≠ 0 := inv_ne_zero (Real.sqrt_pos.mpr hlog).ne'
@@ -286,14 +291,14 @@ theorem riemannHypothesis_iff_liouville_along_the_overlap_flow {β : ℝ} (hβ :
     exact hardLefschetz_of_riemannHypothesis hRH admissible_tiltedUnitSpline
       (one_pos.trans_le hc.1) hN
   · intro H
-    have hα := CriticalArithmeticCorrelationTheory.powerLogPositivityExponent_pos
+    have hα := powerLogPositivityExponent_pos
     refine (RenormalizedIntersectionTheory.riemannHypothesis_iff_completeWeil_hodgeIndex_log
       hβ).mpr ?_
     have hlog1 : ∀ᶠ N : ℕ in atTop, 1 ≤ Real.log N :=
       (Real.tendsto_log_atTop.comp tendsto_natCast_atTop_atTop).eventually_ge_atTop 1
-    filter_upwards [H, CriticalArithmeticCorrelationTheory.eventually_tiltedUnitSpline_completeWeilMatrix_posDef_powerLog
-      (α := CriticalArithmeticCorrelationTheory.powerLogPositivityExponent / 2) (by linarith)
-      (by linarith), hlog1, eventually_one_le_two_mul_rpow_log (by linarith : (0 : ℝ) ≤ β),
+    have hpd0 := eventually_tiltedUnitSpline_completeWeilMatrix_posDef_powerLog
+      (α := powerLogPositivityExponent / 2) (by linarith) (by linarith)
+    filter_upwards [H, hpd0, hlog1, eventually_one_le_two_mul_rpow_log (by linarith : (0 : ℝ) ≤ β),
       eventually_ge_atTop 1] with N hN hpd hlogN htop hN1
     have hbase : HyperplanePositiveAt tiltedUnitSpline 1 N := fun x _ =>
       RenormalizedIntersectionTheory.energy_nonneg_of_posDef (completeWeilMatrix_isHermitian _ _ _)

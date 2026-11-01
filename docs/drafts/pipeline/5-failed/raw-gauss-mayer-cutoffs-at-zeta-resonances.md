@@ -36,6 +36,10 @@ uncorrected operator-limit shortcut.
   and nonzero for every positive real `w`. [Cancellation](../3-formalized/gauss-mayer-negative-unit-pole-cancellation.md),
   [raw limit](../3-formalized/gauss-mayer-raw-negative-unit-determinants.md),
   [real nonvanishing](../3-formalized/gauss-mayer-negative-unit-real-nonvanishing.md).
+- **Actual inverse:** Every real-source scalar-mode perturbation is invertible
+  with explicit successor-shear inverse. At `w=1`, the actual source inverse
+  retains a nonzero rank-one pole while the negative-unit determinant is
+  holomorphic and nonzero. [Exact inverse and residue certificate](../3-formalized/gauss-mayer-negative-unit-resolvent-pole.md).
 - **Positive real coefficient:** `B(w,λ)≠0` for real `w>0`,
   `0<λ<(3/2)^w`; `D(w,1)` has a genuine simple pole at one.
   [Source cone, complementary determinant, and certificate](../3-formalized/gauss-mayer-positive-real-pole-coefficient.md).
@@ -44,7 +48,8 @@ uncorrected operator-limit shortcut.
 
 The scalar coefficient `B`, not raw operator-norm convergence, determines
 raw determinant convergence. Negative-unit cancellation and positive-unit
-noncancellation occur in the same actual source family.
+noncancellation occur in the same actual source family. Determinant cancellation
+does not remove the inverse's source pole.
 
 All named survivors have dependency-closed paper proofs, direct Lean
 checks, umbrella imports, and transitive audits containing only `propext`,

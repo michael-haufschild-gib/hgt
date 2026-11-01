@@ -35,7 +35,8 @@ noncomputable section
 open Finset
 open scoped RealInnerProductSpace
 open GaloisForLFunctions.ArithmeticElectrostatics GaloisForLFunctions.ArithmeticEffectivityTheory
-  GaloisForLFunctions.RenormalizedArithmeticPotentialTheory GaloisForLFunctions.ArithmeticLorentzianGeometry
+  GaloisForLFunctions.RenormalizedArithmeticPotentialTheory
+  GaloisForLFunctions.ArithmeticLorentzianGeometry
 
 namespace GaloisForLFunctions.HodgeTheoryWithoutVarieties
 
@@ -244,6 +245,5 @@ theorem completeWeilEnergy_moebius_gluing {φ : ℝ → ℝ} (hφ : EdgeHodgeThe
       starEmbed d N (starPull d N x) n = if d ∣ (n : ℕ) then x n else 0 :=
     fun n => congrFun (starEmbed_starPull hd0 x) n
   simp only [hr]
-  refine sum_congr rfl fun i _ => sum_congr rfl fun j _ => by ring
 
 end GaloisForLFunctions.HodgeTheoryWithoutVarieties

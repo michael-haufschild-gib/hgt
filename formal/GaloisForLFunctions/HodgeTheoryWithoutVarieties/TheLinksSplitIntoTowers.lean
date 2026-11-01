@@ -151,7 +151,7 @@ theorem not_preconnected_linkGraph {n p q a b : ℕ} (hn : n ≠ 0) (hp : p.Prim
   obtain ⟨w⟩ := hconn ⟨a, p, hp, ha⟩ ⟨b, q, hq, hb⟩
   exact not_towerNeighbor_two hn hp hq hpq (towerNeighbor_of_walk hn hp w ha) hb
 
-/-- Every `n ≥ 2` has neighbours on the towers of `2` and `3` upward, so its link is disconnected. -/
+/-- Every `n ≥ 1` has the neighbours `2n` and `3n` on two towers, so its link is disconnected. -/
 theorem not_preconnected_linkGraph_of_pos {n : ℕ} (hn : n ≠ 0) : ¬ (linkGraph n).Preconnected :=
   not_preconnected_linkGraph hn Nat.prime_two Nat.prime_three (by norm_num)
     ⟨1, le_rfl, Or.inl rfl⟩ ⟨1, le_rfl, Or.inl rfl⟩

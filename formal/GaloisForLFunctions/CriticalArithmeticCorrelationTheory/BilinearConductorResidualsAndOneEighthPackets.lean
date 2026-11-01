@@ -691,7 +691,7 @@ private theorem fullWeilCenter_residual_bilinear_bound (α : ℝ) {m l N : ℕ}
             ((α / N) * ((N : ℝ) / Real.sqrt (n : ℕ) + Real.sqrt (n : ℕ) *
               ((harmonic N : ℝ) - ((harmonic (N - n) : ℝ) + harmonic (N + n)) / 2 +
                 3 / (4 * ((n : ℕ) : ℝ)))) - α * (1 / Real.sqrt (n : ℕ))) := by ring
-      rw [hfactor, hcanc]; dsimp only [B_row]; ring
+      rw [hfactor, hcanc]; ring
     have hp := abs_inner_of_coord_eq_div_sqrt_log hk r₁ B_row hr1_coord
     let b_bdry : ℕ → ℝ := fun n =>
       (harmonic N : ℝ) - ((harmonic (N - n) : ℝ) + harmonic (N + n)) / 2 + 3 / (4 * (n : ℝ))
@@ -917,7 +917,7 @@ private theorem fullWeilCenter_residual_bilinear_bound (α : ℝ) {m l N : ℕ}
     · obtain ⟨c_w, -, rfl⟩ := (mem_conductorSubspace_iff (M := 1) (N := N) (x := w)).mp hw
       have h1_sum : (∑ k ∈ Icc 1 1, c_w k • normalizedRamanujanHorizonVector k N) = c_w 1 • v₁ := by
         rw [Icc_self, sum_singleton]
-      rw [h1_sum, real_inner_smul_left, real_inner_comm v₁ (x - (⟪x, v₁⟫ / ‖v₁‖ ^ 2) • v₁),
+      rw [h1_sum, real_inner_smul_left, real_inner_comm (x - (⟪x, v₁⟫ / ‖v₁‖ ^ 2) • v₁) v₁,
         h_iv1, mul_zero]
     · have hpyth : ‖x - (⟪x, v₁⟫ / ‖v₁‖ ^ 2) • v₁‖ ^ 2 ≤ ‖x‖ ^ 2 := by
         rw [norm_sub_sq_real, norm_smul, Real.norm_eq_abs, mul_pow, sq_abs,
@@ -2835,14 +2835,13 @@ private theorem exists_upward_bilinear_variable_rate {φ : ℝ → ℝ}
         change _ = ((affinePrimeShellCorrectionOfShift m n id φ c ((N : ℝ) / n) -
           ramanujanLagCoefficient m n * shellCorrection φ c m) / Real.sqrt n + _) / 2
         ring
-      rw [hrow, abs_div, show |(2 : ℝ)| = 2 by norm_num, div_div, mul_comm (2 : ℝ)]
+      rw [hrow, abs_div, show |(2 : ℝ)| = 2 by norm_num, div_div, mul_comm (2 : ℝ), ← div_div]
       have htri := div_le_div_of_nonneg_right
         (abs_add_le (shiftedReciprocalUpwardRowError φ c id N m n)
           (shiftedReciprocalUpwardRowError φ c (reflectedAffineShift m) N m n))
         (Real.sqrt_nonneg (n : ℝ))
       rw [add_div] at htri
-      exact (div_le_div_of_nonneg_right htri zero_le_two).trans_eq
-        (by rw [div_div, div_div, add_div])
+      exact div_le_div_of_nonneg_right htri zero_le_two
     have hs_id := hsource m hm hmN c hc id
     have hs_ref := hsource m hm hmN c hc (reflectedAffineShift m)
     calc

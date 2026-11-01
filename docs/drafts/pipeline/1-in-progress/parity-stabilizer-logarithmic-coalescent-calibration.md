@@ -49,5 +49,34 @@ Monotonicity gives `F(Q)≤2O(Q)≤F(2Q)`, hence `O(Q)∼(1/2)log Q`.
 This limit and the uniform conductor bound are formalized in the same leaf;
 all four axiom audits use standard axioms, and the final direct check passes.
 Neither statement alone transports the logarithmic coalescent kernel.
-The [exact C² Poisson row](exact-poisson-row-for-the-odd-stabilizer.md) targets
-the remaining fixed-cutoff dual terms and the sharp horizon.
+The [exact C² Poisson row](../3-formalized/exact-poisson-row-for-the-odd-stabilizer.md)
+now identifies the fixed-cutoff correction as nonnegative primitive samples.
+Equality with the negative diagonal holds exactly when all active samples vanish;
+`Qb≤πm` suffices, including equality. Positive complete and finite rows occur
+arbitrarily close beyond this horizon, falsifying universal rowwise negative
+cancellation. The exact horizon coefficient is `−Ωhat(0)/2`. All sixteen audits
+and both final direct checks pass. The [finite-aperture transport](odd-stabilizer-finite-aperture-transport.md)
+and the global sum of primitive corrections remain open.
+
+## Fixed-cutoff primitive-sample calculation
+
+For the triangle taper `g(y)=L−y`, `L=log X`, choose `Q≈X/T` and
+support Ω in `[T,2T]`. Since `2<π`, every positive spatial sample has base
+`m≤2qT/π<X`. Summing the exact dual over odd base points should reduce the
+linear model, up to lower-order quadrature and coprime-harmonic errors, to
+
+`−β/(2π) ∫ Ω(t) Σ_{q≤Q,odd} (μ²(q)/φ(q)) (L−log(qt/π))² dt`.
+
+The odd logarithmic mean predicts the leading term
+`−β(∫Ω)(log Q)³/(12π)`. Thus scalar 1/4 would retain one eighth of the
+unit-mean scalar-two model term. This asymptotic is not yet proved.
+
+Required arithmetic estimate:
+`|H_q(N)−(φ(q)/q)log N|≤Σ_{d|q}(1+log d)/d`.
+Möbius expansion and the ordinary floor-harmonic bounds give this estimate;
+its conductor average should be logarithmic. The proved linear conductor
+mean controls both `Σ qμ²(q)/φ(q)²=O(log Q)` and convergence of
+`Σ μ²(q)(1+log q)/φ(q)²` by partial summation. These estimates are intended
+to make the raw errors `O(T log²T)`, below the proposed `T log³T` main term.
+All quadrature, weighted-harmonic and finite logarithmic transport steps
+remain to be formalized before asserting the model calibration.

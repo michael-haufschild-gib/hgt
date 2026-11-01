@@ -32,7 +32,7 @@ theorem tendsto_stabilizerLinearRow_horizon_div_log {Ω : ℝ → ℝ} {a b : �
   have hm : 0 < b * (Q : ℝ) / π := by positivity
   have hhor : (Q : ℝ) * b ≤ π * (b * Q / π) := by
     apply le_of_eq
-    field_simp <;> ring
+    field_simp
   rw [stabilizerLinearRow_eq_neg_of_horizon Q ha hab hm hhor hΩ hsupp]
   ring
 
@@ -145,7 +145,8 @@ theorem exists_eventually_positive_finite_stabilizerRow : ∃ Ω : ℝ → ℝ,
         cosTransform Ω (((2 * (n + 1) : ℕ) : ℝ) / (7 / π)) := by
   obtain ⟨Ω, hΩ, hn, hle, hsp, h1, hrow⟩ :=
     exists_positive_stabilizerLinearRow (δ := (1 / 32 : ℝ)) (by norm_num) le_rfl
-  norm_num at hsp
+  rw [show (1 : ℝ) - 1 / 32 = 31 / 32 by norm_num,
+    show (1 : ℝ) + 1 / 32 = 33 / 32 by norm_num] at hsp
   refine ⟨Ω, hΩ, hn, hle, hsp, h1, ?_⟩
   have hsupp : ∀ u, Ω u ≠ 0 → |u| ≤ (33 / 32 : ℝ) := by
     intro u hu

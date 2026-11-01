@@ -2544,9 +2544,9 @@ theorem exists_pure_abscissa_mollified_shellDepthSum_le_log_quarter
         exact mul_le_mul_of_nonneg_left
           (hdk_end z (abs_le.mpr ⟨by linarith only [h0], by linarith only [h1]⟩)) (Nat.cast_nonneg _)
       have hsum_ord := shortShell_orderSum_le_log ha0 hab hba
-      have hlog_b : Real.log (b + 4) ≤ 3 * Real.log V := by
-        have h1 : Real.log (b + 4) ≤ Real.log (V ^ (3 : ℕ)) :=
-          Real.log_le_log (by positivity) (by nlinarith only [hb2V, hV60])
+      have hlog_b : Real.log (b + 4) ≤ 2 * Real.log V := by
+        have h1 : Real.log (b + 4) ≤ Real.log (V ^ (2 : ℕ)) :=
+          Real.log_le_log (by linarith only [ha0, hab]) (by nlinarith only [hb2V, hV60])
         rw [Real.log_pow] at h1; push_cast at h1; exact h1
       calc shellDepthSum a b L
           ≤ ∑ z ∈ shellZeros a b, ((analyticOrderAt xi z).toNat : ℝ) * V ^ c :=
@@ -2557,7 +2557,7 @@ theorem exists_pure_abscissa_mollified_shellDepthSum_le_log_quarter
             mul_le_mul_of_nonneg_right hsum_ord (Real.rpow_nonneg hV_pos.le _)
         _ ≤ (64 * (|xiLineTwoLogDerivConstant| + 4) * V ^ (c + δ_c / 4)) * Real.log V := by
             have hvc : V ^ c ≤ V ^ (c + δ_c / 4) :=
-              Real.rpow_le_rpow_of_exponent_le (by linarith only [hV60]) (by positivity)
+              Real.rpow_le_rpow_of_exponent_le (by linarith only [hV60]) (by linarith only [hδ_pos])
             have hc_abs : 0 ≤ |xiLineTwoLogDerivConstant| := abs_nonneg _
             have hbr : |xiLineTwoLogDerivConstant| + Real.log (b + 4) ≤
                 (|xiLineTwoLogDerivConstant| + 4) * Real.log V := by
@@ -2565,18 +2565,26 @@ theorem exists_pure_abscissa_mollified_shellDepthSum_le_log_quarter
             have hm := mul_le_mul (mul_le_mul_of_nonneg_left hbr (by norm_num : (0 : ℝ) ≤ 16))
               hvc (Real.rpow_nonneg hV_pos.le _) (by positivity)
             have hv_nn : 0 ≤ V ^ (c + δ_c / 4) := Real.rpow_nonneg hV_pos.le (c + δ_c / 4)
-            nlinarith only [hm, hv_nn, hLV_ge1, hc_abs]
+            have hid : 16 * ((|xiLineTwoLogDerivConstant| + 4) * Real.log V) * V ^ (c + δ_c / 4) =
+                16 * ((|xiLineTwoLogDerivConstant| + 4) * V ^ (c + δ_c / 4) * Real.log V) := by ring
+            have hid2 : (64 * (|xiLineTwoLogDerivConstant| + 4) * V ^ (c + δ_c / 4)) * Real.log V =
+                64 * ((|xiLineTwoLogDerivConstant| + 4) * V ^ (c + δ_c / 4) * Real.log V) := by ring
+            have hnn : 0 ≤ (|xiLineTwoLogDerivConstant| + 4) * V ^ (c + δ_c / 4) * Real.log V :=
+              mul_nonneg (mul_nonneg (by positivity) hv_nn) hLV_pos.le
+            linarith only [hm, hid, hid2, hnn]
         _ ≤ V * Real.log V := by
             have hv1 : V ^ (1 : ℝ) = V := Real.rpow_one V
             rw [hv1] at hend_V
             exact mul_le_mul_of_nonneg_right hend_V hLV_pos.le
-    exact add_le_add
+    exact (add_le_add
       (hcap V T₁ hV_pos.le hT₁_lo.le (by linarith only [hT₁_hi, hV60]) (by linarith only [hT₁_lo, hT₁_hi]))
-      (hcap T₂ (2 * V) (by linarith only [hT₂_lo, hV60]) hT₂_hi.le le_rfl (by linarith only [hT₂_lo, hT₂_hi]))
+      (hcap T₂ (2 * V) (by linarith only [hT₂_lo, hV60]) hT₂_hi.le le_rfl (by linarith only [hT₂_lo, hT₂_hi]))).trans_eq
+      (by ring)
   rw [shellDepthSum_split hT₁_lo.le (hT12.le.trans hT₂_hi.le),
     shellDepthSum_split hT12.le hT₂_hi.le]
-  dsimp [K_c]
-  linarith only [hmid_shell, hend_bound]
+  have hsum_kc : ((12 * A₀ * c ^ 2 / δ_c + 4) / Real.pi) * V * Real.log V + 2 * V * Real.log V =
+      K_c * V * Real.log V := by dsimp [K_c]; ring
+  linarith only [hmid_shell, hend_bound, hsum_kc]
 where
   sinh_nonneg_of_nonneg_aux {x : ℝ} (hx : 0 ≤ x) : 0 ≤ Real.sinh x := by
     rw [Real.sinh_eq]

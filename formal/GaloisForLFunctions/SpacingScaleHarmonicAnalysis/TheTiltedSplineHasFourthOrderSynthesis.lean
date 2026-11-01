@@ -1,0 +1,198 @@
+import GaloisForLFunctions.SpacingScaleHarmonicAnalysis.TheSplineHasUniformFourthDerivativeRegularizations
+import GaloisForLFunctions.RenormalizedArithmeticPotentialTheory.LogarithmicOverlapOfTheCompleteWeilMatrixIsTheRiemannHypothesis
+
+/-!
+# Fourth-order synthesis for the tilted spline
+
+The recentred tilted spline is a fixed scalar multiple of `splineProbe (4x)`.
+Its smooth regularizations have uniform derivative bounds through order four,
+so the smooth Euler–Maclaurin estimates can pass to this `C²` profile.
+-/
+
+noncomputable section
+
+set_option autoImplicit false
+
+open MeasureTheory Set Filter Topology
+open scoped ContDiff
+
+namespace GaloisForLFunctions.SpacingScaleHarmonicAnalysis
+
+open BiScaleUncertainty.ChebyshevGauge RenormalizedArithmeticPotentialTheory
+  ArithmeticElectrostatics
+
+private theorem integral_abs_iteratedDeriv_scale_four {f : ℝ → ℝ} (hf : ContDiff ℝ ∞ f) (c : ℝ) (q : ℕ) :
+    (∫ x, |iteratedDeriv q (fun x => c * f (4 * x)) x|) =
+      |c| * ((4 : ℝ) ^ q / 4) * ∫ x, |iteratedDeriv q f x| := by
+  have hq : (q : ℕ∞ω) ≤ ∞ := by exact_mod_cast (le_top : (q : ℕ∞) ≤ ⊤)
+  have hs : ContDiff ℝ ∞ (fun x => f (4 * x)) :=
+    hf.comp (contDiff_const.mul contDiff_id)
+  have hd : iteratedDeriv q (fun x => c * f (4 * x)) =
+      fun x => (c * (4 : ℝ) ^ q) * iteratedDeriv q f (4 * x) := by
+    funext x
+    rw [iteratedDeriv_const_mul c ((hs.of_le hq).contDiffAt),
+      iteratedDeriv_comp_const_mul (hf.of_le hq)]
+    ring
+  simp_rw [hd, abs_mul, abs_pow, abs_of_pos (by norm_num : (0 : ℝ) < 4)]
+  rw [integral_const_mul, Measure.integral_comp_mul_left (fun x => |iteratedDeriv q f x|) 4]
+  norm_num only [smul_eq_mul, show |(4 : ℝ)⁻¹| = 1 / 4 by norm_num]
+  ring
+
+/-- Recentering the unit spline cancels its translation. -/
+theorem recentred_tiltedUnitSpline_eq (s : ℝ) :
+    recentredProfile tiltedUnitSpline s =
+      (2 * ∫ u, tiltedUnitSpline u)⁻¹ * splineProbe (4 * s) := by
+  unfold recentredProfile tiltedUnitSpline atomDilate
+  rw [show ((s + 1) / 2 - 1 / 2) / (1 / 8 : ℝ) = 4 * s by ring]
+  rw [div_eq_mul_inv, mul_comm]
+
+/-- The normalized spline used by the receiver inherits uniform derivative
+bounds through order four from its box regularizations. -/
+theorem exists_recentred_tiltedUnitSpline_regularization_bounds :
+    ∃ A : ℕ → ℝ, (∀ q, 0 ≤ A q) ∧ ∀ ε : ℝ, 0 < ε →
+      ∃ G : ℝ → ℝ, ContDiff ℝ ∞ G ∧ HasCompactSupport G ∧
+        (∀ x, |G x - recentredProfile tiltedUnitSpline x| ≤ ε) ∧
+        ∀ q : ℕ, q ≤ 4 → (∫ x, |iteratedDeriv q G x|) ≤ A q := by
+  obtain ⟨A, hA0, hA⟩ := exists_splineProbe_regularization_bounds
+  let C := (2 * ∫ u, tiltedUnitSpline u)⁻¹
+  refine ⟨fun q => |C| * ((4 : ℝ) ^ q / 4) * A q,
+    fun q => mul_nonneg (by positivity) (hA0 q), ?_⟩
+  intro ε hε
+  let δ := ε / (|C| + 1)
+  have hδ : 0 < δ := div_pos hε (by positivity)
+  obtain ⟨G, hG, hGc, hclose, hGd⟩ := hA δ hδ
+  have hscale : ContDiff ℝ ∞ (fun x => G (4 * x)) :=
+    hG.comp (contDiff_const.mul contDiff_id)
+  have hcscale : HasCompactSupport (fun x => G (4 * x)) :=
+    hGc.comp_smul (by norm_num : (4 : ℝ) ≠ 0)
+  refine ⟨fun x => C * G (4 * x), contDiff_const.mul hscale, hcscale.mul_left, ?_, ?_⟩
+  · intro x
+    have hεδ : |C| * δ ≤ ε := by
+      have hmul : δ * (|C| + 1) = ε := div_mul_cancel₀ ε (by positivity)
+      nlinarith only [hmul, hδ]
+    calc
+      |C * G (4 * x) - recentredProfile tiltedUnitSpline x| =
+          |C| * |G (4 * x) - splineProbe (4 * x)| := by
+        rw [recentred_tiltedUnitSpline_eq]
+        change |C * G (4 * x) - C * splineProbe (4 * x)| = _
+        rw [← mul_sub, abs_mul]
+      _ ≤ |C| * δ := mul_le_mul_of_nonneg_left (hclose _) (abs_nonneg C)
+      _ ≤ ε := hεδ
+  · intro q hq
+    rw [integral_abs_iteratedDeriv_scale_four hG C q]
+    exact mul_le_mul_of_nonneg_left (hGd q hq) (by positivity)
+
+private theorem leibnizBound_mono_up_to {M A B : ℕ → ℝ} (hM : ∀ q, 0 ≤ M q)
+    {p i : ℕ} (hAB : ∀ q, q ≤ p → A q ≤ B q) (hi : i ≤ p) :
+    leibnizBound M A i ≤ leibnizBound M B i := by
+  unfold leibnizBound
+  refine Finset.sum_le_sum fun j _ => ?_
+  exact mul_le_mul_of_nonneg_left (hAB (i - j) ((Nat.sub_le i j).trans hi))
+    (mul_nonneg (Nat.cast_nonneg _) (hM j))
+
+private theorem emConst_mono_up_to {M A B : ℕ → ℝ} (hM : ∀ q, 0 ≤ M q) (m : ℕ)
+    (hAB : ∀ q, q ≤ 2 * m + 2 → A q ≤ B q) : emConst M A m ≤ emConst M B m := by
+  unfold emConst
+  apply mul_le_mul_of_nonneg_left _ (by positivity)
+  apply mul_le_mul_of_nonneg_left _ (by positivity)
+  exact Finset.sum_le_sum fun i hi => leibnizBound_mono_up_to hM hAB
+    (Nat.lt_succ_iff.mp (Finset.mem_range.mp hi))
+
+/-- Uniform approximation with bounded first four derivative norms transfers
+both the fourth-order quadrature error and the synthesis Lipschitz estimate.
+The limiting profile need only be continuous. -/
+theorem fourthOrderSynthesis_of_uniform_regularizations {φ : ℝ → ℝ}
+    (hφ : Continuous φ) (hφc : HasCompactSupport φ) {A : ℕ → ℝ}
+    (happrox : ∀ ε : ℝ, 0 < ε → ∃ G : ℝ → ℝ,
+      ContDiff ℝ ∞ G ∧ HasCompactSupport G ∧ (∀ x, |G x - φ x| ≤ ε) ∧
+      ∀ q : ℕ, q ≤ 4 → (∫ x, |iteratedDeriv q G x|) ≤ A q)
+    {F : ℝ → ℝ} (hF : ContDiff ℝ ∞ F) {R : ℝ}
+    (hFs : ∀ t, t ∉ Icc (-R) R → F t = 0) {M : ℕ → ℝ}
+    (hM : ∀ q t, |iteratedDeriv q F t| ≤ M q) (hM0 : ∀ q, 0 ≤ M q)
+    {n₀ N : ℕ} (hn₀ : 2 ≤ n₀) (hN : Real.log n₀ + 2 * R < Real.log (1 + N))
+    {k : ℝ} (hk : 1 ≤ k) :
+    (∀ r, |atomicTest (N + 1) (emWeights F (Real.log n₀ + R)) (dilate k φ)
+      (r + (Real.log n₀ + R)) - ∫ v, F v * dilate k φ (r - v)| ≤
+        emConst M A 1 * (k / n₀) ^ 4) ∧
+    ∀ u v, |atomicTest (N + 1) (emWeights F (Real.log n₀ + R)) (dilate k φ)
+      (u + (Real.log n₀ + R)) -
+        atomicTest (N + 1) (emWeights F (Real.log n₀ + R)) (dilate k φ)
+          (v + (Real.log n₀ + R))| ≤
+      k * (M 0 * A 1 + emConst M (fun q => A (q + 1)) 0 * (k / n₀) ^ 2) * |u - v| := by
+  have hk0 : 0 < k := by linarith
+  choose ψ hψ hψc hclose hderiv using
+    fun j : ℕ => happrox (1 / ((j : ℝ) + 1)) (by positivity)
+  have he : Tendsto (fun j : ℕ => 1 / ((j : ℝ) + 1)) atTop (𝓝 (0 : ℝ)) :=
+    tendsto_one_div_add_atTop_nhds_zero_nat
+  have hlim : ∀ x, Tendsto (fun j => ψ j x) atTop (𝓝 (φ x)) := by
+    intro x
+    have hlo := (tendsto_const_nhds (x := φ x)).sub he
+    have hhi := (tendsto_const_nhds (x := φ x)).add he
+    simp only [sub_zero, add_zero] at hlo hhi
+    refine tendsto_of_tendsto_of_tendsto_of_le_of_le hlo hhi (fun j => ?_) (fun j => ?_)
+    · linarith only [(abs_le.mp (hclose j x)).1]
+    · linarith only [(abs_le.mp (hclose j x)).2]
+  have hsum : ∀ r, Tendsto
+      (fun j => atomicTest (N + 1) (emWeights F (Real.log n₀ + R)) (dilate k (ψ j)) r)
+      atTop (𝓝 (atomicTest (N + 1) (emWeights F (Real.log n₀ + R)) (dilate k φ) r)) := by
+    intro r
+    unfold atomicTest dilate
+    exact tendsto_finsetSum _ fun n _ =>
+      ((hlim (k * (r - Real.log n))).const_mul k).const_mul _
+  -- Uniform approximation bounds every convolution integrand by one fixed integrable function.
+  obtain ⟨C, hC⟩ := hφc.exists_bound_of_continuous hφ
+  have hψbound : ∀ j x, |ψ j x| ≤ C + 1 := by
+    intro j x
+    have he1 : 1 / ((j : ℝ) + 1) ≤ 1 := by
+      apply (div_le_one (by positivity)).mpr
+      linarith [j.cast_nonneg (α := ℝ)]
+    have hCx : |φ x| ≤ C := by simpa only [Real.norm_eq_abs] using hC x
+    calc
+      |ψ j x| ≤ |ψ j x - φ x| + |φ x| := abs_le_abs_sub_add _ _
+      _ ≤ C + 1 := by linarith only [hclose j x, he1, hCx]
+  have hFi : Integrable F :=
+    hF.continuous.integrable_of_hasCompactSupport (HasCompactSupport.intro isCompact_Icc hFs)
+  have hint : ∀ r, Tendsto (fun j => ∫ v, F v * dilate k (ψ j) (r - v))
+      atTop (𝓝 (∫ v, F v * dilate k φ (r - v))) := by
+    intro r
+    apply tendsto_integral_filter_of_dominated_convergence
+      (fun v => (k * (C + 1)) * |F v|)
+    · exact Eventually.of_forall fun j =>
+        (hF.continuous.mul ((contDiff_dilate_smooth (hψ j) k).continuous.comp
+          (continuous_const.sub continuous_id))).aestronglyMeasurable
+    · exact Eventually.of_forall fun j => Eventually.of_forall fun v => by
+        simp only [Real.norm_eq_abs, dilate, abs_mul, abs_of_pos hk0]
+        calc
+          |F v| * (k * |ψ j (k * (r - v))|) ≤ |F v| * (k * (C + 1)) :=
+            mul_le_mul_of_nonneg_left
+              (mul_le_mul_of_nonneg_left (hψbound j _) hk0.le) (abs_nonneg _)
+          _ = (k * (C + 1)) * |F v| := mul_comm _ _
+    · exact hFi.abs.const_mul _
+    · exact Eventually.of_forall fun v =>
+        ((hlim (k * (r - v))).const_mul k).const_mul (F v)
+  constructor
+  · intro r
+    refine le_of_tendsto ((hsum (r + (Real.log n₀ + R))).sub (hint r)).abs
+      (Eventually.of_forall fun j => ?_)
+    have h := abs_emSynth_dilate_sub_le (hψ j) (hψc j) hF hFs hM hM0 hn₀ hN hk 1 r
+    have hc := emConst_mono_up_to hM0 1 (fun q hq => hderiv j q (by omega))
+    exact h.trans (mul_le_mul_of_nonneg_right hc (by positivity))
+  · intro u v
+    refine le_of_tendsto ((hsum (u + (Real.log n₀ + R))).sub
+      (hsum (v + (Real.log n₀ + R)))).abs (Eventually.of_forall fun j => ?_)
+    apply abs_sub_le_of_hasDerivAt
+      (fun r => hasDerivAt_atomicTest
+        ((contDiff_dilate_smooth (hψ j) k).differentiable (by simp))
+        (N + 1) (emWeights F (Real.log n₀ + R)) (Real.log n₀ + R) r)
+    intro r
+    refine (abs_emSynth_deriv_le (hψ j) (hψc j) hF hFs hM hM0 hn₀ hN hk r).trans ?_
+    have hfirst : (∫ s, |deriv (ψ j) s|) ≤ A 1 := by
+      simpa only [iteratedDeriv_one] using hderiv j 1 (by omega)
+    have hc := emConst_mono_up_to hM0 0
+      (fun q hq => hderiv j (q + 1) (by omega))
+    exact mul_le_mul_of_nonneg_left
+      (add_le_add (mul_le_mul_of_nonneg_left hfirst (hM0 0))
+        (mul_le_mul_of_nonneg_right hc (sq_nonneg _))) hk0.le
+
+end GaloisForLFunctions.SpacingScaleHarmonicAnalysis
+end GaloisForLFunctions.SpacingScaleHarmonicAnalysis

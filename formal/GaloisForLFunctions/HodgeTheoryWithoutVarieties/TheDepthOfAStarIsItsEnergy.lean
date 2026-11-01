@@ -30,7 +30,8 @@ the sign.
 noncomputable section
 
 open Finset
-open GaloisForLFunctions.ArithmeticElectrostatics GaloisForLFunctions.RenormalizedArithmeticPotentialTheory
+open GaloisForLFunctions.ArithmeticElectrostatics
+  GaloisForLFunctions.RenormalizedArithmeticPotentialTheory
 
 namespace GaloisForLFunctions.HodgeTheoryWithoutVarieties
 

@@ -69,6 +69,6 @@ and six determinant-bridge transitive axiom audits contain only `propext`,
 
 ## Scope
 
-The nonvanishing theorem concerns real source parameters. Complex-source
+The [exact inverse formula and nonzero rank-one source residue](gauss-mayer-negative-unit-resolvent-pole.md) are also certified. The nonvanishing theorem concerns real source parameters. Complex-source
 resonance exclusion, primitive modular coding, and Selberg/scattering
 comparison remain open. No RH conclusion or literature-priority claim follows.

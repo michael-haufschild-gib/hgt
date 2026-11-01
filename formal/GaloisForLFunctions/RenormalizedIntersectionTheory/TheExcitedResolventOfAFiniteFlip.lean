@@ -14,7 +14,7 @@ Write `E_i` for the energies `log N − λ_i` of the full prime matrix, `e_i` fo
   `inner_sq_le_excited`): for `w ⊥ e_{i₀}` and `s < t`, `Q_N(w) − s|w|² ≥ (t − s)|w|²` and
   `⟨w, v⟩² ≤ ρ_{i₀}(v) (Q_N(w) − s|w|²)`, with the **excited resolvent**
   `ρ_{i₀}(v) = Σ_{i ≠ i₀} ⟨v, e_i⟩²/(E_i − γ − s)`.
-* **Finite flips** (`eventually_excitedResolvent_finiteFlip_le`): for a finite prime set `F`,
+* **Finite flips** (`eventually_abs_excitedResolvent_finiteFlip_sub_le`): for a finite prime set `F`,
   `ρ_{i₀}(v_F) → δ_F² W_F(s)`, `W_F(s) = Σ_{m≥2} w_F(m)/(E_m − γ − s)`: the full resolvent tends to
   `δ_F²(−1/s + W_F(s))` and the ground term to `−δ_F²/s`.
 -/
@@ -158,13 +158,13 @@ theorem eventually_exists_ground {t : ℝ} (ht : 0 < t) (ht2 : t < 2 * Real.log 
   exact ⟨idx N, isGroundBelow_of_card_one hc hlt, hN.trans (min_le_left _ _)⟩
 
 /-- **The excited resolvent of a finite flip.** For `0 < s < t < 2 log 2` and `ε > 0`, eventually,
-for every ground index `i₀` below `γ + t`, `ρ_{i₀}(v_F) ≤ δ_F² (Λ_F(s) + 1/s) + ε`, where
+for every ground index `i₀` below `γ + t`, `|ρ_{i₀}(v_F) − δ_F² (Λ_F(s) + 1/s)| ≤ ε`, where
 `Λ_F = finiteFlipSecular F`. -/
-theorem eventually_excitedResolvent_finiteFlip_le (F : Finset ℕ) (hF : ∀ p ∈ F, p.Prime)
+theorem eventually_abs_excitedResolvent_finiteFlip_sub_le (F : Finset ℕ) (hF : ∀ p ∈ F, p.Prime)
     {s t : ℝ} (hs : 0 < s) (hst : s < t) (ht2 : t < 2 * Real.log 2) {ε : ℝ} (hε : 0 < ε) :
     ∀ᶠ N : ℕ in atTop, ∀ i₀ : PrimeHorizonIndex N, IsGroundBelow N t i₀ →
-      excitedResolvent N s i₀ (finiteFlipHorizonVector F N) ≤
-        finiteFlipHarmonicDensity F ^ 2 * (finiteFlipSecular F s + 1 / s) + ε := by
+      |excitedResolvent N s i₀ (finiteFlipHorizonVector F N) -
+        finiteFlipHarmonicDensity F ^ 2 * (finiteFlipSecular F s + 1 / s)| ≤ ε := by
   have hs2 : s < 2 * Real.log 2 := hst.trans ht2
   obtain ⟨idx, hE, ha⟩ := exists_finiteFlip_conductor_eigenline F hF (by norm_num : 0 < 1)
   rw [ramanujanAdjunctionEnergy_one] at hE
@@ -180,7 +180,7 @@ theorem eventually_excitedResolvent_finiteFlip_le (F : Finset ℕ) (hF : ∀ p �
   have hval : δ ^ 2 * finiteFlipSecular F s - δ ^ 2 / -s = δ ^ 2 * (finiteFlipSecular F s + 1 / s) := by
     field_simp; ring
   rw [hval] at hlim
-  have hev := hlim.eventually (ge_mem_nhds (lt_add_of_pos_right _ hε))
+  have hev := hlim.eventually (Metric.closedBall_mem_nhds _ hε)
   have hE0 := hE.sub_const γ
   rw [sub_self] at hE0
   have hnear := hE0.eventually (Metric.ball_mem_nhds (0 : ℝ) (show 0 < t by linarith))
@@ -200,8 +200,19 @@ theorem eventually_excitedResolvent_finiteFlip_le (F : Finset ℕ) (hF : ∀ p �
         excitedResolvent (N + 1) s (idx N) (finiteFlipHorizonVector F (N + 1)) := by
     rw [finiteFlipFiniteResolvent, ← add_sum_erase _ _ (mem_univ (idx N))]
     rfl
-  rw [hsplit] at hN
+  rw [Real.dist_eq, hsplit] at hN
   simp only [Pi.div_apply, primeEigen] at hN
-  linarith
+  convert hN using 2
+  ring
+
+/-- The upper half of `eventually_abs_excitedResolvent_finiteFlip_sub_le`. -/
+theorem eventually_excitedResolvent_finiteFlip_le (F : Finset ℕ) (hF : ∀ p ∈ F, p.Prime)
+    {s t : ℝ} (hs : 0 < s) (hst : s < t) (ht2 : t < 2 * Real.log 2) {ε : ℝ} (hε : 0 < ε) :
+    ∀ᶠ N : ℕ in atTop, ∀ i₀ : PrimeHorizonIndex N, IsGroundBelow N t i₀ →
+      excitedResolvent N s i₀ (finiteFlipHorizonVector F N) ≤
+        finiteFlipHarmonicDensity F ^ 2 * (finiteFlipSecular F s + 1 / s) + ε := by
+  filter_upwards [eventually_abs_excitedResolvent_finiteFlip_sub_le F hF hs hst ht2 hε]
+    with N hN i₀ hg
+  linarith [(abs_le.mp (hN i₀ hg)).2]
 
 end GaloisForLFunctions.RenormalizedIntersectionTheory
