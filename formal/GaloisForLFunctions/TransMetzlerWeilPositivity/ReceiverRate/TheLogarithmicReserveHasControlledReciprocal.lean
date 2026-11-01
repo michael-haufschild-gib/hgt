@@ -79,7 +79,10 @@ private theorem reciprocal_control_le_scaled_floor {d c : ℝ}
   rw [logarithmicSpectralControl, ← Real.exp_neg]
   apply Real.exp_le_exp.mpr
   unfold logarithmicReserveRate
-  nlinarith only [h]
+  have heq : 202 * sincTailConst * (4 * c / Real.log c ^ 2) =
+      808 * sincTailConst * c / Real.log c ^ 2 := by ring
+  rw [heq] at h
+  exact neg_le_neg h
 
 /-- Both positive spectral floors dominate the reciprocal of one exponential control. -/
 theorem eventually_logarithmic_reserves_ge_reciprocal :
@@ -102,6 +105,7 @@ theorem eventually_logarithmic_reserves_ge_reciprocal :
       (by norm_num at hc8 ⊢; exact hc8)
     have heq : 2 * Real.pi * c / (16 * Real.pi) = c / 8 := by
       field_simp [Real.pi_ne_zero]
+      norm_num
     simpa only [zeroFreeLogBandFloor, heq] using h
   constructor
   · apply hg.trans
@@ -122,4 +126,5 @@ theorem eventually_logarithmic_reserves_ge_reciprocal :
 end GaloisForLFunctions.TransMetzlerWeilPositivity
 
 #print axioms GaloisForLFunctions.TransMetzlerWeilPositivity.scaled_logarithmic_ratio_le
+#print axioms GaloisForLFunctions.TransMetzlerWeilPositivity.le_logarithmicSpectralControl
 #print axioms GaloisForLFunctions.TransMetzlerWeilPositivity.eventually_logarithmic_reserves_ge_reciprocal

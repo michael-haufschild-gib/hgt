@@ -21,9 +21,13 @@ the generating function of the divisor function.
   (`not_exists_FEPair_coneCount`): its duality needs a logarithmic completion, the same logarithm
   as in the pole-plane Riemann–Roch `h⁰(D) − h⁰(D^∨) = log(D²/2)`.
 
-So the indefinite lattice has two Gaussian substitutes and both have been located: its Siegel
-majorants (definite, possibly fake, existing exactly under the Hodge index) and its cone count
-(arithmetic, `ζ²`, not Poisson-dual).
+* **Siegel–Weil for the split plane** (`siegelWeil_splitPlane`). Averaging the definite majorant
+  counts over the boost line gives the cone count: both Mellin transforms are archimedean factors
+  times `ζ(σ)²`.
+
+So the indefinite lattice has two Gaussian substitutes: its Siegel majorants (definite, fake at
+large boosts, existing as a family exactly under the Hodge index) and its cone count (arithmetic,
+`ζ²`, not Poisson-dual). The boost average of the first is the second.
 -/
 
 noncomputable section
@@ -211,5 +215,18 @@ theorem not_exists_FEPair_coneCount :
   have := tendsto_nhds_unique h1 h2
   have hpos : (0 : ℝ) < (2 * π)⁻¹ := by positivity
   exact hpos.ne' (by exact_mod_cast this.symm)
+
+/-! ### Siegel–Weil for the split plane -/
+
+/-- **Siegel–Weil for the split plane.** Averaging the positive-cone Epstein series of the Siegel
+majorants over the whole boost line gives the Mellin transform of the indefinite cone count, up to
+the archimedean factors: `Γ(σ)(2π)^{−σ} ∫ Z⁺(σ, u) du = K(σ, 0) · Γ(σ)(2π)^{−σ}ζ(σ)²`. Both sides
+are `ζ(σ)²` times archimedean constants. -/
+theorem siegelWeil_splitPlane {σ : ℝ} (hσ : 1 < σ) :
+    Real.Gamma σ * (2 * π) ^ (-σ) * ∫ u, splitSeries σ u * Real.exp (2 * 0 * u) =
+      boostConstant σ 0 * coneMellinValue σ := by
+  rw [integral_splitSeries_mul_exp (by simp; linarith), coneMellinValue]
+  simp only [add_zero, sub_zero]
+  ring
 
 end GaloisForLFunctions.LatticeSectionTheory

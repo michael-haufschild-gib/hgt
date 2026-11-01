@@ -522,8 +522,9 @@ log density `κ ∈ (0, 1/4)` and `0 < s < t`. For every `θ > 0` and `T₀` the
 that, with `F` the flipped primes below `T`, eventually `c_N > 0` and, for every ground index `i₀`
 below `γ + t` and every `w ⊥ e_{i₀}`,
 `|⟨w, v_P⟩ − (c_N/δ_F)⟨w, v_F⟩| ≤ θ c_N √(Q_N(w) − s|w|²)`. -/
-theorem exists_scale_inner_primeSetHorizonVector_sub_le (P : Set ℕ) {κ C : ℝ} (hκ0 : 0 < κ)
-    (hκ : κ < 1 / 4) (hP : ∀ n, 1 ≤ n → |primeSetLogMass P n - κ * Real.log n| ≤ C)
+theorem exists_scale_inner_primeSetHorizonVector_sub_le (P : Set ℕ) {κ C α : ℝ} (hκ0 : 0 < κ)
+    (hκ : κ < 1 / 4) (hα : 0 ≤ α) (hακ : α < 1 - 2 * κ)
+    (hP : ∀ n, 1 ≤ n → |primeSetLogMass P n - κ * Real.log n| ≤ C * (1 + Real.log n) ^ α)
     {s t : ℝ} (hs : 0 < s) (hst : s < t) {θ : ℝ} (hθ0 : 0 < θ) (T₀ : ℕ) :
     ∃ T : ℕ, T₀ ≤ T ∧ 3 ≤ T ∧ ∀ᶠ N : ℕ in atTop, 0 < harmonicCorrelation (primeSetFlip P) N ∧
       ∀ i₀ : PrimeHorizonIndex N, IsGroundBelow N t i₀ →
@@ -536,9 +537,9 @@ theorem exists_scale_inner_primeSetHorizonVector_sub_le (P : Set ℕ) {κ C : �
   have hts : 0 < t - s := by linarith
   set CD := 2 + (2 * s + 1) / (t - s)
   have hCD : 0 ≤ CD := by positivity
-  obtain ⟨K₁, K₂, hK₁, hK₂, hms⟩ := exists_abs_inner_twin_sub_starProjection_le P hκ0 hκ hP
+  obtain ⟨K₁, K₂, hK₁, hK₂, hms⟩ := exists_abs_inner_twin_sub_starProjection_le P hκ0 hκ hα hακ hP
   obtain ⟨c', hc', N₂, hN₂⟩ :=
-    exists_pos_mul_rpow_le_gaugeHarmonicSum_primeSetFlip P (by linarith : κ < 1 / 2) hP
+    exists_pos_mul_rpow_le_gaugeHarmonicSum_primeSetFlip P hκ0.le hα hακ hP
   have hc'' : 0 < c' / 2 := by positivity
   -- choose the scale `T`
   have hTlim : Tendsto (fun T : ℕ => Real.log T ^ (2 * κ - 1 / 2)) atTop (𝓝 0) := by
@@ -564,7 +565,7 @@ theorem exists_scale_inner_primeSetHorizonVector_sub_le (P : Set ℕ) {κ C : �
   set δ := finiteFlipHarmonicDensity F
   have hδeq : flipDensityBelow (primeSetFlip P) T = δ := flipDensityBelow_eq P (by omega)
   -- eventual facts at the horizon
-  obtain ⟨N₃, h3⟩ := eventually_fixedScaleDefect_le P hκ0 (by linarith) hP hT3'
+  obtain ⟨N₃, h3⟩ := eventually_fixedScaleDefect_le P hκ0 hα hακ hP hT3'
     (ε := (θ / 4) ^ 2 * (t - s)) (by positivity)
   obtain ⟨N₄, h4⟩ := eventually_poleDefect_le_primeEnergy
   have hLa : Tendsto (fun N : ℕ => Real.log N ^ (1 / 2 - 2 * κ)) atTop atTop :=
@@ -616,8 +617,9 @@ density `κ ∈ (0, 1/4)`, `0 < s < t < 2 log 2`, and let every partial sum of t
 `Σ_{m ≥ 2} w_P(m)/(E_m − γ − s)` be at most `W`. Then for every `ε > 0`, eventually, for every ground
 index `i₀` below `γ + t` and every `w ⊥ e_{i₀}`,
 `⟨w, v_P⟩² ≤ c_N² (W + ε)(Q_N(w) − s|w|²)`. -/
-theorem eventually_inner_sq_le_conductorSeries (P : Set ℕ) {κ C : ℝ} (hκ0 : 0 < κ)
-    (hκ : κ < 1 / 4) (hP : ∀ n, 1 ≤ n → |primeSetLogMass P n - κ * Real.log n| ≤ C)
+theorem eventually_inner_sq_le_conductorSeries (P : Set ℕ) {κ C α : ℝ} (hκ0 : 0 < κ)
+    (hκ : κ < 1 / 4) (hα : 0 ≤ α) (hακ : α < 1 - 2 * κ)
+    (hP : ∀ n, 1 ≤ n → |primeSetLogMass P n - κ * Real.log n| ≤ C * (1 + Real.log n) ^ α)
     {s t W : ℝ} (hs : 0 < s) (hst : s < t) (ht2 : t < 2 * Real.log 2)
     (hW : ∀ K, ∑ k ∈ range K, primeSetSpectralWeight P (k + 2) /
       (ramanujanAdjunctionEnergy (k + 2) - γ - s) ≤ W) {ε : ℝ} (hε : 0 < ε) :
@@ -638,7 +640,7 @@ theorem eventually_inner_sq_le_conductorSeries (P : Set ℕ) {κ C : ℝ} (hκ0 
     have e : (Real.sqrt W + 2 * θ) ^ 2 = W + 4 * θ * (Real.sqrt W + θ) := by
       rw [add_sq, Real.sq_sqrt hW0]; ring
     nlinarith [Real.sqrt_nonneg W]
-  obtain ⟨T, -, hT3, hA⟩ := exists_scale_inner_primeSetHorizonVector_sub_le P hκ0 hκ hP hs hst hθ0 0
+  obtain ⟨T, -, hT3, hA⟩ := exists_scale_inner_primeSetHorizonVector_sub_le P hκ0 hκ hα hακ hP hs hst hθ0 0
   set F := primeSetCutoff P (T - 1)
   have hF := primeSetCutoff_prime' P (T - 1)
   set δ := finiteFlipHarmonicDensity F
@@ -946,8 +948,9 @@ for every ground index `i₀` below `γ + t`,
 `c_N² (Σ_{m ∈ S} w_P(m)/(E_m − γ − s) − ε) ≤ ρ_{i₀}(v_P)`.
 The test vector is the excited resolvent vector of the finite flip below a scale `T > max S`: it
 carries the packet exactly, and the twin differs from `(c_N/δ_F) v_F` by `θ c_N` in energy norm. -/
-theorem eventually_packet_le_excitedResolvent (P : Set ℕ) {κ C : ℝ} (hκ0 : 0 < κ)
-    (hκ : κ < 1 / 4) (hP : ∀ n, 1 ≤ n → |primeSetLogMass P n - κ * Real.log n| ≤ C)
+theorem eventually_packet_le_excitedResolvent (P : Set ℕ) {κ C α : ℝ} (hκ0 : 0 < κ)
+    (hκ : κ < 1 / 4) (hα : 0 ≤ α) (hακ : α < 1 - 2 * κ)
+    (hP : ∀ n, 1 ≤ n → |primeSetLogMass P n - κ * Real.log n| ≤ C * (1 + Real.log n) ^ α)
     {s t : ℝ} (hs : 0 < s) (hst : s < t) (ht2 : t < 2 * Real.log 2) (S : Finset ℕ)
     (hS : ∀ m ∈ S, 2 ≤ m) {ε : ℝ} (hε : 0 < ε) :
     ∀ᶠ N : ℕ in atTop, ∀ i₀ : PrimeHorizonIndex N, IsGroundBelow N t i₀ →
@@ -974,7 +977,7 @@ theorem eventually_packet_le_excitedResolvent (P : Set ℕ) {κ C : ℝ} (hκ0 :
     nlinarith
   -- the scale `T > max S`
   obtain ⟨T, hTM, hT3, hA'⟩ :=
-    exists_scale_inner_primeSetHorizonVector_sub_le P hκ0 hκ hP hs hst hθ0 (S.sup id + 1)
+    exists_scale_inner_primeSetHorizonVector_sub_le P hκ0 hκ hα hακ hP hs hst hθ0 (S.sup id + 1)
   set F := primeSetCutoff P (T - 1)
   have hF := primeSetCutoff_prime' P (T - 1)
   set δ := finiteFlipHarmonicDensity F
@@ -1005,8 +1008,9 @@ theorem eventually_packet_le_excitedResolvent (P : Set ℕ) {κ C : ℝ} (hκ0 :
     _ ≤ _ := sq_sub_le_of_test hδ0 hcpos.le hθr hr0 hρF hx hxρ
 
 /-- **The upper bound in resolvent form**: `ρ_{i₀}(v_P) ≤ c_N² (W + ε)` eventually. -/
-theorem eventually_excitedResolvent_le_conductorSeries (P : Set ℕ) {κ C : ℝ} (hκ0 : 0 < κ)
-    (hκ : κ < 1 / 4) (hP : ∀ n, 1 ≤ n → |primeSetLogMass P n - κ * Real.log n| ≤ C)
+theorem eventually_excitedResolvent_le_conductorSeries (P : Set ℕ) {κ C α : ℝ} (hκ0 : 0 < κ)
+    (hκ : κ < 1 / 4) (hα : 0 ≤ α) (hακ : α < 1 - 2 * κ)
+    (hP : ∀ n, 1 ≤ n → |primeSetLogMass P n - κ * Real.log n| ≤ C * (1 + Real.log n) ^ α)
     {s t W : ℝ} (hs : 0 < s) (hst : s < t) (ht2 : t < 2 * Real.log 2)
     (hW : ∀ K, ∑ k ∈ range K, primeSetSpectralWeight P (k + 2) /
       (ramanujanAdjunctionEnergy (k + 2) - γ - s) ≤ W) {ε : ℝ} (hε : 0 < ε) :
@@ -1014,7 +1018,7 @@ theorem eventually_excitedResolvent_le_conductorSeries (P : Set ℕ) {κ C : ℝ
       excitedResolvent N s i₀ (primeSetHorizonVector P N) ≤
         harmonicCorrelation (primeSetFlip P) N ^ 2 * (W + ε) := by
   have hW0 : 0 ≤ W := by simpa using hW 0
-  filter_upwards [eventually_inner_sq_le_conductorSeries P hκ0 hκ hP hs hst ht2 hW hε]
+  filter_upwards [eventually_inner_sq_le_conductorSeries P hκ0 hκ hα hακ hP hs hst ht2 hW hε]
     with N hN i₀ hg
   have h := hN i₀ hg _ (excitedResolventVector_perp N s i₀ (primeSetHorizonVector P N))
   rw [inner_excitedResolventVector_self, primeEnergy_sub_excitedResolventVector hg hst] at h
@@ -1023,10 +1027,11 @@ theorem eventually_excitedResolvent_le_conductorSeries (P : Set ℕ) {κ C : ℝ
   · rw [sq] at h
     exact le_of_mul_le_mul_right h hpos
 
-theorem eventually_harmonicCorrelation_pos (P : Set ℕ) {κ C : ℝ} (hκ : κ < 1 / 2)
-    (hP : ∀ n, 1 ≤ n → |primeSetLogMass P n - κ * Real.log n| ≤ C) :
+theorem eventually_harmonicCorrelation_pos (P : Set ℕ) {κ C α : ℝ} (hκ0 : 0 ≤ κ) (hα : 0 ≤ α)
+    (hακ : α < 1 - 2 * κ)
+    (hP : ∀ n, 1 ≤ n → |primeSetLogMass P n - κ * Real.log n| ≤ C * (1 + Real.log n) ^ α) :
     ∀ᶠ N : ℕ in atTop, 0 < harmonicCorrelation (primeSetFlip P) N := by
-  obtain ⟨c', hc', N₂, hN₂⟩ := exists_pos_mul_rpow_le_gaugeHarmonicSum_primeSetFlip P hκ hP
+  obtain ⟨c', hc', N₂, hN₂⟩ := exists_pos_mul_rpow_le_gaugeHarmonicSum_primeSetFlip P hκ0 hα hακ hP
   filter_upwards [eventually_ge_atTop (max N₂ 3)] with N hNN
   have hN3 : 3 ≤ N := (le_max_right _ _).trans hNN
   have hL1 : 1 ≤ Real.log N := one_le_log_of_three_le hN3
@@ -1039,8 +1044,9 @@ theorem eventually_harmonicCorrelation_pos (P : Set ℕ) {κ C : ℝ} (hκ : κ 
 log density `κ ∈ (0, 1/4)`, `0 < s < t < 2 log 2`, and let the conductor series
 `W_P(s) = Σ_{m ≥ 2} w_P(m)/(E_m − γ − s)` converge. Then for every `ε > 0`, eventually, for every ground
 index `i₀` below `γ + t`, `|ρ_{i₀}(v_P)/c_N² − W_P(s)| ≤ ε`. -/
-theorem eventually_abs_excitedResolvent_div_sub_le (P : Set ℕ) {κ C : ℝ} (hκ0 : 0 < κ)
-    (hκ : κ < 1 / 4) (hP : ∀ n, 1 ≤ n → |primeSetLogMass P n - κ * Real.log n| ≤ C)
+theorem eventually_abs_excitedResolvent_div_sub_le (P : Set ℕ) {κ C α : ℝ} (hκ0 : 0 < κ)
+    (hκ : κ < 1 / 4) (hα : 0 ≤ α) (hακ : α < 1 - 2 * κ)
+    (hP : ∀ n, 1 ≤ n → |primeSetLogMass P n - κ * Real.log n| ≤ C * (1 + Real.log n) ^ α)
     {s t : ℝ} (hs : 0 < s) (hst : s < t) (ht2 : t < 2 * Real.log 2)
     (hsum : Summable fun k : ℕ => primeSetSpectralWeight P (k + 2) /
       (ramanujanAdjunctionEnergy (k + 2) - γ - s)) {ε : ℝ} (hε : 0 < ε) :
@@ -1063,9 +1069,9 @@ theorem eventually_abs_excitedResolvent_div_sub_le (P : Set ℕ) {κ C : ℝ} (h
   have hS : ∀ m ∈ S, 2 ≤ m := fun m hm => by obtain ⟨k, -, rfl⟩ := mem_image.mp hm; omega
   have hSsum : ∑ m ∈ S, primeSetSpectralWeight P m / (ramanujanAdjunctionEnergy m - γ - s) =
       ∑ k ∈ range K, f k := sum_image fun a _ b _ h => by omega
-  filter_upwards [eventually_excitedResolvent_le_conductorSeries P hκ0 hκ hP hs hst ht2 hW hε,
-    eventually_packet_le_excitedResolvent P hκ0 hκ hP hs hst ht2 S hS (half_pos hε),
-    eventually_harmonicCorrelation_pos P (by linarith : κ < 1 / 2) hP] with N hup hlow hc i₀ hg
+  filter_upwards [eventually_excitedResolvent_le_conductorSeries P hκ0 hκ hα hακ hP hs hst ht2 hW hε,
+    eventually_packet_le_excitedResolvent P hκ0 hκ hα hακ hP hs hst ht2 S hS (half_pos hε),
+    eventually_harmonicCorrelation_pos P hκ0.le hα hακ hP] with N hup hlow hc i₀ hg
   have hc2 : 0 < harmonicCorrelation (primeSetFlip P) N ^ 2 := by positivity
   have h1 := hup i₀ hg
   have h2 := hlow i₀ hg
@@ -1088,8 +1094,9 @@ open GaloisForLFunctions.SelectiveMultiscaleArithmeticPositivity (ramanujanAdjun
 /-- **The zero-density twins of a convergent conductor series keep the maximal margin.** If `P` has
 relative log density `κ ∈ (0, 1/4)` and every partial sum of `Σ_{m≥2} w_P(m)/(E_m − γ − s)` is at most
 `1/s` for every `s ∈ (0, 2 log 2)`, the flip twin has hyperplane gap `2 log 2`. -/
-theorem primeSetFlip_hasHyperplaneGap_of_conductorSeries (P : Set ℕ) {κ C : ℝ} (hκ0 : 0 < κ)
-    (hκ : κ < 1 / 4) (hP : ∀ n, 1 ≤ n → |primeSetLogMass P n - κ * Real.log n| ≤ C)
+theorem primeSetFlip_hasHyperplaneGap_of_conductorSeries (P : Set ℕ) {κ C α : ℝ} (hκ0 : 0 < κ)
+    (hκ : κ < 1 / 4) (hα : 0 ≤ α) (hακ : α < 1 - 2 * κ)
+    (hP : ∀ n, 1 ≤ n → |primeSetLogMass P n - κ * Real.log n| ≤ C * (1 + Real.log n) ^ α)
     (hsec : ∀ s, 0 < s → s < 2 * Real.log 2 → ∀ K, ∑ k ∈ range K,
       primeSetSpectralWeight P (k + 2) / (ramanujanAdjunctionEnergy (k + 2) - γ - s) ≤ 1 / s) :
     HasHyperplaneGap (primeSetFlip P) (2 * Real.log 2) := by
@@ -1147,10 +1154,10 @@ theorem primeSetFlip_hasHyperplaneGap_of_conductorSeries (P : Set ℕ) {κ C : �
     nlinarith
   -- eventual facts
   have hground := eventually_exists_ground ht0 ht2 hε₀
-  have hmain := eventually_inner_sq_le_conductorSeries P hκ0 hκ hP hs0 hst ht2 hW hε'
+  have hmain := eventually_inner_sq_le_conductorSeries P hκ0 hκ hα hακ hP hs0 hst ht2 hW hε'
   have hpole := eventually_primeEnergy_poleUnit_le hε₀
   obtain ⟨c', hc', N₂, hN₂⟩ :=
-    exists_pos_mul_rpow_le_gaugeHarmonicSum_primeSetFlip P (by linarith : κ < 1 / 2) hP
+    exists_pos_mul_rpow_le_gaugeHarmonicSum_primeSetFlip P hκ0.le hα hακ hP
   obtain ⟨N₀, hN₀⟩ := eventually_atTop.mp (hground.and (hmain.and (hpole.and
     (eventually_ge_atTop (max N₂ 3)))))
   refine ⟨N₀, fun N hN x hx => ?_⟩
@@ -1201,8 +1208,9 @@ theorem primeSetFlip_hasHyperplaneGap_of_conductorSeries (P : Set ℕ) {κ C : �
 /-- **Classification of the flip twins of relative log density `κ ∈ (0, 1/4)`.** The atomic Hodge index
 separates `ω_P` from `ζ` iff some finite packet of conductors `m ≥ 2` has
 `Σ w_P(m)/(E_m − γ − s) > 1/s` for some `s ∈ (0, 2 log 2)`. -/
-theorem hodgeSeparates_primeSetFlip_iff_packet (P : Set ℕ) {κ C : ℝ} (hκ0 : 0 < κ)
-    (hκ : κ < 1 / 4) (hP : ∀ n, 1 ≤ n → |primeSetLogMass P n - κ * Real.log n| ≤ C) :
+theorem hodgeSeparates_primeSetFlip_iff_packet (P : Set ℕ) {κ C α : ℝ} (hκ0 : 0 < κ)
+    (hκ : κ < 1 / 4) (hα : 0 ≤ α) (hακ : α < 1 - 2 * κ)
+    (hP : ∀ n, 1 ≤ n → |primeSetLogMass P n - κ * Real.log n| ≤ C * (1 + Real.log n) ^ α) :
     HodgeSeparates (primeSetFlip P) ↔ ∃ s, 0 < s ∧ s < 2 * Real.log 2 ∧ ∃ S : Finset ℕ,
       (∀ m ∈ S, 2 ≤ m) ∧ 1 / s < ∑ m ∈ S, primeSetSpectralWeight P m /
         (ramanujanAdjunctionEnergy m - γ - s) := by
@@ -1217,7 +1225,7 @@ theorem hodgeSeparates_primeSetFlip_iff_packet (P : Set ℕ) {κ C : ℝ} (hκ0 
         obtain ⟨k, -, rfl⟩ := mem_image.mp hm; omega)
       rwa [sum_image fun a _ b _ h => by omega] at h
     exact (hodgeSeparates_iff_not_hasHyperplaneGap (primeSetFlip_mul_self P)).mp hsep
-      (primeSetFlip_hasHyperplaneGap_of_conductorSeries P hκ0 hκ hP hsec)
+      (primeSetFlip_hasHyperplaneGap_of_conductorSeries P hκ0 hκ hα hακ hP hsec)
   · rintro ⟨s, hs, hs2, S, hS, h⟩
     exact hodgeSeparates_primeSetFlip_of_packet P hs hs2 S hS h
 
