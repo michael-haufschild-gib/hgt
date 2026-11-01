@@ -171,7 +171,8 @@ private def fiberMap (n : ℕ) (p : ↑(qNorm ⁻¹' {n})) : ↥(normFiber n) :=
     have hp : qNorm p.1 = n := p.2
     rw [norm_eq]
     change p.1.1.1 ^ 2 + (8 * p.1.1.2) ^ 2 = (n : ℤ)
-    calc p.1.1.1 ^ 2 + (8 * p.1.1.2) ^ 2 = (qNorm p.1 : ℤ) := by
+    calc
+      p.1.1.1 ^ 2 + (8 * p.1.1.2) ^ 2 = (qNorm p.1 : ℤ) := by
         rw [qNorm_cast]
         ring
       _ = (n : ℤ) := congrArg (fun m : ℕ => (m : ℤ)) hp,

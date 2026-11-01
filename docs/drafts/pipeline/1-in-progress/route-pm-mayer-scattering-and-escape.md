@@ -8,7 +8,7 @@
 
 | Task | Required mathematical result | Status |
 |---|---|---|
-| Mayer 1 | Exact Mayer–Selberg product, oriented/unoriented multiplicities, geometric lengths, and scattering normalization | Euler product and actual translation lengths certified; closed-geodesic multiplicities and scattering comparison open |
+| Mayer 1 | Exact Mayer–Selberg product, oriented/unoriented multiplicities, geometric lengths, and scattering normalization | Euler product, actual lengths and inverse-class multiplicities certified; closed-geodesic identification and scattering comparison open |
 | Mayer 2 | Faithful equivalence between actual right-strip zeta zeros and scattering-sector eigenvalue events | Open; operator and parameter conventions must be identified exactly |
 | Mayer 3 | Actual Hermitian structure including scattering, recovering a classical zero-free region from transfer positivity | Open |
 | Mayer 4 | Separation of cusp events from scattering events by that form | Open |
@@ -32,8 +32,11 @@ D(w,z)D(w,−z) = ∏_c ∏_(m≥0) (1−z^(2ℓ(c)) λ_c^(−w−2m)).
 The joint product has the same value and summable absolute deviations from
 one. The [actual translation length](../3-formalized/gauss-mayer-hyperbolic-translation-length.md)
 is the attained displacement minimum `L_c=2 log λ_c`, so each factor is
-`1−z^(2ℓ(c)) exp(−(w/2+m)L_c)`. The [inverse-orientation multiplicities](../2-fully-proven/gauss-mayer-inverse-orientation-multiplicities.md),
-closed-geodesic identification, and actual scattering comparison remain open.
+`1−z^(2ℓ(c)) exp(−(w/2+m)L_c)`. The certified
+[inverse-orientation multiplicities](../3-formalized/gauss-mayer-inverse-orientation-multiplicities.md)
+regroup these factors with exponent one for self-inverse classes and two
+otherwise. Closed-geodesic identification and actual scattering comparison
+remain open.
 
 ## Operator convention
 

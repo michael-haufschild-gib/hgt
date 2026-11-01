@@ -34,6 +34,7 @@ theorem rectTheta_exponential_bound {y : ℝ} (hy : y ≠ 0) :
     ∃ C b : ℝ, 0 ≤ C ∧ 0 < b ∧ ∀ t : ℝ, 1 ≤ t →
       ‖(rectTheta y t : ℂ) - 1‖ ≤ C * Real.exp (-(b * t)) := by
   obtain ⟨b, C, hb, htail⟩ := rectTheta_sub_one_le hy
+  simp only [neg_mul] at htail
   let T : ℝ := max 1 (1 / y ^ 2)
   let A : ℝ := rectTheta y 1
   let C' : ℝ := max (max C 0) (A * Real.exp (b * T))

@@ -1,81 +1,82 @@
-# Rational correlation Grams at one critical multiple
+# Rational correlation Grams at one universal critical overlap
 
 - **ID:** finite-rational-correlation-grams-at-critical-overlap
 - **Stage:** 3-formalized
 - **Type:** THEOREM
-- **Source:** `docs/reports/review-0111/obstacles-summary.md`, A7.
-- **Target:** For every finite family of positive rationals, its `ratCorr` Gram
-  is an entrywise limit of complete Steklov atomic packet Grams at overlap
-  `K·loglog N·(logloglog N)²`, with one fixed `K` for that family. In the
-  unit-interval normalization, this is a literal complete-matrix compression
-  at overlap `2K·loglog N·(logloglog N)²`.
+- **Source:** `docs/reports/review-0111/route-SC.md`, obligation 1.
 
-## Proof route
+## Statement
 
-Write the rational Gram as the Weil Gram of translates of the cubic spline.
-Choose common support radius `R`, sup bound `M`, and Lipschitz bound `L`.
-Mollification by the Steklov profile converges in the sup and Lévy norms,
-hence jointly in every entry of the finite Gram.
+Put `c*(N)=loglog N·(logloglog N)²`. One fixed nonnegative smooth profile
+`φ=beurlingUnitProfile`, supported in `[0,1]` with integral one, realizes
+**every** finite rational correlation Gram at overlap `2c*(N)`.
+For each finite family `q_i`, there are horizons `N_m→∞` and real vectors
+`v_{m,i}` such that
 
-At each fixed mollifier width, bounded-rate Euler–Maclaurin synthesis has
-vanishing sup and Lévy errors whenever
-`K>288e·blockSize(R+1)`. This condition depends on support, not on the
-mollifier width. For each entry tolerance, first fix a sufficiently narrow
-mollifier and then a sufficiently large horizon. A diagonal choice gives
-the asserted Gram limit along horizons `N=n·blockSize(R+1)`.
+`G_m ⟨completeWeilMatrix φ (2c*(N_m)) N_m · v_{m,i}, v_{m,j}⟩ → ratCorr(q_i⁻¹q_j)`,
 
-For the unit-interval profile `φ(u)=2·steklovDCProfile(2u−1)`, put
-`w=c/N`, `G=∫φ(u/w)²du`, and `v_n=x_n/w`. The profile has integral one
-and positive square integral, so `G>0`. Recentering and translation invariance
-give the exact energy identity `G⟨A_N(c)v,v⟩=W(f_x,f_x)`. Real polarization
-gives every mixed entry `G⟨A_N(c)v_i,v_j⟩=W(f_i,f_j)`. At
-`c=2K·dcScale N`, the recentred dilation is precisely `N/(K·dcScale N)`.
-Thus the same limit is a compression of the normalized complete matrix.
+where `G_m=∫ atomDilate φ (2c*(N_m)/N_m)²` is eventually positive.
+The profile and multiple `2` are independent of the finite family.
 
-Corpus inputs: `dotProduct_weilGram_eq_ratCorr`,
-`tendsto_weilGram_of_perturbation`, `mollify_perturbation`,
-`exists_dcLogSynthesis`, and the bounded-rate synthesis estimates in
-`ABoundedOverlapRateSeesASemilocalWindow`.
+Consequently, positivity of every rational Weil Gram on its boost-mass-zero
+hyperplane is equivalent to eventual positivity of the complete Weil family
+on its pole hyperplane at this **single** fixed overlap. Both are equivalent
+to RH. This proves the realization and equivalence, not the positivity input.
 
-## Lean
+## Proof
 
-`TransMetzlerWeilPositivity/ReceiverRate/ABoundedOverlapRateSeesASemilocalWindow.lean`:
+**Fixed profile.** Starting from the smooth nonnegative unit bump
+`steklovBase`, iterate Steklov averages with radii
 
-- `exists_dcLogSynthesis_family_gram_limit_of_rate`: simultaneous smooth-family synthesis.
-- `eventually_exists_family_gram_approximation_of_rate`: finite C² families, by mollification.
-- `exists_ratCorr_gram_approximation_at_critical_multiple`: rational translates at a fixed multiple.
-- `exists_ratCorr_gram_limit_at_critical_multiple`: diagonal limit with horizons tending to infinity.
-- `completePacketVector_gram`: exact mixed-entry normalization by the positive atom mass.
-- `exists_ratCorr_completeWeil_gram_limit`: literal complete-matrix compression limit.
+`r_j=(1/√log(j+3)−1/√log(j+4))/8`.
 
-The form is the full Weil Gram, including prime, Gamma, and pole terms.
-Atoms use `dilate (N/(K*dcScale N)) steklovDCProfile`; this fixes their
-normalization directly. The multiple depends on the finite family; no single
-universal multiple or exact pole-moment preservation is asserted.
+Their tails telescope. All derivative sequences are uniformly Cauchy, giving
+a smooth nonnegative limit `ψ` supported in `[-1,1]`, with integral one.
+The logarithmic increment bound and rationalization give
 
-Direct leaf audit passed. All six declarations depend only on
-`propext`, `Classical.choice`, and `Quot.sound`. Existing umbrella import includes the leaf.
+`r_j ≥ 1/(16(j+4)log(j+4)√log(j+4))`,
 
-## Hyperplane consequence
+hence
 
-For the fixed unit Steklov profile, RH is equivalent to eventual nonnegativity
-on the pole hyperplane at `2K·dcScale N` for **every** `K≥1`.
-Equivalently, this complete-family condition is positivity of every rational
-Weil Gram on its boost-mass-zero hyperplane.
+`∏_{j<q} r_j⁻¹ ≤ (64/√log(q+3))^q · q! · log(q+3)^(2q)`.
 
-A form nonnegative on one real hyperplane has complex negative index at most
-one: real and imaginary coefficients both lie in the same hyperplane.
-Compression and entrywise Gram limits preserve this bound. The resulting
-bound `κ(ratCorr)≤1` forces `κ(K_ζ)=0` by the zeta index parity law. Conversely,
-RH makes every complete Weil energy nonnegative. No exact preservation of
-pole moments by the packet approximation is needed.
+The derivative bounds pass to the limit. Since `64/√log(q+3)→0`, for every
+`b>0` there is `A>0` with `∫|ψ⁽q⁾|≤A b^q dcLogWeight(q)` for all `q`.
+Set `φ(u)=2ψ(2u−1)`.
 
-`RenormalizedIntersectionTheory/TheHodgeIndexAtCriticalOverlap.lean`:
+**Universal synthesis.** Express the rational Gram using translates of the
+cubic spline. For their common support radius `R`, set `B=blockSize(R+1)`
+and choose derivative type `b=1/(48eB)`. Then `24ebB=1/2<1`, so the
+bounded-rate synthesis theorem applies at dilation `N/dcScale N`.
+The constant `A` changes the eventual error bound, not the overlap.
+Mollification handles the spline's `C²` regularity. Choosing successive
+entry errors `1/(m+1)` yields the simultaneous Gram limit.
 
-- `riemannHypothesis_iff_steklovUnitProfile_hodgeIndex_critical`.
-- `ratCorr_hyperplane_nonneg_iff_steklovUnitProfile_hodgeIndex_critical`.
+**Complete matrix.** For atom width `w=c/N`, divide packet coefficients by
+`w`. Recentering gives the exact energy identity; real polarization gives
+every mixed entry, with the atom mass `G=∫φ(u/w)²du` restored. At
+`c=2dcScale N`, the recentred dilation is exactly `N/dcScale N`.
 
-Direct leaf audit passed with only `propext`, `Classical.choice`, and
-`Quot.sound`; the leaf is wired into its umbrella. This does not prove
-positivity at the critical scale or replace all fixed multiples by one
-universal multiple.
+**Hyperplane.** Nonnegativity on one real hyperplane bounds complex negative
+index by one: real and imaginary coefficient vectors satisfy the same
+constraint. Compression and entrywise Gram limits preserve this bound.
+Thus `κ(ratCorr)≤1`; the exact zeta index identity and parity force `κ(K_ζ)=0`.
+Conversely, RH makes every complete Weil energy nonnegative. Exact pole-moment
+preservation by packet approximation is unnecessary.
+
+## Lean and audit
+
+- `TransMetzlerWeilPositivity/ReceiverRate/AProfileAtEveryLogarithmicType.lean`:
+  `exists_beurlingDCProfile_bound`, with smoothness, nonnegativity and unit mass.
+- `TransMetzlerWeilPositivity/ReceiverRate/EveryFiniteGramFitsOneCriticalOverlap.lean`:
+  `exists_ratCorr_completeWeil_gram_limit_at_universal_critical_overlap`.
+- `RenormalizedIntersectionTheory/TheHodgeIndexAtCriticalOverlap.lean`:
+  `riemannHypothesis_iff_beurlingUnitProfile_hodgeIndex_universal_critical` and
+  `ratCorr_hyperplane_nonneg_iff_beurlingUnitProfile_hodgeIndex_universal_critical`.
+
+Dependencies compiled; final direct Hodge leaf audit passed. The profile,
+complete Gram limit, both equivalences and bump nonnegativity use only
+`propext`, `Classical.choice`, and `Quot.sound`. Umbrella imports are wired.
+
+The original Steklov profile retains its separately verified family-dependent
+Gram realization and receiver quantified over every fixed `K≥1`.

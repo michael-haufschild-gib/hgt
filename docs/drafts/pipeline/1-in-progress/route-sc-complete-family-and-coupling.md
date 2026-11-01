@@ -2,118 +2,65 @@
 
 - **Stage:** 1-in-progress
 - **Source:** `docs/reports/review-0111/route-SC.md`.
-- **Goal:** Resolve the seven main obligations and four heat obligations, with unconditional Lean proofs.
+- **Goal:** Resolve all seven main obligations and four heat obligations with unconditional Lean proofs.
 
-## Current obligations
+## Completed
 
-1. Realize rational correlation Grams by smooth packets of the complete Weil family, including normalization and the boost-mass-zero constraint. Distinguish a multiple chosen for each finite family from one multiple valid for every family.
-2. Exclude bounded cone coupling with unattained maximal zero width.
+**SC1.** One fixed nonnegative smooth unit profile realizes every finite
+`ratCorr` Gram as a positive-mass-weighted complete-matrix compression limit
+at the same overlap `2·loglog N·(logloglog N)²`. Positivity on the rational
+boost-mass-zero hyperplane is equivalent to eventual complete-family
+pole-hyperplane positivity at this single multiple. The equivalence uses
+compression index at most one and zeta index parity, without assuming exact
+moment preservation by the approximating packets.
+
+Proof and exact declarations:
+[universal critical overlap](../3-formalized/finite-rational-correlation-grams-at-critical-overlap.md).
+The new profile, Gram limit and final direct hyperplane audit pass with only
+`propext`, `Classical.choice`, and `Quot.sound`. Both umbrellas are wired.
+Actual positivity remains unproved.
+
+**Heat a.** `negIndex_heatArchState_eq_one_of_eighth_le` gives index one for
+every `c>0` and `t≥1/8` in `TheHeatDeformedArchimedeanState.lean`.
+Its transitive axiom audit and that of
+`riemannHypothesis_iff_negIndex_heatArchState_const` pass with only standard
+axioms. This supplies the certified upper-time calibration.
+
+## Remaining source obligations
+
+2. Bounded coupling on the natural-exponent cone implies RH when maximal zero width is unattained.
 3. Exclude finite nonzero Weil index.
 4. Transfer finite-sieve Hodge positivity to the global inter-tower form.
 5. Prove an arithmetic finite-index ceiling.
-6. Prove a square decomposition for the dilation form itself.
+6. Prove a square decomposition for the dilation form itself on a boost-zero two-prime lattice.
 7. Prove glued index at most one, equivalently bounded two-prime lattice coupling.
 
-Heat: certified upper-time calibration; subcritical heat count; uniform heat count; absence of index jumps on `(0, 1/8]`.
+Heat b: `N(t)≤exp(A·t^(−a))`, `a<1`; heat c: a uniform count;
+heat d: no index jumps on `(0,1/8]`.
 
-## Verified boundary
-
-`exists_ratCorr_completeWeil_gram_limit` realizes each finite rational Gram as a normalized complete-matrix compression using the smooth unit Steklov profile at `2K·loglog N·(logloglog N)²`, with the positive atom mass restored. Its `K` depends on that family; it does not provide a universal fixed multiple.
-
-`riemannHypothesis_iff_unitBump_hodgeIndex_rpow_log` gives the smooth complete-family receiver at `2(log N)^α`, every `α>0`. Neither result proves positivity.
-
-## Complete-matrix normalization
-
-Set `φ(u)=2·steklovDCProfile(2u−1)`, `w=c/N`, and `G=∫φ(u/w)² du>0`.
-An atomic coefficient vector `x` becomes `v_n=x_n/w` in the complete matrix.
-Its mixed Weil pairing is exactly `G⟨A_N(c)v_i,v_j⟩`. Thus the existing rational
-Gram limit at dilation `N/(K·dcScale N)` gives a literal complete-matrix
-compression limit at overlap `2K·dcScale N`.
-
-Lean: `TransMetzlerWeilPositivity/ReceiverRate/ABoundedOverlapRateSeesASemilocalWindow.lean`,
-`exists_ratCorr_completeWeil_gram_limit`.
-Direct compilation passed; only `propext`, `Classical.choice`, and `Quot.sound`.
-Exact preservation of the boost
-hyperplane is not yet supplied by this Gram limit.
-
-The global hyperplane implication can instead pass through inertia: positivity
-on one real hyperplane bounds the complexified matrix index by one; compression
-and finite-Gram limits retain that bound. The rational Weil index equals the
-zeta index, whose nonzero values are at least two. This avoids requiring the
-packet approximation to preserve the pole moment. Lean inputs:
-`hermQuad_map_ofReal`, `hermNegIndex_le_negIndexOn_ker_add_one`,
-`eventually_le_hermNegIndex`, `negIndex_ratCorr`, `negIndex_zetaKernel_le_one_iff`.
-The resulting receiver quantifies over every fixed critical multiple.
-`riemannHypothesis_iff_steklovUnitProfile_hodgeIndex_critical` and
-`ratCorr_hyperplane_nonneg_iff_steklovUnitProfile_hodgeIndex_critical` in
-`RenormalizedIntersectionTheory/TheHodgeIndexAtCriticalOverlap.lean` pass direct
-Lean verification with only `propext`, `Classical.choice`, and `Quot.sound`.
-The leaf is wired into its umbrella. Positivity at this scale and a single
-universal multiple remain unproved.
-
-## Universal-multiple conjecture
-
-Construct one smooth unit profile `ψ`, supported in `[-1,1]`, with
-`∀ B>0, ∃ A, ∀q, ∫|ψ⁽q⁾| ≤ A·B^q·q!·log(q+3)^(2q)`.
-The synthesis threshold is `K>24e·B·blockSize(R+1)`, while `A` affects only
-the error constant. Choosing `B` after the finite support radius `R` would
-therefore realize every rational Gram at the same `K=1` with this fixed profile.
-
-Candidate construction: Steklov averages with telescoping radii
-`r_j=(1/√log(j+3)−1/√log(j+4))/8`. The sum is at most `1/8`.
-The log increment bound and rationalization of the square roots give
-`r_j≥1/(16(j+4)·log(j+4)·√log(j+4))`. Consequently,
-`∏_{j<q}r_j⁻¹ ≤ (64/√log(q+3))^q·dcLogWeight(q)`.
-Uniform derivative limits give the displayed profile estimate; the
-factor `64/√log(q+3)` tends to zero and finitely many derivative orders are
-absorbed into `A`. This changes the profile, not the complete Weil form or
-the prescribed critical scale.
-
-`AProfileAtEveryLogarithmicType.lean` formalizes the radius bound, nonnegative
-smooth limit, unit mass, and `exists_beurlingDCProfile_bound`. Compilation and
-the displayed transitive axiom audits pass with only `propext`,
-`Classical.choice`, and `Quot.sound`. The universal-multiple complete Gram
-realization and hyperplane equivalence await verification.
-
-## Heat calibration
-
-`negIndex_heatArchState_eq_one_of_eighth_le` already gives index one for
-every `c>0` and `t≥1/8` in `TheHeatDeformedArchimedeanState.lean`.
-This supplies the requested upper-time calibration at the classical bound;
-its transitive axiom audit uses only `propext`, `Classical.choice`, and
-`Quot.sound`. The same audit passes for
-`riemannHypothesis_iff_negIndex_heatArchState_const`. The subcritical count,
-uniform count, and no-jump obligations remain separate.
-
-`exists_nonrealZeroCount_and_collisionMass_le_twoThirds` bounds the count by
-`C·R(t)·log(2+3R(t))`, where `R(t)=max(X₀,2π·exp((2/3+ε)/t))+1`.
-The `2/3` improves the coefficient of `1/t`, not its power; this does not
-supply the requested `exp(A·t^(−a))` with `a<1`.
-
-## Cone obstruction
+## Cone boundary
 
 The existing double-pole argument requires an attained maximal real part.
 Below the supremum its geometric expansion diverges for deeper zeros.
-Continuation across the boundary does not by itself isolate residues of an
-infinite accumulating pole series. A quantitative lower weight versus joint
-two-prime spacing estimate remains necessary for that argument.
+Continuation across the boundary does not isolate residues of an infinite
+accumulating pole series.
 
-`two_prime_alias_bound_in_Δ` supplies the arithmetic separation
+`le_norm_paperFT_upow` already gives
+`(|sinh(Im z)|/‖z‖)^4≤|B̂(z)|`, hence polynomial nonvanishing away from the
+critical line. `two_prime_alias_bound_in_Δ` gives joint phase separation
+
 `|Δ log p−2πk₁| log q + |Δ log q−2πk₂| log p ≥ c·min(|Δ|,(2+|Δ|)^(−C))`.
-It controls the two phase clocks, but does not bound cancellation of spline
-residues as their real parts approach an unattained supremum.
 
-`le_norm_paperFT_upow` already gives the spline transform bound
-`(|sinh(Im z)|/‖z‖)^4 ≤ |B̂(z)|`. Thus polynomial nonvanishing away from the
-critical line is available. The missing comparison concerns approach to the
-width supremum versus height and cancellation; neither this bound nor the
-two-prime separation estimate supplies it.
+Neither controls residue cancellation while real parts approach an unattained
+supremum. A comparison involving the width gap and zero height remains missing.
 
-## Gates
+## Other boundaries
 
-- [x] Exact requested scope recorded.
-- [x] Complete-family realization at family-dependent multiples and the all-multiples hyperplane equivalence audited.
-- [ ] A single universal critical multiple, if required by obligation 1.
-- [x] Existing heat calibration audited at `t≥1/8`.
-- [ ] Remaining source estimates proved.
-- [ ] Exact Lean statements, direct checks, standard-only axiom audits, umbrella imports.
+The finite-sieve Hodge theorem concerns the matched prime form after a scalar
+subtraction. The Gamma and mixed-term comparison needed for the complete
+Weil form is not supplied by that uniform index bound.
+
+`exists_nonrealZeroCount_and_collisionMass_le_twoThirds` bounds the heat count
+by `C·R(t)·log(2+3R(t))`, where
+`R(t)=max(X₀,2π·exp((2/3+ε)/t))+1`. The `2/3` improves the coefficient of
+`1/t`, not its power; it does not provide heat b.

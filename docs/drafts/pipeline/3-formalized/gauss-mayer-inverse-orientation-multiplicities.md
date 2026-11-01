@@ -1,7 +1,7 @@
 # Inverse-orientation multiplicities in the actual Mayer product
 
-- **Stage:** 2-fully-proven
-- **Type:** Theorem (paper; Lean formalization required)
+- **Stage:** 3-formalized
+- **Type:** Theorem
 - **Parent:** [PM tasks](../1-in-progress/route-pm-mayer-scattering-and-escape.md).
 - **Inputs:** [primitive modular coding](../3-formalized/gauss-mayer-modular-primitive-coding.md), [primitive-cycle Euler product](../3-formalized/gauss-mayer-primitive-orbit-product.md), [actual translation lengths](../3-formalized/gauss-mayer-hyperbolic-translation-length.md).
 
@@ -79,6 +79,27 @@ infinite-product criterion for `1+f` with summable `f` proves convergence of
 Product Fubini now identifies the nested quotient/mode product with the
 joint quotient product. All inputs are supplied by the actual source
 convergence theorem.
+
+## Lean certificate
+
+Modules in `RenormalizedIntersectionTheory/`:
+
+- `GaussMayerInverseCycles.lean`, namespace `MayerInverseCycles`:
+  `inverseCycle_involutive`, `inverseCycle_eq_iff_inverse_conjugacy`,
+  `cycleLength_inverseCycle`, `multiplier_inverseCycle`, and
+  `orbitTranslationLength_inverseCycle` give the actual inverse-class
+  involution and its invariants. `mem_orientations`, `orientations_unoriented`,
+  `multiplicity_unoriented`, `multiplicity_one_or_two`, and
+  `multiplicity_singleton` identify the complete fibers and their cardinalities.
+- `GaussMayerUnorientedProduct.lean`, namespace `MayerUnorientedProduct`:
+  `exists_signed_determinant_unorientedProduct` and
+  `signed_determinant_unorientedProduct_on_closed_unit` prove the joint and
+  nested actual determinant products, including mode convergence.
+  `signed_determinant_one_eq_unorientedProduct` specializes to `z=1`.
+
+Both direct production checks passed without diagnostics. All seventeen
+transitive axiom audits contain only `propext`, `Classical.choice`, and
+`Quot.sound`. The programme umbrella imports both modules.
 
 ## Scope
 
