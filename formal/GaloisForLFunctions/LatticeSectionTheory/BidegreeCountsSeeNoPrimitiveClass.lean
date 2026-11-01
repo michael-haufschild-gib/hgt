@@ -80,6 +80,7 @@ theorem riemannInequality_bidegree_iff (Φ : ℝ → ℝ → ℝ) (χ₀ : ℝ) 
       have h := hRI (t • x)
       rw [hconst (t • x) (by simp [hH]) (by simp [hV]), eulerChar_smul] at h
       simp only [map_zero, mul_zero, sub_zero] at h
+      rw [sub_zero] at hK
       have := le_abs_self K
       linarith
     · -- evaluate on the pole-plane class `bH + aV`, of bidegree `(a, b)`

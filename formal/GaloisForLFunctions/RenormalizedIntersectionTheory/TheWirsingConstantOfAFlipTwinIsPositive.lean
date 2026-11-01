@@ -450,7 +450,7 @@ theorem exists_powerAbel_le {α : ℝ} (hα0 : 0 ≤ α) (hα1 : α < 1) :
           ((k : ℝ) ^ (-σ) / Real.log k - ((k + 1 : ℕ) : ℝ) ^ (-σ) / Real.log ((k + 1 : ℕ) : ℝ)) ≤
         E₀ := by
   have hl2 : 0 < Real.log 2 := Real.log_pos one_lt_two
-  refine ⟨5 + 2 / Real.log 2 + 2 / (1 - α), fun σ hσ hσ1 X hX => ?_⟩
+  refine ⟨3 + 3 / Real.log 2 + 2 / (1 - α), fun σ hσ hσ1 X hX => ?_⟩
   -- weights: `(1 + log k)^α ≤ 1 + log k`, `≤ 2 (log k)^α` for `k ≥ 3`
   have hw1 : ∀ k : ℕ, 1 ≤ k → (1 + Real.log k) ^ α ≤ 1 + Real.log k := fun k hk => by
     have h1 : 1 ≤ 1 + Real.log k := by linarith [Real.log_natCast_nonneg k]
@@ -657,7 +657,7 @@ theorem sum_primeWeight_mul_ge_rpow {ε : ℕ → ℝ} {β C α : ℝ}
   set a : ℕ → ℝ := fun k => if k.Prime then ε k * Real.log k / k else 0
   have hstep : ∀ n, primeMean ε (n + 1) = primeMean ε n + a (n + 1) := fun n => by
     unfold primeMean; rw [sum_filter, sum_filter, sum_Icc_succ_top (by omega)]
-  have hΦ : ∀ X, 2 ≤ X → -(C * ∑ k ∈ Ico 2 X, (1 + Real.log k) ^ α * (g k - g (k + 1))) ≤
+  have hΦ : ∀ X : ℕ, 2 ≤ X → -(C * ∑ k ∈ Ico 2 X, (1 + Real.log k) ^ α * (g k - g (k + 1))) ≤
       ∑ k ∈ Icc 2 X, a k * g k -
         β * ∑ k ∈ Icc 2 X, (Real.log k - Real.log ((k : ℝ) - 1)) * g k -
         (primeMean ε X - β * Real.log X) * g X := by

@@ -4,6 +4,7 @@ import GaloisForLFunctions.LatticeSectionTheory.TheRectangularLatticeCount
 import GaloisForLFunctions.LatticeSectionTheory.DefiniteCountsHaveOffLineZeros
 import GaloisForLFunctions.LatticeSectionTheory.TheSiegelMajorantIsTheHodgeIndex
 import GaloisForLFunctions.LatticeSectionTheory.TheBoostTransformRestoresTheEulerProduct
+import GaloisForLFunctions.LatticeSectionTheory.BidegreeCountsSeeNoPrimitiveClass
 
 /-!
 # Lattice Section Theory

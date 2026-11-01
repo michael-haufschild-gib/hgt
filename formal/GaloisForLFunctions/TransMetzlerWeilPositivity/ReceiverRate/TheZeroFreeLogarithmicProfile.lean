@@ -45,7 +45,7 @@ theorem hasCompactSupport_zeroFreeLogProfile : HasCompactSupport zeroFreeLogProf
   hasCompactSupport_of_unitSupport zeroFreeLogProfile_eq_zero
 
 theorem integral_zeroFreeLogProfile : ∫ x, zeroFreeLogProfile x = 1 := by
-  rw [zeroFreeLogProfile, integral_sub_right_eq_self,
+  rw [zeroFreeLogProfile, integral_sub_right_eq_self (dilate 8 averagedSincProfile) (1 / 2),
     integral_dilate (by norm_num : (0 : ℝ) < 8), integral_averagedSincProfile]
 
 /-- Affine normalization preserves the logarithmic derivative class. -/
@@ -54,7 +54,9 @@ theorem integral_abs_iteratedDeriv_zeroFreeLogProfile_le (q : ℕ) :
   have heq : zeroFreeLogProfile = fun x => dilate 8 averagedSincProfile (-(1 / 2) + x) := by
     funext x
     rw [zeroFreeLogProfile, sub_eq_neg_add]
-  rw [heq, iteratedDeriv_comp_const_add, integral_add_left_eq_self,
+  rw [heq, iteratedDeriv_comp_const_add,
+    integral_add_left_eq_self (fun x => |iteratedDeriv q (dilate 8 averagedSincProfile) x|)
+      (-(1 / 2)),
     integral_abs_iteratedDeriv_dilate contDiff_averagedSincProfile (by norm_num)]
   calc
     (8 : ℝ) ^ q * (∫ x, |iteratedDeriv q averagedSincProfile x|)
@@ -70,7 +72,8 @@ theorem paperFT_zeroFreeLogProfile (z : ℂ) :
       Complex.exp (Complex.I * z * (1 / 2)) *
         Zeta23.paperFT (cx averagedSincProfile) (z / 8) := by
   change Zeta23.paperFT (fun x => (dilate 8 averagedSincProfile (x - 1 / 2) : ℂ)) z = _
-  rw [_root_.RHTower.paperFT_comp_sub, paperFT_massPreservingDilate (by norm_num)]
+  rw [_root_.RHTower.paperFT_comp_sub (fun u => (dilate 8 averagedSincProfile u : ℂ)) (1 / 2) z,
+    paperFT_massPreservingDilate (by norm_num)]
   norm_num
 
 /-- Translation only changes phase; real conjugation selects positive Fourier frequencies. -/
