@@ -23,3 +23,17 @@ formalized in `HTGeometry.HamburgerFunctionalEquation`.
 - [x] Corpus inputs identified; exact degree and coefficient class fixed.
 - [ ] Dependency-closed paper proof and nonzero Dirichlet-completion bridge.
 - [ ] Lean leaf check, transitive axiom audit, umbrella import.
+
+## Finite-zero interpolation
+
+**Conjecture:** For every `N`, `B` and `k`, one such twin has `k` distinct real zeros
+beyond `max(B,3)`. Thus finite coefficient data give neither a uniform rightmost-zero
+bound nor a uniform count of right-hand real zeros in this functional-equation class.
+
+Take `k` independent theta perturbations. Their restrictions to any real right ray
+remain independent: a vanishing linear combination gives a vanishing Dirichlet series,
+hence zero coefficients. The corpus evaluation-minor theorem supplies `k` distinct
+points with invertible evaluation matrix. Solve against the negative values of `Λ³`.
+The resulting finite linear combination preserves the coefficient prefix and all
+principal parts. The interpolation points are chosen by the proof; they are not an
+arbitrary prescribed tuple.

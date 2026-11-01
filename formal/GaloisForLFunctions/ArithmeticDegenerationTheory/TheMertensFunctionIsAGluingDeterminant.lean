@@ -87,8 +87,8 @@ theorem divisibilityMatrix_mul_moebiusMatrix (N : ℕ) :
       (if j.1 ∣ k.1 then (μ (k.1 / j.1) : ℝ) else 0) =
         ∑ j ∈ Icc 1 N, (if i.1 ∣ j then (1 : ℝ) else 0) *
           (if j ∣ k.1 then (μ (k.1 / j) : ℝ) else 0) :=
-    Finset.sum_subtype (Icc 1 N) (fun _ => Iff.rfl) (fun j => (if i.1 ∣ j then (1 : ℝ) else 0) *
-      (if j ∣ k.1 then (μ (k.1 / j) : ℝ) else 0))
+    (Finset.sum_subtype (Icc 1 N) (fun _ => Iff.rfl) (fun j => (if i.1 ∣ j then (1 : ℝ) else 0) *
+      (if j ∣ k.1 then (μ (k.1 / j) : ℝ) else 0))).symm
   rw [hsub]
   have hterm : ∀ j ∈ Icc 1 N, (if i.1 ∣ j then (1 : ℝ) else 0) *
       (if j ∣ k.1 then (μ (k.1 / j) : ℝ) else 0) =
@@ -111,8 +111,7 @@ theorem divisibilityMatrix_mul_moebiusMatrix (N : ℕ) :
     have hmu : ∀ t ∈ (k.1 / i.1).divisors, (μ (k.1 / (i.1 * t)) : ℝ) = (μ (k.1 / i.1 / t) : ℝ) :=
       fun t _ => by rw [Nat.div_div_eq_div_mul]
     rw [sum_congr rfl hmu]
-    have hs := CompletedShell.sum_divisors_moebius_div (k.1 / i.1)
-    simp only [Nat.cast_id] at hs
+    have hs := RenormalizedArithmeticPotentialTheory.CompletedShell.sum_divisors_moebius_div (k.1 / i.1)
     have hcast : ∑ t ∈ (k.1 / i.1).divisors, (μ (k.1 / i.1 / t) : ℝ) =
         ∑ t ∈ (k.1 / i.1).divisors, ((μ (k.1 / i.1 / t) : ℤ) : ℝ) := rfl
     rw [hcast, hs]
@@ -131,15 +130,17 @@ theorem divisibilityMatrix_mul_moebiusMatrix (N : ℕ) :
   · have hempty : k.1.divisors.filter (i.1 ∣ ·) = ∅ := by
       ext j
       simp only [mem_filter, Nat.mem_divisors, Finset.notMem_empty, iff_false, not_and]
-      intro hjk _ hij
-      exact hik (hij.trans hjk)
-    rw [hempty, sum_empty, if_neg]
-    rintro rfl
-    exact hik dvd_rfl
+      intro hjk hij
+      exact hik (hij.trans hjk.1)
+    rw [hempty, sum_empty]
+    split_ifs with hik'
+    · subst hik'
+      exact absurd dvd_rfl hik
+    · rfl
 
 theorem moebiusMatrix_mul_divisibilityMatrix (N : ℕ) :
     moebiusMatrix N * divisibilityMatrix N = 1 :=
-  Matrix.mul_eq_one_comm.mp (divisibilityMatrix_mul_moebiusMatrix N)
+  mul_eq_one_comm.mp (divisibilityMatrix_mul_moebiusMatrix N)
 
 /-- The divisibility form is unipotent: its determinant is `1`. -/
 theorem det_divisibilityMatrix (N : ℕ) : (divisibilityMatrix N).det = 1 := by
@@ -184,9 +185,9 @@ theorem det_redhefferMatrix (N : ℕ) (hN : 1 ≤ N) :
           rw [moebiusMatrix_mul_divisibilityMatrix, one_mulVec]
       _ = M *ᵥ (fun _ => 1) := by rw [← mulVec_mulVec, h1]
   rw [hc]
-  simp only [mulVec, dotProduct, mul_one, M, moebiusMatrix, o, poleVertex, one_dvd, if_true,
+  simp only [mulVec, dotProduct, mul_one, M, moebiusMatrix, poleVertex, one_dvd, if_true,
     Nat.div_one]
-  exact Finset.sum_subtype (Icc 1 N) (fun _ => Iff.rfl) (fun n => (μ n : ℝ))
+  exact (Finset.sum_subtype (Icc 1 N) (fun _ => Iff.rfl) (fun n => (μ n : ℝ))).symm
 
 /-- The gluing determinant is the Euler characteristic of the nerve of the star cover. -/
 theorem det_redhefferMatrix_eq_nerveEulerChar (N : ℕ) (hN : 1 ≤ N) :

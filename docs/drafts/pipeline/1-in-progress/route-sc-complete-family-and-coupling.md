@@ -18,7 +18,7 @@ Heat: certified upper-time calibration; subcritical heat count; uniform heat cou
 
 ## Verified boundary
 
-`exists_ratCorr_gram_limit_at_critical_multiple` realizes each finite rational Gram using the smooth Steklov profile at `K·loglog N·(logloglog N)²`. Its `K` depends on that family. It does not provide a universal fixed multiple or identify the normalized complete-matrix compression.
+`exists_ratCorr_completeWeil_gram_limit` realizes each finite rational Gram as a normalized complete-matrix compression using the smooth unit Steklov profile at `2K·loglog N·(logloglog N)²`, with the positive atom mass restored. Its `K` depends on that family; it does not provide a universal fixed multiple.
 
 `riemannHypothesis_iff_unitBump_hodgeIndex_rpow_log` gives the smooth complete-family receiver at `2(log N)^α`, every `α>0`. Neither result proves positivity.
 
@@ -30,9 +30,10 @@ Its mixed Weil pairing is exactly `G⟨A_N(c)v_i,v_j⟩`. Thus the existing rati
 Gram limit at dilation `N/(K·dcScale N)` gives a literal complete-matrix
 compression limit at overlap `2K·dcScale N`.
 
-Lean candidate: `TransMetzlerWeilPositivity/ReceiverRate/ABoundedOverlapRateSeesASemilocalWindow.lean`,
+Lean: `TransMetzlerWeilPositivity/ReceiverRate/ABoundedOverlapRateSeesASemilocalWindow.lean`,
 `exists_ratCorr_completeWeil_gram_limit`.
-Direct compilation and axiom audit pending. Exact preservation of the boost
+Direct compilation passed; only `propext`, `Classical.choice`, and `Quot.sound`.
+Exact preservation of the boost
 hyperplane is not yet supplied by this Gram limit.
 
 The global hyperplane implication can instead pass through inertia: positivity
@@ -43,6 +44,8 @@ packet approximation to preserve the pole moment. Lean inputs:
 `hermQuad_map_ofReal`, `hermNegIndex_le_negIndexOn_ker_add_one`,
 `eventually_le_hermNegIndex`, `negIndex_ratCorr`, `negIndex_zetaKernel_le_one_iff`.
 The resulting receiver quantifies over every fixed critical multiple.
+Its formalization in `RenormalizedIntersectionTheory/TheHodgeIndexAtCriticalOverlap.lean`
+is awaiting direct verification.
 
 ## Heat calibration
 

@@ -494,8 +494,10 @@ theorem norm_finiteThetaAmplitude_cusp_remainder_gaussian_le (N : ℕ) {z : ℂ}
             C_maj * Real.exp (-x) := by
           have hgauss := _root_.RHTower.exp_natSucc_mul_abs_thetaCuspPolynomialAtom_le
             P₃ q hx0 (by omega : 0 < m)
+          have hlhs_nn : 0 ≤ Real.exp (((q + 1 : ℕ) : ℝ) * x) *
+              |_root_.RHTower.thetaCuspPolynomialAtom P₃ m x| := by positivity
           have hCmaj_nn : 0 ≤ C_maj :=
-            nonneg_of_mul_nonneg_left ((by positivity).trans hgauss) (Real.exp_pos _)
+            nonneg_of_mul_nonneg_left (hlhs_nn.trans hgauss) (Real.exp_pos _)
           have hexp_le1 : Real.exp (-(Real.pi / 2) * (m : ℝ) ^ (2 : ℕ)) ≤ 1 :=
             Real.exp_le_one_iff.mpr (by nlinarith [Real.pi_pos, sq_nonneg (m : ℝ)])
           have hstep : Real.exp (((q + 1 : ℕ) : ℝ) * x) *
@@ -1051,7 +1053,7 @@ theorem prefixGlobalStripZeroBound_upper :
       exact add_le_add_left
         (Real.log_le_log
           (add_pos_of_nonneg_of_pos (add_nonneg (norm_nonneg _) zero_le_one) zero_lt_one)
-          (add_le_add_right hre_le 1)) 1
+          (add_le_add hre_le le_rfl)) 1
     calc ‖_root_.RHTower.finiteThetaAmplitude N z‖
         ≤ ‖RiemannGaussian.riemannXi (z.re : ℂ)‖ := norm_finiteThetaAmplitude_le_riemannXi_re N z
       _ ≤ Real.exp (A_xi * RiemannGaussian.xiLogLinearScale (‖(z.re : ℂ)‖ + 1)) :=
@@ -1652,9 +1654,7 @@ theorem exists_xi_vertical_lower_bound :
           exact mul_le_mul_of_nonneg_left hG_ge hpi_rpow_pos.le
   refine ⟨hright, ?_⟩
   have hsym : 1 - ((-1 / 2 : ℂ) + (y : ℂ) * I) = (starRingEnd ℂ) s := by
-    have hs_eq : s = ((3 / 2 : ℝ) : ℂ) + (y : ℂ) * I := by dsimp [s]; norm_num
-    rw [hs_eq]
-    apply Complex.ext <;> simp <;> norm_num
+    apply Complex.ext <;> simp [s, map_ofNat] <;> norm_num
   have hnorm_eq : ‖_root_.RHTower.xi ((-1 / 2 : ℂ) + (y : ℂ) * I)‖ = ‖_root_.RHTower.xi s‖ := by
     rw [← _root_.RHTower.xi_one_sub, hsym, _root_.RHTower.xi_conj, norm_conj]
   rwa [hnorm_eq]
@@ -2024,8 +2024,8 @@ theorem prefixGlobalStripZeroBound_lower :
             _ = (5026 / 16875) * Real.exp (-Real.pi) := by ring
         exact hc_low.trans ((xi_re_ge_lowWindow
           (by rw [abs_le]; exact ⟨by linarith [hrect_mem.1.1], by linarith [hrect_mem.1.2]⟩)
-          (by change |(_root_.RHTower.rectangleBoundaryPath _ _ t).im| ≤ 3;
-              rw [h3, hz₁_im, hδ₀_val]; norm_num)).trans (Complex.re_le_norm _))
+          (by rw [show w.im = (thetaWindowLowerLeft 0).im from h3, hz₁_im, hδ₀_val];
+              norm_num)).trans (Complex.re_le_norm _))
       · rw [← hw_eq, h4, hz₂_im]
         exact hhor w.re (by linarith [hrect_mem.1.1]) (by linarith [hrect_mem.1.2])
     have hrouche : ∀ t : ℝ,
@@ -2128,38 +2128,42 @@ theorem prefixGlobalStripZeroBound_lower :
             (Real.log_nonneg (by exact_mod_cast (show 1 ≤ N + 2 by omega))) (by linarith)
       _ ≤ (_root_.RHTower.xiZeroCount (T_star - 1) : ℝ) := hrvm_low
       _ ≤ (prefixGlobalStripZeroBound N : ℝ) := hzeroCount_le
-  -- Combine `N ≥ N_min` with `1 ≤ prefixGlobalStripZeroBound N` for `N < N_min`.
-  let M_low : ℝ := ((N_min + 1 : ℕ) : ℝ) ^ 2 * Real.log ((N_min + 2 : ℕ) : ℝ) + 1
+  -- Abstract `N_min` so `omega` and `positivity` never unfold `Nat.ceil H_thresh`.
+  generalize hN_min_eq : N_min = K_min at hlarge
+  let M_low : ℝ := ((K_min + 1 : ℕ) : ℝ) ^ 2 * Real.log ((K_min + 2 : ℕ) : ℝ) + 1
   have hM_low_pos : 1 ≤ M_low := by
     dsimp only [M_low]
-    have h1 : 0 ≤ ((N_min + 1 : ℕ) : ℝ) ^ 2 * Real.log ((N_min + 2 : ℕ) : ℝ) :=
-      mul_nonneg (by positivity) (Real.log_nonneg (by exact_mod_cast (show 1 ≤ N_min + 2 by omega)))
+    have h1 : 0 ≤ ((K_min + 1 : ℕ) : ℝ) ^ 2 * Real.log ((K_min + 2 : ℕ) : ℝ) :=
+      mul_nonneg (sq_nonneg _)
+        (Real.log_nonneg (by exact_mod_cast (show 1 ≤ K_min + 2 by omega)))
     linarith
   let c₀ : ℝ := min (1 / (8 * Real.pi)) (1 / M_low)
-  refine ⟨c₀, lt_min (by positivity) (by positivity), ?_⟩
+  refine ⟨c₀, lt_min (by positivity) (one_div_pos.mpr (by linarith)), ?_⟩
   intro N
-  rcases le_or_gt N_min N with hge | hlt
+  rcases le_or_gt K_min N with hge | hlt
   · calc c₀ * ((N + 1 : ℕ) : ℝ) ^ 2 * Real.log ((N + 2 : ℕ) : ℝ)
         ≤ (1 / (8 * Real.pi)) * ((N + 1 : ℕ) : ℝ) ^ 2 * Real.log ((N + 2 : ℕ) : ℝ) :=
           mul_le_mul_of_nonneg_right
-            (mul_le_mul_of_nonneg_right (min_le_left _ _) (by positivity))
+            (mul_le_mul_of_nonneg_right (min_le_left _ _) (sq_nonneg _))
             (Real.log_nonneg (by exact_mod_cast (show 1 ≤ N + 2 by omega)))
       _ ≤ (prefixGlobalStripZeroBound N : ℝ) := hlarge N hge
   · have hprod_le : ((N + 1 : ℕ) : ℝ) ^ 2 * Real.log ((N + 2 : ℕ) : ℝ) ≤ M_low := by
-      have hsq : ((N + 1 : ℕ) : ℝ) ^ 2 ≤ ((N_min + 1 : ℕ) : ℝ) ^ 2 :=
-        pow_le_pow_left₀ (by positivity) (by exact_mod_cast (show N + 1 ≤ N_min + 1 by omega)) 2
-      have hlog : Real.log ((N + 2 : ℕ) : ℝ) ≤ Real.log ((N_min + 2 : ℕ) : ℝ) :=
+      have hsq : ((N + 1 : ℕ) : ℝ) ^ 2 ≤ ((K_min + 1 : ℕ) : ℝ) ^ 2 :=
+        pow_le_pow_left₀ (Nat.cast_nonneg _)
+          (by exact_mod_cast (show N + 1 ≤ K_min + 1 by omega)) 2
+      have hlog : Real.log ((N + 2 : ℕ) : ℝ) ≤ Real.log ((K_min + 2 : ℕ) : ℝ) :=
         Real.log_le_log (by exact_mod_cast (show 0 < N + 2 by omega))
-          (by exact_mod_cast (show N + 2 ≤ N_min + 2 by omega))
+          (by exact_mod_cast (show N + 2 ≤ K_min + 2 by omega))
       have hm := mul_le_mul hsq hlog
-        (Real.log_nonneg (by exact_mod_cast (show 1 ≤ N + 2 by omega))) (by positivity)
+        (Real.log_nonneg (by exact_mod_cast (show 1 ≤ N + 2 by omega))) (sq_nonneg _)
       dsimp only [M_low]; linarith
     calc c₀ * ((N + 1 : ℕ) : ℝ) ^ 2 * Real.log ((N + 2 : ℕ) : ℝ)
         ≤ (1 / M_low) * (((N + 1 : ℕ) : ℝ) ^ 2 * Real.log ((N + 2 : ℕ) : ℝ)) := by
           rw [mul_assoc]
           exact mul_le_mul_of_nonneg_right (min_le_right _ _)
-            (mul_nonneg (by positivity) (Real.log_nonneg (by exact_mod_cast (show 1 ≤ N + 2 by omega))))
-      _ ≤ (1 / M_low) * M_low := mul_le_mul_of_nonneg_left hprod_le (by positivity)
+            (mul_nonneg (sq_nonneg _)
+              (Real.log_nonneg (by exact_mod_cast (show 1 ≤ N + 2 by omega))))
+      _ ≤ (1 / M_low) * M_low := mul_le_mul_of_nonneg_left hprod_le (one_div_nonneg.mpr (by linarith))
       _ = 1 := one_div_mul_cancel (by linarith)
       _ ≤ (prefixGlobalStripZeroBound N : ℝ) := by
           exact_mod_cast one_le_prefixGlobalStripZeroBound N

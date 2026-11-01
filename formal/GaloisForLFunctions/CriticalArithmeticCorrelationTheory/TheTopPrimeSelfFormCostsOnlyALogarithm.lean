@@ -534,46 +534,66 @@ theorem topPrimeRow_le {c : ℝ} (hc : 1 ≤ c) {N : ℕ} (hLN : linearDefectCut
   have hC4 : 0 ≤ Real.log 4 + 4 := by have := Real.log_nonneg (show (1 : ℝ) ≤ 4 by norm_num); linarith
   set B := Real.log (Real.exp 1 * A) + (Real.log 4 + 4)
   have hB : 0 ≤ B := by have := Real.log_nonneg hA1; dsimp only [B]; linarith
-  have hc1 : 1 ≤ c * (1 + Real.log c) := by nlinarith
-  have hlc_le : Real.log c ≤ c * (1 + Real.log c) := by
-    have := Real.log_le_sub_one_of_pos hc0; nlinarith
-  have hcc : c ≤ c * (1 + Real.log c) := by nlinarith
-  have hclc : c * Real.log c ≤ c * (1 + Real.log c) := by nlinarith
+  have hE : 0 ≤ Real.exp 1 := (Real.exp_pos 1).le
+  have hlc1 : Real.log c ≤ c - 1 := Real.log_le_sub_one_of_pos hc0
+  set Y := c * (1 + Real.log c)
+  have hY1 : 1 ≤ Y := by
+    have := mul_le_mul hc (show (1 : ℝ) ≤ 1 + Real.log c by linarith) zero_le_one hc0.le
+    simpa only [one_mul, Y] using this
+  have hcY : c ≤ Y := by
+    have := mul_le_mul_of_nonneg_left (show (1 : ℝ) ≤ 1 + Real.log c by linarith) hc0.le
+    simpa only [mul_one, Y] using this
+  have hlcY : Real.log c ≤ Y := by linarith
+  have hclcY : c * Real.log c ≤ Y := by dsimp only [Y]; linarith [mul_nonneg hc0.le hlc]
   -- the two half-rows
-  have hT1 : Real.exp (w / 2) * (2 * (Real.log 4 + 4) * Real.exp w * ((Real.exp w - 1) * N) +
-      (Real.log X + (Real.log 4 + 4))) ≤ Real.exp (1 / 2) *
-        (2 * (Real.log 4 + 4) * Real.exp 1 ^ 2 * c + (B + Real.log c)) := by
-    refine mul_le_mul he2 ?_ (by positivity) (Real.exp_pos _).le
-    have h1 : 2 * (Real.log 4 + 4) * Real.exp w * ((Real.exp w - 1) * N) ≤
-        2 * (Real.log 4 + 4) * Real.exp 1 * (Real.exp 1 * c) :=
-      mul_le_mul (mul_le_mul_of_nonneg_left he1 (by positivity)) hD (by positivity) (by positivity)
-    nlinarith
-  have hT2 : Real.exp (w / 2) * (2 * ((Real.exp w - 1) * N) * (Real.log X + (Real.log 4 + 4)) +
-      (Real.log 4 + 4) * X) ≤ Real.exp (1 / 2) *
-        (2 * Real.exp 1 * c * (B + Real.log c) + (Real.log 4 + 4) * (Real.exp 1 * A * c)) := by
-    refine mul_le_mul he2 ?_ (by positivity) (Real.exp_pos _).le
+  have hED : Real.exp w * ((Real.exp w - 1) * N) ≤ Real.exp 1 ^ 2 * c :=
+    (mul_le_mul he1 hD (by positivity) hE).trans_eq (by ring)
+  have hT1 : 2 * (Real.log 4 + 4) * Real.exp w * ((Real.exp w - 1) * N) +
+      (Real.log X + (Real.log 4 + 4)) ≤ 2 * (Real.log 4 + 4) * Real.exp 1 ^ 2 * c + (B + Real.log c) := by
+    have h1 := mul_le_mul_of_nonneg_left hED (show 0 ≤ 2 * (Real.log 4 + 4) by positivity)
+    dsimp only [B]
+    linarith
+  have hT2 : 2 * ((Real.exp w - 1) * N) * (Real.log X + (Real.log 4 + 4)) + (Real.log 4 + 4) * X ≤
+      2 * Real.exp 1 * c * (B + Real.log c) + (Real.log 4 + 4) * (Real.exp 1 * A * c) := by
     have h1 : 2 * ((Real.exp w - 1) * N) * (Real.log X + (Real.log 4 + 4)) ≤
         2 * (Real.exp 1 * c) * (B + Real.log c) :=
       mul_le_mul (by linarith) (by dsimp only [B]; linarith) (by positivity) (by positivity)
     have h2 := mul_le_mul_of_nonneg_left hXup hC4
-    nlinarith
-  have hsum : topPrimeRow w M N ≤ Real.exp (1 / 2) * (2 * (Real.log 4 + 4) * Real.exp 1 ^ 2 * c +
-      (B + Real.log c) + (2 * Real.exp 1 * c * (B + Real.log c) +
+    linarith
+  have hrow : topPrimeRow w M N ≤ Real.exp (1 / 2) * ((2 * (Real.log 4 + 4) * Real.exp 1 ^ 2 * c +
+      (B + Real.log c)) + (2 * Real.exp 1 * c * (B + Real.log c) +
         (Real.log 4 + 4) * (Real.exp 1 * A * c))) := by
+    have he0 : 0 ≤ Real.exp (w / 2) := (Real.exp_pos _).le
+    have hP1 : 0 ≤ 2 * (Real.log 4 + 4) * Real.exp 1 ^ 2 * c + (B + Real.log c) := by positivity
+    have hP2 : 0 ≤ 2 * Real.exp 1 * c * (B + Real.log c) + (Real.log 4 + 4) * (Real.exp 1 * A * c) := by
+      dsimp only [A]; positivity
+    have k1 := mul_le_mul he2 hT1 (by
+      have := mul_nonneg (mul_nonneg (by positivity : (0 : ℝ) ≤ 2 * (Real.log 4 + 4)) (Real.exp_pos w).le)
+        (mul_nonneg hew hN0.le)
+      linarith) (Real.exp_pos _).le
+    have k2 := mul_le_mul he2 hT2 (by
+      have := mul_nonneg (mul_nonneg (by norm_num : (0 : ℝ) ≤ 2) (mul_nonneg hew hN0.le))
+        (show 0 ≤ Real.log X + (Real.log 4 + 4) by linarith)
+      have := mul_nonneg hC4 (zero_le_one.trans hX1)
+      linarith) (Real.exp_pos _).le
     unfold topPrimeRow
-    nlinarith [hT1, hT2]
-  refine hsum.trans ?_
-  unfold topPrimeConstant
-  have he0 : 0 ≤ Real.exp (1 / 2) := (Real.exp_pos _).le
-  have hE : 0 ≤ Real.exp 1 := (Real.exp_pos 1).le
-  refine mul_le_mul_of_nonneg_left ?_ he0 |>.trans_eq (by dsimp only [B, A]; ring)
-  have k1 := mul_le_mul_of_nonneg_left hcc (show 0 ≤ 2 * (Real.log 4 + 4) * Real.exp 1 ^ 2 by positivity)
-  have k2 := mul_le_mul_of_nonneg_left hc1 hB
-  have k3 := mul_le_mul_of_nonneg_left hcc (show 0 ≤ 2 * Real.exp 1 * B by positivity)
-  have k4 := mul_le_mul_of_nonneg_left hclc (show 0 ≤ 2 * Real.exp 1 by positivity)
-  have k5 := mul_le_mul_of_nonneg_left hcc
-    (show 0 ≤ (Real.log 4 + 4) * Real.exp 1 * A by dsimp only [A]; positivity)
-  have k6 : 0 ≤ c * (1 + Real.log c) := by positivity
-  nlinarith [k1, k2, k3, k4, k5, k6, hlc_le, hB]
+    linarith
+  have hK : (2 * (Real.log 4 + 4) * Real.exp 1 ^ 2 * c + (B + Real.log c)) +
+      (2 * Real.exp 1 * c * (B + Real.log c) + (Real.log 4 + 4) * (Real.exp 1 * A * c)) ≤
+      (2 * (Real.log 4 + 4) * Real.exp 1 ^ 2 + 2 * B + 2 * Real.exp 1 * (B + 1) +
+        (Real.log 4 + 4) * Real.exp 1 * A + 1) * Y := by
+    have k1 := mul_le_mul_of_nonneg_left hcY (show 0 ≤ 2 * (Real.log 4 + 4) * Real.exp 1 ^ 2 by positivity)
+    have k2 := mul_le_mul_of_nonneg_left hY1 hB
+    have k3 := mul_le_mul_of_nonneg_left hcY (show 0 ≤ 2 * Real.exp 1 * B by positivity)
+    have k4 := mul_le_mul_of_nonneg_left hclcY (show 0 ≤ 2 * Real.exp 1 by positivity)
+    have k5 := mul_le_mul_of_nonneg_left hcY
+      (show 0 ≤ (Real.log 4 + 4) * Real.exp 1 * A by dsimp only [A]; positivity)
+    have k6 := mul_le_mul_of_nonneg_left hY1 hB
+    nlinarith [k1, k2, k3, k4, k5, k6, hlcY]
+  calc topPrimeRow w M N ≤ _ := hrow
+    _ ≤ Real.exp (1 / 2) * ((2 * (Real.log 4 + 4) * Real.exp 1 ^ 2 + 2 * B + 2 * Real.exp 1 * (B + 1) +
+        (Real.log 4 + 4) * Real.exp 1 * A + 1) * Y) := mul_le_mul_of_nonneg_left hK (Real.exp_pos _).le
+    _ = topPrimeConstant * c * (1 + Real.log c) := by
+        unfold topPrimeConstant; dsimp only [B, A, Y]; ring
 
 end GaloisForLFunctions.CriticalArithmeticCorrelationTheory

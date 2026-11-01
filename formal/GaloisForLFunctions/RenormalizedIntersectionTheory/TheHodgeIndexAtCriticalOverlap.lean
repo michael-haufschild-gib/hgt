@@ -17,6 +17,8 @@ The multiple can depend on the finite family. The equivalence therefore
 quantifies over every fixed multiple; it asserts no universal multiple.
 -/
 
+set_option autoImplicit false
+
 noncomputable section
 open MeasureTheory Filter Topology Finset Matrix
 open scoped RealInnerProductSpace ContDiff
@@ -51,9 +53,8 @@ private theorem compression_index_le_one {ι J : Type*} [Fintype ι] [Fintype J]
       map_add' := fun c d => by simp only [Pi.add_apply, add_mul, sum_add_distrib]
       map_smul' := fun a c => by
         simp only [Pi.smul_apply, smul_eq_mul, mul_assoc, ← mul_sum, RingHom.id_apply] }
-  have hb := negIndex_le_card_of_nonneg_on_ker
-    (fun i j => ((M * ⟪A (v i), v j⟫ : ℝ) : ℂ)) (fun _ : Fin 1 => ℓ) ?_
-  · simpa only [Fintype.card_fin] using hb
+  change hermNegIndex (fun i j => ((M * ⟪A (v i), v j⟫ : ℝ) : ℂ)) ≤ Fintype.card (Fin 1)
+  apply negIndex_le_card_of_nonneg_on_ker _ (fun _ : Fin 1 => ℓ)
   intro c hc
   have hz := hc 0
   have hr : ⟪∑ i, (c i).re • v i, p⟫ = 0 := by
@@ -87,9 +88,10 @@ theorem riemannHypothesis_iff_steklovUnitProfile_hodgeIndex_critical :
       contDiff_steklovUnitProfile.of_le (natCast_le_infty 2)
     have hfull := (forall_completeWeilEnergy_nonneg_iff hφ steklovUnitProfile_eq_zero
       integral_steklovUnitProfile_sq_pos (by rw [integral_steklovUnitProfile]; norm_num)
-      hc hN).mpr (fun y => weilQuad_atomicTest_nonneg_of_RH hRH
-        (contDiff_recentredProfile hφ) (vanishesOff_recentredProfile steklovUnitProfile_eq_zero)
-        (div_pos two_pos hw) N y)
+      hc hN).mpr (fun y => by
+        obtain ⟨h2, hcomp⟩ := atomicTest_dilate_mem (contDiff_recentredProfile hφ)
+          (vanishesOff_recentredProfile steklovUnitProfile_eq_zero) (div_pos two_pos hw) N y
+        exact RHTower.WeilSpectral.riemannHypothesis_iff_real_weilPositive.mp hRH _ h2 hcomp)
     exact fun x _ => hfull x
   · intro H
     have hκ : negIndex ArithmeticPositiveDuality.ratCorr ≤ 1 := by
