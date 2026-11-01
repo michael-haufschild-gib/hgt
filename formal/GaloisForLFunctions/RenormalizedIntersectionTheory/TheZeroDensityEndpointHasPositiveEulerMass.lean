@@ -44,6 +44,38 @@ theorem primeSetHarmonicDensity_pos_of_logMass_sublinear (P : Set ℕ) {C α : �
   exact (half_pos hc).trans_le
     (ge_of_tendsto (primeSetFlip_harmonicCorrelation_tendsto P) hbound)
 
+/-- Zero Euler mass forces the prime logarithmic mass beyond every sublinear power bound
+at arbitrarily large horizons. -/
+theorem frequently_logMass_gt_sublinear_of_zero_mass (P : Set ℕ)
+    (hzero : primeSetHarmonicDensity P = 0) {α : ℝ} (hα : 0 ≤ α) (hα1 : α < 1)
+    (C : ℝ) :
+    ∃ᶠ N : ℕ in atTop, C * (1 + Real.log N) ^ α < |primeSetLogMass P N| := by
+  by_contra hnot
+  have hevent : ∀ᶠ N : ℕ in atTop,
+      |primeSetLogMass P N| ≤ C * (1 + Real.log N) ^ α := by
+    simpa only [not_lt] using (not_frequently.mp hnot)
+  obtain ⟨N₀, hN₀⟩ := eventually_atTop.mp hevent
+  let B := |C| + ∑ n ∈ range N₀, |primeSetLogMass P n|
+  have hB : 0 ≤ B := add_nonneg (abs_nonneg C) (sum_nonneg fun n _ => abs_nonneg _)
+  have hCB : C ≤ B := by
+    have hsum : 0 ≤ ∑ n ∈ range N₀, |primeSetLogMass P n| :=
+      sum_nonneg fun n _ => abs_nonneg _
+    exact (le_abs_self C).trans (le_add_of_nonneg_right hsum)
+  have hglobal : ∀ n, 1 ≤ n → |primeSetLogMass P n| ≤ B * (1 + Real.log n) ^ α := by
+    intro n _
+    have hpow : 1 ≤ (1 + Real.log n) ^ α :=
+      Real.one_le_rpow (by linarith only [Real.log_natCast_nonneg n]) hα
+    by_cases hn : N₀ ≤ n
+    · exact (hN₀ n hn).trans (mul_le_mul_of_nonneg_right hCB (by linarith only [hpow]))
+    · have hsum := single_le_sum (fun m (_hm : m ∈ range N₀) => abs_nonneg (primeSetLogMass P m))
+        (mem_range.mpr (lt_of_not_ge hn))
+      have hle : |primeSetLogMass P n| ≤ B :=
+        hsum.trans (le_add_of_nonneg_left (abs_nonneg C))
+      exact hle.trans (le_mul_of_one_le_right hB hpow)
+  have hpos := primeSetHarmonicDensity_pos_of_logMass_sublinear P hα hα1 hglobal
+  rw [hzero] at hpos
+  exact (lt_irrefl 0) hpos
+
 /-- At positive Euler mass, a finite conductor packet exactly detects separation. -/
 theorem hodgeSeparates_primeSetFlip_iff_packet_of_positive_mass (P : Set ℕ)
     (hc : 0 < primeSetHarmonicDensity P) :
@@ -85,4 +117,5 @@ theorem hodgeSeparates_primeSetFlip_iff_packet_of_nonneg_logDensity
 end GaloisForLFunctions.RenormalizedIntersectionTheory
 
 #print axioms GaloisForLFunctions.RenormalizedIntersectionTheory.primeSetHarmonicDensity_pos_of_logMass_sublinear
+#print axioms GaloisForLFunctions.RenormalizedIntersectionTheory.frequently_logMass_gt_sublinear_of_zero_mass
 #print axioms GaloisForLFunctions.RenormalizedIntersectionTheory.hodgeSeparates_primeSetFlip_iff_packet_of_nonneg_logDensity

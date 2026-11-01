@@ -19,11 +19,17 @@ Consequently the maximal gap fails exactly when a finite packet exceeds
 `1/s` for some `0<s<2 log 2`. This avoids a singular extension of the
 positive-κ fixed-scale argument, whose cutoff uses `1/κ`.
 
-## Scope
+## Boundary exposed by the proof
 
-The power-error bound is part of the classified regime, not a newly
-postulated analytic input. Mere relative logarithmic density zero, with
-no quantitative error bound, is not covered by this argument.
+The power-error bound is part of the classified regime. At `κ=0` it
+excludes zero Euler mass entirely. More precisely, `δ(P)=0` forces,
+for every `0≤α<1` and every `C`, arbitrarily large `N` with
+`Σ_(p∈P,p≤N)log p/p > C(1+log N)^α`.
+
+Thus the genuinely zero-Euler-mass endpoint of Γ12 remains outside
+every power-error class. Extending the positive-κ proof by setting
+`κ=0` cannot resolve it. The surviving target allows logarithmic mass
+`o(log N)` with no power saving.
 
 ## Lean dependencies
 
