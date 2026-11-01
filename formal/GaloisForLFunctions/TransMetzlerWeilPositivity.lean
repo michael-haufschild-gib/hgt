@@ -34,11 +34,8 @@ import GaloisForLFunctions.TransMetzlerWeilPositivity.ReceiverRate.TheLogarithmi
 import GaloisForLFunctions.TransMetzlerWeilPositivity.ReceiverRate.TheLogarithmicProfileRetainsThePrimeDefect
 import GaloisForLFunctions.TransMetzlerWeilPositivity.ReceiverRate.TheLogarithmicProfileDecouplesConductorBands
 import GaloisForLFunctions.TransMetzlerWeilPositivity.ReceiverRate.TheLogarithmicProfileConfinesItsLowEnergyVectors
-
 import GaloisForLFunctions.TransMetzlerWeilPositivity.ReceiverRate.TheLogarithmicProfileHasCoerciveConductorBands
-
 import GaloisForLFunctions.TransMetzlerWeilPositivity.ReceiverRate.TheLogarithmicConductorSplitFitsTheHorizon
-
 import GaloisForLFunctions.TransMetzlerWeilPositivity.ReceiverRate.TheLogarithmicProfileIsPositiveBelowCriticalOverlap
 
 /-!
@@ -79,7 +76,10 @@ Umbrella for the theory of atomic Weil positivity across and beyond the Metzler 
   (`ZeroSideStratum`);
 * explicit Steklov infinite-convolution Denjoy–Carleman profile `steklovDCProfile` and RH
   equivalence at overlap ratio `(log log N) (log log log N)^β` (`β > 2`) strictly below all Gevrey
-  power schedules (`SuperGevreyCriticalGrowth`).
+  power schedules (`SuperGevreyCriticalGrowth`);
+* a nonnegative logarithmic Denjoy–Carleman profile with no real Fourier zeros, and unconditional
+  complete Weil positive definiteness uniformly through a fixed positive multiple of the exact
+  sinc critical overlap (`TheLogarithmicProfileIsPositiveBelowCriticalOverlap`).
 
 See `TransMetzlerWeilPositivity/README.md`.
 -/

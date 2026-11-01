@@ -42,7 +42,8 @@ theorem unitary_iff_forall_window_kunneth {ι : Type*} [Fintype ι] (D : CurveDa
 inequality. -/
 theorem goldenDatum_not_forall_window_kunneth :
     ¬ ∀ W : Finset ℕ,
-      RiemannInequality (goldenDatum.windowSurface W) 0 0 (kunnethH0 (goldenDatum.windowSurface W)) :=
+      RiemannInequality (goldenDatum.windowSurface W) 0 0
+        (kunnethH0 (goldenDatum.windowSurface W)) :=
   fun h => goldenDatum_not_unitary ((goldenDatum.windowSurface_hodgeIndex_iff_unitary).mp
     fun W => (riemannInequality_kunnethH0_iff _).mp (h W))
 

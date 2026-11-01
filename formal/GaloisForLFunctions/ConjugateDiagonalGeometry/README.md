@@ -1,6 +1,6 @@
 # Conjugate-Diagonal Geometry (CDG)
 
-Namespace `GaloisForLFunctions.ConjugateDiagonalGeometry`; umbrella `ConjugateDiagonalGeometry.lean`; 63 modules. All results
+Namespace `GaloisForLFunctions.ConjugateDiagonalGeometry`; umbrella `ConjugateDiagonalGeometry.lean`; 81 modules. All results
 unconditional; every reading is evaluated on the actual zeta divisor with multiplicities, without simplicity, separation or
 zero-free hypotheses.
 
@@ -101,6 +101,9 @@ amplitudes and their first moments — with explicit error certificates. The com
 | Zero-avoiding pole-nodal dyadic equivalence with $\mathrm{RH}$ | `exists_poleNodal_ordinate_in_Icc`, `riemannHypothesis_iff_dyadic_heckeDefect_le_primePolynomial` | proved |
 | Zero-coordinate-free finite-theta pole-nodal dyadic 6-way equivalence with $\mathrm{RH}$ and anti-nodal sharpness | `riemannHypothesis_finiteTheta_poleNodal_dyadic_tfae`, `exists_antinodal_primePolynomial_exp_growth_of_riemannHypothesis` | proved |
 | Three-scale sieve-mollified dyadic collapse ($c<22/51$), almost-all $\frac65\frac{\log\log T}{\log T}$ corridor, and 4-way $o(\log U)$ TFAE | `exists_dyadicMean_corridor_and_polynomialTheta_le_log`, `eventually_volume_badLogLogCorridor_unitWindows_le`, `dyadicMean_corridor_and_polynomialTheta_littleO_log_tfae` | proved |
+| One-sided ($\Re z\ge\frac12$) mollified Green-Jensen source ceiling, superharmonic critical-line no-go, and pure abscissa quarter-gate ($c<\frac14$) | `no_superharmonic_weight_dominates_depthKernel`, `exists_shellDepthSum_add_mollifierCredit_le_abscissa_source_integral`, `exists_pure_abscissa_mollified_shellDepthSum_le_log_quarter` | proved |
+| Full half-gate ($c<\frac12$) dyadic collapse, sharp $(1+\varepsilon)\frac{\log\log T}{\log T}$ almost-all corridor, 4-way $o(\log U)$ TFAE, and exact Laplace zero-density TFAE up to $c_*\le\frac23$ | `exists_dyadicMean_corridor_and_polynomialTheta_le_log_up_to_half`, `eventually_volume_badSharpLogLogCorridor_unitWindows_le`, `dyadicMean_corridor_and_polynomialTheta_littleO_log_up_to_half_tfae`, `dyadicMean_log_bound_iff_nearLine_exp_density_tfae` | proved |
+| Stage-uniform $\gamma$-oscillation bounds, 5-way unit-window min/mean/sup/$C^2$-jet TFAE (dyadic $\Leftrightarrow\mathrm{RH}$ and fixed-$c$), dyadic unit-window $\sup$ collapse ($c<\frac12$), and local-vs-tail separation | `abs_deriv_finiteThetaSourceMomentReading_le`, `riemannHypothesis_unitWindow_min_mean_max_finiteTheta_tfae`, `polynomialTheta_unitWindow_min_mean_max_log_tfae`, `exists_dyadicMean_unitWindow_sup_polynomialTheta_le_log_up_to_half`, `unitWindow_singleWindow_local_vs_offWindow_separation` | proved |
 
 ## 6. Tools
 
@@ -122,13 +125,17 @@ amplitudes and their first moments — with explicit error certificates. The com
   `exists_uniform_finiteTheta_compact_current_error`, `tendsto_thetaTestStage_error`,
   `abs_finiteThetaProductSourceReading_sub_finitePair_le`, `exists_finiteTheta_pair_current_error`.
 - Collisions: `horizontalCollisionGaussian_error`, `exists_xiWindowGaussianPairSum_error`, `finiteThetaCollisionReading_error`.
-- Log-scale defect, finite-theta aperture schedules, and sieve-mollified shells: `exists_depthKernel_scale_transfer`,
-  `exists_norm_tr_twist_baseBump_le_pow`, `unitWindow_depthCharge_le_heckeDefect`, `normSq_tr_twist_heckeAvgBump_le_of_sep_strip`,
-  `exists_abs_re_archPart_heckeAvgBump_log_le`, `unitWindow_integral_normSq_tr_twist_heckeAvgBump_le`,
-  `exists_polynomialReading_sub_heckeDefect_le_log_div`, `eulerFactor_verticalZeros_depthKernel_ge`, `exists_shellDepthSum_le_mul_log`.
+- Log-scale defect, finite-theta aperture schedules, one-sided mollified Green readings, and $\gamma$-oscillation calculus:
+  `exists_depthKernel_scale_transfer`, `exists_norm_tr_twist_baseBump_le_pow`, `unitWindow_depthCharge_le_heckeDefect`,
+  `normSq_tr_twist_heckeAvgBump_le_of_sep_strip`, `exists_abs_re_archPart_heckeAvgBump_log_le`,
+  `unitWindow_integral_normSq_tr_twist_heckeAvgBump_le`, `exists_polynomialReading_sub_heckeDefect_le_log_div`,
+  `eulerFactor_verticalZeros_depthKernel_ge`, `depthKernel_eq_abscissa_integral`, `sum_depthKernel_eq_sinh_tail_integral`,
+  `halfPlane_green_identity_halfPlaneDepthWeight`, `halfPlane_archXi_log_norm_annihilated`,
+  `exists_selberg_arbitraryRate_nearLine_zeroDensity`, `exists_shellDepthSum_le_mul_log_up_to_half`,
+  `abs_deriv_deriv_finiteThetaSourceMomentReading_le`, `unitWindow_mean_sub_interior_min_le_sixth_sup_deriv2`.
 
 **To build**
-- Upgrade dyadic-mean $O(\log U)$ control ($0<c<22/51$) to pointwise-in-$T$ $O(1)$ control on $\operatorname{unitWindowDepthCharge}(T,c\log T)$, or prove $o(\log U)$ dyadic-mean decay (equivalent to $100\%$ critical-scale clustering), or establish a single additive constant across dyadic scales $L_k=2^k c_0\log T$ on `finiteThetaSourceMomentReading` (equivalent to $\mathrm{RH}$).
+- Upgrade dyadic-mean $O(\log U)$ control ($0<c<1/2$, including unit-window $\sup$) to pointwise-in-$T$ $O(1)$ control on $\operatorname{unitWindowDepthCharge}(T,c\log T)$, or prove $o(\log U)$ dyadic-mean decay (equivalent to $100\%$ critical-scale clustering), or extend $O(\log U)$ dyadic-mean collapse into $1/2\le c<2/3$ via log-free near-line exponential zero-density of slope $>1$, or establish a single additive constant across dyadic scales $L_k=2^k c_0\log T$ on `finiteThetaSourceMomentReading` (equivalent to $\mathrm{RH}$).
 - An arithmetic correspondence acting as conjugation on the divisor (Frobenius at infinity), linking $(\rho,\bar\rho)$ to $(\rho,1-\rho)$.
 - A structural bound $\Delta\le D$ uniform in depth and aperture.
 - Bounds on the collision charge (below two) from the finite theta reading.
@@ -136,7 +143,7 @@ amplitudes and their first moments — with explicit error certificates. The com
 
 ## 7. Open questions
 
-1. Can the dyadic-mean $O(\log U)$ bound on `polynomialThetaSourceMomentReading` at $c<22/51$ be upgraded to $o(\log U)$ (hence $100\%$ critical-scale clustering) or extended beyond the Barban–Vehov gate $22/51$?
+1. Can the dyadic-mean $O(\log U)$ bound on `polynomialThetaSourceMomentReading` (and its unit-window supremum) across $0<c<1/2$ be upgraded to $o(\log U)$ (hence $100\%$ critical-scale clustering) or extended into $1/2\le c<2/3$ via log-free near-line exponential zero-density of slope $2c_*$?
 2. What arithmetic structure realizes conjugation on the zero divisor, so that the collided form becomes a Weil form?
 3. Can the finite theta collision reading be bounded independently of the divisor, giving simplicity-type information?
 4. Can the zero detector be pushed below the zero spacing (radius $\ll1/\log T$) with polynomial resources?
@@ -160,6 +167,8 @@ amplitudes and their first moments — with explicit error certificates. The com
 | Fixed-$c$ uniform bound on $[T,T+1)$ implies $\mathrm{RH}$ | Holds for every fixed $c>0$ on $\mathrm{FiniteOffLine}\wedge\neg\mathrm{RH}$ via $C_c^\infty$ rapid decay; $\mathrm{RH}$ requires coupling dyadic scales $2^k c_0\log T$ at pole-nodal ordinates |
 | Direct two-sided Euler-product mollification bounds symmetric `depthKernel` | Every Euler factor $1-m^{-s}$ ($m\ge2$) vanishes on $\Re s=0$ with spacing $2\pi/\log m$ and `depthKernel` $>T^c-2$; `lineReflect` folding onto $\Re\rho>1/2$ is mandatory |
 | $\Pi_{F_L}$ can be dropped across all $\gamma\in[T,T+1]$ in the dyadic `RH` criterion | Even under $\mathrm{RH}$, anti-nodal ordinates in $[T,T+1]$ force $\|\Pi_{F_L}\|\ge c_T e^L/L^2$; existential unit-window selection of `finiteThetaSourceMomentReading` drops $\Pi_{F_L}$ cleanly |
+| Superharmonic half-plane weight tested purely on $\Re z=\frac12$ dominates `depthKernel` | Vertical mean satisfies $\int\Phi(x+iy)dy\le(x-\frac12)\int\partial_x\Phi(\frac12+iy)dy$; quadratic vanish and exponential growth of `depthKernel` force positive interior $\Delta\Phi$ |
+| Single-window unit-window mean/supremum equals local corridor charge | Minimum on $[T,T+1]$ bounds local `unitWindowDepthCharge` alone; mean and supremum add the nonlocal Lorentzian off-window zero tail, collapsing only asymptotically or in dyadic mean |
 
 ## 9. Context
 

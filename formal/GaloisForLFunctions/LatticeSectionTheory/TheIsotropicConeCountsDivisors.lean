@@ -55,7 +55,8 @@ theorem summable_coneCount {t : ℝ} (ht : 0 < t) :
       (Real.exp_lt_one_iff.mpr (by nlinarith [Real.pi_pos] : -(π * t) < 0))).mul_left
       (Real.exp (-(π * t)))).congr fun m => ?_
     rw [← Real.exp_nat_mul, ← Real.exp_add]; congr 1; ring
-  refine (hg.mul_of_nonneg hg (fun _ => (Real.exp_pos _).le) (fun _ => (Real.exp_pos _).le)).of_nonneg_of_le
+  refine (hg.mul_of_nonneg hg (fun _ => (Real.exp_pos _).le)
+    (fun _ => (Real.exp_pos _).le)).of_nonneg_of_le
     (fun _ => (Real.exp_pos _).le) fun i => ?_
   rw [← Real.exp_add, Real.exp_le_exp, coneWeight]
   have ha : (1 : ℝ) ≤ (i.1 : ℝ) + 1 := by linarith [(Nat.cast_nonneg i.1 : (0 : ℝ) ≤ i.1)]
@@ -92,7 +93,8 @@ theorem mellin_coneCount {σ : ℝ} (hσ : 1 < σ) :
   have hprod : Summable fun i : ℕ × ℕ => ((i.1 : ℝ) + 1) ^ (-σ) * ((i.2 : ℝ) + 1) ^ (-σ) :=
     hps.mul_of_nonneg hps (fun _ => Real.rpow_nonneg (by positivity) _)
       (fun _ => Real.rpow_nonneg (by positivity) _)
-  have hF : ∀ t ∈ Ioi (0 : ℝ), HasSum (fun i : ℕ × ℕ => (1 : ℂ) * (Real.exp (-coneWeight i * t) : ℂ))
+  have hF : ∀ t ∈ Ioi (0 : ℝ),
+      HasSum (fun i : ℕ × ℕ => (1 : ℂ) * (Real.exp (-coneWeight i * t) : ℂ))
       (coneCount t : ℂ) := by
     intro t ht
     refine (Complex.hasSum_ofReal.mpr (summable_coneCount ht).hasSum).congr_fun fun i => ?_
@@ -174,7 +176,8 @@ theorem tendsto_sq_mul_Λ (P : WeakFEPair ℂ) :
     simp only [Complex.ofReal_one, smul_eq_mul] at hres
     have h1 := hres.comp tendsto_ofReal_nhdsGT_one
     have h2 : Tendsto (fun σ : ℝ => (σ : ℂ) - 1) (𝓝[>] 1) (𝓝 0) := by
-      have hc : Continuous fun σ : ℝ => (σ : ℂ) - 1 := Complex.continuous_ofReal.sub continuous_const
+      have hc : Continuous fun σ : ℝ => (σ : ℂ) - 1 :=
+        Complex.continuous_ofReal.sub continuous_const
       have := hc.tendsto 1
       simp only [Complex.ofReal_one, sub_self] at this
       exact this.mono_left nhdsWithin_le_nhds

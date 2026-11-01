@@ -228,7 +228,8 @@ theorem exists_epsteinLambda_eq_zero_of_half_pos (hy0 : 0 < y)
   -- negativity near `1`
   have hcont1 : ContinuousAt (fun σ : ℝ => ((rectFEPair y hy0).Λ₀ (σ : ℂ)).re) 1 :=
     Complex.continuous_re.continuousAt.comp
-      (((rectFEPair y hy0).differentiable_Λ₀ _).continuousAt.comp Complex.continuous_ofReal.continuousAt)
+      (((rectFEPair y hy0).differentiable_Λ₀ _).continuousAt.comp
+        Complex.continuous_ofReal.continuousAt)
   obtain ⟨δ, hδ, hball⟩ := Metric.continuousAt_iff.mp hcont1 1 one_pos
   set C := |((rectFEPair y hy0).Λ₀ ((1 : ℝ) : ℂ)).re| + 1
   have hC : 0 < C := by positivity

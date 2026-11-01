@@ -56,7 +56,8 @@ theorem rectTheta_inv {y t : ℝ} (hy : 0 < y) (ht : 0 < t) :
     ⟨Real.sqrt t, Real.sqrt_pos.2 ht, (Real.sq_sqrt ht.le).symm⟩
   have hs : ∀ u : ℝ, 0 < u → thetaSum u = (Real.sqrt u)⁻¹ * thetaSum u⁻¹ := fun u hu => by
     rw [Real.sqrt_eq_rpow]; exact thetaSum_inv hu
-  rw [rectTheta, rectTheta, hs (1 / r ^ 2) (by positivity), hs (y ^ 2 * (1 / r ^ 2)) (by positivity)]
+  rw [rectTheta, rectTheta, hs (1 / r ^ 2) (by positivity),
+    hs (y ^ 2 * (1 / r ^ 2)) (by positivity)]
   have e1 : (1 / r ^ 2)⁻¹ = r ^ 2 := by rw [one_div, inv_inv]
   have e2 : (y ^ 2 * (1 / r ^ 2))⁻¹ = (1 / y) ^ 2 * r ^ 2 := by
     field_simp
@@ -103,7 +104,8 @@ theorem rectTheta_sub_one_le {y : ℝ} (hy : y ≠ 0) :
     nlinarith [mul_nonneg (mul_nonneg Real.pi_pos.le h0.le) (sub_nonneg.2 (min_le_right 1 (y ^ 2)))]
   have p1 := one_le_thetaSum h0
   have p2 := one_le_thetaSum (show 0 < y ^ 2 * t by positivity)
-  have e : rectTheta y t - 1 = (thetaSum t - 1) * thetaSum (y ^ 2 * t) + (thetaSum (y ^ 2 * t) - 1) := by
+  have e : rectTheta y t - 1 =
+      (thetaSum t - 1) * thetaSum (y ^ 2 * t) + (thetaSum (y ^ 2 * t) - 1) := by
     unfold rectTheta; ring
   rw [e]
   have hθ1 : 0 < thetaSum 1 := thetaSum_pos one_pos
@@ -136,8 +138,8 @@ def rectFEPair (y : ℝ) (hy : 0 < y) : WeakFEPair ℂ where
   ε := ((1 / y : ℝ) : ℂ)
   f₀ := 1
   g₀ := 1
-  hf_int := (continuous_ofReal.comp_continuousOn (continuousOn_rectTheta hy.ne')).locallyIntegrableOn
-    measurableSet_Ioi
+  hf_int := (continuous_ofReal.comp_continuousOn
+    (continuousOn_rectTheta hy.ne')).locallyIntegrableOn measurableSet_Ioi
   hg_int := (continuous_ofReal.comp_continuousOn
     (continuousOn_rectTheta (one_div_pos.mpr hy).ne')).locallyIntegrableOn measurableSet_Ioi
   hk := one_pos
@@ -158,7 +160,8 @@ theorem differentiableAt_epsteinLambda {y : ℝ} (hy : 0 < y) {s : ℂ} (hs0 : s
 
 /-- **Functional equation**: `Λ_y(1 − s) = y⁻¹ Λ_{1/y}(s)`. -/
 theorem epsteinLambda_one_sub {y : ℝ} (hy : 0 < y) (s : ℂ) :
-    epsteinLambda y hy (1 - s) = ((1 / y : ℝ) : ℂ) * epsteinLambda (1 / y) (one_div_pos.mpr hy) s := by
+    epsteinLambda y hy (1 - s) =
+      ((1 / y : ℝ) : ℂ) * epsteinLambda (1 / y) (one_div_pos.mpr hy) s := by
   have h := (rectFEPair y hy).functional_equation s
   have hsymm : (rectFEPair y hy).symm.Λ = epsteinLambda (1 / y) (one_div_pos.mpr hy) := by
     have : (rectFEPair y hy).symm = rectFEPair (1 / y) (one_div_pos.mpr hy) := by

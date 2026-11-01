@@ -49,13 +49,15 @@ theorem primitiveH1_heckeCorrespondence {a : ℝ} (ha : 0 ≤ a) (x : ScalingCyc
 
 /-- `T_a` multiplies the Euler characteristic by `a`. -/
 theorem eulerChar_heckeCorrespondence {a : ℝ} (ha : 0 ≤ a) (x : ScalingCycle) :
-    eulerChar scalingSurface 0 0 (heckeCorrespondence a x) = a * eulerChar scalingSurface 0 0 x := by
+    eulerChar scalingSurface 0 0 (heckeCorrespondence a x) =
+      a * eulerChar scalingSurface 0 0 x := by
   simp only [eulerChar, sub_zero, add_zero, pair_heckeCorrespondence ha]; ring
 
 /-- **The sign of the primitive `h¹` is Hecke-invariant**: for `a > 0`, `h¹_prim(T_a x) ≥ 0` iff
 `h¹_prim(x) ≥ 0`. -/
 theorem primitiveH1_heckeCorrespondence_nonneg_iff {a : ℝ} (ha : 0 < a) (x : ScalingCycle) :
-    0 ≤ primitiveH1 scalingSurface (heckeCorrespondence a x) ↔ 0 ≤ primitiveH1 scalingSurface x := by
+    0 ≤ primitiveH1 scalingSurface (heckeCorrespondence a x) ↔
+      0 ≤ primitiveH1 scalingSurface x := by
   rw [primitiveH1_heckeCorrespondence ha.le]
   exact mul_nonneg_iff_of_pos_left ha
 

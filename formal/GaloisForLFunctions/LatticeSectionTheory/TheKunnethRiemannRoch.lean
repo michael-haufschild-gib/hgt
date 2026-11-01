@@ -110,7 +110,8 @@ def kunnethH0 (x : E) : ℝ := arithH0 (S.pair x S.H) * arithH0 (S.pair x S.V)
 /-- **The Künneth `h¹`**: `H⁰ ⊗ H¹ ⊕ H¹ ⊗ H⁰`, with the base `h¹(d) = h⁰_ℤ(−d)` (canonical
 degree `0`). -/
 def kunnethH1 (x : E) : ℝ :=
-  arithH0 (S.pair x S.H) * arithH0 (-S.pair x S.V) + arithH0 (-S.pair x S.H) * arithH0 (S.pair x S.V)
+  arithH0 (S.pair x S.H) * arithH0 (-S.pair x S.V) +
+    arithH0 (-S.pair x S.H) * arithH0 (S.pair x S.V)
 
 theorem kunnethH0_pos (x : E) : 0 < kunnethH0 S x :=
   mul_pos (arithH0_pos _) (arithH0_pos _)

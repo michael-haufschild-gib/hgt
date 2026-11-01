@@ -99,7 +99,9 @@ classification of which lattice counts can and cannot touch the second part.
    Since `θ(t) ≥ t^{−1/2}`, the dual count gives `M_y(½) ≥ 2 log y − 2 + 2/y`, so
    `Λ_y(½) ≥ 2 log y − 4 > 0` for `y > e²`, while the pole term drives `Λ_y → −∞` at `1⁻`: a real
    zero in `(½, 1)`. By the functional equation the same holds for `y < e^{−2}`. `ℤ ⊕ 8ℤ` is a
-   fake.
+   fake. At the self-dual point `y = 1` (the Gaussian integers) `θ(t)² = t⁻¹θ(1/t)²` makes the
+   Mellin integral `≤ 60/π³ < 3`, so `Λ_1 < 0` on all of `(0, 1)`: the fakes are created by the
+   boost.
 
 **E. The split plane: majorants, boosts, cone.**
 10. Siegel majorant: `P_u(x) = e^{2u}(x·H)² + e^{−2u}(x·V)² + δ(x,x)`. `P_u ≥ 0` ⇔ Hodge index. The
@@ -153,6 +155,7 @@ classification of which lattice counts can and cannot touch the second part.
 | Bidegree blindness | `bidegree_h1_eq`, `riemannInequality_bidegree_iff`, `kunneth_polePlaneRiemannInequality` | proved |
 | Two-dimensional Poisson; Epstein FE-pair; Dirichlet series | `rectTheta_inv`, `rectFEPair`, `epsteinLambda_one_sub`, `differentiableAt_epsteinLambda`, `hasSum_epsteinLambda` | proved |
 | Epstein fakes: a positive centre forces a real zero in `(½,1)`; this holds for `y > e²` and `y < e^{−2}`; `ℤ ⊕ 8ℤ` | `exists_epsteinLambda_eq_zero_of_half_pos`, `exists_epsteinLambda_eq_zero`, `exists_epsteinLambda_eq_zero_of_lt`, `epsteinLambda_eight_has_offLine_zero`, `epsteinLambda_half_re_ge` | proved |
+| The self-dual point has no real zeros: `Λ_1(σ) < 0` on `(0, 1)` | `epsteinMellin_one_le`, `epsteinLambda_one_neg`, `epsteinLambda_one_ne_zero` | proved |
 | Siegel majorant law; convergence ⇔ positivity; scaling surface ⇔ RH | `siegelMajorant_eq`, `siegelMajorant_nonneg_iff_hodgeIndex`, `summable_siegelTerm_iff`, `riemannHypothesis_iff_forall_summable_siegelTerm` | proved; equivalence |
 | Fixed boosts are rectangular and fake; Hecke is a boost | `hyperbolicPlane_siegelMajorant`, `exists_boost_offLine_zero`, `hyperbolicPlane_siegelMajorant_hecke` | proved |
 | Boost transform `= K(s,w)ζ(s+w)ζ(s−w)`; Hecke character | `integral_splitSeries_mul_exp`, `integral_splitSeries_mul_exp_eq_zeta`, `boostConstant_pos`, `integral_boost_translate` | proved |
@@ -192,7 +195,7 @@ classification of which lattice counts can and cannot touch the second part.
 | What is the section space of a class: which lattice, which metric? | A lattice whose rank grows with one fibre degree and whose Gaussian scale grows with the other; bounded rank never works (`not_riemannInequality_of_bounded_rank`). On the pole plane the tensor square of the base, with Serre duality the product of two Poisson summations (`kunnethH0_add_neg`). The Gamma factor enters as the Gaussian weight of the base. |
 | Is surface Serre duality a two-dimensional Poisson summation for an indefinite lattice? | Gaussian (Siegel) counts of the intersection lattice exist exactly where the majorant is positive, i.e. under the Hodge index (`siegelMajorant_nonneg_iff_hodgeIndex`, `riemannHypothesis_iff_forall_summable_siegelTerm`). The indefinite count of the split plane is the divisor count with a double pole, not Poisson-dual (`not_exists_FEPair_coneCount`); its completion is the logarithm of pole-plane Riemann–Roch. |
 | Is the explicit formula the dual side? | The primes enter only through the primitive `h¹ = ½δ`, whose value on test classes is Weil's explicit formula; no Poisson identity of a bidegree count produces them (`riemannInequality_bidegree_iff`). |
-| Why `ζ` and not an Epstein zeta? | Definite counts are fakes (`exists_epsteinLambda_eq_zero`); the split plane at a fixed boost is one of them (`exists_boost_offLine_zero`); only the boost transform carries the Euler product, `K ζ(s+w)ζ(s−w)` (`integral_splitSeries_mul_exp_eq_zeta`). |
+| Why `ζ` and not an Epstein zeta? | Definite counts are fakes (`exists_epsteinLambda_eq_zero`); the split plane at a fixed boost `|u| > 1` is one of them (`exists_boost_offLine_zero`), while the self-dual point `u = 0` is not (`epsteinLambda_one_neg`): the boost creates the fakes. Only the boost transform carries the Euler product, `K ζ(s+w)ζ(s−w)` (`integral_splitSeries_mul_exp_eq_zeta`). |
 | What is the effectivity of a Hecke correspondence? | On the pole plane a boost by `½ log p` (`hyperbolicPlane_siegelMajorant_hecke`); on the primitive part a similitude of ratio its degree (`primitiveH1_heckeCorrespondence`). It never changes the sign. |
 | What replaces finite genus over `ℤ`? | The base is genus one for Riemann–Roch and the Künneth part is finite and bounded on degree levels. The infinite part lives in the primitive `h¹`, and at each degree it is controlled outside a finite divisor of `2#D_a + 2` conditions (`kunneth_primitive_h1_ge`): the genus of `ℤ` is a finite divisor at every degree, unbounded in the degree. |
 | Q1: an effectivity on prime-free cycles? | Yes: the Künneth count, positive, Poisson-dual, quadratic Riemann inequality, bounded on degree levels, on all tests of aperture `≤ 3/10` and on ample-orthogonal tests past `½ log 2` (`kunneth_effectivity_realTestsAt`, `kunneth_effectivity_primitiveSmoothRealTestsAt`). Its Riemann inequality is equivalent to prime-free Weil positivity; deriving that positivity from a count of the primitive `h¹` is the open core. |
@@ -214,10 +217,10 @@ classification of which lattice counts can and cannot touch the second part.
 4. **The degree of a correspondence of `Spec ℤ` as a kernel count**, the analogue of
    `deg(m − nF) = #ker(m − nF)`.
 5. **Height-uniform readings of the primitive index** (B40).
-6. **The whole boost line.** Every boost `|u| > 1` is a fake. The centre value is
-   `2(log y − log 4π + γ)` up to exponentially small terms, so the true threshold is near
-   `y ≈ 7.01` (Bateman–Grosswald) against the proved `e² ≈ 7.39`; how the real zeros of `Λ_{e^{2u}}`
-   enter `(½, 1)` as `u` leaves `0` (the Gaussian integers) is open.
+6. **The whole boost line.** Every boost `|u| > 1` is a fake and the self-dual point `u = 0` has no
+   real zero in `(0, 1)`. The centre value is `2(log y − log 4π + γ)` up to exponentially small
+   terms, so the true threshold is near `y ≈ 7.01` (Bateman–Grosswald) against the proved
+   `e² ≈ 7.39`; where on `0 < |u| ≤ 1` the first real zero enters `(½, 1)` is open.
 
 ## 9. Traps
 

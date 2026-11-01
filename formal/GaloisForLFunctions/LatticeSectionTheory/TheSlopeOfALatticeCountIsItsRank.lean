@@ -191,9 +191,9 @@ section RankLaw
 
 variable {F : Type*} [AddCommGroup F] [Module ℝ F] (S : PolarSurface F)
 
-/-- **Rank law.** A section count `h(x) = h⁰(L(x), d(x))` built from lattices of one fixed rank, with
-`h⁰(L(x), 0) ≤ C` and `|d(x)| ≤ α + β |x · A|`, violates the Riemann inequality on every polar
-surface: bounded rank means at most linear growth along the ample ray. -/
+/-- **Rank law.** A section count `h(x) = h⁰(L(x), d(x))` built from lattices of one fixed rank,
+with `h⁰(L(x), 0) ≤ C` and `|d(x)| ≤ α + β |x · A|`, violates the Riemann inequality on every
+polar surface: bounded rank means at most linear growth along the ample ray. -/
 theorem not_riemannInequality_of_bounded_rank {κ : F} {χ₀ C α β : ℝ}
     (L : F → (E ≃L[ℝ] E)) (deg : F → ℝ)
     (hC : ∀ x, latticeH0 (L x) 0 ≤ C) (hdeg : ∀ x, |deg x| ≤ α + β * |S.pair x S.ample|) :

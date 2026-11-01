@@ -10,6 +10,7 @@ import GaloisForLFunctions.LatticeSectionTheory.TheIsotropicConeCountsDivisors
 import GaloisForLFunctions.LatticeSectionTheory.RiemannRochOutsideAFiniteDivisorAtEveryDegree
 import GaloisForLFunctions.LatticeSectionTheory.HeckeCorrespondencesAreSimilitudesOfThePrimitiveH1
 import GaloisForLFunctions.LatticeSectionTheory.TheIndexReadingsOfThePrimitiveH1
+import GaloisForLFunctions.LatticeSectionTheory.TheSelfDualPointHasNoRealZeros
 
 /-!
 # Lattice Section Theory

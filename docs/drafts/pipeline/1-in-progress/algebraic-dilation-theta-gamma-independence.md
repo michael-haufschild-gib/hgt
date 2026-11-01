@@ -72,22 +72,32 @@ algebraic multiplier `q≠1`; `q=1` repeats the same coordinate.
    the degree-`D` symmetric multilinear form. A vanishing relation annihilates
    that form on every distinct-prime atom packet.
 
-All seven modules have direct production checks and umbrella imports.
-Their 48 public axiom audits use only the standard three axioms.
-These inputs do not yet prove joint independence of the analytic functions.
+8. **Actual logarithmic-jet independence.**
+   `ArithmeticHarmonicAnalysis/AlgebraicDilationJetIndependence.lean` proves
+   that, for distinct positive algebraic `r_i` and `r_i σ>1`, every finite
+   rectangle `F_(r_i)^(k)(σ+it)`, `0≤k≤J`, is algebraically independent over
+   `ℂ` as functions of `t∈ℝ`. Any nonzero relation has a top homogeneous
+   component; exact frequency extraction and nonzero decay factors force its
+   multilinear form to vanish on all distinct-prime rows. Prime-jet separation
+   contradicts the component's nonzero coefficient. Degree zero is included.
+
+9. **Literal analytic germs and logarithmic equation.**
+   `ArithmeticHarmonicAnalysis/PositiveDilationAnalyticGerms.lean` realizes
+   physical `ζ(rs)` and rotated `y_r(z)=ζ(−irz)` in the actual germ rings,
+   proves the rotated germ nonzero, and proves
+   `y_r'/y_r = i F_r(−iz)` in the meromorphic field. Every finite positive
+   dilation packet admits a convergence line beyond any prescribed germ cutoff.
+
+All nine modules have direct production checks and umbrella imports.
+Their 62 public axiom audits use only the standard three axioms.
+The full zeta-family theorem over theta–Gamma coefficients is not yet proved.
 
 ## Remaining bridge
 
-Combine the certified top-degree coefficient identity with the nonzero decay
-factors and prime-jet separation. A nonzero polynomial relation of maximal
-degree `D` would force its symmetric degree-`D` form to vanish identically,
-contradicting `polynomialMultilinear_ne_zero`. This final actual jet-independence
-bridge is drafted but not yet certified. The argument retains frequency
-collisions and requires only absolute convergence of the actual line series.
-
-After actual jet independence, pass through rotated right-half-plane germs.
+Transfer the certified line independence to the rotated logarithmic coordinates
+`i F_r(−iz)`, retaining the exact jet factors `i(−i)^k`.
 `CoordinatewiseDifferentialFamilyMatroid.differentialIndependent_deriv_div_self_iff`
-transfers independence to the actual zeta dilates. Recover physical zeta-jet
+then transfers independence to the actual rotated zeta dilates. Recover physical zeta-jet
 independence by analytic continuation, then apply physical Gamma separation
 and theta differential-algebraic base change. Rotation factors remain
 explicit; Gamma stays in the physical variable. Logarithmic derivatives
