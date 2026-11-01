@@ -121,7 +121,8 @@ theorem eventually_logarithmic_reserves_ge_reciprocal :
     have hcoef : (∫ u, zeroFreeLogProfile u ^ 2) ≤ 2 * c := by
       have h := (div_le_iff₀ (by norm_num : (0 : ℝ) < 2)).mp hce
       linarith only [h]
-    nlinarith only [mul_le_mul_of_nonneg_right hcoef (zeroFreeLogBandFloor_pos _).le]
+    nlinarith only [mul_le_mul_of_nonneg_right hcoef
+      (zeroFreeLogBandFloor_pos (2 * Real.pi * c)).le]
 
 end GaloisForLFunctions.TransMetzlerWeilPositivity
 

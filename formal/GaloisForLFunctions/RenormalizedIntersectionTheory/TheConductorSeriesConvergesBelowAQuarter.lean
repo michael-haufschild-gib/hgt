@@ -41,18 +41,6 @@ local notation "γ" => Real.eulerMascheroniConstant
 
 section Telescoping
 
-/-- `Σ_{a ≤ k ≤ M} (F k − F (k − 1)) = F M − F (a − 1)`. -/
-theorem sum_Icc_sub_pred (F : ℕ → ℝ) {a M : ℕ} (ha : 1 ≤ a) (haM : a - 1 ≤ M) :
-    ∑ k ∈ Icc a M, (F k - F (k - 1)) = F M - F (a - 1) := by
-  induction M, haM using Nat.le_induction with
-  | base => rw [Icc_eq_empty (by omega), sum_empty, sub_self]
-  | succ M hM ih =>
-    rw [sum_Icc_succ_top (by omega), ih, Nat.add_sub_cancel]
-    ring
-
-theorem natCast_pred {k : ℕ} (hk : 1 ≤ k) : ((k - 1 : ℕ) : ℝ) = (k : ℝ) - 1 := by
-  rw [Nat.cast_sub hk, Nat.cast_one]
-
 /-- `Σ_{p ∈ F} 1/(p(p − 1)) ≤ 1` for a finite set of integers `≥ 2`. -/
 theorem sum_inv_mul_pred_le (F : Finset ℕ) (hF : ∀ p ∈ F, 2 ≤ p) :
     ∑ p ∈ F, 1 / ((p : ℝ) * ((p : ℝ) - 1)) ≤ 1 := by
@@ -93,25 +81,6 @@ theorem logIncrement_div_log_le {k : ℕ} (hk : 3 ≤ k) :
   rw [Real.log_div hv.ne' hu.ne', inv_div] at h
   rw [sub_div, div_self hv.ne']
   linarith
-
-/-- `σ Δlog k · k^{−σ} ≤ (k − 1)^{−σ} − k^{−σ}`. -/
-theorem logIncrement_mul_rpow_le {k : ℕ} (hk : 2 ≤ k) {σ : ℝ} :
-    σ * ((Real.log k - Real.log ((k : ℝ) - 1)) * (k : ℝ) ^ (-σ)) ≤
-      ((k : ℝ) - 1) ^ (-σ) - (k : ℝ) ^ (-σ) := by
-  have hk2 : (2 : ℝ) ≤ k := by exact_mod_cast hk
-  rw [Real.rpow_def_of_pos (by linarith : (0 : ℝ) < (k : ℝ) - 1),
-    Real.rpow_def_of_pos (by linarith : (0 : ℝ) < k)]
-  set y := σ * (Real.log k - Real.log ((k : ℝ) - 1))
-  have hy : Real.exp (Real.log ((k : ℝ) - 1) * -σ) = Real.exp (Real.log k * -σ) * Real.exp y := by
-    rw [← Real.exp_add]; congr 1; simp only [y]; ring
-  rw [hy]
-  have h1 := Real.add_one_le_exp y
-  have he := Real.exp_pos (Real.log k * -σ)
-  calc σ * ((Real.log k - Real.log ((k : ℝ) - 1)) * Real.exp (Real.log k * -σ)) =
-        Real.exp (Real.log k * -σ) * y := by simp only [y]; ring
-    _ ≤ Real.exp (Real.log k * -σ) * (Real.exp y - 1) :=
-        mul_le_mul_of_nonneg_left (by linarith) he.le
-    _ = _ := by ring
 
 /-- **The logarithmic integral at scale `σ`**:
 `Σ_{2 ≤ k ≤ X} Δlog k · k^{−σ}/log k ≤ log(1/σ) + K₀` for `σ ∈ (0, 1]`. -/
@@ -254,21 +223,31 @@ theorem exists_sum_logIncrement_rpow_div_log_le :
   rw [hsplit, ← sum_filter_add_sum_filter_not (Icc 3 X) (· ≤ K)]
   linarith
 
-/-- **Prime sums from an upper logarithmic density.** If `Σ_{p ∈ P, p ≤ n} log p/p ≤ κ log n + C`
-with `κ ≥ 0`, then `Σ_{p ∈ P, p ≤ X} p^{−1−σ} ≤ κ log(1/σ) + K` for all `σ ∈ (0, 1]` and `X`. -/
-theorem exists_sum_primeSetCutoff_rpow_le (P : Set ℕ) {κ C : ℝ} (hκ : 0 ≤ κ)
-    (hP : ∀ n : ℕ, 1 ≤ n → primeSetLogMass P n ≤ κ * Real.log n + C) :
+/-- **Prime sums from an upper logarithmic density.** If
+`Σ_{p ∈ P, p ≤ n} log p/p ≤ κ log n + C (1 + log n)^α` with `κ ≥ 0`, `0 ≤ α < 1`, then
+`Σ_{p ∈ P, p ≤ X} p^{−1−σ} ≤ κ log(1/σ) + K` for all `σ ∈ (0, 1]` and `X`. -/
+theorem exists_sum_primeSetCutoff_rpow_le (P : Set ℕ) {κ C α : ℝ} (hκ : 0 ≤ κ) (hα0 : 0 ≤ α)
+    (hα1 : α < 1)
+    (hP : ∀ n : ℕ, 1 ≤ n → primeSetLogMass P n ≤ κ * Real.log n + C * (1 + Real.log n) ^ α) :
     ∃ K : ℝ, 0 ≤ K ∧ ∀ σ : ℝ, 0 < σ → σ ≤ 1 → ∀ X : ℕ,
       ∑ p ∈ primeSetCutoff P X, (p : ℝ) ^ (-(1 + σ)) ≤ κ * Real.log (1 / σ) + K := by
   classical
   obtain ⟨K₀, hK₀, hJ⟩ := exists_sum_logIncrement_rpow_div_log_le
+  obtain ⟨E₀, hE₀⟩ := exists_powerAbel_le hα0 hα1
   have hl2 : 0 < Real.log 2 := Real.log_pos one_lt_two
   have hmass1 : primeSetLogMass P 1 = 0 := by
     unfold primeSetLogMass
     rw [primeSetCutoff_eq_filter]
     simp [Nat.not_prime_one, Finset.filter_singleton]
   have hC0 : 0 ≤ C := by have := hP 1 le_rfl; rw [hmass1] at this; simpa using this
-  refine ⟨κ * K₀ + C / Real.log 2, by positivity, fun σ hσ hσ1 X => ?_⟩
+  have hE₀0 : 0 ≤ E₀ := by
+    have h := hE₀ 1 one_pos le_rfl 2 le_rfl
+    simp only [Ico_self, sum_empty, add_zero] at h
+    have : 0 ≤ (1 + Real.log ((2 : ℕ) : ℝ)) ^ α * (((2 : ℕ) : ℝ) ^ (-(1 : ℝ)) / Real.log ((2 : ℕ) : ℝ)) :=
+      mul_nonneg (Real.rpow_nonneg (by linarith [Real.log_natCast_nonneg 2]) _)
+        (div_nonneg (Real.rpow_nonneg (Nat.cast_nonneg _) _) (Real.log_natCast_nonneg _))
+    linarith
+  refine ⟨κ * K₀ + C * E₀, by positivity, fun σ hσ hσ1 X => ?_⟩
   have hlogσ : 0 ≤ Real.log (1 / σ) := Real.log_nonneg (by rw [le_div_iff₀ hσ]; linarith)
   rcases lt_or_ge X 2 with hX | hX
   · have hemp : primeSetCutoff P X = ∅ := by
@@ -330,36 +309,36 @@ theorem exists_sum_primeSetCutoff_rpow_le (P : Set ℕ) {κ C : ℝ} (hκ : 0 �
     have h := sum_Ico_sub_eq (f := g) hX
     rw [← neg_sub, ← h, ← sum_neg_distrib]
     exact sum_congr rfl fun k _ => by ring
+  set E := (1 + Real.log X) ^ α * g X +
+    ∑ k ∈ Ico 2 X, (1 + Real.log k) ^ α * (g k - g (k + 1))
   have h1 : ∑ k ∈ Ico 2 X, (∑ i ∈ Icc 1 k, a i) * (g k - g (k + 1)) ≤
-      κ * ∑ k ∈ Ico 2 X, Real.log k * (g k - g (k + 1)) + (C * g 2 - C * g X) := by
-    calc _ ≤ ∑ k ∈ Ico 2 X, (κ * Real.log k + C) * (g k - g (k + 1)) := by
+      κ * ∑ k ∈ Ico 2 X, Real.log k * (g k - g (k + 1)) +
+        C * ∑ k ∈ Ico 2 X, (1 + Real.log k) ^ α * (g k - g (k + 1)) := by
+    calc _ ≤ ∑ k ∈ Ico 2 X, (κ * Real.log k + C * (1 + Real.log k) ^ α) * (g k - g (k + 1)) := by
           refine sum_le_sum fun k hk => ?_
           have hk2 := (mem_Ico.mp hk).1
           rw [hA k]
           exact mul_le_mul_of_nonneg_right (hP k (by omega)) (sub_nonneg.mpr (hanti k hk2))
-      _ = κ * ∑ k ∈ Ico 2 X, Real.log k * (g k - g (k + 1)) +
-          C * ∑ k ∈ Ico 2 X, (g k - g (k + 1)) := by
+      _ = _ := by
           rw [mul_sum, mul_sum, ← sum_add_distrib]
           exact sum_congr rfl fun k _ => by ring
-      _ = _ := by rw [htel]; ring
-  have h2 : primeSetLogMass P X * g X ≤ κ * (Real.log X * g X) + C * g X := by
-    calc primeSetLogMass P X * g X ≤ (κ * Real.log X + C) * g X :=
+  have h2 : primeSetLogMass P X * g X ≤
+      κ * (Real.log X * g X) + C * ((1 + Real.log X) ^ α * g X) := by
+    calc primeSetLogMass P X * g X ≤ (κ * Real.log X + C * (1 + Real.log X) ^ α) * g X :=
           mul_le_mul_of_nonneg_right (hP X (by omega)) (hg0 X hX)
       _ = _ := by ring
   have hJX := hJ σ hσ hσ1 X
   have hbg : ∑ k ∈ Icc 2 X, b k * g k ≤ Real.log (1 / σ) + K₀ := hJX
-  have hgg2 : g 2 ≤ 1 / Real.log 2 := by
-    simp only [g]
-    push_cast
-    exact div_le_div_of_nonneg_right
-      (Real.rpow_le_one_of_one_le_of_nonpos (by norm_num) (by linarith)) hl2.le
+  have hE : E ≤ E₀ := hE₀ σ hσ hσ1 X hX
   have hκb := mul_le_mul_of_nonneg_left hbg hκ
-  have hCg := mul_le_mul_of_nonneg_left hgg2 hC0
+  have hCE := mul_le_mul_of_nonneg_left hE hC0
   rw [hsum, habel]
   have e2 : κ * ∑ k ∈ Icc 2 X, b k * g k =
       κ * (Real.log X * g X) + κ * ∑ k ∈ Ico 2 X, Real.log k * (g k - g (k + 1)) := by
     rw [habel', mul_add]
-  rw [mul_one_div] at hCg
+  have e3 : C * E = C * ((1 + Real.log X) ^ α * g X) +
+      C * ∑ k ∈ Ico 2 X, (1 + Real.log k) ^ α * (g k - g (k + 1)) := by
+    simp only [E]; ring
   nlinarith
 
 end PrimeSums
@@ -607,14 +586,15 @@ end Laplace
 section Summable
 
 /-- **The conductor series converges below a quarter.** If
-`Σ_{p ∈ P, p ≤ n} log p/p ≤ κ log n + C` with `0 ≤ κ < 1/4`, then for `0 ≤ s < 2 log 2` the series
-`Σ_{m ≥ 2} w_P(m)/(E_m − γ − s)` is summable. -/
-theorem summable_conductorSeries (P : Set ℕ) {κ C : ℝ} (hκ0 : 0 ≤ κ) (hκ : κ < 1 / 4)
-    (hP : ∀ n : ℕ, 1 ≤ n → primeSetLogMass P n ≤ κ * Real.log n + C) {s : ℝ} (hs : 0 ≤ s)
-    (hs2 : s < 2 * Real.log 2) :
+`Σ_{p ∈ P, p ≤ n} log p/p ≤ κ log n + C (1 + log n)^α` with `0 ≤ κ < 1/4`, `0 ≤ α < 1`, then for
+`0 ≤ s < 2 log 2` the series `Σ_{m ≥ 2} w_P(m)/(E_m − γ − s)` is summable. -/
+theorem summable_conductorSeries (P : Set ℕ) {κ C α : ℝ} (hκ0 : 0 ≤ κ) (hκ : κ < 1 / 4)
+    (hα0 : 0 ≤ α) (hα1 : α < 1)
+    (hP : ∀ n : ℕ, 1 ≤ n → primeSetLogMass P n ≤ κ * Real.log n + C * (1 + Real.log n) ^ α)
+    {s : ℝ} (hs : 0 ≤ s) (hs2 : s < 2 * Real.log 2) :
     Summable fun k : ℕ => primeSetSpectralWeight P (k + 2) /
       (ramanujanAdjunctionEnergy (k + 2) - γ - s) := by
-  obtain ⟨K, hK0, hK⟩ := exists_sum_primeSetCutoff_rpow_le P hκ0 hP
+  obtain ⟨K, hK0, hK⟩ := exists_sum_primeSetCutoff_rpow_le P hκ0 hα0 hα1 hP
   have hl2 : 0 < Real.log 2 := Real.log_pos one_lt_two
   set x₀ := 2 * Real.log 2 - s
   have hx₀ : 0 < x₀ := by simp only [x₀]; linarith
@@ -750,39 +730,42 @@ end Summable
 
 section Unconditional
 
-theorem primeSetLogMass_le_of_abs (P : Set ℕ) {κ C : ℝ}
-    (hP : ∀ n, 1 ≤ n → |primeSetLogMass P n - κ * Real.log n| ≤ C) :
-    ∀ n : ℕ, 1 ≤ n → primeSetLogMass P n ≤ κ * Real.log n + C := fun n hn => by
+theorem primeSetLogMass_le_of_abs (P : Set ℕ) {κ C α : ℝ}
+    (hP : ∀ n, 1 ≤ n → |primeSetLogMass P n - κ * Real.log n| ≤ C * (1 + Real.log n) ^ α) :
+    ∀ n : ℕ, 1 ≤ n → primeSetLogMass P n ≤ κ * Real.log n + C * (1 + Real.log n) ^ α :=
+  fun n hn => by
   have := (abs_le.mp (hP n hn)).2; linarith
 
 /-- **The excited spectral weight is the conductor series.** For relative log density
 `κ ∈ (0, 1/4)` and `0 < s < t < 2 log 2`: for every `ε > 0`, eventually, for every ground index `i₀`
 below `γ + t`, `|ρ_{i₀}(v_P)/c_N² − W_P(s)| ≤ ε`, with `W_P(s) = Σ_{m ≥ 2} w_P(m)/(E_m − γ − s) < ∞`. -/
-theorem eventually_abs_excitedResolvent_div_sub_conductorSeries_le (P : Set ℕ) {κ C : ℝ}
+theorem eventually_abs_excitedResolvent_div_sub_conductorSeries_le (P : Set ℕ) {κ C α : ℝ}
     (hκ0 : 0 < κ) (hκ : κ < 1 / 4)
-    (hP : ∀ n, 1 ≤ n → |primeSetLogMass P n - κ * Real.log n| ≤ C)
+    (hα : 0 ≤ α) (hακ : α < 1 - 2 * κ)
+    (hP : ∀ n, 1 ≤ n → |primeSetLogMass P n - κ * Real.log n| ≤ C * (1 + Real.log n) ^ α)
     {s t : ℝ} (hs : 0 < s) (hst : s < t) (ht2 : t < 2 * Real.log 2) {ε : ℝ} (hε : 0 < ε) :
     ∀ᶠ N : ℕ in atTop, ∀ i₀ : PrimeHorizonIndex N, IsGroundBelow N t i₀ →
       |excitedResolvent N s i₀ (primeSetHorizonVector P N) /
           harmonicCorrelation (primeSetFlip P) N ^ 2 -
         ∑' k : ℕ, primeSetSpectralWeight P (k + 2) / (ramanujanAdjunctionEnergy (k + 2) - γ - s)| ≤
         ε :=
-  eventually_abs_excitedResolvent_div_sub_le P hκ0 hκ hP hs hst ht2
-    (summable_conductorSeries P hκ0.le hκ (primeSetLogMass_le_of_abs P hP) hs.le (hst.trans ht2)) hε
+  eventually_abs_excitedResolvent_div_sub_le P hκ0 hκ hα hακ hP hs hst ht2
+    (summable_conductorSeries P hκ0.le hκ hα (by linarith) (primeSetLogMass_le_of_abs P hP) hs.le (hst.trans ht2)) hε
 
 /-- **The spectral-weight estimate with the exact constant**: off the ground,
 `⟨w, v_P⟩² ≤ c_N² (W_P(s) + ε)(Q_N(w) − s|w|²)` eventually. -/
-theorem eventually_inner_sq_le_tsum_conductorSeries (P : Set ℕ) {κ C : ℝ} (hκ0 : 0 < κ)
-    (hκ : κ < 1 / 4) (hP : ∀ n, 1 ≤ n → |primeSetLogMass P n - κ * Real.log n| ≤ C)
+theorem eventually_inner_sq_le_tsum_conductorSeries (P : Set ℕ) {κ C α : ℝ} (hκ0 : 0 < κ)
+    (hκ : κ < 1 / 4) (hα : 0 ≤ α) (hακ : α < 1 - 2 * κ)
+    (hP : ∀ n, 1 ≤ n → |primeSetLogMass P n - κ * Real.log n| ≤ C * (1 + Real.log n) ^ α)
     {s t : ℝ} (hs : 0 < s) (hst : s < t) (ht2 : t < 2 * Real.log 2) {ε : ℝ} (hε : 0 < ε) :
     ∀ᶠ N : ℕ in atTop, ∀ i₀ : PrimeHorizonIndex N, IsGroundBelow N t i₀ →
       ∀ w : EuclideanSpace ℝ (PrimeHorizonIndex N), ⟪w, primeEigen N i₀⟫ = 0 →
         ⟪w, primeSetHorizonVector P N⟫ ^ 2 ≤ harmonicCorrelation (primeSetFlip P) N ^ 2 *
           ((∑' k : ℕ, primeSetSpectralWeight P (k + 2) /
             (ramanujanAdjunctionEnergy (k + 2) - γ - s)) + ε) * (primeEnergy N w - s * ‖w‖ ^ 2) := by
-  have hsum := summable_conductorSeries P hκ0.le hκ (primeSetLogMass_le_of_abs P hP) hs.le
+  have hsum := summable_conductorSeries P hκ0.le hκ hα (by linarith) (primeSetLogMass_le_of_abs P hP) hs.le
     (hst.trans ht2)
-  refine eventually_inner_sq_le_conductorSeries P hκ0 hκ hP hs hst ht2 (fun K => ?_) hε
+  refine eventually_inner_sq_le_conductorSeries P hκ0 hκ hα hακ hP hs hst ht2 (fun K => ?_) hε
   refine hsum.sum_le_tsum _ fun k _ => div_nonneg (div_nonneg (sq_nonneg _) (Nat.cast_nonneg _)) ?_
   have := conductorEnergy_gap (m := k + 2) (by omega)
   linarith [hst.trans ht2]
@@ -790,12 +773,13 @@ theorem eventually_inner_sq_le_tsum_conductorSeries (P : Set ℕ) {κ C : ℝ} (
 /-- **Classification by the value of the conductor series.** A flip twin of relative log density
 `κ ∈ (0, 1/4)` is separated from `ζ` by the atomic Hodge index iff `W_P(s) > 1/s` for some
 `s ∈ (0, 2 log 2)`. -/
-theorem hodgeSeparates_primeSetFlip_iff_conductorSeries (P : Set ℕ) {κ C : ℝ} (hκ0 : 0 < κ)
-    (hκ : κ < 1 / 4) (hP : ∀ n, 1 ≤ n → |primeSetLogMass P n - κ * Real.log n| ≤ C) :
+theorem hodgeSeparates_primeSetFlip_iff_conductorSeries (P : Set ℕ) {κ C α : ℝ} (hκ0 : 0 < κ)
+    (hκ : κ < 1 / 4) (hα : 0 ≤ α) (hακ : α < 1 - 2 * κ)
+    (hP : ∀ n, 1 ≤ n → |primeSetLogMass P n - κ * Real.log n| ≤ C * (1 + Real.log n) ^ α) :
     HodgeSeparates (primeSetFlip P) ↔ ∃ s, 0 < s ∧ s < 2 * Real.log 2 ∧
       1 / s < ∑' k : ℕ, primeSetSpectralWeight P (k + 2) /
         (ramanujanAdjunctionEnergy (k + 2) - γ - s) := by
-  rw [hodgeSeparates_primeSetFlip_iff_packet P hκ0 hκ hP]
+  rw [hodgeSeparates_primeSetFlip_iff_packet P hκ0 hκ hα hακ hP]
   have hf0 : ∀ s, s < 2 * Real.log 2 → ∀ k : ℕ, 0 ≤ primeSetSpectralWeight P (k + 2) /
       (ramanujanAdjunctionEnergy (k + 2) - γ - s) := fun s hs2 k => by
     refine div_nonneg (div_nonneg (sq_nonneg _) (Nat.cast_nonneg _)) ?_
@@ -803,7 +787,7 @@ theorem hodgeSeparates_primeSetFlip_iff_conductorSeries (P : Set ℕ) {κ C : �
   constructor
   · rintro ⟨s, hs, hs2, S, hS, h⟩
     refine ⟨s, hs, hs2, h.trans_le ?_⟩
-    have hsum := summable_conductorSeries P hκ0.le hκ (primeSetLogMass_le_of_abs P hP) hs.le hs2
+    have hsum := summable_conductorSeries P hκ0.le hκ hα (by linarith) (primeSetLogMass_le_of_abs P hP) hs.le hs2
     have himg : ∑ m ∈ S, primeSetSpectralWeight P m / (ramanujanAdjunctionEnergy m - γ - s) =
         ∑ k ∈ S.image (· - 2), primeSetSpectralWeight P (k + 2) /
           (ramanujanAdjunctionEnergy (k + 2) - γ - s) := by
@@ -812,7 +796,7 @@ theorem hodgeSeparates_primeSetFlip_iff_conductorSeries (P : Set ℕ) {κ C : �
     rw [himg]
     exact hsum.sum_le_tsum _ fun k _ => hf0 s hs2 k
   · rintro ⟨s, hs, hs2, h⟩
-    have hsum := summable_conductorSeries P hκ0.le hκ (primeSetLogMass_le_of_abs P hP) hs.le hs2
+    have hsum := summable_conductorSeries P hκ0.le hκ hα (by linarith) (primeSetLogMass_le_of_abs P hP) hs.le hs2
     obtain ⟨K, hK⟩ := (hsum.hasSum.tendsto_sum_nat.eventually (Ioi_mem_nhds h)).exists
     refine ⟨s, hs, hs2, (range K).image (· + 2), fun m hm => by
       obtain ⟨k, -, rfl⟩ := mem_image.mp hm; omega, ?_⟩

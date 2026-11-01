@@ -20,7 +20,7 @@ does not exist. Siegel's remedy is a majorant: for the ample class `A_u = e^u H 
   Gaussian Poisson summation on the Lorentzian lattice presupposes the sign; it cannot produce it.
 * **The split plane at a fixed boost is a rectangular lattice**
   (`hyperbolicPlane_siegelMajorant`). On `⟨H, V⟩` the majorant is `e^{−2u} Q_{e^{2u}}`, the form of
-  `ℤ ⊕ e^{2u}ℤ`; for `u > 1` its Epstein function has a real zero in `(1/2, 1)`
+  `ℤ ⊕ e^{2u}ℤ`; for `|u| > 1` its Epstein function has a real zero in `(1/2, 1)`
   (`exists_boost_offLine_zero`). A fixed metric on the split plane selects nothing.
 * **Hecke is a boost** (`hyperbolicPlane_siegelMajorant_hecke`). On the index-`p` sublattice
   `ℤH ⊕ pℤV` the majorant at boost `u` is `p` times the majorant at boost `u + ½ log p`.
@@ -184,11 +184,13 @@ theorem hyperbolicPlane_siegelMajorant (u : ℝ) (a b : ℤ) :
   rw [h4]
   linear_combination (-(Real.exp (2 * u) * (b : ℝ) ^ 2)) * hinv
 
-/-- **Fixed boosts are fakes**: for `u > 1` the majorant lattice of the split plane at boost `u` has
-an Epstein function with a real zero in `(1/2, 1)`. -/
-theorem exists_boost_offLine_zero {u : ℝ} (hu : 1 < u) :
-    ∃ σ : ℝ, 1 / 2 < σ ∧ σ < 1 ∧ epsteinLambda (Real.exp (2 * u)) (Real.exp_pos _) σ = 0 :=
-  exists_epsteinLambda_eq_zero (Real.exp_lt_exp.mpr (by linarith))
+/-- **Fixed boosts are fakes**: for `|u| > 1` the majorant lattice of the split plane at boost `u`
+has an Epstein function with a real zero in `(1/2, 1)`. -/
+theorem exists_boost_offLine_zero {u : ℝ} (hu : 1 < |u|) :
+    ∃ σ : ℝ, 1 / 2 < σ ∧ σ < 1 ∧ epsteinLambda (Real.exp (2 * u)) (Real.exp_pos _) σ = 0 := by
+  rcases lt_abs.mp hu with h | h
+  · exact exists_epsteinLambda_eq_zero (Real.exp_lt_exp.mpr (by linarith))
+  · exact exists_epsteinLambda_eq_zero_of_lt (Real.exp_pos _) (Real.exp_lt_exp.mpr (by linarith))
 
 /-- **Hecke is a boost.** On the index-`p` sublattice `ℤH ⊕ pℤV` the majorant at boost `u` is `p`
 times the majorant at boost `u + ½ log p`. -/

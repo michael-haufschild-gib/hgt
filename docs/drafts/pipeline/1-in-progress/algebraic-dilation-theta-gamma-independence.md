@@ -50,8 +50,14 @@ algebraic multiplier `q≠1`; `q=1` repeats the same coordinate.
    `polynomialMultilinear_ne_zero` preserves every nonzero supported coefficient,
    including degree zero.
 
-All four modules have direct production checks and umbrella imports.
-Their 30 public axiom audits use only the standard three axioms.
+5. **Exact top-degree frequency fibers.**
+   `ArithmeticHarmonicAnalysis/AlgebraicPrimeFrequencyFibers.lean` proves
+   that shorter tuples have zero coefficient at a distinct-prime target;
+   equal-length fibers are exactly finite permutation sums. No convergence
+   assumption is required for these finite-fiber identities.
+
+All five modules have direct production checks and umbrella imports.
+Their 33 public axiom audits use only the standard three axioms.
 These inputs do not yet prove joint independence of the analytic functions.
 
 ## Remaining bridge

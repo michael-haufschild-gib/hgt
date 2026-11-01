@@ -15,9 +15,11 @@ positive coefficients (`TheRectangularLatticeCount`). Its zeros are not on the c
 * **The dual count at the centre** (`two_log_le_epsteinMellin_half`). Since `θ(t) ≥ t^{−1/2}`,
   on `(y⁻², 1)` the integrand dominates `t⁻¹ − y⁻¹ t^{−3/2}`, so
   `M_y(1/2) ≥ 2 log y − 2 + 2/y` and `Λ_y(1/2) ≥ 2 log y − 4`.
-* **Epstein fakes** (`exists_epsteinLambda_eq_zero`). The pole `y⁻¹/(1 − σ)` drives `Λ_y` to
-  `−∞` at `1⁻`. For `y > e²` the intermediate value theorem gives `σ ∈ (1/2, 1)` with
-  `Λ_y(σ) = 0`: a real zero right of the critical line. The square lattice `ℤ ⊕ 8ℤ` is one
+* **Epstein fakes** (`exists_epsteinLambda_eq_zero_of_half_pos`). The pole `y⁻¹/(1 − σ)` drives
+  `Λ_y` to `−∞` at `1⁻`, so a positive centre value gives, by the intermediate value theorem,
+  `σ ∈ (1/2, 1)` with `Λ_y(σ) = 0`: a real zero right of the critical line. This happens for
+  `y > e²` (`exists_epsteinLambda_eq_zero`) and, through the functional equation, for `y < e^{−2}`
+  (`exists_epsteinLambda_eq_zero_of_lt`). The lattice `ℤ ⊕ 8ℤ` is one
   (`epsteinLambda_eight_has_offLine_zero`).
 
 So positivity, Poisson duality, the functional equation, simple poles and a positive Dirichlet
@@ -215,21 +217,14 @@ theorem epsteinLambda_half_re_ge (hy : 1 < y) :
 
 /-! ### The zero -/
 
-/-- **Epstein fakes.** For `y > e²` the completed Epstein function of the rectangular lattice
-`ℤ ⊕ yℤ` has a real zero in `(1/2, 1)`. -/
-theorem exists_epsteinLambda_eq_zero (hy : Real.exp 2 < y) :
-    ∃ σ : ℝ, 1 / 2 < σ ∧ σ < 1 ∧
-      epsteinLambda y (lt_trans (Real.exp_pos 2) hy) σ = 0 := by
-  have hy1 : 1 < y := lt_trans (by
-    have := Real.add_one_le_exp 2; linarith) hy
-  have hy0 : 0 < y := by linarith
+/-- **A positive centre forces an off-line zero.** If `Re Λ_y(1/2) > 0`, the completed Epstein
+function has a real zero in `(1/2, 1)`: the pole `y⁻¹/(1 − σ)` drives it to `−∞` at `1⁻`. -/
+theorem exists_epsteinLambda_eq_zero_of_half_pos (hy0 : 0 < y)
+    (hR0' : 0 < (epsteinLambda y hy0 ((1 / 2 : ℝ) : ℂ)).re) :
+    ∃ σ : ℝ, 1 / 2 < σ ∧ σ < 1 ∧ epsteinLambda y hy0 σ = 0 := by
   -- the real function whose zero we locate
   set R : ℝ → ℝ := fun σ => (epsteinLambda y hy0 σ).re
-  -- positivity at the centre
-  have hlog : 2 < Real.log y := by
-    rw [Real.lt_log_iff_exp_lt hy0]; exact hy
-  have hR0 : 0 < R (1 / 2) := by
-    have := epsteinLambda_half_re_ge hy1; simp only [R]; linarith
+  have hR0 : 0 < R (1 / 2) := hR0'
   -- negativity near `1`
   have hcont1 : ContinuousAt (fun σ : ℝ => ((rectFEPair y hy0).Λ₀ (σ : ℂ)).re) 1 :=
     Complex.continuous_re.continuousAt.comp
@@ -281,6 +276,37 @@ theorem exists_epsteinLambda_eq_zero (hy : Real.exp 2 < y) :
   simp only [R] at hRσ
   rw [epsteinLambda_ofReal, Complex.ofReal_re] at hRσ
   rw [hRσ, Complex.ofReal_zero]
+
+/-- **Epstein fakes.** For `y > e²` the completed Epstein function of the rectangular lattice
+`ℤ ⊕ yℤ` has a real zero in `(1/2, 1)`. -/
+theorem exists_epsteinLambda_eq_zero (hy : Real.exp 2 < y) :
+    ∃ σ : ℝ, 1 / 2 < σ ∧ σ < 1 ∧
+      epsteinLambda y (lt_trans (Real.exp_pos 2) hy) σ = 0 := by
+  have hy1 : 1 < y := lt_trans (by have := Real.add_one_le_exp 2; linarith) hy
+  have hlog : 2 < Real.log y := by
+    rw [Real.lt_log_iff_exp_lt (by linarith)]; exact hy
+  refine exists_epsteinLambda_eq_zero_of_half_pos _ ?_
+  have := epsteinLambda_half_re_ge hy1
+  linarith
+
+/-- **The other end.** For `0 < y < e^{−2}` the completed Epstein function of `ℤ ⊕ yℤ` also has a
+real zero in `(1/2, 1)`: by the functional equation `Λ_y(1/2) = y⁻¹ Λ_{1/y}(1/2) > 0`. -/
+theorem exists_epsteinLambda_eq_zero_of_lt (hy0 : 0 < y) (hy : y < Real.exp (-2)) :
+    ∃ σ : ℝ, 1 / 2 < σ ∧ σ < 1 ∧ epsteinLambda y hy0 σ = 0 := by
+  have hinv : Real.exp 2 < 1 / y := by
+    rw [lt_one_div (Real.exp_pos 2) hy0, ← Real.exp_neg]; exact hy
+  have hy1 : 1 < 1 / y := lt_trans (by have := Real.add_one_le_exp 2; linarith) hinv
+  have hlog : 2 < Real.log (1 / y) := by
+    rw [Real.lt_log_iff_exp_lt (by positivity)]; exact hinv
+  refine exists_epsteinLambda_eq_zero_of_half_pos hy0 ?_
+  have hfe := epsteinLambda_one_sub hy0 ((1 / 2 : ℝ) : ℂ)
+  have hhalf : (1 : ℂ) - ((1 / 2 : ℝ) : ℂ) = ((1 / 2 : ℝ) : ℂ) := by push_cast; norm_num
+  rw [hhalf] at hfe
+  rw [hfe, Complex.re_ofReal_mul]
+  have h := epsteinLambda_half_re_ge hy1
+  have hpos : 0 < (epsteinLambda (1 / y) (one_div_pos.mpr hy0) ((1 / 2 : ℝ) : ℂ)).re := by
+    linarith
+  exact mul_pos (one_div_pos.mpr hy0) hpos
 
 /-- `e² < 8`. -/
 theorem exp_two_lt_eight : Real.exp 2 < 8 := by
