@@ -693,9 +693,9 @@ theorem negIndex_archGlue_axialAssembly_ratCorr_ge {S : Finset Nat.Primes} (hS :
       exact ⟨⟨q, hqS⟩, mem_filter.mpr ⟨mem_univ _, hnb⟩, rfl⟩
   rw [hcard]
   refine sum_le_sum fun p _ => ?_
-  split_ifs with hnb
-  · exact hpol_ge p hnb
-  · exact zero_le
+  by_cases hnb : ((p : Nat.Primes) : ℕ) ∉ zetaBlindPrimes
+  · rw [if_pos hnb]; exact hpol_ge p hnb
+  · rw [if_neg hnb]; exact zero_le
 
 /-- **Untruncated axial replication divergence.** On the non-RH finite stratum
 `0 < κ(K_ζ) < ⊤`, the glued negative index of `axialAssembly S ratCorr` diverges to `⊤` along the

@@ -45,6 +45,8 @@ lives, what Castelnuovo–Severi says, what a Künneth square adds, and what sep
 | Margin | `SelectiveMultiscaleArithmeticPositivity.HasHyperplaneGap` | `g` with `P_N(ωx) ≤ (log N − γ − g + ε)|x|²` on the pole hyperplane |
 | Separation | `HodgeSeparates` | just above `ζ`'s ceiling the Hodge index holds for `ζ` and fails for `ω`, infinitely often |
 | Separation from a base gauge | `HodgeSeparatesFrom` | the same, measured against a gauge `ω₀` of margin `g`; the `2`-adic probe uses the `2`-flip |
+| Polar moment, prime mean, logarithmic prime mass | `polarMoment`, `primeMean`, `primeSetLogMass` | `M(N) = Σ_{n≤N} (ω(n)/n) log(N/n)`, `Σ_{p≤n} ω(p) log p/p`, `Σ_{p∈P, p≤n} log p/p` |
+| Residue-class primes | `residueClassPrimes` | the primes `≡ r mod q` |
 | Critical zeros seen by the spline; on-line configuration | `criticalSeen`, `zetaOnLine` | zeros `1/2 + iγ` with `B̂(γ) ≠ 0`; the on-line part of `K_ζ` as a Bohr series |
 | Band poles of the loop-Eisenstein factor | `reflectionPoles` | zeros of `Λ(s + 1)` with `−1/2 < Re s < 0` |
 | Heat dilation kernel | `AdelicKreinGeometry.heatDilationKernel` | the correlation of `H_t`, glued as `heatArchState` |
@@ -64,6 +66,8 @@ lives, what Castelnuovo–Severi says, what a Künneth square adds, and what sep
 - **Hodge defect**: the hyperplane index `boostPolarIndex K`; the Hodge index is defect `0`.
 - **Margin** of a sign gauge: its largest hyperplane gap; `ζ` has the maximal margin `2 log 2`,
   set by the conductor-`2` excitation.
+- **Relative logarithmic density** `κ` of a prime set `P`: `Σ_{p∈P, p≤n} log p/p = κ log n + O(1)`;
+  its flip has prime mean `β = 1 − 2κ`.
 
 ## 4. Mechanisms
 
@@ -134,6 +138,16 @@ lives, what Castelnuovo–Severi says, what a Künneth square adds, and what sep
    the archimedean glue adds one square, so the Hodge defect of `K_t` is the zero count, which only
    drops, by one per conjugate pair colliding on the real line.
 
+**Wirsing.**
+20. The Chebyshev identity turns the logarithmic moment of a completely multiplicative `ω` into
+   `Σ_d Λ(d)ω(d)/d · L(N/d)`; Abel summation of the prime mean `β log t + O(1)` against `L(N/k)`
+   costs the total variation of `L`, at most `H_N`, and the divisor swap returns the polar moment.
+   So `L(N) log N = (1 + β)M(N) + O(log N)` with `M(N + 1) − M(N) = L(N) Δlog N`.
+21. Bernoulli twice: to first order `A(log N)^b` is a supersolution of the recursion for
+   `b > |1 + β|`; to second order the drift of `M/(log N)^{1+β}` is bounded by a telescoping
+   difference of `(log N)^{−β}`, so `M/(log N)^{1+β} ± G(log N)^{−β}` are monotone envelopes that
+   pinch a limit: `L(N) = C(log N)^β + O(1)`.
+
 ## 5. Pillar theorems
 
 | Pillar | Lean | Status |
@@ -162,6 +176,7 @@ lives, what Castelnuovo–Severi says, what a Künneth square adds, and what sep
 | The atomic Hodge index separates `ζ` from a sign gauge iff the gauge's margin is below `2 log 2`: separated are Liouville, every gauge with `S_N² = o(log N)`, every cofinite flip, the prime flips `p < 11`, and exactly those flips of an arbitrary prime set (finite or infinite) whose greatest gap is below `2 log 2`; not separated are the prime flips `p ≥ 11` and every gauge with `S_N/H_N → 1`. With the `2`-adic probe (the index measured against the `2`-flip of `ζ`) every nontrivial prime-set twin of positive harmonic density is separated; every twin flipping all primes outside a set of positive harmonic density has bounded harmonic sums and is separated | `hodgeSeparates_liouville_mul_primeSetFlip`, `abs_harmonicSum_liouville_mul_primeSetFlip_le`, `hodgeSeparates_iff_not_hasHyperplaneGap`, `hodgeSeparates_primeSetFlip_iff`, `hodgeSeparates_cofiniteFlip`, `hodgeSeparatesFrom_iff`, `hodgeSeparates_or_probe_primeSetFlip`, `eventually_poleNegIndex_gauge_eq_zero_of_hasHyperplaneGap`, `frequently_one_le_poleNegIndex_gauge_of_not_hasHyperplaneGap`, `hodgeSeparates_liouville`, `hodgeSeparates_of_harmonicSum_small`, `hodgeSeparates_primeFlip_iff`, `not_hodgeSeparates_of_correlation` | unconditional |
 | The renormalized Hodge index is the Hodge index of the scaling surface, and a sign-free Serre-dual `h⁰` with quadratic Riemann–Roch growth exists iff it holds | `renormalizedHodgeIndex_ratCorr_iff_scalingSurface_hodgeIndex`, `renormalizedHodgeIndex_ratCorr_iff_exists_serreDual_h0` | equivalences |
 | The loop-Eisenstein intertwining factor `Λ(s)/Λ(s+1)` has exactly `κ^{(½)}(K_ζ)` denominator zeros in the band `−1/2 < Re s < 0`; the Hodge index is their absence | `boostPolarIndex_ratCorr_eq_encard_reflectionPoles`, `renormalizedHodgeIndex_iff_reflectionPoles_eq_empty`, `riemannHypothesis_iff_reflectionPoles_eq_empty` | unconditional; equivalences |
+| Wirsing for twins: `L(N) log N = (1 + β)M(N) + O(log N)`; `|L(N)| ≪ (log N)^{b−1}` for `b > |1 + β|`; `L(N) = C(log N)^β + O(1)` for `0 < β ≤ 1`; a flip of relative logarithmic density `κ` has `L(N) = C(log N)^{1−2κ} + O(1)` for `κ < 1/2`, bounded `L` for `κ > 1/2`, and is separated for `κ > 1/4`; residue-class twins with `φ(q) < 4`, among them the flips of the primes `≡ 1` and `≡ 3 mod 4`, are separated | `exists_abs_wirsing_equation_le`, `exists_abs_gaugeHarmonicSum_le_rpow`, `exists_abs_gaugeHarmonicSum_sub_rpow_le`, `exists_abs_gaugeHarmonicSum_primeSetFlip_sub_rpow_le`, `exists_abs_gaugeHarmonicSum_primeSetFlip_le_const`, `hodgeSeparates_primeSetFlip_of_primeSetLogMass`, `exists_abs_primeSetLogMass_residueClassPrimes_sub_le`, `exists_abs_gaugeHarmonicSum_residueClassFlip_sub_rpow_le`, `hodgeSeparates_residueClassFlip`, `hodgeSeparates_primeSetFlip_one_mod_four`, `hodgeSeparates_primeSetFlip_three_mod_four` | unconditional |
 | Heat flow: Hodge defect of `K_t` = nonreal right zeros of `H_t` = pairs colliding after `t`; nonincreasing, jumps at collisions, zero for `t ≥ 1/8`; RH = Hodge index along the flow | `boostPolarIndex_heatDilationKernel`, `boostPolarIndex_heat_eq_sum_collisionPairs`, `antitoneOn_boostPolarIndex_heat`, `exists_left_boostPolarIndex_heat_eq_add_collisionPairs`, `renormalizedHodgeIndex_heat_of_eighth_le`, `riemannHypothesis_iff_forall_renormalizedHodgeIndex_heat`, `boostPolarIndex_ratCorr_lt_top_iff_bdd_heat` | unconditional; equivalence |
 
 ## 6. Tools
@@ -198,10 +213,12 @@ The tools named in the founding question, and where they live:
 - The on-line part of `K_ζ` as a Bohr series, and the lattice count that leaves infinitely many
   critical zeros seen by the spline.
 - Separation from a base gauge and the `2`-adic probe for prime-set twins.
+- The Wirsing bound and asymptotic for logarithmic sums of completely multiplicative `|ω| ≤ 1` with
+  a prime mean: the Levin–Fainleib equation and the Bernoulli envelopes.
 
 **To build.**
-- A margin theory for prime-set twins whose flipped and unflipped primes both have divergent
-  reciprocal sums.
+- A margin theory for prime-set twins of relative logarithmic density `κ ≤ 1/4` and for prime sets
+  without a relative density.
 - A function-field version of the extremal-weight gluing theorem (the quantization of its exponents
   is proved).
 
@@ -218,7 +235,7 @@ The tools named in the founding question, and where they live:
 | Is the collision quantum an index? | Yes: along the heat flow the Hodge defect of `K_t` is the number of conjugate pairs colliding after time `t`, and it drops by one per colliding pair. At `t = 0` the hyperplane index is bounded by the largest horizontal collision charge and, on the finite stratum, the collision mass is twice the index plus the multiplicity excess (HKT). |
 | What separates `ℤ` from `𝔽_q[T]`? | Density of the extremal weight: dense exponents for two primes, a lattice over one prime and over `𝔽_q[T]`. |
 | Why are negative directions confined to low conductors? | At fixed overlap: the low spectrum lives on the low conductors (`RenormalizedArithmeticPotentialTheory.TheLowCompleteWeilSpectrumLivesOnTheLowConductors`), the pole class carries the bottom and the hyperplane sits a gap above it. At iterated-logarithmic overlap the Hodge index holds. At `(log N)^α`, `α < 1/19`, it holds on fixed and slowly growing conductor packets, and on all of `v_1^⊥` it is RH for every `α > 0` with a smooth profile: confinement uniform over packets at any power of the logarithm is exactly the missing sign. |
-| Does the pairing select `ζ` among its twins? | Yes. The glued test index is `κ(K_ζ) + 1` for `ζ` and `∞` for every finite flip twin. At atomic resolution the Hodge index separates `ζ` from a sign gauge exactly when the gauge's margin is below `2 log 2`: the Liouville twin, every cofinite flip, every gauge with `S_N² = o(log N)`, the prime flips `p < 11`, and every prime-set twin of submaximal greatest gap. Measured against the `2`-flip (the `2`-adic probe) it separates every nontrivial prime-set twin of positive harmonic density, the flips of primes `≥ 11` included, and it separates every twin flipping all primes outside a set of positive harmonic density. What remains are flips of sets `P` for which both `Σ_{p∈P} 1/p` and `Σ_{p∉P} 1/p` diverge. |
+| Does the pairing select `ζ` among its twins? | Yes. The glued test index is `κ(K_ζ) + 1` for `ζ` and `∞` for every finite flip twin. At atomic resolution the Hodge index separates `ζ` from a sign gauge exactly when the gauge's margin is below `2 log 2`: the Liouville twin, every cofinite flip, every gauge with `S_N² = o(log N)`, the prime flips `p < 11`, and every prime-set twin of submaximal greatest gap. Measured against the `2`-flip (the `2`-adic probe) it separates every nontrivial prime-set twin of positive harmonic density, the flips of primes `≥ 11` included, and it separates every twin flipping all primes outside a set of positive harmonic density. Among the flips of sets `P` for which both `Σ_{p∈P} 1/p` and `Σ_{p∉P} 1/p` diverge, the Wirsing asymptotic separates every one of relative logarithmic density `κ > 1/4`, the residue-class twins mod `3`, `4`, `6` included. Open: `κ ≤ 1/4` and sets without a relative density. |
 | Is there a global carrier of the sign? | The loop Eisenstein series: the intertwining factor `Λ(s)/Λ(s+1)` of its constant term has exactly as many denominator zeros in the band `−1/2 < Re s < 0` as the pairing has negative squares on the pole-orthogonal hyperplane. |
 | Is the heat flow a homotopy of glued states? | Yes: the Hodge defect of `K_t` is the number of nonreal right zeros of `H_t`; it is nonincreasing, drops by one per colliding pair, vanishes for `t ≥ 1/8`; RH is the Hodge index along the whole flow, and finite defect at `t = 0` is bounded defect along the flow. |
 | What is `h⁰` on the scaling surface, and its Serre dual? | On the base, the theta log-volume `h⁰` of `Spec ℤ` with exact linear Riemann–Roch (`ArithmeticOrientationGeometry.TheThetaH0OfSpecZ`). On the surface, a sign-free `h⁰` with Serre dual `h¹ = h⁰(K − ·)`, quadratic Riemann–Roch growth and subquadratic degree-zero growth exists iff the renormalized Hodge index holds (`renormalizedHodgeIndex_ratCorr_iff_exists_serreDual_h0`): it is the same datum as the sign, so it cannot be built before the sign is proved. |
@@ -232,11 +249,12 @@ The tools named in the founding question, and where they live:
 2. The positive index of `K_ζ` on the infinite stratum (it is infinite on the finite stratum and
    for the on-line part); with it the Künneth square would be all-or-nothing by the same mechanism on
    both strata (the dichotomy itself is already proved).
-3. Prime-set twins for which both `Σ_{p∈P} 1/p` and `Σ_{p∉P} 1/p` diverge (for instance the primes
-   `≡ 1 mod 4`): the atomic Hodge index with its `2`-probe separates every nontrivial prime-set twin
-   of positive density and every twin whose unflipped primes have positive density; in between the
-   harmonic sums are `o(log N)` but not bounded, and neither the cutoff description of the gap nor
-   the bounded-sum criterion applies.
+3. Prime-set twins of relative logarithmic density `κ ≤ 1/4` (for instance one unit class mod `5`,
+   `8`, `10` or `12`, where `κ = 1/4`) and prime sets without a relative density. For `κ < 1/2` the
+   harmonic sum is `C(log N)^{1−2κ} + O(1)`; above `1/4` this is `o(√log N)` and the twin is
+   separated, at and below `1/4` the criterion `S_N² = o(log N)` fails unless `C = 0`, and the
+   margin itself must be computed. Identifying `C` with the Euler-product constant of Wirsing's
+   theorem decides `C ≠ 0`.
 
 ## 9. Traps
 
@@ -258,6 +276,7 @@ The tools named in the founding question, and where they live:
 | The Liouville twin escapes selection because it flips every prime | Its margin is `0`, so the atomic Hodge index separates it |
 | The atomic Hodge index separates every twin | It separates exactly the margins below `2 log 2`; flips of primes `≥ 11` keep `ζ`'s margin and need the `2`-adic probe |
 | The heat flow could create Hodge defect | The defect only drops, one per colliding pair |
+| Twins whose flipped and unflipped primes both have divergent reciprocal sums escape the atomic Hodge index | At relative logarithmic density `κ > 1/4` the Wirsing asymptotic gives `S_N² = o(log N)`: the flips of the primes `≡ 1` or `≡ 3 mod 4` are separated |
 
 ## 10. Context
 
@@ -272,6 +291,7 @@ The tools named in the founding question, and where they live:
 | SquareRootThreshold | zero width, tempered configurations |
 | ArithmeticCastelnuovoSeveri, ArithmeticKunnethTheory | finite-field calibration (Frobenius span), golden datum failing the Hodge index, depth-homogeneity of spectral products |
 | SelectiveMultiscaleArithmeticPositivity, ArithmeticCountingPositivity | hyperplane gaps (margins) of sign gauges and their classification for prime flips |
+| RHTower (Mertens, Chebyshev identity), RenormalizedArithmeticPotentialTheory (Mertens in residue classes) | Mertens with bounded error, `log = 1 * Λ` for completely multiplicative twists, class Mertens sums |
 
 In the RH research map RIT sits on the seam of the three wall families: the sign (Σ) is the
 hyperplane positivity, the count (Π) enters through the zero width and the running counterterm, and
@@ -290,7 +310,7 @@ The criteria the field must meet, and where they stand:
 | Quadratic Riemann–Roch | Equivalent to the renormalized Hodge index (`renormalizedHodgeIndex_ratCorr_iff_exists_serreDual_h0`); linear Riemann–Roch for the base in ArithmeticOrientationGeometry |
 | One topology for both readings | Dense exponents with two primes; continuity against height decay in AdelicKreinGeometry |
 | Integrality | Indices are integers: Hodge defects in `ℕ∞`, so any bound below `1` is the Hodge index |
-| Zero-independence and twin sensitivity | Glued test index and atomic Hodge index separate `ζ` from its twins |
+| Zero-independence and twin sensitivity | Glued test index and atomic Hodge index separate `ζ` from its twins, including the twins of relative logarithmic density `κ > 1/4` (residue-class twins mod `3`, `4`, `6`) |
 
 The field is developed when each question of §7 has a Lean theorem that answers it — an equivalence,
 a classification or a no-go — and each tool of §6 is used by a pillar. It succeeds when one of its sign

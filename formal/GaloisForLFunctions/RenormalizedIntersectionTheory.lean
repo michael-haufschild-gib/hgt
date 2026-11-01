@@ -15,6 +15,8 @@ import GaloisForLFunctions.RenormalizedIntersectionTheory.TheInfiniteProductOfLo
 import GaloisForLFunctions.RenormalizedIntersectionTheory.TheHeatFlowIsAHomotopyOfHodgeDefects
 import GaloisForLFunctions.RenormalizedIntersectionTheory.TheQuadraticRiemannRochIsTheRenormalizedHodgeIndex
 import GaloisForLFunctions.RenormalizedIntersectionTheory.TheLoopEisensteinReflectionCarriesTheHodgeDefect
+import GaloisForLFunctions.RenormalizedIntersectionTheory.TheWirsingBoundForFlipTwins
+import GaloisForLFunctions.RenormalizedIntersectionTheory.TheResidueClassTwinsAreSeparated
 
 /-!
 # Renormalized Intersection Theory of the Scaling Surface
@@ -23,6 +25,6 @@ Umbrella for the renormalized intersection pairing of scaling correspondences: p
 gluing of local poles and the extremal weight, the Künneth inertia law of tensor kernels and the
 Hadamard powers of Weil's kernel, the renormalized Hodge index on the pole-orthogonal hyperplane at
 fixed and growing overlap, the pole class as the ground conductor of the complete Weil matrix,
-selection of `ζ` among its twins by the glued index and by alignment, and the heat flow as a
-homotopy of Hodge defects. See `RenormalizedIntersectionTheory/README.md`.
+selection of `ζ` among its twins by the glued index, by alignment and by the Wirsing asymptotic of
+their harmonic sums, and the heat flow as a homotopy of Hodge defects. See `RenormalizedIntersectionTheory/README.md`.
 -/

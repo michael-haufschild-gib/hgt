@@ -870,6 +870,12 @@ private theorem abs_fullWeilCenterMatrix_mode_inner_le (α : ℝ) {m N : ℕ}
       add_le_add hpole_part hcol_part
     _ ≤ 100 * |α| * (1 + Real.log m) / Real.sqrt (Real.log N) := by
       have h0 : 0 ≤ |α| * (1 + Real.log m) / Real.sqrt (Real.log N) := by positivity
+      have h97 : 2 * |α| * (1 + Real.log m) / Real.sqrt (Real.log N) +
+          95 * |α| * (1 + Real.log m) / Real.sqrt (Real.log N) =
+          97 * (|α| * (1 + Real.log m) / Real.sqrt (Real.log N)) := by ring
+      have h100 : 100 * |α| * (1 + Real.log m) / Real.sqrt (Real.log N) =
+          100 * (|α| * (1 + Real.log m) / Real.sqrt (Real.log N)) := by ring
+      rw [h97, h100]
       linarith only [h0]
 
 /-! ## Section 3: Single-Mode Prime-Matrix Residual Bound Across All Conductors `m * m ≤ N` -/
@@ -2834,7 +2840,7 @@ private theorem mode_overlap_downward_regime_I {φ : ℝ → ℝ}
             rw [hexp, Real.rpow_one]
           have hpos : ((N : ℝ) ^ (1 / 5 : ℝ)) ^ 2 ≠ 0 :=
             pow_ne_zero 2 (Real.rpow_pos_of_pos hN0 _).ne'
-          rw [one_div_pow, div_eq_div_iff hN0.ne' hpos, one_pow]
+          rw [one_div_pow, div_eq_div_iff hN0.ne' hpos]
           linarith only [hsum]
         calc
           Y ^ 2 = (c ^ 4 * (m : ℝ) ^ 2 * Real.log N) / N := by

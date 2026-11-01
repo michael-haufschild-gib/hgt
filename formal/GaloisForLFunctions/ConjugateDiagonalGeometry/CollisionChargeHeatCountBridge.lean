@@ -562,7 +562,7 @@ theorem exists_polyHeat_nonreal_root_inward_drift {A : ℝ} (hA : 1 / 4 < A) :
       simp [z₃, hv_pos.ne', abs_of_pos hAu_pos, hAu_lt]
     rw [Multiset.filter_add, Multiset.filter_add, Multiset.filter_singleton,
       Multiset.filter_singleton, Multiset.filter_singleton, if_neg ht1, if_pos ht2, if_pos ht3,
-      Multiset.card_add, Multiset.card_add, Multiset.card_empty, Multiset.card_singleton,
+      Multiset.empty_eq_zero, zero_add, Multiset.card_add, Multiset.card_singleton,
       Multiset.card_singleton]
 
 /-! ## §3. Forward real-zero stability at `t ≥ 0` and moving-barrier windowed descent -/

@@ -101,17 +101,17 @@ open ArithmeticCastelnuovoSeveri in
 /-- **Over `𝔽_q` the defect involution is the circle reflection**, which fixes exactly the unit
 circle. -/
 theorem circleReflect_eq_self_iff {z : ℂ} (hz : z ≠ 0) :
-    CurveDatum.circleReflect z = z ↔ ‖z‖ = 1 := by
+    circleReflect z = z ↔ ‖z‖ = 1 := by
   constructor
   · intro h
     have hn := congrArg norm h
-    rw [CurveDatum.norm_circleReflect] at hn
+    rw [norm_circleReflect] at hn
     have hpos : 0 < ‖z‖ := norm_pos_iff.mpr hz
     have : ‖z‖ * ‖z‖ = 1 := by
       calc ‖z‖ * ‖z‖ = ‖z‖⁻¹ * ‖z‖ := by rw [hn]
         _ = 1 := inv_mul_cancel₀ hpos.ne'
     nlinarith
-  · exact CurveDatum.circleReflect_of_norm_one
+  · exact circleReflect_of_norm_one
 
 open ArithmeticCastelnuovoSeveri in
 /-- From window `2g` on, the Hodge defect of a curve datum is the number of Frobenius eigenvalues
@@ -119,7 +119,7 @@ moved by the circle reflection outside the unit circle. -/
 theorem hermNegIndex_spanGram_eq_card_moved {ι : Type*} [Fintype ι] (D : CurveDatum ι) {n : ℕ}
     (hn : Fintype.card ι ≤ n) :
     HTGeometry.hermNegIndex (D.spanGram n) =
-      (D.spectrum.filter fun z => CurveDatum.circleReflect z ≠ z ∧ 1 < ‖z‖).card := by
+      (D.spectrum.filter fun z => circleReflect z ≠ z ∧ 1 < ‖z‖).card := by
   rw [D.pontryagin_law_curve.2 n hn, CurveDatum.outerSpectrum]
   congr 1
   refine Finset.filter_congr fun z _ => ?_

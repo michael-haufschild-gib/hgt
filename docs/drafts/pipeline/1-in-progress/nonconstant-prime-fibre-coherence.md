@@ -2,6 +2,7 @@
 
 - **ID:** critical-rigidity-nonconstant-prime-fibre
 - **Stage:** 1-in-progress
+- **Disposition:** Paused with the parent programme. No further research authorized.
 - **Type:** CANDIDATE
 - **Question:** Does removing the generator's global pole output make its norm uniformly bounded relative to adjunction energy?
 

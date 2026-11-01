@@ -14,14 +14,21 @@ For a completely multiplicative `ω` with `|ω| ≤ 1` the logarithmic sum
 * the Chebyshev identity `log n = Σ_{d ∣ n} Λ(d)` gives
   `Σ_{n ≤ N} ω(n) log n / n = Σ_{d ≤ N} Λ(d) ω(d)/d · L(N/d)` (`logMoment_eq_vonMangoldt`).
 
-If the primes carry the mean `Σ_{p ≤ N} ω(p) log p/p = β log N + O(1)`, the prime terms average `L`
-against `β d log t`, the prime powers cost `O(log N)`, and the equation becomes
-`L(N) log N = (1 + β) M(N) + O(log N)` (`exists_abs_wirsing_equation_le`). A discrete Gronwall argument
-then gives `|L(N)| ≪ (log N)^{b − 1}` for every `b > 1` with `b ≥ |1 + β|`
-(`exists_abs_gaugeHarmonicSum_le_rpow`). For `β < 1/2` this is `L(N)² = o(log N)`.
+If the primes carry the mean `Σ_{p ≤ N} ω(p) log p/p = β log N + O(1)`, Abel summation against
+`β d log t` (the total variation of `k ↦ L(N/k)` is at most `H_N`) and the divisor swap turn the prime
+terms into `β M(N) + O(log N)`; the prime powers cost `O(log N)`. So
+`L(N) log N = (1 + β) M(N) + O(log N)` (`exists_abs_wirsing_equation_le`).
 
-For the flip of a set of primes of relative logarithmic density `κ`, `β = 1 − 2κ`
-(`TheWirsingBoundSeparatesTheDenseFlips`).
+* **Bound** (`exists_abs_gaugeHarmonicSum_le_rpow`): `|L(N)| ≪ (log N)^{b − 1}` for every `b ≥ 1`,
+  `b > |1 + β|`: the comparison sequence `A (log N)^b` absorbs the forcing by Bernoulli.
+* **Asymptotic** (`exists_abs_gaugeHarmonicSum_sub_rpow_le`): for `0 < β ≤ 1`,
+  `L(N) = C (log N)^β + O(1)`: `M/(log N)^{1+β} ± G (log N)^{−β}` are monotone envelopes, since the
+  drift of `M/(log N)^{1+β}` is a second-order Bernoulli remainder.
+
+For the flip of a set of primes of relative logarithmic density `κ`, `β = 1 − 2κ`: the harmonic sum is
+`C (log N)^{1 − 2κ} + O(1)` for `κ < 1/2`, bounded for `κ > 1/2`, and `o(√log N)` for `κ > 1/4`, where
+the atomic Hodge index separates the twin from `ζ`
+(`hodgeSeparates_primeSetFlip_of_primeSetLogMass`).
 -/
 
 open Finset Filter

@@ -35,7 +35,7 @@ Set `δ=η/8`. Choose `log P ≥ C₀(K+1)/δ`, `log A ≥ 2(K+L(P))/δ`, and
 `log R ≤ C₂(K+1)/η²`,
 `C₂ = 64[54(2(C₀+3)+2(log 4+4))+49]`.
 
-The reverse gap constant is consequently `256C₂`. Explicit conditioning, weighted approximation, and quadratic confinement compile with only `propext`, `Classical.choice`, and `Quot.sound`. Conditioning passed its final direct audit; the other two direct audits remain pending.
+The reverse gap constant is consequently `256C₂`. Explicit conditioning, weighted approximation, and quadratic confinement passed final direct audits with only `propext`, `Classical.choice`, and `Quot.sound`.
 
 ## Numerical prime coercivity
 
@@ -120,6 +120,25 @@ The proposed weighted residual bound is
 Indeed `m⁴/E_m(c)² ≤ κ⁻²(c¹⁴/m¹⁰+m⁴)`, and `Σ_(m≥1)m⁻¹⁰≤2`.
 The Lean proof is drafted but unverified. This separates the low-conductor
 condition `19α<1` from the high-conductor condition `5q+5α<1`.
+
+The full tail reserve permits cross bound `C_cross√(c⁹)`, since the reverse gap
+already gives `W(w)≥4C_cross²c⁹‖w‖²`. With the cubic prime residual below,
+its prime condition is `c³⁹/L→0`. Put `τ=(1−45α)/20`, `q=8α+τ`,
+`ν=min(τ/4,1/1000)`, and `k=ceil(1/τ)+1`. Then `4α−q/2≤−ν`,
+`5q+5α+1/k−1≤−ν`, and `19α+1/k−1≤−ν`. These give the candidate range
+`α<1/45`. The main proof and its new transfers are not yet verified.
+
+`SuccessorShellArithmetic.Conductor.PrimeConductorResidualNorm` contains
+`exists_primeResidual_packet_sq_le`: the complete prime packet residual costs
+`C(1+log R)³/log N · Σa_m²`. Its proof sums exact prime-dilation energy and its
+first logarithmic moment before completing the common scalar Mertens row.
+This improves the fourth power used by the present orthogonal cross bound.
+Its source is available; the dependency build and cross-bound transfer remain.
+
+The exact normalized lag quotient and the explicit Mertens bound give the
+candidate estimate `|c_m(h)|/φ(m) ≤ 512(h/m)^(3/4)`. Replacing the crude
+harmonic interval mass `O(c)` by `O(1+log c)` would reduce the overlap mean
+to `O(c^(7/4)(1+log c)/Q^(3/4))`. The coefficient proof is drafted, unverified.
 
 ## Gates
 

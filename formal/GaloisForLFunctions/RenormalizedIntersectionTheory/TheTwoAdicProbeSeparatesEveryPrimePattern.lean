@@ -106,4 +106,26 @@ theorem primeSetFlip_trivial_or_hodgeSeparates_or_probe (P : Set ℕ) :
     rw [primeSetFlip_eq_finiteFlip_of_le P le_rfl, he]
     simp only [finiteFlip, prod_empty]
 
+/-- The two fixed margin tests characterize the trivial prime pattern exactly. -/
+theorem primeSetFlip_two_margins_iff_trivial (P : Set ℕ) :
+    (HasHyperplaneGap (primeSetFlip P) (2 * Real.log 2) ∧
+      HasHyperplaneGap (fun n => finiteFlip {2} n * primeSetFlip P n)
+        (finiteFlipGreatestGap {2})) ↔ (∀ n, primeSetFlip P n = 1) := by
+  have hF : ∀ p ∈ ({2} : Finset ℕ), p.Prime := by simp [Nat.prime_two]
+  have hbase := (finiteFlip_hasHyperplaneGap_iff_le_greatestGap {2} hF _).mpr le_rfl
+  constructor
+  · rintro ⟨hplain, hprobe⟩
+    rcases primeSetFlip_trivial_or_hodgeSeparates_or_probe P with h | h | h
+    · exact h
+    · exact False.elim ((hodgeSeparates_iff_not_hasHyperplaneGap (primeSetFlip_mul_self P)).mp h hplain)
+    · have hnot := (hodgeSeparatesFrom_iff (fun n _ => finiteFlip_mul_self {2} n)
+        (fun n _ => by rw [mul_mul_mul_comm, finiteFlip_mul_self, primeSetFlip_mul_self, one_mul])
+        hbase).mp h
+      exact False.elim (hnot hprobe)
+  · intro h
+    have he : primeSetFlip P = fun _ => 1 := funext h
+    rw [he]
+    simp only [mul_one]
+    exact ⟨zeta_hasHyperplaneGap_two_mul_log_two, hbase⟩
+
 end GaloisForLFunctions.RenormalizedIntersectionTheory

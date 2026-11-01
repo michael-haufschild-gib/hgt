@@ -176,6 +176,7 @@ theorem tendsto_harmonicConductorPacket_energy (S : Finset ℕ) (hS : ∀ m ∈ 
     rw [← real_inner_self_eq_norm_sq]
     simp only [harmonicConductorPacket, map_sum, map_smul, sum_inner, inner_sum,
       real_inner_smul_left, real_inner_smul_right, mul_sum, ← sum_sub_distrib]
+    rw [sum_comm]
     apply sum_congr rfl fun m _ => sum_congr rfl fun l _ => ?_
     dsimp only [harmonicPrimeEnergyPair]
     ring

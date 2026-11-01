@@ -8,20 +8,14 @@
 
 ## Consequence
 
-The existing strict finite-flip comparison would extend the atomic Hodge
+The strict finite-flip comparison extends the atomic Hodge
 index or its two-adic probe to every nontrivial prime-set flip, without a
 density or harmonic cancellation assumption.
 
-## Argument under investigation
-
-1. For fixed `d`, `S(N/d) = S(N) + O_d(1)` by bounded sign coefficients.
-2. Fixed Ramanujan correlations are `S(N)` times the finite Euler conductor
-   coefficient, with bounded error.
-3. A positive gap forces `S(N)² ≥ c log N` along a cofinal subsequence
-   (`frequently_harmonicSum_sq_ge_of_hasHyperplaneGap`).
-4. On that subsequence, bounded correlation errors vanish relative to
-   `S(N)`. Fixed conductor quasimodes then transfer a finite-cutoff witness
-   with exact hyperplane correction.
+Equivalently, the two fixed tests
+`HasHyperplaneGap ω_P (2 log 2)` and
+`HasHyperplaneGap (ω_{ {2} }·ω_P) (finiteFlipGreatestGap {2})`
+hold together exactly when `ω_P` is identically one.
 
 ## Paper proof — dependency closed
 
@@ -43,7 +37,9 @@ This enforces exact orthogonality to the prime-pattern constraint, and
 the packet's limiting shifted energy
 `Σ b_m²(E_m−γ−s)≥0` for every `0<s<g`.
 
-For any finite set `S` of conductors at least two, put
+The universal ceiling gives `g≤2 log 2`, while `E_m−γ≥2 log 2` for `m≥2`.
+Thus every following denominator is positive. For any finite set `S` of
+conductors at least two, put
 `T=Σ_{m∈S}β_m²/(E_m−γ−s)`, `b_1=−T`, and
 `b_m=β_m/(E_m−γ−s)` on `S`. The constraint is exact because `β_1=1`.
 The energy inequality reads `T−sT²≥0`, hence `T≤1/s`.
@@ -53,8 +49,16 @@ most zero throughout `0<s<g`. The finite-prime secular classification gives
 the claimed upper bound. Nonpositive gaps follow directly from the same
 classification's vacuous interval.
 
+For selection, if `2∈P`, the cutoff containing `2` bounds the actual gap
+strictly below `2 log 2`. If `2∉P` and `p∈P` is prime, a cutoff of
+`insert 2 P` contains `{2,p}`. Strict finite-flip monotonicity bounds its
+gap below the gap of `{2}`. These are precisely the two Hodge measurements.
+The trivial pattern passes both tests by the known ground and two-flip gaps.
+
 ## Lean status
 
 Proof sources: `ArithmeticCountingPositivity/RelativePrimePatternCoordinates`
-and `EveryPrimePatternInheritsFiniteCutoffUpperBounds`. Initial compilation
-pending; no theorem counted before complete direct checks and axiom audits.
+and `EveryPrimePatternInheritsFiniteCutoffUpperBounds`, followed by
+RIT `TheTwoAdicProbeSeparatesEveryPrimePattern`.
+Lean verification is ongoing; no theorem counted before complete direct
+checks and axiom audits.

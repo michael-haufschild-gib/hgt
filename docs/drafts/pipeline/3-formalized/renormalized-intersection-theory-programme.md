@@ -50,10 +50,15 @@ Answer the questions of §2.6 with unconditional theorems (equivalences, classif
 - Loop Eisenstein: `boostPolarIndex_ratCorr_eq_encard_reflectionPoles`,
   `riemannHypothesis_iff_reflectionPoles_eq_empty`.
 - Density: `not_dense_exponents_of_quantized` (commensurable place sizes, `𝔽_q[T]`).
+- Wirsing for twins: `exists_abs_wirsing_equation_le`, `exists_abs_gaugeHarmonicSum_le_rpow`,
+  `exists_abs_gaugeHarmonicSum_sub_rpow_le`, `exists_abs_gaugeHarmonicSum_primeSetFlip_sub_rpow_le`,
+  `hodgeSeparates_primeSetFlip_of_primeSetLogMass`, `hodgeSeparates_residueClassFlip`,
+  `hodgeSeparates_primeSetFlip_one_mod_four`, `hodgeSeparates_primeSetFlip_three_mod_four`.
 
 ## Open
 Hodge index on schedules between `(log log N)^{<1/16}` (proved) and `(log N)^{α}`, every `α > 0` (= RH); positive index of `K_ζ` on the infinite stratum;
-infinite flip sets of maximal margin (invisible to the atomic Hodge index, not finite flips).
+infinite flip sets of maximal margin (invisible to the atomic Hodge index, not finite flips);
+flip twins of relative logarithmic density `κ ≤ 1/4` or without a relative density.
 
 ## Log
 - 2026-10-31 — created; formalized pillars listed above

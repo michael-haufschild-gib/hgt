@@ -35,7 +35,10 @@ local notation "γ" => Real.eulerMascheroniConstant
 
 private theorem primeSetRamanujanSum_one (P : Set ℕ) (N : ℕ) :
     primeSetRamanujanSum P 1 N = gaugeHarmonicSum (primeSetFlip P) N := by
-  simp [primeSetRamanujanSum_eq, moebiusReal, primeSetFlip, primeSignGauge]
+  have h1 : primeSetFlip P 1 = 1 := by
+    rw [primeSetFlip_eq_finiteFlip_of_le P le_rfl]
+    simp [finiteFlip]
+  simp [primeSetRamanujanSum_eq, moebiusReal, h1]
 
 private theorem primeSet_inner_ground (P : Set ℕ) (N : ℕ) :
     ⟪primeSetHorizonVector P N, harmonicRamanujanHorizonVector 1 N⟫ =
@@ -87,7 +90,7 @@ theorem primeSet_gap_le_finite_diagonal_form (P : Set ℕ) {g s : ℝ}
           (if m = 1 then R j • harmonicRamanujanHorizonVector 1 (ν j) else 0) := by
       by_cases hm : m = 1
       · subst m
-        simp only [a, if_pos rfl, sub_smul]
+        simp only [a, if_pos rfl, ite_true, sub_smul]
       · simp only [a, if_neg hm, sub_zero]
     simp only [harmonicConductorPacket, he, sum_sub_distrib]
     congr 1
@@ -97,12 +100,13 @@ theorem primeSet_gap_le_finite_diagonal_form (P : Set ℕ) {g s : ℝ}
     · exact fun h => False.elim (h h1)
   have horth : ∀ᶠ j in atTop,
       ⟪primeSetHorizonVector P (ν j), harmonicConductorPacket S (a j) (ν j)⟫ = 0 := by
-    filter_upwards [hlarge.eventually_gt_atTop 0] with j hj
+    filter_upwards [hlarge.eventually_gt_atTop 0, hν.eventually_ge_atTop 1] with j hj hN
     have hn := abs_pos.mp hj
+    have hH := gaugeHarmonicSum_one_pos hN
     rw [hpacket, inner_sub_right, real_inner_smul_right, primeSet_inner_packet P S hS,
       primeSet_inner_ground]
     dsimp only [R]
-    field_simp
+    field_simp [hn, hH.ne'] <;> ring
   obtain ⟨N₀, hN₀⟩ := hgap (g - s) (sub_pos.mpr hsg)
   have hnonneg : ∀ᶠ j in atTop,
       0 ≤ (Real.log (ν j) - (γ + s)) * ‖harmonicConductorPacket S (a j) (ν j)‖ ^ 2 -
@@ -116,9 +120,12 @@ theorem primeSet_gap_le_finite_diagonal_form (P : Set ℕ) {g s : ℝ}
     have h := hbound (harmonicConductorPacket S (a j) (ν j)) hj
     nlinarith only [h]
   have h := ge_of_tendsto (tendsto_harmonicConductorPacket_energy S hS hν ha (γ + s)) hnonneg
-  convert h using 1
-  apply sum_congr rfl fun m _ => ?_
-  ring
+  have he : (∑ m ∈ S, b m ^ 2 * (ramanujanAdjunctionEnergy m - (γ + s))) =
+      ∑ m ∈ S, b m ^ 2 * (ramanujanAdjunctionEnergy m - γ - s) := by
+    apply sum_congr rfl fun m _ => ?_
+    ring
+  rw [← he]
+  exact h
 
 private theorem primeSet_relative_one (P : Set ℕ) :
     primeSetMobius P 1 / Real.sqrt (Nat.totient 1 : ℝ) = 1 := by

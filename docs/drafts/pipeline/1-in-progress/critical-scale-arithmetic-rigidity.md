@@ -5,6 +5,7 @@
 - **Type:** CANDIDATE
 - **Source:** `docs/reports/review-3110/astra.md`, section 6
 - **Statement:** Develop source-specific joint successor–dilation rigidity and relative signed-energy estimates at growing arithmetic scales.
+- **Disposition:** Paused at user request. Finish existing Lean drafts and verification only; no further research expansion.
 
 ## Goal
 
@@ -29,3 +30,5 @@ Determine the strongest unconditional rigidity and mixed-energy consequences of 
 ## Open input
 
 No relative complete-form estimate at an RH-complete schedule, near-band power saving, or signed prime-surplus bound is asserted. These remain objectives, not premises.
+
+The packet and prime-generator results have not improved the complete-Weil positivity range, a zero-free strip, or the critical-line census. Their extension to the full signed form is unproved.

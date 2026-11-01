@@ -1,5 +1,6 @@
 import GaloisForLFunctions.CriticalScaleArithmeticRigidity.VanishingEnergyCharge
 import GaloisForLFunctions.CriticalScaleArithmeticRigidity.AdjunctionResidualCoercivity
+import Mathlib.Analysis.Complex.ExponentialBounds
 
 /-!
 # Source charge survives vanishing physical input

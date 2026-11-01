@@ -11,6 +11,8 @@ This programme studies which signed states remain compatible with the joint arit
 
 The finite-packet foundation consists of exact joint arithmetic rigidity and source-preserving sampling theorems. The complete critical-scale questions require these tools to interact with the full signed form and its exceptional states.
 
+These results do not improve the established complete-Weil positivity range, a zero-free strip, or the critical-line census. The missing step is a signed estimate for the complete form, including its mixed complementary block; the prime-generator bounds alone do not supply it.
+
 ## Objects and language
 
 | Object | Meaning |

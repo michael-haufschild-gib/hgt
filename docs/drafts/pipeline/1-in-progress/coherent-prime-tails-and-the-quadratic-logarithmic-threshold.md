@@ -2,6 +2,7 @@
 
 - **ID:** critical-rigidity-coherent-prime-tail-threshold
 - **Stage:** 1-in-progress
+- **Disposition:** Paused with the parent programme. No further research authorized.
 - **Type:** CANDIDATE
 - **Question:** Is the quadratic logarithmic conductor cost in the relative prime residual optimal?
 

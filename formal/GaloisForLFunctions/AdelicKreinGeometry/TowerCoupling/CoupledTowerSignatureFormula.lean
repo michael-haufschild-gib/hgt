@@ -74,6 +74,7 @@ theorem denseShifts_projS {S : Finset Nat.Primes} (hS : 2 ≤ S.card) :
       (twoPrimeLattice p.2 q.2).subtype h := by
     rw [map_mul, map_zpow, map_zpow, posUnitsToHecke_primeUnit, posUnitsToHecke_primeUnit]
     exact hmn
+  dsimp only
   rw [hproj, hhecke]
 
 /-- **Coupled `S`-tower index of any tempered orbit kernel.** Every finite prime set of cardinality
@@ -168,6 +169,7 @@ private theorem poleWeight_cx_im_eq_zero (f : ℝ → ℝ) :
       ((∫ x : ℝ, (∫ t : ℝ, f t * f (t - x)) * Real.exp (-x / 2) : ℝ) : ℂ) := by
     rw [poleWeight, paperFT, ← integral_complex_ofReal]
     refine integral_congr_ae (Eventually.of_forall fun x => ?_)
+    dsimp only
     have hexp : I * (I / 2) * (x : ℂ) = ((-x / 2 : ℝ) : ℂ) := by
       push_cast; ring_nf; rw [I_sq]; ring
     rw [hreal x, hexp, ← Complex.ofReal_exp, Complex.ofReal_mul]
@@ -177,10 +179,12 @@ private theorem polePart_transl_weilTest_cx (f : ℝ → ℝ) (u : posUnits) :
     RHTower.WeilSpectral.polePart
         (RHTower.WeilSpectral.transl (-logPos u) (EF.weilTest (cx f) (cx f))) =
       ((poleWeight (cx f)).re : ℂ) * polePair u := by
+  let r : ℝ := (poleWeight (cx f)).re
+  change _ = (r : ℂ) * polePair u
   have him := poleWeight_cx_im_eq_zero f
-  have hpw : poleWeight (cx f) = ((poleWeight (cx f)).re : ℂ) :=
+  have hpw : poleWeight (cx f) = (r : ℂ) :=
     Complex.ext rfl (by simp [him])
-  have htilde : paperFT (EF.weilTest (cx f) (cx f)) (-I / 2) = ((poleWeight (cx f)).re : ℂ) := by
+  have htilde : paperFT (EF.weilTest (cx f) (cx f)) (-I / 2) = (r : ℂ) := by
     have hc : conj (-I / 2) = I / 2 := by rw [map_div₀, map_neg, Complex.conj_I, neg_neg, map_ofNat]
     conv_lhs => rw [← RHTower.WeilSpectral.tilde_weilTest_self (cx f)]
     rw [EF.paperFT_tilde, hc, ← poleWeight, hpw, Complex.conj_ofReal]
@@ -193,11 +197,10 @@ private theorem polePart_transl_weilTest_cx (f : ℝ → ℝ) (u : posUnits) :
     have hu := posUnits_val_pos u
     have hrp : ((((u : ℚˣ) : ℚ) : ℝ)) ^ (1 / 2 : ℝ) = Real.exp (logPos u / 2) := by
       rw [Real.rpow_def_of_pos hu, logPos]; congr 1; ring
-    rw [polePair, hrp, ← Real.exp_neg]
+    rw [polePair, hrp, ← Real.exp_neg, neg_div]
   rw [RHTower.WeilSpectral.polePart, RHTower.WeilSpectral.paperFT_transl,
     RHTower.WeilSpectral.paperFT_transl, ← poleWeight, hpw, htilde, he1, he2,
-    ← Complex.ofReal_exp, ← Complex.ofReal_exp, hpp]
-  push_cast
+    ← Complex.ofReal_exp, ← Complex.ofReal_exp, hpp, Complex.ofReal_add]
   ring
 
 theorem sTruncatedCorr_eq_nonPole_add_polePair (S : Finset Nat.Primes) (u : posUnits) :
@@ -292,7 +295,7 @@ private theorem tendsto_sTruncatedCorrNonPole_logPos_atTop (S : Finset Nat.Prime
   have ha_lim : Tendsto (fun y : ℝ => RHTower.WeilSpectral.archPart
       (RHTower.WeilSpectral.transl (-y) K)) atTop (𝓝 0) := by
     have hconj := (continuous_conj.tendsto 0).comp
-      (RHTower.WeilSpectral.tendsto_archPart_transl (k := K))
+      (RHTower.WeilSpectral.tendsto_archPart_transl (K := K))
     rw [map_zero] at hconj
     refine hconj.congr fun y => ?_
     simp only [Function.comp_apply]
@@ -403,14 +406,16 @@ theorem sTruncatedCorr_eq_ratCorr_of_abs_logPos_le {B : ℝ} {S : Finset Nat.Pri
       · obtain ⟨p, hp_le, k, _, hp, hk_pos, hpn⟩ :=
           (isPrimePow_nat_iff_bounded n).mp
             (ArithmeticFunction.vonMangoldt_ne_zero_iff.mp hΛ)
-        have hp_not_S : (⟨p, hp⟩ : Nat.Primes) ∉ S := fun hmem =>
-          hs ⟨⟨p, hp⟩, hmem, k, hk_pos, hpn.symm⟩
-        have hp_not_box : (⟨p, hp⟩ : Nat.Primes) ∉ primeBox (⌊Real.exp (B + 8)⌋₊ + 1) :=
+        let pP : Nat.Primes := ⟨p, hp⟩
+        have hp_not_S : pP ∉ S := fun hmem =>
+          hs ⟨pP, hmem, k, hk_pos, hpn.symm⟩
+        have hp_not_box : pP ∉ primeBox (⌊Real.exp (B + 8)⌋₊ + 1) :=
           fun hmem => hp_not_S (hS hmem)
-        rw [mem_primeBox, not_lt] at hp_not_box
+        have hp_ge : ⌊Real.exp (B + 8)⌋₊ + 1 ≤ p :=
+          not_lt.mp (hp_not_box ∘ mem_primeBox.mpr)
         have hexp_lt : Real.exp (B + 8) < (n : ℝ) :=
           (Nat.lt_floor_add_one (Real.exp (B + 8))).trans_le
-            (by exact_mod_cast hp_not_box.trans hp_le)
+            (by exact_mod_cast hp_ge.trans hp_le)
         have hn_pos : (0 : ℝ) < (n : ℝ) := by exact_mod_cast (by omega : 0 < n)
         have hlog_gt : B + 8 < Real.log n := (Real.lt_log_iff_exp_lt hn_pos).mpr hexp_lt
         obtain ⟨hu_lo, hu_hi⟩ := abs_le.mp hu

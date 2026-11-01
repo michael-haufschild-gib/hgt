@@ -31,7 +31,7 @@ theorem primeAdjunctionMass_removeConstantConductor (Q : ℕ) (a : ℕ → ℝ) 
   intro m _
   by_cases hm : m = 1
   · subst m
-    simp only [removeConstantConductor, if_pos rfl, Nat.cast_one, Real.log_one,
+    simp only [removeConstantConductor, Nat.cast_one, Real.log_one,
       SelectiveMultiscaleArithmeticPositivity.tameDifferent_one, zero_add, zero_mul]
   · simp only [removeConstantConductor, if_neg hm]
 
@@ -44,9 +44,9 @@ theorem coefficient_mass_le_adjunction_gap (Q : ℕ) (a : ℕ → ℝ) :
   intro m hm
   by_cases hm1 : m = 1
   · subst m
-    simp only [removeConstantConductor, if_pos rfl, zero_pow two_ne_zero,
+    simp only [removeConstantConductor, if_true, zero_pow two_ne_zero,
       mul_zero, Nat.cast_one, Real.log_one,
-      SelectiveMultiscaleArithmeticPositivity.tameDifferent_one, zero_add, zero_mul]
+      SelectiveMultiscaleArithmeticPositivity.tameDifferent_one, zero_add, zero_mul, le_refl]
   · rw [removeConstantConductor, if_neg hm1]
     have hgap := (SelectiveMultiscaleArithmeticPositivity.ramanujanAdjunctionEnergy_sub_one_ge
       (show 2 ≤ m by have := (mem_Icc.mp hm).1; omega)).1

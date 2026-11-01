@@ -2,6 +2,7 @@
 
 - **ID:** critical-rigidity-relative-prime-form
 - **Stage:** 1-in-progress
+- **Disposition:** Paused with the parent programme. No further research authorized.
 - **Type:** CANDIDATE
 - **Question:** Does retaining adjunction energy enlarge the actual prime-form approximation regime from a cubic logarithmic residual cost to a quadratic one?
 
