@@ -33,12 +33,15 @@ README in the folder.
 - `TheIsotropicConeCountsDivisors`: cone count `Γ(2π)^{−σ}ζ²`, double pole, not Poisson-dual,
   Siegel–Weil identity.
 - `HeckeCorrespondencesAreSimilitudesOfThePrimitiveH1`, `TheIndexReadingsOfThePrimitiveH1`,
-  `TheCalibrationOverFiniteFields`.
+  `TheCalibrationOverFiniteFields`, `TheSelfDualPointHasNoRealZeros` (Λ_1 < 0 on (0,1)).
+- `ThePrimitiveH1OfPrimeFreeCyclesIsAJumpCount`: on prime-free tests `W = Ω(0)‖f‖² + J(f) + 2·pole`;
+  exterior jumps force `W ≥ ‖f‖²/4` for aperture `≤ 1/2000`.
 
 ## Open core
-Primitive `h¹ = ½W(f,f)` as a nonnegative count by an identity on prime-free tests. Known
-count-like representation: the Lévy decomposition of the archimedean collar (RHTower WeilLevy*),
-positivity by a pointwise potential bound; not an identity on the whole window.
+Primitive `h¹ = ½W(f,f)` as a nonnegative count. Prime-free: the jump-count identity is formalized
+and forces positivity up to aperture `1/2000`; exterior charge `½∫f²(W(a−x)+W(a+x))` would give
+`≈ 0.03`; the window `½ log 2` needs interior jumps (Lévy Poincaré on an interval) and the pole
+sign structure (`+2A²` even, `−2A²` odd). Beyond the window: the prime comb in the count.
 
 ## Log
-- 2026-11-01 — created with README first draft; pillars formalized (12 modules).
+- 2026-11-01 — created with README first draft; pillars formalized (14 modules).

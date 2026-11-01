@@ -33,10 +33,13 @@ unless the proved inverse-class criterion identifies them.
    bijectively to nonempty pair words, with source length twice pair length.
    [Paper proof and seventeen production audits](../3-formalized/gauss-mayer-primitive-pair-cycle-multiplicities.md).
    Ordinary digit primitivity is incorrect.
-3. Prove multiplier invariance under pair rotation and the exact power law
-   under repetition. Reindex the absolutely convergent even-word trace series:
-   its coefficient `1/n` must become `1/r` for a primitive cycle repeated `r`
-   times. Expand `(1−λ_c^(−2r))⁻¹` and sum the logarithmic factor series.
+3. **Multiplier laws certified:** pair rotation preserves the expanding
+   multiplier; repetition gives `λ(u^r)=λ(u)^r`. The source fixed-point
+   multiplier equals this matrix multiplier.
+   `GaussMayerPairMultiplier.lean` passed four production axiom audits.
+   Their assembly into the exact primitive-coordinate source term still
+   requires verification. Analytic reindexing must then change `1/n` to
+   `1/r`, expand `(1−λ_c^(−2r))⁻¹`, and sum the logarithmic factor series.
 4. **Certified:** Exact Gauss-word probability gives geometric absolute trace
    decay for `Re w>2`. The even-word identity now holds throughout `|z|≤1`,
    including `z=1`; the full word series converges absolutely and the actual
@@ -64,5 +67,5 @@ This is the missing determinant-to-modular-cycle bridge. It does not yet
 identify geometric geodesic lengths, prove the scattering normalization, or
 exclude complex resonances. The local determinant-to-even-word identity is
 certified through the closed unit disk for `Re w>2`. Primitive-cycle
-multiplicities are certified; multiplier laws, analytic reindexing and the
-Euler product remain open.
+multiplicities and multiplier laws are certified; their source-term assembly,
+analytic reindexing and the Euler product remain open.
