@@ -218,7 +218,25 @@ theorem exists_zeroFreeLogProfile_completeWeilMatrix_posDef_critical_overlap :
     have hec : Real.exp 1 ≤ c := (le_max_right A (Real.exp 1)).trans ((le_max_right 1 _).trans hKc)
     exact hlargeN c hAc (hbudgetN c hec hcup)
 
+/-- The same rough regime reaches a positive multiple of the exact sinc critical overlap. -/
+theorem exists_zeroFreeLogProfile_completeWeilMatrix_posDef_sincCritical_overlap :
+    ∃ ε : ℝ, 0 < ε ∧ ∀ᶠ N : ℕ in atTop, ∀ c : ℝ, 1 ≤ c →
+      c ≤ ε * sincCriticalOverlap N → (completeWeilMatrix zeroFreeLogProfile c N).PosDef := by
+  obtain ⟨ε, hε, hpos⟩ := exists_zeroFreeLogProfile_completeWeilMatrix_posDef_critical_overlap
+  have hD : 0 < 96 * Real.exp 1 := by positivity
+  refine ⟨ε / (96 * Real.exp 1), div_pos hε hD, ?_⟩
+  filter_upwards [hpos, eventually_sincCriticalOverlap_le] with N hN hcritical
+  intro c hc hcup
+  apply hN c hc
+  calc
+    c ≤ (ε / (96 * Real.exp 1)) * sincCriticalOverlap N := hcup
+    _ ≤ (ε / (96 * Real.exp 1)) * (96 * Real.exp 1 * dcScale N) :=
+      mul_le_mul_of_nonneg_left hcritical.1 (div_pos hε hD).le
+    _ = ε * dcScale N := by
+      rw [← mul_assoc, div_mul_cancel₀ ε hD.ne']
+
 end GaloisForLFunctions.TransMetzlerWeilPositivity
 
 #print axioms GaloisForLFunctions.TransMetzlerWeilPositivity.exists_zeroFreeLogProfile_positive_power_budget
 #print axioms GaloisForLFunctions.TransMetzlerWeilPositivity.exists_zeroFreeLogProfile_completeWeilMatrix_posDef_critical_overlap
+#print axioms GaloisForLFunctions.TransMetzlerWeilPositivity.exists_zeroFreeLogProfile_completeWeilMatrix_posDef_sincCritical_overlap

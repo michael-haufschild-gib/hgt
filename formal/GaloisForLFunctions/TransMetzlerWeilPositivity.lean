@@ -29,6 +29,7 @@ import GaloisForLFunctions.TransMetzlerWeilPositivity.ReceiverRate.ScaleAveragin
 import GaloisForLFunctions.TransMetzlerWeilPositivity.ReceiverRate.TheScaleAveragedSincProfile
 import GaloisForLFunctions.TransMetzlerWeilPositivity.ReceiverRate.TheZeroFreeLogarithmicProfile
 import GaloisForLFunctions.TransMetzlerWeilPositivity.ReceiverRate.TheZeroFreeLogarithmicProfileKeepsAQuantitativeReserve
+import GaloisForLFunctions.TransMetzlerWeilPositivity.ReceiverRate.TheLogarithmicFourierFloorHasAPowerLogBudget
 
 /-!
 # Trans-Metzler Complete Weil Positivity and the Overlap-Ratio Phase Diagram

@@ -16,8 +16,8 @@ aperture `a` whose transforms vanish at the pole `i/2` and on `D_a`: `2#D_a + 2`
   the subsurface is not trivial.
 * **Coercive primitive `h¹`** (`kunneth_primitive_h1_ge`). There the primitive `h¹` is coercive:
   `h¹(x) − h¹_K(x) = ½ W(f, f) ≥ ½ c_a ∫ f²` with `c_a = E(a)(1 − 1/π)`, `E(a) = 10 + 68 e^a`,
-  growing in the degree. The finite divisor removes exactly the directions where the primitive `h¹` could be
-  small or negative.
+  growing in the degree. The finite divisor removes exactly the directions where the primitive
+  `h¹` could be small or negative.
 
 So the genus of `ℤ` is a function of the degree: the finite divisor `D_a ∪ {i/2}`. Finite at
 every degree, unbounded as the degree grows; everything the Hodge index of `ℤ` still has to decide
