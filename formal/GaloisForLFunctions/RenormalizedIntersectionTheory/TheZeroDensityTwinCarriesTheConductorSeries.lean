@@ -6,7 +6,8 @@ import GaloisForLFunctions.RenormalizedArithmeticPotentialTheory.TheArchimedeanP
 /-!
 # The zero-density twin carries the conductor series
 
-Let `P` be a set of primes of relative logarithmic density `κ ∈ (0, 1/4)`, `ω = ω_P` its flip twin,
+Let `P` be a set of primes of relative logarithmic density `κ ∈ (0, 1/4)`, with error
+`|Σ_{p ∈ P, p ≤ n} log p/p − κ log n| ≤ C (1 + log n)^α`, `0 ≤ α < 1 − 2κ`; `ω = ω_P` its flip twin,
 `v = v_P` the normalized horizon vector (`primeSetHorizonVector`), `c_N` the harmonic correlation and
 `W_P(s) = Σ_{m≥2} w_P(m)/(E_m − γ − s)` the conductor series.
 
@@ -30,6 +31,12 @@ is `c_N (1 + o(1))` (the estimate applied to the excited part of the pole vector
 **Classification** (`hodgeSeparates_primeSetFlip_iff_packet`): a flip twin of relative log density
 `κ ∈ (0, 1/4)` is separated from `ζ` by the atomic Hodge index iff some finite packet of conductors has
 `Σ w_P(m)/(E_m − γ − s) > 1/s` for some `s ∈ (0, 2 log 2)`.
+
+**The matching lower bound** (`eventually_packet_le_excitedResolvent`): the excited resolvent vector
+of the finite flip below a scale `T > max S` carries every packet `S` exactly, so
+`ρ_{i₀}(v_P) ≥ c_N² (Σ_{m ∈ S} w_P(m)/(E_m − γ − s) − ε)` eventually; with the upper bound in resolvent
+form (`eventually_excitedResolvent_le_conductorSeries`) this gives `ρ_{i₀}(v_P)/c_N² → W_P(s)` whenever
+the conductor series converges (`eventually_abs_excitedResolvent_div_sub_le`).
 -/
 
 noncomputable section
@@ -518,7 +525,7 @@ theorem abs_inner_primeSetHorizonVector_sub_le (P : Set ℕ) {T N : ℕ} (hT : 1
     _ ≤ cN * θ * Real.sqrt G := by nlinarith
 
 /-- **The twin is a multiple of a finite flip up to `θ c_N` in energy norm.** Let `P` have relative
-log density `κ ∈ (0, 1/4)` and `0 < s < t`. For every `θ > 0` and `T₀` there is a scale `T ≥ T₀` such
+log density `κ ∈ (0, 1/4)` with error `O((1 + log n)^α)`, `α < 1 − 2κ`, and `0 < s < t`. For every `θ > 0` and `T₀` there is a scale `T ≥ T₀` such
 that, with `F` the flipped primes below `T`, eventually `c_N > 0` and, for every ground index `i₀`
 below `γ + t` and every `w ⊥ e_{i₀}`,
 `|⟨w, v_P⟩ − (c_N/δ_F)⟨w, v_F⟩| ≤ θ c_N √(Q_N(w) − s|w|²)`. -/
@@ -613,7 +620,7 @@ theorem exists_scale_inner_primeSetHorizonVector_sub_le (P : Set ℕ) {κ C α :
     hTch hK₂' hcN
 
 /-- **The spectral weight of a zero-density twin at precision `c_N²`.** Let `P` have relative log
-density `κ ∈ (0, 1/4)`, `0 < s < t < 2 log 2`, and let every partial sum of the conductor series
+density `κ ∈ (0, 1/4)` with error `O((1 + log n)^α)`, `α < 1 − 2κ`, `0 < s < t < 2 log 2`, and let every partial sum of the conductor series
 `Σ_{m ≥ 2} w_P(m)/(E_m − γ − s)` be at most `W`. Then for every `ε > 0`, eventually, for every ground
 index `i₀` below `γ + t` and every `w ⊥ e_{i₀}`,
 `⟨w, v_P⟩² ≤ c_N² (W + ε)(Q_N(w) − s|w|²)`. -/
@@ -942,7 +949,8 @@ theorem packet_le_finiteFlipSecular (P : Set ℕ) {s : ℝ} (hs : 0 < s) (hs2 : 
   have := conductorEnergy_gap (m := k + 2) (by omega)
   linarith
 
-/-- **The matching lower bound.** Let `P` have relative log density `κ ∈ (0, 1/4)` and
+/-- **The matching lower bound.** Let `P` have relative log density `κ ∈ (0, 1/4)` with error
+`O((1 + log n)^α)`, `α < 1 − 2κ`, and
 `0 < s < t < 2 log 2`. For every finite packet `S` of conductors `m ≥ 2` and every `ε > 0`, eventually,
 for every ground index `i₀` below `γ + t`,
 `c_N² (Σ_{m ∈ S} w_P(m)/(E_m − γ − s) − ε) ≤ ρ_{i₀}(v_P)`.
@@ -1041,7 +1049,7 @@ theorem eventually_harmonicCorrelation_pos (P : Set ℕ) {κ C α : ℝ} (hκ0 :
   exact div_pos (this.trans_le hS) hH0
 
 /-- **The excited spectral weight is the conductor series at precision `c_N²`.** Let `P` have relative
-log density `κ ∈ (0, 1/4)`, `0 < s < t < 2 log 2`, and let the conductor series
+log density `κ ∈ (0, 1/4)` with error `O((1 + log n)^α)`, `α < 1 − 2κ`, `0 < s < t < 2 log 2`, and let the conductor series
 `W_P(s) = Σ_{m ≥ 2} w_P(m)/(E_m − γ − s)` converge. Then for every `ε > 0`, eventually, for every ground
 index `i₀` below `γ + t`, `|ρ_{i₀}(v_P)/c_N² − W_P(s)| ≤ ε`. -/
 theorem eventually_abs_excitedResolvent_div_sub_le (P : Set ℕ) {κ C α : ℝ} (hκ0 : 0 < κ)
@@ -1092,7 +1100,7 @@ section Classification
 open GaloisForLFunctions.SelectiveMultiscaleArithmeticPositivity (ramanujanAdjunctionEnergy_one)
 
 /-- **The zero-density twins of a convergent conductor series keep the maximal margin.** If `P` has
-relative log density `κ ∈ (0, 1/4)` and every partial sum of `Σ_{m≥2} w_P(m)/(E_m − γ − s)` is at most
+relative log density `κ ∈ (0, 1/4)` with error `O((1 + log n)^α)`, `α < 1 − 2κ`, and every partial sum of `Σ_{m≥2} w_P(m)/(E_m − γ − s)` is at most
 `1/s` for every `s ∈ (0, 2 log 2)`, the flip twin has hyperplane gap `2 log 2`. -/
 theorem primeSetFlip_hasHyperplaneGap_of_conductorSeries (P : Set ℕ) {κ C α : ℝ} (hκ0 : 0 < κ)
     (hκ : κ < 1 / 4) (hα : 0 ≤ α) (hακ : α < 1 - 2 * κ)
@@ -1205,7 +1213,8 @@ theorem primeSetFlip_hasHyperplaneGap_of_conductorSeries (P : Set ℕ) {κ C α 
   have hnn : 0 ≤ ‖u‖ ^ 2 := sq_nonneg _
   nlinarith
 
-/-- **Classification of the flip twins of relative log density `κ ∈ (0, 1/4)`.** The atomic Hodge index
+/-- **Classification of the flip twins of relative log density `κ ∈ (0, 1/4)`** (error
+`O((1 + log n)^α)`, `α < 1 − 2κ`). The atomic Hodge index
 separates `ω_P` from `ζ` iff some finite packet of conductors `m ≥ 2` has
 `Σ w_P(m)/(E_m − γ − s) > 1/s` for some `s ∈ (0, 2 log 2)`. -/
 theorem hodgeSeparates_primeSetFlip_iff_packet (P : Set ℕ) {κ C α : ℝ} (hκ0 : 0 < κ)

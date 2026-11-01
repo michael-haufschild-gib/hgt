@@ -294,7 +294,7 @@ real zero in `(1/2, 1)`: by the functional equation `Λ_y(1/2) = y⁻¹ Λ_{1/y}
 theorem exists_epsteinLambda_eq_zero_of_lt (hy0 : 0 < y) (hy : y < Real.exp (-2)) :
     ∃ σ : ℝ, 1 / 2 < σ ∧ σ < 1 ∧ epsteinLambda y hy0 σ = 0 := by
   have hinv : Real.exp 2 < 1 / y := by
-    rw [lt_one_div (Real.exp_pos 2) hy0, ← Real.exp_neg]; exact hy
+    rw [lt_one_div (Real.exp_pos 2) hy0, one_div, ← Real.exp_neg]; exact hy
   have hy1 : 1 < 1 / y := lt_trans (by have := Real.add_one_le_exp 2; linarith) hinv
   have hlog : 2 < Real.log (1 / y) := by
     rw [Real.lt_log_iff_exp_lt (by positivity)]; exact hinv

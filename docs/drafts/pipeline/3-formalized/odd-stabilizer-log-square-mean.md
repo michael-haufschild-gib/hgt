@@ -1,13 +1,13 @@
 # Logarithmic square moment of the odd stabilizer mass
 
-- **Stage:** 1-in-progress
-- **Type:** CANDIDATE
+- **Stage:** 3-formalized
+- **Type:** THEOREM (Lean)
 - **Route:** Argon §4.1.
-- **Parent:** [Literal model calibration](parity-stabilizer-logarithmic-coalescent-calibration.md).
+- **Parent:** [Literal model calibration](../1-in-progress/parity-stabilizer-logarithmic-coalescent-calibration.md).
 
-## Target
+## Statement
 
-For `O(Q)=Σ_{q≤Q,odd}μ²(q)/φ(q)`, prove
+For `O(Q)=Σ_{q≤Q,odd}μ²(q)/φ(q)`, the limit is
 
 `Σ_{q≤Q,odd}(μ²(q)/φ(q))log²(Q/q) / log³Q → 1/6`.
 
@@ -39,6 +39,9 @@ Hence the difference from `log³Q/6` is at most
 
 ## Status
 
-Paper mechanism identified; Abel identity, floor interpolation, integral
-moments and limit transfer await Lean formalization. Existing ordinary
-logarithmic mean is reused unchanged.
+`TransThresholdPairCorrelation/OddStabilizerLogSquareMean.lean` proves
+`oddStabilizerLogSquareMass_eq_integral` and
+`tendsto_oddStabilizerLogSquareMass_div_log_cube`. Floor interpolation and
+both integral moments are included. Both transitive axiom audits use only
+`propext`, `Classical.choice` and `Quot.sound`; the final direct leaf check
+passes. Existing ordinary logarithmic mean is reused unchanged.

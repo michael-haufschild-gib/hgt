@@ -4,12 +4,14 @@ import GaloisForLFunctions.RenormalizedIntersectionTheory.TheZeroDensityTwinCarr
 # The conductor series converges below a quarter
 
 Let `P` have upper relative logarithmic density `κ < 1/4`:
-`Σ_{p ∈ P, p ≤ n} log p/p ≤ κ log n + C`. Then for `0 ≤ s < 2 log 2` the conductor series
+`Σ_{p ∈ P, p ≤ n} log p/p ≤ κ log n + C (1 + log n)^α`, `0 ≤ α < 1`. Then for `0 ≤ s < 2 log 2` the
+conductor series
 `W_P(s) = Σ_{m ≥ 2} w_P(m)/(E_m − γ − s)` converges (`summable_conductorSeries`).
 
 * **Prime sums** (`exists_sum_primeSetCutoff_rpow_le`): `Σ_{p ∈ P} p^{−1−σ} ≤ κ log(1/σ) + K` for
   `σ ∈ (0, 1]`, by Abel summation against the decreasing weight `n^{−σ}/log n`;
-  `Δlog n/log n ≤ Δ log log n` below `e^{1/σ}` and `σ Δlog n · n^{−σ} ≤ Δ(−n^{−σ})` above.
+  `Δlog n/log n ≤ Δ log log n` below `e^{1/σ}` and `σ Δlog n · n^{−σ} ≤ Δ(−n^{−σ})` above; the
+  power-weighted Abel error is bounded (`exists_powerAbel_le`).
 * **Euler product** (`sum_conductorLaplace_le`): `w_P(m) e^{−σ(E_m − γ)}` is multiplicative, the
   prime-power factors are at most `1 + 4p^{1−σ}/(p − 1)²`, so every packet has
   `Σ_{m ∈ S} w_P(m) e^{−σ(E_m − γ)} ≤ exp(4 Σ_{p ∈ P} p^{−1−σ} + 32) ≤ M σ^{−4κ}`.
@@ -17,7 +19,7 @@ Let `P` have upper relative logarithmic density `κ < 1/4`:
   `x ≥ x₀ > 0`; at `σ = 2^{−j−1}` the dyadic terms are `(2^{4κ}/2)^{j+1}`, summable as `4κ < 1`.
 
 With the spectral-weight theorems this makes the asymptotic unconditional: for relative log density
-`κ ∈ (0, 1/4)`, `ρ_{i₀}(v_P)/c_N² → W_P(s)` (`eventually_abs_excitedResolvent_div_sub_conductorSeries_le`),
+`κ ∈ (0, 1/4)` with error `O((1 + log n)^α)`, `α < 1 − 2κ`, `ρ_{i₀}(v_P)/c_N² → W_P(s)` (`eventually_abs_excitedResolvent_div_sub_conductorSeries_le`),
 `⟨w, v_P⟩² ≤ c_N² (W_P(s) + ε)(Q_N(w) − s|w|²)` off the ground (`eventually_inner_sq_le_tsum_conductorSeries`),
 and the twin is separated iff `W_P(s) > 1/s` for some `s ∈ (0, 2 log 2)`
 (`hodgeSeparates_primeSetFlip_iff_conductorSeries`).
@@ -750,7 +752,8 @@ theorem eventually_abs_excitedResolvent_div_sub_conductorSeries_le (P : Set ℕ)
         ∑' k : ℕ, primeSetSpectralWeight P (k + 2) / (ramanujanAdjunctionEnergy (k + 2) - γ - s)| ≤
         ε :=
   eventually_abs_excitedResolvent_div_sub_le P hκ0 hκ hα hακ hP hs hst ht2
-    (summable_conductorSeries P hκ0.le hκ hα (by linarith) (primeSetLogMass_le_of_abs P hP) hs.le (hst.trans ht2)) hε
+    (summable_conductorSeries P hκ0.le hκ hα (by linarith) (primeSetLogMass_le_of_abs P hP) hs.le
+      (hst.trans ht2)) hε
 
 /-- **The spectral-weight estimate with the exact constant**: off the ground,
 `⟨w, v_P⟩² ≤ c_N² (W_P(s) + ε)(Q_N(w) − s|w|²)` eventually. -/
@@ -763,8 +766,8 @@ theorem eventually_inner_sq_le_tsum_conductorSeries (P : Set ℕ) {κ C α : ℝ
         ⟪w, primeSetHorizonVector P N⟫ ^ 2 ≤ harmonicCorrelation (primeSetFlip P) N ^ 2 *
           ((∑' k : ℕ, primeSetSpectralWeight P (k + 2) /
             (ramanujanAdjunctionEnergy (k + 2) - γ - s)) + ε) * (primeEnergy N w - s * ‖w‖ ^ 2) := by
-  have hsum := summable_conductorSeries P hκ0.le hκ hα (by linarith) (primeSetLogMass_le_of_abs P hP) hs.le
-    (hst.trans ht2)
+  have hsum := summable_conductorSeries P hκ0.le hκ hα (by linarith)
+    (primeSetLogMass_le_of_abs P hP) hs.le (hst.trans ht2)
   refine eventually_inner_sq_le_conductorSeries P hκ0 hκ hα hακ hP hs hst ht2 (fun K => ?_) hε
   refine hsum.sum_le_tsum _ fun k _ => div_nonneg (div_nonneg (sq_nonneg _) (Nat.cast_nonneg _)) ?_
   have := conductorEnergy_gap (m := k + 2) (by omega)
@@ -787,7 +790,8 @@ theorem hodgeSeparates_primeSetFlip_iff_conductorSeries (P : Set ℕ) {κ C α :
   constructor
   · rintro ⟨s, hs, hs2, S, hS, h⟩
     refine ⟨s, hs, hs2, h.trans_le ?_⟩
-    have hsum := summable_conductorSeries P hκ0.le hκ hα (by linarith) (primeSetLogMass_le_of_abs P hP) hs.le hs2
+    have hsum := summable_conductorSeries P hκ0.le hκ hα (by linarith)
+      (primeSetLogMass_le_of_abs P hP) hs.le hs2
     have himg : ∑ m ∈ S, primeSetSpectralWeight P m / (ramanujanAdjunctionEnergy m - γ - s) =
         ∑ k ∈ S.image (· - 2), primeSetSpectralWeight P (k + 2) /
           (ramanujanAdjunctionEnergy (k + 2) - γ - s) := by
@@ -796,7 +800,8 @@ theorem hodgeSeparates_primeSetFlip_iff_conductorSeries (P : Set ℕ) {κ C α :
     rw [himg]
     exact hsum.sum_le_tsum _ fun k _ => hf0 s hs2 k
   · rintro ⟨s, hs, hs2, h⟩
-    have hsum := summable_conductorSeries P hκ0.le hκ hα (by linarith) (primeSetLogMass_le_of_abs P hP) hs.le hs2
+    have hsum := summable_conductorSeries P hκ0.le hκ hα (by linarith)
+      (primeSetLogMass_le_of_abs P hP) hs.le hs2
     obtain ⟨K, hK⟩ := (hsum.hasSum.tendsto_sum_nat.eventually (Ioi_mem_nhds h)).exists
     refine ⟨s, hs, hs2, (range K).image (· + 2), fun m hm => by
       obtain ⟨k, -, rfl⟩ := mem_image.mp hm; omega, ?_⟩

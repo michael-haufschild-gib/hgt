@@ -74,8 +74,9 @@ and reduces each degree-`D` contribution to a finite permutation sum. This is
 a symmetric multilinear form in the normalized prime-jet rows. Their
 separation forces the form to vanish; its diagonal is `D!` times the top
 homogeneous polynomial, contradicting a nonzero top coefficient.
-The common-atom expansion, exact polynomial frequency extraction, and actual
-jet-independence bridges are drafted but not yet certified.
+The common-atom expansion passes its scratch check; its production audit is
+pending. Exact polynomial frequency extraction and the actual jet-independence
+bridge are drafted but not yet certified.
 
 The corpus already supplies absolutely convergent product expansion
 (`ExponentialSeriesAlgebra.prod_expSeriesCarrier`) and coefficient extraction

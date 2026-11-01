@@ -56,12 +56,15 @@ dependency checks remain incomplete.
 
 ## Remaining proof obligations
 
-1. Prove the scale-averaged autocorrelation's smoothness, derivative bounds,
-   transform identity, and pointwise Fourier floor.
-2. Derive the Gamma reserve and completed-conductor floor for this profile.
-3. Track dependence on these floors through spectral confinement and residual
-   assembly; choose a positive `ε` satisfying every resulting exponent bound.
-4. Formalize the concrete positivity theorem without analytic assumptions.
+The profile, derivative bound, Fourier floor, Gamma reserve, conductor floor,
+reciprocal-floor power bound, and complete prime-defect reserve pass Lean with
+standard axioms only.
+
+1. Check the drafted conductor-band decoupling, spectral confinement, and residual
+   assembly with actual overlap bounded by the auxiliary parameter `T`.
+2. Check the concrete positivity theorem and its exact `sincCriticalOverlap`
+   corollary without analytic assumptions.
+3. Complete direct module audits and umbrella integration.
 
 ## Gates
 

@@ -340,13 +340,13 @@ private theorem complete_reserve_cost_mono {c T δ : ℝ}
   have heps : 0 ≤ δ / 8 := by positivity
   have hnr : nonRatioRelativeCost c (δ / 8) ≤ nonRatioRelativeCost T (δ / 8) := by
     unfold nonRatioRelativeCost
-    apply add_le_add_right
+    refine add_le_add ?_ le_rfl
     apply div_le_div_of_nonneg_right _ heps
     exact mul_le_mul_of_nonneg_left hsq
       (by have := nonRatioUpConstant_pos; have := nonRatioDownConstant_pos; positivity)
   have hp : poleRelativeCost c (δ / 8) ≤ poleRelativeCost T (δ / 8) := by
     unfold poleRelativeCost
-    apply add_le_add_left
+    refine add_le_add le_rfl ?_
     apply div_le_div_of_nonneg_right _ heps
     exact mul_le_mul_of_nonneg_left hsq (by have := hardyConstant_pos; positivity)
   linarith only [hgamma, hnr, hp]

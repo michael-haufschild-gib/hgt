@@ -7,8 +7,8 @@ import Mathlib.Analysis.MeanInequalitiesPow
 
 Fix a roughness `T`. Peeling one prime at a time (`gaugeHarmonicSum_roughGauge_prime`:
 `S_p(Y) = S_{p+1}(Y) + (ω(p)/p) S_p(Y/p)`) transports the Wirsing asymptotic of `ω` to the
-`T`-rough sums: if `S(Y) = c (log Y)^β + O(1)` with `0 < β ≤ 1`, then
-`S_T(Y) = c Π_{p<T}(1 − ω(p)/p) (log Y)^β + O_T(1)` (`exists_abs_roughSum_sub_le`), since
+`T`-rough sums: if `S(Y) = c (log Y)^β + O((1 + log Y)^α)` with `0 < β ≤ 1`, `α ≥ 0`, then
+`S_T(Y) = c Π_{p<T}(1 − ω(p)/p) (log Y)^β + O_T((1 + log Y)^α)` (`exists_abs_roughSum_sub_le`), since
 `(log Y)^β − (log Y/p)^β ≤ (log 2p)^β` by subadditivity of `t ↦ t^β`. With `ω = 1`, `β = 1` this is
 `F_T(Y) = Π_{p<T}(1 − 1/p) log Y + O_T(1)`.
 
@@ -647,8 +647,8 @@ theorem defect_error_le {c B G₁ G₂ G₀ θ L β α : ℝ} (hc : 0 ≤ c) (hB
       _ = θ / 2 * (L ^ α * L ^ (β - α)) := by ring
   linarith
 
-/-- **The fixed-scale defect.** For a flip twin of relative log density `κ ∈ (0, 1/2)` and fixed
-`T ≥ 3`, with `δ_T` the Euler density of the flipped primes below `T`,
+/-- **The fixed-scale defect.** For a flip twin of relative log density `κ > 0` with error
+`O((1 + log n)^α)`, `0 ≤ α < 1 − 2κ`, and fixed `T ≥ 3`, with `δ_T` the Euler density of the flipped primes below `T`,
 `Σ_{a ≤ N, T-smooth} (δ_T H_N S_T(N/a) − S_N F_T(N/a))²/(a F_T(N/a)) ≤ ε δ_T² H_N S_N²` eventually.
 Equivalently, the `T`-rough means `S_T/F_T` on the fibres equal `c_N/δ_T` up to `o(c_N)` in the
 harmonic `L²` sense. -/

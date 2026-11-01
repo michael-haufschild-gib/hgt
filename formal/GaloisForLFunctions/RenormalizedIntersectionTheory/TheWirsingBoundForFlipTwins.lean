@@ -24,6 +24,9 @@ terms into `β M(N) + O(log N)`; the prime powers cost `O(log N)`. So
 * **Asymptotic** (`exists_abs_gaugeHarmonicSum_sub_rpow_le`): for `0 < β ≤ 1`,
   `L(N) = C (log N)^β + O(1)`: `M/(log N)^{1+β} ± G (log N)^{−β}` are monotone envelopes, since the
   drift of `M/(log N)^{1+β}` is a second-order Bernoulli remainder.
+* **Power error** (`exists_abs_gaugeHarmonicSum_sub_rpow_le_rpow`): if the prime mean is
+  `β log n + O((1 + log n)^α)` with `0 ≤ α < β ≤ 1`, the forcing is `O((log N)^{1+α})`, it telescopes
+  against `(log N)^{α−β}`, and `L(N) = C (log N)^β + O((log N)^α)`.
 
 For the flip of a set of primes of relative logarithmic density `κ`, `β = 1 − 2κ`: the harmonic sum is
 `C (log N)^{1 − 2κ} + O(1)` for `κ < 1/2`, bounded for `κ > 1/2`, and `o(√log N)` for `κ > 1/4`, where

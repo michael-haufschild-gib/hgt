@@ -61,13 +61,16 @@ cosine-taper compatibility and actual signed prime discrepancy remain open.
 The [uniform coprime-harmonic average](../3-formalized/coprime-harmonic-conductor-average.md)
 bounds the all-conductor weighted error by `36864(1+log Q)` for arbitrary
 positive horizons. Its supporting logarithmic moment is at most 576.
-Weighted taper summation, odd-base quadrature and the
-[logarithmic square mean](odd-stabilizer-log-square-mean.md) remain to complete
-the global model calculation.
+The [logarithmic square mean](../3-formalized/odd-stabilizer-log-square-mean.md)
+is formalized with exact coefficient 1/6 and a finite Abel identity.
+The [odd-base quadrature estimate](../3-formalized/odd-stabilizer-spatial-quadrature.md)
+is also formalized, including exact taper support and conductor aggregation
+`K T(1+L+log((Q+1)T))(1+log Q)`. Weighted coprime-harmonic taper summation
+and global signed assembly remain open.
 
 ## Completion gates
 
 - [ ] Each route's arithmetic conjecture proved or precisely falsified.
-- [ ] Every dependency-closed new theorem and positive survivor formalized.
-- [ ] Leaf checks, transitive axiom audits, umbrella imports.
-- [ ] Requested strip/proportion consequences proved, or exact remaining gaps recorded without claiming those consequences.
+- [x] Every dependency-closed new theorem and positive survivor formalized.
+- [x] Leaf checks, transitive axiom audits, umbrella imports.
+- [x] Exact remaining strip/proportion gaps recorded; no improved consequence claimed.

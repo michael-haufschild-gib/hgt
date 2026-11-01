@@ -72,15 +72,13 @@ actual signed prime-minus-model bound remain separate open inputs.
 
 ## Primitive spatial quadrature
 
-Existing right-endpoint Lipschitz quadrature suffices. For
-`F(x)=g(log x)Ω(cx)`, x≥1, the proved taper Lipschitz bound and fixed-profile
-bound `Lip(Ω)≤M/T` give `Lip(F)≤2+LMc/T`. At odd mesh two, with
-`N=ceil(T/c)`, the error from half the integral is at most
-`4T/c+(4+6M)L` when L≥1 and 0<c≤2T.
+The [odd-base quadrature theorem](../3-formalized/odd-stabilizer-spatial-quadrature.md)
+is formalized for the actual standard taper. For `F(x)=g(log x)Ω(cx)`,
+L,T≥1 and 0<c≤2T, the mesh-two error is `≤4T/c+CL`.
+Support vanishing identifies its auxiliary height cutoff with the exact taper
+cutoff `floor(exp L)`, for both the odd sum and integral.
 
-Only frequencies `c=πn/q≤2T` contribute. Summing `Tq/n+L` over these
-frequencies and then over A(q)=μ²(q)/φ(q)² uses the existing arithmetic
-first-moment bound and costs `O(T(1+L+log(QT))(1+log Q))`.
-This gives the intended `O(T log²T)` at polynomial cutoff, without a global
-bounded-variation extension. Support truncation, quadrature assembly and
-weighted coprime-harmonic transport remain to be formalized.
+The A(q)=μ²(q)/φ(q)²-weighted primitive-frequency aggregate over odd q≤Q
+is at most `K T(1+L+log((Q+1)T))(1+log Q)`. All three audits use standard
+axioms and the final direct leaf check passes. Weighted coprime-harmonic
+transport and global signed assembly remain open.

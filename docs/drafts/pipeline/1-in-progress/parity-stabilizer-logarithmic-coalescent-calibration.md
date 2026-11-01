@@ -101,8 +101,9 @@ is formalized for arbitrary positive horizons N(q):
 Its pointwise divisor bound is uniform even when N<q; the supporting
 logarithmic moment is `Σ μ²(q)(1+log q)/φ(q)²≤576`.
 
-Weighted taper summation and odd-base quadrature remain to convert this into
-raw error `O(T log²T)`. The [odd logarithmic square moment](odd-stabilizer-log-square-mean.md)
-should supply coefficient 1/6 from the existing odd mean 1/2. Aperture
-boundary estimates and global summation remain open before asserting the model
-calibration.
+[Odd-base quadrature](../3-formalized/odd-stabilizer-spatial-quadrature.md)
+now has aggregate bound `K T(1+L+log((Q+1)T))(1+log Q)`, with exact taper
+support truncation. The [odd logarithmic square moment](../3-formalized/odd-stabilizer-log-square-mean.md)
+proves coefficient 1/6 by an exact Abel identity and the existing odd mean 1/2.
+Weighted coprime-harmonic taper summation, aperture/boundary estimates and
+global signed assembly remain open.

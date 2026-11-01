@@ -149,6 +149,8 @@ everything else unconditionally.
 | Actual standard taper: Lipschitz constant two and endpoint variation `≤C O(Q)/T` | `StabilizerTaperTransport.lean` | uniform in taper length, collar and monotone transition profile |
 | Literal ordered-pair model = finite logarithmic rows + taper variation; global anchoring error `≤C floor(X) O(Q)/T` | `StabilizerModelRowDecomposition.lean` | exact aperture and upper cutoff; `θ≤log 2` for the bound |
 | Coprime-harmonic errors: `Σ_{q≤Q}qμ²/φ² · |Hq(Nq)−φ(q)log(Nq)/q|≤36864(1+log Q)` | `CoprimeHarmonicConductorAverage.lean` | arbitrary positive horizons; all conductors |
+| Odd logarithmic square mass divided by `log³ Q` tends to `1/6` | `OddStabilizerLogSquareMean.lean` | exact finite Abel identity and unconditional limit |
+| Odd-base quadrature error `≤4T/c+CL`, exact taper cutoff, primitive-frequency aggregate `≤K T(1+L+log((Q+1)T))(1+log Q)` | `OddStabilizerSpatialQuadrature.lean` | actual standard taper; fixed smooth height profile |
 | Unsigned inner-lobe divergence | `sum_Icc_abs_cosTransform_ge_inner_lobe` | unconditional (no-go) |
 | Parity-twin survival line; closed-form germ limits; Λ erased on the cone | `parityTwinPair_unrestricted_vs_evenShift_survivalCone`, `tendsto_shiftedMode_ramanujanGerm_closedForm`, `quad_torsionAlignedLimit_eq_neg_cyclotomicHarmonic_on_cone` | unconditional |
 | PSD cyclotomic-harmonic kernel; IR relocation | `cyclotomicHarmonicKernel_nonneg`, `completedTwinKernel_infrared_survivalCone_eq_zero` | unconditional |
