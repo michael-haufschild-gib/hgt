@@ -197,17 +197,32 @@ theorem exists_zeroFreeLogProfile_positive_power_budget :
     exact hres_m m hm
   · exact hbudget
 
-/-- A fixed smooth zero-free logarithmic profile is positive uniformly below a critical multiple. -/
-theorem exists_zeroFreeLogProfile_completeWeilMatrix_posDef_critical_overlap :
-    ∃ ε : ℝ, 0 < ε ∧ ∀ᶠ N : ℕ in atTop, ∀ c : ℝ, 1 ≤ c → c ≤ ε * dcScale N →
+/-- Explicit multiple of `loglog N · (logloglog N)²` paid by the reciprocal-floor budget. -/
+def zeroFreeLogPositivityMultiple : ℝ :=
+  1 / (827392 * (8 * Real.pi / 3 + 3000))
+
+theorem zeroFreeLogPositivityMultiple_pos : 0 < zeroFreeLogPositivityMultiple := by
+  unfold zeroFreeLogPositivityMultiple
+  positivity
+
+private theorem zeroFreeLogPositivityMultiple_eq :
+    zeroFreeLogPositivityMultiple = (1 / 256 : ℝ) / (4 * logarithmicReserveRate) := by
+  unfold zeroFreeLogPositivityMultiple logarithmicReserveRate sincTailConst
+  rw [div_div]
+  congr 1
+  ring
+
+/-- The complete family is positive up to the explicit logarithmic multiple. -/
+theorem zeroFreeLogProfile_completeWeilMatrix_posDef_explicit_critical_overlap :
+    ∀ᶠ N : ℕ in atTop, ∀ c : ℝ, 1 ≤ c →
+      c ≤ zeroFreeLogPositivityMultiple * dcScale N →
       (completeWeilMatrix zeroFreeLogProfile c N).PosDef := by
   obtain ⟨A, hlarge⟩ := exists_zeroFreeLogProfile_positive_power_budget
   let K := max 1 (max A (Real.exp 1))
   have hK : 1 ≤ K := le_max_left _ _
   have hbounded := eventually_noRealZero_completeWeilMatrix_posDef_uniform_overlap
     smooth_profile zeroFreeLogProfile_eq_zero paperFT_zeroFreeLogProfile_ne_zero hK
-  let ε := (1 / 256 : ℝ) / (4 * logarithmicReserveRate)
-  refine ⟨ε, by dsimp only [ε]; exact div_pos (by norm_num) (by have := logarithmicReserveRate_pos; positivity), ?_⟩
+  rw [zeroFreeLogPositivityMultiple_eq]
   filter_upwards [hlarge, hbounded,
     eventually_logarithmicSpectralControl_le_log_rpow logarithmicReserveRate_pos
       (by norm_num : (0 : ℝ) < 1 / 256)] with N hlargeN hboundedN hbudgetN
@@ -218,6 +233,32 @@ theorem exists_zeroFreeLogProfile_completeWeilMatrix_posDef_critical_overlap :
     have hAc : A ≤ c := (le_max_left A (Real.exp 1)).trans ((le_max_right 1 _).trans hKc)
     have hec : Real.exp 1 ≤ c := (le_max_right A (Real.exp 1)).trans ((le_max_right 1 _).trans hKc)
     exact hlargeN c hAc (hbudgetN c hec hcup)
+
+/-- A fixed smooth zero-free logarithmic profile is positive uniformly below a critical multiple. -/
+theorem exists_zeroFreeLogProfile_completeWeilMatrix_posDef_critical_overlap :
+    ∃ ε : ℝ, 0 < ε ∧ ∀ᶠ N : ℕ in atTop, ∀ c : ℝ, 1 ≤ c → c ≤ ε * dcScale N →
+      (completeWeilMatrix zeroFreeLogProfile c N).PosDef :=
+  ⟨zeroFreeLogPositivityMultiple, zeroFreeLogPositivityMultiple_pos,
+    zeroFreeLogProfile_completeWeilMatrix_posDef_explicit_critical_overlap⟩
+
+/-- An explicit positive multiple of the exact sinc critical overlap is also paid. -/
+theorem zeroFreeLogProfile_completeWeilMatrix_posDef_explicit_sincCritical_overlap :
+    ∀ᶠ N : ℕ in atTop, ∀ c : ℝ, 1 ≤ c →
+      c ≤ (zeroFreeLogPositivityMultiple / (96 * Real.exp 1)) * sincCriticalOverlap N →
+      (completeWeilMatrix zeroFreeLogProfile c N).PosDef := by
+  have hε := zeroFreeLogPositivityMultiple_pos
+  have hD : 0 < 96 * Real.exp 1 := by positivity
+  filter_upwards [zeroFreeLogProfile_completeWeilMatrix_posDef_explicit_critical_overlap,
+    eventually_sincCriticalOverlap_le] with N hN hcritical
+  intro c hc hcup
+  apply hN c hc
+  calc
+    c ≤ (zeroFreeLogPositivityMultiple / (96 * Real.exp 1)) * sincCriticalOverlap N := hcup
+    _ ≤ (zeroFreeLogPositivityMultiple / (96 * Real.exp 1)) *
+        (96 * Real.exp 1 * dcScale N) :=
+      mul_le_mul_of_nonneg_left hcritical.1 (div_pos hε hD).le
+    _ = zeroFreeLogPositivityMultiple * dcScale N := by
+      rw [← mul_assoc, div_mul_cancel₀ _ hD.ne']
 
 /-- The same rough regime reaches a positive multiple of the exact sinc critical overlap. -/
 theorem exists_zeroFreeLogProfile_completeWeilMatrix_posDef_sincCritical_overlap :
@@ -239,5 +280,8 @@ theorem exists_zeroFreeLogProfile_completeWeilMatrix_posDef_sincCritical_overlap
 end GaloisForLFunctions.TransMetzlerWeilPositivity
 
 #print axioms GaloisForLFunctions.TransMetzlerWeilPositivity.exists_zeroFreeLogProfile_positive_power_budget
+#print axioms GaloisForLFunctions.TransMetzlerWeilPositivity.zeroFreeLogPositivityMultiple_pos
+#print axioms GaloisForLFunctions.TransMetzlerWeilPositivity.zeroFreeLogProfile_completeWeilMatrix_posDef_explicit_critical_overlap
+#print axioms GaloisForLFunctions.TransMetzlerWeilPositivity.zeroFreeLogProfile_completeWeilMatrix_posDef_explicit_sincCritical_overlap
 #print axioms GaloisForLFunctions.TransMetzlerWeilPositivity.exists_zeroFreeLogProfile_completeWeilMatrix_posDef_critical_overlap
 #print axioms GaloisForLFunctions.TransMetzlerWeilPositivity.exists_zeroFreeLogProfile_completeWeilMatrix_posDef_sincCritical_overlap

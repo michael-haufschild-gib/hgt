@@ -33,6 +33,8 @@ Both obstruction and positive survivor are formalized. The direct production
 check has no diagnostics; all seven transitive axiom audits use only
 `propext`, `Classical.choice`, `Quot.sound`.
 
-Irrational dilation families, arbitrary variable period coefficients,
-special-value relations, and other nonlinear Böttcher realizations remain
-outside this theorem. The broad paradigm is not retired; no RH conclusion follows.
+[The positive algebraic extension](algebraic-differential-mahler-theta-gamma-shortcut.md)
+now covers irrational algebraic dilations. Transcendental multipliers,
+arbitrary variable period coefficients, special-value relations, and other
+nonlinear Böttcher realizations remain outside these results. The broad
+paradigm is not retired; no RH conclusion follows.

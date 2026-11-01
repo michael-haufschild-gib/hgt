@@ -539,20 +539,23 @@ private theorem abs_weightedMomentDeriv2_le {W : ℂ → ℝ} (hW_cont : Continu
     simpa only [Real.norm_eq_abs] using
       MeasureTheory.norm_integral_le_integral_norm (μ := volume)
         (fun z : ℂ => W z * (trTwistNormSqDeriv2 f z γ * dk z))
+  have hint01 : Integrable (fun z : ℂ =>
+      W z * (Complex.normSq (tr (sourceTwist γ f).1 z) * dk z) +
+        2 * (W z * (Complex.normSq (tr (sourceTwist γ (momentCompactTest 1 f)).1 z) * dk z)))
+      volume :=
+    (hint_m f).add ((hint_m (momentCompactTest 1 f)).const_mul 2)
   have hmono : (∫ z : ℂ, |W z * (trTwistNormSqDeriv2 f z γ * dk z)|) ≤
       ∫ z : ℂ, ((W z * (Complex.normSq (tr (sourceTwist γ f).1 z) * dk z) +
           2 * (W z * (Complex.normSq (tr (sourceTwist γ (momentCompactTest 1 f)).1 z) * dk z))) +
         W z * (Complex.normSq (tr (sourceTwist γ (momentCompactTest 2 f)).1 z) * dk z)) := by
     refine MeasureTheory.integral_mono hint_abs
-      (((hint_m f).add ((hint_m (momentCompactTest 1 f)).const_mul 2)).add
-        (hint_m (momentCompactTest 2 f))) fun z => ?_
+      (hint01.add (hint_m (momentCompactTest 2 f))) fun z => ?_
     have hdk_nn : 0 ≤ dk z := pow_nonneg (depthKernel_nonneg _ _) j
     rw [abs_mul, abs_mul, abs_of_nonneg (hW_nn z), abs_of_nonneg hdk_nn]
     have h1 := mul_le_mul_of_nonneg_left
       (mul_le_mul_of_nonneg_right (abs_trTwistNormSqDeriv2_le f z γ) hdk_nn) (hW_nn z)
     exact h1.trans_eq (by ring)
-  rw [MeasureTheory.integral_add ((hint_m f).add ((hint_m (momentCompactTest 1 f)).const_mul 2))
-      (hint_m (momentCompactTest 2 f)),
+  rw [MeasureTheory.integral_add hint01 (hint_m (momentCompactTest 2 f)),
     MeasureTheory.integral_add (hint_m f) ((hint_m (momentCompactTest 1 f)).const_mul 2),
     MeasureTheory.integral_const_mul] at hmono
   exact (mul_le_mul_of_nonneg_left (hnorm.trans hmono) (inv_nonneg.mpr Real.pi_pos.le)).trans_eq
@@ -806,11 +809,10 @@ theorem unitWindow_mean_sub_min_le_half_sup_deriv {g : ℝ → ℝ} (T : ℝ) {M
       ∫ γ in T..(T + 1), (g γ - g γ_min) := by
     rw [MeasureTheory.integral_Icc_eq_integral_Ioc,
       ← intervalIntegral.integral_of_le (by linarith : T ≤ T + 1),
-      ← intervalIntegral.integral_sub
-        (hg_diff.continuous.intervalIntegrable (μ := volume) _ _) intervalIntegrable_const]
-    have hc : ∫ γ in T..(T + 1), g γ_min = g γ_min := by
-      rw [intervalIntegral.integral_const, smul_eq_mul]; ring
-    rw [hc]
+      intervalIntegral.integral_sub
+        (hg_diff.continuous.intervalIntegrable (μ := volume) _ _) intervalIntegrable_const,
+      intervalIntegral.integral_const, smul_eq_mul]
+    ring
   rw [hsub_int]
   have hi_lhs : IntervalIntegrable (fun γ : ℝ => g γ - g γ_min) volume T (T + 1) :=
     (hg_diff.continuous.sub continuous_const).intervalIntegrable (μ := volume) _ _
@@ -921,7 +923,6 @@ theorem unitWindow_mean_sub_interior_min_le_sixth_sup_deriv2 {g : ℝ → ℝ} (
           (μ := volume) _ _
       have hmono := integral_mono_on (μ := volume) hge hi_l hi_r
         fun u hu => by
-          dsimp only
           have hu_Icc : u ∈ Icc T (T + 1) := ⟨hγ.1.trans hu.1, hu.2.trans hγ_Icc.2⟩
           have h1 := (neg_le_abs (deriv g u)).trans (hg'_lip u hu_Icc)
           rw [abs_of_nonpos (by linarith only [hu.2])] at h1
@@ -942,11 +943,10 @@ theorem unitWindow_mean_sub_interior_min_le_sixth_sup_deriv2 {g : ℝ → ℝ} (
       ∫ γ in T..(T + 1), (g γ - g γ_min) := by
     rw [MeasureTheory.integral_Icc_eq_integral_Ioc,
       ← intervalIntegral.integral_of_le (by linarith : T ≤ T + 1),
-      ← intervalIntegral.integral_sub
-        (hg_diff.continuous.intervalIntegrable (μ := volume) _ _) intervalIntegrable_const]
-    have hc : ∫ γ in T..(T + 1), g γ_min = g γ_min := by
-      rw [intervalIntegral.integral_const, smul_eq_mul]; ring
-    rw [hc]
+      intervalIntegral.integral_sub
+        (hg_diff.continuous.intervalIntegrable (μ := volume) _ _) intervalIntegrable_const,
+      intervalIntegral.integral_const, smul_eq_mul]
+    ring
   rw [hsub_int]
   have hmono := integral_mono_on (μ := volume) (by linarith : T ≤ T + 1)
     ((hg_diff.continuous.sub continuous_const).intervalIntegrable (μ := volume) _ _)
@@ -1172,12 +1172,13 @@ theorem integral_Icc_unitWindow_integral_le {h : ℝ → ℝ} (hh_cont : Continu
     dsimp [H]
     linarith only [hadj]
   simp_rw [hwin_eq]
+  have hi_H1 : IntervalIntegrable (fun x : ℝ => H (x + 1)) volume U (2 * U) :=
+    (hH_cont.comp (continuous_id.add (continuous_const (y := (1 : ℝ))))).intervalIntegrable
+      (μ := volume) _ _
   rw [MeasureTheory.integral_Icc_eq_integral_Ioc,
     ← intervalIntegral.integral_of_le (by linarith only [hU] : U ≤ 2 * U),
-    intervalIntegral.integral_sub
-      ((hH_cont.comp (continuous_id.add continuous_const)).intervalIntegrable (μ := volume) _ _)
-      (hH_cont.intervalIntegrable (μ := volume) _ _),
-    intervalIntegral.integral_comp_add_right H 1]
+    intervalIntegral.integral_sub hi_H1 (hH_cont.intervalIntegrable (μ := volume) _ _),
+    intervalIntegral.integral_comp_add_right (f := H) 1]
   have hs1 := integral_add_adjacent_intervals (a := U) (b := U + 1) (c := 2 * U + 1)
     (hH_cont.intervalIntegrable (μ := volume) _ _)
     (hH_cont.intervalIntegrable (μ := volume) _ _)
@@ -1277,10 +1278,13 @@ theorem heckeDefect_compactTest_eq_zero_of_riemannHypothesis (hRH : RiemannHypot
     heckeDefect g L = 0 := by
   have hon := CrossRouteReceiverBridges.riemannHypothesis_iff_zetaZeroConfig_onLine.mp hRH
   unfold heckeDefect
-  refine tsum_eq_zero fun ρ => ?_
-  have hre : (ρ : ℂ).re = 1 / 2 := hon (ρ : ℂ) ρ.2
-  have hd0 : zetaDepth ρ = 0 := by simp [zetaDepth, hre]
-  rw [hd0, depthKernel_zero_depth, mul_zero]
+  have hzero : (fun ρ : zetaZeroConfig.carrier =>
+      zetaWeight g ρ * depthKernel L (zetaDepth ρ)) = fun _ => 0 := by
+    funext ρ
+    have hre : (ρ : ℂ).re = 1 / 2 := hon (ρ : ℂ) ρ.2
+    have hd0 : zetaDepth ρ = 0 := by simp [zetaDepth, hre]
+    rw [hd0, depthKernel_zero_depth, mul_zero]
+  rw [hzero, tsum_zero]
 
 private theorem exists_forall_abs_le_of_tendsto_zero' {e : ℕ → ℝ} (ht : Tendsto e atTop (𝓝 0)) :
     ∃ M : ℝ, 0 ≤ M ∧ ∀ n : ℕ, |e n| ≤ M := by
@@ -1354,14 +1358,7 @@ theorem exists_uniform_aperture_compactTest_error_bounds (f : CompactTest)
 `depthKernel (2 * L) d = (4 + depthKernel L d) * depthKernel L d`. -/
 theorem depthKernel_two_mul_eq (L d : ℝ) :
     depthKernel (2 * L) d = (4 + depthKernel L d) * depthKernel L d := by
-  rw [depthKernel_eq_four_sinh_sq, depthKernel_eq_four_sinh_sq, Real.sinh_eq, Real.sinh_eq]
-  have h1 : d * (2 * L) = d * L + d * L := by ring
-  have h2 : -(d * (2 * L)) = -(d * L) + -(d * L) := by ring
-  rw [h1, h2, Real.exp_add, Real.exp_add]
-  have hexp_cancel : Real.exp (d * L) * Real.exp (-(d * L)) = 1 := by
-    rw [← Real.exp_add, add_neg_cancel, Real.exp_zero]
-  linear_combination (4 * Real.exp (d * L) ^ 2 * Real.exp (-(d * L)) ^ 2 -
-    4 * Real.exp (d * L) * Real.exp (-(d * L)) - 4) * hexp_cancel
+  rw [depthKernel_double]; ring
 
 /-- Eventual uniform `O(1)` bound on `heckeDefect (sourceTwist γ f) (c * Real.log T)` for any
 `f : CompactTest` supported in `[-1/4, 1/4]` and `0 < c ≤ 2` from eventual boundedness of
@@ -1463,14 +1460,20 @@ theorem eventually_heckeDefect_compactTest_le_of_unitWindowDepthCharge_le
       have hq := hnsq_quartic (emb z)
       have hden : 1 + (z.1.im - γ) ^ 2 ≤ (1 + (z.1.im - γ) ^ 2) ^ 2 := by
         nlinarith only [sq_nonneg (z.1.im - γ)]
-      dsimp [zetaWeight, emb] at hq ⊢
-      rw [hmult]
+      have hq_z : Complex.normSq (tr (sourceTwist γ f).1 z.1) ≤
+          M₀ / (1 + (z.1.im - γ) ^ 2) ^ 2 := hq
       have hlor : Complex.normSq (tr (sourceTwist γ f).1 z.1) ≤
           M₀ * (1 / (1 + (z.1.im - γ) ^ 2)) :=
-        (hq.trans (div_le_div_of_nonneg_left hM₀_pos.le (by positivity) hden)).trans_eq
+        (hq_z.trans (div_le_div_of_nonneg_left hM₀_pos.le (by positivity) hden)).trans_eq
           (div_eq_mul_one_div _ _)
+      have hzd : zetaDepth (emb z) = z.1.re - 1 / 2 := rfl
+      have hzw : zetaWeight (sourceTwist γ f) (emb z) =
+          ((analyticOrderAt xi z.1).toNat : ℝ) * Complex.normSq (tr (sourceTwist γ f).1 z.1) := by
+        change (zetaZeroConfig.mult z.1 : ℝ) * Complex.normSq (tr (sourceTwist γ f).1 z.1) = _
+        rw [hmult]
+      rw [hzw, hzd]
       calc ((analyticOrderAt xi z.1).toNat : ℝ) * Complex.normSq (tr (sourceTwist γ f).1 z.1) *
-              depthKernel L (zetaDepth (emb z))
+              depthKernel L (z.1.re - 1 / 2)
           ≤ ((analyticOrderAt xi z.1).toNat : ℝ) * (M₀ * (1 / (1 + (z.1.im - γ) ^ 2))) *
               depthKernel L (z.1.re - 1 / 2) :=
             mul_le_mul_of_nonneg_right
@@ -1520,10 +1523,13 @@ theorem eventually_heckeDefect_compactTest_le_of_unitWindowDepthCharge_le
             dsimp [x, δ]; ring
           have hsq_nn : 0 ≤ 2 * (x - (3 / 2) * δ) ^ 2 := by positivity
           linarith only [hid, hδ_sq, hsq_nn]
-        have hmono := integral_mono_on (μ := volume) (by linarith : U_m ≤ U_m + 1)
+        have hi_c : IntervalIntegrable (fun _ : ℝ => 1 / (1 + (z.im - γ) ^ 2)) volume U_m (U_m + 1) :=
           intervalIntegrable_const
-          ((continuous_const.mul (continuous_const.div (by fun_prop)
-            fun _ => by positivity)).intervalIntegrable (μ := volume) _ _) hptw
+        have hi_u : IntervalIntegrable (fun u : ℝ => 3 * (1 / (1 + (u - γ) ^ 2))) volume U_m (U_m + 1) :=
+          (continuous_const.mul (continuous_const.div (by fun_prop)
+            fun _ => by positivity)).intervalIntegrable (μ := volume) _ _
+        have hmono := integral_mono_on (μ := volume) (by linarith : U_m ≤ U_m + 1)
+          hi_c hi_u hptw
         rw [intervalIntegral.integral_const, smul_eq_mul,
           intervalIntegral.integral_const_mul] at hmono
         linarith only [hmono]
@@ -1570,16 +1576,31 @@ theorem eventually_heckeDefect_compactTest_le_of_unitWindowDepthCharge_le
           ((analyticOrderAt xi z).toNat : ℝ) * depthKernel L (z.re - 1 / 2) *
             (1 / (1 + (z.im - γ) ^ 2))) ≤
         3 * (4 + B) * B * Real.pi := by
-      have hsub := Finset.sum_le_sum_of_subset_of_nonneg hcov_sh
-        fun _ _ _ => mul_nonneg (mul_nonneg (Nat.cast_nonneg _) (depthKernel_nonneg _ _))
-          (by positivity)
-      have hbi := Finset.sum_biUnion_le (s := Finset.range N)
-        (t := fun m => xiUnitWindowZeros (T / 2 + (m : ℝ)))
-        (f := fun z => ((analyticOrderAt xi z).toNat : ℝ) * depthKernel L (z.re - 1 / 2) *
+      have hsub := Finset.sum_le_sum_of_subset_of_nonneg
+        (f := fun z : ℂ => ((analyticOrderAt xi z).toNat : ℝ) * depthKernel L (z.re - 1 / 2) *
           (1 / (1 + (z.im - γ) ^ 2)))
+        hcov_sh fun _ _ _ =>
+          mul_nonneg (mul_nonneg (Nat.cast_nonneg _) (depthKernel_nonneg _ _)) (by positivity)
+      have hbi : (∑ z ∈ (Finset.range N).biUnion (fun m => xiUnitWindowZeros (T / 2 + (m : ℝ))),
+          ((analyticOrderAt xi z).toNat : ℝ) * depthKernel L (z.re - 1 / 2) *
+            (1 / (1 + (z.im - γ) ^ 2))) =
+          ∑ m ∈ Finset.range N, ∑ z ∈ xiUnitWindowZeros (T / 2 + (m : ℝ)),
+            ((analyticOrderAt xi z).toNat : ℝ) * depthKernel L (z.re - 1 / 2) *
+              (1 / (1 + (z.im - γ) ^ 2)) := by
+        refine Finset.sum_biUnion fun m₁ _ m₂ _ hne => Finset.disjoint_left.mpr fun z hz₁ hz₂ =>
+          hne ?_
+        obtain ⟨hS₁, hlo₁⟩ := mem_xiUnitWindowZeros.mp hz₁
+        obtain ⟨hS₂, hlo₂⟩ := mem_xiUnitWindowZeros.mp hz₂
+        have hhi₁ := ((Set.Finite.mem_toFinset _).mp hS₁).1.2.2.2
+        have hhi₂ := ((Set.Finite.mem_toFinset _).mp hS₂).1.2.2.2
+        have hlt₁ : (m₁ : ℝ) < (m₂ : ℝ) + 1 := by linarith only [hlo₁, hhi₂]
+        have hlt₂ : (m₂ : ℝ) < (m₁ : ℝ) + 1 := by linarith only [hlo₂, hhi₁]
+        have hlt₁' : m₁ < m₂ + 1 := by exact_mod_cast hlt₁
+        have hlt₂' : m₂ < m₁ + 1 := by exact_mod_cast hlt₂
+        omega
       have hm_sum := Finset.sum_le_sum hwin_m
       rw [← Finset.mul_sum] at hm_sum
-      have hadj_N := sum_integral_adjacent_intervals (k := N)
+      have hadj_N := sum_integral_adjacent_intervals (n := N)
         (a := fun m : ℕ => T / 2 + (m : ℝ))
         (f := fun u : ℝ => 1 / (1 + (u - γ) ^ 2)) fun m _ =>
           (continuous_const.div (by fun_prop) fun _ => by positivity).intervalIntegrable
@@ -1591,7 +1612,7 @@ theorem eventually_heckeDefect_compactTest_le_of_unitWindowDepthCharge_le
             (by linarith only [(Nat.cast_nonneg N : (0 : ℝ) ≤ N)]),
           MeasureTheory.integral_Icc_eq_integral_Ioc]
         exact integral_Icc_inv_one_add_sq_sub_le_pi (T / 2) (T / 2 + (N : ℝ)) γ
-      exact (hsub.trans hbi).trans (hm_sum.trans
+      exact (hsub.trans_eq hbi).trans (hm_sum.trans
         (mul_le_mul_of_nonneg_left hpi (by positivity)))
     exact h1.trans ((mul_le_mul_of_nonneg_left hbi_le hM₀_pos.le).trans_eq (by ring))
   -- 2. Remote complement outside `shellZeros (T / 2) (4 * T)` (`0 < c ≤ 2` gives `O(1)`)
@@ -1671,15 +1692,14 @@ theorem eventually_heckeDefect_compactTest_le_of_unitWindowDepthCharge_le
             mul_le_mul (mul_le_mul_of_nonneg_left hnsq_rem (Nat.cast_nonneg _)) hdk_le_4T2
               (depthKernel_nonneg _ _) (by positivity)
         _ = (64 * M₀) * ((zetaZeroConfig.mult ρ.1 : ℝ) * (1 / (1 + (ρ.1 : ℂ).im ^ 2))) := by
-            field_simp [hT_pos.ne']
+            field_simp [hT_pos.ne']; ring
     have htsum1 := Summable.tsum_le_tsum_of_inj Subtype.val Subtype.val_injective
       (fun _ _ => by positivity) hrem_ptw
       ((summable_heckeDefect (sourceTwist γ f) L).subtype
         (S_loc : Set zetaZeroConfig.carrier)ᶜ)
       (hsum_lor.mul_left _)
     rwa [tsum_mul_left] at htsum1
-  dsimp [B_f]
-  linarith only [hloc_le, hrem_le]
+  exact (add_le_add hloc_le hrem_le).trans (by dsimp [B_f]; linarith)
 
 /-- Under `FiniteOffLine`, for any `f : CompactTest` supported in `[-1/4, 1/4]` and `0 < c ≤ 2`,
 `heckeDefect (sourceTwist γ f) (c * Real.log T) ≤ C_f / T ^ 2` for all `T ≥ 2` and
@@ -1820,7 +1840,7 @@ theorem exists_heckeDefect_compactTest_le_div_sq_of_finiteOffLine
 /-! ## §4. Five-way dyadic `RH` equivalence and five-way fixed-`c` unit-window collapse -/
 
 private theorem baseTwist_finTheta_c2Jet_le (L : ℝ) (n : ℕ) (γ : ℝ) :
-    (let R := fun τ : ℝ => finiteThetaSourceMomentReading (baseTwistTest τ) L 1 n
+    (let R := fun τ : ℝ => finiteThetaSourceMomentReading (baseTwistTest τ) L 1 n;
       R γ + |deriv R γ| + |deriv (deriv R) γ|) ≤
       3 * finiteThetaSourceMomentReading (sourceTwist γ baseBumpTest) L 1 n +
         3 * finiteThetaSourceMomentReading
@@ -1831,14 +1851,14 @@ private theorem baseTwist_finTheta_c2Jet_le (L : ℝ) (n : ℕ) (γ : ℝ) :
       fun τ : ℝ => finiteThetaSourceMomentReading (sourceTwist τ baseBumpTest) L 1 n :=
     funext fun τ => by rw [sourceTwist_baseBumpTest_eq]
   dsimp only
-  rw [hfun]
+  rw [hfun, ← sourceTwist_baseBumpTest_eq]
   have hd1 := abs_deriv_finiteThetaSourceMomentReading_le baseBumpTest L 1 n γ zero_lt_one
   rw [one_mul, inv_one, one_mul] at hd1
   have hd2 := abs_deriv_deriv_finiteThetaSourceMomentReading_le baseBumpTest L 1 n γ
   linarith only [hd1, hd2]
 
 private theorem baseTwist_polyTheta_c2Jet_le (L : ℝ) (n : ℕ) (γ : ℝ) :
-    (let P := fun τ : ℝ => polynomialThetaSourceMomentReading (baseTwistTest τ) L 1 n
+    (let P := fun τ : ℝ => polynomialThetaSourceMomentReading (baseTwistTest τ) L 1 n;
       P γ + |deriv P γ| + |deriv (deriv P) γ|) ≤
       3 * polynomialThetaSourceMomentReading (sourceTwist γ baseBumpTest) L 1 n +
         3 * polynomialThetaSourceMomentReading
@@ -1849,7 +1869,7 @@ private theorem baseTwist_polyTheta_c2Jet_le (L : ℝ) (n : ℕ) (γ : ℝ) :
       fun τ : ℝ => polynomialThetaSourceMomentReading (sourceTwist τ baseBumpTest) L 1 n :=
     funext fun τ => by rw [sourceTwist_baseBumpTest_eq]
   dsimp only
-  rw [hfun]
+  rw [hfun, ← sourceTwist_baseBumpTest_eq]
   have hd1 := abs_deriv_polynomialThetaSourceMomentReading_le baseBumpTest L 1 n γ zero_lt_one
   rw [one_mul, inv_one, one_mul] at hd1
   have hd2 := abs_deriv_deriv_polynomialThetaSourceMomentReading_le baseBumpTest L 1 n γ
@@ -1857,7 +1877,7 @@ private theorem baseTwist_polyTheta_c2Jet_le (L : ℝ) (n : ℕ) (γ : ℝ) :
 
 private theorem continuous_baseTwist_finTheta_c2Jet (L : ℝ) (n : ℕ) :
     Continuous (fun γ : ℝ =>
-      let R := fun τ : ℝ => finiteThetaSourceMomentReading (baseTwistTest τ) L 1 n
+      let R := fun τ : ℝ => finiteThetaSourceMomentReading (baseTwistTest τ) L 1 n;
       R γ + |deriv R γ| + |deriv (deriv R) γ|) := by
   have hfun : (fun τ : ℝ => finiteThetaSourceMomentReading (baseTwistTest τ) L 1 n) =
       fun τ : ℝ => finiteThetaSourceMomentReading (sourceTwist τ baseBumpTest) L 1 n :=
@@ -1871,7 +1891,7 @@ private theorem continuous_baseTwist_finTheta_c2Jet (L : ℝ) (n : ℕ) :
 
 private theorem continuous_baseTwist_polyTheta_c2Jet (L : ℝ) (n : ℕ) :
     Continuous (fun γ : ℝ =>
-      let P := fun τ : ℝ => polynomialThetaSourceMomentReading (baseTwistTest τ) L 1 n
+      let P := fun τ : ℝ => polynomialThetaSourceMomentReading (baseTwistTest τ) L 1 n;
       P γ + |deriv P γ| + |deriv (deriv P) γ|) := by
   have hfun : (fun τ : ℝ => polynomialThetaSourceMomentReading (baseTwistTest τ) L 1 n) =
       fun τ : ℝ => polynomialThetaSourceMomentReading (sourceTwist τ baseBumpTest) L 1 n :=
@@ -1963,12 +1983,12 @@ theorem riemannHypothesis_unitWindow_min_mean_max_finiteTheta_tfae {c₀ : ℝ} 
     exact ((riemannHypothesis_finiteTheta_poleNodal_dyadic_tfae hc₀ zero_le_one).out 4 0).mp h5_crit
   tfae_have 1 → 5 := by
     intro hRH
-    obtain ⟨E₀, hE₀, hb₀⟩ := exists_uniform_aperture_compactTest_error_bounds
+    obtain ⟨E₀, _, hb₀⟩ := exists_uniform_aperture_compactTest_error_bounds
       baseBumpTest abs_le_quarter_of_baseBumpTest_ne_zero
-    obtain ⟨E₁, hE₁, hb₁⟩ := exists_uniform_aperture_compactTest_error_bounds
+    obtain ⟨E₁, _, hb₁⟩ := exists_uniform_aperture_compactTest_error_bounds
       (momentCompactTest 1 baseBumpTest)
       (abs_le_of_momentCompactTest_ne_zero 1 baseBumpTest abs_le_quarter_of_baseBumpTest_ne_zero)
-    obtain ⟨E₂, hE₂, hb₂⟩ := exists_uniform_aperture_compactTest_error_bounds
+    obtain ⟨E₂, _, hb₂⟩ := exists_uniform_aperture_compactTest_error_bounds
       (momentCompactTest 2 baseBumpTest)
       (abs_le_of_momentCompactTest_ne_zero 2 baseBumpTest abs_le_quarter_of_baseBumpTest_ne_zero)
     refine ⟨3 * E₀ + 3 * E₁ + E₂, fun k T _ => ?_⟩
@@ -2204,12 +2224,16 @@ theorem exists_dyadicMean_unitWindow_sup_polynomialTheta_le_log_up_to_half
     polynomialThetaSourceMomentReading (sourceTwist γ g) (c * Real.log (max 1 γ)) 1 n
   have hh_cont : ∀ g : CompactTest, Continuous (h_fn g) := fun g => by
     have hmax_cont : Continuous (fun γ : ℝ => max (1 : ℝ) γ) :=
-      continuous_const.max continuous_id
+      (continuous_const (y := (1 : ℝ))).max continuous_id
     have hlog_cont : Continuous (fun γ : ℝ => Real.log (max 1 γ)) :=
       Real.continuousOn_log.comp_continuous hmax_cont fun x =>
         (lt_of_lt_of_le zero_lt_one (le_max_left 1 x)).ne'
-    exact (continuous_polynomialThetaSourceMomentReading_sourceTwist_pair g n).comp
-      (continuous_id.prodMk (continuous_const.mul hlog_cont))
+    dsimp only [h_fn]
+    exact Continuous.comp
+      (g := fun p : ℝ × ℝ => polynomialThetaSourceMomentReading (sourceTwist p.1 g) p.2 1 n)
+      (f := fun γ : ℝ => (γ, c * Real.log (max 1 γ)))
+      (continuous_polynomialThetaSourceMomentReading_sourceTwist_pair g n)
+      (continuous_id.prodMk ((continuous_const (y := c)).mul hlog_cont))
   have hh_nn : ∀ g : CompactTest, ∀ γ : ℝ, 0 ≤ h_fn g γ := fun g γ =>
     polynomialThetaSourceMomentReading_nonneg _ _ _ _
   -- Integrability of `T ↦ sSup ...` on `Icc U (2 * U)` via `continuousOn_sSup_unitWindow_of_continuous`
@@ -2217,10 +2241,15 @@ theorem exists_dyadicMean_unitWindow_sup_polynomialTheta_le_log_up_to_half
     polynomialThetaSourceMomentReading (sourceTwist p.1 f₀) (c * Real.log (max 1 p.2)) 1 n
   have hG_cont : Continuous G_clamped := by
     have hlog_snd : Continuous (fun p : ℝ × ℝ => Real.log (max 1 p.2)) :=
-      Real.continuousOn_log.comp_continuous (continuous_const.max continuous_snd) fun p =>
-        (lt_of_lt_of_le zero_lt_one (le_max_left 1 p.2)).ne'
-    exact (continuous_polynomialThetaSourceMomentReading_sourceTwist_pair f₀ n).comp
-      (continuous_fst.prodMk (continuous_const.mul hlog_snd))
+      Real.continuousOn_log.comp_continuous
+        ((continuous_const (y := (1 : ℝ))).max continuous_snd) fun p =>
+          (lt_of_lt_of_le zero_lt_one (le_max_left 1 p.2)).ne'
+    dsimp only [G_clamped]
+    exact Continuous.comp
+      (g := fun p : ℝ × ℝ => polynomialThetaSourceMomentReading (sourceTwist p.1 f₀) p.2 1 n)
+      (f := fun p : ℝ × ℝ => (p.1, c * Real.log (max 1 p.2)))
+      (continuous_polynomialThetaSourceMomentReading_sourceTwist_pair f₀ n)
+      (continuous_fst.prodMk ((continuous_const (y := c)).mul hlog_snd))
   let supFn : ℝ → ℝ := fun T =>
     sSup ((fun γ => polynomialThetaSourceMomentReading (baseTwistTest γ)
       (c * Real.log T) 1 n) '' Icc T (T + 1))
@@ -2286,18 +2315,20 @@ theorem exists_dyadicMean_unitWindow_sup_polynomialTheta_le_log_up_to_half
       have hH_diff : ∀ x : ℝ, HasDerivAt H (h_fn g x) x := fun x =>
         intervalIntegral.integral_hasDerivAt_right
           ((hh_cont g).intervalIntegrable (μ := volume) _ _)
-          (hh_cont g).stronglyMeasurableAtFilter
+          ((hh_cont g).stronglyMeasurableAtFilter volume (𝓝 x))
           (hh_cont g).continuousAt
       have hH_cont : Continuous H :=
         Differentiable.continuous fun x => (hH_diff x).differentiableAt
-      exact ((Continuous.comp hH_cont (continuous_id.add continuous_const)).sub
-        hH_cont).continuousOn.congr fun T _ => by
-          rw [← MeasureTheory.integral_Icc_eq_integral_Ioc,
-            ← intervalIntegral.integral_of_le (by linarith)]
-          have hadj := integral_add_adjacent_intervals (a := U) (b := T) (c := T + 1)
-            ((hh_cont g).intervalIntegrable (μ := volume) _ _)
-            ((hh_cont g).intervalIntegrable (μ := volume) _ _)
-          dsimp [H]; linarith only [hadj]
+      have hH_win_cont : Continuous (fun T : ℝ => H (T + 1) - H T) :=
+        (hH_cont.comp (continuous_id.add (continuous_const (y := (1 : ℝ))))).sub hH_cont
+      exact hH_win_cont.continuousOn.congr fun T _ => by
+        dsimp only
+        rw [MeasureTheory.integral_Icc_eq_integral_Ioc,
+          ← intervalIntegral.integral_of_le (by linarith)]
+        have hadj := integral_add_adjacent_intervals (a := U) (b := T) (c := T + 1)
+          ((hh_cont g).intervalIntegrable (μ := volume) _ _)
+          ((hh_cont g).intervalIntegrable (μ := volume) _ _)
+        dsimp [H]; linarith only [hadj]
     exact hcont_win.integrableOn_compact isCompact_Icc
   have hint_rhs : IntegrableOn
       (fun T : ℝ => 2 * (∫ γ in Icc T (T + 1), h_fn f₀ γ) + (∫ γ in Icc T (T + 1), h_fn f₁ γ))
@@ -2360,7 +2391,7 @@ theorem exists_dyadicMean_unitWindow_sup_polynomialTheta_le_log_up_to_half
     have hsplit_u : (∫ u in Icc U (2 * U + 1), h_fn g u) =
         (∫ u in Icc U ((3 / 2 : ℝ) * U), h_fn g u) +
           (∫ u in Icc ((3 / 2 : ℝ) * U) (2 * U + 1), h_fn g u) := by
-      simp_rw [← MeasureTheory.integral_Icc_eq_integral_Ioc]
+      simp_rw [MeasureTheory.integral_Icc_eq_integral_Ioc]
       rw [← intervalIntegral.integral_of_le (by linarith only [hU16] : U ≤ 2 * U + 1),
         ← intervalIntegral.integral_of_le (by linarith only [hU16] : U ≤ (3 / 2 : ℝ) * U),
         ← intervalIntegral.integral_of_le (by linarith only [hU16] : (3 / 2 : ℝ) * U ≤ 2 * U + 1)]
@@ -2488,9 +2519,8 @@ theorem unitWindow_singleWindow_local_vs_offWindow_separation :
   have hloc_eq_sum : ∀ γ : ℝ, localWindowHeckeDefect T γ L =
       ∑ ρ ∈ S_win, zetaWeight (baseTwistTest γ) ρ * depthKernel L (zetaDepth ρ) := by
     intro γ
-    rw [Finset.sum_image (fun a _ b _ h => hinj h), ← Finset.sum_attach (xiUnitWindowZeros T)]
     unfold localWindowHeckeDefect
-    rw [← Finset.sum_attach (xiUnitWindowZeros T)]
+    rw [Finset.sum_image (fun a _ b _ h => hinj h), ← Finset.sum_attach (xiUnitWindowZeros T)]
     refine Finset.sum_congr rfl fun z _ => ?_
     obtain ⟨hS, _⟩ := mem_xiUnitWindowZeros.mp z.2
     obtain ⟨⟨h0, h1, _, _⟩, _⟩ := (Set.Finite.mem_toFinset _).mp hS
@@ -2498,8 +2528,12 @@ theorem unitWindow_singleWindow_local_vs_offWindow_separation :
       change _ = ((analyticOrderAt riemannZeta z.1).toNat : ℝ)
       exact congrArg (fun k : ℕ => (k : ℝ))
         (congrArg ENat.toNat (xi_analyticOrderAt_eq_riemannZeta_of_mem_strip ⟨h0, h1⟩))
-    dsimp [zetaWeight, baseTwistTest, zetaDepth, emb]
-    rw [hmult]
+    have hzd : zetaDepth (emb z) = z.1.re - 1 / 2 := rfl
+    have hzw : zetaWeight (baseTwistTest γ) (emb z) =
+        ((analyticOrderAt xi z.1).toNat : ℝ) * Complex.normSq (tr (twist γ baseBump) z.1) := by
+      change (zetaZeroConfig.mult z.1 : ℝ) * Complex.normSq (tr (twist γ baseBump) z.1) = _
+      rw [hmult]
+    rw [hzw, hzd]
   have hspec : ∀ γ ∈ Icc T (T + 1),
       heckeDefect (baseTwistTest γ) L =
         localWindowHeckeDefect T γ L + offWindowHeckeDefect T γ L ∧
@@ -2524,10 +2558,11 @@ theorem unitWindow_singleWindow_local_vs_offWindow_separation :
       rw [Finset.mul_sum]
       refine Finset.sum_le_sum fun ρ hρ => ?_
       obtain ⟨hS, him_ge⟩ := mem_xiUnitWindowZeros.mp hρ
-      obtain ⟨⟨h0, h1, _, him_lt⟩, _⟩ := (Set.Finite.mem_toFinset _).mp hS
-      have hre_abs : |ρ.re - 1 / 2| ≤ 1 / 2 := abs_le.mpr ⟨by linarith, by linarith⟩
+      obtain ⟨⟨_, _, _, him_lt⟩, _⟩ := (Set.Finite.mem_toFinset _).mp hS
       have him_abs : |ρ.im - γ| ≤ 1 := abs_le.mpr ⟨by linarith [hγ.2], by linarith [hγ.1]⟩
-      have hcos_le := cos_quarter_sq_le_normSq_tr_twist_baseBump hre_abs him_abs
+      have hcos_le : Real.cos (1 / 4 : ℝ) ^ 2 ≤ Complex.normSq (tr (twist γ baseBump) ρ) :=
+        cos_quarter_mul_sq_le_normSq_tr_twist_baseBump (A := 1) zero_le_one
+          (by linarith [Real.pi_gt_three]) him_abs
       calc Real.cos (1 / 4 : ℝ) ^ 2 *
               (((analyticOrderAt xi ρ).toNat : ℝ) * depthKernel L (ρ.re - 1 / 2))
           = ((analyticOrderAt xi ρ).toNat : ℝ) * Real.cos (1 / 4 : ℝ) ^ 2 *
@@ -2600,21 +2635,29 @@ theorem unitWindow_singleWindow_local_vs_offWindow_separation :
             fun γ : ℝ => heckeDefect (sourceTwist γ baseBumpTest) L :=
           funext fun γ => by rw [sourceTwist_baseBumpTest_eq]
         rw [heq]
-        exact (continuous_heckeDefect_sourceTwist_pair baseBumpTest (by norm_num)
-          abs_le_quarter_of_baseBumpTest_ne_zero).comp (continuous_id.prodMk continuous_const)
+        exact Continuous.comp
+          (g := fun p : ℝ × ℝ => heckeDefect (sourceTwist p.1 baseBumpTest) p.2)
+          (f := fun γ : ℝ => (γ, L))
+          (continuous_heckeDefect_sourceTwist_pair baseBumpTest (by norm_num)
+            abs_le_quarter_of_baseBumpTest_ne_zero)
+          (continuous_id.prodMk (continuous_const (y := L)))
       have hloc_c : Continuous (fun γ : ℝ =>
           ∑ ρ ∈ xiUnitWindowZeros T,
             ((analyticOrderAt xi ρ).toNat : ℝ) * Complex.normSq (tr (twist γ baseBump) ρ) *
               depthKernel L (ρ.re - 1 / 2)) := by
-        refine continuous_finset_sum _ fun ρ _ => ?_
+        refine continuous_finsetSum _ fun ρ _ => ?_
         have htr_c : Continuous (fun γ : ℝ => Complex.normSq (tr (twist γ baseBump) ρ)) := by
           have heq : (fun γ : ℝ => Complex.normSq (tr (twist γ baseBump) ρ)) =
               fun γ : ℝ => Complex.normSq (tr (sourceTwist γ baseBumpTest).1 ρ) := rfl
           rw [heq]
           exact Complex.continuous_normSq.comp
-            ((continuous_tr_sourceTwist_pair baseBumpTest).comp
-              (continuous_id.prodMk continuous_const))
-        exact (continuous_const.mul htr_c).mul continuous_const
+            (Continuous.comp
+              (g := fun p : ℝ × ℂ => tr (sourceTwist p.1 baseBumpTest).1 p.2)
+              (f := fun γ : ℝ => (γ, ρ))
+              (continuous_tr_sourceTwist_pair baseBumpTest)
+              (continuous_id.prodMk (continuous_const (y := ρ))))
+        exact ((continuous_const (y := ((analyticOrderAt xi ρ).toNat : ℝ))).mul htr_c).mul
+          (continuous_const (y := depthKernel L (ρ.re - 1 / 2)))
       exact hhd_c.sub hloc_c
     have hoff_bdd : BddAbove ((fun γ => offWindowHeckeDefect T γ L) '' Icc T (T + 1)) :=
       (isCompact_Icc.image hoff_cont).bddAbove
@@ -2790,19 +2833,23 @@ theorem finiteOffLine_not_rh_unitWindow_separation
   · -- Part 2a: Dyadic `sInf` unbounded
     intro C
     by_contra hall; push Not at hall
-    exact hnotRH ((htfae.out 1 0).mp ⟨C, hall⟩)
+    have h10 := htfae.out 1 0 rfl rfl
+    exact hnotRH (h10.mp ⟨C, hall⟩)
   · -- Part 2b: Dyadic mean unbounded
     intro C
     by_contra hall; push Not at hall
-    exact hnotRH ((htfae.out 2 0).mp ⟨C, hall⟩)
+    have h20 := htfae.out 2 0 rfl rfl
+    exact hnotRH (h20.mp ⟨C, hall⟩)
   · -- Part 2c: Dyadic `sSup` unbounded
     intro C
     by_contra hall; push Not at hall
-    exact hnotRH ((htfae.out 3 0).mp ⟨C, hall⟩)
+    have h30 := htfae.out 3 0 rfl rfl
+    exact hnotRH (h30.mp ⟨C, hall⟩)
   · -- Part 2d: Dyadic `C²`-jet `sSup` unbounded
     intro C
     by_contra hall; push Not at hall
-    exact hnotRH ((htfae.out 4 0).mp ⟨C, hall⟩)
+    have h40 := htfae.out 4 0 rfl rfl
+    exact hnotRH (h40.mp ⟨C, hall⟩)
 
 end GaloisForLFunctions.ConjugateDiagonalGeometry.LogScaleHeckeDefect
 

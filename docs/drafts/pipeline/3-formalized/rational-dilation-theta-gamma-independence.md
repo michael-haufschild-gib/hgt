@@ -80,6 +80,10 @@ The new contribution is their finite rational-denominator transport with
 exact physical jet factors, including contracting Mahler orbits.
 No literature-priority claim is made.
 
+[Positive algebraic dilation independence](algebraic-dilation-theta-gamma-independence.md)
+extends the full family and sharp multiplier classification beyond rationals
+using exact prime-frequency collision control.
+
 This excludes the specified rational differential–Mahler realization.
 Special-value relations, arbitrary variable period coefficients, and
 other nonlinear realizations remain outside the result. No RH conclusion
