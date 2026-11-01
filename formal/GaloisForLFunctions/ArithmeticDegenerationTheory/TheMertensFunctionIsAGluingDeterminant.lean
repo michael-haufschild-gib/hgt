@@ -27,6 +27,7 @@ cover (`det_redhefferMatrix_eq_nerveEulerChar`).
 noncomputable section
 
 open Finset ArithmeticFunction Matrix
+open scoped ArithmeticFunction.Moebius
 
 namespace GaloisForLFunctions.ArithmeticDegenerationTheory
 
@@ -54,8 +55,8 @@ theorem sum_divisors_filter_dvd {i k : ℕ} (hi : 0 < i) (hk : 0 < k) (hik : i �
   have hk' : k / i ≠ 0 := (Nat.div_pos (Nat.le_of_dvd hk hik) hi).ne'
   refine sum_nbij' (fun j => j / i) (fun t => i * t) ?_ ?_ ?_ ?_ ?_
   · intro j hj
-    simp only [mem_coe, mem_filter, Nat.mem_divisors] at hj
-    simp only [mem_coe, Nat.mem_divisors]
+    simp only [mem_filter, Nat.mem_divisors] at hj
+    simp only [Nat.mem_divisors]
     exact ⟨Nat.div_dvd_div hj.2 hj.1.1, hk'⟩
   · intro t ht
     simp only [mem_coe, Nat.mem_divisors] at ht

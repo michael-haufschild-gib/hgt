@@ -11,7 +11,7 @@ set_option autoImplicit false
 noncomputable section
 namespace GaloisForLFunctions.RenormalizedIntersectionTheory.MayerOrbitProduct
 
-/-- The deviation from one in a primitive-cycle Euler factor. -/
+/-- The weight subtracted from one in a primitive-cycle Euler factor. -/
 def orbitWeight (w z : ℂ) (c : Orbit) (m : ℕ) : ℂ :=
   z^(2*cycleLength c) * (multiplier c : ℂ)^(-w-2*(m : ℂ))
 

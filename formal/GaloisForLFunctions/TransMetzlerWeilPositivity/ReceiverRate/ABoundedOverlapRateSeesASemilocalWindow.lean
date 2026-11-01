@@ -22,6 +22,10 @@ overlap in units of the Denjoy–Carleman scale: the **rate** is `c_N / (ℓ ℓ
 * **Every divergent rate is a receiver.** If `c_N/(L (log L)²) → ∞` and `N/c_N → ∞`, RH holds iff
   the atomic families at overlap `c_N` are eventually nonnegative
   (`riemannHypothesis_iff_nonneg_of_divergent_rate`).
+* **Finite rational Grams are complete-matrix limits.** Each finite `ratCorr` Gram is an
+  entrywise limit of compressions at overlap `2K·dcScale N`, with one fixed `K` for that family
+  (`exists_ratCorr_completeWeil_gram_limit`). The positive atom mass restores the normalization
+  of the complete matrix, including every mixed entry.
 -/
 
 noncomputable section

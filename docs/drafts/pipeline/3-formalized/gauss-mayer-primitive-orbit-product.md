@@ -65,7 +65,7 @@ determinant identity proves the statement.
 Module: `RenormalizedIntersectionTheory/GaussMayerPrimitiveOrbitProduct.lean`.
 Namespace: `GaloisForLFunctions.RenormalizedIntersectionTheory.MayerOrbitProduct`.
 
-- `orbitWeight`: literal deviation from one in each Euler factor.
+- `orbitWeight`: weight subtracted from one in each Euler factor.
 - `exists_signed_determinant_eulerProduct`: local absolute convergence and actual determinant identity for `Re w>1`.
 - `signed_determinant_eulerProduct_on_closed_unit`: joint and nested products throughout `|z|≤1` for `Re w>2`.
 - `signed_determinant_one_eq_eulerProduct`: specialization at `z=1`.
