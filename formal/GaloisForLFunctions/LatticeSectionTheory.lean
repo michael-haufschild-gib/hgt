@@ -3,6 +3,7 @@ import GaloisForLFunctions.LatticeSectionTheory.TheSlopeOfALatticeCountIsItsRank
 import GaloisForLFunctions.LatticeSectionTheory.TheRectangularLatticeCount
 import GaloisForLFunctions.LatticeSectionTheory.DefiniteCountsHaveOffLineZeros
 import GaloisForLFunctions.LatticeSectionTheory.TheSiegelMajorantIsTheHodgeIndex
+import GaloisForLFunctions.LatticeSectionTheory.TheBoostTransformRestoresTheEulerProduct
 
 /-!
 # Lattice Section Theory

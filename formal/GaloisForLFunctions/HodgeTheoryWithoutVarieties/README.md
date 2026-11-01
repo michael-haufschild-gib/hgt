@@ -298,12 +298,26 @@ Weil's sign convention, Hodge–Riemann = `W ≥ 0` on primitive vectors.
 
 ## 8. Open research topics
 
-1. **The top coprime stratum.** In the gcd stratification every stratum is the coprime part of a
-   lower-resolution family. The top stratum carries all successor pairs and the coprime affine
-   shells. Is it controlled on `v₁^⊥` by the diagonal of the strata below, with level-independent
-   constants? This is the inductive step that the package lacks. For the prime part it is RAPT's
-   pole defect: the root defects are sums of squares. The open part is the successor and
-   archimedean coupling between coprime atoms.
+1. **The top coprime stratum.** On `v₁^⊥` the pole rows drop out. The top stratum consists of the
+   root cone `−2x₁ Σ_k Λ(k)k^{−1/2}x_k`, the archimedean couplings of coprime atoms (center kernel
+   and the near overlap of successor pairs), and the coprime shells `(n, kn+h)`, `gcd(n, h) = 1`.
+   - *Solved by identities.* The root cone is completed to the root defect by `Λ ∗ 1 = log`
+     (`renormalizedPrimeForm_moebius_recursion`). In the limit structure the Möbius gluing is
+     RAPT's repayment. A Ramanujan packet `c_m(n) = Σ_{d∣(m,n)} μ(m/d)d` is the Möbius combination
+     of the pole packets of the stars `d ∣ m`, and its energy
+     `φ(m)⁻¹ Σ_{d∣m} μ(m/d) d E(c/d)` collapses to a sum of positive Fourier integrals over the
+     shells coprime to `m`.
+   - *What is left* is uniformity in `N`. Three residual families sit in the top stratum: Mertens
+     remainders at shifted horizons `R(⌊(N−h)/n⌋)` with floor defects, archimedean cross errors,
+     and the shift-distribution terms of the shells (`sum_shellBalance_eq_zero`: zero in the mean).
+     They must be `o(E_m(c))` uniformly in the conductors kept by localization, and
+     `E_m(c) ≍ E(c/m) → 0`.
+   - *Generic bounds* give the universal regime `(log N)^{1/19}`. Beyond it, only an identity can
+     help. At RH-complete overlap the Mertens remainders are needed at square-root precision in
+     multiplicative windows, which is equivalent to RH (ACoT: coupling = kernel = window error).
+   - The only prime-dependent parts of the top stratum are the root cone and the coprime shells.
+     The archimedean part is the same for every twin, so the control must use the `Λ`-weights of
+     the shells.
 2. **Shallow stars.** Local HR with an explicit margin on stars of depth `d ≲ c`, i.e. for the
    low-conductor band of review Σ-4.
 3. **A quadratic invariant of the nerve.** The Euler characteristic of the nerve is the Mertens

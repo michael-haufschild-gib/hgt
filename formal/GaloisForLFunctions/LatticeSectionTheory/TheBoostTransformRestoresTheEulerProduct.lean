@@ -190,8 +190,8 @@ theorem integral_splitSeries_mul_exp {s w : ℝ} (hw : |w| < s - 1) :
     refine ((summable_splitCoeff hw).mul_right (boostConstant s w)).congr fun i => ?_
     rw [← integral_splitTerm_mul_exp]
     refine integral_congr_ae (ae_of_all _ fun u => ?_)
-    rw [Real.norm_of_nonneg]
-    exact mul_nonneg (Real.rpow_nonneg (by positivity) _) (Real.exp_pos _).le
+    exact (Real.norm_of_nonneg (mul_nonneg (Real.rpow_nonneg (by positivity) _)
+      (Real.exp_pos _).le)).symm
   have hswap := integral_tsum_of_summable_integral_norm hint hnorm
   have hlhs : (fun u => splitSeries s u * Real.exp (2 * w * u)) =
       fun u => ∑' i : ℕ × ℕ, splitTerm s u i * Real.exp (2 * w * u) := by
@@ -204,19 +204,17 @@ theorem integral_splitSeries_mul_exp {s w : ℝ} (hw : |w| < s - 1) :
   have h2 : 1 < s - w := by linarith [le_abs_self w]
   rw [tsum_mul_tsum_of_summable_norm]
   · rfl
-  · simpa [Real.norm_of_nonneg (Real.rpow_nonneg (by positivity : (0 : ℝ) ≤ _ + 1) _)] using
-      summable_nat_add_one_rpow h1
-  · simpa [Real.norm_of_nonneg (Real.rpow_nonneg (by positivity : (0 : ℝ) ≤ _ + 1) _)] using
-      summable_nat_add_one_rpow h2
+  · exact summable_norm_iff.mpr (summable_nat_add_one_rpow h1)
+  · exact summable_norm_iff.mpr (summable_nat_add_one_rpow h2)
 
 /-- The real `p`-series is the Riemann zeta function. -/
 theorem riemannZeta_ofReal_eq_tsum {a : ℝ} (ha : 1 < a) :
     riemannZeta (a : ℂ) = ((∑' m : ℕ, ((m : ℝ) + 1) ^ (-a) : ℝ) : ℂ) := by
   rw [zeta_eq_tsum_one_div_nat_add_one_cpow (by simpa using ha), Complex.ofReal_tsum]
   refine tsum_congr fun m => ?_
-  rw [Complex.ofReal_cpow (by positivity), Complex.cpow_neg, one_div]
+  rw [Complex.ofReal_cpow (by positivity)]
   push_cast
-  rfl
+  rw [Complex.cpow_neg, one_div]
 
 /-- **Selection by the boosts.** The boost transform of the split counts is the archimedean
 constant times `ζ(s + w) ζ(s − w)`. -/
@@ -238,9 +236,11 @@ theorem integral_boost_translate (F : ℝ → ℝ) (w c : ℝ) :
   have h : (fun u => F (u + c) * Real.exp (2 * w * u)) =
       fun u => Real.exp (-(2 * w * c)) * (fun v => F v * Real.exp (2 * w * v)) (u + c) := by
     funext u
+    have e : Real.exp (-(2 * w * c)) * Real.exp (2 * w * (u + c)) = Real.exp (2 * w * u) := by
+      rw [← Real.exp_add]; congr 1; ring
     simp only
-    rw [show 2 * w * (u + c) = 2 * w * u + 2 * w * c by ring, Real.exp_add]
-    rw [mul_left_comm, ← mul_assoc, ← Real.exp_add, neg_add_cancel, Real.exp_zero, one_mul]
+    rw [← e]
+    ring
   rw [h, integral_const_mul, MeasureTheory.integral_add_right_eq_self
     (fun v => F v * Real.exp (2 * w * v))]
 

@@ -67,8 +67,10 @@ and positive-frequency mass has no additive height term. The
 [literal weighted-row transport](../3-formalized/literal-logarithmic-stabilizer-transport.md)
 is now formalized: fixed smooth profiles have signed dual error
 `≤C O(Q)[T⁻¹+(m/(TR))³]`, row bound `C O(Q)`, and logarithmic moment
-`C O(Q)/T`. All eight audits and both final direct checks pass. Actual
-taper compatibility, aperture reindexing and global boundary summation remain open.
+`C O(Q)/T`. All eight audits and both final direct checks pass. The
+[actual standard taper](../3-formalized/actual-smooth-taper-stabilizer-transport.md)
+has Lipschitz constant two and endpoint variation `C O(Q)/T`, uniformly in
+length and collar. Aperture reindexing and global boundary summation remain open.
 
 ## Fixed-cutoff primitive-sample calculation
 
@@ -84,8 +86,8 @@ The actual standard taper is `g=autocorr(φ²)`, with
 `g_le_Aphi`, `Aphi_le`). Its replacement by the triangle must follow the
 signed spatial/diagonal cancellation: an earlier absolute replacement can cost
 `O(wX log Q)`. Retaining `∫_{log(qt/π)}^L g(y)dy` first should reduce the
-replacement cost to `O(wT log²T)`. Uniform taper Lipschitz control is also
-needed for pair-endpoint transport.
+replacement cost to `O(wT log²T)`. Uniform taper Lipschitz control and its
+finite-row endpoint transport are now formalized.
 
 The odd logarithmic mean predicts the leading term
 `−β(∫Ω)(log Q)³/(12π)`. Thus scalar 1/4 would retain one eighth of the
@@ -98,5 +100,5 @@ its conductor average should be logarithmic. The proved linear conductor
 mean controls both `Σ qμ²(q)/φ(q)²=O(log Q)` and convergence of
 `Σ μ²(q)(1+log q)/φ(q)²` by partial summation. These estimates are intended
 to make the raw errors `O(T log²T)`, below the proposed `T log³T` main term.
-All quadrature, weighted-harmonic and finite logarithmic transport steps
-remain to be formalized before asserting the model calibration.
+Quadrature, weighted-harmonic averaging, aperture reindexing and global
+summation remain to be formalized before asserting the model calibration.

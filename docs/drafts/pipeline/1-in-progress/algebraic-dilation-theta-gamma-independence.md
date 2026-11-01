@@ -48,15 +48,31 @@ uniqueness at infinitely many prime logarithms should make these jet rows
 span every finite packet even after deleting finitely many primes.
 Polarization would then kill the top homogeneous relation.
 
+The exact frequency statement needed is sharper than global independence of
+all scaled prime logs: if `D` target terms use distinct primes and positive
+algebraic weights, every representation by at most `D` positive algebraic
+prime terms has exactly `D` terms and permutes the same prime–weight pairs.
+Baker gives equality of total weight at each prime. Positivity gives equal
+prime supports; cardinality forces one term per target prime, and weight
+balance identifies each exponent. The cofinite prime-jet law then extends to
+all multilinear forms by currying one slot and excluding its prime from the
+remaining slots. These two exact lemmas are being formalized; the full
+independence theorem remains open.
+
 The corpus already proves absolutely convergent product expansion
 (`ExponentialSeriesAlgebra.prod_expSeriesCarrier`) and coefficient extraction
 with frequency collisions (`ExponentialSeriesFiberwise.fiberAmplitude_eq_zero_of_expSeriesCarrier_eq_zero`).
-The missing bridge is the actual log-derivative jet expansion, its summability,
-and the Baker-separated prime-fiber and top-degree polarization argument. Logarithmic derivatives are
+The actual undilated jet identity is already proved in
+`XiCollapseDirichletLeg.iteratedDeriv_zetaLogDeriv_eq_LSeries`; argument
+scaling has an unconditional chain rule. The missing bridge transports these
+jets to common positive-algebraic prime atoms with absolute summability, then
+uses the Baker-separated prime fibers and top-degree polarization. Logarithmic derivatives are
 meromorphic in the upper half-plane, so they cannot be inserted as analytic
 representatives into the physical Gamma receiver. Transfer their differential
 independence to the actual zeta dilates in rotated right-half-plane germs,
 then recover physical zeta-jet independence before Gamma separation.
+`CoordinatewiseDifferentialFamilyMatroid.differentialIndependent_deriv_div_self_iff`
+already supplies the abstract family transfer.
 
 No theorem or stronger Mahler exclusion is claimed yet. Special-value
 relations and other nonlinear realizations remain outside this conjecture.

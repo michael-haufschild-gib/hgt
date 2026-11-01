@@ -31,11 +31,12 @@ retain decay and have no additive height loss on short rows.
 
 ## Actual smooth taper
 
-The standard taper is `g=autocorr(φ²)`. The corpus proves `∫|(φ²)'|=2`
-and the derivative formula for compact C¹ autocorrelations. Together with
-`0≤φ²≤1`, these give the candidate uniform estimate
-`|g(x)−g(y)|≤2|x−y|`. Endpoint variation should therefore cost at most twice
-the proved logarithmic first-moment bound.
+The [actual standard taper transport](../3-formalized/actual-smooth-taper-stabilizer-transport.md)
+is formalized: `g=autocorr(φ²)` satisfies `|g(x)−g(y)|≤2|x−y|`, uniformly
+in length, collar and monotone transition profile. Endpoint variation costs
+`C O(Q)/T` for each fixed smooth height profile. The three audits use standard
+axioms and the final direct check passes. Compatibility with the separate
+cosine-shaped taper remains open.
 
 Keep this actual taper through the signed spatial/diagonal cancellation.
 Its triangle bracket differs by at most `2w`, but a premature absolute
@@ -44,10 +45,13 @@ is only `O(wT log²T)`.
 
 ## Aperture and boundary
 
-Put `N=floor X` and
-`R_m=min((N−m)/2, floor(m(exp θ−1)/2))`.
+Put `N=floor X` and `R_m=(min(N,floor(m exp θ))−m)/2`, using
+natural subtraction and division. This directly retains both literal cutoffs.
 The exact ordered-pair identity should express the model as
 `(1/(4π))Σ_{odd 3≤m≤N}[2g(log m)logRow(m,R_m)+taperVariation(m,R_m)]`.
+The corresponding global taper-anchoring error should be at most
+`C floor(X) O(Q)/T` for fixed smooth height profiles and `θ≤log 2`.
+These exact source identities and their global bound await Lean verification.
 
 For `θ≤log 2`, `2R_m≤m`. Bulk bases `m≤X exp(−θ)` see the full aperture;
 if `mθ≥4`, its length is at least `mθ/4`. Short bases number `O(θ⁻¹)`.

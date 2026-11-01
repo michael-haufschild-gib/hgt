@@ -51,8 +51,10 @@ now transfer the [literal logarithmic row](../3-formalized/literal-logarithmic-s
 including its square-root pair weight. For each fixed smooth profile its signed
 dual error is `≤C O(Q)[T⁻¹+(m/(TR))³]`, its row is bounded by `C O(Q)`, and
 its logarithmic taper moment by `C O(Q)/T`. All eight audits and both final
-direct checks pass. Actual taper compatibility, aperture reindexing, global
-primitive-correction summation and actual signed prime discrepancy remain open.
+direct checks pass. [Actual standard taper transport](../3-formalized/actual-smooth-taper-stabilizer-transport.md)
+also gives a uniform Lipschitz constant two and endpoint variation `C O(Q)/T`.
+Aperture reindexing, global primitive-correction summation, cosine-taper
+compatibility and actual signed prime discrepancy remain open.
 
 ## Completion gates
 

@@ -1344,6 +1344,13 @@ private theorem eventually_three_cutoff_bounds_one_ninth {q θ₁ : ℝ}
   exact ⟨hQ2, hQR₀, hR₀R₁, hQ_le, hsqrtQ, hlogQ_lb, hH₀_ub, hlogR₀_lb, h36_R₀,
     hH₁_ub, h1080_R₁, hk₁_lb⟩
 
+/-- `(M, N] = [1, N] \ [1, M]` as finite sets of naturals. -/
+private theorem Ioc_eq_Icc_sdiff_Icc_telescoped (M N : ℕ) :
+    (Ioc M N : Finset ℕ) = Icc 1 N \ Icc 1 M := by
+  ext n
+  rw [mem_Ioc, Finset.mem_sdiff, mem_Icc, mem_Icc]
+  omega
+
 private theorem complement_three_band_vector_assembly_one_ninth
     {Q₁ R₀ R₁ N : ℕ} {c b k₁ Lh κ₀ C_coerc0 C_band1 : ℝ}
     (hQ2 : 2 ≤ Q₁) (hQR₀ : Q₁ ≤ R₀) (hR₀R₁ : R₀ ≤ R₁)
@@ -1439,12 +1446,10 @@ private theorem complement_three_band_vector_assembly_one_ninth
       (∑ n ∈ Icc 1 (N / linearDefectCutoff c), primeHorizonExtension w n ^ 2) +
         (∑ n ∈ Ioc (N / linearDefectCutoff c) N, primeHorizonExtension w n ^ 2) := by
     rw [← sum_primeHorizonExtension_sq w,
-      Ioc_eq_Icc_sdiff_Icc (N / linearDefectCutoff c) N, add_comm]
+      Ioc_eq_Icc_sdiff_Icc_telescoped (N / linearDefectCutoff c) N, add_comm]
     exact (sum_sdiff (Icc_subset_Icc le_rfl (Nat.div_le_self N _))).symm
-  generalize (∑ n ∈ Icc 1 (N / linearDefectCutoff c), primeHorizonExtension w n ^ 2) = P_w at
-    hdiag2 hcr0w hcr1w hPw0 hw_split
-  generalize (∑ n ∈ Ioc (N / linearDefectCutoff c) N, primeHorizonExtension w n ^ 2) = S_w at
-    hdiag2 hcr0w hcr1w hSw0 hw_split
+  generalize (∑ n ∈ Icc 1 (N / linearDefectCutoff c), primeHorizonExtension w n ^ 2) = P_w at hdiag2 hcr0w hcr1w hPw0 hw_split
+  generalize (∑ n ∈ Ioc (N / linearDefectCutoff c) N, primeHorizonExtension w n ^ 2) = S_w at hdiag2 hcr0w hcr1w hSw0 hw_split
   have hfloor0 : (κ₀ + 2) * ‖u₀‖ ^ 2 + (1 / 2 : ℝ) * ‖u₀‖ ^ 2 ≤
       ((3 / 4 : ℝ) * Real.log (Q₁ : ℝ) - Real.log c - C_coerc0) * ‖u₀‖ ^ 2 := by
     rw [show (κ₀ + 2) * ‖u₀‖ ^ 2 + (1 / 2 : ℝ) * ‖u₀‖ ^ 2 =
@@ -1467,7 +1472,7 @@ private theorem complement_three_band_vector_assembly_one_ninth
       apply mul_le_mul_of_nonneg_right _ hPw0
       have hh : b * k₁ / (32 * c ^ 7) ≤ k₁ / 256 := by
         have hm := mul_le_mul_of_nonneg_right hb_c7 (div_nonneg hk₁_pos.le (by norm_num : (0 : ℝ) ≤ 32))
-        exact (by field_simp [hc0.ne']; ring : b * k₁ / (32 * c ^ 7) = (b / c ^ 7) * (k₁ / 32)).trans_le
+        exact (by field_simp [hc0.ne'] : b * k₁ / (32 * c ^ 7) = (b / c ^ 7) * (k₁ / 32)).trans_le
           (hm.trans_eq (by ring))
       linarith only [hh, hk₁_pos]
     have hP_k : (κ₀ + 2) * P_w ≤ (k₁ / 8) * P_w :=
@@ -1547,7 +1552,7 @@ private theorem complement_scalar_smallness_one_ninth
     κ₀ + 2 ≤ (Real.log (R₁ : ℝ) / D - 1) / 8 ∧
     κ₀ + 2 ≤ 3 * b * (Real.log (R₁ : ℝ) / D - 1) / (8 * c ^ 7) := by
   have hL0 : 0 < L := zero_lt_one.trans_le hL1
-  have hLh1 : 1 ≤ Lh := hLh_eq ▸ Real.one_le_rpow hL1 (by norm_num)
+  have hLh1 : 1 ≤ Lh := by rw [hLh_eq]; exact Real.one_le_rpow hL1 (by norm_num)
   have hLh0 : 0 < Lh := zero_lt_one.trans_le hLh1
   have hLh_sq : Lh * Lh = L := by
     rw [hLh_eq, ← Real.rpow_add hL0]; norm_num [Real.rpow_one]
@@ -1582,9 +1587,9 @@ private theorem complement_scalar_smallness_one_ninth
           mul_le_mul (hcpow 2) hVc hlc_nn (Real.rpow_nonneg hL0.le _)
         _ = L ^ (2 * α + ν) := by rw [← Real.rpow_add hL0]; congr 1
     calc
-      c ^ 2 * (1 + Real.log c) / Lh ≤ L ^ (2 * α + ν) / L ^ (1 / 2 : ℝ) :=
-        hLh_eq ▸ div_le_div_of_nonneg_right h1 hLh0.le
-      _ = L ^ (2 * α + ν - 1 / 2) := by rw [← Real.rpow_sub hL0]
+      c ^ 2 * (1 + Real.log c) / Lh ≤ L ^ (2 * α + ν) / Lh :=
+        div_le_div_of_nonneg_right h1 hLh0.le
+      _ = L ^ (2 * α + ν - 1 / 2) := by rw [hLh_eq, ← Real.rpow_sub hL0]
       _ ≤ L ^ (-ν) := Real.rpow_le_rpow_of_exponent_le hL1 (by linarith only [hν1, hα9, hν])
   have hc2_vc_L : c ^ 2 * (1 + Real.log c) / L ≤ L ^ (-ν) :=
     (div_le_div_of_nonneg_left (mul_nonneg (sq_nonneg c) hlc_nn) hLh0
@@ -1684,7 +1689,7 @@ private theorem complement_scalar_smallness_one_ninth
         _ = 1 := hmul_ν
     have h2 : K_two * c ^ 9 ≤ (θ₁ / (4 * D)) * L := by
       have hmul := mul_le_mul_of_nonneg_left h1
-        (mul_nonneg (div_nonneg hθ₁.le (mul_pos (by norm_num) hD).le) hL0.le)
+        (mul_nonneg (div_nonneg hθ₁.le (mul_pos (by norm_num : (0 : ℝ) < 4) hD).le) hL0.le)
       have hlhs_eq : ((θ₁ / (4 * D)) * L) * ((4 * D * K_two / θ₁) * (c ^ 9 / L)) = K_two * c ^ 9 := by
         field_simp [hθ₁.ne', hD.ne', hL0.ne']
       linarith only [hmul, hlhs_eq]
@@ -1700,7 +1705,8 @@ private theorem complement_scalar_smallness_one_ninth
       have h2 : terminalPacketCost R₁ (N / linearDefectCutoff c) N / (L / 2) =
           2 * terminalPacketCost R₁ (N / linearDefectCutoff c) N / L := by ring
       exact (h1.trans_eq h2).trans
-        (div_le_div_of_nonneg_right (mul_le_mul_of_nonneg_left hB1_ub zero_le_two) hL0.le)
+        (div_le_div_of_nonneg_right
+          ((mul_le_mul_of_nonneg_left hB1_ub zero_le_two).trans_eq (by ring)) hL0.le)
     have hc7_vc : c ^ 7 * (1 + Real.log c) / L ≤ L ^ (-ν) := by
       have hc79 : c ^ 7 ≤ c ^ 9 := pow_le_pow_right₀ hc1 (by norm_num)
       exact (div_le_div_of_nonneg_right (mul_le_mul_of_nonneg_right hc79 hlc_nn) hL0.le).trans hc9_vc_L
@@ -1784,9 +1790,10 @@ private theorem complement_scalar_smallness_one_ninth
             mul_le_mul hν_b6 hc2_vc_Lh
               (div_nonneg (mul_nonneg (sq_nonneg c) hlc_nn) hLh0.le) hLν0
           _ = 1 := hmul_ν
-      have hm := mul_le_mul_of_nonneg_right h1 (mul_nonneg (by norm_num) hLh0.le)
+      have hm := mul_le_mul_of_nonneg_right h1
+        (mul_nonneg (by norm_num : (0 : ℝ) ≤ 1 / 16) hLh0.le)
       have hid : (16 * C_band1) * (c ^ 2 * (1 + Real.log c) / Lh) * ((1 / 16 : ℝ) * Lh) =
-          C_band1 * c ^ 2 * (1 + Real.log c) := by field_simp [hLh0.ne']; ring
+          C_band1 * c ^ 2 * (1 + Real.log c) := by field_simp [hLh0.ne']
       linarith only [hm, hid]
     have hLh_lb : 16 * (κ₀ + 3) ≤ Lh := by
       have hsq : (16 * (κ₀ + 3)) ^ 2 ≤ Lh ^ 2 := by
@@ -1800,7 +1807,9 @@ private theorem complement_scalar_smallness_one_ninth
       have hh := (div_le_iff₀ hθ₁).mp hL_w_pre
       linarith only [hh]
     have h2 : κ₀ + 2 ≤ ((θ₁ / (4 * D)) * L) / 8 := by
-      rw [div_mul_eq_mul_div, div_div, le_div_iff₀ (mul_pos (by norm_num) hD)]
+      have hD32 : 0 < 32 * D := mul_pos (by norm_num) hD
+      have hid : ((θ₁ / (4 * D)) * L) / 8 = θ₁ * L / (32 * D) := by ring
+      rw [hid, le_div_iff₀ hD32]
       linarith only [h1]
     exact h2.trans (div_le_div_of_nonneg_right hk₁_lb (by norm_num))
   have hout10 : κ₀ + 2 ≤ 3 * b * (Real.log (R₁ : ℝ) / D - 1) / (8 * c ^ 7) := by

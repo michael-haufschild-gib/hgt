@@ -1,6 +1,8 @@
 import GaloisForLFunctions.TransMetzlerWeilPositivity.ReceiverRate.ScaleAveragingRemovesFourierZeros
 import GaloisForLFunctions.BiScaleUncertainty.PairingRecurrenceLaw
 import GaloisForLFunctions.RHTower.WeilPrimeFreeTest
+import GaloisForLFunctions.RHTower.SecondMoment
+import GaloisForLFunctions.HTGeometry.CompactFourierEntire
 
 /-!
 # A scale-averaged logarithmic Denjoy–Carleman profile
@@ -176,5 +178,130 @@ theorem integral_abs_iteratedDeriv_averagedSincProfile_le (q : ℕ) :
   have h := integral_abs_le_of_bound hd (hasCompactSupport_of_vanishes hds)
     (abs_iteratedDeriv_averagedSincProfile_le q) hds (by norm_num : (0 : ℝ) ≤ 4)
   linarith only [h]
+
+/-- Its transform is the nonnegative average of sinc spectral energy. -/
+theorem fourier_averagedSincProfile (ξ : ℝ) :
+    𝓕 (fun x => (averagedSincProfile x : ℂ)) ξ =
+      ((scaleBandAverage (fun u => ‖𝓕 (fun x => (sincProfile x : ℂ)) u‖ ^ 2) ξ : ℝ) : ℂ) := by
+  rw [averagedSincProfile, fourier_scaleAverage contDiff_sincCorrelation.continuous
+    (contDiff_sincCorrelation.continuous.integrable_of_hasCompactSupport
+      hasCompactSupport_sincCorrelation)]
+  simp_rw [fourier_sincCorrelation, ← Complex.ofReal_mul]
+  exact intervalIntegral.integral_ofReal
+
+private theorem fourier_sincProfile_zero :
+    𝓕 (fun x => (sincProfile x : ℂ)) 0 = 1 := by
+  rw [HTGeometry.fourier_zero_eq_integral, integral_ofReal, integral_sincProfile,
+    Complex.ofReal_one]
+
+/-- Unit mass is unchanged by the average of normalized dilations. -/
+theorem integral_averagedSincProfile : ∫ x, averagedSincProfile x = 1 := by
+  have h := fourier_averagedSincProfile 0
+  rw [HTGeometry.fourier_zero_eq_integral, integral_ofReal] at h
+  simp only [scaleBandAverage, mul_zero, fourier_sincProfile_zero, norm_one, one_pow,
+    mul_one] at h
+  rw [intervalIntegral.integral_const_mul, integral_id] at h
+  norm_num at h
+  exact_mod_cast h
+
+private theorem exists_fourier_sincProfile_ne_zero_between {a b : ℝ} (hab : a < b) :
+    ∃ u ∈ Set.Ioo a b, 𝓕 (fun x => (sincProfile x : ℂ)) u ≠ 0 := by
+  let G : ℂ → ℂ := fun z =>
+    Zeta23.paperFT (fun x => (sincProfile x : ℂ)) ((-(2 * Real.pi) : ℂ) * z)
+  have hd : Differentiable ℂ G :=
+    (_root_.RHTower.EvenSector.differentiable_paperFT_of_compact
+      (Complex.continuous_ofReal.comp contDiff_sincProfile.continuous)
+      (hasCompactSupport_sincProfile.comp_left Complex.ofReal_zero)).comp
+        (differentiable_const.mul differentiable_id)
+  have he (u : ℝ) : G (u : ℂ) = 𝓕 (fun x => (sincProfile x : ℂ)) u := by
+    rw [RHTower.WeilDeletion.fourier_eq_paperFT]
+    dsimp only [G]
+    congr 1
+    push_cast
+    ring
+  by_contra hn
+  push_neg at hn
+  have hz := HTGeometry.entire_eq_zero_of_vanishing_on_real_interval
+    (t₀ := (a + b) / 2) hd (show 0 < (b - a) / 2 by linarith only [hab])
+    (fun u hu => by
+      rw [he]
+      exact hn u ⟨by linarith only [(abs_lt.mp hu).1],
+        by linarith only [(abs_lt.mp hu).2]⟩) (0 : ℂ)
+  rw [show (0 : ℂ) = ((0 : ℝ) : ℂ) by rfl, he, fourier_sincProfile_zero] at hz
+  exact one_ne_zero hz
+
+private theorem integral_fourier_sincProfile_sq_pos {a b : ℝ} (hab : a < b) :
+    0 < ∫ u in a..b, ‖𝓕 (fun x => (sincProfile x : ℂ)) u‖ ^ 2 := by
+  apply _root_.RHTower.intervalIntegral_pos_of_continuous_nonneg_of_exists_pos
+    (continuous_norm_fourier_sincProfile.pow 2) (fun u _ => sq_nonneg _)
+  obtain ⟨u, hu, hne⟩ := exists_fourier_sincProfile_ne_zero_between hab
+  exact ⟨u, hu, sq_pos_of_pos (norm_pos_iff.mpr hne)⟩
+
+/-- Averaging over a nondegenerate scale interval removes every real Fourier zero. -/
+theorem fourier_averagedSincProfile_re_pos (ξ : ℝ) :
+    0 < (𝓕 (fun x => (averagedSincProfile x : ℂ)) ξ).re := by
+  rw [fourier_averagedSincProfile, Complex.ofReal_re]
+  have hc : Continuous (fun u => ‖𝓕 (fun x => (sincProfile x : ℂ)) u‖ ^ 2) :=
+    continuous_norm_fourier_sincProfile.pow 2
+  rcases lt_trichotomy ξ 0 with hξ | rfl | hξ
+  · have hp := integral_fourier_sincProfile_sq_pos (show 2 * ξ < ξ by linarith only [hξ])
+    rw [intervalIntegral.integral_symm, ← mul_scaleBandAverage _ hc] at hp
+    nlinarith only [hp, hξ]
+  · simp only [scaleBandAverage, mul_zero, fourier_sincProfile_zero, norm_one, one_pow,
+      mul_one]
+    rw [intervalIntegral.integral_const_mul, integral_id]
+    norm_num
+  · have hp := integral_fourier_sincProfile_sq_pos (show ξ < 2 * ξ by linarith only [hξ])
+    rw [← mul_scaleBandAverage _ hc] at hp
+    exact (mul_pos_iff_of_pos_left hξ).mp hp
+
+theorem fourier_averagedSincProfile_ne_zero (ξ : ℝ) :
+    𝓕 (fun x => (averagedSincProfile x : ℂ)) ξ ≠ 0 := by
+  intro h
+  have hp := fourier_averagedSincProfile_re_pos ξ
+  rw [h, Complex.zero_re] at hp
+  exact (lt_irrefl 0) hp
+
+theorem norm_fourier_averagedSincProfile_eq_re (ξ : ℝ) :
+    ‖𝓕 (fun x => (averagedSincProfile x : ℂ)) ξ‖ =
+      (𝓕 (fun x => (averagedSincProfile x : ℂ)) ξ).re := by
+  have hp := fourier_averagedSincProfile_re_pos ξ
+  rw [fourier_averagedSincProfile, Complex.ofReal_re] at hp ⊢
+  rw [Complex.norm_real, Real.norm_eq_abs, abs_of_pos hp]
+
+/-- The integrated sinc lower bound gives a pointwise logarithmic Fourier floor. -/
+theorem eventually_fourier_averagedSincProfile_re_ge :
+    ∀ᶠ ξ : ℝ in atTop,
+      Real.exp (-(sincTailConst * (ξ / Real.log ξ ^ 2))) ≤
+        (𝓕 (fun x => (averagedSincProfile x : ℂ)) ξ).re := by
+  simpa only [fourier_averagedSincProfile, Complex.ofReal_re] using
+    eventually_scaleBandAverage_sinc_ge
+
+/-- One explicit floor controls the full Montgomery–Vaughan frequency band. -/
+theorem eventually_fourier_averagedSincProfile_band_ge :
+    ∀ᶠ c : ℝ in atTop, ∀ t ∈ Set.Icc c (101 * c),
+      Real.exp (-(101 * sincTailConst * (c / Real.log c ^ 2))) ≤
+        (𝓕 (fun x => (averagedSincProfile x : ℂ)) t).re := by
+  obtain ⟨A, hA⟩ := eventually_atTop.mp eventually_fourier_averagedSincProfile_re_ge
+  filter_upwards [eventually_ge_atTop A, eventually_gt_atTop (Real.exp 1)] with c hcA hc
+  have hc0 : 0 < c := (Real.exp_pos 1).trans hc
+  have hlc : 0 < Real.log c := by
+    have h := Real.log_le_log (Real.exp_pos 1) hc.le
+    rw [Real.log_exp] at h
+    linarith only [h]
+  intro t ht
+  have ht0 : 0 < t := hc0.trans_le ht.1
+  have hlog : Real.log c ≤ Real.log t := Real.log_le_log hc0 ht.1
+  have hden : Real.log c ^ 2 ≤ Real.log t ^ 2 := pow_le_pow_left₀ hlc.le hlog 2
+  have hratio : t / Real.log t ^ 2 ≤ 101 * (c / Real.log c ^ 2) := by
+    calc
+      _ ≤ t / Real.log c ^ 2 :=
+        div_le_div_of_nonneg_left ht0.le (sq_pos_of_pos hlc) hden
+      _ ≤ (101 * c) / Real.log c ^ 2 :=
+        div_le_div_of_nonneg_right ht.2 (sq_nonneg _)
+      _ = 101 * (c / Real.log c ^ 2) := by ring
+  apply le_trans (Real.exp_le_exp.mpr ?_) (hA t (hcA.trans ht.1))
+  have h := mul_le_mul_of_nonneg_left hratio sincTailConst_pos.le
+  nlinarith only [h]
 
 end GaloisForLFunctions.TransMetzlerWeilPositivity

@@ -30,10 +30,13 @@ private theorem hasDerivAt_paramAvg_of_smooth {F D : ℝ → ℝ → ℝ}
       (Continuous.prodMk_right x)).intervalIntegrable (0 : ℝ) 1
   have hd := (HTGeometry.Interfinity.hasFDerivAt_paramAvg hF1 x).hasDerivAt
   rw [ContinuousLinearMap.intervalIntegral_apply hI] at hd
-  convert hd using 1
-  apply intervalIntegral.integral_congr
-  intro t _
-  exact (hD t).unique (HTGeometry.Interfinity.hasFDerivAt_partial hF1 x t).hasDerivAt
+  have he : (∫ t in (0 : ℝ)..1, D x t) =
+      ∫ t in (0 : ℝ)..1, (HTGeometry.Interfinity.partialFderiv F x t) 1 := by
+    apply intervalIntegral.integral_congr
+    intro t _
+    exact (hD t).unique (HTGeometry.Interfinity.hasFDerivAt_partial hF1 x t).hasDerivAt
+  rw [he]
+  exact hd
 
 /-- The average of mass-preserving dilations over scales from one to two. -/
 def scaleAverage (f : ℝ → ℝ) (x : ℝ) : ℝ :=
@@ -96,7 +99,8 @@ theorem iteratedDeriv_scaleAverage {f : ℝ → ℝ} (hf : ContDiff ℝ ∞ f) (
         (deriv (iteratedDeriv q f) (x / (1 + t ^ 2)) * (1 / (1 + t ^ 2))) =
         2 * t / (1 + t ^ 2) ^ (q + 1 + 1) *
           iteratedDeriv (q + 1) f (x / (1 + t ^ 2)) := by
-      rw [iteratedDeriv_succ, pow_succ]
+      rw [iteratedDeriv_succ]
+      simp only [pow_succ]
       field_simp [show (1 : ℝ) + t ^ 2 ≠ 0 by positivity]
     simpa only [Function.comp_def, id_eq, he] using hd
 
@@ -150,8 +154,8 @@ def scaleBandAverage (F : ℝ → ℝ) (ξ : ℝ) : ℝ :=
 theorem mul_scaleBandAverage (F : ℝ → ℝ) (hF : Continuous F) (ξ : ℝ) :
     ξ * scaleBandAverage F ξ = ∫ u in ξ..2 * ξ, F u := by
   have hd (t : ℝ) : HasDerivAt (fun s : ℝ => (1 + s ^ 2) * ξ) (2 * t * ξ) t := by
-    simpa only [Nat.cast_ofNat, pow_one, mul_one] using
-      (((hasDerivAt_id t).pow 2).const_add 1).mul_const ξ
+    convert (((hasDerivAt_id t).pow 2).const_add 1).mul_const ξ using 1 <;>
+      first | rfl | norm_num
   have hsub := intervalIntegral.integral_comp_mul_deriv
     (a := (0 : ℝ)) (b := 1) (fun t _ => hd t)
     (by fun_prop : ContinuousOn (fun t : ℝ => 2 * t * ξ) (Set.uIcc 0 1)) hF
@@ -189,8 +193,16 @@ theorem fourier_scaleAverage {f : ℝ → ℝ} (hf : Continuous f) (hfi : Integr
   have hscale (t : ℝ) : Integrable (fun x => f (x / (1 + t ^ 2))) := by
     simpa only [div_eq_mul_inv] using hfi.comp_mul_right' (inv_ne_zero (hd t).ne')
   have hFc : Continuous (Function.uncurry F) := by
-    dsimp only [F, Function.uncurry]
-    fun_prop (disch := positivity)
+    change Continuous (fun p : ℝ × ℝ => (Real.fourierChar (-(p.2 * ξ)) : ℂ) *
+      ((2 * p.1 / (1 + p.1 ^ 2) : ℝ) * (f (p.2 / (1 + p.1 ^ 2)) : ℂ)))
+    have hdcont : Continuous (fun p : ℝ × ℝ => 1 + p.1 ^ 2) :=
+      continuous_const.add (continuous_fst.pow 2)
+    have hc := (continuous_const.mul continuous_fst).div hdcont (fun p => (hd p.1).ne')
+    have hx := continuous_snd.div hdcont (fun p => (hd p.1).ne')
+    have hchar : Continuous (fun p : ℝ × ℝ => (Real.fourierChar (-(p.2 * ξ)) : ℂ)) := by
+      fun_prop
+    exact hchar.mul ((Complex.continuous_ofReal.comp hc).mul
+      (Complex.continuous_ofReal.comp (hf.comp hx)))
   have hnorm (t x : ℝ) : ‖F t x‖ =
       |2 * t / (1 + t ^ 2)| * |f (x / (1 + t ^ 2))| := by
     simp only [F, norm_mul, Circle.norm_coe, one_mul, Complex.norm_real, Real.norm_eq_abs]
@@ -210,11 +222,14 @@ theorem fourier_scaleAverage {f : ℝ → ℝ} (hf : Continuous f) (hfi : Integr
       ((volume.restrict (Set.uIoc (0 : ℝ) 1)).prod volume) := by
     rw [integrable_prod_iff hFc.aestronglyMeasurable]
     refine ⟨Filter.Eventually.of_forall hslice, ?_⟩
+    change Integrable (fun t => ∫ x, ‖F t x‖) (volume.restrict (Set.uIoc (0 : ℝ) 1))
     simp_rw [hmass]
     rw [Set.uIoc_of_le zero_le_one]
     have hc : Continuous (fun t : ℝ =>
         |2 * t / (1 + t ^ 2)| * ((1 + t ^ 2) * ∫ x, |f x|)) := by
-      fun_prop (disch := positivity)
+      exact (((continuous_const.mul continuous_id).div
+        (continuous_const.add (continuous_id.pow 2)) (fun t => (hd t).ne')).abs).mul
+          ((continuous_const.add (continuous_id.pow 2)).mul continuous_const)
     exact (hc.intervalIntegrable (0 : ℝ) 1).1
   have hinner (t : ℝ) : (∫ x, F t x) =
       (2 * t : ℝ) * 𝓕 (fun x => (f x : ℂ)) ((1 + t ^ 2) * ξ) := by
@@ -236,8 +251,10 @@ theorem fourier_scaleAverage {f : ℝ → ℝ} (hf : Continuous f) (hfi : Integr
       _ = (2 * t : ℝ) * 𝓕 (fun x => (f x : ℂ)) ((1 + t ^ 2) * ξ) := by
         rw [heq, hFT, div_inv_eq_mul, mul_comm ξ]
         push_cast
-        field_simp [Complex.ofReal_ne_zero.mpr (hd t).ne']
-  calc 𝓕 (fun x => (scaleAverage f x : ℂ)) ξ = ∫ x, ∫ t in (0 : ℝ)..1, F t x := by
+        have hz : (1 : ℂ) + (t : ℂ) ^ 2 ≠ 0 := by exact_mod_cast (hd t).ne'
+        field_simp [hz]
+  calc
+    𝓕 (fun x => (scaleAverage f x : ℂ)) ξ = (∫ x, ∫ t in (0 : ℝ)..1, F t x) := by
       rw [Real.fourier_real_eq]
       apply integral_congr_ae
       apply Filter.Eventually.of_forall
@@ -253,3 +270,8 @@ theorem fourier_scaleAverage {f : ℝ → ℝ} (hf : Continuous f) (hfi : Integr
       simp_rw [hinner]
 
 end GaloisForLFunctions.TransMetzlerWeilPositivity
+
+#print axioms GaloisForLFunctions.TransMetzlerWeilPositivity.contDiff_scaleAverage
+#print axioms GaloisForLFunctions.TransMetzlerWeilPositivity.iteratedDeriv_scaleAverage
+#print axioms GaloisForLFunctions.TransMetzlerWeilPositivity.fourier_scaleAverage
+#print axioms GaloisForLFunctions.TransMetzlerWeilPositivity.eventually_scaleBandAverage_sinc_ge
