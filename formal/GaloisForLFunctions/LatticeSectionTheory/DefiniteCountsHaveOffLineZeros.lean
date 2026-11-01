@@ -46,12 +46,11 @@ theorem f_modif_eq_ofReal (hy : 0 < y) (t : ℝ) :
   · simp [epsteinModif]
   · simp only [epsteinModif, Complex.ofReal_im, WeakFEPair.f_modif, Pi.add_apply,
       Set.indicator_apply]
-    split_ifs <;> simp [rectFEPair, ← Complex.ofReal_mul, ← Complex.ofReal_one,
-      ← Complex.ofReal_sub, -Complex.ofReal_one]
+    split_ifs <;> simp [rectFEPair, -Complex.ofReal_one]
 
 theorem epsteinModif_of_one_lt (hy : 0 < y) {t : ℝ} (ht : 1 < t) :
     epsteinModif y hy t = rectTheta y t - 1 := by
-  simp [epsteinModif, WeakFEPair.f_modif, Set.indicator_apply, ht, rectFEPair,
+  simp [epsteinModif, WeakFEPair.f_modif, ht, rectFEPair,
     show ¬ t < 1 from not_lt.mpr ht.le]
 
 theorem epsteinModif_of_lt_one (hy : 0 < y) {t : ℝ} (ht0 : 0 < t) (ht : t < 1) :
@@ -84,7 +83,7 @@ theorem epsteinModif_nonneg (hy : 0 < y) {t : ℝ} (ht : 0 < t) : 0 ≤ epsteinM
       rw [e, Real.rpow_neg_one, mul_inv, ← mul_assoc, mul_comm (Real.sqrt t)⁻¹ y⁻¹, mul_assoc,
         ← mul_inv, Real.mul_self_sqrt ht.le, one_div]
     linarith
-  · subst h; simp [epsteinModif, WeakFEPair.f_modif, Set.indicator_apply]
+  · subst h; simp [epsteinModif, WeakFEPair.f_modif]
   · rw [epsteinModif_of_one_lt hy h]
     linarith [one_le_rectTheta hy.ne' (show 0 < t by linarith)]
 

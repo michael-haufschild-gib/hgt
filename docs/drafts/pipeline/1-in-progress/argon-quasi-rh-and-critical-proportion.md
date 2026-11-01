@@ -34,7 +34,25 @@ The [matching cosine coefficient](../3-formalized/cosine-shape-one-improves-tran
 
 The [raw normalization audit](../3-formalized/stabilizer-odd-pair-normalization-audit.md) and [actual-prime comparison](../3-formalized/stabilizer-incomplete-periods-and-prime-comparison.md) are formalized. Full odd rectangles have nonnegative error at most `2Q³` above `2M²`. At `M=Q²`, actual prime-minus-model mean tends to `1−β/2`: the literal scalar 1/4 leaves 7/8; scalar two uniquely centers it. All nineteen audits use standard axioms, and all three leaves pass final direct checks. This [falsifies raw centering](../5-failed/quarter-scaled-stabilizer-raw-centering.md); the signed narrow-aperture estimate remains open.
 
-The [signed row bound](../3-formalized/odd-stabilizer-conductor-error-is-bounded.md) now has conductor cost at most `64 cosTransform Ω 0` at `Q=floor(m/b)`, and the odd main sum has exact logarithmic mean one half. All four audits and the final leaf check pass. The [exact C² Poisson theorem](../3-formalized/exact-poisson-row-for-the-odd-stabilizer.md) identifies the fixed-cutoff correction as nonnegative primitive samples, proves the exact vanishing criterion and sharp support horizon, and gives positive complete and finite rows arbitrarily close beyond it. All sixteen audits and both final direct checks pass. This [falsifies universal negative-row cancellation](../5-failed/fixed-cutoff-negative-row-cancellation.md). Global summation of the correction and logarithmic finite-aperture transport remain open, as does the actual prime discrepancy bound. The [C⁴ linear aperture bounds](../3-formalized/odd-stabilizer-aperture-and-fixed-base-renormalization.md) are now formalized: cubic tail error and a Q-independent row envelope. At fixed m, row/log Q→0 and spatial correction/log Q→`Ωhat(0)/(2πm)`, contrasting the moving-horizon limit. All seven audits and the final direct check pass. The [decay-preserving cosine estimates](../3-formalized/decay-preserving-cosine-transport.md) now bound logarithmic phase error by `min(M₁x²,16D₁/x²)` and positive-frequency lattice mass by `2m(M₀/T+T³D₄)`. All seven audits and the final direct check pass; literal weighted-row and global transport remain open.
+The [odd conductor bound](../3-formalized/odd-stabilizer-conductor-error-is-bounded.md)
+gives `Σμ²σ₂/φ²≤64Q` and `O(Q)∼(1/2)log Q`. The
+[exact Poisson row](../3-formalized/exact-poisson-row-for-the-odd-stabilizer.md)
+retains a nonnegative primitive spatial correction. It vanishes through the
+sharp support horizon `Qb≤πm`; positive rows occur arbitrarily close beyond it,
+[refuting universal negative-row cancellation](../5-failed/fixed-cutoff-negative-row-cancellation.md).
+
+The [aperture and fixed-base bounds](../3-formalized/odd-stabilizer-aperture-and-fixed-base-renormalization.md)
+give a cubic tail and a Q-independent row envelope. At fixed m, row/log Q→0
+and spatial correction/log Q→`Ωhat(0)/(2πm)`; at the moving horizon,
+row/log Q→`−Ωhat(0)/2`.
+
+[Decay-preserving Fourier estimates](../3-formalized/decay-preserving-cosine-transport.md)
+now transfer the [literal logarithmic row](../3-formalized/literal-logarithmic-stabilizer-transport.md),
+including its square-root pair weight. For each fixed smooth profile its signed
+dual error is `≤C O(Q)[T⁻¹+(m/(TR))³]`, its row is bounded by `C O(Q)`, and
+its logarithmic taper moment by `C O(Q)/T`. All eight audits and both final
+direct checks pass. Actual taper compatibility, aperture reindexing, global
+primitive-correction summation and actual signed prime discrepancy remain open.
 
 ## Completion gates
 

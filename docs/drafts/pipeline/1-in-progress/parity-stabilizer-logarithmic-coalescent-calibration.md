@@ -63,8 +63,12 @@ limit is zero, and the primitive correction/log Q limit is `Ωhat(0)/(2πm)`.
 These seven theorems pass audits and the final direct check.
 The [decay-preserving phase and lattice bounds](../3-formalized/decay-preserving-cosine-transport.md)
 are also formalized: logarithmic phase error retains inverse-square decay,
-and positive-frequency mass has no additive height term. Literal pair-weight,
-taper and boundary transport remain open.
+and positive-frequency mass has no additive height term. The
+[literal weighted-row transport](../3-formalized/literal-logarithmic-stabilizer-transport.md)
+is now formalized: fixed smooth profiles have signed dual error
+`≤C O(Q)[T⁻¹+(m/(TR))³]`, row bound `C O(Q)`, and logarithmic moment
+`C O(Q)/T`. All eight audits and both final direct checks pass. Actual
+taper compatibility, aperture reindexing and global boundary summation remain open.
 
 ## Fixed-cutoff primitive-sample calculation
 
@@ -74,6 +78,14 @@ support Ω in `[T,2T]`. Since `2<π`, every positive spatial sample has base
 linear model, up to lower-order quadrature and coprime-harmonic errors, to
 
 `−β/(2π) ∫ Ω(t) Σ_{q≤Q,odd} (μ²(q)/φ(q)) (L−log(qt/π))² dt`.
+
+The actual standard taper is `g=autocorr(φ²)`, with
+`max(L−2w−|y|,0)≤g(y)≤max(L−|y|,0)` (`Zeta23.Taper.g_ge`,
+`g_le_Aphi`, `Aphi_le`). Its replacement by the triangle must follow the
+signed spatial/diagonal cancellation: an earlier absolute replacement can cost
+`O(wX log Q)`. Retaining `∫_{log(qt/π)}^L g(y)dy` first should reduce the
+replacement cost to `O(wT log²T)`. Uniform taper Lipschitz control is also
+needed for pair-endpoint transport.
 
 The odd logarithmic mean predicts the leading term
 `−β(∫Ω)(log Q)³/(12π)`. Thus scalar 1/4 would retain one eighth of the

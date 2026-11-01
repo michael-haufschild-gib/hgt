@@ -12,7 +12,8 @@ decided exactly, shell by shell, over a complete period `L = ∏_{p ∈ P} p`.
 * **Variance of the coherent sector** (`sum_range_incidencePacket_sq`): the period mean of `F_b²` is
   `Σ_p b_p² (1/p)(1 − 1/p)`, since the incidence coordinates of distinct primes are independent.
 * **The shell balance law** (`shellBalance_eq`): for one shell `(k, h)`,
-  `½·mean (F_b(kn + h) − F_b(n))² − mean F_b² = Σ_p b_p² (v_p/2 − (1/p)(1 − 1/p)) + ½(Σ_p b_p μ_p)²`,
+  `½·mean (F_b(kn + h) − F_b(n))² − mean F_b²
+     = Σ_p b_p² (v_p/2 − (1/p)(1 − 1/p)) + ½(Σ_p b_p μ_p)²`,
   with the period variance `v_p` and mean `μ_p` of the affine event of `p`. Prime by prime:
   - a prime dividing neither `k` nor `h` contributes the **surplus** `b_p²/p²`
     (`shellBalance_of_coprime`);

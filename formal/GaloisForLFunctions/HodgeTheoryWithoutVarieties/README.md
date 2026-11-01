@@ -1,7 +1,7 @@
 # Hodge Theory without Varieties over ℤ (HWV)
 
 Namespace `GaloisForLFunctions.HodgeTheoryWithoutVarieties`; umbrella `HodgeTheoryWithoutVarieties.lean`;
-14 modules. In the review this field was called *the arithmetic Kähler package*. Everything is
+16 modules. In the review this field was called *the arithmetic Kähler package*. Everything is
 unconditional. Theorems named `riemannHypothesis_iff_*` are equivalences and are not proofs of RH.
 
 ## 1. Motivation
@@ -123,7 +123,8 @@ Weil's sign convention, Hodge–Riemann = `W ≥ 0` on primitive vectors.
    to stars, on all vectors and on the primitive part (`positiveAt_div`, `twinPositiveAt_div`,
    `hyperplanePositiveAt_div`).
 
-**C. Local Hodge–Riemann** (`TheDepthOfAStarIsItsEnergy`, `StarsOfTheCompleteWeilFamily`).
+**C. Local Hodge–Riemann** (`TheDepthOfAStarIsItsEnergy`, `StarsOfTheCompleteWeilFamily`,
+`TheSignGaugeOnDeepStars`).
 10. *Depth law.* On the star of `d`, at every horizon, `R_N ≥ (log d − C₀)|x|²`
     (`renormalizedPrimeForm_starRestrict_ge`). Asymptotically the bound is `(log d − ε)|x|²`, and
     `(log d + 2 log 2 − ε)|x|²` on primitive pullbacks
@@ -132,22 +133,29 @@ Weil's sign convention, Hodge–Riemann = `W ≥ 0` on primitive vectors.
 11. *Deep stars sink into the universal regime.* For the tilted spline, every star with
     `⌊N/d⌋ ≥ M₀` and `1 ≤ c⌊N/d⌋/N < (log ⌊N/d⌋)^α` is positive, at every resolution `(c, N)`
     (`exists_star_positive_tiltedUnitSpline`).
-12. *Depth and conductor are dual.* RAPT's completed conductor energy is
+12. *The sign gauge is local too.* Atoms of the star of `d` are spaced by at least
+    `atomSpacing ⌊N/d⌋`, so separated atoms of a deep star meet nonpositively
+    (`markovPair_star_nonpos`). At width `c/N` this holds whenever `c(⌊N/d⌋ + 1) < N`
+    (`markovPair_star_nonpos_of_lt`), and the pole rows are nonnegative
+    (`starPoleRow_nonneg`). The Lorentzian sign hypothesis therefore holds on the stars of depth
+    beyond the overlap and fails across the shallow ones, where ALG's Metzler threshold `1` is
+    exceeded.
+13. *Depth and conductor are dual.* RAPT's completed conductor energy is
     `E_m(c) = φ(m)⁻¹ Σ_{d ∣ m} μ(m/d) d E(c/d)`: the conductor-`m` mode is governed by the pole
     energy at the star overlaps `c/d` of the divisors of `m`. Stars and conductors degenerate in the
     same order, by `c ↦ c/d`.
 
 **D. Gluing** (`TheMoebiusGluingOfStars`, `TheGcdStratification`,
 `TheRenormalizedFormIsGluedFromItsStars`, `TheNerveOfTheStarCover`, `TheLinksSplitIntoTowers`).
-13. *Möbius gluing.* For every form on `[1, N]`,
+14. *Möbius gluing.* For every form on `[1, N]`,
     `Q(x) = Q_cop(x) + Σ_{2≤d≤N} (−μ(d)) Q(x·1_{dℕ})` (`quadratic_moebius_gluing`). For the
     complete family each star term is the family at the star resolution
     (`completeWeilEnergy_moebius_gluing`).
-14. *The prime form is a cone glued to its stars.* Coprime pairs of the prime kernel all contain
+15. *The prime form is a cone glued to its stars.* Coprime pairs of the prime kernel all contain
     the vertex `1` (`weilPrimeKernel_eq_zero_of_coprime`), so
     `P_N(x) = 2x₁ Σ_k P(1,k)x_k + Σ_{d≥2}(−μ(d)) P_{⌊N/d⌋}(x(d·))`
     (`atomicWeilForm_moebius_recursion`). This is an exact recursion over the nerve.
-15. *The signs telescope.* `μ ∗ 1 = δ`, so unwinding the Möbius gluing gives the sign-free **gcd
+16. *The signs telescope.* `μ ∗ 1 = δ`, so unwinding the Möbius gluing gives the sign-free **gcd
     stratification** (`quadratic_gcd_stratification`). The star of `g` of the complete Weil matrix
     is the matrix at the star resolution, entry by entry (`completeWeilMatrix_submatrix_starMap`,
     through polarization `eq_of_qf_eq`). Hence
@@ -155,38 +163,44 @@ Weil's sign convention, Hodge–Riemann = `W ≥ 0` on primitive vectors.
     A coprime pair is diagonal only at the root (`coprime_self_iff`), so each stratum is an
     off-diagonal form. Every successor pair `(n, n+1)` lies in the top stratum, and an affine shell
     `(n, kn+h)` lies in the stratum `gcd(n, h)`.
-16. *The renormalized prime form is glued from its stars.* With `Σ_{d∣n} μ(d) log d = −Λ(n)`, the
+17. *The renormalized prime form is glued from its stars.* With `Σ_{d∣n} μ(d) log d = −Λ(n)`, the
     star counterterms add up at `n` to `log N − γ − Λ(n)` up to floor defects
     (`sum_star_counterterms`). The missing `Λ` completes the cone of the root to a sum of squares:
     `R_N(x) = Σ_k Λ(k)(x_k − x₁/√k)² − R(N)x₁² − F_N(x) + Σ_{d≥2}(−μ(d)) R_{⌊N/d⌋}(x(d·))`
     (`renormalizedPrimeForm_moebius_recursion`). Unwound over the nerve, the root defects of all
     vertices assemble into RAPT's pole defect: this is the ground-state identity, written as an
     induction over stars.
-17. *The nerve.* A set of primes has a common star vertex iff its product is `≤ N`
+18. *The nerve.* A set of primes has a common star vertex iff its product is `≤ N`
     (`exists_common_star_iff`). The signed face count of the nerve is the Mertens function
     (`nerveEulerChar_eq_mertens`). RH is the half-power growth bound on it
     (`riemannHypothesis_iff_nerveEulerChar`), and unconditionally it is `Ω±(√N)`
     (`nerveEulerChar_omega_pm_sqrt`).
-18. *Links split into towers.* Neighbours of `n` on two distinct prime towers are never adjacent
+19. *Links split into towers.* Neighbours of `n` on two distinct prime towers are never adjacent
     (`not_dilationAdj_of_towerNeighbor`), while each tower is a clique
     (`dilationAdj_of_towerNeighbor_same`). Every link is disconnected
     (`not_preconnected_linkGraph_of_pos`). Over a curve, positions are degrees and the links are
     complete (`degreeLink_adj`).
 
-**E. Künneth** (`TheEulerProductTensorizes`).
-19. *Exact tensorization.* The two-factor Efron–Stein inequality (`pvar_prod_le`) gives the Künneth
+**E. Künneth** (`TheEulerProductTensorizes`, `TheLayersOfAPrime`).
+20. *Exact tensorization.* The two-factor Efron–Stein inequality (`pvar_prod_le`) gives the Künneth
     step for spectral gaps: Poincaré constants `λ` on two factors give `λ` on the product
     (`gap_prod_ge`). Functions of one coordinate show that the product gap is at most each factor
     gap (`pvar_prod_comp_fst`).
-20. *The tower gap.* On the box `0 ≤ a ≤ A` with weights `r^a/Z`, the tower energy dominates
+21. *The tower gap.* On the box `0 ≤ a ≤ A` with weights `r^a/Z`, the tower energy dominates
     `ℓ Z` times the variance term by term (`towerEnergy_ge`). The valuation step attains this
     (`towerEnergy_valuationStep`), so the gap is exactly `ℓ Z`. With `ℓ = log p` and
     `r = p^{−σ}` it tends to `log p/(1 − p^{−σ})`. For the Euler-product measure the gap of the
     dilation complex is therefore `min_p log p/(1 − p^{−σ})`. It is attained at `p = 2` and equals
     `2 log 2` at `σ = 1`, which is RAPT's horizon gap.
+22. *The Künneth step at the horizon.* For a prime `p` and every weight,
+    `P^λ_N(F) = Σ_a p^{−a} P^{λ_{p'}}_{⌊N/p^a⌋}(pullback of layer a) + P^{λ_p}_N(F)`
+    (`dilationForm_layers`). The edges prime to `p` stay in a valuation layer
+    (`dilationForm_coprimePart_eq_sum_layers`). Each layer is the star of `p^a`, and its pullback is
+    the packet on the integers prime to `p` (`starPullback_layer`). The horizon turns the Künneth sum
+    into a layered sum of the `p`-deleted complex at the horizons `⌊N/p^a⌋`.
 
 **E′. Shell balance** (`TheShellBalanceOnTheCoherentSector`).
-21′. *The coherent sector.* The period mean of `F_b²` is `Σ_p b_p²(1/p)(1 − 1/p)`
+23. *The coherent sector.* The period mean of `F_b²` is `Σ_p b_p²(1/p)(1 − 1/p)`
     (`sum_range_incidencePacket_sq`). For one shell `(k, h)` the balance is
     `Σ_p b_p²(v_p/2 − (1/p)(1 − 1/p)) + ½(Σ_p b_p μ_p)²` (`shellBalance_eq`). A prime dividing neither
     `k` nor `h` gives the surplus `b_p²/p²` (`shellBalance_of_coprime`). A prime dividing `h` but
@@ -195,20 +209,20 @@ Weil's sign convention, Hodge–Riemann = `W ≥ 0` on primitive vectors.
     every ratio coprime to the sector (`sum_shellBalance_eq_zero`).
 
 **F. Selection** (`TheDivisorIdentitySelects`).
-21. *Classification.* A counterterm is self-similar iff the weight vanishes off prime powers and is
+24. *Classification.* A counterterm is self-similar iff the weight vanishes off prime powers and is
     constant on every tower (`selfSimilarFlux_iff`). The mechanism is the one-prime step: the new
     divisors of `pn` contain the single prime power `p^{v_p(n)+1}` (`inDegree_mul_prime_sub`).
-22. *Twists.* `Λω`, with `ω` completely multiplicative and `ω(p) ≠ 0`, is self-similar iff `ω ≡ 1`
+25. *Twists.* `Λω`, with `ω` completely multiplicative and `ω(p) ≠ 0`, is self-similar iff `ω ≡ 1`
     on primes (`selfSimilarFlux_twist_iff`). Every prime flip and the Liouville twist break it.
 
 **G. Liouville and the Lefschetz operator** (`TheLiouvilleProperty`, `TheLefschetzCandidates`).
-23. *Dilation Liouville.* Zero dilation energy forces a constant packet
+26. *Dilation Liouville.* Zero dilation energy forces a constant packet
     (`eq_of_dilationEnergy_eq_zero`). A primitive packet with zero energy vanishes
     (`eq_zero_of_dilationEnergy_eq_zero_of_primitive`, `eq_zero_of_poleDefect_eq_zero_of_primitive`).
-24. *Liouville is hard Lefschetz* (`liouvilleAt_iff_hardLefschetz`).
-25. *Transport along the overlap flow* (`hyperplanePositiveAt_of_liouville`): the complete family is
+27. *Liouville is hard Lefschetz* (`liouvilleAt_iff_hardLefschetz`).
+28. *Transport along the overlap flow* (`hyperplanePositiveAt_of_liouville`): the complete family is
     a continuous Kähler family (`continuousOn_completeWeilMatrix`).
-26. *Under RH there are no zero modes.* Atomic tests are faithful
+29. *Under RH there are no zero modes.* Atomic tests are faithful
     (`eq_zero_of_atomicTest_eq_zero`), and Weil's form is positive definite under RH
     (`completeWeilEnergy_pos_of_riemannHypothesis`, `hardLefschetz_of_riemannHypothesis`).
 
@@ -242,6 +256,8 @@ Weil's sign convention, Hodge–Riemann = `W ≥ 0` on primitive vectors.
 | Nerve: Euler characteristic = Mertens; RH ⇔ half-power growth; `Ω±(√N)` | `nerveEulerChar_eq_mertens`, `riemannHypothesis_iff_nerveEulerChar`, `nerveEulerChar_omega_pm_sqrt` | proved; equivalence |
 | Künneth step for gaps; sharp tower gap | `gap_prod_ge`, `towerEnergy_ge`, `towerEnergy_valuationStep` | proved |
 | Shell balance law on the coherent sector; exact balance in the mean | `shellBalance_eq`, `shellBalance_of_coprime`, `sum_shellBalance_eq_zero` | proved |
+| Künneth step at the horizon: layers of a prime | `dilationForm_layers` | proved |
+| Sign gauge (Metzler) on deep stars | `markovPair_star_nonpos`, `markovPair_star_nonpos_of_lt` | proved |
 | Liouville = HL; RH ⇔ Liouville along the overlap flow | `liouvilleAt_iff_hardLefschetz`, `riemannHypothesis_iff_liouville_along_the_overlap_flow` | proved; equivalence |
 | Lefschetz trichotomy | `not_rh_gluing_failure`, `frequently_exists_primitive_zero_mode_of_not_rh`, `couplingLaplacian_transports_the_index` | proved |
 
@@ -268,14 +284,17 @@ Weil's sign convention, Hodge–Riemann = `W ≥ 0` on primitive vectors.
   two-factor Efron–Stein; truncated geometric towers.
 - Poincaré calculus for the affine graph on the coherent sector: incidence coordinates and their
   independence over a period, the shell balance per shell and averaged over shifts.
+- Layer calculus of a prime: weight splitting, valuation layers as stars of `p^a`.
+- Sign gauge on stars: gaps of star atoms, separated Markov pairs, nonnegative pole rows.
 
 **To build.**
 - A gluing inequality for the coprime part `W_cop` against the Möbius-signed star terms, with a
   constant independent of `N`.
-- The affine (successor) analogue of the boundary flux for the non-ratio matrix, and its pairing
-  with the coprime gluing.
-- The exact layered Künneth decomposition at the horizon: valuation layers `p^a` as lower horizons
-  of the `p`-deleted complex, coupled only through `p`-towers.
+- The layered Künneth step for the complete Weil family: the archimedean part does not preserve
+  valuation layers, so the layers of a prime are coupled through the successor pairs as well as
+  through the `p`-towers.
+- A trickle-down statement on deep stars assembled from the sign gauge, the pole rows and the
+  star law.
 
 ## 8. Open research topics
 
@@ -310,6 +329,7 @@ Weil's sign convention, Hodge–Riemann = `W ≥ 0` on primitive vectors.
 | Self-similarity of stars is arithmetic | Geometric self-similarity holds for every weight (`twinPositiveAt_div`); only the counterterm flux selects |
 | A self-similar counterterm forces `Λ` | It forces a generalized von Mangoldt weight, constant on towers; the archimedean matching fixes the weights `λ(p)` |
 | The Liouville property asks for two vanishing energies | Zero jump energy alone kills a primitive vector; Liouville is HL |
+| The Lorentzian sign hypothesis is a global input | It holds star by star on deep stars and fails across shallow ones (ALG threshold `1`); it is local exactly like Hodge–Riemann |
 | An exact Künneth gap proves positivity | It gives the gap of the dilation Laplacian, `2 log 2`, below the pole; the RH content is in the successor and archimedean parts at growing overlap |
 | The topology of the nerve is softer | Its Euler characteristic is the Mertens function: half-power growth is RH |
 

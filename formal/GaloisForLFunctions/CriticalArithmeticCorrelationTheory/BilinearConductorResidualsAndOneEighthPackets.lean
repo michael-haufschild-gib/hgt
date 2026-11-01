@@ -4064,7 +4064,7 @@ theorem eventually_tiltedUnitSpline_polylog_conductorSubspace_energy_ge
   exact spectralFloorWeilMatrix_subspace_inner_ge_of_bilinear_budget hQ1 hMN hL0 hc1
     hgram_small hbilin_small a
 
-/-- **Sub-one-eighth spectral floor on every fixed finite conductor packet (`Σ-2` closed up to `1 / 8`).**
+/-- **Sub-one-eighth spectral floor on every fixed finite conductor packet.**
 For every fixed conductor cutoff `M₀ : ℕ` and every `0 < α < 1 / 8`, eventually in `N`,
 `completeWeilEnergy tiltedUnitSpline c N` dominates `(κ₀ / (2 c^7)) * ‖y‖^2` on the entire packet
 subspace `conductorSubspace M₀ N` across `1 ≤ c ≤ (log N)^α`. -/

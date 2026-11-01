@@ -1,6 +1,6 @@
 # Critical Arithmetic Correlation Theory
 
-Namespace `GaloisForLFunctions.CriticalArithmeticCorrelationTheory`; umbrella `CriticalArithmeticCorrelationTheory.lean`; 105 modules. Every theorem is unconditional (no RH, no correlation model, no zero hypothesis); modules end with `#print axioms`.
+Namespace `GaloisForLFunctions.CriticalArithmeticCorrelationTheory`; umbrella `CriticalArithmeticCorrelationTheory.lean`. Every theorem is unconditional (no RH, no correlation model, no zero hypothesis); modules end with `#print axioms`.
 
 ## 1. Motivation
 
@@ -66,6 +66,7 @@ External: `atomDilate`, `archForm`, `weilQuad` (RHTower/SSHA), `robinEulerThresh
 1. Bounded overlap: every constant monotone in `c` on `[1, K]`; one Fourier floor on `[1, 101K]`.
 2. Polynomial costs: residual `‖·‖² ≤ K(c⁵/log N + c¹⁰(log N/N)²)`, energies `≤ Cc²`, defect reserve `a/c⁷` at mass cost `Cc⁹`, conductor floor `c⁻⁷`.
 3. Quantitative arithmetic: fixed-modulus and conductor-uniform PNT (`q ≤ (log X)^A`) give every inverse-log rate for residue readings and Mertens remainders; total variation (not sup) of reciprocal weights makes the affine source linear in `c`.
+4. Direct bilinear conductor residuals save one power of overlap. Symmetric energy-root rescaling gives relative packet error of order `c⁸/log N`, up to arbitrarily small logarithmic losses; fixed packets are positive below exponent `1/8`, and polylogarithmic subspaces are coercive when `α + 2q < 1`.
 
 **F. Cyclotomic curvature**
 1. `P_m(k) = Σ_{d|m} μ(m/d)(k mod d)(d − k mod d) ≥ φ(m)` when `m ∤ k` (cyclotomic norm ≥ 1 + AM–GM); `A_m(k+u)` interpolates `P_m(k), P_m(k+1)`.
@@ -85,7 +86,9 @@ External: `atomDilate`, `archForm`, `weilQuad` (RHTower/SSHA), `robinEulerThresh
 | Ground state is the pole: one eigenvalue below `E(1) + gap/2`, it tends to `E(1)`, its line captures `v_1` | `eventually_tiltedUnitSpline_completeWeil_ground_count_one`, `tendsto_tiltedUnitSpline_groundProjection_error_sq` | proved |
 | One horizon and one floor for all `0 < c ≤ K` | `exists_tiltedUnitSpline_completeWeil_uniform_boundedOverlap_floor`, `eventually_tiltedUnitSpline_weilQuad_nonneg_uniform_boundedOverlap` | proved |
 | Explicit horizon at `c ≥ 1`: `Q ≤ exp(D(Cc¹⁶+1)) + 2`, `N ≥ Q⁴, Hc⁸`, `log N ≳ c¹⁰` | `exists_tiltedUnitSpline_completeWeilMatrix_posDef_explicit_horizon` | proved |
-| Fixed conductor packets positive for `1 ≤ c ≤ (log N)^A`, `A < 1/48`, and for `c ≤ (log log N)^A` any `A` | `eventually_tiltedUnitSpline_finite_packet_energy_pos_growing_overlap`, `eventually_tiltedUnitSpline_finite_packet_energy_pos_iterated_log_overlap` | proved; full matrix at growing overlap open |
+| Fixed conductor packets positive for `1 ≤ c ≤ (log N)^α`, `0 < α < 1/8` | `eventually_tiltedUnitSpline_fixed_conductorSubspace_pos_below_one_eighth` | proved |
+| Polylogarithmic conductor subspace coercivity: `Q = ⌊(log N)^q⌋`, `0 < α < 1/8`, `q > 0`, `α + 2q < 1` | `eventually_tiltedUnitSpline_polylog_conductorSubspace_energy_ge` | proved |
+| All-vector positivity for `1 ≤ c ≤ (log N)^α`, `0 < α < 1/16` | `eventually_tiltedUnitSpline_completeWeilMatrix_posDef_below_one_sixteenth` | proved |
 | Selectivity: ζ positive, every pole-free sign gauge (Liouville, every cofinite flip) negative at the same `c ≥ 1` | `liouvilleSelector_selective_of_one_le`, `liouvilleSelector_selective_of_cofiniteFlip` | proved |
 | Growing Ramanujan families: `(log(N+1) − log(K+1))Σa² ≤ Σ F_a²`, `K = Q(Q−1)`; annular frames `¼, 5/4` | `ramanujanPoleProfile_family_logarithmic_lower`, `ramanujanPoleProfile_dyadic_twoSided_frame` | proved |
 | Cyclotomic floor `P_m(k) ≥ φ(m)`, `A_m(t)/φ(m) ≥ {t}(1−{t})` | `totient_le_primitiveRootPrefixEnergy`, `fract_quadratic_le_normalized_arithmeticOverlapCurvature` | proved |
@@ -107,20 +110,19 @@ External: `atomDilate`, `archForm`, `weilQuad` (RHTower/SSHA), `robinEulerThresh
 - Explicit profiles: `tiltedUnitSpline`, `tiltedBoxPlateau` (FT `= 2L·Û_L·Û_w⁴` shifted by `iτ`), `liouvilleSelector` (threshold `< 1`).
 
 **To build**
-- Full-matrix positivity at growing overlap `c_N → ∞`: needs a conductor cutoff whose cost does not grow like `exp(c¹⁶)` and residuals with sub-`c¹⁰` cost.
+- Extend all-vector positivity beyond the proved power-logarithmic overlap range.
 - Uniform low-energy confinement with conductor count growing with `N` (current certificates fix a finite family before the horizon).
 - An exhausting overlapping family (holes below the horizon top persist at `c ≤ 1`).
 - Annular upper bound on `W(2R) − W(R)` from the completed arithmetic expression (needed `39/50`).
 
 ## 7. Open questions
 
-1. Positivity of the full complete matrix along a prescribed schedule `c_N → ∞`. Which loss dominates: the `exp(c¹⁶)` conductor cutoff, the `c⁻⁷` floor, or the `c¹⁰` residual?
+1. Which residual and conductor-confinement estimates extend all-vector positivity beyond exponent `1/16`?
 2. Is the `c⁻⁷` Fourier-tail floor sharp for smooth compact profiles, or can a profile family keep a `c`-independent floor?
 3. Can the defect reserve `a/c⁷` be improved to a fixed fraction at growing overlap?
-4. Do the polynomial packet results extend from `A < 1/48` to larger powers of `log N` (SuccessorShellArithmetic reaches `1/19`)?
-5. Which overlapping atomic families exhaust compact tests, and what is their low spectrum?
-6. Does the cyclotomic curvature `A_m` coincide with the overlapping spectral symbol of the complete form?
-7. Signed short-difference correlations for the critical-line census (exchange-rate input, bandwidth-`4/3` surplus).
+4. Which overlapping atomic families exhaust compact tests, and what is their low spectrum?
+5. Does the cyclotomic curvature `A_m` coincide with the overlapping spectral symbol of the complete form?
+6. Signed short-difference correlations for the critical-line census (exchange-rate input, bandwidth-`4/3` surplus).
 
 ## 8. Traps
 

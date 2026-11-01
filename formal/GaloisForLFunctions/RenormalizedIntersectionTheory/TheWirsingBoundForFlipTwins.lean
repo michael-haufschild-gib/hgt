@@ -185,13 +185,13 @@ def primeMean (ω : ℕ → ℝ) (n : ℕ) : ℝ := ∑ k ∈ Icc 1 n with k.Pri
 def logWeightSum (ω : ℕ → ℝ) (N : ℕ) : ℝ :=
   ∑ k ∈ Icc 1 N, (Real.log k - Real.log ((k : ℝ) - 1)) * gaugeHarmonicSum ω (N / k)
 
-/-- **Abel summation of the prime terms.** If the prime mean is `β log n + O(C)`, the prime terms of
-the Chebyshev identity are `β` times the log-weighted sum, up to `C(1 + H(N))`. -/
-theorem abs_primePart_sub_le (hbd : ∀ n, |ω n| ≤ 1) {β C : ℝ}
-    (hA : ∀ n, 1 ≤ n → |primeMean ω n - β * Real.log n| ≤ C) {N : ℕ} (hN : 1 ≤ N) :
+/-- **Abel summation of the prime terms.** If the prime mean is `β log n + O(C)` up to `N`, the prime
+terms of the Chebyshev identity are `β` times the log-weighted sum, up to `C(1 + H(N))`. -/
+theorem abs_primePart_sub_le_of_le (hbd : ∀ n, |ω n| ≤ 1) {β C : ℝ} {N : ℕ} (hN : 1 ≤ N)
+    (hA : ∀ n, 1 ≤ n → n ≤ N → |primeMean ω n - β * Real.log n| ≤ C) :
     |∑ k ∈ Icc 1 N with k.Prime, ω k * Real.log k / k * gaugeHarmonicSum ω (N / k) -
         β * logWeightSum ω N| ≤ C * (1 + hsum N) := by
-  have hC : 0 ≤ C := (abs_nonneg _).trans (hA 1 le_rfl)
+  have hC : 0 ≤ C := (abs_nonneg _).trans (hA 1 le_rfl hN)
   set a : ℕ → ℝ := fun k => if k.Prime then ω k * Real.log k / k else 0
   set g : ℕ → ℝ := fun i => a (i + 1) - β * (Real.log ((i + 1 : ℕ) : ℝ) - Real.log (i : ℝ))
   set f : ℕ → ℝ := fun i => gaugeHarmonicSum ω (N / (i + 1))
@@ -207,10 +207,10 @@ theorem abs_primePart_sub_le (hbd : ∀ n, |ω n| ≤ 1) {β C : ℝ}
     rw [sum_sub_distrib, ← mul_sum]
     push_cast
     rw [sum_range_log_succ_sub, primeMean, sum_filter, sumIcc_eq_sumRange]
-  have hGb : ∀ n, |∑ i ∈ range n, g i| ≤ C := fun n => by
+  have hGb : ∀ n, n ≤ N → |∑ i ∈ range n, g i| ≤ C := fun n hnN => by
     rcases Nat.eq_zero_or_pos n with rfl | hn
     · simp [hC]
-    · rw [hG]; exact hA n hn
+    · rw [hG]; exact hA n hn hnN
   rw [hsplit, sum_range_by_parts]
   have hf1 : |f (N - 1)| ≤ 1 := by
     simp only [f, Nat.sub_add_cancel hN, Nat.div_self hN]
@@ -222,17 +222,24 @@ theorem abs_primePart_sub_le (hbd : ∀ n, |ω n| ≤ 1) {β C : ℝ}
         ∑ i ∈ range (N - 1), (f (i + 1) - f i) • ∑ j ∈ range (i + 1), g j|
       ≤ |f (N - 1)| * C + ∑ i ∈ range (N - 1), |f (i + 1) - f i| * C := by
         refine (abs_sub _ _).trans (add_le_add ?_ ((abs_sum_le_sum_abs _ _).trans
-          (sum_le_sum fun i _ => ?_)))
+          (sum_le_sum fun i hi => ?_)))
         · rw [smul_eq_mul, abs_mul]
-          exact mul_le_mul_of_nonneg_left (hGb N) (abs_nonneg _)
+          exact mul_le_mul_of_nonneg_left (hGb N le_rfl) (abs_nonneg _)
         · rw [smul_eq_mul, abs_mul]
-          exact mul_le_mul_of_nonneg_left (hGb _) (abs_nonneg _)
+          exact mul_le_mul_of_nonneg_left (hGb _ (by have := mem_range.mp hi; omega))
+            (abs_nonneg _)
     _ ≤ 1 * C + hsum N * C := by
         rw [← sum_mul]
         refine add_le_add (mul_le_mul_of_nonneg_right hf1 hC)
           (mul_le_mul_of_nonneg_right ?_ hC)
         simpa only [f, Nat.add_assoc] using htv
     _ = C * (1 + hsum N) := by ring
+
+theorem abs_primePart_sub_le (hbd : ∀ n, |ω n| ≤ 1) {β C : ℝ}
+    (hA : ∀ n, 1 ≤ n → |primeMean ω n - β * Real.log n| ≤ C) {N : ℕ} (hN : 1 ≤ N) :
+    |∑ k ∈ Icc 1 N with k.Prime, ω k * Real.log k / k * gaugeHarmonicSum ω (N / k) -
+        β * logWeightSum ω N| ≤ C * (1 + hsum N) :=
+  abs_primePart_sub_le_of_le hbd hN fun n hn _ => hA n hn
 
 /-- `Σ_{k ≤ K} (log k − log(k − 1)) = log K`. -/
 theorem sum_log_sub_log_pred (K : ℕ) :
@@ -317,16 +324,23 @@ theorem sum_vonMangoldt_nonprime_le {N : ℕ} (hN : 1 ≤ N) :
   rw [abs_le] at h1 h2
   linarith [h1.1, h1.2, h2.1, h2.2]
 
-/-- **The Wirsing equation**: if the prime mean is `β log n + O(1)`, then
-`L(N) log N = (1 + β) M(N) + O(1 + log N)`. -/
-theorem exists_abs_wirsing_equation_le (hmul : ∀ a b, a ≠ 0 → b ≠ 0 → ω (a * b) = ω a * ω b)
-    (hbd : ∀ n, |ω n| ≤ 1) {β C : ℝ} (hA : ∀ n, 1 ≤ n → |primeMean ω n - β * Real.log n| ≤ C) :
+/-- **The Wirsing equation with a power error**: if the prime mean is
+`β log n + O((1 + log n)^α)`, `α ≥ 0`, then `L(N) log N = (1 + β) M(N) + O((1 + log N)^{1+α})`. -/
+theorem exists_abs_wirsing_equation_le_rpow
+    (hmul : ∀ a b, a ≠ 0 → b ≠ 0 → ω (a * b) = ω a * ω b) (hbd : ∀ n, |ω n| ≤ 1) {β C α : ℝ}
+    (hα : 0 ≤ α)
+    (hA : ∀ n, 1 ≤ n → |primeMean ω n - β * Real.log n| ≤ C * (1 + Real.log n) ^ α) :
     ∃ K : ℝ, ∀ N : ℕ, 1 ≤ N →
-      |gaugeHarmonicSum ω N * Real.log N - (1 + β) * polarMoment ω N| ≤ K * (1 + Real.log N) := by
-  have hC : 0 ≤ C := (abs_nonneg _).trans (hA 1 le_rfl)
+      |gaugeHarmonicSum ω N * Real.log N - (1 + β) * polarMoment ω N| ≤
+        K * (1 + Real.log N) ^ (1 + α) := by
+  have hC : 0 ≤ C := by simpa using (abs_nonneg _).trans (hA 1 le_rfl)
   set Cpp := 2 * (Real.log 4 + 4) + (8 + RHTower.Mertens.mertensTail)
   refine ⟨2 * |β| + C * 2 + Cpp, fun N hN => ?_⟩
   have hlog : 0 ≤ Real.log N := Real.log_natCast_nonneg N
+  set Pα := (1 + Real.log N) ^ α
+  have hPα : 1 ≤ Pα := Real.one_le_rpow (by linarith) hα
+  have hP1 : (1 + Real.log N) ^ (1 + α) = (1 + Real.log N) * Pα := by
+    rw [Real.rpow_add (by linarith), Real.rpow_one]
   -- the Chebyshev identity, split into prime and non-prime terms
   have hcheb := logMoment_eq_vonMangoldt ω hmul N
   rw [logMoment_eq] at hcheb
@@ -365,7 +379,11 @@ theorem exists_abs_wirsing_equation_le (hmul : ∀ a b, a ≠ 0 → b ≠ 0 → 
     refine (sum_le_sum hterm).trans ?_
     rw [← sum_mul]
     exact mul_le_mul_of_nonneg_right (sum_vonMangoldt_nonprime_le hN) (by linarith)
-  have hab := abs_primePart_sub_le hbd hA hN
+  have hab := abs_primePart_sub_le_of_le hbd hN (C := C * Pα) fun n hn hnN => (hA n hn).trans
+    (mul_le_mul_of_nonneg_left (Real.rpow_le_rpow (by positivity)
+      (by have := Real.log_le_log (by exact_mod_cast (show 0 < n by omega))
+            (show (n : ℝ) ≤ N by exact_mod_cast hnN)
+          linarith) hα) hC)
   have hpm := abs_polarMoment_sub_logWeightSum_le hbd hN
   have hh := hsum_le N
   -- assemble: `L log N − M = (prime part) + (non-prime part)`
@@ -383,13 +401,35 @@ theorem exists_abs_wirsing_equation_le (hmul : ∀ a b, a ≠ 0 → b ≠ 0 → 
         |∑ d ∈ Icc 1 N with ¬ d.Prime, Λ d * (ω d / d) * gaugeHarmonicSum ω (N / d)| +
         |β * (polarMoment ω N - logWeightSum ω N)| := by
           refine (abs_sub _ _).trans (add_le_add (abs_add_le _ _) le_rfl)
-    _ ≤ C * (1 + hsum N) + Cpp * (1 + Real.log N) + 2 * |β| := add_le_add (add_le_add hab hnp) hβ
-    _ ≤ (2 * |β| + C * 2 + Cpp) * (1 + Real.log N) := by
-        have h1 : C * (1 + hsum N) ≤ C * 2 * (1 + Real.log N) := by
-          nlinarith [mul_le_mul_of_nonneg_left hh hC]
-        have h2 : 2 * |β| ≤ 2 * |β| * (1 + Real.log N) := by
+    _ ≤ C * Pα * (1 + hsum N) + Cpp * (1 + Real.log N) + 2 * |β| :=
+        add_le_add (add_le_add hab hnp) hβ
+    _ ≤ (2 * |β| + C * 2 + Cpp) * (1 + Real.log N) ^ (1 + α) := by
+        rw [hP1]
+        have hCpp : 0 ≤ Cpp := by
+          have h := sum_vonMangoldt_nonprime_le (N := 1) le_rfl
+          have h0 : (0 : ℝ) ≤ ∑ d ∈ Icc 1 1 with ¬ d.Prime, Λ d / d :=
+            sum_nonneg fun d _ => div_nonneg ArithmeticFunction.vonMangoldt_nonneg (Nat.cast_nonneg d)
+          linarith
+        have h1 : C * Pα * (1 + hsum N) ≤ C * 2 * ((1 + Real.log N) * Pα) := by
+          have : 1 + hsum N ≤ 2 * (1 + Real.log N) := by linarith
+          have := mul_le_mul_of_nonneg_left this (mul_nonneg hC (by linarith : (0 : ℝ) ≤ Pα))
+          linarith
+        have h2 : Cpp * (1 + Real.log N) ≤ Cpp * ((1 + Real.log N) * Pα) :=
+          mul_le_mul_of_nonneg_left (le_mul_of_one_le_right (by linarith) hPα) hCpp
+        have h3 : 2 * |β| ≤ 2 * |β| * ((1 + Real.log N) * Pα) := by
+          have : 1 ≤ (1 + Real.log N) * Pα := one_le_mul_of_one_le_of_one_le (by linarith) hPα
           nlinarith [abs_nonneg β]
         nlinarith
+
+/-- **The Wirsing equation**: if the prime mean is `β log n + O(1)`, then
+`L(N) log N = (1 + β) M(N) + O(1 + log N)`. -/
+theorem exists_abs_wirsing_equation_le (hmul : ∀ a b, a ≠ 0 → b ≠ 0 → ω (a * b) = ω a * ω b)
+    (hbd : ∀ n, |ω n| ≤ 1) {β C : ℝ} (hA : ∀ n, 1 ≤ n → |primeMean ω n - β * Real.log n| ≤ C) :
+    ∃ K : ℝ, ∀ N : ℕ, 1 ≤ N →
+      |gaugeHarmonicSum ω N * Real.log N - (1 + β) * polarMoment ω N| ≤ K * (1 + Real.log N) := by
+  obtain ⟨K, hK⟩ := exists_abs_wirsing_equation_le_rpow hmul hbd (α := 0) le_rfl
+    fun n hn => by rw [Real.rpow_zero, mul_one]; exact hA n hn
+  exact ⟨K, fun N hN => by simpa using hK N hN⟩
 
 end Equation
 
@@ -572,11 +612,297 @@ theorem sub_mul_rpow_neg_le {ℓ ℓ' a : ℝ} (hℓ : 0 < ℓ) (hle : ℓ ≤ �
   have hDX : D * X ≤ Y - X := by nlinarith [mul_le_mul_of_nonneg_left hXY hD]
   nlinarith [mul_le_mul_of_nonneg_right hDX hY.le]
 
+/-- The recursion of `U = M/ℓ^a` over one step `ℓ → ℓ' = ℓ(1 + σ)`:
+`U' = U (1 + aσ)/q + Eσ/(ℓ^a q)` with `q = (1 + σ)^a`, `E = Lℓ − aM`. -/
+theorem wirsing_step_rec {ℓ ℓ' a M L : ℝ} (hℓ : 0 < ℓ) (hle : ℓ ≤ ℓ') :
+    (M + L * (ℓ' - ℓ)) / ℓ' ^ a =
+      M / ℓ ^ a * ((1 + a * ((ℓ' - ℓ) / ℓ)) / (1 + (ℓ' - ℓ) / ℓ) ^ a) +
+        (L * ℓ - a * M) * ((ℓ' - ℓ) / ℓ) / (ℓ ^ a * (1 + (ℓ' - ℓ) / ℓ) ^ a) := by
+  have hσ0 : 0 ≤ (ℓ' - ℓ) / ℓ := div_nonneg (by linarith) hℓ.le
+  have hq : 0 < (1 + (ℓ' - ℓ) / ℓ) ^ a := Real.rpow_pos_of_pos (by linarith) a
+  have hℓa : 0 < ℓ ^ a := Real.rpow_pos_of_pos hℓ a
+  have hℓ' : ℓ' = ℓ * (1 + (ℓ' - ℓ) / ℓ) := by field_simp; ring
+  have hℓ'a : ℓ' ^ a = ℓ ^ a * (1 + (ℓ' - ℓ) / ℓ) ^ a := by
+    conv_lhs => rw [hℓ']
+    exact Real.mul_rpow hℓ.le (by linarith)
+  rw [hℓ'a]
+  field_simp
+  ring
+
+/-- The forcing of one step telescopes against `ℓ^{1−a'}`, `a = a' + α`:
+`|Eσ/(ℓ^a q)| ≤ K (a' − 1)⁻¹ (ℓ^{1−a'} − ℓ'^{1−a'})` when `|E| ≤ K ℓ^{1+α}`. -/
+theorem wirsing_step_force {ℓ ℓ' a a' K α E : ℝ} (hℓ : 0 < ℓ) (hle : ℓ ≤ ℓ')
+    (ha'1 : 1 < a') (ha'2 : a' ≤ 2) (haa' : a = a' + α) (hα : 0 ≤ α) (hK : 0 ≤ K)
+    (hE : |E| ≤ K * ℓ ^ (1 + α)) :
+    |E * ((ℓ' - ℓ) / ℓ) / (ℓ ^ a * (1 + (ℓ' - ℓ) / ℓ) ^ a)| ≤
+      K * (a' - 1)⁻¹ * (ℓ ^ (1 - a') - ℓ' ^ (1 - a')) := by
+  have hℓ'0 : 0 < ℓ' := hℓ.trans_le hle
+  set δ := ℓ' - ℓ
+  have hδ0 : 0 ≤ δ := by simp only [δ]; linarith
+  have hσ0 : 0 ≤ δ / ℓ := div_nonneg hδ0 hℓ.le
+  have hσℓ : δ / ℓ * ℓ = δ := div_mul_cancel₀ δ hℓ.ne'
+  have htel := sub_mul_rpow_neg_le hℓ hle ha'1 ha'2
+  have hℓ'a : ℓ' ^ a = ℓ ^ a * (1 + δ / ℓ) ^ a := by
+    have hℓ' : ℓ' = ℓ * (1 + δ / ℓ) := by simp only [δ]; field_simp; ring
+    conv_lhs => rw [hℓ']
+    exact Real.mul_rpow hℓ.le (by linarith)
+  have hℓ'a0 : 0 < ℓ' ^ a := Real.rpow_pos_of_pos hℓ'0 a
+  have hℓ'a'0 : 0 < ℓ' ^ a' := Real.rpow_pos_of_pos hℓ'0 a'
+  have hℓα : ℓ ^ α ≤ ℓ' ^ α := Real.rpow_le_rpow hℓ.le hle hα
+  have hsplit : ℓ' ^ a = ℓ' ^ α * ℓ' ^ a' := by
+    rw [← Real.rpow_add hℓ'0, haa', add_comm]
+  have hpow1 : ℓ ^ (1 + α) = ℓ * ℓ ^ α := by rw [Real.rpow_add hℓ, Real.rpow_one]
+  have h1 : |E * (δ / ℓ) / (ℓ ^ a * (1 + δ / ℓ) ^ a)| ≤ K * δ * (ℓ' ^ a')⁻¹ := by
+    rw [abs_div, abs_mul, abs_of_nonneg hσ0, ← hℓ'a, abs_of_pos hℓ'a0, div_le_iff₀ hℓ'a0]
+    calc |E| * (δ / ℓ) ≤ K * ℓ ^ (1 + α) * (δ / ℓ) := mul_le_mul_of_nonneg_right hE hσ0
+      _ = K * δ * ℓ ^ α := by rw [hpow1, ← hσℓ]; field_simp
+      _ ≤ K * δ * ℓ' ^ α := mul_le_mul_of_nonneg_left hℓα (mul_nonneg hK hδ0)
+      _ = K * δ * (ℓ' ^ a')⁻¹ * ℓ' ^ a := by rw [hsplit]; field_simp
+  refine h1.trans ?_
+  have ha0 : 0 < a' - 1 := by linarith
+  calc K * δ * (ℓ' ^ a')⁻¹ = K * (a' - 1)⁻¹ * ((a' - 1) * δ * (ℓ' ^ a')⁻¹) := by
+        field_simp
+    _ ≤ K * (a' - 1)⁻¹ * (ℓ ^ (1 - a') - ℓ' ^ (1 - a')) :=
+        mul_le_mul_of_nonneg_left htel (mul_nonneg hK (inv_nonneg.mpr ha0.le))
+
+/-- The drift factor of one step: `0 ≤ ρ ≤ 1` and `1 − ρ ≤ 4 (a − 1)⁻¹ (ℓ^{1−a} − ℓ'^{1−a})` for
+`ρ = (1 + aσ)/(1 + σ)^a`, `σ = (ℓ' − ℓ)/ℓ`, `1 ≤ ℓ ≤ ℓ' ≤ ℓ + 1`, `1 < a ≤ 2`. -/
+theorem wirsing_step_drift {ℓ ℓ' a : ℝ} (hℓ1 : 1 ≤ ℓ) (hle : ℓ ≤ ℓ') (hδ1 : ℓ' - ℓ ≤ 1)
+    (ha1 : 1 < a) (ha2 : a ≤ 2) :
+    0 ≤ (1 + a * ((ℓ' - ℓ) / ℓ)) / (1 + (ℓ' - ℓ) / ℓ) ^ a ∧
+      (1 + a * ((ℓ' - ℓ) / ℓ)) / (1 + (ℓ' - ℓ) / ℓ) ^ a ≤ 1 ∧
+      1 - (1 + a * ((ℓ' - ℓ) / ℓ)) / (1 + (ℓ' - ℓ) / ℓ) ^ a ≤
+        4 * (a - 1)⁻¹ * (ℓ ^ (1 - a) - ℓ' ^ (1 - a)) := by
+  have hℓ0 : 0 < ℓ := by linarith
+  have hℓ'0 : 0 < ℓ' := hℓ0.trans_le hle
+  set δ := ℓ' - ℓ
+  set σ := δ / ℓ
+  have hδ0 : 0 ≤ δ := by simp only [δ]; linarith
+  have hσ0 : 0 ≤ σ := div_nonneg hδ0 hℓ0.le
+  have hσℓ : σ * ℓ = δ := div_mul_cancel₀ δ hℓ0.ne'
+  have htel := sub_mul_rpow_neg_le hℓ0 hle ha1 ha2
+  set q := (1 + σ) ^ a
+  have hq1 : 1 + a * σ ≤ q := one_add_mul_self_le_rpow_one_add (by linarith) ha1.le
+  have hq2 : q ≤ 1 + a * σ + σ ^ 2 := one_add_rpow_le_second hσ0 ha1.le ha2
+  have haσ0 : 0 ≤ a * σ := mul_nonneg (by linarith) hσ0
+  have hqpos : 0 < q := by linarith
+  have hℓ'a0 : 0 < ℓ' ^ a := Real.rpow_pos_of_pos hℓ'0 a
+  have hρ2 : 1 - (1 + a * σ) / q ≤ σ ^ 2 := by
+    rw [sub_le_comm, le_div_iff₀ hqpos]
+    calc (1 - σ ^ 2) * q ≤ (1 - σ ^ 2) * (1 + a * σ + σ ^ 2) := by
+          have hσ1 : σ ≤ 1 := (div_le_self hδ0 hℓ1).trans hδ1
+          exact mul_le_mul_of_nonneg_left hq2 (by nlinarith)
+      _ ≤ 1 + a * σ := by
+          have h4 : 0 ≤ a * σ * σ ^ 2 := mul_nonneg haσ0 (sq_nonneg σ)
+          have h5 : 0 ≤ σ ^ 4 := pow_nonneg hσ0 4
+          nlinarith [h4, h5]
+  have hσ4 : σ ^ 2 ≤ 4 * (a - 1)⁻¹ * (ℓ ^ (1 - a) - ℓ' ^ (1 - a)) := by
+    have hℓ'2 : ℓ' ^ a ≤ 4 * ℓ ^ 2 := by
+      have hℓ'1 : 1 ≤ ℓ' := by linarith
+      calc ℓ' ^ a ≤ ℓ' ^ (2 : ℝ) := Real.rpow_le_rpow_of_exponent_le hℓ'1 ha2
+        _ = ℓ' ^ 2 := Real.rpow_two ℓ'
+        _ ≤ (2 * ℓ) ^ 2 := pow_le_pow_left₀ hℓ'0.le (by simp only [δ] at hδ1; linarith) 2
+        _ = 4 * ℓ ^ 2 := by ring
+    have h1 : σ ^ 2 ≤ 4 * δ * (ℓ' ^ a)⁻¹ := by
+      rw [← div_eq_mul_inv, le_div_iff₀ hℓ'a0]
+      calc σ ^ 2 * ℓ' ^ a ≤ σ ^ 2 * (4 * ℓ ^ 2) := mul_le_mul_of_nonneg_left hℓ'2 (sq_nonneg σ)
+        _ = 4 * δ * δ := by rw [← hσℓ]; ring
+        _ ≤ 4 * δ := by nlinarith
+    refine h1.trans ?_
+    have ha0 : 0 < a - 1 := by linarith
+    calc 4 * δ * (ℓ' ^ a)⁻¹ = 4 * (a - 1)⁻¹ * ((a - 1) * δ * (ℓ' ^ a)⁻¹) := by field_simp
+      _ ≤ 4 * (a - 1)⁻¹ * (ℓ ^ (1 - a) - ℓ' ^ (1 - a)) :=
+          mul_le_mul_of_nonneg_left htel (by positivity)
+  exact ⟨div_nonneg (by linarith) hqpos.le, (div_le_one hqpos).mpr hq1, hρ2.trans hσ4⟩
+
+/-- **Envelopes.** If `|U| ≤ B` and `|U(N + 1) − U(N)| ≤ G₁ ΔT + G₂ ΔT_α` with nonnegative
+nonincreasing `T ≤ T_α` from `N = 3` on, then `U → c` with `|U(N) − c| ≤ (G₁ + G₂) T_α(N)`: the
+sequences `U ± (G₁ T + G₂ T_α)` are monotone and pinch `c`. -/
+theorem exists_abs_sub_le_of_drift {U T Tα : ℕ → ℝ} {G₁ G₂ B : ℝ} (hG₁ : 0 ≤ G₁) (hG₂ : 0 ≤ G₂)
+    (hT0 : ∀ N, 3 ≤ N → 0 ≤ T N) (hTα0 : ∀ N, 3 ≤ N → 0 ≤ Tα N)
+    (hTTα : ∀ N, 3 ≤ N → T N ≤ Tα N) (hUB : ∀ N, 3 ≤ N → |U N| ≤ B)
+    (hdrift : ∀ N, 3 ≤ N →
+      |U (N + 1) - U N| ≤ G₁ * (T N - T (N + 1)) + G₂ * (Tα N - Tα (N + 1))) :
+    ∃ c : ℝ, ∀ N, 3 ≤ N → |U N - c| ≤ (G₁ + G₂) * Tα N := by
+  set V : ℕ → ℝ := fun N => G₁ * T N + G₂ * Tα N
+  have hV0 : ∀ N, 3 ≤ N → 0 ≤ V N := fun N hN =>
+    add_nonneg (mul_nonneg hG₁ (hT0 N hN)) (mul_nonneg hG₂ (hTα0 N hN))
+  have hVd : ∀ N, 3 ≤ N → ∀ m, N ≤ m → U m + V m ≤ U N + V N := by
+    intro N hN m hm
+    induction m, hm using Nat.le_induction with
+    | base => exact le_rfl
+    | succ m hm ih =>
+      have := (abs_le.mp (hdrift m (hN.trans hm))).2
+      simp only [V] at ih ⊢
+      linarith
+  have hWi : ∀ N, 3 ≤ N → ∀ m, N ≤ m → U N - V N ≤ U m - V m := by
+    intro N hN m hm
+    induction m, hm using Nat.le_induction with
+    | base => exact le_rfl
+    | succ m hm ih =>
+      have := (abs_le.mp (hdrift m (hN.trans hm))).1
+      simp only [V] at ih ⊢
+      linarith
+  have hbdd : BddBelow (Set.range fun n : ℕ => U (n + 3) + V (n + 3)) := by
+    refine ⟨-B, ?_⟩
+    rintro _ ⟨n, rfl⟩
+    have h1 := (abs_le.mp (hUB (n + 3) (by omega))).1
+    have h2 := hV0 (n + 3) (by omega)
+    linarith
+  set c := ⨅ n : ℕ, (U (n + 3) + V (n + 3))
+  have hcV : ∀ N, 3 ≤ N → c ≤ U N + V N := fun N hN => by
+    have := ciInf_le hbdd (N - 3)
+    simpa only [Nat.sub_add_cancel hN] using this
+  have hWc : ∀ N, 3 ≤ N → U N - V N ≤ c := fun N hN => by
+    refine le_ciInf fun n => ?_
+    rcases le_total N (n + 3) with h | h
+    · have := hWi N hN (n + 3) h
+      have := hV0 (n + 3) (by omega)
+      linarith
+    · have := hVd (n + 3) (by omega) N h
+      have := hV0 N hN
+      linarith
+  refine ⟨c, fun N hN => ?_⟩
+  have hVG : V N ≤ (G₁ + G₂) * Tα N := by
+    have := mul_le_mul_of_nonneg_left (hTTα N hN) hG₁
+    simp only [V]; linarith
+  rw [abs_le]; constructor <;> linarith [hcV N hN, hWc N hN]
+
+/-- **The Wirsing asymptotic with a power error.** If `M(N + 1) = M(N) + L(N) Δ log N` and
+`|L(N) log N − a M(N)| ≤ K (log N)^{1+α}` with `0 ≤ α`, `1 + α < a ≤ 2`, then `M(N)/(log N)^a → c` at
+rate `(log N)^{1+α−a}` and `L(N) = a c (log N)^{a − 1} + O((log N)^α)`. The drift of `M/(log N)^a` is a
+second-order Bernoulli remainder telescoping against `(log N)^{1−a}`, the forcing telescopes against
+`(log N)^{1+α−a}` (`wirsing_step_drift`, `wirsing_step_force`, `exists_abs_sub_le_of_drift`). -/
+theorem exists_abs_sub_rpow_le_of_wirsing_rpow {M L : ℕ → ℝ} {a K α : ℝ} (hK : 0 ≤ K)
+    (hα : 0 ≤ α) (haα : 1 + α < a) (ha2 : a ≤ 2)
+    (hstep : ∀ N, 3 ≤ N → M (N + 1) = M N + L N * (Real.log ((N + 1 : ℕ) : ℝ) - Real.log N))
+    (heq : ∀ N, 3 ≤ N → |L N * Real.log N - a * M N| ≤ K * Real.log N ^ (1 + α)) :
+    ∃ c G : ℝ, ∀ N, 3 ≤ N →
+      |M N / Real.log N ^ a - c| ≤ G * Real.log N ^ (1 + α - a) ∧
+        |L N - a * c * Real.log N ^ (a - 1)| ≤ (a * G + K) * Real.log N ^ α := by
+  have ha1 : 1 < a := by linarith
+  set a' := a - α with ha'
+  have ha'1 : 1 < a' := by simp only [a']; linarith
+  have ha'2 : a' ≤ 2 := by simp only [a']; linarith
+  have haa' : a = a' + α := by simp only [a']; ring
+  have h1a' : 1 - a' = 1 + α - a := by simp only [a']; ring
+  set U : ℕ → ℝ := fun N => M N / Real.log N ^ a with hU
+  set T : ℕ → ℝ := fun N => Real.log N ^ (1 - a) with hT
+  set Tα : ℕ → ℝ := fun N => Real.log N ^ (1 - a') with hTα
+  have hlogs : ∀ N : ℕ, 3 ≤ N → 1 ≤ Real.log N ∧ Real.log N ≤ Real.log ((N + 1 : ℕ) : ℝ) ∧
+      Real.log ((N + 1 : ℕ) : ℝ) - Real.log N ≤ 1 := by
+    intro N hN
+    have h3 : (3 : ℝ) ≤ N := by exact_mod_cast hN
+    have hN0 : (0 : ℝ) < N := by linarith
+    refine ⟨one_le_log_of_three_le hN, Real.log_le_log hN0 (by push_cast; linarith), ?_⟩
+    rw [← Real.log_div (by positivity) hN0.ne']
+    refine (Real.log_le_sub_one_of_pos (by positivity)).trans ?_
+    rw [div_sub_one hN0.ne', div_le_one hN0]; push_cast; linarith
+  -- one step of the recursion
+  have hstepU : ∀ N, 3 ≤ N →
+      (|U (N + 1)| ≤ |U N| + K * (a' - 1)⁻¹ * (Tα N - Tα (N + 1))) ∧
+      |U (N + 1) - U N| ≤ 4 * |U N| * (a - 1)⁻¹ * (T N - T (N + 1)) +
+        K * (a' - 1)⁻¹ * (Tα N - Tα (N + 1)) := by
+    intro N hN
+    obtain ⟨hℓ1, hle, hδ1⟩ := hlogs N hN
+    have hrec := wirsing_step_rec (M := M N) (L := L N) (a := a) (by linarith) hle
+    have hforce := wirsing_step_force (E := L N * Real.log N - a * M N) (by linarith) hle
+      ha'1 ha'2 haa' hα hK (heq N hN)
+    obtain ⟨hρ0, hρ1, hρ2⟩ := wirsing_step_drift hℓ1 hle hδ1 ha1 ha2
+    have hUN1 : U (N + 1) = M (N + 1) / Real.log ((N + 1 : ℕ) : ℝ) ^ a := rfl
+    rw [hUN1, hstep N hN, hrec]
+    set ρ := (1 + a * ((Real.log ((N + 1 : ℕ) : ℝ) - Real.log N) / Real.log N)) /
+      (1 + (Real.log ((N + 1 : ℕ) : ℝ) - Real.log N) / Real.log N) ^ a
+    set F := (L N * Real.log N - a * M N) *
+      ((Real.log ((N + 1 : ℕ) : ℝ) - Real.log N) / Real.log N) /
+        (Real.log N ^ a * (1 + (Real.log ((N + 1 : ℕ) : ℝ) - Real.log N) / Real.log N) ^ a)
+    have hUN : M N / Real.log N ^ a = U N := rfl
+    rw [hUN]
+    constructor
+    · refine (abs_add_le _ _).trans (add_le_add ?_ hforce)
+      rw [abs_mul, abs_of_nonneg hρ0]
+      exact mul_le_of_le_one_right (abs_nonneg _) hρ1
+    · rw [show U N * ρ + F - U N = -(U N * (1 - ρ)) + F by ring]
+      refine (abs_add_le _ _).trans ?_
+      rw [abs_neg, abs_mul, abs_of_nonneg (sub_nonneg.mpr hρ1)]
+      have := mul_le_mul_of_nonneg_left hρ2 (abs_nonneg (U N))
+      calc |U N| * (1 - ρ) + |F| ≤ |U N| * (4 * (a - 1)⁻¹ * (T N - T (N + 1))) +
+            K * (a' - 1)⁻¹ * (Tα N - Tα (N + 1)) := add_le_add this hforce
+        _ = _ := by ring
+  have ha0 : 0 < (a - 1)⁻¹ := inv_pos.mpr (by linarith)
+  have ha0α : 0 < (a' - 1)⁻¹ := inv_pos.mpr (by linarith)
+  have hTα0 : ∀ N, 3 ≤ N → 0 ≤ Tα N := fun N hN =>
+    Real.rpow_nonneg (by linarith [one_le_log_of_three_le hN]) _
+  have hdT : ∀ N, 3 ≤ N → 0 ≤ T N - T (N + 1) := fun N hN => by
+    obtain ⟨hℓ1, hle, -⟩ := hlogs N hN
+    have := sub_mul_rpow_neg_le (by linarith) hle ha1 ha2
+    have h0 : 0 ≤ (a - 1) * (Real.log ((N + 1 : ℕ) : ℝ) - Real.log N) *
+        (Real.log ((N + 1 : ℕ) : ℝ) ^ a)⁻¹ :=
+      mul_nonneg (mul_nonneg (by linarith) (by linarith))
+        (inv_nonneg.mpr (Real.rpow_nonneg (by linarith) _))
+    exact h0.trans this
+  -- `U` is bounded
+  set B := |U 3| + K * (a' - 1)⁻¹ * Tα 3
+  have hB : ∀ N, 3 ≤ N → |U N| + K * (a' - 1)⁻¹ * Tα N ≤ B := by
+    intro N hN
+    induction N, hN using Nat.le_induction with
+    | base => exact le_rfl
+    | succ N hN ih => linarith [(hstepU N hN).1]
+  have hUB : ∀ N, 3 ≤ N → |U N| ≤ B := fun N hN => by
+    have := hB N hN
+    have := mul_nonneg (mul_nonneg hK ha0α.le) (hTα0 N hN)
+    linarith
+  have hB0 : 0 ≤ B := (abs_nonneg _).trans (hUB 3 le_rfl)
+  obtain ⟨c, hc⟩ := exists_abs_sub_le_of_drift (U := U) (T := T) (Tα := Tα)
+    (G₁ := 4 * B * (a - 1)⁻¹) (G₂ := K * (a' - 1)⁻¹) (B := B) (by positivity)
+    (mul_nonneg hK ha0α.le)
+    (fun N hN => Real.rpow_nonneg (by linarith [one_le_log_of_three_le hN]) _) hTα0
+    (fun N hN => Real.rpow_le_rpow_of_exponent_le (one_le_log_of_three_le hN)
+      (by simp only [a']; linarith)) hUB
+    (fun N hN => by
+      have h2 := (hstepU N hN).2
+      have h4 : 4 * |U N| * (a - 1)⁻¹ * (T N - T (N + 1)) ≤
+          4 * B * (a - 1)⁻¹ * (T N - T (N + 1)) :=
+        mul_le_mul_of_nonneg_right (mul_le_mul_of_nonneg_right
+          (by linarith [hUB N hN]) ha0.le) (hdT N hN)
+      linarith)
+  set G := 4 * B * (a - 1)⁻¹ + K * (a' - 1)⁻¹
+  refine ⟨c, G, fun N hN => ?_⟩
+  have hUc := hc N hN
+  refine ⟨by rw [← h1a']; exact hUc, ?_⟩
+  -- `L = (a M + E)/ℓ` with `M = U ℓ^a`
+  have hℓ0 : 0 < Real.log N := by linarith [one_le_log_of_three_le hN]
+  have hℓa : 0 < Real.log N ^ a := Real.rpow_pos_of_pos hℓ0 a
+  have hMU : M N = U N * Real.log N ^ a := by simp only [hU]; field_simp
+  have hTa : Tα N * Real.log N ^ a = Real.log N ^ (1 + α) := by
+    simp only [hTα]; rw [← Real.rpow_add hℓ0, h1a']; congr 1; ring
+  have hpa : Real.log N ^ a = Real.log N * Real.log N ^ (a - 1) := by
+    rw [Real.rpow_sub_one hℓ0.ne']; field_simp
+  have hp1α : Real.log N ^ (1 + α) = Real.log N * Real.log N ^ α := by
+    rw [Real.rpow_add hℓ0, Real.rpow_one]
+  have hkey : (L N - a * c * Real.log N ^ (a - 1)) * Real.log N =
+      (L N * Real.log N - a * M N) + a * ((U N - c) * Real.log N ^ a) := by
+    rw [hMU, hpa]; ring
+  have h2 : a * (|U N - c| * Real.log N ^ a) ≤ a * (G * Real.log N ^ (1 + α)) := by
+    refine mul_le_mul_of_nonneg_left ?_ (by linarith)
+    calc |U N - c| * Real.log N ^ a ≤ G * Tα N * Real.log N ^ a :=
+          mul_le_mul_of_nonneg_right hUc hℓa.le
+      _ = G * Real.log N ^ (1 + α) := by rw [mul_assoc, hTa]
+  have hbound : |L N - a * c * Real.log N ^ (a - 1)| * Real.log N ≤
+      ((a * G + K) * Real.log N ^ α) * Real.log N := by
+    calc |L N - a * c * Real.log N ^ (a - 1)| * Real.log N
+        = |(L N * Real.log N - a * M N) + a * ((U N - c) * Real.log N ^ a)| := by
+          rw [← hkey, abs_mul, abs_of_pos hℓ0]
+      _ ≤ |L N * Real.log N - a * M N| + a * (|U N - c| * Real.log N ^ a) := by
+          refine (abs_add_le _ _).trans (add_le_add le_rfl (le_of_eq ?_))
+          rw [abs_mul, abs_of_pos (by linarith : (0 : ℝ) < a), abs_mul, abs_of_pos hℓa]
+      _ ≤ K * Real.log N ^ (1 + α) + a * (G * Real.log N ^ (1 + α)) := add_le_add (heq N hN) h2
+      _ = ((a * G + K) * Real.log N ^ α) * Real.log N := by rw [hp1α]; ring
+  exact le_of_mul_le_mul_right hbound hℓ0
+
 /-- **The Wirsing asymptotic.** If `M(N + 1) = M(N) + L(N) Δ log N` and
 `|L(N) log N − a M(N)| ≤ K log N` with `1 < a ≤ 2`, then `M(N)/(log N)^a → c` at rate
-`(log N)^{1 − a}` and `L(N) = a c (log N)^{a − 1} + O(1)`. The sequences
-`M/(log N)^a ± G (log N)^{1 − a}` are monotone: the drift of `M/(log N)^a` is a second-order Bernoulli
-remainder, which telescopes against `(log N)^{1 − a}`. -/
+`(log N)^{1 − a}` and `L(N) = a c (log N)^{a − 1} + O(1)`. -/
 theorem exists_abs_sub_rpow_le_of_wirsing {M L : ℕ → ℝ} {a K : ℝ} (hK : 0 ≤ K) (ha1 : 1 < a)
     (ha2 : a ≤ 2)
     (hstep : ∀ N, 3 ≤ N → M (N + 1) = M N + L N * (Real.log ((N + 1 : ℕ) : ℝ) - Real.log N))
@@ -584,212 +910,27 @@ theorem exists_abs_sub_rpow_le_of_wirsing {M L : ℕ → ℝ} {a K : ℝ} (hK : 
     ∃ c G : ℝ, ∀ N, 3 ≤ N →
       |M N / Real.log N ^ a - c| ≤ G * Real.log N ^ (1 - a) ∧
         |L N - a * c * Real.log N ^ (a - 1)| ≤ a * G + K := by
-  set U : ℕ → ℝ := fun N => M N / Real.log N ^ a with hU
-  set T : ℕ → ℝ := fun N => Real.log N ^ (1 - a) with hT
-  have hT0 : ∀ N, 3 ≤ N → 0 ≤ T N := fun N hN =>
-    Real.rpow_nonneg (by linarith [one_le_log_of_three_le hN]) _
-  -- one step of the recursion
-  have ha0' : 0 < a - 1 := by linarith
-  have hstepU : ∀ N, 3 ≤ N →
-      (|U (N + 1)| ≤ |U N| + K * (a - 1)⁻¹ * (T N - T (N + 1))) ∧
-      |U (N + 1) - U N| ≤ (4 * |U N| + K) * (a - 1)⁻¹ * (T N - T (N + 1)) ∧
-      0 ≤ T N - T (N + 1) := by
-    intro N hN
-    have hℓ1 := one_le_log_of_three_le hN
-    have hℓ0 : 0 < Real.log N := by linarith
-    have h3 : (3 : ℝ) ≤ N := by exact_mod_cast hN
-    have hN0 : (0 : ℝ) < N := by linarith
-    have hle : Real.log N ≤ Real.log ((N + 1 : ℕ) : ℝ) :=
-      Real.log_le_log hN0 (by push_cast; linarith)
-    have hδ1 : Real.log ((N + 1 : ℕ) : ℝ) - Real.log N ≤ 1 := by
-      rw [← Real.log_div (by positivity) hN0.ne']
-      refine (Real.log_le_sub_one_of_pos (by positivity)).trans ?_
-      rw [div_sub_one hN0.ne', div_le_one hN0]; push_cast; linarith
-    have htel := sub_mul_rpow_neg_le hℓ0 hle ha1 ha2
-    set ℓ := Real.log N
-    set ℓ' := Real.log ((N + 1 : ℕ) : ℝ)
-    set δ := ℓ' - ℓ with hδ
-    have htelT : (a - 1) * δ * (ℓ' ^ a)⁻¹ ≤ T N - T (N + 1) := htel
-    have hδ0 : 0 ≤ δ := sub_nonneg.mpr hle
-    have hℓ'0 : 0 < ℓ' := by linarith
-    have hℓ'a0 : 0 < ℓ' ^ a := Real.rpow_pos_of_pos hℓ'0 a
-    set σ := δ / ℓ with hσ
-    have hσ0 : 0 ≤ σ := div_nonneg hδ0 hℓ0.le
-    have hσℓ : σ * ℓ = δ := div_mul_cancel₀ δ hℓ0.ne'
-    have hσ1 : σ ≤ 1 := (div_le_self hδ0 hℓ1).trans hδ1
-    set q := (1 + σ) ^ a
-    have hq1 : 1 + a * σ ≤ q := one_add_mul_self_le_rpow_one_add (by linarith) ha1.le
-    have hq2 : q ≤ 1 + a * σ + σ ^ 2 := one_add_rpow_le_second hσ0 ha1.le ha2
-    have haσ0 : 0 ≤ a * σ := mul_nonneg (by linarith) hσ0
-    have haσ : 0 ≤ 1 + a * σ := by linarith
-    have hqpos : 0 < q := by linarith
-    have hℓ'eq : ℓ' = ℓ * (1 + σ) := by linarith [hσℓ]
-    have hℓa : 0 < ℓ ^ a := Real.rpow_pos_of_pos hℓ0 a
-    have hℓ'a : ℓ' ^ a = ℓ ^ a * q := by rw [hℓ'eq, Real.mul_rpow hℓ0.le (by linarith)]
-    have hDpos : 0 < ℓ ^ a * q := mul_pos hℓa hqpos
-    set E := L N * ℓ - a * M N
-    have hE : |E| ≤ K * ℓ := heq N hN
-    -- `U(N + 1) = U(N)(1 + aσ)/q + Eσ/(ℓ^a q)`
-    have hrec : U (N + 1) = U N * ((1 + a * σ) / q) + E * σ / (ℓ ^ a * q) := by
-      simp only [hU]
-      rw [hstep N hN]
-      change (M N + L N * δ) / ℓ' ^ a = M N / ℓ ^ a * ((1 + a * σ) / q) + E * σ / (ℓ ^ a * q)
-      rw [hℓ'a, ← hσℓ]
-      simp only [E]
-      field_simp
-      ring
-    -- the forcing term telescopes
-    have hforce : |E * σ / (ℓ ^ a * q)| ≤ K * (a - 1)⁻¹ * (T N - T (N + 1)) := by
-      have h1 : |E * σ / (ℓ ^ a * q)| ≤ K * δ * (ℓ' ^ a)⁻¹ := by
-        rw [abs_div, abs_mul, abs_of_nonneg hσ0, abs_of_pos hDpos, hℓ'a, div_le_iff₀ hDpos,
-          inv_mul_cancel_right₀ hDpos.ne', ← hσℓ]
-        calc |E| * σ ≤ K * ℓ * σ := mul_le_mul_of_nonneg_right hE hσ0
-          _ = K * (σ * ℓ) := by ring
-      refine h1.trans ?_
-      calc K * δ * (ℓ' ^ a)⁻¹ = K * (a - 1)⁻¹ * ((a - 1) * δ * (ℓ' ^ a)⁻¹) := by
-            rw [show K * (a - 1)⁻¹ * ((a - 1) * δ * (ℓ' ^ a)⁻¹) =
-              K * δ * (ℓ' ^ a)⁻¹ * ((a - 1)⁻¹ * (a - 1)) by ring, inv_mul_cancel₀ ha0'.ne',
-              mul_one]
-        _ ≤ K * (a - 1)⁻¹ * (T N - T (N + 1)) :=
-            mul_le_mul_of_nonneg_left htelT (mul_nonneg hK (inv_nonneg.mpr ha0'.le))
-    -- the drift: `0 ≤ 1 − (1 + aσ)/q ≤ σ² ≤ 4δ/ℓ'^a`
-    have hρ0 : 0 ≤ (1 + a * σ) / q := div_nonneg haσ hqpos.le
-    have hρ1 : (1 + a * σ) / q ≤ 1 := (div_le_one hqpos).mpr hq1
-    have hρ2 : 1 - (1 + a * σ) / q ≤ σ ^ 2 := by
-      rw [sub_le_comm, le_div_iff₀ hqpos]
-      calc (1 - σ ^ 2) * q ≤ (1 - σ ^ 2) * (1 + a * σ + σ ^ 2) :=
-            mul_le_mul_of_nonneg_left hq2 (by nlinarith)
-        _ ≤ 1 + a * σ := by
-            have h4 : 0 ≤ a * σ * σ ^ 2 := mul_nonneg haσ0 (sq_nonneg σ)
-            have h5 : 0 ≤ σ ^ 4 := pow_nonneg hσ0 4
-            nlinarith [h4, h5]
-    have hσ4 : σ ^ 2 ≤ 4 * (a - 1)⁻¹ * (T N - T (N + 1)) := by
-      have hℓ'2 : ℓ' ^ a ≤ 4 * ℓ ^ 2 := by
-        have hℓ'1 : 1 ≤ ℓ' := by linarith
-        calc ℓ' ^ a ≤ ℓ' ^ (2 : ℝ) := Real.rpow_le_rpow_of_exponent_le hℓ'1 ha2
-          _ = ℓ' ^ 2 := Real.rpow_two ℓ'
-          _ ≤ (2 * ℓ) ^ 2 := pow_le_pow_left₀ hℓ'0.le (by linarith) 2
-          _ = 4 * ℓ ^ 2 := by ring
-      have h1 : σ ^ 2 ≤ 4 * δ * (ℓ' ^ a)⁻¹ := by
-        rw [← div_eq_mul_inv, le_div_iff₀ hℓ'a0]
-        calc σ ^ 2 * ℓ' ^ a ≤ σ ^ 2 * (4 * ℓ ^ 2) := mul_le_mul_of_nonneg_left hℓ'2 (sq_nonneg σ)
-          _ = 4 * δ * δ := by rw [← hσℓ]; ring
-          _ ≤ 4 * δ := by nlinarith
-      refine h1.trans ?_
-      calc 4 * δ * (ℓ' ^ a)⁻¹ = 4 * (a - 1)⁻¹ * ((a - 1) * δ * (ℓ' ^ a)⁻¹) := by
-            rw [show 4 * (a - 1)⁻¹ * ((a - 1) * δ * (ℓ' ^ a)⁻¹) =
-              4 * δ * (ℓ' ^ a)⁻¹ * ((a - 1)⁻¹ * (a - 1)) by ring, inv_mul_cancel₀ ha0'.ne',
-              mul_one]
-        _ ≤ 4 * (a - 1)⁻¹ * (T N - T (N + 1)) :=
-            mul_le_mul_of_nonneg_left htelT (by positivity)
-    refine ⟨?_, ?_, (mul_nonneg (mul_nonneg ha0'.le hδ0) (inv_nonneg.mpr hℓ'a0.le)).trans htelT⟩
-    · rw [hrec]
-      refine (abs_add_le _ _).trans (add_le_add ?_ hforce)
-      rw [abs_mul, abs_of_nonneg hρ0]
-      exact mul_le_of_le_one_right (abs_nonneg _) hρ1
-    · rw [hrec, show U N * ((1 + a * σ) / q) + E * σ / (ℓ ^ a * q) - U N =
-        -(U N * (1 - (1 + a * σ) / q)) + E * σ / (ℓ ^ a * q) by ring]
-      refine (abs_add_le _ _).trans ?_
-      rw [abs_neg, abs_mul, abs_of_nonneg (sub_nonneg.mpr hρ1)]
-      calc |U N| * (1 - (1 + a * σ) / q) + |E * σ / (ℓ ^ a * q)|
-          ≤ |U N| * (4 * (a - 1)⁻¹ * (T N - T (N + 1))) + K * (a - 1)⁻¹ * (T N - T (N + 1)) :=
-            add_le_add (mul_le_mul_of_nonneg_left (hρ2.trans hσ4) (abs_nonneg _)) hforce
-        _ = (4 * |U N| + K) * (a - 1)⁻¹ * (T N - T (N + 1)) := by ring
-  have ha0 : 0 < (a - 1)⁻¹ := inv_pos.mpr (by linarith)
-  -- `U` is bounded
-  set B := |U 3| + K * (a - 1)⁻¹ * T 3
-  have hB : ∀ N, 3 ≤ N → |U N| + K * (a - 1)⁻¹ * T N ≤ B := by
-    intro N hN
-    induction N, hN using Nat.le_induction with
-    | base => exact le_rfl
-    | succ N hN ih => linarith [(hstepU N hN).1]
-  have hUB : ∀ N, 3 ≤ N → |U N| ≤ B := fun N hN => by
-    have := hB N hN
-    have := mul_nonneg (mul_nonneg hK ha0.le) (hT0 N hN)
-    linarith
-  set G := (4 * B + K) * (a - 1)⁻¹
-  have hB0 : 0 ≤ B := (abs_nonneg _).trans (hUB 3 le_rfl)
-  have hG0 : 0 ≤ G := mul_nonneg (by linarith) ha0.le
-  have hdrift : ∀ N, 3 ≤ N → |U (N + 1) - U N| ≤ G * (T N - T (N + 1)) := fun N hN => by
-    obtain ⟨-, h2, h3⟩ := hstepU N hN
-    exact h2.trans (mul_le_mul_of_nonneg_right
-      (mul_le_mul_of_nonneg_right (by linarith [hUB N hN]) ha0.le) h3)
-  -- the upper envelope `U + G T` decreases, the lower envelope `U − G T` increases
-  have hV : ∀ N, 3 ≤ N → ∀ m, N ≤ m → U m + G * T m ≤ U N + G * T N := by
-    intro N hN m hm
-    induction m, hm using Nat.le_induction with
-    | base => exact le_rfl
-    | succ m hm ih =>
-      have := (abs_le.mp (hdrift m (hN.trans hm))).2
-      linarith
-  have hW : ∀ N, 3 ≤ N → ∀ m, N ≤ m → U N - G * T N ≤ U m - G * T m := by
-    intro N hN m hm
-    induction m, hm using Nat.le_induction with
-    | base => exact le_rfl
-    | succ m hm ih =>
-      have := (abs_le.mp (hdrift m (hN.trans hm))).1
-      linarith
-  have hbdd : BddBelow (Set.range fun n : ℕ => U (n + 3) + G * T (n + 3)) := by
-    refine ⟨-B, ?_⟩
-    rintro _ ⟨n, rfl⟩
-    have h1 := (abs_le.mp (hUB (n + 3) (by omega))).1
-    have h2 := mul_nonneg hG0 (hT0 (n + 3) (by omega))
-    linarith
-  set c := ⨅ n : ℕ, (U (n + 3) + G * T (n + 3))
-  have hcV : ∀ N, 3 ≤ N → c ≤ U N + G * T N := fun N hN => by
-    have := ciInf_le hbdd (N - 3)
-    simpa only [Nat.sub_add_cancel hN] using this
-  have hWc : ∀ N, 3 ≤ N → U N - G * T N ≤ c := fun N hN => by
-    refine le_ciInf fun n => ?_
-    rcases le_total N (n + 3) with h | h
-    · have := hW N hN (n + 3) h
-      have := mul_nonneg hG0 (hT0 (n + 3) (by omega))
-      linarith
-    · have := hV (n + 3) (by omega) N h
-      have := mul_nonneg hG0 (hT0 N hN)
-      linarith
-  refine ⟨c, G, fun N hN => ?_⟩
-  have hUc : |U N - c| ≤ G * T N := by
-    rw [abs_le]; constructor <;> linarith [hcV N hN, hWc N hN]
-  refine ⟨hUc, ?_⟩
-  -- `L = (a M + E)/ℓ` with `M = U ℓ^a`
-  have hℓ0 : 0 < Real.log N := by linarith [one_le_log_of_three_le hN]
-  have hℓa : 0 < Real.log N ^ a := Real.rpow_pos_of_pos hℓ0 a
-  have hMU : M N = U N * Real.log N ^ a := by simp only [hU]; field_simp
-  have hTa : T N * Real.log N ^ a = Real.log N := by
-    simp only [hT]; rw [← Real.rpow_add hℓ0, sub_add_cancel, Real.rpow_one]
-  have hpa : Real.log N ^ a = Real.log N * Real.log N ^ (a - 1) := by
-    rw [Real.rpow_sub_one hℓ0.ne']; field_simp
-  have hkey : (L N - a * c * Real.log N ^ (a - 1)) * Real.log N =
-      (L N * Real.log N - a * M N) + a * ((U N - c) * Real.log N ^ a) := by
-    rw [hMU, hpa]; ring
-  have hbound : |L N - a * c * Real.log N ^ (a - 1)| * Real.log N ≤ (a * G + K) * Real.log N := by
-    have h1 := heq N hN
-    have h2 : a * (|U N - c| * Real.log N ^ a) ≤ a * (G * Real.log N) := by
-      refine mul_le_mul_of_nonneg_left ?_ (by linarith)
-      calc |U N - c| * Real.log N ^ a ≤ G * T N * Real.log N ^ a :=
-            mul_le_mul_of_nonneg_right hUc hℓa.le
-        _ = G * Real.log N := by rw [mul_assoc, hTa]
-    calc |L N - a * c * Real.log N ^ (a - 1)| * Real.log N
-        = |(L N - a * c * Real.log N ^ (a - 1)) * Real.log N| := by rw [abs_mul, abs_of_pos hℓ0]
-      _ = |(L N * Real.log N - a * M N) + a * ((U N - c) * Real.log N ^ a)| := by rw [hkey]
-      _ ≤ |L N * Real.log N - a * M N| + a * (|U N - c| * Real.log N ^ a) := by
-          refine (abs_add_le _ _).trans (add_le_add le_rfl (le_of_eq ?_))
-          rw [abs_mul, abs_of_pos (by linarith : (0 : ℝ) < a), abs_mul, abs_of_pos hℓa]
-      _ ≤ K * Real.log N + a * (G * Real.log N) := add_le_add h1 h2
-      _ = (a * G + K) * Real.log N := by ring
-  exact le_of_mul_le_mul_right hbound hℓ0
+  obtain ⟨c, G, h⟩ := exists_abs_sub_rpow_le_of_wirsing_rpow (α := 0) hK le_rfl (by linarith) ha2
+    hstep fun N hN => by rw [add_zero, Real.rpow_one]; exact heq N hN
+  exact ⟨c, G, fun N hN => by simpa using h N hN⟩
 
-/-- **The Wirsing asymptotic for completely multiplicative `ω`.** If the prime mean is
-`β log n + O(1)` with `0 < β ≤ 1`, then `Σ_{n ≤ N} ω(n)/n = C (log N)^β + O(1)`. -/
-theorem exists_abs_gaugeHarmonicSum_sub_rpow_le {ω : ℕ → ℝ}
-    (hmul : ∀ a b, a ≠ 0 → b ≠ 0 → ω (a * b) = ω a * ω b) (hbd : ∀ n, |ω n| ≤ 1) {β C : ℝ}
-    (hA : ∀ n, 1 ≤ n → |primeMean ω n - β * Real.log n| ≤ C) (hβ0 : 0 < β) (hβ1 : β ≤ 1) :
-    ∃ c G : ℝ, ∀ N, 3 ≤ N → |gaugeHarmonicSum ω N - c * Real.log N ^ β| ≤ G := by
-  obtain ⟨K, hK⟩ := exists_abs_wirsing_equation_le hmul hbd hA
-  have hK0 : 0 ≤ K := by simpa using (abs_nonneg _).trans (hK 1 le_rfl)
-  obtain ⟨c, G, hcG⟩ := exists_abs_sub_rpow_le_of_wirsing (M := polarMoment ω)
-    (L := gaugeHarmonicSum ω) (a := 1 + β) (K := 2 * K) (by linarith) (by linarith) (by linarith)
+/-- **The Wirsing asymptotic with a power error.** If the prime mean of a completely multiplicative
+`|ω| ≤ 1` is `β log n + O((1 + log n)^α)` with `0 ≤ α < β ≤ 1`, then
+`Σ_{n ≤ N} ω(n)/n = c (log N)^β + O((log N)^α)`. -/
+theorem exists_abs_gaugeHarmonicSum_sub_rpow_le_rpow {ω : ℕ → ℝ}
+    (hmul : ∀ a b, a ≠ 0 → b ≠ 0 → ω (a * b) = ω a * ω b) (hbd : ∀ n, |ω n| ≤ 1) {β C α : ℝ}
+    (hα : 0 ≤ α) (hαβ : α < β) (hβ1 : β ≤ 1)
+    (hA : ∀ n, 1 ≤ n → |primeMean ω n - β * Real.log n| ≤ C * (1 + Real.log n) ^ α) :
+    ∃ c G : ℝ, ∀ N, 3 ≤ N → |gaugeHarmonicSum ω N - c * Real.log N ^ β| ≤ G * Real.log N ^ α := by
+  obtain ⟨K, hK⟩ := exists_abs_wirsing_equation_le_rpow hmul hbd hα hA
+  have hK0 : 0 ≤ K := by
+    have h := (abs_nonneg _).trans (hK 1 le_rfl)
+    simp only [Nat.cast_one, Real.log_one, add_zero, Real.one_rpow, mul_one] at h
+    exact h
+  have hα1 : α ≤ 1 := by linarith
+  obtain ⟨c, G, hcG⟩ := exists_abs_sub_rpow_le_of_wirsing_rpow (M := polarMoment ω)
+    (L := gaugeHarmonicSum ω) (a := 1 + β) (K := 4 * K) (α := α) (by linarith) hα (by linarith)
+    (by linarith)
     (fun N hN => by
       have h3 : (3 : ℝ) ≤ N := by exact_mod_cast hN
       have hN0 : (0 : ℝ) < N := by linarith
@@ -798,10 +939,33 @@ theorem exists_abs_gaugeHarmonicSum_sub_rpow_le {ω : ℕ → ℝ}
     (fun N hN => by
       have hℓ := one_le_log_of_three_le hN
       refine (hK N (by omega)).trans ?_
-      nlinarith)
-  refine ⟨(1 + β) * c, (1 + β) * G + 2 * K, fun N hN => ?_⟩
+      have h1 : (1 + Real.log N) ^ (1 + α) ≤ (2 * Real.log N) ^ (1 + α) :=
+        Real.rpow_le_rpow (by linarith) (by linarith) (by linarith)
+      have h2 : (2 * Real.log N) ^ (1 + α) = 2 ^ (1 + α) * Real.log N ^ (1 + α) :=
+        Real.mul_rpow (by norm_num) (by linarith)
+      have h3 : (2 : ℝ) ^ (1 + α) ≤ 4 := by
+        calc (2 : ℝ) ^ (1 + α) ≤ 2 ^ (2 : ℝ) :=
+              Real.rpow_le_rpow_of_exponent_le (by norm_num) (by linarith)
+          _ = 4 := by norm_num
+      have h4 : 0 ≤ Real.log N ^ (1 + α) := Real.rpow_nonneg (by linarith) _
+      calc K * (1 + Real.log N) ^ (1 + α) ≤ K * (2 ^ (1 + α) * Real.log N ^ (1 + α)) := by
+            rw [← h2]; exact mul_le_mul_of_nonneg_left h1 hK0
+        _ ≤ K * (4 * Real.log N ^ (1 + α)) :=
+            mul_le_mul_of_nonneg_left (mul_le_mul_of_nonneg_right h3 h4) hK0
+        _ = 4 * K * Real.log N ^ (1 + α) := by ring)
+  refine ⟨(1 + β) * c, (1 + β) * G + 4 * K, fun N hN => ?_⟩
   have h := (hcG N hN).2
   rwa [show 1 + β - 1 = β by ring] at h
+
+/-- **The Wirsing asymptotic for completely multiplicative `ω`.** If the prime mean is
+`β log n + O(1)` with `0 < β ≤ 1`, then `Σ_{n ≤ N} ω(n)/n = C (log N)^β + O(1)`. -/
+theorem exists_abs_gaugeHarmonicSum_sub_rpow_le {ω : ℕ → ℝ}
+    (hmul : ∀ a b, a ≠ 0 → b ≠ 0 → ω (a * b) = ω a * ω b) (hbd : ∀ n, |ω n| ≤ 1) {β C : ℝ}
+    (hA : ∀ n, 1 ≤ n → |primeMean ω n - β * Real.log n| ≤ C) (hβ0 : 0 < β) (hβ1 : β ≤ 1) :
+    ∃ c G : ℝ, ∀ N, 3 ≤ N → |gaugeHarmonicSum ω N - c * Real.log N ^ β| ≤ G := by
+  obtain ⟨c, G, h⟩ := exists_abs_gaugeHarmonicSum_sub_rpow_le_rpow hmul hbd le_rfl hβ0 hβ1
+    (C := C) fun n hn => by rw [Real.rpow_zero, mul_one]; exact hA n hn
+  exact ⟨c, G, fun N hN => by simpa using h N hN⟩
 
 end Asymptotic
 
@@ -874,6 +1038,36 @@ theorem abs_primeMean_primeSetFlip_sub_le (P : Set ℕ) {κ C : ℝ}
   have h2 := hP n hn
   rw [abs_le] at h1 h2 ⊢
   constructor <;> linarith [h1.1, h1.2, h2.1, h2.2]
+
+/-- A relative logarithmic density with a power error gives the prime mean `(1 − 2κ) log n` with the
+same error. -/
+theorem abs_primeMean_primeSetFlip_sub_le_rpow (P : Set ℕ) {κ C α : ℝ} (hα : 0 ≤ α)
+    (hP : ∀ n, 1 ≤ n → |primeSetLogMass P n - κ * Real.log n| ≤ C * (1 + Real.log n) ^ α)
+    {n : ℕ} (hn : 1 ≤ n) :
+    |primeMean (primeSetFlip P) n - (1 - 2 * κ) * Real.log n| ≤
+      (|(Real.log 4 + 4) + (8 + RHTower.Mertens.mertensTail)| + 2 * C) * (1 + Real.log n) ^ α := by
+  rw [primeMean_primeSetFlip]
+  have hC : 0 ≤ C := by simpa using (abs_nonneg _).trans (hP 1 le_rfl)
+  have hP1 : 1 ≤ (1 + Real.log n) ^ α := Real.one_le_rpow (by linarith [Real.log_natCast_nonneg n]) hα
+  have h1 := RHTower.Mertens.mertens_first_prime n hn
+  have h2 := hP n hn
+  set C₀ := (Real.log 4 + 4) + (8 + RHTower.Mertens.mertensTail)
+  have hC₀ : C₀ ≤ |C₀| * (1 + Real.log n) ^ α :=
+    (le_abs_self C₀).trans (le_mul_of_one_le_right (abs_nonneg _) hP1)
+  rw [abs_le] at h1 h2 ⊢
+  constructor <;> nlinarith [h1.1, h1.2, h2.1, h2.2]
+
+/-- **The Wirsing asymptotic for flip twins with a power error.** If
+`Σ_{p ∈ P, p ≤ n} log p/p = κ log n + O((1 + log n)^α)` with `0 ≤ κ`, `0 ≤ α < 1 − 2κ`, then
+`Σ_{n ≤ N} ω_P(n)/n = c (log N)^{1 − 2κ} + O((log N)^α)`. -/
+theorem exists_abs_gaugeHarmonicSum_primeSetFlip_sub_rpow_le_rpow (P : Set ℕ) {κ C α : ℝ}
+    (hκ0 : 0 ≤ κ) (hα : 0 ≤ α) (hακ : α < 1 - 2 * κ)
+    (hP : ∀ n, 1 ≤ n → |primeSetLogMass P n - κ * Real.log n| ≤ C * (1 + Real.log n) ^ α) :
+    ∃ c G : ℝ, ∀ N, 3 ≤ N →
+      |gaugeHarmonicSum (primeSetFlip P) N - c * Real.log N ^ (1 - 2 * κ)| ≤ G * Real.log N ^ α :=
+  exists_abs_gaugeHarmonicSum_sub_rpow_le_rpow
+    (fun a b ha hb => (primeSetFlip_isSignGauge P).mul ha hb) (abs_primeSetFlip_le P) hα hακ
+    (by linarith) (fun n hn => abs_primeMean_primeSetFlip_sub_le_rpow P hα hP hn)
 
 /-- A relative logarithmic density is at most `1`. -/
 theorem le_one_of_primeSetLogMass (P : Set ℕ) {κ C : ℝ}

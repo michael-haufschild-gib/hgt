@@ -1,99 +1,66 @@
-# Finite aperture transport for the literal odd-conductor row
+# Global transport of the literal odd-conductor model
 
 - **Stage:** 1-in-progress
 - **Type:** CANDIDATE
 - **Route:** Argon §4.1.
-- **Parent:** [Literal model calibration](../1-in-progress/parity-stabilizer-logarithmic-coalescent-calibration.md).
+- **Parent:** [Literal model calibration](parity-stabilizer-logarithmic-coalescent-calibration.md).
 
 ## Target
 
-Transfer the exact complete Poisson row to the finite logarithmic pair kernel,
-retaining `1/sqrt(m(m+2r))`, the taper, the aperture and the upper pair endpoint.
-The fixed conductor cutoff and its primitive spatial correction remain explicit.
+Sum the literal logarithmic pair kernel over odd bases, retaining the fixed
+conductor cutoff, actual smooth taper, coalescent aperture and upper endpoint.
+The primitive spatial correction cannot be dropped.
 
-For a C⁴ window, let `D₄ = ∫|Ω⁽⁴⁾|` over an interval containing its support,
-and `O(Q)=Σ_{q≤Q,odd} μ²(q)/φ(q)`. The formalized aperture bound is
+## Formalized local estimates
 
-`|Σ_{r=1}^R parityStabilizerWeight Q (2r) Ωhat(2r/m) − fullRow|`
-`≤ 2 O(Q) D₄ (m/2)^4 / R³`, for R≥1.
+For each fixed smooth height profile, the
+[literal logarithmic row](../3-formalized/literal-logarithmic-stabilizer-transport.md)
+with `1/sqrt(m(m+2r))`, `1≤R` and `2R≤m` satisfies
 
-Use `abs_cosTransform_le`, the Ramanujan bound `|c_q(h)|≤φ(q)`,
-and `HilbertSchmidt.tsum_reciprocal_square_tail_le`: multiply the square tail
-by `R⁻²` to bound the fourth-power tail.
+`|logRow−[π spatialDual−Ωhat(0)O(Q)/m]|≤C O(Q)[T⁻¹+(m/(TR))³]`.
 
-## Existing phase transport and remaining boundary
+Every finite row is bounded by `C O(Q)`; its absolute logarithmic first moment
+is at most `C O(Q)/T`. Constants depend only on the fixed profile, with no
+derivative estimate left as a premise. All eight audits use standard axioms,
+and both final direct leaf checks pass.
 
-`coalescent_term_linearization_bound` already controls both logarithmic phase
-and square-root pair weight for a bounded Lipschitz scaled kernel. For
-`Ω_T(t)=u((t−T)/T)^4`, the corpus supplies all derivative bounds.
-At bandwidth 4/3 and aperture `θ=T^(-5/6)`, the bulk truncation and logarithm
-errors have matching power saving `T^(-1/6)` before logarithmic factors.
+The [linear aperture bounds](../3-formalized/odd-stabilizer-aperture-and-fixed-base-renormalization.md)
+also show fixed-base cancellation of the leading logarithmic diagonal. The
+[Fourier transport estimates](../3-formalized/decay-preserving-cosine-transport.md)
+retain decay and have no additive height loss on short rows.
 
-Rows with `mθ` bounded and rows near the upper pair endpoint require separate
-bounds. The estimate `|parityStabilizerWeight|≤2O(Q)` alone can lose a
-logarithm on those short rows. The corpus supplies
-`abs_singularSeriesTerm_le` and `Σ μ²(q)/φ(q)²≤16`, giving the candidate
-uniform bound `|parityStabilizerWeight Q h|≤32σ(h)` for h≥1.
-This removes the conductor logarithm when the lag stays bounded.
-Even complete model transport leaves the actual signed prime-minus-model
-discrepancy unproved.
+## Actual smooth taper
 
-## Conductor-independent short rows
+The standard taper is `g=autocorr(φ²)`. The corpus proves `∫|(φ²)'|=2`
+and the derivative formula for compact C¹ autocorrelations. Together with
+`0≤φ²≤1`, these give the candidate uniform estimate
+`|g(x)−g(y)|≤2|x−y|`. Endpoint variation should therefore cost at most twice
+the proved logarithmic first-moment bound.
 
-Oddness gives `c_q(2r)=c_q(r)`. The divisor formula bounds `|c_q(r)|≤r²`,
-and `Σ μ²(q)/φ(q)²≤16`, hence `|parityStabilizerWeight Q (2r)|≤32r²`.
-Fourth-order decay then gives, for every finite truncation and the complete row,
+Keep this actual taper through the signed spatial/diagonal cancellation.
+Its triangle bracket differs by at most `2w`, but a premature absolute
+replacement can cost `O(wX log Q)`. After cancellation, the proposed error
+is only `O(wT log²T)`.
 
-`|row|≤4D₄m⁴`, independently of Q.
+## Aperture and boundary
 
-Indeed each absolute summand is at most `2D₄m⁴/r²`, and
-`Σ_{r≥1}r⁻²≤2`. Together with the cubic aperture-tail bound, this covers both
-short rows and bulk truncation without paying an extra conductor logarithm.
-The logarithmic phase, taper variation and upper pair boundary remain separate
-parts of the literal model transport.
+Put `N=floor X` and
+`R_m=min((N−m)/2, floor(m(exp θ−1)/2))`.
+The exact ordered-pair identity should express the model as
+`(1/(4π))Σ_{odd 3≤m≤N}[2g(log m)logRow(m,R_m)+taperVariation(m,R_m)]`.
 
-## Decay-preserving logarithmic transport
+For `θ≤log 2`, `2R_m≤m`. Bulk bases `m≤X exp(−θ)` see the full aperture;
+if `mθ≥4`, its length is at least `mθ/4`. Short bases number `O(θ⁻¹)`.
+The upper boundary has width `O(Xθ+1)` and each taper there is at most θ.
+These aperture identities and their global sums remain unformalized.
 
-A [formalized phase estimate](../3-formalized/decay-preserving-cosine-transport.md)
-avoids the global Lipschitz loss. Write
-`Ωhat_T(θ)=T K(Tθ)`. Fourth-order decay for the transform of `tΩ_T(t)`
-gives `|Ωhat_T′(θ)|≤min(C T²,D T⁻²/θ⁴)`. On
-`h/m≤1`, the logarithmic frequency lies between `h/(2m)` and `h/m`.
-The phase error is therefore bounded by
-`m⁻¹ min(Cu²,16D/u²)`, `u=Th/m`.
+At `X≤T²`, `θ=T^(−7/12)`, the proposed raw errors are
 
-The positive lattice sums of this envelope and the corresponding weight-error
-envelope `min(u,u⁻³)` are `O(m/T)`: both are bounded by a constant times
-`(1+u)⁻²`, whose lattice sum telescopes. This predicts row error `O(1/T)`,
-uniformly in the aperture. At bandwidth two, the global raw error would be
-`O(T log²T)`. Keeping the vanishing taper at the upper endpoint gives
-boundary cost `O(Xθ² log Q)`. With `θ=T^(-7/12)`, both the cubic tail and
-this boundary term have power savings. The derivative, phase and lattice-mass
-bounds are formalized with seven standard-axiom audits and a passing final
-direct check. Literal weighted-row and global boundary transport remain open.
+- phase and weight: `O(X log X log Q/T)`;
+- taper variation: `O(X log Q/T)`;
+- aperture tail: `O(X log X log Q/(T³θ³))`;
+- short rows: `O(θ⁻¹ log X log Q)`;
+- upper boundary: `O((Xθ²+θ)log Q)`.
 
-For the scaled profile, put `κ(v)=v u(v−1)^4` and choose derivative suprema
-`M₄≥sup|(u⁴)⁽⁴⁾|`, `Mκ≥sup|κ⁽⁴⁾|`. Compact support supplies both.
-The identity `tΩ_T(t)=Tκ(t/T)` gives the candidate uniform transport constant
-`C=42+6M₄+192Mκ` for T≥1. Indeed, on the extended support interval,
-`M₀≤3T`, `M₁≤9T²`, `D₄≤3M₄/T³`, and `D₁≤3Mκ/T²`.
-This would make the literal row error at most `O(Q)C/T`, uniformly over
-every R with `2R≤m`, without an unspecified analytic hypothesis.
-
-For the linear taper, symmetrizing ordered pairs introduces the difference
-`g(log(m+h))−g(log m)=−log(1+h/m)`. Its absolute row sum should be at most
-`4O(Q)(M₀/T+16T³D₄)/T`. The logarithmic frequency lies in `[h/(2m),h/m]`;
-mass and fourth-derivative bounds give a summable reciprocal-square envelope.
-This first-moment estimate controls taper variation without a global factor
-`log X`.
-
-## Formalized aperture and fixed-base consequences
-
-The conductor-independent bound gives `row_Q(m)/log Q→0` for fixed m>0.
-The exact Poisson identity and odd logarithmic mean then give
-`spatialDual_Q(m)/log Q→Ωhat(0)/(2πm)`.
-Thus, at a fixed base, the primitive correction cancels the entire leading
-negative diagonal; along the moving support horizon the normalized row instead
-tends to `−Ωhat(0)/2`. The aperture bound, conductor-independent envelopes and both limits are
-[formalized](../3-formalized/odd-stabilizer-aperture-and-fixed-base-renormalization.md);
-all seven audits use standard axioms and the final direct check passes.
+All should be `o(T log³T)`. Global primitive-sample calibration and the
+actual signed prime-minus-model bound remain separate open inputs.

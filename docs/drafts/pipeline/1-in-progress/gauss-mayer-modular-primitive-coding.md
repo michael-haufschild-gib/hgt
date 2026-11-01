@@ -12,6 +12,17 @@ The literal Gauss matrices have determinant `(-1)^k`; one-digit cyclic
 rotation uses a determinant-minus-one conjugator. Ordinary digit necklaces
 therefore require an orientation audit.
 
+## Certified actual Gauss classification
+
+The literal `Word (2*k)` matrices now satisfy the target: integral conjugacy
+is cyclic splitting of consecutive digit pairs; an integral `r`th root
+exists exactly when the pair sequence is an `r`fold repetition. Pair
+extraction recovers every original digit, and every positive-trace
+hyperbolic integral class has a nonempty even Gauss representative.
+
+Every one-digit Gauss matrix squared is primitive in `SL₂(ℤ)`, despite its
+two identical digits. Thus ordinary digit-word primitivity is insufficient.
+
 ## Certified matrix classification
 
 Let `L=(1,1;0,1)` and `R=(1,0;1,1)`. Every nonnegative determinant-one
@@ -55,18 +66,26 @@ Modules in `RenormalizedIntersectionTheory`:
   `integral_intertwiner_iff_cyclic_split`, `integral_root_iff_word_power`,
   `exists_integral_word_conjugate`.
 
-All five direct production checks pass without diagnostics. Their
-6+3+9+11+4 transitive axiom audits use only standard axioms. Umbrella imports
-wired. These certify the matrix classification, not the full Gauss target.
+- `GaussMayerPrimitiveWordCoding.lean`, namespace `MayerGaussCoding`:
+  `evenWordPairs_digits`, `evenWordMatrix_conjugacy_iff`,
+  `evenWordMatrix_root_iff`, `exists_evenWordMatrix_intertwiner`,
+  `single_digit_square_primitive`.
 
-## Remaining bridge
+All six direct production checks pass without diagnostics. Their
+6+3+9+11+4+18 transitive axiom audits use only standard axioms. Umbrella
+imports wired. The actual Gauss classification is certified; the explicit
+matrix-inverse orientation audit below remains open.
 
-Two positive Gauss digits satisfy `M_a M_b=R^a L^b`; the actual `wordMatrix`
-uses reversed digit order. Translate alternating positive runs into that
-literal source, prove cyclic classification with even digit rotations, and
-retain even-word primitivity: the square of an odd primitive Gauss word can
-be primitive in `SL₂(ℤ)`.
+## Remaining orientation audit
 
-Matrix/inverse conjugacy and oriented versus unoriented multiplicities must
-also be audited before a geodesic or Selberg-product identity. No such
-identity, scattering normalization, or resonance exclusion is assumed.
+The source uses reversed digit order; `M_a M_b=R^a L^b` and uniqueness of
+positive alternating runs now connect it exactly to the matrix classification.
+A conjugacy cut producing another aligned word must cut at a whole run-pair
+boundary. Repeated words inherit the same first and last generator, giving
+the exact whole-pair root classification.
+
+For `J=(0,−1;1,0)`, the proposed inverse-class audit uses
+`J A⁻¹ J⁻¹=Aᵀ`. Gauss digit matrices are symmetric, so transpose reverses
+digit order. Formalize this exact involution and its cyclic-pair criterion.
+No oriented/unoriented geodesic identification, Selberg-product identity,
+scattering normalization, or resonance exclusion is assumed.
