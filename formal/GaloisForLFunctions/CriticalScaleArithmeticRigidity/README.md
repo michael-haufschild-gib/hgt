@@ -68,7 +68,7 @@ This holds for every `Q≥2`, every window, and all affine parameters and coeffi
 
 `[log(N+1)−log(Q(Q−1)+1)] E(f) ≤ Σ_(1≤n≤N) f(n)²/n`.
 
-[AffineWindowEnergy.lean](AffineWindowEnergy.lean) proves these identities and estimates through explicit spectral transport, finite Parseval, and the corpus's sharp two-sided large sieve. Complete-period arithmetic energy therefore becomes an observable quantity at quadratic conductor horizons.
+[AffineWindowEnergy.lean](AffineWindowEnergy.lean) proves these identities and estimates through explicit spectral transport, finite Parseval, and the corpus's sharp two-sided large sieve. [FiniteHorizonRigidity.lean](FiniteHorizonRigidity.lean) transfers the joint successor–dyadic gap to these windows and identifies its exact constant-packet kernel when `K>Q(Q−1)`. Complete-period arithmetic energy therefore becomes an observable quantity at quadratic conductor horizons.
 
 ### Relative prime transport
 
@@ -87,6 +87,12 @@ The literal finite-horizon prime residual has two different sources: a scalar Me
 `||R_a||²/log N≤[C H_Q M_Q(a)+38 A_Q H_Q L_Q(a)]/log N`
 
 for `Q,N≥2`, with an absolute constant `C`. Since `A_Q≤14H_Q`, the arithmetic-energy term costs two conductor logarithms. [RelativePrimeResidual.lean](RelativePrimeResidual.lean) proves the source identity and the estimate, keeping every row quotient and the prescribed scalar counterterm.
+
+The two conductor logarithms are attained on the prime coefficients `w_p=sqrt(p−1)/p`. For every sufficiently large `P`, with `Q=P²`, every `N≥P` satisfies
+
+`Σ_(n≤N) R_w(N,n)² ≥ (1/384)(log Q)² L_Q(w)`.
+
+[PrimeIncidenceHarmonicWindows.lean](PrimeIncidenceHarmonicWindows.lean) retains the coherent tail through the exact discrepancy of divisibility indicators. [SharpPrimeResidualScale.lean](SharpPrimeResidualScale.lean) then subtracts the scalar correction. This identifies the residual-norm scale; it gives no obstruction to joint cancellation in the complete Weil form.
 
 ### Coherent receiving modes
 
@@ -120,7 +126,7 @@ The coherent charge can survive even when input energy vanishes. For every presc
 
 `L_Q(a)<ε`, `mean G_Q(a)=t`, and `mean|G_Q(a)−t|²<ε`.
 
-The explicit unprojected coefficients are `(t/B_Q)sqrt(p−1)/p` on primes, with energy `t²/B_Q`. [VanishingEnergyCharge.lean](VanishingEnergyCharge.lean) proves the construction and its preservation by the physical pole projection. Thus convergence in adjunction energy alone loses receiving-charge data. A source-preserving limiting theory must retain those data or prove their cancellation inside the complete signed form. The output convergence here uses complete-period means; transfer to growing physical horizons and nonconstant receiving modes requires further theorems.
+The explicit unprojected coefficients are `(t/B_Q)sqrt(p−1)/p` on primes, with energy `t²/B_Q`. [VanishingEnergyCharge.lean](VanishingEnergyCharge.lean) proves the construction and its preservation by the physical pole projection. [PhysicalHorizonCharges.lean](PhysicalHorizonCharges.lean) strengthens it for every `N≥Q`: both the harmonic input square and the harmonic square of `G_Q(a)−t`, divided by `log N`, are below `ε`. Thus convergence in adjunction energy and physical input norm can lose receiving-charge data. A source-preserving limiting theory must retain those data or prove their cancellation inside the complete signed form. Nonconstant receiving modes and graph-closure classification remain open.
 
 ## Foundational mechanisms
 

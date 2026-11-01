@@ -24,17 +24,29 @@ def torusKernelDensity (k : Multiplicative (I →₀ ℤ) → ℂ)
   hermQuad (gram k (fun a => Multiplicative.ofAdd (x a)))
     (fun a => torusCharacter (-x a) θ) / n
 
+omit [Countable I] in
+theorem continuous_torusKernelDensity (k : Multiplicative (I →₀ ℤ) → ℂ)
+    (x : Fin n → I →₀ ℤ) : Continuous (torusKernelDensity k x) := by
+  unfold torusKernelDensity hermQuad dotProduct Matrix.mulVec
+  simp only [Pi.star_apply, Complex.star_def]
+  exact (Complex.continuous_re.comp (continuous_finsetSum _ fun a _ =>
+    (Complex.continuous_conj.comp (torusCharacter (-x a)).continuous).mul
+      (continuous_finsetSum _ fun b _ =>
+        continuous_const.mul (torusCharacter (-x b)).continuous))).div_const _
+
 /-- The nonnegative density supplied by finitely many correction functions. -/
 def torusCorrectionDensity (x : Fin n → I →₀ ℤ) (φ : Fin m → Fin n → ℂ)
     (θ : UnitAddTorus I) : ℝ :=
   (∑ i, ‖∑ a, φ i a * torusCharacter (-x a) θ‖ ^ 2) / n
 
+omit [Countable I] in
 theorem torusCorrectionDensity_nonneg (x : Fin n → I →₀ ℤ)
     (φ : Fin m → Fin n → ℂ) (θ : UnitAddTorus I) :
     0 ≤ torusCorrectionDensity x φ θ := by
   unfold torusCorrectionDensity
   positivity
 
+omit [Countable I] in
 /-- The same correction squares that repair every Gram form repair its
 torus density pointwise. -/
 theorem torusKernelDensity_add_correction_nonneg
@@ -53,6 +65,7 @@ theorem torusKernelDensity_add_correction_nonneg
   apply div_nonneg _ (Nat.cast_nonneg n)
   simpa only [mul_comm] using h
 
+omit [Countable I] in
 theorem continuous_torusCorrectionDensity (x : Fin n → I →₀ ℤ)
     (φ : Fin m → Fin n → ℂ) : Continuous (torusCorrectionDensity x φ) := by
   unfold torusCorrectionDensity
@@ -66,11 +79,13 @@ theorem integral_torusCorrectionDensity (x : Fin n → I →₀ ℤ)
     (∫ θ, torusCorrectionDensity x φ θ ∂torusHaar I) =
       (∑ i, ∑ a, ‖φ i a‖ ^ 2) / n := by
   have hint (i : Fin m) : Integrable
-      (fun θ => ‖∑ a, φ i a * torusCharacter (-x a) θ‖ ^ 2) (torusHaar I) :=
-    ((continuous_finsetSum _ fun a _ =>
-      continuous_const.mul (torusCharacter (-x a)).continuous).norm.pow 2)
-        .integrable_of_hasCompactSupport (HasCompactSupport.of_compactSpace _)
-  rw [torusCorrectionDensity, integral_div,
+      (fun θ => ‖∑ a, φ i a * torusCharacter (-x a) θ‖ ^ 2) (torusHaar I) := by
+    have hc : Continuous (fun θ => ‖∑ a, φ i a * torusCharacter (-x a) θ‖ ^ 2) :=
+      (continuous_finsetSum _ fun a _ =>
+        continuous_const.mul (torusCharacter (-x a)).continuous).norm.pow 2
+    exact hc.integrable_of_hasCompactSupport (HasCompactSupport.of_compactSpace _)
+  simp only [torusCorrectionDensity]
+  rw [integral_div,
     integral_finsetSum _ fun i _ => hint i]
   congr 1
   exact sum_congr rfl fun i _ =>

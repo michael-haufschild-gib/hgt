@@ -118,3 +118,5 @@ import GaloisForLFunctions.ArithmeticIndexDescent.FixedCoarseCellsControlTheEnti
 Completed Weil forms, finite presentations, transverse energy and arithmetic source work.
 -/
 import GaloisForLFunctions.ArithmeticIndexDescent.TheFullPrimeWindowCancelsTheGrowingHeadPole
+import GaloisForLFunctions.ArithmeticIndexDescent.QuantitativePrimeHinges
+import GaloisForLFunctions.ArithmeticIndexDescent.PrimeWindowHingeIdentities

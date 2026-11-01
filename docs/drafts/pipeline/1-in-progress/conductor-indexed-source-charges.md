@@ -36,7 +36,7 @@ For any fixed tolerance, remove a fixed initial prime segment so that the last f
 
 ## Stronger concentration target
 
-For coprime conductors, the literal generator should obey `G(e_r F)=e_r G(F)+(G e_r)F`. Coherent prime packets supported above every prime dividing `r` may then have vanishing adjunction energy while their output approaches `e_r` in complete-period square mean. Finite sums would expose a full family of independent receiving charges.
+The modewise coprime derivation law is formalized. Its packet version would give `G(e_r F)=e_r G(F)+(G e_r)F` when all conductors in `F` are coprime to `r`. Coherent prime packets supported above every prime dividing `r` may then have vanishing adjunction energy while their output approaches `e_r` in complete-period square mean. Finite sums would expose a full family of independent receiving charges.
 
 A precise stronger target is: every fixed finite conductor packet `F` is approximable by generator outputs `G U` with `L(U)` arbitrarily small. Choose a coherent prime packet `H` supported above all conductors of `F`, and put `U=FH`. Unique coprime conductor factorization predicts
 
@@ -44,7 +44,7 @@ A precise stronger target is: every fixed finite conductor packet `F` is approxi
 
 Complete-period product orthogonality then transfers `L(H)→0`, `G(H)→1` to `L(U)→0`, `G(U)→F`. Proving these literal product identities and the prime-tail charge construction would determine the entire finite receiving-charge space, rather than only parity. The positive structure to retain is the full arithmetic gradient with its exact square energy; summing all prime currents into one generator can lose this continuity.
 
-The product rule and explicit charge construction must be formalized before asserting this limit or any graph-closure classification. No statement about negative complete Weil states follows without the missing joint Gamma–pole–shell analysis.
+The packet product identities and explicit charge construction must be formalized before asserting this limit or any graph-closure classification. No statement about negative complete Weil states follows without the missing joint Gamma–pole–shell analysis.
 
 For the exact topology, use the full coefficient norm `Σ(1+λ_m)a_m²`, so conductor one is retained rather than quotiented ambiguously. Prime escape has coefficient mass at most `L/(2log 2)`. If every finite receiving charge is constructed as above, the closure of the generator graph in this input Hilbert space times coefficient `ℓ²` is the full product: first add vanishing-input charge corrections to each finite packet, then use density of finite packets. This predicts a completely multivalued graph limit, not merely failure of a uniform norm bound.
 
@@ -66,4 +66,4 @@ The prospective identity is therefore `harmonic finite part = γ⟨a,b⟩−L(a,
 
 ## Formal interfaces
 
-`CoprimeModeTransport.lean` now drafts the all-row normalized source sum, its exact coprime derivation law, and additive adjunction weights. It uses the already-proved Mangoldt product rule and the packet source sum; verification is pending. Prime-band normalization, coefficient-product Plancherel, and the receiving-charge approximation remain to be implemented.
+`CoprimeModeTransport.lean` proves the all-row normalized source sum, its exact coprime derivation law, and additive adjunction weights. Declarations `hasSum_normalizedPrimeModeSource`, `normalizedPrimeModeSource_mul_of_coprime`, and `adjunctionWeight_mul_of_coprime` passed direct audit with only `propext`, `Classical.choice`, `Quot.sound`. These specialize the existing Mangoldt product rule and packet source sum. Prime-band normalization, coefficient-product Plancherel, and the receiving-charge approximation remain unproved and paused.

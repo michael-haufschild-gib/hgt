@@ -53,7 +53,8 @@ private theorem removeConstantConductor_primeOnly (a : ℕ → ℝ) :
   funext m
   by_cases hm : m = 1
   · subst m
-    simp [removeConstantConductor, primeOnly]
+    rw [removeConstantConductor, if_pos rfl, primeOnly,
+      if_neg (by decide : ¬ Nat.Prime 1)]
   · simp only [removeConstantConductor, if_neg hm]
 
 /-- The physical harmonic projection contracts the square of a conductor packet. -/

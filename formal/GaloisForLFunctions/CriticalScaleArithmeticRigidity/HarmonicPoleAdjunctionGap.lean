@@ -27,7 +27,11 @@ theorem horizonPacket_inner_pole_eq_harmonicSum (Q N : ℕ) (a : ℕ → ℝ) :
         SelectiveMultiscaleArithmeticPositivity.harmonicSum N (conductorHorizonProfile Q a) /
           Real.log N := by
   have hpole (n : ℕ) : ramanujanPoleProfile 1 n = (Real.sqrt n)⁻¹ := by
-    simp [ramanujanPoleProfile, normalizedRamanujanMode, ramanujanMode_one]
+    have hc := BezoutValuationIncidence.ramanujanLagCoefficient_of_dvd (one_dvd n)
+    simp only [Nat.totient_one, Nat.cast_one] at hc
+    simp only [ramanujanPoleProfile,
+      normalizedRamanujanMode_eq_coefficient (by decide : 0 < (1 : ℕ)), hc,
+      Nat.totient_one, Nat.cast_one, Real.sqrt_one, div_one, one_div]
   have hsum : (∑ m ∈ Icc 1 Q, a m *
       ∑ n ∈ Icc 1 N, ramanujanPoleProfile m n * ramanujanPoleProfile 1 n) =
         SelectiveMultiscaleArithmeticPositivity.harmonicSum N (conductorHorizonProfile Q a) := by

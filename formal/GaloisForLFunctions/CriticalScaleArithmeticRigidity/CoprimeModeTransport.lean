@@ -35,8 +35,9 @@ theorem hasSum_normalizedPrimeModeSource {m : ℕ} (hm : 0 < m) (n : ℕ) :
       (normalizedRamanujanMode m (k * n) - normalizedRamanujanMode m n))
       (normalizedPrimeModeSource m n) := by
   have h := hasSum_normalizedRamanujanPacket_up m (fun r => if r = m then 1 else 0) n
+  have hmm : m ∈ Icc 1 m := mem_Icc.mpr ⟨hm, le_rfl⟩
   simpa only [ite_mul, one_mul, zero_mul, sum_ite_eq',
-    if_pos (mem_Icc.mpr ⟨hm, le_rfl⟩), normalizedPrimeModeSource] using h
+    if_pos hmm, normalizedPrimeModeSource] using h
 
 /-- Normalizing the exact arithmetic product rule preserves every Mangoldt weight. -/
 theorem normalizedPrimeJump_mul_of_coprime {a b : ℕ}

@@ -5,7 +5,7 @@
 - **Type:** CANDIDATE
 - **Source:** `docs/reports/review-3110/astra.md`, section 6
 - **Statement:** Develop source-specific joint successor–dilation rigidity and relative signed-energy estimates at growing arithmetic scales.
-- **Disposition:** Paused at user request. Finish existing Lean drafts and verification only; no further research expansion.
+- **Disposition:** Paused at user request. Existing Lean drafts and direct audits are complete; no further research authorized.
 
 ## Goal
 

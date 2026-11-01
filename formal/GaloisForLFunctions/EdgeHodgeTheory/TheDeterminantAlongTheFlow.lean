@@ -32,7 +32,12 @@ theorem det_ne_zero_iff_hermNullIndex_eq_zero {H : Matrix ι ι ℂ} (hH : H.IsH
     H.det ≠ 0 ↔ hermNullIndex H = 0 := by
   rw [hH.det_eq_prod_eigenvalues, nullIndex_eq_card_zero_eigenvalues hH, Finset.card_eq_zero,
     Finset.filter_eq_empty_iff, Finset.prod_ne_zero_iff]
-  simp only [Finset.mem_univ, true_implies, ne_eq, Complex.ofReal_eq_zero]
+  simp only [Finset.mem_univ, true_implies, ne_eq]
+  constructor
+  · intro h a ha
+    exact h a (by rw [ha]; simp)
+  · intro h a ha
+    exact h (RCLike.ofReal_eq_zero.mp ha)
 
 /-- **Determinants along paths.** Along a continuous family of Hermitian matrices with nonvanishing
 determinant on a preconnected set the negative index is constant. -/

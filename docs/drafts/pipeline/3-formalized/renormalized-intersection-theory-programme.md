@@ -54,11 +54,14 @@ Answer the questions of §2.6 with unconditional theorems (equivalences, classif
   `exists_abs_gaugeHarmonicSum_sub_rpow_le`, `exists_abs_gaugeHarmonicSum_primeSetFlip_sub_rpow_le`,
   `hodgeSeparates_primeSetFlip_of_primeSetLogMass`, `hodgeSeparates_residueClassFlip`,
   `hodgeSeparates_primeSetFlip_one_mod_four`, `hodgeSeparates_primeSetFlip_three_mod_four`.
+- Conductor series: `hodgeSeparates_primeSetFlip_of_packet`, `hodgeSeparates_primeSetFlip_iff_secular_pos`,
+  `exists_packet_gt_of_lowerLogDensity`, `hodgeSeparates_primeSetFlip_of_lowerLogDensity`,
+  `hodgeSeparates_residueClassFlip_of_totient_le_four`, `hodgeSeparates_primeSetFlip_one_mod_five`.
 
 ## Open
 Hodge index on schedules between `(log log N)^{<1/16}` (proved) and `(log N)^{α}`, every `α > 0` (= RH); positive index of `K_ζ` on the infinite stratum;
 infinite flip sets of maximal margin (invisible to the atomic Hodge index, not finite flips);
-flip twins of relative logarithmic density `κ ≤ 1/4` or without a relative density.
+zero-density flip twins without `2` whose conductor packets stay below `1/s` (maximal-margin side).
 
 ## Log
 - 2026-10-31 — created; formalized pillars listed above

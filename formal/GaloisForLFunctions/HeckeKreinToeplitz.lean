@@ -1,3 +1,37 @@
+import GaloisForLFunctions.HeckeKreinToeplitz.Index.IndexOneGrowthBoundary
+import GaloisForLFunctions.HeckeKreinToeplitz.Index.PositiveHyperplaneQuadraticGrowth
+import GaloisForLFunctions.HeckeKreinToeplitz.Index.SubexponentialPositiveHyperplane
+import GaloisForLFunctions.HeckeKreinToeplitz.Index.IndexOneKernelDichotomy
+import GaloisForLFunctions.HeckeKreinToeplitz.Index.HyperbolicEigenlineSplitting
+import GaloisForLFunctions.HeckeKreinToeplitz.Index.PositiveEigenlineCoefficients
+import GaloisForLFunctions.HeckeKreinToeplitz.Index.CommutingReflectedEigenline
+import GaloisForLFunctions.HeckeKreinToeplitz.Index.ReflectedNullEigenvector
+import GaloisForLFunctions.HeckeKreinToeplitz.Index.NullIsometryQuotient
+import GaloisForLFunctions.HeckeKreinToeplitz.Index.NullCoordinates
+import GaloisForLFunctions.HeckeKreinToeplitz.Index.PositiveCharacterHyperplane
+import GaloisForLFunctions.HeckeKreinToeplitz.Index.CompletedColumnRepresentation
+import GaloisForLFunctions.HeckeKreinToeplitz.Index.CompletedFrameRepresentation
+import GaloisForLFunctions.HeckeKreinToeplitz.Index.CompletingIndexOneIsometries
+import GaloisForLFunctions.HeckeKreinToeplitz.Index.NegativeColumnHilbertSpace
+import GaloisForLFunctions.HeckeKreinToeplitz.Index.NegativeColumnComplement
+import GaloisForLFunctions.HeckeKreinToeplitz.Index.NegativeColumnFrames
+import GaloisForLFunctions.HeckeKreinToeplitz.Index.NegativeFrameHilbertSpace
+import GaloisForLFunctions.HeckeKreinToeplitz.Index.FiniteNegativeDirections
+import GaloisForLFunctions.HeckeKreinToeplitz.Index.ContractionGraphImages
+import GaloisForLFunctions.HeckeKreinToeplitz.Index.InvariantNegativeGraph
+import GaloisForLFunctions.HeckeKreinToeplitz.Index.CompletingFiniteNegativeIsometries
+import GaloisForLFunctions.HeckeKreinToeplitz.Index.HeckeBoundedKreinLanger
+import GaloisForLFunctions.HeckeKreinToeplitz.Index.OneNegativeDirection
+import GaloisForLFunctions.HeckeKreinToeplitz.Index.ProjectiveHilbertBall
+import GaloisForLFunctions.HeckeKreinToeplitz.Index.CommutingIndexOneIsometries
+import GaloisForLFunctions.HeckeKreinToeplitz.Index.BoundedKreinLanger
+import GaloisForLFunctions.HeckeKreinToeplitz.Index.SignedTorusCorrections
+import GaloisForLFunctions.HeckeKreinToeplitz.Index.BoundedSignedSpectralMeasure
+import GaloisForLFunctions.HeckeKreinToeplitz.Index.TorusSpectralForms
+import GaloisForLFunctions.HeckeKreinToeplitz.Index.FreeLatticeWindows
+import GaloisForLFunctions.HeckeKreinToeplitz.Index.TorusFejerFourierCoefficients
+import GaloisForLFunctions.HeckeKreinToeplitz.Index.TorusFejerCorrections
+import GaloisForLFunctions.HeckeKreinToeplitz.Index.BoundedPontryaginCorrections
 import GaloisForLFunctions.HeckeKreinToeplitz.Index.PeriodicSaturation
 import GaloisForLFunctions.HeckeKreinToeplitz.Index.MonotoneHermitianForms
 import GaloisForLFunctions.HeckeKreinToeplitz.Index.HermitianFiniteSums
@@ -73,7 +107,8 @@ Hermitian kernels with finitely many negative squares on groups, and on the Heck
 * **Structure.** The negative index of a kernel; hyperbolic pairs and the Krein–Langer index
   formula; the exact index of a finite exponential sum without separation and of an absolutely
   convergent Bohr series; finite index as
-  positive definite minus finite rank (Pontryagin decomposition),
+  positive definite minus finite rank (Pontryagin decomposition), the bounded converse on
+  countable free lattices and positive rationals with exact unitary-character count,
   attainment and subadditivity; subgroup zero sets for null kernels of index one;
   rank at most the square of the index from two zero subgroup readings;
   an algebraic column representation recovering every group kernel as a coefficient;

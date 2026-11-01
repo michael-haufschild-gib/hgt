@@ -1,0 +1,44 @@
+# Uncorrected Gauss–Mayer branch cutoffs at zeta scattering parameters
+
+- **Stage:** 5-failed
+- **Type:** No-go with positive survivor
+- **Parent:** [three approaches, A](../1-in-progress/argon-three-orthogonal-rh-approaches.md).
+
+## Exact obstruction
+
+On the disc algebra `|z−1|≤3/2`, let
+`L_{s,N}f(z)=Σ_{n=1}^N(n+z)^(−2s)f(1/(n+z))`.
+For every nontrivial zeta zero `ρ`, with `s=ρ/2`,
+
+`‖L_{s,N}‖/N^(1−Re ρ) → 1/|1−ρ| > 0`.
+
+Thus these raw finite-alphabet cutoffs diverge in operator norm at every
+actual zeta scattering target, including critical zeros. Ordinary branch
+convergence cannot distinguish critical from off-critical resonances there.
+
+This obstruction concerns these uncorrected cutoffs only. It does not exclude
+Padé approximants, corrected cutoffs, the continued Mayer operator, nuclearity,
+Fredholm comparisons, or the full scattering route.
+
+## Positive survivor
+
+For `Re s>0`, `s≠1/2`, subtracting the explicit constant-mode operator
+`N^(1−2s)/(1−2s) · [f↦f(0)·1]` gives operator-norm convergence with error
+`O(N^(−2 Re s))`. On `0<Re s<1/2`, this leading coefficient is forced among
+all bounded-operator subtractions of the same power scale. The corrected
+operator equals the usual absolutely convergent branch sum for `Re s>1/2`.
+
+[Exact theorem, constants, paper proof, and Lean certificate](../3-formalized/gauss-mayer-renormalized-cutoff-operator.md).
+Both obstruction and positive survivor are formalized in
+`RenormalizedIntersectionTheory/GaussMayerCutoffRenormalization.lean`;
+the final direct check and transitive axiom audits passed with only
+`propext`, `Classical.choice`, and `Quot.sound`.
+
+The corrected operator also has a certified order-zero nuclear expansion and
+geometric finite-rank error bound: [paper proof and Lean certificate](../3-formalized/gauss-mayer-renormalized-nuclear-expansion.md). This strengthens the positive
+survivor without supplying a scattering determinant identity.
+
+Its [global determinant](../3-formalized/gauss-mayer-source-fredholm-determinant.md)
+is now certified as the entire limit of actual coefficient determinants, with
+an explicit error and zeros exactly at failure of invertibility of the
+original Banach operator. Selberg/scattering comparison remains open.

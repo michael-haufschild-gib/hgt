@@ -1,0 +1,34 @@
+import GaloisForLFunctions.ArithmeticCouplingTheory.TheCouplingCalculus
+import GaloisForLFunctions.ArithmeticCouplingTheory.TheLocalHyersUlamInequality
+import GaloisForLFunctions.ArithmeticCouplingTheory.TheCouplingIsAsLargeAsTheKernel
+import GaloisForLFunctions.ArithmeticCouplingTheory.BoundedCouplingIsTheRiemannHypothesis
+import GaloisForLFunctions.ArithmeticCouplingTheory.TheSingleLatticeCouplingOnTheFiniteStratum
+import GaloisForLFunctions.ArithmeticCouplingTheory.OneTwoPrimeLatticeDecidesTheCriticalLine
+import GaloisForLFunctions.ArithmeticCouplingTheory.TheConeCouplingHasNoDeepestZero
+import GaloisForLFunctions.ArithmeticCouplingTheory.MixedDifferencesSeeEveryZero
+import GaloisForLFunctions.ArithmeticCouplingTheory.TheCouplingFormIsSelective
+import GaloisForLFunctions.ArithmeticCouplingTheory.FlipTwinsCarryTheirIndexIntoTheCouplingForm
+import GaloisForLFunctions.ArithmeticCouplingTheory.TheCouplingHomotopyIsCrossingFree
+import GaloisForLFunctions.ArithmeticCouplingTheory.TheMertensPolarization
+import GaloisForLFunctions.ArithmeticCouplingTheory.TheCompleteFormOnTheCoherentSector
+import GaloisForLFunctions.ArithmeticCouplingTheory.NonpositivePacketsAreNearlyDilationInvariant
+import GaloisForLFunctions.ArithmeticCouplingTheory.TheCompleteFormAtEveryOverlap
+import GaloisForLFunctions.ArithmeticCouplingTheory.NonpositiveDirectionsLocalizeInAConductorSector
+import GaloisForLFunctions.ArithmeticCouplingTheory.TheAffineIncidenceEnergy
+import GaloisForLFunctions.ArithmeticCouplingTheory.TheCouplingOfACurve
+import GaloisForLFunctions.ArithmeticCouplingTheory.TheCouplingInterfaces
+
+/-!
+# Arithmetic Coupling Theory
+
+Umbrella for the theory of how the additive structure of `ℤ` couples its multiplicative towers:
+the coupling calculus (Künneth splitting, polarization, antidiagonal, coupling Laplacian), local
+Hyers–Ulam stability and the lossless coupling–kernel transfer, bounded coupling as RH and the
+coupling rate as the zero width, one two-prime lattice deciding RH and its cone excluding a deepest
+zero, coupling completeness, the selectivity of the coupling against flip twins of every density,
+the crossing-free coupling homotopy, the Mertens polarization, the complete Weil form on the
+coherent sector below touching and at every overlap, the localization of nonpositive directions in
+a finite conductor sector at every overlap, the affine incidence energy, the `𝔽_q` calibration, and
+the interfaces to edge Hodge theory and critical-scale rigidity.
+See `ArithmeticCouplingTheory/README.md`.
+-/

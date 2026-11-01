@@ -95,6 +95,10 @@ amplitudes and their first moments — with explicit error certificates. The com
 | Uniform zero detector on discs of radius $(16(n+1)^6)^{-1}$ | `exists_polynomialThetaLocalReading_error_bound`, `polynomialThetaLocalReading_uniform_zero_detector` | proved |
 | Integer theta prefixes read the horizontal collision charge exactly | `tendsto_finiteThetaCollisionReading`, `eventually_floor_finiteThetaCollisionReading` | proved |
 | Conductor horizon and companion forcing are disjoint for $0\le\delta\le\frac12$ | `forcing_requires_exponential_aperture`, `conductor_forcing_disjoint` | proved |
+| Unit-window self-absorption of $\Pi_{F_{c\log T}}$ and explicit-formula RVM no-go | `exists_unitWindow_integral_norm_primePolynomial_le`, `exists_rvm_zeroConfig_not_heckeDefect_le_spectralDeviation` | proved |
+| Super-polynomial decay of $E_\gamma(c\log T)$ under `FiniteOffLine` (any prime cutoff) | `exists_heckeDefect_log_le_div_pow_of_finiteOffLine`, `exists_heckeDefect_log_le_primePolynomial_any_cutoff_of_finiteOffLine` | proved |
+| Log-scale 5-way TFAE, all-$c$ scale rigidity, positive-sign separation, and Lindelöf corridor | `heckeDefect_log_unitWindow_tfae`, `unitWindowDepthCharge_log_iff_of_pos`, `eventually_heckeDefect_le_pos_re_primePolynomial_iff`, `zerosApproachLine_and_lindelof_of_heckeDefect_log_bound` | proved |
+| Zero-avoiding pole-nodal dyadic equivalence with $\mathrm{RH}$ | `exists_poleNodal_ordinate_in_Icc`, `riemannHypothesis_iff_dyadic_heckeDefect_le_primePolynomial` | proved |
 
 ## 6. Tools
 
@@ -116,9 +120,12 @@ amplitudes and their first moments — with explicit error certificates. The com
   `exists_uniform_finiteTheta_compact_current_error`, `tendsto_thetaTestStage_error`,
   `abs_finiteThetaProductSourceReading_sub_finitePair_le`, `exists_finiteTheta_pair_current_error`.
 - Collisions: `horizontalCollisionGaussian_error`, `exists_xiWindowGaussianPairSum_error`, `finiteThetaCollisionReading_error`.
+- Log-scale defect vs. prime polynomial: `exists_depthKernel_scale_transfer`, `exists_norm_tr_twist_baseBump_le_pow`,
+  `unitWindow_depthCharge_le_heckeDefect`, `normSq_tr_twist_heckeAvgBump_le_of_sep_strip`,
+  `exists_abs_re_archPart_heckeAvgBump_log_le`, `unitWindow_integral_normSq_tr_twist_heckeAvgBump_le`.
 
 **To build**
-- A prime-side upper bound for the Hecke defect at $L\asymp\log T$ (the readings compute it, they do not bound it).
+- An unconditional uniform bound on the prime-free logarithmic corridor charge $\sum_{\rho\in W(T)} m_\rho k(c\log T,\delta_\rho)$ ($\Pi_{F_{c\log T}}$ self-absorbs by $O(1/\log T)$ across $[T,T+1)$), or a single additive constant across dyadic scales $L_k=2^k c_0\log T$ (equivalent to $\mathrm{RH}$).
 - An arithmetic correspondence acting as conjugation on the divisor (Frobenius at infinity), linking $(\rho,\bar\rho)$ to $(\rho,1-\rho)$.
 - A structural bound $\Delta\le D$ uniform in depth and aperture.
 - Bounds on the collision charge (below two) from the finite theta reading.
@@ -146,6 +153,8 @@ amplitudes and their first moments — with explicit error certificates. The com
 | The explicit formula applies to antiholomorphic arguments | Needs new justification; the collided form is not holomorphic in the test |
 | Companion forcing reaches the conductor horizon | Disjoint at every height for $0\le\delta\le\frac12$ |
 | Zero detection needs isolated zeros | Bracketing by integer multiplicity needs no separation |
+| $\Pi_{F_{c\log T}}$ of length $T^{2c}$ pays for unbounded $E_\gamma(c\log T)$ on $[T,T+1)$ | Unit-window Plancherel forces $\int_T^{T+1}\|\Pi\|d\gamma\le C_1(c)+O(1/\log T)\int_T^{T+1}E_\gamma d\gamma$; $\Pi$ eliminates itself |
+| Fixed-$c$ uniform bound on $[T,T+1)$ implies $\mathrm{RH}$ | Holds for every fixed $c>0$ on $\mathrm{FiniteOffLine}\wedge\neg\mathrm{RH}$ via $C_c^\infty$ rapid decay; $\mathrm{RH}$ requires coupling dyadic scales $2^k c_0\log T$ at pole-nodal ordinates |
 
 ## 9. Context
 

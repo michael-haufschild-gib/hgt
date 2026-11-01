@@ -78,8 +78,17 @@ import GaloisForLFunctions.CompletedArithmeticForms.CompleteWeilResidualLevelOfD
 import GaloisForLFunctions.CompletedArithmeticForms.CompleteWeilConductorAveragePositivity
 import GaloisForLFunctions.CompletedArithmeticForms.ConductorBandTopTailBounds
 import GaloisForLFunctions.CompletedArithmeticForms.ConductorBandPrimeAndCenterBounds
+import GaloisForLFunctions.CompletedArithmeticForms.ConductorBandQuadraticCenterBounds
 import GaloisForLFunctions.CompletedArithmeticForms.PrimePacketCoercivity
+import GaloisForLFunctions.CompletedArithmeticForms.HighConductorAdjunctionCoercivity
 import GaloisForLFunctions.CompletedArithmeticForms.ConductorBandOverlapAndNonRatioBounds
+import GaloisForLFunctions.CompletedArithmeticForms.ConductorBandQuadraticCancellation
+import GaloisForLFunctions.CompletedArithmeticForms.ExceptionalConductorsVanishAbovePolylog
+
+import GaloisForLFunctions.CompletedArithmeticForms.ConductorPrefixLeakage
+import GaloisForLFunctions.CompletedArithmeticForms.LogarithmicPacketInterpolation
+import GaloisForLFunctions.CompletedArithmeticForms.WeightedConductorCrossBounds
+import GaloisForLFunctions.CompletedArithmeticForms.SplitPrimeCrossBounds
 
 /-!
 # Quantitative theory of completed arithmetic forms
@@ -172,6 +181,9 @@ On sub-horizon conductor subspaces, quantitative exponential confinement, revers
 gaps, quotient-tail torsion cancellation, collective prime and center cross-bounds, and
 intermediate-band summation-by-parts overlap decay control every component of the
 complete Weil operator at power-of-logarithm overlap.
+Every individual Ramanujan conductor mode between polylogarithmic and square-root-sub-horizon
+polynomial scales has logarithmic positive complete-Weil energy across power-of-logarithm
+overlap below one quarter, making the exceptional conductor set above polylogarithms empty.
 The foundational source questions are developed in
 `CompletedArithmeticForms/README.md`.
 -/

@@ -17,10 +17,12 @@ namespace GaloisForLFunctions.HTGeometry
 
 variable {I J : Type*} [Countable I] [Fintype J]
 
-/-- Haar integration keeps precisely the equal-frequency terms in a packet. -/
-theorem integral_norm_sq_torusCharacter_sum (n : J → I →₀ ℤ) (c : J → ℂ) :
-    ((∫ x, ‖∑ j, c j * torusCharacter (n j) x‖ ^ 2 ∂torusHaar I : ℝ) : ℂ) =
-      ∑ i, ∑ j, conj (c i) * c j * (if n i = n j then 1 else 0) := by
+/-- Packet energy is the Toeplitz form of the measure's character integrals. -/
+theorem integral_norm_sq_torusCharacter_sum_measure
+    (μ : Measure (UnitAddTorus I)) [IsFiniteMeasure μ]
+    (n : J → I →₀ ℤ) (c : J → ℂ) :
+    ((∫ x, ‖∑ j, c j * torusCharacter (n j) x‖ ^ 2 ∂μ : ℝ) : ℂ) =
+      ∑ i, ∑ j, conj (c i) * c j * (∫ x, torusCharacter (n j - n i) x ∂μ) := by
   classical
   have he (x : UnitAddTorus I) :
       ((‖∑ j, c j * torusCharacter (n j) x‖ ^ 2 : ℝ) : ℂ) =
@@ -31,16 +33,26 @@ theorem integral_norm_sq_torusCharacter_sum (n : J → I →₀ ℤ) (c : J → 
     rw [map_mul, sub_eq_add_neg, torusCharacter_add_index, torusCharacter_neg_index]
     ring
   have hint (i j : J) : Integrable
-      (fun x => conj (c i) * c j * torusCharacter (n j - n i) x) (torusHaar I) :=
+      (fun x => conj (c i) * c j * torusCharacter (n j - n i) x) μ :=
     ((torusCharacter (n j - n i)).continuous.integrable_of_hasCompactSupport
       (HasCompactSupport.of_compactSpace _)).const_mul _
   rw [← integral_complex_ofReal]
   simp_rw [he]
   rw [integral_finsetSum _ fun i _ => integrable_finsetSum _ fun j _ => hint i j]
-  simp_rw [integral_finsetSum _ fun j _ => hint _ j, integral_const_mul,
-    integral_torusCharacter, sub_eq_zero]
+  simp_rw [integral_finsetSum _ fun j _ => hint _ j, integral_const_mul]
+
+open scoped Classical in
+/-- Haar integration keeps precisely the equal-frequency terms in a packet. -/
+theorem integral_norm_sq_torusCharacter_sum (n : J → I →₀ ℤ) (c : J → ℂ) :
+    ((∫ x, ‖∑ j, c j * torusCharacter (n j) x‖ ^ 2 ∂torusHaar I : ℝ) : ℂ) =
+      ∑ i, ∑ j, conj (c i) * c j * (if n i = n j then 1 else 0) := by
+  classical
+  rw [integral_norm_sq_torusCharacter_sum_measure]
+  simp_rw [integral_torusCharacter, sub_eq_zero]
   apply sum_congr rfl fun i _ => sum_congr rfl fun j _ => ?_
-  rw [eq_comm (n j) (n i)]
+  by_cases h : n i = n j
+  · rw [if_pos h.symm, if_pos h]
+  · rw [if_neg (Ne.symm h), if_neg h]
 
 /-- Distinct characters are an orthonormal family, on finite or infinite tori. -/
 theorem integral_norm_sq_torusCharacter_sum_of_injective

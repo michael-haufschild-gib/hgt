@@ -35,7 +35,7 @@ private theorem centeredDivisibility_prefix_eq {d : ℕ} (hd : 0 < d) (X : ℕ) 
 private theorem centeredDivisibility_prefix_bounds {d : ℕ} (hd : 0 < d) (X : ℕ) :
     -1 ≤ (∑ n ∈ Icc 1 X, centeredDivisibility d n) ∧
       (∑ n ∈ Icc 1 X, centeredDivisibility d n) ≤ 0 := by
-  rw [centeredDivisibility_prefix_eq hd]
+  rw [centeredDivisibility_prefix_eq hd, neg_div]
   have hdR : (0 : ℝ) < d := by exact_mod_cast hd
   have hr : (((X % d : ℕ) : ℝ) / d) ≤ 1 := by
     rw [div_le_iff₀ hdR, one_mul]
@@ -180,6 +180,7 @@ theorem highPrimeSource_harmonic_sq_lower (P Q A K : ℕ) :
   have hmean := (abs_le.mp (abs_highPrimeSource_harmonic_mean_error_le P Q A K)).1
   have hlinear := mul_le_mul_of_nonneg_left hmean
     (mul_nonneg (by norm_num : (0 : ℝ) ≤ 2) (highPrimePoleMass_nonneg P Q))
+  rw [mul_neg, ← mul_div_assoc] at hlinear
   have hsquare := sum_nonneg (s := Icc (A + 1) (A + K)) fun n _ =>
     div_nonneg (sq_nonneg (highPrimeCoherentSource P Q n - highPrimePoleMass P Q))
       (Nat.cast_nonneg n)

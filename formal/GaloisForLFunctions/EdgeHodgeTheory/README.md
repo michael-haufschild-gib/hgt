@@ -96,33 +96,43 @@ proves where they cannot give more.
 4. On a complex combination of real tests Weil's form is the sum of its values on the real and
    imaginary parts, which are again real atomic tests: complex and real positivity agree.
 
+**Continuity and crossings.**
+5. Atoms of nearby widths differ uniformly by `O(|1/w − 1/w₀|)` with a common support and Lipschitz
+   bound, so Weil's form of the atomic tests moves continuously with the overlap; polarization turns
+   continuous quadratic forms into continuous entries. Strict positivity on the compact unit sphere
+   is then open in the overlap, positivity is closed, and the first failure of positivity happens
+   through a degenerate form: the edge is a crossing.
+
 **Identities.**
-5. Repayment: each completed conductor energy is a positive Fourier integral, so the limit
+6. Repayment: each completed conductor energy is a positive Fourier integral, so the limit
    structure is polarized by an identity; the pole conductor is its ground state.
-6. Shells: on the boost hyperplane the glued archimedean state is Weil's dilation form plus the
+7. Shells: on the boost hyperplane the glued archimedean state is Weil's dilation form plus the
    squares of the half-line shells.
 
 **Degeneration.**
-7. The completed conductor energies tend to `0` with the overlap. Along any growing schedule the
+8. The completed conductor energies tend to `0` with the overlap. Along any growing schedule the
    limit structure degenerates; in the universal regime a polynomial fraction of it is inherited,
-   in the RH regime nothing is.
+   in the RH regime nothing is. The degeneration is self-similar in the conductor:
+   `E₁(c/m) ≤ E_m(c) ≤ (m/φ(m)) E₁(c/m)` (RAPT `completedShellEnergy_div_conductor_le`,
+   `completedConductorEnergy_le_one`), so the conductor-`m` mode reaches the quantum at about `m`
+   times the overlap of the pole, and the modes reach it in the order of their conductors.
 
 **Integers.**
-8. The negative index is lower semicontinuous, `n₊ + n₋ + n₀` is the dimension, so near a matrix of
+9. The negative index is lower semicontinuous, `n₊ + n₋ + n₀` is the dimension, so near a matrix of
    nullity `n₀` the index rises by at most `n₀`; at nondegenerate points it is locally constant and
    along nondegenerate paths constant. A reading within `1/2` of a continuous function is constant.
-9. Kronecker inertia: `n₋(G ⊗ G) = 2 n₊(G) n₋(G)`.
-10. Right zeros pair under conjugation, so a finite Krein–Langer index is even.
+10. Kronecker inertia: `n₋(G ⊗ G) = 2 n₊(G) n₋(G)`.
+11. Right zeros pair under conjugation, so a finite Krein–Langer index is even.
 
 **Profile covariance.**
-11. The RH regime starts where the synthesis error, read in the density `log N`, vanishes:
+12. The RH regime starts where the synthesis error, read in the density `log N`, vanishes:
    `c_N⁴/log N → ∞` for every `C²` profile, `(log log N)^α`, `α > 1`, for Denjoy–Carleman profiles,
    a divergent multiple of `L(log L)²` for the sinc profile; Gevrey class `≤ 1` admits no compactly
    supported profile.
 
 **Selection and calibration.**
-12. Every admissible profile sees every prime flip at bounded overlap, while the edge of `ζ` grows.
-13. Over `𝔽_q` the span defect is constant from window `2g` on: detection happens at bounded
+13. Every admissible profile sees every prime flip at bounded overlap, while the edge of `ζ` grows.
+14. Over `𝔽_q` the span defect is constant from window `2g` on: detection happens at bounded
    resolution.
 
 ## 5. Questions and answers
@@ -130,7 +140,7 @@ proves where they cannot give more.
 | Question | Answer | Lean |
 |---|---|---|
 | What is the limiting structure of `W_{φ,c,N}`, and is it polarized on `v₁^⊥` by an `SL₂`-type mechanism? | At fixed overlap the limit is the Ramanujan-graded form `Σ E_m(c) y_m²`, polarized by the repayment identity, with the pole conductor as ground state. Along every growing schedule it degenerates to `0`; for the tilted spline a polynomial floor `K/c⁷` is inherited throughout the universal regime, and at the RH-complete schedules the ground energy tends to `0` while positivity is RH. The `SL₂`-type structure (pole pair of the boost–successor plane) is blind on `v₁^⊥`: adding it with any weight leaves the Hodge index unchanged. | `tendsto_ramanujan_quasimode`, `limitForm_nonneg`, `ground_mul_sum_sq_le_limitForm`, `tendsto_limitForm_comp`, `tiltedSpline_inheritance_and_degeneration`; `RenormalizedIntersectionTheory.renormalizedHodgeIndex_add_polePair_iff` |
-| Why is the edge at `τ(c) log N ≈ 1`, and what changes there? | The balance overlap `c*_N` is of order `L(log L)²` for the sinc profile; at the multiple `K` of it the family controls every test of support radius `½ log K − O(1)`: the visible window opens at the balance and is empty below it. In the plane of resolutions the edge is the graph of the threshold; for the tilted spline it lies above `(log 1/w)^α/(2w)` unconditionally and, without RH, below `N` at the widths `2(log N)^β/N` infinitely often. | `sinc_edge_balance`, `sinc_window_opens`, `positiveAt_iff_lt_horizonThreshold`, `eventually_lt_horizonThreshold_powerLog`, `frequently_horizonThreshold_le_of_not_rh` |
+| Why is the edge at `τ(c) log N ≈ 1`, and what changes there? | The balance overlap `c*_N` is of order `L(log L)²` for the sinc profile; at the multiple `K` of it the family controls every test of support radius `½ log K − O(1)`: the visible window opens at the balance and is empty below it. In the plane of resolutions the edge is the graph of the threshold; for the tilted spline it lies above `(log 1/w)^α/(2w)` unconditionally and, without RH, below `N` at the widths `2(log N)^β/N` infinitely often. What changes in the form at the edge: it acquires a zero mode while remaining positive semidefinite — the edge is a crossing of the overlap flow, a root of its lowest eigenvalue; without RH this happens infinitely often at an overlap in `[(log N)^α, 2(log N)^β]`. | `sinc_edge_balance`, `sinc_window_opens`, `positiveAt_iff_lt_horizonThreshold`, `eventually_lt_horizonThreshold_powerLog`, `frequently_horizonThreshold_le_of_not_rh`, `edge_is_a_crossing`, `frequently_zero_mode_in_window_of_not_rh` |
 | Is there a monotone or conserved quantity controlling the Hodge defect along the resolution flow? | Yes. At fixed width the horizon defect is nondecreasing and converges to the number of right zeros the atom sees, reaching it at a finite horizon when finite; for spline atoms of every width this is `κ(K_ζ)` (HKT). Along the heat flow the defect is nonincreasing, dropping by one per collision (RIT). | `horizonDefect_mono`, `iSup_horizonDefect`, `exists_horizonDefect_eq`; `HeckeKreinToeplitz.negIndex_zetaKernel_eq_iSup_shrinkGram`, `RenormalizedIntersectionTheory.antitoneOn_boostPolarIndex_heat` |
 | What is Frobenius at infinity? | The defect involution `ρ ↦ 1 − ρ̄` fixes exactly the critical line; a conjugation identifying the collided and reflection pairings exists on `ζ` iff RH, and its failure is counted by `κ(K_ζ)`, one per moved zero on the right. Over `𝔽_q` it is the circle reflection of the Frobenius eigenvalues, and the span defect counts the eigenvalues it moves outside the circle. As a Hecke similitude of the collided polarization it is again RH. | `defectInvolution_eq_self_iff`, `riemannHypothesis_iff_defectInvolution_trivial`, `negIndex_zetaKernel_eq_encard_moved`, `circleReflect_eq_self_iff`, `hermNegIndex_spanGram_eq_card_moved`, `frobeniusAtInfinity_iff` |
 | Does Weil's dilation form on `ℓ = 0` admit a shell identity, and is it the edge limit of the universal-regime decompositions? | The glued archimedean state is the dilation form plus shell squares at every resolution (AKG). The universal-regime decompositions are the limit structure, which degenerates to `0` along every growing schedule, so the dilation form at the edge is not their limit. A positivity identity for the dilation form at an RH-complete resolution is RH (RIT). | `AdelicKreinGeometry.hermQuad_gram_weilArchState_shell`, `tendsto_limitForm_comp`, `RenormalizedIntersectionTheory.riemannHypothesis_iff_completeWeil_hodgeIndex_log` |
@@ -148,6 +158,7 @@ proves where they cannot give more.
 | Horizon flow: monotone defect, conserved charge = seen right zeros, stabilization, positivity = vanishing defect, threshold infinite iff nothing seen | `horizonDefect_mono`, `iSup_horizonDefect`, `exists_horizonDefect_eq`, `horizonDefect_eq_zero_iff`, `horizonThreshold_eq_top_iff` | unconditional |
 | The edge is a threshold curve: section theorem, width positivity = seeing, divergence of the detection horizon | `positiveAt_iff_lt_horizonThreshold`, `forall_positiveAt_width_iff`, `tendsto_horizonThreshold_tiltedUnitSpline` | unconditional |
 | The threshold curve hugs the hyperbola `wN = 1` within log-power factors | `eventually_lt_horizonThreshold_powerLog`, `frequently_horizonThreshold_le_of_not_rh` | unconditional |
+| The edge is a crossing: continuity in the overlap; at a finite edge `e > 1` the form is positive semidefinite with a zero mode; without RH a zero mode appears in the power-log window infinitely often | `continuousAt_completeWeilEnergy`, `continuousAt_completeWeilMatrix_apply`, `eventually_nonneg_of_pos`, `crossing_of_firstFailure`, `edge_is_a_crossing`, `frequently_zero_mode_in_window_of_not_rh` | unconditional |
 | Integers along paths: semicontinuity, local constancy, path invariance, precision below `1/2`, deformation to a model | `eventually_le_hermPosIndex`, `eventually_hermNegIndex_le_add_nullIndex`, `eventually_hermNegIndex_eq_of_nullIndex_eq_zero`, `hermNegIndex_eq_of_isPreconnected`, `eq_of_abs_sub_lt_half_of_isPreconnected`, `exists_crossingFree_path_to_one_iff` | unconditional |
 | Index by deformation of the spline horizon families | `riemannHypothesis_iff_spline_regularized_deformation`, `eventually_not_exists_crossingFree_path_of_not_rh` | equivalence; unconditional |
 | No softening at resolution: Künneth defect `2 n₊ n₋`; RH iff the Künneth squares of the integer spline atoms are positive; otherwise defect `≥ 2` eventually | `hermNegIndex_kronecker_self`, `riemannHypothesis_iff_kunneth_horizon`, `eventually_two_le_kunneth_of_not_rh` | unconditional; equivalence |
@@ -155,6 +166,7 @@ proves where they cannot give more.
 | Frobenius at infinity | `riemannHypothesis_iff_defectInvolution_trivial`, `negIndex_zetaKernel_eq_encard_moved`, `hermNegIndex_spanGram_eq_card_moved`, `frobeniusAtInfinity_iff` | equivalences; unconditional |
 | The window opens at the balance; profile covariance and the quasi-analytic boundary | `sinc_edge_balance`, `sinc_window_opens`, `profile_covariance_of_the_edge` | unconditional; equivalence |
 | Integer readings as edge detectors: horizon defects `≤` collision charges; vanishing charges give positivity at every resolution; charges `≤ 1` give RH | `exists_fredholmIndex_eq_collisionCharge`, `horizonDefect_le_iSup_collisionCharge`, `positiveAt_of_collisionCharge_eq_zero`, `riemannHypothesis_of_collisionCharge_le_one` | unconditional; implication |
+| The determinant along the flow: crossings are its zeros, its sign is the parity of the defect; under RH every spline determinant is nonnegative | `det_ne_zero_iff_hermNullIndex_eq_zero`, `hermNegIndex_eq_of_det_ne_zero`, `neg_one_pow_horizonDefect_mul_det_nonneg`, `odd_horizonDefect_of_det_neg`, `det_shrinkGram_nonneg_of_rh` | unconditional; implication |
 | Calibration over `𝔽_q`: the flow is trivial — edge `∞` iff Weil's bound, otherwise `≤ 2g`; defect constant from `2g`; the golden datum is seen at window `2` | `windowEdge_eq_top_iff`, `windowEdge_le_card`, `hermNegIndex_spanGram_stable`, `two_le_windowEdge`, `windowEdge_goldenDatum`, `edge_bounded_over_curves_and_unbounded_over_integers` | unconditional |
 
 ## 7. Tools
@@ -168,19 +180,25 @@ proves where they cannot give more.
 - Horizon families of arbitrary real tests: nesting, monotone defect, conserved charge, thresholds,
   and the real/complex positivity bridge `re_weilFull_eq_re_add_im`.
 - The section theorem linking overlap and threshold coordinates.
+- Continuity of the complete Weil family in the overlap (uniform atom comparison, the corpus
+  perturbation bound for Weil's form, polarization), openness of strict positivity on the sphere,
+  and the crossing theorem for first failures.
 - Limit structures: the Ramanujan-graded limit form and its degeneration along schedules.
 - Kronecker inertia applied to resolution families.
 - The defect involution over `ℤ` and its circle-reflection analogue over `𝔽_q`.
 - Integer readings: collision charges as Fredholm indices bounding every horizon defect.
+- Determinants along the flow: zeros are crossings, signs are parities.
 
 **To build.**
-- Asymptotic expansions of the limit structure along the overlap degeneration: the rescaled limit
-  `E_m(c)/E₁(c)`, for regularly varying ground energies a Jordan-totient weight structure.
+- Second-order asymptotics of the limit structure along the overlap degeneration: the rescaled limit
+  `E_m(c)/E₁(c)`, a Jordan-totient weight structure when the ground energy varies regularly; the
+  first-order law is the conductor scaling `E_m(c) ≍ E₁(c/m)`.
 - A conductor-graded edge: the overlap at which `E_m(c) log N ≈ 1`, and its relation to the edges on
   the orthogonal complements of the first Ramanujan vectors.
-- Renormalized determinants and the running counterterm `log N − γ` along the flows.
-- Continuity of the complete Weil family in the overlap, to apply path invariance along the overlap
-  flow at fixed horizon.
+- The running counterterm `log N − γ` along the overlap flow, and renormalized determinants
+  normalized by it.
+- Spectral flow of the overlap flow beyond the edge: the order of the zero mode at the edge and
+  the jump of the Hodge defect there.
 
 ## 8. Open research topics
 
@@ -263,7 +281,9 @@ integer converging to a charge only the zeros can carry: the number of right zer
 plane of resolutions, and the edge is where this section crosses the threshold curve. Under RH the
 threshold is at infinity on every line; without RH it is finite exactly on the lines whose atom sees
 an off-line zero, recedes to infinity as the atoms shrink, and lies within log-power factors of the
-hyperbola `wN = 1`.
+hyperbola `wN = 1`. Along the overlap flow at fixed horizon the family is continuous, and positivity
+is lost only through a zero mode: the edge is an equation, the first root of the lowest eigenvalue,
+not the place where an estimate runs out.
 
 The structures that hold by identity live on the limit: the Ramanujan-graded completed conductor
 energies are positive Fourier integrals with the pole as ground state. But the limit degenerates

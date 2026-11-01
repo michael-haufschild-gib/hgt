@@ -59,7 +59,8 @@ theorem frobKernel_inv (n : Multiplicative ℤ) : frobKernel D n⁻¹ = frobKern
   rw [← Equiv.sum_comp D.fePerm]
   refine sum_congr rfl fun i _ => ?_
   have h : D.β (D.fePerm i) = (D.β i)⁻¹ := eq_inv_of_mul_eq_one_left (D.β_fePerm i)
-  simp only [frobCharacter, MonoidHom.coe_mk, OneHom.coe_mk, toAdd_inv, h, zpow_neg, inv_zpow]
+  simp only [frobCharacter, MonoidHom.coe_mk, OneHom.coe_mk, toAdd_inv, h, zpow_neg, inv_zpow,
+    inv_inv]
 
 /-- **The coupling of a curve is a sum of products.** -/
 theorem coupling_frobKernel (a b : Multiplicative ℤ) :
@@ -98,16 +99,16 @@ theorem unitary_iff_bounded_tower_coupling {d₁ d₂ : ℕ} (h₁ : 0 < d₁) (
             (frobCharacter D i (Multiplicative.ofAdd ((d₁ : ℤ) * a)) - 1)]
       _ = Fintype.card ι * 4 := by simp
   · rintro ⟨M, hM⟩
-    set L : ℕ := d₁ * d₂
+    set L : ℕ := d₁ * d₂ with hLdef
     have hL : 0 < L := Nat.mul_pos h₁ h₂
     have hbound : ∀ k : ℕ, ‖∑ i, (D.β i ^ L) ^ k‖ ≤ (Fintype.card ι + M / 2) * 1 ^ k := by
       intro k
       have hc := hM ((d₂ : ℤ) * k) (-((d₁ : ℤ) * k))
       have e1 : Multiplicative.ofAdd ((d₁ : ℤ) * ((d₂ : ℤ) * k)) = Multiplicative.ofAdd ((L * k : ℕ) : ℤ) := by
-        congr 1; push_cast; ring
+        congr 1; rw [hLdef]; push_cast; ring
       have e2 : Multiplicative.ofAdd ((d₂ : ℤ) * -((d₁ : ℤ) * k)) =
           (Multiplicative.ofAdd ((L * k : ℕ) : ℤ))⁻¹ := by
-        rw [← ofAdd_neg]; congr 1; push_cast; ring
+        rw [← ofAdd_neg]; congr 1; rw [hLdef]; push_cast; ring
       rw [e1, e2, coupling_frobKernel_inv, norm_mul, Complex.norm_two] at hc
       have hK : frobKernel D (Multiplicative.ofAdd ((L * k : ℕ) : ℤ)) = ∑ i, (D.β i ^ L) ^ k := by
         simp only [frobKernel, frobCharacter, MonoidHom.coe_mk, OneHom.coe_mk, toAdd_ofAdd,
@@ -118,6 +119,7 @@ theorem unitary_iff_bounded_tower_coupling {d₁ d₂ : ℕ} (h₁ : 0 < d₁) (
           (frobKernel D 1 - frobKernel D (Multiplicative.ofAdd ((L * k : ℕ) : ℤ)))
         rwa [sub_sub_cancel] at this
       rw [frobKernel_one, Complex.norm_natCast] at h3
+      rw [frobKernel_one] at hc
       rw [← hK, one_pow, mul_one]
       linarith
     have hle : ∀ i, ‖D.β i‖ ≤ 1 := fun i => by
@@ -149,7 +151,7 @@ theorem not_bounded_tower_coupling_golden {d₁ d₂ : ℕ} (h₁ : 0 < d₁) (h
   rw [← unitary_iff_bounded_tower_coupling goldenDatum h₁ h₂]
   intro h
   have h0 := h 0
-  have hφ : goldenDatum.β 0 = ((goldenRatio : ℝ) : ℂ) := rfl
+  have hφ : goldenDatum.β 0 = ((Real.goldenRatio : ℝ) : ℂ) := rfl
   rw [hφ, Complex.norm_real, Real.norm_eq_abs, abs_of_pos Real.goldenRatio_pos] at h0
   exact (ne_of_gt Real.one_lt_goldenRatio) h0
 

@@ -49,7 +49,8 @@ private theorem primeWitness_mass_gap (Q : ℕ) :
     funext m
     by_cases hm : m = 1
     · subst m
-      simp [removeConstantConductor, primeOnly]
+      rw [removeConstantConductor, if_pos rfl, primeOnly,
+        if_neg (by decide : ¬ Nat.Prime 1)]
     · simp only [removeConstantConductor, if_neg hm]
   have h := coefficient_mass_le_adjunction_gap Q (primeOnly primePoleWitness)
   rwa [heq, (primePoleWitness_response_and_energy Q).2] at h
@@ -112,7 +113,7 @@ theorem eventually_coherentPrimeResidual_logarithmic_lower :
     linarith only [h, hl2]
   have hBsq : (l / 2) ^ 2 ≤ highPrimePoleMass P (P * P) ^ 2 := by
     have hprod := mul_nonneg (sub_nonneg.mpr hB)
-      (add_nonneg hB0 (div_nonneg hl0 (by norm_num)))
+      (add_nonneg hB0 (div_nonneg hl0 (by norm_num : (0 : ℝ) ≤ 2)))
     nlinarith only [hprod]
   have hmain : l ^ 3 / 8 ≤
       (∑ n ∈ Icc (N / P + 1) N, 1 / (n : ℝ)) * highPrimePoleMass P (P * P) ^ 2 := by
@@ -130,7 +131,9 @@ theorem eventually_coherentPrimeResidual_logarithmic_lower :
   have hboundary : 2 * highPrimePoleMass P (P * P) * highPrimeActivityMass P (P * P) /
       (((N / P : ℕ) : ℝ) + 1) ≤ 66 * l ^ 2 := by
     apply (div_le_iff₀ (by positivity : 0 < ((N / P : ℕ) : ℝ) + 1)).mpr
-    exact hactivity.trans (le_mul_of_one_le_right (by positivity) (by positivity))
+    have hnonneg := mul_nonneg (by positivity : (0 : ℝ) ≤ 66 * l ^ 2)
+      (Nat.cast_nonneg (α := ℝ) (N / P))
+    nlinarith only [hactivity, hnonneg]
   have htail := coherentPrimeTail_incidence_lower hP0 (P * P) N
   have htailLower : l ^ 3 / 8 - 66 * l ^ 2 ≤
       ∑ n ∈ Icc 1 N,

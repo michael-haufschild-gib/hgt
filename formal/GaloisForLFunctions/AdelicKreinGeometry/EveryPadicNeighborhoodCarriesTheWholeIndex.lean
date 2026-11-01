@@ -41,13 +41,13 @@ def padicPrincipalUnits (n : ℕ) : Subgroup posUnits where
       rw [map_mul, hv.1, mul_one]
       exact max_lt hu.2 hv.2
   inv_mem' {u} hu := by
-    change Rat.AbsoluteValue.padic p (((u : ℚˣ) : ℚ)⁻¹) = 1 ∧ _
+    simp only [Set.mem_setOf_eq, Subgroup.coe_inv, Units.val_inv_eq_inv_val]
     constructor
     · rw [map_inv₀, hu.1, inv_one]
     · change Rat.AbsoluteValue.padic p (((u : ℚˣ) : ℚ)⁻¹ - 1) < _
       rw [show ((u : ℚˣ) : ℚ)⁻¹ - 1 =
         -((((u : ℚˣ) : ℚ) - 1) / ((u : ℚˣ) : ℚ)) by
-          field_simp; ring]
+          field_simp [Units.ne_zero (u : ℚˣ)]; ring]
       rw [map_neg_eq_map, map_div₀, hu.1, div_one]
       exact hu.2
 

@@ -1,6 +1,6 @@
 # HeckeKreinToeplitz (HKT)
 
-Namespace `GaloisForLFunctions.HeckeKreinToeplitz`; umbrella `HeckeKreinToeplitz.lean`; 47 modules (39 top level, 8 in `Index/`). Every theorem is unconditional; RH appears only inside equivalences (`RiemannHypothesis ↔ …`) or as the conclusion of a stated finite-stratum hypothesis such as `(rightZeros zetaZeroConfig).Finite`. `#print axioms` lines exist only in `Index/`.
+Namespace `GaloisForLFunctions.HeckeKreinToeplitz`; umbrella `HeckeKreinToeplitz.lean`; generic index theory lives in `Index/`. Every theorem is unconditional; RH appears only inside equivalences (`RiemannHypothesis ↔ …`) or as the conclusion of a stated finite-stratum hypothesis such as `(rightZeros zetaZeroConfig).Finite`. `#print axioms` lines exist only in `Index/`.
 
 ## 1. Motivation
 
@@ -58,6 +58,10 @@ External: `zetaZeroConfig`, `rightZeros`, `CurveDatum`, `realTests`, `cx` (Arith
 7. Spectral matrix: every Gram matrix of `Σ a_χ χ` is `MᴴAM`. Dedekind–Artin makes some `M` surjective, so `κ = κ(A)` with no separation hypothesis.
 8. Bohr means: box averages of `conj ψ_i ψ_j` tend to `δ_ij`, so a Bohr series is eventually negative definite on its negative characters.
 
+Index one on any abelian group: completing the positive column complement gives a common nonpositive line for commuting isometries. Its reflected eigencharacter defines a positive mass hyperplane; conversely, positivity on such a hyperplane bounds the index by one. No growth or countability assumption is needed. The kernel either has a positive unitary-character mass hyperplane or splits as a positive-definite kernel plus one nonzero nonunitary hyperbolic pair. The off-circle unitary resolvent constructs the reflected companion line. The unitary-hyperplane case is exactly cyclic subexponential growth, equivalently cyclic quadratic growth. A positive unitary-character hyperplane forces the quadratic bound even on a nonabelian group, through the polar-index/second-difference identity.
+
+Bounded kernels: finite translate corrections give uniformly bounded Fejér measure pairs. Compactness produces a signed torus spectrum; L² density extends the repaired form to indicators. A positive mass floor forces finite negative support, and correction-map injectivity gives exactly `κ` negative atoms.
+
 **B. Topology and deformation**
 9. Closedness: pointwise kernel convergence gives entrywise Gram convergence, and negative-definite subspaces persist, so `{κ ≤ m}` is closed.
 10. Restriction and compression never raise `κ`. A compression multiplies the weight of a pair by `P̂(χ) conj P̂(χ^†)`.
@@ -101,7 +105,9 @@ External: `zetaZeroConfig`, `rightZeros`, `CurveDatum`, `realTests`, `cx` (Arith
 | Golden datum: `κ = 1` on its tower, `∞` on the lattice (two primes) | `negIndex_golden_traceKernel`, `negIndex_orbitKernel_golden_twoPrime`, `golden_tower_vs_lattice` | proved |
 | Orbit kernel: Gram = Weil Gram of translates; `κ` = #seen right zeros | `gram_orbitKernel`, `negIndex_orbitKernel` | proved |
 | `κ(K_ζ)` = #right zeros, even; RH ⇔ `κ = 0` ⇔ `κ ≤ 1` | `negIndex_zetaKernel`, `negIndex_zetaKernel_eq_two_mul`, `riemannHypothesis_tfae_zetaKernel` | proved |
-| Krein–Langer ⇔ finite index, for orbit kernels and `ζ` | `isKreinLanger_orbitKernel_iff_negIndex_lt_top`, `isKreinLanger_zetaKernel_iff_negIndex_lt_top` | proved; general covariant converse on `Γ` open |
+| Krein–Langer ⇔ finite index, for orbit kernels and `ζ` | `isKreinLanger_orbitKernel_iff_negIndex_lt_top`, `isKreinLanger_zetaKernel_iff_negIndex_lt_top` | proved; general unbounded converse on `Γ` open |
+| Bounded free-lattice kernels: finite index iff PD minus finitely many distinct unitary characters with positive weights; least count = index | `bounded_free_lattice_krein_langer`, `bounded_free_lattice_finite_index_iff`, `bounded_hecke_krein_langer` | proved |
+| On the finite stratum, boundedness iff an index-sized unitary decomposition | `finite_index_bounded_iff_unitary_decomposition`, `negative_index_le_unitary_decomposition_size` | proved |
 | Same index on `ℝ_{>0}`, `ℚ_{>0}`, two primes; finite-index TFAE | `negIndex_realOrbitKernel`, `negIndex_zetaKernel_twoPrime`, `zetaKernel_finiteIndex_tfae` | proved |
 | Finite index ⇒ LH and a zero-free strip | `lindelof_of_negIndex_zetaKernel_lt_top`, `quasiRH_of_negIndex_zetaKernel_lt_top` | proved |
 | Height truncations converge, `κ` = sup; RH ⇔ every truncation positive definite | `negIndex_orbitKernel_eq_iSup_height`, `riemannHypothesis_iff_height_truncations_posDef` | proved |
@@ -137,7 +143,7 @@ External: `zetaZeroConfig`, `rightZeros`, `CurveDatum`, `realTests`, `cx` (Arith
 - Realness of the explicit-formula functional on real tests (`im_weilFullFunctional_ofReal`).
 
 **To build**
-- Covariant converse on `Γ` for infinite spectral support: a `κ`-dimensional negative subspace invariant under all prime translations.
+- Covariant converse for unbounded kernels on `Γ`. The bounded case has finite negative spectral support and an exact unitary-character decomposition.
 - An arithmetic Krein–Langer bound: `κ(K_ζ)` from local constituents and one global count, reproducing index zero over `𝔽_q`.
 - A Stepanov certificate over `ℤ`: Dirichlet polynomials vanishing off the line without presupposing the zeros.
 - A bound on `E_crit`, or any prime-side bound on `κ`.
@@ -146,7 +152,7 @@ External: `zetaZeroConfig`, `rightZeros`, `CurveDatum`, `realTests`, `cx` (Arith
 
 ## 7. Open questions
 
-1. Does finite index on `Γ` force Krein–Langer structure for every Hermitian kernel (fixed-point theorem for commuting translations of a Pontryagin space)?
+1. What structure theorem holds for unbounded finite-index Hermitian kernels on `Γ`? The bounded case is positive definite minus exactly `κ` distinct unitary characters with positive weights.
 2. Which prime-side quantity bounds `κ(K_ζ)`? Any such bound proves LH.
 3. Can the one-sided count `ψ(x) − x ≤ C√x log²x` be proved from local constituents, as Stepanov does over `𝔽_q`?
 4. Is there a prime that certifies all zeros of height `≤ T`, uniformly in `T` (Diophantine relation between `log p` and the ordinates)?

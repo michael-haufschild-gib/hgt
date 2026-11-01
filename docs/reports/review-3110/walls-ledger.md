@@ -72,7 +72,7 @@ derived from `[L]` statements, not formalized; `[map]` frontier-map status.
 | Wall | Status | Strength | Content |
 |---|---|---|---|
 | Γ1 Trivial gauge point | Open | RH | `Θ ≥ ½`, Haar-a.e. `½`; RH ⇔ trivial point typical [L]. |
-| Γ2 Twin resolution | Solved for finite, thin, co-thin and cofinite flips | — | Pole-index window: ζ `0`, Liouville `1`; glued test index `∞` for every nonempty finite flip; edge of every single prime flip eventually bounded while the tilted edge of ζ `→ ∞` [L]. Atomic Hodge index: prime-set flip separated iff greatest gap `< 2 log 2`; thin sets (`Σ_{p∈P}1/p < ∞`) separated directly or by the 2-probe; co-thin and cofinite flips separated; every flip of relative logarithmic density `κ > ¼` separated (Wirsing–Gronwall) [L]. |
+| Γ2 Twin resolution | Solved for all prime-set flips | — | Pole-index window: ζ `0`, Liouville `1`; glued test index `∞` for every nonempty finite flip; edge of every single prime flip eventually bounded while the tilted edge of ζ `→ ∞` [L]. Atomic Hodge index alone separates iff greatest gap `< 2 log 2`; the fixed ordinary and two-adic margin tests together select exactly the trivial prime pattern, without density assumptions (RIT `primeSetFlip_two_margins_iff_trivial`) [L]. |
 | Γ3 Twin-blindness of soft structure | No-go (complete) | — | Krein index invariant under unitary twists; pointwise-closed weight classes contain every unitary twist [L]. |
 | Γ4 Hecke invariance / Frobenius at infinity | Open | RH | RH ⇔ collided form Hecke-invariant ⇔ `W = D` [L]; collided side exact from theta data [L]; RH ⇔ dyadic Hecke defects subexponential, a bound at one large dyadic scale suffices [L]. Missing: an arithmetic correspondence acting as conjugation on the divisor. |
 | Γ5 Source identification | Partially solved | RH | Integer counting + full-cone positivity ⇒ `λ = Λ` and RH [L]. |
@@ -82,7 +82,7 @@ derived from `[L]` statements, not formalized; `[map]` frontier-map status.
 | Γ9 Archimedean continuity vs height decay | Solved (no-go) | — | Continuous dilation reading against denominator-decaying finite-adelic reading ⇒ `κ = ∞` [L]. |
 | Γ10 Function-field indistinguishability | Sharpened | — | Conformality and the local index wall are identical over `𝔽_q(X)` [L]; ℤ differs by density of the extremal-weight exponents and by an unbounded edge (curve edge `≤ 2g`, ℤ edge `→ ∞`) [L/S]. |
 | Γ11 Pole-blindness of the glued state | Solved (no-go) | — | Simple pole absorbed; double pole costs a square; the glue absorbs exactly its own pair [L]. |
-| Γ12 Maximal-margin twins | Sharpened | sub | Remaining prime-set class: flips of relative logarithmic density `0 < κ ≤ ¼`, zero-density sets with divergent `Σ1/p`, irregular densities; plus general gauges with `S_N/H_N → 1`. The Wirsing exponent `b − 1 < ½` requires `κ > ¼` [L]. |
+| Γ12 Maximal-margin twins | Partially solved | sub | Prime-set class closed: every actual gap is bounded by every finite-cutoff gap (ACP `primeSetGreatestGap_le_every_cutoff`); the fixed ordinary and two-adic tests select the trivial pattern among all prime-set flips [L]. Remaining: general gauges with `S_N/H_N → 1`. |
 | Γ13 Source-uniform extinction | No-go | — | Optical flux `−16(Re s−½)Im s·M₊M₋` cannot force extinction (fails at `3/4 + i`) [L]. |
 | Γ14 Local counterterm selection | No-go | — | For every finite `S`, diagonal counterterms give `Λ` and a prime-flip twin glued index `1` while one global index is `∞` [S]. Selection cannot be produced by local renormalization. |
 
@@ -113,4 +113,4 @@ derived from `[L]` statements, not formalized; `[map]` frontier-map status.
 |---|---|---|---|---|---|---|
 | Σ | 4 (Σ1e, Σ1f, Σ9, Σ10) | 4 (Σ1b, Σ1g, Σ4, Σ7) | 11 (Σ1, Σ1c, Σ1d, Σ5, Σ8, Σ12, Σ13, Σ14, Σ16, Σ17, Σ20) | 3 (Σ1h, Σ3, Σ6) | 3 (Σ1a, Σ15, Σ19) | 3 (Σ2, Σ11, Σ18) |
 | Π | 2 (Π1, Π11) | 4 (Π3, Π4, Π8, Π9) | 5 (Π6, Π10, Π12, Π13, Π14) | 2 (Π2, Π5) | 1 (Π7) | — |
-| Γ | 5 (Γ2, Γ6, Γ7, Γ9, Γ11) | 1 (Γ5) | 3 (Γ8, Γ10, Γ12) | 2 (Γ1, Γ4) | 3 (Γ3, Γ13, Γ14) | — |
+| Γ | 5 (Γ2, Γ6, Γ7, Γ9, Γ11) | 2 (Γ5, Γ12) | 2 (Γ8, Γ10) | 2 (Γ1, Γ4) | 3 (Γ3, Γ13, Γ14) | — |

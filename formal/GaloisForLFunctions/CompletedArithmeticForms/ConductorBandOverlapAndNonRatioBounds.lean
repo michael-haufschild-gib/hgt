@@ -2615,7 +2615,8 @@ private theorem exists_midBand_mean_sum_le_cubic {φ : ℝ → ℝ}
     obtain ⟨hm1, _⟩ := mem_Icc.mp hm
     rcases le_or_gt m Q₁ with hmQ | hmQ
     · rw [ha0 m (mem_Icc.mpr ⟨hm1, hmQ⟩), sq, zero_mul, zero_mul, zero_mul, abs_zero, zero_mul]
-    · let g := Nat.gcd m h
+    · -- Reduce the lag quotient before using the square-root totient bound.
+      let g := Nat.gcd m h
       let t := m / g
       have hg : 0 < g := Nat.gcd_pos_of_pos_left h hm1
       have ht : 0 < t := Nat.div_pos (Nat.le_of_dvd hm1 (Nat.gcd_dvd_left m h)) hg

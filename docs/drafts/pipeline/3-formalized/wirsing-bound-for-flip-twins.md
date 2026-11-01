@@ -47,6 +47,6 @@
   `RenormalizedIntersectionTheory/TheResidueClassTwinsAreSeparated.lean`
 
 ## Open
-- `κ ≤ 1/4`: `L = C(log N)^{1−2κ} + O(1)` is not `o(√log N)` unless `C = 0`; identify `C` with the
-  Euler-product constant and compute the margin.
+- `κ < 1/4`: `L = C(log N)^{1−2κ} + O(1)` is not `o(√log N)` unless `C = 0`; the margin is governed by
+  the conductor series (`zero-density-flip-twins-margin.md`; `κ = 1/4` is separated there).
 - `κ = 1/2` (`β = 0`): only `L ≪ (log N)^ε` is proved.

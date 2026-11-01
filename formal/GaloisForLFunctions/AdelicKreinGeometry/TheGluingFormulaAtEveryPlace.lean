@@ -150,14 +150,18 @@ theorem glueAt_inv_mul (hS : IsGluingSuccessor v s ψ) (K : posUnits → ℂ) (g
         ψ (Multiplicative.ofAdd (shiftOf h - shiftOf g)) := by
   rw [glueAt, conformalInduction_inv_mul (hS.conformal), map_mul, map_inv]
 
-/-- **Lower bound**: every negative subspace of `K` on `ℓ_v = 0` survives next to one square of the
-successor. -/
-theorem add_one_le_negIndex_glueAt (hS : IsGluingSuccessor v s ψ) (hs : 0 < s)
-    (hv : ∃ u : ℚ, 1 < v u) {K : posUnits → ℂ} (hK : IsHermKernel K)
-    {m : ℕ} (u : Fin m → posUnits) :
-    (negIndexOn (gram K u) (LinearMap.ker (placeMass v s u)) : ℕ∞) + 1 ≤ negIndex (glueAt v s ψ K) := by
+/-- A place-polar family retains the successor square if the subgroup contains its dilations
+and translations by every power of one element whose place norm exceeds one. -/
+theorem add_one_le_negIndex_glueAt_subgroup_of_translation_powers
+    (hS : IsGluingSuccessor v s ψ) (hs : 0 < s)
+    {K : posUnits → ℂ} (hK : IsHermKernel K)
+    {m : ℕ} (u : Fin m → posUnits) (U : Subgroup AffineGroupQ)
+    (hdil : ∀ i, dilation ((u i : posUnits) : ℚˣ) ∈ U)
+    (htrans : ∃ u0 : ℚ, 1 < v u0 ∧ ∀ N : ℕ, translation (u0 ^ N) ∈ U) :
+    (negIndexOn (gram K u) (LinearMap.ker (placeMass v s u)) : ℕ∞) + 1 ≤
+      negIndex (glueAt v s ψ K ∘ U.subtype) := by
   classical
-  obtain ⟨u0, hu0⟩ := hv
+  obtain ⟨u0, hu0, htrans⟩ := htrans
   have hu00 : u0 ≠ 0 := by rintro rfl; simp at hu0; linarith
   obtain ⟨W, hWV, hWr, hW⟩ := exists_negIndexOn (gram K u) (LinearMap.ker (placeMass v s u))
   set r := Module.finrank ℂ W
@@ -368,11 +372,42 @@ theorem add_one_le_negIndex_glueAt (hS : IsGluingSuccessor v s ψ) (hs : 0 < s)
   have hcomp : hermNegIndex (H N) ≤ hermNegIndex (gram Φ (Sum.elim D (T N))) :=
     hermNegIndex_le_of_hermQuad_eq _ _ (Matrix.mulVecLin (S N)) fun a => by
       rw [Matrix.mulVecLin_apply, ← HTGeometry.hermQuad_rect_conjugate]
-  have hfin := hermNegIndex_gram_le_negIndex Φ (Sum.elim D (T N))
+  let X : Fin m ⊕ Fin 2 → U := fun j => ⟨Sum.elim D (T N) j, by
+    cases j with
+    | inl i => exact hdil i
+    | inr e =>
+      fin_cases e
+      · exact U.one_mem
+      · exact htrans N⟩
+  have hfin := hermNegIndex_gram_le_negIndex (Φ ∘ U.subtype) X
+  change (hermNegIndex (gram Φ (Sum.elim D (T N))) : ℕ∞) ≤
+    negIndex (Φ ∘ U.subtype) at hfin
   have hfinal : r + 1 ≤ hermNegIndex (gram Φ (Sum.elim D (T N))) := (hlimit.trans hN).trans hcomp
   calc (negIndexOn (gram K u) (LinearMap.ker (placeMass v s u)) : ℕ∞) + 1
       = ((r + 1 : ℕ) : ℕ∞) := by push_cast; rw [hWr]
-    _ ≤ negIndex Φ := (Nat.cast_le.mpr hfinal).trans hfin
+    _ ≤ negIndex (Φ ∘ U.subtype) := (Nat.cast_le.mpr hfinal).trans hfin
+
+/-- Every negative place-polar family survives with the successor square inside any subgroup
+containing its dilations and all translations. -/
+theorem add_one_le_negIndex_glueAt_subgroup (hS : IsGluingSuccessor v s ψ) (hs : 0 < s)
+    (hv : ∃ u : ℚ, 1 < v u) {K : posUnits → ℂ} (hK : IsHermKernel K)
+    {m : ℕ} (u : Fin m → posUnits) (U : Subgroup AffineGroupQ)
+    (hdil : ∀ i, dilation ((u i : posUnits) : ℚˣ) ∈ U)
+    (htrans : ∀ t : ℚ, translation t ∈ U) :
+    (negIndexOn (gram K u) (LinearMap.ker (placeMass v s u)) : ℕ∞) + 1 ≤
+      negIndex (glueAt v s ψ K ∘ U.subtype) := by
+  obtain ⟨u0, hu0⟩ := hv
+  exact add_one_le_negIndex_glueAt_subgroup_of_translation_powers hS hs hK u U hdil
+    ⟨u0, hu0, fun N => htrans (u0 ^ N)⟩
+
+/-- Every negative place-polar family survives together with the successor square. -/
+theorem add_one_le_negIndex_glueAt (hS : IsGluingSuccessor v s ψ) (hs : 0 < s)
+    (hv : ∃ u : ℚ, 1 < v u) {K : posUnits → ℂ} (hK : IsHermKernel K)
+    {m : ℕ} (u : Fin m → posUnits) :
+    (negIndexOn (gram K u) (LinearMap.ker (placeMass v s u)) : ℕ∞) + 1 ≤ negIndex (glueAt v s ψ K) := by
+  exact (add_one_le_negIndex_glueAt_subgroup hS hs hv hK u ⊤
+    (fun _ => by trivial) (fun _ => by trivial)).trans
+      (negIndex_comp_le _ (⊤ : Subgroup AffineGroupQ).subtype)
 
 /-- **The gluing formula at `v`**: `κ(K(|a|) + |a|_v^{−s/2}ψ(b)) = κ_v(K) + 1`. -/
 theorem negIndex_glueAt_eq (hS : IsGluingSuccessor v s ψ) (hs : 0 < s) (hv : ∃ u : ℚ, 1 < v u)

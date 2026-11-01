@@ -32,7 +32,7 @@ CSAR = CriticalScaleArithmeticRigidity, BOT = Bottcher.
 | One-sided count `ψ(x) − x ≤ C√x log²x` ⇔ RH; section shortfall rate ⇔ zero width | ACP, SPTL [L] | every exponent gain on a count is quasi-RH |
 | Collision charge: `O(T)` cumulative; `n_off(T) ≤ ΔO(T) ≤ 2n(T)n_off(T)`, `ΔO ≪ log²T`; bounded `ΔO` ⇒ critical proportion `→ 1`; with Backlund's equivalence, `ΔO = o(log T)` ⇒ Lindelöf. Master inequality `H(γ) ≤ C(1 + log|γ|/L) − Re Π_{F_L} + 4E_γ(L)`; at `L = ¼ log log|γ|`, `H(γ) ≪ log|γ|/log log|γ| + E_γ` | CDG `CollisionChargeIncrements`, `HeckeDefectHorizontalMultiplicity` [L]; RHTower `BacklundLindelofConverse` [L] | per-window charge bounds are **LH**, cumulative `O(T) = o(N(T))` is density one (**sub**), bounded `O` is **≥qRH**; the Hecke defect controls fibre multiplicity |
 | Falsification certificates: RH ⇒ unique upper periodic point of the Xi Donoghue map; RH ⇒ every Jensen section of `∏(1−c_iD)D^kΞ` splits (and RH ⇔ all Xi Jensen polynomials split); RH ⇒ strictly left-moving Ritz branches of the Xi heat-moment form | BOT, Jensen `XiJetObstruction`, MomentFlow `XiRitzVelocity` [L] | finite tests for ¬RH; none has a converse mechanism |
-| Index twin-blind; glue pole-blind; glued test index `∞` on finite flips; edge of every single prime flip bounded; atomic Hodge index separates exactly submaximal margins | AKG, RIT, EHT `eventually_twinEdge_primeFlip_le` [L] | selection must come from prime data; dense/co-dense infinite twins of zero harmonic density remain |
+| Index twin-blind; glue pole-blind; glued test index `∞` on finite flips; edge of every single prime flip bounded; ordinary and two-adic margin tests together select exactly the trivial prime pattern | AKG, EHT; RIT `primeSetFlip_two_margins_iff_trivial` [L] | all prime-set flips selected without density assumptions; general gauges remain |
 | Heat: `κ(φ_c^{(t)}) = N(t)/2 + 1`, antitone, `1` for `t ≥ 1/8`; `0 ≤ Λ < 1/8` | AKG, RHTower [L] | heat routes reduce to `Λ = 0` |
 | Crossing-free Hermitian path `A → I` exists iff `A` is PD; index constant on nondegenerate connected families | EHT `IntegersAlongPaths` [L] | homotopy invariance relocates the sign to noncrossing; deformation to a positive model is not a free input |
 
@@ -111,7 +111,7 @@ right zeros the test sees, attained when finite; loop-Eisenstein band poles of `
 |---|---|
 | A7 | Explicit capture stage for complete-cell indices (AID `TheCompleteCellsCaptureEveryFiniteIndex`, [S]) |
 | B8 | Arithmetic index ceiling uniform in resolution — **≥qRH** for `K_ζ`; **RH** for `K_ζ⊠K_ζ` (Σ5) |
-| B9 | Converse Krein–Langer for kernels not presented by a zero configuration — **sub** |
+| B9 | **Bounded case closed:** on every countable free abelian group, including the Hecke lattice, bounded finite-index kernels are PD minus exactly the index many distinct positive-weight unitary characters; this count is minimal [L: HKT `bounded_free_lattice_krein_langer`, `bounded_hecke_krein_langer`]. **Arbitrary abelian index one:** `κ ≤ 1` iff a character-mass hyperplane is positive. Such a kernel either has a positive unitary-character hyperplane or is PD plus one nonzero nonunitary hyperbolic pair; the unitary alternative is equivalent to cyclic subexponential growth and to cyclic quadratic growth [L: HKT `negIndex_le_one_iff_positive_character_hyperplane`, `index_one_unitary_or_hyperbolic`, `cyclic_subexponential_iff_unitary_positive_hyperplane`, `cyclic_subexponential_iff_quadratic`]. General unbounded higher-index decomposition remains open — **sub** |
 | B10 | Emptiness mechanism for the loop-Eisenstein band poles (pole-order / noncancellation theorem for the constant term) — **RH** |
 
 ### S3. Heat flow, collision charge, integer readings
@@ -189,9 +189,12 @@ continuous profile on two disjoint two-prime lattices ⇒ affine, `κ, κ₊ ≤
 `κ = ∞` or `κ₊ = ∞` and nonzero coupling on `⟨2,3⟩ × ⟨5,7⟩`; untruncated axial assemblies
 diverge on the finite non-RH stratum. Separable `S`-truncated towers are zero-blind; diagonal
 counterterms make `Λ` and a prime-flip twin both glued index `1` [S]. Selection [L]: prime-set
-flips separated by the atomic Hodge index iff greatest gap `< 2 log 2`; thin, co-thin and cofinite
-flips separated; every flip of relative logarithmic density `κ > ¼` separated (Wirsing–Gronwall);
-edge of every single prime flip bounded.
+flips separated by the atomic Hodge index iff greatest gap `< 2 log 2`.
+Every prime-set gap is bounded by every finite-cutoff gap, with no density
+assumption (ACP `primeSetGreatestGap_le_every_cutoff`). The two fixed ordinary
+and two-adic margin tests hold together iff the prime pattern is identically
+one (RIT `primeSetFlip_two_margins_iff_trivial`). Edge of every single prime
+flip bounded.
 
 | | Obstacle |
 |---|---|
@@ -202,7 +205,7 @@ edge of every single prime flip bounded.
 | B22 | Quantitative coupling transfer: local Hyers–Ulam with Baker-type constants, `sup_{|log u|≤L}|K(u) − K(1)| ≤ C L^k · sup|coupling|` — **sub** |
 | B22a | Bounded inter-tower coupling of `ratCorr` on `⟨2,3⟩ × ⟨5,7⟩` — **RH** [D] |
 | B23 | Zero-independent selection at the trivial gauge point — **RH** (Γ1) |
-| B24 | Selection of flip sets of relative logarithmic density `0 < κ ≤ ¼`, zero-density sets with divergent `Σ 1/p`, and irregular densities — **sub** (Γ12) |
+| B24 | **Closed for all prime-set flips:** universal finite-cutoff gap bounds give exact selection by the ordinary and two-adic margin pair, including zero and irregular densities [L]. General gauges remain in Γ12. |
 | B25 | Arithmetic correspondence acting as conjugation on the zero divisor (Frobenius at infinity) — **RH** (Γ4) |
 
 ## 2. Live routes
