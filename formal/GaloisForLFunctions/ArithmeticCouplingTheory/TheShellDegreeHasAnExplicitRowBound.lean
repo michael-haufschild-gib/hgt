@@ -20,6 +20,7 @@ namespace GaloisForLFunctions.ArithmeticCouplingTheory
 
 open ArithmeticElectrostatics SpacingScaleHarmonicAnalysis
   CriticalArithmeticCorrelationTheory RenormalizedArithmeticPotentialTheory
+  ArithmeticLorentzianGeometry ArithmeticEffectivityTheory
 
 private theorem nonRatio_entry_le_windows {φ : ℝ → ℝ} (hφ : ContDiff ℝ 2 φ)
     (hsupp : ∀ u, u ∉ Set.Icc 0 1 → φ u = 0) (hM : 0 < ∫ u, φ u ^ 2)
@@ -120,6 +121,33 @@ theorem nat_mul_shellDegree_le_explicit {φ : ℝ → ℝ} (hφ : ContDiff ℝ 2
     (nonRatioRow_le_of_ratio hN (div_nonneg hc.le hN0.le)
       ((div_le_one hN0).mpr hcN) le_rfl (mem_Icc.mp n.property).1)
 
+/-- Nonnegative profiles have nonnegative shell degree. -/
+theorem shellDegree_nonneg {φ : ℝ → ℝ} (hφ0 : ∀ u, 0 ≤ φ u)
+    (hsupp : ∀ u, u ∉ Set.Icc 0 1 → φ u = 0) (hM : 0 < ∫ u, φ u ^ 2)
+    {c : ℝ} (hc : 0 < c) {N : ℕ} (n : PrimeHorizonIndex N) :
+    0 ≤ shellDegree φ c N n :=
+  sum_nonneg fun j _ => nonRatioWeight_nonneg hφ0 hsupp hM hc n j
+
+/-- The shell payment on any packet is bounded by its harmonic mass and a terminal logarithmic mass. -/
+theorem shellDegree_packet_payment_le {φ : ℝ → ℝ} (hφ : ContDiff ℝ 2 φ)
+    (hsupp : ∀ u, u ∉ Set.Icc 0 1 → φ u = 0) (hM : 0 < ∫ u, φ u ^ 2)
+    {c : ℝ} (hc : 0 < c) {N : ℕ} (hcN : c ≤ N) (F : ℕ → ℝ) :
+    (∑ n : PrimeHorizonIndex N, shellDegree φ c N n * F n ^ 2) ≤
+      2 * (Real.log 4 + 4) * Real.exp (5 / 2) * c *
+          (∑ n : PrimeHorizonIndex N, F n ^ 2 / n) +
+        (2 * Real.exp (3 / 2) * c / N) *
+          ∑ n : PrimeHorizonIndex N, F n ^ 2 * (Real.log n + 1) := by
+  rw [mul_sum, mul_sum, ← sum_add_distrib]
+  apply sum_le_sum
+  intro n hn
+  have hn0 : (0 : ℝ) < n := by exact_mod_cast (mem_Icc.mp n.property).1
+  have hN0 : (0 : ℝ) < N := hc.trans_le hcN
+  have h := nat_mul_shellDegree_le_explicit hφ hsupp hM hc hcN n
+  have hd := (le_div_iff₀ hn0).mpr (by simpa only [mul_comm] using h)
+  have hp := mul_le_mul_of_nonneg_right hd (sq_nonneg (F n))
+  convert hp using 1 <;> field_simp [hn0.ne', hN0.ne'] <;> ring
+
 end GaloisForLFunctions.ArithmeticCouplingTheory
 
 #print axioms GaloisForLFunctions.ArithmeticCouplingTheory.nat_mul_shellDegree_le_explicit
+#print axioms GaloisForLFunctions.ArithmeticCouplingTheory.shellDegree_packet_payment_le

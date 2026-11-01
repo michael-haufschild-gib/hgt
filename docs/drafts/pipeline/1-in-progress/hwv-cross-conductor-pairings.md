@@ -28,6 +28,7 @@ Positivity of the top coprime stratum against the strata below with `N`-independ
 - The constant at the eighth root: the leading `c/log N` term of the bilinear residual against
   the margin constant `κ₀`, at `c⁸ ≍ log N`.
 - Whole space from `1/9` to `1/8`: the complement of the polylogarithmic conductor subspaces.
+  Open in the corpus; structure and route on `off-pole-nonratio-cross-and-one-eighth-weil-positivity.md`.
 
 ## No-go closure
 - **Exact killing theorem/mechanism:** the generic relative bound has the RH exponent `1/8`;

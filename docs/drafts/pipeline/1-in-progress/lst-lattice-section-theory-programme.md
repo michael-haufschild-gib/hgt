@@ -36,12 +36,14 @@ README in the folder.
   `TheCalibrationOverFiniteFields`, `TheSelfDualPointHasNoRealZeros` (Λ_1 < 0 on (0,1)).
 - `ThePrimitiveH1OfPrimeFreeCyclesIsAJumpCount`: on prime-free tests `W = Ω(0)‖f‖² + J(f) + 2·pole`;
   exterior jumps force `W ≥ ‖f‖²/4` for aperture `≤ 1/2000`.
+- `TheExteriorJumpsOfAPrimeFreeCycle`: `A_f(x) ≤ ½‖f‖²` for gaps `x ≥ a`; count-derived positivity
+  `W ≥ ‖f‖²/20` for aperture `≤ 1/64`.
 
 ## Open core
 Primitive `h¹ = ½W(f,f)` as a nonnegative count. Prime-free: the jump-count identity is formalized
-and forces positivity up to aperture `1/2000`; exterior charge `½∫f²(W(a−x)+W(a+x))` would give
+and forces positivity up to aperture `1/64`; exterior charge `½∫f²(W(a−x)+W(a+x))` would give
 `≈ 0.03`; the window `½ log 2` needs interior jumps (Lévy Poincaré on an interval) and the pole
 sign structure (`+2A²` even, `−2A²` odd). Beyond the window: the prime comb in the count.
 
 ## Log
-- 2026-11-01 — created with README first draft; pillars formalized (14 modules).
+- 2026-11-01 — created with README first draft; pillars formalized (15 modules).

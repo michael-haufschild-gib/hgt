@@ -500,7 +500,9 @@ theorem eventually_exists_family_gram_approximation_of_rate {ι : Type*} [Fintyp
     apply Filter.eventually_all.mpr
     intro j
     have hh : Tendsto (fun m => ‖gramG m i j - gramF i j‖) atTop (𝓝 0) := by
-      simpa only [sub_self, norm_zero] using ((hconv i j).sub tendsto_const_nhds).norm
+      have hentry : Tendsto (fun m => gramG m i j) atTop (𝓝 (gramF i j)) := hconv i j
+      simpa only [sub_self, norm_zero] using
+        (hentry.sub (tendsto_const_nhds (x := gramF i j))).norm
     exact hh.eventually (gt_mem_nhds (half_pos hε))
   obtain ⟨m, hm, hm1⟩ := (hnear.and (eventually_ge_atTop 1)).exists
   have hmR : (1 : ℝ) ≤ m := by exact_mod_cast hm1
@@ -525,7 +527,9 @@ theorem eventually_exists_family_gram_approximation_of_rate {ι : Type*} [Fintyp
     apply Filter.eventually_all.mpr
     intro j
     have hh : Tendsto (fun n => ‖gramX n i j - gramG m i j‖) atTop (𝓝 0) := by
-      simpa only [sub_self, norm_zero] using ((hx i j).sub tendsto_const_nhds).norm
+      have hentry : Tendsto (fun n => gramX n i j) atTop (𝓝 (gramG m i j)) := hx i j
+      simpa only [sub_self, norm_zero] using
+        (hentry.sub (tendsto_const_nhds (x := gramG m i j))).norm
     exact hh.eventually (gt_mem_nhds (half_pos hε))
   filter_upwards [hclose] with n hn
   refine ⟨x n, fun i j => ?_⟩
@@ -744,8 +748,37 @@ theorem exists_ratCorr_gram_approximation_at_critical_multiple
   refine ⟨x, fun i j => ?_⟩
   simpa only [← hgram i j] using hx i j
 
+/-- Every finite rational correlation Gram is an entrywise limit of full Weil
+packet Grams on one fixed Steklov critical schedule. -/
+theorem exists_ratCorr_gram_limit_at_critical_multiple
+    {ι : Type*} [Fintype ι] (q : ι → posUnits) :
+    ∃ K : ℝ, 1 ≤ K ∧ ∃ N : ℕ → ℕ, Tendsto N atTop atTop ∧
+      ∃ x : ℕ → ι → ℕ → ℝ, ∀ i j,
+        Tendsto (fun m => weilGram vonMangoldtWeight
+          (fun a => cx (atomicTest (N m) (x m a)
+            (dilate ((N m : ℝ) / (K * dcScale (N m))) steklovDCProfile))) i j)
+          atTop (𝓝 (ratCorr ((q i)⁻¹ * q j))) := by
+  classical
+  obtain ⟨K, hK, B, hB, happ⟩ := exists_ratCorr_gram_approximation_at_critical_multiple q
+  have hex : ∀ m : ℕ, ∃ n : ℕ, m ≤ n ∧ ∃ x : ι → ℕ → ℝ, ∀ i j,
+      ‖weilGram vonMangoldtWeight
+          (fun a => cx (atomicTest (n * B) (x a)
+            (dilate (((n * B : ℕ) : ℝ) / (K * dcScale (n * B))) steklovDCProfile))) i j -
+        ratCorr ((q i)⁻¹ * q j)‖ < 1 / ((m : ℝ) + 1) := by
+    intro m
+    exact ((eventually_ge_atTop m).and (happ (1 / ((m : ℝ) + 1)) (by positivity))).exists
+  choose n hn x hx using hex
+  refine ⟨K, hK, fun m => n m * B,
+    tendsto_atTop_mono (fun m => (hn m).trans (Nat.le_mul_of_pos_right (n m) hB)) tendsto_id,
+    x, fun i j => ?_⟩
+  rw [tendsto_iff_norm_sub_tendsto_zero]
+  exact squeeze_zero (fun m => norm_nonneg _) (fun m => (hx m i j).le)
+    tendsto_one_div_add_atTop_nhds_zero_nat
+
 end GaloisForLFunctions.TransMetzlerWeilPositivity
 
 #print axioms GaloisForLFunctions.TransMetzlerWeilPositivity.exists_dcLogSynthesis_family_gram_limit_of_rate
 #print axioms GaloisForLFunctions.TransMetzlerWeilPositivity.eventually_exists_family_gram_approximation_of_rate
 #print axioms GaloisForLFunctions.TransMetzlerWeilPositivity.exists_ratCorr_gram_approximation_at_critical_multiple
+
+#print axioms GaloisForLFunctions.TransMetzlerWeilPositivity.exists_ratCorr_gram_limit_at_critical_multiple

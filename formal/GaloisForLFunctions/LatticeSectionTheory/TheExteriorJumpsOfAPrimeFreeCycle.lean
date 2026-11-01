@@ -35,8 +35,9 @@ open ArithmeticCastelnuovoSeveri BiScaleUncertainty RHTower.ArchimedeanAnomaly Z
 theorem autocorr_le_half_of_le {f : ℝ → ℝ} (hf : f ∈ realTests) {a x : ℝ}
     (hs : tsupport f ⊆ Icc (-a) a) (hax : a ≤ x) : autocorr f x ≤ (∫ u, f u ^ 2) / 2 := by
   have hcont : Continuous f := hf.1.continuous
-  have hsq : Integrable fun u => f u ^ 2 :=
-    (hcont.pow 2).integrable_of_hasCompactSupport (hf.2.pow (by norm_num))
+  have hsupp : HasCompactSupport fun u => f u ^ 2 :=
+    hf.2.comp_left (g := fun y : ℝ => y ^ 2) (by norm_num)
+  have hsq : Integrable fun u => f u ^ 2 := (hcont.pow 2).integrable_of_hasCompactSupport hsupp
   set g₁ : ℝ → ℝ := (Iic (0 : ℝ)).indicator fun u => f u ^ 2
   set g₂ : ℝ → ℝ := (Ici (0 : ℝ)).indicator fun u => f u ^ 2
   have hg₁ : Integrable g₁ := hsq.indicator measurableSet_Iic
@@ -57,7 +58,7 @@ theorem autocorr_le_half_of_le {f : ℝ → ℝ} (hf : f ∈ realTests) {a x : �
     simp only [g₁, g₂, Set.indicator_of_mem hl, Set.indicator_of_mem hr]
     nlinarith [sq_nonneg (f u - f (u + x))]
   have hprod : Integrable fun u => f u * f (u + x) :=
-    (hcont.mul (hcont.comp (continuous_add_right x))).integrable_of_hasCompactSupport
+    (hcont.mul (hcont.comp (continuous_add_const x))).integrable_of_hasCompactSupport
       (hf.2.mul_right)
   have hrhs : Integrable fun u => (g₁ u + g₂ (u + x)) / 2 :=
     (hg₁.add (hg₂.comp_add_right x)).div_const 2
@@ -80,12 +81,9 @@ theorem archLevySinhWeight_ge_exp {x : ℝ} (hx : 0 < x) :
   have hsinh : Real.sinh x ≤ Real.exp x / 2 := by
     rw [Real.sinh_eq]; linarith [Real.exp_pos (-x)]
   rw [le_div_iff₀ hs]
-  have : 2 * Real.exp (-(1 / 2) * x) * (Real.exp x / 2) = Real.exp (x / 2) := by
-    rw [mul_div_assoc', mul_comm 2, mul_div_assoc, div_self two_ne_zero.symm.symm, mul_one,
-      ← Real.exp_add]
-    · congr 1; ring
-  have h := mul_le_mul_of_nonneg_left hsinh (show 0 ≤ 2 * Real.exp (-(1 / 2) * x) by positivity)
-  linarith
+  have hprod : Real.exp (-(1 / 2) * x) * Real.exp x = Real.exp (x / 2) := by
+    rw [← Real.exp_add]; congr 1; ring
+  nlinarith [mul_le_mul_of_nonneg_left hsinh (Real.exp_pos (-(1 / 2) * x)).le]
 
 /-- **Exterior jumps.** A test supported in `[−a, a]`, `0 < 2a ≤ 1`, has
 `J(f) ≥ ‖f‖²(½(log 2 − a/2) + log(1/2a) − (1 − 2a)/2 + 4 e^{−1/2})`. -/

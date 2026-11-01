@@ -17,7 +17,7 @@ power is seen, and the primitive `h¹ = ½ W(f, f)` of the Künneth count is the
 with `A_f` the autocorrelation, `Ω(0) = −(log π + 3 log 2 + γ + π/2)` the archimedean constant, and
 the **jump count**
 
-    J(f) = ∫_0^∞ (A_f(0) − A_f(x)) e^{x/2}/sinh x dx = ½ ∫_0^∞ ∫ (f(u) − f(u + x))² du · w(x) dx ≥ 0,
+    J(f) = ∫_0^∞ (A_f(0) − A_f(x)) w(x) dx = ½ ∫_0^∞ ∫ (f(u) − f(u + x))² du · w(x) dx ≥ 0,
 
 the Lévy–Khintchine form of the Gamma factor: every jump of `f` across a gap `x` is counted with the
 weight `w(x) = e^{x/2}/sinh x`.
@@ -31,9 +31,10 @@ weight `w(x) = e^{x/2}/sinh x`.
   term: `W(f, f) ≥ ‖f‖²/4`. The primitive `h¹` on these prime-free cycles is nonnegative because a
   count of jumps dominates it (`primitiveH1_ge_of_jumpCount`).
 
-The window is small; on the whole prime-free window `(−½ log 2, ½ log 2)` the exterior jumps
-(`≈ 3.9 ‖f‖²` at `a = ½ log 2`) no longer pay `|Ω(0)| ≈ 5.37`, and the interior jumps and the pole
-term must be counted as well. That is the remaining part of Q1.
+Counting the jumps across gaps in `[a, 2a]` as well enlarges the window to `1/64`
+(`TheExteriorJumpsOfAPrimeFreeCycle`). On the whole prime-free window `(−½ log 2, ½ log 2)` the
+exterior jumps (`≈ 3.9 ‖f‖²` at `a = ½ log 2`) no longer pay `|Ω(0)| ≈ 5.37`, and the interior
+jumps and the pole term must be counted as well.
 -/
 
 noncomputable section

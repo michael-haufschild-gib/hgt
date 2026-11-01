@@ -12,6 +12,7 @@ import GaloisForLFunctions.LatticeSectionTheory.HeckeCorrespondencesAreSimilitud
 import GaloisForLFunctions.LatticeSectionTheory.TheIndexReadingsOfThePrimitiveH1
 import GaloisForLFunctions.LatticeSectionTheory.TheSelfDualPointHasNoRealZeros
 import GaloisForLFunctions.LatticeSectionTheory.ThePrimitiveH1OfPrimeFreeCyclesIsAJumpCount
+import GaloisForLFunctions.LatticeSectionTheory.TheExteriorJumpsOfAPrimeFreeCycle
 
 /-!
 # Lattice Section Theory

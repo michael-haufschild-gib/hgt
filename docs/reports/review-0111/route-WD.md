@@ -1,0 +1,9 @@
+From foundation to the final step. Each block builds on the ones before it.
+
+1. The arithmetic input. Find a bound on the Hecke defect from the primes that goes beyond zero counts and the linear explicit formula, both proved insufficient. It must act on the non-holomorphic, conjugate-diagonal side, because holomorphic carriers are proved unable to carry the quantum.
+2. The certificate format. Fix a class of Szegő multipliers F built from theta moments, so that "Re(FΛ) > 0" becomes a checkable certificate of winding zero. With an arbitrary continuous F, the condition only restates winding zero.
+3. The averaged rung, sub-RH. Show that the mean index over dyadic ranges of windows, at logarithmic resolution, is o(log U). This is equivalent to 100% critical-scale clustering. Selberg's method gives only the exponentially small version.
+4. Uniformity in height. Upgrade the average to a bound that holds in every window, with constants independent of height. This removes exceptional heights and finitely many exceptional zeros.
+5. The corridor rung, ≥qRH. Show that the index is zero at logarithmic resolution in all large windows. This is equivalent to every high zero lying within C/log T of the line, and it implies Lindelöf. A sufficient route is the fixed-scale bound E_γ(c log T) = O(1).
+6. Shallow zeros. Exclude off-line zeros whose depth lies between about 1/T and C/log T. The corridor cannot see them; only the step from logarithmic to polynomial resolution does.
+7. Closing step. With blocks 1–6, show that the index is zero at polynomial resolution in every unit window. This is equivalent to RH.

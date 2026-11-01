@@ -13,7 +13,7 @@
 | Zwegers indefinite theta | Convergence and modular transformation of completed signature `(r−1,1)` theta series | [Zwegers thesis, Chapter 2](https://arxiv.org/abs/0807.4834). No complete corpus proof found. |
 | CKS limiting Hodge structures | Limiting mixed Hodge structure and multivariable nilpotent/SL₂ orbit results | [Cattani–Kaplan–Schmid](https://annals.math.princeton.edu/1986/123-3/p02). No complete corpus proof found. |
 | Affine-group expanders | Explicit affine action with uniform spectral gap | **MGG family verified:** `AffineExpanders.mgg_expander_family` and `norm_mgg_centered_le`, in `HTGeometry/AffineExpanders/Family.lean`. Nonconstant spectral radius ≤ `5√2/8 < 1`. Specific affine family; no general claim about arbitrary affine groups. |
-| Björner squarefree complex | Literal prime-support complex, Euler characteristic/Mertens identity, homotopy and Betti-number results | [Björner](https://arxiv.org/abs/1101.5704). No complete corpus proof found. |
+| Björner squarefree complex | Literal prime-support complex, Euler characteristic/Mertens identity, homotopy and Betti-number results | `RHTower.sum_primeSets_neg_one_pow` proves the alternating-face/Mertens identity; `primeChainCutoff_cycle_bounds_in_double` gives explicit doubled-cutoff fillings. The wedge decomposition and exact Betti counts remain. [Björner](https://arxiv.org/abs/1101.5704). |
 | Logarithmic Chowla | Logarithmic two-point Liouville/Möbius cancellation for distinct nonproportional affine forms | Corpus averaged-Chowla interface assumes cancellation; almost-everywhere twisted results do not imply the untwisted theorem. Full endpoint remains. |
 
 ## Reuse audit

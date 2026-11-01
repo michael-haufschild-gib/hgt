@@ -30,15 +30,14 @@ The `1/9` proof loses `c⁹` (vs. the necessary `c⁸`) at three places; each mu
 3. **Inverse-energy residual sum (`Σ_{m≤Q₁} ‖r_m‖²/E_m ≪ c⁹/log N`).** `‖r_m‖² ≍ c²/log N` comes
    from near-center/near-gamma rows on `N/(R_c+1) < n ≤ N`; on `[1, M]` those rows vanish.
 
-**Conjecture (open core).** The pole-orthogonal non-ratio block is a factor `c` smaller than its
-Schur bound:
-`|⟨NR_{PT} x, y⟩|² ≤ C c (1+log c)^A log N · ‖x|_{[1,M]}‖² ‖y|_{(M,N]}‖²` for `y ⊥ v_{1,N}`.
-Mechanism: the low Mellin frequencies `|t| ≤ T₀ = exp((log N)^{1/3})` of `Σ_k Λ(k)k^{−1/2}(kn)^{it}`
-lie in the unconditional zero-free region and reduce to the pole term `∝ n^{−1/2}`, which `y` annihilates;
-frequencies `|t| > T₀` are paid by `archForm` with a `(log N)^{1/3}` gain and no `c⁷` loss.
-
-**How it fails.** If the PNT error at the needed uniformity in `c` and `T₀` is not `o(c^{−1})`
-relative to the main term, or if `w ⊥ V_{R₁}` leaves an off-pole residual with Schur-tight column.
+**Terminal-pole-orthogonality is not enough (refuted).** The bound
+`|⟨NR_PT x, y⟩|² ≤ C c (1+log c)^A log N ‖x‖²‖y‖²` for `y ⊥ v_{1,N}` is false. Take `x = P v₁`
+(prefix pole) and `y(n) = n^{−1/2}(log n − μ_S)` on `S = (M, N]`, with `μ_S` the `1/n`-weighted mean,
+so `y ⊥ v_{1,N}`. The prefix-pole column is exact, `Σ_{k | n'} Λ(k) = log n'`, so
+`Σ_m NR(m,n) m^{−1/2} ≈ n^{−1/2} |W(n)| log N` with window `|W(n)| ≈ 2cn/N`. The pairing reads the
+*unweighted* moment `(c/N) Σ_{n∈S} Y(n) ≍ c log c`, not the pole moment `Σ Y(n)/n = 0`:
+`⟨NR_PT x, y⟩ ≍ c log c log N`, `‖x‖² ≍ log N`, `‖y‖² ≍ (log c)³`, ratio to the bound `≍ c/(log c)^{A+1}`.
+No PNT enters; only the divisor identity. The orthogonality that can work is the global one below.
 
 ## Global orthogonality and the coherent cross term
 
@@ -60,3 +59,42 @@ available source identity for identifying `a`.
 This decomposition is unproved. The earlier output-pole projection alone
 does not supply it; the coherent output need not be proportional to `q`.
 Band–terminal and inverse-energy residual improvements remain required.
+
+## Structure of `NR_PT` (paper, heuristic where marked)
+
+- **The coherent part is rank one.** `NR_PTᵀ â ∝ p` with `â(n) ∝ √n` on `S`, because
+  `Σ_{k≤X} Λ(k) k ≈ X²/2`. Star poles and low conductors are coherent only through their overlap with
+  `p`: `NR_PT(P x_d) ≈ (c log N/d) â`. So `a = σ â`, `σ ≍ c √log N`.
+- **The remainder on `x ⊥ p` is a shifted-correlation problem.** With `X(m) = √m x(m)` and
+  `F = Λ ∗ X`, `‖NR_PT x‖² ≈ Σ_{|h|≤2c} ω_h Σ_{n∈S} F(n)F(n−h)/n`, `Σ ω_h ≍ c²`. The `h = 0` term is
+  `≤ 2c log c log N ‖x‖²` (Cauchy–Schwarz over `k | n`), which is the target level. The `h ≠ 0`
+  terms count prime pairs `km − k'm' = h`; no unconditional bound with a saving is available.
+- **What suffices.** With reserves `θ log N · P` and `κ log N/c⁷ · S`, positivity needs
+  `‖E‖² ≤ c (log N)^{1+δ}`, `δ = 1 − 8α`: a saving `(log N)^{9α−1}` over the trivial `c² log N`.
+- **Terminal reserve is small on two families.** `archForm` of a terminal atomic test is
+  `≈ ∫ |φ̂(wξ)|² |D_y(ξ)|² Θ(ξ) dξ`, `D_y(ξ) = Σ y_n n^{−iξ}`. It is `≈ (κ/c⁷) log N` per unit mass
+  for Mellin-smooth `y` (`|ξ| ≲ 1`) and for destructive-overlap `y` (local period `< c`, where
+  `φ̂(wξ)` is small). It is `≈ c log|t|` per unit mass at Mellin frequency `|t| ≪ N/c`.
+
+## Route (open steps)
+
+1. Split terminal `y` at Mellin frequency `T₀ = exp(C c log c)`. The high part is paid by
+   `c log T₀ ≥ C' c² log c` against the trivial `‖NR_PT‖² ≍ c² log N log c` (open: the arch
+   inequality per Mellin band, including destructive-overlap patterns).
+2. Low part: `NR_PTᵀ y_low = (coherent)·p + O(PNT error)` row by row. Rows `m ≤ N/X₀`,
+   `log X₀ ≍ (log N)^{1/4}`: Route-T twisted Chebyshev (zero-free width
+   `≳ (log t)^{−9/10}(log log t)^{−2}`, `RHTower.Sieve.exists_norm_partialSum_vonMangoldtTwist_routeT_uniform`)
+   gives relative error `exp(−log X/(log T₀)^{0.9+})`. Remaining rows cost `c² log X₀/log c` in total.
+   Open: near-orthogonality across Mellin bands on the discrete prefix (Gallagher type).
+3. Band–terminal cross: band vectors carry only `log Q₁` reserve, so the high-frequency trade of
+   step 1 does not pay it; needs the coherent structure of `NR_PT` on conductor packets (open).
+4. `y–z` Schur: localize `r_m` on the terminal and pay `|⟨r₁, z_S⟩|²` with the terminal reserve:
+   `c²/log N ≤ c^{−7} · κ log N/c⁷` is `c⁸ ≲ log N` (needs the reserve of step 1 inside the Schur).
+5. Elementary: the tail–tail column is
+   `Σ_{k ≤ eL} Λ(k)(2ec/k + 1) = O(c(1 + log c))` (multiples of `k` in a window), not `O(c²)`.
+
+## No-go closure
+- **Killed:** terminal-pole-orthogonal smallness of `NR_PT` (counterexample above).
+- **Positive survivor:** rank-one coherent structure `NR_PT ≈ σ â ⊗ p̂ + E`; exact prefix-pole
+  column law from `Σ_{k|n} Λ(k) = log n`; target `‖E‖² ≤ c (log N)^{1+δ}`.
+- **Status:** paper only; no Lean.

@@ -310,7 +310,8 @@ theorem genusFunction_ge_of_net {η : ℝ} (hη0 : 0 < η) (hη1 : η ≤ 1) :
     have := netScale_mul_netPoly_le hL1 hA₀ h7
     unfold naturalThreshold at this ⊢
     linarith
-  have hle := finrank_le_genusFunction (by linarith) (by positivity) hnear
+  have hle := finrank_le_genusFunction (by linarith)
+    (mul_nonneg two_pos.le (naturalThreshold_pos η L).le) hnear
   have hle' : (Module.finrank ℂ V : ℝ) ≤ genusFunction L (2 * naturalThreshold η L) := by
     exact_mod_cast hle
   push_cast at hdim
@@ -355,10 +356,10 @@ theorem mul_exp_two_mul_levelOf_le {η T : ℝ} (hη0 : 0 < η) (hη1 : η ≤ 1
   have h2 := exp_quarter_le_two hη1
   have hpi := Real.pi_gt_three
   have : Real.exp (η / 4) * (T / (2 * π)) ≤ T := by
-    rw [div_eq_mul_inv, ← mul_assoc]
-    have hinv : (2 * π)⁻¹ ≤ 1 / 6 := by
-      rw [inv_le_comm₀ (by positivity) (by norm_num)]; norm_num; linarith
-    calc Real.exp (η / 4) * T * (2 * π)⁻¹ ≤ 2 * T * (1 / 6) := by gcongr
+    have hT2 : T / (2 * π) ≤ T / 6 :=
+      div_le_div_of_nonneg_left hT.le (by norm_num) (by linarith)
+    calc Real.exp (η / 4) * (T / (2 * π)) ≤ 2 * (T / 6) :=
+          mul_le_mul h2 hT2 (by positivity) (by norm_num)
       _ ≤ T := by linarith
   exact mul_le_mul_of_nonneg_left this hη0.le
 
@@ -433,8 +434,8 @@ theorem eventually_le_zetaZeroCount : ∀ᶠ T : ℝ in atTop, T ≤ (zetaZeroCo
     have : C * Real.log T ^ 2 ≤ C * (1 / (8 * (C + 1)) * T) :=
       mul_le_mul_of_nonneg_left hlog hC0
     have hCC : C * (1 / (8 * (C + 1)) * T) ≤ T / 8 := by
-      rw [show C * (1 / (8 * (C + 1)) * T) = T / 8 * (C / (C + 1)) by field_simp; ring]
-      have : C / (C + 1) ≤ 1 := by rw [div_le_one (by linarith)]; linarith
+      rw [show C * (1 / (8 * (C + 1)) * T) = T / 8 * (C / (C + 1)) by field_simp]
+      have : C / (C + 1) ≤ 1 := (div_le_one (by linarith)).mpr (by linarith)
       nlinarith
     linarith
   -- `zeroCountMain T ≥ (T/2π)(2π + 1) ≥ T + T/8`
@@ -448,9 +449,9 @@ theorem eventually_le_zetaZeroCount : ∀ᶠ T : ℝ in atTop, T ≤ (zetaZeroCo
     have hTpi : 0 ≤ T / (2 * π) := by positivity
     have : T / (2 * π) * (2 * π + 1) ≤ T / (2 * π) * (Real.log (T / (2 * π)) - 1) := by
       apply mul_le_mul_of_nonneg_left _ hTpi; linarith
-    have e : T / (2 * π) * (2 * π + 1) = T + T / (2 * π) := by field_simp; ring
-    have : T / 8 ≤ T / (2 * π) := by
-      apply div_le_div_of_nonneg_left hTpos.le (by positivity); linarith
+    have e : T / (2 * π) * (2 * π + 1) = T + T / (2 * π) := by field_simp
+    have h8 : T / 8 ≤ T / (2 * π) :=
+      div_le_div_of_nonneg_left hTpos.le (by positivity) (by linarith [Real.pi_le_four])
     linarith
   linarith
 
@@ -527,8 +528,9 @@ theorem resolutionScale_le_netScale {η T : ℝ} (hη0 : 0 < η) (hη1 : η ≤ 
     unfold levelOf; rw [hlogdiv]; linarith
   have hLpos : 0 < levelOf (2 * η) T := by linarith
   have hexp : Real.exp (η / 2) ≤ 2 := by
-    have := exp_quarter_le_two (η := 2 * η) (by linarith)
-    rwa [show 2 * η / 4 = η / 2 by ring] at this
+    have hlog2 := Real.log_two_gt_d9
+    calc Real.exp (η / 2) ≤ Real.exp (Real.log 2) := Real.exp_le_exp.mpr (by linarith)
+      _ = 2 := Real.exp_log two_pos
   have hlogpos : 0 < 20 * Real.log T := by linarith
   set L := levelOf (2 * η) T with hLdef
   rw [hE, show (2 * η) ^ 2 * (Real.exp (η / 2) * (T / (2 * π))) / (100 * L) =
@@ -584,7 +586,8 @@ theorem cover_deficiency_le_of_genus_law {η : ℝ} (hη0 : 0 < η) (hη1 : η �
   have h70 : 70 * (1 + levelOf (2 * η) T) ≤ η ^ 2 * Real.exp (2 * levelOf (2 * η) T) := by
     have := hL₂ _ hL2; simpa using this
   have hthr := two_mul_naturalThreshold_two_mul_le hL1' h70
-  have hmono := genusFunction_mono (by linarith) (by positivity) hthr
+  have hmono := genusFunction_mono (by linarith : (0 : ℝ) ≤ levelOf (2 * η) T)
+    (mul_nonneg two_pos.le (naturalThreshold_pos _ _).le) hthr
   have hmono' : (genusFunction (levelOf (2 * η) T) (2 * naturalThreshold (2 * η)
       (levelOf (2 * η) T)) : ℝ) ≤
       genusFunction (levelOf (2 * η) T) (naturalThreshold η (levelOf (2 * η) T)) := by

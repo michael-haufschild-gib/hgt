@@ -156,7 +156,8 @@ theorem integralValuationProj_isSelfAdjoint : IsSelfAdjoint integralValuationPro
   intro x y
   rw [lp.inner_eq_tsum, lp.inner_eq_tsum]
   refine tsum_congr fun n => ?_
-  simp only [integralValuationProj_apply]
+  change ⟪integralValuationProj x n, y n⟫_ℂ = ⟪x n, integralValuationProj y n⟫_ℂ
+  rw [integralValuationProj_apply, integralValuationProj_apply]
   split_ifs
   · rfl
   · simp only [inner_zero_left, inner_zero_right]
@@ -364,24 +365,27 @@ theorem opTrace_primeValuationLogOperator_eq_soninLogScaleLength (pk : Nat.Prime
   push_cast
   ring
 
+private theorem real_sqrt_pow {x : ℝ} (hx : 0 ≤ x) (n : ℕ) :
+    Real.sqrt (x ^ n) = Real.sqrt x ^ n := by
+  induction n with
+  | zero => simp
+  | succ n ih => rw [pow_succ', pow_succ', Real.sqrt_mul hx, ih]
+
 theorem soninEulerCoeff_mul_opTrace_primeValuationLogOperator (pk : Nat.Primes × ℕ) :
     soninSemilocalLogPrimePowerCoefficient pk *
         opTrace (primeValuationLogOperator pk.1.1 (pk.2 + 1)) =
       (((ArithmeticFunction.vonMangoldt (pk.1.1 ^ (pk.2 + 1)) : ℝ) /
         Real.sqrt ((pk.1.1 ^ (pk.2 + 1) : ℕ) : ℝ) : ℝ) : ℂ) := by
-  rw [opTrace_primeValuationLogOperator_eq_soninLogScaleLength,
-    ← soninSemilocalPrimeFluxCoefficient, soninSemilocalPrimeFluxCoefficient_eq]
   have hp : pk.1.1.Prime := pk.1.2
   have hppos : (0 : ℝ) ≤ (pk.1.1 : ℝ) := Nat.cast_nonneg _
   have hvm : ArithmeticFunction.vonMangoldt (pk.1.1 ^ (pk.2 + 1)) = Real.log (pk.1.1 : ℝ) :=
     (ArithmeticFunction.vonMangoldt_apply_pow (Nat.succ_ne_zero pk.2)).trans
       (ArithmeticFunction.vonMangoldt_apply_prime hp)
-  have hsqrt_pow : ∀ n : ℕ, Real.sqrt ((pk.1.1 : ℝ) ^ n) = Real.sqrt (pk.1.1 : ℝ) ^ n := by
-    intro n
-    induction n with
-    | zero => simp
-    | succ n ih => rw [pow_succ, pow_succ, Real.sqrt_mul hppos, ih]
-  rw [hvm, Nat.cast_pow, hsqrt_pow (pk.2 + 1)]
+  have hflx : soninSemilocalPrimeFluxCoefficient pk =
+      (((Real.sqrt (pk.1.1 : ℝ))⁻¹ ^ (pk.2 + 1) * Real.log (pk.1.1 : ℝ) : ℝ) : ℂ) :=
+    soninSemilocalPrimeFluxCoefficient_eq pk
+  rw [opTrace_primeValuationLogOperator_eq_soninLogScaleLength,
+    ← soninSemilocalPrimeFluxCoefficient, hflx, hvm, Nat.cast_pow, real_sqrt_pow hppos (pk.2 + 1)]
   congr 1
   rw [inv_pow, div_eq_mul_inv, mul_comm]
 

@@ -1,8 +1,8 @@
 # Rational correlation Grams at one critical multiple
 
 - **ID:** finite-rational-correlation-grams-at-critical-overlap
-- **Stage:** 1-in-progress
-- **Type:** CANDIDATE
+- **Stage:** 3-formalized
+- **Type:** THEOREM
 - **Source:** `docs/reports/review-0111/obstacles-summary.md`, A7.
 - **Target:** For every finite family of positive rationals, its `ratCorr` Gram
   is an entrywise limit of complete Steklov atomic packet Grams at overlap
@@ -27,8 +27,18 @@ Corpus inputs: `dotProduct_weilGram_eq_ratCorr`,
 `exists_dcLogSynthesis`, and the bounded-rate synthesis estimates in
 `ABoundedOverlapRateSeesASemilocalWindow`.
 
-## Remaining proof obligations
+## Lean
 
-- Joint finite-family synthesis with one horizon and one translation.
-- Exact packet-to-complete-matrix normalization.
-- Concrete Steklov specialization, direct Lean and axiom audits.
+`TransMetzlerWeilPositivity/ReceiverRate/ABoundedOverlapRateSeesASemilocalWindow.lean`:
+
+- `exists_dcLogSynthesis_family_gram_limit_of_rate`: simultaneous smooth-family synthesis.
+- `eventually_exists_family_gram_approximation_of_rate`: finite C² families, by mollification.
+- `exists_ratCorr_gram_approximation_at_critical_multiple`: rational translates at a fixed multiple.
+- `exists_ratCorr_gram_limit_at_critical_multiple`: diagonal limit with horizons tending to infinity.
+
+The form is the full Weil Gram, including prime, Gamma, and pole terms.
+Atoms use `dilate (N/(K*dcScale N)) steklovDCProfile`; this fixes their
+normalization directly. The result does not assert a separate normalized-matrix identity.
+
+Direct leaf audit passed. All four declarations depend only on
+`propext`, `Classical.choice`, and `Quot.sound`. Existing umbrella import includes the leaf.

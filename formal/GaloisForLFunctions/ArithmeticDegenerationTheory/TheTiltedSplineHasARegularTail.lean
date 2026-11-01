@@ -30,6 +30,7 @@ namespace GaloisForLFunctions.ArithmeticDegenerationTheory
 
 open RenormalizedArithmeticPotentialTheory.CompletedShell SpacingScaleHarmonicAnalysis
   ArithmeticCastelnuovoSeveri BiScaleUncertainty BiScaleUncertainty.ChebyshevGauge RHTower
+  RHTower.WeilDeletion
 
 /-! ## The exact spectrum -/
 
@@ -60,7 +61,7 @@ theorem norm_paperFT_unif_shift_sq (x : ℝ) :
     rw [hs]
     have hsc := Real.sin_sq_add_cos_sq x
     linear_combination (Real.exp 1 - Real.exp (-1)) ^ 2 * hsc + 4 * Real.sin x ^ 2 * he
-  rw [hnum, hnum', hw, hden]
+  rw [hnum, show -(⟨1, x⟩ : ℂ) = ⟨-1, -x⟩ from by apply Complex.ext <;> simp, hw, hden]
   field_simp
 
 /-- The spline probe transform on the real line: `‖Û(r)‖² = ((sinh²1 + sin²r)/(1 + r²))⁴`. -/
@@ -68,16 +69,15 @@ theorem norm_paperFT_splineProbe_sq (r : ℝ) :
     ‖Zeta23.paperFT (fun u => (splineProbe u : ℂ)) r‖ ^ 2 =
       ((Real.sinh 1 ^ 2 + Real.sin r ^ 2) / (1 + r ^ 2)) ^ 4 := by
   unfold splineProbe
-  rw [paperFT_tiltedSource, cubicSpline, paperFT_upow, norm_pow, ← pow_mul, mul_comm 3 2,
-    pow_mul, norm_paperFT_unif_shift_sq]
-  norm_num
+  rw [paperFT_tiltedSource, cubicSpline, paperFT_upow, norm_pow, ← pow_mul,
+    show (3 + 1) * 2 = 2 * 4 by norm_num, pow_mul, norm_paperFT_unif_shift_sq]
 
 theorem norm_paperFT_tiltedUnitSpline (r : ℝ) :
     ‖Zeta23.paperFT (cx tiltedUnitSpline) (r : ℂ)‖ =
       (1 / 8 : ℝ) * ‖Zeta23.paperFT (cx splineProbe) ((r / 8 : ℝ) : ℂ)‖ := by
   have heq : cx tiltedUnitSpline =
       ArithmeticCastelnuovoSeveri.translate (1 / 2) (cx (atomDilate splineProbe (1 / 8))) := rfl
-  rw [heq, paperFT_translate, paperFT_atomDilate (by norm_num : (0 : ℝ) < 1 / 8),
+  rw [heq, ArithmeticCastelnuovoSeveri.paperFT_translate, paperFT_atomDilate (by norm_num : (0 : ℝ) < 1 / 8),
     norm_mul, norm_mul, Complex.norm_exp]
   have hz : ((1 / 8 : ℝ) : ℂ) * (r : ℂ) = ((r / 8 : ℝ) : ℂ) := by push_cast; ring
   rw [hz]
@@ -163,7 +163,7 @@ theorem periodic_tail_squeeze {q h : ℝ → ℝ} {L Y B : ℝ} (hL : 0 < L) (hq
     intro n
     induction n with
     | zero =>
-        simp only [b, Nat.cast_zero, zero_mul, add_zero, Nat.cast_add, Nat.cast_one, zero_add,
+        simp only [b, Nat.cast_zero, zero_mul, add_zero, Nat.cast_one, zero_add,
           one_mul, intervalIntegral.integral_same]
         have := hqh_le Y le_rfl
         calc ∫ x in Y..Y + L, q x * h x ≤ P * h Y := this
@@ -186,7 +186,7 @@ theorem periodic_tail_squeeze {q h : ℝ → ℝ} {L Y B : ℝ} (hL : 0 < L) (hq
           (hIh (b (n + 1)) (b (n + 2))), hb (n + 1),
           ← intervalIntegral.integral_add_adjacent_intervals (hII Y (b n)) (hII (b n) (b (n + 1))),
           hb n]
-        rw [hb n] at ih ⊢
+        rw [hb n] at ih
         have h1 := hqh_ge (b n) (hbY n)
         have h2 := hh_le (b n + L) (by linarith [hbY n])
         have h3 : P * h (b n + L) = μ * (L * h (b n + L)) := by simp only [μ]; field_simp
@@ -214,8 +214,9 @@ theorem periodic_tail_squeeze {q h : ℝ → ℝ} {L Y B : ℝ} (hL : 0 < L) (hq
 
 theorem splineWeight_nonneg (x : ℝ) : 0 ≤ splineWeight x := by unfold splineWeight; positivity
 
-theorem continuous_splineWeight : Continuous splineWeight :=
-  ((continuous_const.add (continuous_pow 2)).pow 4).inv₀ fun x => by positivity
+theorem continuous_splineWeight : Continuous splineWeight := by
+  unfold splineWeight
+  exact Continuous.inv₀ (by fun_prop) fun x => by positivity
 
 theorem splineWeight_le (x : ℝ) (hx : 0 < x) : splineWeight x ≤ x ^ (-8 : ℝ) := by
   rw [splineWeight, Real.rpow_neg hx.le, show (8 : ℝ) = (8 : ℕ) by norm_num, Real.rpow_natCast]
@@ -235,9 +236,9 @@ theorem le_splineWeight (x : ℝ) (hx : 0 < x) :
     nlinarith [sq_nonneg a, pow_nonneg ha0 3, pow_nonneg ha0 4, pow_nonneg ha0 5]
   have hx2 : x ^ 2 * a = 1 := by rw [ha]; field_simp
   have e1 : (x ^ 8)⁻¹ - 4 * (x ^ 10)⁻¹ = (1 - 4 * a) * a ^ 4 := by
-    rw [ha]; field_simp; ring
+    rw [ha]; field_simp; try ring
   have e2 : ((1 + x ^ 2) ^ 4)⁻¹ = a ^ 4 / (1 + a) ^ 4 := by
-    rw [ha]; field_simp; ring
+    rw [ha]; field_simp; try ring
   rw [e1, e2, le_div_iff₀ (by positivity)]
   nlinarith [pow_nonneg ha0 4, key, mul_le_mul_of_nonneg_left key (pow_nonneg ha0 4)]
 
@@ -317,7 +318,7 @@ theorem tendsto_rpow_seven_mul_integral_numerator_weight :
       splineNumerator_le splineNumerator_periodic continuous_splineWeight splineWeight_nonneg
       (antitoneOn_splineWeight.mono (Ici_subset_Ici.mpr hY.le)) (integrableOn_splineWeight hY)
   -- upper envelope `μ(π/Y + 1/7)`
-  have hup : Tendsto (fun Y : ℝ => μ * (π * Y⁻¹ + 1 / 7)) atTop (𝓝 (μ / 7)) := by
+  have hup : Tendsto (fun Y : ℝ => μ * (1 / 7 + π * Y⁻¹)) atTop (𝓝 (μ / 7)) := by
     have := ((tendsto_inv_atTop_zero.const_mul π).const_add (1 / 7 : ℝ)).const_mul μ
     simpa [div_eq_mul_inv] using this
   -- lower envelope `μ (Y/(Y+π))⁷ (1/7 − (4/9)(Y+π)⁻²)`
@@ -329,10 +330,12 @@ theorem tendsto_rpow_seven_mul_integral_numerator_weight :
           |>.const_sub 1
       refine (by simpa using h1 : Tendsto (fun Y : ℝ => 1 - π * (Y + π)⁻¹) atTop (𝓝 1)).congr' ?_
       filter_upwards [eventually_gt_atTop 0] with Y hY
+      have : Y + π ≠ 0 := by positivity
       field_simp
-      ring
+      try ring
     have hr7 : Tendsto (fun Y : ℝ => (Y / (Y + π)) ^ (7 : ℝ)) atTop (𝓝 1) := by
-      simpa using hr.rpow_const (Or.inl one_ne_zero)
+      have := hr.rpow_const (p := (7 : ℝ)) (Or.inl one_ne_zero)
+      rwa [Real.one_rpow] at this
     have hs : Tendsto (fun Y : ℝ => ((Y + π) ^ 2)⁻¹) atTop (𝓝 0) :=
       tendsto_inv_atTop_zero.comp ((tendsto_pow_atTop two_ne_zero).comp
         (tendsto_atTop_add_const_right _ π tendsto_id))
@@ -350,12 +353,13 @@ theorem tendsto_rpow_seven_mul_integral_numerator_weight :
         show (9 : ℝ) = 7 + 2 by norm_num, Real.rpow_add hYp, Real.rpow_two]
       have : 0 < (Y + π) ^ (7 : ℝ) := Real.rpow_pos_of_pos hYp _
       field_simp
-      ring
+      try ring
     rw [e]
     calc μ * (Y ^ (7 : ℝ) * ((Y + π) ^ (-7 : ℝ) / 7 - 4 * ((Y + π) ^ (-9 : ℝ) / 9)))
         ≤ μ * (Y ^ (7 : ℝ) * ∫ x in Ioi (Y + π), splineWeight x) := by gcongr
       _ = Y ^ (7 : ℝ) * (μ * ∫ x in Ioi (Y + π), splineWeight x) := by ring
-      _ ≤ Y ^ (7 : ℝ) * ∫ x in Ioi Y, splineNumerator x * splineWeight x := by gcongr
+      _ ≤ Y ^ (7 : ℝ) * ∫ x in Ioi Y, splineNumerator x * splineWeight x :=
+          mul_le_mul_of_nonneg_left hmain hY7.le
   · filter_upwards [eventually_gt_atTop 0] with Y hY
     have hmain := (hsq Y hY).2
     have hu := integral_splineWeight_le hY
@@ -366,11 +370,12 @@ theorem tendsto_rpow_seven_mul_integral_numerator_weight :
     have e2 : Y ^ (7 : ℝ) * (Y ^ (-7 : ℝ) / 7) = 1 / 7 := by
       rw [mul_div_assoc', ← Real.rpow_add hY]; norm_num
     calc Y ^ (7 : ℝ) * ∫ x in Ioi Y, splineNumerator x * splineWeight x
-        ≤ Y ^ (7 : ℝ) * (μ * (π * splineWeight Y + ∫ x in Ioi Y, splineWeight x)) := by gcongr
+        ≤ Y ^ (7 : ℝ) * (μ * (π * splineWeight Y + ∫ x in Ioi Y, splineWeight x)) :=
+          mul_le_mul_of_nonneg_left hmain hY7.le
       _ ≤ Y ^ (7 : ℝ) * (μ * (π * Y ^ (-8 : ℝ) + Y ^ (-7 : ℝ) / 7)) := by
           gcongr
       _ = μ * (π * (Y ^ (7 : ℝ) * Y ^ (-8 : ℝ)) + Y ^ (7 : ℝ) * (Y ^ (-7 : ℝ) / 7)) := by ring
-      _ = μ * (π * Y⁻¹ + 1 / 7) := by rw [e1, e2]
+      _ = μ * (1 / 7 + π * Y⁻¹) := by rw [e1, e2]; ring
 
 /-- The tail constant `A_φ = (4/π)⁷/(16π) · μ_q/7` of the tilted spline. -/
 def tiltedTailConstant : ℝ := (4 / π) ^ (7 : ℝ) / (16 * π) * (splineNumeratorMean / 7)
@@ -412,6 +417,7 @@ theorem tendsto_rpow_seven_mul_spectralTail_tiltedUnitSpline :
   rw [Real.mul_rpow (by positivity) hc.le, Real.div_rpow (by norm_num) Real.pi_pos.le]
   have : 0 < π ^ (7 : ℝ) := Real.rpow_pos_of_pos Real.pi_pos _
   field_simp
+  rw [← Real.mul_rpow (by norm_num) (by positivity), show (4 : ℝ) * (π / 4) = π by ring]
 
 /-! ## The rescaled limit of the tilted spline -/
 
@@ -461,7 +467,7 @@ theorem jordanTotient_eight_pos {m : ℕ} (hm : 0 < m) : 0 < jordanTotient 8 m :
   have hz : 0 < zetaSum 8 := by
     have := one_le_coprimeZetaSum (k := 8) (by norm_num) 1
     have hle : coprimeZetaSum 8 1 = zetaSum 8 := by
-      simp [coprimeZetaSum, zetaSum, Nat.coprime_one_left]
+      simp [coprimeZetaSum, zetaSum]
     linarith
   have hr : 0 < (m : ℝ) ^ (8 : ℝ) * coprimeZetaSum 8 m := by
     have := one_le_coprimeZetaSum (k := 8) (by norm_num) m
