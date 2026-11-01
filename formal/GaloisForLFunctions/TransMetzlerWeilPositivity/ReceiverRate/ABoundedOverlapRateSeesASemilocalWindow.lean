@@ -1,5 +1,6 @@
 import GaloisForLFunctions.TransMetzlerWeilPositivity.SuperGevreyCriticalGrowth
 import GaloisForLFunctions.EffectiveArithmeticHodgeTheory.TheExplicitSchedulesReachTheIndex
+import GaloisForLFunctions.ArithmeticPositiveDuality.AffinePositivityIsInducedFromTheDilations
 
 /-!
 # A bounded overlap rate sees a semilocal window
@@ -433,6 +434,110 @@ theorem exists_dcLogSynthesis_family_gram_limit_of_rate {ι : Type*}
   · exact he
   · exact hV
 
+/-- Every finite `C²` family in the bounded aperture is approximated jointly
+in complete Weil Gram entries at the same fixed overlap rate. -/
+theorem eventually_exists_family_gram_approximation_of_rate {ι : Type*} [Fintype ι]
+    {φ : ℝ → ℝ} (hφ : ContDiff ℝ ∞ φ) (hφ1 : VanishesOff φ) (hφint : ∫ s, φ s = 1)
+    {A Bφ : ℝ} (hBφ : 0 ≤ Bφ)
+    (hA : ∀ q, ∫ t, |iteratedDeriv q φ t| ≤ A * Bφ ^ q * dcLogWeight q)
+    {κ : ℕ → ℝ} (hk : Tendsto κ atTop atTop) {K : ℝ} (hK1 : 1 ≤ K)
+    (hK : ∀ᶠ N : ℕ in atTop, K ≤ dcRate κ N)
+    {F : ι → ℝ → ℝ} {R : ℝ} (hR : 0 ≤ R)
+    (hF : ∀ i, ContDiff ℝ 2 (F i)) (hFR : ∀ i, SupportedIn R (F i))
+    (hRK : 24 * Bφ * blockSize (R + 1) * Real.exp 1 < K) :
+    ∀ ε : ℝ, 0 < ε → ∀ᶠ n : ℕ in atTop, ∃ x : ι → ℕ → ℝ, ∀ i j,
+      ‖ArithmeticCastelnuovoSeveri.weilGram
+          (fun p => (ArithmeticFunction.vonMangoldt p : ℝ))
+          (fun a => ArithmeticCastelnuovoSeveri.cx
+            (atomicTest (n * blockSize (R + 1)) (x a)
+              (dilate (κ (n * blockSize (R + 1))) φ))) i j -
+        ArithmeticCastelnuovoSeveri.weilGram
+          (fun p => (ArithmeticFunction.vonMangoldt p : ℝ))
+          (fun a => ArithmeticCastelnuovoSeveri.cx (F a)) i j‖ < ε := by
+  classical
+  intro ε hε
+  have hFc : ∀ i, HasCompactSupport (F i) :=
+    fun i => hasCompactSupport_of_vanishes (hFR i)
+  choose Ri Mi Li hRi hRiF hMi hLi using fun i => exists_test_bounds (hF i) (hFc i)
+  let M := ∑ i, |Mi i|
+  let L := ∑ i, |Li i|
+  have hM : 0 ≤ M := Finset.sum_nonneg fun i _ => abs_nonneg _
+  have hFM : ∀ i u, |F i u| ≤ M := fun i u => (hMi i u).trans
+    ((le_abs_self _).trans (Finset.single_le_sum (fun j _ => abs_nonneg (Mi j))
+      (Finset.mem_univ i)))
+  have hFL : ∀ i u v, |F i u - F i v| ≤ L * |u - v| := fun i u v => (hLi i u v).trans
+    (mul_le_mul_of_nonneg_right ((le_abs_self _).trans
+      (Finset.single_le_sum (fun j _ => abs_nonneg (Li j)) (Finset.mem_univ i)))
+        (abs_nonneg _))
+  have hA0 : 0 ≤ A := by
+    have h := (integral_nonneg fun t => abs_nonneg (iteratedDeriv 0 φ t)).trans (hA 0)
+    simpa only [pow_zero, mul_one, dcLogWeight_zero] using h
+  let G : ℕ → ι → ℝ → ℝ := fun m i => mollify (F i) φ m
+  let Λw : ℕ → ℝ := fun p => ArithmeticFunction.vonMangoldt p
+  let gramF := ArithmeticCastelnuovoSeveri.weilGram Λw
+    (fun i => ArithmeticCastelnuovoSeveri.cx (F i))
+  let gramG := fun m => ArithmeticCastelnuovoSeveri.weilGram Λw
+    (fun i => ArithmeticCastelnuovoSeveri.cx (G m i))
+  -- A common mollifier width approximates all entries of the finite family.
+  obtain ⟨he, hV, _, _⟩ := tendsto_mollifyErr L (∫ s, |φ s|) M (∫ s, |deriv φ s|) (R + 1)
+  have hconv := EffectiveArithmeticHodgeTheory.tendsto_weilGram_of_perturbation
+    (F := F) (R' := R + 1) (by linarith only [hR]) hF hFc
+    (fun i => EffectiveArithmeticHodgeTheory.supportedIn_mono (hFR i) (by linarith))
+    (A := G) (Dn := fun m i u => G m i u - F i u) (c := fun _ => 0)
+    (e := fun m : ℕ => L * (1 / (m : ℝ)) * ∫ s, |φ s|)
+    (LD := fun m : ℕ => M * ((m : ℝ) * ∫ s, |deriv φ s|) + L)
+    (k := fun m : ℕ => (m : ℝ))
+    (Filter.Eventually.of_forall fun m i => by funext u; simp only [sub_zero]; ring)
+    (by
+      filter_upwards [eventually_ge_atTop 1] with m hm i
+      have hm' : (1 : ℝ) ≤ m := by exact_mod_cast hm
+      obtain ⟨h2, hs, he, hL⟩ := mollify_perturbation hφ hφ1 hφint
+        (hF i) (hFR i) (hFM i) (hFL i) hm'
+      exact ⟨h2, hs, he, hL, hm'⟩) he hV
+  have hnear : ∀ᶠ m : ℕ in atTop, ∀ i j, ‖gramG m i j - gramF i j‖ < ε / 2 := by
+    apply Filter.eventually_all.mpr
+    intro i
+    apply Filter.eventually_all.mpr
+    intro j
+    have hh : Tendsto (fun m => ‖gramG m i j - gramF i j‖) atTop (𝓝 0) := by
+      simpa only [sub_self, norm_zero] using ((hconv i j).sub tendsto_const_nhds).norm
+    exact hh.eventually (gt_mem_nhds (half_pos hε))
+  obtain ⟨m, hm, hm1⟩ := (hnear.and (eventually_ge_atTop 1)).exists
+  have hmR : (1 : ℝ) ≤ m := by exact_mod_cast hm1
+  have hm0 : (0 : ℝ) < m := zero_lt_one.trans_le hmR
+  have hG : ∀ i, ContDiff ℝ ∞ (G m i) :=
+    fun i => contDiff_mollify hφ hφ1 (hF i).continuous hm0
+  have hGR : ∀ i, SupportedIn (R + 1) (G m i) :=
+    fun i => mollify_supportedIn hφ1 (hFR i) hmR
+  have hGM : ∀ i l u, |iteratedDeriv l (G m i) u| ≤
+      (M * A) * (Bφ * m) ^ l * dcLogWeight l := fun i l u =>
+    rate_abs_iteratedDeriv_mollify_le hφ hφ1 (hF i).continuous (hFM i) hm0 hA l u
+  obtain ⟨x, hx⟩ := exists_dcLogSynthesis_family_gram_limit_of_rate hφ hφ1 hφint hBφ hA
+    hk hK1 hK (by linarith only [hR]) (mul_nonneg hM hA0) (mul_nonneg hBφ hm0.le)
+    hG hGR hGM hRK
+  let gramX := fun n => ArithmeticCastelnuovoSeveri.weilGram Λw
+    (fun i => ArithmeticCastelnuovoSeveri.cx
+      (atomicTest (n * blockSize (R + 1)) (x n i)
+        (dilate (κ (n * blockSize (R + 1))) φ)))
+  have hclose : ∀ᶠ n : ℕ in atTop, ∀ i j, ‖gramX n i j - gramG m i j‖ < ε / 2 := by
+    apply Filter.eventually_all.mpr
+    intro i
+    apply Filter.eventually_all.mpr
+    intro j
+    have hh : Tendsto (fun n => ‖gramX n i j - gramG m i j‖) atTop (𝓝 0) := by
+      simpa only [sub_self, norm_zero] using ((hx i j).sub tendsto_const_nhds).norm
+    exact hh.eventually (gt_mem_nhds (half_pos hε))
+  filter_upwards [hclose] with n hn
+  refine ⟨x n, fun i j => ?_⟩
+  change ‖gramX n i j - gramF i j‖ < ε
+  calc
+    _ = ‖(gramX n i j - gramG m i j) + (gramG m i j - gramF i j)‖ := by
+      congr 1
+      abel
+    _ ≤ ‖gramX n i j - gramG m i j‖ + ‖gramG m i j - gramF i j‖ := norm_add_le _ _
+    _ < ε / 2 + ε / 2 := add_lt_add (hn i j) (hm i j)
+    _ = ε := by ring
+
 /-! ### Length coordinates -/
 
 private theorem loglog_atTop :
@@ -578,6 +683,69 @@ theorem steklovDCProfile_window {K : ℝ} (hK1 : 1 ≤ K)
     steklovDCProfile_vanishesOff integral_steklovDCProfile (by norm_num : (0 : ℝ) ≤ 12)
     integral_abs_iteratedDeriv_steklovDCProfile_le hcN hK1 hrate H hg hR hgR (by linarith)
 
+open ArithmeticPositiveDuality ArithmeticCastelnuovoSeveri
+open BiScaleUncertainty.ChebyshevGauge (cubicSpline contDiff_cubicSpline
+  hasCompactSupport_cubicSpline)
+
+/-- Each finite rational correlation Gram is approximated by complete Steklov
+packet Grams at one fixed critical multiple, independent of entry tolerance. -/
+theorem exists_ratCorr_gram_approximation_at_critical_multiple
+    {ι : Type*} [Fintype ι] (q : ι → posUnits) :
+    ∃ K : ℝ, 1 ≤ K ∧ ∃ B : ℕ, 1 ≤ B ∧
+      ∀ ε : ℝ, 0 < ε → ∀ᶠ n : ℕ in atTop, ∃ x : ι → ℕ → ℝ, ∀ i j,
+        ‖weilGram vonMangoldtWeight
+            (fun a => cx (atomicTest (n * B) (x a)
+              (dilate (((n * B : ℕ) : ℝ) / (K * dcScale (n * B))) steklovDCProfile))) i j -
+          ratCorr ((q i)⁻¹ * q j)‖ < ε := by
+  classical
+  let F : ι → ℝ → ℝ := fun i u => cubicSpline (u - logPos (q i))
+  have hF : ∀ i, ContDiff ℝ 2 (F i) :=
+    fun i => contDiff_cubicSpline.comp (contDiff_id.sub contDiff_const)
+  have hFc : ∀ i, HasCompactSupport (F i) :=
+    fun i => hasCompactSupport_cubicSpline.comp_homeomorph (Homeomorph.subRight _)
+  choose Ri Mi Li hRi hRiF hMi hLi using fun i => exists_test_bounds (hF i) (hFc i)
+  let R := ∑ i, Ri i
+  have hR : 0 ≤ R := Finset.sum_nonneg fun i _ => hRi i
+  have hFR : ∀ i, SupportedIn R (F i) := fun i =>
+    EffectiveArithmeticHodgeTheory.supportedIn_mono (hRiF i)
+      (Finset.single_le_sum (fun j _ => hRi j) (Finset.mem_univ i))
+  let B := blockSize (R + 1)
+  let K : ℝ := 1 + 288 * B * Real.exp 1
+  have hB : 1 ≤ B := one_le_blockSize (R + 1)
+  have hK : 1 ≤ K := by
+    have hnonneg : 0 ≤ 288 * (B : ℝ) * Real.exp 1 := by positivity
+    dsimp only [K]
+    linarith only [hnonneg]
+  have hK0 : 0 < K := zero_lt_one.trans_le hK
+  let κ : ℕ → ℝ := fun N => (N : ℝ) / (K * dcScale N)
+  have hk : Tendsto κ atTop atTop := tendsto_div_const_mul_dcScale hK0
+  have hrate : ∀ᶠ N : ℕ in atTop, K ≤ dcRate κ N := by
+    have hc1 : ∀ᶠ N : ℕ in atTop, 1 ≤ K * dcScale N := by
+      filter_upwards [dcScale_atTop.eventually_ge_atTop 1] with N hS
+      nlinarith only [hK, hS, mul_nonneg (sub_nonneg.mpr hK) (sub_nonneg.mpr hS)]
+    filter_upwards [eventually_div_dcScale_le_dcRate hk hc1,
+      dcScale_atTop.eventually_gt_atTop 0] with N hN hS
+    rwa [mul_div_assoc, div_self hS.ne', mul_one] at hN
+  have hRK : 24 * (12 : ℝ) * blockSize (R + 1) * Real.exp 1 < K := by
+    dsimp only [K, B]
+    linarith only []
+  have hgram (i j : ι) : weilGram vonMangoldtWeight (fun a => cx (F a)) i j =
+      ratCorr ((q i)⁻¹ * q j) := by
+    change weilGram vonMangoldtWeight
+      (fun a => ArithmeticCastelnuovoSeveri.translate (logPos (q a)) (cx cubicSpline)) i j = _
+    rw [weilGram_translate_cubicSpline, ratCorr, logPos_inv_mul, neg_sub]
+  refine ⟨K, hK, B, hB, fun ε hε => ?_⟩
+  have happrox := eventually_exists_family_gram_approximation_of_rate
+    contDiff_steklovDCProfile steklovDCProfile_vanishesOff integral_steklovDCProfile
+    (by norm_num : (0 : ℝ) ≤ 12) integral_abs_iteratedDeriv_steklovDCProfile_le
+    hk hK hrate hR hF hFR hRK ε hε
+  filter_upwards [happrox] with n hn
+  obtain ⟨x, hx⟩ := hn
+  refine ⟨x, fun i j => ?_⟩
+  simpa only [← hgram i j] using hx i j
+
 end GaloisForLFunctions.TransMetzlerWeilPositivity
 
 #print axioms GaloisForLFunctions.TransMetzlerWeilPositivity.exists_dcLogSynthesis_family_gram_limit_of_rate
+#print axioms GaloisForLFunctions.TransMetzlerWeilPositivity.eventually_exists_family_gram_approximation_of_rate
+#print axioms GaloisForLFunctions.TransMetzlerWeilPositivity.exists_ratCorr_gram_approximation_at_critical_multiple
