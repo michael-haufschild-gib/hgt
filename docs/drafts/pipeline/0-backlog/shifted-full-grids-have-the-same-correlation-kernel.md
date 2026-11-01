@@ -35,3 +35,17 @@ own sampling/normalization argument and are not covered by the translation claim
 - [ ] Uniform finite-grid comparison with actual boundary error.
 - [ ] Rank–trace transfer and exact scope of the no-go formalized.
 - [ ] Positive survivor beyond basis invariance audited.
+
+## Finite critical-block mechanism
+
+For bounded grid-origin shifts, the same bulk tail estimate should make each
+normalized critical-pair Gram entry differ by `O(1/T)`. With `m=O(T log T)`,
+the Gram difference then has Frobenius norm `O(log T)`. Local zero counts
+`O(log T)` on unit intervals, combined with Fourier decay, should give
+critical-block squared Frobenius norm `O(m log T)`. Cauchy–Schwarz would then
+make the change in total pair energy `o(N)`. The diagonal changes by `O(log T)`.
+
+This would rule out a new macroscopic *critical-pair* credit from translation
+alone. It does not control the indefinite off-critical block or negative-part
+credit; those require a separate argument. Both the finite tail estimate and
+this critical-block transport remain unproved.

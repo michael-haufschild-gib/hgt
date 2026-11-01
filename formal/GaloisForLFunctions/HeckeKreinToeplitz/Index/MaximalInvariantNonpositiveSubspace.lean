@@ -58,7 +58,7 @@ theorem exists_maximal_dimension_invariant_nonpositive [FiniteDimensional ℂ E]
     · intro v hv
       have hz := (Submodule.mem_bot ℂ).mp hv
       subst v
-      simp only [pairing, inner_zero_left, sub_self, Complex.zero_re, le_refl]
+      simp [pairing]
   obtain ⟨U, hiU, hnU, hdU⟩ := Nat.findGreatest_spec (Nat.zero_le (finrank ℂ E)) h0
   refine ⟨U, hiU, hnU, ?_⟩
   intro V hiV hnV

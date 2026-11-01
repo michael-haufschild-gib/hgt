@@ -1,39 +1,49 @@
-# Forced Mayer pole cancellation at the negative unit parameter
+# Successor telescoping cancels the negative-unit Mayer determinant pole
 
 - **Stage:** 1-in-progress
 - **Type:** Conjecture
-- **Parent:** [exact determinant pole](gauss-mayer-rank-one-determinant-pole.md).
+- **Parent:** [exact determinant pole](../3-formalized/gauss-mayer-rank-one-determinant-pole.md).
 
 ## Target
 
-For the actual source determinant, prove `B(1,−1)=0`, hence removability
-of `D(w,−1)` at `w=1`. This tests a spectral parameter required by the
-even-word product `D(w,1)D(w,−1)`, beyond generic isolated cancellation.
+For every `Re w>0` and complex `t`, prove
 
-## Source mechanism to audit
+`det(I+R(w)+tP)=det(I+R(w))`.
 
-The disc-algebra function `f(z)=z/(1+z)` vanishes at zero. At exponent one,
-its actual branch terms are
+Then `B(w,−1)=0` throughout this half-plane and the actual source determinant
+satisfies `D(w,−1)=A(w,−1)`, including its assigned value at `w=1`.
+Consequently it is holomorphic throughout the half-plane. This settles one
+specific nonzero cancellation required by the even-word determinant product.
 
-`(n+z)^(−1) f((n+z)^(−1)) = 1/((n+z)(n+z+1))`.
+## Paper mechanism
 
-They telescope to `1/(1+z)=1−f(z)`. Since `P f=0`, the holomorphic
-remainder therefore satisfies `(I+R(1))f=1`.
+The actual disc-algebra response `f_w(z)=1−(1+z)^(−w)` vanishes at zero.
+For `a=n+z`, both `a` and `a+1` have positive real part, so
+`Im(log(a+1)−log a)∈(−π,π)`. Exponential/logarithm inversion therefore gives
+`log(1+a⁻¹)=log(a+1)−log a`, proving the principal-power identity on the
+whole complex disc. The genuine branch terms are exactly
 
-After transporting this exact response to the established Hilbert
-realization, the rank-one determinant update should make
-`det(I+R(1)+tP)` independent of `t`: the response functional is
-`f(0)=0`. Its affine coefficient is exactly `B(1,−1)`.
+`(n+z)^(−w) f_w((n+z)^(−1)) = (n+z)^(−w)−(n+z+1)^(−w)`.
 
-The generic theorem `det2Op_rankOne_update` is already proved and requires
-this response vector. The missing work is the actual telescoping identity,
-its Hilbert transport, and cancellation of the regularized diagonal factor.
-No invertibility assumption on `I+R(1)` is permitted. Neither a value for
-the removable determinant nor its vanishing order is claimed.
+The existing source bound makes the telescoping tail tend to zero for
+`Re w>0`. Normal convergence identifies the sum with the actual remainder,
+yielding `(I+R(w))f_w=1`.
 
-## Scope
+Cauchy analysis transports evaluation at zero to the bounded Hilbert
+functional `q(v)=Σ_j(−1)^j(6/5)^(−j)v_j`. With `u=Qf_w`, `x=Q1`, and
+`A` the Hilbert remainder, one has `u+Au=x`, `q(u)=0`, `q(x)=1`.
+The existing `det2Op_rankOne_update` thus gives the factor `exp(−t)`.
+The genuine diagonal correction contributes `exp(t)` and cancels it.
+No inverse of `I+A` is assumed.
 
-This would settle one specific cancellation left open by the rank-one pole
-classification. It does not identify the Selberg determinant, settle the
-parameter `λ=1`, or exclude off-critical resonances. Targeted corpus searches supplied no checked exact cancellation theorem.
-The Lean certificate remains incomplete; no literature-priority claim is made.
+## Audit and scope
+
+The strengthened all-parameter statement follows from the same successor
+identity as the initial rational response at `w=1`. Principal powers and
+the vanishing tail are now included in its paper proof; Lean verification
+is in progress. Targeted corpus searches supplied no checked exact source
+cancellation theorem. No literature-priority claim is made.
+
+The value at `w=1` and its possible vanishing order remain undetermined.
+The parameter `λ=1`, primitive modular coding, Selberg/scattering comparison,
+and off-critical resonance exclusion remain open.

@@ -31,6 +31,7 @@ variable (W : Submodule ℂ (H × E)) (T : (H × E) ≃L[ℂ] (H × E))
     (hT : ∀ v w, pairing (T v) (T w) = pairing v w)
     (hf : ∀ v ∈ W, T v ∈ W) (hb : ∀ v ∈ W, T.symm v ∈ W)
 
+include hT hf hb in
 /-- An intermediate radical projection does not change the quotient action. -/
 theorem radicalRetraction_map_radicalRetraction (v : H × E) :
     radicalRetraction W (T (radicalRetraction W v)) = radicalRetraction W (T v) := by

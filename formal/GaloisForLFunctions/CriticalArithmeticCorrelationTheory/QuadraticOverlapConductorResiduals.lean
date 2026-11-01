@@ -46,7 +46,7 @@ namespace GaloisForLFunctions.CriticalArithmeticCorrelationTheory
 open CompletedArithmeticForms RenormalizedArithmeticPotentialTheory
   RenormalizedArithmeticPotentialTheory.CompletedShell
   SpacingScaleHarmonicAnalysis ArithmeticElectrostatics
-  BezoutValuationIncidence
+  BezoutValuationIncidence SuccessorShellArithmetic
 
 /-! ## Section 1: Normalization and Elementary Tail Lemmas -/
 
@@ -111,7 +111,7 @@ private theorem sum_range_sub_le_first (g : ℕ → ℝ) (hg : ∀ k, 0 ≤ g k)
     induction m with
     | zero => simp
     | succ m ih =>
-      rw [sum_range_succ, ih]
+      rw [Finset.sum_range_succ, ih]
       ring
   rw [htel M]
   linarith only [hg M]
@@ -254,7 +254,7 @@ private theorem exists_crossError_quadratic_conductor_bound {φ : ℝ → ℝ}
     have hinv_d : 1 / (d : ℝ) ≤ (N : ℝ) / (c * n) := by
       have hpos : 0 < c * (n : ℝ) / N := div_pos (mul_pos hc0 hn0) hN0
       exact (one_div_le_one_div_of_le hpos hcd).trans_eq (one_div_div _ _)
-    let S_mod := (Icc 1 N).filter (fun j => 2 * (c / N) < |Real.log j - Real.log n| ∧
+    let S_mod := (Icc 1 N).filter (fun j : ℕ => 2 * (c / N) < |Real.log (j : ℝ) - Real.log n| ∧
       (n ≤ 2 * j ∧ j ≤ 2 * n))
     have hterm_pt : ∀ j ∈ Icc 1 N,
         |E_ker n j * (normalizedRamanujanMode m j / Real.sqrt j)| ≤
@@ -355,9 +355,10 @@ private theorem exists_crossError_quadratic_conductor_bound {φ : ℝ → ℝ}
           rw [div_le_div_iff₀ hj0 hn0]
           nlinarith only [hnjR, sub_pos.mpr hjlt]
         have habs_eq : |(n : ℝ) - j| = (n : ℝ) - j := abs_of_pos (sub_pos.mpr hjlt)
-        have hlt2 : 2 * (c / N) < 2 * |(n : ℝ) - j| / n := by
-          rw [habs_eq]; linarith only [hgap, hlog_eq, hlog_ub, hfrac]
-        have hmul := (div_lt_div_iff₀ hN0 hn0).mp (by simpa only [mul_div_assoc] using hlt2)
+        have hlt2 : 2 * c / N < 2 * |(n : ℝ) - j| / n := by
+          rw [habs_eq, show 2 * c / (N : ℝ) = 2 * (c / N) by ring]
+          linarith only [hgap, hlog_eq, hlog_ub, hfrac]
+        have hmul := (div_lt_div_iff₀ hN0 hn0).mp hlt2
         exact (div_lt_iff₀ hN0).mpr (by linarith only [hmul])
       · have hngt : (n : ℝ) < j := by exact_mod_cast hgt
         have hlog_ub := Real.log_le_sub_one_of_pos (div_pos hj0 hn0)
@@ -367,11 +368,13 @@ private theorem exists_crossError_quadratic_conductor_bound {φ : ℝ → ℝ}
           abs_of_nonneg (sub_nonneg.mpr (Real.log_le_log hn0 hngt.le))
         have habs_eq : |(n : ℝ) - j| = (j : ℝ) - n := by
           rw [abs_sub_comm, abs_of_pos (sub_pos.mpr hngt)]
-        have hlt2 : 2 * (c / N) < 2 * |(n : ℝ) - j| / n := by
-          rw [habs_eq]
-          have hpos_diff : 0 < ((j : ℝ) - n) / n := div_pos (sub_pos.mpr hngt) hn0
-          linarith only [hgap, hlog_eq, hlog_ub, hpos_diff]
-        have hmul := (div_lt_div_iff₀ hN0 hn0).mp (by simpa only [mul_div_assoc] using hlt2)
+        have hpos_diff : 0 < ((j : ℝ) - n) / n := div_pos (sub_pos.mpr hngt) hn0
+        have h2diff : ((j : ℝ) - n) / n ≤ 2 * ((j : ℝ) - n) / n := by
+          rw [mul_div_assoc]; linarith only [hpos_diff]
+        have hlt2 : 2 * c / N < 2 * |(n : ℝ) - j| / n := by
+          rw [habs_eq, show 2 * c / (N : ℝ) = 2 * (c / N) by ring]
+          linarith only [hgap, hlog_eq, hlog_ub, h2diff]
+        have hmul := (div_lt_div_iff₀ hN0 hn0).mp hlt2
         exact (div_lt_iff₀ hN0).mpr (by linarith only [hmul])
     -- Tail sum over `S_mod` is at most `4 / d ≤ 4 * N / (c * n)`.
     have hsum_mod : (∑ j ∈ S_mod, 1 / |(n : ℝ) - j| ^ 2) ≤ 4 * (N : ℝ) / (c * n) := by
@@ -437,7 +440,8 @@ private theorem exists_crossError_quadratic_conductor_bound {φ : ℝ → ℝ}
           hsub_d (fun _ _ _ => by positivity)).trans (sum_Icc_inv_sq_from_le hd1)
       rw [hsplit_LR]
       have h4d : (∑ j ∈ L_set, 1 / |(n : ℝ) - j| ^ 2) + ∑ j ∈ R_set, 1 / |(n : ℝ) - j| ^ 2 ≤
-          4 * (1 / (d : ℝ)) := by linarith only [hL_bound, hR_bound]
+          4 * (1 / (d : ℝ)) :=
+        (add_le_add hL_bound hR_bound).trans_eq (by ring)
       exact h4d.trans ((mul_le_mul_of_nonneg_left hinv_d (by norm_num)).trans_eq (by ring))
     have hrow_abs : |∑ j ∈ Icc 1 N, E_ker n j * (normalizedRamanujanMode m j / Real.sqrt j)| ≤
         32 * K₀ * Real.sqrt m * c * Real.sqrt n / N + 4 * K₀ * Real.sqrt m * c ^ 2 / N := by
@@ -461,7 +465,7 @@ private theorem exists_crossError_quadratic_conductor_bound {φ : ℝ → ℝ}
         _ ≤ K₀ * (c / N) ^ 2 * Real.sqrt m *
               ((8 * (n : ℝ) * Real.sqrt n) * (4 * (N : ℝ) / (c * n)) + 4 * N) :=
           mul_le_mul_of_nonneg_left
-            (add_le_add_right (mul_le_mul_of_nonneg_left hsum_mod (by positivity)) _)
+            (add_le_add (mul_le_mul_of_nonneg_left hsum_mod (by positivity)) le_rfl)
             (by positivity)
         _ = 32 * K₀ * Real.sqrt m * c * Real.sqrt n / N + 4 * K₀ * Real.sqrt m * c ^ 2 / N := by
           field_simp [hc0.ne', hn0.ne', hN0.ne']; ring
@@ -589,7 +593,8 @@ private theorem exists_poleError_quadratic_conductor_bound {φ : ℝ → ℝ}
           (Real.sqrt n / Real.sqrt j + Real.sqrt j / Real.sqrt n) * ramanujanPoleProfile m j) =
           atomPoleErrorCoefficient φ c N * (Real.sqrt n * S_m + (1 / Real.sqrt n) * T_m) := by
         dsimp only [S_m, T_m]
-        rw [mul_add, mul_sum, mul_sum, ← sum_add_distrib]
+        rw [mul_add, ← mul_assoc _ (Real.sqrt n), mul_sum,
+          ← mul_assoc _ (1 / Real.sqrt n), mul_sum, ← sum_add_distrib]
         refine sum_congr rfl fun j hj => ?_
         have hj0 : (0 : ℝ) < j := by exact_mod_cast (mem_Icc.mp hj).1
         have hsj : 0 < Real.sqrt (j : ℝ) := Real.sqrt_pos.mpr hj0
@@ -713,8 +718,8 @@ private theorem exists_nearCenter_quadratic_conductor_bound (φ : ℝ → ℝ) :
       rcases lt_or_gt_of_ne hjn with hlt | hgt
       · have hjlt : (j : ℝ) < n := by exact_mod_cast hlt
         have hlog_le := Real.log_le_sub_one_of_pos (div_pos hj0 hn0)
-        rw [Real.log_div hj0.ne' hn0.ne', show (1 : ℝ) - (j : ℝ) / n = ((n : ℝ) - j) / n from
-          one_sub_div hn0.ne'] at hlog_le
+        rw [Real.log_div hj0.ne' hn0.ne', show (j : ℝ) / n - 1 = -(((n : ℝ) - j) / n) by
+          field_simp [hn0.ne']; ring] at hlog_le
         have hsub : ((n : ℝ) - j) / n ≤ Real.log n - Real.log j := by linarith only [hlog_le]
         have hy_eq : y = Real.log n - Real.log j := by
           dsimp only [y]
@@ -725,8 +730,8 @@ private theorem exists_nearCenter_quadratic_conductor_bound (φ : ℝ → ℝ) :
         exact (div_le_div_of_nonneg_left (sub_pos.mpr hjlt).le hn0 hnN_R).trans hsub
       · have hngt : (n : ℝ) < j := by exact_mod_cast hgt
         have hlog_le := Real.log_le_sub_one_of_pos (div_pos hn0 hj0)
-        rw [Real.log_div hn0.ne' hj0.ne', show (1 : ℝ) - (n : ℝ) / j = ((j : ℝ) - n) / j from
-          one_sub_div hj0.ne'] at hlog_le
+        rw [Real.log_div hn0.ne' hj0.ne', show (n : ℝ) / j - 1 = -(((j : ℝ) - n) / j) by
+          field_simp [hj0.ne']; ring] at hlog_le
         have hsub : ((j : ℝ) - n) / j ≤ Real.log j - Real.log n := by linarith only [hlog_le]
         have hy_eq : y = Real.log j - Real.log n := by
           dsimp only [y]
@@ -743,7 +748,7 @@ private theorem exists_nearCenter_quadratic_conductor_bound (φ : ℝ → ℝ) :
       have h2 : 1 / (2 * y) ≤ (N : ℝ) / (2 * |(j : ℝ) - n|) := by
         have h2gap : 2 * |(j : ℝ) - n| / N ≤ 2 * y := by
           have := mul_le_mul_of_nonneg_left hgap zero_le_two
-          rwa [mul_div_assoc] at this
+          rwa [← mul_div_assoc] at this
         exact (one_div_le_one_div_of_le (div_pos (by positivity) hN0) h2gap).trans_eq
           (one_div_div _ _)
       have hNdist1 : 1 ≤ (N : ℝ) / |(j : ℝ) - n| := (one_le_div hdist_pos).mpr hdist_le_N
@@ -779,9 +784,10 @@ private theorem exists_nearCenter_quadratic_conductor_bound (φ : ℝ → ℝ) :
               ((1 + Real.exp (1 / 2)) * ((N : ℝ) / |(j : ℝ) - n|)) :=
           mul_le_mul_of_nonneg_left hD_ub (by positivity)
         _ = |completeWeilPoleShift φ 1| * (1 + Real.exp (1 / 2)) * c * (1 / |(j : ℝ) - n|) := by
-          field_simp [hN0.ne']; ring
+          field_simp [hN0.ne']
     rw [hkernel, abs_div, abs_mul, abs_mul, abs_div, abs_of_pos hN0, abs_of_pos hD0,
-      abs_of_pos (Real.sqrt_pos.mpr hj0), div_eq_mul_one_div _ (Real.sqrt j)]
+      abs_of_pos (Real.sqrt_pos.mpr hj0), div_eq_mul_one_div _ (Real.sqrt j),
+      mul_assoc (_ * _)]
     have hm_j := mul_le_mul (abs_mode_le_sqrt_conductor_quad hm j) hsqrt_j
       (by positivity) (Real.sqrt_nonneg m)
     exact (mul_le_mul hcoef hm_j (by positivity) (by positivity)).trans_eq
@@ -957,7 +963,7 @@ private theorem abs_divisorJet_le_totient_log_quad {m : ℕ} (hm : 0 < m) (n : �
 instead of `O(c^3 * K^2)`. -/
 private theorem sum_near_div_sqrt_sq_le_quadratic_width {c K : ℝ} (hc : 0 < c)
     {N : ℕ} (hN : 1 ≤ N) (hw : c / N ≤ 1) (F : ℕ → ℕ → ℝ)
-    (hK0 : 0 ≤ K)
+    (_hK0 : 0 ≤ K)
     (hF : ∀ n ∈ Icc 1 N, ∀ j ∈ nearRowIndices c N n, |F n j| ≤ K) :
     (∑ n ∈ Icc 1 N, (∑ j ∈ nearRowIndices c N n, F n j / Real.sqrt j) ^ 2) ≤
       4 * Real.exp 2 * linearNearRowRadius c ^ 2 * K ^ 2 := by
@@ -1311,7 +1317,7 @@ private theorem exists_downward_quadratic_conductor_bound {φ : ℝ → ℝ}
             c ^ 3 * Real.log N ^ 2 / (N : ℝ)) / Real.log N :=
         div_le_div_of_nonneg_right hraw hL0.le
       _ = B_ext * (m.totient : ℝ) ^ 2 * 1 * (c ^ 3 * Real.log N / (N : ℝ)) := by
-        dsimp only [B_ext]; field_simp [hN0.ne', hL0.ne']; ring
+        dsimp only [B_ext]; field_simp [hN0.ne', hL0.ne']
       _ ≤ B_ext * (m.totient : ℝ) ^ 2 * (1 + Real.log m) ^ 2 * (c ^ 3 * Real.log N / (N : ℝ)) :=
         mul_le_mul_of_nonneg_right
           (mul_le_mul_of_nonneg_left h1m_sq (by positivity)) (by positivity)
@@ -1598,7 +1604,7 @@ private theorem linearizedUpwardCoefficient_quadratic_boundary_budget {φ : ℝ 
       _ = 4 * (B : ℝ) * m.totient * ∑ k ∈ S_ex n, (ArithmeticFunction.vonMangoldt k : ℝ) / k := by
         dsimp only [S_ex, L_val]
         rw [← sum_filter, ← sum_mul]
-        field_simp [hM.ne']; ring
+        field_simp [hM.ne']
   -- Every `S_ex n` lies inside `Icc ((N - B) / n) ((N + B) / n)`, and `N ≤ 2 * (k * n)`.
   have hS_sub : ∀ n : ℕ, 1 ≤ n → S_ex n ⊆ Icc ((N - B) / n) ((N + B) / n) := by
     intro n hn1 k hk
@@ -1620,10 +1626,12 @@ private theorem linearizedUpwardCoefficient_quadratic_boundary_budget {φ : ℝ 
         have h2 := Nat.mod_lt (N - B) (show 0 < n by omega)
         dsimp only [a₀]
         nlinarith only [h1, h2, Nat.mul_comm n ((N - B) / n)]
+      have hdiv_lo' : N - B < a₀ * n + n := by
+        simpa only [Nat.add_mul, one_mul] using hdiv_lo
       have hdiv_hi : b₀ * n ≤ N + B := Nat.div_mul_le_self (N + B) n
       have hnat : (b₀ + 1 - a₀) * n ≤ 2 * B + 2 * n := by
-        have hsub_mul : (b₀ + 1 - a₀) * n = b₀ * n + n - a₀ * n :=
-          Nat.sub_mul (b₀ + 1) a₀ n |>.trans (by ring_nf)
+        have hsub_mul : (b₀ + 1 - a₀) * n = b₀ * n + n - a₀ * n := by
+          rw [Nat.sub_mul, Nat.add_mul, one_mul]
         omega
       have h1 : (S_ex n).card * n ≤ 2 * B + 2 * n := by
         have hc_eq : (Icc a₀ b₀).card = b₀ + 1 - a₀ := Nat.card_Icc a₀ b₀
@@ -1670,22 +1678,34 @@ private theorem linearizedUpwardCoefficient_quadratic_boundary_budget {φ : ℝ 
         have hk0 : (0 : ℝ) < k := zero_lt_one.trans_le hk1
         have hsk : 0 < Real.sqrt (k : ℝ) := Real.sqrt_pos.mpr hk0
         have hN_2kn : (N : ℝ) ≤ 2 * (k : ℝ) * n := by
-          exact_mod_cast (show N ≤ 2 * k * n by omega)
+          have hkn : N ≤ k * n + k * n := by omega
+          have hknR : (N : ℝ) ≤ (k : ℝ) * n + (k : ℝ) * n := by exact_mod_cast hkn
+          linarith only [hknR]
         have hinv_k : 1 / (k : ℝ) ≤ 2 * (n : ℝ) / N := by
           rw [div_le_div_iff₀ hk0 hN0, one_mul]
           linarith only [hN_2kn]
         have hinv_sk : 1 / Real.sqrt k ≤ Real.sqrt (2 * (n : ℝ) / N) := by
           have h := Real.sqrt_le_sqrt hinv_k
           rwa [Real.sqrt_div zero_le_one, Real.sqrt_one] at h
+        have hlog_sk : Real.log k ≤ 2 * Real.sqrt k := by
+          have h1 := Real.log_le_sub_one_of_pos hsk
+          have h2 : 2 * Real.log (Real.sqrt k) = Real.log k := by
+            calc
+              2 * Real.log (Real.sqrt k) = Real.log (Real.sqrt k ^ 2) := by
+                rw [Real.log_pow]; ring
+              _ = Real.log k := by rw [Real.sq_sqrt hk0.le]
+          linarith only [h1, h2]
         have hvm : (ArithmeticFunction.vonMangoldt k : ℝ) / k ≤ 2 * (1 / Real.sqrt k) := by
           calc
             (ArithmeticFunction.vonMangoldt k : ℝ) / k ≤ Real.log k / k :=
               div_le_div_of_nonneg_right ArithmeticFunction.vonMangoldt_le_log hk0.le
-            _ = (Real.log k * (Real.sqrt k)⁻¹) * (1 / Real.sqrt k) := by
-              rw [← Real.sq_sqrt hk0.le]; field_simp [hsk.ne']
-            _ ≤ 2 * (1 / Real.sqrt k) :=
-              mul_le_mul_of_nonneg_right (_root_.RHTower.WeilAbscissa.log_div_sqrt_le hk1)
-                (by positivity)
+            _ ≤ (2 * Real.sqrt k) / k := div_le_div_of_nonneg_right hlog_sk hk0.le
+            _ = 2 * (1 / Real.sqrt k) := by
+              rw [div_eq_iff hk0.ne']
+              calc
+                2 * Real.sqrt k = 2 * (1 / Real.sqrt k) * (Real.sqrt k * Real.sqrt k) := by
+                  field_simp [hsk.ne']
+                _ = 2 * (1 / Real.sqrt k) * k := by rw [Real.mul_self_sqrt hk0.le]
         exact hvm.trans (mul_le_mul_of_nonneg_left hinv_sk zero_le_two)
       have hsum_k : (∑ k ∈ S_ex n, (ArithmeticFunction.vonMangoldt k : ℝ) / k) ≤
           6 * Real.sqrt 2 * Real.sqrt n / Real.sqrt N := by
@@ -1756,7 +1776,9 @@ private theorem linearizedUpwardCoefficient_quadratic_boundary_budget {φ : ℝ 
             have := Real.log_le_sub_one_of_pos (by norm_num : (0 : ℝ) < 2); linarith
           linarith only [hl, hl2, hlogN]
         have hN_2kn : (N : ℝ) ≤ 2 * (k : ℝ) * n := by
-          exact_mod_cast (show N ≤ 2 * k * n by omega)
+          have hkn : N ≤ k * n + k * n := by omega
+          have hknR : (N : ℝ) ≤ (k : ℝ) * n + (k : ℝ) * n := by exact_mod_cast hkn
+          linarith only [hknR]
         have hinv_k : 1 / (k : ℝ) ≤ 2 * (n : ℝ) / N := by
           rw [div_le_div_iff₀ hk0 hN0, one_mul]
           linarith only [hN_2kn]
@@ -2164,10 +2186,9 @@ theorem exists_completeWeil_quadratic_conductor_residual_variable_rate {φ : ℝ
     calc
       _ ≤ Cq * (m : ℝ) * c ^ 10 * (Real.log (N : ℝ) / N) ^ 2 := hb
       _ ≤ Cq * M_log * (c ^ 10 * (Real.log (N : ℝ) / N) ^ 2) := by
-        rw [mul_assoc (Cq * M_log)]
-        exact (mul_le_mul_of_nonneg_right
-          (mul_le_mul_of_nonneg_right (mul_le_mul_of_nonneg_left hm_le_Mlog hCq) (by positivity))
-          (sq_nonneg _)).trans_eq (by ring)
+        rw [mul_assoc (Cq * (m : ℝ))]
+        exact mul_le_mul_of_nonneg_right (mul_le_mul_of_nonneg_left hm_le_Mlog hCq)
+          (by positivity : 0 ≤ c ^ 10 * (Real.log (N : ℝ) / N) ^ 2)
       _ ≤ Cq * M_log * R :=
         mul_le_mul_of_nonneg_left (le_add_of_nonneg_left (by positivity)) (by positivity)
   have hd' : ‖(Real.sqrt (m.totient : ℝ))⁻¹ • normalizedFullNearGammaDownwardVector φ c N m‖ ^ 2 ≤
@@ -2197,7 +2218,8 @@ theorem exists_completeWeil_quadratic_conductor_residual_variable_rate {φ : ℝ
       (by exact_mod_cast Nat.totient_le m : (m.totient : ℝ) ≤ m).trans hm_le_Mlog
     have hup_R : c ^ 2 * (1 + Real.log c) * Real.log N ^ (1 / (k : ℝ)) / Real.log N +
         c ^ 10 * (Real.log (N : ℝ) / N) ^ 2 ≤ R := by
-      apply add_le_add_right
+      dsimp only [R]
+      refine add_le_add ?_ le_rfl
       apply div_le_div_of_nonneg_right _ hL0.le
       apply mul_le_mul_of_nonneg_right _ (by positivity)
       exact mul_le_mul_of_nonneg_left
@@ -2303,8 +2325,9 @@ theorem exists_tiltedUnitSpline_quadratic_relative_residual_sum_le :
       have hh := mul_le_mul_of_nonneg_right
         (mul_le_mul_of_nonneg_left hp (mul_nonneg hK₀.le hm0.le)) hr
       apply div_le_div_of_nonneg_right _ (sq_nonneg _)
-      exact (hN m (mem_Icc.mp hm).1 (hmQ.trans hQ) c hc hwidth).trans
-        (by simpa only [mul_assoc] using hh)
+      have hNm := hN m (mem_Icc.mp hm).1 (hmQ.trans hQ) c hc hwidth
+      change _ ≤ K₀ * ((m : ℝ) * (1 + Real.log m) ^ 2) * r at hNm
+      exact (hNm.trans_eq (by ring)).trans hh
     _ = (K₀ * (1 + Real.log Q) ^ 2 * r) * ∑ m ∈ Icc 1 Q,
         (m : ℝ) / completedConductorEnergy tiltedUnitSpline c m ^ 2 := by
       rw [mul_sum]

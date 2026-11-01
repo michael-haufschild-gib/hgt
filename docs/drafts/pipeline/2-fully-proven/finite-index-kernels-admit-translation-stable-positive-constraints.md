@@ -26,6 +26,12 @@ rank repair and Haar source statements do not give the proposed general
 translation-stable constraints. No earlier common maximal nonpositive
 subspace or equivalent kernel result was found.
 
+Final searches `/tmp/hgt-translation-stable-constraints-final-novelty.json`
+and `/tmp/hgt-maximal-invariant-nonpositive-final-novelty.json` retain that
+distinction: the bounded free-lattice classification and periodic affine
+moving-space positivity impose additional conditions. The new helper
+declarations returned by search are excluded from novelty evidence.
+
 ## Dependency-closed paper proof
 
 Complete the kernel column representation as `X=H×E`, with `H` Hilbert,
@@ -94,8 +100,9 @@ subspace, or spectral hypothesis is assumed in the kernel statement.
 
 ## Lean status
 
-`SignedOrthogonalComplements` passes Lean; its three printed axiom audits
-contain only `propext`, `Classical.choice`, and `Quot.sound`.
-The radical-complement retraction, induced isometries, maximal invariant
+`SignedOrthogonalComplements`, `RadicalHilbertComplement`, and
+`RadicalQuotientIsometries` pass Lean;
+their printed axiom audits contain only `propext`, `Classical.choice`,
+and `Quot.sound`. The common line modulo the radical, maximal invariant
 nonpositive subspace, finite pairing space, and kernel capstones are drafted
 and awaiting verification. No contribution is counted from these drafts.

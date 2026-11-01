@@ -61,8 +61,9 @@ External (Zeta23): `kc` `k_c(t) = c² − ((c − t)₊)²`, `Pmat`, `xsq`, `ran
 | Non-lattice floor of the MT kernel | `one_div_250_le_abs_mtKernel`, `exists_pair_mtKernel_ge_of_triple` | proved |
 | Bulk grid overlap ≈ kernel | `eventually_pairGridOverlap_atD_close` | proved |
 | Arbitrary-bandwidth cosine sampling | `pairGridOverlap_cosineParams_error`, `eventually_pairGridOverlap_cosineParams_close` | proved |
-| Positive actual pair credit at every fixed positive bandwidth | `zetaCosine_positive_disjointPairs`, `zetaCosine_positive_rankTrace` | proved, unconditional |
+| Explicit actual credit `1/[200(10+720π²λ²)²]` at every fixed positive bandwidth | `zetaCosine_explicit_disjointPairs`, `zetaCosine_explicit_rankTrace` | proved, unconditional |
 | Exact kernel degeneracy classification | `mtKernel_additive_zero_triple_iff` | proved |
+| Explicit all-frequency weighted triple floor | `cotangentLineResidual_triple_floor`, `mtKernel_explicit_triple_floor` | proved |
 | Shape-one diagonal coefficient above the box rate for `λ ≥ 1` | `shapeOneCosineRate_ge_box`, `cosineWindowRate_fourThirds_eventually` | proved; prime surplus remains separate |
 | Macroscopic slack `≥ 10⁻⁸N(T,2T)` | `eventually_exists_disjointPairs_slack` | proved |
 | Simple critical proportion `≥ HD(1) + 10⁻⁸` | `beyond_HD_one_simple_critical_cumulative`, `simple_critical_proportion_ge_67250071` | proved, unconditional |

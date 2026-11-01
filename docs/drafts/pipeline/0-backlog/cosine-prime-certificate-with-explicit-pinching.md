@@ -11,7 +11,8 @@ For the actual shape-one cosine window at bandwidth `4/3`, retain the matching
 signed prime surplus and prove the simple-critical certificate with coefficient
 `Hcos(4/3)+δ`, up to an arbitrarily small error. The formalized coefficient obeys
 `Hcos(4/3)≥3/4+79/1250`; actual zero-side pair credit has δ>0.
-An explicit candidate credit is recorded in the [triple-floor card](../1-in-progress/explicit-weighted-cosine-triple-floor.md).
+The [explicit triple floor](../3-formalized/explicit-weighted-cosine-triple-floor.md) gives
+`δλ=1/[200(10+720π²λ²)²]` for the actual pair and rank–trace credit.
 
 ## Exact source gap
 

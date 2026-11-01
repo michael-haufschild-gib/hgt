@@ -933,6 +933,199 @@ private theorem scaleII_barbanVehov_slab_sum_le {V S A K c' L T₁ T₂ L_S lam 
       _ = (16 * Real.exp 2 * K) * c' ^ 2 * L_S ^ 4 * S ^ (1 / 50 : ℝ) := by ring
   exact add_le_add hm_geom hm_err
 
+/-- Reusable short-shell `V^{3/4}` bound when `0 ≤ L ≤ (1 / 2) * Real.log V` (`16 ≤ V`). -/
+private theorem shortCap_shellDepthSum_le_rpow {V W₁ W₂ L K_log3 : ℝ}
+    (hV16 : 16 ≤ V) (hW₁ : 0 ≤ W₁) (h12 : W₁ ≤ W₂) (hlen : W₂ - W₁ ≤ 2) (hW₂ : W₂ ≤ 2 * V)
+    (hL0 : 0 ≤ L) (hL : L ≤ (1 / 2) * Real.log V)
+    (hlog3 : ∀ x : ℝ, 1 ≤ x → (1 + Real.log x) ^ 3 ≤ K_log3 * x ^ (1 / 4 : ℝ)) :
+    shellDepthSum W₁ W₂ L ≤
+      32 * (|xiLineTwoLogDerivConstant| + 4) * K_log3 * V ^ (3 / 4 : ℝ) := by
+  have hV_pos : 0 < V := by linarith
+  have hlogV_ge2 : 2 ≤ Real.log V := two_le_log_of_sixteen_le hV16
+  have hdk_cap : ∀ z : ℂ, |z.re - 1 / 2| ≤ 1 / 2 →
+      depthKernel L (z.re - 1 / 2) ≤ (Real.log V) ^ 2 * V ^ (1 / 2 : ℝ) := by
+    intro z hz
+    have h1 := depthKernel_le_four_sq_mul_exp (d := z.re - 1 / 2) hL0
+    have hLd : L * |z.re - 1 / 2| ≤ (1 / 2) * Real.log V := by
+      nlinarith [hL, hz, abs_nonneg (z.re - 1 / 2), hlogV_ge2]
+    have hsq : 4 * (L * |z.re - 1 / 2|) ^ 2 ≤ (Real.log V) ^ 2 := by
+      have := pow_le_pow_left₀ (by positivity) hLd 2
+      linarith
+    have hexp : Real.exp (2 * L * |z.re - 1 / 2|) ≤ V ^ (1 / 2 : ℝ) := by
+      have h2Ld : 2 * L * |z.re - 1 / 2| ≤ (1 / 2) * Real.log V := by
+        nlinarith [hL, hz, abs_nonneg (z.re - 1 / 2), hlogV_ge2]
+      calc Real.exp (2 * L * |z.re - 1 / 2|)
+          ≤ Real.exp ((1 / 2) * Real.log V) := Real.exp_le_exp.mpr h2Ld
+        _ = V ^ (1 / 2 : ℝ) := by rw [Real.rpow_def_of_pos hV_pos, mul_comm]
+    exact h1.trans (mul_le_mul hsq hexp (Real.exp_pos _).le (sq_nonneg _))
+  have hord := (shortShell_orderSum_le_log hW₁ h12 hlen).trans
+    (mul_le_mul_of_nonneg_left (add_le_add le_rfl
+      (Real.log_le_log (by linarith) (by linarith : W₂ + 4 ≤ 2 * V + 4))) (by norm_num))
+  have hlog2V4 : Real.log (2 * V + 4) ≤ 3 + Real.log V := by
+    calc Real.log (2 * V + 4) ≤ Real.log (4 * V) := Real.log_le_log (by positivity) (by linarith)
+      _ = Real.log 4 + Real.log V := Real.log_mul (by norm_num) hV_pos.ne'
+      _ ≤ 3 + Real.log V := by linarith [log_four_le_two]
+  have hsh_raw : shellDepthSum W₁ W₂ L ≤
+      16 * (|xiLineTwoLogDerivConstant| + Real.log (2 * V + 4)) *
+        ((Real.log V) ^ 2 * V ^ (1 / 2 : ℝ)) := by
+    unfold shellDepthSum
+    calc ∑ z ∈ shellZeros W₁ W₂, ((analyticOrderAt xi z).toNat : ℝ) * depthKernel L (z.re - 1 / 2)
+        ≤ ∑ z ∈ shellZeros W₁ W₂,
+            ((analyticOrderAt xi z).toNat : ℝ) * ((Real.log V) ^ 2 * V ^ (1 / 2 : ℝ)) := by
+          refine Finset.sum_le_sum fun z hz => mul_le_mul_of_nonneg_left (hdk_cap z ?_)
+            (Nat.cast_nonneg _)
+          obtain ⟨h0, h1, _, _, _⟩ := mem_stripFinsetPos.mp (Finset.mem_filter.mp hz).1
+          rw [abs_le]; constructor <;> linarith
+      _ = (∑ z ∈ shellZeros W₁ W₂, ((analyticOrderAt xi z).toNat : ℝ)) *
+            ((Real.log V) ^ 2 * V ^ (1 / 2 : ℝ)) := (Finset.sum_mul _ _ _).symm
+      _ ≤ _ := mul_le_mul_of_nonneg_right hord (by positivity)
+  have hfactor : (|xiLineTwoLogDerivConstant| + Real.log (2 * V + 4)) * (Real.log V) ^ 2 ≤
+      2 * (|xiLineTwoLogDerivConstant| + 4) * (1 + Real.log V) ^ 3 := by
+    nlinarith [abs_nonneg xiLineTwoLogDerivConstant, hlogV_ge2, hlog2V4]
+  have hpow_le := hlog3 V (by linarith)
+  have hV_add : V ^ (1 / 4 : ℝ) * V ^ (1 / 2 : ℝ) = V ^ (3 / 4 : ℝ) := by
+    rw [← Real.rpow_add hV_pos]; norm_num
+  calc shellDepthSum W₁ W₂ L
+      ≤ 16 * ((|xiLineTwoLogDerivConstant| + Real.log (2 * V + 4)) * (Real.log V) ^ 2) *
+          V ^ (1 / 2 : ℝ) := hsh_raw.trans_eq (by ring)
+    _ ≤ 16 * (2 * (|xiLineTwoLogDerivConstant| + 4) * (K_log3 * V ^ (1 / 4 : ℝ))) *
+          V ^ (1 / 2 : ℝ) :=
+        mul_le_mul_of_nonneg_right
+          (mul_le_mul_of_nonneg_left
+            (hfactor.trans (mul_le_mul_of_nonneg_left hpow_le (by positivity))) (by norm_num))
+          (Real.rpow_nonneg hV_pos.le _)
+    _ = 32 * (|xiLineTwoLogDerivConstant| + 4) * K_log3 *
+          (V ^ (1 / 4 : ℝ) * V ^ (1 / 2 : ℝ)) := by ring
+    _ = 32 * (|xiLineTwoLogDerivConstant| + 4) * K_log3 * V ^ (3 / 4 : ℝ) := by rw [hV_add]
+
+/-- Scale-I near-line shell bound (`0 < z.re - 1/2 < (51/50) / L_S`) via Selberg's `Λ²` first moment. -/
+private theorem scaleI_near_shell_sum_le {V T₁ T₂ L L_S c' : ℝ}
+    (hV_pos : 0 < V) (hT₂2V : T₂ ≤ 2 * V)
+    (hc0 : 0 < c') (hc' : c' < 22 / 51)
+    (hLS_pos : 0 < L_S) (hLS_le : L_S ≤ 2 * Real.log V)
+    (hL0 : 0 ≤ L) (hL_le_LS : L ≤ c' * L_S)
+    (hm1_V : offLineMoment (2 * V) ≤ 17 / 100 * (2 * V)) :
+    2 * (∑ z ∈ ((shellZeros T₁ T₂).filter (fun z => 1 / 2 < z.re)).filter
+          (fun z => z.re - 1 / 2 < (51 / 50) * (1 / L_S)),
+        ((analyticOrderAt xi z).toNat : ℝ) * depthKernel L (z.re - 1 / 2)) ≤
+      (16 * Real.exp 2) * c' ^ 2 * V * Real.log V := by
+  classical
+  let R₁ := ((shellZeros T₁ T₂).filter (fun z => 1 / 2 < z.re)).filter
+    (fun z => z.re - 1 / 2 < (51 / 50) * (1 / L_S))
+  have hptwI : ∀ z ∈ R₁,
+      ((analyticOrderAt xi z).toNat : ℝ) * depthKernel L (z.re - 1 / 2) ≤
+        (8 * Real.exp 2 * c' ^ 2 * L_S) *
+          (((analyticOrderAt xi z).toNat : ℝ) * (z.re - 1 / 2)) := by
+    intro z hz
+    obtain ⟨hzR, hlt_b1⟩ := Finset.mem_filter.mp hz
+    have hre_gt : 1 / 2 < z.re := (Finset.mem_filter.mp hzR).2
+    set δ : ℝ := z.re - 1 / 2
+    have hδ_pos : 0 < δ := by dsimp [δ]; linarith
+    have hLδ_c : L * δ ≤ (51 / 50) * c' := by
+      calc L * δ ≤ (c' * L_S) * ((51 / 50) * (1 / L_S)) :=
+            mul_le_mul hL_le_LS hlt_b1.le hδ_pos.le (by positivity)
+        _ = (51 / 50) * c' * (L_S / L_S) := by ring
+        _ = (51 / 50) * c' := by rw [div_self hLS_pos.ne', mul_one]
+    have hLδ_lt1 : L * δ ≤ 1 := by linarith
+    have hsq_le : (L * δ) ^ 2 ≤ (2 * c' ^ 2 * L_S) * δ := by
+      have hprod : L * (L * δ) ≤ (c' * L_S) * ((51 / 50) * c') :=
+        mul_le_mul hL_le_LS hLδ_c (mul_nonneg hL0 hδ_pos.le) (by positivity)
+      have hm := mul_le_mul_of_nonneg_right hprod hδ_pos.le
+      have hcoef : (c' * L_S) * ((51 / 50) * c') * δ ≤ (2 * c' ^ 2 * L_S) * δ := by
+        have hnn : 0 ≤ c' ^ 2 * L_S * δ := by positivity
+        nlinarith
+      nlinarith
+    have hdk_I : depthKernel L δ ≤ (8 * Real.exp 2 * c' ^ 2 * L_S) * δ := by
+      have h1 := depthKernel_le_four_sq_mul_exp (d := δ) hL0
+      rw [abs_of_pos hδ_pos] at h1
+      have hexp_le : Real.exp (2 * L * δ) ≤ Real.exp 2 := Real.exp_le_exp.mpr (by linarith)
+      have hm := mul_le_mul (mul_le_mul_of_nonneg_left hsq_le (by norm_num : (0 : ℝ) ≤ 4))
+        hexp_le (Real.exp_pos _).le (by positivity)
+      linarith
+    exact (mul_le_mul_of_nonneg_left hdk_I (Nat.cast_nonneg _)).trans_eq (by ring)
+  have hsub_box : R₁ ⊆ boxFinsetLe (2 * V) := by
+    intro z hz
+    obtain ⟨hzR, _⟩ := Finset.mem_filter.mp hz
+    obtain ⟨hz_sh, hre_gt⟩ := Finset.mem_filter.mp hzR
+    obtain ⟨_, hre_lt, him_pos, him_le, hxi⟩ := mem_stripFinsetPos.mp (Finset.mem_filter.mp hz_sh).1
+    exact mem_boxFinsetLe.mpr ⟨hre_gt, hre_lt, him_pos.le, him_le.trans hT₂2V, hxi⟩
+  have hsum_box : ∑ z ∈ R₁, (((analyticOrderAt xi z).toNat : ℝ) * (z.re - 1 / 2)) ≤
+      offLineMoment (2 * V) :=
+    Finset.sum_le_sum_of_subset_of_nonneg hsub_box fun z hz _ => offLineMoment_term_nonneg hz
+  have hsumI : ∑ z ∈ R₁, ((analyticOrderAt xi z).toNat : ℝ) * depthKernel L (z.re - 1 / 2) ≤
+      (8 * Real.exp 2 * c' ^ 2 * L_S) * offLineMoment (2 * V) := by
+    refine (Finset.sum_le_sum hptwI).trans ?_
+    rw [← Finset.mul_sum]
+    exact mul_le_mul_of_nonneg_left hsum_box (by positivity)
+  have hlogV_nn : 0 ≤ Real.log V := by
+    have := offLineMoment_nonneg (2 * V)
+    nlinarith [hLS_pos, hLS_le]
+  calc 2 * ∑ z ∈ R₁, ((analyticOrderAt xi z).toNat : ℝ) * depthKernel L (z.re - 1 / 2)
+      ≤ 2 * ((8 * Real.exp 2 * c' ^ 2 * L_S) * offLineMoment (2 * V)) :=
+        mul_le_mul_of_nonneg_left hsumI zero_le_two
+    _ ≤ 2 * ((8 * Real.exp 2 * c' ^ 2 * (2 * Real.log V)) * (17 / 100 * (2 * V))) :=
+        mul_le_mul_of_nonneg_left (mul_le_mul
+          (mul_le_mul_of_nonneg_left hLS_le (by positivity))
+          hm1_V (offLineMoment_nonneg _) (by positivity)) zero_le_two
+    _ = (544 / 50 : ℝ) * (Real.exp 2 * c' ^ 2 * V * Real.log V) := by ring
+    _ ≤ 16 * (Real.exp 2 * c' ^ 2 * V * Real.log V) :=
+        mul_le_mul_of_nonneg_right (by norm_num) (by positivity)
+    _ = (16 * Real.exp 2) * c' ^ 2 * V * Real.log V := by ring
+
+/-- Scale-III deep shell bound (`1 / 2 + 1 / 200 ≤ z.re`) via `liftToXiZeroCopy`. -/
+private theorem scaleIII_deep_shell_sum_le (R_deep : Finset ℂ) {V T₁ T₂ L C_deep γ₀ : ℝ}
+    (hV_pos : 0 < V) (hVT₁ : V ≤ T₁) (hT₂2V : T₂ ≤ 2 * V) (hL0 : 0 ≤ L)
+    (hsub : R_deep ⊆ shellZeros T₁ T₂)
+    (hre : ∀ z ∈ R_deep, 1 / 2 + 1 / 200 ≤ z.re)
+    (hdeep_V : ∀ G : Finset XiZeroCopy,
+      (∀ q ∈ G, 1 / 2 + 1 / 200 ≤ foldedRe q ∧ V ≤ |(q.1 : ℂ).im| ∧ |(q.1 : ℂ).im| ≤ 2 * V) →
+      (1 / V) * ∑ q ∈ G, Real.exp (2 * L * (foldedRe q - 1 / 2)) ≤ C_deep * V ^ (-γ₀)) :
+    2 * ∑ z ∈ R_deep, ((analyticOrderAt xi z).toNat : ℝ) * depthKernel L (z.re - 1 / 2) ≤
+      2 * (C_deep * V ^ (1 - γ₀)) := by
+  have hxi : ∀ z ∈ R_deep, xi z = 0 := fun z hz =>
+    (mem_stripFinsetPos.mp (Finset.mem_filter.mp (hsub hz)).1).2.2.2.2
+  have hptw : ∑ z ∈ R_deep, ((analyticOrderAt xi z).toNat : ℝ) * depthKernel L (z.re - 1 / 2) ≤
+      ∑ z ∈ R_deep, ((analyticOrderAt xi z).toNat : ℝ) * Real.exp (2 * L * (z.re - 1 / 2)) := by
+    refine Finset.sum_le_sum fun z hz => ?_
+    have hge := hre z hz
+    have hdk := depthKernel_le_exp_two_mul (d := z.re - 1 / 2) hL0
+    rw [abs_of_pos (by linarith)] at hdk
+    exact mul_le_mul_of_nonneg_left hdk (Nat.cast_nonneg _)
+  have hfold_eq : ∑ q ∈ liftToXiZeroCopy R_deep hxi, Real.exp (2 * L * ((q.1 : ℂ).re - 1 / 2)) =
+      ∑ q ∈ liftToXiZeroCopy R_deep hxi, Real.exp (2 * L * (foldedRe q - 1 / 2)) := by
+    refine Finset.sum_congr rfl fun q hq => ?_
+    have hge := hre (q.1 : ℂ) (mem_liftToXiZeroCopy_iff hq)
+    rw [show foldedRe q = (q.1 : ℂ).re from max_eq_left (by linarith)]
+  have hG_cond : ∀ q ∈ liftToXiZeroCopy R_deep hxi,
+      1 / 2 + 1 / 200 ≤ foldedRe q ∧ V ≤ |(q.1 : ℂ).im| ∧ |(q.1 : ℂ).im| ≤ 2 * V := by
+    intro q hq
+    have hz_mem : (q.1 : ℂ) ∈ R_deep := mem_liftToXiZeroCopy_iff hq
+    have hge := hre (q.1 : ℂ) hz_mem
+    have hz_sh := hsub hz_mem
+    have him1 : T₁ < (q.1 : ℂ).im := (Finset.mem_filter.mp hz_sh).2
+    have him2 : (q.1 : ℂ).im ≤ T₂ := (mem_stripFinsetPos.mp (Finset.mem_filter.mp hz_sh).1).2.2.2.1
+    rw [abs_of_pos (by linarith)]
+    exact ⟨le_trans hge (le_max_left _ _), by linarith, by linarith⟩
+  have hm_V := mul_le_mul_of_nonneg_left (hdeep_V (liftToXiZeroCopy R_deep hxi) hG_cond) hV_pos.le
+  have hlhs : V * ((1 / V) * ∑ q ∈ liftToXiZeroCopy R_deep hxi,
+      Real.exp (2 * L * (foldedRe q - 1 / 2))) =
+      ∑ q ∈ liftToXiZeroCopy R_deep hxi, Real.exp (2 * L * (foldedRe q - 1 / 2)) := by
+    field_simp
+  have hrhs : V * (C_deep * V ^ (-γ₀)) = C_deep * V ^ (1 - γ₀) := by
+    calc V * (C_deep * V ^ (-γ₀))
+        = C_deep * (V ^ (1 : ℝ) * V ^ (-γ₀)) := by rw [Real.rpow_one]; ring
+      _ = C_deep * V ^ (1 - γ₀) := by rw [← Real.rpow_add hV_pos]; ring_nf
+  rw [hlhs, hrhs] at hm_V
+  have hchain : ∑ z ∈ R_deep, ((analyticOrderAt xi z).toNat : ℝ) * depthKernel L (z.re - 1 / 2) ≤
+      C_deep * V ^ (1 - γ₀) :=
+    calc ∑ z ∈ R_deep, ((analyticOrderAt xi z).toNat : ℝ) * depthKernel L (z.re - 1 / 2)
+        ≤ ∑ z ∈ R_deep, ((analyticOrderAt xi z).toNat : ℝ) * Real.exp (2 * L * (z.re - 1 / 2)) := hptw
+      _ = ∑ q ∈ liftToXiZeroCopy R_deep hxi, Real.exp (2 * L * ((q.1 : ℂ).re - 1 / 2)) :=
+          sum_analyticOrder_eq_sum_liftToXiZeroCopy R_deep hxi _
+      _ = ∑ q ∈ liftToXiZeroCopy R_deep hxi, Real.exp (2 * L * (foldedRe q - 1 / 2)) := hfold_eq
+      _ ≤ C_deep * V ^ (1 - γ₀) := hm_V
+  exact mul_le_mul_of_nonneg_left hchain zero_le_two
+
 /-- **Three-Scale Sieve-Mollified Shell Bound (`exists_shellDepthSum_le_mul_log`).**
 For every `0 < c' < 22 / 51`, `shellDepthSum V (2 * V) L ≤ K_sh * V * Real.log V` uniformly for
 all `0 ≤ L ≤ c' * Real.log V` eventually in `V`, with uniform quadratic small-`c'` constant
@@ -944,7 +1137,6 @@ theorem exists_shellDepthSum_le_mul_log :
           ∀ᶠ V : ℝ in atTop, ∀ L : ℝ, 0 ≤ L → L ≤ c' * Real.log V →
             shellDepthSum V (2 * V) L ≤ K_sh * V * Real.log V := by
   obtain ⟨A, K, hA, hK, hbv_ev⟩ := exists_selberg_criticalGate_nearLine_zeroDensity
-  -- Universal constant for `c' ≤ 9 / 40`, where `lam ≥ 2 / 5` and `1 - exp(-lam / 2) ≥ 1 - exp(-1 / 5)`
   set r_max : ℝ := Real.exp (-(1 / 5 : ℝ))
   have hr_max_lt1 : r_max < 1 := Real.exp_lt_one_iff.mpr (by norm_num)
   set K_I : ℝ := 16 * Real.exp 2
@@ -964,7 +1156,7 @@ theorem exists_shellDepthSum_le_mul_log :
     have hlam_ge : (2 / 5 : ℝ) ≤ lam := by dsimp [lam]; linarith
     have hr_le : r ≤ r_max := Real.exp_le_exp.mpr (by linarith)
     have hden_ge : (2 / 5 : ℝ) * (1 - r_max) ≤ lam * (1 - r) :=
-      mul_le_mul hlam_ge (by linarith) (by linarith) (by norm_num)
+      mul_le_mul hlam_ge (by linarith) (by linarith) hlam_pos.le
     have hKII_le : K_II_c ≤ K_II_univ := by
       dsimp [K_II_c, K_II_univ]
       have hdiv := div_le_div_of_nonneg_left (by positivity : 0 ≤ 64 * Real.exp 1 * A)
@@ -972,20 +1164,17 @@ theorem exists_shellDepthSum_le_mul_log :
       linarith
     dsimp [K_sh, K_univ]
     exact mul_le_mul_of_nonneg_right (by linarith) (sq_nonneg c')
-  -- Deep off-line Scale III (`δ ≥ 1 / 200`, `α = c' < 22 / 51 < 2 / 3`)
   obtain ⟨C_deep, hC_deep, T_deep, hT_deep, hdeep⟩ :=
     exists_sum_exp_foldedRe_deep_decay_up_to_two_thirds_log
       hc0.le (by linarith : c' < 2 / 3) (by norm_num : (0 : ℝ) < 1 / 200) (by norm_num)
   set γ₀ : ℝ := (4 / 3 - 2 * c') * (1 / 200) / 8
   have hγ₀_pos : 0 < γ₀ := by dsimp [γ₀]; linarith
-  -- Polylogarithmic absorptions for end-caps (`V^{c'} * log^3 V = o(V)`) and Scale II error
   obtain ⟨K_log3, _, hlog3⟩ := exists_one_add_log_pow_le_rpow 3 (by positivity : (0 : ℝ) < 1 / 4)
   obtain ⟨K_log4, _, hlog4⟩ := exists_one_add_log_pow_le_rpow 4 (by positivity : (0 : ℝ) < 1 / 50)
   have htend_32 : Tendsto (fun V : ℝ => (3 / 2 : ℝ) * V) atTop atTop :=
     tendsto_id.const_mul_atTop (by norm_num)
   have htend_2 : Tendsto (fun V : ℝ => (2 : ℝ) * V) atTop atTop :=
     tendsto_id.const_mul_atTop zero_lt_two
-  -- Sublinear `o(V)` eventual absorptions
   have hev_cap : ∀ᶠ V : ℝ in atTop,
       64 * (|xiLineTwoLogDerivConstant| + 4) * K_log3 * V ^ (3 / 4 : ℝ) ≤
         c' ^ 2 * V * Real.log V := by
@@ -994,20 +1183,19 @@ theorem exists_shellDepthSum_le_mul_log :
     filter_upwards [ht.eventually_ge_atTop
       (64 * (|xiLineTwoLogDerivConstant| + 4) * K_log3 / c' ^ 2 + 1),
       eventually_ge_atTop (4 : ℝ)] with V hV_rpow hV4
-    have hlog1 : 1 ≤ Real.log V := by
-      have := Real.log_two_gt_d9
-      have := Real.log_le_log zero_lt_two (by linarith : (2 : ℝ) ≤ V)
-      linarith
-    have hV_split : V = V ^ (3 / 4 : ℝ) * V ^ (1 / 4 : ℝ) := by
-      rw [← Real.rpow_add (by linarith : 0 < V)]; norm_num
+    have hV_pos : 0 < V := by linarith
+    have hlog1 : 1 ≤ Real.log V := one_le_log_of_four_le hV4
+    have hV_mul : V ^ (3 / 4 : ℝ) * V ^ (1 / 4 : ℝ) = V := by
+      rw [← Real.rpow_add hV_pos]; norm_num
     have hmul1 := (div_le_iff₀ (by positivity : 0 < c' ^ 2)).mp (by linarith :
       64 * (|xiLineTwoLogDerivConstant| + 4) * K_log3 / c' ^ 2 ≤ V ^ (1 / 4 : ℝ))
-    have hmul2 := mul_le_mul_of_nonneg_left hmul1 (Real.rpow_nonneg (by linarith : 0 ≤ V) (3 / 4))
+    have hmul2 := mul_le_mul_of_nonneg_left hmul1 (Real.rpow_nonneg hV_pos.le (3 / 4))
     have hrew : V ^ (3 / 4 : ℝ) * (V ^ (1 / 4 : ℝ) * c' ^ 2) = c' ^ 2 * V := by
-      rw [hV_split]; ring
+      calc V ^ (3 / 4 : ℝ) * (V ^ (1 / 4 : ℝ) * c' ^ 2)
+          = c' ^ 2 * (V ^ (3 / 4 : ℝ) * V ^ (1 / 4 : ℝ)) := by ring
+        _ = c' ^ 2 * V := by rw [hV_mul]
     rw [hrew] at hmul2
-    have hm_log := le_mul_of_one_le_right (by positivity : 0 ≤ c' ^ 2 * V) hlog1
-    linarith
+    exact hmul2.trans (le_mul_of_one_le_right (by positivity) hlog1)
   have hev_errII : ∀ᶠ V : ℝ in atTop,
       2 * ((16 * Real.exp 2 * K) * c' ^ 2 * K_log4 * ((3 / 2 : ℝ) * V) ^ (1 / 25 : ℝ)) ≤
         c' ^ 2 * V * Real.log V := by
@@ -1016,10 +1204,7 @@ theorem exists_shellDepthSum_le_mul_log :
     filter_upwards [ht.eventually_ge_atTop (64 * Real.exp 2 * K * K_log4 + 1),
       eventually_ge_atTop (4 : ℝ)] with V hV_rpow hV4
     have hV_pos : 0 < V := by linarith
-    have hlog1 : 1 ≤ Real.log V := by
-      have := Real.log_two_gt_d9
-      have := Real.log_le_log zero_lt_two (by linarith : (2 : ℝ) ≤ V)
-      linarith
+    have hlog1 : 1 ≤ Real.log V := one_le_log_of_four_le hV4
     have h32_rpow : ((3 / 2 : ℝ) * V) ^ (1 / 25 : ℝ) ≤ 2 * V ^ (1 / 25 : ℝ) := by
       rw [Real.mul_rpow (by norm_num) hV_pos.le]
       refine mul_le_mul_of_nonneg_right ?_ (Real.rpow_nonneg hV_pos.le _)
@@ -1027,7 +1212,7 @@ theorem exists_shellDepthSum_le_mul_log :
             (Real.rpow_le_rpow (by norm_num) (by norm_num) (by norm_num)).trans
               (Real.rpow_le_rpow_of_exponent_le one_le_two (by norm_num))
         _ = 2 := Real.rpow_one 2
-    have hV_split : V = V ^ (1 / 25 : ℝ) * V ^ (24 / 25 : ℝ) := by
+    have hV_mul : V ^ (1 / 25 : ℝ) * V ^ (24 / 25 : ℝ) = V := by
       rw [← Real.rpow_add hV_pos]; norm_num
     have h1 : 2 * ((16 * Real.exp 2 * K) * c' ^ 2 * K_log4 * ((3 / 2 : ℝ) * V) ^ (1 / 25 : ℝ)) ≤
         c' ^ 2 * V ^ (1 / 25 : ℝ) * (64 * Real.exp 2 * K * K_log4) := by
@@ -1035,9 +1220,11 @@ theorem exists_shellDepthSum_le_mul_log :
         (by positivity : 0 ≤ 32 * Real.exp 2 * K * c' ^ 2 * K_log4)
       linarith
     have h2 : c' ^ 2 * V ^ (1 / 25 : ℝ) * (64 * Real.exp 2 * K * K_log4) ≤ c' ^ 2 * V := by
-      have hm := mul_le_mul_of_nonneg_left (by linarith : 64 * Real.exp 2 * K * K_log4 ≤ V ^ (24 / 25 : ℝ))
-        (by positivity : 0 ≤ c' ^ 2 * V ^ (1 / 25 : ℝ))
-      rw [hV_split]; linarith
+      calc c' ^ 2 * V ^ (1 / 25 : ℝ) * (64 * Real.exp 2 * K * K_log4)
+          ≤ c' ^ 2 * V ^ (1 / 25 : ℝ) * V ^ (24 / 25 : ℝ) :=
+            mul_le_mul_of_nonneg_left (by linarith) (by positivity)
+        _ = c' ^ 2 * (V ^ (1 / 25 : ℝ) * V ^ (24 / 25 : ℝ)) := by ring
+        _ = c' ^ 2 * V := by rw [hV_mul]
     exact (h1.trans h2).trans (le_mul_of_one_le_right (by positivity) hlog1)
   have hev_deep : ∀ᶠ V : ℝ in atTop,
       2 * (C_deep * V ^ (1 - γ₀)) ≤ c' ^ 2 * V * Real.log V := by
@@ -1045,16 +1232,16 @@ theorem exists_shellDepthSum_le_mul_log :
     filter_upwards [ht.eventually_ge_atTop (2 * C_deep / c' ^ 2 + 1),
       eventually_ge_atTop (4 : ℝ)] with V hV_rpow hV4
     have hV_pos : 0 < V := by linarith
-    have hlog1 : 1 ≤ Real.log V := by
-      have := Real.log_two_gt_d9
-      have := Real.log_le_log zero_lt_two (by linarith : (2 : ℝ) ≤ V)
-      linarith
-    have hV_split : V = V ^ (1 - γ₀) * V ^ γ₀ := by
-      rw [← Real.rpow_add hV_pos]; ring_nf
+    have hlog1 : 1 ≤ Real.log V := one_le_log_of_four_le hV4
+    have hV_mul : V ^ (1 - γ₀) * V ^ γ₀ = V := by
+      rw [← Real.rpow_add hV_pos]; ring_nf; exact Real.rpow_one V
     have hm1 := (div_le_iff₀ (by positivity : 0 < c' ^ 2)).mp
       (by linarith : 2 * C_deep / c' ^ 2 ≤ V ^ γ₀)
     have hm2 := mul_le_mul_of_nonneg_left hm1 (Real.rpow_nonneg hV_pos.le (1 - γ₀))
-    have hrew : V ^ (1 - γ₀) * (V ^ γ₀ * c' ^ 2) = c' ^ 2 * V := by rw [hV_split]; ring
+    have hrew : V ^ (1 - γ₀) * (V ^ γ₀ * c' ^ 2) = c' ^ 2 * V := by
+      calc V ^ (1 - γ₀) * (V ^ γ₀ * c' ^ 2)
+          = c' ^ 2 * (V ^ (1 - γ₀) * V ^ γ₀) := by ring
+        _ = c' ^ 2 * V := by rw [hV_mul]
     rw [hrew] at hm2
     exact (by linarith : 2 * (C_deep * V ^ (1 - γ₀)) ≤ c' ^ 2 * V).trans
       (le_mul_of_one_le_right (by positivity) hlog1)
@@ -1068,20 +1255,16 @@ theorem exists_shellDepthSum_le_mul_log :
   have hV16 : 16 ≤ V := (le_max_left _ _).trans hV_max
   have hV_deep : T_deep ≤ V := (le_max_right _ _).trans hV_max
   have hV_pos : 0 < V := by linarith
-  have hlogV_ge2 : 2 ≤ Real.log V := by
-    have h2 := Real.log_two_gt_d9
-    have h16 : Real.log ((2 : ℝ) ^ (4 : ℕ)) ≤ Real.log V :=
-      Real.log_le_log (by norm_num) (by norm_num at *; linarith)
-    rw [Real.log_pow] at h16; push_cast at h16; linarith
+  have hlogV_ge2 : 2 ≤ Real.log V := two_le_log_of_sixteen_le hV16
   set S : ℝ := (3 / 2) * V
   set L_S : ℝ := Real.log S
+  have hLS_pos : 0 < L_S := by dsimp [L_S]; linarith
   have hLS_le_2logV : L_S ≤ 2 * Real.log V := by
     dsimp [L_S, S]
     have h1 : Real.log ((3 / 2) * V) ≤ Real.log (2 * V) :=
       Real.log_le_log (by positivity) (by linarith)
     rw [Real.log_mul zero_lt_two.ne' hV_pos.ne'] at h1
-    have := Real.log_two_lt_d9
-    linarith
+    linarith [Real.log_two_lt_d9]
   have hL_le_LS : L ≤ c' * L_S :=
     hL.trans (mul_le_mul_of_nonneg_left
       (Real.log_le_log hV_pos (by dsimp [S]; linarith)) hc0.le)
@@ -1089,162 +1272,34 @@ theorem exists_shellDepthSum_le_mul_log :
   have hVT₁ : V ≤ T₁ := by dsimp [S] at hT₁; linarith [hT₁.1]
   have hT₁2 : T₁ ≤ T₂ := by dsimp [S] at hT₁ hT₂; linarith [hT₁.2, hT₂.1]
   have hT₂2V : T₂ ≤ 2 * V := by dsimp [S] at hT₂; linarith [hT₂.2]
-  rw [shellDepthSum_split hVT₁ (hT₁2.trans hT₂2V), shellDepthSum_split hT₁2 hT₂2V]
-  -- 1. Bound both end-caps `(V, T₁]` and `(T₂, 2 * V]`
+  -- 1. End-caps `(V, T₁]` and `(T₂, 2 * V]`
+  have hL_half : L ≤ (1 / 2) * Real.log V :=
+    hL.trans (mul_le_mul_of_nonneg_right (by linarith) (by linarith))
   have hcap_sum : shellDepthSum V T₁ L + shellDepthSum T₂ (2 * V) L ≤
       c' ^ 2 * V * Real.log V := by
-    have hdk_cap : ∀ z : ℂ, |z.re - 1 / 2| ≤ 1 / 2 →
-        depthKernel L (z.re - 1 / 2) ≤ (Real.log V) ^ 2 * V ^ (1 / 2 : ℝ) := by
-      intro z hz
-      have h1 := depthKernel_le_four_sq_mul_exp (d := z.re - 1 / 2) hL0
-      have hLd : L * |z.re - 1 / 2| ≤ (1 / 2) * Real.log V := by
-        have hc_lt1 : c' ≤ 1 := by linarith
-        have hL_log : L ≤ Real.log V := hL.trans (mul_le_of_le_one_left (by positivity) hc_lt1)
-        nlinarith [abs_nonneg (z.re - 1 / 2)]
-      have hsq : 4 * (L * |z.re - 1 / 2|) ^ 2 ≤ (Real.log V) ^ 2 := by
-        have := pow_le_pow_left₀ (by positivity) hLd 2
-        linarith
-      have hexp : Real.exp (2 * L * |z.re - 1 / 2|) ≤ V ^ (1 / 2 : ℝ) := by
-        have hc_half : c' ≤ 1 / 2 := by linarith
-        have h2Ld : 2 * L * |z.re - 1 / 2| ≤ (1 / 2) * Real.log V := by
-          have := mul_le_mul hL hz (abs_nonneg _) (by positivity)
-          nlinarith [hlogV_ge2]
-        calc Real.exp (2 * L * |z.re - 1 / 2|)
-            ≤ Real.exp ((1 / 2) * Real.log V) := Real.exp_le_exp.mpr h2Ld
-          _ = V ^ (1 / 2 : ℝ) := by rw [Real.rpow_def_of_pos hV_pos, mul_comm]
-      exact h1.trans (mul_le_mul hsq hexp (Real.exp_pos _).le (sq_nonneg _))
-    have hcap1_ord := shortShell_orderSum_le_log hV_pos.le hVT₁
-      (by dsimp [S] at hT₁; linarith [hT₁.2])
-    have hcap2_ord := shortShell_orderSum_le_log (by linarith) hT₂2V
-      (by dsimp [S] at hT₂; linarith [hT₂.1])
-    have hbound_shell : ∀ W₁ W₂ : ℝ, W₂ ≤ 2 * V →
-        (∑ z ∈ shellZeros W₁ W₂, ((analyticOrderAt xi z).toNat : ℝ)) ≤
-          16 * (|xiLineTwoLogDerivConstant| + Real.log (2 * V + 4)) →
-        shellDepthSum W₁ W₂ L ≤
-          16 * (|xiLineTwoLogDerivConstant| + Real.log (2 * V + 4)) *
-            ((Real.log V) ^ 2 * V ^ (1 / 2 : ℝ)) := by
-      intro W₁ W₂ _ hord
-      unfold shellDepthSum
-      calc ∑ z ∈ shellZeros W₁ W₂, ((analyticOrderAt xi z).toNat : ℝ) * depthKernel L (z.re - 1 / 2)
-          ≤ ∑ z ∈ shellZeros W₁ W₂,
-              ((analyticOrderAt xi z).toNat : ℝ) * ((Real.log V) ^ 2 * V ^ (1 / 2 : ℝ)) := by
-            refine Finset.sum_le_sum fun z hz => mul_le_mul_of_nonneg_left (hdk_cap z ?_)
-              (Nat.cast_nonneg _)
-            obtain ⟨h0, h1, _, _, _⟩ := mem_stripFinsetPos.mp (Finset.mem_filter.mp hz).1
-            rw [abs_le]; constructor <;> linarith
-        _ = (∑ z ∈ shellZeros W₁ W₂, ((analyticOrderAt xi z).toNat : ℝ)) *
-              ((Real.log V) ^ 2 * V ^ (1 / 2 : ℝ)) := (Finset.sum_mul _ _ _).symm
-        _ ≤ _ := mul_le_mul_of_nonneg_right hord (by positivity)
-    have hlog2V4 : Real.log (2 * V + 4) ≤ 3 + Real.log V := by
-      have hle : 2 * V + 4 ≤ 4 * V := by linarith
-      calc Real.log (2 * V + 4) ≤ Real.log (4 * V) := Real.log_le_log (by positivity) hle
-        _ = Real.log 4 + Real.log V := Real.log_mul (by norm_num) hV_pos.ne'
-        _ ≤ 3 + Real.log V := by
-            have : Real.log ((2 : ℝ) ^ (2 : ℕ)) ≤ 2 := by
-              rw [Real.log_pow]; push_cast; linarith [Real.log_two_lt_d9]
-            norm_num at this; linarith
-    have hb1 := hbound_shell V T₁ (hT₁2.trans hT₂2V) (hcap1_ord.trans
-      (mul_le_mul_of_nonneg_left (add_le_add le_rfl
-        (Real.log_le_log (by positivity) (by linarith))) (by norm_num)))
-    have hb2 := hbound_shell T₂ (2 * V) le_rfl hcap2_ord
-    have hpoly : 32 * (|xiLineTwoLogDerivConstant| + Real.log (2 * V + 4)) *
-        ((Real.log V) ^ 2 * V ^ (1 / 2 : ℝ)) ≤
-        64 * (|xiLineTwoLogDerivConstant| + 4) * K_log3 * V ^ (3 / 4 : ℝ) := by
-      have hfactor : (|xiLineTwoLogDerivConstant| + Real.log (2 * V + 4)) * (Real.log V) ^ 2 ≤
-          2 * (|xiLineTwoLogDerivConstant| + 4) * (1 + Real.log V) ^ 3 := by
-        nlinarith [abs_nonneg xiLineTwoLogDerivConstant, hlogV_ge2, hlog2V4]
-      have hpow_le := hlog3 V (by linarith)
-      have hV_add : V ^ (1 / 4 : ℝ) * V ^ (1 / 2 : ℝ) = V ^ (3 / 4 : ℝ) := by
-        rw [← Real.rpow_add hV_pos]; norm_num
-      calc 32 * (|xiLineTwoLogDerivConstant| + Real.log (2 * V + 4)) *
-              ((Real.log V) ^ 2 * V ^ (1 / 2 : ℝ))
-          = 32 * ((|xiLineTwoLogDerivConstant| + Real.log (2 * V + 4)) * (Real.log V) ^ 2) *
-              V ^ (1 / 2 : ℝ) := by ring
-        _ ≤ 32 * (2 * (|xiLineTwoLogDerivConstant| + 4) * (K_log3 * V ^ (1 / 4 : ℝ))) *
-              V ^ (1 / 2 : ℝ) :=
-            mul_le_mul_of_nonneg_right
-              (mul_le_mul_of_nonneg_left
-                (hfactor.trans (mul_le_mul_of_nonneg_left hpow_le (by positivity))) (by norm_num))
-              (Real.rpow_nonneg hV_pos.le _)
-        _ = 64 * (|xiLineTwoLogDerivConstant| + 4) * K_log3 *
-              (V ^ (1 / 4 : ℝ) * V ^ (1 / 2 : ℝ)) := by ring
-        _ = 64 * (|xiLineTwoLogDerivConstant| + 4) * K_log3 * V ^ (3 / 4 : ℝ) := by rw [hV_add]
-    linarith [hb1, hb2, hpoly, hcap_V]
+    have hb1 := shortCap_shellDepthSum_le_rpow hV16 hV_pos.le hVT₁
+      (by dsimp [S] at hT₁; linarith [hT₁.2]) (hT₁2.trans hT₂2V) hL0 hL_half hlog3
+    have hb2 := shortCap_shellDepthSum_le_rpow hV16 (by linarith) hT₂2V
+      (by dsimp [S] at hT₂; linarith [hT₂.1]) le_rfl hL0 hL_half hlog3
+    calc shellDepthSum V T₁ L + shellDepthSum T₂ (2 * V) L
+        ≤ 32 * (|xiLineTwoLogDerivConstant| + 4) * K_log3 * V ^ (3 / 4 : ℝ) +
+            32 * (|xiLineTwoLogDerivConstant| + 4) * K_log3 * V ^ (3 / 4 : ℝ) :=
+          add_le_add hb1 hb2
+      _ = 64 * (|xiLineTwoLogDerivConstant| + 4) * K_log3 * V ^ (3 / 4 : ℝ) := by ring
+      _ ≤ c' ^ 2 * V * Real.log V := hcap_V
   -- 2. Partition `shellDepthSum T₁ T₂ L` into Scales I, II, III
-  rw [shellDepthSum_eq_two_mul_right T₁ T₂ L]
   classical
-  set R := (shellZeros T₁ T₂).filter (fun z => 1 / 2 < z.re)
-  set N_S : ℕ := ⌊L_S / 100⌋₊
-  set b₁ : ℝ := (51 / 50) * (1 / L_S)
-  set b₂ : ℝ := (51 / 50) * ((N_S : ℝ) / L_S)
-  set f_z : ℂ → ℝ := fun z => ((analyticOrderAt xi z).toNat : ℝ) * depthKernel L (z.re - 1 / 2)
+  let R := (shellZeros T₁ T₂).filter (fun z => 1 / 2 < z.re)
+  let N_S : ℕ := ⌊L_S / 100⌋₊
+  let b₁ : ℝ := (51 / 50) * (1 / L_S)
+  let b₂ : ℝ := (51 / 50) * ((N_S : ℝ) / L_S)
+  let f_z : ℂ → ℝ := fun z => ((analyticOrderAt xi z).toNat : ℝ) * depthKernel L (z.re - 1 / 2)
   have hpart1 := (Finset.sum_filter_add_sum_filter_not R (fun z => z.re - 1 / 2 < b₁) f_z).symm
   have hpart2 := (Finset.sum_filter_add_sum_filter_not
     (R.filter (fun z => ¬ z.re - 1 / 2 < b₁)) (fun z => z.re - 1 / 2 < b₂) f_z).symm
-  -- Scale I (`z.re - 1/2 < b₁`): Selberg `Λ²` first moment `≤ (17 / 100) * (2 * V)`
-  have hLS_pos : 0 < L_S := by dsimp [L_S]; linarith
   have hscaleI : 2 * ∑ z ∈ R.filter (fun z => z.re - 1 / 2 < b₁), f_z z ≤
-      K_I * c' ^ 2 * V * Real.log V := by
-    have hptwI : ∀ z ∈ R.filter (fun z => z.re - 1 / 2 < b₁),
-        f_z z ≤ (8 * Real.exp 2 * c' ^ 2 * L_S) *
-          (((analyticOrderAt xi z).toNat : ℝ) * (z.re - 1 / 2)) := by
-      intro z hz
-      obtain ⟨hzR, hlt_b1⟩ := Finset.mem_filter.mp hz
-      have hre_gt : 1 / 2 < z.re := (Finset.mem_filter.mp hzR).2
-      set δ : ℝ := z.re - 1 / 2
-      have hδ_pos : 0 < δ := by dsimp [δ]; linarith
-      have hLδ_c : L * δ ≤ (51 / 50) * c' := by
-        have h1 : L * δ ≤ (c' * L_S) * ((51 / 50) * (1 / L_S)) :=
-          mul_le_mul hL_le_LS hlt_b1.le hδ_pos.le (by positivity)
-        have h2 : (c' * L_S) * ((51 / 50) * (1 / L_S)) = (51 / 50) * c' := by
-          have : L_S ≠ 0 := hLS_pos.ne'
-          field_simp; ring
-        rwa [h2] at h1
-      have hLδ_lt1 : L * δ ≤ 1 := by linarith
-      have hsq_le : (L * δ) ^ 2 ≤ (2 * c' ^ 2 * L_S) * δ := by
-        have hprod : L * (L * δ) ≤ (c' * L_S) * ((51 / 50) * c') :=
-          mul_le_mul hL_le_LS hLδ_c (mul_nonneg hL0 hδ_pos.le) (by positivity)
-        have hm := mul_le_mul_of_nonneg_right hprod hδ_pos.le
-        have hcoef : (c' * L_S) * ((51 / 50) * c') * δ ≤ (2 * c' ^ 2 * L_S) * δ := by
-          have hnn : 0 ≤ c' ^ 2 * L_S * δ := by positivity
-          nlinarith
-        nlinarith
-      have hdk_I : depthKernel L δ ≤ (8 * Real.exp 2 * c' ^ 2 * L_S) * δ := by
-        have h1 := depthKernel_le_four_sq_mul_exp (d := δ) hL0
-        rw [abs_of_pos hδ_pos] at h1
-        have hexp_le : Real.exp (2 * L * δ) ≤ Real.exp 2 := Real.exp_le_exp.mpr (by linarith)
-        have hm := mul_le_mul (mul_le_mul_of_nonneg_left hsq_le (by norm_num : (0 : ℝ) ≤ 4))
-          hexp_le (Real.exp_pos _).le (by positivity)
-        linarith
-      dsimp [f_z]
-      have hm_ord := mul_le_mul_of_nonneg_left hdk_I (Nat.cast_nonneg (analyticOrderAt xi z).toNat)
-      linarith
-    have hsub_box : R.filter (fun z => z.re - 1 / 2 < b₁) ⊆ boxFinsetLe (2 * V) := by
-      intro z hz
-      obtain ⟨hzR, _⟩ := Finset.mem_filter.mp hz
-      obtain ⟨hz_sh, hre_gt⟩ := Finset.mem_filter.mp hzR
-      obtain ⟨_, hre_lt, him_pos, him_le, hxi⟩ := mem_stripFinsetPos.mp (Finset.mem_filter.mp hz_sh).1
-      exact mem_boxFinsetLe.mpr ⟨hre_gt, hre_lt, him_pos.le, him_le.trans hT₂2V, hxi⟩
-    have hsum_box : ∑ z ∈ R.filter (fun z => z.re - 1 / 2 < b₁),
-          (((analyticOrderAt xi z).toNat : ℝ) * (z.re - 1 / 2)) ≤ offLineMoment (2 * V) :=
-      Finset.sum_le_sum_of_subset_of_nonneg hsub_box fun z hz _ => offLineMoment_term_nonneg hz
-    have hsumI : ∑ z ∈ R.filter (fun z => z.re - 1 / 2 < b₁), f_z z ≤
-        (8 * Real.exp 2 * c' ^ 2 * L_S) * offLineMoment (2 * V) := by
-      refine (Finset.sum_le_sum hptwI).trans ?_
-      rw [← Finset.mul_sum]
-      exact mul_le_mul_of_nonneg_left hsum_box (by positivity)
-    calc 2 * ∑ z ∈ R.filter (fun z => z.re - 1 / 2 < b₁), f_z z
-        ≤ 2 * ((8 * Real.exp 2 * c' ^ 2 * L_S) * offLineMoment (2 * V)) :=
-          mul_le_mul_of_nonneg_left hsumI zero_le_two
-      _ ≤ 2 * ((8 * Real.exp 2 * c' ^ 2 * (2 * Real.log V)) * (17 / 100 * (2 * V))) := by
-          refine mul_le_mul_of_nonneg_left (mul_le_mul
-            (mul_le_mul_of_nonneg_left hLS_le_2logV (by positivity))
-            hm1_V (offLineMoment_nonneg _) (by positivity)) zero_le_two
-      _ ≤ K_I * c' ^ 2 * V * Real.log V := by
-          dsimp [K_I]
-          have hnn : 0 ≤ Real.exp 2 * c' ^ 2 * V * Real.log V := by positivity
-          linarith
-  -- Scale II (`b₁ ≤ z.re - 1/2 < b₂`): Barban–Vehov slab summation at `m₀ = 1`
+      K_I * c' ^ 2 * V * Real.log V :=
+    scaleI_near_shell_sum_le hV_pos hT₂2V hc0 hc' hLS_pos hLS_le_2logV hL0 hL_le_LS hm1_V
   have hscaleII : 2 * ∑ z ∈ (R.filter (fun z => ¬ z.re - 1 / 2 < b₁)).filter
         (fun z => z.re - 1 / 2 < b₂), f_z z ≤
       (K_II_c + 1) * c' ^ 2 * V * Real.log V := by
@@ -1262,15 +1317,15 @@ theorem exists_shellDepthSum_le_mul_log :
         exact ⟨⟨⟨hz_sh, by linarith⟩, by simpa [one_div] using hge⟩, hlt⟩
     rw [hR₂_eq]
     have hT₁_pos : 0 < T₁ := by linarith
-    have hbv_win : ∀ a : ℝ, 1 ≤ a → a ≤ Real.log S / 100 →
-        2 * Real.pi * ((a / Real.log S) *
-          ∑ w ∈ (windowZeros T₁ T₂).filter (fun w => 1 / 2 + 51 / 50 * (a / Real.log S) ≤ w.re),
+    have hbv_win : ∀ a : ℝ, 1 ≤ a → a ≤ L_S / 100 →
+        2 * Real.pi * ((a / L_S) *
+          ∑ w ∈ (windowZeros T₁ T₂).filter (fun w => 1 / 2 + 51 / 50 * (a / L_S) ≤ w.re),
             ((analyticOrderAt riemannZeta w).toNat : ℝ)) ≤
-          (T₂ - T₁) * (A * Real.exp (-(22 / 25 * a))) + K * Real.log S :=
+          (T₂ - T₁) * (A * Real.exp (-(22 / 25 * a))) + K * L_S :=
       fun a ha1 ha2 => hbv_S a ha1 ha2 (windowZeros T₁ T₂) (mem_windowZeros_iff hT₁_pos hT₁2)
-    have hslab := scaleII_barbanVehov_slab_sum_le (V := V) (S := S) (A := A) (K := K)
-      (c' := c') (L := L) (T₁ := T₁) (T₂ := T₂) (m₀ := 1)
-      (by linarith) rfl hA hK hc0 hc' hL0 hL_le_LS hT₁ hT₂ hLS200 hbv_win le_rfl
+    have hslab := scaleII_barbanVehov_slab_sum_le
+      (by linarith : 4 ≤ V) rfl hA hK hc0 hc' hL0 hL_le_LS hT₁ hT₂ rfl rfl rfl rfl
+      hLS200 hbv_win (le_rfl : 1 ≤ 1)
     have hr1_le : r ^ (1 : ℕ) ≤ 1 := by rw [pow_one]; exact hr_lt1.le
     have hmain_II : 2 * ((64 * Real.exp 1 * A / (lam * (1 - r))) * c' ^ 2 * r ^ (1 : ℕ) * (V * L_S)) ≤
         K_II_c * c' ^ 2 * V * Real.log V := by
@@ -1284,10 +1339,8 @@ theorem exists_shellDepthSum_le_mul_log :
     have herr_II : 2 * ((16 * Real.exp 2 * K) * c' ^ 2 * L_S ^ 4 * S ^ (1 / 50 : ℝ)) ≤
         c' ^ 2 * V * Real.log V := by
       have hS_pos : 0 < S := by dsimp [S]; linarith
-      have hLS4 : L_S ^ 4 ≤ K_log4 * S ^ (1 / 50 : ℝ) := by
-        have h1 : L_S ^ 4 ≤ (1 + L_S) ^ 4 :=
-          pow_le_pow_left₀ hLS_pos.le (by linarith) 4
-        exact h1.trans (hlog4 S (by dsimp [S]; linarith))
+      have hLS4 : L_S ^ 4 ≤ K_log4 * S ^ (1 / 50 : ℝ) :=
+        (pow_le_pow_left₀ hLS_pos.le (by linarith) 4).trans (hlog4 S (by dsimp [S]; linarith))
       have hS_add : S ^ (1 / 50 : ℝ) * S ^ (1 / 50 : ℝ) = S ^ (1 / 25 : ℝ) := by
         rw [← Real.rpow_add hS_pos]; norm_num
       have hm := mul_le_mul_of_nonneg_right
@@ -1302,83 +1355,43 @@ theorem exists_shellDepthSum_le_mul_log :
                 (S ^ (1 / 50 : ℝ) * S ^ (1 / 50 : ℝ))) := by ring
           _ = _ := by rw [hS_add]
       exact (hm.trans_eq hrew).trans herrII_V
-    have hslab2 := mul_le_mul_of_nonneg_left hslab zero_le_two
-    linarith [hslab2, hmain_II, herr_II]
-  -- Scale III (`b₂ ≤ z.re - 1/2`, hence `1 / 200 ≤ z.re - 1/2`): hybrid IGM–DH deep decay
+    exact ((mul_le_mul_of_nonneg_left hslab zero_le_two).trans_eq (mul_add _ _ _)).trans
+      ((add_le_add hmain_II herr_II).trans_eq (by ring))
   have hscaleIII : 2 * ∑ z ∈ (R.filter (fun z => ¬ z.re - 1 / 2 < b₁)).filter
         (fun z => ¬ z.re - 1 / 2 < b₂), f_z z ≤
       c' ^ 2 * V * Real.log V := by
-    set R₃ := (R.filter (fun z => ¬ z.re - 1 / 2 < b₁)).filter (fun z => ¬ z.re - 1 / 2 < b₂)
+    let R₃ := (R.filter (fun z => ¬ z.re - 1 / 2 < b₁)).filter (fun z => ¬ z.re - 1 / 2 < b₂)
     have hb₂_ge : (1 / 200 : ℝ) ≤ b₂ := by
       have hN_gt : L_S / 100 - 1 < (N_S : ℝ) := Nat.sub_one_lt_floor (L_S / 100)
       have hN_ge : L_S / 200 ≤ (N_S : ℝ) := by linarith [hLS200]
       have hm := mul_le_mul_of_nonneg_left hN_ge (by positivity : 0 ≤ (51 / 50) / L_S)
       have h1 : ((51 / 50) / L_S) * (L_S / 200) = 51 / 10000 := by
-        have : L_S ≠ 0 := hLS_pos.ne'
-        field_simp; ring
+        calc ((51 / 50) / L_S) * (L_S / 200) = (51 / 10000) * (L_S / L_S) := by ring
+          _ = 51 / 10000 := by rw [div_self hLS_pos.ne', mul_one]
       have h2 : ((51 / 50) / L_S) * (N_S : ℝ) = b₂ := by dsimp [b₂]; ring
       rw [h1, h2] at hm
       linarith
-    have hxi₃ : ∀ z ∈ R₃, xi z = 0 := fun z hz => by
-      obtain ⟨⟨⟨hz_sh, _⟩, _⟩, _⟩ :=
-        (Finset.mem_filter.mp hz).1 |> fun h => ⟨Finset.mem_filter.mp h.1, h.2⟩
-      exact (mem_stripFinsetPos.mp (Finset.mem_filter.mp hz_sh).1).2.2.2.2
-    have hptw_III : ∑ z ∈ R₃, f_z z ≤
-        ∑ z ∈ R₃, ((analyticOrderAt xi z).toNat : ℝ) * Real.exp (2 * L * (z.re - 1 / 2)) := by
-      refine Finset.sum_le_sum fun z hz => ?_
-      have hge : b₂ ≤ z.re - 1 / 2 := not_lt.mp (Finset.mem_filter.mp hz).2
-      have hpos : 0 < z.re - 1 / 2 := by linarith
-      have hdk := depthKernel_le_exp_two_mul (d := z.re - 1 / 2) hL0
-      rw [abs_of_pos hpos] at hdk
-      exact mul_le_mul_of_nonneg_left hdk (Nat.cast_nonneg _)
-    rw [sum_analyticOrder_eq_sum_liftToXiZeroCopy R₃ hxi₃] at hptw_III
-    have hG_cond : ∀ q ∈ liftToXiZeroCopy R₃ hxi₃,
-        1 / 2 + 1 / 200 ≤ foldedRe q ∧ V ≤ |(q.1 : ℂ).im| ∧ |(q.1 : ℂ).im| ≤ 2 * V := by
-      intro q hq
-      have hz : (q.1 : ℂ) ∈ R₃ := mem_liftToXiZeroCopy_iff hq
-      have hge : b₂ ≤ (q.1 : ℂ).re - 1 / 2 := not_lt.mp (Finset.mem_filter.mp hz).2
-      have hz_sh : (q.1 : ℂ) ∈ shellZeros T₁ T₂ :=
-        (Finset.mem_filter.mp (Finset.mem_filter.mp (Finset.mem_filter.mp hz).1).1).1
-      have him1 : T₁ < (q.1 : ℂ).im := (Finset.mem_filter.mp hz_sh).2
-      have him2 : (q.1 : ℂ).im ≤ T₂ := (mem_stripFinsetPos.mp (Finset.mem_filter.mp hz_sh).1).2.2.2.1
-      have habs_im : |(q.1 : ℂ).im| = (q.1 : ℂ).im := abs_of_pos (by linarith)
-      refine ⟨?_, by rw [habs_im]; linarith, by rw [habs_im]; linarith⟩
-      rw [foldedRe]
-      exact le_trans (by linarith) (le_max_left _ _)
-    have hfold_eq : ∑ q ∈ liftToXiZeroCopy R₃ hxi₃, Real.exp (2 * L * ((q.1 : ℂ).re - 1 / 2)) =
-        ∑ q ∈ liftToXiZeroCopy R₃ hxi₃, Real.exp (2 * L * (foldedRe q - 1 / 2)) := by
-      refine Finset.sum_congr rfl fun q hq => ?_
-      have hz : (q.1 : ℂ) ∈ R₃ := mem_liftToXiZeroCopy_iff hq
-      have hge : b₂ ≤ (q.1 : ℂ).re - 1 / 2 := not_lt.mp (Finset.mem_filter.mp hz).2
-      have hre_fold : foldedRe q = (q.1 : ℂ).re := max_eq_left (by linarith)
-      rw [hre_fold]
-    rw [hfold_eq] at hptw_III
-    have hdeep_G := hdeep V hV_deep L hL0 hL (liftToXiZeroCopy R₃ hxi₃) hG_cond
-    have hm_V := mul_le_mul_of_nonneg_left hdeep_G hV_pos.le
-    have hlhs : V * ((1 / V) * ∑ q ∈ liftToXiZeroCopy R₃ hxi₃,
-        Real.exp (2 * L * (foldedRe q - 1 / 2))) =
-        ∑ q ∈ liftToXiZeroCopy R₃ hxi₃, Real.exp (2 * L * (foldedRe q - 1 / 2)) := by
-      field_simp
-    have hrhs : V * (C_deep * V ^ (-γ₀)) = C_deep * V ^ (1 - γ₀) := by
-      calc V * (C_deep * V ^ (-γ₀))
-          = C_deep * (V ^ (1 : ℝ) * V ^ (-γ₀)) := by rw [Real.rpow_one]; ring
-        _ = C_deep * V ^ (1 - γ₀) := by rw [← Real.rpow_add hV_pos]; ring_nf
-    rw [hlhs, hrhs] at hm_V
-    have h2 := mul_le_mul_of_nonneg_left (hptw_III.trans hm_V) zero_le_two
-    exact h2.trans hdeep_V
-  -- Assemble end-caps + Scales I, II, III
-  change shellDepthSum V T₁ L + (2 * ∑ z ∈ R, f_z z + shellDepthSum T₂ (2 * V) L) ≤
-    K_sh * V * Real.log V
-  rw [hpart1, hpart2]
-  have hsum_all : shellDepthSum V T₁ L + shellDepthSum T₂ (2 * V) L +
-      2 * ∑ z ∈ R.filter (fun z => z.re - 1 / 2 < b₁), f_z z +
-      2 * ∑ z ∈ (R.filter (fun z => ¬ z.re - 1 / 2 < b₁)).filter (fun z => z.re - 1 / 2 < b₂), f_z z +
-      2 * ∑ z ∈ (R.filter (fun z => ¬ z.re - 1 / 2 < b₁)).filter (fun z => ¬ z.re - 1 / 2 < b₂), f_z z ≤
-      (K_I + K_II_c + 3) * c' ^ 2 * V * Real.log V := by
-    linarith [hcap_sum, hscaleI, hscaleII, hscaleIII]
+    have hsub₃ : R₃ ⊆ shellZeros T₁ T₂ := fun z hz =>
+      (Finset.mem_filter.mp (Finset.mem_filter.mp (Finset.mem_filter.mp hz).1).1).1
+    have hre₃ : ∀ z ∈ R₃, 1 / 2 + 1 / 200 ≤ z.re := fun z hz => by
+      linarith [not_lt.mp (Finset.mem_filter.mp hz).2]
+    exact (scaleIII_deep_shell_sum_le R₃ hV_pos hVT₁ hT₂2V hL0 hsub₃ hre₃
+      (hdeep V hV_deep L hL0 hL)).trans hdeep_V
+  have hmid_tot : shellDepthSum T₁ T₂ L ≤ (K_I + K_II_c + 2) * c' ^ 2 * V * Real.log V := by
+    rw [shellDepthSum_eq_two_mul_right T₁ T₂ L]
+    change 2 * ∑ z ∈ R, f_z z ≤ _
+    rw [hpart1, hpart2, mul_add, mul_add]
+    exact (add_le_add (add_le_add hscaleI hscaleII) hscaleIII).trans_eq (by ring)
+  rw [shellDepthSum_split hVT₁ (hT₁2.trans hT₂2V), shellDepthSum_split hT₁2 hT₂2V]
   have hextra : 0 ≤ c' ^ 2 * V * Real.log V := by positivity
-  dsimp [K_sh]
-  linarith [hsum_all, hextra]
+  calc shellDepthSum V T₁ L + (shellDepthSum T₁ T₂ L + shellDepthSum T₂ (2 * V) L)
+      = (shellDepthSum V T₁ L + shellDepthSum T₂ (2 * V) L) + shellDepthSum T₁ T₂ L := by ring
+    _ ≤ c' ^ 2 * V * Real.log V + (K_I + K_II_c + 2) * c' ^ 2 * V * Real.log V :=
+        add_le_add hcap_sum hmid_tot
+    _ = (K_I + K_II_c + 3) * (c' ^ 2 * V * Real.log V) := by ring
+    _ ≤ (K_I + K_II_c + 4) * (c' ^ 2 * V * Real.log V) :=
+        mul_le_mul_of_nonneg_right (by linarith) hextra
+    _ = K_sh * V * Real.log V := by dsimp [K_sh]; ring
 
 /-- **Sub-Power Shell Bound up to `c' < 2 / 3` (`exists_shellDepthSum_le_subpower`).**
 For every `0 ≤ c' < 2 / 3` and every `η > 0`, `shellDepthSum V (2 * V) L ≤ C_sub * V ^ (1 + η)`
@@ -1395,7 +1408,7 @@ theorem exists_shellDepthSum_le_subpower {c' η : ℝ} (hc0 : 0 ≤ c') (hc' : c
   have hV_pos : 0 < V := by linarith
   rw [shellDepthSum_eq_two_mul_right V (2 * V) L]
   classical
-  set R := (shellZeros V (2 * V)).filter (fun z => 1 / 2 < z.re)
+  let R := (shellZeros V (2 * V)).filter (fun z => 1 / 2 < z.re)
   have hxi : ∀ z ∈ R, xi z = 0 := fun z hz =>
     (mem_stripFinsetPos.mp (Finset.mem_filter.mp (Finset.mem_filter.mp hz).1).1).2.2.2.2
   have hptw : ∑ z ∈ R, ((analyticOrderAt xi z).toNat : ℝ) * depthKernel L (z.re - 1 / 2) ≤
@@ -1405,13 +1418,11 @@ theorem exists_shellDepthSum_le_subpower {c' η : ℝ} (hc0 : 0 ≤ c') (hc' : c
     have hdk := depthKernel_le_exp_two_mul (d := z.re - 1 / 2) hL0
     rw [abs_of_pos (by linarith)] at hdk
     exact mul_le_mul_of_nonneg_left hdk (Nat.cast_nonneg _)
-  rw [sum_analyticOrder_eq_sum_liftToXiZeroCopy R hxi] at hptw
   have hfold_eq : ∑ q ∈ liftToXiZeroCopy R hxi, Real.exp (2 * L * ((q.1 : ℂ).re - 1 / 2)) =
       ∑ q ∈ liftToXiZeroCopy R hxi, Real.exp (2 * L * (foldedRe q - 1 / 2)) := by
     refine Finset.sum_congr rfl fun q hq => ?_
     have hre : 1 / 2 < (q.1 : ℂ).re := (Finset.mem_filter.mp (mem_liftToXiZeroCopy_iff hq)).2
     rw [show foldedRe q = (q.1 : ℂ).re from max_eq_left (by linarith)]
-  rw [hfold_eq] at hptw
   have hG_cond : ∀ q ∈ liftToXiZeroCopy R hxi,
       V ≤ |(q.1 : ℂ).im| ∧ |(q.1 : ℂ).im| ≤ 2 * V := by
     intro q hq
@@ -1431,8 +1442,19 @@ theorem exists_shellDepthSum_le_subpower {c' η : ℝ} (hc0 : 0 ≤ c') (hc' : c
     calc V * (C * V ^ η) = C * (V ^ (1 : ℝ) * V ^ η) := by rw [Real.rpow_one]; ring
       _ = C * V ^ (1 + η) := by rw [← Real.rpow_add hV_pos]
   rw [hlhs, hrhs] at hb
+  have hchain : ∑ z ∈ R, ((analyticOrderAt xi z).toNat : ℝ) * depthKernel L (z.re - 1 / 2) ≤
+      C * V ^ (1 + η) :=
+    calc ∑ z ∈ R, ((analyticOrderAt xi z).toNat : ℝ) * depthKernel L (z.re - 1 / 2)
+        ≤ ∑ z ∈ R, ((analyticOrderAt xi z).toNat : ℝ) * Real.exp (2 * L * (z.re - 1 / 2)) := hptw
+      _ = ∑ q ∈ liftToXiZeroCopy R hxi, Real.exp (2 * L * ((q.1 : ℂ).re - 1 / 2)) :=
+          sum_analyticOrder_eq_sum_liftToXiZeroCopy R hxi _
+      _ = ∑ q ∈ liftToXiZeroCopy R hxi, Real.exp (2 * L * (foldedRe q - 1 / 2)) := hfold_eq
+      _ ≤ C * V ^ (1 + η) := hb
   have hnn : 0 ≤ V ^ (1 + η) := Real.rpow_nonneg hV_pos.le _
-  linarith [mul_le_mul_of_nonneg_left (hptw.trans hb) zero_le_two]
+  calc 2 * ∑ z ∈ R, ((analyticOrderAt xi z).toNat : ℝ) * depthKernel L (z.re - 1 / 2)
+      ≤ 2 * (C * V ^ (1 + η)) := mul_le_mul_of_nonneg_left hchain zero_le_two
+    _ = (2 * C) * V ^ (1 + η) := by ring
+    _ ≤ (2 * C + 1) * V ^ (1 + η) := mul_le_mul_of_nonneg_right (by linarith) hnn
 
 /-! ## §5. Dyadic mean collapse of `unitWindowDepthCharge`, `heckeDefect`, and `polynomialThetaSourceMomentReading` -/
 
@@ -1452,11 +1474,11 @@ private theorem unitWindowDepthCharge_eq_sum_indicator {U c T : ℝ} (hU : 0 < U
     rw [mem_xiUnitWindowZeros, shellZeros, Finset.mem_filter, mem_stripFinsetPos,
       Set.Finite.mem_toFinset, mem_Ioc]
     constructor
-    · rintro ⟨⟨⟨h0, h1, him0, hlt⟩, hxi⟩, hle⟩
-      exact ⟨⟨⟨h0, h1, him0, by linarith [hT.2], hxi⟩, by linarith [hT.1]⟩,
+    · rintro ⟨⟨⟨h0, h1, _him0, hlt⟩, hxi⟩, hle⟩
+      exact ⟨⟨⟨h0, h1, by linarith [hT.1, hle], by linarith [hT.2], hxi⟩, by linarith [hT.1]⟩,
         by linarith, hle⟩
     · rintro ⟨⟨⟨h0, h1, him0, _, hxi⟩, _⟩, hgt, hle⟩
-      exact ⟨⟨⟨h0, h1, him0, by linarith⟩, hxi⟩, hle⟩
+      exact ⟨⟨⟨h0, h1, him0.le, by linarith⟩, hxi⟩, hle⟩
   unfold unitWindowDepthCharge
   have hfilt : xiUnitWindowZeros T =
       (shellZeros (U - 1) (2 * U + 1)).filter (fun z => T ∈ Ioc (z.im - 1) z.im) := by
@@ -1484,7 +1506,7 @@ theorem integrableOn_unitWindowDepthCharge_log_Icc {U : ℝ} (hU : 0 < U) (c : �
           (fun t => ((analyticOrderAt xi z).toNat : ℝ) *
             depthKernel (c * Real.log t) (z.re - 1 / 2)) T)
       (Icc U (2 * U)) volume := by
-    refine integrable_finset_sum _ fun z _ => ?_
+    refine integrable_finsetSum _ fun z _ => ?_
     have hcont : ContinuousOn
         (fun t : ℝ => ((analyticOrderAt xi z).toNat : ℝ) *
           depthKernel (c * Real.log t) (z.re - 1 / 2)) (Icc U (2 * U)) :=
@@ -1503,16 +1525,20 @@ theorem dyadicIntegral_unitWindowDepthCharge_le_shellDepthSum {U c : ℝ} (hU : 
     (∫ T in Icc U (2 * U), unitWindowDepthCharge T (c * Real.log T)) ≤
       shellDepthSum (U - 1) (2 * U + 1) (c * Real.log (2 * U)) := by
   have hU0 : 0 < U := by linarith
+  let f_ind : ℂ → ℝ → ℝ := fun z T =>
+    (Ioc (z.im - 1) z.im).indicator
+      (fun t => ((analyticOrderAt xi z).toNat : ℝ) *
+        depthKernel (c * Real.log t) (z.re - 1 / 2)) T
+  have hint_ind : ∀ z ∈ shellZeros (U - 1) (2 * U + 1),
+      IntegrableOn (f_ind z) (Icc U (2 * U)) volume := fun z _ =>
+    ((continuousOn_const.mul (continuousOn_depthKernel_log hU0 c _)).integrableOn_compact
+      isCompact_Icc).indicator measurableSet_Ioc
   have hcongr : (∫ T in Icc U (2 * U), unitWindowDepthCharge T (c * Real.log T)) =
-      ∫ T in Icc U (2 * U), ∑ z ∈ shellZeros (U - 1) (2 * U + 1),
-        (Ioc (z.im - 1) z.im).indicator
-          (fun t => ((analyticOrderAt xi z).toNat : ℝ) *
-            depthKernel (c * Real.log t) (z.re - 1 / 2)) T :=
+      ∫ T in Icc U (2 * U), ∑ z ∈ shellZeros (U - 1) (2 * U + 1), f_ind z T :=
     setIntegral_congr_fun measurableSet_Icc fun T hT =>
       unitWindowDepthCharge_eq_sum_indicator hU0 hT
-  rw [hcongr, integral_finset_sum _ fun z _ =>
-    ((continuousOn_const.mul (continuousOn_depthKernel_log hU0 c _)).integrableOn_compact
-      isCompact_Icc).indicator measurableSet_Ioc]
+  rw [hcongr, integral_finsetSum (s := shellZeros (U - 1) (2 * U + 1)) (f := f_ind) hint_ind]
+  dsimp only [f_ind]
   unfold shellDepthSum
   refine Finset.sum_le_sum fun z _ => ?_
   rw [setIntegral_indicator measurableSet_Ioc]
@@ -1555,16 +1581,20 @@ theorem shellDepthSum_le_dyadicIntegral_unitWindowDepthCharge {U c : ℝ} (hU : 
       ∫ T in Icc U (2 * U), unitWindowDepthCharge T (c * Real.log T) := by
   classical
   have hU0 : 0 < U := by linarith
+  let f_ind : ℂ → ℝ → ℝ := fun z T =>
+    (Ioc (z.im - 1) z.im).indicator
+      (fun t => ((analyticOrderAt xi z).toNat : ℝ) *
+        depthKernel (c * Real.log t) (z.re - 1 / 2)) T
+  have hint_ind : ∀ z ∈ shellZeros (U - 1) (2 * U + 1),
+      IntegrableOn (f_ind z) (Icc U (2 * U)) volume := fun z _ =>
+    ((continuousOn_const.mul (continuousOn_depthKernel_log hU0 c _)).integrableOn_compact
+      isCompact_Icc).indicator measurableSet_Ioc
   have hcongr : (∫ T in Icc U (2 * U), unitWindowDepthCharge T (c * Real.log T)) =
-      ∫ T in Icc U (2 * U), ∑ z ∈ shellZeros (U - 1) (2 * U + 1),
-        (Ioc (z.im - 1) z.im).indicator
-          (fun t => ((analyticOrderAt xi z).toNat : ℝ) *
-            depthKernel (c * Real.log t) (z.re - 1 / 2)) T :=
+      ∫ T in Icc U (2 * U), ∑ z ∈ shellZeros (U - 1) (2 * U + 1), f_ind z T :=
     setIntegral_congr_fun measurableSet_Icc fun T hT =>
       unitWindowDepthCharge_eq_sum_indicator hU0 hT
-  rw [hcongr, integral_finset_sum _ fun z _ =>
-    ((continuousOn_const.mul (continuousOn_depthKernel_log hU0 c _)).integrableOn_compact
-      isCompact_Icc).indicator measurableSet_Ioc]
+  rw [hcongr, integral_finsetSum (s := shellZeros (U - 1) (2 * U + 1)) (f := f_ind) hint_ind]
+  dsimp only [f_ind]
   have hsub_sh : shellZeros (U + 1) (2 * U) ⊆ shellZeros (U - 1) (2 * U + 1) := by
     intro z hz
     obtain ⟨hz_pos, him1⟩ := Finset.mem_filter.mp hz
@@ -1608,18 +1638,22 @@ theorem shellDepthSum_le_dyadicIntegral_unitWindowDepthCharge {U c : ℝ} (hU : 
         exact mul_le_mul_of_nonneg_left (depthKernel_mono_scale hlog_nn hlog_le _)
           (Nat.cast_nonneg _)
 
+private theorem continuousOn_comp_log_pair {F : ℝ × ℝ → ℝ} (hF : Continuous F)
+    {U : ℝ} (hU : 0 < U) (c : ℝ) :
+    ContinuousOn (fun γ : ℝ => F (γ, c * Real.log γ)) (Icc U (2 * U)) := by
+  have hlog : ContinuousOn Real.log (Icc U (2 * U)) :=
+    Real.continuousOn_log.mono fun γ hγ => (by linarith [hγ.1] : 0 < γ).ne'
+  have hpair : ContinuousOn (fun γ : ℝ => (γ, c * Real.log γ)) (Icc U (2 * U)) :=
+    continuousOn_id.prodMk (continuousOn_const.mul hlog)
+  exact hF.comp_continuousOn hpair
+
 /-- Integrability of `γ ↦ heckeDefect (baseTwistTest γ) (c * Real.log γ)` on `Icc U (2 * U)`
 (`0 < U`). -/
 theorem integrableOn_heckeDefect_log_Icc {U : ℝ} (hU : 0 < U) (c : ℝ) :
     IntegrableOn (fun γ : ℝ => heckeDefect (baseTwistTest γ) (c * Real.log γ))
-      (Icc U (2 * U)) volume := by
-  have hlog : ContinuousOn Real.log (Icc U (2 * U)) :=
-    Real.continuousOn_log.mono fun γ hγ => (by linarith [hγ.1] : 0 < γ).ne'
-  have hcont : ContinuousOn (fun γ : ℝ => heckeDefect (baseTwistTest γ) (c * Real.log γ))
-      (Icc U (2 * U)) :=
-    continuous_heckeDefect_pair.comp_continuousOn
-      (continuousOn_id.prodMk (continuousOn_const.mul hlog))
-  exact hcont.integrableOn_compact isCompact_Icc
+      (Icc U (2 * U)) volume :=
+  (continuousOn_comp_log_pair (F := fun p => heckeDefect (baseTwistTest p.1) p.2)
+    continuous_heckeDefect_pair hU c).integrableOn_compact isCompact_Icc
 
 /-- Pointwise coercion of `unitWindowDepthCharge` into `heckeDefect` gives the immediate dyadic
 integral lower bound on the exact same interval `[U, 2U]`. -/
@@ -1753,7 +1787,7 @@ theorem exists_dyadicIntegral_heckeDefect_le_threeShells :
           depthKernel L_max (z.1.re - 1 / 2) :=
         depthKernel_mono_scale hLγ_nn hLγ_le (z.1.re - 1 / 2)
       have hlor_z := hnsq_lor γ (emb z)
-      dsimp [zetaWeight, baseTwistTest, emb] at hlor_z ⊢
+      dsimp only [zetaWeight, baseTwistTest, emb] at hlor_z ⊢
       rw [hmult]
       calc ((analyticOrderAt xi z.1).toNat : ℝ) * Complex.normSq (tr (twist γ baseBump) z.1) *
               depthKernel (c * Real.log γ) (zetaDepth (emb z))
@@ -1765,10 +1799,10 @@ theorem exists_dyadicIntegral_heckeDefect_le_threeShells :
         _ = ((analyticOrderAt xi z.1).toNat : ℝ) * depthKernel L_max (z.1.re - 1 / 2) *
               (M₀ * (1 / (1 + (z.1.im - γ) ^ 2))) := by ring
     -- Remote tail (`ρ ∉ S_loc`): `K = 2` Paley–Wiener quartic decay
-    have hrem_part : (∑' ρ : (↑S_locᶜ : Set zetaZeroConfig.carrier),
+    have hrem_part : (∑' ρ : ((S_loc : Set zetaZeroConfig.carrier)ᶜ),
           zetaWeight (baseTwistTest γ) ρ.1 * depthKernel (c * Real.log γ) (zetaDepth ρ.1)) ≤
         C_rem * (2 * U) ^ c / U ^ 2 := by
-      have hrem_ptw : ∀ ρ : (↑S_locᶜ : Set zetaZeroConfig.carrier),
+      have hrem_ptw : ∀ ρ : ((S_loc : Set zetaZeroConfig.carrier)ᶜ),
           zetaWeight (baseTwistTest γ) ρ.1 * depthKernel (c * Real.log γ) (zetaDepth ρ.1) ≤
             (16 * C₂ ^ 2 * (2 * U) ^ c / U ^ 2) *
               ((zetaZeroConfig.mult ρ.1 : ℝ) * (1 / (1 + (ρ.1 : ℂ).im ^ 2))) := by
@@ -1784,6 +1818,7 @@ theorem exists_dyadicIntegral_heckeDefect_le_threeShells :
             ⟨mem_stripFinsetPos.mpr ⟨hxi_01.2.1, hxi_01.2.2, by linarith [hmid.1], hmid.2, hxi_01.1⟩,
               hmid.1⟩)
         have hquartic : (1 / 16 : ℝ) * U ^ 2 * (1 + (ρ.1 : ℂ).im ^ 2) ≤ ((ρ.1 : ℂ).im - γ) ^ 4 := by
+          have hnn_q : 0 ≤ U ^ 2 * (1 + (ρ.1 : ℂ).im ^ 2) := by positivity
           rcases him_out with hle_half | hgt_4U
           · rcases lt_or_ge ((ρ.1 : ℂ).im) 0 with hneg | hnn
             · have h1 : U ≤ γ - (ρ.1 : ℂ).im := by linarith [hγ.1]
@@ -1793,7 +1828,7 @@ theorem exists_dyadicIntegral_heckeDefect_le_threeShells :
               have hm := mul_le_mul hsq1 hsq2 (by positivity) (sq_nonneg _)
               have hp4 : ((ρ.1 : ℂ).im - γ) ^ 2 * (2 * ((ρ.1 : ℂ).im - γ) ^ 2) =
                   2 * ((ρ.1 : ℂ).im - γ) ^ 4 := by ring
-              linarith
+              linarith [hm, hp4, hnn_q]
             · have h1 : U / 2 ≤ γ - (ρ.1 : ℂ).im := by linarith [hγ.1]
               have hsq1 : U ^ 2 / 4 ≤ ((ρ.1 : ℂ).im - γ) ^ 2 := by nlinarith
               have him_sq : 1 + (ρ.1 : ℂ).im ^ 2 ≤ U ^ 2 := by nlinarith [hU4]
@@ -1810,7 +1845,7 @@ theorem exists_dyadicIntegral_heckeDefect_le_threeShells :
             have hm := mul_le_mul hsq1 hsq2 (by positivity) (sq_nonneg _)
             have hp4 : ((ρ.1 : ℂ).im - γ) ^ 2 * ((ρ.1 : ℂ).im - γ) ^ 2 =
                 ((ρ.1 : ℂ).im - γ) ^ 4 := by ring
-            linarith
+            linarith [hm, hp4, hnn_q]
         have hne_im : (ρ.1 : ℂ).im ≠ γ := by
           intro heq
           rw [heq, sub_self] at hquartic
@@ -1829,14 +1864,15 @@ theorem exists_dyadicIntegral_heckeDefect_le_threeShells :
           refine hsq.trans ?_
           have hdiv := div_le_div_of_nonneg_left (sq_nonneg C₂) (by positivity) hquartic
           refine hdiv.trans_eq ?_
-          field_simp; ring
+          rw [mul_one_div, div_div, div_eq_div_iff (by positivity) (by positivity)]
+          ring
         have hdk_exp : depthKernel (c * Real.log γ) (zetaDepth ρ.1) ≤ (2 * U) ^ c := by
           calc depthKernel (c * Real.log γ) (zetaDepth ρ.1)
               ≤ depthKernel L_max (zetaDepth ρ.1) := depthKernel_mono_scale hLγ_nn hLγ_le _
             _ ≤ Real.exp L_max := depthKernel_le_exp_of_abs_le_half hLmax_nn hstrip
             _ = (2 * U) ^ c := by
                 dsimp [L_max]; rw [Real.rpow_def_of_pos (by positivity), mul_comm]
-        dsimp [zetaWeight, baseTwistTest]
+        dsimp only [zetaWeight, baseTwistTest]
         calc (zetaZeroConfig.mult ρ.1 : ℝ) * Complex.normSq (tr (twist γ baseBump) ρ.1) *
                 depthKernel (c * Real.log γ) (zetaDepth ρ.1)
             ≤ (zetaZeroConfig.mult ρ.1 : ℝ) *
@@ -1846,13 +1882,18 @@ theorem exists_dyadicIntegral_heckeDefect_le_threeShells :
           _ = (16 * C₂ ^ 2 * (2 * U) ^ c / U ^ 2) *
                 ((zetaZeroConfig.mult ρ.1 : ℝ) * (1 / (1 + (ρ.1 : ℂ).im ^ 2))) := by ring
       have htsum1 := ((summable_heckeDefect (baseTwistTest γ) (c * Real.log γ)).subtype
-        (↑S_locᶜ : Set zetaZeroConfig.carrier)).tsum_le_tsum hrem_ptw
+        ((S_loc : Set zetaZeroConfig.carrier)ᶜ)).tsum_le_tsum hrem_ptw
         ((hsum_lor.subtype _).mul_left _)
       rw [tsum_mul_left] at htsum1
-      have hsub_lor : (∑' ρ : (↑S_locᶜ : Set zetaZeroConfig.carrier),
-          (zetaZeroConfig.mult ρ.1 : ℝ) * (1 / (1 + (ρ.1 : ℂ).im ^ 2))) ≤ L_mass :=
-        Summable.tsum_subtype_le hsum_lor _ fun _ => by positivity
-      calc (∑' ρ : (↑S_locᶜ : Set zetaZeroConfig.carrier),
+      have hsub_lor : (∑' ρ : ((S_loc : Set zetaZeroConfig.carrier)ᶜ),
+          (zetaZeroConfig.mult ρ.1 : ℝ) * (1 / (1 + (ρ.1 : ℂ).im ^ 2))) ≤ L_mass := by
+        have hsp := hsum_lor.sum_add_tsum_compl (s := S_loc)
+        have hnn_s : 0 ≤ ∑ ρ ∈ S_loc,
+            (zetaZeroConfig.mult ρ : ℝ) * (1 / (1 + (ρ : ℂ).im ^ 2)) :=
+          Finset.sum_nonneg fun _ _ => by positivity
+        dsimp only [L_mass]
+        linarith [hsp, hnn_s]
+      calc (∑' ρ : ((S_loc : Set zetaZeroConfig.carrier)ᶜ),
               zetaWeight (baseTwistTest γ) ρ.1 * depthKernel (c * Real.log γ) (zetaDepth ρ.1))
           ≤ (16 * C₂ ^ 2 * (2 * U) ^ c / U ^ 2) * L_mass :=
             htsum1.trans (mul_le_mul_of_nonneg_left hsub_lor (by positivity))
@@ -1866,29 +1907,29 @@ theorem exists_dyadicIntegral_heckeDefect_le_threeShells :
             linarith
     exact add_le_add hloc_part hrem_part
   -- Integrate `hptw_gamma` over `γ ∈ Icc U (2 * U)`
-  have hint_rhs : IntegrableOn
-      (fun γ : ℝ => (∑ z ∈ shellZeros (U / 2) (4 * U),
-        ((analyticOrderAt xi z).toNat : ℝ) * depthKernel L_max (z.re - 1 / 2) *
-          (M₀ * (1 / (1 + (z.im - γ) ^ 2)))) + C_rem * (2 * U) ^ c / U ^ 2)
-      (Icc U (2 * U)) volume := by
-    refine Integrable.add (integrable_finset_sum _ fun z _ => ?_)
-      (integrableOn_const (hs := by rw [Real.volume_Icc]; exact ENNReal.ofReal_ne_top))
-    have hcont : Continuous fun γ : ℝ =>
-        ((analyticOrderAt xi z).toNat : ℝ) * depthKernel L_max (z.re - 1 / 2) *
-          (M₀ * (1 / (1 + (z.im - γ) ^ 2))) :=
+  let g_loc : ℂ → ℝ → ℝ := fun z γ =>
+    ((analyticOrderAt xi z).toNat : ℝ) * depthKernel L_max (z.re - 1 / 2) *
+      (M₀ * (1 / (1 + (z.im - γ) ^ 2)))
+  have hg_int : ∀ z ∈ shellZeros (U / 2) (4 * U),
+      IntegrableOn (g_loc z) (Icc U (2 * U)) volume := by
+    intro z _
+    have hcont : Continuous (g_loc z) :=
       continuous_const.mul (continuous_const.mul
         (continuous_const.div (by fun_prop) fun γ => by positivity))
     exact hcont.continuousOn.integrableOn_compact isCompact_Icc
+  have hsum_int : IntegrableOn
+      (fun γ : ℝ => ∑ z ∈ shellZeros (U / 2) (4 * U), g_loc z γ)
+      (Icc U (2 * U)) volume :=
+    integrable_finsetSum _ hg_int
+  have hconst_int : IntegrableOn
+      (fun _ : ℝ => C_rem * (2 * U) ^ c / U ^ 2) (Icc U (2 * U)) volume :=
+    integrableOn_const (hs := by rw [Real.volume_Icc]; exact ENNReal.ofReal_ne_top)
   have hint_mono := setIntegral_mono_on (integrableOn_heckeDefect_log_Icc hU_pos c)
-    hint_rhs measurableSet_Icc hptw_gamma
-  rw [integral_add (integrable_finset_sum _ fun z _ =>
-    ((continuous_const.mul (continuous_const.mul (continuous_const.div (by fun_prop)
-      fun γ => by positivity))) : Continuous _).continuousOn.integrableOn_compact isCompact_Icc)
-    (integrableOn_const (hs := by rw [Real.volume_Icc]; exact ENNReal.ofReal_ne_top)),
-    integral_finset_sum _ fun z _ =>
-      ((continuous_const.mul (continuous_const.mul (continuous_const.div (by fun_prop)
-        fun γ => by positivity))) : Continuous _).continuousOn.integrableOn_compact isCompact_Icc,
+    (hsum_int.add hconst_int) measurableSet_Icc hptw_gamma
+  rw [integral_add hsum_int hconst_int,
+    integral_finsetSum (s := shellZeros (U / 2) (4 * U)) (f := g_loc) hg_int,
     setIntegral_const, smul_eq_mul] at hint_mono
+  dsimp only [g_loc] at hint_mono
   have hvol_U : volume.real (Icc U (2 * U)) = U := by
     rw [Measure.real_def, Real.volume_Icc, show 2 * U - U = U by ring,
       ENNReal.toReal_ofReal hU_pos.le]
@@ -1916,7 +1957,7 @@ theorem exists_dyadicIntegral_heckeDefect_le_threeShells :
       linarith
     calc (∑ z ∈ shellZeros (U / 2) (4 * U),
             ∫ γ in Icc U (2 * U),
-              ((analyticOrderAt xi z).toNat : ℝ) * depthKernel L_max (z.re - 1 / 2) *
+               ((analyticOrderAt xi z).toNat : ℝ) * depthKernel L_max (z.re - 1 / 2) *
                 (M₀ * (1 / (1 + (z.im - γ) ^ 2))))
         ≤ ∑ z ∈ shellZeros (U / 2) (4 * U),
             (Real.pi * M₀) * (((analyticOrderAt xi z).toNat : ℝ) *
@@ -1931,9 +1972,12 @@ theorem exists_dyadicIntegral_heckeDefect_le_threeShells :
     rw [shellDepthSum_split (by linarith : U / 2 ≤ U) (by linarith : U ≤ 4 * U),
       shellDepthSum_split (by linarith : U ≤ 2 * U) (by linarith : 2 * U ≤ 4 * U), add_assoc]
   have hrem_U : U * (C_rem * (2 * U) ^ c / U ^ 2) = C_rem * (2 * U) ^ c / U := by
-    field_simp; ring
+    calc U * (C_rem * (2 * U) ^ c / U ^ 2)
+        = (C_rem * (2 * U) ^ c / U) * (U / U) := by ring
+      _ = C_rem * (2 * U) ^ c / U := by rw [div_self hU_pos.ne', mul_one]
   rw [hsplit3] at hsum_lor_int
-  linarith [hint_mono, hsum_lor_int, hrem_U]
+  rw [hrem_U] at hint_mono
+  exact hint_mono.trans (add_le_add hsum_lor_int le_rfl)
 
 /-- Joint continuity of `(γ, L) ↦ polynomialThetaSourceMomentReading (baseTwistTest γ) L 1 n`
 at any fixed stage `n : ℕ`. -/
@@ -1963,11 +2007,9 @@ theorem continuous_polynomialThetaSourceMomentReading_pair (n : ℕ) :
       (contDiff_stripSourceCutoff n).continuous.comp continuous_snd
     have htr_c : Continuous (fun q : (ℝ × ℝ) × ℂ =>
         Complex.normSq (tr (baseTwistTest q.1.1).1 q.2)) := by
-      have h1 : (fun q : (ℝ × ℝ) × ℂ => tr (baseTwistTest q.1.1).1 q.2) =
-          fun q : (ℝ × ℝ) × ℂ => tr baseBumpTest.1 (q.2 - (q.1.1 : ℂ) * I) := by
-        funext q
-        change tr (twist q.1.1 baseBump) q.2 = tr baseBump (q.2 - (q.1.1 : ℂ) * I)
-        exact tr_twist q.1.1 baseBump q.2
+      have h1 : (fun q : (ℝ × ℝ) × ℂ => Complex.normSq (tr (baseTwistTest q.1.1).1 q.2)) =
+          fun q : (ℝ × ℝ) × ℂ => Complex.normSq (tr baseBumpTest.1 (q.2 - (q.1.1 : ℂ) * I)) :=
+        funext fun q => congrArg Complex.normSq (tr_twist q.1.1 baseBump q.2)
       rw [h1]
       exact Complex.continuous_normSq.comp ((contDiff_tr baseBumpTest).continuous.comp
         (continuous_snd.sub ((Complex.continuous_ofReal.comp
@@ -1994,15 +2036,10 @@ on `Icc U (2 * U)` (`0 < U`). -/
 theorem integrableOn_polynomialTheta_log_Icc {U : ℝ} (hU : 0 < U) (c : ℝ) (n : ℕ) :
     IntegrableOn (fun γ : ℝ =>
       polynomialThetaSourceMomentReading (baseTwistTest γ) (c * Real.log γ) 1 n)
-      (Icc U (2 * U)) volume := by
-  have hlog : ContinuousOn Real.log (Icc U (2 * U)) :=
-    Real.continuousOn_log.mono fun γ hγ => (by linarith [hγ.1] : 0 < γ).ne'
-  have hcont : ContinuousOn (fun γ : ℝ =>
-      polynomialThetaSourceMomentReading (baseTwistTest γ) (c * Real.log γ) 1 n)
-      (Icc U (2 * U)) :=
-    (continuous_polynomialThetaSourceMomentReading_pair n).comp_continuousOn
-      (continuousOn_id.prodMk (continuousOn_const.mul hlog))
-  exact hcont.integrableOn_compact isCompact_Icc
+      (Icc U (2 * U)) volume :=
+  (continuousOn_comp_log_pair
+    (F := fun p => polynomialThetaSourceMomentReading (baseTwistTest p.1) p.2 1 n)
+    (continuous_polynomialThetaSourceMomentReading_pair n) hU c).integrableOn_compact isCompact_Icc
 
 /-- Uniform `O(log U)` dyadic-integral comparison between `polynomialThetaSourceMomentReading` at
 `linearThetaStage (2 * U)` and `heckeDefect` across `0 ≤ c ≤ 2` and `U ≥ 4` (hence `O(log U / U)`
@@ -2055,16 +2092,76 @@ theorem exists_abs_dyadicIntegral_polynomialTheta_sub_heckeDefect_le :
   rw [hvol_U] at hnorm_int
   have hlog2U : Real.log (2 * U) ≤ 2 * Real.log U := by
     rw [Real.log_mul zero_lt_two.ne' hU_pos.ne']
-    have h2 : Real.log ((2 : ℝ) ^ (2 : ℕ)) ≤ Real.log U :=
-      Real.log_le_log (by norm_num) (by norm_num at *; linarith)
-    rw [Real.log_pow] at h2; push_cast at h2
-    linarith [Real.log_two_gt_d9]
+    linarith [one_le_log_of_four_le hU4, Real.log_two_lt_d9]
+  have hcancel : U * (C_lin * Real.log (2 * U) / U) = C_lin * Real.log (2 * U) := by
+    calc U * (C_lin * Real.log (2 * U) / U)
+        = (C_lin * Real.log (2 * U)) * (U / U) := by ring
+      _ = C_lin * Real.log (2 * U) := by rw [div_self hU_pos.ne', mul_one]
   calc |(∫ γ in Icc U (2 * U),
           polynomialThetaSourceMomentReading (baseTwistTest γ) (c * Real.log γ) 1 n_U -
             heckeDefect (baseTwistTest γ) (c * Real.log γ))|
       ≤ U * (C_lin * Real.log (2 * U) / U) := hnorm_int
-    _ = C_lin * Real.log (2 * U) := by field_simp
-    _ ≤ 2 * C_lin * Real.log U := by nlinarith [hC_lin]
+    _ = C_lin * Real.log (2 * U) := hcancel
+    _ ≤ C_lin * (2 * Real.log U) := mul_le_mul_of_nonneg_left hlog2U hC_lin.le
+    _ = 2 * C_lin * Real.log U := by ring
+
+/-- Reusable short end-cap `U^{5/6}` bound for `shellDepthSum W₁ W₂ (c * Real.log (2 * U))`
+whenever `16 ≤ U`, `0 ≤ W₁ ≤ W₂`, `W₂ - W₁ ≤ 2`, `W₂ ≤ 2 * U + 1`, and `0 ≤ c ≤ 2 / 3`. -/
+private theorem shortEndCap_shellDepthSum_le_five_sixths {U W₁ W₂ c K_log1 : ℝ}
+    (hU16 : 16 ≤ U) (hW₁ : 0 ≤ W₁) (h12 : W₁ ≤ W₂) (hlen : W₂ - W₁ ≤ 2) (hW₂ : W₂ ≤ 2 * U + 1)
+    (hc0 : 0 ≤ c) (hc : c ≤ 2 / 3) (hK_log1 : 0 < K_log1)
+    (hlog1 : ∀ x : ℝ, 1 ≤ x → (1 + Real.log x) ^ 1 ≤ K_log1 * x ^ (1 / 6 : ℝ)) :
+    shellDepthSum W₁ W₂ (c * Real.log (2 * U)) ≤
+      64 * (|xiLineTwoLogDerivConstant| + 5) * K_log1 * U ^ (5 / 6 : ℝ) := by
+  have hU_pos : 0 < U := by linarith
+  have hLmax_nn : 0 ≤ c * Real.log (2 * U) := mul_nonneg hc0 (Real.log_nonneg (by linarith))
+  have hdk_cap : ∀ z : ℂ, |z.re - 1 / 2| ≤ 1 / 2 →
+      depthKernel (c * Real.log (2 * U)) (z.re - 1 / 2) ≤ 2 * U ^ (2 / 3 : ℝ) := by
+    intro z hz
+    refine (depthKernel_le_exp_of_abs_le_half hLmax_nn hz).trans ?_
+    calc Real.exp (c * Real.log (2 * U))
+        = (2 * U) ^ c := by rw [Real.rpow_def_of_pos (by positivity), mul_comm]
+      _ ≤ (2 * U) ^ (2 / 3 : ℝ) := Real.rpow_le_rpow_of_exponent_le (by linarith) hc
+      _ ≤ 2 * U ^ (2 / 3 : ℝ) := by
+          rw [Real.mul_rpow zero_le_two hU_pos.le]
+          refine mul_le_mul_of_nonneg_right ?_ (Real.rpow_nonneg hU_pos.le _)
+          calc (2 : ℝ) ^ (2 / 3 : ℝ) ≤ (2 : ℝ) ^ (1 : ℝ) :=
+                Real.rpow_le_rpow_of_exponent_le one_le_two (by norm_num)
+            _ = 2 := Real.rpow_one 2
+  have hord := shortShell_orderSum_le_log hW₁ h12 hlen
+  have hlogW : Real.log (W₂ + 4) ≤ 4 + Real.log U := by
+    calc Real.log (W₂ + 4) ≤ Real.log (4 * U) := Real.log_le_log (by positivity) (by linarith)
+      _ = Real.log 4 + Real.log U := Real.log_mul (by norm_num) hU_pos.ne'
+      _ ≤ 4 + Real.log U := by linarith [log_four_le_two]
+  unfold shellDepthSum
+  have hsum_dk : ∑ z ∈ shellZeros W₁ W₂,
+        ((analyticOrderAt xi z).toNat : ℝ) * depthKernel (c * Real.log (2 * U)) (z.re - 1 / 2) ≤
+      (∑ z ∈ shellZeros W₁ W₂, ((analyticOrderAt xi z).toNat : ℝ)) * (2 * U ^ (2 / 3 : ℝ)) := by
+    rw [Finset.sum_mul]
+    refine Finset.sum_le_sum fun z hz => mul_le_mul_of_nonneg_left (hdk_cap z ?_)
+      (Nat.cast_nonneg _)
+    obtain ⟨h0, h1, _, _, _⟩ := mem_stripFinsetPos.mp (Finset.mem_filter.mp hz).1
+    rw [abs_le]; constructor <;> linarith
+  have hlogU_nn : 0 ≤ Real.log U := Real.log_nonneg (by linarith)
+  have hpoly1 : |xiLineTwoLogDerivConstant| + Real.log (W₂ + 4) ≤
+      2 * (|xiLineTwoLogDerivConstant| + 5) * (1 + Real.log U) ^ 1 := by
+    rw [pow_one]
+    nlinarith [abs_nonneg xiLineTwoLogDerivConstant, hlogW, hlogU_nn]
+  have hpow_le := hlog1 U (by linarith)
+  have hU_add : U ^ (1 / 6 : ℝ) * U ^ (2 / 3 : ℝ) = U ^ (5 / 6 : ℝ) := by
+    rw [← Real.rpow_add hU_pos]; norm_num
+  calc ∑ z ∈ shellZeros W₁ W₂,
+          ((analyticOrderAt xi z).toNat : ℝ) * depthKernel (c * Real.log (2 * U)) (z.re - 1 / 2)
+      ≤ 16 * (|xiLineTwoLogDerivConstant| + Real.log (W₂ + 4)) * (2 * U ^ (2 / 3 : ℝ)) :=
+        hsum_dk.trans (mul_le_mul_of_nonneg_right hord (by positivity))
+    _ ≤ 16 * (2 * (|xiLineTwoLogDerivConstant| + 5) * (K_log1 * U ^ (1 / 6 : ℝ))) *
+          (2 * U ^ (2 / 3 : ℝ)) :=
+        mul_le_mul_of_nonneg_right (mul_le_mul_of_nonneg_left
+          (hpoly1.trans (mul_le_mul_of_nonneg_left hpow_le (by positivity))) (by norm_num))
+          (by positivity)
+    _ = 64 * (|xiLineTwoLogDerivConstant| + 5) * K_log1 *
+          (U ^ (1 / 6 : ℝ) * U ^ (2 / 3 : ℝ)) := by ring
+    _ = 64 * (|xiLineTwoLogDerivConstant| + 5) * K_log1 * U ^ (5 / 6 : ℝ) := by rw [hU_add]
 
 /-- **Three-Scale Sieve-Mollified Dyadic Mean Collapse (`exists_dyadicMean_corridor_and_polynomialTheta_le_log`).**
 For every `0 < c < 22 / 51`, the dyadic means of `unitWindowDepthCharge T (c log T)`,
@@ -2115,28 +2212,28 @@ theorem exists_dyadicMean_corridor_and_polynomialTheta_le_log :
     tendsto_id.atTop_mul_const (by norm_num)
   have ht_two : Tendsto (fun U : ℝ => 2 * U) atTop atTop :=
     tendsto_id.const_mul_atTop zero_lt_two
-  obtain ⟨K_log3, _, hlog3⟩ := exists_one_add_log_pow_le_rpow 3 (by positivity : (0 : ℝ) < 1 / 4)
+  obtain ⟨K_log1, hK_log1, hlog1⟩ := exists_one_add_log_pow_le_rpow 1 (by positivity : (0 : ℝ) < 1 / 6)
   -- Eventual smallness of short end-caps, remote `O(U^{c - 2})` tail, and `O(log U / U)` theta error
   have hev_capU : ∀ᶠ U : ℝ in atTop,
-      64 * (|xiLineTwoLogDerivConstant| + 5) * K_log3 * U ^ (3 / 4 : ℝ) ≤
+      128 * (|xiLineTwoLogDerivConstant| + 5) * K_log1 * U ^ (5 / 6 : ℝ) ≤
         c ^ 2 * U * Real.log U := by
-    have ht : Tendsto (fun U : ℝ => U ^ (1 / 4 : ℝ)) atTop atTop := tendsto_rpow_atTop (by positivity)
+    have ht : Tendsto (fun U : ℝ => U ^ (1 / 6 : ℝ)) atTop atTop := tendsto_rpow_atTop (by positivity)
     filter_upwards [ht.eventually_ge_atTop
-      (64 * (|xiLineTwoLogDerivConstant| + 5) * K_log3 / c ^ 2 + 1),
+      (128 * (|xiLineTwoLogDerivConstant| + 5) * K_log1 / c ^ 2 + 1),
       eventually_ge_atTop (4 : ℝ)] with U hU_r hU4
     have hU_pos : 0 < U := by linarith
-    have hlog1 : 1 ≤ Real.log U := by
-      have := Real.log_two_gt_d9
-      have := Real.log_le_log zero_lt_two (by linarith : (2 : ℝ) ≤ U)
-      linarith
-    have hsplit : U = U ^ (3 / 4 : ℝ) * U ^ (1 / 4 : ℝ) := by
+    have hlog1_U : 1 ≤ Real.log U := one_le_log_of_four_le hU4
+    have hsplit : U ^ (5 / 6 : ℝ) * U ^ (1 / 6 : ℝ) = U := by
       rw [← Real.rpow_add hU_pos]; norm_num
     have hm1 := (div_le_iff₀ (by positivity : 0 < c ^ 2)).mp
-      (by linarith : 64 * (|xiLineTwoLogDerivConstant| + 5) * K_log3 / c ^ 2 ≤ U ^ (1 / 4 : ℝ))
-    have hm2 := mul_le_mul_of_nonneg_left hm1 (Real.rpow_nonneg hU_pos.le (3 / 4))
-    have hrew : U ^ (3 / 4 : ℝ) * (U ^ (1 / 4 : ℝ) * c ^ 2) = c ^ 2 * U := by rw [hsplit]; ring
+      (by linarith : 128 * (|xiLineTwoLogDerivConstant| + 5) * K_log1 / c ^ 2 ≤ U ^ (1 / 6 : ℝ))
+    have hm2 := mul_le_mul_of_nonneg_left hm1 (Real.rpow_nonneg hU_pos.le (5 / 6))
+    have hrew : U ^ (5 / 6 : ℝ) * (U ^ (1 / 6 : ℝ) * c ^ 2) = c ^ 2 * U := by
+      calc U ^ (5 / 6 : ℝ) * (U ^ (1 / 6 : ℝ) * c ^ 2)
+          = c ^ 2 * (U ^ (5 / 6 : ℝ) * U ^ (1 / 6 : ℝ)) := by ring
+        _ = c ^ 2 * U := by rw [hsplit]
     rw [hrew] at hm2
-    exact hm2.trans (le_mul_of_one_le_right (by positivity) hlog1)
+    exact hm2.trans (le_mul_of_one_le_right (by positivity) hlog1_U)
   set δ_c : ℝ := c' - c
   have hδc_pos : 0 < δ_c := sub_pos.mpr hc_lt_c'
   filter_upwards [ht_half.eventually hev_sh, hev_sh, ht_two.eventually hev_sh,
@@ -2154,7 +2251,7 @@ theorem exists_dyadicMean_corridor_and_polynomialTheta_le_log :
     have : 0 ≤ (c + c') * Real.log 2 / δ_c := by positivity
     linarith
   set L_max : ℝ := c * Real.log (2 * U)
-  have hLmax_nn : 0 ≤ L_max := mul_nonneg hc0 (Real.log_nonneg (by linarith))
+  have hLmax_nn : 0 ≤ L_max := mul_nonneg hc0.le (Real.log_nonneg (by linarith))
   -- Scale inequality `L_max = c log(2U) ≤ c' log(U / 2)`
   have hL_le_half : L_max ≤ c' * Real.log (U / 2) := by
     have hlog2U : Real.log (2 * U) = Real.log 2 + Real.log U :=
@@ -2180,12 +2277,9 @@ theorem exists_dyadicMean_corridor_and_polynomialTheta_le_log :
     have hlog_le : Real.log (U / 2) ≤ Real.log U :=
       Real.log_le_log (by positivity) (by linarith)
     have hlog_nn : 0 ≤ Real.log (U / 2) := Real.log_nonneg (by linarith)
-    calc shellDepthSum (U / 2) U L_max
-        ≤ K_sh * (U / 2) * Real.log (U / 2) := h1
-      _ ≤ K_sh * U * Real.log U := by
-          have hm := mul_le_mul (by linarith : K_sh * (U / 2) ≤ K_sh * U) hlog_le
-            hlog_nn (by positivity)
-          exact hm
+    have hKU : K_sh * (U / 2) ≤ K_sh * U :=
+      mul_le_mul_of_nonneg_left (by linarith) hK_sh.le
+    exact h1.trans (mul_le_mul hKU hlog_le hlog_nn (by positivity))
   have hb_U : shellDepthSum U (2 * U) L_max ≤ K_sh * U * Real.log U :=
     hsh_U L_max hLmax_nn hL_le_U
   have hb_2U : shellDepthSum (2 * U) (4 * U) L_max ≤ 4 * K_sh * U * Real.log U := by
@@ -2200,78 +2294,32 @@ theorem exists_dyadicMean_corridor_and_polynomialTheta_le_log :
           mul_le_mul_of_nonneg_left hlog2U (by positivity)
       _ = 4 * K_sh * U * Real.log U := by ring
   -- 1. Bound `∫_U^{2U} unitWindowDepthCharge`
-  have hint_uwd : (1 / U) * (∫ T in Icc U (2 * U), unitWindowDepthCharge T (c * Real.log T)) ≤
-      K_c * Real.log U := by
+  have huwd_raw : (∫ T in Icc U (2 * U), unitWindowDepthCharge T (c * Real.log T)) ≤
+      (K_sh + c ^ 2) * U * Real.log U := by
     have h1 := dyadicIntegral_unitWindowDepthCharge_le_shellDepthSum (by linarith : 1 ≤ U) hc0.le
     rw [shellDepthSum_split (by linarith : U - 1 ≤ U) (by linarith : U ≤ 2 * U + 1),
       shellDepthSum_split (by linarith : U ≤ 2 * U) (by linarith : 2 * U ≤ 2 * U + 1)] at h1
-    have hdk_cap : ∀ z : ℂ, |z.re - 1 / 2| ≤ 1 / 2 →
-        depthKernel L_max (z.re - 1 / 2) ≤ 2 * U ^ (1 / 2 : ℝ) := by
-      intro z hz
-      refine (depthKernel_le_exp_of_abs_le_half hLmax_nn hz).trans ?_
-      have hc_half : c ≤ 1 / 2 := by linarith
-      calc Real.exp (c * Real.log (2 * U))
-          = (2 * U) ^ c := by rw [Real.rpow_def_of_pos (by positivity), mul_comm]
-        _ ≤ (2 * U) ^ (1 / 2 : ℝ) := Real.rpow_le_rpow_of_exponent_le (by linarith) hc_half
-        _ ≤ 2 * U ^ (1 / 2 : ℝ) := by
-            rw [Real.mul_rpow zero_le_two hU_pos.le]
-            refine mul_le_mul_of_nonneg_right ?_ (Real.rpow_nonneg hU_pos.le _)
-            calc (2 : ℝ) ^ (1 / 2 : ℝ) ≤ (2 : ℝ) ^ (1 : ℝ) :=
-                  Real.rpow_le_rpow_of_exponent_le one_le_two (by norm_num)
-              _ = 2 := Real.rpow_one 2
-    have hshort_cap : ∀ W₁ W₂ : ℝ, 0 ≤ W₁ → W₁ ≤ W₂ → W₂ - W₁ ≤ 2 → W₂ ≤ 2 * U + 1 →
-        shellDepthSum W₁ W₂ L_max ≤
-          32 * (|xiLineTwoLogDerivConstant| + 5) * K_log3 * U ^ (3 / 4 : ℝ) := by
-      intro W₁ W₂ hW₁ h12 hlen hW₂
-      have hord := shortShell_orderSum_le_log hW₁ h12 hlen
-      have hlogW : Real.log (W₂ + 4) ≤ 4 + Real.log U := by
-        calc Real.log (W₂ + 4) ≤ Real.log (4 * U) :=
-              Real.log_le_log (by positivity) (by linarith)
-          _ = Real.log 4 + Real.log U := Real.log_mul (by norm_num) hU_pos.ne'
-          _ ≤ 4 + Real.log U := by
-              have : Real.log ((2 : ℝ) ^ (2 : ℕ)) ≤ 2 := by
-                rw [Real.log_pow]; push_cast; linarith [Real.log_two_lt_d9]
-              norm_num at this; linarith
-      unfold shellDepthSum
-      have hsum_dk : ∑ z ∈ shellZeros W₁ W₂,
-            ((analyticOrderAt xi z).toNat : ℝ) * depthKernel L_max (z.re - 1 / 2) ≤
-          (∑ z ∈ shellZeros W₁ W₂, ((analyticOrderAt xi z).toNat : ℝ)) *
-            (2 * U ^ (1 / 2 : ℝ)) := by
-        rw [Finset.sum_mul]
-        refine Finset.sum_le_sum fun z hz => mul_le_mul_of_nonneg_left (hdk_cap z ?_)
-          (Nat.cast_nonneg _)
-        obtain ⟨h0, h1, _, _, _⟩ := mem_stripFinsetPos.mp (Finset.mem_filter.mp hz).1
-        rw [abs_le]; constructor <;> linarith
-      have hpoly1 : (|xiLineTwoLogDerivConstant| + Real.log (W₂ + 4)) ≤
-          (|xiLineTwoLogDerivConstant| + 5) * (1 + Real.log U) ^ 3 := by
-        have h13 : 1 + Real.log U ≤ (1 + Real.log U) ^ 3 := by nlinarith [hlogU_ge4]
-        nlinarith [abs_nonneg xiLineTwoLogDerivConstant, hlogW, h13]
-      have hpow_le := hlog3 U (by linarith)
-      have hU_add : U ^ (1 / 4 : ℝ) * U ^ (1 / 2 : ℝ) = U ^ (3 / 4 : ℝ) := by
-        rw [← Real.rpow_add hU_pos]; norm_num
-      calc ∑ z ∈ shellZeros W₁ W₂,
-              ((analyticOrderAt xi z).toNat : ℝ) * depthKernel L_max (z.re - 1 / 2)
-          ≤ 16 * (|xiLineTwoLogDerivConstant| + Real.log (W₂ + 4)) * (2 * U ^ (1 / 2 : ℝ)) :=
-            hsum_dk.trans (mul_le_mul_of_nonneg_right hord (by positivity))
-        _ ≤ 16 * ((|xiLineTwoLogDerivConstant| + 5) * (K_log3 * U ^ (1 / 4 : ℝ))) *
-              (2 * U ^ (1 / 2 : ℝ)) :=
-            mul_le_mul_of_nonneg_right (mul_le_mul_of_nonneg_left
-              (hpoly1.trans (mul_le_mul_of_nonneg_left hpow_le (by positivity))) (by norm_num))
-              (by positivity)
-        _ = 32 * (|xiLineTwoLogDerivConstant| + 5) * K_log3 *
-              (U ^ (1 / 4 : ℝ) * U ^ (1 / 2 : ℝ)) := by ring
-        _ = 32 * (|xiLineTwoLogDerivConstant| + 5) * K_log3 * U ^ (3 / 4 : ℝ) := by rw [hU_add]
-    have hc1 := hshort_cap (U - 1) U (by linarith) (by linarith) (by linarith) (by linarith)
-    have hc2 := hshort_cap (2 * U) (2 * U + 1) (by linarith) (by linarith) (by linarith) le_rfl
-    have htot_uwd : (∫ T in Icc U (2 * U), unitWindowDepthCharge T (c * Real.log T)) ≤
-        (K_sh + c ^ 2) * U * Real.log U := by
-      linarith [h1, hc1, hc2, hb_U, hcap_U]
-    have hm := mul_le_mul_of_nonneg_left htot_uwd (by positivity : 0 ≤ 1 / U)
-    have hsimp : (1 / U) * ((K_sh + c ^ 2) * U * Real.log U) = (K_sh + c ^ 2) * Real.log U := by
-      field_simp; ring
-    rw [hsimp] at hm
-    refine hm.trans (mul_le_mul_of_nonneg_right ?_ (by positivity))
-    dsimp [K_c]; nlinarith [hC_loc, hK_sh, sq_nonneg c]
+    have hc1 := shortEndCap_shellDepthSum_le_five_sixths hU16
+      (by linarith : 0 ≤ U - 1) (by linarith) (by linarith) (by linarith)
+      hc0.le (by linarith) hK_log1 hlog1
+    have hc2 := shortEndCap_shellDepthSum_le_five_sixths hU16
+      (by linarith : 0 ≤ 2 * U) (by linarith) (by linarith) le_rfl
+      hc0.le (by linarith) hK_log1 hlog1
+    have hcaps : shellDepthSum (U - 1) U L_max + shellDepthSum (2 * U) (2 * U + 1) L_max ≤
+        c ^ 2 * U * Real.log U := by
+      calc shellDepthSum (U - 1) U L_max + shellDepthSum (2 * U) (2 * U + 1) L_max
+          ≤ 64 * (|xiLineTwoLogDerivConstant| + 5) * K_log1 * U ^ (5 / 6 : ℝ) +
+              64 * (|xiLineTwoLogDerivConstant| + 5) * K_log1 * U ^ (5 / 6 : ℝ) :=
+            add_le_add hc1 hc2
+        _ = 128 * (|xiLineTwoLogDerivConstant| + 5) * K_log1 * U ^ (5 / 6 : ℝ) := by ring
+        _ ≤ c ^ 2 * U * Real.log U := hcap_U
+    calc (∫ T in Icc U (2 * U), unitWindowDepthCharge T (c * Real.log T))
+        ≤ shellDepthSum (U - 1) U L_max +
+            (shellDepthSum U (2 * U) L_max + shellDepthSum (2 * U) (2 * U + 1) L_max) := h1
+      _ = shellDepthSum U (2 * U) L_max +
+            (shellDepthSum (U - 1) U L_max + shellDepthSum (2 * U) (2 * U + 1) L_max) := by ring
+      _ ≤ K_sh * U * Real.log U + c ^ 2 * U * Real.log U := add_le_add hb_U hcaps
+      _ = (K_sh + c ^ 2) * U * Real.log U := by ring
   -- 2. Bound `∫_U^{2U} heckeDefect`
   have hint_hd_raw : (∫ γ in Icc U (2 * U), heckeDefect (baseTwistTest γ) (c * Real.log γ)) ≤
       (C_loc * (6 * K_sh) + c ^ 2) * U * Real.log U := by
@@ -2289,39 +2337,58 @@ theorem exists_dyadicMean_corridor_and_polynomialTheta_le_log :
         linarith
       exact (h1.trans h2).trans (le_mul_of_one_le_right (by positivity) (by linarith))
     have hsh_sum : shellDepthSum (U / 2) U L_max + shellDepthSum U (2 * U) L_max +
-        shellDepthSum (2 * U) (4 * U) L_max ≤ 6 * K_sh * U * Real.log U := by
-      linarith [hb_half, hb_U, hb_2U]
-    have hm_loc := mul_le_mul_of_nonneg_left hsh_sum hC_loc.le
-    linarith [h3, hm_loc, hrem_small]
-  have hint_hd : (1 / U) * (∫ γ in Icc U (2 * U), heckeDefect (baseTwistTest γ) (c * Real.log γ)) ≤
-      K_c * Real.log U := by
-    have hm := mul_le_mul_of_nonneg_left hint_hd_raw (by positivity : 0 ≤ 1 / U)
-    have hsimp : (1 / U) * ((C_loc * (6 * K_sh) + c ^ 2) * U * Real.log U) =
-        (C_loc * (6 * K_sh) + c ^ 2) * Real.log U := by field_simp; ring
-    rw [hsimp] at hm
-    refine hm.trans (mul_le_mul_of_nonneg_right ?_ (by positivity))
-    dsimp [K_c]; nlinarith [hC_loc, hK_sh, sq_nonneg c]
+        shellDepthSum (2 * U) (4 * U) L_max ≤ (6 * K_sh) * (U * Real.log U) := by
+      calc shellDepthSum (U / 2) U L_max + shellDepthSum U (2 * U) L_max +
+              shellDepthSum (2 * U) (4 * U) L_max
+          ≤ K_sh * U * Real.log U + K_sh * U * Real.log U + 4 * K_sh * U * Real.log U :=
+            add_le_add (add_le_add hb_half hb_U) hb_2U
+        _ = (6 * K_sh) * (U * Real.log U) := by ring
+    calc (∫ γ in Icc U (2 * U), heckeDefect (baseTwistTest γ) (c * Real.log γ))
+        ≤ C_loc * (shellDepthSum (U / 2) U L_max + shellDepthSum U (2 * U) L_max +
+            shellDepthSum (2 * U) (4 * U) L_max) + C_rem * (2 * U) ^ c / U := h3
+      _ ≤ C_loc * ((6 * K_sh) * (U * Real.log U)) + c ^ 2 * U * Real.log U :=
+          add_le_add (mul_le_mul_of_nonneg_left hsh_sum hC_loc.le) hrem_small
+      _ = (C_loc * (6 * K_sh) + c ^ 2) * U * Real.log U := by ring
   -- 3. Bound `∫_U^{2U} polynomialThetaSourceMomentReading`
-  have hint_poly : (1 / U) * (∫ γ in Icc U (2 * U),
+  have hpoly_raw : (∫ γ in Icc U (2 * U),
       polynomialThetaSourceMomentReading (baseTwistTest γ) (c * Real.log γ) 1
-        (linearThetaStage (2 * U))) ≤ K_c * Real.log U := by
+        (linearThetaStage (2 * U))) ≤
+      (C_loc * (6 * K_sh) + 2 * c ^ 2) * U * Real.log U := by
     have hdiff := (le_abs_self _).trans (hpoly_diff U c (by linarith) hc0.le (by linarith))
     have hlin_small : 2 * C_lin * Real.log U ≤ c ^ 2 * U * Real.log U := by
       have hm := (div_le_iff₀ (by positivity : 0 < c ^ 2)).mp
         (by linarith : 2 * C_lin / c ^ 2 ≤ U)
       exact mul_le_mul_of_nonneg_right (by linarith) (by positivity)
-    have hpoly_raw : (∫ γ in Icc U (2 * U),
+    have hsub_le : (∫ γ in Icc U (2 * U),
         polynomialThetaSourceMomentReading (baseTwistTest γ) (c * Real.log γ) 1
           (linearThetaStage (2 * U))) ≤
-        (C_loc * (6 * K_sh) + 2 * c ^ 2) * U * Real.log U := by
-      linarith [hint_hd_raw, hdiff, hlin_small]
-    have hm := mul_le_mul_of_nonneg_left hpoly_raw (by positivity : 0 ≤ 1 / U)
-    have hsimp : (1 / U) * ((C_loc * (6 * K_sh) + 2 * c ^ 2) * U * Real.log U) =
-        (C_loc * (6 * K_sh) + 2 * c ^ 2) * Real.log U := by field_simp; ring
-    rw [hsimp] at hm
-    refine hm.trans (mul_le_mul_of_nonneg_right ?_ (by positivity))
-    dsimp [K_c]; nlinarith [hC_loc, hK_sh, sq_nonneg c]
-  exact ⟨hint_uwd, hint_hd, hint_poly⟩
+        (∫ γ in Icc U (2 * U), heckeDefect (baseTwistTest γ) (c * Real.log γ)) +
+          2 * C_lin * Real.log U := sub_le_iff_le_add'.mp hdiff
+    calc (∫ γ in Icc U (2 * U),
+            polynomialThetaSourceMomentReading (baseTwistTest γ) (c * Real.log γ) 1
+              (linearThetaStage (2 * U)))
+        ≤ (C_loc * (6 * K_sh) + c ^ 2) * U * Real.log U + c ^ 2 * U * Real.log U :=
+          hsub_le.trans (add_le_add hint_hd_raw hlin_small)
+      _ = (C_loc * (6 * K_sh) + 2 * c ^ 2) * U * Real.log U := by ring
+  have hdiv_U_log : ∀ M : ℝ, M ≤ K_c →
+      (1 / U) * (M * U * Real.log U) ≤ K_c * Real.log U := by
+    intro M hM
+    have hsimp : (1 / U) * (M * U * Real.log U) = M * Real.log U := by
+      calc (1 / U) * (M * U * Real.log U)
+          = (M * Real.log U) * (U / U) := by ring
+        _ = M * Real.log U := by rw [div_self hU_pos.ne', mul_one]
+    rw [hsimp]
+    exact mul_le_mul_of_nonneg_right hM (by linarith)
+  have hCK_nn : 0 ≤ C_loc * K_sh := mul_nonneg hC_loc.le hK_sh.le
+  have hM1 : K_sh + c ^ 2 ≤ K_c := by
+    dsimp [K_c]; rw [add_mul, one_mul]; linarith [sq_nonneg c]
+  have hM2 : C_loc * (6 * K_sh) + c ^ 2 ≤ K_c := by
+    dsimp [K_c]; rw [add_mul, one_mul]; linarith [sq_nonneg c]
+  have hM3 : C_loc * (6 * K_sh) + 2 * c ^ 2 ≤ K_c := by
+    dsimp [K_c]; rw [add_mul, one_mul]; linarith [sq_nonneg c]
+  exact ⟨(mul_le_mul_of_nonneg_left huwd_raw (by positivity)).trans (hdiv_U_log _ hM1),
+    (mul_le_mul_of_nonneg_left hint_hd_raw (by positivity)).trans (hdiv_U_log _ hM2),
+    (mul_le_mul_of_nonneg_left hpoly_raw (by positivity)).trans (hdiv_U_log _ hM3)⟩
 
 /-- **Sub-Power Dyadic Mean Bound up to `c < 2 / 3` (`exists_dyadicMean_polynomialTheta_subpower_up_to_two_thirds`).**
 Across the full Ingham–Guth–Maynard zero-density regime `0 < c < 2 / 3`, for every `η > 0`, the
@@ -2344,7 +2411,7 @@ theorem exists_dyadicMean_polynomialTheta_subpower_up_to_two_thirds
   obtain ⟨C_sh, hC_sh, hev_sh⟩ := exists_shellDepthSum_le_subpower (by linarith : 0 ≤ c') hc'_lt hη
   obtain ⟨C_loc, C_rem, hC_loc, hC_rem, hhecke_3sh⟩ := exists_dyadicIntegral_heckeDefect_le_threeShells
   obtain ⟨C_lin, hC_lin, hpoly_diff⟩ := exists_abs_dyadicIntegral_polynomialTheta_sub_heckeDefect_le
-  obtain ⟨K_log1, _, hlog1⟩ := exists_one_add_log_pow_le_rpow 1 (by positivity : (0 : ℝ) < 1 / 6)
+  obtain ⟨K_log1, hK_log1, hlog1⟩ := exists_one_add_log_pow_le_rpow 1 (by positivity : (0 : ℝ) < 1 / 6)
   set C_out : ℝ := (C_loc + 1) * ((2 + (2 : ℝ) ^ (1 + η)) * C_sh) + 3
   refine ⟨C_out, by dsimp [C_out]; positivity, ?_⟩
   have ht_half : Tendsto (fun U : ℝ => U / 2) atTop atTop :=
@@ -2366,7 +2433,10 @@ theorem exists_dyadicMean_polynomialTheta_subpower_up_to_two_thirds
       (Real.rpow_nonneg hU_pos.le (5 / 6))
     have hrew : U ^ (5 / 6 : ℝ) * U ^ (1 / 6 + η) = U ^ (1 + η) := by
       rw [← Real.rpow_add hU_pos]; ring_nf
-    linarith
+    calc 128 * (|xiLineTwoLogDerivConstant| + 5) * K_log1 * U ^ (5 / 6 : ℝ)
+        = U ^ (5 / 6 : ℝ) * (128 * (|xiLineTwoLogDerivConstant| + 5) * K_log1) := by ring
+      _ ≤ U ^ (5 / 6 : ℝ) * U ^ (1 / 6 + η) := hm
+      _ = U ^ (1 + η) := hrew
   filter_upwards [ht_half.eventually hev_sh, hev_sh, ht_two.eventually hev_sh,
     Real.tendsto_log_atTop.eventually_ge_atTop ((c + c') * Real.log 2 / δ_c + 4),
     eventually_ge_atTop (max 16 (4 * C_rem + 1)),
@@ -2406,70 +2476,34 @@ theorem exists_dyadicMean_polynomialTheta_subpower_up_to_two_thirds
   have hb_2U : shellDepthSum (2 * U) (4 * U) L_max ≤ (2 : ℝ) ^ (1 + η) * C_sh * U ^ (1 + η) := by
     have h1 := hsh_2U L_max hLmax_nn hL_le_2U
     rw [show 2 * (2 * U) = 4 * U by ring, Real.mul_rpow zero_le_two hU_pos.le] at h1
-    linarith
+    exact h1.trans_eq (by ring)
   -- 1. `unitWindowDepthCharge`
   have huwd_raw : (∫ T in Icc U (2 * U), unitWindowDepthCharge T (c * Real.log T)) ≤
       (C_sh + 1) * U ^ (1 + η) := by
     have h1 := dyadicIntegral_unitWindowDepthCharge_le_shellDepthSum (by linarith : 1 ≤ U) hc0.le
     rw [shellDepthSum_split (by linarith : U - 1 ≤ U) (by linarith : U ≤ 2 * U + 1),
       shellDepthSum_split (by linarith : U ≤ 2 * U) (by linarith : 2 * U ≤ 2 * U + 1)] at h1
-    have hdk_cap : ∀ z : ℂ, |z.re - 1 / 2| ≤ 1 / 2 →
-        depthKernel L_max (z.re - 1 / 2) ≤ 2 * U ^ (2 / 3 : ℝ) := by
-      intro z hz
-      refine (depthKernel_le_exp_of_abs_le_half hLmax_nn hz).trans ?_
-      calc Real.exp (c * Real.log (2 * U))
-          = (2 * U) ^ c := by rw [Real.rpow_def_of_pos (by positivity), mul_comm]
-        _ ≤ (2 * U) ^ (2 / 3 : ℝ) := Real.rpow_le_rpow_of_exponent_le (by linarith) hc.le
-        _ ≤ 2 * U ^ (2 / 3 : ℝ) := by
-            rw [Real.mul_rpow zero_le_two hU_pos.le]
-            refine mul_le_mul_of_nonneg_right ?_ (Real.rpow_nonneg hU_pos.le _)
-            calc (2 : ℝ) ^ (2 / 3 : ℝ) ≤ (2 : ℝ) ^ (1 : ℝ) :=
-                  Real.rpow_le_rpow_of_exponent_le one_le_two (by norm_num)
-              _ = 2 := Real.rpow_one 2
-    have hshort_cap : ∀ W₁ W₂ : ℝ, 0 ≤ W₁ → W₁ ≤ W₂ → W₂ - W₁ ≤ 2 → W₂ ≤ 2 * U + 1 →
-        shellDepthSum W₁ W₂ L_max ≤
-          64 * (|xiLineTwoLogDerivConstant| + 5) * K_log1 * U ^ (5 / 6 : ℝ) := by
-      intro W₁ W₂ hW₁ h12 hlen hW₂
-      have hord := shortShell_orderSum_le_log hW₁ h12 hlen
-      have hlogW : Real.log (W₂ + 4) ≤ 4 + Real.log U := by
-        calc Real.log (W₂ + 4) ≤ Real.log (4 * U) :=
-              Real.log_le_log (by positivity) (by linarith)
-          _ = Real.log 4 + Real.log U := Real.log_mul (by norm_num) hU_pos.ne'
-          _ ≤ 4 + Real.log U := by
-              have : Real.log ((2 : ℝ) ^ (2 : ℕ)) ≤ 2 := by
-                rw [Real.log_pow]; push_cast; linarith [Real.log_two_lt_d9]
-              norm_num at this; linarith
-      unfold shellDepthSum
-      have hsum_dk : ∑ z ∈ shellZeros W₁ W₂,
-            ((analyticOrderAt xi z).toNat : ℝ) * depthKernel L_max (z.re - 1 / 2) ≤
-          (∑ z ∈ shellZeros W₁ W₂, ((analyticOrderAt xi z).toNat : ℝ)) *
-            (2 * U ^ (2 / 3 : ℝ)) := by
-        rw [Finset.sum_mul]
-        refine Finset.sum_le_sum fun z hz => mul_le_mul_of_nonneg_left (hdk_cap z ?_)
-          (Nat.cast_nonneg _)
-        obtain ⟨h0, h1, _, _, _⟩ := mem_stripFinsetPos.mp (Finset.mem_filter.mp hz).1
-        rw [abs_le]; constructor <;> linarith
-      have hpoly1 : |xiLineTwoLogDerivConstant| + Real.log (W₂ + 4) ≤
-          2 * (|xiLineTwoLogDerivConstant| + 5) * (1 + Real.log U) ^ 1 := by
-        rw [pow_one]; nlinarith [abs_nonneg xiLineTwoLogDerivConstant, hlogW]
-      have hpow_le := hlog1 U (by linarith)
-      have hU_add : U ^ (1 / 6 : ℝ) * U ^ (2 / 3 : ℝ) = U ^ (5 / 6 : ℝ) := by
-        rw [← Real.rpow_add hU_pos]; norm_num
-      calc ∑ z ∈ shellZeros W₁ W₂,
-              ((analyticOrderAt xi z).toNat : ℝ) * depthKernel L_max (z.re - 1 / 2)
-          ≤ 16 * (|xiLineTwoLogDerivConstant| + Real.log (W₂ + 4)) * (2 * U ^ (2 / 3 : ℝ)) :=
-            hsum_dk.trans (mul_le_mul_of_nonneg_right hord (by positivity))
-        _ ≤ 16 * (2 * (|xiLineTwoLogDerivConstant| + 5) * (K_log1 * U ^ (1 / 6 : ℝ))) *
-              (2 * U ^ (2 / 3 : ℝ)) :=
-            mul_le_mul_of_nonneg_right (mul_le_mul_of_nonneg_left
-              (hpoly1.trans (mul_le_mul_of_nonneg_left hpow_le (by positivity))) (by norm_num))
-              (by positivity)
-        _ = 64 * (|xiLineTwoLogDerivConstant| + 5) * K_log1 *
-              (U ^ (1 / 6 : ℝ) * U ^ (2 / 3 : ℝ)) := by ring
-        _ = 64 * (|xiLineTwoLogDerivConstant| + 5) * K_log1 * U ^ (5 / 6 : ℝ) := by rw [hU_add]
-    have hc1 := hshort_cap (U - 1) U (by linarith) (by linarith) (by linarith) (by linarith)
-    have hc2 := hshort_cap (2 * U) (2 * U + 1) (by linarith) (by linarith) (by linarith) le_rfl
-    linarith [h1, hc1, hc2, hb_U, hcap_U]
+    have hc1 := shortEndCap_shellDepthSum_le_five_sixths hU16
+      (by linarith : 0 ≤ U - 1) (by linarith) (by linarith) (by linarith)
+      hc0.le hc.le hK_log1 hlog1
+    have hc2 := shortEndCap_shellDepthSum_le_five_sixths hU16
+      (by linarith : 0 ≤ 2 * U) (by linarith) (by linarith) le_rfl
+      hc0.le hc.le hK_log1 hlog1
+    have hcaps : shellDepthSum (U - 1) U L_max + shellDepthSum (2 * U) (2 * U + 1) L_max ≤
+        U ^ (1 + η) := by
+      calc shellDepthSum (U - 1) U L_max + shellDepthSum (2 * U) (2 * U + 1) L_max
+          ≤ 64 * (|xiLineTwoLogDerivConstant| + 5) * K_log1 * U ^ (5 / 6 : ℝ) +
+              64 * (|xiLineTwoLogDerivConstant| + 5) * K_log1 * U ^ (5 / 6 : ℝ) :=
+            add_le_add hc1 hc2
+        _ = 128 * (|xiLineTwoLogDerivConstant| + 5) * K_log1 * U ^ (5 / 6 : ℝ) := by ring
+        _ ≤ U ^ (1 + η) := hcap_U
+    calc (∫ T in Icc U (2 * U), unitWindowDepthCharge T (c * Real.log T))
+        ≤ shellDepthSum (U - 1) U L_max +
+            (shellDepthSum U (2 * U) L_max + shellDepthSum (2 * U) (2 * U + 1) L_max) := h1
+      _ = shellDepthSum U (2 * U) L_max +
+            (shellDepthSum (U - 1) U L_max + shellDepthSum (2 * U) (2 * U + 1) L_max) := by ring
+      _ ≤ C_sh * U ^ (1 + η) + U ^ (1 + η) := add_le_add hb_U hcaps
+      _ = (C_sh + 1) * U ^ (1 + η) := by ring
   -- 2. `heckeDefect`
   have hhd_raw : (∫ γ in Icc U (2 * U), heckeDefect (baseTwistTest γ) (c * Real.log γ)) ≤
       (C_loc * ((2 + (2 : ℝ) ^ (1 + η)) * C_sh) + 1) * U ^ (1 + η) := by
@@ -2485,9 +2519,17 @@ theorem exists_dyadicMean_polynomialTheta_subpower_up_to_two_thirds
     have hsh_sum : shellDepthSum (U / 2) U L_max + shellDepthSum U (2 * U) L_max +
         shellDepthSum (2 * U) (4 * U) L_max ≤
         ((2 + (2 : ℝ) ^ (1 + η)) * C_sh) * U ^ (1 + η) := by
-      linarith [hb_half, hb_U, hb_2U]
-    have hm_loc := mul_le_mul_of_nonneg_left hsh_sum hC_loc.le
-    linarith [h3, hm_loc, hrem_small]
+      calc shellDepthSum (U / 2) U L_max + shellDepthSum U (2 * U) L_max +
+              shellDepthSum (2 * U) (4 * U) L_max
+          ≤ C_sh * U ^ (1 + η) + C_sh * U ^ (1 + η) + (2 : ℝ) ^ (1 + η) * C_sh * U ^ (1 + η) :=
+            add_le_add (add_le_add hb_half hb_U) hb_2U
+        _ = ((2 + (2 : ℝ) ^ (1 + η)) * C_sh) * U ^ (1 + η) := by ring
+    calc (∫ γ in Icc U (2 * U), heckeDefect (baseTwistTest γ) (c * Real.log γ))
+        ≤ C_loc * (shellDepthSum (U / 2) U L_max + shellDepthSum U (2 * U) L_max +
+            shellDepthSum (2 * U) (4 * U) L_max) + C_rem * (2 * U) ^ c / U := h3
+      _ ≤ C_loc * (((2 + (2 : ℝ) ^ (1 + η)) * C_sh) * U ^ (1 + η)) + U ^ (1 + η) :=
+          add_le_add (mul_le_mul_of_nonneg_left hsh_sum hC_loc.le) hrem_small
+      _ = (C_loc * ((2 + (2 : ℝ) ^ (1 + η)) * C_sh) + 1) * U ^ (1 + η) := by ring
   -- 3. `polynomialThetaSourceMomentReading`
   have hpoly_raw : (∫ γ in Icc U (2 * U),
       polynomialThetaSourceMomentReading (baseTwistTest γ) (c * Real.log γ) 1
@@ -2504,29 +2546,45 @@ theorem exists_dyadicMean_polynomialTheta_subpower_up_to_two_thirds
         (Real.rpow_nonneg hU_pos.le (1 / 6))
       have hrew : U ^ (5 / 6 : ℝ) * U ^ (1 / 6 : ℝ) = U := by
         rw [← Real.rpow_add hU_pos]; norm_num
-      linarith [hm1, hm2, hrew, hU1_eta]
-    linarith [hhd_raw, hdiff, hlin_small]
+      calc 2 * C_lin * Real.log U
+          ≤ 2 * C_lin * (K_log1 * U ^ (1 / 6 : ℝ)) := hm1
+        _ = (2 * C_lin * K_log1) * U ^ (1 / 6 : ℝ) := by ring
+        _ ≤ U ^ (5 / 6 : ℝ) * U ^ (1 / 6 : ℝ) := hm2
+        _ = U := hrew
+        _ ≤ U ^ (1 + η) := hU1_eta
+    have hsub_le : (∫ γ in Icc U (2 * U),
+        polynomialThetaSourceMomentReading (baseTwistTest γ) (c * Real.log γ) 1
+          (linearThetaStage (2 * U))) ≤
+        (∫ γ in Icc U (2 * U), heckeDefect (baseTwistTest γ) (c * Real.log γ)) +
+          2 * C_lin * Real.log U := sub_le_iff_le_add'.mp hdiff
+    calc (∫ γ in Icc U (2 * U),
+            polynomialThetaSourceMomentReading (baseTwistTest γ) (c * Real.log γ) 1
+              (linearThetaStage (2 * U)))
+        ≤ (C_loc * ((2 + (2 : ℝ) ^ (1 + η)) * C_sh) + 1) * U ^ (1 + η) + U ^ (1 + η) :=
+          hsub_le.trans (add_le_add hhd_raw hlin_small)
+      _ = (C_loc * ((2 + (2 : ℝ) ^ (1 + η)) * C_sh) + 2) * U ^ (1 + η) := by ring
   have hdiv_U : ∀ M : ℝ, M ≤ C_out →
       (1 / U) * (M * U ^ (1 + η)) ≤ C_out * U ^ η := by
     intro M hM
     have hsplit : U ^ (1 + η) = U * U ^ η := by
       rw [Real.rpow_add hU_pos, Real.rpow_one]
     have hsimp : (1 / U) * (M * U ^ (1 + η)) = M * U ^ η := by
-      rw [hsplit]; field_simp; ring
+      rw [hsplit]
+      calc (1 / U) * (M * (U * U ^ η))
+          = (M * U ^ η) * (U / U) := by ring
+        _ = M * U ^ η := by rw [div_self hU_pos.ne', mul_one]
     rw [hsimp]
     exact mul_le_mul_of_nonneg_right hM (Real.rpow_nonneg hU_pos.le _)
+  have hrpow_nn : 0 ≤ (2 : ℝ) ^ (1 + η) := Real.rpow_nonneg zero_le_two _
+  have hprod_nn : 0 ≤ C_loc * ((2 + (2 : ℝ) ^ (1 + η)) * C_sh) := by positivity
+  have h2_ge : C_sh ≤ (2 + (2 : ℝ) ^ (1 + η)) * C_sh :=
+    le_mul_of_one_le_left hC_sh.le (by linarith)
   have hM1 : C_sh + 1 ≤ C_out := by
-    dsimp [C_out]
-    have : 0 ≤ (2 : ℝ) ^ (1 + η) := Real.rpow_nonneg zero_le_two _
-    nlinarith [hC_loc, hC_sh]
+    dsimp [C_out]; rw [add_mul, one_mul]; linarith
   have hM2 : C_loc * ((2 + (2 : ℝ) ^ (1 + η)) * C_sh) + 1 ≤ C_out := by
-    dsimp [C_out]
-    have : 0 ≤ (2 : ℝ) ^ (1 + η) := Real.rpow_nonneg zero_le_two _
-    nlinarith [hC_sh]
+    dsimp [C_out]; rw [add_mul, one_mul]; linarith [le_trans hC_sh.le h2_ge]
   have hM3 : C_loc * ((2 + (2 : ℝ) ^ (1 + η)) * C_sh) + 2 ≤ C_out := by
-    dsimp [C_out]
-    have : 0 ≤ (2 : ℝ) ^ (1 + η) := Real.rpow_nonneg zero_le_two _
-    nlinarith [hC_sh]
+    dsimp [C_out]; rw [add_mul, one_mul]; linarith [le_trans hC_sh.le h2_ge]
   exact ⟨(mul_le_mul_of_nonneg_left huwd_raw (by positivity)).trans (hdiv_U _ hM1),
     (mul_le_mul_of_nonneg_left hhd_raw (by positivity)).trans (hdiv_U _ hM2),
     (mul_le_mul_of_nonneg_left hpoly_raw (by positivity)).trans (hdiv_U _ hM3)⟩

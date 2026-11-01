@@ -61,7 +61,7 @@ theorem exists_common_nonpositive_line_mod_radical
     exact hvq
   have hv₀ : e v₀ ≠ 0 := by
     intro hz
-    have hzero : pairing (e v₀) (e v₀) = 0 := by simp only [hz, pairing, inner_zero_left, sub_self]
+    have hzero : pairing (e v₀) (e v₀) = 0 := by simp [hz, pairing]
     rw [hzero, Complex.zero_re] at hv₀q
     exact (lt_irrefl 0) hv₀q
   have hsnd : (e v₀).2 ≠ 0 := fun h => hv₀ (eq_zero_of_nonpositive_snd_eq_zero hv₀q.le h)

@@ -66,7 +66,7 @@ theorem exists_horizontal_line_free_of_zeros {G : ℂ → ℂ} (hG : Differentia
     intro n
     have h := (isCompact_closedBall (0 : ℂ) n).finite_sdiff_of_mem_codiscreteWithin
       (codiscreteWithin_mono (Set.subset_univ _) hcod)
-    simpa only [Set.sdiff_eq, compl_compl] using h
+    simpa only [Set.sdiff_eq, Set.preimage_compl, compl_compl] using h
   have hZ : (G ⁻¹' {0}).Countable := by
     have hcover : G ⁻¹' {0} ⊆ ⋃ n : ℕ, Metric.closedBall (0 : ℂ) n ∩ G ⁻¹' {0} := by
       intro z hz
@@ -100,8 +100,9 @@ theorem exists_smooth_profile_noRealZero :
   let b : ℝ → ℝ := RenormalizedIntersectionTheory.unitBump
   have hbc : Continuous b := RenormalizedIntersectionTheory.unitBump.continuous
   have hbs : HasCompactSupport b := RenormalizedIntersectionTheory.unitBump.hasCompactSupport
-  have hG := RHTower.EvenSector.differentiable_paperFT_of_compact (Complex.continuous_ofReal.comp hbc)
-    (hbs.comp_left Complex.ofReal_zero)
+  have hG : Differentiable ℂ (paperFT (cx b)) :=
+    RHTower.EvenSector.differentiable_paperFT_of_compact (Complex.continuous_ofReal.comp hbc)
+      (hbs.comp_left Complex.ofReal_zero)
   have hG0 : paperFT (cx b) 0 ≠ 0 := by
     have h : paperFT (cx b) 0 = ((∫ u, b u : ℝ) : ℂ) := by
       unfold paperFT cx
@@ -120,13 +121,12 @@ theorem exists_smooth_profile_noRealZero :
   · simp only [φ, b, RenormalizedIntersectionTheory.unitBump_eq_zero u hu, mul_zero]
   · have hpos : φ (1 / 2) ≠ 0 :=
       (mul_pos (Real.exp_pos _) (RenormalizedIntersectionTheory.unitBump.pos_of_mem_ball
-        (Metric.mem_ball_self (by norm_num)))).ne'
+        (Metric.mem_ball_self RenormalizedIntersectionTheory.unitBump.rOut_pos))).ne'
     exact (hφ.continuous).integral_pos_of_hasCompactSupport_nonneg_nonzero
       (hbs.mul_left) (fun u => hnn u) hpos
-  · rw [paperFT_exp_tilt]
-    convert hμ r using 2
-    push_cast
-    ring
+  · rw [paperFT_exp_tilt, show (r : ℂ) - ((-μ : ℝ) : ℂ) * Complex.I = (r : ℂ) + μ * Complex.I by
+      push_cast; ring]
+    exact hμ r
 
 /-! ### Both regimes on one smooth profile -/
 

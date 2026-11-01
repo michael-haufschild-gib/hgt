@@ -1,23 +1,23 @@
 # Explicit weighted cosine triple floor
 
-- **Stage:** 1-in-progress
+- **Stage:** 3-formalized
 - **Type:** THEOREM / QUANTITATIVE PINCHING SOURCE
 - **Parent:** [Positive cosine pinching](../3-formalized/trans-threshold-cosine-pinching-credit.md).
 
-## Target
+## Theorem
 
 The compactness constant is replaced by an explicit all-frequency bound. For
 `F_c(t)=ct sin t−cos t`, the theorem is
 
 `max(|F_c(x)|, |F_c(y)|, |F_c(x+y)|) ≥ 1/10`
 
-for every real c,x,y. The polynomial cosine-kernel identity would then give, for
+for every real c,x,y. The polynomial cosine-kernel identity gives, for
 `|x|,|y|,|x+y|≤S` and `A=θ sinθ≠0`,
 
 `max(|Kθ(x)|,|Kθ(y)|,|Kθ(x+y)|) ≥ |A|/[10(π²S²+θ²)|aStar|]`.
 
 Here K uses the corpus's normalized kernel and x,y are its frequency coordinates.
-This would make the positive pinching constant explicit, with inverse fourth-power
+This makes the positive pinching constant explicit, with inverse fourth-power
 bandwidth decay after squaring.
 
 ## Paper proof
@@ -59,12 +59,12 @@ These bounds remain valid at removable frequencies; only `θ sinθ=0` is exclude
 Search found the existing shape-near-one, span-three floor and the new qualitative
 compactness theorem. Neither supplies this all-frequency residual estimate or
 explicit inverse-quadratic kernel floor. No claim of external novelty.
+
 ## Lean
 
 `ExplicitCosineTripleFloor.lean` proves `cotangentLineResidual_triple_floor`,
 `mtKernel_explicit_triple_floor`, and `mtKernel_shapeOne_explicit_triple_floor`.
-`PositivePinchingEveryBandwidth.lean` now proves `zetaCosine_explicit_disjointPairs`
+`PositivePinchingEveryBandwidth.lean` proves `zetaCosine_explicit_disjointPairs`
 and `zetaCosine_explicit_rankTrace`, retaining its three previous positive-credit
 statements as corollaries. All eight theorem audits contain only `propext`,
-`Classical.choice`, and `Quot.sound`. Direct final leaf checks are pending;
-umbrella imports are present.
+`Classical.choice`, and `Quot.sound`. Both exact production leaves pass `lake --old env lean`; umbrella imports are present.

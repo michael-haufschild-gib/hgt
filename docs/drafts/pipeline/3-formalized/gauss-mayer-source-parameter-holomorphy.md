@@ -66,6 +66,7 @@ This discharges source holomorphy and uniformity hypotheses for the actual
 Mayer family; the general exponential, normal-convergence, and determinant
 consumers already existed. No literature-priority claim is made.
 
-The operator residue does not establish determinant pole order. Primitive
-modular geodesic coding, the Selberg/scattering identity, and exclusion of
+The [exact determinant pole theorem](gauss-mayer-rank-one-determinant-pole.md)
+now identifies its residue and classifies cancellation. Primitive modular
+geodesic coding, the Selberg/scattering identity, and exclusion of
 off-critical resonances remain open. No RH conclusion follows.

@@ -53,5 +53,7 @@ Primitive geodesic coding and the scattering identity remain open.
 
 [Source-parameter holomorphy](../3-formalized/gauss-mayer-source-parameter-holomorphy.md)
 is also certified for the actual operator and determinant, together with the
-operator's nonzero rank-one residue at `w=1`. Determinant pole order remains
-a separate question.
+operator's nonzero rank-one residue at `w=1`. The
+[exact determinant pole theorem](../3-formalized/gauss-mayer-rank-one-determinant-pole.md)
+now gives `D=A+ζB`, residue `B(1,λ)`, and removability exactly at its closed
+discrete countable zero set. Its derivative at `λ=0` is `−1`.
