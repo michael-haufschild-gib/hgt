@@ -1,4 +1,4 @@
-import GaloisForLFunctions.ArithmeticCastelnuovoSeveri.LandauWidomNearRadicalLaw
+import GaloisForLFunctions.RHTower.SharpWeilNearRadicalCount
 
 /-!
 # The genus function reads the distinct, resolved zeros
@@ -139,11 +139,9 @@ theorem integral_norm_trigTest_le {b : ℝ → ℂ} (hb : Integrable b) (ℓ : �
     rw [norm_mul, Complex.norm_exp]
     have : (I * (trigFreq ℓ k₀ j : ℂ) * (u : ℂ)).re = 0 := by simp
     rw [this, Real.exp_zero, mul_one]
-  have hint : Integrable (trigTest b ℓ k₀ c) := by
-    have h := hb.bdd_mul (continuous_bandTrigPoly ℓ k₀ c).aestronglyMeasurable
-      ⟨∑ j, ‖c j‖, hpoly⟩
-    refine h.congr (Eventually.of_forall fun u => ?_)
-    simp only [trigTest]; ring
+  have hint : Integrable (trigTest b ℓ k₀ c) :=
+    hb.mul_bdd (continuous_bandTrigPoly ℓ k₀ c).aestronglyMeasurable
+      (Eventually.of_forall hpoly)
   calc ∫ u, ‖trigTest b ℓ k₀ c u‖ ≤ ∫ u, ‖b u‖ * ∑ j, ‖c j‖ := by
         refine integral_mono hint.norm (hb.norm.mul_const _) fun u => ?_
         simp only [trigTest, norm_mul]
@@ -190,10 +188,8 @@ theorem norm_W_trigTest_le_of_net {A₀ : ℝ} (hA₀ : 1 ≤ A₀)
       rw [norm_mul, Complex.norm_exp]
       have : (I * (trigFreq ℓ k₀ j : ℂ) * (u : ℂ)).re = 0 := by simp
       rw [this, Real.exp_zero, mul_one]
-    have h := hb.bdd_mul (continuous_bandTrigPoly ℓ k₀ c).aestronglyMeasurable
-      ⟨∑ j, ‖c j‖, hpoly⟩
-    refine h.congr (Eventually.of_forall fun u => ?_)
-    simp only [hf, trigTest]; ring
+    exact hb.mul_bdd (continuous_bandTrigPoly ℓ k₀ c).aestronglyMeasurable
+      (Eventually.of_forall hpoly)
   have hfs : ∀ u, U < |u| → f u = 0 := fun u hu => by simp [hf, trigTest, hbs u hu]
   have hfI : ∫ u, ‖f u‖ ≤ (∑ j, ‖c j‖) * ∫ u, ‖b u‖ := integral_norm_trigTest_le hb ℓ k₀ c
   have hfI0 : 0 ≤ ∫ u, ‖f u‖ := integral_nonneg fun _ => norm_nonneg _

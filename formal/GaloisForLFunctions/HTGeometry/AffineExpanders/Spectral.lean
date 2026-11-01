@@ -297,14 +297,8 @@ theorem mgg_rayleigh_bound (n : ℕ) (hn : 3 ≤ n)
     · exact sq_eq_zero_iff.mp h3
     · linarith
   -- Reindexing: ∑ g = ∑ f (bijection (x,y) ↦ x*n+y)
-  have hsum_g : ∑ x : Fin n, ∑ y : Fin n, g x y = ∑ v : Fin (n * n), f v := by
-    rw [← Fintype.sum_prod_type']
-    rw [← finProdFinEquiv.sum_comp (fun v => f v)]
-    congr 1; ext ⟨x, y⟩
-    show g x y = f.ofLp (finProdFinEquiv (x, y))
-    have : finProdFinEquiv (x, y) = ⟨x.val * n + y.val, Fin.pair_lt x y⟩ :=
-      Fin.ext (by show _ = x.val * n + y.val; unfold finProdFinEquiv; simp; ring)
-    rw [this]
+  have hsum_g : ∑ x : Fin n, ∑ y : Fin n, g x y = ∑ v : Fin (n * n), f v :=
+    (sum_reindex_xy n (fun v => f v)).symm
   -- G(0,0) = 0 (from mean-zero condition)
   have hG0 : G ⟨0, by omega⟩ ⟨0, by omega⟩ = 0 := by
     show ‖dft2d n g ⟨0, _⟩ ⟨0, _⟩‖ = 0
@@ -328,14 +322,8 @@ theorem mgg_rayleigh_bound (n : ℕ) (hn : 3 ≤ n)
   -- Step 6: ∑ g² = ‖f‖² = 1
   have hg_sq : ∑ v₁ : Fin n, ∑ v₂ : Fin n, (g v₁ v₂ : ℝ) ^ 2 = 1 := by
     have h_reindex : ∑ x : Fin n, ∑ y : Fin n, (g x y) ^ 2 =
-        ∑ v : Fin (n * n), (f v) ^ 2 := by
-      rw [← Fintype.sum_prod_type']
-      rw [← finProdFinEquiv.sum_comp (fun v => (f v) ^ 2)]
-      congr 1; ext ⟨x, y⟩
-      have heq : finProdFinEquiv (x, y) =
-          (⟨x.val * n + y.val, Fin.pair_lt x y⟩ : Fin (n * n)) :=
-        Fin.ext (by show _ = x.val * n + y.val; unfold finProdFinEquiv; simp; ring)
-      rw [heq]
+        ∑ v : Fin (n * n), (f v) ^ 2 :=
+      (sum_reindex_xy n (fun v => (f v) ^ 2)).symm
     rw [h_reindex]
     have h_norm : ‖f‖ ^ 2 = ∑ v : Fin (n * n), (f v) ^ 2 := by
       rw [sq, ← real_inner_self_eq_norm_mul_norm, PiLp.inner_apply]; simp [sq]
