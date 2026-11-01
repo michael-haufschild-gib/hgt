@@ -30,3 +30,9 @@ This supplies an exact criterion and a sharp support boundary. Beyond that
 boundary, the negative diagonal is a lower bound; an upper bound must pay
 the surviving samples. The proof and Lean declarations are recorded in
 [Exact Poisson rows](../3-formalized/exact-poisson-row-for-the-odd-stabilizer.md).
+
+The [fixed-base renormalization theorem](../3-formalized/odd-stabilizer-aperture-and-fixed-base-renormalization.md)
+sharpens the obstruction: for every fixed m>0 and compact C⁴ window,
+row/log Q tends to zero and primitive correction/log Q tends to
+`Ωhat(0)/(2πm)`. The entire logarithmic negative diagonal is cancelled
+at a fixed base. Both limits and the uniform row envelope are formalized.

@@ -37,9 +37,10 @@ endpoint masses; thus the first four derivative `L¹` norms are at most one,
 uniformly in the smoothing density. Transfer through the exponential tilt and
 dilation, apply smooth Euler–Maclaurin, then pass to the spline limit. A fixed
 smooth cutoff equal to `exp` on `[-5,5]` bounds all tilt derivatives uniformly;
-the existing Leibniz estimate then suffices. Uniform approximation allows the
-quadrature bound to pass by an arbitrary-positive-error argument, without a
-Stieltjes integration library.
+the existing Leibniz estimate then suffices. Uniform approximation gives
+pointwise convergence of the finite atomic sums; dominated convergence handles
+the convolution integrals. The same limit transfers the synthesis Lipschitz
+bound, without requiring convergence of derivatives.
 The synthesis perturbation must also extend to `C²` profiles:
 `exists_emSynthesis_of` itself still assumes smoothness. At the
 endpoint, positivity for every fixed multiple permits diagonal selection of

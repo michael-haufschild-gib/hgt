@@ -12,7 +12,7 @@ retaining `1/sqrt(m(m+2r))`, the taper, the aperture and the upper pair endpoint
 The fixed conductor cutoff and its primitive spatial correction remain explicit.
 
 For a C⁴ window, let `D₄ = ∫|Ω⁽⁴⁾|` over an interval containing its support,
-and `O(Q)=Σ_{q≤Q,odd} μ²(q)/φ(q)`. The first target is
+and `O(Q)=Σ_{q≤Q,odd} μ²(q)/φ(q)`. The formalized aperture bound is
 
 `|Σ_{r=1}^R parityStabilizerWeight Q (2r) Ωhat(2r/m) − fullRow|`
 `≤ 2 O(Q) D₄ (m/2)^4 / R³`, for R≥1.
@@ -70,11 +70,13 @@ boundary cost `O(Xθ² log Q)`. With `θ=T^(-7/12)`, both the cubic tail and
 this boundary term have power savings. These derivative and transport
 claims remain to be formalized.
 
-## Fixed-base consequence to audit
+## Formalized aperture and fixed-base consequences
 
-The conductor-independent bound predicts `row_Q(m)/log Q→0` for fixed m>0.
-Combining this with the exact Poisson identity and the odd logarithmic mean
-would give `spatialDual_Q(m)/log Q→Ωhat(0)/(2πm)`.
+The conductor-independent bound gives `row_Q(m)/log Q→0` for fixed m>0.
+The exact Poisson identity and odd logarithmic mean then give
+`spatialDual_Q(m)/log Q→Ωhat(0)/(2πm)`.
 Thus, at a fixed base, the primitive correction cancels the entire leading
 negative diagonal; along the moving support horizon the normalized row instead
-tends to `−Ωhat(0)/2`. This consequence still needs its Lean proof.
+tends to `−Ωhat(0)/2`. The aperture bound, conductor-independent envelopes and both limits are
+[formalized](../3-formalized/odd-stabilizer-aperture-and-fixed-base-renormalization.md);
+all seven audits use standard axioms and the final direct check passes.

@@ -1,4 +1,5 @@
 import GaloisForLFunctions.LatticeSectionTheory.TheKunnethRiemannRoch
+import GaloisForLFunctions.LatticeSectionTheory.TheSlopeOfALatticeCountIsItsRank
 
 /-!
 # Lattice Section Theory

@@ -40,9 +40,11 @@ variable {ι : Type*} [Fintype ι]
 local notation "E" => EuclideanSpace ℝ ι
 local notation "Z" => ι → ℤ
 
+omit [Fintype ι] in
 theorem euclideanIntegerPoint_zero : euclideanIntegerPoint (0 : Z) = (0 : E) := by
   ext i; simp [euclideanIntegerPoint, integerPoint]
 
+omit [Fintype ι] in
 theorem euclideanIntegerPoint_ne_zero {k : Z} (hk : k ≠ 0) : euclideanIntegerPoint k ≠ (0 : E) := by
   intro h
   apply hk
@@ -75,12 +77,12 @@ theorem latticeTheta_pos (B : E ≃L[ℝ] E) {t : ℝ} (ht : 0 < t) : 0 < lattic
 /-- The lattice count decreases as the metric grows. -/
 theorem latticeTheta_antitone (B : E ≃L[ℝ] E) {t t' : ℝ} (ht : 0 < t) (htt' : t ≤ t') :
     latticeTheta B t' ≤ latticeTheta B t := by
+  rw [latticeTheta_eq_tsum, latticeTheta_eq_tsum]
   refine (summable_latticeTerm B (ht.trans_le htt')).tsum_le_tsum (fun k => ?_)
     (summable_latticeTerm B ht)
-  unfold latticeTerm
-  rw [Real.exp_le_exp]
-  have := sq_nonneg ‖B (euclideanIntegerPoint k)‖
-  nlinarith [Real.pi_pos]
+  simp only [latticeTerm, Real.exp_le_exp]
+  nlinarith [mul_nonneg (mul_nonneg (sub_nonneg.2 htt') Real.pi_pos.le)
+    (sq_nonneg ‖B (euclideanIntegerPoint k)‖)]
 
 /-- **The lattice `h⁰`** of `L = B ℤ^ι` at degree `d`. -/
 def latticeH0 (B : E ≃L[ℝ] E) (d : ℝ) : ℝ := Real.log (latticeTheta B (Real.exp (-2 * d)))
@@ -153,11 +155,11 @@ theorem tendsto_latticeTheta_atTop (B : E ≃L[ℝ] E) :
       ring
   have hbound : ∀ᶠ t in atTop, ∀ k : Z, ‖latticeTerm B t k‖ ≤ latticeTerm B 1 k := by
     filter_upwards [eventually_ge_atTop (1 : ℝ)] with t ht k
-    rw [Real.norm_of_nonneg (Real.exp_pos _).le]
-    unfold latticeTerm
-    rw [Real.exp_le_exp]
-    have := sq_nonneg ‖B (euclideanIntegerPoint k)‖
-    nlinarith [Real.pi_pos]
+    have h0 : 0 ≤ latticeTerm B t k := (Real.exp_pos _).le
+    rw [Real.norm_of_nonneg h0]
+    simp only [latticeTerm, Real.exp_le_exp]
+    nlinarith [mul_nonneg (mul_nonneg (sub_nonneg.2 ht) Real.pi_pos.le)
+      (sq_nonneg ‖B (euclideanIntegerPoint k)‖)]
   have := tendsto_tsum_of_dominated_convergence (summable_latticeTerm B one_pos) hlim hbound
   rwa [tsum_ite_eq] at this
 
@@ -170,7 +172,8 @@ theorem tendsto_latticeH0_atBot (B : E ≃L[ℝ] E) : Tendsto (latticeH0 B) atBo
     exact this.congr fun d => by ring
   have := (Real.continuousAt_log one_ne_zero).tendsto.comp
     ((tendsto_latticeTheta_atTop B).comp hexp)
-  simpa only [Real.log_one] using this
+  rw [Real.log_one] at this
+  exact this
 
 /-- **The rank is the asymptotic slope**: `h⁰(L, d) − (r d + log(1/covol L)) → 0` as `d → ∞`. -/
 theorem tendsto_latticeH0_sub_atTop (B : E ≃L[ℝ] E) :
@@ -218,10 +221,12 @@ theorem not_riemannInequality_latticeH0_linear {κ : F} {χ₀ : ℝ} (B : E ≃
         (2 * latticeH0 B 0 + latticeRank ι * |k|))).exists
   have hr : 0 ≤ latticeRank ι := Nat.cast_nonneg _
   have hn0 : (0 : ℝ) ≤ n := Nat.cast_nonneg n
+  have e1 : deg ((n : ℝ) • S.ample) = n * a := by rw [map_smul, smul_eq_mul]
+  have e2 : deg (κ - (n : ℝ) • S.ample) = k - n * a := by rw [map_sub, e1]
   have b1 := latticeH0_le B (deg ((n : ℝ) • S.ample))
   have b2 := latticeH0_le B (deg (κ - (n : ℝ) • S.ample))
-  rw [map_smul, smul_eq_mul] at b1
-  rw [map_sub, map_smul, smul_eq_mul] at b2
+  rw [e1] at b1 hn1
+  rw [e2] at b2 hn1
   have m1 : max (n * a) 0 ≤ n * |a| :=
     max_le (mul_le_mul_of_nonneg_left (le_abs_self a) hn0) (by positivity)
   have m2 : max (k - n * a) 0 ≤ |k| + n * |a| := by

@@ -323,22 +323,6 @@ section MainEstimate
 
 open GaloisForLFunctions.SelectiveMultiscaleArithmeticPositivity (ramanujanAdjunctionEnergy_one)
 
-/-- The real form of the finite-flip term: `|μ y| ≤ c (√W + θ/4) √G`. -/
-theorem abs_mul_le_term1 {y μ δ c W θ G : ℝ} (hδ : 0 < δ) (hc : 0 ≤ c) (hW : 0 ≤ W) (hθ : 0 ≤ θ)
-    (hμ : μ = c / δ) (hy : y ^ 2 ≤ (δ ^ 2 * W + (δ * θ / 4) ^ 2) * G) :
-    |μ * y| ≤ c * (Real.sqrt W + θ / 4) * Real.sqrt G := by
-  have h1 : |y| ≤ Real.sqrt ((δ ^ 2 * W + (δ * θ / 4) ^ 2) * G) := Real.abs_le_sqrt hy
-  have h2 : Real.sqrt ((δ ^ 2 * W + (δ * θ / 4) ^ 2) * G) ≤ δ * (Real.sqrt W + θ / 4) * Real.sqrt G := by
-    rw [Real.sqrt_mul (by positivity)]
-    refine mul_le_mul_of_nonneg_right ?_ (Real.sqrt_nonneg _)
-    refine (sqrt_add_le_add_sqrt (by positivity) (by positivity)).trans (le_of_eq ?_)
-    rw [Real.sqrt_mul (by positivity), Real.sqrt_sq hδ.le, Real.sqrt_sq (by positivity)]
-    ring
-  rw [abs_mul, hμ, abs_of_nonneg (div_nonneg hc hδ.le)]
-  calc c / δ * |y| ≤ c / δ * (δ * (Real.sqrt W + θ / 4) * Real.sqrt G) :=
-        mul_le_mul_of_nonneg_left (h1.trans h2) (div_nonneg hc hδ.le)
-    _ = c * (Real.sqrt W + θ / 4) * Real.sqrt G := by field_simp
-
 /-- The real form of the fixed-scale term: `|⟨w, P z⟩|/√H ≤ c (θ/4) √G`. -/
 theorem abs_div_le_term2 {x a b c G H θ d : ℝ} (hH : 0 < H) (hc : 0 ≤ c) (hd : 0 < d) (ha : 0 ≤ a)
     (hb : 0 ≤ b) (hθ : 0 ≤ θ) (hx : |x| ≤ a * b) (ha2 : a ^ 2 ≤ G / d)
@@ -456,17 +440,14 @@ theorem norm_starProjection_twin_sub_sq_le (P : Set ℕ) {T N : ℕ} (hT : 1 ≤
   rw [mul_comm M]
   exact inner_sq_le_of_mem_smoothFibreSpace _ hv
 
-/-- **The pointwise estimate at one horizon.** With the finite flip `F` below `T`, its density `δ`,
-the excited-resolvent bound, the fixed-scale defect, the multiscale bound and the energy facts at
-horizon `N`, `|⟨w, v_P⟩| ≤ c_N (√W + θ) √(Q_N(w) − s|w|²)` for `w ⊥ e_{i₀}`. -/
-theorem abs_inner_primeSetHorizonVector_le (P : Set ℕ) {T N : ℕ} (hT : 1 ≤ T)
-    {i₀ : PrimeHorizonIndex N} {s t W θ CD K₁ K₂ LT c'' κ : ℝ} (hst : s < t)
+/-- **The remainder at one horizon.** With the finite flip `F` below `T`, its density `δ`, the
+fixed-scale defect, the multiscale bound and the energy facts at horizon `N`,
+`|⟨w, v_P⟩ − (c_N/δ)⟨w, v_F⟩| ≤ θ c_N √(Q_N(w) − s|w|²)` for `w ⊥ e_{i₀}`. -/
+theorem abs_inner_primeSetHorizonVector_sub_le (P : Set ℕ) {T N : ℕ} (hT : 1 ≤ T)
+    {i₀ : PrimeHorizonIndex N} {s t θ CD K₁ K₂ LT c'' κ : ℝ} (hst : s < t)
     (hg : IsGroundBelow N t i₀) {w : EuclideanSpace ℝ (PrimeHorizonIndex N)}
-    (hw : ⟪w, primeEigen N i₀⟫ = 0) (hW0 : 0 ≤ W) (hθ : 0 ≤ θ) (hc'' : 0 ≤ c'') (hCD : 0 ≤ CD)
+    (hw : ⟪w, primeEigen N i₀⟫ = 0) (hθ : 0 ≤ θ) (hc'' : 0 ≤ c'') (hCD : 0 ≤ CD)
     (hL1 : 1 ≤ Real.log N)
-    (hρ : excitedResolvent N s i₀ (finiteFlipHorizonVector (primeSetCutoff P (T - 1)) N) ≤
-      finiteFlipHarmonicDensity (primeSetCutoff P (T - 1)) ^ 2 * W +
-        (finiteFlipHarmonicDensity (primeSetCutoff P (T - 1)) * θ / 4) ^ 2)
     (hdef : ∑ a ∈ smoothSet T N, (finiteFlipHarmonicDensity (primeSetCutoff P (T - 1)) *
         gaugeHarmonicSum (fun _ => (1 : ℝ)) N *
         gaugeHarmonicSum (roughGauge T (primeSetFlip P)) (N / a) -
@@ -482,8 +463,10 @@ theorem abs_inner_primeSetHorizonVector_le (P : Set ℕ) {T N : ℕ} (hT : 1 ≤
     (hTch : K₁ * LT * Real.sqrt CD ≤ θ / 4 * c'')
     (hK₂ : K₂ * Real.sqrt CD ≤ θ / 4 * c'' * Real.log N ^ (1 / 2 - 2 * κ))
     (hcN : c'' * Real.log N ^ (-(2 * κ)) ≤ harmonicCorrelation (primeSetFlip P) N) :
-    |⟪w, primeSetHorizonVector P N⟫| ≤ harmonicCorrelation (primeSetFlip P) N *
-      (Real.sqrt W + θ) * Real.sqrt (primeEnergy N w - s * ‖w‖ ^ 2) := by
+    |⟪w, primeSetHorizonVector P N⟫ - harmonicCorrelation (primeSetFlip P) N /
+        finiteFlipHarmonicDensity (primeSetCutoff P (T - 1)) *
+        ⟪w, finiteFlipHorizonVector (primeSetCutoff P (T - 1)) N⟫| ≤
+      harmonicCorrelation (primeSetFlip P) N * θ * Real.sqrt (primeEnergy N w - s * ‖w‖ ^ 2) := by
   set F := primeSetCutoff P (T - 1)
   set δ := finiteFlipHarmonicDensity F
   have hδ0 : 0 < δ := finiteFlipHarmonicDensity_pos (primeSetCutoff_prime' P (T - 1))
@@ -498,7 +481,6 @@ theorem abs_inner_primeSetHorizonVector_le (P : Set ℕ) {T N : ℕ} (hT : 1 ≤
   have hts : 0 < t - s := by linarith
   set G := primeEnergy N w - s * ‖w‖ ^ 2
   have hcoer := primeEnergy_sub_ge_of_perp (s := s) hg hw
-  have hG0 : 0 ≤ G := le_trans (mul_nonneg hts.le (sq_nonneg _)) hcoer
   have hw2 : ‖w‖ ^ 2 ≤ G / (t - s) := by rw [le_div_iff₀ hts]; linarith
   -- the decomposition `ω⃗ = μ ω⃗_F + P_T(ω⃗ − μ ω⃗_F) + (ω⃗ − P_T ω⃗)`
   set ωv := gaugeVector N (primeSetFlip P)
@@ -513,11 +495,7 @@ theorem abs_inner_primeSetHorizonVector_le (P : Set ℕ) {T N : ℕ} (hT : 1 ≤
   have hinner := inner_decomp w (primeSetHorizonVector P N) (finiteFlipHorizonVector F N) ωv ωvF PT
     (1 / Real.sqrt H) μ (primeSetHorizonVector_eq P N) (finiteFlipHorizonVector_eq F N)
     (Submodule.starProjection_eq_self_iff.mpr (gaugeVector_finiteFlip_mem hFT N))
-  -- term 1: the finite flip
-  have hT1sq : ⟪w, finiteFlipHorizonVector F N⟫ ^ 2 ≤ (δ ^ 2 * W + (δ * θ / 4) ^ 2) * G :=
-    (inner_sq_le_excited hg hst hw _).trans (mul_le_mul_of_nonneg_right hρ hG0)
-  have hX1 := abs_mul_le_term1 hδ0 hcN0 hW0 hθ rfl hT1sq
-  -- term 2: the fixed-scale defect
+  -- the fixed-scale defect
   have hPz2 : ‖PT (ωv - μ • ωvF)‖ ^ 2 ≤ (θ / 4) ^ 2 * (t - s) * cN ^ 2 * H := by
     have h := norm_starProjection_twin_sub_sq_le P hT hδ0 hH0 hdef
     rw [← hHdef, ← hSdef, hz] at h
@@ -525,18 +503,113 @@ theorem abs_inner_primeSetHorizonVector_le (P : Set ℕ) {T N : ℕ} (hT : 1 ≤
     rw [hcNdef]; field_simp
   have hX2 := abs_div_le_term2 (x := ⟪w, PT (ωv - μ • ωvF)⟫) hH0 hcN0 hts (norm_nonneg w)
     (norm_nonneg _) hθ (abs_real_inner_le_norm _ _) hw2 hPz2
-  -- term 3: the rough fluctuations
-  have hX3 : |1 / Real.sqrt H * ⟪w, ωv - PT ωv⟫| ≤ cN * (θ / 2) * Real.sqrt G := by
-    exact abs_div_le_term3 hL1 hHL hθ hc'' hCD
+  -- the rough fluctuations
+  have hX3 : |1 / Real.sqrt H * ⟪w, ωv - PT ωv⟫| ≤ cN * (θ / 2) * Real.sqrt G :=
+    abs_div_le_term3 hL1 hHL hθ hc'' hCD
       (hms.trans (mul_le_mul_of_nonneg_left (Real.sqrt_le_sqrt hD) hcoef)) hTch hK₂ hcN
-  -- combine
-  rw [hinner]
-  calc _ ≤ |μ * ⟪w, finiteFlipHorizonVector F N⟫| +
-        |1 / Real.sqrt H * ⟪w, PT (ωv - μ • ωvF)⟫| + |1 / Real.sqrt H * ⟪w, ωv - PT ωv⟫| :=
-        (abs_add_le _ _).trans (add_le_add (abs_add_le _ _) le_rfl)
-    _ ≤ cN * (Real.sqrt W + θ / 4) * Real.sqrt G + cN * (θ / 4) * Real.sqrt G +
-        cN * (θ / 2) * Real.sqrt G := add_le_add (add_le_add hX1 hX2) hX3
-    _ = cN * (Real.sqrt W + θ) * Real.sqrt G := by ring
+  have hrest : ⟪w, primeSetHorizonVector P N⟫ - μ * ⟪w, finiteFlipHorizonVector F N⟫ =
+      1 / Real.sqrt H * ⟪w, PT (ωv - μ • ωvF)⟫ + 1 / Real.sqrt H * ⟪w, ωv - PT ωv⟫ := by
+    rw [hinner]; ring
+  rw [hrest]
+  have hq : 0 ≤ cN * θ * Real.sqrt G := by positivity
+  calc _ ≤ |1 / Real.sqrt H * ⟪w, PT (ωv - μ • ωvF)⟫| + |1 / Real.sqrt H * ⟪w, ωv - PT ωv⟫| :=
+        abs_add_le _ _
+    _ ≤ cN * (θ / 4) * Real.sqrt G + cN * (θ / 2) * Real.sqrt G := add_le_add hX2 hX3
+    _ ≤ cN * θ * Real.sqrt G := by nlinarith
+
+/-- **The twin is a multiple of a finite flip up to `θ c_N` in energy norm.** Let `P` have relative
+log density `κ ∈ (0, 1/4)` and `0 < s < t`. For every `θ > 0` and `T₀` there is a scale `T ≥ T₀` such
+that, with `F` the flipped primes below `T`, eventually `c_N > 0` and, for every ground index `i₀`
+below `γ + t` and every `w ⊥ e_{i₀}`,
+`|⟨w, v_P⟩ − (c_N/δ_F)⟨w, v_F⟩| ≤ θ c_N √(Q_N(w) − s|w|²)`. -/
+theorem exists_scale_inner_primeSetHorizonVector_sub_le (P : Set ℕ) {κ C : ℝ} (hκ0 : 0 < κ)
+    (hκ : κ < 1 / 4) (hP : ∀ n, 1 ≤ n → |primeSetLogMass P n - κ * Real.log n| ≤ C)
+    {s t : ℝ} (hs : 0 < s) (hst : s < t) {θ : ℝ} (hθ0 : 0 < θ) (T₀ : ℕ) :
+    ∃ T : ℕ, T₀ ≤ T ∧ 3 ≤ T ∧ ∀ᶠ N : ℕ in atTop, 0 < harmonicCorrelation (primeSetFlip P) N ∧
+      ∀ i₀ : PrimeHorizonIndex N, IsGroundBelow N t i₀ →
+        ∀ w : EuclideanSpace ℝ (PrimeHorizonIndex N), ⟪w, primeEigen N i₀⟫ = 0 →
+          |⟪w, primeSetHorizonVector P N⟫ - harmonicCorrelation (primeSetFlip P) N /
+              finiteFlipHarmonicDensity (primeSetCutoff P (T - 1)) *
+              ⟪w, finiteFlipHorizonVector (primeSetCutoff P (T - 1)) N⟫| ≤
+            harmonicCorrelation (primeSetFlip P) N * θ *
+              Real.sqrt (primeEnergy N w - s * ‖w‖ ^ 2) := by
+  have hts : 0 < t - s := by linarith
+  set CD := 2 + (2 * s + 1) / (t - s)
+  have hCD : 0 ≤ CD := by positivity
+  obtain ⟨K₁, K₂, hK₁, hK₂, hms⟩ := exists_abs_inner_twin_sub_starProjection_le P hκ0 hκ hP
+  obtain ⟨c', hc', N₂, hN₂⟩ :=
+    exists_pos_mul_rpow_le_gaugeHarmonicSum_primeSetFlip P (by linarith : κ < 1 / 2) hP
+  have hc'' : 0 < c' / 2 := by positivity
+  -- choose the scale `T`
+  have hTlim : Tendsto (fun T : ℕ => Real.log T ^ (2 * κ - 1 / 2)) atTop (𝓝 0) := by
+    have h := (tendsto_rpow_neg_atTop (show 0 < 1 / 2 - 2 * κ by linarith)).comp
+      (Real.tendsto_log_atTop.comp tendsto_natCast_atTop_atTop)
+    refine h.congr fun T => ?_
+    simp only [Function.comp_apply]
+    congr 1; ring
+  have hsmall : 0 < θ / 4 * (c' / 2) / (K₁ * Real.sqrt CD + 1) := by positivity
+  obtain ⟨T, hT3, hTsmall⟩ := ((eventually_ge_atTop (max 3 T₀)).and
+    (hTlim.eventually (ge_mem_nhds hsmall))).exists
+  have hT3' : 3 ≤ T := (le_max_left _ _).trans hT3
+  refine ⟨T, (le_max_right _ _).trans hT3, hT3', ?_⟩
+  have hLT0 : 0 ≤ Real.log T ^ (2 * κ - 1 / 2) := Real.rpow_nonneg (Real.log_natCast_nonneg T) _
+  have hTch : K₁ * Real.log T ^ (2 * κ - 1 / 2) * Real.sqrt CD ≤ θ / 4 * (c' / 2) := by
+    rw [le_div_iff₀ (by positivity)] at hTsmall
+    have h1 : K₁ * Real.sqrt CD * Real.log T ^ (2 * κ - 1 / 2) ≤
+        (K₁ * Real.sqrt CD + 1) * Real.log T ^ (2 * κ - 1 / 2) :=
+      mul_le_mul_of_nonneg_right (by linarith) hLT0
+    nlinarith
+  -- the flipped primes below `T`
+  set F := primeSetCutoff P (T - 1)
+  set δ := finiteFlipHarmonicDensity F
+  have hδeq : flipDensityBelow (primeSetFlip P) T = δ := flipDensityBelow_eq P (by omega)
+  -- eventual facts at the horizon
+  obtain ⟨N₃, h3⟩ := eventually_fixedScaleDefect_le P hκ0 (by linarith) hP hT3'
+    (ε := (θ / 4) ^ 2 * (t - s)) (by positivity)
+  obtain ⟨N₄, h4⟩ := eventually_poleDefect_le_primeEnergy
+  have hLa : Tendsto (fun N : ℕ => Real.log N ^ (1 / 2 - 2 * κ)) atTop atTop :=
+    (tendsto_rpow_atTop (by linarith)).comp (Real.tendsto_log_atTop.comp tendsto_natCast_atTop_atTop)
+  have hK₂ev := hLa.eventually_ge_atTop (K₂ * Real.sqrt CD / (θ / 4 * (c' / 2)))
+  filter_upwards [eventually_ge_atTop (max (max N₃ N₄) (max N₂ T)), hK₂ev] with N hN hK₂N
+  have hN3 : N₃ ≤ N := (le_max_left _ _).trans ((le_max_left _ _).trans hN)
+  have hN4 : N₄ ≤ N := (le_max_right _ _).trans ((le_max_left _ _).trans hN)
+  have hNN₂ : N₂ ≤ N := (le_max_left _ _).trans ((le_max_right _ _).trans hN)
+  have hTN : T ≤ N := (le_max_right _ _).trans ((le_max_right _ _).trans hN)
+  have hL1 : 1 ≤ Real.log N := one_le_log_of_three_le (hT3'.trans hTN)
+  -- `c_N ≥ (c'/2)(log N)^{−2κ}`
+  have hcN : c' / 2 * Real.log N ^ (-(2 * κ)) ≤ harmonicCorrelation (primeSetFlip P) N := by
+    have hH0 : 0 < gaugeHarmonicSum (fun _ => (1 : ℝ)) N := lt_of_lt_of_le (by linarith)
+      (log_le_harmonic N)
+    have hHu : gaugeHarmonicSum (fun _ => (1 : ℝ)) N ≤ 2 * Real.log N := by
+      have := (abs_le.mp (abs_harmonic_sub_log_le N)).2; linarith
+    have hLpow : Real.log N ^ (1 - 2 * κ) = Real.log N * Real.log N ^ (-(2 * κ)) := by
+      rw [show 1 - 2 * κ = 1 + -(2 * κ) by ring, Real.rpow_add (by linarith), Real.rpow_one]
+    have hp0 : 0 ≤ Real.log N ^ (-(2 * κ)) := Real.rpow_nonneg (by linarith) _
+    rw [harmonicCorrelation, le_div_iff₀ hH0]
+    calc c' / 2 * Real.log N ^ (-(2 * κ)) * gaugeHarmonicSum (fun _ => (1 : ℝ)) N ≤
+          c' / 2 * Real.log N ^ (-(2 * κ)) * (2 * Real.log N) :=
+          mul_le_mul_of_nonneg_left hHu (by positivity)
+      _ = c' * Real.log N ^ (1 - 2 * κ) := by rw [hLpow]; ring
+      _ ≤ gaugeHarmonicSum (primeSetFlip P) N := hN₂ N hNN₂
+  have hcpos : 0 < harmonicCorrelation (primeSetFlip P) N :=
+    lt_of_lt_of_le (mul_pos hc'' (Real.rpow_pos_of_pos (by linarith) _)) hcN
+  refine ⟨hcpos, fun i₀ hg w hw => ?_⟩
+  have hdef := h3 N hN3
+  rw [hδeq] at hdef
+  -- the defect against the energy
+  have hD : poleDefect N (horizonExtend w) ≤ CD * (primeEnergy N w - s * ‖w‖ ^ 2) := by
+    have h := h4 N hN4 w
+    have hcoer := primeEnergy_sub_ge_of_perp (s := s) hg hw
+    have hw2 : (2 * s + 1) * ‖w‖ ^ 2 ≤ (2 * s + 1) / (t - s) * (primeEnergy N w - s * ‖w‖ ^ 2) := by
+      rw [div_mul_eq_mul_div, le_div_iff₀ hts]; nlinarith
+    simp only [CD]
+    nlinarith
+  have hK₂' : K₂ * Real.sqrt CD ≤ θ / 4 * (c' / 2) * Real.log N ^ (1 / 2 - 2 * κ) := by
+    rw [div_le_iff₀ (by positivity)] at hK₂N; linarith
+  exact abs_inner_primeSetHorizonVector_sub_le P (show 1 ≤ T by omega) hst hg hw hθ0.le
+    hc''.le hCD hL1 hdef (hms T N hT3' hTN w) hD
+    (by have := Real.rpow_nonneg (by linarith : (0 : ℝ) ≤ Real.log N) (1 / 2 - 2 * κ); positivity)
+    hTch hK₂' hcN
 
 /-- **The spectral weight of a zero-density twin at precision `c_N²`.** Let `P` have relative log
 density `κ ∈ (0, 1/4)`, `0 < s < t < 2 log 2`, and let every partial sum of the conductor series
@@ -555,101 +628,57 @@ theorem eventually_inner_sq_le_conductorSeries (P : Set ℕ) {κ C : ℝ} (hκ0 
   have hs2 : s < 2 * Real.log 2 := hst.trans ht2
   have hts : 0 < t - s := by linarith
   have hW0 : 0 ≤ W := by simpa using hW 0
-  -- the tolerance `θ` with `(√W + θ)² ≤ W + ε`
-  set θ := min 1 (ε / (2 * Real.sqrt W + 1))
+  -- the tolerance `θ` with `(√W + 2θ)² ≤ W + ε`
+  set θ := min 1 (ε / (4 * (Real.sqrt W + 1)))
   have hθ0 : 0 < θ := lt_min one_pos (by positivity)
-  have hθε : θ * (2 * Real.sqrt W + θ) ≤ ε := by
-    have h1 : θ ≤ ε / (2 * Real.sqrt W + 1) := min_le_right _ _
-    have h2 : θ * (2 * Real.sqrt W + 1) ≤ ε := by rwa [le_div_iff₀ (by positivity)] at h1
+  have hWθ : (Real.sqrt W + 2 * θ) ^ 2 ≤ W + ε := by
+    have h1 : θ ≤ ε / (4 * (Real.sqrt W + 1)) := min_le_right _ _
+    have h2 : θ * (4 * (Real.sqrt W + 1)) ≤ ε := by rwa [le_div_iff₀ (by positivity)] at h1
     have h3 : θ ≤ 1 := min_le_left _ _
-    nlinarith [Real.sqrt_nonneg W]
-  have hWθ : (Real.sqrt W + θ) ^ 2 ≤ W + ε := by
-    have e : (Real.sqrt W + θ) ^ 2 = W + θ * (2 * Real.sqrt W + θ) := by
+    have e : (Real.sqrt W + 2 * θ) ^ 2 = W + 4 * θ * (Real.sqrt W + θ) := by
       rw [add_sq, Real.sq_sqrt hW0]; ring
-    linarith only [e, hθε]
-  set CD := 2 + (2 * s + 1) / (t - s)
-  have hCD : 0 ≤ CD := by positivity
-  obtain ⟨K₁, K₂, hK₁, hK₂, hms⟩ := exists_abs_inner_twin_sub_starProjection_le P hκ0 hκ hP
-  obtain ⟨c', hc', N₂, hN₂⟩ :=
-    exists_pos_mul_rpow_le_gaugeHarmonicSum_primeSetFlip P (by linarith : κ < 1 / 2) hP
-  have hc'' : 0 < c' / 2 := by positivity
-  -- choose the scale `T`
-  have hTlim : Tendsto (fun T : ℕ => Real.log T ^ (2 * κ - 1 / 2)) atTop (𝓝 0) := by
-    have h := (tendsto_rpow_neg_atTop (show 0 < 1 / 2 - 2 * κ by linarith)).comp
-      (Real.tendsto_log_atTop.comp tendsto_natCast_atTop_atTop)
-    refine h.congr fun T => ?_
-    simp only [Function.comp_apply]
-    congr 1; ring
-  have hsmall : 0 < θ / 4 * (c' / 2) / (K₁ * Real.sqrt CD + 1) := by positivity
-  obtain ⟨T, hT3, hTsmall⟩ := ((eventually_ge_atTop 3).and
-    (hTlim.eventually (ge_mem_nhds hsmall))).exists
-  have hLT0 : 0 ≤ Real.log T ^ (2 * κ - 1 / 2) := Real.rpow_nonneg (Real.log_natCast_nonneg T) _
-  have hTch : K₁ * Real.log T ^ (2 * κ - 1 / 2) * Real.sqrt CD ≤ θ / 4 * (c' / 2) := by
-    rw [le_div_iff₀ (by positivity)] at hTsmall
-    have h1 : K₁ * Real.sqrt CD * Real.log T ^ (2 * κ - 1 / 2) ≤
-        (K₁ * Real.sqrt CD + 1) * Real.log T ^ (2 * κ - 1 / 2) :=
-      mul_le_mul_of_nonneg_right (by linarith) hLT0
-    nlinarith
-  -- the flipped primes below `T`
+    nlinarith [Real.sqrt_nonneg W]
+  obtain ⟨T, -, hT3, hA⟩ := exists_scale_inner_primeSetHorizonVector_sub_le P hκ0 hκ hP hs hst hθ0 0
   set F := primeSetCutoff P (T - 1)
   have hF := primeSetCutoff_prime' P (T - 1)
   set δ := finiteFlipHarmonicDensity F
-  have hδeq : flipDensityBelow (primeSetFlip P) T = δ := flipDensityBelow_eq P (by omega)
+  have hδ0 : 0 < δ := finiteFlipHarmonicDensity_pos hF
   have hWF : finiteFlipSecular F s + 1 / s ≤ W := finiteFlipSecular_add_le P hs hs2 hW (T - 1)
-  -- eventual facts at the horizon
-  have h5 := eventually_excitedResolvent_finiteFlip_le F hF hs hst ht2
-    (ε := (δ * θ / 4) ^ 2) (by have := finiteFlipHarmonicDensity_pos hF; positivity)
-  obtain ⟨N₃, h3⟩ := eventually_fixedScaleDefect_le P hκ0 (by linarith) hP hT3
-    (ε := (θ / 4) ^ 2 * (t - s)) (by positivity)
-  obtain ⟨N₄, h4⟩ := eventually_poleDefect_le_primeEnergy
-  have hLa : Tendsto (fun N : ℕ => Real.log N ^ (1 / 2 - 2 * κ)) atTop atTop :=
-    (tendsto_rpow_atTop (by linarith)).comp (Real.tendsto_log_atTop.comp tendsto_natCast_atTop_atTop)
-  have hK₂ev := hLa.eventually_ge_atTop (K₂ * Real.sqrt CD / (θ / 4 * (c' / 2)))
-  filter_upwards [h5, eventually_ge_atTop (max (max N₃ N₄) (max N₂ T)), hK₂ev]
-    with N h5N hN hK₂N i₀ hg w hw
-  have hN3 : N₃ ≤ N := (le_max_left _ _).trans ((le_max_left _ _).trans hN)
-  have hN4 : N₄ ≤ N := (le_max_right _ _).trans ((le_max_left _ _).trans hN)
-  have hNN₂ : N₂ ≤ N := (le_max_left _ _).trans ((le_max_right _ _).trans hN)
-  have hTN : T ≤ N := (le_max_right _ _).trans ((le_max_right _ _).trans hN)
-  have hL1 : 1 ≤ Real.log N := one_le_log_of_three_le (hT3.trans hTN)
-  -- `c_N ≥ (c'/2)(log N)^{−2κ}`
-  have hcN : c' / 2 * Real.log N ^ (-(2 * κ)) ≤ harmonicCorrelation (primeSetFlip P) N := by
-    have hH0 : 0 < gaugeHarmonicSum (fun _ => (1 : ℝ)) N := lt_of_lt_of_le (by linarith)
-      (log_le_harmonic N)
-    have hHu : gaugeHarmonicSum (fun _ => (1 : ℝ)) N ≤ 2 * Real.log N := by
-      have := (abs_le.mp (abs_harmonic_sub_log_le N)).2; linarith
-    have hLpow : Real.log N ^ (1 - 2 * κ) = Real.log N * Real.log N ^ (-(2 * κ)) := by
-      rw [show 1 - 2 * κ = 1 + -(2 * κ) by ring, Real.rpow_add (by linarith), Real.rpow_one]
-    have hp0 : 0 ≤ Real.log N ^ (-(2 * κ)) := Real.rpow_nonneg (by linarith) _
-    rw [harmonicCorrelation, le_div_iff₀ hH0]
-    calc c' / 2 * Real.log N ^ (-(2 * κ)) * gaugeHarmonicSum (fun _ => (1 : ℝ)) N ≤
-          c' / 2 * Real.log N ^ (-(2 * κ)) * (2 * Real.log N) :=
-          mul_le_mul_of_nonneg_left hHu (by positivity)
-      _ = c' * Real.log N ^ (1 - 2 * κ) := by rw [hLpow]; ring
-      _ ≤ gaugeHarmonicSum (primeSetFlip P) N := hN₂ N hNN₂
-  have hρ : excitedResolvent N s i₀ (finiteFlipHorizonVector F N) ≤ δ ^ 2 * W + (δ * θ / 4) ^ 2 := by
-    refine (h5N i₀ hg).trans ?_
-    have := mul_le_mul_of_nonneg_left hWF (sq_nonneg δ)
-    linarith
-  have hdef := h3 N hN3
-  rw [hδeq] at hdef
-  -- the defect against the energy
-  have hD : poleDefect N (horizonExtend w) ≤ CD * (primeEnergy N w - s * ‖w‖ ^ 2) := by
-    have h := h4 N hN4 w
-    have hcoer := primeEnergy_sub_ge_of_perp (s := s) hg hw
-    have hw2 : (2 * s + 1) * ‖w‖ ^ 2 ≤ (2 * s + 1) / (t - s) * (primeEnergy N w - s * ‖w‖ ^ 2) := by
-      rw [div_mul_eq_mul_div, le_div_iff₀ hts]; nlinarith
-    simp only [CD]
-    nlinarith
-  have hK₂' : K₂ * Real.sqrt CD ≤ θ / 4 * (c' / 2) * Real.log N ^ (1 / 2 - 2 * κ) := by
-    rw [div_le_iff₀ (by positivity)] at hK₂N; linarith
-  have hpt := abs_inner_primeSetHorizonVector_le P (show 1 ≤ T by omega) hst hg hw hW0 hθ0.le
-    hc''.le hCD hL1 hρ hdef (hms T N hT3 hTN w) hD
-    (by have := Real.rpow_nonneg (by linarith : (0 : ℝ) ≤ Real.log N) (1 / 2 - 2 * κ); positivity)
-    hTch hK₂' hcN
-  have hG0 : 0 ≤ primeEnergy N w - s * ‖w‖ ^ 2 :=
+  have h5 := eventually_excitedResolvent_finiteFlip_le F hF hs hst ht2 (ε := (δ * θ) ^ 2)
+    (by positivity)
+  filter_upwards [hA, h5] with N ⟨hcpos, hAN⟩ h5N i₀ hg w hw
+  set cN := harmonicCorrelation (primeSetFlip P) N
+  set G := primeEnergy N w - s * ‖w‖ ^ 2
+  have hG0 : 0 ≤ G :=
     le_trans (mul_nonneg hts.le (sq_nonneg _)) (primeEnergy_sub_ge_of_perp (s := s) hg hw)
-  have hsq := pow_le_pow_left₀ (abs_nonneg _) hpt 2
+  -- the finite flip carries at most `δ²(√W + θ)²`
+  have hρ : excitedResolvent N s i₀ (finiteFlipHorizonVector F N) ≤ (δ * (Real.sqrt W + θ)) ^ 2 := by
+    refine (h5N i₀ hg).trans ?_
+    have hm := mul_le_mul_of_nonneg_left hWF (sq_nonneg δ)
+    have e : (δ * (Real.sqrt W + θ)) ^ 2 = δ ^ 2 * W + (δ * θ) ^ 2 + 2 * δ ^ 2 * θ * Real.sqrt W := by
+      rw [mul_pow, add_sq, Real.sq_sqrt hW0]; ring
+    have : 0 ≤ 2 * δ ^ 2 * θ * Real.sqrt W := by positivity
+    linarith
+  have hF1 : |⟪w, finiteFlipHorizonVector F N⟫| ≤ δ * (Real.sqrt W + θ) * Real.sqrt G := by
+    have h := Real.abs_le_sqrt ((inner_sq_le_excited hg hst hw _).trans
+      (mul_le_mul_of_nonneg_right hρ hG0))
+    rwa [Real.sqrt_mul (sq_nonneg _), Real.sqrt_sq (by positivity)] at h
+  have h1 : |cN / δ * ⟪w, finiteFlipHorizonVector F N⟫| ≤ cN * (Real.sqrt W + θ) * Real.sqrt G := by
+    rw [abs_mul, abs_of_nonneg (div_nonneg hcpos.le hδ0.le)]
+    calc cN / δ * |⟪w, finiteFlipHorizonVector F N⟫| ≤
+          cN / δ * (δ * (Real.sqrt W + θ) * Real.sqrt G) :=
+          mul_le_mul_of_nonneg_left hF1 (div_nonneg hcpos.le hδ0.le)
+      _ = cN * (Real.sqrt W + θ) * Real.sqrt G := by field_simp
+  have habs : |⟪w, primeSetHorizonVector P N⟫| ≤ cN * (Real.sqrt W + 2 * θ) * Real.sqrt G := by
+    have e : ⟪w, primeSetHorizonVector P N⟫ = (⟪w, primeSetHorizonVector P N⟫ -
+        cN / δ * ⟪w, finiteFlipHorizonVector F N⟫) + cN / δ * ⟪w, finiteFlipHorizonVector F N⟫ := by
+      ring
+    rw [e]
+    calc _ ≤ _ := abs_add_le _ _
+      _ ≤ cN * θ * Real.sqrt G + cN * (Real.sqrt W + θ) * Real.sqrt G :=
+          add_le_add (hAN i₀ hg w hw) h1
+      _ = cN * (Real.sqrt W + 2 * θ) * Real.sqrt G := by ring
+  have hsq := pow_le_pow_left₀ (abs_nonneg _) habs 2
   rw [sq_abs, mul_pow, mul_pow, Real.sq_sqrt hG0] at hsq
   exact hsq.trans (mul_le_mul_of_nonneg_right (mul_le_mul_of_nonneg_left hWθ (sq_nonneg _)) hG0)
 
@@ -798,6 +827,258 @@ theorem le_primeEnergy_of_perp {N : ℕ} {i₀ : PrimeHorizonIndex N} {s t W ε 
   linarith only [hsplitu, hfin]
 
 end Margin
+
+
+section ResolventAsymptotic
+
+/-- The **excited resolvent vector** `Σ_{i ≠ i₀} ⟨v, e_i⟩/(E_i − γ − s) e_i`. -/
+def excitedResolventVector (N : ℕ) (s : ℝ) (i₀ : PrimeHorizonIndex N)
+    (v : EuclideanSpace ℝ (PrimeHorizonIndex N)) : EuclideanSpace ℝ (PrimeHorizonIndex N) :=
+  ∑ i ∈ univ.erase i₀,
+    (⟪v, primeEigen N i⟫ / (fullPrimeEnergyEigenvalue N i - γ - s)) • primeEigen N i
+
+theorem inner_excitedResolventVector_primeEigen (N : ℕ) (s : ℝ) (i₀ j : PrimeHorizonIndex N)
+    (v : EuclideanSpace ℝ (PrimeHorizonIndex N)) :
+    ⟪excitedResolventVector N s i₀ v, primeEigen N j⟫ =
+      if j = i₀ then 0 else ⟪v, primeEigen N j⟫ / (fullPrimeEnergyEigenvalue N j - γ - s) := by
+  classical
+  unfold excitedResolventVector
+  rw [sum_inner]
+  have e : ∀ i ∈ univ.erase i₀, ⟪(⟪v, primeEigen N i⟫ / (fullPrimeEnergyEigenvalue N i - γ - s)) •
+      primeEigen N i, primeEigen N j⟫ = if i = j then
+        ⟪v, primeEigen N i⟫ / (fullPrimeEnergyEigenvalue N i - γ - s) else 0 := fun i _ => by
+    rw [real_inner_smul_left, inner_primeEigen N j i]
+    split_ifs <;> ring
+  rw [sum_congr rfl e, sum_ite_eq']
+  by_cases hj : j = i₀
+  · rw [if_pos hj, if_neg (by rw [hj]; exact notMem_erase i₀ univ)]
+  · rw [if_neg hj, if_pos (mem_erase.mpr ⟨hj, mem_univ j⟩)]
+
+theorem excitedResolventVector_perp (N : ℕ) (s : ℝ) (i₀ : PrimeHorizonIndex N)
+    (v : EuclideanSpace ℝ (PrimeHorizonIndex N)) :
+    ⟪excitedResolventVector N s i₀ v, primeEigen N i₀⟫ = 0 := by
+  rw [inner_excitedResolventVector_primeEigen, if_pos rfl]
+
+/-- `⟨R v, v⟩ = ρ_{i₀}(v)`. -/
+theorem inner_excitedResolventVector_self (N : ℕ) (s : ℝ) (i₀ : PrimeHorizonIndex N)
+    (v : EuclideanSpace ℝ (PrimeHorizonIndex N)) :
+    ⟪excitedResolventVector N s i₀ v, v⟫ = excitedResolvent N s i₀ v := by
+  rw [inner_eq_sum_eigen, ← add_sum_erase _ _ (mem_univ i₀),
+    inner_excitedResolventVector_primeEigen, if_pos rfl, zero_mul, zero_add]
+  unfold excitedResolvent
+  refine sum_congr rfl fun i hi => ?_
+  rw [inner_excitedResolventVector_primeEigen, if_neg (ne_of_mem_erase hi)]
+  ring
+
+/-- `Q_N(R v) − s|R v|² = ρ_{i₀}(v)`. -/
+theorem primeEnergy_sub_excitedResolventVector {N : ℕ} {s t : ℝ} {i₀ : PrimeHorizonIndex N}
+    (hg : IsGroundBelow N t i₀) (hst : s < t) (v : EuclideanSpace ℝ (PrimeHorizonIndex N)) :
+    primeEnergy N (excitedResolventVector N s i₀ v) -
+        s * ‖excitedResolventVector N s i₀ v‖ ^ 2 = excitedResolvent N s i₀ v := by
+  rw [primeEnergy_sub_eq_sum, ← add_sum_erase _ _ (mem_univ i₀),
+    inner_excitedResolventVector_primeEigen, if_pos rfl]
+  simp only [ne_eq, OfNat.ofNat_ne_zero, not_false_eq_true, zero_pow, mul_zero, zero_add]
+  unfold excitedResolvent
+  refine sum_congr rfl fun i hi => ?_
+  rw [inner_excitedResolventVector_primeEigen, if_neg (ne_of_mem_erase hi)]
+  have hd : fullPrimeEnergyEigenvalue N i - γ - s ≠ 0 := by
+    have := hg i (ne_of_mem_erase hi); exact (by linarith : (0 : ℝ) < _).ne'
+  field_simp
+
+theorem excitedResolvent_nonneg {N : ℕ} {s t : ℝ} {i₀ : PrimeHorizonIndex N}
+    (hg : IsGroundBelow N t i₀) (hst : s < t) (v : EuclideanSpace ℝ (PrimeHorizonIndex N)) :
+    0 ≤ excitedResolvent N s i₀ v :=
+  sum_nonneg fun i hi => div_nonneg (sq_nonneg _)
+    (by have := hg i (ne_of_mem_erase hi); linarith)
+
+/-- The real form of the test-vector bound: if `ρ_F ≥ (δ r)²`, `θ ≤ r`,
+`|x − (c/δ)ρ_F| ≤ cθ√ρ_F` and `x² ≤ ρ ρ_F`, then `c²(r − θ)² ≤ ρ`. -/
+theorem sq_sub_le_of_test {x ρF ρ c δ r θ : ℝ} (hδ : 0 < δ) (hc : 0 ≤ c)
+    (hrθ : θ ≤ r) (hr : 0 < r) (hρF : (δ * r) ^ 2 ≤ ρF)
+    (hx : |x - c / δ * ρF| ≤ c * θ * Real.sqrt ρF) (hxρ : x ^ 2 ≤ ρ * ρF) :
+    c ^ 2 * (r - θ) ^ 2 ≤ ρ := by
+  have hρF0 : 0 < ρF := lt_of_lt_of_le (by positivity) hρF
+  set q := Real.sqrt ρF
+  have hq : q ^ 2 = ρF := Real.sq_sqrt hρF0.le
+  have hqr : δ * r ≤ q := by
+    have := Real.sqrt_le_sqrt hρF
+    rwa [Real.sqrt_sq (by positivity)] at this
+  have hq0 : 0 ≤ q := Real.sqrt_nonneg _
+  have h2 : c * q * r ≤ c / δ * ρF := by
+    rw [← hq, div_mul_eq_mul_div, le_div_iff₀ hδ]
+    have := mul_le_mul_of_nonneg_left hqr (mul_nonneg hc hq0)
+    nlinarith
+  have hx1 : c * q * (r - θ) ≤ x := by
+    have := (abs_le.mp hx).1
+    nlinarith
+  have hx0 : 0 ≤ c * q * (r - θ) := mul_nonneg (mul_nonneg hc hq0) (by linarith)
+  have h3 : (c * q * (r - θ)) ^ 2 ≤ x ^ 2 := pow_le_pow_left₀ hx0 hx1 2
+  have h4 : c ^ 2 * (r - θ) ^ 2 * ρF ≤ ρ * ρF := by
+    rw [← hq]; nlinarith [h3, hxρ]
+  exact le_of_mul_le_mul_right h4 hρF0
+
+/-- Once the cutoff reaches a packet, the finite flip carries the packet:
+`Σ_{m ∈ S} w_P(m)/(E_m − γ − s) ≤ Λ_F(s) + 1/s` for `F` the flipped primes up to `Q ≥ max S`. -/
+theorem packet_le_finiteFlipSecular (P : Set ℕ) {s : ℝ} (hs : 0 < s) (hs2 : s < 2 * Real.log 2)
+    (S : Finset ℕ) (hS : ∀ m ∈ S, 2 ≤ m) {Q : ℕ} (hQ : ∀ m ∈ S, m ≤ Q) :
+    ∑ m ∈ S, primeSetSpectralWeight P m / (ramanujanAdjunctionEnergy m - γ - s) ≤
+      finiteFlipSecular (primeSetCutoff P Q) s + 1 / s := by
+  have hsum := summable_finiteFlipSecularTail (primeSetCutoff P Q) (primeSetCutoff_prime' P Q) hs hs2
+  have e : finiteFlipSecular (primeSetCutoff P Q) s + 1 / s = ∑' k : ℕ,
+      finiteFlipSpectralWeight (primeSetCutoff P Q) (k + 2) /
+        (ramanujanAdjunctionEnergy (k + 2) - γ - s) := by
+    unfold finiteFlipSecular; ring
+  have himg : ∑ m ∈ S, primeSetSpectralWeight P m / (ramanujanAdjunctionEnergy m - γ - s) =
+      ∑ k ∈ S.image (· - 2), finiteFlipSpectralWeight (primeSetCutoff P Q) (k + 2) /
+        (ramanujanAdjunctionEnergy (k + 2) - γ - s) := by
+    rw [sum_image fun a ha b hb h => by have := hS a ha; have := hS b hb; omega]
+    refine sum_congr rfl fun m hm => ?_
+    rw [Nat.sub_add_cancel (hS m hm), primeSetSpectralWeight, primeSetMobius_eq_finiteCutoff P (hQ m hm)]
+    rfl
+  rw [e, himg]
+  refine hsum.sum_le_tsum _ fun k _ => div_nonneg (div_nonneg (sq_nonneg _) (Nat.cast_nonneg _)) ?_
+  have := conductorEnergy_gap (m := k + 2) (by omega)
+  linarith
+
+/-- **The matching lower bound.** Let `P` have relative log density `κ ∈ (0, 1/4)` and
+`0 < s < t < 2 log 2`. For every finite packet `S` of conductors `m ≥ 2` and every `ε > 0`, eventually,
+for every ground index `i₀` below `γ + t`,
+`c_N² (Σ_{m ∈ S} w_P(m)/(E_m − γ − s) − ε) ≤ ρ_{i₀}(v_P)`.
+The test vector is the excited resolvent vector of the finite flip below a scale `T > max S`: it
+carries the packet exactly, and the twin differs from `(c_N/δ_F) v_F` by `θ c_N` in energy norm. -/
+theorem eventually_packet_le_excitedResolvent (P : Set ℕ) {κ C : ℝ} (hκ0 : 0 < κ)
+    (hκ : κ < 1 / 4) (hP : ∀ n, 1 ≤ n → |primeSetLogMass P n - κ * Real.log n| ≤ C)
+    {s t : ℝ} (hs : 0 < s) (hst : s < t) (ht2 : t < 2 * Real.log 2) (S : Finset ℕ)
+    (hS : ∀ m ∈ S, 2 ≤ m) {ε : ℝ} (hε : 0 < ε) :
+    ∀ᶠ N : ℕ in atTop, ∀ i₀ : PrimeHorizonIndex N, IsGroundBelow N t i₀ →
+      harmonicCorrelation (primeSetFlip P) N ^ 2 *
+          (∑ m ∈ S, primeSetSpectralWeight P m / (ramanujanAdjunctionEnergy m - γ - s) - ε) ≤
+        excitedResolvent N s i₀ (primeSetHorizonVector P N) := by
+  have hs2 : s < 2 * Real.log 2 := hst.trans ht2
+  set A := ∑ m ∈ S, primeSetSpectralWeight P m / (ramanujanAdjunctionEnergy m - γ - s)
+  by_cases hAε : A ≤ ε
+  · filter_upwards with N i₀ hg
+    exact le_trans (mul_nonpos_of_nonneg_of_nonpos (sq_nonneg _) (by linarith))
+      (excitedResolvent_nonneg hg hst _)
+  push Not at hAε
+  -- the tolerances: `(r − θ)² ≥ A − ε` with `r = √(A − ε/2)`
+  set r := Real.sqrt (A - ε / 2)
+  have hr0 : 0 < r := Real.sqrt_pos.mpr (by linarith)
+  have hr2 : r ^ 2 = A - ε / 2 := Real.sq_sqrt (by linarith)
+  set θ := min (r / 2) (ε / (4 * (r + 1)))
+  have hθ0 : 0 < θ := lt_min (by positivity) (by positivity)
+  have hθr : θ ≤ r := (min_le_left _ _).trans (by linarith)
+  have hgoal : A - ε ≤ (r - θ) ^ 2 := by
+    have h1 : θ ≤ ε / (4 * (r + 1)) := min_le_right _ _
+    have h2 : θ * (4 * (r + 1)) ≤ ε := by rwa [le_div_iff₀ (by positivity)] at h1
+    nlinarith
+  -- the scale `T > max S`
+  obtain ⟨T, hTM, hT3, hA'⟩ :=
+    exists_scale_inner_primeSetHorizonVector_sub_le P hκ0 hκ hP hs hst hθ0 (S.sup id + 1)
+  set F := primeSetCutoff P (T - 1)
+  have hF := primeSetCutoff_prime' P (T - 1)
+  set δ := finiteFlipHarmonicDensity F
+  have hδ0 : 0 < δ := finiteFlipHarmonicDensity_pos hF
+  have hWF : A ≤ finiteFlipSecular F s + 1 / s :=
+    packet_le_finiteFlipSecular P hs hs2 S hS fun m hm => by
+      have := Finset.le_sup (f := id) hm; simp only [id] at this; omega
+  have h5 := eventually_abs_excitedResolvent_finiteFlip_sub_le F hF hs hst ht2
+    (ε := δ ^ 2 * (ε / 2)) (by positivity)
+  filter_upwards [hA', h5] with N ⟨hcpos, hAN⟩ h5N i₀ hg
+  set ρF := excitedResolvent N s i₀ (finiteFlipHorizonVector F N)
+  have hρF : (δ * r) ^ 2 ≤ ρF := by
+    have h1 := (abs_le.mp (h5N i₀ hg)).1
+    have hm := mul_le_mul_of_nonneg_left hWF (sq_nonneg δ)
+    rw [mul_pow, hr2]; nlinarith
+  -- the test vector
+  set w := excitedResolventVector N s i₀ (finiteFlipHorizonVector F N)
+  have hw := excitedResolventVector_perp N s i₀ (finiteFlipHorizonVector F N)
+  have hG : primeEnergy N w - s * ‖w‖ ^ 2 = ρF := primeEnergy_sub_excitedResolventVector hg hst _
+  have hwF : ⟪w, finiteFlipHorizonVector F N⟫ = ρF := inner_excitedResolventVector_self _ _ _ _
+  have hx := hAN i₀ hg w hw
+  rw [hG, hwF] at hx
+  have hxρ := inner_sq_le_excited hg hst hw (primeSetHorizonVector P N)
+  rw [hG] at hxρ
+  calc harmonicCorrelation (primeSetFlip P) N ^ 2 * (A - ε) ≤
+        harmonicCorrelation (primeSetFlip P) N ^ 2 * (r - θ) ^ 2 :=
+        mul_le_mul_of_nonneg_left hgoal (sq_nonneg _)
+    _ ≤ _ := sq_sub_le_of_test hδ0 hcpos.le hθr hr0 hρF hx hxρ
+
+/-- **The upper bound in resolvent form**: `ρ_{i₀}(v_P) ≤ c_N² (W + ε)` eventually. -/
+theorem eventually_excitedResolvent_le_conductorSeries (P : Set ℕ) {κ C : ℝ} (hκ0 : 0 < κ)
+    (hκ : κ < 1 / 4) (hP : ∀ n, 1 ≤ n → |primeSetLogMass P n - κ * Real.log n| ≤ C)
+    {s t W : ℝ} (hs : 0 < s) (hst : s < t) (ht2 : t < 2 * Real.log 2)
+    (hW : ∀ K, ∑ k ∈ range K, primeSetSpectralWeight P (k + 2) /
+      (ramanujanAdjunctionEnergy (k + 2) - γ - s) ≤ W) {ε : ℝ} (hε : 0 < ε) :
+    ∀ᶠ N : ℕ in atTop, ∀ i₀ : PrimeHorizonIndex N, IsGroundBelow N t i₀ →
+      excitedResolvent N s i₀ (primeSetHorizonVector P N) ≤
+        harmonicCorrelation (primeSetFlip P) N ^ 2 * (W + ε) := by
+  have hW0 : 0 ≤ W := by simpa using hW 0
+  filter_upwards [eventually_inner_sq_le_conductorSeries P hκ0 hκ hP hs hst ht2 hW hε]
+    with N hN i₀ hg
+  have h := hN i₀ hg _ (excitedResolventVector_perp N s i₀ (primeSetHorizonVector P N))
+  rw [inner_excitedResolventVector_self, primeEnergy_sub_excitedResolventVector hg hst] at h
+  rcases (excitedResolvent_nonneg hg hst (primeSetHorizonVector P N)).eq_or_lt with h0 | hpos
+  · rw [← h0]; positivity
+  · rw [sq] at h
+    exact le_of_mul_le_mul_right h hpos
+
+theorem eventually_harmonicCorrelation_pos (P : Set ℕ) {κ C : ℝ} (hκ : κ < 1 / 2)
+    (hP : ∀ n, 1 ≤ n → |primeSetLogMass P n - κ * Real.log n| ≤ C) :
+    ∀ᶠ N : ℕ in atTop, 0 < harmonicCorrelation (primeSetFlip P) N := by
+  obtain ⟨c', hc', N₂, hN₂⟩ := exists_pos_mul_rpow_le_gaugeHarmonicSum_primeSetFlip P hκ hP
+  filter_upwards [eventually_ge_atTop (max N₂ 3)] with N hNN
+  have hN3 : 3 ≤ N := (le_max_right _ _).trans hNN
+  have hL1 : 1 ≤ Real.log N := one_le_log_of_three_le hN3
+  have hS := hN₂ N ((le_max_left _ _).trans hNN)
+  have hH0 : 0 < gaugeHarmonicSum (fun _ => (1 : ℝ)) N := gaugeHarmonicSum_one_pos (by omega)
+  have : 0 < c' * Real.log N ^ (1 - 2 * κ) := mul_pos hc' (Real.rpow_pos_of_pos (by linarith) _)
+  exact div_pos (this.trans_le hS) hH0
+
+/-- **The excited spectral weight is the conductor series at precision `c_N²`.** Let `P` have relative
+log density `κ ∈ (0, 1/4)`, `0 < s < t < 2 log 2`, and let the conductor series
+`W_P(s) = Σ_{m ≥ 2} w_P(m)/(E_m − γ − s)` converge. Then for every `ε > 0`, eventually, for every ground
+index `i₀` below `γ + t`, `|ρ_{i₀}(v_P)/c_N² − W_P(s)| ≤ ε`. -/
+theorem eventually_abs_excitedResolvent_div_sub_le (P : Set ℕ) {κ C : ℝ} (hκ0 : 0 < κ)
+    (hκ : κ < 1 / 4) (hP : ∀ n, 1 ≤ n → |primeSetLogMass P n - κ * Real.log n| ≤ C)
+    {s t : ℝ} (hs : 0 < s) (hst : s < t) (ht2 : t < 2 * Real.log 2)
+    (hsum : Summable fun k : ℕ => primeSetSpectralWeight P (k + 2) /
+      (ramanujanAdjunctionEnergy (k + 2) - γ - s)) {ε : ℝ} (hε : 0 < ε) :
+    ∀ᶠ N : ℕ in atTop, ∀ i₀ : PrimeHorizonIndex N, IsGroundBelow N t i₀ →
+      |excitedResolvent N s i₀ (primeSetHorizonVector P N) /
+          harmonicCorrelation (primeSetFlip P) N ^ 2 -
+        ∑' k : ℕ, primeSetSpectralWeight P (k + 2) / (ramanujanAdjunctionEnergy (k + 2) - γ - s)| ≤
+        ε := by
+  have hs2 : s < 2 * Real.log 2 := hst.trans ht2
+  set f := fun k : ℕ => primeSetSpectralWeight P (k + 2) /
+    (ramanujanAdjunctionEnergy (k + 2) - γ - s)
+  set W := ∑' k : ℕ, f k
+  have hf0 : ∀ k, 0 ≤ f k := fun k => by
+    refine div_nonneg (div_nonneg (sq_nonneg _) (Nat.cast_nonneg _)) ?_
+    have := conductorEnergy_gap (m := k + 2) (by omega); linarith
+  have hW : ∀ K, ∑ k ∈ range K, f k ≤ W := fun K => hsum.sum_le_tsum _ fun k _ => hf0 k
+  obtain ⟨K, hK⟩ := (hsum.hasSum.tendsto_sum_nat.eventually
+    (Ioi_mem_nhds (show W - ε / 2 < W by linarith))).exists
+  set S := (range K).image (· + 2)
+  have hS : ∀ m ∈ S, 2 ≤ m := fun m hm => by obtain ⟨k, -, rfl⟩ := mem_image.mp hm; omega
+  have hSsum : ∑ m ∈ S, primeSetSpectralWeight P m / (ramanujanAdjunctionEnergy m - γ - s) =
+      ∑ k ∈ range K, f k := sum_image fun a _ b _ h => by omega
+  filter_upwards [eventually_excitedResolvent_le_conductorSeries P hκ0 hκ hP hs hst ht2 hW hε,
+    eventually_packet_le_excitedResolvent P hκ0 hκ hP hs hst ht2 S hS (half_pos hε),
+    eventually_harmonicCorrelation_pos P (by linarith : κ < 1 / 2) hP] with N hup hlow hc i₀ hg
+  have hc2 : 0 < harmonicCorrelation (primeSetFlip P) N ^ 2 := by positivity
+  have h1 := hup i₀ hg
+  have h2 := hlow i₀ hg
+  rw [hSsum] at h2
+  have hK' : W - ε / 2 < ∑ k ∈ range K, f k := hK
+  rw [abs_le]
+  constructor
+  · rw [le_sub_iff_add_le, le_div_iff₀ hc2]
+    nlinarith
+  · rw [sub_le_iff_le_add, div_le_iff₀ hc2]
+    nlinarith
+
+end ResolventAsymptotic
 
 
 section Classification

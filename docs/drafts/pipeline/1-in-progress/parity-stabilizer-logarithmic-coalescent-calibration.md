@@ -57,6 +57,10 @@ arbitrarily close beyond this horizon, falsifying universal rowwise negative
 cancellation. The exact horizon coefficient is `−Ωhat(0)/2`. All sixteen audits
 and both final direct checks pass. The [finite-aperture transport](odd-stabilizer-finite-aperture-transport.md)
 and the global sum of primitive corrections remain open.
+The [C⁴ aperture bounds](../3-formalized/odd-stabilizer-aperture-and-fixed-base-renormalization.md)
+now control finite linear tails and short rows. At a fixed base the row/log Q
+limit is zero, and the primitive correction/log Q limit is `Ωhat(0)/(2πm)`.
+These seven theorems pass audits and the final direct check.
 
 ## Fixed-cutoff primitive-sample calculation
 

@@ -34,6 +34,8 @@ open Finset ArithmeticFunction
 open GaloisForLFunctions.ArithmeticCouplingTheory GaloisForLFunctions.ArithmeticElectrostatics
   GaloisForLFunctions.ArithmeticEffectivityTheory
 
+local notation "μ" => ArithmeticFunction.moebius
+
 namespace GaloisForLFunctions.HodgeTheoryWithoutVarieties
 
 /-- The root defect: the pole defect of the dilation edges leaving the vertex `1`. -/
@@ -82,8 +84,8 @@ theorem sum_star_counterterms {N n : ℕ} (hn : n ∈ Icc 1 N) :
   have h2 := sum_moebius_mul_log_eq (n := n)
   have hmem : (1 : ℕ) ∈ n.divisors := Nat.mem_divisors.mpr ⟨one_dvd n, hn0⟩
   rw [← sum_erase_add _ _ hmem] at h1 h2
-  simp only [moebius_apply_one, Int.cast_one, Nat.cast_one, Real.log_one, mul_zero,
-    add_zero] at h1 h2
+  simp only [moebius_apply_one, Int.cast_one, ArithmeticFunction.log_apply, Nat.cast_one,
+    Real.log_one, mul_zero, add_zero] at h1 h2
   rw [sum_neg_distrib, h2]
   split_ifs with hn1
   · rw [show ∑ x ∈ n.divisors.erase 1, (μ x : ℝ) = 0 by rw [if_pos hn1] at h1; linarith]
@@ -123,7 +125,6 @@ theorem renormalizedPrimeForm_moebius_recursion {N : ℕ} (hN : 1 ≤ N) (x : �
         ∑ d ∈ Icc 2 N, -(μ d : ℝ) * renormalizedPrimeForm (N / d) (starPullback d x) := by
     have hdiag := sum_star_diagonal N x
       (fun d => -(μ d : ℝ) * (Real.log (N / d : ℕ) - Real.eulerMascheroniConstant))
-    simp only at hdiag
     rw [← hdiag, ← sum_sub_distrib]
     refine sum_congr rfl fun d _ => ?_
     rw [renormalizedPrimeForm]
@@ -147,9 +148,14 @@ theorem renormalizedPrimeForm_moebius_recursion {N : ℕ} (hN : 1 ≤ N) (x : �
         (if n = 1 then 0 else Real.log N - Real.eulerMascheroniConstant) =
       (Real.log N - Real.eulerMascheroniConstant) * ∑ n ∈ Icc 1 N, x n ^ 2 -
         (Real.log N - Real.eulerMascheroniConstant) * x 1 ^ 2 := by
-    rw [mul_sum, ← sum_erase_add _ _ (mem_Icc.mpr ⟨le_rfl, hN⟩),
-      ← sum_erase_add _ _ (mem_Icc.mpr ⟨le_rfl, hN⟩), if_pos rfl]
-    rw [sum_congr rfl fun n hn => by rw [if_neg (ne_of_mem_erase hn)]]
+    have h1 : (1 : ℕ) ∈ Icc 1 N := mem_Icc.mpr ⟨le_rfl, hN⟩
+    rw [mul_sum, ← sum_erase_add _ _ h1, ← sum_erase_add _ _ h1, if_pos rfl,
+      sum_congr rfl fun n hn => by rw [if_neg (ne_of_mem_erase hn)]]
+    have hs : ∑ n ∈ (Icc 1 N).erase 1,
+        x n ^ 2 * (Real.log N - Real.eulerMascheroniConstant) =
+        ∑ n ∈ (Icc 1 N).erase 1, (Real.log N - Real.eulerMascheroniConstant) * x n ^ 2 :=
+      sum_congr rfl fun n _ => by ring
+    rw [hs]
     ring
   rw [renormalizedPrimeForm, atomicWeilForm_moebius_recursion, hstars, sum_congr rfl hcoef,
     sum_add_distrib, sum_sub_distrib, hsplit, hroot, starFloorTerm, mertensRemainder]
