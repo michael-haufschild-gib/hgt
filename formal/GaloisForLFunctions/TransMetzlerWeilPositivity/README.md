@@ -1,6 +1,6 @@
 # Trans-Metzler Weil Positivity
 
-Namespace `GaloisForLFunctions.TransMetzlerWeilPositivity` (subfolder `BoundedOverlap/` uses `…TransMetzlerWeilPositivity.BoundedOverlap`); umbrella `TransMetzlerWeilPositivity.lean`; 34 modules. Nothing is assumed: RH and finite off-line support appear only as hypotheses of stated implications or as one side of an equivalence. Modules end with `#print axioms`.
+Namespace `GaloisForLFunctions.TransMetzlerWeilPositivity` (subfolder `BoundedOverlap/` uses `…TransMetzlerWeilPositivity.BoundedOverlap`); umbrella `TransMetzlerWeilPositivity.lean`; 46 modules. Nothing is assumed: RH and finite off-line support appear only as hypotheses of stated implications or as one side of an equivalence. Modules end with `#print axioms`.
 
 ## 1. Motivation
 
@@ -21,6 +21,7 @@ The complete Weil form of ζ is tested on atomic families: `N` copies of one pro
 | Steklov average | `steklovAvg a f` | `(2a)⁻¹∫_{−a}^{a} f(x+t)dt`; Fourier multiplier `sinc(2πaξ)` |
 | Log-DC weight | `dcLogWeight q` | `q!·log(q+3)^{2q}`; submultiplicative |
 | Fixed profiles | `steklovDCProfile`, `sincProfile` | infinite Steklov iterates / infinite box convolution; `∫|φ^{(q)}| ≤ A·12^q·W_q` |
+| Zero-free log-DC profile | `zeroFreeLogProfile` | normalized scale-averaged sinc autocorrelation; nonnegative, unit mass, support `[0,1]`, `∫|φ^{(q)}| ≤ 32·96^q·W_q`, no real Fourier zeros |
 | Rate and scale | `dcRate κ N`, `dcScale N` | overlap `N/κ_N` over `ℓℓ₂²`; `L(log L)²` |
 | Critical overlap | `dcCriticalOverlap B N`, `sincCriticalOverlap N` | least `c ≥ 1` with tail² `· log N ≤ 1` (majorant / exact Fourier tail) |
 | Successor fiber | `weightedDownwardDivisorFiber`, `plateauSuccessorFiber c N` | Schur-weighted divisor fiber of row `N` into product `N+1` |
@@ -68,6 +69,7 @@ External: `completeWeilMatrix`, `normalizedFullWeilHorizonMatrix`, `poleDefect`,
 3. Mollify a negative test by the profile (stays negative, inherits the weight bounds), synthesize it on block `[N/B, N]`: any stable form is globally nonnegative iff eventually nonnegative on atomic families at super-Gevrey overlap.
 4. Bounded rate `K`: window radius `½ log K + O(1)` (`B = ⌈1 + e^{2R+2}⌉`). RH = union over `K`.
 5. Critical overlap: Fourier majorant `μ_B(c) = inf_q B^q W_q/c^q`, `log(1/μ_B(c)) ≍ c/log²c`; the sinc profile's tail `∫_c^{2c}|φ̂|² ≥ c·e^{−Kc/log²c}` (Jensen on sinc products, `π log 2` per period of `−log|sin|`) shows this is exact. Hence `c*_N ≍ L(log L)²`.
+6. Averaging dilates of the sinc autocorrelation converts its integrated Fourier bound into a positive pointwise floor. Its reciprocal is bounded by `T(c)=exp(Bc/log²c)`. The prime-defect reserve, conductor confinement, and residual budget give full-matrix positivity when `T(c)≤(log N)^(1/256)`, hence uniformly for `1≤c≤ε·c*_N` with a fixed `ε>0`.
 
 **F. Obstructions at growing overlap**
 1. Divisor fiber: with Schur weights all divisors of `ℓ` share one lag and sum to `log ℓ`; the successor fiber grows like `log N` at every `c > 1`, is positive iff `c > N log(1+1/N)`, and tends to 0 at touching.
@@ -98,7 +100,7 @@ External: `completeWeilMatrix`, `normalizedFullWeilHorizonMatrix`, `poleDefect`,
 | No uniform Gram floor along `c_N → ∞` | `no_uniform_plateau_atomic_mass_floor` | proved |
 | Full PSD ⇔ prefix Schur complement PSD (prefix paid for `cM ≤ N`) | `eventually_completeWeil_posSemidef_iff_prefixSchur` | proved |
 | Receiver bandwidth `→ 1`; `N < T^α` for all `α > 1` | `tendsto_superGevrey_bandwidth`, `eventually_superGevrey_length_lt_height_rpow` | proved |
-| Positivity of the full matrix at any growing overlap | — | open |
+| Zero-free log-DC full matrix is PosDef uniformly for `1≤c≤ε L(log L)²`, also for a positive multiple of exact `sincCriticalOverlap N` | `exists_zeroFreeLogProfile_completeWeilMatrix_posDef_critical_overlap`, `exists_zeroFreeLogProfile_completeWeilMatrix_posDef_sincCritical_overlap` | proved |
 
 ## 6. Tools
 
@@ -122,7 +124,7 @@ External: `completeWeilMatrix`, `normalizedFullWeilHorizonMatrix`, `poleDefect`,
 
 ## 7. Open questions
 
-1. Does ζ's complete matrix stay positive on a macroscopic range `c ≥ 2` (successor shells `kn ± r`, `r < c`)? Any proof must be selective: the 11-flip already fails at `99/100`.
+1. For `zeroFreeLogProfile`, positivity holds uniformly through a fixed positive multiple of the critical overlap. Can the admitted multiple be arbitrarily large? Any proof must retain the complete arithmetic and archimedean terms.
 2. Is the Young boundary `c_*` an actual sign change of the complete matrix, or only the end of this certificate family?
 3. Is `L(log L)²` optimal among all smooth compactly supported profiles? Denjoy–Carleman non-quasianalyticity allows weights down to `Σ 1/(m log m)`-type divergence; the receiver argument needs `ratio < e⁻¹` at order `≈ log log κ`.
 4. Can the positive Schur complement after the paid prefix be shown at overlap `c_N = r_N c*_N`? This is exactly RH.

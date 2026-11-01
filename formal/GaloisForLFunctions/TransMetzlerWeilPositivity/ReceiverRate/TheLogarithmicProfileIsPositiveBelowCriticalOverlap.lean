@@ -79,6 +79,7 @@ theorem exists_zeroFreeLogProfile_positive_power_budget :
   have hc1 := hcgt.le
   have hc0 := zero_lt_one.trans hcgt
   let T := L ^ α
+  change logarithmicSpectralControl logarithmicReserveRate c ≤ T at hcontrol
   have hL1 : 1 ≤ L := by dsimp only [L]; linarith only [hL2000]
   have hL0 := zero_lt_one.trans_le hL1
   have hT1 : 1 ≤ T := Real.one_le_rpow hL1 hα.le

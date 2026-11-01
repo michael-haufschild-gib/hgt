@@ -114,8 +114,8 @@ Evidence:
 
 | # | Task | Routes served | Why it is work |
 |---|---|---|---|
-| A1 | Fourth-order synthesis for the tilted spline (receiver at `K(log N)^{1/8}`, every `K`) | HF, SRT, AIP, ACS | Euler–Maclaurin synthesis with BV third derivative; it moves the spline's receiver exponent and nothing else |
-| A2 | Bilinear conductor-residual theorem: packets and polylog subspaces for `α < 1/8` | HF, SRT, AIP, ACS | file in progress; rough regime |
+| A1 | Fourth-order synthesis for the tilted spline (receiver at `K(log N)^{1/8}`, every `K`) | HF, SRT, AIP, ACS | [Formalized](../../drafts/pipeline/3-formalized/tilted-spline-fourth-order-synthesis.md): full-space and pole-hyperplane endpoint receivers |
+| A2 | Bilinear conductor-residual theorem: packets and polylog subspaces for `α < 1/8` | HF, SRT, AIP, ACS | [Formalized](../../drafts/pipeline/3-formalized/one-eighth-conductor-packet-positivity.md): fixed packets; polylog subspaces when `α + 2q < 1` |
 | A3 | Rough regime for a tilted Denjoy–Carleman profile up to `ε·c*_N` (sinc itself has real Fourier zeros) | HF, SRT, AIP, ACS | profile constants; existence of tilts without real zeros proved |
 | A4 | Edge of one off-line pair at atomic resolution in the RVM model | HF, SRT, RW, EHT | composition of the visibility law with the `K ↔ ½ log K` transfer |
 | A5 | Propagate `1/16` into the EHT edge-window and crossing theorems (Lean: `1/59`) | EHT, HF, SRT, SC | composition |

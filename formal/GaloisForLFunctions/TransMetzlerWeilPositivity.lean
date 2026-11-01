@@ -39,6 +39,8 @@ import GaloisForLFunctions.TransMetzlerWeilPositivity.ReceiverRate.TheLogarithmi
 
 import GaloisForLFunctions.TransMetzlerWeilPositivity.ReceiverRate.TheLogarithmicConductorSplitFitsTheHorizon
 
+import GaloisForLFunctions.TransMetzlerWeilPositivity.ReceiverRate.TheLogarithmicProfileIsPositiveBelowCriticalOverlap
+
 /-!
 # Trans-Metzler Complete Weil Positivity and the Overlap-Ratio Phase Diagram
 

@@ -73,8 +73,8 @@ Established:
 
 | | Obstacle |
 |---|---|
-| A1 | Fourth-order synthesis for the tilted spline. Its third derivative has bounded variation, so the Euler–Maclaurin synthesis of the smooth case (`TheEulerMaclaurinSynthesis`) applies with the Stieltjes remainder to order `4`. Expected receiver: RH ⇔ eventual positivity at `K(log N)^{1/8}` for every `K` (`α > 1/8`), plus the hyperplane analogue [D]. |
-| A2 | Finish the bilinear conductor-residual theorem: positivity on fixed finite conductor packets and coercivity on polylogarithmic conductor subspaces for `α < 1/8` [U]. |
+| A1 | [Formalized](../../drafts/pipeline/3-formalized/tilted-spline-fourth-order-synthesis.md) [L]: fourth-order tilted-spline synthesis; RH ⇔ eventual positivity at every `K(log N)^{1/8}`, with the pole-hyperplane analogue. |
+| A2 | [Formalized](../../drafts/pipeline/3-formalized/one-eighth-conductor-packet-positivity.md) [L]: bilinear conductor residuals, fixed-packet positivity for `α < 1/8`, and polylogarithmic subspace coercivity when `α + 2q < 1`. |
 | A3 | Run the rough-regime proof for a tilted Denjoy–Carleman profile without real Fourier zeros up to `ε·c*_N` (sinc itself has real Fourier zeros, which break the Gamma-reserve input). At `ε·c*_N` the floor is `(log N)^{−O(ε)}` while every residual is polynomial in `c ≍ loglog N` [D]. |
 | A4 | Edge dictionary for one off-line pair: compose the visibility law with the `K ↔ ½ log K` transfer. In the RVM model this gives edge `≲ C e^{2a(ρ)}·c*_N`, with `a(ρ)` the visibility aperture of `ρ` [D]. |
 | A5 | Propagate the `1/16` exponent into the EHT edge-window and crossing theorems (Lean uses `powerLogPositivityExponent = 1/59`). |

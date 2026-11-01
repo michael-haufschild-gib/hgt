@@ -2,9 +2,9 @@
 
 - **ID:** denjoy-carleman-rough-regime
 - **Stage:** 1-in-progress
-- **Type:** CANDIDATE
+- **Type:** THEOREM (Lean)
 - **Source:** `docs/reports/review-0111/route-obstacles.md`, A3.
-- **Target:** A fixed nonnegative logarithmic Denjoy–Carleman profile on `[0,1]`
+- **Statement:** A fixed nonnegative logarithmic Denjoy–Carleman profile on `[0,1]`
   and a constant `ε>0` for which the complete Weil matrix is eventually positive
   definite uniformly on `1≤c≤ε L(log L)²`, where `L=loglog N`.
 
@@ -20,7 +20,7 @@ Let `f=sincProfile`, `h=f*reflect(f)`, and
 `g(x)=∫₁² h(x/s)/s ds`. Then
 `ĝ(t)=∫₁² |f̂(st)|² ds = t⁻¹∫ₜ²ₜ |f̂(u)|² du` for `t>0`.
 The existing band-energy theorem therefore gives the pointwise floor
-`ĝ(t)≥exp(-C t/log²t)` for large `t`. Compact support makes `f̂` analytic;
+`ĝ(t)≥exp(-C t/log²t)` for large `t`, with `C=8π/3+3000`. Compact support makes `f̂` analytic;
 its unit mass excludes vanishing on any interval, so `ĝ(t)>0` everywhere.
 Autocorrelation and averaging dilations `1≤s≤2` preserve the logarithmic
 Denjoy–Carleman derivative class. Translate and dilate `g` to `[0,1]`.
@@ -49,26 +49,36 @@ For large `N`, `1+log R≤(log N)^(1/4)`, so the orthogonal cross error is
 bounded independently of actual overlap. The residual budget is controlled by
 `5q+19α+1/k<1`; intermediate-band leakage by `8α<q`; and the coercivity
 gap by `q/4>α`. These inequalities hold for the stated parameters.
-The resulting proposed critical coefficient is
+Low-band decoupling sends any nonpositive unit vector to an orthogonal unit
+vector of energy at most `2`. Confinement retains squared norm at least `3/4`
+and energy at most `3`; intermediate-band coercivity instead gives energy at
+least `(1/4)log Q−log c−C_coerc`, eventually larger than `3`.
+This contradiction proves positivity on every nonzero vector.
+The critical coefficient is
 `ε=(1/256)/(4B)`, with `B=808C`. Bounded overlaps use the existing uniform
-zero-free-profile theorem. The complete Lean proof chain is drafted; its
-dependency checks remain incomplete.
+zero-free-profile theorem. Since `sincCriticalOverlap N≤96e·dcScale N`
+eventually, replacing `ε` by `ε/(96e)` gives the exact critical-scale version.
 
-## Remaining proof obligations
+## Lean declarations
 
-The profile, derivative bound, Fourier floor, Gamma reserve, conductor floor,
-reciprocal-floor power bound, and complete prime-defect reserve pass Lean with
-standard axioms only. Low-conductor decoupling and the cubic orthogonal
-cross-pairing bound also pass.
+Namespace `GaloisForLFunctions.TransMetzlerWeilPositivity`.
+Modules lie in `formal/GaloisForLFunctions/TransMetzlerWeilPositivity/ReceiverRate/`.
 
-1. Check the drafted spectral confinement, conductor-band coercivity, and residual
-   assembly with actual overlap bounded by the auxiliary parameter `T`.
-2. Check the concrete positivity theorem and its exact `sincCriticalOverlap`
-   corollary without analytic assumptions.
-3. Complete direct module audits and umbrella integration.
+- `TheZeroFreeLogarithmicProfile.lean`: `zeroFreeLogProfile`,
+  `integral_abs_iteratedDeriv_zeroFreeLogProfile_le`,
+  `paperFT_zeroFreeLogProfile_ne_zero`.
+- `TheLogarithmicProfileIsPositiveBelowCriticalOverlap.lean`:
+  `exists_zeroFreeLogProfile_positive_power_budget`,
+  `exists_zeroFreeLogProfile_completeWeilMatrix_posDef_critical_overlap`,
+  `exists_zeroFreeLogProfile_completeWeilMatrix_posDef_sincCritical_overlap`.
+
+All three final theorems passed a direct Lean check, with transitive axioms
+`[propext, Classical.choice, Quot.sound]` only. All twelve modules are imported
+by the programme umbrella. Direct final checks of the eleven dependency
+modules remain pending.
 
 ## Gates
 
 - [x] Precise target and existing inputs identified.
-- [ ] Dependency-closed paper proof.
+- [x] Dependency-closed paper proof.
 - [ ] Direct Lean checks, transitive axiom audit, umbrella integration.
