@@ -34,6 +34,28 @@ cycle and repetition sums, and exponentiate the Taylor logarithm. The target
 is the [actual primitive-orbit Euler product](gauss-mayer-primitive-orbit-product.md).
 This alone does not identify a scattering determinant or exclude resonances.
 
+## Operator convention
+
+`MayerFredholm.determinant_eq_zero_iff_eigenvector` concerns the full actual
+operator `MayerCutoff.regularized = ζ(w)P + remainderSum`, with eigenvalue
+`z⁻¹`. It does not identify the spectrum of the holomorphic remainder alone.
+The faithful scattering comparison must preserve this distinction.
+
+The inspected `SelbergEisensteinScatteringEntry.phiσ` is an actual constant
+term, proved holomorphic for `Re s>1/2`, `s≠1`. Its arithmetic factor contains
+the Möbius Dirichlet series at `2s`. Those theorems do not continue this
+literal series into `Re(2s)<1`; the required meromorphic continuation and
+Mayer comparison remain separate analytic obligations.
+
+## Escape receiver boundary
+
+`exists_tendsto_normGram_of_dominant_split` consumes an actual power-row
+decomposition with a subdominant remainder; it does not construct that
+decomposition from energy divergence. The exact visibility criterion
+`riemannHypothesis_iff_forall_gaugeMass_pos` requires every actual cofactor
+limit at every subcritical damping. Existence of limits or the conditional
+zero-mass law under power growth does not supply positive gauge mass.
+
 ## Integrity and placement
 
 No missing source identity, summability bound, positivity, or spectral gap may

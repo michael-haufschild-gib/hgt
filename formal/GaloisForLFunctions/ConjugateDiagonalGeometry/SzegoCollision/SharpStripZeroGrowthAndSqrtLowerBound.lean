@@ -1376,7 +1376,7 @@ theorem entire_rectIntegral_mul_logDeriv_eq_sum {f g : ℂ → ℂ}
       (2 * Real.pi * I)⁻¹ *
           _root_.RHTower.rectIntegral (fun z => g z * logDeriv f z) z₁ z₂ =
         ∑ w ∈ Z, ((analyticOrderAt f w).toNat : ℂ) * g w := by
-  set R_big : ℝ := max (|z₁.re| + |z₁.im|) (|z₂.re| + |z₂.im|) + 4
+  set R_big : ℝ := |z₁.re| + |z₂.re| + |z₁.im| + |z₂.im| + 4
   have hR_pos : 0 < R_big := by dsimp [R_big]; positivity
   -- Finiteness of zeros of `f` in `closedBall 0 R_big` from `divisor.finiteSupport`.
   let D_ball := MeromorphicOn.divisor f (closedBall (0 : ℂ) R_big)
@@ -1407,20 +1407,801 @@ theorem entire_rectIntegral_mul_logDeriv_eq_sum {f g : ℂ → ℂ}
     intro z hx1 hx2 hy1 hy2
     rw [mem_closedBall, dist_zero_right]
     have hnorm := Complex.norm_le_abs_re_add_abs_im z
-    have hre_le : |z.re| ≤ max |z₁.re| |z₂.re| + 1 / 2 := by
+    have hre_le : |z.re| ≤ |z₁.re| + |z₂.re| + 1 / 2 := by
       rw [abs_le]
-      exact ⟨by linarith [neg_abs_le z₁.re, le_max_left |z₁.re| |z₂.re|],
-             by linarith [le_abs_self z₂.re, le_max_right |z₁.re| |z₂.re|]⟩
-    have him_le : |z.im| ≤ max |z₁.im| |z₂.im| + 1 / 2 := by
+      exact ⟨by linarith [neg_abs_le z₁.re, abs_nonneg z₂.re],
+             by linarith [le_abs_self z₂.re, abs_nonneg z₁.re]⟩
+    have him_le : |z.im| ≤ |z₁.im| + |z₂.im| + 1 / 2 := by
       rw [abs_le]
-      exact ⟨by linarith [neg_abs_le z₁.im, le_max_left |z₁.im| |z₂.im|],
-             by linarith [le_abs_self z₂.im, le_max_right |z₁.im| |z₂.im|]⟩
-    have hm1 : max |z₁.re| |z₂.re| ≤ |z₁.re| + |z₂.re| :=
-      max_le (by linarith [abs_nonneg z₂.re]) (by linarith [abs_nonneg z₁.re])
-    have hm2 : max |z₁.im| |z₂.im| ≤ |z₁.im| + |z₂.im| :=
-      max_le (by linarith [abs_nonneg z₂.im]) (by linarith [abs_nonneg z₁.im])
-    -- Wait: `(|z₁.re| + |z₂.re|) + (|z₁.im| + |z₂.im|)` could exceed `max(|z₁.re|+|z₁.im|, |z₂.re|+|z₂.im|)`!
-    -- Wait: let's check! If `z₁ = -10 + 0i` and `z₂ = 0 + 10i`, `z = -10 + 10i` has `|z.re| + |z.im| = 20`,
-    -- while `max(10, 10) + 4 = 14`! Let's fix `R_big` right above to `|z₁.re| + |z₂.re| + |z₁.im| + |z₂.im| + 4`!
-    sorry
-  sorry
+      exact ⟨by linarith [neg_abs_le z₁.im, abs_nonneg z₂.im],
+             by linarith [le_abs_self z₂.im, abs_nonneg z₁.im]⟩
+    dsimp only [R_big]
+    linarith
+  have hmem_Z : ∀ w : ℂ, w ∈ Z ↔
+      (z₁.re < w.re ∧ w.re < z₂.re ∧ z₁.im < w.im ∧ w.im < z₂.im) ∧ f w = 0 := by
+    intro w
+    dsimp only [Z, Z_ball]
+    rw [Finset.mem_filter, Set.Finite.mem_toFinset, Set.mem_setOf_eq]
+    constructor
+    · rintro ⟨⟨_, hw0⟩, hin⟩; exact ⟨hin, hw0⟩
+    · rintro ⟨hin, hw0⟩
+      exact ⟨⟨hnhd_in_ball w (by linarith [hin.1]) (by linarith [hin.2.1])
+        (by linarith [hin.2.2.1]) (by linarith [hin.2.2.2]), hw0⟩, hin⟩
+  let rDist : ℂ → ℝ := fun w =>
+    max (max (z₁.re - w.re) (w.re - z₂.re)) (max (z₁.im - w.im) (w.im - z₂.im))
+  have hrDist_pos : ∀ w : ℂ, f w = 0 → w ∉ Z → 0 < rDist w := by
+    intro w hw0 hnot
+    by_contra hle
+    replace hle : rDist w ≤ 0 := not_lt.mp hle
+    have hx1 : z₁.re ≤ w.re := by linarith [(le_max_left _ _).trans ((le_max_left _ _).trans hle)]
+    have hx2 : w.re ≤ z₂.re := by linarith [(le_max_right _ _).trans ((le_max_left _ _).trans hle)]
+    have hy1 : z₁.im ≤ w.im := by linarith [(le_max_left _ _).trans ((le_max_right _ _).trans hle)]
+    have hy2 : w.im ≤ z₂.im := by linarith [(le_max_right _ _).trans ((le_max_right _ _).trans hle)]
+    by_cases hin : z₁.re < w.re ∧ w.re < z₂.re ∧ z₁.im < w.im ∧ w.im < z₂.im
+    · exact hnot ((hmem_Z w).mpr ⟨hin, hw0⟩)
+    · have hedge : w.re = z₁.re ∨ w.re = z₂.re ∨ w.im = z₁.im ∨ w.im = z₂.im := by
+        rcases eq_or_lt_of_le hx1 with h | h1
+        · exact Or.inl h.symm
+        · rcases eq_or_lt_of_le hx2 with h | h2
+          · exact Or.inr (Or.inl h)
+          · rcases eq_or_lt_of_le hy1 with h | h3
+            · exact Or.inr (Or.inr (Or.inl h.symm))
+            · rcases eq_or_lt_of_le hy2 with h | h4
+              · exact Or.inr (Or.inr (Or.inr h))
+              · exact absurd ⟨h1, h2, h3, h4⟩ hin
+      obtain ⟨t, ht⟩ := exists_boundaryPath_eq hre him ⟨hx1, hx2⟩ ⟨hy1, hy2⟩ hedge
+      exact hbdry t (ht.symm ▸ hw0)
+  let Z_out : Finset ℂ := Z_ball \ Z
+  set δ : ℝ := if h : Z_out.Nonempty then min (1 / 2) (Z_out.inf' h rDist / 2) else 1 / 2
+  have hδ_pos : 0 < δ := by
+    dsimp only [δ]
+    split_ifs with h
+    · refine lt_min (by norm_num) (half_pos ?_)
+      rw [Finset.lt_inf'_iff]
+      intro w hw
+      obtain ⟨hwB, hwNot⟩ := Finset.mem_sdiff.mp hw
+      exact hrDist_pos w ((hzeros_fin.mem_toFinset.mp hwB).2) hwNot
+    · norm_num
+  have hδ_le : δ ≤ 1 / 2 := by
+    dsimp only [δ]; split_ifs <;> [exact min_le_left _ _; exact le_rfl]
+  let U : Set ℂ := {z : ℂ |
+    z₁.re - δ < z.re ∧ z.re < z₂.re + δ ∧ z₁.im - δ < z.im ∧ z.im < z₂.im + δ}
+  have hUopen : IsOpen U :=
+    (isOpen_lt continuous_const Complex.continuous_re).inter
+      ((isOpen_lt Complex.continuous_re continuous_const).inter
+        ((isOpen_lt continuous_const Complex.continuous_im).inter
+          (isOpen_lt Complex.continuous_im continuous_const)))
+  have hsub : (uIcc z₁.re z₂.re ×ℂ uIcc z₁.im z₂.im) ⊆ U := by
+    intro z hz
+    rw [uIcc_of_le hre, uIcc_of_le him, Complex.mem_reProdIm] at hz
+    exact ⟨by linarith [hz.1.1], by linarith [hz.1.2],
+      by linarith [hz.2.1], by linarith [hz.2.2]⟩
+  have hin : ∀ w ∈ Z, z₁.re < w.re ∧ w.re < z₂.re ∧ z₁.im < w.im ∧ w.im < z₂.im :=
+    fun w hw => ((hmem_Z w).mp hw).1
+  have htU : ∀ w ∈ Z, w ∈ U := by
+    intro w hw
+    obtain ⟨h1, h2, h3, h4⟩ := hin w hw
+    exact ⟨by linarith, by linarith, by linarith, by linarith⟩
+  have hzeros_U : ∀ z ∈ U, f z = 0 → z ∈ Z := by
+    intro z hzU hz0
+    have hzBall : z ∈ Z_ball := hzeros_fin.mem_toFinset.mpr
+      ⟨hnhd_in_ball z (by linarith [hzU.1, hδ_le]) (by linarith [hzU.2.1, hδ_le])
+        (by linarith [hzU.2.2.1, hδ_le]) (by linarith [hzU.2.2.2, hδ_le]), hz0⟩
+    by_contra hzNot
+    have hzOut : z ∈ Z_out := Finset.mem_sdiff.mpr ⟨hzBall, hzNot⟩
+    have hinf_le : δ ≤ rDist z / 2 := by
+      dsimp only [δ]
+      rw [dif_pos ⟨z, hzOut⟩]
+      exact (min_le_right _ _).trans
+        (div_le_div_of_nonneg_right (Finset.inf'_le rDist hzOut) (by norm_num))
+    have hdist_lt : rDist z < δ :=
+      max_lt (max_lt (by linarith [hzU.1]) (by linarith [hzU.2.1]))
+        (max_lt (by linarith [hzU.2.2.1]) (by linarith [hzU.2.2.2]))
+    linarith
+  have hfU : AnalyticOnNhd ℂ f U := hf.mono (subset_univ _)
+  obtain ⟨m₀, h, hhan, hh0, hfact⟩ :=
+    _root_.RHTower.exists_multi_peel hUopen hfU Z htU hzeros_U (fun w _ => hord w)
+  have hm_eq : ∀ w₀ ∈ Z, m₀ w₀ = (analyticOrderAt f w₀).toNat := by
+    intro w₀ hw₀
+    let G : ℂ → ℂ := fun z => (∏ w ∈ Z.erase w₀, (z - w) ^ m₀ w) * h z
+    have hGan : AnalyticAt ℂ G w₀ := by
+      refine AnalyticAt.mul ?_ (hhan w₀ (htU w₀ hw₀))
+      have hprod_eq : (fun z => ∏ w ∈ Z.erase w₀, (z - w) ^ m₀ w) =
+          ∏ w ∈ Z.erase w₀, fun z => (z - w) ^ m₀ w := by
+        funext z; rw [Finset.prod_apply]
+      rw [hprod_eq]
+      exact Finset.analyticAt_prod (Z.erase w₀)
+        (fun w _ => (analyticAt_id.sub analyticAt_const).pow (m₀ w))
+    have hG0 : G w₀ ≠ 0 := by
+      refine mul_ne_zero (Finset.prod_ne_zero_iff.mpr fun w hw => ?_) (hh0 w₀ (htU w₀ hw₀))
+      exact pow_ne_zero _ (sub_ne_zero.mpr (Finset.ne_of_mem_erase hw).symm)
+    have hev : f =ᶠ[nhds w₀] (fun z => (z - w₀) ^ m₀ w₀) • G := by
+      filter_upwards [hUopen.mem_nhds (htU w₀ hw₀)] with z hzU
+      change f z = (z - w₀) ^ m₀ w₀ * G z
+      dsimp only [G]
+      rw [hfact z hzU, ← Finset.mul_prod_erase Z _ hw₀, mul_assoc]
+    have hord_eq : analyticOrderAt f w₀ = (m₀ w₀ : ℕ∞) :=
+      (hfU w₀ (htU w₀ hw₀)).analyticOrderAt_eq_natCast.mpr ⟨G, hGan, hG0, hev⟩
+    rw [hord_eq, ENat.toNat_coe]
+  have hfact' : ∀ z ∈ U, f z = (∏ w ∈ Z, (z - w) ^ (analyticOrderAt f w).toNat) * h z := by
+    intro z hzU
+    rw [hfact z hzU]
+    congr 1
+    exact Finset.prod_congr rfl fun w hw => by rw [hm_eq w hw]
+  have hrect := _root_.RHTower.rectIntegral_mul_logDeriv_boxCount
+    Z id (fun w => (analyticOrderAt f w).toNat) hg hUopen hin hsub hhan hh0 hfact'
+  have h2pi_ne : (2 * Real.pi * I : ℂ) ≠ 0 := by
+    have : (Real.pi : ℂ) ≠ 0 := Complex.ofReal_ne_zero.mpr Real.pi_ne_zero
+    simp [this, Complex.I_ne_zero]
+  refine ⟨Z, hmem_Z, ?_⟩
+  rw [hrect, inv_mul_cancel_left₀ h2pi_ne]
+  rfl
+
+/-! ## §5 Burnol good-height Rouché lower bound: `Θ(N² log N)` and `Ω(√T)` -/
+
+/-- Lower bound on `‖xi‖` along the vertical lines `Re z = 3 / 2` and `Re z = -1 / 2` for `|Im z| ≥ 3`. -/
+theorem exists_xi_vertical_lower_bound :
+    ∃ (c_vert : ℝ) (N_vert : ℕ), 0 < c_vert ∧ ∀ y : ℝ, 3 ≤ |y| →
+      c_vert * (|y| ^ N_vert)⁻¹ * Real.exp (-(Real.pi / 4) * |y|) ≤
+          ‖_root_.RHTower.xi ((3 / 2 : ℂ) + (y : ℂ) * I)‖ ∧
+        c_vert * (|y| ^ N_vert)⁻¹ * Real.exp (-(Real.pi / 4) * |y|) ≤
+          ‖_root_.RHTower.xi ((-1 / 2 : ℂ) + (y : ℂ) * I)‖ := by
+  obtain ⟨C_invΓ, N_invΓ, hC_invΓ0, hinvΓ⟩ :=
+    HTGeometry.exists_bound_norm_inv_Gamma_strip (3 / 4 : ℝ) (3 / 4 : ℝ)
+  obtain ⟨B_invζ, hB_invζ0, hinvζ⟩ :=
+    _root_.RHTower.exists_norm_inv_riemannZeta_le_of_three_halves_le_re
+  let c_vert : ℝ := Real.pi ^ (-(3 / 4 : ℝ)) * ((C_invΓ + 1) * (B_invζ + 1))⁻¹
+  have hc_pos : 0 < c_vert := by
+    dsimp only [c_vert]
+    have hpi : 0 < Real.pi ^ (-(3 / 4 : ℝ)) := Real.rpow_pos_of_pos Real.pi_pos _
+    positivity
+  refine ⟨c_vert, N_invΓ, hc_pos, ?_⟩
+  intro y hy
+  set s : ℂ := (3 / 2 : ℂ) + (y : ℂ) * I
+  have hs_re : s.re = 3 / 2 := by simp [s]
+  have hs_im : s.im = y := by simp [s]
+  have hs_ne1 : s ≠ 1 := by
+    intro h
+    have := congrArg Complex.im h
+    rw [hs_im, Complex.one_im] at this
+    rw [this, abs_zero] at hy
+    norm_num at hy
+  have hright : c_vert * (|y| ^ N_invΓ)⁻¹ * Real.exp (-(Real.pi / 4) * |y|) ≤
+      ‖_root_.RHTower.xi s‖ := by
+    rw [_root_.RHTower.norm_xi_eq_factors (by rw [hs_re]; norm_num) hs_ne1]
+    have hexp_re : -(s.re / 2) = -(3 / 4 : ℝ) := by rw [hs_re]; norm_num
+    rw [hexp_re]
+    have hquad_ge1 : 1 ≤ ‖s * (s - 1) / 2‖ := by
+      rw [_root_.RHTower.norm_mul_sub_one_div_two]
+      have hs_ge : 3 ≤ ‖s‖ := by
+        calc (3 : ℝ) ≤ |y| := hy
+          _ = |s.im| := by rw [hs_im]
+          _ ≤ ‖s‖ := Complex.abs_im_le_norm s
+      have hs1_ge : 3 ≤ ‖s - 1‖ := by
+        calc (3 : ℝ) ≤ |y| := hy
+          _ = |(s - 1).im| := by simp [hs_im]
+          _ ≤ ‖s - 1‖ := Complex.abs_im_le_norm (s - 1)
+      nlinarith
+    have hG_ge : ((C_invΓ + 1) * |y| ^ N_invΓ)⁻¹ * Real.exp (-(Real.pi / 4) * |y|) ≤
+        ‖Complex.Gamma (s / 2)‖ := by
+      have him2 : |(s / 2).im| = |y| / 2 := by simp [hs_im, abs_div]
+      have hG_ne : Complex.Gamma (s / 2) ≠ 0 := by
+        refine Complex.Gamma_ne_zero fun m hm => ?_
+        have him_eq := congrArg Complex.im hm
+        simp [hs_im] at him_eq
+        rw [him_eq, abs_zero] at hy
+        norm_num at hy
+      have hG_pos : 0 < ‖Complex.Gamma (s / 2)‖ := norm_pos_iff.mpr hG_ne
+      have h1 := hinvΓ (s / 2) (by simp [hs_re]) (by simp [hs_re]) (by rw [him2]; linarith)
+      rw [norm_inv, him2] at h1
+      have hpow : (|y| / 2) ^ N_invΓ ≤ |y| ^ N_invΓ :=
+        pow_le_pow_left₀ (by positivity) (by linarith) N_invΓ
+      have hexp_eq : Real.exp (Real.pi * (|y| / 2) / 2) = Real.exp ((Real.pi / 4) * |y|) := by
+        congr 1; ring
+      rw [hexp_eq] at h1
+      have hinv_le : ‖Complex.Gamma (s / 2)‖⁻¹ ≤
+          ((C_invΓ + 1) * |y| ^ N_invΓ) * Real.exp ((Real.pi / 4) * |y|) :=
+        h1.trans (mul_le_mul_of_nonneg_right
+          (mul_le_mul (by linarith) hpow (by positivity) (by positivity)) (Real.exp_pos _).le)
+      have hflip := (inv_le_inv₀
+        (by positivity : 0 < ((C_invΓ + 1) * |y| ^ N_invΓ) * Real.exp ((Real.pi / 4) * |y|))
+        hG_pos).mpr hinv_le
+      rwa [inv_inv, mul_inv, ← Real.exp_neg, show -((Real.pi / 4) * |y|) = -(Real.pi / 4) * |y|
+        by ring] at hflip
+    have hζ_ge : (B_invζ + 1)⁻¹ ≤ ‖riemannZeta s‖ := by
+      have hζ_ne : riemannZeta s ≠ 0 := riemannZeta_ne_zero_of_one_lt_re (by rw [hs_re]; norm_num)
+      have hζ_pos : 0 < ‖riemannZeta s‖ := norm_pos_iff.mpr hζ_ne
+      have h1 := hinvζ s (by rw [hs_re])
+      rw [norm_inv] at h1
+      have hflip := (inv_le_inv₀ (by positivity : 0 < B_invζ + 1) hζ_pos).mpr (by linarith)
+      rwa [inv_inv] at hflip
+    calc c_vert * (|y| ^ N_invΓ)⁻¹ * Real.exp (-(Real.pi / 4) * |y|)
+        = 1 * (Real.pi ^ (-(3 / 4 : ℝ)) *
+            (((C_invΓ + 1) * |y| ^ N_invΓ)⁻¹ * Real.exp (-(Real.pi / 4) * |y|))) *
+            (B_invζ + 1)⁻¹ := by
+          dsimp only [c_vert]
+          rw [mul_inv, mul_inv]
+          ring
+      _ ≤ ‖s * (s - 1) / 2‖ * (Real.pi ^ (-(3 / 4 : ℝ)) * ‖Complex.Gamma (s / 2)‖) *
+            ‖riemannZeta s‖ := by
+          refine mul_le_mul ?_ hζ_ge (by positivity) (norm_nonneg _)
+          refine mul_le_mul hquad_ge1 ?_ (by positivity [Real.rpow_pos_of_pos Real.pi_pos _])
+            (norm_nonneg _)
+          exact mul_le_mul_of_nonneg_left hG_ge (Real.rpow_pos_of_pos Real.pi_pos _).le
+  refine ⟨hright, ?_⟩
+  have hsym : 1 - ((-1 / 2 : ℂ) + (y : ℂ) * I) = (starRingEnd ℂ) s := by
+    apply Complex.ext <;> simp [s] <;> norm_num
+  have hnorm_eq : ‖_root_.RHTower.xi ((-1 / 2 : ℂ) + (y : ℂ) * I)‖ = ‖_root_.RHTower.xi s‖ := by
+    rw [← _root_.RHTower.xi_one_sub, hsym, _root_.RHTower.xi_conj, norm_conj]
+  rwa [hnorm_eq]
+
+/-- **Simultaneous Burnol horizontal-line and vertical-side lower bound for `xi`.**
+There exist `H₀ ≥ 9`, `c_bdry > 0`, and `K_bdry : ℕ` such that every interval `[H, H + 1]`
+(`H ≥ H₀`) contains a height `T_* ∈ [H, H + 1]` along which `‖xi (x + i T_*)‖` is bounded below
+across `x ∈ [-1, 2]` by `c_bdry * T_*^{-K_bdry} * exp(-(π / 4) T_*)`, while the vertical lines
+`x = -1 / 2` and `x = 3 / 2` satisfy the same bound at every `|y| ≤ T_*`. -/
+theorem exists_burnol_horizontal_and_vertical_xi_lower :
+    ∃ (H₀ c_bdry : ℝ) (K_bdry : ℕ), 9 ≤ H₀ ∧ 0 < c_bdry ∧
+      ∀ H : ℝ, H₀ ≤ H → ∃ T_* : ℝ, H ≤ T_* ∧ T_* ≤ H + 1 ∧
+        (∀ x : ℝ, -1 ≤ x → x ≤ 2 →
+          c_bdry * (T_* ^ K_bdry)⁻¹ * Real.exp (-(Real.pi / 4) * T_*) ≤
+            ‖_root_.RHTower.xi ((x : ℂ) + (T_* : ℂ) * I)‖) ∧
+        (∀ y : ℝ, |y| ≤ T_* →
+          c_bdry * (T_* ^ K_bdry)⁻¹ * Real.exp (-(Real.pi / 4) * T_*) ≤
+              ‖_root_.RHTower.xi ((3 / 2 : ℂ) + (y : ℂ) * I)‖ ∧
+            c_bdry * (T_* ^ K_bdry)⁻¹ * Real.exp (-(Real.pi / 4) * T_*) ≤
+              ‖_root_.RHTower.xi ((-1 / 2 : ℂ) + (y : ℂ) * I)‖) := by
+  obtain ⟨M_bur, n0_bur, hbur⟩ := _root_.RHTower.exists_xi_horizontal_ratio_nat_bound
+  obtain ⟨c_vert, N_vert, hc_vert, hvert⟩ := exists_xi_vertical_lower_bound
+  let c_low : ℝ := (5026 / 16875) * Real.exp (-Real.pi)
+  have hc_low : 0 < c_low := by dsimp [c_low]; positivity
+  let c_bdry : ℝ := min c_low c_vert
+  have hc_bdry : 0 < c_bdry := lt_min hc_low hc_vert
+  let K_bdry : ℕ := N_vert + M_bur
+  refine ⟨max 9 n0_bur, c_bdry, K_bdry, le_max_left 9 _, hc_bdry, ?_⟩
+  intro H hH
+  obtain ⟨T_*, hHT, hTH, hratio⟩ := hbur H (le_trans (le_max_right 9 _) hH)
+  have hH9 : 9 ≤ H := le_trans (le_max_left 9 _) hH
+  have hT9 : 9 ≤ T_* := hH9.trans hHT
+  have hT1 : 1 ≤ T_* := by linarith
+  refine ⟨T_*, hHT, hTH, ?_, ?_⟩
+  · intro x hx1 hx2
+    have hhor := (hratio (3 / 2) x (by norm_num) (by norm_num) hx1 hx2).1
+    have hv := (hvert T_* (by rw [abs_of_pos (by linarith)]; linarith)).1
+    rw [abs_of_pos (by linarith : 0 < T_*)] at hv
+    have hTM_pos : 0 < T_* ^ M_bur := by positivity
+    have hdiv : (T_* ^ M_bur)⁻¹ * ‖_root_.RHTower.xi ((3 / 2 : ℂ) + (T_* : ℂ) * I)‖ ≤
+        ‖_root_.RHTower.xi ((x : ℂ) + (T_* : ℂ) * I)‖ := by
+      rw [inv_mul_le_iff₀ hTM_pos]
+      exact hhor
+    calc c_bdry * (T_* ^ K_bdry)⁻¹ * Real.exp (-(Real.pi / 4) * T_*)
+        ≤ c_vert * (T_* ^ K_bdry)⁻¹ * Real.exp (-(Real.pi / 4) * T_*) :=
+          mul_le_mul_of_nonneg_right
+            (mul_le_mul_of_nonneg_right (min_le_right _ _) (by positivity))
+            (Real.exp_pos _).le
+      _ = (T_* ^ M_bur)⁻¹ * (c_vert * (T_* ^ N_vert)⁻¹ * Real.exp (-(Real.pi / 4) * T_*)) := by
+          dsimp only [K_bdry]
+          rw [pow_add, mul_inv]
+          ring
+      _ ≤ (T_* ^ M_bur)⁻¹ * ‖_root_.RHTower.xi ((3 / 2 : ℂ) + (T_* : ℂ) * I)‖ :=
+          mul_le_mul_of_nonneg_left hv (by positivity)
+      _ ≤ ‖_root_.RHTower.xi ((x : ℂ) + (T_* : ℂ) * I)‖ := hdiv
+  · intro y hyT
+    rcases le_or_gt |y| 3 with hy3 | hy3
+    · have hinv1 : (T_* ^ K_bdry)⁻¹ ≤ 1 := inv_le_one_of_one_le₀ (one_le_pow₀ hT1)
+      have hexp1 : Real.exp (-(Real.pi / 4) * T_*) ≤ 1 :=
+        Real.exp_le_one_iff.mpr (by nlinarith [Real.pi_pos])
+      have hbase_le : c_bdry * (T_* ^ K_bdry)⁻¹ * Real.exp (-(Real.pi / 4) * T_*) ≤ c_low := by
+        calc c_bdry * (T_* ^ K_bdry)⁻¹ * Real.exp (-(Real.pi / 4) * T_*)
+            ≤ c_low * 1 * 1 := by
+              refine mul_le_mul ?_ hexp1 (Real.exp_pos _).le hc_low.le
+              exact mul_le_mul (min_le_left _ _) hinv1 (by positivity) hc_low.le
+          _ = c_low := by ring
+      have hlow_r : c_low ≤ ‖_root_.RHTower.xi ((3 / 2 : ℂ) + (y : ℂ) * I)‖ :=
+        (xi_re_ge_lowWindow (by simp; norm_num) (by simp; linarith)).trans (Complex.re_le_norm _)
+      have hlow_l : c_low ≤ ‖_root_.RHTower.xi ((-1 / 2 : ℂ) + (y : ℂ) * I)‖ :=
+        (xi_re_ge_lowWindow (by simp; norm_num) (by simp; linarith)).trans (Complex.re_le_norm _)
+      exact ⟨hbase_le.trans hlow_r, hbase_le.trans hlow_l⟩
+    · obtain ⟨hvr, hvl⟩ := hvert y hy3.le
+      have hpow_le : |y| ^ N_vert ≤ T_* ^ K_bdry := by
+        calc |y| ^ N_vert
+            ≤ T_* ^ N_vert := pow_le_pow_left₀ (abs_nonneg y) hyT N_vert
+          _ ≤ T_* ^ K_bdry := pow_le_pow_right₀ hT1 (by dsimp [K_bdry]; omega)
+      have hinv_le : (T_* ^ K_bdry)⁻¹ ≤ (|y| ^ N_vert)⁻¹ :=
+        inv_anti₀ (pow_pos (by linarith) N_vert) hpow_le
+      have hexp_le : Real.exp (-(Real.pi / 4) * T_*) ≤ Real.exp (-(Real.pi / 4) * |y|) :=
+        Real.exp_le_exp.mpr (by nlinarith [Real.pi_pos])
+      have hmono : c_bdry * (T_* ^ K_bdry)⁻¹ * Real.exp (-(Real.pi / 4) * T_*) ≤
+          c_vert * (|y| ^ N_vert)⁻¹ * Real.exp (-(Real.pi / 4) * |y|) := by
+        refine mul_le_mul ?_ hexp_le (Real.exp_pos _).le (by positivity)
+        exact mul_le_mul (min_le_right _ _) hinv_le (by positivity) hc_vert.le
+      exact ⟨hmono.trans hvr, hmono.trans hvl⟩
+
+/-- Every prefix `finiteThetaAmplitude N` has `1 ≤ prefixGlobalStripZeroBound N` from its
+guaranteed critical-line zero above height `3`. -/
+theorem one_le_prefixGlobalStripZeroBound (N : ℕ) : 1 ≤ prefixGlobalStripZeroBound N := by
+  obtain ⟨t₀, _, ht₀⟩ := exists_criticalLine_zero_finiteThetaAmplitude N
+  set w₀ : ℂ := (1 / 2 : ℂ) + (t₀ : ℂ) * I
+  have hw₀_mem : w₀ ∈ prefixGlobalStripZeroSet N := by
+    apply (finiteThetaAmplitude_strip_zeros_finite N 1).mem_toFinset.mpr
+    exact ⟨by simp [w₀], ht₀⟩
+  have hord_ne_top : analyticOrderAt (_root_.RHTower.finiteThetaAmplitude N) w₀ ≠ ⊤ := by
+    have hfun : _root_.RHTower.finiteThetaAmplitude N = finiteThetaShellPencil N 0 :=
+      (funext (finiteThetaShellPencil_zero N)).symm
+    rw [hfun]
+    exact finiteThetaShellPencil_orderAt_ne_top N ⟨le_rfl, zero_le_one⟩ w₀
+  have hord_pos : 1 ≤ (analyticOrderAt (_root_.RHTower.finiteThetaAmplitude N) w₀).toNat := by
+    have hne0 : analyticOrderAt (_root_.RHTower.finiteThetaAmplitude N) w₀ ≠ 0 := by
+      intro h0
+      rcases analyticOrderAt_eq_zero.mp h0 with hnot | hnz
+      · exact hnot (analyticOnNhd_finiteThetaAmplitude N w₀ (Set.mem_univ w₀))
+      · exact hnz ht₀
+    have hcoe := ENat.coe_toNat hord_ne_top
+    by_contra hlt
+    have hz : (analyticOrderAt (_root_.RHTower.finiteThetaAmplitude N) w₀).toNat = 0 := by omega
+    rw [hz, ENat.coe_zero] at hcoe
+    exact hne0 hcoe.symm
+  unfold prefixGlobalStripZeroBound
+  exact hord_pos.trans (Finset.single_le_sum (fun _ _ => Nat.zero_le _) hw₀_mem)
+
+/-- **Sharp `Ω(N² log N)` lower bound on `prefixGlobalStripZeroBound N`.**
+Applying rectangle Rouché on `[-1 / 2, 3 / 2] × [-1 / 12, T_*]` at a Burnol good height
+`T_* ∈ [(N + 1)², (N + 1)² + 1]` proves `c₀ * (N + 1)² * log(N + 2) ≤ prefixGlobalStripZeroBound N`
+for every `N : ℕ`. -/
+theorem prefixGlobalStripZeroBound_lower :
+    ∃ c₀ : ℝ, 0 < c₀ ∧ ∀ N : ℕ,
+      c₀ * ((N + 1 : ℕ) : ℝ) ^ 2 * Real.log ((N + 2 : ℕ) : ℝ) ≤
+        (prefixGlobalStripZeroBound N : ℝ) := by
+  obtain ⟨H₀, c_bdry, K_bdry, hH₀9, hc_bdry, hburnol⟩ :=
+    exists_burnol_horizontal_and_vertical_xi_lower
+  obtain ⟨T_rvm, hT_rvm4, hrvm⟩ :=
+    _root_.RHTower.exists_xiZeroCount_close (1 / (4 * Real.pi)) (by positivity)
+  let K_pos : ℕ := K_bdry + 1
+  have hK_pos : 0 < (K_pos : ℝ) := by dsimp [K_pos]; positivity
+  let C_pow : ℝ := (10 * (K_pos : ℝ)) ^ K_pos
+  have hC_pow_pos : 0 < C_pow := by dsimp [C_pow]; positivity
+  let c_exp : ℝ := c_bdry / C_pow
+  have hc_exp_pos : 0 < c_exp := div_pos hc_bdry hC_pow_pos
+  let C_tail : ℝ := _root_.RHTower.thetaCuspIntegerTailConstant *
+    _root_.RHTower.thetaAmplitudeEnvelope 2 * Real.exp 1
+  have hC_tail_nn : 0 ≤ C_tail :=
+    mul_nonneg (mul_nonneg _root_.RHTower.thetaCuspIntegerTailConstant_nonneg
+      (_root_.RHTower.thetaAmplitudeEnvelope_pos 2).le) (Real.exp_pos 1).le
+  let H_thresh : ℝ := max H₀
+    (max (T_rvm + 2) (max 16 (10 * Real.log ((2 * C_tail + 1) / c_exp) + 2)))
+  let N_min : ℕ := Nat.ceil H_thresh + 1
+  -- First prove the lower bound `(1 / (8 * π)) * (N + 1)² * log(N + 2)` for all `N ≥ N_min`.
+  have hlarge : ∀ N : ℕ, N_min ≤ N →
+      (1 / (8 * Real.pi)) * ((N + 1 : ℕ) : ℝ) ^ 2 * Real.log ((N + 2 : ℕ) : ℝ) ≤
+        (prefixGlobalStripZeroBound N : ℝ) := by
+    intro N hN
+    set H : ℝ := ((N + 1 : ℕ) : ℝ) ^ 2
+    have hN_ge_H : H_thresh ≤ ((N + 1 : ℕ) : ℝ) := by
+      have hc : H_thresh ≤ (Nat.ceil H_thresh : ℝ) := Nat.le_ceil H_thresh
+      have hn : (Nat.ceil H_thresh + 1 : ℝ) ≤ ((N + 1 : ℕ) : ℝ) := by
+        exact_mod_cast (show Nat.ceil H_thresh + 1 ≤ N + 1 by omega)
+      linarith
+    have hH_ge : H₀ ≤ H := by
+      have h1 : H₀ ≤ H_thresh := le_max_left H₀ _
+      have h2 : (1 : ℝ) ≤ ((N + 1 : ℕ) : ℝ) := by exact_mod_cast Nat.succ_pos N
+      dsimp only [H]
+      nlinarith
+    have hH_thresh : H_thresh ≤ H := by
+      have h2 : (1 : ℝ) ≤ ((N + 1 : ℕ) : ℝ) := by exact_mod_cast Nat.succ_pos N
+      dsimp only [H]
+      nlinarith
+    obtain ⟨T_*, hHT, hTH, hhor, hvert⟩ := hburnol H hH_ge
+    have hT16 : 16 ≤ T_* :=
+      (le_trans (le_max_left 16 _) (le_trans (le_max_right _ _) (le_max_right H₀ _))).trans
+        (hH_thresh.trans hHT)
+    have hT1 : 1 ≤ T_* := by linarith
+    set δ₀ : ℝ := 1 / (2 * (zhukovskyStage 0 : ℝ))
+    have hδ₀_val : δ₀ = 1 / 12 := by
+      dsimp only [δ₀]; rw [show (zhukovskyStage 0 : ℝ) = 6 by unfold zhukovskyStage; norm_num]
+      norm_num
+    set T_win : ℝ := T_* + δ₀
+    have hT_win_pos : 0 ≤ T_win := by dsimp [T_win]; rw [hδ₀_val]; linarith
+    set z₁ : ℂ := thetaWindowLowerLeft 0
+    set z₂ : ℂ := thetaWindowUpperRight T_win 0
+    have hz₁_re : z₁.re = -1 / 2 := thetaWindowLowerLeft_re 0
+    have hz₂_re : z₂.re = 3 / 2 := thetaWindowUpperRight_re T_win 0
+    have hz₁_im : z₁.im = -δ₀ := thetaWindowLowerLeft_im 0
+    have hz₂_im : z₂.im = T_* := by
+      rw [thetaWindowUpperRight_im, max_eq_right hT_win_pos]
+      dsimp only [T_win, δ₀]; ring
+    -- Lower bound `‖xi (γ t)‖ ≥ c_exp * exp(-(9 / 10) * T_*)` on `∂R_{T_win, 0}`.
+    have hpow_absorb : T_* ^ K_bdry ≤ C_pow * Real.exp ((1 / 10) * T_*) := by
+      set u : ℝ := T_* / (10 * (K_pos : ℝ))
+      have hu0 : 0 ≤ u := by dsimp [u]; positivity
+      have hu_exp : u ≤ Real.exp u := by linarith [Real.add_one_le_exp u]
+      have hp := pow_le_pow_left₀ hu0 hu_exp K_pos
+      rw [← Real.exp_nat_mul] at hp
+      have hmul_u : (K_pos : ℝ) * u = (1 / 10) * T_* := by
+        dsimp [u]; field_simp [hK_pos.ne']
+      rw [hmul_u] at hp
+      have hlhs : T_* = (10 * (K_pos : ℝ)) * u := by
+        dsimp [u]; field_simp [hK_pos.ne']
+      calc T_* ^ K_bdry
+          ≤ T_* ^ K_pos := pow_le_pow_right₀ hT1 (by dsimp [K_pos]; omega)
+        _ = ((10 * (K_pos : ℝ)) * u) ^ K_pos := by rw [← hlhs]
+        _ = C_pow * u ^ K_pos := by dsimp [C_pow]; exact mul_pow _ _ _
+        _ ≤ C_pow * Real.exp ((1 / 10) * T_*) := mul_le_mul_of_nonneg_left hp hC_pow_pos.le
+    have hbase_ge : c_exp * Real.exp (-(9 / 10) * T_*) ≤
+        c_bdry * (T_* ^ K_bdry)⁻¹ * Real.exp (-(Real.pi / 4) * T_*) := by
+      have hinv : (C_pow * Real.exp ((1 / 10) * T_*))⁻¹ ≤ (T_* ^ K_bdry)⁻¹ :=
+        inv_anti₀ (by positivity) hpow_absorb
+      have hpi_lt : Real.pi / 4 ≤ 4 / 5 := by linarith [Real.pi_lt_d2]
+      calc c_exp * Real.exp (-(9 / 10) * T_*)
+          = c_bdry * (C_pow * Real.exp ((1 / 10) * T_*))⁻¹ * Real.exp (-(4 / 5) * T_*) := by
+            dsimp only [c_exp, div_eq_mul_inv]
+            rw [mul_inv, ← Real.exp_neg, mul_assoc, mul_assoc, ← Real.exp_add]
+            congr 2; ring
+        _ ≤ c_bdry * (T_* ^ K_bdry)⁻¹ * Real.exp (-(Real.pi / 4) * T_*) := by
+            refine mul_le_mul ?_ (Real.exp_le_exp.mpr (by nlinarith))
+              (Real.exp_pos _).le (by positivity)
+            exact mul_le_mul_of_nonneg_left hinv hc_bdry.le
+    have hxi_bdry : ∀ t : ℝ,
+        c_exp * Real.exp (-(9 / 10) * T_*) ≤
+          ‖_root_.RHTower.xi (_root_.RHTower.rectangleBoundaryPath z₁ z₂ t)‖ := by
+      intro t
+      set w := _root_.RHTower.rectangleBoundaryPath z₁ z₂ t
+      have hrect_mem := _root_.RHTower.rectangleBoundaryPath_mem_reProdIm z₁ z₂
+        (thetaWindow_re_le T_win 0) (thetaWindow_im_le T_win 0) t
+      rw [uIcc_of_le (thetaWindow_re_le T_win 0), uIcc_of_le (thetaWindow_im_le T_win 0),
+        Complex.mem_reProdIm, hz₁_re, hz₂_re, hz₁_im, hz₂_im] at hrect_mem
+      have hedge : w.re = z₁.re ∨ w.re = z₂.re ∨ w.im = z₁.im ∨ w.im = z₂.im := by
+        unfold _root_.RHTower.rectangleBoundaryPath _root_.RHTower.rectangleEdgePath at *
+        change (_root_.RHTower.rectangleBoundaryPath z₁ z₂ t).re = _ ∨ _
+        unfold _root_.RHTower.rectangleBoundaryPath _root_.RHTower.rectangleEdgePath
+        split_ifs
+        · exact Or.inr (Or.inr (Or.inl (by simp)))
+        · exact Or.inr (Or.inl (by simp))
+        · exact Or.inr (Or.inr (Or.inr (by simp)))
+        · exact Or.inl (by simp)
+      have hw_eq : ((w.re : ℂ) + (w.im : ℂ) * I) = w := Complex.re_add_im w
+      have him_abs : |w.im| ≤ T_* := by
+        rw [abs_le]
+        exact ⟨by linarith [hrect_mem.2.1, hδ₀_val], hrect_mem.2.2⟩
+      refine hbase_ge.trans ?_
+      rcases hedge with h1 | h2 | h3 | h4
+      · rw [← hw_eq, h1, hz₁_re]
+        exact (hvert w.im him_abs).2
+      · rw [← hw_eq, h2, hz₂_re]
+        exact (hvert w.im him_abs).1
+      · have hc_low : c_bdry * (T_* ^ K_bdry)⁻¹ * Real.exp (-(Real.pi / 4) * T_*) ≤
+            (5026 / 16875) * Real.exp (-Real.pi) := by
+          have hinv1 : (T_* ^ K_bdry)⁻¹ ≤ 1 := inv_le_one_of_one_le₀ (one_le_pow₀ hT1)
+          have hexp1 : Real.exp (-(Real.pi / 4) * T_*) ≤ 1 :=
+            Real.exp_le_one_iff.mpr (by nlinarith [Real.pi_pos])
+          calc c_bdry * (T_* ^ K_bdry)⁻¹ * Real.exp (-(Real.pi / 4) * T_*)
+              ≤ ((5026 / 16875) * Real.exp (-Real.pi)) * 1 * 1 := by
+                refine mul_le_mul ?_ hexp1 (Real.exp_pos _).le (by positivity)
+                exact mul_le_mul (min_le_left _ _) hinv1 (by positivity) (by positivity)
+            _ = (5026 / 16875) * Real.exp (-Real.pi) := by ring
+        exact hc_low.trans ((xi_re_ge_lowWindow
+          (by rw [abs_le]; exact ⟨by linarith [hrect_mem.1.1], by linarith [hrect_mem.1.2]⟩)
+          (by rw [h3, hz₁_im, hδ₀_val]; norm_num)).trans (Complex.re_le_norm _))
+      · rw [← hw_eq, h4, hz₂_im]
+        exact hhor w.re (by linarith [hrect_mem.1.1]) (by linarith [hrect_mem.1.2])
+    -- Rouché domination `‖finiteThetaAmplitude N (γ t) - xi (γ t)‖ < ‖xi (γ t)‖`.
+    have hrouche : ∀ t : ℝ,
+        ‖_root_.RHTower.finiteThetaAmplitude N (_root_.RHTower.rectangleBoundaryPath z₁ z₂ t) -
+            _root_.RHTower.xi (_root_.RHTower.rectangleBoundaryPath z₁ z₂ t)‖ <
+          ‖_root_.RHTower.xi (_root_.RHTower.rectangleBoundaryPath z₁ z₂ t)‖ := by
+      intro t
+      set w := _root_.RHTower.rectangleBoundaryPath z₁ z₂ t
+      have hrect_mem := _root_.RHTower.rectangleBoundaryPath_mem_reProdIm z₁ z₂
+        (thetaWindow_re_le T_win 0) (thetaWindow_im_le T_win 0) t
+      rw [uIcc_of_le (thetaWindow_re_le T_win 0), Complex.mem_reProdIm, hz₁_re, hz₂_re] at hrect_mem
+      have hw_re2 : |w.re| ≤ 2 :=
+        abs_le.mpr ⟨by linarith [hrect_mem.1.1], by linarith [hrect_mem.1.2]⟩
+      have htail := norm_finiteThetaAmplitude_sub_xi_le_strip N (by norm_num : (0 : ℝ) ≤ 2) hw_re2
+      have hexp_H : Real.exp (-H) ≤ Real.exp 1 * Real.exp (-T_*) := by
+        rw [← Real.exp_add]
+        exact Real.exp_le_exp.mpr (by linarith)
+      have htail_T : ‖_root_.RHTower.finiteThetaAmplitude N w - _root_.RHTower.xi w‖ ≤
+          C_tail * Real.exp (-T_*) := by
+        calc ‖_root_.RHTower.finiteThetaAmplitude N w - _root_.RHTower.xi w‖
+            ≤ _root_.RHTower.thetaCuspIntegerTailConstant * Real.exp (-H) *
+                _root_.RHTower.thetaAmplitudeEnvelope 2 := htail
+          _ ≤ _root_.RHTower.thetaCuspIntegerTailConstant * (Real.exp 1 * Real.exp (-T_*)) *
+                _root_.RHTower.thetaAmplitudeEnvelope 2 := by
+              refine mul_le_mul_of_nonneg_right ?_ (_root_.RHTower.thetaAmplitudeEnvelope_pos 2).le
+              exact mul_le_mul_of_nonneg_left hexp_H _root_.RHTower.thetaCuspIntegerTailConstant_nonneg
+          _ = C_tail * Real.exp (-T_*) := by dsimp only [C_tail]; ring
+      have hT_log : 10 * Real.log ((2 * C_tail + 1) / c_exp) < T_* := by
+        have h1 : 10 * Real.log ((2 * C_tail + 1) / c_exp) + 2 ≤ H_thresh :=
+          (le_max_right 16 _).trans ((le_max_right _ _).trans (le_max_right H₀ _))
+        linarith [hH_thresh, hHT]
+      have hexp_tenth : Real.exp (-(1 / 10) * T_*) < c_exp / (2 * C_tail + 1) := by
+        have hlt : -(1 / 10) * T_* < Real.log (c_exp / (2 * C_tail + 1)) := by
+          rw [Real.log_div hc_exp_pos.ne' (by positivity),
+            ← Real.log_inv, inv_div]
+          -- Simpler: use `Real.log_div` directly:
+          linarith [Real.log_div (by positivity : (2 * C_tail + 1) ≠ 0) hc_exp_pos.ne',
+            Real.log_div hc_exp_pos.ne' (by positivity : (2 * C_tail + 1) ≠ 0)]
+        simpa only [Real.exp_log (div_pos hc_exp_pos (by positivity))] using
+          Real.exp_lt_exp.mpr hlt
+      have hstrict : C_tail * Real.exp (-T_*) < c_exp * Real.exp (-(9 / 10) * T_*) := by
+        calc C_tail * Real.exp (-T_*)
+            ≤ (2 * C_tail + 1) * Real.exp (-(1 / 10) * T_*) * Real.exp (-(9 / 10) * T_*) := by
+              rw [mul_assoc, ← Real.exp_add, show -(1 / 10) * T_* + -(9 / 10) * T_* = -T_* by ring]
+              exact mul_le_mul_of_nonneg_right (by linarith) (Real.exp_pos _).le
+          _ < (2 * C_tail + 1) * (c_exp / (2 * C_tail + 1)) * Real.exp (-(9 / 10) * T_*) := by
+              refine mul_lt_mul_of_pos_right ?_ (Real.exp_pos _)
+              exact mul_lt_mul_of_pos_left hexp_tenth (by positivity)
+          _ = c_exp * Real.exp (-(9 / 10) * T_*) := by
+              rw [mul_div_cancel₀ _ (by positivity)]
+      exact (htail_T.trans_lt hstrict).trans_le (hxi_bdry t)
+    have hbdry_A : ∀ t : ℝ,
+        _root_.RHTower.finiteThetaAmplitude N (_root_.RHTower.rectangleBoundaryPath z₁ z₂ t) ≠ 0 := by
+      intro t h0
+      have hr := hrouche t
+      rw [h0, zero_sub, norm_neg] at hr
+      exact lt_irrefl _ hr
+    have hbdry_xi : ∀ t : ℝ,
+        _root_.RHTower.xi (_root_.RHTower.rectangleBoundaryPath z₁ z₂ t) ≠ 0 := by
+      intro t h0
+      have hb := hxi_bdry t
+      rw [h0, norm_zero] at hb
+      exact not_lt.mpr hb (by positivity)
+    -- Apply `rectIntegral_logDeriv_eq_of_norm_sub_lt`.
+    have heq_int := rectIntegral_logDeriv_eq_of_norm_sub_lt
+      _root_.RHTower.xi_differentiable
+      (_root_.RHTower.differentiable_finiteThetaAmplitude N) z₁ z₂ hrouche
+    -- Identify the RHS with `integerThetaWindowDegree T_win 0 N ≤ prefixGlobalStripZeroBound N`.
+    have hrhs_eq : (2 * Real.pi * I)⁻¹ *
+        _root_.RHTower.rectIntegral (logDeriv (_root_.RHTower.finiteThetaAmplitude N)) z₁ z₂ =
+        (integerThetaWindowDegree T_win 0 N : ℂ) := by
+      have hbdry0 : ∀ t : ℝ, finiteThetaShellPencil N 0
+          (_root_.RHTower.rectangleBoundaryPath z₁ z₂ t) ≠ 0 := by
+        simpa only [finiteThetaShellPencil_zero] using hbdry_A
+      obtain ⟨hp0, hd0⟩ := pencilWindowDegree_eq_sum T_win 0 N ⟨le_rfl, zero_le_one⟩ hbdry0
+      rw [pencilWindowDegree_zero] at hd0
+      rw [← hd0] at hp0
+      rw [← hp0]
+      unfold pencilWindowPowerSum
+      congr 1
+      refine congrFun (congrFun (congrArg _root_.RHTower.rectIntegral ?_) z₁) z₂
+      funext z
+      rw [pow_zero, one_mul, finiteThetaShellPencil_zero, finiteThetaPencilFirstMoment_zero,
+        logDeriv_apply, _root_.RHTower.deriv_finiteThetaAmplitude]
+    -- Identify the LHS with the sum of `(analyticOrderAt xi w).toNat` inside `R_{T_win, 0}`.
+    obtain ⟨Z_xi, hZ_xi_mem, hlhs_eq⟩ := entire_rectIntegral_mul_logDeriv_eq_sum
+      (_root_.RHTower.xi_analyticOnNhd Set.univ) _root_.RHTower.xi_orderAt_ne_top
+      (fun _ _ => analyticAt_const) (thetaWindow_re_le T_win 0) (thetaWindow_im_le T_win 0)
+      hbdry_xi
+    have hlhs_eq' : (2 * Real.pi * I)⁻¹ *
+        _root_.RHTower.rectIntegral (logDeriv _root_.RHTower.xi) z₁ z₂ =
+        ((∑ w ∈ Z_xi, (analyticOrderAt _root_.RHTower.xi w).toNat : ℕ) : ℂ) := by
+      simpa only [one_mul, mul_one, Nat.cast_sum] using hlhs_eq
+    have hcount_eq : ∑ w ∈ Z_xi, (analyticOrderAt _root_.RHTower.xi w).toNat =
+        integerThetaWindowDegree T_win 0 N := by
+      rw [hlhs_eq', hrhs_eq] at heq_int
+      exact Nat.cast_injective heq_int
+    have hdeg_le := integerThetaWindowDegree_le_globalStripZeroBound T_win 0 N hbdry_A
+    -- Every zero in `xiSupportsPos (T_* - 1)` lies in `Z_xi`.
+    have hT_sub_pos : 0 ≤ T_* - 1 := by linarith
+    have hinj : Set.InjOn (fun ρ : _root_.RHTower.XiDivisorSupport => (ρ : ℂ))
+        ↑(_root_.RHTower.xiSupportsPos (T_* - 1)) :=
+      fun _ _ _ _ h => Subtype.ext h
+    have hsub_Z : (_root_.RHTower.xiSupportsPos (T_* - 1)).image
+        (fun ρ : _root_.RHTower.XiDivisorSupport => (ρ : ℂ)) ⊆ Z_xi := by
+      intro w hw
+      obtain ⟨ρ, hρ, rfl⟩ := Finset.mem_image.mp hw
+      obtain ⟨habs, hpos⟩ := _root_.RHTower.mem_xiSupportsPos.mp hρ
+      have hz0 := _root_.RHTower.xi_eq_zero_of_mem_divisor_support ρ
+      obtain ⟨hre0, hre1⟩ := _root_.RHTower.xi_zero_re_mem_open_unit hz0
+      rw [hZ_xi_mem]
+      rw [hz₁_re, hz₂_re, hz₁_im, hz₂_im, hδ₀_val]
+      exact ⟨⟨by linarith, by linarith, by linarith, by linarith [(abs_le.mp habs).2]⟩, hz0⟩
+    have hzeroCount_le : (_root_.RHTower.xiZeroCount (T_* - 1) : ℝ) ≤
+        (prefixGlobalStripZeroBound N : ℝ) := by
+      have h1 : _root_.RHTower.xiZeroCount (T_* - 1) ≤
+          ((∑ w ∈ Z_xi, (analyticOrderAt _root_.RHTower.xi w).toNat : ℕ) : ℤ) := by
+        rw [_root_.RHTower.xiZeroCount_eq_pos_sum hT_sub_pos, Nat.cast_sum]
+        calc ∑ ρ ∈ _root_.RHTower.xiSupportsPos (T_* - 1),
+                (_root_.RHTower.xiSupportMultiplicity ρ : ℤ)
+            = ∑ w ∈ (_root_.RHTower.xiSupportsPos (T_* - 1)).image
+                  (fun ρ : _root_.RHTower.XiDivisorSupport => (ρ : ℂ)),
+                ((analyticOrderAt _root_.RHTower.xi w).toNat : ℤ) := by
+              rw [Finset.sum_image hinj]
+              exact Finset.sum_congr rfl fun ρ _ => by
+                rw [_root_.RHTower.xiSupportMultiplicity_eq_analyticOrderAt_toNat]
+          _ ≤ ∑ w ∈ Z_xi, ((analyticOrderAt _root_.RHTower.xi w).toNat : ℤ) :=
+              Finset.sum_le_sum_of_subset_of_nonneg hsub_Z fun _ _ _ => Nat.cast_nonneg _
+      have h2 : (∑ w ∈ Z_xi, (analyticOrderAt _root_.RHTower.xi w).toNat) ≤
+          prefixGlobalStripZeroBound N := hcount_eq.trans_le hdeg_le
+      exact_mod_cast h1.trans (Int.ofNat_le.mpr h2)
+    -- Apply Riemann–von Mangoldt at `T_* - 1 ≥ T_rvm`.
+    have hT_rvm_le : T_rvm ≤ T_* - 1 := by
+      have h1 : T_rvm + 2 ≤ H_thresh := (le_max_left _ _).trans (le_max_right H₀ _)
+      linarith [hH_thresh, hHT]
+    have hclose := hrvm (T_* - 1) hT_rvm_le
+    have hrvm_low : (1 / (4 * Real.pi)) * ((T_* - 1) * Real.log (T_* - 1)) ≤
+        (_root_.RHTower.xiZeroCount (T_* - 1) : ℝ) := by
+      have h := (abs_le.mp hclose).1
+      linarith
+    have hT_half : (1 / 2) * H ≤ T_* - 1 := by linarith [hT16, hHT]
+    have hlog_ge : Real.log ((N + 2 : ℕ) : ℝ) ≤ Real.log (T_* - 1) := by
+      apply Real.log_le_log (by exact_mod_cast (show 0 < N + 2 by omega))
+      have hN4 : (4 : ℝ) ≤ ((N + 1 : ℕ) : ℝ) := by
+        have h16 : (16 : ℝ) ≤ H :=
+          (le_trans (le_max_left 16 _) (le_trans (le_max_right _ _) (le_max_right H₀ _))).trans hH_thresh
+        dsimp only [H] at h16
+        nlinarith [Nat.cast_nonneg (α := ℝ) (N + 1)]
+      have hN2_le : ((N + 2 : ℕ) : ℝ) ≤ (1 / 2) * H := by
+        have hc : ((N + 2 : ℕ) : ℝ) = ((N + 1 : ℕ) : ℝ) + 1 := by push_cast; ring
+        rw [hc]; dsimp only [H]; nlinarith
+      linarith
+    calc (1 / (8 * Real.pi)) * H * Real.log ((N + 2 : ℕ) : ℝ)
+        = (1 / (4 * Real.pi)) * (((1 / 2) * H) * Real.log ((N + 2 : ℕ) : ℝ)) := by ring
+      _ ≤ (1 / (4 * Real.pi)) * ((T_* - 1) * Real.log (T_* - 1)) := by
+          refine mul_le_mul_of_nonneg_left ?_ (by positivity)
+          exact mul_le_mul hT_half hlog_ge
+            (Real.log_nonneg (by exact_mod_cast (show 1 ≤ N + 2 by omega))) (by linarith)
+      _ ≤ (_root_.RHTower.xiZeroCount (T_* - 1) : ℝ) := hrvm_low
+      _ ≤ (prefixGlobalStripZeroBound N : ℝ) := hzeroCount_le
+  -- Combine `N ≥ N_min` with `1 ≤ prefixGlobalStripZeroBound N` for `N < N_min`.
+  let M_low : ℝ := ((N_min + 1 : ℕ) : ℝ) ^ 2 * Real.log ((N_min + 2 : ℕ) : ℝ) + 1
+  have hM_low_pos : 1 ≤ M_low := by
+    dsimp only [M_low]
+    have h1 : 0 ≤ ((N_min + 1 : ℕ) : ℝ) ^ 2 * Real.log ((N_min + 2 : ℕ) : ℝ) :=
+      mul_nonneg (by positivity) (Real.log_nonneg (by exact_mod_cast (show 1 ≤ N_min + 2 by omega)))
+    linarith
+  let c₀ : ℝ := min (1 / (8 * Real.pi)) (1 / M_low)
+  refine ⟨c₀, lt_min (by positivity) (by positivity), ?_⟩
+  intro N
+  rcases le_or_gt N_min N with hge | hlt
+  · calc c₀ * ((N + 1 : ℕ) : ℝ) ^ 2 * Real.log ((N + 2 : ℕ) : ℝ)
+        ≤ (1 / (8 * Real.pi)) * ((N + 1 : ℕ) : ℝ) ^ 2 * Real.log ((N + 2 : ℕ) : ℝ) :=
+          mul_le_mul_of_nonneg_right
+            (mul_le_mul_of_nonneg_right (min_le_left _ _) (by positivity))
+            (Real.log_nonneg (by exact_mod_cast (show 1 ≤ N + 2 by omega)))
+      _ ≤ (prefixGlobalStripZeroBound N : ℝ) := hlarge N hge
+  · have hprod_le : ((N + 1 : ℕ) : ℝ) ^ 2 * Real.log ((N + 2 : ℕ) : ℝ) ≤ M_low := by
+      have hsq : ((N + 1 : ℕ) : ℝ) ^ 2 ≤ ((N_min + 1 : ℕ) : ℝ) ^ 2 :=
+        pow_le_pow_left₀ (by positivity) (by exact_mod_cast (show N + 1 ≤ N_min + 1 by omega)) 2
+      have hlog : Real.log ((N + 2 : ℕ) : ℝ) ≤ Real.log ((N_min + 2 : ℕ) : ℝ) :=
+        Real.log_le_log (by exact_mod_cast (show 0 < N + 2 by omega))
+          (by exact_mod_cast (show N + 2 ≤ N_min + 2 by omega))
+      have hm := mul_le_mul hsq hlog
+        (Real.log_nonneg (by exact_mod_cast (show 1 ≤ N + 2 by omega))) (by positivity)
+      dsimp only [M_low]; linarith
+    calc c₀ * ((N + 1 : ℕ) : ℝ) ^ 2 * Real.log ((N + 2 : ℕ) : ℝ)
+        ≤ (1 / M_low) * (((N + 1 : ℕ) : ℝ) ^ 2 * Real.log ((N + 2 : ℕ) : ℝ)) := by
+          rw [mul_assoc]
+          exact mul_le_mul_of_nonneg_right (min_le_right _ _)
+            (mul_nonneg (by positivity) (Real.log_nonneg (by exact_mod_cast (show 1 ≤ N + 2 by omega))))
+      _ ≤ (1 / M_low) * M_low := mul_le_mul_of_nonneg_left hprod_le (by positivity)
+      _ = 1 := one_div_mul_cancel (by linarith)
+      _ ≤ (prefixGlobalStripZeroBound N : ℝ) := by
+          exact_mod_cast one_le_prefixGlobalStripZeroBound N
+
+/-- **Exact two-sided `Θ(N² log N)` strip zero-multiplicity law for `finiteThetaAmplitude N`.** -/
+theorem prefixGlobalStripZeroBound_theta_growth :
+    ∃ (c₀ C₁ : ℝ), 0 < c₀ ∧ 1 ≤ C₁ ∧ ∀ N : ℕ,
+      c₀ * ((N + 1 : ℕ) : ℝ) ^ 2 * Real.log ((N + 2 : ℕ) : ℝ) ≤
+          (prefixGlobalStripZeroBound N : ℝ) ∧
+        (prefixGlobalStripZeroBound N : ℝ) ≤
+          C₁ * ((N + 2 : ℕ) : ℝ) ^ 2 * Real.log ((N + 3 : ℕ) : ℝ) := by
+  obtain ⟨c₀, hc₀, hlow⟩ := prefixGlobalStripZeroBound_lower
+  obtain ⟨C₁, hC₁, hup⟩ := prefixGlobalStripZeroBound_upper
+  exact ⟨c₀, C₁, hc₀, hC₁, fun N => ⟨hlow N, hup N⟩⟩
+
+/-- **Unconditional `Ω(√T)` lower bound in height `T` on `firstArtifactFreePrefix T n`.**
+Because `prefixGlobalStripZeroBound N ≤ C₁ (N + 2)² log(N + 3)` while
+`xiStripWindowTotalOrder T ≥ N(T - 1) = (1 / 2π + o(1)) T log T`, no cumulative prefix shorter than
+`c_* √T` can accommodate all `xi` zeros in `[0, T)`: for all `T ≥ T₀` and all
+`n ≥ thetaAnnihilationScale T`, `c_* * Real.sqrt T ≤ (firstArtifactFreePrefix T n : ℝ)`. -/
+theorem firstArtifactFreePrefix_sqrt_lower_bound :
+    ∃ (c_* T₀ : ℝ), 0 < c_* ∧ 4 ≤ T₀ ∧ ∀ (T : ℝ) (n : ℕ),
+      T₀ ≤ T → thetaAnnihilationScale T ≤ n →
+        c_* * Real.sqrt T ≤ (firstArtifactFreePrefix T n : ℝ) := by
+  obtain ⟨C₁, hC₁1, hup⟩ := prefixGlobalStripZeroBound_upper
+  obtain ⟨T_rvm, hT_rvm4, hrvm⟩ :=
+    _root_.RHTower.exists_xiZeroCount_close (1 / (4 * Real.pi)) (by positivity)
+  let c_* : ℝ := min (1 / 4) (1 / Real.sqrt (64 * Real.pi * C₁ + 1))
+  have hc_pos : 0 < c_* := by
+    dsimp only [c_*]
+    exact lt_min (by norm_num) (one_div_pos.mpr (Real.sqrt_pos.mpr (by positivity)))
+  have hc_quarter : c_* ≤ 1 / 4 := min_le_left _ _
+  have hc_sq : c_* ^ 2 ≤ 1 / (64 * Real.pi * C₁ + 1) := by
+    have hle : c_* ≤ 1 / Real.sqrt (64 * Real.pi * C₁ + 1) := min_le_right _ _
+    have hp := pow_le_pow_left₀ hc_pos.le hle 2
+    rw [div_pow, one_pow, Real.sq_sqrt (by positivity)] at hp
+    exact hp
+  let T₀ : ℝ := max (T_rvm + 2) (max 100 ((4 / c_*) ^ 2))
+  refine ⟨c_*, T₀, hc_pos, le_trans (by norm_num) ((le_max_left 100 _).trans (le_max_right _ _)), ?_⟩
+  intro T n hT hn
+  by_contra hlt_raw
+  replace hlt_raw : (firstArtifactFreePrefix T n : ℝ) < c_* * Real.sqrt T := not_le.mp hlt_raw
+  set N₀ : ℕ := firstArtifactFreePrefix T n
+  have hT100 : 100 ≤ T := (le_max_left 100 _).trans ((le_max_right _ _).trans hT)
+  have hT_rvm_le : T_rvm ≤ T - 1 := by
+    have h1 : T_rvm + 2 ≤ T₀ := le_max_left _ _
+    linarith
+  have h4_le_csqrt : 4 ≤ c_* * Real.sqrt T := by
+    have hsq : (4 / c_*) ^ 2 ≤ T := (le_max_right 100 _).trans ((le_max_right _ _).trans hT)
+    have hle : 4 / c_* ≤ Real.sqrt T := by
+      rw [← Real.sqrt_sq (by positivity : 0 ≤ 4 / c_*)]
+      exact Real.sqrt_le_sqrt hsq
+    rwa [div_le_iff₀ hc_pos, mul_comm] at hle
+  have hN2_le : ((N₀ + 2 : ℕ) : ℝ) ≤ 2 * c_* * Real.sqrt T := by
+    have hc : ((N₀ + 2 : ℕ) : ℝ) = (N₀ : ℝ) + 2 := by push_cast; ring
+    linarith
+  have hN3_le : ((N₀ + 3 : ℕ) : ℝ) ≤ Real.sqrt (T - 1) := by
+    have hc : ((N₀ + 3 : ℕ) : ℝ) = (N₀ : ℝ) + 3 := by push_cast; ring
+    have h1 : ((N₀ + 3 : ℕ) : ℝ) ≤ 2 * c_* * Real.sqrt T := by linarith
+    have h2 : 2 * c_* * Real.sqrt T ≤ (1 / 2) * Real.sqrt T :=
+      mul_le_mul_of_nonneg_right (by linarith) (Real.sqrt_nonneg T)
+    have h3 : (1 / 2) * Real.sqrt T ≤ Real.sqrt (T - 1) := by
+      have hsq : ((1 / 2) * Real.sqrt T) ^ 2 ≤ T - 1 := by
+        rw [mul_pow, Real.sq_sqrt (by linarith)]
+        linarith
+      rw [← Real.sqrt_sq (by positivity : 0 ≤ (1 / 2) * Real.sqrt T)]
+      exact Real.sqrt_le_sqrt hsq
+    linarith
+  have hlog_N3 : Real.log ((N₀ + 3 : ℕ) : ℝ) ≤ Real.log (T - 1) := by
+    have hl := Real.log_le_log (by exact_mod_cast (show 0 < N₀ + 3 by omega)) hN3_le
+    rw [Real.log_sqrt (by linarith)] at hl
+    have hlog_pos : 0 < Real.log (T - 1) := Real.log_pos (by linarith)
+    linarith
+  have hsq_N2 : ((N₀ + 2 : ℕ) : ℝ) ^ 2 ≤ 4 * c_* ^ 2 * T := by
+    have hp := pow_le_pow_left₀ (by positivity) hN2_le 2
+    calc ((N₀ + 2 : ℕ) : ℝ) ^ 2
+        ≤ (2 * c_* * Real.sqrt T) ^ 2 := hp
+      _ = 4 * c_* ^ 2 * (Real.sqrt T ^ 2) := by ring
+      _ = 4 * c_* ^ 2 * T := by rw [Real.sq_sqrt (by linarith)]
+  have hlog_pos : 0 < Real.log (T - 1) := Real.log_pos (by linarith)
+  have hbound_lt : (prefixGlobalStripZeroBound N₀ : ℝ) <
+      (1 / (8 * Real.pi)) * T * Real.log (T - 1) := by
+    have hcoef_lt : 4 * C₁ * c_* ^ 2 < 1 / (8 * Real.pi) := by
+      calc 4 * C₁ * c_* ^ 2
+          ≤ 4 * C₁ * (1 / (64 * Real.pi * C₁ + 1)) :=
+            mul_le_mul_of_nonneg_left hc_sq (by positivity)
+        _ < 1 / (8 * Real.pi) := by
+            rw [mul_one_div, div_lt_div_iff₀ (by positivity) (by positivity)]
+            nlinarith [Real.pi_pos]
+    calc (prefixGlobalStripZeroBound N₀ : ℝ)
+        ≤ C₁ * ((N₀ + 2 : ℕ) : ℝ) ^ 2 * Real.log ((N₀ + 3 : ℕ) : ℝ) := hup N₀
+      _ ≤ C₁ * (4 * c_* ^ 2 * T) * Real.log (T - 1) := by
+          refine mul_le_mul ?_ hlog_N3
+            (Real.log_nonneg (by exact_mod_cast (show 1 ≤ N₀ + 3 by omega))) (by positivity)
+          exact mul_le_mul_of_nonneg_left hsq_N2 (by linarith)
+      _ = (4 * C₁ * c_* ^ 2) * (T * Real.log (T - 1)) := by ring
+      _ < (1 / (8 * Real.pi)) * (T * Real.log (T - 1)) :=
+          mul_lt_mul_of_pos_right hcoef_lt (by positivity)
+      _ = (1 / (8 * Real.pi)) * T * Real.log (T - 1) := by ring
+  have hrvm_low : (1 / (8 * Real.pi)) * T * Real.log (T - 1) ≤
+      (_root_.RHTower.xiStripWindowTotalOrder T : ℝ) := by
+    have hclose := hrvm (T - 1) hT_rvm_le
+    have h1 : (1 / (4 * Real.pi)) * ((T - 1) * Real.log (T - 1)) ≤
+        (_root_.RHTower.xiZeroCount (T - 1) : ℝ) := by
+      linarith [(abs_le.mp hclose).1]
+    have h2 : (_root_.RHTower.xiZeroCount (T - 1) : ℝ) ≤
+        (_root_.RHTower.xiStripWindowTotalOrder T : ℝ) := by
+      have hz := xiZeroCount_le_xiStripWindowTotalOrder (T := T - 1) (by linarith)
+      rw [sub_add_cancel] at hz
+      exact_mod_cast hz
+    calc (1 / (8 * Real.pi)) * T * Real.log (T - 1)
+        = (1 / (4 * Real.pi)) * (((1 / 2) * T) * Real.log (T - 1)) := by ring
+      _ ≤ (1 / (4 * Real.pi)) * ((T - 1) * Real.log (T - 1)) := by
+          refine mul_le_mul_of_nonneg_left ?_ (by positivity)
+          exact mul_le_mul_of_nonneg_right (by linarith) hlog_pos.le
+      _ ≤ (_root_.RHTower.xiStripWindowTotalOrder T : ℝ) := h1.trans h2
+  have hgt_nat : prefixGlobalStripZeroBound N₀ < _root_.RHTower.xiStripWindowTotalOrder T :=
+    Nat.cast_lt.mp (hbound_lt.trans_le hrvm_low)
+  exact lt_irrefl N₀ (lt_firstArtifactFreePrefix_of_gt_globalBound N₀ hn hgt_nat)
+
+end GaloisForLFunctions.ConjugateDiagonalGeometry.SzegoCollision
+
+#print axioms GaloisForLFunctions.ConjugateDiagonalGeometry.SzegoCollision.seamSlope_gaussian_lower_bound
+#print axioms GaloisForLFunctions.ConjugateDiagonalGeometry.SzegoCollision.finiteThetaAmplitude_ne_zero_above_quadratic_horizon
+#print axioms GaloisForLFunctions.ConjugateDiagonalGeometry.SzegoCollision.prefixGlobalStripZeroBound_upper
+#print axioms GaloisForLFunctions.ConjugateDiagonalGeometry.SzegoCollision.rectIntegral_logDeriv_eq_of_norm_sub_lt
+#print axioms GaloisForLFunctions.ConjugateDiagonalGeometry.SzegoCollision.entire_rectIntegral_mul_logDeriv_eq_sum
+#print axioms GaloisForLFunctions.ConjugateDiagonalGeometry.SzegoCollision.prefixGlobalStripZeroBound_lower
+#print axioms GaloisForLFunctions.ConjugateDiagonalGeometry.SzegoCollision.prefixGlobalStripZeroBound_theta_growth
+#print axioms GaloisForLFunctions.ConjugateDiagonalGeometry.SzegoCollision.firstArtifactFreePrefix_sqrt_lower_bound
+

@@ -10,7 +10,7 @@
 ## Shell bound
 
 For a nonnegative `C²` profile supported in `[0,1]` with positive square mass,
-`0<c≤N`, and `1≤n≤N`, the proposed bound is
+`0<c≤N`, and `1≤n≤N`, the formalized bound is
 
 `0 ≤ n·d_n ≤ 2(log 4+4)e^(5/2)c + 2e^(3/2)c(n/N)(log n+1)`.
 
@@ -19,6 +19,13 @@ Each autocorrelation is at most the atom mass times its window indicator.
 The weighted row `Σ_m √(n/m) NR_nm` equals `n·d_n`; the two directed row
 bounds give the displayed constants. This retains the position dependence
 needed to distinguish a fixed prefix from the terminal horizon.
+
+`ArithmeticCouplingTheory/TheShellDegreeHasAnExplicitRowBound.lean` proves
+`nat_mul_shellDegree_le_explicit`, `shellDegree_nonneg`, and
+`shellDegree_packet_payment_le`. The latter bounds `Σ_n d_n F(n)²` by the
+corresponding harmonic and terminal logarithmic masses. Direct leaf and
+transitive axiom audits pass; only `propext`, `Classical.choice`, and
+`Quot.sound` occur. The umbrella includes the leaf.
 
 ## Prime successor comparison
 
@@ -44,18 +51,18 @@ nonconstant mass. This comparison is unproved; the shell payment remains
 in the complete energy identity.
 
 The successor gap follows from the exact period identity
-`mean (F(n+1)−F(n))² = Σ_m 2(φ(m)−μ(m))a_m²`.
+`mean (F(n+1)−F(n))² = Σ_m 2(totient(m)−μ(m))a_m²`.
 The constant mode contributes zero, parity contributes `4a_2²`, and
-`|μ(m)/φ(m)|≤1/2` for `m≥3` gives at least `φ(m)a_m²`.
+`|μ(m)/totient(m)|≤1/2` for `m≥3` gives at least `totient(m)a_m²`.
 If `gcd(p,Q!)=1`, dilation preserves each Ramanujan mode and permutes
 residues modulo `Q!`. Thus the same gap holds for `F(pn+1)−F(n)`.
 The existing relative affine-window bound then gives
 `Σ_(A<n≤A+K) (F(pn+1)−F(n))² ≥ (K−Q(Q−1))·nonconstantPacketMass`
 when `K≥Q(Q−1)`. No prime-distribution input is needed for this step.
+This [successor-gap theorem](../3-formalized/coprime-successor-gap-for-conductor-packets.md)
+passes direct Lean and standard-axiom audits.
 
 ## Remaining obligations
 
-- Formalize the pointwise degree bound and its packet-weighted consequence.
 - Combine the exact complete packet identity with CSAR rigidity, retaining
   shell, pole, and archimedean terms at fixed and growing overlap.
-- Direct leaf checks and transitive axiom audits.

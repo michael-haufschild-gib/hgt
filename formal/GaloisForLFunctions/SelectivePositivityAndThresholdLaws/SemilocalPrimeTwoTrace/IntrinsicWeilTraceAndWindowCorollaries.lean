@@ -130,13 +130,9 @@ theorem ccmPolarOperator_eq_even_sub_odd (a : SuzukiPositiveAperture) :
   refine ContinuousLinearMap.ext fun f => ext_inner_right ℂ fun g => ?_
   unfold ccmPolarOperator ccmPolarEvenOperator ccmPolarOddOperator
     ccmPolarCoshVector ccmPolarSinhVector
-  rw [clm_add_apply, clm_sub_apply, clm_smul_apply, clm_smul_apply,
-    InnerProductSpace.rankOne_apply, InnerProductSpace.rankOne_apply,
-    InnerProductSpace.rankOne_apply, InnerProductSpace.rankOne_apply,
-    inner_add_left, inner_sub_left, inner_smul_left, inner_smul_left,
-    inner_smul_left, inner_smul_left, inner_smul_left, inner_smul_left,
-    inner_smul_left, inner_smul_left, inner_add_left, inner_sub_left,
-    inner_add_left, inner_sub_left, map_ofNat, Complex.conj_ofReal]
+  simp only [clm_add_apply, clm_sub_apply, clm_smul_apply,
+    InnerProductSpace.rankOne_apply, inner_add_left, inner_sub_left, inner_smul_left,
+    map_add, map_sub, map_mul, map_ofNat, Complex.conj_ofReal]
   push_cast
   ring
 
@@ -282,7 +278,7 @@ is unconditionally positive. -/
 theorem isPositive_ccmRestrictedWeilZeroFormOperator_halfLogTwo :
     ContinuousLinearMap.IsPositive (ccmRestrictedWeilZeroFormOperator halfLogTwoAperture) :=
   isPositive_ccmRestrictedWeilZeroFormOperator_of_le_threeHundredSixtyTwoThousandths
-    half_log_two_lt_threeHundredSixtyTwoThousandths.le
+    GaloisForLFunctions.SelectivePositivityAndThresholdLaws.half_log_two_lt_threeHundredSixtyTwoThousandths.le
 
 /-- **Quantitative coercive operator-trace floor past `½ log 2`:**
 for all `0 < a ≤ 181 / 500` and `u : CCMArchimedeanFormDomain a`,
@@ -305,7 +301,7 @@ theorem one_div_5000_le_primeFreeFamily_energy_halfLogTwo :
     (1 / 5000 : ℝ) ≤ primeFreeFamily.energy halfLogTwoAperture := by
   rw [primeFreeFamily_energy_halfLogTwo]
   exact one_div_5000_le_ccmRestrictedWeilGroundEnergy_threeHundredSixtyTwoThousandths
-    half_log_two_lt_threeHundredSixtyTwoThousandths.le
+    GaloisForLFunctions.SelectivePositivityAndThresholdLaws.half_log_two_lt_threeHundredSixtyTwoThousandths.le
 
 theorem one_div_5000_le_primeTwoSemilocal_energy_of_le_threeHundredSixtyTwoThousandths
     {a : SuzukiPositiveAperture} (ha : a.1 ≤ 181 / 500) :
@@ -336,7 +332,8 @@ theorem threeHundredSixtyTwoThousandths_le_zetaContactAperture (hRH : ¬ Riemann
 
 theorem half_log_two_lt_zetaContactAperture (hRH : ¬ RiemannHypothesis) :
     Real.log 2 / 2 < zetaContactAperture :=
-  lt_of_lt_of_le half_log_two_lt_threeHundredSixtyTwoThousandths
+  lt_of_lt_of_le
+    GaloisForLFunctions.SelectivePositivityAndThresholdLaws.half_log_two_lt_threeHundredSixtyTwoThousandths
     (threeHundredSixtyTwoThousandths_le_zetaContactAperture hRH)
 
 /-- **All-profile coercive Weil positivity on `realTestsAt a` past the first prime (`a ≤ 181 / 500`),**

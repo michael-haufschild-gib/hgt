@@ -1,3 +1,4 @@
+import GaloisForLFunctions.RenormalizedArithmeticPotentialTheory.LogarithmicOverlapOfTheCompleteWeilMatrixIsTheRiemannHypothesis
 import GaloisForLFunctions.TransMetzlerWeilPositivity.SuperGevreyCriticalGrowth
 import GaloisForLFunctions.EffectiveArithmeticHodgeTheory.TheExplicitSchedulesReachTheIndex
 import GaloisForLFunctions.ArithmeticPositiveDuality.AffinePositivityIsInducedFromTheDilations
@@ -782,3 +783,181 @@ end GaloisForLFunctions.TransMetzlerWeilPositivity
 #print axioms GaloisForLFunctions.TransMetzlerWeilPositivity.exists_ratCorr_gram_approximation_at_critical_multiple
 
 #print axioms GaloisForLFunctions.TransMetzlerWeilPositivity.exists_ratCorr_gram_limit_at_critical_multiple
+
+/-! ### Literal complete-matrix realization -/
+
+set_option autoImplicit false
+
+noncomputable section
+
+open MeasureTheory Filter Topology Finset
+open scoped ContDiff RealInnerProductSpace
+
+namespace GaloisForLFunctions.TransMetzlerWeilPositivity
+
+open TransMetzlerWeilPositivity RenormalizedArithmeticPotentialTheory
+  SpacingScaleHarmonicAnalysis ArithmeticElectrostatics ArithmeticCastelnuovoSeveri
+  EffectiveArithmeticHodgeTheory ArithmeticPositiveDuality
+
+/-- The unit-mass Steklov profile on `[0,1]`. -/
+def steklovUnitProfile (u : ℝ) : ℝ := 2 * steklovDCProfile (2 * u - 1)
+
+theorem contDiff_steklovUnitProfile : ContDiff ℝ ∞ steklovUnitProfile :=
+  contDiff_const.mul (contDiff_steklovDCProfile.comp
+    ((contDiff_const.mul contDiff_id).sub contDiff_const))
+
+theorem steklovUnitProfile_eq_zero (u : ℝ) (hu : u ∉ Set.Icc 0 1) :
+    steklovUnitProfile u = 0 := by
+  unfold steklovUnitProfile
+  rw [steklovDCProfile_vanishesOff, mul_zero]
+  by_contra h
+  have h' := abs_le.mp (not_lt.mp h)
+  exact hu ⟨by linarith [h'.1], by linarith [h'.2]⟩
+
+theorem integral_steklovUnitProfile : ∫ u, steklovUnitProfile u = 1 := by
+  unfold steklovUnitProfile
+  rw [integral_const_mul]
+  have h : (fun u => steklovDCProfile (2 * u - 1)) =
+      fun u => (fun t => steklovDCProfile (t - 1)) (u / (1 / 2)) := by
+    funext u
+    congr 1
+    ring
+  rw [h, Measure.integral_comp_div]
+  simp only [sub_eq_add_neg, integral_add_right_eq_self, integral_steklovDCProfile]
+  norm_num
+
+theorem recentred_steklovUnitProfile : recentredProfile steklovUnitProfile =
+    steklovDCProfile := by
+  funext u
+  rw [recentredProfile, integral_steklovUnitProfile]
+  unfold steklovUnitProfile
+  rw [show 2 * ((u + 1) / 2) - 1 = u by ring]
+  ring
+
+/-- The packet coefficients in the atom-mass normalization of the complete matrix. -/
+def completePacketVector (φ : ℝ → ℝ) (c : ℝ) (N : ℕ) (x : ℕ → ℝ) :
+    EuclideanSpace ℝ (PrimeHorizonIndex N) :=
+  WithLp.toLp 2 (fun n => x n / (c / N * ∫ u, φ u))
+
+private theorem integral_sq_pos {φ : ℝ → ℝ} (hφ : Continuous φ)
+    (hc : HasCompactSupport φ) (hint : (∫ u, φ u) ≠ 0) :
+    0 < ∫ u, φ u ^ 2 := by
+  have hi := (hφ.pow 2).integrable_of_hasCompactSupport
+    (hc.comp_left (g := fun t : ℝ => t ^ 2) (by norm_num))
+  refine lt_of_le_of_ne (integral_nonneg fun u => sq_nonneg _) ?_
+  intro he
+  have hae := (integral_eq_zero_iff_of_nonneg (fun u => sq_nonneg (φ u)) hi).mp he.symm
+  apply hint
+  calc
+    (∫ u, φ u) = ∫ _ : ℝ, (0 : ℝ) := integral_congr_ae (hae.mono fun u hu => sq_eq_zero_iff.mp hu)
+    _ = 0 := integral_zero _ _
+
+theorem integral_steklovUnitProfile_sq_pos : 0 < ∫ u, steklovUnitProfile u ^ 2 :=
+  integral_sq_pos contDiff_steklovUnitProfile.continuous
+    (HasCompactSupport.intro isCompact_Icc steklovUnitProfile_eq_zero)
+    (by rw [integral_steklovUnitProfile]; norm_num)
+
+/-- Exact normalization: complete energy times atom mass is the synthesized Weil form. -/
+theorem completePacketVector_energy {φ : ℝ → ℝ} (hφ : ContDiff ℝ 2 φ)
+    (hs : ∀ u, u ∉ Set.Icc 0 1 → φ u = 0) (hM : 0 < ∫ u, φ u ^ 2)
+    {c : ℝ} (hc : 0 < c) {N : ℕ} (hN : 1 ≤ N) (x : ℕ → ℝ) :
+    (∫ u, atomDilate φ (c / N) u ^ 2) *
+        completeWeilEnergy φ c N (completePacketVector φ c N x) =
+      weilQuad (atomicTest N x (dilate (2 / (c / N)) (recentredProfile φ))) := by
+  have hw : 0 < c / N := div_pos hc (by exact_mod_cast hN)
+  have hmass : (∫ u, atomDilate φ (c / N) u ^ 2) ≠ 0 := by
+    rw [integral_atomDilate_sq hw]
+    exact (mul_pos hw hM).ne'
+  rw [completeWeilEnergy, completeWeilMatrix_inner_eq_weilQuad hφ hs hc hN,
+    mul_div_cancel₀ _ hmass, weilQuad_atomicTest_dilate_recentred hw,
+    atomicTest_restrict N (fun n => x n / (c / N * ∫ u, φ u))]
+  rfl
+
+private theorem complete_energy_polarization (φ : ℝ → ℝ) (c : ℝ) (N : ℕ)
+    (x y : EuclideanSpace ℝ (PrimeHorizonIndex N)) :
+    completeWeilEnergy φ c N (x + y) - completeWeilEnergy φ c N (x - y) =
+      4 * ⟪(completeWeilMatrix φ c N).toEuclideanLin x, y⟫ := by
+  have h : ⟪(completeWeilMatrix φ c N).toEuclideanLin x, y⟫ =
+      ⟪(completeWeilMatrix φ c N).toEuclideanLin y, x⟫ :=
+    (Matrix.isSymmetric_toEuclideanLin_iff.mpr
+      (completeWeilMatrix_isHermitian φ c N) x y).trans (real_inner_comm _ _)
+  simp only [completeWeilEnergy, map_add, map_sub, inner_add_left, inner_add_right,
+    inner_sub_left, inner_sub_right]
+  rw [← h]
+  ring
+
+/-- Every mixed packet entry is an exact compression of the complete matrix,
+with the positive atom-mass factor restored. -/
+theorem completePacketVector_gram {ι : Type*} (x : ι → ℕ → ℝ)
+    {φ : ℝ → ℝ} (hφ : ContDiff ℝ 2 φ)
+    (hs : ∀ u, u ∉ Set.Icc 0 1 → φ u = 0) (hM : 0 < ∫ u, φ u ^ 2)
+    {c : ℝ} (hc : 0 < c) {N : ℕ} (hN : 1 ≤ N) (i j : ι) :
+    (((∫ u, atomDilate φ (c / N) u ^ 2) *
+      ⟪(completeWeilMatrix φ c N).toEuclideanLin (completePacketVector φ c N (x i)),
+        completePacketVector φ c N (x j)⟫ : ℝ) : ℂ) =
+      weilGram vonMangoldtWeight
+        (fun a => cx (atomicTest N (x a)
+          (dilate (2 / (c / N)) (recentredProfile φ)))) i j := by
+  have hw : 0 < c / N := div_pos hc (by exact_mod_cast hN)
+  have hk : 0 < 2 / (c / N) := div_pos two_pos hw
+  have hm a := atomicTest_dilate_mem (contDiff_recentredProfile hφ)
+    (vanishesOff_recentredProfile hs) hk N (x a)
+  have ha : completePacketVector φ c N (fun n => x i n + x j n) =
+      completePacketVector φ c N (x i) + completePacketVector φ c N (x j) := by
+    ext n
+    change (x i n + x j n) / _ = x i n / _ + x j n / _
+    exact add_div _ _ _
+  have hb : completePacketVector φ c N (fun n => x i n - x j n) =
+      completePacketVector φ c N (x i) - completePacketVector φ c N (x j) := by
+    ext n
+    change (x i n - x j n) / _ = x i n / _ - x j n / _
+    exact sub_div _ _ _
+  have hp := completePacketVector_energy hφ hs hM hc hN (fun n => x i n + x j n)
+  have hn := completePacketVector_energy hφ hs hM hc hN (fun n => x i n - x j n)
+  rw [ha, atomicTest_add_weights] at hp
+  have hsub : atomicTest N (fun n => x i n - x j n)
+      (dilate (2 / (c / N)) (recentredProfile φ)) =
+      fun u => atomicTest N (x i) (dilate (2 / (c / N)) (recentredProfile φ)) u -
+        atomicTest N (x j) (dilate (2 / (c / N)) (recentredProfile φ)) u := by
+    funext u
+    simp only [atomicTest, sub_mul, sum_sub_distrib]
+  rw [hb, hsub] at hn
+  change _ = RHTower.weilFullFunctional vonMangoldtWeight _
+  rw [weilPair_real_eq (hm i).1 (hm i).2 (hm j).1 (hm j).2]
+  congr 1
+  rw [← hp, ← hn, ← mul_sub,
+    complete_energy_polarization φ c N (completePacketVector φ c N (x i))
+      (completePacketVector φ c N (x j))]
+  ring
+
+/-- Every finite rational correlation Gram is an entrywise limit of compressions
+of the smooth complete Weil matrix at one fixed critical multiple. -/
+theorem exists_ratCorr_completeWeil_gram_limit {ι : Type*} [Fintype ι]
+    (q : ι → posUnits) :
+    ∃ K : ℝ, 1 ≤ K ∧ ∃ N : ℕ → ℕ, Tendsto N atTop atTop ∧
+      ∃ v : (m : ℕ) → ι → EuclideanSpace ℝ (PrimeHorizonIndex (N m)), ∀ i j,
+        Tendsto (fun m => (((∫ u, atomDilate steklovUnitProfile
+          (2 * K * dcScale (N m) / N m) u ^ 2) *
+          ⟪(completeWeilMatrix steklovUnitProfile (2 * K * dcScale (N m)) (N m)).toEuclideanLin
+            (v m i), v m j⟫ : ℝ) : ℂ)) atTop (𝓝 (ratCorr ((q i)⁻¹ * q j))) := by
+  obtain ⟨K, hK, N, hN, x, hx⟩ := exists_ratCorr_gram_limit_at_critical_multiple q
+  refine ⟨K, hK, N, hN, fun m i =>
+    completePacketVector steklovUnitProfile (2 * K * dcScale (N m)) (N m) (x m i), fun i j => ?_⟩
+  refine (hx i j).congr' ?_
+  filter_upwards [hN.eventually (dcScale_atTop.eventually_gt_atTop 0),
+    hN.eventually (eventually_ge_atTop 1)] with m hm h1
+  have hc : 0 < 2 * K * dcScale (N m) := by
+    have hK0 := zero_lt_one.trans_le hK
+    positivity
+  have heq : 2 / (2 * K * dcScale (N m) / N m) =
+      (N m : ℝ) / (K * dcScale (N m)) := by
+    rw [mul_assoc, div_div_eq_mul_div, mul_div_mul_left _ _ two_ne_zero]
+  symm
+  simpa only [recentred_steklovUnitProfile, heq] using
+    completePacketVector_gram (x m) (contDiff_steklovUnitProfile.of_le (natCast_le_infty 2))
+      steklovUnitProfile_eq_zero integral_steklovUnitProfile_sq_pos hc h1 i j
+
+end GaloisForLFunctions.TransMetzlerWeilPositivity
+
+#print axioms GaloisForLFunctions.TransMetzlerWeilPositivity.completePacketVector_gram
+#print axioms GaloisForLFunctions.TransMetzlerWeilPositivity.exists_ratCorr_completeWeil_gram_limit
