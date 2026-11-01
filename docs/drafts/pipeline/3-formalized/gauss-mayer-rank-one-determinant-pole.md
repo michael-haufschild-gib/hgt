@@ -81,3 +81,8 @@ The successor response now proves [cancellation at `λ=−1` throughout the sour
 half-plane](gauss-mayer-negative-unit-pole-cancellation.md). The parameter `λ=1`,
 primitive modular coding, Selberg/scattering comparison, and exclusion of
 off-critical resonances remain open. No RH conclusion follows.
+
+The same coefficient now controls the [exact finite part of raw finite-branch
+determinants](gauss-mayer-raw-determinant-finite-part.md). In the critical strip,
+its zero set is precisely the set of spectral parameters admitting any finite
+raw determinant limit.

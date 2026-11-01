@@ -82,11 +82,11 @@ ACP: `tendsto_finiteFlipFiniteResolvent`, `exists_finiteFlip_conductor_eigenline
 `eventually_fullPrime_ground_count_one`. RIT: Wirsing module. Mathlib: smooth-number Euler products.
 
 ## Lean plan (RenormalizedIntersectionTheory)
-1. `TheRoughWirsingBoundIsUniform` (Step 1)
-2. `TheWirsingConstantOfAFlipTwinIsPositive` (Step 2)
-3. `TheRoughMeanAtAFixedScale` (Step 3)
-4. `TheMultiscaleProjectionBound` (Step 4)
-5. `TheExcitedResolventOfAFiniteFlip` (Step 5)
+1. `TheRoughWirsingBoundIsUniform` (Step 1) — compiled
+2. `TheWirsingConstantOfAFlipTwinIsPositive` (Step 2) — compiled
+3. `TheRoughMeanAtAFixedScale` (Step 3) — compiled
+4. `TheMultiscaleProjectionBound` (Step 4) — compiled
+5. `TheExcitedResolventOfAFiniteFlip` (Step 5) — compiled
 6. `TheZeroDensityTwinCarriesTheConductorSeries` (Step 6, gap theorem, classification)
 
 ## Log

@@ -45,3 +45,4 @@ their harmonic sums, the heat flow as a homotopy of Hodge defects, and rational 
 for native scattering energies, together with operator-norm renormalization, nuclear expansion,
 a source Fredholm determinant, and the fixed-point trace of the Gauss–Mayer operator. See `RenormalizedIntersectionTheory/README.md`.
 -/
+import GaloisForLFunctions.RenormalizedIntersectionTheory.GaussMayerRawDeterminantFinitePart

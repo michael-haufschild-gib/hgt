@@ -1,46 +1,67 @@
-# The actual cosine prime certificate with pinching
+# The actual cosine prime certificate through bandwidth two
 
 - **Stage:** 1-in-progress
-- **Type:** CANDIDATE / ACTUAL PRIME-GRAM TRANSPORT
+- **Type:** THEOREM / ACTUAL PRIME-GRAM TRANSPORT
 - **Route:** Argon §4.1.
 - **Parents:** [Actual pinching](../3-formalized/trans-threshold-cosine-pinching-credit.md), [cosine coefficient](../3-formalized/cosine-shape-one-improves-trans-threshold-calibration.md).
 
-## Target
+## Theorem
 
-For the actual shape-one cosine window at bandwidth `4/3`, retain the matching
-signed prime surplus and prove the simple-critical certificate with coefficient
-`Hcos(4/3)+δ`, up to an arbitrarily small error. The formalized coefficient obeys
-`Hcos(4/3)≥3/4+79/1250`; actual zero-side pair credit has δ>0.
-The [explicit triple floor](../3-formalized/explicit-weighted-cosine-triple-floor.md) gives
-`δλ=1/[200(10+720π²λ²)²]` for the actual pair and rank–trace credit.
+For every fixed `0<λ≤2` and ε>0, eventually
 
-## Exact source gap
+`(Hcos(λ)+δλ−ε) N(T,2T) − Sλ(T) ≤ N0simple(T,2T)`,
 
-`zetaCosine_positive_rankTrace` concerns the finite zero Gram `Az`.
-`cosineWindowRate_fourThirds_eventually` evaluates its literal window moments.
-Neither estimates the matching prime Gram or transfers the retained pair credit
-through the tail seam. The existing trans-threshold certificate uses a box window.
+where the literal shape-one cosine prime surplus is
+`Sλ(T)=frobSurplus(Q.toSetting T,Q.localFun T)/(Q.a T*Q.L T)²`,
+`Q=zetaCosineParams λ T`, and
+`δλ=1/[200(10+720π²λ²)²]`.
 
-## Mechanism
+The explicit specializations have coefficients
+`3/4+79/1250+δ(4/3)` and `5/6+43/3750+δ(2)` before ε.
+No upper bound on S is assumed or proved. Thus neither a 75% theorem nor
+a five-sixths theorem follows yet.
 
-Keep the archimedean diagonal moment b and prime lag moment J in the generic
-continuous-form expansion. `ThmD.PP.sumA2g_close` supplies the window moment
-partial summation; the existing box proof instead replaces these moments by
-one and one third. A generic `AdmWindow` supplies `LocalHypsCoreW` without the bandwidth cap.
-The shape-one admissible window has a uniform derivative
-constant, so its frozen, height-dependent profile must be transported through
-the generic local-window and tail bounds. Retain the coalescent prime sum with
-that same window at every step.
+## Proof
 
-The resulting signed surplus bound remains the arithmetic problem; replacing
-it by an unsigned factor-two envelope is excluded by the phase-resonance example.
+The generic admissible window supplies wide local hypotheses and complex
+strip decay `|φ̂(r−iy)|≤exp(L/4)cDT/|r−iy|²` for `|y|≤1/2`.
+Prime partial summation retains the literal lag moment:
+`sumA2g=(L³/2)J+O(L²)`. The actual Gram diagonal is
+`D≤TL(b ell1²+L²J)/(2π)+O(T l²)`.
 
-## Endpoint conjecture
+Let `N=N(T,2T)`, `F=||hat Gprime||²`, `S=Sλ(T)`, and `δ=δλ`.
+Normalize by `(aL)²`, use moment convergence and Riemann–von Mangoldt:
+`F≤(2−Hcos(λ)+η)N+S`; the actual prime trace is `N+o(N)`.
+The normalized tail is bounded for λ≤2, even though its unnormalized
+bound need not tend to zero at λ=2. Perturbing the actual zero-side
+pinching certificate gives
 
-The same certificate should extend to every fixed `0<λ≤2`. At λ=2,
-`θ₀=O(log T)` but its hat-unit normalization `θ₀/(aL)` is bounded.
-The perturbation loss is then `O(1+√F)`, where F is the normalized prime
-Frobenius square. When the proposed lower bound is positive, its retained
-surplus forces `F=O(N)`; otherwise the conclusion is trivial. Thus this loss
-is `o(N)` without requiring `θ₀→0`. The wide trace error is `O(√X+log T)=O(T)`,
-also `o(N)`. Endpoint transport is not yet formalized.
+`4 tr(hat Gprime)−F−2N+δN−3NII−B(4+2sqrt(F)+B)≤N0simple`
+
+with B fixed. If `(Hcos+δ−ε)N−S≤0`, use `N0simple≥0`.
+Otherwise the same retained surplus forces `F≤(3+δ)N` for small η.
+The tail loss is then `O(sqrt(N)+1)=o(N)`; the actual local zero count
+gives `NII=o(N)`. Absorb these errors. This also proves the endpoint λ=2.
+
+## Lean
+
+- `IncommensurableGaborPinching/CosineWindowAnalyticBridge.lean`: five
+  theorems for wide local hypotheses, the literal frozen window, and strip decay.
+- `TransThresholdPairCorrelation/CosinePrimeGramCertificate.lean`:
+  `sumA2g_cosine_close`, `zetaCosine_diagonal_part_le`,
+  `zetaCosine_bounded_tail`, `zetaCosine_prime_rankTrace`.
+- `TransThresholdPairCorrelation/CosinePrimeSurplusCriterion.lean`:
+  `zetaCosine_frobSq_le`, `zetaCosine_trace_close`,
+  `zetaCosine_surplus_certificate`,
+  `zetaCosine_fourThirds_surplus_certificate`,
+  `zetaCosine_two_surplus_certificate`.
+
+All fourteen public theorem audits use only `propext`, `Classical.choice`,
+and `Quot.sound`. The analytic bridge and prime-Gram leaf pass final direct checks;
+the surplus-criterion leaf awaits its final direct check. Umbrella imports are present.
+
+## Remaining
+
+An actual signed upper bound for this same Sλ. At λ=4/3, the sufficient
+asymptotic budget is `(79/1250+δ(4/3))N`; at λ=2 it is
+`(1/12+43/3750+δ(2))N`. Unsigned factor-two envelopes do not supply either bound.

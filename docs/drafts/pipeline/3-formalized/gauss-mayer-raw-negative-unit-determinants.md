@@ -90,6 +90,7 @@ is their exact finite successor shear and raw determinant limit.
 No literature-priority claim is made.
 
 The theorem supplies no exclusion of off-critical resonances and no
-Selberg/scattering identity. It does not assert determinant convergence
-at `λ=1` or at general spectral parameters. The raw operator obstruction
-remains valid.
+Selberg/scattering identity. The [exact finite-part theorem](gauss-mayer-raw-determinant-finite-part.md)
+now classifies convergence at every spectral parameter in the critical strip:
+it occurs exactly when the source pole coefficient vanishes. The raw operator
+obstruction remains valid.

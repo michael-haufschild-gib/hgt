@@ -68,3 +68,10 @@ including at every actual zeta parameter where the raw operator norms diverge.
 The exact finite shear, uniform nuclear control, and operator/matrix transport
 are Lean-certified with thirteen clean production axiom audits. The obstruction
 therefore concerns operator convergence, not this negative-unit determinant limit.
+
+The [exact finite part](../3-formalized/gauss-mayer-raw-determinant-finite-part.md)
+now resolves every spectral parameter: `E_N−a_NB→A` on `Re w>0`.
+In the critical strip, raw determinant convergence is equivalent to `B=0`,
+with limit `D=A`; otherwise the exact norm-growth coefficient is
+`|B|/|1−w|`. The actual double-centered branch bound and complementary
+Fredholm identity are formalized, with eighteen clean source axiom audits.

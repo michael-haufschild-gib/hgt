@@ -52,9 +52,12 @@ At heat coefficient `133/200`, their limiting saddle gaps are respectively
 - Checked: the complete `5/6` line estimate
   `norm_riemannZeta_fiveSixths_le`, with constant `10^7`, exponent `2/53`
   and logarithmic factor for `t ≥ 8`.
-- Pending: finite critical-line AFE transfer, all four strip profiles,
-  and the order-uniform heat conclusion.
+- Checked: the complete critical-line estimate
+  `exists_norm_riemannZeta_half_le_subWeyl`, with exponent `33/200` and
+  logarithmic factor for `t ≥ 8`. Both exact AFE block bounds, tails and pole
+  residue are discharged.
+- Pending: four strip profiles and the order-uniform heat conclusion.
 
 The published Bourgain pair in `BourgainLogExponentPair` is a target with an
-unproved analytic premise, not an available subconvexity theorem. The critical-line
-sub-Weyl exponent and heat conclusion are not yet certified.
+unproved analytic premise, not an available subconvexity theorem. Both new zeta
+exponents are certified; the heat conclusion remains pending.
