@@ -70,8 +70,10 @@ private theorem scaled_regularization_bounds {f : ℝ → ℝ} (C : ℝ)
   obtain ⟨G, hG, hGc, hclose, hGd⟩ := hA δ hδ
   have hscale : ContDiff ℝ ∞ (fun x => G (4 * x)) :=
     hG.comp (contDiff_const.mul contDiff_id)
-  have hcscale : HasCompactSupport (fun x => G (4 * x)) :=
-    hGc.comp_smul (by norm_num : (4 : ℝ) ≠ 0)
+  have hcscale_smul : HasCompactSupport (fun x : ℝ => G ((4 : ℝ) • x)) :=
+    hGc.comp_smul (c := (4 : ℝ)) (by norm_num)
+  have hcscale : HasCompactSupport (fun x => G (4 * x)) := by
+    simpa only [smul_eq_mul] using hcscale_smul
   refine ⟨fun x => C * G (4 * x), contDiff_const.mul hscale, hcscale.mul_left, ?_, ?_⟩
   · intro x
     have hεδ : |C| * δ ≤ ε := by
