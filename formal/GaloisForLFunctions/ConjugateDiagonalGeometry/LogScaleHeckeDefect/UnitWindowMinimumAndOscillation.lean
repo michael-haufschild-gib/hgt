@@ -1,16 +1,17 @@
 import GaloisForLFunctions.ConjugateDiagonalGeometry.LogScaleHeckeDefect.HalfGateClosureAndDensityEquivalence
+import GaloisForLFunctions.ArithmeticOrientationGeometry.TheIndexExit
 import Mathlib.Analysis.Calculus.ParametricIntegral
 import Mathlib.Analysis.Calculus.LocalExtr.Basic
 
 /-!
 # Unit-Window Minimum Selection, Ordinate Oscillation Calculus, and Separation Classification
 
-This module resolves Directive 3 on Criterion 5 of `riemannHypothesis_finiteTheta_poleNodal_dyadic_tfae`
+This module establishes the ordinate (`γ`) oscillation calculus for Criterion 5 of
+`riemannHypothesis_finiteTheta_poleNodal_dyadic_tfae`
 (`min_{γ ∈ [T, T + 1]} finiteThetaSourceMomentReading (baseTwistTest γ) L_k(T) 1 (apertureStage L_k(T) T)`)
-by establishing the exact `γ`-oscillation calculus of `finiteThetaSourceMomentReading` and
-`polynomialThetaSourceMomentReading` and isolating the three-way separation between unit-window
-minimum selection, unit-window mean control (`heckeDefect_log_unitWindow_tfae`), and dyadic
-variation:
+on `finiteThetaSourceMomentReading` and `polynomialThetaSourceMomentReading` and isolates the
+three-way separation between unit-window minimum selection, unit-window mean control
+(`heckeDefect_log_unitWindow_tfae`), and dyadic variation:
 
 1. **Zero-coordinate-free `L`-lossless `γ`-derivative bounds (§1)**
    (`abs_deriv_finiteThetaSourceMomentReading_le`,
@@ -71,9 +72,8 @@ namespace GaloisForLFunctions.ConjugateDiagonalGeometry.LogScaleHeckeDefect
 
 open GaloisForLFunctions.ConjugateDiagonalGeometry
 open GaloisForLFunctions.ArithmeticOrientationGeometry
-open GaloisForLFunctions.BiScaleUncertainty.ZeroDensityFilteredCriticalDeficitLaw
 open ArithmeticPolarization SquareRootThreshold _root_.RHTower _root_.Zeta23
-open _root_.RHTower.DeBruijn
+open _root_.RHTower.DeBruijn _root_.RHTower.BacklundConverse
 
 /-! ## §1. Moment-weighted source tests and `L`-lossless `γ`-derivative bounds -/
 
@@ -112,13 +112,30 @@ theorem hasDerivAt_tr_sourceTwist (f : CompactTest) (z : ℂ) (γ₀ : ℝ) :
     ((f.2.2.mul_left).mul_right)
   have hbound_supp : HasCompactSupport bound :=
     (((momentCompactTest 1 f).2.2.mul_right).norm)
+  have hF_cont : ∀ γ : ℝ, Continuous (F γ) := fun γ =>
+    ((Complex.continuous_exp.comp
+        (continuous_neg.comp (((continuous_const (y := (γ : ℂ))).mul
+          (continuous_const (y := I))).mul Complex.continuous_ofReal))).mul f.2.1.continuous).mul
+      (Complex.continuous_exp.comp ((continuous_const (y := z - 1 / 2)).mul
+        Complex.continuous_ofReal))
+  have hF'_cont : Continuous (F' γ₀) :=
+    (continuous_const (y := -I)).mul
+      (((Complex.continuous_exp.comp
+          (continuous_neg.comp (((continuous_const (y := (γ₀ : ℂ))).mul
+            (continuous_const (y := I))).mul Complex.continuous_ofReal))).mul
+        ((Complex.continuous_ofReal.pow 1).mul f.2.1.continuous)).mul
+        (Complex.continuous_exp.comp ((continuous_const (y := z - 1 / 2)).mul
+          Complex.continuous_ofReal)))
+  have hbound_cont : Continuous bound :=
+    (((Complex.continuous_ofReal.pow 1).mul f.2.1.continuous).mul
+      (Complex.continuous_exp.comp ((continuous_const (y := z - 1 / 2)).mul
+        Complex.continuous_ofReal))).norm
   have hdom := hasDerivAt_integral_of_dominated_loc_of_deriv_le
     (μ := volume) (s := Set.univ) (x₀ := γ₀) (F := F) (F' := F') (bound := bound)
     Filter.univ_mem
-    (Eventually.of_forall fun γ =>
-      (by dsimp [F]; fun_prop : Continuous (F γ)).aestronglyMeasurable)
-    ((by dsimp [F]; fun_prop : Continuous (F γ₀)).integrable_of_hasCompactSupport (hF_supp γ₀))
-    ((by dsimp [F']; fun_prop : Continuous (F' γ₀)).aestronglyMeasurable)
+    (Eventually.of_forall fun γ => (hF_cont γ).aestronglyMeasurable)
+    ((hF_cont γ₀).integrable_of_hasCompactSupport (hF_supp γ₀))
+    hF'_cont.aestronglyMeasurable
     (Eventually.of_forall fun u γ _ => by
       dsimp [F', bound]
       have hexp_norm : ‖Complex.exp (-((γ : ℂ) * I * (u : ℂ)))‖ = 1 := by
@@ -128,7 +145,7 @@ theorem hasDerivAt_tr_sourceTwist (f : CompactTest) (z : ℂ) (γ₀ : ℝ) :
         exact Complex.norm_exp_ofReal_mul_I (-(γ * u))
       rw [norm_mul, norm_neg, Complex.norm_I, one_mul, norm_mul, norm_mul, hexp_norm, one_mul,
         ← norm_mul])
-    ((by dsimp [bound]; fun_prop : Continuous bound).integrable_of_hasCompactSupport hbound_supp)
+    (hbound_cont.integrable_of_hasCompactSupport hbound_supp)
     (Eventually.of_forall fun u γ _ => by
       dsimp [F, F']
       have hlin : HasDerivAt (fun x : ℝ => -((x : ℂ) * I * (u : ℂ))) (-(1 * I * (u : ℂ))) γ :=
@@ -265,7 +282,7 @@ private def weightedMomentDeriv1 (W : ℂ → ℝ) (f : CompactTest) (L : ℝ) (
 private def weightedMomentDeriv2 (W : ℂ → ℝ) (f : CompactTest) (L : ℝ) (j : ℕ) (γ : ℝ) : ℝ :=
   Real.pi⁻¹ * ∫ z : ℂ, W z * (trTwistNormSqDeriv2 f z γ * depthKernel L (z.re - 1 / 2) ^ j)
 
-private theorem normSq_tr_sourceTwist_le_ball (g : CompactTest) {A : ℝ} (hA0 : 0 ≤ A)
+private theorem normSq_tr_sourceTwist_le_ball (g : CompactTest) {A : ℝ}
     (hA : ∀ w : ℂ, ‖tr g.1 w‖ ≤ A * Real.exp (‖w‖ ^ 2)) {γ₀ γ : ℝ}
     (hγ : γ ∈ Metric.ball γ₀ 1) (z : ℂ) :
     Complex.normSq (tr (sourceTwist γ g).1 z) ≤
@@ -325,8 +342,8 @@ private theorem hasDerivAt_weightedMomentReading {W : ℂ → ℝ} (hW_cont : Co
     (f : CompactTest) (L : ℝ) (j : ℕ) (γ₀ : ℝ) :
     HasDerivAt (fun γ : ℝ => weightedMomentReading W (sourceTwist γ f) L j)
       (weightedMomentDeriv1 W f L j γ₀) γ₀ := by
-  obtain ⟨A₀, hA₀1, hA₀⟩ := norm_tr_le_sourceGaussian f
-  obtain ⟨A₁, hA₁1, hA₁⟩ := norm_tr_le_sourceGaussian (momentCompactTest 1 f)
+  obtain ⟨A₀, _, hA₀⟩ := norm_tr_le_sourceGaussian f
+  obtain ⟨A₁, _, hA₁⟩ := norm_tr_le_sourceGaussian (momentCompactTest 1 f)
   let dk : ℂ → ℝ := fun z => depthKernel L (z.re - 1 / 2) ^ j
   have hdk_cont : Continuous dk := by
     dsimp [dk]; unfold depthKernel
@@ -350,14 +367,14 @@ private theorem hasDerivAt_weightedMomentReading {W : ℂ → ℝ} (hW_cont : Co
     ((hW_cont.mul (((continuous_trTwistNormSqDeriv1_pair f).comp
         (continuous_const.prodMk continuous_id)).mul hdk_cont)).aestronglyMeasurable)
     (Eventually.of_forall fun z γ hγ => by
-      dsimp [F', bound]
-      have hb0 := normSq_tr_sourceTwist_le_ball f (by linarith only [hA₀1]) hA₀ hγ z
-      have hb1 := normSq_tr_sourceTwist_le_ball (momentCompactTest 1 f)
-        (by linarith only [hA₁1]) hA₁ hγ z
+      change |W z * (trTwistNormSqDeriv1 f z γ * dk z)| ≤
+        W z * (((A₀ ^ 2 + A₁ ^ 2) * Real.exp (2 * (‖z‖ + |γ₀| + 1) ^ 2)) * dk z)
+      have hb0 := normSq_tr_sourceTwist_le_ball f hA₀ hγ z
+      have hb1 := normSq_tr_sourceTwist_le_ball (momentCompactTest 1 f) hA₁ hγ z
       have hd1 := abs_trTwistNormSqDeriv1_le f z γ zero_lt_one
       rw [one_mul, inv_one, one_mul] at hd1
       have hdk_nn : 0 ≤ dk z := pow_nonneg (depthKernel_nonneg _ _) j
-      rw [Real.norm_eq_abs, abs_mul, abs_mul, abs_of_nonneg (hW_nn z), abs_of_nonneg hdk_nn]
+      rw [abs_mul, abs_mul, abs_of_nonneg (hW_nn z), abs_of_nonneg hdk_nn]
       refine mul_le_mul_of_nonneg_left (mul_le_mul_of_nonneg_right ?_ hdk_nn) (hW_nn z)
       exact (hd1.trans (add_le_add hb0 hb1)).trans_eq (by ring))
     ((hW_cont.mul (((continuous_const.mul (Real.continuous_exp.comp
@@ -374,9 +391,9 @@ private theorem hasDerivAt_weightedMomentDeriv1 {W : ℂ → ℝ} (hW_cont : Con
     (f : CompactTest) (L : ℝ) (j : ℕ) (γ₀ : ℝ) :
     HasDerivAt (weightedMomentDeriv1 W f L j)
       (weightedMomentDeriv2 W f L j γ₀) γ₀ := by
-  obtain ⟨A₀, hA₀1, hA₀⟩ := norm_tr_le_sourceGaussian f
-  obtain ⟨A₁, hA₁1, hA₁⟩ := norm_tr_le_sourceGaussian (momentCompactTest 1 f)
-  obtain ⟨A₂, hA₂1, hA₂⟩ := norm_tr_le_sourceGaussian (momentCompactTest 2 f)
+  obtain ⟨A₀, _, hA₀⟩ := norm_tr_le_sourceGaussian f
+  obtain ⟨A₁, _, hA₁⟩ := norm_tr_le_sourceGaussian (momentCompactTest 1 f)
+  obtain ⟨A₂, _, hA₂⟩ := norm_tr_le_sourceGaussian (momentCompactTest 2 f)
   let dk : ℂ → ℝ := fun z => depthKernel L (z.re - 1 / 2) ^ j
   have hdk_cont : Continuous dk := by
     dsimp [dk]; unfold depthKernel
@@ -399,15 +416,14 @@ private theorem hasDerivAt_weightedMomentDeriv1 {W : ℂ → ℝ} (hW_cont : Con
     ((hW_cont.mul (((continuous_trTwistNormSqDeriv2_pair f).comp
         (continuous_const.prodMk continuous_id)).mul hdk_cont)).aestronglyMeasurable)
     (Eventually.of_forall fun z γ hγ => by
-      dsimp [F', bound]
-      have hb0 := normSq_tr_sourceTwist_le_ball f (by linarith only [hA₀1]) hA₀ hγ z
-      have hb1 := normSq_tr_sourceTwist_le_ball (momentCompactTest 1 f)
-        (by linarith only [hA₁1]) hA₁ hγ z
-      have hb2 := normSq_tr_sourceTwist_le_ball (momentCompactTest 2 f)
-        (by linarith only [hA₂1]) hA₂ hγ z
+      change |W z * (trTwistNormSqDeriv2 f z γ * dk z)| ≤
+        W z * (((A₀ ^ 2 + 2 * A₁ ^ 2 + A₂ ^ 2) * Real.exp (2 * (‖z‖ + |γ₀| + 1) ^ 2)) * dk z)
+      have hb0 := normSq_tr_sourceTwist_le_ball f hA₀ hγ z
+      have hb1 := normSq_tr_sourceTwist_le_ball (momentCompactTest 1 f) hA₁ hγ z
+      have hb2 := normSq_tr_sourceTwist_le_ball (momentCompactTest 2 f) hA₂ hγ z
       have hd2 := abs_trTwistNormSqDeriv2_le f z γ
       have hdk_nn : 0 ≤ dk z := pow_nonneg (depthKernel_nonneg _ _) j
-      rw [Real.norm_eq_abs, abs_mul, abs_mul, abs_of_nonneg (hW_nn z), abs_of_nonneg hdk_nn]
+      rw [abs_mul, abs_mul, abs_of_nonneg (hW_nn z), abs_of_nonneg hdk_nn]
       refine mul_le_mul_of_nonneg_left (mul_le_mul_of_nonneg_right ?_ hdk_nn) (hW_nn z)
       exact (hd2.trans (add_le_add (add_le_add hb0 (mul_le_mul_of_nonneg_left hb1 zero_le_two))
         hb2)).trans_eq (by ring))
@@ -473,9 +489,11 @@ private theorem abs_weightedMomentDeriv1_le {W : ℂ → ℝ} (hW_cont : Continu
         (continuous_const.prodMk continuous_id))).mul
       hdk_cont)).integrable_of_hasCompactSupport hW_supp.mul_right
   rw [abs_mul, abs_of_pos (inv_pos.mpr Real.pi_pos)]
-  have hnorm := norm_integral_le_integral_norm
-    (fun z : ℂ => W z * (trTwistNormSqDeriv1 f z γ * dk z))
-  simp only [Real.norm_eq_abs] at hnorm
+  have hnorm : |∫ z : ℂ, W z * (trTwistNormSqDeriv1 f z γ * dk z)| ≤
+      ∫ z : ℂ, |W z * (trTwistNormSqDeriv1 f z γ * dk z)| := by
+    simpa only [Real.norm_eq_abs] using
+      MeasureTheory.norm_integral_le_integral_norm (μ := volume)
+        (fun z : ℂ => W z * (trTwistNormSqDeriv1 f z γ * dk z))
   have hmono : (∫ z : ℂ, |W z * (trTwistNormSqDeriv1 f z γ * dk z)|) ≤
       ∫ z : ℂ, (κ * (W z * (Complex.normSq (tr (sourceTwist γ f).1 z) * dk z)) +
         κ⁻¹ * (W z * (Complex.normSq (tr (sourceTwist γ (momentCompactTest 1 f)).1 z) * dk z))) := by
@@ -516,9 +534,11 @@ private theorem abs_weightedMomentDeriv2_le {W : ℂ → ℝ} (hW_cont : Continu
       ((continuous_tr_sourceTwist_pair g).comp (continuous_const.prodMk continuous_id))).mul
       hdk_cont)).integrable_of_hasCompactSupport hW_supp.mul_right
   rw [abs_mul, abs_of_pos (inv_pos.mpr Real.pi_pos)]
-  have hnorm := norm_integral_le_integral_norm
-    (fun z : ℂ => W z * (trTwistNormSqDeriv2 f z γ * dk z))
-  simp only [Real.norm_eq_abs] at hnorm
+  have hnorm : |∫ z : ℂ, W z * (trTwistNormSqDeriv2 f z γ * dk z)| ≤
+      ∫ z : ℂ, |W z * (trTwistNormSqDeriv2 f z γ * dk z)| := by
+    simpa only [Real.norm_eq_abs] using
+      MeasureTheory.norm_integral_le_integral_norm (μ := volume)
+        (fun z : ℂ => W z * (trTwistNormSqDeriv2 f z γ * dk z))
   have hmono : (∫ z : ℂ, |W z * (trTwistNormSqDeriv2 f z γ * dk z)|) ≤
       ∫ z : ℂ, ((W z * (Complex.normSq (tr (sourceTwist γ f).1 z) * dk z) +
           2 * (W z * (Complex.normSq (tr (sourceTwist γ (momentCompactTest 1 f)).1 z) * dk z))) +
@@ -546,8 +566,9 @@ private def polyThetaWeight (n : ℕ) (z : ℂ) : ℝ :=
   stripSourceCutoff n z *
     finiteThetaSourceCurvature (polynomialSourceRegulator n) (polynomialThetaIntegerCutoff n) z
 
-private theorem continuous_finThetaWeight (n : ℕ) : Continuous (finThetaWeight n) :=
-  (sourceCutoff n).contDiff.continuous.mul
+private theorem continuous_finThetaWeight (n : ℕ) : Continuous (finThetaWeight n) := by
+  have hc : ContDiff ℝ 2 (sourceCutoff n : ℂ → ℝ) := (sourceCutoff n).contDiff
+  exact hc.continuous.mul
     (continuous_finiteThetaSourceCurvature (explicitSourceRegulator_pos n) _)
 
 private theorem hasCompactSupport_finThetaWeight (n : ℕ) : HasCompactSupport (finThetaWeight n) :=
@@ -781,17 +802,15 @@ theorem unitWindow_mean_sub_min_le_half_sup_deriv {g : ℝ → ℝ} (T : ℝ) {M
         exact hbd u (huIoc hu)
     rw [hftc, Real.norm_eq_abs] at hnorm
     exact (le_abs_self _).trans hnorm
-  have hint_g : IntegrableOn g (Icc T (T + 1)) volume :=
-    hg_diff.continuous.continuousOn.integrableOn_compact isCompact_Icc
-  have hint_c : IntegrableOn (fun _ : ℝ => g γ_min) (Icc T (T + 1)) volume :=
-    integrableOn_const (hs := by rw [Real.volume_Icc]; exact ENNReal.ofReal_ne_top)
-  have hvol : volume.real (Icc T (T + 1)) = 1 := by
-    rw [Real.volume_real_Icc_of_le (by linarith)]; ring
   have hsub_int : (∫ γ in Icc T (T + 1), g γ) - g γ_min =
       ∫ γ in T..(T + 1), (g γ - g γ_min) := by
-    rw [← MeasureTheory.integral_Icc_eq_integral_Ioc, integral_of_le (by linarith : T ≤ T + 1),
-      ← MeasureTheory.integral_Icc_eq_integral_Ioc, MeasureTheory.integral_sub hint_g hint_c,
-      setIntegral_const, hvol, one_smul]
+    rw [MeasureTheory.integral_Icc_eq_integral_Ioc,
+      ← intervalIntegral.integral_of_le (by linarith : T ≤ T + 1),
+      ← intervalIntegral.integral_sub
+        (hg_diff.continuous.intervalIntegrable (μ := volume) _ _) intervalIntegrable_const]
+    have hc : ∫ γ in T..(T + 1), g γ_min = g γ_min := by
+      rw [intervalIntegral.integral_const, smul_eq_mul]; ring
+    rw [hc]
   rw [hsub_int]
   have hi_lhs : IntervalIntegrable (fun γ : ℝ => g γ - g γ_min) volume T (T + 1) :=
     (hg_diff.continuous.sub continuous_const).intervalIntegrable (μ := volume) _ _
@@ -811,6 +830,7 @@ theorem unitWindow_mean_sub_min_le_half_sup_deriv {g : ℝ → ℝ} (T : ℝ) {M
           (Set.uIcc T γ_min) := by
         rw [uIcc_of_le hγ_min.1]
         intro γ hγ
+        dsimp only
         rw [abs_of_nonpos (by linarith only [hγ.2])]
         ring
       rw [integral_congr hcongr,
@@ -826,6 +846,7 @@ theorem unitWindow_mean_sub_min_le_half_sup_deriv {g : ℝ → ℝ} (T : ℝ) {M
           (Set.uIcc γ_min (T + 1)) := by
         rw [uIcc_of_le hγ_min.2]
         intro γ hγ
+        dsimp only
         exact abs_of_nonneg (by linarith only [hγ.1])
       rw [integral_congr hcongr,
         integral_eq_sub_of_hasDerivAt (f := fun γ : ℝ => (γ - γ_min) ^ 2 / 2)
@@ -893,14 +914,18 @@ theorem unitWindow_mean_sub_interior_min_le_sixth_sup_deriv2 {g : ℝ → ℝ} (
         ring
       exact hmono.trans_eq hrhs
     · rw [integral_symm]
-      have hmono := integral_mono_on (μ := volume) hge
-        (hg'_diff.continuous.neg.intervalIntegrable (μ := volume) _ _)
-        ((continuous_const.mul (continuous_const.sub continuous_id)).intervalIntegrable
-          (μ := volume) _ _)
+      have hi_l : IntervalIntegrable (fun u : ℝ => -deriv g u) volume γ γ_min :=
+        hg'_diff.continuous.neg.intervalIntegrable (μ := volume) _ _
+      have hi_r : IntervalIntegrable (fun u : ℝ => M₂ * (γ_min - u)) volume γ γ_min :=
+        (continuous_const.mul (continuous_const.sub continuous_id)).intervalIntegrable
+          (μ := volume) _ _
+      have hmono := integral_mono_on (μ := volume) hge hi_l hi_r
         fun u hu => by
+          dsimp only
           have hu_Icc : u ∈ Icc T (T + 1) := ⟨hγ.1.trans hu.1, hu.2.trans hγ_Icc.2⟩
-          have h1 := (neg_le_abs _).trans (hg'_lip u hu_Icc)
-          rwa [abs_of_nonpos (by linarith only [hu.2]), mul_neg, le_neg] at h1
+          have h1 := (neg_le_abs (deriv g u)).trans (hg'_lip u hu_Icc)
+          rw [abs_of_nonpos (by linarith only [hu.2])] at h1
+          linarith only [h1]
       have h1 : -(∫ u in γ..γ_min, deriv g u) = ∫ u in γ..γ_min, -deriv g u :=
         (intervalIntegral.integral_neg).symm
       rw [h1]
@@ -913,17 +938,15 @@ theorem unitWindow_mean_sub_interior_min_le_sixth_sup_deriv2 {g : ℝ → ℝ} (
           ((by fun_prop : Continuous _).intervalIntegrable (μ := volume) _ _)]
         ring
       exact hmono.trans_eq hrhs
-  have hint_g : IntegrableOn g (Icc T (T + 1)) volume :=
-    hg_diff.continuous.continuousOn.integrableOn_compact isCompact_Icc
-  have hint_c : IntegrableOn (fun _ : ℝ => g γ_min) (Icc T (T + 1)) volume :=
-    integrableOn_const (hs := by rw [Real.volume_Icc]; exact ENNReal.ofReal_ne_top)
-  have hvol : volume.real (Icc T (T + 1)) = 1 := by
-    rw [Real.volume_real_Icc_of_le (by linarith)]; ring
   have hsub_int : (∫ γ in Icc T (T + 1), g γ) - g γ_min =
       ∫ γ in T..(T + 1), (g γ - g γ_min) := by
-    rw [← MeasureTheory.integral_Icc_eq_integral_Ioc, integral_of_le (by linarith : T ≤ T + 1),
-      ← MeasureTheory.integral_Icc_eq_integral_Ioc, MeasureTheory.integral_sub hint_g hint_c,
-      setIntegral_const, hvol, one_smul]
+    rw [MeasureTheory.integral_Icc_eq_integral_Ioc,
+      ← intervalIntegral.integral_of_le (by linarith : T ≤ T + 1),
+      ← intervalIntegral.integral_sub
+        (hg_diff.continuous.intervalIntegrable (μ := volume) _ _) intervalIntegrable_const]
+    have hc : ∫ γ in T..(T + 1), g γ_min = g γ_min := by
+      rw [intervalIntegral.integral_const, smul_eq_mul]; ring
+    rw [hc]
   rw [hsub_int]
   have hmono := integral_mono_on (μ := volume) (by linarith : T ≤ T + 1)
     ((hg_diff.continuous.sub continuous_const).intervalIntegrable (μ := volume) _ _)
@@ -1142,14 +1165,14 @@ theorem integral_Icc_unitWindow_integral_le {h : ℝ → ℝ} (hh_cont : Continu
       _ < ε := half_lt_self hε
   have hwin_eq : ∀ T : ℝ, (∫ γ in Icc T (T + 1), h γ) = H (T + 1) - H T := by
     intro T
-    rw [← MeasureTheory.integral_Icc_eq_integral_Ioc, ← intervalIntegral.integral_of_le (by linarith)]
+    rw [MeasureTheory.integral_Icc_eq_integral_Ioc, ← intervalIntegral.integral_of_le (by linarith)]
     have hadj := integral_add_adjacent_intervals (a := U) (b := T) (c := T + 1)
       (hh_cont.intervalIntegrable (μ := volume) _ _)
       (hh_cont.intervalIntegrable (μ := volume) _ _)
     dsimp [H]
     linarith only [hadj]
   simp_rw [hwin_eq]
-  rw [← MeasureTheory.integral_Icc_eq_integral_Ioc,
+  rw [MeasureTheory.integral_Icc_eq_integral_Ioc,
     ← intervalIntegral.integral_of_le (by linarith only [hU] : U ≤ 2 * U),
     intervalIntegral.integral_sub
       ((hH_cont.comp (continuous_id.add continuous_const)).intervalIntegrable (μ := volume) _ _)

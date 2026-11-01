@@ -2641,7 +2641,7 @@ theorem exists_complement_coercive_with_defect_reserve_below_one_ninth :
       (tiltedSplineSpectralFloorConstant + 2) / θ₁ := by positivity
   let M_L_floor : ℝ := 3000 + ((16 * (tiltedSplineSpectralFloorConstant + 3)) ^ 2 + 1) +
     32 * explicitConductorCutoffConstant * (tiltedSplineSpectralFloorConstant + 2) / θ₁
-  filter_upwards [eventually_three_cutoff_bounds hq hq_hi hθ₁ hθ₁_4096,
+  filter_upwards [eventually_three_cutoff_bounds hq (hq_hi.trans (by norm_num : (1 / 2 : ℝ) ≤ 1)) hθ₁ hθ₁_4096,
     eventually_log_nat_le_rpow_36,
     hLlim.eventually (RHTower.eventually_const_mul_polylog_le_rpow 1 hν 1),
     ((tendsto_rpow_atTop hν).comp hLlim).eventually_ge_atTop M_ν,
@@ -2970,7 +2970,7 @@ theorem exists_completeWeil_logarithmic_defect_and_spectral_floor_below_one_nint
     hinv_res q hq_pos.le k hk,
     eventually_log_nat_le_rpow_36,
     hLlim.eventually (RHTower.eventually_const_mul_polylog_le_rpow 1 hν 1),
-    hLlim.eventually (RHTower.eventually_const_mul_polylog_le_rpow (18 : ℝ) (by norm_num : (0 : ℝ) < 1) 1),
+    hLlim.eventually (RHTower.eventually_const_mul_polylog_le_rpow 1 (by norm_num : (0 : ℝ) < 1) 18),
     ((tendsto_rpow_atTop hq_pos).comp hLlim).eventually_ge_atTop 2,
     ((tendsto_rpow_atTop hν).comp hLlim).eventually_ge_atTop (32 * K_inv + 1),
     hLlim.eventually_ge_atTop 2000,
