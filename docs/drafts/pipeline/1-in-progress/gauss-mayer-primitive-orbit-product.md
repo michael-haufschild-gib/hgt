@@ -33,13 +33,14 @@ unless the proved inverse-class criterion identifies them.
    bijectively to nonempty pair words, with source length twice pair length.
    [Paper proof and seventeen production audits](../3-formalized/gauss-mayer-primitive-pair-cycle-multiplicities.md).
    Ordinary digit primitivity is incorrect.
-3. **Multiplier laws certified:** pair rotation preserves the expanding
-   multiplier; repetition gives `λ(u^r)=λ(u)^r`. The source fixed-point
-   multiplier equals this matrix multiplier.
-   `GaussMayerPairMultiplier.lean` passed four production axiom audits.
-   Their assembly into the exact primitive-coordinate source term still
-   requires verification. Analytic reindexing must then change `1/n` to
-   `1/r`, expand `(1−λ_c^(−2r))⁻¹`, and sum the logarithmic factor series.
+3. **Source terms certified:** pair rotation preserves the expanding
+   multiplier; repetition gives `λ(u^r)=λ(u)^r`. The actual fixed-point
+   multiplier equals this matrix multiplier. The exact source bijection
+   gives half-length `rℓ(c)` and literal trace term
+   `z^(2rℓ(c))/(rℓ(c)) · (λ_c^r)^(−w)/(1−(λ_c^r)⁻²)`.
+   [Paper proof and ten production audits](../3-formalized/gauss-mayer-primitive-orbit-words.md).
+   Analytic reindexing must change `1/(rℓ(c))` to `1/r`, expand
+   `(1−λ_c^(−2r))⁻¹`, and sum the logarithmic factor series.
 4. **Certified:** Exact Gauss-word probability gives geometric absolute trace
    decay for `Re w>2`. The even-word identity now holds throughout `|z|≤1`,
    including `z=1`; the full word series converges absolutely and the actual
@@ -67,5 +68,5 @@ This is the missing determinant-to-modular-cycle bridge. It does not yet
 identify geometric geodesic lengths, prove the scattering normalization, or
 exclude complex resonances. The local determinant-to-even-word identity is
 certified through the closed unit disk for `Re w>2`. Primitive-cycle
-multiplicities and multiplier laws are certified; their source-term assembly,
+multiplicities, multiplier laws and exact source terms are certified;
 analytic reindexing and the Euler product remain open.

@@ -507,9 +507,10 @@ theorem isUnit_wienerHopfLift_of_re_pos (W : C(HTGeometry.UnitCircle, ℂ))
     rw [mul_sub, mul_one, hP_idem, sub_self]
   have horth : ∀ x y : HTGeometry.L2Real, inner ℂ (P x) (Q y) = 0 := by
     intro x y
+    have hPQy : P (Q y) = 0 :=
+      congrArg (fun T : HTGeometry.L2Real →L[ℂ] HTGeometry.L2Real => T y) hPQ
     rw [← ContinuousLinearMap.adjoint_inner_right, ← ContinuousLinearMap.star_eq_adjoint,
-      hP_star, ← ContinuousLinearMap.mul_apply_eq_comp, hPQ, _root_.zero_apply,
-      inner_zero_right]
+      hP_star, hPQy, inner_zero_right]
   have hrem_eq : (1 : HTGeometry.L2Real →L[ℂ] HTGeometry.L2Real) -
       (ε : ℂ) • HTGeometry.wienerHopfLift W =
       P * HTGeometry.circleMultiplier V * P + ((1 - ε : ℝ) : ℂ) • Q := by
@@ -520,15 +521,16 @@ theorem isUnit_wienerHopfLift_of_re_pos (W : C(HTGeometry.UnitCircle, ℂ))
       rw [h1, HTGeometry.circleMultiplier_add, HTGeometry.circleMultiplier_one,
         HTGeometry.circleMultiplier_smul, neg_smul, sub_eq_add_neg]
     rw [HTGeometry.wienerHopfLift, hCV]
-    dsimp only [P, Q]
-    ext1 x
-    simp only [_root_.sub_apply, _root_.add_apply, _root_.smul_apply,
-      ContinuousLinearMap.one_apply_eq_self, ContinuousLinearMap.mul_apply_eq_comp,
-      Function.comp_apply]
-    have hPPx : HTGeometry.halfProj (HTGeometry.halfProj x) = HTGeometry.halfProj x :=
-      congrArg (fun T : HTGeometry.L2Real →L[ℂ] HTGeometry.L2Real => T x) hP_idem
-    rw [map_sub, map_smul, hPPx, Complex.ofReal_sub, Complex.ofReal_one]
-    module
+    change (1 : HTGeometry.L2Real →L[ℂ] HTGeometry.L2Real) -
+        (ε : ℂ) • (P * HTGeometry.circleMultiplier W * P + Q) =
+      P * (1 - (ε : ℂ) • HTGeometry.circleMultiplier W) * P + ((1 - ε : ℝ) : ℂ) • Q
+    have hP_expand : P * (1 - (ε : ℂ) • HTGeometry.circleMultiplier W) * P =
+        P - (ε : ℂ) • (P * HTGeometry.circleMultiplier W * P) := by
+      rw [mul_sub, sub_mul, mul_one, hP_idem, mul_smul_comm, smul_mul_assoc]
+    have h1_eq : (1 : HTGeometry.L2Real →L[ℂ] HTGeometry.L2Real) = P + Q := by
+      dsimp only [Q]; abel
+    rw [hP_expand, h1_eq, Complex.ofReal_sub, Complex.ofReal_one, sub_smul, one_smul, smul_add]
+    abel
   have hop_norm : ‖(1 : HTGeometry.L2Real →L[ℂ] HTGeometry.L2Real) -
       (ε : ℂ) • HTGeometry.wienerHopfLift W‖ ≤ q := by
     rw [hrem_eq]
@@ -677,6 +679,11 @@ def circlePolyInv (p : Polynomial ℂ) (hp : IsOuterPolynomial p) :
       hp (u : ℂ) (HTGeometry.norm_coe_unitCircle u).le
 
 @[simp]
+theorem circlePolyInv_apply (p : Polynomial ℂ) (hp : IsOuterPolynomial p)
+    (u : HTGeometry.UnitCircle) :
+    circlePolyInv p hp u = (p.eval (u : ℂ))⁻¹ := rfl
+
+@[simp]
 theorem circlePoly_mul_inv (p : Polynomial ℂ) (hp : IsOuterPolynomial p) :
     circlePoly p * circlePolyInv p hp = 1 := by
   ext u
@@ -798,8 +805,8 @@ theorem hankelPlus_circlePolyInv_eq_zero (p : Polynomial ℂ) (hp : IsOuterPolyn
     congr 1
     have hmap : (p.roots.attach.map fun a => (u : ℂ) - a.1) =
         p.roots.map fun a => (u : ℂ) - a := by
-      simpa [Multiset.map_map] using
-        congrArg (Multiset.map fun a => (u : ℂ) - a) (Multiset.attach_map_val p.roots)
+      have h := congrArg (Multiset.map fun a => (u : ℂ) - a) (Multiset.attach_map_val p.roots)
+      rwa [Multiset.map_map] at h
     rw [hmap]
   rw [hfact_eq]
   refine inHardyPlus_smul _ (inHardyPlus_multisetProd factors fun V hV => ?_)
@@ -838,21 +845,15 @@ theorem fredholm_and_kernel_of_sandwiched_cayleyPow
     refine ⟨B_inv ((star HTGeometry.cayleyWienerHopf ^ m) (A_inv y)), ?_⟩
     dsimp only [T]
     have hBB_y : B (B_inv ((star HTGeometry.cayleyWienerHopf ^ m) (A_inv y))) =
-        (star HTGeometry.cayleyWienerHopf ^ m) (A_inv y) := by
-      simpa only [ContinuousLinearMap.mul_apply_eq_comp, Function.comp_apply,
-        ContinuousLinearMap.one_apply_eq_self] using
-        congrArg (fun S : HTGeometry.L2Real →L[ℂ] HTGeometry.L2Real =>
-          S ((star HTGeometry.cayleyWienerHopf ^ m) (A_inv y))) hBB
+        (star HTGeometry.cayleyWienerHopf ^ m) (A_inv y) :=
+      congrArg (fun S : HTGeometry.L2Real →L[ℂ] HTGeometry.L2Real =>
+        S ((star HTGeometry.cayleyWienerHopf ^ m) (A_inv y))) hBB
     have hcay : (HTGeometry.cayleyWienerHopf ^ m)
-        ((star HTGeometry.cayleyWienerHopf ^ m) (A_inv y)) = A_inv y := by
-      simpa only [ContinuousLinearMap.mul_apply_eq_comp, Function.comp_apply,
-        ContinuousLinearMap.one_apply_eq_self] using
-        congrArg (fun S : HTGeometry.L2Real →L[ℂ] HTGeometry.L2Real => S (A_inv y))
-          (HTGeometry.cayleyWienerHopf_pow_mul_star_pow m)
-    have hAA_y : A (A_inv y) = y := by
-      simpa only [ContinuousLinearMap.mul_apply_eq_comp, Function.comp_apply,
-        ContinuousLinearMap.one_apply_eq_self] using
-        congrArg (fun S : HTGeometry.L2Real →L[ℂ] HTGeometry.L2Real => S y) hAA
+        ((star HTGeometry.cayleyWienerHopf ^ m) (A_inv y)) = A_inv y :=
+      congrArg (fun S : HTGeometry.L2Real →L[ℂ] HTGeometry.L2Real => S (A_inv y))
+        (HTGeometry.cayleyWienerHopf_pow_mul_star_pow m)
+    have hAA_y : A (A_inv y) = y :=
+      congrArg (fun S : HTGeometry.L2Real →L[ℂ] HTGeometry.L2Real => S y) hAA
     change A ((HTGeometry.cayleyWienerHopf ^ m) (B (B_inv
       ((star HTGeometry.cayleyWienerHopf ^ m) (A_inv y))))) = y
     rw [hBB_y, hcay, hAA_y]
@@ -860,19 +861,13 @@ theorem fredholm_and_kernel_of_sandwiched_cayleyPow
     intro v hv
     have h := congrArg A_inv hv
     rw [map_zero] at h
-    have h1 : A_inv (A v) = v := by
-      simpa only [ContinuousLinearMap.mul_apply_eq_comp, Function.comp_apply,
-        ContinuousLinearMap.one_apply_eq_self] using
-        congrArg (fun S : HTGeometry.L2Real →L[ℂ] HTGeometry.L2Real => S v) hA_invA
+    have h1 : A_inv (A v) = v :=
+      congrArg (fun S : HTGeometry.L2Real →L[ℂ] HTGeometry.L2Real => S v) hA_invA
     rwa [h1] at h
-  have hB_left : ∀ x : HTGeometry.L2Real, B_inv (B x) = x := fun x => by
-    simpa only [ContinuousLinearMap.mul_apply_eq_comp, Function.comp_apply,
-      ContinuousLinearMap.one_apply_eq_self] using
-      congrArg (fun S : HTGeometry.L2Real →L[ℂ] HTGeometry.L2Real => S x) hB_invB
-  have hB_right : ∀ y : HTGeometry.L2Real, B (B_inv y) = y := fun y => by
-    simpa only [ContinuousLinearMap.mul_apply_eq_comp, Function.comp_apply,
-      ContinuousLinearMap.one_apply_eq_self] using
-      congrArg (fun S : HTGeometry.L2Real →L[ℂ] HTGeometry.L2Real => S y) hBB
+  have hB_left : ∀ x : HTGeometry.L2Real, B_inv (B x) = x := fun x =>
+    congrArg (fun S : HTGeometry.L2Real →L[ℂ] HTGeometry.L2Real => S x) hB_invB
+  have hB_right : ∀ y : HTGeometry.L2Real, B (B_inv y) = y := fun y =>
+    congrArg (fun S : HTGeometry.L2Real →L[ℂ] HTGeometry.L2Real => S y) hBB
   let kerEquiv :
       LinearMap.ker (T : HTGeometry.L2Real →ₗ[ℂ] HTGeometry.L2Real) ≃ₗ[ℂ]
       LinearMap.ker ((HTGeometry.cayleyWienerHopf ^ m :
@@ -918,10 +913,8 @@ theorem fredholm_and_kernel_of_sandwiched_cayleyPow
           rw [hx, map_zero]
         have h2 : (↑u⁻¹ * T : HTGeometry.L2Real →L[ℂ] HTGeometry.L2Real) = 1 := by
           rw [← hu, Units.inv_mul]
-        have h3 : (↑u⁻¹ : HTGeometry.L2Real →L[ℂ] HTGeometry.L2Real) (T x) = x := by
-          simpa only [ContinuousLinearMap.mul_apply_eq_comp, Function.comp_apply,
-            ContinuousLinearMap.one_apply_eq_self] using
-            congrArg (fun S : HTGeometry.L2Real →L[ℂ] HTGeometry.L2Real => S x) h2
+        have h3 : (↑u⁻¹ : HTGeometry.L2Real →L[ℂ] HTGeometry.L2Real) (T x) = x :=
+          congrArg (fun S : HTGeometry.L2Real →L[ℂ] HTGeometry.L2Real => S x) h2
         rwa [h3] at h1
       have h0 : (m : Cardinal) = 0 := by
         rw [← hrank, hker_bot, rank_bot]
@@ -984,7 +977,7 @@ private lemma exists_zhukovsky_quadratic_root (n : ℕ) (d : ℂ) :
     split_ifs with h
     · exact h
     · rw [norm_inv]
-      exact one_le_inv₀ (norm_pos_iff.mpr hz₀_ne) (not_le.mp h).le
+      exact (one_le_inv₀ (norm_pos_iff.mpr hz₀_ne)).mpr (not_le.mp h).le
   have hzp_ne : z_p ≠ 0 := by
     intro h0
     rw [h0, norm_zero] at hzp_ge
@@ -1016,10 +1009,8 @@ private lemma exists_zhukovsky_quadratic_root (n : ℕ) (d : ℂ) :
   have hr_pos : 0 < r := lt_of_lt_of_le zero_lt_one hzp_ge
   have hρ_gt : 1 < ρ := one_lt_zhukovskyRadius n
   have hρ_pos : 0 < ρ := zero_lt_one.trans hρ_gt
-  have hzp_polar : z_p = (r : ℂ) * Complex.exp ((φ : ℂ) * I) := by
-    dsimp only [r, φ]
-    rw [mul_comm (Complex.arg z_p : ℂ) I]
-    exact (Complex.norm_mul_exp_arg_mul_I z_p).symm
+  have hzp_polar : z_p = (r : ℂ) * Complex.exp ((φ : ℂ) * I) :=
+    (Complex.norm_mul_exp_arg_mul_I z_p).symm
   have hd_eq : d = zhukovskyMap n z_p := by
     have h := hfact z_p hzp_ne
     rw [sub_self, zero_mul, mul_zero, mul_zero] at h
@@ -1051,29 +1042,35 @@ private lemma exists_zhukovsky_quadratic_root (n : ℕ) (d : ℂ) :
     simp only [Complex.add_im, Complex.ofReal_im, Complex.mul_im, Complex.I_re,
       Complex.ofReal_re, Complex.I_im, h12]
     ring
-  have hmaj := zhukovskyAxis_major_identity n
-  have hmin := zhukovskyAxis_minor_identity n
-  have ha_pos := zhukovskyMajorAxis_pos n
-  have hb_pos := zhukovskyMinorAxis_pos n
+  have hmaj : (c_n / 2) * (ρ + ρ⁻¹) = zhukovskyMajorAxis n := zhukovskyAxis_major_identity n
+  have hmin : (c_n / 2) * (ρ - ρ⁻¹) = zhukovskyMinorAxis n := zhukovskyAxis_minor_identity n
+  have hc2_ne : c_n / 2 ≠ 0 := by positivity
   have hρ_sum_pos : 0 < ρ + ρ⁻¹ := by positivity
   have hρ_sub_pos : 0 < ρ - ρ⁻¹ := by
     have h1 : ρ⁻¹ < 1 := inv_lt_one_of_one_lt₀ hρ_gt
     linarith
+  have hre_div : (d.re - 1 / 2) / zhukovskyMajorAxis n =
+      ((r + r⁻¹) / (ρ + ρ⁻¹)) * Real.cos φ := by
+    rw [hd_re, ← hmaj, mul_assoc (c_n / 2), mul_div_mul_left _ _ hc2_ne, mul_div_right_comm]
+  have him_div : d.im / zhukovskyMinorAxis n =
+      ((r - r⁻¹) / (ρ - ρ⁻¹)) * Real.sin φ := by
+    rw [hd_im, ← hmin, mul_assoc (c_n / 2), mul_div_mul_left _ _ hc2_ne, mul_div_right_comm]
   have hform_eq : zhukovskyEllipseForm n d =
       ((r + r⁻¹) / (ρ + ρ⁻¹)) ^ 2 * Real.cos φ ^ 2 +
         ((r - r⁻¹) / (ρ - ρ⁻¹)) ^ 2 * Real.sin φ ^ 2 := by
     unfold zhukovskyEllipseForm
-    rw [hd_re, hd_im, ← hmaj, ← hmin]
-    dsimp only [c_n, ρ]
-    field_simp [hc_pos.ne', hρ_sum_pos.ne', hρ_sub_pos.ne']
-    ring
+    rw [← div_pow, ← div_pow, hre_div, him_div, mul_pow, mul_pow]
   have hcs := Real.cos_sq_add_sin_sq φ
+  have hcos_nn : 0 ≤ Real.cos φ ^ 2 := sq_nonneg _
+  have hsin_nn : 0 ≤ Real.sin φ ^ 2 := sq_nonneg _
+  have hprod_gt : 1 < r * ρ := by
+    have hle : ρ ≤ r * ρ := by simpa only [one_mul] using mul_le_mul_of_nonneg_right hzp_ge hρ_pos.le
+    linarith
   have hr_lt_imp : r < ρ → zhukovskyEllipseForm n d < 1 := by
     intro hlt
     have hsum_lt : r + r⁻¹ < ρ + ρ⁻¹ := by
       have hdiff : (ρ + ρ⁻¹) - (r + r⁻¹) = (ρ - r) * (1 - (r * ρ)⁻¹) := by
         field_simp [hr_pos.ne', hρ_pos.ne']; ring
-      have hprod_gt : 1 < r * ρ := by nlinarith [hzp_ge, hρ_gt]
       have hinv_lt : (r * ρ)⁻¹ < 1 := inv_lt_one_of_one_lt₀ hprod_gt
       have hpos : 0 < (ρ - r) * (1 - (r * ρ)⁻¹) := mul_pos (by linarith) (by linarith)
       linarith
@@ -1083,40 +1080,48 @@ private lemma exists_zhukovsky_quadratic_root (n : ℕ) (d : ℂ) :
     have hsub_nn : 0 ≤ r - r⁻¹ := by
       have hinv_le : r⁻¹ ≤ 1 := inv_le_one_of_one_le₀ hzp_ge
       linarith
-    have hq1 : ((r + r⁻¹) / (ρ + ρ⁻¹)) ^ 2 < 1 := by
-      have hd1 : (r + r⁻¹) / (ρ + ρ⁻¹) < 1 := (div_lt_one hρ_sum_pos).mpr hsum_lt
-      have hd0 : 0 ≤ (r + r⁻¹) / (ρ + ρ⁻¹) := by positivity
-      nlinarith
-    have hq2 : ((r - r⁻¹) / (ρ - ρ⁻¹)) ^ 2 < 1 := by
-      have hd1 : (r - r⁻¹) / (ρ - ρ⁻¹) < 1 := (div_lt_one hρ_sub_pos).mpr hsub_lt
-      have hd0 : 0 ≤ (r - r⁻¹) / (ρ - ρ⁻¹) := div_nonneg hsub_nn hρ_sub_pos.le
-      nlinarith
+    set q₁ := ((r + r⁻¹) / (ρ + ρ⁻¹)) ^ 2
+    set q₂ := ((r - r⁻¹) / (ρ - ρ⁻¹)) ^ 2
+    have hq1 : q₁ < 1 :=
+      pow_lt_one₀ (by positivity) ((div_lt_one hρ_sum_pos).mpr hsum_lt) two_ne_zero
+    have hq2 : q₂ < 1 :=
+      pow_lt_one₀ (div_nonneg hsub_nn hρ_sub_pos.le)
+        ((div_lt_one hρ_sub_pos).mpr hsub_lt) two_ne_zero
     rw [hform_eq]
-    nlinarith [sq_nonneg (Real.cos φ), sq_nonneg (Real.sin φ), hcs]
+    calc q₁ * Real.cos φ ^ 2 + q₂ * Real.sin φ ^ 2
+        ≤ max q₁ q₂ * Real.cos φ ^ 2 + max q₁ q₂ * Real.sin φ ^ 2 :=
+          add_le_add (mul_le_mul_of_nonneg_right (le_max_left _ _) hcos_nn)
+            (mul_le_mul_of_nonneg_right (le_max_right _ _) hsin_nn)
+      _ = max q₁ q₂ * (Real.cos φ ^ 2 + Real.sin φ ^ 2) := by ring
+      _ = max q₁ q₂ := by rw [hcs, mul_one]
+      _ < 1 := max_lt hq1 hq2
   have hr_gt_imp : ρ < r → 1 < zhukovskyEllipseForm n d := by
     intro hgt
     have hsum_gt : ρ + ρ⁻¹ < r + r⁻¹ := by
       have hdiff : (r + r⁻¹) - (ρ + ρ⁻¹) = (r - ρ) * (1 - (r * ρ)⁻¹) := by
         field_simp [hr_pos.ne', hρ_pos.ne']; ring
-      have hprod_gt : 1 < r * ρ := by nlinarith [hzp_ge, hρ_gt]
       have hinv_lt : (r * ρ)⁻¹ < 1 := inv_lt_one_of_one_lt₀ hprod_gt
       have hpos : 0 < (r - ρ) * (1 - (r * ρ)⁻¹) := mul_pos (by linarith) (by linarith)
       linarith
     have hsub_gt : ρ - ρ⁻¹ < r - r⁻¹ := by
       have hinv_lt : r⁻¹ < ρ⁻¹ := inv_lt_inv₀ hr_pos hρ_pos |>.mpr hgt
       linarith
-    have hq1 : 1 < ((r + r⁻¹) / (ρ + ρ⁻¹)) ^ 2 := by
-      have hd1 : 1 < (r + r⁻¹) / (ρ + ρ⁻¹) := (one_lt_div hρ_sum_pos).mpr hsum_gt
-      nlinarith
-    have hq2 : 1 < ((r - r⁻¹) / (ρ - ρ⁻¹)) ^ 2 := by
-      have hd1 : 1 < (r - r⁻¹) / (ρ - ρ⁻¹) := (one_lt_div hρ_sub_pos).mpr hsub_gt
-      nlinarith
+    set q₁ := ((r + r⁻¹) / (ρ + ρ⁻¹)) ^ 2
+    set q₂ := ((r - r⁻¹) / (ρ - ρ⁻¹)) ^ 2
+    have hq1 : 1 < q₁ := one_lt_pow₀ ((one_lt_div hρ_sum_pos).mpr hsum_gt) two_ne_zero
+    have hq2 : 1 < q₂ := one_lt_pow₀ ((one_lt_div hρ_sub_pos).mpr hsub_gt) two_ne_zero
     rw [hform_eq]
-    nlinarith [sq_nonneg (Real.cos φ), sq_nonneg (Real.sin φ), hcs]
+    calc (1 : ℝ) < min q₁ q₂ := lt_min hq1 hq2
+      _ = min q₁ q₂ * (Real.cos φ ^ 2 + Real.sin φ ^ 2) := by rw [hcs, mul_one]
+      _ = min q₁ q₂ * Real.cos φ ^ 2 + min q₁ q₂ * Real.sin φ ^ 2 := by ring
+      _ ≤ q₁ * Real.cos φ ^ 2 + q₂ * Real.sin φ ^ 2 :=
+          add_le_add (mul_le_mul_of_nonneg_right (min_le_left _ _) hcos_nn)
+            (mul_le_mul_of_nonneg_right (min_le_right _ _) hsin_nn)
   have hr_eq_imp : r = ρ → zhukovskyEllipseForm n d = 1 := by
     intro heq
-    rw [hform_eq, heq, div_self hρ_sum_pos.ne', div_self hρ_sub_pos.ne']
-    nlinarith [hcs]
+    rw [hform_eq, heq, div_self hρ_sum_pos.ne', div_self hρ_sub_pos.ne',
+      one_pow, one_mul, one_mul]
+    exact hcs
   refine ⟨z_p, hzp_ge, hzp_ne, hfact, ⟨hr_lt_imp, ?_⟩, ⟨hr_gt_imp, ?_⟩⟩
   · intro hlt_form
     rcases lt_trichotomy r ρ with hlt | heq | hgt
@@ -1195,13 +1200,36 @@ theorem exists_zhukovsky_outer_factorization_of_gt_one {n : ℕ} {d : ℂ}
     exact zero_ne_one h1
   change zhukovskyMap n ((ρ : ℂ) * (u : ℂ)) - d = g.eval (u : ℂ) * star (h.eval (u : ℂ))
   rw [hfact ((ρ : ℂ) * (u : ℂ)) (mul_ne_zero hρ_ne hu_ne)]
+  have hu_mul_star : (u : ℂ) * star (u : ℂ) = 1 := by
+    rw [Complex.star_def, Complex.mul_conj', HTGeometry.norm_coe_unitCircle]
+    norm_num
   have hu_inv : (u : ℂ)⁻¹ = star (u : ℂ) := unitCircle_inv_eq_star u
+  have hf1 : (ρ : ℂ) * (u : ℂ) - z_p = (-z_p) * (1 - (z_p / (ρ : ℂ))⁻¹ * (u : ℂ)) := by
+    field_simp [hρ_ne, hzp_ne]
+    ring
+  have hf2 : (ρ : ℂ) * (u : ℂ) - z_p⁻¹ =
+      (ρ : ℂ) * (u : ℂ) * (1 - (z_p⁻¹ / (ρ : ℂ)) * star (u : ℂ)) := by
+    calc (ρ : ℂ) * (u : ℂ) - z_p⁻¹
+        = (ρ : ℂ) * (u : ℂ) - z_p⁻¹ * ((u : ℂ) * star (u : ℂ)) := by rw [hu_mul_star, mul_one]
+      _ = (ρ : ℂ) * (u : ℂ) * (1 - (z_p⁻¹ / (ρ : ℂ)) * star (u : ℂ)) := by
+          field_simp [hρ_ne]
   dsimp only [g, h, α_p, α_m]
   simp only [Polynomial.eval_mul, Polynomial.eval_sub, Polynomial.eval_one, Polynomial.eval_C,
     Polynomial.eval_X, star_sub, star_one, star_mul, star_star]
-  rw [mul_inv, hu_inv]
-  field_simp [hρ_ne, hzp_ne]
-  ring
+  rw [mul_inv, hu_inv, hf1, hf2]
+  calc ((c_n : ℂ) / 2) * (((ρ : ℂ)⁻¹ * star (u : ℂ)) *
+          ((-z_p * (1 - (z_p / (ρ : ℂ))⁻¹ * (u : ℂ))) *
+            ((ρ : ℂ) * (u : ℂ) * (1 - (z_p⁻¹ / (ρ : ℂ)) * star (u : ℂ)))))
+      = ((ρ : ℂ)⁻¹ * (ρ : ℂ)) * ((u : ℂ) * star (u : ℂ)) *
+          ((-((c_n : ℂ) * (ρ : ℂ) / 2 * (z_p / (ρ : ℂ)))) *
+            (1 - (z_p / (ρ : ℂ))⁻¹ * (u : ℂ)) *
+            (1 - star (u : ℂ) * (z_p⁻¹ / (ρ : ℂ)))) := by
+          field_simp [hρ_ne]
+    _ = -((c_n : ℂ) * (ρ : ℂ) / 2 * (z_p / (ρ : ℂ))) *
+          (1 - (z_p / (ρ : ℂ))⁻¹ * (u : ℂ)) *
+          (1 - star (u : ℂ) * (z_p⁻¹ / (ρ : ℂ))) := by
+          rw [inv_mul_cancel₀ hρ_ne, hu_mul_star, one_mul, one_mul]
+          ring
 
 /-- **Interior Zhukovsky factor outer splitting (`E_n(d) < 1`).**
 When `d` lies strictly inside the `n`-th Zhukovsky ellipse, `zhukovskyLoop n u - d` factors on
@@ -1266,7 +1294,7 @@ theorem exists_zhukovsky_outer_factorization_of_lt_one {n : ℕ} {d : ℂ}
   rw [hfact ((ρ : ℂ) * (u : ℂ)) (mul_ne_zero hρ_ne hu_ne)]
   have hu_inv : (u : ℂ)⁻¹ = star (u : ℂ) := unitCircle_inv_eq_star u
   have hcρ_conj : star ((c_n : ℂ) * (ρ : ℂ) / 2) = (c_n : ℂ) * (ρ : ℂ) / 2 := by
-    simp [Complex.star_def]
+    simp
   dsimp only [q, α_p, α_m]
   simp only [Polynomial.eval_mul, Polynomial.eval_sub, Polynomial.eval_one, Polynomial.eval_C,
     Polynomial.eval_X, star_mul, star_sub, star_one, star_star, hcρ_conj]
@@ -1277,13 +1305,13 @@ theorem exists_zhukovsky_outer_factorization_of_lt_one {n : ℕ} {d : ℂ}
     calc (ρ : ℂ) * (u : ℂ) - z_p
         = (ρ : ℂ) * (u : ℂ) - z_p * ((u : ℂ) * star (u : ℂ)) := by rw [hu_mul_star, mul_one]
       _ = (ρ : ℂ) * (u : ℂ) * (1 - (z_p / (ρ : ℂ)) * star (u : ℂ)) := by
-          field_simp [hρ_ne]; ring
+          field_simp [hρ_ne]
   have h2 : (ρ : ℂ) * (u : ℂ) - z_p⁻¹ =
       (ρ : ℂ) * (u : ℂ) * (1 - (z_p⁻¹ / (ρ : ℂ)) * star (u : ℂ)) := by
     calc (ρ : ℂ) * (u : ℂ) - z_p⁻¹
         = (ρ : ℂ) * (u : ℂ) - z_p⁻¹ * ((u : ℂ) * star (u : ℂ)) := by rw [hu_mul_star, mul_one]
       _ = (ρ : ℂ) * (u : ℂ) * (1 - (z_p⁻¹ / (ρ : ℂ)) * star (u : ℂ)) := by
-          field_simp [hρ_ne]; ring
+          field_simp [hρ_ne]
   rw [h1, h2]
   calc ((c_n : ℂ) / 2) * (((ρ : ℂ)⁻¹ * star (u : ℂ)) *
           (((ρ : ℂ) * (u : ℂ) * (1 - z_p / (ρ : ℂ) * star (u : ℂ))) *
@@ -1291,9 +1319,10 @@ theorem exists_zhukovsky_outer_factorization_of_lt_one {n : ℕ} {d : ℂ}
       = ((ρ : ℂ)⁻¹ * (ρ : ℂ)) * ((u : ℂ) * star (u : ℂ)) * (u : ℂ) *
           (((c_n : ℂ) * (ρ : ℂ) / 2) * (1 - z_p / (ρ : ℂ) * star (u : ℂ)) *
             (1 - z_p⁻¹ / (ρ : ℂ) * star (u : ℂ))) := by ring
-    _ = (u : ℂ) * (((c_n : ℂ) * (ρ : ℂ) / 2) * (1 - z_p / (ρ : ℂ) * star (u : ℂ)) *
-          (1 - z_p⁻¹ / (ρ : ℂ) * star (u : ℂ))) := by
+    _ = (u : ℂ) * ((1 - star (u : ℂ) * (z_p⁻¹ / (ρ : ℂ))) *
+          ((1 - star (u : ℂ) * (z_p / (ρ : ℂ))) * ((c_n : ℂ) * (ρ : ℂ) / 2))) := by
         rw [inv_mul_cancel₀ hρ_ne, hu_mul_star, one_mul, one_mul]
+        ring
 
 /-- Surjectivity of `zhukovskyLoop n` onto the level set `zhukovskyEllipseForm n = 1`:
 boundary regularity plus nonvanishing of `integerThetaLaurentLoop T n N` on `UnitCircle`
@@ -1330,25 +1359,36 @@ theorem ellipse_nondegenerate_of_loop_ne_zero (T : ℝ) (n N : ℕ)
     exact (pow_eq_one_iff_of_nonneg (norm_nonneg ζ) two_ne_zero).mp hsq
   let u : HTGeometry.UnitCircle := ⟨ζ, mem_sphere_zero_iff_norm.mpr hζ_norm⟩
   have hloop_u : zhukovskyLoop n u = d := by
-    rw [← HTGeometry.circleExp_arg u, zhukovskyLoop_circleExp]
-    have hexp := HTGeometry.exp_arg_mul_I_of_norm_eq_one hζ_norm
-    rw [Complex.exp_mul_I, ← Complex.ofReal_cos, ← Complex.ofReal_sin] at hexp
-    have hcos : Real.cos (Complex.arg ζ) = (d.re - 1 / 2) / a := by
-      have h := congrArg Complex.re hexp
-      simpa [ζ] using h
-    have hsin : Real.sin (Complex.arg ζ) = d.im / b := by
-      have h := congrArg Complex.im hexp
-      simpa [ζ] using h
-    change zhukovskyLoop n (HTGeometry.circleExp (Complex.arg ζ)) = d at *
-    rw [hcos, hsin]
-    dsimp only [a, b]
-    apply Complex.ext
-    · simp only [Complex.add_re, Complex.ofReal_re, Complex.mul_re, Complex.I_re,
-        Complex.ofReal_im, Complex.I_im]
-      field_simp [ha_ne]; ring
-    · simp only [Complex.add_im, Complex.ofReal_im, Complex.mul_im, Complex.I_re,
-        Complex.ofReal_re, Complex.I_im]
-      field_simp [hb_ne]; ring
+    have hu_inv : ζ⁻¹ = star ζ := unitCircle_inv_eq_star u
+    have hmaj := zhukovskyAxis_major_identity n
+    have hmin := zhukovskyAxis_minor_identity n
+    have hζ_star : star ζ = (((d.re - 1 / 2) / a : ℝ) : ℂ) - (((d.im / b : ℝ) : ℂ) * I) := by
+      dsimp only [ζ]
+      simp [sub_eq_add_neg]
+    change (1 / 2 : ℂ) + ((zhukovskyFocal n : ℂ) / 2) *
+      ((zhukovskyRadius n : ℂ) * ζ + ((zhukovskyRadius n : ℂ) * ζ)⁻¹) = d
+    rw [mul_inv, hu_inv, hζ_star, ← Complex.ofReal_inv]
+    dsimp only [ζ]
+    have hmaj_re : (zhukovskyFocal n / 2) * (zhukovskyRadius n + (zhukovskyRadius n)⁻¹) *
+        ((d.re - 1 / 2) / a) = d.re - 1 / 2 := by
+      rw [hmaj]; exact mul_div_cancel₀ _ ha_ne
+    have hmin_im : (zhukovskyFocal n / 2) * (zhukovskyRadius n - (zhukovskyRadius n)⁻¹) *
+        (d.im / b) = d.im := by
+      rw [hmin]; exact mul_div_cancel₀ _ hb_ne
+    calc (1 / 2 : ℂ) + ((zhukovskyFocal n : ℂ) / 2) *
+          ((zhukovskyRadius n : ℂ) *
+              ((((d.re - 1 / 2) / a : ℝ) : ℂ) + ((d.im / b : ℝ) : ℂ) * I) +
+            (((zhukovskyRadius n)⁻¹ : ℝ) : ℂ) *
+              ((((d.re - 1 / 2) / a : ℝ) : ℂ) - ((d.im / b : ℝ) : ℂ) * I))
+        = (((1 / 2 + (zhukovskyFocal n / 2) * (zhukovskyRadius n + (zhukovskyRadius n)⁻¹) *
+            ((d.re - 1 / 2) / a) : ℝ) : ℂ)) +
+          ((((zhukovskyFocal n / 2) * (zhukovskyRadius n - (zhukovskyRadius n)⁻¹) *
+            (d.im / b) : ℝ) : ℂ)) * I := by
+            push_cast; ring
+      _ = ((d.re : ℝ) : ℂ) + ((d.im : ℝ) : ℂ) * I := by
+            rw [hmaj_re, hmin_im]
+            congr 1; push_cast; ring
+      _ = d := Complex.re_add_im d
   have hz0 := ((mem_prefixEnclosedZeros_iff T n N z).mp hz).2
   have hw0 := ((mem_prefixEnclosedZeros_iff T n N w).mp hw).2
   have hmz_pos : 0 < (analyticOrderAt (_root_.RHTower.finiteThetaAmplitude N) z).toNat := by
@@ -1368,7 +1408,7 @@ theorem ellipse_nondegenerate_of_loop_ne_zero (T : ℝ) (n N : ℕ)
     exact Nat.pos_of_ne_zero fun ht =>
       hne_zero ((ENat.coe_toNat hne_top).symm.trans (by simp [ht]))
   have heval := eval_pencilDifferencePoly_eq_prod T n N ⟨le_rfl, zero_le_one⟩ hbdry0 (zhukovskyLoop n u)
-  simp only [pencilDifferencePoly_zero, prefixEnclosedZeros, hfun] at heval
+  simp only [pencilDifferencePoly_zero, hfun] at heval
   have hP0 : (integerThetaDifferencePoly T n N).eval (zhukovskyLoop n u) = 0 := by
     rw [heval]
     refine Finset.prod_eq_zero hz ?_
@@ -1430,8 +1470,9 @@ theorem exists_birkhoffSzego_factorization_integerTheta (T : ℝ) (n N : ℕ)
   have heval : ∀ x : ℂ, (integerThetaDifferencePoly T n N).eval x =
       ∏ z ∈ Z, ∏ w ∈ Z, (x - (z - w)) ^ (m z * m w) := by
     intro x
+    dsimp only [Z, m, prefixEnclosedZeros]
     have h := eval_pencilDifferencePoly_eq_prod T n N ⟨le_rfl, zero_le_one⟩ hbdry0 x
-    simpa only [pencilDifferencePoly_zero, prefixEnclosedZeros, hfun] using h
+    simpa only [pencilDifferencePoly_zero, hfun] using h
   -- For each pair `(z, w) ∈ Z ×ˢ Z`, extract its outer polynomials and coordinate degree `0` or `1`.
   have hpair : ∀ p : {p : ℂ × ℂ // p ∈ Z ×ˢ Z},
       ∃ g_p h_p : Polynomial ℂ, IsOuterPolynomial g_p ∧ IsOuterPolynomial h_p ∧
@@ -1506,7 +1547,14 @@ theorem exists_birkhoffSzego_factorization_integerTheta (T : ℝ) (n N : ℕ)
       rw [map_prod]; rfl
     have hcoord_eval : (∏ p ∈ S, (HTGeometry.circleCoord u) ^ (mult p * deg p)) =
         (HTGeometry.circleCoord ^ k) u := by
-      rw [← Finset.pow_sum, hk_sum, ContinuousMap.coe_pow, Pi.pow_apply]
+      have hpow_sum : ∀ (s : Finset {p : ℂ × ℂ // p ∈ Z ×ˢ Z}),
+          (∏ p ∈ s, (HTGeometry.circleCoord u) ^ (mult p * deg p)) =
+            (HTGeometry.circleCoord u) ^ (∑ p ∈ s, mult p * deg p) := by
+        intro s
+        induction s using Finset.induction_on with
+        | empty => simp
+        | @insert p s hp ih => rw [Finset.prod_insert hp, Finset.sum_insert hp, pow_add, ih]
+      rw [hpow_sum S, hk_sum, ContinuousMap.coe_pow, Pi.pow_apply]
     rw [hg_eval, hh_eval, hcoord_eval]
   have hlaurent_eq : integerThetaLaurentLoop T n N =
       circlePoly (g₀ ^ 2) * HTGeometry.circleCoord ^ (2 * k) * star (circlePoly (h₀ ^ 2)) := by
@@ -1586,8 +1634,9 @@ theorem exists_birkhoffSzego_factorization_integerTheta (T : ℝ) (n N : ℕ)
     ext u
     unfold integerThetaCollisionSymbol
     rw [unitNormalizeSymbol_apply_of_ne_zero hloop_nz, hlaurent_eq]
-    simp only [ContinuousMap.coe_mul, ContinuousMap.coe_pow, ContinuousMap.star_apply,
-      Pi.mul_apply, Pi.pow_apply, circlePoly_apply, circlePoly_pow]
+    dsimp only [Φ, Φ_inv]
+    simp only [ContinuousMap.mul_apply, ContinuousMap.pow_apply, ContinuousMap.star_apply,
+      circlePoly_apply, circlePolyInv_apply, circlePoly_pow, star_pow, star_mul, star_inv₀]
     set gu := g₀.eval (u : ℂ)
     set hu := h₀.eval (u : ℂ)
     have hgu_ne : gu ≠ 0 := hg₀_out (u : ℂ) (HTGeometry.norm_coe_unitCircle u).le
@@ -1598,14 +1647,10 @@ theorem exists_birkhoffSzego_factorization_integerTheta (T : ℝ) (n N : ℕ)
         show ‖HTGeometry.circleCoord u‖ = 1 from HTGeometry.norm_coe_unitCircle u,
         one_pow, mul_one, Complex.ofReal_mul, Complex.ofReal_pow, Complex.ofReal_pow,
         ← Complex.mul_conj', ← Complex.mul_conj']
-    change (gu ^ 2 * (HTGeometry.circleCoord u) ^ (2 * k) * (star hu) ^ 2) /
-        (‖gu ^ 2 * (HTGeometry.circleCoord u) ^ (2 * k) * (star hu) ^ 2‖ : ℂ) =
-      (gu * hu⁻¹) * (HTGeometry.circleCoord u) ^ (2 * k) * (star hu * (star gu)⁻¹)
     rw [hnorm_eq]
     have hsg_ne : star gu ≠ 0 := star_ne_zero.mpr hgu_ne
     have hsh_ne : star hu ≠ 0 := star_ne_zero.mpr hhu_ne
     field_simp [hgu_ne, hhu_ne, hsg_ne, hsh_ne]
-    ring
   let A_nm := HTGeometry.wienerHopfLift Φ
   let A_nm_inv := HTGeometry.wienerHopfLift Φ_inv
   let B_nm := HTGeometry.wienerHopfLift (star Φ_inv)
@@ -1699,14 +1744,14 @@ theorem integerTheta_szego_positivity_tfae (T : ℝ) (n N : ℕ)
         exact mul_ne_zero (inv_ne_zero (hG z hz)) (hH z hz)
     refine ⟨F, hF_disk, fun u => ?_⟩
     rw [hGH]
-    simp only [F, ContinuousMap.coe_mul, ContinuousMap.star_apply, circlePoly_apply]
+    simp only [F, ContinuousMap.mul_apply, ContinuousMap.star_apply, circlePoly_apply]
     have hGu_ne : G.eval (u : ℂ) ≠ 0 := hG (u : ℂ) (HTGeometry.norm_coe_unitCircle u).le
     have hHu_ne : H.eval (u : ℂ) ≠ 0 := hH (u : ℂ) (HTGeometry.norm_coe_unitCircle u).le
     have hprod : ((G.eval (u : ℂ))⁻¹ * H.eval (u : ℂ)) *
         (G.eval (u : ℂ) * star (H.eval (u : ℂ))) =
         H.eval (u : ℂ) * star (H.eval (u : ℂ)) := by
-      field_simp [hGu_ne]; ring
-    rw [hprod, Complex.star_def, Complex.mul_conj', Complex.ofReal_re]
+      field_simp [hGu_ne]
+    rw [hprod, Complex.star_def, Complex.mul_conj', ← Complex.ofReal_pow, Complex.ofReal_re]
     exact sq_pos_of_pos (norm_pos_iff.mpr hHu_ne)
   tfae_have 6 → 1 := by
     rintro ⟨F, hF, hpos⟩

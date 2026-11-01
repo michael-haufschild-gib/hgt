@@ -43,6 +43,16 @@ interval. The successor gap for the same packet is at least its
 nonconstant mass. This comparison is unproved; the shell payment remains
 in the complete energy identity.
 
+The successor gap follows from the exact period identity
+`mean (F(n+1)−F(n))² = Σ_m 2(φ(m)−μ(m))a_m²`.
+The constant mode contributes zero, parity contributes `4a_2²`, and
+`|μ(m)/φ(m)|≤1/2` for `m≥3` gives at least `φ(m)a_m²`.
+If `gcd(p,Q!)=1`, dilation preserves each Ramanujan mode and permutes
+residues modulo `Q!`. Thus the same gap holds for `F(pn+1)−F(n)`.
+The existing relative affine-window bound then gives
+`Σ_(A<n≤A+K) (F(pn+1)−F(n))² ≥ (K−Q(Q−1))·nonconstantPacketMass`
+when `K≥Q(Q−1)`. No prime-distribution input is needed for this step.
+
 ## Remaining obligations
 
 - Formalize the pointwise degree bound and its packet-weighted consequence.

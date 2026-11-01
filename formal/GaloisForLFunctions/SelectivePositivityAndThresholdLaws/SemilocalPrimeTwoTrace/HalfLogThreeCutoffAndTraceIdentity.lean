@@ -131,7 +131,8 @@ theorem inner_neg_logTranslationCLM_eq_zero_of_two_mul_le
 theorem clm_smul_zero {H : Type*} [NormedAddCommGroup H] [InnerProductSpace ℂ H]
     (c : ℂ) : c • (0 : H →L[ℂ] H) = 0 := by
   ext x
-  rfl
+  change c • (0 : H) = 0
+  exact smul_zero c
 
 theorem clm_smul_comp {H : Type*} [NormedAddCommGroup H] [InnerProductSpace ℂ H]
     (c : ℂ) (A B : H →L[ℂ] H) : (c • A) ∘L B = c • (A ∘L B) := by
@@ -231,17 +232,19 @@ theorem ccmFinitePrimeOperator_eq_primeTwo_of_le_halfLogThree {a : SuzukiPositiv
     rw [ccmFinitePrimeOperator_eq_zero_of_le_halfLogTwo ha2,
       ccmPrimeTransportOperator_eq_zero_of_two_mul_le_log a h2, clm_smul_zero]
   · unfold ccmFinitePrimeOperator
-    have hexp2 : (2 : ℝ) < Real.exp (2 * a.1) := by
-      rw [← Real.exp_log (by norm_num : (0 : ℝ) < 2)]
-      exact Real.exp_lt_exp.mpr (by linarith)
-    have hexp3 : Real.exp (2 * a.1) ≤ (3 : ℝ) := by
-      rw [← Real.exp_log (by norm_num : (0 : ℝ) < 3)]
-      exact Real.exp_le_exp.mpr (by linarith)
+    have hexp2 : (2 : ℝ) < Real.exp (2 * a.1) :=
+      calc (2 : ℝ) = Real.exp (Real.log 2) := (Real.exp_log (by norm_num)).symm
+        _ < Real.exp (2 * a.1) := Real.exp_lt_exp.mpr (by linarith)
+    have hexp3 : Real.exp (2 * a.1) ≤ ((3 : ℕ) : ℝ) :=
+      calc Real.exp (2 * a.1) ≤ Real.exp (Real.log 3) := Real.exp_le_exp.mpr (by linarith)
+        _ = (3 : ℝ) := Real.exp_log (by norm_num)
+        _ = ((3 : ℕ) : ℝ) := by norm_num
     have hfl2 : 2 ≤ Nat.floor (Real.exp (2 * a.1)) := Nat.le_floor hexp2.le
     have hfl3 : Nat.floor (Real.exp (2 * a.1)) ≤ 3 :=
-      (Nat.floor_le_iff (Real.exp_pos _).le).mpr (by linarith)
+      calc Nat.floor (Real.exp (2 * a.1)) ≤ Nat.floor ((3 : ℕ) : ℝ) := Nat.floor_mono hexp3
+        _ = 3 := Nat.floor_natCast 3
     rw [Finset.sum_eq_single 2]
-    · rw [ArithmeticFunction.vonMangoldt_apply_prime Nat.prime_two]
+    · rw [ArithmeticFunction.vonMangoldt_apply_prime Nat.prime_two, Nat.cast_ofNat]
     · intro n hn hne2
       obtain ⟨hn2, hnu⟩ := Finset.mem_Icc.mp hn
       have hn3 : n = 3 := by omega
@@ -338,7 +341,13 @@ theorem ccmPrimePowerOperator_diagonal_eq_of_val_eq (p : ℕ) {a b : SuzukiPosit
           (inner ℂ (ccmVisiblePrimeBlock c (p ^ m) f) f).re := by
     intro c f
     unfold ccmPrimePowerOperator
-    rw [ContinuousLinearMap.sum_apply, sum_inner_left, Complex.re_sum]
+    generalize Finset.Icc 1 (Nat.floor (Real.exp (2 * c.1))) = s
+    induction s using Finset.induction_on with
+    | empty =>
+        rw [Finset.sum_empty, Finset.sum_empty, zero_apply, inner_zero_left, Complex.zero_re]
+    | @insert m s hm ih =>
+        rw [Finset.sum_insert hm, Finset.sum_insert hm, add_apply, inner_add_left,
+          Complex.add_re, ih]
   rw [hsum_re b fb, hsum_re a fa, hexpand]
   refine Finset.sum_congr rfl fun m _ => ?_
   exact deleted_diagonal_eq_of_val_eq (p ^ m) hab hvu
@@ -374,11 +383,13 @@ theorem ccmPrimePowerOperator_two_eq_finitePrime_of_le_halfLogThree {a : SuzukiP
     (ha : a.1 ≤ Real.log 3 / 2) :
     ccmPrimePowerOperator 2 a = ccmFinitePrimeOperator a := by
   rw [ccmFinitePrimeOperator_eq_primeTwo_of_le_halfLogThree ha]
-  have hexp3 : Real.exp (2 * a.1) ≤ (3 : ℝ) := by
-    rw [← Real.exp_log (by norm_num : (0 : ℝ) < 3)]
-    exact Real.exp_le_exp.mpr (by linarith)
+  have hexp3 : Real.exp (2 * a.1) ≤ ((3 : ℕ) : ℝ) :=
+    calc Real.exp (2 * a.1) ≤ Real.exp (Real.log 3) := Real.exp_le_exp.mpr (by linarith)
+      _ = (3 : ℝ) := Real.exp_log (by norm_num)
+      _ = ((3 : ℕ) : ℝ) := by norm_num
   have hfl3 : Nat.floor (Real.exp (2 * a.1)) ≤ 3 :=
-    (Nat.floor_le_iff (Real.exp_pos _).le).mpr (by linarith)
+    calc Nat.floor (Real.exp (2 * a.1)) ≤ Nat.floor ((3 : ℕ) : ℝ) := Nat.floor_mono hexp3
+      _ = 3 := Nat.floor_natCast 3
   rcases le_or_gt a.1 (Real.log 2 / 2) with ha2 | ha2
   · have h2 : 2 * a.1 ≤ Real.log (2 : ℕ) := by rw [Nat.cast_ofNat]; linarith
     rw [ccmPrimeTransportOperator_eq_zero_of_two_mul_le_log a h2, clm_smul_zero]
@@ -394,15 +405,15 @@ theorem ccmPrimePowerOperator_two_eq_finitePrime_of_le_halfLogThree {a : SuzukiP
         Real.log_le_log (by norm_num) hpow
       rw [ccmPrimeTransportOperator_eq_zero_of_two_mul_le_log a (by linarith), clm_smul_zero]
     · rfl
-  · have hexp2 : (2 : ℝ) < Real.exp (2 * a.1) := by
-      rw [← Real.exp_log (by norm_num : (0 : ℝ) < 2)]
-      exact Real.exp_lt_exp.mpr (by linarith)
+  · have hexp2 : (2 : ℝ) < Real.exp (2 * a.1) :=
+      calc (2 : ℝ) = Real.exp (Real.log 2) := (Real.exp_log (by norm_num)).symm
+        _ < Real.exp (2 * a.1) := Real.exp_lt_exp.mpr (by linarith)
     have hfl2 : 2 ≤ Nat.floor (Real.exp (2 * a.1)) := Nat.le_floor hexp2.le
     unfold ccmPrimePowerOperator
     rw [Finset.sum_eq_single 1]
     · unfold ccmVisiblePrimeBlock
       rw [pow_one, if_pos (Finset.mem_Icc.mpr ⟨le_rfl, hfl2⟩),
-        ArithmeticFunction.vonMangoldt_apply_prime Nat.prime_two]
+        ArithmeticFunction.vonMangoldt_apply_prime Nat.prime_two, Nat.cast_ofNat]
     · intro m hm hne1
       have hm2 : 2 ≤ m := by
         have hm1 := (Finset.mem_Icc.mp hm).1
@@ -449,7 +460,8 @@ theorem primeSingleSemilocalFamily_two_energy_halfLogThree :
 theorem opTrace_comp_rankOne_self_of_isSelfAdjoint {H : Type*} [NormedAddCommGroup H]
     [InnerProductSpace ℂ H] [CompleteSpace H] {R : H →L[ℂ] H} (hR : IsSelfAdjoint R) (f : H) :
     ContinuousLinearMap.opTrace (R ∘L InnerProductSpace.rankOne ℂ f f) = inner ℂ (R f) f := by
-  rw [opTrace_comp_rankOne, hR.isSymmetric f f]
+  rw [opTrace_comp_rankOne]
+  exact (hR.isSymmetric f f).symm
 
 /-- **Exact `{∞, 2}` operator-trace identity through `½ log 3`.**
 For every aperture `0 < a ≤ ½ log 3` and every form vector `u : CCMArchimedeanFormDomain a` with
@@ -484,15 +496,29 @@ theorem ccmRestrictedWeilSourceQuadratic_eq_semilocalPrimeTwoTrace_of_le_halfLog
     rw [opTrace_comp_rankOne_self_of_isSelfAdjoint (ccmPolarOperator_isSelfAdjoint a) f,
       inner_ccmPolarOperator]
     rfl
+  set c : ℂ := soninSemilocalLogPrimePowerCoefficient (twoPrime, 0) *
+      ContinuousLinearMap.opTrace (primeTwoLogOperator 1)
+  set S : suzukiApertureHilbert a →L[ℂ] suzukiApertureHilbert a :=
+      ccmApertureCompression a (ccmSymmetricLogTranslation (Real.log 2))
+  have hpr1 : inner ℂ (ccmFinitePrimeOperator a f) f =
+      ContinuousLinearMap.opTrace (ccmFinitePrimeOperator a ∘L InnerProductSpace.rankOne ℂ f f) :=
+    (opTrace_comp_rankOne_self_of_isSelfAdjoint (ccmFinitePrimeOperator_isSelfAdjoint a) f).symm
+  have hpr2 : ContinuousLinearMap.opTrace
+      (ccmFinitePrimeOperator a ∘L InnerProductSpace.rankOne ℂ f f) =
+      ContinuousLinearMap.opTrace ((c • S) ∘L InnerProductSpace.rankOne ℂ f f) :=
+    congrArg (fun T : suzukiApertureHilbert a →L[ℂ] suzukiApertureHilbert a =>
+      ContinuousLinearMap.opTrace (T ∘L InnerProductSpace.rankOne ℂ f f))
+      (ccmFinitePrimeOperator_eq_primeTwoLogTrace_of_le_halfLogThree ha)
+  have hpr3 : ContinuousLinearMap.opTrace ((c • S) ∘L InnerProductSpace.rankOne ℂ f f) =
+      c * ContinuousLinearMap.opTrace (S ∘L InnerProductSpace.rankOne ℂ f f) := by
+    have hcomp : (c • S) ∘L InnerProductSpace.rankOne ℂ f f =
+        c • (S ∘L InnerProductSpace.rankOne ℂ f f) :=
+      clm_smul_comp c S (InnerProductSpace.rankOne ℂ f f)
+    exact (congrArg ContinuousLinearMap.opTrace hcomp).trans
+      (RHTower.opTrace_smul c (S ∘L InnerProductSpace.rankOne ℂ f f))
   have hpr : inner ℂ (ccmFinitePrimeOperator a f) f =
-      soninSemilocalLogPrimePowerCoefficient (twoPrime, 0) *
-        ContinuousLinearMap.opTrace (primeTwoLogOperator 1) *
-        ContinuousLinearMap.opTrace
-          (ccmApertureCompression a (ccmSymmetricLogTranslation (Real.log 2)) ∘L
-            InnerProductSpace.rankOne ℂ f f) := by
-    rw [← opTrace_comp_rankOne_self_of_isSelfAdjoint (ccmFinitePrimeOperator_isSelfAdjoint a) f,
-      ccmFinitePrimeOperator_eq_primeTwoLogTrace_of_le_halfLogThree ha,
-      clm_smul_comp, RHTower.opTrace_smul]
+      c * ContinuousLinearMap.opTrace (S ∘L InnerProductSpace.rankOne ℂ f f) :=
+    hpr1.trans (hpr2.trans hpr3)
   linarith [primeFreeFamily_Q_eq a u, hQ, hpol, congrArg Complex.re hpr]
 
 /-- Combined `{∞, 2}` trace-identity package: pairs the Connes–Consani archimedean Sonin cutoff
@@ -503,8 +529,10 @@ theorem archimedean_and_primeTwo_trace_identity_through_halfLogThree :
     (∀ g : CCMCompactSchwartzLogTest,
       -ccmArchimedeanWeilDistribution (ccmSoninGramTest g) =
         ContinuousLinearMap.opTrace
-          (ϑ[g.toSchwartzMap] ∘L (1 - evenIndicatorCutoff 1 - evenFourierCutoff 1) ∘L
-            ϑ†[g.toSchwartzMap])) ∧
+          (ccmIntegratedScaling (ccmSchwartzLogKernel g.toSchwartzMap) ∘L
+            (1 - evenIndicatorCutoff 1 - evenFourierCutoff 1) ∘L
+            ContinuousLinearMap.adjoint
+              (ccmIntegratedScaling (ccmSchwartzLogKernel g.toSchwartzMap)))) ∧
     (∀ m : ℕ, ContinuousLinearMap.IsPositive (primeTwoLogOperator m) ∧
       ContinuousLinearMap.IsTraceClass (primeTwoLogOperator m) ∧
       ContinuousLinearMap.opTrace (primeTwoLogOperator m) = (m : ℂ) * (Real.log 2 : ℂ)) ∧

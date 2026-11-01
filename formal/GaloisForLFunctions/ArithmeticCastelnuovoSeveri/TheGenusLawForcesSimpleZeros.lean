@@ -15,8 +15,10 @@ the mutual distances of the zeros of `ζ`.** Weil's form reads a zero through th
 transform there, so the construction of the near radical spends one constraint per distinct zero,
 and even one per cluster of zeros closer than the resolution of the threshold. Hence:
 
-* `genusFunction_ge_distinct`: `g(L, ε_η(L)) ≥ (2 − η)e^{2L} + 2(N(0,T) − N_d(0,T))` at
-  `T = 2πe^{2(L − η/8)}`, where `N` counts with multiplicity and `N_d` counts distinct zeros.
+* `exists_nearRadical_blind`, `genusFunction_ge_distinct`:
+  `g(L, ε_η(L)) ≥ (2 − η)e^{2L} + 2(N(0,T) − N_d(0,T))` at `T = 2πe^{2(L − η/8)}`, where `N` counts
+  with multiplicity and `N_d` counts distinct zeros; the constructed space is blind to every zero
+  of height `≤ T`.
 * `genusFunction_ge_of_net`: `g(L, 2ε_η(L)) ≥ (2 − η)e^{2L} + 2N(0,T) − #S` for every finite set `S`
   of zeros within `exp(−η²e^{2L}/(100L))` of every zero of height `≤ T`.
 * `multiplicity_excess_le_of_genus_law`: the genus law at one `η` gives
@@ -32,9 +34,13 @@ The unconditional knowledge in the corpus is that at least two thirds of the zer
 critical (`RHTower.two_thirds_simpleCritical_epsilon`); the genus law would raise this to all but
 `o(T)`. So the upper Landau–Widom half of the genus law lies beyond time–frequency concentration
 and zero counting: any proof of it proves that the zeros of `ζ` are almost all simple at rate
-`1/log T`, a statement not known today. The near radical of Weil's form at degree `a` has dimension
-`(2 + o(1))e^{2a}` if and only if the zeros are resolved at the doubly exponential scale up to `o(T)`
-exceptions, and in general its dimension is the Shannon surplus against the *resolved* zeros.
+`1/log T`, a statement not known today. The dimension of the near radical of Weil's form at degree
+`a` is at least the Shannon surplus against the *resolved* zeros; it is `(2 + o(1))e^{2a}` only if
+the zeros are resolved at the doubly exponential scale up to `o(T)` exceptions.
+
+The characterization half of the question holds for the constructed space
+(`exists_nearRadical_blind`): every element of the constructed near radical has transform vanishing
+at every zero of height `≤ T`.
 -/
 
 open Complex MeasureTheory Set Filter Topology Zeta23 RHTower
@@ -159,14 +165,18 @@ theorem two_mul_Nd_le_N_add_Ns (Z : ZeroConfig) (T₁ T₂ : ℝ) :
 
 /-! ### The refined lower bounds -/
 
-/-- **The genus function reads the distinct zeros.** For every `0 < η ≤ 1` and all large `L`,
-`g(L, ε_η(L)) ≥ (2 − η)e^{2L} + 2(N(0,T) − N_d(0,T))` with `T = 2πe^{2(L − η/8)}`: each multiple
-zero below the Landau height adds its excess multiplicity, twice, to the near radical. -/
-theorem genusFunction_ge_distinct {η : ℝ} (hη0 : 0 < η) (hη1 : η ≤ 1) :
+/-- **The constructed near radical is blind to the zeros below the Landau height.** For every
+`0 < η ≤ 1` and all large `L` there is a near-radical subspace `V` at threshold `ε_η(L)` with
+`dim V ≥ (2 − η)e^{2L} + 2(N(0,T) − N_d(0,T))`, `T = 2πe^{2(L − η/8)}`, every element of which has
+transform vanishing at every zero of height `≤ T`. -/
+theorem exists_nearRadical_blind {η : ℝ} (hη0 : 0 < η) (hη1 : η ≤ 1) :
     ∃ L₀ : ℝ, ∀ L : ℝ, L₀ ≤ L →
-      (2 - η) * Real.exp (2 * L) +
-        2 * ((zetaZeroConfig.N 0 (landauHeight η L) : ℝ) - zetaZeroConfig.Nd 0 (landauHeight η L)) ≤
-        (genusFunction L (naturalThreshold η L) : ℝ) := by
+      ∃ V : Submodule ℂ (ℝ → ℂ), IsNearRadical L (naturalThreshold η L) V ∧
+        (2 - η) * Real.exp (2 * L) +
+          2 * ((zetaZeroConfig.N 0 (landauHeight η L) : ℝ) -
+            zetaZeroConfig.Nd 0 (landauHeight η L)) ≤ (Module.finrank ℂ V : ℝ) ∧
+        ∀ f ∈ V, ∀ ρ ∈ zetaZeroConfig.carrier, |ρ.im| ≤ landauHeight η L →
+          paperFT f (gammaOf ρ) = 0 := by
   obtain ⟨A₀, hA₀, hloc⟩ := Zeta23.RvM.zetaZeroConfig_local_count
   obtain ⟨CR, T₁, hCR, hT₁, hcount⟩ := zeroCount_upper
   obtain ⟨c₀, hlow⟩ := ncard_lowZeros_le_two_mul_Nd
@@ -189,24 +199,38 @@ theorem genusFunction_ge_distinct {η : ℝ} (hη0 : 0 < η) (hη1 : η ≤ 1) :
   set S : Finset ℂ := (lowZeros_finite T).toFinset with hSdef
   have hS : ∀ s ∈ S, s ∈ zetaZeroConfig.carrier := fun s hs =>
     ((lowZeros_finite T).mem_toFinset.mp hs).1
+  have hmemS : ∀ ρ ∈ zetaZeroConfig.carrier, |ρ.im| ≤ landauHeight η L → ρ ∈ S :=
+    fun ρ hρ hρT => (lowZeros_finite T).mem_toFinset.mpr ⟨hρ, hρT⟩
   have hnet : ∀ ρ ∈ zetaZeroConfig.carrier, |ρ.im| ≤ landauHeight η L →
-      ∃ s ∈ S, ‖ρ - s‖ ≤ 0 := fun ρ hρ hρT =>
-    ⟨ρ, (lowZeros_finite T).mem_toFinset.mpr ⟨hρ, hρT⟩, by simp⟩
-  obtain ⟨V, hVfin, hdim, hV, hW⟩ := nearRadical_at_level_of_net (δ := 0) hη0 hη1 hL1 hA₀ hloc hCR
-    hcount (sharpCount_cond1 hL1 hCR (Nat.cast_nonneg _) h1) (sharpCount_cond2 hL1 hA₀ h2)
-    (sharpCount_cond3 hL1 h3) (sharpCount_cond4 hL1 h4)
+      ∃ s ∈ S, ‖ρ - s‖ ≤ 0 := fun ρ hρ hρT => ⟨ρ, hmemS ρ hρ hρT, by simp⟩
+  obtain ⟨V, hVfin, hdim, hV, hblind, hW⟩ := nearRadical_at_level_of_net (δ := 0) hη0 hη1 hL1
+    hA₀ hloc hCR hcount (sharpCount_cond1 hL1 hCR (Nat.cast_nonneg _) h1)
+    (sharpCount_cond2 hL1 hA₀ h2) (sharpCount_cond3 hL1 h3) (sharpCount_cond4 hL1 h4)
     (sharpCount_cond5 hL1 hη1 (by linarith) h5) le_rfl (by simp) S hS hnet
   rw [hTeq] at hdim
   have hcard : (S.card : ℝ) ≤ 2 * (zetaZeroConfig.Nd 0 T : ℝ) + c₀ := by
     have h := hlow T hT0
     rw [Set.ncard_eq_toFinset_card _ (lowZeros_finite T)] at h
     exact_mod_cast h
-  have hnear : IsNearRadical L (naturalThreshold η L) V := by
-    refine ⟨fun f hf => hV f hf, fun f hf => ?_⟩
-    have h := hW f hf
-    rw [zero_mul, add_zero] at h
-    exact h
-  have hle := finrank_le_genusFunction (by linarith) (naturalThreshold_pos η L).le hnear
+  refine ⟨V, ⟨fun f hf => hV f hf, fun f hf => ?_⟩, by linarith,
+    fun f hf ρ hρ hρT => hblind f hf ρ (hmemS ρ hρ hρT)⟩
+  have h := hW f hf
+  rw [zero_mul, add_zero] at h
+  exact h
+
+/-- **The genus function reads the distinct zeros.** For every `0 < η ≤ 1` and all large `L`,
+`g(L, ε_η(L)) ≥ (2 − η)e^{2L} + 2(N(0,T) − N_d(0,T))` with `T = 2πe^{2(L − η/8)}`: each multiple
+zero below the Landau height adds its excess multiplicity, twice, to the near radical. -/
+theorem genusFunction_ge_distinct {η : ℝ} (hη0 : 0 < η) (hη1 : η ≤ 1) :
+    ∃ L₀ : ℝ, ∀ L : ℝ, L₀ ≤ L →
+      (2 - η) * Real.exp (2 * L) +
+        2 * ((zetaZeroConfig.N 0 (landauHeight η L) : ℝ) - zetaZeroConfig.Nd 0 (landauHeight η L)) ≤
+        (genusFunction L (naturalThreshold η L) : ℝ) := by
+  obtain ⟨L₀, hL₀⟩ := exists_nearRadical_blind hη0 hη1
+  refine ⟨max L₀ 0, fun L hL => ?_⟩
+  obtain ⟨V, hnear, hdim, -⟩ := hL₀ L (le_trans (le_max_left _ _) hL)
+  have hle := finrank_le_genusFunction (le_trans (le_max_right _ _) hL)
+    (naturalThreshold_pos η L).le hnear
   have hle' : (Module.finrank ℂ V : ℝ) ≤ genusFunction L (naturalThreshold η L) := by
     exact_mod_cast hle
   linarith
@@ -295,7 +319,7 @@ theorem genusFunction_ge_of_net {η : ℝ} (hη0 : 0 < η) (hη1 : η ≤ 1) :
     ((((((((eventually_ge_atTop (1 : ℝ)).and e1).and e2).and e3).and e4).and e5).and e6).and e7)
   refine ⟨L₀, fun L hL S hS hnet => ?_⟩
   obtain ⟨⟨⟨⟨⟨⟨⟨hL1, h1⟩, h2⟩, h3⟩, h4⟩, h5⟩, h6⟩, h7⟩ := hL₀ L hL
-  obtain ⟨V, hVfin, hdim, hV, hW⟩ := nearRadical_at_level_of_net (δ := netScale η L) (c₀ := 0)
+  obtain ⟨V, hVfin, hdim, hV, -, hW⟩ := nearRadical_at_level_of_net (δ := netScale η L) (c₀ := 0)
     hη0 hη1 hL1 hA₀ hloc hCR hcount
     (by have := sharpCount_cond1 (c := 0) hL1 hCR le_rfl h1; simpa using this)
     (sharpCount_cond2 hL1 hA₀ h2)
@@ -609,3 +633,9 @@ theorem cover_deficiency_le_of_genus_law {η : ℝ} (hη0 : 0 < η) (hη1 : η �
   linarith
 
 end GaloisForLFunctions.ArithmeticCastelnuovoSeveri
+
+#print axioms GaloisForLFunctions.ArithmeticCastelnuovoSeveri.exists_nearRadical_blind
+#print axioms GaloisForLFunctions.ArithmeticCastelnuovoSeveri.genusFunction_ge_of_net
+#print axioms GaloisForLFunctions.ArithmeticCastelnuovoSeveri.multiplicity_excess_le_of_genus_law
+#print axioms GaloisForLFunctions.ArithmeticCastelnuovoSeveri.tendsto_simple_ratio_of_genusLaw
+#print axioms GaloisForLFunctions.ArithmeticCastelnuovoSeveri.cover_deficiency_le_of_genus_law

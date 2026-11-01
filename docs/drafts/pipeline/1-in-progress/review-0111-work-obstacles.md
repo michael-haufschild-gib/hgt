@@ -9,7 +9,7 @@
 
 ## Open obligations
 
-All A1–A29 remain required. Numerical certificates must be proved in the kernel;
+Open rows are not discharged. Numerical certificates must be proved in the kernel;
 the task forbids numerical experiments and trusted computation.
 
 | Item | Verified mathematical boundary |
@@ -17,7 +17,7 @@ the task forbids numerical experiments and trusted computation.
 | A1 | Collective packet coercivity below `1/4` and logarithmic confinement below `1/9` are already formalized. All-vector `1/8` still requires improving three `c⁹` payments: prefix–terminal, band–terminal, and inverse-energy residual. See `off-pole-nonratio-cross-and-one-eighth-weil-positivity.md`. |
 | A2 | [Formalized](../3-formalized/sharp-logarithmic-overlap-budget.md): explicit coefficient `1/[103424(8π/3+3000)]`; exact ceiling for the specified reciprocal-floor budget. Both leaf audits pass with standard axioms; optimality across all absolute estimates is not established. |
 | A3 | [Formalized](../3-formalized/rvm-isolated-pair-critical-multiple.md): exact global edge `exp(min(x/δ,L))`, where `x>0` solves `sinh x−x=2δL`; explicit power-law bounds for `δL≥16`. Both leaves pass direct checks with standard axioms only. |
-| A4 | [Paper proof](../2-fully-proven/one-ninth-exponent-through-edge-and-hodge-theory.md): source statements upgraded to `1/9`; `TheEdgeOfTheCompleteWeilFamily` passes its direct audit. Remaining six leaf audits pending. |
+| A4 | [Paper proof](../2-fully-proven/one-ninth-exponent-through-edge-and-hodge-theory.md): source statements upgraded to `1/9`; edge, crossing, and width-threshold leaves pass direct audits. Remaining four leaf audits pending. |
 | A5 | Existing `CompleteConductorResidualsRetainTheirHorizonDecay` gives explicit inequalities in proved existential constants, for `c≥1` and uniformly for `0<c≤1`. Numerical constants and effective growing-overlap schedules remain to be extracted. |
 | A6 | Existing `nonneg_of_sincCritical_multiple` reaches radius `R` only when `K>1152e·sincTailConst·blockSize(R+1)`. Completeness over all radii is proved for all multiples or a divergent rate; one universal fixed multiple is not supplied by that argument. |
 | A7 | [Formalized](../3-formalized/finite-rational-correlation-grams-at-critical-overlap.md): every finite rational correlation Gram is a limit of full Steklov packet Grams at one fixed critical multiple. Joint synthesis, mollification, rational specialization, and diagonal limit pass direct and standard-axiom audits. |

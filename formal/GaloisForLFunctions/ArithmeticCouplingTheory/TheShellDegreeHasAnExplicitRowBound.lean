@@ -143,7 +143,10 @@ theorem shellDegree_packet_payment_le {φ : ℝ → ℝ} (hφ : ContDiff ℝ 2 �
   have hn0 : (0 : ℝ) < n := by exact_mod_cast (mem_Icc.mp n.property).1
   have hN0 : (0 : ℝ) < N := hc.trans_le hcN
   have h := nat_mul_shellDegree_le_explicit hφ hsupp hM hc hcN n
-  have hd := (le_div_iff₀ hn0).mpr (by simpa only [mul_comm] using h)
+  have hd : shellDegree φ c N n ≤
+      (2 * (Real.log 4 + 4) * Real.exp (5 / 2) * c +
+        2 * Real.exp (3 / 2) * c * ((n : ℝ) / N) * (Real.log n + 1)) / n :=
+    (le_div_iff₀ hn0).mpr (by simpa only [mul_comm] using h)
   have hp := mul_le_mul_of_nonneg_right hd (sq_nonneg (F n))
   convert hp using 1 <;> field_simp [hn0.ne', hN0.ne'] <;> ring
 

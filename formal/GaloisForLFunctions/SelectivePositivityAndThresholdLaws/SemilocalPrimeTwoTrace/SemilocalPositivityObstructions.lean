@@ -130,9 +130,12 @@ def smallSupportNonnegLogTest : CCMCompactSchwartzLogTest :=
 
 /-- A small-support nonnegative bump yields a strictly negative generic Sonin trace at cutoff `1`. -/
 theorem opTrace_ccmSoninGenericPartAt_one_smallSupportNonneg_lt_zero :
-    (ContinuousLinearMap.opTrace (ϑ[smallSupportNonnegLogTest.toSchwartzMap] ∘L
+    (ContinuousLinearMap.opTrace
+      (ccmIntegratedScaling (ccmSchwartzLogKernel smallSupportNonnegLogTest.toSchwartzMap) ∘L
         ccmSoninGenericPartAt 1 ∘L
-          ContinuousLinearMap.adjoint ϑ[smallSupportNonnegLogTest.toSchwartzMap])).re < 0 := by
+          ContinuousLinearMap.adjoint
+            (ccmIntegratedScaling
+              (ccmSchwartzLogKernel smallSupportNonnegLogTest.toSchwartzMap)))).re < 0 := by
   set ε := min ccmSoninSmallSupportRadius 1
   have hε : 0 < ε := lt_min ccmSoninSmallSupportRadius_pos zero_lt_one
   have hε₀ : ε ≤ ccmSoninSmallSupportRadius := min_le_left _ _
@@ -167,7 +170,8 @@ theorem opTrace_ccmSoninGenericPartAt_one_smallSupportNonneg_lt_zero :
 theorem not_isPositive_ccmSoninGenericPartAt_one :
     ¬ ContinuousLinearMap.IsPositive (ccmSoninGenericPartAt 1) := by
   intro hpos
-  have hge := opTrace_comp_comp_adjoint_re_nonneg hpos ϑ[smallSupportNonnegLogTest.toSchwartzMap]
+  have hge := opTrace_comp_comp_adjoint_re_nonneg hpos
+    (ccmIntegratedScaling (ccmSchwartzLogKernel smallSupportNonnegLogTest.toSchwartzMap))
   linarith [opTrace_ccmSoninGenericPartAt_one_smallSupportNonneg_lt_zero]
 
 /-! ## 3. Bilateral indefiniteness of prime transport and multiplicative tensor no-go -/
@@ -346,7 +350,7 @@ theorem not_isPositive_neg_ccmPrimeTransportOperator {p : ℕ} (hp : 2 ≤ p)
   intro hpos
   obtain ⟨u₊, _, hgt, _⟩ := exists_pos_and_neg_ccmPrimeTransportOperator hp ha
   have hge := hpos.2 (ccmArchimedeanFormToAperture a u₊)
-  rw [ContinuousLinearMap.reApplyInnerSelf, ContinuousLinearMap.neg_apply, inner_neg_left] at hge
+  rw [ContinuousLinearMap.reApplyInnerSelf, neg_apply, inner_neg_left] at hge
   change 0 ≤ -(inner ℂ (ccmPrimeTransportOperator a p (ccmArchimedeanFormToAperture a u₊))
     (ccmArchimedeanFormToAperture a u₊)).re at hge
   linarith
@@ -364,7 +368,7 @@ theorem neither_sign_isPositive_ccmFinitePrimeOperator_primeTwo_window
   constructor
   · intro hpos
     have hge := hpos.2 (ccmArchimedeanFormToAperture a u₋)
-    rw [ContinuousLinearMap.reApplyInnerSelf, ContinuousLinearMap.smul_apply, inner_smul_left,
+    rw [ContinuousLinearMap.reApplyInnerSelf, smul_apply, inner_smul_left,
       Complex.conj_ofReal] at hge
     change 0 ≤ ((Real.log 2 : ℂ) *
       inner ℂ (ccmPrimeTransportOperator a 2 (ccmArchimedeanFormToAperture a u₋))
@@ -373,8 +377,8 @@ theorem neither_sign_isPositive_ccmFinitePrimeOperator_primeTwo_window
     nlinarith
   · intro hpos
     have hge := hpos.2 (ccmArchimedeanFormToAperture a u₊)
-    rw [ContinuousLinearMap.reApplyInnerSelf, ContinuousLinearMap.neg_apply,
-      ContinuousLinearMap.smul_apply, inner_neg_left, inner_smul_left, Complex.conj_ofReal] at hge
+    rw [ContinuousLinearMap.reApplyInnerSelf, neg_apply,
+      smul_apply, inner_neg_left, inner_smul_left, Complex.conj_ofReal] at hge
     change 0 ≤ -((Real.log 2 : ℂ) *
       inner ℂ (ccmPrimeTransportOperator a 2 (ccmArchimedeanFormToAperture a u₊))
         (ccmArchimedeanFormToAperture a u₊)).re at hge
@@ -435,7 +439,7 @@ theorem no_multiplicative_tensor_factorization_primeTwo_window
       rw [inner_add_left, ← add_assoc, Complex.add_re]
       rfl
     rw [ccmFinitePrimeOperator_eq_primeTwo_of_le_halfLogThree ha3,
-      ContinuousLinearMap.smul_apply, inner_smul_left, Complex.conj_ofReal] at hdiff
+      smul_apply, inner_smul_left, Complex.conj_ofReal] at hdiff
     have hre : (((Real.log 2 : ℂ) * inner ℂ (ccmPrimeTransportOperator a 2
         (ccmArchimedeanFormToAperture a u₊)) (ccmArchimedeanFormToAperture a u₊))).re =
         Real.log 2 * (inner ℂ (ccmPrimeTransportOperator a 2
@@ -478,7 +482,7 @@ theorem ccmPrimePowerOperator_eq_zero_of_le_halfLogTwo (p : ℕ) {a : SuzukiPosi
   · have hp2 : 2 ≤ p ^ m := (Finset.mem_Icc.mp hmem).1
     have hlog : Real.log 2 ≤ Real.log ((p ^ m : ℕ) : ℝ) :=
       Real.log_le_log (by norm_num) (by exact_mod_cast hp2)
-    rw [ccmPrimeTransportOperator_eq_zero_of_two_mul_le_log a (by linarith), smul_zero]
+    rw [ccmPrimeTransportOperator_eq_zero_of_two_mul_le_log a (by linarith), clm_smul_zero]
   · rfl
 
 theorem ccmPrimePowerOperator_of_lt_two {p : ℕ} (hp : p < 2) (a : SuzukiPositiveAperture) :
@@ -633,15 +637,25 @@ theorem exists_aperture_primeFree_and_singleSemilocal_energy_lt (p : ℕ) (K : �
       exact inner_eq_zero_symm.mpr hshift_zero
     rw [inner_ccmPrimeTransportOperator, hshift_zero, hneg_zero, add_zero, mul_zero]
   have hpower_re_zero : (inner ℂ (ccmPrimePowerOperator q b₀ f) f).re = 0 := by
+    have hterm_zero : ∀ k ∈ Finset.Icc 1 (Nat.floor (Real.exp (2 * b₀.1))),
+        (inner ℂ (ccmVisiblePrimeBlock b₀ (q ^ k) f) f).re = 0 := by
+      intro k hk
+      have hk1 : 1 ≤ k := (Finset.mem_Icc.mp hk).1
+      unfold ccmVisiblePrimeBlock
+      split_ifs
+      · rw [smul_apply, inner_smul_left, hprime_zero k hk1, mul_zero, Complex.zero_re]
+      · rw [zero_apply, inner_zero_left, Complex.zero_re]
     unfold ccmPrimePowerOperator
-    rw [ContinuousLinearMap.sum_apply, sum_inner_left, Complex.re_sum]
-    refine Finset.sum_eq_zero fun k hk => ?_
-    have hk1 : 1 ≤ k := (Finset.mem_Icc.mp hk).1
-    unfold ccmVisiblePrimeBlock
-    split_ifs
-    · rw [ContinuousLinearMap.smul_apply, inner_smul_left, hprime_zero k hk1, mul_zero,
-        Complex.zero_re]
-    · simp
+    revert hterm_zero
+    generalize Finset.Icc 1 (Nat.floor (Real.exp (2 * b₀.1))) = s
+    intro hterm_zero
+    induction s using Finset.induction_on with
+    | empty =>
+        rw [Finset.sum_empty, zero_apply, inner_zero_left, Complex.zero_re]
+    | @insert k s hk ih =>
+        rw [Finset.sum_insert hk, add_apply, inner_add_left, Complex.add_re,
+          hterm_zero k (Finset.mem_insert_self k s),
+          ih (fun m hm => hterm_zero m (Finset.mem_insert_of_mem hm)), add_zero]
   -- Polar evaluation on `v` gives `-2 (e^{L/2} - e^{-L/2})^2 m₊ m₋`.
   have hpol_plus : inner ℂ (ccmPolarApertureVector b₀ (1 / 2)) f =
       (((Real.exp (L / 2) - Real.exp (-L / 2)) * m₊ : ℝ) : ℂ) := by
@@ -704,8 +718,8 @@ theorem exists_aperture_primeFree_and_singleSemilocal_energy_lt (p : ℕ) (K : �
           (inner ℂ (ccmPolarOperator b₀ f) f).re := by
       unfold CCMRemainderFamily.Q CCMRemainderFamily.diagonal
       change ‖v‖ ^ 2 + (inner ℂ (ccmPrimeFreeRemainder b₀ f) f).re = _
-      rw [ccmPrimeFreeRemainder_eq_scalar_add_polar, ContinuousLinearMap.add_apply,
-        ContinuousLinearMap.smul_apply, ContinuousLinearMap.one_apply, inner_add_left,
+      rw [ccmPrimeFreeRemainder_eq_scalar_add_polar, add_apply,
+        smul_apply, one_apply_eq_self, inner_add_left,
         inner_smul_left, star_ccmArchimedeanRemainderScalar, Complex.add_re]
       ring
     rw [hform, hpol_re]
@@ -757,7 +771,7 @@ theorem exists_aperture_primeFree_and_singleSemilocal_energy_lt (p : ℕ) (K : �
         unfold CCMRemainderFamily.Q CCMRemainderFamily.diagonal
         change ‖v‖ ^ 2 + (inner ℂ ((ccmPrimeFreeRemainder b₀ - ccmPrimePowerOperator p b₀) f) f).re =
           ‖v‖ ^ 2 + (inner ℂ (ccmPrimeFreeRemainder b₀ f) f).re
-        rw [← hqp, ContinuousLinearMap.sub_apply, inner_sub_left, Complex.sub_re,
+        rw [← hqp, sub_apply, inner_sub_left, Complex.sub_re,
           hpower_re_zero, sub_zero]
       have hray := (primeSingleSemilocalFamily p).energy_mul_formNorm_sq_le b₀ v
       rw [hQeq] at hray

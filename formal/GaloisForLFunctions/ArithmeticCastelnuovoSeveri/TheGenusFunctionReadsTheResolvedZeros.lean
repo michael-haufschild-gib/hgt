@@ -527,8 +527,8 @@ theorem finrank_ker_netConstraint_ge (b : ℝ → ℂ) (ℓ : ℝ) (k₀ : ℕ) 
 `(C1)–(C5)` of `RHTower.sharpCount_at_level`, for every finite set `S` of zeros such that every zero
 of height `≤ T = 2πe^{2(L − η/8)}` lies within `δ` of `S` (`0 ≤ δ`, `δL ≤ 1`), the Hodge-class
 tests at level `L` contain a subspace `V` with
-`dim V ≥ (2 − η)e^{2L} + (2N(0,T) + c₀ − #S)` and
-`‖W(f,f)‖ ≤ (exp(−η²e^{2L}/(300L)) + δ · Q(L) e^{9L}) ∫|f|²` on `V`. -/
+`dim V ≥ (2 − η)e^{2L} + (2N(0,T) + c₀ − #S)`, every element of which has transform vanishing
+on `S`, and `‖W(f,f)‖ ≤ (exp(−η²e^{2L}/(300L)) + δ · Q(L) e^{9L}) ∫|f|²` on `V`. -/
 theorem nearRadical_at_level_of_net {η L A₀ CR T₁ δ : ℝ} {c₀ : ℕ} (hη0 : 0 < η) (hη1 : η ≤ 1)
     (hL : 1 ≤ L) (hA₀ : 1 ≤ A₀)
     (hloc : ∀ t : ℝ, (zetaZeroConfig.N t (t + 1) : ℝ) ≤ A₀ * Real.log (|t| + 3))
@@ -550,6 +550,7 @@ theorem nearRadical_at_level_of_net {η L A₀ CR T₁ δ : ℝ} {c₀ : ℕ} (h
           (Module.finrank ℂ V : ℝ) ∧
       (∀ f ∈ V, ContDiff ℝ 2 f ∧ tsupport f ⊆ Icc (-L) L ∧ paperFT f (I / 2) = 0 ∧
         paperFT f (-(I / 2)) = 0) ∧
+      (∀ f ∈ V, ∀ s ∈ S, paperFT f (gammaOf s) = 0) ∧
       ∀ f ∈ V, ‖zetaZeroConfig.W f f‖ ≤
         (Real.exp (-(η ^ 2 * Real.exp (2 * L) / (300 * L))) +
           δ * (netPoly A₀ L * Real.exp (9 * L))) * ∫ u, ‖f u‖ ^ 2 := by
@@ -631,7 +632,7 @@ theorem nearRadical_at_level_of_net {η L A₀ CR T₁ δ : ℝ} {c₀ : ℕ} (h
   set Φ := trigTestMap b ℓ k₀ with hΦdef
   have hΦinj : Function.Injective Φ :=
     trigTestMap_injective hℓpos hbC.continuous hbs hb1 k₀
-  refine ⟨(LinearMap.ker Λ).map Φ, inferInstance, ?_, ?_, ?_⟩
+  refine ⟨(LinearMap.ker Λ).map Φ, inferInstance, ?_, ?_, ?_, ?_⟩
   · -- dimension count: `2k₀ + 1` coefficients, `#S + 2` constraints
     have hequiv := Submodule.equivMapOfInjective Φ hΦinj (LinearMap.ker Λ)
     rw [← hequiv.finrank_eq]
@@ -648,6 +649,14 @@ theorem nearRadical_at_level_of_net {η L A₀ CR T₁ δ : ℝ} {c₀ : ℕ} (h
     obtain ⟨-, h23⟩ := Prod.mk_eq_zero.mp hΛc
     obtain ⟨h2, h3⟩ := Prod.mk_eq_zero.mp h23
     exact ⟨contDiff_trigTest hbC ℓ k₀ c, tsupport_trigTest hb0 ℓ k₀ c, h2, h3⟩
+  · -- blindness on the net
+    rintro f ⟨c, hc, rfl⟩ s hs
+    have hΛc : Λ c = 0 := hc
+    rw [hΛ] at hΛc
+    have h1 := congrFun (Prod.mk_eq_zero.mp hΛc).1 ⟨s, hs⟩
+    have hΦc : Φ c = trigTest b ℓ k₀ c := rfl
+    rw [hΦc]
+    simpa using h1
   · rintro f ⟨c, hc, rfl⟩
     have hΛc : Λ c = 0 := hc
     rw [hΛ] at hΛc
