@@ -65,4 +65,17 @@ Write `v_jet = Σ_k J_k v_k`, `J_k = Σ_m a_m w(m,k) √(φ(k)/φ(m))`,
   C((1 + log R)(1 + log c)/log N · G + c²R⁵/(N² log N) · A)‖w‖²` (`P` exact pole coefficient,
   `ũ` the band without `v₁`, `w ⊥ V_R`). Uses the exact pole `P = a₋a₊/G` (center pole part plus
   pole error), so no `α/N` approximation enters.
+- `CriticalArithmeticCorrelationTheory.TheBandFarCrossBelowTheEighthRoot` — assembly:
+  `band_far_cross_eq` (channel identity for `u = a₁v₁ + ũ`); `collar_reducedBand_sq_le`
+  (`‖C ũ‖² ≤ (24 + 780 Sg₁ + 72R^{15}/N)/log N · ‖u‖²`, `Sg₁ ≥ m/φ(m)`);
+  `exists_div_totient_le_loglog` (`m/φ(m) ≤ K(1 + log(1 + log m))`), `sigma_div_totient_le_sq`;
+  `exists_upwardPrimeVector_top_sq_le` (rows `n > M`: `O(c²(N/M)(1 + log c)/log N)‖u‖²`);
+  `exists_band_far_cross_le_channels` (every channel paid by free parameters `s₁, t₁, s₂, t₂, γ`;
+  six non-prime channels share `bandFarChannelBudget`, pole mode through `ρ ≥ ‖r₁‖²`).
+  `#print axioms`: `propext, Classical.choice, Quot.sound`.
+
+## Status
+Steps 1–6 are in Lean in channel form. Not yet in Lean: the specialization to the statement above
+(choose `s, t, γ` from `k₁`, verify smallness eventually below `1/8` with `ρ` from
+`exists_tiltedUnitSpline_quadratic_conductor_residual_variable_rate`).
 

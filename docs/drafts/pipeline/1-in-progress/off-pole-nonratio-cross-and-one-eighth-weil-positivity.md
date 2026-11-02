@@ -153,4 +153,14 @@ CACT, compiled, wired into the umbrella (T1):
 - `TheFarReserveBelowTheEighthRoot` — `eventually_completeWeilEnergy_far_reserve_below_one_eighth`: for `α < 1/8`, `θ > 0`, on `(V_1)ᗮ`, `(7/8)D_M + κ/(4c⁷)·log N·S − θ log N·P ≤ E`.
 - `ThePolynomialConductorComplementIsCoerciveBelowTheEighthRoot` — on `(V_{⌊N^θ⌋})ᗮ`, `(c_orth log N/c⁷)‖z‖² ≤ E` for `α < 1/8`; nonpositive subspaces have dimension `≤ ⌊N^θ⌋` (corpus had both below `1/9`).
 
-Open: T2 (coherent cancellation identity, (b), (c), upward split), T3 deep rows, T4 assembly.
+T2, compiled, wired into the umbrellas (details on `band-far-cross-below-one-eighth.md`):
+- `CompletedArithmeticForms.TheNearCollarCostsTheMeanLogarithmicMultiplier` — sharp near collar.
+- `TheNearGramFormOfAPacketCostsItsDivisorMean`, `TheReducedDivisorJetCostsItsDivisorMean` — `K₂ᵦ` on the jet.
+- `TheJetPoleComponentCancelsThePole` — coherent pole pair.
+- `TheBandFarCrossBelowTheEighthRoot` — `exists_band_far_cross_le_channels`: the cross with every
+  channel paid by a free reserve parameter; non-prime channels share `bandFarChannelBudget`
+  (`c^{8+o(1)}/log N` per unit band reserve at `M = N/L_c`).
+
+Open: T2 specialization to the assembly shape (`(1/32)E + (1/4)‖u‖² + (k₁/32)P + (bk₁/(32c⁷))(S + ‖w‖²)`,
+eventual smallness, `ρ` from the quadratic residual bound), T3 deep rows (no paper proof yet),
+T4 assembly.

@@ -151,7 +151,8 @@ theorem hermQuad_gram_onLine_natSlope_pos {ι : Type*} [Fintype ι] {s : ι → 
     set j := e.symm ⟨ρ, hρon⟩
     have hej : (e j : ℂ) = ρ := by simp [j]
     have hwpos : 0 < onLineWeight e j := by
-      simp only [onLineWeight, Wsummand_onLine (e j).2, ofReal_re, hej]
+      simp only [onLineWeight]
+      rw [Wsummand_onLine (e j).2, ofReal_re, hej]
       have hm : (1 : ℝ) ≤ zetaOnLine.mult ρ := by exact_mod_cast zetaOnLine.one_le_mult ρ hρon
       have hF : 0 < ‖paperFT (cx cubicSpline) (ρ.im : ℂ)‖ := norm_pos_iff.mpr hρ.2.2
       positivity
@@ -168,19 +169,18 @@ theorem hermQuad_gram_onLine_natSlope_pos {ι : Type*} [Fintype ι] {s : ι → 
     refine Finset.sum_congr rfl fun b _ => ?_
     simp only [onLineChar, logChar_apply, x, scale_natSlope, him, map_mul, ← Complex.exp_conj]
     congr 2
-    simp only [map_mul, conj_ofReal, conj_I]
+    simp only [conj_ofReal, conj_I]
     push_cast
     ring
   -- the polynomial is nonzero
   obtain ⟨b₀, hb₀⟩ : ∃ b, c b ≠ 0 := by
-    by_contra h
-    push_neg at h
-    exact hc (funext h)
+    obtain ⟨b, hb⟩ := Function.ne_iff.mp hc
+    exact ⟨b, by simpa using hb⟩
   have hCne : ∃ n, 0 < n ∧ C n ≠ 0 := by
     refine ⟨s b₀ + 1, Nat.succ_pos _, ?_⟩
     simp only [C, Nat.add_right_cancel_iff, hs.eq_iff, Finset.sum_ite_eq', Finset.mem_univ,
       if_true]
-    exact (map_ne_zero _).mpr hb₀
+    exact (_root_.map_ne_zero (starRingEnd ℂ)).mpr hb₀
   have hCsum : WeightedAbsSummable C 1 := by
     apply summable_of_ne_finset_zero (s := Finset.univ.image fun b => s b + 1)
     intro n hn
@@ -201,7 +201,9 @@ theorem hermQuad_gram_onLine_natSlope_pos {ι : Type*} [Fintype ι] {s : ι → 
     exact Real.log_le_log (Real.exp_pos _) hTe
   have hclog : 1 / π + 1 + 3 * K < c₀ * Real.log T := by
     have : (1 / π + 1 + 3 * K) / c₀ < Real.log T := by linarith
-    rwa [div_lt_iff₀ hc₀, mul_comm] at this
+    rw [div_lt_iff₀ hc₀] at this
+    have hc : c₀ * Real.log T = Real.log T * c₀ := mul_comm _ _
+    linarith
   obtain ⟨τS, hτS, hcard⟩ := hmany T hTT₀
   have hL := card_filter_lattice_le hT0.le τS fun τ hτ => ⟨(hτS τ hτ).1, (hτS τ hτ).2.1⟩
   set S := τS.filter fun τ => ¬ ∃ n : ℤ, τ = n * π

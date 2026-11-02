@@ -1,5 +1,6 @@
 import GaloisForLFunctions.ArithmeticHodgeTheoryOfDegenerations.TheAlternatingWindowCountsTheConductorTwoPoints
 import GaloisForLFunctions.RHTower.PrimeSquareMobiusDensityFracture
+import GaloisForLFunctions.RHTower.XiThetaSquareRateBoundary
 
 /-!
 # The prime window counts the projective points over `𝔽_p`
@@ -552,5 +553,346 @@ theorem primeRow_values (h : ℝ → ℝ) (φ : ℝ → ℝ) {p : ℕ} (hp : 0 <
   constructor
   · rw [← mul_assoc, hw2]; field_simp
   · rw [← mul_assoc, hw2]; field_simp
+
+/-- The arithmetic of the prime energy: row errors and equidistribution errors combine. -/
+theorem prime_assembly_le {H P1 P2 P3 S1 S2 T1 T2 c N p D R : ℝ} (hc : 0 < c) (hN : 0 < N)
+    (hp : 0 < p) (hH : 2 * Real.pi / c * (c / N * (T1 - T2)) = 2 * Real.pi * H)
+    (h1 : |P1 - c / N / p * S1| ≤ D) (h2 : |P2 - c / N * S2| ≤ D) (h3 : |P3 - c / N * T2| ≤ D)
+    (h4 : |S1 - p⁻¹ * T1| ≤ R) (h5 : |S2 - p⁻¹ * T2| ≤ R) :
+    |2 * Real.pi / c * (p ^ 2 * P1 - 2 * p * P2 + P3) - 2 * Real.pi * H| ≤
+      2 * Real.pi / c * ((p + 1) ^ 2 * D) + 2 * Real.pi / N * (3 * p * R) := by
+  rw [← hH]
+  have e : 2 * Real.pi / c * (p ^ 2 * P1 - 2 * p * P2 + P3) -
+      2 * Real.pi / c * (c / N * (T1 - T2)) =
+      2 * Real.pi / c * (p ^ 2 * (P1 - c / N / p * S1) - 2 * p * (P2 - c / N * S2) +
+        (P3 - c / N * T2)) + 2 * Real.pi / N * (p * (S1 - p⁻¹ * T1) - 2 * p * (S2 - p⁻¹ * T2)) := by
+    field_simp
+    ring
+  rw [e]
+  have hD0 : 0 ≤ D := (abs_nonneg _).trans h1
+  have hpi : 0 < 2 * Real.pi / c := by positivity
+  have hpiN : 0 < 2 * Real.pi / N := by positivity
+  refine (abs_add_le _ _).trans (add_le_add ?_ ?_)
+  · rw [abs_mul, abs_of_pos hpi]
+    refine mul_le_mul_of_nonneg_left ?_ hpi.le
+    calc |p ^ 2 * (P1 - c / N / p * S1) - 2 * p * (P2 - c / N * S2) + (P3 - c / N * T2)|
+        ≤ |p ^ 2 * (P1 - c / N / p * S1) - 2 * p * (P2 - c / N * S2)| + |P3 - c / N * T2| :=
+          abs_add_le _ _
+      _ ≤ |p ^ 2 * (P1 - c / N / p * S1)| + |2 * p * (P2 - c / N * S2)| + |P3 - c / N * T2| :=
+          add_le_add_left (abs_sub _ _) _
+      _ = p ^ 2 * |P1 - c / N / p * S1| + 2 * p * |P2 - c / N * S2| + |P3 - c / N * T2| := by
+          rw [abs_mul, abs_mul, abs_of_pos (by positivity : (0 : ℝ) < p ^ 2),
+            abs_of_pos (by positivity : (0 : ℝ) < 2 * p)]
+      _ ≤ p ^ 2 * D + 2 * p * D + D := by
+          gcongr
+      _ = (p + 1) ^ 2 * D := by ring
+  · rw [abs_mul, abs_of_pos hpiN]
+    refine mul_le_mul_of_nonneg_left ?_ hpiN.le
+    refine (abs_sub _ _).trans ?_
+    rw [abs_mul, abs_mul, abs_of_pos hp, abs_of_pos (by positivity : (0 : ℝ) < 2 * p)]
+    nlinarith [mul_le_mul_of_nonneg_left h4 hp.le,
+      mul_le_mul_of_nonneg_left h5 (by positivity : (0 : ℝ) ≤ 2 * p)]
+
+/-- **The energy of the prime block**: `E_N = 2π (𝒜_N(c/p) − 𝒜_N(c)) + O(c/N)` for `1 ≤ c ≤ N/4`.
+The sublattice rows are Poisson sums on `ℤ/(a/p)`, the full rows on `ℤ/a`, and the outer sums over
+multiples of `p` equidistribute. -/
+theorem abs_primeEnergy_sub_le (hφ : ContDiff ℝ 2 φ) (hφsupp : ∀ u, u ∉ Set.Icc 0 1 → φ u = 0)
+    {Cφ q : ℝ} (hq : 4 < q) (hCφ : 0 ≤ Cφ)
+    (hdecay : ∀ u : ℝ, ‖paperFT (cx φ) u‖ ^ 2 ≤ Cφ * (1 + |u|) ^ (-q))
+    (hh : ContDiff ℝ 2 h) (hA : 0 ≤ A) (hsupp : ∀ y, y ∉ Set.Icc (-A) 0 → h y = 0)
+    {p : ℕ} (hp : 1 < p) :
+    ∃ K : ℝ, 0 ≤ K ∧ ∀ c : ℝ, 1 ≤ c → ∀ N : ℕ, 4 * c ≤ N →
+      |(∫ τ : ℝ, ‖paperFT (cx φ) (((c / N : ℝ) : ℂ) * τ)‖ ^ 2 *
+          (‖dirichletPoly N (twistedWeights h (primeTwist p) N) τ‖ ^ 2 / N)) -
+        2 * Real.pi * (horizonAlias φ h (c / p) N - horizonAlias φ h c N)| ≤ K * c / N := by
+  have hp' : 0 < p := by omega
+  have hp0 : (0 : ℝ) < p := by exact_mod_cast hp'
+  obtain ⟨B, X, hB0, hX0, hrows⟩ := exists_prime_row_bounds hφ hφsupp hh hsupp hp' (A := A)
+  obtain ⟨K₀, hK₀, hout⟩ := exists_prime_outer_bounds hφ hφsupp hq hCφ hdecay hh hA hsupp hp
+  refine ⟨2 * Real.pi * ((p + 1) ^ 2 * B * X) + 2 * Real.pi * (3 * p * (2 * K₀)), by positivity,
+    fun c hc N hcN => ?_⟩
+  have hc0 : 0 < c := by linarith
+  have hN0 : (0 : ℝ) < N := by linarith
+  have hN : 1 ≤ N := by
+    have : (1 : ℝ) ≤ N := by linarith
+    exact_mod_cast this
+  have hsN : 0 < Real.sqrt N := Real.sqrt_pos.mpr hN0
+  set I := ∫ u, φ u with hI
+  set y := horizonWeights h N with hy
+  set Gm : ℕ → ℕ → ℝ := fun m n => shellAutocorr φ (N * (Real.log m - Real.log n) / c) with hGm
+  have hGsym : ∀ m n, Gm m n = Gm n m := fun m n => by
+    simp only [hGm]; rw [← shellAutocorr_neg]; congr 1; ring
+  rw [atomEnergy_eq hφ hφsupp _ hc0 hN]
+  rw [show (∑ m ∈ Icc 1 N, ∑ n ∈ Icc 1 N, twistedWeights h (primeTwist p) N m *
+      twistedWeights h (primeTwist p) N n * shellAutocorr φ (N * (Real.log m - Real.log n) / c)) =
+      ∑ m ∈ Icc 1 N, ∑ n ∈ Icc 1 N, y m * primeTwist p m * (y n * primeTwist p n) * Gm m n by
+    rfl, sum_sum_primeTwist_eq y Gm hGsym p (Icc 1 N)]
+  set a : ℕ → ℝ := fun n => if p ∣ n then y n else 0 with ha
+  set Vs : ℕ → ℝ := fun n => y n * (c * n / N / p * (I ^ 2 + 2 * aliasDensity φ (c * n / N / p)))
+    with hVs
+  set Vf : ℕ → ℝ := fun n => y n * (c * n / N * (I ^ 2 + 2 * aliasDensity φ (c * n / N)))
+    with hVf
+  set ε := X * c ^ 2 / (N * Real.sqrt N) with hε
+  have hD1 : |∑ n ∈ Icc 1 N, a n * ∑ m ∈ Icc 1 N, a m * Gm m n -
+      ∑ n ∈ Icc 1 N, a n * Vs n| ≤ N * (B / Real.sqrt N * ε) :=
+    abs_sum_mul_sub_sum_le fun n hn => by
+      obtain ⟨hyb, -, hS⟩ := hrows c hc N hcN n hn
+      simp only [ha]
+      split_ifs with hpn
+      · rw [← mul_sub, abs_mul]
+        exact mul_le_mul hyb (hS hpn) (abs_nonneg _) (by positivity)
+      · simp only [zero_mul, sub_zero, abs_zero]; positivity
+  have hD2 : |∑ n ∈ Icc 1 N, a n * ∑ m ∈ Icc 1 N, y m * Gm m n -
+      ∑ n ∈ Icc 1 N, a n * Vf n| ≤ N * (B / Real.sqrt N * ε) :=
+    abs_sum_mul_sub_sum_le fun n hn => by
+      obtain ⟨hyb, hF, -⟩ := hrows c hc N hcN n hn
+      rw [← mul_sub, abs_mul]
+      refine mul_le_mul ?_ hF (abs_nonneg _) (by positivity)
+      simp only [ha]
+      split_ifs
+      · exact hyb
+      · rw [abs_zero]; positivity
+  have hD3 : |∑ n ∈ Icc 1 N, y n * ∑ m ∈ Icc 1 N, y m * Gm m n -
+      ∑ n ∈ Icc 1 N, y n * Vf n| ≤ N * (B / Real.sqrt N * ε) :=
+    abs_sum_mul_sub_sum_le fun n hn => by
+      obtain ⟨hyb, hF, -⟩ := hrows c hc N hcN n hn
+      rw [← mul_sub, abs_mul]
+      exact mul_le_mul hyb hF (abs_nonneg _) (by positivity)
+  -- the Poisson values in the variable `x = n/N`
+  have hS1 : ∑ n ∈ Icc 1 N, a n * Vs n = c / N / p * ∑ n ∈ Icc 1 N, (if p ∣ n then
+      sqWindow h (n / N) * (I ^ 2 + 2 * aliasDensity φ (c * (n / N) / p)) else 0) := by
+    rw [mul_sum]
+    refine sum_congr rfl fun n hn => ?_
+    simp only [ha, hVs]
+    split_ifs
+    · exact (primeRow_values h φ hp' hN (Finset.mem_Icc.mp hn).1 (c := c)).1
+    · simp
+  have hS2 : ∑ n ∈ Icc 1 N, a n * Vf n = c / N * ∑ n ∈ Icc 1 N, (if p ∣ n then
+      sqWindow h (n / N) * (I ^ 2 + 2 * aliasDensity φ (c * (n / N))) else 0) := by
+    rw [mul_sum]
+    refine sum_congr rfl fun n hn => ?_
+    simp only [ha, hVf]
+    split_ifs
+    · exact (primeRow_values h φ hp' hN (Finset.mem_Icc.mp hn).1 (c := c)).2
+    · simp
+  have hT2 : ∑ n ∈ Icc 1 N, y n * Vf n = c / N * ∑ n ∈ Icc 1 N,
+      sqWindow h (n / N) * (I ^ 2 + 2 * aliasDensity φ (c * (n / N))) := by
+    rw [mul_sum]
+    exact sum_congr rfl fun n hn =>
+      (primeRow_values h φ hp' hN (Finset.mem_Icc.mp hn).1 (c := c)).2
+  have hH : 2 * Real.pi / c * (c / N * ((∑ n ∈ Icc 1 N,
+      sqWindow h (n / N) * (I ^ 2 + 2 * aliasDensity φ (c * (n / N) / p))) - ∑ n ∈ Icc 1 N,
+      sqWindow h (n / N) * (I ^ 2 + 2 * aliasDensity φ (c * (n / N))))) =
+      2 * Real.pi * (horizonAlias φ h (c / p) N - horizonAlias φ h c N) := by
+    unfold horizonAlias
+    rw [← mul_sub, ← sum_sub_distrib, ← sum_sub_distrib]
+    have e : ∀ n ∈ Icc 1 N, sqWindow h (n / N) * (I ^ 2 + 2 * aliasDensity φ (c * (n / N) / p)) -
+        sqWindow h (n / N) * (I ^ 2 + 2 * aliasDensity φ (c * (n / N))) =
+        2 * (h (Real.log n - Real.log N) ^ 2 * aliasDensity φ (c / p * n / N) -
+          h (Real.log n - Real.log N) ^ 2 * aliasDensity φ (c * n / N)) := fun n hn => by
+      rw [sqWindow_natCast_div h (Finset.mem_Icc.mp hn).1 hN,
+        show c * (n / N) / p = c / p * n / N by ring, show c * (n / N) = c * n / N by ring]
+      ring
+    rw [sum_congr rfl e, ← mul_sum]
+    field_simp
+  rw [hS1] at hD1
+  rw [hS2] at hD2
+  rw [hT2] at hD3
+  obtain ⟨he₁, he₂⟩ := hout c hc N hN
+  have hfin := prime_assembly_le hc0 hN0 hp0 hH hD1 hD2 hD3 he₁ he₂
+  refine hfin.trans (le_of_eq ?_)
+  rw [hε]
+  field_simp
+  rw [Real.sq_sqrt hN0.le]
+  ring
+
+/-! ### The prime block is quiet below its first resonance -/
+
+/-- A set integral on `[−T, T]` of a function bounded by `b₁` on `|τ| ≤ R` and by `c₂/τ² + c₃`
+beyond is at most `2R b₁ + 2π c₂/R + 2T c₃`. -/
+theorem setIntegral_Icc_le_of_split {f : ℝ → ℝ} {R T b₁ c₂ c₃ : ℝ} (hR : 0 < R) (hT : 0 ≤ T)
+    (hfi : IntegrableOn f (Set.Icc (-T) T)) (hb₁ : 0 ≤ b₁) (hc₂ : 0 ≤ c₂) (hc₃ : 0 ≤ c₃)
+    (h1 : ∀ τ ∈ Set.Icc (-T) T, |τ| ≤ R → f τ ≤ b₁)
+    (h2 : ∀ τ ∈ Set.Icc (-T) T, R ≤ |τ| → f τ ≤ c₂ / τ ^ 2 + c₃) :
+    ∫ τ in Set.Icc (-T) T, f τ ≤ 2 * R * b₁ + 2 * c₂ * (Real.pi / R) + 2 * T * c₃ := by
+  set g : ℝ → ℝ := fun τ => Set.indicator (Set.Icc (-R) R) (fun _ => b₁) τ +
+    2 * c₂ * (R ^ 2 + τ ^ 2)⁻¹ + c₃ with hg
+  have hcauchy : Integrable fun τ : ℝ => (R ^ 2 + τ ^ 2)⁻¹ := by
+    have h := (integrable_inv_one_add_sq.comp_div hR.ne').const_mul (R⁻¹ ^ 2)
+    refine h.congr (Eventually.of_forall fun τ => ?_)
+    field_simp
+  have hind : Integrable (Set.indicator (Set.Icc (-R) R) (fun _ : ℝ => b₁)) :=
+    (integrable_indicator_iff measurableSet_Icc).mpr (integrableOn_const (by simp))
+  have hgi : IntegrableOn g (Set.Icc (-T) T) :=
+    ((hind.add (hcauchy.const_mul _)).integrableOn).add (integrableOn_const (by simp))
+  have hfg : ∀ τ ∈ Set.Icc (-T) T, f τ ≤ g τ := fun τ hτ => by
+    simp only [hg]
+    have hc0 : 0 ≤ 2 * c₂ * (R ^ 2 + τ ^ 2)⁻¹ := by positivity
+    rcases le_or_gt |τ| R with hτR | hτR
+    · rw [Set.indicator_of_mem (show τ ∈ Set.Icc (-R) R from abs_le.mp hτR)]
+      linarith [h1 τ hτ hτR]
+    · rw [Set.indicator_of_notMem (fun hm => by linarith [abs_le.mpr hm])]
+      have := h2 τ hτ hτR.le
+      have hsq : R ^ 2 + τ ^ 2 ≤ 2 * τ ^ 2 := by nlinarith [sq_abs τ, abs_nonneg τ]
+      have hk : c₂ / τ ^ 2 ≤ 2 * c₂ * (R ^ 2 + τ ^ 2)⁻¹ := by
+        have hτ0 : 0 < τ ^ 2 := by nlinarith [sq_abs τ, abs_nonneg τ]
+        have h3 : (2 * τ ^ 2)⁻¹ ≤ (R ^ 2 + τ ^ 2)⁻¹ := inv_anti₀ (by positivity) hsq
+        have h4 : c₂ / τ ^ 2 = 2 * c₂ * (2 * τ ^ 2)⁻¹ := by field_simp
+        rw [h4]; exact mul_le_mul_of_nonneg_left h3 (by positivity)
+      linarith
+  refine (setIntegral_mono_on hfi hgi measurableSet_Icc hfg).trans ?_
+  show ∫ x in Set.Icc (-T) T, (Set.indicator (Set.Icc (-R) R) (fun _ => b₁) x +
+    2 * c₂ * (R ^ 2 + x ^ 2)⁻¹ + c₃) ≤ _
+  have hA1 : IntegrableOn (fun x => Set.indicator (Set.Icc (-R) R) (fun _ => b₁) x +
+      2 * c₂ * (R ^ 2 + x ^ 2)⁻¹) (Set.Icc (-T) T) :=
+    hind.integrableOn.add (hcauchy.const_mul (2 * c₂)).integrableOn
+  have hA2 : IntegrableOn (fun x : ℝ => 2 * c₂ * (R ^ 2 + x ^ 2)⁻¹) (Set.Icc (-T) T) :=
+    (hcauchy.const_mul (2 * c₂)).integrableOn
+  rw [integral_add hA1 (integrableOn_const (by simp)), integral_add hind.integrableOn hA2,
+    setIntegral_const, Real.volume_real_Icc, smul_eq_mul, max_eq_left (by linarith)]
+  have i1 : ∫ τ in Set.Icc (-T) T, Set.indicator (Set.Icc (-R) R) (fun _ : ℝ => b₁) τ ≤ 2 * R * b₁ := by
+    refine (setIntegral_le_integral hind (Eventually.of_forall fun τ => ?_)).trans (le_of_eq ?_)
+    · exact Set.indicator_nonneg (fun _ _ => hb₁) τ
+    · rw [integral_indicator_const _ measurableSet_Icc, Real.volume_real_Icc, smul_eq_mul,
+        max_eq_left (by linarith)]
+      ring
+  have i2 : ∫ τ in Set.Icc (-T) T, 2 * c₂ * (R ^ 2 + τ ^ 2)⁻¹ ≤ 2 * c₂ * (Real.pi / R) := by
+    rw [integral_const_mul, ← RHTower.integral_inv_sq_add_sq_univ hR]
+    exact mul_le_mul_of_nonneg_left (setIntegral_le_integral hcauchy
+      (Eventually.of_forall fun τ => by positivity)) (by positivity)
+  nlinarith [i1, i2]
+
+/-- The Dirichlet polynomial of a twisted window lives on the window. -/
+theorem dirichletPoly_twisted_eq_range (hsupp : ∀ y, y ∉ Set.Icc (-A) 0 → h y = 0) (hA : 0 ≤ A)
+    (χ : ℕ → ℝ) {N : ℕ} (hN : 1 ≤ N) (τ : ℝ) :
+    dirichletPoly N (twistedWeights h χ N) τ =
+      ∑ m ∈ range (N - windowStart A N + 1), (horizonWeights h N (windowStart A N + m) : ℂ) *
+        ((χ (windowStart A N + m) : ℂ) *
+          Complex.exp (((τ * Real.log (windowStart A N + m) : ℝ) : ℂ) * Complex.I)) := by
+  set n₀ := windowStart A N with hn₀
+  have h1 := one_le_windowStart hN A
+  have h2 : n₀ ≤ N := windowStart_le hA
+  unfold dirichletPoly
+  have hsplit : Icc 1 N = Ico 1 n₀ ∪ Ico n₀ (N + 1) := by
+    ext n; simp only [mem_Icc, mem_union, mem_Ico]; omega
+  rw [hsplit, sum_union (disjoint_left.mpr fun n ha hb => by
+    simp only [mem_Ico] at ha hb; omega)]
+  rw [sum_eq_zero (fun n hn => by
+    simp only [mem_Ico] at hn
+    rw [twistedWeights, horizonWeights_eq_zero_of_lt hsupp hn.1 hn.2, zero_mul,
+      Complex.ofReal_zero, zero_mul]), zero_add,
+    sum_Ico_eq_sum_range, show N + 1 - n₀ = N - n₀ + 1 by omega]
+  refine sum_congr rfl fun m _ => ?_
+  rw [twistedWeights]
+  push_cast
+  ring_nf
+
+/-- Sums of `n^{iτ}` over the multiples of `p` in `(n₀ − 1, X]`, reindexed by the cofactor. -/
+theorem sum_range_dvd_eq (p n₀ k : ℕ) (hp : 0 < p) (hn₀ : 1 ≤ n₀) (e : ℕ → ℂ) :
+    ∑ m ∈ range (k + 1), (if p ∣ n₀ + m then e (n₀ + m) else 0) =
+      ∑ c ∈ Finset.Ioc ((n₀ - 1) / p) ((n₀ + k) / p), e (p * c) := by
+  have hR1 := RHTower.sum_Icc_dvd_reindex p (n₀ + k) hp e
+  have hR2 := RHTower.sum_Icc_dvd_reindex p (n₀ - 1) hp e
+  have hdiv : (n₀ - 1) / p ≤ (n₀ + k) / p := Nat.div_le_div_right (by omega)
+  have hA : ∑ c ∈ Icc 1 ((n₀ + k) / p), e (p * c) = ∑ c ∈ Icc 1 ((n₀ - 1) / p), e (p * c) +
+      ∑ c ∈ Finset.Ioc ((n₀ - 1) / p) ((n₀ + k) / p), e (p * c) := by
+    rw [show Icc 1 ((n₀ + k) / p) = Finset.Ioc 0 ((n₀ + k) / p) by ext; simp; omega,
+      show Icc 1 ((n₀ - 1) / p) = Finset.Ioc 0 ((n₀ - 1) / p) by ext; simp; omega,
+      Finset.sum_Ioc_consecutive _ (Nat.zero_le _) hdiv]
+  have hB : ∑ n ∈ (Icc 1 (n₀ + k)).filter (fun n => p ∣ n), e n =
+      ∑ n ∈ (Icc 1 (n₀ - 1)).filter (fun n => p ∣ n), e n +
+        ∑ m ∈ range (k + 1), (if p ∣ n₀ + m then e (n₀ + m) else 0) := by
+    rw [Finset.sum_filter, Finset.sum_filter,
+      show Icc 1 (n₀ + k) = Finset.Ioc 0 (n₀ + k) by ext; simp; omega,
+      show Icc 1 (n₀ - 1) = Finset.Ioc 0 (n₀ - 1) by ext; simp; omega,
+      ← Finset.sum_Ioc_consecutive _ (Nat.zero_le (n₀ - 1)) (by omega : n₀ - 1 ≤ n₀ + k)]
+    congr 1
+    rw [show Finset.Ioc (n₀ - 1) (n₀ + k) = Finset.Ico n₀ (n₀ + k + 1) by ext; simp; omega,
+      Finset.sum_Ico_eq_sum_range, show n₀ + k + 1 - n₀ = k + 1 by omega]
+  rw [hR1, hR2, hA] at hB
+  linear_combination -hB
+
+/-- **Kuzmin–Landau for the prime twist.** For `0 < τ ≤ π n₀/p` and `n₀ + k ≤ N`, the partial
+sums of `c_p(n) n^{iτ}` over `[n₀, n₀ + k]` are at most `6πN/τ + p + 1`. -/
+theorem norm_partial_primeTwist_cpow_le {p : ℕ} (hp : 0 < p) {n₀ N k : ℕ} (hn₀ : 1 ≤ n₀)
+    (hk : n₀ + k ≤ N) {τ : ℝ} (hτ : 0 < τ) (hτn : τ ≤ Real.pi * n₀ / p) :
+    ‖∑ m ∈ range (k + 1), (primeTwist p (n₀ + m) : ℂ) *
+        Complex.exp (((τ * Real.log (n₀ + m) : ℝ) : ℂ) * Complex.I)‖ ≤
+      6 * Real.pi * N / τ + p + 1 := by
+  have hp0 : (0 : ℝ) < p := by exact_mod_cast hp
+  have hN0 : (0 : ℝ) < N := by have : 1 ≤ N := by omega
+                               exact_mod_cast this
+  set e : ℕ → ℂ := fun n => Complex.exp (((τ * Real.log n : ℝ) : ℂ) * Complex.I) with he
+  have hsplit : ∑ m ∈ range (k + 1), (primeTwist p (n₀ + m) : ℂ) *
+      Complex.exp (((τ * Real.log (n₀ + m) : ℝ) : ℂ) * Complex.I) =
+      p * ∑ m ∈ range (k + 1), (if p ∣ n₀ + m then e (n₀ + m) else 0) -
+        ∑ m ∈ range (k + 1), e (n₀ + m) := by
+    rw [mul_sum, ← sum_sub_distrib]
+    refine sum_congr rfl fun m _ => ?_
+    simp only [primeTwist, he]
+    split_ifs <;> push_cast <;> ring
+  rw [hsplit, sum_range_dvd_eq p n₀ k hp hn₀ e]
+  -- the full partial sum
+  have hfull : ‖∑ m ∈ range (k + 1), e (n₀ + m)‖ ≤ 3 * Real.pi * N / τ + 1 := by
+    have hp1 : (1 : ℝ) ≤ p := by exact_mod_cast hp
+    have h := norm_partial_cpow_le hn₀ hk hτ (hτn.trans (div_le_self (by positivity) hp1))
+    have e1 : ∑ m ∈ range (k + 1), e (n₀ + m) = ∑ m ∈ range (k + 1),
+        Complex.exp (((τ * Real.log (n₀ + m) : ℝ) : ℂ) * Complex.I) :=
+      sum_congr rfl fun m _ => by simp only [he, Nat.cast_add]
+    rw [e1]
+    exact h
+  -- the sublattice partial sum
+  obtain ⟨a, ha⟩ : ∃ a, a = (n₀ - 1) / p := ⟨_, rfl⟩
+  obtain ⟨b, hb⟩ : ∃ b, b = (n₀ + k) / p := ⟨_, rfl⟩
+  rw [← ha, ← hb]
+  have hsub : ‖∑ c ∈ Finset.Ioc a b, e (p * c)‖ ≤ 3 * Real.pi * N / (p * τ) + 1 := by
+    rcases Nat.lt_or_ge a b with hab | hab
+    · have hreidx : ∑ c ∈ Finset.Ioc a b, e (p * c) = ∑ j ∈ range (b - (a + 1) + 1),
+          Complex.exp (((τ * Real.log p : ℝ) : ℂ) * Complex.I) *
+            Complex.exp (((τ * Real.log ((a + 1 : ℕ) + j) : ℝ) : ℂ) * Complex.I) := by
+        rw [show Finset.Ioc a b = Finset.Ico (a + 1) (b + 1) by
+            ext x; simp only [Finset.mem_Ioc, Finset.mem_Ico]; omega, Finset.sum_Ico_eq_sum_range,
+          show b + 1 - (a + 1) = b - (a + 1) + 1 by omega]
+        refine sum_congr rfl fun j _ => ?_
+        simp only [he]
+        have hj0 : (0 : ℝ) < (a + 1 : ℕ) + j := by positivity
+        rw [← Complex.exp_add]
+        congr 1
+        rw [show ((p * (a + 1 + j) : ℕ) : ℝ) = (p : ℝ) * ((a + 1 : ℕ) + j) by push_cast; ring,
+          Real.log_mul hp0.ne' hj0.ne']
+        push_cast
+        ring
+      rw [hreidx, ← mul_sum, norm_mul, Complex.norm_exp_ofReal_mul_I, one_mul]
+      have ha1 : 1 ≤ a + 1 := by omega
+      have hab' : (a + 1) + (b - (a + 1)) ≤ b := (Nat.add_sub_cancel' hab).le
+      have hτa : τ ≤ Real.pi * (a + 1 : ℕ) := by
+        refine hτn.trans ?_
+        rw [div_le_iff₀ hp0]
+        have : (n₀ : ℝ) ≤ ((a + 1 : ℕ) : ℝ) * p := by
+          have h1 : n₀ ≤ (a + 1) * p := by
+            have := Nat.lt_div_mul_add (a := n₀ - 1) hp
+            rw [ha, add_mul, one_mul]
+            omega
+          exact_mod_cast h1
+        nlinarith [Real.pi_pos, mul_le_mul_of_nonneg_left this Real.pi_pos.le]
+      have h := norm_partial_cpow_le ha1 hab' hτ hτa
+      refine h.trans ?_
+      have hbN : (b : ℝ) ≤ N / p := by
+        rw [le_div_iff₀ hp0]
+        have : b * p ≤ N := by rw [hb]; exact (Nat.div_mul_le_self _ _).trans hk
+        exact_mod_cast this
+      have : 3 * Real.pi * b / τ ≤ 3 * Real.pi * N / (p * τ) := by
+        rw [div_le_div_iff₀ hτ (by positivity)]
+        have := mul_le_mul_of_nonneg_left hbN (by positivity : (0 : ℝ) ≤ 3 * Real.pi * (p * τ))
+        rw [show 3 * Real.pi * (p * τ) * (N / p) = 3 * Real.pi * N * τ by field_simp] at this
+        nlinarith
+      linarith
+    · rw [Finset.Ioc_eq_empty (by omega), sum_empty, norm_zero]; positivity
+  calc ‖(p : ℂ) * ∑ c ∈ Finset.Ioc a b, e (p * c) - ∑ m ∈ range (k + 1), e (n₀ + m)‖
+      ≤ p * (3 * Real.pi * N / (p * τ) + 1) + (3 * Real.pi * N / τ + 1) := by
+        refine (norm_sub_le _ _).trans (add_le_add ?_ hfull)
+        rw [norm_mul, Complex.norm_natCast]
+        exact mul_le_mul_of_nonneg_left hsub hp0.le
+    _ = 6 * Real.pi * N / τ + p + 1 := by field_simp; ring
 
 end GaloisForLFunctions.ArithmeticHodgeTheoryOfDegenerations
