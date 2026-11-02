@@ -44,3 +44,12 @@ amplification proved separately. No equivalence between Cauchy fixed fields
 and Mayer transfer eigenfunctions is assumed. Local searches found the
 source identities and generic analytic/Cayley tools, but not this exact
 operator classification.
+
+## Lean certificate: exact spectrum
+
+`RenormalizedIntersectionTheory/GaussMayerCauchySpectrum.lean` certifies
+`operator_eq_circle`, `operator_spectrum_eq_insert`,
+`operator_spectrum_eq_closure`, `zero_mem_operator_spectrum`, and
+`operator_not_isUnit`. Its direct production check passed without warnings;
+all five declarations use only `propext`, `Classical.choice`, and `Quot.sound`.
+The no-eigenvector claim remains in formalization.

@@ -131,12 +131,12 @@ private theorem primeSpike_sq_eq (S : Finset ℕ) (a : ℕ → ℝ) {N n : ℕ}
     (hn : n ∈ Icc 1 N) :
     primeSpike S a n ^ 2 =
       ∑ p ∈ S, ((p : ℝ) * a p / Real.sqrt (p.totient : ℝ)) ^ 2 * (if p ∣ n then 1 else 0) := by
-  let z := fun p => ((p : ℝ) * a p / Real.sqrt (p.totient : ℝ)) * (if p ∣ n then 1 else 0)
+  let z := fun p : ℕ => ((p : ℝ) * a p / Real.sqrt (p.totient : ℝ)) * (if p ∣ n then 1 else 0)
   have hcross (p : ℕ) (hp : p ∈ S) (q : ℕ) (hq : q ∈ S) (hne : p ≠ q) : z p * z q = 0 := by
     by_cases hpn : p ∣ n
     · by_cases hqn : q ∣ n
       · have hcop := (Nat.coprime_primes (hP p hp) (hP q hq)).mpr hne
-        have hpq := Nat.le_of_dvd (by omega : 0 < n) (hcop.mul_dvd_of_dvd_of_dvd hpn hqn)
+        have hpq := Nat.le_of_dvd ((mem_Icc.mp hn).1) (hcop.mul_dvd_of_dvd_of_dvd hpn hqn)
         exact False.elim ((not_lt_of_ge (hpq.trans (mem_Icc.mp hn).2)) (hdisj p hp q hq hne))
       · simp only [z, if_neg hqn, mul_zero]
     · simp only [z, if_neg hpn, mul_zero, zero_mul]
@@ -183,7 +183,6 @@ private theorem sum_primeSpike_sq_div (S : Finset ℕ) (a : ℕ → ℝ) (N : �
       rw [heq, sum_inv_multiples_real N p (hP p hp).pos, div_pow,
         Real.sq_sqrt htot.le]
       field_simp
-      <;> ring
 
 private theorem sum_primeSpike_div (S : Finset ℕ) (a : ℕ → ℝ) (N : ℕ)
     (hP : ∀ p ∈ S, p.Prime) :
@@ -207,7 +206,6 @@ private theorem sum_primeSpike_div (S : Finset ℕ) (a : ℕ → ℝ) (N : ℕ)
   have hs : Real.sqrt (p.totient : ℝ) ≠ 0 :=
     (Real.sqrt_pos.mpr (by exact_mod_cast Nat.totient_pos.mpr (hP p hp).pos)).ne'
   field_simp
-  <;> ring
 
 /-- Above pairwise product horizons, the prime-conductor Gram is a positive
 diagonal plus the correction from its common constant mode. -/
@@ -256,7 +254,7 @@ theorem primeConductor_lower_frame_of_disjoint_multiples (S : Finset ℕ) (a : �
         ‖∑ p ∈ S, a p • normalizedRamanujanHorizonVector p N‖ ^ 2 := by
   have hf : ∀ n ∈ Icc 1 N, n ≤ M → primeSpike S a n / Real.sqrt n = 0 := by
     intro n hn hnM
-    rw [primeSpike_vanishes_before S a hM (by omega : 0 < n) hnM, zero_div]
+    rw [primeSpike_vanishes_before S a hM ((mem_Icc.mp hn).1) hnM, zero_div]
   have hh := norm_sub_scalar_ge_missing_support (Icc 1 N) (fun n => n ≤ M)
     (fun n => primeSpike S a n / Real.sqrt n) (fun n => 1 / Real.sqrt n)
     (primeOffset S a) hf
@@ -273,7 +271,7 @@ theorem primeConductor_lower_frame_of_disjoint_multiples (S : Finset ℕ) (a : �
     intro n _
     rw [show primeSpike S a n / Real.sqrt n - primeOffset S a * (1 / Real.sqrt n) =
       (primeSpike S a n - primeOffset S a) / Real.sqrt n by ring, div_sqrt_nat_sq]
-  rw [hG, hE, harmonic_head_eq hMN, hA, sum_primeSpike_sq_div S a N hP hdisj] at hh
+  simp only [hG, hE, harmonic_head_eq hMN, hA, sum_primeSpike_sq_div S a N hP hdisj] at hh
   calc
     _ ≤ (harmonic N : ℝ) *
         ∑ n ∈ Icc 1 N, (primeSpike S a n - primeOffset S a) ^ 2 / n := hh

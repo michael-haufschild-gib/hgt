@@ -220,6 +220,7 @@ theorem logNormal_moments_do_not_determine_logMean :
     have hint_e : Integrable (fun y : ℝ => Real.exp (k * y) * gaussWeight y) := by
       have := (integrable_cexp_gauss (((k : ℝ) : ℂ) + ((0 : ℝ) : ℂ) * I)).re
       refine this.congr (Filter.Eventually.of_forall fun y => ?_)
+      dsimp only
       rw [RCLike.re_to_complex, cexp_gauss_real_mul_I, Complex.re_ofReal_mul]
       simp
     have hint_s : Integrable (fun y : ℝ => Real.exp (k * y) * Real.sin (2 * π * y) *
@@ -239,10 +240,10 @@ theorem logNormal_moments_do_not_determine_logMean :
           Real.exp (k * y) * Real.sin (2 * π * y) * gaussWeight y / Real.sqrt (2 * π) := by
       intro y; ring
     simp_rw [hsplit]
-    rw [integral_add (hint_e.div_const _) (hint_s.div_const _), integral_div (μ := volume)
-      (fun y => Real.exp (k * y) * Real.sin (2 * π * y) * gaussWeight y),
-      integral_exp_mul_sin_gaussWeight, zero_div, add_zero]
-    congr 1; ext y; ring
+    rw [integral_add (hint_e.div_const _) (hint_s.div_const _)]
+    simp only [integral_div, integral_exp_mul_sin_gaussWeight, zero_div, add_zero]
+    rw [← integral_div]
+    congr 1; funext y; ring
   · have hint_yg : Integrable (fun y : ℝ => y * gaussWeight y) := by
       have := integrable_mul_exp_neg_mul_sq (b := (1 / 2 : ℝ)) (by norm_num)
       refine this.congr (Filter.Eventually.of_forall fun y => ?_)
@@ -264,10 +265,9 @@ theorem logNormal_moments_do_not_determine_logMean :
         y * gaussWeight y / Real.sqrt (2 * π) := by
       intro y; ring
     simp_rw [h2, h1]
-    rw [integral_add (hint_yg.div_const _) (hint_ys.div_const _),
-      integral_div (μ := volume) (fun y => y * gaussWeight y),
-      integral_div (μ := volume) (fun y => y * Real.sin (2 * π * y) * gaussWeight y),
-      integral_mul_gaussWeight, integral_mul_sin_gaussWeight]
+    rw [integral_add (hint_yg.div_const _) (hint_ys.div_const _)]
+    simp only [integral_div, integral_mul_gaussWeight, integral_mul_sin_gaussWeight, zero_div,
+      zero_add, sub_zero]
     field_simp
 
 end
