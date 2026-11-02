@@ -1,4 +1,4 @@
-# Continuous spectrum of actual logarithmic Cauchy averaging
+# Exact spectrum and absence of Cauchy eigenvectors
 
 - **Stage:** 1-in-progress
 - **Type:** Paper theorem; Lean formalization in progress

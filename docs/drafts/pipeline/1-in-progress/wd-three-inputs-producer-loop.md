@@ -78,6 +78,8 @@ through mollifiers and Jensen.
 | 31 | Long mollifiers through the contour form `M(s) = ∮ ζ(s+w)⁻¹ T^{θw}P̂(w)dw` | reduction | for `θ > 1` the zero residues `T^{θ(ρ−s)}/ζ'(ρ)` dominate; `∫|M|²` becomes a zero-pair sum weighted by `1/(ζ'(ρ)ζ̄'(ρ'))`: Gonek–Hejhal negative moments plus pair correlation, open even under RH |
 | 32 | Holomorphic moments `E(ζM)^k = 1` plus `E|ζM|² = c` improve Jensen's `E log|ζM| ≤ ½ log c` | refuted, survivor formalized | the boundary law of `F(w) = r⁻¹(w+r)/(1+rw)`, `r = c^{−½}`, has every holomorphic moment `1`, constant modulus `√c`, log-mean exactly `½ log c`; the mollifier method's loss is intrinsic to its data (`exists_jensen_extremal`) |
 | 33 | All absolute moments `E|ζM|^{2k}` (if known) determine `E log|ζM|` | refuted (structural) | at fixed `θ` the law of `log|ζM|` has positive variance; log-normal moment sequences are indeterminate (Heyde: densities `f(x)(1 + ε sin(2π log x))` share all moments), and the perturbation shifts `E log` by `ε·2π e^{−2π²}`; so no moment method at fixed mollifier length pins the log-mean, only `θ → ∞` (variance `→ 0`) or non-moment structure |
+| 34 | Gaussian bookkeeping: `E log|ζM| = ½ log E|ζM|² − Var − (higher cumulants)` with the variance from primes and zeros | reduction | the `O(1)` term of the variance is the Goldston–Gonek–Montgomery constant `∫_1^∞ F(α)α^{−2}dα` (long-range pair correlation, weighted); at fixed `θ` the higher cumulants of `log|ζM|` are `O(1)` (log-singularities, few nearby zeros), so mean and variance do not determine each other |
+| 35 | Szegő–Kolmogorov–Helson: the optimal mollified mean square `c_opt(θ) = inf_{a_1=1}(1/T)∫|ζM|²` over all mollifiers of length `T^θ` | equivalence (insight) | Jensen with the mollifier credit `E log|M| ≥ 0` gives `c_opt(θ) ≥ exp(2E log|ζ|)` for every `θ`; Helson–Lowdenslager on the Bohr torus `𝕋^∞` (dual ℚ₊ ordered) predicts `c_opt(θ) → exp(2E log|ζ|)`; so the long-mollifier input (optimal coefficients, `θ → ∞`) is equivalent to block 3, not merely sufficient. Transfer from `𝕋^∞` to `t ∈ [T,2T]` holds only below length `T` |
 
 ## Formalized
 
@@ -93,4 +95,4 @@ An unconditional bound for the damped long-range energy, equivalently cancellati
 multiplicity. No mechanism above survives.
 
 ## Log
-- 2026-11-02 — created; rows 1–33; minimal input identified (critical-line log-mean).
+- 2026-11-02 — created; rows 1–35; minimal input identified (critical-line log-mean).

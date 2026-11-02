@@ -57,9 +57,18 @@ def halfChebyshev (x : ℝ) : ℝ := ∑ n ∈ Finset.Icc 2 ⌊x⌋₊, primeJum
 
 variable {A ℓ : ℝ} {H : ℝ → ℝ}
 
-theorem indicator_one_mul (s : Set ℝ) (f : ℝ → ℝ) (u : ℝ) :
-    s.indicator (1 : ℝ → ℝ) u * f u = s.indicator f u := by
-  by_cases hu : u ∈ s <;> simp [hu]
+/-- `m_ℓ(u) f(u) = 1_{[−A,−ℓ]} f(u) + 1_{[ℓ−A,0]} f(u)`. -/
+theorem inWindowCount_mul (A ℓ u : ℝ) (f : ℝ → ℝ) :
+    inWindowCount A ℓ u * f u = (Icc (-A) (-ℓ)).indicator f u + (Icc (ℓ - A) 0).indicator f u := by
+  unfold inWindowCount
+  by_cases h1 : u ∈ Icc (-A) (-ℓ) <;> by_cases h2 : u ∈ Icc (ℓ - A) 0 <;> simp [h1, h2, add_mul]
+
+/-- `∫ (f + g − 2h) = ∫ f + ∫ g − 2∫ h`. -/
+theorem integral_add_sub_two_mul {f g h : ℝ → ℝ} (hf : Integrable f) (hg : Integrable g)
+    (hh : Integrable h) :
+    ∫ u, (f u + g u - 2 * h u) = (∫ u, f u) + (∫ u, g u) - 2 * ∫ u, h u := by
+  rw [integral_sub (f := fun u => f u + g u) (hf.add hg) (hh.const_mul 2),
+    integral_add hf hg, integral_const_mul]
 
 theorem inWindowCount_nonneg (A ℓ u : ℝ) : 0 ≤ inWindowCount A ℓ u := by
   unfold inWindowCount
@@ -98,10 +107,10 @@ theorem integrable_indicator_Icc_one (a b : ℝ) : Integrable ((Icc a b).indicat
   (integrable_indicator_iff measurableSet_Icc).mpr (integrableOn_const (by simp [Real.volume_Icc]))
 
 /-- **The fold identity.** For `H` continuous, compactly supported and vanishing off `[−A, 0]`, and
-`ℓ ≥ 0`, the jump energy minus the creation is the fold energy minus the in-window count:
+every `ℓ`, the jump energy minus the creation is the fold energy minus the in-window count:
 `∫(H − H(·+ℓ))² − 2∫H² = ∫_{[−A,−ℓ]}(H − H(·+ℓ))² − ∫ m_ℓ H²`. -/
 theorem jump_sub_creation_eq_fold (hc : Continuous H) (hcs : HasCompactSupport H)
-    (hv : ∀ y, y ∉ Icc (-A) 0 → H y = 0) (hℓ : 0 ≤ ℓ) :
+    (hv : ∀ y, y ∉ Icc (-A) 0 → H y = 0) :
     (∫ u, (H u - H (u + ℓ)) ^ 2) - 2 * ∫ u, H u ^ 2 =
       foldEnergy A ℓ H - ∫ u, inWindowCount A ℓ u * H u ^ 2 := by
   set P : ℝ → ℝ := fun u => H u * H (u + ℓ) with hP
@@ -136,34 +145,31 @@ theorem jump_sub_creation_eq_fold (hc : Continuous H) (hcs : HasCompactSupport H
     simp only [hP]; ring
   have hfull : ∫ u, (H u - H (u + ℓ)) ^ 2 = 2 * (∫ u, H u ^ 2) - 2 * ∫ u, P u := by
     simp_rw [hexp]
-    rw [integral_sub (iH.add iHs) (iP.const_mul 2), integral_add iH iHs, integral_const_mul,
-      integral_add_right_eq_self (fun u => H u ^ 2) ℓ]
+    rw [integral_add_sub_two_mul iH iHs iP, integral_add_right_eq_self (fun u => H u ^ 2) ℓ]
     ring
   have mI := measurableSet_Icc (a := -A) (b := -ℓ)
   have mJ := measurableSet_Icc (a := ℓ - A) (b := (0 : ℝ))
   have hfold : foldEnergy A ℓ H =
       (∫ u, (Icc (-A) (-ℓ)).indicator (fun u => H u ^ 2) u) +
         (∫ u, (Icc (ℓ - A) 0).indicator (fun u => H u ^ 2) u) - 2 * ∫ u, P u := by
-    have hpt : (Icc (-A) (-ℓ)).indicator (fun u => (H u - H (u + ℓ)) ^ 2) =
-        fun u => (Icc (-A) (-ℓ)).indicator (fun u => H u ^ 2) u +
+    have hpt : ∀ u, (Icc (-A) (-ℓ)).indicator (fun u => (H u - H (u + ℓ)) ^ 2) u =
+        (Icc (-A) (-ℓ)).indicator (fun u => H u ^ 2) u +
           (Icc (-A) (-ℓ)).indicator (fun u => H (u + ℓ) ^ 2) u -
-            2 * (Icc (-A) (-ℓ)).indicator P u := by
-      funext u
+            2 * (Icc (-A) (-ℓ)).indicator P u := fun u => by
       by_cases hu : u ∈ Icc (-A) (-ℓ)
       · simp only [indicator_of_mem hu, hexp]
       · simp only [indicator_of_notMem hu]; ring
-    rw [foldEnergy, hpt, integral_sub ((iH.indicator mI).add (iHs.indicator mI))
-      ((iP.indicator mI).const_mul 2), integral_add (iH.indicator mI) (iHs.indicator mI),
-      integral_const_mul, hPind, htr]
+    rw [foldEnergy, integral_congr_ae (Eventually.of_forall hpt),
+      integral_add_sub_two_mul (iH.indicator mI) (iHs.indicator mI) (iP.indicator mI), hPind, htr]
   have hcount : ∫ u, inWindowCount A ℓ u * H u ^ 2 =
       (∫ u, (Icc (-A) (-ℓ)).indicator (fun u => H u ^ 2) u) +
         ∫ u, (Icc (ℓ - A) 0).indicator (fun u => H u ^ 2) u := by
-    have hpt : (fun u => inWindowCount A ℓ u * H u ^ 2) = fun u =>
+    have hpt : ∀ u, inWindowCount A ℓ u * H u ^ 2 =
         (Icc (-A) (-ℓ)).indicator (fun u => H u ^ 2) u +
-          (Icc (ℓ - A) 0).indicator (fun u => H u ^ 2) u := by
-      funext u
-      rw [inWindowCount, add_mul, indicator_one_mul, indicator_one_mul]
-    rw [hpt, integral_add (iH.indicator mI) (iH.indicator mJ)]
+          (Icc (ℓ - A) 0).indicator (fun u => H u ^ 2) u := fun u =>
+      inWindowCount_mul A ℓ u (fun u => H u ^ 2)
+    rw [integral_congr_ae (Eventually.of_forall hpt),
+      integral_add (iH.indicator mI) (iH.indicator mJ)]
   rw [hfull, hfold, hcount]
   ring
 
@@ -179,8 +185,8 @@ theorem integral_canonicalDensity_mul (hc : Continuous H) (hcs : HasCompactSuppo
     refine Integrable.const_mul ?_ _
     have hpt : (fun u => inWindowCount A (Real.log n) u * H u ^ 2) = fun u =>
         (Icc (-A) (-Real.log n)).indicator (fun u => H u ^ 2) u +
-          (Icc (Real.log n - A) 0).indicator (fun u => H u ^ 2) u := by
-      funext u; rw [inWindowCount, add_mul, indicator_one_mul, indicator_one_mul]
+          (Icc (Real.log n - A) 0).indicator (fun u => H u ^ 2) u :=
+      funext fun u => inWindowCount_mul A (Real.log n) u (fun u => H u ^ 2)
     rw [hpt]
     exact (iH.indicator measurableSet_Icc).add (iH.indicator measurableSet_Icc)
   simp_rw [canonicalDensity, Finset.sum_mul, mul_assoc]
@@ -200,17 +206,14 @@ theorem markovForm_eq_fold_sub_canonical (hc : Continuous H) (hcs : HasCompactSu
         2 * primeJumpWeight n * (∫ u, H u ^ 2) =
       primeJumpWeight n * foldEnergy A (Real.log n) H -
         primeJumpWeight n * ∫ u, inWindowCount A (Real.log n) u * H u ^ 2 := fun n _ => by
-    have := jump_sub_creation_eq_fold hc hcs hv (Real.log_natCast_nonneg n) (ℓ := Real.log n)
+    have := jump_sub_creation_eq_fold hc hcs hv (ℓ := Real.log n)
     rw [show 2 * primeJumpWeight n * (∫ u, H u ^ 2) = primeJumpWeight n * (2 * ∫ u, H u ^ 2) by
       ring, ← mul_sub, this, mul_sub]
   have hsum := Finset.sum_congr rfl hfold
   rw [Finset.sum_sub_distrib, Finset.sum_sub_distrib, ← Finset.sum_mul] at hsum
   rw [markovForm, creationPotential, primeJump, integral_canonicalDensity_mul hc hcs,
     ← Finset.mul_sum] at *
-  have h2 : 2 * ∑ n ∈ Finset.Icc 2 (windowLevel A), primeJumpWeight n =
-      ∑ n ∈ Finset.Icc 2 (windowLevel A), 2 * primeJumpWeight n := Finset.mul_sum _ _ _
-  rw [h2]
-  linarith
+  linear_combination hsum
 
 /-- **Weil's form on a window** is archimedean jumps plus fold energies minus the canonical density,
 plus the pole plane. -/
@@ -259,7 +262,7 @@ theorem halfChebyshev_exp_eq {A t : ℝ} (ht : t ≤ A) :
     halfChebyshev (Real.exp t) = ∑ n ∈ Finset.Icc 2 (windowLevel A),
       primeJumpWeight n * (Ici (Real.log n)).indicator (1 : ℝ → ℝ) t := by
   have hsub : Finset.Icc 2 ⌊Real.exp t⌋₊ =
-      (Finset.Icc 2 (windowLevel A)).filter fun n => Real.log n ≤ t := by
+      (Finset.Icc 2 (windowLevel A)).filter fun n : ℕ => Real.log (n : ℝ) ≤ t := by
     ext n
     simp only [Finset.mem_Icc, Finset.mem_filter]
     constructor
@@ -294,8 +297,9 @@ theorem canonicalMass_eq_integral_halfChebyshev {A : ℝ} (hA : 0 ≤ A) :
     canonicalMass A = 2 * ∫ t in (0 : ℝ)..A, halfChebyshev (Real.exp t) := by
   rw [intervalIntegral.integral_of_le hA,
     setIntegral_congr_fun measurableSet_Ioc fun t ht => halfChebyshev_exp_eq ht.2,
-    integral_finsetSum _ fun n _ =>
-      ((integrableOn_const (by simp [Real.volume_Ioc])).indicator measurableSet_Ici).const_mul _,
+    integral_finsetSum _ fun n _ => by
+      refine Integrable.const_mul ?_ _
+      exact (integrableOn_const (by simp [Real.volume_Ioc])).indicator measurableSet_Ici,
     Finset.mul_sum, canonicalMass]
   refine Finset.sum_congr rfl fun n hn => ?_
   obtain ⟨h0, hA'⟩ := log_le_of_mem_Icc_windowLevel hn

@@ -65,5 +65,7 @@ Corpus search found fixed-family and growing-square cancellation, the
 pointwise window limit, and the bounded Haar pole functional; no all-detail
 Hilbert operator estimate was found. The mass identities are already
 proved by `integral_haarSectionProfile_sq` and `inner_coarseAtom`.
-The new trace, row-tail and operator estimates remain unformalized.
-External priority is unchecked.
+`fullPrimeWindowTrace_div_sqrt_le_exp` in `FullPrimeWindowTraceDecay.lean`
+now proves the refined trace bound. Its direct audit contains only
+`propext`, `Classical.choice`, and `Quot.sound`. The row-tail and operator
+estimates remain unformalized. External priority is unchecked.

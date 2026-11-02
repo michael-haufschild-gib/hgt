@@ -1,6 +1,7 @@
 # Prime-conductor frames beyond the square-root horizon
 
-- **Stage:** 1-in-progress; novelty and Lean checks pending.
+- **Stage:** 2-fully-proven; Lean written, checks pending.
+- **Type:** THEOREM (paper).
 - **Wall:** Σ1e.
 - **Target:** For `1/2<θ<1`, prime conductor packets supported on `sqrt N<p≤N^θ` have a lower frame bound independent of `N`. No prime-distribution estimate is required.
 
@@ -44,9 +45,18 @@ The square-root threshold helps this restricted family: it separates its
 divisibility supports. This does not settle frames for all composite conductors,
 nor their complete-Weil residual averages.
 
-## Remaining proof work
+## Lean boundary
 
-Verify the exact Ramanujan normalization and harmonic-sum identities against the
-corpus. Formalize the finite weighted projection bound, the disjoint-support
-identity, and the polynomial-band lower bound. Audit the final theorem's axioms
-before changing Σ1e's status.
+The exact normalization is supplied by
+`norm_sum_normalizedRamanujanHorizonVector_sq`,
+`normalizedRamanujanMode_eq_coefficient`, and `ramanujanCoefficient_prime`.
+The harmonic bounds `log_le_harmonic_floor` and `harmonic_le_one_add_log`,
+floor conversion, and prime coprimality APIs were checked in a scratch file.
+
+Written in `CompletedArithmeticForms/LargePrimeConductorsHaveDisjointHorizonSpikes.lean`:
+
+- `primeConductor_gram_eq_diagonal_add_rank_two`;
+- `primeConductor_lower_frame_of_disjoint_multiples`;
+- `primeConductorBand_lower_frame`.
+
+All three checks and transitive axiom audits remain pending.

@@ -179,6 +179,7 @@ theorem hermNegIndex_weilWindowGram (hφ0 : ∫ u, φ u ≠ 0) (hφ2 : 0 < ∫ u
 
 /-! ### The window index as a function of the multiple -/
 
+omit [DecidableEq ι] in
 /-- **Monotonicity**: for `βJ ≥ 0` the window index is nondecreasing in the multiple. -/
 theorem hermNegIndex_pencilGram_mono {h : ι → ℝ → ℝ} (hh : ∀ i, ContDiff ℝ 2 (h i))
     (hsupp : ∀ i y, y ∉ Set.Icc (-A) 0 → h i y = 0) {β J : ℝ} (hβJ : 0 ≤ β * J) {K K' : ℝ}
@@ -190,6 +191,7 @@ theorem hermNegIndex_pencilGram_mono {h : ι → ℝ → ℝ} (hh : ∀ i, ContD
     have := mul_le_mul_of_nonneg_right (div_le_div_of_nonneg_left hβJ hK hKK) hq
     linarith
 
+omit [DecidableEq ι] in
 /-- The window index never exceeds Weil's part. -/
 theorem hermNegIndex_pencilGram_le_weil {h : ι → ℝ → ℝ} (hh : ∀ i, ContDiff ℝ 2 (h i))
     (hsupp : ∀ i y, y ∉ Set.Icc (-A) 0 → h i y = 0) {β J : ℝ} (hβJ : 0 ≤ β * J) {K : ℝ}
@@ -226,8 +228,8 @@ theorem eventually_hermNegIndex_pencilGram_eq (hφ0 : ∫ u, φ u ≠ 0) (hφ2 :
   rw [← hermNegIndex_weilWindowGram hφ0 hφ2]
   exact le_antisymm (hermNegIndex_pencilGram_le_weil hh hsupp hβJ hK0) hK
 
-/-- The window index is bounded by the number of right zeros at every multiple, for every family
-(no schedule needed). -/
+omit [DecidableEq ι] in
+/-- The window index is bounded by the number of right zeros at every multiple, for every family. -/
 theorem hermNegIndex_pencilGram_le_rightZeros (hφ0 : ∫ u, φ u ≠ 0) (hφ2 : 0 < ∫ u, φ u ^ 2)
     {h : ι → ℝ → ℝ} (hh : ∀ i, ContDiff ℝ 2 (h i))
     (hsupp : ∀ i y, y ∉ Set.Icc (-A) 0 → h i y = 0) {β J : ℝ} (hβJ : 0 ≤ β * J) {K : ℝ}
