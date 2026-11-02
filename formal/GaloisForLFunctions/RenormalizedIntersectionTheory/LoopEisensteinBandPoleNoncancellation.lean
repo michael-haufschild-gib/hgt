@@ -247,10 +247,16 @@ private theorem norm_degreeFourSeries_sub_le {f : ℤ → ℂ → ℂ}
 private theorem norm_xiSector_sub_one_le (b : Bool) (R : ℝ) (hR : 0 < R)
     (s : ℂ) (hs : s ∈ levelFourStrip) :
     ‖xiSector b R s - 1‖ ≤ 2 * ∑' n : ℤ, rotationMajorant R n := by
-  have hr := norm_degreeFourSeries_sub_le
-    (fun n s hs => (xiSectorCoefficient_family_bound b n s hs).1) R hR s hs
-  have ht := norm_degreeFourSeries_sub_le
-    (fun n s hs => (xiSectorCoefficient_family_bound b n s hs).2) R hR s hs
+  have hr :
+      ‖degreeFourSeries (fun n => xiSectorCoefficient b (.r n)) R s -
+        xiSectorCoefficient b (.r 0) s‖ ≤ ∑' n : ℤ, rotationMajorant R n :=
+    norm_degreeFourSeries_sub_le (f := fun n => xiSectorCoefficient b (.r n))
+      (fun n s hs => (xiSectorCoefficient_family_bound b n s hs).1) R hR s hs
+  have ht :
+      ‖degreeFourSeries (fun n => xiSectorCoefficient b (.sr n)) R s -
+        xiSectorCoefficient b (.sr 0) s‖ ≤ ∑' n : ℤ, rotationMajorant R n :=
+    norm_degreeFourSeries_sub_le (f := fun n => xiSectorCoefficient b (.sr n))
+      (fun n s hs => (xiSectorCoefficient_family_bound b n s hs).2) R hR s hs
   have hzero : xiSectorCoefficient b (.r 0) s + xiSectorCoefficient b (.sr 0) s = 1 := by
     change xiSectorCoefficient b 1 s + xiSectorCoefficient b finiteReflection s = 1
     rw [xiSectorCoefficient_one, xiSectorCoefficient_finiteReflection]
@@ -261,7 +267,13 @@ private theorem norm_xiSector_sub_one_le (b : Bool) (R : ℝ) (hR : 0 < R)
     rw [xiSector, ← hzero]
     ring
   rw [he]
-  exact (norm_add_le _ _).trans (by simpa only [two_mul] using add_le_add hr ht)
+  calc
+    _ ≤ ‖degreeFourSeries (fun n => xiSectorCoefficient b (.r n)) R s -
+          xiSectorCoefficient b (.r 0) s‖ +
+        ‖degreeFourSeries (fun n => xiSectorCoefficient b (.sr n)) R s -
+          xiSectorCoefficient b (.sr 0) s‖ := norm_add_le _ _
+    _ ≤ (∑' n : ℤ, rotationMajorant R n) + ∑' n : ℤ, rotationMajorant R n := add_le_add hr ht
+    _ = _ := (two_mul _).symm
 
 /-- One rotation threshold makes both sectors nonzero at every height in the strip. -/
 theorem xiSector_eventually_uniform_ne_zero :

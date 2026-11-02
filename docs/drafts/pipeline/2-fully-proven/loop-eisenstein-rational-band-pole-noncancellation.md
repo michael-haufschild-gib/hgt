@@ -39,7 +39,9 @@ For one sufficiently large threshold, both sectors stay within distance one
 of `1` everywhere on the strip and therefore have no zeros there.
 
 Fix a band zero `s₀` of `Λ(s+1)`. Both completed-zeta factors are analytic
-near `s₀`. The numerator `Λ(s₀)=Λ(1−s₀)` is nonzero by Euler-product
+near `s₀`. The denominator has finite zero order because
+`ξ(z)=z(z−1)Λ(z)/2` is entire and not identically zero.
+The numerator `Λ(s₀)=Λ(1−s₀)` is nonzero by Euler-product
 nonvanishing, since `Re(1−s₀)>1`. Above the uniform rotation threshold,
 `P_R(s₀)≠0`; hence the cleared numerator
 `Λ(s+1)Q_R(s)+Λ(s)P_R(s)` is nonzero at `s₀`.

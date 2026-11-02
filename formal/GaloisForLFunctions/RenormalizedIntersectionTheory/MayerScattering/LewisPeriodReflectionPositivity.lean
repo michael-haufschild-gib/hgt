@@ -13,7 +13,7 @@ period functions of the Mayer operator:
    `Re s = 1/4`. Consequently, in any positive-semidefinite Hermitian space `(V, h)`, both
    `h(ψ_s, ψ_s) ≥ 0` and the `I_s`-induced Krein self-pairing `h(ψ_s, I_s ψ_s) = h(ψ_s, ψ_s) ≥ 0`
    are blind to `Re s = 1/4`; likewise, on the `s`-dependent Cauchy–Mellin space
-   `L²((0, ∞), a^(4 Re s - 1) da)`, `I_s` is an exact norm isometry for every `s ∈ ℂ`.
+   `L²((0, ∞), a^(2 Re s - 1) da)`, `I_s` is an exact norm isometry for every `s ∈ ℂ`.
 2. **Canonical `s`-Independent Möbius–Critical Hilbert Space `H_LP`:** Equipped with the weight
    `lewisCriticalWeight a = (a + a⁻¹)^(-6) * a^(-1/2)` on `(0, ∞)`, every unsubtracted global
    Lewis period function across the entire open strip `0 < Re s < 1/2` (together with its
@@ -29,7 +29,8 @@ period functions of the Mayer operator:
 
 open Complex Set Filter MeasureTheory Topology
 open GaloisForLFunctions.RenormalizedIntersectionTheory
-open MayerCutoff MayerParameter MayerScatteringMellin MayerGlobalPeriods MayerScatteringCore
+open MayerCutoff MayerParameter MayerScatteringMellin MayerScatteringState
+open MayerGlobalPeriods MayerScatteringCore
 
 set_option autoImplicit false
 
@@ -48,6 +49,7 @@ theorem integral_Ioi_zero_inv_subst {E : Type*} [NormedAddCommGroup E] [NormedSp
     (∫ a in Ioi (0 : ℝ), g a) = ∫ b in Ioi (0 : ℝ), b ^ (-2 : ℝ) • g b⁻¹ := by
   have himg : (fun b : ℝ => b⁻¹) '' Ioi (0 : ℝ) = Ioi 0 := by
     ext u
+    simp only [Set.mem_image, Set.mem_Ioi]
     exact ⟨fun ⟨b, hb, hbu⟩ => hbu ▸ inv_pos.mpr hb,
       fun hu => ⟨u⁻¹, inv_pos.mpr hu, inv_inv u⟩⟩
   have hinj : Set.InjOn (fun b : ℝ => b⁻¹) (Ioi 0) := fun _ _ _ _ h => inv_injective h
@@ -59,7 +61,7 @@ theorem integral_Ioi_zero_inv_subst {E : Type*} [NormedAddCommGroup E] [NormedSp
   have hb0 : 0 < b := hb
   have habs : |-(b ^ 2)⁻¹| = b ^ (-2 : ℝ) := by
     rw [abs_neg, abs_of_pos (by positivity), Real.rpow_neg hb0.le, Real.rpow_two]
-  dsimp only
+  change |-(b ^ 2)⁻¹| • g b⁻¹ = b ^ (-2 : ℝ) • g b⁻¹
   rw [habs]
 
 private theorem integral_Ioc_zero_one_inv_subst (g : ℝ → ℝ) :
@@ -116,7 +118,7 @@ theorem lewisModularInversion_involutive {s : ℂ} {f : ℝ → ℂ} {a : ℝ} (
 theorem lewisModularInversion_resonantLewisPeriod {s : ℂ} (hs : IsMayerScatteringResonance s)
     {a : ℝ} (ha : 0 < a) :
     lewisModularInversion s (fun x : ℝ => resonantLewisPeriod s x) a = resonantLewisPeriod s a := by
-  unfold lewisModularInversion
+  dsimp only [lewisModularInversion]
   have hrec := resonantLewisPeriod_reciprocity hs (a := (a : ℂ)) (by simpa using ha)
   rw [Complex.ofReal_inv]
   exact hrec.symm
@@ -146,10 +148,10 @@ theorem fixed_vector_krein_self_pairing_nonneg {V : Type*} (h : V → V → ℂ)
 
 /-- **Modular Inversion Blindness on the `s`-Dependent Cauchy–Mellin Space.** For EVERY `s ∈ ℂ`
 (whether `Re s = 1/4` or `Re s ≠ 1/4`), `lewisModularInversion s` is an exact norm isometry of
-`L²((0, ∞), a^(4 Re s - 1) da)`. -/
+`L²((0, ∞), a^(2 Re s - 1) da)`. -/
 theorem cauchyMellinWeight_isometry (s : ℂ) (f : ℝ → ℂ) :
-    (∫ a in Ioi (0 : ℝ), a ^ (4 * s.re - 1) * ‖lewisModularInversion s f a‖ ^ 2) =
-      ∫ b in Ioi (0 : ℝ), b ^ (4 * s.re - 1) * ‖f b‖ ^ 2 := by
+    (∫ a in Ioi (0 : ℝ), a ^ (2 * s.re - 1) * ‖lewisModularInversion s f a‖ ^ 2) =
+      ∫ b in Ioi (0 : ℝ), b ^ (2 * s.re - 1) * ‖f b‖ ^ 2 := by
   rw [integral_Ioi_zero_inv_subst]
   refine setIntegral_congr_fun measurableSet_Ioi fun b hb => ?_
   have hb0 : 0 < b := hb
@@ -159,16 +161,16 @@ theorem cauchyMellinWeight_isometry (s : ℂ) (f : ℝ → ℂ) :
     Real.inv_rpow hb0.le, Real.inv_rpow hb0.le, mul_pow]
   have hre : (-(2 * s)).re = -2 * s.re := by simp
   rw [hre]
-  have hrpow1 : (b ^ (4 * s.re - 1))⁻¹ = b ^ (1 - 4 * s.re) := by
-    rw [← Real.rpow_neg hb0.le, show -(4 * s.re - 1) = 1 - 4 * s.re by ring]
+  have hrpow1 : (b ^ (2 * s.re - 1))⁻¹ = b ^ (1 - 2 * s.re) := by
+    rw [← Real.rpow_neg hb0.le, show -(2 * s.re - 1) = 1 - 2 * s.re by ring]
   have hrpow2 : ((b ^ (-2 * s.re))⁻¹) ^ (2 : ℕ) = b ^ (4 * s.re) := by
     rw [← Real.rpow_neg hb0.le, ← Real.rpow_natCast, ← Real.rpow_mul hb0.le]
     congr 1
     push_cast
     ring
   rw [hrpow1, hrpow2]
-  have hcomb : b ^ (-2 : ℝ) * (b ^ (1 - 4 * s.re) * (b ^ (4 * s.re) * ‖f b‖ ^ 2)) =
-      (b ^ (-2 : ℝ) * b ^ (1 - 4 * s.re) * b ^ (4 * s.re)) * ‖f b‖ ^ 2 := by ring
+  have hcomb : b ^ (-2 : ℝ) * (b ^ (1 - 2 * s.re) * (b ^ (4 * s.re) * ‖f b‖ ^ 2)) =
+      (b ^ (-2 : ℝ) * b ^ (1 - 2 * s.re) * b ^ (4 * s.re)) * ‖f b‖ ^ 2 := by ring
   rw [hcomb, ← Real.rpow_add hb0, ← Real.rpow_add hb0]
   congr 2
   ring
@@ -215,9 +217,12 @@ def lewisCriticalNormSq (f : ℝ → ℂ) : ℝ :=
 theorem lewisCriticalInner_self_eq_ofReal_normSq (f : ℝ → ℂ) :
     lewisCriticalInner f f = (lewisCriticalNormSq f : ℂ) := by
   unfold lewisCriticalInner lewisCriticalNormSq
-  rw [← integral_ofReal]
-  refine setIntegral_congr_fun measurableSet_Ioi fun a _ => ?_
-  rw [Complex.mul_conj', Complex.ofReal_mul, Complex.ofReal_pow]
+  calc
+    (∫ a in Ioi (0 : ℝ), f a * (starRingEnd ℂ) (f a) * (lewisCriticalWeight a : ℂ)) =
+        ∫ a in Ioi (0 : ℝ), ((‖f a‖ ^ 2 * lewisCriticalWeight a : ℝ) : ℂ) := by
+      refine setIntegral_congr_fun measurableSet_Ioi fun a _ => ?_
+      rw [Complex.mul_conj', Complex.ofReal_mul, Complex.ofReal_pow]
+    _ = ((∫ a in Ioi (0 : ℝ), ‖f a‖ ^ 2 * lewisCriticalWeight a : ℝ) : ℂ) := integral_ofReal
 
 theorem lewisCriticalNormSq_nonneg (f : ℝ → ℂ) : 0 ≤ lewisCriticalNormSq f := by
   unfold lewisCriticalNormSq
@@ -241,7 +246,7 @@ theorem eq_zero_on_Ioi_of_lewisCriticalNormSq_eq_zero {f : ℝ → ℂ}
   let q : ℝ := a₀ + r / 2
   have hp_pos : 0 < p := lt_max_of_lt_left (half_pos ha₀)
   have hp_lt_a₀ : p < a₀ := max_lt (half_lt_self ha₀) (by linarith)
-  have hp_lt_q : p < q := by linarith
+  have hp_lt_q : p < q := by dsimp [q]; linarith
   have hw_min : ∃ m : ℝ, 0 < m ∧ ∀ x ∈ Ioc p q, m ≤ ‖f x‖ ^ 2 * lewisCriticalWeight x := by
     let g : ℝ → ℝ := fun x => (‖f a₀‖ / 2) ^ 2 * lewisCriticalWeight x
     have hg_cont : ContinuousOn g (Icc p q) :=
@@ -252,7 +257,8 @@ theorem eq_zero_on_Ioi_of_lewisCriticalNormSq_eq_zero {f : ℝ → ℂ}
     have hx_dist : dist x a₀ < r := by
       rw [Real.dist_eq, abs_lt]
       have hp2 : a₀ - r / 2 ≤ p := le_max_right _ _
-      exact ⟨by linarith [hx.1], by linarith [hx.2]⟩
+      have hx_le : x ≤ a₀ + r / 2 := hx.2
+      exact ⟨by linarith [hx.1], by linarith⟩
     have hfx : ‖f a₀‖ / 2 ≤ ‖f x‖ := by
       have hb := abs_lt.mp (by simpa [Real.dist_eq] using hball hx_dist)
       linarith
@@ -262,14 +268,15 @@ theorem eq_zero_on_Ioi_of_lewisCriticalNormSq_eq_zero {f : ℝ → ℂ}
       (mul_le_mul_of_nonneg_right hsq (lewisCriticalWeight_pos (hp_pos.trans hx.1)).le)
   obtain ⟨m, hm_pos, hm_le⟩ := hw_min
   have hsub : Ioc p q ⊆ Ioi 0 := fun x hx => hp_pos.trans hx.1
-  have hunion : Ioi (0 : ℝ) = Ioc p q ∪ (Ioi 0 \ Ioc p q) := (Set.union_diff_cancel hsub).symm
+  have hunion : Ioi (0 : ℝ) = Ioc p q ∪ (Ioi 0 \ Ioc p q) := (Set.union_sdiff_cancel hsub).symm
   have hdisj : Disjoint (Ioc p q) (Ioi 0 \ Ioc p q) := disjoint_sdiff_self_right
   have hsplit : lewisCriticalNormSq f =
       (∫ x in Ioc p q, ‖f x‖ ^ 2 * lewisCriticalWeight x) +
         ∫ x in Ioi 0 \ Ioc p q, ‖f x‖ ^ 2 * lewisCriticalWeight x := by
     unfold lewisCriticalNormSq
-    rw [hunion, setIntegral_union hdisj (measurableSet_Ioi.diff measurableSet_Ioc)
-      (hf_int.mono_set hsub) (hf_int.mono_set Set.diff_subset)]
+    conv_lhs => rw [hunion]
+    exact setIntegral_union hdisj (measurableSet_Ioi.diff measurableSet_Ioc)
+      (hf_int.mono_set hsub) (hf_int.mono_set Set.sdiff_subset)
   have hrest_nn : 0 ≤ ∫ x in Ioi 0 \ Ioc p q, ‖f x‖ ^ 2 * lewisCriticalWeight x :=
     setIntegral_nonneg (measurableSet_Ioi.diff measurableSet_Ioc) fun x hx =>
       mul_nonneg (sq_nonneg _) (lewisCriticalWeight_pos hx.1).le
@@ -297,7 +304,7 @@ theorem period_real_continuousOn {w : ℂ} (hw : 0 < w.re) (ε c : ℂ) (f : Dis
   have hh := (extension_differentiableOn hw ε c f).differentiableAt (hdom_open.mem_nhds hd)
   have hcomp : ContinuousAt (fun x : ℝ => period w ε c f x) a := by
     change ContinuousAt (fun x : ℝ => extension w ε c f ((x : ℂ) - 1)) a
-    exact hh.continuousAt.comp (Complex.continuous_ofReal.continuousAt.sub continuousAt_const)
+    exact hh.continuousAt.comp (show ContinuousAt (fun x : ℝ => (x : ℂ) - 1) a by fun_prop)
   exact hcomp.continuousWithinAt
 
 /-- Linear growth bound `‖period w ε c f b‖ ≤ M * b` on `[1, ∞)` deduced directly from
@@ -357,7 +364,7 @@ theorem exists_period_linear_bound_Ici_one {w ε c : ℂ} (hw : 0 < w.re) (hε :
       rw [hrew]
       calc
         ‖ψ ((t + n) + 1)‖ ≤ ‖ψ (t + n)‖ + M := hstep (t + n) htn1
-        _ ≤ ((n : ℝ) + 1) * M + M := add_le_add_right (ih ht) M
+        _ ≤ ((n : ℝ) + 1) * M + M := by linarith [ih ht]
         _ = (((n + 1 : ℕ) : ℝ) + 1) * M := by push_cast; ring
   refine ⟨M, hM_pos, fun b hb => ?_⟩
   let n : ℕ := ⌊b - 1⌋₊
@@ -406,9 +413,15 @@ theorem globalLewisPeriod_rpow_integrableOn_Ioi_one {w ε c : ℂ} (hw : 0 < w.r
     intro b hb
     have hb0 : 0 < b := zero_lt_one.trans hb
     have hsum : b + b⁻¹ ≠ 0 := (add_pos hb0 (inv_pos.mpr hb0)).ne'
-    have hψ := ((period_real_continuousOn hw ε c f).continuousAt (isOpen_Ioi.mem_nhds hb0)).norm.pow 2
-    have hw1 := (continuousAt_id.add (continuousAt_inv₀ hb0.ne')).rpow continuousAt_const (Or.inl hsum)
-    have hw2 := continuousAt_id.rpow continuousAt_const (Or.inl hb0.ne')
+    have hψ : ContinuousAt (fun x : ℝ => ‖period w ε c f x‖ ^ 2) b :=
+      ((period_real_continuousOn hw ε c f).continuousAt
+        (isOpen_Ioi.mem_nhds (Set.mem_Ioi.mpr hb0))).norm.pow 2
+    have hw1 : ContinuousAt (fun x : ℝ => (x + x⁻¹) ^ (-6 : ℝ)) b :=
+      (continuousAt_id.add (continuousAt_inv₀ hb0.ne')).rpow
+        (continuousAt_const : ContinuousAt (fun _ : ℝ => (-6 : ℝ)) b) (Or.inl hsum)
+    have hw2 : ContinuousAt (fun x : ℝ => x ^ β) b :=
+      continuousAt_id.rpow
+        (continuousAt_const : ContinuousAt (fun _ : ℝ => β) b) (Or.inl hb0.ne')
     exact (hψ.mul (hw1.mul hw2)).continuousWithinAt
   refine hdom.mono' (hcont.aestronglyMeasurable measurableSet_Ioi) ?_
   filter_upwards [ae_restrict_mem measurableSet_Ioi] with b hb
@@ -466,15 +479,13 @@ theorem globalLewisPeriod_integrable_lewisCriticalNormSq {s ε c : ℂ}
           = ‖ε‖ * ‖(a : ℂ) ^ (-(2 * s))‖ * ‖period (2 * s) ε c f (a⁻¹ : ℝ)‖ := by
         rw [hrec, norm_mul, norm_mul]
       _ ≤ 1 * a ^ (-(2 * s).re) * (M * a⁻¹) := by
-        rw [hnorm_ε, Complex.norm_cpow_eq_rpow_re_of_pos ha.1, Complex.neg_re, one_mul, one_mul]
+        rw [hnorm_ε, Complex.norm_cpow_eq_rpow_re_of_pos ha.1, Complex.neg_re, one_mul]
         exact mul_le_mul_of_nonneg_left (hM a⁻¹ ha_inv_ge) (Real.rpow_pos_of_pos ha.1 _).le
       _ = M * (a ^ (-(2 * s).re) * a ^ (-1 : ℝ)) := by
         rw [← Real.rpow_neg_one a]
         ring
       _ = M * a ^ (-(2 * s).re - 1) := by
-        rw [← Real.rpow_add ha.1]
-        congr 2
-        ring
+        rw [← Real.rpow_add ha.1, ← sub_eq_add_neg]
   have hunion : Ioi (0 : ℝ) = Ioc 0 1 ∪ Ioi 1 := (Ioc_union_Ioi_eq_Ioi zero_le_one).symm
   constructor
   · rw [hunion]
@@ -491,7 +502,7 @@ theorem globalLewisPeriod_integrable_lewisCriticalNormSq {s ε c : ℂ}
       rw [Real.norm_of_nonneg hnn]
       have hψ_sq : ‖period (2 * s) ε c f a‖ ^ 2 ≤ M ^ 2 * a ^ (-2 * (2 * s).re - 2) := by
         have h1 := pow_le_pow_left₀ (norm_nonneg _) (hnear_bound a ha) 2
-        rw [mul_pow, ← Real.rpow_natCast, ← Real.rpow_mul ha.1.le] at h1
+        rw [mul_pow, ← Real.rpow_natCast (a ^ (-(2 * s).re - 1)) 2, ← Real.rpow_mul ha.1.le] at h1
         convert h1 using 2
         push_cast
         ring
@@ -524,12 +535,21 @@ theorem globalLewisPeriod_integrable_lewisCriticalNormSq {s ε c : ℂ}
       intro a ha
       have ha0 : 0 < a := ha
       have hpow : ContinuousAt (fun x : ℝ => (x : ℂ) ^ (-(2 * riemannMayerReflect s))) a :=
-        (Complex.continuousAt_ofReal_cpow_const a _ (Or.inr ha0.ne'))
-      have hψinv : ContinuousAt (fun x : ℝ => period (2 * s) ε c f x⁻¹) a :=
-        ((period_real_continuousOn hw0 ε c f).continuousAt
-          (isOpen_Ioi.mem_nhds (inv_pos.mpr ha0))).comp (continuousAt_inv₀ ha0.ne')
-      exact (((hpow.mul hψinv).norm.pow 2).mul
-        (lewisCriticalWeight_continuousOn.continuousAt (isOpen_Ioi.mem_nhds ha0))).continuousWithinAt
+        Complex.continuousAt_ofReal_cpow_const a _ (Or.inr ha0.ne')
+      have hψinv : ContinuousAt (fun x : ℝ => period (2 * s) ε c f (x⁻¹ : ℝ)) a :=
+        ContinuousAt.comp (g := fun u : ℝ => period (2 * s) ε c f u)
+          ((period_real_continuousOn hw0 ε c f).continuousAt
+            (isOpen_Ioi.mem_nhds (Set.mem_Ioi.mpr (inv_pos.mpr ha0))))
+          (continuousAt_inv₀ ha0.ne')
+      have htot : ContinuousAt
+          (fun x : ℝ =>
+            ‖lewisModularInversion (riemannMayerReflect s) (fun u => period (2 * s) ε c f u) x‖ ^ 2 *
+              lewisCriticalWeight x) a := by
+        unfold lewisModularInversion
+        exact ((hpow.mul hψinv).norm.pow 2).mul
+          (lewisCriticalWeight_continuousOn.continuousAt
+            (isOpen_Ioi.mem_nhds (Set.mem_Ioi.mpr ha0)))
+      exact htot.continuousWithinAt
     have hre_ref : (-(2 * riemannMayerReflect s)).re = (2 * s).re - 1 := by
       simp [riemannMayerReflect]
       ring
@@ -545,10 +565,10 @@ theorem globalLewisPeriod_integrable_lewisCriticalNormSq {s ε c : ℂ}
       have ha_inv_ge : 1 ≤ a⁻¹ := (one_le_inv₀ ha.1).mpr ha.2
       have hR_le : ‖lewisModularInversion (riemannMayerReflect s)
           (fun x => period (2 * s) ε c f x) a‖ ≤ M * a ^ ((2 * s).re - 2) := by
-        unfold lewisModularInversion
+        dsimp only [lewisModularInversion]
         rw [norm_mul, Complex.norm_cpow_eq_rpow_re_of_pos ha.1, hre_ref]
         calc
-          a ^ ((2 * s).re - 1) * ‖period (2 * s) ε c f a⁻¹‖
+          a ^ ((2 * s).re - 1) * ‖period (2 * s) ε c f (a⁻¹ : ℝ)‖
               ≤ a ^ ((2 * s).re - 1) * (M * a⁻¹) :=
             mul_le_mul_of_nonneg_left (hM a⁻¹ ha_inv_ge) (Real.rpow_pos_of_pos ha.1 _).le
           _ = M * (a ^ ((2 * s).re - 1) * a ^ (-1 : ℝ)) := by rw [← Real.rpow_neg_one a]; ring
@@ -556,7 +576,7 @@ theorem globalLewisPeriod_integrable_lewisCriticalNormSq {s ε c : ℂ}
       have hR_sq : ‖lewisModularInversion (riemannMayerReflect s)
           (fun x => period (2 * s) ε c f x) a‖ ^ 2 ≤ M ^ 2 * a ^ (2 * (2 * s).re - 4) := by
         have h1 := pow_le_pow_left₀ (norm_nonneg _) hR_le 2
-        rw [mul_pow, ← Real.rpow_natCast, ← Real.rpow_mul ha.1.le] at h1
+        rw [mul_pow, ← Real.rpow_natCast (a ^ ((2 * s).re - 2)) 2, ← Real.rpow_mul ha.1.le] at h1
         convert h1 using 2
         push_cast
         ring
@@ -594,10 +614,10 @@ theorem globalLewisPeriod_integrable_lewisCriticalNormSq {s ε c : ℂ}
       have hbinv_mem : b⁻¹ ∈ Ioc (0 : ℝ) 1 := ⟨inv_pos.mpr hb0, inv_le_one_of_one_le₀ hb.le⟩
       have hR_le : ‖lewisModularInversion (riemannMayerReflect s)
           (fun x => period (2 * s) ε c f x) b‖ ≤ M * b ^ (2 * (2 * s).re) := by
-        unfold lewisModularInversion
+        dsimp only [lewisModularInversion]
         rw [norm_mul, Complex.norm_cpow_eq_rpow_re_of_pos hb0, hre_ref]
         calc
-          b ^ ((2 * s).re - 1) * ‖period (2 * s) ε c f b⁻¹‖
+          b ^ ((2 * s).re - 1) * ‖period (2 * s) ε c f (b⁻¹ : ℝ)‖
               ≤ b ^ ((2 * s).re - 1) * (M * (b⁻¹) ^ (-(2 * s).re - 1)) :=
             mul_le_mul_of_nonneg_left (hnear_bound b⁻¹ hbinv_mem) (Real.rpow_pos_of_pos hb0 _).le
           _ = M * (b ^ ((2 * s).re - 1) * b ^ ((2 * s).re + 1)) := by
@@ -608,7 +628,7 @@ theorem globalLewisPeriod_integrable_lewisCriticalNormSq {s ε c : ℂ}
       have hR_sq : ‖lewisModularInversion (riemannMayerReflect s)
           (fun x => period (2 * s) ε c f x) b‖ ^ 2 ≤ M ^ 2 * b ^ (4 * (2 * s).re) := by
         have h1 := pow_le_pow_left₀ (norm_nonneg _) hR_le 2
-        rw [mul_pow, ← Real.rpow_natCast, ← Real.rpow_mul hb0.le] at h1
+        rw [mul_pow, ← Real.rpow_natCast (b ^ (2 * (2 * s).re)) 2, ← Real.rpow_mul hb0.le] at h1
         convert h1 using 2
         push_cast
         ring
@@ -645,7 +665,7 @@ theorem resonantLewisPeriod_integrable_lewisCriticalNormSq {s : ℂ}
     rw [norm_constant, norm_zero]
   have hreg : regularized (2 * s) hw0 (state (2 * s)) =
       (1 : ℂ) • state (2 * s) + constant 0 := by
-    rw [← MayerScatteringState.source_eq hw0, hs.2.2, one_smul, hconst0, add_zero]
+    rw [← source_eq hw0, hs.2.2, one_smul, hconst0, add_zero]
   exact globalLewisPeriod_integrable_lewisCriticalNormSq hs.1 hs.2.1 (by norm_num)
     (state (2 * s)) hreg
 
@@ -672,26 +692,32 @@ theorem lewisCriticalInner_modularInversion_adj (s : ℂ) (f g : ℝ → ℂ) :
   refine setIntegral_congr_fun measurableSet_Ioi fun b hb => ?_
   have hb0 : 0 < b := hb
   have hbC : (b : ℂ) ≠ 0 := Complex.ofReal_ne_zero.mpr hb0.ne'
-  dsimp only [ lewisModularInversion]
-  rw [inv_inv, Complex.real_smul, ← Complex.ofReal_mul (b ^ (-2 : ℝ)),
-    lewisCriticalWeight_inv_mul_jac hb0, Complex.ofReal_mul,
-    ofReal_inv_cpow_pos hb0 (-(2 * s)), neg_neg, map_mul, conj_ofReal_cpow_pos hb0]
-  have hb_inv : ((b ^ (-1 : ℝ) : ℝ) : ℂ) = (b : ℂ) ^ (-1 : ℂ) := by
-    simpa using (Complex.ofReal_cpow hb0.le (-1 : ℝ)).symm
+  dsimp only [lewisModularInversion]
+  rw [inv_inv, Complex.real_smul, ofReal_inv_cpow_pos hb0 (-(2 * s)), neg_neg,
+    map_mul, conj_ofReal_cpow_pos hb0]
+  have hjac_w : ((b ^ (-2 : ℝ) : ℝ) : ℂ) * (lewisCriticalWeight b⁻¹ : ℂ) =
+      (b : ℂ) ^ (-1 : ℂ) * (lewisCriticalWeight b : ℂ) := by
+    rw [← Complex.ofReal_mul, lewisCriticalWeight_inv_mul_jac hb0, Complex.ofReal_mul,
+      ← Complex.ofReal_cpow hb0.le (-1 : ℝ)]
+    norm_num
   have hexp_conj : (starRingEnd ℂ) (-(2 * riemannMayerReflect s)) = 2 * s - 1 := by
     unfold riemannMayerReflect
     rw [map_neg, map_mul, map_ofNat, map_sub, map_div₀, map_one, map_ofNat, Complex.conj_conj]
     ring
-  rw [hb_inv, hexp_conj]
+  rw [hexp_conj]
   have hpow : (b : ℂ) ^ (2 * s) * (b : ℂ) ^ (-1 : ℂ) = (b : ℂ) ^ (2 * s - 1) := by
     rw [← Complex.cpow_add _ _ hbC]
     congr 1
     ring
   calc
-    ((b : ℂ) ^ (2 * s) * f b * (starRingEnd ℂ) (g b⁻¹) *
-        ((b : ℂ) ^ (-1 : ℂ) * (lewisCriticalWeight b : ℂ)))
-        = f b * (((b : ℂ) ^ (2 * s) * (b : ℂ) ^ (-1 : ℂ)) * (starRingEnd ℂ) (g b⁻¹)) *
-            (lewisCriticalWeight b : ℂ) := by ring
+    ((b ^ (-2 : ℝ) : ℝ) : ℂ) *
+        ((b : ℂ) ^ (2 * s) * f b * (starRingEnd ℂ) (g b⁻¹) * (lewisCriticalWeight b⁻¹ : ℂ))
+        = ((b : ℂ) ^ (2 * s) * f b * (starRingEnd ℂ) (g b⁻¹)) *
+            (((b ^ (-2 : ℝ) : ℝ) : ℂ) * (lewisCriticalWeight b⁻¹ : ℂ)) := by ring
+    _ = ((b : ℂ) ^ (2 * s) * f b * (starRingEnd ℂ) (g b⁻¹)) *
+          ((b : ℂ) ^ (-1 : ℂ) * (lewisCriticalWeight b : ℂ)) := by rw [hjac_w]
+    _ = f b * (((b : ℂ) ^ (2 * s) * (b : ℂ) ^ (-1 : ℂ)) * (starRingEnd ℂ) (g b⁻¹)) *
+          (lewisCriticalWeight b : ℂ) := by ring
     _ = f b * ((b : ℂ) ^ (2 * s - 1) * (starRingEnd ℂ) (g b⁻¹)) *
           (lewisCriticalWeight b : ℂ) := by rw [hpow]
 
@@ -772,12 +798,13 @@ theorem lewisModularInversion_isometry_iff (s : ℂ) :
       have hsub_set : Ioc (3 / 2 : ℝ) 2 ⊆ Ioc 1 2 :=
         fun x hx => ⟨by linarith [hx.1], hx.2⟩
       have hunion : Ioc (1 : ℝ) 2 = Ioc (3 / 2) 2 ∪ (Ioc 1 2 \ Ioc (3 / 2) 2) :=
-        (Set.union_diff_cancel hsub_set).symm
+        (Set.union_sdiff_cancel hsub_set).symm
       have hsplit : (∫ b in Ioc (1 : ℝ) 2, d b) =
           (∫ b in Ioc (3 / 2) 2, d b) + ∫ b in Ioc 1 2 \ Ioc (3 / 2) 2, d b := by
-        rw [hunion, setIntegral_union disjoint_sdiff_self_right
+        conv_lhs => rw [hunion]
+        exact setIntegral_union disjoint_sdiff_self_right
           (measurableSet_Ioc.diff measurableSet_Ioc)
-          (hd_int.mono_set hsub_set) (hd_int.mono_set Set.diff_subset)]
+          (hd_int.mono_set hsub_set) (hd_int.mono_set Set.sdiff_subset)
       have hrest : 0 ≤ ∫ b in Ioc 1 2 \ Ioc (3 / 2) 2, d b := by
         refine setIntegral_nonneg (measurableSet_Ioc.diff measurableSet_Ioc) fun b hb => ?_
         have hb0 : 0 < b := zero_lt_one.trans hb.1.1
@@ -958,7 +985,6 @@ theorem lewisCoIsometryDefect_eq_neg_integral {s : ℂ} {ψ : ℝ → ℂ}
           (b ^ (-(1 / 2 : ℝ)) + b ^ (4 * s.re - 2 - -(1 / 2 : ℝ))))) (Ioi 1) := by
     have hs := (h1_int.mono_set (Ioi_subset_Ioi zero_le_one)).add hfold1
     refine hs.congr_fun (fun b _ => ?_) measurableSet_Ioi
-    dsimp only
     rw [show 4 * s.re - 2 - -(1 / 2 : ℝ) = 4 * s.re - 3 / 2 by ring]
     ring
   have hintB : IntegrableOn
@@ -967,13 +993,11 @@ theorem lewisCoIsometryDefect_eq_neg_integral {s : ℂ} {ψ : ℝ → ℂ}
           (b ^ (8 * s.re - 5 / 2) + b ^ (4 * s.re - 2 - (8 * s.re - 5 / 2))))) (Ioi 1) := by
     have hs := (h2_int.mono_set (Ioi_subset_Ioi zero_le_one)).add hfold2
     refine hs.congr_fun (fun b _ => ?_) measurableSet_Ioi
-    dsimp only
     rw [show 4 * s.re - 2 - (8 * s.re - 5 / 2) = -4 * s.re + 1 / 2 by ring]
     ring
   rw [← integral_sub hintA hintB, ← integral_neg]
   refine setIntegral_congr_fun measurableSet_Ioi fun b hb => ?_
   have hb0 : 0 < b := zero_lt_one.trans hb
-  dsimp only
   let x : ℝ := b ^ δ
   let y : ℝ := b ^ (-δ)
   have hxy : x * y = 1 := by
@@ -1024,7 +1048,7 @@ theorem resonantLewisPeriod_coIsometryDefect_eq {s : ℂ} (hs : IsMayerScatterin
     rw [norm_constant, norm_zero]
   have hreg : regularized (2 * s) hw0 (state (2 * s)) =
       (1 : ℂ) • state (2 * s) + constant 0 := by
-    rw [← MayerScatteringState.source_eq hw0, hs.2.2, one_smul, hconst0, add_zero]
+    rw [← source_eq hw0, hs.2.2, one_smul, hconst0, add_zero]
   obtain ⟨hi1, hi2⟩ := resonantLewisPeriod_integrable_lewisCriticalNormSq hs
   have hf1 := globalLewisPeriod_rpow_integrableOn_Ioi_one hw0 (by norm_num) (state (2 * s)) hreg
     (β := 4 * s.re - 3 / 2) (by linarith [hs.2.1])
@@ -1077,7 +1101,7 @@ theorem resonantLewisPeriod_coIsometryDefect_lt_zero_iff {s : ℂ}
     have hc1 : 0 < ‖resonantLewisPeriod s (1 : ℝ)‖ :=
       norm_pos_iff.mpr (by simpa using resonantLewisPeriod_one_ne_zero hs)
     have hcont1 : ContinuousAt (fun x : ℝ => ‖resonantLewisPeriod s x‖) 1 :=
-      (hψ_cont.continuousAt (isOpen_Ioi.mem_nhds zero_lt_one)).norm
+      (hψ_cont.continuousAt (isOpen_Ioi.mem_nhds (Set.mem_Ioi.mpr zero_lt_one))).norm
     obtain ⟨r, hr_pos, hball⟩ :=
       Metric.continuousAt_iff.mp hcont1 (‖resonantLewisPeriod s (1 : ℝ)‖ / 2) (half_pos hc1)
     let p : ℝ := 1 + min r 1 / 4
@@ -1089,13 +1113,20 @@ theorem resonantLewisPeriod_coIsometryDefect_lt_zero_iff {s : ℂ}
       intro b hb
       have hb0 : 0 < b := hb
       have hsum : b + b⁻¹ ≠ 0 := (add_pos hb0 (inv_pos.mpr hb0)).ne'
-      have c1 := (continuousAt_id.add (continuousAt_inv₀ hb0.ne')).rpow continuousAt_const (Or.inl hsum)
-      have c2 := continuousAt_id.rpow continuousAt_const (Or.inl hb0.ne')
-      have c3 := (continuousAt_id.rpow continuousAt_const (Or.inl hb0.ne')).add
-        (continuousAt_id.rpow continuousAt_const (Or.inl hb0.ne'))
-      have c4 := ((continuousAt_id.rpow continuousAt_const (Or.inl hb0.ne')).sub
-        (continuousAt_id.rpow continuousAt_const (Or.inl hb0.ne'))).pow 2
-      have c5 := (hψ_cont.continuousAt (isOpen_Ioi.mem_nhds hb0)).norm.pow 2
+      have c1 : ContinuousAt (fun x : ℝ => (x + x⁻¹) ^ (-6 : ℝ)) b :=
+        (continuousAt_id.add (continuousAt_inv₀ hb0.ne')).rpow
+          (continuousAt_const : ContinuousAt (fun _ : ℝ => (-6 : ℝ)) b) (Or.inl hsum)
+      have c2 : ContinuousAt (fun x : ℝ => x ^ (2 * s.re - 1)) b :=
+        continuousAt_id.rpow
+          (continuousAt_const : ContinuousAt (fun _ : ℝ => 2 * s.re - 1) b) (Or.inl hb0.ne')
+      have c3 : ContinuousAt (fun x : ℝ => x ^ δ + x ^ (-δ)) b :=
+        (continuousAt_id.rpow (continuousAt_const : ContinuousAt (fun _ : ℝ => δ) b) (Or.inl hb0.ne')).add
+          (continuousAt_id.rpow (continuousAt_const : ContinuousAt (fun _ : ℝ => -δ) b) (Or.inl hb0.ne'))
+      have c4 : ContinuousAt (fun x : ℝ => (x ^ δ - x ^ (-δ)) ^ 2) b :=
+        ((continuousAt_id.rpow (continuousAt_const : ContinuousAt (fun _ : ℝ => δ) b) (Or.inl hb0.ne')).sub
+          (continuousAt_id.rpow (continuousAt_const : ContinuousAt (fun _ : ℝ => -δ) b) (Or.inl hb0.ne'))).pow 2
+      have c5 : ContinuousAt (fun x : ℝ => ‖resonantLewisPeriod s x‖ ^ 2) b :=
+        (hψ_cont.continuousAt (isOpen_Ioi.mem_nhds (Set.mem_Ioi.mpr hb0))).norm.pow 2
       exact ((((c1.mul c2).mul c3).mul c4).mul c5).continuousWithinAt
     obtain ⟨x₀, hx₀, hminK⟩ := isCompact_Icc.exists_isMinOn
       (nonempty_Icc.mpr hp_lt_q.le)
@@ -1105,8 +1136,8 @@ theorem resonantLewisPeriod_coIsometryDefect_lt_zero_iff {s : ℂ}
     have hx₀_dist : dist x₀ 1 < r := by
       rw [Real.dist_eq, abs_of_pos (by linarith : 0 < x₀ - 1)]
       have hle_r : min r 1 ≤ r := min_le_left r 1
-      dsimp [q] at hx₀
-      linarith [hx₀.2]
+      have hx₀_le : x₀ ≤ 1 + min r 1 / 2 := hx₀.2
+      linarith
     have hx₀_ψ_pos : 0 < ‖resonantLewisPeriod s x₀‖ := by
       have hb := abs_lt.mp (by simpa [Real.dist_eq] using hball hx₀_dist)
       linarith
@@ -1132,7 +1163,7 @@ theorem resonantLewisPeriod_coIsometryDefect_lt_zero_iff {s : ℂ}
         apply norm_eq_zero.mp; rw [norm_constant, norm_zero]
       have hreg : regularized (2 * s) hw0 (state (2 * s)) =
           (1 : ℂ) • state (2 * s) + constant 0 := by
-        rw [← MayerScatteringState.source_eq hw0, hs.2.2, one_smul, hconst0, add_zero]
+        rw [← source_eq hw0, hs.2.2, one_smul, hconst0, add_zero]
       have hdom := (globalLewisPeriod_rpow_integrableOn_Ioi_one hw0 (by norm_num) (state (2 * s))
         hreg (β := 5 / 2) (by norm_num)).const_mul 8
       refine hdom.mono' ((hK_cont.mono (Ioi_subset_Ioi zero_le_one)).aestronglyMeasurable
@@ -1190,12 +1221,13 @@ theorem resonantLewisPeriod_coIsometryDefect_lt_zero_iff {s : ℂ}
               ((b + b⁻¹) ^ (-6 : ℝ) * b ^ (5 / 2 : ℝ))) := by ring
     have hsub_Ioi : Ioc p q ⊆ Ioi 1 := fun x hx => hp_gt1.trans hx.1
     have hunion : Ioi (1 : ℝ) = Ioc p q ∪ (Ioi 1 \ Ioc p q) :=
-      (Set.union_diff_cancel hsub_Ioi).symm
+      (Set.union_sdiff_cancel hsub_Ioi).symm
     have hsplit : (∫ b in Ioi (1 : ℝ), K b) =
         (∫ b in Ioc p q, K b) + ∫ b in Ioi 1 \ Ioc p q, K b := by
-      rw [hunion, setIntegral_union disjoint_sdiff_self_right
+      conv_lhs => rw [hunion]
+      exact setIntegral_union disjoint_sdiff_self_right
         (measurableSet_Ioi.diff measurableSet_Ioc)
-        (hK_int.mono_set hsub_Ioi) (hK_int.mono_set Set.diff_subset)]
+        (hK_int.mono_set hsub_Ioi) (hK_int.mono_set Set.sdiff_subset)
     have hrest : 0 ≤ ∫ b in Ioi 1 \ Ioc p q, K b := by
       refine setIntegral_nonneg (measurableSet_Ioi.diff measurableSet_Ioc) fun b hb => ?_
       have hb0 : 0 < b := zero_lt_one.trans hb.1

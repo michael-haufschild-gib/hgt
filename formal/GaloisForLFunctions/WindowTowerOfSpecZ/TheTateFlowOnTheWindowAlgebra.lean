@@ -18,6 +18,10 @@ For an **Euler datum** `(F, G)` with `F * G = 1` the **Tate family** `J^F_k = (t
   `ρ_A(J_k) = e^{kM} Z e^{−kM} Z^{−1}`, `Z = ρ_A(ζ)`. The Tate pieces of the degeneration are the
   commutators of the window zeta operator with the Tate flow at integer times; Weil's arithmetic
   operator `ρ_A(Λ) = [M, Z]Z^{−1}` is the infinitesimal commutator.
+* **Conjugation form** (`windowRep_zeta_conj_position`): `Z M Z^{−1} = M − ρ_A(Λ)`.
+* **Hensel tower** (`jordanTotient_prime_pow_succ`, `hasDerivAt_jordanTotient_prime_pow`): along the
+  powers of `p` the Tate pieces grow by the fibre count `p^k` of reduction `(ℤ/p^{a+1})^k → (ℤ/p^a)^k`,
+  while the non-Tate piece stays `log p`.
 * **Tate pieces at a prime have the sign of the weight** (`tateFamily_prime`,
   `logDeriv_prime`): `J^F_k(p) = F(p)(p^k − 1)` and the logarithmic-derivative weight is
   `λ_F(p) = F(p) log p`. A flip of the sign of `Λ` at `p` (a flip twin) makes every Tate piece at
@@ -113,6 +117,50 @@ theorem windowRepFun_jordan_eq_commutator {A : ℝ} {H : ℝ → ℝ} (hH : H �
           windowRepFun A (ArithmeticFunction.moebius : ArithmeticFunction ℝ) H v) u := by
   rw [windowRepFun_twist, ← mul_assoc, ← Real.exp_add, show k * u + -k * u = 0 by ring,
     Real.exp_zero, one_mul, jordanFun_eq, ← windowRepFun_mul _ _ hH]
+
+/-- **The window zeta operator conjugates the position into position minus von Mangoldt**:
+`Z M Z^{−1} = M − ρ_A(Λ)`, the operator form of the logarithmic derivative `−ζ′/ζ = Σ Λ(n)n^{−s}`. -/
+theorem windowRep_zeta_conj_position (A : ℝ) :
+    windowRep A (ArithmeticFunction.zeta : ArithmeticFunction ℝ) * positionOp A *
+        windowRep A (ArithmeticFunction.moebius : ArithmeticFunction ℝ) =
+      positionOp A - windowRep A ArithmeticFunction.vonMangoldt := by
+  set Z := windowRep A (ArithmeticFunction.zeta : ArithmeticFunction ℝ)
+  set Zi := windowRep A (ArithmeticFunction.moebius : ArithmeticFunction ℝ)
+  set L := windowRep A ArithmeticFunction.vonMangoldt
+  set M := positionOp A
+  have h1 : M * Z - Z * M = windowRep A ArithmeticFunction.log := by
+    rw [position_comm_windowRep, pmul_zeta_log]
+  have h2 : L * Z = windowRep A ArithmeticFunction.log := by
+    rw [← map_mul, ArithmeticFunction.vonMangoldt_mul_zeta]
+  have h3 : Z * Zi = 1 := windowRep_zeta_mul_moebius A
+  refine LinearMap.ext fun H => ?_
+  have e1 := congrArg (fun φ : Module.End ℝ (windowSupported A) => φ (Zi H)) h1
+  have e2 := congrArg (fun φ : Module.End ℝ (windowSupported A) => φ (Zi H)) h2
+  have e3 := congrArg (fun φ : Module.End ℝ (windowSupported A) => φ H) h3
+  simp only [LinearMap.sub_apply, Module.End.mul_apply, Module.End.one_apply] at e1 e2 e3 ⊢
+  rw [e3] at e1 e2
+  rw [← e2] at e1
+  rw [← e1]
+  abel
+
+/-! ### The Hensel tower of Tate pieces -/
+
+/-- **Hensel tower**: along the powers of a prime the Tate pieces grow by the fibre count `p^k`,
+`J_k(p^{a+1}) = p^k J_k(p^a)` (`a ≥ 1`), while the non-Tate piece `∂_kJ_k(p^a)|₀ = log p` is the same
+at every stage (`hasDerivAt_jordanTotient_prime_pow`). -/
+theorem jordanTotient_prime_pow_succ {p : ℕ} (hp : p.Prime) (k : ℝ) {a : ℕ} (ha : 1 ≤ a) :
+    jordanTotient k (p ^ (a + 1)) = (p : ℝ) ^ k * jordanTotient k (p ^ a) := by
+  have hp0 : (0 : ℝ) < p := by exact_mod_cast hp.pos
+  rw [jordanTotient_prime_pow hp k (by omega), jordanTotient_prime_pow hp k ha,
+    show (a + 1 - 1 : ℕ) = (a - 1) + 1 by omega, Nat.cast_add, Nat.cast_one, mul_add, mul_one,
+    Real.rpow_add hp0]
+  ring
+
+theorem hasDerivAt_jordanTotient_prime_pow {p : ℕ} (hp : p.Prime) {a : ℕ} (ha : 1 ≤ a) :
+    HasDerivAt (fun k => jordanTotient k (p ^ a)) (Real.log p) 0 := by
+  have h := hasDerivAt_jordanTotient_zero (p ^ a)
+  rwa [ArithmeticFunction.vonMangoldt_apply_pow (by omega),
+    ArithmeticFunction.vonMangoldt_apply_prime hp] at h
 
 /-! ### Tate pieces at a prime -/
 

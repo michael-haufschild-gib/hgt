@@ -28,9 +28,16 @@ For `F_(u,Y)=Y^u τ_(u,Y)`, this becomes `T_p F_(u,Y)=F_(u,pY)+F_(u,Y/p)`.
 At equal parameter, normalized pairings in logarithmic height have kernel
 `exp(-a|x-y|+it(x-y))`, `u=-a+it`. All finite Hecke words therefore read one common height-translation representation, rather than independent prime directions, when all intermediate cutoffs stay at least one.
 
-## Next conjecture
+## Next conjecture: the compact-core return
 
-The selector must involve spatially localized observables: cutoff Gram data and their Hecke translates admit the elementary model for every decay rate. Determine whether the mixed moments with compact spatial localization have an arithmetic relation incompatible with the off-line rate. No such incompatibility is established by the cutoff model alone.
+The Gram proof requires cutoffs at least one: above that height the fundamental domain contains complete horocycles. A Hecke word whose shifted cutoffs remain at least one is therefore represented by elementary cusp powers. Crossing below one encounters incomplete horocycles and modular identifications. The coordinate formula for `heckeTruncated` must not be confused with a proof of automorphic truncation at these smaller heights.
+
+Determine the exact compact-core return correction for genuine automorphic truncation, then test whether its repeated returns enforce a restriction on the decay rate. This is the first place where spatial localization can distinguish the modular surface from the elementary cutoff model. No such restriction has been established.
+
+**First-prime candidate.** At cutoff one, write `z=x+iy∈fd` and
+`h_k(z)=2y/((x+k)²+y²)`. The missing automorphic cusp subtraction in the two downward branches of `T₂` should be
+`B(u)/√2 · Σ_(k=-1,0,1) 1_(h_k>1) h_k^(1/2-u)`.
+These return regions are the disks `(x+k)²+(y-1)²<1`. To verify: classify primitive rows in the two Hecke images, prove that rows with `|c|≥2` cannot return above height one, account for the `±` row multiplicity, and compare the resulting operator with genuine automorphic truncation. The correction is subtracted from the coordinate Hecke formula. This remains a conjectured source identity, not an assumed input.
 
 ## Open dependency
 

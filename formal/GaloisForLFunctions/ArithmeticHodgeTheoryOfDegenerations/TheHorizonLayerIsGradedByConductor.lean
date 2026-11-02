@@ -176,7 +176,7 @@ theorem crossEnergy_eq (hφ : ContDiff ℝ 2 φ) (hφsupp : ∀ u, u ∉ Set.Icc
     rw [dirichletPoly_add, dirichletPoly_sub]
     have := norm_add_sq_sub_norm_sub_sq (dirichletPoly N u τ) (dirichletPoly N v τ)
     field_simp
-    linear_combination (-2 * ‖paperFT (cx φ) (((c / N : ℝ) : ℂ) * τ)‖ ^ 2) * this
+    linear_combination (-‖paperFT (cx φ) (((c / N : ℝ) : ℂ) * τ)‖ ^ 2) * this
   rw [integral_congr_ae (Eventually.of_forall hpt), integral_div, integral_sub hip him, hplus,
     hminus]
   have hsym : ∀ m n : ℕ, shellAutocorr φ (N * (Real.log m - Real.log n) / c) =
@@ -250,7 +250,7 @@ theorem exists_abs_crossEnergy_le (hφ : ContDiff ℝ 2 φ) (hφsupp : ∀ u, u 
       unfold primeTwist
       split_ifs
       · rw [abs_of_nonneg (by linarith)]; linarith
-      · norm_num; exact hp1
+      · norm_num; exact hp.le
     rw [hv, twistedWeights, abs_mul, mul_comm, mul_div_assoc]
     exact mul_le_mul h2 h1 (abs_nonneg _) hp0.le
   set ε := Xh * c ^ 2 / (N * Real.sqrt N) with hε
@@ -280,7 +280,6 @@ theorem exists_abs_crossEnergy_le (hφ : ContDiff ℝ 2 φ) (hφsupp : ∀ u, u 
     unfold primeTwist
     split_ifs
     · field_simp
-      ring
     · field_simp
       ring
   have he := hout c hc N hN
