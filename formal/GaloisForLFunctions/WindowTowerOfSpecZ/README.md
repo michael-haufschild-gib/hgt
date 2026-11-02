@@ -1,6 +1,6 @@
 # The Window Tower of Spec ℤ (WTZ)
 
-Namespace `GaloisForLFunctions.WindowTowerOfSpecZ`; umbrella `WindowTowerOfSpecZ.lean`; 14 modules.
+Namespace `GaloisForLFunctions.WindowTowerOfSpecZ`; umbrella `WindowTowerOfSpecZ.lean`; 15 modules.
 Every theorem is unconditional; none assumes or proves RH.
 
 ## 1. Motivation
@@ -36,6 +36,7 @@ the sections, the growth law in `A`, and the place where selection has to happen
 | Tate function | `tateFunction A H k` | `τ_H(k) = ⟨ρ_A(J_k)H, H⟩`, an exponential polynomial in the dimension `k` |
 | Flip datum, shifted datum | `flipDatum p`, `shiftedDatum ε` | `ζ(s)(1 − p^{−s})²`; `ζ(s)ζ(s − ε)` |
 | Atoms, atomic embedding | `atom N φ m`, `atomicEmbedding N φ g`, `IsAtomProfile` | `b_m(u) = φ(u + log N − log m)` at `log(m/N)`; `ι(g) = Σ_{m≤N} g(m)m^{−1/2}b_m` |
+| Window bundle | `windowBundleH0 N`, `windowBundleDualH0 N` | `ℰ_N = ⊕_{m ≤ N} 𝒪(½ log m)`, `h⁰(ℰ_N, d) = Σ_{m≤N} h⁰_ℤ(d + ½ log m)` |
 | Centred pole plane | `centredCosh A`, `centredSinh A` | `2cosh((u + A/2)/2)`, `2sinh((u + A/2)/2)` |
 | Sharp window floor | `sharpWindowFloor A` | `deg K_A + 2 sinh(A/2) − A` |
 | Dilation, Adams lift | `dilate r`, RHTower `mPart e` | `(D_rH)(u) = H(u/r)`; `ψ^e f(n^e) = f(n)`, zero off `e`-th powers |
@@ -116,7 +117,11 @@ moved by the window shifts as the integers are multiplied: `T_{log n}b_m = b_{nm
 level). The atomic embedding `ι` intertwines `ρ_A` with multiplication in `D_N`: the integers of
 the window are a free module of rank one over the window algebra. With `⟨ι g, ι h⟩ = ‖φ‖²Σ g(k)h(k)/k`,
 Weil's arithmetic term on the lattice is multiplication by `Λ`, `−2‖φ‖²Σ_k (Λ*g)(k)g(k)/k`, and the pole
-plane reads the window Dirichlet polynomial `Σ g(m)m^{−s}` at `s = 0` and `s = 1`.
+plane reads the window Dirichlet polynomial `Σ g(m)m^{−s}` at `s = 0` and `s = 1`. The atoms are
+mutually orthogonal with `‖b_m/√m‖² = 1/m`, so the lattice is the Arakelov bundle
+`ℰ_N = ⊕_{m ≤ e^A} 𝒪(½ log m)` with the theta metric of `Spec ℤ`: Riemann–Roch
+`h⁰(ℰ_N, d) − h⁰(ℰ_N^∨, −d) = Nd + ½ log N!` by Poisson summation on each summand, degree `½ log N!`
+and slope at most `½ log N ≤ A/2`.
 
 **E. The pole plane and the floor.** The pole term `2Ĥ(0)Ĥ(1)` is translation invariant; centred at
 the window it is `½⟨c_A,H⟩² − ½⟨s_A,H⟩²` with `‖s_A‖² = 4 sinh(A/2) − 2A`. Its exact capacity
@@ -185,7 +190,7 @@ the sign of the weight. Counts at integer dimensions do not select.
 | What are the restriction maps `W_A → W_{A'}` and their control theorem? | Algebraically and analytically controlled. Analytic control: crossing a stage adds one fold paid by its end mass (`weilQuad_eq_stageForm_add_fold`, `weilQuad_nonneg_of_endCoercive`), composite stages are free (`weilQuad_eq_stageForm_of_not_primePow`), and the collar exit charge pays every new fold uniformly (`levyJump_ge_collar`, `primeJumpWeight_le_archLevyAntideriv`, `weilQuad_ge_reducedStageForm`). Algebraic control: equivalently, equivariant inclusions of window modules over the truncations `D_{⌊e^{A'}⌋} → D_{⌊e^A⌋}` (`windowRepFun_of_le`, `ker_windowRep`). Each stage is a small extension with kernel the new fold (`sub_single_mem_truncIdeal_succ`, `mul_mem_truncIdeal`); the new fold is a socle element until stage `2n` (`windowRep_single_mul_eq_zero`); Loewy length `⌊log₂ N⌋ + 1` (`windowRep_kills_pow_iff`); cotangent space = primes (`mem_sq_sup_truncIdeal_iff`, `single_prime_not_mem`); inverse limit = Dirichlet ring (`existsUnique_limit`, `iInf_truncIdeal`). |
 | What is the count attached to a fold `T_n`; what does `sym₂` count? | `T_n` is `δ_n`; in the Tate function its coefficient is `J_k(n)n^{−1/2}`, a count of primitive vectors of `(ℤ/n)^k` (`tateFunction_eq`, `jordanTotient_eq_card_primVec`). At the first prime the signed fold count `anti₂ − sym₂` is the coefficient of `#ℙ^{k−1}(𝔽₂) = 2^k − 1` (`tateFunction_firstPrime`). It enters Weil's form only through the derivative at `k = 0` (`weilQuad_eq_tateJet`): no integer dimension makes it a count. Equivalently, Weil's window form is a signed combination of the counts `φ(m)#ℙ^{j−1}(ℤ/m)`, `j < e^A`, with the coefficients of the polynomial interpolating `log` at `1, …, ⌊e^A⌋` (`sum_coeff_mul_jordanTotient`, `weilQuad_eq_signedCount`): the window `h¹` is a signed count, and its sign is the sign of that interpolation against the archimedean data. |
 | Is there a scheme over `ℤ` whose `ℤ/m`-points give the twisted counts and whose "conductor-one" part is the window form? | The punctured affine spaces `𝔸^k∖0` (primitive vectors), with the dimension as parameter: `J_k(m) = φ(m)#ℙ^{k−1}(ℤ/m)` are the Tate pieces (`jordanTotient_eq_card_projPoints`); `∂_kJ_k(m)|₀ = Λ(m)` (`hasDerivAt_jordanTotient_zero`) makes Weil's arithmetic window term the derivative at dimension zero (`hasDerivAt_tateFunction`). |
-| What lattice of rank `≈ 2e^A` carries the sections; with what metric? | The atomic lattice: the integers `m ≤ e^A`, a free rank-one module over the window algebra (`windowRepFun_atomicEmbedding`), of rank `⌊e^A⌋`; the window genus `≥ (2 − η)e^A` (CWS) is twice this rank to main order. Metric `‖φ‖²Σ g(k)h(k)/k` (`integral_atomicEmbedding_mul`); arithmetic term = multiplication by `Λ` (`integral_windowRep_atomicEmbedding`); pole = values at `s = 0, 1` (`poleA_atomicEmbedding`, `poleB_atomicEmbedding`); the Gamma factor enters as the Lévy kernel between atoms. |
+| What lattice of rank `≈ 2e^A` carries the sections; with what metric? | The atomic lattice: the integers `m ≤ e^A`, a free rank-one module over the window algebra (`windowRepFun_atomicEmbedding`), of rank `⌊e^A⌋`; the window genus `≥ (2 − η)e^A` (CWS) is twice this rank to main order. Metric `‖φ‖²Σ g(k)h(k)/k` (`integral_atomicEmbedding_mul`); arithmetic term = multiplication by `Λ` (`integral_windowRep_atomicEmbedding`); pole = values at `s = 0, 1` (`poleA_atomicEmbedding`, `poleB_atomicEmbedding`); the Gamma factor enters as the Gaussian (theta) metric on each atom and as the Lévy kernel between atoms. As an Arakelov bundle it is `⊕_{m≤e^A} 𝒪(½ log m)` with `h⁰ − h⁰∨ = Nd + ½ log N!` and slope `≤ A/2` (`integral_atomicEmbedding_single`, `windowBundleH0_riemannRoch`, `windowBundle_slope_le`). |
 | What growth law does the tower obey? | Negativity `≤ (deg K_A + 2 sinh(A/2) − A)‖H‖² ≤ (−Ω(0) + (4A+1)e^{A/2})‖H‖²` (`weilQuad_ge_neg_sharpWindowFloor`, `sharpWindowFloor_le`). Its exponent lies between the zero width and `½`, with RH iff it is `0` (ACCE `UnconditionalEqualityOfPolarAndFullGroundEnergyRates`, SRT `NegativityRateEqualsMaximalDepth`). |
 | Do the Tate pieces reproduce the degeneration on twisted windows (criterion 6)? | Yes for character twists: twists commute with the Tate flow and carry Tate families (`twist_tateTwist_comm`, `tateFamily_twist`); the Tate pieces of `L(s, χ)` are `χ(m)φ(m)#ℙ^β(ℤ/m)` (`tateFamily_charTwist_succ`) and its non-Tate piece is `χΛ` (`hasDerivAt_tateFamily_charTwist`), the dimension `β` entering as the dimension of projective space. |
 | Is there a Frobenius / base change for the tower; what is Serre duality on it? | Adams lifts are dilations `A ↦ eA` up to a Tate twist (`windowRepFun_mPart_dilate`, `windowShift_dilate`); Serre duality `σ_A` is the Rosati involution (`windowInvolution_windowShift`, `integral_windowRepFun_mul_eq`). |
@@ -201,6 +206,8 @@ the sign of the weight. Counts at integer dimensions do not select.
   data as cocycles, Tate operators as group commutators; Tate pieces at primes.
 - The Jordan family as an analytic family in the dimension; Tate functions of window tests.
 - Atoms and the atomic embedding; orthogonality, regular representation, pole moments of atomic tests.
+- Arakelov `h⁰` of the growing-rank window bundle `⊕_{m≤e^A} 𝒪(½ log m)`: Poisson Riemann–Roch,
+  degree `½ log ⌊e^A⌋!`, slope `≤ A/2`.
 - Centred pole plane; exact capacity by Cauchy–Schwarz; sharp floor and pencil; `ψ_{1/2}` bound by
   telescoping `Σ n^{−1/2} ≤ 2√N`.
 - Dilations of windows and Adams lifts; adjoint shifts and the Rosati involution.
@@ -280,6 +287,7 @@ dimension.
 | Twists: ring endomorphisms commuting with the Tate flow; twisted Tate pieces | `twistHom`, `twist_tateTwist_comm`, `tateFamily_twist`, `charZeta_mul_charMoebius`, `tateFamily_charTwist`, `tateFamily_charTwist_succ`, `hasDerivAt_tateFamily_charTwist` |
 | What survives the derivative at dimension zero: the Markov sign | `tateFamily_prime_nonneg_iff` |
 | Adams lifts = dilations; Serre duality = Rosati involution | `windowShift_dilate`, `windowRepFun_mPart_dilate`, `windowInvolution_windowShift`, `integral_windowShift_mul_eq`, `integral_windowRepFun_mul_eq` |
+| The Arakelov bundle of a window | `integral_atomicEmbedding_single`, `arithH0_add_half_log`, `windowBundleH0_riemannRoch`, `windowBundle_slope_le` |
 | Exact pole capacity; sharp floor and pencil; exponent `½` | `pole_eq_centred`, `integral_centredSinh_sq`, `centredSinhPairing_sq_le`, `pole_ge`, `weilQuad_ge_neg_sharpWindowFloor`, `pencil_nonneg_sharp`, `halfChebyshev_le`, `sharpWindowFloor_le` |
 
 ## 9. Traps

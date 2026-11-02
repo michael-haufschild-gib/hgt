@@ -810,9 +810,7 @@ private lemma single_prime_logIntegral_le {p : ℕ} (hp : Nat.Prime p) {T₁ T�
         (fun x _ => ?_)
         ((by fun_prop : Continuous fun x : ℝ => 3 * Real.exp (-Real.log p * x)).intervalIntegrable _ _)
       have hd := (((hasDerivAt_id x).const_mul (-Real.log p)).exp).const_mul (-(3 / Real.log p))
-      convert hd using 1
-      field_simp [hlogp_pos.ne']
-      ring
+      exact hd.congr_deriv (by field_simp [hlogp_pos.ne'])
     have hexp_half_le : Real.exp (-Real.log p * (1 / 2)) ≤ 1 :=
       Real.exp_le_one_iff.mpr (by linarith)
     have hexp_R_pos : 0 < Real.exp (-Real.log p * R) := Real.exp_pos _
@@ -905,10 +903,12 @@ theorem exists_abs_window_logIntegral_eulerProductMollifier_le (S : Finset ℕ)
       exact hdiff.continuous.comp (by fun_prop)
     have hcont : Continuous (fun t : ℝ =>
         Real.log ‖(1 : ℂ) - (p : ℂ) ^ (-(((1 / 2 : ℝ) : ℂ) + (t : ℂ) * I))‖) :=
-      continuous_iff_continuousAt.mpr fun t =>
-        (Real.continuousAt_log (norm_ne_zero_iff.mpr
-          (_root_.RHTower.eulerFactor_ne_zero hp_prime.two_le (by simp)))).comp
-          hcont_fac.norm.continuousAt
+      continuous_iff_continuousAt.mpr fun t => by
+        have hnz : ‖(1 : ℂ) - (p : ℂ) ^ (-(((1 / 2 : ℝ) : ℂ) + (t : ℂ) * I))‖ ≠ 0 :=
+          norm_ne_zero_iff.mpr (_root_.RHTower.eulerFactor_ne_zero hp_prime.two_le (by simp))
+        exact ContinuousAt.comp (g := Real.log)
+          (f := fun u : ℝ => ‖(1 : ℂ) - (p : ℂ) ^ (-(((1 / 2 : ℝ) : ℂ) + (u : ℂ) * I))‖)
+          (Real.continuousAt_log hnz) hcont_fac.norm.continuousAt
     exact hcont.intervalIntegrable _ _
   rw [heq, intervalIntegral.integral_finsetSum hint_fac]
   exact (Finset.abs_sum_le_sum_abs _ _).trans
@@ -956,9 +956,12 @@ private lemma integral_log_norm_zeta_mul_eulerProductMollifier (S : Finset ℕ)
       Real.log ‖eulerProductMollifier S (((1 / 2 : ℝ) : ℂ) + (t : ℂ) * I)‖) := by
     have h1 : Continuous (fun t : ℝ => eulerProductMollifier S (((1 / 2 : ℝ) : ℂ) + (t : ℂ) * I)) :=
       (differentiable_eulerProductMollifier S).continuous.comp (by fun_prop)
-    exact continuous_iff_continuousAt.mpr fun t =>
-      (Real.continuousAt_log (norm_ne_zero_iff.mpr
-        (eulerProductMollifier_ne_zero S (by simp)))).comp h1.norm.continuousAt
+    exact continuous_iff_continuousAt.mpr fun t => by
+      have hnz : ‖eulerProductMollifier S (((1 / 2 : ℝ) : ℂ) + (t : ℂ) * I)‖ ≠ 0 :=
+        norm_ne_zero_iff.mpr (eulerProductMollifier_ne_zero S (by simp))
+      exact ContinuousAt.comp (g := Real.log)
+        (f := fun u : ℝ => ‖eulerProductMollifier S (((1 / 2 : ℝ) : ℂ) + (u : ℂ) * I)‖)
+        (Real.continuousAt_log hnz) h1.norm.continuousAt
   rw [← intervalIntegral.integral_add
     (_root_.RHTower.intervalIntegrable_log_norm_riemannZeta_line T₁ T₂)
     (hcont_M.intervalIntegrable _ _)]
@@ -1111,9 +1114,9 @@ theorem criticalClustering_logMean_mollifier_hecke_tfae {c : ℝ} (hc0 : 0 < c) 
     have hfl_T := hfloor T h20
     have hlo : -((C_fl + K_fl * Real.log (2 * T)) / T) ≤
         T⁻¹ * ∫ t in T..(2 * T), Real.log ‖riemannZeta (((1 / 2 : ℝ) : ℂ) + (t : ℂ) * I)‖ := by
-      rw [div_eq_inv_mul, ← neg_mul_eq_mul_neg]
+      rw [div_eq_inv_mul _ T]
       have h1 := mul_le_mul_of_nonneg_left hfl_T (inv_nonneg.mpr hT_pos.le)
-      linarith
+      rwa [mul_neg] at h1
     have hlt_fl : (C_fl + K_fl * Real.log (2 * T)) / T < η / 2 :=
       (le_abs_self _).trans_lt hfl_lt
     exact abs_lt.mpr ⟨by linarith, by linarith⟩
@@ -1543,8 +1546,8 @@ theorem criticalClustering_logMean_mollifier_hecke_tfae {c : ℝ} (hc0 : 0 < c) 
               mul_nonneg (Nat.cast_nonneg _)
                 (by linarith [(Finset.mem_filter.mp hz).2, div_pos hR_pos hlogT_pos])
         _ ≤ B_e * Real.exp (-(R / 28)) * T + K_e * L ^ 2 := hbd_R
-        _ ≤ (ε / 4) * T + K_e * L ^ 2 :=
-            add_le_add_right (mul_le_mul_of_nonneg_right hexp_R hT_pos.le) _
+        _ ≤ (ε / 4) * T + K_e * L ^ 2 := by
+            linarith [mul_le_mul_of_nonneg_right hexp_R hT_pos.le]
         _ < (ε / 4) * T + (ε / 4) * T := by linarith [hK_lt]
         _ = (ε / 2) * T := by ring
     have hsum_lt : ∑ z ∈ F_pos,

@@ -57,5 +57,14 @@ The exact lag-to-pair identity and interval scaling are being verified in
 ## Remaining extension
 
 Transfer this count to the actual Gamma weight and include the exact odd
-pole `−2(∫f sinh(x/2))²`. The corresponding whole-window count is not yet
+pole `−2(∫f sinh(x/2))²`. Oddness gives `∫₀²ᵃA=0`; the correlation bound
+`|A|≤M` then gives `∫₀²ᵃt(M−A)≤3a²M`. The second-order Gamma tail and
+`w(t)≥1/t+1/2−t/10` predict the explicit odd Weil floor
+
+`[7/5−γ−log(2πa)−13a²/60−(a³/3)cosh²(a/2)]M`.
+
+This exceeds `M/1000` for `0<a≤(log 2)/2`. Its count derivation is not yet
 formalized; all-aperture positivity remains open.
+
+The scalar bounds `γ<289/500`, `log(π log 2)<779/1000`, `a²<121/1000`
+and `(a³/3)cosh²(a/2)<3/200` leave `107/60000>1/1000`.

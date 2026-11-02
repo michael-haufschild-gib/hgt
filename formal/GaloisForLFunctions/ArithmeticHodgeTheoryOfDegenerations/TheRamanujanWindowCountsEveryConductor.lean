@@ -270,8 +270,7 @@ theorem abs_ramEnergy_sub_le (hφ : ContDiff ℝ 2 φ) (hφsupp : ∀ u, u ∉ S
     rw [sum_congr rfl e, Finset.sum_comm, Finset.mul_sum, Finset.mul_sum]
     refine sum_congr rfl fun x _ => ?_
     unfold horizonAlias
-    rw [← Finset.mul_sum, Finset.mul_sum, Finset.mul_sum, Finset.mul_sum, Finset.mul_sum]
-    refine sum_congr rfl fun n _ => ?_
+    rw [← Finset.mul_sum, ← Finset.mul_sum]
     field_simp
   rw [← hmain]
   exact hK c hc N hcN

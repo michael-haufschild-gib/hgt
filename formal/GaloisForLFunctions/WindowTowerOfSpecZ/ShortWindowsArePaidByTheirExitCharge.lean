@@ -15,8 +15,12 @@ The end-profile bound turns positivity into a pointwise inequality for the windo
   (`weilQuad_nonneg_of_le_one_twelfth`): `Ω(1/24) ≥ 68/25` (`archLevyAntideriv_one_div_24_ge`, from the
   closed form `½ log((1+t)/(1−t)) + arctan t`, `t = e^{−1/48}`), `Ω_Γ > −5.373` and
   `2 sinh(A/2) − A ≤ A²/2`. The archimedean exit charge alone — a count of the jumps that leave the
-  window — pays the Gamma constant and the pole plane; no estimate of Weil's form enters. The count
-  threshold of LST (`1/32`) is improved to `1/12`.
+  window — pays the Gamma constant and the pole plane; no estimate of Weil's form enters.
+* **Up to `1/7`** (`weilQuad_nonneg_of_le_one_seventh`): with `arctan t ≥ π/4 − (1−t)/(1+t)`
+  (`pi_div_four_sub_le_arctan`, from `arctan t + arctan((1−t)/(1+t)) = π/4` and `arctan z ≤ z`),
+  `Ω(1/14) ≥ 69/25` and the exit charge pays every window of length `≤ 1/7`. The count threshold of
+  LST (`1/32`) is improved to `1/7`; the pointwise mechanism itself stops near `0.18`, where
+  `Ω_Γ + 2Ω(A/2)` changes sign.
 -/
 
 noncomputable section
@@ -134,6 +138,71 @@ theorem weilQuad_nonneg_of_le_one_twelfth (hH : IsWindowTest A H) (hA0 : 0 < A)
   have hΓ := RHTower.WeilLevyOsculatingFloor.neg_gammaBracket_zero_lt_5373_over_1000
   have hp := two_sinh_half_sub_le hA0.le (by linarith)
   have hA2 : A ^ 2 ≤ 1 / 144 := by nlinarith
+  linarith
+
+/-! ### Up to one seventh -/
+
+/-- `arctan z ≤ z` for `z ≥ 0` (from `x < tan x` on `(0, π/2)`). -/
+theorem arctan_le_self_of_nonneg {z : ℝ} (hz : 0 ≤ z) : Real.arctan z ≤ z := by
+  rcases hz.eq_or_lt with rfl | hz
+  · simp
+  · have h0 : 0 < Real.arctan z := Real.arctan_pos.mpr hz
+    have := Real.lt_tan h0 (Real.arctan_lt_pi_div_two z)
+    rw [Real.tan_arctan] at this
+    exact this.le
+
+/-- `arctan t ≥ π/4 − (1 − t)/(1 + t)` for `0 ≤ t ≤ 1`: `arctan t + arctan((1−t)/(1+t)) = π/4`. -/
+theorem pi_div_four_sub_le_arctan {t : ℝ} (ht0 : 0 ≤ t) (ht1 : t ≤ 1) :
+    Real.pi / 4 - (1 - t) / (1 + t) ≤ Real.arctan t := by
+  have h1t : (0 : ℝ) < 1 + t := by linarith
+  have hy0 : 0 ≤ (1 - t) / (1 + t) := div_nonneg (by linarith) h1t.le
+  have hxy : t * ((1 - t) / (1 + t)) < 1 := by
+    rw [mul_div_assoc', div_lt_one h1t]; nlinarith
+  have hsum := Real.arctan_add hxy
+  have e1 : t + (1 - t) / (1 + t) = (1 + t ^ 2) / (1 + t) := by field_simp; ring
+  have e2 : 1 - t * ((1 - t) / (1 + t)) = (1 + t ^ 2) / (1 + t) := by field_simp; ring
+  rw [e1, e2, div_self (div_pos (by positivity) h1t).ne', Real.arctan_one] at hsum
+  linarith [arctan_le_self_of_nonneg hy0]
+
+/-- `4 ≤ log 55`, from `e < 2.7182818286`. -/
+theorem four_le_log_fiftyfive : (4 : ℝ) ≤ Real.log 55 := by
+  rw [Real.le_log_iff_exp_le (by norm_num)]
+  have h1 : Real.exp 1 < 2.7182818286 := Real.exp_one_lt_d9
+  calc Real.exp 4 = Real.exp 1 ^ 4 := by rw [← Real.exp_nat_mul]; norm_num
+    _ ≤ 2.7182818286 ^ 4 := pow_le_pow_left₀ (Real.exp_pos 1).le h1.le 4
+    _ ≤ 55 := by norm_num
+
+/-- `Ω(1/14) ≥ 69/25`. -/
+theorem archLevyAntideriv_one_div_14_ge : (69 / 25 : ℝ) ≤ archLevyAntideriv (1 / 14) := by
+  rw [archLevyAntideriv_eq_log_div (by norm_num)]
+  set t := Real.exp (-(1 / 14) / 2) with htdef
+  have ht1 : t < 1 := Real.exp_lt_one_iff.mpr (by norm_num)
+  have ht27 : 27 / 28 ≤ t := by
+    have := Real.add_one_le_exp (-(1 / 14) / 2)
+    rw [htdef]; linarith
+  have h55 : (55 : ℝ) ≤ (1 + t) / (1 - t) := by
+    rw [le_div_iff₀ (by linarith)]; linarith
+  have hlog : (4 : ℝ) ≤ Real.log ((1 + t) / (1 - t)) :=
+    four_le_log_fiftyfive.trans (Real.log_le_log (by norm_num) h55)
+  have harc := pi_div_four_sub_le_arctan (by linarith) ht1.le
+  have hfrac : (1 - t) / (1 + t) ≤ 1 / 55 := by
+    rw [div_le_div_iff₀ (by linarith) (by norm_num)]; linarith
+  have hpi := Real.pi_gt_d2
+  linarith
+
+/-- **Windows of length at most `1/7` are positive by their exit charge.** -/
+theorem weilQuad_nonneg_of_le_one_seventh (hH : IsWindowTest A H) (hA0 : 0 < A)
+    (hA : A ≤ 1 / 7) : 0 ≤ weilQuad H := by
+  have hlog2 : A < Real.log 2 := by
+    have := Real.log_two_gt_d9; linarith
+  refine weilQuad_nonneg_of_primeFree_centre hH hA0.le hlog2 ?_
+  have hΩ : archLevyAntideriv (1 / 14) ≤ archLevyAntideriv (A / 2) :=
+    antitoneOn_archLevyAntideriv (show A / 2 ∈ Ioi 0 from by simp; linarith)
+      (show (1 / 14 : ℝ) ∈ Ioi 0 from by norm_num) (by linarith)
+  have h14 := archLevyAntideriv_one_div_14_ge
+  have hΓ := RHTower.WeilLevyOsculatingFloor.neg_gammaBracket_zero_lt_5373_over_1000
+  have hp := two_sinh_half_sub_le hA0.le (by linarith)
+  have hA2 : A ^ 2 ≤ 1 / 49 := by nlinarith
   linarith
 
 end GaloisForLFunctions.WindowTowerOfSpecZ

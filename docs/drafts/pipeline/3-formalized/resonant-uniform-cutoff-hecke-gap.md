@@ -67,4 +67,4 @@ global integrability and exact mass have only `propext`, `Classical.choice`, and
 No choice of a single cutoff gives an `L²` Hecke-quasimode approximation when
 the real parameter stays negative away from zero. This includes the critical
 rate and therefore supplies no critical-line selector. Arbitrary complex
-superpositions of cutoffs require a separate [packet bound](../0-backlog/resonant-cutoff-packet-gap.md).
+superpositions of cutoffs require a separate [packet bound](../1-in-progress/resonant-cutoff-packet-gap.md).

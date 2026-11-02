@@ -12,6 +12,7 @@ import GaloisForLFunctions.WindowTowerOfSpecZ.TheExitChargePaysEveryNewFold
 import GaloisForLFunctions.WindowTowerOfSpecZ.TheEulerFactorizationOfAWindow
 import GaloisForLFunctions.WindowTowerOfSpecZ.TheEndProfileOfAWindow
 import GaloisForLFunctions.WindowTowerOfSpecZ.ShortWindowsArePaidByTheirExitCharge
+import GaloisForLFunctions.WindowTowerOfSpecZ.TheArakelovBundleOfAWindow
 
 /-!
 # The Window Tower of Spec â„¤
@@ -28,6 +29,6 @@ twists (Tate flow, characters) and the character-weighted Tate pieces of `L(s, Ï
 form as a signed combination of projective point counts (interpolation of `log`); the transfer
 across a stage and the collar exit charge paying every new fold; the exact Euler factorization of
 the window zeta operator; the exit-charge inequality, the universal end profile and the pointwise
-payment of short windows. See
+payment of short windows; the Arakelov bundle of a window. See
 `WindowTowerOfSpecZ/README.md`.
 -/

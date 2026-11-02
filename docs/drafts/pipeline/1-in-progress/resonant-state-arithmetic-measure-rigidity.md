@@ -55,7 +55,7 @@ For `Y≥2`, the exact normalized mass is `2^(-2 Re u)−2^(2 Re u)`.
 The three-return decomposition and global integrability are also checked.
 [Statement, proof and audit](../3-formalized/resonant-uniform-cutoff-hecke-gap.md).
 
-**Next candidate.** Exclude source cancellation by arbitrary finite complex superpositions of cutoffs at least two. The cusp model turns Hecke action into a unitary dilation plus its inverse; the corpus already supplies both dilation and resolvent estimates. The missing bridge is the actual packet residual norm. [Precise conjecture](../0-backlog/resonant-cutoff-packet-gap.md).
+**Next candidate.** Exclude source cancellation by arbitrary finite complex superpositions of cutoffs at least two. The cusp model turns Hecke action into a unitary dilation plus its inverse; the corpus already supplies both dilation and resolvent estimates. The missing bridge is the actual packet residual norm. [Precise conjecture](resonant-cutoff-packet-gap.md).
 
 ## Open dependency
 
