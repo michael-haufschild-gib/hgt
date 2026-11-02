@@ -28,7 +28,7 @@ private theorem scalar_gap_norm_sq {r : ℝ} (hr : 0 < r) (u : ℂ) :
       (2 * r ^ (u.re - 1 / 2)) ^ 2 + 1 -
         4 * r ^ (u.re - 1 / 2) * Real.cos (u.im * Real.log r) := by
   rw [← Complex.normSq_eq_norm_sq, Complex.normSq_sub, Complex.normSq_one,
-    Complex.conj_one, mul_one, Complex.normSq_eq_norm_sq, norm_mul,
+    map_one, mul_one, Complex.normSq_eq_norm_sq, norm_mul,
     Complex.norm_cpow_eq_rpow_re_of_pos hr]
   have hre := real_cpow_re hr (u - 1 / 2)
   have hwre : (u - 1 / 2 : ℂ).re = u.re - 1 / 2 := by simp
@@ -66,8 +66,7 @@ theorem dyadicEigenResidual_normalized_expansion {u : ℂ}
   rw [dyadicEigenResidual_norm_sq_expansion hAu hz,
     integral_norm_sq_of_msA_eq_zero hu hur hAu (by norm_num)]
   simp only [Real.one_rpow, mul_one]
-  have hB : ‖msB u‖ ^ 2 ≠ 0 := pow_ne_zero 2 (norm_ne_zero_iff.mpr
-    (msB_ne_zero_of_negative_re hu hur))
+  have hB : ‖msB u‖ ≠ 0 := norm_ne_zero_iff.mpr (msB_ne_zero_of_negative_re hu hur)
   field_simp [hB]
 
 end

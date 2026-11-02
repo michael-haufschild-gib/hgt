@@ -152,8 +152,8 @@ private theorem normalized_residual_eq {u : ℂ}
     returnHeight, returnRatio, coreSourcePhase, z, Int.cast_zero, add_zero]
   ring
 
-/-- Weak convergence of the actual normalized residual on the complete single-return rectangle. -/
-theorem dyadicEigenResidual_core_weak_limit
+/-- Coordinate form of the normalized residual limit on the single-return rectangle. -/
+theorem dyadicEigenResidual_core_coordinate_weak_limit
     {u : ℕ → ℂ} (hu : ∀ n, u n ∈ eisensteinLineDomain)
     (hur : ∀ n, (u n).re < 0) (hAu : ∀ n, msA (u n) = 0)
     {a : ℝ} (ha : Tendsto (fun n => (u n).re) atTop (𝓝 a))
@@ -188,6 +188,40 @@ theorem dyadicEigenResidual_core_weak_limit
   refine setIntegral_congr_fun coreSourceRect_measurable fun p hp => ?_
   have hn := normalized_residual_eq (hu n) (hur n) (hAu n) hp
   linear_combination -(f p) * hn
+
+/-- The hyperbolic residual measures converge to the sum of their two Weyl-source masses. -/
+theorem dyadicEigenResidual_core_weak_limit
+    {u : ℕ → ℂ} (hu : ∀ n, u n ∈ eisensteinLineDomain)
+    (hur : ∀ n, (u n).re < 0) (hAu : ∀ n, msA (u n) = 0)
+    {a : ℝ} (ha : Tendsto (fun n => (u n).re) atTop (𝓝 a))
+    (ht : Tendsto (fun n => (u n).im) atTop atTop)
+    (f : ℝ × ℝ → ℝ) (hf : Continuous f) :
+    Tendsto (fun n => ∫ z in coreRectangle,
+      f (z.re, z.im) * (‖dyadicEigenResidual (u n) z‖ ^ 2 /
+        (∫ w in fd, ‖truncatedLineModel (u n) 1 w‖ ^ 2)))
+      atTop (𝓝 (∫ p in coreSourceRect, f p * coreSourceLimitDensity a p)) := by
+  have hset : coreRectangle = {z : ℍ | (z.re, z.im) ∈ coreSourceRect} := by
+    ext z
+    simp only [coreRectangle, coreSourceRect, mem_setOf_eq, mem_prod, mem_Icc,
+      abs_le, and_assoc]
+  have hchart (n : ℕ) :
+      (∫ z in coreRectangle, f (z.re, z.im) * (‖dyadicEigenResidual (u n) z‖ ^ 2 /
+        (∫ w in fd, ‖truncatedLineModel (u n) 1 w‖ ^ 2))) =
+      ∫ p in coreSourceRect, f p * (‖dyadicEigenResidual (u n) (ofComplex ⟨p.1, p.2⟩)‖ ^ 2 /
+        (∫ w in fd, ‖truncatedLineModel (u n) 1 w‖ ^ 2)) / p.2 ^ 2 := by
+    let F : ℝ × ℝ → ℝ := fun p =>
+      f p * (‖dyadicEigenResidual (u n) (ofComplex ⟨p.1, p.2⟩)‖ ^ 2 /
+        (∫ w in fd, ‖truncatedLineModel (u n) 1 w‖ ^ 2))
+    have hF : (fun z : ℍ => F (z.re, z.im)) =
+        fun z => f (z.re, z.im) * (‖dyadicEigenResidual (u n) z‖ ^ 2 /
+          (∫ w in fd, ‖truncatedLineModel (u n) 1 w‖ ^ 2)) := by
+      funext z
+      have he : (⟨z.re, z.im⟩ : ℂ) = (z : ℂ) := Complex.ext rfl rfl
+      simp only [F, he, ofComplex_apply]
+    rw [← hF, hset, setIntegral_coord_eq_real coreSourceRect_measurable
+      (fun p hp => coreSourceRect_height_pos hp)]
+  exact (dyadicEigenResidual_core_coordinate_weak_limit hu hur hAu ha ht f hf).
+    congr (fun n => (hchart n).symm)
 
 end
 
