@@ -408,7 +408,10 @@ theorem twisted_horizon_form_ge_window {φ : ℝ → ℝ} (hφ : ContDiff ℝ 2 
   have hlow' : -((2 + M) * B / (c * (c / N * ∫ u, φ u ^ 2))) +
       (c * (c / N * ∫ u, φ u ^ 2))⁻¹ * I ≤
       c⁻¹ * (weilQuad (atomicTest N x (atomDilate φ (c / N))) / (c / N * ∫ u, φ u ^ 2)) := by
-    rw [inv_mul_eq_div, div_div, mul_comm (c / N * ∫ u, φ u ^ 2) c]
+    have hR : c⁻¹ * (weilQuad (atomicTest N x (atomDilate φ (c / N))) / (c / N * ∫ u, φ u ^ 2)) =
+        weilQuad (atomicTest N x (atomDilate φ (c / N))) / (c * (c / N * ∫ u, φ u ^ 2)) := by
+      rw [inv_mul_eq_div, div_div, mul_comm (c / N * ∫ u, φ u ^ 2) c]
+    rw [hR]
     have := div_le_div_of_nonneg_right hQ' hpos.le
     calc -((2 + M) * B / (c * (c / N * ∫ u, φ u ^ 2))) + (c * (c / N * ∫ u, φ u ^ 2))⁻¹ * I
         = (-((2 + M) * B) + I) / (c * (c / N * ∫ u, φ u ^ 2)) := by ring
@@ -570,7 +573,8 @@ theorem meanSquare_window_twisted_ge {h : ℝ → ℝ} {A Bh : ℝ} (hB : ∀ y,
     nlinarith [Real.exp_pos (-A)]
   have hU0 : 0 < 2 ^ j * ((N : ℝ) * Real.exp (-A)) := by positivity
   have hUS := mul_le_mul_of_nonneg_left hS1.le hU0.le
-  nlinarith
+  have hk := mul_le_mul_of_nonneg_left hj'.le hN0.le
+  nlinarith [hk, hS2, hMV, hUS]
 
 theorem norm_sq_paperFT_centredAtomicTest {φ : ℝ → ℝ} (hφ : Continuous φ)
     (hφc : HasCompactSupport φ) (x : ℕ → ℝ) {c : ℝ} (hc : 0 < c) {N : ℕ} (hN : 1 ≤ N) (τ : ℝ) :
@@ -708,6 +712,11 @@ theorem twisted_horizon_layer_coercive {A : ℝ} (hA : 0 ≤ A) {h : ℝ → ℝ
       Real.exp (2 * (A + 1)) ^ 2 / Real.pi with hνmdef
   set M := ∫ u, tiltedUnitSpline u ^ 2 with hM
   have hlogN : 0 ≤ Real.log N := Real.log_nonneg (by exact_mod_cast hN)
+  have hcN0 : c N ≠ 0 := (hc0 N).ne'
+  have hWm0 : 0 ≤ Wm := by rw [hWm]; positivity
+  have hD20 : 0 ≤ D2 := intervalIntegral.integral_nonneg (by linarith) fun τ _ => by positivity
+  have hq0 : 0 ≤ 2 ^ j * Real.exp (-A) * s / 4 :=
+    div_nonneg (mul_nonneg (mul_nonneg (by positivity) (Real.exp_pos _).le) hs0.le) (by norm_num)
   have hchain : a₀ / M * Real.log N / c N ^ (8 : ℝ) ≤ (c N * (c N / N * M))⁻¹ * I := by
     have e : (c N * (c N / N * M))⁻¹ * ((c N / N) ^ 2 * Wm * νm * D2) = Wm * νm * (D2 / N) / M := by
       field_simp
@@ -718,11 +727,12 @@ theorem twisted_horizon_layer_coercive {A : ℝ} (hA : 0 ≤ A) {h : ℝ → ℝ
           rw [ha₀]; field_simp
       _ ≤ Wm * νm * (D2 / N) / M := by
           refine div_le_div_of_nonneg_right ?_ hM0.le
-          exact mul_le_mul (mul_le_mul hWt hνm (by positivity) (by positivity)) hD
-            (by positivity) (by positivity)
+          exact mul_le_mul (mul_le_mul hWt hνm (div_nonneg hlogN (by positivity)) hWm0) hD
+            hq0 (mul_nonneg hWm0 hνm0)
       _ = (c N * (c N / N * M))⁻¹ * ((c N / N) ^ 2 * Wm * νm * D2) := e.symm
       _ ≤ (c N * (c N / N * M))⁻¹ * I :=
-          mul_le_mul_of_nonneg_left hW (by positivity)
+          mul_le_mul_of_nonneg_left hW (inv_nonneg.mpr (mul_nonneg (hc0 N).le
+            (mul_nonneg (div_nonneg (hc0 N).le hN0.le) hM0.le)))
   rw [neg_div] at hwb
   have : a₀ / M * Real.log N / c N ^ (8 : ℝ) = a₀ / M * Real.log N / c N ^ (8 : ℝ) := rfl
   linarith

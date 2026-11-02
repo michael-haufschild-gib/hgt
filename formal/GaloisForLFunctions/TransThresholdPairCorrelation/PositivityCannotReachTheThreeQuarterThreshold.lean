@@ -404,3 +404,5 @@ theorem positivity_does_not_reach_three_quarters :
     exact hI
 
 end GaloisForLFunctions.TransThresholdPairCorrelation
+
+#print axioms GaloisForLFunctions.TransThresholdPairCorrelation.positivity_does_not_reach_three_quarters

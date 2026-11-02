@@ -122,6 +122,59 @@ theorem windowIndex_eq_zero_iff {A : ℝ} :
     exact add_nonneg (hpart Complex.re (Complex.reCLM.contDiff.comp hf) Complex.zero_re)
       (hpart Complex.im (Complex.imCLM.contDiff.comp hf) Complex.zero_im)
 
+/-! ### The index sees the window form -/
+
+/-- **`ι(A) = 0` iff Weil's form is nonnegative on every real window test of length `A`.** -/
+theorem windowIndex_eq_zero_iff {A : ℝ} :
+    windowIndex A = 0 ↔ ∀ H : ℝ → ℝ, IsWindowTest A H → 0 ≤ weilQuad H := by
+  rw [windowIndex, hodgeDefectAt_eq_zero_iff zetaZeroConfig
+    SquareRootThreshold.temperedConfig_zetaZeroConfig]
+  constructor
+  · intro h H hH
+    -- centre the window test: `G(u) = H(u − A/2)` lives in `[−A/2, A/2]`
+    set G : ℝ → ℝ := fun u => H (u - A / 2) with hG
+    have hGc : ContDiff ℝ 2 G := hH.contDiff.comp (contDiff_id.sub contDiff_const)
+    have hGv : ∀ y, y ∉ Icc (-(A / 2)) (A / 2) → G y = 0 := fun y hy => by
+      refine hH.vanish _ fun hm => hy ⟨?_, ?_⟩ <;> linarith [hm.1, hm.2]
+    have hGcs : HasCompactSupport G :=
+      HasCompactSupport.intro (isCompact_Icc (a := -(A / 2)) (b := A / 2)) hGv
+    have hts : tsupport (fun u => (G u : ℂ)) ⊆ Icc (-(A / 2)) (A / 2) := by
+      refine closure_minimal (fun y hy => ?_) isClosed_Icc
+      by_contra hn
+      exact hy (by simp [hGv y hn])
+    have hW := h (fun u => (G u : ℂ)) (Complex.ofRealCLM.contDiff.comp hGc) hts
+    rw [← LogCells.weilQuad_eq_zetaW hGc hGcs, hG, weilQuad_comp_sub] at hW
+    exact hW
+  · intro h f hf hts
+    have hfc : HasCompactSupport f := isCompact_Icc.of_isClosed_subset (isClosed_tsupport _) hts
+    rw [RHTower.zeta_W_eq_weilFullFunctional hf hfc,
+      RHTower.CHMDPolar.re_weilFullFunctional_split _ ⟨f, hf, hfc⟩]
+    -- each part, moved into `[−A, 0]`, is a window test
+    have hpart : ∀ (g : ℂ → ℝ) (hg : ContDiff ℝ 2 (fun x => g (f x))) (hg0 : g 0 = 0),
+        0 ≤ weilQuad (fun x => g (f x)) := fun g hg hg0 => by
+      have hv : ∀ y, y ∉ Icc (-A) 0 → g (f (y - -(A / 2))) = 0 := fun y hy => by
+        have : f (y - -(A / 2)) = 0 := by
+          by_contra hne
+          exact hy ⟨by linarith [(hts (subset_tsupport f hne)).1],
+            by linarith [(hts (subset_tsupport f hne)).2]⟩
+        rw [this, hg0]
+      have := h (fun y => g (f (y - -(A / 2))))
+        ⟨hg.comp (contDiff_id.sub contDiff_const), hv⟩
+      rwa [weilQuad_comp_sub (fun x => g (f x))] at this
+    exact add_nonneg (hpart Complex.re (Complex.reCLM.contDiff.comp hf) Complex.zero_re)
+      (hpart Complex.im (Complex.imCLM.contDiff.comp hf) Complex.zero_im)
+
+/-- RH iff every window has index `0`. -/
+theorem riemannHypothesis_iff_forall_windowIndex_eq_zero :
+    RiemannHypothesis ↔ ∀ A, windowIndex A = 0 := by
+  rw [riemannHypothesis_iff_windowForm_nonneg]
+  constructor
+  · intro h A
+    rcases le_total 0 A with hA | hA
+    · exact windowIndex_eq_zero_iff.mpr (h A hA)
+    · exact windowIndex_eq_zero_of_le (by linarith)
+  · exact fun h A _ => windowIndex_eq_zero_iff.mp (h A)
+
 /-- RH iff every window has index `0`. -/
 theorem riemannHypothesis_iff_forall_windowIndex_eq_zero :
     RiemannHypothesis ↔ ∀ A, windowIndex A = 0 := by

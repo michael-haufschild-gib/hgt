@@ -87,7 +87,8 @@ proved by `integral_haarSectionProfile_sq` and `inner_coarseAtom`.
 proves the refined trace bound. `FullPrimeWindowHaarDecay.lean` proves
 the unsigned Haar moment and normalized full-prime row bounds. Their direct
 audits contain only `propext`, `Classical.choice`, and `Quot.sound`.
-The joint row estimate is now directly audited with standard axioms.
-The all-detail tail, operator estimate, and rank-one consequence remain
-unformalized.
+The joint row estimate and
+`exists_fullPrimeWindowRemainder_hilbert_tail_bound` in `PrimeWindowRowTails`
+pass direct audits with the same standard axioms. The growing-coarse
+operator estimate and rank-one consequence remain unformalized.
 External priority is unchecked.
