@@ -212,7 +212,8 @@ theorem isMayerScatteringResonance_conj_iff {s : ℂ} :
     have hc1 : ((starRingEnd ℂ) s).re < 1 / 2 := by simpa using h1
     obtain ⟨hw0, hw1⟩ := two_mul_re_bounds h0 h1
     have hwne1 : 2 * s ≠ 1 := fun he => by rw [he, Complex.one_re] at hw1; exact lt_irrefl 1 hw1
-    have hconj2 : 2 * (starRingEnd ℂ) s = (starRingEnd ℂ) (2 * s) := by simp
+    have hconj2 : 2 * (starRingEnd ℂ) s = (starRingEnd ℂ) (2 * s) := by
+      rw [map_mul, map_ofNat]
     rw [isMayerScatteringResonance_iff_zeta_zero hc0 hc1,
       isMayerScatteringResonance_iff_zeta_zero h0 h1, hconj2,
       _root_.RHTower.riemannZeta_conj_eq_zero_iff_of_re_pos hw0 hwne1]
@@ -234,7 +235,8 @@ theorem isMayerScatteringResonance_reflect_iff {s : ℂ} :
     have harg : 2 * riemannMayerReflect s = 1 - 2 * (starRingEnd ℂ) s := by
       unfold riemannMayerReflect
       ring
-    have hconj2 : 2 * (starRingEnd ℂ) s = (starRingEnd ℂ) (2 * s) := by simp
+    have hconj2 : 2 * (starRingEnd ℂ) s = (starRingEnd ℂ) (2 * s) := by
+      rw [map_mul, map_ofNat]
     rw [harg, _root_.RHTower.xi_one_sub, hconj2, _root_.RHTower.xi_conj, map_eq_zero]
   · constructor <;> intro hs
     · exfalso

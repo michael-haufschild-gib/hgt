@@ -34,8 +34,8 @@ open Complex Set Filter MeasureTheory Topology Finset
 open scoped BigOperators
 open GaloisForLFunctions.HTGeometry
 open GaloisForLFunctions.RenormalizedIntersectionTheory
-open MayerCutoff MayerParameter MayerScatteringMultiplicity MayerScatteringNormalization
-open MayerScatteringState MayerScatteringCore MayerCoreZeroMoment
+open MayerCutoff MayerParameter MayerScatteringMellin MayerScatteringMultiplicity
+open MayerScatteringNormalization MayerScatteringState MayerScatteringCore MayerCoreZeroMoment
 
 set_option autoImplicit false
 
@@ -103,8 +103,8 @@ theorem mayerReflectedArchFactor_ne_zero {s : ℂ} (hs : s.re < 1 / 2) :
     mayerReflectedArchFactor s ≠ 0 := by
   rw [mayerReflectedArchFactor_eq_Gammaℝ hs]
   apply Complex.Gammaℝ_ne_zero_of_re_pos
-  simp only [Complex.sub_re, Complex.one_re, Complex.mul_re, Complex.ofNat_re, Complex.ofNat_im,
-    zero_mul, sub_zero]
+  have hre : (1 - 2 * s).re = 1 - 2 * s.re := by simp
+  rw [hre]
   linarith
 
 /-- Along the critical scattering line, `mayerComplexZ` equals `(hardyZ τ : ℂ)` identically. -/
@@ -216,7 +216,7 @@ theorem ofReal_deriv_mayerZ_eq_of_zero {τ₀ : ℝ} (hzero : mayerZ τ₀ = 0) 
       (deriv riemannZeta (_root_.RHTower.linePt τ₀) * I) τ₀ := by
     have hc := HasDerivAt.comp τ₀ (differentiableAt_riemannZeta hne1).hasDerivAt
       (_root_.RHTower.hasDerivAt_linePt τ₀)
-    simpa [Function.comp] using! hc
+    simpa [Function.comp] using hc
   have hZ : HasDerivAt (fun u : ℝ => (mayerZ u : ℂ)) (deriv mayerZ τ₀ : ℂ) τ₀ := by
     have hc := (Complex.ofRealCLM.hasDerivAt (x := mayerZ τ₀)).comp τ₀
       (differentiable_mayerZ τ₀).hasDerivAt
@@ -263,9 +263,8 @@ theorem ofReal_deriv_mayerZ_eq_core_mellin_zero {τ₀ : ℝ} (hτ₀ : 0 < τ�
   have hw0 : 0 < (2 * criticalScatteringPt τ₀).re := by simp [criticalScatteringPt]
   have hw1 : (2 * criticalScatteringPt τ₀).re < 1 := by simp [criticalScatteringPt]; norm_num
   have him : 0 < (2 * criticalScatteringPt τ₀).im := by
-    simp only [Complex.mul_im, Complex.ofNat_re, Complex.ofNat_im, criticalScatteringPt_im,
-      zero_mul, add_zero]
-    linarith
+    rw [two_mul_criticalScatteringPt, _root_.RHTower.linePt_im]
+    exact hτ₀
   have hm := (core_zero_hasMellin_zero hw0 hw1 him hzeta0).2
   rw [ofReal_deriv_mayerZ_eq_of_zero hz, ← two_mul_criticalScatteringPt, ← hm]
 
@@ -350,9 +349,8 @@ theorem deriv_mayerZ_ne_zero_iff_simple_resonance {τ₀ : ℝ} (hτ₀ : 0 < τ
   have hw0 : 0 < (2 * criticalScatteringPt τ₀).re := by simp [criticalScatteringPt]
   have hw1 : (2 * criticalScatteringPt τ₀).re < 1 := by simp [criticalScatteringPt]; norm_num
   have him : 0 < (2 * criticalScatteringPt τ₀).im := by
-    simp only [Complex.mul_im, Complex.ofNat_re, Complex.ofNat_im, criticalScatteringPt_im,
-      zero_mul, add_zero]
-    linarith
+    rw [two_mul_criticalScatteringPt, _root_.RHTower.linePt_im]
+    exact hτ₀
   have hwne1 : 2 * criticalScatteringPt τ₀ ≠ 1 := fun he => by
     rw [he, Complex.one_re] at hw1
     exact lt_irrefl 1 hw1
@@ -416,9 +414,8 @@ theorem exists_local_mayerZ_sign_change_of_simple_resonance {τ₀ : ℝ} (hτ�
     have hw0 : 0 < (2 * criticalScatteringPt τ₀).re := by simp [criticalScatteringPt]
     have hw1 : (2 * criticalScatteringPt τ₀).re < 1 := by simp [criticalScatteringPt]; norm_num
     have him : 0 < (2 * criticalScatteringPt τ₀).im := by
-      simp only [Complex.mul_im, Complex.ofNat_re, Complex.ofNat_im, criticalScatteringPt_im,
-        zero_mul, add_zero]
-      linarith
+      rw [two_mul_criticalScatteringPt, _root_.RHTower.linePt_im]
+      exact hτ₀
     have hwne1 : 2 * criticalScatteringPt τ₀ ≠ 1 := fun he => by
       rw [he, Complex.one_re] at hw1
       exact lt_irrefl 1 hw1

@@ -1,6 +1,7 @@
 import GaloisForLFunctions.ArithmeticHodgeTheoryOfDegenerations.TheAlternatingWindowCountsTheConductorTwoPoints
 import GaloisForLFunctions.RHTower.PrimeSquareMobiusDensityFracture
 import GaloisForLFunctions.RHTower.XiThetaSquareRateBoundary
+import GaloisForLFunctions.ArithmeticPositiveDuality.TheCriticalLineIsThePositivityThresholdOfTheIntegerSuccessor
 
 /-!
 # The prime window counts the projective points over `𝔽_p`
@@ -26,6 +27,11 @@ positive (`twisted_horizon_form_ge`). This file computes its second-order term e
   `prime_layer_criticalCurve_exact`): `→ (p^{β+1} − 1) β J/K ‖H‖²_{−(β+1)}`; for the tilted spline
   `7 (p − 1) J(p)/K ‖H‖²_{−8}` with `(p − 1) J(p) = (p⁸ − 1) J(1) = J(1) φ(p) #ℙ⁷(𝔽_p)`
   (`jordanCoefficient_prime`).
+
+* **Divisor twists** (`divisor_layer_criticalCurve_exact`): nothing above uses primality; for every
+  `d ≥ 2` the window twisted by `d·1_{d|n} − 1` has second-order term
+  `(7/K) Σ_{e|d, e>1} φ(e) J(e) ‖H‖²_{−8} = 7 J(1)(d⁸ − 1)/K ‖H‖²_{−8}`, the sum of the conductor
+  counts of the divisors of `d` (`sum_divisors_jordanTotient`).
 
 The second-order term of the conductor-`p` window is the first-order count of conductor `p`, for
 every prime: the count law of the degeneration reappears at second order on the twisted directions.
@@ -1530,6 +1536,72 @@ theorem prime_layer_criticalCurve_exact (hh : ContDiff ℝ 2 h) (hA : 0 ≤ A)
     congr 1; funext y; norm_num
   rw [hp8, hint] at hlim
   rw [jordanCoefficient_prime hp]
+  convert hlim using 2
+  ring
+
+
+/-! ### Divisor twists -/
+
+/-- The Jordan totient sums to the power over the divisors: `Σ_{e|d} J_k(e) = d^k`. -/
+theorem sum_divisors_jordanTotient (k : ℝ) {d : ℕ} (hd : d ≠ 0) :
+    ∑ e ∈ d.divisors, ArithmeticDegenerationTheory.jordanTotient k e = (d : ℝ) ^ k := by
+  rw [← ArithmeticPositiveDuality.sum_divisors_jordan k hd]
+  refine sum_congr rfl fun e he => ?_
+  have he0 : e ≠ 0 := Nat.ne_of_gt (Nat.pos_of_mem_divisors he)
+  rw [ArithmeticDegenerationTheory.jordanTotient, ArithmeticPositiveDuality.jordan,
+    ArithmeticFunction.mul_apply, Nat.sum_divisorsAntidiagonal' (fun a b =>
+      ((ArithmeticFunction.moebius : ArithmeticFunction ℤ) : ArithmeticFunction ℝ) a *
+        ArithmeticPositiveDuality.powFun k b)]
+  refine sum_congr rfl fun c hc => ?_
+  rw [ArithmeticPositiveDuality.powFun_apply (Nat.ne_of_gt (Nat.pos_of_mem_divisors hc)),
+    ArithmeticFunction.intCoe_apply]
+
+/-- `φ(e) J(e) = J₈(e) J(1)`: the conductor-`e` Jordan coefficient times the units counts the
+primitive vectors of `(ℤ/e)⁸`. -/
+theorem totient_mul_jordanCoefficient {e : ℕ} (he : 0 < e) :
+    (e.totient : ℝ) * ArithmeticDegenerationTheory.jordanCoefficient e =
+      ArithmeticDegenerationTheory.jordanTotient 8 e * tiltedJordanOne := by
+  have ht : (0 : ℝ) < e.totient := by exact_mod_cast Nat.totient_pos.mpr he
+  unfold ArithmeticDegenerationTheory.jordanCoefficient tiltedJordanOne
+  field_simp
+
+/-- **The divisor window counts the nonzero vectors of `(ℤ/d)⁸`.** For the tilted spline and every
+`d ≥ 2`, the window twisted by `d·1_{d|n} − 1` has, along `c⁸/log N → K`,
+`c⁻¹⟨W x, x⟩/∫g² → (7/K) Σ_{e|d, e>1} φ(e) J(e) · ∫ e^{−8y} H²`: the sum of the conductor
+counts of the divisors of `d`, `Σ_{e|d, e>1} φ(e) J(e) = J(1) (d⁸ − 1)`. For a prime `d = p` this
+is the Ramanujan window `c_p`. -/
+theorem divisor_layer_criticalCurve_exact (hh : ContDiff ℝ 2 h) (hA : 0 ≤ A)
+    (hsupp : ∀ y, y ∉ Set.Icc (-A) 0 → h y = 0) {c : ℕ → ℝ} (hc1 : ∀ N, 1 ≤ c N) {K : ℝ}
+    (hK : 0 < K) (hcrit : Tendsto (fun N : ℕ => c N ^ 8 / Real.log N) atTop (𝓝 K)) {d : ℕ}
+    (hd : 1 < d) :
+    Tendsto (fun N : ℕ => (c N)⁻¹ * (weilQuad (atomicTest N (twistedWeights h (primeTwist d) N)
+        (atomDilate tiltedUnitSpline (c N / N))) / ∫ u, atomDilate tiltedUnitSpline (c N / N) u ^ 2))
+      atTop (𝓝 (7 * (∑ e ∈ d.divisors.erase 1,
+        (e.totient : ℝ) * ArithmeticDegenerationTheory.jordanCoefficient e) / K *
+          ∫ y, Real.exp (-(8 * y)) * halfWeight h y ^ 2)) := by
+  have hC : 0 ≤ tiltedDecayConst := by unfold tiltedDecayConst; positivity
+  have hcrit' : Tendsto (fun N : ℕ => c N ^ ((7 : ℝ) + 1) / Real.log N) atTop (𝓝 K) := by
+    refine hcrit.congr fun N => ?_
+    rw [show (7 : ℝ) + 1 = ((8 : ℕ) : ℝ) by norm_num, Real.rpow_natCast]
+  have hlim := prime_layer_criticalCurve_of_regularBulk contDiff_tiltedUnitSpline
+    tiltedUnitSpline_support integral_tiltedUnitSpline_sq_pos (q := 8) (by norm_num) hC
+    tiltedUnitSpline_decay (β := 7) (by norm_num) tendsto_rpow_seven_mul_completedShellEnergy_tilted
+    hh hA hsupp hc1 hK hcrit' hd
+  have hd8 : (d : ℝ) ^ ((7 : ℝ) + 1) = (d : ℝ) ^ (8 : ℝ) := by norm_num
+  have hint : ∫ y, Real.exp (-(((7 : ℝ) + 1) * y)) * halfWeight h y ^ 2 =
+      ∫ y, Real.exp (-(8 * y)) * halfWeight h y ^ 2 := by
+    congr 1; funext y; norm_num
+  rw [hd8, hint] at hlim
+  have hsum : ∑ e ∈ d.divisors.erase 1,
+      (e.totient : ℝ) * ArithmeticDegenerationTheory.jordanCoefficient e =
+      ((d : ℝ) ^ (8 : ℝ) - 1) * tiltedJordanOne := by
+    rw [sum_congr rfl fun e he => totient_mul_jordanCoefficient
+      (Nat.pos_of_mem_divisors (Finset.mem_of_mem_erase he)), ← sum_mul,
+      Finset.sum_erase_eq_sub (Nat.one_mem_divisors.mpr (by omega)),
+      sum_divisors_jordanTotient 8 (by omega)]
+    congr 1
+    simp [ArithmeticDegenerationTheory.jordanTotient]
+  rw [hsum]
   convert hlim using 2
   ring
 

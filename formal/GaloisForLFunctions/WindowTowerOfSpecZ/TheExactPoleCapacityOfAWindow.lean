@@ -97,7 +97,7 @@ theorem integral_centredSinh_sq (hA : 0 ≤ A) :
       (centredSinh A u ^ 2) u := fun u _ => by
     have h1 : HasDerivAt (fun u => u + A / 2) 1 u := (hasDerivAt_id u).add_const _
     have h2 : HasDerivAt (fun y => Real.sinh (y + A / 2)) (Real.cosh (u + A / 2) * 1) u :=
-      (Real.hasDerivAt_sinh (u + A / 2)).comp u h1
+      h1.sinh
     have h3 : HasDerivAt (fun u => 2 * Real.sinh (u + A / 2) - 2 * u)
         (2 * (Real.cosh (u + A / 2) * 1) - 2 * 1) u :=
       (h2.const_mul 2).fun_sub ((hasDerivAt_id' u).const_mul 2)

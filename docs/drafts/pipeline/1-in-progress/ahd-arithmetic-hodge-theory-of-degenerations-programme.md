@@ -23,7 +23,8 @@ TheHorizonBlockBelowTheGridIsSharp, TheSecondOrderTermOfAHorizonBlock,
 TheAliasingIsTheDilationDerivativeOfTheBulk, TheAliasingConstantOfTheTiltedSpline,
 ThePrimesOfAHorizonWindow, TheBulkDeterminesTheSecondOrderTerm, TheWindowIndex,
 TheCountLawOverEveryFiniteRing, TheTwistedHorizonLayerIsZeroBlind, TheWindowIndexCountsTheRightZeros,
-TheTwistedHorizonLayerIsPositive, TheAlternatingWindowCountsTheConductorTwoPoints.
+TheTwistedHorizonLayerIsPositive, TheAlternatingWindowCountsTheConductorTwoPoints,
+ThePrimeWindowCountsTheProjectivePoints.
 
 ## Status
 - First order = count: `J(m) = J(1) #ℙ⁷(ℤ/m)`; count law over every finite ring (𝔽_q[T] calibration) [L].
@@ -47,13 +48,8 @@ TheTwistedHorizonLayerIsPositive, TheAlternatingWindowCountsTheConductorTwoPoint
 - Conductor-two window `(−1)^n h/√n`: `c⁻¹⟨Wx,x⟩ − (log N/∫φ²)(𝒜(c/2) − 𝒜(c)) → 0`; at the critical
   curve `→ (2^{β+1}−1)βJ/K‖H‖²`, tilted spline `7J(2)/K‖H‖²_{−8}`, `J(2) = 255 J(1)` [L].
 
-## Next: prime conductor p (c_p(n) = p·1_{p|n} − 1)
-Energy: x_m x_n = hw hw (p²1_{p|m}1_{p|n} − p1_{p|m} − p1_{p|n} + 1); rows of the three mixed sums
-are unshifted (swap order by symmetry of G; the p|m, p|n block is a sublattice row on pℤ − n with
-p|n); Poisson at a/p and a gives `2a(a_φ(a/p) − a_φ(a))`; outer sums over pℤ equidistribute
-(ψ = 1_{p|n} − 1/p mean-zero periodic, summation by parts). Quiet region: twisted Riemann sums for
-|τ| ≤ √N; for √N ≤ |τ| ≤ πNe^{−A}/p, Kuzmin–Landau on n and on k = n/p gives partial sums O(N/τ),
-so |D|²/N ≲ 1/τ². Constant: (p^{β+1} − 1)βJ/K = βJ_{β+1}(p)J/K; tilted 7(p−1)J(p)/K.
+- Prime conductor window c_p = p·1_{p|n} − 1: second order `(p^{β+1}−1)βJ/K‖H‖²`, tilted
+  `7(p−1)J(p)/K‖H‖²_{−8}`, `(p−1)J(p) = J(1)φ(p)#ℙ⁷(𝔽_p)`, every prime [L].
 
 ## Open: exact second-order term of twisted windows of composite conductor
 Claim: for `χ` `m`-periodic of mean zero, `c⁻¹⟨Wx,x⟩ − (log N/∫φ²)𝒜^χ_N → 0` with

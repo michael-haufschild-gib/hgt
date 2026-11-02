@@ -64,5 +64,6 @@
 - formal/GaloisForLFunctions/HodgeTheoryWithoutVarieties/README.md
 - formal/GaloisForLFunctions/LatticeSectionTheory/README.md
 - formal/GaloisForLFunctions/ArithmeticHodgeTheoryOfDegenerations/README.md
+- formal/GaloisForLFunctions/ArithmeticDegenerationTheory/README.md
 - formal/GaloisForLFunctions/CohomologyOfWindowsOfSpecZ/README.md
 - formal/GaloisForLFunctions/WindowTowerOfSpecZ/README.md

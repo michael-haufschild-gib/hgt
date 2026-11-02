@@ -173,7 +173,7 @@ private theorem sum_Icc_inv_sq_from_le {d N : ℕ} (hd : 1 ≤ d) :
 
 /-! ## Section 2: Prime Residual, Self-Error, Cross-Error, Pole-Error, and Near-Center Channels -/
 
-private theorem exists_primeResidual_quad_bound :
+theorem exists_primeResidual_quad_bound :
     ∃ C : ℝ, 0 < C ∧ ∀ m : ℕ, 0 < m → ∀ N : ℕ,
       ‖Matrix.toEuclideanLin (fullPrimeMatrix N) (normalizedRamanujanHorizonVector m N) -
         (Real.log N - ramanujanAdjunctionEnergy m) • normalizedRamanujanHorizonVector m N‖ ^ 2 ≤
@@ -203,7 +203,7 @@ private theorem exists_primeResidual_quad_bound :
     (hraw'.trans ((mul_le_mul_of_nonneg_left hcost hB.le).trans_eq (by ring)))
     (Real.log_natCast_nonneg N)
 
-private theorem exists_selfError_quad_bound {φ : ℝ → ℝ}
+theorem exists_selfError_quad_bound {φ : ℝ → ℝ}
     (hφ : ContDiff ℝ 2 φ) (hsupp : ∀ u, u ∉ Set.Icc 0 1 → φ u = 0)
     (hM : 0 < ∫ u, φ u ^ 2) :
     ∃ C : ℝ, 0 < C ∧ ∀ m : ℕ, 0 < m → ∀ N : ℕ,
@@ -529,7 +529,7 @@ private theorem exists_crossError_quadratic_conductor_bound {φ : ℝ → ℝ}
 
 /-- Sub-power `O(m * c^10 * (log N / N)^2)` bound on `fullWeilPoleErrorMatrix` via rank-two
 row factorization `√n * ∑ a(j)/j + (1/√n) * ∑ a(j)`. -/
-private theorem exists_poleError_quadratic_conductor_bound {φ : ℝ → ℝ}
+theorem exists_poleError_quadratic_conductor_bound {φ : ℝ → ℝ}
     (hφ : ContDiff ℝ 2 φ) (hsupp : ∀ u, u ∉ Set.Icc 0 1 → φ u = 0)
     (hM : 0 < ∫ u, φ u ^ 2) :
     ∃ C : ℝ, 0 ≤ C ∧ ∀ m : ℕ, 0 < m → ∀ c : ℝ, 1 ≤ c →
