@@ -2,12 +2,16 @@
 
 - **Stage:** 2-fully-proven
 - **Type:** THEOREM; Lean formalization in progress
-- **Wall:** Π11h: interior-jump count on the prime-free window; Σ7: odd sector.
+- **Wall:** Π11h: interior-jump count on the prime-free window.
 - **Statement:** For every odd real compact smooth test supported in `[-a,a]`,
   `a>0`, with mass `M=∫f²` and autocorrelation `A`,
   `∫_0^(2a) (M−A(t))/t dt ≥ (log 2+7/5)M`.
   Consequently, the interior and exterior Gamma jump count gives
   `W(f,f)≥M/1000` and `h¹_prim≥M/2000` whenever `2a≤log 2`.
+
+Odd Weil positivity through radius `181/500` was already formalized. The new
+content is the scale-invariant logarithmic jump gap and its count derivation
+of positivity throughout the prime-free odd window.
 
 ## Proof
 

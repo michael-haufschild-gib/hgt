@@ -813,4 +813,137 @@ theorem ram_layer_sharp (hφ : ContDiff ℝ 2 φ) (hφsupp : ∀ u, u ∉ Set.Ic
     (hLoEt.const_mul (M⁻¹ * (2 * Real.pi)⁻¹))).add (hDft.const_mul (M⁻¹ * (2 * Real.pi)⁻¹))
   simpa using this
 
+/-! ### The Ramanujan window at the critical curve -/
+
+/-- `Σ_{de = m} μ(d) e^k = J_k(m)`. -/
+theorem sum_antidiagonal_moebius_rpow (k : ℝ) (m : ℕ) :
+    ∑ x ∈ m.divisorsAntidiagonal, (ArithmeticFunction.moebius x.1 : ℝ) * (x.2 : ℝ) ^ k =
+      ArithmeticDegenerationTheory.jordanTotient k m := by
+  rw [ArithmeticDegenerationTheory.jordanTotient,
+    ← Nat.sum_divisorsAntidiagonal' (fun a b => (ArithmeticFunction.moebius a : ℝ) * (b : ℝ) ^ k)]
+
+/-- The aliasing at the overlap `c/e` along the critical curve:
+`(log N/∫φ²) 𝒜_N(c/e) → e^{β+1} βJ/K ∫ e^{−βy} h²`. -/
+theorem tendsto_log_mul_horizonAlias_div (hφ : ContDiff ℝ 2 φ)
+    (hφsupp : ∀ u, u ∉ Set.Icc 0 1 → φ u = 0) (hφ2 : 0 < ∫ u, φ u ^ 2) {Cφ q : ℝ} (hq : 4 < q)
+    (hCφ : 0 ≤ Cφ) (hdecay : ∀ u : ℝ, ‖paperFT (cx φ) u‖ ^ 2 ≤ Cφ * (1 + |u|) ^ (-q))
+    {β J : ℝ} (hβ : 0 ≤ β)
+    (hbulk : Tendsto (fun s => s ^ β * completedShellEnergy φ s) atTop (𝓝 J))
+    (hh : ContDiff ℝ 2 h) (hA : 0 ≤ A) (hsupp : ∀ y, y ∉ Set.Icc (-A) 0 → h y = 0)
+    {c : ℕ → ℝ} (hc1 : ∀ N, 1 ≤ c N) {K : ℝ} (hK : 0 < K)
+    (hcrit : Tendsto (fun N : ℕ => c N ^ (β + 1) / Real.log N) atTop (𝓝 K)) {e : ℕ} (he : 0 < e) :
+    Tendsto (fun N : ℕ => Real.log N / (∫ u, φ u ^ 2) * horizonAlias φ h (c N / e) N) atTop
+      (𝓝 (K⁻¹ * ((e : ℝ) ^ (β + 1) * (J * (β * ∫ y, Real.exp (-(β * y)) * h y ^ 2))))) := by
+  obtain ⟨hcinf, -, hcN⟩ := criticalCurve_facts_rpow hc1 (q := β + 1) (by linarith) hK hcrit
+  rw [show β + 1 + 1 = β + 2 by ring] at hcN
+  have he0 : (0 : ℝ) < e := by exact_mod_cast he
+  have he1 : (1 : ℝ) ≤ e := by exact_mod_cast he
+  set c' : ℕ → ℝ := fun N => max (c N / e) 1 with hc'
+  have hc'1 : ∀ N, 1 ≤ c' N := fun N => le_max_right _ _
+  have hc'le : ∀ N, c' N ≤ c N := fun N =>
+    max_le (div_le_self (by linarith [hc1 N]) he1) (hc1 N)
+  have hc'inf : Tendsto c' atTop atTop :=
+    tendsto_atTop_mono (fun N => le_max_left _ _) (hcinf.atTop_div_const he0)
+  have hc'N : Tendsto (fun N : ℕ => c' N ^ (β + 2) / N) atTop (𝓝 0) := by
+    refine squeeze_zero (fun N => by have := hc'1 N; positivity) (fun N => ?_) hcN
+    exact div_le_div_of_nonneg_right (Real.rpow_le_rpow (by linarith [hc'1 N]) (hc'le N)
+      (by linarith)) (Nat.cast_nonneg _)
+  have h2 := tendsto_rpow_mul_horizonAlias_of_regularBulk hφ hφsupp hφ2 hq hCφ hdecay hbulk
+    hh hA hsupp hc'1 hc'inf hc'N
+  have hev : ∀ᶠ N : ℕ in atTop, c' N = c N / e := by
+    filter_upwards [hcinf.eventually (eventually_ge_atTop (e : ℝ))] with N hN
+    exact max_eq_left (by rw [le_div_iff₀ he0, one_mul]; exact hN)
+  have hinv : Tendsto (fun N : ℕ => Real.log N / c N ^ (β + 1)) atTop (𝓝 K⁻¹) :=
+    (hcrit.inv₀ hK.ne').congr fun N => by rw [inv_div]
+  refine (hinv.mul (h2.const_mul ((e : ℝ) ^ (β + 1)))).congr' ?_
+  filter_upwards [hev] with N hN
+  have hc0 : 0 < c N := by linarith [hc1 N]
+  have hcp : 0 < c N ^ (β + 1) := Real.rpow_pos_of_pos hc0 _
+  have hsplit : (e : ℝ) ^ (β + 1) * (c N / e) ^ (β + 1) = c N ^ (β + 1) := by
+    rw [Real.div_rpow hc0.le he0.le, mul_div_cancel₀ _ (by positivity)]
+  simp only [hN]
+  rw [← hsplit]
+  field_simp
+
+/-- **The Ramanujan window at the critical curve.** For every profile whose bulk energy has the
+rescaled limit `s^β E₁(s) → J`, along `c^{β+1}/log N → K`, the window twisted by the Ramanujan sum
+`c_m`, `m ≥ 2`, has `c⁻¹⟨W x, x⟩/∫g² → J_{β+1}(m) βJ/K ∫ e^{−(β+1)y} H²`: the Jordan totient of
+conductor `m`. -/
+theorem ram_layer_criticalCurve_of_regularBulk (hφ : ContDiff ℝ 2 φ)
+    (hφsupp : ∀ u, u ∉ Set.Icc 0 1 → φ u = 0) (hφ2 : 0 < ∫ u, φ u ^ 2) {Cφ q : ℝ} (hq : 4 < q)
+    (hCφ : 0 ≤ Cφ) (hdecay : ∀ u : ℝ, ‖paperFT (cx φ) u‖ ^ 2 ≤ Cφ * (1 + |u|) ^ (-q))
+    {β J : ℝ} (hβ : 0 ≤ β)
+    (hbulk : Tendsto (fun s => s ^ β * completedShellEnergy φ s) atTop (𝓝 J))
+    (hh : ContDiff ℝ 2 h) (hA : 0 ≤ A) (hsupp : ∀ y, y ∉ Set.Icc (-A) 0 → h y = 0)
+    {c : ℕ → ℝ} (hc1 : ∀ N, 1 ≤ c N) {K : ℝ} (hK : 0 < K)
+    (hcrit : Tendsto (fun N : ℕ => c N ^ (β + 1) / Real.log N) atTop (𝓝 K)) {m : ℕ} (hm : 1 < m) :
+    Tendsto (fun N : ℕ => (c N)⁻¹ * (weilQuad (atomicTest N (twistedWeights h (ramTwist m) N)
+        (atomDilate φ (c N / N))) / ∫ u, atomDilate φ (c N / N) u ^ 2)) atTop
+      (𝓝 (ArithmeticDegenerationTheory.jordanTotient (β + 1) m * β * J / K *
+        ∫ y, Real.exp (-((β + 1) * y)) * halfWeight h y ^ 2)) := by
+  obtain ⟨hcinf, hclog, -⟩ := criticalCurve_facts_rpow hc1 (q := β + 1) (by linarith) hK hcrit
+  have hsharp := ram_layer_sharp hφ hφsupp hφ2 hq hCφ hdecay hh hA hsupp hc1 hcinf hclog hm
+  set M := ∫ u, φ u ^ 2 with hM
+  set I := ∫ y, Real.exp (-(β * y)) * h y ^ 2 with hI
+  have hterm : Tendsto (fun N : ℕ => Real.log N / M * ramAlias φ h m (c N) N) atTop
+      (𝓝 (∑ x ∈ m.divisorsAntidiagonal, (ArithmeticFunction.moebius x.1 : ℝ) *
+        (K⁻¹ * ((x.2 : ℝ) ^ (β + 1) * (J * (β * I)))))) := by
+    have hsum := tendsto_finset_sum m.divisorsAntidiagonal fun x hx =>
+      (tendsto_log_mul_horizonAlias_div hφ hφsupp hφ2 hq hCφ hdecay hβ hbulk hh hA hsupp hc1 hK
+        hcrit (Nat.pos_of_mem_divisors (Nat.snd_mem_divisors_of_mem_antidiagonal hx))).const_mul
+          (ArithmeticFunction.moebius x.1 : ℝ)
+    refine hsum.congr fun N => ?_
+    unfold ramAlias
+    rw [Finset.mul_sum]
+    exact sum_congr rfl fun x _ => by ring
+  have := hsharp.add hterm
+  rw [zero_add] at this
+  have hH : ∫ y, Real.exp (-((β + 1) * y)) * halfWeight h y ^ 2 = I := by
+    rw [hI]; congr 1; funext y
+    rw [halfWeight, mul_pow, ← Real.exp_nat_mul,
+      show Real.exp (-((β + 1) * y)) * (Real.exp ((2 : ℕ) * (y / 2)) * h y ^ 2) =
+        (Real.exp (-((β + 1) * y)) * Real.exp ((2 : ℕ) * (y / 2))) * h y ^ 2 by ring,
+      ← Real.exp_add]
+    congr 2; push_cast; ring
+  rw [hH]
+  have hval : ∑ x ∈ m.divisorsAntidiagonal, (ArithmeticFunction.moebius x.1 : ℝ) *
+      (K⁻¹ * ((x.2 : ℝ) ^ (β + 1) * (J * (β * I)))) =
+      ArithmeticDegenerationTheory.jordanTotient (β + 1) m * β * J / K * I := by
+    rw [← sum_antidiagonal_moebius_rpow, Finset.sum_mul, Finset.sum_mul, Finset.sum_div,
+      Finset.sum_mul]
+    exact sum_congr rfl fun x _ => by field_simp
+  rw [hval] at this
+  refine this.congr fun N => ?_
+  ring
+
+/-- **The Ramanujan window counts the conductor.** For the tilted spline and every `m ≥ 2`, along
+`c⁸/log N → K`, the window twisted by `c_m` has
+`c⁻¹⟨W x, x⟩/∫g² → (7 φ(m) J(m)/K) ∫ e^{−8y} H²`, with `φ(m) J(m) = J(1) J₈(m)`: the
+second-order term of the conductor-`m` window is the first-order count of conductor `m`,
+`J(1) φ(m) #ℙ⁷(ℤ/m)`. -/
+theorem ram_layer_criticalCurve_exact (hh : ContDiff ℝ 2 h) (hA : 0 ≤ A)
+    (hsupp : ∀ y, y ∉ Set.Icc (-A) 0 → h y = 0) {c : ℕ → ℝ} (hc1 : ∀ N, 1 ≤ c N) {K : ℝ}
+    (hK : 0 < K) (hcrit : Tendsto (fun N : ℕ => c N ^ 8 / Real.log N) atTop (𝓝 K)) {m : ℕ}
+    (hm : 1 < m) :
+    Tendsto (fun N : ℕ => (c N)⁻¹ * (weilQuad (atomicTest N (twistedWeights h (ramTwist m) N)
+        (atomDilate tiltedUnitSpline (c N / N))) / ∫ u, atomDilate tiltedUnitSpline (c N / N) u ^ 2))
+      atTop (𝓝 (7 * ((m.totient : ℝ) * ArithmeticDegenerationTheory.jordanCoefficient m) / K *
+        ∫ y, Real.exp (-(8 * y)) * halfWeight h y ^ 2)) := by
+  have hC : 0 ≤ tiltedDecayConst := by unfold tiltedDecayConst; positivity
+  have hcrit' : Tendsto (fun N : ℕ => c N ^ ((7 : ℝ) + 1) / Real.log N) atTop (𝓝 K) := by
+    refine hcrit.congr fun N => ?_
+    rw [show (7 : ℝ) + 1 = ((8 : ℕ) : ℝ) by norm_num, Real.rpow_natCast]
+  have hlim := ram_layer_criticalCurve_of_regularBulk contDiff_tiltedUnitSpline
+    tiltedUnitSpline_support integral_tiltedUnitSpline_sq_pos (q := 8) (by norm_num) hC
+    tiltedUnitSpline_decay (β := 7) (by norm_num) tendsto_rpow_seven_mul_completedShellEnergy_tilted
+    hh hA hsupp hc1 hK hcrit' hm
+  have hint : ∫ y, Real.exp (-(((7 : ℝ) + 1) * y)) * halfWeight h y ^ 2 =
+      ∫ y, Real.exp (-(8 * y)) * halfWeight h y ^ 2 := by
+    congr 1; funext y; norm_num
+  have h8 : ((7 : ℝ) + 1) = 8 := by norm_num
+  rw [hint, h8] at hlim
+  rw [totient_mul_jordanCoefficient (by omega : 0 < m)]
+  convert hlim using 2
+  ring
+
 end GaloisForLFunctions.ArithmeticHodgeTheoryOfDegenerations

@@ -1,6 +1,6 @@
 # Exact height law and cusp escape of normalized resonant states
 
-- **Stage:** 0-backlog
+- **Stage:** 1-in-progress
 - **Type:** CONJECTURE
 - **Parent:** [arithmetic measure rigidity](../1-in-progress/resonant-state-arithmetic-measure-rigidity.md).
 

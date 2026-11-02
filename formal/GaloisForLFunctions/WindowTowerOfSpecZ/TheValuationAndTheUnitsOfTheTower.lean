@@ -44,7 +44,7 @@ theorem mul_vanishesBelow {a b : ℕ} (ha : 1 ≤ a) (hb : 1 ≤ b) {f g : Arith
     by_cases h2 : x.2 < b
     · rw [hg _ h2, mul_zero]
     exfalso
-    push_neg at h1 h2
+    push Not at h1 h2
     have hge : a * b ≤ x.1 * x.2 := Nat.mul_le_mul h1 h2
     rcases h1.lt_or_eq with h1' | h1'
     · have : (a + 1) * b ≤ x.1 * x.2 := Nat.mul_le_mul h1' h2
@@ -59,6 +59,7 @@ theorem mul_vanishesBelow {a b : ℕ} (ha : 1 ≤ a) (hb : 1 ≤ b) {f g : Arith
     refine hterm k x hx (fun h => ?_) hk.le
     rw [h] at hx
     obtain ⟨hxk, _⟩ := Nat.mem_divisorsAntidiagonal.mp hx
+    simp only at hxk
     omega
   · rw [ArithmeticFunction.mul_apply, Finset.sum_eq_single (a, b)]
     · exact fun x hx hxab => hterm _ x hx hxab le_rfl
@@ -184,7 +185,8 @@ theorem isUnit_windowRep_iff {A : ℝ} (hA : 0 ≤ A) (f : ArithmeticFunction �
           (-y) ^ i) by ring, hc, one_mul, mul_neg_geom_sum]
     have hρ : windowRep A f * windowRep A g = 1 := by
       have h := windowRep_eq_zero_of_mem hpow
-      rw [← map_mul, hfg, map_sub, map_one, h, sub_zero]
+      rw [← map_mul, hfg, map_sub, map_one, h]
+      exact sub_zero _
     have hρ' : windowRep A g * windowRep A f = 1 := by
       rw [← map_mul, mul_comm, map_mul, hρ]
     exact ⟨⟨windowRep A f, windowRep A g, hρ, hρ'⟩, rfl⟩

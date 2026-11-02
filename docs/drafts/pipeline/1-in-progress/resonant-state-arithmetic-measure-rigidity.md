@@ -55,7 +55,11 @@ For `Y≥2`, the exact normalized mass is `2^(-2 Re u)−2^(2 Re u)`.
 The three-return decomposition and global integrability are also checked.
 [Statement, proof and audit](../3-formalized/resonant-uniform-cutoff-hecke-gap.md).
 
-**Next candidate.** Exclude source cancellation by arbitrary finite complex superpositions of cutoffs at least two. The cusp model turns Hecke action into a unitary dilation plus its inverse; the corpus already supplies both dilation and resolvent estimates. The missing bridge is the actual packet residual norm. [Precise conjecture](resonant-cutoff-packet-gap.md).
+**Finite cutoff packets: formalized.** Every finite complex packet `F=Σ c_j Λ_aut^(Y_j) E_u`, with `Y_j≥2`, satisfies
+`||(T₂−λ₂)F||² ≥ (2^(Re u)+2^(-Re u)−2)² ||F||²`.
+The coefficient is positive at every negative rate, including the critical rate. An exact residual isometry retains all cross terms before applying the unitary-dilation factorization. [Proof and audit](../3-formalized/resonant-cutoff-packet-gap.md).
+
+**Next candidate.** Classify the actual normalized height marginal and its escape as `Y→∞`. Fourier cancellation suggests a mixture of the cutoff-one marginal with an explicit power-law band, giving a frequency-uniform rescaled height limit. [Precise measure identity and error bound](resonant-cusp-height-law.md).
 
 ## Open dependency
 
