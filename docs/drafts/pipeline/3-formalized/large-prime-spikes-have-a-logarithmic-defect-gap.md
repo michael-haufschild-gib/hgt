@@ -1,7 +1,7 @@
 # Large prime spikes have a logarithmic defect gap
 
-- **Stage:** 2-fully-proven; Lean check pending.
-- **Type:** THEOREM (paper).
+- **Stage:** 3-formalized.
+- **Type:** THEOREM.
 - **Wall:** Σ1e.
 - **Statement:** For every finite family of primes `p>sqrt N`, `N≥2`, the pole-centered incidence packet has prime defect at least `(log N)/2` times its harmonic squared norm.
 
@@ -33,7 +33,8 @@ Thus pole centering reduces the norm without changing the diagonal defect.
 
 `CompletedArithmeticForms/LargePrimeIncidencePacketsHaveALogarithmicDefectGap.lean`:
 `centered_largePrime_incidence_mass_eq`, `largePrime_incidence_defect_gap`.
-Source check and transitive axiom audits are pending.
+Direct source check passed. Both transitive audits contain only
+`propext`, `Classical.choice`, `Quot.sound`.
 
 The general diagonal is already checked in
 `PrimeIncidenceDefectsHaveAnExactHarmonicDiagonal.lean`:

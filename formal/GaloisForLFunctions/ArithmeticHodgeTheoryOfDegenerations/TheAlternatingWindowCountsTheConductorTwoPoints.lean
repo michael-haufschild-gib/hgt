@@ -276,8 +276,8 @@ theorem abs_altRow_sub_le {k G : ℝ → ℝ} {Bk Lk BG LG : ℝ} (hk : ∀ y, |
 theorem abs_altEnergy_sub_le (hφ : ContDiff ℝ 2 φ) (hφsupp : ∀ u, u ∉ Set.Icc 0 1 → φ u = 0)
     (hh : ContDiff ℝ 2 h) (hsupp : ∀ y, y ∉ Set.Icc (-A) 0 → h y = 0) :
     ∃ K : ℝ, 0 ≤ K ∧ ∀ c : ℝ, 1 ≤ c → ∀ N : ℕ, 4 * c ≤ N →
-      |∫ τ : ℝ, ‖paperFT (cx φ) (((c / N : ℝ) : ℂ) * τ)‖ ^ 2 *
-          (‖dirichletPoly N (twistedWeights h altSign N) τ‖ ^ 2 / N) -
+      |(∫ τ : ℝ, ‖paperFT (cx φ) (((c / N : ℝ) : ℂ) * τ)‖ ^ 2 *
+          (‖dirichletPoly N (twistedWeights h altSign N) τ‖ ^ 2 / N)) -
         2 * Real.pi * altAlias φ h c N| ≤ K * c / N := by
   obtain ⟨Bk, Lk, hk, hkL⟩ := exists_bound_lipschitz (contDiff_taperedProfile hh)
     (A := A) fun y hy => taperedProfile_eq_zero hsupp hy
@@ -357,7 +357,7 @@ theorem abs_altEnergy_sub_le (hφ : ContDiff ℝ 2 φ) (hφsupp : ∀ u, u ∉ S
         (2 * (c * n / N) * (aliasDensity φ (c * n / N / 2) - aliasDensity φ (c * n / N)))) =
       2 * Real.pi * altAlias φ h c N := by
     unfold altAlias horizonAlias
-    rw [mul_sum, ← mul_sub, ← mul_sub, ← sum_sub_distrib, mul_sum, mul_sum]
+    rw [mul_sum, ← mul_sub, ← sum_sub_distrib, mul_sum, mul_sum]
     refine sum_congr rfl fun n hn => ?_
     have hn0 : (0 : ℝ) < n := by exact_mod_cast (Finset.mem_Icc.mp hn).1
     have hx2 : twistedWeights h altSign N n * (altSign n * horizonWeights h N n) =
@@ -365,7 +365,12 @@ theorem abs_altEnergy_sub_le (hφ : ContDiff ℝ 2 φ) (hφsupp : ∀ u, u ∉ S
       rw [twistedWeights, show horizonWeights h N n * altSign n * (altSign n *
         horizonWeights h N n) = altSign n ^ 2 * (horizonWeights h N n * horizonWeights h N n) by
         ring, altSign_sq, one_mul, horizonWeights, div_mul_div_comm, Real.mul_self_sqrt hn0.le, sq]
-    rw [show c / 2 * n / N = c * n / N / 2 by ring, ← mul_assoc, hx2]
+    rw [show c / 2 * n / N = c * n / N / 2 by ring]
+    rw [show 2 * Real.pi / c * (twistedWeights h altSign N n * (altSign n * horizonWeights h N n *
+      (2 * (c * n / N) * (aliasDensity φ (c * n / N / 2) - aliasDensity φ (c * n / N))))) =
+      2 * Real.pi / c * (twistedWeights h altSign N n * (altSign n * horizonWeights h N n)) *
+      (2 * (c * n / N) * (aliasDensity φ (c * n / N / 2) - aliasDensity φ (c * n / N))) by ring,
+      hx2]
     field_simp
   rw [← hmain, ← mul_sub, ← sum_sub_distrib, abs_mul,
     abs_of_pos (by positivity : 0 < 2 * Real.pi / c)]

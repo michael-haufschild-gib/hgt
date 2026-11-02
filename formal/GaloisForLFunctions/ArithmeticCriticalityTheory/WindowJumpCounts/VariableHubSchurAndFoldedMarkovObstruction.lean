@@ -72,7 +72,6 @@ theorem integral_variableHub_sq_eq {X : Set ℝ} (hX : MeasurableSet X)
         (∫ x in X, M x * (w x * p x / (w x + p x))) * uBar ^ 2 := by
   rw [← integral_mul_const, ← integral_add i_sq (i_schur.mul_const (uBar ^ 2))]
   refine setIntegral_congr_fun hX fun x hx => ?_
-  dsimp only
   rw [variableHub_pointwise_sq_eq (hwp x hx)]
   ring
 
@@ -107,12 +106,12 @@ theorem harmonicHub_cauchy_schwarz {Z : Set ℝ} (hZ : MeasurableSet Z)
   refine sq_le_mul_of_quad_nonneg hA fun t => ?_
   have i1 : IntegrableOn (fun z => (M z / K z) * t ^ 2) Z := i_inv.mul_const (t ^ 2)
   have i2 : IntegrableOn (fun z => 2 * (M z * (ux - u z)) * t) Z := (i_lin.const_mul 2).mul_const t
+  have i12 : IntegrableOn (fun z => (M z / K z) * t ^ 2 + 2 * (M z * (ux - u z)) * t) Z := i1.add i2
   have hsum : (∫ z in Z, M z / K z) * t ^ 2 + 2 * (∫ z in Z, M z * (ux - u z)) * t +
       (∫ z in Z, K z * M z * (ux - u z) ^ 2) =
       ∫ z in Z, ((M z / K z) * t ^ 2 + 2 * (M z * (ux - u z)) * t + K z * M z * (ux - u z) ^ 2) := by
     rw [← integral_mul_const, ← integral_const_mul, ← integral_mul_const,
-      ← integral_add i1 i2, ← integral_add (i1.add i2) i_quad]
-    rfl
+      ← integral_add i1 i2, ← integral_add i12 i_quad]
   rw [hsum]
   refine setIntegral_nonneg hZ fun z hz => ?_
   have hKz : K z ≠ 0 := (hK z hz).ne'
@@ -146,7 +145,6 @@ theorem harmonicHub_jump_ge_hubMean_sq {Z : Set ℝ} (hZ : MeasurableSet Z)
       funext fun z => by ring
     rw [hpt, integral_sub (i_M.mul_const ux) i_Mu, integral_mul_const]
     field_simp [hmZ.ne']
-    ring
   rw [hlin_eq] at hcs
   rw [div_mul_eq_mul_div, div_le_iff₀ hinv_pos]
   linarith [hcs]
@@ -187,12 +185,8 @@ theorem twoVertexStick_sq_eq {p₁ p₂ w₁ w₂ g₁₂ : ℝ}
           (u₂ - (stickDiag1 p₁ w₁ g₁₂ * w₂ + g₁₂ * w₁) * uBar /
             stickDet p₁ p₂ w₁ w₂ g₁₂) ^ 2 +
         (stickSchurNum p₁ p₂ w₁ w₂ g₁₂ / stickDet p₁ p₂ w₁ w₂ g₁₂) * uBar ^ 2 := by
-  set d₁ := stickDiag1 p₁ w₁ g₁₂
-  set Δ := stickDet p₁ p₂ w₁ w₂ g₁₂
-  have hd₁' : d₁ ≠ 0 := hd₁
-  have hΔ' : Δ ≠ 0 := hΔ
-  field_simp [hd₁', hΔ']
-  unfold d₁ Δ stickDiag1 stickDet stickDiag2 stickSchurNum
+  field_simp [hd₁, hΔ]
+  unfold stickDet stickDiag1 stickDiag2 stickSchurNum
   ring
 
 /-- Positivity of the two elimination pivots bounds the `T₂`-coupled pair below by its Schur
@@ -229,11 +223,9 @@ theorem cosh_half_add_cosh_half_shift (x s : ℝ) :
       2 * Real.cosh (x / 2) * Real.cosh ((x + s) / 2) := by
   rw [Real.cosh_eq, Real.cosh_eq, Real.cosh_eq, Real.cosh_eq]
   have h1 : (s + 2 * x) / 2 = s / 2 + x / 2 + x / 2 := by ring
-  have h2 : -((s + 2 * x) / 2) = -(s / 2) + -(x / 2) + -(x / 2) := by ring
   have h3 : (x + s) / 2 = x / 2 + s / 2 := by ring
-  have h4 : -((x + s) / 2) = -(x / 2) + -(s / 2) := by ring
-  rw [h1, h2, h3, h4]
-  simp only [Real.exp_add]
+  rw [h1, h3]
+  simp only [neg_add, Real.exp_add]
   have hex : Real.exp (x / 2) * Real.exp (-(x / 2)) = 1 := by
     rw [← Real.exp_add]; simp
   linear_combination -(Real.exp (s / 2) + Real.exp (-(s / 2))) * hex / 2
@@ -297,20 +289,21 @@ theorem tendsto_foldedCalibratedConductance_corner {a : ℝ} (ha : 0 < a) (c₀ 
         c₀ * Real.cosh (ε / 2) * Real.cosh ((a - ε) / 2))
       (𝓝 0) (𝓝 (2 * archLevyDensity a - c₀ * Real.cosh (a / 2))) := by
     have hsub : Tendsto (fun ε : ℝ => a - 2 * ε) (𝓝 0) (𝓝 a) := by
-      simpa using (tendsto_const_nhds (x := a)).sub (tendsto_id.const_mul 2)
+      simpa using (show ContinuousAt (fun ε : ℝ => a - 2 * ε) 0 by fun_prop).tendsto
     have h1 : Tendsto (fun ε : ℝ => archLevyDensity (a - 2 * ε)) (𝓝 0) (𝓝 (archLevyDensity a)) :=
       (continuousAt_archLevyDensity ha).tendsto.comp hsub
     have h2 : ContinuousAt (fun ε : ℝ => c₀ * Real.cosh (ε / 2) * Real.cosh ((a - ε) / 2)) 0 := by
       fun_prop
-    have hlim := (h1.add tendsto_const_nhds).sub h2.tendsto
+    have hlim := (h1.add (tendsto_const_nhds (x := archLevyDensity a))).sub h2.tendsto
     simpa [Real.cosh_zero, show 2 * archLevyDensity a = archLevyDensity a + archLevyDensity a by ring]
       using hlim
   refine (hbase.mono_left nhdsWithin_le_nhds).congr' ?_
   filter_upwards [self_mem_nhdsWithin,
-    nhdsWithin_le_nhds (Iio_mem_nhds (by linarith : (0 : ℝ) < a / 2))] with ε hε0 hεa
+    nhdsWithin_le_nhds (Iio_mem_nhds (by linarith : (0 : ℝ) < a / 2))] with ε _ hεa
   unfold foldedCalibratedConductance
   have habs : |ε - (a - ε)| = a - 2 * ε := by
-    rw [show ε - (a - ε) = -(a - 2 * ε) by ring, abs_neg, abs_of_pos (by linarith)]
+    rw [show ε - (a - ε) = -(a - 2 * ε) by ring, abs_neg,
+      abs_of_pos (by linarith [mem_Iio.mp hεa])]
   have hadd : ε + (a - ε) = a := by ring
   rw [habs, hadd]
 
@@ -491,7 +484,7 @@ theorem phiDoob_halfLine_coshMass_split {a : ℝ} (ha : 0 ≤ a) :
     have hm : Integrable (fun x : ℝ => riemannKernelReal x * Real.exp ((-(1 / 2) : ℝ) * x)) :=
       integrable_riemannKernelReal_mul_exp (-(1 / 2))
     refine ((hp.add hm).div_const 2).congr (Eventually.of_forall fun x => ?_)
-    dsimp only
+    simp only [Pi.add_apply]
     rw [Real.cosh_eq, show (1 / 2 : ℝ) * x = x / 2 by ring,
       show (-(1 / 2) : ℝ) * x = -(x / 2) by ring]
     ring

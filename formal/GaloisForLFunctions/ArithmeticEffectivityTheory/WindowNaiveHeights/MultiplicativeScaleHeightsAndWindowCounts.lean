@@ -64,7 +64,7 @@ open GaloisForLFunctions.LatticeSectionTheory
 open GaloisForLFunctions.LatticeSectionTheory.WindowJumpCounts
 open GaloisForLFunctions.SquareRootThreshold (TemperedConfig temperedConfig_zetaZeroConfig
   lagStructure continuous_lagStructure exists_radius_of_hasCompactSupport)
-open _root_.RHTower Zeta23
+open _root_.RHTower _root_.RHTower.CHMDPolar Zeta23
 
 /-! ### 1. Pullback scaling data, `ℚ_{>0}^×`, and two-prime scale subrings -/
 
@@ -117,19 +117,19 @@ theorem intRosatiForm_scaleInvolution {G E : Type*} [AddCommGroup G] [AddCommGro
     [Module ℝ E] (D : ScalingDatum G E) (x : E) (ξ : G →₀ ℤ) :
     intRosatiForm D x (scaleInvolution ξ) = intRosatiForm D x ξ := by
   classical
-  have emb : G ↪ G := ⟨Neg.neg, neg_injective⟩
-  have hmap : scaleInvolution ξ = ξ.embDomain emb := by
-    unfold scaleInvolution
-    exact Finsupp.embDomain_eq_mapDomain emb ξ |>.symm
+  let emb : G ↪ G := ⟨Neg.neg, neg_injective⟩
+  have hmap : scaleInvolution ξ = ξ.embDomain emb :=
+    (Finsupp.embDomain_eq_mapDomain emb ξ).symm
   rw [hmap, intRosatiForm, Finsupp.support_embDomain]
   rw [Finset.sum_map]
   refine Finset.sum_congr rfl fun g _ => ?_
   rw [Finset.sum_map]
   refine Finset.sum_congr rfl fun h _ => ?_
-  simp only [emb, Function.Embedding.coeFn_mk, Finsupp.embDomain_apply_self]
-  have hsub : -g - -h = -(g - h) := by abel
+  simp only [Finsupp.embDomain_apply_self]
+  have hsub : emb g - emb h = -(g - h) := by
+    change -g - -h = -(g - h)
+    abel
   rw [hsub, D.orbitCorr_neg]
-  rfl
 
 /-- Positive rational numbers `ℚ_{>0}^×` written additively as the group of rational Hecke scales. -/
 @[ext]
@@ -138,10 +138,14 @@ structure PosRatScale where
   pos : 0 < val
   deriving DecidableEq
 
+instance : Zero PosRatScale := ⟨⟨1, one_pos⟩⟩
+instance : Add PosRatScale := ⟨fun a b => ⟨a.val * b.val, mul_pos a.pos b.pos⟩⟩
+instance : Neg PosRatScale := ⟨fun a => ⟨a.val⁻¹, inv_pos.mpr a.pos⟩⟩
+
 instance : AddCommGroup PosRatScale where
-  zero := ⟨1, one_pos⟩
-  add a b := ⟨a.val * b.val, mul_pos a.pos b.pos⟩
-  neg a := ⟨a.val⁻¹, inv_pos.mpr a.pos⟩
+  zero := 0
+  add := (· + ·)
+  neg := Neg.neg
   add_assoc a b c := by ext; exact mul_assoc a.val b.val c.val
   zero_add a := by ext; exact one_mul a.val
   add_zero a := by ext; exact mul_one a.val
@@ -180,7 +184,7 @@ theorem denseRange_posRatLog : DenseRange posRatLog := by
   obtain ⟨r, hr1, hr2⟩ := exists_rat_btwn (Real.exp_lt_exp.mpr (lt_add_of_pos_right v hε))
   have hr0 : (0 : ℝ) < r := (Real.exp_pos v).trans hr1
   refine ⟨⟨r, by exact_mod_cast hr0⟩, ?_⟩
-  rw [Metric.mem_ball, Real.dist_eq]
+  rw [dist_comm, Real.dist_eq]
   change |Real.log (r : ℝ) - v| < ε
   have h1 : v < Real.log (r : ℝ) := (Real.lt_log_iff_exp_lt hr0).mpr hr1
   have h2 : Real.log (r : ℝ) < v + ε := (Real.log_lt_iff_lt_exp hr0).mpr hr2
@@ -191,7 +195,7 @@ theorem denseRange_posRatLog : DenseRange posRatLog := by
 def twoPrimeLog (p q : ℕ) : (ℤ × ℤ) →+ ℝ where
   toFun mn := (mn.1 : ℝ) * Real.log p + (mn.2 : ℝ) * Real.log q
   map_zero' := by simp
-  map_add' a b := by dsimp only; push_cast; ring
+  map_add' a b := by push_cast; ring
 
 /-- For any two distinct primes `p ≠ q`, `{m log p + n log q : m, n ∈ ℤ}` is dense in `ℝ`. -/
 theorem denseRange_twoPrimeLog {p q : ℕ} (hp : p.Prime) (hq : q.Prime) (hpq : p ≠ q) :
@@ -199,11 +203,13 @@ theorem denseRange_twoPrimeLog {p q : ℕ} (hp : p.Prime) (hq : q.Prime) (hpq : 
   have hclosure : (AddSubgroup.closure {Real.log q, Real.log p} : Set ℝ) ⊆
       Set.range (twoPrimeLog p q) := by
     change (AddSubgroup.closure {Real.log q, Real.log p} : Set ℝ) ⊆ ((twoPrimeLog p q).range : Set ℝ)
-    exact AddSubgroup.closure_le.mpr (Set.insert_subset_iff.mpr
+    rw [SetLike.coe_subset_coe, AddSubgroup.closure_le]
+    exact Set.insert_subset_iff.mpr
       ⟨⟨(0, 1), by simp [twoPrimeLog]⟩,
-        Set.singleton_subset_iff.mpr ⟨(1, 0), by simp [twoPrimeLog]⟩⟩)
+        Set.singleton_subset_iff.mpr ⟨(1, 0), by simp [twoPrimeLog]⟩⟩
   have hdense : Dense (AddSubgroup.closure {Real.log q, Real.log p} : Set ℝ) :=
-    dense_addSubgroupClosure_pair_iff.mpr (_root_.RHTower.irrational_log_ratio hp hq hpq)
+    dense_addSubgroupClosure_pair_iff.mpr
+      (GaloisForLFunctions.RHTower.irrational_log_ratio hp hq hpq)
   exact hdense.mono hclosure
 
 /-- The scaling datum of `ℤ` over the multiplicative group of positive rationals `ℚ_{>0}^×`. -/
@@ -247,7 +253,7 @@ theorem exists_natCount_iff_nonneg {M : Type*} [AddCommGroup M] {q : M → ℝ}
   constructor
   · rintro ⟨c, B, hB⟩
     exact (exists_naiveHeight_iff_nonneg hq).mp
-      ⟨fun x => (c x : ℝ), 0, B, fun x => by positivity, hB⟩
+      ⟨fun x => (c x : ℝ), 0, B, fun x => by simpa using Nat.cast_nonneg (c x), hB⟩
   · intro hnn
     exact ⟨fun x => ⌊q x⌋₊, 1, fun x => abs_natFloor_sub_le_one_of_nonneg (hnn x)⟩
 
@@ -396,9 +402,10 @@ count height at bounded distance from `posRatRosatiForm x` on `ℤ[ℚ_{>0}^×]`
 theorem riemannHypothesis_iff_forall_posRatNatCount :
     RiemannHypothesis ↔ ∀ x : ScalingCycle,
       ∃ c : (PosRatScale →₀ ℤ) → ℕ, ∃ B : ℝ, ∀ ξ, |(c ξ : ℝ) - posRatRosatiForm x ξ| ≤ B := by
-  rw [← zetaScalingDatum_hodgeIndex_iff, zetaScalingDatum.hodgeIndex_tfae.out 0 1]
+  rw [← zetaScalingDatum_hodgeIndex_iff, (ScalingDatum.hodgeIndex_tfae zetaScalingDatum).out 0 1]
   refine forall_congr' fun x => ?_
   rw [← zetaOrbitHodgeIndex_pullback_iff_of_denseRange denseRange_posRatLog x,
+    ← show zetaPosRatScalingDatum = pullbackScalingDatum zetaScalingDatum posRatLog from rfl,
     orbitHodgeIndex_iff_int, IntOrbitHodgeIndex,
     ← exists_natCount_iff_nonneg (intRosatiForm_nsmul zetaPosRatScalingDatum x)]
   rfl
@@ -433,6 +440,7 @@ theorem riemannHypothesis_iff_singleOrbit_posRatNatCount (x : ScalingCycle)
     simp only [ScalingDatum.OrbitHodgeIndex, configScalingDatum_zeta_orbitCorr]
   rw [← htfae, hcfg_eq,
     ← zetaOrbitHodgeIndex_pullback_iff_of_denseRange denseRange_posRatLog x,
+    ← show zetaPosRatScalingDatum = pullbackScalingDatum zetaScalingDatum posRatLog from rfl,
     orbitHodgeIndex_iff_int, IntOrbitHodgeIndex,
     ← exists_natCount_iff_nonneg (intRosatiForm_nsmul zetaPosRatScalingDatum x)]
   rfl
@@ -460,6 +468,7 @@ theorem riemannHypothesis_iff_singleOrbit_twoPrimeNatCount {p q : ℕ} (hp : p.P
     simp only [ScalingDatum.OrbitHodgeIndex, configScalingDatum_zeta_orbitCorr]
   rw [← htfae, hcfg_eq,
     ← zetaOrbitHodgeIndex_pullback_iff_of_denseRange (denseRange_twoPrimeLog hp hq hpq) x,
+    ← show zetaTwoPrimeScalingDatum p q = pullbackScalingDatum zetaScalingDatum (twoPrimeLog p q) from rfl,
     orbitHodgeIndex_iff_int, IntOrbitHodgeIndex,
     ← exists_natCount_iff_nonneg (intRosatiForm_nsmul (zetaTwoPrimeScalingDatum p q) x)]
   rfl
@@ -485,7 +494,7 @@ theorem riemannHypothesis_iff_forall_windowCountPlusNonneg :
     exact eq_natFloor_add_sq_of_nonneg hW
   · intro hwin x
     rw [scalingSurface_defect_self]
-    set f : ℝ → ℝ := x.2.2
+    set f : ℝ → ℝ := x.2.2.1
     have hf : f ∈ realTests := x.2.2.2
     obtain ⟨B, hB⟩ := hf.2.isBounded.subset_closedBall (0 : ℝ)
     set a := max B 0 + 1
@@ -507,7 +516,8 @@ theorem riemannHypothesis_iff_forall_windowCountPlusNonneg :
 theorem goldenDatum_no_natCount :
     ¬ ∃ c : ℤ × ℤ → ℕ, ∃ B : ℝ, ∀ v, |(c v : ℝ) - intEndDeg goldenDatum v| ≤ B := by
   rintro ⟨c, B, hB⟩
-  exact goldenDatum_no_naiveHeight ⟨fun v => (c v : ℝ), 0, B, fun _ => by positivity, hB⟩
+  exact goldenDatum_no_naiveHeight
+    ⟨fun v => (c v : ℝ), 0, B, fun v => by simpa using Nat.cast_nonneg (c v), hB⟩
 
 /-- On the complex-quartet fake (`q = 16`, roots `±8i, ±2i`), every kernel count `deg P(F)` is
 nonnegative, yet no `ℕ`-valued count height exists at bounded distance from `intRosatiDeg`. -/
@@ -517,7 +527,7 @@ theorem complexFake_no_natCount :
   obtain ⟨hdet, -, hno⟩ := complexFake_kernelCounts_nonneg_no_naiveHeight
   refine ⟨hdet, ?_⟩
   rintro ⟨c, B, hB⟩
-  exact hno ⟨fun P => (c P : ℝ), 0, B, fun _ => by positivity, hB⟩
+  exact hno ⟨fun P => (c P : ℝ), 0, B, fun P => by simpa using Nat.cast_nonneg (c P), hB⟩
 
 end GaloisForLFunctions.ArithmeticEffectivityTheory.WindowNaiveHeights
 

@@ -89,11 +89,15 @@ coefficients and cell indices at most `exp(√log Y/23040000)`, with error
 standard axioms. This extends fixed-family cancellation; a uniform upper
 bound for the complete Weil index is still missing.
 
-The [all-detail source extension](all-detail-prime-pole-cancellation.md)
-is active. A support-sensitive trace bound predicts summable normalized
-Haar row tails, extending growing-packet cancellation to every detail
-horizon and a growing coarse range in the original cell masses. The
-quantitative operator theorem remains unformalized.
+The [all-detail source extension](../3-formalized/all-detail-prime-pole-cancellation.md)
+is formalized in the original squared Hilbert masses. For unit Haar and
+coarse sections, every detail horizon is allowed and
+`M≤exp(√log Y/184320000)` gives normalized remainder
+`O(exp(−√log Y/92160000))`. The literal common-horizon all-prime source
+satisfies the same bound. The normalized prime matrix approaches its
+separable leading pole at that rate. All six module audits use only
+standard axioms. The retained `√Y` normalization still leaves the complete
+Weil index ceiling open.
 
 The finite-sieve Hodge theorem concerns the matched prime form after a scalar
 subtraction. The Gamma and mixed-term comparison needed for the complete

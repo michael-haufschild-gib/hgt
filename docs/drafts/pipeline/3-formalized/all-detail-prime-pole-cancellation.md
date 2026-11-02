@@ -1,13 +1,13 @@
 # Prime–pole cancellation uniform over all Haar details
 
-- **Stage:** 1-in-progress
-- **Type:** CANDIDATE; paper argument, Lean formalization incomplete.
+- **Stage:** 3-formalized
+- **Type:** THEOREM; direct Lean and transitive axiom audits passed.
 - **Parent:** SC arithmetic mixed-source control.
 
 Let `R(Y,a,b)` be the literal full prime-window coupling minus both mixed
 pole terms, divided by `√Y`. Set `m_a=haarMass(a)` and
 `w_b=logCellWidth(b)`, the original squared Hilbert masses.
-The target is an absolute constant `C>0` such that, for all sufficiently
+There is an absolute constant `C>0` such that, for all sufficiently
 large natural `Y`, every
 
 ```text
@@ -23,8 +23,10 @@ satisfies
 ```
 
 There is no restriction on the detail horizon `X`. The same estimate
-should hold for the literal all-prime source at every common horizon `N`
+holds for the literal all-prime source at every common horizon `N`
 with `X≤N` and `Y(M+1)≤N+1`. Coefficients are real.
+The normalized prime matrix also approaches the rank-one matrix
+`4(√(2b+2)−√(2b)) ∫haar_a(u)e^(−u/2)du` at the same rate.
 The `√Y` normalization remains; this is not a complete Weil index bound.
 
 ## Paper argument
@@ -59,36 +61,32 @@ Their sum is at most `(28C₂+8C₁+1)exp(−2rt)`.
 Exact prime support identifies every admissible common-horizon source
 with this same matrix remainder.
 
-## Rank-one consequence to formalize
+The remaining opposite pole factors as `(2/Y)H₊(d)Q₋(q)`.
+The original unit masses give `|H₊|≤1` and `|Q₋|≤2(M+1)²`.
+For the stated coarse range and `log Y≥1`, its absolute value is at most
+`16exp(−2rt)`, proving the rank-one approximation.
 
-Write `H_±(d)=Σ_a d_a∫h_a(u)e^(±u/2)du` and
-`V_+(q)=Σ_b 4q_b(√(2b+2)−√(2b))`. The same uniform bound should give
+## Formalization and scope
 
-```text
-|Σ_b q_b Σ_a d_a C_Y(a,b)/√Y − H_−(d)V_+(q)|
-  ≤ (C+16) exp(−2r√log Y).
-```
+Main declarations in `ArithmeticIndexDescent/AllDetailPrimePoleCancellation.lean`:
 
-Here `C_Y` is the literal full prime-window coupling. The exact opposite
-pole is `(2/Y)H_+(d)Σ_b q_b∫q_b^cell(u)e^(−u/2)du`.
-The existing Haar pole theorem gives `|H_+(d)|≤1`; unit coarse mass gives
-an absolute bound `2(M+1)²` for the latter sum. Thus the opposite pole is
-at most `4(M+1)²/Y≤16 exp(−2r√log Y)` for large `Y`.
-This is a rank-one approximation of the normalized mixed source, without
-a sign assertion for the complete Weil form.
+- `exists_fullPrimeWindowRemainder_all_detail_growing_coarse_rate`.
+- `exists_allPrimesMixedSource_all_detail_growing_coarse_rate`.
+- `exists_fullPrimeWindowCoupling_all_detail_rank_one_rate`.
 
-## Audit
+The support estimate is in `FullPrimeWindowTraceDecay`; unsigned Haar
+integration in `FullPrimeWindowHaarDecay`; both-pole row estimates in
+`FullPrimeWindowRowBounds`; weighted tails in `PrimeWindowRowTails`;
+unit-coordinate estimates in `PrimeWindowUnitCoordinates`.
+The original squared Hilbert mass identities are
+`integral_haarSectionProfile_sq` and `inner_coarseAtom`.
 
-Corpus search found fixed-family and growing-square cancellation, the
-pointwise window limit, and the bounded Haar pole functional; no all-detail
-Hilbert operator estimate was found. The mass identities are already
-proved by `integral_haarSectionProfile_sq` and `inner_coarseAtom`.
-`fullPrimeWindowTrace_div_sqrt_le_exp` in `FullPrimeWindowTraceDecay.lean`
-proves the refined trace bound. `FullPrimeWindowHaarDecay.lean` proves
-the unsigned Haar moment and normalized full-prime row bounds. Their direct
-audits contain only `propext`, `Classical.choice`, and `Quot.sound`.
-The joint row estimate and
-`exists_fullPrimeWindowRemainder_hilbert_tail_bound` in `PrimeWindowRowTails`
-pass direct audits with the same standard axioms. The growing-coarse
-operator estimate and rank-one consequence remain unformalized.
-External priority is unchecked.
+All six modules pass individual direct Lean checks. Their displayed
+transitive axiom audits contain only `propext`, `Classical.choice`, and
+`Quot.sound`. The umbrella imports all six modules.
+
+Corpus novelty audit found fixed-family and growing-square cancellation,
+plus Gamma-norm cancellation retaining an aperture factor. The all-detail
+operator estimate in the original cell masses was not found.
+External priority is unchecked. The retained `√Y` normalization leaves
+complete-source positivity and the finite-index ceiling open.

@@ -27,6 +27,4 @@ theorem completedConductorEnergy_le_logarithmic_uniform {φ : ℝ → ℝ}
   simp only [one_pow, mul_one] at hone
   exact hmono.trans hone
 
-#print axioms completedConductorEnergy_le_logarithmic_uniform
-
 end GaloisForLFunctions.CompletedArithmeticForms

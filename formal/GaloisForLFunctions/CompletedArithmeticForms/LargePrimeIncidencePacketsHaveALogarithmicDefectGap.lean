@@ -195,7 +195,4 @@ theorem largePrime_incidence_defect_gap (P : Finset ℕ) (b : ℕ → ℝ) {N : 
     (mul_nonneg (div_nonneg hHp hp0.le) (sq_nonneg (b p)))
   exact hh.trans_eq (by ring)
 
-#print axioms centered_largePrime_incidence_mass_eq
-#print axioms largePrime_incidence_defect_gap
-
 end GaloisForLFunctions.CompletedArithmeticForms

@@ -39,7 +39,7 @@ theorem windowTransform_windowInvolution (A : ℝ) (H : ℝ → ℝ) (s : ℂ) :
   unfold windowTransform windowInvolution windowMultiplier
   have h : (fun u : ℝ => ((H (-A - u) : ℝ) : ℂ) * cexp ((s - 1 / 2) * u)) =
       fun u => (fun v : ℝ => (H v : ℂ) * cexp ((s - 1 / 2) * ((-A - v : ℝ) : ℂ))) (-A - u) := by
-    funext u; congr 3; ring
+    funext u; congr 3; push_cast; ring
   rw [h, integral_sub_left_eq_self (fun v : ℝ => (H v : ℂ) * cexp ((s - 1 / 2) * ((-A - v : ℝ) : ℂ)))
     volume (-A), ← integral_const_mul]
   congr 1

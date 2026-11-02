@@ -1,6 +1,6 @@
 # Whole-form payment for low coefficient leakage
 
-- **Stage:** 1-in-progress.
+- **Stage:** 0-backlog.
 - **Type:** CONJECTURE.
 - **Wall:** Σ1d.
 - **Target:** Fixed polynomial conductor spans through a super-log-log overlap clock for every nonzero compact real `C²` profile.
@@ -72,8 +72,11 @@ would then give the conjectured super-log-log interval.
 
 - `TheOverlapThatResolvesATwistIsAnExactThreshold.completedConductorEnergy_anti`.
 - `ConductorBandOverlapAndNonRatioBounds.completedConductorEnergy_le_of_one_le`.
+- `ConductorEnergiesHaveAUniformLogarithmicUpperBound.completedConductorEnergy_le_logarithmic_uniform`.
 - `EveryProfileHasALogarithmicHighConductorGap.lean`: coefficient split and current overlap payment.
 - `EveryPolylogConductorSpanIsPositiveAtLogLogOverlap.lean`: raw low-block residual.
 
-The uniform diagonal upper bound has a two-line derivation from checked source
-statements. Whole-form leakage cancellation remains open.
+The uniform diagonal upper bound is formalized in
+`CompletedArithmeticForms/ConductorEnergiesHaveAUniformLogarithmicUpperBound.lean`.
+Its direct source check passed; transitive axioms are only `propext`,
+`Classical.choice`, `Quot.sound`. Whole-form leakage cancellation remains open.

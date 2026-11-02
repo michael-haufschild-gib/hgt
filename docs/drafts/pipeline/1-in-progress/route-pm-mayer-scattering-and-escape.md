@@ -60,7 +60,10 @@ real period segment, throughout `Re w>0`, `w≠2`. The
 [universal signed period relations](../3-formalized/gauss-mayer-all-signed-periods.md)
 now cover every actual signed eigenfunction and constant-forced solution
 on `Re w>0`. Negative-signed solutions vanish at zero; for arbitrary input,
-`(I+L_w)f=g` forces `f(0)=g(0)−g(1)`. The
+`(I+L_w)f=g` forces `f(0)=g(0)−g(1)`. Every constant-forced signed solution has a
+[unique holomorphic continuation](../3-formalized/gauss-mayer-global-eigenfunction-periods.md)
+to `Re z>−1`; signed inversion and the Lewis relation hold
+throughout `Re a>0`. Boundary-growth asymptotics remain unproved. The
 [actual boundary positivity argument](../3-formalized/gauss-mayer-boundary-positivity-zero-free-region.md)
 certifies a classical logarithmic zero-free region from the nonnegative
 coefficients `Λ(n)(1−1/n)` of the shifted inverse entry’s logarithmic derivative. The

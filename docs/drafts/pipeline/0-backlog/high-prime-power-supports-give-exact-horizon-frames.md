@@ -1,6 +1,6 @@
 # High prime-power supports give exact horizon frames
 
-- **Stage:** 1-in-progress.
+- **Stage:** 0-backlog.
 - **Type:** CONJECTURE.
 - **Wall:** Σ1e.
 - **Statement:** Distinct prime-power conductors whose preceding powers exceed `sqrt N` have exactly orthogonal horizon vectors; through `m≤N^θ`, their lower frame constant is `1−θ`.
