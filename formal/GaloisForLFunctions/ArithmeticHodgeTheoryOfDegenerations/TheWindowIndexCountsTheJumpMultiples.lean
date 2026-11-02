@@ -87,6 +87,7 @@ theorem hermNegIndex_add_smul_posDef {W B : Matrix ι ι ℂ} (hW : W.IsHermitia
   rw [key, negIndex_isometric_congr hUU, negIndex_diagonal]
   rfl
 
+omit [DecidableEq ι] in
 /-- A Hermitian matrix with positive form on nonzero vectors is positive definite. -/
 theorem posDef_of_hermQuad_pos {B : Matrix ι ι ℂ} (hB : B.IsHermitian)
     (h : ∀ x : ι → ℂ, x ≠ 0 → 0 < hermQuad B x) : B.PosDef := by
@@ -137,7 +138,7 @@ theorem hermQuad_weightGram_eq {w : ℝ → ℝ} (hw : Continuous w) {H : ι →
   unfold hermQuad
   rw [key, Complex.ofReal_re]
 
-omit [DecidableEq ι] in
+omit [Fintype ι] [DecidableEq ι] in
 theorem aliasGram_isHermitian (β : ℝ) (h : ι → ℝ → ℝ) : (aliasGram β h).IsHermitian := by
   ext i j
   simp only [aliasGram, conjTranspose_apply]
@@ -145,6 +146,7 @@ theorem aliasGram_isHermitian (β : ℝ) (h : ι → ℝ → ℝ) : (aliasGram �
   congr 1
   exact integral_congr_ae (Eventually.of_forall fun y => by simp only; ring)
 
+omit [DecidableEq ι] in
 /-- **Independent families**: the aliasing Gram matrix of a linearly independent family of windows
 is positive definite. -/
 theorem aliasGram_posDef (β : ℝ) {h : ι → ℝ → ℝ} (hh : ∀ i, ContDiff ℝ 2 (h i))

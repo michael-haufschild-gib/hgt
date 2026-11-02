@@ -193,24 +193,27 @@ private theorem coercive_combine {k θ D ℓ g c P S B Dm E : ℝ} (hD : 0 < D) 
     mul_le_mul_of_nonneg_right hleak hS
   linarith only [hpre, hfar, h1, h2, hAP]
 
-/-- **Polynomial-conductor complement coercivity below the eighth root.** For every `θ > 0` and
-every `0 < α < 1 / 8`, eventually in `N` and uniformly across `1 ≤ c ≤ (log N)^α`, every
-`z ∈ (conductorSubspace ⌊N^θ⌋₊ N)ᗮ` satisfies
-`(c_orth log N / c⁷) ‖z‖² ≤ completeWeilEnergy tiltedUnitSpline c N z`. -/
-theorem eventually_completeWeilEnergy_ge_on_polynomialConductorOrthogonal_below_one_eighth
-    {θ α : ℝ} (hθ : 0 < θ) (hα : 0 < α) (hα_lt : α < 1 / 8) :
-    ∃ c_orth : ℝ, 0 < c_orth ∧
-      ∀ᶠ N : ℕ in atTop, ∀ c : ℝ, 1 ≤ c → c ≤ Real.log (N : ℝ) ^ α →
-        ∀ {z : EuclideanSpace ℝ (PrimeHorizonIndex N)},
-          z ∈ (conductorSubspace ⌊(N : ℝ) ^ θ⌋₊ N)ᗮ →
-          (c_orth * Real.log (N : ℝ) / c ^ 7) * ‖z‖ ^ 2 ≤
-            completeWeilEnergy tiltedUnitSpline c N z := by
+/-- **Two-region reserve on a polynomial-conductor complement below the eighth root.** For
+`0 < θ ≤ 1 / 36` and `0 < α < 1 / 8`, eventually in `N` and uniformly across `1 ≤ c ≤ (log N)^α`,
+every `z ∈ (conductorSubspace ⌊N^θ⌋₊ N)ᗮ` has energy at least `(θ / 8D) log N` per unit mass on the
+prefix rows `n ≤ N / T` (`T = linearDefectCutoff c`) and `g log N / (8 c⁷)` per unit mass on the
+top rows: the pole-defect prefix bound plus the far reserve, with the leakage `k B = O(c)` paid by
+`g log N / c⁷` because `c⁸ = o(log N)`. -/
+theorem eventually_completeWeilEnergy_two_region_on_polynomialConductorOrthogonal_below_one_eighth
+    {θ α : ℝ} (hθ : 0 < θ) (hθ36 : θ ≤ 1 / 36) (hα : 0 < α) (hα_lt : α < 1 / 8) :
+    ∀ᶠ N : ℕ in atTop, ∀ c : ℝ, 1 ≤ c → c ≤ Real.log (N : ℝ) ^ α →
+      ∀ {z : EuclideanSpace ℝ (PrimeHorizonIndex N)},
+        z ∈ (conductorSubspace ⌊(N : ℝ) ^ θ⌋₊ N)ᗮ →
+        θ / (8 * explicitConductorCutoffConstant) * Real.log (N : ℝ) *
+            (∑ n ∈ Icc 1 (N / linearDefectCutoff c), primeHorizonExtension z n ^ 2) +
+          growingMassConstant / (8 * c ^ 7) * Real.log (N : ℝ) *
+            (∑ n ∈ Ioc (N / linearDefectCutoff c) N, primeHorizonExtension z n ^ 2) ≤
+          completeWeilEnergy tiltedUnitSpline c N z := by
   set D := explicitConductorCutoffConstant with hDdef
   have hD : 0 < D := explicitConductorCutoffConstant_pos
-  set θ₀ := min θ (1 / 36) with hθ₀def
-  have hθ₀ : 0 < θ₀ := lt_min hθ (by norm_num)
-  have hθ₀_le : θ₀ ≤ θ := min_le_left _ _
-  have hθ₀_36 : θ₀ ≤ 1 / 36 := min_le_right _ _
+  set θ₀ := θ with hθ₀def
+  have hθ₀ : 0 < θ₀ := hθ
+  have hθ₀_36 : θ₀ ≤ 1 / 36 := hθ36
   set g := growingMassConstant with hgdef
   have hg : 0 < g := growingMassConstant_pos
   set H := 256 * Real.exp 2 + 4 with hHdef
@@ -220,7 +223,6 @@ theorem eventually_completeWeilEnergy_ge_on_polynomialConductorOrthogonal_below_
   set C_lk := 7 * θ₀ * (5 + Real.log (2 * H)) / (2 * D) with hClk
   have hClk0 : 0 ≤ C_lk := by
     have := Real.log_nonneg (show (1 : ℝ) ≤ 2 * H by linarith); positivity
-  refine ⟨min (θ₀ / (8 * D)) (g / 8), lt_min (by positivity) (by positivity), ?_⟩
   have hLlim : Tendsto (fun N : ℕ => Real.log (N : ℝ)) atTop atTop :=
     Real.tendsto_log_atTop.comp tendsto_natCast_atTop_atTop
   have hNθlim : Tendsto (fun N : ℕ => (N : ℝ) ^ θ₀) atTop atTop :=
@@ -250,10 +252,7 @@ theorem eventually_completeWeilEnergy_ge_on_polynomialConductorOrthogonal_below_
   have hN1R : (1 : ℝ) ≤ N := by
     have : 1 ≤ N := le_trans (by omega : 1 ≤ 2) (hM2.trans (Nat.div_le_self _ _))
     exact_mod_cast this
-  have hR_le : ⌊(N : ℝ) ^ θ₀⌋₊ ≤ ⌊(N : ℝ) ^ θ⌋₊ :=
-    Nat.floor_mono (Real.rpow_le_rpow_of_exponent_le hN1R hθ₀_le)
-  have hzR : z ∈ (conductorSubspace ⌊(N : ℝ) ^ θ₀⌋₊ N)ᗮ := fun v hv =>
-    hz v (conductorSubspace_mono hR_le N hv)
+  have hzR : z ∈ (conductorSubspace ⌊(N : ℝ) ^ θ₀⌋₊ N)ᗮ := hz
   have hz1 : z ∈ (conductorSubspace 1 N)ᗮ := fun v hv =>
     hzR v (conductorSubspace_mono (by omega) N hv)
   have hk_pos : 0 < Real.log ⌊(N : ℝ) ^ θ₀⌋₊ / D - 1 :=
@@ -344,18 +343,56 @@ theorem eventually_completeWeilEnergy_ge_on_polynomialConductorOrthogonal_below_
         Real.log ((N / linearDefectCutoff c : ℕ) : ℝ) = 2 * B := by rw [hBdef]; ring
     rw [← e]; exact hpre
   have hcomb := coercive_combine hD hθ₀ hL0.le hc1 hP0 hS0 hgap hpre' hleak hfarz
+  exact hcomb
+
+/-- **Polynomial-conductor complement coercivity below the eighth root.** For every `θ > 0` and
+every `0 < α < 1 / 8`, eventually in `N` and uniformly across `1 ≤ c ≤ (log N)^α`, every
+`z ∈ (conductorSubspace ⌊N^θ⌋₊ N)ᗮ` satisfies
+`(c_orth log N / c⁷) ‖z‖² ≤ completeWeilEnergy tiltedUnitSpline c N z`. -/
+theorem eventually_completeWeilEnergy_ge_on_polynomialConductorOrthogonal_below_one_eighth
+    {θ α : ℝ} (hθ : 0 < θ) (hα : 0 < α) (hα_lt : α < 1 / 8) :
+    ∃ c_orth : ℝ, 0 < c_orth ∧
+      ∀ᶠ N : ℕ in atTop, ∀ c : ℝ, 1 ≤ c → c ≤ Real.log (N : ℝ) ^ α →
+        ∀ {z : EuclideanSpace ℝ (PrimeHorizonIndex N)},
+          z ∈ (conductorSubspace ⌊(N : ℝ) ^ θ⌋₊ N)ᗮ →
+          (c_orth * Real.log (N : ℝ) / c ^ 7) * ‖z‖ ^ 2 ≤
+            completeWeilEnergy tiltedUnitSpline c N z := by
+  set D := explicitConductorCutoffConstant with hDdef
+  have hD : 0 < D := explicitConductorCutoffConstant_pos
+  set θ₀ := min θ (1 / 36) with hθ₀def
+  have hθ₀ : 0 < θ₀ := lt_min hθ (by norm_num)
+  have hθ₀_le : θ₀ ≤ θ := min_le_left _ _
+  have hθ₀_36 : θ₀ ≤ 1 / 36 := min_le_right _ _
+  set g := growingMassConstant with hgdef
+  have hg : 0 < g := growingMassConstant_pos
+  refine ⟨min (θ₀ / (8 * D)) (g / 8), lt_min (by positivity) (by positivity), ?_⟩
+  filter_upwards [eventually_completeWeilEnergy_two_region_on_polynomialConductorOrthogonal_below_one_eighth
+      hθ₀ hθ₀_36 hα hα_lt, eventually_ge_atTop 1] with N htwo hN1
+  intro c hc1 hcα z hz
+  have hN1R : (1 : ℝ) ≤ N := by exact_mod_cast hN1
+  have hL0 : 0 ≤ Real.log N := Real.log_nonneg hN1R
+  have hc0 : 0 < c := lt_of_lt_of_le one_pos hc1
+  have hR_le : ⌊(N : ℝ) ^ θ₀⌋₊ ≤ ⌊(N : ℝ) ^ θ⌋₊ :=
+    Nat.floor_mono (Real.rpow_le_rpow_of_exponent_le hN1R hθ₀_le)
+  have hzR : z ∈ (conductorSubspace ⌊(N : ℝ) ^ θ₀⌋₊ N)ᗮ := fun v hv =>
+    hz v (conductorSubspace_mono hR_le N hv)
+  have hcomb := htwo c hc1 hcα hzR
+  have hP0 : 0 ≤ ∑ n ∈ Icc 1 (N / linearDefectCutoff c), primeHorizonExtension z n ^ 2 :=
+    sum_nonneg fun _ _ => sq_nonneg _
+  have hS0 : 0 ≤ ∑ n ∈ Ioc (N / linearDefectCutoff c) N, primeHorizonExtension z n ^ 2 :=
+    sum_nonneg fun _ _ => sq_nonneg _
   rw [norm_sq_eq_prefix_add_top (N / linearDefectCutoff c) (Nat.div_le_self _ _) z]
   have hc7 : (1 : ℝ) ≤ c ^ 7 := one_le_pow₀ hc1
   have hcoefP : min (θ₀ / (8 * D)) (g / 8) * Real.log N / c ^ 7 ≤ θ₀ / (8 * D) * Real.log N := by
     rw [div_le_iff₀ (by positivity)]
-    have h1 := mul_le_mul_of_nonneg_right (min_le_left (θ₀ / (8 * D)) (g / 8)) hL0.le
+    have h1 := mul_le_mul_of_nonneg_right (min_le_left (θ₀ / (8 * D)) (g / 8)) hL0
     have h2 := mul_le_mul_of_nonneg_left hc7
-      (mul_nonneg (by positivity : (0 : ℝ) ≤ θ₀ / (8 * D)) hL0.le)
+      (mul_nonneg (by positivity : (0 : ℝ) ≤ θ₀ / (8 * D)) hL0)
     linarith only [h1, h2]
   have hcoefS : min (θ₀ / (8 * D)) (g / 8) * Real.log N / c ^ 7 ≤ g / (8 * c ^ 7) * Real.log N := by
     have h1 := min_le_right (θ₀ / (8 * D)) (g / 8)
     rw [show g / (8 * c ^ 7) * Real.log N = (g / 8) * Real.log N / c ^ 7 by field_simp]
-    exact div_le_div_of_nonneg_right (mul_le_mul_of_nonneg_right h1 hL0.le) (by positivity)
+    exact div_le_div_of_nonneg_right (mul_le_mul_of_nonneg_right h1 hL0) (by positivity)
   have hp := mul_le_mul_of_nonneg_right hcoefP hP0
   have hs := mul_le_mul_of_nonneg_right hcoefS hS0
   linarith only [hcomb, hp, hs]

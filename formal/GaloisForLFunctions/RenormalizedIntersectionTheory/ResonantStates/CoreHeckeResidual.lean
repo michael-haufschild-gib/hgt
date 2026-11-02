@@ -44,7 +44,7 @@ private theorem core_radius_bounds {z : ℍ} (hz : z ∈ coreRectangle) :
 /-- Ratio of the two positive height scales entering the central return. -/
 def returnRatio (z : ℍ) : ℝ := 4 / (z.re ^ 2 + z.im ^ 2)
 
-private theorem returnRatio_pos (z : ℍ) : 0 < returnRatio z :=
+theorem returnRatio_pos (z : ℍ) : 0 < returnRatio z :=
   div_pos (by norm_num)
     (add_pos_of_nonneg_of_pos (sq_nonneg _) (sq_pos_of_pos z.im_pos))
 
@@ -58,7 +58,7 @@ private theorem returnRatio_bounds {z : ℍ} (hz : z ∈ coreRectangle) :
   · rw [returnRatio, div_le_iff₀ hd]
     linarith [hr.1]
 
-private theorem returnRatio_height (z : ℍ) :
+theorem returnRatio_height (z : ℍ) :
     (z.im / 2) * returnRatio z = returnHeight 0 z := by
   simp only [returnRatio, returnHeight, Int.cast_zero, add_zero]
   ring

@@ -22,6 +22,8 @@ Put `E_M(w)=∏_(p|M)(1−p^(−w))` and
    Hence its continuation is `U_N,y(s)S(s)`, where
    `U_N,y(s)=2 exp(−s log N²) exp(−s log N) (y/N)^(1−s)
    φ(N²)/(φ(N)E_(N²)(2s))`.
+   Since `φ(N²)=Nφ(N)` and `E_(N²)=E_N`, this simplifies to
+   `U_N,y(s)=2N^(−2s)y^(1−s)/E_N(2s)`.
 3. Every factor of `U_N,y` is holomorphic and nonzero on `Re s>0`:
    the exponential and positive-base powers never vanish, both totients
    are positive, and `|p^(−2s)|<1`. Thus multiplication by `U_N,y`
@@ -30,6 +32,10 @@ Put `E_M(w)=∏_(p|M)(1−p^(−w))` and
    `ord_(w/2) S = −ord_w ζ` for `0<Re w<1`.
    Therefore the congruence constant term has exactly the same order,
    for every level and height, including multiple zeros.
+5. The incoming term `y^s` is entire and nonzero. At a pole, its order zero
+   exceeds the reflected term's negative order, so their sum has the same
+   pole order. Away from those poles both summands have nonnegative order.
+   Thus the full constant coefficient also has exactly the zeta pole divisor.
 
 Dependencies: `eisenstein_eq`, `fourier_ker0_zero`, `integral_ker01`,
 `DirichletCharacter.LSeries.mul_mu_eq_one`, the principal Euler identity,

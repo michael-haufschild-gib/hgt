@@ -26,6 +26,7 @@ import GaloisForLFunctions.ArithmeticHodgeTheoryOfDegenerations.TheTwistedHorizo
 import GaloisForLFunctions.ArithmeticHodgeTheoryOfDegenerations.TheAlternatingWindowCountsTheConductorTwoPoints
 import GaloisForLFunctions.ArithmeticHodgeTheoryOfDegenerations.ThePrimeWindowCountsTheProjectivePoints
 import GaloisForLFunctions.ArithmeticHodgeTheoryOfDegenerations.TheHorizonLayerIsGradedByConductor
+import GaloisForLFunctions.ArithmeticHodgeTheoryOfDegenerations.TheWindowIndexCountsTheJumpMultiples
 
 /-!
 # Arithmetic Hodge Theory of Degenerations
@@ -54,6 +55,8 @@ zero and lie above the archimedean horizon); the window index counts the right z
 alternating (conductor-two) window has second-order term `7 J(2)/K ‖H‖²_{−8}`, and for every prime
 `p` the conductor-`p` window has `7 (p − 1) J(p)/K ‖H‖²_{−8}`: the conductor-`p` count; the
 horizon layer is graded by conductor (untwisted and prime windows are orthogonal at second order,
-so their span carries the direct sum of the two blocks).
+so their span carries the direct sum of the two blocks); the window index of an independent
+family counts its jump multiples `βJ/(−λ_i)`, `λ_i` the relative eigenvalues of Weil's part against
+the aliasing part.
 See `ArithmeticHodgeTheoryOfDegenerations/README.md`.
 -/
