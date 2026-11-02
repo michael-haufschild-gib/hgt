@@ -31,6 +31,7 @@ private theorem dilation_packet_ae {ι : Type*} (S : Finset ι) (u : ℂ)
       fun y => (r : ℂ) ^ (-u) * cuspPacket S u (fun i => Y i / r) c y := by
   have hcomp := hf.comp_tendsto (realMul_quasiMeasurePreserving r hr.ne').tendsto_ae
   filter_upwards [dilation_ae r hr f, hcomp] with y hd hf'
+  change f (r * y) = cuspPacket S u Y c (r * y) at hf'
   rw [hd, hf']
   simp only [cuspPacket, Finset.mul_sum]
   apply Finset.sum_congr rfl
@@ -81,7 +82,9 @@ theorem cuspPacket_residual_gap {ι : Type*} (S : Finset ι) {u : ℂ} (hur : u.
       Lp.coeFn_add (U f) (U.symm f), Lp.coeFn_smul (q + q⁻¹) f,
       hdf, hif, hfn] with y hs ha hm hd' hi' hf'
     change (U f + U.symm f - (q + q⁻¹) • f : SoninL2) y = _
-    rw [hs, ha, hm]
+    rw [hs]
+    change (U f + U.symm f : SoninL2) y - ((q + q⁻¹) • f : SoninL2) y = _
+    rw [ha, hm]
     simp only [Pi.sub_apply, Pi.add_apply, Pi.smul_apply, smul_eq_mul, hd', hi', hf',
       cuspPacket, Finset.mul_sum, ← Finset.sum_add_distrib, ← Finset.sum_sub_distrib]
     apply Finset.sum_congr rfl
@@ -106,7 +109,10 @@ theorem cuspPacket_residual_gap {ι : Type*} (S : Finset ι) {u : ℂ} (hur : u.
     rw [he]
     exact div_nonneg (sq_nonneg _) hr.le
   have hsq := pow_le_pow_left₀ (mul_nonneg hnonneg (norm_nonneg f)) hg 2
-  rw [mul_pow, hcoef, norm_sq_toLp_eq_integral_norm_sq hf, hn] at hsq
+  change ((‖q‖ + ‖q‖⁻¹ - 2) * ‖f‖) ^ 2 ≤ ‖R‖ ^ 2 at hsq
+  have hfnorm : ‖f‖ ^ 2 = ∫ y, ‖cuspPacket S u Y c y‖ ^ 2 :=
+    norm_sq_toLp_eq_integral_norm_sq hf
+  rw [mul_pow, hcoef, hfnorm, hn] at hsq
   exact hsq
 
 end

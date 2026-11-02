@@ -76,16 +76,15 @@ theorem cutoffPacket_residual_isometry {ι : Type*} (S : Finset ι) {u : ℂ}
     intro j hj
     have hi := hY j.1 (Finset.mem_product.mp hj).1
     rcases j with ⟨i, k⟩
-    fin_cases k <;> simp only [H, Matrix.cons_val_zero, Matrix.cons_val_one,
-      Matrix.cons_val_fin_one] <;> linarith
+    fin_cases k <;> dsimp [H] <;> linarith
   have he := resonant_finite_combination_isometry J (fun _ => u) H C
     (fun _ _ => hu) (fun _ _ => hur) (fun _ _ => hAu) hH
   have hleft : (∫ z in fd, ‖∑ i ∈ S, c i * dyadicEigenResidualAt u (Y i) z‖ ^ 2) =
       ∫ z in fd, ‖∑ j ∈ J, C j * truncatedLineModel u (H j) z‖ ^ 2 := by
     refine setIntegral_congr_fun isClosed_fd.measurableSet fun z hz => ?_
     apply congrArg (fun w : ℂ => ‖w‖ ^ 2)
-    simp only [J, Finset.sum_product, Fin.sum_univ_three, C, H,
-      Matrix.cons_val_zero, Matrix.cons_val_one, Matrix.cons_val_fin_one]
+    simp only [J, Finset.sum_product, Fin.sum_univ_three]
+    dsimp [C, H]
     apply Finset.sum_congr rfl
     intro i hi
     rw [dyadicEigenResidualAt_cutoff_shifts hAu (hY i hi) hz]
@@ -94,8 +93,8 @@ theorem cutoffPacket_residual_isometry {ι : Type*} (S : Finset ι) {u : ℂ}
   apply integral_congr_ae
   refine Eventually.of_forall fun y => ?_
   apply congrArg (fun w : ℂ => ‖w‖ ^ 2)
-  simp only [J, Finset.sum_product, Fin.sum_univ_three, C, H,
-    Matrix.cons_val_zero, Matrix.cons_val_one, Matrix.cons_val_fin_one]
+  simp only [J, Finset.sum_product, Fin.sum_univ_three]
+  dsimp [C, H]
   apply Finset.sum_congr rfl
   intro i hi
   ring

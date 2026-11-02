@@ -338,7 +338,7 @@ theorem norm_partial_dvd_cpow_le {q : ℕ} (hq : 0 < q) {n₀ N k : ℕ} (hn₀ 
 
 /-- **Kuzmin–Landau for the Ramanujan twist.** For `0 < τ ≤ π n₀/m` and `n₀ + k ≤ N`, the partial
 sums of `c_m(n) n^{iτ}` over `[n₀, n₀ + k]` are at most `Σ_{de = m} (3πN/τ + e)`. -/
-theorem norm_partial_ramTwist_cpow_le {m : ℕ} (hm : 0 < m) {n₀ N k : ℕ} (hn₀ : 1 ≤ n₀)
+theorem norm_partial_ramTwist_cpow_le {m : ℕ} {n₀ N k : ℕ} (hn₀ : 1 ≤ n₀)
     (hk : n₀ + k ≤ N) {τ : ℝ} (hτ : 0 < τ) (hτn : τ ≤ Real.pi * n₀ / m) :
     ‖∑ j ∈ range (k + 1), (ramTwist m (n₀ + j) : ℂ) *
         Complex.exp (((τ * Real.log (n₀ + j) : ℝ) : ℂ) * Complex.I)‖ ≤
@@ -376,5 +376,214 @@ theorem norm_partial_ramTwist_cpow_le {m : ℕ} (hm : 0 < m) {n₀ N k : ℕ} (h
   calc _ ≤ (x.2 : ℝ) * (3 * Real.pi * N / (x.2 * τ) + 1) :=
         mul_le_mul hμ hb (norm_nonneg _) he0.le
     _ = 3 * Real.pi * N / τ + x.2 := by field_simp
+
+/-- The Kuzmin–Landau constant of the Ramanujan twist at frequency `τ`. -/
+theorem sum_antidiagonal_KL (m : ℕ) (N τ : ℝ) :
+    ∑ x ∈ m.divisorsAntidiagonal, (3 * Real.pi * N / τ + x.2) =
+      (m.divisorsAntidiagonal.card : ℝ) * (3 * Real.pi * N / τ) +
+        ∑ x ∈ m.divisorsAntidiagonal, (x.2 : ℝ) := by
+  rw [sum_add_distrib, sum_const, nsmul_eq_mul]
+
+/-- **The Ramanujan block below its first resonance**: for `0 < |τ| ≤ π N e^{−A}/m`,
+`|D_x(τ)| ≤ (d 3πN/|τ| + σ)(L e^{3A/2} + B e^{A/2})/√N`, `d = #{de = m}`, `σ = Σ_{e|m} e`. -/
+theorem norm_dirichletPoly_ram_le {Bh L : ℝ} (hsupp : ∀ y, y ∉ Set.Icc (-A) 0 → h y = 0)
+    (hA : 0 ≤ A) (hB : ∀ y, |h y| ≤ Bh) (hL : ∀ u v, |h u - h v| ≤ L * |u - v|) {m : ℕ}
+    (hm : 0 < m) {N : ℕ} (hN : 1 ≤ N) {τ : ℝ} (hτ0 : 0 < |τ|)
+    (hτ : |τ| ≤ Real.pi * ((N : ℝ) * Real.exp (-A)) / m) :
+    ‖dirichletPoly N (twistedWeights h (ramTwist m) N) τ‖ ≤
+      ((m.divisorsAntidiagonal.card : ℝ) * (3 * Real.pi * N / |τ|) +
+        ∑ x ∈ m.divisorsAntidiagonal, (x.2 : ℝ)) *
+        ((L * Real.exp (3 / 2 * A) + Bh * Real.exp (A / 2)) / Real.sqrt N) := by
+  have hm0 : (0 : ℝ) < m := by exact_mod_cast hm
+  have key : ∀ t : ℝ, 0 < t → t ≤ Real.pi * ((N : ℝ) * Real.exp (-A)) / m →
+      ‖dirichletPoly N (twistedWeights h (ramTwist m) N) t‖ ≤
+        ((m.divisorsAntidiagonal.card : ℝ) * (3 * Real.pi * N / t) +
+          ∑ x ∈ m.divisorsAntidiagonal, (x.2 : ℝ)) *
+          ((L * Real.exp (3 / 2 * A) + Bh * Real.exp (A / 2)) / Real.sqrt N) := by
+    intro t ht htN
+    set n₀ := windowStart A N with hn₀
+    have h1 := one_le_windowStart hN A
+    have h2 : n₀ ≤ N := windowStart_le hA
+    have htn : t ≤ Real.pi * n₀ / m := by
+      refine htN.trans (div_le_div_of_nonneg_right ?_ hm0.le)
+      exact mul_le_mul_of_nonneg_left (le_windowStart A N) Real.pi_pos.le
+    rw [dirichletPoly_twisted_eq_range hsupp hA _ hN]
+    refine (norm_sum_mul_le_of_partial (fun j => horizonWeights h N (n₀ + j))
+      (fun j => (ramTwist m (n₀ + j) : ℂ) * Complex.exp (((t * Real.log (n₀ + j) : ℝ) : ℂ) *
+        Complex.I)) (N - n₀) (B := (m.divisorsAntidiagonal.card : ℝ) * (3 * Real.pi * N / t) +
+          ∑ x ∈ m.divisorsAntidiagonal, (x.2 : ℝ)) fun k hk => ?_).trans ?_
+    · have := norm_partial_ramTwist_cpow_le h1 (show n₀ + k ≤ N by omega) ht htn (m := m)
+      rw [sum_antidiagonal_KL] at this
+      push_cast at this ⊢
+      exact this
+    · exact mul_le_mul_of_nonneg_left (variation_horizonWeights_le hsupp hA hB hL hN)
+        (by positivity)
+  rcases lt_or_gt_of_ne (abs_pos.mp hτ0) with hneg | hpos
+  · have := key (-τ) (by linarith) (by rw [abs_of_neg hneg] at hτ; exact hτ)
+    rw [norm_dirichletPoly_neg, ← abs_of_neg hneg] at this
+    exact this
+  · rw [abs_of_pos hpos] at hτ ⊢
+    exact key τ hpos hτ
+
+/-- Small frequencies of the Ramanujan block: for `|τ| ≤ √N`, `|D_x(τ)|²/N ≤ 4W²/N`,
+`W = 2 S e^{2A}(L + B)`, `S = Σ_{j<m} |c_m(j)|`. -/
+theorem ramLow_small_le (hh : ContDiff ℝ 2 h) (hA : 0 ≤ A)
+    (hsupp : ∀ y, y ∉ Set.Icc (-A) 0 → h y = 0) {Bh : ℝ} (hB : ∀ y, |h y| ≤ Bh) {Lh : NNReal}
+    (hLh : LipschitzWith Lh h) {m : ℕ} (hm : 1 < m) {N : ℕ} (hN : 1 ≤ N) {τ : ℝ}
+    (hτ : |τ| ≤ Real.sqrt N) :
+    ‖dirichletPoly N (twistedWeights h (ramTwist m) N) τ‖ ^ 2 / N ≤
+      4 * (2 * (∑ j ∈ range m, |ramTwist m j|) * Real.exp (2 * A) * ((Lh : ℝ) + Bh)) ^ 2 / N := by
+  have hN0 : (0 : ℝ) < N := by exact_mod_cast hN
+  have hN1 : (1 : ℝ) ≤ N := by exact_mod_cast hN
+  have hsN1 : 1 ≤ Real.sqrt N := by rw [Real.one_le_sqrt]; exact hN1
+  have hBh0 : 0 ≤ Bh := (abs_nonneg _).trans (hB 0)
+  have hL0 : (0 : ℝ) ≤ Lh := Lh.2
+  set S := ∑ j ∈ range m, |ramTwist m j| with hS
+  have hS0 : 0 ≤ S := Finset.sum_nonneg fun _ _ => abs_nonneg _
+  have hD := norm_sq_dirichletPoly_twisted_le hh hA hsupp hB hLh (meanZeroTwist_ramTwist hm) hN τ
+  have hK : (Lh : ℝ) + (1 / 2 + |τ|) * Bh ≤ ((Lh : ℝ) + Bh) * (2 * Real.sqrt N) := by
+    nlinarith [mul_le_mul_of_nonneg_right hτ hBh0]
+  have h1 : 2 * S * (((Lh : ℝ) + (1 / 2 + |τ|) * Bh) * Real.exp (2 * A)) / N ≤
+      2 * S * (((Lh : ℝ) + Bh) * (2 * Real.sqrt N) * Real.exp (2 * A)) / N := by gcongr
+  have h2 := pow_le_pow_left₀ (by positivity) h1 2
+  rw [div_le_div_iff_of_pos_right hN0]
+  refine hD.trans ((mul_le_mul_of_nonneg_left h2 hN0.le).trans (le_of_eq ?_))
+  have hsq : Real.sqrt N ^ 2 = N := Real.sq_sqrt hN0.le
+  rw [show 2 * S * (((Lh : ℝ) + Bh) * (2 * Real.sqrt N) * Real.exp (2 * A)) / N =
+      (2 * S * Real.exp (2 * A) * ((Lh : ℝ) + Bh)) * (2 * Real.sqrt N / N) by ring, mul_pow,
+    div_pow, mul_pow 2 (Real.sqrt N), hsq]
+  field_simp
+  ring
+
+/-- Frequencies beyond `√N` and below the first resonance:
+`|D_x(τ)|²/N ≤ 18π² d² V²/τ² + 2σ² V²/N²`. -/
+theorem ramLow_large_le {Bh L : ℝ} (hsupp : ∀ y, y ∉ Set.Icc (-A) 0 → h y = 0)
+    (hA : 0 ≤ A) (hB : ∀ y, |h y| ≤ Bh) (hL : ∀ u v, |h u - h v| ≤ L * |u - v|) {m : ℕ}
+    (hm : 0 < m) {N : ℕ} (hN : 1 ≤ N) {τ : ℝ} (hτ0 : 0 < |τ|)
+    (hτ : |τ| ≤ Real.pi * ((N : ℝ) * Real.exp (-A)) / m) :
+    ‖dirichletPoly N (twistedWeights h (ramTwist m) N) τ‖ ^ 2 / N ≤
+      18 * Real.pi ^ 2 * (m.divisorsAntidiagonal.card : ℝ) ^ 2 *
+          (L * Real.exp (3 / 2 * A) + Bh * Real.exp (A / 2)) ^ 2 / τ ^ 2 +
+        2 * (∑ x ∈ m.divisorsAntidiagonal, (x.2 : ℝ)) ^ 2 *
+          (L * Real.exp (3 / 2 * A) + Bh * Real.exp (A / 2)) ^ 2 / (N : ℝ) ^ 2 := by
+  have hN0 : (0 : ℝ) < N := by exact_mod_cast hN
+  set V := L * Real.exp (3 / 2 * A) + Bh * Real.exp (A / 2) with hV
+  set d := (m.divisorsAntidiagonal.card : ℝ) with hd
+  set σ := ∑ x ∈ m.divisorsAntidiagonal, (x.2 : ℝ) with hσ
+  have hD := norm_dirichletPoly_ram_le hsupp hA hB hL hm hN hτ0 hτ
+  rw [← hV, ← hd, ← hσ] at hD
+  have h2 := pow_le_pow_left₀ (norm_nonneg _) hD 2
+  have hsq : (d * (3 * Real.pi * N / |τ|) + σ) ^ 2 ≤
+      2 * (d * (3 * Real.pi * N / |τ|)) ^ 2 + 2 * σ ^ 2 := by
+    nlinarith [sq_nonneg (d * (3 * Real.pi * N / |τ|) - σ)]
+  have hτ2 : τ ^ 2 = |τ| ^ 2 := (sq_abs τ).symm
+  rw [div_le_iff₀ hN0]
+  refine h2.trans ?_
+  rw [mul_pow, div_pow, Real.sq_sqrt hN0.le]
+  refine (mul_le_mul_of_nonneg_right hsq (by positivity)).trans (le_of_eq ?_)
+  rw [hτ2]
+  have : |τ| ≠ 0 := hτ0.ne'
+  field_simp
+  ring
+
+/-- **The Ramanujan block is quiet below its first resonance**: the energy on
+`|τ| ≤ N e^{−A}/m` is `O(N^{−1/2})`. -/
+theorem exists_ramLow_energy_le (hφ : ContDiff ℝ 2 φ) (hφsupp : ∀ u, u ∉ Set.Icc 0 1 → φ u = 0)
+    {Cφ q : ℝ} (hq : 0 ≤ q) (hCφ : 0 ≤ Cφ)
+    (hdecay : ∀ u : ℝ, ‖paperFT (cx φ) u‖ ^ 2 ≤ Cφ * (1 + |u|) ^ (-q))
+    (hh : ContDiff ℝ 2 h) (hA : 0 ≤ A) (hsupp : ∀ y, y ∉ Set.Icc (-A) 0 → h y = 0)
+    {m : ℕ} (hm : 1 < m) :
+    ∃ C : ℝ, 0 ≤ C ∧ ∀ N : ℕ, 1 ≤ N → ∀ c : ℝ, 0 < c →
+      ∫ τ in Set.Icc (-((N : ℝ) * Real.exp (-(A + Real.log m))))
+          ((N : ℝ) * Real.exp (-(A + Real.log m))),
+        ‖paperFT (cx φ) (((c / N : ℝ) : ℂ) * τ)‖ ^ 2 *
+          (‖dirichletPoly N (twistedWeights h (ramTwist m) N) τ‖ ^ 2 / N) ≤ C / Real.sqrt N := by
+  have hm' : 0 < m := by omega
+  have hm0 : (0 : ℝ) < m := by exact_mod_cast hm'
+  obtain ⟨Bh, L, hB, hL⟩ := exists_bound_lipschitz hh hsupp
+  obtain ⟨Lh, hLh⟩ := ContDiff.lipschitzWith_of_hasCompactSupport
+    (hasCompactSupport_of_window hsupp) hh (by norm_num)
+  have hBh0 : 0 ≤ Bh := (abs_nonneg _).trans (hB 0)
+  have hL0 : 0 ≤ L := by
+    have := hL 1 0; norm_num at this; linarith [abs_nonneg (h 1 - h 0)]
+  obtain ⟨W, hW⟩ : ∃ W, W = 2 * (∑ j ∈ range m, |ramTwist m j|) * Real.exp (2 * A) *
+      ((Lh : ℝ) + Bh) := ⟨_, rfl⟩
+  obtain ⟨V, hV⟩ : ∃ V, V = L * Real.exp (3 / 2 * A) + Bh * Real.exp (A / 2) := ⟨_, rfl⟩
+  have hV0 : 0 ≤ V := by rw [hV]; positivity
+  obtain ⟨a, ha⟩ : ∃ a, a = 18 * Real.pi ^ 2 * (m.divisorsAntidiagonal.card : ℝ) ^ 2 * V ^ 2 :=
+    ⟨_, rfl⟩
+  obtain ⟨b, hb⟩ : ∃ b, b = 2 * (∑ x ∈ m.divisorsAntidiagonal, (x.2 : ℝ)) ^ 2 * V ^ 2 := ⟨_, rfl⟩
+  have ha0 : 0 ≤ a := by rw [ha]; positivity
+  have hb0 : 0 ≤ b := by rw [hb]; positivity
+  refine ⟨Cφ * (8 * W ^ 2) + 2 * Real.pi * (Cφ * a) + 2 * (Cφ * b), by positivity,
+    fun N hN c hc => ?_⟩
+  have hN0 : (0 : ℝ) < N := by exact_mod_cast hN
+  have hN1 : (1 : ℝ) ≤ N := by exact_mod_cast hN
+  have hsN : 0 < Real.sqrt N := Real.sqrt_pos.mpr hN0
+  have hsN1 : 1 ≤ Real.sqrt N := by rw [Real.one_le_sqrt]; exact hN1
+  have hNs : Real.sqrt N * Real.sqrt N = N := Real.mul_self_sqrt hN0.le
+  obtain ⟨T₀, hT₀⟩ : ∃ T₀, T₀ = (N : ℝ) * Real.exp (-(A + Real.log m)) := ⟨_, rfl⟩
+  rw [← hT₀]
+  have hT₀0 : 0 ≤ T₀ := by rw [hT₀]; positivity
+  have hT₀N : T₀ ≤ N := by
+    rw [hT₀]
+    have : Real.exp (-(A + Real.log m)) ≤ 1 :=
+      Real.exp_le_one_iff.mpr (by linarith [Real.log_nonneg (show (1 : ℝ) ≤ m by
+        exact_mod_cast hm.le)])
+    nlinarith
+  have hT₀res : T₀ ≤ Real.pi * ((N : ℝ) * Real.exp (-A)) / m := by
+    rw [hT₀, neg_add, Real.exp_add, Real.exp_neg (Real.log m), Real.exp_log hm0, le_div_iff₀ hm0]
+    have : (N : ℝ) * (Real.exp (-A) * (m : ℝ)⁻¹) * m = N * Real.exp (-A) := by field_simp
+    rw [this]
+    nlinarith [Real.pi_gt_three, mul_nonneg hN0.le (Real.exp_pos (-A)).le]
+  have hφb : ∀ τ : ℝ, ‖paperFT (cx φ) (((c / N : ℝ) : ℂ) * τ)‖ ^ 2 ≤ Cφ := fun τ => by
+    have := hdecay (c / N * τ)
+    rw [show ((c / N * τ : ℝ) : ℂ) = ((c / N : ℝ) : ℂ) * (τ : ℂ) by push_cast; ring] at this
+    refine this.trans ?_
+    have : (1 + |(c / N * τ)|) ^ (-q) ≤ 1 :=
+      Real.rpow_le_one_of_one_le_of_nonpos (by linarith [abs_nonneg (c / N * τ)]) (by linarith)
+    nlinarith
+  have hb₁ : ∀ τ ∈ Set.Icc (-T₀) T₀, |τ| ≤ Real.sqrt N →
+      ‖paperFT (cx φ) (((c / N : ℝ) : ℂ) * τ)‖ ^ 2 *
+        (‖dirichletPoly N (twistedWeights h (ramTwist m) N) τ‖ ^ 2 / N) ≤ Cφ * (4 * W ^ 2 / N) :=
+    fun τ _ hτ => by
+      have := ramLow_small_le hh hA hsupp hB hLh hm hN hτ
+      rw [← hW] at this
+      exact mul_le_mul (hφb τ) this (by positivity) hCφ
+  have hb₂ : ∀ τ ∈ Set.Icc (-T₀) T₀, Real.sqrt N ≤ |τ| →
+      ‖paperFT (cx φ) (((c / N : ℝ) : ℂ) * τ)‖ ^ 2 *
+        (‖dirichletPoly N (twistedWeights h (ramTwist m) N) τ‖ ^ 2 / N) ≤
+        Cφ * a / τ ^ 2 + Cφ * (b / (N : ℝ) ^ 2) :=
+    fun τ hτ hτs => by
+      have hτ0 : 0 < |τ| := lt_of_lt_of_le hsN hτs
+      have := ramLow_large_le hsupp hA hB hL hm' hN hτ0 ((abs_le.mpr hτ).trans hT₀res)
+      rw [← hV, ← ha, ← hb] at this
+      refine (mul_le_mul (hφb τ) this (by positivity) hCφ).trans (le_of_eq ?_)
+      ring
+  have hint : IntegrableOn (fun τ : ℝ => ‖paperFT (cx φ) (((c / N : ℝ) : ℂ) * τ)‖ ^ 2 *
+      (‖dirichletPoly N (twistedWeights h (ramTwist m) N) τ‖ ^ 2 / N)) (Set.Icc (-T₀) T₀) :=
+    (integrable_energyW hφ hφsupp _ hc hN).integrableOn
+  have hsplit := setIntegral_Icc_le_of_split hsN hT₀0 hint (by positivity) (by positivity)
+    (by positivity) hb₁ hb₂
+  refine hsplit.trans ?_
+  have e1 : 2 * Real.sqrt N * (Cφ * (4 * W ^ 2 / N)) = Cφ * (8 * W ^ 2) / Real.sqrt N := by
+    rw [eq_div_iff hsN.ne']
+    have : 2 * Real.sqrt N * (Cφ * (4 * W ^ 2 / N)) * Real.sqrt N =
+        Cφ * (8 * W ^ 2) * ((Real.sqrt N * Real.sqrt N) / N) := by ring
+    rw [this, hNs, div_self hN0.ne', mul_one]
+  have e2 : 2 * (Cφ * a) * (Real.pi / Real.sqrt N) = 2 * Real.pi * (Cφ * a) / Real.sqrt N := by
+    ring
+  have e3 : 2 * T₀ * (Cφ * (b / (N : ℝ) ^ 2)) ≤ 2 * (Cφ * b) / Real.sqrt N := by
+    have hX : 0 ≤ 2 * (Cφ * b) := by positivity
+    have h1 : 2 * T₀ * (Cφ * (b / (N : ℝ) ^ 2)) ≤ 2 * (Cφ * b) / N := by
+      have : 2 * (Cφ * b) / N = 2 * N * (Cφ * (b / (N : ℝ) ^ 2)) := by
+        field_simp
+      rw [this]
+      exact mul_le_mul_of_nonneg_right (by linarith) (by positivity)
+    refine h1.trans (div_le_div_of_nonneg_left hX hsN ?_)
+    calc Real.sqrt N ≤ Real.sqrt N * Real.sqrt N := le_mul_of_one_le_left hsN.le hsN1
+      _ = N := hNs
+  rw [e1, e2, add_div, add_div]
+  linarith
 
 end GaloisForLFunctions.ArithmeticHodgeTheoryOfDegenerations

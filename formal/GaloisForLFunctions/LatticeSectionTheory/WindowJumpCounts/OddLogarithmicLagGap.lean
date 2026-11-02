@@ -1,5 +1,17 @@
 import GaloisForLFunctions.LatticeSectionTheory.WindowJumpCounts.OddLogarithmicPairGap
 import GaloisForLFunctions.BiScaleUncertainty.KreinIncrementAndChordCascade
+import GaloisForLFunctions.RHTower.CHMDCompactSourceClass
+
+/-!
+# The interior logarithmic jumps of an odd test
+
+For an odd compact `C²` test supported in `[-a,a]`, its autocorrelation `A`
+satisfies `∫₀²ᵃ (A(0)-A(t))/t dt ≥ (log 2+7/5) A(0)`.
+Fubini turns the lag count into a symmetric pair count. Reflection gives
+the principal odd kernel; jumps leaving the support give the exact exterior
+charge. The cubic ground-state bound then applies, and dilation removes the
+normalization `a=1`.
+-/
 
 open Real MeasureTheory Set
 open RHTower.ArchimedeanAnomaly RHTower.ArchimedeanExactForm RHTower.WeilMarkovPole
@@ -11,9 +23,18 @@ namespace GaloisForLFunctions.LatticeSectionTheory
 /-- Logarithmic jumps of length at most two. The diagonal has weight zero. -/
 def logarithmicJumpKernel (t : ℝ) : ℝ := if |t| ≤ 2 then |t|⁻¹ else 0
 
+private theorem measurable_logarithmicJumpKernel : Measurable logarithmicJumpKernel :=
+  Measurable.ite (measurableSet_le continuous_abs.measurable measurable_const)
+    continuous_abs.measurable.inv measurable_const
+
 /-- The unnormalized pair count of truncated logarithmic jumps. -/
 def logarithmicJumpPair (F : ℝ → ℝ) (x y : ℝ) : ℝ :=
   logarithmicJumpKernel (y - x) * (F x - F y) ^ 2
+
+private theorem measurable_logarithmicJumpPair {F : ℝ → ℝ} (hFc : Continuous F) :
+    Measurable (fun p : ℝ × ℝ => logarithmicJumpPair F p.1 p.2) :=
+  (measurable_logarithmicJumpKernel.comp (measurable_snd.sub measurable_fst)).mul
+    (((hFc.measurable.comp measurable_fst).sub (hFc.measurable.comp measurable_snd)).pow_const 2)
 
 private theorem logarithmicJumpPair_nonneg (F : ℝ → ℝ) (x y : ℝ) :
     0 ≤ logarithmicJumpPair F x y := by
@@ -23,7 +44,8 @@ private theorem logarithmicJumpPair_nonneg (F : ℝ → ℝ) (x y : ℝ) :
 private theorem logarithmicJumpPair_comm (F : ℝ → ℝ) (x y : ℝ) :
     logarithmicJumpPair F x y = logarithmicJumpPair F y x := by
   unfold logarithmicJumpPair logarithmicJumpKernel
-  rw [abs_sub_comm, sq_sub_comm]
+  rw [abs_sub_comm]
+  ring
 
 private theorem logarithmicJumpPair_bound {F : ℝ → ℝ} {K : ℝ}
     (hFL : ∀ x y, |F x - F y| ≤ K * |x - y|) (x y : ℝ) :
@@ -54,7 +76,7 @@ private theorem logarithmicJumpPair_zero_left {F : ℝ → ℝ}
   unfold logarithmicJumpPair logarithmicJumpKernel
   split_ifs with hxy
   · have hy : 1 ≤ |y| := by
-      have h := abs_add (x - y) y
+      have h := abs_add_le (x - y) y
       rw [sub_add_cancel, abs_sub_comm] at h
       linarith only [h, hx, hxy]
     rw [hFx, hFs y hy, sub_self, zero_pow (by decide : 2 ≠ 0), mul_zero]
@@ -70,7 +92,10 @@ private theorem integrable_on_cube {G : ℝ × ℝ → ℝ} {C : ℝ}
     · exact (Set.indicator_of_mem hp G).symm
     · rw [Set.indicator_of_notMem hp, hz p hp]
   rw [he, integrable_indicator_iff (measurableSet_Icc.prod measurableSet_Icc)]
-  refine Measure.integrableOn_of_bounded (M := C) (by simp) hm.aestronglyMeasurable ?_
+  have hfin : (volume.prod volume) (Icc (-3 : ℝ) 3 ×ˢ Icc (-3 : ℝ) 3) ≠ ⊤ := by
+    rw [Measure.prod_prod]
+    exact (ENNReal.mul_lt_top measure_Icc_lt_top measure_Icc_lt_top).ne
+  refine Measure.integrableOn_of_bounded (M := C) hfin hm.aestronglyMeasurable ?_
   filter_upwards with p
   rw [Real.norm_eq_abs]
   exact hb p
@@ -80,14 +105,13 @@ private theorem integrable_logarithmicJumpPair {F : ℝ → ℝ} (hFc : Continuo
     (hFs : ∀ x, 1 ≤ |x| → F x = 0) :
     Integrable (fun p : ℝ × ℝ => logarithmicJumpPair F p.1 p.2) (volume.prod volume) := by
   apply integrable_on_cube (C := 2 * K ^ 2)
-  · unfold logarithmicJumpPair logarithmicJumpKernel
-    fun_prop
+  · exact measurable_logarithmicJumpPair hFc
   · intro p
     exact logarithmicJumpPair_bound hFL p.1 p.2
   · intro p hp
     have h : 3 < |p.1| ∨ 3 < |p.2| := by
       by_contra hn
-      push_neg at hn
+      push Not at hn
       exact hp ⟨(abs_le.mp hn.1), (abs_le.mp hn.2)⟩
     rcases h with hx | hy
     · exact logarithmicJumpPair_zero_left hFs hx
@@ -99,14 +123,14 @@ private theorem integrable_logarithmicJumpShift {F : ℝ → ℝ} (hFc : Continu
     (hFs : ∀ x, 1 ≤ |x| → F x = 0) :
     Integrable (fun p : ℝ × ℝ => logarithmicJumpPair F p.1 (p.1 + p.2)) (volume.prod volume) := by
   apply integrable_on_cube (C := 2 * K ^ 2)
-  · unfold logarithmicJumpPair logarithmicJumpKernel
-    fun_prop
+  · exact (measurable_logarithmicJumpPair hFc).comp
+      (measurable_fst.prodMk (measurable_fst.add measurable_snd))
   · intro p
     exact logarithmicJumpPair_bound hFL p.1 (p.1 + p.2)
   · intro p hp
     have h : 3 < |p.1| ∨ 3 < |p.2| := by
       by_contra hn
-      push_neg at hn
+      push Not at hn
       exact hp ⟨abs_le.mp hn.1, abs_le.mp hn.2⟩
     rcases h with hx | ht
     · exact logarithmicJumpPair_zero_left hFs hx
@@ -163,7 +187,8 @@ theorem logarithmic_pair_eq_lag {F : ℝ → ℝ} (hFc : Continuous F) {K : ℝ}
     have he : ∀ t ∈ Ioi (0 : ℝ), g t =
         (Iic (2 : ℝ)).indicator (fun t => 2 * ((autocorr F 0 - autocorr F t) / t)) t := by
       intro t ht
-      simp only [g, logarithmicJumpKernel, abs_of_pos ht, Set.indicator_apply, mem_Iic]
+      have ht0 : 0 < t := Set.mem_Ioi.mp ht
+      simp only [g, logarithmicJumpKernel, abs_of_pos ht0, Set.indicator_apply, mem_Iic]
       split_ifs <;> ring
     rw [setIntegral_congr_fun measurableSet_Ioi he, setIntegral_indicator measurableSet_Iic,
       Ioi_inter_Iic, integral_const_mul]
@@ -189,8 +214,7 @@ private theorem integrable_logarithmicJumpPair_row {F : ℝ → ℝ}
     (hFs : ∀ x, 1 ≤ |x| → F x = 0) (x : ℝ) :
     Integrable (logarithmicJumpPair F x) := by
   apply integrable_bounded_window (C := 2 * K ^ 2)
-  · unfold logarithmicJumpPair logarithmicJumpKernel
-    fun_prop
+  · exact (measurable_logarithmicJumpPair hFc).comp (measurable_const.prodMk measurable_id)
   · exact logarithmicJumpPair_bound hFL x
   · intro y hy
     rw [logarithmicJumpPair_comm]
@@ -224,7 +248,7 @@ theorem logarithmic_pair_eq_positive_fold {F : ℝ → ℝ} (hFc : Continuous F)
     intro x
     calc
       row (-x) = ∫ y, logarithmicJumpPair F (-x) (-y) :=
-        (integral_neg_eq_self (fun y => logarithmicJumpPair F (-x) y)).symm
+        (integral_neg_eq_self (fun y => logarithmicJumpPair F (-x) y) volume).symm
       _ = row x := integral_congr_ae (Filter.Eventually.of_forall fun y =>
         logarithmicJumpPair_reflect hFo x y)
   have habs : ∀ x, row |x| = row x := by
@@ -243,8 +267,8 @@ theorem logarithmic_pair_eq_positive_fold {F : ℝ → ℝ} (hFc : Continuous F)
   have hi := integrable_logarithmicJumpPair_row hFc hFL hFs x
   have hin : Integrable (fun y => logarithmicJumpPair F x (-y)) := by
     apply integrable_bounded_window (C := 2 * K ^ 2)
-    · unfold logarithmicJumpPair logarithmicJumpKernel
-      fun_prop
+    · exact (measurable_logarithmicJumpPair hFc).comp
+        (measurable_const.prodMk measurable_id.neg)
     · intro y
       exact logarithmicJumpPair_bound hFL x (-y)
     · intro y hy
@@ -254,6 +278,11 @@ theorem logarithmic_pair_eq_positive_fold {F : ℝ → ℝ} (hFc : Continuous F)
 
 private def foldedPair (F : ℝ → ℝ) (x y : ℝ) : ℝ :=
   logarithmicJumpPair F x y + logarithmicJumpPair F x (-y)
+
+private theorem measurable_foldedPair {F : ℝ → ℝ} (hFc : Continuous F) :
+    Measurable (fun p : ℝ × ℝ => foldedPair F p.1 p.2) :=
+  (measurable_logarithmicJumpPair hFc).add
+    ((measurable_logarithmicJumpPair hFc).comp (measurable_fst.prodMk measurable_snd.neg))
 
 private theorem foldedPair_eq {F : ℝ → ℝ} (hFo : ∀ x, F (-x) = -F x) (x y : ℝ) :
     foldedPair F x y = logarithmicJumpKernel (y - x) * (F x - F y) ^ 2 +
@@ -266,12 +295,13 @@ private theorem foldedPair_comm {F : ℝ → ℝ} (hFo : ∀ x, F (-x) = -F x) (
     foldedPair F x y = foldedPair F y x := by
   rw [foldedPair_eq hFo, foldedPair_eq hFo]
   unfold logarithmicJumpKernel
-  rw [abs_sub_comm, sq_sub_comm, add_comm y x, add_comm (F y) (F x)]
+  rw [abs_sub_comm, add_comm y x, add_comm (F y) (F x)]
+  ring
 
 private theorem foldedPair_bound {F : ℝ → ℝ} {K : ℝ}
     (hFL : ∀ x y, |F x - F y| ≤ K * |x - y|) (x y : ℝ) :
     |foldedPair F x y| ≤ 4 * K ^ 2 := by
-  exact (abs_add _ _).trans (by
+  exact (abs_add_le _ _).trans (by
     linarith only [logarithmicJumpPair_bound hFL x y, logarithmicJumpPair_bound hFL x (-y)])
 
 private theorem foldedPair_zero_right {F : ℝ → ℝ}
@@ -288,14 +318,13 @@ private theorem integrable_foldedPair {F : ℝ → ℝ} (hFc : Continuous F) {K 
     (hFs : ∀ x, 1 ≤ |x| → F x = 0) :
     Integrable (fun p : ℝ × ℝ => foldedPair F p.1 p.2) (volume.prod volume) := by
   apply integrable_on_cube (C := 4 * K ^ 2)
-  · unfold foldedPair logarithmicJumpPair logarithmicJumpKernel
-    fun_prop
+  · exact measurable_foldedPair hFc
   · intro p
     exact foldedPair_bound hFL p.1 p.2
   · intro p hp
     have h : 3 < |p.1| ∨ 3 < |p.2| := by
       by_contra hn
-      push_neg at hn
+      push Not at hn
       exact hp ⟨abs_le.mp hn.1, abs_le.mp hn.2⟩
     rcases h with hx | hy
     · unfold foldedPair
@@ -306,8 +335,7 @@ private theorem integrable_foldedPair_row {F : ℝ → ℝ} (hFc : Continuous F)
     (hFL : ∀ x y, |F x - F y| ≤ K * |x - y|)
     (hFs : ∀ x, 1 ≤ |x| → F x = 0) (x : ℝ) : Integrable (foldedPair F x) := by
   apply integrable_bounded_window (C := 4 * K ^ 2)
-  · unfold foldedPair logarithmicJumpPair logarithmicJumpKernel
-    fun_prop
+  · exact (measurable_foldedPair hFc).comp (measurable_const.prodMk measurable_id)
   · exact foldedPair_bound hFL x
   · intro y hy
     exact foldedPair_zero_right hFs hy
@@ -349,7 +377,8 @@ private theorem positive_square_split {D : ℝ → ℝ → ℝ}
   have hdis : Disjoint (Ioc (0 : ℝ) 1) (Ioi 1) :=
     Set.disjoint_left.mpr fun _ h1 h2 => not_lt_of_ge h1.2 h2
   have hs : Ioc (0 : ℝ) 1 ⊆ Ioi 0 := fun _ h => h.1
-  have ht : Ioi (1 : ℝ) ⊆ Ioi 0 := fun _ h => lt_trans zero_lt_one h
+  have ht : Ioi (1 : ℝ) ⊆ Ioi 0 := fun _ h =>
+    Set.mem_Ioi.mpr (lt_trans zero_lt_one (Set.mem_Ioi.mp h))
   have hinner : ∀ x, (∫ y in Ioi (0 : ℝ), D x y) =
       (∫ y in Ioc (0 : ℝ) 1, D x y) + ∫ y in Ioi (1 : ℝ), D x y := by
     intro x
@@ -383,38 +412,42 @@ private theorem right_exterior_log_integral {x : ℝ} (hx0 : -1 < x) (hx1 : x < 
     IntegrableOn (fun y => logarithmicJumpKernel (y - x)) (Ioi (1 : ℝ)) ∧
       (∫ y in Ioi (1 : ℝ), logarithmicJumpKernel (y - x)) =
         Real.log 2 - Real.log (1 - x) := by
+  have hden : 0 < 1 - x := sub_pos.mpr hx1
   have hm : Measurable (fun y => (Ioi (1 : ℝ)).indicator
-      (fun y => logarithmicJumpKernel (y - x)) y) := by
-    unfold logarithmicJumpKernel
-    fun_prop
+      (fun y => logarithmicJumpKernel (y - x)) y) :=
+    (measurable_logarithmicJumpKernel.comp (measurable_id.sub measurable_const)).indicator
+      measurableSet_Ioi
   have hi : Integrable (fun y => (Ioi (1 : ℝ)).indicator
       (fun y => logarithmicJumpKernel (y - x)) y) := by
     apply integrable_bounded_window hm (C := (1 - x)⁻¹)
     · intro y
       by_cases hy : 1 < y
-      · rw [Set.indicator_of_mem hy]
+      · have hp : 0 < y - x := by linarith only [hy, hx1]
+        rw [Set.indicator_of_mem (Set.mem_Ioi.mpr hy)]
         unfold logarithmicJumpKernel
-        rw [abs_of_pos (show 0 < y - x by linarith only [hy, hx1])]
+        rw [abs_of_pos hp]
         split_ifs with h2
         · rw [abs_of_nonneg (by positivity)]
-          exact one_div_le_one_div_of_le (sub_pos.mpr hx1) (by linarith only [hy])
+          simpa only [one_div] using one_div_le_one_div_of_le hden
+            (show 1 - x ≤ y - x by linarith only [hy])
         · rw [abs_zero]
           positivity
-      · rw [Set.indicator_of_notMem hy, abs_zero]
+      · rw [Set.indicator_of_notMem (show y ∉ Ioi (1 : ℝ) from fun h => hy (Set.mem_Ioi.mp h)), abs_zero]
         positivity
     · intro y hy
       by_cases hy1 : 1 < y
       · have hy3 : 3 < y := by rwa [abs_of_pos (by linarith only [hy1])] at hy
-        rw [Set.indicator_of_mem hy1]
+        rw [Set.indicator_of_mem (Set.mem_Ioi.mpr hy1)]
         unfold logarithmicJumpKernel
         rw [abs_of_pos (show 0 < y - x by linarith only [hy3, hx1]),
           if_neg (by linarith only [hy3, hx1])]
-      · exact Set.indicator_of_notMem hy1 _
+      · exact Set.indicator_of_notMem (show y ∉ Ioi (1 : ℝ) from fun h => hy1 (Set.mem_Ioi.mp h)) _
   refine ⟨(integrable_indicator_iff measurableSet_Ioi).mp hi, ?_⟩
   have he : ∀ y ∈ Ioi (1 : ℝ), logarithmicJumpKernel (y - x) =
       (Iic (x + 2)).indicator (fun y => 1 / (y - x)) y := by
     intro y hy
-    have hp : 0 < y - x := by linarith only [hy, hx1]
+    have hy1 : 1 < y := Set.mem_Ioi.mp hy
+    have hp : 0 < y - x := by linarith only [hy1, hx1]
     simp only [logarithmicJumpKernel, abs_of_pos hp, Set.indicator_apply, mem_Iic, one_div]
     congr 1
     exact propext (by constructor <;> intro h <;> linarith only [h])
@@ -456,7 +489,7 @@ private theorem integral_inv_add_unit {x : ℝ} (hx : 0 < x) :
   have h := ArithmeticIncidencePositivity.integral_quartic_sub_log
     (x := x) (a := 0) (b := 1) (c₀ := 0) (c₁ := 0) (c₂ := 0) (c₃ := 0) (c₄ := 0)
     (K := -1) zero_le_one (by simpa only [add_zero] using hx)
-  simpa only [zero_mul, zero_add, zero_sub, neg_one_mul, neg_neg, neg_div, add_zero] using h
+  simpa only [zero_mul, mul_zero, zero_add, add_zero, zero_sub, neg_one_mul, neg_neg, neg_div] using h
 
 private theorem reflected_mass_bound {F : ℝ → ℝ} {K x y : ℝ} (hF0 : F 0 = 0)
     (hFL : ∀ x y, |F x - F y| ≤ K * |x - y|)
@@ -468,7 +501,8 @@ private theorem reflected_mass_bound {F : ℝ → ℝ} {K x y : ℝ} (hF0 : F 0 
     have h := pow_le_pow_left₀ (abs_nonneg (F x)) hf 2
     simpa only [sq_abs, mul_pow] using h
   have hx2 : x ^ 2 ≤ x := by nlinarith only [hx.1, hx.2]
-  rw [abs_of_nonneg (by positivity), div_le_iff₀ (add_pos hx.1 hy.1)]
+  have hxy : 0 < x + y := add_pos hx.1 hy.1
+  rw [abs_of_nonneg (div_nonneg (sq_nonneg _) hxy.le), div_le_iff₀ hxy]
   nlinarith only [hf2, mul_le_mul_of_nonneg_left hx2 (sq_nonneg K),
     mul_nonneg (sq_nonneg K) hy.1.le]
 
@@ -498,7 +532,9 @@ private theorem foldedPair_interior_integral {F : ℝ → ℝ} (hFc : Continuous
     filter_upwards [ae_restrict_mem (measurableSet_Ioo.prod measurableSet_Ioo)] with p hp
     rw [Real.norm_eq_abs]
     exact reflected_mass_bound hF0 hFL hp.2 hp.1
-  have hIE := principalOddKernel_energy_integrable hFc (fun x _ y _ => hFL x y)
+  have hIE : Integrable E
+      ((volume.restrict (Ioo (0 : ℝ) 1)).prod (volume.restrict (Ioo (0 : ℝ) 1))) :=
+    principalOddKernel_energy_integrable hFc (fun x _ y _ => hFL x y)
   have hID : Integrable (fun p : ℝ × ℝ => foldedPair F p.1 p.2)
       ((volume.restrict (Ioo (0 : ℝ) 1)).prod (volume.restrict (Ioo (0 : ℝ) 1))) := by
     rw [Measure.prod_restrict]
@@ -520,8 +556,7 @@ private theorem foldedPair_interior_integral {F : ℝ → ℝ} (hFc : Continuous
     dsimp [B]
     simp only [div_eq_mul_inv]
     rw [integral_const_mul]
-    change F x ^ 2 * (∫ y in Ioo (0 : ℝ) 1, 1 / (x + y)) = _
-    rw [integral_inv_add_unit hx.1]
+    simpa only [one_div] using congrArg (fun z => F x ^ 2 * z) (integral_inv_add_unit hx.1)
   rw [integral_integral (f := fun x y => foldedPair F x y) hID]
   have hae : (fun p : ℝ × ℝ => foldedPair F p.1 p.2) =ᵐ[
       (volume.restrict (Ioo (0 : ℝ) 1)).prod (volume.restrict (Ioo (0 : ℝ) 1))]
@@ -530,8 +565,10 @@ private theorem foldedPair_interior_integral {F : ℝ → ℝ} (hFc : Continuous
     filter_upwards [ae_restrict_mem (measurableSet_Ioo.prod measurableSet_Ioo)] with p hp'
     exact hp p.1 hp'.1 p.2 hp'.2
   rw [integral_congr_ae hae,
-    integral_add ((hIE.const_mul 2).add (hIB.const_mul 2)) (hIBs.const_mul 2),
-    integral_add (hIE.const_mul 2) (hIB.const_mul 2), integral_const_mul, integral_const_mul,
+    integral_add (f := fun p => 2 * E p + 2 * B p) (g := fun p => 2 * B (p.2, p.1))
+      ((hIE.const_mul 2).add (hIB.const_mul 2)) (hIBs.const_mul 2),
+    integral_add (f := fun p => 2 * E p) (g := fun p => 2 * B p)
+      (hIE.const_mul 2) (hIB.const_mul 2), integral_const_mul, integral_const_mul,
     integral_const_mul,
     ← integral_integral (f := fun x y => E (x, y)) hIE,
     ← integral_integral (f := fun x y => B (x, y)) hIB,
@@ -606,12 +643,14 @@ private theorem odd_unit_mass {F : ℝ → ℝ}
     rcases le_total 0 x with hx | hx
     · rw [abs_of_nonneg hx]
     · rw [abs_of_nonpos hx, hFo, neg_sq]
-  rw [← integral_congr_ae (Filter.Eventually.of_forall habs), integral_comp_abs]
+  rw [← integral_congr_ae (Filter.Eventually.of_forall habs),
+    integral_comp_abs (f := fun x => F x ^ 2)]
   have he : ∀ x ∈ Ioi (0 : ℝ), F x ^ 2 = (Iic (1 : ℝ)).indicator (fun x => F x ^ 2) x := by
     intro x hx
     by_cases h : x ≤ 1
-    · exact (Set.indicator_of_mem h _).symm
-    · rw [Set.indicator_of_notMem h, hFs x (by rw [abs_of_pos hx]; exact (lt_of_not_ge h).le)]
+    · exact (Set.indicator_of_mem (Set.mem_Iic.mpr h) (fun x : ℝ => F x ^ 2)).symm
+    · rw [Set.indicator_of_notMem (show x ∉ Iic (1 : ℝ) from fun h' => h (Set.mem_Iic.mp h')),
+        hFs x (by rw [abs_of_pos (Set.mem_Ioi.mp hx)]; exact (lt_of_not_ge h).le)]
       norm_num
   rw [setIntegral_congr_fun measurableSet_Ioi he, setIntegral_indicator measurableSet_Iic,
     Ioi_inter_Iic, integral_Ioc_eq_integral_Ioo]
@@ -684,10 +723,42 @@ theorem odd_logarithmic_jump_gap {F : ℝ → ℝ} (hFc : Continuous F) {K a : �
       intervalIntegral.integral_of_le (show (0 : ℝ) ≤ 2 * a by positivity)] at h
     exact h
   rw [hmass, hlag] at hgap
-  apply (mul_le_mul_left (inv_pos.mpr ha)).mp
-  calc
-    a⁻¹ * ((Real.log 2 + 7 / 5) * ∫ x, F x ^ 2) =
-        (Real.log 2 + 7 / 5) * (a⁻¹ * ∫ x, F x ^ 2) := by ring
-    _ ≤ _ := hgap
+  have h : a⁻¹ * ((Real.log 2 + 7 / 5) * ∫ x, F x ^ 2) ≤
+      a⁻¹ * ∫ t in Ioc (0 : ℝ) (2 * a), (autocorr F 0 - autocorr F t) / t := by
+    calc
+      a⁻¹ * ((Real.log 2 + 7 / 5) * ∫ x, F x ^ 2) =
+          (Real.log 2 + 7 / 5) * (a⁻¹ * ∫ x, F x ^ 2) := by ring
+      _ ≤ _ := hgap
+  have hm := mul_le_mul_of_nonneg_left h ha.le
+  simpa only [← mul_assoc, mul_inv_cancel₀ ha.ne', one_mul] using hm
+
+/-- The logarithmic interior-jump count controls the mass of every odd compact smooth test. -/
+theorem odd_interior_jump_poincare {F : ℝ → ℝ} (hF : ContDiff ℝ 2 F) {a : ℝ}
+    (ha : 0 < a) (hFs : tsupport F ⊆ Icc (-a) a) (hFo : ∀ x, F (-x) = -F x) :
+    (Real.log 2 + 7 / 5) * (∫ x, F x ^ 2) ≤
+      ∫ t in Ioc (0 : ℝ) (2 * a), (autocorr F 0 - autocorr F t) / t := by
+  have hcs : HasCompactSupport F :=
+    HasCompactSupport.intro (isCompact_Icc (a := -a) (b := a)) fun x hx =>
+      image_eq_zero_of_notMem_tsupport fun hs => hx (hFs hs)
+  obtain ⟨K, hK⟩ := RHTower.CHMDDoobGraph.compact_source_lipschitz hF hcs
+  have hFL : ∀ x y, |F x - F y| ≤ (K : ℝ) * |x - y| := by
+    intro x y
+    simpa only [Real.dist_eq] using hK.dist_le_mul x y
+  have hz : Ioi a ⊆ {x | F x = 0} := by
+    intro x hx
+    exact image_eq_zero_of_notMem_tsupport fun hs => not_le_of_gt hx (hFs hs).2
+  have hzr : ∀ x, a ≤ x → F x = 0 := by
+    have h := closure_minimal hz (isClosed_eq hF.continuous continuous_const)
+    rw [closure_Ioi] at h
+    exact fun x hx => h hx
+  have hsupport : ∀ x, a ≤ |x| → F x = 0 := by
+    intro x hx
+    rcases le_total 0 x with hx0 | hx0
+    · exact hzr x (by rwa [abs_of_nonneg hx0] at hx)
+    · have hneg := hzr (-x) (by rwa [abs_of_nonpos hx0] at hx)
+      rw [hFo] at hneg
+      exact neg_eq_zero.mp hneg
+  exact odd_logarithmic_jump_gap hF.continuous ha hFL hsupport hFo
 
 end GaloisForLFunctions.LatticeSectionTheory
+

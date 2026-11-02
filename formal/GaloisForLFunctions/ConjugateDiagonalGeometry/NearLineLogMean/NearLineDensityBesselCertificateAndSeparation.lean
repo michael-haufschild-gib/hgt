@@ -20,7 +20,7 @@ paired with `ClusteringLogMeanAndMollifierEquivalence`:
      `O_r(B * (e^{-r A} / A) * V)` of `[V, 2V]` are free of `ξ`-zeros with `|Re ρ - 1/2| ≥ A / log V`
      for every `0 < r < 1`.
    - On Burnol unit windows `m ∈ [⌈V⌉, ⌊2V⌋]`, all except `O_c(V / log(log V))` windows satisfy the
-     explicit Bessel–Szegő certificate at `doubleLogDoorStage c m` (`0 < c < 1 / 192`) for every
+     explicit Bessel–Szegő certificate at `doubleLogDoorStage c m` (`0 < c < 1 / 48`) for every
      `N ≥ doorSqrtPrefix m`.
 
 3. **Bidirectional no-go separation countermodels (`UnitWindowStripZeroModel`,
@@ -28,7 +28,7 @@ paired with `ClusteringLogMeanAndMollifierEquivalence`:
    `exists_sparseUniformModel_logMean_not_cert`)**:
    Even under local Riemann–von Mangoldt `(1 / (2π)) log m + O(1)`, `> 68%` simple critical-line zeros,
    reflection symmetry, and uniform arbitrary-rate (`0 < r < 1`) Selberg exponential near-line zero
-   density, almost-all unit-window certificates (`ModelWindowOccupancy`)neither imply `(D_zero)` nor
+   density, almost-all unit-window certificates (`ModelWindowOccupancy`) neither imply `(D_zero)` nor
    `(L)` (clustered packet model), and `(L)` / `100%` critical-scale clustering do not imply
    unit-window certificates (sparse-uniform model).
 -/
@@ -110,6 +110,22 @@ private lemma sq_sum_le_card_mul_sum_sq {α : Type*} (s : Finset α) (f : α →
       have hnonneg : 0 ≤ ((n + 1) * ((f a) ^ 2 + Q)) - (f a + Σ) ^ 2 :=
         nonneg_of_mul_nonneg_right hdiff hn
       linarith
+
+private lemma finset_sum_union_le {α : Type*} [DecidableEq α] (s₁ s₂ : Finset α)
+    {f : α → ℝ} (hf : ∀ a, 0 ≤ f a) :
+    ∑ a ∈ s₁ ∪ s₂, f a ≤ ∑ a ∈ s₁, f a + ∑ a ∈ s₂, f a := by
+  have h := Finset.sum_union_inter (s₁ := s₁) (s₂ := s₂) (f := f)
+  have hnn : 0 ≤ ∑ a ∈ s₁ ∩ s₂, f a := Finset.sum_nonneg fun a _ => hf a
+  linarith
+
+private lemma finset_sum_biUnion_le {ι α : Type*} [DecidableEq α] (s : Finset ι)
+    (t : ι → Finset α) {f : α → ℝ} (hf : ∀ a, 0 ≤ f a) :
+    ∑ a ∈ s.biUnion t, f a ≤ ∑ i ∈ s, ∑ a ∈ t i, f a := by
+  induction s using Finset.induction_on with
+  | empty => simp
+  | @insert i s hi ih =>
+    rw [Finset.biUnion_insert, Finset.sum_insert hi]
+    exact (finset_sum_union_le (t i) (s.biUnion t) hf).trans (by linarith [ih])
 
 private lemma tendsto_one_div_const_mul_nhdsGT_zero {k : ℝ} (hk : 0 < k) :
     Tendsto (fun c : ℝ => 1 / (k * c)) (𝓝[>] 0) atTop := by
@@ -392,8 +408,9 @@ private lemma not_hasLogStageBesselCertificate_of_deep_unitZero {A : ℝ} (hA : 
   have hlogV_pos : 0 < Real.log V := Real.log_pos (by linarith)
   -- Reflect `ρ ↦ 1 - star ρ` if needed so `1/2 ≤ ρ₁.re`, keeping `ρ₁ ∈ xiUnitWindowZeros m'`.
   have hρ_mem := mem_xiUnitWindowZeros.mp hρ_unit
-  obtain ⟨⟨⟨hr0_ρ, hr1_ρ, _, him_lt_m1⟩, hxi_ρ⟩, hm'_le_im⟩ :=
-    (_root_.RHTower.stripZeros_finite ((m' : ℝ) + 1)).mem_toFinset.mp hρ_mem.1, hρ_mem.2
+  obtain ⟨⟨hr0_ρ, hr1_ρ, _, him_lt_m1⟩, hxi_ρ⟩ :=
+    (_root_.RHTower.stripZeros_finite ((m' : ℝ) + 1)).mem_toFinset.mp hρ_mem.1
+  have hm'_le_im : (m' : ℝ) ≤ ρ.im := hρ_mem.2
   have hρ₁_ex : ∃ ρ₁ ∈ xiUnitWindowZeros (m' : ℝ),
       ρ₁.im = ρ.im ∧ 1 / 2 + A / Real.log V ≤ ρ₁.re := by
     rcases le_or_gt (1 / 2 : ℝ) ρ.re with hge | hlt
@@ -853,21 +870,7 @@ theorem logFreeNearLineZeroDensity_implies_windowOccupancy_and_logMean
           (_root_.RHTower.mem_stripFinsetPos.mpr ⟨hr0, hr1, him0, hlo_im, hxi⟩))
       · refine Finset.mem_union.mpr (Or.inr ?_)
         push Not at hlo_im
-        -- Find the largest `j < K` with `V / 2^(j+1) < z.im ≤ V / 2^j`.
-        have hex_j : ∀ n : ℕ, n ≤ K → V / (2 : ℝ) ^ n < z.im ∨
-            ∃ j < n, V / (2 : ℝ) ^ (j + 1) < z.im ∧ z.im ≤ V / (2 : ℝ) ^ j := by
-          intro n hn
-          induction n with
-          | zero => rw [pow_zero, div_one]; exact Or.inl (by linarith) -- Wait: z.im ≤ V!
-          | succ m ih =>
-            rcases le_or_gt z.im (V / (2 : ℝ) ^ (m + 1)) with hle | hgt
-            · rcases ih (Nat.le_of_succ_le hn) with hgt_m | ⟨j, hj, hj1, hj2⟩
-              · exact absurd hle (not_le.mpr (hgt_m.trans_le (by positivity))) -- unreachable
-              · exact Or.inr ⟨j, Nat.lt_succ_of_lt hj, hj1, hj2⟩
-            · rcases le_or_gt z.im (V / (2 : ℝ) ^ m) with hle_m | hgt_m
-              · exact Or.inr ⟨m, Nat.lt_succ_self m, hgt, hle_m⟩
-              · exact Or.inl hgt_m -- wait: if m+1 = K, z.im ≤ V, handle cleanly below!
-        -- Cleaner direct induction from `0` (`z.im ≤ V = V / 2^0`)!
+        -- Find `j < K` with `V / 2^(j+1) < z.im ≤ V / 2^j`.
         have hex_shell : ∀ m : ℕ, V / (2 : ℝ) ^ m < z.im → z.im ≤ V →
             ∃ j < m, V / (2 : ℝ) ^ (j + 1) < z.im ∧ z.im ≤ V / (2 : ℝ) ^ j := by
           intro m
@@ -974,21 +977,13 @@ theorem logFreeNearLineZeroDensity_implies_windowOccupancy_and_logMean
             ((analyticOrderAt _root_.RHTower.xi z).toNat : ℝ) := by
       unfold _root_.RHTower.offLineCountBeyond
       refine (Finset.sum_le_sum_of_subset_of_nonneg hcov fun _ _ _ => Nat.cast_nonneg _).trans ?_
-      rw [Finset.sum_union_inter]
-      have hnonneg_inter : 0 ≤ ∑ z ∈ _root_.RHTower.stripFinsetPos (V / (2 : ℝ) ^ K) ∩ _,
-          ((analyticOrderAt _root_.RHTower.xi z).toNat : ℝ) :=
-        Finset.sum_nonneg fun _ _ => Nat.cast_nonneg _
-      have hbi : ∀ (s : Finset ℕ) (t : ℕ → Finset ℂ),
-          ∑ z ∈ s.biUnion t, ((analyticOrderAt _root_.RHTower.xi z).toNat : ℝ) ≤
-          ∑ j ∈ s, ∑ z ∈ t j, ((analyticOrderAt _root_.RHTower.xi z).toNat : ℝ) := by
-        intro s t
-        induction s using Finset.induction_on with
-        | empty => simp
-        | @insert a s ha ih =>
-          rw [Finset.biUnion_insert, Finset.sum_insert ha, Finset.sum_union_inter]
-          linarith [ih, Finset.sum_nonneg fun z (_ : z ∈ t a ∩ s.biUnion t) =>
-            (Nat.cast_nonneg (analyticOrderAt _root_.RHTower.xi z).toNat : (0 : ℝ) ≤ _)]
-      linarith [hbi (Finset.range K) _]
+      refine (finset_sum_union_le _ _ fun _ => Nat.cast_nonneg _).trans ?_
+      have hbi := finset_sum_biUnion_le (Finset.range K)
+        (fun j => (shellZeros (V / (2 : ℝ) ^ (j + 1)) (2 * (V / (2 : ℝ) ^ (j + 1)))).filter
+          (fun z => (κ / 2) / Real.log (V / (2 : ℝ) ^ (j + 1)) ≤ |z.re - 1 / 2|))
+        (f := fun z => ((analyticOrderAt _root_.RHTower.xi z).toNat : ℝ))
+        (fun _ => Nat.cast_nonneg _)
+      linarith [hbi]
     linarith [hunion_le, hbase_le, hshells_le, mul_pos hη (mul_pos hV_pos hlogV_pos)]
   have h8way := criticalClustering_logMean_mollifier_hecke_tfae
     (c := 1 / 4) (by norm_num) (by norm_num)
@@ -1123,26 +1118,14 @@ theorem logFreeNearLineZeroDensity_of_windowOccupancy_and_sqMoment
   have hbi_le : ∑ z ∈ Bad_occ.biUnion
         (fun m => (burnolUnitXiZeros m).filter (fun ρ => A / Real.log V ≤ |ρ.re - 1 / 2|)),
         ((analyticOrderAt _root_.RHTower.xi z).toNat : ℝ) ≤
-      ∑ m ∈ Bad_occ, N_win m := by
-    have hbi : ∀ (s : Finset ℕ) (t : ℕ → Finset ℂ),
-        ∑ z ∈ s.biUnion t, ((analyticOrderAt _root_.RHTower.xi z).toNat : ℝ) ≤
-        ∑ m ∈ s, ∑ z ∈ t m, ((analyticOrderAt _root_.RHTower.xi z).toNat : ℝ) := by
-      intro s t
-      induction s using Finset.induction_on with
-      | empty => simp
-      | @insert a s ha ih =>
-        rw [Finset.biUnion_insert, Finset.sum_insert ha, Finset.sum_union_inter]
-        linarith [ih, Finset.sum_nonneg fun z (_ : z ∈ t a ∩ s.biUnion t) =>
-          (Nat.cast_nonneg (analyticOrderAt _root_.RHTower.xi z).toNat : (0 : ℝ) ≤ _)]
-    exact hbi Bad_occ _
+      ∑ m ∈ Bad_occ, N_win m :=
+    finset_sum_biUnion_le Bad_occ _ fun _ => Nat.cast_nonneg _
   have htot_le : ∑ z ∈ (shellZeros V (2 * V)).filter (fun z => A / Real.log V ≤ |z.re - 1 / 2|),
       ((analyticOrderAt _root_.RHTower.xi z).toNat : ℝ) ≤
       ∑ z ∈ shellZeros V (V + 1), ((analyticOrderAt _root_.RHTower.xi z).toNat : ℝ) +
       ∑ m ∈ Bad_occ, N_win m := by
     refine (Finset.sum_le_sum_of_subset_of_nonneg hcov fun _ _ _ => Nat.cast_nonneg _).trans ?_
-    rw [Finset.sum_union_inter]
-    linarith [hbi_le, Finset.sum_nonneg fun z (_ : z ∈ shellZeros V (V + 1) ∩ _) =>
-      (Nat.cast_nonneg (analyticOrderAt _root_.RHTower.xi z).toNat : (0 : ℝ) ≤ _)]
+    exact (finset_sum_union_le _ _ fun _ => Nat.cast_nonneg _).trans (by linarith [hbi_le])
   dsimp only [ε]
   linarith [htot_le, hcap, hcs]
 

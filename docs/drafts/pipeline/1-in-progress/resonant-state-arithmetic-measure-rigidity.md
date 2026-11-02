@@ -65,4 +65,6 @@ The source-side results in `MayerScattering/FareyLewisTransferAndCuspSeparation`
 
 Congruence lifting preserves the obstruction: `CongruenceScattering.constantTerm_order` and `fullConstantTerm_pole_iff` retain the complete scattering pole divisor, including multiplicities, at every principal level and height. Changing level alone supplies no restriction on the decay rate.
 
+`SelbergScatteringNativeResidual.xi_residual_isGLB` gives the sharp native Laplacian residual floor `|γ|(1−β)/2` at the scattering energy of `ρ=β+iγ`, with explicit packets approaching it. Under scaling by `γ⁻²`, this floor becomes `(1−β)/(2|γ|)` and tends to zero at large ordinate; it does not obstruct semiclassical transport at that scale. The dyadic Hecke residual studied here remains of order one. `SelbergScatteringCutoffForcing` also proves that the actual differential cutoff forcing is nonzero despite a vanishing bilinear pairing.
+
 No microlocal limit, Hecke recurrence, entropy bound or classification selecting β has been proved. The positive finite-measure hypotheses of standard entropy arguments cannot be silently transferred to non-square-integrable resonant states.
