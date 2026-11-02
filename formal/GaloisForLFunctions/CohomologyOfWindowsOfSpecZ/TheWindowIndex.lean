@@ -77,18 +77,8 @@ theorem riemannHypothesis_iff_forall_windowIndex_lt_two :
   · exact fun h A => (le_iSup windowIndex A).trans_lt h
   · intro h
     refine lt_of_le_of_lt (iSup_le fun A => ?_) (by norm_num : (1 : ℕ∞) < 2)
-    have := h A
-    exact Order.le_of_lt_succ (by simpa using this)
-
-/-- RH iff every window has index `0`. -/
-theorem riemannHypothesis_iff_forall_windowIndex_eq_zero :
-    RiemannHypothesis ↔ ∀ A, windowIndex A = 0 := by
-  rw [ArithmeticOrientationTheory.riemannHypothesis_iff_forall_hodgeDefectAt_eq_zero]
-  constructor
-  · exact fun h A => h (A / 2)
-  · intro h a
-    have := h (2 * a)
-    rwa [windowIndex, mul_div_cancel_left₀ a two_ne_zero] at this
+    have h2 : windowIndex A < 1 + 1 := by rw [one_add_one_eq_two]; exact h A
+    exact Order.le_of_lt_add_one h2
 
 /-! ### The index sees the window form -/
 
@@ -110,7 +100,7 @@ theorem windowIndex_eq_zero_iff {A : ℝ} :
       refine closure_minimal (fun y hy => ?_) isClosed_Icc
       by_contra hn
       exact hy (by simp [hGv y hn])
-    have hW := h _ (Complex.ofRealCLM.contDiff.comp hGc) hts
+    have hW := h (fun u => (G u : ℂ)) (Complex.ofRealCLM.contDiff.comp hGc) hts
     rw [← LogCells.weilQuad_eq_zetaW hGc hGcs, hG, weilQuad_comp_sub] at hW
     exact hW
   · intro h f hf hts
@@ -131,5 +121,16 @@ theorem windowIndex_eq_zero_iff {A : ℝ} :
       rwa [weilQuad_comp_sub (fun x => g (f x))] at this
     exact add_nonneg (hpart Complex.re (Complex.reCLM.contDiff.comp hf) Complex.zero_re)
       (hpart Complex.im (Complex.imCLM.contDiff.comp hf) Complex.zero_im)
+
+/-- RH iff every window has index `0`. -/
+theorem riemannHypothesis_iff_forall_windowIndex_eq_zero :
+    RiemannHypothesis ↔ ∀ A, windowIndex A = 0 := by
+  rw [riemannHypothesis_iff_windowForm_nonneg]
+  constructor
+  · intro h A
+    rcases le_total 0 A with hA | hA
+    · exact windowIndex_eq_zero_iff.mpr (h A hA)
+    · exact windowIndex_eq_zero_of_le (by linarith)
+  · exact fun h A _ => windowIndex_eq_zero_iff.mp (h A)
 
 end GaloisForLFunctions.CohomologyOfWindowsOfSpecZ

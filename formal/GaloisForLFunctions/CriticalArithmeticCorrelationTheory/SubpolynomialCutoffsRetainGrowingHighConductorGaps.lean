@@ -376,6 +376,4 @@ theorem eventually_subpolynomial_high_band_horizon (R : ℕ → ℕ)
     nlinarith only [hratePaid, hlagPaid, hcostRoot, hlogSmall, hconst, hlogQ, mul_nonneg hq.le ht.le]
   exact ⟨hcL, hcN, hradSize, hsize, hraw, hterminal, hgap⟩
 
-#print axioms eventually_subpolynomial_high_band_horizon
-
 end GaloisForLFunctions.CriticalArithmeticCorrelationTheory

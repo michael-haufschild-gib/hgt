@@ -64,7 +64,8 @@ margin one. Their sum retains `L^(−η)/4` on `V_R'`, hence on `V_R`.
   ratio and divergent clock ratio; directly checked, with only the three
   standard axioms in both transitive audits.
 - `SubpolynomialCutoffsRetainGrowingHighConductorGaps.lean`: uniform terminal,
-  lag and geometric horizon; written, unchecked.
+  lag and geometric horizon; directly checked, with only the three standard
+  axioms in its transitive audit.
 - `EverySubpolynomialSpanHasASuperLogLogPositivityClock.lean`:
   `eventually_subpolynomial_span_coercivity`; written, unchecked.
 

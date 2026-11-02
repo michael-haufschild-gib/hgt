@@ -36,11 +36,19 @@ derivative should give a summable `n^(−Re w−1)` majorant. Normal convergence
 would prove holomorphy and equality with the actual source operator.
 The source equation then defines the continued `f`.
 
-Separate the first branch for a second continuation to `Re z>−1`.
-Its reciprocal argument has positive real part and therefore belongs to
-the first continuation domain; all remaining branches stay in the original
-disc. Agreement on the overlap must be proved before gluing. The identity
-principle then continues the already established real period relations.
+Put `F₁(z)=ε(L_ext f(z)−c)`. The first-branch identity gives the second
+continuation directly:
+
+```text
+F₂(z)=F₁(z+1)+ε(1+z)^(−w) F₁(1/(1+z)),       Re z>−1.
+```
+
+Both arguments have positive real part, so both use the first continuation.
+On the overlap, the reciprocal argument lies in the original disc, and the
+actual transfer difference identity proves `F₂=F₁`. Thus no new tail model
+is needed. The identity principle then continues the already established
+real period relations. Normal convergence, overlap equality, and the global
+identities are being formalized.
 
 For the boundary law, split the transfer series into `f(0)` times the
 continued Hurwitz series and the correction `f(1/(n+x))−f(0)`.
