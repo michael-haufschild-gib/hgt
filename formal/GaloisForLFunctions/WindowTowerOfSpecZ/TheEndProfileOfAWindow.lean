@@ -36,7 +36,7 @@ namespace GaloisForLFunctions.WindowTowerOfSpecZ
 
 open CohomologyOfWindowsOfSpecZ SpacingScaleHarmonicAnalysis RHTower.WeilMarkovPole
 open RHTower.WeilLevyPoleGauss
-open _root_.RHTower (archLevyDensity)
+open _root_.RHTower (archLevyDensity measurable_archLevyDensity)
 
 variable {A : ℝ} {H : ℝ → ℝ}
 
@@ -65,8 +65,8 @@ theorem exitWeight_nonneg (A y u : ℝ) : 0 ≤ exitWeight A y u := by
 
 /-! ### One jump -/
 
-/-- **One jump**: for `y > 0`, `∫ (exits of u under y)·H(u)² ≤ ∫(H − H(·+y))²`. -/
-theorem integral_exitWeight_mul_le (hH : IsWindowTest A H) {y : ℝ} (hy : 0 < y) :
+/-- **One jump**: `∫ (exits of u under y)·H(u)² ≤ ∫(H − H(·+y))²`. -/
+theorem integral_exitWeight_mul_le (hH : IsWindowTest A H) (y : ℝ) :
     ∫ u, exitWeight A y u * H u ^ 2 ≤ ∫ u, (H u - H (u + y)) ^ 2 := by
   have hc := hH.continuous
   have iH := integrable_sq hc hH.hasCompactSupport
@@ -216,7 +216,7 @@ theorem lintegral_exitPotential_le (hH : IsWindowTest A H) :
                 mul_nonneg (exitWeight_nonneg A y u) (sq_nonneg _)), ← ENNReal.ofReal_mul hω]
           _ ≤ ENNReal.ofReal (archLevyDensity y * ∫ u, (H u - H (u + y)) ^ 2) :=
               ENNReal.ofReal_le_ofReal (mul_le_mul_of_nonneg_left
-                (integral_exitWeight_mul_le hH (mem_Ioi.mp hy)) hω)
+                (integral_exitWeight_mul_le hH y) hω)
 
 theorem measurable_exitPotential (A : ℝ) : Measurable (exitPotential A) := by
   unfold exitPotential
@@ -272,9 +272,12 @@ theorem weilQuad_ge_windowPotential (hH : IsWindowTest A H) :
   have iK := integrable_canonicalDensity_mul hH.continuous hH.hasCompactSupport A
   have hsplit : ∫ u, windowPotential A u * H u ^ 2 = EF.gammaBracket 0 * (∫ u, H u ^ 2) +
       (∫ u, exitPotential A u * H u ^ 2) - ∫ u, canonicalDensity A u * H u ^ 2 := by
-    rw [← integral_const_mul, ← integral_add (iH.const_mul _) iE, ← integral_sub
-      ((iH.const_mul _).add iE) iK]
-    exact integral_congr_ae (Eventually.of_forall fun u => by simp only [windowPotential]; ring)
+    have e : (fun u => windowPotential A u * H u ^ 2) = fun u =>
+        (EF.gammaBracket 0 * H u ^ 2 + exitPotential A u * H u ^ 2) -
+          canonicalDensity A u * H u ^ 2 := by
+      funext u; simp only [windowPotential]; ring
+    rw [e, integral_sub ((iH.const_mul _).add iE) iK, integral_add (iH.const_mul _) iE,
+      integral_const_mul]
   rw [hsplit]
   exact weilQuad_ge_endProfile hH
 
@@ -289,7 +292,7 @@ theorem weilQuad_nonneg_of_potential (hH : IsWindowTest A H) (hA : 0 ≤ A)
   have iV : Integrable fun u => windowPotential A u * H u ^ 2 := by
     have := ((iH.const_mul (EF.gammaBracket 0)).add iE).sub iK
     refine this.congr (Eventually.of_forall fun u => ?_)
-    simp only [windowPotential]; ring
+    simp only [Pi.add_apply, Pi.sub_apply, windowPotential]; ring
   -- the window is a.e. its interior
   have hmono : (2 * Real.sinh (A / 2) - A) * ∫ u, H u ^ 2 ≤ ∫ u, windowPotential A u * H u ^ 2 := by
     rw [← integral_const_mul]
