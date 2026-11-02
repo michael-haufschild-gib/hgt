@@ -994,9 +994,9 @@ theorem alternating_layer_sharp (hφ : ContDiff ℝ 2 φ) (hφsupp : ∀ u, u �
     simp only [hT₀, hA']
     have : Real.exp (-(A + 1)) ≤ Real.exp (-A) := Real.exp_le_exp.mpr (by linarith)
     exact mul_le_mul_of_nonneg_left this (Nat.cast_nonneg _)
-  have hvol : ∀ N : ℕ, (volume (Set.Icc (-T₀ N) (T₀ N))).toReal ≤ 2 * N := by
+  have hvol : ∀ N : ℕ, volume.real (Set.Icc (-T₀ N) (T₀ N)) ≤ 2 * N := by
     intro N
-    rw [Real.volume_Icc, ENNReal.toReal_ofReal (by
+    rw [Real.volume_real_Icc, max_eq_left (by
       simp only [hT₀]
       have : (0 : ℝ) ≤ N * Real.exp (-A') := by positivity
       linarith)]
@@ -1024,7 +1024,7 @@ theorem alternating_layer_sharp (hφ : ContDiff ℝ 2 φ) (hφsupp : ∀ u, u �
         show |symbolW φ (twistedWeights h altSign N) (c N) N (Real.exp (2 * (A + 1))) τ| ≤ _
         refine this.trans (le_of_eq ?_)
         rw [hW]; ring
-    have hI := norm_setIntegral_le_of_norm_le_const (by simp [Real.volume_Icc]) hbd
+    have hI := norm_setIntegral_le_of_norm_le_const measure_Icc_lt_top hbd
     refine hI.trans ?_
     have hlog3 : Real.log (2 + N) ≤ Real.log 3 + Real.log N := by
       rw [← Real.log_mul (by norm_num) hN0.ne']
@@ -1032,7 +1032,7 @@ theorem alternating_layer_sharp (hφ : ContDiff ℝ 2 φ) (hφsupp : ∀ u, u �
     have hW0 : 0 ≤ W := by rw [hW]; positivity
     have hA0 : 0 ≤ Aν + Real.log (2 + N) := by
       have := Real.log_nonneg (show (1 : ℝ) ≤ 2 + N by linarith); linarith
-    calc W / (N : ℝ) ^ 2 * (Aν + Real.log (2 + N)) * (volume (Set.Icc (-T₀ N) (T₀ N))).toReal
+    calc W / (N : ℝ) ^ 2 * (Aν + Real.log (2 + N)) * volume.real (Set.Icc (-T₀ N) (T₀ N))
         ≤ W / (N : ℝ) ^ 2 * (Aν + Real.log (2 + N)) * (2 * N) :=
           mul_le_mul_of_nonneg_left (hvol N) (by positivity)
       _ = 2 * W * ((Aν + Real.log (2 + N)) / N) := by field_simp
@@ -1059,12 +1059,12 @@ theorem alternating_layer_sharp (hφ : ContDiff ℝ 2 φ) (hφsupp : ∀ u, u �
       rw [Real.norm_eq_abs, abs_of_nonneg (by positivity)]
       refine this.trans (le_of_eq ?_)
       rw [hW]; ring
-    have hI := norm_setIntegral_le_of_norm_le_const (by simp [Real.volume_Icc]) hbd
+    have hI := norm_setIntegral_le_of_norm_le_const measure_Icc_lt_top hbd
     simp only [hLoE]
     rw [norm_mul, Real.norm_eq_abs, abs_of_nonneg hlog0]
     have hW0 : 0 ≤ W := by rw [hW]; positivity
     calc Real.log N * ‖∫ τ in Set.Icc (-T₀ N) (T₀ N), E N τ‖
-        ≤ Real.log N * (W / (N : ℝ) ^ 2 * (volume (Set.Icc (-T₀ N) (T₀ N))).toReal) :=
+        ≤ Real.log N * (W / (N : ℝ) ^ 2 * volume.real (Set.Icc (-T₀ N) (T₀ N))) :=
           mul_le_mul_of_nonneg_left hI hlog0
       _ ≤ Real.log N * (W / (N : ℝ) ^ 2 * (2 * N)) :=
           mul_le_mul_of_nonneg_left (mul_le_mul_of_nonneg_left (hvol N) (by positivity)) hlog0
@@ -1147,7 +1147,6 @@ theorem alternating_layer_sharp (hφ : ContDiff ℝ 2 φ) (hφsupp : ∀ u, u �
     rw [hSeq, hsplitS, hcompl]
     simp only [hP, hLo, hLoE, hDf]
     rw [← hsplitE]
-    field_simp
     ring
   refine Tendsto.congr' hid ?_
   have := (((hPt.add (hLot.const_mul M⁻¹)).add (hRmt.const_mul M⁻¹)).sub
