@@ -13,6 +13,9 @@ import GaloisForLFunctions.WindowTowerOfSpecZ.TheEulerFactorizationOfAWindow
 import GaloisForLFunctions.WindowTowerOfSpecZ.TheEndProfileOfAWindow
 import GaloisForLFunctions.WindowTowerOfSpecZ.ShortWindowsArePaidByTheirExitCharge
 import GaloisForLFunctions.WindowTowerOfSpecZ.TheArakelovBundleOfAWindow
+import GaloisForLFunctions.WindowTowerOfSpecZ.TheAtomicLatticeSeesTheMertensSum
+import GaloisForLFunctions.WindowTowerOfSpecZ.TheValuationAndTheUnitsOfTheTower
+import GaloisForLFunctions.WindowTowerOfSpecZ.TheTangentPrincipleOfTheTateFamily
 
 /-!
 # The Window Tower of Spec ℤ

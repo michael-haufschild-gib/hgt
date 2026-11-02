@@ -395,7 +395,7 @@ write new reports to reflect the current status quo and frontier of our research
 2. then create a summary document that combines all the information and:
    2.1 lists all tasks / obstacles that we can solve and are "just work"
    2.2 lists the open mathematical obstacles/research topics nobody has a solution to
-   2.3 name the 3 questions we should answer next to make the most progress to a breakthrough in our research
+   2.3 suggest if you see any opportunity for a "frankenstein" route that creates an RH proof by assembling building blocks from different routes and allowing this way to circumvent the blockers in a single route
    2.4 suggest if you see any opportunity for a wildy different route that is not at all like all the routes we have and does not face the same walls our existing routes and candidates face. say if you see none. the wildly different route does not have to be closed yet, just show that there could possibly be a wildly different route to the rh proof far away from our current routes.
    2.5 ideate and describe a breakthrough question that is less "hard" than proving RH or quasi-RH and would bring a real advance and breakthrough in:
    2.5.1 our RH proof research as a whole
@@ -408,6 +408,7 @@ write new reports to reflect the current status quo and frontier of our research
    2.6.3 route WD
    2.6.4 route HF
    2.7 ideates whether solving all obstacles to reach the RH proof would require a new field of mathematics, what this field would be about, what it would be like, what criteria it must meet, what questions it must answer, what tools it aims to develop, what objects and language and mechanisms it must be built on or would aim to discover
+   2.8 What is the one question the is less hard than proving RH or quasiRH outright and would, when answered, bring a real breakthrough and push the door wide open for us for finding the RH proof?
 3. based on that an updated wall-ledger where walls have changed, were solved, or new walls were added.
 4. also provide a new version of the route-unification-ledger.md which shows which routes are just different faces of the same problem similar to the wall-ledger unifies all walls into 3 core problem families.
 
@@ -495,7 +496,7 @@ Do not use the hgtl7 skill.
 
 read and understand docs/reports/review-0211/obstacles-summary.md
 
-under "## 2.7 Does closing RH need a new field?" it describes a new field/research programme called "cohomology of windows of Spec ℤ"
+under "## 2.7 Does closing RH need a new field?" it describes a new field/research programme called "theory of the window tower of Spec ℤ"
 
 Your task: develop this field/research programme and do the actual research and formalization.
 
@@ -582,15 +583,10 @@ do not use the hgtl7 skill.
 
 read: docs/reports/review-0211/obstacles-summary.md
 
-the document asks two questions, gives two tasks to bring use forward in our RH research as a whole:
+the document asks two questions, gives two tasks to bring use forward in our RH research via route PM:
 
-1. Prove Weil positivity on window tests of length `A ≤ log 3` by an identity whose terms are
-cardinalities, Lévy jump counts or manifest squares: the archimedean jump count, a count attached to the
-jump `n = 2` (the graph of `T₂`), and the pole term (Q1, steps 1–2).
-2. Construct, for every window length `A`, a count `h_A` (a cardinality, a lattice-point count,
-or a log-count) on window tests with `h_A(H) = ½Q(H)` up to manifest squares — equivalently a naive height
-`h` on `ℤ[ℚ_{>0}^×]`, nonnegative because it counts, with `\|h(ξ) − τ_x(ξ ⋆ ξ′)\| ≤ C_x` for every cycle
-(B20, B32).
+1. Build from the Mayer operator alone (geodesic Euler product, Lewis period functions, whose three-term relation carries the reflection `s ↔ 1 − s`) a function real on the critical line of the scattering parameter whose sign changes are the scattering resonances — the operator analogue of Hardy's `Z(t)` — and prove infinitely many sign changes (Hardy's theorem), then a positive proportion.
+2. Find a positive-definite Hermitian structure on the space of Lewis period functions (or on the scattering channel of the Mayer operator) invariant under the reflection `ψ(z) ↦ z^{−2s}ψ(1/z)`, such that a resonance off `Re s = 1/4` produces a negative norm — a Krein or Lax–Phillips realization where the resonances are eigenvalues of a definite operator.
 
 your task: answer both questions, find a complete solution for them and unconditionally formalize them and its implications and collaries in lean.
 
@@ -652,6 +648,43 @@ Put lean code into the correct subfolder(s), do not bloat RHTower or HTGeometry 
 
 
 ## Walls
+
+Do not use the hgtl7 skill.
+
+read and understand docs/reports/review-0211/obstacles-summary.md
+
+under "## 2.4 A wildly different route" it describes an approach to a different proof route.
+
+Your task: develop this proof route and do the actual research and formalization.
+ 
+we are not interested in busywork, redressing of existing knowledge, building unnecessary lean infrastructure. focus on the task and solve the actual hard problems to develop this route.
+  
+**Tools to use:**
+1. Search: use the search tool for our lean corpus, not just rg or grep. make good use of the search tool to find existing work, building blocks, and new ideas. Try to apply existing lean research, try to identify problems and questions the field with your contribution could explain or solve.
+
+2. Conjecture loop: use an endless loop of conjecture -> succeed and move to next conjecture or fail and learn from it and move to next conjecture. never stop conjecturing no matter how often you fail.
+
+do not conjecture or judge or assume or anything on your training data. your training data is outdated. use the search tool for our lean corpus to understand what the true frontier and true open questions are.
+
+always look at the big picture, try to understand what all our research is trying to tell you about the nature of the field. do not blindly follow a route because it is in your training data. understand what our research is hinting at. your job is to create the missing mathematical knowledge through relentless conjecturing and learning from failures.
+
+**Lean rules:**
+1. Proofs must be unconditional, no hypotheses, no added axioms, no premises, ... 
+2. Always build in the foreground, one build process per agent at the time (other agents can also build in parallel to you).
+3. No computations
+4. Always use  lake env lean \<filmodule> for the final audit. Use --old flag to not unncessarily rebuild unchanged modules. Do not forget to wire new modules into the umbrellas.
+5. do not run full builds. check ins that are needed, wirefinished modules into their umbrella but do not run full umbrella builds.
+6. make sure you don't leave staleclean up after yourself.
+7. Optimize lean code. No raising heartbeat hacks.
+8. Add helpful, crisp, not verbose comments to lean code to make clear what the code is about.
+
+Put lean code into the correct subfolder(s), do not bloat RHTower or HTGeometry folders more.
+
+Do not use the wall ledger as diary. Only update status, do not add more.
+
+Goal is met when there are no more open or partially solved or sharpened walls.
+
+## Obstacles
 
 Do not use the hgtl7 skill.
 

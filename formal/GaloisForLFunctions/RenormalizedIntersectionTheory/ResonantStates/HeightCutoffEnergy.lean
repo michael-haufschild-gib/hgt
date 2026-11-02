@@ -52,6 +52,8 @@ theorem height_weighted_norm_integrable (g : ℝ → ℝ) (hg : Measurable g)
     {M : ℝ} (hM : ∀ y, ‖g y‖ ≤ M) (u : ℂ) {Y : ℝ} (hY : 1 ≤ Y) :
     IntegrableOn (fun z : ℍ => g z.im * ‖truncatedLineModel u Y z‖ ^ 2) fd := by
   have hi := (weighted_cutoff_product_integrable g hg hM u ((starRingEnd ℂ) u) hY hY).re
+  change IntegrableOn (fun z : ℍ => ((g z.im : ℂ) * truncatedLineModel u Y z *
+    truncatedLineModel ((starRingEnd ℂ) u) Y z).re) fd at hi
   simpa only [← truncatedLineModel_conj, mul_assoc, Complex.mul_conj,
     Complex.normSq_eq_norm_sq, ← Complex.ofReal_mul, Complex.ofReal_re] using hi
 
@@ -127,9 +129,12 @@ theorem height_weighted_energy_increment (g : ℝ → ℝ) (hg : Continuous g)
     split_ifs <;> simp only [Complex.ofReal_mul, norm_zero, zero_pow (by norm_num : 2 ≠ 0),
       mul_zero, Complex.ofReal_zero]
   have hdint := congrArg (fun F : ℍ → ℂ => ∫ z in fd, F z) hd
-  rw [integral_add ((hi Y Y hY hY).sub (hi Y 1 hY (by norm_num)) |>.sub (hi 1 Y (by norm_num) hY))
-      (hi 1 1 (by norm_num) (by norm_num)),
-    integral_sub ((hi Y Y hY hY).sub (hi Y 1 hY (by norm_num))) (hi 1 Y (by norm_num) hY),
+  have hs : IntegrableOn (fun z => P Y Y z - P Y 1 z) fd :=
+    (hi Y Y hY hY).sub (hi Y 1 hY (by norm_num))
+  have hs₂ : IntegrableOn (fun z => P Y Y z - P Y 1 z - P 1 Y z) fd :=
+    hs.sub (hi 1 Y (by norm_num) hY)
+  rw [integral_add hs₂ (hi 1 1 (by norm_num) (by norm_num)),
+    integral_sub hs (hi 1 Y (by norm_num) hY),
     integral_sub (hi Y Y hY hY) (hi Y 1 hY (by norm_num)), hc₁, hc₂,
     hdiag Y, hdiag 1, integral_complex_ofReal] at hdint
   apply Complex.ofReal_injective
@@ -151,8 +156,9 @@ theorem resonant_height_weighted_energy (g : ℝ → ℝ) (hg : Continuous g)
         g z.im * (‖msB u‖ ^ 2 * z.im ^ (1 - 2 * u.re)) else 0 := by
     apply setIntegral_congr_fun isClosed_fd.measurableSet
     intro z hz
+    dsimp only
     split_ifs with hy
-    · rw [cuspConstantPart_eq_msAB, hAu, zero_mul, zero_add, norm_mul, mul_pow,
+    · rw [cuspConstantPart_eq_msAB, hAu, zero_mul, add_zero, norm_mul, mul_pow,
         Complex.norm_cpow_eq_rpow_re_of_pos z.im_pos, rpow_half_sub_sq z.im_pos]
     · rfl
   rw [he]
@@ -160,7 +166,8 @@ theorem resonant_height_weighted_energy (g : ℝ → ℝ) (hg : Continuous g)
       (Icc 1 Y) := by
     apply Complex.continuous_ofReal.comp_continuousOn
     exact hg.continuousOn.mul (continuousOn_const.mul
-      (continuousOn_id.rpow_const (fun y hy => Or.inl (by linarith [hy.1]))))
+      (continuousOn_id.rpow_const (fun y hy => Or.inl
+        (ne_of_gt (lt_of_lt_of_le zero_lt_one hy.1)))))
   have hint := setIntegral_fd_height (Y₂ := Y) (by norm_num : (1 : ℝ) ≤ 1) _ hh
   have hfun : (fun z : ℍ => if 1 < z.im ∧ z.im ≤ Y then
       ((g z.im * (‖msB u‖ ^ 2 * z.im ^ (1 - 2 * u.re)) : ℝ) : ℂ) else 0) =
@@ -175,10 +182,13 @@ theorem resonant_height_weighted_energy (g : ℝ → ℝ) (hg : Continuous g)
       _ = ∫ y in Ioc 1 Y, ((‖msB u‖ ^ 2 * (g y * y ^ (-2 * u.re - 1)) : ℝ) : ℂ) := by
         refine setIntegral_congr_fun measurableSet_Ioc fun y hy => ?_
         have hy0 : 0 < y := lt_trans (by norm_num) hy.1
-        rw [← Complex.ofReal_pow, ← Complex.ofReal_div]
-        apply congrArg Complex.ofReal
-        rw [← Real.rpow_two, mul_div_assoc, mul_div_assoc, ← Real.rpow_sub hy0]
-        congr 1 <;> ring
+        have he : (-1 - 2 * u.re : ℝ) = -2 * u.re - 1 := by ring
+        calc
+          _ = (((g y * ‖msB u‖ ^ 2) * y ^ (1 - 2 * u.re) : ℝ) : ℂ) /
+              (y : ℂ) ^ 2 := by congr 2; ring
+          _ = (((g y * ‖msB u‖ ^ 2) * y ^ (-1 - 2 * u.re) : ℝ) : ℂ) :=
+            ofReal_normSq_div_sq_eq hy0 _ _
+          _ = _ := by rw [he]; congr 1; ring
       _ = _ := by rw [integral_complex_ofReal, integral_const_mul]
   exact Complex.ofReal_injective (hint.trans hr)
 

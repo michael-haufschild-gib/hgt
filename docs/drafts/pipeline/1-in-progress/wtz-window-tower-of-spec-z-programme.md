@@ -48,9 +48,9 @@ stage-resolved analytic control (AOT aperture transport); window capacity; expon
 ## Conjecture loop (ledger)
 | # | Conjecture | Test | Status |
 |---|---|---|---|
-| C1 | On the atomic lattice `|⟨ρ(Λ)ιg,ιg⟩| ≤ ½(Σ_{d≤N}Λ(d)/d + log N)‖ιg‖²` (Mertens size, not `ψ_{1/2}`) | numerics: λ_max ≈ ½ Mertens (N ≤ 3000) | proved on paper (AM–GM + `Σ_{d∣k}Λ = log k`); Lean pending |
+| C1 | On the atomic lattice `|⟨ρ(Λ)ιg,ιg⟩| ≤ ½(Σ_{d≤N}Λ(d)/d + log N)‖ιg‖²` (Mertens size, not `ψ_{1/2}`) | numerics: λ_max ≈ ½ Mertens (N ≤ 3000) | **[L]** `TheAtomicLatticeSeesTheMertensSum` |
 | C1' | sharper: λ_max ≤ ½ log N | numerics N ≤ 3000 (ratio → ½ from above vs Mertens; `≤ ½ log N` holds) | open (needs Mertens `Σ Λ/d ≤ log N`) |
 | C2 | stage multiplicativity: `v(f*g) = v(f)v(g)`, leading coeff multiplies; exact nilpotency order | paper | **[L]** `TheValuationAndTheUnitsOfTheTower` |
 | C3 | Wiener's lemma: `ρ_A(f)` unit ⇔ `f(1) ≠ 0`; spectrum `{f(1)}` | paper | **[L]** same module |
-| C4 | tangent principle `J_k(n) ≥ [n=1] + kΛ(n)` (k ≥ 0) ⇒ nonneg tests: `⟨ρΛH,H⟩ ≤ (τ(k) − ‖H‖²)/k` | paper | in progress |
+| C4 | tangent principle `J_k(n) ≥ [n=1] + kΛ(n)` (k ≥ 0) ⇒ nonneg tests: `⟨ρΛH,H⟩ ≤ (τ(k) − ‖H‖²)/k` | paper | **[L]** `TheTangentPrincipleOfTheTateFamily` |
 | N0 | numeric window model (sine basis, Lévy symbol from ω): μ(0.3)=0.225, μ(0.6)=0.0086, μ(0.8)=2e−4, ≈0 beyond 1 | harness `weilwin.py` | tool; precision ~1e−3 |

@@ -1,9 +1,9 @@
 # Interior jumps of odd prime-free cycles
 
-- **Stage:** 2-fully-proven
-- **Type:** THEOREM; Lean formalization in progress
+- **Stage:** 3-formalized
+- **Type:** THEOREM
 - **Wall:** Π11h: interior-jump count on the prime-free window.
-- **Statement:** For every odd real compact smooth test supported in `[-a,a]`,
+- **Statement:** For every odd real compact `C²` test supported in `[-a,a]`,
   `a>0`, with mass `M=∫f²` and autocorrelation `A`,
   `∫_0^(2a) (M−A(t))/t dt ≥ (log 2+7/5)M`.
   Consequently, the interior and exterior Gamma jump count gives
@@ -22,14 +22,13 @@ and `k≥0` off the diagonal. Symmetry and
 `(u−v)²−u²(1−q/p)−v²(1−p/q)=(uq−vp)²/(pq)≥0`
 
 give `∫∫k(f(x)−f(y))²≥2∫f² h⁻¹∫k(h(x)−h(y))dy`.
-The polynomial generator satisfies `T x=x`,
-`T x³=(11/6)x³−x/2`, hence
+Direct integration gives
 
 `h⁻¹∫k(h(x)−h(y))dy=7/5−(26/75)x²/(1−4x²/5)−log((1+x)/x)`.
 
 For `0≤v<1`,
 
-`−½log(1−v) ≥ (26/75)v/(1−4v/5)`, `0≤v<1`.
+`−½log(1−v) ≥ (26/75)v/(1−4v/5)`.
 
 To verify this scalar bound, split at `1/4,1/2,3/4,7/8,15/16`.
 Lower tangents to `−½log(1−v)` have respective affine lower bounds
@@ -52,13 +51,6 @@ Since `M=2∫₀¹f²`, this proves the statement.
 All uses of Fubini are absolute: Lipschitz differences cancel the diagonal
 singularity; oddness gives `f(x)=O(x)` and `h(x)≥x/5` at the origin;
 compact support gives `f(x)=O(1−x)` at the other endpoint.
-
-## Lean status
-
-The scalar barrier and folded gap are formalized in
-`LatticeSectionTheory/WindowJumpCounts/OddLogarithmicPairGap.lean`.
-The exact lag-to-pair identity and interval scaling are being verified in
-`LatticeSectionTheory/WindowJumpCounts/OddLogarithmicLagGap.lean`.
 
 ## Gamma count and pole cost
 
@@ -85,5 +77,22 @@ The logarithmic bound follows from the exponential Taylor lower sum of degree
 six; the pole bound follows from `(1−z²/2)cosh z≤1`, `z=a/2`, and
 `cosh²(a/2)≤16/15`. Prime autocorrelations vanish also at `2a=log 2`.
 
-The Gamma-count formalization is pending. Even tests on the whole prime-free
-window, prime jumps at larger apertures, and all-aperture positivity remain open.
+## Lean proof
+
+Namespace: `GaloisForLFunctions.LatticeSectionTheory`.
+
+- `WindowJumpCounts/OddLogarithmicPairGap.lean`:
+  `odd_cubic_log_barrier`, `folded_logarithmic_jump_gap`.
+- `WindowJumpCounts/OddLogarithmicLagGap.lean`:
+  `odd_interior_jump_poincare` (also proved for globally Lipschitz tests).
+- `WindowJumpCounts/OddPrimeFreeGammaJumpCount.lean`:
+  `odd_gamma_jump_count_ge`, `odd_weil_count_floor`,
+  `odd_primefree_Weil_from_jump_count`, `odd_primefree_primitiveH1_from_jump_count`.
+
+All three modules pass direct Lean source checks. The capstones depend only on
+`propext`, `Classical.choice`, and `Quot.sound`. Imported by `LatticeSectionTheory.lean`.
+
+## Remaining
+
+Even tests on the whole prime-free window, prime jumps at larger apertures,
+and counts on lattices of growing rank remain open.
