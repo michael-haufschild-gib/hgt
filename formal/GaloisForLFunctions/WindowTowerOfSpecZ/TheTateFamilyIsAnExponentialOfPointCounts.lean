@@ -339,7 +339,7 @@ theorem pow_apply_nonneg {g : ArithmeticFunction ℝ} (hg : ∀ n, 0 ≤ g n) (j
 theorem tateExponent_nonneg {k : ℝ} (hk : 0 ≤ k) (n : ℕ) : 0 ≤ tateExponent k n := by
   rw [tateExponent_apply]
   rcases Nat.eq_zero_or_pos n with rfl | hn
-  · simp [primePowerLog_apply]
+  · simp
   exact mul_nonneg (primePowerLog_nonneg n)
     (sub_nonneg.mpr (Real.one_le_rpow (by exact_mod_cast hn) hk))
 
@@ -347,7 +347,7 @@ theorem tateExponent_nonneg {k : ℝ} (hk : 0 ≤ k) (n : ℕ) : 0 ≤ tateExpon
 theorem jordanTotient_ge_exp_tangent {k : ℝ} (hk : 0 ≤ k) (n : ℕ) :
     (if n = 1 then 1 else 0) + tateExponent k n ≤ jordanTotient k n := by
   rcases Nat.eq_zero_or_pos n with rfl | hn
-  · simp [tateExponent_apply, jordanTotient]
+  · simp [jordanTotient]
   have hmem := expTrunc_sub_jordan_mem (N := n) (L := n)
     (Nat.lt_two_pow_self.trans (Nat.pow_lt_pow_right (by norm_num) (by omega))) k n hn le_rfl
   rw [sub_apply', jordanFun_apply, sub_eq_zero] at hmem

@@ -4,6 +4,23 @@ import GaloisForLFunctions.SquareRootThreshold.ZetaSmallApertureHeightWindowPosi
 
 /-!
 # The window index resolves the zeros of its length
+
+The Shannon bound (`hermNegIndex_pencilGram_le_shannon`) caps the window index of windows of length
+`A` by `1 + 2A T(A/2)/π`. This file gives the matching lower bound: windows of length `2a` carry the
+finite-level index of `ζ` at level `a`, hence every right zero that the level-`a` Weil form resolves.
+
+* **Real parts** (`le_hermNegIndex_reIm`): if Weil's form is negative on all nonzero combinations
+  `Σ x̄_i f_i` of `n` complex tests, the `2n` real and imaginary parts have Weil index `≥ n`; the
+  combination is `Σ ȳ_j r_j` with `y = (x, −ix)`, and `x ↦ (x, −ix)` is injective.
+* **Windows from tests** (`windowOfTest`, `weilGram_windowOfTest`): a real test `r` on `[−a, a]` is
+  the synthesized test of the window `e^{−y/2} r(y + a)` on `[−2a, 0]`, up to a translation that
+  leaves Weil's Gram matrix unchanged.
+* **The finite-level index** (`exists_windows_le_weilNegIndex`): some family of windows of length
+  `2a` has window index eventually `≥` the `ε`-negative index of the level-`a` Weil form of `ζ`.
+* **Resolved zeros** (`exists_windows_resolving_rightZeros`): with the finite-level inertia law of
+  `ζ` (`weilNegIndex_ge_card_offline_zeros`), every set of right zeros resolved at level `a`
+  (below the Nyquist height `πe^{2a−3/4}`, separated, with the Nyquist size and tail conditions)
+  is counted by the window index of some family of windows of length `2a`.
 -/
 
 noncomputable section
@@ -129,7 +146,7 @@ theorem exists_windows_le_weilNegIndex (hφ0 : ∫ u, φ u ≠ 0) (hφ2 : 0 < �
   have hne : S.Nonempty := by
     by_contra hem
     rw [Set.not_nonempty_iff_eq_empty] at hem
-    exact h0 (by rw [hdef, hem, Nat.sSup_empty])
+    exact h0 (by rw [hdef, hem, csSup_empty]; rfl)
   have hbdd : BddAbove S := by
     by_contra hnb
     exact h0 (by rw [hdef, Nat.sSup_of_not_bddAbove hnb])

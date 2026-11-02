@@ -31,6 +31,7 @@ import GaloisForLFunctions.ArithmeticHodgeTheoryOfDegenerations.TheEnergyOfAPeri
 import GaloisForLFunctions.ArithmeticHodgeTheoryOfDegenerations.TheRamanujanWindowCountsEveryConductor
 import GaloisForLFunctions.ArithmeticHodgeTheoryOfDegenerations.TheSecondOrderTermIsDiagonalInTheRamanujanBasis
 import GaloisForLFunctions.ArithmeticHodgeTheoryOfDegenerations.TheHorizonLayerIsGradedByEveryConductor
+import GaloisForLFunctions.ArithmeticHodgeTheoryOfDegenerations.TheWindowIndexResolvesTheZerosOfItsLength
 
 /-!
 # Arithmetic Hodge Theory of Degenerations
@@ -64,6 +65,7 @@ is diagonal with the conductor counts as eigenvalues (Parseval for the count); t
 horizon layer is graded by conductor (untwisted and prime windows are orthogonal at second order,
 so their span carries the direct sum of the two blocks); the window index of an independent
 family counts its jump multiples `βJ/(−λ_i)`, `λ_i` the relative eigenvalues of Weil's part against
-the aliasing part.
+the aliasing part, and windows of length `2a` resolve every right zero below the level-`a` Nyquist
+height (two-sided with the Shannon bound).
 See `ArithmeticHodgeTheoryOfDegenerations/README.md`.
 -/

@@ -27,7 +27,7 @@ TheTwistedHorizonLayerIsPositive, TheAlternatingWindowCountsTheConductorTwoPoint
 ThePrimeWindowCountsTheProjectivePoints, TheHorizonLayerIsGradedByConductor,
 TheWindowIndexCountsTheJumpMultiples, TheEnergyOfAPeriodicTwist,
 TheRamanujanWindowCountsEveryConductor, TheSecondOrderTermIsDiagonalInTheRamanujanBasis,
-TheHorizonLayerIsGradedByEveryConductor.
+TheHorizonLayerIsGradedByEveryConductor, TheWindowIndexResolvesTheZerosOfItsLength.
 
 ## Status
 - First order = count: `J(m) = J(1) #ℙ⁷(ℤ/m)`; count law over every finite ring (𝔽_q[T] calibration) [L].
@@ -63,9 +63,11 @@ TheHorizonLayerIsGradedByEveryConductor.
   distinct conductors orthogonal at every offset [L].
 - Conductor decomposition: untwisted ⊥ every mean-zero quiet twist; `h/√n + Σa_m c_m g/√n` →
   `κQ(H) + βJ/K‖H‖² + (Σa_m²J_{β+1}(m))βJ/K‖G‖²` [L].
+- Window length: windows of length `2a` have window index ≥ #right zeros resolved at level `a`
+  (finite-level inertia of ζ), ≤ Shannon number [L].
 - Jump multiples: independent family ⇒ `A(H)` posdef and `ind₋(P_K) = #{λ_i < 0, βJ/(−λ_i) < K}`,
   `λ_i` relative eigenvalues of `κW(H)` against `A(H)` [L].
 
 ## Open
-Window index vs width (Landau–Widom); bulk second order; uniform bulk
+Gap between resolved zeros and Shannon number; bulk second order; uniform bulk
 ledger to `N^{1/2−ε}`; count of the second order; integer; `𝔽_q(T)` complete family. See README §9.

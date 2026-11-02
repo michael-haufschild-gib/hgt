@@ -33,7 +33,7 @@ WindowTowerOfSpecZ.
 | End profile: `Q ≥ ∫V_A H² + pole`, `V_A = Ω_Γ + φ(−u) + φ(A+u)`, `φ(t) = Ω(t) − ψ_{1/2}(e^t)`; windows `≤ 1/7` are positive by the exit charge alone; the pointwise mechanism stops near `0.18` | WTZ `TheEndProfileOfAWindow`, `weilQuad_nonneg_of_le_one_seventh` [L] | beyond `~0.18` interior jumps and antisymmetric fold counts must pay `V_A < 0` nonlocally |
 | Fold capacity criterion: RH ⇔ on every window `|Ω(0)|‖H‖² + Σ(Λ(n)/√n)sym_n + ½s² ≤ J_∞ + Σ(Λ(n)/√n)·½fold_n + ½c²` | CWS `riemannHypothesis_iff_foldCapacity` [L] | the sign is a capacity inequality for a jump process on an interval |
 | Sharp floor: exact pole capacity `2sinh(A/2) − A`; `Q ≥ −(deg K_A + 2sinh(A/2) − A)‖H‖² ≥ −(−Ω(0) + (4A+1)e^{A/2})‖H‖²` | WTZ `TheExactPoleCapacityOfAWindow` [L] | maximal window negativity `~Ae^{A/2}` = the trivial strip |
-| Negativity rate of unimodular two-bump tests = supremum of zero depths | SRT `NegativityRateEqualsMaximalDepth` [L] | the growth exponent of window negativity is `Θ − ½`, exactly |
+| Negativity rate of unimodular two-bump tests = supremum of zero depths | SRT `NegativityRateEqualsMaximalDepth` [L] | window negativity grows at least at rate `Θ − ½` and at most at rate `½`; RH iff it is subexponential |
 | Window index `ι(A)`: monotone, `0` for `A ≤ 3/5`, Shannon-bounded, `sup_A ι(A) = #` right zeros; `≤ 1` on smooth windows below `log 2 + 1/50` | CWS `TheWindowIndex`, `not_negative_plane` [L] | each window is a finite problem; RH is uniformity in `A` |
 | Known window positivity: all tests `A ≤ 3/5` (estimates); all tests `A ≤ 1/7` (exit charge); jump count to `1/32`; odd tests on the whole prime-free window by count (`h¹ ≥ ‖f‖²/2000`); odd tests to `0.724`; cosh-orthogonal tests to `log 2 + 1/50` | ACS; WTZ; LST `OddPrimeFreeGammaJumpCount` [L] | below `log 2 + 1/50` positivity is one scalar cosh-capacity inequality (`coshCapacity_criterion` [L]) |
 | First prime: for `log 2 ≤ A < 2log 2`, `Q − J_∞ = Ω(0)‖H‖² < 0` on an infinite-dimensional space of fold-free, pole-free tests; no identity `Q = J_∞ + Φ(folds) + Σ_{i<k}ℓ_i²` | CWS `TheArchimedeanObstructionAtTheFirstPrime` [L] | at the first prime the Lévy count must pay `Ω(0)` by an inequality, never by a finite-square identity |
@@ -112,11 +112,13 @@ consequence on nonnegative tests [S]; atomic-lattice bound
 `|⟨ρ(Λ)ιg,ιg⟩| ≤ ½(Σ_{d≤N}Λ(d)/d + log N)‖ιg‖²` [S]; units of the tower (`ρ_A(f)` invertible iff
 `f(1) ≠ 0`) [L].
 
-Research status: algebraic control of the tower is complete. Analytic control: entrances are free
-and composite stages are free; all of RH is the growth of the window at frozen arithmetic inside a
-stage (bulk room), uniformly in the stage. The pointwise part is done; the nonlocal part (interior
-jumps and antisymmetric fold counts against `V_A < 0`) is open. Margins are doubly exponentially
-small, so the payment must be exact.
+Research status: algebraic control of the tower is complete. Analytically, the new fold `N+1` enters
+only through one collar-to-collar correlation: `Q_{N+1}(H) = Q_N(H) − 2w_{N+1}∫H(u)H(u+log(N+1))du`, the
+integral running over the left collar of width `ε = A − log(N+1)` [L/D]. The exit charge pays it
+pointwise, but only by AM–GM, which drops the new fold's own energy; with doubly-exponentially small
+margins this lossy step (bulk room, Σ30) is sufficient, not necessary, and the exact step is open. The
+pointwise part of the bulk is done; the nonlocal part (interior jumps and antisymmetric fold counts
+against `V_A < 0`) is open.
 
 | | Obstacle |
 |---|---|
@@ -124,10 +126,10 @@ small, so the payment must be exact.
 | A4 | Certified stages: computer-assisted lower bounds (Lehmann–Goerisch with a Lévy comparison operator) for the first-fold stage to `log 3`: odd margin `1.5×10⁻⁵`, even margin `5.6×10⁻⁸` [N]; stages `log 5, log 7` need relative precision below `10⁻¹⁴`. Finite and certifiable; not scalable. |
 | A8 | Atomic-lattice bound `λ_max ≤ ½ log N` from Mertens' `Σ_{d≤N}Λ(d)/d = log N − γ + o(1)` with explicit error. |
 | A11 | Higher critical lengths `A_k = inf{A : ι(A) ≥ k}` as functions of a hypothetical off-line configuration (conditional calculus; the first is twice SRT's contact aperture). |
-| B2 | Bulk room: `Q_N − Ω(ε)∫_{collars}H² ≥ 0` on windows of every stage, uniformly in `N` — **RH**; each stage **sub** (Σ30). |
+| B2 | The stage step: positivity on windows shorter than `log(N+1)` ⇒ positivity of `Q_N − 2w_{N+1}·(collar correlation)` up to `log(N+2)`, exactly (without AM–GM), uniformly in `N` — **RH** as an induction; each step **sub**. Its lossy form `Q_N − Ω(ε)∫_{collars}H² ≥ 0` (bulk room) is sufficient and may fail under RH (Σ30). |
 | B3 | Window capacity: a Poincaré inequality for the interior (censored) Lévy and fold jumps against the end-profile potential where `V_A < 0`, uniformly in `A`; on the odd sector (where the cosh square vanishes and positivity at every length is RH), equivalently a positive supersolution (Agmon ground state) of the folded jump Schrödinger operator after Schur elimination of its negative folded conductances, with sinh capacity `≤ 1` [D] — **RH**; fixed length **sub** (Σ7). |
 | B4 | Positivity surviving the derivative at dimension zero: a positivity of the Tate family `k ↦ ρ_A(J_k)`, coupled to the archimedean data, that controls `τ′_H(0)`. The Taylor coefficients of `J_k` at `k = 0` are Bombieri's `Λ_j = μ * log^j` (`Λ₁ = Λ`, `Λ₂ = Λlog + Λ*Λ`) [D], so this is the parity barrier on windows — **method**; uniform **RH** (Σ31). |
-| B19 | Growth law of window negativity: exponent `= Θ − ½` [L]; exponent `< ½` is a zero-free strip — **≥qRH**; subexponential — **RH** (Σ28). |
+| B19 | Growth law of window negativity: exponent between `Θ − ½` (two-bump tests [L]) and `½` (floor [L]); exponent `< ½` is a zero-free strip — **≥qRH**; subexponential — **RH** (Σ28). |
 
 ### S3. Kähler package, stars and gluing
 Routes: HF, ACS-Hodge, AIP, TG, SC, RW; MC through the gluing determinant.
@@ -158,7 +160,7 @@ regular extensions and Hecke-supported/mixing carriers.
 | | Obstacle |
 |---|---|
 | B13 | Arithmetic index ceiling uniform in resolution — **≥qRH** for `K_ζ`; **RH** for `K_ζ ⊠ K_ζ` (Σ4). |
-| B41 | Zero–one law: `κ(K_ζ) ∈ {0, ∞}` (if RH fails it fails infinitely often) — **sub**. |
+| B41 | Zero–one law `κ(K_ζ) ∈ {0, ∞}`; the finite nonzero stratum is Lindelöf-deep [L] — **sub**. |
 
 ### S5. Window energy, near-line density and the Hecke defect
 Routes: WD, LA, TG, HCF, SC-heat, TH-heat; census; HEF.
@@ -323,12 +325,13 @@ Established: S2 in full.
 Research status: the window `h¹` is a signed count (Lagrange signs), the derivative at dimension zero
 of the Tate family. Counts in positive dimension are positive for ζ and for fakes alike. Finite-square
 count identities at the first prime are impossible. New folds and composite stages cost nothing; the
-whole problem is bulk room, i.e. window capacity at frozen arithmetic, uniformly in the stage.
+whole problem is the exact stage step: each new fold is one collar-to-collar correlation, paid
+pointwise only with an AM–GM loss that the doubly-exponential margins cannot afford.
 
 | | Obstacle |
 |---|---|
 | A3, A4, A8, A11 | Prime-free cosh capacity; certified stages; atomic Mertens bound; critical lengths. |
-| B2, B3 | Bulk room; window capacity / Agmon ground state — **RH**. |
+| B2, B3 | Exact stage step; window capacity / Agmon ground state — **RH**. |
 | B4 | Positivity surviving the derivative at dimension zero — **method**. |
 | B25 | Naive heights at bounded distance from the window Rosati form — **RH**. |
 | B34 | Window Frobenius at infinity as a positivity — **RH**. |
@@ -350,7 +353,8 @@ Established: `μ(a) ≥ 0 ∀a` ⇔ RH; floors through half-width `181/500`; exa
 end-potential bound, exit-only positivity to window length `1/7`; ceiling
 `μ(a) ≤ K exp((11/2)a − πe^{2(a−2)})`; pointwise folded-Markov payment fails at `½log2`, `½log3`;
 fold-only count identities fail.
-Window reading: RW is the window sign stage by stage. Entrances are free; the open part is bulk room.
+Window reading: RW is the window sign stage by stage. Each entrance is one collar-to-collar correlation,
+paid pointwise by the exit charge with an AM–GM loss; the open part is the exact stage step.
 The first-fold stage has numerical margin `5.6×10⁻⁸` [N].
 - A: A3, A4, A5. B: B1, B2, B3, B9; depth-weighted all-window mass bound (**≥qRH**).
 
@@ -503,7 +507,7 @@ in B14); the prime-blind cone (B18, Section S7); the paused classical-formalizat
 
 | Wall | Routes |
 |---|---|
-| Σ, window sign / bulk room / window capacity (horizon layer; every `2K(log N)^{1/8}`; Beurling schedule; fold capacity; Markov sector) | RW, EWU, OWU, ACT, HF, SRT, AIP, ACS-atomic, SC, CHMD, TT; MSC, FEL; ADT/AHD/CWS/WTZ |
+| Σ, window sign / exact stage step / window capacity (horizon layer; every `2K(log N)^{1/8}`; Beurling schedule; fold capacity; Markov sector) | RW, EWU, OWU, ACT, HF, SRT, AIP, ACS-atomic, SC, CHMD, TT; MSC, FEL; ADT/AHD/CWS/WTZ |
 | Σ, Hodge–Lefschetz / top coprime stratum | HF, ACS-Hodge, TG |
 | Σ, rank / degree (Laguerre–Pólya) | TH, HCF, PA, GTA, LA; ART |
 | Σ, scheduled prime sums | FU, CFC, RP, SZ, LI; EGC |

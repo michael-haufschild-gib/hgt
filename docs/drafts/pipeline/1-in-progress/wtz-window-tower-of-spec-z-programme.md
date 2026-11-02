@@ -63,4 +63,8 @@ stage-resolved analytic control (AOT aperture transport); window capacity; expon
 | C6 | `m^k + I_N = {f : f(n)=0 for n ≤ N, Ω(n) < k}`; `gr_k` has basis the `k`-almost primes ≤ N (Hilbert function = Landau `π_k(N)`) | paper | **[L]** `TheHilbertFunctionOfTheTower` |
 | C7 | socle of `D_N` = span `δ_n`, `N/2 < n ≤ N` (type `⌈N/2⌉`); Gorenstein ⇔ `N ≤ 2` (window `< log 3`) | paper | **[L]** same module |
 | C8 | parity at the first prime: on `[log 2, log 3)` the fold `T₂` raises the σ-odd sector and lowers the σ-even sector; pole does the opposite | numerics `parity.py` (odd min −0.013→+0.030 at A=0.76) | observed |
+| C9 | every test (not only `H ≥ 0`) is dominated by the Tate counts of its modulus: `Q ≥ Ω‖H‖² + J + pole − (2/k)(τ^{|H|}(k) − ‖H‖²)` | paper | **[L]** `weilQuad_ge_absTateCount` |
+| C10 | `ζ ≡ exp ℓ`, `ℓ = Λ/log`, on every window; `ρ(Λ) = [M, log Z]`; `J_k ≡ exp g_k`, `g_k(p^a) = #(𝔸^k∖0)(𝔽_{p^a})/a` (Hasse–Weil of punctured affine space); `J_k ≥ [n=1] + g_k ≥ [n=1] + kΛ` | paper (log-derivation ODE uniqueness on `D_N`) | **[L]** `TheTateFamilyIsAnExponentialOfPointCounts` |
+| C11 | Tate positivity horizon: `ρ_A(J_k)` PSD only for `k < k*(A)`, `k*(0.8) ∈ (1,2)`, `k*(2) ∈ (½,1)`, `k*(3) ∈ (¼,½)` → 0 | numerics `tatepsd.py` | observed; only the tangent at 0 is uniform |
+| C12 | pole-free form: Perron ground state ≈ −canonical degree, rest of spectrum ≈ 0⁺ (RH ⇒ index ≤ 1) | numerics `polefree.py` | observed (precision-limited for A > 2) |
 

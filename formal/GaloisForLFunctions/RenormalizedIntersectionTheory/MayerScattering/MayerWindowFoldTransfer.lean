@@ -319,7 +319,9 @@ theorem lewisCoIsometryDefect_eq_neg_log_integral {s : ℂ} {ψ : ℝ → ℂ}
                 (Real.exp (u / 4) * Real.exp (u / 4)) * ‖ψ (Real.exp u)‖ ^ 2 := by ring
         _ = (2 * Real.cosh u) ^ (-6 : ℝ) * Real.exp (u / 2) * ‖ψ (Real.exp u)‖ ^ 2 := by
           rw [← Real.rpow_add hc_pos, ← Real.exp_add]
-          congr 2 <;> ring
+          have h1 : (-3 : ℝ) + -3 = -6 := by norm_num
+          have h2 : u / 4 + u / 4 = u / 2 := by ring
+          rw [h1, h2]
     calc
       ‖logPeriodTransform ψ u‖ * (Real.exp (δ * u) * ‖logPeriodTransform ψ u‖)
           = Real.exp (δ * u) * (‖logPeriodTransform ψ u‖ * ‖logPeriodTransform ψ u‖) := by ring
@@ -611,7 +613,7 @@ theorem windowPeriodLift_coIsometryDefect_eq {A : ℝ} (hA : 0 ≤ A) {H : ℝ �
       intro b hb
       by_cases hle : b ≤ Real.exp A
       · exact (indicator_of_mem ⟨hb, hle⟩ _).symm
-      · push_neg at hle
+      · rw [not_le] at hle
         have hnot : Real.log b ∉ Icc (-A) A := fun hm =>
           hle.not_ge ((Real.log_le_iff_le_exp (zero_lt_one.trans hb)).mp hm.2)
         have hFz : F (Real.log b) = 0 := windowLogLift_eq_zero_of_notMem hA hv s hnot
@@ -675,7 +677,7 @@ theorem windowPeriodLift_coIsometryDefect_eq {A : ℝ} (hA : 0 ≤ A) {H : ℝ �
       by_cases hle : u ≤ A
       · have hm : -u ∈ Icc (-A) 0 := ⟨by linarith, by linarith⟩
         rw [indicator_of_mem hm, neg_neg]
-      · push_neg at hle
+      · rw [not_le] at hle
         have hnot : -u ∉ Icc (-A) 0 := fun hm => by linarith [hm.1]
         rw [indicator_of_notMem hnot, hv (-u) hnot]
         ring
@@ -828,8 +830,9 @@ theorem frobeniusDefectFactor_mono_nonneg (s : ℂ) {u₁ u₂ : ℝ}
   have hsum_le : e₁ + e₁⁻¹ ≤ e₂ + e₂⁻¹ := by
     have hdiff : (e₂ + e₂⁻¹) - (e₁ + e₁⁻¹) = (e₂ - e₁) * (e₁ * e₂ - 1) / (e₁ * e₂) := by
       field_simp [he₁_pos.ne', he₂_pos.ne']; ring
+    have hprod_ge1 : 1 ≤ e₁ * e₂ := one_le_mul_of_one_le_of_one_le he₁_ge1 he₂_ge1
     have hnn : 0 ≤ (e₂ - e₁) * (e₁ * e₂ - 1) / (e₁ * e₂) :=
-      div_nonneg (mul_nonneg (by linarith) (by nlinarith)) (by positivity)
+      div_nonneg (mul_nonneg (by linarith) (by linarith)) (by positivity)
     linarith
   have hd₁_nn : 0 ≤ e₁ - e₁⁻¹ := by
     have : e₁⁻¹ ≤ 1 := inv_le_one_of_one_le₀ he₁_ge1
@@ -848,7 +851,9 @@ private theorem frobeniusDefectFactor_log_nat (s : ℂ) {n : ℕ} (hn : 1 ≤ n)
   have hn0 : (0 : ℝ) < n := by exact_mod_cast hn
   unfold frobeniusDefectFactor
   rw [Real.rpow_def_of_pos hn0, Real.rpow_def_of_pos hn0]
-  congr 2 <;> [congr 1; congr 1] <;> congr 1 <;> ring
+  have h1 : Real.log n * (2 * s.re - 1 / 2) = (2 * s.re - 1 / 2) * Real.log n := by ring
+  have h2 : Real.log n * -(2 * s.re - 1 / 2) = -((2 * s.re - 1 / 2) * Real.log n) := by ring
+  rw [h1, h2]
 
 private theorem windowPeriodLift_neg_defect_eq_Icc {A : ℝ} (hA : 0 ≤ A) {H : ℝ → ℝ}
     (hc : Continuous H) (hv : ∀ y, y ∉ Icc (-A) 0 → H y = 0) (s : ℂ) :
@@ -892,7 +897,7 @@ theorem windowPeriodLift_neg_defect_ge_foldSym_sub_foldEnergy {A : ℝ} {n : ℕ
         simp only [Pi.sub_apply]
         have hsos : 8 * H x ^ 2 - (H x + H (x + ℓ)) ^ 2 + 2 * (H x - H (x + ℓ)) ^ 2 =
             (3 * H x - H (x + ℓ)) ^ 2 := by ring
-        nlinarith [sq_nonneg (3 * H x - H (x + ℓ))]
+        linarith [hsos, sq_nonneg (3 * H x - H (x + ℓ))]
     rw [integral_sub (hint_sym.const_mul (1 / 8)) (hint_en.const_mul (1 / 4)),
       integral_const_mul, integral_const_mul] at hmono
     have hsym_eq : foldSym A ℓ H = (1 / 2) * ∫ x in Icc (-A) (-ℓ), (H x + H (x + ℓ)) ^ 2 := by
@@ -1027,14 +1032,14 @@ theorem windowPeriodLift_neg_defect_le_firstPrime_fold {A : ℝ}
           rw [indicator_of_mem hm1]
           simp only [Pi.one_apply]
           linarith
-        · push_neg at hleft
+        · rw [not_le] at hleft
           have hm2 : x ∈ Icc (Real.log 2 - A) 0 := ⟨by linarith, hx.2⟩
           have hnn1 : 0 ≤ (Icc (-A) (-Real.log 2)).indicator (1 : ℝ → ℝ) x :=
             indicator_nonneg (fun _ _ => zero_le_one) x
           rw [indicator_of_mem hm2]
           simp only [Pi.one_apply]
           linarith
-      nlinarith [sq_nonneg (H x)]
+      simpa only [one_mul] using mul_le_mul_of_nonneg_right h1_le (sq_nonneg (H x))
     · rw [indicator_of_notMem hx]
       exact mul_nonneg (inWindowCount_nonneg A (Real.log 2) x) (sq_nonneg _)
   have hint_count : Integrable (fun x => inWindowCount A (Real.log 2) x * H x ^ 2) := by

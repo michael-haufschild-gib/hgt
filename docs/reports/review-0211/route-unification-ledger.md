@@ -19,14 +19,15 @@ Dirichlet ring truncated at `⌊e^A⌋`, and `κ = sup_A ι(A)`. The unification
   sieves and Weil's form are readings of one family in the dimension.
 - **One decomposition.** At the critical curve the complete family is a point count on every fixed
   conductor plus Weil's form on untwisted horizon windows [L].
-- **One place where the problem lives.** Entering a stage is free (exit charge); composite stages are
-  free; all of RH is bulk room — growth of the window at frozen arithmetic [L].
+- **One place where the problem lives.** A new fold enters as one collar-to-collar correlation, paid
+  pointwise by the exit charge with an AM–GM loss; composite stages are free [L]. The bulk — the
+  accumulated canonical class — must be paid exactly, stage by stage [D].
 - **One axis.** Window length `A` = log of the level `⌊e^A⌋` = twice the half-width of RW/LST/ACS =
   radius `½log K` of the tests a critical multiple `K` synthesizes = time `t` of the window energy =
   log of the Landau height `T/2π` = exponent of the window Frobenius multiplier `e^{−(s−½)A}` = the
   logarithmic coordinate `u` of the Lewis period space under `U_LP` [L/S/D].
-- **One exponent.** Window negativity is at most `(4A+1)e^{A/2}` [L]; its growth exponent equals the
-  maximal zero depth [L]; the window-energy abscissa is twice it [L].
+- **One exponent.** Window negativity is at most `(4A+1)e^{A/2}` [L]; on two-bump tests it grows exactly
+  at the rate of the maximal zero depth [L]; the window-energy abscissa is twice that depth [L].
 - **One reflection.** Serre duality `σ_A` is the Rosati involution of the window algebra; on Lewis
   periods the reflection is the Hilbert adjoint `I_{1/2−s̄}`; `U_LP` identifies the two; `Λ(s)/Λ(s+1)`
   carries the defect as band poles; the Mayer Krein form is its positivity [L/S].
@@ -40,7 +41,8 @@ Dirichlet ring truncated at `⌊e^A⌋`, and `κ = sup_A ι(A)`. The unification
   and selection, every window of a curve lives in one `ℂ^{2g}`, and base change is an exact symmetry of
   the tower. Over `ℤ` every structural axiom of the tower holds for every Euler datum [L], no finite
   carrier exists [L], counts in positive dimension are soft [L], and Weil positivity has no slack [L].
-  Missing: an exact positivity of unbounded rank that survives the derivative at dimension zero —
+  Missing: an exact positivity of unbounded rank that survives the derivative at dimension zero — an
+  archimedean counterpart of the point counts `φ(m)#ℙ^{k−1}(ℤ/m)` dominating them near `k = 0`, or
   equivalently a positive ground state of the folded window jump process at every length.
 
 Evidence: `[L]` integrated Lean; `[S]` working tree or not wired into its umbrella; `[P]` paper;
@@ -91,9 +93,9 @@ Evidence: `[L]` integrated Lean; `[S]` working tree or not wired into its umbrel
 
 The three walls are the three ways a reading of the tower fails:
 - **Σ**: at each length the sign is a finite question with doubly-exponentially small margin; entrances
-  are free; nothing pays the bulk at frozen arithmetic uniformly in the stage.
+  are paid pointwise with a loss; nothing pays the bulk exactly, uniformly in the stage.
 - **Π**: the arithmetic term is the derivative at dimension zero of counts (parity); negativity grows
-  with exponent `Θ − ½`; nothing produces the window `h¹` by an exact identity of unbounded rank.
+  at least at rate `Θ − ½`; nothing produces the window `h¹` by an exact identity of unbounded rank.
 - **Γ**: the reflection exists on both sides; nothing makes it positive; every selector without
   positivity is blind, and selection after positivity is a theorem.
 
@@ -166,10 +168,10 @@ in `A`. C5 and C6 are sign problems on test families that become RH-complete onl
 degree or schedule. C7 and C11 are precision faces; C13 is the production face; C8–C10 and C14 are
 selection faces.
 
-## U-Σ — bulk room of the window tower
+## U-Σ — the exact stage step of the window tower
 
-Core problem: Weil's form is nonnegative on windows of every length; entrances are paid, so the core is
-the growth of the window at frozen arithmetic inside each stage. Equivalent forms: every fixed multiple
+Core problem: Weil's form is nonnegative on windows of every length; each new fold is one
+collar-to-collar correlation, so the core is an exact (lossless) stage step, uniformly in the stage. Equivalent forms: every fixed multiple
 of the critical overlap; horizon layer; Beurling schedule; `ι(A) = 0` ∀A; fold capacity; odd-sector
 Markov capacity; HL on the positive locus; `μ(A) ≥ 0` ∀A; Mayer Krein positivity; prime-blind
 positivity [L/D].
@@ -193,10 +195,10 @@ positivity [L/D].
 | Face | Routes / programmes | Reduction |
 |---|---|---|
 | Complete atomic matrix | HF, SRT, AIP, ACT, ACS-atomic, CACT, CAF, RAPT, SSH, SSHA, CSAR, ACPL, TM, ADT, AHD | untwisted horizon windows = window form; every fixed conductor a count; `1/8` join is assembly |
-| Aperture ground minimum | RW, EWU, OWU, MSC, CFC, SP | window sign by stages; entrance free; bulk room open |
+| Aperture ground minimum | RW, EWU, OWU, MSC, CFC, SP | window sign by stages; exact stage step open |
 | Glued state | SC, AKG | Beurling-schedule sign |
 | Markov / odd sector | CHMD, AID, SAHT, TT, ACT-L, OWU | criticality of the folded jump process with sinh capacity |
-| Window tower | CWS, WTZ | bulk room uniformly in the stage |
+| Window tower | CWS, WTZ | exact stage step uniformly in the stage |
 | Edge / zero modes / Kähler | EHT, HWV, RW | HL on the PSD locus |
 | Stars / gluing | HWV, CSAR, ADT | top gcd stratum |
 | Effectivity / RR | ACS, LST, RIT, HF, AE | count-valued inequality for the primitive `h¹` (U-Π production) |
@@ -212,7 +214,7 @@ positivity [L/D].
 Core problem: control the derivative at dimension zero of the Tate counts exactly, and produce the
 window `h¹` by an identity of unbounded rank. Seven forms:
 - the one-point windowed prime error (kernel, coupling, one-sided count; its damped form on the cone);
-- the growth exponent of window negativity (`= Θ − ½`);
+- the growth exponent of window negativity (`≥ Θ − ½`, `≤ ½`);
 - windowed zero power sums (window energy; window integer; inner caps);
 - the conjugate diagonal ↔ near-line density ↔ log-mean (one statement in eight forms);
 - the signed pair information beyond bandwidth one;
@@ -225,7 +227,7 @@ window `h¹` by an identity of unbounded rank. Seven forms:
 | Windowed kernel / coupling | SC, ACPL, AKG, HKT | bounded `K_ζ` ⇔ bounded dense coupling ⇔ bounded damped cone coupling (Π4, Σ17) |
 | Integer producers | WL, AKLT, AHA | `ε`-uniform producer (Π3) |
 | Möbius / nerve | MC, BVI, CAF, HWV, ADT | half-power cancellation; `χ̃ = −M(N)` (Π1, Π2, Π10) |
-| Window budget | CWS, WTZ, SRT | exponent `= Θ − ½` (Σ28) |
+| Window budget | CWS, WTZ, SRT | exponent between `Θ − ½` and `½` (Σ28) |
 | Window energy | WD, TG, CDG | inner caps (Π17, Π23) |
 | Near-line density / log-mean | WD, CDG, RBG, HEF, census | eight-form statement; occupancy (Π5, Π22) |
 | Census | SRT, IGP, Zeta23, CDG, TTPC | signed information beyond bandwidth one (Π7) |
@@ -238,8 +240,8 @@ window `h¹` by an identity of unbounded rank. Seven forms:
 | Subconvexity / heat | LA, WD, AHA | floors `133/200`, `2/3` (Π12) |
 | Candidates | APF, EWJ, FEL, WBF, IRK | integral counts from a source lift |
 
-Identities [L/S]: one-sided count ⇔ `κ = 0`; coupling rate = zero width; negativity exponent = maximal
-depth; window-energy abscissa = twice the maximal depth; canonical class = half-weighted Chebyshev
+Identities [L/S]: one-sided count ⇔ `κ = 0`; coupling rate = zero width; two-bump negativity rate =
+maximal depth; window-energy abscissa = twice the maximal depth; canonical class = half-weighted Chebyshev
 profile; Weil's window form = Tate jet = signed count; eight forms of near-line density; Künneth
 `h¹` = counts + `½Q`; Rosati positivity ⇔ naive height; first-order degeneration term = point count over
 every finite ring.
@@ -279,9 +281,9 @@ its positivity is RH.
 | Σ ∩ Π: one algebra | window = module over the truncated Dirichlet ring; arithmetic = multiplication by `Λ` | WTZ, CWS [L] |
 | Σ ∩ Π ∩ Γ: one family | Tate pieces (counts) at positive dimension, Weil's form at `k = 0`, Bombieri's `Λ_j` as Taylor coefficients | WTZ, AHD [L]; [D] |
 | Σ: one decomposition | counts on every fixed conductor + Weil on untwisted windows | ADT, AHD [L] |
-| Σ: one location | entrance free; bulk room open | WTZ [L] |
+| Σ: one location | each new fold = one collar-to-collar correlation; exact stage step open | WTZ [L]; [D] |
 | Σ: one axis | window length = level = radius `½log K` = active primes = Mayer coordinate | AHD, TM, RW, LST, CWS, RIT [L/S] |
-| Σ ∩ Π: one exponent | floor `(4A+1)e^{A/2}`; exponent = maximal depth = ½ abscissa | WTZ, SRT, CDG [L] |
+| Σ ∩ Π: one exponent | floor `(4A+1)e^{A/2}`; two-bump rate = maximal depth = ½ abscissa | WTZ, SRT, CDG [L] |
 | Σ ∩ Π: phase diagram | sharp pencil positive at bounded `(A, K)`; RH at `A, K → ∞` | WTZ, AHD [L] |
 | Σ: one hyperplane | glued index, complete sign, Markov criterion, Hodge index on `v₁^⊥` | SC, HF, SRT, AIP, ACS, CHMD, RIT, HWV |
 | Σ: inherited regime | estimates live below the critical exponent; the `1/8` join is assembly | CACT, ADT, TM [L/P] |
@@ -308,7 +310,7 @@ its positivity is RH.
 | Route | Core | Class | Face |
 |---|---|---|---|
 | WL | Π | C7 | one-sided count; canonical class as cumulative Chebyshev |
-| RW, EWU, OWU | Σ (Γ) | C1, C4, C15 | window sign by stages; bulk room |
+| RW, EWU, OWU | Σ (Γ) | C1, C4, C15 | window sign by stages; exact stage step |
 | FU, CFC, RP, SZ, LI | Σ | C6 | scheduled prime sums |
 | PA, TH, LA, HCF, GTA | Σ | C5 | Laguerre–Pólya |
 | MC | Π (Γ) | C7, C8 | Möbius cancellation; Redheffer; typicality |
@@ -334,9 +336,9 @@ its positivity is RH.
 
 | Needed | Present over `ℤ` | Missing |
 |---|---|---|
-| Sign of the window form | criterion; window algebra; signed folds; fold capacity; entrance free; end profile; positivity to `3/5`, odd prime-free by count, one scalar below `log 2 + 1/50` | bulk room at frozen arithmetic in every stage, by an exact mechanism (Σ30, Σ7) |
+| Sign of the window form | criterion; window algebra; signed folds; fold capacity; entrance free; end profile; positivity to `3/5`, odd prime-free by count, one scalar below `log 2 + 1/50` | an exact stage step in every stage (Σ30, Σ7) |
 | Full-space structure | counts on every fixed conductor; untwisted windows = Weil; `1/8` join planned | growing conductors and cross terms (Σ1j) |
-| Uniformity in `A` | each length finite and decidable; stage transfer; phase diagram | a law in `A`; exponent of negativity `= Θ − ½` |
+| Uniformity in `A` | each length finite and decidable; stage transfer; phase diagram | a law in `A`; subexponential window negativity |
 | Positivity through dimension zero | Tate counts positive in positive dimension; tangent principle on nonnegative tests | a positivity that survives `∂_k` at `k = 0` (parity on windows, Σ31) |
 | Nondegeneracy (HL) | Kähler transport; Liouville = HL | HL on the positive locus; no zero modes |
 | Gluing | gcd stratification; two-prime cyclic orbit carries the defect | global payment of the top stratum |

@@ -1382,8 +1382,8 @@ private lemma deepExtendedShell_orderSum_le {r : ℝ} (hr0 : 0 < r) (hr1 : r < 1
     exact ha_V.trans (mul_le_mul_of_nonneg_left hlogV_le_LS (by positivity))
   have hr'_mul_a : r * A ≤ r' * a := by
     rw [hr'_def, ha_def, hε'_def, mul_div_assoc', le_div_iff₀ (by linarith)]
-    have hdiff : (r + 1) / 2 - r * (1 + (1 - r) / 4) = (1 - r) * (r + 2) / 4 := by ring
-    have hpos_d : 0 ≤ (1 - r) * (r + 2) / 4 :=
+    have hdiff : (r + 1) / 2 - r * (1 + (1 - r) / 4) = (1 - r) * (2 - r) / 4 := by ring
+    have hpos_d : 0 ≤ (1 - r) * (2 - r) / 4 :=
       div_nonneg (mul_nonneg (by linarith) (by linarith)) (by norm_num)
     have hle_coef : r * (1 + (1 - r) / 4) ≤ (r + 1) / 2 := by linarith
     calc r * A * (1 + (1 - r) / 4) = (r * (1 + (1 - r) / 4)) * A := by ring
@@ -1456,7 +1456,7 @@ private lemma deepExtendedShell_orderSum_le {r : ℝ} (hr0 : 0 < r) (hr1 : r < 1
         have hS_le : S ≤ 2 * V := by rw [hS_def]; linarith
         calc S ^ (1 - η_r)
             ≤ (2 * V) ^ (1 - η_r) := Real.rpow_le_rpow hS_pos.le hS_le (by linarith)
-          _ = (2 : ℝ) ^ (1 - η_r) * V ^ (1 - η_r) := Real.mul_rpow zero_le_two hV_pos.le _
+          _ = (2 : ℝ) ^ (1 - η_r) * V ^ (1 - η_r) := Real.mul_rpow zero_le_two hV_pos.le
           _ ≤ 4 * V ^ (1 - η_r) := by
               refine mul_le_mul_of_nonneg_right ?_ (Real.rpow_nonneg hV_pos.le _)
               calc (2 : ℝ) ^ (1 - η_r) ≤ (2 : ℝ) ^ (1 : ℝ) :=
@@ -2513,7 +2513,7 @@ private def sparseModel : UnitWindowStripZeroModel where
             ≤ ((4 / 3) * Real.exp ((3 / 4) * u)) * Real.exp (-u) :=
               mul_le_mul_of_nonneg_right hu_le (Real.exp_pos _).le
           _ = (4 / 3) * Real.exp (-(1 / 4 * u)) := by
-              rw [mul_assoc, ← Real.exp_add]; congr 1; ring
+              rw [mul_assoc, ← Real.exp_add, show 3 / 4 * u + -u = -(1 / 4 * u) by ring]
           _ ≤ (4 / 3) * Real.exp (-(r * a)) := by
               refine mul_le_mul_of_nonneg_left (Real.exp_le_exp.mpr ?_) (by norm_num)
               have hra : r * a ≤ 1 * a := mul_le_mul_of_nonneg_right hr1.le (by linarith)
@@ -3179,7 +3179,7 @@ private def clusteredModel : UnitWindowStripZeroModel where
         have h2 : a * Real.exp (-(6 / 5 * a)) ≤ (5 * Real.exp (a / 5)) * Real.exp (-(6 / 5 * a)) :=
           mul_le_mul_of_nonneg_right (by linarith) (Real.exp_pos _).le
         have h3 : (5 * Real.exp (a / 5)) * Real.exp (-(6 / 5 * a)) = 5 * Real.exp (-a) := by
-          rw [mul_assoc, ← Real.exp_add]; congr 1; ring
+          rw [mul_assoc, ← Real.exp_add, show a / 5 + -(6 / 5 * a) = -a by ring]
         have hra : r * a ≤ 1 * a := mul_le_mul_of_nonneg_right hr1.le (by linarith)
         have h4 : Real.exp (-a) ≤ Real.exp (-(r * a)) :=
           Real.exp_le_exp.mpr (by linarith)

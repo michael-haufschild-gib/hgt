@@ -6,17 +6,18 @@ critical line, and all three are read on one object: the **window tower** `A ↦
 `κ = sup_A ι(A)`. A window of length `A` is a module over the Dirichlet ring truncated at `⌊e^A⌋`; the
 tower is a chain of small extensions, one fold per integer.
 
-- **Σ is bulk room.** On a window Weil's form is
-  `Q = Ω(0)‖H‖² + J_∞(H) − 2⟨ρ_A(Λ)H,H⟩ + ½⟨c,H⟩² − ½⟨s,H⟩²`. Entering a stage costs nothing (the
-  collar exit charge pays every new fold; composite stages are free); the pointwise part is paid by the
-  end profile up to length `~0.18`. What is open is the growth of the window at frozen arithmetic
-  inside each stage: a nonlocal capacity of the archimedean and prime jumps against the end-profile
-  potential, uniformly in the stage. Weil positivity has no slack: the Weil cone is a single point and
-  window margins are doubly exponentially small, so the payment must be exact.
+- **Σ is the exact stage step.** On a window Weil's form is
+  `Q = Ω(0)‖H‖² + J_∞(H) − 2⟨ρ_A(Λ)H,H⟩ + ½⟨c,H⟩² − ½⟨s,H⟩²`. A new fold `N+1` enters only as one
+  collar-to-collar correlation `−2w_{N+1}∫H(u)H(u+log(N+1))du`; the collar exit charge pays it pointwise,
+  composite stages are free, and the pointwise part of the bulk is paid by the end profile up to length
+  `~0.18`. What is open is the exact step: the pointwise payment uses AM–GM and drops the new fold's own
+  energy, and Weil positivity has no slack (the Weil cone is a single point; window margins are doubly
+  exponentially small). The bulk — the accumulated canonical class against the interior jumps — has to be
+  paid exactly, uniformly in the stage.
 - **Π is the derivative at dimension zero.** Weil's arithmetic term is the `k`-derivative at `k = 0` of
   the Tate function `⟨ρ_A(J_k)H,H⟩`, whose values at positive integers are point counts of punctured
   affine space over `ℤ/m`; its Taylor coefficients are Bombieri's `Λ_j` [D], so the first one is the
-  parity barrier on windows. Size: window negativity grows with exponent `Θ − ½` exactly. Production:
+  parity barrier on windows. Size: window negativity grows at least at rate `Θ − ½` (two-bump tests) and at most at rate `½`. Production:
   no finite-square identity, no finite-rank carrier; a producer is an exact identity of unbounded rank.
   The classical precision faces (log-mean, near-line density, Hecke defect) are one density statement in
   eight forms.
@@ -76,9 +77,9 @@ plan; `[N]` numerical; `[D]` derived here from Lean statements. Window lengths `
 | Σ25 Semilocal and trace carriers | No-go | — | No `{∞,p}` positive carrier; exact `{∞,2}` trace through `½log3` [L]. |
 | Σ26 Approximation by RH-true objects | Classified | — | Closure class Laguerre–Pólya [L/D]. |
 | Σ27 Window stages | Partially solved | sub (each stage); RH (all) | Entrance solved: crossing a stage adds one fold whose end mass the collar exit charge pays (`Ω(ε) ≥ log 3 > 2/e ≥ Λ(n)/√n`); composite stages free [L]. Prime-free stage: all tests to `3/5`, exit charge to `1/7`, jump count to `1/32`, odd sector on the whole prime-free window by a count (`h¹ ≥ ‖f‖²/2000`) [L]; at most one negative direction below `log 2 + 1/50`, positivity ⇔ one cosh-capacity inequality [L]. First-fold stage: one fold `T₂`; no finite-square count identity (Π20) [L]; odd tests to `0.724`, cosh-orthogonal to `log 2 + 1/50` [L]; numerical margins `1.5×10⁻⁵` / `5.6×10⁻⁸` at `½log3` [N]. |
-| Σ28 Window negativity budget | Reduced (exponent `= Θ − ½`) | ≥qRH (exponent `< ½`); RH (subexponential) | Exact pole capacity `2sinh(A/2) − A`; `Q ≥ −(deg K_A + 2sinh(A/2) − A)‖H‖² ≥ −(−Ω(0) + (4A+1)e^{A/2})‖H‖²` [L]. The negativity rate of unimodular two-bump tests equals the supremum of zero depths [L]; window-energy abscissa = twice the maximal depth [L]. |
+| Σ28 Window negativity budget | Sharpened | ≥qRH (exponent `< ½`); RH (subexponential) | Exact pole capacity `2sinh(A/2) − A`; `Q ≥ −(deg K_A + 2sinh(A/2) − A)‖H‖² ≥ −(−Ω(0) + (4A+1)e^{A/2})‖H‖²` [L]. The negativity rate of unimodular two-bump tests equals the supremum of zero depths [L]; window-energy abscissa = twice the maximal depth [L]. |
 | Σ29 Low-frequency localization | Solved (localization) | — | Window negativity lives at the poles and below `τ₀(a) = 4exp(10 + 2e^{4a})` [L]. |
-| Σ30 Bulk room | Open | RH; each stage sub | `Q ≥ Q_N − Ω(ε)∫_{collars}H²` with the reduced archimedean energy `≥ 0` [L]; open: `Q_N − Ω(ε)∫_{collars}H² ≥ 0` on windows of every stage, uniformly in `N` — the growth of the window at frozen arithmetic. |
+| Σ30 The stage step | Open | RH (exact step, as an induction); bulk room sufficient | Exact: `Q_{N+1}(H) = Q_N(H) + w_{N+1}(fold energy − end mass) = Q_N(H) − 2w_{N+1}∫_{left collar}H(u)H(u+log(N+1))du` [L/D]. Lossy: `Q ≥ Q_N − Ω(ε)∫_{collars}H²` with the reduced archimedean energy `≥ 0` [L]; its sufficient condition `Q_N − Ω(ε)∫_{collars}H² ≥ 0` (bulk room) drops the new fold's energy and over-pays its end mass, and with doubly-exponential margins it need not hold under RH. Under RH the near-null tests of the frozen form must anticipate every new prime-power fold: their end-to-end correlation at the lag `log(N+1)` is nonpositive up to the margin [D]. |
 | Σ31 Positivity across the dimension-zero derivative | Sharpened | method; RH (uniform) | `Q = Ω(0)τ_H(0) − 2τ′_H(0) + J_∞ + pole`; `Q` is a signed count with the Lagrange coefficients of `log` [L]. Tate positivity at positive dimension is soft (`ζ(s)ζ(s−ε)` passes); at a prime only the sign of the weight survives `∂_k` at `0` [L]. On nonnegative tests the tangent principle bounds the arithmetic term by Tate counts in every positive dimension [S]. `J_k = Σ_j k^jΛ_j/j!` with Bombieri's `Λ_j = μ * log^j` [D]: the first coefficient is the parity barrier. |
 | Σ32 Prime-blind positivity | Sharpened | RH | Every real weight with full Weil positivity is `Λ`; the Weil cone is nonempty iff the pole + archimedean part is `≥ 0` on positive combinations of autocorrelations vanishing at every `±log n` [L]; hence RH ⇔ prime-blind positivity [D]. Finite levels: the cones `C_A` of weights on `n ≤ e^A` positive on `W_A` are compact and nested, and RH ⇔ `C_A ≠ ∅` ∀A [D]. On the annihilator the archimedean part equals the zero sum `Σ_ρ ĝ(γ_ρ)` [D]. |
 
@@ -154,9 +155,9 @@ plan; `[N]` numerical; `[D]` derived here from Lean statements. Window lengths `
 | Weil's window form = dimension-zero jet of the Tate function = signed count; Tate pieces = degeneration counts `φ(m)#ℙ^β(ℤ/m)` | WTZ, AHD [L] |
 | Tate family = exponential generating function of Bombieri's `Λ_j`; first coefficient = parity | [D] |
 | Complete family at the critical curve = counts on every fixed conductor + Weil on untwisted windows | AHD [L] |
-| Stage transfer: entrance free; bulk room = Σ30 | WTZ [L] |
+| Stage step: one collar-to-collar correlation per new fold; exit charge pays it with an AM–GM loss (Σ30) | WTZ [L]; [D] |
 | Fold capacity ⇔ window sign ⇔ odd-sector Markov capacity with sinh capacity | CWS, CHMD [L]; criticality form [D] |
-| Negativity exponent = maximal depth = ½ window-energy abscissa | SRT, CDG [L]; WTZ floor [L] |
+| Two-bump negativity rate = maximal depth = ½ window-energy abscissa; full window exponent between it and `½` | SRT, CDG [L]; WTZ floor [L] |
 | Window involution = Rosati involution ↔ Lewis adjoint `I_{1/2−s̄}` via `U_LP`; Frobenius defect ↔ co-isometry defect | WTZ [L], RIT [L/S] |
 | Weil cone `⊆ {Λ}`; nonempty ⇔ prime-blind positivity | RHTower [L] |
 | Near-line density: eight forms; occupancy ⇔ almost-all certificates | CDG [S] |
@@ -169,7 +170,7 @@ plan; `[N]` numerical; `[D]` derived here from Lean statements. Window lengths `
 
 | Family | Solved | Partially solved | Sharpened | Open | No-go | Classified | Reduced |
 |---|---|---|---|---|---|---|---|
-| Σ (44) | 7 (Σ1a, Σ1h, Σ10, Σ12, Σ16, Σ24, Σ29) | 10 (Σ1b, Σ1c, Σ1d, Σ1g, Σ1j, Σ1k, Σ3, Σ6, Σ9, Σ27) | 10 (Σ1, Σ2, Σ3a, Σ4, Σ7, Σ8, Σ17, Σ19, Σ31, Σ32) | 4 (Σ1e, Σ18, Σ20, Σ30) | 5 (Σ1f, Σ13, Σ14, Σ23, Σ25) | 6 (Σ1i, Σ11, Σ15, Σ21, Σ22, Σ26) | 2 (Σ5 → Π17, Σ28 → exponent `Θ − ½`) |
+| Σ (44) | 7 (Σ1a, Σ1h, Σ10, Σ12, Σ16, Σ24, Σ29) | 10 (Σ1b, Σ1c, Σ1d, Σ1g, Σ1j, Σ1k, Σ3, Σ6, Σ9, Σ27) | 11 (Σ1, Σ2, Σ3a, Σ4, Σ7, Σ8, Σ17, Σ19, Σ28, Σ31, Σ32) | 4 (Σ1e, Σ18, Σ20, Σ30) | 5 (Σ1f, Σ13, Σ14, Σ23, Σ25) | 6 (Σ1i, Σ11, Σ15, Σ21, Σ22, Σ26) | 1 (Σ5 → Π17) |
 | Π (30) | 3 (Π1, Π11g, Π13) | 5 (Π3, Π7, Π9, Π11f, Π12) | 9 (Π4, Π5, Π6, Π8, Π10, Π11h, Π16, Π17, Π22) | 2 (Π2, Π23) | 9 (Π11a–e, Π14, Π18, Π19, Π20) | 2 (Π15, Π21) | — |
 | Γ (27) | 6 (Γ2, Γ6, Γ7, Γ12, Γ18, Γ23) | 2 (Γ5, Γ15) | 6 (Γ4, Γ8, Γ10, Γ16, Γ19, Γ24) | 1 (Γ1) | 10 (Γ3, Γ9, Γ11, Γ13, Γ14, Γ21, Γ22, Γ25, Γ26, Γ27) | 2 (Γ17, Γ20) | — |
 

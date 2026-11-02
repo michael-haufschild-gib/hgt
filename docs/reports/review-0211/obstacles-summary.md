@@ -43,13 +43,17 @@ generalized von Mangoldt functions, `J_k = Σ_j (k^j/j!)Λ_j`, `Λ_j = μ * log^
 the higher ones are sieve-accessible. The dimension-zero derivative is the parity barrier on
 windows [D, heuristic identification].
 
-### 1.3 Entrances are free; the obstruction is the bulk
+### 1.3 A new fold is one collar-to-collar correlation; the obstruction is the bulk
 Crossing a stage adds one fold, whose only cost is its end mass on two collars of width
-`ε = A − log(N+1)`: `Q = Q_N + w_{N+1}(fold energy − end mass)` [L]. Every archimedean jump longer than
-`ε` carries the collars out of the window, so the collar exit charge `Ω(ε)∫_{collars}H² ≤ J_∞`, and on
-every stage `Ω(ε) ≥ log 3 > 2/e ≥ Λ(n)/√n`: **the exit charge pays every new fold, uniformly along
-the tower** [L]. Composite stages are free [L]. Hence all of RH is the growth of the window at frozen
-arithmetic inside a stage: whether `Q_N` minus the collar loan stays nonnegative (bulk room).
+`ε = A − log(N+1)`: `Q = Q_N + w_{N+1}(fold energy − end mass)` [L]; equivalently the new fold enters as
+the single collar-to-collar correlation `−2w_{N+1}∫H(u)H(u+log(N+1))du` over the left collar [D].
+Every archimedean jump longer than `ε` carries the collars out of the window, so the collar exit charge
+`Ω(ε)∫_{collars}H² ≤ J_∞`, and on every stage `Ω(ε) ≥ log 3 > 2/e ≥ Λ(n)/√n`: **the exit charge pays
+every new fold pointwise, uniformly along the tower** [L]. Composite stages are free [L]. The payment
+is by AM–GM and drops the new fold's own energy; since margins are doubly exponentially small (1.4),
+the lossy condition `Q_N − Ω(ε)∫_{collars}H² ≥ 0` (bulk room) is sufficient, not necessary. New folds
+are never the obstruction pointwise; the obstruction is the accumulated canonical class in the bulk,
+and the stage step has to be exact.
 
 Pointwise, `Q ≥ ∫V_A H² + pole` with the universal end profile
 `V_A = Ω_Γ + φ(−u) + φ(A+u)`, `φ(t) = Ω(t) − ψ_{1/2}(e^t)` [L]: the Gamma factor's exit tail minus
@@ -122,13 +126,13 @@ windows are zero-free beyond `A/log V` and all but `O(V/log log V)` unit windows
 double-log stage. On the window-energy side, the right-edge flux never cancels against its
 functional-equation image; Cauchy caps cancel it down to `σ_m = 1 − 1/(116log(m+5))`, and the inner
 caps `[½, σ_m]` are the zero-free-region problem itself; the polynomial stage is RH [S]. The growth
-exponent of window negativity equals the maximal zero depth [L].
+rate of two-bump window negativity equals the maximal zero depth; the full window negativity exponent lies between it and `½` [L].
 
 ### 1.8 What the three walls are
 | Wall | Window form |
 |---|---|
-| Σ sign | bulk room: the censored jump process (Lévy + prime jumps) pays the end-profile potential `V_A < 0` and the sinh capacity, at frozen arithmetic, in every stage; exact (no slack) |
-| Π precision / production | the derivative at dimension zero of the Tate counts (parity on windows); the growth exponent `Θ − ½` of window negativity; a production of the window `h¹` by an exact identity of unbounded rank |
+| Σ sign | the exact stage step: the censored jump process (Lévy + prime jumps) pays the end-profile potential `V_A < 0` and the sinh capacity in every stage, without loss (no slack); each new fold is one collar-to-collar correlation |
+| Π precision / production | the derivative at dimension zero of the Tate counts (parity on windows); the growth exponent of window negativity (between `Θ − ½` and `½`); a production of the window `h¹` by an exact identity of unbounded rank |
 | Γ selection | the reflection is present on both sides; what is missing is its positivity (Rosati / Krein); every selector without positivity is blind; the Weil cone is a point and its nonemptiness is prime-blind |
 
 They are three readings of one statement: **on the odd sector of every window, the folded arithmetic
@@ -179,7 +183,7 @@ that even direction. At the first prime the open content is an inequality, not a
 | # | Problem | Strength | Routes |
 |---|---|---|---|
 | B1 | Weil's sign on windows of every length (≡ fold capacity ≡ horizon criterion ≡ Beurling schedule ≡ every `2K(log N)^{1/8}` ≡ `ι(A) = 0` ∀A ≡ Mayer Krein positivity) | RH; fixed length sub | HF, SRT, AIP, ACT, ACS, SC, RW, EWU, OWU, CHMD, TT, MSC, FEL, PM |
-| B2 | Bulk room: `Q_N` minus the collar loan `≥ 0` on every stage | RH; each stage sub | RW, CWS/WTZ, HF |
+| B2 | Exact stage step (each new fold = one collar-to-collar correlation, paid without AM–GM loss); its lossy form, bulk room, is sufficient and may fail | RH as induction; each step sub | RW, CWS/WTZ, HF |
 | B3 | Window capacity: Poincaré inequality for the censored jumps where `V_A < 0`; Agmon ground state of the arithmetic jump process | RH; fixed length sub | CWS/WTZ, RW, CHMD, TT, OWU, HF |
 | B4 | Positivity surviving the derivative at dimension zero (parity on windows) | method; uniform RH | CWS/WTZ, ACS, AHD |
 | B5 | Growing-conductor Tate decomposition; conductors above `√N` | sub | HF, SRT, AIP, ACS, SC, AHD |
@@ -191,12 +195,12 @@ that even direction. At the first prime the open content is an inequality, not a
 | B11 | Top coprime stratum | RH | HF, ACS, ADT |
 | B12 | Cross-tower gap through the archimedean channel | method; RH | HF, AIP |
 | B13 | Index ceiling uniform in resolution | ≥qRH; RH (tensor) | CHMD, SRT, WD, SC |
-| B41 | Zero–one law `κ ∈ {0, ∞}` | sub | SC, HF, ACS, CWS, SRT |
+| B41 | Zero–one law `κ ∈ {0, ∞}` (the finite nonzero stratum is Lindelöf-deep [L]) | sub | SC, HF, ACS, CWS, SRT |
 | B14 | Laguerre–Pólya (all ranks / degrees) | RH | TH, LA, HCF, PA, GTA |
 | B15 | Scheduled prime energies | RH | FU, CFC, RP, SZ, LI, FEL, EGC |
 | B17 | Source-faithful realization: a tower of unbounded rank | RH | RN, PTR, W1C, PM |
 | B18 | Prime-blind positivity: archimedean + pole part `≥ 0` on positive combinations vanishing on `±log ℕ_{≥2}` | RH | (no route; Section 2.4) |
-| B19 | Growth exponent of window negativity (`= Θ − ½`) | ≥qRH (`< ½`); RH (`0`) | all window routes, WD |
+| B19 | Growth exponent of window negativity (`≥ Θ − ½` on two-bump tests, `≤ ½`) | ≥qRH (`< ½`); RH (`0`) | all window routes, WD |
 | B42 | A count for the untwisted window (Weil piece as a Tate piece of a second degeneration) | RH | HF, AHD |
 
 ### Π — precision and production
@@ -246,7 +250,7 @@ reduces RH to one stage-local statement with every other segment proved or just 
 | Entrance: every new fold paid by the collar exit charge; composite stages free | WTZ | [L] |
 | Upper control: sharp floor `(4A+1)e^{A/2}`; negativity confined below an archimedean frequency horizon | WTZ, AHD | [L] |
 | Nonlocal payment tools: variable-hub Schur squares and `T₂`-stick elimination; two-sided fold–Frobenius bounds; logarithmic jump gap | ACT-L, RIT [S], LST | [L/S] |
-| Core: bulk room at frozen arithmetic in every stage | — | B2 (RH) |
+| Core: the exact stage step in every stage | — | B2 (RH) |
 
 What F1 bypasses: growing conductors and the `√N` barrier (HF/SRT/AIP; the window criterion is RH
 directly, so the complete family is never needed); the prime-side damping bound (SC); log-free density
@@ -254,13 +258,12 @@ directly, so the complete family is never needed); the prime-side damping bound 
 window side carries the reflection as the Rosati involution of its algebra). What it does not bypass:
 exactness (doubly-exponential margins).
 
-The core in its sharpest form: for every `N` and every `A ∈ (log(N+1), log(N+2))`,
-`Q_N(H) ≥ Ω(A − log(N+1))∫_{collars}H²` on `W_A`. The window grows by `log(1 + 1/(N+1))` per stage at
-frozen arithmetic, so for large `N` this is a differential statement in `A`. Heuristic support [D]:
-near-null window tests are interpolants vanishing at the zeros below the Landau height; such
-concentrates carry little mass near the window ends, where the exit potential `Ω(−u)` is
-logarithmically infinite — the collar loan is cheapest exactly on the near-null directions.
-Quantifying this (collar mass of near-null vectors ≤ ground energy × explicit factor) is the core.
+The core in its sharpest form: for every `N` and every `A ∈ [log(N+1), log(N+2))`,
+`Q_N(H) ≥ 2w_{N+1}∫H(u)H(u+log(N+1))du` (left collar) on `W_A`, exactly. The lossy version (bulk room,
+`Q_N ≥ Ω(ε)∫_{collars}H²`) is sufficient and affordable only if near-null tests are doubly-exponentially
+quiet on the collars. Under RH the exact step says [D]: near-null tests of the frozen form anticipate
+every new prime-power fold — their end-to-end correlation at the lag `log(N+1)` is nonpositive up to the
+margin. Understanding that anticipation is the core.
 
 ### F2. The reflection assembly (PM ⊕ CWS ⊕ WTZ)
 PM supplies the reflection as a Hilbert adjoint, a Krein space whose negative index is the polar
@@ -397,8 +400,9 @@ with sinh capacity `≤ 1`, compatible with the stage transfer.
   approximable, organizable stage by stage. The ground-state representation then writes the odd window
   form exactly as a sum of squares of jump differences of `H/φ_A` minus one capacity term: an exact
   identity of unbounded rank (the only kind the no-slack facts allow), the window `h¹` as a weighted
-  count of jumps, and the realization every producer needs. New folds are paid [L], so a
-  supersolution only has to survive growth at frozen arithmetic inside each stage.
+  count of jumps, and the realization every producer needs. Each new fold is one collar-to-collar
+  correlation [L/D], so at an entrance a supersolution needs only a correction localized on the two
+  collars.
 
 ### 2.6.2 Route PM — finite cusp energy forces zero defect
 **Question.** Prove that every Lewis period of finite dyadic cusp energy has zero co-isometry defect:
@@ -477,7 +481,8 @@ extensions.
   Laplacian plus `Λ`-weighted shifts plus two pole constraints)? Zero modes are exactly the edges, and
   their absence is RH.
 - Is there a Hecke operator on windows commuting with `σ_A` and acting as a similitude of `Q`?
-- Does the window index obey a zero–one law?
+- What is the archimedean place in dimension `k` — the Gamma factor's counterpart of the point counts
+  `φ(m)#ℙ^{k−1}(ℤ/m)` — and does it dominate them near `k = 0`?
 - Is the archimedean place positive on the annihilator of `log ℕ`?
 - Over `𝔽_q(C)`, which structure supplies each answer, and which of them has an analogue over `ℤ`?
 
@@ -495,37 +500,50 @@ small extensions; Lewis–Mayer transfer operators; Hecke correspondences on win
   involution `σ_A`, Lewis period space and its Krein form, window index, prime-blind cone `𝒦`.
 - Mechanism A (criticality): Agmon ground state of the folded odd-sector process + sinh capacity `≤ 1`
   ⇒ exact sum of squares ⇒ window positivity ⇒ RH.
-- Mechanism B (dimension zero): a positive family `P_k` with `P_0 = 0` and `∂_kP_k|₀ = Q` ⇒ `Q ≥ 0`.
+- Mechanism B (dimension zero): an archimedean Tate family `A_k` dominating the Tate counts,
+  `P_k = A_k − 2(τ_H(k) − ‖H‖²) ≥ 0` with `P_0 = 0` and `∂_kP_k|₀ = Q` ⇒ `Q ≥ 0`.
 - Mechanism C (reflection): Rosati positivity + Hecke similitude ⇒ RH (Weil's argument).
 - Mechanism D (prime-blind): archimedean positivity on `𝒦` ⇒ Weil cone nonempty ⇒ `Λ` by uniqueness ⇒ RH.
-- Mechanism E (rigidity): zero–one law + an index ceiling ⇒ RH.
 
-No corpus result shows that this field closes RH. Its first tests are 2.6.1 at the first-fold stage,
-2.8, and the function-field calibration A16.
+No corpus result shows that this field closes RH. Its first tests are 2.8 at the first-fold stage,
+2.6.1 at the first-fold stage, and the function-field calibration A16.
 
 ## 2.8 The one question
 
-**Does the window index obey a zero–one law: is `κ = sup_A ι(A)`, the number of distinct zeros right of
-the critical line, either `0` or `∞`?** Equivalently: if RH fails, does it fail infinitely often?
+**Is there an archimedean Tate family — a form `A_k` built only from the Gamma factor and the pole, in
+every dimension `k ≥ 0`, with `A_0 = 0` and `∂_kA_k|_{k=0} = Ω(0)‖H‖² + J_∞(H) + pole(H)` — that
+dominates the arithmetic Tate counts on every window,
+`A_k(H) ≥ 2(τ_H(k) − ‖H‖²)` for `0 < k ≤ k₀`?**
 
-- **Less hard than RH and quasi-RH.** RH implies it; it implies no zero-free strip, no Lindelöf and no
-  density bound. Nobody knows how to exclude a finite nonzero set of off-line zeros; the corpus treats
-  finite off-line support as an open scope guard.
-- **Why the corpus can attack it.** `{0, ∞}` laws are theorems for every derived object: tensor
-  squares of `K_ζ`, regular extensions of Weil's correlation, Hecke-supported, mixing, escaping and
-  height-decaying carriers [L]. The mechanism exists; what is missing is to show that the off-line part
-  of Weil's own state has one of these properties. A finite off-line set is a finite-dimensional
-  representation of `ℚ^×_{>0}` (characters `b ↦ b^{ρ−½}`) inside a state whose on-line part is mixing;
-  the question is whether the arithmetic (Euler product, functional equation, Hecke operators,
-  window algebra) forbids such a finite block.
-- **Why it opens the door.** Every sign question in the corpus has zero slack: one lossy step and it
-  fails. After a zero–one law, RH is equivalent to `κ < ∞`, i.e. a bounded window index — a statement
-  that tolerates every finite-rank error, every compact perturbation and every constant loss. That is
-  the regime where the corpus's machinery works: per-aperture finite index, index `≤ R + A` on coarse
-  cells, Shannon bounds, pencil index counts, Krein–Langer finite-index calculus, Pontryagin-space
-  theory. The zero–one law turns RH from an exact sign problem into a finiteness problem; it also gives
-  the first selective rigidity statement — one that sees individual off-line zeros — which no selector
-  in the corpus provides.
-- **What remains after it.** `κ < ∞` (finite off-line support) implies that the zeros approach the line
-  and Lindelöf [L], so the finiteness problem is itself ≥qRH in strength: the door opens onto a hard
-  problem of a different kind — one where losses are allowed — not onto a short proof.
+Here `τ_H(k) − ‖H‖² = ⟨ρ_A(J_k − δ₁)H, H⟩` is the window's point count in dimension `k`: Jordan's
+totients, i.e. `φ(m)#ℙ^{k−1}(ℤ/m)` for `m ≤ e^A`, read against the autocorrelation of `H`. Dividing by
+`k` and letting `k ↓ 0` turns the domination into `Q(H) ≥ 0`, because Weil's window form is exactly
+`Ω(0)τ_H(0) − 2τ′_H(0) + J_∞ + pole` [L]. Positivity at `k = 0` is then inherited from a comparison in
+positive dimension.
+
+- **Why this is the frontier question.** It is the open core of the window tower in its exact form.
+  Everything around it is settled: the algebra acting on a window is the truncated Dirichlet ring; the
+  arithmetic term is the dimension-zero derivative of point counts; the counts in positive dimension are
+  nonnegative and computed by the degeneration as its Tate pieces; finite-square count identities are
+  impossible at the first prime; positivity in positive dimension alone selects nothing (`ζ(s)ζ(s−ε)`
+  passes, and at a prime only the sign of the weight survives the derivative); Weil positivity has no
+  slack. What no programme has is the archimedean side of the comparison in dimension `k`: the Gamma
+  factor's counterpart of `#ℙ^{k−1}(ℤ/m)`. That missing object is the window analogue of the
+  Lefschetz–Castelnuovo comparison that closes RH over `𝔽_q`, where the archimedean side is replaced by
+  the geometry of `C × C`.
+- **Why it is less hard than RH.** It is a comparison between two explicit families of forms on window
+  tests — arithmetic point counts and an archimedean object to be constructed — in positive dimension,
+  with no zero of ζ and no prime-error term in it. It is finite at every stage and fully explicit at the
+  first ones: on prime-free windows the counts vanish and the question is `A_k ≥ 0` (the single cosh
+  capacity of A3); on the first-fold stage `log 2 ≤ A < log 3` it reads
+  `A_k(H) ≥ √2(2^k − 1)·∫H(u)H(u + log 2)du`, one autocorrelation against an archimedean form, a
+  two-variable problem in `k` and `H`.
+- **Why the answer tells us whether this is the path.** The Tate family, the Tate twist and the Gamma
+  factor are defined uniformly in the window length, and the tower adds one fold per stage. An `A_k`
+  built from the Gamma factor alone and dominating the counts at the first stages by a rule, not by
+  numerics, is a uniform statement along the tower; with it RH is one line (differentiate at `k = 0`),
+  and HF, ACS, AHD, CWS and WTZ close together, since the degeneration produces exactly these counts.
+  If no archimedean family can dominate the counts already at the first fold — the Taylor coefficients
+  of `J_k` at `k = 0` are Bombieri's `Λ_j`, so the domination has to beat the parity barrier at first
+  order — then the count/Hodge/degeneration programme cannot close RH, and the remaining paths are the
+  criticality of the folded jump process (2.6.1) and the reflection positivity of PM (2.6.2).
