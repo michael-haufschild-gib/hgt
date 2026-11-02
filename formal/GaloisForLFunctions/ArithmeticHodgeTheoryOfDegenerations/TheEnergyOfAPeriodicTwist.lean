@@ -237,7 +237,7 @@ theorem periodicExt_natCast {χ : ℕ → ℝ} {M : ℕ} (hper : ∀ n, χ (n + 
 
 theorem periodicExt_add_period (χ : ℕ → ℝ) (M : ℕ) (z : ℤ) :
     periodicExt χ M (z + M) = periodicExt χ M z := by
-  simp [periodicExt, Int.add_emod_self]
+  rw [periodicExt, periodicExt, Int.add_emod_right]
 
 theorem abs_periodic_le {χ : ℕ → ℝ} {M : ℕ} (hM : 0 < M) (hper : ∀ n, χ (n + M) = χ n) (n : ℕ) :
     |χ n| ≤ ∑ j ∈ range M, |χ j| := by
@@ -327,9 +327,10 @@ theorem abs_offsetProfile_sub_le {G : ℝ → ℝ} {BG LG : ℝ} (hG : ∀ t, |G
         abs_of_pos hb0, abs_sub_comm]
       have hab : (c * Real.exp (-A)) ^ 2 ≤ a * b := by nlinarith
       have h1 : |a - b| / (a * b) ≤ (c * Real.exp (-A))⁻¹ ^ 2 * |a - b| := by
-        rw [div_le_iff₀ (by positivity), inv_pow, mul_assoc, mul_comm (|a - b|) (a * b),
-          ← mul_assoc, ← div_eq_inv_mul, le_div_iff₀ (by positivity) |>.symm.not.not]
-        rw [le_div_iff₀ (by positivity : (0 : ℝ) < (c * Real.exp (-A)) ^ 2)]
+        rw [div_le_iff₀ (by positivity)]
+        have h2 : 1 ≤ (c * Real.exp (-A))⁻¹ ^ 2 * (a * b) := by
+          rw [inv_pow, inv_mul_eq_div, le_div_iff₀ (by positivity), one_mul]
+          exact hab
         nlinarith [abs_nonneg (a - b)]
       calc |δ| * (|a - b| / (a * b)) ≤ (2 * c) * ((c * Real.exp (-A))⁻¹ ^ 2 * |a - b|) :=
             mul_le_mul hδ h1 (by positivity) (by positivity)
@@ -339,8 +340,266 @@ theorem abs_offsetProfile_sub_le {G : ℝ → ℝ} {BG LG : ℝ} (hG : ∀ t, |G
   refine hmain.trans (mul_le_mul_of_nonneg_right ?_ (abs_nonneg _))
   have e : Bu * c * (LG * (2 * c * (c * Real.exp (-A))⁻¹ ^ 2)) =
       Bu * (2 * LG * Real.exp A ^ 2) := by
-    rw [mul_inv, inv_pow, mul_pow, ← Real.exp_neg, neg_neg]
+    rw [Real.exp_neg]
     field_simp
   rw [e]
+
+/-! ### The energy law -/
+
+theorem horizonWeights_sq_eq (h : ℝ → ℝ) {N n : ℕ} (hN : 1 ≤ N) (hn : 1 ≤ n) :
+    horizonWeights h N n ^ 2 = (N : ℝ)⁻¹ * invWindow h (n / N) := by
+  have hn0 : (0 : ℝ) < n := by exact_mod_cast hn
+  have hN0 : (0 : ℝ) < N := by exact_mod_cast hN
+  rw [invWindow, sqWindow_natCast_div h hn hN, horizonWeights, div_pow, Real.sq_sqrt hn0.le]
+  field_simp
+
+/-- **The offset sums equidistribute**: `Σ_n χ(n) y_n² Σ_δ χ(n+δ) G(δ/a_n)` is
+`Σ_n y_n² Σ_δ C_χ(δ) G(δ/a_n)` up to `O(c/N)`. -/
+theorem abs_offsetSum_sub_le {G : ℝ → ℝ} {BG LG : ℝ} (hG : ∀ t, |G t| ≤ BG)
+    (hGL : ∀ s t, |G s - G t| ≤ LG * |s - t|) (hBG : 0 ≤ BG) {Bu Lu : ℝ}
+    (hBu : ∀ x, |invWindow h x| ≤ Bu) (hLu : ∀ x y, |invWindow h x - invWindow h y| ≤ Lu * |x - y|)
+    (hu0 : ∀ x, x < Real.exp (-A) → invWindow h x = 0) (hu1 : invWindow h 1 = 0)
+    {χ : ℕ → ℝ} {M : ℕ} (hM : 0 < M) (hper : ∀ n, χ (n + M) = χ n) {c : ℝ} (hc : 1 ≤ c)
+    {N : ℕ} (hN : 1 ≤ N) :
+    |∑ n ∈ Icc 1 N, χ n * horizonWeights h N n ^ 2 * ∑ δ ∈ Finset.Icc (-(⌈c⌉₊ : ℤ)) ⌈c⌉₊,
+        periodicExt χ M (n + δ) * G (δ * (c * n / N)⁻¹) -
+      ∑ n ∈ Icc 1 N, horizonWeights h N n ^ 2 * ∑ δ ∈ Finset.Icc (-(⌈c⌉₊ : ℤ)) ⌈c⌉₊,
+        autoCorr χ M δ * G (δ * (c * n / N)⁻¹)| ≤
+      5 * c * (2 * M * (∑ j ∈ range M, |χ j|) ^ 2 * (Lu * BG + Bu * (2 * LG * Real.exp A ^ 2))) /
+        N := by
+  have hc0 : 0 < c := by linarith
+  have hN0 : (0 : ℝ) < N := by exact_mod_cast hN
+  have hBu0 : 0 ≤ Bu := (abs_nonneg _).trans (hBu 0)
+  have hLu0 : 0 ≤ Lu := by
+    have := hLu 1 0; norm_num at this; linarith [abs_nonneg (invWindow h 1 - invWindow h 0)]
+  have hLG0 : 0 ≤ LG := by
+    have := hGL 1 0; norm_num at this; linarith [abs_nonneg (G 1 - G 0)]
+  obtain ⟨Mχ, hMχ⟩ : ∃ Mχ, Mχ = ∑ j ∈ range M, |χ j| := ⟨_, rfl⟩
+  rw [← hMχ]
+  have hMχ0 : 0 ≤ Mχ := by rw [hMχ]; exact Finset.sum_nonneg fun _ _ => abs_nonneg _
+  have hχb : ∀ n, |χ n| ≤ Mχ := fun n => hMχ ▸ abs_periodic_le hM hper n
+  have hχZb : ∀ z, |periodicExt χ M z| ≤ Mχ := fun z => hMχ ▸ abs_periodicExt_le hM hper z
+  obtain ⟨D, hD⟩ : ∃ D, D = ⌈c⌉₊ := ⟨_, rfl⟩
+  rw [← hD]
+  have hDc : (D : ℝ) ≤ 2 * c := by
+    rw [hD]; linarith [Nat.ceil_lt_add_one hc0.le]
+  obtain ⟨Lf, hLf⟩ : ∃ Lf, Lf = Lu * BG + Bu * (2 * LG * Real.exp A ^ 2) := ⟨_, rfl⟩
+  rw [← hLf]
+  have hLf0 : 0 ≤ Lf := by rw [hLf]; positivity
+  set f : ℤ → ℝ → ℝ := fun δ x => invWindow h x * G (δ * (c * x)⁻¹) with hf
+  set ψ : ℤ → ℕ → ℝ := fun δ n => χ n * periodicExt χ M (n + δ) with hψ
+  have hrw1 : ∀ n ∈ Icc 1 N, χ n * horizonWeights h N n ^ 2 * ∑ δ ∈ Finset.Icc (-(D : ℤ)) D,
+      periodicExt χ M (n + δ) * G (δ * (c * n / N)⁻¹) =
+      ∑ δ ∈ Finset.Icc (-(D : ℤ)) D, (N : ℝ)⁻¹ * (ψ δ n * f δ (n / N)) := fun n hn => by
+    rw [horizonWeights_sq_eq h hN (Finset.mem_Icc.mp hn).1, mul_sum]
+    refine sum_congr rfl fun δ _ => ?_
+    simp only [hψ, hf]
+    rw [show c * n / N = c * (n / N) by ring]
+    ring
+  have hrw2 : ∀ n ∈ Icc 1 N, horizonWeights h N n ^ 2 * ∑ δ ∈ Finset.Icc (-(D : ℤ)) D,
+      autoCorr χ M δ * G (δ * (c * n / N)⁻¹) =
+      ∑ δ ∈ Finset.Icc (-(D : ℤ)) D, (N : ℝ)⁻¹ * (autoCorr χ M δ * f δ (n / N)) := fun n hn => by
+    rw [horizonWeights_sq_eq h hN (Finset.mem_Icc.mp hn).1, mul_sum]
+    refine sum_congr rfl fun δ _ => ?_
+    simp only [hf]
+    rw [show c * n / N = c * (n / N) by ring]
+    ring
+  rw [sum_congr rfl hrw1, sum_congr rfl hrw2, Finset.sum_comm, Finset.sum_comm (s := Icc 1 N),
+    ← sum_sub_distrib]
+  have hδ : ∀ δ ∈ Finset.Icc (-(D : ℤ)) D,
+      |∑ n ∈ Icc 1 N, (N : ℝ)⁻¹ * (ψ δ n * f δ (n / N)) -
+        ∑ n ∈ Icc 1 N, (N : ℝ)⁻¹ * (autoCorr χ M δ * f δ (n / N))| ≤
+      (N : ℝ)⁻¹ * (2 * M * (Mχ * Mχ) * Lf) := fun δ hδ => by
+    have hδ' : |(δ : ℝ)| ≤ 2 * c := by
+      have h1 := Finset.mem_Icc.mp hδ
+      have : |(δ : ℝ)| ≤ D := by
+        rw [abs_le]; constructor
+        · have : ((-(D : ℤ) : ℤ) : ℝ) ≤ (δ : ℝ) := by exact_mod_cast h1.1
+          push_cast at this; linarith
+        · exact_mod_cast h1.2
+      linarith
+    have hper' : ∀ n, ψ δ (n + M) = ψ δ n := fun n => by
+      simp only [hψ]
+      rw [hper, show ((n + M : ℕ) : ℤ) + δ = (n + δ) + M by push_cast; ring,
+        periodicExt_add_period]
+    have hψb : ∀ n, |ψ δ n| ≤ Mχ * Mχ := fun n => by
+      simp only [hψ]; rw [abs_mul]
+      exact mul_le_mul (hχb n) (hχZb _) (abs_nonneg _) hMχ0
+    have hfL : ∀ x y, |f δ x - f δ y| ≤ Lf * |x - y| := fun x y => by
+      rw [hLf]; exact abs_offsetProfile_sub_le hG hGL hBG hBu hLu hu0 hc0 hδ' x y
+    have heq := abs_sum_periodic_sub_le hM hper' hψb hfL hN
+    have hf1 : f δ 1 = 0 := by simp only [hf]; rw [hu1, zero_mul]
+    rw [hf1, abs_zero, zero_add] at heq
+    rw [← mul_sum, ← mul_sum, ← mul_sub, abs_mul, abs_of_pos (inv_pos.mpr hN0)]
+    refine mul_le_mul_of_nonneg_left ?_ (inv_pos.mpr hN0).le
+    rw [← mul_sum]
+    exact heq
+  refine (Finset.abs_sum_le_sum_abs _ _).trans ((Finset.sum_le_sum hδ).trans ?_)
+  rw [Finset.sum_const, nsmul_eq_mul]
+  have hcard : ((Finset.Icc (-(D : ℤ)) D).card : ℝ) ≤ 5 * c := by
+    rw [Int.card_Icc]
+    have : ((D : ℤ) + 1 - -(D : ℤ)).toNat = 2 * D + 1 := by omega
+    rw [this]
+    push_cast
+    linarith [Nat.ceil_lt_add_one hc0.le, hD ▸ (Nat.ceil_lt_add_one hc0.le)]
+  calc ((Finset.Icc (-(D : ℤ)) D).card : ℝ) * ((N : ℝ)⁻¹ * (2 * M * (Mχ * Mχ) * Lf))
+      ≤ 5 * c * ((N : ℝ)⁻¹ * (2 * M * (Mχ * Mχ) * Lf)) :=
+        mul_le_mul_of_nonneg_right hcard (by positivity)
+    _ = 5 * c * (2 * M * Mχ ^ 2 * Lf) / N := by ring
+
+/-- **The energy of a periodic twist**: for an `M`-periodic twist `χ` and `1 ≤ c ≤ N/4`,
+`E_N = (2π/c) Σ_n y_n² Σ_{|δ| ≤ ⌈c⌉} C_χ(δ) G(δ/a_n) + O(c/N)`, `y_n = h(log(n/N))/√n`,
+`a_n = cn/N`, `C_χ` the autocorrelation of the twist. -/
+theorem periodicEnergy_le (hφ : ContDiff ℝ 2 φ) (hφsupp : ∀ u, u ∉ Set.Icc 0 1 → φ u = 0)
+    (hh : ContDiff ℝ 2 h) (hA : 0 ≤ A) (hsupp : ∀ y, y ∉ Set.Icc (-A) 0 → h y = 0)
+    {χ : ℕ → ℝ} {M : ℕ} (hM : 0 < M) (hper : ∀ n, χ (n + M) = χ n) :
+    ∃ K : ℝ, 0 ≤ K ∧ ∀ c : ℝ, 1 ≤ c → ∀ N : ℕ, 4 * c ≤ N →
+      |(∫ τ : ℝ, ‖paperFT (cx φ) (((c / N : ℝ) : ℂ) * τ)‖ ^ 2 *
+          (‖dirichletPoly N (twistedWeights h χ N) τ‖ ^ 2 / N)) -
+        2 * Real.pi / c * ∑ n ∈ Icc 1 N, horizonWeights h N n ^ 2 *
+          ∑ δ ∈ Finset.Icc (-(⌈c⌉₊ : ℤ)) ⌈c⌉₊,
+            autoCorr χ M δ * shellAutocorr φ (δ * (c * n / N)⁻¹)| ≤ K * c / N := by
+  obtain ⟨Bk, Lk, hk, hkL⟩ := exists_bound_lipschitz (contDiff_taperedProfile hh)
+    (A := A) fun y hy => taperedProfile_eq_zero hsupp hy
+  have hG2 := contDiff_shellAutocorr hφ hφsupp
+  have hG1 : ∀ t, 1 ≤ |t| → shellAutocorr φ t = 0 := fun t ht =>
+    shellAutocorr_eq_zero_of_one_le_abs hφ hφsupp ht
+  have hGc : HasCompactSupport (shellAutocorr φ) :=
+    HasCompactSupport.intro (isCompact_Icc (a := -1) (b := 1)) fun t ht => by
+      refine hG1 t ?_
+      by_contra hlt
+      exact ht (abs_le.mp (not_le.mp hlt).le)
+  obtain ⟨BG, hBG⟩ := hGc.exists_bound_of_continuous hG2.continuous
+  obtain ⟨LG, hLG⟩ := ContDiff.lipschitzWith_of_hasCompactSupport hGc hG2 (by norm_num)
+  have hGb : ∀ t, |shellAutocorr φ t| ≤ |BG| := fun t =>
+    (by simpa [Real.norm_eq_abs] using hBG t : |shellAutocorr φ t| ≤ BG).trans (le_abs_self _)
+  have hGL : ∀ s t, |shellAutocorr φ s - shellAutocorr φ t| ≤ (LG : ℝ) * |s - t| := fun s t => by
+    simpa [Real.dist_eq] using hLG.dist_le_mul s t
+  have hkb : ∀ y, |taperedProfile h y| ≤ |Bk| := fun y => (hk y).trans (le_abs_self _)
+  have hkL' : ∀ u v, |taperedProfile h u - taperedProfile h v| ≤ |Lk| * |u - v| := fun u v =>
+    (hkL u v).trans (mul_le_mul_of_nonneg_right (le_abs_self _) (abs_nonneg _))
+  have hk0 : ∀ y, 0 < y → taperedProfile h y = 0 := fun y hy =>
+    taperedProfile_eq_zero hsupp fun hm => by linarith [hm.2]
+  obtain ⟨Bu, Lu, hBu0, hLu0, hBu, hLu, hu0⟩ := exists_invWindow_bounds hh hA hsupp
+  have hu1 : invWindow h 1 = 0 := by
+    obtain ⟨-, Lh0, -, hLh0⟩ := exists_bound_lipschitz hh hsupp
+    rw [invWindow, sqWindow, if_pos one_pos, Real.log_one, horizon_zero_at_zero hsupp hLh0]
+    simp
+  obtain ⟨Mχ, hMχ⟩ : ∃ Mχ, Mχ = ∑ j ∈ range M, |χ j| := ⟨_, rfl⟩
+  have hMχ0 : 0 ≤ Mχ := by rw [hMχ]; exact Finset.sum_nonneg fun _ _ => abs_nonneg _
+  have hχb : ∀ n, |χ n| ≤ Mχ := fun n => hMχ ▸ abs_periodic_le hM hper n
+  have hχZb : ∀ z, |periodicExt χ M z| ≤ Mχ := fun z => hMχ ▸ abs_periodicExt_le hM hper z
+  obtain ⟨X, hX⟩ : ∃ X, X = 5 * (|Lk| * |BG| + 8 * |Bk| * (LG : ℝ)) := ⟨_, rfl⟩
+  have hX0 : 0 ≤ X := by rw [hX]; positivity
+  obtain ⟨Q, hQ⟩ : ∃ Q, Q = 5 * (2 * M * Mχ ^ 2 *
+      (Lu * |BG| + Bu * (2 * (LG : ℝ) * Real.exp A ^ 2))) := ⟨_, rfl⟩
+  have hQ0 : 0 ≤ Q := by rw [hQ]; positivity
+  refine ⟨2 * Real.pi * (Mχ ^ 2 * |Bk| * X) + 2 * Real.pi * Q, by positivity,
+    fun c hc N hcN => ?_⟩
+  have hc0 : 0 < c := by linarith
+  have hN0 : (0 : ℝ) < N := by linarith
+  have hN : 1 ≤ N := by
+    have : (1 : ℝ) ≤ N := by linarith
+    exact_mod_cast this
+  have hsN : 0 < Real.sqrt N := Real.sqrt_pos.mpr hN0
+  have hxw : ∀ m, 1 ≤ m → horizonWeights h N m =
+      taperedProfile h (Real.log m - Real.log N) / Real.sqrt N := fun m hm =>
+    horizonWeights_eq_tapered h hN hm
+  rw [atomEnergy_eq hφ hφsupp _ hc0 hN]
+  set G := shellAutocorr φ with hGdef
+  set tw := twistedWeights h χ N with htw
+  set R : ℕ → ℝ := fun n => ∑ m ∈ Icc 1 N, tw m * G (N * (Real.log m - Real.log n) / c) with hR
+  set L : ℕ → ℝ := fun n => ∑ m ∈ Icc 1 (2 * N), periodicExt χ M m *
+    G (((m : ℝ) - n) * (c * n / N)⁻¹) with hL
+  have hswap : ∑ m ∈ Icc 1 N, ∑ n ∈ Icc 1 N, tw m * tw n *
+      G (N * (Real.log m - Real.log n) / c) = ∑ n ∈ Icc 1 N, tw n * R n := by
+    rw [Finset.sum_comm]
+    refine sum_congr rfl fun n _ => ?_
+    simp only [hR]
+    rw [mul_sum]
+    exact sum_congr rfl fun m _ => by ring
+  rw [hswap]
+  -- the rows
+  set ε := X * c ^ 2 / (N * Real.sqrt N) with hε
+  have hrows : |∑ n ∈ Icc 1 N, tw n * R n - ∑ n ∈ Icc 1 N, tw n * (horizonWeights h N n * L n)| ≤
+      N * (Mχ * |Bk| / Real.sqrt N * (Mχ * ε)) :=
+    abs_sum_mul_sub_sum_le fun n hn => by
+      have hn1 := (Finset.mem_Icc.mp hn).1
+      have hnN := (Finset.mem_Icc.mp hn).2
+      have hr := abs_twistRow_sub_le hkb hkL' hGb hGL hG1 hk0 (abs_nonneg _) (abs_nonneg _)
+        (NNReal.coe_nonneg _) (abs_nonneg _) hχZb hc hcN hn1 hnN
+      have hRn : R n = ∑ m ∈ Icc 1 N, periodicExt χ M m *
+          (taperedProfile h (Real.log m - Real.log N) / Real.sqrt N) *
+            G (N * (Real.log m - Real.log n) / c) := by
+        simp only [hR, htw]
+        refine sum_congr rfl fun m hm => ?_
+        rw [twistedWeights, hxw m (Finset.mem_Icc.mp hm).1, periodicExt_natCast hper]
+        ring
+      rw [← mul_sub, abs_mul]
+      refine mul_le_mul ?_ ?_ (abs_nonneg _) (by positivity)
+      · simp only [htw]
+        rw [twistedWeights, abs_mul, hxw n hn1, abs_div, abs_of_pos hsN, mul_comm, mul_div_assoc]
+        exact mul_le_mul (hχb n) (div_le_div_of_nonneg_right (hkb _) hsN.le)
+          (by positivity) hMχ0
+      · rw [hRn, hxw n hn1]
+        refine hr.trans (le_of_eq ?_)
+        rw [hε, hX]
+  -- the offsets
+  have hoff : ∑ n ∈ Icc 1 N, tw n * (horizonWeights h N n * L n) =
+      ∑ n ∈ Icc 1 N, χ n * horizonWeights h N n ^ 2 * ∑ δ ∈ Finset.Icc (-(⌈c⌉₊ : ℤ)) ⌈c⌉₊,
+        periodicExt χ M (n + δ) * G (δ * (c * n / N)⁻¹) := by
+    refine sum_congr rfl fun n hn => ?_
+    have hn1 := (Finset.mem_Icc.mp hn).1
+    have hnN : (n : ℝ) ≤ N := by exact_mod_cast (Finset.mem_Icc.mp hn).2
+    have hn0 : (0 : ℝ) < n := by exact_mod_cast hn1
+    have ha0 : 0 < c * n / N := by positivity
+    have hac : c * n / N ≤ c := by
+      rw [div_le_iff₀ hN0]; exact mul_le_mul_of_nonneg_left hnN hc0.le
+    have han : 4 * (c * n / N) ≤ n := by
+      rw [show 4 * (c * n / N) = 4 * c / N * n by ring]
+      exact mul_le_of_le_one_left hn0.le ((div_le_one hN0).mpr hcN)
+    have hDN : n + ⌈c⌉₊ ≤ 2 * N := by
+      have : ⌈c⌉₊ ≤ N := Nat.ceil_le.mpr (by linarith)
+      have : n ≤ N := (Finset.mem_Icc.mp hn).2
+      omega
+    have hL' : L n = ∑ δ ∈ Finset.Icc (-(⌈c⌉₊ : ℤ)) ⌈c⌉₊,
+        periodicExt χ M (n + δ) * G (δ * (c * n / N)⁻¹) :=
+      sum_offset_eq hG1 (periodicExt χ M) ha0 han (hac.trans (Nat.le_ceil c)) hDN
+    rw [hL']
+    simp only [htw]
+    rw [twistedWeights]
+    ring
+  have hoffeq := abs_offsetSum_sub_le hGb hGL (abs_nonneg _) hBu hLu hu0 hu1 hM hper hc hN
+    (G := G)
+  rw [← hoff, ← hMχ] at hoffeq
+  have htot : |2 * Real.pi / c * ∑ n ∈ Icc 1 N, tw n * R n -
+      2 * Real.pi / c * ∑ n ∈ Icc 1 N, horizonWeights h N n ^ 2 *
+        ∑ δ ∈ Finset.Icc (-(⌈c⌉₊ : ℤ)) ⌈c⌉₊, autoCorr χ M δ * G (δ * (c * n / N)⁻¹)| ≤
+      2 * Real.pi / c * (N * (Mχ * |Bk| / Real.sqrt N * (Mχ * ε)) +
+        5 * c * (2 * M * Mχ ^ 2 * (Lu * |BG| + Bu * (2 * (LG : ℝ) * Real.exp A ^ 2))) / N) := by
+    rw [← mul_sub, abs_mul, abs_of_pos (by positivity : 0 < 2 * Real.pi / c)]
+    refine mul_le_mul_of_nonneg_left ?_ (by positivity)
+    have := abs_sub_le (∑ n ∈ Icc 1 N, tw n * R n)
+      (∑ n ∈ Icc 1 N, tw n * (horizonWeights h N n * L n))
+      (∑ n ∈ Icc 1 N, horizonWeights h N n ^ 2 *
+        ∑ δ ∈ Finset.Icc (-(⌈c⌉₊ : ℤ)) ⌈c⌉₊, autoCorr χ M δ * G (δ * (c * n / N)⁻¹))
+    linarith
+  refine htot.trans ?_
+  rw [hε]
+  have e1 : 2 * Real.pi / c * (N * (Mχ * |Bk| / Real.sqrt N * (Mχ * (X * c ^ 2 /
+      (N * Real.sqrt N))))) = 2 * Real.pi * (Mχ ^ 2 * |Bk| * X) * c / N := by
+    field_simp
+    rw [Real.sq_sqrt hN0.le]
+    ring
+  have e2 : 2 * Real.pi / c * (5 * c * (2 * M * Mχ ^ 2 *
+      (Lu * |BG| + Bu * (2 * (LG : ℝ) * Real.exp A ^ 2))) / N) = 2 * Real.pi * Q / N := by
+    rw [hQ]; field_simp
+  rw [mul_add, e1, e2]
+  have hQc : 2 * Real.pi * Q / N ≤ 2 * Real.pi * Q * c / N := by
+    rw [div_le_div_iff_of_pos_right hN0]
+    exact le_mul_of_one_le_right (by positivity) hc
+  have : (2 * Real.pi * (Mχ ^ 2 * |Bk| * X) + 2 * Real.pi * Q) * c / N =
+      2 * Real.pi * (Mχ ^ 2 * |Bk| * X) * c / N + 2 * Real.pi * Q * c / N := by ring
+  linarith
 
 end GaloisForLFunctions.ArithmeticHodgeTheoryOfDegenerations

@@ -186,9 +186,15 @@ theorem dyadicEigenResidual_core_coordinate_weak_limit
   have hp : Continuous (fun p : ℝ × ℝ => ((u n).re, p)) := by fun_prop
   have hc : ContinuousOn (fun p => Real.cos ((u n).im * coreSourcePhase p)) coreSourceRect :=
     Real.continuous_cos.comp_continuousOn (continuousOn_const.mul coreSourcePhase_continuousOn)
-  rw [← integral_sub
-    (ContinuousOn.integrableOn_compact coreSourceRect_compact (hD.comp hp).continuousOn)
-    (ContinuousOn.integrableOn_compact coreSourceRect_compact ((hC.comp hp).continuousOn.mul hc))]
+  have hDi : IntegrableOn (fun p => f p * sourceDiagonal (u n).re p) coreSourceRect := by
+    simpa only [Function.comp_def] using
+      ContinuousOn.integrableOn_compact (μ := volume) coreSourceRect_compact (hD.comp hp).continuousOn
+  have hCi : IntegrableOn (fun p =>
+      f p * sourceCross (u n).re p * Real.cos ((u n).im * coreSourcePhase p)) coreSourceRect := by
+    refine (ContinuousOn.integrableOn_compact (μ := volume) coreSourceRect_compact
+      ((hC.comp hp).continuousOn.mul hc)).congr ?_
+    exact Eventually.of_forall fun p => rfl
+  rw [← integral_sub hDi hCi]
   refine setIntegral_congr_fun coreSourceRect_measurable fun p hp => ?_
   have hn := normalized_residual_eq (hu n) (hur n) (hAu n) hp
   linear_combination -(f p) * hn
@@ -226,6 +232,9 @@ theorem dyadicEigenResidual_core_weak_limit
       (fun p hp => coreSourceRect_height_pos hp)]
   exact (dyadicEigenResidual_core_coordinate_weak_limit hu hur hAu ha ht f hf).congr
     (fun n => (hchart n).symm)
+
+#print axioms dyadicEigenResidual_core_weak_limit
+#print axioms coreSourceLimitDensity_pos
 
 end
 

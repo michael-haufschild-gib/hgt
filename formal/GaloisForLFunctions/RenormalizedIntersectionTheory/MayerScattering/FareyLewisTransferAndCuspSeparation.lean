@@ -1143,194 +1143,848 @@ theorem lewisFarey_normBounded {s : ℂ} (hs0 : 0 ≤ s.re) :
   let C_U : ℝ := (4 : ℝ) ^ (7 : ℝ)
   let C_V : ℝ := (4 : ℝ) ^ (7 : ℝ) * (2 : ℝ) ^ (4 * s.re + 2)
   refine ⟨2 * (C_U + C_V), by dsimp [C_U, C_V]; positivity, fun f hf => ?_⟩
+  have hf1 : IntegrableOn (fun b => ‖f b‖ ^ 2 * lewisCriticalWeight b) (Ioi 1) :=
+    hf.mono_set (Ioi_subset_Ioi zero_le_one)
+  have hintU1 : IntegrableOn (fun b => ‖f b‖ ^ 2 * lewisCriticalWeight (b - 1)) (Ioi 1) := by
+    have hcont_rat : ContinuousOn
+        (fun b : ℝ => lewisCriticalWeight (b - 1) / lewisCriticalWeight b) (Ioi 1) := by
+      intro b hb
+      have hb0 : 0 < b := zero_lt_one.trans hb
+      have hb1 : 0 < b - 1 := sub_pos.mpr hb
+      have hc1 : ContinuousAt (fun x : ℝ => lewisCriticalWeight (x - 1)) b :=
+        ContinuousAt.comp (g := lewisCriticalWeight) (f := fun x : ℝ => x - 1)
+          (lewisCriticalWeight_continuousOn.continuousAt (isOpen_Ioi.mem_nhds hb1))
+          (continuousAt_id.sub continuousAt_const)
+      have hc2 : ContinuousAt lewisCriticalWeight b :=
+        lewisCriticalWeight_continuousOn.continuousAt (isOpen_Ioi.mem_nhds hb0)
+      exact (hc1.div hc2 (lewisCriticalWeight_pos hb0).ne').continuousWithinAt
+    have hasm : AEStronglyMeasurable
+        (fun b : ℝ => ‖f b‖ ^ 2 * lewisCriticalWeight (b - 1)) (volume.restrict (Ioi 1)) := by
+      refine (hf1.aestronglyMeasurable.mul
+        (hcont_rat.aestronglyMeasurable measurableSet_Ioi)).congr ?_
+      filter_upwards [ae_restrict_mem measurableSet_Ioi] with b hb
+      have hwb : lewisCriticalWeight b ≠ 0 := (lewisCriticalWeight_pos (zero_lt_one.trans hb)).ne'
+      field_simp [hwb]
+    refine (hf1.const_mul C_U).mono' hasm ?_
+    filter_upwards [ae_restrict_mem measurableSet_Ioi] with b hb
+    have hnn : 0 ≤ ‖f b‖ ^ 2 * lewisCriticalWeight (b - 1) :=
+      mul_nonneg (sq_nonneg _) (lewisCriticalWeight_pos (sub_pos.mpr hb)).le
+    rw [Real.norm_of_nonneg hnn]
+    calc
+      ‖f b‖ ^ 2 * lewisCriticalWeight (b - 1)
+          ≤ ‖f b‖ ^ 2 * (C_U * lewisCriticalWeight b) :=
+        mul_le_mul_of_nonneg_left (weight_shift_ratio_bound_Ioi_one hb).2 (sq_nonneg _)
+      _ = C_U * (‖f b‖ ^ 2 * lewisCriticalWeight b) := by ring
+  have hintU : IntegrableOn (fun a => ‖lewisShift f a‖ ^ 2 * lewisCriticalWeight a) (Ioi 0) := by
+    have himg : (fun a : ℝ => a + 1) '' Ioi (0 : ℝ) = Ioi 1 := by
+      ext b; simp only [mem_image, mem_Ioi]
+      exact ⟨fun ⟨a, ha, rfl⟩ => by linarith, fun hb => ⟨b - 1, by linarith, sub_add_cancel b 1⟩⟩
+    have hinj : InjOn (fun a : ℝ => a + 1) (Ioi 0) := fun _ _ _ _ h => add_right_cancel h
+    have hderiv : ∀ a ∈ Ioi (0 : ℝ), HasDerivWithinAt (fun x : ℝ => x + 1) 1 (Ioi 0) a :=
+      fun a _ => ((hasDerivAt_id a).add_const 1).hasDerivWithinAt
+    have hiff := integrableOn_image_iff_integrableOn_abs_deriv_smul measurableSet_Ioi hderiv
+      hinj (fun b : ℝ => ‖f b‖ ^ 2 * lewisCriticalWeight (b - 1))
+    rw [himg] at hiff
+    exact (hiff.mp hintU1).congr_fun (fun a _ => by simp [lewisShift]) measurableSet_Ioi
   have hU_bound : lewisCriticalNormSq (lewisShift f) ≤ C_U * lewisCriticalNormSq f := by
-    by_cases hintU : IntegrableOn (fun a => ‖lewisShift f a‖ ^ 2 * lewisCriticalWeight a) (Ioi 0)
-    · unfold lewisCriticalNormSq lewisShift
-      have hshift := integral_Ioi_zero_add_subst 1
-        (fun b : ℝ => ‖f b‖ ^ 2 * lewisCriticalWeight (b - 1))
-      have hlhs : (∫ a in Ioi (0 : ℝ), ‖f (a + 1)‖ ^ 2 * lewisCriticalWeight a) =
-          ∫ b in Ioi (1 : ℝ), ‖f b‖ ^ 2 * lewisCriticalWeight (b - 1) := by
-        simpa [add_sub_cancel_right] using hshift
-      have hintU1 : IntegrableOn (fun b => ‖f b‖ ^ 2 * lewisCriticalWeight (b - 1)) (Ioi 1) := by
-        have himg : (fun a : ℝ => a + 1) '' Ioi (0 : ℝ) = Ioi 1 := by
-          ext b; simp only [mem_image, mem_Ioi]
-          exact ⟨fun ⟨a, ha, rfl⟩ => by linarith, fun hb => ⟨b - 1, by linarith, sub_add_cancel b 1⟩⟩
-        have hinj : InjOn (fun a : ℝ => a + 1) (Ioi 0) := fun _ _ _ _ h => add_right_cancel h
-        have hderiv : ∀ a ∈ Ioi (0 : ℝ), HasDerivWithinAt (fun x : ℝ => x + 1) 1 (Ioi 0) a :=
-          fun a _ => ((hasDerivAt_id a).add_const 1).hasDerivWithinAt
-        have hiff := integrableOn_image_iff_integrableOn_abs_deriv_smul measurableSet_Ioi hderiv
-          hinj (fun b : ℝ => ‖f b‖ ^ 2 * lewisCriticalWeight (b - 1))
-        rw [himg] at hiff
-        exact hiff.mp (by simpa [lewisShift, add_sub_cancel_right] using hintU)
-      rw [hlhs]
-      have hf1 := hf.mono_set (Ioi_subset_Ioi zero_le_one)
-      have hmono := setIntegral_mono_on hintU1 (hf1.const_mul C_U) measurableSet_Ioi fun b hb => by
+    unfold lewisCriticalNormSq lewisShift
+    have hshift := integral_Ioi_zero_add_subst 1
+      (fun b : ℝ => ‖f b‖ ^ 2 * lewisCriticalWeight (b - 1))
+    have hlhs : (∫ a in Ioi (0 : ℝ), ‖f (a + 1)‖ ^ 2 * lewisCriticalWeight a) =
+        ∫ b in Ioi (1 : ℝ), ‖f b‖ ^ 2 * lewisCriticalWeight (b - 1) := by
+      simpa [add_sub_cancel_right] using hshift
+    rw [hlhs]
+    have hmono := setIntegral_mono_on hintU1 (hf1.const_mul C_U) measurableSet_Ioi fun b hb => by
+      calc
+        ‖f b‖ ^ 2 * lewisCriticalWeight (b - 1)
+            ≤ ‖f b‖ ^ 2 * (C_U * lewisCriticalWeight b) :=
+          mul_le_mul_of_nonneg_left (weight_shift_ratio_bound_Ioi_one hb).2 (sq_nonneg _)
+        _ = C_U * (‖f b‖ ^ 2 * lewisCriticalWeight b) := by ring
+    rw [integral_const_mul] at hmono
+    have hrest : 0 ≤ ∫ a in Ioc (0 : ℝ) 1, ‖f a‖ ^ 2 * lewisCriticalWeight a :=
+      setIntegral_nonneg measurableSet_Ioc fun a ha =>
+        mul_nonneg (sq_nonneg _) (lewisCriticalWeight_pos ha.1).le
+    have hsplit : (∫ a in Ioi (0 : ℝ), ‖f a‖ ^ 2 * lewisCriticalWeight a) =
+        (∫ a in Ioc (0 : ℝ) 1, ‖f a‖ ^ 2 * lewisCriticalWeight a) +
+          ∫ b in Ioi (1 : ℝ), ‖f b‖ ^ 2 * lewisCriticalWeight b := by
+      rw [← Ioc_union_Ioi_eq_Ioi zero_le_one]
+      exact setIntegral_union (Set.disjoint_left.mpr fun _ hx hy => (not_lt.mpr hx.2) hy)
+        measurableSet_Ioi (hf.mono_set Ioc_subset_Ioi_self) hf1
+    rw [hsplit]
+    nlinarith [show 0 ≤ C_U by dsimp [C_U]; positivity]
+  let H_V : ℝ → ℝ := fun c =>
+    ‖f c‖ ^ 2 * ((1 - c) ^ (4 * s.re - 2) * lewisCriticalWeight (c / (1 - c)))
+  have hcongr_V : ∀ a ∈ Ioi (0 : ℝ),
+      ‖lewisParabolic s f a‖ ^ 2 * lewisCriticalWeight a =
+        ((a + 1) ^ (-2 : ℝ)) • H_V (a / (a + 1)) := by
+    intro a ha
+    have ha1 : 0 < a + 1 := by linarith [show 0 < a from ha]
+    let c : ℝ := a / (a + 1)
+    have h1c : 1 - c = (a + 1)⁻¹ := by dsimp [c]; field_simp [ha1.ne']; ring
+    have hc_div : c / (1 - c) = a := by dsimp [c]; rw [h1c]; field_simp [ha1.ne']
+    dsimp only [smul_eq_mul, H_V, lewisParabolic]
+    rw [norm_mul, mul_pow, Complex.norm_cpow_eq_rpow_re_of_pos ha1, h1c, hc_div]
+    have hre : (-(2 * s)).re = -2 * s.re := by simp
+    rw [hre, ← Real.rpow_natCast, ← Real.rpow_mul ha1.le, Real.inv_rpow ha1.le,
+      ← Real.rpow_neg ha1.le]
+    have hcomb : (a + 1) ^ (-2 : ℝ) *
+        (‖f c‖ ^ 2 * ((a + 1) ^ (-(4 * s.re - 2)) * lewisCriticalWeight a)) =
+        ((a + 1) ^ (-2 : ℝ) * (a + 1) ^ (-(4 * s.re - 2))) *
+          ‖f c‖ ^ 2 * lewisCriticalWeight a := by ring
+    rw [hcomb, ← Real.rpow_add ha1]
+    congr 2; congr 1; push_cast; ring
+  have hker_V_bound : ∀ c ∈ Ioo (0 : ℝ) 1,
+      (1 - c) ^ (4 * s.re - 2) * lewisCriticalWeight (c / (1 - c)) ≤
+        C_V * lewisCriticalWeight c := by
+    intro c hc
+    let b : ℝ := c⁻¹
+    have hb_gt1 : 1 < b := (one_lt_inv₀ hc.1).mpr hc.2
+    have hb0 : 0 < b := zero_lt_one.trans hb_gt1
+    have hu : 0 < b - 1 := sub_pos.mpr hb_gt1
+    have h1c_pos : 0 < 1 - c := sub_pos.mpr hc.2
+    have hcd_eq : c / (1 - c) = (b - 1)⁻¹ := by
+      dsimp [b]; field_simp [hc.1.ne', h1c_pos.ne', hu.ne']; ring
+    have h1c_b : 1 - c = (b - 1) / b := by
+      dsimp [b]; field_simp [hc.1.ne', hb0.ne']
+    have hw_cd : lewisCriticalWeight (c / (1 - c)) =
+        (b - 1) * lewisCriticalWeight (b - 1) := by
+      rw [hcd_eq]
+      unfold lewisCriticalWeight
+      rw [inv_inv, add_comm (b - 1)⁻¹ (b - 1), Real.inv_rpow hu.le, ← Real.rpow_neg hu.le, neg_neg]
+      have h1 : ((b - 1) + (b - 1)⁻¹) ^ (-6 : ℝ) * (b - 1) ^ (1 / 2 : ℝ) =
+          ((b - 1) + (b - 1)⁻¹) ^ (-6 : ℝ) * ((b - 1) ^ (1 : ℝ) * (b - 1) ^ (-(1 / 2 : ℝ))) := by
+        rw [← Real.rpow_add hu]; congr 2; norm_num
+      rw [h1, Real.rpow_one]; ring
+    have hw_c_eq : lewisCriticalWeight c = b * lewisCriticalWeight b := by
+      dsimp [b]
+      unfold lewisCriticalWeight
+      rw [inv_inv, add_comm b⁻¹ b, Real.inv_rpow hb0.le, ← Real.rpow_neg hb0.le, neg_neg]
+      have h1 : (b + b⁻¹) ^ (-6 : ℝ) * b ^ (1 / 2 : ℝ) =
+          (b + b⁻¹) ^ (-6 : ℝ) * (b ^ (1 : ℝ) * b ^ (-(1 / 2 : ℝ))) := by
+        rw [← Real.rpow_add hb0]; congr 2; norm_num
+      rw [h1, Real.rpow_one]; ring
+    have hker_eq : (1 - c) ^ (4 * s.re - 2) * lewisCriticalWeight (c / (1 - c)) =
+        ((b - 1) / b) ^ (4 * s.re - 1) * (b * lewisCriticalWeight (b - 1)) := by
+      rw [h1c_b, hw_cd, Real.div_rpow hu.le hb0.le, Real.div_rpow hu.le hb0.le]
+      have h1 : (b - 1) ^ (4 * s.re - 1) = (b - 1) ^ (4 * s.re - 2) * (b - 1) ^ (1 : ℝ) := by
+        rw [← Real.rpow_add hu]; congr 1; ring
+      have h2 : b ^ (4 * s.re - 1) = b ^ (4 * s.re - 2) * b ^ (1 : ℝ) := by
+        rw [← Real.rpow_add hb0]; congr 1; ring
+      rw [h1, h2, Real.rpow_one, Real.rpow_one]
+      field_simp [(Real.rpow_pos_of_pos hb0 _).ne', hb0.ne']
+    by_cases hb2 : b ≤ 2
+    · have hu_le1 : b - 1 ≤ 1 := by linarith
+      have hu6 : ((b - 1) + (b - 1)⁻¹) ^ (-6 : ℝ) ≤ (b - 1) ^ (6 : ℝ) := by
         calc
-          ‖f b‖ ^ 2 * lewisCriticalWeight (b - 1)
-              ≤ ‖f b‖ ^ 2 * (C_U * lewisCriticalWeight b) :=
-            mul_le_mul_of_nonneg_left (weight_shift_ratio_bound_Ioi_one hb).2 (sq_nonneg _)
-          _ = C_U * (‖f b‖ ^ 2 * lewisCriticalWeight b) := by ring
-      rw [integral_const_mul] at hmono
-      have hrest : 0 ≤ ∫ a in Ioc (0 : ℝ) 1, ‖f a‖ ^ 2 * lewisCriticalWeight a :=
-        setIntegral_nonneg measurableSet_Ioc fun a ha =>
-          mul_nonneg (sq_nonneg _) (lewisCriticalWeight_pos ha.1).le
-      have hsplit : (∫ a in Ioi (0 : ℝ), ‖f a‖ ^ 2 * lewisCriticalWeight a) =
-          (∫ a in Ioc (0 : ℝ) 1, ‖f a‖ ^ 2 * lewisCriticalWeight a) +
-            ∫ b in Ioi (1 : ℝ), ‖f b‖ ^ 2 * lewisCriticalWeight b := by
-        rw [← Ioc_union_Ioi_eq_Ioi zero_le_one]
-        exact setIntegral_union (Set.disjoint_left.mpr fun _ hx hy => (not_lt.mpr hx.2) hy)
-          measurableSet_Ioi (hf.mono_set Ioc_subset_Ioi_self) hf1
-      rw [hsplit]
-      nlinarith [show 0 ≤ C_U by dsimp [C_U]; positivity]
-    · rw [lewisCriticalNormSq, integral_undef hintU]
-      exact mul_nonneg (by dsimp [C_U]; positivity) (lewisCriticalNormSq_nonneg f)
+          ((b - 1) + (b - 1)⁻¹) ^ (-6 : ℝ) ≤ ((b - 1)⁻¹) ^ (-6 : ℝ) :=
+            Real.rpow_le_rpow_of_nonpos (inv_pos.mpr hu) (by linarith) (by norm_num)
+          _ = (b - 1) ^ (6 : ℝ) := by
+            rw [Real.inv_rpow hu.le, ← Real.rpow_neg hu.le]; norm_num
+      have hnum_le : (b - 1) ^ (4 * s.re - 1) * lewisCriticalWeight (b - 1) ≤ 1 := by
+        unfold lewisCriticalWeight
+        calc
+          (b - 1) ^ (4 * s.re - 1) *
+              (((b - 1) + (b - 1)⁻¹) ^ (-6 : ℝ) * (b - 1) ^ (-(1 / 2 : ℝ)))
+              ≤ (b - 1) ^ (4 * s.re - 1) * ((b - 1) ^ (6 : ℝ) * (b - 1) ^ (-(1 / 2 : ℝ))) :=
+            mul_le_mul_of_nonneg_left
+              (mul_le_mul_of_nonneg_right hu6 (by positivity)) (by positivity)
+          _ = (b - 1) ^ (4 * s.re - 1) * (b - 1) ^ (6 : ℝ) * (b - 1) ^ (-(1 / 2 : ℝ)) := by ring
+          _ = (b - 1) ^ (4 * s.re + 9 / 2) := by
+            rw [← Real.rpow_add hu, ← Real.rpow_add hu]; congr 1; ring
+          _ ≤ 1 := Real.rpow_le_one hu.le hu_le1 (by linarith)
+      have hinv_b : (b ^ (4 * s.re - 1))⁻¹ = b ^ (1 - 4 * s.re) := by
+        rw [← Real.rpow_neg hb0.le, show -(4 * s.re - 1) = 1 - 4 * s.re by ring]
+      have hb_pow_le : b ^ (1 - 4 * s.re) ≤ (2 : ℝ) ^ (4 * s.re + 2) := by
+        calc
+          b ^ (1 - 4 * s.re) ≤ b ^ (4 * s.re + 2) :=
+            Real.rpow_le_rpow_of_exponent_le hb_gt1.le (by linarith)
+          _ ≤ (2 : ℝ) ^ (4 * s.re + 2) :=
+            Real.rpow_le_rpow hb0.le hb2 (by linarith)
+      have h4w := one_le_four_pow_seven_mul_weight_Ioc_two hb_gt1 hb2
+      rw [hker_eq, hw_c_eq, Real.div_rpow hu.le hb0.le]
+      calc
+        ((b - 1) ^ (4 * s.re - 1) / b ^ (4 * s.re - 1)) * (b * lewisCriticalWeight (b - 1))
+            = b * (b ^ (1 - 4 * s.re) *
+                ((b - 1) ^ (4 * s.re - 1) * lewisCriticalWeight (b - 1))) := by
+          rw [div_eq_mul_inv, hinv_b]; ring
+        _ ≤ b * ((2 : ℝ) ^ (4 * s.re + 2) * 1) := by
+          apply mul_le_mul_of_nonneg_left _ hb0.le
+          exact mul_le_mul hb_pow_le hnum_le (by positivity) (by positivity)
+        _ ≤ b * ((2 : ℝ) ^ (4 * s.re + 2) * ((4 : ℝ) ^ (7 : ℝ) * lewisCriticalWeight b)) := by
+          apply mul_le_mul_of_nonneg_left _ hb0.le
+          exact mul_le_mul_of_nonneg_left h4w (by positivity)
+        _ = C_V * (b * lewisCriticalWeight b) := by dsimp [C_V]; ring
+    · push_neg at hb2
+      let q : ℝ := (b - 1) / b
+      have hq_pos : 0 < q := div_pos hu hb0
+      have hq_ge : 1 / 2 ≤ q := by
+        dsimp [q]; rw [le_div_iff₀ hb0]; linarith
+      have hq_le1 : q ≤ 1 := by
+        dsimp [q]; rw [div_le_one hb0]; linarith
+      have hq_pow : q ^ (4 * s.re - 1) ≤ (2 : ℝ) ^ (4 * s.re + 2) := by
+        by_cases hexp : 0 ≤ 4 * s.re - 1
+        · calc
+            q ^ (4 * s.re - 1) ≤ 1 := Real.rpow_le_one hq_pos.le hq_le1 hexp
+            _ ≤ (2 : ℝ) ^ (4 * s.re + 2) := Real.one_le_rpow (by norm_num) (by linarith)
+        · push_neg at hexp
+          calc
+            q ^ (4 * s.re - 1) ≤ (1 / 2 : ℝ) ^ (4 * s.re - 1) :=
+              Real.rpow_le_rpow_of_nonpos (by norm_num) hq_ge hexp.le
+            _ = (2 : ℝ) ^ (1 - 4 * s.re) := by
+              rw [one_div, Real.inv_rpow (by norm_num), ← Real.rpow_neg (by norm_num)]
+              congr 1; ring
+            _ ≤ (2 : ℝ) ^ (4 * s.re + 2) :=
+              Real.rpow_le_rpow_of_exponent_le (by norm_num) (by linarith)
+      have hw_sh := (weight_shift_ratio_bound_Ioi_one hb_gt1).2
+      rw [hker_eq, hw_c_eq]
+      calc
+        q ^ (4 * s.re - 1) * (b * lewisCriticalWeight (b - 1))
+            ≤ (2 : ℝ) ^ (4 * s.re + 2) * (b * ((4 : ℝ) ^ (7 : ℝ) * lewisCriticalWeight b)) := by
+          refine mul_le_mul hq_pow ?_ (by positivity) (by positivity)
+          exact mul_le_mul_of_nonneg_left hw_sh hb0.le
+        _ = C_V * (b * lewisCriticalWeight b) := by dsimp [C_V]; ring
+  have hf_Ioo : IntegrableOn (fun c => ‖f c‖ ^ 2 * lewisCriticalWeight c) (Ioo 0 1) :=
+    hf.mono_set Ioo_subset_Ioi_self
+  have hint_HV : IntegrableOn H_V (Ioo 0 1) := by
+    have hcont_rat : ContinuousOn
+        (fun c : ℝ => ((1 - c) ^ (4 * s.re - 2) * lewisCriticalWeight (c / (1 - c))) /
+          lewisCriticalWeight c) (Ioo 0 1) := by
+      intro c hc
+      have h1c : 0 < 1 - c := sub_pos.mpr hc.2
+      have hcd : 0 < c / (1 - c) := div_pos hc.1 h1c
+      have c1 : ContinuousAt (fun x : ℝ => (1 - x) ^ (4 * s.re - 2)) c :=
+        (continuousAt_const.sub continuousAt_id).rpow continuousAt_const (Or.inl h1c.ne')
+      have c2 : ContinuousAt (fun x : ℝ => lewisCriticalWeight (x / (1 - x))) c :=
+        ContinuousAt.comp (g := lewisCriticalWeight) (f := fun x : ℝ => x / (1 - x))
+          (lewisCriticalWeight_continuousOn.continuousAt (isOpen_Ioi.mem_nhds hcd))
+          (continuousAt_id.div (continuousAt_const.sub continuousAt_id) h1c.ne')
+      have c3 : ContinuousAt lewisCriticalWeight c :=
+        lewisCriticalWeight_continuousOn.continuousAt (isOpen_Ioi.mem_nhds hc.1)
+      exact ((c1.mul c2).div c3 (lewisCriticalWeight_pos hc.1).ne').continuousWithinAt
+    have hasm : AEStronglyMeasurable H_V (volume.restrict (Ioo 0 1)) := by
+      refine (hf_Ioo.aestronglyMeasurable.mul
+        (hcont_rat.aestronglyMeasurable measurableSet_Ioo)).congr ?_
+      filter_upwards [ae_restrict_mem measurableSet_Ioo] with c hc
+      have hwc : lewisCriticalWeight c ≠ 0 := (lewisCriticalWeight_pos hc.1).ne'
+      dsimp [H_V]
+      field_simp [hwc]
+    refine (hf_Ioo.const_mul C_V).mono' hasm ?_
+    filter_upwards [ae_restrict_mem measurableSet_Ioo] with c hc
+    have hnn : 0 ≤ H_V c := by
+      dsimp [H_V]
+      exact mul_nonneg (sq_nonneg _)
+        (mul_nonneg (Real.rpow_pos_of_pos (sub_pos.mpr hc.2) _).le
+          (lewisCriticalWeight_pos (div_pos hc.1 (sub_pos.mpr hc.2))).le)
+    rw [Real.norm_of_nonneg hnn]
+    dsimp [H_V]
+    calc
+      ‖f c‖ ^ 2 * ((1 - c) ^ (4 * s.re - 2) * lewisCriticalWeight (c / (1 - c)))
+          ≤ ‖f c‖ ^ 2 * (C_V * lewisCriticalWeight c) :=
+        mul_le_mul_of_nonneg_left (hker_V_bound c hc) (sq_nonneg _)
+      _ = C_V * (‖f c‖ ^ 2 * lewisCriticalWeight c) := by ring
+  have hintV :
+      IntegrableOn (fun a => ‖lewisParabolic s f a‖ ^ 2 * lewisCriticalWeight a) (Ioi 0) := by
+    let φ : ℝ → ℝ := fun a => a / (a + 1)
+    have himg : φ '' Ioi (0 : ℝ) = Ioo (0 : ℝ) 1 := by
+      ext c; simp only [φ, mem_image, mem_Ioi, mem_Ioo]
+      refine ⟨fun ⟨a, ha, rfl⟩ => ⟨div_pos ha (by linarith), (div_lt_one (by linarith)).mpr (by linarith)⟩,
+        fun ⟨hc0, hc1⟩ => ⟨c / (1 - c), div_pos hc0 (sub_pos.mpr hc1),
+          by field_simp [(sub_pos.mpr hc1).ne']; ring⟩⟩
+    have hinj : InjOn φ (Ioi 0) := by
+      intro a₁ ha₁ a₂ ha₂ heq; dsimp [φ] at heq
+      rw [div_eq_div_iff (by linarith [show 0 < a₁ from ha₁])
+        (by linarith [show 0 < a₂ from ha₂])] at heq
+      linarith
+    have hderiv : ∀ a ∈ Ioi (0 : ℝ), HasDerivWithinAt φ (((a + 1) ^ 2)⁻¹) (Ioi 0) a := by
+      intro a ha
+      have ha1 : a + 1 ≠ 0 := by linarith [show 0 < a from ha]
+      have hd := (hasDerivAt_id a).div ((hasDerivAt_id a).add_const 1) ha1
+      have hval : (1 * (a + 1) - a * (1 + 0)) / (a + 1) ^ 2 = ((a + 1) ^ 2)⁻¹ := by
+        field_simp [ha1]; ring
+      exact (hval ▸ hd).hasDerivWithinAt
+    have hiff := integrableOn_image_iff_integrableOn_abs_deriv_smul measurableSet_Ioi
+      hderiv hinj H_V
+    rw [himg] at hiff
+    refine (hiff.mp hint_HV).congr_fun (fun a ha => ?_) measurableSet_Ioi
+    rw [hcongr_V a ha]
+    have ha1 : 0 < a + 1 := by linarith [show 0 < a from ha]
+    have habs : |((a + 1) ^ 2)⁻¹| = (a + 1) ^ (-2 : ℝ) := by
+      rw [abs_of_pos (by positivity), Real.rpow_neg ha1.le, Real.rpow_two]
+    simp [φ, habs]
   have hV_bound : lewisCriticalNormSq (lewisParabolic s f) ≤ C_V * lewisCriticalNormSq f := by
-    by_cases hintV :
-        IntegrableOn (fun a => ‖lewisParabolic s f a‖ ^ 2 * lewisCriticalWeight a) (Ioi 0)
-    · -- Express via `c = a / (a + 1)` on `Ioo 0 1`:
-      let H_V : ℝ → ℝ := fun c =>
+    have heq_V : lewisCriticalNormSq (lewisParabolic s f) = ∫ c in Ioo (0 : ℝ) 1, H_V c := by
+      unfold lewisCriticalNormSq
+      rw [setIntegral_congr_fun measurableSet_Ioi hcongr_V, ← integral_Ioi_zero_mobius_subst]
+    rw [heq_V]
+    have hmono := setIntegral_mono_on hint_HV (hf_Ioo.const_mul C_V) measurableSet_Ioo fun c hc => by
+      dsimp [H_V]
+      calc
         ‖f c‖ ^ 2 * ((1 - c) ^ (4 * s.re - 2) * lewisCriticalWeight (c / (1 - c)))
-      have hcongr_V : ∀ a ∈ Ioi (0 : ℝ),
-          ‖lewisParabolic s f a‖ ^ 2 * lewisCriticalWeight a =
-            ((a + 1) ^ (-2 : ℝ)) • H_V (a / (a + 1)) := by
-        intro a ha
-        have ha1 : 0 < a + 1 := by linarith [show 0 < a from ha]
-        let c : ℝ := a / (a + 1)
-        have h1c : 1 - c = (a + 1)⁻¹ := by dsimp [c]; field_simp [ha1.ne']; ring
-        have hc_div : c / (1 - c) = a := by dsimp [c]; rw [h1c]; field_simp [ha1.ne']
-        dsimp only [smul_eq_mul, H_V, lewisParabolic]
-        rw [norm_mul, mul_pow, Complex.norm_cpow_eq_rpow_re_of_pos ha1, h1c, hc_div]
-        have hre : (-(2 * s)).re = -2 * s.re := by simp
-        rw [hre, ← Real.rpow_natCast, ← Real.rpow_mul ha1.le, Real.inv_rpow ha1.le,
-          ← Real.rpow_neg ha1.le]
-        have hcomb : (a + 1) ^ (-2 : ℝ) *
-            (‖f c‖ ^ 2 * ((a + 1) ^ (-(4 * s.re - 2)) * lewisCriticalWeight a)) =
-            ((a + 1) ^ (-2 : ℝ) * (a + 1) ^ (-(4 * s.re - 2))) *
-              ‖f c‖ ^ 2 * lewisCriticalWeight a := by ring
-        rw [hcomb, ← Real.rpow_add ha1]
-        congr 2; congr 1; push_cast; ring
-      have heq_V : lewisCriticalNormSq (lewisParabolic s f) = ∫ c in Ioo (0 : ℝ) 1, H_V c := by
-        unfold lewisCriticalNormSq
-        rw [setIntegral_congr_fun measurableSet_Ioi hcongr_V, ← integral_Ioi_zero_mobius_subst]
-      have hint_HV : IntegrableOn H_V (Ioo 0 1) := by
-        let φ : ℝ → ℝ := fun a => a / (a + 1)
-        have himg : φ '' Ioi (0 : ℝ) = Ioo (0 : ℝ) 1 := by
-          ext c; simp only [φ, mem_image, mem_Ioi, mem_Ioo]
-          refine ⟨fun ⟨a, ha, rfl⟩ => ⟨div_pos ha (by linarith), (div_lt_one (by linarith)).mpr (by linarith)⟩,
-            fun ⟨hc0, hc1⟩ => ⟨c / (1 - c), div_pos hc0 (sub_pos.mpr hc1), by field_simp [(sub_pos.mpr hc1).ne']; ring⟩⟩
-        have hinj : InjOn φ (Ioi 0) := by
-          intro a₁ ha₁ a₂ ha₂ heq; dsimp [φ] at heq
-          rw [div_eq_div_iff (by linarith [show 0 < a₁ from ha₁]) (by linarith [show 0 < a₂ from ha₂])] at heq
-          linarith
-        have hderiv : ∀ a ∈ Ioi (0 : ℝ), HasDerivWithinAt φ (((a + 1) ^ 2)⁻¹) (Ioi 0) a := by
-          intro a ha
-          have ha1 : a + 1 ≠ 0 := by linarith [show 0 < a from ha]
-          have hd := (hasDerivAt_id a).div ((hasDerivAt_id a).add_const 1) ha1
-          have hval : (1 * (a + 1) - a * (1 + 0)) / (a + 1) ^ 2 = ((a + 1) ^ 2)⁻¹ := by
-            field_simp [ha1]; ring
-          exact (hval ▸ hd).hasDerivWithinAt
-        have hiff := integrableOn_image_iff_integrableOn_abs_deriv_smul measurableSet_Ioi
-          hderiv hinj H_V
-        rw [himg] at hiff
-        refine hiff.mpr (hintV.congr_fun (fun a ha => ?_) measurableSet_Ioi)
-        rw [hcongr_V a ha]
-        have ha1 : 0 < a + 1 := by linarith [show 0 < a from ha]
-        have habs : |((a + 1) ^ 2)⁻¹| = (a + 1) ^ (-2 : ℝ) := by
-          rw [abs_of_pos (by positivity), Real.rpow_neg ha1.le, Real.rpow_two]
-        simp [φ, habs]
-      -- Pointwise bound `H_V c ≤ C_V * (‖f c‖^2 * lewisCriticalWeight c)` on `Ioo 0 1` via `b = c⁻¹ > 1`:
-      have hpt_V : ∀ c ∈ Ioo (0 : ℝ) 1, H_V c ≤ C_V * (‖f c‖ ^ 2 * lewisCriticalWeight c) := by
-        intro c hc
-        let b : ℝ := c⁻¹
-        have hb_gt1 : 1 < b := (one_lt_inv₀ hc.1).mpr hc.2
-        have hb0 : 0 < b := zero_lt_one.trans hb_gt1
-        have h1c_pos : 0 < 1 - c := sub_pos.mpr hc.2
-        have hcd_eq : c / (1 - c) = (b - 1)⁻¹ := by
-          dsimp [b]; field_simp [hc.1.ne', h1c_pos.ne', (sub_pos.mpr hb_gt1).ne']; ring
-        have h1c_b : 1 - c = (b - 1) / b := by
-          dsimp [b]; field_simp [hc.1.ne', hb0.ne']
-        have hw_cd : lewisCriticalWeight (c / (1 - c)) =
-            (b - 1) * lewisCriticalWeight (b - 1) := by
-          rw [hcd_eq]
-          have hu : 0 < b - 1 := sub_pos.mpr hb_gt1
-          unfold lewisCriticalWeight
-          rw [inv_inv, add_comm (b - 1)⁻¹ (b - 1), Real.inv_rpow hu.le, ← Real.rpow_neg hu.le,
-            neg_neg]
-          have h1 : ((b - 1) + (b - 1)⁻¹) ^ (-6 : ℝ) * (b - 1) ^ (1 / 2 : ℝ) =
-              ((b - 1) + (b - 1)⁻¹) ^ (-6 : ℝ) * ((b - 1) ^ (1 : ℝ) * (b - 1) ^ (-(1 / 2 : ℝ))) := by
-            rw [← Real.rpow_add hu]; congr 2; norm_num
-          rw [h1, Real.rpow_one]; ring
-        have hw_c_eq : lewisCriticalWeight c = b * lewisCriticalWeight b := by
-          dsimp [b]
-          unfold lewisCriticalWeight
-          rw [inv_inv, add_comm b⁻¹ b, Real.inv_rpow hb0.le, ← Real.rpow_neg hb0.le, neg_neg]
-          have h1 : (b + b⁻¹) ^ (-6 : ℝ) * b ^ (1 / 2 : ℝ) =
-              (b + b⁻¹) ^ (-6 : ℝ) * (b ^ (1 : ℝ) * b ^ (-(1 / 2 : ℝ))) := by
-            rw [← Real.rpow_add hb0]; congr 2; norm_num
-          rw [h1, Real.rpow_one]; ring
-        -- Therefore `(1 - c)^(4 Re s - 2) * w_LP(c/(1 - c))`
-        -- `= ((b - 1) / b)^(4 Re s - 1) * (b * lewisCriticalWeight (b - 1))`:
-        have hker_eq : (1 - c) ^ (4 * s.re - 2) * lewisCriticalWeight (c / (1 - c)) =
-            ((b - 1) / b) ^ (4 * s.re - 1) * (b * lewisCriticalWeight (b - 1)) := by
-          have hu : 0 < b - 1 := sub_pos.mpr hb_gt1
-          rw [h1c_b, hw_cd, Real.div_rpow hu.le hb0.le, Real.div_rpow hu.le hb0.le]
-          have h1 : (b - 1) ^ (4 * s.re - 1) = (b - 1) ^ (4 * s.re - 2) * (b - 1) ^ (1 : ℝ) := by
-            rw [← Real.rpow_add hu]; congr 1; ring
-          have h2 : b ^ (4 * s.re - 1) = b ^ (4 * s.re - 2) * b ^ (1 : ℝ) := by
-            rw [← Real.rpow_add hb0]; congr 1; ring
-          rw [h1, h2, Real.rpow_one, Real.rpow_one]
-          field_simp [(Real.rpow_pos_of_pos hb0 _).ne', hb0.ne']
-        have hker_bound : (1 - c) ^ (4 * s.re - 2) * lewisCriticalWeight (c / (1 - c)) ≤
-            C_V * lewisCriticalWeight c := by
-          by_cases hb2 : b ≤ 2
-          · -- Near `c → 1⁻` (`1 < b ≤ 2`): `1 - c ≤ 1/2 ≤ 1`, `c / (1 - c) = (b - 1)⁻¹ ≥ 1`:
-            have hu : 0 < b - 1 := sub_pos.mpr hb_gt1
-            have hu_le1 : b - 1 ≤ 1 := by linarith
-            have hu6 : ((b - 1) + (b - 1)⁻¹) ^ (-6 : ℝ) ≤ (b - 1) ^ (6 : ℝ) := by
-              calc
-                ((b - 1) + (b - 1)⁻¹) ^ (-6 : ℝ) ≤ ((b - 1)⁻¹) ^ (-6 : ℝ) :=
-                  Real.rpow_le_rpow_of_nonpos (inv_pos.mpr hu) (by linarith) (by norm_num)
-                _ = (b - 1) ^ (6 : ℝ) := by
-                  rw [Real.inv_rpow hu.le, ← Real.rpow_neg hu.le]; norm_num
-            have hnum_le : (b - 1) ^ (4 * s.re - 1) * lewisCriticalWeight (b - 1) ≤ 1 := by
-              unfold lewisCriticalWeight
-              calc
-                (b - 1) ^ (4 * s.re - 1) *
-                    (((b - 1) + (b - 1)⁻¹) ^ (-6 : ℝ) * (b - 1) ^ (-(1 / 2 : ℝ)))
-                    ≤ (b - 1) ^ (4 * s.re - 1) * ((b - 1) ^ (6 : ℝ) * (b - 1) ^ (-(1 / 2 : ℝ))) :=
-                  mul_le_mul_of_nonneg_left
-                    (mul_le_mul_of_nonneg_right hu6 (by positivity)) (by positivity)
-                _ = (b - 1) ^ (4 * s.re - 1) * (b - 1) ^ (6 : ℝ) * (b - 1) ^ (-(1 / 2 : ℝ)) := by
-                  ring
-                _ = (b - 1) ^ (4 * s.re + 9 / 2) := by
-                  rw [← Real.rpow_add hu, ← Real.rpow_add hu]; congr 1; ring
-                _ ≤ 1 := Real.rpow_le_one hu.le hu_le1 (by linarith)
-            have hden_le : b ^ (2 - 4 * s.re) ≤ (2 : ℝ) ^ (4 * s.re + 2) := by
-              calc
-                b ^ (2 - 4 * s.re) ≤ b ^ (4 * s.re + 2) :=
-                  Real.rpow_le_rpow_of_exponent_le hb_gt1.le (by linarith)
-                _ ≤ (2 : ℝ) ^ (4 * s.re + 2) :=
-                  Real.rpow_le_rpow hb0.le hb2 (by linarith)
-            have h4w := one_le_four_pow_seven_mul_weight_Ioc_two hb_gt1 hb2
-            rw [hker_eq, hw_c_eq, Real.div_rpow hu.le hb0.le]
-            have hrew : ((b - 1) ^ (4 * s.re - 1) / b ^ (4 * s.re - 1)) *
-                (b * lewisCriticalWeight (b - 1)) =
-                b ^ (2 - 4 * s.re) * ((b - 1) ^ (4 * s.re - 1) * lewisCriticalWeight (b - 1)) := by
-              have hb_pow : b / b ^ (4 * s.re - 1) = b ^ (2 - 4 * s.re) := by
-                rw [div_eq_mul_inv, ← Real.rpow_neg hb0.le, ← Real.rpow_one b,
-                  ← Real.rpow_add hb0]
-                -- wait: avoid rewriting `b` inside `4 * s.re - 1` (`b` has no `s.re`!)
-                sorry
-              sorry
-            sorry
-          · sorry
-        dsimp only [H_V]
+            ≤ ‖f c‖ ^ 2 * (C_V * lewisCriticalWeight c) :=
+          mul_le_mul_of_nonneg_left (hker_V_bound c hc) (sq_nonneg _)
+        _ = C_V * (‖f c‖ ^ 2 * lewisCriticalWeight c) := by ring
+    rw [integral_const_mul] at hmono
+    have hsub_le : ∫ c in Ioo (0 : ℝ) 1, ‖f c‖ ^ 2 * lewisCriticalWeight c ≤
+        lewisCriticalNormSq f := by
+      unfold lewisCriticalNormSq
+      have hunion : Ioi (0 : ℝ) = Ioo 0 1 ∪ (Ioi 0 \ Ioo 0 1) :=
+        (Set.union_sdiff_cancel Ioo_subset_Ioi_self).symm
+      conv_rhs => rw [hunion]
+      rw [setIntegral_union disjoint_sdiff_self_right (measurableSet_Ioi.diff measurableSet_Ioo)
+        hf_Ioo (hf.mono_set Set.sdiff_subset)]
+      have hrest : 0 ≤ ∫ c in Ioi 0 \ Ioo 0 1, ‖f c‖ ^ 2 * lewisCriticalWeight c :=
+        setIntegral_nonneg (measurableSet_Ioi.diff measurableSet_Ioo) fun c hc =>
+          mul_nonneg (sq_nonneg _) (lewisCriticalWeight_pos hc.1).le
+      linarith
+    exact hmono.trans (mul_le_mul_of_nonneg_left hsub_le (by dsimp [C_V]; positivity))
+  by_cases hintM :
+      IntegrableOn (fun a => ‖lewisFarey s f a‖ ^ 2 * lewisCriticalWeight a) (Ioi 0)
+  · have hmono := setIntegral_mono_on hintM ((hintU.add hintV).const_mul 2) measurableSet_Ioi
+      fun a ha => by
+        have htri : ‖lewisFarey s f a‖ ≤ ‖lewisShift f a‖ + ‖lewisParabolic s f a‖ :=
+          norm_add_le _ _
+        have hsq1 : ‖lewisFarey s f a‖ ^ 2 ≤ (‖lewisShift f a‖ + ‖lewisParabolic s f a‖) ^ 2 :=
+          pow_le_pow_left₀ (norm_nonneg _) htri 2
+        have hsq2 : (‖lewisShift f a‖ + ‖lewisParabolic s f a‖) ^ 2 ≤
+            2 * (‖lewisShift f a‖ ^ 2 + ‖lewisParabolic s f a‖ ^ 2) := by
+          nlinarith [sq_nonneg (‖lewisShift f a‖ - ‖lewisParabolic s f a‖)]
+        have hw_nn : 0 ≤ lewisCriticalWeight a := (lewisCriticalWeight_pos ha).le
+        simp only [Pi.add_apply]
         calc
-          ‖f c‖ ^ 2 * ((1 - c) ^ (4 * s.re - 2) * lewisCriticalWeight (c / (1 - c)))
-              ≤ ‖f c‖ ^ 2 * (C_V * lewisCriticalWeight c) :=
-            mul_le_mul_of_nonneg_left hker_bound (sq_nonneg _)
-          _ = C_V * (‖f c‖ ^ 2 * lewisCriticalWeight c) := by ring
-      sorry
-    · rw [lewisCriticalNormSq, integral_undef hintV]
-      exact mul_nonneg (by dsimp [C_V]; positivity) (lewisCriticalNormSq_nonneg f)
-  sorry
+          ‖lewisFarey s f a‖ ^ 2 * lewisCriticalWeight a
+              ≤ (2 * (‖lewisShift f a‖ ^ 2 + ‖lewisParabolic s f a‖ ^ 2)) *
+                  lewisCriticalWeight a :=
+            mul_le_mul_of_nonneg_right (hsq1.trans hsq2) hw_nn
+          _ = 2 * (‖lewisShift f a‖ ^ 2 * lewisCriticalWeight a +
+                ‖lewisParabolic s f a‖ ^ 2 * lewisCriticalWeight a) := by ring
+    rw [integral_const_mul, integral_add hintU hintV] at hmono
+    change lewisCriticalNormSq (lewisFarey s f) ≤
+      2 * (lewisCriticalNormSq (lewisShift f) + lewisCriticalNormSq (lewisParabolic s f)) at hmono
+    linarith
+  · rw [lewisCriticalNormSq, integral_undef hintM]
+    exact mul_nonneg (by dsimp [C_U, C_V]; positivity) (lewisCriticalNormSq_nonneg f)
+
+/-- Exact squared-norm identity `‖M_s† g‖_LP² = ∫_0^∞ μ_s(a) ‖g(a)‖² w_LP(a) da` on `H_LP`. -/
+theorem lewisCriticalNormSq_fareyAdj (s : ℂ) (g : ℝ → ℂ)
+    (hg_adj : IntegrableOn (fun x => ‖lewisFareyAdj s g x‖ ^ 2 * lewisCriticalWeight x) (Ioi 0)) :
+    lewisCriticalNormSq (lewisFareyAdj s g) =
+      ∫ a in Ioi (0 : ℝ), lewisFareyMultiplier s a * ‖g a‖ ^ 2 * lewisCriticalWeight a := by
+  have hpt_split : ∀ x : ℝ,
+      ‖lewisFareyAdj s g x‖ ^ 2 * lewisCriticalWeight x =
+        ‖lewisShiftAdj g x‖ ^ 2 * lewisCriticalWeight x +
+          ‖lewisParabolicAdj s g x‖ ^ 2 * lewisCriticalWeight x := by
+    intro x
+    unfold lewisFareyAdj
+    by_cases hx : 1 < x
+    · have hnot : x ∉ Ioo (0 : ℝ) 1 := fun hm => by linarith [hm.2]
+      simp [lewisParabolicAdj, hnot]
+    · simp [lewisShiftAdj, hx]
+  have hind_U : (fun x : ℝ => ‖lewisShiftAdj g x‖ ^ 2 * lewisCriticalWeight x) =
+      (Ioi (1 : ℝ)).indicator (fun x => ‖lewisFareyAdj s g x‖ ^ 2 * lewisCriticalWeight x) := by
+    ext x
+    by_cases hx : 1 < x
+    · have hnot : x ∉ Ioo (0 : ℝ) 1 := fun hm => by linarith [hm.2]
+      simp [lewisFareyAdj, lewisParabolicAdj, hx, hnot, mem_Ioi]
+    · simp [lewisShiftAdj, hx, mem_Ioi]
+  have hind_V : (fun x : ℝ => ‖lewisParabolicAdj s g x‖ ^ 2 * lewisCriticalWeight x) =
+      (Ioo (0 : ℝ) 1).indicator (fun x => ‖lewisFareyAdj s g x‖ ^ 2 * lewisCriticalWeight x) := by
+    ext x
+    by_cases hx : x ∈ Ioo (0 : ℝ) 1
+    · have hnot : ¬ (1 < x) := by linarith [hx.2]
+      simp [lewisFareyAdj, lewisShiftAdj, hx, hnot]
+    · simp [lewisParabolicAdj, hx]
+  have hint_U : IntegrableOn (fun x => ‖lewisShiftAdj g x‖ ^ 2 * lewisCriticalWeight x) (Ioi 0) := by
+    rw [hind_U, integrableOn_indicator_iff measurableSet_Ioi,
+      inter_eq_self_of_subset_right (Ioi_subset_Ioi zero_le_one)]
+    exact hg_adj.mono_set (Ioi_subset_Ioi zero_le_one)
+  have hint_V :
+      IntegrableOn (fun x => ‖lewisParabolicAdj s g x‖ ^ 2 * lewisCriticalWeight x) (Ioi 0) := by
+    rw [hind_V, integrableOn_indicator_iff measurableSet_Ioo,
+      inter_eq_self_of_subset_right Ioo_subset_Ioi_self]
+    exact hg_adj.mono_set Ioo_subset_Ioi_self
+  have hsum_adj : lewisCriticalNormSq (lewisFareyAdj s g) =
+      (∫ x in Ioi (0 : ℝ), ‖lewisShiftAdj g x‖ ^ 2 * lewisCriticalWeight x) +
+        ∫ x in Ioi (0 : ℝ), ‖lewisParabolicAdj s g x‖ ^ 2 * lewisCriticalWeight x := by
+    unfold lewisCriticalNormSq
+    rw [setIntegral_congr_fun measurableSet_Ioi (fun x _ => hpt_split x), integral_add hint_U hint_V]
+  have hU_eq : (∫ x in Ioi (0 : ℝ), ‖lewisShiftAdj g x‖ ^ 2 * lewisCriticalWeight x) =
+      ∫ a in Ioi (0 : ℝ),
+        (lewisCriticalWeight a / lewisCriticalWeight (a + 1)) * ‖g a‖ ^ 2 * lewisCriticalWeight a := by
+    have h1 : (fun x : ℝ => ‖lewisShiftAdj g x‖ ^ 2 * lewisCriticalWeight x) =
+        (Ioi (1 : ℝ)).indicator (fun b =>
+          (lewisCriticalWeight (b - 1) / lewisCriticalWeight b) * ‖g (b - 1)‖ ^ 2 *
+            lewisCriticalWeight (b - 1)) := by
+      ext b
+      by_cases hb : 1 < b
+      · have hb0 : 0 < b := zero_lt_one.trans hb
+        have hb1 : 0 < b - 1 := sub_pos.mpr hb
+        have hwb : lewisCriticalWeight b ≠ 0 := (lewisCriticalWeight_pos hb0).ne'
+        simp only [lewisShiftAdj, if_pos hb, mem_Ioi, indicator_of_mem hb, norm_mul, mul_pow,
+          Complex.norm_real, Real.norm_of_nonneg (div_pos (lewisCriticalWeight_pos hb1)
+            (lewisCriticalWeight_pos hb0)).le]
+        field_simp [hwb]
+      · simp [lewisShiftAdj, hb, mem_Ioi]
+    rw [h1, setIntegral_indicator measurableSet_Ioi,
+      inter_eq_self_of_subset_right (Ioi_subset_Ioi zero_le_one),
+      ← integral_Ioi_zero_add_subst 1]
+    refine setIntegral_congr_fun measurableSet_Ioi fun a _ => ?_
+    simp [add_sub_cancel_right]
+  have hint_m1 : IntegrableOn
+      (fun a => (lewisCriticalWeight a / lewisCriticalWeight (a + 1)) *
+        ‖g a‖ ^ 2 * lewisCriticalWeight a) (Ioi 0) := by
+    have himg : (fun a : ℝ => a + 1) '' Ioi (0 : ℝ) = Ioi 1 := by
+      ext b; simp only [mem_image, mem_Ioi]
+      exact ⟨fun ⟨a, ha, rfl⟩ => by linarith, fun hb => ⟨b - 1, by linarith, sub_add_cancel b 1⟩⟩
+    have hinj : InjOn (fun a : ℝ => a + 1) (Ioi 0) := fun _ _ _ _ h => add_right_cancel h
+    have hderiv : ∀ a ∈ Ioi (0 : ℝ), HasDerivWithinAt (fun x : ℝ => x + 1) 1 (Ioi 0) a :=
+      fun a _ => ((hasDerivAt_id a).add_const 1).hasDerivWithinAt
+    have hiff := integrableOn_image_iff_integrableOn_abs_deriv_smul measurableSet_Ioi hderiv hinj
+      (fun b => ‖lewisShiftAdj g b‖ ^ 2 * lewisCriticalWeight b)
+    rw [himg] at hiff
+    refine (hiff.mp (hint_U.mono_set (Ioi_subset_Ioi zero_le_one))).congr_fun (fun a ha => ?_)
+      measurableSet_Ioi
+    have ha1_gt1 : 1 < a + 1 := by linarith [show 0 < a from ha]
+    have ha1_pos : 0 < a + 1 := by linarith [show 0 < a from ha]
+    have hwa1 : lewisCriticalWeight (a + 1) ≠ 0 := (lewisCriticalWeight_pos ha1_pos).ne'
+    simp only [abs_one, one_smul, lewisShiftAdj, if_pos ha1_gt1, add_sub_cancel_right,
+      norm_mul, mul_pow, Complex.norm_real,
+      Real.norm_of_nonneg (div_pos (lewisCriticalWeight_pos ha) (lewisCriticalWeight_pos ha1_pos)).le]
+    field_simp [hwa1]
+  let F_V : ℝ → ℝ := fun c =>
+    (1 - c) ^ (4 * s.re - 4) *
+      (lewisCriticalWeight (c / (1 - c)) / lewisCriticalWeight c) *
+      ‖g (c / (1 - c))‖ ^ 2 * lewisCriticalWeight (c / (1 - c))
+  have hFV_ind : (fun x : ℝ => ‖lewisParabolicAdj s g x‖ ^ 2 * lewisCriticalWeight x) =
+      (Ioo (0 : ℝ) 1).indicator F_V := by
+    ext c
+    by_cases hc : c ∈ Ioo (0 : ℝ) 1
+    · have h1c : 0 < 1 - c := sub_pos.mpr hc.2
+      have hcd : 0 < c / (1 - c) := div_pos hc.1 h1c
+      have hwc : lewisCriticalWeight c ≠ 0 := (lewisCriticalWeight_pos hc.1).ne'
+      have hre : (2 * (starRingEnd ℂ) s - 2).re = 2 * s.re - 2 := by simp
+      simp only [lewisParabolicAdj, if_pos hc, indicator_of_mem hc, F_V, norm_mul, mul_pow,
+        Complex.norm_cpow_eq_rpow_re_of_pos h1c, hre, Complex.norm_real,
+        Real.norm_of_nonneg (div_pos (lewisCriticalWeight_pos hcd) (lewisCriticalWeight_pos hc.1)).le,
+        ← Real.rpow_natCast, ← Real.rpow_mul h1c.le]
+      have hexp : (2 * s.re - 2) * ((2 : ℕ) : ℝ) = 4 * s.re - 4 := by push_cast; ring
+      rw [hexp]
+      field_simp [hwc]
+    · simp [lewisParabolicAdj, hc]
+  have hFV_mob : ∀ a ∈ Ioi (0 : ℝ),
+      ((a + 1) ^ (-2 : ℝ)) • F_V (a / (a + 1)) =
+        (a + 1) ^ (2 - 4 * s.re) * (lewisCriticalWeight a / lewisCriticalWeight (a / (a + 1))) *
+          ‖g a‖ ^ 2 * lewisCriticalWeight a := by
+    intro a ha
+    have ha1 : 0 < a + 1 := by linarith [show 0 < a from ha]
+    let c : ℝ := a / (a + 1)
+    have h1c : 1 - c = (a + 1)⁻¹ := by dsimp [c]; field_simp [ha1.ne']; ring
+    have hc_div : c / (1 - c) = a := by dsimp [c]; rw [h1c]; field_simp [ha1.ne']
+    dsimp only [smul_eq_mul, F_V]
+    rw [h1c, hc_div, Real.inv_rpow ha1.le, ← Real.rpow_neg ha1.le]
+    have hcomb : (a + 1) ^ (-2 : ℝ) *
+        ((a + 1) ^ (-(4 * s.re - 4)) * (lewisCriticalWeight a / lewisCriticalWeight c) *
+          ‖g a‖ ^ 2 * lewisCriticalWeight a) =
+        ((a + 1) ^ (-2 : ℝ) * (a + 1) ^ (-(4 * s.re - 4))) *
+          (lewisCriticalWeight a / lewisCriticalWeight c) * ‖g a‖ ^ 2 * lewisCriticalWeight a := by
+      ring
+    rw [hcomb, ← Real.rpow_add ha1]
+    congr 3; congr 1; ring
+  have hV_eq : (∫ x in Ioi (0 : ℝ), ‖lewisParabolicAdj s g x‖ ^ 2 * lewisCriticalWeight x) =
+      ∫ a in Ioi (0 : ℝ),
+        (a + 1) ^ (2 - 4 * s.re) * (lewisCriticalWeight a / lewisCriticalWeight (a / (a + 1))) *
+          ‖g a‖ ^ 2 * lewisCriticalWeight a := by
+    rw [hFV_ind, setIntegral_indicator measurableSet_Ioo,
+      inter_eq_self_of_subset_right Ioo_subset_Ioi_self, integral_Ioi_zero_mobius_subst]
+    exact setIntegral_congr_fun measurableSet_Ioi hFV_mob
+  have hint_m2 : IntegrableOn
+      (fun a => (a + 1) ^ (2 - 4 * s.re) *
+        (lewisCriticalWeight a / lewisCriticalWeight (a / (a + 1))) *
+        ‖g a‖ ^ 2 * lewisCriticalWeight a) (Ioi 0) := by
+    have hint_FV : IntegrableOn F_V (Ioo 0 1) := by
+      have h := hint_V
+      rwa [hFV_ind, integrableOn_indicator_iff measurableSet_Ioo,
+        inter_eq_self_of_subset_right Ioo_subset_Ioi_self] at h
+    let φ : ℝ → ℝ := fun a => a / (a + 1)
+    have himg : φ '' Ioi (0 : ℝ) = Ioo (0 : ℝ) 1 := by
+      ext c; simp only [φ, mem_image, mem_Ioi, mem_Ioo]
+      refine ⟨fun ⟨a, ha, rfl⟩ => ⟨div_pos ha (by linarith), (div_lt_one (by linarith)).mpr (by linarith)⟩,
+        fun ⟨hc0, hc1⟩ => ⟨c / (1 - c), div_pos hc0 (sub_pos.mpr hc1),
+          by field_simp [(sub_pos.mpr hc1).ne']; ring⟩⟩
+    have hinj : InjOn φ (Ioi 0) := by
+      intro a₁ ha₁ a₂ ha₂ heq; dsimp [φ] at heq
+      rw [div_eq_div_iff (by linarith [show 0 < a₁ from ha₁])
+        (by linarith [show 0 < a₂ from ha₂])] at heq
+      linarith
+    have hderiv : ∀ a ∈ Ioi (0 : ℝ), HasDerivWithinAt φ (((a + 1) ^ 2)⁻¹) (Ioi 0) a := by
+      intro a ha
+      have ha1 : a + 1 ≠ 0 := by linarith [show 0 < a from ha]
+      have hd := (hasDerivAt_id a).div ((hasDerivAt_id a).add_const 1) ha1
+      have hval : (1 * (a + 1) - a * (1 + 0)) / (a + 1) ^ 2 = ((a + 1) ^ 2)⁻¹ := by
+        field_simp [ha1]; ring
+      exact (hval ▸ hd).hasDerivWithinAt
+    have hiff := integrableOn_image_iff_integrableOn_abs_deriv_smul measurableSet_Ioi
+      hderiv hinj F_V
+    rw [himg] at hiff
+    refine (hiff.mp hint_FV).congr_fun (fun a ha => ?_) measurableSet_Ioi
+    rw [← hFV_mob a ha]
+    have ha1 : 0 < a + 1 := by linarith [show 0 < a from ha]
+    have habs : |((a + 1) ^ 2)⁻¹| = (a + 1) ^ (-2 : ℝ) := by
+      rw [abs_of_pos (by positivity), Real.rpow_neg ha1.le, Real.rpow_two]
+    simp [φ, habs]
+  rw [hsum_adj, hU_eq, hV_eq, ← integral_add hint_m1 hint_m2]
+  refine setIntegral_congr_fun measurableSet_Ioi fun a _ => ?_
+  unfold lewisFareyMultiplier
+  simp only [Pi.add_apply]
+  ring
+
+/-- **Strict Self-Commutator Negativity on Continuous Three-Term Fixed Points (`s.re ≤ 1/2`).**
+Because `M_s M_s† = μ_s > 1` everywhere on `(0, ∞)`, every nonzero continuous three-term fixed
+point `M_s ψ = ψ` in `H_LP` with `M_s† ψ ∈ H_LP` satisfies
+`lewisCriticalNormSq (M_s ψ) - lewisCriticalNormSq (M_s† ψ) < 0`. -/
+theorem lewisFarey_selfCommutator_neg_of_fixed {s : ℂ} (hs : s.re ≤ 1 / 2) {ψ : ℝ → ℂ}
+    (hψ_cont : ContinuousOn ψ (Ioi 0))
+    (hψ_ne : ∃ a₀ > 0, ψ a₀ ≠ 0)
+    (hψ_int : IntegrableOn (fun a => ‖ψ a‖ ^ 2 * lewisCriticalWeight a) (Ioi 0))
+    (hψ_adj_int : IntegrableOn (fun x => ‖lewisFareyAdj s ψ x‖ ^ 2 * lewisCriticalWeight x) (Ioi 0))
+    (hfix : ∀ a > 0, lewisFarey s ψ a = ψ a) :
+    lewisCriticalNormSq (lewisFarey s ψ) - lewisCriticalNormSq (lewisFareyAdj s ψ) < 0 := by
+  have hnorm_fix : lewisCriticalNormSq (lewisFarey s ψ) = lewisCriticalNormSq ψ := by
+    unfold lewisCriticalNormSq
+    exact setIntegral_congr_fun measurableSet_Ioi fun a ha => by rw [hfix a ha]
+  rw [hnorm_fix, lewisCriticalNormSq_fareyAdj s ψ hψ_adj_int]
+  have hint_mu : IntegrableOn
+      (fun a => lewisFareyMultiplier s a * ‖ψ a‖ ^ 2 * lewisCriticalWeight a) (Ioi 0) := by
+    by_contra hnot
+    have hzero : (∫ a in Ioi (0 : ℝ),
+        lewisFareyMultiplier s a * ‖ψ a‖ ^ 2 * lewisCriticalWeight a) = 0 :=
+      integral_undef hnot
+    have heq_adj := lewisCriticalNormSq_fareyAdj s ψ hψ_adj_int
+    rw [hzero] at heq_adj
+    -- Yet `‖M_s ψ‖_LP = ‖ψ‖_LP > 0` while `⟨M_s ψ, ψ⟩ = ⟨ψ, M_s† ψ⟩` contradicts `‖M_s† ψ‖ = 0`:
+    obtain ⟨a₀, ha₀, hne₀⟩ := hψ_ne
+    have hpos_ψ : 0 < lewisCriticalNormSq ψ := by
+      by_contra hle
+      have hz : lewisCriticalNormSq ψ = 0 := le_antisymm (not_lt.mp hle) (lewisCriticalNormSq_nonneg ψ)
+      exact hne₀ (eq_zero_on_Ioi_of_lewisCriticalNormSq_eq_zero hψ_cont hψ_int hz a₀ ha₀)
+    -- Direct integrability from `lewisCriticalNormSq_fareyAdj` components:
+    have hind_U : (fun x : ℝ => ‖lewisShiftAdj ψ x‖ ^ 2 * lewisCriticalWeight x) =
+        (Ioi (1 : ℝ)).indicator (fun x => ‖lewisFareyAdj s ψ x‖ ^ 2 * lewisCriticalWeight x) := by
+      ext x
+      by_cases hx : 1 < x
+      · have hn : x ∉ Ioo (0 : ℝ) 1 := fun hm => by linarith [hm.2]
+        simp [lewisFareyAdj, lewisParabolicAdj, hx, hn, mem_Ioi]
+      · simp [lewisShiftAdj, hx, mem_Ioi]
+    have hind_V : (fun x : ℝ => ‖lewisParabolicAdj s ψ x‖ ^ 2 * lewisCriticalWeight x) =
+        (Ioo (0 : ℝ) 1).indicator (fun x => ‖lewisFareyAdj s ψ x‖ ^ 2 * lewisCriticalWeight x) := by
+      ext x
+      by_cases hx : x ∈ Ioo (0 : ℝ) 1
+      · have hn : ¬ (1 < x) := by linarith [hx.2]
+        simp [lewisFareyAdj, lewisShiftAdj, hx, hn]
+      · simp [lewisParabolicAdj, hx]
+    have hint_U1 : IntegrableOn (fun x => ‖lewisShiftAdj ψ x‖ ^ 2 * lewisCriticalWeight x) (Ioi 1) := by
+      have h := hψ_adj_int.mono_set (Ioi_subset_Ioi zero_le_one)
+      refine h.congr_fun (fun x hx => ?_) measurableSet_Ioi
+      have hn : x ∉ Ioo (0 : ℝ) 1 := fun hm => by linarith [hm.2]
+      simp [lewisFareyAdj, lewisParabolicAdj, hx, hn]
+    have hint_m1 : IntegrableOn
+        (fun a => (lewisCriticalWeight a / lewisCriticalWeight (a + 1)) *
+          ‖ψ a‖ ^ 2 * lewisCriticalWeight a) (Ioi 0) := by
+      have himg : (fun a : ℝ => a + 1) '' Ioi (0 : ℝ) = Ioi 1 := by
+        ext b; simp only [mem_image, mem_Ioi]
+        exact ⟨fun ⟨a, ha, rfl⟩ => by linarith, fun hb => ⟨b - 1, by linarith, sub_add_cancel b 1⟩⟩
+      have hinj : InjOn (fun a : ℝ => a + 1) (Ioi 0) := fun _ _ _ _ h => add_right_cancel h
+      have hderiv : ∀ a ∈ Ioi (0 : ℝ), HasDerivWithinAt (fun x : ℝ => x + 1) 1 (Ioi 0) a :=
+        fun a _ => ((hasDerivAt_id a).add_const 1).hasDerivWithinAt
+      have hiff := integrableOn_image_iff_integrableOn_abs_deriv_smul measurableSet_Ioi hderiv hinj
+        (fun b => ‖lewisShiftAdj ψ b‖ ^ 2 * lewisCriticalWeight b)
+      rw [himg] at hiff
+      refine (hiff.mp hint_U1).congr_fun (fun a ha => ?_) measurableSet_Ioi
+      have ha1_gt1 : 1 < a + 1 := by linarith [show 0 < a from ha]
+      have ha1_pos : 0 < a + 1 := by linarith [show 0 < a from ha]
+      have hwa1 : lewisCriticalWeight (a + 1) ≠ 0 := (lewisCriticalWeight_pos ha1_pos).ne'
+      simp only [abs_one, one_smul, lewisShiftAdj, if_pos ha1_gt1, add_sub_cancel_right,
+        norm_mul, mul_pow, Complex.norm_real,
+        Real.norm_of_nonneg (div_pos (lewisCriticalWeight_pos ha) (lewisCriticalWeight_pos ha1_pos)).le]
+      field_simp [hwa1]
+    have hint_V1 :
+        IntegrableOn (fun x => ‖lewisParabolicAdj s ψ x‖ ^ 2 * lewisCriticalWeight x) (Ioo 0 1) := by
+      have h := hψ_adj_int.mono_set Ioo_subset_Ioi_self
+      refine h.congr_fun (fun x hx => ?_) measurableSet_Ioo
+      have hn : ¬ (1 < x) := by linarith [hx.2]
+      simp [lewisFareyAdj, lewisShiftAdj, hx, hn]
+    have hint_m2 : IntegrableOn
+        (fun a => (a + 1) ^ (2 - 4 * s.re) *
+          (lewisCriticalWeight a / lewisCriticalWeight (a / (a + 1))) *
+          ‖ψ a‖ ^ 2 * lewisCriticalWeight a) (Ioi 0) := by
+      let φ : ℝ → ℝ := fun a => a / (a + 1)
+      have himg : φ '' Ioi (0 : ℝ) = Ioo (0 : ℝ) 1 := by
+        ext c; simp only [φ, mem_image, mem_Ioi, mem_Ioo]
+        refine ⟨fun ⟨a, ha, rfl⟩ => ⟨div_pos ha (by linarith), (div_lt_one (by linarith)).mpr (by linarith)⟩,
+          fun ⟨hc0, hc1⟩ => ⟨c / (1 - c), div_pos hc0 (sub_pos.mpr hc1),
+            by field_simp [(sub_pos.mpr hc1).ne']; ring⟩⟩
+      have hinj : InjOn φ (Ioi 0) := by
+        intro a₁ ha₁ a₂ ha₂ heq; dsimp [φ] at heq
+        rw [div_eq_div_iff (by linarith [show 0 < a₁ from ha₁])
+          (by linarith [show 0 < a₂ from ha₂])] at heq
+        linarith
+      have hderiv : ∀ a ∈ Ioi (0 : ℝ), HasDerivWithinAt φ (((a + 1) ^ 2)⁻¹) (Ioi 0) a := by
+        intro a ha
+        have ha1 : a + 1 ≠ 0 := by linarith [show 0 < a from ha]
+        have hd := (hasDerivAt_id a).div ((hasDerivAt_id a).add_const 1) ha1
+        have hval : (1 * (a + 1) - a * (1 + 0)) / (a + 1) ^ 2 = ((a + 1) ^ 2)⁻¹ := by
+          field_simp [ha1]; ring
+        exact (hval ▸ hd).hasDerivWithinAt
+      have hiff := integrableOn_image_iff_integrableOn_abs_deriv_smul measurableSet_Ioi hderiv hinj
+        (fun x => ‖lewisParabolicAdj s ψ x‖ ^ 2 * lewisCriticalWeight x)
+      rw [himg] at hiff
+      refine (hiff.mp hint_V1).congr_fun (fun a ha => ?_) measurableSet_Ioi
+      have ha1 : 0 < a + 1 := by linarith [show 0 < a from ha]
+      let c : ℝ := a / (a + 1)
+      have hc_mem : c ∈ Ioo (0 : ℝ) 1 := ⟨div_pos ha ha1, (div_lt_one ha1).mpr (by linarith)⟩
+      have h1c : 1 - c = (a + 1)⁻¹ := by dsimp [c]; field_simp [ha1.ne']; ring
+      have hc_div : c / (1 - c) = a := by dsimp [c]; rw [h1c]; field_simp [ha1.ne']
+      have hwc : lewisCriticalWeight c ≠ 0 := (lewisCriticalWeight_pos hc_mem.1).ne'
+      have habs : |((a + 1) ^ 2)⁻¹| = (a + 1) ^ (-2 : ℝ) := by
+        rw [abs_of_pos (by positivity), Real.rpow_neg ha1.le, Real.rpow_two]
+      have hre : (2 * (starRingEnd ℂ) s - 2).re = 2 * s.re - 2 := by simp
+      dsimp only [φ]
+      change |((a + 1) ^ 2)⁻¹| * (‖lewisParabolicAdj s ψ c‖ ^ 2 * lewisCriticalWeight c) = _
+      rw [habs]
+      simp only [lewisParabolicAdj, if_pos hc_mem, norm_mul, mul_pow,
+        Complex.norm_cpow_eq_rpow_re_of_pos (sub_pos.mpr hc_mem.2), hre, Complex.norm_real,
+        Real.norm_of_nonneg (div_pos (lewisCriticalWeight_pos ha)
+          (lewisCriticalWeight_pos hc_mem.1)).le, hc_div, h1c,
+        Real.inv_rpow ha1.le, ← Real.rpow_neg ha1.le, ← Real.rpow_natCast, ← Real.rpow_mul ha1.le]
+      have hexp : -(2 * s.re - 2) * ((2 : ℕ) : ℝ) = 4 - 4 * s.re := by push_cast; ring
+      rw [hexp]
+      have hwc_div : (lewisCriticalWeight a / lewisCriticalWeight c) ^ 2 * lewisCriticalWeight c =
+          (lewisCriticalWeight a / lewisCriticalWeight c) * lewisCriticalWeight a := by
+        field_simp [hwc]
+      calc
+        (a + 1) ^ (-2 : ℝ) *
+            ((a + 1) ^ (4 - 4 * s.re) * (lewisCriticalWeight a / lewisCriticalWeight c) ^ 2 *
+              ‖ψ a‖ ^ 2 * lewisCriticalWeight c)
+            = ((a + 1) ^ (-2 : ℝ) * (a + 1) ^ (4 - 4 * s.re)) *
+                ((lewisCriticalWeight a / lewisCriticalWeight c) ^ 2 * lewisCriticalWeight c) *
+                ‖ψ a‖ ^ 2 := by ring
+        _ = (a + 1) ^ (2 - 4 * s.re) * (lewisCriticalWeight a / lewisCriticalWeight c) *
+              ‖ψ a‖ ^ 2 * lewisCriticalWeight a := by
+          rw [← Real.rpow_add ha1, hwc_div]
+          ring_nf
+    exact hnot ((hint_m1.add hint_m2).congr_fun (fun a _ => by
+      unfold lewisFareyMultiplier; simp only [Pi.add_apply]; ring) measurableSet_Ioi)
+  unfold lewisCriticalNormSq
+  have hdiff_eq : (∫ a in Ioi (0 : ℝ), ‖ψ a‖ ^ 2 * lewisCriticalWeight a) -
+      (∫ a in Ioi (0 : ℝ), lewisFareyMultiplier s a * ‖ψ a‖ ^ 2 * lewisCriticalWeight a) =
+      -∫ a in Ioi (0 : ℝ), (lewisFareyMultiplier s a - 1) * ‖ψ a‖ ^ 2 * lewisCriticalWeight a := by
+    rw [← integral_sub hψ_int hint_mu, ← integral_neg]
+    refine setIntegral_congr_fun measurableSet_Ioi fun a _ => ?_
+    ring
+  rw [hdiff_eq, Left.neg_neg_iff]
+  let K : ℝ → ℝ := fun a => (lewisFareyMultiplier s a - 1) * ‖ψ a‖ ^ 2 * lewisCriticalWeight a
+  have hint_K : IntegrableOn K (Ioi 0) :=
+    (hint_mu.sub hψ_int).congr_fun (fun a _ => by dsimp [K]; simp only [Pi.sub_apply]; ring)
+      measurableSet_Ioi
+  have hcont_mu : ContinuousOn (lewisFareyMultiplier s) (Ioi 0) := by
+    intro a ha
+    have ha0 : 0 < a := ha
+    have ha1 : 0 < a + 1 := by linarith
+    have hc_pos : 0 < a / (a + 1) := div_pos ha0 ha1
+    have cw0 : ContinuousAt lewisCriticalWeight a :=
+      lewisCriticalWeight_continuousOn.continuousAt (isOpen_Ioi.mem_nhds ha0)
+    have cw1 : ContinuousAt (fun x : ℝ => lewisCriticalWeight (x + 1)) a :=
+      ContinuousAt.comp (g := lewisCriticalWeight) (f := fun x : ℝ => x + 1)
+        (lewisCriticalWeight_continuousOn.continuousAt (isOpen_Ioi.mem_nhds ha1))
+        (continuousAt_id.add continuousAt_const)
+    have cw2 : ContinuousAt (fun x : ℝ => lewisCriticalWeight (x / (x + 1))) a :=
+      ContinuousAt.comp (g := lewisCriticalWeight) (f := fun x : ℝ => x / (x + 1))
+        (lewisCriticalWeight_continuousOn.continuousAt (isOpen_Ioi.mem_nhds hc_pos))
+        (continuousAt_id.div (continuousAt_id.add continuousAt_const) ha1.ne')
+    have cp : ContinuousAt (fun x : ℝ => (x + 1) ^ (2 - 4 * s.re)) a :=
+      (continuousAt_id.add continuousAt_const).rpow continuousAt_const (Or.inl ha1.ne')
+    unfold lewisFareyMultiplier
+    exact ((cw0.div cw1 (lewisCriticalWeight_pos ha1).ne').add
+      (cp.mul (cw0.div cw2 (lewisCriticalWeight_pos hc_pos).ne'))).continuousWithinAt
+  have hcont_K : ContinuousOn K (Ioi 0) :=
+    (((hcont_mu.sub continuousOn_const).mul (hψ_cont.norm.pow 2)).mul
+      lewisCriticalWeight_continuousOn)
+  obtain ⟨a₀, ha₀, hne₀⟩ := hψ_ne
+  have hc0 : 0 < ‖ψ a₀‖ := norm_pos_iff.mpr hne₀
+  have hnorm_cont : ContinuousAt (fun x : ℝ => ‖ψ x‖) a₀ :=
+    (hψ_cont.continuousAt (isOpen_Ioi.mem_nhds ha₀)).norm
+  obtain ⟨r, hr_pos, hball⟩ := Metric.continuousAt_iff.mp hnorm_cont (‖ψ a₀‖ / 2) (half_pos hc0)
+  let p : ℝ := max (a₀ / 2) (a₀ - r / 2)
+  let q : ℝ := a₀ + r / 2
+  have hp_pos : 0 < p := lt_max_of_lt_left (half_pos ha₀)
+  have hp_lt_a₀ : p < a₀ := max_lt (half_lt_self ha₀) (by linarith)
+  have hp_lt_q : p < q := by dsimp [q]; linarith
+  obtain ⟨x₀, hx₀, hminK⟩ := isCompact_Icc.exists_isMinOn (nonempty_Icc.mpr hp_lt_q.le)
+    (hcont_K.mono (fun x hx => lt_of_lt_of_le hp_pos hx.1))
+  have hx₀_pos : 0 < x₀ := lt_of_lt_of_le hp_pos hx₀.1
+  have hx₀_dist : dist x₀ a₀ < r := by
+    rw [Real.dist_eq, abs_lt]
+    have hp2 : a₀ - r / 2 ≤ p := le_max_right _ _
+    have hx_le : x₀ ≤ a₀ + r / 2 := hx₀.2
+    exact ⟨by linarith [hx₀.1], by linarith⟩
+  have hx₀_ψ_pos : 0 < ‖ψ x₀‖ := by
+    have hb := abs_lt.mp (by simpa [Real.dist_eq] using hball hx₀_dist)
+    linarith
+  have hKx₀_pos : 0 < K x₀ := by
+    dsimp [K]
+    exact mul_pos (mul_pos (sub_pos.mpr (one_lt_lewisFareyMultiplier hs hx₀_pos))
+      (sq_pos_of_pos hx₀_ψ_pos)) (lewisCriticalWeight_pos hx₀_pos)
+  have hsub : Ioc p q ⊆ Ioi 0 := fun x hx => hp_pos.trans hx.1
+  have hunion : Ioi (0 : ℝ) = Ioc p q ∪ (Ioi 0 \ Ioc p q) := (Set.union_sdiff_cancel hsub).symm
+  have hsplit : (∫ a in Ioi (0 : ℝ), K a) =
+      (∫ a in Ioc p q, K a) + ∫ a in Ioi 0 \ Ioc p q, K a := by
+    conv_lhs => rw [hunion]
+    exact setIntegral_union disjoint_sdiff_self_right (measurableSet_Ioi.diff measurableSet_Ioc)
+      (hint_K.mono_set hsub) (hint_K.mono_set Set.sdiff_subset)
+  have hrest : 0 ≤ ∫ a in Ioi 0 \ Ioc p q, K a :=
+    setIntegral_nonneg (measurableSet_Ioi.diff measurableSet_Ioc) fun a ha =>
+      mul_nonneg (mul_nonneg (sub_pos.mpr (one_lt_lewisFareyMultiplier hs ha.1)).le (sq_nonneg _))
+        (lewisCriticalWeight_pos ha.1).le
+  have hlow : (q - p) * K x₀ ≤ ∫ a in Ioc p q, K a := by
+    have hc : (∫ _ in Ioc p q, K x₀) = (q - p) * K x₀ := by
+      rw [setIntegral_const, Real.volume_real_Ioc_of_le hp_lt_q.le, smul_eq_mul]
+    rw [← hc]
+    exact setIntegral_mono_on (integrableOn_const (hs := measure_Ioc_lt_top.ne))
+      (hint_K.mono_set hsub) measurableSet_Ioc fun a ha => hminK ⟨ha.1.le, ha.2⟩
+  linarith [mul_pos (sub_pos.mpr hp_lt_q) hKx₀_pos]
+
+/-! ## Part 4: Universal Manin–Mühlenbruch Hecke `T_{2,s}` intertwining on `(0, ∞)` -/
+
+/-- The Manin–Mühlenbruch period Hecke operator `T_{2,s}` on `(0, ∞)`. -/
+def lewisHeckeT2 (s : ℂ) (f : ℝ → ℂ) (a : ℝ) : ℂ :=
+  f (2 * a) + (2 : ℂ) ^ (-(2 * s)) * f (a / 2) +
+    (2 : ℂ) ^ (-(2 * s)) * f ((a + 1) / 2) +
+    ((a + 1 : ℝ) : ℂ) ^ (-(2 * s)) * f (2 * a / (a + 1))
+
+/-- The companion Farey–Hecke operator `T̃_{2,s}` intertwining `(1 - M_s)`. -/
+def lewisHeckeT2Companion (s : ℂ) (g : ℝ → ℂ) (a : ℝ) : ℂ :=
+  g (2 * a) + (2 : ℂ) ^ (-(2 * s)) * g (a / 2) +
+    g (2 * a + 1) + ((a + 2 : ℝ) : ℂ) ^ (-(2 * s)) * g (a / (a + 2))
+
+private theorem ofReal_mul_cpow_pos {x y : ℝ} (hx : 0 < x) (hy : 0 < y) (z : ℂ) :
+    ((x * y : ℝ) : ℂ) ^ z = (x : ℂ) ^ z * (y : ℂ) ^ z := by
+  rw [Complex.ofReal_mul, Complex.mul_cpow_ofReal_nonneg hx.le hy.le]
+
+private theorem ofReal_div_cpow_pos {x y : ℝ} (hx : 0 < x) (hy : 0 < y) (z : ℂ) :
+    ((x / y : ℝ) : ℂ) ^ z = (x : ℂ) ^ z * (y : ℂ) ^ (-z) := by
+  rw [div_eq_mul_inv, ofReal_mul_cpow_pos hx (inv_pos.mpr hy), ofReal_inv_cpow_pos hy]
+
+/-- **Universal Modular-Inversion Commutation `I_s (T_{2,s} f) = T_{2,s} (I_s f)` on `(0, ∞)`.** -/
+theorem lewisModularInversion_heckeT2 (s : ℂ) (f : ℝ → ℂ) {a : ℝ} (ha : 0 < a) :
+    lewisModularInversion s (lewisHeckeT2 s f) a =
+      lewisHeckeT2 s (lewisModularInversion s f) a := by
+  have ha1 : 0 < a + 1 := by linarith
+  have ha_inv : 0 < a⁻¹ := inv_pos.mpr ha
+  have ha_inv1 : 0 < a⁻¹ + 1 := by linarith
+  have h2pos : (0 : ℝ) < 2 := by norm_num
+  have h2ne : (2 : ℂ) ≠ 0 := two_ne_zero
+  unfold lewisModularInversion lewisHeckeT2
+  have hp_2a : ((2 * a : ℝ) : ℂ) ^ (-(2 * s)) = (2 : ℂ) ^ (-(2 * s)) * (a : ℂ) ^ (-(2 * s)) := by
+    simpa using ofReal_mul_cpow_pos h2pos ha (-(2 * s))
+  have hp_a2 : ((a / 2 : ℝ) : ℂ) ^ (-(2 * s)) = (a : ℂ) ^ (-(2 * s)) * (2 : ℂ) ^ (2 * s) := by
+    simpa using ofReal_div_cpow_pos ha h2pos (-(2 * s))
+  have hp_a1_2 : (((a + 1) / 2 : ℝ) : ℂ) ^ (-(2 * s)) =
+      ((a + 1 : ℝ) : ℂ) ^ (-(2 * s)) * (2 : ℂ) ^ (2 * s) := by
+    simpa using ofReal_div_cpow_pos ha1 h2pos (-(2 * s))
+  have hp_2a_a1 : ((2 * a / (a + 1) : ℝ) : ℂ) ^ (-(2 * s)) =
+      (2 : ℂ) ^ (-(2 * s)) * (a : ℂ) ^ (-(2 * s)) * ((a + 1 : ℝ) : ℂ) ^ (2 * s) := by
+    rw [ofReal_div_cpow_pos (mul_pos h2pos ha) ha1, ofReal_mul_cpow_pos h2pos ha, neg_neg]
+    simp
+  have hp_ainv1 : (a : ℂ) ^ (-(2 * s)) * ((a⁻¹ + 1 : ℝ) : ℂ) ^ (-(2 * s)) =
+      ((a + 1 : ℝ) : ℂ) ^ (-(2 * s)) := by
+    rw [← ofReal_mul_cpow_pos ha ha_inv1]
+    congr 1; congr 1; field_simp [ha.ne']
+  have h2_cancel : (2 : ℂ) ^ (-(2 * s)) * (2 : ℂ) ^ (2 * s) = 1 := by
+    rw [← Complex.cpow_add _ _ h2ne]; simp
+  have ha1_cancel : ((a + 1 : ℝ) : ℂ) ^ (-(2 * s)) * ((a + 1 : ℝ) : ℂ) ^ (2 * s) = 1 := by
+    rw [← Complex.cpow_add _ _ (Complex.ofReal_ne_zero.mpr ha1.ne')]; simp
+  have harg1 : (2 * a)⁻¹ = a⁻¹ / 2 := by field_simp [ha.ne']
+  have harg2 : (a / 2)⁻¹ = 2 * a⁻¹ := by field_simp [ha.ne']
+  have harg3 : 2 * a⁻¹ / (a⁻¹ + 1) = ((a + 1) / 2)⁻¹ := by
+    field_simp [ha.ne', ha1.ne', ha_inv1.ne']; ring
+  have harg4 : (2 * a / (a + 1))⁻¹ = (a⁻¹ + 1) / 2 := by
+    field_simp [ha.ne', ha1.ne']; ring
+  rw [hp_2a, hp_a2, hp_a1_2, hp_2a_a1, harg1, harg2, harg3, harg4]
+  linear_combination
+    -f (2 * a⁻¹) * (a : ℂ) ^ (-(2 * s)) * h2_cancel -
+    f (((a + 1) / 2)⁻¹) * hp_ainv1 +
+    f (((a + 1) / 2)⁻¹) * ((a + 1 : ℝ) : ℂ) ^ (-(2 * s)) * h2_cancel +
+    f ((a⁻¹ + 1) / 2) * (2 : ℂ) ^ (-(2 * s)) * (a : ℂ) ^ (-(2 * s)) * ha1_cancel
+
+/-- **Universal Three-Term Hecke Intertwining `(1 - M_s)(T_{2,s} f) = T̃_{2,s}((1 - M_s) f)` on `(0, ∞)`.**
+Every Farey three-term fixed point `M_s ψ = ψ` is mapped by `T_{2,s}` to another Farey three-term
+fixed point. -/
+theorem lewisThreeTermDefect_heckeT2 (s : ℂ) (f : ℝ → ℂ) {a : ℝ} (ha : 0 < a) :
+    lewisHeckeT2 s f a - lewisFarey s (lewisHeckeT2 s f) a =
+      lewisHeckeT2Companion s (fun x => f x - lewisFarey s f x) a := by
+  have ha1 : 0 < a + 1 := by linarith
+  have ha2 : 0 < a + 2 := by linarith
+  have h2a1 : 0 < 2 * a + 1 := by linarith
+  have h2pos : (0 : ℝ) < 2 := by norm_num
+  have h2ne : (2 : ℂ) ≠ 0 := two_ne_zero
+  unfold lewisHeckeT2Companion lewisHeckeT2 lewisFarey lewisShift lewisParabolic
+  -- Normalize shifted arguments:
+  have h_a1_add1 : a + 1 + 1 = a + 2 := by ring
+  have h_2_a1 : 2 * (a + 1) = 2 * a + 2 := by ring
+  have h_2_div : 2 * (a / (a + 1)) = 2 * a / (a + 1) := by ring
+  have h_div_2 : (a / (a + 1)) / 2 = a / (2 * a + 2) := by field_simp [ha1.ne']; ring
+  have h_add1_div2 : (a / (a + 1) + 1) / 2 = (2 * a + 1) / (2 * a + 2) := by
+    field_simp [ha1.ne']; ring
+  have h_add1_frac : a / (a + 1) + 1 = (2 * a + 1) / (a + 1) := by field_simp [ha1.ne']; ring
+  have h_2_frac_div : 2 * (a / (a + 1)) / (a / (a + 1) + 1) = 2 * a / (2 * a + 1) := by
+    field_simp [ha1.ne', h2a1.ne']; ring
+  have h_a2_add1 : a / 2 + 1 = (a + 2) / 2 := by ring
+  have h_a2_frac : (a / 2) / (a / 2 + 1) = a / (a + 2) := by field_simp [ha2.ne']; ring
+  have h_2a1_add1 : 2 * a + 1 + 1 = 2 * a + 2 := by ring
+  have h_aa2_add1 : a / (a + 2) + 1 = (2 * a + 2) / (a + 2) := by field_simp [ha2.ne']; ring
+  have h_aa2_frac : (a / (a + 2)) / (a / (a + 2) + 1) = a / (2 * a + 2) := by
+    field_simp [ha2.ne', (show 2 * a + 2 ≠ 0 by linarith)]; ring
+  -- Normalize complex powers:
+  have hp_2a1_prod : ((a + 1 : ℝ) : ℂ) ^ (-(2 * s)) *
+      (((2 * a + 1) / (a + 1) : ℝ) : ℂ) ^ (-(2 * s)) =
+      ((2 * a + 1 : ℝ) : ℂ) ^ (-(2 * s)) := by
+    rw [← ofReal_mul_cpow_pos ha1 (div_pos h2a1 ha1)]
+    congr 1; congr 1; field_simp [ha1.ne']
+  have hp_a2_prod : (2 : ℂ) ^ (-(2 * s)) * (((a + 2) / 2 : ℝ) : ℂ) ^ (-(2 * s)) =
+      ((a + 2 : ℝ) : ℂ) ^ (-(2 * s)) := by
+    have h := ofReal_mul_cpow_pos h2pos (div_pos ha2 h2pos) (-(2 * s))
+    rw [show (2 * ((a + 2) / 2) : ℝ) = a + 2 by ring] at h
+    simpa using h.symm
+  have hp_2a2 : ((2 * a + 2 : ℝ) : ℂ) ^ (-(2 * s)) =
+      (2 : ℂ) ^ (-(2 * s)) * ((a + 1 : ℝ) : ℂ) ^ (-(2 * s)) := by
+    have h := ofReal_mul_cpow_pos h2pos ha1 (-(2 * s))
+    rw [show (2 * (a + 1) : ℝ) = 2 * a + 2 by ring] at h
+    simpa using h
+  have hp_aa2_prod : ((a + 2 : ℝ) : ℂ) ^ (-(2 * s)) *
+      (((2 * a + 2) / (a + 2) : ℝ) : ℂ) ^ (-(2 * s)) =
+      (2 : ℂ) ^ (-(2 * s)) * ((a + 1 : ℝ) : ℂ) ^ (-(2 * s)) := by
+    rw [← ofReal_mul_cpow_pos ha2 (div_pos (by linarith) ha2)]
+    rw [show (a + 2) * ((2 * a + 2) / (a + 2)) = 2 * a + 2 by field_simp [ha2.ne'], hp_2a2]
+  rw [h_a1_add1, h_2_a1, h_2_div, h_div_2, h_add1_div2, h_2_frac_div, h_add1_frac,
+    h_a2_frac, h_a2_add1, h_aa2_frac, h_aa2_add1, h_2a1_add1, hp_2a2]
+  linear_combination
+    -f (2 * a / (2 * a + 1)) * hp_2a1_prod +
+    f (a / (a + 2)) * hp_a2_prod +
+    f (a / (2 * a + 2)) * hp_aa2_prod
+
+/-- Invariance corollary: if `M_s ψ = ψ` on `(0, ∞)`, then `M_s (T_{2,s} ψ) = T_{2,s} ψ` on `(0, ∞)`. -/
+theorem lewisFarey_heckeT2_of_fixed {s : ℂ} {ψ : ℝ → ℂ}
+    (hfix : ∀ x > 0, lewisFarey s ψ x = ψ x) {a : ℝ} (ha : 0 < a) :
+    lewisFarey s (lewisHeckeT2 s ψ) a = lewisHeckeT2 s ψ a := by
+  have hd := lewisThreeTermDefect_heckeT2 s ψ ha
+  have hrhs : lewisHeckeT2Companion s (fun x => ψ x - lewisFarey s ψ x) a = 0 := by
+    unfold lewisHeckeT2Companion
+    have h1 : ψ (2 * a) - lewisFarey s ψ (2 * a) = 0 := sub_eq_zero.mpr (hfix _ (by linarith)).symm
+    have h2 : ψ (a / 2) - lewisFarey s ψ (a / 2) = 0 := sub_eq_zero.mpr (hfix _ (by linarith)).symm
+    have h3 : ψ (2 * a + 1) - lewisFarey s ψ (2 * a + 1) = 0 :=
+      sub_eq_zero.mpr (hfix _ (by linarith)).symm
+    have h4 : ψ (a / (a + 2)) - lewisFarey s ψ (a / (a + 2)) = 0 :=
+      sub_eq_zero.mpr (hfix _ (div_pos ha (by linarith))).symm
+    simp [h1, h2, h3, h4]
+  rw [hrhs] at hd
+  exact (sub_eq_zero.mp hd).symm
+

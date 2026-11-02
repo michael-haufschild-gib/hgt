@@ -45,9 +45,13 @@ The full automorphic residual also satisfies
 `∫_R |(T₂−λ₂)Λ¹_aut E_u|² dμ ≥ (−2 Re u)/512 · ||τ_(u,1)||²`.
 The proof compares moduli, so both bounds hold at every frequency, including `Re u=−1/4`. This rules out an `L²` Hecke-quasimode approximation for cutoff-one truncations at fixed negative rate. Exact identities, paper proof and Lean certificates: [automorphic dyadic return](../3-formalized/resonant-automorphic-dyadic-return.md).
 
-**Next limit candidate.** Put `R'={1/8≤x≤1/4, 7/4≤y≤15/8}`. For resonances `u_n=a_n+it_n` with `a_n→a∈(-1/2,0)` and `t_n→∞`, the normalized squared full dyadic residual on `R'` should converge weakly to
+**Compact-core source limit: formalized.** For resonances `u_n=a_n+it_n` with `a_n→a∈(-1/2,0)` and `t_n→∞`, the normalized squared full dyadic residual on the entire rectangle `R` converges weakly to
 `(-2a)[2^(2a)y^(1−2a)+h_0^(1−2a)/2] dμ`.
-The sole oscillatory cross term has phase `t_n log(4/(x²+y²))`, whose `x` derivative stays away from zero on `R'`. Prove this limit directly from the actual source identity. It would identify a positive source term in the limiting Hecke equation; it would not establish invariance or entropy of the resonant-state measure itself.
+The relative phase is analytic and nonconstant on each horizontal slice, so its pushforward is absolutely continuous even across `x=0`. Dephasing, varying-amplitude convergence, nonvanishing of `B(u)`, and actual Maass–Selberg normalization are checked in Lean. The limiting source is strictly positive for every negative rate, including the critical rate. [Exact statement and proof](../3-formalized/resonant-core-source-limit.md).
+
+**Next candidate.** Prove the actual dyadic residual gap uniformly for every cutoff `Y≥1`. A near-one core rectangle and a high cusp band suggest the bound
+`||(T₂−λ₂)Λ^Y_aut E_u||² ≥ (-2 Re u)||Λ^Y E_u||²/1024`.
+[Candidate and two-region proof](resonant-uniform-cutoff-hecke-gap.md).
 
 ## Open dependency
 
