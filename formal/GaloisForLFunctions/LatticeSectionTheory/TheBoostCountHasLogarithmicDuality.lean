@@ -26,6 +26,11 @@ theorem continuous_logThetaTail : Continuous logThetaTail := by
 theorem logThetaTail_nonneg (x : ℝ) : 0 ≤ logThetaTail x :=
   sub_nonneg.mpr (one_le_thetaSum (Real.exp_pos _))
 
+theorem logThetaTail_pos (x : ℝ) : 0 < logThetaTail x := by
+  apply sub_pos.mpr
+  exact (one_le_thetaSum (show 0 < 2 * Real.exp (2*x) by positivity)).trans_lt
+    (thetaSum_lt_thetaSum (Real.exp_pos _) (by linarith only [Real.exp_pos (2*x)]))
+
 theorem logThetaTail_neg (x : ℝ) :
     logThetaTail (-x) = Real.exp x * logThetaTail x + Real.exp x - 1 := by
   have h := thetaSum_inv (Real.exp_pos (2 * -x))
@@ -72,7 +77,7 @@ theorem integrableOn_exp_logThetaTail (a : ℝ) :
       mul_le_mul_of_nonneg_left (logThetaTail_le hx) (Real.exp_pos _).le
     _ = 4 * Real.exp (-3*x) := by rw [mul_left_comm, ← Real.exp_add]; congr 1; ring
 
-/-- The Gaussian count on the two nonzero axes, averaged over boosts.
+/-- The Gaussian count with both coordinates nonzero, averaged over boosts.
 The integrand is even in the boost, so twice the positive half-line is the full average. -/
 def gaussianBoostCount (x : ℝ) : ℝ :=
   2 * ∫ u in Ioi (0 : ℝ), logThetaTail (x + u) * logThetaTail (x - u)
@@ -101,17 +106,6 @@ private theorem regularizedBoost_integrand (x u : ℝ) :
   rw [neg_sub] at h
   dsimp only [logThetaTail] at h ⊢
   nlinarith only [h]
-
-/-- Removing the divergent Gaussian term leaves a nonnegative integrand. -/
-theorem regularizedBoostCount_nonneg (x : ℝ) : 0 ≤ regularizedBoostCount x := by
-  apply mul_nonneg (by positivity)
-  apply integral_nonneg
-  intro u
-  rw [regularizedBoost_integrand]
-  exact add_nonneg (add_nonneg
-    (mul_nonneg (logThetaTail_nonneg _) (logThetaTail_nonneg _))
-    (logThetaTail_nonneg _))
-    (mul_nonneg (Real.exp_pos _).le (logThetaTail_nonneg _))
 
 private theorem theta_exp_neg (x : ℝ) :
     thetaSum (Real.exp (2 * -x)) = Real.exp x * thetaSum (Real.exp (2*x)) := by
@@ -201,6 +195,32 @@ theorem integrableOn_regularizedBoost (x : ℝ) :
   rw [regularizedBoost_integrand]
   simp only [Pi.add_apply, sub_eq_add_neg, add_comm (-x)]
 
+/-- The completed boost count is strictly positive at every scale. -/
+theorem regularizedBoostCount_pos (x : ℝ) : 0 < regularizedBoostCount x := by
+  let g : ℝ → ℝ := fun u =>
+    thetaSum (Real.exp (2*(x+u))) * thetaSum (Real.exp (2*(x-u))) - Real.exp (u-x)
+  have hg (u : ℝ) : 0 < g u := by
+    dsimp only [g]
+    rw [regularizedBoost_integrand]
+    exact add_pos_of_pos_of_nonneg
+      (add_pos_of_nonneg_of_pos
+        (mul_nonneg (logThetaTail_nonneg _) (logThetaTail_nonneg _)) (logThetaTail_pos _))
+      (mul_nonneg (Real.exp_pos _).le (logThetaTail_nonneg _))
+  apply mul_pos (by positivity)
+  change 0 < ∫ u in Ioi (0 : ℝ), g u
+  rw [integral_pos_iff_support_of_nonneg (fun u => (hg u).le)
+    (integrableOn_regularizedBoost x)]
+  have hs : Function.support g = univ := eq_univ_of_forall fun u => (hg u).ne'
+  rw [hs]
+  simp
+
+/-- The logarithm of the completed count satisfies the pole-plane Riemann--Roch identity. -/
+theorem log_regularizedBoostCount_neg (x : ℝ) :
+    Real.log (regularizedBoostCount (-x)) - Real.log (regularizedBoostCount x) = 2*x := by
+  rw [regularizedBoostCount_neg, Real.log_mul (Real.exp_ne_zero _)
+    (regularizedBoostCount_pos x).ne', Real.log_exp]
+  ring
+
 private theorem boost_axis_integrals (x : ℝ) :
     (∫ v in Ioi x, logThetaTail v) + (∫ v in Ioi (-x), Real.exp v * logThetaTail v) =
       (∫ v in Ioi (0 : ℝ), logThetaTail v) +
@@ -222,13 +242,14 @@ private theorem boost_axis_integrals (x : ℝ) :
     simpa only [neg_zero, hpoint] using hc.symm
   have hcont : Continuous (fun v : ℝ => 1-Real.exp (-v)) := by fun_prop
   have helem : (∫ v in (0 : ℝ)..x, 1-Real.exp (-v)) = x + Real.exp (-x) - 1 := by
-    have hd (v : ℝ) : HasDerivAt (fun v : ℝ => v + Real.exp (-v))
-        (1-Real.exp (-v)) v := by
-      simpa only [id_eq, mul_neg, mul_one, add_neg_eq_sub] using
-        (hasDerivAt_id v).add ((hasDerivAt_id v).neg.exp)
-    simpa only [neg_zero, Real.exp_zero, zero_add] using
-      intervalIntegral.integral_eq_sub_of_hasDerivAt (fun v _ => hd v)
-        (hcont.intervalIntegrable 0 x)
+    have h₁ : IntervalIntegrable (fun _ : ℝ => (1 : ℝ)) volume 0 x :=
+      continuous_const.intervalIntegrable 0 x
+    have h₂ : IntervalIntegrable (fun v : ℝ => Real.exp (-v)) volume 0 x :=
+      (show Continuous (fun v : ℝ => Real.exp (-v)) by fun_prop).intervalIntegrable 0 x
+    rw [intervalIntegral.integral_sub h₁ h₂,
+      intervalIntegral.integral_const, intervalIntegral.integral_comp_neg Real.exp, integral_exp]
+    simp only [sub_zero, smul_eq_mul, mul_one, neg_zero, Real.exp_zero]
+    ring
   rw [intervalIntegral.integral_add (continuous_logThetaTail.intervalIntegrable 0 x)
     (hcont.intervalIntegrable 0 x), helem] at hchange
   linarith only [hI, hJ, hchange]
@@ -239,13 +260,18 @@ theorem regularizedBoostCount_eq (x : ℝ) :
       boostLogConstant := by
   have h₁ := integrableOn_translate (integrableOn_logThetaTail x)
   have h₂ := integrableOn_translate (integrableOn_exp_logThetaTail (-x))
+  have h₀ : IntegrableOn (fun u =>
+      logThetaTail (x+u) * logThetaTail (x-u) + logThetaTail (x+u)) (Ioi 0) :=
+    (integrableOn_gaussianBoost x).add h₁
   have he (u : ℝ) : Real.exp (u-x) * logThetaTail (u-x) =
       Real.exp (-x+u) * logThetaTail (-x+u) := by
     rw [sub_eq_neg_add]
   simp only [regularizedBoostCount, regularizedBoost_integrand]
   simp_rw [he]
-  rw [integral_add ((integrableOn_gaussianBoost x).add h₁) h₂,
-    integral_add (integrableOn_gaussianBoost x) h₁, integral_translate, integral_translate]
+  rw [integral_add h₀ h₂,
+    integral_add (integrableOn_gaussianBoost x) h₁,
+    integral_translate logThetaTail x,
+    integral_translate (fun v => Real.exp v * logThetaTail v) (-x)]
   have h := boost_axis_integrals x
   dsimp only [gaussianBoostCount, boostLogConstant]
   linarith only [h]
@@ -284,6 +310,7 @@ end GaloisForLFunctions.LatticeSectionTheory
 
 #print axioms GaloisForLFunctions.LatticeSectionTheory.integrableOn_gaussianBoost
 #print axioms GaloisForLFunctions.LatticeSectionTheory.integrableOn_regularizedBoost
-#print axioms GaloisForLFunctions.LatticeSectionTheory.regularizedBoostCount_nonneg
+#print axioms GaloisForLFunctions.LatticeSectionTheory.regularizedBoostCount_pos
+#print axioms GaloisForLFunctions.LatticeSectionTheory.log_regularizedBoostCount_neg
 #print axioms GaloisForLFunctions.LatticeSectionTheory.regularizedBoostCount_eq
 #print axioms GaloisForLFunctions.LatticeSectionTheory.gaussianBoostCount_log_inv

@@ -73,13 +73,13 @@ theorem jordanFun_zero : jordanFun 0 = 1 := by
 theorem hasDerivAt_jordanTotient_zero (m : ℕ) :
     HasDerivAt (fun k => jordanTotient k m) (ArithmeticFunction.vonMangoldt m) 0 := by
   have hterm : ∀ d ∈ m.divisors, HasDerivAt
-      (fun k => (ArithmeticFunction.moebius (m / d) : ℝ) * (d : ℝ) ^ k)
+      (fun k : ℝ => (ArithmeticFunction.moebius (m / d) : ℝ) * (d : ℝ) ^ k)
       ((ArithmeticFunction.moebius (m / d) : ℝ) * ((d : ℝ) ^ (0 : ℝ) * Real.log d)) 0 :=
     fun d hd => ((Real.hasStrictDerivAt_const_rpow
-      (by exact_mod_cast Nat.pos_of_mem_divisors hd) 0).hasDerivAt).const_mul _
+      (by exact_mod_cast Nat.pos_of_mem_divisors hd : (0 : ℝ) < d) 0).hasDerivAt).const_mul _
   have h := HasDerivAt.fun_sum hterm
   simp only [Real.rpow_zero, one_mul] at h
-  convert h using 1
+  refine h.congr_deriv ?_
   rw [← ArithmeticFunction.log_mul_moebius_eq_vonMangoldt, ArithmeticFunction.mul_apply,
     Nat.sum_divisorsAntidiagonal (fun a b => ArithmeticFunction.log a *
       (ArithmeticFunction.moebius : ArithmeticFunction ℝ) b)]

@@ -1,8 +1,8 @@
 # Logarithmic duality of the boost count
 
 - **ID:** logarithmic-duality-of-the-boost-count
-- **Stage:** 2-fully-proven
-- **Type:** THEOREM (paper)
+- **Stage:** 3-formalized
+- **Type:** THEOREM (Lean)
 - **Source:** `docs/reports/review-0111/walls-ledger.md`, Π11f
 - **Statement:** The Gaussian boost average of the positive split cone has an explicit logarithmic reflection defect; subtracting that defect gives a self-dual regularized count.
 
@@ -19,7 +19,7 @@ Poisson summation gives `R(1/t)=t R(t)`. The regularized axis contributions prod
 ## Gates
 - [x] Well-posed source: the existing Gaussian count and its Poisson identity.
 - [x] Absolute convergence and complete paper derivation of the logarithmic term.
-- [ ] Lean formalization, individual-file check and transitive axiom audit.
+- [x] Lean formalization, individual-file check and transitive axiom audit.
 
 ## Existing boundary
 `TheIsotropicConeCountsDivisors.lean` proves the Mellin value and double-pole obstruction, but no physical completion. `TheBoostTransformRestoresTheEulerProduct.lean` gives the spectral boost factorization. The new claim must identify an actual convergent count and its correction, not merely square the functional equation of ζ.
@@ -37,6 +37,8 @@ The integrand of `r/2` is exactly
 `f(x+u)f(x−u)+f(x+u)+e^{u−x}f(u−x)`.
 Thus both integrals converge absolutely. Pointwise Poisson gives
 `r(−x)=e^{2x}r(x)`.
+The displayed decomposition is strictly positive because `f(v)>0` for every finite `v`.
+Thus `r(x)>0` and `log r(−x)−log r(x)=2x`: the completed count carries the pole-plane logarithmic Riemann–Roch identity.
 
 Let `I(x)=∫_x∞f(v)dv`, `J(x)=∫_x∞e^v f(v)dv` and
 `c=2(I(0)+J(0))−2`.
@@ -49,8 +51,9 @@ Hence `r(x)=b(x)+2x+2e^{−x}+c`, and therefore
 Equivalently,
 `B(1/t)=tB(t)+(1+t)log t+c(t−1)` for every `t>0`.
 The logarithmic defect is explicit and its constant is an absolutely convergent theta integral.
-This proves the Gaussian boost-average face of Π11f. The literal exponential cone count's
-dual transform remains to be identified; no primitive effectivity follows.
+This proves the Gaussian boost-average face of Π11f. Its exact identification with the
+literal cone's Abel transform is formalized in `TheConeCountHasAnAbelCompletion`;
+no primitive effectivity follows.
 
 ## Novelty boundary
 The scalar transformation is classical Koshliakov duality; see Dixit,
@@ -58,3 +61,20 @@ The scalar transformation is classical Koshliakov duality; see Dixit,
 ([primary source](https://msp.org/pjm/2012/255-2/pjm-v255-n2-s.pdf), printed p. 319).
 No novelty is claimed for that identity. The corpus gap is its convergent physical realization
 by the split-plane count and the explicit subtraction of the two axes.
+
+## Literal cone comparison
+`TheConeCountHasAnAbelCompletion` proves
+`B(t)=4∫₀∞ C(t cosh v)dv`, where `C=coneCount`.
+Each Gaussian pair is a translate of `exp(−2πtmn cosh(2u))`;
+summable integral norms justify both exchanges of integral and series.
+The completed literal cone transform is therefore exactly `R(t)`.
+
+## Lean
+Module: `GaloisForLFunctions/LatticeSectionTheory/TheBoostCountHasLogarithmicDuality.lean`.
+- `integrableOn_gaussianBoost`, `integrableOn_regularizedBoost`: absolute convergence.
+- `regularizedBoostCount_pos`, `log_regularizedBoostCount_neg`: positivity and logarithmic Riemann–Roch.
+- `regularizedBoostCount_eq`: exact axis correction.
+- `gaussianBoostCount_eq_integral`, `gaussianBoostCount_log_inv`: full boost integral and reflection formula.
+
+Individual audit: `lake --old env lean GaloisForLFunctions/LatticeSectionTheory/TheBoostCountHasLogarithmicDuality.lean` passed.
+Transitive axioms: `propext`, `Classical.choice`, `Quot.sound` only.

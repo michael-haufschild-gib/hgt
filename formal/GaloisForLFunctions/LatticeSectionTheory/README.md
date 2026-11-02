@@ -121,6 +121,15 @@ classification of which lattice counts can and cannot touch the second part.
     not Poisson-dual. Its completion is a logarithm — the `log(D²/2)` of pole-plane Riemann–Roch.
     Siegel–Weil in miniature: the boost average of the majorant counts is the cone count up to
     archimedean factors.
+    The Gaussian boost count has an explicit physical completion: writing
+    `B(t)=∫(θ(te^{2u})−1)(θ(te^{−2u})−1)du`, its convergent regularization
+    `R(t)=∫[θ(te^{2u})θ(te^{−2u})−t^{−1/2}e^{|u|}]du` is positive and satisfies
+    `R(1/t)=tR(t)`. Its axes contribute `R(t)−B(t)=log t+2/√t+c`, with `c` an
+    absolutely convergent theta integral. Hence
+    `B(1/t)=tB(t)+(1+t)log t+c(t−1)` and `log R(1/t)−log R(t)=log t`
+    (`TheBoostCountHasLogarithmicDuality`). The exact, absolutely convergent comparison
+    `B(t)=4∫₀∞ C(t cosh v)dv` identifies this completion directly on the literal cone count
+    (`TheConeCountHasAnAbelCompletion`). This count concerns the pole plane.
 
 **F. Hecke, the primitive part, and its index.**
 14. `T_a` sends the bidegree `(b₁, b₂)` to `(b₁, ab₂)` (boost and scaling) and multiplies the

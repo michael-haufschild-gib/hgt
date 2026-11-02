@@ -101,7 +101,7 @@ derived here from Lean statements.
 | Π11c Fixed-rank counts | No-go | — | Fixed-rank lattice counts with bounded `h⁰(·, 0)` and degree `≤ α + β\|x·A\|` violate RI on every polar surface [L]. |
 | Π11d Definite counts | No-go | — | `ℤ ⊕ yℤ`, `y > e²` (e.g. `y = 8`): positive count, Poisson duality, FE, simple poles, positive Dirichlet series, real zero in `(½, 1)` [L]. The self-dual point `ℤ ⊕ ℤ` has `Λ₁(σ) < 0` on `(0,1)`: the fakes are created by the boost [L]; where on `0 < \|u\| ≤ 1` the first real zero enters `(½, 1)` is open (numerically near `y ≈ 7.01`). |
 | Π11e Siegel majorants | No-go as producer | — | `P_u ≥ 0` on every class ⇔ Hodge index; every primitive Gaussian count of the scaling surface converges ⇔ RH; split plane at fixed boost is a rectangular lattice with fakes for `\|u\| > 1` [L]. |
-| Π11f Logarithmic duality of the split surface | Open | sub | Isotropic cone count `= Γ(σ)(2π)^{−σ}ζ(σ)²`, double pole `1/(2π)`, no weak FE-pair; boost average of majorants = cone count [L]. The completion must carry the logarithm of the pole-plane RR `h⁰(D) − h⁰(D^∨) = log(D²/2)`. |
+| Π11f Logarithmic duality of the split surface | Solved | sub | Isotropic cone count `= Γ(σ)(2π)^{−σ}ζ(σ)²`, double pole `1/(2π)`, no weak FE-pair; boost average of majorants = cone count [L]. The completion must carry the logarithm of the pole-plane RR `h⁰(D) − h⁰(D^∨) = log(D²/2)`. |
 | Π11g Boost transform | Solved (identity) | — | `∫Z⁺(s,u)e^{2wu}du = K(s,w)ζ(s+w)ζ(s−w)`; the boost-equivariant part of the split count carries the Euler product [L]. |
 | Π11h Count-valued primitive `h¹` | Open (solved at small radius) | RH | Künneth RR `h_K(x) + h_K(−x) = ½x² + h¹_K + ½δ`; RI on the scaling surface ⇔ RH; Hecke correspondences scale primitive `h¹`; over curves primitive `h¹` of a graph = degree of the correspondence (`N₁` for `1 − F`) [L]. Prime-free cycles: `W = Ω(0)‖f‖² + J(f) + pole term`, `J(f) = ½∫∫(f(u) − f(u+x))² du w(x)dx ≥ 0`, `w(x) = e^{x/2}/sinh x` (the Lévy–Khintchine jump count of the Gamma factor); the count alone gives `W ≥ ‖f‖²/20` and `h¹_prim ≥ ‖f‖²/40` at radius `≤ 1/64` [L]. Over `𝔽_q` the Stepanov count gives Künneth effectivity and `h¹_prim ≥ 0` on every Frobenius window of every odd-characteristic hyperelliptic curve [L]. The exterior charge reaches radius `≈ 0.03`; at `½ log 2` it gives `≈ 3.85` against `\|Ω(0)\| ≈ 5.37`. Missing: the count reading on the whole prime-free window (a Poincaré inequality for the Lévy form on an interval, and the pole signs `+2A²` even, `−2A²` odd), the prime comb past the first Hecke graph, and counts on lattices of growing rank. |
 | Π12 Subconvexity / heat floor | Partially solved | sub | `μ(½) ≤ 33/200`, `μ(5/6) ≤ 2/53` [L]; every even heated slice coefficient positive at `(133/200)/log\|t\|` [L]; flow threshold `(2/3 + ε)/log X` [L]. |
@@ -169,13 +169,13 @@ derived here from Lean statements.
 | Family | Solved | Partially solved | Sharpened | Open | No-go | Classified |
 |---|---|---|---|---|---|---|
 | Σ (36) | 7 (Σ1a, Σ1h, Σ10, Σ12, Σ16, Σ17, Σ24) | 7 (Σ1b, Σ1d, Σ1e, Σ1g, Σ3, Σ6, Σ9) | 6 (Σ1, Σ1i, Σ2, Σ3a, Σ4, Σ5) | 6 (Σ1c, Σ7, Σ8, Σ18, Σ19, Σ20) | 5 (Σ1f, Σ13, Σ14, Σ23, Σ25) | 5 (Σ11, Σ15, Σ21, Σ22, Σ26) |
-| Π (23) | 3 (Π1, Π11g, Π13 paper) | 4 (Π3, Π7, Π9, Π12) | 7 (Π4, Π5, Π6, Π8, Π10, Π15, Π16) | 3 (Π2, Π11f, Π11h) | 6 (Π11a–e, Π14) | — |
+| Π (23) | 4 (Π1, Π11f, Π11g, Π13 paper) | 4 (Π3, Π7, Π9, Π12) | 7 (Π4, Π5, Π6, Π8, Π10, Π15, Π16) | 2 (Π2, Π11h) | 6 (Π11a–e, Π14) | — |
 | Γ (19) | 5 (Γ2, Γ6, Γ7, Γ12, Γ18) | 2 (Γ5, Γ15) | 4 (Γ8, Γ10, Γ16, Γ19) | 2 (Γ1, Γ4) | 5 (Γ3, Γ9, Γ11, Γ13, Γ14) | 1 (Γ17) |
 
 Strength of the open walls:
 - **RH:** Σ1, Σ1i (all `K`), Σ2, Σ3 (ascent), Σ3a, Σ5, Σ6, Σ7, Σ8, Σ18, Σ19, Σ20, Π2, Π4, Π11h,
   Π15, Γ1, Γ4, Γ5, Γ8, Γ16, Γ19.
 - **≥qRH:** Σ4 (`K_ζ`), Π5 (fixed scale), Π10 (¾ strip).
-- **sub:** Σ1b–Σ1g, Σ1i (fixed `K`), Π3, Π5 (mean `o(log U)`, density rate `≥ 1`), Π7, Π9, Π11f,
+- **sub:** Σ1b–Σ1g, Σ1i (fixed `K`), Π3, Π5 (mean `o(log U)`, density rate `≥ 1`), Π7, Π9,
   Π11h (fixed degree), Π12, Γ15.
 - **indep.:** Π16 (genus law; implies almost all zeros simple).
