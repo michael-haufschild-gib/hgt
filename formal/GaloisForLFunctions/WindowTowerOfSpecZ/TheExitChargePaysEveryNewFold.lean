@@ -34,6 +34,7 @@ namespace GaloisForLFunctions.WindowTowerOfSpecZ
 
 open CohomologyOfWindowsOfSpecZ SpacingScaleHarmonicAnalysis RHTower.WeilMarkovPole
 open RHTower.WeilLevyPoleGauss
+open _root_.RHTower (archLevyDensity)
 
 variable {A ε : ℝ} {H : ℝ → ℝ}
 

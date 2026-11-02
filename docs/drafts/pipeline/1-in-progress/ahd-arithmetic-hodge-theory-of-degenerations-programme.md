@@ -24,7 +24,8 @@ TheAliasingIsTheDilationDerivativeOfTheBulk, TheAliasingConstantOfTheTiltedSplin
 ThePrimesOfAHorizonWindow, TheBulkDeterminesTheSecondOrderTerm, TheWindowIndex,
 TheCountLawOverEveryFiniteRing, TheTwistedHorizonLayerIsZeroBlind, TheWindowIndexCountsTheRightZeros,
 TheTwistedHorizonLayerIsPositive, TheAlternatingWindowCountsTheConductorTwoPoints,
-ThePrimeWindowCountsTheProjectivePoints, TheHorizonLayerIsGradedByConductor.
+ThePrimeWindowCountsTheProjectivePoints, TheHorizonLayerIsGradedByConductor,
+TheWindowIndexCountsTheJumpMultiples.
 
 ## Status
 - First order = count: `J(m) = J(1) #ℙ⁷(ℤ/m)`; count law over every finite ring (𝔽_q[T] calibration) [L].
@@ -53,14 +54,26 @@ ThePrimeWindowCountsTheProjectivePoints, TheHorizonLayerIsGradedByConductor.
 - Divisor twists `d·1_{d|n} − 1`: second order `(7/K)Σ_{e|d,e>1} φ(e)J(e)‖H‖²_{−8}` [L].
 - Conductor grading: untwisted `x` and prime `y` windows orthogonal at second order
   (`c⁻¹(Q(x+y) − Q(x−y))/∫g² → 0`); `x + y → κQ(H) + βJ/K‖H‖² + (p^{β+1}−1)βJ/K‖G‖²` [L].
+- Jump multiples: independent family ⇒ `A(H)` posdef and `ind₋(P_K) = #{λ_i < 0, βJ/(−λ_i) < K}`,
+  `λ_i` relative eigenvalues of `κW(H)` against `A(H)` [L].
 
-## Open: exact second-order term of twisted windows of composite conductor
-Claim: for `χ` `m`-periodic of mean zero, `c⁻¹⟨Wx,x⟩ − (log N/∫φ²)𝒜^χ_N → 0` with
-`𝒜^χ_N = (2/N)Σ_n h_n² Σ_{k} |χ̂(k)|² |φ̂(2πk cn/(mN))|²` (Poisson on residue classes); no Weil
-term (pole amplitudes and the quiet region `|τ| ≤ πNe^{−A}/m` vanish by Kuzmin–Landau with the
-twist's additive characters). For `χ = c_m` the constant is `Σ_{(k,m)=1}(m/k)^{β+1} ∝ J_{β+1}(m)`:
-the conductor-`m` count. Positive: twisted windows are polarized by the count.
+## In progress: Ramanujan windows of every conductor
+Claim: for the Ramanujan window `c_m(n) h/√n`, `m ≥ 2`, the energy is
+`2π Σ_{q|m} μ(m/q) 𝒜_N(c/q) + O(c/N)`, so at `c^{β+1}/log N → K` the second order is
+`J_{β+1}(m) βJ/K ‖H‖²` (tilted: `7 φ(m) J(m)/K ‖H‖²_{−8}`).
+Paper proof (δ-route, no shifted-lattice Poisson):
+1. Rows: `Σ_m c_m(m) x_m G_{mn} = x_n Σ_{|δ|<a_n} c_m(n+δ) G(δ/a_n) + O(c²N^{−3/2})` (entrywise
+   linearization, `|c_m| ≤ σ(m)`).
+2. Swap: `Σ_n c_m(n) x_n row_n = Σ_δ Σ_n c_m(n)c_m(n+δ) x_n² G(δ/a_n)`; for each `|δ| ≤ c+1`,
+   `n ↦ c_m(n)c_m(n+δ)` is `m`-periodic with mean `c_m(δ)` (roots of unity:
+   `m⁻¹Σ_r c_m(r)c_m(r+δ) = Σ_{ξ prim} ξ^δ`), and `x ↦ h(log x)²/x · G(δ/(cx))` is Lipschitz uniformly
+   in `δ`; periodic equidistribution, error `O(1/N)` per `δ`, `O(c/N)` total.
+3. `Σ_δ c_m(δ)G(δ/a) = Σ_{q|m} qμ(m/q) Σ_j G(qj/a) = a Σ_q μ(m/q)(I² + 2a_φ(a/q))`; `Σμ = 0` removes
+   `I²`: energy `2π Σ_q μ(m/q) 𝒜_N(c/q)`.
+4. Pole (mean-zero twist) `O(N^{−2})`; remainder uniform; quiet region `|τ| ≤ N e^{−A}/m`:
+   `c_m = Σ_q qμ(m/q) 1_{q|n}`, Kuzmin–Landau on each cofactor, twisted Riemann sums below `√N`.
+5. Critical curve: `log N 𝒜_N(c/q) → q^{β+1} βJ/K ‖H‖²`, `Σ_q μ(m/q) q^{β+1} = J_{β+1}(m)`.
 
 ## Open
-Jump multiples of a family; window index vs width (Landau–Widom); bulk second order; uniform bulk
+Window index vs width (Landau–Widom); bulk second order; uniform bulk
 ledger to `N^{1/2−ε}`; count of the second order; integer; `𝔽_q(T)` complete family. See README §9.

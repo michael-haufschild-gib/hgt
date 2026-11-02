@@ -1,10 +1,10 @@
 # Congruence Eisenstein constant terms preserve every zeta pole
 
-- **Stage:** 2-fully-proven
-- **Type:** THEOREM (paper); Lean pending
+- **Stage:** 3-formalized
+- **Type:** THEOREM (Lean)
 - **Wall:** Σ8, scattering continuation below `Re(2s) = 1`.
 - **Statement:** For every principal congruence level `N ≥ 3` and positive height,
-  the actual Poincaré constant term has a meromorphic continuation whose pole
+  the actual Poincaré constant term at infinity has a meromorphic continuation whose pole
   divisor on `0 < Re s < 1/2` is exactly the zero divisor of `ζ(2s)`, with multiplicity.
 
 ## Proof
@@ -30,7 +30,7 @@ Put `E_M(w)=∏_(p|M)(1−p^(−w))` and
    preserves meromorphic order.
 4. The established level-one scattering theorem gives
    `ord_(w/2) S = −ord_w ζ` for `0<Re w<1`.
-   Therefore the congruence constant term has exactly the same order,
+   Therefore the reflected congruence term has exactly the same order,
    for every level and height, including multiple zeros.
 5. The incoming term `y^s` is entire and nonzero. At a pole, its order zero
    exceeds the reflected term's negative order, so their sum has the same
@@ -41,6 +41,19 @@ Dependencies: `eisenstein_eq`, `fourier_ker0_zero`, `integral_ker01`,
 `DirichletCharacter.LSeries.mul_mu_eq_one`, the principal Euler identity,
 and `MayerBoundaryResolvent.scattering_order`. No zero-location or
 noncancellation premise is assumed.
+
+## Lean
+
+`RenormalizedIntersectionTheory/MayerScattering/CongruencePolePersistence.lean`,
+namespace `CongruenceScattering`:
+
+- Source comparison: `constantTerm_eq`, `poincare_eq`, `levelFactor_eq`.
+- Continuation: `meromorphicOn_fullConstantTerm` on `Re s>0`.
+- Exact pole divisor: `fullConstantTerm_pole_iff`, `fullConstantTerm_order_of_zero`.
+- Reflected term's order at every strip point: `constantTerm_order`.
+
+Direct source audit passes with `lake --old env lean`; transitive axioms:
+`propext`, `Classical.choice`, `Quot.sound`. Wired into the RIT umbrella.
 
 ## Scope
 

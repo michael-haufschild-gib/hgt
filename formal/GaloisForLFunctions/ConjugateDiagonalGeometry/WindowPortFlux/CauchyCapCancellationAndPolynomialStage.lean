@@ -1298,24 +1298,36 @@ theorem invPoly_corridor_iff_fixedDegree_polynomialStage {k : ℕ} (hk : 1 ≤ k
     Nat.ceil_le.mpr (by
       push_cast
       exact mul_le_of_le_one_left (by positivity) hc1)
-  tfae_have 1 → 3 := by
+  -- Helper: under (1), there exist `0 < c ≤ 1` and `m₁` such that on every window `m ≥ m₁` and
+  -- prefix `N ≥ polySqrtPrefix k m`, every enclosed `A_N`-zero has `z.re - 1/2 ≤ 1 / (12 * n)`.
+  have h1_corridor :
+      (∃ T₁ C : ℝ, 2 ≤ T₁ ∧ 0 < C ∧
+        ∀ ρ : ℂ, _root_.RHTower.xi ρ = 0 → T₁ ≤ |ρ.im| → |ρ.re - 1 / 2| ≤ C / |ρ.im| ^ k) →
+      ∃ c : ℝ, 0 < c ∧ c ≤ 1 ∧ ∃ m₁ : ℕ, ∀ m ≥ m₁, ∀ (N : ℕ) (hN : polySqrtPrefix k m ≤ N),
+        ∀ z ∈ (centeredThetaWindow (burnolUnitLower_le_upper m) N
+            (burnolUnit_bdry_regular m
+              ((burnolPrefix_le_capCancelSqrtPrefix m).trans
+                ((capCancelSqrtPrefix_le_polySqrtPrefix k m).trans hN)))).Z,
+          z.re - 1 / 2 ≤ 1 / (12 * (fixedPolyDoorStage k c m : ℝ)) := by
     rintro ⟨T₁, C, hT₁, hC, hcorr⟩
     set c : ℝ := min 1 (1 / (96 * C * (2 : ℝ) ^ k))
     have hc_pos : 0 < c := lt_min zero_lt_one (by positivity)
     have hc_le1 : c ≤ 1 := min_le_left _ _
-    -- Since `(log(m + 6))² ≤ 50 (√m + 1)` and `(m + 6)^k ≥ m + 6 ≥ (√m + 1)² / 2`, for `m` above
-    -- an explicit threshold `m₁`, `7 + 2 * burnolOrderBound m ^ 2 ≤ 2 * c * (m + 6)^k`.
     set B_ord : ℝ := 7 + 100 * (burnolPrefixConst : ℝ) ^ 2
-    set m₁ : ℕ := max (Nat.ceil T₁ + 12) (Nat.ceil ((B_ord / c) ^ 2) + 12)
-    refine ⟨c, hc_pos, hc_le1, m₁, fun m hm N hN K hK u => ?_⟩
+    have hB_pos : 0 < B_ord := by dsimp only [B_ord]; positivity
+    set m₁ : ℕ := max (Nat.ceil T₁ + 12) (Nat.ceil ((2 * B_ord / c) ^ 2) + 12)
+    refine ⟨c, hc_pos, hc_le1, m₁, fun m hm N hN z hz => ?_⟩
     set S : ℕ := Nat.ceil (c * ((m + 6 : ℕ) : ℝ) ^ k)
     have hS_pow := hS_le_pow c hc_le1 m
     have hNbessel := (besselUnitPrefix_le_polySqrtPrefix_of_le k m hS_pow).trans hN
     have hNdoor := (doorUnitPrefix_le_besselUnitPrefix m S).trans hNbessel
-    have hbdry := burnolUnit_bdry_regular m ((burnolPrefix_le_doorUnitPrefix m S).trans hNdoor)
+    have hbdry := burnolUnit_bdry_regular m
+      ((burnolPrefix_le_capCancelSqrtPrefix m).trans
+        ((capCancelSqrtPrefix_le_polySqrtPrefix k m).trans hN))
     obtain ⟨hstage, -⟩ := doorUnitStage_spec m S
     set n := fixedPolyDoorStage k c m
     have hn6 : 6 ≤ n := (le_max_right S 6).trans (Finset.mem_Icc.mp hstage).1
+    have hn_pos : (0 : ℝ) < (n : ℝ) := by exact_mod_cast (show 0 < n by omega)
     have hn_le : (n : ℝ) ≤ (S : ℝ) + 6 + 2 * ((∑ w ∈ burnolUnitXiZeros m,
         (analyticOrderAt _root_.RHTower.xi w).toNat : ℕ) : ℝ) ^ 2 := by
       have h := (Finset.mem_Icc.mp hstage).2
@@ -1323,32 +1335,371 @@ theorem invPoly_corridor_iff_fixedDegree_polynomialStage {k : ℕ} (hk : 1 ≤ k
       exact_mod_cast (show n ≤ S + 6 + 2 * (∑ w ∈ burnolUnitXiZeros m,
         (analyticOrderAt _root_.RHTower.xi w).toNat) ^ 2 by omega)
     have htail := unitStage_tail_lt m S hn6 hn_le hNbessel
-    -- Bound `n ≤ 3 * c * (m + 6)^k`.
-    have hn_3c : (n : ℝ) ≤ 3 * c * ((m + 6 : ℕ) : ℝ) ^ k := by
+    -- Bound `n ≤ 2 * c * (m + 6)^k`.
+    have hn_2c : (n : ℝ) ≤ 2 * c * ((m + 6 : ℕ) : ℝ) ^ k := by
       set s : ℕ := Nat.sqrt m + 1
-      have hs_ge : (B_ord / c : ℝ) ≤ (s : ℝ) := by
-        have hm_ge : Nat.ceil ((B_ord / c) ^ 2) ≤ m :=
-          (Nat.le_add_right _ 12).trans ((le_max_right _ _).trans hm)
-        have hsq_le : (B_ord / c) ^ 2 ≤ ((s : ℝ)) ^ 2 := by
-          calc (B_ord / c) ^ 2 ≤ (Nat.ceil ((B_ord / c) ^ 2) : ℝ) := Nat.le_ceil _
+      have hs1 : (1 : ℝ) ≤ (s : ℝ) := by exact_mod_cast Nat.succ_pos (Nat.sqrt m)
+      have hs_le_rt : (s : ℝ) ≤ 2 * Real.sqrt ((m + 6 : ℕ) : ℝ) := by
+        have hrt_m : (Nat.sqrt m : ℝ) ≤ Real.sqrt ((m + 6 : ℕ) : ℝ) := by
+          rw [← Real.sqrt_sq (Nat.cast_nonneg (Nat.sqrt m))]
+          exact Real.sqrt_le_sqrt (by
+            have h1 : (Nat.sqrt m : ℝ) ^ 2 ≤ (m : ℝ) := by exact_mod_cast Nat.sqrt_le m
+            push_cast; linarith)
+        have h1_rt : (1 : ℝ) ≤ Real.sqrt ((m + 6 : ℕ) : ℝ) := by
+          rw [← Real.sqrt_one]
+          exact Real.sqrt_le_sqrt (by exact_mod_cast (show 1 ≤ m + 6 by omega))
+        push_cast [s]
+        linarith
+      have hL_sq : (Real.log ((m + 5 : ℕ) : ℝ)) ^ 2 ≤ 50 * (s : ℝ) := by
+        have hle : Real.log ((m + 5 : ℕ) : ℝ) ≤ Real.log ((m + 6 : ℕ) : ℝ) :=
+          Real.log_le_log (by positivity) (by exact_mod_cast (show m + 5 ≤ m + 6 by omega))
+        have hnn : 0 ≤ Real.log ((m + 5 : ℕ) : ℝ) :=
+          Real.log_nonneg (by exact_mod_cast (show 1 ≤ m + 5 by omega))
+        exact (pow_le_pow_left₀ hnn hle 2).trans (sq_log_add_six_le_fifty_mul_sqrt m)
+      have hd_le : ((∑ w ∈ burnolUnitXiZeros m,
+          (analyticOrderAt _root_.RHTower.xi w).toNat : ℕ) : ℝ) ≤ burnolOrderBound m :=
+        burnolUnitXiZeros_totalOrder_le m
+      have h2d_sq : 7 + 2 * ((∑ w ∈ burnolUnitXiZeros m,
+          (analyticOrderAt _root_.RHTower.xi w).toNat : ℕ) : ℝ) ^ 2 ≤ B_ord * (s : ℝ) := by
+        have hd0 : (0 : ℝ) ≤ (∑ w ∈ burnolUnitXiZeros m,
+          (analyticOrderAt _root_.RHTower.xi w).toNat : ℕ) := Nat.cast_nonneg _
+        have hd_sq : ((∑ w ∈ burnolUnitXiZeros m,
+            (analyticOrderAt _root_.RHTower.xi w).toNat : ℕ) : ℝ) ^ 2 ≤ burnolOrderBound m ^ 2 :=
+          pow_le_pow_left₀ hd0 hd_le 2
+        have hord_sq : burnolOrderBound m ^ 2 ≤ 50 * (burnolPrefixConst : ℝ) ^ 2 * (s : ℝ) := by
+          unfold burnolOrderBound
+          rw [mul_pow]
+          nlinarith [hL_sq]
+        dsimp only [B_ord]
+        nlinarith
+      have hm_ge : Nat.ceil ((2 * B_ord / c) ^ 2) ≤ m :=
+        (Nat.le_add_right _ 12).trans ((le_max_right _ _).trans hm)
+      have hrt_ge : 2 * B_ord / c ≤ Real.sqrt ((m + 6 : ℕ) : ℝ) := by
+        have hsq : (2 * B_ord / c) ^ 2 ≤ ((m + 6 : ℕ) : ℝ) := by
+          calc (2 * B_ord / c) ^ 2 ≤ (Nat.ceil ((2 * B_ord / c) ^ 2) : ℝ) := Nat.le_ceil _
             _ ≤ (m : ℝ) := by exact_mod_cast hm_ge
-            _ ≤ (s : ℝ) ^ 2 := by
-                have hm1 : (m : ℝ) + 1 ≤ (s : ℝ) ^ 2 := by exact_mod_cast Nat.lt_succ_sqrt' m
-                linarith
-        have hB_nn : 0 ≤ B_ord / c := by dsimp only [B_ord]; positivity
-        nlinarith [sq_nonneg ((s : ℝ) - B_ord / c)]
-      have hs_sq : (s : ℝ) ^ 2 ≤ ((m + 6 : ℕ) : ℝ) ^ k := by
-        have hs_m : (s : ℝ) ^ 2 ≤ ((m + 6 : ℕ) : ℝ) := by
-          have hs_le : s ≤ Nat.sqrt m + 1 := le_rfl
-          have hrt_le : (Nat.sqrt m : ℝ) ^ 2 ≤ (m : ℝ) := by exact_mod_cast Nat.sqrt_le m
-          have hrt_m : (Nat.sqrt m : ℝ) ≤ (m : ℝ) := by exact_mod_cast Nat.sqrt_le_self m
-          have h1 : (s : ℝ) = (Nat.sqrt m : ℝ) + 1 := by push_cast; rfl
-          -- Wait: `(√m + 1)² = (√m)² + 2 √m + 1 ≤ m + 2 m + 1`? No: for `m ≥ 12`, `2 √m + 1 ≤ 6` fails
-          -- at large `m`, wait: `(√m + 1)² ≤ 4 m ≤ 4 (m + 6)`, so divide by `4` in `m₁`!
-          sorry
-        sorry
-      sorry
-    sorry
+            _ ≤ ((m + 6 : ℕ) : ℝ) := by push_cast; linarith
+        rw [← Real.sqrt_sq (by positivity : 0 ≤ 2 * B_ord / c)]
+        exact Real.sqrt_le_sqrt hsq
+      have h2B_le : 2 * B_ord * Real.sqrt ((m + 6 : ℕ) : ℝ) ≤ c * ((m + 6 : ℕ) : ℝ) ^ k := by
+        have h1 : 2 * B_ord ≤ c * Real.sqrt ((m + 6 : ℕ) : ℝ) := (div_le_iff₀ hc_pos).mp hrt_ge
+        have h2 : 2 * B_ord * Real.sqrt ((m + 6 : ℕ) : ℝ) ≤
+            c * (Real.sqrt ((m + 6 : ℕ) : ℝ) * Real.sqrt ((m + 6 : ℕ) : ℝ)) := by
+          nlinarith [Real.sqrt_nonneg ((m + 6 : ℕ) : ℝ)]
+        rw [Real.mul_self_sqrt (by positivity)] at h2
+        have hpow_ge : ((m + 6 : ℕ) : ℝ) ≤ ((m + 6 : ℕ) : ℝ) ^ k := by
+          conv_lhs => rw [← pow_one ((m + 6 : ℕ) : ℝ)]
+          exact pow_le_pow_right₀ (by exact_mod_cast (show 1 ≤ m + 6 by omega)) hk
+        exact h2.trans (mul_le_mul_of_nonneg_left hpow_ge hc_pos.le)
+      have hS_lt : (S : ℝ) ≤ c * ((m + 6 : ℕ) : ℝ) ^ k + 1 :=
+        (Nat.ceil_lt_add_one (by positivity)).le
+      have hBs_le : B_ord * (s : ℝ) ≤ 2 * B_ord * Real.sqrt ((m + 6 : ℕ) : ℝ) := by
+        nlinarith
+      linarith
+    obtain ⟨hz_rect, hz_zero⟩ := (mem_centeredThetaWindow_iff _ N hbdry z).mp hz
+    obtain ⟨w, hw_mem, hdist⟩ := exists_xiZero_near_thetaZero m N (r := 1 / (16 * (n : ℝ)))
+      (by positivity) htail hz_rect hz_zero
+    obtain ⟨⟨_, _, hwy_lo, _⟩, hw_xi⟩ := (mem_burnolUnitXiZeros_iff m w).mp hw_mem
+    have hcoords := burnolUnit_coords m
+    have hm12 : 12 ≤ m := (Nat.le_add_left 12 _).trans ((le_max_left _ _).trans hm)
+    have hmT1 : Nat.ceil T₁ + 12 ≤ m := (le_max_left _ _).trans hm
+    have hw_im_ge_half : ((m + 6 : ℕ) : ℝ) / 2 ≤ |w.im| := by
+      have hmR : (12 : ℝ) ≤ (m : ℝ) := by exact_mod_cast hm12
+      have hlo : (m : ℝ) - 3 ≤ w.im := by linarith [hcoords.2.2.1, hcoords.2.2.2.2, hwy_lo]
+      have hhalf : ((m + 6 : ℕ) : ℝ) / 2 ≤ (m : ℝ) - 3 := by push_cast; linarith
+      exact (hhalf.trans hlo).trans (le_abs_self _)
+    have hw_T1 : T₁ ≤ |w.im| := by
+      have hceil : T₁ ≤ (Nat.ceil T₁ : ℝ) := Nat.le_ceil T₁
+      have hmR : (Nat.ceil T₁ : ℝ) + 12 ≤ (m : ℝ) := by exact_mod_cast hmT1
+      have hlo : (m : ℝ) - 3 ≤ w.im := by linarith [hcoords.2.2.1, hcoords.2.2.2.2, hwy_lo]
+      exact (by linarith : T₁ ≤ w.im).trans (le_abs_self _)
+    have hw_re_bd : |w.re - 1 / 2| ≤ 1 / (48 * (n : ℝ)) := by
+      have h1 := hcorr w hw_xi hw_T1
+      have hpow_ge : (((m + 6 : ℕ) : ℝ) / 2) ^ k ≤ |w.im| ^ k :=
+        pow_le_pow_left₀ (by positivity) hw_im_ge_half k
+      have h2 : C / |w.im| ^ k ≤ (C * (2 : ℝ) ^ k) / ((m + 6 : ℕ) : ℝ) ^ k := by
+        calc C / |w.im| ^ k
+            ≤ C / (((m + 6 : ℕ) : ℝ) / 2) ^ k :=
+              div_le_div_of_nonneg_left hC.le (by positivity) hpow_ge
+          _ = (C * (2 : ℝ) ^ k) / ((m + 6 : ℕ) : ℝ) ^ k := by
+              rw [div_pow, div_div_eq_mul_div]
+      have hc_bound : c ≤ 1 / (96 * C * (2 : ℝ) ^ k) := min_le_right _ _
+      have h96 : 96 * c * (C * (2 : ℝ) ^ k) ≤ 1 := by
+        have := (le_div_iff₀ (by positivity : 0 < 96 * C * (2 : ℝ) ^ k)).mp hc_bound
+        linarith
+      have h3 : (C * (2 : ℝ) ^ k) / ((m + 6 : ℕ) : ℝ) ^ k ≤ 1 / (48 * (n : ℝ)) := by
+        rw [div_le_div_iff₀ (by positivity) (by positivity), one_mul]
+        calc C * (2 : ℝ) ^ k * (48 * (n : ℝ))
+            ≤ C * (2 : ℝ) ^ k * (48 * (2 * c * ((m + 6 : ℕ) : ℝ) ^ k)) :=
+              mul_le_mul_of_nonneg_left (by linarith) (by positivity)
+          _ = (96 * c * (C * (2 : ℝ) ^ k)) * ((m + 6 : ℕ) : ℝ) ^ k := by ring
+          _ ≤ 1 * ((m + 6 : ℕ) : ℝ) ^ k :=
+              mul_le_mul_of_nonneg_right h96 (by positivity)
+          _ = ((m + 6 : ℕ) : ℝ) ^ k := one_mul _
+      exact (h1.trans h2).trans h3
+    have hz_close : z.re - w.re ≤ 1 / (16 * (n : ℝ)) :=
+      (le_abs_self _).trans ((Complex.abs_re_le_norm (z - w)).trans hdist)
+    have hw_sub : w.re - 1 / 2 ≤ 1 / (48 * (n : ℝ)) := (le_abs_self _).trans hw_re_bd
+    have halg : 1 / (48 * (n : ℝ)) + 1 / (16 * (n : ℝ)) = 1 / (12 * (n : ℝ)) := by ring
+    linarith
+  tfae_have 1 → 2 := by
+    intro h1
+    obtain ⟨c, hc_pos, hc_le1, m₁, hcorr⟩ := h1_corridor h1
+    refine ⟨c, hc_pos, hc_le1, m₁, fun m hm N hN => ?_⟩
+    set n := fixedPolyDoorStage k c m
+    have hn6 : 6 ≤ n :=
+      (le_max_right _ 6).trans (Finset.mem_Icc.mp (doorUnitStage_spec m _).1).1
+    have hn_pos : (0 : ℝ) < (n : ℝ) := by exact_mod_cast (show 0 < n by omega)
+    have hbdry := burnolUnit_bdry_regular m
+      ((burnolPrefix_le_capCancelSqrtPrefix m).trans
+        ((capCancelSqrtPrefix_le_polySqrtPrefix k m).trans hN))
+    set W := centeredThetaWindow (burnolUnitLower_le_upper m) N hbdry
+    have hδ := hcorr m hm N hN
+    have hint_Z : IntegrableOn
+        (fun t : ℝ => Real.exp (-((1 / (2 * (n : ℝ))) * t)) *
+          ‖centeredThetaExpSum (burnolUnitLower m) (burnolUnitUpper m) N t‖ ^ 2)
+        (Ioi (0 : ℝ)) := by
+      have hdom : IntegrableOn
+          (fun t : ℝ => ((W.degree : ℝ) ^ 2 + 1) * Real.exp (-((1 / (3 * (n : ℝ))) * t)))
+          (Ioi (0 : ℝ)) := by
+        have hneg : -(1 / (3 * (n : ℝ))) < 0 := neg_lt_zero.mpr (by positivity)
+        simpa only [neg_mul] using (integrableOn_exp_mul_Ioi hneg 0).const_mul _
+      have hcont_Z : Continuous (centeredThetaExpSum (burnolUnitLower m) (burnolUnitUpper m) N) := by
+        have heq : centeredThetaExpSum (burnolUnitLower m) (burnolUnitUpper m) N =
+            fun t => W.expSum t :=
+          funext fun t => (centeredThetaWindow_expSum _ N hbdry t).symm
+        rw [heq]; exact W.continuous_expSum
+      refine hdom.mono'
+        (((Real.continuous_exp.comp (continuous_const.mul continuous_id).neg).mul
+          (hcont_Z.norm.pow 2)).aestronglyMeasurable) ?_
+      refine ae_restrict_of_forall_mem measurableSet_Ioi fun t ht => ?_
+      have ht0 : 0 ≤ t := (mem_Ioi.mp ht).le
+      rw [Real.norm_eq_abs, abs_of_nonneg (mul_nonneg (Real.exp_pos _).le (sq_nonneg _))]
+      have hnorm := W.norm_expSum_le hδ ht0
+      rw [centeredThetaWindow_expSum (burnolUnitLower_le_upper m) N hbdry t] at hnorm
+      have hsq : ‖centeredThetaExpSum (burnolUnitLower m) (burnolUnitUpper m) N t‖ ^ 2 ≤
+          ((W.degree : ℝ) ^ 2 + 1) * Real.exp ((1 / (6 * (n : ℝ))) * t) := by
+        calc ‖centeredThetaExpSum (burnolUnitLower m) (burnolUnitUpper m) N t‖ ^ 2
+            ≤ ((W.degree : ℝ) * Real.exp ((1 / (12 * (n : ℝ))) * t)) ^ 2 :=
+              pow_le_pow_left₀ (norm_nonneg _) hnorm 2
+          _ = (W.degree : ℝ) ^ 2 * Real.exp ((1 / (6 * (n : ℝ))) * t) := by
+              rw [mul_pow, sq (Real.exp _), ← Real.exp_add]; congr 2; ring
+          _ ≤ ((W.degree : ℝ) ^ 2 + 1) * Real.exp ((1 / (6 * (n : ℝ))) * t) :=
+              mul_le_mul_of_nonneg_right (by linarith) (Real.exp_pos _).le
+      calc Real.exp (-((1 / (2 * (n : ℝ))) * t)) *
+              ‖centeredThetaExpSum (burnolUnitLower m) (burnolUnitUpper m) N t‖ ^ 2
+          ≤ Real.exp (-((1 / (2 * (n : ℝ))) * t)) *
+              (((W.degree : ℝ) ^ 2 + 1) * Real.exp ((1 / (6 * (n : ℝ))) * t)) :=
+            mul_le_mul_of_nonneg_left hsq (Real.exp_pos _).le
+        _ = ((W.degree : ℝ) ^ 2 + 1) *
+              (Real.exp (-((1 / (2 * (n : ℝ))) * t)) * Real.exp ((1 / (6 * (n : ℝ))) * t)) := by ring
+        _ = ((W.degree : ℝ) ^ 2 + 1) * Real.exp (-((1 / (3 * (n : ℝ))) * t)) := by
+            rw [← Real.exp_add]; congr 2; ring
+    exact ⟨hint_Z, (integrableOn_windowEnergy_iff_rightHalfPort
+      (burnolUnitLower_le_upper m) N hbdry (by positivity)).mp hint_Z⟩
+  tfae_have 1 → 3 := by
+    intro h1
+    obtain ⟨c, hc_pos, hc_le1, m₁, hcorr⟩ := h1_corridor h1
+    refine ⟨c, hc_pos, hc_le1, m₁, fun m hm N hN K hK u => ?_⟩
+    set n := fixedPolyDoorStage k c m
+    have hn6 : 6 ≤ n :=
+      (le_max_right _ 6).trans (Finset.mem_Icc.mp (doorUnitStage_spec m _).1).1
+    have hnR : (6 : ℝ) ≤ (n : ℝ) := by exact_mod_cast hn6
+    have hbdry := burnolUnit_bdry_regular m
+      ((burnolPrefix_le_capCancelSqrtPrefix m).trans
+        ((capCancelSqrtPrefix_le_polySqrtPrefix k m).trans hN))
+    set W := centeredThetaWindow (burnolUnitLower_le_upper m) N hbdry
+    have hη : 0 < 1 / (4 * (n : ℝ)) := by positivity
+    have hη2 : 1 / (4 * (n : ℝ)) ≤ 1 / 2 := by
+      rw [div_le_div_iff₀ (by positivity) (by norm_num)]; linarith
+    have hin : W.InCorridor n (1 / (4 * (n : ℝ))) := by
+      intro z hz
+      have h12 := hcorr m hm N hN z hz
+      rw [zhukovskyMajorAxis_of_six_le hn6]
+      have hpos12 : 0 < 1 / (12 * (n : ℝ)) := by positivity
+      have halg : 1 / 2 - (1 / 2 - 1 / (2 * (n : ℝ))) - 1 / (4 * (n : ℝ)) =
+          3 * (1 / (12 * (n : ℝ))) := by ring
+      linarith
+    rw [← centeredThetaWindow_degree (burnolUnitLower_le_upper m) N hbdry] at hK
+    have hpos := hin.besselSzegoCertificate_mul_loop_pos
+      (eval_centeredThetaDifferencePoly_eq_window (burnolUnitLower_le_upper m) N hbdry) hη hη2 hK u
+    have hE : (fun t => ‖W.expSum t‖ ^ 2) =
+        fun t => ‖centeredThetaExpSum (burnolUnitLower m) (burnolUnitUpper m) N t‖ ^ 2 :=
+      funext fun t => by rw [centeredThetaWindow_expSum]
+    rwa [hE] at hpos
+  tfae_have 2 → 4 := by
+    rintro ⟨c, hc_pos, hc_le1, m₀, hint⟩
+    refine ⟨c, hc_pos, hc_le1, m₀, fun m hm N hN => ?_⟩
+    set S : ℕ := Nat.ceil (c * ((m + 6 : ℕ) : ℝ) ^ k)
+    have hNbessel := (besselUnitPrefix_le_polySqrtPrefix_of_le k m (hS_le_pow c hc_le1 m)).trans hN
+    have hNdoor := (doorUnitPrefix_le_besselUnitPrefix m S).trans hNbessel
+    have hbdry := burnolUnit_bdry_regular m ((burnolPrefix_le_doorUnitPrefix m S).trans hNdoor)
+    obtain ⟨hstage, hspec⟩ := doorUnitStage_spec m S
+    obtain ⟨hnz, _⟩ := hspec N hNdoor
+    set n := fixedPolyDoorStage k c m
+    have hn6 : 6 ≤ n := (le_max_right S 6).trans (Finset.mem_Icc.mp hstage).1
+    set W := centeredThetaWindow (burnolUnitLower_le_upper m) N hbdry
+    have hint_W : IntegrableOn
+        (fun t : ℝ => Real.exp (-((1 / 2 - zhukovskyMajorAxis n) * t)) * ‖W.expSum t‖ ^ 2)
+        (Ioi 0) := by
+      have hgap : 1 / 2 - zhukovskyMajorAxis n = 1 / (2 * (n : ℝ)) := by
+        rw [zhukovskyMajorAxis_of_six_le hn6]; ring
+      have heq : (fun t : ℝ => ‖W.expSum t‖ ^ 2) =
+          fun t => ‖centeredThetaExpSum (burnolUnitLower m) (burnolUnitUpper m) N t‖ ^ 2 :=
+        funext fun t => by rw [centeredThetaWindow_expSum]
+      simpa only [hgap, heq] using (hint m hm N hN).1
+    exact ⟨hnz, W.fredholmIndex_eq_zero_of_integrableOn_energy
+      (eval_centeredThetaDifferencePoly_eq_window (burnolUnitLower_le_upper m) N hbdry) hint_W⟩
+  tfae_have 3 → 4 := by
+    rintro ⟨c, hc_pos, hc_le1, m₀, hcert⟩
+    refine ⟨c, hc_pos, hc_le1, m₀, fun m hm N hN => ?_⟩
+    set n := fixedPolyDoorStage k c m
+    have hn6 : 6 ≤ n :=
+      (le_max_right _ 6).trans (Finset.mem_Icc.mp (doorUnitStage_spec m _).1).1
+    have hnR : (6 : ℝ) ≤ (n : ℝ) := by exact_mod_cast hn6
+    have hη : 0 < 1 / (4 * (n : ℝ)) := by positivity
+    have hη1 : 1 / (4 * (n : ℝ)) < 1 := by rw [div_lt_one (by positivity)]; linarith
+    obtain ⟨K, hK⟩ := exists_certificate_order
+      (centeredThetaWindowDegree (burnolUnitLower m) (burnolUnitUpper m) N : ℝ) _ hη hη1
+    exact fredholmIndex_eq_zero_of_diskUnit_re_pos _
+      (isDiskUnit_besselSzegoCertificate n K _) (hcert m hm N hN K hK)
+  tfae_have 4 → 1 := by
+    rintro ⟨c, hc_pos, hc_le1, m₀, hind⟩
+    set m₂ : ℕ := max m₀ (Nat.ceil ((600 / c) ^ 2) + 12)
+    refine ⟨((m₂ + 1 : ℕ) : ℝ), 1 / (4 * c), ?_, by positivity, fun ρ hxi_ρ hT₁ => ?_⟩
+    · have : 12 ≤ m₂ := (Nat.le_add_left 12 _).trans (le_max_right _ _)
+      exact_mod_cast (show 2 ≤ m₂ + 1 by omega)
+    · -- Reflect into the upper half-plane via `1 - ρ` if `ρ.im < 0`.
+      set ρ₊ : ℂ := if 0 ≤ ρ.im then ρ else 1 - ρ
+      have hxi_₊ : _root_.RHTower.xi ρ₊ = 0 := by
+        dsimp only [ρ₊]; split_ifs
+        · exact hxi_ρ
+        · rw [_root_.RHTower.xi_one_sub]; exact hxi_ρ
+      have him_₊ : ρ₊.im = |ρ.im| := by
+        dsimp only [ρ₊]; split_ifs with hnn
+        · exact (abs_of_nonneg hnn).symm
+        · simp [abs_of_neg (not_le.mp hnn)]
+      have hre_abs : |ρ₊.re - 1 / 2| = |ρ.re - 1 / 2| := by
+        dsimp only [ρ₊]; split_ifs
+        · rfl
+        · simp only [Complex.sub_re, Complex.one_re]
+          rw [show 1 - ρ.re - 1 / 2 = -(ρ.re - 1 / 2) by ring, abs_neg]
+      have hre_lt1 : ρ₊.re < 1 :=
+        not_le.mp fun hge => _root_.RHTower.xi_ne_zero_of_one_le_re hge hxi_₊
+      have hre_gt0 : 0 < ρ₊.re := by
+        by_contra hle
+        push_neg at hle
+        have hge1 : 1 ≤ (1 - ρ₊).re := by simp; linarith
+        exact _root_.RHTower.xi_ne_zero_of_one_le_re hge1
+          (by rw [_root_.RHTower.xi_one_sub]; exact hxi_₊)
+      have hne1 : ρ₊ ≠ 1 := fun h1 => by rw [h1] at hre_lt1; simp at hre_lt1
+      have hzeta_₊ : riemannZeta ρ₊ = 0 :=
+        (_root_.RHTower.xi_eq_zero_iff hre_gt0 hne1).mp hxi_₊
+      have hm₂_12 : 12 ≤ m₂ := (Nat.le_add_left 12 _).trans (le_max_right _ _)
+      have him_ge_m₂ : ((m₂ + 1 : ℕ) : ℝ) ≤ ρ₊.im := him_₊ ▸ hT₁
+      have him_pos : 0 < ρ₊.im := by
+        have : (0 : ℝ) < ((m₂ + 1 : ℕ) : ℝ) := by positivity
+        linarith
+      set m : ℕ := Nat.floor ρ₊.im
+      have hm_ge_m₂ : m₂ ≤ m := by
+        have h1 : m₂ + 1 ≤ m := Nat.le_floor him_ge_m₂
+        omega
+      have hm_ge_m₀ : m₀ ≤ m := (le_max_left _ _).trans hm_ge_m₂
+      have hm_ge_ceil : Nat.ceil ((600 / c) ^ 2) + 12 ≤ m := (le_max_right _ _).trans hm_ge_m₂
+      have hm_le_im : (m : ℝ) ≤ ρ₊.im := Nat.floor_le him_pos.le
+      have him_lt_m1 : ρ₊.im < (m : ℝ) + 1 := Nat.lt_floor_add_one ρ₊.im
+      have hρ_unit : ρ₊ ∈ xiUnitWindowZeros (m : ℝ) :=
+        mem_xiUnitWindowZeros.mpr
+          ⟨(_root_.RHTower.stripZeros_finite ((m : ℝ) + 1)).mem_toFinset.mpr
+            ⟨⟨hre_gt0, hre_lt1, him_pos.le, him_lt_m1⟩, hxi_₊⟩, hm_le_im⟩
+      have hρ_Z : ρ₊ ∈ burnolUnitXiZeros m := xiUnitWindowZeros_subset_burnolUnitXiZeros m hρ_unit
+      set S : ℕ := Nat.ceil (c * ((m + 6 : ℕ) : ℝ) ^ k)
+      set n : ℕ := fixedPolyDoorStage k c m
+      set N : ℕ := polySqrtPrefix k m
+      have hNdoor : doorUnitPrefix m S ≤ N :=
+        (doorUnitPrefix_le_besselUnitPrefix m S).trans
+          (besselUnitPrefix_le_polySqrtPrefix_of_le k m (hS_le_pow c hc_le1 m))
+      obtain ⟨hn_Icc, hspec⟩ := doorUnitStage_spec m S
+      obtain ⟨_, hind_sum⟩ := hspec N hNdoor
+      have hind0 := (hind m hm_ge_m₀ N le_rfl).2
+      have hn_ge_S : S ≤ n := (le_max_left S 6).trans (Finset.mem_Icc.mp hn_Icc).1
+      have hn6 : 6 ≤ n := (le_max_right S 6).trans (Finset.mem_Icc.mp hn_Icc).1
+      have hn_pos : (0 : ℝ) < (n : ℝ) := by exact_mod_cast (show 0 < n by omega)
+      have hs_eq : (zhukovskyStage n : ℝ) = (n : ℝ) := by
+        exact_mod_cast zhukovskyStage_eq_self hn6
+      have hn_ge_pow : c * ((m + 6 : ℕ) : ℝ) ^ k ≤ (n : ℝ) :=
+        (Nat.le_ceil _).trans (by exact_mod_cast hn_ge_S)
+      rw [← hre_abs, ← him_₊]
+      by_contra hgt
+      push_neg at hgt
+      have him_le_m6 : ρ₊.im ≤ ((m + 6 : ℕ) : ℝ) := by push_cast; linarith
+      have hlo_band : 1 / (4 * (zhukovskyStage n : ℝ)) < |ρ₊.re - 1 / 2| := by
+        rw [hs_eq]
+        have hpow_le : ρ₊.im ^ k ≤ ((m + 6 : ℕ) : ℝ) ^ k :=
+          pow_le_pow_left₀ him_pos.le him_le_m6 k
+        have h1 : 1 / (4 * (n : ℝ)) ≤ (1 / (4 * c)) / ((m + 6 : ℕ) : ℝ) ^ k := by
+          rw [div_div, one_div_le_one_div (by positivity) (by positivity)]
+          linarith
+        have h2 : (1 / (4 * c)) / ((m + 6 : ℕ) : ℝ) ^ k ≤ (1 / (4 * c)) / ρ₊.im ^ k :=
+          div_le_div_of_nonneg_left (by positivity) (by positivity) hpow_le
+        exact (h1.trans h2).trans_lt hgt
+      have hhi_band : |ρ₊.re - 1 / 2| < 1 / 2 - 1 / (4 * (zhukovskyStage n : ℝ)) := by
+        rw [hs_eq]
+        have hup := _root_.RHTower.re_le_one_sub_of_zeta_zero hre_gt0 hre_lt1 hzeta_₊
+        have hdn := _root_.RHTower.one_div_le_re_of_zeta_zero hre_gt0 hre_lt1 hzeta_₊
+        rw [abs_of_pos him_pos] at hup hdn
+        have habs_zfr : |ρ₊.re - 1 / 2| ≤ 1 / 2 - 1 / (58 * Real.log ρ₊.im) := by
+          rw [div_div] at hup hdn
+          exact abs_le.mpr ⟨by linarith, by linarith⟩
+        have him_gt1 : 1 < ρ₊.im := by
+          have : (12 : ℝ) < ((m₂ + 1 : ℕ) : ℝ) := by exact_mod_cast (show 12 < m₂ + 1 by omega)
+          linarith
+        have hlog_pos : 0 < Real.log ρ₊.im := Real.log_pos him_gt1
+        have hlog_le_rt : Real.log ρ₊.im ≤ 2 * Real.sqrt ((m + 6 : ℕ) : ℝ) := by
+          have h1 : Real.log ρ₊.im ≤ Real.log ((m + 6 : ℕ) : ℝ) :=
+            Real.log_le_log him_pos him_le_m6
+          have hsq := sq_log_le_four_mul (x := ((m + 6 : ℕ) : ℝ))
+            (by exact_mod_cast (show 1 ≤ m + 6 by omega))
+          have h2 : Real.log ((m + 6 : ℕ) : ℝ) ≤ 2 * Real.sqrt ((m + 6 : ℕ) : ℝ) := by
+            have hnn : 0 ≤ Real.log ((m + 6 : ℕ) : ℝ) :=
+              Real.log_nonneg (by exact_mod_cast (show 1 ≤ m + 6 by omega))
+            rw [← Real.sqrt_sq hnn]
+            calc Real.sqrt ((Real.log ((m + 6 : ℕ) : ℝ)) ^ 2)
+                ≤ Real.sqrt (4 * ((m + 6 : ℕ) : ℝ)) := Real.sqrt_le_sqrt hsq
+              _ = 2 * Real.sqrt ((m + 6 : ℕ) : ℝ) := by
+                  rw [Real.sqrt_mul (by norm_num), show Real.sqrt 4 = 2 by norm_num]
+          exact h1.trans h2
+        have hrt_gt : 600 / c < Real.sqrt ((m + 6 : ℕ) : ℝ) := by
+          have hsq : (600 / c) ^ 2 < ((m + 6 : ℕ) : ℝ) := by
+            have hc1 : (600 / c) ^ 2 ≤ (Nat.ceil ((600 / c) ^ 2) : ℝ) := Nat.le_ceil _
+            have hc2 : (Nat.ceil ((600 / c) ^ 2) : ℝ) + 12 ≤ (m : ℝ) := by exact_mod_cast hm_ge_ceil
+            push_cast; linarith
+          rw [← Real.sqrt_sq (by positivity : 0 ≤ 600 / c)]
+          exact Real.sqrt_lt_sqrt (by positivity) hsq
+        have h58_lt : 58 * Real.log ρ₊.im < 4 * (n : ℝ) := by
+          have h1 : 600 < c * Real.sqrt ((m + 6 : ℕ) : ℝ) := (div_lt_iff₀ hc_pos).mp hrt_gt
+          have hrt_pos : 0 < Real.sqrt ((m + 6 : ℕ) : ℝ) := Real.sqrt_pos.mpr (by positivity)
+          have h2 : 116 * Real.sqrt ((m + 6 : ℕ) : ℝ) < c * ((m + 6 : ℕ) : ℝ) := by
+            have hmul : 600 * Real.sqrt ((m + 6 : ℕ) : ℝ) <
+                c * (Real.sqrt ((m + 6 : ℕ) : ℝ) * Real.sqrt ((m + 6 : ℕ) : ℝ)) := by nlinarith
+            rw [Real.mul_self_sqrt (by positivity)] at hmul
+            linarith
+          have hpow_ge : ((m + 6 : ℕ) : ℝ) ≤ ((m + 6 : ℕ) : ℝ) ^ k := by
+            conv_lhs => rw [← pow_one ((m + 6 : ℕ) : ℝ)]
+            exact pow_le_pow_right₀ (by exact_mod_cast (show 1 ≤ m + 6 by omega)) hk
+          have h3 : c * ((m + 6 : ℕ) : ℝ) ≤ c * ((m + 6 : ℕ) : ℝ) ^ k :=
+            mul_le_mul_of_nonneg_left hpow_ge hc_pos.le
+          linarith
+        have hinv_lt : 1 / (4 * (n : ℝ)) < 1 / (58 * Real.log ρ₊.im) :=
+          one_div_lt_one_div_of_lt (by positivity) h58_lt
+        linarith
+      have hmult_pos : ∀ w ∈ burnolUnitXiZeros m, 1 ≤ (analyticOrderAt _root_.RHTower.xi w).toNat :=
+        fun w hw => Nat.one_le_iff_ne_zero.mpr
+          (_root_.RHTower.xi_order_toNat_ne_zero (((mem_burnolUnitXiZeros_iff m w).mp hw).2))
+      have hge2 := two_le_collision_sum_of_offLine_in_band
+        (one_sub_star_mem_burnolUnitXiZeros m) hmult_pos hρ_Z hlo_band hhi_band
+      rw [← hind_sum, hind0] at hge2
+      omega
   tfae_finish
 
 end GaloisForLFunctions.ConjugateDiagonalGeometry.WindowPortFlux

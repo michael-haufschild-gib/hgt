@@ -138,14 +138,13 @@ theorem coreSourcePhase_cos_dephases (g : ℝ × ℝ → ℝ) (hg : Continuous g
     have hi := integral_re (μ := volume.restrict coreSourceRect)
       (ContinuousOn.integrableOn_compact (μ := volume) coreSourceRect_compact hc)
     change (∫ p in coreSourceRect, ((g p : ℂ) *
-      Complex.exp (-((t * coreSourcePhase p : ℝ) : ℂ) * Complex.I)).re) = _ at hi
+      Complex.exp (-((t * coreSourcePhase p : ℝ) : ℂ) * Complex.I)).re) =
+      (∫ p in coreSourceRect, (g p : ℂ) *
+        Complex.exp (-((t * coreSourcePhase p : ℝ) : ℂ) * Complex.I)).re at hi
     rw [← hi]
     refine integral_congr_ae (Eventually.of_forall fun p => ?_)
-    simp only [Complex.mul_re, Complex.ofReal_re, Complex.ofReal_im,
-      zero_mul, sub_zero, Complex.exp_re, Complex.neg_re, Complex.neg_im,
-      Complex.I_re, Complex.I_im, mul_zero, mul_one, zero_sub, Real.exp_zero,
-      one_mul, Real.cos_neg]
-  simpa only [Function.comp_apply, Complex.zero_re, he] using ht
+    simp [Complex.mul_re, Complex.mul_im, Complex.exp_re]
+  simpa only [Function.comp_def, Complex.zero_re, he] using ht
 
 /-- Dephasing survives a convergent real parameter in a continuous amplitude. -/
 theorem coreSourcePhase_varying_cos_dephases
@@ -154,7 +153,9 @@ theorem coreSourcePhase_varying_cos_dephases
     (ht : Tendsto t atTop atTop) :
     Tendsto (fun n => ∫ p in coreSourceRect,
       g (a n) p * Real.cos (t n * coreSourcePhase p)) atTop (𝓝 0) := by
-  have hc (v : ℝ) : Continuous (g v) := hg.comp (by fun_prop)
+  have hc (v : ℝ) : Continuous (g v) := by
+    have hp : Continuous (fun p : ℝ × ℝ => (v, p)) := by fun_prop
+    exact hg.comp hp
   have hcos (v : ℝ) : ContinuousOn (fun p => Real.cos (v * coreSourcePhase p))
       coreSourceRect := Real.continuous_cos.comp_continuousOn
     (continuousOn_const.mul coreSourcePhase_continuousOn)
@@ -166,7 +167,8 @@ theorem coreSourcePhase_varying_cos_dephases
       ((hg.sub ((hc b).comp continuous_snd)).norm) coreSourceRect_compact
   have hsmall : Tendsto (fun n => ∫ p in coreSourceRect, ‖g (a n) p - g b p‖)
       atTop (𝓝 0) := by
-    simpa only [sub_self, norm_zero, integral_zero] using hdiff.continuousAt.tendsto.comp ha
+    simpa only [Function.comp_def, sub_self, norm_zero, integral_zero]
+      using hdiff.continuousAt.tendsto.comp ha
   have herr : Tendsto (fun n => ∫ p in coreSourceRect,
       (g (a n) p - g b p) * Real.cos (t n * coreSourcePhase p)) atTop (𝓝 0) := by
     refine squeeze_zero_norm (fun n => ?_) hsmall
@@ -184,7 +186,12 @@ theorem coreSourcePhase_varying_cos_dephases
   have hsum := herr.add hfixed
   simp only [zero_add] at hsum
   refine hsum.congr fun n => ?_
-  rw [← integral_add ((hi (a n) (t n)).sub (hi b (t n))) (hi b (t n))]
+  simp only [Function.comp_apply]
+  have hd : IntegrableOn (fun p =>
+      (g (a n) p - g b p) * Real.cos (t n * coreSourcePhase p)) coreSourceRect :=
+    ContinuousOn.integrableOn_compact coreSourceRect_compact
+      (((hc (a n)).sub (hc b)).continuousOn.mul (hcos (t n)))
+  rw [← integral_add hd (hi b (t n))]
   refine integral_congr_ae (Eventually.of_forall fun p => ?_)
   ring
 
