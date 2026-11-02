@@ -40,15 +40,17 @@ The exact signed fold cost `w(C−F)` can be paid uniformly along the tower. The
 ## Current analytic test of the stronger loan
 
 Try the odd C² polynomial window `f(x)=x(1−x²)^3` on `[-1,1]`, zero outside, dilated to length
-`13/12 < log 3`. Its pole contribution is nonpositive. A rigorous upper bound for the prime-free
+`109/100 < log 3`. Its pole contribution is nonpositive. A rigorous upper bound for the prime-free
 archimedean form would suffice to refute the nonnegative-loan target.
 
 Useful exact kernel identity, for `t>0`:
 `ω(t)=1/(4 sinh(t/2))+1/(4 cosh(t/2)) ≤ 1/(2t)+1/4`.
-Compare the interior jumps with this logarithmic kernel and retain the exact tail `Ω(1)`.
+Compare the interior jumps with this logarithmic kernel and retain the exact tail `Ω(A)`.
 For an odd unit-mass profile at length `A`, the constant-kernel contribution cancels its
 autocorrelation integral, giving the candidate upper quotient
-`L(f)−log A+1/2+2Ω(1)`, where `L` is the logarithmic interior-plus-exit quotient.
+`L(f)+A/2+2Ω(A)`, where `L` is the scale-invariant logarithmic lag quotient.
+Target exact bounds: `L(f)≤29/12`, `Ω(109/100)≤119/100`, and `−Ω_Γ>107/20`.
+These imply a strictly negative prime-free archimedean Rayleigh quotient. All three remain to audit.
 
 The polynomial identity
 `f=16(P₁/105−P₃/55+P₅/91−P₇/429)` exposes a finite exact rational expression for `L(f)`.

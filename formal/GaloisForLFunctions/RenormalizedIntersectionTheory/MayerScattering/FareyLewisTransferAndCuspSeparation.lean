@@ -2277,215 +2277,77 @@ theorem dyadicCuspExtractor_bound {s ε c : ℂ} (hs0 : 0 < s.re) (hs_ne : 2 * s
     ring
   have hsum_2a : Summable (fun n : ℕ => term (2 * s) f n (((2 * a : ℝ) : ℂ) - 1)) :=
     (term_locallyUniform hw0 f).summable hz2a
-  have hsum_a : Summable (fun k : ℕ => term (2 * s) k.ble? ... ) := sorry
+  have hsum_a : Summable (fun k : ℕ => term (2 * s) f k ((a : ℂ) - 1)) :=
     (term_locallyUniform hw0 f).summable hza
   have hinj_ev : Function.Injective (fun k : ℕ => 2 * k) := fun _ _ h => by simpa using h
   have hinj_od : Function.Injective (fun k : ℕ => 2 * k + 1) := fun _ _ h => by simpa using h
-  have hsum_ev : Summable (fun k : ℕ => term w f (2 * k) (((2 * a : ℝ) : ℂ) - 1)) :=
+  have hsum_ev : Summable (fun k : ℕ => term (2 * s) f (2 * k) (((2 * a : ℝ) : ℂ) - 1)) :=
     hsum_2a.comp_injective hinj_ev
-  have hsum_od : Summable (fun k : ℕ => term w f (2 * k + 1) (((2 * a : ℝ) : ℂ) - 1)) :=
+  have hsum_od : Summable (fun k : ℕ => term (2 * s) f (2 * k + 1) (((2 * a : ℝ) : ℂ) - 1)) :=
     hsum_2a.comp_injective hinj_od
-  have hsum_eta : Summable (fun k : ℕ => RHTower.etaTerm w k * plane f 0) :=
-    (RHTower.summable_etaTerm w hw0).mul_right (plane f 0)
-  -- Define the `k`-th remainder `δR k`:
-  let δR : ℕ → ℂ := fun k =>
-    let u : ℝ := (k : ℝ) + a
-    ((2 * u : ℝ) : ℂ) ^ (-w) * (plane f (((2 * u : ℝ) : ℂ)⁻¹) - plane f 0) +
-      ((2 * u + 1 : ℝ) : ℂ) ^ (-w) * (plane f (((2 * u + 1 : ℝ) : ℂ)⁻¹) - plane f 0) -
-      2 * ((2 * u : ℝ) : ℂ) ^ (-w) * (plane f ((u : ℂ)⁻¹) - plane f 0) +
-      (((2 * u + 1 : ℝ) : ℂ) ^ (-w) - ((2 * u : ℝ) : ℂ) ^ (-w)) * plane f 0
-  have hpair_eq : ∀ k : ℕ,
-      term w f (2 * k) (((2 * a : ℝ) : ℂ) - 1) +
-        term w f (2 * k + 1) (((2 * a : ℝ) : ℂ) - 1) -
-        (2 : ℂ) ^ (1 - w) * term w f k ((a : ℂ) - 1) =
-        -(RHTower.etaTerm w k * plane f 0) + δR k := by
-    intro k
-    let u : ℝ := (k : ℝ) + a
-    have hu_pos : 0 < u := by dsimp [u]; positivity
-    have hk1_pos : (0 : ℝ) < (k : ℝ) + 1 := by positivity
-    have h2pos : (0 : ℝ) < 2 := by norm_num
-    have h2_1w : (2 : ℂ) ^ (1 - w) = 2 * (2 : ℂ) ^ (-w) := by
-      rw [show (1 - w : ℂ) = 1 + (-w) by ring, Complex.cpow_add _ _ two_ne_zero, Complex.cpow_one]
-    have hp_2u : (2 : ℂ) ^ (-w) * (u : ℂ) ^ (-w) = ((2 * u : ℝ) : ℂ) ^ (-w) :=
-      (ofReal_mul_cpow_pos h2pos hu_pos (-w)).symm
-    have hp_2k2 : (2 : ℂ) ^ (-w) * (((k : ℝ) + 1 : ℝ) : ℂ) ^ (-w) =
-        ((2 * (k : ℝ) + 2 : ℝ) : ℂ) ^ (-w) := by
-      have h := (ofReal_mul_cpow_pos h2pos hk1_pos (-w)).symm
-      rw [show (2 * ((k : ℝ) + 1) : ℝ) = 2 * (k : ℝ) + 2 by ring] at h
-      exact h
-    have hc_ev : (((2 * k + 1 : ℕ) : ℂ) + (((2 * a : ℝ) : ℂ) - 1)) = ((2 * u : ℝ) : ℂ) := by
-      dsimp [u]; push_cast; ring
-    have hc_od : (((2 * k + 1 + 1 : ℕ) : ℂ) + (((2 * a : ℝ) : ℂ) - 1)) =
-        ((2 * u + 1 : ℝ) : ℂ) := by
-      dsimp [u]; push_cast; ring
-    have hc_a : (((k + 1 : ℕ) : ℂ) + ((a : ℂ) - 1)) = (u : ℂ) := by
-      dsimp [u]; push_cast; ring
-    have hc_n1 : ((2 * k + 1 : ℕ) : ℂ) = ((2 * (k : ℝ) + 1 : ℝ) : ℂ) := by push_cast; ring
-    have hc_n2 : ((2 * k + 1 + 1 : ℕ) : ℂ) = ((2 * (k : ℝ) + 2 : ℝ) : ℂ) := by push_cast; ring
-    have hc_nk : ((k + 1 : ℕ) : ℂ) = (((k : ℝ) + 1 : ℝ) : ℂ) := by push_cast; ring
-    dsimp only [δR]
-    unfold term RHTower.etaTerm
-    rw [hc_ev, hc_od, hc_a, hc_n1, hc_n2, hc_nk, h2_1w]
-    linear_combination
-      -2 * plane f ((u : ℂ)⁻¹) * hp_2u + 2 * plane f 0 * hp_2k2
-  -- Bound each `‖δR k‖`:
-  have hδR_le : ∀ k : ℕ, ‖δR k‖ ≤ (16 + ‖w‖) * ‖f‖ * ((k : ℝ) + a) ^ (-w.re - 1) := by
-    intro k
-    let u : ℝ := (k : ℝ) + a
-    have hu1 : 1 ≤ u := by dsimp [u]; linarith [Nat.cast_nonneg (α := ℝ) k]
-    have hu0 : 0 < u := zero_lt_one.trans_le hu1
-    have h2u1 : 1 ≤ 2 * u := by linarith
-    have h2u0 : 0 < 2 * u := by linarith
-    have h2u1_1 : 1 ≤ 2 * u + 1 := by linarith
-    have h2u1_0 : 0 < 2 * u + 1 := by linarith
-    have hf0 : ‖plane f 0‖ ≤ ‖f‖ := norm_plane_le f zeroPoint.2
-    -- First piece:
-    have hb1 : ‖((2 * u : ℝ) : ℂ) ^ (-w) * (plane f (((2 * u : ℝ) : ℂ)⁻¹) - plane f 0)‖ ≤
-        4 * ‖f‖ * u ^ (-w.re - 1) := by
-      rw [norm_mul, Complex.norm_cpow_eq_rpow_re_of_pos h2u0, Complex.neg_re]
-      have hp := norm_plane_sub_zero_le f (inv_ofReal_mem_closedBall_one h2u1)
-      rw [norm_inv, Complex.norm_real, Real.norm_of_nonneg h2u0.le] at hp
-      calc
-        (2 * u) ^ (-w.re) * ‖plane f (((2 * u : ℝ) : ℂ)⁻¹) - plane f 0‖
-            ≤ (2 * u) ^ (-w.re) * (4 * ‖f‖ * (2 * u)⁻¹) :=
-          mul_le_mul_of_nonneg_left hp (Real.rpow_nonneg h2u0.le _)
-        _ = 4 * ‖f‖ * ((2 * u) ^ (-w.re) * (2 * u) ^ (-1 : ℝ)) := by
-          rw [Real.rpow_neg_one]; ring
-        _ = 4 * ‖f‖ * (2 * u) ^ (-w.re - 1) := by
-          rw [← Real.rpow_add h2u0, ← sub_eq_add_neg]
-        _ ≤ 4 * ‖f‖ * u ^ (-w.re - 1) :=
-          mul_le_mul_of_nonneg_left
-            (Real.rpow_le_rpow_of_nonpos hu0 (by linarith) (by linarith)) (by positivity)
-    -- Second piece:
-    have hb2 : ‖((2 * u + 1 : ℝ) : ℂ) ^ (-w) * (plane f (((2 * u + 1 : ℝ) : ℂ)⁻¹) - plane f 0)‖ ≤
-        4 * ‖f‖ * u ^ (-w.re - 1) := by
-      rw [norm_mul, Complex.norm_cpow_eq_rpow_re_of_pos h2u1_0, Complex.neg_re]
-      have hp := norm_plane_sub_zero_le f (inv_ofReal_mem_closedBall_one h2u1_1)
-      rw [norm_inv, Complex.norm_real, Real.norm_of_nonneg h2u1_0.le] at hp
-      calc
-        (2 * u + 1) ^ (-w.re) * ‖plane f (((2 * u + 1 : ℝ) : ℂ)⁻¹) - plane f 0‖
-            ≤ (2 * u + 1) ^ (-w.re) * (4 * ‖f‖ * (2 * u + 1)⁻¹) :=
-          mul_le_mul_of_nonneg_left hp (Real.rpow_nonneg h2u1_0.le _)
-        _ = 4 * ‖f‖ * ((2 * u + 1) ^ (-w.re) * (2 * u + 1) ^ (-1 : ℝ)) := by
-          rw [Real.rpow_neg_one]; ring
-        _ = 4 * ‖f‖ * (2 * u + 1) ^ (-w.re - 1) := by
-          rw [← Real.rpow_add h2u1_0, ← sub_eq_add_neg]
-        _ ≤ 4 * ‖f‖ * u ^ (-w.re - 1) :=
-          mul_le_mul_of_nonneg_left
-            (Real.rpow_le_rpow_of_nonpos hu0 (by linarith) (by linarith)) (by positivity)
-    -- Third piece:
-    have hb3 : ‖(2 : ℂ) * ((2 * u : ℝ) : ℂ) ^ (-w) * (plane f ((u : ℂ)⁻¹) - plane f 0)‖ ≤
-        8 * ‖f‖ * u ^ (-w.re - 1) := by
-      rw [norm_mul, norm_mul, Complex.norm_ofNat,
-        Complex.norm_cpow_eq_rpow_re_of_pos h2u0, Complex.neg_re]
-      have hp := norm_plane_sub_zero_le f (inv_ofReal_mem_closedBall_one hu1)
-      rw [norm_inv, Complex.norm_real, Real.norm_of_nonneg hu0.le] at hp
-      have h2u_le : (2 * u) ^ (-w.re) ≤ u ^ (-w.re) :=
-        Real.rpow_le_rpow_of_nonpos hu0 (by linarith) (by linarith)
-      calc
-        2 * (2 * u) ^ (-w.re) * ‖plane f ((u : ℂ)⁻¹) - plane f 0‖
-            ≤ 2 * u ^ (-w.re) * (4 * ‖f‖ * u⁻¹) := by
-          refine mul_le_mul ?_ hp (norm_nonneg _) (by positivity)
-          exact mul_le_mul_of_nonneg_left h2u_le (by norm_num)
-        _ = 8 * ‖f‖ * (u ^ (-w.re) * u ^ (-1 : ℝ)) := by rw [Real.rpow_neg_one]; ring
-        _ = 8 * ‖f‖ * u ^ (-w.re - 1) := by rw [← Real.rpow_add hu0, ← sub_eq_add_neg]
-    -- Fourth piece:
-    have hb4 : ‖(((2 * u + 1 : ℝ) : ℂ) ^ (-w) - ((2 * u : ℝ) : ℂ) ^ (-w)) * plane f 0‖ ≤
-        ‖w‖ * ‖f‖ * u ^ (-w.re - 1) := by
-      rw [norm_mul]
-      have hdq := RHTower.DQPT.dqptRp_sub_norm_le hw0 h2u0 (show 2 * u ≤ 2 * u + 1 by linarith)
-      rw [show 2 * u + 1 - 2 * u = 1 by ring, mul_one, RHTower.DQPT.dqptRp,
-        RHTower.DQPT.dqptRp, norm_sub_rev] at hdq
-      have hmono : (2 * u) ^ (-w.re - 1) ≤ u ^ (-w.re - 1) :=
-        Real.rpow_le_rpow_of_nonpos hu0 (by linarith) (by linarith)
-      calc
-        ‖((2 * u + 1 : ℝ) : ℂ) ^ (-w) - ((2 * u : ℝ) : ℂ) ^ (-w)‖ * ‖plane f 0‖
-            ≤ (‖w‖ * (2 * u) ^ (-w.re - 1)) * ‖f‖ :=
-          mul_le_mul hdq hf0 (norm_nonneg _) (by positivity)
-        _ ≤ (‖w‖ * u ^ (-w.re - 1)) * ‖f‖ :=
-          mul_le_mul_of_nonneg_right (mul_le_mul_of_nonneg_left hmono (norm_nonneg w))
-            (norm_nonneg f)
-        _ = ‖w‖ * ‖f‖ * u ^ (-w.re - 1) := by ring
-    dsimp only [δR]
-    calc
-      ‖((2 * u : ℝ) : ℂ) ^ (-w) * (plane f (((2 * u : ℝ) : ℂ)⁻¹) - plane f 0) +
-          ((2 * u + 1 : ℝ) : ℂ) ^ (-w) * (plane f (((2 * u + 1 : ℝ) : ℂ)⁻¹) - plane f 0) -
-          2 * ((2 * u : ℝ) : ℂ) ^ (-w) * (plane f ((u : ℂ)⁻¹) - plane f 0) +
-          (((2 * u + 1 : ℝ) : ℂ) ^ (-w) - ((2 * u : ℝ) : ℂ) ^ (-w)) * plane f 0‖
-          ≤ ‖((2 * u : ℝ) : ℂ) ^ (-w) * (plane f (((2 * u : ℝ) : ℂ)⁻¹) - plane f 0) +
-              ((2 * u + 1 : ℝ) : ℂ) ^ (-w) * (plane f (((2 * u + 1 : ℝ) : ℂ)⁻¹) - plane f 0) -
-              2 * ((2 * u : ℝ) : ℂ) ^ (-w) * (plane f ((u : ℂ)⁻¹) - plane f 0)‖ +
-            ‖(((2 * u + 1 : ℝ) : ℂ) ^ (-w) - ((2 * u : ℝ) : ℂ) ^ (-w)) * plane f 0‖ :=
-        norm_add_le _ _
-      _ ≤ ‖((2 * u : ℝ) : ℂ) ^ (-w) * (plane f (((2 * u : ℝ) : ℂ)⁻¹) - plane f 0) +
-            ((2 * u + 1 : ℝ) : ℂ) ^ (-w) * (plane f (((2 * u + 1 : ℝ) : ℂ)⁻¹) - plane f 0)‖ +
-          ‖(2 : ℂ) * ((2 * u : ℝ) : ℂ) ^ (-w) * (plane f ((u : ℂ)⁻¹) - plane f 0)‖ +
-          ‖(((2 * u + 1 : ℝ) : ℂ) ^ (-w) - ((2 * u : ℝ) : ℂ) ^ (-w)) * plane f 0‖ := by
-        linarith [norm_sub_le
-          (((2 * u : ℝ) : ℂ) ^ (-w) * (plane f (((2 * u : ℝ) : ℂ)⁻¹) - plane f 0) +
-            ((2 * u + 1 : ℝ) : ℂ) ^ (-w) * (plane f (((2 * u + 1 : ℝ) : ℂ)⁻¹) - plane f 0))
-          ((2 : ℂ) * ((2 * u : ℝ) : ℂ) ^ (-w) * (plane f ((u : ℂ)⁻¹) - plane f 0))]
-      _ ≤ 4 * ‖f‖ * u ^ (-w.re - 1) + 4 * ‖f‖ * u ^ (-w.re - 1) +
-            8 * ‖f‖ * u ^ (-w.re - 1) + ‖w‖ * ‖f‖ * u ^ (-w.re - 1) := by
-        linarith [norm_add_le
-          (((2 * u : ℝ) : ℂ) ^ (-w) * (plane f (((2 * u : ℝ) : ℂ)⁻¹) - plane f 0))
-          (((2 * u + 1 : ℝ) : ℂ) ^ (-w) * (plane f (((2 * u + 1 : ℝ) : ℂ)⁻¹) - plane f 0))]
-      _ = (16 + ‖w‖) * ‖f‖ * u ^ (-w.re - 1) := by ring
+  have hsum_eta : Summable (fun k : ℕ => RHTower.etaTerm (2 * s) k * plane f 0) :=
+    (RHTower.summable_etaTerm (2 * s) hw0).mul_right (plane f 0)
   obtain ⟨hsum_tail, htail_le⟩ := tsum_add_rpow_neg_succ_le hw0 ha
-  have hsum_δR_norm : Summable (fun k : ℕ => ‖δR k‖) :=
-    Summable.of_nonneg_of_le (fun _ => norm_nonneg _) hδR_le
-      (hsum_tail.mul_left ((16 + ‖w‖) * ‖f‖))
-  have hsum_δR : Summable δR := hsum_δR_norm.of_norm
-  -- Collapse the `transfer` difference to `∑' k, δR k` via `etaPair_eq`:
+  have hsum_δR_norm : Summable (fun k : ℕ => ‖dyadicRemainderTerm (2 * s) f a k‖) :=
+    Summable.of_nonneg_of_le (fun _ => norm_nonneg _)
+      (norm_dyadicRemainderTerm_le hw0 f ha)
+      (hsum_tail.mul_left ((16 + ‖2 * s‖) * ‖f‖))
+  have hsum_δR : Summable (dyadicRemainderTerm (2 * s) f a) := hsum_δR_norm.of_norm
   have htr_diff :
-      transfer w f (((2 * a : ℝ) : ℂ) - 1) - (2 : ℂ) ^ (1 - w) * transfer w f ((a : ℂ) - 1) =
-        ∑' k : ℕ, δR k := by
+      transfer (2 * s) f (((2 * a : ℝ) : ℂ) - 1) -
+          (2 : ℂ) ^ (1 - 2 * s) * transfer (2 * s) f ((a : ℂ) - 1) =
+        ∑' k : ℕ, dyadicRemainderTerm (2 * s) f a k := by
     unfold transfer
-    have hsplit : (∑' n : ℕ, term w f n (((2 * a : ℝ) : ℂ) - 1)) =
-        (∑' k : ℕ, term w f (2 * k) (((2 * a : ℝ) : ℂ) - 1)) +
-          ∑' k : ℕ, term w f (2 * k + 1) (((2 * a : ℝ) : ℂ) - 1) :=
+    have hsplit : (∑' n : ℕ, term (2 * s) f n (((2 * a : ℝ) : ℂ) - 1)) =
+        (∑' k : ℕ, term (2 * s) f (2 * k) (((2 * a : ℝ) : ℂ) - 1)) +
+          ∑' k : ℕ, term (2 * s) f (2 * k + 1) (((2 * a : ℝ) : ℂ) - 1) :=
       (tsum_even_add_odd hsum_ev hsum_od).symm
-    have hmul_a : (2 : ℂ) ^ (1 - w) * (∑' k : ℕ, term w f k ((a : ℂ) - 1)) =
-        ∑' k : ℕ, (2 : ℂ) ^ (1 - w) * term w f k ((a : ℂ) - 1) :=
-      (tsum_mul_left).symm
+    have hmul_a : (2 : ℂ) ^ (1 - 2 * s) * (∑' k : ℕ, term (2 * s) f k ((a : ℂ) - 1)) =
+        ∑' k : ℕ, (2 : ℂ) ^ (1 - 2 * s) * term (2 * s) f k ((a : ℂ) - 1) :=
+      tsum_mul_left.symm
     have hcomb_tsum :
-        (∑' k : ℕ, term w f (2 * k) (((2 * a : ℝ) : ℂ) - 1)) +
-          (∑' k : ℕ, term w f (2 * k + 1) (((2 * a : ℝ) : ℂ) - 1)) -
-          (∑' k : ℕ, (2 : ℂ) ^ (1 - w) * term w f k ((a : ℂ) - 1)) =
-        ∑' k : ℕ, (-(RHTower.etaTerm w k * plane f 0) + δR k) := by
+        (∑' k : ℕ, term (2 * s) f (2 * k) (((2 * a : ℝ) : ℂ) - 1)) +
+          (∑' k : ℕ, term (2 * s) f (2 * k + 1) (((2 * a : ℝ) : ℂ) - 1)) -
+          (∑' k : ℕ, (2 : ℂ) ^ (1 - 2 * s) * term (2 * s) f k ((a : ℂ) - 1)) =
+        ∑' k : ℕ, (-(RHTower.etaTerm (2 * s) k * plane f 0) + dyadicRemainderTerm (2 * s) f a k) := by
       rw [← hsum_ev.tsum_add hsum_od, ← (hsum_ev.add hsum_od).tsum_sub
-        (hsum_a.mul_left ((2 : ℂ) ^ (1 - w)))]
-      exact tsum_congr hpair_eq
-    have heta_val : (∑' k : ℕ, -(RHTower.etaTerm w k * plane f 0)) =
-        -((1 - (2 : ℂ) ^ (1 - w)) * riemannZeta w * plane f 0) := by
-      rw [tsum_neg, tsum_mul_right, ← RHTower.etaPair, RHTower.etaPair_eq w hw0 hs_ne]
+        (hsum_a.mul_left ((2 : ℂ) ^ (1 - 2 * s)))]
+      exact tsum_congr (dyadicRemainderTerm_pair_eq (2 * s) f a ha)
+    have heta_val : (∑' k : ℕ, -(RHTower.etaTerm (2 * s) k * plane f 0)) =
+        -((1 - (2 : ℂ) ^ (1 - 2 * s)) * riemannZeta (2 * s) * plane f 0) := by
+      rw [tsum_neg, tsum_mul_right, ← RHTower.etaPair, RHTower.etaPair_eq (2 * s) hw0 hs_ne]
     rw [hsplit]
     calc
-      (riemannZeta w * plane f 0 +
-          ((∑' k : ℕ, term w f (2 * k) (((2 * a : ℝ) : ℂ) - 1)) +
-            ∑' k : ℕ, term w f (2 * k + 1) (((2 * a : ℝ) : ℂ) - 1))) -
-          (2 : ℂ) ^ (1 - w) * (riemannZeta w * plane f 0 + ∑' k : ℕ, term w f k ((a : ℂ) - 1))
-          = (1 - (2 : ℂ) ^ (1 - w)) * riemannZeta w * plane f 0 +
-              ((∑' k : ℕ, term w f (2 * k) (((2 * a : ℝ) : ℂ) - 1)) +
-                (∑' k : ℕ, term w f (2 * k + 1) (((2 * a : ℝ) : ℂ) - 1)) -
-                (2 : ℂ) ^ (1 - w) * ∑' k : ℕ, term w f k ((a : ℂ) - 1)) := by ring
-      _ = (1 - (2 : ℂ) ^ (1 - w)) * riemannZeta w * plane f 0 +
-            ∑' k : ℕ, (-(RHTower.etaTerm w k * plane f 0) + δR k) := by
+      (riemannZeta (2 * s) * plane f 0 +
+          ((∑' k : ℕ, term (2 * s) f (2 * k) (((2 * a : ℝ) : ℂ) - 1)) +
+            ∑' k : ℕ, term (2 * s) f (2 * k + 1) (((2 * a : ℝ) : ℂ) - 1))) -
+          (2 : ℂ) ^ (1 - 2 * s) *
+            (riemannZeta (2 * s) * plane f 0 + ∑' k : ℕ, term (2 * s) f k ((a : ℂ) - 1))
+          = (1 - (2 : ℂ) ^ (1 - 2 * s)) * riemannZeta (2 * s) * plane f 0 +
+              ((∑' k : ℕ, term (2 * s) f (2 * k) (((2 * a : ℝ) : ℂ) - 1)) +
+                (∑' k : ℕ, term (2 * s) f (2 * k + 1) (((2 * a : ℝ) : ℂ) - 1)) -
+                (2 : ℂ) ^ (1 - 2 * s) * ∑' k : ℕ, term (2 * s) f k ((a : ℂ) - 1)) := by ring
+      _ = (1 - (2 : ℂ) ^ (1 - 2 * s)) * riemannZeta (2 * s) * plane f 0 +
+            ∑' k : ℕ, (-(RHTower.etaTerm (2 * s) k * plane f 0) +
+              dyadicRemainderTerm (2 * s) f a k) := by
         rw [hmul_a, hcomb_tsum]
-      _ = (1 - (2 : ℂ) ^ (1 - w)) * riemannZeta w * plane f 0 +
-            ((∑' k : ℕ, -(RHTower.etaTerm w k * plane f 0)) + ∑' k : ℕ, δR k) := by
+      _ = (1 - (2 : ℂ) ^ (1 - 2 * s)) * riemannZeta (2 * s) * plane f 0 +
+            ((∑' k : ℕ, -(RHTower.etaTerm (2 * s) k * plane f 0)) +
+              ∑' k : ℕ, dyadicRemainderTerm (2 * s) f a k) := by
         rw [hsum_eta.neg.tsum_add hsum_δR]
-      _ = ∑' k : ℕ, δR k := by rw [heta_val]; ring
+      _ = ∑' k : ℕ, dyadicRemainderTerm (2 * s) f a k := by rw [heta_val]; ring
   rw [hcomb_ε, htr_diff, norm_mul, hnorm_ε, one_mul]
   calc
-    ‖∑' k : ℕ, δR k‖ ≤ ∑' k : ℕ, ‖δR k‖ := norm_tsum_le_tsum_norm hsum_δR_norm
-    _ ≤ ∑' k : ℕ, (16 + ‖w‖) * ‖f‖ * ((k : ℝ) + a) ^ (-w.re - 1) :=
-      hsum_δR_norm.tsum_le_tsum hδR_le (hsum_tail.mul_left ((16 + ‖w‖) * ‖f‖))
-    _ = (16 + ‖w‖) * ‖f‖ * ∑' k : ℕ, ((k : ℝ) + a) ^ (-w.re - 1) := tsum_mul_left
-    _ ≤ (16 + ‖w‖) * ‖f‖ * ((1 + 1 / w.re) * a ^ (-w.re)) :=
+    ‖∑' k : ℕ, dyadicRemainderTerm (2 * s) f a k‖
+        ≤ ∑' k : ℕ, ‖dyadicRemainderTerm (2 * s) f a k‖ := norm_tsum_le_tsum_norm hsum_δR_norm
+    _ ≤ ∑' k : ℕ, (16 + ‖2 * s‖) * ‖f‖ * ((k : ℝ) + a) ^ (-(2 * s).re - 1) :=
+      hsum_δR_norm.tsum_le_tsum (norm_dyadicRemainderTerm_le hw0 f ha)
+        (hsum_tail.mul_left ((16 + ‖2 * s‖) * ‖f‖))
+    _ = (16 + ‖2 * s‖) * ‖f‖ * ∑' k : ℕ, ((k : ℝ) + a) ^ (-(2 * s).re - 1) := tsum_mul_left
+    _ ≤ (16 + ‖2 * s‖) * ‖f‖ * ((1 + 1 / (2 * s).re) * a ^ (-(2 * s).re)) :=
       mul_le_mul_of_nonneg_left htail_le (by positivity)
     _ = (16 + ‖2 * s‖) * (1 + 1 / (2 * s.re)) * ‖f‖ * a ^ (-2 * s.re) := by
-      dsimp [w]; rw [hw_re]; ring
+      rw [hw_re]; ring
 
 /-- **Autonomous Dyadic Cusp-Forcing Recovery:**
 `lim_{a → +∞} (ψ(2a) - 2^(1 - 2s) ψ(a)) = -ε (1 - 2^(1 - 2s)) c` across `s.re > 0`, `2s ≠ 1`. -/
@@ -2529,7 +2391,7 @@ theorem dyadicCuspExtractor_sq_div_integrableOn_iff {s ε c : ℂ}
     by_contra hc_ne
     have hnorm_ε : ‖ε‖ = 1 := by
       have hsq : ‖ε‖ ^ 2 = 1 := by rw [← norm_pow, hε, norm_one]
-      nlinarith [norm_nonneg ε]
+      exact (sq_eq_one_iff.mp hsq).resolve_right (by linarith [norm_nonneg ε])
     have h2_gt1 : 1 < ‖(2 : ℂ) ^ (1 - 2 * s)‖ := by
       have h2C : (2 : ℂ) = ((2 : ℝ) : ℂ) := by norm_num
       rw [h2C, Complex.norm_cpow_eq_rpow_re_of_pos (by norm_num : (0 : ℝ) < 2)]
@@ -2683,6 +2545,11 @@ theorem eisensteinLewisPeriod_properties {s : ℂ} (hs0 : 0 < s.re) (hs1 : s.re 
     rw [hc1, hc2] at htt
     exact htt.symm
 
+private def eisensteinDefectIntegrand (s : ℂ) (b : ℝ) : ℝ :=
+  (b + b⁻¹) ^ (-6 : ℝ) * b ^ (2 * s.re - 1) *
+    (b ^ (2 * s.re - 1 / 2) + b ^ (-(2 * s.re - 1 / 2))) *
+    (b ^ (2 * s.re - 1 / 2) - b ^ (-(2 * s.re - 1 / 2))) ^ 2 * ‖eisensteinLewisPeriod s b‖ ^ 2
+
 /-- **Cusp-Erasure Obstruction Theorem Across the Strip (`0 < Re s < 1/2`):**
 At EVERY parameter `s` in `0 < Re s < 1/2` — resonant OR non-resonant — the continuous Eisenstein
 Lewis period `eisensteinLewisPeriod s` satisfies `lewisCoIsometryDefect s Ψ < 0 ↔ s.re ≠ 1/4`
@@ -2717,7 +2584,7 @@ theorem eisensteinLewisPeriod_coIsometryDefect_lt_zero_iff {s : ℂ}
       -- Autonomous non-vanishing on `(1, ∞)` from `tendsto_dyadicCuspExtractor`:
       have hex_gt1 : ∃ b₀ > 1, eisensteinLewisPeriod s b₀ ≠ 0 := by
         by_contra hall
-        push_neg at hall
+        push Not at hall
         have htend := tendsto_dyadicCuspExtractor hs0 hs_ne (by norm_num : (1 : ℂ) ^ 2 = 1)
           (state (2 * s)) hreg
         have hev0 : dyadicCuspExtractor s (fun x => eisensteinLewisPeriod s x) =ᶠ[atTop] 0 := by
@@ -2740,14 +2607,11 @@ theorem eisensteinLewisPeriod_coIsometryDefect_lt_zero_iff {s : ℂ}
         exact hprod_ne heq_lim
       obtain ⟨b₀, hb₀_gt1, hb₀_ne⟩ := hex_gt1
       rw [hdef_eq, Left.neg_neg_iff]
-      let δ : ℝ := 2 * s.re - 1 / 2
-      have hδ_ne : δ ≠ 0 := by dsimp [δ]; intro h; apply hne; linarith
-      let K : ℝ → ℝ := fun b =>
-        (b + b⁻¹) ^ (-6 : ℝ) * b ^ (2 * s.re - 1) *
-          (b ^ δ + b ^ (-δ)) * (b ^ δ - b ^ (-δ)) ^ 2 * ‖eisensteinLewisPeriod s b‖ ^ 2
+      change 0 < ∫ b in Ioi (1 : ℝ), eisensteinDefectIntegrand s b
+      have hδ_ne : 2 * s.re - 1 / 2 ≠ 0 := fun h => hne (by linarith)
       have hψ_cont : ContinuousOn (fun b : ℝ => eisensteinLewisPeriod s b) (Ioi 0) :=
         period_real_continuousOn hw0 1 (-riemannZeta (2 * s)) (state (2 * s))
-      have hK_cont : ContinuousOn K (Ioi 0) := by
+      have hK_cont : ContinuousOn (eisensteinDefectIntegrand s) (Ioi 0) := by
         intro b hb
         have hb0 : 0 < b := hb
         have hsum : b + b⁻¹ ≠ 0 := (add_pos hb0 (inv_pos.mpr hb0)).ne'
@@ -2757,15 +2621,21 @@ theorem eisensteinLewisPeriod_coIsometryDefect_lt_zero_iff {s : ℂ}
         have c2 : ContinuousAt (fun x : ℝ => x ^ (2 * s.re - 1)) b :=
           continuousAt_id.rpow
             (continuousAt_const : ContinuousAt (fun _ : ℝ => 2 * s.re - 1) b) (Or.inl hb0.ne')
-        have c3 : ContinuousAt (fun x : ℝ => x ^ δ + x ^ (-δ)) b :=
-          (continuousAt_id.rpow (continuousAt_const : ContinuousAt (fun _ : ℝ => δ) b)
+        have c3 : ContinuousAt
+            (fun x : ℝ => x ^ (2 * s.re - 1 / 2) + x ^ (-(2 * s.re - 1 / 2))) b :=
+          (continuousAt_id.rpow
+              (continuousAt_const : ContinuousAt (fun _ : ℝ => 2 * s.re - 1 / 2) b)
               (Or.inl hb0.ne')).add
-            (continuousAt_id.rpow (continuousAt_const : ContinuousAt (fun _ : ℝ => -δ) b)
+            (continuousAt_id.rpow
+              (continuousAt_const : ContinuousAt (fun _ : ℝ => -(2 * s.re - 1 / 2)) b)
               (Or.inl hb0.ne'))
-        have c4 : ContinuousAt (fun x : ℝ => (x ^ δ - x ^ (-δ)) ^ 2) b :=
-          ((continuousAt_id.rpow (continuousAt_const : ContinuousAt (fun _ : ℝ => δ) b)
+        have c4 : ContinuousAt
+            (fun x : ℝ => (x ^ (2 * s.re - 1 / 2) - x ^ (-(2 * s.re - 1 / 2))) ^ 2) b :=
+          ((continuousAt_id.rpow
+              (continuousAt_const : ContinuousAt (fun _ : ℝ => 2 * s.re - 1 / 2) b)
               (Or.inl hb0.ne')).sub
-            (continuousAt_id.rpow (continuousAt_const : ContinuousAt (fun _ : ℝ => -δ) b)
+            (continuousAt_id.rpow
+              (continuousAt_const : ContinuousAt (fun _ : ℝ => -(2 * s.re - 1 / 2)) b)
               (Or.inl hb0.ne'))).pow 2
         have c5 : ContinuousAt (fun x : ℝ => ‖eisensteinLewisPeriod s x‖ ^ 2) b :=
           (hψ_cont.continuousAt (isOpen_Ioi.mem_nhds hb0)).norm.pow 2
@@ -2775,37 +2645,35 @@ theorem eisensteinLewisPeriod_coIsometryDefect_lt_zero_iff {s : ℂ}
         (hψ_cont.continuousAt (isOpen_Ioi.mem_nhds (zero_lt_one.trans hb₀_gt1))).norm
       obtain ⟨r, hr_pos, hball⟩ :=
         Metric.continuousAt_iff.mp hcont_b0 (‖eisensteinLewisPeriod s b₀‖ / 2) (half_pos hc_b0)
-      let p : ℝ := max ((1 + b₀) / 2) (b₀ - r / 2)
-      let q : ℝ := b₀ + r / 2
-      have hp_gt1 : 1 < p := lt_max_of_lt_left (by linarith)
-      have hp_lt_b0 : p < b₀ := max_lt (by linarith) (by linarith)
-      have hp_lt_q : p < q := by dsimp [q]; linarith
+      have hp_gt1 : 1 < max ((1 + b₀) / 2) (b₀ - r / 2) := lt_max_of_lt_left (by linarith)
+      have hp_lt_b0 : max ((1 + b₀) / 2) (b₀ - r / 2) < b₀ := max_lt (by linarith) (by linarith)
+      have hp_lt_q : max ((1 + b₀) / 2) (b₀ - r / 2) < b₀ + r / 2 := by linarith
       obtain ⟨x₀, hx₀, hminK⟩ := isCompact_Icc.exists_isMinOn (nonempty_Icc.mpr hp_lt_q.le)
         (hK_cont.mono (fun x hx => zero_lt_one.trans (lt_of_lt_of_le hp_gt1 hx.1)))
       have hx₀_gt1 : 1 < x₀ := lt_of_lt_of_le hp_gt1 hx₀.1
       have hx₀_pos : 0 < x₀ := zero_lt_one.trans hx₀_gt1
       have hx₀_dist : dist x₀ b₀ < r := by
         rw [Real.dist_eq, abs_lt]
-        have hp2 : b₀ - r / 2 ≤ p := le_max_right _ _
+        have hp2 : b₀ - r / 2 ≤ max ((1 + b₀) / 2) (b₀ - r / 2) := le_max_right _ _
         have hx_le : x₀ ≤ b₀ + r / 2 := hx₀.2
         exact ⟨by linarith [hx₀.1], by linarith⟩
       have hx₀_ψ_pos : 0 < ‖eisensteinLewisPeriod s x₀‖ := by
         have hb := abs_lt.mp (by simpa [Real.dist_eq] using hball hx₀_dist)
         linarith
-      have hx₀_diff_ne : x₀ ^ δ - x₀ ^ (-δ) ≠ 0 := by
+      have hx₀_diff_ne : x₀ ^ (2 * s.re - 1 / 2) - x₀ ^ (-(2 * s.re - 1 / 2)) ≠ 0 := by
         intro heq_pow
-        have hpow_eq : x₀ ^ δ = x₀ ^ (-δ) := sub_eq_zero.mp heq_pow
+        have hpow_eq : x₀ ^ (2 * s.re - 1 / 2) = x₀ ^ (-(2 * s.re - 1 / 2)) :=
+          sub_eq_zero.mp heq_pow
         rcases lt_or_gt_of_ne hδ_ne with hneg | hpos
-        · exact (Real.rpow_lt_rpow_of_exponent_lt hx₀_gt1 (show δ < -δ by linarith)).ne hpow_eq
-        · exact (Real.rpow_lt_rpow_of_exponent_lt hx₀_gt1 (show -δ < δ by linarith)).ne hpow_eq.symm
-      have hKx₀_pos : 0 < K x₀ := by
-        dsimp [K]
-        exact mul_pos (mul_pos (mul_pos (mul_pos
+        · exact (Real.rpow_lt_rpow_of_exponent_lt hx₀_gt1 (by linarith)).ne hpow_eq
+        · exact (Real.rpow_lt_rpow_of_exponent_lt hx₀_gt1 (by linarith)).ne hpow_eq.symm
+      have hKx₀_pos : 0 < eisensteinDefectIntegrand s x₀ :=
+        mul_pos (mul_pos (mul_pos (mul_pos
           (Real.rpow_pos_of_pos (add_pos hx₀_pos (inv_pos.mpr hx₀_pos)) _)
           (Real.rpow_pos_of_pos hx₀_pos _))
           (add_pos (Real.rpow_pos_of_pos hx₀_pos _) (Real.rpow_pos_of_pos hx₀_pos _)))
           (sq_pos_iff.mpr hx₀_diff_ne)) (sq_pos_of_pos hx₀_ψ_pos)
-      have hK_int : IntegrableOn K (Ioi 1) := by
+      have hK_int : IntegrableOn (eisensteinDefectIntegrand s) (Ioi 1) := by
         have hdom := (globalLewisPeriod_rpow_integrableOn_Ioi_one hw0 (by norm_num) (state (2 * s))
           hreg (β := 5 / 2) (by norm_num)).const_mul 8
         refine hdom.mono' ((hK_cont.mono (Ioi_subset_Ioi zero_le_one)).aestronglyMeasurable
@@ -2813,24 +2681,28 @@ theorem eisensteinLewisPeriod_coIsometryDefect_lt_zero_iff {s : ℂ}
         filter_upwards [ae_restrict_mem measurableSet_Ioi] with b hb
         have hb0 : 0 < b := zero_lt_one.trans hb
         have hb1 : 1 ≤ b := hb.le
-        have hK_nn : 0 ≤ K b := by
-          dsimp [K]
-          exact mul_nonneg (mul_nonneg (mul_nonneg (mul_nonneg
+        have hK_nn : 0 ≤ eisensteinDefectIntegrand s b :=
+          mul_nonneg (mul_nonneg (mul_nonneg (mul_nonneg
             (Real.rpow_pos_of_pos (add_pos hb0 (inv_pos.mpr hb0)) _).le
             (Real.rpow_pos_of_pos hb0 _).le)
             (add_nonneg (Real.rpow_pos_of_pos hb0 _).le (Real.rpow_pos_of_pos hb0 _).le))
             (sq_nonneg _)) (sq_nonneg _)
         rw [Real.norm_of_nonneg hK_nn]
-        have hbd1 : b ^ δ ≤ b ^ (1 / 2 : ℝ) :=
-          Real.rpow_le_rpow_of_exponent_le hb1 (by dsimp [δ]; linarith)
-        have hbd2 : b ^ (-δ) ≤ b ^ (1 / 2 : ℝ) :=
-          Real.rpow_le_rpow_of_exponent_le hb1 (by dsimp [δ]; linarith)
-        have hsum_le : b ^ δ + b ^ (-δ) ≤ 2 * b ^ (1 / 2 : ℝ) := by linarith
-        have hdiff_abs : |b ^ δ - b ^ (-δ)| ≤ 2 * b ^ (1 / 2 : ℝ) := by
+        have hbd1 : b ^ (2 * s.re - 1 / 2) ≤ b ^ (1 / 2 : ℝ) :=
+          Real.rpow_le_rpow_of_exponent_le hb1 (by linarith)
+        have hbd2 : b ^ (-(2 * s.re - 1 / 2)) ≤ b ^ (1 / 2 : ℝ) :=
+          Real.rpow_le_rpow_of_exponent_le hb1 (by linarith)
+        have hsum_le : b ^ (2 * s.re - 1 / 2) + b ^ (-(2 * s.re - 1 / 2)) ≤
+            2 * b ^ (1 / 2 : ℝ) := by linarith
+        have hdiff_abs : |b ^ (2 * s.re - 1 / 2) - b ^ (-(2 * s.re - 1 / 2))| ≤
+            2 * b ^ (1 / 2 : ℝ) := by
           rw [abs_le]
-          exact ⟨by linarith [Real.rpow_pos_of_pos hb0 δ, Real.rpow_pos_of_pos hb0 (-δ)],
-            by linarith [Real.rpow_pos_of_pos hb0 δ, Real.rpow_pos_of_pos hb0 (-δ)]⟩
-        have hsq_le : (b ^ δ - b ^ (-δ)) ^ 2 ≤ 4 * b ^ (1 : ℝ) := by
+          exact ⟨by linarith [Real.rpow_pos_of_pos hb0 (2 * s.re - 1 / 2),
+              Real.rpow_pos_of_pos hb0 (-(2 * s.re - 1 / 2))],
+            by linarith [Real.rpow_pos_of_pos hb0 (2 * s.re - 1 / 2),
+              Real.rpow_pos_of_pos hb0 (-(2 * s.re - 1 / 2))]⟩
+        have hsq_le : (b ^ (2 * s.re - 1 / 2) - b ^ (-(2 * s.re - 1 / 2))) ^ 2 ≤
+            4 * b ^ (1 : ℝ) := by
           have h1 := pow_le_pow_left₀ (abs_nonneg _) hdiff_abs 2
           rw [sq_abs, mul_pow, ← Real.rpow_natCast (b ^ (1 / 2 : ℝ)) 2,
             ← Real.rpow_mul hb0.le] at h1
@@ -2839,10 +2711,14 @@ theorem eisensteinLewisPeriod_coIsometryDefect_lt_zero_iff {s : ℂ}
           rwa [hexp, h4] at h1
         have hbase_le : b ^ (2 * s.re - 1) ≤ b ^ (1 : ℝ) :=
           Real.rpow_le_rpow_of_exponent_le hb1 (by linarith)
-        have hmid : b ^ (2 * s.re - 1) * (b ^ δ + b ^ (-δ)) * (b ^ δ - b ^ (-δ)) ^ 2 ≤
+        have hmid : b ^ (2 * s.re - 1) *
+            (b ^ (2 * s.re - 1 / 2) + b ^ (-(2 * s.re - 1 / 2))) *
+            (b ^ (2 * s.re - 1 / 2) - b ^ (-(2 * s.re - 1 / 2))) ^ 2 ≤
             8 * b ^ (5 / 2 : ℝ) := by
           calc
-            b ^ (2 * s.re - 1) * (b ^ δ + b ^ (-δ)) * (b ^ δ - b ^ (-δ)) ^ 2
+            b ^ (2 * s.re - 1) *
+                (b ^ (2 * s.re - 1 / 2) + b ^ (-(2 * s.re - 1 / 2))) *
+                (b ^ (2 * s.re - 1 / 2) - b ^ (-(2 * s.re - 1 / 2))) ^ 2
                 ≤ (b ^ (1 : ℝ) * (2 * b ^ (1 / 2 : ℝ))) * (4 * b ^ (1 : ℝ)) := by
               apply mul_le_mul _ hsq_le (sq_nonneg _) (by positivity)
               exact mul_le_mul hbase_le hsum_le
@@ -2850,14 +2726,17 @@ theorem eisensteinLewisPeriod_coIsometryDefect_lt_zero_iff {s : ℂ}
                 (Real.rpow_pos_of_pos hb0 _).le
             _ = 8 * (b ^ (1 : ℝ) * b ^ (1 / 2 : ℝ) * b ^ (1 : ℝ)) := by ring
             _ = 8 * b ^ (5 / 2 : ℝ) := by rw [← Real.rpow_add hb0, ← Real.rpow_add hb0]; norm_num
-        dsimp [K, eisensteinLewisPeriod]
+        unfold eisensteinDefectIntegrand eisensteinLewisPeriod
         calc
-          (b + b⁻¹) ^ (-6 : ℝ) * b ^ (2 * s.re - 1) * (b ^ δ + b ^ (-δ)) *
-              (b ^ δ - b ^ (-δ)) ^ 2 *
+          (b + b⁻¹) ^ (-6 : ℝ) * b ^ (2 * s.re - 1) *
+              (b ^ (2 * s.re - 1 / 2) + b ^ (-(2 * s.re - 1 / 2))) *
+              (b ^ (2 * s.re - 1 / 2) - b ^ (-(2 * s.re - 1 / 2))) ^ 2 *
               ‖period (2 * s) 1 (-riemannZeta (2 * s)) (state (2 * s)) b‖ ^ 2
               = (b + b⁻¹) ^ (-6 : ℝ) *
                   ‖period (2 * s) 1 (-riemannZeta (2 * s)) (state (2 * s)) b‖ ^ 2 *
-                  (b ^ (2 * s.re - 1) * (b ^ δ + b ^ (-δ)) * (b ^ δ - b ^ (-δ)) ^ 2) := by ring
+                  (b ^ (2 * s.re - 1) *
+                    (b ^ (2 * s.re - 1 / 2) + b ^ (-(2 * s.re - 1 / 2))) *
+                    (b ^ (2 * s.re - 1 / 2) - b ^ (-(2 * s.re - 1 / 2))) ^ 2) := by ring
           _ ≤ (b + b⁻¹) ^ (-6 : ℝ) *
                 ‖period (2 * s) 1 (-riemannZeta (2 * s)) (state (2 * s)) b‖ ^ 2 *
                 (8 * b ^ (5 / 2 : ℝ)) :=
@@ -2865,26 +2744,37 @@ theorem eisensteinLewisPeriod_coIsometryDefect_lt_zero_iff {s : ℂ}
               (mul_nonneg (Real.rpow_pos_of_pos (add_pos hb0 (inv_pos.mpr hb0)) _).le (sq_nonneg _))
           _ = 8 * (‖period (2 * s) 1 (-riemannZeta (2 * s)) (state (2 * s)) b‖ ^ 2 *
                 ((b + b⁻¹) ^ (-6 : ℝ) * b ^ (5 / 2 : ℝ))) := by ring
-      have hsub_Ioi : Ioc p q ⊆ Ioi 1 := fun x hx => hp_gt1.trans hx.1
-      have hunion : Ioi (1 : ℝ) = Ioc p q ∪ (Ioi 1 \ Ioc p q) :=
+      have hsub_Ioi : Ioc (max ((1 + b₀) / 2) (b₀ - r / 2)) (b₀ + r / 2) ⊆ Ioi 1 :=
+        fun x hx => hp_gt1.trans hx.1
+      have hunion : Ioi (1 : ℝ) = Ioc (max ((1 + b₀) / 2) (b₀ - r / 2)) (b₀ + r / 2) ∪
+          (Ioi 1 \ Ioc (max ((1 + b₀) / 2) (b₀ - r / 2)) (b₀ + r / 2)) :=
         (Set.union_sdiff_cancel hsub_Ioi).symm
-      have hsplit : (∫ b in Ioi (1 : ℝ), K b) =
-          (∫ b in Ioc p q, K b) + ∫ b in Ioi 1 \ Ioc p q, K b := by
+      have hsplit : (∫ b in Ioi (1 : ℝ), eisensteinDefectIntegrand s b) =
+          (∫ b in Ioc (max ((1 + b₀) / 2) (b₀ - r / 2)) (b₀ + r / 2),
+            eisensteinDefectIntegrand s b) +
+          ∫ b in Ioi 1 \ Ioc (max ((1 + b₀) / 2) (b₀ - r / 2)) (b₀ + r / 2),
+            eisensteinDefectIntegrand s b := by
         conv_lhs => rw [hunion]
         exact setIntegral_union disjoint_sdiff_self_right
           (measurableSet_Ioi.diff measurableSet_Ioc)
           (hK_int.mono_set hsub_Ioi) (hK_int.mono_set Set.sdiff_subset)
-      have hrest : 0 ≤ ∫ b in Ioi 1 \ Ioc p q, K b := by
+      have hrest : 0 ≤ ∫ b in Ioi 1 \ Ioc (max ((1 + b₀) / 2) (b₀ - r / 2)) (b₀ + r / 2),
+          eisensteinDefectIntegrand s b := by
         refine setIntegral_nonneg (measurableSet_Ioi.diff measurableSet_Ioc) fun b hb => ?_
         have hb0 : 0 < b := zero_lt_one.trans hb.1
-        dsimp [K]
         exact mul_nonneg (mul_nonneg (mul_nonneg (mul_nonneg
           (Real.rpow_pos_of_pos (add_pos hb0 (inv_pos.mpr hb0)) _).le
           (Real.rpow_pos_of_pos hb0 _).le)
           (add_nonneg (Real.rpow_pos_of_pos hb0 _).le (Real.rpow_pos_of_pos hb0 _).le))
           (sq_nonneg _)) (sq_nonneg _)
-      have hlow : (q - p) * K x₀ ≤ ∫ b in Ioc p q, K b := by
-        have hc : (∫ _ in Ioc p q, K x₀) = (q - p) * K x₀ := by
+      have hlow : ((b₀ + r / 2) - max ((1 + b₀) / 2) (b₀ - r / 2)) *
+          eisensteinDefectIntegrand s x₀ ≤
+          ∫ b in Ioc (max ((1 + b₀) / 2) (b₀ - r / 2)) (b₀ + r / 2),
+            eisensteinDefectIntegrand s b := by
+        have hc : (∫ _ in Ioc (max ((1 + b₀) / 2) (b₀ - r / 2)) (b₀ + r / 2),
+            eisensteinDefectIntegrand s x₀) =
+            ((b₀ + r / 2) - max ((1 + b₀) / 2) (b₀ - r / 2)) *
+              eisensteinDefectIntegrand s x₀ := by
           rw [setIntegral_const, Real.volume_real_Ioc_of_le hp_lt_q.le, smul_eq_mul]
         rw [← hc]
         exact setIntegral_mono_on (integrableOn_const (hs := measure_Ioc_lt_top.ne))
@@ -2972,9 +2862,9 @@ theorem criticalLineResonance_iff_dyadicCuspEnergy_and_zero_coIsometryDefect {s 
 
 #print axioms lewisModularInversion_adj_comp_self
 #print axioms lewisModularInversion_normBounded_iff
-#print axioms gaussMayerHead_normBounded_iff
-#print axioms gaussMayerPair_normBounded_iff
-#print axioms gaussMayerTail_normBounded
+#print axioms gaussMayerBranch_zero_normBounded_iff
+#print axioms gaussMayerBranch_zero_pair_normBounded_iff
+#print axioms gaussMayerBranch_tail_normBounded
 #print axioms lewisFarey_comp_fareyAdj
 #print axioms one_lt_lewisFareyMultiplier
 #print axioms lewisFarey_normBounded

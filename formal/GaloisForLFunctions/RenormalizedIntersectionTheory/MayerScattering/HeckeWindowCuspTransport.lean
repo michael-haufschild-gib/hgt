@@ -181,4 +181,28 @@ theorem hecke_windowPeriodLift_finite_window_iff (s : ℂ) {H : ℝ → ℝ} {A 
     rw [lewisModularInversion, hz, mul_zero] at hfix
     exact hfix.symm
 
+/-- A continuous window which is nonzero at the first-prime position produces a noncompact
+Hecke tail, at every complex parameter. No resonance or positivity assumption enters. -/
+theorem hecke_windowPeriodLift_no_cutoff_of_first_prime_ne_zero (s : ℂ)
+    {H : ℝ → ℝ} {A : ℝ} (hc : Continuous H)
+    (hv : ∀ y, y ∉ Icc (-A) 0 → H y = 0) (hprime : H (-Real.log 2) ≠ 0) :
+    ¬ ∃ B : ℝ, 0 ≤ B ∧ ∀ a > B, lewisHeckeT2 s (windowPeriodLift s H) a = 0 := by
+  rw [hecke_windowPeriodLift_upper_cutoff_iff s hv]
+  rintro ⟨b, hb, hzero⟩
+  have hcont : ContinuousAt (fun x : ℝ => H (-Real.log x)) 2 :=
+    hc.continuousAt.comp (Real.continuousAt_log (by norm_num)).neg
+  obtain ⟨l, u, hlu, hne⟩ := mem_nhds_iff_exists_Ioo_subset.mp
+    (hcont.eventually_ne hprime)
+  have hmax : max b l < 2 := max_lt hb.2 hlu.1
+  let x := (max b l + 2) / 2
+  have hx2 : x < 2 := by dsimp [x]; linarith
+  have hxmax : max b l < x := by dsimp [x]; linarith
+  have hxb : b < x := lt_of_le_of_lt (le_max_left _ _) hxmax
+  have hxl : l < x := lt_of_le_of_lt (le_max_right _ _) hxmax
+  exact hne ⟨hxl, hx2.trans hlu.2⟩ (hzero x ⟨hxb, hx2⟩)
+
+#print axioms lewisHeckeT2_upper_cutoff_iff
+#print axioms hecke_windowPeriodLift_finite_window_iff
+#print axioms hecke_windowPeriodLift_no_cutoff_of_first_prime_ne_zero
+
 end GaloisForLFunctions.RenormalizedIntersectionTheory.MayerScattering

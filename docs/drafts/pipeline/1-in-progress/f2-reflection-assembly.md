@@ -16,6 +16,8 @@
 2. Identify the resulting action on complete Weil energy, including archimedean and polar terms. Norm transport and fold bounds alone do not identify quadratic forms.
 3. Establish arithmetic positivity on finite-cusp-energy resonances, or an exact positive realization of the complete window form. This remains the RH-strength input.
 
+**Reflection distinction:** `U_LP` conjugates `I_s` to a twisted reflection on the doubled logarithmic line. Every `windowPeriodLift s H` is fixed by `I_s`, for arbitrary `H`. This does not conjugate the nontrivial map `H(u)↦H(−A−u)` on the original window to `I_s`, and does not identify Weil energy with the co-isometry defect. Those identifications cannot be inferred from the existing bridge.
+
 ## Hecke support law — paper proof; Lean audit pending
 
 For `f(x)=0` on `x>R`, `R≥0`, and `a>2R`, the first three Hecke branches vanish, giving
@@ -31,6 +33,16 @@ For `f=windowPeriodLift s H`, the positive normalization gives `f(x)=0 ↔ H(−
 **Next conjecture:** a reflection-compatible compression has an exact Weil-energy boundary correction expressible through this recovered germ. Its sign must be proved jointly with the interior energy.
 
 **Source:** `RenormalizedIntersectionTheory/MayerScattering/HeckeWindowCuspTransport.lean` (unverified).
+
+## Reflection centralizer — paper proof; Lean audit pending
+
+On WTZ's full supported-function module, `ρ_A(f)` commutes with `σ_A` iff `f(n)=0` for every active `n≥2`; equivalently its action is `f(1)·Id`. Apply commutation to the left endpoint vector and evaluate at `−log n`: the reflected forward action reads `f(n)/√n`, while every forward shift of the reflected endpoint vanishes there. Conversely only the scalar term remains.
+
+**Scope:** the full WTZ module, including endpoint vectors; no assertion about an almost-everywhere quotient at an exact stage boundary.
+
+**Consequence:** the desired non-scalar Hecke operator cannot lie in the one-directional Dirichlet algebra. It must use its adjoint extension or the period cusp channel. The positive survivor is a complete centralizer classification.
+
+**Source:** `WindowTowerOfSpecZ/TheReflectionCentralizerOfTheWindowAlgebra.lean` (unverified).
 
 ## Completion gates
 
