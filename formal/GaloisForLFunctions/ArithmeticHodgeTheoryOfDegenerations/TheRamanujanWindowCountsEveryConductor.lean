@@ -4,7 +4,23 @@ import GaloisForLFunctions.ArithmeticEffectivityTheory.TheFourierCoefficientsOfT
 /-!
 # The Ramanujan window counts every conductor
 
-The window twisted by the Ramanujan sum `c_m(n) = Σ_{de = m} μ(d) e [e ∣ n]`, `m ≥ 2`.
+The window twisted by the Ramanujan sum `c_m(n) = Σ_{de = m} μ(d) e [e ∣ n]`, `m ≥ 2`, has
+second-order term the conductor-`m` count of the first order.
+
+* **Autocorrelation** (`sum_ramTwist_mul_add`, `autoCorr_ramTwist`): `m⁻¹ Σ_{r<m} c_m(r) c_m(r+s) =
+  c_m(s)`. With `c_m(n) = Σ_{ζ primitive} ζ^n`, the double sum over primitive roots collapses on
+  `ζξ = 1` by orthogonality of the `m`-th roots of unity.
+* **Energy** (`abs_ramEnergy_sub_le`): by the energy law of periodic twists the block energy is
+  `(2π/c) Σ_n y_n² Σ_δ c_m(δ) G(δ/a_n)`, and `Σ_δ c_m(δ) G(δ/a) = Σ_{de=m} μ(d) e Σ_j G(ej/a)` is a
+  combination of Poisson sums on the lattices `eℤ` (`sum_offset_ramTwist_eq`); since `Σ μ(d) = 0`
+  the zero modes cancel and `E_N = 2π Σ_{de = m} μ(d) 𝒜_N(c/e) + O(c/N)`.
+* **Quiet region** (`exists_ramLow_energy_le`): below `N e^{−A}/m`, Kuzmin–Landau on each lattice
+  `eℤ` (`norm_partial_dvd_cpow_le`) and twisted Riemann sums below `√N` leave `O(N^{−1/2})`.
+* **Sharp form** (`ram_layer_sharp`): `c⁻¹⟨W x, x⟩/∫g² − (log N/∫φ²) Σ μ(d) 𝒜_N(c/e) → 0`.
+* **Critical curve** (`ram_layer_criticalCurve_of_regularBulk`): along `c^{β+1}/log N → K`,
+  `c⁻¹⟨W x, x⟩/∫g² → J_{β+1}(m) βJ/K ‖H‖²_{−(β+1)}`, since `(log N) 𝒜_N(c/e) → e^{β+1}βJ/K` and
+  `Σ_{de=m} μ(d) e^{β+1} = J_{β+1}(m)`. For the tilted spline (`ram_layer_criticalCurve_exact`):
+  `7 φ(m) J(m)/K ‖H‖²_{−8}` with `φ(m) J(m) = J(1) J₈(m) = J(1) φ(m) #ℙ⁷(ℤ/m)`.
 -/
 
 noncomputable section
@@ -888,7 +904,7 @@ theorem ram_layer_criticalCurve_of_regularBulk (hφ : ContDiff ℝ 2 φ)
   have hterm : Tendsto (fun N : ℕ => Real.log N / M * ramAlias φ h m (c N) N) atTop
       (𝓝 (∑ x ∈ m.divisorsAntidiagonal, (ArithmeticFunction.moebius x.1 : ℝ) *
         (K⁻¹ * ((x.2 : ℝ) ^ (β + 1) * (J * (β * I)))))) := by
-    have hsum := tendsto_finset_sum m.divisorsAntidiagonal fun x hx =>
+    have hsum := tendsto_finsetSum m.divisorsAntidiagonal fun x hx =>
       (tendsto_log_mul_horizonAlias_div hφ hφsupp hφ2 hq hCφ hdecay hβ hbulk hh hA hsupp hc1 hK
         hcrit (Nat.pos_of_mem_divisors (Nat.snd_mem_divisors_of_mem_antidiagonal hx))).const_mul
           (ArithmeticFunction.moebius x.1 : ℝ)

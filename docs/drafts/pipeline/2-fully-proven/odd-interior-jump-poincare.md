@@ -77,10 +77,10 @@ Combining the count with the archimedean constant yields the Weil floor
 
 `[7/5−γ−log(2πa)−13a²/60−(a³/3)cosh²(a/2)]M`.
 
-This exceeds `M/1000` for `0<a≤(log 2)/2`.
+The coefficient is at least `1/1000` for `0<a≤(log 2)/2`.
 
-The scalar bounds `γ<289/500`, `log(π log 2)<779/1000`, `a²<121/1000`
-and `(a³/3)cosh²(a/2)<3/200` leave `107/60000>1/1000`.
+The scalar bounds `γ≤289/500`, `log(π log 2)≤779/1000`, `a²≤121/1000`
+and `(a³/3)cosh²(a/2)≤3/200` leave `107/60000>1/1000`.
 The logarithmic bound follows from the exponential Taylor lower sum of degree
 six; the pole bound follows from `(1−z²/2)cosh z≤1`, `z=a/2`, and
 `cosh²(a/2)≤16/15`. Prime autocorrelations vanish also at `2a=log 2`.

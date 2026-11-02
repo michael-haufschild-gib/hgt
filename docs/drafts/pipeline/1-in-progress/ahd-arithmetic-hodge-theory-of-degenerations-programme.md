@@ -25,7 +25,8 @@ ThePrimesOfAHorizonWindow, TheBulkDeterminesTheSecondOrderTerm, TheWindowIndex,
 TheCountLawOverEveryFiniteRing, TheTwistedHorizonLayerIsZeroBlind, TheWindowIndexCountsTheRightZeros,
 TheTwistedHorizonLayerIsPositive, TheAlternatingWindowCountsTheConductorTwoPoints,
 ThePrimeWindowCountsTheProjectivePoints, TheHorizonLayerIsGradedByConductor,
-TheWindowIndexCountsTheJumpMultiples.
+TheWindowIndexCountsTheJumpMultiples, TheEnergyOfAPeriodicTwist,
+TheRamanujanWindowCountsEveryConductor.
 
 ## Status
 - First order = count: `J(m) = J(1) #ℙ⁷(ℤ/m)`; count law over every finite ring (𝔽_q[T] calibration) [L].
@@ -54,25 +55,11 @@ TheWindowIndexCountsTheJumpMultiples.
 - Divisor twists `d·1_{d|n} − 1`: second order `(7/K)Σ_{e|d,e>1} φ(e)J(e)‖H‖²_{−8}` [L].
 - Conductor grading: untwisted `x` and prime `y` windows orthogonal at second order
   (`c⁻¹(Q(x+y) − Q(x−y))/∫g² → 0`); `x + y → κQ(H) + βJ/K‖H‖² + (p^{β+1}−1)βJ/K‖G‖²` [L].
+- Periodic twists: `E_N = (2π/c) Σ_n y_n² Σ_{|δ|≤⌈c⌉} C_χ(δ) G(δ/a_n) + O(c/N)` [L].
+- Ramanujan windows, every `m ≥ 2`: autocorrelation of `c_m` is `c_m`; energy
+  `2π Σ_{de=m} μ(d) 𝒜_N(c/e)`; second order `J_{β+1}(m)βJ/K‖H‖²`, tilted `7φ(m)J(m)/K` [L].
 - Jump multiples: independent family ⇒ `A(H)` posdef and `ind₋(P_K) = #{λ_i < 0, βJ/(−λ_i) < K}`,
   `λ_i` relative eigenvalues of `κW(H)` against `A(H)` [L].
-
-## In progress: Ramanujan windows of every conductor
-Claim: for the Ramanujan window `c_m(n) h/√n`, `m ≥ 2`, the energy is
-`2π Σ_{q|m} μ(m/q) 𝒜_N(c/q) + O(c/N)`, so at `c^{β+1}/log N → K` the second order is
-`J_{β+1}(m) βJ/K ‖H‖²` (tilted: `7 φ(m) J(m)/K ‖H‖²_{−8}`).
-Paper proof (δ-route, no shifted-lattice Poisson):
-1. Rows: `Σ_m c_m(m) x_m G_{mn} = x_n Σ_{|δ|<a_n} c_m(n+δ) G(δ/a_n) + O(c²N^{−3/2})` (entrywise
-   linearization, `|c_m| ≤ σ(m)`).
-2. Swap: `Σ_n c_m(n) x_n row_n = Σ_δ Σ_n c_m(n)c_m(n+δ) x_n² G(δ/a_n)`; for each `|δ| ≤ c+1`,
-   `n ↦ c_m(n)c_m(n+δ)` is `m`-periodic with mean `c_m(δ)` (roots of unity:
-   `m⁻¹Σ_r c_m(r)c_m(r+δ) = Σ_{ξ prim} ξ^δ`), and `x ↦ h(log x)²/x · G(δ/(cx))` is Lipschitz uniformly
-   in `δ`; periodic equidistribution, error `O(1/N)` per `δ`, `O(c/N)` total.
-3. `Σ_δ c_m(δ)G(δ/a) = Σ_{q|m} qμ(m/q) Σ_j G(qj/a) = a Σ_q μ(m/q)(I² + 2a_φ(a/q))`; `Σμ = 0` removes
-   `I²`: energy `2π Σ_q μ(m/q) 𝒜_N(c/q)`.
-4. Pole (mean-zero twist) `O(N^{−2})`; remainder uniform; quiet region `|τ| ≤ N e^{−A}/m`:
-   `c_m = Σ_q qμ(m/q) 1_{q|n}`, Kuzmin–Landau on each cofactor, twisted Riemann sums below `√N`.
-5. Critical curve: `log N 𝒜_N(c/q) → q^{β+1} βJ/K ‖H‖²`, `Σ_q μ(m/q) q^{β+1} = J_{β+1}(m)`.
 
 ## Open
 Window index vs width (Landau–Widom); bulk second order; uniform bulk
