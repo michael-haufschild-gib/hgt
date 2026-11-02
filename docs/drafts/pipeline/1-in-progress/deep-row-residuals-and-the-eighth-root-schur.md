@@ -48,4 +48,7 @@ eventually; with the corpus polylog floor `⟨W'y, y⟩ ≥ (1/4)S_y` (`α + 2q 
 `⟨W'x, x⟩ > 0` for `x ≠ 0`, hence `W ≻ 0`.
 
 ## Lean modules
-(none yet)
+- `CriticalArithmeticCorrelationTheory.TheConductorResidualsAreSmallOnTheDeepRows` — T3.1:
+  `exists_deepMass_conductorResidual_le` (deep rows `nX ≤ N`, `X > max(2ce², 2c, 2⌈ce⌉+3)`;
+  budget `deepResidualBudget`, upward rate `ρ` as hypothesis). Made public for it: the prime,
+  self and pole quadratic bounds in `QuadraticOverlapConductorResiduals`.

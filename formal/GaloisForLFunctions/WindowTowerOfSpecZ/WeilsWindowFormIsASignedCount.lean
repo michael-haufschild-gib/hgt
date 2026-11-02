@@ -43,9 +43,9 @@ theorem exists_log_interpolant (N : ℕ) :
     (fun a _ b _ hab => by exact_mod_cast hab) (Finset.mem_Icc.mpr ⟨h1, hN⟩)
 
 /-- **Von Mangoldt is a signed combination of Jordan counts**: for an interpolant `P` of `log` at
-`1, …, N`, `Σ_j p_j J_j(n) = Λ(n)` for `1 ≤ n ≤ N`. -/
+`1, …, N`, `Σ_j p_j J_j(n) = Λ(n)` for `n ≤ N`. -/
 theorem sum_coeff_mul_jordanTotient {N : ℕ} {P : ℝ[X]}
-    (hP : ∀ d, 1 ≤ d → d ≤ N → P.eval (d : ℝ) = Real.log d) {n : ℕ} (hn1 : 1 ≤ n) (hnN : n ≤ N) :
+    (hP : ∀ d, 1 ≤ d → d ≤ N → P.eval (d : ℝ) = Real.log d) {n : ℕ} (hnN : n ≤ N) :
     ∑ j ∈ Finset.range (P.natDegree + 1), P.coeff j * jordanTotient (j : ℕ) n =
       ArithmeticFunction.vonMangoldt n := by
   simp_rw [jordanTotient, Real.rpow_natCast, Finset.mul_sum]
@@ -82,8 +82,8 @@ theorem integral_windowRep_vonMangoldt_eq_signedCount {A : ℝ} {H : ℝ → ℝ
   simp_rw [windowRepFun, Finset.sum_mul, mul_assoc]
   rw [integral_finsetSum _ hint]
   refine Finset.sum_congr rfl fun n hn => ?_
-  obtain ⟨hn1, hnN⟩ := Finset.mem_Icc.mp hn
-  rw [integral_const_mul, integral_windowShift_mul hmem, ← sum_coeff_mul_jordanTotient hP hn1 hnN,
+  rw [integral_const_mul, integral_windowShift_mul hmem,
+    ← sum_coeff_mul_jordanTotient hP (Finset.mem_Icc.mp hn).2,
     Finset.sum_div, Finset.sum_mul]
   refine Finset.sum_congr rfl fun j _ => ?_
   ring

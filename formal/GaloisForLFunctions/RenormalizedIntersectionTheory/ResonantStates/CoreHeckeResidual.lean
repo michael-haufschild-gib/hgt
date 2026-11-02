@@ -81,14 +81,14 @@ theorem dyadicEigenResidual_factor {u : ℂ} (hAu : msA u = 0)
   have hupp := weyl_scalar_identity (p := 2) (by norm_num) u false
   rw [weylExponent_false, sqrt_inv_mul_cpow_half_sub (by norm_num)] at hupp
   have hupp' : (((Real.sqrt 2)⁻¹ : ℝ) : ℂ) * 2 * ((2 : ℂ) ^ s)⁻¹ = (2 : ℂ) ^ u := by
-    change _ = _ at hupp
     linear_combination hupp
   rw [dyadicEigenResidual_on_core hAu hz, dyadicReturnDefect_on_core hAu hz]
   change msB u * (z.im : ℂ) ^ s * (2 : ℂ) ^ u -
     (((Real.sqrt 2)⁻¹ : ℝ) : ℂ) * msB u * (returnHeight 0 z : ℂ) ^ s = _
   rw [show u - 1 / 2 = -s by dsimp [s]; ring, Complex.cpow_neg,
-    hprod, ofReal_div_natCast_cpow_eisensteinHeckeMaassSelberg 2 z.im_pos.le s]
-  push_cast
+    hprod]
+  push_cast at hupp' ⊢
+  rw [ofReal_div_natCast_cpow_eisensteinHeckeMaassSelberg 2 z.im_pos.le s]
   rw [← hupp']
   field_simp [hgp]
   <;> ring
@@ -105,9 +105,8 @@ private theorem return_scalar_norm_lower {u : ℂ} (hu : -1 / 2 < u.re)
     Real.one_le_rpow hgb.1 (by linarith)
   have hm : returnRatio z ^ (u.re - 1 / 2) * returnRatio z =
       returnRatio z ^ (u.re + 1 / 2) := by
-    rw [← Real.rpow_one (returnRatio z), ← Real.rpow_add hg]
-    congr 1
-    ring
+    simpa only [Real.rpow_one, show u.re - 1 / 2 + 1 = u.re + 1 / 2 by ring]
+      using (Real.rpow_add hg (u.re - 1 / 2) 1).symm
   have hn : 0 ≤ returnRatio z ^ (u.re - 1 / 2) := Real.rpow_nonneg hg.le _
   nlinarith only [hp, hm, mul_nonneg hn (sub_nonneg.mpr hgb.2)]
 
