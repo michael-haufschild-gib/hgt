@@ -758,7 +758,8 @@ private lemma single_prime_logIntegral_le {p : ℕ} (hp : Nat.Prime p) {T₁ T�
     have h1 : ContinuousAt h_p ((x : ℂ) + (y : ℂ) * I) := (hanOn _ hsU).continuousAt
     have h2 : ContinuousAt (fun u : ℝ => (u : ℂ) + (y : ℂ) * I) x :=
       (by fun_prop : Continuous fun u : ℝ => (u : ℂ) + (y : ℂ) * I).continuousAt
-    exact (h1.comp h2).continuousWithinAt
+    exact (ContinuousAt.comp (g := h_p)
+      (f := fun u : ℝ => (u : ℂ) + (y : ℂ) * I) h1 h2).continuousWithinAt
   have hcont_vert : ∀ x : ℝ, 1 / 2 ≤ x → ContinuousOn (fun y : ℝ => h_p ((x : ℂ) + (y : ℂ) * I))
       (Icc T₁ T₂) := fun x hx y _ => by
     have hsU : ((x : ℂ) + (y : ℂ) * I) ∈ U := by
@@ -767,7 +768,8 @@ private lemma single_prime_logIntegral_le {p : ℕ} (hp : Nat.Prime p) {T₁ T�
     have h1 : ContinuousAt h_p ((x : ℂ) + (y : ℂ) * I) := (hanOn _ hsU).continuousAt
     have h2 : ContinuousAt (fun u : ℝ => (x : ℂ) + (u : ℂ) * I) y :=
       (by fun_prop : Continuous fun u : ℝ => (x : ℂ) + (u : ℂ) * I).continuousAt
-    exact (h1.comp h2).continuousWithinAt
+    exact (ContinuousAt.comp (g := h_p)
+      (f := fun u : ℝ => (x : ℂ) + (u : ℂ) * I) h1 h2).continuousWithinAt
   have him_edges := _root_.RHTower.im_rectIntegral h_p z₁ z₂
     (by rw [hz₁_re, hz₂_re, hz₁_im]; exact (hcont_horiz T₁).intervalIntegrable_of_Icc hR_half)
     (by rw [hz₁_re, hz₂_re, hz₂_im]; exact (hcont_horiz T₂).intervalIntegrable_of_Icc hR_half)

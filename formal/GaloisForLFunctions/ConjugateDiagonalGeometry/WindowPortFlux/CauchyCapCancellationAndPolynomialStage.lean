@@ -135,7 +135,8 @@ theorem horizCapFlux_add_adjacent {a b c y₁ y₂ : ℝ} (hab : a ≤ b) (hbc :
         (analyticAt_thetaLogDeriv (hnz x hx)).continuousAt
       have h2 : ContinuousAt (fun u : ℝ => (u : ℂ) + (y : ℂ) * I) x :=
         (by fun_prop : Continuous fun u : ℝ => (u : ℂ) + (y : ℂ) * I).continuousAt
-      exact (h1.comp h2).continuousWithinAt
+      exact (ContinuousAt.comp (g := thetaLogDeriv N)
+        (f := fun u : ℝ => (u : ℂ) + (y : ℂ) * I) h1 h2).continuousWithinAt
     have hi1 := (hcont.mono (Icc_subset_Icc_right hbc)).intervalIntegrable_of_Icc hab
     have hi2 := (hcont.mono (Icc_subset_Icc_left hab)).intervalIntegrable_of_Icc hbc
     exact (intervalIntegral.integral_add_adjacent_intervals hi1 hi2).symm
@@ -154,7 +155,8 @@ theorem exists_norm_vertFlux_le_exp {σ y₁ y₂ : ℝ} (hy : y₁ ≤ y₂) (N
         (analyticAt_thetaLogDeriv (hnz y hy_m)).continuousAt
       have h2 : ContinuousAt (fun u : ℝ => (σ : ℂ) + (u : ℂ) * I) y :=
         (by fun_prop : Continuous fun u : ℝ => (σ : ℂ) + (u : ℂ) * I).continuousAt
-      exact (h1.comp h2).continuousWithinAt
+      exact (ContinuousAt.comp (g := thetaLogDeriv N)
+        (f := fun u : ℝ => (σ : ℂ) + (u : ℂ) * I) h1 h2).continuousWithinAt
   obtain ⟨B, hB⟩ := isCompact_Icc.exists_bound_of_continuousOn hcont
   have hB_nn : 0 ≤ B := (norm_nonneg _).trans (hB y₁ ⟨le_rfl, hy⟩)
   have hdy : 0 ≤ y₂ - y₁ := sub_nonneg.mpr hy
@@ -558,14 +560,16 @@ theorem subexp_windowEnergy_tfae {y₁ y₂ : ℝ} (hy : y₁ ≤ y₂) (N : ℕ
         (analyticAt_thetaLogDeriv (hnz_h₁ x ⟨hx.1, hx.2.trans (by linarith)⟩)).continuousAt
       have h2 : ContinuousAt (fun u : ℝ => (u : ℂ) + (y₁ : ℂ) * I) x :=
         (by fun_prop : Continuous fun u : ℝ => (u : ℂ) + (y₁ : ℂ) * I).continuousAt
-      exact (h1.comp h2).continuousWithinAt
+      exact (ContinuousAt.comp (g := thetaLogDeriv N)
+        (f := fun u : ℝ => (u : ℂ) + (y₁ : ℂ) * I) h1 h2).continuousWithinAt
     have hcont₂ : ContinuousOn (fun x : ℝ => thetaLogDeriv N ((x : ℂ) + (y₂ : ℂ) * I))
         (Icc (1 / 2) σ₁) := fun x hx => by
       have h1 : ContinuousAt (thetaLogDeriv N) ((x : ℂ) + (y₂ : ℂ) * I) :=
         (analyticAt_thetaLogDeriv (hnz_h₂ x ⟨hx.1, hx.2.trans (by linarith)⟩)).continuousAt
       have h2 : ContinuousAt (fun u : ℝ => (u : ℂ) + (y₂ : ℂ) * I) x :=
         (by fun_prop : Continuous fun u : ℝ => (u : ℂ) + (y₂ : ℂ) * I).continuousAt
-      exact (h1.comp h2).continuousWithinAt
+      exact (ContinuousAt.comp (g := thetaLogDeriv N)
+        (f := fun u : ℝ => (u : ℂ) + (y₂ : ℂ) * I) h1 h2).continuousWithinAt
     obtain ⟨B₁, hB₁⟩ := isCompact_Icc.exists_bound_of_continuousOn hcont₁
     obtain ⟨B₂, hB₂⟩ := isCompact_Icc.exists_bound_of_continuousOn hcont₂
     set B := max (max B₁ B₂) 1

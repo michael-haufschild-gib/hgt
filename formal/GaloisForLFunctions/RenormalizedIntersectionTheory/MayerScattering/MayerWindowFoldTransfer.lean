@@ -509,18 +509,20 @@ private theorem continuous_windowLogLift {A : ℝ} {H : ℝ → ℝ} (hc : Conti
     filter_upwards [isOpen_Ioi.mem_nhds hgt] with u hu
     simp [windowLogLift, f_pos, show 0 < u from hu]
 
-private theorem hasCompactSupport_windowLogLift {A : ℝ} (hA : 0 ≤ A) {H : ℝ → ℝ}
-    (hv : ∀ y, y ∉ Icc (-A) 0 → H y = 0) (s : ℂ) :
-    HasCompactSupport (windowLogLift s H) := by
-  refine HasCompactSupport.intro (isCompact_Icc (a := -A) (b := A)) fun u hu => ?_
+private theorem windowLogLift_eq_zero_of_notMem {A : ℝ} (hA : 0 ≤ A) {H : ℝ → ℝ}
+    (hv : ∀ y, y ∉ Icc (-A) 0 → H y = 0) (s : ℂ) {u : ℝ} (hu : u ∉ Icc (-A) A) :
+    windowLogLift s H u = 0 := by
   unfold windowLogLift
   rcases lt_trichotomy u 0 with hlt | rfl | hgt
-  · have hnot : ¬ (0 < u) := not_lt.mpr hlt.le
-    have hnotin : u ∉ Icc (-A) 0 := fun hm => hu ⟨hm.1, hm.2.trans hA⟩
-    simp [hlt, hnot, hv u hnotin]
+  · simp [hlt, not_lt.mpr hlt.le, hv u (fun hm => hu ⟨hm.1, hm.2.trans hA⟩)]
   · simp
-  · have hnotin : -u ∉ Icc (-A) 0 := fun hm => hu ⟨by linarith [hm.2, hA], by linarith [hm.1]⟩
-    simp [hgt, hv (-u) hnotin]
+  · simp [hgt, hv (-u) (fun hm => hu ⟨by linarith [hm.2, hA], by linarith [hm.1]⟩)]
+
+private theorem hasCompactSupport_windowLogLift {A : ℝ} (hA : 0 ≤ A) {H : ℝ → ℝ}
+    (hv : ∀ y, y ∉ Icc (-A) 0 → H y = 0) (s : ℂ) :
+    HasCompactSupport (windowLogLift s H) :=
+  HasCompactSupport.intro (isCompact_Icc (a := -A) (b := A)) fun u hu =>
+    windowLogLift_eq_zero_of_notMem hA hv s hu
 
 /-- **Exact Window Frobenius Defect Identity for `windowPeriodLift s H`.**
 For any continuous window test `H` supported on `[-A, 0]` (`A ≥ 0`), `windowPeriodLift s H`
@@ -538,12 +540,15 @@ theorem windowPeriodLift_coIsometryDefect_eq {A : ℝ} (hA : 0 ≤ A) {H : ℝ �
           (‖windowMultiplier x (2 * s)‖ - ‖windowMultiplier (-x) (2 * s)‖) ^ 2 * H x ^ 2 := by
   let ψ : ℝ → ℂ := windowPeriodLift s H
   let F : ℝ → ℂ := windowLogLift s H
+  have hH0 : H 0 = 0 := window_zero_at_zero hc hv
   have hF_eq : logPeriodTransform ψ = F := funext (logPeriodTransform_comp_inverse F)
   have hF_cont : Continuous F := continuous_windowLogLift hc hv s
   have hF_cs : HasCompactSupport F := hasCompactSupport_windowLogLift hA hv s
   have hψ_int : IntegrableOn (fun a => ‖ψ a‖ ^ 2 * lewisCriticalWeight a) (Ioi 0) := by
     rw [← integrable_logPeriodTransform_normSq_iff, hF_eq]
-    exact (hF_cont.norm.pow 2).integrable_of_hasCompactSupport (hF_cs.norm.pow_left)
+    exact (hF_cont.norm.pow 2).integrable_of_hasCompactSupport
+      (HasCompactSupport.intro (isCompact_Icc (a := -A) (b := A)) fun u hu => by
+        simp [F, windowLogLift_eq_zero_of_notMem hA hv s hu])
   have hψR_int : IntegrableOn
       (fun a => ‖lewisModularInversion (riemannMayerReflect s) ψ a‖ ^ 2 * lewisCriticalWeight a)
       (Ioi 0) := by
@@ -551,26 +556,584 @@ theorem windowPeriodLift_coIsometryDefect_eq {A : ℝ} (hA : 0 ≤ A) {H : ℝ �
     have htr : (fun u : ℝ =>
         ‖logPeriodTransform (lewisModularInversion (riemannMayerReflect s) ψ) u‖ ^ 2) =
         fun u : ℝ => ‖windowMultiplier u (2 * riemannMayerReflect s) * F (-u)‖ ^ 2 := by
-      ext u
-      rw [logPeriodTransform_modularInversion, hF_eq]
+      ext u; rw [logPeriodTransform_modularInversion, hF_eq]
     rw [htr]
     have hcontR : Continuous (fun u : ℝ =>
         ‖windowMultiplier u (2 * riemannMayerReflect s) * F (-u)‖ ^ 2) := by
-      unfold windowMultiplier; fun_prop
-    have hcsR : HasCompactSupport (fun u : ℝ =>
-        ‖windowMultiplier u (2 * riemannMayerReflect s) * F (-u)‖ ^ 2) := by
-      refine HasCompactSupport.intro (isCompact_Icc (a := -A) (b := A)) fun u hu => ?_
-      have hnu : -u ∉ Icc (-A) A := fun hm => hu ⟨by linarith [hm.2], by linarith [hm.1]⟩
-      have hFu : F (-u) = 0 := image_eq_zero_of_notMem_tsupport
-        (fun hm => hnu (HasCompactSupport.intro (isCompact_Icc (a := -A) (b := A))
-          (fun v hv' => by
-            unfold F windowLogLift
-            rcases lt_trichotomy v 0 with hlt | rfl | hgt
-            · simp [hlt, not_lt.mpr hlt.le, hv v (fun h => hv' ⟨h.1, h.2.trans hA⟩)]
-            · simp
-            · simp [hgt, hv (-v) (fun h => hv' ⟨by linarith [h.2, hA], by linarith [h.1]⟩)]) |>
-          fun _ => by exact hm))
-      -- Simpler direct support proof without `tsupport`:
-      sorry
-    sorry
-  sorry
+      have hc1 : Continuous (fun u : ℝ => windowMultiplier u (2 * riemannMayerReflect s)) := by
+        unfold windowMultiplier; fun_prop
+      have hc2 : Continuous (fun u : ℝ => F (-u)) := hF_cont.comp continuous_neg
+      exact ((hc1.mul hc2).norm).pow 2
+    refine hcontR.integrable_of_hasCompactSupport
+      (HasCompactSupport.intro (isCompact_Icc (a := -A) (b := A)) fun u hu => ?_)
+    have hnu : -u ∉ Icc (-A) A := fun hm => hu ⟨by linarith [hm.2], by linarith [hm.1]⟩
+    simp [F, windowLogLift_eq_zero_of_notMem hA hv s hnu]
+  -- Compact-support integrability of any `rpow`-weighted square of `ψ` on `Ioi 1`:
+  have hfold_int : ∀ β : ℝ,
+      IntegrableOn (fun b => ‖ψ b‖ ^ 2 * ((b + b⁻¹) ^ (-6 : ℝ) * b ^ β)) (Ioi 1) := by
+    intro β
+    have hψ_cont : ContinuousOn ψ (Ioi 0) := by
+      intro b hb
+      have hb0 : 0 < b := hb
+      have hsum : b + b⁻¹ ≠ 0 := (add_pos hb0 (inv_pos.mpr hb0)).ne'
+      have c1 : ContinuousAt (fun x : ℝ => (x + x⁻¹) ^ (3 : ℝ)) b :=
+        (continuousAt_id.add (continuousAt_inv₀ hb0.ne')).rpow
+          (continuousAt_const : ContinuousAt (fun _ : ℝ => (3 : ℝ)) b) (Or.inl hsum)
+      have c2 : ContinuousAt (fun x : ℝ => x ^ (-(1 / 4 : ℝ))) b :=
+        continuousAt_id.rpow
+          (continuousAt_const : ContinuousAt (fun _ : ℝ => -(1 / 4 : ℝ)) b) (Or.inl hb0.ne')
+      have c3 : ContinuousAt (fun x : ℝ => F (Real.log x)) b :=
+        ContinuousAt.comp (g := F) (f := Real.log) hF_cont.continuousAt (Real.continuousAt_log hb0.ne')
+      have c12 : ContinuousAt (fun x : ℝ =>
+          (((x + x⁻¹) ^ (3 : ℝ) * x ^ (-(1 / 4 : ℝ)) : ℝ) : ℂ)) b :=
+        Complex.continuous_ofReal.continuousAt.comp (c1.mul c2)
+      exact (c12.mul c3).continuousWithinAt
+    have hcont_g : ContinuousOn
+        (fun b : ℝ => ‖ψ b‖ ^ 2 * ((b + b⁻¹) ^ (-6 : ℝ) * b ^ β)) (Icc 1 (Real.exp A)) := by
+      intro b hb
+      have hb0 : 0 < b := zero_lt_one.trans_le hb.1
+      have hsum : b + b⁻¹ ≠ 0 := (add_pos hb0 (inv_pos.mpr hb0)).ne'
+      have cψ : ContinuousAt (fun x : ℝ => ‖ψ x‖ ^ 2) b :=
+        (hψ_cont.continuousAt (isOpen_Ioi.mem_nhds hb0)).norm.pow 2
+      have cw1 : ContinuousAt (fun x : ℝ => (x + x⁻¹) ^ (-6 : ℝ)) b :=
+        (continuousAt_id.add (continuousAt_inv₀ hb0.ne')).rpow
+          (continuousAt_const : ContinuousAt (fun _ : ℝ => (-6 : ℝ)) b) (Or.inl hsum)
+      have cw2 : ContinuousAt (fun x : ℝ => x ^ β) b :=
+        continuousAt_id.rpow (continuousAt_const : ContinuousAt (fun _ : ℝ => β) b) (Or.inl hb0.ne')
+      exact (cψ.mul (cw1.mul cw2)).continuousWithinAt
+    have hint_Ioc : IntegrableOn
+        (fun b : ℝ => ‖ψ b‖ ^ 2 * ((b + b⁻¹) ^ (-6 : ℝ) * b ^ β)) (Ioc 1 (Real.exp A)) :=
+      hcont_g.integrableOn_Icc.mono_set Ioc_subset_Icc_self
+    have hind_eq : Set.EqOn
+        (fun b : ℝ => ‖ψ b‖ ^ 2 * ((b + b⁻¹) ^ (-6 : ℝ) * b ^ β))
+        ((Ioc 1 (Real.exp A)).indicator
+          (fun b => ‖ψ b‖ ^ 2 * ((b + b⁻¹) ^ (-6 : ℝ) * b ^ β))) (Ioi 1) := by
+      intro b hb
+      by_cases hle : b ≤ Real.exp A
+      · exact (indicator_of_mem ⟨hb, hle⟩ _).symm
+      · push_neg at hle
+        have hnot : Real.log b ∉ Icc (-A) A := fun hm =>
+          hle.not_ge ((Real.log_le_iff_le_exp (zero_lt_one.trans hb)).mp hm.2)
+        have hFz : F (Real.log b) = 0 := windowLogLift_eq_zero_of_notMem hA hv s hnot
+        have hψz : ψ b = 0 := by simp [ψ, windowPeriodLift, logPeriodInverse, F, hFz]
+        rw [indicator_of_notMem (fun hm => hle.not_ge hm.2), hψz]
+        simp
+    exact ((integrableOn_indicator_iff measurableSet_Ioc).mpr
+      (hint_Ioc.mono_set inter_subset_right)).congr_fun
+      (fun b hb => (hind_eq hb).symm) measurableSet_Ioi
+  refine ⟨hψ_int, hψR_int, ?_⟩
+  rw [lewisCoIsometryDefect_eq_neg_log_integral
+    (fun a ha => lewisModularInversion_windowPeriodLift s H ha)
+    hψ_int hψR_int (hfold_int _) (hfold_int _), hF_eq]
+  congr 1
+  -- On `u > 0`, `‖F u * F (-u)‖ = H (-u) ^ 2`:
+  have hpt_pos : ∀ u ∈ Ioi (0 : ℝ),
+      (Real.exp ((2 * s.re - 1 / 2) * u) + Real.exp (-((2 * s.re - 1 / 2) * u))) *
+        (Real.exp ((2 * s.re - 1 / 2) * u) - Real.exp (-((2 * s.re - 1 / 2) * u))) ^ 2 *
+        ‖F u * F (-u)‖ = frobeniusDefectFactor s u * H (-u) ^ 2 := by
+    intro u hu
+    have hu0 : 0 < u := hu
+    have hnu_lt : -u < 0 := neg_lt_zero.mpr hu0
+    have hnu_not : ¬ (0 < -u) := not_lt.mpr hnu_lt.le
+    have hpair : ‖F u * F (-u)‖ = H (-u) ^ 2 := by
+      dsimp [F, windowLogLift]
+      rw [if_pos hu0, if_neg hnu_not, if_pos hnu_lt, norm_mul, norm_mul,
+        Complex.norm_exp, Complex.norm_real, Complex.norm_real, Real.norm_eq_abs, Real.norm_eq_abs,
+        abs_mul, abs_mul, abs_of_pos (Real.exp_pos _), abs_of_pos (Real.exp_pos _)]
+      have hre_exp : (-((2 * s - 1 / 2) * ((-u : ℝ) : ℂ))).re = (2 * s.re - 1 / 2) * u := by
+        simp; ring
+      rw [hre_exp]
+      have hexp_one : Real.exp (-((s.re - 1 / 4) * u)) *
+          (Real.exp ((2 * s.re - 1 / 2) * u) * Real.exp ((s.re - 1 / 4) * (-u))) = 1 := by
+        rw [← Real.exp_add, ← Real.exp_add]
+        have hz : -((s.re - 1 / 4) * u) + ((2 * s.re - 1 / 2) * u + (s.re - 1 / 4) * (-u)) = 0 := by
+          ring
+        rw [hz, Real.exp_zero]
+      calc
+        Real.exp (-((s.re - 1 / 4) * u)) * |H (-u)| *
+            (Real.exp ((2 * s.re - 1 / 2) * u) * (Real.exp ((s.re - 1 / 4) * (-u)) * |H (-u)|))
+            = (Real.exp (-((s.re - 1 / 4) * u)) *
+                (Real.exp ((2 * s.re - 1 / 2) * u) * Real.exp ((s.re - 1 / 4) * (-u)))) *
+                (|H (-u)| * |H (-u)|) := by ring
+        _ = H (-u) ^ 2 := by rw [hexp_one, one_mul, ← sq, sq_abs]
+    rw [hpair]; rfl
+  rw [setIntegral_congr_fun measurableSet_Ioi hpt_pos, ← integral_indicator measurableSet_Ioi]
+  -- Match indicator on `Ioi 0` with reflected indicator on `Icc (-A) 0`:
+  have hind_neg : (Ioi (0 : ℝ)).indicator (fun u => frobeniusDefectFactor s u * H (-u) ^ 2) =
+      fun u => (Icc (-A) 0).indicator (fun x => frobeniusDefectFactor s (-x) * H x ^ 2) (-u) := by
+    ext u
+    rcases lt_trichotomy u 0 with hlt | rfl | hgt
+    · have h1 : u ∉ Ioi (0 : ℝ) := not_lt.mpr hlt.le
+      have h2 : -u ∉ Icc (-A) 0 := fun hm => by linarith [hm.2]
+      rw [indicator_of_notMem h1, indicator_of_notMem h2]
+    · have h1 : (0 : ℝ) ∉ Ioi (0 : ℝ) := lt_irrefl 0
+      rw [indicator_of_notMem h1, neg_zero]
+      by_cases h0m : (0 : ℝ) ∈ Icc (-A) 0
+      · simp [h0m, hH0]
+      · simp [h0m]
+    · rw [indicator_of_mem hgt]
+      by_cases hle : u ≤ A
+      · have hm : -u ∈ Icc (-A) 0 := ⟨by linarith, by linarith⟩
+        rw [indicator_of_mem hm, neg_neg]
+      · push_neg at hle
+        have hnot : -u ∉ Icc (-A) 0 := fun hm => by linarith [hm.1]
+        rw [indicator_of_notMem hnot, hv (-u) hnot]
+        ring
+  rw [hind_neg, integral_neg_eq_self, setIntegral_indicator measurableSet_Icc]
+  refine setIntegral_congr_fun measurableSet_Icc fun x _ => ?_
+  rw [frobeniusDefectFactor_even, frobeniusDefectFactor_eq_windowMultiplier]
+
+/-- Multiplicative-Haar `db / b` substitution mapping `[1, e^A / n]` onto `[-A, -log n]`. -/
+private theorem integral_Icc_fold_haar_subst {A : ℝ} {n : ℕ} (hn : 2 ≤ n)
+    (hlog : Real.log n ≤ A) (g : ℝ → ℝ) :
+    (∫ u in Icc (-A) (-Real.log n), g u) =
+      ∫ b in Icc (1 : ℝ) (Real.exp A / n), g (-Real.log b - Real.log n) / b := by
+  have hn_pos : (0 : ℝ) < n := by exact_mod_cast (lt_of_lt_of_le (by norm_num : 0 < 2) hn)
+  let B : ℝ := Real.exp A / n
+  by_cases hlt : Real.log n < A
+  · have h1B : 1 < B := by
+      dsimp [B]
+      rw [one_lt_div hn_pos]
+      exact (Real.log_lt_iff_lt_exp hn_pos).mp hlt
+    let φ : ℝ → ℝ := fun b => -Real.log b - Real.log n
+    have himg : φ '' Ioo (1 : ℝ) B = Ioo (-A) (-Real.log n) := by
+      ext u
+      simp only [φ, mem_image, mem_Ioo]
+      constructor
+      · rintro ⟨b, ⟨hb1, hbB⟩, rfl⟩
+        have hb0 : 0 < b := zero_lt_one.trans hb1
+        have hlog_pos : 0 < Real.log b := Real.log_pos hb1
+        have hlog_lt : Real.log b < A - Real.log n := by
+          have h := Real.log_lt_log hb0 hbB
+          dsimp [B] at h
+          rw [Real.log_div (Real.exp_pos A).ne' hn_pos.ne', Real.log_exp] at h
+          exact h
+        exact ⟨by linarith, by linarith⟩
+      · rintro ⟨hu1, hu2⟩
+        let b : ℝ := Real.exp (-u - Real.log n)
+        have hb1 : 1 < b := Real.one_lt_exp_iff.mpr (by linarith)
+        have hbB : b < B := by
+          dsimp [b, B]
+          have h1 : Real.exp (-u - Real.log n) = Real.exp (-u) / n := by
+            rw [sub_eq_add_neg, Real.exp_add, Real.exp_neg, Real.exp_log hn_pos, div_eq_mul_inv]
+          rw [h1]
+          exact div_lt_div_of_pos_right (Real.exp_lt_exp.mpr (by linarith)) hn_pos
+        refine ⟨b, ⟨hb1, hbB⟩, ?_⟩
+        dsimp [b]
+        rw [Real.log_exp]
+        ring
+    have hinj : InjOn φ (Ioo 1 B) := by
+      intro b₁ hb₁ b₂ hb₂ heq
+      dsimp [φ] at heq
+      have hlog_eq : Real.log b₁ = Real.log b₂ := by linarith
+      exact Real.log_injOn_pos (zero_lt_one.trans hb₁.1) (zero_lt_one.trans hb₂.1) hlog_eq
+    have hderiv : ∀ b ∈ Ioo (1 : ℝ) B, HasDerivWithinAt φ (-b⁻¹) (Ioo 1 B) b := by
+      intro b hb
+      have hb0 : 0 < b := zero_lt_one.trans hb.1
+      exact (((Real.hasDerivAt_log hb0.ne').neg).sub_const (Real.log n)).hasDerivWithinAt
+    have hint := MeasureTheory.integral_image_eq_integral_abs_deriv_smul
+      measurableSet_Ioo hderiv hinj g
+    rw [himg] at hint
+    rw [← setIntegral_congr_set MeasureTheory.Ioo_ae_eq_Icc,
+      ← setIntegral_congr_set (s := Ioo 1 B) (t := Icc 1 B) MeasureTheory.Ioo_ae_eq_Icc, hint]
+    refine setIntegral_congr_fun measurableSet_Ioo fun b hb => ?_
+    have hb0 : 0 < b := zero_lt_one.trans hb.1
+    dsimp only [φ, smul_eq_mul]
+    rw [abs_neg, abs_of_pos (inv_pos.mpr hb0), div_eq_mul_inv, mul_comm]
+  · have heq_A : A = Real.log n := le_antisymm (not_lt.mp hlt) hlog
+    have hB1 : B = 1 := by
+      dsimp [B]; rw [heq_A, Real.exp_log hn_pos, div_self hn_pos.ne']
+    rw [heq_A, hB1]
+    simp
+
+/-- **Multiplicative-Haar Representation of `foldSym A (log n) H` on `[1, e^A / n]`.** -/
+theorem foldSym_eq_haar_periodWindowProfile {A : ℝ} {n : ℕ} (hn : 2 ≤ n)
+    (hlog : Real.log n ≤ A) (s : ℂ) (H : ℝ → ℝ) :
+    foldSym A (Real.log n) H =
+      (1 / 2) * ∫ b in Icc (1 : ℝ) (Real.exp A / n),
+        ((periodWindowProfile s (windowPeriodLift s H) (n * b) +
+          periodWindowProfile s (windowPeriodLift s H) b).re) ^ 2 / b := by
+  have hn_pos : (0 : ℝ) < n := by exact_mod_cast (lt_of_lt_of_le (by norm_num : 0 < 2) hn)
+  have hn_ge2 : (2 : ℝ) ≤ n := by exact_mod_cast hn
+  unfold foldSym
+  rw [integral_indicator measurableSet_Icc, integral_Icc_fold_haar_subst hn hlog]
+  congr 1
+  rw [← setIntegral_congr_set MeasureTheory.Ioo_ae_eq_Icc,
+    ← setIntegral_congr_set MeasureTheory.Ioo_ae_eq_Icc]
+  refine setIntegral_congr_fun measurableSet_Ioo fun b hb => ?_
+  have hb1 : 1 < b := hb.1
+  have hb0 : 0 < b := zero_lt_one.trans hb1
+  have hnb1 : 1 < (n : ℝ) * b := by nlinarith
+  rw [periodWindowProfile_windowPeriodLift s H hb1,
+    periodWindowProfile_windowPeriodLift s H hnb1]
+  have hlog_mul : -Real.log ((n : ℝ) * b) = -Real.log b - Real.log n := by
+    rw [Real.log_mul hn_pos.ne' hb0.ne']; ring
+  have hshift : (-Real.log b - Real.log n) + Real.log n = -Real.log b := by ring
+  rw [hlog_mul, hshift]
+  simp
+
+/-- **Multiplicative-Haar Representation of `foldEnergy A (log n) H` on `[1, e^A / n]`.** -/
+theorem foldEnergy_eq_haar_periodWindowProfile {A : ℝ} {n : ℕ} (hn : 2 ≤ n)
+    (hlog : Real.log n ≤ A) (s : ℂ) (H : ℝ → ℝ) :
+    foldEnergy A (Real.log n) H =
+      ∫ b in Icc (1 : ℝ) (Real.exp A / n),
+        ((periodWindowProfile s (windowPeriodLift s H) (n * b) -
+          periodWindowProfile s (windowPeriodLift s H) b).re) ^ 2 / b := by
+  have hn_pos : (0 : ℝ) < n := by exact_mod_cast (lt_of_lt_of_le (by norm_num : 0 < 2) hn)
+  have hn_ge2 : (2 : ℝ) ≤ n := by exact_mod_cast hn
+  unfold foldEnergy
+  rw [integral_indicator measurableSet_Icc, integral_Icc_fold_haar_subst hn hlog]
+  rw [← setIntegral_congr_set MeasureTheory.Ioo_ae_eq_Icc,
+    ← setIntegral_congr_set MeasureTheory.Ioo_ae_eq_Icc]
+  refine setIntegral_congr_fun measurableSet_Ioo fun b hb => ?_
+  have hb1 : 1 < b := hb.1
+  have hb0 : 0 < b := zero_lt_one.trans hb1
+  have hnb1 : 1 < (n : ℝ) * b := by nlinarith
+  rw [periodWindowProfile_windowPeriodLift s H hb1,
+    periodWindowProfile_windowPeriodLift s H hnb1]
+  have hlog_mul : -Real.log ((n : ℝ) * b) = -Real.log b - Real.log n := by
+    rw [Real.log_mul hn_pos.ne' hb0.ne']; ring
+  have hshift : (-Real.log b - Real.log n) + Real.log n = -Real.log b := by ring
+  rw [hlog_mul, hshift]
+  simp
+
+/-! ## Part 3: Two-sided quantitative `(foldSym, foldEnergy)` transfer & `T₂`-stick Schur elimination -/
+
+/-- Monotonicity of `frobeniusDefectFactor s` on `[0, ∞)`. -/
+theorem frobeniusDefectFactor_mono_nonneg (s : ℂ) {u₁ u₂ : ℝ}
+    (hu₁ : 0 ≤ u₁) (hle : u₁ ≤ u₂) :
+    frobeniusDefectFactor s u₁ ≤ frobeniusDefectFactor s u₂ := by
+  let δ : ℝ := |2 * s.re - 1 / 2|
+  have hδ_nn : 0 ≤ δ := abs_nonneg _
+  have habs_eq : ∀ u : ℝ, frobeniusDefectFactor s u =
+      (Real.exp (δ * u) + (Real.exp (δ * u))⁻¹) *
+        (Real.exp (δ * u) - (Real.exp (δ * u))⁻¹) ^ 2 := by
+    intro u
+    unfold frobeniusDefectFactor
+    dsimp [δ]
+    rcases le_or_gt 0 (2 * s.re - 1 / 2) with hpos | hneg
+    · rw [abs_of_nonneg hpos, Real.exp_neg]
+    · rw [abs_of_neg hneg]
+      have h1 : -(2 * s.re - 1 / 2) * u = -((2 * s.re - 1 / 2) * u) := by ring
+      rw [h1, Real.exp_neg, inv_inv]
+      ring
+  rw [habs_eq u₁, habs_eq u₂]
+  let e₁ : ℝ := Real.exp (δ * u₁)
+  let e₂ : ℝ := Real.exp (δ * u₂)
+  have he₁_ge1 : 1 ≤ e₁ := Real.one_le_exp (mul_nonneg hδ_nn hu₁)
+  have he₁_pos : 0 < e₁ := zero_lt_one.trans_le he₁_ge1
+  have he₁_le_e₂ : e₁ ≤ e₂ := Real.exp_le_exp.mpr (mul_le_mul_of_nonneg_left hle hδ_nn)
+  have he₂_ge1 : 1 ≤ e₂ := he₁_ge1.trans he₁_le_e₂
+  have he₂_pos : 0 < e₂ := zero_lt_one.trans_le he₂_ge1
+  have hsum_le : e₁ + e₁⁻¹ ≤ e₂ + e₂⁻¹ := by
+    have hdiff : (e₂ + e₂⁻¹) - (e₁ + e₁⁻¹) = (e₂ - e₁) * (e₁ * e₂ - 1) / (e₁ * e₂) := by
+      field_simp [he₁_pos.ne', he₂_pos.ne']; ring
+    have hnn : 0 ≤ (e₂ - e₁) * (e₁ * e₂ - 1) / (e₁ * e₂) :=
+      div_nonneg (mul_nonneg (by linarith) (by nlinarith)) (by positivity)
+    linarith
+  have hd₁_nn : 0 ≤ e₁ - e₁⁻¹ := by
+    have : e₁⁻¹ ≤ 1 := inv_le_one_of_one_le₀ he₁_ge1
+    linarith
+  have hdiff_le : e₁ - e₁⁻¹ ≤ e₂ - e₂⁻¹ := by
+    have hinv_le : e₂⁻¹ ≤ e₁⁻¹ := inv_anti₀ he₁_pos he₁_le_e₂
+    linarith
+  have hsq_le : (e₁ - e₁⁻¹) ^ 2 ≤ (e₂ - e₂⁻¹) ^ 2 :=
+    pow_le_pow_left₀ hd₁_nn hdiff_le 2
+  exact mul_le_mul hsum_le hsq_le (sq_nonneg _) (by positivity)
+
+private theorem frobeniusDefectFactor_log_nat (s : ℂ) {n : ℕ} (hn : 1 ≤ n) :
+    frobeniusDefectFactor s (Real.log n) =
+      ((n : ℝ) ^ (2 * s.re - 1 / 2) + (n : ℝ) ^ (-(2 * s.re - 1 / 2))) *
+        ((n : ℝ) ^ (2 * s.re - 1 / 2) - (n : ℝ) ^ (-(2 * s.re - 1 / 2))) ^ 2 := by
+  have hn0 : (0 : ℝ) < n := by exact_mod_cast hn
+  unfold frobeniusDefectFactor
+  rw [Real.rpow_def_of_pos hn0, Real.rpow_def_of_pos hn0]
+  congr 2 <;> [congr 1; congr 1] <;> congr 1 <;> ring
+
+private theorem windowPeriodLift_neg_defect_eq_Icc {A : ℝ} (hA : 0 ≤ A) {H : ℝ → ℝ}
+    (hc : Continuous H) (hv : ∀ y, y ∉ Icc (-A) 0 → H y = 0) (s : ℂ) :
+    -lewisCoIsometryDefect s (windowPeriodLift s H) =
+      ∫ x in Icc (-A) 0, frobeniusDefectFactor s (-x) * H x ^ 2 := by
+  obtain ⟨_, _, hdef⟩ := windowPeriodLift_coIsometryDefect_eq hA hc hv s
+  rw [hdef, neg_neg]
+  refine setIntegral_congr_fun measurableSet_Icc fun x _ => ?_
+  rw [frobeniusDefectFactor_even, frobeniusDefectFactor_eq_windowMultiplier]
+
+/-- **Universal `n`-th Fold Lower Bound (`A ≥ log n`, `n ≥ 2`).**
+At every active window stage `A ≥ log n`, the off-line co-isometry defect of `windowPeriodLift s H`
+dominates `((n^δ + n^(-δ))(n^δ - n^(-δ))² / 4) * (foldSym A (log n) H - foldEnergy A (log n) H)`. -/
+theorem windowPeriodLift_neg_defect_ge_foldSym_sub_foldEnergy {A : ℝ} {n : ℕ}
+    (hn : 2 ≤ n) (hlog : Real.log n ≤ A) {H : ℝ → ℝ}
+    (hc : Continuous H) (hv : ∀ y, y ∉ Icc (-A) 0 → H y = 0) (s : ℂ) :
+    (((n : ℝ) ^ (2 * s.re - 1 / 2) + (n : ℝ) ^ (-(2 * s.re - 1 / 2))) *
+      ((n : ℝ) ^ (2 * s.re - 1 / 2) - (n : ℝ) ^ (-(2 * s.re - 1 / 2))) ^ 2 / 4) *
+      (foldSym A (Real.log n) H - foldEnergy A (Real.log n) H) ≤
+      -lewisCoIsometryDefect s (windowPeriodLift s H) := by
+  have hn1 : 1 ≤ n := le_trans (by norm_num) hn
+  have hn_gt1 : (1 : ℝ) < n := by exact_mod_cast (lt_of_lt_of_le (by norm_num : 1 < 2) hn)
+  have hlog_pos : 0 < Real.log n := Real.log_pos hn_gt1
+  have hA : 0 ≤ A := hlog_pos.le.trans hlog
+  rw [windowPeriodLift_neg_defect_eq_Icc hA hc hv s, ← frobeniusDefectFactor_log_nat s hn1]
+  have hsub_Icc : Icc (-A) (-Real.log n) ⊆ Icc (-A) 0 :=
+    fun x hx => ⟨hx.1, hx.2.trans (by linarith)⟩
+  -- SOS lower bound `H(x)² ≥ (1/8)(H(x) + H(x + ℓ))² - (1/4)(H(x) - H(x + ℓ))²`:
+  let ℓ : ℝ := Real.log n
+  have hint_sq : IntegrableOn (fun x => H x ^ 2) (Icc (-A) (-ℓ)) :=
+    (hc.pow 2).continuousOn.integrableOn_Icc
+  have hint_sym : IntegrableOn (fun x => (H x + H (x + ℓ)) ^ 2) (Icc (-A) (-ℓ)) :=
+    ((hc.add (hc.comp (continuous_add_const ℓ))).pow 2).continuousOn.integrableOn_Icc
+  have hint_en : IntegrableOn (fun x => (H x - H (x + ℓ)) ^ 2) (Icc (-A) (-ℓ)) :=
+    ((hc.sub (hc.comp (continuous_add_const ℓ))).pow 2).continuousOn.integrableOn_Icc
+  have hsos_int : (foldSym A ℓ H - foldEnergy A ℓ H) / 4 ≤
+      ∫ x in Icc (-A) (-ℓ), H x ^ 2 := by
+    have hmono := setIntegral_mono_on
+      ((hint_sym.const_mul (1 / 8)).sub (hint_en.const_mul (1 / 4))) hint_sq
+      measurableSet_Icc fun x _ => by
+        simp only [Pi.sub_apply]
+        have hsos : 8 * H x ^ 2 - (H x + H (x + ℓ)) ^ 2 + 2 * (H x - H (x + ℓ)) ^ 2 =
+            (3 * H x - H (x + ℓ)) ^ 2 := by ring
+        nlinarith [sq_nonneg (3 * H x - H (x + ℓ))]
+    rw [integral_sub (hint_sym.const_mul (1 / 8)) (hint_en.const_mul (1 / 4)),
+      integral_const_mul, integral_const_mul] at hmono
+    have hsym_eq : foldSym A ℓ H = (1 / 2) * ∫ x in Icc (-A) (-ℓ), (H x + H (x + ℓ)) ^ 2 := by
+      unfold foldSym; rw [integral_indicator measurableSet_Icc]
+    have hen_eq : foldEnergy A ℓ H = ∫ x in Icc (-A) (-ℓ), (H x - H (x + ℓ)) ^ 2 := by
+      unfold foldEnergy; rw [integral_indicator measurableSet_Icc]
+    linarith
+  -- Monotonicity on `[-A, -ℓ] ⊆ [-A, 0]`:
+  have hint_full : IntegrableOn (fun x => frobeniusDefectFactor s (-x) * H x ^ 2) (Icc (-A) 0) := by
+    have hcont_f : Continuous (fun x : ℝ => frobeniusDefectFactor s (-x) * H x ^ 2) := by
+      unfold frobeniusDefectFactor; fun_prop
+    exact hcont_f.continuousOn.integrableOn_Icc
+  have hdom_sub : ∫ x in Icc (-A) (-ℓ), frobeniusDefectFactor s (-x) * H x ^ 2 ≤
+      ∫ x in Icc (-A) 0, frobeniusDefectFactor s (-x) * H x ^ 2 := by
+    have hunion : Icc (-A) 0 = Icc (-A) (-ℓ) ∪ (Icc (-A) 0 \ Icc (-A) (-ℓ)) :=
+      (Set.union_sdiff_cancel hsub_Icc).symm
+    conv_rhs => rw [hunion]
+    rw [setIntegral_union disjoint_sdiff_self_right (measurableSet_Icc.diff measurableSet_Icc)
+      (hint_full.mono_set hsub_Icc) (hint_full.mono_set Set.sdiff_subset)]
+    have hrest : 0 ≤ ∫ x in Icc (-A) 0 \ Icc (-A) (-ℓ),
+        frobeniusDefectFactor s (-x) * H x ^ 2 :=
+      setIntegral_nonneg (measurableSet_Icc.diff measurableSet_Icc) fun x _ =>
+        mul_nonneg (frobeniusDefectFactor_nonneg s (-x)) (sq_nonneg _)
+    linarith
+  have hlow_left : frobeniusDefectFactor s ℓ * ∫ x in Icc (-A) (-ℓ), H x ^ 2 ≤
+      ∫ x in Icc (-A) (-ℓ), frobeniusDefectFactor s (-x) * H x ^ 2 := by
+    rw [← integral_const_mul]
+    exact setIntegral_mono_on (hint_sq.const_mul _) (hint_full.mono_set hsub_Icc)
+      measurableSet_Icc fun x hx =>
+        mul_le_mul_of_nonneg_right
+          (frobeniusDefectFactor_mono_nonneg s hlog_pos.le (by linarith [hx.2])) (sq_nonneg _)
+  have hmult := mul_le_mul_of_nonneg_left hsos_int (frobeniusDefectFactor_nonneg s ℓ)
+  linarith [show (frobeniusDefectFactor s ℓ / 4) * (foldSym A ℓ H - foldEnergy A ℓ H) =
+    frobeniusDefectFactor s ℓ * ((foldSym A ℓ H - foldEnergy A ℓ H) / 4) by ring]
+
+/-- **Sharp Fold-Symmetric Lower Bound (`A ≥ log n`, `n ≥ 2`).**
+On fold-symmetric tests `H(x + log n) = H(x)` (`x ∈ [-A, -log n]`), the constant sharpens to `1/2`:
+`-lewisCoIsometryDefect s (windowPeriodLift s H) ≥ ((n^δ + n^(-δ))(n^δ - n^(-δ))² / 2) * foldSym`. -/
+theorem windowPeriodLift_neg_defect_ge_half_foldSym_of_symmetric {A : ℝ} {n : ℕ}
+    (hn : 2 ≤ n) (hlog : Real.log n ≤ A) {H : ℝ → ℝ}
+    (hc : Continuous H) (hv : ∀ y, y ∉ Icc (-A) 0 → H y = 0)
+    (hsym : ∀ u ∈ Icc (-A) (-Real.log n), H (u + Real.log n) = H u) (s : ℂ) :
+    (((n : ℝ) ^ (2 * s.re - 1 / 2) + (n : ℝ) ^ (-(2 * s.re - 1 / 2))) *
+      ((n : ℝ) ^ (2 * s.re - 1 / 2) - (n : ℝ) ^ (-(2 * s.re - 1 / 2))) ^ 2 / 2) *
+      foldSym A (Real.log n) H ≤
+      -lewisCoIsometryDefect s (windowPeriodLift s H) := by
+  have hn1 : 1 ≤ n := le_trans (by norm_num) hn
+  have hn_gt1 : (1 : ℝ) < n := by exact_mod_cast (lt_of_lt_of_le (by norm_num : 1 < 2) hn)
+  have hlog_pos : 0 < Real.log n := Real.log_pos hn_gt1
+  have hA : 0 ≤ A := hlog_pos.le.trans hlog
+  rw [windowPeriodLift_neg_defect_eq_Icc hA hc hv s, ← frobeniusDefectFactor_log_nat s hn1]
+  let ℓ : ℝ := Real.log n
+  have hsub_Icc : Icc (-A) (-ℓ) ⊆ Icc (-A) 0 :=
+    fun x hx => ⟨hx.1, hx.2.trans (by linarith)⟩
+  have hsym_eq : foldSym A ℓ H = 2 * ∫ x in Icc (-A) (-ℓ), H x ^ 2 := by
+    unfold foldSym
+    rw [integral_indicator measurableSet_Icc]
+    have hcongr : Set.EqOn (fun u => (H u + H (u + ℓ)) ^ 2)
+        (fun u => 4 * H u ^ 2) (Icc (-A) (-ℓ)) := fun u hu => by
+      rw [hsym u hu]; ring
+    rw [setIntegral_congr_fun measurableSet_Icc hcongr, integral_const_mul]
+    ring
+  have hint_sq : IntegrableOn (fun x => H x ^ 2) (Icc (-A) (-ℓ)) :=
+    (hc.pow 2).continuousOn.integrableOn_Icc
+  have hint_full : IntegrableOn (fun x => frobeniusDefectFactor s (-x) * H x ^ 2) (Icc (-A) 0) := by
+    have hcont_f : Continuous (fun x : ℝ => frobeniusDefectFactor s (-x) * H x ^ 2) := by
+      unfold frobeniusDefectFactor; fun_prop
+    exact hcont_f.continuousOn.integrableOn_Icc
+  have hdom_sub : ∫ x in Icc (-A) (-ℓ), frobeniusDefectFactor s (-x) * H x ^ 2 ≤
+      ∫ x in Icc (-A) 0, frobeniusDefectFactor s (-x) * H x ^ 2 := by
+    have hunion : Icc (-A) 0 = Icc (-A) (-ℓ) ∪ (Icc (-A) 0 \ Icc (-A) (-ℓ)) :=
+      (Set.union_sdiff_cancel hsub_Icc).symm
+    conv_rhs => rw [hunion]
+    rw [setIntegral_union disjoint_sdiff_self_right (measurableSet_Icc.diff measurableSet_Icc)
+      (hint_full.mono_set hsub_Icc) (hint_full.mono_set Set.sdiff_subset)]
+    have hrest : 0 ≤ ∫ x in Icc (-A) 0 \ Icc (-A) (-ℓ),
+        frobeniusDefectFactor s (-x) * H x ^ 2 :=
+      setIntegral_nonneg (measurableSet_Icc.diff measurableSet_Icc) fun x _ =>
+        mul_nonneg (frobeniusDefectFactor_nonneg s (-x)) (sq_nonneg _)
+    linarith
+  have hlow_left : frobeniusDefectFactor s ℓ * ∫ x in Icc (-A) (-ℓ), H x ^ 2 ≤
+      ∫ x in Icc (-A) (-ℓ), frobeniusDefectFactor s (-x) * H x ^ 2 := by
+    rw [← integral_const_mul]
+    exact setIntegral_mono_on (hint_sq.const_mul _) (hint_full.mono_set hsub_Icc)
+      measurableSet_Icc fun x hx =>
+        mul_le_mul_of_nonneg_right
+          (frobeniusDefectFactor_mono_nonneg s hlog_pos.le (by linarith [hx.2])) (sq_nonneg _)
+  rw [hsym_eq]
+  linarith [show (frobeniusDefectFactor s ℓ / 2) * (2 * ∫ x in Icc (-A) (-ℓ), H x ^ 2) =
+    frobeniusDefectFactor s ℓ * ∫ x in Icc (-A) (-ℓ), H x ^ 2 by ring]
+
+/-- **Universal First-Prime Capacity Upper Bound (`A ≥ 2 log 2`).**
+Once the two ends `[-A, -log 2]` and `[log 2 - A, 0]` cover `[-A, 0]`, any bound on
+`foldEnergy A (log 2) H / 2 + foldSym A (log 2) H` directly upper-bounds the Mayer defect
+`-lewisCoIsometryDefect s (windowPeriodLift s H)`. -/
+theorem windowPeriodLift_neg_defect_le_firstPrime_fold {A : ℝ}
+    (hA2 : 2 * Real.log 2 ≤ A) {H : ℝ → ℝ}
+    (hc : Continuous H) (hv : ∀ y, y ∉ Icc (-A) 0 → H y = 0) (s : ℂ) :
+    -lewisCoIsometryDefect s (windowPeriodLift s H) ≤
+      frobeniusDefectFactor s A *
+        (foldEnergy A (Real.log 2) H / 2 + foldSym A (Real.log 2) H) := by
+  have hlog2 : 0 < Real.log 2 := Real.log_pos (by norm_num)
+  have hA : 0 ≤ A := by linarith
+  have hcs : HasCompactSupport H := HasCompactSupport.intro (isCompact_Icc (a := -A) (b := 0)) hv
+  rw [windowPeriodLift_neg_defect_eq_Icc hA hc hv s]
+  -- Pointwise on `[-A, 0]`, `frobeniusDefectFactor s (-x) ≤ frobeniusDefectFactor s A`:
+  have hint_full : IntegrableOn (fun x => frobeniusDefectFactor s (-x) * H x ^ 2) (Icc (-A) 0) := by
+    have hcont_f : Continuous (fun x : ℝ => frobeniusDefectFactor s (-x) * H x ^ 2) := by
+      unfold frobeniusDefectFactor; fun_prop
+    exact hcont_f.continuousOn.integrableOn_Icc
+  have hint_sq_Icc : IntegrableOn (fun x => H x ^ 2) (Icc (-A) 0) :=
+    (hc.pow 2).continuousOn.integrableOn_Icc
+  have hup1 : ∫ x in Icc (-A) 0, frobeniusDefectFactor s (-x) * H x ^ 2 ≤
+      frobeniusDefectFactor s A * ∫ x in Icc (-A) 0, H x ^ 2 := by
+    rw [← integral_const_mul]
+    exact setIntegral_mono_on hint_full (hint_sq_Icc.const_mul _) measurableSet_Icc fun x hx =>
+      mul_le_mul_of_nonneg_right
+        (frobeniusDefectFactor_mono_nonneg s (by linarith [hx.2]) (by linarith [hx.1]))
+        (sq_nonneg _)
+  -- On `[-A, 0]`, `1 ≤ inWindowCount A (Real.log 2) x` since `A ≥ 2 log 2`:
+  have hcount_ge1 : ∀ x : ℝ, (Icc (-A) 0).indicator (fun x => H x ^ 2) x ≤
+      inWindowCount A (Real.log 2) x * H x ^ 2 := by
+    intro x
+    by_cases hx : x ∈ Icc (-A) 0
+    · rw [indicator_of_mem hx]
+      have h1_le : 1 ≤ inWindowCount A (Real.log 2) x := by
+        unfold inWindowCount
+        by_cases hleft : x ≤ -Real.log 2
+        · have hm1 : x ∈ Icc (-A) (-Real.log 2) := ⟨hx.1, hleft⟩
+          have hnn2 : 0 ≤ (Icc (Real.log 2 - A) 0).indicator (1 : ℝ → ℝ) x :=
+            indicator_nonneg (fun _ _ => zero_le_one) x
+          rw [indicator_of_mem hm1]
+          simp only [Pi.one_apply]
+          linarith
+        · push_neg at hleft
+          have hm2 : x ∈ Icc (Real.log 2 - A) 0 := ⟨by linarith, hx.2⟩
+          have hnn1 : 0 ≤ (Icc (-A) (-Real.log 2)).indicator (1 : ℝ → ℝ) x :=
+            indicator_nonneg (fun _ _ => zero_le_one) x
+          rw [indicator_of_mem hm2]
+          simp only [Pi.one_apply]
+          linarith
+      nlinarith [sq_nonneg (H x)]
+    · rw [indicator_of_notMem hx]
+      exact mul_nonneg (inWindowCount_nonneg A (Real.log 2) x) (sq_nonneg _)
+  have hint_count : Integrable (fun x => inWindowCount A (Real.log 2) x * H x ^ 2) := by
+    have iH : Integrable (fun x => H x ^ 2) := (hc.pow 2).integrable_of_hasCompactSupport
+      (HasCompactSupport.intro (isCompact_Icc (a := -A) (b := 0)) fun y hy => by simp [hv y hy])
+    refine ((iH.indicator measurableSet_Icc).add (iH.indicator measurableSet_Icc)).congr
+      (Eventually.of_forall fun x => ?_)
+    simp only [Pi.add_apply]
+    exact (inWindowCount_mul A (Real.log 2) x (fun y => H y ^ 2)).symm
+  have hsq_le_count : ∫ x in Icc (-A) 0, H x ^ 2 ≤
+      ∫ x, inWindowCount A (Real.log 2) x * H x ^ 2 := by
+    rw [← integral_indicator measurableSet_Icc]
+    exact integral_mono ((integrable_indicator_iff measurableSet_Icc).mpr hint_sq_Icc)
+      hint_count hcount_ge1
+  have hcount_id : ∫ x, inWindowCount A (Real.log 2) x * H x ^ 2 =
+      foldEnergy A (Real.log 2) H / 2 + foldSym A (Real.log 2) H := by
+    have h := foldEnergy_sub_count_eq_anti_sub_sym hc hcs (Real.log 2) (A := A)
+    linarith
+  rw [hcount_id] at hsq_le_count
+  exact hup1.trans (mul_le_mul_of_nonneg_left hsq_le_count (frobeniusDefectFactor_nonneg s A))
+
+/-- **Integrated Coupled `T₂`-Stick Schur Lower Bound Across `[-A, -log 2]`.**
+Integrating `WindowJumpCounts.twoVertexStick_ge_schur` against `(u₁, u₂) = (H(x + log 2), H(x))`
+couples inner-origin potentials `(p₁, w₁)` (`x + log 2 ∈ [log 2 - A, 0]`) with outer-edge
+potentials `(p₂, w₂)` (`x ∈ [-A, -log 2]`, allowing `p₂(x) + w₂(x) < 0`) via the exact first-prime
+fold energy `g₁₂ * foldEnergy A (log 2) H`. -/
+theorem integral_firstPrime_stick_ge_schur {A g₁₂ uBar : ℝ}
+    {p₁ p₂ w₁ w₂ H : ℝ → ℝ}
+    (hc : Continuous H)
+    (hp₁ : ContinuousOn p₁ (Icc (-A) (-Real.log 2)))
+    (hp₂ : ContinuousOn p₂ (Icc (-A) (-Real.log 2)))
+    (hw₁ : ContinuousOn w₁ (Icc (-A) (-Real.log 2)))
+    (hw₂ : ContinuousOn w₂ (Icc (-A) (-Real.log 2)))
+    (hd₁ : ∀ x ∈ Icc (-A) (-Real.log 2), 0 < stickDiag1 (p₁ x) (w₁ x) g₁₂)
+    (hΔ : ∀ x ∈ Icc (-A) (-Real.log 2), 0 < stickDet (p₁ x) (p₂ x) (w₁ x) (w₂ x) g₁₂) :
+    (∫ x in Icc (-A) (-Real.log 2),
+      stickSchurNum (p₁ x) (p₂ x) (w₁ x) (w₂ x) g₁₂ /
+        stickDet (p₁ x) (p₂ x) (w₁ x) (w₂ x) g₁₂) * uBar ^ 2 ≤
+      (∫ x in Icc (-A) (-Real.log 2),
+        p₁ x * H (x + Real.log 2) ^ 2 + w₁ x * (H (x + Real.log 2) - uBar) ^ 2 +
+          p₂ x * H x ^ 2 + w₂ x * (H x - uBar) ^ 2) +
+        g₁₂ * foldEnergy A (Real.log 2) H := by
+  let S : Set ℝ := Icc (-A) (-Real.log 2)
+  have hc_Hsh : ContinuousOn (fun x => H (x + Real.log 2)) S :=
+    (hc.comp (continuous_add_const (Real.log 2))).continuousOn
+  have hc_schur : ContinuousOn
+      (fun x => stickSchurNum (p₁ x) (p₂ x) (w₁ x) (w₂ x) g₁₂ /
+        stickDet (p₁ x) (p₂ x) (w₁ x) (w₂ x) g₁₂) S := by
+    have c_num : ContinuousOn (fun x => stickSchurNum (p₁ x) (p₂ x) (w₁ x) (w₂ x) g₁₂) S := by
+      unfold stickSchurNum
+      exact (((hp₁.mul hp₂).add ((hp₁.add hp₂).const_mul g₁₂)).mul (hw₁.add hw₂)).add
+        (((hp₁.add hp₂).mul hw₁).mul hw₂)
+    have c_det : ContinuousOn (fun x => stickDet (p₁ x) (p₂ x) (w₁ x) (w₂ x) g₁₂) S := by
+      unfold stickDet stickDiag1 stickDiag2
+      exact (((hp₁.add hw₁).add continuousOn_const).mul
+        ((hp₂.add hw₂).add continuousOn_const)).sub continuousOn_const
+    exact c_num.div c_det fun x hx => (hΔ x hx).ne'
+  have hc_quad : ContinuousOn
+      (fun x => p₁ x * H (x + Real.log 2) ^ 2 + w₁ x * (H (x + Real.log 2) - uBar) ^ 2 +
+        p₂ x * H x ^ 2 + w₂ x * (H x - uBar) ^ 2) S :=
+    (((hp₁.mul (hc_Hsh.pow 2)).add (hw₁.mul ((hc_Hsh.sub continuousOn_const).pow 2))).add
+      (hp₂.mul (hc.continuousOn.pow 2))).add
+      (hw₂.mul ((hc.continuousOn.sub continuousOn_const).pow 2))
+  have hc_fold : ContinuousOn (fun x => (H x - H (x + Real.log 2)) ^ 2) S :=
+    ((hc.continuousOn.sub hc_Hsh).pow 2)
+  have i_schur : IntegrableOn
+      (fun x => (stickSchurNum (p₁ x) (p₂ x) (w₁ x) (w₂ x) g₁₂ /
+        stickDet (p₁ x) (p₂ x) (w₁ x) (w₂ x) g₁₂) * uBar ^ 2) S :=
+    (hc_schur.integrableOn_Icc).mul_const (uBar ^ 2)
+  have i_quad : IntegrableOn
+      (fun x => p₁ x * H (x + Real.log 2) ^ 2 + w₁ x * (H (x + Real.log 2) - uBar) ^ 2 +
+        p₂ x * H x ^ 2 + w₂ x * (H x - uBar) ^ 2) S :=
+    hc_quad.integrableOn_Icc
+  have i_fold : IntegrableOn (fun x => g₁₂ * (H x - H (x + Real.log 2)) ^ 2) S :=
+    (hc_fold.integrableOn_Icc).const_mul g₁₂
+  have hfold_eq : g₁₂ * foldEnergy A (Real.log 2) H =
+      ∫ x in S, g₁₂ * (H x - H (x + Real.log 2)) ^ 2 := by
+    unfold foldEnergy
+    rw [integral_indicator measurableSet_Icc, integral_const_mul]
+  rw [← integral_mul_const, hfold_eq, ← integral_add i_quad i_fold]
+  refine setIntegral_mono_on i_schur (i_quad.add i_fold) measurableSet_Icc fun x hx => ?_
+  simp only [Pi.add_apply]
+  have hpt := twoVertexStick_ge_schur (hd₁ x hx) (hΔ x hx) (H (x + Real.log 2)) (H x) uBar
+  have hsub_sq : (H (x + Real.log 2) - H x) ^ 2 = (H x - H (x + Real.log 2)) ^ 2 := by ring
+  linarith
+
+#print axioms logPeriodInverse_comp_transform
+#print axioms logPeriodTransform_comp_inverse
+#print axioms lewisCriticalNormSq_eq_l2NormSq_logPeriodTransform
+#print axioms lewisCriticalInner_eq_l2Inner_logPeriodTransform
+#print axioms logPeriodTransform_modularInversion
+#print axioms lewisCoIsometryDefect_eq_neg_log_integral
+#print axioms lewisModularInversion_windowPeriodLift
+#print axioms windowPeriodLift_coIsometryDefect_eq
+#print axioms foldSym_eq_haar_periodWindowProfile
+#print axioms foldEnergy_eq_haar_periodWindowProfile
+#print axioms windowPeriodLift_neg_defect_ge_foldSym_sub_foldEnergy
+#print axioms windowPeriodLift_neg_defect_ge_half_foldSym_of_symmetric
+#print axioms windowPeriodLift_neg_defect_le_firstPrime_fold
+#print axioms integral_firstPrime_stick_ge_schur
+
+end GaloisForLFunctions.RenormalizedIntersectionTheory.MayerScattering
