@@ -4,7 +4,7 @@
 - **Stage:** 2-fully-proven
 - **Type:** THEOREM (paper)
 - **Source:** `docs/reports/review-0111/walls-ledger.md`, Σ19
-- **Statement:** Every zero of `Λ(s+1)` in `−1/2<Re s<0` survives, with its full multiplicity, in the level-four rational affine Weyl sum for every sufficiently strong degree rotation.
+- **Statement:** One rotation threshold preserves every zero of `Λ(s+1)` in `−1/2<Re s<0`, with its full multiplicity, in the level-four rational affine Weyl sum.
 
 ## Exact source
 Let `λ(s)=(4−s,s)` and `c_w(λ)=Π_(β∈I(w)) Λ(λ(β∨))/Λ(λ(β∨)+1)`.
@@ -32,18 +32,22 @@ uniform convergence, so both sectors are analytic on the entire strip.
 It also dominates the strong-rotation limit for `R≥1`.
 Only the identity and finite simple reflection have degree index zero;
 they belong to opposite sectors and their remaining products equal one.
-Consequently `P_R(s)→1` and `Q_R(s)→1` as `R→∞`.
+The remainder of each sector is bounded, uniformly on the entire strip, by
+`2Σ_(n≠0) exp(2+4|n|−2Rn²)`. Dominated convergence makes this bound tend to zero.
+Consequently `P_R→1` and `Q_R→1` uniformly on the strip as `R→∞`.
+For one sufficiently large threshold, both sectors stay within distance one
+of `1` everywhere on the strip and therefore have no zeros there.
 
 Fix a band zero `s₀` of `Λ(s+1)`. Both completed-zeta factors are analytic
 near `s₀`. The numerator `Λ(s₀)=Λ(1−s₀)` is nonzero by Euler-product
-nonvanishing, since `Re(1−s₀)>1`. For every sufficiently large `R`,
+nonvanishing, since `Re(1−s₀)>1`. Above the uniform rotation threshold,
 `P_R(s₀)≠0`; hence the cleared numerator
 `Λ(s+1)Q_R(s)+Λ(s)P_R(s)` is nonzero at `s₀`.
 The meromorphic order of `E_R` is exactly minus the zero order of `Λ` at
-`s₀+1`. Any finite set of band zeros has one common rotation threshold.
+`s₀+1`, simultaneously at every band zero and every height.
 Conversely, away from these denominator zeros the two-sector expression is
-analytic. Thus the union of actual band-pole supports over `R>0` is exactly
-`reflectionPoles`; its cardinal is the renormalized Hodge defect.
+analytic. Thus every sufficiently strongly rotated Weyl sum has actual band-pole
+support exactly `reflectionPoles`; its cardinal is the renormalized Hodge defect.
 
 ## Gates
 - [x] Exact rational source and infinite sum; no assumed noncancellation.

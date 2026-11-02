@@ -251,6 +251,7 @@ private theorem mellin_spectral_linear_relation_eq_zero
   have hμ_pos : 0 < μ := by
     obtain ⟨j, _, hμ_eq⟩ :=
       Finset.mem_image.mp (Finset.min'_mem (S.image fun j : upperMayerResonances => 2 * j.1.re) _)
+    dsimp only [μ]
     rw [← hμ_eq]
     linarith [j.2.2.1]
   have hμ_lt_one : μ < 1 := by
@@ -390,8 +391,9 @@ private theorem mellin_spectral_linear_relation_eq_zero
   have hxi_uk : _root_.RHTower.xi uk ≠ 0 := by
     have href : _root_.RHTower.xi uk = _root_.RHTower.xi (2 - 2 * k.1) := by
       rw [← _root_.RHTower.xi_one_sub uk]
+      congr 1
       dsimp [uk]
-      ring_nf
+      ring
     rw [href]
     have hgt1 : 1 < (2 - 2 * k.1).re := by
       have hre : (2 - 2 * k.1).re = 2 - 2 * k.1.re := by simp
@@ -482,7 +484,7 @@ theorem resonantFieldCore_linearIndependent_Ioi :
         = ∑ j ∈ S, ∫ a in Ioi (0 : ℝ), c j * ((a : ℂ) ^ (u - 1) * fieldCore (2 * j.1) a) :=
       Finset.sum_congr rfl fun j hj => (hval j hj).symm
     _ = ∫ a in Ioi (0 : ℝ), ∑ j ∈ S, c j * ((a : ℂ) ^ (u - 1) * fieldCore (2 * j.1) a) :=
-      (integral_finset_sum S hint).symm
+      (integral_finsetSum S hint).symm
     _ = ∫ a in Ioi (0 : ℝ), (0 : ℂ) := by
       refine setIntegral_congr_fun measurableSet_Ioi fun a ha => ?_
       have hfactor : (∑ j ∈ S, c j * ((a : ℂ) ^ (u - 1) * fieldCore (2 * j.1) a)) =
@@ -615,7 +617,7 @@ theorem mayerPeriodCore_linearIndependent_Ioi :
           = ∑ j ∈ S, ∫ a in Ioi (0 : ℝ), c j * ((a : ℂ) ^ (u - 1) * mayerPeriodCore j.1 a) :=
         Finset.sum_congr rfl fun j hj => (hval j hj).symm
       _ = ∫ a in Ioi (0 : ℝ), ∑ j ∈ S, c j * ((a : ℂ) ^ (u - 1) * mayerPeriodCore j.1 a) :=
-        (integral_finset_sum S hint).symm
+        (integral_finsetSum S hint).symm
       _ = ∫ a in Ioi (0 : ℝ), (0 : ℂ) := by
         refine setIntegral_congr_fun measurableSet_Ioi fun a ha => ?_
         have hfactor : (∑ j ∈ S, c j * ((a : ℂ) ^ (u - 1) * mayerPeriodCore j.1 a)) =
@@ -1001,7 +1003,7 @@ theorem mayerOffLineNegativeState_upperRight_linearIndependent :
   rw [linearIndependent_iff']
   intro S c hsum k hk
   have hcoord := congrArg (fun u => mayerPeriodBasis.repr u (ofUpperRightResonance k)) hsum
-  simp only [map_sum, map_smul, map_zero, Finsupp.coe_finset_sum, Finsupp.coe_smul,
+  simp only [map_sum, map_smul, map_zero, Finsupp.coe_finsetSum, Finsupp.coe_smul,
     Finset.sum_apply, Pi.smul_apply, smul_eq_mul, Finsupp.coe_zero, Pi.zero_apply] at hcoord
   have hterm : ∀ s ∈ S,
       c s * mayerPeriodBasis.repr (mayerOffLineNegativeState (ofUpperRightResonance s))

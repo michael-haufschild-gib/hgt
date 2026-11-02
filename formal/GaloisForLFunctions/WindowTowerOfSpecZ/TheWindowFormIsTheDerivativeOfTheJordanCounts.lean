@@ -185,6 +185,30 @@ theorem tateFunction_succ {A : ℝ} {H : ℝ → ℝ} (hH : IsWindowTest A H) (�
   refine Finset.sum_congr rfl fun m hm => ?_
   rw [jordanTotient_eq_card_projPoints β (Finset.mem_Icc.mp hm).1]
 
+theorem jordanTotient_one_eq (k : ℝ) : jordanTotient k 1 = 1 := by
+  simp [jordanTotient]
+
+theorem jordanTotient_two (k : ℝ) : jordanTotient k 2 = (2 : ℝ) ^ k - 1 := by
+  rw [jordanTotient, Nat.Prime.divisors Nat.prime_two, Finset.sum_insert (by decide),
+    Finset.sum_singleton]
+  simp [ArithmeticFunction.moebius_apply_prime Nat.prime_two]
+  ring
+
+/-- **At the first prime the Tate function counts `ℙ^{k−1}(𝔽₂)`**: on a window of level `2`,
+`τ_H(k) = ‖H‖² + (2^k − 1)·2^{−1/2} ∫H(u)H(u + log 2)`, and `2^k − 1 = #ℙ^{k−1}(𝔽₂)` in positive
+integer dimension. The signed fold count of `T₂`, `anti₂ − sym₂ = −2∫H(u)H(u + log 2)`, is the
+coefficient of the point count of projective space over `𝔽₂`; it enters Weil's form through the
+derivative `∂_k(2^k − 1)|_{k=0} = log 2`. -/
+theorem tateFunction_firstPrime {A : ℝ} {H : ℝ → ℝ} (hH : IsWindowTest A H)
+    (hA : windowLevel A = 2) (k : ℝ) :
+    tateFunction A H k = (∫ u, H u ^ 2) +
+      ((2 : ℝ) ^ k - 1) / Real.sqrt 2 * ∫ u, H u * H (u + Real.log 2) := by
+  rw [tateFunction_eq hH, hA, Finset.sum_Icc_succ_top (by norm_num), Finset.Icc_self,
+    Finset.sum_singleton]
+  simp only [Nat.cast_one, Nat.reduceAdd, Nat.cast_ofNat, jordanTotient_one_eq, jordanTotient_two,
+    Real.sqrt_one, div_one, Real.log_one, add_zero, one_mul]
+  simp_rw [sq]
+
 /-- **Weil's window form is a first-order jet of the Tate function**:
 `Q(H) = Ω(0) τ_H(0) − 2 τ_H′(0) + J_∞(H) + ½⟨c,H⟩² − ½⟨s,H⟩²`. -/
 theorem weilQuad_eq_tateJet {A : ℝ} {H : ℝ → ℝ} (hH : IsWindowTest A H) :

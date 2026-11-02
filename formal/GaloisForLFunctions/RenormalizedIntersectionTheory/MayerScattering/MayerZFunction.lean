@@ -32,7 +32,6 @@ definitions:
 
 open Complex Set Filter MeasureTheory Topology Finset
 open scoped BigOperators
-open GaloisForLFunctions.HTGeometry
 open GaloisForLFunctions.RenormalizedIntersectionTheory
 open MayerCutoff MayerParameter MayerScatteringMellin MayerScatteringMultiplicity
 open MayerScatteringNormalization MayerScatteringState MayerScatteringCore MayerCoreZeroMoment
@@ -97,7 +96,8 @@ theorem mayerReflectedArchFactor_eq_Gammaℝ {s : ℂ} (hs : s.re < 1 / 2) :
   unfold mayerReflectedArchFactor archimedeanFactor
   rw [harg, Complex.Gammaℝ_def]
   field_simp [hG]
-  rw [← mul_assoc, hpi]
+  rw [show 1 - s * 2 = 1 - 2 * s by ring,
+    show -((1 - 2 * s) / 2) = -(1 - 2 * s) / 2 by ring, hpi, mul_comm]
 
 theorem mayerReflectedArchFactor_ne_zero {s : ℂ} (hs : s.re < 1 / 2) :
     mayerReflectedArchFactor s ≠ 0 := by
@@ -201,10 +201,10 @@ theorem exists_odd_mayerResonance_of_mayerZ_sign_change {τ₁ τ₂ : ℝ} (hτ
     have hord := _root_.RHTower.xi_analyticOrderAt_eq_riemannZeta_of_mem_strip hstrip
     simpa only [analyticOrderNatAt, hord] using hodd
 
-/-- At any critical-line zero `mayerZ τ₀ = 0`, `(deriv mayerZ τ₀ : ℂ)` equals
+/-- At any critical-line zero `mayerZ τ₀ = 0`, `((deriv mayerZ τ₀ : ℝ) : ℂ)` equals
 `I * conj (gammaHardyPhase τ₀) * deriv riemannZeta (linePt τ₀)`. -/
 theorem ofReal_deriv_mayerZ_eq_of_zero {τ₀ : ℝ} (hzero : mayerZ τ₀ = 0) :
-    (deriv mayerZ τ₀ : ℂ) =
+    ((deriv mayerZ τ₀ : ℝ) : ℂ) =
       I * (starRingEnd ℂ) (_root_.RHTower.gammaHardyPhase τ₀) *
         deriv riemannZeta (_root_.RHTower.linePt τ₀) := by
   have hne1 : _root_.RHTower.linePt τ₀ ≠ 1 := by
@@ -217,7 +217,7 @@ theorem ofReal_deriv_mayerZ_eq_of_zero {τ₀ : ℝ} (hzero : mayerZ τ₀ = 0) 
     have hc := HasDerivAt.comp τ₀ (differentiableAt_riemannZeta hne1).hasDerivAt
       (_root_.RHTower.hasDerivAt_linePt τ₀)
     simpa [Function.comp] using hc
-  have hZ : HasDerivAt (fun u : ℝ => (mayerZ u : ℂ)) (deriv mayerZ τ₀ : ℂ) τ₀ := by
+  have hZ : HasDerivAt (fun u : ℝ => (mayerZ u : ℂ)) ((deriv mayerZ τ₀ : ℝ) : ℂ) τ₀ := by
     have hc := (Complex.ofRealCLM.hasDerivAt (x := mayerZ τ₀)).comp τ₀
       (differentiable_mayerZ τ₀).hasDerivAt
     simpa [Function.comp] using hc
@@ -226,7 +226,7 @@ theorem ofReal_deriv_mayerZ_eq_of_zero {τ₀ : ℝ} (hzero : mayerZ τ₀ = 0) 
     ext u
     rw [_root_.RHTower.riemannZeta_line_eq_gammaHardyPhase_mul_hardyZ, mayerZ_eq_hardyZ]
   have hright : HasDerivAt (fun u : ℝ => _root_.RHTower.gammaHardyPhase u * (mayerZ u : ℂ))
-      (_root_.RHTower.gammaHardyPhase τ₀ * (deriv mayerZ τ₀ : ℂ)) τ₀ := by
+      (_root_.RHTower.gammaHardyPhase τ₀ * ((deriv mayerZ τ₀ : ℝ) : ℂ)) τ₀ := by
     have hm := (_root_.RHTower.hasDerivAt_gammaHardyPhase τ₀).mul hZ
     simpa only [hzero, Complex.ofReal_zero, mul_zero, zero_add] using hm
   rw [hprod] at hleft
@@ -235,12 +235,12 @@ theorem ofReal_deriv_mayerZ_eq_of_zero {τ₀ : ℝ} (hzero : mayerZ τ₀ = 0) 
       _root_.RHTower.gammaHardyPhase τ₀ = 1 :=
     (_root_.RHTower.gammaHardyPhase_isUnitary τ₀)
   calc
-    (deriv mayerZ τ₀ : ℂ) =
+    ((deriv mayerZ τ₀ : ℝ) : ℂ) =
         ((starRingEnd ℂ) (_root_.RHTower.gammaHardyPhase τ₀) *
-          _root_.RHTower.gammaHardyPhase τ₀) * (deriv mayerZ τ₀ : ℂ) := by
+          _root_.RHTower.gammaHardyPhase τ₀) * ((deriv mayerZ τ₀ : ℝ) : ℂ) := by
       rw [hunit, one_mul]
     _ = (starRingEnd ℂ) (_root_.RHTower.gammaHardyPhase τ₀) *
-          (_root_.RHTower.gammaHardyPhase τ₀ * (deriv mayerZ τ₀ : ℂ)) := by ring
+          (_root_.RHTower.gammaHardyPhase τ₀ * ((deriv mayerZ τ₀ : ℝ) : ℂ)) := by ring
     _ = (starRingEnd ℂ) (_root_.RHTower.gammaHardyPhase τ₀) *
           (deriv riemannZeta (_root_.RHTower.linePt τ₀) * I) := by rw [heq]
     _ = I * (starRingEnd ℂ) (_root_.RHTower.gammaHardyPhase τ₀) *
@@ -248,11 +248,11 @@ theorem ofReal_deriv_mayerZ_eq_of_zero {τ₀ : ℝ} (hzero : mayerZ τ₀ = 0) 
 
 /-- **Transverse Mayer core-moment slope formula.** At every positive critical-line Mayer
 scattering resonance `s₀ = criticalScatteringPt τ₀` (`τ₀ > 0`), the complexified slope
-`(deriv mayerZ τ₀ : ℂ)` is given directly by the zero-endpoint Mellin moment of the
+`((deriv mayerZ τ₀ : ℝ) : ℂ)` is given directly by the zero-endpoint Mellin moment of the
 scattering-subtracted Mayer core `fieldCore (2 * s₀)`. -/
 theorem ofReal_deriv_mayerZ_eq_core_mellin_zero {τ₀ : ℝ} (hτ₀ : 0 < τ₀)
     (hres : IsMayerScatteringResonance (criticalScatteringPt τ₀)) :
-    (deriv mayerZ τ₀ : ℂ) =
+    ((deriv mayerZ τ₀ : ℝ) : ℂ) =
       I * (starRingEnd ℂ) (_root_.RHTower.gammaHardyPhase τ₀) *
         mellin (fieldCore (2 * criticalScatteringPt τ₀)) 0 := by
   have hz : mayerZ τ₀ = 0 := (mayerZ_eq_zero_iff_resonance τ₀).mpr hres
@@ -279,7 +279,7 @@ theorem deriv_mayerZ_eq_re_core_mellin_zero {τ₀ : ℝ} (hτ₀ : 0 < τ₀)
 private theorem analyticOrderNatAt_zeta_eq_one_iff_deriv_ne_zero {w : ℂ}
     (hw1 : w ≠ 1) (hz : riemannZeta w = 0) :
     analyticOrderNatAt riemannZeta w = 1 ↔ deriv riemannZeta w ≠ 0 := by
-  have han : AnalyticAt ℂ riemannZeta w := analyticAt_riemannZeta hw1
+  have han : AnalyticAt ℂ riemannZeta w := _root_.analyticAt_riemannZeta hw1
   have hfin : analyticOrderAt riemannZeta w ≠ ⊤ := by
     have hZ : AnalyticOnNhd ℂ _root_.RHTower.zetaResidueUnit univ :=
       fun z _ => _root_.RHTower.analyticAt_zetaResidueUnit z
@@ -297,14 +297,14 @@ private theorem analyticOrderNatAt_zeta_eq_one_iff_deriv_ne_zero {w : ℂ}
   have hn_eq : analyticOrderAt riemannZeta w = (n : ℕ∞) := (ENat.coe_toNat hfin).symm
   have hn_pos : 0 < n := by
     have hne0 : analyticOrderAt riemannZeta w ≠ 0 := han.analyticOrderAt_ne_zero.mpr hz
-    rw [hn_eq] at hne0
-    omega
+    exact Nat.pos_of_ne_zero (fun h0 => hne0 (by simp [hn_eq, h0]))
   obtain ⟨g, hgan, hg0, hfac⟩ := (han.analyticOrderAt_eq_natCast (n := n)).mp hn_eq
   constructor
   · intro hn1
-    subst hn1
-    have hderivEq : deriv riemannZeta w = deriv (fun z => (z - w) * g z) w :=
-      Filter.EventuallyEq.deriv_eq (by filter_upwards [hfac] with z hzz; simpa [smul_eq_mul] using hzz)
+    have hderivEq : deriv riemannZeta w = deriv (fun z => (z - w) * g z) w := by
+      apply Filter.EventuallyEq.deriv_eq
+      filter_upwards [hfac] with z hzz
+      rw [hzz, hn1, pow_one, smul_eq_mul]
     have hhas : HasDerivAt (fun z => (z - w) * g z) (1 * g w + (w - w) * deriv g w) w :=
       ((hasDerivAt_id w).sub_const w).mul hgan.differentiableAt.hasDerivAt
     rw [hderivEq, hhas.deriv]
@@ -312,12 +312,12 @@ private theorem analyticOrderNatAt_zeta_eq_one_iff_deriv_ne_zero {w : ℂ}
   · intro hd
     by_contra hne1
     have hn2 : 2 ≤ n := by omega
-    obtain ⟨m, rfl⟩ : ∃ m : ℕ, n = m + 2 := ⟨n - 2, by omega⟩
+    obtain ⟨m, hm⟩ : ∃ m : ℕ, n = m + 2 := ⟨n - 2, by omega⟩
     have hderivEq : deriv riemannZeta w =
         deriv (fun z => (z - w) * ((z - w) ^ (m + 1) * g z)) w := by
       apply Filter.EventuallyEq.deriv_eq
       filter_upwards [hfac] with z hzz
-      rw [hzz, smul_eq_mul]
+      rw [hzz, hm, smul_eq_mul]
       ring
     have htail : DifferentiableAt ℂ (fun z => (z - w) ^ (m + 1) * g z) w :=
       (((differentiableAt_id).sub_const w).pow (m + 1)).mul hgan.differentiableAt
@@ -382,12 +382,12 @@ theorem exists_local_sign_change_of_deriv_ne_zero {f : ℝ → ℝ} {τ₀ : ℝ
   set q₁ : ℝ := δ⁻¹ * f (τ₀ + δ)
   set q₂ : ℝ := -(δ⁻¹ * f (τ₀ - δ))
   have hprod_pos : 0 < q₁ * q₂ := by
-    rcases lt_trichotomy L 0 with hLneg | rfl | hLpos
+    rcases lt_trichotomy L 0 with hLneg | hL0 | hLpos
     · have hLabs : |L| = -L := abs_of_neg hLneg
       have hq1 : q₁ < 0 := by linarith [(abs_lt.mp h1).2]
       have hq2 : q₂ < 0 := by linarith [(abs_lt.mp h2).2]
       exact mul_pos_of_neg_of_neg hq1 hq2
-    · exact absurd rfl hd
+    · exact absurd hL0 hd
     · have hLabs : |L| = L := abs_of_pos hLpos
       have hq1 : 0 < q₁ := by linarith [(abs_lt.mp h1).1]
       have hq2 : 0 < q₂ := by linarith [(abs_lt.mp h2).1]
@@ -442,6 +442,7 @@ theorem mem_mayerResonanceFinset {T : ℝ} {s : ℂ} :
   rw [mayerResonanceFinset, Finset.mem_map]
   constructor
   · rintro ⟨z, hz, rfl⟩
+    dsimp only [Function.Embedding.coeFn_mk]
     obtain ⟨hre0, hre1, him0, himT, hxi⟩ := _root_.RHTower.mem_stripFinsetPos.mp hz
     have hs0 : 0 < (z / 2).re := by simp; linarith
     have hs1 : (z / 2).re < 1 / 2 := by simp; linarith
@@ -449,11 +450,14 @@ theorem mem_mayerResonanceFinset {T : ℝ} {s : ℂ} :
     refine ⟨(isMayerScatteringResonance_iff_xi_zero hs0 hs1).mpr (by rwa [h2]), ?_, ?_⟩ <;>
       rwa [h2]
   · rintro ⟨hs, him0, himT⟩
-    obtain ⟨hs0, hs1, _⟩ := hs
-    obtain ⟨hw0, hw1⟩ :=
-      (show 0 < (2 * s).re ∧ (2 * s).re < 1 from ⟨by simp; linarith, by simp; linarith⟩)
+    have hs0 : 0 < s.re := hs.1
+    have hs1 : s.re < 1 / 2 := hs.2.1
+    have hw0 : 0 < (2 * s).re := by simp; linarith
+    have hw1 : (2 * s).re < 1 := by simp; linarith
     refine ⟨2 * s, _root_.RHTower.mem_stripFinsetPos.mpr
-      ⟨hw0, hw1, him0, himT, (isMayerScatteringResonance_iff_xi_zero hs0 hs1).mp hs⟩, by ring⟩
+      ⟨hw0, hw1, him0, himT, (isMayerScatteringResonance_iff_xi_zero hs0 hs1).mp hs⟩, ?_⟩
+    dsimp only [Function.Embedding.coeFn_mk]
+    ring
 
 /-- Cumulative Mayer scattering resonance count with Fredholm determinant-excess multiplicity. -/
 def mayerResonanceCount (T : ℝ) : ℕ :=
@@ -587,7 +591,8 @@ theorem eventually_disjoint_mayerZ_sign_changes_proportion :
     ⟨⟨0, hm_pos⟩, Finset.mem_univ _⟩
   let δmin : ℝ := (Finset.univ.image δf).min' (hne_univ.image _)
   have hδmin_pos : 0 < δmin := by
-    obtain ⟨y, _, rfl⟩ := Finset.mem_image.mp (Finset.min'_mem (Finset.univ.image δf) (hne_univ.image _))
+    obtain ⟨y, _, hy⟩ := Finset.mem_image.mp (Finset.min'_mem (Finset.univ.image δf) (hne_univ.image _))
+    rw [← hy]
     exact hδf_pos y
   let δ : ℝ := δmin / 2
   have hδ_pos : 0 < δ := half_pos hδmin_pos
@@ -600,7 +605,7 @@ theorem eventually_disjoint_mayerZ_sign_changes_proportion :
   · have hm_cast : (m : ℝ) = (k : ℝ) - 1 := by
       have hk1 : 1 ≤ k := by omega
       dsimp [m]
-      exact Nat.cast_sub hk1
+      simpa using Nat.cast_sub (R := ℝ) hk1
     have h1_le : (1 : ℝ) ≤ (ε / 2) * (Zeta23.Ncount 0 T : ℝ) := by
       have := (div_le_iff₀ hε).mp hN_eps
       linarith

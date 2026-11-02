@@ -177,7 +177,6 @@ theorem flipDatum_prime {p : ℕ} (hp : p.Prime) : flipDatum p p = -1 := by
   simp only [hsub]
   simp [hp.one_lt.ne, hp.one_lt.ne', hp.ne_zero, ArithmeticFunction.natCoe_apply,
     ArithmeticFunction.zeta_apply]
-  norm_num
 
 /-- **Flip twins violate Tate positivity**: for any inverse `G` of the flip datum at `p`, every Tate
 piece at `p` in positive dimension is negative, `J^{F_p}_k(p) = −(p^k − 1) < 0`. -/
