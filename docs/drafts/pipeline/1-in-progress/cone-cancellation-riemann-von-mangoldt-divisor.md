@@ -1,7 +1,7 @@
 # Exact spline cone cancellation with the Riemann–von Mangoldt count
 
-- **Stage:** 0-backlog
-- **Type:** CONJECTURE
+- **Stage:** 1-in-progress
+- **Type:** Paper construction; Lean formalization incomplete
 - **Parent:** SC2; distinguish arithmetic source data from zero geometry.
 
 Conjecture: the exact sparse off-line quartet model can be completed by
@@ -15,7 +15,7 @@ while exact coefficients `(sinh z/z)^8`, symmetry, unattained positive
 width, and bounded natural two-prime cone coupling persist. The resulting
 divisor is not asserted to be the zeta divisor or to admit its Euler product.
 
-## Candidate construction
+## Written construction to formalize
 
 Write `F(T)` for the displayed main term. In each unit interval `[j,j+1)`, `j≥1`,
 place `max(6, floor F(j+1)−floor F(j))` distinct critical ordinates.

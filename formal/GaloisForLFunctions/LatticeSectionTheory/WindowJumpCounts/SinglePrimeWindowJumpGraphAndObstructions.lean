@@ -43,7 +43,8 @@ open GaloisForLFunctions.ArithmeticCastelnuovoSeveri
 open GaloisForLFunctions.ArithmeticCriticalityTheory
 open GaloisForLFunctions.ArithmeticIncidencePositivity
 open GaloisForLFunctions.BiScaleUncertainty
-open RHTower RHTower.CHMDPolar Zeta23
+open _root_.RHTower _root_.RHTower.ArchimedeanAnomaly _root_.RHTower.CHMDPolar
+  _root_.RHTower.CHMDDoobGraph _root_.RHTower.CHMDClosedJump Zeta23
 
 /-! ### 1. Endpoint autocorrelation vanishing and closed prime-free / single-prime cutoffs -/
 
@@ -81,7 +82,7 @@ theorem primeTwoGraphJump_eq {f : ℝ → ℝ} (hf : f ∈ realTests) :
   have hcont : Continuous f := hf.1.continuous
   have hcomp : HasCompactSupport f := hf.2
   have i1 : Integrable (fun u => f u ^ 2) :=
-    (hcont.pow 2).integrable_of_hasCompactSupport (hasCompactSupport_sq hcomp)
+    (hcont.pow 2).integrable_of_hasCompactSupport (_root_.RHTower.CHMDPolar.hasCompactSupport_sq hcomp)
   have i2 : Integrable (fun u => f (u + Real.log 2) ^ 2) := i1.comp_add_right (Real.log 2)
   have i3 : Integrable (fun u => f u * f (u + Real.log 2)) :=
     (hcont.mul (hcont.comp (continuous_id.add continuous_const))).integrable_of_hasCompactSupport

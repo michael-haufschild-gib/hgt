@@ -41,7 +41,8 @@ TheTwistedHorizonLayerIsPositive.
   RH iff the window index vanishes; windows of length A: index ≤ 1 + 2A T(A/2)/π (Shannon) [L].
 - Twisted horizon windows (mean-zero periodic twist) see no zero: twisted Riemann sums `O(1/N)` [L].
 - Twisted horizon windows are positive at every resolution: `c⁻¹⟨Wx,x⟩/∫g² ≥ −C₀(L+B)²/N²`
-  (symbol ≥ 0 beyond the archimedean horizon; low frequencies and pole values `O(1/N)`) [L].
+  (symbol ≥ 0 beyond the archimedean horizon; low frequencies and pole values `O(1/N)`); coercive:
+  at the critical curve eventually `≥ a/K − ε` (tilted spline; MVT from below, `Σx² → μ_χ∫h²`) [L].
 
 ## Open: exact second-order term of twisted windows
 Claim: for `χ` `m`-periodic of mean zero, `c⁻¹⟨Wx,x⟩ − (log N/∫φ²)𝒜^χ_N → 0` with

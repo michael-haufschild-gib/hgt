@@ -208,7 +208,10 @@ polarized? ⇒ inheritance ⇒ RH. The zero side splits the second order into le
   against the Lipschitz profile `h(log x) x^{s−1}` makes every twisted Riemann sum `O(1/N)` on
   `0 ≤ Re s ≤ 2`. Hence a twisted window sees no point of the strip, and its transform is `O(1/N)`
   on the low frequencies and at the pole values. Beyond the archimedean horizon the symbol is
-  nonnegative, so the twisted window is positive at every resolution up to `O(N^{−2})`.
+  nonnegative, so the twisted window is positive at every resolution up to `O(N^{−2})`. Its mass
+  is `Σ x_n² → μ_χ ∫ h²` (the twist `χ² − μ_χ` has mean zero), so the mean-value theorem from
+  below puts `a log N/c⁸` on one dyadic window above the grid: the second-order term of a twisted
+  window is at least `a/K` at the multiple `K` of the critical curve.
 - **Critical multiples.** If the rescaled family converges to `J + K X`, positive definiteness is
   inherited and a negative direction is eventually negative; for `J ⪰ 0` the admissible multiples
   form a closed initial segment, positive semidefinite terms never remove a multiple, and negative
@@ -246,7 +249,7 @@ the untwisted horizon windows; twisted horizon windows are zero-blind.
 | What is the first-order structure of the degeneration, and why is it polarized? | The point count of projective space: `J(m) = J(1) #ℙ⁷(ℤ/m)`, `#ℙ^{k−1}(ℤ/m) φ(m) = J_k(m)`. Weight strings are Hensel towers, the tensor law is CRT. It is positive because it is a cardinality. | `jordanCoefficient_eq_projPoints`, `natCard_projPoints_mul_totient`, `natCard_primVec_eq_jordanTotient`, `projPoints_prime_mul`, `projPoints_prime_pow_succ`, `primVecCRT` |
 | How do the zeros enter the second-order term of fixed packets? | Only through the pole coefficient: `(log N/c) W_ρ/∫g² → m_ρ κ y_1²/(ρ(1−ρ))`, real part `> 0`; at the critical curve `c⁷ W_ρ/∫g² → K m_ρ κ y_1²/(ρ(1−ρ))`. Same for every finite window. | `tendsto_bulkLedger`, `tendsto_bulkLedger_criticalCurve`, `tendsto_sum_bulkLedger`, `re_sum_mult_div_nonneg` |
 | Which directions of the complete family see an individual zero? | Only the untwisted horizon windows: there `W_ρ/(c∫g²) → κ W_ρ(H,H)`, Weil's summand of the synthesized test. Fixed conductor packets see a zero only through the pole, with positive weight; horizon windows twisted by a mean-zero periodic weight (Ramanujan sums `c_m`, `m ≥ 2`; nonprincipal characters) see no point of the strip: their twisted Riemann sums are `O(1/N)`. | `tendsto_horizonLedger`, `Wsummand_halfWeight`, `tendsto_bulkLedger`, `tendsto_twistedLedger`, `norm_twistedRiemannSum_le` |
-| Where do the negative directions of the horizon layer live? | Only on untwisted windows. A window twisted by a mean-zero periodic weight has transform `O(1/N)` at low frequencies and at the pole values, and the symbol is nonnegative beyond the archimedean horizon `τ₀(A)`; so at every resolution `0 < c ≤ N` its normalized form is `≥ −C₀(L_h + B_h)²/N²`. | `twisted_horizon_form_ge`, `eventually_twisted_horizon_form_ge`, `exists_weilQuad_ge_of_lowFrequency` |
+| Where do the negative directions of the horizon layer live? | Only on untwisted windows. A window twisted by a mean-zero periodic weight has transform `O(1/N)` at low frequencies and at the pole values, and the symbol is nonnegative beyond the archimedean horizon `τ₀(A)`; so at every resolution `0 < c ≤ N` its normalized form is `≥ −C₀(L_h + B_h)²/N²`. Its second-order term is strictly positive: one dyadic window above the grid carries `a log N/c⁸`, so at the multiple `K` of the critical curve it is `≥ a/K − ε`. | `twisted_horizon_form_ge`, `eventually_twisted_horizon_form_ge`, `exists_weilQuad_ge_of_lowFrequency`, `twisted_horizon_layer_coercive`, `twisted_horizon_layer_criticalCurve_ge` |
 | Is the horizon layer Weil's form? | Yes. In the iterated limit (horizon, then window of zeros) windows exhaust `κ W(H,H)`. Directly: past the critical curve (`(1+log N)/c^p → 0`) `c⁻¹⟨Wx,x⟩ → κ Q(H)`; at `c^p/log N → K_c` it is `κ Q(H)` up to `K/K_c`; for every schedule the error is `ε + K(1+log N)/c^p`. | `horizon_layer_two_sided`, `tendsto_horizon_layer_supercritical`, `horizon_layer_criticalCurve`, `horizon_window_exhaustion` |
 | What is the second-order term at the critical curve (obstacles summary 2.5.4)? | On horizon blocks, exactly: `c⁻¹⟨Wx,x⟩ → κ Q(H) + (βJ/K) ∫ e^{−(β+1)y} H²` along `c^{β+1}/log N → K`, for every profile with bulk limit `s^β E₁(s) → J` (tilted spline: `β = 7`, `J = J(1)`). For every profile and every schedule with `c → ∞`, `c(log N)²/N → 0`: `c⁻¹⟨Wx,x⟩ = κ Q(H) − log N · N⁻¹ Σ_n h(log(n/N))² E₁'(cn/N) + o(1)`. | `horizon_layer_criticalCurve_of_regularBulk`, `horizon_layer_criticalCurve_exact`, `horizon_layer_sharp`, `horizon_layer_sharp_bulk`, `horizonForm_eq` |
 | Which structure polarizes the second-order term? | The first-order count, through the monodromy. The aliasing density is the dilation derivative of the bulk energy, `a_φ = −(∫φ²/2) E₁'`, positive because `E₁` is antitone; its window average at the local overlaps `c e^y` is `β J(1)` times `‖H‖²_{−8}`. So the second-order term is a pencil: Weil's form plus `1/K` times a positive definite form built from `J(1)`. It is positive at every multiple iff `Q ≥ 0` on horizon windows, i.e. iff RH. On the bulk, the zero charge is the Li-type pole charge (positive per zero). | `hasDerivAt_completedShellEnergy`, `aliasLimit_eq`, `tendsto_rpow_seven_mul_completedShellEnergy_tilted`, `re_inv_mul_one_sub_pos`, `riemannHypothesis_iff_horizon_layer` |
@@ -321,8 +324,8 @@ Stepanov over `ℤ` (AET) and over curves (LST).
 **To build.**
 - Uniform ledgers: explicit horizon-law remainders `O(|s|σ(e)N^{Re s−1})` with the zero-free region,
   summed over zeros up to a growing height.
-- Twisted horizon windows are zero-blind and positive (proved); their exact second-order term
-  remains: Poisson summation of the atom autocorrelation on residue classes should identify it with
+- Twisted horizon windows are zero-blind, positive and coercive (proved); their exact second-order
+  term remains: Poisson summation of the atom autocorrelation on residue classes should identify it with
   `(log N/∫φ²) (2/N) Σ_n h_n² Σ_k |χ̂(k)|² |φ̂(2πk cn/(mN))|²`, for Ramanujan sums the conductor-`m`
   count `Σ_{(k,m)=1} (m/k)^{β+1} ∝ J_{β+1}(m)`.
 - The function-field complete family and its horizon layer; Zwegers–Vignéras completions of the
@@ -338,6 +341,7 @@ Stepanov over `ℤ` (AET) and over curves (LST).
 | Horizon ledger: Weil summands of the synthesized test | `tendsto_horizonLedger`, `Wsummand_halfWeight`, `tendsto_horizonDirichlet` | proved |
 | Twisted horizon windows are zero-blind | `tendsto_twistedLedger`, `norm_twistedRiemannSum_le`, `abs_sum_range_le` | proved |
 | Twisted horizon windows are positive at every resolution, up to `O(N^{−2})` | `twisted_horizon_form_ge`, `exists_weilQuad_ge_of_lowFrequency`, `nuSymbol_nonneg_of_archHorizon_le` | proved |
+| Twisted horizon windows are coercive: second-order term `≥ a/K` at the critical curve | `twisted_horizon_layer_coercive`, `twisted_horizon_layer_criticalCurve_ge`, `tendsto_sum_twistedWeights_sq` | proved |
 | Exhaustion: windows of zeros give Weil's form of the synthesized test | `horizon_window_exhaustion`, `tendsto_sum_horizonLedger` | proved |
 | Critical-multiple calculus | `admissible_of_le`, `isClosed_admissible`, `admissible_mono`, `neg_persists`, `eventually_pos_of_tendsto`, `eventually_not_nonneg_of_tendsto` | proved |
 | Horizon layer past the critical curve = Weil's form; at it, up to `O(1/K)` | `horizon_layer_two_sided`, `tendsto_horizon_layer_supercritical`, `horizon_layer_criticalCurve` | proved |
@@ -417,7 +421,7 @@ Stepanov over `ℤ` (AET) and over curves (LST).
 | Criterion | Status |
 |---|---|
 | First-order structure identified as a count | proved: `#ℙ⁷(ℤ/m)` |
-| How zeros enter the second order, packets that see a zero classified | proved per zero and per window: bulk (pole only, positive), untwisted horizon windows (Weil summands), twisted horizon windows (none) |
+| How zeros enter the second order, packets that see a zero classified | proved per zero and per window: bulk (pole only, positive), untwisted horizon windows (Weil summands), twisted horizon windows (none; their second-order term is positive, `≥ a/K`) |
 | Second-order term at the critical curve identified | horizon layer: exactly `κ Q(H) + (βJ/K)‖H‖²_{−(β+1)}` for every profile with bulk limit `s^βE₁ → J` (proved; tilted spline `7J(1)`); bulk second order: open |
 | A count reading the primes inside the jump measure, creation potential paid on a window | the primes beyond the window pay their own creation (proved); a count for the primes inside it: open (corpus foothold on prime-free cycles) |
 | Gluing theorem with exactly one negative square | AKG `κ + 1`; zero ledger of the bulk is a positive pole gluing |

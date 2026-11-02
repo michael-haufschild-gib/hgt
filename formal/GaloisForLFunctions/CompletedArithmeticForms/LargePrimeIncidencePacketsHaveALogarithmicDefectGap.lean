@@ -211,7 +211,7 @@ theorem centered_largePrime_incidence_mass_eq (P : Finset ℕ) (b : ℕ → ℝ)
   rw [hexpand, largePrimeIncidence_mass P b N hP hlarge]
   change _ - 2 * (T / H) * T + (T / H) ^ 2 * H = _ - T ^ 2 / H
   field_simp
-  <;> ring
+  ring
 
 private theorem centered_jump_eq (P : Finset ℕ) (b : ℕ → ℝ) (N : ℕ) :
     jumpEnergy N (centeredPrimeIncidencePacket P b N) = jumpEnergy N (incidencePacket P b) := by

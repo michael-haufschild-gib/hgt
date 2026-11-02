@@ -19,6 +19,12 @@ A window of length `A` is at **stage** `n` when `⌊e^A⌋ = n`, i.e. `log n ≤
   vanishes on one end of a fold is not acted on by it.
 * **Extremal tests** (`foldEnergy_eq_zero_of_symmetric`, `foldEnergy_eq_of_antisymmetric`):
   fold-symmetric tests pay the full end mass, fold-antisymmetric tests gain it.
+* **Signed fold counts** (`foldEnergy_sub_count_eq_anti_sub_sym`, `weilQuad_eq_signedFolds`): each
+  fold contributes `(Λ(n)/√n)(½∫_{I⁻}(H − H(·+ℓ))² − ½∫_{I⁻}(H + H(·+ℓ))²)`, its antisymmetric
+  count minus its symmetric mass:
+  `Q(H) = Ω(0)‖H‖² + J_∞(H) + Σ (Λ(n)/√n)(anti_n − sym_n) + pole`. The symmetric fold masses are
+  the only negative arithmetic terms of a window; at the first prime there is one,
+  `Q = Ω(0)‖H‖² + J_∞ + (log 2/√2)(anti₂ − sym₂) + pole` (`weilQuad_eq_firstPrime_signedFold`).
 -/
 
 noncomputable section
@@ -238,5 +244,74 @@ theorem foldEnergy_eq_of_antisymmetric (hc : Continuous H) (hcs : HasCompactSupp
       integral_add (iH.indicator measurableSet_Icc) (iH.indicator measurableSet_Icc)]
   rw [hP] at h
   linarith
+
+/-! ### Signed fold counts -/
+
+/-- The **symmetric fold mass** `½∫_{[−A,−ℓ]} (H(u) + H(u + ℓ))²`. -/
+def foldSym (A ℓ : ℝ) (H : ℝ → ℝ) : ℝ :=
+  (1 / 2) * ∫ u, (Icc (-A) (-ℓ)).indicator (fun u => (H u + H (u + ℓ)) ^ 2) u
+
+theorem foldSym_nonneg (A ℓ : ℝ) (H : ℝ → ℝ) : 0 ≤ foldSym A ℓ H :=
+  mul_nonneg (by norm_num) (integral_nonneg fun u => indicator_nonneg (fun _ _ => sq_nonneg _) u)
+
+/-- **A fold is an antisymmetric count minus a symmetric mass**:
+`fold energy − ∫ m_ℓ H² = ½(fold energy) − foldSym`. -/
+theorem foldEnergy_sub_count_eq_anti_sub_sym (hc : Continuous H) (hcs : HasCompactSupport H)
+    (ℓ : ℝ) :
+    foldEnergy A ℓ H - ∫ u, inWindowCount A ℓ u * H u ^ 2 =
+      foldEnergy A ℓ H / 2 - foldSym A ℓ H := by
+  have iH := integrable_sq hc hcs
+  have iHs : Integrable fun u => H (u + ℓ) ^ 2 :=
+    integrable_sq (hc.comp (continuous_add_const ℓ)) (hasCompactSupport_comp_add hcs ℓ)
+  have iD := integrable_sub_shift_sq hc hcs ℓ
+  have iS : Integrable fun u => (H u + H (u + ℓ)) ^ 2 := by
+    refine ((iH.add iHs).const_mul 2 |>.sub iD).congr (ae_of_all _ fun u => ?_)
+    simp only [Pi.add_apply]; ring
+  have mI := measurableSet_Icc (a := -A) (b := -ℓ)
+  -- `a² + b² = ½(a − b)² + ½(a + b)²` on the left end
+  have hpt : ∀ u, (Icc (-A) (-ℓ)).indicator (fun u => H u ^ 2) u +
+      (Icc (-A) (-ℓ)).indicator (fun u => H (u + ℓ) ^ 2) u =
+      (1 / 2) * (Icc (-A) (-ℓ)).indicator (fun u => (H u - H (u + ℓ)) ^ 2) u +
+        (1 / 2) * (Icc (-A) (-ℓ)).indicator (fun u => (H u + H (u + ℓ)) ^ 2) u := fun u => by
+    by_cases hu : u ∈ Icc (-A) (-ℓ)
+    · simp only [indicator_of_mem hu]; ring
+    · simp only [indicator_of_notMem hu]; ring
+  have hcount : ∫ u, inWindowCount A ℓ u * H u ^ 2 = foldEnergy A ℓ H / 2 + foldSym A ℓ H := by
+    rw [integral_congr_ae (Eventually.of_forall fun u => inWindowCount_mul A ℓ u fun u => H u ^ 2),
+      integral_add (iH.indicator mI) (iH.indicator measurableSet_Icc),
+      ← integral_leftEnd_translate H A ℓ,
+      ← integral_add (iH.indicator mI) (iHs.indicator mI),
+      integral_congr_ae (Eventually.of_forall hpt),
+      integral_add ((iD.indicator mI).const_mul _) ((iS.indicator mI).const_mul _),
+      integral_const_mul, integral_const_mul, foldEnergy, foldSym]
+    ring
+  rw [hcount]; ring
+
+/-- **Weil's window form as signed fold counts**: archimedean jumps, plus for every active prime power
+its antisymmetric fold count minus its symmetric fold mass, plus the pole plane. -/
+theorem weilQuad_eq_signedFolds (hH : IsWindowTest A H) :
+    weilQuad H = EF.gammaBracket 0 * (∫ u, H u ^ 2) + levyJump H +
+      (∑ n ∈ Finset.Icc 2 (windowLevel A),
+        primeJumpWeight n * (foldEnergy A (Real.log n) H / 2 - foldSym A (Real.log n) H)) +
+      (coshPairing H ^ 2 / 2 - sinhPairing H ^ 2 / 2) := by
+  rw [weilQuad_eq_fold_sub_canonical hH, integral_canonicalDensity_mul hH.continuous
+    hH.hasCompactSupport]
+  have h : ∀ n ∈ Finset.Icc 2 (windowLevel A),
+      primeJumpWeight n * (foldEnergy A (Real.log n) H / 2 - foldSym A (Real.log n) H) =
+        primeJumpWeight n * foldEnergy A (Real.log n) H -
+          primeJumpWeight n * ∫ u, inWindowCount A (Real.log n) u * H u ^ 2 := fun n _ => by
+    rw [← foldEnergy_sub_count_eq_anti_sub_sym hH.continuous hH.hasCompactSupport, mul_sub]
+  rw [Finset.sum_congr rfl h, Finset.sum_sub_distrib]
+  ring
+
+/-- **The first prime as one signed fold**: for `log 2 ≤ A < log 3`,
+`Q = Ω(0)‖H‖² + J_∞ + (log 2/√2)(½·fold₂ − sym₂) + pole`. -/
+theorem weilQuad_eq_firstPrime_signedFold (hH : IsWindowTest A H) (h2 : Real.log 2 ≤ A)
+    (h3 : A < Real.log 3) :
+    weilQuad H = EF.gammaBracket 0 * (∫ u, H u ^ 2) + levyJump H +
+      primeJumpWeight 2 * (foldEnergy A (Real.log 2) H / 2 - foldSym A (Real.log 2) H) +
+      (coshPairing H ^ 2 / 2 - sinhPairing H ^ 2 / 2) := by
+  rw [weilQuad_eq_firstPrimeFold hH h2 h3,
+    foldEnergy_sub_count_eq_anti_sub_sym hH.continuous hH.hasCompactSupport]
 
 end GaloisForLFunctions.CohomologyOfWindowsOfSpecZ

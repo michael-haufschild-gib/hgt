@@ -570,7 +570,9 @@ theorem meanSquare_window_twisted_ge {h : ℝ → ℝ} {A Bh : ℝ} (hB : ∀ y,
   have hj' : 208 * (Bh ^ 2 * (∑ j ∈ range m, |χ j|) ^ 2) < 2 ^ j * Real.exp (-A) * s / 4 := by
     rw [div_lt_iff₀ hs] at hj
     have he : Real.exp A * Real.exp (-A) = 1 := by rw [← Real.exp_add]; simp
-    nlinarith [Real.exp_pos (-A)]
+    have h1 := mul_lt_mul_of_pos_right hj (Real.exp_pos (-A))
+    rw [mul_assoc _ (Real.exp A), he, mul_one] at h1
+    linarith
   have hU0 : 0 < 2 ^ j * ((N : ℝ) * Real.exp (-A)) := by positivity
   have hUS := mul_le_mul_of_nonneg_left hS1.le hU0.le
   have hk := mul_le_mul_of_nonneg_left hj'.le hN0.le

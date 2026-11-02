@@ -15,7 +15,8 @@ Fourier transform, Fejér kernels as in `fejer_shifted_bound_gap`) use only
 
 * `F(α) = α` on `[0, 1]` (Montgomery's theorem),
 * `F ≥ 0`,
-* `p ≥ 0` (the pair measure `δ₀ + p(ξ) dξ` is a positive measure).
+* `p ≥ 0` (the pair measure `δ₀ + p(ξ) dξ` is a positive measure),
+* lower bounds `F ≥ L` beyond `α = 1` with `L ≤ 1` (any lower bound the GUE value satisfies).
 
 So each such bound also holds for every model form factor with these properties. This module
 constructs one with `I > 1/9` (`positivity_does_not_reach_three_quarters`): GUE plus a narrow spike
@@ -370,19 +371,20 @@ theorem transThresholdIntegral_spikedFormFactor :
 /-! ## The no-go -/
 
 /-- **Positivity cannot certify the `3/4` threshold.** Some continuous, even, nonnegative form
-factor equals `α` on `[0, 1]`, has `F − 1` integrable with real Fourier transform `p − 1` for a
-nonnegative pair density `p`, and still has trans-threshold integral above `1/9`, so its Frobenius
-norm at bandwidth `4/3` exceeds `5/4`. Any upper bound for `I` derived only from these properties
-is therefore weaker than `I ≤ 1/9`. -/
+factor equals `α` on `[0, 1]`, is at least the GUE value `1` beyond `|α| = 1`, has `F − 1`
+integrable with real Fourier transform `p − 1` for a nonnegative pair density `p`, and still has
+trans-threshold integral above `1/9`, so its Frobenius norm at bandwidth `4/3` exceeds `5/4`. Any
+upper bound for `I` derived only from these properties is therefore weaker than `I ≤ 1/9`. -/
 theorem positivity_does_not_reach_three_quarters :
     ∃ F : ℝ → ℝ, Continuous F ∧ (∀ α, F (-α) = F α) ∧ (∀ α, 0 ≤ F α) ∧
-      (∀ α ∈ Icc (0 : ℝ) 1, F α = α) ∧ Integrable (fun α => F α - 1) ∧
+      (∀ α ∈ Icc (0 : ℝ) 1, F α = α) ∧ (∀ α, 1 ≤ |α| → 1 ≤ F α) ∧
+      Integrable (fun α => F α - 1) ∧
       (∀ ξ : ℝ, ∃ p : ℝ, 0 ≤ p ∧ 𝓕 (fun α => ((F α - 1 : ℝ) : ℂ)) ξ = ((p - 1 : ℝ) : ℂ)) ∧
       1 / 9 < transThresholdIntegral F (4 / 3) ∧ 5 / 4 < frobeniusFormFactor F (4 / 3) := by
   have hI : 1 / 9 < transThresholdIntegral spikedFormFactor (4 / 3) :=
     lt_of_lt_of_le (by norm_num) transThresholdIntegral_spikedFormFactor
   refine ⟨spikedFormFactor, continuous_spikedFormFactor, fun α => ?_, fun α => ?_,
-    fun α hα => spikedFormFactor_of_mem_Icc hα, ?_,
+    fun α hα => spikedFormFactor_of_mem_Icc hα, fun α hα => ?_, ?_,
     fun ξ => ⟨spikedPairDensity ξ, spikedPairDensity_nonneg ξ, fourier_spikedFormFactor_sub_one ξ⟩,
     hI, ?_⟩
   · have hneg : ∀ w u : ℝ, triangleFn w (-u) = triangleFn w u := fun w u => by
@@ -395,6 +397,11 @@ theorem positivity_does_not_reach_three_quarters :
     have := triangleFn_nonneg (1 / 100) (α + 101 / 100)
     have : 0 ≤ min |α| 1 := le_min (abs_nonneg α) zero_le_one
     positivity
+  · unfold spikedFormFactor
+    rw [min_eq_right hα]
+    have := triangleFn_nonneg (1 / 100) (α - 101 / 100)
+    have := triangleFn_nonneg (1 / 100) (α + 101 / 100)
+    linarith
   · rw [funext spikedFormFactor_sub_one]
     exact ((integrable_triangleFn_sub one_pos 0).neg.add
       ((integrable_triangleFn_sub (by norm_num) _).const_mul 20)).add
@@ -404,5 +411,3 @@ theorem positivity_does_not_reach_three_quarters :
     exact hI
 
 end GaloisForLFunctions.TransThresholdPairCorrelation
-
-#print axioms GaloisForLFunctions.TransThresholdPairCorrelation.positivity_does_not_reach_three_quarters
