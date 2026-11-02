@@ -163,7 +163,7 @@ theorem leftEdgeFlux_eq_conj_rightEdgeFlux_neg (y₁ y₂ : ℝ) (N : ℕ) (t : 
   unfold leftEdgeFlux rightEdgeFlux vertFlux
   have hstar_pi : star ((2 * Real.pi : ℂ)⁻¹) = (2 * Real.pi : ℂ)⁻¹ := by
     simp
-  rw [star_mul', hstar_pi, star_intervalIntegral, ← neg_mul_eq_mul_neg, ← mul_neg,
+  rw [star_mul', hstar_pi, star_intervalIntegral, ← mul_neg,
     ← intervalIntegral.integral_neg]
   congr 1
   refine intervalIntegral.integral_congr fun y _ => ?_
@@ -766,14 +766,14 @@ theorem integrableOn_windowEnergy_iff_rightHalfPort {y₁ y₂ : ℝ} (hy : y₁
       (((Real.continuous_exp.comp (continuous_const.mul continuous_id).neg).mul
         (hcont_left.norm.pow 2)).aestronglyMeasurable) ?_
     refine ae_restrict_of_forall_mem measurableSet_Ioi fun t ht => ?_
-      have ht0 : 0 ≤ t := (mem_Ioi.mp ht).le
-      have hexp1 : Real.exp (-(x * t)) ≤ 1 :=
-        Real.exp_le_one_iff.mpr (neg_nonpos.mpr (mul_nonneg hx ht0))
-      rw [Real.norm_eq_abs, abs_of_nonneg (mul_nonneg (Real.exp_pos _).le (sq_nonneg _))]
-      calc Real.exp (-(x * t)) * ‖leftHalfPort y₁ y₂ N t‖ ^ 2
-          ≤ 1 * ‖leftHalfPort y₁ y₂ N t‖ ^ 2 :=
-            mul_le_mul_of_nonneg_right hexp1 (sq_nonneg _)
-        _ = ‖leftHalfPort y₁ y₂ N t‖ ^ 2 := one_mul _
+    have ht0 : 0 ≤ t := (mem_Ioi.mp ht).le
+    have hexp1 : Real.exp (-(x * t)) ≤ 1 :=
+      Real.exp_le_one_iff.mpr (neg_nonpos.mpr (mul_nonneg hx ht0))
+    rw [Real.norm_eq_abs, abs_of_nonneg (mul_nonneg (Real.exp_pos _).le (sq_nonneg _))]
+    calc Real.exp (-(x * t)) * ‖leftHalfPort y₁ y₂ N t‖ ^ 2
+        ≤ 1 * ‖leftHalfPort y₁ y₂ N t‖ ^ 2 :=
+          mul_le_mul_of_nonneg_right hexp1 (sq_nonneg _)
+      _ = ‖leftHalfPort y₁ y₂ N t‖ ^ 2 := one_mul _
   constructor
   · intro hZ
     have hdom := (hZ.const_mul 2).add (hleft_wt.const_mul 2)
@@ -899,7 +899,7 @@ theorem periodic_endpoint_mean_sq {y₁ y₂ : ℝ} (hy : y₁ < y₂) (w₁ w�
     rw [intervalIntegral.integral_const_mul]
     have hcomm := Complex.reCLM.intervalIntegral_comp_comm
       ((by fun_prop : Continuous fun t : ℝ =>
-        (w₂ * star w₁) * cexp ((t : ℂ) * (Δ : ℂ) * I)).intervalIntegrable T (T + P))
+        (w₂ * star w₁) * cexp ((t : ℂ) * (Δ : ℂ) * I)).intervalIntegrable volume T (T + P))
     change 2 * (∫ t in T..(T + P), Complex.reCLM ((w₂ * star w₁) * cexp ((t : ℂ) * (Δ : ℂ) * I))) = 0
     rw [hcomm, intervalIntegral.integral_const_mul, hosc_zero, mul_zero,
       Complex.reCLM_apply, Complex.zero_re, mul_zero]
@@ -1235,15 +1235,70 @@ private lemma norm_deriv_xi_le_strip_two {z : ℂ} (hz : |z.re| ≤ 2) :
     _ = _root_.RHTower.thetaAmplitudeEnvelope 2 := by
         rw [MeasureTheory.integral_const_mul]; rfl
 
+private def fluxEnvConst : ℝ :=
+  _root_.RHTower.thetaAmplitudeEnvelope 2
+
+private lemma fluxEnvConst_nonneg : 0 ≤ fluxEnvConst :=
+  _root_.RHTower.thetaAmplitudeEnvelope_nonneg 2
+
+private def fluxTailConst : ℝ :=
+  _root_.RHTower.thetaCuspIntegerTailConstant * fluxEnvConst
+
+private lemma fluxTailConst_nonneg : 0 ≤ fluxTailConst :=
+  mul_nonneg _root_.RHTower.thetaCuspIntegerTailConstant_nonneg fluxEnvConst_nonneg
+
+private lemma thetaStripTailBound_eq_fluxTailConst (N : ℕ) :
+    thetaStripTailBound N = fluxTailConst * Real.exp (-((N + 1 : ℕ) : ℝ) ^ 2) := rfl
+
+private lemma thetaStripTailBound_nonneg (N : ℕ) : 0 ≤ thetaStripTailBound N := by
+  rw [thetaStripTailBound_eq_fluxTailConst]
+  exact mul_nonneg fluxTailConst_nonneg (Real.exp_pos _).le
+
+private def fluxDenomConst : ℝ :=
+  9 + 4 * (|canonicalXiZero.im| + 4) ^ 2
+
+private lemma fluxDenomConst_pos : 0 < fluxDenomConst := by
+  unfold fluxDenomConst; positivity
+
+private def fluxBigConst : ℝ :=
+  (8 * (fluxEnvConst + 1) * (fluxTailConst + 1) * fluxDenomConst / burnolGoodLowerConst ^ 2 +
+    2 * (fluxTailConst + 1) / burnolGoodLowerConst + 1) * Real.exp 8
+
+private lemma one_lt_fluxBigConst : 1 < fluxBigConst := by
+  unfold fluxBigConst
+  have hcg := burnolGoodLowerConst_pos
+  have hE := fluxEnvConst_nonneg
+  have hC := fluxTailConst_nonneg
+  have hK := fluxDenomConst_pos
+  have h1 : 0 ≤ 8 * (fluxEnvConst + 1) * (fluxTailConst + 1) * fluxDenomConst /
+      burnolGoodLowerConst ^ 2 + 2 * (fluxTailConst + 1) / burnolGoodLowerConst := by positivity
+  have he8 : 1 < Real.exp 8 := Real.one_lt_exp_iff.mpr (by norm_num)
+  nlinarith
+
+private lemma fluxBigConst_ge_amp :
+    (2 * (fluxTailConst + 1) / burnolGoodLowerConst) * Real.exp 8 ≤ fluxBigConst := by
+  unfold fluxBigConst
+  have hcg := burnolGoodLowerConst_pos
+  have hE := fluxEnvConst_nonneg
+  have hC := fluxTailConst_nonneg
+  have hK := fluxDenomConst_pos
+  have h1 : 0 ≤ (8 * (fluxEnvConst + 1) * (fluxTailConst + 1) * fluxDenomConst /
+      burnolGoodLowerConst ^ 2 + 1) * Real.exp 8 := by positivity
+  linarith
+
+private lemma fluxBigConst_ge_quot :
+    (8 * (fluxEnvConst + 1) * (fluxTailConst + 1) * fluxDenomConst /
+      burnolGoodLowerConst ^ 2) * Real.exp 8 ≤ fluxBigConst := by
+  unfold fluxBigConst
+  have hcg := burnolGoodLowerConst_pos
+  have hC := fluxTailConst_nonneg
+  have h1 : 0 ≤ (2 * (fluxTailConst + 1) / burnolGoodLowerConst + 1) * Real.exp 8 := by positivity
+  linarith
+
 /-- Explicit multiplier constant `K_flux ≥ doorOpenerSqrtConst` ensuring `Re L_N(3/2 + iy) > 0`
 at both Burnol heights `y₁(m), y₂(m)` for every `m : ℕ` and `N ≥ fluxSqrtPrefix m`. -/
 def fluxSqrtConst : ℕ :=
-  let E₂ := _root_.RHTower.thetaAmplitudeEnvelope 2
-  let C₀ := _root_.RHTower.thetaCuspIntegerTailConstant * E₂
-  let cg := burnolGoodLowerConst
-  let K_den := 9 + 4 * (|canonicalXiZero.im| + 4) ^ 2
-  let M_big := (8 * (E₂ + 1) * (C₀ + 1) * K_den / cg ^ 2 + 2 * (C₀ + 1) / cg + 1) * Real.exp 8
-  max doorOpenerSqrtConst (Nat.ceil (Real.sqrt (|Real.log M_big| + 6)) + 2)
+  max doorOpenerSqrtConst (Nat.ceil (Real.sqrt (|Real.log fluxBigConst| + 6)) + 2)
 
 /-- Explicit `Θ(√m)` prefix schedule `fluxSqrtConst * (Nat.sqrt m + 1)`. -/
 def fluxSqrtPrefix (m : ℕ) : ℕ :=
@@ -1260,42 +1315,35 @@ theorem burnolPrefix_le_fluxSqrtPrefix (m : ℕ) :
 theorem re_thetaLogDeriv_burnol_pos (m : ℕ) {N : ℕ} (hN : fluxSqrtPrefix m ≤ N)
     {y : ℝ} (hy_or : y = burnolUnitLower m ∨ y = burnolUnitUpper m) :
     0 < (thetaLogDeriv N ((3 / 2 : ℂ) + (y : ℂ) * I)).re := by
-  set E₂ : ℝ := _root_.RHTower.thetaAmplitudeEnvelope 2
-  have hE₂_nn : 0 ≤ E₂ := _root_.RHTower.thetaAmplitudeEnvelope_nonneg 2
-  set C₀ : ℝ := _root_.RHTower.thetaCuspIntegerTailConstant * E₂
-  have hC₀_nn : 0 ≤ C₀ := mul_nonneg _root_.RHTower.thetaCuspIntegerTailConstant_nonneg hE₂_nn
-  set cg : ℝ := burnolGoodLowerConst
-  have hcg_pos : 0 < cg := burnolGoodLowerConst_pos
-  set K_den : ℝ := 9 + 4 * (|canonicalXiZero.im| + 4) ^ 2
-  have hK_den_pos : 0 < K_den := by dsimp [K_den]; positivity
-  set M_big : ℝ := (8 * (E₂ + 1) * (C₀ + 1) * K_den / cg ^ 2 + 2 * (C₀ + 1) / cg + 1) * Real.exp 8
-  have hM_big_gt1 : 1 < M_big := by
-    dsimp [M_big]
-    have h1 : 0 ≤ 8 * (E₂ + 1) * (C₀ + 1) * K_den / cg ^ 2 + 2 * (C₀ + 1) / cg := by positivity
-    have he8 : 1 < Real.exp 8 := Real.one_lt_exp_iff.mpr (by norm_num)
-    nlinarith
-  have hM_pos : 0 < M_big := by linarith
-  set z : ℂ := (3 / 2 : ℂ) + (y : ℂ) * I
+  have hE₂_nn : 0 ≤ fluxEnvConst := fluxEnvConst_nonneg
+  have hC₀_nn : 0 ≤ fluxTailConst := fluxTailConst_nonneg
+  have hcg_pos : 0 < burnolGoodLowerConst := burnolGoodLowerConst_pos
+  have hK_den_pos : 0 < fluxDenomConst := fluxDenomConst_pos
+  have hM_big_gt1 : 1 < fluxBigConst := one_lt_fluxBigConst
+  have hM_pos : 0 < fluxBigConst := zero_lt_one.trans hM_big_gt1
+  have htail_nn : 0 ≤ thetaStripTailBound N := thetaStripTailBound_nonneg N
+  let z : ℂ := (3 / 2 : ℂ) + (y : ℂ) * I
   have hz_re : |z.re| ≤ 2 := by simp [z]; norm_num
   obtain ⟨hy₁_lo, hy₁_hi, hy₂_lo, hy₂_hi, _⟩ := burnolUnit_coords m
   have hy_abs : |y| ≤ (m : ℝ) + 3 := by
     rcases hy_or with rfl | rfl
     · exact abs_le.mpr ⟨by linarith, by linarith⟩
     · exact abs_le.mpr ⟨by linarith, by linarith⟩
-  have hxi_ge : cg * Real.exp (-((m + 3 : ℕ) : ℝ)) ≤ ‖_root_.RHTower.xi z‖ := by
+  have hxi_ge : burnolGoodLowerConst * Real.exp (-((m + 3 : ℕ) : ℝ)) ≤ ‖_root_.RHTower.xi z‖ := by
     obtain ⟨τ, hτ⟩ := exists_boundaryPath_of_edges
       (z₁ := centeredWindowLowerLeft (burnolUnitLower m))
       (z₂ := centeredWindowUpperRight (burnolUnitUpper m))
+      (z := z)
       (by simp; norm_num) (by simpa using burnolUnitLower_le_upper m)
-      (by simp [z]; norm_num)
+      ⟨by simp [z]; norm_num, by simp [z]⟩
       (by rcases hy_or with rfl | rfl <;> simp [z, burnolUnitLower_le_upper m])
       (Or.inr (Or.inl (by simp [z])))
     rw [← hτ]
     exact burnolUnit_xi_bdry_ge m τ
-  have hxi_le : ‖_root_.RHTower.xi z‖ ≤ E₂ := by
+  have hxi_le : ‖_root_.RHTower.xi z‖ ≤ fluxEnvConst := by
     rw [← bilateral_fullTheta_eq_xi]
     exact _root_.RHTower.norm_fullThetaAmplitude_le_strip (by norm_num) hz_re
-  have hdxi_le : ‖deriv _root_.RHTower.xi z‖ ≤ E₂ := norm_deriv_xi_le_strip_two hz_re
+  have hdxi_le : ‖deriv _root_.RHTower.xi z‖ ≤ fluxEnvConst := norm_deriv_xi_le_strip_two hz_re
   have hA_diff : ‖_root_.RHTower.finiteThetaAmplitude N z - _root_.RHTower.xi z‖ ≤
       thetaStripTailBound N := by
     simpa only [thetaStripTailBound, mul_right_comm] using
@@ -1304,76 +1352,79 @@ theorem re_thetaLogDeriv_burnol_pos (m : ℕ) {N : ℕ} (hN : fluxSqrtPrefix m �
       thetaStripTailBound N := by
     simpa only [thetaStripTailBound, mul_right_comm] using
       norm_finiteThetaFirstMoment_sub_deriv_xi_le_strip N (R := 2) (by norm_num) hz_re
-  have hN_sq : Real.log M_big + 4 * ((m : ℝ) + 1) < ((N + 1 : ℕ) : ℝ) ^ 2 := by
-    have hK_ge : Nat.ceil (Real.sqrt (|Real.log M_big| + 6)) + 2 ≤ fluxSqrtConst := le_max_right _ _
-    have hsq_nat : (Nat.ceil (Real.sqrt (|Real.log M_big| + 6)) + 2) * (Nat.sqrt m + 1) ≤ N :=
+  have hN_sq : Real.log fluxBigConst + 4 * ((m : ℝ) + 1) < ((N + 1 : ℕ) : ℝ) ^ 2 := by
+    have hK_ge : Nat.ceil (Real.sqrt (|Real.log fluxBigConst| + 6)) + 2 ≤ fluxSqrtConst :=
+      le_max_right _ _
+    have hsq_nat : (Nat.ceil (Real.sqrt (|Real.log fluxBigConst| + 6)) + 2) * (Nat.sqrt m + 1) ≤ N :=
       (Nat.mul_le_mul_right _ hK_ge).trans hN
     have hm_sq : m + 1 ≤ (Nat.sqrt m + 1) ^ 2 := Nat.lt_succ_sqrt' m
-    have h1 : (|Real.log M_big| + 6) * ((m : ℝ) + 1) < ((N + 1 : ℕ) : ℝ) ^ 2 := by
-      have hc : Real.sqrt (|Real.log M_big| + 6) <
-          ((Nat.ceil (Real.sqrt (|Real.log M_big| + 6)) + 2 : ℕ) : ℝ) := by
+    have h1 : (|Real.log fluxBigConst| + 6) * ((m : ℝ) + 1) < ((N + 1 : ℕ) : ℝ) ^ 2 := by
+      have hc : Real.sqrt (|Real.log fluxBigConst| + 6) <
+          ((Nat.ceil (Real.sqrt (|Real.log fluxBigConst| + 6)) + 2 : ℕ) : ℝ) := by
         push_cast
-        linarith [Nat.le_ceil (Real.sqrt (|Real.log M_big| + 6))]
-      have hc_sq : |Real.log M_big| + 6 <
-          ((Nat.ceil (Real.sqrt (|Real.log M_big| + 6)) + 2 : ℕ) : ℝ) ^ 2 := by
-        rw [← Real.sq_sqrt (by positivity : 0 ≤ |Real.log M_big| + 6)]
+        linarith [Nat.le_ceil (Real.sqrt (|Real.log fluxBigConst| + 6))]
+      have hc_sq : |Real.log fluxBigConst| + 6 <
+          ((Nat.ceil (Real.sqrt (|Real.log fluxBigConst| + 6)) + 2 : ℕ) : ℝ) ^ 2 := by
+        conv_lhs => rw [← Real.sq_sqrt (by positivity : 0 ≤ |Real.log fluxBigConst| + 6)]
         exact pow_lt_pow_left₀ hc (Real.sqrt_nonneg _) two_ne_zero
-      have hmul : (|Real.log M_big| + 6) * ((m : ℝ) + 1) <
-          ((Nat.ceil (Real.sqrt (|Real.log M_big| + 6)) + 2 : ℕ) : ℝ) ^ 2 *
+      have hmul : (|Real.log fluxBigConst| + 6) * ((m : ℝ) + 1) <
+          ((Nat.ceil (Real.sqrt (|Real.log fluxBigConst| + 6)) + 2 : ℕ) : ℝ) ^ 2 *
             ((Nat.sqrt m + 1 : ℕ) : ℝ) ^ 2 := by
         have hmR : (m : ℝ) + 1 ≤ ((Nat.sqrt m + 1 : ℕ) : ℝ) ^ 2 := by exact_mod_cast hm_sq
         have hm_pos : 0 < (m : ℝ) + 1 := by positivity
         exact lt_of_lt_of_le (mul_lt_mul_of_pos_right hc_sq hm_pos)
           (mul_le_mul_of_nonneg_left hmR (by positivity))
-      have hNR : ((Nat.ceil (Real.sqrt (|Real.log M_big| + 6)) + 2 : ℕ) : ℝ) ^ 2 *
+      have hNR : ((Nat.ceil (Real.sqrt (|Real.log fluxBigConst| + 6)) + 2 : ℕ) : ℝ) ^ 2 *
           ((Nat.sqrt m + 1 : ℕ) : ℝ) ^ 2 ≤ ((N + 1 : ℕ) : ℝ) ^ 2 := by
         rw [← mul_pow]
-        have hleR : ((Nat.ceil (Real.sqrt (|Real.log M_big| + 6)) + 2 : ℕ) : ℝ) *
+        have hleR : ((Nat.ceil (Real.sqrt (|Real.log fluxBigConst| + 6)) + 2 : ℕ) : ℝ) *
             ((Nat.sqrt m + 1 : ℕ) : ℝ) ≤ ((N + 1 : ℕ) : ℝ) := by
           exact_mod_cast (hsq_nat.trans (Nat.le_succ N))
         exact pow_le_pow_left₀ (by positivity) hleR 2
       exact hmul.trans_le hNR
     have hm0 : (0 : ℝ) ≤ m := Nat.cast_nonneg m
-    have hlog_le : Real.log M_big ≤ |Real.log M_big| := le_abs_self _
-    have hlog_nn : 0 ≤ |Real.log M_big| := abs_nonneg _
+    have hlog_le : Real.log fluxBigConst ≤ |Real.log fluxBigConst| := le_abs_self _
+    have hlog_nn : 0 ≤ |Real.log fluxBigConst| := abs_nonneg _
     nlinarith
-  have hexp_N : Real.exp (-((N + 1 : ℕ) : ℝ) ^ 2) < Real.exp (-4 * ((m : ℝ) + 1)) / M_big := by
+  have hexp_N : Real.exp (-((N + 1 : ℕ) : ℝ) ^ 2) <
+      Real.exp (-4 * ((m : ℝ) + 1)) / fluxBigConst := by
     rw [lt_div_iff₀ hM_pos, ← Real.exp_log hM_pos, ← Real.exp_add]
     exact Real.exp_lt_exp.mpr (by linarith)
   have htail_lt : thetaStripTailBound N <
-      (C₀ + 1) * Real.exp (-4 * ((m : ℝ) + 1)) / M_big := by
-    calc thetaStripTailBound N = C₀ * Real.exp (-((N + 1 : ℕ) : ℝ) ^ 2) := rfl
-      _ ≤ (C₀ + 1) * Real.exp (-((N + 1 : ℕ) : ℝ) ^ 2) :=
+      (fluxTailConst + 1) * Real.exp (-4 * ((m : ℝ) + 1)) / fluxBigConst := by
+    calc thetaStripTailBound N
+        = fluxTailConst * Real.exp (-((N + 1 : ℕ) : ℝ) ^ 2) :=
+          thetaStripTailBound_eq_fluxTailConst N
+      _ ≤ (fluxTailConst + 1) * Real.exp (-((N + 1 : ℕ) : ℝ) ^ 2) :=
           mul_le_mul_of_nonneg_right (by linarith) (Real.exp_pos _).le
-      _ < (C₀ + 1) * (Real.exp (-4 * ((m : ℝ) + 1)) / M_big) :=
+      _ < (fluxTailConst + 1) * (Real.exp (-4 * ((m : ℝ) + 1)) / fluxBigConst) :=
           mul_lt_mul_of_pos_left hexp_N (by positivity)
-      _ = (C₀ + 1) * Real.exp (-4 * ((m : ℝ) + 1)) / M_big := by ring
-  -- Lower bound `‖A_N z‖ ≥ (cg / 2) e^{-(m+3)}`
-  have htail_half : thetaStripTailBound N ≤ (cg / 2) * Real.exp (-((m + 3 : ℕ) : ℝ)) := by
+      _ = (fluxTailConst + 1) * Real.exp (-4 * ((m : ℝ) + 1)) / fluxBigConst := by ring
+  -- Lower bound `‖A_N z‖ ≥ (burnolGoodLowerConst / 2) e^{-(m+3)}`
+  have htail_half : thetaStripTailBound N ≤
+      (burnolGoodLowerConst / 2) * Real.exp (-((m + 3 : ℕ) : ℝ)) := by
     refine htail_lt.le.trans ?_
     rw [div_le_iff₀ hM_pos]
-    have hM_part : (2 * (C₀ + 1) / cg) * Real.exp 8 ≤ M_big := by
-      dsimp [M_big]
-      have : 0 ≤ (8 * (E₂ + 1) * (C₀ + 1) * K_den / cg ^ 2 + 1) * Real.exp 8 := by positivity
-      linarith
+    have hM_part := fluxBigConst_ge_amp
     have hexp_cmp : Real.exp (-4 * ((m : ℝ) + 1)) ≤
         Real.exp (-((m + 3 : ℕ) : ℝ)) * Real.exp 8 := by
       rw [← Real.exp_add]
       apply Real.exp_le_exp.mpr
       have hm0 : (0 : ℝ) ≤ m := Nat.cast_nonneg m
       push_cast; linarith
-    calc (C₀ + 1) * Real.exp (-4 * ((m : ℝ) + 1))
-        ≤ (C₀ + 1) * (Real.exp (-((m + 3 : ℕ) : ℝ)) * Real.exp 8) :=
+    calc (fluxTailConst + 1) * Real.exp (-4 * ((m : ℝ) + 1))
+        ≤ (fluxTailConst + 1) * (Real.exp (-((m + 3 : ℕ) : ℝ)) * Real.exp 8) :=
           mul_le_mul_of_nonneg_left hexp_cmp (by positivity)
-      _ = (cg / 2) * Real.exp (-((m + 3 : ℕ) : ℝ)) * ((2 * (C₀ + 1) / cg) * Real.exp 8) := by
+      _ = (burnolGoodLowerConst / 2) * Real.exp (-((m + 3 : ℕ) : ℝ)) *
+            ((2 * (fluxTailConst + 1) / burnolGoodLowerConst) * Real.exp 8) := by
           field_simp [hcg_pos.ne']
-      _ ≤ (cg / 2) * Real.exp (-((m + 3 : ℕ) : ℝ)) * M_big :=
+      _ ≤ (burnolGoodLowerConst / 2) * Real.exp (-((m + 3 : ℕ) : ℝ)) * fluxBigConst :=
           mul_le_mul_of_nonneg_left hM_part (by positivity)
-  have hAN_ge : (cg / 2) * Real.exp (-((m + 3 : ℕ) : ℝ)) ≤
+  have hAN_ge : (burnolGoodLowerConst / 2) * Real.exp (-((m + 3 : ℕ) : ℝ)) ≤
       ‖_root_.RHTower.finiteThetaAmplitude N z‖ := by
-    have htri := norm_sub_le (_root_.RHTower.xi z)
+    have htri := norm_add_le (_root_.RHTower.finiteThetaAmplitude N z)
       (_root_.RHTower.xi z - _root_.RHTower.finiteThetaAmplitude N z)
-    rw [sub_sub_cancel, norm_sub_rev] at htri
+    rw [add_sub_cancel, norm_sub_rev] at htri
     linarith [hxi_ge, hA_diff, htail_half, htri]
   have hAN_pos : 0 < ‖_root_.RHTower.finiteThetaAmplitude N z‖ :=
     lt_of_lt_of_le (by positivity) hAN_ge
@@ -1382,8 +1433,8 @@ theorem re_thetaLogDeriv_burnol_pos (m : ℕ) {N : ℕ} (hN : fluxSqrtPrefix m �
   have hxi_ne : _root_.RHTower.xi z ≠ 0 := norm_pos_iff.mp hxi_pos
   -- Bound `‖thetaLogDeriv N z - logDeriv xi z‖`
   have hquot_diff : ‖thetaLogDeriv N z - logDeriv _root_.RHTower.xi z‖ ≤
-      4 * (E₂ + 1) * thetaStripTailBound N /
-        (cg ^ 2 * Real.exp (-2 * ((m + 3 : ℕ) : ℝ))) := by
+      4 * (fluxEnvConst + 1) * thetaStripTailBound N /
+        (burnolGoodLowerConst ^ 2 * Real.exp (-2 * ((m + 3 : ℕ) : ℝ))) := by
     rw [thetaLogDeriv, logDeriv_apply]
     have halg : -_root_.RHTower.finiteThetaFirstMoment N z /
           _root_.RHTower.finiteThetaAmplitude N z -
@@ -1399,36 +1450,41 @@ theorem re_thetaLogDeriv_burnol_pos (m : ℕ) {N : ℕ} (hN : fluxSqrtPrefix m �
           _root_.RHTower.xi z +
         deriv _root_.RHTower.xi z *
           (_root_.RHTower.xi z - _root_.RHTower.finiteThetaAmplitude N z)‖ ≤
-        2 * (E₂ + 1) * thetaStripTailBound N := by
+        2 * (fluxEnvConst + 1) * thetaStripTailBound N := by
       have h1 : ‖(-_root_.RHTower.finiteThetaFirstMoment N z - deriv _root_.RHTower.xi z) *
-          _root_.RHTower.xi z‖ ≤ (E₂ + 1) * thetaStripTailBound N := by
+          _root_.RHTower.xi z‖ ≤ (fluxEnvConst + 1) * thetaStripTailBound N := by
         rw [norm_mul, mul_comm]
         exact mul_le_mul (hxi_le.trans (by linarith)) hM_diff (norm_nonneg _) (by positivity)
       have h2 : ‖deriv _root_.RHTower.xi z *
           (_root_.RHTower.xi z - _root_.RHTower.finiteThetaAmplitude N z)‖ ≤
-          (E₂ + 1) * thetaStripTailBound N := by
+          (fluxEnvConst + 1) * thetaStripTailBound N := by
         rw [norm_mul, norm_sub_rev]
         exact mul_le_mul (hdxi_le.trans (by linarith)) hA_diff (norm_nonneg _) (by positivity)
       calc ‖_ + _‖ ≤ _ + _ := norm_add_le _ _
-        _ ≤ (E₂ + 1) * thetaStripTailBound N + (E₂ + 1) * thetaStripTailBound N :=
+        _ ≤ (fluxEnvConst + 1) * thetaStripTailBound N +
+              (fluxEnvConst + 1) * thetaStripTailBound N :=
             add_le_add h1 h2
-        _ = 2 * (E₂ + 1) * thetaStripTailBound N := by ring
-    have hden : (cg ^ 2 / 2) * Real.exp (-2 * ((m + 3 : ℕ) : ℝ)) ≤
+        _ = 2 * (fluxEnvConst + 1) * thetaStripTailBound N := by ring
+    have hden : (burnolGoodLowerConst ^ 2 / 2) * Real.exp (-2 * ((m + 3 : ℕ) : ℝ)) ≤
         ‖_root_.RHTower.finiteThetaAmplitude N z‖ * ‖_root_.RHTower.xi z‖ := by
-      calc (cg ^ 2 / 2) * Real.exp (-2 * ((m + 3 : ℕ) : ℝ))
-          = ((cg / 2) * Real.exp (-((m + 3 : ℕ) : ℝ))) *
-              (cg * Real.exp (-((m + 3 : ℕ) : ℝ))) := by
+      calc (burnolGoodLowerConst ^ 2 / 2) * Real.exp (-2 * ((m + 3 : ℕ) : ℝ))
+          = ((burnolGoodLowerConst / 2) * Real.exp (-((m + 3 : ℕ) : ℝ))) *
+              (burnolGoodLowerConst * Real.exp (-((m + 3 : ℕ) : ℝ))) := by
             rw [mul_mul_mul_comm, ← Real.exp_add]; congr 1 <;> ring
         _ ≤ ‖_root_.RHTower.finiteThetaAmplitude N z‖ * ‖_root_.RHTower.xi z‖ :=
             mul_le_mul hAN_ge hxi_ge (by positivity) hAN_pos.le
+    have hden_pos : 0 < (burnolGoodLowerConst ^ 2 / 2) * Real.exp (-2 * ((m + 3 : ℕ) : ℝ)) :=
+      mul_pos (half_pos (sq_pos_of_pos hcg_pos)) (Real.exp_pos _)
     calc ‖_‖ / (‖_root_.RHTower.finiteThetaAmplitude N z‖ * ‖_root_.RHTower.xi z‖)
-        ≤ (2 * (E₂ + 1) * thetaStripTailBound N) /
-            ((cg ^ 2 / 2) * Real.exp (-2 * ((m + 3 : ℕ) : ℝ))) :=
-          div_le_div₀ (by positivity) hnum (by positivity) hden
-      _ = 4 * (E₂ + 1) * thetaStripTailBound N /
-            (cg ^ 2 * Real.exp (-2 * ((m + 3 : ℕ) : ℝ))) := by field_simp [hcg_pos.ne']; ring
-  -- Compare with `1 / (9 + 4 * (y - Im ρ₀)²) ≥ 1 / (K_den * exp(2 * (m + 1)))`
-  have hden_le : 9 + 4 * (y - canonicalXiZero.im) ^ 2 ≤ K_den * Real.exp (2 * ((m : ℝ) + 1)) := by
+        ≤ (2 * (fluxEnvConst + 1) * thetaStripTailBound N) /
+            ((burnolGoodLowerConst ^ 2 / 2) * Real.exp (-2 * ((m + 3 : ℕ) : ℝ))) :=
+          div_le_div₀ (by positivity) hnum hden_pos hden
+      _ = 4 * (fluxEnvConst + 1) * thetaStripTailBound N /
+            (burnolGoodLowerConst ^ 2 * Real.exp (-2 * ((m + 3 : ℕ) : ℝ))) := by
+          field_simp [hcg_pos.ne']; ring
+  -- Compare with `1 / (9 + 4 * (y - Im ρ₀)²) ≥ 1 / (fluxDenomConst * exp(2 * (m + 1)))`
+  have hden_le : 9 + 4 * (y - canonicalXiZero.im) ^ 2 ≤
+      fluxDenomConst * Real.exp (2 * ((m : ℝ) + 1)) := by
     have hydiff : |y - canonicalXiZero.im| ≤ ((m : ℝ) + 1) * (|canonicalXiZero.im| + 4) := by
       have h1 : |y - canonicalXiZero.im| ≤ |y| + |canonicalXiZero.im| := abs_sub _ _
       have hm0 : (0 : ℝ) ≤ m := Nat.cast_nonneg m
@@ -1449,60 +1505,69 @@ theorem re_thetaLogDeriv_burnol_pos (m : ℕ) {N : ℕ} (hN : fluxSqrtPrefix m �
     calc 9 + 4 * (y - canonicalXiZero.im) ^ 2
         ≤ 9 * ((m : ℝ) + 1) ^ 2 + 4 * (((m : ℝ) + 1) ^ 2 * (|canonicalXiZero.im| + 4) ^ 2) := by
           nlinarith
-      _ = K_den * ((m : ℝ) + 1) ^ 2 := by dsimp [K_den]; ring
-      _ ≤ K_den * Real.exp (2 * ((m : ℝ) + 1)) :=
+      _ = fluxDenomConst * ((m : ℝ) + 1) ^ 2 := by unfold fluxDenomConst; ring
+      _ ≤ fluxDenomConst * Real.exp (2 * ((m : ℝ) + 1)) :=
           mul_le_mul_of_nonneg_left hm_exp hK_den_pos.le
-  have hxi_re_lb : 1 / (K_den * Real.exp (2 * ((m : ℝ) + 1))) ≤
+  have hxi_re_lb : 1 / (fluxDenomConst * Real.exp (2 * ((m : ℝ) + 1))) ≤
       (logDeriv _root_.RHTower.xi z).re :=
     (div_le_div_of_nonneg_left zero_le_one (by positivity) hden_le).trans
       (re_logDeriv_xi_three_halves_ge y)
-  have hquot_lt : 4 * (E₂ + 1) * thetaStripTailBound N /
-        (cg ^ 2 * Real.exp (-2 * ((m + 3 : ℕ) : ℝ))) <
-      1 / (2 * K_den * Real.exp (2 * ((m : ℝ) + 1))) := by
-    have hstep1 : 4 * (E₂ + 1) * thetaStripTailBound N /
-          (cg ^ 2 * Real.exp (-2 * ((m + 3 : ℕ) : ℝ))) <
-        4 * (E₂ + 1) * ((C₀ + 1) * Real.exp (-4 * ((m : ℝ) + 1)) / M_big) /
-          (cg ^ 2 * Real.exp (-2 * ((m + 3 : ℕ) : ℝ))) := by
-      exact div_lt_div_of_pos_right
-        (mul_lt_mul_of_pos_left htail_lt (by positivity)) (by positivity)
+  have hquot_lt : 4 * (fluxEnvConst + 1) * thetaStripTailBound N /
+        (burnolGoodLowerConst ^ 2 * Real.exp (-2 * ((m + 3 : ℕ) : ℝ))) <
+      1 / (2 * fluxDenomConst * Real.exp (2 * ((m : ℝ) + 1))) := by
+    have hstep1 : 4 * (fluxEnvConst + 1) * thetaStripTailBound N /
+          (burnolGoodLowerConst ^ 2 * Real.exp (-2 * ((m + 3 : ℕ) : ℝ))) <
+        4 * (fluxEnvConst + 1) * ((fluxTailConst + 1) * Real.exp (-4 * ((m : ℝ) + 1)) / fluxBigConst) /
+          (burnolGoodLowerConst ^ 2 * Real.exp (-2 * ((m + 3 : ℕ) : ℝ))) :=
+      div_lt_div_of_pos_right
+        (mul_lt_mul_of_pos_left htail_lt (by positivity))
+        (mul_pos (sq_pos_of_pos hcg_pos) (Real.exp_pos _))
     refine hstep1.trans_le ?_
-    rw [div_le_div_iff₀ (by positivity) (by positivity)]
-    have hM_part : (8 * (E₂ + 1) * (C₀ + 1) * K_den / cg ^ 2) * Real.exp 8 ≤ M_big := by
-      dsimp [M_big]
-      have : 0 ≤ (2 * (C₀ + 1) / cg + 1) * Real.exp 8 := by positivity
-      linarith
-    have hexp_id : Real.exp (-4 * ((m : ℝ) + 1)) * (2 * K_den * Real.exp (2 * ((m : ℝ) + 1))) =
-        2 * K_den * Real.exp (-2 * ((m + 3 : ℕ) : ℝ)) * Real.exp 8 := by
+    rw [div_le_div_iff₀ (mul_pos (sq_pos_of_pos hcg_pos) (Real.exp_pos _)) (by positivity)]
+    have hM_part := fluxBigConst_ge_quot
+    have hexp_id : Real.exp (-4 * ((m : ℝ) + 1)) * (2 * fluxDenomConst * Real.exp (2 * ((m : ℝ) + 1))) ≤
+        2 * fluxDenomConst * Real.exp (-2 * ((m + 3 : ℕ) : ℝ)) * Real.exp 8 := by
       have hexp_eq : Real.exp (-4 * ((m : ℝ) + 1)) * Real.exp (2 * ((m : ℝ) + 1)) =
-          Real.exp (-2 * ((m + 3 : ℕ) : ℝ)) * Real.exp 8 := by
+          Real.exp (-2 * ((m + 3 : ℕ) : ℝ)) * Real.exp 4 := by
         rw [← Real.exp_add, ← Real.exp_add]
         congr 1; push_cast; ring
-      calc Real.exp (-4 * ((m : ℝ) + 1)) * (2 * K_den * Real.exp (2 * ((m : ℝ) + 1)))
-          = 2 * K_den * (Real.exp (-4 * ((m : ℝ) + 1)) * Real.exp (2 * ((m : ℝ) + 1))) := by ring
-        _ = 2 * K_den * Real.exp (-2 * ((m + 3 : ℕ) : ℝ)) * Real.exp 8 := by rw [hexp_eq]; ring
-    have hdiv_le : 4 * (E₂ + 1) * ((C₀ + 1) * Real.exp (-4 * ((m : ℝ) + 1)) / M_big) *
-          (2 * K_den * Real.exp (2 * ((m : ℝ) + 1))) ≤
-        cg ^ 2 * Real.exp (-2 * ((m + 3 : ℕ) : ℝ)) := by
-      rw [show 4 * (E₂ + 1) * ((C₀ + 1) * Real.exp (-4 * ((m : ℝ) + 1)) / M_big) *
-            (2 * K_den * Real.exp (2 * ((m : ℝ) + 1))) =
-          (4 * (E₂ + 1) * (C₀ + 1) *
-            (Real.exp (-4 * ((m : ℝ) + 1)) * (2 * K_den * Real.exp (2 * ((m : ℝ) + 1))))) / M_big
+      calc Real.exp (-4 * ((m : ℝ) + 1)) * (2 * fluxDenomConst * Real.exp (2 * ((m : ℝ) + 1)))
+          = 2 * fluxDenomConst * (Real.exp (-4 * ((m : ℝ) + 1)) * Real.exp (2 * ((m : ℝ) + 1))) := by ring
+        _ = 2 * fluxDenomConst * Real.exp (-2 * ((m + 3 : ℕ) : ℝ)) * Real.exp 4 := by rw [hexp_eq]; ring
+        _ ≤ 2 * fluxDenomConst * Real.exp (-2 * ((m + 3 : ℕ) : ℝ)) * Real.exp 8 :=
+            mul_le_mul_of_nonneg_left (Real.exp_le_exp.mpr (by norm_num)) (by positivity)
+    have hdiv_le : 4 * (fluxEnvConst + 1) *
+          ((fluxTailConst + 1) * Real.exp (-4 * ((m : ℝ) + 1)) / fluxBigConst) *
+          (2 * fluxDenomConst * Real.exp (2 * ((m : ℝ) + 1))) ≤
+        burnolGoodLowerConst ^ 2 * Real.exp (-2 * ((m + 3 : ℕ) : ℝ)) := by
+      rw [show 4 * (fluxEnvConst + 1) *
+              ((fluxTailConst + 1) * Real.exp (-4 * ((m : ℝ) + 1)) / fluxBigConst) *
+              (2 * fluxDenomConst * Real.exp (2 * ((m : ℝ) + 1))) =
+            (4 * (fluxEnvConst + 1) * (fluxTailConst + 1) *
+              (Real.exp (-4 * ((m : ℝ) + 1)) *
+                (2 * fluxDenomConst * Real.exp (2 * ((m : ℝ) + 1))))) / fluxBigConst
             by ring,
-        hexp_id, div_le_iff₀ hM_pos]
-      calc 4 * (E₂ + 1) * (C₀ + 1) * (2 * K_den * Real.exp (-2 * ((m + 3 : ℕ) : ℝ)) * Real.exp 8)
-          = (cg ^ 2 * Real.exp (-2 * ((m + 3 : ℕ) : ℝ))) *
-              ((8 * (E₂ + 1) * (C₀ + 1) * K_den / cg ^ 2) * Real.exp 8) := by
+        div_le_iff₀ hM_pos]
+      calc 4 * (fluxEnvConst + 1) * (fluxTailConst + 1) *
+              (Real.exp (-4 * ((m : ℝ) + 1)) * (2 * fluxDenomConst * Real.exp (2 * ((m : ℝ) + 1))))
+          ≤ 4 * (fluxEnvConst + 1) * (fluxTailConst + 1) *
+              (2 * fluxDenomConst * Real.exp (-2 * ((m + 3 : ℕ) : ℝ)) * Real.exp 8) :=
+            mul_le_mul_of_nonneg_left hexp_id (by positivity)
+        _ = (burnolGoodLowerConst ^ 2 * Real.exp (-2 * ((m + 3 : ℕ) : ℝ))) *
+              ((8 * (fluxEnvConst + 1) * (fluxTailConst + 1) * fluxDenomConst /
+                burnolGoodLowerConst ^ 2) * Real.exp 8) := by
             field_simp [hcg_pos.ne']; ring
-        _ ≤ (cg ^ 2 * Real.exp (-2 * ((m + 3 : ℕ) : ℝ))) * M_big :=
-            mul_le_mul_of_nonneg_left hM_part (by positivity)
+        _ ≤ (burnolGoodLowerConst ^ 2 * Real.exp (-2 * ((m + 3 : ℕ) : ℝ))) * fluxBigConst :=
+            mul_le_mul_of_nonneg_left hM_part
+              (mul_nonneg (sq_nonneg _) (Real.exp_pos _).le)
     linarith
   have hre_diff : |(thetaLogDeriv N z - logDeriv _root_.RHTower.xi z).re| ≤
       ‖thetaLogDeriv N z - logDeriv _root_.RHTower.xi z‖ := Complex.abs_re_le_norm _
   have hre_sub := (abs_le.mp hre_diff).1
   rw [Complex.sub_re] at hre_sub
-  have hpos_den : 0 < 1 / (2 * K_den * Real.exp (2 * ((m : ℝ) + 1))) := by positivity
-  have hhalf_eq : 1 / (K_den * Real.exp (2 * ((m : ℝ) + 1))) =
-      2 * (1 / (2 * K_den * Real.exp (2 * ((m : ℝ) + 1)))) := by ring
+  have hpos_den : 0 < 1 / (2 * fluxDenomConst * Real.exp (2 * ((m : ℝ) + 1))) := by positivity
+  have hhalf_eq : 1 / (fluxDenomConst * Real.exp (2 * ((m : ℝ) + 1))) =
+      2 * (1 / (2 * fluxDenomConst * Real.exp (2 * ((m : ℝ) + 1)))) := by ring
   linarith
 
 /-- **Unconditional `Ω(e^t / t)` exponential blow-up of right-plus-left flux on every Burnol unit
@@ -1527,7 +1592,7 @@ theorem exists_burnol_rightAddLeftFlux_exp_blowup (m : ℕ) {N : ℕ} (hN : flux
   have hnz_r : ∀ y ∈ Icc y₁ y₂,
       _root_.RHTower.finiteThetaAmplitude N ((3 / 2 : ℂ) + (y : ℂ) * I) ≠ 0 := by
     intro y hy_m
-    exact edge_ne_zero_of_bdry_regular hy_lt.le hbdry ⟨by simp; norm_num, by simp; norm_num⟩
+    exact edge_ne_zero_of_bdry_regular hy_lt.le hbdry ⟨by simp; norm_num, by simp⟩
       ⟨by simpa using hy_m.1, by simpa using hy_m.2⟩ (Or.inr (Or.inl (by simp)))
   set f : ℝ → ℂ := fun y => (2 * Real.pi : ℂ)⁻¹ * thetaLogDeriv N ((3 / 2 : ℂ) + (y : ℂ) * I)
   set f' : ℝ → ℂ :=
@@ -1543,7 +1608,7 @@ theorem exists_burnol_rightAddLeftFlux_exp_blowup (m : ℕ) {N : ℕ} (hN : flux
       exact han.comp (y : ℂ)
         ((hasDerivAt_const (y : ℂ) (3 / 2 : ℂ)).add ((hasDerivAt_id (y : ℂ)).mul_const I)
           |>.congr_deriv (by ring))
-    exact ((hw.comp_ofReal).const_mul (2 * Real.pi : ℂ)⁻¹).congr_deriv (by dsimp [f']; ring)
+    exact ((hw.comp_ofReal).const_mul (2 * Real.pi : ℂ)⁻¹).congr_deriv (by dsimp only [f']; ring)
   have hf2 : ∀ y ∈ Icc y₁ y₂, HasDerivAt f' (f'' y) y := by
     intro y hy_m
     have hw : HasDerivAt (fun w : ℂ => deriv (thetaLogDeriv N) ((3 / 2 : ℂ) + w * I))
@@ -1553,20 +1618,20 @@ theorem exists_burnol_rightAddLeftFlux_exp_blowup (m : ℕ) {N : ℕ} (hN : flux
         ((hasDerivAt_const (y : ℂ) (3 / 2 : ℂ)).add ((hasDerivAt_id (y : ℂ)).mul_const I)
           |>.congr_deriv (by ring))
     refine ((hw.comp_ofReal).const_mul ((2 * Real.pi : ℂ)⁻¹ * I)).congr_deriv ?_
-    dsimp [f'']
+    dsimp only [f'']
     have hI2 : (I : ℂ) ^ 2 = -1 := Complex.I_sq
     linear_combination (2 * Real.pi : ℂ)⁻¹ *
       deriv (deriv (thetaLogDeriv N)) ((3 / 2 : ℂ) + (y : ℂ) * I) * hI2
   have hf''_cont : ContinuousOn f'' (Icc y₁ y₂) := by
     intro y hy_m
-    dsimp [f'']
+    dsimp only [f'']
     refine continuousWithinAt_const.mul ?_
-    exact ((((analyticAt_thetaLogDeriv (hnz_r y hy_m)).deriv).deriv).continuousAt.comp
-      (by fun_prop : Continuous fun y : ℝ => (3 / 2 : ℂ) + (y : ℂ) * I).continuousAt).continuousWithinAt
+    exact continuousWithinAt_comp_line (by fun_prop)
+      (((analyticAt_thetaLogDeriv (hnz_r y hy_m)).deriv).deriv)
   have hfy₂_pos : 0 < ‖f y₂‖ := by
     have hre_pos := re_thetaLogDeriv_burnol_pos m hN (y := y₂) (Or.inr rfl)
     have hf_re : 0 < (f y₂).re := by
-      dsimp [f]
+      dsimp only [f]
       have hcast : ((2 * Real.pi : ℂ)⁻¹) = (((2 * Real.pi)⁻¹ : ℝ) : ℂ) := by push_cast; rfl
       rw [hcast, Complex.re_ofReal_mul]
       exact mul_pos (by positivity) hre_pos
@@ -1588,12 +1653,13 @@ theorem exists_burnol_rightAddLeftFlux_exp_blowup (m : ℕ) {N : ℕ} (hN : flux
     unfold rightEdgeFlux vertFlux
     rw [← intervalIntegral.integral_const_mul, ← intervalIntegral.integral_const_mul]
     refine intervalIntegral.integral_congr fun y _ => ?_
-    dsimp [f]
+    dsimp only [f]
     have hexp_split : cexp ((t : ℂ) * ((((3 / 2 : ℝ) : ℂ) + (y : ℂ) * I) - 1 / 2)) =
         (Real.exp t : ℂ) * cexp ((t : ℂ) * (y : ℂ) * I) := by
       rw [Complex.ofReal_exp, ← Complex.exp_add]
       congr 1; push_cast; ring
-    rw [hexp_split]
+    rw [hexp_split, show (((3 / 2 : ℝ) : ℂ) + (y : ℂ) * I) = (3 / 2 : ℂ) + (y : ℂ) * I by
+      push_cast; rfl]
     ring
   have hright_norm : μ * Real.exp t / t ≤ ‖rightEdgeFlux y₁ y₂ N t‖ := by
     rw [hright_eq, norm_mul, Complex.norm_real, Real.norm_of_nonneg (Real.exp_pos t).le]
@@ -1620,16 +1686,17 @@ theorem exists_burnol_rightAddLeftFlux_exp_blowup (m : ℕ) {N : ℕ} (hN : flux
           mul_le_mul_of_nonneg_left hexp_inv hC_L.le
       _ = C_L / (t + 1) := by ring
       _ ≤ (μ / 2) * Real.exp t / t := hCL_le
+  have hμ_two : μ * Real.exp t / t = 2 * ((μ / 2) * Real.exp t / t) := by ring
   constructor
   · have htri := norm_sub_le (rightEdgeFlux y₁ y₂ N t + leftEdgeFlux y₁ y₂ N t)
       (leftEdgeFlux y₁ y₂ N t)
     rw [add_sub_cancel_right] at htri
     have hl_le := hl_edge.trans hedge_le
-    linarith [htri, hright_norm, hl_le]
+    linarith [htri, hright_norm, hl_le, hμ_two]
   · have htri := norm_sub_le (rightEdgeFlux y₁ y₂ N t + leftHalfPort y₁ y₂ N t)
       (leftHalfPort y₁ y₂ N t)
     rw [add_sub_cancel_right] at htri
     have hl_le := hl_port.trans hCL_le
-    linarith [htri, hright_norm, hl_le]
+    linarith [htri, hright_norm, hl_le, hμ_two]
 
 end GaloisForLFunctions.ConjugateDiagonalGeometry.WindowPortFlux

@@ -441,10 +441,11 @@ theorem abs_pole_add_sub_le (a b c d : ℂ) :
     rw [← Complex.sub_re]; congr 1; simp only [map_add, map_sub]; ring
   have h1 : ‖a * conj d + b * conj c + c * conj b + d * conj a‖ ≤
       ‖a‖ * ‖d‖ + ‖b‖ * ‖c‖ + ‖c‖ * ‖b‖ + ‖d‖ * ‖a‖ := by
-    refine (norm_add_le _ _).trans ?_
-    refine (add_le_add_right ((norm_add_le _ _).trans
-      (add_le_add_right (norm_add_le _ _) _)) _).trans (le_of_eq ?_)
-    simp only [norm_mul, Complex.norm_conj]
+    have e1 := norm_add_le (a * conj d + b * conj c + c * conj b) (d * conj a)
+    have e2 := norm_add_le (a * conj d + b * conj c) (c * conj b)
+    have e3 := norm_add_le (a * conj d) (b * conj c)
+    simp only [norm_mul, Complex.norm_conj] at e1 e2 e3
+    linarith
   have h2 : ‖(2 : ℂ)‖ = 2 := by simp
   rw [e]
   refine (Complex.abs_re_le_norm _).trans ?_
@@ -568,14 +569,16 @@ theorem abs_polar_le {F : ℝ} (hF : 0 ≤ F) (u v : ℂ) {N s : ℝ} (hN : 0 < 
     |F * (‖u + v‖ ^ 2 / N) - F * (‖u - v‖ ^ 2 / N)| ≤
       2 * F * (‖u‖ ^ 2 / N / s + s * (‖v‖ ^ 2 / N)) := by
   have e : F * (‖u + v‖ ^ 2 / N) - F * (‖u - v‖ ^ 2 / N) = (F * 4 / N) * (u * conj v).re := by
-    rw [mul_assoc, ← norm_add_sq_sub_norm_sub_sq]; ring
+    rw [show F * 4 / N * (u * conj v).re = F * (4 * (u * conj v).re) / N by ring,
+      ← norm_add_sq_sub_norm_sub_sq]
+    ring
   have hre : |(u * conj v).re| ≤ ‖u‖ * ‖v‖ := by
     refine (Complex.abs_re_le_norm _).trans (le_of_eq ?_); rw [norm_mul, Complex.norm_conj]
   have hamgm : ‖u‖ * ‖v‖ ≤ (‖u‖ ^ 2 / s + s * ‖v‖ ^ 2) / 2 := by
     have h1 : 2 * (‖u‖ * ‖v‖) * s ≤ ‖u‖ ^ 2 + s ^ 2 * ‖v‖ ^ 2 := by
       nlinarith [sq_nonneg (‖u‖ - s * ‖v‖)]
     rw [show (‖u‖ ^ 2 / s + s * ‖v‖ ^ 2) / 2 = (‖u‖ ^ 2 + s ^ 2 * ‖v‖ ^ 2) / (2 * s) by
-      field_simp; ring, le_div_iff₀ (by positivity)]
+      field_simp, le_div_iff₀ (by positivity)]
     linarith
   rw [e, abs_mul, abs_of_nonneg (by positivity)]
   calc F * 4 / N * |(u * conj v).re| ≤ F * 4 / N * ((‖u‖ ^ 2 / s + s * ‖v‖ ^ 2) / 2) :=
@@ -666,6 +669,7 @@ theorem exists_quietCross_le (hφ : ContDiff ℝ 2 φ) (hφsupp : ∀ u, u ∉ S
     integrable_inv_one_add_sq.const_mul _
   have hi2 := (hEi (twistedWeights g (primeTwist p) N)).const_mul (2 * s)
   refine (setIntegral_mono_on hdi (hi1.add hi2).integrableOn measurableSet_Icc hpt).trans ?_
+  simp only [Pi.add_apply]
   rw [integral_add hi1.integrableOn hi2.integrableOn, integral_const_mul, integral_const_mul]
   have h1 : ∫ τ in Set.Icc (-T₀) T₀, (1 + τ ^ 2)⁻¹ ≤ Real.pi := by
     rw [← integral_univ_inv_one_add_sq]
@@ -681,6 +685,347 @@ theorem exists_quietCross_le (hφ : ContDiff ℝ 2 φ) (hφsupp : ∀ u, u ∉ S
     _ = (2 * Cφ * Cx * Real.pi + 2 * CL) / s := by
         rw [← hs2]
         field_simp
-        ring
+
+/-! ### The remainder above the cut -/
+
+theorem tendsto_log_div_sqrt_sqrt :
+    Tendsto (fun N : ℕ => Real.log N / Real.sqrt (Real.sqrt N)) atTop (𝓝 0) := by
+  have h := (isLittleO_log_rpow_atTop (r := 1 / 4) (by norm_num)).tendsto_div_nhds_zero
+  refine (h.comp tendsto_natCast_atTop_atTop).congr fun N => ?_
+  simp only [Function.comp_apply, Real.sqrt_eq_rpow]
+  rw [← Real.rpow_mul (Nat.cast_nonneg _)]
+  norm_num
+
+/-- The remainder above the cut tends to `0` for every family of weights with uniform window
+bounds `Σ z² ≤ B² e^{A'}`, `Σ n z² ≤ N B²`. -/
+theorem tendsto_remainderW (hφ : ContDiff ℝ 2 φ) (hφsupp : ∀ u, u ∉ Set.Icc 0 1 → φ u = 0)
+    {Cφ q : ℝ} (hq : 1 < q) (hCφ : 0 ≤ Cφ)
+    (hdecay : ∀ u : ℝ, ‖paperFT (cx φ) u‖ ^ 2 ≤ Cφ * (1 + |u|) ^ (-q)) {A' : ℝ} (hA' : 0 ≤ A')
+    {B : ℝ} {z : ℕ → ℕ → ℝ}
+    (hS1 : ∀ N : ℕ, 1 ≤ N → ∑ n ∈ Icc 1 N, z N n ^ 2 ≤ B ^ 2 * Real.exp A')
+    (hS2 : ∀ N : ℕ, 1 ≤ N → ∑ n ∈ Icc 1 N, (n : ℝ) * z N n ^ 2 ≤ N * B ^ 2)
+    {c : ℕ → ℝ} (hc1 : ∀ N, 1 ≤ c N) (hcinf : Tendsto c atTop atTop) (L : ℝ) :
+    Tendsto (fun N : ℕ => ∫ τ in (Set.Icc (-((N : ℝ) * Real.exp (-A')))
+        ((N : ℝ) * Real.exp (-A')))ᶜ,
+        (symbolW φ (z N) (c N) N (Real.exp L) τ -
+          Real.log N / (2 * Real.pi) * (‖paperFT (cx φ) (((c N / N : ℝ) : ℂ) * τ)‖ ^ 2 *
+            (‖dirichletPoly N (z N) τ‖ ^ 2 / N)))) atTop (𝓝 0) := by
+  obtain ⟨C, hC0, hC⟩ := exists_abs_mu_sub_log_le
+  have hc0 : ∀ N, 0 < c N := fun N => by linarith [hc1 N]
+  have hcp : Tendsto (fun N : ℕ => c N ^ q) atTop atTop :=
+    (tendsto_rpow_atTop (by linarith)).comp hcinf
+  have hlim : Tendsto (fun N : ℕ => 2 * (aliasConst Cφ q A' B *
+      (C + Real.exp L ^ 2 / Real.pi + A' + 1) / c N ^ q)) atTop (𝓝 0) := by
+    have := (tendsto_const_nhds (x := aliasConst Cφ q A' B *
+      (C + Real.exp L ^ 2 / Real.pi + A' + 1))).div_atTop hcp
+    simpa using this.const_mul 2
+  have hevA := tendsto_natCast_atTop_atTop.eventually (eventually_ge_atTop (Real.exp A'))
+  have hT : Tendsto (fun N : ℕ => (N : ℝ) * Real.exp (-A')) atTop atTop :=
+    tendsto_natCast_atTop_atTop.atTop_mul_const (Real.exp_pos _)
+  have hevT := hT.eventually (eventually_ge_atTop 2)
+  refine squeeze_zero_norm' ?_ hlim
+  filter_upwards [hevA, hevT, eventually_ge_atTop 1] with N h1 h2 hN
+  rw [Real.norm_eq_abs]
+  exact abs_remainderW_le hφ hφsupp hq hCφ hdecay hC0 hC L hA' h1 (hS1 N hN) (hS2 N hN) h2 (hc0 N)
+
+/-- Window bounds for weights dominated by an untwisted and a prime window. -/
+theorem sum_sq_mixed_le (hsupp : ∀ y, y ∉ Set.Icc (-A) 0 → h y = 0)
+    (hgsupp : ∀ y, y ∉ Set.Icc (-A) 0 → g y = 0) {Bh Bg : ℝ} (hB : ∀ y, |h y| ≤ Bh)
+    (hBg : ∀ y, |g y| ≤ Bg) {p : ℕ} (hp : 1 < p) {N : ℕ} (hN : 1 ≤ N) {z : ℕ → ℝ}
+    (hz : ∀ n, z n ^ 2 ≤ 2 * horizonWeights h N n ^ 2 +
+      2 * twistedWeights g (primeTwist p) N n ^ 2) :
+    ∑ n ∈ Icc 1 N, z n ^ 2 ≤ (2 * (Bh + p * Bg)) ^ 2 * Real.exp A ∧
+      ∑ n ∈ Icc 1 N, (n : ℝ) * z n ^ 2 ≤ N * (2 * (Bh + p * Bg)) ^ 2 := by
+  have hBh0 : 0 ≤ Bh := (abs_nonneg _).trans (hB 0)
+  have hBg0 : 0 ≤ Bg := (abs_nonneg _).trans (hBg 0)
+  have hp1 : (1 : ℝ) ≤ p := by exact_mod_cast hp.le
+  have hy : ∀ n, twistedWeights g (primeTwist p) N n ^ 2 ≤
+      (p : ℝ) ^ 2 * horizonWeights g N n ^ 2 := fun n => by
+    simp only [twistedWeights, mul_pow]
+    rw [mul_comm]
+    refine mul_le_mul_of_nonneg_right ?_ (sq_nonneg _)
+    simp only [primeTwist]
+    split_ifs
+    · nlinarith
+    · nlinarith
+  have hz' : ∀ n, z n ^ 2 ≤ 2 * horizonWeights h N n ^ 2 +
+      2 * ((p : ℝ) ^ 2 * horizonWeights g N n ^ 2) := fun n => (hz n).trans (by linarith [hy n])
+  have hkey : 2 * Bh ^ 2 + 2 * ((p : ℝ) ^ 2 * Bg ^ 2) ≤ (2 * (Bh + p * Bg)) ^ 2 := by
+    nlinarith [mul_nonneg (mul_nonneg (by linarith : (0 : ℝ) ≤ p) hBh0) hBg0]
+  constructor
+  · refine (sum_le_sum fun n _ => hz' n).trans ?_
+    rw [sum_add_distrib, ← mul_sum, ← mul_sum, ← mul_sum]
+    have h1 := sum_horizonWeights_sq_le hsupp hB hN
+    have h2 := sum_horizonWeights_sq_le hgsupp hBg hN
+    calc 2 * ∑ n ∈ Icc 1 N, horizonWeights h N n ^ 2 +
+          2 * ((p : ℝ) ^ 2 * ∑ n ∈ Icc 1 N, horizonWeights g N n ^ 2)
+        ≤ 2 * (Bh ^ 2 * Real.exp A) + 2 * ((p : ℝ) ^ 2 * (Bg ^ 2 * Real.exp A)) := by gcongr
+      _ = (2 * Bh ^ 2 + 2 * ((p : ℝ) ^ 2 * Bg ^ 2)) * Real.exp A := by ring
+      _ ≤ _ := mul_le_mul_of_nonneg_right hkey (Real.exp_pos A).le
+  · refine (sum_le_sum fun n _ => mul_le_mul_of_nonneg_left (hz' n) (Nat.cast_nonneg n)).trans ?_
+    have h1 := sum_mul_horizonWeights_sq_le hB N (h := h)
+    have h2 := sum_mul_horizonWeights_sq_le hBg N (h := g)
+    calc ∑ n ∈ Icc 1 N, (n : ℝ) * (2 * horizonWeights h N n ^ 2 +
+          2 * ((p : ℝ) ^ 2 * horizonWeights g N n ^ 2))
+        = 2 * ∑ n ∈ Icc 1 N, (n : ℝ) * horizonWeights h N n ^ 2 +
+          2 * ((p : ℝ) ^ 2 * ∑ n ∈ Icc 1 N, (n : ℝ) * horizonWeights g N n ^ 2) := by
+          rw [mul_sum, mul_sum, mul_sum, ← sum_add_distrib]
+          exact sum_congr rfl fun n _ => by ring
+      _ ≤ 2 * (N * Bh ^ 2) + 2 * ((p : ℝ) ^ 2 * (N * Bg ^ 2)) := by gcongr
+      _ = N * (2 * Bh ^ 2 + 2 * ((p : ℝ) ^ 2 * Bg ^ 2)) := by ring
+      _ ≤ _ := mul_le_mul_of_nonneg_left hkey (Nat.cast_nonneg N)
+
+/-! ### The conductor grading -/
+
+/-- **Untwisted and prime windows are orthogonal at second order.** For a `C²` profile `φ` on
+`[0, 1]` with `|φ̂(u)|² ≤ C_φ(1 + |u|)^{−q}`, `q > 4`, window profiles `h, g` on `[−A, 0]` and
+resolutions with `c → ∞`, `c log² N/N → 0`, the polarized form of `x = h/√n` and
+`y = c_p(n) g/√n` vanishes: `c⁻¹(Q(x + y) − Q(x − y))/∫g² → 0`. The mixed pole terms are
+twisted Riemann sums, the quiet region is AM–GM against the prime block's quiet energy, the
+remainder is uniform, and the mixed energy is `O(c/N)` by equidistribution on `pℤ`. -/
+theorem cross_layer_vanishes (hφ : ContDiff ℝ 2 φ) (hφsupp : ∀ u, u ∉ Set.Icc 0 1 → φ u = 0)
+    (hφ2 : 0 < ∫ u, φ u ^ 2) {Cφ q : ℝ} (hq : 4 < q) (hCφ : 0 ≤ Cφ)
+    (hdecay : ∀ u : ℝ, ‖paperFT (cx φ) u‖ ^ 2 ≤ Cφ * (1 + |u|) ^ (-q))
+    (hh : ContDiff ℝ 2 h) (hg : ContDiff ℝ 2 g) (hA : 0 ≤ A)
+    (hsupp : ∀ y, y ∉ Set.Icc (-A) 0 → h y = 0) (hgsupp : ∀ y, y ∉ Set.Icc (-A) 0 → g y = 0)
+    {c : ℕ → ℝ} (hc1 : ∀ N, 1 ≤ c N) (hcinf : Tendsto c atTop atTop)
+    (hclog : Tendsto (fun N : ℕ => c N * Real.log N ^ 2 / N) atTop (𝓝 0)) {p : ℕ} (hp : 1 < p) :
+    Tendsto (fun N : ℕ =>
+      (c N)⁻¹ * (weilQuad (atomicTest N (fun n => horizonWeights h N n +
+          twistedWeights g (primeTwist p) N n) (atomDilate φ (c N / N))) /
+            ∫ u, atomDilate φ (c N / N) u ^ 2) -
+      (c N)⁻¹ * (weilQuad (atomicTest N (fun n => horizonWeights h N n -
+          twistedWeights g (primeTwist p) N n) (atomDilate φ (c N / N))) /
+            ∫ u, atomDilate φ (c N / N) u ^ 2)) atTop (𝓝 0) := by
+  have hc0 : ∀ N, 0 < c N := fun N => by linarith [hc1 N]
+  have hcN := tendsto_div_of_log_sq hc1 hclog
+  have hlogp : 0 ≤ Real.log p := Real.log_nonneg (by exact_mod_cast hp.le)
+  obtain ⟨Cp, hCp0, hCp⟩ := exists_abs_crossPole_le hφ hφsupp hφ2 hh hg hA hsupp hgsupp hp
+  obtain ⟨KX, hKX0, hKX⟩ := exists_abs_crossEnergy_le hφ hφsupp hq hCφ hdecay hh hg hA hsupp
+    hgsupp hp
+  obtain ⟨CQ, hCQ0, hCQ⟩ := exists_quietCross_le hφ hφsupp (by linarith : 0 ≤ q) hCφ hdecay hh hg
+    hA hsupp hgsupp hp
+  obtain ⟨Aν, hAν, hν⟩ := exists_abs_nuSymbol_le (Real.exp_pos (2 * (A + 1))).le
+  obtain ⟨Bh, -, hB, -⟩ := exists_bound_lipschitz hh hsupp
+  obtain ⟨Bg, -, hBg, -⟩ := exists_bound_lipschitz hg hgsupp
+  have hzp : ∀ N : ℕ, ∀ n : ℕ, 1 ≤ n → Real.log n - Real.log N ∉ Set.Icc (-A) 0 →
+      horizonWeights h N n + twistedWeights g (primeTwist p) N n = 0 := fun N n hn hy => by
+    rw [twistedWeights_eq_zero hgsupp _ N n hn hy, horizonWeights, hsupp _ hy, zero_div, add_zero]
+  have hzm : ∀ N : ℕ, ∀ n : ℕ, 1 ≤ n → Real.log n - Real.log N ∉ Set.Icc (-A) 0 →
+      horizonWeights h N n - twistedWeights g (primeTwist p) N n = 0 := fun N n hn hy => by
+    rw [twistedWeights_eq_zero hgsupp _ N n hn hy, horizonWeights, hsupp _ hy, zero_div, sub_zero]
+  set M := ∫ u, φ u ^ 2 with hM
+  set T₀ : ℕ → ℝ := fun N => (N : ℝ) * Real.exp (-(A + Real.log p)) with hT₀
+  set Sp : ℕ → ℝ → ℝ := fun N => symbolW φ (fun n => horizonWeights h N n +
+    twistedWeights g (primeTwist p) N n) (c N) N (Real.exp (2 * (A + 1))) with hSp
+  set Sm : ℕ → ℝ → ℝ := fun N => symbolW φ (fun n => horizonWeights h N n -
+    twistedWeights g (primeTwist p) N n) (c N) N (Real.exp (2 * (A + 1))) with hSm
+  set Ep : ℕ → ℝ → ℝ := fun N τ => ‖paperFT (cx φ) (((c N / N : ℝ) : ℂ) * τ)‖ ^ 2 *
+    (‖dirichletPoly N (fun n => horizonWeights h N n +
+      twistedWeights g (primeTwist p) N n) τ‖ ^ 2 / N) with hEp
+  set Em : ℕ → ℝ → ℝ := fun N τ => ‖paperFT (cx φ) (((c N / N : ℝ) : ℂ) * τ)‖ ^ 2 *
+    (‖dirichletPoly N (fun n => horizonWeights h N n -
+      twistedWeights g (primeTwist p) N n) τ‖ ^ 2 / N) with hEm
+  set Pd : ℕ → ℝ := fun N => (poleRe (centredAtomicTest φ (fun n => horizonWeights h N n +
+      twistedWeights g (primeTwist p) N n) (c N) N) -
+    poleRe (centredAtomicTest φ (fun n => horizonWeights h N n -
+      twistedWeights g (primeTwist p) N n) (c N) N)) / (c N * (c N / N * M)) with hPd
+  set QL : ℕ → ℝ := fun N => ∫ τ in Set.Icc (-T₀ N) (T₀ N), (Sp N τ - Sm N τ) with hQL
+  set Rp : ℕ → ℝ := fun N => ∫ τ in (Set.Icc (-T₀ N) (T₀ N))ᶜ,
+    (Sp N τ - Real.log N / (2 * Real.pi) * Ep N τ) with hRp
+  set Rm : ℕ → ℝ := fun N => ∫ τ in (Set.Icc (-T₀ N) (T₀ N))ᶜ,
+    (Sm N τ - Real.log N / (2 * Real.pi) * Em N τ) with hRm
+  set Xc : ℕ → ℝ := fun N => ∫ τ : ℝ, ‖paperFT (cx φ) (((c N / N : ℝ) : ℂ) * τ)‖ ^ 2 *
+    ((dirichletPoly N (horizonWeights h N) τ *
+      conj (dirichletPoly N (twistedWeights g (primeTwist p) N) τ)).re / N) with hXc
+  set QE : ℕ → ℝ := fun N => ∫ τ in Set.Icc (-T₀ N) (T₀ N), (Ep N τ - Em N τ) with hQE
+  have hint : ∀ N : ℕ, 1 ≤ N → Integrable (Sp N) ∧ Integrable (Sm N) ∧ Integrable (Ep N) ∧
+      Integrable (Em N) := fun N hN =>
+    ⟨integrable_symbolW hφ hφsupp _ (hc0 N) hN _, integrable_symbolW hφ hφsupp _ (hc0 N) hN _,
+      integrable_energyW hφ hφsupp _ (hc0 N) hN, integrable_energyW hφ hφsupp _ (hc0 N) hN⟩
+  -- eventual conditions
+  have hev4 : ∀ᶠ N : ℕ in atTop, 4 * c N ≤ N := by
+    filter_upwards [hcN.eventually (gt_mem_nhds (by norm_num : (0 : ℝ) < 1 / 4)),
+      eventually_ge_atTop 1] with N h1 hN
+    have hN0 : (0 : ℝ) < N := by exact_mod_cast hN
+    rw [div_lt_iff₀ hN0] at h1; linarith
+  -- the mixed poles
+  have hPdt : Tendsto Pd atTop (𝓝 0) := by
+    have hlim : Tendsto (fun N : ℕ => Cp / (N : ℝ)) atTop (𝓝 0) :=
+      tendsto_const_nhds.div_atTop tendsto_natCast_atTop_atTop
+    refine squeeze_zero_norm' ?_ hlim
+    filter_upwards [hev4, eventually_ge_atTop 1] with N h4 hN
+    rw [Real.norm_eq_abs]
+    exact hCp N hN (c N) (hc0 N) (by linarith [hc0 N])
+  -- the quiet region
+  have hQ : ∀ N : ℕ, 1 ≤ N → ∫ τ in Set.Icc (-T₀ N) (T₀ N), |Ep N τ - Em N τ| ≤
+      CQ / Real.sqrt (Real.sqrt N) := fun N hN => hCQ N hN (c N) (hc0 N)
+  have hs : Tendsto (fun N : ℕ => Real.sqrt (Real.sqrt N)) atTop atTop :=
+    Real.tendsto_sqrt_atTop.comp (Real.tendsto_sqrt_atTop.comp tendsto_natCast_atTop_atTop)
+  have hQLt : Tendsto QL atTop (𝓝 0) := by
+    have hlim : Tendsto (fun N : ℕ => CQ * ((Aν + Real.log 3) / Real.sqrt (Real.sqrt N) +
+        Real.log N / Real.sqrt (Real.sqrt N))) atTop (𝓝 0) := by
+      have h1 : Tendsto (fun N : ℕ => (Aν + Real.log 3) / Real.sqrt (Real.sqrt N)) atTop (𝓝 0) :=
+        tendsto_const_nhds.div_atTop hs
+      simpa using (h1.add tendsto_log_div_sqrt_sqrt).const_mul CQ
+    refine squeeze_zero_norm' ?_ hlim
+    filter_upwards [eventually_ge_atTop 1] with N hN
+    have hN0 : (0 : ℝ) < N := by exact_mod_cast hN
+    obtain ⟨hSpi, hSmi, hEpi, hEmi⟩ := hint N hN
+    have hT₀N : T₀ N ≤ N := by
+      simp only [hT₀]
+      have : Real.exp (-(A + Real.log p)) ≤ 1 := Real.exp_le_one_iff.mpr (by linarith)
+      nlinarith
+    have hWl : 0 ≤ Aν + Real.log (2 + N) := by
+      have := Real.log_nonneg (show (1 : ℝ) ≤ 2 + N by linarith); linarith
+    have hpt : ∀ τ ∈ Set.Icc (-T₀ N) (T₀ N),
+        |Sp N τ - Sm N τ| ≤ (Aν + Real.log (2 + N)) * |Ep N τ - Em N τ| := fun τ hτ => by
+      have hτN : |τ| ≤ N := (abs_le.mpr hτ).trans hT₀N
+      have hν' : |nuSymbol (Real.exp (2 * (A + 1))) τ| ≤ Aν + Real.log (2 + N) :=
+        (hν τ).trans (by
+          have := Real.log_le_log (by positivity : (0 : ℝ) < 2 + |τ|)
+            (by linarith : 2 + |τ| ≤ 2 + N)
+          linarith)
+      have e : Sp N τ - Sm N τ = (Ep N τ - Em N τ) * nuSymbol (Real.exp (2 * (A + 1))) τ := by
+        simp only [hSp, hSm, hEp, hEm, symbolW]; ring
+      rw [e, abs_mul, mul_comm]
+      exact mul_le_mul_of_nonneg_right hν' (abs_nonneg _)
+    have h1 : ‖QL N‖ ≤ ∫ τ in Set.Icc (-T₀ N) (T₀ N), |Sp N τ - Sm N τ| := by
+      simp only [hQL]
+      rw [Real.norm_eq_abs]
+      exact abs_integral_le_integral_abs
+    have h2 : ∫ τ in Set.Icc (-T₀ N) (T₀ N), |Sp N τ - Sm N τ| ≤
+        ∫ τ in Set.Icc (-T₀ N) (T₀ N), (Aν + Real.log (2 + N)) * |Ep N τ - Em N τ| :=
+      setIntegral_mono_on (hSpi.sub hSmi).abs.integrableOn
+        ((hEpi.sub hEmi).abs.const_mul _).integrableOn measurableSet_Icc hpt
+    rw [integral_const_mul] at h2
+    have hlog3 : Real.log (2 + N) ≤ Real.log 3 + Real.log N := by
+      rw [← Real.log_mul (by norm_num) hN0.ne']
+      exact Real.log_le_log (by positivity) (by linarith)
+    refine h1.trans (h2.trans ?_)
+    calc (Aν + Real.log (2 + N)) * ∫ τ in Set.Icc (-T₀ N) (T₀ N), |Ep N τ - Em N τ|
+        ≤ (Aν + Real.log (2 + N)) * (CQ / Real.sqrt (Real.sqrt N)) :=
+          mul_le_mul_of_nonneg_left (hQ N hN) hWl
+      _ ≤ (Aν + Real.log 3 + Real.log N) * (CQ / Real.sqrt (Real.sqrt N)) :=
+          mul_le_mul_of_nonneg_right (by linarith) (by positivity)
+      _ = CQ * ((Aν + Real.log 3) / Real.sqrt (Real.sqrt N) +
+          Real.log N / Real.sqrt (Real.sqrt N)) := by ring
+  have hQEt : Tendsto (fun N : ℕ => Real.log N * QE N) atTop (𝓝 0) := by
+    have hlim := tendsto_log_div_sqrt_sqrt.const_mul CQ
+    rw [mul_zero] at hlim
+    refine squeeze_zero_norm' ?_ hlim
+    filter_upwards [eventually_ge_atTop 1] with N hN
+    obtain ⟨-, -, hEpi, hEmi⟩ := hint N hN
+    have hlog0 : 0 ≤ Real.log N := Real.log_natCast_nonneg N
+    have h1 : |QE N| ≤ CQ / Real.sqrt (Real.sqrt N) := by
+      simp only [hQE]
+      exact abs_integral_le_integral_abs.trans (hQ N hN)
+    rw [norm_mul, Real.norm_eq_abs, Real.norm_eq_abs, abs_of_nonneg hlog0]
+    calc Real.log N * |QE N| ≤ Real.log N * (CQ / Real.sqrt (Real.sqrt N)) :=
+          mul_le_mul_of_nonneg_left h1 hlog0
+      _ = CQ * (Real.log N / Real.sqrt (Real.sqrt N)) := by ring
+  -- the remainders
+  have hRbounds : ∀ (z : ℕ → ℕ → ℝ), (∀ N n, z N n ^ 2 ≤ 2 * horizonWeights h N n ^ 2 +
+      2 * twistedWeights g (primeTwist p) N n ^ 2) →
+      Tendsto (fun N : ℕ => ∫ τ in (Set.Icc (-((N : ℝ) * Real.exp (-(A + Real.log p))))
+          ((N : ℝ) * Real.exp (-(A + Real.log p))))ᶜ,
+        (symbolW φ (z N) (c N) N (Real.exp (2 * (A + 1))) τ -
+          Real.log N / (2 * Real.pi) * (‖paperFT (cx φ) (((c N / N : ℝ) : ℂ) * τ)‖ ^ 2 *
+            (‖dirichletPoly N (z N) τ‖ ^ 2 / N)))) atTop (𝓝 0) := fun z hz =>
+    tendsto_remainderW hφ hφsupp (by linarith : 1 < q) hCφ hdecay (by linarith)
+      (B := 2 * (Bh + p * Bg))
+      (fun N hN => ((sum_sq_mixed_le hsupp hgsupp hB hBg hp hN (hz N)).1).trans
+        (mul_le_mul_of_nonneg_left (Real.exp_le_exp.mpr (by linarith)) (sq_nonneg _)))
+      (fun N hN => (sum_sq_mixed_le hsupp hgsupp hB hBg hp hN (hz N)).2) hc1 hcinf _
+  have hRpt : Tendsto Rp atTop (𝓝 0) := hRbounds (fun N n => horizonWeights h N n +
+    twistedWeights g (primeTwist p) N n) fun N n => by
+      nlinarith [sq_nonneg (horizonWeights h N n - twistedWeights g (primeTwist p) N n)]
+  have hRmt : Tendsto Rm atTop (𝓝 0) := hRbounds (fun N n => horizonWeights h N n -
+    twistedWeights g (primeTwist p) N n) fun N n => by
+      nlinarith [sq_nonneg (horizonWeights h N n + twistedWeights g (primeTwist p) N n)]
+  -- the mixed energy
+  have hXt : Tendsto (fun N : ℕ => Real.log N * Xc N) atTop (𝓝 0) := by
+    have hev3 : ∀ᶠ N : ℕ in atTop, 1 ≤ Real.log N :=
+      (Real.tendsto_log_atTop.comp tendsto_natCast_atTop_atTop).eventually (eventually_ge_atTop 1)
+    have t1 : Tendsto (fun N : ℕ => Real.log N * (c N / N)) atTop (𝓝 0) := by
+      refine squeeze_zero' (Eventually.of_forall fun N => ?_) ?_ hclog
+      · have := hc1 N
+        have := Real.log_natCast_nonneg N
+        positivity
+      · filter_upwards [hev3] with N hN
+        have hc0' : 0 ≤ c N / N := by have := hc1 N; positivity
+        calc Real.log N * (c N / N) ≤ Real.log N * Real.log N * (c N / N) :=
+              mul_le_mul_of_nonneg_right (le_mul_of_one_le_left (by linarith) hN) hc0'
+          _ = c N * Real.log N ^ 2 / N := by ring
+    have hlim := t1.const_mul KX
+    rw [mul_zero] at hlim
+    refine squeeze_zero_norm' ?_ hlim
+    filter_upwards [hev4] with N h4
+    have hlog0 : 0 ≤ Real.log N := Real.log_natCast_nonneg N
+    rw [norm_mul, Real.norm_eq_abs, Real.norm_eq_abs, abs_of_nonneg hlog0]
+    have := hKX (c N) (hc1 N) N h4
+    calc Real.log N * |Xc N| ≤ Real.log N * (KX * c N / N) := mul_le_mul_of_nonneg_left this hlog0
+      _ = KX * (Real.log N * (c N / N)) := by ring
+  -- the identity
+  have hid : ∀ᶠ N : ℕ in atTop, Pd N + M⁻¹ * QL N + M⁻¹ * (Rp N - Rm N) +
+      M⁻¹ * (2 * Real.pi)⁻¹ * (4 * (Real.log N * Xc N) - Real.log N * QE N) =
+      (c N)⁻¹ * (weilQuad (atomicTest N (fun n => horizonWeights h N n +
+          twistedWeights g (primeTwist p) N n) (atomDilate φ (c N / N))) /
+            ∫ u, atomDilate φ (c N / N) u ^ 2) -
+      (c N)⁻¹ * (weilQuad (atomicTest N (fun n => horizonWeights h N n -
+          twistedWeights g (primeTwist p) N n) (atomDilate φ (c N / N))) /
+            ∫ u, atomDilate φ (c N / N) u ^ 2) := by
+    filter_upwards [hev4, eventually_ge_atTop 1] with N h4 hN
+    have hcle : c N ≤ N := by linarith [hc0 N]
+    obtain ⟨hSpi, hSmi, hEpi, hEmi⟩ := hint N hN
+    rw [atomForm_eq (x := fun n => horizonWeights h N n + twistedWeights g (primeTwist p) N n)
+        hφ hφsupp hφ2 (hzp N) hA (hc0 N) hN hcle,
+      atomForm_eq (x := fun n => horizonWeights h N n - twistedWeights g (primeTwist p) N n)
+        hφ hφsupp hφ2 (hzm N) hA (hc0 N) hN hcle, ← hM]
+    have hsplitSp := (integral_add_compl (s := Set.Icc (-T₀ N) (T₀ N)) measurableSet_Icc hSpi).symm
+    have hsplitSm := (integral_add_compl (s := Set.Icc (-T₀ N) (T₀ N)) measurableSet_Icc hSmi).symm
+    have hsplitEp := integral_add_compl (s := Set.Icc (-T₀ N) (T₀ N)) measurableSet_Icc hEpi
+    have hsplitEm := integral_add_compl (s := Set.Icc (-T₀ N) (T₀ N)) measurableSet_Icc hEmi
+    have hcomplp : ∫ τ in (Set.Icc (-T₀ N) (T₀ N))ᶜ, Sp N τ = Rp N +
+        Real.log N / (2 * Real.pi) * ∫ τ in (Set.Icc (-T₀ N) (T₀ N))ᶜ, Ep N τ := by
+      simp only [hRp]
+      rw [integral_sub hSpi.integrableOn (hEpi.const_mul _).integrableOn, integral_const_mul]
+      ring
+    have hcomplm : ∫ τ in (Set.Icc (-T₀ N) (T₀ N))ᶜ, Sm N τ = Rm N +
+        Real.log N / (2 * Real.pi) * ∫ τ in (Set.Icc (-T₀ N) (T₀ N))ᶜ, Em N τ := by
+      simp only [hRm]
+      rw [integral_sub hSmi.integrableOn (hEmi.const_mul _).integrableOn, integral_const_mul]
+      ring
+    have hQLe : ∫ τ in Set.Icc (-T₀ N) (T₀ N), Sp N τ - ∫ τ in Set.Icc (-T₀ N) (T₀ N), Sm N τ =
+        QL N := by
+      simp only [hQL]
+      rw [integral_sub hSpi.integrableOn hSmi.integrableOn]
+    have hQEe : ∫ τ in Set.Icc (-T₀ N) (T₀ N), Ep N τ - ∫ τ in Set.Icc (-T₀ N) (T₀ N), Em N τ =
+        QE N := by
+      simp only [hQE]
+      rw [integral_sub hEpi.integrableOn hEmi.integrableOn]
+    have hXe : ∫ τ, Ep N τ - ∫ τ, Em N τ = 4 * Xc N := by
+      simp only [hXc]
+      rw [← integral_sub hEpi hEmi, ← integral_const_mul]
+      refine integral_congr_ae (Eventually.of_forall fun τ => ?_)
+      simp only [hEp, hEm]
+      rw [dirichletPoly_add, dirichletPoly_sub]
+      have := norm_add_sq_sub_norm_sub_sq (dirichletPoly N (horizonWeights h N) τ)
+        (dirichletPoly N (twistedWeights g (primeTwist p) N) τ)
+      linear_combination (‖paperFT (cx φ) (((c N / N : ℝ) : ℂ) * τ)‖ ^ 2 / N) * this
+    have hSpe : (∫ τ, symbolW φ (fun n => horizonWeights h N n +
+        twistedWeights g (primeTwist p) N n) (c N) N (Real.exp (2 * (A + 1))) τ) =
+        ∫ τ, Sp N τ := rfl
+    have hSme : (∫ τ, symbolW φ (fun n => horizonWeights h N n -
+        twistedWeights g (primeTwist p) N n) (c N) N (Real.exp (2 * (A + 1))) τ) =
+        ∫ τ, Sm N τ := rfl
+    rw [hSpe, hSme, hsplitSp, hsplitSm, hcomplp, hcomplm]
+    simp only [hPd, poleRe]
+    linear_combination (-M⁻¹) * hQLe +
+      (-(M⁻¹ * (Real.log N / (2 * Real.pi)))) * (hsplitEp - hsplitEm + hXe - hQEe)
+  refine Tendsto.congr' hid ?_
+  have := ((hPdt.add (hQLt.const_mul M⁻¹)).add ((hRpt.sub hRmt).const_mul M⁻¹)).add
+    (((hXt.const_mul 4).sub hQEt).const_mul (M⁻¹ * (2 * Real.pi)⁻¹))
+  simpa using this
 
 end GaloisForLFunctions.ArithmeticHodgeTheoryOfDegenerations

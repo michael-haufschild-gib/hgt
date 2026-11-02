@@ -987,7 +987,7 @@ theorem mayerKreinForm_offLineNegativeState_self {s : upperMayerResonances}
         simp [hne]
       · by_cases htr : t = reflectUpperResonance s
         · subst htr
-          simp [hne]
+          simp [hne, hne.symm]
         · simp [hts, htr, Ne.symm hts, Ne.symm htr]
     rw [hsupp, Finset.sum_pair hne.symm, hrep, Finsupp.sub_apply, Finsupp.sub_apply,
       Finsupp.single_eq_same, Finsupp.single_eq_of_ne hne, Finsupp.single_eq_of_ne hne.symm,

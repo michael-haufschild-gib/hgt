@@ -47,7 +47,7 @@ private theorem lower_row_height (v : gammaSet 1 1 0) (b : ℤ) (z : ℍ) :
       ((v.1 0 : ℝ) * ((z.re + b) / 2) + v.1 1) ^ 2 =
       (((v.1 0 : ℝ) * z.im) ^ 2 +
         ((v.1 0 : ℝ) * z.re + ((v.1 0 : ℝ) * b + 2 * v.1 1)) ^ 2) / 4 by ring]
-  rw [div_div]
+  simp [div_eq_mul_inv]
   ring
 
 /-- A primitive row returning above height one has first entry `0` or `±1`;
@@ -83,7 +83,8 @@ theorem dyadic_return_row_bound {z : ℍ} (hz : z ∈ fd) (b : ℤ)
       · exact Or.inr (by omega)
   have hxsq : ((c : ℝ) * z.re + k) ^ 2 < 1 := by
     rcases hc1 with hc1 | hc1 <;> rw [hc1] at hlt ⊢ <;>
-      norm_num at hlt ⊢ <;> nlinarith only [hlt, sq_nonneg (z.im - 1)]
+      norm_num only [Int.cast_one, Int.cast_neg, one_mul, neg_mul, neg_sq] at hlt ⊢ <;>
+      nlinarith only [hlt, sq_nonneg (z.im - 1)]
   have hxlt : -1 < (c : ℝ) * z.re + k ∧ (c : ℝ) * z.re + k < 1 := by
     constructor <;> nlinarith only [hxsq, sq_nonneg ((c : ℝ) * z.re + k + 1),
       sq_nonneg ((c : ℝ) * z.re + k - 1)]
@@ -187,7 +188,7 @@ theorem cuspLift_smul (f : ℝ → ℂ) (g : SL(2, ℤ)) (z : ℍ) :
       gammaSetSelfEquiv_apply_val]
   unfold cuspLift
   simp_rw [he]
-  rw [(gammaSetSelfEquiv g).tsum_eq]
+  rw [(gammaSetSelfEquiv g).tsum_eq (fun v => f (rowHeight v z))]
 
 theorem cuspLift_eq_of_mem_fd (f : ℝ → ℂ) (hf : ∀ y ≤ 1, f y = 0)
     {z : ℍ} (hz : z ∈ fd) : cuspLift f z = f z.im := by
@@ -213,7 +214,7 @@ theorem cuspLift_lower_zero (f : ℝ → ℂ) (hf : ∀ y ≤ 1, f y = 0)
         unitRow_lower_height, dyadicLower_im]
       norm_num
       ring
-    all_goals simp [eq_unitRow, eq_negUnitRow, rowPlus, rowMinus, unitRow, negUnitRow]
+    all_goals simp [rowPlus, rowMinus, unitRow, negUnitRow]
   · intro v hv
     apply hf
     exact le_of_not_gt (fun h => hv (lower_zero_support hz v h))
@@ -232,7 +233,7 @@ theorem cuspLift_lower_one (f : ℝ → ℂ) (hf : ∀ y ≤ 1, f y = 0)
         negUnitRow_height, unitRow_lower_height, unitRow_lower_height, dyadicLower_im]
       norm_num
       ring
-    all_goals simp [eq_unitRow, eq_negUnitRow, rowPlus, rowMinus, unitRow, negUnitRow]
+    all_goals simp [rowPlus, rowMinus, unitRow, negUnitRow]
   · intro v hv
     apply hf
     exact le_of_not_gt (fun h => hv (lower_one_support hz v h))
