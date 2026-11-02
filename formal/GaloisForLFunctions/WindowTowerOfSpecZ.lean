@@ -4,6 +4,7 @@ import GaloisForLFunctions.WindowTowerOfSpecZ.TheWindowFormIsTheDerivativeOfTheJ
 import GaloisForLFunctions.WindowTowerOfSpecZ.TheTateFlowOnTheWindowAlgebra
 import GaloisForLFunctions.WindowTowerOfSpecZ.TheAtomicLatticeOfAWindow
 import GaloisForLFunctions.WindowTowerOfSpecZ.TheExactPoleCapacityOfAWindow
+import GaloisForLFunctions.WindowTowerOfSpecZ.TheSymmetriesOfTheTower
 
 /-!
 # The Window Tower of Spec ℤ
@@ -14,6 +15,7 @@ small extensions (one new fold per stage, socle law, Loewy length, primes as cot
 Dirichlet ring as inverse limit); Weil's window form as the derivative at dimension zero of the
 Jordan counts (Tate pieces); the Tate flow, its cocycle and the commutator form of the Tate
 operators, Tate positivity and its softness; the atomic lattice as the regular representation of
-the window algebra; the exact pole capacity and the sharp window floor. See
+the window algebra; the exact pole capacity and the sharp window floor; the symmetries of the
+tower (Adams lifts as dilations, Serre duality as the Rosati involution). See
 `WindowTowerOfSpecZ/README.md`.
 -/

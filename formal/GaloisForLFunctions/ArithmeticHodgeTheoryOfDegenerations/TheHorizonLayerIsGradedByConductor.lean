@@ -307,4 +307,380 @@ theorem exists_abs_crossEnergy_le (hφ : ContDiff ℝ 2 φ) (hφsupp : ∀ u, u 
   rw [Real.sq_sqrt hN0.le]
   ring
 
+/-! ### Pole amplitudes -/
+
+/-- Untwisted Riemann sums are bounded: `|N^{−s} D_x(γ_s)| ≤ K_s` for `0 ≤ Re s ≤ 2`, since the
+profile `F_s` is `K_s`-Lipschitz and vanishes at `1`. -/
+theorem norm_horizonRiemannSum_le (hh : ContDiff ℝ 2 h) (hA : 0 ≤ A)
+    (hsupp : ∀ y, y ∉ Set.Icc (-A) 0 → h y = 0) {Bh : ℝ} (hB : ∀ y, |h y| ≤ Bh)
+    {Lh : NNReal} (hLh : LipschitzWith Lh h) {s : ℂ} (hs0 : 0 ≤ s.re) (hs2 : s.re ≤ 2) {N : ℕ}
+    (hN : 1 ≤ N) :
+    ‖((N : ℝ) : ℂ) ^ (-s) * dirichletPoly N (horizonWeights h N) (gammaOf s)‖ ≤
+      ((Lh : ℝ) + ‖s - 1‖ * Bh) * Real.exp (2 * A) := by
+  have hBh0 : 0 ≤ Bh := (abs_nonneg _).trans (hB 0)
+  have hN0 : (0 : ℝ) < N := by exact_mod_cast hN
+  obtain ⟨K, hK⟩ : ∃ K, K = ((Lh : ℝ) + ‖s - 1‖ * Bh) * Real.exp (2 * A) := ⟨_, rfl⟩
+  have hK0 : 0 ≤ K := by rw [hK]; positivity
+  rw [← hK]
+  have hlip := lipschitzWith_horizonProfile hh hsupp hA hB hLh hs0 hs2
+  rw [← hK] at hlip
+  have hg0 : h 0 = 0 := horizon_zero_at_zero hsupp fun u v => by
+    simpa [Real.dist_eq] using hLh.dist_le_mul u v
+  have hF1 : horizonProfile h s 1 = 0 := by simp [horizonProfile, hg0]
+  have e : twistedWeights h (fun _ => 1) N = horizonWeights h N := funext fun n => mul_one _
+  rw [← e, twistedRiemannSum_eq h _ s hN]
+  simp only [Complex.ofReal_one, mul_one]
+  rw [norm_mul, norm_inv, Complex.norm_real, Real.norm_of_nonneg hN0.le]
+  have hterm : ∀ r ∈ Icc 1 N, ‖horizonProfile h s (r / N)‖ ≤ K := fun r hr => by
+    have hr := Finset.mem_Icc.mp hr
+    have hr0 : (0 : ℝ) ≤ r / N := by positivity
+    have hr1 : (r : ℝ) / N ≤ 1 := (div_le_one hN0).mpr (by exact_mod_cast hr.2)
+    have := hlip.dist_le_mul ((r : ℝ) / N) 1
+    rw [dist_eq_norm, Real.dist_eq, Real.coe_toNNReal _ hK0, hF1, sub_zero] at this
+    refine this.trans ?_
+    rw [abs_of_nonpos (by linarith)]
+    nlinarith
+  calc (N : ℝ)⁻¹ * ‖∑ r ∈ Icc 1 N, horizonProfile h s (r / N)‖ ≤ (N : ℝ)⁻¹ * (N * K) := by
+        refine mul_le_mul_of_nonneg_left ((norm_sum_le _ _).trans ?_) (by positivity)
+        refine (Finset.sum_le_sum hterm).trans (le_of_eq ?_)
+        rw [Finset.sum_const, Nat.card_Icc, Nat.add_sub_cancel, nsmul_eq_mul]
+    _ = K := by field_simp
+
+/-- The pole amplitudes of an untwisted window: `|D_x(i/2)| ≤ K` and `|D_x(−i/2)| ≤ N K`. -/
+theorem norm_dirichletPoly_horizon_pole_le (hh : ContDiff ℝ 2 h) (hA : 0 ≤ A)
+    (hsupp : ∀ y, y ∉ Set.Icc (-A) 0 → h y = 0) {Bh : ℝ} (hB : ∀ y, |h y| ≤ Bh)
+    {Lh : NNReal} (hLh : LipschitzWith Lh h) {N : ℕ} (hN : 1 ≤ N) :
+    ‖dirichletPoly N (horizonWeights h N) (Complex.I / 2)‖ ≤
+        ((Lh : ℝ) + 1 * Bh) * Real.exp (2 * A) ∧
+      ‖dirichletPoly N (horizonWeights h N) (-Complex.I / 2)‖ ≤
+        N * (((Lh : ℝ) + 1 * Bh) * Real.exp (2 * A)) := by
+  have hN0 : (0 : ℝ) < N := by exact_mod_cast hN
+  have hBh0 : 0 ≤ Bh := (abs_nonneg _).trans (hB 0)
+  have hD : ∀ s : ℂ, 0 ≤ s.re → s.re ≤ 2 → ‖s - 1‖ ≤ 1 →
+      ‖((N : ℝ) : ℂ) ^ (-s) * dirichletPoly N (horizonWeights h N) (gammaOf s)‖ ≤
+        ((Lh : ℝ) + 1 * Bh) * Real.exp (2 * A) := by
+    intro s h0 h2 h1
+    refine (norm_horizonRiemannSum_le hh hA hsupp hB hLh h0 h2 hN).trans ?_
+    gcongr
+  constructor
+  · have := hD 0 (by simp) (by simp) (by simp)
+    rwa [neg_zero, Complex.cpow_zero, one_mul, gammaOf_zero] at this
+  · have := hD 1 (by simp) (by simp) (by simp)
+    rw [Complex.cpow_neg_one, gammaOf_one, norm_mul, norm_inv, Complex.norm_real,
+      Real.norm_eq_abs, abs_of_pos hN0, inv_mul_le_iff₀ hN0] at this
+    exact this
+
+/-- Mixed pole values of two recentred blocks:
+`|T̂_x(i/2)| |T̂_y(−i/2)| = w² |φ̂(wi/2)||φ̂(−wi/2)| |D_x(i/2)||D_y(−i/2)|`. -/
+theorem norm_mul_norm_paperFT_centredAtomicTest₂ {φ : ℝ → ℝ} (hφ : Continuous φ)
+    (hφc : HasCompactSupport φ) (x y : ℕ → ℝ) {c : ℝ} (hc : 0 < c) {N : ℕ} (hN : 1 ≤ N) :
+    ‖paperFT (cx (centredAtomicTest φ x c N)) (Complex.I / 2)‖ *
+        ‖paperFT (cx (centredAtomicTest φ y c N)) (-Complex.I / 2)‖ =
+      (c / N) ^ 2 * (‖paperFT (cx φ) (((c / N : ℝ) : ℂ) * (Complex.I / 2))‖ *
+        ‖paperFT (cx φ) (((c / N : ℝ) : ℂ) * (-Complex.I / 2))‖) *
+          (‖dirichletPoly N x (Complex.I / 2)‖ * ‖dirichletPoly N y (-Complex.I / 2)‖) := by
+  have hN0 : (0 : ℝ) < N := by exact_mod_cast hN
+  have hw : 0 < c / N := div_pos hc hN0
+  rw [paperFT_centredAtomicTest hφ hφc x hc hN, paperFT_centredAtomicTest hφ hφc y hc hN]
+  simp only [norm_mul, Complex.norm_real, Real.norm_eq_abs, abs_of_pos hw]
+  have e1 : -(Complex.I * (Complex.I / 2) * (Real.log N : ℂ)) = ((Real.log N / 2 : ℝ) : ℂ) := by
+    push_cast; ring_nf; rw [Complex.I_sq]; ring
+  have e2 : -(Complex.I * (-Complex.I / 2) * (Real.log N : ℂ)) = ((-(Real.log N / 2) : ℝ) : ℂ) := by
+    push_cast; ring_nf; rw [Complex.I_sq]; ring
+  have he : ‖Complex.exp (-(Complex.I * (Complex.I / 2) * (Real.log N : ℂ)))‖ *
+      ‖Complex.exp (-(Complex.I * (-Complex.I / 2) * (Real.log N : ℂ)))‖ = 1 := by
+    rw [e1, e2, Complex.norm_exp_ofReal, Complex.norm_exp_ofReal, ← Real.exp_add, add_neg_cancel,
+      Real.exp_zero]
+  calc _ = (‖Complex.exp (-(Complex.I * (Complex.I / 2) * (Real.log N : ℂ)))‖ *
+        ‖Complex.exp (-(Complex.I * (-Complex.I / 2) * (Real.log N : ℂ)))‖) *
+        ((c / N) ^ 2 * (‖paperFT (cx φ) (((c / N : ℝ) : ℂ) * (Complex.I / 2))‖ *
+          ‖paperFT (cx φ) (((c / N : ℝ) : ℂ) * (-Complex.I / 2))‖) *
+            (‖dirichletPoly N x (Complex.I / 2)‖ * ‖dirichletPoly N y (-Complex.I / 2)‖)) := by ring
+    _ = _ := by rw [he, one_mul]
+
+theorem paperFT_centredAtomicTest_add {φ : ℝ → ℝ} (hφ : Continuous φ) (hφc : HasCompactSupport φ)
+    (x y : ℕ → ℝ) {c : ℝ} (hc : 0 < c) {N : ℕ} (hN : 1 ≤ N) (z : ℂ) :
+    paperFT (cx (centredAtomicTest φ (fun n => x n + y n) c N)) z =
+      paperFT (cx (centredAtomicTest φ x c N)) z + paperFT (cx (centredAtomicTest φ y c N)) z := by
+  rw [paperFT_centredAtomicTest hφ hφc _ hc hN, paperFT_centredAtomicTest hφ hφc x hc hN,
+    paperFT_centredAtomicTest hφ hφc y hc hN, dirichletPoly_add]
+  ring
+
+theorem paperFT_centredAtomicTest_sub {φ : ℝ → ℝ} (hφ : Continuous φ) (hφc : HasCompactSupport φ)
+    (x y : ℕ → ℝ) {c : ℝ} (hc : 0 < c) {N : ℕ} (hN : 1 ≤ N) (z : ℂ) :
+    paperFT (cx (centredAtomicTest φ (fun n => x n - y n) c N)) z =
+      paperFT (cx (centredAtomicTest φ x c N)) z - paperFT (cx (centredAtomicTest φ y c N)) z := by
+  rw [paperFT_centredAtomicTest hφ hφc _ hc hN, paperFT_centredAtomicTest hφ hφc x hc hN,
+    paperFT_centredAtomicTest hφ hφc y hc hN, dirichletPoly_sub]
+  ring
+
+/-- The pole part `Re(Ŵ(i/2) + Ŵ(−i/2))` of Weil's form of a real test `f`. -/
+def poleRe (f : ℝ → ℝ) : ℝ :=
+  (paperFT (EF.weilTest (cx f) (cx f)) (Complex.I / 2) +
+    paperFT (EF.weilTest (cx f) (cx f)) (-Complex.I / 2)).re
+
+theorem poleRe_eq {f : ℝ → ℝ} (hf : Continuous f) (hfc : HasCompactSupport f) :
+    poleRe f = (paperFT (cx f) (Complex.I / 2) * conj (paperFT (cx f) (-Complex.I / 2)) +
+      paperFT (cx f) (-Complex.I / 2) * conj (paperFT (cx f) (Complex.I / 2))).re := by
+  have hcx : Continuous (cx f) := Complex.continuous_ofReal.comp hf
+  have hcxc : HasCompactSupport (cx f) := hfc.comp_left Complex.ofReal_zero
+  rw [poleRe, EF.paperFT_weilTest hcx hcx hcxc hcxc, EF.paperFT_weilTest hcx hcx hcxc hcxc]
+  have hc1 : conj (Complex.I / 2) = -Complex.I / 2 := by
+    rw [map_div₀, Complex.conj_I, map_ofNat]
+  have hc2 : conj (-Complex.I / 2) = Complex.I / 2 := by
+    rw [map_div₀, map_neg, Complex.conj_I, neg_neg, map_ofNat]
+  rw [hc1, hc2]
+
+/-- The polarized pole part only sees the mixed amplitudes `a d̄` and `b c̄`. -/
+theorem abs_pole_add_sub_le (a b c d : ℂ) :
+    |((a + b) * conj (c + d) + (c + d) * conj (a + b)).re -
+      ((a - b) * conj (c - d) + (c - d) * conj (a - b)).re| ≤ 4 * (‖a‖ * ‖d‖ + ‖b‖ * ‖c‖) := by
+  have e : ((a + b) * conj (c + d) + (c + d) * conj (a + b)).re -
+      ((a - b) * conj (c - d) + (c - d) * conj (a - b)).re =
+      (2 * (a * conj d + b * conj c + c * conj b + d * conj a)).re := by
+    rw [← Complex.sub_re]; congr 1; simp only [map_add, map_sub]; ring
+  have h1 : ‖a * conj d + b * conj c + c * conj b + d * conj a‖ ≤
+      ‖a‖ * ‖d‖ + ‖b‖ * ‖c‖ + ‖c‖ * ‖b‖ + ‖d‖ * ‖a‖ := by
+    refine (norm_add_le _ _).trans ?_
+    refine (add_le_add_right ((norm_add_le _ _).trans
+      (add_le_add_right (norm_add_le _ _) _)) _).trans (le_of_eq ?_)
+    simp only [norm_mul, Complex.norm_conj]
+  have h2 : ‖(2 : ℂ)‖ = 2 := by simp
+  rw [e]
+  refine (Complex.abs_re_le_norm _).trans ?_
+  rw [norm_mul, h2]
+  nlinarith [h1, mul_comm ‖c‖ ‖b‖, mul_comm ‖d‖ ‖a‖]
+
+/-- **The mixed pole terms vanish**: the polarized pole part of an untwisted and a prime block is
+`O(1/N)` after normalization (the prime amplitudes are twisted Riemann sums). -/
+theorem exists_abs_crossPole_le (hφ : ContDiff ℝ 2 φ) (hφsupp : ∀ u, u ∉ Set.Icc 0 1 → φ u = 0)
+    (hφ2 : 0 < ∫ u, φ u ^ 2) (hh : ContDiff ℝ 2 h) (hg : ContDiff ℝ 2 g) (hA : 0 ≤ A)
+    (hsupp : ∀ y, y ∉ Set.Icc (-A) 0 → h y = 0) (hgsupp : ∀ y, y ∉ Set.Icc (-A) 0 → g y = 0)
+    {p : ℕ} (hp : 1 < p) :
+    ∃ Cp : ℝ, 0 ≤ Cp ∧ ∀ N : ℕ, 1 ≤ N → ∀ c : ℝ, 0 < c → c ≤ N →
+      |(poleRe (centredAtomicTest φ (fun n => horizonWeights h N n +
+            twistedWeights g (primeTwist p) N n) c N) -
+          poleRe (centredAtomicTest φ (fun n => horizonWeights h N n -
+            twistedWeights g (primeTwist p) N n) c N)) /
+          (c * (c / N * ∫ u, φ u ^ 2))| ≤ Cp / N := by
+  have hφc : HasCompactSupport φ := HasCompactSupport.intro isCompact_Icc fun u hu => hφsupp u hu
+  obtain ⟨Φ, hΦ0, hΦ⟩ := exists_norm_paperFT_le hφ.continuous hφc 1
+  obtain ⟨Bh, -, hB, -⟩ := exists_bound_lipschitz hh hsupp
+  obtain ⟨Lh, hLh⟩ := ContDiff.lipschitzWith_of_hasCompactSupport
+    (hasCompactSupport_of_window hsupp) hh (by norm_num)
+  obtain ⟨Bg, -, hBg, -⟩ := exists_bound_lipschitz hg hgsupp
+  obtain ⟨Lg, hLg⟩ := ContDiff.lipschitzWith_of_hasCompactSupport
+    (hasCompactSupport_of_window hgsupp) hg (by norm_num)
+  have hBh0 : 0 ≤ Bh := (abs_nonneg _).trans (hB 0)
+  have hBg0 : 0 ≤ Bg := (abs_nonneg _).trans (hBg 0)
+  obtain ⟨S, hS⟩ : ∃ S, S = ∑ j ∈ range p, |primeTwist p j| := ⟨_, rfl⟩
+  obtain ⟨Kx, hKx⟩ : ∃ K, K = ((Lh : ℝ) + 1 * Bh) * Real.exp (2 * A) := ⟨_, rfl⟩
+  obtain ⟨Ky, hKy⟩ : ∃ K, K = ((Lg : ℝ) + 1 * Bg) * Real.exp (2 * A) := ⟨_, rfl⟩
+  have hS0 : 0 ≤ S := by rw [hS]; exact Finset.sum_nonneg fun _ _ => abs_nonneg _
+  have hKx0 : 0 ≤ Kx := by rw [hKx]; positivity
+  have hKy0 : 0 ≤ Ky := by rw [hKy]; positivity
+  have hM := hφ2
+  refine ⟨8 * Φ ^ 2 * (2 * S * Ky * Kx) / ∫ u, φ u ^ 2, by positivity,
+    fun N hN c hc hcN => ?_⟩
+  have hN0 : (0 : ℝ) < N := by exact_mod_cast hN
+  have hw : 0 < c / N := div_pos hc hN0
+  obtain ⟨hx0, hx1⟩ := norm_dirichletPoly_horizon_pole_le hh hA hsupp hB hLh hN
+  rw [← hKx] at hx0 hx1
+  have hD : ∀ s : ℂ, 0 ≤ s.re → s.re ≤ 2 → ‖s - 1‖ ≤ 1 →
+      ‖((N : ℝ) : ℂ) ^ (-s) * dirichletPoly N (twistedWeights g (primeTwist p) N) (gammaOf s)‖ ≤
+        2 * S * Ky / N := by
+    intro s h0 h2 h1
+    refine (norm_twistedRiemannSum_le hg hA hgsupp hBg hLg (meanZeroTwist_primeTwist hp) h0 h2
+      hN).trans ?_
+    rw [hS, hKy]
+    gcongr
+  have hy0 : ‖dirichletPoly N (twistedWeights g (primeTwist p) N) (Complex.I / 2)‖ ≤
+      2 * S * Ky / N := by
+    have := hD 0 (by simp) (by simp) (by simp)
+    rwa [neg_zero, Complex.cpow_zero, one_mul, gammaOf_zero] at this
+  have hy1 : ‖dirichletPoly N (twistedWeights g (primeTwist p) N) (-Complex.I / 2)‖ ≤
+      N * (2 * S * Ky / N) := by
+    have := hD 1 (by simp) (by simp) (by simp)
+    rw [Complex.cpow_neg_one, gammaOf_one, norm_mul, norm_inv, Complex.norm_real,
+      Real.norm_eq_abs, abs_of_pos hN0, inv_mul_le_iff₀ hN0] at this
+    exact this
+  have hφ1 : ‖paperFT (cx φ) (((c / N : ℝ) : ℂ) * (Complex.I / 2))‖ ≤ Φ := by
+    refine hΦ _ ?_
+    rw [norm_mul, Complex.norm_real, Real.norm_eq_abs, abs_of_pos hw, norm_div, Complex.norm_I]
+    norm_num
+    nlinarith [(div_le_one hN0).mpr hcN]
+  have hφ2' : ‖paperFT (cx φ) (((c / N : ℝ) : ℂ) * (-Complex.I / 2))‖ ≤ Φ := by
+    refine hΦ _ ?_
+    rw [norm_mul, Complex.norm_real, Real.norm_eq_abs, abs_of_pos hw, norm_div, norm_neg,
+      Complex.norm_I]
+    norm_num
+    nlinarith [(div_le_one hN0).mpr hcN]
+  set x := horizonWeights h N with hx
+  set y := twistedWeights g (primeTwist p) N with hy
+  have hTp := contDiff_centredAtomicTest hφ (fun n => x n + y n) c N
+  have hTm := contDiff_centredAtomicTest hφ (fun n => x n - y n) c N
+  rw [poleRe_eq hTp.continuous (hasCompactSupport_centredAtomicTest hφsupp _ hc hN),
+    poleRe_eq hTm.continuous (hasCompactSupport_centredAtomicTest hφsupp _ hc hN)]
+  simp only [paperFT_centredAtomicTest_add hφ.continuous hφc x y hc hN,
+    paperFT_centredAtomicTest_sub hφ.continuous hφc x y hc hN]
+  have hab := abs_pole_add_sub_le (paperFT (cx (centredAtomicTest φ x c N)) (Complex.I / 2))
+    (paperFT (cx (centredAtomicTest φ y c N)) (Complex.I / 2))
+    (paperFT (cx (centredAtomicTest φ x c N)) (-Complex.I / 2))
+    (paperFT (cx (centredAtomicTest φ y c N)) (-Complex.I / 2))
+  have had := norm_mul_norm_paperFT_centredAtomicTest₂ hφ.continuous hφc x y hc hN
+  have hbc := norm_mul_norm_paperFT_centredAtomicTest₂ hφ.continuous hφc y x hc hN
+  have hpr1 : ‖dirichletPoly N x (Complex.I / 2)‖ * ‖dirichletPoly N y (-Complex.I / 2)‖ ≤
+      2 * S * Ky * Kx := by
+    have e1 : (N : ℝ) * (2 * S * Ky / N) = 2 * S * Ky := by field_simp
+    rw [e1] at hy1
+    nlinarith [norm_nonneg (dirichletPoly N x (Complex.I / 2)),
+      norm_nonneg (dirichletPoly N y (-Complex.I / 2))]
+  have hpr2 : ‖dirichletPoly N y (Complex.I / 2)‖ * ‖dirichletPoly N x (-Complex.I / 2)‖ ≤
+      2 * S * Ky * Kx := by
+    calc ‖dirichletPoly N y (Complex.I / 2)‖ * ‖dirichletPoly N x (-Complex.I / 2)‖
+        ≤ (2 * S * Ky / N) * (N * Kx) := mul_le_mul hy0 hx1 (norm_nonneg _) (by positivity)
+      _ = 2 * S * Ky * Kx := by field_simp
+  have hφφ : ‖paperFT (cx φ) (((c / N : ℝ) : ℂ) * (Complex.I / 2))‖ *
+      ‖paperFT (cx φ) (((c / N : ℝ) : ℂ) * (-Complex.I / 2))‖ ≤ Φ ^ 2 := by
+    rw [sq]; exact mul_le_mul hφ1 hφ2' (norm_nonneg _) hΦ0
+  have hsum : ‖paperFT (cx (centredAtomicTest φ x c N)) (Complex.I / 2)‖ *
+        ‖paperFT (cx (centredAtomicTest φ y c N)) (-Complex.I / 2)‖ +
+      ‖paperFT (cx (centredAtomicTest φ y c N)) (Complex.I / 2)‖ *
+        ‖paperFT (cx (centredAtomicTest φ x c N)) (-Complex.I / 2)‖ ≤
+      (c / N) ^ 2 * Φ ^ 2 * (2 * (2 * S * Ky * Kx)) := by
+    rw [had, hbc]
+    have hw2 : 0 ≤ (c / N) ^ 2 := sq_nonneg _
+    have h1 := mul_le_mul hφφ hpr1 (by positivity) (sq_nonneg Φ)
+    have h2 := mul_le_mul hφφ hpr2 (by positivity) (sq_nonneg Φ)
+    nlinarith [mul_le_mul_of_nonneg_left h1 hw2, mul_le_mul_of_nonneg_left h2 hw2]
+  have hpos : 0 < c * (c / N * ∫ u, φ u ^ 2) := by positivity
+  rw [abs_div, abs_of_pos hpos, div_le_div_iff₀ hpos hN0]
+  calc _ ≤ 4 * ((c / N) ^ 2 * Φ ^ 2 * (2 * (2 * S * Ky * Kx))) * N :=
+        mul_le_mul_of_nonneg_right (hab.trans (by linarith)) hN0.le
+    _ = 8 * Φ ^ 2 * (2 * S * Ky * Kx) / (∫ u, φ u ^ 2) * (c * (c / N * ∫ u, φ u ^ 2)) := by
+        field_simp
+        ring
+
+/-! ### The quiet region -/
+
+/-- Polarized energies: `|F‖u+v‖²/N − F‖u−v‖²/N| ≤ 2F(‖u‖²/(Ns) + s‖v‖²/N)` for every `s > 0`. -/
+theorem abs_polar_le {F : ℝ} (hF : 0 ≤ F) (u v : ℂ) {N s : ℝ} (hN : 0 < N) (hs : 0 < s) :
+    |F * (‖u + v‖ ^ 2 / N) - F * (‖u - v‖ ^ 2 / N)| ≤
+      2 * F * (‖u‖ ^ 2 / N / s + s * (‖v‖ ^ 2 / N)) := by
+  have e : F * (‖u + v‖ ^ 2 / N) - F * (‖u - v‖ ^ 2 / N) = (F * 4 / N) * (u * conj v).re := by
+    rw [mul_assoc, ← norm_add_sq_sub_norm_sub_sq]; ring
+  have hre : |(u * conj v).re| ≤ ‖u‖ * ‖v‖ := by
+    refine (Complex.abs_re_le_norm _).trans (le_of_eq ?_); rw [norm_mul, Complex.norm_conj]
+  have hamgm : ‖u‖ * ‖v‖ ≤ (‖u‖ ^ 2 / s + s * ‖v‖ ^ 2) / 2 := by
+    have h1 : 2 * (‖u‖ * ‖v‖) * s ≤ ‖u‖ ^ 2 + s ^ 2 * ‖v‖ ^ 2 := by
+      nlinarith [sq_nonneg (‖u‖ - s * ‖v‖)]
+    rw [show (‖u‖ ^ 2 / s + s * ‖v‖ ^ 2) / 2 = (‖u‖ ^ 2 + s ^ 2 * ‖v‖ ^ 2) / (2 * s) by
+      field_simp; ring, le_div_iff₀ (by positivity)]
+    linarith
+  rw [e, abs_mul, abs_of_nonneg (by positivity)]
+  calc F * 4 / N * |(u * conj v).re| ≤ F * 4 / N * ((‖u‖ ^ 2 / s + s * ‖v‖ ^ 2) / 2) :=
+        mul_le_mul_of_nonneg_left (hre.trans hamgm) (by positivity)
+    _ = 2 * F * (‖u‖ ^ 2 / N / s + s * (‖v‖ ^ 2 / N)) := by field_simp; ring
+
+/-- **The quiet region does not couple the conductors**: below the first resonance of the prime
+block, the polarized energy of an untwisted and a prime block is `O(N^{−1/4})`. -/
+theorem exists_quietCross_le (hφ : ContDiff ℝ 2 φ) (hφsupp : ∀ u, u ∉ Set.Icc 0 1 → φ u = 0)
+    {Cφ q : ℝ} (hq : 0 ≤ q) (hCφ : 0 ≤ Cφ)
+    (hdecay : ∀ u : ℝ, ‖paperFT (cx φ) u‖ ^ 2 ≤ Cφ * (1 + |u|) ^ (-q))
+    (hh : ContDiff ℝ 2 h) (hg : ContDiff ℝ 2 g) (hA : 0 ≤ A)
+    (hsupp : ∀ y, y ∉ Set.Icc (-A) 0 → h y = 0) (hgsupp : ∀ y, y ∉ Set.Icc (-A) 0 → g y = 0)
+    {p : ℕ} (hp : 1 < p) :
+    ∃ C : ℝ, 0 ≤ C ∧ ∀ N : ℕ, 1 ≤ N → ∀ c : ℝ, 0 < c →
+      ∫ τ in Set.Icc (-((N : ℝ) * Real.exp (-(A + Real.log p))))
+          ((N : ℝ) * Real.exp (-(A + Real.log p))),
+        |‖paperFT (cx φ) (((c / N : ℝ) : ℂ) * τ)‖ ^ 2 * (‖dirichletPoly N (fun n =>
+            horizonWeights h N n + twistedWeights g (primeTwist p) N n) τ‖ ^ 2 / N) -
+          ‖paperFT (cx φ) (((c / N : ℝ) : ℂ) * τ)‖ ^ 2 * (‖dirichletPoly N (fun n =>
+            horizonWeights h N n - twistedWeights g (primeTwist p) N n) τ‖ ^ 2 / N)| ≤
+        C / Real.sqrt (Real.sqrt N) := by
+  obtain ⟨CL, hCL0, hCL⟩ := exists_primeLow_energy_le hφ hφsupp hq hCφ hdecay hg hA hgsupp hp
+  obtain ⟨Bh, L, hB, hL⟩ := exists_bound_lipschitz hh hsupp
+  have hBh0 : 0 ≤ Bh := (abs_nonneg _).trans (hB 0)
+  obtain ⟨Cx, hCx⟩ : ∃ C, C = 2 * (Bh ^ 2 * Real.exp A + 16 * Real.pi ^ 2 * windowConst A Bh L ^ 2) :=
+    ⟨_, rfl⟩
+  have hCx0 : 0 ≤ Cx := by rw [hCx]; positivity
+  refine ⟨2 * Cφ * Cx * Real.pi + 2 * CL, by positivity, fun N hN c hc => ?_⟩
+  have hN0 : (0 : ℝ) < N := by exact_mod_cast hN
+  obtain ⟨s, hs⟩ : ∃ s, s = Real.sqrt (Real.sqrt N) := ⟨_, rfl⟩
+  have hs0 : 0 < s := by rw [hs]; exact Real.sqrt_pos.mpr (Real.sqrt_pos.mpr hN0)
+  have hs2 : s ^ 2 = Real.sqrt N := by rw [hs]; exact Real.sq_sqrt (Real.sqrt_nonneg _)
+  rw [← hs]
+  obtain ⟨T₀, hT₀⟩ : ∃ T, T = (N : ℝ) * Real.exp (-(A + Real.log p)) := ⟨_, rfl⟩
+  rw [← hT₀]
+  have hCLN := hCL N hN c hc
+  rw [← hT₀] at hCLN
+  have hT₀A : T₀ ≤ N * Real.exp (-A) := by
+    have hlogp : 0 ≤ Real.log p := Real.log_nonneg (by exact_mod_cast hp.le)
+    rw [hT₀]
+    exact mul_le_mul_of_nonneg_left (Real.exp_le_exp.mpr (by linarith)) hN0.le
+  have hEi := fun z : ℕ → ℝ => integrable_energyW hφ hφsupp z hc hN
+  have hpt : ∀ τ ∈ Set.Icc (-T₀) T₀,
+      |‖paperFT (cx φ) (((c / N : ℝ) : ℂ) * τ)‖ ^ 2 * (‖dirichletPoly N (fun n =>
+          horizonWeights h N n + twistedWeights g (primeTwist p) N n) τ‖ ^ 2 / N) -
+        ‖paperFT (cx φ) (((c / N : ℝ) : ℂ) * τ)‖ ^ 2 * (‖dirichletPoly N (fun n =>
+          horizonWeights h N n - twistedWeights g (primeTwist p) N n) τ‖ ^ 2 / N)| ≤
+      2 * Cφ * Cx / s * (1 + τ ^ 2)⁻¹ + 2 * s * (‖paperFT (cx φ) (((c / N : ℝ) : ℂ) * τ)‖ ^ 2 *
+        (‖dirichletPoly N (twistedWeights g (primeTwist p) N) τ‖ ^ 2 / N)) := by
+    intro τ hτ
+    have hτA : |τ| ≤ N * Real.exp (-A) := (abs_le.mpr hτ).trans hT₀A
+    have hDx := horizonDirichlet_sq_div_le hsupp hA hB hL hN hτA
+    rw [← hCx] at hDx
+    have hF : ‖paperFT (cx φ) (((c / N : ℝ) : ℂ) * τ)‖ ^ 2 ≤ Cφ := by
+      have h1 := hdecay (c / N * τ)
+      rw [Complex.ofReal_mul] at h1
+      refine h1.trans ?_
+      have : (1 + |c / N * τ|) ^ (-q) ≤ 1 :=
+        Real.rpow_le_one_of_one_le_of_nonpos (by linarith [abs_nonneg (c / N * τ)]) (by linarith)
+      nlinarith
+    rw [dirichletPoly_add, dirichletPoly_sub]
+    refine (abs_polar_le (sq_nonneg _) _ _ hN0 hs0).trans ?_
+    have hτ2 : 0 < 1 + τ ^ 2 := by positivity
+    have hk : ‖paperFT (cx φ) (((c / N : ℝ) : ℂ) * τ)‖ ^ 2 *
+        (‖dirichletPoly N (horizonWeights h N) τ‖ ^ 2 / N) ≤ Cφ * Cx * (1 + τ ^ 2)⁻¹ := by
+      rw [mul_assoc, ← div_eq_mul_inv]
+      exact mul_le_mul hF hDx (by positivity) hCφ
+    calc 2 * ‖paperFT (cx φ) (((c / N : ℝ) : ℂ) * τ)‖ ^ 2 *
+          (‖dirichletPoly N (horizonWeights h N) τ‖ ^ 2 / N / s +
+            s * (‖dirichletPoly N (twistedWeights g (primeTwist p) N) τ‖ ^ 2 / N))
+        = 2 / s * (‖paperFT (cx φ) (((c / N : ℝ) : ℂ) * τ)‖ ^ 2 *
+            (‖dirichletPoly N (horizonWeights h N) τ‖ ^ 2 / N)) +
+          2 * s * (‖paperFT (cx φ) (((c / N : ℝ) : ℂ) * τ)‖ ^ 2 *
+            (‖dirichletPoly N (twistedWeights g (primeTwist p) N) τ‖ ^ 2 / N)) := by
+          field_simp
+      _ ≤ 2 / s * (Cφ * Cx * (1 + τ ^ 2)⁻¹) + 2 * s * (‖paperFT (cx φ) (((c / N : ℝ) : ℂ) * τ)‖ ^ 2 *
+            (‖dirichletPoly N (twistedWeights g (primeTwist p) N) τ‖ ^ 2 / N)) := by
+          gcongr
+      _ = _ := by ring
+  have hdi : IntegrableOn (fun τ : ℝ =>
+      |‖paperFT (cx φ) (((c / N : ℝ) : ℂ) * τ)‖ ^ 2 * (‖dirichletPoly N (fun n =>
+          horizonWeights h N n + twistedWeights g (primeTwist p) N n) τ‖ ^ 2 / N) -
+        ‖paperFT (cx φ) (((c / N : ℝ) : ℂ) * τ)‖ ^ 2 * (‖dirichletPoly N (fun n =>
+          horizonWeights h N n - twistedWeights g (primeTwist p) N n) τ‖ ^ 2 / N)|)
+      (Set.Icc (-T₀) T₀) := ((hEi _).sub (hEi _)).abs.integrableOn
+  have hi1 : Integrable fun τ : ℝ => 2 * Cφ * Cx / s * (1 + τ ^ 2)⁻¹ :=
+    integrable_inv_one_add_sq.const_mul _
+  have hi2 := (hEi (twistedWeights g (primeTwist p) N)).const_mul (2 * s)
+  refine (setIntegral_mono_on hdi (hi1.add hi2).integrableOn measurableSet_Icc hpt).trans ?_
+  rw [integral_add hi1.integrableOn hi2.integrableOn, integral_const_mul, integral_const_mul]
+  have h1 : ∫ τ in Set.Icc (-T₀) T₀, (1 + τ ^ 2)⁻¹ ≤ Real.pi := by
+    rw [← integral_univ_inv_one_add_sq]
+    exact setIntegral_le_integral integrable_inv_one_add_sq
+      (Eventually.of_forall fun τ => by positivity)
+  have hc0 : 0 ≤ 2 * Cφ * Cx / s := by positivity
+  calc 2 * Cφ * Cx / s * (∫ τ in Set.Icc (-T₀) T₀, (1 + τ ^ 2)⁻¹) +
+        2 * s * ∫ τ in Set.Icc (-T₀) T₀, ‖paperFT (cx φ) (((c / N : ℝ) : ℂ) * τ)‖ ^ 2 *
+          (‖dirichletPoly N (twistedWeights g (primeTwist p) N) τ‖ ^ 2 / N)
+      ≤ 2 * Cφ * Cx / s * Real.pi + 2 * s * (CL / Real.sqrt N) :=
+        add_le_add (mul_le_mul_of_nonneg_left h1 hc0)
+          (mul_le_mul_of_nonneg_left hCLN (by positivity))
+    _ = (2 * Cφ * Cx * Real.pi + 2 * CL) / s := by
+        rw [← hs2]
+        field_simp
+        ring
+
 end GaloisForLFunctions.ArithmeticHodgeTheoryOfDegenerations

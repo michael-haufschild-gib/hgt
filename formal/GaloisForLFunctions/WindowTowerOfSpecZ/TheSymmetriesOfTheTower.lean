@@ -113,9 +113,12 @@ theorem windowRepFun_mPart_dilate {A : ℝ} {e : ℕ} (he : 1 ≤ e) (f : Arithm
     rw [Real.sqrt_eq_rpow, ← Real.rpow_natCast, ← Real.rpow_mul hn0.le]
     ring_nf
   have hsq1 : Real.sqrt n = (n : ℝ) ^ ((1 : ℝ) / 2) := Real.sqrt_eq_rpow n
-  rw [hsq, hsq1, div_eq_mul_inv, div_eq_mul_inv, ← Real.rpow_neg hn0.le,
-    ← Real.rpow_neg hn0.le, mul_assoc (f n), ← Real.rpow_add hn0]
-  ring_nf
+  have key : (n : ℝ) ^ (-(((e : ℝ) - 1) / 2)) / Real.sqrt n = 1 / Real.sqrt ((n : ℝ) ^ e) := by
+    rw [hsq, hsq1, ← Real.rpow_sub hn0, eq_div_iff (Real.rpow_pos_of_pos hn0 _).ne',
+      ← Real.rpow_add hn0, show -(((e : ℝ) - 1) / 2) - 1 / 2 + (e : ℝ) / 2 = 0 by ring,
+      Real.rpow_zero]
+  rw [mul_div_assoc, key]
+  ring
 
 /-! ### Reflection and the Rosati involution -/
 
@@ -129,6 +132,7 @@ theorem windowInvolution_windowShift (A t : ℝ) (H : ℝ → ℝ) :
   simp only [windowInvolution, adjointShift]
   rcases le_or_gt (-A - u) 0 with hu | hu
   · rw [windowShift_apply_of_le _ hu, indicator_of_mem (mem_Ici.mpr (by linarith))]
+    show H (-A - (-A - u - t)) = H (u + t)
     congr 1; ring
   · rw [windowShift_apply_of_pos _ hu, indicator_of_notMem (fun h => by
       linarith [mem_Ici.mp h])]

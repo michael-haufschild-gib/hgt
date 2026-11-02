@@ -1,7 +1,7 @@
 # RH proof-route frontier
 
 **RH open · 33 live routes · 16 candidates.**
-**Corpus checkpoint:** `f9580eacbe53e55d9b99c05c190c3623f56a81f4`.
+**Corpus checkpoint:** `f6e3769c7542a572baf190351b81805ec9e7b6ab`.
 
 Live = source observable + proved RH-sufficient receiver + explicit open estimate. Candidate = missing independent source mechanism/landing.
 Evidence: [L] integrated, source-reviewed; [S] unfinished/unintegrated, unverified; [K] individual Lean + standard-only transitive-axiom audit. Untagged established facts: [L].
@@ -115,7 +115,7 @@ Evidence: [L] integrated, source-reviewed; [S] unfinished/unintegrated, unverifi
 ### HF — Positive Hodge form on arithmetic cohomology
 
 - **Path:** Complete arithmetic form ≥0 → Hodge index → RH.
-- **Established:** Hodge/Hecke/Riemann–Roch receivers; zero-density prime-flip separation. Subpolynomial-span positivity, regular-bulk limits, window-index exhaustion and signed folds: shared frontier. Strongly rotated rational Weyl band-pole count=Hodge defect [S]: [PM](#pm).
+- **Established:** Hodge/Hecke/Riemann–Roch receivers; zero-density prime-flip separation. Subpolynomial-span positivity, regular-bulk limits, window-index exhaustion and signed folds: shared frontier. Strongly rotated rational Weyl band-pole count=Hodge defect [L]: [PM](#pm).
 - **Open:** RH-complete full-family/horizon sign or primitive section effectivity. Remaining conductor bands and the explicit band–far budget must fit the vanishing floor; a subpower index ceiling is not index0. Independent infinite-dimensional window realization remains open.
 - **Sources:** J:TheIndexExit; PL:HeckeInvarianceOfTheCollidedPolarizationIsRH; CACT:CollectivePacketCoercivityAndLogarithmicConfinement.
 
@@ -147,9 +147,9 @@ Evidence: [L] integrated, source-reviewed; [S] unfinished/unintegrated, unverifi
 ### WD — Ward orientation and horizontal collision
 
 - **Path:** Source current/window energy → collision charge<2 or all-resolution sectoriality → RH.
-- **Established:** Collision/index receivers; attained extremizers. For 0<c<1/2: mean-sup O_c(log U), dyadic mean o(log U)⇔critical-scale clustering. All-stage Bessel–Szegő certificate⇔RH; log stages⇔inverse-log confinement. Energy Laplace abscissa=twice maximal depth. Holomorphic moments leave Jensen sharp; generic integer-moment data do not determine the log integral.
-- **Open:** Actual all-window/all-stage certificate sign or uniform dyadic defect control. Little-o mean/clustering remains open and permits shallow/finite exceptions. Actual arithmetic log-mean control needs more than generic moment identities ([obstruction](rh-killed-routes.md#holomorphic-jensen)).
-- **Sources:** CDG:LogScaleHeckeDefect/UnitWindowMinimumAndOscillation; CDG:LogScaleHeckeDefect/HalfGateClosureAndDensityEquivalence; CDG:SzegoCollision/HeckeDefectCorridorAndRHDoorOpener; CDG:SzegoCollision/WindowEnergyLaplace; CDG:SzegoCollision/LogStageBesselCertificate; R:WD/HolomorphicMomentsCannotBeatJensen; R:WD/MomentsDoNotDetermineTheLogMean.
+- **Established:** Collision/index receivers; attained extremizers. For 0<c<1/2: mean-sup O_c(log U), dyadic mean o(log U)⇔critical-scale clustering. All-stage Bessel–Szegő certificate⇔RH; log stages⇔inverse-log confinement. Energy Laplace abscissa=twice maximal depth. Boundary-regular centered windows: left port∈L²; full/right-port energy integrability equivalent at every Laplace weight x≥0 [S].
+- **Open:** All-window/all-stage certificate sign or complete right-port Laplace control, retaining right horizontal caps. [Left-reflection cancellation fails](rh-killed-routes.md#window-port-reflection). Little-o clustering permits shallow/finite exceptions; arithmetic log-mean control needs more than [generic moment identities](rh-killed-routes.md#holomorphic-jensen).
+- **Sources:** CDG:LogScaleHeckeDefect/UnitWindowMinimumAndOscillation; CDG:LogScaleHeckeDefect/HalfGateClosureAndDensityEquivalence; CDG:SzegoCollision/HeckeDefectCorridorAndRHDoorOpener; CDG:SzegoCollision/WindowEnergyLaplace; CDG:SzegoCollision/LogStageBesselCertificate; CDG:WindowPortFlux/PortFluxDecompositionAndBlowup [S]; R:WD/HolomorphicMomentsCannotBeatJensen; R:WD/MomentsDoNotDetermineTheLogMean.
 
 <a id="li"></a>
 ### LI — Paired Li and prime–Gamma balances
@@ -171,9 +171,9 @@ Evidence: [L] integrated, source-reviewed; [S] unfinished/unintegrated, unverifi
 ### PM — Physical-model Haar approximation (FZZ-P)
 
 - **Path:** Faithful scattering source → Krein/Lewis positivity or pole/escape exclusion → RH.
-- **Established:** Faithful ζ scattering; core Mellin/energy, sharp Cauchy and global Lewis identities [L]. Resonances⇔ζ(2s)=0; Mayer Z=Hardy Z; critical-weight D_s≤0, equality iff Re s=1/4. Independent resonant cores; Krein positivity⇔RH, off-line square −2. Cutoff heights≥1: finite-combination isometry to cusp powers; normalized Hecke action=two height shifts. Complete rational affine Weyl sum: one rotation threshold preserves every Λ(s+1) zero in −1/2<Re s<0 as a pole of full multiplicity; pole support counts Hodge defect [S].
-- **Open:** Arithmetic Krein positivity/D_s≥0 or pole-excluding source bounds retaining 2ζ(w−1)/(w−1); [Krein self-adjointness](rh-killed-routes.md#mayer-krein-sign) and [cutoff-Gram positivity](rh-killed-routes.md#resonant-cutoff-gram) do not select. Rational Weyl branch: band holomorphy; arithmetic loop-group Eisenstein integral and its Weyl-sum identification absent. Full Mayer eigenspace classification remains open.
-- **Sources:** CP:TheEscapeCompletenessCriterion; RIT:GaussMayerScatteringVector; RIT:GaussMayerCoreZeroMoment; RIT:GaussMayerCauchySharpOperator; RIT:GaussMayerGlobalPeriods; RIT:MayerScattering/MayerResonanceCharacterization [S]; RIT:MayerScattering/MayerZFunction [S]; RIT:MayerScattering/LewisPeriodReflectionPositivity [S]; RIT:MayerScattering/MayerKreinLaxPhillipsRealization [S]; RIT:ResonantStates/CutoffGramKernel [S]; RIT:ResonantStates/HeckeCutoffShifts [S]; RIT:LoopEisensteinBandPoleNoncancellation [S].
+- **Established:** Faithful ζ scattering; core Mellin/energy, sharp Cauchy and global Lewis identities [L]. Resonances⇔ζ(2s)=0; Mayer Z=Hardy Z; critical-weight D_s≤0, equality iff Re s=1/4. Independent resonant cores; Krein positivity⇔RH, off-line square −2. Cutoffs≥1: finite-combination isometry to cusp powers, including simultaneous one-step Hecke transforms at arbitrary primes p_i when Y_i≥p_i [L]. Complete rational affine Weyl sum: one rotation threshold preserves every Λ(s+1) zero in −1/2<Re s<0 as a full-multiplicity pole; pole support counts Hodge defect [L].
+- **Open:** Arithmetic Krein positivity/D_s≥0 or pole-excluding source bounds retaining 2ζ(w−1)/(w−1). [Cutoff/Hecke Gram positivity](rh-killed-routes.md#resonant-cutoff-gram) does not select; genuine compact-core returns below height1 remain unmodeled. Rational Weyl branch: band holomorphy; arithmetic loop-group integral and Weyl-sum identification. Full Mayer eigenspace classification remains open.
+- **Sources:** CP:TheEscapeCompletenessCriterion; RIT:GaussMayerScatteringVector; RIT:GaussMayerCoreZeroMoment; RIT:GaussMayerCauchySharpOperator; RIT:GaussMayerGlobalPeriods; RIT:MayerScattering/MayerResonanceCharacterization [S]; RIT:MayerScattering/MayerZFunction [S]; RIT:MayerScattering/LewisPeriodReflectionPositivity [S]; RIT:MayerScattering/MayerKreinLaxPhillipsRealization [S]; RIT:ResonantStates/CutoffGramKernel [L]; RIT:ResonantStates/HeckeCutoffShifts [L]; RIT:LoopEisensteinBandPoleNoncancellation [L].
 
 <a id="jas"></a>
 ### JAS — Joint ancestry
@@ -315,7 +315,7 @@ Promotion requires the missing independent source mechanism/landing below; an un
 | <a id="candidate-ptr"></a><a id="ptr"></a>**PTR — Photonic source:** prime-faithful lossless stack → real-rooted Ξ limit. | Finite lossless real-rooted stacks; Ξ-limit criterion. Existing converse uses unknown Ξ zeros; continuum port has unit gap. | Independent nonlocal prime-faithful port preserving exact Ξ, or zero-loss mechanism overcoming that gap. | R:PhotonicLosslessProductPortRH; R:PaperPoissonCompletionGap |
 | <a id="rfhm"></a>**RFHM — Support grade:** faithful phase/depth source → non-inverse-covariant wall law. | Full finite-support/phase/grade admission, forward creation and strong cutoff exhaustion. | Source-defined symmetry-breaking phase/depth/compound law with arithmetic wall orientation. Reversible sewing remains inverse-covariant. | R:GammaThetaFullSupportSource; R:PaperRFHMSurvivalInformation |
 | <a id="sec"></a>**SEC — Adjacent prime seam:** exact compactness/Fock boundedness → seam jump zero. | Essential norm=seam jump; exact vanishing and time-one factorial-Fock criteria. | Pre-divisor proof of exact eventual compactness or Fock boundedness at actual zeros. Asymptotic seam smallness is nonselective. | R:XiPrimeSeamAdjacentEssentialNormNoGo; R:TimeOneGammaJetFockRHCriterion |
-| <a id="w1c"></a>**W1C — Clifford–Dirac / centred Lee–Yang:** arithmetic operator or ferromagnetic limit → real-rooted Ξ. | Finite Lee–Yang/Ising-limit receiver; faithful PM scattering divisor. Resonant-core algebraic Krein realization [S]. | Source-defined Ising couplings with centred slow-field convergence, or an arithmetic positive Hilbert realization with self-adjoint generator. PM's [Krein form](rh-killed-routes.md#mayer-krein-sign) remains indefinite; its [positive cutoff model](rh-killed-routes.md#resonant-cutoff-gram) admits every Re u<0. | R:LeeYangIsingGraphDatum; R:IsingLawConvergenceRH; R:HermitianPencilEulerFactorObstruction; RIT:MayerScattering/MayerKreinLaxPhillipsRealization [S] |
+| <a id="w1c"></a>**W1C — Clifford–Dirac / centred Lee–Yang:** arithmetic operator or ferromagnetic limit → real-rooted Ξ. | Finite Lee–Yang/Ising-limit receiver; faithful PM scattering divisor. Resonant-core algebraic Krein realization [S]. | Source-defined Ising couplings with centred slow-field convergence, or an arithmetic positive Hilbert realization with self-adjoint generator. PM's [Krein form](rh-killed-routes.md#mayer-krein-sign) remains indefinite; its [mixed-prime cutoff model](rh-killed-routes.md#resonant-cutoff-gram) admits every Re u<0. | R:LeeYangIsingGraphDatum; R:IsingLawConvergenceRH; R:HermitianPencilEulerFactorObstruction; RIT:MayerScattering/MayerKreinLaxPhillipsRealization [S] |
 | <a id="wbf"></a>**WBF — Source certificates:** arithmetic stream → depth-uniform positive completion → Ξ. | Abstract genealogy Gram/Fredholm recovery and relative determinants; no arithmetic coupling. | Arithmetic certificate stream and source-faithful uniform-depth completion landing on Ξ/Weil positivity. | H:PaperGenealogyFredholmRecovery; H:PaperCriticalGenealogyCompletion |
 
 ## Shared frontier
@@ -363,7 +363,7 @@ PW-B: [retired source-uniform extinction mechanism](rh-killed-routes.md#kr-pwb);
 
 ADT: conductor degeneration supporting HF/ACS/SC; gluing determinant reformulates MC. AHD: horizon/index receivers within SRT/HF/SC. CWS: window locality/signed folds/index exhaustion within HF/RW/ACS; independent all-window positive realization open. See [shared frontier](#shared-frontier).
 
-WTZ: nilpotent Dirichlet tower, separated-atom representation and Tate-flow commutator [S]; Jordan-jet/window floor in [shared frontier](#shared-frontier). Support for RW/HF/ACS, not an independent sign producer. Sources: WTZ:TheTowerOfSmallExtensions; WTZ:TheAtomicLatticeOfAWindow; WTZ:TheTateFlowOnTheWindowAlgebra [S].
+WTZ: nilpotent Dirichlet tower, separated atoms, Tate-flow commutator; Adams dilation with Tate twist and reflection/adjoint identity [S]. Jordan-jet/window floor: [shared frontier](#shared-frontier). RW/HF/ACS support; complete-Weil sign open. Sources: WTZ:TheTowerOfSmallExtensions; WTZ:TheAtomicLatticeOfAWindow; WTZ:TheTateFlowOnTheWindowAlgebra; WTZ:TheSymmetriesOfTheTower [S].
 
 ## Source locator
 

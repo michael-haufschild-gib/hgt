@@ -114,9 +114,7 @@ private theorem cauchyWeight_inv_eq {w : ℂ} {t : ℝ} (ht : 0 < t) :
     congr 1
     ring
   unfold cauchyWeight
-  have hcast1 : (1 : ℂ) + ((t⁻¹ : ℝ) : ℂ) ^ 2 = ((1 + (t⁻¹) ^ 2 : ℝ) : ℂ) := by push_cast; ring
-  have hcast2 : (1 : ℂ) + (t : ℂ) ^ 2 = ((1 + t ^ 2 : ℝ) : ℂ) := by push_cast; ring
-  rw [hcast1, hcast2, hfac,
+  rw [hfac,
     Complex.mul_cpow_ofReal_nonneg (inv_pos.mpr ht2_pos).le hsum_pos.le, hpow_t2]
 
 /-- Every `mayerPeriodCore s` (`Re s > 0`, `Im s > 0`) is a `+1` fixed function of the Lewis
@@ -160,12 +158,20 @@ theorem lewisModularInversion_mayerPeriodCore {s : ℂ} (hs0 : 0 < s.re) (hsim :
     have hker_inv : cauchyKernel (2 * s) t⁻¹ / ((t⁻¹ : ℝ) : ℂ) =
         (averagingFactor (2 * s))⁻¹ * ((t : ℂ) ^ (2 * s + 2) * cauchyWeight (2 * s) t) := by
       unfold cauchyKernel
-      rw [cauchyWeight_inv_eq ht0]
-      field_simp [ht_invC]
+      rw [cauchyWeight_inv_eq ht0,
+        show (averagingFactor (2 * s))⁻¹ * ((t⁻¹ : ℝ) : ℂ) *
+            ((t : ℂ) ^ (2 * s + 2) * cauchyWeight (2 * s) t) =
+          ((averagingFactor (2 * s))⁻¹ * ((t : ℂ) ^ (2 * s + 2) * cauchyWeight (2 * s) t)) *
+            ((t⁻¹ : ℝ) : ℂ) by ring,
+        mul_div_cancel_right₀ _ ht_invC]
     have hker : cauchyKernel (2 * s) t * fieldCore (2 * s) (a / t) / (t : ℂ) =
         (averagingFactor (2 * s))⁻¹ * cauchyWeight (2 * s) t * fieldCore (2 * s) (a / t) := by
       unfold cauchyKernel
-      field_simp [htC]
+      rw [show (averagingFactor (2 * s))⁻¹ * (t : ℂ) * cauchyWeight (2 * s) t *
+            fieldCore (2 * s) (a / t) =
+          ((averagingFactor (2 * s))⁻¹ * cauchyWeight (2 * s) t * fieldCore (2 * s) (a / t)) *
+            (t : ℂ) by ring,
+        mul_div_cancel_right₀ _ htC]
     have hexp1 : (t : ℂ) ^ (-2 : ℂ) * (t : ℂ) ^ (2 * s + 2) * (t : ℂ) ^ (-(2 * s)) = 1 := by
       rw [← Complex.cpow_add _ _ htC, ← Complex.cpow_add _ _ htC,
         show (-2 : ℂ) + (2 * s + 2) + -(2 * s) = 0 by ring, Complex.cpow_zero]
@@ -205,7 +211,7 @@ private theorem differentiableAt_finset_prod {α : Type*} (T : Finset α) (g : �
     DifferentiableAt ℂ (fun z => ∏ m ∈ T, g m z) u := by
   classical
   induction T using Finset.induction_on with
-  | empty => simpa using differentiableAt_const (1 : ℂ)
+  | empty => simp
   | @insert a s has ih =>
     have hfun : (fun z => ∏ m ∈ insert a s, g m z) =
         fun z => g a z * ∏ m ∈ s, g m z := by
@@ -220,7 +226,7 @@ private theorem differentiableAt_finset_sum {α : Type*} (T : Finset α) (g : α
     DifferentiableAt ℂ (fun z => ∑ m ∈ T, g m z) u := by
   classical
   induction T using Finset.induction_on with
-  | empty => simpa using differentiableAt_const (0 : ℂ)
+  | empty => simp
   | @insert a s has ih =>
     have hfun : (fun z => ∑ m ∈ insert a s, g m z) =
         fun z => g a z + ∑ m ∈ s, g m z := by
@@ -323,10 +329,9 @@ private theorem mellin_spectral_linear_relation_eq_zero
       rw [Finset.mul_sum]
       refine Finset.sum_congr rfl fun j hj => ?_
       have hj_re_pos : 0 < (2 * j.1 - u).re := by
-        simp only [Complex.sub_re, Complex.mul_re]
-        have hjμ := hμ_le j hj
-        have h2re : (2 * j.1).re = 2 * j.1.re := by simp
-        linarith
+        have h2re : (2 * j.1 - u).re = 2 * j.1.re - u.re := by simp
+        rw [h2re]
+        linarith [hμ_le j hj]
       have hj_re_lt1 : (2 * j.1 - u).re < 1 := by
         have h2re : (2 * j.1 - u).re = 2 * j.1.re - u.re := by simp
         rw [h2re]
@@ -356,6 +361,7 @@ private theorem mellin_spectral_linear_relation_eq_zero
       rw [hprod_split, hrew, hG_u, hG_j,
         show 2 * j.1 - u - 1 = 2 * j.1 - 1 - u by ring]
       field_simp [hu_ne0, hsub1, hj_ne0, hj_sub1, hG2j]
+      ring
     rw [hF_eq, hrel, mul_zero]
   let ustar : ℂ := ((μ / 2 : ℝ) : ℂ) + I
   have hustar : ustar ∈ U₀ := by
@@ -471,9 +477,9 @@ theorem resonantFieldCore_linearIndependent_Ioi :
   have hint : ∀ j ∈ S,
       IntegrableOn (fun a : ℝ => c j * ((a : ℂ) ^ (u - 1) * fieldCore (2 * j.1) a)) (Ioi 0) := by
     intro j hj
-    have hi := (hm j hj).1
-    change IntegrableOn (fun a : ℝ => (a : ℂ) ^ (u - 1) • fieldCore (2 * j.1) a) (Ioi 0) at hi
-    simpa only [smul_eq_mul] using hi.const_mul (c j)
+    have hi : IntegrableOn (fun a : ℝ => (a : ℂ) ^ (u - 1) * fieldCore (2 * j.1) a) (Ioi 0) := by
+      simpa only [MellinConvergent, smul_eq_mul] using (hm j hj).1
+    exact hi.const_mul (c j)
   have hval : ∀ j ∈ S,
       (∫ a in Ioi (0 : ℝ), c j * ((a : ℂ) ^ (u - 1) * fieldCore (2 * j.1) a)) =
         c j * (1 * (Gammaℝ u * Gammaℝ (2 * j.1 - u) / Gammaℝ (2 * j.1) *
@@ -591,8 +597,11 @@ theorem mayerPeriodCore_linearIndependent_Ioi :
       have hwu1 : (2 * j.1 - u).re < 1 := by
         have hr : (2 * j.1 - u).re = 2 * j.1.re - u.re := by simp
         rw [hr]; linarith [j.2.2.2.1]
-      have hker := cauchyKernel_hasMellin hw0 (by linarith : -1 < u.re)
-        (by have hr : (2 * j.1).re = 2 * j.1.re := by simp; rw [hr]; linarith)
+      have hwu_ker : u.re < (2 * j.1).re + 1 := by
+        have hr : (2 * j.1).re = 2 * j.1.re := by simp
+        rw [hr]
+        linarith
+      have hker := cauchyKernel_hasMellin hw0 (by linarith : -1 < u.re) hwu_ker
       have hcore := core_hasMellin_gammaR hu0 hu1 hwu0 hwu1 hwim
       have hconv := _root_.RHTower.hasMellin_positiveMellinConvolution
         (measurable_cauchyKernel (2 * j.1)) (measurable_fieldCore_of_im_pos hwim)
@@ -602,9 +611,9 @@ theorem mayerPeriodCore_linearIndependent_Ioi :
     have hint : ∀ j ∈ S,
         IntegrableOn (fun a : ℝ => c j * ((a : ℂ) ^ (u - 1) * mayerPeriodCore j.1 a)) (Ioi 0) := by
       intro j hj
-      have hi := (hm j hj).1
-      change IntegrableOn (fun a : ℝ => (a : ℂ) ^ (u - 1) • mayerPeriodCore j.1 a) (Ioi 0) at hi
-      simpa only [smul_eq_mul] using hi.const_mul (c j)
+      have hi : IntegrableOn (fun a : ℝ => (a : ℂ) ^ (u - 1) * mayerPeriodCore j.1 a) (Ioi 0) := by
+        simpa only [MellinConvergent, smul_eq_mul] using (hm j hj).1
+      exact hi.const_mul (c j)
     have hval : ∀ j ∈ S,
         (∫ a in Ioi (0 : ℝ), c j * ((a : ℂ) ^ (u - 1) * mayerPeriodCore j.1 a)) =
           c j * (symbol (2 * j.1) u *
@@ -689,8 +698,8 @@ theorem mayerKreinPosInner_smul_left (c : ℂ) (u v : mayerPeriodKreinSpace) :
   have hsub : (mayerPeriodBasis.repr (c • u)).support ⊆ S := by
     rw [map_smul]
     exact Finsupp.support_smul
-  rw [mayerKreinPosInner_eq_sum_of_subset hsub, mayerKreinPosInner_eq_sum_of_subset Subset.rfl,
-    Finset.mul_sum]
+  rw [mayerKreinPosInner_eq_sum_of_subset hsub,
+    mayerKreinPosInner_eq_sum_of_subset Finset.Subset.rfl, Finset.mul_sum]
   refine Finset.sum_congr rfl fun s _ => ?_
   simp only [map_smul, Finsupp.coe_smul, Pi.smul_apply, smul_eq_mul, mul_assoc]
 
@@ -699,6 +708,7 @@ theorem mayerKreinPosInner_self_eq (u : mayerPeriodKreinSpace) :
       ∑ s ∈ (mayerPeriodBasis.repr u).support, ((‖mayerPeriodBasis.repr u s‖ ^ 2 : ℝ) : ℂ) := by
   unfold mayerKreinPosInner Finsupp.sum
   refine Finset.sum_congr rfl fun s _ => ?_
+  dsimp only
   rw [Complex.mul_conj', Complex.ofReal_pow]
 
 theorem mayerKreinPosInner_self_im (u : mayerPeriodKreinSpace) :
@@ -869,7 +879,7 @@ theorem conj_mayerLaxPhillipsEigenvalue_reflect (s : ℂ) :
     (starRingEnd ℂ) (mayerLaxPhillipsEigenvalue (riemannMayerReflect s)) =
       mayerLaxPhillipsEigenvalue s := by
   unfold mayerLaxPhillipsEigenvalue riemannMayerReflect
-  rw [map_mul, map_neg, Complex.conj_I, map_sub, map_sub, map_div₀, map_one, map_ofNat,
+  simp only [map_mul, map_neg, Complex.conj_I, map_sub, map_div₀, map_one, map_ofNat,
     Complex.conj_conj]
   ring
 
@@ -954,10 +964,9 @@ theorem mayerKreinForm_offLineNegativeState_self {s : upperMayerResonances}
   have hne : reflectUpperResonance s ≠ s :=
     fun h => hs ((reflectUpperResonance_eq_self_iff s).mp h)
   unfold mayerKreinForm
-  rw [mayerKreinReflection_offLineNegativeState, ← neg_one_smul ℂ (mayerOffLineNegativeState s)]
-  -- Expand using conjugate symmetry and linearity in the first argument:
-  rw [← mayerKreinPosInner_conj_symm, mayerKreinPosInner_smul_left,
-    mayerKreinPosInner_conj_symm, map_mul, map_neg, map_one]
+  rw [mayerKreinReflection_offLineNegativeState, ← neg_one_smul ℂ (mayerOffLineNegativeState s),
+    ← mayerKreinPosInner_conj_symm, mayerKreinPosInner_smul_left,
+    map_mul, map_neg, map_one, mayerKreinPosInner_conj_symm]
   unfold mayerOffLineNegativeState
   have hself : mayerKreinPosInner (mayerPeriodBasis s - mayerPeriodBasis (reflectUpperResonance s))
       (mayerPeriodBasis s - mayerPeriodBasis (reflectUpperResonance s)) = 2 := by
@@ -1009,7 +1018,7 @@ theorem mayerOffLineNegativeState_upperRight_linearIndependent :
     Finset.sum_apply, Pi.smul_apply, smul_eq_mul, Finsupp.coe_zero, Pi.zero_apply] at hcoord
   have hterm : ∀ s ∈ S,
       c s * mayerPeriodBasis.repr (mayerOffLineNegativeState (ofUpperRightResonance s))
-        (ofUpperRightResonance k) = if s = k then c k else 0 := by
+        (ofUpperRightResonance k) = if s = k then c s else 0 := by
     intro s _
     unfold mayerOffLineNegativeState
     rw [map_sub, mayerPeriodBasis.repr_self, mayerPeriodBasis.repr_self, Finsupp.sub_apply,
@@ -1024,7 +1033,7 @@ theorem mayerOffLineNegativeState_upperRight_linearIndependent :
     by_cases hsk : s = k
     · subst hsk; simp
     · have hne_u : ofUpperRightResonance s ≠ ofUpperRightResonance k :=
-        fun h => hsk (Subtype.ext (congrArg Subtype.val h))
+        fun h => hsk (Subtype.ext (congrArg (fun x : upperMayerResonances => x.1) h))
       simp [hsk, hne_u]
   rw [Finset.sum_congr rfl hterm, Finset.sum_ite_eq' S k c, if_pos hk] at hcoord
   exact hcoord
@@ -1061,7 +1070,7 @@ theorem mayerKreinForm_neg_on_negativeSubspace {w : mayerPeriodKreinSpace}
     unfold mayerKreinForm
     rw [mayerKreinReflection_eq_neg_on_negativeSubspace hw, ← neg_one_smul ℂ w,
       ← mayerKreinPosInner_conj_symm, mayerKreinPosInner_smul_left,
-      mayerKreinPosInner_conj_symm, map_mul, map_neg, map_one, neg_one_mul]
+      map_mul, map_neg, map_one, mayerKreinPosInner_conj_symm, neg_one_mul]
   rw [heq, Complex.neg_re, Left.neg_neg_iff]
   exact (mayerKreinPosInner_self_re_pos_iff w).mpr hne
 
