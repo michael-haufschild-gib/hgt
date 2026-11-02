@@ -303,9 +303,9 @@ theorem period_real_continuousOn {w : ℂ} (hw : 0 < w.re) (ε c : ℂ) (f : Dis
     linarith
   have hh := (extension_differentiableOn hw ε c f).differentiableAt (hdom_open.mem_nhds hd)
   have hcomp : ContinuousAt (fun x : ℝ => period w ε c f x) a := by
-    change ContinuousAt (fun x : ℝ => extension w ε c f ((x : ℂ) - 1)) a
-    exact ContinuousAt.comp hh.continuousAt
-      (show ContinuousAt (fun x : ℝ => (x : ℂ) - 1) a by fun_prop)
+    change ContinuousAt ((extension w ε c f) ∘ (fun x : ℝ => (x : ℂ) - 1)) a
+    exact ContinuousAt.comp (g := extension w ε c f) (f := fun x : ℝ => (x : ℂ) - 1)
+      hh.continuousAt (by fun_prop)
   exact hcomp.continuousWithinAt
 
 /-- Linear growth bound `‖period w ε c f b‖ ≤ M * b` on `[1, ∞)` deduced directly from
@@ -702,7 +702,7 @@ theorem lewisCriticalInner_modularInversion_adj (s : ℂ) (f g : ℝ → ℂ) :
   have hjac_w : ((b ^ (-2 : ℝ) : ℝ) : ℂ) * (lewisCriticalWeight b⁻¹ : ℂ) =
       (b : ℂ) ^ (-1 : ℂ) * (lewisCriticalWeight b : ℂ) := by
     have hb_pow : ((b ^ (-1 : ℝ) : ℝ) : ℂ) = (b : ℂ) ^ (-1 : ℂ) := by
-      simpa using (Complex.ofReal_cpow hb0.le (-1 : ℝ)).symm
+      simpa using Complex.ofReal_cpow hb0.le (-1 : ℝ)
     rw [← Complex.ofReal_mul, lewisCriticalWeight_inv_mul_jac hb0, Complex.ofReal_mul, hb_pow]
   have hexp_conj : (starRingEnd ℂ) (-(2 * riemannMayerReflect s)) = 2 * s - 1 := by
     unfold riemannMayerReflect
@@ -973,10 +973,10 @@ theorem lewisCoIsometryDefect_eq_neg_integral {s : ℂ} {ψ : ℝ → ℂ}
   have hnorm2_eq : lewisCriticalNormSq (lewisModularInversion (riemannMayerReflect s) ψ) =
       ∫ a in Ioi (0 : ℝ), ‖ψ a‖ ^ 2 * ((a + a⁻¹) ^ (-6 : ℝ) * a ^ (8 * s.re - 5 / 2)) :=
     setIntegral_congr_fun measurableSet_Ioi h2_congr
-  have hf1 := fold_Ioi_zero_to_Ioi_one hfix h1_int
-    (by convert hfold1 using 3; ring)
-  have hf2 := fold_Ioi_zero_to_Ioi_one hfix h2_int
-    (by convert hfold2 using 3; ring)
+  have h1_exp : (4 * s.re - 2 - -(1 / 2 : ℝ)) = 4 * s.re - 3 / 2 := by ring
+  have h2_exp : (4 * s.re - 2 - (8 * s.re - 5 / 2)) = -4 * s.re + 1 / 2 := by ring
+  have hf1 := fold_Ioi_zero_to_Ioi_one hfix h1_int (by rwa [h1_exp])
+  have hf2 := fold_Ioi_zero_to_Ioi_one hfix h2_int (by rwa [h2_exp])
   unfold lewisCoIsometryDefect
   change (∫ a in Ioi (0 : ℝ), ‖ψ a‖ ^ 2 * ((a + a⁻¹) ^ (-6 : ℝ) * a ^ (-(1 / 2 : ℝ)))) -
       lewisCriticalNormSq (lewisModularInversion (riemannMayerReflect s) ψ) = _

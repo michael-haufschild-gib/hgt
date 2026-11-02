@@ -106,9 +106,3 @@ theorem hecke_finite_combination_isometry {ι : Type*} (S : Finset ι)
 end
 
 end GaloisForLFunctions.RenormalizedIntersectionTheory.ResonantStates
-
-#print axioms GaloisForLFunctions.RenormalizedIntersectionTheory.ResonantStates.resonant_finite_combination_isometry
-#print axioms GaloisForLFunctions.RenormalizedIntersectionTheory.ResonantStates.cusp_cutoff_gram
-#print axioms GaloisForLFunctions.RenormalizedIntersectionTheory.ResonantStates.hecke_cutoff_shifts
-#print axioms GaloisForLFunctions.RenormalizedIntersectionTheory.ResonantStates.normalized_hecke_cutoff_shifts
-#print axioms GaloisForLFunctions.RenormalizedIntersectionTheory.ResonantStates.hecke_finite_combination_isometry

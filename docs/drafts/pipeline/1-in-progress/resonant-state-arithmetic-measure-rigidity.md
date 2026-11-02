@@ -11,9 +11,11 @@ The corpus proves exact truncated norms, partner angles, first two Hecke moments
 
 Petridis–Raulf–Risager, *Quantum Limits of Eisenstein Series and Scattering States*, Theorem 1.1, identifies local scattering-state limits as `E(z,2-β)dμ` along the sequences covered there. This is a family retaining β, not a theorem selecting β. Source: <https://arxiv.org/abs/1111.6615>. No analytic statement from this paper is assumed in Lean.
 
-## Cutoff model: paper derivation, Lean verification pending
+## Cutoff model: formalized
 
-Write `τ_(u,Y)=Λ^Y E_u`, `B(u)=Λ(2u)`, with `Λ(1+2u)=0`, `Re u<0`, `Im u>0`.
+Exact declarations, proof and audit: [the joint cusp model](../3-formalized/resonant-cutoff-cusp-model.md).
+
+Write `τ_(u,Y)=Λ^Y E_u`, `B(u)=Λ(2u)`, with `Λ(1+2u)=0`, `-1/2<Re u<0`, `Im u>0`, and cutoffs at least one.
 
 For `Y≤Z`, `τ_(v,Z)-τ_(v,Y)` is the constant Fourier mode on `(Y,Z]`. The other truncated state has zero constant mode there. Hence mixed-height pairings equal their value at `min(Y,Z)`. Maass–Selberg then gives, for distinct parameters as well as equal ones,
 
@@ -25,12 +27,11 @@ This is exactly the Gram kernel of the elementary functions
 The single Weyl term also gives
 `T_p τ_(u,Y)=p^u τ_(u,pY)+p^(-u)τ_(u,Y/p)`.
 For `F_(u,Y)=Y^u τ_(u,Y)`, this becomes `T_p F_(u,Y)=F_(u,pY)+F_(u,Y/p)`.
-At equal parameter, normalized pairings in logarithmic height have kernel
-`exp(-a|x-y|+it(x-y))`, `u=-a+it`. All finite Hecke words therefore read one common height-translation representation, rather than independent prime directions, when all intermediate cutoffs stay at least one.
+The finite-combination isometry also holds for simultaneous transforms at arbitrary primes `p_i` when `Y_i≥p_i`, including all mixed terms between primes and states.
 
 ## Next conjecture: the compact-core return
 
-The Gram proof requires cutoffs at least one: above that height the fundamental domain contains complete horocycles. A Hecke word whose shifted cutoffs remain at least one is therefore represented by elementary cusp powers. Crossing below one encounters incomplete horocycles and modular identifications. The coordinate formula for `heckeTruncated` must not be confused with a proof of automorphic truncation at these smaller heights.
+The Gram proof requires cutoffs at least one: above that height the fundamental domain contains complete horocycles. The proposed extension to repeated Hecke words is the same cusp model whenever all shifted cutoffs remain at least one; this still needs a formal induction. Crossing below one encounters incomplete horocycles and modular identifications. The coordinate formula for `heckeTruncated` must not be confused with a proof of automorphic truncation at these smaller heights.
 
 Determine the exact compact-core return correction for genuine automorphic truncation, then test whether its repeated returns enforce a restriction on the decay rate. This is the first place where spatial localization can distinguish the modular surface from the elementary cutoff model. No such restriction has been established.
 

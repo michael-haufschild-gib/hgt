@@ -156,7 +156,7 @@ theorem lewisModularInversion_mayerPeriodCore {s : ℂ} (hs0 : 0 < s.re) (hsim :
         _ = ((a / t : ℝ) : ℂ) ^ (2 * s) * fieldCore (2 * s) (a / t) := by rw [hrec]
         _ = (a : ℂ) ^ (2 * s) * (t : ℂ) ^ (-(2 * s)) * fieldCore (2 * s) (a / t) := by rw [hquot]
     have ht_jac : ((t ^ (-2 : ℝ) : ℝ) : ℂ) = (t : ℂ) ^ (-2 : ℂ) := by
-      simpa using (Complex.ofReal_cpow ht0.le (-2 : ℝ)).symm
+      simpa using Complex.ofReal_cpow ht0.le (-2 : ℝ)
     have hker_inv : cauchyKernel (2 * s) t⁻¹ / ((t⁻¹ : ℝ) : ℂ) =
         (averagingFactor (2 * s))⁻¹ * ((t : ℂ) ^ (2 * s + 2) * cauchyWeight (2 * s) t) := by
       unfold cauchyKernel
