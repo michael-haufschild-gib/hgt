@@ -43,9 +43,10 @@ theorem dyadicEigenResidualAt_eq_one_on_core {u : ℂ} (hAu : msA u = 0)
       if_neg (not_lt.mpr (h1.trans hY)), if_neg (not_lt.mpr (hm.trans hY)), add_zero]
   rw [dyadicEigenResidualAt_eq hAu hY (coreRectangle_subset_fd hz), hs,
     heckeRemainder_eq_upperBand (p := 2) (by norm_num) u (by linarith)
-      (by linarith [hz.2.1]) (by linarith [hz.2.2]),
+      (by linarith [hz.2.1]) (by norm_num only [Nat.cast_ofNat]; linarith [hz.2.2]),
     upperBandRemainder_resonant (by norm_num) hAu,
     dyadicEigenResidual_on_core hAu hz]
+  norm_num only [Nat.cast_ofNat]
 
 private theorem returnHeight_le_one_of_two_le (k : ℤ) {z : ℍ} (hz : 2 ≤ z.im) :
     returnHeight k z ≤ 1 := by
@@ -61,7 +62,8 @@ theorem dyadicEigenResidualAt_eq_upperBand {u : ℂ} (hAu : msA u = 0)
     (hylo : Y < z.im) (hyhi : z.im ≤ 2 * Y) :
     dyadicEigenResidualAt u Y z = upperBandRemainder 2 u z.im := by
   rw [dyadicEigenResidualAt_eq hAu hY hz,
-    heckeRemainder_eq_upperBand (p := 2) (by norm_num) u (by linarith) hylo (by linarith)]
+    heckeRemainder_eq_upperBand (p := 2) (by norm_num) u (by linarith) hylo
+      (by norm_num only [Nat.cast_ofNat]; linarith)]
   have hn (k : ℤ) : ¬ Y < returnHeight k z :=
     not_lt.mpr ((returnHeight_le_one_of_two_le k hz2).trans hY)
   simp only [dyadicReturnSource, dyadicReturnPower, if_neg (hn 0), if_neg (hn 1),
@@ -70,7 +72,7 @@ theorem dyadicEigenResidualAt_eq_upperBand {u : ℂ} (hAu : msA u = 0)
 /-- A quadratic height test cancels the hyperbolic density on a cusp band. -/
 private theorem quadratic_band_integral {L U : ℝ} (hL : 1 ≤ L) (hLU : L ≤ U) (C : ℝ) :
     (∫ z in fd, if L < z.im ∧ z.im ≤ U then C * z.im ^ 2 else 0) = C * (U - L) := by
-  have h := setIntegral_fd_height hL (fun y => ((C * y ^ 2 : ℝ) : ℂ))
+  have h := setIntegral_fd_height (Y₂ := U) hL (fun y => ((C * y ^ 2 : ℝ) : ℂ))
     ((Complex.continuous_ofReal.comp (continuous_const.mul (continuous_id.pow 2))).continuousOn)
   have he : (fun z : ℍ => if L < z.im ∧ z.im ≤ U then ((C * z.im ^ 2 : ℝ) : ℂ) else 0) =
       fun z => ((if L < z.im ∧ z.im ≤ U then C * z.im ^ 2 else 0 : ℝ) : ℂ) := by
@@ -92,7 +94,7 @@ private theorem quadratic_band_integral {L U : ℝ} (hL : 1 ≤ L) (hLU : L ≤ 
         ring
   exact Complex.ofReal_injective (h.trans hr)
 
-private theorem quadratic_band_integrable {L U C : ℝ} (hL : 1 ≤ L) (hC : 0 ≤ C) :
+private theorem quadratic_band_integrable {L U C : ℝ} (hC : 0 ≤ C) :
     IntegrableOn (fun z : ℍ => if L < z.im ∧ z.im ≤ U then C * z.im ^ 2 else 0) fd := by
   have hm : Measurable (fun z : ℍ => if L < z.im ∧ z.im ≤ U then C * z.im ^ 2 else 0) :=
     Measurable.ite (measurableSet_band L U)
@@ -122,12 +124,13 @@ private theorem upperBand_quadratic_lower {u : ℂ} (hu : u ∈ eisensteinLineDo
   have he : y ^ (1 - 2 * u.re) = y * y ^ (-2 * u.re) := by
     rw [show 1 - 2 * u.re = 1 + (-2 * u.re) by ring, Real.rpow_add hy0, Real.rpow_one]
   rw [norm_sq_upperBandRemainder_resonant (by norm_num) hAu hy0, he]
+  norm_num only [Nat.cast_ofNat]
   have hb := sq_nonneg ‖msB u‖
   have hYp := (Real.rpow_pos_of_pos hY (-2 * u.re)).le
   have hprod := mul_le_mul hp hq hYp (Real.rpow_pos_of_pos (by norm_num) _).le
   have hmid : ‖msB u‖ ^ 2 * y * ((1 / 2) * Y ^ (-2 * u.re)) ≤
       ‖msB u‖ ^ 2 * (2 : ℝ) ^ (2 * u.re) * (y * y ^ (-2 * u.re)) := by
-    convert mul_le_mul_of_nonneg_left hprod (mul_nonneg hb hy0.le) using 1 <;> ring
+    nlinarith only [mul_le_mul_of_nonneg_left hprod (mul_nonneg hb hy0.le)]
   apply le_trans _ hmid
   rw [show (‖msB u‖ ^ 2 * Y ^ (-2 * u.re) / (4 * Y)) * y ^ 2 =
     (‖msB u‖ ^ 2 * Y ^ (-2 * u.re) * y ^ 2) / (4 * Y) by ring,
@@ -149,7 +152,7 @@ theorem dyadicEigenResidualAt_large_cutoff_mass_lower {u : ℂ}
   have hL : 1 ≤ L := by dsimp [L]; linarith
   have hLU : L ≤ U := by dsimp [L, U]; linarith
   have hC : 0 ≤ C := by dsimp [C]; positivity
-  have hi := quadratic_band_integrable (U := U) hL hC
+  have hi := quadratic_band_integrable (L := L) (U := U) hC
   have hb := setIntegral_mono_on hi (dyadicEigenResidualAt_integrable_norm_sq hur hAu hY1)
     isClosed_fd.measurableSet (fun z hz => show
       (if L < z.im ∧ z.im ≤ U then C * z.im ^ 2 else 0) ≤ ‖dyadicEigenResidualAt u Y z‖ ^ 2 from by
@@ -163,7 +166,7 @@ theorem dyadicEigenResidualAt_large_cutoff_mass_lower {u : ℂ}
   rw [quadratic_band_integral hL hLU C] at hb
   have he : C * (U - L) = ‖msB u‖ ^ 2 * Y ^ (-2 * u.re) / 256 := by
     dsimp [C, U, L]
-    field_simp
+    field_simp [hY0.ne']
     ring
   rwa [he] at hb
 
@@ -179,7 +182,8 @@ theorem dyadicEigenResidualAt_small_cutoff_mass_lower {u : ℂ}
   have he : (∫ z in coreRectangle, ‖dyadicEigenResidualAt u Y z‖ ^ 2) =
       ∫ z in coreRectangle, ‖dyadicEigenResidual u z‖ ^ 2 :=
     setIntegral_congr_fun hm fun z hz => by rw [dyadicEigenResidualAt_eq_one_on_core hAu hY hYhi hz]
-  have hb := setIntegral_mono_set (dyadicEigenResidualAt_integrable_norm_sq hur hAu hY)
+  have hb := setIntegral_mono_set (s := coreRectangle)
+    (dyadicEigenResidualAt_integrable_norm_sq hur hAu hY)
     (Eventually.of_forall fun z => sq_nonneg ‖dyadicEigenResidualAt u Y z‖)
     (Eventually.of_forall fun z hz => coreRectangle_subset_fd hz)
   rw [he] at hb
@@ -194,7 +198,7 @@ theorem dyadicEigenResidualAt_uniform_mass_lower {u : ℂ}
   have hY0 : 0 < Y := by linarith
   have he : (-2 * u.re) / 1024 * (∫ z in fd, ‖truncatedLineModel u Y z‖ ^ 2) =
       ‖msB u‖ ^ 2 * Y ^ (-2 * u.re) / 1024 := by
-    rw [integral_norm_sq_of_msA_eq_zero hu hur hAu hY0]
+    rw [integral_norm_sq_of_msA_eq_zero hu hur hAu hY]
     have hne : u.re ≠ 0 := hur.ne
     field_simp
   rw [he]
@@ -211,6 +215,8 @@ theorem dyadicEigenResidualAt_uniform_mass_lower {u : ℂ}
     linarith only [hb, hp]
 
 #print axioms dyadicEigenResidualAt_uniform_mass_lower
+#print axioms dyadicEigenResidualAt_integrable_norm_sq
+#print axioms dyadicEigenResidualAt_mass_of_two_le
 
 end
 

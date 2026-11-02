@@ -144,7 +144,7 @@ theorem periodicExt_ramTwist_eq {m : ℕ} (hm : 0 < m) (δ : ℤ) :
     Int.natCast_dvd_natCast.mpr (Nat.dvd_of_mem_divisors (Nat.snd_mem_divisors_of_mem_antidiagonal hx))
   have hiff : x.2 ∣ (δ % m).toNat ↔ (x.2 : ℤ) ∣ δ := by
     rw [← Int.natCast_dvd_natCast, hs]
-    have e := Int.ediv_add_emod δ m
+    have e := Int.mul_ediv_add_emod δ m
     constructor
     · intro h1
       rw [← e]
@@ -179,7 +179,7 @@ theorem sum_offset_dvd_eq {G : ℝ → ℝ} (hG1 : ∀ t, 1 ≤ |t| → G t = 0)
     · intro j hj
       simp only [Function.mem_support, ne_eq, ite_eq_right_iff, not_forall] at hj
       obtain ⟨⟨k, hk⟩, -⟩ := hj
-      exact ⟨k, by omega⟩
+      exact ⟨k, by show (e : ℤ) * k = j; omega⟩
   rw [hsub, tsum_eq_sum (s := Finset.Icc (-(D : ℤ)) D)]
   intro j hj
   split_ifs with hej
@@ -224,11 +224,12 @@ theorem sum_offset_ramTwist_eq (hφ : ContDiff ℝ 2 φ) (hφsupp : ∀ u, u ∉
     rw [sum_congr rfl e, ← Finset.mul_sum, hl]
     field_simp
   rw [sum_congr rfl hx]
-  simp_rw [mul_add, Finset.sum_add_distrib, ← Finset.sum_mul, ← Finset.mul_sum]
-  rw [show ∑ x ∈ m.divisorsAntidiagonal, (ArithmeticFunction.moebius x.1 : ℝ) * (a * (∫ u, φ u) ^ 2)
-      = (∑ x ∈ m.divisorsAntidiagonal, (ArithmeticFunction.moebius x.1 : ℝ)) * (a * (∫ u, φ u) ^ 2)
-      by rw [Finset.sum_mul], sum_antidiagonal_moebius hm, zero_mul, zero_add]
-  rw [Finset.mul_sum, Finset.mul_sum]
-  exact sum_congr rfl fun x _ => by ring
+  have hsplit : ∀ x ∈ m.divisorsAntidiagonal, (ArithmeticFunction.moebius x.1 : ℝ) *
+      (a * ((∫ u, φ u) ^ 2 + 2 * aliasDensity φ (a / x.2))) =
+      (ArithmeticFunction.moebius x.1 : ℝ) * (a * (∫ u, φ u) ^ 2) +
+        2 * a * ((ArithmeticFunction.moebius x.1 : ℝ) * aliasDensity φ (a / x.2)) :=
+    fun x _ => by ring
+  rw [sum_congr rfl hsplit, sum_add_distrib, ← sum_mul, sum_antidiagonal_moebius hm, zero_mul,
+    zero_add, ← mul_sum]
 
 end GaloisForLFunctions.ArithmeticHodgeTheoryOfDegenerations
