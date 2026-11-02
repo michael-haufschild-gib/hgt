@@ -94,7 +94,8 @@ through mollifiers and Jensen.
 | 47 | Certify the Jensen gap from primes in `(T^θ, P]` by a truncated linear tilt `dQ/dP = 1 + λX·1_{|X|≤K}` (Donsker–Varadhan) | refuted | the tilt needs `|λX| ≤ 1`, and the lost mass `E[X²1_{|X|>K}]` needs the fourth moment of the prime polynomial `X`, whose square has length `P²`: the cap is `P ≤ T^{½}`, exactly the mollifier cap; a heavy lower tail of `log|ζM|` (near zeros) can make the Jensen gap `≪` the variance |
 | 48 | Calibrations by structure (Beurling systems: Euler product, no functional equation; Davenport–Heilbronn: functional equation, no Euler product) | corrected | Davenport–Heilbronn satisfies block 3 (row 13) by dominance; for `ζ` the AFE ratio `R = χA*/A` has `|R| ≡ 1` on the line (maximal balance), so dominance is unavailable and block 3 is the scarcity of bubble curves `{|R| = 1, σ ≠ ½}` at depth `≥ a/L` |
 | 49 | Total positivity (Pólya–Schoenberg): RH iff `ℱ[ξ(½)/ξ(½ + ·)]` on the real axis of `ξ` is a Pólya frequency function | reduction | non-moment and non-reflection, but local total positivity at scale `1/T` is Hankel/Turán positivity of the Taylor data, i.e. Jensen-polynomial hyperbolicity; Griffin–Ono–Rolen–Zagier give fixed degree with large shift, far from degree `≍ T²` at shift `0` |
-| 50 | Block 3 through the AFE half at its natural height: (first-order model) block 3 ⟺ `E log|A_t(½ + a/L + it)| = o(1)`, `A_t = Σ_{n≤√(t/2π)} n^{−s}` | reduction | `A_t` is short (`√T`), so `E|A|²`, `E|A|⁴` are exact, but its inverse is not short (the cutoff destroys multiplicativity; truncation residues have mean square `≍ L`), and the Bohr–Jessen model predicts a positive Mahler measure (the Bohr lift vanishes in the polydisc); the self-dual regime `t ≈ 2πN²` is non-random, and the scarcity of right-zeros of `A_t` is itself the content of block 3 |
+| 50 | Block 3 through scarcity of right-zeros of the AFE half `A_t = Σ_{n≤√(t/2π)} n^{−s}` at its natural height | refuted (numerics) | at `T = 10⁴, 10⁵, 10⁶` (windows of height 300) `A_t` has right-zeros at depth `> 1/L` amounting to `8–10%` of the ζ-zero count and at depth `> 2/L` to `2%`, stable in `T`; the phase `θ + arg A` reverses on `≈ 8%` of heights, reversals mostly `< π`; yet ζ has no off-line zeros there. Right-zeros of a fixed half do not produce off-line zeros; Levinson's bound `N − N₀ ≤ 2·#{right-zeros of the half}` is lossy by exactly this |
+| 51 | Level-set topology of `R = χA*/A`: `log|R|` is odd across the line (`|R(1−s̄)| = 1/|R(s)|`), each right-zero of `A` is a pole of `R` inside a component ("island") of `{log|R| > 0}`, and by the argument principle each island boundary carries exactly one point with `R = −1`, a zero of `A + χA*`; the maximum principle forces every island to contain a pole | reduction (non-moment, non-reflection) | ζ stays on the line iff the `R = −1` point of every island lies on the critical-line part of its boundary; block 3 ⟺ islands placing that point at depth `≥ a/L` are `o(N)`. Hermite–Biehler (no islands) is sufficient but false for the AFE half; the de Branges half `E` with no islands exists iff RH. Numerics at `T = 10⁵`: for every right-zero of `A` at depth `2.1–3.1/L`, Newton for `A + χA*` lands on the critical line within `0.4` in height (`|ζ| ≈ 0.05`, the Riemann–Siegel remainder size) and `log|R| > 0` just right of the line, so the islands attach although a single zero attaches only below depth `2/L` (Apollonius: `2d/(d²+τ²) > L`); attachment beyond `2/L` is carried by the neighbouring zeros of `A`, whose right-zeros are shadows `ρ₀ − A(ρ₀)/A'(ρ₀)` of on-line ζ-zeros. This is a restatement of critical-scale RH, not an independent producer |
 
 ## Formalized
 
@@ -107,6 +108,16 @@ through mollifiers and Jensen.
   by `2π e^{−2π²}`). With the Jensen sharpness: at fixed mollifier length no moment data, finite or
   complete, fixes the critical-line log-mean. Standard axioms only; wired into `RHTower.lean`.
 
+## Non-moment, non-reflection cluster (rows 39–51)
+
+Landau positivity, topological sign counting, pointwise window certificates, Hecke eigen-relations,
+total positivity, Bombieri–Hejhal dominance and the level-set topology of `χA*/A` were each run to
+a verdict. Every one either reduces to the abscissa law, to Levinson's half-zero count, or to a
+restatement of critical-scale RH (island attachment, row 51). NO POSITIVE SALVAGE FOUND as a formal
+theorem in this cluster; the corrected calibration (row 13: Davenport–Heilbronn satisfies block 3)
+and the numerics (row 50: the AFE half has `≈ 9%` critical-scale right-zeros while ζ has none) are the
+recorded insights.
+
 ## Open core
 
 An unconditional bound for the damped long-range energy, equivalently cancellation of size
@@ -114,4 +125,4 @@ An unconditional bound for the damped long-range energy, equivalently cancellati
 multiplicity. No mechanism above survives.
 
 ## Log
-- 2026-11-02 — created; rows 1–50; rows 13 and 48 corrected (Bombieri–Hejhal); row 17 corrected after reading the rank–trace census; minimal input identified (critical-line log-mean).
+- 2026-11-02 — created; rows 1–51; rows 13 and 48 corrected (Bombieri–Hejhal); row 17 corrected after reading the rank–trace census; minimal input identified (critical-line log-mean).

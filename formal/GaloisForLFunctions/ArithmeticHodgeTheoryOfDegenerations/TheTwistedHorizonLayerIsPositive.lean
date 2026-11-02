@@ -214,7 +214,7 @@ theorem norm_sq_dirichletPoly_twisted_le {h : ℝ → ℝ} {A : ℝ} (hh : ContD
   have hN0 : (0 : ℝ) < N := by exact_mod_cast hN
   have hBh0 : 0 ≤ Bh := (abs_nonneg _).trans (hB 0)
   set s : ℂ := 1 / 2 + Complex.I * τ with hsdef
-  have hs0 : 0 ≤ s.re := by simp [hsdef]; norm_num
+  have hs0 : 0 ≤ s.re := by simp [hsdef]
   have hs2 : s.re ≤ 2 := by simp [hsdef]; norm_num
   have hb := norm_twistedRiemannSum_le hh hA hsupp hB hLh hχ hs0 hs2 hN
   rw [hsdef, gammaOf_half_add] at hb
@@ -238,9 +238,177 @@ theorem norm_sq_dirichletPoly_twisted_le {h : ℝ → ℝ} {A : ℝ} (hh : ContD
   have hsq : ((N : ℝ) ^ (-(1 / 2 : ℝ))) ^ 2 = (N : ℝ)⁻¹ := by
     rw [← Real.rpow_natCast, ← Real.rpow_mul hN0.le]
     norm_num
+    exact Real.rpow_neg_one _
   have h2 := pow_le_pow_left₀ (by positivity) hb' 2
   rw [mul_pow, hsq] at h2
   rw [← le_div_iff₀' (inv_pos.mpr hN0), div_inv_eq_mul, mul_comm] at h2
   · exact h2
+
+/-- **Positivity of twisted windows.** At every resolution `0 < c ≤ N` the normalized form of a
+twisted window is at least `−C₀ (L_h + B_h)²/N²`; `C₀` depends only on `φ`, `A` and `χ`. -/
+theorem twisted_horizon_form_ge {φ : ℝ → ℝ} (hφ : ContDiff ℝ 2 φ)
+    (hφsupp : ∀ u, u ∉ Set.Icc 0 1 → φ u = 0) (hφ2 : 0 < ∫ u, φ u ^ 2) {A : ℝ} (hA : 0 ≤ A)
+    {χ : ℕ → ℝ} {m : ℕ} (hχ : MeanZeroTwist χ m) :
+    ∃ C₀ : ℝ, 0 ≤ C₀ ∧ ∀ h : ℝ → ℝ, ContDiff ℝ 2 h → (∀ y, y ∉ Set.Icc (-A) 0 → h y = 0) →
+      ∀ (Bh : ℝ) (Lh : NNReal), (∀ y, |h y| ≤ Bh) → LipschitzWith Lh h →
+        ∀ N : ℕ, 1 ≤ N → ∀ c : ℝ, 0 < c → c ≤ N →
+          -(C₀ * ((Lh : ℝ) + Bh) ^ 2) / (N : ℝ) ^ 2 ≤
+            c⁻¹ * (weilQuad (atomicTest N (twistedWeights h χ N) (atomDilate φ (c / N))) /
+              ∫ u, atomDilate φ (c / N) u ^ 2) := by
+  have hφc : HasCompactSupport φ := HasCompactSupport.intro isCompact_Icc fun u hu => hφsupp u hu
+  obtain ⟨M, hM0, hM⟩ := exists_weilQuad_ge_of_lowFrequency (A + 1)
+  have hτ₀ := archHorizon_nonneg (A + 1)
+  obtain ⟨Φ, hΦ0, hΦ⟩ := exists_norm_paperFT_le hφ.continuous hφc (archHorizon (A + 1) + 1)
+  have hS0 : 0 ≤ ∑ j ∈ range m, |χ j| := Finset.sum_nonneg fun _ _ => abs_nonneg _
+  have hE0 := Real.exp_pos (2 * A)
+  refine ⟨(2 + M) * Φ ^ 2 * (2 * (∑ j ∈ range m, |χ j|) *
+      ((1 + archHorizon (A + 1)) * Real.exp (2 * A))) ^ 2 / ∫ u, φ u ^ 2, by positivity, ?_⟩
+  intro h hh hsupp Bh Lh hB hLh N hN c hc hcN
+  have hBh0 : 0 ≤ Bh := (abs_nonneg _).trans (hB 0)
+  have hN0 : (0 : ℝ) < N := by exact_mod_cast hN
+  have hw : 0 < c / N := div_pos hc hN0
+  have hw1 : c / N ≤ 1 := (div_le_one hN0).mpr hcN
+  set τ₀ := archHorizon (A + 1) with hτ₀def
+  set S := ∑ j ∈ range m, |χ j| with hSdef
+  set E := Real.exp (2 * A) with hEdef
+  set x := twistedWeights h χ N with hxdef
+  set Kb := ((Lh : ℝ) + (1 + τ₀) * Bh) * E with hKb
+  have hKb0 : 0 ≤ Kb := by positivity
+  -- the twisted Riemann sums at the points we need
+  have hD : ∀ s : ℂ, 0 ≤ s.re → s.re ≤ 2 → ‖s - 1‖ ≤ 1 + τ₀ →
+      ‖((N : ℝ) : ℂ) ^ (-s) * dirichletPoly N x (gammaOf s)‖ ≤ 2 * S * Kb / N := by
+    intro s h0 h2 h1
+    refine (norm_twistedRiemannSum_le hh hA hsupp hB hLh hχ h0 h2 hN).trans ?_
+    rw [hKb]
+    gcongr
+  set B := (c / N) ^ 2 * Φ ^ 2 * (N * (2 * S * Kb / N) ^ 2) with hBdef
+  have hB0 : 0 ≤ B := by positivity
+  -- low frequencies
+  have hlow : ∀ τ : ℝ, |τ| ≤ τ₀ →
+      ‖paperFT (cx (centredAtomicTest φ x c N)) τ‖ ^ 2 ≤ B := by
+    intro τ hτ
+    rw [paperFT_centredAtomicTest hφ.continuous hφc x hc hN, norm_mul, norm_mul, norm_mul]
+    have he : ‖Complex.exp (-(Complex.I * (τ : ℂ) * (Real.log N : ℂ)))‖ = 1 := by
+      rw [show -(Complex.I * (τ : ℂ) * (Real.log N : ℂ)) = ((-(τ * Real.log N) : ℝ) : ℂ) *
+        Complex.I by push_cast; ring, Complex.norm_exp_ofReal_mul_I]
+    have hφτ : ‖paperFT (cx φ) (((c / N : ℝ) : ℂ) * τ)‖ ≤ Φ := by
+      refine hΦ _ ?_
+      rw [norm_mul, Complex.norm_real, Complex.norm_real, Real.norm_eq_abs, Real.norm_eq_abs,
+        abs_of_pos hw]
+      nlinarith [abs_nonneg τ]
+    have hDτ := norm_sq_dirichletPoly_twisted_le hh hA hsupp hB hLh hχ hN τ
+    have hKτ : 2 * S * (((Lh : ℝ) + (1 / 2 + |τ|) * Bh) * E) / N ≤ 2 * S * Kb / N := by
+      rw [hKb]; gcongr; linarith
+    have hDτ' : ‖dirichletPoly N x τ‖ ^ 2 ≤ N * (2 * S * Kb / N) ^ 2 :=
+      hDτ.trans (mul_le_mul_of_nonneg_left (pow_le_pow_left₀ (by positivity) hKτ 2) hN0.le)
+    rw [he, one_mul, Complex.norm_real, Real.norm_eq_abs, abs_of_pos hw, mul_pow, mul_pow, hBdef]
+    exact mul_le_mul (mul_le_mul_of_nonneg_left (pow_le_pow_left₀ (norm_nonneg _) hφτ 2)
+      (by positivity)) hDτ' (by positivity) (by positivity)
+  -- the pole values
+  have hpole : ‖paperFT (cx (centredAtomicTest φ x c N)) (Complex.I / 2)‖ *
+      ‖paperFT (cx (centredAtomicTest φ x c N)) (-Complex.I / 2)‖ ≤ B := by
+    rw [paperFT_centredAtomicTest hφ.continuous hφc x hc hN,
+      paperFT_centredAtomicTest hφ.continuous hφc x hc hN]
+    simp only [norm_mul, Complex.norm_real, Real.norm_eq_abs, abs_of_pos hw]
+    have he : ‖Complex.exp (-(Complex.I * (Complex.I / 2) * (Real.log N : ℂ)))‖ *
+        ‖Complex.exp (-(Complex.I * (-Complex.I / 2) * (Real.log N : ℂ)))‖ = 1 := by
+      have e1 : -(Complex.I * (Complex.I / 2) * (Real.log N : ℂ)) = ((Real.log N / 2 : ℝ) : ℂ) := by
+        push_cast; ring_nf; rw [Complex.I_sq]; ring
+      have e2 : -(Complex.I * (-Complex.I / 2) * (Real.log N : ℂ)) =
+          ((-(Real.log N / 2) : ℝ) : ℂ) := by
+        push_cast; ring_nf; rw [Complex.I_sq]; ring
+      rw [e1, e2, Complex.norm_exp_ofReal, Complex.norm_exp_ofReal, ← Real.exp_add, add_neg_cancel,
+        Real.exp_zero]
+    have hφ1 : ‖paperFT (cx φ) (((c / N : ℝ) : ℂ) * (Complex.I / 2))‖ ≤ Φ := by
+      refine hΦ _ ?_
+      rw [norm_mul, Complex.norm_real, Real.norm_eq_abs, abs_of_pos hw, norm_div, Complex.norm_I]
+      norm_num
+      nlinarith
+    have hφ2' : ‖paperFT (cx φ) (((c / N : ℝ) : ℂ) * (-Complex.I / 2))‖ ≤ Φ := by
+      refine hΦ _ ?_
+      rw [norm_mul, Complex.norm_real, Real.norm_eq_abs, abs_of_pos hw, norm_div, norm_neg,
+        Complex.norm_I]
+      norm_num
+      nlinarith
+    have hD0 : ‖dirichletPoly N x (Complex.I / 2)‖ ≤ 2 * S * Kb / N := by
+      have := hD 0 (by simp) (by simp) (by simp; linarith)
+      rwa [neg_zero, Complex.cpow_zero, one_mul, gammaOf_zero] at this
+    have hD1 : ‖dirichletPoly N x (-Complex.I / 2)‖ ≤ N * (2 * S * Kb / N) := by
+      have := hD 1 (by simp) (by simp) (by simp; linarith)
+      rw [Complex.cpow_neg_one, gammaOf_one, norm_mul, norm_inv, Complex.norm_real,
+        Real.norm_eq_abs, abs_of_pos hN0, inv_mul_le_iff₀ hN0] at this
+      exact this
+    calc ‖Complex.exp (-(Complex.I * (Complex.I / 2) * (Real.log N : ℂ)))‖ *
+          (c / N * ‖paperFT (cx φ) (((c / N : ℝ) : ℂ) * (Complex.I / 2))‖ *
+            ‖dirichletPoly N x (Complex.I / 2)‖) *
+        (‖Complex.exp (-(Complex.I * (-Complex.I / 2) * (Real.log N : ℂ)))‖ *
+          (c / N * ‖paperFT (cx φ) (((c / N : ℝ) : ℂ) * (-Complex.I / 2))‖ *
+            ‖dirichletPoly N x (-Complex.I / 2)‖))
+        = (‖Complex.exp (-(Complex.I * (Complex.I / 2) * (Real.log N : ℂ)))‖ *
+            ‖Complex.exp (-(Complex.I * (-Complex.I / 2) * (Real.log N : ℂ)))‖) *
+          ((c / N) ^ 2 * (‖paperFT (cx φ) (((c / N : ℝ) : ℂ) * (Complex.I / 2))‖ *
+            ‖paperFT (cx φ) (((c / N : ℝ) : ℂ) * (-Complex.I / 2))‖) *
+          (‖dirichletPoly N x (Complex.I / 2)‖ * ‖dirichletPoly N x (-Complex.I / 2)‖)) := by ring
+      _ ≤ 1 * ((c / N) ^ 2 * (Φ * Φ) * ((2 * S * Kb / N) * (N * (2 * S * Kb / N)))) := by
+          rw [he]
+          gcongr
+      _ = B := by rw [hBdef]; ring
+  -- Weil's form of the recentred block
+  have hts : tsupport (centredAtomicTest φ x c N) ⊆ Set.Icc (-(A + 1)) (A + 1) :=
+    (tsupport_centredAtomicTest_subset hφsupp (twistedWeights_eq_zero hsupp χ N) hc hN).trans
+      (Set.Icc_subset_Icc (by linarith) (by linarith))
+  have hQ := hM _ (contDiff_centredAtomicTest hφ x c N) hts B hB0 hlow
+  rw [weilQuad_centredAtomicTest] at hQ
+  have hQ' : -((2 + M) * B) ≤ weilQuad (atomicTest N x (atomDilate φ (c / N))) := by nlinarith
+  -- normalization
+  rw [integral_atomDilate_sq φ hw]
+  have hKbl : Kb ≤ (1 + τ₀) * E * ((Lh : ℝ) + Bh) := by
+    rw [hKb]
+    have hL0 : (0 : ℝ) ≤ Lh := Lh.2
+    nlinarith [mul_nonneg (mul_nonneg hτ₀ hE0.le) hL0]
+  have hI := hφ2
+  have key : (2 + M) * B / (c * (c / N * ∫ u, φ u ^ 2)) =
+      (2 + M) * Φ ^ 2 * (2 * S * Kb) ^ 2 / (∫ u, φ u ^ 2) / (N : ℝ) ^ 2 := by
+    rw [hBdef]; field_simp
+  have hfin : (2 + M) * Φ ^ 2 * (2 * S * Kb) ^ 2 / (∫ u, φ u ^ 2) / (N : ℝ) ^ 2 ≤
+      (2 + M) * Φ ^ 2 * (2 * S * ((1 + τ₀) * E)) ^ 2 / (∫ u, φ u ^ 2) *
+        ((Lh : ℝ) + Bh) ^ 2 / (N : ℝ) ^ 2 := by
+    have h1 : 2 * S * Kb ≤ 2 * S * ((1 + τ₀) * E * ((Lh : ℝ) + Bh)) :=
+      mul_le_mul_of_nonneg_left hKbl (by positivity)
+    have hnum : (2 + M) * Φ ^ 2 * (2 * S * Kb) ^ 2 ≤
+        (2 + M) * Φ ^ 2 * (2 * S * ((1 + τ₀) * E)) ^ 2 * ((Lh : ℝ) + Bh) ^ 2 := by
+      calc (2 + M) * Φ ^ 2 * (2 * S * Kb) ^ 2
+          ≤ (2 + M) * Φ ^ 2 * (2 * S * ((1 + τ₀) * E * ((Lh : ℝ) + Bh))) ^ 2 :=
+            mul_le_mul_of_nonneg_left (pow_le_pow_left₀ (by positivity) h1 2) (by positivity)
+        _ = _ := by ring
+    apply div_le_div_of_nonneg_right _ (by positivity)
+    rw [div_mul_eq_mul_div]
+    exact div_le_div_of_nonneg_right hnum hI.le
+  have hlow' : -((2 + M) * B / (c * (c / N * ∫ u, φ u ^ 2))) ≤
+      c⁻¹ * (weilQuad (atomicTest N x (atomDilate φ (c / N))) / (c / N * ∫ u, φ u ^ 2)) := by
+    rw [inv_mul_eq_div, div_div, mul_comm (c / N * ∫ u, φ u ^ 2) c, ← neg_div]
+    exact div_le_div_of_nonneg_right hQ' (by positivity)
+  rw [neg_div]
+  linarith
+
+/-- Along every schedule `0 < c_N ≤ N` the normalized form of a twisted window has nonnegative
+lower limit. -/
+theorem eventually_twisted_horizon_form_ge {φ : ℝ → ℝ} (hφ : ContDiff ℝ 2 φ)
+    (hφsupp : ∀ u, u ∉ Set.Icc 0 1 → φ u = 0) (hφ2 : 0 < ∫ u, φ u ^ 2) {A : ℝ} (hA : 0 ≤ A)
+    {h : ℝ → ℝ} (hh : ContDiff ℝ 2 h) (hsupp : ∀ y, y ∉ Set.Icc (-A) 0 → h y = 0)
+    {χ : ℕ → ℝ} {m : ℕ} (hχ : MeanZeroTwist χ m) {c : ℕ → ℝ} (hc : ∀ N, 0 < c N)
+    (hcN : ∀ N : ℕ, c N ≤ N) {ε : ℝ} (hε : 0 < ε) :
+    ∀ᶠ N : ℕ in atTop, -ε ≤ (c N)⁻¹ * (weilQuad (atomicTest N (twistedWeights h χ N)
+      (atomDilate φ (c N / N))) / ∫ u, atomDilate φ (c N / N) u ^ 2) := by
+  obtain ⟨C₀, hC₀, hbound⟩ := twisted_horizon_form_ge hφ hφsupp hφ2 hA hχ
+  obtain ⟨Bh, -, hB, -⟩ := exists_bound_lipschitz hh hsupp
+  obtain ⟨Lh, hLh⟩ := ContDiff.lipschitzWith_of_hasCompactSupport
+    (hasCompactSupport_of_window hsupp) hh (by norm_num)
+  have hlim : Tendsto (fun N : ℕ => C₀ * ((Lh : ℝ) + Bh) ^ 2 / (N : ℝ) ^ 2) atTop (𝓝 0) :=
+    tendsto_const_nhds.div_atTop ((tendsto_pow_atTop two_ne_zero).comp tendsto_natCast_atTop_atTop)
+  filter_upwards [hlim.eventually (gt_mem_nhds hε), eventually_ge_atTop 1] with N hN hN1
+  have := hbound h hh hsupp Bh Lh hB hLh N hN1 (c N) (hc N) (hcN N)
+  rw [neg_div] at this
+  linarith
 
 end GaloisForLFunctions.ArithmeticHodgeTheoryOfDegenerations

@@ -115,6 +115,9 @@ equals the central Gamma multiplier modulus. Strict contraction at every
 spectral height holds exactly for `Re w≥1`; every smaller
 positive abscissa admits amplified actual `L²` fields at all large heights.
 A height-independent contraction gap exists exactly for `Re w>1`.
+Its [exact spectrum](../3-formalized/gauss-mayer-cauchy-continuous-spectrum.md)
+is the Gamma multiplier curve together with zero. No nonzero `L²`
+eigenvector exists at any eigenvalue, and no bounded inverse exists.
 Its literal Cauchy image of the canonical core has finite weighted energy
 at most `|m(w,w/2)|²` times the input energy. The
 [actual theta factorization and Mellin spectrum](../3-formalized/gauss-mayer-theta-core-mellin.md)

@@ -51,7 +51,7 @@ theorem tendsto_subpolynomialConductorRatio {R : ℕ → ℕ}
   have hLlim : Tendsto (fun N : ℕ => Real.log (N : ℝ)) atTop atTop :=
     Real.tendsto_log_atTop.comp tendsto_natCast_atTop_atTop
   have hconst : Tendsto (fun N : ℕ => (1 + Real.log 2) / Real.log N) atTop (𝓝 0) := by
-    simpa only [div_eq_mul_inv, mul_zero] using
+    simpa only [div_eq_mul_inv, mul_zero, Function.comp_def] using
       (tendsto_inv_atTop_zero.comp hLlim).const_mul (1 + Real.log 2)
   have hlog : Tendsto (fun N : ℕ => Real.log (Real.log (N : ℝ)) / Real.log N)
       atTop (𝓝 0) := by
@@ -59,9 +59,10 @@ theorem tendsto_subpolynomialConductorRatio {R : ℕ → ℕ}
       ((isLittleO_log_rpow_rpow_atTop 1 zero_lt_one).tendsto_div_nhds_zero).comp hLlim
   have hupper := (hR.add hconst).add hlog
   simp only [add_zero] at hupper
-  apply squeeze_zero' (Eventually.of_forall fun N => ?_) ?_ hupper
-  · exact div_nonneg (by have := Real.log_natCast_nonneg (subpolynomialConductorHull R N); positivity)
+  have hnonneg (N : ℕ) : 0 ≤ subpolynomialConductorRatio R N := by
+    exact div_nonneg (by have := Real.log_natCast_nonneg (subpolynomialConductorHull R N); positivity)
       (Real.log_natCast_nonneg N)
+  apply squeeze_zero' (Eventually.of_forall hnonneg) ?_ hupper
   filter_upwards [hLlim.eventually_ge_atTop 2] with N hL2
   let L := Real.log (N : ℝ)
   let A := max 1 (R N)
