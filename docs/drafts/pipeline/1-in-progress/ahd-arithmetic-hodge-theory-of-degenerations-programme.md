@@ -22,7 +22,7 @@ TheCriticalMultipleOfAWindow, TheAliasingIsCoercive, TheEnergyOfAHorizonBlock,
 TheHorizonBlockBelowTheGridIsSharp, TheSecondOrderTermOfAHorizonBlock,
 TheAliasingIsTheDilationDerivativeOfTheBulk, TheAliasingConstantOfTheTiltedSpline,
 ThePrimesOfAHorizonWindow, TheBulkDeterminesTheSecondOrderTerm, TheWindowIndex,
-TheCountLawOverEveryFiniteRing, TheTwistedHorizonLayerIsZeroBlind.
+TheCountLawOverEveryFiniteRing, TheTwistedHorizonLayerIsZeroBlind, TheWindowIndexCountsTheRightZeros.
 
 ## Status
 - First order = count: `J(m) = J(1) #ℙ⁷(ℤ/m)`; count law over every finite ring (𝔽_q[T] calibration) [L].
@@ -34,8 +34,19 @@ TheCountLawOverEveryFiniteRing, TheTwistedHorizonLayerIsZeroBlind.
   critical multiple `7J(1)‖H‖²_{−8}/(κ|Q|)` [L].
 - General: `s^βE₁(s) → J` ⇒ at `c^{β+1}/log N → K`: `→ κQ(H) + (βJ/K)‖H‖²_{−(β+1)}` [L].
 - Primes of a window: departing jumps pay their creation; Markov form at level `⌊e^A⌋` [L].
-- Window index: horizon Gram → pencil `κQ + (βJ/K)⟨,⟩`; ind₋(pencil) ≤ eventual ind₋(G_N) ≤ #right zeros [L].
+- Window index: horizon Gram → pencil `κQ + (βJ/K)⟨,⟩`; ind₋(pencil) ≤ eventual ind₋(G_N) [L].
+- Window index law: `P_K = κW(H) + (βJ/K)A(H)`, `A ⪰ 0`; monotone in K; = ind₋W(H) for large K;
+  some family has index ≥ n iff ≥ n right zeros (cubic-spline translates moved into a window);
+  RH iff the window index vanishes [L].
+- Twisted horizon windows (mean-zero periodic twist) see no zero: twisted Riemann sums `O(1/N)` [L].
+
+## Next: second-order term of twisted windows
+Claim: for `χ` `m`-periodic of mean zero, `c⁻¹⟨Wx,x⟩ − (log N/∫φ²)𝒜^χ_N → 0` with
+`𝒜^χ_N = (2/N)Σ_n h_n² Σ_{k} |χ̂(k)|² |φ̂(2πk cn/(mN))|²` (Poisson on residue classes); no Weil
+term (pole amplitudes and the quiet region `|τ| ≤ πNe^{−A}/m` vanish by Kuzmin–Landau with the
+twist's additive characters). For `χ = c_m` the constant is `Σ_{(k,m)=1}(m/k)^{β+1} ∝ J_{β+1}(m)`:
+the conductor-`m` count. Positive: twisted windows are polarized by the count.
 
 ## Open
-Window index as counting function in K; bulk second order; uniform bulk ledger to `N^{1/2−ε}`;
-count of the second order; integer; `𝔽_q[T]` calibration. See README §9.
+Jump multiples of a family; window index vs width (Landau–Widom); bulk second order; uniform bulk
+ledger to `N^{1/2−ε}`; count of the second order; integer; `𝔽_q(T)` complete family. See README §9.

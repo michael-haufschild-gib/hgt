@@ -271,10 +271,17 @@ theorem primeConductor_lower_frame_of_disjoint_multiples (S : Finset ℕ) (a : �
     intro n _
     rw [show primeSpike S a n / Real.sqrt n - primeOffset S a * (1 / Real.sqrt n) =
       (primeSpike S a n - primeOffset S a) / Real.sqrt n by ring, div_sqrt_nat_sq]
-  simp only [hG, hE, harmonic_head_eq hMN, hA, sum_primeSpike_sq_div S a N hP hdisj] at hh
+  simp only [hG, hE, hA, sum_primeSpike_sq_div S a N hP hdisj] at hh
+  have hpaid : (harmonic M : ℝ) *
+      (∑ p ∈ S, ((p : ℝ) / p.totient) * (harmonic (N / p) : ℝ) * a p ^ 2) ≤
+      (harmonic N : ℝ) *
+        ∑ n ∈ Icc 1 N, (primeSpike S a n - primeOffset S a) ^ 2 / n := by
+    convert hh using 1
+    congr 1
+    exact (harmonic_head_eq hMN).symm
   calc
     _ ≤ (harmonic N : ℝ) *
-        ∑ n ∈ Icc 1 N, (primeSpike S a n - primeOffset S a) ^ 2 / n := hh
+        ∑ n ∈ Icc 1 N, (primeSpike S a n - primeOffset S a) ^ 2 / n := hpaid
     _ = _ := by rw [norm_prime_packet_eq S a hP N]; field_simp
 
 /-- Prime conductors strictly above the square-root horizon retain a uniform lower

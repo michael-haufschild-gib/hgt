@@ -120,6 +120,7 @@ norm, determined by the first-order data `(β, J)` of the bulk; its critical mul
 | Jordan coefficient | ADT `jordanCoefficient`, `jordanTotient` | `J(m) = lim c⁷E_m(c)`; `J_k(m)` |
 | Window aliasing | `windowAlias` | `h(log x)² a_φ(c max(x, e^{−A}))`, the integrand of `𝒜_N` |
 | Second-order limit, pencil and horizon Gram matrices | `secondOrderLimit`, `pencilGram`, `horizonGram`, `horizonTest` | `κQ(H) + (βJ/K)‖H‖²_{−(β+1)}`; its polarization on a family; Weil's Gram matrix of the horizon tests |
+| Weil and aliasing parts of the pencil | `weilWindowGram`, `aliasGram` | `κ W(H_i, H_j)`; `∫ e^{−(β+1)y} H_i H_j` |
 | Twisted windows | `twistedWeights`, `MeanZeroTwist`, `twistedLedger` | `χ(n) h(log(n/N))/√n` with `χ` periodic of mean zero |
 | Unimodular vectors, projective space over a ring | `Unimodular`, `ProjSpace` | `R^k` entries generating `R`; modulo `Rˣ` |
 | Möbius horizons | RAPT `mobiusHorizon`, `horizonBoundary` | exact zero-side reading of atomic vectors |
@@ -214,10 +215,13 @@ In AHD's language a horizon window `H` has the exact critical multiple
 negative above it. On a family of windows the second-order term polarizes to the **pencil Gram
 matrix** `P_K = κ Q(H_i, H_j) + (βJ/K)⟨H_i, H_j⟩_{−(β+1)}`, the entrywise limit of the normalized
 horizon Gram matrices `G_N` of the complete family. The **window index** `ind₋(P_K)` is read by the
-complete family (eventually `ind₋(P_K) ≤ ind₋(G_N)`, lower semicontinuity) and bounded by the number
-of right zeros (Weil's form has at most that many negative squares on compact tests). It is `0` for
-every family and every `K` exactly under RH; EAHT shows that atomic Gram matrices reach the full
-index `κ(K_ζ)` along explicit schedules.
+complete family (eventually `ind₋(P_K) ≤ ind₋(G_N)`, lower semicontinuity). The pencil splits as
+`P_K = κ W(H) + (βJ/K) A(H)`, Weil's Gram matrix of the synthesized tests plus the positive
+semidefinite aliasing Gram matrix, so the window index is nondecreasing in `K` and equals
+`ind₋ W(H)` for all large `K`. Translates of the cubic spline moved into one window carry every
+finite part of the index of Weil's form (AOG), so **some family of windows has window index `≥ n`
+iff `ζ` has at least `n` right zeros**: the window index is the counting function of the right zeros
+read through the degeneration, and RH is its vanishing.
 
 **G. Gluing.** One rank-one gluing at the pole creates the Mertens function (Redheffer, ADT) and
 the one extra negative square (`κ + 1`, AKG). The zero ledger of the bulk is itself a rank-one
@@ -240,7 +244,7 @@ the untwisted horizon windows; twisted horizon windows are zero-blind.
 | Is the horizon layer Weil's form? | Yes. In the iterated limit (horizon, then window of zeros) windows exhaust `κ W(H,H)`. Directly: past the critical curve (`(1+log N)/c^p → 0`) `c⁻¹⟨Wx,x⟩ → κ Q(H)`; at `c^p/log N → K_c` it is `κ Q(H)` up to `K/K_c`; for every schedule the error is `ε + K(1+log N)/c^p`. | `horizon_layer_two_sided`, `tendsto_horizon_layer_supercritical`, `horizon_layer_criticalCurve`, `horizon_window_exhaustion` |
 | What is the second-order term at the critical curve (obstacles summary 2.5.4)? | On horizon blocks, exactly: `c⁻¹⟨Wx,x⟩ → κ Q(H) + (βJ/K) ∫ e^{−(β+1)y} H²` along `c^{β+1}/log N → K`, for every profile with bulk limit `s^β E₁(s) → J` (tilted spline: `β = 7`, `J = J(1)`). For every profile and every schedule with `c → ∞`, `c(log N)²/N → 0`: `c⁻¹⟨Wx,x⟩ = κ Q(H) − log N · N⁻¹ Σ_n h(log(n/N))² E₁'(cn/N) + o(1)`. | `horizon_layer_criticalCurve_of_regularBulk`, `horizon_layer_criticalCurve_exact`, `horizon_layer_sharp`, `horizon_layer_sharp_bulk`, `horizonForm_eq` |
 | Which structure polarizes the second-order term? | The first-order count, through the monodromy. The aliasing density is the dilation derivative of the bulk energy, `a_φ = −(∫φ²/2) E₁'`, positive because `E₁` is antitone; its window average at the local overlaps `c e^y` is `β J(1)` times `‖H‖²_{−8}`. So the second-order term is a pencil: Weil's form plus `1/K` times a positive definite form built from `J(1)`. It is positive at every multiple iff `Q ≥ 0` on horizon windows, i.e. iff RH. On the bulk, the zero charge is the Li-type pole charge (positive per zero). | `hasDerivAt_completedShellEnergy`, `aliasLimit_eq`, `tendsto_rpow_seven_mul_completedShellEnergy_tilted`, `re_inv_mul_one_sub_pos`, `riemannHypothesis_iff_horizon_layer` |
-| What is the integer of the degeneration (carrier C)? | The window index `ind₋(P_K)` of the pencil Gram matrix of a family of windows at multiple `K`: the complete family reads it (`ind₋(P_K) ≤ ind₋(G_N)` eventually) and it never exceeds the number of zeros right of the line; it vanishes for all families and multiples iff RH. | `tendsto_horizonGram`, `eventually_hermNegIndex_pencilGram_le`, `hermNegIndex_pencilGram_le_offLineCount` |
+| What is the integer of the degeneration (carrier C)? | The window index `ind₋(P_K)` of the pencil Gram matrix of a family of windows at multiple `K`: the complete family reads it (`ind₋(P_K) ≤ ind₋(G_N)` eventually); it is nondecreasing in `K` and equals Weil's index on the family for large `K`; some family has window index `≥ n` iff `ζ` has `≥ n` right zeros; it vanishes for all families and multiples iff RH. | `tendsto_horizonGram`, `eventually_hermNegIndex_pencilGram_le`, `pencilGram_eq`, `hermNegIndex_pencilGram_mono`, `eventually_hermNegIndex_pencilGram_eq`, `windowIndex_law`, `riemannHypothesis_iff_windowIndex_eq_zero` |
 | What is the critical multiple of a window? | Exactly `K*(H) = 7 J(1) ‖H‖²_{−8}/(κ |Q(H)|)` for `Q(H) < 0` (`+∞` otherwise): positive below, negative above. Before the exact constant: coercive bounds `κ Q(H) + a/K ≤ · ≤ κ Q(H) + b/K`. | `criticalMultiple_exact`, `horizon_layer_coercive`, `horizon_layer_lower_criticalCurve`, `horizon_layer_criticalCurve` |
 | Where does the horizon term of a conductor live? | Only at `e = 1`: `D_e(s;N) − [e=1]N^s/s → ζ(1−s)J_s(e)`. | `tendsto_conductorDirichlet_sub_horizonTerm`, `conductorDirichlet_eq` |
 | Is positivity at one fixed multiple of the critical curve RH? | No: positivity at multiple `K` is `κ Q(H) ≥ −7J(1)‖H‖²_{−8}/K` on every window (sub-RH); every window with `Q(H) < 0` turns negative past `K*(H)`. RH is positivity at every multiple. | `criticalMultiple_exact`, `weilQuad_halfWeight_ge_of_horizon_nonneg`, `eventually_horizon_neg_of_weilQuad_neg` |
@@ -336,14 +340,15 @@ Stepanov over `ℤ` (AET) and over curves (LST).
 | The bulk determines the second order: `s^β E₁ → J` gives `κQ(H) + (βJ/K)‖H‖²_{−(β+1)}` | `horizon_layer_criticalCurve_of_regularBulk`, `tendsto_rpow_mul_horizonAlias_of_regularBulk`, `integral_windowAlias_eq`, `abs_aliasDensity_sub_le` | proved |
 | Calibration: the count law over every finite ring; Hensel law over every finite local ring | `natCard_unimodular_eq`, `natCard_unimodular_local`, `natCard_projSpace_local` | proved |
 | The window index: Gram matrices converge to the pencil; the index is read by the family and bounded by the right zeros | `tendsto_horizonGram`, `pencilGram_isHermitian`, `eventually_hermNegIndex_pencilGram_le`, `hermNegIndex_pencilGram_le_offLineCount` | proved |
+| The window index law: `P_K = κW(H) + (βJ/K)A(H)`, `A ⪰ 0`; monotone in `K`; Weil's index for large `K`; index `≥ n` on some family iff `≥ n` right zeros | `pencilGram_eq`, `hermQuad_aliasGram_nonneg`, `hermNegIndex_pencilGram_mono`, `eventually_hermNegIndex_pencilGram_eq`, `windowIndex_law`, `riemannHypothesis_iff_windowIndex_eq_zero` | proved |
 | The primes of a window: departing jumps pay their creation; Markov form at level `⌊e^A⌋` | `primeJump_departing_eq`, `markovForm_eq_of_level`, `weilQuad_halfWeight_eq_markovForm` | proved |
 
 ## 9. Open research topics
 
-1. **The window index as a counting function.** `K ↦ ind₋(P_K)` is nondecreasing and tends to the
-   negative index of Weil's form on the span; whether it equals the number of generalized
-   eigenvalues of `Q` below `−βJ/(κK)` relative to `‖·‖²_{−(β+1)}`, and how fast it reaches the
-   number of right zeros as the family grows, is open.
+1. **The window index as a counting function.** Proved: monotone in `K`, Weil's index for large
+   `K`, exhaustion of the right zeros. Open: the jump multiples of a family (its critical multiples,
+   the generalized eigenvalues of `κW(H)` against `A(H)`) and the growth of the index with the window
+   width `A` (Landau–Widom: the Shannon number plus the resolved-zero defect).
 2. **Bulk second order.** The collective `1/log N` term of fixed packets (the high zeros, read on the
    arithmetic side through primes in progressions to the moduli `e e'`).
 3. **Uniform bulk ledger.** All zeros of height `≤ N^{1/2−ε}` together contribute `o(c/log N)` to every
@@ -401,7 +406,7 @@ Stepanov over `ℤ` (AET) and over curves (LST).
 | Second-order term at the critical curve identified | horizon layer: exactly `κ Q(H) + (βJ/K)‖H‖²_{−(β+1)}` for every profile with bulk limit `s^βE₁ → J` (proved; tilted spline `7J(1)`); bulk second order: open |
 | A count reading the primes inside the jump measure, creation potential paid on a window | the primes beyond the window pay their own creation (proved); a count for the primes inside it: open (corpus foothold on prime-free cycles) |
 | Gluing theorem with exactly one negative square | AKG `κ + 1`; zero ledger of the bulk is a positive pole gluing |
-| An integer with a structural bound | the window index `ind₋(P_K)`: read by the complete family, bounded by the number of right zeros (proved); a source-defined bound forcing it to `0` (WD's sectorial multiplier): open |
+| An integer with a structural bound | the window index `ind₋(P_K)`: read by the complete family, monotone in the multiple, its supremum over families is the number of right zeros, RH iff it vanishes (proved); a source-defined bound forcing it to `0` (WD's sectorial multiplier): open |
 | Calibrations separating `ζ` from the fakes | negative result: ledgers, the count law (over every finite ring, so over `𝔽_q[T]`) and the aliasing constant carry no selection; selection enters only through `Q(H)` |
 
 ## 13. What counts as a contribution
@@ -453,7 +458,8 @@ count: for every profile with bulk limit `s^β E₁(s) → J` it is exactly
 `κ Q(H) + (β J/K) ∫ e^{−(β+1)y} H²` at the multiple `K` of the critical curve (`7 J(1)` for the tilted
 spline). This pencil is polarized at every multiple exactly when Weil's form is
 nonnegative on horizon windows, which is RH; every window with `Q(H) < 0` has the finite critical
-multiple `β J ‖H‖²_{−(β+1)}/(κ|Q(H)|)`, and on families of windows the negative index of the pencil
-is read by the complete family and never exceeds the number of right zeros. The count of the first
+multiple `β J ‖H‖²_{−(β+1)}/(κ|Q(H)|)`. On families of windows the negative index of the pencil is
+read by the complete family, grows with the multiple, and its supremum over families is exactly the
+number of right zeros. The count of the first
 order pays the second order at small multiples and nothing at large ones. What the field has not yet built is a mechanism that forces
 the sign of `Q` on horizon windows: a count of the second order that sees the zeros.
