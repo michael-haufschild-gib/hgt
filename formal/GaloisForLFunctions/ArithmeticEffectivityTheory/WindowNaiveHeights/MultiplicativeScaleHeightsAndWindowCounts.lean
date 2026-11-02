@@ -62,6 +62,7 @@ open GaloisForLFunctions.ArithmeticCastelnuovoSeveri
 open GaloisForLFunctions.ArithmeticCorrespondencePositivity
 open GaloisForLFunctions.LatticeSectionTheory
 open GaloisForLFunctions.LatticeSectionTheory.WindowJumpCounts
+open GaloisForLFunctions.ArithmeticCriticalityTheory
 open GaloisForLFunctions.SquareRootThreshold (TemperedConfig temperedConfig_zetaZeroConfig
   lagStructure continuous_lagStructure exists_radius_of_hasCompactSupport)
 open _root_.RHTower _root_.RHTower.CHMDPolar Zeta23
@@ -195,7 +196,7 @@ theorem denseRange_posRatLog : DenseRange posRatLog := by
 def twoPrimeLog (p q : ℕ) : (ℤ × ℤ) →+ ℝ where
   toFun mn := (mn.1 : ℝ) * Real.log p + (mn.2 : ℝ) * Real.log q
   map_zero' := by simp
-  map_add' a b := by push_cast; ring
+  map_add' a b := by simp only [Prod.fst_add, Prod.snd_add]; push_cast; ring
 
 /-- For any two distinct primes `p ≠ q`, `{m log p + n log q : m, n ∈ ℤ}` is dense in `ℝ`. -/
 theorem denseRange_twoPrimeLog {p q : ℕ} (hp : p.Prime) (hq : q.Prime) (hpq : p ≠ q) :
@@ -253,7 +254,7 @@ theorem exists_natCount_iff_nonneg {M : Type*} [AddCommGroup M] {q : M → ℝ}
   constructor
   · rintro ⟨c, B, hB⟩
     exact (exists_naiveHeight_iff_nonneg hq).mp
-      ⟨fun x => (c x : ℝ), 0, B, fun x => by simpa using Nat.cast_nonneg (c x), hB⟩
+      ⟨fun x => (c x : ℝ), 0, B, fun x => by simp, hB⟩
   · intro hnn
     exact ⟨fun x => ⌊q x⌋₊, 1, fun x => abs_natFloor_sub_le_one_of_nonneg (hnn x)⟩
 
@@ -402,8 +403,8 @@ count height at bounded distance from `posRatRosatiForm x` on `ℤ[ℚ_{>0}^×]`
 theorem riemannHypothesis_iff_forall_posRatNatCount :
     RiemannHypothesis ↔ ∀ x : ScalingCycle,
       ∃ c : (PosRatScale →₀ ℤ) → ℕ, ∃ B : ℝ, ∀ ξ, |(c ξ : ℝ) - posRatRosatiForm x ξ| ≤ B := by
-  rw [← zetaScalingDatum_hodgeIndex_iff, (ScalingDatum.hodgeIndex_tfae zetaScalingDatum).out 0 1]
-  refine forall_congr' fun x => ?_
+  refine (zetaScalingDatum_hodgeIndex_iff.symm.trans
+    ((ScalingDatum.hodgeIndex_tfae zetaScalingDatum).out 0 1)).trans (forall_congr' fun x => ?_)
   rw [← zetaOrbitHodgeIndex_pullback_iff_of_denseRange denseRange_posRatLog x,
     ← show zetaPosRatScalingDatum = pullbackScalingDatum zetaScalingDatum posRatLog from rfl,
     orbitHodgeIndex_iff_int, IntOrbitHodgeIndex,
@@ -516,8 +517,7 @@ theorem riemannHypothesis_iff_forall_windowCountPlusNonneg :
 theorem goldenDatum_no_natCount :
     ¬ ∃ c : ℤ × ℤ → ℕ, ∃ B : ℝ, ∀ v, |(c v : ℝ) - intEndDeg goldenDatum v| ≤ B := by
   rintro ⟨c, B, hB⟩
-  exact goldenDatum_no_naiveHeight
-    ⟨fun v => (c v : ℝ), 0, B, fun v => by simpa using Nat.cast_nonneg (c v), hB⟩
+  exact goldenDatum_no_naiveHeight ⟨fun v => (c v : ℝ), 0, B, fun _ => by simp, hB⟩
 
 /-- On the complex-quartet fake (`q = 16`, roots `±8i, ±2i`), every kernel count `deg P(F)` is
 nonnegative, yet no `ℕ`-valued count height exists at bounded distance from `intRosatiDeg`. -/
@@ -527,7 +527,7 @@ theorem complexFake_no_natCount :
   obtain ⟨hdet, -, hno⟩ := complexFake_kernelCounts_nonneg_no_naiveHeight
   refine ⟨hdet, ?_⟩
   rintro ⟨c, B, hB⟩
-  exact hno ⟨fun P => (c P : ℝ), 0, B, fun P => by simpa using Nat.cast_nonneg (c P), hB⟩
+  exact hno ⟨fun P => (c P : ℝ), 0, B, fun _ => by simp, hB⟩
 
 end GaloisForLFunctions.ArithmeticEffectivityTheory.WindowNaiveHeights
 

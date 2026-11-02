@@ -1,7 +1,7 @@
 # RH proof-route frontier
 
 **RH open · 33 live routes · 16 candidates.**
-**Corpus checkpoint:** `58f2f6662514084561adfa4f49c485df269535c0`.
+**Corpus checkpoint:** `286c79b9e3df68a6ce4117184a75a7c3394630ce`.
 
 Live = source observable + proved RH-sufficient receiver + explicit open estimate. Candidate = missing independent source mechanism/landing.
 Evidence: [L] integrated, source-reviewed; [S] unfinished/unintegrated, unverified; [K] individual Lean + standard-only transitive-axiom audit. Untagged established facts: [L].
@@ -123,9 +123,9 @@ Evidence: [L] integrated, source-reviewed; [S] unfinished/unintegrated, unverifi
 ### CHMD — Causal Hyperbolic–Modular Duality
 
 - **Path:** Complete causal prime/Möbius wave bound or odd Doob half-threshold bound → RH.
-- **Established:** Wave/Doob receivers, Haar transport, prime-edge Gamma reserve and growing-packet prime–pole cancellation. Full prime−pole remainder: squared detail-tail norm≤C(M+1)³/(A+1), details a>A, coarse cells b≤M, in original cell masses; uniform in prime/detail horizons. Unit-mass Haar/coarse/pole coordinate bounds.
-- **Open:** Joint growing-coarse/head/tail control paying the cubic coarse cost, then full wave/odd sign with non-arithmetic Gamma, signed potential and infinite-orbit terms.
-- **Sources:** R:CHMDStage22PrimeWaveGrowthLawAndTwoPointSumCriterion; R:CHMDOddSectorCriterion; AID:PrimeWindowRowTails; AID:PrimeWindowUnitCoordinates.
+- **Established:** Wave/Doob receivers, Haar transport and prime-edge Gamma reserve. In original unit Haar/coarse masses, (full prime−pole)/√Y has operator norm O(exp(−√log Y/92160000)), uniformly over every detail horizon and M≤exp(√log Y/184320000). Same bound for the common-horizon all-prime source; normalized prime matrix approaches one separable pole channel [L].
+- **Open:** Complete wave/odd sign: pay Gamma, signed potential and infinite-orbit terms in the receiver's normalization. The retained √Y scaling does not give an unnormalized vanishing error or full-Weil index ceiling.
+- **Sources:** R:CHMDStage22PrimeWaveGrowthLawAndTwoPointSumCriterion; R:CHMDOddSectorCriterion; AID:AllDetailPrimePoleCancellation.
 
 <a id="th"></a>
 ### TH — Theta moment positivity
@@ -172,7 +172,7 @@ Evidence: [L] integrated, source-reviewed; [S] unfinished/unintegrated, unverifi
 
 - **Path:** Global Haar approximation / cofinal damping ε↓0 / every escape limit visible → RH.
 - **Established:** Faithful ζ scattering divisor; Epstein/Eisenstein identification. For 0<Re w<1, Im w>0: positive core energy at zeros; Mellin strips (0,Re w) off zeros, (Re w−1,1) at zeros; u=0 convergence⇔ζ(w)=0; zero moments u=0,w equal ζ′(w). Actual Cauchy norm=central Gamma multiplier modulus: all-height strict contraction iff Re w≥1; uniform gap iff Re w>1. For Re w>0: spectrum=Gamma curve∪{0}, empty logarithmic L² point spectrum, no bounded inverse. Signed constant-forced Mayer solutions extend uniquely to Re z>−1; global inversion/Lewis laws; negative-unit eigenfunctions vanish at zero [L].
-- **Open:** Ray growth and source-specific positive energy excluding off-line poles/cofinal escape, retaining 2ζ(w−1)/(w−1). Global period laws do not classify Mayer eigenspaces. Native [Schur contractivity does not locate scattering zeros](rh-killed-routes.md#scattering-schur) [S].
+- **Open:** Ray growth and source-specific positive energy excluding off-line poles/cofinal escape, retaining 2ζ(w−1)/(w−1). Global period laws do not classify Mayer eigenspaces. Native [Schur contractivity does not locate scattering zeros](rh-killed-routes.md#scattering-schur) [L].
 - **Sources:** CP:TheEscapeCompletenessCriterion; RIT:GaussMayerScatteringVector; RIT:GaussMayerScatteringCharge; RIT:GaussMayerZeroMellinStrip; RIT:GaussMayerCoreZeroMoment; RIT:GaussMayerCauchySharpOperator; RIT:GaussMayerCauchySpectrum; RIT:GaussMayerCauchyNoEigenvectors; RIT:GaussMayerSignedPeriods; RIT:GaussMayerGlobalPeriods.
 
 <a id="jas"></a>
@@ -283,17 +283,17 @@ Evidence: [L] integrated, source-reviewed; [S] unfinished/unintegrated, unverifi
 ### ACS — Arithmetic Castelnuovo–Severi effectivity
 
 - **Path:** Arithmetic effectivity / Rosati heights / bounded Weil coupling → Hodge → RH.
-- **Established:** Exact receivers; finite-grid-blind Künneth effectivity at every aperture; local primitive coercivity. Odd-characteristic hyperelliptic Frobenius calibration gives Hodge/Künneth positivity. All-profile arithmetic Künneth positivity through radius181/500. First-prime jump/graph decomposition through radius½log3 [S]. Shared atomic positivity below.
+- **Established:** Exact receivers; finite-grid-blind Künneth effectivity; odd-characteristic Frobenius calibration; all-profile positivity through radius181/500. First-prime graph through radius½log3 [S]. Length A: model Shannon surplus has maximum2e^A; for each 0<η≤1, eventual genus lower bound (2−η)e^A plus multiplicity excess at its natural threshold [S]. Shared atomic positivity below.
 - **Open:** All-aperture primitive effectivity, paying constrained/mixed modes; alternatively dense-lattice/Gaussian-damped cone bounds ([SC](#sc)) or finite product-group tensor index. Two-prime count-height receiver [S] still needs an independent count producer; flooring a nonnegative form assumes its sign. Sharp genus upper law remains open.
-- **Sources:** G:ExactArithmeticSourceEffectivity; LST:RiemannRochOutsideAFiniteDivisorAtEveryDegree; LST:WindowJumpCounts/SinglePrimeWindowJumpGraphAndObstructions [S]; LST:TheStepanovCountPaysThePrimitiveH1OverFiniteFields; G:TheGenusLawForcesSimpleZeros; AE:WindowNaiveHeights/MultiplicativeScaleHeightsAndWindowCounts [S].
+- **Sources:** G:ExactArithmeticSourceEffectivity; LST:RiemannRochOutsideAFiniteDivisorAtEveryDegree; LST:WindowJumpCounts/SinglePrimeWindowJumpGraphAndObstructions [S]; LST:TheStepanovCountPaysThePrimitiveH1OverFiniteFields; G:TheGenusLawForcesSimpleZeros; CWS:TheWindowGenusIsAYoungConjugate [S]; AE:WindowNaiveHeights/MultiplicativeScaleHeightsAndWindowCounts [S].
 
 <a id="inter-tower-coupling"></a><a id="coupled-tower-signature"></a><a id="sc"></a>
 ### SC — Stokes/Witt–Krein / archimedean successor
 
 - **Path:** Glued affine Weil index≤1 / bounded Gaussian-damped two-prime kernel coupling → RH.
-- **Established:** Exact glued index=κ_ζ+1; complete-matrix/tensor receivers. For distinct primes p,q and fixed τ>0, Gaussian-damped kernel coupling is O(exp(σt)) iff width≤σ, σ≥0, t=m log p+n log q; bounded ℕ² coupling⇔RH, including unattained width. Full prime−pole detail-tail operator bound: see CHMD.
-- **Open:** Prime/archimedean bound for damped coupling, or glued index≤1/complete pole-hyperplane sign. Undamped exact-spline quartets retain positive unattained width and bounded coupling even when every positive inverse-power height sum converges.
-- **Sources:** AKG:TheGluingFormulaAtEveryPlace; AKG:TowerCoupling/CoupledTowerSignatureFormula; ACPL:ConeBoundary/GaussianConeKernel; ACPL:ConeBoundary/PolynomialBoundaryRepulsion; ACPL:ConeMoments/ZeroExponentSplineQuartets; AID:PrimeWindowRowTails.
+- **Established:** Exact glued index=κ_ζ+1; complete-matrix/tensor receivers. For distinct primes p,q and fixed τ>0, Gaussian-damped coupling is O(exp(σt)) iff width≤σ, σ≥0, t=m log p+n log q; bounded ℕ² coupling⇔RH, including unattained width. All-detail/growing-coarse prime–pole norm decay and rank-one approximation: [CHMD](#chmd).
+- **Open:** Prime/archimedean bound for damped coupling, or glued index≤1/complete pole-hyperplane sign. √Y-normalized prime–pole decay supplies neither. Undamped bounded coupling admits off-line quartets even with zero exponent of convergence.
+- **Sources:** AKG:TheGluingFormulaAtEveryPlace; AKG:TowerCoupling/CoupledTowerSignatureFormula; ACPL:ConeBoundary/GaussianConeKernel; ACPL:ConeBoundary/PolynomialBoundaryRepulsion; ACPL:ConeMoments/ZeroExponentSplineQuartets; AID:AllDetailPrimePoleCancellation.
 
 ## Route candidates
 
@@ -315,7 +315,7 @@ Promotion requires the missing independent source mechanism/landing below; an un
 | <a id="candidate-ptr"></a><a id="ptr"></a>**PTR — Photonic source:** prime-faithful lossless stack → real-rooted Ξ limit. | Finite lossless real-rooted stacks; Ξ-limit criterion. Existing converse uses unknown Ξ zeros; continuum port has unit gap. | Independent nonlocal prime-faithful port preserving exact Ξ, or zero-loss mechanism overcoming that gap. | R:PhotonicLosslessProductPortRH; R:PaperPoissonCompletionGap |
 | <a id="rfhm"></a>**RFHM — Support grade:** faithful phase/depth source → non-inverse-covariant wall law. | Full finite-support/phase/grade admission, forward creation and strong cutoff exhaustion. | Source-defined symmetry-breaking phase/depth/compound law with arithmetic wall orientation. Reversible sewing remains inverse-covariant. | R:GammaThetaFullSupportSource; R:PaperRFHMSurvivalInformation |
 | <a id="sec"></a>**SEC — Adjacent prime seam:** exact compactness/Fock boundedness → seam jump zero. | Essential norm=seam jump; exact vanishing and time-one factorial-Fock criteria. | Pre-divisor proof of exact eventual compactness or Fock boundedness at actual zeros. Asymptotic seam smallness is nonselective. | R:XiPrimeSeamAdjacentEssentialNormNoGo; R:TimeOneGammaJetFockRHCriterion |
-| <a id="w1c"></a>**W1C — Clifford–Dirac / centred Lee–Yang:** arithmetic operator or ferromagnetic limit → real-rooted Ξ. | Finite Lee–Yang theorem and Ising-limit receiver; explicit density/field constraints. PM supplies a faithful ζ scattering divisor. | Source-defined Ising couplings with centred slow-field convergence, or a positive/self-adjoint realization of the faithful divisor. A meromorphic resolvent alone does not locate poles on the line. | R:LeeYangIsingGraphDatum; R:IsingLawConvergenceRH; R:HermitianPencilEulerFactorObstruction; RIT:GaussMayerScatteringVector |
+| <a id="w1c"></a>**W1C — Clifford–Dirac / centred Lee–Yang:** arithmetic operator or ferromagnetic limit → real-rooted Ξ. | Finite Lee–Yang theorem and Ising-limit receiver; explicit density/field constraints. PM supplies a faithful ζ scattering divisor. | Source-defined Ising couplings with centred slow-field convergence, or a positive/self-adjoint realization of the faithful divisor. Native [scattering Schur positivity](rh-killed-routes.md#scattering-schur) cannot locate its zeros. | R:LeeYangIsingGraphDatum; R:IsingLawConvergenceRH; R:HermitianPencilEulerFactorObstruction; RIT:GaussMayerScatteringVector |
 | <a id="wbf"></a>**WBF — Source certificates:** arithmetic stream → depth-uniform positive completion → Ξ. | Abstract genealogy Gram/Fredholm recovery and relative determinants; no arithmetic coupling. | Arithmetic certificate stream and source-faithful uniform-depth completion landing on Ξ/Weil positivity. | H:PaperGenealogyFredholmRecovery; H:PaperCriticalGenealogyCompletion |
 
 ## Shared frontier

@@ -103,3 +103,5 @@ a finite conductor sector at every overlap, the affine incidence energy, the `ù
 the interfaces to edge Hodge theory and critical-scale rigidity.
 See `ArithmeticCouplingTheory/README.md`.
 -/
+import GaloisForLFunctions.ArithmeticCouplingTheory.ConeMoments.RVMCompletionCounts
+import GaloisForLFunctions.ArithmeticCouplingTheory.ConeMoments.CriticalSplineSlots

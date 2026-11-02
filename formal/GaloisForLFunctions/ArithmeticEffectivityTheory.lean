@@ -50,6 +50,7 @@ import GaloisForLFunctions.ArithmeticEffectivityTheory.TheBurgessMoment
 import GaloisForLFunctions.ArithmeticEffectivityTheory.TheBurgessEnergy
 import GaloisForLFunctions.ArithmeticEffectivityTheory.TheBurgessBound
 import GaloisForLFunctions.ArithmeticEffectivityTheory.TheLeastQuadraticNonresidue
+import GaloisForLFunctions.ArithmeticEffectivityTheory.WindowNaiveHeights.MultiplicativeScaleHeightsAndWindowCounts
 
 /-!
 # Arithmetic Effectivity Theory

@@ -40,8 +40,13 @@ product and growth proof; it is not part of the established construction.
 
 ## Audit
 
-The zero-exponent off-line model is formalized. Block completion, its
-counting law, and the full-divisor coupling bound are unformalized.
+The zero-exponent off-line model is formalized.
+`exists_unit_block_rvm_count` in `ConeMoments/RVMCompletionCounts.lean`
+proves the counting law for arbitrary finite blocks of the prescribed sizes;
+its direct Lean and transitive axiom audits use only standard axioms.
+`CriticalSplineSlots.lean` also proves nonzero exact rational-slot weights,
+absolute summability, and bounded critical-pair coupling, with standard
+axiom audits. Divisor geometry and full-series assembly remain unformalized.
 The separate count audit found the actual Riemann–von Mangoldt count
 and the theta-tail divisor-capacity theorem. The latter controls radial
 density, without resolving bounded horizontal displacements. No block
