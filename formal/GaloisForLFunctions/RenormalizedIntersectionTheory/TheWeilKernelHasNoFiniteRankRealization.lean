@@ -32,6 +32,8 @@ ranks grow without bound, each finite Gram matrix being realized at some finite 
 open Complex Matrix
 open scoped ComplexConjugate
 open GaloisForLFunctions.HTGeometry GaloisForLFunctions.HeckeKreinToeplitz
+open GaloisForLFunctions.ArithmeticCastelnuovoSeveri (rightZeros)
+open Zeta23
 
 noncomputable section
 
@@ -48,10 +50,11 @@ def HasFiniteRankRealization (k : G → ℂ) (r : ℕ) : Prop :=
 theorem gram_eq_of_realization {k : G → ℂ} {r : ℕ} {ε : Fin r → ℝ} {f : Fin r → G → ℂ}
     (hk : ∀ x y : G, k (x⁻¹ * y) = ∑ i, (ε i : ℂ) * conj (f i x) * f i y)
     {ι : Type*} [Fintype ι] (x : ι → G) :
-    gram k x = (Matrix.of fun i b => f i (x b))ᴴ * diagonal (fun i => (ε i : ℂ)) *
-      Matrix.of fun i b => f i (x b) := by
+    HeckeKreinToeplitz.gram k x = (Matrix.of fun i b => f i (x b))ᴴ *
+      (diagonal (fun i => (ε i : ℂ)) * Matrix.of fun i b => f i (x b)) := by
   ext a b
-  simp only [gram, hk, Matrix.mul_apply, Matrix.mul_diagonal, conjTranspose_apply, of_apply,
+  rw [Matrix.mul_apply]
+  simp only [HeckeKreinToeplitz.gram, hk, Matrix.diagonal_mul, conjTranspose_apply, of_apply,
     Complex.star_def]
   exact Finset.sum_congr rfl fun i _ => by ring
 
@@ -61,11 +64,11 @@ theorem hermPosIndex_gram_le_of_realization {k : G → ℂ} {r : ℕ} {ε : Fin 
     {ι : Type*} [Fintype ι] (x : ι → G) : hermPosIndex (gram k x) ≤ r := by
   classical
   set A : Matrix (Fin r) ι ℂ := Matrix.of fun i b => f i (x b)
-  obtain ⟨W, hW, hpos⟩ := exists_isPosDefOn_finrank_eq_posIndex (gram k x)
-  have hzero : ∀ c : ι → ℂ, A *ᵥ c = 0 → hermQuad (gram k x) c = 0 := by
+  obtain ⟨W, hW, hpos⟩ := exists_isPosDefOn_finrank_eq_posIndex (HeckeKreinToeplitz.gram k x)
+  have hzero : ∀ c : ι → ℂ, A *ᵥ c = 0 → hermQuad (HeckeKreinToeplitz.gram k x) c = 0 := by
     intro c hc
-    rw [gram_eq_of_realization hk x, hermQuad, ← Matrix.mulVec_mulVec, hc, Matrix.mulVec_zero,
-      Matrix.mulVec_zero, dotProduct_zero, Complex.zero_re]
+    rw [gram_eq_of_realization hk x, hermQuad, ← Matrix.mulVec_mulVec, ← Matrix.mulVec_mulVec]
+    simp [A, hc]
   have hinj : Function.Injective (A.mulVecLin.domRestrict W) := by
     rw [← LinearMap.ker_eq_bot, Submodule.eq_bot_iff]
     intro w hw
@@ -84,17 +87,18 @@ theorem hermPosIndex_gram_le_of_realization {k : G → ℂ} {r : ℕ} {ε : Fin 
 theorem posIndex_le_of_realization {k : G → ℂ} {r : ℕ} (h : HasFiniteRankRealization k r) :
     posIndex k ≤ r := by
   obtain ⟨ε, f, hk⟩ := h
-  unfold posIndex negIndex
+  unfold posIndex HeckeKreinToeplitz.negIndex
   refine iSup_le fun n => iSup_le fun x => ?_
   rw [gram_neg, hermNegIndex, neg_neg]
   exact_mod_cast hermPosIndex_gram_le_of_realization hk x
 
 /-- **Negative index of a finite-rank kernel.** -/
 theorem negIndex_le_of_realization {k : G → ℂ} {r : ℕ} (h : HasFiniteRankRealization k r) :
-    negIndex k ≤ r := by
+    HeckeKreinToeplitz.negIndex k ≤ r := by
   obtain ⟨ε, f, hk⟩ := h
   have hneg : HasFiniteRankRealization (fun g => -k g) r :=
     ⟨fun i => -ε i, f, fun x y => by
+      show -k (x⁻¹ * y) = _
       rw [hk, ← Finset.sum_neg_distrib]
       exact Finset.sum_congr rfl fun i _ => by push_cast; ring⟩
   have h := posIndex_le_of_realization hneg
@@ -105,7 +109,7 @@ theorem negIndex_le_of_realization {k : G → ℂ} {r : ℕ} (h : HasFiniteRankR
 theorem rightZeros_infinite_of_realization {r : ℕ}
     (h : HasFiniteRankRealization zetaKernel r) : (rightZeros zetaZeroConfig).Infinite := by
   intro hfin
-  have htop := posIndex_zetaKernel_eq_top_of_finite (Set.not_infinite.mp hfin)
+  have htop := posIndex_zetaKernel_eq_top_of_finite hfin
   have hle := posIndex_le_of_realization h
   rw [htop] at hle
   exact absurd hle (by simp)

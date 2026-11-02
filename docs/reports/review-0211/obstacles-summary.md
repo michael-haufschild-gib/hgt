@@ -1,452 +1,464 @@
 # Obstacles summary — status quo
 
-Companion to `route-obstacles.md` (per route), `walls-ledger.md` (walls) and
-`route-unification-ledger.md` (core problems and route classes). Labels `A*`, `B*`, `S*` refer to
-`route-obstacles.md`; wall labels to `walls-ledger.md`. Corpus: `2605d92e2b` with the working tree.
+Companion to `route-obstacles.md` (per route; labels `A*`, `B*`, `S*`), `walls-ledger.md` (labels
+Σ/Π/Γ) and `route-unification-ledger.md` (core problems, route classes). Corpus: `9ff1dbfc9a` with
+the working tree. Evidence: `[L]` integrated Lean; `[S]` working tree or not wired into its umbrella;
+`[D]` derived here from Lean statements. Window lengths `A`; LST/ACS/RW half-widths `a = A/2`.
 
-Evidence: `[L]` Lean; `[S]` Lean in the working tree or not integrated; `[P]` complete paper proof,
-Lean pending; `[D]` derived here from Lean statements.
+## 1. The big picture
 
-## Picture
+### 1.1 RH has become a statement about a tower of finite objects
+The corpus has turned Weil's criterion into a statement about **windows**: RH holds iff Weil's form
+`Q` is nonnegative on every test supported in `[−A, 0]`, for every length `A` [L]. A window is a
+finite-type arithmetic object:
+- it sees only the prime powers `n ≤ e^A` — two weights agreeing there have the same functional on
+  every test of the window [L];
+- on it, Weil's form is
+  `Q(H) = Ω(0)‖H‖² + J_∞(H) + Σ_{n≤e^A}(Λ(n)/√n)(½fold_n(H) − sym_n(H)) + 2Ĥ(0)Ĥ(1)`:
+  the Gamma factor contributes a negative constant `Ω(0)` and a Lévy jump energy `J_∞ ≥ 0`, each prime
+  power acts by **one fold** of the window onto itself (left end `[−A, −log n]` onto right end
+  `[log n − A, 0]`), and the pole contributes `½⟨2cosh(u/2),H⟩² − ½⟨2sinh(u/2),H⟩²` [L], which is the
+  product `2Ĥ(0)Ĥ(1)` of the transform at `0` and `1` [D];
+- each fold is a nonnegative antisymmetric count minus a **symmetric fold mass**
+  `sym_n = ½∫(H + H(·+log n))²` over the left end; these are the only negative arithmetic terms [L];
+- the prime cost of the window is a canonical density `k_A(u) = ψ_{1/2}(e^{−u}) + ψ_{1/2}(e^{A+u})`, the
+  half-weighted Chebyshev function at the distances to the two ends, with degree
+  `deg K_A = 2ψ_{1/2}(e^A) − Ω(0) ≈ 4e^{A/2}` [L];
+- its negative index `ι(A)` is finite, Shannon-bounded, monotone in `A`, zero for `A ≤ 3/5`, and
+  `sup_A ι(A)` is the number of zeros right of the line [L]; negativity lives only at the two pole
+  values and in a finite frequency band `|τ| ≤ τ₀(A/2)` [L].
 
-1. **One even integer on one hyperplane.** Every route reads `κ = #` distinct zeros right of the
-   line, on `v₁^⊥` [L]. `κ` is even, RH is `κ < 2`, finite `κ` gives `Θ < 1`; glued at any place the
-   index is `κ + 1`; the Hecke orbit of one generic test under two primes carries all of `κ` [L].
+So **each window is a decidable finite problem, and RH is uniformity in `A`.** The analogy with
+verifying zeros up to height `T` is exact in shape: a window of length `A` sees zeros up to its
+Landau height `2πe^A` [L/D]. Proving positivity on longer and longer windows is calibration, not a
+proof; the proof is a law valid for all `A`.
 
-2. **Edge logic decides which producers can work.** A statement proved without zero information
-   holds on every datum sharing that information and stops below the edge of the off-line members.
-   What crosses the edge holds there by structure: an identity, an inherited polarization, or an
-   integer with a structural bound [L/D].
+### 1.2 The degeneration has located `H¹`
+The complete atomic Weil family degenerates along the resolution axis, and its pieces are
+classified [L/S]:
+- **bulk** (fixed conductor packets): the point count `J(1)#ℙ⁷(ℤ/m)` — positive, zero-blind, the same
+  law over every finite ring, so the same over `ℤ` and over `𝔽_q[T]`;
+- **twisted horizon windows** (weights twisted by any mean-zero periodic function — Ramanujan sums,
+  characters): zero-blind, positive at every resolution, coercive; the conductor-two window has second
+  order exactly `(7J(2)/K)∫e^{−8y}H²` with `J(2) = J(1)#ℙ⁷(𝔽₂) = 255J(1)` — a count, no Weil term [S];
+- **untwisted horizon windows**: Weil's window form, plus at the critical curve the conductor-one count
+  `(7J(1)/K)∫e^{−8y}H²`.
 
-3. **The complete family is Weil's window form plus a count.** The complete atomic Weil family
-   degenerates along the resolution axis (ADT, AHD) [L]:
-   - its **bulk** (fixed conductor packets, and the growing subthreshold block below `1/8`) converges
-     after rescaling to the Jordan form `J(m) = J(1)·#ℙ⁷(ℤ/m)` — the point count of projective
-     7-space over `ℤ/m`; weight strings are Hensel towers, the tensor law is the Chinese remainder
-     theorem, the monodromy is eventually idempotent; a zero enters the bulk only through a pole
-     weight of positive real part, so the bulk is positive, zero-blind and selects nothing;
-   - its **horizon layer** (blocks `h(log(n/N))/√n`) is, divided by the overlap, Weil's form `κQ(H)` of
-     the synthesized window test `H = e^{y/2}h` past the critical curve, and
-     `κQ(H) + (7J(1)/K)∫e^{−8y}H²` at `c⁸/log N → K`; the extra term is the dilation derivative of the
-     bulk, prime-free and positive.
-   So the constant-factor wall, the second-order term of the degeneration, the receiver scale and the
-   glued index are one statement: **Weil positivity of window tests of every length** (the horizon
-   criterion; the single Beurling schedule `2L(log L)²`; every fixed `K·c*`) [L]. The degeneration is a
-   complete dictionary; it does not produce a sign.
+Read as a weight decomposition: every piece of the family is a **Tate piece** (a point count of
+projective space over a residue ring) except one, and that one is `H¹` — Weil's window form. The
+degeneration does not orient `H¹`, but it isolates it on the horizon layer: every complete-family
+route (HF, SRT, AIP, ACT, SC, RW, CHMD) has the same sign problem, and the twisted directions are not
+where zeros can hide. On the full space the cross-terms between the pieces are open (B2).
 
-4. **The window Markov form.** On a window of length `A` Weil's form is
-   `(Ω(0) − 2Σ_{n≤e^A}Λ(n)/√n)‖H‖² + J_arch(H) + Σ_{n≤e^A}Λ(n)n^{−½}‖H − H(·+log n)‖² + pole(H)`:
-   only the prime powers `n ≤ e^A` jump; jumps leaving the window pay exactly their creation [L/D].
-   Positivity is known through window length `0.724` (radius `181/500`), past the first prime
-   `log 2`; the `{∞,2}` trace identity is exact through `log 3` [L].
+### 1.3 Every finite piece is paid; all of RH sits at infinity
+Two finite statements are theorems:
+- **Semiboundedness** [S]: `Q ≥ −(deg K_A + 2A sinh²(A/2))‖H‖²` on every window. The canonical degree
+  bounds how negative a window can be.
+- **The pencil** [S]: the critical-curve form `κQ(H) + (βJ/K)∫e^{−(β+1)y}H²` is nonnegative on every
+  window with `κ·windowFloor(A) ≤ βJ/K`. The prime-free count term pays the whole arithmetic of any
+  window of bounded length at bounded multiple `K`.
 
-5. **The rough regime and its join.** All vectors are positive to `(log N)^{1/9}`. Below `1/8` the
-   growing subthreshold block, the mid-band (to `1/4`), and the polynomial-conductor complement with
-   its far reserve are coercive [L]; what remains of the whole-space `1/8` is the band–far cross and
-   the threshold block `e ≍ c`. General compact profiles (Fourier zeros allowed) are positive on
-   polynomial spans to `(log log N)^{1/4}` and on almost-polynomial spans past `log log N` [L/S]; the
-   logarithmic profile is positive to `ε₀·c*` [L].
+Together with the window-index law (index of the pencil monotone in `K`, equal to Weil's index for
+large `K`, never above the right-zero count) [L], the sign question has a phase diagram in the
+`(A, K)` plane: positivity holds near `A = 0` and near `K = 0`; RH is positivity on the whole
+quadrant, i.e. in the double limit `A → ∞`, `K → ∞`.
 
-6. **One gluing at the pole creates the arithmetic.** Redheffer `det = M(N)` = nerve Euler
-   characteristic = coprimality signature; graded energies are positive cone sums of top-stratum
-   energies and the inverse is Möbius-signed, so graded positivity never reaches the top stratum [L].
-   Positivity is never semilocal or a trace of a positive operator [L].
+The canonical degree has a direct meaning [D]: a zero `ρ = ½ + δ + iγ` contributes to a window of
+length `A` at most `e^{δA}`; the budget `e^{A/2}` is the trivial strip `δ < ½`. The size of window
+negativity is therefore the exponent `Θ − ½` in disguise: an exponent `< ½` is a zero-free strip,
+subexponential growth is RH. The window form converts "where are the zeros" into "how fast does
+negativity grow with the window length".
 
-7. **The window integer is a zero power sum.** Per stabilized window, index `0` ⇔ Wiener–Hopf
-   invertibility ⇔ outer Szegő factorization; the canonical multiplier exists whenever any does and is
-   determined by the window energy `|Σ_{z∈W} m_z e^{t(z−½)}|²`, whose Laplace abscissa is twice the
-   maximal depth. Log stage ⇔ inverse-log corridor; polynomial stage ⇔ RH; the 9-way door opener and
-   separation-free `Θ(√m)` stabilization are in Lean [L]. WD is a precision problem on
-   windowed zero power sums.
+### 1.4 The producer must be a tower of unbounded rank
+- No window has a finite-dimensional realization `Q(H) = ‖rH‖²`: short windows are coercive, so every
+  window contains infinite-dimensional positive subspaces [L].
+- Weil's kernel has no finite-rank realization: a rank-`r` form has positive index `≤ r`, while
+  `K_ζ` has infinitely many positive squares whenever the right zeros are finite; under RH no
+  finite-rank realization exists [S]. Scaling classes cannot be divisor classes on one arithmetic
+  surface with a finite-dimensional Néron–Tate pairing.
+- The window genus has main term `2e^A`, the Young conjugate of the zero density, equal to twice the
+  theta count of `ℤ` at degree `A` [S]. Over a curve the genus saturates at `2g` and every window is
+  realized in one fixed `ℂ^{2g}`; over `ℤ` it grows without bound [S].
+- Counts already pay everything but the primitive part: on a window, Künneth Riemann–Roch reads
+  `h_K(x) + h_K(−x) = χ(x) + h¹_K(x) + ½Q(H)` with `h¹_K > 0` a product of counts [S]. A naive height at
+  bounded distance from the window Rosati form exists iff the window is positive (windowed Tate law)
+  [S]; for one spectrally generic orbit an `ℕ`-valued count height on `ℤ[p^ℤq^ℤ]` decides RH, and the
+  golden and complex fakes admit none [L].
 
-8. **One function carries Frobenius at infinity.** `Λ(s)/Λ(s+1)` has band poles exactly at the Hodge
-   defect, is the Gauss–Mayer boundary `2ζ(s)/ζ(s+1)`, and is the scattering coefficient of
-   `SL₂(ℤ)\ℍ` [L/D]. PM realizes ζ's divisor faithfully in a channel of a nuclear operator whose
-   determinant is the geodesic Euler product; its boundary slope has nonnegative coefficients
-   `(1 − 1/n)Λ(n)` and gives the classical zero-free region [L]. Universal contraction fails below
-   `Re w = 1`; the scattering-core energy is positive at every zero, on or off the line [L].
+So a geometric proof needs a **tower** — one finite object per window, of rank `≈ 2e^A`, compatible
+as `A` grows — carrying `½Q(H)` as a count. Flooring a form already known to be nonnegative is
+circular; the count must be produced independently.
 
-9. **Counts and heights.** On prime-free cycles of radius `≤ 1/64` the primitive `h¹` is the Lévy jump
-   count of the Gamma factor; over `𝔽_q` the Stepanov count pays it; Rosati positivity ⇔ a naive
-   height at bounded distance from the integral Rosati form; cones, bidegree, fixed-rank, definite and
-   Siegel counts are excluded [L].
+### 1.5 Selection is a law in `A`
+- Windows of bounded length cannot select ζ: a prime flip beyond `e^A` is invisible to every test of
+  length `A` and is not Weil positive [S].
+- Zero density cannot select: exact spline divisors with the full Riemann–von Mangoldt count, bounded
+  undamped two-prime cone coupling and unattained positive width exist [S]. With a fixed Gaussian
+  damping `exp(τ(ρ−½)²)` the same coupling bound is equivalent to RH [L].
+- Contractive scattering positivity cannot place zeros: Blaschke pairs preserve the functional
+  equation product, conjugation symmetry, boundary modulus and every Schur inequality while placing
+  zeros anywhere in the half-plane [L].
+- On a window, Frobenius at infinity is the involution `σ_AH(u) = H(−A−u)`, acting on transforms by
+  `e^{−(s−½)A}Ĥ(1−s)`; its multiplier is unitary exactly on `Re s = ½`, but pair products are invariant,
+  so `σ_A` is an isometry on every datum and orients nothing [S].
 
-10. **Precision ladders.** One-point: one-sided count ⇔ RH; producers reach the main term.
-    Conjugate diagonal: Hecke means ↔ near-line density rates, rate `r < 1` holds, clustering ⇔
-    `o(log U)`. Census: `0.6725`; further gains need the signed pair surplus beyond bandwidth one [L].
+What distinguishes the line is a **growth rate in `A`** — the multiplier `e^{−(s−½)A}`, the window
+energy `e^{t(z−½)}` of WD, the Gaussian damping. Local data, densities and contractions are blind.
 
-11. **Selection is closed for flips.** Every prime-set flip is separated at every density (zero density
-    without rate included); only `Λ` degenerates completely; harmonic saturation holds only at the
-    Euler gauge; degree-three and positive degree-two FE data admit off-line real zeros [L].
+### 1.6 What the three walls are
+| Wall | Window form |
+|---|---|
+| Σ sign | the symmetric fold masses, `|Ω(0)|` and the odd pole square are paid by the Lévy jumps and the antisymmetric fold counts at every length; nonlocally (pointwise Markov calibration fails at `½ log 2`, `½ log 3`) |
+| Π precision / production | the growth exponent of window negativity in `A` (budget `e^{A/2}` = trivial strip) and a count for the primitive window `h¹`, produced by a tower of rank `≈ 2e^A` |
+| Γ selection | a law in `A`: the reflection `ρ ↔ 1 − ρ̄` must act as a positivity whose fixed line is `Re s = ½`; local, density and contraction selectors are blind |
 
-12. **The natural cone needs ζ.** Bounded natural-cone coupling gives RH or polynomial repulsion from
-    the maximal width; models with exact spline weights, unit multiplicities, `≤ 12` atoms per unit
-    height and unattained width exist [L]. ζ's Riemann–von Mangoldt density is outside these models.
+They are three readings of the limit `A → ∞` of one tower. One sentence states what is missing: **an
+arithmetic mechanism making the symmetric fold masses of every window a count, uniformly in the
+window length.**
+
+### 1.7 Where the edge is
+The first window where the sign is not a theorem is prime-free: all-test positivity is proved for
+`A ≤ 3/5`, and the window has no prime until `A = log 2 ≈ 0.693` [L]. The first unproved windows are a
+statement about the Gamma factor alone, and are just work. The first prime (`T₂`, `log 2 ≤ A < log 3`)
+is passed on the odd sector (to `0.724`) and on the `cosh`-orthogonal hyperplane (to `log 2 + 1/50`),
+not on all tests [L]. The first place where arithmetic must be paid by a count is `sym₂`.
 
 ## 2.1 Obstacles that are just work
 
 | # | Task | Routes served | Why it is work |
 |---|---|---|---|
-| A1 | Join at `1/8`: band–far cross and threshold block `e ≍ c`, with the subthreshold block, mid-band and polynomial complement already coercive (risk: becomes B41 if the shifted prime-pair correlation is needed) | HF, SRT, AIP, ACS | three of the pieces are Lean theorems; Schur and PNT-level inputs |
-| A2 | Explicit horizons (`1/9` theorem, logarithmic profile, single Beurling schedule, horizon criterion), residual constants | HF, SRT, AIP, ACS, RW, SC | constants |
-| A3 | Kernel-certified Weil positivity at `½ log 3` and the next prime apertures | RW, EWU, OWU, HF, AHD | finite Schur complements on the finite divisor |
-| A4 | Strength of one fixed critical multiple: which configurations (isolated pairs, clusters) it excludes; effective window length; equality case `K = K*` | HF, SRT, AHD | analysis of an exact limit form against the visibility law |
-| A5 | AHD calibrations: second order over `𝔽_q(T)`; horizon blocks of the fakes; pure block `m ≫ c` | HF, ACS | function-field and model computations |
-| A6 | Close `[S]`: terminal-support quadratic loss; explicit-clock coercivity; finite clock products; theta ray; Cayley ladder; first-variation transfer; Poisson rigidity | HF, SC, PM, LI, SZ | formalization in progress |
-| A7 | Prime-successor comparison with the shell payment; combination with the packet identity | HF, AIP, SRT | Mertens law and affine sampling |
+| A1 | Join at `1/8`: band–far cross and threshold block `e ≍ c` against the three coercive pieces (risk: shifted prime-pair correlation, B41) | HF, SRT, AIP, ACS | coercive pieces in Lean; Schur and PNT-level inputs |
+| A2 | Explicit horizons and constants (`1/9` theorem, logarithmic profile, Beurling schedule, horizon criterion, window-index convergence) | HF, SRT, AIP, ACS, RW, SC | constants |
+| A3 | Certified window positivity by stage: all tests on prime-free windows `3/5 < A < log 2` (Gamma factor only); first-fold stage `log 2 ≤ A < log 3`; stages `log 3, log 4, log 5` | RW, EWU, OWU, HF, ACS, CWS | finite band, finitely many folds, Shannon-bounded index: interval-certified Schur complements |
+| A4 | Phase diagram `(A, K)`: sharpen the pencil floor (exact pole product, weight `e^{−(β+1)y}`), tabulate `K*(A)` lower bounds, equality case `K = K*` | HF, SRT, AHD, CWS | estimates of explicit forms |
+| A5 | Twisted windows at every conductor: second order of `c_m`- and character-twisted windows (Möbius–Poisson computation predicts the Jordan count at `m`); untwisted–twisted cross-terms at fixed twist; integrate conductor two | HF, SRT, AHD | the `m = 2` proof is the template |
+| A6 | Integrate `[S]`: conductor-two window; six CWS modules (canonical-degree bound, window Frobenius, window genus, naive heights, curve windows, selection battery) and the Künneth edit; finite-rank no-go; RVM completed divisor; terminal-support loss; Cayley ladder; first-variation transfer; Poisson rigidity | all | proofs exist |
+| A7 | Prime-successor comparison with the shell payment | HF, AIP, SRT | Mertens law and affine sampling |
 | A8 | Quantitative depth law, star horizons, gcd-strata tabulation | HF, ACS | effectivization |
 | A9 | Björner wedge decomposition of the squarefree complex | MC, HF | classical topology |
-| A10 | WD polynomial stage as one statement; computable stopping prefix with certified intervals; flow threshold `Λ_X`; `ΔO` ⇒ density one ⇒ Lindelöf | WD, LA, TG | composition of Lean theorems and classical estimates |
-| A11 | Count reading of the whole prime-free window (Lévy Poincaré on an interval; pole signs) | ACS, HF, RW | target known by estimates |
+| A10 | WD polynomial stage as one statement; certified stopping prefix; flow threshold `Λ_X`; `ΔO` ⇒ density one ⇒ Lindelöf | WD, LA, TG | composition |
+| A11 | Prime-free windows as a count: Lévy Poincaré inequality on an interval beyond length `1/1000`, with the pole signs | ACS, HF, RW, CWS | target is the Gamma factor alone |
 | A12 | Künneth primitive `h¹` on the finite divisor at small degree | ACS, HF | calibration |
-| A13 | Mixed-jet recovery `≥ 3` primes; explicit main-term producer | WL, ACS | algebra, rounding |
+| A13 | Mixed-jet recovery for `≥ 3` primes; explicit main-term producer | WL, ACS | algebra |
 | A14 | Census: `S_cos(λ)`, `λ ≤ 1`; odd stabilizer; `β = 2` | census, ACS | classical pair estimates |
 | A15 | Voronoi summation; Zwegers' indefinite theta | ACS, HF | classical theorems |
-| A16 | `𝔽_q(X)` calibration; `𝔽₃` elliptic loop chain | SC, ACS, HF | curve theory proved; assembly |
-| A17 | Selberg-zeta normalization of the Mayer product; scattering continuation into `Re(2s) < 1`; Lax–Phillips for `PSL₂(ℤ)\ℍ`; Lewis–Zagier separation of cusp-form events | PM | known mathematics |
-| A18 | Operator-native nonvanishing on `Re w = 1` (spectral-Eisenstein template) | PM | known template; risk: may reduce to the Euler product |
-| A19 | Natural-cone models with Riemann–von Mangoldt density, or the obstruction | SC, ACS | extension of the sparse-spline construction |
+| A16 | `𝔽_q(X)` calibration incl. second order over `𝔽_q(T)` and curve windows at second order | SC, ACS, HF, AHD | curve theory proved |
+| A17 | Selberg-zeta normalization; scattering continuation into `Re(2s) < 1`; Lax–Phillips; Lewis–Zagier separation | PM | known mathematics |
+| A18 | Operator-native nonvanishing on `Re w = 1` (risk: reduces to the Euler product) | PM | spectral-Eisenstein template |
+| A19 | Prime-side identity for the Gaussian-damped two-prime coupling (heat-smoothed explicit formula) | SC, ACS | explicit formula |
 | A20 | Theta Hankel rank 8 strict; ranks 9–10 | TH | finite computation |
-| A21 | Hausdorff shifts, Jensen horizons, two-grid degrees, Toeplitz minors beyond PF₃₇ | PA, LA, HCF | effectivization |
+| A21 | Hausdorff shifts, Jensen horizons, two-grid degrees, Toeplitz minors | PA, LA, HCF | effectivization |
 | A22 | Nine atom-dominated collar moduli | ACT | finite case analysis |
-| A23 | Mixed Schur debit; first-prime/coarse/polar costs | AIP, CHMD | fixed-dimensional estimates |
+| A23 | Mixed Schur debit; first-prime / coarse / polar costs | AIP, CHMD | fixed-dimensional estimates |
 | A24 | Logarithmic two-point Chowla | MC | Tao's theorem |
+| A25 | Classical calibration of window negativity: express the classical zero-free region and density theorems as window-form bounds | all window routes | known zero information, explicit formula |
+| A26 | General profiles beyond polynomial spans `θ < 1/1080` and the super-log-log clocks | HF, SRT, SC | constants and cutoffs |
 
 ## 2.2 Open mathematical obstacles
-
-Strength: **RH**; **≥qRH**; **LH**; **sub**; **indep.**; **method**.
 
 ### Σ — critical sign
 | # | Problem | Strength | Routes |
 |---|---|---|---|
-| B1 | Weil's sign on window tests of every length (≡ every fixed `K·c*` ≡ horizon criterion ≡ single Beurling schedule ≡ glued index `≤ 1`) | RH; fixed length sub | HF, SRT, AIP, ACT, ACS, SC, RW, EWU, OWU, CHMD, MSC, FEL |
-| B2 | Full-space second-order identification at the critical curve; horizon localization of negative directions | sub | HF, SRT, AIP, ACS, SC, AHD |
-| B3 | Positivity at one fixed critical multiple (contains dense-cluster exclusion at every height) | sub | HF, SRT, AHD |
-| B4 | Joint shell–pole / Gamma-graph payment on growing packets | sub | HF, SRT, AIP, CHMD |
-| B5 | Conductors above `√N`; general profiles at super-log-log overlap on the full space | sub | HF, SRT, AIP, SC |
-| B6 | Exact SOS for the dilation form on one two-prime lattice | RH | HF, SC, ACS, RIT |
+| B1 | Weil's sign on windows of every length (≡ every `K·c*` ≡ horizon criterion ≡ Beurling schedule ≡ glued index `≤ 1` ≡ `ι(A) = 0` ∀A) | RH; fixed length sub | HF, SRT, AIP, ACT, ACS, SC, RW, EWU, OWU, CHMD, MSC, FEL |
+| B2 | Tate decomposition of the complete family on the full space (general conductors, cross-terms, growing twists, horizon localization) | sub | HF, SRT, AIP, ACS, SC, AHD |
+| B3 | One fixed critical multiple on windows of every length (dense clusters) | sub | HF, SRT, AHD |
+| B4 | Joint shell–pole / Gamma-graph payment | sub | HF, SRT, AIP, CHMD |
+| B5 | Conductors above `√N`; general profiles past `log log N` | sub | HF, SRT, AIP, SC |
+| B6 | Exact SOS on one two-prime lattice | RH | HF, SC, ACS |
 | B7 | Cluster exclusion below the Landau height | sub | RW, SRT |
 | B8 | HL on the positive locus | RH | HF, TG, SC |
-| B9 | Top coprime stratum: sum–product inequality on conductor packets | RH | HF, ACS, ADT |
-| B10 | Cross-tower spectral gap through the archimedean channel | method; uniform RH | HF, AIP |
-| B12 | Arithmetic index ceiling uniform in resolution | ≥qRH; RH (tensor) | CHMD, SRT, WD, SC |
-| B13 | Zero–one law (no finite nonzero index) | sub | SC, HF, ACS |
-| B14 | Heat: subcritical count (sub); horizon `< ½` (≥qRH); `O(T) = o(N(T))` (sub); `ΔO = o(log T)` (LH) | sub / ≥qRH / LH | WD, LA, SC-heat |
-| B36 | Source-faithful realization | RH | RN, PTR, W1C |
-| B37 | Odd-sector bound `R ≤ ½`; window sinh capacity | RH | CHMD, TT, HF |
-| B38 | All-rank / all-degree signs (Laguerre–Pólya) | RH | TH, LA, HCF, PA, GTA; ART |
-| B39 | Lower bounds for scheduled prime energies | RH | FU, CFC, RP, SZ, LI, FEL, EGC |
-| B41 | Shifted prime-pair correlation for the prefix–terminal remainder (only if A1 needs it) | sub | HF, SRT, AIP |
+| B9 | Top coprime stratum | RH | HF, ACS, ADT |
+| B10 | Cross-tower gap through the archimedean channel | method; RH | HF, AIP |
+| B12 | Index ceiling uniform in resolution | ≥qRH; RH (tensor) | CHMD, SRT, WD, SC |
+| B13 | Zero–one law | sub | SC, HF, ACS |
+| B14 | Heat counts and horizons | sub / ≥qRH / LH | WD, LA, SC |
+| B36 | Source-faithful realization (a tower of unbounded rank) | RH | RN, PTR, W1C, PM |
+| B37 | Window Markov capacity: nonlocal Poincaré inequality at every length | RH; fixed length sub | CHMD, TT, HF, RW, OWU |
+| B38 | Laguerre–Pólya (all ranks / degrees) | RH | TH, LA, HCF, PA, GTA |
+| B39 | Scheduled prime energies | RH | FU, CFC, RP, SZ, LI, FEL, EGC |
+| B41 | Shifted prime-pair correlation (only if A1 needs it) | sub | HF, SRT, AIP |
+| B42 | A count for the symmetric fold masses, starting with `sym₂` | sub per stage; RH uniformly | CWS, RW, ACS, HF |
+| B43 | Growth law of window negativity: exponent `< ½` (zero-free strip), subexponential (RH) | ≥qRH; RH | all window routes, WD |
 
 ### Π — precision and production
 | # | Problem | Strength | Routes |
 |---|---|---|---|
-| B15 | Subexponential window energy on every unit window | ≥qRH (log stage); RH (polynomial stage) | WD, TG, SC-heat |
-| B16 | Log-free near-line density (log-stage certificate on almost all windows) | sub | WD, census |
-| B17 | Near-line density at rate `r ≥ 1`; critical-scale clustering (`o(log U)`) | sub | WD, census |
-| B18 | Hecke defect pointwise `O(1)` (≥qRH); doubly-log scale (sub); one dyadic constant (RH) | sub / ≥qRH / RH | WD |
-| B19 | Arithmetic input beyond counts + linear explicit formula | method | WD, HEF |
-| B20 | Count-valued primitive `h¹` past the prime-free window / naive height on correspondences | RH; fixed degree sub | ACS, HF, ADT, AHD, IRK |
-| B21 | Genus law (⇒ almost all zeros simple) | indep. | ACS, RW |
-| B22 | Logarithmic Serre duality of the split surface | sub | ACS, HF |
+| B15 | Subexponential window energy on every unit window | ≥qRH (log); RH (polynomial) | WD, TG |
+| B16 | Log-free near-line density | sub | WD, census |
+| B17 | Near-line density rate `≥ 1`; critical-scale clustering | sub | WD, census |
+| B18 | Hecke defect pointwise / dyadic-uniform | ≥qRH / RH | WD |
+| B19 | Input beyond counts + linear explicit formula | method | WD, HEF |
+| B20 | Count-valued primitive `h¹` (naive height; generic two-prime `ℕ`-count; window tower) | RH; fixed length sub | ACS, HF, CWS, IRK |
+| B21 | Genus law `≤ (2+η)e^A` | indep. | ACS |
+| B22 | Logarithmic Serre duality | sub | ACS, HF |
 | B23 | `ε`-uniform producer | sub / RH | WL |
-| B24 | Square-root source input; half-power Redheffer determinant | RH | WL, MC, PBM, RB, JAS, CTF |
+| B24 | Square-root source input; Redheffer determinant | RH | WL, MC, PBM, RB, JAS, CTF |
 | B25 | Near-band cyclotomic energy | ≥qRH | MC |
-| B26 | Signed prime-pair surplus beyond bandwidth one | sub | census, ACS |
+| B26 | Signed pair information beyond bandwidth one | sub | census, ACS |
 | B27 | First Epstein real zero on the boost line | sub | ACS |
-| B28 | Bounded coupling on one dense two-prime lattice; glued index `≤ 1` | RH | SC, ACS |
-| B29 | Natural cone: exclusion of unattained width for ζ (sub); unattained width excluded outright (≥qRH) | sub / ≥qRH | SC, ACS, PM |
+| B28 | Bounded dense two-prime coupling | RH | SC, ACS |
+| B29 | Bounded Gaussian-damped natural-cone coupling from the prime side | RH | SC, ACS |
 | B30 | Finite-sieve Hodge positivity → global | RH | SC |
-| B35 | PM energy/charge control excluding off-line poles with the correction `2ζ(w−1)/(w−1)`; escape | sub / ≥qRH; RH (cofinal) | PM |
+| B35 | PM energy / charge control | sub / ≥qRH / RH | PM |
+| B44 | Mollified log-mean `= o(1)` from distributional input | sub | WD |
 
 ### Γ — selection
 | # | Problem | Strength | Routes |
 |---|---|---|---|
 | B11 | Band-pole noncancellation of `Λ(s)/Λ(s+1)` | RH | HF, ACS, SC, PM |
 | B31 | Selection at the trivial gauge point | RH | MC, BAG, XN |
-| B32 | Frobenius at infinity as an operator (Rosati / naive height; Hecke similitude; partner saturation) | RH | HF, ACS, PL, CDG, EHT |
-| B33 | Euler-product FE twins; unimodular gauges | sub | HF, ACS, AIP, SRT, SC |
-| B34 | A structure placing the scattering resonances of `SL₂(ℤ)\ℍ` on `Re s = 1/4` (RH); a separated scattering-sector gap with a fixed zero-free strip (≥qRH) | RH / ≥qRH | PM, W1C, PW-B survivor |
+| B32 | Frobenius at infinity as a positivity (Rosati / naive height; Hecke similitude; a positivity with symmetry `σ_A`) | RH | HF, ACS, CWS, PM |
+| B33 | Euler-product FE twins; unimodular gauges | sub | HF, ACS, SC |
+| B34 | A structure placing the `SL₂(ℤ)` resonances (via the reflection, not contraction) | RH / ≥qRH | PM, W1C |
 | B40 | Pre-divisor forcing | RH | APF, BSH, CDC, DR, EWJ, HJ, PCS, RFHM, SEC, WBF |
 
 ## 2.3 The three questions to answer next
 
-The corpus has located the sign (Weil's window form), the production gap (a count equal to it), and
-the precision gap (local zero location per window). The three questions are the three points where
-an answer changes what every route does next.
+**Q1. Does a count pay the first prime fold?**
 
-**Q1. Is Weil's window form a count at the first prime?**
+In hand: the first-fold window form
+`Q = Ω(0)‖H‖² + J_∞ + (log 2/√2)(½fold₂ − sym₂) + 2Ĥ(0)Ĥ(1)` [L]; the Lévy jump count pays the
+prime-free form on windows of length `≤ 1/1000` [L]; positivity on odd tests to `0.724` and on the
+`cosh`-orthogonal hyperplane to `log 2 + 1/50` [L]; pointwise folded-Markov payment fails at
+`½ log 2` and `½ log 3` while Schur squares survive [L]; Künneth counts pay everything but `½Q` [S].
 
-In hand [L]: the window Markov form — on a window of length `A` only `n ≤ e^A` jump and departing
-jumps pay their creation; the Lévy jump count of the Gamma factor pays the primitive `h¹` on prime-free
-cycles of radius `≤ 1/64`; positivity by estimates through window length `0.724 > log 2`; the exact
-`{∞,2}` trace with the valuation-shell operator through `log 3`; the first-order structure of the
-complete family is the point count `#ℙ⁷(ℤ/m)`; Stepanov pays the primitive `h¹` over `𝔽_q`; Tate's limit
-law turns a naive height into Rosati positivity.
+The question, in order: (0) certify all-test positivity on the prime-free windows `3/5 < A < log 2`
+and read it as a Lévy count (A3, A11); (1) find an identity on the first-fold stage
+`Q = (Lévy count) + (count attached to T₂) + (manifest squares)` that pays `sym₂` nonlocally; (2) if no
+such identity exists, classify the counts that can read a fold and name the exact obstruction.
 
-The question in three steps: (1) the whole prime-free window `A < log 2` as a count (Lévy Poincaré on an
-interval, pole signs — A11); (2) windows `log 2 < A ≤ log 3`: an identity
-`Q(H) = (Lévy jump count) + (a count attached to the jump n = 2, the graph of T₂) + (squares)`; (3) if no
-such identity exists, the classification of counts with a Poisson-type duality that read the test
-component, and the exact obstruction at the first prime.
+Why: `sym_n` are the only negative arithmetic terms of every window; a count for `sym₂` is the first
+place over `ℤ` where a prime is paid by a count rather than by an estimate, and it is the seed of the
+window tower (B42 → B20). It is finite, sub-RH, and decides whether the count programme (ACS, LST,
+CWS, AE) can cross a prime at all.
 
-Why: a count is the only carrier that escapes the doubly exponential ceiling and the near radical; it is
-Weil's and Stepanov's producer; the first-order structure of the degeneration is a count and everything
-left is Weil's window form; and a naive height supplies selection at the same time.
+**Q2. Is the complete family a count everywhere except on untwisted windows?**
 
-**Q2. What is the full-space second-order limit of the complete family at the critical curve?**
+In hand: bulk = `#ℙ⁷(ℤ/m)` [L]; twisted windows zero-blind and positive [L]; conductor-two window =
+`J(2)` count [S]; untwisted windows = Weil + `J(1)` count [L]; pencil and window-index law [L/S].
 
-In hand [L]: the bulk limit (point count, positive pole ledger), the horizon formula and the exact
-second order on horizon blocks, the subthreshold block, the polynomial complement and far reserve below
-`1/8`, the graded/top Möbius pair, the critical-multiple calculus.
+The question: compute the second order of every `c_m`- and character-twisted window (predicted: the
+Jordan count at `m`), and the cross-terms between untwisted windows, twisted windows and bulk
+packets on the full space along `c⁸ = K log N`.
 
-The question: along `c⁸ = K log N`, compute the rescaled limit of the complete form on all vectors —
-bulk, horizon, the threshold block `e ≍ c` and the band–far cross — and decide whether every negative
-direction is asymptotically a horizon block (horizon localization), or whether a mixed term survives.
+Why: if the answer is yes, the full complete-family form at the critical curve is
+`(Weil's window form) ⊕ (point counts over ℤ/m)`, an identity with no estimate, so it crosses the edge.
+HF, SRT, AIP, ACT and SC become literally Weil's window criterion plus counts (B2 closed), the join at
+`1/8` (A1) is needed only below the critical curve, and the Tate/non-Tate split tells a window
+cohomology which classes are counts (`ℙ⁷` over residue rings) and which one is `H¹`. If a mixed term
+survives, it is new zero-carrying structure and a candidate producer.
 
-Why: it is an identity, so it can cross the edge. If the limit is bulk ⊕ horizon ⊕ positive terms, then
-the routes of C1, C2 and C4 are literally Weil's window criterion with explicit positive corrections,
-the join A1 follows at the critical curve, and all effort moves to producers (Q1, B6, B37). If a mixed
-term survives, it is new zero-carrying structure of the family and a candidate producer.
+**Q3. What is the growth law of window negativity in `A`?**
 
-**Q3. Is there a log-free near-line zero density?**
+In hand: semiboundedness by the canonical degree `≈ 4e^{A/2}` [S]; the pair bound `e^{δA}` [D];
+visibility law for isolated pairs [L]; window energy abscissa = twice the maximal depth [L]; log-stage
+certificate ⇔ inverse-log corridor [L]; almost all unit windows zero-free beyond
+`(1+ε) log log T/log T` [L]; moments cannot fix the mollified log-mean [L].
 
-In hand [L]: window-energy abscissa = twice the maximal depth; log-stage certificate ⇔ inverse-log
-corridor on every large window; Hecke-defect dyadic means ⇔ near-line density rates, rate `r < 1` proved;
-almost all unit windows zero-free beyond `(1 + ε)loglog T/log T`; right-half squared depth moment
-`o(V)`; census `0.6725`.
+The question: (1) state the exact dictionary between the negativity of windows of length `A` and the
+zero configuration (exponent `Θ − ½`, heights up to `2πe^A`); (2) read the classical zero-free
+region and density theorems as unconditional improvements of the canonical-degree bound on
+high-frequency and almost-all-height windows (A25); (3) prove subexponential negativity growth on
+almost all windows — equivalently a log-free near-line density (B16).
 
-The question: prove `#{ρ : V ≤ γ ≤ 2V, \|β − ½\| ≥ A/log V} ≤ ε(A)V` with `ε(A) → 0`. Its companion
-target in the rate scale is near-line density at rate `r ≥ 1` (B17); neither implies the other.
-
-Why: it is the precision statement where WD, the Hecke defect and the census meet. It would certify the
-log-stage Bessel–Szegő condition on almost all unit windows and give 100% critical-scale clustering,
-hence dyadic Hecke means `o(log U)` [L equivalence]. It is below quasi-RH (no Lindelöf, no zero-free region) and
-belongs to the classical mollifier/zero-detector toolbox, where the obstruction is the `log T` density of
-zeros itself.
+Why: it unifies the precision routes (WD's window energy, the Hecke defect, the census) with the
+sign routes (the window form) on one axis, and it turns "precision" into a growth exponent of a
+quantity the sign routes already control at finite `A`. Its first step is sub-RH and belongs to the
+classical mollifier/zero-detector toolbox.
 
 ## 2.4 A wildly different route
 
 **Verdict: no route escapes all three walls. One direction escapes Σ and Π by its mechanism and meets
 Γ in a new form: arithmetic measure rigidity of resonant states.**
 
-The distant directions examined fall back on known walls:
+Directions examined:
 
 | Direction | Producer | Wall it falls on |
 |---|---|---|
-| Centered curve products / function-field limits | approximation + Hurwitz | Laguerre–Pólya closure (Σ6, Σ26) |
-| Exact extremal certificates from modular forms | dual certificate | no attained extremizer at finite aperture; crystalline rigidity needs zero-side positivity (Γ8) |
-| Effective horocycle equidistribution | mixing rates | Eisenstein constant term at `ρ/2`: square-root precision (Π) |
-| Discrete Morse theory on the squarefree complex | combinatorial cancellation | cancellation between dimensions (Π1) |
-| Böttcher / period rigidity | algebraic relations | none exist: ζ and its positive algebraic dilates are differentially independent over the theta–Gamma field |
-| Big-Witt / λ-ring geometry over `F₁` | Frobenius lifts at all primes | the λ-ring of correspondences exists; positivity is the orientation (Γ19); the scaling-site pullback fails |
-| Deformation / heat flow | noncrossing | crossing-free deformation ⇔ positivity (Σ14) |
+| Centered curve products / function-field limits | approximation + Hurwitz | Laguerre–Pólya closure (Σ26) |
+| Extremal certificates from modular forms; crystalline rigidity | dual certificate | zero-side positivity is RH (Γ8) |
+| Effective horocycle equidistribution | mixing rates | square-root precision of the Eisenstein constant term (Π) |
+| Discrete Morse theory on the squarefree complex | cancellation | cancellation between dimensions (Π1) |
+| One arithmetic surface (Faltings–Hriljac Hodge index) | Néron–Tate pairing | no finite-rank realization (Π18) |
+| Iwasawa-type towers of growing rank | control theorems | it is the window tower itself (CWS); the positivity is B20 |
+| Renormalization of the window tower in `A` (Lyapunov exponents, Hodge-norm variation) | sign of a variational formula | the curvature sign is the window sign (Σ1) |
+| Contractive scattering / Lax–Phillips | Schur positivity | blind to zero position (Γ22) |
+| Deformation / heat flow | noncrossing | crossing-free ⇔ positivity (Σ14) |
 
-**The rigidity direction.** Every route in the corpus produces a sign, a precision or a selector. A
-classification theorem is a fourth kind of producer: it identifies an object by structure and entropy,
-not by an inequality.
+**The rigidity direction.** Every route produces a sign, a precision or a selector. A classification
+theorem is a fourth kind of producer: it identifies an object by entropy and invariance, not by an
+inequality.
+- *Objects.* The scattering resonances of `SL₂(ℤ)\ℍ` sit at `s = ρ/2`; RH places them on `Re s = 1/4`.
+  Each carries a resonant state (truncated Eisenstein series at `ρ/2`) with exact Hecke data and the
+  partner angle `cos² = 4 Re ρ(1 − Re ρ)` [L].
+- *Mechanism [D, heuristic].* Semiclassical limits of resonant states as `Im ρ → ∞` are conformal
+  measures on the unit tangent bundle whose decay rate is fixed by `Re ρ`; the window Frobenius
+  multiplier `e^{−(s−½)A}` is the same rate read on windows [S/D]. Hecke operators act on the limits.
+  A rigidity theorem — positive entropy from Hecke recurrence, then classification of
+  Hecke-recurrent conformal measures — would pin the rate to the symmetric value, i.e. `Re ρ = ½`.
+- *Why it is far from every route.* No quadratic form, no window positivity, no prime count at any
+  precision, no index. Its tools (entropy, measure classification, microlocal lifts) appear nowhere
+  in the corpus. It uses exactly what every corpus selector lacks: a growth rate as an invariant, not
+  a positivity.
+- *Walls it meets.* Γ4 in a new form: the reflection `ρ ↔ 1 − ρ̄` (the fixed line `Re s = 1/4` of
+  `s ↦ ½ − s̄`) is not a symmetry of the Laplacian; resonant states are not `L²`; their Hecke
+  eigenvalues are non-tempered, which breaks the positive-entropy step as it stands; a semiclassical
+  limit sees only infinite families, so it could first exclude off-line zeros accumulating at a fixed
+  depth profile (a Lindelöf-type statement) before RH.
 
-- *Objects.* The scattering resonances of `SL₂(ℤ)\ℍ` sit at `s = ρ/2`; RH is the statement that they lie
-  on `Re s = 1/4` (the coefficient `Λ(s)/Λ(s+1)`, Σ19). Each has a resonant state (the Eisenstein series
-  at `ρ/2`, truncated); the corpus computes its Hecke data exactly — first moment `p^u + p^{ū}`,
-  variance `2(1 − p^{2 Re u})` — and the partner angle `cos² = 4 Re ρ(1 − Re ρ)` [L].
-- *Mechanism [D, heuristic].* As `Im ρ → ∞` the resonant states have semiclassical limits on the unit
-  tangent bundle; for resonances such limits are expected to be conformal rather than invariant under
-  the geodesic flow, with a decay rate fixed by `Re ρ`, and the functional equation pairs the rates of
-  `ρ` and `1 − ρ̄` symmetrically about the critical value. Hecke operators act on the limits (the arithmetic input that made
-  Lindenstrauss's quantum unique ergodicity work). A rigidity theorem — positive entropy from Hecke
-  recurrence, then classification of Hecke-recurrent conformal measures — would pin the rate to the
-  symmetric value, i.e. `Re ρ = ½`.
-- *Why it is far from every route.* It uses no quadratic form, no window positivity, no prime count at
-  any precision, and no index. Its tools (entropy, measure classification for diagonal actions,
-  microlocal limits of resonant states) appear nowhere in the corpus.
-- *Which wall it meets.* Γ4 in a new form: the entropy argument must see the reflection symmetry
-  `ρ ↔ 1 − ρ̄` (the fixed line `Re s = 1/4` of `s ↦ ½ − s̄`), which is not a symmetry of the Laplacian.
-  Its own walls: resonant states are not `L²`; their Hecke eigenvalues `p^u + p^{−u}` are non-tempered
-  (`|p^u| ≠ 1`), which breaks the positive-entropy step of Bourgain–Lindenstrauss as it stands; and a
-  semiclassical limit sees only resonances with `Im ρ → ∞`, so a single off-line zero is invisible —
-  the route could at best exclude infinitely many off-line zeros approaching a fixed depth profile,
-  which is a Lindelöf-type statement, before reaching RH.
-
-The first test is a sub-RH statement: Hecke-recurrent semiclassical limits of truncated resonant states
-along any sequence `ρ_n` with `Re ρ_n → β` have conformal exponent determined by `β`, and positive
-entropy. Neither is known; both are statements about objects the corpus already has.
+First test (sub-RH): Hecke-recurrent semiclassical limits of truncated resonant states along any
+sequence `ρ_n` with `Re ρ_n → β` have conformal exponent determined by `β`, and positive entropy.
 
 ## 2.5 Breakthrough questions below RH and quasi-RH
 
 ### 2.5.1 Whole programme — a count pays the first prime
-**Question.** Prove Weil positivity on window tests of length `A ≤ log 3` by an identity whose terms are
-cardinalities, Lévy jump counts or manifest squares: the archimedean jump count, a count attached to the
-jump `n = 2` (the graph of `T₂`), and the pole term (Q1, steps 1–2).
-- **Below RH.** It is a finite-aperture statement, known by estimates to length `0.724` and reducible to
-  a certified computation to `log 3` (A3).
-- **Advance.** The first place over `ℤ` where a prime is paid by a count instead of an estimate: the
-  second-order (window) structure of the complete family becomes a count, as its first-order structure
-  `#ℙ⁷(ℤ/m)` already is. It either finds the count or isolates the exact obstruction at the first prime,
-  and it calibrates B20.
+**Question.** Prove `ι(A) = 0` for all `A < log 3` by an identity whose terms are cardinalities, Lévy
+jump counts and manifest squares — the Gamma factor's jump count, a count attached to the fold `T₂`
+that pays `sym₂`, and the pole product.
+- **Below RH.** A finite-window statement, implied by RH; its truth (not its count form) is reachable
+  by certified computation (A3).
+- **Advance.** The first prime over `ℤ` paid by a count: the first level of the window tower as a
+  count, the first instance of B42, and the decisive calibration for B20. It either produces the
+  object every count route lacks or names the exact obstruction at the first prime, where the
+  pointwise Markov mechanism provably fails.
 
-### 2.5.2 Route PM — the operator locates a zero
-**Question.** From the Gauss–Mayer operator alone — the geodesic Euler product, the Lewis three-term
-relation, the real-`w` derivative cone, the reflection of the period function — prove that infinitely many
-scattering resonances of `SL₂(ℤ)\ℍ` lie on `Re s = 1/4` (Hardy's theorem in operator form), then a
-positive proportion.
-- **Below RH.** Hardy's and Selberg's theorems are classical; the question is their operator-native form.
-- **Advance.** PM has a faithful divisor in a channel and the classical zero-free region from its boundary
-  coefficients, but ζ enters the determinant as a scalar (`D = A + ζB`) and no statement in the corpus
-  says the operator itself places a zero on the line. A location statement derived from the operator's
-  real structure is the minimal evidence that PM carries critical-line information beyond the Euler
-  product, and it is the template for 2.6.2.
+### 2.5.2 Route PM — a Mayer `Z`-function
+**Question.** Build from the Mayer operator alone (geodesic Euler product, Lewis period functions,
+whose three-term relation carries the reflection `s ↔ 1 − s`) a function real on the critical line
+of the scattering parameter whose sign changes are the scattering resonances — the operator analogue
+of Hardy's `Z(t)` — and prove infinitely many sign changes (Hardy's theorem), then a positive
+proportion.
+- **Below RH.** Hardy's and Selberg's theorems are classical; the content is their operator-native
+  form.
+- **Advance.** Contractive positivity is proved blind to zero position; the reflection is what PM
+  lacks. A real-on-the-line Mayer object is the first statement in which PM uses the reflection, and
+  the template for 2.6.2.
 
 ### 2.5.3 Route WD — almost every window is certified
-**Question.** Certify the log-stage Bessel–Szegő condition on almost all unit windows: equivalently,
-almost all unit windows have every zero within `A/log T` of the line, i.e. a log-free near-line density
-`#{ρ : depth ≥ A/log V} ≤ ε(A)V` (Q3). Companion target in the rate scale: near-line density at rate
-`r ≥ 1` (B17).
-- **Below RH.** It is a density statement: it implies neither Lindelöf nor a zero-free region; the
-  per-window log-stage statement is ≥qRH and the polynomial-stage one is RH.
-- **Advance.** WD's window machinery is complete (prefix scale, canonical multiplier, energy law, door
-  opener); its open input is a classical-type density statement. A positive answer is the first
-  unconditional certification of window sectoriality on a full-measure set of heights, and it gives
-  `o(log U)` Hecke means.
+**Question.** Prove the log-free near-line density `#{ρ : V ≤ γ ≤ 2V, |β − ½| ≥ A/log V} ≤ ε(A)V`,
+`ε(A) → 0` — equivalently the log-stage Bessel–Szegő certificate on almost all unit windows; with it
+the mollified log-mean `E log|ζM| = o(1)` that moment data cannot give.
+- **Below RH.** A density statement; no Lindelöf, no zero-free region.
+- **Advance.** WD's window machinery (prefix scale, canonical multiplier, Bessel cepstrum, door opener)
+  is complete; this is its open input. It also gives `o(log U)` Hecke means and is the almost-all
+  form of Q3.
 
-### 2.5.4 Route HF — the whole space up to the critical exponent
-**Question.** Prove positivity of the complete tilted-spline family on all vectors along every schedule
-`1 ≤ c ≤ (log N)^α`, `α < 1/8`: join the subthreshold block, the mid-band and the polynomial complement
-across the threshold block `e ≍ c` and the band–far cross (A1).
-- **Below RH.** It lies in the inherited regime; RH sits at the critical exponent `1/8` itself.
-- **Advance.** Estimates would reach exactly the RH exponent on the whole space. Under ¬RH the edge of the
-  family would then lie in `[(log N)^{1/8−}, 2(log N)^{1/8+}]` infinitely often: a counterexample to RH is
-  pinned to the critical curve, where the second order is Weil's window form (Σ1i). It also decides
-  whether the prefix–terminal remainder needs the shifted prime-pair correlation (B41).
+### 2.5.4 Route HF — the Tate decomposition
+**Question.** Prove that along `c⁸ = K log N` the complete tilted-spline form on all vectors is the
+orthogonal sum of Weil's form on untwisted horizon windows plus point counts — `(7J(m)/K)∫e^{−8y}H²` on
+each conductor-`m` twisted window and the Jordan counts on bulk packets — with vanishing
+cross-terms.
+- **Below RH.** It is an identity of limits; it needs no sign of Weil's form.
+- **Advance.** HF's complete family becomes exactly Weil's window criterion plus counts; every
+  complete-family route collapses onto one statement; the negative directions are localized on the
+  full space; the whole-space `1/8` join is needed only below the critical curve. It also delivers the
+  Tate/non-Tate split a window cohomology must reproduce.
 
 ## 2.6 Breakthrough questions that open the path to RH
 
-### 2.6.1 Whole programme — a count equal to Weil's window form
-**Question.** Construct, for every window length `A`, a count `h_A` (a cardinality, a lattice-point count,
-or a log-count) on window tests with `h_A(H) = ½Q(H)` up to manifest squares — equivalently a naive height
-`h` on `ℤ[ℚ_{>0}^×]`, nonnegative because it counts, with `\|h(ξ) − τ_x(ξ ⋆ ξ′)\| ≤ C_x` for every cycle
-(B20, B32).
-- **Why it opens the path.** Tate's limit law turns the height into Rosati positivity at each cycle;
-  Rosati positivity at every cycle is the orbit Hodge index, which is RH [L]. On the complete family it is
-  the horizon criterion; the bulk is already a count.
-- Over `𝔽_q` the function is the degree of a graph or the Stepanov count; over `ℤ` the first instance is
-  the Lévy jump count on prime-free cycles, and the first-order structure `#ℙ⁷(ℤ/m)` of the degeneration.
+### 2.6.1 Whole programme — the window tower
+**Question.** Construct for every window length `A` a finite object — a lattice or section space of
+rank `≈ 2e^A` with an integral count — whose primitive `h¹` equals `½Q(H)` on window tests, compatible
+under lengthening (folds acting as correspondences, departing folds paying their creation), with the
+symmetric fold masses expressed as counts.
+- **Why it opens the path.** A count at bounded distance from the window Rosati form is positivity by
+  Tate's limit law, at every length; that is RH [L/S]. The finite-rank no-go says such an object must
+  be a tower; the window genus says its rank; the Künneth law says counts already carry everything but
+  `½Q`; the degeneration says which classes are Tate. What is asked is the one missing level structure.
 
-### 2.6.2 Route PM — a structure that places resonances
-**Question.** Realize the scattering channel of the Mayer operator as a self-adjoint operator in a Krein or
-Lax–Phillips space in which the resonances `ρ/2` become eigenvalues of a definite (or dissipative with
-known shift) operator — equivalently, a Herglotz representation of the boundary `2ζ(s)/ζ(s+1)` (or of its
-slope, whose coefficients `(1 − 1/n)Λ(n)` are nonnegative) with a positive measure on the critical line;
-equivalently, local energy decay of the automorphic wave equation at the optimal rate (B34).
-- **Why it opens the path.** RH is the placement of the poles of `Λ(s)/Λ(s+1)` (band poles = Hodge defect
-  [L]); partner saturation of resonant states is RH [L]. A definite structure forces the placement.
-- **Constraints from the corpus.** No algebraic recentering takes the critical parabola to a real
-  spectrum; universal Cauchy contraction fails below `Re w = 1`; core energy is positive at every zero; ζ
-  enters `D = A + ζB` as a scalar. The structure must come from the relation between `A`, `B` and the
-  eigenvalue parameter, not from the determinant alone.
+### 2.6.2 Route PM — a reflection positivity on period functions
+**Question.** Find a positive-definite Hermitian structure on the space of Lewis period functions
+(or on the scattering channel of the Mayer operator) invariant under the reflection
+`ψ(z) ↦ z^{−2s}ψ(1/z)`, such that a resonance off `Re s = 1/4` produces a negative norm — a Krein or
+Lax–Phillips realization where the resonances are eigenvalues of a definite operator.
+- **Why it opens the path.** RH is the placement of the poles of `Λ(s)/Λ(s+1)` [L]. Contraction cannot
+  place them; a positivity whose symmetry is the reflection can, exactly as the window multiplier
+  `e^{−(s−½)A}` is unitary only on the line.
 
 ### 2.6.3 Route WD — subexponential window energy from the source
-**Question.** For every unit window at the polynomial stage and prefix `Θ(√m)`, prove from the integer-theta
-source that the window energy `\|𝒵_N(t)\|²` grows subexponentially in `t` (B15). `𝒵_N(t)` is a contour
-integral of `e^{t(z−½)}(−A_N'/A_N)` around the window: the question is a source identity that cancels the
-`e^{t}` flux through the right edge against its functional-equation image to all orders.
-- **Why it opens the path.** At the polynomial stage this is equivalent to RH [L]. It is a statement about
-  polynomial-size integer data per window with no separation input; the canonical multiplier and the
-  certificate then follow automatically [L].
+**Question.** For every unit window at the polynomial stage and prefix `Θ(√m)`, prove from the
+integer-theta source that `|𝒵_N(t)|²` grows subexponentially in `t`, via a source identity cancelling
+the `e^t` flux through the right edge against its functional-equation image.
+- **Why it opens the path.** Equivalent to RH at the polynomial stage [L]; the multiplier and the
+  certificate follow automatically [L]. It is the growth law of Q3 on WD's own windows.
 
 ### 2.6.4 Route HF — the window Markov capacity
-**Question.** For every window length `A`, prove the Poincaré (capacity) inequality of the window Markov
-form on pole-orthogonal window tests: the jump energy — the archimedean Lévy jumps plus the prime jumps
-`n ≤ e^A` with weights `Λ(n)/√n` — dominates the creation potential `\|Ω(0) − 2Σ_{n≤e^A}Λ(n)/√n\| ≈ 4e^{A/2}`
-(B37; the sinh-capacity form of B1).
-- **Why it opens the path.** It is RH [L], and by the horizon criterion it is the RH criterion of the whole
-  complete family.
-  It is a spectral-gap statement for an explicit Markov generator on an interval — a random walk with
-  prime-logarithm steps and Gamma-factor Lévy jumps — so the tools are Dirichlet forms, isoperimetry and
-  comparison of jump kernels rather than prime-error estimates. Its algebraic shadow on one two-prime
-  lattice is the SOS identity B6; over a curve it is Castelnuovo–Severi on the Frobenius span [L].
+**Question.** For every window length `A`, prove the nonlocal Poincaré inequality
+`J_∞(H) + Σ_{n≤e^A}(Λ(n)/(2√n))fold_n(H) + ½⟨c,H⟩² ≥ |Ω(0)|‖H‖² + Σ_{n≤e^A}(Λ(n)/√n)sym_n(H) + ½⟨s,H⟩²`.
+- **Why it opens the path.** It is Weil's window criterion, hence RH, and by the horizon criterion and
+  the Tate decomposition it is the whole sign problem of the complete family. It is a spectral-gap
+  statement for an explicit jump process on an interval — archimedean Lévy jumps plus prime folds —
+  whose payment must be nonlocal (graph Schur complements, harmonic hubs), since pointwise calibration
+  fails at the first two primes.
 
 ## 2.7 Does closing RH need a new field?
 
-**Assessment: yes.** The corpus has built every layer of an arithmetic Hodge theory of the scaling surface
-except the one that produces positivity. The degeneration layer (ADT/AHD) is complete and its content is exact:
-its first-order structure is a point count (`#ℙ⁷(ℤ/m)`), its second-order structure is Weil's window form
-plus a positive prime-free term. A theory of degenerations describes where the sign lives; it does not
-supply it. The missing field is a **cohomology of windows of `Spec ℤ`**: a theory that attaches to each
-window length `A` (scale cutoff `e^A`) a finite object whose `h¹` is Weil's window form and is nonnegative
-because it is a dimension or a cardinality.
+**Assessment: yes, and its seed exists as CWS.** The corpus has built every structural layer of a
+cohomology of windows of `Spec ℤ` — datum, locality, canonical class, Serre duality, Frobenius at
+infinity, index, genus, naive heights, curve calibration, selection battery, Künneth form — and has
+proved each axiom holds for every weight on the prime powers, ζ or not. The missing layer is the one
+that produces positivity: the `h¹` as a count, uniformly in the window length. Three proved laws fix
+its shape: it cannot be finite-dimensional or finite-rank (Π18); its rank grows like `2e^A` (Π16); its
+Tate classes are point counts of projective space over residue rings and its single non-Tate class is
+Weil's window form (Σ1j).
 
-*Why.* Over `𝔽_q` the three proofs of RH rest on objects `ℤ` lacks: intersection numbers that are counts
-(Weil), auxiliary sections whose vanishing is counted (Stepanov–Bombieri), tensor powers of a realization
-with Euler products (Deligne). Over `ℤ` the algebra exists (correspondences, λ-ring, theorem of the square,
-Lefschetz trace, Riemann–Roch identities), Tate's limit law names the missing input (a naive height),
-integer producers reach the main term but never the square root, tensor amplification is all-or-nothing,
-and every other producer is excluded by a proved law (edge logic, ceiling, near radical, free deformation,
-margin selectors, semilocal and trace no-gos, Laguerre–Pólya closure, the degeneration's zero-blind bulk).
+*What the field is about.* A **theory of the window tower of `Spec ℤ`**: for each length `A` a finite
+arithmetic object `W_A` attached to the integers `n ≤ e^A`, with restriction maps as `A` grows, whose
+first cohomology carries Weil's window form as a dimension or a count; an arithmetic Hodge theory
+whose positivity comes from counting, organized as a tower with control theorems — closer in shape
+to Iwasawa theory (towers of growing rank, characteristic objects, control) than to the cohomology of
+one variety.
 
-*What exists [L].*
-- The window: Weil's window criterion; the window Markov form (finitely many prime jumps, departing jumps
-  paying creation); the finite divisor and near radical at every degree; positivity to `0.724`; the exact
-  `{∞,2}` trace to `log 3`.
-- The degeneration: Jordan point count, Hensel weight strings, CRT tensor law, idempotent monodromy,
-  graded/top Möbius pair, exact second order on horizon blocks, complete degeneration selecting ζ.
-- The arithmetic: correspondence algebra with λ-ring and Rosati involution; Tate's limit law; Künneth RR;
-  the Lévy count on prime-free cycles; Stepanov over `𝔽_q`; count classification.
-- The selector's function: `Λ(s)/Λ(s+1)` with its band poles, its Mayer realization and its scattering
-  reading.
-
-*Criteria the field must meet.*
-1. `h⁰` from arithmetic counts; `h¹ ≥ 0` because it is a dimension, a cardinality (naive height) or a
-   log-count (midpoint convexity).
-2. First order: reproduce the Jordan polarization `J_{β+1}(m)/φ(m) = #ℙ^β(ℤ/m)` as point counts, with the
+*Criteria it must meet.*
+1. `h⁰` from arithmetic counts (theta count of `ℤ`); `h¹ ≥ 0` because it is a dimension, a cardinality
+   or a log-count.
+2. Locality: `W_A` depends only on `n ≤ e^A` and the Gamma factor; departing folds pay their creation.
+3. Primitive `h¹(W_A) = ½Q(H)` exactly; the Künneth part `h¹_K` is the existing count.
+4. The symmetric fold masses are counts; the antisymmetric fold counts and Lévy jumps are the
+   correspondences acting on `W_A`.
+5. Rank `≈ 2e^A` (window genus), never finite; Riemann–Roch with canonical class `k_A` (the half-weighted
+   Chebyshev profile) and Serre duality `σ_A`.
+6. Tate pieces reproduce the degeneration: `#ℙ^β(ℤ/m)` at first order and on twisted windows, with the
    profile exponent `β` as a dimension.
-3. Second order: primitive `h¹` of a window test `= ½Q(H)`; the prime jumps `n ≤ e^A` and the archimedean
-   Lévy jumps as the two kinds of correspondences acting on the window; the creation potential as a degree.
-4. Riemann–Roch at every window by a Poisson-type duality on lattices whose rank grows like `e^{2a}` (the
-   near radical), with a logarithmic completion of the split surface.
-5. Locality: the window object depends only on the primes `n ≤ e^A` (departing jumps pay their creation).
-6. Calibrations: over curves `deg(m − nF)`, `N₁`, Stepanov, window `2g`; on prime-free cycles the Lévy
-   count; the genus function as Shannon number plus resolved-zero defect.
-7. It avoids the proved no-gos: cones, bidegree counts, fixed rank, definite counts, Siegel majorants at a
-   fixed boost, ordinary Poisson pairs for the isotropic count, semilocal and trace carriers, separable
-   gluing, free deformation, zero-blind limits.
-8. Selection: it fails for the golden fake, prime flips, Epstein lattices beyond the self-dual point and
-   the `m² + 64n²` series, and reproduces Weil and Stepanov over `𝔽_q`.
-9. Gluing: global, one negative square at the pole, distinct primes coupled through `∞`; graded
-   positivity reaching the top stratum by a mechanism that is not the Möbius inversion.
-10. Frobenius at infinity: an operator on the window object whose fixed line is `Re s = ½` and whose action
-    on `Λ(s)/Λ(s+1)` places its poles.
+7. Frobenius at infinity: a positivity whose symmetry is `σ_A`, so that the multiplier `e^{−(s−½)A}`
+   orients the line.
+8. Selection by a law in `A`: fails for prime flips beyond their level, the golden fake, Epstein and
+   `m² + 64n²` fakes; reproduces curves (genus saturating at `2g`, Stepanov, Castelnuovo–Severi).
+9. Avoids every proved no-go: finite realizations, pointwise Markov calibration, contractive
+   positivity, density selection, semilocal and trace carriers, separable gluing, free deformation,
+   zero-blind limits, flooring.
 
 *Questions it must answer.*
-- What object has Weil's window form as its `h¹`? What set does `τ_x(ξ ⋆ ξ′)` count, up to bounded error?
-- Is the profile exponent `β` the dimension of an ambient projective space, and is there a scheme over `ℤ`
-  whose point counts over `ℤ/m` give the second-order (window) term the way `ℙ⁷` gives the first?
-- What pays the creation potential `−2Σ_{n≤e^A}Λ(n)/√n` — what is the degree of the window's canonical
-  class?
-- What are Stepanov's auxiliary sections on a window?
-- What lattice carries the sections of a window of length `A` (rank `≈ 2e^{2a}`), with what metric (the
-  Gamma factor as Gaussian and as Lévy measure)?
-- Why `ζ` and not an Epstein function or a positive degree-two series: which axiom fails for them?
+- What finite set does `sym₂` count? What is the count attached to a fold `T_n`?
+- What are the restriction maps `W_A → W_{A'}` and their control theorem (how much of `h¹` is new at the
+  stage where `n` enters)?
+- Is there a scheme over `ℤ` whose points over `ℤ/m` give the twisted second-order counts and whose
+  "conductor-one" part is the window form?
+- What lattice of rank `≈ 2e^A` carries the sections of `W_A`, with what metric (the Gamma factor as
+  Gaussian and as Lévy measure)?
+- What growth law in `A` does the tower obey, and why does it force the exponent of window negativity
+  to vanish?
+- Which axiom fails for the fakes?
 
-*Tools it aims to develop.* Dirichlet forms and Poincaré inequalities for arithmetic jump kernels on
-intervals; point counting over `ℤ/m` and Hensel towers; λ-rings and Adams operations; Néron–Tate theory on
-`ℤ[ℚ_{>0}^×]`; Arakelov `h⁰` on growing-rank lattices; Zwegers–Vignéras indefinite theta and Voronoi
-summation; Stepanov's method; Wiener–Hopf / Szegő factorization; Krein-space and Lax–Phillips scattering
-for the modular surface; measure rigidity and entropy (for the direction of 2.4).
+*Tools it aims to develop.* Nonlocal Dirichlet forms and Poincaré inequalities for arithmetic jump
+kernels on intervals (graph Schur complements, harmonic hubs); point counting over finite rings and
+Hensel towers; Iwasawa-style control of towers; λ-rings and Néron–Tate theory on `ℤ[ℚ_{>0}^×]`;
+Arakelov `h⁰` on growing-rank lattices; Stepanov's auxiliary sections; Wiener–Hopf / Szegő
+factorization; Krein-space scattering; entropy and measure rigidity (for 2.4).
 
 *Objects, language, mechanisms.*
-- Objects: windows `[−A, 0]`; window tests; the window Markov form (jump kernel, creation potential, pole
-  plane); scaling surface classes; correspondences and normalized graphs; Rosati involution; naive
-  heights; section lattices `Λ_A`; `h⁰, h¹, h²`; genus function; finite divisor; near radical; the
-  degenerating family with its bulk count and horizon layer; `Λ(s)/Λ(s+1)`; window energy.
-- Mechanism A (count): naive height on window correspondences ⇒ Tate limit `≥ 0` ⇒ Rosati positivity ⇒
-  orbit Hodge index ⇒ RH.
-- Mechanism B (capacity): Poincaré inequality of the window Markov form at every length ⇒ Weil's window
-  criterion ⇒ RH.
-- Mechanism C (placement): a definite structure on the scattering channel ⇒ poles of `Λ(s)/Λ(s+1)` on the
-  line ⇒ RH.
-- The degeneration is the dictionary connecting them; the window integer reduces to precision and is not
-  an independent mechanism.
+- Objects: windows `[−A, 0]`, stages `log n ≤ A < log(n+1)`, folds `T_n`, symmetric and antisymmetric
+  fold masses, canonical class `k_A`, canonical degree, window involution and its multiplier, window
+  index `ι(A)`, window genus, window Rosati form and naive heights, Tate pieces `#ℙ^β(ℤ/m)`, the tower
+  `A ↦ W_A`.
+- Mechanism A (count): `sym_n` as counts ⇒ window naive heights ⇒ Tate limit `≥ 0` ⇒ window positivity
+  ⇒ RH.
+- Mechanism B (capacity): nonlocal Poincaré inequality of the window jump process at every length ⇒
+  window criterion ⇒ RH.
+- Mechanism C (growth): a law in `A` forcing subexponential window negativity ⇒ RH; its exponent form is
+  a zero-free strip.
+- Mechanism D (placement): a reflection positivity on the scattering side ⇒ poles of `Λ(s)/Λ(s+1)` on
+  the line ⇒ RH.
 
-No corpus result shows that the field closes RH. Its first tests are 2.5.1 (a count at the first prime)
-and Q2 (the full-space second order), where the answer is not obstructed by zeros.
+No corpus result shows that this field closes RH. Its first tests are 2.5.1 (a count at the first
+prime) and 2.5.4 (the Tate decomposition), neither obstructed by zeros.

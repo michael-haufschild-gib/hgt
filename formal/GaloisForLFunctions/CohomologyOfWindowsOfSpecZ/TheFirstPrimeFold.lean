@@ -25,6 +25,9 @@ A window of length `A` is at **stage** `n` when `⌊e^A⌋ = n`, i.e. `log n ≤
   `Q(H) = Ω(0)‖H‖² + J_∞(H) + Σ (Λ(n)/√n)(anti_n − sym_n) + pole`. The symmetric fold masses are
   the only negative arithmetic terms of a window; at the first prime there is one,
   `Q = Ω(0)‖H‖² + J_∞ + (log 2/√2)(anti₂ − sym₂) + pole` (`weilQuad_eq_firstPrime_signedFold`).
+* **The fold capacity criterion** (`riemannHypothesis_iff_foldCapacity`): RH holds iff on every
+  window the counts dominate the masses,
+  `|Ω(0)|‖H‖² + Σ (Λ(n)/√n) sym_n + ½⟨s,H⟩² ≤ J_∞(H) + Σ (Λ(n)/√n) anti_n + ½⟨c,H⟩²`.
 -/
 
 noncomputable section
@@ -313,5 +316,24 @@ theorem weilQuad_eq_firstPrime_signedFold (hH : IsWindowTest A H) (h2 : Real.log
       (coshPairing H ^ 2 / 2 - sinhPairing H ^ 2 / 2) := by
   rw [weilQuad_eq_firstPrimeFold hH h2 h3,
     foldEnergy_sub_count_eq_anti_sub_sym hH.continuous hH.hasCompactSupport]
+
+/-- **The fold capacity criterion**: RH iff on every window the jump counts, antisymmetric fold counts
+and the cosh square dominate the archimedean constant, the symmetric fold masses and the sinh
+square. -/
+theorem riemannHypothesis_iff_foldCapacity :
+    RiemannHypothesis ↔ ∀ A : ℝ, 0 ≤ A → ∀ H : ℝ → ℝ, IsWindowTest A H →
+      -EF.gammaBracket 0 * (∫ u, H u ^ 2) +
+          (∑ n ∈ Finset.Icc 2 (windowLevel A), primeJumpWeight n * foldSym A (Real.log n) H) +
+          sinhPairing H ^ 2 / 2 ≤
+        levyJump H +
+          (∑ n ∈ Finset.Icc 2 (windowLevel A),
+            primeJumpWeight n * (foldEnergy A (Real.log n) H / 2)) +
+          coshPairing H ^ 2 / 2 := by
+  rw [riemannHypothesis_iff_windowForm_nonneg]
+  refine forall_congr' fun A => forall_congr' fun _ => forall_congr' fun H =>
+    forall_congr' fun hH => ?_
+  rw [weilQuad_eq_signedFolds hH]
+  simp only [mul_sub, Finset.sum_sub_distrib]
+  constructor <;> intro h <;> linarith
 
 end GaloisForLFunctions.CohomologyOfWindowsOfSpecZ
