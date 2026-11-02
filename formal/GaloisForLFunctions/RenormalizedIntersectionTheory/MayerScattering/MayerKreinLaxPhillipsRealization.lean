@@ -125,7 +125,7 @@ theorem lewisModularInversion_mayerPeriodCore {s : ℂ} (hs0 : 0 < s.re) (hsim :
     {a : ℝ} (ha : 0 < a) :
     lewisModularInversion s (mayerPeriodCore s) a = mayerPeriodCore s a := by
   have haC : (a : ℂ) ≠ 0 := Complex.ofReal_ne_zero.mpr ha.ne'
-  unfold lewisModularInversion mayerPeriodCore _root_.RHTower.positiveMellinConvolution
+  dsimp only [lewisModularInversion, mayerPeriodCore, _root_.RHTower.positiveMellinConvolution]
   rw [integral_Ioi_zero_inv_subst]
   have hcongr :
       (∫ t in Ioi (0 : ℝ),
@@ -141,7 +141,7 @@ theorem lewisModularInversion_mayerPeriodCore {s : ℂ} (hs0 : 0 < s.re) (hsim :
     have hcore : fieldCore (2 * s) (a / t)⁻¹ =
         (a : ℂ) ^ (2 * s) * (t : ℂ) ^ (-(2 * s)) * fieldCore (2 * s) (a / t) := by
       have hrec := lewisModularInversion_fieldCore hs0 hsim (div_pos ha ht0)
-      unfold lewisModularInversion at hrec
+      dsimp only [lewisModularInversion] at hrec
       have hquot : ((a / t : ℝ) : ℂ) ^ (2 * s) = (a : ℂ) ^ (2 * s) * (t : ℂ) ^ (-(2 * s)) := by
         rw [div_eq_mul_inv, Complex.ofReal_mul,
           Complex.mul_cpow_ofReal_nonneg ha.le (inv_pos.mpr ht0).le,
@@ -295,14 +295,17 @@ private theorem mellin_spectral_linear_relation_eq_zero
   have hF_diff : DifferentiableOn ℂ F U := by
     intro u hu
     have hd_sum : DifferentiableAt ℂ F u := by
-      refine differentiableAt_finset_sum S _ u fun j hj => ?_
+      refine differentiableAt_finset_sum S
+        (fun j z => (4 * c j / Gammaℝ (2 * j.1)) * M j z *
+          _root_.RHTower.xi z * _root_.RHTower.xi (2 * j.1 - z) * P j z) u fun j hj => ?_
       have hdM : DifferentiableAt ℂ (M j) u :=
         hM_diff j hj u (lt_of_lt_of_le hu.1 (hμ_le j hj)) hu.2
       have hdxi1 : DifferentiableAt ℂ _root_.RHTower.xi u := _root_.RHTower.xi_differentiable u
       have hdxi2 : DifferentiableAt ℂ (fun z => _root_.RHTower.xi (2 * j.1 - z)) u :=
         (_root_.RHTower.xi_differentiable _).comp u (differentiableAt_const (2 * j.1) |>.sub differentiableAt_id)
       have hdP : DifferentiableAt ℂ (P j) u :=
-        differentiableAt_finset_prod (S.erase j) _ u fun m _ =>
+        differentiableAt_finset_prod (S.erase j)
+          (fun m z => (2 * m.1 - z) * (2 * m.1 - 1 - z)) u fun m _ =>
           ((differentiableAt_const (2 * m.1) |>.sub differentiableAt_id).mul
             (differentiableAt_const (2 * m.1 - 1) |>.sub differentiableAt_id))
       exact ((((differentiableAt_const _).mul hdM).mul hdxi1).mul hdxi2).mul hdP
@@ -951,7 +954,7 @@ theorem mayerKreinForm_offLineNegativeState_self {s : upperMayerResonances}
   have hne : reflectUpperResonance s ≠ s :=
     fun h => hs ((reflectUpperResonance_eq_self_iff s).mp h)
   unfold mayerKreinForm
-  rw [mayerKreinReflection_offLineNegativeState, map_neg, ← neg_one_smul ℂ (mayerOffLineNegativeState s)]
+  rw [mayerKreinReflection_offLineNegativeState, ← neg_one_smul ℂ (mayerOffLineNegativeState s)]
   -- Expand using conjugate symmetry and linearity in the first argument:
   rw [← mayerKreinPosInner_conj_symm, mayerKreinPosInner_smul_left,
     mayerKreinPosInner_conj_symm, map_mul, map_neg, map_one]
@@ -987,10 +990,9 @@ theorem mayerKreinForm_offLineNegativeState_self {s : upperMayerResonances}
 theorem mayerOffLineNegativeState_ne_zero {s : upperMayerResonances} (hs : s.1.re ≠ 1 / 4) :
     mayerOffLineNegativeState s ≠ 0 := by
   intro h0
-  have hform := mayerKreinForm_offLineNegativeState_self hs
-  rw [h0] at hform
-  unfold mayerKreinForm mayerKreinPosInner at hform
-  simp at hform
+  have heq : mayerPeriodBasis s = mayerPeriodBasis (reflectUpperResonance s) :=
+    sub_eq_zero.mp h0
+  exact hs ((reflectUpperResonance_eq_self_iff s).mp (mayerPeriodBasis.injective heq).symm)
 
 /-- Canonical inclusion of `upperRightMayerResonances` (`1/4 < Re s`, `0 < Im s`) into
 `upperMayerResonances`. -/

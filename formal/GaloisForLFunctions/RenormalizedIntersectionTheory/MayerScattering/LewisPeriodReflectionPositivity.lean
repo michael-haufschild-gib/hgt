@@ -304,7 +304,8 @@ theorem period_real_continuousOn {w : ℂ} (hw : 0 < w.re) (ε c : ℂ) (f : Dis
   have hh := (extension_differentiableOn hw ε c f).differentiableAt (hdom_open.mem_nhds hd)
   have hcomp : ContinuousAt (fun x : ℝ => period w ε c f x) a := by
     change ContinuousAt (fun x : ℝ => extension w ε c f ((x : ℂ) - 1)) a
-    exact hh.continuousAt.comp (show ContinuousAt (fun x : ℝ => (x : ℂ) - 1) a by fun_prop)
+    exact ContinuousAt.comp hh.continuousAt
+      (show ContinuousAt (fun x : ℝ => (x : ℂ) - 1) a by fun_prop)
   exact hcomp.continuousWithinAt
 
 /-- Linear growth bound `‖period w ε c f b‖ ≤ M * b` on `[1, ∞)` deduced directly from
@@ -503,9 +504,10 @@ theorem globalLewisPeriod_integrable_lewisCriticalNormSq {s ε c : ℂ}
       have hψ_sq : ‖period (2 * s) ε c f a‖ ^ 2 ≤ M ^ 2 * a ^ (-2 * (2 * s).re - 2) := by
         have h1 := pow_le_pow_left₀ (norm_nonneg _) (hnear_bound a ha) 2
         rw [mul_pow, ← Real.rpow_natCast (a ^ (-(2 * s).re - 1)) 2, ← Real.rpow_mul ha.1.le] at h1
-        convert h1 using 2
-        push_cast
-        ring
+        have hexp : (-(2 * s).re - 1) * ((2 : ℕ) : ℝ) = -2 * (2 * s).re - 2 := by
+          push_cast
+          ring
+        rwa [hexp] at h1
       have hw_le : lewisCriticalWeight a ≤ a ^ (11 / 2 : ℝ) := by
         unfold lewisCriticalWeight
         calc
@@ -577,9 +579,10 @@ theorem globalLewisPeriod_integrable_lewisCriticalNormSq {s ε c : ℂ}
           (fun x => period (2 * s) ε c f x) a‖ ^ 2 ≤ M ^ 2 * a ^ (2 * (2 * s).re - 4) := by
         have h1 := pow_le_pow_left₀ (norm_nonneg _) hR_le 2
         rw [mul_pow, ← Real.rpow_natCast (a ^ ((2 * s).re - 2)) 2, ← Real.rpow_mul ha.1.le] at h1
-        convert h1 using 2
-        push_cast
-        ring
+        have hexp : ((2 * s).re - 2) * ((2 : ℕ) : ℝ) = 2 * (2 * s).re - 4 := by
+          push_cast
+          ring
+        rwa [hexp] at h1
       have hw_le : lewisCriticalWeight a ≤ a ^ (11 / 2 : ℝ) := by
         unfold lewisCriticalWeight
         calc
@@ -629,9 +632,10 @@ theorem globalLewisPeriod_integrable_lewisCriticalNormSq {s ε c : ℂ}
           (fun x => period (2 * s) ε c f x) b‖ ^ 2 ≤ M ^ 2 * b ^ (4 * (2 * s).re) := by
         have h1 := pow_le_pow_left₀ (norm_nonneg _) hR_le 2
         rw [mul_pow, ← Real.rpow_natCast (b ^ (2 * (2 * s).re)) 2, ← Real.rpow_mul hb0.le] at h1
-        convert h1 using 2
-        push_cast
-        ring
+        have hexp : 2 * (2 * s).re * ((2 : ℕ) : ℝ) = 4 * (2 * s).re := by
+          push_cast
+          ring
+        rwa [hexp] at h1
       have hw_le : lewisCriticalWeight b ≤ b ^ (-13 / 2 : ℝ) := by
         unfold lewisCriticalWeight
         calc
@@ -697,18 +701,16 @@ theorem lewisCriticalInner_modularInversion_adj (s : ℂ) (f g : ℝ → ℂ) :
     map_mul, conj_ofReal_cpow_pos hb0]
   have hjac_w : ((b ^ (-2 : ℝ) : ℝ) : ℂ) * (lewisCriticalWeight b⁻¹ : ℂ) =
       (b : ℂ) ^ (-1 : ℂ) * (lewisCriticalWeight b : ℂ) := by
-    rw [← Complex.ofReal_mul, lewisCriticalWeight_inv_mul_jac hb0, Complex.ofReal_mul,
-      ← Complex.ofReal_cpow hb0.le (-1 : ℝ)]
-    norm_num
+    have hb_pow : ((b ^ (-1 : ℝ) : ℝ) : ℂ) = (b : ℂ) ^ (-1 : ℂ) := by
+      simpa using (Complex.ofReal_cpow hb0.le (-1 : ℝ)).symm
+    rw [← Complex.ofReal_mul, lewisCriticalWeight_inv_mul_jac hb0, Complex.ofReal_mul, hb_pow]
   have hexp_conj : (starRingEnd ℂ) (-(2 * riemannMayerReflect s)) = 2 * s - 1 := by
     unfold riemannMayerReflect
     rw [map_neg, map_mul, map_ofNat, map_sub, map_div₀, map_one, map_ofNat, Complex.conj_conj]
     ring
   rw [hexp_conj]
   have hpow : (b : ℂ) ^ (2 * s) * (b : ℂ) ^ (-1 : ℂ) = (b : ℂ) ^ (2 * s - 1) := by
-    rw [← Complex.cpow_add _ _ hbC]
-    congr 1
-    ring
+    rw [← Complex.cpow_add _ _ hbC, ← sub_eq_add_neg]
   calc
     ((b ^ (-2 : ℝ) : ℝ) : ℂ) *
         ((b : ℂ) ^ (2 * s) * f b * (starRingEnd ℂ) (g b⁻¹) * (lewisCriticalWeight b⁻¹ : ℂ))
@@ -985,6 +987,7 @@ theorem lewisCoIsometryDefect_eq_neg_integral {s : ℂ} {ψ : ℝ → ℂ}
           (b ^ (-(1 / 2 : ℝ)) + b ^ (4 * s.re - 2 - -(1 / 2 : ℝ))))) (Ioi 1) := by
     have hs := (h1_int.mono_set (Ioi_subset_Ioi zero_le_one)).add hfold1
     refine hs.congr_fun (fun b _ => ?_) measurableSet_Ioi
+    simp only [Pi.add_apply]
     rw [show 4 * s.re - 2 - -(1 / 2 : ℝ) = 4 * s.re - 3 / 2 by ring]
     ring
   have hintB : IntegrableOn
@@ -993,6 +996,7 @@ theorem lewisCoIsometryDefect_eq_neg_integral {s : ℂ} {ψ : ℝ → ℂ}
           (b ^ (8 * s.re - 5 / 2) + b ^ (4 * s.re - 2 - (8 * s.re - 5 / 2))))) (Ioi 1) := by
     have hs := (h2_int.mono_set (Ioi_subset_Ioi zero_le_one)).add hfold2
     refine hs.congr_fun (fun b _ => ?_) measurableSet_Ioi
+    simp only [Pi.add_apply]
     rw [show 4 * s.re - 2 - (8 * s.re - 5 / 2) = -4 * s.re + 1 / 2 by ring]
     ring
   rw [← integral_sub hintA hintB, ← integral_neg]
@@ -1028,11 +1032,11 @@ theorem lewisCoIsometryDefect_eq_neg_integral {s : ℂ} {ψ : ℝ → ℂ}
   have halg : (y + x) - (x ^ 3 + y ^ 3) = -(x + y) * (x - y) ^ 2 := by
     linear_combination -(x + y) * hxy
   rw [hp1, hp2, hp3, hp4]
-  change -((‖ψ b‖ ^ 2 * ((b + b⁻¹) ^ (-6 : ℝ) * (b ^ (2 * s.re - 1) * y + b ^ (2 * s.re - 1) * x))) -
-      (‖ψ b‖ ^ 2 * ((b + b⁻¹) ^ (-6 : ℝ) *
-        (b ^ (2 * s.re - 1) * x ^ 3 + b ^ (2 * s.re - 1) * y ^ 3)))) =
-    (b + b⁻¹) ^ (-6 : ℝ) * b ^ (2 * s.re - 1) * (x + y) * (x - y) ^ 2 * ‖ψ b‖ ^ 2
-  linear_combination -(b + b⁻¹) ^ (-6 : ℝ) * b ^ (2 * s.re - 1) * ‖ψ b‖ ^ 2 * halg
+  change ‖ψ b‖ ^ 2 * ((b + b⁻¹) ^ (-6 : ℝ) * (b ^ (2 * s.re - 1) * y + b ^ (2 * s.re - 1) * x)) -
+      ‖ψ b‖ ^ 2 * ((b + b⁻¹) ^ (-6 : ℝ) *
+        (b ^ (2 * s.re - 1) * x ^ 3 + b ^ (2 * s.re - 1) * y ^ 3)) =
+    -((b + b⁻¹) ^ (-6 : ℝ) * b ^ (2 * s.re - 1) * (x + y) * (x - y) ^ 2 * ‖ψ b‖ ^ 2)
+  linear_combination (b + b⁻¹) ^ (-6 : ℝ) * b ^ (2 * s.re - 1) * ‖ψ b‖ ^ 2 * halg
 
 /-- Exact integral formula specialized to every resonant Lewis period function. -/
 theorem resonantLewisPeriod_coIsometryDefect_eq {s : ℂ} (hs : IsMayerScatteringResonance s) :
@@ -1193,7 +1197,9 @@ theorem resonantLewisPeriod_coIsometryDefect_lt_zero_iff {s : ℂ}
         have h1 := pow_le_pow_left₀ (abs_nonneg _) hdiff_abs 2
         rw [sq_abs, mul_pow, ← Real.rpow_natCast (b ^ (1 / 2 : ℝ)) 2,
           ← Real.rpow_mul hb0.le] at h1
-        convert h1 using 2 <;> norm_num
+        have hexp : (1 / 2 : ℝ) * ((2 : ℕ) : ℝ) = 1 := by norm_num
+        have h4 : (2 : ℝ) ^ 2 = 4 := by norm_num
+        rwa [hexp, h4] at h1
       have hbase_le : b ^ (2 * s.re - 1) ≤ b ^ (1 : ℝ) :=
         Real.rpow_le_rpow_of_exponent_le hb1 (by linarith [hs.2.1])
       have hmid : b ^ (2 * s.re - 1) * (b ^ δ + b ^ (-δ)) * (b ^ δ - b ^ (-δ)) ^ 2 ≤

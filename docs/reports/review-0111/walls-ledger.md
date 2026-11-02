@@ -73,7 +73,7 @@ derived here from Lean statements.
 | Σ16 Prime–pole coherence / packet identity | Solved (as identity) | — | Mertens polarization `P_N(F) = Σ F²/n(ψ₁(⌊N/n⌋) + log n) − J_N(F)`; complete form = jump squares + affine incidence squares + bounded diagonal − shell degree + boundary; the shell degree is the only term growing with the overlap; `B_Q² ≤ S_Q L_Q` sharp [L]. |
 | Σ17 Inter-tower coupling | Solved (as equivalence) | RH | Coupling ≡ kernel with absolute constants; RH ⇔ bounded coupling on one `⟨p⟩×⟨q⟩`; rate = width; local Hyers–Ulam stability; cone ⇒ RH or unattained width; finite stratum ⇒ RH [L]. |
 | Σ18 Exact SOS on a two-prime lattice | Open | RH | Weil's dilation form on boost-mass-zero vectors of one two-prime lattice as a sum of squares of coupling differences. The Hecke orbit of one spectrally generic test under `ℤ log p + ℤ log q` carries the full Hodge defect [L]. |
-| Σ19 Loop-Eisenstein band poles | Open | RH | `κ_Hodge = #` band poles of `Λ(s)/Λ(s+1)`; noncancellation mechanism missing [L]. |
+| Σ19 Loop-Eisenstein band poles | Partially solved | RH | `κ_Hodge = #` band poles of `Λ(s)/Λ(s+1)`; noncancellation mechanism missing [L]. |
 | Σ20 Scheduled prime sums | Open | RH | Lower bounds for prime-scheduled energies (FU, CFC, RP, SZ, LI, FEL, EGC) [L]. |
 | Σ21 Extension / carrier | Classified | — | Escape, mixing, height decay ⇒ `κ ∈ {0, ∞}`; continuous-dilation carriers reading `1_H` exist iff `H ∈ {{0}, ℚ}`; unique proper-subgroup split [L]. |
 | Σ22 Lefschetz operators | Classified | — | Dilation: HL trivial, transports positivity downward only. Overlap flow: HL on the HR locus is RH. Coupling Laplacian: HL for `t > 0`, base point `t = 0` is the zero form. No candidate is free [L]. |
@@ -168,7 +168,7 @@ derived here from Lean statements.
 
 | Family | Solved | Partially solved | Sharpened | Open | No-go | Classified |
 |---|---|---|---|---|---|---|
-| Σ (36) | 7 (Σ1a, Σ1h, Σ10, Σ12, Σ16, Σ17, Σ24) | 7 (Σ1b, Σ1d, Σ1e, Σ1g, Σ3, Σ6, Σ9) | 6 (Σ1, Σ1i, Σ2, Σ3a, Σ4, Σ5) | 6 (Σ1c, Σ7, Σ8, Σ18, Σ19, Σ20) | 5 (Σ1f, Σ13, Σ14, Σ23, Σ25) | 5 (Σ11, Σ15, Σ21, Σ22, Σ26) |
+| Σ (36) | 7 (Σ1a, Σ1h, Σ10, Σ12, Σ16, Σ17, Σ24) | 8 (Σ1b, Σ1d, Σ1e, Σ1g, Σ3, Σ6, Σ9, Σ19) | 6 (Σ1, Σ1i, Σ2, Σ3a, Σ4, Σ5) | 5 (Σ1c, Σ7, Σ8, Σ18, Σ20) | 5 (Σ1f, Σ13, Σ14, Σ23, Σ25) | 5 (Σ11, Σ15, Σ21, Σ22, Σ26) |
 | Π (23) | 4 (Π1, Π11f, Π11g, Π13 paper) | 4 (Π3, Π7, Π9, Π12) | 7 (Π4, Π5, Π6, Π8, Π10, Π15, Π16) | 2 (Π2, Π11h) | 6 (Π11a–e, Π14) | — |
 | Γ (19) | 5 (Γ2, Γ6, Γ7, Γ12, Γ18) | 2 (Γ5, Γ15) | 4 (Γ8, Γ10, Γ16, Γ19) | 2 (Γ1, Γ4) | 5 (Γ3, Γ9, Γ11, Γ13, Γ14) | 1 (Γ17) |
 

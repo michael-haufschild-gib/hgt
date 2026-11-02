@@ -1,8 +1,8 @@
 # Rational band poles survive the infinite affine Weyl sum
 
 - **ID:** loop-eisenstein-rational-band-pole-noncancellation
-- **Stage:** 2-fully-proven
-- **Type:** THEOREM (paper)
+- **Stage:** 3-formalized
+- **Type:** THEOREM (Lean)
 - **Source:** `docs/reports/review-0111/walls-ledger.md`, Σ19
 - **Statement:** One rotation threshold preserves every zero of `Λ(s+1)` in `−1/2<Re s<0`, with its full multiplicity, in the level-four rational affine Weyl sum.
 
@@ -54,7 +54,20 @@ support exactly `reflectionPoles`; its cardinal is the renormalized Hodge defect
 ## Gates
 - [x] Exact rational source and infinite sum; no assumed noncancellation.
 - [x] Dependency-closed proof from the corpus's quotient bound and Gaussian degree series.
-- [ ] Lean convergence, sector identity, full pole multiplicity and axiom audit.
+- [x] Lean convergence, sector identity, uniform noncancellation, full pole multiplicity and axiom audit.
+
+## Lean
+Module: `formal/GaloisForLFunctions/RenormalizedIntersectionTheory/LoopEisensteinBandPoleNoncancellation.lean`.
+Namespace: `GaloisForLFunctions.RenormalizedIntersectionTheory.LoopXi`.
+- `levelFourXiWeylSum_eq_sectors`: exact factorization of the full infinite source.
+- `xiSector_eventually_uniform_ne_zero`: both analytic sectors nonzero throughout the strip above one threshold.
+- `levelFourXiWeylSum_eventual_uniform_order`: simultaneous preservation of every band pole and multiplicity.
+- `rationalWeylBandPolesAt_eventually_eq`: actual pole support equals `reflectionPoles`.
+- `boostPolarIndex_ratCorr_eventually_eq_encard_weylBandPoles`: distinct actual poles count the Hodge defect.
+- `riemannHypothesis_iff_eventually_weylBandPoles_empty`: absence of these actual poles is RH.
+
+Direct source audit passed with `lake --old env lean`; transitive axioms are only
+`propext`, `Classical.choice`, and `Quot.sound`.
 
 ## Boundary
 The existing `reflectionPoles` definition counts denominator zeros. This theorem
