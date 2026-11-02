@@ -116,6 +116,19 @@ def coreSourceLimitDensity (a : ℝ) (p : ℝ × ℝ) : ℝ :=
   (-2 * a) * ((2 : ℝ) ^ (2 * a) * p.2 ^ (1 - 2 * a) +
     (2 * p.2 / (p.1 ^ 2 + p.2 ^ 2)) ^ (1 - 2 * a) / 2) / p.2 ^ 2
 
+/-- Every negative limiting real parameter leaves a strictly positive source density. -/
+theorem coreSourceLimitDensity_pos {a : ℝ} (ha : a < 0)
+    {p : ℝ × ℝ} (hp : p ∈ coreSourceRect) : 0 < coreSourceLimitDensity a p := by
+  have hy := coreSourceRect_height_pos hp
+  have hd : 0 < p.1 ^ 2 + p.2 ^ 2 :=
+    add_pos_of_nonneg_of_pos (sq_nonneg _) (sq_pos_of_pos hy)
+  have hh : 0 < 2 * p.2 / (p.1 ^ 2 + p.2 ^ 2) :=
+    div_pos (mul_pos (by norm_num) hy) hd
+  unfold coreSourceLimitDensity
+  exact div_pos (mul_pos (by linarith) (add_pos
+    (mul_pos (Real.rpow_pos_of_pos (by norm_num) _) (Real.rpow_pos_of_pos hy _))
+    (div_pos (Real.rpow_pos_of_pos hh _) (by norm_num)))) (sq_pos_of_pos hy)
+
 private theorem sourceY_eq {p : ℝ × ℝ} (hp : p ∈ coreSourceRect) : sourceY p = p.2 :=
   max_eq_right (by linarith [hp.2.1])
 

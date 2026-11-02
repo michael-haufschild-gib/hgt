@@ -7,6 +7,8 @@ import GaloisForLFunctions.WindowTowerOfSpecZ.TheExactPoleCapacityOfAWindow
 import GaloisForLFunctions.WindowTowerOfSpecZ.TheSymmetriesOfTheTower
 import GaloisForLFunctions.WindowTowerOfSpecZ.TheTwistsOfTheTower
 import GaloisForLFunctions.WindowTowerOfSpecZ.WeilsWindowFormIsASignedCount
+import GaloisForLFunctions.WindowTowerOfSpecZ.TheTransferAcrossAStage
+import GaloisForLFunctions.WindowTowerOfSpecZ.TheExitChargePaysEveryNewFold
 
 /-!
 # The Window Tower of Spec ℤ
@@ -20,6 +22,7 @@ operators, Tate positivity and its softness; the atomic lattice as the regular r
 the window algebra; the exact pole capacity and the sharp window floor; the symmetries of the
 tower (Adams lifts as dilations, Serre duality as the Rosati involution); completely multiplicative
 twists (Tate flow, characters) and the character-weighted Tate pieces of `L(s, χ)`; Weil's window
-form as a signed combination of projective point counts (interpolation of `log`). See
+form as a signed combination of projective point counts (interpolation of `log`); the transfer
+across a stage and the collar exit charge paying every new fold. See
 `WindowTowerOfSpecZ/README.md`.
 -/
