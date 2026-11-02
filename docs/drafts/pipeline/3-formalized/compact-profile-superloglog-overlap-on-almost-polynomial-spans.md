@@ -1,6 +1,6 @@
 # Compact profiles beyond log-log overlap on almost-polynomial spans
 
-- **Stage:** 2-fully-proven; Lean capstone written, checks pending.
+- **Stage:** 3-formalized.
 - **Wall:** Σ1d.
 - **Theorem:** For every nonzero compact real `C²` profile, one explicit clock `Cφ(N)` satisfies `Cφ(N)/log log N→∞`. For every `0<η<1/2` and `κ>2`, eventually `Wφ,c,N(x)≥(log N)^(-η)‖x‖²/4` on `V_floor(exp(log N/(log log N)^κ))`, uniformly for `1≤c≤Cφ(N)`.
 
@@ -48,7 +48,11 @@ gap eventually exceeds one. Orthogonal splitting and
 ## Lean boundary
 
 - `LogarithmicTailMassGivesAnExplicitSpectralFloor.lean`: checked, clean transitive axiom audits.
-- `EveryCompactProfileHasAnExplicitTailClock.lean`: spectral and conductor floors checked with clean audits; sharper `t log t` cap awaiting check.
+- `EveryCompactProfileHasAnExplicitTailClock.lean`: capped clock, spectral floor and conductor floor directly checked; clean transitive axiom audits.
 - `LogarithmicFloorsControlQuadraticOverlapResiduals.lean`: direct check passed; transitive audit contains only `propext`, `Classical.choice`, `Quot.sound`.
-- `AlmostPolynomialConductorSpansRetainHighEnergyGaps.lean`: horizon written, unchecked.
-- `EveryCompactProfileIsPositiveBeyondLogLogOverlap.lean`: capstone written, unchecked.
+- `AlmostPolynomialConductorSpansRetainHighEnergyGaps.lean`: `κ>2` horizon directly checked; transitive audit contains only `propext`, `Classical.choice`, `Quot.sound`.
+- `EveryCompactProfileIsPositiveBeyondLogLogOverlap.lean`:
+  `eventually_explicit_clock_almost_polynomial_span_coercivity` and
+  `tendsto_explicit_profile_overlap_div_loglog_atTop` directly checked with
+  `lake --old env lean`; both transitive audits contain only `propext`,
+  `Classical.choice`, `Quot.sound`.

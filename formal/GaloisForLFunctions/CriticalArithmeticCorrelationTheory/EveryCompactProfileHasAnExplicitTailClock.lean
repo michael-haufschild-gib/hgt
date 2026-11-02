@@ -247,8 +247,4 @@ theorem eventually_exp_le_completedConductorEnergy_up_to_explicit_clock {φ : �
       mul_le_mul_of_nonneg_left (htail _ hcm0 hcm) ha.le
     _ ≤ _ := completedConductorEnergy_ge_rescaled_tail hφ hsupp hM hc hm
 
-#print axioms integrable_shellSpectrum_standard_log_weight
-#print axioms eventually_exp_le_shell_tail_up_to_explicit_clock
-#print axioms eventually_exp_le_completedConductorEnergy_up_to_explicit_clock
-
 end GaloisForLFunctions.CriticalArithmeticCorrelationTheory

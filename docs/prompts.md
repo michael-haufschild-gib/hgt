@@ -390,7 +390,7 @@ read:
 - docs/reports/rh-current-frontier-map.md
 - docs/reports/rh-killed-routes.md
 
-write new reviews to reflect the current status quo and frontier of our research taking into account all new lean proofs and changes done since the original reports were written:
+write new reports to reflect the current status quo and frontier of our research taking into account all new lean proofs and changes done since the original reports were written:
 1. a complete report about each route and route candidate and what the hard mathematical obstacles are that block us from closing the route. split these into a) obstacles that we can solve and are "just work", and b) obstacles that are open mathematical problems nobody has a solution to
 2. then create a summary document that combines all the information and:
    2.1 lists all tasks / obstacles that we can solve and are "just work"
@@ -418,7 +418,7 @@ first collect information in a working log in logs/ - facts, not process or stat
 
 the reports are not diaries or history log, but status quo reports.
 
-replace the reports in folder docs/reports/review-0111/ without history language or "this changed since last review".
+put the reports in folder docs/reports/review-0211/ without history language or "this changed since last review".
 do not run builds. this is not a task to verify the work of other agents but to create consolidated reports and "big picture" interpretations on their research results.
 
 
@@ -493,9 +493,9 @@ do not run any builds. do not search the web. do not grep for sorry or other shi
 
 Do not use the hgtl7 skill.
 
-read and understand docs/reports/review-0111/fable.md
+read and understand docs/reports/review-0111/obstacles-summary.md
 
-under "## 8. Q7 — The field the walls are asking for" it describes a new field/research programme 
+under "## 2.7 Does closing RH need a new field?" it describes a new field/research programme 
 
 Your task: develop this field/research programme and do the actual research and formalization.
 
@@ -616,11 +616,11 @@ Put all lean code for the answer into relevant subfolders to not bloat RHTower a
 
 Do not use the hgtl7 skill.
 
-read and understand route MC from docs/reports/rh-current-frontier-map.md
+read and understand route WD from docs/reports/rh-current-frontier-map.md
 
-read this todo list for closing route MC docs/reports/review-0111/route-MC.md
+read this todo list for closing route WD docs/reports/review-0111/route-WD.md
 
-your task: work step by step through the todos in docs/reports/review-0111/route-MC.md and bring each step to a full and final solution and formalization.
+your task: work step by step through the todos in docs/reports/review-0111/route-WD.md and bring each step to a full and final solution and formalization.
 
 we are not interested in busywork, redressing of existing knowledge, building unnecessary lean infrastructure. stay focused on the task and tackle the actual problems. do not just write lean code for the sake of doing something. solve the actual problems.
   
@@ -644,6 +644,7 @@ always look at the big picture, try to understand what all our research is tryin
 8. Add helpful, crisp, not verbose comments to lean code to make clear what the code is about.
 
 Put lean code into the correct subfolder(s), do not bloat RHTower or HTGeometry folders more.
+
 
 ## Walls
 

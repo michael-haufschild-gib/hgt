@@ -14,6 +14,9 @@ Since `I_{k-1} ≥ I_{k+1}` on `[0, ∞)`, the cepstrum alternates in sign: `(-1
 the window only through the energy `t ↦ |𝒵(t)|²` (`besselSzegoCertificate`), and it certifies
 sectoriality of the collision loop on every corridor window once `2D²(1-η)^{K+1}/η < π/2`.
 
+Every analytic certificate is the exact multiplier times a Carathéodory factor
+(`re_div_exactSzegoMultiplier_pos`): no multiplier carries less information than the cepstrum.
+
 Proof: insert the Laplace identity `R(x) = ∫₀^∞ e^{-xt}|𝒵(t)|² dt` for the pair resolvent into
 the resolvent form of the cepstrum, exchange the circle and Laplace integrals (the integrand is
 dominated by `C e^{-ηt}`), and evaluate the Fourier coefficients of `e^{-tJ_n}` as Bessel
@@ -283,6 +286,76 @@ theorem InCorridor.besselSzegoCertificate_mul_loop_pos {P : Polynomial ℂ}
       polyZhukovskyLaurentLoop n P u).re := by
   rw [hcorr.besselSzegoCertificate_eq hη hη2 K]
   exact hcorr.szegoCertificate_mul_loop_pos heval hη hη2 hK u
+
+
+/-! ## Rigidity of Szegő certificates -/
+
+theorem InCorridor.differentiableOn_exactSzegoMultiplier {η : ℝ} (hη : 0 < η)
+    (hη2 : η ≤ 1 / 2) (hcorr : W.InCorridor n η) :
+    DifferentiableOn ℂ (W.exactSzegoMultiplier n) (Metric.closedBall 0 1) := by
+  intro z hz
+  rw [Metric.mem_closedBall, dist_zero_right] at hz
+  refine DifferentiableAt.differentiableWithinAt ?_
+  unfold exactSzegoMultiplier
+  refine DifferentiableAt.fun_finsetProd fun x hx => DifferentiableAt.fun_finsetProd fun y hy => ?_
+  refine DifferentiableAt.pow (DifferentiableAt.div ?_ ?_
+    (hcorr.innerDen_ne_zero hη hη2 hx hy hz)) _
+  · unfold innerNum; fun_prop
+  · unfold innerDen; fun_prop
+
+/-- **Rigidity of Szegő certificates.** On a corridor window, every multiplier `F'` holomorphic on
+the open disk and continuous on its closure with `Re (F' Λ) > 0` on `S¹` satisfies
+`Re (F'/F) > 0` on the closed disk, `F` the exact multiplier; in particular `F'` is zero-free.
+Proof: `F Λ > 0` on `S¹`, so `Re (F'/F) > 0` there; minimum principle for `|exp(-F'/F)|`. -/
+theorem InCorridor.re_div_exactSzegoMultiplier_pos {P : Polynomial ℂ}
+    (heval : ∀ x : ℂ, P.eval x = ∏ z ∈ W.Z, ∏ w ∈ W.Z, (x - (z - w)) ^ (W.mult z * W.mult w))
+    {η : ℝ} (hη : 0 < η) (hη2 : η ≤ 1 / 2) (hcorr : W.InCorridor n η) {F' : ℂ → ℂ}
+    (hF' : DiffContOnCl ℂ F' (Metric.ball 0 1))
+    (hpos : ∀ u : HTGeometry.UnitCircle, 0 < (F' u * polyZhukovskyLaurentLoop n P u).re) :
+    ∀ z ∈ Metric.closedBall (0 : ℂ) 1, 0 < (F' z / W.exactSzegoMultiplier n z).re := by
+  set F := W.exactSzegoMultiplier n with hF_def
+  have hFd := hcorr.differentiableOn_exactSzegoMultiplier hη hη2
+  have hFne : ∀ z ∈ Metric.closedBall (0 : ℂ) 1, F z ≠ 0 :=
+    (W.isDiskUnit_exactSzegoMultiplier hη hη2 hcorr).2
+  have hcl : closure (Metric.ball (0 : ℂ) 1) = Metric.closedBall 0 1 := closure_ball 0 one_ne_zero
+  set Ω : ℂ → ℂ := fun z => F' z / F z with hΩ_def
+  have hΩ : DiffContOnCl ℂ Ω (Metric.ball 0 1) :=
+    ⟨hF'.differentiableOn.div (hFd.mono Metric.ball_subset_closedBall)
+        (fun z hz => hFne z (Metric.ball_subset_closedBall hz)),
+      hF'.continuousOn.div (by rw [hcl]; exact hFd.continuousOn) (by rw [hcl]; exact hFne)⟩
+  have hbd : ∀ u : HTGeometry.UnitCircle, 0 < (Ω u).re := by
+    intro u
+    obtain ⟨r, hr, hr_eq⟩ := W.exactSzegoMultiplier_mul_loop_eq_pos heval hη hη2 hcorr u
+    have hu : (u : ℂ) ∈ Metric.closedBall (0 : ℂ) 1 := by
+      rw [Metric.mem_closedBall, dist_zero_right]; exact (HTGeometry.norm_coe_unitCircle u).le
+    have h := hpos u
+    have hsplit : F' u * polyZhukovskyLaurentLoop n P u =
+        Ω u * (F u * polyZhukovskyLaurentLoop n P u) := by
+      rw [hΩ_def]
+      field_simp [hFne _ hu]
+    rw [hsplit, hr_eq, Complex.mul_re, Complex.ofReal_re, Complex.ofReal_im, mul_zero,
+      sub_zero] at h
+    exact pos_of_mul_pos_left h hr.le
+  have hcont : ContinuousOn (fun z => (Ω z).re) (Metric.sphere (0 : ℂ) 1) :=
+    Complex.continuous_re.comp_continuousOn
+      (hΩ.continuousOn.mono (by rw [hcl]; exact Metric.sphere_subset_closedBall))
+  obtain ⟨z₀, hz₀, hmin⟩ := (isCompact_sphere (0 : ℂ) 1).exists_isMinOn
+    (NormedSpace.sphere_nonempty.mpr zero_le_one) hcont
+  have hμ : 0 < (Ω z₀).re := hbd ⟨z₀, hz₀⟩
+  have hg : DiffContOnCl ℂ (fun z => cexp (-Ω z)) (Metric.ball 0 1) :=
+    Complex.differentiable_exp.comp_diffContOnCl hΩ.neg
+  intro z hz
+  have hfront : ∀ w ∈ frontier (Metric.ball (0 : ℂ) 1),
+      ‖cexp (-Ω w)‖ ≤ Real.exp (-(Ω z₀).re) := by
+    intro w hw
+    rw [frontier_ball 0 one_ne_zero] at hw
+    rw [Complex.norm_exp, Complex.neg_re]
+    exact Real.exp_le_exp.mpr (neg_le_neg (hmin hw))
+  have h := Complex.norm_le_of_forall_mem_frontier_norm_le Metric.isBounded_ball hg hfront
+    (by rw [hcl]; exact hz)
+  rw [Complex.norm_exp, Complex.neg_re, Real.exp_le_exp] at h
+  show 0 < (Ω z).re
+  linarith
 
 end ReflectedWindow
 

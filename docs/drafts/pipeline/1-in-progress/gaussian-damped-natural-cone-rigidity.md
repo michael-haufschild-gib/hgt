@@ -1,6 +1,6 @@
 # Gaussian damping and natural-cone rigidity
 
-- **Stage:** 0-backlog
+- **Stage:** 1-in-progress
 - **Type:** CONJECTURE
 - **Parent:** SC2; an actual-zeta criterion without attained maximal width.
 
@@ -25,20 +25,19 @@ Mixed differences bound all moments of
 where `a=log p`, `b=log q`. Fix a zero `ρ₀` with `Re z_ρ₀>σ`.
 Its coefficient is nonzero.
 
-Write `u_ρ=exp(a z_ρ)`, `v_ρ=exp(b z_ρ)`. For every other zero
-with `|Im ρ|≤T`, use the linear factor
+Write `u_ρ=exp(a z_ρ)`, `v_ρ=exp(b z_ρ)`. The proved averaged-clock
+separation `ConeBoundary.exists_two_prime_clockDefect_lower`, applied to
+either `z_ρ−z_ρ₀` or its negative, gives a polynomial lower bound for
+`|u_ρ−u_ρ₀|+|v_ρ−v_ρ₀|`. The fixed-target isolating radius follows from
+`finite_window`.
 
-`L_ρ(U,V)=(U−u_ρ)conj(u_ρ₀−u_ρ)+(V−v_ρ)conj(v_ρ₀−v_ρ)`.
-
-It vanishes at `ρ`, while its value at `ρ₀` is the positive sum
-`|u_ρ₀−u_ρ|²+|v_ρ₀−v_ρ|²`. The proved averaged-clock separation
-`ConeBoundary.exists_two_prime_clockDefect_lower`, applied to either
-`z_ρ−z_ρ₀` or its negative, gives an inverse-polynomial lower bound.
-The required fixed-target isolating radius follows from `finite_window`.
-Thus each target factor is at least `c(1+T)^(-B)`.
-Multiply the factors and normalize their product to one at `ρ₀`.
-The actual zero count is `O(T log T)`, so both coefficient norm and
-uniform tail value cost at most `exp(C T log²(2+T))`.
+For each other zero with `|Im ρ|≤T`, choose the larger clock gap and
+normalize its affine factor: `(U−u_ρ)/(u_ρ₀−u_ρ)` or its `V` analogue.
+Each factor kills that zero and equals one at the target. Its coefficient
+norm is at most `2(R+1)/δ` when the joint gap is at least `δ` and clock
+moduli are at most `R`. Multiply these factors. The actual zero count is
+`O(T log T)`, so both coefficient norm and uniform tail value cost at most
+`exp(C T log²(2+T))`.
 
 All clock values are uniformly bounded on the zero strip. Thus these
 polynomials remain bounded by the same exponential cost on the entire tail;
@@ -59,7 +58,7 @@ Take `T=N⁴`, `m=N⁷`. The elementary inequality `log N≤N` gives
 the two errors are bounded by
 
 `M exp(C N⁶−a(Re z_ρ₀−σ)N⁷)` and
-`L exp(C N⁶+a(1/2−Re z_ρ₀)N⁷−τN⁸)`.
+`L exp(C N⁶+(a/2−a(Re z_ρ₀−σ))N⁷−τN⁸)`.
 
 Both tend to zero, contradicting its fixed nonzero coefficient.
 This uses only polynomial comparisons `6<7<8`.
@@ -72,11 +71,27 @@ Multiplying at most `C N⁵` factors gives the required `exp(C₂N⁶)` bound.
 
 ## Unfinished audits
 
-The fixed-target joint-clock separation, finite clock-product norm bound,
-actual cutoff count, and complete contradiction remain to be formalized.
+`clock_product_moment_bound` and `exists_affine_clock_separator` in
+`ConeBoundary/FiniteClockProducts.lean` are formalized and pass direct
+standard-axiom audits. They prove the positive-shift product bound and the
+normalized affine interpolation cost above.
+`exists_strip_joint_clock_lower` in `ConeBoundary/StripClockSeparation.lean`
+proves polynomial joint-clock separation throughout a vertical strip, with
+a direct standard-axiom audit.
+`exists_zeta_fixed_target_radius` and `exists_zeta_fourth_cutoff_count` in
+`ConeBoundary/GaussianZeroGeometry.lean` prove fixed-target isolation and
+the `CN⁵` cutoff count, also with direct standard-axiom audits.
+`GaussianResidues.lean` proves absolute convergence, preservation of every
+nonzero right-of-line mixed residue, and the quadratic Gaussian tail bound,
+with a direct standard-axiom audit. `GaussianFilterCosts.lean` proves the
+sixth-power interpolation cost and the seventh/eighth-power decay comparison,
+with the same audit result. `exists_actual_clock_filters` in
+`GaussianFiniteFilters.lean` now constructs the finite isolating products,
+with uniform value and moment costs `exp(KN⁶)` and a direct standard-axiom
+audit. The complete criterion remains unformalized.
 Local search found `XiGaussianAnnihilator` and
 `GaussianCentralGapFilterLightCone`: the former uses polynomials in squared
 spectral points; the latter varies a Gaussian filter and its center.
 Neither inspected statement proves this fixed-Gaussian natural-cone criterion.
-External priority has not been checked. Complete the active bounded-local-density
-construction before pursuing this candidate.
+External priority has not been checked. The bounded-local-density exact-spline
+model is formalized; the Gaussian criterion remains unproved.

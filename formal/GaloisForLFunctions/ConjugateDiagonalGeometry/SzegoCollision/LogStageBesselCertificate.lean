@@ -11,7 +11,12 @@ import GaloisForLFunctions.ConjugateDiagonalGeometry.SzegoCollision.HeckeDefectC
 2. **Zero transfer** (`exists_xiZero_near_thetaZero`): on the Burnol window at height `m`, every
    zero of `A_N` lies within `r` of a zero of `ξ` as soon as the theta tail is below
    `c_good e^{-(m+3)} (r/8)^d`, `d` the window's zero count (minimum modulus of the peeled
-   cofactor of `ξ`).
+   cofactor of `ξ`). Resolving depth `r` costs only `N² ≳ m + d log(1/r)`.
+3. **Logarithmic stage** (`logStage_besselSzego_iff_invLog_corridor`): the explicit certificate
+   holds on all large windows at stage `logDoorStage c m` iff `ξ` has an `A/log|γ|` corridor.
+4. **Every stage** (`riemannHypothesis_iff_unitStage_besselSzego`): `RH` iff the explicit
+   certificate holds on every Burnol window at every stage `doorUnitStage m S` and prefix
+   `N ≥ besselUnitPrefix m S = Θ(√m + √(log m · log S))`.
 -/
 
 set_option autoImplicit false
@@ -682,5 +687,197 @@ theorem logStage_besselSzego_iff_invLog_corridor :
     obtain ⟨K, hK⟩ := exists_certificate_order
       (centeredThetaWindowDegree (burnolUnitLower m) (burnolUnitUpper m) N : ℝ) _ hη hη1
     exact ⟨_, isDiskUnit_besselSzegoCertificate _ K _, hcert m hm N hN K hK⟩
+
+
+/-! ## §4 Every stage -/
+
+/-- Bound `D_m = C_u log(m+5)` on the total order of `ξ` on the `m`-th Burnol window. -/
+def burnolOrderBound (m : ℕ) : ℝ :=
+  (burnolPrefixConst : ℝ) * Real.log ((m + 5 : ℕ) : ℝ)
+
+/-- Transfer budget `|log(C₀+1)| + |log c_good| + (m+3) + D_m log(128 (S + 6 + 2D_m²))`. -/
+def besselTransferBudget (m S : ℕ) : ℝ :=
+  |Real.log (_root_.RHTower.thetaCuspIntegerTailConstant *
+      _root_.RHTower.thetaAmplitudeEnvelope 2 + 1)| +
+    |Real.log burnolGoodLowerConst| + ((m + 3 : ℕ) : ℝ) +
+    burnolOrderBound m * Real.log (128 * ((S : ℝ) + 6 + 2 * burnolOrderBound m ^ 2))
+
+/-- Prefix schedule `doorUnitPrefix m S + ⌈√(budget)⌉ + 1` at which theta zeros are located to
+radius `1/(16n)` for every stage `n` admissible on the `m`-th window. -/
+def besselUnitPrefix (m S : ℕ) : ℕ :=
+  doorUnitPrefix m S + Nat.ceil (Real.sqrt (besselTransferBudget m S)) + 1
+
+theorem doorUnitPrefix_le_besselUnitPrefix (m S : ℕ) : doorUnitPrefix m S ≤ besselUnitPrefix m S := by
+  unfold besselUnitPrefix; omega
+
+theorem burnolPrefix_le_doorUnitPrefix (m S : ℕ) :
+    burnolPrefixConst * (Nat.sqrt m + 1) ≤ doorUnitPrefix m S := by
+  unfold doorUnitPrefix
+  exact Nat.mul_le_mul_left _ (by omega)
+
+/-- At the prefix `besselUnitPrefix m S` the theta tail beats the transfer threshold at radius
+`1/(16 n)` for every stage `6 ≤ n ≤ S + 6 + 2d²`. -/
+theorem unitStage_tail_lt (m S : ℕ) {n : ℕ} (hn6 : 6 ≤ n)
+    (hn : (n : ℝ) ≤ (S : ℝ) + 6 + 2 * ((∑ w ∈ burnolUnitXiZeros m,
+      (analyticOrderAt _root_.RHTower.xi w).toNat : ℕ) : ℝ) ^ 2)
+    {N : ℕ} (hN : besselUnitPrefix m S ≤ N) :
+    thetaStripTailBound N < burnolGoodLowerConst * Real.exp (-((m + 3 : ℕ) : ℝ)) *
+      ((1 / (16 * (n : ℝ))) / 8) ^
+        (∑ w ∈ burnolUnitXiZeros m, (analyticOrderAt _root_.RHTower.xi w).toNat) := by
+  set C₀ : ℝ := _root_.RHTower.thetaCuspIntegerTailConstant * _root_.RHTower.thetaAmplitudeEnvelope 2
+  have hC₀ : 0 ≤ C₀ := mul_nonneg _root_.RHTower.thetaCuspIntegerTailConstant_nonneg
+    (_root_.RHTower.thetaAmplitudeEnvelope_nonneg 2)
+  set cg : ℝ := burnolGoodLowerConst
+  have hcg : 0 < cg := burnolGoodLowerConst_pos
+  set d : ℕ := ∑ w ∈ burnolUnitXiZeros m, (analyticOrderAt _root_.RHTower.xi w).toNat
+  have hd : (d : ℝ) ≤ burnolOrderBound m := burnolUnitXiZeros_totalOrder_le m
+  have hd0 : (0 : ℝ) ≤ d := Nat.cast_nonneg _
+  have hnR : (6 : ℝ) ≤ n := by exact_mod_cast hn6
+  have hlog_nn : 0 ≤ Real.log (128 * (n : ℝ)) := Real.log_nonneg (by nlinarith)
+  have hS0 : (0 : ℝ) ≤ S := Nat.cast_nonneg _
+  have hdlog : (d : ℝ) * Real.log (128 * (n : ℝ)) ≤
+      burnolOrderBound m * Real.log (128 * ((S : ℝ) + 6 + 2 * burnolOrderBound m ^ 2)) := by
+    have hn' : (n : ℝ) ≤ (S : ℝ) + 6 + 2 * burnolOrderBound m ^ 2 := by
+      have : (d : ℝ) ^ 2 ≤ burnolOrderBound m ^ 2 := pow_le_pow_left₀ hd0 hd 2
+      linarith
+    have hlog_le : Real.log (128 * (n : ℝ)) ≤
+        Real.log (128 * ((S : ℝ) + 6 + 2 * burnolOrderBound m ^ 2)) :=
+      Real.log_le_log (by positivity) (by linarith)
+    exact mul_le_mul hd hlog_le hlog_nn (hd0.trans hd)
+  have hB : besselTransferBudget m S < ((N + 1 : ℕ) : ℝ) ^ 2 := by
+    have hB0 : 0 ≤ besselTransferBudget m S := by
+      unfold besselTransferBudget
+      have h1 : 0 ≤ burnolOrderBound m * Real.log (128 * ((S : ℝ) + 6 + 2 * burnolOrderBound m ^ 2)) :=
+        (mul_nonneg hd0 hlog_nn).trans hdlog
+      positivity
+    have hsq : Real.sqrt (besselTransferBudget m S) < (N : ℝ) := by
+      have h1 : Real.sqrt (besselTransferBudget m S) ≤
+          (Nat.ceil (Real.sqrt (besselTransferBudget m S)) : ℝ) := Nat.le_ceil _
+      have h2 : ((Nat.ceil (Real.sqrt (besselTransferBudget m S)) + 1 : ℕ) : ℝ) ≤ (N : ℝ) := by
+        exact_mod_cast (show Nat.ceil (Real.sqrt (besselTransferBudget m S)) + 1 ≤ N by
+          unfold besselUnitPrefix at hN; omega)
+      push_cast at h2
+      linarith
+    have h3 : besselTransferBudget m S < (N : ℝ) ^ 2 := by
+      rw [← Real.sq_sqrt hB0]
+      exact pow_lt_pow_left₀ hsq (Real.sqrt_nonneg _) two_ne_zero
+    have h4 : (N : ℝ) ^ 2 ≤ ((N + 1 : ℕ) : ℝ) ^ 2 := by
+      push_cast; nlinarith [(Nat.cast_nonneg N : (0 : ℝ) ≤ N)]
+    linarith
+  have hkey : Real.log (C₀ + 1) - ((N + 1 : ℕ) : ℝ) ^ 2 <
+      Real.log cg - ((m + 3 : ℕ) : ℝ) - (d : ℝ) * Real.log (128 * (n : ℝ)) := by
+    have hL : Real.log (C₀ + 1) - Real.log cg ≤ |Real.log (C₀ + 1)| + |Real.log cg| := by
+      have := le_abs_self (Real.log (C₀ + 1)); have := neg_abs_le (Real.log cg); linarith
+    unfold besselTransferBudget at hB
+    linarith
+  have hpow : ((1 / (16 * (n : ℝ))) / 8) ^ d = Real.exp (-((d : ℝ) * Real.log (128 * (n : ℝ)))) := by
+    rw [show (1 / (16 * (n : ℝ))) / 8 = (128 * (n : ℝ))⁻¹ by field_simp; ring, ← Real.exp_log
+      (by positivity : (0 : ℝ) < ((128 * (n : ℝ))⁻¹) ^ d), Real.log_pow, Real.log_inv]
+    congr 1
+    ring
+  calc thetaStripTailBound N = C₀ * Real.exp (-((N + 1 : ℕ) : ℝ) ^ 2) := rfl
+    _ ≤ (C₀ + 1) * Real.exp (-((N + 1 : ℕ) : ℝ) ^ 2) :=
+        mul_le_mul_of_nonneg_right (by linarith) (Real.exp_pos _).le
+    _ = Real.exp (Real.log (C₀ + 1) - ((N + 1 : ℕ) : ℝ) ^ 2) := by
+        rw [Real.exp_sub, Real.exp_log (by linarith), Real.exp_neg, div_eq_mul_inv]
+    _ < Real.exp (Real.log cg - ((m + 3 : ℕ) : ℝ) - (d : ℝ) * Real.log (128 * (n : ℝ))) :=
+        Real.exp_lt_exp.mpr hkey
+    _ = cg * Real.exp (-((m + 3 : ℕ) : ℝ)) * ((1 / (16 * (n : ℝ))) / 8) ^ d := by
+        rw [hpow, Real.exp_sub, Real.exp_sub, Real.exp_log hcg, Real.exp_neg, Real.exp_neg,
+          div_eq_mul_inv, div_eq_mul_inv]
+
+theorem zhukovskyMajorAxis_of_six_le {n : ℕ} (hn : 6 ≤ n) :
+    zhukovskyMajorAxis n = 1 / 2 - 1 / (2 * (n : ℝ)) := by
+  unfold zhukovskyMajorAxis
+  rw [zhukovskyStage_eq_self hn]
+
+/-- **`RH` ⇔ the explicit Bessel–Szegő certificate at every stage.** `RiemannHypothesis` holds iff
+on every Burnol window `m`, at every stage `n = doorUnitStage m S` and every prefix
+`N ≥ besselUnitPrefix m S`, the order-`K` certificate built from the source energy
+`|𝒵_N(t)|²` makes the centered collision loop sectorial whenever
+`2 D² (1 - η)^{K+1}/η < π/2`, `η = 1/(4n)`. -/
+theorem riemannHypothesis_iff_unitStage_besselSzego :
+    RiemannHypothesis ↔
+      ∀ m S : ℕ, ∀ N ≥ besselUnitPrefix m S, ∀ K : ℕ,
+        2 * (centeredThetaWindowDegree (burnolUnitLower m) (burnolUnitUpper m) N : ℝ) ^ 2 *
+            (1 - 1 / (4 * (doorUnitStage m S : ℝ))) ^ (K + 1) /
+              (1 / (4 * (doorUnitStage m S : ℝ))) < Real.pi / 2 →
+        ∀ u : HTGeometry.UnitCircle,
+          0 < (besselSzegoCertificate (doorUnitStage m S) K
+              (fun t => ‖centeredThetaExpSum (burnolUnitLower m) (burnolUnitUpper m) N t‖ ^ 2) u *
+            centeredThetaLaurentLoop (burnolUnitLower m) (burnolUnitUpper m)
+              (doorUnitStage m S) N u).re := by
+  constructor
+  · intro hRH m S N hN K hK u
+    have hNdoor := (doorUnitPrefix_le_besselUnitPrefix m S).trans hN
+    have hbdry := burnolUnit_bdry_regular m ((burnolPrefix_le_doorUnitPrefix m S).trans hNdoor)
+    obtain ⟨hstage, -⟩ := doorUnitStage_spec m S
+    set n := doorUnitStage m S with hn_def
+    have hn6 : 6 ≤ n := (le_max_right S 6).trans (Finset.mem_Icc.mp hstage).1
+    have hnR : (6 : ℝ) ≤ (n : ℝ) := by exact_mod_cast hn6
+    have hn_le : (n : ℝ) ≤ (S : ℝ) + 6 + 2 * ((∑ w ∈ burnolUnitXiZeros m,
+        (analyticOrderAt _root_.RHTower.xi w).toNat : ℕ) : ℝ) ^ 2 := by
+      have h := (Finset.mem_Icc.mp hstage).2
+      have hmax : max S 6 ≤ S + 6 := max_le (by omega) (by omega)
+      have h' : n ≤ S + 6 + 2 * (∑ w ∈ burnolUnitXiZeros m,
+          (analyticOrderAt _root_.RHTower.xi w).toNat) ^ 2 := by omega
+      exact_mod_cast h'
+    have htail := unitStage_tail_lt m S hn6 hn_le hN
+    set W := centeredThetaWindow (burnolUnitLower_le_upper m) N hbdry
+    have hη : 0 < 1 / (4 * (n : ℝ)) := by positivity
+    have hη2 : 1 / (4 * (n : ℝ)) ≤ 1 / 2 := by
+      rw [div_le_div_iff₀ (by positivity) (by norm_num)]; linarith
+    have hcorr : W.InCorridor n (1 / (4 * (n : ℝ))) := by
+      intro z hz
+      obtain ⟨hz_rect, hz_zero⟩ := (mem_centeredThetaWindow_iff _ N hbdry z).mp hz
+      obtain ⟨w, hw, hdist⟩ := exists_xiZero_near_thetaZero m N (r := 1 / (16 * (n : ℝ)))
+        (by positivity) htail hz_rect hz_zero
+      have hw_xi := ((mem_burnolUnitXiZeros_iff m w).mp hw).2
+      have hw_re := _root_.RHTower.xi_zero_re_eq_half_of_RH hRH hw_xi
+      have hre_close : |z.re - w.re| ≤ 1 / (16 * (n : ℝ)) := by
+        have := Complex.abs_re_le_norm (z - w)
+        rw [Complex.sub_re] at this
+        linarith
+      rw [zhukovskyMajorAxis_of_six_le hn6]
+      have h1 := (abs_le.mp hre_close).2
+      have hfinal : 1 / 2 - (1 / 2 - 1 / (2 * (n : ℝ))) - 1 / (4 * (n : ℝ)) =
+          2 * (1 / (16 * (n : ℝ))) + 1 / (8 * (n : ℝ)) := by
+        field_simp; ring
+      rw [hfinal]
+      have : 0 < 1 / (8 * (n : ℝ)) := by positivity
+      linarith
+    rw [← centeredThetaWindow_degree (burnolUnitLower_le_upper m) N hbdry] at hK
+    have h := hcorr.besselSzegoCertificate_mul_loop_pos
+      (eval_centeredThetaDifferencePoly_eq_window (burnolUnitLower_le_upper m) N hbdry) hη hη2 hK u
+    have hE : (fun t => ‖W.expSum t‖ ^ 2) =
+        fun t => ‖centeredThetaExpSum (burnolUnitLower m) (burnolUnitUpper m) N t‖ ^ 2 := by
+      funext t
+      rw [centeredThetaWindow_expSum]
+    rw [hE] at h
+    exact h
+  · intro hcert
+    refine (riemannHypothesis_door_opener_tfae.out 8 0).mp fun m S N hN => ?_
+    obtain ⟨hstage, hspec⟩ := doorUnitStage_spec m S
+    set n := doorUnitStage m S
+    have hn6 : 6 ≤ n := (le_max_right S 6).trans (Finset.mem_Icc.mp hstage).1
+    have hnR : (6 : ℝ) ≤ (n : ℝ) := by exact_mod_cast hn6
+    set N₀ := besselUnitPrefix m S
+    have hη : 0 < 1 / (4 * (n : ℝ)) := by positivity
+    have hη1 : 1 / (4 * (n : ℝ)) < 1 := by
+      rw [div_lt_one (by positivity)]; linarith
+    obtain ⟨K, hK⟩ := exists_certificate_order
+      (centeredThetaWindowDegree (burnolUnitLower m) (burnolUnitUpper m) N₀ : ℝ) _ hη hη1
+    have hpos := hcert m S N₀ le_rfl K hK
+    obtain ⟨-, hind₀⟩ := fredholmIndex_eq_zero_of_diskUnit_re_pos _
+      (isDiskUnit_besselSzegoCertificate n K _) hpos
+    obtain ⟨-, hind_eq₀⟩ := hspec N₀ (doorUnitPrefix_le_besselUnitPrefix m S)
+    obtain ⟨hnz, hind_eq⟩ := hspec N hN
+    refine ⟨hnz, ?_⟩
+    have h0 : HTGeometry.fredholmIndex
+        (centeredThetaCollisionOperator (burnolUnitLower m) (burnolUnitUpper m) n N₀) = 0 := hind₀
+    rw [hind_eq]
+    rw [hind_eq₀] at h0
+    rw [h0]
+    norm_num
 
 end GaloisForLFunctions.ConjugateDiagonalGeometry.SzegoCollision

@@ -158,6 +158,10 @@ theorem eventually_explicit_clock_almost_polynomial_span_coercivity {φ : ℝ �
   let Q := ⌊L ^ q⌋₊
   let R := almostPolynomialConductorCutoff κ N
   obtain ⟨hQ2, hQR, hR6, hlogR, hhor⟩ := hhorN
+  change 2 ≤ Q at hQ2
+  change Q ≤ R at hQR
+  change R ^ 6 ≤ N at hR6
+  change 36 * (1 + Real.log R) ≤ L at hlogR
   have hL1 : 1 ≤ L := by linarith only [hlogR, Real.log_natCast_nonneg R]
   have hL : 0 < L := zero_lt_one.trans_le hL1
   have hQ0 : (0 : ℝ) < Q := by exact_mod_cast (show 0 < Q by omega)
@@ -246,9 +250,10 @@ theorem eventually_explicit_clock_almost_polynomial_span_coercivity {φ : ℝ �
   have hcrossLower := neg_abs_le ⟪Matrix.toEuclideanLin (completeWeilMatrix φ c N) p, z⟫
   have hzReserve := mul_le_mul_of_nonneg_right he1 (sq_nonneg ‖z‖)
   have hnonneg := mul_nonneg he.le (add_nonneg (sq_nonneg ‖p‖) (sq_nonneg ‖z‖))
+  have hzNonneg := mul_nonneg he.le (sq_nonneg ‖z‖)
   change e / 4 * ‖x‖ ^ 2 ≤ _
   rw [← hpyth]
-  nlinarith only [hpEnergy, hzEnergy, hcrossCost, henergy, hcrossLower, hzReserve, hnonneg]
+  nlinarith only [hpEnergy, hzEnergy, hcrossCost, henergy, hcrossLower, hzReserve, hnonneg, hzNonneg]
 
 /-- The actual overlap range exceeds every fixed multiple of `log log N`. -/
 theorem tendsto_explicit_profile_overlap_div_loglog_atTop (φ : ℝ → ℝ) :
@@ -257,8 +262,5 @@ theorem tendsto_explicit_profile_overlap_div_loglog_atTop (φ : ℝ → ℝ) :
   have htlim : Tendsto (fun N : ℕ => Real.log (Real.log (N : ℝ))) atTop atTop :=
     Real.tendsto_log_atTop.comp (Real.tendsto_log_atTop.comp tendsto_natCast_atTop_atTop)
   exact (tendsto_compactProfileTailClock_div_atTop φ).comp htlim
-
-#print axioms eventually_explicit_clock_almost_polynomial_span_coercivity
-#print axioms tendsto_explicit_profile_overlap_div_loglog_atTop
 
 end GaloisForLFunctions.CriticalArithmeticCorrelationTheory

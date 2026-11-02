@@ -11,87 +11,27 @@
 | Block | Status | Lean |
 |---|---|---|
 | 1 arithmetic input on the conjugate-diagonal side | open; the object is now explicit: the window energy `|𝒵(t)|²` (Thm 3, 8) | — |
-| 2 certificate format | paper proof below (Bessel–Szegő certificate) | items 1–9 formalized: `SzegoCollision/{WindowEnergyLaplace,BesselSzegoCertificate,BesselCepstrumEnergy}`; open: item 10 (centered-theta/log-stage specialization, needs theta-zero→ξ-zero transfer) |
+| 2 certificate format | closed | `logStage_besselSzego_iff_invLog_corridor` (card wd-bessel-szego-certificate) |
 | 3 averaged rung `o(log U)` | open | — |
 | 4 height uniformity | open | — |
 | 5 corridor rung | open; ⟺ certificate at log stage (Cor 10) | — |
 | 6 shallow zeros | open | — |
-| 7 closing step | open | — |
+| 7 closing step | format closed (RH ⟺ explicit certificate at every stage); the positivity itself is RH | `riemannHypothesis_iff_unitStage_besselSzego` |
 
-## Block 2 — the Bessel–Szegő certificate
+## Block 2 — closed
 
-### Notation
-`n ≥ 6`, `a=(n−1)/(2n)`, `b=1/n`, `c=√(a²−b²)` (`zhukovskyFocal`), `ρ=(a+b)/c=√((n+1)/(n−3))∈(1,2)`
-(`zhukovskyRadius`); `(c/2)(ρ+ρ⁻¹)=a`, `(c/2)(ρ−ρ⁻¹)=b`. `J(u)=½+(c/2)(ρu+(ρu)⁻¹)`
-(`zhukovskyLoop`), `Re J ≥ g := ½−a = 1/(2n)`. `E(d)=(Re d−½)²/a²+(Im d)²/b²`
-(`zhukovskyEllipseForm`).
-
-Window data: finite `Z⊂ℂ`, multiplicities `m_z≥1`, closed under `z↦1−z̄` with `m` invariant.
-`D=Σm_z`, `P(x)=Π_{z,w}(x−(z−w))^{m_zm_w}`, `B=P∘J`, `Λ=B²` (`polyZhukovskyLaurentLoop`).
-`δ*=max(Re z−½)≥0`, `𝒵(t)=Σ m_z e^{t(z−½)}` — the window exponential sum; for theta data
-`𝒵_N(t)=(2πi)⁻¹∮_{∂R} e^{t(z−½)}(−A_N'/A_N)(z)dz` is a contour integral of the source.
-
-### Statements and proofs
-1. **Pair energy.** `Σ_{z,w}m_zm_w e^{t(z−w)}=|𝒵(t)|²` (t real). *Proof.* Reindex `w↦1−w̄`:
-   `Σ_w m_w e^{−tw}=e^{−t}\overline{Σ_w m_w e^{tw}}`.
-2. **Pair real parts.** `Re(z−w)≤2δ*`, attained by the horizontal pair `(z*,1−z̄*)`, whose
-   difference is the real number `2δ*`.
-3. **Laplace energy identity.** For `Re x>2δ*`: `Σ_{z,w}m_zm_w/(x−(z−w))=∫₀^∞e^{−tx}|𝒵(t)|²dt`.
-   *Proof.* `1/(x−d)=∫₀^∞e^{−t(x−d)}dt` for `Re(x−d)>0`; finite sum; item 1.
-4. **Abscissa law.** For real `x`: `e^{−tx}|𝒵(t)|²∈L¹(0,∞) ⟺ x>2δ*`. *Proof.* (⇐) `|𝒵|≤De^{δ*t}`.
-   (⇒) if integrable at `x≤2δ*`, then for every `y>2δ*` item 3 and `Re(1/(y−d))≥0` give
-   `∫e^{−tx}|𝒵|² ≥ ∫e^{−ty}|𝒵|² ≥ 1/(y−2δ*)`, unbounded as `y↓2δ*`.
-5. **Energy–index law.** `2δ*<g ⇒` every `E(z−w)>1` (as `|Re d−½|≥a+(g−2δ*)`) ⇒ index `0`.
-   `g<2δ*<1−g ⇒ E(2δ*)<1` ⇒ index `≥2m_{z*}²≥2`.
-6. **Outer root.** `E(d)>1`: roots `w₁,w₂=1/w₁` of `w²−2((d−½)/c)w+1`, `|w₁|>ρ`. Put
-   `α=w₁/ρ`, `a_d=ρw₂` (`|a_d|<1`), `β_d=a_d/ρ²`. On `S¹`:
-   `J(u)−d=(cρ/2)(−α)(1−a_du)·\overline{(1−β̄_du)}`; `a_{d̄}=ā_d`.
-7. **Exact multiplier.** If every `E(z−w)>1`, with `S_k=Σm_zm_w a_{z−w}^k` (real, `|S_k|≤D²r^k`,
-   `r=max|a_d|<1`): `F(u)=exp(2Σ_{k≥1}(1−ρ^{−2k})S_ku^k/k)=Π((1−β_du)/(1−a_du))^{2m}` is holomorphic
-   on `|u|<1/r`, zero-free, and `F·Λ=κ²|H|⁴>0` on `S¹`, `H=Π(1−β̄_du)^m`,
-   `κ=(cρ/2)^{D²}Π(−α_d)^m∈ℝ∖0`. *Proof.* `Σ_k w^k/k=−log(1−w)`; item 6; conjugation reindexing
-   `(z,w)↦(1−w̄,1−z̄)` sends `d↦d̄`, so `Π(1−β_du)^m=Π(1−β̄_du)^m` and `κ=κ̄`.
-8. **Alternating Bessel cepstrum.** If `2δ*<g`, then for `k≥1`
-   `S_k=(−ρ)^k(c/2)∫₀^∞e^{−t/2}(I_{k−1}(ct)−I_{k+1}(ct))|𝒵(t)|²dt=(−ρ)^k k∫₀^∞e^{−t/2}I_k(ct)|𝒵(t)|²dt/t`,
-   `I_j(x)=Σ_i(x/2)^{j+2i}/(i!(j+i)!)`; hence `(−1)^kS_k>0`.
-   *Proof.* (i) `(cρ/2)(u−ρ^{−2}u^{−1})/(J(u)−d)=1+α/(u−α)+β/(u−β)=−Σ_{j≥1}a_d^ju^j+Σ_{j≥1}β_d^ju^{−j}`,
-   so its `u^k`-coefficient is `−a_d^k`. (ii) Sum with weights and insert item 3 at `x=J(u)`
-   (`Re J−2δ*≥g−2δ*>0`); Fubini, dominated by `(cρ)D²e^{−t(g−2δ*)}`. (iii) Fourier coefficients:
-   `e^{−tJ(u)}=e^{−t/2}e^{Au}e^{A'/u}`, `A=−ctρ/2`, `A'=−ct/(2ρ)`, so the `u^j` coefficient is
-   `e^{−t/2}(−ρ)^jI_j(ct)`. (iv) Collect: `S_k=(−ρ)^k(c/2)∫e^{−t/2}(I_{k−1}−I_{k+1})(ct)|𝒵|²dt`.
-   (v) `I_{k−1}−I_{k+1}=(2k/x)I_k` termwise (`1/(i!(k−1+i)!)−1/((i−1)!(k+i)!)=k/(i!(k+i)!)`);
-   `|𝒵(0)|²=D²>0`.
-   *Reading.* On `[0,τ]`, `|𝒵(t)|²=|Σ_rσ_r t^r/r!|²` with `σ_r` the centered theta moments, so
-   `(−1)^kS_k^{(τ)}=ρ^k⟨σ,𝐇^{(k,τ)}σ⟩`, `𝐇_{rs}=∫₀^τ t^{r+s}dμ_k/(r!s!)`, `dμ_k=ke^{−t/2}I_k(ct)dt/t`:
-   a positive Hankel form of the centered theta moments. The worst point of the certificate is
-   `u=−1` (`J(−1)=g`, nearest the pair differences).
-9. **Finite certificate.** `F_K=exp(2Σ_{k≤K}(1−ρ^{−2k})S_ku^k/k)` is entire and zero-free
-   (`IsDiskUnit`). If `2δ*≤g−η`, `η>0`: `r≤1−η` (from `(c/2)(R+R⁻¹)≥a+η`, `R−ρ≥2η/c>4η`,
-   `ρ<2`, `η≤1/12`), and `2D²(1−η)^{K+1}/((K+1)η)<π/2` gives `Re(F_KΛ)>0` on `S¹`
-   (`|arg(F_KΛ)|=|Im(log F−log F_K)|≤2Σ_{k>K}|S_k|/k`). Soundness: any `IsDiskUnit` certificate
-   forces index `0` (`fredholmIndex_eq_zero_of_diskUnit_re_pos`).
-10. **Log-stage certificate.** At `n=logDoorStage c m`, `η≍1/log m`, `D≲log m` give
-    `K(m)≍log m·log log m`; corridor ⟹ `F_{K(m)}` certifies every window from `m₀` on, and
-    conversely (item 9 + `logStage_sqrtPrefix_szego_iff_invLog_corridor`). Needs the transfer
-    "ξ-corridor ⇒ `2δ*(Z_N)≤g−η`" (theta zeros within `e^{−cm/log m}` of ξ zeros: min-modulus of
-    the peeled cofactor, as in `exists_prefix_zero_in_ball_of_xi_zero`).
-11. **Rigidity.** Any `F'` continuous on the closed disk, holomorphic inside, zero-free, with
-    `Re(F'Λ)>0` on `S¹` equals `F·Ω` with `Re Ω>0` on the closed disk (`FΛ>0`, minimum principle).
-
-### Insight
-Block 2 is closed as a format: the certificate class is `{F_K}` — exponentials of a truncated
-Bessel transform of the window energy `|𝒵_N(t)|²`, i.e. of a positive Hankel form in the centered
-theta moments. Rigidity (11) shows no cheaper certificate exists: every certificate is `F` up to a
-Carathéodory factor, and `F` converges on `S¹` exactly when the energy grows at rate `<g`
-(items 4, 8). Positivity `Re(F_KΛ)>0` is therefore the stage-`n` corridor, and its arithmetic
-input is growth control of `|𝒵(t)|²=𝒵(t)𝒵(−t)` for `t≲K/c` — block 1's object: through the
-explicit formula `𝒵(t)` is a short prime sum near `e^t` at height `m`, so the certificate needs
-`|Σ_{n≈e^t}Λ(n)n^{−½+im}w(log n−t)|²≤e^{(g−η)t}` for `t≲log m·loglog m`.
+Formalized: [wd-bessel-szego-certificate](../3-formalized/wd-bessel-szego-certificate.md).
+The certificate class is `{besselSzegoCertificate n K E}` with `E(t) = |𝒵_N(t)|²`; it is complete
+on corridor windows with explicit `K`, sound by `fredholmIndex_eq_zero_of_diskUnit_re_pos`, and
+at the logarithmic stage equivalent to the `A/log|γ|` corridor
+(`logStage_besselSzego_iff_invLog_corridor`). Every certificate equals `F·Ω` with `Re Ω > 0`
+(rigidity, paper item 11), so the arithmetic content of sectoriality is the growth rate of the
+energy `|𝒵(t)|²`: index 0 at stage `n` iff that rate is below `g_n = 1/(2n)`
+(`integrableOn_energy_iff`, energy–index law).
 
 ## Gates
 - [x] 0 → 1  blocks fixed; block 2 attack fixed
-- [x] 1 → 2  block 2 paper proof (items 1–9, 11)
-- [ ] 2 → 3  block 2 Lean
+- [x] block 2 paper proof and Lean
 - [ ] blocks 1, 3–7
 
 ## Ledger (conjecture loop)
@@ -101,3 +41,21 @@ explicit formula `𝒵(t)` is a short prime sum near `e^t` at height `m`, so the
 | 1 | 2 | Re(FΛ)>0 is a quadratic form of the Hermite–Hankel matrix of centered moments | refined | the moment Hankel series diverges at the needed scale (`|z−mid|>½−c`); the convergent form is the Laplace/Bessel energy of `𝒵` (item 8) |
 | 2 | 2 | canonical outer multiplier has a zero-free closed form in theta data | proved (7, 8) | cepstrum = alternating Bessel transform of `|𝒵|²` |
 | 3 | 2 | a certificate cheaper than the cepstrum exists | refuted (11) | rigidity up to Carathéodory factors |
+| 4 | 1 | Depth-weighted Montgomery identity bounds the conjugate diagonal: `Σ_ρ x^{2δ_ρ}w(0) ≤` prime mean square of `Σ_ρ x^{ρ−½}h_t(ρ)` | refuted | unconditional identity holds (zero side `Σ x^{δ+δ'}x^{i(γ−γ')}Ĥ(ρ,ρ')`), but even on RH the off-diagonal is `≈(α−1)·diag<0` for `α<1`; the diagonal exceeds the total. |
+| 5 | 1 | Positive kernel `r̂` makes the depth-shifted off-diagonal `Re R(γ−γ'−i(δ+δ'))` nonnegative | refuted | `Re R(x−iy)=` FT of `r̂(α)cosh(αyL)`; compact `r̂` forces sign changes; positivity only for `(δ+δ')log T ≤ c₀` — shallow pairs, the wrong regime. |
+| 6 | 3 | Mean index `o(log U)` at log stage from mean values of `𝒵_m(t)`, `t ≤ log U` | refuted (mechanism) | typical `|𝒵_m(t)|² ≍ t` (Montgomery–Vaughan / Selberg CLT), so depth `a/log U` is visible only when `e^{2a} ≫ log U`: this is exactly Selberg's `loglog U/log U` barrier. Clustering at fixed `a` needs prime sums longer than the height (`α>1` pair correlation with depth weights). |
+| 7 | 3 | Certificate on density-one windows at stage `≍ log m/loglog m` | skipped (composition at Selberg strength) | `eventually_volume_badSharpLogLogCorridor_unitWindows_le` + `exists_xiZero_near_thetaZero` + `besselSzegoCertificate_mul_loop_pos`; Selberg strength, so not recorded as new. |
+| 8 | 1 | Energy = conjugate-diagonal object | insight | `|𝒵(t)|² = 𝒵(t)𝒵(−t)` is bilinear-holomorphic by reflection; the true conjugate diagonal is its diagonal `Σ m² e^{2tδ}` (depth charge). Bilinear prime input (pair correlation) contains it, the off-diagonal is the obstruction: block 1 ⟺ off-diagonal pair control with depth weights. |
+| 9 | 1, 3 | Bargmann subharmonicity of the window spectrogram `|V_g μ(t,m)|²` (Gaussian Gabor transform of `Σ Λ(n)n^{−½}δ_{log n}`) upgrades mean values over `m` to pointwise bounds | refuted | `log|V|+π|z|²/2` is subharmonic, so `log|V(z₀)| ≤ ½ log avg_{disk}|V|² + πR²/4`; Montgomery–Vaughan needs an `m`-range `≥ e^t` (log-frequency spacing `e^{−t}`), forcing `R ≥ σe^t` and penalty `≥ σ²e^{2t}`; uncertainty leaves only the trivial one-term window `σ ≤ e^{−t}`. |
+| 10 | 7 | Explicit certificate format at every stage (polynomial resolution) | proved, Lean `riemannHypothesis_iff_unitStage_besselSzego` | `riemannHypothesis_iff_unitStage_besselSzego`: prefix `besselUnitPrefix m S = doorUnitPrefix + ⌈√budget⌉ + 1`, budget `≈ m + D_m log(128(S+6+2D_m²))`; locating theta zeros to depth `r` costs `N² ≳ m + d log(8/r)`, so polynomially small depths need only `Θ(√m+√(log m·log S))`. Converse: stabilization makes the index `N`-independent. |
+| 11 | 1 | Lee–Yang/Pólya–Dickson reading of the window sum `𝒵̃_m(t)=Σ m e^{t(ρ−c_m)}` in complex `t` | insight (reformulation) | zeros of an exponential polynomial lie asymptotically in half-strips normal to the sides of the hull of its frequencies; window RH ⟺ hull is a vertical segment ⟺ all complex zeros of `𝒵̃_m` lie in a horizontal strip. Imaginary `t` damps height (`e^{−τγ}`), real `t` shifts log-prime scale. No new producer. |
+| 12 | 1 | A prime-computable pair kernel `k(ρ+ρ̄'−1)` (sesqui-holomorphic, so bilinear explicit formula applies) that is pointwise `≥0`, letting the off-diagonal be dropped | refuted | `{z+w̄ : z,w in the strip}` is open, so a holomorphic `k` real and `≥0` there is constant (open mapping). Prime-computable pair kernels are at best positive-definite (Laplace transforms of positive measures), giving only `|𝒵|²≥0`. Dropping the off-diagonal then needs spacing (large sieve / Carleson embedding of the zero measure into `PW_L`), and the Carleson constant for weight `e^{2Lδ}` is the depth charge itself: circular. |
+| 13 | 1 | Function-field calibration of the energy producer | insight | over `𝔽_q(C)` the window energy is `|Σ α_j^t|²` and the certificate's input is the Hasse–Weil bound `|#C(𝔽_{q^n})−q^n−1| ≤ 2g q^{n/2}` for all `n` — a square-root bound on the prime sum at every `t`, produced by Stepanov–Bombieri counting (auxiliary function + Riemann–Roch). Block 1 over `ℤ` asks for exactly this count; it is the LST/HWV open core (primitive `h¹` count), not a WD-internal estimate. |
+| 14 | 4 | Smooth (Gaussian) height windows see low off-line zeros, giving height uniformity | refuted | a zero at height `γ₀` enters the window-`m` energy with weight `e^{−(m−γ₀)²}e^{tδ₀}`, visible only for `t ≳ (m−γ₀)²/δ₀`: prime sums of length `e^{m²}`; uniformity is the global PNT error, i.e. RH. |
+| 15 | 3 | Bound the mean index by an energy integral `∫|𝒵_m(t)|²dμ(t) = Σ_{pairs}F(d)`, `F(z)=∫e^{tz}dμ`, with `Re F ≥ 1_{E_n}` and `Re F ≥ 0` on the strip | refuted (Harnack) | `Re F` is a nonnegative harmonic function on the strip; `≥1` on `E_n` (distance `g_n=1/(2n)` from the line `Re d=0`) forces `Re F ≥ 1−O(g_n)` on the imaginary-axis pair differences nearby (Harnack). On-line pairs then contribute `≍D²≍log²U` per window. Any energy majorant of the index must subtract the pair-correlation mass to precision `o(1/log U)` — second-order pair correlation. |
+| 16 | 1, 3 | Extract the conjugate diagonal as the Bohr mean of the energy: `(1/H)∫_T^{T+H}|𝒵(t)|²e^{−2εt}dt → Σ_{same ordinate}` | reduction | same-ordinate pairs are `(z,z)` (weight `e^{2tδ}`, the depth charge) and `(z,z̃)` (weight 1); distinct ordinates average out only for `H ≫ 1/(min ordinate gap)` — the separation input Π13, with no lower bound on gaps. Via the explicit formula this is depth-weighted Montgomery `F(α)` as `α→∞`; mollifier form: mean values with length `T^θ`, `θ→∞`. Blocks 1/3 ⟺ unconditional long-range pair correlation with depth weights. |
+| 17 | 3 | Clustering from the short-interval prime variance `∫_X^{2X}(ψ(x+h)−ψ(x)−h)² ∼ hX log(X/h)` | refuted as an input | a zero of fixed depth `δ` contributes `X^{1+2δ}min((h/X)²,γ^{−2})`, so the asymptotic for all large `X` already forbids every off-line zero (≥ RH); at a single scale the off-diagonal pair terms can offset the depth excess. Under RH, Goldston–Montgomery identify the variance with `F(α)`, `α>1` (Hardy–Littlewood pair heuristics); the unconditional depth-weighted form is the open input. |
+| 18 | 1 | Weil's power-sum argument on the lattice `t = k log p`: pseudo-Frobenius numbers `α_ρ(p)=p^{ρ−½}`, window power sums `Σ_ρ α_ρ(p)^k = 𝒵(k log p)` | reduction | `Σ_k 𝒵(k log p)z^k = Σ_ρ α_ρ z/(1−α_ρ z)` has radius `p^{−δ*}`; bounds `|𝒵(k log p)| ≤ C(1+ε)^k` for all `k` give `δ* ≤ log(1+ε)/log p` — the abscissa law restricted to a lattice. Over `𝔽_q` the power sums are `q^k+1−#C(𝔽_{q^k})`, bounded by counting; over `ℚ` they are prime sums near `p^k` with no counting interpretation. Same missing producer as row 13. |
+| 19 | 3 | Mean log-stage collision index (literal block-3 object) is `O(log U)` from the corpus depth-charge gate | refined | a pair inside `E_n` has `Re(z−w) > g_n`, so one zero is deeper than `1/(4n)`, but its partners are all zeros within `b_n = 1/n` in height. Depth charge plus the pointwise local count `≪ log m` gives only `O(log²U)`; `O(log U)` needs short-range pair counts (Selberg–Fujii second moment of `S(t+h)−S(t)`, not in the corpus), via Cauchy–Schwarz with the depth charge at `2L`. The exactly-horizontal charge is `≤ 2·#{δ>1/(4n)}` and is governed by the corpus TFAE `dyadicMean_corridor_and_polynomialTheta_littleO_log_tfae`; the Zhukovsky index adds near-horizontal pairs (the Π13 layer). |
+| 20 | 3 (B21) | Montgomery's simple-zero argument with depths: the unconditional depth-weighted `F_dep(α)=|α|+T^{−2|α|}log T+o(1)` (`0<α≤1`, `x^{ρ−½}` form of his identity; prime side unconditional) with Fejér `r̂` gives near-line density at rate up to `2` | refuted after analysis | off-diagonal real parts are `Re r((LΔγ − i(a+a'))/λ)` (`supp r̂ ⊂ [−1/λ,1/λ]`), nonnegative only for `|a+a'| ≤ λη₀`, `η₀ = O(1)` set by `sup|ĝ'/ĝ|`; deep pairs are `O(λ e^{−(r−1/λ)A})`-negligible by Selberg only beyond `A ≍ r^{−1}log(1/ε)`, and the moderate band `λη₀ < |a+a'| < A` is uncontrolled. Closing the band needs `λ ≥ A/η₀`, giving rate `2/λ ≪ r`: no gain over Selberg. |
+

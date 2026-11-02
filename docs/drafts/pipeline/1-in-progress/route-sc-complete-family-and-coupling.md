@@ -40,57 +40,34 @@ heat d: no index jumps on `(0,1/8]`.
 
 ## Cone boundary
 
-The existing double-pole argument requires an attained maximal real part.
-Below the supremum its geometric expansion diverges for deeper zeros.
-Continuation across the boundary does not isolate residues of an infinite
-accumulating pole series.
-
-`le_norm_paperFT_upow` already gives
-`(|sinh(Im z)|/‖z‖)^4≤|B̂(z)|`, hence polynomial nonvanishing away from the
-critical line. `two_prime_alias_bound_in_Δ` gives joint phase separation
-
-`|Δ log p−2πk₁| log q + |Δ log q−2πk₂| log p ≥ c·min(|Δ|,(2+|Δ|)^(−C))`.
-
-Together with phase-coherent cluster control, these now give the polynomial
-width-gap bound below. That bound still permits unattained positive width.
-
-Positive weights alone do not remove this obstruction: the concrete
-`CircleQuadraturePositive.pcoef` and `ppoint` have positive weights summable
-to every positive power, distinct nodes of modulus at least `5/4`, and all
-positive integer moments zero. The symmetric single-prime Wolff configuration
-also has locally finite ordinates and positive scalar Toeplitz Grams despite
-off-line support.
-
-The stronger [two-clock positive atomic construction](../3-formalized/two-prime-cone-positive-moment-obstruction.md)
-now has distinct support, mass two, linear height count, reciprocal weight
-lower bounds, and unattained positive width, while every positive cone moment
-vanishes. Its even Hermitian quartet kernel has cone coupling bounded by
-twenty. Both final direct Lean audits use only standard axioms. Thus those
-generic lower bounds and joint clock separation cannot settle SC2. The model
-does not impose the actual complex spline weights or integer zero multiplicities.
-
-The [eighth-power refinement](../3-formalized/two-prime-cone-spline-sized-weights.md)
-also imposes two-sided eighth-power height decay on the positive weights.
-
-The [exact-coefficient construction](../3-formalized/two-prime-cone-prescribed-spline-weights.md)
-now removes the remaining weight and multiplicity freedoms. It has exact
-coefficients `(sinh z/z)^8`, unit multiplicities, distinct quartets, linear
-height count, and unattained positive width. Every positive two-prime cone
-moment vanishes, and quartet coupling is bounded by twenty. The complete
-existence theorem and its transitive dependencies pass direct Lean audits
-with only standard axioms. Thus these generic zero-side properties cannot
-settle SC2. A further property of actual zeta zeros is required.
-
 The [polynomial boundary-repulsion theorem](../3-formalized/cone-coupling-polynomial-boundary-repulsion.md)
-proves that bounded natural-cone coupling implies RH or a uniform lower bound
+proves that bounded natural-cone coupling implies RH or
 `D-|Re ρ-1/2|≥c/(1+|Im ρ|)^A`, with `c>0` and integer `A>0`.
-Its final direct Lean audit and transitive axiom check pass. The argument
-handles arbitrarily close clusters and arbitrary actual multiplicities.
-This sharpens the necessary condition; SC2 remains open.
+It combines exact spline lower bounds, Baker separation of the two prime
+clocks, phase-coherent cluster control, and a finite sixth residue moment.
+It handles arbitrarily close clusters and arbitrary actual multiplicities.
+The bound permits unattained positive width; SC2 remains open.
 
-The [local-density conjecture](cone-cancellation-with-bounded-local-density.md)
-tests whether a uniform unit-interval count can coexist with the exact-spline
-cancellation mechanism. No such stronger countermodel is yet proved.
+The [exact spline model with bounded local density](../3-formalized/cone-cancellation-with-bounded-local-density.md)
+has distinct sign/conjugation quartets, exact coefficients `(sinh z/z)^8`,
+unit multiplicities, and real parts cofinal at an unattained positive width.
+Every positive two-prime cone moment vanishes, and quartet coupling is
+bounded by twenty. Core unit-height windows embed into `Fin 3`; quartet
+windows embed into `Fin 12`. All real moments converge absolutely.
+The existence theorem and transitive axiom audit pass direct Lean checks
+with only standard axioms.
+
+Thus exact spline weights, integer multiplicities, joint clock separation,
+and even uniformly bounded local counts do not settle SC2. These strengthen
+the earlier [positive-weight](../3-formalized/two-prime-cone-positive-moment-obstruction.md),
+[eighth-power](../3-formalized/two-prime-cone-spline-sized-weights.md), and
+[exact-coefficient](../3-formalized/two-prime-cone-prescribed-spline-weights.md)
+models. A further property of actual zeta zeros is required.
+
+The [Gaussian-damped criterion](gaussian-damped-natural-cone-rigidity.md)
+is an active conjecture for actual zeros. Quadratic exponential tails may
+permit finite clock products to isolate any off-line zero. No transfer from
+bounded coupling of the original spline kernel is assumed or proved.
 
 ## Other boundaries
 

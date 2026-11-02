@@ -48,3 +48,9 @@ Write `v_jet = Σ_k J_k v_k`, `J_k = Σ_m a_m w(m,k) √(φ(k)/φ(m))`,
   `|M_D(θ)| ≤ 3 + log(1/|sin(θ/2)|)`, collar weight `≤ 130 k/φ(k)` (`k ≥ 2`), smoothed packets
   over a range, `sum_collarRowNear_sq_le_sharp`. The collar decomposition in
   `ConductorBandPrimeAndCenterBounds` (`collarRow_eq_sum_three`, `SumHalf`/`Far` bounds) is public.
+- `CriticalArithmeticCorrelationTheory.TheNearGramFormOfAPacketCostsItsDivisorMean` — step 2 core:
+  `sum_nearGram_sq_le_gram` (`‖K₂ᵦ y‖² ≤ (2ec − 1)⟨Γy, y⟩ + ‖y‖²`), the Möbius/Abel mean
+  `abs_sum_ramanujanLagCoefficient_mul_le`, `exists_nearGram_packet_form_le` (packets with `a 1 = 0`).
+  The mid-band machinery in `SharpenedMidBandAndCrossBounds` (`midBand*`, `shifted_mode_osc_Ico_le`,
+  `sum_nearBand_sq_le_of_mem_conductorSubspace`) is public.
+

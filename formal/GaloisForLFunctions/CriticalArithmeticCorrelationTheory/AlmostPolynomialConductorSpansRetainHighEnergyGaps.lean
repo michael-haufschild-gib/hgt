@@ -30,7 +30,7 @@ private def highBandRate (c r q L n : ℝ) : ℝ :=
     c ^ 3 * r ^ 4 / n + c ^ 2 * (1 + Real.log c) / L
 
 private theorem high_band_rate_envelope {q κ L n c r Q : ℝ}
-    (hq : 0 < q) (hL1 : 1 ≤ L) (ht1 : 1 ≤ Real.log L) (hn1 : 1 ≤ n)
+    (_hq : 0 < q) (hL1 : 1 ≤ L) (ht1 : 1 ≤ Real.log L) (hn1 : 1 ≤ n)
     (hc1 : 1 ≤ c) (hcT : c ≤ (Real.log L) ^ 2)
     (hcLog : c ≤ Real.log L * Real.log (Real.log L)) (hcL : c ≤ L)
     (hr1 : 1 ≤ r) (hr : r ≤ n ^ (1 / 16 : ℝ))
@@ -157,11 +157,9 @@ private theorem high_band_rate_envelope {q κ L n c r Q : ℝ}
         dsimp only [U]
         rw [Real.rpow_sub ht, Real.rpow_two]
         field_simp
-        ring
       _ ≤ _ := by
-        apply add_le_add_right
         have hh : t ^ 2 * (Real.log t) ^ 2 * M ≤ t ^ 2 * t ^ 2 * (2 * t) := by gcongr
-        exact (div_le_div_of_nonneg_right hh hL.le).trans_eq (by ring)
+        exact add_le_add ((div_le_div_of_nonneg_right hh hL.le).trans_eq (by ring)) le_rfl
   dsimp only [highBandRate]
   calc
     _ ≤ 5 * U + 2 * (t ^ 6 / L ^ (q / 2)) + 3 * V := by
@@ -187,7 +185,7 @@ private theorem tendsto_loglog_power_div_log_power {e : ℝ} (he : 0 < e) (a : �
 private theorem tendsto_high_band_envelope {q κ : ℝ} (hq : 0 < q) (hκ : 2 < κ) :
     Tendsto (fun N : ℕ =>
       10 * (Real.log (Real.log (N : ℝ)) ^ 5 / Real.log N) +
-      5 * ((Real.log (Real.log (Real.log (N : ℝ))) ^ 2 *
+      5 * (Real.log (Real.log (Real.log (N : ℝ))) ^ 2 *
         (1 + 2 * Real.log (Real.log (Real.log (N : ℝ)))) /
         Real.log (Real.log (N : ℝ)) ^ (κ - 2)) +
       2 * (Real.log (Real.log (N : ℝ)) ^ 6 / Real.log (N : ℝ) ^ (q / 2)) +
@@ -338,7 +336,7 @@ theorem eventually_almost_polynomial_high_band_horizon {q κ C H : ℝ}
     apply Real.exp_le_exp.mpr
     have hh : L / t ^ κ ≤ L / 16 := div_le_div_of_nonneg_left hL.le
       (by norm_num) (by linarith only [hκ72])
-    simpa only [div_eq_mul_inv] using hh
+    simpa only [div_eq_mul_inv, one_mul] using hh
   have hR6 : R ^ 6 ≤ N := by
     have hh : (R : ℝ) ^ 6 ≤ (N : ℝ) := by
       calc
@@ -412,9 +410,8 @@ theorem eventually_almost_polynomial_high_band_horizon {q κ C H : ℝ}
       linarith only [hh]
     have hconst := (div_le_iff₀ hq).mp hgapN
     change 8 * (H + 1 + Real.log 2 / 4) ≤ t * q at hconst
-    linarith only [hlogc, hlogt, hlogQ, hconst]
+    have hqt : 0 ≤ q * t := mul_nonneg hq.le ht.le
+    nlinarith only [hlogc, hlogt, hlogQ, hconst, hqt]
   exact ⟨hcL, hcN, hradBound, hsize, hresWidth, hsmallRate, hgap⟩
-
-#print axioms eventually_almost_polynomial_high_band_horizon
 
 end GaloisForLFunctions.CriticalArithmeticCorrelationTheory

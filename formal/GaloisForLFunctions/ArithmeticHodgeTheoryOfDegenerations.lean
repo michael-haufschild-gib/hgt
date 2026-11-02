@@ -17,6 +17,8 @@ import GaloisForLFunctions.ArithmeticHodgeTheoryOfDegenerations.TheSecondOrderTe
 import GaloisForLFunctions.ArithmeticHodgeTheoryOfDegenerations.TheAliasingIsTheDilationDerivativeOfTheBulk
 import GaloisForLFunctions.ArithmeticHodgeTheoryOfDegenerations.TheAliasingConstantOfTheTiltedSpline
 import GaloisForLFunctions.ArithmeticHodgeTheoryOfDegenerations.ThePrimesOfAHorizonWindow
+import GaloisForLFunctions.ArithmeticHodgeTheoryOfDegenerations.TheBulkDeterminesTheSecondOrderTerm
+import GaloisForLFunctions.ArithmeticHodgeTheoryOfDegenerations.TheWindowIndex
 
 /-!
 # Arithmetic Hodge Theory of Degenerations
@@ -35,6 +37,9 @@ sharp part below the grid; the second-order term (Weil's form plus `log N` times
 of the aliasing density); the aliasing density as the dilation derivative of the bulk energy; the
 exact second-order term at the critical curve for the tilted spline, `κ Q(H) + (7 J(1)/K) ∫ e^{−8y} H²`,
 and the exact critical multiple of a window; the primes of a horizon window (departing prime jumps
-pay their own creation potential).
+pay their own creation potential); the bulk determines the second-order term (for every profile with
+`s^β E₁(s) → J`, the correction is `(β J/K) ∫ e^{−(β+1)y} H²`); the window index (the pencil Gram
+matrix of a family of windows is the limit of the complete family's horizon Gram matrices, its
+negative index is read by them and bounded by the number of right zeros).
 See `ArithmeticHodgeTheoryOfDegenerations/README.md`.
 -/

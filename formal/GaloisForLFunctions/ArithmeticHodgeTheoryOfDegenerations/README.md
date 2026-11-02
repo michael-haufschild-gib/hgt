@@ -85,8 +85,11 @@ horizon block pays at depth `y` is the dilation derivative of the bulk energy at
 
 **c⁻¹⟨Wx, x⟩ → κ_φ Q(H) + (7 J(1)/K) ∫ e^{−8y} H(y)² dy.**
 
-The second-order term of the degeneration on a horizon window is Weil's form plus `β J(1)/K` times
-a positive weighted norm; its critical multiple is `K*(H) = 7 J(1) ‖H‖²_{−8}/(κ_φ |Q(H)|)`.
+More generally, for every profile whose bulk energy has the rescaled limit `s^β E₁(s) → J`, at
+`c^{β+1} = K log N`: **c⁻¹⟨Wx, x⟩ → κ_φ Q(H) + (β J/K) ∫ e^{−(β+1)y} H(y)² dy.** The second-order
+term of the degeneration on a horizon window is Weil's form plus `β J/K` times a positive weighted
+norm, determined by the first-order data `(β, J)` of the bulk; its critical multiple is
+`K*(H) = β J ‖H‖²_{−(β+1)}/(κ_φ |Q(H)|)`.
 
 ## 3. Objects
 
@@ -190,6 +193,12 @@ polarized? ⇒ inheritance ⇒ RH. The zero side splits the second order into le
   see the oscillation only through `c/N`, and the harmonics sum to `ζ(8)`:
   `c⁸ 𝒜_N → 2(1/64)(4/π)⁸ μ_q ζ(8) ∫ e^{−7y} h² = 7 J(1) ∫φ² · ∫ e^{−8y} H²`. The factor
   `7 = β` is the pointwise density `−d/ds(J(1) s^{−7})` against the tail integral of the bulk.
+- **The bulk determines the second order.** For any profile with `|φ̂|² ≲ (1+|u|)^{−p}`, `p > 4`, the
+  aliasing density is bounded and Lipschitz above any overlap, so the window sum is a Riemann sum
+  up to `O(c^{β+2}/N)`; integrating by parts against `E₁(cx)` turns the window average of
+  `a_φ(cx) = −(∫φ²/2)E₁'(cx)` into `c^{−β}` times the window average of `F'(x) · c^β E₁(cx)`, and
+  `c^β E₁(cx) → J x^{−β}` uniformly on the window. A second integration by parts gives
+  `β J ∫ e^{−(β+1)y} H²`. No equidistribution and no property of `φ` beyond its first-order limit.
 - **Critical multiples.** If the rescaled family converges to `J + K X`, positive definiteness is
   inherited and a negative direction is eventually negative; for `J ⪰ 0` the admissible multiples
   form a closed initial segment, positive semidefinite terms never remove a multiple, and negative
@@ -198,9 +207,13 @@ polarized? ⇒ inheritance ⇒ RH. The zero side splits the second order into le
 **C. Integer.** source-defined sectorial multiplier ⇒ window index `0` on every window ⇒ RH (WD).
 In AHD's language a horizon window `H` has the exact critical multiple
 `K*(H) = 7 J(1) ‖H‖²_{−8}/(κ |Q(H)|)` (`+∞` when `Q(H) ≥ 0`): the block is positive below it and
-negative above it. The window index at multiple `K` counts the negative directions of
-`κ Q + (7J(1)/K)‖·‖²_{−8}` on a span of windows; it is `0` for every span and every `K` exactly under
-RH, and EAHT shows that atomic Gram matrices reach the full index `κ(K_ζ)` along explicit schedules.
+negative above it. On a family of windows the second-order term polarizes to the **pencil Gram
+matrix** `P_K = κ Q(H_i, H_j) + (βJ/K)⟨H_i, H_j⟩_{−(β+1)}`, the entrywise limit of the normalized
+horizon Gram matrices `G_N` of the complete family. The **window index** `ind₋(P_K)` is read by the
+complete family (eventually `ind₋(P_K) ≤ ind₋(G_N)`, lower semicontinuity) and bounded by the number
+of right zeros (Weil's form has at most that many negative squares on compact tests). It is `0` for
+every family and every `K` exactly under RH; EAHT shows that atomic Gram matrices reach the full
+index `κ(K_ζ)` along explicit schedules.
 
 **G. Gluing.** One rank-one gluing at the pole creates the Mertens function (Redheffer, ADT) and
 the one extra negative square (`κ + 1`, AKG). The zero ledger of the bulk is itself a rank-one
@@ -218,8 +231,9 @@ must come from the bulk second-order term or from a carrier.
 | How do the zeros enter the second-order term of fixed packets? | Only through the pole coefficient: `(log N/c) W_ρ/∫g² → m_ρ κ y_1²/(ρ(1−ρ))`, real part `> 0`; at the critical curve `c⁷ W_ρ/∫g² → K m_ρ κ y_1²/(ρ(1−ρ))`. Same for every finite window. | `tendsto_bulkLedger`, `tendsto_bulkLedger_criticalCurve`, `tendsto_sum_bulkLedger`, `re_sum_mult_div_nonneg` |
 | Which packets can see an individual zero? | Not fixed conductor packets (positive pole charge only). Horizon blocks: `W_ρ/(c∫g²) → κ W_ρ(H,H)`, Weil's summand of the synthesized test. | `tendsto_horizonLedger`, `Wsummand_halfWeight` |
 | Is the horizon layer Weil's form? | Yes. In the iterated limit (horizon, then window of zeros) windows exhaust `κ W(H,H)`. Directly: past the critical curve (`(1+log N)/c^p → 0`) `c⁻¹⟨Wx,x⟩ → κ Q(H)`; at `c^p/log N → K_c` it is `κ Q(H)` up to `K/K_c`; for every schedule the error is `ε + K(1+log N)/c^p`. | `horizon_layer_two_sided`, `tendsto_horizon_layer_supercritical`, `horizon_layer_criticalCurve`, `horizon_window_exhaustion` |
-| What is the second-order term at the critical curve (obstacles summary 2.5.4)? | On horizon blocks, exactly: `c⁻¹⟨Wx,x⟩ → κ Q(H) + (7J(1)/K) ∫ e^{−8y} H²` along `c⁸/log N → K` (tilted spline). For every profile and every schedule with `c → ∞`, `c(log N)²/N → 0`: `c⁻¹⟨Wx,x⟩ = κ Q(H) − log N · N⁻¹ Σ_n h(log(n/N))² E₁'(cn/N) + o(1)`. | `horizon_layer_criticalCurve_exact`, `horizon_layer_sharp`, `horizon_layer_sharp_bulk`, `horizonForm_eq` |
+| What is the second-order term at the critical curve (obstacles summary 2.5.4)? | On horizon blocks, exactly: `c⁻¹⟨Wx,x⟩ → κ Q(H) + (βJ/K) ∫ e^{−(β+1)y} H²` along `c^{β+1}/log N → K`, for every profile with bulk limit `s^β E₁(s) → J` (tilted spline: `β = 7`, `J = J(1)`). For every profile and every schedule with `c → ∞`, `c(log N)²/N → 0`: `c⁻¹⟨Wx,x⟩ = κ Q(H) − log N · N⁻¹ Σ_n h(log(n/N))² E₁'(cn/N) + o(1)`. | `horizon_layer_criticalCurve_of_regularBulk`, `horizon_layer_criticalCurve_exact`, `horizon_layer_sharp`, `horizon_layer_sharp_bulk`, `horizonForm_eq` |
 | Which structure polarizes the second-order term? | The first-order count, through the monodromy. The aliasing density is the dilation derivative of the bulk energy, `a_φ = −(∫φ²/2) E₁'`, positive because `E₁` is antitone; its window average at the local overlaps `c e^y` is `β J(1)` times `‖H‖²_{−8}`. So the second-order term is a pencil: Weil's form plus `1/K` times a positive definite form built from `J(1)`. It is positive at every multiple iff `Q ≥ 0` on horizon windows, i.e. iff RH. On the bulk, the zero charge is the Li-type pole charge (positive per zero). | `hasDerivAt_completedShellEnergy`, `aliasLimit_eq`, `tendsto_rpow_seven_mul_completedShellEnergy_tilted`, `re_inv_mul_one_sub_pos`, `riemannHypothesis_iff_horizon_layer` |
+| What is the integer of the degeneration (carrier C)? | The window index `ind₋(P_K)` of the pencil Gram matrix of a family of windows at multiple `K`: the complete family reads it (`ind₋(P_K) ≤ ind₋(G_N)` eventually) and it never exceeds the number of zeros right of the line; it vanishes for all families and multiples iff RH. | `tendsto_horizonGram`, `eventually_hermNegIndex_pencilGram_le`, `hermNegIndex_pencilGram_le_offLineCount` |
 | What is the critical multiple of a window? | Exactly `K*(H) = 7 J(1) ‖H‖²_{−8}/(κ |Q(H)|)` for `Q(H) < 0` (`+∞` otherwise): positive below, negative above. Before the exact constant: coercive bounds `κ Q(H) + a/K ≤ · ≤ κ Q(H) + b/K`. | `criticalMultiple_exact`, `horizon_layer_coercive`, `horizon_layer_lower_criticalCurve`, `horizon_layer_criticalCurve` |
 | Where does the horizon term of a conductor live? | Only at `e = 1`: `D_e(s;N) − [e=1]N^s/s → ζ(1−s)J_s(e)`. | `tendsto_conductorDirichlet_sub_horizonTerm`, `conductorDirichlet_eq` |
 | Is positivity at one fixed multiple of the critical curve RH? | No: positivity at multiple `K` is `κ Q(H) ≥ −7J(1)‖H‖²_{−8}/K` on every window (sub-RH); every window with `Q(H) < 0` turns negative past `K*(H)`. RH is positivity at every multiple. | `criticalMultiple_exact`, `weilQuad_halfWeight_ge_of_horizon_nonneg`, `eventually_horizon_neg_of_weilQuad_neg` |
@@ -264,6 +278,9 @@ must come from the bulk second-order term or from a carrier.
 - Dyadic tails with block-local weights `V + j` (`integral_aliasing_le_of_blocks`), the symbol as
   `log|τ|/2π + O(1)` (`exists_abs_mu_sub_log_le`, `abs_nuSymbol_sub_log_le`).
 - Harmonic calculus of the bulk energy: `E₁' = −(2/∫φ²) a_φ` (`hasDerivAt_completedShellEnergy`).
+- Integration by parts of window averages against the bulk energy, uniform rescaled limits on
+  windows (`integral_windowAlias_eq`, `tendsto_window_bulk`, `integral_logProfileDeriv_mul_rpow`);
+  Lipschitz and size bounds of the aliasing density (`abs_aliasDensity_sub_le`, `aliasDensity_le`).
 - Equidistribution of a periodic numerator against window weights (`abs_integral_mul_numerator_sub_le`,
   `tendsto_modulated`) and Tannery over the grid harmonics (`tendsto_rpow_eight_mul_horizonAlias`).
 
@@ -295,14 +312,16 @@ must come from the bulk second-order term or from a carrier.
 | The aliasing is the dilation derivative of the bulk: `E₁' = −(2/∫φ²) a_φ` | `hasDerivAt_completedShellEnergy`, `sub_eq_integral_aliasDensity`, `horizon_layer_sharp_bulk` | proved |
 | Conjecture HB, sharp form: at `c⁸/log N → K`, `c⁻¹⟨Wx,x⟩ → κQ(H) + (7J(1)/K)‖H‖²_{−8}` | `horizon_layer_criticalCurve_exact`, `tendsto_rpow_eight_mul_horizonAlias`, `aliasLimit_eq` | proved |
 | Exact critical multiple `K*(H) = 7J(1)‖H‖²_{−8}/(κ|Q(H)|)` | `criticalMultiple_exact` | proved |
+| The bulk determines the second order: `s^β E₁ → J` gives `κQ(H) + (βJ/K)‖H‖²_{−(β+1)}` | `horizon_layer_criticalCurve_of_regularBulk`, `tendsto_rpow_mul_horizonAlias_of_regularBulk`, `integral_windowAlias_eq`, `abs_aliasDensity_sub_le` | proved |
+| The window index: Gram matrices converge to the pencil; the index is read by the family and bounded by the right zeros | `tendsto_horizonGram`, `pencilGram_isHermitian`, `eventually_hermNegIndex_pencilGram_le`, `hermNegIndex_pencilGram_le_offLineCount` | proved |
 | The primes of a window: departing jumps pay their creation; Markov form at level `⌊e^A⌋` | `primeJump_departing_eq`, `markovForm_eq_of_level`, `weilQuad_halfWeight_eq_markovForm` | proved |
 
 ## 9. Open research topics
 
-1. **The second-order term for every regular tail.** For a profile with `s^β E₁(s) → J(1)` and a
-   regular spectral tail, the window average of `−E₁'` at the local overlaps should give
-   `β J(1) ∫ e^{−(β+1)y} H²` at `c^{β+1} = K log N`. The tilted spline is proved; the general case
-   needs equidistribution of the tail modulation against window weights.
+1. **The window index as a counting function.** `K ↦ ind₋(P_K)` is nondecreasing and tends to the
+   negative index of Weil's form on the span; whether it equals the number of generalized
+   eigenvalues of `Q` below `−βJ/(κK)` relative to `‖·‖²_{−(β+1)}`, and how fast it reaches the
+   number of right zeros as the family grows, is open.
 2. **Bulk second order.** The collective `1/log N` term of fixed packets (the high zeros, read on the
    arithmetic side through primes in progressions to the moduli `e e'`).
 3. **Uniform bulk ledger.** All zeros of height `≤ N^{1/2−ε}` together contribute `o(c/log N)` to every
@@ -352,10 +371,10 @@ must come from the bulk second-order term or from a carrier.
 |---|---|
 | First-order structure identified as a count | proved: `#ℙ⁷(ℤ/m)` |
 | How zeros enter the second order, packets that see a zero classified | proved per zero and per window: bulk (pole only, positive), horizon layer (Weil summands) |
-| Second-order term at the critical curve identified | horizon layer: exactly `κ Q(H) + (7J(1)/K)‖H‖²_{−8}` (proved, tilted spline), in general `κ Q(H)` minus `log N` times the window average of `E₁'` (proved); bulk second order: open |
+| Second-order term at the critical curve identified | horizon layer: exactly `κ Q(H) + (βJ/K)‖H‖²_{−(β+1)}` for every profile with bulk limit `s^βE₁ → J` (proved; tilted spline `7J(1)`); bulk second order: open |
 | A count reading the primes inside the jump measure, creation potential paid on a window | open (corpus foothold on prime-free cycles) |
 | Gluing theorem with exactly one negative square | AKG `κ + 1`; zero ledger of the bulk is a positive pole gluing |
-| An integer with a structural bound | open |
+| An integer with a structural bound | the window index `ind₋(P_K)`: read by the complete family, bounded by the number of right zeros (proved); a source-defined bound forcing it to `0` (WD's sectorial multiplier): open |
 | Calibrations separating `ζ` from the fakes | negative result: ledgers and counts carry no selection |
 
 ## 13. What counts as a contribution

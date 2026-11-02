@@ -112,8 +112,12 @@ canonical core has strictly positive finite weighted energy. The
 [actual logarithmic Cauchy operator](../3-formalized/gauss-mayer-cauchy-l2-operator.md)
 is injective on `L²`, with norm bounded by the central Gamma multiplier.
 Its literal Cauchy image of the canonical core has finite weighted energy
-at most `|m(w,w/2)|²` times the input energy. Full eigenspace
-classification and a Hermitian form remain open.
+at most `|m(w,w/2)|²` times the input energy. The
+[actual theta factorization and Mellin spectrum](../3-formalized/gauss-mayer-theta-core-mellin.md)
+identify the core with a convergent Gaussian-ray correlation and give
+`M F_w(u)=Γ(u/2)Γ((w−u)/2)ζ(u)ζ(w−u)/Γ(w/2)` whenever
+`Im w>0`, `0<Re u<1`, and `0<Re(w−u)<1`, with absolute convergence.
+Full eigenspace classification and a Hermitian form remain open.
 
 ## Operator convention
 

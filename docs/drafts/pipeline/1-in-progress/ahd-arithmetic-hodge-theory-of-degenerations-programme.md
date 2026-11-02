@@ -20,7 +20,8 @@ TheHorizonBlockIsQuietBelowTheGrid, TheAliasingTailOfAHorizonBlock,
 TheHorizonBlockOnTheArithmeticSide, TheHorizonLayerBecomesWeilsForm, TheHorizonCriterion,
 TheCriticalMultipleOfAWindow, TheAliasingIsCoercive, TheEnergyOfAHorizonBlock,
 TheHorizonBlockBelowTheGridIsSharp, TheSecondOrderTermOfAHorizonBlock,
-TheAliasingIsTheDilationDerivativeOfTheBulk, TheAliasingConstantOfTheTiltedSpline.
+TheAliasingIsTheDilationDerivativeOfTheBulk, TheAliasingConstantOfTheTiltedSpline,
+ThePrimesOfAHorizonWindow, TheBulkDeterminesTheSecondOrderTerm, TheWindowIndex.
 
 ## Status
 - First order = count: `J(m) = J(1) #ℙ⁷(ℤ/m)` [L].
@@ -30,7 +31,10 @@ TheAliasingIsTheDilationDerivativeOfTheBulk, TheAliasingConstantOfTheTiltedSplin
 - Second order exact: `c⁻¹⟨Wx,x⟩ = κQ(H) − log N·N⁻¹Σ h_n² E₁'(cn/N) + o(1)`; aliasing density
   `= −(∫φ²/2)E₁'`; tilted spline at `c⁸/log N → K`: `→ κQ(H) + (7J(1)/K)∫e^{−8y}H²`; exact
   critical multiple `7J(1)‖H‖²_{−8}/(κ|Q|)` [L].
+- General: `s^βE₁(s) → J` ⇒ at `c^{β+1}/log N → K`: `→ κQ(H) + (βJ/K)‖H‖²_{−(β+1)}` [L].
+- Primes of a window: departing jumps pay their creation; Markov form at level `⌊e^A⌋` [L].
+- Window index: horizon Gram → pencil `κQ + (βJ/K)⟨,⟩`; ind₋(pencil) ≤ eventual ind₋(G_N) ≤ #right zeros [L].
 
 ## Open
-Second-order constant for general regular tails; bulk second order; uniform bulk ledger to `N^{1/2−ε}`;
+Window index as counting function in K; bulk second order; uniform bulk ledger to `N^{1/2−ε}`;
 count of the second order; integer; `𝔽_q[T]` calibration. See README §9.
