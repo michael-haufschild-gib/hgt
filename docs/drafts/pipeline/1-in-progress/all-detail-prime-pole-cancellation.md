@@ -66,6 +66,8 @@ pointwise window limit, and the bounded Haar pole functional; no all-detail
 Hilbert operator estimate was found. The mass identities are already
 proved by `integral_haarSectionProfile_sq` and `inner_coarseAtom`.
 `fullPrimeWindowTrace_div_sqrt_le_exp` in `FullPrimeWindowTraceDecay.lean`
-now proves the refined trace bound. Its direct audit contains only
-`propext`, `Classical.choice`, and `Quot.sound`. The row-tail and operator
-estimates remain unformalized. External priority is unchecked.
+proves the refined trace bound. `FullPrimeWindowHaarDecay.lean` proves
+the unsigned Haar moment and normalized full-prime row bounds. Their direct
+audits contain only `propext`, `Classical.choice`, and `Quot.sound`.
+The joint prime–pole tail and operator estimates remain unformalized.
+External priority is unchecked.

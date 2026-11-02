@@ -63,38 +63,40 @@ theorem foldEnergy_sub_count_eq (hc : Continuous H) (hcs : HasCompactSupport H)
   rw [integral_add_sub_two_mul iH iHs iP, integral_add_right_eq_self (fun u => H u ^ 2) ℓ]
   ring
 
+/-- Translating the left end of a fold onto the right end. -/
+theorem integral_leftEnd_translate (H : ℝ → ℝ) (A ℓ : ℝ) :
+    ∫ u, (Icc (-A) (-ℓ)).indicator (fun u => H (u + ℓ) ^ 2) u =
+      ∫ u, (Icc (ℓ - A) 0).indicator (fun u => H u ^ 2) u := by
+  rw [← integral_add_right_eq_self (fun u => (Icc (ℓ - A) 0).indicator (fun u => H u ^ 2) u) ℓ]
+  congr 1
+  funext u
+  have hiff : u + ℓ ∈ Icc (ℓ - A) 0 ↔ u ∈ Icc (-A) (-ℓ) := by
+    simp only [mem_Icc]; constructor <;> rintro ⟨h, h'⟩ <;> constructor <;> linarith
+  by_cases hu : u ∈ Icc (-A) (-ℓ)
+  · rw [indicator_of_mem hu, indicator_of_mem (hiff.mpr hu)]
+  · rw [indicator_of_notMem hu, indicator_of_notMem (fun h => hu (hiff.mp h))]
+
 /-- The fold energy is at most twice the end mass. -/
-theorem foldEnergy_le_two_mul_count (hc : Continuous H) (hcs : HasCompactSupport H)
-    (hv : ∀ y, y ∉ Icc (-A) 0 → H y = 0) (ℓ : ℝ) :
+theorem foldEnergy_le_two_mul_count (hc : Continuous H) (hcs : HasCompactSupport H) (ℓ : ℝ) :
     foldEnergy A ℓ H ≤ 2 * ∫ u, inWindowCount A ℓ u * H u ^ 2 := by
-  have h := foldEnergy_sub_count_eq hc hcs hv ℓ
-  have hP : |2 * ∫ u, H u * H (u + ℓ)| ≤ ∫ u, inWindowCount A ℓ u * H u ^ 2 := by
-    have h1 := jump_sub_creation_eq_fold hc hcs hv (ℓ := ℓ)
-    have h2 := foldEnergy_nonneg A ℓ H
-    have h3 : 0 ≤ ∫ u, (H u - H (u + ℓ)) ^ 2 := integral_nonneg fun u => sq_nonneg _
-    -- `(a + b)² ≥ 0` gives the other side: `∫(H + H(·+ℓ))² = 2∫H² + 2∫P`
-    have h4 : 0 ≤ ∫ u, (H u + H (u + ℓ)) ^ 2 := integral_nonneg fun u => sq_nonneg _
-    have iH := integrable_sq hc hcs
-    have iHs : Integrable fun u => H (u + ℓ) ^ 2 :=
-      integrable_sq (hc.comp (continuous_add_const ℓ)) (hasCompactSupport_comp_add hcs ℓ)
-    have iP := integrable_mul_shift hc hcs ℓ
-    have hsum : ∫ u, (H u + H (u + ℓ)) ^ 2 = 2 * (∫ u, H u ^ 2) + 2 * ∫ u, H u * H (u + ℓ) := by
-      have hexp : ∀ u, (H u + H (u + ℓ)) ^ 2 =
-          H u ^ 2 + H (u + ℓ) ^ 2 - 2 * (-(H u * H (u + ℓ))) := fun u => by ring
-      simp_rw [hexp]
-      rw [integral_add_sub_two_mul iH iHs iP.neg, integral_neg,
-        integral_add_right_eq_self (fun u => H u ^ 2) ℓ]
-      ring
-    have hdiff : ∫ u, (H u - H (u + ℓ)) ^ 2 = 2 * (∫ u, H u ^ 2) - 2 * ∫ u, H u * H (u + ℓ) := by
-      have hexp : ∀ u, (H u - H (u + ℓ)) ^ 2 =
-          H u ^ 2 + H (u + ℓ) ^ 2 - 2 * (H u * H (u + ℓ)) := fun u => by ring
-      simp_rw [hexp]
-      rw [integral_add_sub_two_mul iH iHs iP, integral_add_right_eq_self (fun u => H u ^ 2) ℓ]
-      ring
-    rw [abs_le]
-    constructor <;> nlinarith
-  rw [abs_le] at hP
-  linarith [hP.1, hP.2]
+  have iH := integrable_sq hc hcs
+  have iHs : Integrable fun u => H (u + ℓ) ^ 2 :=
+    integrable_sq (hc.comp (continuous_add_const ℓ)) (hasCompactSupport_comp_add hcs ℓ)
+  have iD := integrable_sub_shift_sq hc hcs ℓ
+  have mI := measurableSet_Icc (a := -A) (b := -ℓ)
+  have hpt : ∀ u, (Icc (-A) (-ℓ)).indicator (fun u => (H u - H (u + ℓ)) ^ 2) u ≤
+      2 * ((Icc (-A) (-ℓ)).indicator (fun u => H u ^ 2) u +
+        (Icc (-A) (-ℓ)).indicator (fun u => H (u + ℓ) ^ 2) u) := fun u => by
+    by_cases hu : u ∈ Icc (-A) (-ℓ)
+    · simp only [indicator_of_mem hu]; nlinarith [sq_nonneg (H u + H (u + ℓ))]
+    · simp only [indicator_of_notMem hu]; norm_num
+  have hmono := integral_mono (iD.indicator mI)
+    (((iH.indicator mI).add (iHs.indicator mI)).const_mul 2) hpt
+  rw [integral_const_mul, integral_add (iH.indicator mI) (iHs.indicator mI),
+    integral_leftEnd_translate] at hmono
+  rw [integral_congr_ae (Eventually.of_forall fun u => inWindowCount_mul A ℓ u fun u => H u ^ 2),
+    integral_add (iH.indicator mI) (iH.indicator measurableSet_Icc)]
+  exact hmono
 
 /-- **The arithmetic of a window is bounded by its canonical class**:
 `|Q(H) − (Ω(0)‖H‖² + J_∞(H) + pole)| ≤ ∫ k_A H²`. -/
@@ -109,7 +111,7 @@ theorem abs_weilQuad_sub_arch_le (hH : IsWindowTest A H) :
           primeJumpWeight n * ∫ u, inWindowCount A (Real.log n) u * H u ^ 2| ≤
         primeJumpWeight n * ∫ u, inWindowCount A (Real.log n) u * H u ^ 2 := fun n _ => by
     have h1 := foldEnergy_nonneg A (Real.log n) H
-    have h2 := foldEnergy_le_two_mul_count hH.continuous hH.hasCompactSupport hH.vanish
+    have h2 := foldEnergy_le_two_mul_count hH.continuous hH.hasCompactSupport
       (Real.log n) (A := A)
     have hw := primeJumpWeight_nonneg n
     rw [← mul_sub, abs_mul, abs_of_nonneg hw]
@@ -143,8 +145,8 @@ theorem weilQuad_eq_arch_of_primeFree (hH : IsWindowTest A H) (h0 : 0 ≤ A)
     weilQuad H = EF.gammaBracket 0 * (∫ u, H u ^ 2) + levyJump H +
       (coshPairing H ^ 2 / 2 - sinhPairing H ^ 2 / 2) := by
   rw [weilQuad_eq_fold_sub_canonical hH, windowLevel_eq_one h0 h]
-  simp only [Finset.Icc_self, show ¬ (2 : ℕ) ≤ 1 by norm_num, Finset.Icc_eq_empty,
-    not_false_eq_true, Finset.sum_empty]
+  simp only [show ¬ (2 : ℕ) ≤ 1 by norm_num, Finset.Icc_eq_empty, not_false_eq_true,
+    Finset.sum_empty]
   simp_rw [canonicalDensity, windowLevel_eq_one h0 h]
   simp
 
@@ -228,16 +230,7 @@ theorem foldEnergy_eq_of_antisymmetric (hc : Continuous H) (hcs : HasCompactSupp
         · rw [hv u h1]; ring
     have iHs : Integrable fun u => H (u + ℓ) ^ 2 :=
       integrable_sq (hc.comp (continuous_add_const ℓ)) (hasCompactSupport_comp_add hcs ℓ)
-    have htr : ∫ u, (Icc (-A) (-ℓ)).indicator (fun u => H (u + ℓ) ^ 2) u =
-        ∫ u, (Icc (ℓ - A) 0).indicator (fun u => H u ^ 2) u := by
-      rw [← integral_add_right_eq_self (fun u => (Icc (ℓ - A) 0).indicator (fun u => H u ^ 2) u) ℓ]
-      congr 1
-      funext u
-      have hiff : u + ℓ ∈ Icc (ℓ - A) 0 ↔ u ∈ Icc (-A) (-ℓ) := by
-        simp only [mem_Icc]; constructor <;> rintro ⟨h, h'⟩ <;> constructor <;> linarith
-      by_cases hu : u ∈ Icc (-A) (-ℓ)
-      · rw [indicator_of_mem hu, indicator_of_mem (hiff.mpr hu)]
-      · rw [indicator_of_notMem hu, indicator_of_notMem (fun h => hu (hiff.mp h))]
+    have htr := integral_leftEnd_translate H A ℓ
     rw [integral_congr_ae (Eventually.of_forall hpt), integral_const_mul,
       integral_add (iH.indicator measurableSet_Icc) (iHs.indicator measurableSet_Icc), htr,
       integral_congr_ae (Eventually.of_forall fun u => inWindowCount_mul A ℓ u fun u => H u ^ 2),

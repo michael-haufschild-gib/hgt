@@ -278,7 +278,10 @@ theorem primeConductor_lower_frame_of_disjoint_multiples (S : Finset ℕ) (a : �
         ∑ n ∈ Icc 1 N, (primeSpike S a n - primeOffset S a) ^ 2 / n := by
     convert hh using 1
     congr 1
-    exact (harmonic_head_eq hMN).symm
+    rw [← harmonic_head_eq hMN]
+    apply sum_congr rfl
+    intro n _
+    by_cases hnM : n ≤ M <;> simp only [hnM, if_true, if_false]
   calc
     _ ≤ (harmonic N : ℝ) *
         ∑ n ∈ Icc 1 N, (primeSpike S a n - primeOffset S a) ^ 2 / n := hpaid

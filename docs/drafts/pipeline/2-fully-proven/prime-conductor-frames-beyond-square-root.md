@@ -32,7 +32,7 @@ It also gives the full Gram identity. With
 Thus the prime Gram is a positive diagonal plus a correction of rank at most two.
 This identity only requires `pq>N` for distinct primes in the family.
 
-Thus the proposed sharp finite lower bound is
+Thus the finite lower bound is
 
 `‖Σ_p a_p v_p‖² ≥ [H_M/(L H_N)] Σ_p [p/(p−1)] H_floor(N/p) a_p²`.
 

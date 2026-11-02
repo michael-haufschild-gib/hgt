@@ -53,6 +53,15 @@ For coefficient-high packets, the remaining arithmetic pole term involves the
 unweighted sum of mean-zero periodic Ramanujan modes. Finite-period cancellation
 may make that term negligible after its `1/N` factor; this still needs a bound.
 
+The exact definition confirms that `fullWeilPoleErrorMatrix` is also a scalar
+multiple of `arithmeticPoleKernel`. Both pole contributions therefore use the
+same two moments. For a packet with zero conductor-one coefficient, periodic
+cancellation bounds its unweighted mode sum by `2R²` times its coefficient
+norm; the remaining harmonic moment is bounded by Cauchy–Schwarz.
+The direct inequality `poleDefect_normalizedRamanujanPacket_ge_logarithmic`
+does not require pole orthogonality, so it remains available on the
+coefficient-high packet before the complete-form leakage identity is applied.
+
 With those two bounds, `W(u)=W(y)−W(v)+2⟨Wv,u⟩` would cost only
 `O((1+log Q)ρ²)` for `ρ=(1+log R)/log N`, plus the raw low residual.
 For a sufficiently small fixed polynomial exponent, this is absorbable into
