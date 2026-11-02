@@ -53,4 +53,16 @@ Write `v_jet = Σ_k J_k v_k`, `J_k = Σ_m a_m w(m,k) √(φ(k)/φ(m))`,
   `abs_sum_ramanujanLagCoefficient_mul_le`, `exists_nearGram_packet_form_le` (packets with `a 1 = 0`).
   The mid-band machinery in `SharpenedMidBandAndCrossBounds` (`midBand*`, `shifted_mode_osc_Ico_le`,
   `sum_nearBand_sq_le_of_mem_conductorSubspace`) is public.
+- `SharpenedMidBandAndCrossBounds.exists_overlap_sub_downward_sub_jet_sq_le` —
+  `‖(Overlap − Down)u − K₂ᵦ v_jet‖² ≤ C(c⁴(1 + log c)/log N + c³R²log N/N)‖u‖²`.
+- `CriticalArithmeticCorrelationTheory.TheReducedDivisorJetCostsItsDivisorMean` — step 2:
+  `reducedDivisorJet` (`v_jet` without `k = 1`), `v_jet = v_jet' + J₁v₁`;
+  `exists_nearGram_reducedDivisorJet_sq_le_weighted`:
+  `‖K₂ᵦ v_jet'‖² ≤ C c((1 + log c)Sg/log N + c⁵/N + c³R⁴/(N log N))(1 + log R)Σ(1 + log m)a_m²`,
+  `Sg ≥ σ(m)/φ(m)` on `[2, R]`.
+- `CriticalArithmeticCorrelationTheory.TheJetPoleComponentCancelsThePole` — step 1:
+  `exists_coherentPolePair_sq_le`: `(P⟨Πũ, w⟩ + J₁⟨K₂ᵦ v₁, w⟩)² ≤
+  C((1 + log R)(1 + log c)/log N · G + c²R⁵/(N² log N) · A)‖w‖²` (`P` exact pole coefficient,
+  `ũ` the band without `v₁`, `w ⊥ V_R`). Uses the exact pole `P = a₋a₊/G` (center pole part plus
+  pole error), so no `α/N` approximation enters.
 

@@ -91,8 +91,10 @@ theorem primeTwoGraphJump_eq {f : ℝ → ℝ} (hf : f ∈ realTests) :
   have hpt : (fun u => (f u - f (u + Real.log 2)) ^ 2) =
       fun u => (f u ^ 2 + f (u + Real.log 2) ^ 2) - 2 * (f u * f (u + Real.log 2)) :=
     funext fun u => by ring
-  rw [hpt, integral_sub (i1.add i2) (i3.const_mul 2), integral_add i1 i2,
-    integral_add_right_eq_self (fun u => f u ^ 2) (Real.log 2), integral_const_mul]
+  rw [hpt, integral_sub (f := fun u => f u ^ 2 + f (u + Real.log 2) ^ 2)
+      (g := fun u => 2 * (f u * f (u + Real.log 2))) (i1.add i2) (i3.const_mul 2),
+    integral_add i1 i2, integral_add_right_eq_self (fun u => f u ^ 2) (Real.log 2),
+    integral_const_mul]
   ring
 
 /-- The gauge-weighted `T₂`-graph jump `∫ M(u) M(u + log 2) (g(u) − g(u + log 2))² du`. -/
@@ -120,11 +122,11 @@ theorem neg_two_mul_autocorr_gauge_eq {M g : ℝ → ℝ} (hM : Continuous M) (h
       hgc.sub (hgc.comp_homeomorph (Homeomorph.addRight (Real.log 2)))
     refine ((hM.mul (hM.comp (continuous_id.add continuous_const))).mul
       ((hg.sub (hg.comp (continuous_id.add continuous_const))).pow 2)).integrable_of_hasCompactSupport ?_
-    exact (hasCompactSupport_sq hdiff_c).mul_left
+    exact (_root_.RHTower.CHMDPolar.hasCompactSupport_sq hdiff_c).mul_left
   have i_mass : Integrable (fun u => M u * M (u + Real.log 2) * (g u ^ 2 + g (u + Real.log 2) ^ 2)) := by
     have hsq_c : HasCompactSupport (fun u => g u ^ 2 + g (u + Real.log 2) ^ 2) :=
-      (hasCompactSupport_sq hgc).add
-        (hasCompactSupport_sq (hgc.comp_homeomorph (Homeomorph.addRight (Real.log 2))))
+      (_root_.RHTower.CHMDPolar.hasCompactSupport_sq hgc).add
+        (_root_.RHTower.CHMDPolar.hasCompactSupport_sq (hgc.comp_homeomorph (Homeomorph.addRight (Real.log 2))))
     exact ((hM.mul (hM.comp (continuous_id.add continuous_const))).mul
       ((hg.pow 2).add ((hg.comp (continuous_id.add continuous_const)).pow 2))).integrable_of_hasCompactSupport
       hsq_c.mul_left
@@ -151,17 +153,16 @@ theorem two_mul_poleCross_eq_poleSquares {f : ℝ → ℝ} (hf : f ∈ realTests
   have hcont : Continuous f := hf.1.continuous
   have hcomp : HasCompactSupport f := hf.2
   obtain ⟨B, hFB⟩ : ∃ B : ℝ, ∀ x, f x ≠ 0 → |x| ≤ B := by
-    obtain ⟨K, hK, hsub⟩ := exists_compact_iff_hasCompactSupport.mpr hcomp
-    obtain ⟨B, hB⟩ := hK.isBounded.subset_closedBall (0 : ℝ)
+    obtain ⟨B, hB⟩ := hcomp.isBounded.subset_closedBall (0 : ℝ)
     refine ⟨B, fun x hx => ?_⟩
-    have := hB (hsub (subset_tsupport f hx))
+    have := hB (subset_tsupport f hx)
     simpa [Metric.mem_closedBall, Real.dist_eq] using this
   -- Relate `poleCross` at `supportScale` to the full half-line `polarDensity` integral.
   set N := (toRealWeilTestFn hf).supportScale
   have hc_auto : Continuous (autocorr f) :=
-    RHTower.ArchimedeanExactForm.continuous_autocorr hf.1 hf.2
+    _root_.RHTower.ArchimedeanExactForm.continuous_autocorr hf.1 hf.2
   have hcs_auto : HasCompactSupport (autocorr f) :=
-    RHTower.ArchimedeanExactForm.hasCompactSupport_autocorr hf.2
+    _root_.RHTower.ArchimedeanExactForm.hasCompactSupport_autocorr hf.2
   have hint_pol : Integrable (fun x => SignedPrimePolar.polarDensity x * autocorr f x) := by
     unfold SignedPrimePolar.polarDensity
     exact ((continuous_const.mul (by fun_prop)).mul hc_auto).integrable_of_hasCompactSupport
@@ -171,10 +172,14 @@ theorem two_mul_poleCross_eq_poleSquares {f : ℝ → ℝ} (hf : f ∈ realTests
   have hIcc_Ioi : poleCross N f = ∫ x in Ioi (0 : ℝ), SignedPrimePolar.polarDensity x * autocorr f x := by
     unfold poleCross
     have hL : 0 ≤ SignedPrimePolar.cutoff N := SignedPrimePolar.cutoff_nonneg N
-    rw [← integral_Ioc_eq_integral_Icc, ← add_zero (∫ x in Ioc 0 _, _), ← htail,
-      ← setIntegral_union (Ioc_disjoint_Ioi le_rfl) measurableSet_Ioi
-        hint_pol.integrableOn hint_pol.integrableOn,
-      Ioc_union_Ioi_eq_Ioi hL]
+    have hunion :
+        (∫ x in Ioc 0 (SignedPrimePolar.cutoff N), SignedPrimePolar.polarDensity x * autocorr f x) +
+          (∫ x in Ioi (SignedPrimePolar.cutoff N), SignedPrimePolar.polarDensity x * autocorr f x) =
+          ∫ x in Ioi (0 : ℝ), SignedPrimePolar.polarDensity x * autocorr f x := by
+      rw [← setIntegral_union (Ioc_disjoint_Ioi le_rfl) measurableSet_Ioi
+        hint_pol.integrableOn hint_pol.integrableOn, Ioc_union_Ioi_eq_Ioi hL]
+    rw [integral_Icc_eq_integral_Ioc]
+    linarith [htail, hunion]
   -- Evaluate the half-line `cosh` autocorrelation integral via `expHalfMoment * expNegHalfMoment`.
   have hauto_eq : autocorr f = autoCorr f := rfl
   have hE : expHalfMoment f * expNegHalfMoment f = ∫ t, Real.cosh (t / 2) * autoCorr f t := by
@@ -198,29 +203,29 @@ theorem two_mul_poleCross_eq_poleSquares {f : ℝ → ℝ} (hf : f ∈ realTests
     exact integral_congr_ae (Eventually.of_forall fun x => by simp only; ring)
   have heven_int : (∫ t, Real.cosh (t / 2) * autoCorr f t) =
       2 * ∫ t in Ioi (0 : ℝ), Real.cosh (t / 2) * autoCorr f t := by
-    have hev : Function.Even (fun t => Real.cosh (t / 2) * autoCorr f t) := fun t => by
-      dsimp only
-      rw [show -t / 2 = -(t / 2) by ring, Real.cosh_neg, autoCorr_neg]
     have hi : Integrable (fun t => Real.cosh (t / 2) * autoCorr f t) := by
       have : (fun t => Real.cosh (t / 2) * autoCorr f t) =
           fun t => (1 / 2) * (SignedPrimePolar.polarDensity t * autocorr f t) := by
         funext t; unfold SignedPrimePolar.polarDensity; rw [hauto_eq]; ring
       rw [this]
       exact hint_pol.const_mul (1 / 2)
-    have hsplit_R := integral_univ_eq_integral_Iio_add_Ioi (0 : ℝ) hi
-    have hneg_Ioi : (∫ t in Iio (0 : ℝ), Real.cosh (t / 2) * autoCorr f t) =
-        ∫ t in Ioi (0 : ℝ), Real.cosh (t / 2) * autoCorr f t := by
-      rw [← integral_comp_neg_Ioi]
-      exact setIntegral_congr_fun measurableSet_Ioi fun t _ => hev t
-    have huniv : (∫ t, Real.cosh (t / 2) * autoCorr f t) =
-        ∫ t in univ, Real.cosh (t / 2) * autoCorr f t := by simp
-    linarith [huniv, hsplit_R, hneg_Ioi]
+    rw [← integral_add_compl measurableSet_Ioi hi, compl_Ioi]
+    have hneg := integral_comp_neg_Ioi 0 (fun t => Real.cosh (t / 2) * autoCorr f t)
+    rw [neg_zero] at hneg
+    rw [← hneg]
+    have hev : (∫ t in Ioi (0 : ℝ), Real.cosh (-t / 2) * autoCorr f (-t)) =
+        ∫ t in Ioi (0 : ℝ), Real.cosh (t / 2) * autoCorr f t :=
+      setIntegral_congr_fun measurableSet_Ioi fun t _ => by
+        rw [autoCorr_neg, show -t / 2 = -(t / 2) by ring, Real.cosh_neg]
+    rw [hev]
+    ring
   have hpol_eq : (∫ x in Ioi (0 : ℝ), SignedPrimePolar.polarDensity x * autocorr f x) =
       2 * ∫ x in Ioi (0 : ℝ), Real.cosh (x / 2) * autoCorr f x := by
     rw [← integral_const_mul]
     refine setIntegral_congr_fun measurableSet_Ioi fun x _ => ?_
     unfold SignedPrimePolar.polarDensity
     rw [hauto_eq]
+    ring
   rw [hIcc_Ioi, hpol_eq, ← heven_int, ← hE, expHalfMoment_eq hcont hcomp,
     expNegHalfMoment_eq hcont hcomp]
   ring
@@ -301,12 +306,12 @@ theorem weilPair_eq_jumpCount_add_primeTwoGraph_of_le_log_three {f : ℝ → ℝ
     nlinarith [h2]
   unfold SignedPrimePolar.pairing jumpCount
   unfold poleCross at hpole
-  rw [hprime, show -2 * ((Real.log 2 / Real.sqrt 2) * autocorr f (Real.log 2) - _) =
-    (Real.log 2 / Real.sqrt 2) * (-2 * autocorr f (Real.log 2)) + 2 * _ by ring]
-  have hsub : -2 * autocorr f (Real.log 2) = primeTwoGraphJump f - 2 * ∫ u, f u ^ 2 := by
-    linarith [hT2]
-  rw [hsub]
-  linear_combination hpole - hsqrt * (∫ u, f u ^ 2)
+  rw [hprime]
+  have hmul_T2 : (Real.log 2 / Real.sqrt 2) * (-2 * autocorr f (Real.log 2)) =
+      (Real.log 2 / Real.sqrt 2) * primeTwoGraphJump f -
+        (Real.sqrt 2 * Real.log 2) * (∫ u, f u ^ 2) := by
+    linear_combination -(Real.log 2 / Real.sqrt 2) * hT2 - (∫ u, f u ^ 2) * hsqrt
+  linarith [hpole, hmul_T2]
 
 /-- Primitive `h¹` form of the `{∞, 2}` window jump-count and `T₂`-graph identity (`2a ≤ log 3`). -/
 theorem primitiveH1_eq_jumpCount_add_primeTwoGraph_of_le_log_three {a : ℝ}
@@ -326,11 +331,10 @@ theorem weilPair_eq_fullZeroForm {f : ℝ → ℝ} (hf : f ∈ realTests) :
     weilPair f f = fullZeroForm f := by
   have h1 := GaloisForLFunctions.ArithmeticPositivityTheory.fullZeroForm_eq_re_weilFullFunctional
     hf.1.continuous hf.2
-  have h2 : weilPair f f = (RHTower.weilFullFunctional
+  have h2 : weilPair f f = (_root_.RHTower.weilFullFunctional
       (fun n => (ArithmeticFunction.vonMangoldt n : ℝ))
-      (EF.weilTest (cx f) (cx f))).re := rfl
+      (EF.weilTest (fun x => (f x : ℂ)) (fun x => (f x : ℂ)))).re := rfl
   rw [h2, ← h1]
-  rfl
 
 /-- **All-parity coercivity up to `a ≤ 3/10`.** Every `f ∈ realTests` supported in `[−a, a]` with
 `a ≤ 3/10` satisfies `W(f, f) ≥ (1/5000) ∫ f²` (extending `LatticeSectionTheory` 19.2× beyond `1/64`). -/
@@ -387,8 +391,8 @@ theorem weilPair_ge_of_evenPoleMoment_zero_past_primeTwo {f : ℝ → ℝ}
       have : (fun x => f (-x)) = f ∘ Homeomorph.neg ℝ := rfl
       rw [this, tsupport_comp_eq_preimage f (Homeomorph.neg ℝ)]
       intro x hx
-      have := hs hx
-      exact ⟨by linarith [this.2], by linarith [this.1]⟩
+      have hmem : -x ∈ Ioo (-a) a := hs hx
+      exact ⟨by linarith [hmem.2], by linarith [hmem.1]⟩
     unfold evenPartReal
     refine (tsupport_mul_subset_left.trans (tsupport_add _ _)).trans (union_subset hs hneg_s)
   have hCe : evenPoleMoment (evenPartReal f) = 0 := by
@@ -405,10 +409,12 @@ theorem weilPair_ge_of_evenPoleMoment_zero_past_primeTwo {f : ℝ → ℝ}
       refine integral_congr_ae (Eventually.of_forall fun x => ?_)
       dsimp only
       rw [show -x / 2 = -(x / 2) by ring, Real.cosh_neg]
-    have hpt : (fun x => (f x + f (-x)) * (1 / 2) * Real.cosh (x / 2)) =
+    have hpt : (fun x => (f x + f (-x)) / 2 * Real.cosh (x / 2)) =
         fun x => (1 / 2) * (f x * Real.cosh (x / 2) + f (-x) * Real.cosh (x / 2)) :=
       funext fun x => by ring
-    rw [hpt, integral_const_mul, integral_add i1 i2, hneg_eq]
+    rw [hpt, integral_const_mul,
+      integral_add (f := fun x => f x * Real.cosh (x / 2))
+        (g := fun x => f (-x) * Real.cosh (x / 2)) i1 i2, hneg_eq]
     unfold evenPoleMoment at hC
     linarith
   have hSe : oddPoleMoment (evenPartReal f) = 0 :=

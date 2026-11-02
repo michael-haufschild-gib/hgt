@@ -1,7 +1,7 @@
 # Every subpolynomial cutoff admits a super-log-log clock
 
-- **Stage:** 2-fully-proven; Lean written, checks pending.
-- **Type:** THEOREM (paper).
+- **Stage:** 3-formalized.
+- **Type:** THEOREM.
 - **Wall:** Σ1d.
 - **Statement:** For every nonzero compact real `C²` profile and every conductor cutoff `R(N)` with `log(max(1,R(N)))/log N→0`, there is an explicit clock `Cφ,R(N)/log log N→∞` retaining margin `(log N)^(-η)/4` on `V_R(N)` for every `0<η<1/2`, uniformly for `1≤c≤Cφ,R(N)`.
 
@@ -67,6 +67,7 @@ margin one. Their sum retains `L^(−η)/4` on `V_R'`, hence on `V_R`.
   lag and geometric horizon; directly checked, with only the three standard
   axioms in its transitive audit.
 - `EverySubpolynomialSpanHasASuperLogLogPositivityClock.lean`:
-  `eventually_subpolynomial_span_coercivity`; written, unchecked.
+  `eventually_subpolynomial_span_coercivity`; directly checked, with only
+  `propext`, `Classical.choice`, `Quot.sound` in its transitive audit.
 
 The cutoff condition defines the claimed class; no additional spectral or prime-distribution hypothesis is assumed.

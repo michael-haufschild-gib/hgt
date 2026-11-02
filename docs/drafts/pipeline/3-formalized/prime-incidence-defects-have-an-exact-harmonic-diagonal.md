@@ -1,6 +1,6 @@
 # Prime incidence defects have an exact harmonic diagonal
 
-- **Stage:** 2-fully-proven; formalization in progress.
+- **Stage:** 3-formalized.
 - **Wall:** Σ1e.
 - **Statement:** For every finite prime set `P`, real coefficients `b`, and horizon `N`,
   `J_N(Σ_p b_p(1_(p|n)−1/p))=Σ_p (log p/p)H_floor(N/p)b_p²`.
@@ -27,5 +27,6 @@ Corpus boundary: `incidencePacket_dilation_jump`, `sum_dilation_source_eq`,
 and `sum_dilation_target_eq` supply the edge identities. The corpus search
 found no general finite harmonic evaluation of incidence jump energy.
 
-Lean target: `CompletedArithmeticForms/PrimeIncidenceDefectsHaveAnExactHarmonicDiagonal.lean`,
-`jumpEnergy_prime_incidence_eq_harmonic_diagonal`.
+Lean: `CompletedArithmeticForms/PrimeIncidenceDefectsHaveAnExactHarmonicDiagonal.lean`,
+`jumpEnergy_prime_incidence_eq_harmonic_diagonal`. Direct source check passed;
+transitive axioms: `propext`, `Classical.choice`, `Quot.sound`.

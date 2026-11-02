@@ -266,7 +266,7 @@ theorem foldEnergy_sub_count_eq_anti_sub_sym (hc : Continuous H) (hcs : HasCompa
   have iD := integrable_sub_shift_sq hc hcs ℓ
   have iS : Integrable fun u => (H u + H (u + ℓ)) ^ 2 := by
     refine ((iH.add iHs).const_mul 2 |>.sub iD).congr (ae_of_all _ fun u => ?_)
-    simp only [Pi.add_apply]; ring
+    simp only [Pi.sub_apply, Pi.add_apply]; ring
   have mI := measurableSet_Icc (a := -A) (b := -ℓ)
   -- `a² + b² = ½(a − b)² + ½(a + b)²` on the left end
   have hpt : ∀ u, (Icc (-A) (-ℓ)).indicator (fun u => H u ^ 2) u +

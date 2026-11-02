@@ -167,6 +167,4 @@ theorem eventually_subpolynomial_span_coercivity {φ : ℝ → ℝ}
   rw [← hpyth]
   nlinarith only [hpEnergy, hzEnergy, hcrossCost, henergy, hcrossLower, hzReserve, hnonneg, hzNonneg]
 
-#print axioms eventually_subpolynomial_span_coercivity
-
 end GaloisForLFunctions.CriticalArithmeticCorrelationTheory

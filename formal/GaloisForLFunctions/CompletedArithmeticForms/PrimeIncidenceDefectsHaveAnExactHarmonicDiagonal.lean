@@ -58,7 +58,7 @@ private theorem jumpEnergy_incidence_eq_drift (P : Finset ℕ) (b : ℕ → ℝ)
       exact sum_congr rfl fun kn _ => by ring
     _ = (∑ n ∈ Icc 1 N, G n * Real.log n / n) -
         ∑ n ∈ Icc 1 N, G n / n * mertensSum (N / n) := by
-      rw [sum_dilation_target_eq, sum_dilation_source_eq]
+      rw [sum_dilation_target_eq N G, sum_dilation_source_eq N (fun n => G n / n)]
     _ = _ := by
       rw [← sum_sub_distrib]
       exact sum_congr rfl fun n _ => by dsimp only [horizonDrift, G]; ring
@@ -129,7 +129,5 @@ theorem jumpEnergy_prime_incidence_eq_harmonic_diagonal (P : Finset ℕ)
       rw [mul_sum, ← sum_sub_distrib, mul_sum]
       exact sum_congr rfl fun n _ => by ring
     _ = _ := by rw [hind, sum_horizonDrift_eq_zero]; ring
-
-#print axioms jumpEnergy_prime_incidence_eq_harmonic_diagonal
 
 end GaloisForLFunctions.CompletedArithmeticForms
