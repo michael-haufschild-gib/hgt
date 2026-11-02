@@ -114,7 +114,8 @@ private theorem terminal_coefficient_envelope {L n c r : ℝ}
       gcongr
     _ = 4 * t ^ 10 / L + 2 * (t ^ 9 * L) / n ^ (7 / 8 : ℝ) := by
       rw [show (7 / 8 : ℝ) = 1 - 1 / 8 by norm_num, Real.rpow_sub hn, Real.rpow_one]
-      field_simp <;> ring
+      field_simp
+      ring
     _ ≤ _ := by
       gcongr
       have hh := mul_le_mul_of_nonneg_right (pow_le_pow_left₀ ht.le htL 9) hL.le
@@ -160,16 +161,17 @@ private theorem tendsto_linear_lag_envelope {q : ℝ} (hq : 0 < q) :
       2 * Real.log (Real.log (N : ℝ)) ^ 5 / Real.log N +
       2 * (Real.log (Real.log (N : ℝ)) ^ 6 / Real.log (N : ℝ) ^ (q / 2)) +
       2 * (Real.log (N : ℝ) ^ 6 / (N : ℝ) ^ (1 / 4 : ℝ))) atTop (𝓝 0) := by
-  have hp (x : ℝ) (k : ℕ) : x ^ (k : ℝ) = x ^ k := Real.rpow_natCast x k
+  have h5 (x : ℝ) : x ^ (5 : ℝ) = x ^ (5 : ℕ) := Real.rpow_natCast x 5
+  have h6 (x : ℝ) : x ^ (6 : ℝ) = x ^ (6 : ℕ) := Real.rpow_natCast x 6
   have h1 : Tendsto (fun N : ℕ =>
       Real.log (Real.log (N : ℝ)) ^ 5 / Real.log N) atTop (𝓝 0) := by
-    simpa only [hp, Real.rpow_one] using tendsto_loglog_power_div_log_power zero_lt_one 5
+    simpa only [h5, Real.rpow_one] using tendsto_loglog_power_div_log_power zero_lt_one 5
   have h2 : Tendsto (fun N : ℕ =>
       Real.log (Real.log (N : ℝ)) ^ 6 / Real.log (N : ℝ) ^ (q / 2)) atTop (𝓝 0) := by
-    simpa only [hp] using tendsto_loglog_power_div_log_power (div_pos hq zero_lt_two) 6
+    simpa only [h6] using tendsto_loglog_power_div_log_power (div_pos hq zero_lt_two) 6
   have h3 : Tendsto (fun N : ℕ =>
       Real.log (N : ℝ) ^ 6 / (N : ℝ) ^ (1 / 4 : ℝ)) atTop (𝓝 0) := by
-    simpa only [hp] using tendsto_log_power_div_nat_power 6 (by norm_num : (0 : ℝ) < 1 / 4)
+    simpa only [h6] using tendsto_log_power_div_nat_power 6 (by norm_num : (0 : ℝ) < 1 / 4)
   have hh := ((h1.const_mul 2).add (h2.const_mul 2)).add (h3.const_mul 2)
   simp only [mul_zero, add_zero] at hh
   apply hh.congr
@@ -195,7 +197,7 @@ private theorem tendsto_terminal_envelope :
 /-- A cutoff containing the logarithmic block and having vanishing logarithmic
 ratio satisfies every finite high-gap condition under the reciprocal-root clock. -/
 theorem eventually_subpolynomial_high_band_horizon (R : ℕ → ℕ)
-    (hRlow : ∀ N, ⌊Real.log (N : ℝ)⌋₊ + 2 ≤ R N)
+    (hRlow : ∀ N : ℕ, ⌊Real.log (N : ℝ)⌋₊ + 2 ≤ R N)
     (hρlim : Tendsto (fun N : ℕ => (1 + Real.log (R N)) / Real.log N) atTop (𝓝 0))
     {q C D : ℝ} (hq : 0 < q) (hq1 : q ≤ 1) (hC : 0 < C) :
     ∀ᶠ N : ℕ in atTop,
@@ -354,7 +356,7 @@ theorem eventually_subpolynomial_high_band_horizon (R : ℕ → ℕ)
   have hcostRoot : C * (t * Real.sqrt ρ) ≤ q * t / 16 := by
     calc
       _ ≤ C * (t * (q / (16 * C))) := by gcongr
-      _ = _ := by field_simp; ring
+      _ = _ := by field_simp
   have hlogc : Real.log c ≤ 2 * Real.log t := by
     have hh := Real.log_le_log hc hcT
     simpa only [Real.log_pow, Nat.cast_ofNat] using hh
@@ -363,6 +365,7 @@ theorem eventually_subpolynomial_high_band_horizon (R : ℕ → ℕ)
     linarith only [hh, hlogc]
   have hconst : D + 2 + Real.log 2 / 4 ≤ q * t / 16 := by
     have hh := (div_le_iff₀ hq).mp hgapN
+    change 16 * (D + 2 + Real.log 2 / 4) ≤ t * q at hh
     linarith only [hh]
   have hcancel : C * (1 / C) = 1 := by field_simp
   have hlagPaid := (mul_le_mul_of_nonneg_left hlagN hC.le).trans_eq hcancel
@@ -372,5 +375,7 @@ theorem eventually_subpolynomial_high_band_horizon (R : ℕ → ℕ)
       c ^ 3 * (r : ℝ) ^ 4 / N) + 1 ≤ (1 / 4 : ℝ) * Real.log Q := by
     nlinarith only [hratePaid, hlagPaid, hcostRoot, hlogSmall, hconst, hlogQ, mul_nonneg hq.le ht.le]
   exact ⟨hcL, hcN, hradSize, hsize, hraw, hterminal, hgap⟩
+
+#print axioms eventually_subpolynomial_high_band_horizon
 
 end GaloisForLFunctions.CriticalArithmeticCorrelationTheory

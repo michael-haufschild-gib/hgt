@@ -76,12 +76,12 @@ def windowZeroMap (A : ℝ) : windowTests A →ₗ[ℝ] ℓ²(zetaZeroConfig.car
 theorem reflectVec_eq_self_of_riemannHypothesis (hRH : RiemannHypothesis)
     (x : ℓ²(zetaZeroConfig.carrier, ℂ)) : reflectVec zetaZeroConfig x = x := by
   ext τ
-  rw [reflectVec_apply]
-  congr 1
-  refine Subtype.ext ?_
-  have hre := RHTower.WeilConditional.re_eq_half_of_carrier hRH τ
-  simp only [reflectCarrier, reflect]
-  apply Complex.ext <;> simp [hre]; norm_num
+  have hfix : reflectCarrier zetaZeroConfig τ = τ := by
+    refine Subtype.ext ?_
+    have hre := RHTower.WeilConditional.re_eq_half_of_carrier hRH τ
+    simp only [reflectCarrier, reflect]
+    apply Complex.ext <;> simp [hre]; norm_num
+  rw [reflectVec_apply, hfix]
 
 /-- **Under RH the zero map realizes every window.** -/
 theorem isWindowRealization_zeroMap (hRH : RiemannHypothesis) (A : ℝ) :
@@ -94,9 +94,10 @@ theorem isWindowRealization_zeroMap (hRH : RiemannHypothesis) (A : ℝ) :
   have hcx : ((cxWindow A H : testSpace) : ℝ → ℂ) = fun u => ((H : ℝ → ℝ) u : ℂ) := rfl
   rw [hcx, reflectVec_eq_self_of_riemannHypothesis hRH] at hi
   rw [hi]
-  have := inner_self_eq_norm_sq (𝕜 := ℂ)
-    (zeroMap zetaZeroConfig SquareRootThreshold.temperedConfig_zetaZeroConfig (cxWindow A H))
-  simpa [windowZeroMap] using this
+  have hr : windowZeroMap A H =
+      zeroMap zetaZeroConfig SquareRootThreshold.temperedConfig_zetaZeroConfig (cxWindow A H) := rfl
+  rw [hr]
+  exact inner_self_eq_norm_sq (𝕜 := ℂ) _
 
 /-- **RH is the existence of a realization of every window** (in `ℓ²(zeros)`). -/
 theorem riemannHypothesis_iff_forall_windowRealization :
@@ -179,6 +180,25 @@ theorem cellBump_center {a δ : ℝ} (hδ : 0 < δ) (i j : ℕ) :
         mul_le_mul_of_nonneg_right (by exact_mod_cast hij) hδ.le
       linarith
 
+/-- A combination of cell bumps that vanishes everywhere has zero coefficients. -/
+theorem eq_zero_of_sum_cellBump {a δ : ℝ} (hδ : 0 < δ) {n : ℕ} (c : Fin n → ℝ)
+    (h : ∀ y, ∑ i, c i * cellBump a δ hδ i y = 0) : c = 0 := by
+  funext j
+  have := h (-a + ((j : ℕ) + 1 / 2) * δ)
+  simp_rw [cellBump_center hδ, Fin.val_inj, mul_ite, mul_one, mul_zero] at this
+  simpa using this
+
+/-- On a short window a test with `Q(H) = 0` vanishes. -/
+theorem eq_zero_of_weilQuad_eq_zero_of_short {H : ℝ → ℝ} (hH : IsWindowTest A H) (hA0 : 0 < A)
+    (hA : A ≤ 1 / 1000) (hQ : weilQuad H = 0) (y : ℝ) : H y = 0 := by
+  by_contra hy
+  have h1 := weilQuad_ge_of_short hH hA0 hA
+  have hpos := Continuous.integral_pos_of_hasCompactSupport_nonneg_nonzero (μ := volume)
+    (f := fun u => H u ^ 2) (x := y) (hH.continuous.pow 2)
+    (hH.hasCompactSupport.comp_left (g := fun t : ℝ => t ^ 2) (by norm_num))
+    (fun u => sq_nonneg (H u)) (pow_ne_zero 2 hy)
+  linarith
+
 /-- **No window cohomology is finite-dimensional**: for `A > 0` no realization of the window `h¹`
 has a finite-dimensional target. -/
 theorem not_isWindowRealization_of_finiteDimensional (hA : 0 < A) {E : Type*}
@@ -200,41 +220,22 @@ theorem not_isWindowRealization_of_finiteDimensional (hA : 0 < A) {E : Type*}
   -- `n` bumps in disjoint cells of `[−a, 0]`
   let b : Fin n → windowTests A := fun i =>
     ⟨cellBump a δ hδ i, (cellBump_isWindowTest hδ (hcell i)).mono haA⟩
-  set L := r.comp (Fintype.linearCombination ℝ b) with hL
-  have hker : LinearMap.ker L ≠ ⊥ := LinearMap.ker_ne_bot_of_finrank_lt (by
-    rw [Module.finrank_fin_fun]; omega)
-  obtain ⟨c, hc, hc0⟩ := (Submodule.ne_bot_iff _).mp hker
-  set Hs : windowTests A := Fintype.linearCombination ℝ b c with hHs
-  have hval : ∀ y, (Hs : ℝ → ℝ) y = ∑ i, c i * cellBump a δ hδ i y := fun y => by
-    rw [hHs, Fintype.linearCombination_apply, Submodule.coe_sum, Finset.sum_apply]
+  obtain ⟨c, hc, hc0⟩ := (Submodule.ne_bot_iff _).mp
+    (LinearMap.ker_ne_bot_of_finrank_lt (f := r.comp (Fintype.linearCombination ℝ b))
+      (by rw [Module.finrank_fin_fun]; omega))
+  rw [LinearMap.mem_ker, LinearMap.comp_apply] at hc
+  have hval : ∀ y, ((Fintype.linearCombination ℝ b c : windowTests A) : ℝ → ℝ) y =
+      ∑ i, c i * cellBump a δ hδ i y := fun y => by
+    rw [Fintype.linearCombination_apply, Submodule.coe_sum, Finset.sum_apply]
     rfl
-  -- `Hs` is a window test of length `a`
-  have hHa : IsWindowTest a Hs := by
-    refine ⟨Hs.2.contDiff, fun y hy => ?_⟩
+  have hHa : IsWindowTest a (Fintype.linearCombination ℝ b c : windowTests A) := by
+    refine ⟨(Fintype.linearCombination ℝ b c).2.contDiff, fun y hy => ?_⟩
     rw [hval]
     exact Finset.sum_eq_zero fun i _ => by
       rw [(cellBump_isWindowTest hδ (hcell i)).vanish y hy, mul_zero]
-  -- `r Hs = 0`, so `Q(Hs) = 0`, so `Hs = 0` by short coercivity
-  have hr0 : r Hs = 0 := hc
-  have hQ : weilQuad Hs = 0 := by rw [hr Hs, hr0, norm_zero]; ring
-  have hint : ∫ u, (Hs : ℝ → ℝ) u ^ 2 = 0 := by
-    have h1 := weilQuad_ge_of_short hHa ha0 ha1
-    have h2 : 0 ≤ ∫ u, (Hs : ℝ → ℝ) u ^ 2 := integral_nonneg fun u => sq_nonneg _
-    linarith
-  have hzero : ∀ y, (Hs : ℝ → ℝ) y = 0 := by
-    by_contra hne
-    push_neg at hne
-    obtain ⟨y, hy⟩ := hne
-    have hpos := Continuous.integral_pos_of_hasCompactSupport_nonneg_nonzero (μ := volume)
-      (hHa.continuous.pow 2) (hHa.hasCompactSupport.comp_left (by norm_num : (0 : ℝ) ^ 2 = 0))
-      (fun u => sq_nonneg _) (pow_ne_zero 2 hy)
-    linarith
-  -- evaluating at the centres recovers the coefficients
-  apply hc0
-  funext j
-  have := hzero (-a + ((j : ℕ) + 1 / 2) * δ)
-  rw [hval] at this
-  simp_rw [cellBump_center hδ] at this
-  simpa [Fin.val_eq_val, Fin.ext_iff] using this
+  have hQ : weilQuad (Fintype.linearCombination ℝ b c : windowTests A) = 0 := by
+    rw [hr, hc, norm_zero]; ring
+  exact hc0 (eq_zero_of_sum_cellBump hδ c fun y => by
+    rw [← hval]; exact eq_zero_of_weilQuad_eq_zero_of_short hHa ha0 ha1 hQ y)
 
 end GaloisForLFunctions.CohomologyOfWindowsOfSpecZ

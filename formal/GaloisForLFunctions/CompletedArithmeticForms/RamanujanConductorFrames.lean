@@ -531,7 +531,7 @@ private theorem totient_mul_prime_pow_ge (l : ℕ) {p k : ℕ} (hp : p.Prime) (h
       _ ≤ p * (l * p ^ (j + 1)).totient := Nat.mul_le_mul_left p (ih (Nat.succ_pos j))
 
 /-- Elementary Chebyshev bound `∑_{t=1}^M Λ(t)/t ≤ 2 log M` without analytic inputs. -/
-private theorem sum_Icc_vonMangoldt_div_le (M : ℕ) :
+theorem sum_Icc_vonMangoldt_div_le (M : ℕ) :
     (∑ t ∈ Icc 1 M, (Λ t : ℝ) / t) ≤ 2 * Real.log M := by
   rcases lt_or_ge M 2 with hM | hM2
   · interval_cases M <;> simp
@@ -884,14 +884,14 @@ private theorem abs_sum_conductorOffDiagKernel_le {M : ℕ} (a : ℕ → ℝ) :
     _ = 3 * Real.sqrt 2 * Real.log M * ∑ m ∈ Icc 1 M, a m ^ 2 := by rw [← sum_mul]; ring
 
 /-- Divisor-amplitude factor bounding the floor-harmonic remainder. -/
-private def floorAmplitude (m : ℕ) : ℝ :=
+def floorAmplitude (m : ℕ) : ℝ :=
   (∑ d ∈ m.divisors, |(μ (m / d) : ℝ)| * (d : ℝ)) / Real.sqrt (m.totient : ℝ)
 
-private theorem floorAmplitude_nonneg (m : ℕ) : 0 ≤ floorAmplitude m :=
+theorem floorAmplitude_nonneg (m : ℕ) : 0 ≤ floorAmplitude m :=
   div_nonneg (sum_nonneg fun _ _ => mul_nonneg (abs_nonneg _) (Nat.cast_nonneg _)) (Real.sqrt_nonneg _)
 
 /-- Entrywise rank-1 majorant on `conductorGramFloorError`. -/
-private theorem abs_conductorGramFloorError_le {m l N : ℕ} (hm : 0 < m) (hl : 0 < l)
+theorem abs_conductorGramFloorError_le {m l N : ℕ} (hm : 0 < m) (hl : 0 < l)
     (hml : m * l ≤ N) (hL : 0 < Real.log N) :
     |conductorGramFloorError m l N| ≤
       4 / ((N : ℝ) * Real.log N) * (floorAmplitude m * floorAmplitude l) := by

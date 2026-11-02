@@ -204,6 +204,11 @@ polarized? ⇒ inheritance ⇒ RH. The zero side splits the second order into le
   `a_φ(cx) = −(∫φ²/2)E₁'(cx)` into `c^{−β}` times the window average of `F'(x) · c^β E₁(cx)`, and
   `c^β E₁(cx) → J x^{−β}` uniformly on the window. A second integration by parts gives
   `β J ∫ e^{−(β+1)y} H²`. No equidistribution and no property of `φ` beyond its first-order limit.
+- **Twisted windows.** A mean-zero `m`-periodic twist has a bounded primitive; summation by parts
+  against the Lipschitz profile `h(log x) x^{s−1}` makes every twisted Riemann sum `O(1/N)` on
+  `0 ≤ Re s ≤ 2`. Hence a twisted window sees no point of the strip, and its transform is `O(1/N)`
+  on the low frequencies and at the pole values. Beyond the archimedean horizon the symbol is
+  nonnegative, so the twisted window is positive at every resolution up to `O(N^{−2})`.
 - **Critical multiples.** If the rescaled family converges to `J + K X`, positive definiteness is
   inherited and a negative direction is eventually negative; for `J ⪰ 0` the admissible multiples
   form a closed initial segment, positive semidefinite terms never remove a multiple, and negative
@@ -241,10 +246,11 @@ the untwisted horizon windows; twisted horizon windows are zero-blind.
 | What is the first-order structure of the degeneration, and why is it polarized? | The point count of projective space: `J(m) = J(1) #ℙ⁷(ℤ/m)`, `#ℙ^{k−1}(ℤ/m) φ(m) = J_k(m)`. Weight strings are Hensel towers, the tensor law is CRT. It is positive because it is a cardinality. | `jordanCoefficient_eq_projPoints`, `natCard_projPoints_mul_totient`, `natCard_primVec_eq_jordanTotient`, `projPoints_prime_mul`, `projPoints_prime_pow_succ`, `primVecCRT` |
 | How do the zeros enter the second-order term of fixed packets? | Only through the pole coefficient: `(log N/c) W_ρ/∫g² → m_ρ κ y_1²/(ρ(1−ρ))`, real part `> 0`; at the critical curve `c⁷ W_ρ/∫g² → K m_ρ κ y_1²/(ρ(1−ρ))`. Same for every finite window. | `tendsto_bulkLedger`, `tendsto_bulkLedger_criticalCurve`, `tendsto_sum_bulkLedger`, `re_sum_mult_div_nonneg` |
 | Which directions of the complete family see an individual zero? | Only the untwisted horizon windows: there `W_ρ/(c∫g²) → κ W_ρ(H,H)`, Weil's summand of the synthesized test. Fixed conductor packets see a zero only through the pole, with positive weight; horizon windows twisted by a mean-zero periodic weight (Ramanujan sums `c_m`, `m ≥ 2`; nonprincipal characters) see no point of the strip: their twisted Riemann sums are `O(1/N)`. | `tendsto_horizonLedger`, `Wsummand_halfWeight`, `tendsto_bulkLedger`, `tendsto_twistedLedger`, `norm_twistedRiemannSum_le` |
+| Where do the negative directions of the horizon layer live? | Only on untwisted windows. A window twisted by a mean-zero periodic weight has transform `O(1/N)` at low frequencies and at the pole values, and the symbol is nonnegative beyond the archimedean horizon `τ₀(A)`; so at every resolution `0 < c ≤ N` its normalized form is `≥ −C₀(L_h + B_h)²/N²`. | `twisted_horizon_form_ge`, `eventually_twisted_horizon_form_ge`, `exists_weilQuad_ge_of_lowFrequency` |
 | Is the horizon layer Weil's form? | Yes. In the iterated limit (horizon, then window of zeros) windows exhaust `κ W(H,H)`. Directly: past the critical curve (`(1+log N)/c^p → 0`) `c⁻¹⟨Wx,x⟩ → κ Q(H)`; at `c^p/log N → K_c` it is `κ Q(H)` up to `K/K_c`; for every schedule the error is `ε + K(1+log N)/c^p`. | `horizon_layer_two_sided`, `tendsto_horizon_layer_supercritical`, `horizon_layer_criticalCurve`, `horizon_window_exhaustion` |
 | What is the second-order term at the critical curve (obstacles summary 2.5.4)? | On horizon blocks, exactly: `c⁻¹⟨Wx,x⟩ → κ Q(H) + (βJ/K) ∫ e^{−(β+1)y} H²` along `c^{β+1}/log N → K`, for every profile with bulk limit `s^β E₁(s) → J` (tilted spline: `β = 7`, `J = J(1)`). For every profile and every schedule with `c → ∞`, `c(log N)²/N → 0`: `c⁻¹⟨Wx,x⟩ = κ Q(H) − log N · N⁻¹ Σ_n h(log(n/N))² E₁'(cn/N) + o(1)`. | `horizon_layer_criticalCurve_of_regularBulk`, `horizon_layer_criticalCurve_exact`, `horizon_layer_sharp`, `horizon_layer_sharp_bulk`, `horizonForm_eq` |
 | Which structure polarizes the second-order term? | The first-order count, through the monodromy. The aliasing density is the dilation derivative of the bulk energy, `a_φ = −(∫φ²/2) E₁'`, positive because `E₁` is antitone; its window average at the local overlaps `c e^y` is `β J(1)` times `‖H‖²_{−8}`. So the second-order term is a pencil: Weil's form plus `1/K` times a positive definite form built from `J(1)`. It is positive at every multiple iff `Q ≥ 0` on horizon windows, i.e. iff RH. On the bulk, the zero charge is the Li-type pole charge (positive per zero). | `hasDerivAt_completedShellEnergy`, `aliasLimit_eq`, `tendsto_rpow_seven_mul_completedShellEnergy_tilted`, `re_inv_mul_one_sub_pos`, `riemannHypothesis_iff_horizon_layer` |
-| What is the integer of the degeneration (carrier C)? | The window index `ind₋(P_K)` of the pencil Gram matrix of a family of windows at multiple `K`: the complete family reads it (`ind₋(P_K) ≤ ind₋(G_N)` eventually); it is nondecreasing in `K` and equals Weil's index on the family for large `K`; some family has window index `≥ n` iff `ζ` has `≥ n` right zeros; it vanishes for all families and multiples iff RH. | `tendsto_horizonGram`, `eventually_hermNegIndex_pencilGram_le`, `pencilGram_eq`, `hermNegIndex_pencilGram_mono`, `eventually_hermNegIndex_pencilGram_eq`, `windowIndex_law`, `riemannHypothesis_iff_windowIndex_eq_zero` |
+| What is the integer of the degeneration (carrier C)? | The window index `ind₋(P_K)` of the pencil Gram matrix of a family of windows at multiple `K`: the complete family reads it (`ind₋(P_K) ≤ ind₋(G_N)` eventually); it is nondecreasing in `K` and equals Weil's index on the family for large `K`; some family has window index `≥ n` iff `ζ` has `≥ n` right zeros; windows of length `A` have index `≤ 1 + 2A T(A/2)/π` (Shannon number); it vanishes for all families and multiples iff RH. | `tendsto_horizonGram`, `eventually_hermNegIndex_pencilGram_le`, `pencilGram_eq`, `hermNegIndex_pencilGram_mono`, `eventually_hermNegIndex_pencilGram_eq`, `windowIndex_law`, `riemannHypothesis_iff_windowIndex_eq_zero`, `hermNegIndex_pencilGram_le_shannon` |
 | What is the critical multiple of a window? | Exactly `K*(H) = 7 J(1) ‖H‖²_{−8}/(κ |Q(H)|)` for `Q(H) < 0` (`+∞` otherwise): positive below, negative above. Before the exact constant: coercive bounds `κ Q(H) + a/K ≤ · ≤ κ Q(H) + b/K`. | `criticalMultiple_exact`, `horizon_layer_coercive`, `horizon_layer_lower_criticalCurve`, `horizon_layer_criticalCurve` |
 | Where does the horizon term of a conductor live? | Only at `e = 1`: `D_e(s;N) − [e=1]N^s/s → ζ(1−s)J_s(e)`. | `tendsto_conductorDirichlet_sub_horizonTerm`, `conductorDirichlet_eq` |
 | Is positivity at one fixed multiple of the critical curve RH? | No: positivity at multiple `K` is `κ Q(H) ≥ −7J(1)‖H‖²_{−8}/K` on every window (sub-RH); every window with `Q(H) < 0` turns negative past `K*(H)`. RH is positivity at every multiple. | `criticalMultiple_exact`, `weilQuad_halfWeight_ge_of_horizon_nonneg`, `eventually_horizon_neg_of_weilQuad_neg` |
@@ -298,6 +304,12 @@ the untwisted horizon windows; twisted horizon windows are zero-blind.
 - Bounded primitives of mean-zero periodic twists and summation by parts against complex profiles
   (`abs_sum_range_le`, `norm_sum_mul_real_le`, `norm_twistedRiemannSum_le`).
 - Counting unimodular vectors over finite rings (`natCard_unimodular_eq`, `natCard_unimodular_local`).
+- Weil's form above the archimedean horizon: for tests supported in `[−a, a]` the symbol is
+  nonnegative beyond `τ₀(a)`, and `Q(f) ≥ −2|f̂(i/2)||f̂(−i/2)| − M_a sup_{|τ|≤τ₀} |f̂|²`
+  (`nuSymbol_nonneg_of_archHorizon_le`, `exists_weilQuad_ge_of_lowFrequency`); recentred atomic
+  tests with arbitrary window weights (`centredAtomicTest`, `paperFT_centredAtomicTest`).
+- The pencil split and positive semidefinite weighted Gram matrices on windows (`pencilGram_eq`,
+  `hermQuad_weightGram_nonneg`).
 
 **Developed in neighbouring programmes and used here.** Néron–Tate theory and the Tate limit law on
 correspondences (AET); Arakelov `h⁰` of lattices of growing rank, Künneth Riemann–Roch, the
@@ -309,9 +321,10 @@ Stepanov over `ℤ` (AET) and over curves (LST).
 **To build.**
 - Uniform ledgers: explicit horizon-law remainders `O(|s|σ(e)N^{Re s−1})` with the zero-free region,
   summed over zeros up to a growing height.
-- Twisted horizon windows are zero-blind (proved); their aliasing remains: Poisson summation of the
-  atom autocorrelation on residue classes should identify their second-order term with the
-  conductor-`m` count `β J(m)/K ‖H‖²` and no Weil's form.
+- Twisted horizon windows are zero-blind and positive (proved); their exact second-order term
+  remains: Poisson summation of the atom autocorrelation on residue classes should identify it with
+  `(log N/∫φ²) (2/N) Σ_n h_n² Σ_k |χ̂(k)|² |φ̂(2πk cn/(mN))|²`, for Ramanujan sums the conductor-`m`
+  count `Σ_{(k,m)=1} (m/k)^{β+1} ∝ J_{β+1}(m)`.
 - The function-field complete family and its horizon layer; Zwegers–Vignéras completions of the
   isotropic count.
 
@@ -324,6 +337,7 @@ Stepanov over `ℤ` (AET) and over curves (LST).
 | Bulk zero ledger, at every schedule and at the critical curve; positivity of the pole charge | `tendsto_bulkLedger`, `tendsto_bulkLedger_criticalCurve`, `re_inv_mul_one_sub_pos`, `tendsto_sum_bulkLedger` | proved |
 | Horizon ledger: Weil summands of the synthesized test | `tendsto_horizonLedger`, `Wsummand_halfWeight`, `tendsto_horizonDirichlet` | proved |
 | Twisted horizon windows are zero-blind | `tendsto_twistedLedger`, `norm_twistedRiemannSum_le`, `abs_sum_range_le` | proved |
+| Twisted horizon windows are positive at every resolution, up to `O(N^{−2})` | `twisted_horizon_form_ge`, `exists_weilQuad_ge_of_lowFrequency`, `nuSymbol_nonneg_of_archHorizon_le` | proved |
 | Exhaustion: windows of zeros give Weil's form of the synthesized test | `horizon_window_exhaustion`, `tendsto_sum_horizonLedger` | proved |
 | Critical-multiple calculus | `admissible_of_le`, `isClosed_admissible`, `admissible_mono`, `neg_persists`, `eventually_pos_of_tendsto`, `eventually_not_nonneg_of_tendsto` | proved |
 | Horizon layer past the critical curve = Weil's form; at it, up to `O(1/K)` | `horizon_layer_two_sided`, `tendsto_horizon_layer_supercritical`, `horizon_layer_criticalCurve` | proved |
@@ -340,15 +354,15 @@ Stepanov over `ℤ` (AET) and over curves (LST).
 | The bulk determines the second order: `s^β E₁ → J` gives `κQ(H) + (βJ/K)‖H‖²_{−(β+1)}` | `horizon_layer_criticalCurve_of_regularBulk`, `tendsto_rpow_mul_horizonAlias_of_regularBulk`, `integral_windowAlias_eq`, `abs_aliasDensity_sub_le` | proved |
 | Calibration: the count law over every finite ring; Hensel law over every finite local ring | `natCard_unimodular_eq`, `natCard_unimodular_local`, `natCard_projSpace_local` | proved |
 | The window index: Gram matrices converge to the pencil; the index is read by the family and bounded by the right zeros | `tendsto_horizonGram`, `pencilGram_isHermitian`, `eventually_hermNegIndex_pencilGram_le`, `hermNegIndex_pencilGram_le_offLineCount` | proved |
-| The window index law: `P_K = κW(H) + (βJ/K)A(H)`, `A ⪰ 0`; monotone in `K`; Weil's index for large `K`; index `≥ n` on some family iff `≥ n` right zeros | `pencilGram_eq`, `hermQuad_aliasGram_nonneg`, `hermNegIndex_pencilGram_mono`, `eventually_hermNegIndex_pencilGram_eq`, `windowIndex_law`, `riemannHypothesis_iff_windowIndex_eq_zero` | proved |
+| The window index law: `P_K = κW(H) + (βJ/K)A(H)`, `A ⪰ 0`; monotone in `K`; Weil's index for large `K`; index `≥ n` on some family iff `≥ n` right zeros; Shannon bound `1 + 2A T(A/2)/π` for windows of length `A` | `pencilGram_eq`, `hermQuad_aliasGram_nonneg`, `hermNegIndex_pencilGram_mono`, `eventually_hermNegIndex_pencilGram_eq`, `windowIndex_law`, `riemannHypothesis_iff_windowIndex_eq_zero`, `hermNegIndex_pencilGram_le_shannon` | proved |
 | The primes of a window: departing jumps pay their creation; Markov form at level `⌊e^A⌋` | `primeJump_departing_eq`, `markovForm_eq_of_level`, `weilQuad_halfWeight_eq_markovForm` | proved |
 
 ## 9. Open research topics
 
 1. **The window index as a counting function.** Proved: monotone in `K`, Weil's index for large
-   `K`, exhaustion of the right zeros. Open: the jump multiples of a family (its critical multiples,
-   the generalized eigenvalues of `κW(H)` against `A(H)`) and the growth of the index with the window
-   width `A` (Landau–Widom: the Shannon number plus the resolved-zero defect).
+   `K`, exhaustion of the right zeros, the Shannon bound `1 + 2A T(A/2)/π` in the window length.
+   Open: the jump multiples of a family (the generalized eigenvalues of `κW(H)` against `A(H)`), and
+   the lower bound in the window length (which right zeros a window of length `A` resolves).
 2. **Bulk second order.** The collective `1/log N` term of fixed packets (the high zeros, read on the
    arithmetic side through primes in progressions to the moduli `e e'`).
 3. **Uniform bulk ledger.** All zeros of height `≤ N^{1/2−ε}` together contribute `o(c/log N)` to every
@@ -377,6 +391,7 @@ Stepanov over `ℤ` (AET) and over curves (LST).
 | Soft laws select | Ledgers and counts hold on every configuration and every quotient |
 | The aliasing is an error term to be estimated | It is the monodromy derivative of the bulk count, exactly; it is positive and computable |
 | The sharp constant depends on the zeros | It is `β J(1)`, a property of the profile and the bulk; the zeros enter only through `Q(H)` |
+| Twisting the horizon window by a Ramanujan sum or a character transports the sign question | Twisted windows see no zero and are positive at every resolution; the sign question lives only on untwisted windows |
 
 ## 11. Context
 

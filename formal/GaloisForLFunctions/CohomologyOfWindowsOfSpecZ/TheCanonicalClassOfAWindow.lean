@@ -22,6 +22,10 @@ canonical density is the only prime cost left on the window.
 * **Degree** (`integral_canonicalDensity`): the canonical class has mass
   `deg k_A = Σ_{n ≤ e^A} (Λ(n)/√n)·2(A − log n)`, the Riesz mean of the half-weighted Chebyshev
   function: `deg k_A = 2∫_0^A ψ_{1/2}(e^t) dt` (`canonicalMass_eq_integral_halfChebyshev`).
+* **Shape** (`canonicalDensity_eq_halfChebyshev`): on the window
+  `k_A(u) = ψ_{1/2}(e^{−u}) + ψ_{1/2}(e^{A+u})`, the half-weighted Chebyshev function at the
+  distances to the two ends: a jump stays inside on one side exactly when it is shorter than the
+  distance to that end. At an end `k_A = ψ_{1/2}(e^A)`, at the centre `k_A = 2ψ_{1/2}(e^{A/2})`.
 * **Duality** (`canonicalDensity_reflect`): `k_A(−A − u) = k_A(u)`; the window involution exchanges
   the two ends of every fold.
 * **Departing jumps** (`inWindowCount_eq_zero_of_lt`): a jump longer than the window carries no
@@ -279,6 +283,51 @@ theorem halfChebyshev_exp_eq {A t : ℝ} (ht : t ≤ A) :
   by_cases h : Real.log n ≤ t
   · rw [if_pos h, indicator_of_mem (mem_Ici.mpr h), Pi.one_apply, mul_one]
   · rw [if_neg h, indicator_of_notMem (fun hm => h (mem_Ici.mp hm)), mul_zero]
+
+/-- On the window, `m_ℓ(u) = 1[ℓ ≤ −u] + 1[ℓ ≤ A + u]`: one neighbour inside on each side that is
+farther away than `ℓ`. -/
+theorem inWindowCount_eq_of_mem {u : ℝ} (hu : u ∈ Icc (-A) 0) (ℓ : ℝ) :
+    inWindowCount A ℓ u = (Ici ℓ).indicator 1 (-u) + (Ici ℓ).indicator 1 (A + u) := by
+  unfold inWindowCount
+  have h1 : u ∈ Icc (-A) (-ℓ) ↔ -u ∈ Ici ℓ := by
+    simp only [mem_Icc, mem_Ici]; constructor
+    · rintro ⟨_, h⟩; linarith
+    · intro h; exact ⟨hu.1, by linarith⟩
+  have h2 : u ∈ Icc (ℓ - A) 0 ↔ A + u ∈ Ici ℓ := by
+    simp only [mem_Icc, mem_Ici]; constructor
+    · rintro ⟨h, _⟩; linarith
+    · intro h; exact ⟨by linarith, hu.2⟩
+  by_cases ha : -u ∈ Ici ℓ <;> by_cases hb : A + u ∈ Ici ℓ <;>
+    simp [indicator, ha, hb, h1, h2]
+
+/-- **The shape of the canonical class**: `k_A(u) = ψ_{1/2}(e^{−u}) + ψ_{1/2}(e^{A+u})` on the
+window. -/
+theorem canonicalDensity_eq_halfChebyshev {u : ℝ} (hu : u ∈ Icc (-A) 0) :
+    canonicalDensity A u = halfChebyshev (Real.exp (-u)) + halfChebyshev (Real.exp (A + u)) := by
+  rw [halfChebyshev_exp_eq (A := A) (by linarith [hu.1]),
+    halfChebyshev_exp_eq (A := A) (by linarith [hu.2]), ← Finset.sum_add_distrib, canonicalDensity]
+  refine Finset.sum_congr rfl fun n _ => ?_
+  rw [inWindowCount_eq_of_mem hu, mul_add]
+
+theorem halfChebyshev_one : halfChebyshev 1 = 0 := by
+  simp [halfChebyshev]
+
+/-- At an end of the window the canonical density is `ψ_{1/2}(e^A)`. -/
+theorem canonicalDensity_end (hA : 0 ≤ A) : canonicalDensity A 0 = halfChebyshev (Real.exp A) := by
+  rw [canonicalDensity_eq_halfChebyshev ⟨by linarith, le_rfl⟩, neg_zero, Real.exp_zero,
+    halfChebyshev_one, add_zero, zero_add]
+
+/-- At the centre of the window the canonical density is `2ψ_{1/2}(e^{A/2})`. -/
+theorem canonicalDensity_centre (hA : 0 ≤ A) :
+    canonicalDensity A (-(A / 2)) = 2 * halfChebyshev (Real.exp (A / 2)) := by
+  rw [canonicalDensity_eq_halfChebyshev ⟨by linarith, by linarith⟩, neg_neg,
+    show A + -(A / 2) = A / 2 by ring]
+  ring
+
+/-- The canonical degree is twice the end value plus `|Ω(0)|`. -/
+theorem canonicalDegree_eq_halfChebyshev (A : ℝ) :
+    canonicalDegree A = 2 * halfChebyshev (Real.exp A) - EF.gammaBracket 0 := by
+  rw [canonicalDegree_eq]; rfl
 
 theorem setIntegral_Ioc_indicator_Ici {c A : ℝ} (hc : 0 < c) (hcA : c ≤ A) :
     ∫ t in Ioc 0 A, (Ici c).indicator (1 : ℝ → ℝ) t = A - c := by

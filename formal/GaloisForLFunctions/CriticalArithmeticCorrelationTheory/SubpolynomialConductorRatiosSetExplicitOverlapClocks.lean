@@ -131,7 +131,4 @@ theorem tendsto_subpolynomialProfileClock_div_loglog_atTop (φ : ℝ → ℝ) {R
       _ ≤ t * 1 := mul_le_mul_of_nonneg_left hKroot ht.le
       _ = _ := mul_one _
 
-#print axioms tendsto_subpolynomialConductorRatio
-#print axioms tendsto_subpolynomialProfileClock_div_loglog_atTop
-
 end GaloisForLFunctions.CriticalArithmeticCorrelationTheory

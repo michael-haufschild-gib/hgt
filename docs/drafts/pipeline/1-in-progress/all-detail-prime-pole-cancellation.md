@@ -59,6 +59,24 @@ Their sum is at most `(28C₂+8C₁+1)exp(−2rt)`.
 Exact prime support identifies every admissible common-horizon source
 with this same matrix remainder.
 
+## Rank-one consequence to formalize
+
+Write `H_±(d)=Σ_a d_a∫h_a(u)e^(±u/2)du` and
+`V_+(q)=Σ_b 4q_b(√(2b+2)−√(2b))`. The same uniform bound should give
+
+```text
+|Σ_b q_b Σ_a d_a C_Y(a,b)/√Y − H_−(d)V_+(q)|
+  ≤ (C+16) exp(−2r√log Y).
+```
+
+Here `C_Y` is the literal full prime-window coupling. The exact opposite
+pole is `(2/Y)H_+(d)Σ_b q_b∫q_b^cell(u)e^(−u/2)du`.
+The existing Haar pole theorem gives `|H_+(d)|≤1`; unit coarse mass gives
+an absolute bound `2(M+1)²` for the latter sum. Thus the opposite pole is
+at most `4(M+1)²/Y≤16 exp(−2r√log Y)` for large `Y`.
+This is a rank-one approximation of the normalized mixed source, without
+a sign assertion for the complete Weil form.
+
 ## Audit
 
 Corpus search found fixed-family and growing-square cancellation, the
@@ -69,5 +87,7 @@ proved by `integral_haarSectionProfile_sq` and `inner_coarseAtom`.
 proves the refined trace bound. `FullPrimeWindowHaarDecay.lean` proves
 the unsigned Haar moment and normalized full-prime row bounds. Their direct
 audits contain only `propext`, `Classical.choice`, and `Quot.sound`.
-The joint prime–pole tail and operator estimates remain unformalized.
+The joint row estimate is now directly audited with standard axioms.
+The all-detail tail, operator estimate, and rank-one consequence remain
+unformalized.
 External priority is unchecked.

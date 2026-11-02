@@ -1,7 +1,7 @@
 # Signed period relations for every actual Mayer solution
 
-- **Stage:** 2-fully-proven
-- **Type:** Paper theorem; Lean formalization in progress
+- **Stage:** 3-formalized
+- **Type:** THEOREM (Lean)
 - **Parent:** [PM](../1-in-progress/route-pm-mayer-scattering-and-escape.md), Mayer 2–4.
 
 ## Statement
@@ -60,3 +60,12 @@ scattering state. This extends them to every actual signed eigenfunction
 and constant-forced solution. It does not assert surjectivity onto an
 independently defined period space, a Hermitian form, cusp/scattering
 separation, or resonance exclusion.
+
+## Lean certificate
+
+`RenormalizedIntersectionTheory/GaussMayerSignedPeriods.lean` certifies
+`operator_shift`, `period_shift`, `reciprocity`, `three_term`,
+`negative_solution_zero_at_origin`, and `negative_forced_boundary`.
+The direct production audit passed without warnings. All six declarations
+use only `propext`, `Classical.choice`, and `Quot.sound`.
+The module is wired into the mathematical umbrella.

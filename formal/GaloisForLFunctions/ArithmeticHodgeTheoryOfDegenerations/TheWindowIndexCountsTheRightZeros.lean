@@ -2,6 +2,9 @@ import GaloisForLFunctions.ArithmeticHodgeTheoryOfDegenerations.TheWindowIndex
 import GaloisForLFunctions.SpacingScaleHarmonicAnalysis.UnboundedOverlapIsTheRiemannHypothesis
 import GaloisForLFunctions.HTGeometry.InertiaScalingSwap
 import GaloisForLFunctions.HeckeKreinToeplitz.KernelsOnGroupsAndTheirNegativeIndex
+import GaloisForLFunctions.ArithmeticCastelnuovoSeveri.LandauWidomNearRadicalLaw
+import GaloisForLFunctions.ArithmeticCastelnuovoSeveri.TemperedConfigurationPontryaginLaw
+import GaloisForLFunctions.EffectiveArithmeticHodgeTheory.FiniteWeilFamiliesHaveExplicitIndexHorizonTests
 
 /-!
 # The window index counts the right zeros
@@ -25,6 +28,9 @@ the multiple and of the family.
   invariance of Weil's Gram matrices).
 * **RH** (`riemannHypothesis_iff_windowIndex_eq_zero`): RH iff the window index vanishes for every
   family of windows at every multiple.
+* **Shannon bound** (`hermNegIndex_pencilGram_le_shannon`): windows of length `A` have window index
+  at most `1 + 2A T(A/2)/π`, `T` the archimedean horizon frequency (ACS Landau–Widom law), at every
+  multiple and for every family.
 
 The window index is the counting function of the right zeros read through the degeneration: the
 aliasing norm pays the negative directions of Weil's form up to the multiple, and past the last
@@ -325,5 +331,43 @@ theorem riemannHypothesis_iff_windowIndex_eq_zero (hφ0 : ∫ u, φ u ≠ 0)
     obtain ⟨A, S, h, hh, hsupp, K, hK, hK1⟩ := (windowIndex_law hφ0 hφ2 hβJ 1).mpr h1
     rw [hall A S h hh hsupp K hK] at hK1
     exact absurd hK1 (by norm_num)
+
+/-! ### The Shannon bound -/
+
+/-- **Shannon bound.** A family of windows of length `A` has window index at most
+`1 + 2A T(A/2)/π` at every multiple: recentre the synthesized tests in `[−A/2, A/2]`
+(translation invariance) and apply the Landau–Widom law of the zero-side Gram matrix. -/
+theorem hermNegIndex_pencilGram_le_shannon (hφ0 : ∫ u, φ u ≠ 0) (hφ2 : 0 < ∫ u, φ u ^ 2)
+    (hA : 0 ≤ A) {n : ℕ} {h : Fin n → ℝ → ℝ} (hh : ∀ i, ContDiff ℝ 2 (h i))
+    (hsupp : ∀ i y, y ∉ Set.Icc (-A) 0 → h i y = 0) {β J : ℝ} (hβJ : 0 ≤ β * J) {K : ℝ}
+    (hK : 0 < K) :
+    (hermNegIndex (pencilGram φ β J K h) : ℝ) ≤ 1 + 2 * A * horizonFreq (A / 2) / Real.pi := by
+  have h1 := hermNegIndex_pencilGram_le_weil (φ := φ) hh hsupp hβJ hK
+  rw [hermNegIndex_weilWindowGram hφ0 hφ2] at h1
+  have hH : ∀ i, ContDiff ℝ 2 (halfWeight (h i)) := fun i => contDiff_halfWeight (hh i)
+  have hHc : ∀ i, HasCompactSupport (halfWeight (h i)) := fun i =>
+    hasCompactSupport_halfWeight (hasCompactSupport_of_window (hsupp i))
+  rw [← EffectiveArithmeticHodgeTheory.weilGram_cx_common_translate (fun i => halfWeight (h i))
+    hH hHc (A / 2)] at h1
+  have hG : ∀ i, ContDiff ℝ 2 (cx fun u => halfWeight (h i) (u - A / 2)) := fun i =>
+    cx_contDiff ((hH i).comp (contDiff_id.sub contDiff_const))
+  have hGc : ∀ i, HasCompactSupport (cx fun u => halfWeight (h i) (u - A / 2)) := fun i =>
+    cx_hasCompactSupport ((hHc i).comp_homeomorph (Homeomorph.subRight (A / 2)))
+  rw [weilGram_eq_zeroGram _ hG hGc] at h1
+  have hts : ∀ i, tsupport (cx fun u => halfWeight (h i) (u - A / 2)) ⊆
+      Set.Icc (-(A / 2)) (A / 2) := fun i => by
+    refine closure_minimal (fun u hu => ?_) isClosed_Icc
+    by_contra hout
+    apply hu
+    have hy : u - A / 2 ∉ Set.Icc (-A) 0 := fun hm => hout ⟨by linarith [hm.1], by linarith [hm.2]⟩
+    simp only [cx, halfWeight_eq_zero_of_window (hsupp i) _ hy, Complex.ofReal_zero]
+  have hb := negIndex_zeroGram_zeta_le_shannon (a := A / 2) (by linarith)
+    (fun i => cx fun u => halfWeight (h i) (u - A / 2)) fun i => ⟨hG i, hts i⟩
+  have hc : (hermNegIndex (pencilGram φ β J K h) : ℝ) ≤
+      hermNegIndex (zeroGram zetaZeroConfig fun i => cx fun u => halfWeight (h i) (u - A / 2)) := by
+    exact_mod_cast h1
+  have e : 4 * (A / 2) * horizonFreq (A / 2) / Real.pi = 2 * A * horizonFreq (A / 2) / Real.pi := by
+    ring
+  linarith
 
 end GaloisForLFunctions.ArithmeticHodgeTheoryOfDegenerations

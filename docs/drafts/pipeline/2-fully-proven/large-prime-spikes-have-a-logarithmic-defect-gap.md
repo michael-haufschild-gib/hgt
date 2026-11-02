@@ -63,3 +63,14 @@ contribute only the pole before centering and may be deleted.
 Written in `CompletedArithmeticForms/LargePrimeIncidencePacketsHaveALogarithmicDefectGap.lean`:
 `jumpEnergy_largePrime_incidencePacket`, `centered_largePrime_incidence_mass_eq`,
 and `largePrime_incidence_defect_gap`. Source checks and axiom audits are pending.
+
+## Stronger identity to formalize separately
+
+The exact defect diagonal appears to hold for every finite prime family,
+without `N<p²`. At a target `n` divisible by `p`, only the jump by
+`p^v_p(n)` changes the incidence bit from zero to one. Its contribution is
+`b_p² log p/n`. Summing targets gives `(log p/p)H_floor(N/p)b_p²`.
+Equivalently the prime-power source sums telescope. The large-prime condition
+is needed for the disjoint Gram diagonal, not for this proposed defect identity.
+The corpus supplies the incidence jump formula but no general harmonic-diagonal
+evaluation was found. This strengthening is not used by the current Lean proof.

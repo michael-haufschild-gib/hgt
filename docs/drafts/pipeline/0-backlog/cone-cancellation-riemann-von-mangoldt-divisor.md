@@ -27,6 +27,9 @@ The existing sparse model has at most three core ordinates per unit
 interval, hence at most six positive-ordinate quartet points. Delete that
 many critical slots in each block and insert these off-line points.
 Block counts remain unchanged, so the same counting law survives.
+The remaining critical slots can use distinct rational heights
+`j+(k+1)/(n_j+1)`, avoiding all nonzero integer multiples of `π`.
+Their exact spline coefficients are consequently nonzero.
 Critical coefficients equal `(sin γ/γ)^8`; their norms are summable under
 this count. Their coupling is therefore bounded, and adding them preserves
 the bounded coupling of the off-line model.
@@ -39,6 +42,9 @@ product and growth proof; it is not part of the established construction.
 
 The zero-exponent off-line model is formalized. Block completion, its
 counting law, and the full-divisor coupling bound are unformalized.
-The first novelty search returned only the existing cone models; a
-separate count and entire-function audit is still required. External
-priority is unchecked.
+The separate count audit found the actual Riemann–von Mangoldt count
+and the theta-tail divisor-capacity theorem. The latter controls radial
+density, without resolving bounded horizontal displacements. No block
+completion preserving exact spline cone cancellation was found.
+The optional entire-function realization still needs its own audit.
+External priority is unchecked.
