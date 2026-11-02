@@ -61,7 +61,7 @@ theorem unitary_pair_gap {H : Type*} [NormedAddCommGroup H] [InnerProductSpace �
   have he : U g - q • g = -q • R := by
     dsimp [g, R]
     simp only [map_sub, map_smul, LinearIsometryEquiv.apply_symm_apply,
-      smul_sub, smul_add, smul_smul, neg_mul, mul_add, mul_inv_cancel₀ hq,
+      smul_sub, smul_add, smul_smul, neg_mul, mul_inv_cancel₀ hq,
       neg_smul, one_smul, add_smul]
     module
   have h₁ := norm_sub_smul_lower_bound U q g
@@ -75,12 +75,30 @@ theorem unitary_pair_gap {H : Type*} [NormedAddCommGroup H] [InnerProductSpace �
     rw [sq_abs]
     field_simp
     ring
-  apply (mul_le_mul_left hr).mp
-  calc
-    ‖q‖ * ((‖q‖ + ‖q‖⁻¹ - 2) * ‖f‖) = |‖q‖ - 1| * (|‖q‖ - 1| * ‖f‖) := by
-      rw [← mul_assoc, hid]
-      ring
-    _ ≤ ‖q‖ * ‖R‖ := hmul.trans h₁
+  have hb : ‖q‖ * ((‖q‖ + ‖q‖⁻¹ - 2) * ‖f‖) ≤ ‖q‖ * ‖R‖ := by
+    calc
+      ‖q‖ * ((‖q‖ + ‖q‖⁻¹ - 2) * ‖f‖) = |‖q‖ - 1| * (|‖q‖ - 1| * ‖f‖) := by
+        rw [← mul_assoc, hid]
+        ring
+      _ ≤ ‖q‖ * ‖R‖ := hmul.trans h₁
+  by_contra h
+  exact (not_lt_of_ge hb) (mul_lt_mul_of_pos_left (lt_of_not_ge h) hr)
+
+/-- The dyadic residual coefficient is strictly positive at every negative real rate. -/
+theorem dyadic_packet_gap_pos {a : ℝ} (ha : a < 0) :
+    0 < (2 : ℝ) ^ a + (2 : ℝ) ^ (-a) - 2 := by
+  have hr : 0 < (2 : ℝ) ^ a := Real.rpow_pos_of_pos (by norm_num) a
+  have hr1 : (2 : ℝ) ^ a < 1 := Real.rpow_lt_one_of_one_lt_of_neg (by norm_num) ha
+  rw [Real.rpow_neg (by norm_num : (0 : ℝ) ≤ 2)]
+  have he : (2 : ℝ) ^ a + ((2 : ℝ) ^ a)⁻¹ - 2 =
+      (1 - (2 : ℝ) ^ a) ^ 2 / (2 : ℝ) ^ a := by
+    field_simp
+    ring
+  rw [he]
+  exact div_pos (sq_pos_of_pos (sub_pos.mpr hr1)) hr
+
+#print axioms unitary_pair_gap
+#print axioms dyadic_packet_gap_pos
 
 end
 

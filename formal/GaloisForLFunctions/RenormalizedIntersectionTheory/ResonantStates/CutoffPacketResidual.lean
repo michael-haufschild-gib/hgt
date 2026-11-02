@@ -1,6 +1,6 @@
 import GaloisForLFunctions.RenormalizedIntersectionTheory.ResonantStates.HeckeCutoffSource
 import GaloisForLFunctions.RenormalizedIntersectionTheory.ResonantStates.HeckeCutoffShifts
-import GaloisForLFunctions.RenormalizedIntersectionTheory.ResonantStates.CutoffDilation
+import GaloisForLFunctions.RenormalizedIntersectionTheory.ResonantStates.CutoffPacketModel
 
 /-!
 # The residual norm of an automorphic cutoff packet
@@ -83,7 +83,7 @@ theorem cutoffPacket_residual_isometry {ι : Type*} (S : Finset ι) {u : ℂ}
   have hleft : (∫ z in fd, ‖∑ i ∈ S, c i * dyadicEigenResidualAt u (Y i) z‖ ^ 2) =
       ∫ z in fd, ‖∑ j ∈ J, C j * truncatedLineModel u (H j) z‖ ^ 2 := by
     refine setIntegral_congr_fun isClosed_fd.measurableSet fun z hz => ?_
-    congr 1
+    apply congrArg (fun w : ℂ => ‖w‖ ^ 2)
     simp only [J, Finset.sum_product, Fin.sum_univ_three, C, H,
       Matrix.cons_val_zero, Matrix.cons_val_one, Matrix.cons_val_fin_one]
     apply Finset.sum_congr rfl
@@ -91,14 +91,47 @@ theorem cutoffPacket_residual_isometry {ι : Type*} (S : Finset ι) {u : ℂ}
     rw [dyadicEigenResidualAt_cutoff_shifts hAu (hY i hi) hz]
     ring
   rw [hleft, he]
-  congr 1
-  funext y
-  congr 1
+  apply integral_congr_ae
+  refine Eventually.of_forall fun y => ?_
+  apply congrArg (fun w : ℂ => ‖w‖ ^ 2)
   simp only [J, Finset.sum_product, Fin.sum_univ_three, C, H,
     Matrix.cons_val_zero, Matrix.cons_val_one, Matrix.cons_val_fin_one]
   apply Finset.sum_congr rfl
   intro i hi
   ring
+
+/-- The norm of an actual automorphic packet equals the elementary cusp norm. -/
+theorem automorphicCutoffPacket_norm_eq {ι : Type*} (S : Finset ι) {u : ℂ}
+    (hu : u ∈ eisensteinLineDomain) (hur : u.re < 0) (hAu : msA u = 0)
+    (Y : ι → ℝ) (c : ι → ℂ) (hY : ∀ i ∈ S, 1 ≤ Y i) :
+    (∫ z in fd, ‖automorphicCutoffPacket S u Y c z‖ ^ 2) =
+      ∫ y, ‖cuspPacket S u Y c y‖ ^ 2 := by
+  calc
+    _ = ∫ z in fd, ‖∑ i ∈ S, c i * truncatedLineModel u (Y i) z‖ ^ 2 := by
+      refine setIntegral_congr_fun isClosed_fd.measurableSet fun z hz => ?_
+      apply congrArg (fun w : ℂ => ‖w‖ ^ 2)
+      unfold automorphicCutoffPacket
+      apply Finset.sum_congr rfl
+      intro i hi
+      rw [automorphicTruncation_eq_of_mem_fd u (hY i hi) hz]
+    _ = _ := resonant_finite_combination_isometry S (fun _ => u) Y c
+      (fun _ _ => hu) (fun _ _ => hur) (fun _ _ => hAu) hY
+
+/-- Arbitrary finite complex mixtures of high cutoffs retain a uniform Hecke residual gap. -/
+theorem automorphicCutoffPacket_residual_gap {ι : Type*} (S : Finset ι) {u : ℂ}
+    (hu : u ∈ eisensteinLineDomain) (hur : u.re < 0) (hAu : msA u = 0)
+    (Y : ι → ℝ) (c : ι → ℂ) (hY : ∀ i ∈ S, 2 ≤ Y i) :
+    ((2 : ℝ) ^ u.re + (2 : ℝ) ^ (-u.re) - 2) ^ 2 *
+        (∫ z in fd, ‖automorphicCutoffPacket S u Y c z‖ ^ 2) ≤
+      ∫ z in fd, ‖dyadicHecke (automorphicCutoffPacket S u Y c) z -
+        ((2 : ℂ) ^ u + (2 : ℂ) ^ (-u)) * automorphicCutoffPacket S u Y c z‖ ^ 2 := by
+  simp_rw [automorphicCutoffPacket_residual]
+  rw [automorphicCutoffPacket_norm_eq S hu hur hAu Y c (fun i hi => by linarith [hY i hi]),
+    cutoffPacket_residual_isometry S hu hur hAu Y c hY]
+  exact cuspPacket_residual_gap S hur Y c (fun i hi => by linarith [hY i hi])
+
+#print axioms automorphicCutoffPacket_residual_gap
+#print axioms cutoffPacket_residual_isometry
 
 end
 

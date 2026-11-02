@@ -275,4 +275,106 @@ theorem abs_ramEnergy_sub_le (hφ : ContDiff ℝ 2 φ) (hφsupp : ∀ u, u ∉ S
   rw [← hmain]
   exact hK c hc N hcN
 
+/-! ### The Ramanujan block is quiet below its first resonance -/
+
+/-- **Kuzmin–Landau on a sublattice**: for `0 < τ ≤ π n₀/q` and `n₀ + k ≤ N`, the partial sums of
+`n^{iτ}` over the multiples of `q` in `[n₀, n₀ + k]` are at most `3πN/(qτ) + 1`. -/
+theorem norm_partial_dvd_cpow_le {q : ℕ} (hq : 0 < q) {n₀ N k : ℕ} (hn₀ : 1 ≤ n₀)
+    (hk : n₀ + k ≤ N) {τ : ℝ} (hτ : 0 < τ) (hτn : τ ≤ Real.pi * n₀ / q) :
+    ‖∑ m ∈ range (k + 1), (if q ∣ n₀ + m then
+        Complex.exp (((τ * Real.log ((n₀ + m : ℕ) : ℝ) : ℝ) : ℂ) * Complex.I) else 0)‖ ≤
+      3 * Real.pi * N / (q * τ) + 1 := by
+  have hq0 : (0 : ℝ) < q := by exact_mod_cast hq
+  set e : ℕ → ℂ := fun n => Complex.exp (((τ * Real.log n : ℝ) : ℂ) * Complex.I) with he
+  rw [show (∑ m ∈ range (k + 1), (if q ∣ n₀ + m then
+      Complex.exp (((τ * Real.log ((n₀ + m : ℕ) : ℝ) : ℝ) : ℂ) * Complex.I) else 0)) =
+      ∑ m ∈ range (k + 1), (if q ∣ n₀ + m then e (n₀ + m) else 0) from rfl,
+    sum_range_dvd_eq q n₀ k hq hn₀ e]
+  obtain ⟨a, ha⟩ : ∃ a, a = (n₀ - 1) / q := ⟨_, rfl⟩
+  obtain ⟨b, hb⟩ : ∃ b, b = (n₀ + k) / q := ⟨_, rfl⟩
+  rw [← ha, ← hb]
+  rcases Nat.lt_or_ge a b with hab | hab
+  · have hreidx : ∑ c ∈ Finset.Ioc a b, e (q * c) = ∑ j ∈ range (b - (a + 1) + 1),
+        Complex.exp (((τ * Real.log q : ℝ) : ℂ) * Complex.I) *
+          Complex.exp (((τ * Real.log ((a + 1 : ℕ) + j) : ℝ) : ℂ) * Complex.I) := by
+      rw [show Finset.Ioc a b = Finset.Ico (a + 1) (b + 1) by
+          ext x; simp only [Finset.mem_Ioc, Finset.mem_Ico]; omega, Finset.sum_Ico_eq_sum_range,
+        show b + 1 - (a + 1) = b - (a + 1) + 1 by omega]
+      refine sum_congr rfl fun j _ => ?_
+      simp only [he]
+      have hj0 : (0 : ℝ) < (a + 1 : ℕ) + j := by positivity
+      rw [← Complex.exp_add]
+      congr 1
+      rw [show ((q * (a + 1 + j) : ℕ) : ℝ) = (q : ℝ) * ((a + 1 : ℕ) + j) by push_cast; ring,
+        Real.log_mul hq0.ne' hj0.ne']
+      push_cast
+      ring
+    rw [hreidx, ← mul_sum, norm_mul, Complex.norm_exp_ofReal_mul_I, one_mul]
+    have ha1 : 1 ≤ a + 1 := by omega
+    have hab' : (a + 1) + (b - (a + 1)) ≤ b := (Nat.add_sub_cancel' hab).le
+    have hτa : τ ≤ Real.pi * (a + 1 : ℕ) := by
+      refine hτn.trans ?_
+      rw [div_le_iff₀ hq0]
+      have : (n₀ : ℝ) ≤ ((a + 1 : ℕ) : ℝ) * q := by
+        have h1 : n₀ ≤ (a + 1) * q := by
+          have := Nat.lt_div_mul_add (a := n₀ - 1) hq
+          rw [ha, add_mul, one_mul]
+          omega
+        exact_mod_cast h1
+      nlinarith [Real.pi_pos, mul_le_mul_of_nonneg_left this Real.pi_pos.le]
+    have h := norm_partial_cpow_le ha1 hab' hτ hτa
+    refine h.trans ?_
+    have hbN : (b : ℝ) ≤ N / q := by
+      rw [le_div_iff₀ hq0]
+      have : b * q ≤ N := by rw [hb]; exact (Nat.div_mul_le_self _ _).trans hk
+      exact_mod_cast this
+    have : 3 * Real.pi * b / τ ≤ 3 * Real.pi * N / (q * τ) := by
+      rw [div_le_div_iff₀ hτ (by positivity)]
+      have := mul_le_mul_of_nonneg_left hbN (by positivity : (0 : ℝ) ≤ 3 * Real.pi * (q * τ))
+      rw [show 3 * Real.pi * (q * τ) * (N / q) = 3 * Real.pi * N * τ by field_simp] at this
+      nlinarith
+    linarith
+  · rw [Finset.Ioc_eq_empty (by omega), sum_empty, norm_zero]; positivity
+
+/-- **Kuzmin–Landau for the Ramanujan twist.** For `0 < τ ≤ π n₀/m` and `n₀ + k ≤ N`, the partial
+sums of `c_m(n) n^{iτ}` over `[n₀, n₀ + k]` are at most `Σ_{de = m} (3πN/τ + e)`. -/
+theorem norm_partial_ramTwist_cpow_le {m : ℕ} (hm : 0 < m) {n₀ N k : ℕ} (hn₀ : 1 ≤ n₀)
+    (hk : n₀ + k ≤ N) {τ : ℝ} (hτ : 0 < τ) (hτn : τ ≤ Real.pi * n₀ / m) :
+    ‖∑ j ∈ range (k + 1), (ramTwist m (n₀ + j) : ℂ) *
+        Complex.exp (((τ * Real.log (n₀ + j) : ℝ) : ℂ) * Complex.I)‖ ≤
+      ∑ x ∈ m.divisorsAntidiagonal, (3 * Real.pi * N / τ + x.2) := by
+  have hsplit : ∑ j ∈ range (k + 1), (ramTwist m (n₀ + j) : ℂ) *
+      Complex.exp (((τ * Real.log (n₀ + j) : ℝ) : ℂ) * Complex.I) =
+      ∑ x ∈ m.divisorsAntidiagonal, ((ArithmeticFunction.moebius x.1 : ℝ) * x.2 : ℂ) *
+        ∑ j ∈ range (k + 1), (if x.2 ∣ n₀ + j then
+          Complex.exp (((τ * Real.log ((n₀ + j : ℕ) : ℝ) : ℝ) : ℂ) * Complex.I) else 0) := by
+    simp_rw [Finset.mul_sum]
+    rw [Finset.sum_comm]
+    refine sum_congr rfl fun j _ => ?_
+    simp only [ramTwist]
+    push_cast
+    rw [Finset.sum_mul]
+    refine sum_congr rfl fun x _ => ?_
+    split_ifs <;> push_cast <;> ring
+  rw [hsplit]
+  refine (norm_sum_le _ _).trans (sum_le_sum fun x hx => ?_)
+  have he : 0 < x.2 := Nat.pos_of_mem_divisors (Nat.snd_mem_divisors_of_mem_antidiagonal hx)
+  have he0 : (0 : ℝ) < x.2 := by exact_mod_cast he
+  have hem : (x.2 : ℝ) ≤ m := by
+    exact_mod_cast Nat.divisor_le (Nat.snd_mem_divisors_of_mem_antidiagonal hx)
+  have hτe : τ ≤ Real.pi * n₀ / x.2 :=
+    hτn.trans (div_le_div_of_nonneg_left (by positivity) he0 hem)
+  have hb := norm_partial_dvd_cpow_le he hn₀ hk hτ hτe
+  rw [norm_mul]
+  have hμ : ‖((ArithmeticFunction.moebius x.1 : ℝ) * x.2 : ℂ)‖ ≤ x.2 := by
+    rw [show ((ArithmeticFunction.moebius x.1 : ℝ) * x.2 : ℂ) =
+      (((ArithmeticFunction.moebius x.1 : ℝ) * x.2 : ℝ) : ℂ) by push_cast; ring,
+      Complex.norm_real, Real.norm_eq_abs, abs_mul, abs_of_pos he0]
+    have : |(ArithmeticFunction.moebius x.1 : ℝ)| ≤ 1 := by
+      exact_mod_cast ArithmeticFunction.abs_moebius_le_one
+    nlinarith
+  calc _ ≤ (x.2 : ℝ) * (3 * Real.pi * N / (x.2 * τ) + 1) :=
+        mul_le_mul hμ hb (norm_nonneg _) he0.le
+    _ = 3 * Real.pi * N / τ + x.2 := by field_simp
+
 end GaloisForLFunctions.ArithmeticHodgeTheoryOfDegenerations

@@ -44,3 +44,8 @@ stage-resolved analytic control (AOT aperture transport); window capacity; expon
 
 ## Log
 - 2026-11-02 — created; fifteen modules formalized; README written.
+
+## Conjecture loop (ledger)
+| # | Conjecture | Test | Status |
+|---|---|---|---|
+| C1 | On the atomic lattice `|⟨ρ(Λ)ιg,ιg⟩| ≤ ½(Σ_{d≤N}Λ(d)/d + log N)‖ιg‖²` (Mertens size, not `ψ_{1/2}`) | numerics: λ_max ≈ ½ Mertens (N ≤ 3000) | proved on paper (AM–GM + `Σ_{d∣k}Λ = log k`); Lean pending |

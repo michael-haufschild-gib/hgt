@@ -810,7 +810,7 @@ private lemma single_prime_logIntegral_le {p : ℕ} (hp : Nat.Prime p) {T₁ T�
         (fun x _ => ?_)
         ((by fun_prop : Continuous fun x : ℝ => 3 * Real.exp (-Real.log p * x)).intervalIntegrable _ _)
       have hd := (((hasDerivAt_id x).const_mul (-Real.log p)).exp).const_mul (-(3 / Real.log p))
-      exact hd.congr_deriv (by field_simp [hlogp_pos.ne'])
+      exact hd.congr_deriv (by dsimp only [id]; field_simp [hlogp_pos.ne'])
     have hexp_half_le : Real.exp (-Real.log p * (1 / 2)) ≤ 1 :=
       Real.exp_le_one_iff.mpr (by linarith)
     have hexp_R_pos : 0 < Real.exp (-Real.log p * R) := Real.exp_pos _
