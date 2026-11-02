@@ -1,5 +1,6 @@
 import GaloisForLFunctions.RenormalizedIntersectionTheory.MayerScattering.FareyLewisTransferAndCuspSeparation
 import GaloisForLFunctions.RenormalizedIntersectionTheory.MayerScattering.MayerWindowFoldTransfer
+import Mathlib.Analysis.Calculus.BumpFunction.InnerProduct
 
 /-!
 # The cusp channel of a window Hecke operator
@@ -15,6 +16,8 @@ noncomputable section
 open Complex Set Filter Topology
 
 namespace GaloisForLFunctions.RenormalizedIntersectionTheory.MayerScattering
+
+open GaloisForLFunctions.CohomologyOfWindowsOfSpecZ
 
 /-- Beyond twice the input cutoff, precisely the nonlinear cusp branch survives. -/
 theorem lewisHeckeT2_eq_cusp_of_two_mul_lt (s : ℂ) {f : ℝ → ℂ} {R a : ℝ}
@@ -58,7 +61,7 @@ theorem lewisHeckeT2_upper_cutoff_iff (s : ℂ) {f : ℝ → ℂ} {R : ℝ}
         have hden : x / (2 - x) + 1 = 2 / (2 - x) := by
           field_simp [hx2.ne']; ring
         rw [hden]
-        field_simp [hx2.ne']
+        field_simp [hx2.ne'] <;> ring
       have hlarge : 2 * R < x / (2 - x) := by
         dsimp [C] at hCx
         linarith [le_max_right B (2 * R)]
@@ -201,8 +204,40 @@ theorem hecke_windowPeriodLift_no_cutoff_of_first_prime_ne_zero (s : ℂ)
   have hxl : l < x := lt_of_le_of_lt (le_max_right _ _) hxmax
   exact hne ⟨hxl, hx2.trans hlu.2⟩ (hzero x ⟨hxb, hx2⟩)
 
+/-- At every window length beyond `log 2`, a smooth window test has a Hecke image with no
+finite upper cutoff. The test is a bump centered at the first-prime position. -/
+theorem exists_windowTest_hecke_no_cutoff (s : ℂ) {A : ℝ} (hA : Real.log 2 < A) :
+    ∃ H : ℝ → ℝ, IsWindowTest A H ∧ H (-Real.log 2) = 1 ∧
+      ¬ ∃ B : ℝ, 0 ≤ B ∧ ∀ a > B, lewisHeckeT2 s (windowPeriodLift s H) a = 0 := by
+  have hlog : 0 < Real.log 2 := Real.log_pos (by norm_num)
+  let r := min (Real.log 2) (A - Real.log 2) / 2
+  have hr : 0 < r := div_pos (lt_min hlog (sub_pos.mpr hA)) (by norm_num)
+  have hrleft : r ≤ A - Real.log 2 := by
+    have := min_le_right (Real.log 2) (A - Real.log 2)
+    dsimp [r]
+    linarith
+  have hrright : r ≤ Real.log 2 := by
+    have := min_le_left (Real.log 2) (A - Real.log 2)
+    dsimp [r]
+    linarith
+  let H : ContDiffBump (-Real.log (2 : ℝ)) := ⟨r / 2, r, by positivity, by linarith⟩
+  have hv : ∀ y, y ∉ Icc (-A) 0 → H y = 0 := by
+    intro y hy
+    apply H.zero_of_le_dist
+    change r ≤ dist y (-Real.log 2)
+    rw [Real.dist_eq]
+    by_contra hn
+    obtain ⟨hl, hu⟩ := abs_lt.mp (lt_of_not_ge hn)
+    exact hy ⟨by linarith, by linarith⟩
+  have hvalue : H (-Real.log 2) = 1 :=
+    H.one_of_mem_closedBall (Metric.mem_closedBall_self (by positivity))
+  refine ⟨H, ⟨H.contDiff, hv⟩, hvalue, ?_⟩
+  exact hecke_windowPeriodLift_no_cutoff_of_first_prime_ne_zero s H.continuous hv
+    (by rw [hvalue]; exact one_ne_zero)
+
 #print axioms lewisHeckeT2_upper_cutoff_iff
 #print axioms hecke_windowPeriodLift_finite_window_iff
 #print axioms hecke_windowPeriodLift_no_cutoff_of_first_prime_ne_zero
+#print axioms exists_windowTest_hecke_no_cutoff
 
 end GaloisForLFunctions.RenormalizedIntersectionTheory.MayerScattering

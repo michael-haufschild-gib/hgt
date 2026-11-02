@@ -18,6 +18,8 @@
 
 **Reflection distinction:** `U_LP` conjugates `I_s` to a twisted reflection on the doubled logarithmic line. Every `windowPeriodLift s H` is fixed by `I_s`, for arbitrary `H`. This does not conjugate the nontrivial map `H(u)↦H(−A−u)` on the original window to `I_s`, and does not identify Weil energy with the co-isometry defect. Those identifications cannot be inferred from the existing bridge.
 
+**Metric distinction:** `mayerKreinPosInner` makes the resonant period basis orthonormal by its coefficient formula; it is not defined by `lewisCriticalInner`. Its reflection `mayerKreinReflection` exchanges parameters `s↔1/2−conj(s)`, whereas `I_s` fixes each period at its own parameter. A valid form bridge must address these two different pairings and two different reflections.
+
 ## Hecke support law — paper proof; Lean audit pending
 
 For `f(x)=0` on `x>R`, `R≥0`, and `a>2R`, the first three Hecke branches vanish, giving
@@ -29,6 +31,8 @@ The increasing fractional-linear map `a↦2a/(a+1)` bijects an upper tail onto a
 For `f=windowPeriodLift s H`, the positive normalization gives `f(x)=0 ↔ H(−log x)=0` for `x>1`. Inversion fixes the Hecke image and exchanges its upper and lower tails. Hence the image lies in some finite multiplicative window iff `H` vanishes on a right germ at `−log 2`. Every window with `A<log 2` qualifies. At and beyond the first prime, endpoint value alone does not suffice.
 
 **Consequence:** the direct finite-window Hecke endomorphism conjecture requires a germ restriction. The positive survivor is the exact cusp-channel recovery and finite-support classification. Keep the full channel in subsequent energy transport; do not project it away.
+
+For every `A>log 2`, a smooth bump at `−log 2`, with outer radius `min(log 2,A−log 2)/2`, is a window test with value one there. Continuity and the germ criterion force its Hecke image to have no finite upper cutoff. The failure therefore occurs on the actual smooth window test space. Lean witness: `exists_windowTest_hecke_no_cutoff` (audit pending).
 
 **Next conjecture:** a reflection-compatible compression has an exact Weil-energy boundary correction expressible through this recovered germ. Its sign must be proved jointly with the interior energy.
 

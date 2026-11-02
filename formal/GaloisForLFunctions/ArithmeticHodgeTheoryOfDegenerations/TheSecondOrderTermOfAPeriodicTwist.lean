@@ -72,11 +72,12 @@ theorem norm_partial_cpow_real_le {x₀ X : ℝ} (hx₀ : 0 < x₀) {k : ℕ} (h
             linarith [(Nat.cast_nonneg m : (0 : ℝ) ≤ m)]
         _ ≤ 1 / 2 := by
             rw [div_mul_div_comm, mul_one, div_le_div_iff₀ (by positivity) (by norm_num)]
-            nlinarith [Real.pi_pos]
+            linarith
     have hδle : δ ≤ 1 / 2 := by
       rw [hδ, div_le_div_iff₀ (by positivity) (by norm_num)]
-      have : x₀ ≤ X := by have : (0 : ℝ) ≤ k := Nat.cast_nonneg k; linarith
-      nlinarith [Real.pi_pos]
+      have hxX : x₀ ≤ X := by have : (0 : ℝ) ≤ k := Nat.cast_nonneg k; linarith
+      have := mul_le_mul_of_nonneg_left hxX Real.pi_pos.le
+      linarith
     linarith
   · rw [hdiff]
     have h1 : (0 : ℝ) < x₀ + m := by positivity
@@ -99,9 +100,11 @@ theorem norm_partial_cpow_real_le {x₀ X : ℝ} (hx₀ : 0 < x₀) {k : ℕ} (h
       push_cast
       apply Real.log_le_log (by positivity)
       rw [div_le_div_iff₀ (by positivity) h1]
-      nlinarith
+      ring_nf
+      linarith
     have : 0 ≤ τ / (2 * Real.pi) := by positivity
-    nlinarith
+    have := mul_le_mul_of_nonneg_left h2 this
+    linarith
   · have : 3 / (2 * δ) = 3 * Real.pi * X / τ := by rw [hδ]; field_simp
     rw [this]
 

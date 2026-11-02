@@ -289,9 +289,10 @@ dimension.
 4. **Window capacity.** The pointwise part is done: `Q ≥ ∫V_A H² + pole` with the universal end
    profile, and short windows (`≤ 1/7`) are positive by it. Open: a Poincaré inequality for the
    interior jumps on the region where `V_A < 0`, uniform in `A` (RH; shared with CWS §7). Numerically
-   the archimedean form `Ω_Γ‖H‖² + J_∞(H)` alone has negative index `0` below `A₁ ≈ 0.215`, `1` up to
-   `A₂ ≈ 0.762`, then about `2A` (Weyl law for the symbol of the Gamma factor, which vanishes near
-   `ξ = 2π`). So no potential bound for `J_∞` (exit potential, ground-state weights) passes `A₁`: beyond
+   the archimedean form `Ω_Γ‖H‖² + J_∞(H)` alone has negative index `0` below `A₁ ≈ 0.218`, `1` up to
+   `A₂ ≈ 0.763`, and in general its critical lengths are `A_k ≈ k/2 − 0.24` (gaps `→ π/ξ₀`): a Weyl law
+   `ι_Γ(A) ≈ 2A` for the Gamma symbol `Re ψ(¼ + iξ/2) − log π`, which vanishes at `ξ₀ = 6.2898 ≈ 2π`
+   (the `2π` of the Riemann–von Mangoldt formula). So no potential bound for `J_∞` (exit potential, ground-state weights) passes `A₁`: beyond
    it the pole is indispensable. The second archimedean direction is odd under `σ_A` and appears
    just after the first prime `log 2`.
 5. **The exponent.** Close the gap between the zero width and the negativity exponent without

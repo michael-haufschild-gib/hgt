@@ -39,21 +39,26 @@ The exact signed fold cost `w(C−F)` can be paid uniformly along the tower. The
 
 ## Current analytic test of the stronger loan
 
-Try the odd C² polynomial window `f(x)=x(1−x²)^3` on `[-1,1]`, zero outside, dilated to length
-`109/100 < log 3`. Its pole contribution is nonpositive. A rigorous upper bound for the prime-free
-archimedean form would suffice to refute the nonnegative-loan target.
+Use the continuous odd cubic `f(x)=x max(1−4x²,0)`, supported in `[-1/2,1/2]`.
+For `0≤t≤1`, its proposed exact autocorrelation is
+`C(t)=2/105−2t²/5+2t³/3−2t⁵/5+4t⁷/35`; it vanishes for `t≥1`.
+Thus `E=C(0)=2/105`, `∫₀¹ C=0`, and `∫₀¹(E−C(t))/t=(457/210)E`.
 
-Useful exact kernel identity, for `t>0`:
-`ω(t)=1/(4 sinh(t/2))+1/(4 cosh(t/2)) ≤ 1/(2t)+1/4`.
-Compare the interior jumps with this logarithmic kernel and retain the exact tail `Ω(A)`.
-For an odd unit-mass profile at length `A`, the constant-kernel contribution cancels its
-autocorrelation integral, giving the candidate upper quotient
-`L(f)+A/2+2Ω(A)`, where `L` is the scale-invariant logarithmic lag quotient.
-Target exact bounds: `L(f)≤29/12`, `Ω(109/100)≤119/100`, and `−Ω_Γ>107/20`.
-These imply a strictly negative prime-free archimedean Rayleigh quotient. All three remain to audit.
+The existing AIP theorem `archLevyDensity_le_inv` gives `ω(t)≤1/(2t)+1/4`.
+It yields `J∞≤(457/210+1/2+2Ω(1))E`. The existing antiderivative expansion gives
+`Ω(1)≤251/200`; standard logarithm and Euler-constant bounds give `−Γ>26/5`.
+Consequently the proposed prime-free bound is `Q₁(f)<−(29/2100)E`.
+These identities and inequalities await Lean verification. Existing continuous-source
+mollification preserves the energy limit and produces C² tests inside a slightly enlarged
+window still shorter than `log 3`.
 
-The polynomial identity
-`f=16(P₁/105−P₃/55+P₅/91−P₇/429)` exposes a finite exact rational expression for `L(f)`.
-The logarithmic exit average is `H₁₃−H₆+1/15`. Prove the comparison and rational evaluation;
-no numerical result is accepted. If the stronger loan fails, preserve the signed fold and
-seek joint Schur payment of the frozen negative direction and the new fold.
+If this refutes the stronger loan, preserve the signed fold. The positive survivor must
+jointly pay the frozen negative direction and the new fold; a negative statement alone
+does not retire F1.
+
+For the same cubic, the proposed positive survivor is `Q(f)≥E/100` after inserting prime `2`.
+Exact moments are `∫₀¹t(E−C)=7E/12` and `∫₀¹t²(E−C)=47E/120`.
+The sharp lower Gamma kernel, `Ω(1)≥log 2+π/4−1/4+1/96`, `−Γ≤269/50`,
+`C(log 2)≤−33E/100`, `log 2/√2≥49/100`, and polar cost `≤7E/225` give this margin.
+This would exhibit strict negative frozen energy and strict positive complete energy on the
+same smooth first-stage test. The bounds and smoothing transfer remain to formalize.
