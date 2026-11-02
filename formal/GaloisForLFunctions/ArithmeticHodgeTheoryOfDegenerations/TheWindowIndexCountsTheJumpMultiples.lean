@@ -93,6 +93,7 @@ theorem posDef_of_hermQuad_pos {B : Matrix ι ι ℂ} (hB : B.IsHermitian)
   rw [Matrix.posDef_iff_dotProduct_mulVec]
   refine ⟨hB, fun x hx => ?_⟩
   have him : (star x ⬝ᵥ B *ᵥ x).im = 0 := Complex.conj_eq_iff_im.1 (by
+    change star (star x ⬝ᵥ B *ᵥ x) = star x ⬝ᵥ B *ᵥ x
     rw [← Matrix.star_dotProduct_star, star_star, Matrix.star_mulVec, hB.eq,
       ← Matrix.dotProduct_mulVec])
   rw [Complex.lt_def]
@@ -139,10 +140,10 @@ theorem hermQuad_weightGram_eq {w : ℝ → ℝ} (hw : Continuous w) {H : ι →
 omit [DecidableEq ι] in
 theorem aliasGram_isHermitian (β : ℝ) (h : ι → ℝ → ℝ) : (aliasGram β h).IsHermitian := by
   ext i j
-  simp only [aliasGram, conjTranspose_apply, star_def, Complex.conj_ofReal]
-  congr 2
-  funext y
-  ring
+  simp only [aliasGram, conjTranspose_apply]
+  rw [Complex.star_def, Complex.conj_ofReal]
+  congr 1
+  exact integral_congr_ae (Eventually.of_forall fun y => by simp only; ring)
 
 /-- **Independent families**: the aliasing Gram matrix of a linearly independent family of windows
 is positive definite. -/
@@ -170,7 +171,7 @@ theorem aliasGram_posDef (β : ℝ) {h : ι → ℝ → ℝ} (hh : ∀ i, ContDi
     have him : ∀ y, ∑ j, (x j).im * h j y = 0 := fun y => by
       have h1 := congrArg Complex.im (hall y)
       simp only [Complex.im_sum, Complex.mul_im, Complex.ofReal_re, Complex.ofReal_im, mul_zero,
-        add_zero, Complex.zero_im, halfWeight] at h1
+        Complex.zero_im, halfWeight] at h1
       have he : Real.exp (y / 2) ≠ 0 := (Real.exp_pos _).ne'
       have : Real.exp (y / 2) * ∑ j, (x j).im * h j y = 0 := by
         rw [Finset.mul_sum]; rw [← h1]; exact Finset.sum_congr rfl fun j _ => by ring
@@ -185,12 +186,13 @@ theorem aliasGram_posDef (β : ℝ) {h : ι → ℝ → ℝ} (hh : ∀ i, ContDi
       Complex.normSq (∑ j, x j * (halfWeight (h j) y : ℂ)) := by
     refine (by fun_prop : Continuous fun y => Real.exp (-((β + 1) * y))).mul
       (Complex.continuous_normSq.comp ?_)
-    exact continuous_finset_sum _ fun j _ =>
+    exact continuous_finsetSum _ fun j _ =>
       continuous_const.mul (Complex.continuous_ofReal.comp (hHc j))
   have hcs : HasCompactSupport fun y => Real.exp (-((β + 1) * y)) *
       Complex.normSq (∑ j, x j * (halfWeight (h j) y : ℂ)) :=
-    HasCompactSupport.intro isCompact_Icc fun y hy => by
-      simp [hHs _ y hy]
+    HasCompactSupport.intro (isCompact_Icc (a := -A) (b := 0)) fun y hy => by
+      have hz : ∀ j, halfWeight (h j) y = 0 := fun j => hHs j y hy
+      simp [hz]
   refine hcont.integral_pos_of_hasCompactSupport_nonneg_nonzero hcs
     (fun y => mul_nonneg (Real.exp_pos _).le (Complex.normSq_nonneg _)) (x := y₀) ?_
   exact mul_ne_zero (Real.exp_pos _).ne' (by rwa [Ne, Complex.normSq_eq_zero])
