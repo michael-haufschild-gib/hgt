@@ -99,8 +99,9 @@ theorem isPrimitiveVec_iff_exists_isUnit_of_local [IsLocalRing R] (v : Fin k →
   · rintro ⟨i, hi⟩
     obtain ⟨u, hu⟩ := hi
     refine ⟨fun j => if j = i then (↑u⁻¹ : R) else 0, ?_⟩
-    rw [sum_eq_single i (fun j _ hj => by rw [if_neg hj, zero_mul])
-      (fun h => absurd (mem_univ i) h), if_pos rfl, ← hu, Units.inv_mul]
+    rw [sum_eq_single i (fun j _ hj => by simp only [if_neg hj, zero_mul])
+      (fun h => absurd (mem_univ i) h)]
+    simp only [if_pos rfl, ← hu, Units.inv_mul]
 
 /-- The non-unimodular vectors of a local ring are the vectors with entries in `𝔪`. -/
 def notUnimodularEquiv [IsLocalRing R] :

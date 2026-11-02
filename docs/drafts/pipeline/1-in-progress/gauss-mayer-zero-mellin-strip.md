@@ -21,7 +21,12 @@ The certified tail decomposition is
 `|T_w(a)| ≤ C(w)a^(−σ/2−1)` for `a≥1`.
 Thus `a^w F_w(a) → −ζ(w)`. At a zeta zero, the stronger certified limit is
 `a F_w(a) → −B(w)`, with `B(w)≠0`.
-A nonzero scaled limit gives matching upper and lower power bounds at infinity.
+A nonzero scaled limit of modulus `L>0` gives, for sufficiently large `a`,
+`(L/2)a^(−κ) ≤ |F_w(a)| ≤ (3L/2)a^(−κ)`, with `κ=σ` or `κ=1`.
+The weighted norm is therefore comparable to `a^(Re u−κ−1)`.
+Its tail integral converges precisely when the exponent is below `−1`; equality
+is logarithmic divergence. Local integrability follows by multiplying one
+certified central-strip Mellin integrand by its continuous inverse power.
 Hence the tail Mellin integral converges exactly when `Re u<σ` in the first
 case and `Re u<1` in the second. The exact reciprocity
 `F_w(a)=a^(−w)F_w(1/a)` turns the head criterion into the tail criterion

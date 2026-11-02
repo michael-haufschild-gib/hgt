@@ -28,7 +28,8 @@ conductor growth as a complete positive class at some super-log-log overlap.
 - The quadratic bound in `TheLinearMomentRemovesTheOverlapLogarithm.lean` is checked
   with a clean axiom audit. Its bilinear consequence in
   `LinearOverlapBoundsControlBothPacketArguments.lean` is written, unchecked.
-- Retain the explicit `cρ` cost in the coefficient split instead of requiring it to be at most one.
+- `LinearOverlapComparisonRetainsItsCutoffRatio.lean` retains the explicit `cρ`
+  cost in the coefficient split; written, unchecked.
 - Combine terminal payment with the cubic high-coefficient lag bound.
 - Prove the sequence-dependent clock and horizon, then the whole-span capstone.
 

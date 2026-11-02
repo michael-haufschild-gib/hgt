@@ -88,7 +88,10 @@ sixth-power interpolation cost and the seventh/eighth-power decay comparison,
 with the same audit result. `exists_actual_clock_filters` in
 `GaussianFiniteFilters.lean` now constructs the finite isolating products,
 with uniform value and moment costs `exp(KN⁶)` and a direct standard-axiom
-audit. The complete criterion remains unformalized.
+audit. `GaussianConeRigidity.lean` proves the full shifted-moment width
+criterion, with direct standard-axiom audits of the target/tail estimate and
+`zetaZeroWidth_le_iff_bounded_gaussian_moments`. The scalar-kernel coupling
+bridge remains unformalized.
 Local search found `XiGaussianAnnihilator` and
 `GaussianCentralGapFilterLightCone`: the former uses polynomials in squared
 spectral points; the latter varies a Gaussian filter and its center.

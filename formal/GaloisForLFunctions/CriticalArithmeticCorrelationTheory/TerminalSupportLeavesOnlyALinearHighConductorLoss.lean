@@ -156,7 +156,7 @@ theorem exists_profile_highConductor_linear_loss_of_terminal_budget {φ : ℝ �
         (le_add_of_nonneg_right (by positivity))
     have hs : (c ^ 2 / Real.log N) ^ 2 ≤ 1 := by
       calc
-        _ = c ^ 4 * 1 * (1 / (Real.log N) ^ 2) := by ring
+        _ = c ^ 4 * 1 * (1 / (Real.log N) ^ 2) := by rw [div_pow]; ring
         _ ≤ c ^ 4 * (1 + Real.log R) *
             ((1 + Real.log c) ^ 2 / (Real.log N) ^ 2 +
               (R : ℝ) ^ 2 * (1 + Real.log c) / N) :=

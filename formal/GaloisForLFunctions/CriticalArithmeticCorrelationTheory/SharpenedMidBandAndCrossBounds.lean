@@ -2424,7 +2424,7 @@ theorem norm_separatedCrossErrorMatrix_sq_le_of_mem_conductorSubspace {φ : ℝ 
           (mul_le_mul_of_nonneg_left hinv_N2 (by positivity)) (sq_nonneg _))
     _ = 520 * K₀ ^ 2 * (c ^ 4 / Real.log N) * ‖u‖ ^ 2 := by ring
 
-private theorem downwardPrimeVector_packet_apply' (φ : ℝ → ℝ) {c : ℝ} (hc : 0 < c)
+theorem downwardPrimeVector_packet_apply' (φ : ℝ → ℝ) {c : ℝ} (hc : 0 < c)
     (hφ : ContDiff ℝ 2 φ) (hsupp : ∀ u, u ∉ Set.Icc 0 1 → φ u = 0)
     {M N : ℕ} (hN : 1 ≤ N) (a : ℕ → ℝ) (n : PrimeHorizonIndex N) :
     downwardPrimeVector φ c N
@@ -2473,7 +2473,7 @@ private theorem downwardPrimeVector_packet_apply' (φ : ℝ → ℝ) {c : ℝ} (
   refine sum_congr rfl fun j hj => ?_
   rw [hext j hj, sum_mul]
 
-private theorem sum_exterior_packet_sq_le' {φ : ℝ → ℝ}
+theorem sum_exterior_packet_sq_le' {φ : ℝ → ℝ}
     (hφ : ContDiff ℝ 2 φ) (hsupp : ∀ u, u ∉ Set.Icc 0 1 → φ u = 0)
     (hM : 0 < ∫ u, φ u ^ 2) {R N : ℕ} {c : ℝ}
     (hR : 2 ≤ R) (hRN : R * R ≤ N) (hlog : 18 * (1 + Real.log R) ≤ Real.log N)
@@ -2684,13 +2684,13 @@ private theorem sum_exterior_packet_sq_le' {φ : ℝ → ℝ}
           c ^ 3 * (R : ℝ) ^ 2 * (Real.log N / N) *
           ‖∑ m ∈ Icc 1 R, a m • normalizedRamanujanHorizonVector m N‖ ^ 2 := by ring
 
-private def nearDivisorJetKernelMatrix (φ : ℝ → ℝ) (c : ℝ) (N : ℕ) :
+def nearDivisorJetKernelMatrix (φ : ℝ → ℝ) (c : ℝ) (N : ℕ) :
     Matrix (PrimeHorizonIndex N) (PrimeHorizonIndex N) ℝ := fun n j =>
   if (j : ℕ) ∈ nearRowIndices c N (n : ℕ) then
     shellAutocorr φ (|Real.log (j : ℕ) - Real.log (n : ℕ)| / (c / N)) / (∫ t, φ t ^ 2)
   else 0
 
-private theorem nearDivisorJetKernelMatrix_row (φ : ℝ → ℝ) (c : ℝ) (N : ℕ)
+theorem nearDivisorJetKernelMatrix_row (φ : ℝ → ℝ) (c : ℝ) (N : ℕ)
     (v : EuclideanSpace ℝ (PrimeHorizonIndex N)) (n : ℕ) (hn : n ∈ Icc 1 N) :
     primeHorizonExtension (Matrix.toEuclideanLin (nearDivisorJetKernelMatrix φ c N) v) n =
       ∑ j ∈ nearRowIndices c N n,
@@ -2710,7 +2710,7 @@ private theorem nearDivisorJetKernelMatrix_row (φ : ℝ → ℝ) (c : ℝ) (N :
       fun hc => h (mem_filter.mpr ⟨j.2, hc⟩)
     rw [if_neg h, if_neg hnot, zero_mul]
 
-private theorem divisorJetHorizonVector_eq_sum_single (R N : ℕ) (a : ℕ → ℝ) :
+theorem divisorJetHorizonVector_eq_sum_single (R N : ℕ) (a : ℕ → ℝ) :
     divisorJetHorizonVector R N a =
       ∑ m ∈ Icc 1 R, a m • divisorJetHorizonVector R N (fun k => if k = m then 1 else 0) := by
   ext n
@@ -3177,6 +3177,300 @@ theorem exists_overlap_sub_downward_sq_le_c9_split {φ : ℝ → ℝ}
       have h3 := mul_nonneg
         (show 0 ≤ 32 * K_nb * C_jet ^ 2 + K_nb * (M_nc ^ 2 + M_2a ^ 2) + 1 by positivity) hT_U2
       nlinarith only [h1, h2, h3]
+
+/-- **`overlap − downward` minus its divisor-jet near term.** The remaining `K₁`, `K₂ₐ` and
+exterior rows cost `O(c⁴ (1 + log c)/log N + c³R²(log N/N))` per unit mass; the jet term
+`K₂ᵦ v_jet` is left to be bounded separately. -/
+theorem exists_overlap_sub_downward_sub_jet_sq_le {φ : ℝ → ℝ}
+    (hφ : ContDiff ℝ 2 φ) (hsupp : ∀ t, t ∉ Set.Icc 0 1 → φ t = 0)
+    (hM : 0 < ∫ t, φ t ^ 2) :
+    ∃ C_near : ℝ, 0 < C_near ∧
+      ∀ {R N : ℕ} {c : ℝ},
+        2 ≤ R → R * R ≤ N → 18 * (1 + Real.log R) ≤ Real.log N →
+        1 ≤ c → c / N ≤ 1 / 3 →
+        ((R * R : ℕ) + 1 : ℝ) * (linearNearRowRadius c + 1) ≤ N →
+      ∀ a : ℕ → ℝ,
+        let u := ∑ m ∈ Icc 1 R, a m • normalizedRamanujanHorizonVector m N
+        ‖Matrix.toEuclideanLin (overlapMatrix φ c N) u - downwardPrimeVector φ c N u -
+            Matrix.toEuclideanLin (nearDivisorJetKernelMatrix φ c N)
+              (divisorJetHorizonVector R N a)‖ ^ 2 ≤
+          C_near * ((c ^ 4 * (1 + Real.log c) / Real.log N +
+              c ^ 3 * (R : ℝ) ^ 2 * (Real.log N / N)) * ‖u‖ ^ 2) := by
+  obtain ⟨K_pair, hK_pair0, hpair⟩ := exists_abs_atomArchPair_near_sub_le hφ hsupp hM
+  obtain ⟨C_jet, hC_jet_pos, hC_jet⟩ := exists_divisorJetHorizonVector_norm_le
+  let M_nc : ℝ := 1 + Real.exp (1 / 2)
+  let M_2a : ℝ := K_pair + 2 * Real.exp 2 + 1
+  let K_nb : ℝ := 80 * (2 * Real.exp 2) ^ 2
+  let K_ext : ℝ := 36 * (Real.exp 1 + 2) * (Real.exp 1 + 1) ^ 2
+  let C_near : ℝ := 4 * (32 * K_nb * C_jet ^ 2 + K_nb * (M_nc ^ 2 + M_2a ^ 2) + K_ext + 1)
+  refine ⟨C_near, by dsimp only [C_near, K_nb, K_ext, M_nc, M_2a]; positivity, ?_⟩
+  intro R N c hR hRN hlog hc1 hw1 hRNT a
+  dsimp only
+  let u := ∑ m ∈ Icc 1 R, a m • normalizedRamanujanHorizonVector m N
+  have hu : u ∈ conductorSubspace R N := sum_normalizedRamanujanHorizonVector_mem_conductorSubspace R N a
+  have hc0 : 0 < c := zero_lt_one.trans_le hc1
+  have hw : c / N ≤ 1 := hw1.trans (by norm_num)
+  have hN1 : 1 ≤ N := (Nat.mul_pos (by omega : 0 < R) (by omega : 0 < R)).trans_le hRN
+  have hN0 : (0 : ℝ) < N := by exact_mod_cast hN1
+  have hcN2 : 2 * c ≤ N := by have := (div_le_iff₀ hN0).mp hw1; linarith only [this, hc0]
+  have hL : 0 < Real.log N := by have := Real.log_natCast_nonneg R; linarith only [hlog, this]
+  have hlc0 : 0 ≤ Real.log c := Real.log_nonneg hc1
+  let g := atomDilate φ (c / N)
+  let G0 := ∫ t, g t ^ 2
+  let K1 : ℕ → ℕ → ℝ := fun n j =>
+    completeWeilPoleShift φ c / N * archimedeanCenterKernel n j
+  let K2a : ℕ → ℕ → ℝ := fun n j =>
+    atomArchPair g n j / G0 -
+      Real.log j * (shellAutocorr φ (|Real.log j - Real.log n| / (c / N)) / (∫ t, φ t ^ 2))
+  let K2b : ℕ → ℕ → ℝ := fun n j =>
+    shellAutocorr φ (|Real.log j - Real.log n| / (c / N)) / (∫ t, φ t ^ 2)
+  let vJet := divisorJetHorizonVector R N a
+  have hu_ext : ∀ j ∈ Icc 1 N, primeHorizonExtension u j =
+      (Real.sqrt (Real.log N))⁻¹ *
+        ∑ m ∈ Icc 1 R, a m * (normalizedRamanujanMode m j / Real.sqrt j) := by
+    intro j hj
+    rw [primeHorizonExtension_coe u ⟨j, hj⟩]
+    change (PiLp.projₗ (𝕜 := ℝ) 2 (fun _ : PrimeHorizonIndex N => ℝ) ⟨j, hj⟩) u = _
+    dsimp only [u]
+    rw [map_sum, mul_sum]
+    exact sum_congr rfl fun m _ => by
+      change a m * ((Real.sqrt (Real.log N))⁻¹ * (normalizedRamanujanMode m j / Real.sqrt j)) = _
+      ring
+  have hvJet_ext : ∀ j ∈ Icc 1 N, primeHorizonExtension vJet j =
+      (Real.sqrt (Real.log N))⁻¹ *
+        ∑ m ∈ Icc 1 R, a m * (ramanujanLogDivisorJet m j /
+          (Real.sqrt (m.totient : ℝ) * Real.sqrt j)) := by
+    intro j hj
+    rw [primeHorizonExtension_coe vJet ⟨j, hj⟩, divisorJetHorizonVector_apply R N a ⟨j, hj⟩]
+    simp only [poleVector]
+    rw [mul_assoc, mul_sum]
+    congr 1
+    exact sum_congr rfl fun m _ => by ring
+  have hrow_decomp : ∀ n ∈ Icc 1 N,
+      primeHorizonExtension
+          (Matrix.toEuclideanLin (overlapMatrix φ c N) u - downwardPrimeVector φ c N u) n =
+        (∑ j ∈ nearRowIndices c N n, K1 n j * primeHorizonExtension u j) +
+        (∑ j ∈ nearRowIndices c N n, K2a n j * primeHorizonExtension u j) +
+        (∑ j ∈ nearRowIndices c N n, K2b n j * primeHorizonExtension vJet j) -
+        ∑ m ∈ Icc 1 R, a m * ((Real.sqrt (m.totient : ℝ))⁻¹ *
+          (actualExteriorDownwardRow g N m n / Real.sqrt (Real.log N))) := by
+    intro n hn
+    rw [primeHorizonExtension_coe _ ⟨n, hn⟩]
+    change (Matrix.toEuclideanLin (overlapMatrix φ c N) u) ⟨n, hn⟩ -
+      downwardPrimeVector φ c N u ⟨n, hn⟩ = _
+    have hov_sum : (Matrix.toEuclideanLin (overlapMatrix φ c N) u) ⟨n, hn⟩ =
+        ∑ m ∈ Icc 1 R, a m *
+          (Matrix.toEuclideanLin (overlapMatrix φ c N)
+            (normalizedRamanujanHorizonVector m N)) ⟨n, hn⟩ := by
+      change (PiLp.projₗ (𝕜 := ℝ) 2 (fun _ : PrimeHorizonIndex N => ℝ) ⟨n, hn⟩)
+        (Matrix.toEuclideanLin (overlapMatrix φ c N) u) = _
+      dsimp only [u]
+      rw [map_sum, map_sum]
+      exact sum_congr rfl fun m _ => by rw [map_smul, map_smul]; rfl
+    have hdown_sum : downwardPrimeVector φ c N u ⟨n, hn⟩ =
+        ∑ m ∈ Icc 1 R, a m *
+          downwardPrimeVector φ c N (normalizedRamanujanHorizonVector m N) ⟨n, hn⟩ :=
+      downwardPrimeVector_packet_apply' φ hc0 hφ hsupp hN1 a ⟨n, hn⟩
+    rw [hov_sum, hdown_sum, ← sum_sub_distrib]
+    have hmode : ∀ m ∈ Icc 1 R,
+        a m * (Matrix.toEuclideanLin (overlapMatrix φ c N)
+            (normalizedRamanujanHorizonVector m N) ⟨n, hn⟩ -
+          downwardPrimeVector φ c N (normalizedRamanujanHorizonVector m N) ⟨n, hn⟩) =
+        a m * nearCenterVector φ c N m ⟨n, hn⟩ +
+          a m * ((Real.sqrt (m.totient : ℝ))⁻¹ *
+            (nearGammaDownwardRow φ c N m n / Real.sqrt (Real.log N))) -
+          a m * ((Real.sqrt (m.totient : ℝ))⁻¹ *
+            (actualExteriorDownwardRow g N m n / Real.sqrt (Real.log N))) := by
+      intro m hm
+      have hm0 : 0 < m := (mem_Icc.mp hm).1
+      rw [overlapMatrix_ramanujan_row_eq φ c hm0 ⟨n, hn⟩]
+      have hfull := congrArg (fun v : EuclideanSpace ℝ (PrimeHorizonIndex N) => v ⟨n, hn⟩)
+        (normalizedFullNearGammaDownwardVector_eq_sub hφ hsupp hc0 N m)
+      change normalizedFullNearGammaDownwardVector φ c N m ⟨n, hn⟩ =
+        nearGammaDownwardRow φ c N m n / Real.sqrt (Real.log N) -
+          actualExteriorDownwardRow g N m n / Real.sqrt (Real.log N) at hfull
+      rw [hfull]
+      ring
+    rw [sum_congr rfl fun m hm => by rw [← mul_sub, hmode m hm], sum_sub_distrib, sum_add_distrib]
+    have hnc_sum : (∑ m ∈ Icc 1 R, a m * nearCenterVector φ c N m ⟨n, hn⟩) =
+        ∑ j ∈ nearRowIndices c N n, K1 n j * primeHorizonExtension u j := by
+      have h1 : ∀ m ∈ Icc 1 R, a m * nearCenterVector φ c N m ⟨n, hn⟩ =
+          ∑ j ∈ nearRowIndices c N n,
+            K1 n j * ((Real.sqrt (Real.log N))⁻¹ *
+              (a m * (normalizedRamanujanMode m j / Real.sqrt j))) := by
+        intro m _
+        change a m * ((∑ j ∈ nearRowIndices c N n,
+          K1 n j * normalizedRamanujanMode m j / Real.sqrt j) / Real.sqrt (Real.log N)) = _
+        rw [sum_div, mul_sum]
+        exact sum_congr rfl fun j _ => by ring
+      rw [sum_congr rfl h1, sum_comm]
+      refine sum_congr rfl fun j hj => ?_
+      rw [← mul_sum, ← mul_sum, hu_ext j (mem_filter.mp hj).1]
+    have hng_sum :
+        (∑ m ∈ Icc 1 R, a m * ((Real.sqrt (m.totient : ℝ))⁻¹ *
+          (nearGammaDownwardRow φ c N m n / Real.sqrt (Real.log N)))) =
+        (∑ j ∈ nearRowIndices c N n, K2a n j * primeHorizonExtension u j) +
+        (∑ j ∈ nearRowIndices c N n, K2b n j * primeHorizonExtension vJet j) := by
+      have hcoeff : ∀ m ∈ Icc 1 R, ∀ j ∈ nearRowIndices c N n,
+          a m * ((Real.sqrt (m.totient : ℝ))⁻¹ *
+            (nearGammaDownwardCoefficient φ c N m n j / Real.sqrt j / Real.sqrt (Real.log N))) =
+          K2a n j * ((Real.sqrt (Real.log N))⁻¹ *
+              (a m * (normalizedRamanujanMode m j / Real.sqrt j))) +
+            K2b n j * ((Real.sqrt (Real.log N))⁻¹ *
+              (a m * (ramanujanLogDivisorJet m j / (Real.sqrt (m.totient : ℝ) * Real.sqrt j)))) := by
+        intro m hm j hj
+        have hm0 : 0 < m := (mem_Icc.mp hm).1
+        have hj1 : 1 ≤ j := (mem_Icc.mp (mem_filter.mp hj).1).1
+        rw [nearGammaDownwardCoefficient, sum_vonMangoldt_mul_ramanujan_eq_log_sub_jet m hj1,
+          normalizedRamanujanMode_eq_coefficient hm0]
+        dsimp only [K2a, K2b, g, G0]
+        ring
+      have hm_eq : ∀ m ∈ Icc 1 R,
+          a m * ((Real.sqrt (m.totient : ℝ))⁻¹ *
+            (nearGammaDownwardRow φ c N m n / Real.sqrt (Real.log N))) =
+          ∑ j ∈ nearRowIndices c N n,
+            (K2a n j * ((Real.sqrt (Real.log N))⁻¹ *
+                (a m * (normalizedRamanujanMode m j / Real.sqrt j))) +
+              K2b n j * ((Real.sqrt (Real.log N))⁻¹ *
+                (a m * (ramanujanLogDivisorJet m j /
+                  (Real.sqrt (m.totient : ℝ) * Real.sqrt j))))) := by
+        intro m hm
+        unfold nearGammaDownwardRow
+        rw [sum_div, mul_sum, mul_sum]
+        exact sum_congr rfl fun j hj => by simpa only [mul_assoc] using hcoeff m hm j hj
+      rw [sum_congr rfl hm_eq, sum_comm, ← sum_add_distrib]
+      refine sum_congr rfl fun j hj => ?_
+      have hjI := (mem_filter.mp hj).1
+      rw [sum_add_distrib, ← mul_sum, ← mul_sum, ← mul_sum, ← mul_sum,
+        hu_ext j hjI, hvJet_ext j hjI]
+    rw [hnc_sum, hng_sum, add_assoc]
+  have hK1_le : ∀ n ∈ Icc 1 N, ∀ j ∈ nearRowIndices c N n, |K1 n j| ≤ M_nc * c := by
+    intro n hn j hj
+    have h1 := abs_nearCenter_entry_le (φ := φ) (m := 1) zero_lt_one hN1 hcN2 hn hj
+    have hm1 : ∀ k, normalizedRamanujanMode 1 k = 1 := fun k => by
+      rw [normalizedRamanujanMode, ramanujanMode_one, Nat.totient_one, Nat.cast_one,
+        Real.sqrt_one, div_one]
+    rw [hm1 j, mul_one, range_one, sum_singleton, hm1 0, abs_one, mul_one,
+      abs_of_nonneg (completeWeilPoleShift_nonneg φ hc0.le)] at h1
+    have hpole := completeWeilPoleShift_le hφ.continuous hsupp hM hc0.le
+    exact h1.trans (by
+      dsimp only [M_nc]
+      simpa only [mul_comm c] using mul_le_mul_of_nonneg_right hpole (by positivity))
+  have hK2a_le : ∀ n ∈ Icc 1 N, ∀ j ∈ nearRowIndices c N n, |K2a n j| ≤ M_2a * c := by
+    intro n hn j hj
+    have hjN := (mem_filter.mp hj).1
+    have hj0 : (0 : ℝ) < j := by exact_mod_cast (mem_Icc.mp hjN).1
+    have hw0 : 0 < c / N := div_pos hc0 hN0
+    have hs : |Real.log j - Real.log n| ≤ 2 * (c / N) := by
+      simpa only [mul_div_assoc] using (mem_filter.mp hj).2.2
+    have hrem : |atomArchPair g n j / G0 - Real.log (1 / (c / N)) * K2b n j| ≤ K_pair := by
+      simpa only [g, G0, K2b, mul_div_assoc] using hpair (c / N) hw0 hw1 n j hs
+    have hq : |K2b n j| ≤ 1 := by
+      dsimp only [K2b]
+      rw [abs_div, abs_of_pos hM, div_le_one hM]
+      exact abs_bumpCorr_le hφ.continuous (hasCompactSupport_profile hsupp) _
+    have hquot : (N : ℝ) / j ≤ linearNearRowRadius c :=
+      (div_le_iff₀ hj0).mpr (nearRow_geometry_small_width hc0 hn hj hw).2.2
+    have hloglow : 0 ≤ Real.log N - Real.log j :=
+      sub_nonneg.mpr (Real.log_le_log hj0 (by exact_mod_cast (mem_Icc.mp hjN).2))
+    have hloghigh : Real.log N - Real.log j ≤ linearNearRowRadius c := by
+      have h := Real.log_le_sub_one_of_pos (div_pos hN0 hj0)
+      rw [Real.log_div hN0.ne' hj0.ne'] at h
+      linarith only [h, hquot]
+    have hlogc_abs : |Real.log c| ≤ c := by
+      rw [abs_of_nonneg hlc0]
+      linarith [Real.log_le_sub_one_of_pos hc0]
+    have hlogeq : Real.log (1 / (c / N)) - Real.log j = (Real.log N - Real.log j) - Real.log c := by
+      rw [one_div, Real.log_inv, Real.log_div hc0.ne' hN0.ne']; ring
+    have hlog_diff : |Real.log (1 / (c / N)) - Real.log j| ≤ linearNearRowRadius c + c := by
+      rw [hlogeq]
+      exact (abs_sub _ _).trans (by rw [abs_of_nonneg hloglow]; linarith only [hloghigh, hlogc_abs])
+    have hid : K2a n j = (atomArchPair g n j / G0 - Real.log (1 / (c / N)) * K2b n j) +
+        (Real.log (1 / (c / N)) - Real.log j) * K2b n j := by
+      dsimp only [K2a]; ring
+    rw [hid]
+    calc
+      _ ≤ |atomArchPair g n j / G0 - Real.log (1 / (c / N)) * K2b n j| +
+            |(Real.log (1 / (c / N)) - Real.log j) * K2b n j| := abs_add_le _ _
+      _ ≤ K_pair + (linearNearRowRadius c + c) * 1 := by
+        rw [abs_mul]
+        exact add_le_add hrem (mul_le_mul hlog_diff hq (abs_nonneg _)
+          (by unfold linearNearRowRadius; positivity))
+      _ ≤ M_2a * c := by
+        dsimp only [M_2a, linearNearRowRadius]
+        nlinarith only [hc1, hK_pair0]
+  have hK2b_le : ∀ n ∈ Icc 1 N, ∀ j ∈ nearRowIndices c N n, |K2b n j| ≤ 1 := by
+    intro _ _ _ _
+    dsimp only [K2b]
+    rw [abs_div, abs_of_pos hM, div_le_one hM]
+    exact abs_bumpCorr_le hφ.continuous (hasCompactSupport_profile hsupp) _
+  have hsq1 := sum_nearBand_sq_le_of_mem_conductorSubspace hR hlog hc1 hw
+    (by dsimp only [M_nc]; positivity) hRNT K1 hK1_le hu
+  have hsq2a := sum_nearBand_sq_le_of_mem_conductorSubspace hR hlog hc1 hw
+    (by dsimp only [M_2a]; positivity) hRNT K2a hK2a_le hu
+  have hsq3 := sum_exterior_packet_sq_le' hφ hsupp hM hR hRN hlog hc1 hw1 a
+  -- the near−down rows minus the jet rows are the `K₁`, `K₂ₐ` and exterior rows
+  have hthree : ∀ x₁ x₂ x₃ : ℝ, (x₁ + x₂ - x₃) ^ 2 ≤ 3 * (x₁ ^ 2 + x₂ ^ 2 + x₃ ^ 2) :=
+    fun x₁ x₂ x₃ => by
+      nlinarith only [sq_nonneg (x₁ - x₂), sq_nonneg (x₁ + x₃), sq_nonneg (x₂ + x₃)]
+  rw [← sum_primeHorizonExtension_sq]
+  have hpt : ∀ n ∈ Icc 1 N,
+      primeHorizonExtension (Matrix.toEuclideanLin (overlapMatrix φ c N) u -
+          downwardPrimeVector φ c N u -
+          Matrix.toEuclideanLin (nearDivisorJetKernelMatrix φ c N) vJet) n ^ 2 ≤
+        3 * ((∑ j ∈ nearRowIndices c N n, K1 n j * primeHorizonExtension u j) ^ 2 +
+          (∑ j ∈ nearRowIndices c N n, K2a n j * primeHorizonExtension u j) ^ 2 +
+          (∑ m ∈ Icc 1 R, a m * ((Real.sqrt (m.totient : ℝ))⁻¹ *
+            (actualExteriorDownwardRow g N m n / Real.sqrt (Real.log N)))) ^ 2) := by
+    intro n hn
+    have hsub : primeHorizonExtension (Matrix.toEuclideanLin (overlapMatrix φ c N) u -
+          downwardPrimeVector φ c N u -
+          Matrix.toEuclideanLin (nearDivisorJetKernelMatrix φ c N) vJet) n =
+        primeHorizonExtension (Matrix.toEuclideanLin (overlapMatrix φ c N) u -
+          downwardPrimeVector φ c N u) n -
+        primeHorizonExtension (Matrix.toEuclideanLin (nearDivisorJetKernelMatrix φ c N) vJet) n := by
+      rw [primeHorizonExtension_coe _ ⟨n, hn⟩, primeHorizonExtension_coe _ ⟨n, hn⟩,
+        primeHorizonExtension_coe _ ⟨n, hn⟩]
+      rfl
+    rw [hsub, hrow_decomp n hn, nearDivisorJetKernelMatrix_row φ c N vJet n hn]
+    have hK2b_eq : (∑ j ∈ nearRowIndices c N n, K2b n j * primeHorizonExtension vJet j) =
+        ∑ j ∈ nearRowIndices c N n,
+          (shellAutocorr φ (|Real.log j - Real.log n| / (c / N)) / (∫ t, φ t ^ 2)) *
+            primeHorizonExtension vJet j := rfl
+    rw [← hK2b_eq]
+    have := hthree (∑ j ∈ nearRowIndices c N n, K1 n j * primeHorizonExtension u j)
+      (∑ j ∈ nearRowIndices c N n, K2a n j * primeHorizonExtension u j)
+      (∑ m ∈ Icc 1 R, a m * ((Real.sqrt (m.totient : ℝ))⁻¹ *
+        (actualExteriorDownwardRow g N m n / Real.sqrt (Real.log N))))
+    convert this using 2
+    ring
+  have hT_U1 : 0 ≤ c ^ 4 * (1 + Real.log c) / Real.log N * ‖u‖ ^ 2 := by positivity
+  have hT_U2 : 0 ≤ c ^ 3 * (R : ℝ) ^ 2 * (Real.log N / N) * ‖u‖ ^ 2 := by positivity
+  have hKnb_pos : 0 ≤ K_nb := by dsimp only [K_nb]; positivity
+  have hKext_pos : 0 ≤ K_ext := by dsimp only [K_ext]; positivity
+  calc
+    _ ≤ 3 * ((∑ n ∈ Icc 1 N, (∑ j ∈ nearRowIndices c N n, K1 n j * primeHorizonExtension u j) ^ 2) +
+          (∑ n ∈ Icc 1 N, (∑ j ∈ nearRowIndices c N n, K2a n j * primeHorizonExtension u j) ^ 2) +
+          (∑ n ∈ Icc 1 N, (∑ m ∈ Icc 1 R, a m * ((Real.sqrt (m.totient : ℝ))⁻¹ *
+            (actualExteriorDownwardRow g N m n / Real.sqrt (Real.log N)))) ^ 2)) := by
+      refine (sum_le_sum hpt).trans_eq ?_
+      rw [← mul_sum, sum_add_distrib, sum_add_distrib]
+    _ ≤ 3 * (K_nb * c ^ 2 * (M_nc * c) ^ 2 * ((1 + Real.log c) / Real.log N) * ‖u‖ ^ 2 +
+          K_nb * c ^ 2 * (M_2a * c) ^ 2 * ((1 + Real.log c) / Real.log N) * ‖u‖ ^ 2 +
+          K_ext * c ^ 3 * (R : ℝ) ^ 2 * (Real.log N / N) * ‖u‖ ^ 2) := by
+      linarith only [hsq1, hsq2a, hsq3]
+    _ = 3 * (K_nb * (M_nc ^ 2 + M_2a ^ 2)) * (c ^ 4 * (1 + Real.log c) / Real.log N * ‖u‖ ^ 2) +
+        3 * K_ext * (c ^ 3 * (R : ℝ) ^ 2 * (Real.log N / N) * ‖u‖ ^ 2) := by ring
+    _ ≤ C_near * ((c ^ 4 * (1 + Real.log c) / Real.log N +
+          c ^ 3 * (R : ℝ) ^ 2 * (Real.log N / N)) * ‖u‖ ^ 2) := by
+      dsimp only [C_near]
+      have hjet0 : 0 ≤ C_jet ^ 2 := sq_nonneg _
+      nlinarith only [hT_U1, hT_U2, hKnb_pos, hKext_pos, hjet0,
+        mul_nonneg (show (0 : ℝ) ≤ 32 * K_nb * C_jet ^ 2 + 1 by positivity) hT_U1,
+        mul_nonneg (show (0 : ℝ) ≤ 32 * K_nb * C_jet ^ 2 + K_nb * (M_nc ^ 2 + M_2a ^ 2) + 1 by
+          positivity) hT_U2,
+        mul_nonneg (show (0 : ℝ) ≤ K_ext + 1 by positivity) hT_U1]
+
 
 private theorem identity_euclid_apply' {N : ℕ}
     (x : EuclideanSpace ℝ (PrimeHorizonIndex N)) :
