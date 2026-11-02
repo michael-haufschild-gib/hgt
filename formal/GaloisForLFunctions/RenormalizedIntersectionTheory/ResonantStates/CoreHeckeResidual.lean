@@ -88,10 +88,12 @@ theorem dyadicEigenResidual_factor {u : ℂ} (hAu : msA u = 0)
   rw [show u - 1 / 2 = -s by dsimp [s]; ring, Complex.cpow_neg,
     hprod]
   push_cast at hupp' ⊢
-  rw [ofReal_div_natCast_cpow_eisensteinHeckeMaassSelberg 2 z.im_pos.le s]
+  have hdiv : ((z.im : ℂ) / 2) ^ s = (z.im : ℂ) ^ s * ((2 : ℂ) ^ s)⁻¹ := by
+    simpa only [Nat.cast_ofNat] using
+      ofReal_div_natCast_cpow_eisensteinHeckeMaassSelberg 2 z.im_pos.le s
+  rw [hdiv]
   rw [← hupp']
   field_simp [hgp]
-  <;> ring
 
 private theorem return_scalar_norm_lower {u : ℂ} (hu : -1 / 2 < u.re)
     {z : ℍ} (hz : z ∈ coreRectangle) :
@@ -215,8 +217,8 @@ theorem dyadicEigenResidual_core_mass_lower {u : ℂ} (hu : u ∈ eisensteinLine
   simpa only [setIntegral_const, hv, smul_eq_mul, show (1 / 16 : ℝ) *
     (‖msB u‖ ^ 2 / 32) = ‖msB u‖ ^ 2 / 512 by ring] using hm
 
-/-- Fixed-height truncations remain a definite distance from Hecke eigenstates,
-uniformly in frequency whenever the real parameter stays below zero. -/
+/-- Cutoff-one truncations remain a definite distance from Hecke eigenstates,
+uniformly in frequency when the real parameter is bounded away from zero below. -/
 theorem dyadicEigenResidual_relative_mass_lower {u : ℂ}
     (hu : u ∈ eisensteinLineDomain) (hur : u.re < 0) (hAu : msA u = 0) :
     (-2 * u.re) / 512 * (∫ z in fd, ‖truncatedLineModel u 1 z‖ ^ 2) ≤
@@ -229,11 +231,6 @@ theorem dyadicEigenResidual_relative_mass_lower {u : ℂ}
     field_simp
   rw [he]
   exact dyadicEigenResidual_core_mass_lower hu hur hAu
-
-#print axioms dyadicEigenResidual_factor
-#print axioms dyadicEigenResidual_norm_sq_lower
-#print axioms dyadicEigenResidual_core_mass_lower
-#print axioms dyadicEigenResidual_relative_mass_lower
 
 end
 

@@ -1,6 +1,6 @@
 # The Window Tower of Spec ℤ (WTZ)
 
-Namespace `GaloisForLFunctions.WindowTowerOfSpecZ`; umbrella `WindowTowerOfSpecZ.lean`; 8 modules.
+Namespace `GaloisForLFunctions.WindowTowerOfSpecZ`; umbrella `WindowTowerOfSpecZ.lean`; 9 modules.
 Every theorem is unconditional; none assumes or proves RH.
 
 ## 1. Motivation
@@ -97,6 +97,16 @@ positive integers are counts. Along the powers of a prime the Tate pieces form a
 non-Tate piece `log p` is the same at every stage. At the first prime `τ_H(k) = ‖H‖² + (2^k − 1)2^{−1/2}∫H(u)H(u + log 2)`:
 the signed fold count of `T₂` is the coefficient of `#ℙ^{k−1}(𝔽₂)`.
 
+Because `τ_H` has only the frequencies `log d`, `d ≤ e^A`, its derivative at `0` is a fixed
+combination of its values at `0, …, N − 1`: if `P = Σ p_j x^j` interpolates `log` at `1, …, N`, then
+`Λ(n) = Σ_j p_j J_j(n)` for `n ≤ N` and
+
+`Q(H) = Ω(0)‖H‖² + J_∞(H) + pole − 2Σ_j p_j τ_H(j)`:
+
+Weil's window form is an explicit **signed count** — a combination of projective point counts over
+the residue rings `ℤ/m`, `m ≤ e^A`, in dimensions `< e^A`, with the interpolation coefficients of `log`
+as signs.
+
 **D. The atomic lattice.** Atoms of width `< log((N+1)/N)` at the points `log(m/N)`, `m ≤ N`, are
 moved by the window shifts as the integers are multiplied: `T_{log n}b_m = b_{nm}` (`0` past the
 level). The atomic embedding `ι` intertwines `ρ_A` with multiplication in `D_N`: the integers of
@@ -136,7 +146,7 @@ the sign of the weight. Counts at integer dimensions do not select.
 | Question (obstacles §2.7) | Answer |
 |---|---|
 | What are the restriction maps `W_A → W_{A'}` and their control theorem? | Equivariant inclusions of window modules over the truncations `D_{⌊e^{A'}⌋} → D_{⌊e^A⌋}` (`windowRepFun_of_le`, `ker_windowRep`). Each stage is a small extension with kernel the new fold (`sub_single_mem_truncIdeal_succ`, `mul_mem_truncIdeal`); the new fold is a socle element until stage `2n` (`windowRep_single_mul_eq_zero`); Loewy length `⌊log₂ N⌋ + 1` (`windowRep_kills_pow_iff`); cotangent space = primes (`mem_sq_sup_truncIdeal_iff`, `single_prime_not_mem`); inverse limit = Dirichlet ring (`existsUnique_limit`, `iInf_truncIdeal`). |
-| What is the count attached to a fold `T_n`; what does `sym₂` count? | `T_n` is `δ_n`; in the Tate function its coefficient is `J_k(n)n^{−1/2}`, a count of primitive vectors of `(ℤ/n)^k` (`tateFunction_eq`, `jordanTotient_eq_card_primVec`). At the first prime the signed fold count `anti₂ − sym₂` is the coefficient of `#ℙ^{k−1}(𝔽₂) = 2^k − 1` (`tateFunction_firstPrime`). It enters Weil's form only through the derivative at `k = 0` (`weilQuad_eq_tateJet`): no integer dimension makes it a count. |
+| What is the count attached to a fold `T_n`; what does `sym₂` count? | `T_n` is `δ_n`; in the Tate function its coefficient is `J_k(n)n^{−1/2}`, a count of primitive vectors of `(ℤ/n)^k` (`tateFunction_eq`, `jordanTotient_eq_card_primVec`). At the first prime the signed fold count `anti₂ − sym₂` is the coefficient of `#ℙ^{k−1}(𝔽₂) = 2^k − 1` (`tateFunction_firstPrime`). It enters Weil's form only through the derivative at `k = 0` (`weilQuad_eq_tateJet`): no integer dimension makes it a count. Equivalently, Weil's window form is a signed combination of the counts `φ(m)#ℙ^{j−1}(ℤ/m)`, `j < e^A`, with the coefficients of the polynomial interpolating `log` at `1, …, ⌊e^A⌋` (`sum_coeff_mul_jordanTotient`, `weilQuad_eq_signedCount`): the window `h¹` is a signed count, and its sign is the sign of that interpolation against the archimedean data. |
 | Is there a scheme over `ℤ` whose `ℤ/m`-points give the twisted counts and whose "conductor-one" part is the window form? | The punctured affine spaces `𝔸^k∖0` (primitive vectors), with the dimension as parameter: `J_k(m) = φ(m)#ℙ^{k−1}(ℤ/m)` are the Tate pieces (`jordanTotient_eq_card_projPoints`); `∂_kJ_k(m)|₀ = Λ(m)` (`hasDerivAt_jordanTotient_zero`) makes Weil's arithmetic window term the derivative at dimension zero (`hasDerivAt_tateFunction`). |
 | What lattice of rank `≈ 2e^A` carries the sections; with what metric? | The atomic lattice: the integers `m ≤ e^A`, a free rank-one module over the window algebra (`windowRepFun_atomicEmbedding`), of rank `⌊e^A⌋`; the window genus `≥ (2 − η)e^A` (CWS) is twice this rank to main order. Metric `‖φ‖²Σ g(k)h(k)/k` (`integral_atomicEmbedding_mul`); arithmetic term = multiplication by `Λ` (`integral_windowRep_atomicEmbedding`); pole = values at `s = 0, 1` (`poleA_atomicEmbedding`, `poleB_atomicEmbedding`); the Gamma factor enters as the Lévy kernel between atoms. |
 | What growth law does the tower obey? | Negativity `≤ (deg K_A + 2 sinh(A/2) − A)‖H‖² ≤ (−Ω(0) + (4A+1)e^{A/2})‖H‖²` (`weilQuad_ge_neg_sharpWindowFloor`, `sharpWindowFloor_le`). Its exponent lies between the zero width and `½`, with RH iff it is `0` (ACCE `UnconditionalEqualityOfPolarAndFullGroundEnergyRates`, SRT `NegativityRateEqualsMaximalDepth`). |
@@ -158,6 +168,7 @@ the sign of the weight. Counts at integer dimensions do not select.
   telescoping `Σ n^{−1/2} ≤ 2√N`.
 - Dilations of windows and Adams lifts; adjoint shifts and the Rosati involution.
 - Completely multiplicative twists of Euler data; character-weighted Tate pieces.
+- Lagrange interpolation of `log` on the integers of a window; signed-count form of Weil's window form.
 
 **Used from the corpus.** CWS (window tests, folds, canonical class, floor, index, genus, flip twins);
 AHD/ADT (`jordanTotient`, `natCard_projPoints_mul_totient`, `natCard_primVec_eq_jordanTotient`); RHTower
@@ -208,6 +219,7 @@ in the dimension.
 | Inverse limit = Dirichlet ring | `iInf_truncIdeal`, `existsUnique_limit` |
 | Jordan family: `J_0 = 1`, `∂J|₀ = Λ`, Tate pieces = point counts | `jordanFun_zero`, `jordanFun_eq`, `hasDerivAt_jordanTotient_zero`, `jordanTotient_eq_card_projPoints`, `jordanTotient_eq_card_primVec`, `windowRepFun_jordan_nonneg` |
 | Weil's form = 1-jet of the Tate function at dimension zero | `tateFunction_zero`, `hasDerivAt_tateFunction`, `tateFunction_succ`, `tateFunction_firstPrime`, `weilQuad_eq_tateJet` |
+| Weil's window form is a signed count | `exists_log_interpolant`, `sum_coeff_mul_jordanTotient`, `integral_windowRep_vonMangoldt_eq_signedCount`, `weilQuad_eq_signedCount` |
 | Tate cocycle, commutator and conjugation forms | `tateFamily_add`, `tateFamily_zeta`, `windowRepFun_jordan_eq_commutator`, `windowRep_zeta_conj_position` |
 | Hensel tower of Tate pieces | `jordanTotient_prime_pow_succ`, `hasDerivAt_jordanTotient_prime_pow` |
 | Tate pieces at primes; flip twins; softness | `tateFamily_prime`, `logDeriv_prime`, `tateFamily_prime_mul_log`, `flipDatum_tateFamily_prime_neg`, `shiftedDatum_tateFamily_nonneg` |
@@ -224,7 +236,7 @@ in the dimension.
 | The window algebra is the semilocal algebra of the Euler factors at `p ≤ e^A` | It is the Dirichlet ring truncated at `n ≤ e^A`; composites are products, truncation is by size |
 | The tower is a direct limit of finite objects carrying `h¹` | The algebras are finite-dimensional; the modules are not, and no window has a finite-dimensional realization (CWS) |
 | A new prime power is a large perturbation of the window | Algebraically it is a socle element; it composes to zero with every fold until stage `2n` |
-| Weil's arithmetic term is a count | It is the derivative at dimension zero of counts; at every positive integer dimension the family is a count, and that positivity is soft |
+| Weil's arithmetic term is a count | It is the derivative at dimension zero of counts, i.e. a signed combination of counts with interpolation signs; at every positive integer dimension the family is a count, and that positivity is soft |
 | Counting coefficients select `ζ` | `ζ(s)ζ(s − ε)` is Tate positive with zeros off the line |
 | The pole plane costs `Ae^A` on a window | Its exact capacity is `2 sinh(A/2) − A`, exponent `½` |
 | Atoms diagonalize Weil's form | They diagonalize the norm and turn the arithmetic into multiplication by `Λ`; the Lévy kernel couples all atoms |

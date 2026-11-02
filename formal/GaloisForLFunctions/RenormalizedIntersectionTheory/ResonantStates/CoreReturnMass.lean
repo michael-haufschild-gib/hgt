@@ -166,7 +166,7 @@ theorem dyadicReturnDefect_core_mass_lower {u : ℂ} (hur : u.re < 0) (hAu : msA
   simpa only [setIntegral_const, hv, smul_eq_mul, show (1 / 16 : ℝ) *
     (‖msB u‖ ^ 2 / 8) = ‖msB u‖ ^ 2 / 128 by ring] using hm
 
-/-- Relative core mass cannot vanish with frequency while the real parameter stays negative. -/
+/-- A uniform negative upper bound on the real parameter forces persistent relative core mass. -/
 theorem dyadicReturnDefect_relative_mass_lower {u : ℂ}
     (hu : u ∈ eisensteinLineDomain) (hur : u.re < 0) (hAu : msA u = 0) :
     (-2 * u.re) / 128 * (∫ z in fd, ‖truncatedLineModel u 1 z‖ ^ 2) ≤

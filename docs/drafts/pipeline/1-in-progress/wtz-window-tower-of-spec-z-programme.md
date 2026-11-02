@@ -15,7 +15,7 @@ CWS (`CohomologyOfWindowsOfSpecZ`) is owned by another agent: import, never edit
 ## Lean modules [L]
 TheWindowDirichletAlgebra, TheTowerOfSmallExtensions, TheWindowFormIsTheDerivativeOfTheJordanCounts,
 TheTateFlowOnTheWindowAlgebra, TheAtomicLatticeOfAWindow, TheExactPoleCapacityOfAWindow,
-TheSymmetriesOfTheTower.
+TheSymmetriesOfTheTower, TheTwistsOfTheTower, WeilsWindowFormIsASignedCount.
 
 ## Status
 - Window algebra = Dirichlet ring truncated at `⌊e^A⌋` (`ker_windowRep`); nesting; `ZMZ⁻¹ = M − ρ(Λ)`;
@@ -26,10 +26,13 @@ TheSymmetriesOfTheTower.
 - Atomic lattice = regular representation; arithmetic = multiplication by `Λ`; pole = values at `s=0,1`.
 - Exact pole capacity `2sinh(A/2) − A`; sharp floor `≤ −Ω(0) + (4A+1)e^{A/2}`.
 - Adams lifts = dilations up to Tate twist `(e−1)/2`; Serre duality = Rosati involution.
+- Character twists carry Tate families: `L(s,χ)` has Tate pieces `χφ#ℙ^β`, non-Tate piece `χΛ`; near
+  dimension zero Tate positivity at primes ⇔ weight sign (Markov, soft).
+- Signed count: `Λ(n) = Σ p_j J_j(n)` for `P` interpolating `log` on `1..N`; `Q = Ω‖H‖² + J + pole − 2Σ p_jτ(j)`.
 
 ## Open (README §7)
 Positivity surviving the derivative at dimension zero; positivity across a small extension;
 stage-resolved analytic control (AOT aperture transport); window capacity; exponent vs zero width.
 
 ## Log
-- 2026-11-02 — created; seven modules formalized; README written.
+- 2026-11-02 — created; nine modules formalized; README written.

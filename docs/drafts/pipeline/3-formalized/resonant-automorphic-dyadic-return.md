@@ -1,9 +1,12 @@
 # Automorphic dyadic return of resonant states
 
-- **Stage:** 1-in-progress; source identity and return-mass bound checked in Lean; full-residual bound pending.
-- **Parent:** [Arithmetic measure rigidity](resonant-state-arithmetic-measure-rigidity.md).
+- **Stage:** 3-formalized.
+- **Type:** THEOREM / OBSTRUCTION.
+- **Parent:** [Arithmetic measure rigidity](../1-in-progress/resonant-state-arithmetic-measure-rigidity.md).
 
 ## Exact source identity
+
+Throughout, `−1/2<Re u` and `Im u>0`; norm bounds also assume `A(u)=0` and `Re u<0`.
 
 For `z=x+iy∈fd`, put `h_k(z)=2y/((x+k)²+y²)` and let `C_u(y)` denote the full Eisenstein constant term. Define the global truncation by
 
@@ -27,7 +30,7 @@ Right multiplication by a modular matrix permutes primitive rows and preserves t
 
 ## Boundary
 
-This identifies spatial data missing from the cusp Gram model. It neither selects `Re u=-1/4` nor proves Hecke recurrence or entropy. The next question concerns correlations of these explicitly localized returns under repeated correspondences.
+Cutoff-one normalized truncations do not become `L²` Hecke quasimodes when the real parameter stays uniformly below zero. The obstruction persists at `Re u=-1/4`; it does not select that rate or rule out recurrence of other limiting objects. The positive survivor is the exact localized source and its quantitative mass, not merely failure of an eigenstate approximation.
 
 ## Quantitative survivor
 
@@ -39,18 +42,24 @@ Compared with the exact cutoff-one norm, this gives
 `∫_R |D_u|² dμ ≥ (−2 Re u)/128 · ||τ_(u,1)||²`.
 The bound is uniform in `Im u`. The full residual `(T₂−λ₂)τ` requires the separate comparison below.
 
-## Stronger candidate: the full residual
+## Full residual: noncancellation
 
-No oscillatory estimate is needed on this rectangle. Put `r=x²+y²`, `s=1/2−u`. Here `3<r<4` and `1<y<2`. The coordinate residual is `B(u)2^u y^s`, while the return correction is `B(u)h_0^s/√2`. Their ratio is exactly
+No oscillatory estimate is needed on this rectangle. Put `r=x²+y²`, `s=1/2−u`. Here `3≤r≤4` and `1<y<2`. The coordinate residual is `B(u)2^u y^s`, while the return correction is `B(u)h_0^s/√2`. The coordinate term equals the return term multiplied by
 
 `2^(2u) r^(1/2−u) = (r/2)(4/r)^(u+1/2)`.
 
-For `−1/2<Re u<0`, its modulus is at least `r/2>3/2`. The reverse triangle inequality therefore gives
+For `−1/2<Re u<0`, its modulus is at least `r/2≥3/2`. The reverse triangle inequality therefore gives
 `|(T₂−λ₂)Λ¹_aut E_u|² ≥ |D_u|²/4 ≥ |B(u)|²/8` on `R`.
-Hence the full residual should satisfy the uniform core bound
+Hence the full residual satisfies the uniform core bound
 `∫_R |(T₂−λ₂)Λ¹_aut E_u|² dμ ≥ (−2 Re u)/512 · ||τ_(u,1)||²`.
-This is a new candidate beyond the checked source identity; its exact algebra and mass comparison still require Lean verification.
+All statements hold at every frequency, without a semiclassical limit or an assumed analytic estimate.
 
 ## Lean certificates
 
-`ResonantStates/AutomorphicHeckeReturn.lean`: modular invariance, agreement on `fd`, exact three-disk correction. `ResonantStates/CoreReturnMass.lean`: pointwise and integral core lower bounds, including `dyadicReturnDefect_relative_mass_lower`. Checks passed; transitive axioms are only `propext`, `Classical.choice`, `Quot.sound`. The full residual candidate is not included in this certificate.
+Modules under `RenormalizedIntersectionTheory/ResonantStates/`:
+
+- `AutomorphicHeckeReturn.lean`: modular invariance, agreement on `fd`, `resonant_automorphic_dyadic_correction`.
+- `CoreReturnMass.lean`: pointwise and integral correction bounds, `dyadicReturnDefect_relative_mass_lower`.
+- `CoreHeckeResidual.lean`: `dyadicEigenResidual_factor`, `dyadicEigenResidual_norm_sq_lower`, `dyadicEigenResidual_core_mass_lower`, `dyadicEigenResidual_relative_mass_lower`.
+
+Lean checks passed. Transitive axioms are only `propext`, `Classical.choice`, `Quot.sound`.

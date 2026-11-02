@@ -6,6 +6,7 @@ import GaloisForLFunctions.WindowTowerOfSpecZ.TheAtomicLatticeOfAWindow
 import GaloisForLFunctions.WindowTowerOfSpecZ.TheExactPoleCapacityOfAWindow
 import GaloisForLFunctions.WindowTowerOfSpecZ.TheSymmetriesOfTheTower
 import GaloisForLFunctions.WindowTowerOfSpecZ.TheTwistsOfTheTower
+import GaloisForLFunctions.WindowTowerOfSpecZ.WeilsWindowFormIsASignedCount
 
 /-!
 # The Window Tower of Spec ℤ
@@ -18,6 +19,7 @@ Jordan counts (Tate pieces); the Tate flow, its cocycle and the commutator form 
 operators, Tate positivity and its softness; the atomic lattice as the regular representation of
 the window algebra; the exact pole capacity and the sharp window floor; the symmetries of the
 tower (Adams lifts as dilations, Serre duality as the Rosati involution); completely multiplicative
-twists (Tate flow, characters) and the character-weighted Tate pieces of `L(s, χ)`. See
+twists (Tate flow, characters) and the character-weighted Tate pieces of `L(s, χ)`; Weil's window
+form as a signed combination of projective point counts (interpolation of `log`). See
 `WindowTowerOfSpecZ/README.md`.
 -/

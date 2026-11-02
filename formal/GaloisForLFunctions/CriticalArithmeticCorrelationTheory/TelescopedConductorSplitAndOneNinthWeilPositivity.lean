@@ -59,14 +59,14 @@ theorem oneNinthPowerLogExponent_lt_oneEighthPowerLogExponent :
 
 /-! ### 1. Orthogonal three-band decomposition and Hermitian quadratic expansion -/
 
-private theorem identity_euclid_apply_telescoped {N : ℕ}
+theorem identity_euclid_apply_telescoped {N : ℕ}
     (x : EuclideanSpace ℝ (PrimeHorizonIndex N)) :
     Matrix.toEuclideanLin (1 : Matrix (PrimeHorizonIndex N) (PrimeHorizonIndex N) ℝ) x = x := by
   ext n
   change ((1 : Matrix (PrimeHorizonIndex N) (PrimeHorizonIndex N) ℝ) *ᵥ x) n = x n
   rw [Matrix.one_mulVec]
 
-private theorem hermitian_inner_add_eq_telescoped {N : ℕ}
+theorem hermitian_inner_add_eq_telescoped {N : ℕ}
     {A : Matrix (PrimeHorizonIndex N) (PrimeHorizonIndex N) ℝ} (hA : A.IsHermitian)
     (x y : EuclideanSpace ℝ (PrimeHorizonIndex N)) :
     ⟪Matrix.toEuclideanLin A (x + y), x + y⟫ =
@@ -77,7 +77,7 @@ private theorem hermitian_inner_add_eq_telescoped {N : ℕ}
     real_inner_comm y (Matrix.toEuclideanLin A x)]
   ring
 
-private theorem completeWeilEnergy_three_add_ge (φ : ℝ → ℝ) (c : ℝ) {N : ℕ}
+theorem completeWeilEnergy_three_add_ge (φ : ℝ → ℝ) (c : ℝ) {N : ℕ}
     (u₀ u₁ w : EuclideanSpace ℝ (PrimeHorizonIndex N)) :
     completeWeilEnergy φ c N u₀ + completeWeilEnergy φ c N u₁ + completeWeilEnergy φ c N w -
       2 * |⟪Matrix.toEuclideanLin (completeWeilMatrix φ c N) u₀, u₁⟫| -
@@ -93,7 +93,7 @@ private theorem completeWeilEnergy_three_add_ge (φ : ℝ → ℝ) (c : ℝ) {N 
   have habs1w := neg_abs_le ⟪Matrix.toEuclideanLin (completeWeilMatrix φ c N) u₁, w⟫
   linarith only [habs01, habs0w, habs1w]
 
-private theorem sub_starProjection_mem_orthogonal_telescoped {N : ℕ}
+theorem sub_starProjection_mem_orthogonal_telescoped {N : ℕ}
     (K : Submodule ℝ (EuclideanSpace ℝ (PrimeHorizonIndex N)))
     (x : EuclideanSpace ℝ (PrimeHorizonIndex N)) :
     x - K.starProjection x ∈ Kᗮ := by
@@ -102,7 +102,7 @@ private theorem sub_starProjection_mem_orthogonal_telescoped {N : ℕ}
   rw [real_inner_comm]
   exact K.starProjection_inner_eq_zero x v hv
 
-private theorem telescoped_three_band_orthogonal_split {Q₁ R₀ R₁ N : ℕ}
+theorem telescoped_three_band_orthogonal_split {Q₁ R₀ R₁ N : ℕ}
     (hQR₀ : Q₁ ≤ R₀) (hR₀R₁ : R₀ ≤ R₁)
     {z : EuclideanSpace ℝ (PrimeHorizonIndex N)} (hz : z ∈ (conductorSubspace Q₁ N)ᗮ) :
     ∃ u₀ u₁ w : EuclideanSpace ℝ (PrimeHorizonIndex N),
@@ -162,7 +162,7 @@ private theorem telescoped_three_band_orthogonal_split {Q₁ R₀ R₁ N : ℕ}
 
 /-! ### 2. Cutoff and horizon geometry for `Q₁`, `R₀`, and `R₁` -/
 
-private theorem eventually_log_nat_le_rpow_36_one_ninth :
+theorem eventually_log_nat_le_rpow_36_one_ninth :
     ∀ᶠ N : ℕ in atTop, Real.log (N : ℝ) ≤ (N : ℝ) ^ (1 / 36 : ℝ) := by
   have hsmall := tendsto_natCast_atTop_atTop.eventually
     ((isLittleO_log_rpow_atTop (by norm_num : (0 : ℝ) < 1 / 36)).bound zero_lt_one)
@@ -173,7 +173,7 @@ private theorem eventually_log_nat_le_rpow_36_one_ninth :
       abs_of_nonneg (Real.rpow_nonneg hN0 _), one_mul] using hN
   exact (le_abs_self _).trans habs
 
-private theorem rpow_horizon_N_bounds_one_ninth {N R' : ℕ} {c : ℝ}
+theorem rpow_horizon_N_bounds_one_ninth {N R' : ℕ} {c : ℝ}
     (hN1 : 1 ≤ N) (hR'2 : 2 ≤ R') (hc1 : 1 ≤ c)
     (hL2000 : 2000 ≤ Real.log (N : ℝ))
     (hLX : Real.log (N : ℝ) ≤ (N : ℝ) ^ (1 / 36 : ℝ))
@@ -346,7 +346,7 @@ private theorem rpow_horizon_N_bounds_one_ninth {N R' : ℕ} {c : ℝ}
       _ ≤ (N : ℝ) := hpowX 13 (by norm_num)
   exact ⟨h1, h2, h3, h4, h5, h6, h7, h8, h9, h10, h11, h12⟩
 
-private theorem linear_prefix_horizon_bounds_one_ninth {N R : ℕ} {c : ℝ}
+theorem linear_prefix_horizon_bounds_one_ninth {N R : ℕ} {c : ℝ}
     (hN1 : 1 ≤ N) (hR : 2 ≤ R) (hc : 1 ≤ c)
     (hL3000 : 3000 ≤ Real.log N)
     (hLX : Real.log N ≤ (N : ℝ) ^ (1 / 36 : ℝ)) (hcL : c ≤ Real.log N)
@@ -450,7 +450,7 @@ private theorem linear_prefix_horizon_bounds_one_ninth {N R : ℕ} {c : ℝ}
 
 /-- Cross payment between `u₀ ∈ V_{R₀} ∩ (V_1)ᗮ` and `u₁ ∈ (V_{R₀})ᗮ` at `M = N`, spending
 `(1 / 16) * (log N)^(1/2) * ‖u₁‖^2` from Band 1's subpolynomial logarithmic reserve. -/
-private theorem exists_band0_band1_cross_le :
+theorem exists_band0_band1_cross_le :
     ∃ C_cross01 : ℝ, 0 < C_cross01 ∧
       ∀ {R₀ N : ℕ} {c : ℝ},
         2 ≤ R₀ → R₀ ^ 6 ≤ N → 18 * (1 + Real.log R₀) ≤ Real.log N →
@@ -942,7 +942,7 @@ private theorem exists_band_terminal_cross_le {b : ℝ} (hb : 0 < b) :
 `1080 * (1 + log R₁) ≤ log N`, all non-prime quadratic terms are `O(c^2 (1 + log c)) * ‖u₁‖^2`,
 which is subdominant to `(1 / 4) * log R₀ ~ (log N)^(1/2)` throughout `1 ≤ c ≤ (log N)^α`
 (`α < 1 / 4`). -/
-private theorem exists_band1_coercive_homogeneous :
+theorem exists_band1_coercive_homogeneous :
     ∃ C_band1 : ℝ, 0 < C_band1 ∧
       ∀ {R₀ R₁ N : ℕ} {c : ℝ},
         2 ≤ R₀ → R₀ ≤ R₁ → R₁ ^ 6 ≤ N → 1080 * (1 + Real.log R₁) ≤ Real.log N →
@@ -1200,7 +1200,7 @@ private theorem exists_band1_coercive_homogeneous :
 
 /-! ### 5. Four-band cutoff ordering and complement coercivity below `1 / 9` -/
 
-private theorem eventually_three_cutoff_bounds_one_ninth {q θ₁ : ℝ}
+theorem eventually_three_cutoff_bounds_one_ninth {q θ₁ : ℝ}
     (hq : 0 < q) (hqmax : q ≤ 1 / 2) (hθ₁ : 0 < θ₁) (hθ₁_4096 : θ₁ ≤ 1 / 4096) :
     ∀ᶠ N : ℕ in atTop,
       let L := Real.log (N : ℝ)
@@ -1345,7 +1345,7 @@ private theorem eventually_three_cutoff_bounds_one_ninth {q θ₁ : ℝ}
     hH₁_ub, h1080_R₁, hk₁_lb⟩
 
 /-- `(M, N] = [1, N] \ [1, M]` as finite sets of naturals. -/
-private theorem Ioc_eq_Icc_sdiff_Icc_telescoped (M N : ℕ) :
+theorem Ioc_eq_Icc_sdiff_Icc_telescoped (M N : ℕ) :
     (Ioc M N : Finset ℕ) = Icc 1 N \ Icc 1 M := by
   ext n
   rw [mem_Ioc, Finset.mem_sdiff, mem_Icc, mem_Icc]
@@ -1998,7 +1998,7 @@ theorem eventually_tiltedUnitSpline_complement_coercive_below_one_ninth
 
 /-! ### 6. Global two-block Schur synthesis and all-vector positivity below `1 / 9` -/
 
-private theorem posDef_of_inner_pos_on_ne_zero {N : ℕ}
+theorem posDef_of_inner_pos_on_ne_zero {N : ℕ}
     {A : Matrix (PrimeHorizonIndex N) (PrimeHorizonIndex N) ℝ} (hA : A.IsHermitian)
     (hpos : ∀ x : EuclideanSpace ℝ (PrimeHorizonIndex N), x ≠ 0 →
       0 < ⟪Matrix.toEuclideanLin A x, x⟫) :

@@ -29,11 +29,11 @@ The single Weyl term also gives
 For `F_(u,Y)=Y^u τ_(u,Y)`, this becomes `T_p F_(u,Y)=F_(u,pY)+F_(u,Y/p)`.
 The finite-combination isometry also holds for simultaneous transforms at arbitrary primes `p_i` when `Y_i≥p_i`, including all mixed terms between primes and states.
 
-## Next conjecture: the compact-core return
+## Compact-core return
 
 The Gram proof requires cutoffs at least one: above that height the fundamental domain contains complete horocycles. The proposed extension to repeated Hecke words is the same cusp model whenever all shifted cutoffs remain at least one; this still needs a formal induction. Crossing below one encounters incomplete horocycles and modular identifications. The coordinate formula for `heckeTruncated` must not be confused with a proof of automorphic truncation at these smaller heights.
 
-Determine the exact compact-core return correction for genuine automorphic truncation, then test whether its repeated returns enforce a restriction on the decay rate. This is the first place where spatial localization can distinguish the modular surface from the elementary cutoff model. No such restriction has been established.
+The compact-core return distinguishes the modular surface from the elementary cutoff model. Its exact source term must be retained before attempting a limiting recurrence equation. No restriction selecting the decay rate has been established.
 
 **First-prime return: formalized.** Write `h_k(z)=2y/((x+k)²+y²)`. The globally automorphic truncation at height one differs from coordinate Hecke truncation by the subtraction
 `D_u(z)=B(u)/√2 · Σ_(k=-1,0,1) 1_(h_k>1) h_k^(1/2-u)`.
@@ -41,7 +41,13 @@ The return regions are exactly `(x+k)²+(y−1)²<1`. Primitive-row classificati
 
 On `R={|x|≤1/4, 7/4≤y≤15/8}`, only the central return survives. Lean proves
 `∫_R |D_u|² dμ ≥ (−2 Re u)/128 · ||τ_(u,1)||²`.
-Thus this correction remains macroscopic at fixed negative real parameter, at every frequency. Exact statements and the stronger pending full-residual bound: [automorphic dyadic return](resonant-automorphic-dyadic-return.md).
+The full automorphic residual also satisfies
+`∫_R |(T₂−λ₂)Λ¹_aut E_u|² dμ ≥ (−2 Re u)/512 · ||τ_(u,1)||²`.
+The proof compares moduli, so both bounds hold at every frequency, including `Re u=−1/4`. This rules out an `L²` Hecke-quasimode approximation for cutoff-one truncations at fixed negative rate. Exact identities, paper proof and Lean certificates: [automorphic dyadic return](../3-formalized/resonant-automorphic-dyadic-return.md).
+
+**Next limit candidate.** Put `R'={1/8≤x≤1/4, 7/4≤y≤15/8}`. For resonances `u_n=a_n+it_n` with `a_n→a∈(-1/2,0)` and `t_n→∞`, the normalized squared full dyadic residual on `R'` should converge weakly to
+`(-2a)[2^(2a)y^(1−2a)+h_0^(1−2a)/2] dμ`.
+The sole oscillatory cross term has phase `t_n log(4/(x²+y²))`, whose `x` derivative stays away from zero on `R'`. Prove this limit directly from the actual source identity. It would identify a positive source term in the limiting Hecke equation; it would not establish invariance or entropy of the resonant-state measure itself.
 
 ## Open dependency
 
