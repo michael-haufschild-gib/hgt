@@ -548,7 +548,9 @@ theorem primeRow_values (h : ℝ → ℝ) (φ : ℝ → ℝ) {p : ℕ} (hp : 0 <
   have hw2 : horizonWeights h N n * horizonWeights h N n = h (Real.log n - Real.log N) ^ 2 / n := by
     rw [horizonWeights, div_mul_div_comm, Real.mul_self_sqrt hn0.le, sq]
   rw [sqWindow_natCast_div h hn hN, show c * (n / N) / p = c * n / N / p by ring,
-    show c * (n / N) = c * n / N by ring, ← mul_assoc, ← mul_assoc, hw2]
-  constructor <;> field_simp
+    show c * (n / N) = c * n / N by ring]
+  constructor
+  · rw [← mul_assoc, hw2]; field_simp
+  · rw [← mul_assoc, hw2]; field_simp
 
 end GaloisForLFunctions.ArithmeticHodgeTheoryOfDegenerations

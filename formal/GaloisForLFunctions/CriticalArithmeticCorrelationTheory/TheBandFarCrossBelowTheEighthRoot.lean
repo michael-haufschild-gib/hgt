@@ -20,10 +20,10 @@ For a band `u = Σ_{m ≤ R} a_m v_m ⊥ v₁` and `w ⊥ V_R`, split `u = a₁v
   rows `n > M`, where the window `kn ≈ j ≤ N` forces `k ≤ 2N/M`
   (`exists_upwardPrimeVector_top_sq_le`: `O(c²(N/M)(1 + log c)/log N)`).
 
-`exists_band_far_cross_le_channels` pays each channel by a free reserve parameter. With
-`M = N/L_c` and `c ≤ (log N)^α`, every channel costs `c^{8+o(1)}/log N` or less per unit
-band reserve against the far reserves `k₁P` and `(log N/c⁷)S`, i.e. it closes for `α < 1/8`.
-The remainder of this file collects the totient-ratio bounds (`exists_div_totient_le_loglog`).
+`exists_band_far_cross_le_channels` pays each channel by a free reserve parameter; the six
+non-prime channels share the budget `bandFarChannelBudget`. With `M = N/L_c`, `Sg₁ = O(log log R)`
+(`exists_div_totient_le_loglog`) and `c ≤ (log N)^α`, paying against the far reserves `k₁P` and
+`(log N/c⁷)S` costs `c^{8+o(1)}/log N` per unit band reserve, which is `o(1)` for `α < 1/8`.
 -/
 
 set_option autoImplicit false

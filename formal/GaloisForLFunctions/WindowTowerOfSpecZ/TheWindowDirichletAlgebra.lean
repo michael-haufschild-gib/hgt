@@ -51,7 +51,7 @@ def windowSupported (A : ℝ) : Submodule ℝ (ℝ → ℝ) where
 theorem mem_windowSupported {A : ℝ} {H : ℝ → ℝ} :
     H ∈ windowSupported A ↔ ∀ y, y ∉ Icc (-A) 0 → H y = 0 := Iff.rfl
 
-theorem IsWindowTest.mem_windowSupported {A : ℝ} {H : ℝ → ℝ} (hH : IsWindowTest A H) :
+theorem mem_windowSupported_of_isWindowTest {A : ℝ} {H : ℝ → ℝ} (hH : IsWindowTest A H) :
     H ∈ windowSupported A := hH.vanish
 
 theorem windowSupported_mono {A B : ℝ} (hAB : A ≤ B) : windowSupported A ≤ windowSupported B :=
@@ -143,6 +143,11 @@ theorem lt_log_of_windowLevel_lt {A : ℝ} {n : ℕ} (hn : windowLevel A < n) : 
 def windowRepFun (A : ℝ) (f : ArithmeticFunction ℝ) (H : ℝ → ℝ) : ℝ → ℝ := fun u =>
   ∑ n ∈ Finset.Icc 1 (windowLevel A), f n / Real.sqrt n * windowShift (Real.log n) H u
 
+theorem windowShift_windowRepFun (t A : ℝ) (g : ArithmeticFunction ℝ) (H : ℝ → ℝ) (u : ℝ) :
+    windowShift t (windowRepFun A g H) u = ∑ n ∈ Finset.Icc 1 (windowLevel A),
+      g n / Real.sqrt n * windowShift t (windowShift (Real.log n) H) u :=
+  windowShift_sum _ t (fun n => g n / Real.sqrt n) (fun n => windowShift (Real.log n) H) u
+
 theorem windowRepFun_mem {A : ℝ} (f : ArithmeticFunction ℝ) {H : ℝ → ℝ}
     (hH : H ∈ windowSupported A) : windowRepFun A f H ∈ windowSupported A := fun y hy => by
   refine Finset.sum_eq_zero fun n hn => ?_
@@ -233,7 +238,7 @@ theorem windowRepFun_mul {A : ℝ} (f g : ArithmeticFunction ℝ) {H : ℝ → �
       ∑ x ∈ Finset.Icc 1 N ×ˢ Finset.Icc 1 N, G x := by
     rw [Finset.sum_product, windowRepFun]
     refine Finset.sum_congr rfl fun a ha => ?_
-    rw [windowRepFun, windowShift_sum, Finset.mul_sum]
+    rw [windowShift_windowRepFun, Finset.mul_sum]
     refine Finset.sum_congr rfl fun b hb => ?_
     have ha1 : (1 : ℝ) ≤ a := by exact_mod_cast (Finset.mem_Icc.mp ha).1
     have hb1 : (1 : ℝ) ≤ b := by exact_mod_cast (Finset.mem_Icc.mp hb).1
@@ -247,7 +252,7 @@ theorem windowRepFun_mul {A : ℝ} (f g : ArithmeticFunction ℝ) {H : ℝ → �
     refine Finset.sum_congr rfl fun k _ => ?_
     rw [ArithmeticFunction.mul_apply, Finset.sum_div, Finset.sum_mul]
     refine Finset.sum_congr rfl fun x hx => ?_
-    rw [(Nat.mem_divisorsAntidiagonal.mp hx).1]
+    simp only [hG, (Nat.mem_divisorsAntidiagonal.mp hx).1]
   rw [hlhs, hrhs, sum_Icc_divisorsAntidiagonal, Finset.sum_filter_of_ne]
   intro x _ hx
   by_contra hle
@@ -320,7 +325,8 @@ theorem windowRep_eq_zero_iff {A : ℝ} (f : ArithmeticFunction ℝ) :
 
 /-- The **position operator** `(MH)(u) = u H(u)` on `F_A`. -/
 def positionOp (A : ℝ) : Module.End ℝ (windowSupported A) where
-  toFun H := ⟨fun u => u * (H : ℝ → ℝ) u, fun y hy => by rw [H.2 y hy, mul_zero]⟩
+  toFun H := ⟨fun u => u * (H : ℝ → ℝ) u, fun y hy =>
+    show y * (H : ℝ → ℝ) y = 0 by rw [H.2 y hy, mul_zero]⟩
   map_add' H K := Subtype.ext (funext fun u => by simp [mul_add])
   map_smul' c H := Subtype.ext (funext fun u => by simp; ring)
 
@@ -374,12 +380,12 @@ theorem windowRepFun_twist (A k : ℝ) (f : ArithmeticFunction ℝ) (H : ℝ →
 theorem windowRep_moebius_mul_zeta (A : ℝ) :
     windowRep A (ArithmeticFunction.moebius : ArithmeticFunction ℝ) *
       windowRep A (ArithmeticFunction.zeta : ArithmeticFunction ℝ) = 1 := by
-  rw [← map_mul, ArithmeticFunction.moebius_mul_coe_zeta, map_one]
+  rw [← map_mul, ArithmeticFunction.coe_moebius_mul_coe_zeta, map_one]
 
 theorem windowRep_zeta_mul_moebius (A : ℝ) :
     windowRep A (ArithmeticFunction.zeta : ArithmeticFunction ℝ) *
       windowRep A (ArithmeticFunction.moebius : ArithmeticFunction ℝ) = 1 := by
-  rw [← map_mul, ArithmeticFunction.coe_zeta_mul_moebius, map_one]
+  rw [← map_mul, ArithmeticFunction.coe_zeta_mul_coe_moebius, map_one]
 
 theorem pmul_zeta_log :
     (ArithmeticFunction.zeta : ArithmeticFunction ℝ).pmul ArithmeticFunction.log =
@@ -416,13 +422,12 @@ theorem integral_windowShift_mul {A ℓ : ℝ} {H : ℝ → ℝ} (hH : H ∈ win
   rw [← integral_sub_right_eq_self (fun u => H u * H (u + ℓ)) ℓ]
   refine integral_congr_ae (Eventually.of_forall fun u => ?_)
   simp only [sub_add_cancel]
-  ring
 
 /-- The arithmetic pairing `⟨ρ_A(Λ)H, H⟩ = Σ_{2 ≤ n ≤ e^A} (Λ(n)/√n) ∫ H(u) H(u + log n)`. -/
 theorem integral_windowRep_vonMangoldt_mul {A : ℝ} {H : ℝ → ℝ} (hH : IsWindowTest A H) :
     ∫ u, windowRepFun A ArithmeticFunction.vonMangoldt H u * H u =
       ∑ n ∈ Finset.Icc 2 (windowLevel A), primeJumpWeight n * ∫ u, H u * H (u + Real.log n) := by
-  have hmem := hH.mem_windowSupported
+  have hmem := mem_windowSupported_of_isWindowTest hH
   have hint : ∀ n ∈ Finset.Icc 1 (windowLevel A), Integrable fun u =>
       (ArithmeticFunction.vonMangoldt n / Real.sqrt n) *
         (windowShift (Real.log n) H u * H u) := fun n _ => by
@@ -472,11 +477,15 @@ theorem weilQuad_eq_windowRep {A : ℝ} {H : ℝ → ℝ} (hH : IsWindowTest A H
     rw [integral_add_sub_two_mul iH iHs iP,
       integral_add_right_eq_self (fun u => H u ^ 2) (Real.log n)]
     ring
+  have hsum : ∑ n ∈ Finset.Icc 2 (windowLevel A), primeJumpWeight n *
+      (2 * (∫ u, H u ^ 2) - 2 * ∫ u, H u * H (u + Real.log n)) =
+      2 * (∫ u, H u ^ 2) * (∑ n ∈ Finset.Icc 2 (windowLevel A), primeJumpWeight n) -
+        2 * ∑ n ∈ Finset.Icc 2 (windowLevel A), primeJumpWeight n *
+          ∫ u, H u * H (u + Real.log n) := by
+    rw [Finset.mul_sum, Finset.mul_sum, ← Finset.sum_sub_distrib]
+    exact Finset.sum_congr rfl fun n _ => by ring
   rw [weilQuad_eq_markovForm_windowLevel hH, markovForm, creationPotential, primeJump,
-    Finset.sum_congr rfl hjump, integral_windowRep_vonMangoldt_mul hH]
-  simp only [mul_sub, Finset.sum_sub_distrib, ← Finset.sum_mul, Finset.mul_sum]
-  ring_nf
-  simp only [Finset.sum_mul, mul_assoc]
+    Finset.sum_congr rfl hjump, hsum, integral_windowRep_vonMangoldt_mul hH]
   ring
 
 end GaloisForLFunctions.WindowTowerOfSpecZ

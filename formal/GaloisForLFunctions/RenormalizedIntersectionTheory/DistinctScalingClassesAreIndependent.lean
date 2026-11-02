@@ -30,6 +30,9 @@ open scoped ComplexConjugate
 open GaloisForLFunctions.HTGeometry GaloisForLFunctions.HeckeKreinToeplitz
 open GaloisForLFunctions.ArithmeticCastelnuovoSeveri (rightZeros cx)
 open Zeta23
+open GaloisForLFunctions.BiScaleUncertainty.ChebyshevGauge (cubicSpline)
+open GaloisForLFunctions.SquareRootThreshold (temperedConfig_zetaZeroConfig)
+open scoped Real
 
 noncomputable section
 

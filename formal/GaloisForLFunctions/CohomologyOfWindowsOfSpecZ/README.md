@@ -162,8 +162,9 @@ Krein and Lax–Phillips structures for the scattering channel of `Λ(s)/Λ(s+1)
    `< log 2`: from the jump count to `1/32` (LST), for all tests by estimates to `3/5` (ACS), for odd tests
    past the first prime to `0.724` (ACS, AIP), on the cosh hyperplane across the prime-free window and past
    it to `log 2 + 1/50` (LST `WindowJumpCounts`). Hence every window shorter than `log 2 + 1/50` has at
-   most one negative direction (`not_negative_plane`); what is open is the cosh capacity of that single
-   even direction, and any derivation from the count beyond `1/32`. The window potential `archWindowKilling − k_A` is the natural Schrödinger potential; at the
+   most one negative direction (`not_negative_plane`), and positivity there is exactly the cosh capacity
+   inequality `B(h, e)² ≤ Q(h)Q(e)` of one fixed even direction `e` against the coercive cosh hyperplane
+   (`coshCapacity_criterion`). Open: that inequality, and any derivation from the count beyond `1/32`. The window potential `archWindowKilling − k_A` is the natural Schrödinger potential; at the
    centre it is `−log(1 − e^{−2R}) − (3/2)R − (γ + log π)` before the primes act, positive only on short
    windows, so the interior jumps must contribute.
 3. **Window capacity.** The fold capacity inequality uniform in `A` (`riemannHypothesis_iff_foldCapacity`,
@@ -188,7 +189,7 @@ Krein and Lax–Phillips structures for the scattering channel of `Λ(s)/Λ(s+1)
 | Stages: prime-free, first prime | `weilQuad_eq_arch_of_primeFree`, `weilQuad_eq_firstPrimeFold`, `weilQuad_eq_firstPrime_signedFold` |
 | Fold capacity criterion | `riemannHypothesis_iff_foldCapacity` |
 | Archimedean obstruction at the first prime; no count identity | `weilQuad_eq_of_foldFree`, `exists_foldFree_poleFree`, `not_exists_countIdentity` |
-| At most one negative square below `log 2 + 1/50` | `weilQuad_ge_of_coshOrthogonal`, `not_negative_plane` |
+| At most one negative square below `log 2 + 1/50`; the cosh capacity criterion | `weilQuad_ge_of_coshOrthogonal`, `not_negative_plane`, `coshCapacity_criterion` |
 | Semiboundedness; second-order pencil | `weilQuad_ge_neg_windowFloor`, `pencil_nonneg` |
 | Window Frobenius at infinity | `windowTransform_windowInvolution`, `norm_windowMultiplier_eq_one_iff`, `windowTransform_windowInvolution_mul` |
 | The window `h¹` is the primitive Künneth `h¹` | `primitiveH1_windowCycle`, `kunneth_windowCycle` |

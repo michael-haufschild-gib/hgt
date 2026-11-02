@@ -1,7 +1,7 @@
 # RH proof-route frontier
 
 **RH open · 33 live routes · 16 candidates.**
-**Corpus checkpoint:** `94e69a8c079c87017f51a259f33f7e0860bf9342`.
+**Corpus checkpoint:** `96e7eb4b09f5ca4b4fce38e902297b4307afbd0b`.
 
 Live = source observable + proved RH-sufficient receiver + explicit open estimate. Candidate = missing independent source mechanism/landing.
 Evidence: [L] integrated, source-reviewed; [S] unfinished/unintegrated, unverified; [K] individual Lean + standard-only transitive-axiom audit. Untagged established facts: [L].
@@ -44,7 +44,7 @@ Evidence: [L] integrated, source-reviewed; [S] unfinished/unintegrated, unverifi
 
 - **Path:** Complete Weil form → μ(A)≥0 at every aperture → RH.
 - **Established:** Ground minima attained; strict aperture monotonicity; μ≥1/5000 through A=181/500. Exact {∞,2} trace through A=½log3 with polar Krein (+1,−1) split. Finite-prime zero crossing by 2log(|S|+2)+11; bounded-below weighted energy requires Ω_κ(X) active weight in every large (X,κX), κ>1. Shared atomic positivity below.
-- **Open:** Sign at A=½log3, then every aperture, paying low/mixed modes and polar cost. Pointwise [fully calibrated folded-Markov payment fails](rh-killed-routes.md#folded-markov) [L]; Schur payment remains.
+- **Open:** Sign at A=½log3, then every aperture: the exact fold-capacity criterion requires Lévy/antisymmetric-fold/cosh reserves to pay symmetric folds, archimedean deficit and sinh cost. [Pointwise folded-Markov payment](rh-killed-routes.md#folded-markov) and [fold-only count identities](rh-killed-routes.md#fold-count-identity) fail; actual inequalities remain open.
 - **Sources:** C:TheApertureFlowNeverStalls; SP:LiouvilleOddWindowRefutationAndSelectiveFullPositivity; SP:SemilocalPrimeTwoTrace/IntrinsicWeilTraceAndWindowCorollaries; SP:SemilocalPrimeTwoTrace/FinitePrimeSetSemilocalObstruction.
 
 <a id="fu"></a>
@@ -116,7 +116,7 @@ Evidence: [L] integrated, source-reviewed; [S] unfinished/unintegrated, unverifi
 
 - **Path:** Complete arithmetic form ≥0 → Hodge index → RH.
 - **Established:** Hodge/Hecke/Riemann–Roch receivers; zero-density prime-flip separation. Subpolynomial-span positivity, regular-bulk limits, exact window-index exhaustion and signed fold decomposition: shared frontier.
-- **Open:** RH-complete full-family/horizon sign or primitive section effectivity. Remaining conductor bands and band–far cross must fit the vanishing floor; the complement's subpower index ceiling is not index0.
+- **Open:** RH-complete full-family/horizon sign or primitive section effectivity. Remaining conductor bands and the explicit band–far budget [S] must fit the vanishing floor; a subpower index ceiling is not index0. Independent infinite-dimensional window realization remains open.
 - **Sources:** J:TheIndexExit; PL:HeckeInvarianceOfTheCollidedPolarizationIsRH; CACT:CollectivePacketCoercivityAndLogarithmicConfinement.
 
 <a id="chmd"></a>
@@ -276,7 +276,7 @@ Evidence: [L] integrated, source-reviewed; [S] unfinished/unintegrated, unverifi
 
 - **Path:** Prime incidence + plateau gauge → all-aperture global allocation → odd positivity → RH.
 - **Established:** Allocation receiver; jump/incidence/shell decomposition; far-reserve costs absorbed below exponent1/8. Exact coherent jet–pole cancellation, all-prime harmonic defect diagonal and every subpolynomial-span positivity: shared frontier.
-- **Open:** Global allocation or RH-complete family sign. Pay remaining band–far coupling jointly with low-conductor, Gamma and polar costs.
+- **Open:** Global allocation or RH-complete family sign. Discharge the band–far budget's pole-mode residual bound [S] and absorb every channel jointly with low-conductor, Gamma and polar costs.
 - **Sources:** I:GlobalIncidenceAllocationCondition; I:GlobalSharedSurplusAllocation; CACT:CollectivePacketCoercivityAndLogarithmicConfinement.
 
 <a id="lattice-sections"></a><a id="acs"></a>
@@ -284,7 +284,7 @@ Evidence: [L] integrated, source-reviewed; [S] unfinished/unintegrated, unverifi
 
 - **Path:** Arithmetic effectivity / Rosati heights / bounded Weil coupling → Hodge → RH.
 - **Established:** Exact receivers; finite-grid-blind Künneth effectivity; odd-characteristic Frobenius calibration; all-profile positivity through radius181/500. First-prime graph through radius½log3; two-prime count-height and windowed Tate criteria. Primitive window h¹=Q/2. Model Shannon maximum2e^A; each 0<η≤1: eventual genus lower bound (2−η)e^A plus multiplicity excess at its natural threshold. Shared atomic positivity below.
-- **Open:** All-aperture primitive effectivity or independent count producer. Künneth counts leave Q/2; floor/Tate constructions repackage the sign. [Bounded-window selection fails](rh-killed-routes.md#finite-readings). Alternatives: dense-lattice/Gaussian-damped bounds ([SC](#sc)), finite product-group tensor index. Sharp genus upper law remains open.
+- **Open:** All-aperture primitive effectivity or independent count producer. Künneth/floor/Tate counts leave the sign; [fold data plus finitely many squares cannot supply the count identity](rh-killed-routes.md#fold-count-identity). [Bounded-window selection fails](rh-killed-routes.md#finite-readings). Alternatives: [SC](#sc) coupling or product-group tensor index. Sharp genus upper law remains open.
 - **Sources:** G:ExactArithmeticSourceEffectivity; LST:RiemannRochOutsideAFiniteDivisorAtEveryDegree; LST:WindowJumpCounts/SinglePrimeWindowJumpGraphAndObstructions; LST:TheStepanovCountPaysThePrimitiveH1OverFiniteFields; G:TheGenusLawForcesSimpleZeros; CWS:TheWindowGenusIsAYoungConjugate; AE:WindowNaiveHeights/MultiplicativeScaleHeightsAndWindowCounts; CWS:WindowNaiveHeights; CWS:WindowRealizations.
 
 <a id="inter-tower-coupling"></a><a id="coupled-tower-signature"></a><a id="sc"></a>
@@ -327,11 +327,11 @@ Promotion requires the missing independent source mechanism/landing below; an un
 |---|---|
 | Tilted spline, eventually uniformly 1≤c≤(log N)^α, 0<α<1/9: full matrix≥κ/(2c⁷)I; W≥bc⁻⁸D_N. Deep stars inherit positivity. Spectral-floor sublevel has D_N≤C log(2c)‖x‖² [L]. | RH iff eventual full/pole-hyperplane sign at every 2K(log N)^(1/8), K>0. Close the full-space rate gap. |
 | c_N→∞, c_N≤(log N)^α, α<1/8: for every ε>0, some X makes the entire growing conductor block e≤⌊c_N/X⌋ eventually ε-relative-close to Σ_e J(e)b_e² after c_N⁷ rescaling [L]. | Transition e≈c_N, larger conductors and mixed complement at every K(log N)^(1/8). Fixed-packet bulk weights do not select the line. |
-| Fixed mean-zero periodic twists are zero-blind; tilted-spline normalized complete form≥−ε+a log N/c_N⁸ eventually, a>0, for fixed nonzero C² window/twist and 1≤c_N≤N. Alternating x_n=(−1)^nh(log(n/N))/√n, C² h supported on [−A,0], A≥0: at c_N≥1, c_N⁸/log N→K>0, tilted-spline c_N⁻¹Q_N→(7J(2)/K)∫e^(−8y)H², H=e^(y/2)h, J(2)=255J(1), Q_N atom-mass-normalized [L]. | No Weil term in the alternating limit. Untwisted–twisted cross-terms, growing-twist uniformity and full-zero-sum exchange remain; fixed-twist positivity is not full-family positivity. |
+| Fixed mean-zero periodic twists are zero-blind and eventually positive on the tilted-spline critical layer. Alternating x_n=(−1)^nh(log(n/N))/√n, C² h supported on [−A,0], A≥0: c_N≥1, c_N⁸/log N→K>0 gives atom-mass-normalized c_N⁻¹Q_N→(7J(2)/K)∫e^(−8y)H², H=e^(y/2)h, J(2)=255J(1) [L]. For p>1, sublattice Poisson-row and outer equidistribution estimates [S]. | No Weil term in the alternating limit. General-p energy/complete-form assembly, untwisted–twisted cross-terms, growing-twist uniformity and full-zero-sum exchange remain. |
 | Scalar scaling c⁷E_m(c)=J(m)R_m(c/m), J(m)=C J₈(m)/ϕ(m); J(m)/J(1)=#P⁷(ℤ/mℤ). 0≤R_m(x)≤Cx; R_m(x)→1 uniformly. Projective orbit/local-count laws hold over every finite commutative/local ring. Λ residue vanishes; every nonempty finite prime-flip set has indefinite residue [L]. | Full growing-conductor complement at RH overlap. Scalar/counting positivity does not give complete-matrix sign or classify infinite twists. |
 | Nonzero C² profile on [0,1], Fourier-square decay p>4, s^βE₁(s)→J, β≥0: c_N^(β+1)/log N→K>0 gives c_N⁻¹Q_N→κQ_Weil(H)+(βJ/K)∫e^(−(β+1)y)H², H=e^(y/2)h, κ=(∫φ)²/∫φ². For κ>0, βJ≥0, finite-pencil index increases to Weil index; supremum over windows/K counts distinct right zeros. At fixed length A, index≤1+2A·horizonFreq(A/2)/π [L]. | Actual Weil/index sign; no aperture-uniform ceiling. Tilted spline threshold K*=7J(1)∫e^(−8y)H²/(κ abs(Q_Weil(H))) for negative windows; equality unresolved. Supercritical sign⇔RH. |
-| Window [−A,0]: exact signed-fold/pole split; only the 2-fold acts for log2≤A<log3. C_A=deg K_A+2A sinh²(A/2): Q(H)≥−C_A‖H‖²; κQ(H)+c∫e^(−py)H²≥0 for A,p≥0, κ>0, c≥κC_A [L]. | Pay signed-fold, canonical-density and pole costs to obtain Q≥0 at every window; positive pencil correction can mask negative Q. Exact norm realizations require an infinite-dimensional target for A>0 [L]; independent construction open. |
-| Mid-band V_⌊N^θ⌋∩V_⌊(log N)^q⌋^⊥ coercive for α<1/4, q>3α, 0<θ≤1/4096. Reduced divisor-jet bound retains logarithmic coefficient weights. Exact pole+jet pair, w⊥V_R, 2≤R≤N, 1≤c, 8c≤N, c⁴≤N: square≤C[(1+log R)(1+log c)Σ(1+log m)a_m²/log N+c²R⁵Σa_m²/(N²log N)]‖w‖² [L]. | Pay the weighted coefficient cost from the available reserve and assemble all band–far channels at the 1/8 rate. Coherent cancellation is not deletion of the pole term. |
+| RH⇔Lévy + antisymmetric-fold/2 + cosh²/2 ≥ −Ω(0)‖H‖² + symmetric-fold + sinh²/2 for every A≥0 and C² test supported on [−A,0], with Λ(n)/√n fold weights. Smooth tests, 0≤A<log2+1/50: centered-cosh hyperplane floor1/1000; full sign⇔Q(e)≥0 and B(h,e)²≤Q(h)Q(e) on that hyperplane for any smooth transverse e [L]. | Prove the capacity inequality at all lengths. Local criterion lies inside the established length181/250 positivity range. Positive pencil correction can mask negative Q; finite fold/square identities cannot pay the archimedean deficit. |
+| Mid-band V_⌊N^θ⌋∩V_⌊(log N)^q⌋^⊥ coercive for α<1/4, q>3α, 0<θ≤1/4096. Coherent pole+jet cancellation retains logarithmic coefficient costs [L]. Complete band–far split and explicit prime, upward-prefix/top, pole, collar, separated and jet/remainder budgets [S]. | Supply the actual pole-mode residual bound and absorb all budgets into conductor/prefix/far reserves at RH overlap. The channel theorem alone does not extend full-space positivity from α<1/9 to α<1/8. |
 | Prime-only band √N<p≤N^θ, θ<1, log N≥1: Gram=diagonal+rank≤2 correction, floor(1−θ)/4 [L]. Every finite prime family: incidence jump energy=Σ_p(log p/p)H_⌊N/p⌋b_p², retaining all prime powers [L]. For p>√N, pole-centered defect≥½log N×harmonic mass [L]. | Below √N the packet norm is not disjoint; harmonic defect diagonal alone does not pay Gram, complete-Weil residuals or low-band coupling. Composite-conductor frames remain open. |
 | Every nonzero C² profile on [0,1]: E_m(c)≥a_εexp(−εc/m), every ε>0. On V_⌊N^θ⌋, 0<θ<1/1080, 1≤c≤b_φloglog N: floor a_φexp(−Bc), universal B>0; a_φ,b_φ independent of θ [L]. Every polylog span positive through 1≤c≤Kloglog N, each fixed K>0 [L]. | Beyond log-log on fixed polynomial spans: remove the c log R/log N leakage/center loss. Full space also needs omitted bands and cross-terms. |
 | Every nonzero C² profile on [0,1] and R_N=N^o(1): explicit cutoff-dependent C_N/loglog N→∞; complete form on V_R_N eventually≥(log N)^−η‖x‖²/4 uniformly 1≤c≤C_N, every 0<η<1/2. Low/high-block assembly and terminal/mixed payment closed [L]. | Full complement/cross-terms and the Beurling receiver's prescribed 2L(log L)² schedule, L=loglog N, remain open. A cutoff-dependent super-log-log clock need not reach that schedule. |
@@ -343,8 +343,8 @@ Promotion requires the missing independent source mechanism/landing below; an un
 
 Sources:
 
-- **Positivity/payment:** CACT:CollectivePacketCoercivityAndLogarithmicConfinement; CACT:EveryProfileIsPositiveAtLogLogOverlapOnPolynomialSpans; CACT:EveryPolylogConductorSpanIsPositiveAtLogLogOverlap; CACT:EverySubpolynomialSpanHasASuperLogLogPositivityClock; CACT:ThePolynomialConductorComplementIsCoerciveBelowTheEighthRoot; CACT:TheReducedDivisorJetCostsItsDivisorMean; CACT:TheJetPoleComponentCancelsThePole; CACT:SharpenedMidBandAndCrossBounds; CAF:LargePrimeConductorsHaveDisjointHorizonSpikes; CAF:PrimeIncidenceDefectsHaveAnExactHarmonicDiagonal; CAF:LargePrimeIncidencePacketsHaveALogarithmicDefectGap; CSAR:SharpPrimeResidualScale; CSAR:CoprimeSuccessorGap.
-- **Horizon/counts:** AHD:TheCountLawOverEveryFiniteRing; AHD:TheHorizonCriterion; AHD:TheBulkDeterminesTheSecondOrderTerm; AHD:TheWindowIndexCountsTheRightZeros; AHD:TheTwistedHorizonLayerIsZeroBlind; AHD:TheTwistedHorizonLayerIsPositive; AHD:TheAlternatingWindowCountsTheConductorTwoPoints; CWS:TheWindowDatum; CWS:TheFirstPrimeFold; CWS:WindowRealizations; CWS:TheCanonicalDegreeBoundsTheWindowForm.
+- **Positivity/payment:** CACT:CollectivePacketCoercivityAndLogarithmicConfinement; CACT:EveryProfileIsPositiveAtLogLogOverlapOnPolynomialSpans; CACT:EveryPolylogConductorSpanIsPositiveAtLogLogOverlap; CACT:EverySubpolynomialSpanHasASuperLogLogPositivityClock; CACT:ThePolynomialConductorComplementIsCoerciveBelowTheEighthRoot; CACT:TheJetPoleComponentCancelsThePole; CACT:TheBandFarCrossBelowTheEighthRoot [S]; CACT:SharpenedMidBandAndCrossBounds; CAF:LargePrimeConductorsHaveDisjointHorizonSpikes; CAF:PrimeIncidenceDefectsHaveAnExactHarmonicDiagonal; CAF:LargePrimeIncidencePacketsHaveALogarithmicDefectGap; CSAR:SharpPrimeResidualScale; CSAR:CoprimeSuccessorGap.
+- **Horizon/counts:** AHD:TheCountLawOverEveryFiniteRing; AHD:TheHorizonCriterion; AHD:TheBulkDeterminesTheSecondOrderTerm; AHD:TheWindowIndexCountsTheRightZeros; AHD:TheTwistedHorizonLayerIsZeroBlind; AHD:TheTwistedHorizonLayerIsPositive; AHD:TheAlternatingWindowCountsTheConductorTwoPoints; AHD:ThePrimeWindowCountsTheProjectivePoints [S]; CWS:TheFirstPrimeFold; CWS:ShortWindowsCarryAtMostOneNegativeSquare; CWS:WindowRealizations.
 - **Receivers:** SSHA:EveryEighthRootMultipleReceivesTheTiltedSpline; RIT:TheZeroDensityEndpointHasTheConductorCriterion; TM:ReceiverRate/SharpLogarithmicOverlapBudget; TM:ReceiverRate/EveryFiniteGramFitsOneCriticalOverlap; RIT:TheHodgeIndexAtCriticalOverlap.
 
 <a id="external-literature"></a>
@@ -361,6 +361,8 @@ Sources:
 PW-B: [retired source-uniform extinction mechanism](rh-killed-routes.md#kr-pwb); surviving critical-line detector feeds PM/scattering. ISC-polar, BVI and ART: support, not independent live routes. [Other killed mechanisms and retired aliases](rh-killed-routes.md).
 
 ADT: conductor degeneration supporting HF/ACS/SC; gluing determinant reformulates MC. AHD: horizon/index receivers within SRT/HF/SC. CWS: window locality/signed folds/index exhaustion within HF/RW/ACS; independent all-window positive realization open. See [shared frontier](#shared-frontier).
+
+WTZ: truncated window Dirichlet representation, cutoff faithfulness, Tate/logarithmic-derivative laws and exact Weil-form pairing [S]; support for RW/HF/ACS, not an independent sign producer. Source: WTZ:TheWindowDirichletAlgebra.
 
 ## Source locator
 
@@ -403,3 +405,4 @@ ADT: conductor degeneration supporting HF/ACS/SC; gluing determinant reformulate
 | ACPL | ArithmeticCouplingTheory | HWV | HodgeTheoryWithoutVarieties |
 | LST | LatticeSectionTheory | ADT | ArithmeticDegenerationTheory |
 | AHD | ArithmeticHodgeTheoryOfDegenerations | CWS | CohomologyOfWindowsOfSpecZ |
+| WTZ | WindowTowerOfSpecZ | — | — |
