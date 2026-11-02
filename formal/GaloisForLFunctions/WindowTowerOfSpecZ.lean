@@ -9,6 +9,7 @@ import GaloisForLFunctions.WindowTowerOfSpecZ.TheTwistsOfTheTower
 import GaloisForLFunctions.WindowTowerOfSpecZ.WeilsWindowFormIsASignedCount
 import GaloisForLFunctions.WindowTowerOfSpecZ.TheTransferAcrossAStage
 import GaloisForLFunctions.WindowTowerOfSpecZ.TheExitChargePaysEveryNewFold
+import GaloisForLFunctions.WindowTowerOfSpecZ.TheEulerFactorizationOfAWindow
 
 /-!
 # The Window Tower of Spec ℤ
@@ -23,6 +24,7 @@ the window algebra; the exact pole capacity and the sharp window floor; the symm
 tower (Adams lifts as dilations, Serre duality as the Rosati involution); completely multiplicative
 twists (Tate flow, characters) and the character-weighted Tate pieces of `L(s, χ)`; Weil's window
 form as a signed combination of projective point counts (interpolation of `log`); the transfer
-across a stage and the collar exit charge paying every new fold. See
+across a stage and the collar exit charge paying every new fold; the exact Euler factorization of
+the window zeta operator. See
 `WindowTowerOfSpecZ/README.md`.
 -/
