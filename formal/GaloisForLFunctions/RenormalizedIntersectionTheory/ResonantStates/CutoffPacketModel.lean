@@ -22,7 +22,7 @@ def cuspPacket {ι : Type*} (S : Finset ι) (u : ℂ)
 theorem cuspPacket_memLp {ι : Type*} (S : Finset ι) {u : ℂ} (hur : u.re < 0)
     (Y : ι → ℝ) (c : ι → ℂ) (hY : ∀ i ∈ S, 0 ≤ Y i) :
     MemLp (cuspPacket S u Y c) 2 volume :=
-  memLp_finset_sum S fun i hi => (cuspCutoff_memLp hur (hY i hi)).const_mul (c i)
+  memLp_finsetSum S fun i hi => (cuspCutoff_memLp hur (hY i hi)).const_mul (c i)
 
 private theorem dilation_packet_ae {ι : Type*} (S : Finset ι) (u : ℂ)
     (Y : ι → ℝ) (c : ι → ℂ) (f : SoninL2)
@@ -85,7 +85,7 @@ theorem cuspPacket_residual_gap {ι : Type*} (S : Finset ι) {u : ℂ} (hur : u.
     rw [hs]
     change (U f + U.symm f : SoninL2) y - ((q + q⁻¹) • f : SoninL2) y = _
     rw [ha, hm]
-    simp only [Pi.sub_apply, Pi.add_apply, Pi.smul_apply, smul_eq_mul, hd', hi', hf',
+    simp only [Pi.add_apply, Pi.smul_apply, smul_eq_mul, hd', hi', hf',
       cuspPacket, Finset.mul_sum, ← Finset.sum_add_distrib, ← Finset.sum_sub_distrib]
     apply Finset.sum_congr rfl
     intro i hiS
@@ -114,6 +114,8 @@ theorem cuspPacket_residual_gap {ι : Type*} (S : Finset ι) {u : ℂ} (hur : u.
     norm_sq_toLp_eq_integral_norm_sq hf
   rw [mul_pow, hcoef, hfnorm, hn] at hsq
   exact hsq
+
+#print axioms cuspPacket_residual_gap
 
 end
 
