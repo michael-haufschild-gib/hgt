@@ -1988,3 +1988,906 @@ theorem lewisFarey_heckeT2_of_fixed {s : ℂ} {ψ : ℝ → ℂ}
   rw [hrhs] at hd
   exact (sub_eq_zero.mp hd).symm
 
+/-! ## Part 5: Autonomous dyadic cusp-forcing recovery, off-line Eisenstein counterexample, and `Mayer 4` -/
+
+/-- Derivative-free dyadic cusp extractor `(Δ_{2,s}^∞ ψ)(a) = ψ(2a) - 2^(1 - 2s) ψ(a)` on `(0, ∞)`,
+annihilating the outgoing `a^(1 - 2s)` wave while isolating constant cusp forcing. -/
+def dyadicCuspExtractor (s : ℂ) (ψ : ℝ → ℂ) (a : ℝ) : ℂ :=
+  ψ (2 * a) - (2 : ℂ) ^ (1 - 2 * s) * ψ a
+
+/-- The continuous Eisenstein global Lewis period function across `0 < Re s < 1/2`.
+At Mayer scattering resonances (`ζ(2s) = 0`) this coincides with `resonantLewisPeriod s`;
+at non-resonant points (`ζ(2s) ≠ 0`) it carries constant forcing `c = -ζ(2s)`. -/
+def eisensteinLewisPeriod (s : ℂ) (a : ℂ) : ℂ :=
+  period (2 * s) 1 (-riemannZeta (2 * s)) (state (2 * s)) a
+
+/-- Identity of `extension w ε c f` with `ε * (transfer w f - c)` on `halfPlane = {Re z > -1/2}`,
+proved from public holomorphic continuation and agreement on `MayerCutoff.inner`. -/
+theorem extension_eq_eps_transfer_sub {w ε c : ℂ} (hw : 0 < w.re) (hε : ε ^ 2 = 1)
+    (f : DiscSpace) (hf : regularized w hw f = ε • f + constant c)
+    {z : ℂ} (hz : z ∈ halfPlane) :
+    extension w ε c f z = ε * (transfer w f z - c) := by
+  have hhp_open : IsOpen halfPlane := isOpen_lt continuous_const Complex.continuous_re
+  have hsub : halfPlane ⊆ MayerGlobalPeriods.domain := fun u hu => by
+    change -1 < u.re
+    change -(1 / 2 : ℝ) < u.re at hu
+    linarith
+  let D : ℂ → ℂ := fun u => extension w ε c f u - ε * (transfer w f u - c)
+  have hd : AnalyticOnNhd ℂ D halfPlane :=
+    (((extension_differentiableOn hw ε c f).mono hsub).sub
+      ((differentiableOn_const ε).mul
+        ((transfer_differentiableOn hw f).sub (differentiableOn_const c)))).analyticOnNhd hhp_open
+  have hevent : D =ᶠ[𝓝 (0 : ℂ)] 0 := by
+    have h0_in : (0 : ℂ) ∈ MayerCutoff.inner := by
+      norm_num [MayerCutoff.inner, Metric.mem_ball, dist_eq_norm]
+    filter_upwards [Metric.isOpen_ball.mem_nhds h0_in] with u hu
+    have hu_out : u ∈ outer := Metric.ball_subset_closedBall hu
+    have hex := extension_eq_plane hw hε f hf hu
+    have htr : ε * (transfer w f u - c) = plane f u := by
+      rw [show transfer w f u = transfer w f ⟨u, hu_out⟩ from rfl,
+        transfer_eq_source hw f ⟨u, hu_out⟩, hf, map_add, map_smul, smul_eq_mul]
+      have hval : ε * (ε * evaluation ⟨u, hu_out⟩ f + c - c) = evaluation ⟨u, hu_out⟩ f := by
+        linear_combination evaluation ⟨u, hu_out⟩ f * hε
+      exact hval.trans (plane_eq f ⟨u, hu_out⟩).symm
+    dsimp [D]
+    rw [hex, htr, sub_self]
+  have hc : IsPreconnected halfPlane := (convex_halfSpace_re_gt (-(1 / 2 : ℝ))).isPreconnected
+  have hz0 := hd.eqOn_zero_of_preconnected_of_eventuallyEq_zero hc
+    (by norm_num [halfPlane] : (0 : ℂ) ∈ halfPlane) hevent hz
+  exact sub_eq_zero.mp hz0
+
+private theorem norm_plane_sub_zero_le (f : DiscSpace) {z : ℂ}
+    (hz : z ∈ Metric.closedBall (1 : ℂ) 1) :
+    ‖plane f z - plane f 0‖ ≤ 4 * ‖f‖ * ‖z‖ := by
+  have hderiv : ∀ w ∈ Metric.closedBall (1 : ℂ) 1, ‖deriv (plane f) w‖ ≤ 4 * ‖f‖ := by
+    intro w hw
+    have hsub : Metric.closedBall w (1 / 4) ⊆ MayerCutoff.inner := by
+      intro u hu
+      have hw' : ‖w - 1‖ ≤ 1 := by simpa only [Metric.mem_closedBall, dist_eq_norm] using hw
+      have hu' : ‖u - w‖ ≤ (1 / 4 : ℝ) := by
+        simpa only [Metric.mem_closedBall, dist_eq_norm] using hu
+      rw [MayerCutoff.inner, Metric.mem_ball, dist_eq_norm, show u - 1 = (u - w) + (w - 1) by ring]
+      exact (norm_add_le _ _).trans_lt (by linarith)
+    have h := Complex.norm_deriv_le_of_forall_mem_sphere_norm_le (by norm_num : (0 : ℝ) < 1 / 4)
+      ((differentiableOn_plane f).diffContOnCl_ball hsub)
+      (fun u hu => norm_plane_le f
+        (Metric.ball_subset_closedBall (hsub (Metric.sphere_subset_closedBall hu))))
+    linarith [show ‖f‖ / (1 / 4 : ℝ) = 4 * ‖f‖ by ring]
+  have h := (convex_closedBall (1 : ℂ) (1 : ℝ)).norm_image_sub_le_of_norm_deriv_le
+    (fun w hw => (differentiableOn_plane f).differentiableAt
+      (Metric.isOpen_ball.mem_nhds (Metric.closedBall_subset_ball (by norm_num : (1 : ℝ) < 3 / 2) hw)))
+    hderiv
+    (by norm_num [Metric.mem_closedBall, dist_eq_norm] : (0 : ℂ) ∈ Metric.closedBall (1 : ℂ) 1) hz
+  simpa only [sub_zero] using h
+
+private theorem inv_ofReal_mem_closedBall_one {u : ℝ} (hu : 1 ≤ u) :
+    ((u : ℂ)⁻¹) ∈ Metric.closedBall (1 : ℂ) 1 := by
+  have hu0 : 0 < u := zero_lt_one.trans_le hu
+  have hu_inv_le : u⁻¹ ≤ 1 := inv_le_one_of_one_le₀ hu
+  rw [Metric.mem_closedBall, dist_eq_norm, ← Complex.ofReal_inv,
+    show ((u⁻¹ : ℝ) : ℂ) - 1 = ((u⁻¹ - 1 : ℝ) : ℂ) by push_cast; ring,
+    Complex.norm_real, Real.norm_eq_abs, abs_of_nonpos (by linarith)]
+  linarith [inv_pos.mpr hu0]
+
+/-- Telescoping Hurwitz tail estimate `∑_{k=0}^∞ (k + a)^(-σ - 1) ≤ (1 + 1/σ) a^(-σ)` for `σ > 0`
+and `a ≥ 1`. -/
+theorem tsum_add_rpow_neg_succ_le {σ a : ℝ} (hσ : 0 < σ) (ha : 1 ≤ a) :
+    Summable (fun k : ℕ => ((k : ℝ) + a) ^ (-σ - 1)) ∧
+      (∑' k : ℕ, ((k : ℝ) + a) ^ (-σ - 1)) ≤ (1 + 1 / σ) * a ^ (-σ) := by
+  have ha0 : 0 < a := zero_lt_one.trans_le ha
+  have hsum : Summable (fun k : ℕ => ((k : ℝ) + a) ^ (-σ - 1)) := by
+    have hdom : Summable (fun k : ℕ => ((k : ℝ) + 1) ^ (-σ - 1)) := by
+      have h1 := (summable_nat_add_iff 1).mpr
+        (Real.summable_nat_rpow.mpr (show -σ - 1 < -1 by linarith))
+      exact h1.congr fun k => by push_cast; ring_nf
+    refine Summable.of_nonneg_of_le (fun k => Real.rpow_nonneg (by positivity) _) (fun k => ?_) hdom
+    exact Real.rpow_le_rpow_of_nonpos (by positivity) (by linarith) (by linarith)
+  refine ⟨hsum, ?_⟩
+  have hstep : ∀ u : ℝ, 0 < u → (u + 1) ^ (-σ - 1) ≤ (u ^ (-σ) - (u + 1) ^ (-σ)) / σ := by
+    intro u hu
+    let g : ℝ → ℝ := fun t => -(t ^ (-σ)) / σ
+    have hcont : ContinuousOn g (Icc u (u + 1)) := by
+      intro x hx
+      have hx0 : 0 < x := lt_of_lt_of_le hu hx.1
+      exact (((continuousAt_id.rpow continuousAt_const (Or.inl hx0.ne')).neg).div_const
+        σ).continuousWithinAt
+    have hderiv : ∀ x ∈ Ioo u (u + 1), HasDerivAt g (x ^ (-σ - 1)) x := by
+      intro x hx
+      have hx0 : 0 < x := hu.trans hx.1
+      have hd := ((Real.hasDerivAt_rpow_const (p := -σ) (Or.inl hx0.ne')).neg).div_const σ
+      refine hd.congr_deriv ?_
+      field_simp [hσ.ne']
+    obtain ⟨ξ, hξ, hslope⟩ := exists_hasDerivAt_eq_slope g (fun x hx => x ^ (-σ - 1))
+      (by linarith : u < u + 1) hcont (fun x hx => (hderiv x hx).hasDerivWithinAt)
+    have hξ0 : 0 < ξ := hu.trans hξ.1
+    have hmono : (u + 1) ^ (-σ - 1) ≤ ξ ^ (-σ - 1) :=
+      Real.rpow_le_rpow_of_nonpos hξ0 hξ.2.le (by linarith)
+    have hrhs : (g (u + 1) - g u) / (u + 1 - u) = (u ^ (-σ) - (u + 1) ^ (-σ)) / σ := by
+      dsimp [g]; field_simp [hσ.ne']; ring
+    linarith
+  have hpartial : ∀ N : ℕ,
+      (∑ k ∈ Finset.range N, ((k : ℝ) + a) ^ (-σ - 1)) ≤ (1 + 1 / σ) * a ^ (-σ) := by
+    intro N
+    induction N with
+    | zero =>
+      simp only [Finset.range_zero, Finset.sum_empty]
+      positivity
+    | succ n _ =>
+      rw [Finset.sum_range_succ']
+      simp only [Nat.cast_zero, zero_add]
+      have ha_first : a ^ (-σ - 1) ≤ a ^ (-σ) :=
+        Real.rpow_le_rpow_of_exponent_le ha (by linarith)
+      have htel_le : (∑ m ∈ Finset.range n, (((m + 1 : ℕ) : ℝ) + a) ^ (-σ - 1)) ≤
+          ∑ m ∈ Finset.range n, (((m : ℝ) + a) ^ (-σ) - (((m + 1 : ℕ) : ℝ) + a) ^ (-σ)) / σ := by
+        refine Finset.sum_le_sum fun m _ => ?_
+        have hm := hstep ((m : ℝ) + a) (by positivity)
+        have hcast : (((m + 1 : ℕ) : ℝ) + a) = ((m : ℝ) + a) + 1 := by push_cast; ring
+        rwa [hcast]
+      have htel_eq : (∑ m ∈ Finset.range n,
+          (((m : ℝ) + a) ^ (-σ) - (((m + 1 : ℕ) : ℝ) + a) ^ (-σ)) / σ) =
+          (a ^ (-σ) - ((n : ℝ) + a) ^ (-σ)) / σ := by
+        have hdiv : (fun m : ℕ =>
+            (((m : ℝ) + a) ^ (-σ) - (((m + 1 : ℕ) : ℝ) + a) ^ (-σ)) / σ) =
+            fun m => ((m : ℝ) + a) ^ (-σ) / σ - (((m + 1 : ℕ) : ℝ) + a) ^ (-σ) / σ := by
+          ext m; ring
+        rw [hdiv, Finset.sum_range_sub' (fun m : ℕ => ((m : ℝ) + a) ^ (-σ) / σ)]
+        simp [zero_add, sub_div]
+      have hrem_nn : 0 ≤ ((n : ℝ) + a) ^ (-σ) / σ := by positivity
+      linarith [show a ^ (-σ) + a ^ (-σ) / σ = (1 + 1 / σ) * a ^ (-σ) by ring]
+  exact le_of_tendsto_of_tendsto hsum.hasSum.tendsto_sum_nat tendsto_const_nhds
+    (Eventually.of_forall hpartial)
+
+/-- **Quantitative Autonomous Dyadic Cusp-Forcing Bound (`a ≥ 1`, `s.re > 0`, `2s ≠ 1`).**
+For any signed Mayer solution `(f ∈ DiscSpace, c ∈ ℂ, ε² = 1)` with global period
+`ψ(a) = period (2s) ε c f a`, the dyadic cusp extractor cancels both the outgoing `a^(1 - 2s)`
+wave (`ζ(2s) f(0)` via `ZetaRealStrip.etaPair_eq`) and the shifted Hurwitz series up to an explicit
+`O(a^(-2 Re s))` remainder, isolating `-ε (1 - 2^(1 - 2s)) c`. -/
+theorem dyadicCuspExtractor_bound {s ε c : ℂ} (hs0 : 0 < s.re) (hs_ne : 2 * s ≠ 1)
+    (hε : ε ^ 2 = 1) (f : DiscSpace)
+    (hf : regularized (2 * s) (by simp; linarith) f = ε • f + constant c)
+    {a : ℝ} (ha : 1 ≤ a) :
+    ‖dyadicCuspExtractor s (fun x => period (2 * s) ε c f x) a +
+        ε * (1 - (2 : ℂ) ^ (1 - 2 * s)) * c‖ ≤
+      (16 + ‖2 * s‖) * (1 + 1 / (2 * s.re)) * ‖f‖ * a ^ (-2 * s.re) := by
+  let w : ℂ := 2 * s
+  have hw0 : 0 < w.re := by dsimp [w]; simp; linarith
+  have hw_re : w.re = 2 * s.re := by dsimp [w]; simp
+  have hnorm_ε : ‖ε‖ = 1 := by
+    have hsq : ‖ε‖ ^ 2 = 1 := by rw [← norm_pow, hε, norm_one]
+    nlinarith [norm_nonneg ε]
+  have hza : ((a : ℂ) - 1) ∈ halfPlane := by
+    change -(1 / 2 : ℝ) < ((a : ℂ) - 1).re
+    simp only [Complex.sub_re, Complex.ofReal_re, Complex.one_re]; linarith
+  have hz2a : (((2 * a : ℝ) : ℂ) - 1) ∈ halfPlane := by
+    change -(1 / 2 : ℝ) < (((2 * a : ℝ) : ℂ) - 1).re
+    simp only [Complex.sub_re, Complex.ofReal_re, Complex.one_re]; linarith
+  have hψa : period w ε c f a = ε * (transfer w f ((a : ℂ) - 1) - c) :=
+    extension_eq_eps_transfer_sub hw0 hε f hf hza
+  have hψ2a : period w ε c f (2 * a : ℝ) = ε * (transfer w f (((2 * a : ℝ) : ℂ) - 1) - c) :=
+    extension_eq_eps_transfer_sub hw0 hε f hf hz2a
+  have hcomb_ε :
+      dyadicCuspExtractor s (fun x => period w ε c f x) a +
+        ε * (1 - (2 : ℂ) ^ (1 - w)) * c =
+        ε * (transfer w f (((2 * a : ℝ) : ℂ) - 1) -
+          (2 : ℂ) ^ (1 - w) * transfer w f ((a : ℂ) - 1)) := by
+    unfold dyadicCuspExtractor
+    change period w ε c f (2 * a : ℝ) - (2 : ℂ) ^ (1 - w) * period w ε c f a +
+      ε * (1 - (2 : ℂ) ^ (1 - w)) * c = _
+    rw [hψ2a, hψa]
+    ring
+  -- Summability of `term w f ·` at `2a - 1` and `a - 1`:
+  have hsum_2a : Summable (fun n : ℕ => term w f n (((2 * a : ℝ) : ℂ) - 1)) :=
+    (term_locallyUniform hw0 f).summable hz2a
+  have hsum_a : Summable (fun k : ℕ => term w f k ((a : ℂ) - 1)) :=
+    (term_locallyUniform hw0 f).summable hza
+  have hinj_ev : Function.Injective (fun k : ℕ => 2 * k) := fun _ _ h => by simpa using h
+  have hinj_od : Function.Injective (fun k : ℕ => 2 * k + 1) := fun _ _ h => by simpa using h
+  have hsum_ev : Summable (fun k : ℕ => term w f (2 * k) (((2 * a : ℝ) : ℂ) - 1)) :=
+    hsum_2a.comp_injective hinj_ev
+  have hsum_od : Summable (fun k : ℕ => term w f (2 * k + 1) (((2 * a : ℝ) : ℂ) - 1)) :=
+    hsum_2a.comp_injective hinj_od
+  have hsum_eta : Summable (fun k : ℕ => RHTower.etaTerm w k * plane f 0) :=
+    (RHTower.summable_etaTerm w hw0).mul_right (plane f 0)
+  -- Define the `k`-th remainder `δR k`:
+  let δR : ℕ → ℂ := fun k =>
+    let u : ℝ := (k : ℝ) + a
+    ((2 * u : ℝ) : ℂ) ^ (-w) * (plane f (((2 * u : ℝ) : ℂ)⁻¹) - plane f 0) +
+      ((2 * u + 1 : ℝ) : ℂ) ^ (-w) * (plane f (((2 * u + 1 : ℝ) : ℂ)⁻¹) - plane f 0) -
+      2 * ((2 * u : ℝ) : ℂ) ^ (-w) * (plane f ((u : ℂ)⁻¹) - plane f 0) +
+      (((2 * u + 1 : ℝ) : ℂ) ^ (-w) - ((2 * u : ℝ) : ℂ) ^ (-w)) * plane f 0
+  have hpair_eq : ∀ k : ℕ,
+      term w f (2 * k) (((2 * a : ℝ) : ℂ) - 1) +
+        term w f (2 * k + 1) (((2 * a : ℝ) : ℂ) - 1) -
+        (2 : ℂ) ^ (1 - w) * term w f k ((a : ℂ) - 1) =
+        -(RHTower.etaTerm w k * plane f 0) + δR k := by
+    intro k
+    let u : ℝ := (k : ℝ) + a
+    have hu_pos : 0 < u := by dsimp [u]; positivity
+    have hk1_pos : (0 : ℝ) < (k : ℝ) + 1 := by positivity
+    have h2pos : (0 : ℝ) < 2 := by norm_num
+    have h2_1w : (2 : ℂ) ^ (1 - w) = 2 * (2 : ℂ) ^ (-w) := by
+      rw [show (1 - w : ℂ) = 1 + (-w) by ring, Complex.cpow_add _ _ two_ne_zero, Complex.cpow_one]
+    have hp_2u : (2 : ℂ) ^ (-w) * (u : ℂ) ^ (-w) = ((2 * u : ℝ) : ℂ) ^ (-w) :=
+      (ofReal_mul_cpow_pos h2pos hu_pos (-w)).symm
+    have hp_2k2 : (2 : ℂ) ^ (-w) * (((k : ℝ) + 1 : ℝ) : ℂ) ^ (-w) =
+        ((2 * (k : ℝ) + 2 : ℝ) : ℂ) ^ (-w) := by
+      have h := (ofReal_mul_cpow_pos h2pos hk1_pos (-w)).symm
+      rw [show (2 * ((k : ℝ) + 1) : ℝ) = 2 * (k : ℝ) + 2 by ring] at h
+      exact h
+    have hc_ev : (((2 * k + 1 : ℕ) : ℂ) + (((2 * a : ℝ) : ℂ) - 1)) = ((2 * u : ℝ) : ℂ) := by
+      dsimp [u]; push_cast; ring
+    have hc_od : (((2 * k + 1 + 1 : ℕ) : ℂ) + (((2 * a : ℝ) : ℂ) - 1)) =
+        ((2 * u + 1 : ℝ) : ℂ) := by
+      dsimp [u]; push_cast; ring
+    have hc_a : (((k + 1 : ℕ) : ℂ) + ((a : ℂ) - 1)) = (u : ℂ) := by
+      dsimp [u]; push_cast; ring
+    have hc_n1 : ((2 * k + 1 : ℕ) : ℂ) = ((2 * (k : ℝ) + 1 : ℝ) : ℂ) := by push_cast; ring
+    have hc_n2 : ((2 * k + 1 + 1 : ℕ) : ℂ) = ((2 * (k : ℝ) + 2 : ℝ) : ℂ) := by push_cast; ring
+    have hc_nk : ((k + 1 : ℕ) : ℂ) = (((k : ℝ) + 1 : ℝ) : ℂ) := by push_cast; ring
+    dsimp only [δR]
+    unfold term RHTower.etaTerm
+    rw [hc_ev, hc_od, hc_a, hc_n1, hc_n2, hc_nk, h2_1w]
+    linear_combination
+      -2 * plane f ((u : ℂ)⁻¹) * hp_2u + 2 * plane f 0 * hp_2k2
+  -- Bound each `‖δR k‖`:
+  have hδR_le : ∀ k : ℕ, ‖δR k‖ ≤ (16 + ‖w‖) * ‖f‖ * ((k : ℝ) + a) ^ (-w.re - 1) := by
+    intro k
+    let u : ℝ := (k : ℝ) + a
+    have hu1 : 1 ≤ u := by dsimp [u]; linarith [Nat.cast_nonneg (α := ℝ) k]
+    have hu0 : 0 < u := zero_lt_one.trans_le hu1
+    have h2u1 : 1 ≤ 2 * u := by linarith
+    have h2u0 : 0 < 2 * u := by linarith
+    have h2u1_1 : 1 ≤ 2 * u + 1 := by linarith
+    have h2u1_0 : 0 < 2 * u + 1 := by linarith
+    have hf0 : ‖plane f 0‖ ≤ ‖f‖ := norm_plane_le f zeroPoint.2
+    -- First piece:
+    have hb1 : ‖((2 * u : ℝ) : ℂ) ^ (-w) * (plane f (((2 * u : ℝ) : ℂ)⁻¹) - plane f 0)‖ ≤
+        4 * ‖f‖ * u ^ (-w.re - 1) := by
+      rw [norm_mul, Complex.norm_cpow_eq_rpow_re_of_pos h2u0, Complex.neg_re]
+      have hp := norm_plane_sub_zero_le f (inv_ofReal_mem_closedBall_one h2u1)
+      rw [norm_inv, Complex.norm_real, Real.norm_of_nonneg h2u0.le] at hp
+      calc
+        (2 * u) ^ (-w.re) * ‖plane f (((2 * u : ℝ) : ℂ)⁻¹) - plane f 0‖
+            ≤ (2 * u) ^ (-w.re) * (4 * ‖f‖ * (2 * u)⁻¹) :=
+          mul_le_mul_of_nonneg_left hp (Real.rpow_nonneg h2u0.le _)
+        _ = 4 * ‖f‖ * ((2 * u) ^ (-w.re) * (2 * u) ^ (-1 : ℝ)) := by
+          rw [Real.rpow_neg_one]; ring
+        _ = 4 * ‖f‖ * (2 * u) ^ (-w.re - 1) := by
+          rw [← Real.rpow_add h2u0, ← sub_eq_add_neg]
+        _ ≤ 4 * ‖f‖ * u ^ (-w.re - 1) :=
+          mul_le_mul_of_nonneg_left
+            (Real.rpow_le_rpow_of_nonpos hu0 (by linarith) (by linarith)) (by positivity)
+    -- Second piece:
+    have hb2 : ‖((2 * u + 1 : ℝ) : ℂ) ^ (-w) * (plane f (((2 * u + 1 : ℝ) : ℂ)⁻¹) - plane f 0)‖ ≤
+        4 * ‖f‖ * u ^ (-w.re - 1) := by
+      rw [norm_mul, Complex.norm_cpow_eq_rpow_re_of_pos h2u1_0, Complex.neg_re]
+      have hp := norm_plane_sub_zero_le f (inv_ofReal_mem_closedBall_one h2u1_1)
+      rw [norm_inv, Complex.norm_real, Real.norm_of_nonneg h2u1_0.le] at hp
+      calc
+        (2 * u + 1) ^ (-w.re) * ‖plane f (((2 * u + 1 : ℝ) : ℂ)⁻¹) - plane f 0‖
+            ≤ (2 * u + 1) ^ (-w.re) * (4 * ‖f‖ * (2 * u + 1)⁻¹) :=
+          mul_le_mul_of_nonneg_left hp (Real.rpow_nonneg h2u1_0.le _)
+        _ = 4 * ‖f‖ * ((2 * u + 1) ^ (-w.re) * (2 * u + 1) ^ (-1 : ℝ)) := by
+          rw [Real.rpow_neg_one]; ring
+        _ = 4 * ‖f‖ * (2 * u + 1) ^ (-w.re - 1) := by
+          rw [← Real.rpow_add h2u1_0, ← sub_eq_add_neg]
+        _ ≤ 4 * ‖f‖ * u ^ (-w.re - 1) :=
+          mul_le_mul_of_nonneg_left
+            (Real.rpow_le_rpow_of_nonpos hu0 (by linarith) (by linarith)) (by positivity)
+    -- Third piece:
+    have hb3 : ‖(2 : ℂ) * ((2 * u : ℝ) : ℂ) ^ (-w) * (plane f ((u : ℂ)⁻¹) - plane f 0)‖ ≤
+        8 * ‖f‖ * u ^ (-w.re - 1) := by
+      rw [norm_mul, norm_mul, Complex.norm_ofNat,
+        Complex.norm_cpow_eq_rpow_re_of_pos h2u0, Complex.neg_re]
+      have hp := norm_plane_sub_zero_le f (inv_ofReal_mem_closedBall_one hu1)
+      rw [norm_inv, Complex.norm_real, Real.norm_of_nonneg hu0.le] at hp
+      have h2u_le : (2 * u) ^ (-w.re) ≤ u ^ (-w.re) :=
+        Real.rpow_le_rpow_of_nonpos hu0 (by linarith) (by linarith)
+      calc
+        2 * (2 * u) ^ (-w.re) * ‖plane f ((u : ℂ)⁻¹) - plane f 0‖
+            ≤ 2 * u ^ (-w.re) * (4 * ‖f‖ * u⁻¹) := by
+          refine mul_le_mul ?_ hp (norm_nonneg _) (by positivity)
+          exact mul_le_mul_of_nonneg_left h2u_le (by norm_num)
+        _ = 8 * ‖f‖ * (u ^ (-w.re) * u ^ (-1 : ℝ)) := by rw [Real.rpow_neg_one]; ring
+        _ = 8 * ‖f‖ * u ^ (-w.re - 1) := by rw [← Real.rpow_add hu0, ← sub_eq_add_neg]
+    -- Fourth piece:
+    have hb4 : ‖(((2 * u + 1 : ℝ) : ℂ) ^ (-w) - ((2 * u : ℝ) : ℂ) ^ (-w)) * plane f 0‖ ≤
+        ‖w‖ * ‖f‖ * u ^ (-w.re - 1) := by
+      rw [norm_mul]
+      have hdq := RHTower.DQPT.dqptRp_sub_norm_le hw0 h2u0 (show 2 * u ≤ 2 * u + 1 by linarith)
+      rw [show 2 * u + 1 - 2 * u = 1 by ring, mul_one, RHTower.DQPT.dqptRp,
+        RHTower.DQPT.dqptRp, norm_sub_rev] at hdq
+      have hmono : (2 * u) ^ (-w.re - 1) ≤ u ^ (-w.re - 1) :=
+        Real.rpow_le_rpow_of_nonpos hu0 (by linarith) (by linarith)
+      calc
+        ‖((2 * u + 1 : ℝ) : ℂ) ^ (-w) - ((2 * u : ℝ) : ℂ) ^ (-w)‖ * ‖plane f 0‖
+            ≤ (‖w‖ * (2 * u) ^ (-w.re - 1)) * ‖f‖ :=
+          mul_le_mul hdq hf0 (norm_nonneg _) (by positivity)
+        _ ≤ (‖w‖ * u ^ (-w.re - 1)) * ‖f‖ :=
+          mul_le_mul_of_nonneg_right (mul_le_mul_of_nonneg_left hmono (norm_nonneg w))
+            (norm_nonneg f)
+        _ = ‖w‖ * ‖f‖ * u ^ (-w.re - 1) := by ring
+    dsimp only [δR]
+    calc
+      ‖((2 * u : ℝ) : ℂ) ^ (-w) * (plane f (((2 * u : ℝ) : ℂ)⁻¹) - plane f 0) +
+          ((2 * u + 1 : ℝ) : ℂ) ^ (-w) * (plane f (((2 * u + 1 : ℝ) : ℂ)⁻¹) - plane f 0) -
+          2 * ((2 * u : ℝ) : ℂ) ^ (-w) * (plane f ((u : ℂ)⁻¹) - plane f 0) +
+          (((2 * u + 1 : ℝ) : ℂ) ^ (-w) - ((2 * u : ℝ) : ℂ) ^ (-w)) * plane f 0‖
+          ≤ ‖((2 * u : ℝ) : ℂ) ^ (-w) * (plane f (((2 * u : ℝ) : ℂ)⁻¹) - plane f 0) +
+              ((2 * u + 1 : ℝ) : ℂ) ^ (-w) * (plane f (((2 * u + 1 : ℝ) : ℂ)⁻¹) - plane f 0) -
+              2 * ((2 * u : ℝ) : ℂ) ^ (-w) * (plane f ((u : ℂ)⁻¹) - plane f 0)‖ +
+            ‖(((2 * u + 1 : ℝ) : ℂ) ^ (-w) - ((2 * u : ℝ) : ℂ) ^ (-w)) * plane f 0‖ :=
+        norm_add_le _ _
+      _ ≤ ‖((2 * u : ℝ) : ℂ) ^ (-w) * (plane f (((2 * u : ℝ) : ℂ)⁻¹) - plane f 0) +
+            ((2 * u + 1 : ℝ) : ℂ) ^ (-w) * (plane f (((2 * u + 1 : ℝ) : ℂ)⁻¹) - plane f 0)‖ +
+          ‖(2 : ℂ) * ((2 * u : ℝ) : ℂ) ^ (-w) * (plane f ((u : ℂ)⁻¹) - plane f 0)‖ +
+          ‖(((2 * u + 1 : ℝ) : ℂ) ^ (-w) - ((2 * u : ℝ) : ℂ) ^ (-w)) * plane f 0‖ := by
+        linarith [norm_sub_le
+          (((2 * u : ℝ) : ℂ) ^ (-w) * (plane f (((2 * u : ℝ) : ℂ)⁻¹) - plane f 0) +
+            ((2 * u + 1 : ℝ) : ℂ) ^ (-w) * (plane f (((2 * u + 1 : ℝ) : ℂ)⁻¹) - plane f 0))
+          ((2 : ℂ) * ((2 * u : ℝ) : ℂ) ^ (-w) * (plane f ((u : ℂ)⁻¹) - plane f 0))]
+      _ ≤ 4 * ‖f‖ * u ^ (-w.re - 1) + 4 * ‖f‖ * u ^ (-w.re - 1) +
+            8 * ‖f‖ * u ^ (-w.re - 1) + ‖w‖ * ‖f‖ * u ^ (-w.re - 1) := by
+        linarith [norm_add_le
+          (((2 * u : ℝ) : ℂ) ^ (-w) * (plane f (((2 * u : ℝ) : ℂ)⁻¹) - plane f 0))
+          (((2 * u + 1 : ℝ) : ℂ) ^ (-w) * (plane f (((2 * u + 1 : ℝ) : ℂ)⁻¹) - plane f 0))]
+      _ = (16 + ‖w‖) * ‖f‖ * u ^ (-w.re - 1) := by ring
+  obtain ⟨hsum_tail, htail_le⟩ := tsum_add_rpow_neg_succ_le hw0 ha
+  have hsum_δR_norm : Summable (fun k : ℕ => ‖δR k‖) :=
+    Summable.of_nonneg_of_le (fun _ => norm_nonneg _) hδR_le
+      (hsum_tail.mul_left ((16 + ‖w‖) * ‖f‖))
+  have hsum_δR : Summable δR := hsum_δR_norm.of_norm
+  -- Collapse the `transfer` difference to `∑' k, δR k` via `etaPair_eq`:
+  have htr_diff :
+      transfer w f (((2 * a : ℝ) : ℂ) - 1) - (2 : ℂ) ^ (1 - w) * transfer w f ((a : ℂ) - 1) =
+        ∑' k : ℕ, δR k := by
+    unfold transfer
+    have hsplit : (∑' n : ℕ, term w f n (((2 * a : ℝ) : ℂ) - 1)) =
+        (∑' k : ℕ, term w f (2 * k) (((2 * a : ℝ) : ℂ) - 1)) +
+          ∑' k : ℕ, term w f (2 * k + 1) (((2 * a : ℝ) : ℂ) - 1) :=
+      (tsum_even_add_odd hsum_ev hsum_od).symm
+    have hmul_a : (2 : ℂ) ^ (1 - w) * (∑' k : ℕ, term w f k ((a : ℂ) - 1)) =
+        ∑' k : ℕ, (2 : ℂ) ^ (1 - w) * term w f k ((a : ℂ) - 1) :=
+      (tsum_mul_left).symm
+    have hcomb_tsum :
+        (∑' k : ℕ, term w f (2 * k) (((2 * a : ℝ) : ℂ) - 1)) +
+          (∑' k : ℕ, term w f (2 * k + 1) (((2 * a : ℝ) : ℂ) - 1)) -
+          (∑' k : ℕ, (2 : ℂ) ^ (1 - w) * term w f k ((a : ℂ) - 1)) =
+        ∑' k : ℕ, (-(RHTower.etaTerm w k * plane f 0) + δR k) := by
+      rw [← hsum_ev.tsum_add hsum_od, ← (hsum_ev.add hsum_od).tsum_sub
+        (hsum_a.mul_left ((2 : ℂ) ^ (1 - w)))]
+      exact tsum_congr hpair_eq
+    have heta_val : (∑' k : ℕ, -(RHTower.etaTerm w k * plane f 0)) =
+        -((1 - (2 : ℂ) ^ (1 - w)) * riemannZeta w * plane f 0) := by
+      rw [tsum_neg, tsum_mul_right, ← RHTower.etaPair, RHTower.etaPair_eq w hw0 hs_ne]
+    rw [hsplit]
+    calc
+      (riemannZeta w * plane f 0 +
+          ((∑' k : ℕ, term w f (2 * k) (((2 * a : ℝ) : ℂ) - 1)) +
+            ∑' k : ℕ, term w f (2 * k + 1) (((2 * a : ℝ) : ℂ) - 1))) -
+          (2 : ℂ) ^ (1 - w) * (riemannZeta w * plane f 0 + ∑' k : ℕ, term w f k ((a : ℂ) - 1))
+          = (1 - (2 : ℂ) ^ (1 - w)) * riemannZeta w * plane f 0 +
+              ((∑' k : ℕ, term w f (2 * k) (((2 * a : ℝ) : ℂ) - 1)) +
+                (∑' k : ℕ, term w f (2 * k + 1) (((2 * a : ℝ) : ℂ) - 1)) -
+                (2 : ℂ) ^ (1 - w) * ∑' k : ℕ, term w f k ((a : ℂ) - 1)) := by ring
+      _ = (1 - (2 : ℂ) ^ (1 - w)) * riemannZeta w * plane f 0 +
+            ∑' k : ℕ, (-(RHTower.etaTerm w k * plane f 0) + δR k) := by
+        rw [hmul_a, hcomb_tsum]
+      _ = (1 - (2 : ℂ) ^ (1 - w)) * riemannZeta w * plane f 0 +
+            ((∑' k : ℕ, -(RHTower.etaTerm w k * plane f 0)) + ∑' k : ℕ, δR k) := by
+        rw [hsum_eta.neg.tsum_add hsum_δR]
+      _ = ∑' k : ℕ, δR k := by rw [heta_val]; ring
+  rw [hcomb_ε, htr_diff, norm_mul, hnorm_ε, one_mul]
+  calc
+    ‖∑' k : ℕ, δR k‖ ≤ ∑' k : ℕ, ‖δR k‖ := norm_tsum_le_tsum_norm hsum_δR_norm
+    _ ≤ ∑' k : ℕ, (16 + ‖w‖) * ‖f‖ * ((k : ℝ) + a) ^ (-w.re - 1) :=
+      hsum_δR_norm.tsum_le_tsum hδR_le (hsum_tail.mul_left ((16 + ‖w‖) * ‖f‖))
+    _ = (16 + ‖w‖) * ‖f‖ * ∑' k : ℕ, ((k : ℝ) + a) ^ (-w.re - 1) := tsum_mul_left
+    _ ≤ (16 + ‖w‖) * ‖f‖ * ((1 + 1 / w.re) * a ^ (-w.re)) :=
+      mul_le_mul_of_nonneg_left htail_le (by positivity)
+    _ = (16 + ‖2 * s‖) * (1 + 1 / (2 * s.re)) * ‖f‖ * a ^ (-2 * s.re) := by
+      dsimp [w]; rw [hw_re]; ring
+
+/-- **Autonomous Dyadic Cusp-Forcing Recovery:**
+`lim_{a → +∞} (ψ(2a) - 2^(1 - 2s) ψ(a)) = -ε (1 - 2^(1 - 2s)) c` across `s.re > 0`, `2s ≠ 1`. -/
+theorem tendsto_dyadicCuspExtractor {s ε c : ℂ} (hs0 : 0 < s.re) (hs_ne : 2 * s ≠ 1)
+    (hε : ε ^ 2 = 1) (f : DiscSpace)
+    (hf : regularized (2 * s) (by simp; linarith) f = ε • f + constant c) :
+    Tendsto (dyadicCuspExtractor s (fun x => period (2 * s) ε c f x))
+      atTop (𝓝 (-ε * (1 - (2 : ℂ) ^ (1 - 2 * s)) * c)) := by
+  rw [tendsto_iff_norm_sub_tendsto_zero]
+  let B : ℝ := (16 + ‖2 * s‖) * (1 + 1 / (2 * s.re)) * ‖f‖
+  have hzero : Tendsto (fun a : ℝ => B * a ^ (-2 * s.re)) atTop (𝓝 0) := by
+    simpa [mul_zero] using (tendsto_rpow_neg_atTop (show 0 < 2 * s.re by linarith)).const_mul B
+  refine squeeze_zero_norm' ?_ hzero
+  filter_upwards [eventually_ge_atTop (1 : ℝ)] with a ha
+  rw [Real.norm_of_nonneg (norm_nonneg _),
+    show dyadicCuspExtractor s (fun x => period (2 * s) ε c f x) a -
+        (-ε * (1 - (2 : ℂ) ^ (1 - 2 * s)) * c) =
+      dyadicCuspExtractor s (fun x => period (2 * s) ε c f x) a +
+        ε * (1 - (2 : ℂ) ^ (1 - 2 * s)) * c by ring]
+  exact dyadicCuspExtractor_bound hs0 hs_ne hε f hf ha
+
+/-- **Autonomous Dyadic Cusp-Energy Separation (`0 < s.re < 1/2`).**
+The positive-semidefinite multiplicative-Haar cusp quadratic form
+`∫_1^∞ ‖ψ(2a) - 2^(1 - 2s) ψ(a)‖² da/a` is finite iff the constant forcing `c` vanishes. -/
+theorem dyadicCuspExtractor_sq_div_integrableOn_iff {s ε c : ℂ}
+    (hs0 : 0 < s.re) (hs1 : s.re < 1 / 2) (hε : ε ^ 2 = 1) (f : DiscSpace)
+    (hf : regularized (2 * s) (by simp; linarith) f = ε • f + constant c) :
+    IntegrableOn
+      (fun a : ℝ => ‖dyadicCuspExtractor s (fun x => period (2 * s) ε c f x) a‖ ^ 2 / a)
+      (Ioi 1) ↔ c = 0 := by
+  have hs_ne : 2 * s ≠ 1 := by
+    intro heq
+    have hre := congrArg Complex.re heq
+    simp at hre
+    linarith
+  let ψ : ℝ → ℂ := fun x => period (2 * s) ε c f x
+  let B : ℝ := (16 + ‖2 * s‖) * (1 + 1 / (2 * s.re)) * ‖f‖
+  have hB_nn : 0 ≤ B := by dsimp [B]; positivity
+  constructor
+  · intro hint
+    by_contra hc_ne
+    have hnorm_ε : ‖ε‖ = 1 := by
+      have hsq : ‖ε‖ ^ 2 = 1 := by rw [← norm_pow, hε, norm_one]
+      nlinarith [norm_nonneg ε]
+    have h2_gt1 : 1 < ‖(2 : ℂ) ^ (1 - 2 * s)‖ := by
+      have h2C : (2 : ℂ) = ((2 : ℝ) : ℂ) := by norm_num
+      rw [h2C, Complex.norm_cpow_eq_rpow_re_of_pos (by norm_num : (0 : ℝ) < 2)]
+      have hre : (1 - 2 * s).re = 1 - 2 * s.re := by simp
+      rw [hre]
+      exact Real.one_lt_rpow (by norm_num) (by linarith)
+    have h12_ne : 1 - (2 : ℂ) ^ (1 - 2 * s) ≠ 0 := by
+      intro hz
+      have heq : (2 : ℂ) ^ (1 - 2 * s) = 1 := (sub_eq_zero.mp hz).symm
+      rw [heq, norm_one] at h2_gt1
+      exact lt_irrefl 1 h2_gt1
+    let L : ℝ := ‖ε * (1 - (2 : ℂ) ^ (1 - 2 * s)) * c‖
+    have hL_pos : 0 < L := by
+      dsimp [L]
+      rw [norm_mul, norm_mul, hnorm_ε, one_mul]
+      exact mul_pos (norm_pos_iff.mpr h12_ne) (norm_pos_iff.mpr hc_ne)
+    let A₀ : ℝ := max 1 (((2 * B + 1) / L) ^ (1 / (2 * s.re)))
+    have hA₀_ge1 : 1 ≤ A₀ := le_max_left _ _
+    have hA₀_pos : 0 < A₀ := zero_lt_one.trans_le hA₀_ge1
+    have hlow_pt : ∀ a ∈ Ioi A₀,
+        (L / 2) ^ 2 * a ^ (-1 : ℝ) ≤ ‖dyadicCuspExtractor s ψ a‖ ^ 2 / a := by
+      intro a ha
+      have ha_ge1 : 1 ≤ a := hA₀_ge1.trans ha.le
+      have ha_pos : 0 < a := zero_lt_one.trans_le ha_ge1
+      have ha_ge_pow : ((2 * B + 1) / L) ^ (1 / (2 * s.re)) ≤ a :=
+        (le_max_right 1 _).trans ha.le
+      have hpow_ge : (2 * B + 1) / L ≤ a ^ (2 * s.re) := by
+        have h1 := Real.rpow_le_rpow (by positivity) ha_ge_pow (show 0 ≤ 2 * s.re by linarith)
+        rw [← Real.rpow_mul (by positivity), one_div_mul_cancel (by linarith), Real.rpow_one] at h1
+        exact h1
+      have hrem_le : B * a ^ (-2 * s.re) ≤ L / 2 := by
+        rw [Real.rpow_neg ha_pos.le, ← div_eq_mul_inv, div_le_iff₀ (Real.rpow_pos_of_pos ha_pos _)]
+        have hmul := mul_le_mul_of_nonneg_left hpow_ge (half_pos hL_pos).le
+        have hlhs : (L / 2) * ((2 * B + 1) / L) = B + 1 / 2 := by field_simp [hL_pos.ne']; ring
+        linarith
+      have hbd := dyadicCuspExtractor_bound hs0 hs_ne hε f hf ha_ge1
+      have htri : L ≤ ‖dyadicCuspExtractor s ψ a + ε * (1 - (2 : ℂ) ^ (1 - 2 * s)) * c‖ +
+          ‖dyadicCuspExtractor s ψ a‖ := by
+        dsimp [L]
+        calc
+          ‖ε * (1 - (2 : ℂ) ^ (1 - 2 * s)) * c‖
+              = ‖(dyadicCuspExtractor s ψ a + ε * (1 - (2 : ℂ) ^ (1 - 2 * s)) * c) -
+                  dyadicCuspExtractor s ψ a‖ := by ring_nf
+          _ ≤ ‖dyadicCuspExtractor s ψ a + ε * (1 - (2 : ℂ) ^ (1 - 2 * s)) * c‖ +
+                ‖dyadicCuspExtractor s ψ a‖ := norm_sub_le _ _
+      have hnorm_ge : L / 2 ≤ ‖dyadicCuspExtractor s ψ a‖ := by linarith
+      have hsq_ge : (L / 2) ^ 2 ≤ ‖dyadicCuspExtractor s ψ a‖ ^ 2 :=
+        pow_le_pow_left₀ (half_pos hL_pos).le hnorm_ge 2
+      rw [Real.rpow_neg_one, ← div_eq_mul_inv]
+      exact div_le_div_of_nonneg_right hsq_ge ha_pos.le
+    have hint_A₀ : IntegrableOn (fun a : ℝ => ‖dyadicCuspExtractor s ψ a‖ ^ 2 / a) (Ioi A₀) :=
+      hint.mono_set (Ioi_subset_Ioi hA₀_ge1)
+    have hcont_inv : ContinuousOn (fun a : ℝ => (L / 2) ^ 2 * a ^ (-1 : ℝ)) (Ioi A₀) := by
+      intro a ha
+      have ha0 : 0 < a := hA₀_pos.trans ha
+      exact ((continuousAt_id.rpow continuousAt_const (Or.inl ha0.ne')).const_mul _).continuousWithinAt
+    have hint_har : IntegrableOn (fun a : ℝ => (L / 2) ^ 2 * a ^ (-1 : ℝ)) (Ioi A₀) := by
+      refine hint_A₀.mono' (hcont_inv.aestronglyMeasurable measurableSet_Ioi) ?_
+      filter_upwards [ae_restrict_mem measurableSet_Ioi] with a ha
+      have ha0 : 0 < a := hA₀_pos.trans ha
+      rw [Real.norm_of_nonneg (mul_nonneg (sq_nonneg _) (Real.rpow_pos_of_pos ha0 _).le)]
+      exact hlow_pt a ha
+    have hint_rpow : IntegrableOn (fun a : ℝ => a ^ (-1 : ℝ)) (Ioi A₀) := by
+      have h := hint_har.const_mul (((L / 2) ^ 2)⁻¹)
+      refine h.congr_fun (fun a _ => ?_) measurableSet_Ioi
+      field_simp [(sq_pos_of_pos (half_pos hL_pos)).ne']
+    have hlt := (integrableOn_Ioi_rpow_iff hA₀_pos).mp hint_rpow
+    linarith
+  · rintro rfl
+    have hdom : IntegrableOn (fun a : ℝ => B ^ 2 * a ^ (-4 * s.re - 1)) (Ioi 1) :=
+      ((integrableOn_Ioi_rpow_iff zero_lt_one).2 (by linarith)).const_mul (B ^ 2)
+    have hψ_cont : ContinuousOn ψ (Ioi 0) :=
+      period_real_continuousOn (by simp; linarith) ε 0 f
+    have hcont : ContinuousOn (fun a : ℝ => ‖dyadicCuspExtractor s ψ a‖ ^ 2 / a) (Ioi 1) := by
+      intro a ha
+      have ha0 : 0 < a := zero_lt_one.trans ha
+      have h2a0 : 0 < 2 * a := by linarith
+      have c1 : ContinuousAt (fun x : ℝ => ψ (2 * x)) a :=
+        ContinuousAt.comp (g := ψ) (f := fun x : ℝ => 2 * x)
+          (hψ_cont.continuousAt (isOpen_Ioi.mem_nhds h2a0))
+          (continuousAt_const.mul continuousAt_id)
+      have c2 : ContinuousAt ψ a := hψ_cont.continuousAt (isOpen_Ioi.mem_nhds ha0)
+      unfold dyadicCuspExtractor
+      exact (((c1.sub (continuousAt_const.mul c2)).norm.pow 2).div
+        continuousAt_id ha0.ne').continuousWithinAt
+    refine hdom.mono' (hcont.aestronglyMeasurable measurableSet_Ioi) ?_
+    filter_upwards [ae_restrict_mem measurableSet_Ioi] with a ha
+    have ha0 : 0 < a := zero_lt_one.trans ha
+    have hnn : 0 ≤ ‖dyadicCuspExtractor s ψ a‖ ^ 2 / a := div_nonneg (sq_nonneg _) ha0.le
+    rw [Real.norm_of_nonneg hnn]
+    have hbd := dyadicCuspExtractor_bound hs0 hs_ne hε f hf ha.le
+    simp only [mul_zero, add_zero] at hbd
+    have hsq : ‖dyadicCuspExtractor s ψ a‖ ^ 2 ≤ B ^ 2 * a ^ (-4 * s.re) := by
+      have h1 := pow_le_pow_left₀ (norm_nonneg _) hbd 2
+      rw [mul_pow, ← Real.rpow_natCast (a ^ (-2 * s.re)) 2, ← Real.rpow_mul ha0.le] at h1
+      have hexp : (-2 * s.re) * ((2 : ℕ) : ℝ) = -4 * s.re := by push_cast; ring
+      rwa [hexp] at h1
+    calc
+      ‖dyadicCuspExtractor s ψ a‖ ^ 2 / a
+          ≤ (B ^ 2 * a ^ (-4 * s.re)) / a := div_le_div_of_nonneg_right hsq ha0.le
+      _ = B ^ 2 * (a ^ (-4 * s.re) * a ^ (-1 : ℝ)) := by
+        rw [div_eq_mul_inv, Real.rpow_neg_one]; ring
+      _ = B ^ 2 * a ^ (-4 * s.re - 1) := by rw [← Real.rpow_add ha0, ← sub_eq_add_neg]
+
+private theorem state_regularized_eisenstein {s : ℂ} (hs0 : 0 < s.re) (hs1 : s.re < 1 / 2) :
+    regularized (2 * s) (by simp; linarith) (state (2 * s)) =
+      (1 : ℂ) • state (2 * s) + constant (-riemannZeta (2 * s)) := by
+  have hw0 : 0 < (2 * s).re := by simp; linarith
+  have hw1 : (2 * s).re < 1 := by simp; linarith
+  have hne1 : 2 * s ≠ 1 := fun h => by rw [h, Complex.one_re] at hw1; exact lt_irrefl 1 hw1
+  have hne2 : 2 * s ≠ 2 := fun h => by rw [h] at hw1; norm_num at hw1
+  have hst := state_equation hw0 hne1 hne2
+  have hconst_neg : constant (-riemannZeta (2 * s)) = -(riemannZeta (2 * s) • constant 1) := by
+    apply Subtype.ext; ext z; simp [constant]
+  rw [← source_eq hw0, one_smul, hconst_neg]
+  exact eq_add_neg_of_sub_eq hst.symm |> fun _ => by
+    have : source (2 * s) (state (2 * s)) = state (2 * s) - riemannZeta (2 * s) • constant 1 := by
+      have h1 := congrArg (fun x => state (2 * s) - x) hst
+      simpa [sub_sub_cancel] using h1.symm
+    rw [this, sub_eq_add_neg]
+
+/-- Across the entire open strip `0 < Re s < 1/2`, `eisensteinLewisPeriod s` belongs to `H_LP`
+(together with its Riemann–Mayer reflected partner) and satisfies both `I_s Ψ = Ψ` and `M_s Ψ = Ψ`
+on `(0, ∞)`. -/
+theorem eisensteinLewisPeriod_properties {s : ℂ} (hs0 : 0 < s.re) (hs1 : s.re < 1 / 2) :
+    IntegrableOn (fun a : ℝ => ‖eisensteinLewisPeriod s a‖ ^ 2 * lewisCriticalWeight a) (Ioi 0) ∧
+    IntegrableOn (fun a : ℝ =>
+      ‖lewisModularInversion (riemannMayerReflect s) (fun x => eisensteinLewisPeriod s x) a‖ ^ 2 *
+        lewisCriticalWeight a) (Ioi 0) ∧
+    (∀ a : ℝ, 0 < a →
+      lewisModularInversion s (fun x => eisensteinLewisPeriod s x) a = eisensteinLewisPeriod s a) ∧
+    (∀ a : ℝ, 0 < a →
+      lewisFarey s (fun x => eisensteinLewisPeriod s x) a = eisensteinLewisPeriod s a) := by
+  have hw0 : 0 < (2 * s).re := by simp; linarith
+  have hreg := state_regularized_eisenstein hs0 hs1
+  obtain ⟨hi1, hi2⟩ := globalLewisPeriod_integrable_lewisCriticalNormSq hs0 hs1 (by norm_num)
+    (state (2 * s)) hreg
+  refine ⟨hi1, hi2, ?_, ?_⟩
+  · intro a ha
+    unfold lewisModularInversion eisensteinLewisPeriod
+    have hrec := MayerGlobalPeriods.reciprocity hw0 (by norm_num : (1 : ℂ) ^ 2 = 1) (state (2 * s))
+      hreg (a := (a : ℂ)) (by simpa using ha)
+    rw [one_mul, ← Complex.ofReal_inv] at hrec
+    exact hrec.symm
+  · intro a ha
+    unfold lewisFarey lewisShift lewisParabolic eisensteinLewisPeriod
+    have htt := MayerGlobalPeriods.three_term hw0 (by norm_num : (1 : ℂ) ^ 2 = 1) (state (2 * s))
+      hreg (a := (a : ℂ)) (by simpa using ha)
+    have hc1 : ((a : ℂ) + 1) = ((a + 1 : ℝ) : ℂ) := by push_cast; ring
+    have hc2 : ((a : ℂ) / ((a : ℂ) + 1)) = ((a / (a + 1) : ℝ) : ℂ) := by push_cast; ring
+    rw [hc1, hc2] at htt
+    exact htt.symm
+
+/-- **Cusp-Erasure Obstruction Theorem Across the Strip (`0 < Re s < 1/2`):**
+At EVERY parameter `s` in `0 < Re s < 1/2` — resonant OR non-resonant — the continuous Eisenstein
+Lewis period `eisensteinLewisPeriod s` satisfies `lewisCoIsometryDefect s Ψ < 0 ↔ s.re ≠ 1/4`
+(proved without `state_zero` or `core_hasMellin` at non-resonant points via
+`tendsto_dyadicCuspExtractor`). -/
+theorem eisensteinLewisPeriod_coIsometryDefect_lt_zero_iff {s : ℂ}
+    (hs0 : 0 < s.re) (hs1 : s.re < 1 / 2) :
+    lewisCoIsometryDefect s (fun a : ℝ => eisensteinLewisPeriod s a) < 0 ↔ s.re ≠ 1 / 4 := by
+  by_cases hzeta : riemannZeta (2 * s) = 0
+  · have hres : IsMayerScatteringResonance s :=
+      (isMayerScatteringResonance_iff_zeta_zero hs0 hs1).mpr hzeta
+    have heq_fn : (fun a : ℝ => eisensteinLewisPeriod s a) =
+        fun a : ℝ => resonantLewisPeriod s a := by
+      ext a; simp [eisensteinLewisPeriod, resonantLewisPeriod, hzeta]
+    rw [heq_fn]
+    exact resonantLewisPeriod_coIsometryDefect_lt_zero_iff hres
+  · have hw0 : 0 < (2 * s).re := by simp; linarith
+    have hs_ne : 2 * s ≠ 1 := fun h => by
+      have hre := congrArg Complex.re h; simp at hre; linarith
+    have hreg := state_regularized_eisenstein hs0 hs1
+    obtain ⟨hi1, hi2, hmod, _⟩ := eisensteinLewisPeriod_properties hs0 hs1
+    have hf1 := globalLewisPeriod_rpow_integrableOn_Ioi_one hw0 (by norm_num) (state (2 * s)) hreg
+      (β := 4 * s.re - 3 / 2) (by linarith)
+    have hf2 := globalLewisPeriod_rpow_integrableOn_Ioi_one hw0 (by norm_num) (state (2 * s)) hreg
+      (β := -4 * s.re + 1 / 2) (by linarith)
+    have hdef_eq := lewisCoIsometryDefect_eq_neg_integral hmod hi1 hi2 hf1 hf2
+    constructor
+    · intro hlt heq
+      rw [hdef_eq, heq, show (2 * (1 / 4 : ℝ) - 1 / 2) = 0 by norm_num, neg_zero] at hlt
+      simp [sub_self] at hlt
+    · intro hne
+      -- Autonomous non-vanishing on `(1, ∞)` from `tendsto_dyadicCuspExtractor`:
+      have hex_gt1 : ∃ b₀ > 1, eisensteinLewisPeriod s b₀ ≠ 0 := by
+        by_contra hall
+        push_neg at hall
+        have htend := tendsto_dyadicCuspExtractor hs0 hs_ne (by norm_num : (1 : ℂ) ^ 2 = 1)
+          (state (2 * s)) hreg
+        have hev0 : dyadicCuspExtractor s (fun x => eisensteinLewisPeriod s x) =ᶠ[atTop] 0 := by
+          filter_upwards [eventually_gt_atTop (1 : ℝ)] with a ha
+          unfold dyadicCuspExtractor
+          rw [hall (2 * a) (by linarith), hall a ha]
+          simp
+        have hlim0 : Tendsto (dyadicCuspExtractor s (fun x => eisensteinLewisPeriod s x))
+            atTop (𝓝 0) := tendsto_const_nhds.congr' hev0.symm
+        have heq_lim := tendsto_nhds_unique htend hlim0
+        have h2_gt1 : 1 < ‖(2 : ℂ) ^ (1 - 2 * s)‖ := by
+          rw [show (2 : ℂ) = ((2 : ℝ) : ℂ) by norm_num,
+            Complex.norm_cpow_eq_rpow_re_of_pos (by norm_num : (0 : ℝ) < 2),
+            show (1 - 2 * s).re = 1 - 2 * s.re by simp]
+          exact Real.one_lt_rpow (by norm_num) (by linarith)
+        have h12_ne : 1 - (2 : ℂ) ^ (1 - 2 * s) ≠ 0 := fun hz => by
+          rw [(sub_eq_zero.mp hz).symm, norm_one] at h2_gt1; exact lt_irrefl 1 h2_gt1
+        have hprod_ne : (-1 : ℂ) * (1 - (2 : ℂ) ^ (1 - 2 * s)) * (-riemannZeta (2 * s)) ≠ 0 :=
+          mul_ne_zero (mul_ne_zero (by norm_num) h12_ne) (neg_ne_zero.mpr hzeta)
+        exact hprod_ne heq_lim
+      obtain ⟨b₀, hb₀_gt1, hb₀_ne⟩ := hex_gt1
+      rw [hdef_eq, Left.neg_neg_iff]
+      let δ : ℝ := 2 * s.re - 1 / 2
+      have hδ_ne : δ ≠ 0 := by dsimp [δ]; intro h; apply hne; linarith
+      let K : ℝ → ℝ := fun b =>
+        (b + b⁻¹) ^ (-6 : ℝ) * b ^ (2 * s.re - 1) *
+          (b ^ δ + b ^ (-δ)) * (b ^ δ - b ^ (-δ)) ^ 2 * ‖eisensteinLewisPeriod s b‖ ^ 2
+      have hψ_cont : ContinuousOn (fun b : ℝ => eisensteinLewisPeriod s b) (Ioi 0) :=
+        period_real_continuousOn hw0 1 (-riemannZeta (2 * s)) (state (2 * s))
+      have hK_cont : ContinuousOn K (Ioi 0) := by
+        intro b hb
+        have hb0 : 0 < b := hb
+        have hsum : b + b⁻¹ ≠ 0 := (add_pos hb0 (inv_pos.mpr hb0)).ne'
+        have c1 : ContinuousAt (fun x : ℝ => (x + x⁻¹) ^ (-6 : ℝ)) b :=
+          (continuousAt_id.add (continuousAt_inv₀ hb0.ne')).rpow
+            (continuousAt_const : ContinuousAt (fun _ : ℝ => (-6 : ℝ)) b) (Or.inl hsum)
+        have c2 : ContinuousAt (fun x : ℝ => x ^ (2 * s.re - 1)) b :=
+          continuousAt_id.rpow
+            (continuousAt_const : ContinuousAt (fun _ : ℝ => 2 * s.re - 1) b) (Or.inl hb0.ne')
+        have c3 : ContinuousAt (fun x : ℝ => x ^ δ + x ^ (-δ)) b :=
+          (continuousAt_id.rpow (continuousAt_const : ContinuousAt (fun _ : ℝ => δ) b)
+              (Or.inl hb0.ne')).add
+            (continuousAt_id.rpow (continuousAt_const : ContinuousAt (fun _ : ℝ => -δ) b)
+              (Or.inl hb0.ne'))
+        have c4 : ContinuousAt (fun x : ℝ => (x ^ δ - x ^ (-δ)) ^ 2) b :=
+          ((continuousAt_id.rpow (continuousAt_const : ContinuousAt (fun _ : ℝ => δ) b)
+              (Or.inl hb0.ne')).sub
+            (continuousAt_id.rpow (continuousAt_const : ContinuousAt (fun _ : ℝ => -δ) b)
+              (Or.inl hb0.ne'))).pow 2
+        have c5 : ContinuousAt (fun x : ℝ => ‖eisensteinLewisPeriod s x‖ ^ 2) b :=
+          (hψ_cont.continuousAt (isOpen_Ioi.mem_nhds hb0)).norm.pow 2
+        exact ((((c1.mul c2).mul c3).mul c4).mul c5).continuousWithinAt
+      have hc_b0 : 0 < ‖eisensteinLewisPeriod s b₀‖ := norm_pos_iff.mpr hb₀_ne
+      have hcont_b0 : ContinuousAt (fun x : ℝ => ‖eisensteinLewisPeriod s x‖) b₀ :=
+        (hψ_cont.continuousAt (isOpen_Ioi.mem_nhds (zero_lt_one.trans hb₀_gt1))).norm
+      obtain ⟨r, hr_pos, hball⟩ :=
+        Metric.continuousAt_iff.mp hcont_b0 (‖eisensteinLewisPeriod s b₀‖ / 2) (half_pos hc_b0)
+      let p : ℝ := max ((1 + b₀) / 2) (b₀ - r / 2)
+      let q : ℝ := b₀ + r / 2
+      have hp_gt1 : 1 < p := lt_max_of_lt_left (by linarith)
+      have hp_lt_b0 : p < b₀ := max_lt (by linarith) (by linarith)
+      have hp_lt_q : p < q := by dsimp [q]; linarith
+      obtain ⟨x₀, hx₀, hminK⟩ := isCompact_Icc.exists_isMinOn (nonempty_Icc.mpr hp_lt_q.le)
+        (hK_cont.mono (fun x hx => zero_lt_one.trans (lt_of_lt_of_le hp_gt1 hx.1)))
+      have hx₀_gt1 : 1 < x₀ := lt_of_lt_of_le hp_gt1 hx₀.1
+      have hx₀_pos : 0 < x₀ := zero_lt_one.trans hx₀_gt1
+      have hx₀_dist : dist x₀ b₀ < r := by
+        rw [Real.dist_eq, abs_lt]
+        have hp2 : b₀ - r / 2 ≤ p := le_max_right _ _
+        have hx_le : x₀ ≤ b₀ + r / 2 := hx₀.2
+        exact ⟨by linarith [hx₀.1], by linarith⟩
+      have hx₀_ψ_pos : 0 < ‖eisensteinLewisPeriod s x₀‖ := by
+        have hb := abs_lt.mp (by simpa [Real.dist_eq] using hball hx₀_dist)
+        linarith
+      have hx₀_diff_ne : x₀ ^ δ - x₀ ^ (-δ) ≠ 0 := by
+        intro heq_pow
+        have hpow_eq : x₀ ^ δ = x₀ ^ (-δ) := sub_eq_zero.mp heq_pow
+        rcases lt_or_gt_of_ne hδ_ne with hneg | hpos
+        · exact (Real.rpow_lt_rpow_of_exponent_lt hx₀_gt1 (show δ < -δ by linarith)).ne hpow_eq
+        · exact (Real.rpow_lt_rpow_of_exponent_lt hx₀_gt1 (show -δ < δ by linarith)).ne hpow_eq.symm
+      have hKx₀_pos : 0 < K x₀ := by
+        dsimp [K]
+        exact mul_pos (mul_pos (mul_pos (mul_pos
+          (Real.rpow_pos_of_pos (add_pos hx₀_pos (inv_pos.mpr hx₀_pos)) _)
+          (Real.rpow_pos_of_pos hx₀_pos _))
+          (add_pos (Real.rpow_pos_of_pos hx₀_pos _) (Real.rpow_pos_of_pos hx₀_pos _)))
+          (sq_pos_iff.mpr hx₀_diff_ne)) (sq_pos_of_pos hx₀_ψ_pos)
+      have hK_int : IntegrableOn K (Ioi 1) := by
+        have hdom := (globalLewisPeriod_rpow_integrableOn_Ioi_one hw0 (by norm_num) (state (2 * s))
+          hreg (β := 5 / 2) (by norm_num)).const_mul 8
+        refine hdom.mono' ((hK_cont.mono (Ioi_subset_Ioi zero_le_one)).aestronglyMeasurable
+          measurableSet_Ioi) ?_
+        filter_upwards [ae_restrict_mem measurableSet_Ioi] with b hb
+        have hb0 : 0 < b := zero_lt_one.trans hb
+        have hb1 : 1 ≤ b := hb.le
+        have hK_nn : 0 ≤ K b := by
+          dsimp [K]
+          exact mul_nonneg (mul_nonneg (mul_nonneg (mul_nonneg
+            (Real.rpow_pos_of_pos (add_pos hb0 (inv_pos.mpr hb0)) _).le
+            (Real.rpow_pos_of_pos hb0 _).le)
+            (add_nonneg (Real.rpow_pos_of_pos hb0 _).le (Real.rpow_pos_of_pos hb0 _).le))
+            (sq_nonneg _)) (sq_nonneg _)
+        rw [Real.norm_of_nonneg hK_nn]
+        have hbd1 : b ^ δ ≤ b ^ (1 / 2 : ℝ) :=
+          Real.rpow_le_rpow_of_exponent_le hb1 (by dsimp [δ]; linarith)
+        have hbd2 : b ^ (-δ) ≤ b ^ (1 / 2 : ℝ) :=
+          Real.rpow_le_rpow_of_exponent_le hb1 (by dsimp [δ]; linarith)
+        have hsum_le : b ^ δ + b ^ (-δ) ≤ 2 * b ^ (1 / 2 : ℝ) := by linarith
+        have hdiff_abs : |b ^ δ - b ^ (-δ)| ≤ 2 * b ^ (1 / 2 : ℝ) := by
+          rw [abs_le]
+          exact ⟨by linarith [Real.rpow_pos_of_pos hb0 δ, Real.rpow_pos_of_pos hb0 (-δ)],
+            by linarith [Real.rpow_pos_of_pos hb0 δ, Real.rpow_pos_of_pos hb0 (-δ)]⟩
+        have hsq_le : (b ^ δ - b ^ (-δ)) ^ 2 ≤ 4 * b ^ (1 : ℝ) := by
+          have h1 := pow_le_pow_left₀ (abs_nonneg _) hdiff_abs 2
+          rw [sq_abs, mul_pow, ← Real.rpow_natCast (b ^ (1 / 2 : ℝ)) 2,
+            ← Real.rpow_mul hb0.le] at h1
+          have hexp : (1 / 2 : ℝ) * ((2 : ℕ) : ℝ) = 1 := by norm_num
+          have h4 : (2 : ℝ) ^ 2 = 4 := by norm_num
+          rwa [hexp, h4] at h1
+        have hbase_le : b ^ (2 * s.re - 1) ≤ b ^ (1 : ℝ) :=
+          Real.rpow_le_rpow_of_exponent_le hb1 (by linarith)
+        have hmid : b ^ (2 * s.re - 1) * (b ^ δ + b ^ (-δ)) * (b ^ δ - b ^ (-δ)) ^ 2 ≤
+            8 * b ^ (5 / 2 : ℝ) := by
+          calc
+            b ^ (2 * s.re - 1) * (b ^ δ + b ^ (-δ)) * (b ^ δ - b ^ (-δ)) ^ 2
+                ≤ (b ^ (1 : ℝ) * (2 * b ^ (1 / 2 : ℝ))) * (4 * b ^ (1 : ℝ)) := by
+              apply mul_le_mul _ hsq_le (sq_nonneg _) (by positivity)
+              exact mul_le_mul hbase_le hsum_le
+                (add_nonneg (Real.rpow_pos_of_pos hb0 _).le (Real.rpow_pos_of_pos hb0 _).le)
+                (Real.rpow_pos_of_pos hb0 _).le
+            _ = 8 * (b ^ (1 : ℝ) * b ^ (1 / 2 : ℝ) * b ^ (1 : ℝ)) := by ring
+            _ = 8 * b ^ (5 / 2 : ℝ) := by rw [← Real.rpow_add hb0, ← Real.rpow_add hb0]; norm_num
+        dsimp [K, eisensteinLewisPeriod]
+        calc
+          (b + b⁻¹) ^ (-6 : ℝ) * b ^ (2 * s.re - 1) * (b ^ δ + b ^ (-δ)) *
+              (b ^ δ - b ^ (-δ)) ^ 2 *
+              ‖period (2 * s) 1 (-riemannZeta (2 * s)) (state (2 * s)) b‖ ^ 2
+              = (b + b⁻¹) ^ (-6 : ℝ) *
+                  ‖period (2 * s) 1 (-riemannZeta (2 * s)) (state (2 * s)) b‖ ^ 2 *
+                  (b ^ (2 * s.re - 1) * (b ^ δ + b ^ (-δ)) * (b ^ δ - b ^ (-δ)) ^ 2) := by ring
+          _ ≤ (b + b⁻¹) ^ (-6 : ℝ) *
+                ‖period (2 * s) 1 (-riemannZeta (2 * s)) (state (2 * s)) b‖ ^ 2 *
+                (8 * b ^ (5 / 2 : ℝ)) :=
+            mul_le_mul_of_nonneg_left hmid
+              (mul_nonneg (Real.rpow_pos_of_pos (add_pos hb0 (inv_pos.mpr hb0)) _).le (sq_nonneg _))
+          _ = 8 * (‖period (2 * s) 1 (-riemannZeta (2 * s)) (state (2 * s)) b‖ ^ 2 *
+                ((b + b⁻¹) ^ (-6 : ℝ) * b ^ (5 / 2 : ℝ))) := by ring
+      have hsub_Ioi : Ioc p q ⊆ Ioi 1 := fun x hx => hp_gt1.trans hx.1
+      have hunion : Ioi (1 : ℝ) = Ioc p q ∪ (Ioi 1 \ Ioc p q) :=
+        (Set.union_sdiff_cancel hsub_Ioi).symm
+      have hsplit : (∫ b in Ioi (1 : ℝ), K b) =
+          (∫ b in Ioc p q, K b) + ∫ b in Ioi 1 \ Ioc p q, K b := by
+        conv_lhs => rw [hunion]
+        exact setIntegral_union disjoint_sdiff_self_right
+          (measurableSet_Ioi.diff measurableSet_Ioc)
+          (hK_int.mono_set hsub_Ioi) (hK_int.mono_set Set.sdiff_subset)
+      have hrest : 0 ≤ ∫ b in Ioi 1 \ Ioc p q, K b := by
+        refine setIntegral_nonneg (measurableSet_Ioi.diff measurableSet_Ioc) fun b hb => ?_
+        have hb0 : 0 < b := zero_lt_one.trans hb.1
+        dsimp [K]
+        exact mul_nonneg (mul_nonneg (mul_nonneg (mul_nonneg
+          (Real.rpow_pos_of_pos (add_pos hb0 (inv_pos.mpr hb0)) _).le
+          (Real.rpow_pos_of_pos hb0 _).le)
+          (add_nonneg (Real.rpow_pos_of_pos hb0 _).le (Real.rpow_pos_of_pos hb0 _).le))
+          (sq_nonneg _)) (sq_nonneg _)
+      have hlow : (q - p) * K x₀ ≤ ∫ b in Ioc p q, K b := by
+        have hc : (∫ _ in Ioc p q, K x₀) = (q - p) * K x₀ := by
+          rw [setIntegral_const, Real.volume_real_Ioc_of_le hp_lt_q.le, smul_eq_mul]
+        rw [← hc]
+        exact setIntegral_mono_on (integrableOn_const (hs := measure_Ioc_lt_top.ne))
+          (hK_int.mono_set hsub_Ioi) measurableSet_Ioc fun b hb => hminK ⟨hb.1.le, hb.2⟩
+      linarith [mul_pos (sub_pos.mpr hp_lt_q) hKx₀_pos]
+
+/-- **Unconditional Off-Line Counterexample to Naive Three-Term Reflection Positivity:**
+For every real `σ ∈ (0, 1/2) \ {1/4}` (e.g. `σ = 1/8`), `s = (σ : ℂ)` is non-resonant, yet
+`eisensteinLewisPeriod s ∈ H_LP` satisfies BOTH `I_s Ψ = Ψ` AND the homogeneous Farey–Lewis
+three-term equation `M_s Ψ = Ψ` with strictly negative co-isometry defect `Q_s(Ψ) < 0` and
+infinite dyadic cusp energy. -/
+theorem nonresonant_real_strip_eisenstein_counterexample {σ : ℝ}
+    (h0 : 0 < σ) (h1 : σ < 1 / 2) (hne : σ ≠ 1 / 4) :
+    ¬ IsMayerScatteringResonance (σ : ℂ) ∧
+    IntegrableOn
+      (fun a : ℝ => ‖eisensteinLewisPeriod (σ : ℂ) a‖ ^ 2 * lewisCriticalWeight a) (Ioi 0) ∧
+    (∀ a : ℝ, 0 < a →
+      lewisModularInversion (σ : ℂ) (fun x => eisensteinLewisPeriod (σ : ℂ) x) a =
+        eisensteinLewisPeriod (σ : ℂ) a) ∧
+    (∀ a : ℝ, 0 < a →
+      lewisFarey (σ : ℂ) (fun x => eisensteinLewisPeriod (σ : ℂ) x) a =
+        eisensteinLewisPeriod (σ : ℂ) a) ∧
+    lewisCoIsometryDefect (σ : ℂ) (fun a : ℝ => eisensteinLewisPeriod (σ : ℂ) a) < 0 ∧
+    ¬ IntegrableOn
+      (fun a : ℝ =>
+        ‖dyadicCuspExtractor (σ : ℂ) (fun x => eisensteinLewisPeriod (σ : ℂ) x) a‖ ^ 2 / a)
+      (Ioi 1) := by
+  have hs0 : 0 < (σ : ℂ).re := by simp [h0]
+  have hs1 : (σ : ℂ).re < 1 / 2 := by simp [h1]
+  have hs_ne : (σ : ℂ).re ≠ 1 / 4 := by simp [hne]
+  have hzeta_ne : riemannZeta (2 * (σ : ℂ)) ≠ 0 := by
+    rw [show 2 * (σ : ℂ) = ((2 * σ : ℝ) : ℂ) by push_cast; ring]
+    exact RHTower.riemannZeta_real_strip_ne_zero (by linarith) (by linarith)
+  have hnot_res : ¬ IsMayerScatteringResonance (σ : ℂ) := by
+    rw [isMayerScatteringResonance_iff_zeta_zero hs0 hs1]
+    exact hzeta_ne
+  obtain ⟨hi1, _, hmod, hfar⟩ := eisensteinLewisPeriod_properties hs0 hs1
+  have hdef_lt :=
+    (eisensteinLewisPeriod_coIsometryDefect_lt_zero_iff hs0 hs1).mpr hs_ne
+  have hnot_cusp : ¬ IntegrableOn
+      (fun a : ℝ =>
+        ‖dyadicCuspExtractor (σ : ℂ) (fun x => eisensteinLewisPeriod (σ : ℂ) x) a‖ ^ 2 / a)
+      (Ioi 1) := by
+    rw [eisensteinLewisPeriod,
+      dyadicCuspExtractor_sq_div_integrableOn_iff hs0 hs1 (by norm_num) (state (2 * (σ : ℂ)))
+        (state_regularized_eisenstein hs0 hs1),
+      neg_eq_zero]
+    exact hzeta_ne
+  exact ⟨hnot_res, hi1, hmod, hfar, hdef_lt, hnot_cusp⟩
+
+/-- **Resolution of Route PM Task `Mayer 4` (Quadratic-Form Separation of Resonances from
+Continuous Scattering):**
+Across `0 < Re s < 1/2`, the positive-semidefinite dyadic cusp quadratic form
+`∫_1^∞ ‖eisensteinLewisPeriod s (2a) - 2^(1 - 2s) eisensteinLewisPeriod s a‖² da/a`
+is finite if and only if `s` is a Mayer scattering resonance. Combined with `lewisCoIsometryDefect`,
+a strip parameter `s` is a critical-line Mayer scattering resonance (`IsMayerScatteringResonance s ∧
+s.re = 1/4`) iff `eisensteinLewisPeriod s` simultaneously has finite dyadic cusp energy and zero
+co-isometry defect on `H_LP`. -/
+theorem eisensteinLewisPeriod_dyadicCuspEnergy_integrable_iff_resonance {s : ℂ}
+    (hs0 : 0 < s.re) (hs1 : s.re < 1 / 2) :
+    IntegrableOn
+      (fun a : ℝ =>
+        ‖dyadicCuspExtractor s (fun x => eisensteinLewisPeriod s x) a‖ ^ 2 / a)
+      (Ioi 1) ↔ IsMayerScatteringResonance s := by
+  rw [eisensteinLewisPeriod,
+    dyadicCuspExtractor_sq_div_integrableOn_iff hs0 hs1 (by norm_num) (state (2 * s))
+      (state_regularized_eisenstein hs0 hs1),
+    neg_eq_zero, isMayerScatteringResonance_iff_zeta_zero hs0 hs1]
+
+theorem criticalLineResonance_iff_dyadicCuspEnergy_and_zero_coIsometryDefect {s : ℂ}
+    (hs0 : 0 < s.re) (hs1 : s.re < 1 / 2) :
+    (IsMayerScatteringResonance s ∧ s.re = 1 / 4) ↔
+      (IntegrableOn
+        (fun a : ℝ =>
+          ‖dyadicCuspExtractor s (fun x => eisensteinLewisPeriod s x) a‖ ^ 2 / a)
+        (Ioi 1) ∧
+        lewisCoIsometryDefect s (fun a : ℝ => eisensteinLewisPeriod s a) = 0) := by
+  rw [eisensteinLewisPeriod_dyadicCuspEnergy_integrable_iff_resonance hs0 hs1]
+  refine and_congr_right fun hres => ?_
+  have heq_fn : (fun a : ℝ => eisensteinLewisPeriod s a) =
+      fun a : ℝ => resonantLewisPeriod s a := by
+    have hz := (isMayerScatteringResonance_iff_zeta_zero hs0 hs1).mp hres
+    ext a; simp [eisensteinLewisPeriod, resonantLewisPeriod, hz]
+  rw [heq_fn, resonantLewisPeriod_coIsometryDefect_eq_zero_iff hres]
+
+#print axioms lewisModularInversion_adj_comp_self
+#print axioms lewisModularInversion_normBounded_iff
+#print axioms gaussMayerHead_normBounded_iff
+#print axioms gaussMayerPair_normBounded_iff
+#print axioms gaussMayerTail_normBounded
+#print axioms lewisFarey_comp_fareyAdj
+#print axioms one_lt_lewisFareyMultiplier
+#print axioms lewisFarey_normBounded
+#print axioms lewisFarey_selfCommutator_neg_of_fixed
+#print axioms lewisModularInversion_heckeT2
+#print axioms lewisThreeTermDefect_heckeT2
+#print axioms dyadicCuspExtractor_bound
+#print axioms dyadicCuspExtractor_sq_div_integrableOn_iff
+#print axioms eisensteinLewisPeriod_coIsometryDefect_lt_zero_iff
+#print axioms nonresonant_real_strip_eisenstein_counterexample
+#print axioms eisensteinLewisPeriod_dyadicCuspEnergy_integrable_iff_resonance
+#print axioms criticalLineResonance_iff_dyadicCuspEnergy_and_zero_coIsometryDefect
+
+end GaloisForLFunctions.RenormalizedIntersectionTheory.MayerScattering
+
