@@ -897,9 +897,11 @@ theorem periodic_endpoint_mean_sq {y₁ y₂ : ℝ} (hy : y₁ < y₂) (w₁ w�
   have hre_zero : ∫ t in T..(T + P),
       2 * ((w₂ * star w₁) * cexp ((t : ℂ) * (Δ : ℂ) * I)).re = 0 := by
     rw [intervalIntegral.integral_const_mul]
-    have hcomm := Complex.reCLM.intervalIntegral_comp_comm
-      ((by fun_prop : Continuous fun t : ℝ =>
-        (w₂ * star w₁) * cexp ((t : ℂ) * (Δ : ℂ) * I)).intervalIntegrable volume T (T + P))
+    have hint_osc : IntervalIntegrable
+        (fun t : ℝ => (w₂ * star w₁) * cexp ((t : ℂ) * (Δ : ℂ) * I)) volume T (T + P) :=
+      (by fun_prop : Continuous fun t : ℝ =>
+        (w₂ * star w₁) * cexp ((t : ℂ) * (Δ : ℂ) * I)).intervalIntegrable T (T + P)
+    have hcomm := Complex.reCLM.intervalIntegral_comp_comm hint_osc
     change 2 * (∫ t in T..(T + P), Complex.reCLM ((w₂ * star w₁) * cexp ((t : ℂ) * (Δ : ℂ) * I))) = 0
     rw [hcomm, intervalIntegral.integral_const_mul, hosc_zero, mul_zero,
       Complex.reCLM_apply, Complex.zero_re, mul_zero]

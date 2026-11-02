@@ -1,9 +1,9 @@
 # Automorphic dyadic return of resonant states
 
-- **Stage:** 1-in-progress; source identity checked in Lean, mass bound pending.
+- **Stage:** 1-in-progress; source identity and return-mass bound checked in Lean; full-residual bound pending.
 - **Parent:** [Arithmetic measure rigidity](resonant-state-arithmetic-measure-rigidity.md).
 
-## Exact candidate
+## Exact source identity
 
 For `z=x+iy∈fd`, put `h_k(z)=2y/((x+k)²+y²)` and let `C_u(y)` denote the full Eisenstein constant term. Define the global truncation by
 
@@ -37,4 +37,20 @@ Since `y≤2` and the Euclidean area is `1/16`,
 `∫_R |D_u|² dμ ≥ |B(u)|²/128`.
 Compared with the exact cutoff-one norm, this gives
 `∫_R |D_u|² dμ ≥ (−2 Re u)/128 · ||τ_(u,1)||²`.
-The bound is uniform in `Im u`. It concerns the coordinate-to-automorphic correction, not the entire residual `(T₂−λ₂)τ`; those two quantities must not be conflated. A subsequent phase-correlation estimate is needed to control cancellation with the coordinate residual.
+The bound is uniform in `Im u`. The full residual `(T₂−λ₂)τ` requires the separate comparison below.
+
+## Stronger candidate: the full residual
+
+No oscillatory estimate is needed on this rectangle. Put `r=x²+y²`, `s=1/2−u`. Here `3<r<4` and `1<y<2`. The coordinate residual is `B(u)2^u y^s`, while the return correction is `B(u)h_0^s/√2`. Their ratio is exactly
+
+`2^(2u) r^(1/2−u) = (r/2)(4/r)^(u+1/2)`.
+
+For `−1/2<Re u<0`, its modulus is at least `r/2>3/2`. The reverse triangle inequality therefore gives
+`|(T₂−λ₂)Λ¹_aut E_u|² ≥ |D_u|²/4 ≥ |B(u)|²/8` on `R`.
+Hence the full residual should satisfy the uniform core bound
+`∫_R |(T₂−λ₂)Λ¹_aut E_u|² dμ ≥ (−2 Re u)/512 · ||τ_(u,1)||²`.
+This is a new candidate beyond the checked source identity; its exact algebra and mass comparison still require Lean verification.
+
+## Lean certificates
+
+`ResonantStates/AutomorphicHeckeReturn.lean`: modular invariance, agreement on `fd`, exact three-disk correction. `ResonantStates/CoreReturnMass.lean`: pointwise and integral core lower bounds, including `dyadicReturnDefect_relative_mass_lower`. Checks passed; transitive axioms are only `propext`, `Classical.choice`, `Quot.sound`. The full residual candidate is not included in this certificate.

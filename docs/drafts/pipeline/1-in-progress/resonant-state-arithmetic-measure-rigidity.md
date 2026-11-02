@@ -35,10 +35,13 @@ The Gram proof requires cutoffs at least one: above that height the fundamental 
 
 Determine the exact compact-core return correction for genuine automorphic truncation, then test whether its repeated returns enforce a restriction on the decay rate. This is the first place where spatial localization can distinguish the modular surface from the elementary cutoff model. No such restriction has been established.
 
-**First-prime candidate.** At cutoff one, write `z=x+iy∈fd` and
-`h_k(z)=2y/((x+k)²+y²)`. The missing automorphic cusp subtraction in the two downward branches of `T₂` should be
-`B(u)/√2 · Σ_(k=-1,0,1) 1_(h_k>1) h_k^(1/2-u)`.
-These return regions are the disks `(x+k)²+(y-1)²<1`. To verify: classify primitive rows in the two Hecke images, prove that rows with `|c|≥2` cannot return above height one, account for the `±` row multiplicity, and compare the resulting operator with genuine automorphic truncation. The correction is subtracted from the coordinate Hecke formula. This remains a conjectured source identity, not an assumed input.
+**First-prime return: formalized.** Write `h_k(z)=2y/((x+k)²+y²)`. The globally automorphic truncation at height one differs from coordinate Hecke truncation by the subtraction
+`D_u(z)=B(u)/√2 · Σ_(k=-1,0,1) 1_(h_k>1) h_k^(1/2-u)`.
+The return regions are exactly `(x+k)²+(y−1)²<1`. Primitive-row classification, signed multiplicities and modular invariance are checked in Lean.
+
+On `R={|x|≤1/4, 7/4≤y≤15/8}`, only the central return survives. Lean proves
+`∫_R |D_u|² dμ ≥ (−2 Re u)/128 · ||τ_(u,1)||²`.
+Thus this correction remains macroscopic at fixed negative real parameter, at every frequency. Exact statements and the stronger pending full-residual bound: [automorphic dyadic return](resonant-automorphic-dyadic-return.md).
 
 ## Open dependency
 

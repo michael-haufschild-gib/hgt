@@ -24,7 +24,7 @@ TheAliasingIsTheDilationDerivativeOfTheBulk, TheAliasingConstantOfTheTiltedSplin
 ThePrimesOfAHorizonWindow, TheBulkDeterminesTheSecondOrderTerm, TheWindowIndex,
 TheCountLawOverEveryFiniteRing, TheTwistedHorizonLayerIsZeroBlind, TheWindowIndexCountsTheRightZeros,
 TheTwistedHorizonLayerIsPositive, TheAlternatingWindowCountsTheConductorTwoPoints,
-ThePrimeWindowCountsTheProjectivePoints.
+ThePrimeWindowCountsTheProjectivePoints, TheHorizonLayerIsGradedByConductor.
 
 ## Status
 - First order = count: `J(m) = J(1) #ℙ⁷(ℤ/m)`; count law over every finite ring (𝔽_q[T] calibration) [L].
@@ -50,6 +50,9 @@ ThePrimeWindowCountsTheProjectivePoints.
 
 - Prime conductor window c_p = p·1_{p|n} − 1: second order `(p^{β+1}−1)βJ/K‖H‖²`, tilted
   `7(p−1)J(p)/K‖H‖²_{−8}`, `(p−1)J(p) = J(1)φ(p)#ℙ⁷(𝔽_p)`, every prime [L].
+- Divisor twists `d·1_{d|n} − 1`: second order `(7/K)Σ_{e|d,e>1} φ(e)J(e)‖H‖²_{−8}` [L].
+- Conductor grading: untwisted `x` and prime `y` windows orthogonal at second order
+  (`c⁻¹(Q(x+y) − Q(x−y))/∫g² → 0`); `x + y → κQ(H) + βJ/K‖H‖² + (p^{β+1}−1)βJ/K‖G‖²` [L].
 
 ## Open: exact second-order term of twisted windows of composite conductor
 Claim: for `χ` `m`-periodic of mean zero, `c⁻¹⟨Wx,x⟩ − (log N/∫φ²)𝒜^χ_N → 0` with

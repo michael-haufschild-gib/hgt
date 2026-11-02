@@ -25,6 +25,7 @@ import GaloisForLFunctions.ArithmeticHodgeTheoryOfDegenerations.TheWindowIndexCo
 import GaloisForLFunctions.ArithmeticHodgeTheoryOfDegenerations.TheTwistedHorizonLayerIsPositive
 import GaloisForLFunctions.ArithmeticHodgeTheoryOfDegenerations.TheAlternatingWindowCountsTheConductorTwoPoints
 import GaloisForLFunctions.ArithmeticHodgeTheoryOfDegenerations.ThePrimeWindowCountsTheProjectivePoints
+import GaloisForLFunctions.ArithmeticHodgeTheoryOfDegenerations.TheHorizonLayerIsGradedByConductor
 
 /-!
 # Arithmetic Hodge Theory of Degenerations
@@ -51,6 +52,8 @@ finite ring (calibration: the first-order count is the same over `ℤ` and `𝔽
 horizon layer is zero-blind and positive (windows twisted by a mean-zero periodic weight see no
 zero and lie above the archimedean horizon); the window index counts the right zeros; the
 alternating (conductor-two) window has second-order term `7 J(2)/K ‖H‖²_{−8}`, and for every prime
-`p` the conductor-`p` window has `7 (p − 1) J(p)/K ‖H‖²_{−8}`: the conductor-`p` count.
+`p` the conductor-`p` window has `7 (p − 1) J(p)/K ‖H‖²_{−8}`: the conductor-`p` count; the
+horizon layer is graded by conductor (untwisted and prime windows are orthogonal at second order,
+so their span carries the direct sum of the two blocks).
 See `ArithmeticHodgeTheoryOfDegenerations/README.md`.
 -/

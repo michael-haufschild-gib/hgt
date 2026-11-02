@@ -29,38 +29,21 @@ transitive axiom audits pass; only `propext`, `Classical.choice`, and
 
 ## Prime successor comparison
 
-A candidate lower bound uses pairs `(n,pn+1)` with primes `p>Q` and
-`N/2≤pn<N`. Multiplication by `p` preserves every Ramanujan mode of
-conductor at most `Q`; the affine difference therefore samples the
-successor difference. The prime is recoverable from the pair, so these
-edges are distinct. For large enough fixed overlap, their normalized
-autocorrelations have a common positive lower bound.
-
-Restricting `p≤N/(16Q²)` makes the quadratic-horizon sampling error a
-fixed fraction of the interval mass. A precise candidate is
+For every nonnegative nonzero `C²` profile supported in `[0,1]`, some fixed
+profile-dependent overlap threshold gives, for all `N≥1`, `Q≥2` and coefficient families,
 
 `½ affineDirichlet ≥ (1/64) [primePoleScale(⌊N/(16Q²)⌋)−primePoleScale(Q)]
- · nonconstantPacketMass`,
+ · nonconstantPacketMass`.
 
-for every `Q≥2` and overlap above a profile-dependent constant. Here
-`primePoleScale(X)=Σ_(p≤X) log p/p`; its formalized bounded-error Mertens
-law gives the scale `log N−3 log Q−C`. Continuity of autocorrelation at
-zero supplies a normalized lower bound `1/2` on a sufficiently small lag
-interval. The successor gap for the same packet is at least its
-nonconstant mass. This comparison is unproved; the shell payment remains
-in the complete energy identity.
+The actual edges `(n,pn+1)`, with `Q<p≤N/(16Q²)` prime and
+`N/(2p)<n≤N/(2p)+N/(4p)`, have weight at least `log p/(2N)`.
+Their interval mass is at least `N/(16p)` times the nonconstant packet mass,
+by the coprime-successor window gap. Distinct `(p,n)` give distinct ordered
+edges, so their contributions sum inside the literal affine Dirichlet energy.
+No prime-distribution estimate is needed.
 
-The successor gap follows from the exact period identity
-`mean (F(n+1)−F(n))² = Σ_m 2(totient(m)−μ(m))a_m²`.
-The constant mode contributes zero, parity contributes `4a_2²`, and
-`|μ(m)/totient(m)|≤1/2` for `m≥3` gives at least `totient(m)a_m²`.
-If `gcd(p,Q!)=1`, dilation preserves each Ramanujan mode and permutes
-residues modulo `Q!`. Thus the same gap holds for `F(pn+1)−F(n)`.
-The existing relative affine-window bound then gives
-`Σ_(A<n≤A+K) (F(pn+1)−F(n))² ≥ (K−Q(Q−1))·nonconstantPacketMass`
-when `K≥Q(Q−1)`. No prime-distribution input is needed for this step.
-This [successor-gap theorem](../3-formalized/coprime-successor-gap-for-conductor-packets.md)
-passes direct Lean and standard-axiom audits.
+The kernel-checked comparison and its paper proof are recorded in
+[Prime successor edges pay nonconstant packet mass](../3-formalized/prime-successor-edges-pay-packet-mass.md).
 
 ## Remaining obligations
 

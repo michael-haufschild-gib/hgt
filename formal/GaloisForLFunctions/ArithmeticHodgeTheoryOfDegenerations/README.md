@@ -102,6 +102,13 @@ same holds at every prime: the window twisted by `c_p(n) = p·1_{p|n} − 1` has
 for every `d ≥ 2` the window twisted by `d·1_{d|n} − 1` carries `(7/K) Σ_{e|d, e>1} φ(e) J(e)`, the
 conductor counts of the divisors of `d`.
 
+The two kinds of direction do not interact: an untwisted window `x` and a prime window `y` are
+orthogonal at second order, so on their span
+
+**c⁻¹⟨W(x+y), x+y⟩ → κ_φ Q(H) + (7 J(1)/K) ‖H‖²_{−8} + (7 (p − 1) J(p)/K) ‖G‖²_{−8}:**
+
+the second-order form is graded by conductor, Weil's form living only on the conductor-one block.
+
 ## 3. Objects
 
 | Object | Lean | Meaning |
@@ -239,6 +246,13 @@ polarized? ⇒ inheritance ⇒ RH. The zero side splits the second order into le
   `pℤ` of Lipschitz profiles equidistribute. The energy is `2π(𝒜_N(c/p) − 𝒜_N(c))`. Below the
   first resonance, Kuzmin–Landau on `n` and on the cofactor `n/p` together with the twisted Riemann
   sums below `√N` leave `O(N^{−1/2})`. Hence the second-order term `(p^{β+1} − 1)βJ/K ‖H‖²`.
+- **The conductor grading.** Polarize the sharp forms of an untwisted block `x` and a prime block
+  `y`. Each piece of the polarized form is a mixed product with one prime factor: the pole values
+  pair a Riemann sum with a twisted Riemann sum; below the first resonance AM–GM with weight
+  `N^{1/4}` pairs the untwisted domination `C/(1 + τ²)` with the quiet energy `O(N^{−1/2})` of `y`;
+  the mixed energy is `(2π/c) Σ_n y_n Σ_m x_m G_{mn}`, whose untwisted rows are smooth, so `c_p`
+  integrates to `0` against the product window by equidistribution on `pℤ`. With the
+  parallelogram law the limit of `x + y` is the sum of the two blocks.
 - **Critical multiples.** If the rescaled family converges to `J + K X`, positive definiteness is
   inherited and a negative direction is eventually negative; for `J ⪰ 0` the admissible multiples
   form a closed initial segment, positive semidefinite terms never remove a multiple, and negative
@@ -276,6 +290,7 @@ the untwisted horizon windows; twisted horizon windows are zero-blind.
 | What is the first-order structure of the degeneration, and why is it polarized? | The point count of projective space: `J(m) = J(1) #ℙ⁷(ℤ/m)`, `#ℙ^{k−1}(ℤ/m) φ(m) = J_k(m)`. Weight strings are Hensel towers, the tensor law is CRT. It is positive because it is a cardinality. | `jordanCoefficient_eq_projPoints`, `natCard_projPoints_mul_totient`, `natCard_primVec_eq_jordanTotient`, `projPoints_prime_mul`, `projPoints_prime_pow_succ`, `primVecCRT` |
 | How do the zeros enter the second-order term of fixed packets? | Only through the pole coefficient: `(log N/c) W_ρ/∫g² → m_ρ κ y_1²/(ρ(1−ρ))`, real part `> 0`; at the critical curve `c⁷ W_ρ/∫g² → K m_ρ κ y_1²/(ρ(1−ρ))`. Same for every finite window. | `tendsto_bulkLedger`, `tendsto_bulkLedger_criticalCurve`, `tendsto_sum_bulkLedger`, `re_sum_mult_div_nonneg` |
 | Which directions of the complete family see an individual zero? | Only the untwisted horizon windows: there `W_ρ/(c∫g²) → κ W_ρ(H,H)`, Weil's summand of the synthesized test. Fixed conductor packets see a zero only through the pole, with positive weight; horizon windows twisted by a mean-zero periodic weight (Ramanujan sums `c_m`, `m ≥ 2`; nonprincipal characters) see no point of the strip: their twisted Riemann sums are `O(1/N)`. | `tendsto_horizonLedger`, `Wsummand_halfWeight`, `tendsto_bulkLedger`, `tendsto_twistedLedger`, `norm_twistedRiemannSum_le` |
+| Do the twisted directions interact with the untwisted ones? | Not at second order: for `x = h/√n` and `y = c_p(n) g/√n`, `c⁻¹(Q(x+y) − Q(x−y))/∫g² → 0` along every resolution with `c → ∞`, `c log²N/N → 0`. The mixed pole terms are products of a Riemann sum and a twisted Riemann sum (`O(1/N)`), the quiet region couples a dominated untwisted block (`|D_x|²/N ≤ C/(1+τ²)`) with a prime block of quiet energy `O(N^{−1/2})` (AM–GM: `O(N^{−1/4})`), and the mixed energy is `O(c/N)` because `c_p` has mean zero on the smooth untwisted rows. So the second-order form of the span is the direct sum `κQ(H) + (βJ/K)‖H‖² + (p^{β+1} − 1)(βJ/K)‖G‖²`. | `cross_layer_vanishes`, `exists_abs_crossPole_le`, `exists_quietCross_le`, `exists_abs_crossEnergy_le`, `atomForm_parallelogram`, `graded_layer_criticalCurve_of_regularBulk`, `graded_layer_criticalCurve_exact` |
 | Where do the negative directions of the horizon layer live? | Only on untwisted windows. A window twisted by a mean-zero periodic weight has transform `O(1/N)` at low frequencies and at the pole values, and the symbol is nonnegative beyond the archimedean horizon `τ₀(A)`; so at every resolution `0 < c ≤ N` its normalized form is `≥ −C₀(L_h + B_h)²/N²`. Its second-order term is strictly positive: one dyadic window above the grid carries `a log N/c⁸`, so at the multiple `K` of the critical curve it is `≥ a/K − ε`. | `twisted_horizon_form_ge`, `eventually_twisted_horizon_form_ge`, `exists_weilQuad_ge_of_lowFrequency`, `twisted_horizon_layer_coercive`, `twisted_horizon_layer_criticalCurve_ge` |
 | Is the horizon layer Weil's form? | Yes. In the iterated limit (horizon, then window of zeros) windows exhaust `κ W(H,H)`. Directly: past the critical curve (`(1+log N)/c^p → 0`) `c⁻¹⟨Wx,x⟩ → κ Q(H)`; at `c^p/log N → K_c` it is `κ Q(H)` up to `K/K_c`; for every schedule the error is `ε + K(1+log N)/c^p`. | `horizon_layer_two_sided`, `tendsto_horizon_layer_supercritical`, `horizon_layer_criticalCurve`, `horizon_window_exhaustion` |
 | What is the second-order term at the critical curve (obstacles summary 2.5.4)? | On horizon blocks, exactly: `c⁻¹⟨Wx,x⟩ → κ Q(H) + (βJ/K) ∫ e^{−(β+1)y} H²` along `c^{β+1}/log N → K`, for every profile with bulk limit `s^β E₁(s) → J` (tilted spline: `β = 7`, `J = J(1)`). For every profile and every schedule with `c → ∞`, `c(log N)²/N → 0`: `c⁻¹⟨Wx,x⟩ = κ Q(H) − log N · N⁻¹ Σ_n h(log(n/N))² E₁'(cn/N) + o(1)`. | `horizon_layer_criticalCurve_of_regularBulk`, `horizon_layer_criticalCurve_exact`, `horizon_layer_sharp`, `horizon_layer_sharp_bulk`, `horizonForm_eq` |
@@ -347,6 +362,11 @@ the untwisted horizon windows; twisted horizon windows are zero-blind.
   tests with arbitrary window weights (`centredAtomicTest`, `paperFT_centredAtomicTest`).
 - The pencil split and positive semidefinite weighted Gram matrices on windows (`pencilGram_eq`,
   `hermQuad_weightGram_nonneg`).
+- Polarization of block forms: linearity of block transforms in the weights, the polarized pole
+  part, AM–GM for polarized energies, the mixed Plancherel identity, the parallelogram law
+  (`paperFT_centredAtomicTest_add`, `abs_pole_add_sub_le`, `abs_polar_le`, `crossEnergy_eq`,
+  `atomForm_parallelogram`); bounded untwisted Riemann sums (`norm_horizonRiemannSum_le`); the
+  remainder above the cut uniformly in the weights (`tendsto_remainderW`).
 
 **Developed in neighbouring programmes and used here.** Néron–Tate theory and the Tate limit law on
 correspondences (AET); Arakelov `h⁰` of lattices of growing rank, Künneth Riemann–Roch, the
@@ -380,6 +400,7 @@ Stepanov over `ℤ` (AET) and over curves (LST).
 | The conductor-two window counts the conductor-two points: `c⁻¹⟨Wx,x⟩ → 7J(2)/K ‖H‖²_{−8}` | `alternating_layer_criticalCurve_exact`, `alternating_layer_sharp`, `abs_altEnergy_sub_le`, `norm_dirichletPoly_alt_le` | proved |
 | The prime window counts `ℙ⁷(𝔽_p)`: `c⁻¹⟨Wx,x⟩ → 7(p−1)J(p)/K ‖H‖²_{−8}` for every prime `p` | `prime_layer_criticalCurve_exact`, `prime_layer_sharp`, `abs_primeEnergy_sub_le`, `exists_primeLow_energy_le` | proved |
 | Divisor windows sum the divisor counts: `→ (7/K) Σ_{e|d,e>1} φ(e)J(e) ‖H‖²_{−8}` for every `d ≥ 2` | `divisor_layer_criticalCurve_exact`, `sum_divisors_jordanTotient`, `totient_mul_jordanCoefficient` | proved |
+| The horizon layer is graded by conductor: untwisted and prime windows are orthogonal at second order, `x + y → κQ(H) + 7J(1)/K ‖H‖²_{−8} + 7(p−1)J(p)/K ‖G‖²_{−8}` | `cross_layer_vanishes`, `graded_layer_criticalCurve_of_regularBulk`, `graded_layer_criticalCurve_exact`, `atomForm_parallelogram` | proved |
 | Exhaustion: windows of zeros give Weil's form of the synthesized test | `horizon_window_exhaustion`, `tendsto_sum_horizonLedger` | proved |
 | Critical-multiple calculus | `admissible_of_le`, `isClosed_admissible`, `admissible_mono`, `neg_persists`, `eventually_pos_of_tendsto`, `eventually_not_nonneg_of_tendsto` | proved |
 | Horizon layer past the critical curve = Weil's form; at it, up to `O(1/K)` | `horizon_layer_two_sided`, `tendsto_horizon_layer_supercritical`, `horizon_layer_criticalCurve` | proved |
@@ -462,7 +483,7 @@ Stepanov over `ℤ` (AET) and over curves (LST).
 |---|---|
 | First-order structure identified as a count | proved: `#ℙ⁷(ℤ/m)` |
 | How zeros enter the second order, packets that see a zero classified | proved per zero and per window: bulk (pole only, positive), untwisted horizon windows (Weil summands), twisted horizon windows (none; their second-order term is positive, `≥ a/K`) |
-| Second-order term at the critical curve identified | horizon layer: exactly `κ Q(H) + (βJ/K)‖H‖²_{−(β+1)}` for every profile with bulk limit `s^βE₁ → J` (proved; tilted spline `7J(1)`); conductor-`p` windows: exactly `(p^{β+1} − 1)βJ/K ‖H‖²`, i.e. `7(p−1)J(p)/K` (proved for every prime); bulk second order: open |
+| Second-order term at the critical curve identified | horizon layer: exactly `κ Q(H) + (βJ/K)‖H‖²_{−(β+1)}` for every profile with bulk limit `s^βE₁ → J` (proved; tilted spline `7J(1)`); conductor-`p` windows: exactly `(p^{β+1} − 1)βJ/K ‖H‖²`, i.e. `7(p−1)J(p)/K` (proved for every prime); untwisted ⊕ prime span: the direct sum of the two (proved); bulk second order: open |
 | A count reading the primes inside the jump measure, creation potential paid on a window | the primes beyond the window pay their own creation (proved); a count for the primes inside it: open (corpus foothold on prime-free cycles) |
 | Gluing theorem with exactly one negative square | AKG `κ + 1`; zero ledger of the bulk is a positive pole gluing |
 | An integer with a structural bound | the window index `ind₋(P_K)`: read by the complete family, monotone in the multiple, its supremum over families is the number of right zeros, RH iff it vanishes (proved); a source-defined bound forcing it to `0` (WD's sectorial multiplier): open |
@@ -508,7 +529,9 @@ through Weil's summand of the test it synthesizes, and windows of zeros exhaust 
 horizon block twisted by a Ramanujan sum or a character reads no zero at all, is positive at every
 resolution, and at the critical curve the window of prime conductor `p` carries exactly the
 conductor-`p` count `7 (p − 1) J(p)/K ‖H‖²_{−8}`: the count of the first order reappears at second
-order on the twisted directions.
+order on the twisted directions. Twisted and untwisted directions are orthogonal at second order,
+so the second-order form is graded by conductor and Weil's form lives on the conductor-one block
+alone.
 
 On the arithmetic side the horizon layer is computed exactly. Below the atom grid the block is the
 Riemann sum of the synthesized test; its total energy is, by Plancherel and Poisson summation on the

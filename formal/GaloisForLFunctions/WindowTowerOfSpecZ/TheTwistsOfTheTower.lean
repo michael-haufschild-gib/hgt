@@ -17,6 +17,9 @@ datum to the twisted datum (`tateFamily_twist`): the Tate family of `(χζ, χμ
 * **Twisted Tate pieces are character-weighted counts** (`tateFamily_charTwist_succ`): at
   `k = β + 1` they are `χ(m)φ(m)#ℙ^β(ℤ/m)`; the twisted windows of the degeneration read the same
   projective point counts, weighted by the character.
+* **What survives the derivative** (`tateFamily_prime_nonneg_iff`): Tate positivity at a prime in
+  small positive dimensions is equivalent to the nonnegativity of the weight there — the Markov
+  sign, which every datum with nonnegative weights has.
 * **The non-Tate piece of a twisted datum is the twisted von Mangoldt weight**
   (`hasDerivAt_tateFamily_charTwist`): `∂_k(χJ_k)(m)|₀ = χ(m)Λ(m)`, the arithmetic weight of the
   window form of `L(s, χ)`.
@@ -51,7 +54,7 @@ theorem twist_mul {c : ℕ → ℝ} (hc : IsCompletelyMultiplicative c) (f g : A
 theorem twist_one {c : ℕ → ℝ} (hc : IsCompletelyMultiplicative c) :
     twist c (1 : ArithmeticFunction ℝ) = 1 := by
   ext n
-  rw [twist_apply, ArithmeticFunction.one_apply, ArithmeticFunction.one_apply]
+  rw [twist_apply, ArithmeticFunction.one_apply]
   split_ifs with h
   · rw [h, hc.map_one, mul_one]
   · rw [zero_mul]
@@ -119,5 +122,31 @@ theorem hasDerivAt_tateFamily_charTwist {c : ℕ → ℝ} (hc : IsCompletelyMult
       (c m * ArithmeticFunction.vonMangoldt m) 0 := by
   simp_rw [tateFamily_charTwist hc]
   exact (hasDerivAt_jordanTotient_zero m).const_mul (c m)
+
+/-! ### What survives the derivative at dimension zero -/
+
+/-- **Tate positivity near dimension zero is the Markov sign of the weight**: for an Euler datum and
+any `ε > 0`, the Tate pieces at a prime `p` are nonnegative in all dimensions `0 < k < ε` iff the
+logarithmic-derivative weight at `p` is nonnegative. This is the only positivity of the Tate family
+that survives the derivative at `k = 0`, and it is soft: it holds for `ζ(s)ζ(s − ε)`. -/
+theorem tateFamily_prime_nonneg_iff {F G : ArithmeticFunction ℝ} (hFG : F * G = 1)
+    (hF1 : F 1 = 1) {p : ℕ} (hp : p.Prime) {ε : ℝ} (hε : 0 < ε) :
+    (∀ k, 0 < k → k < ε → 0 ≤ tateFamily F G k p) ↔
+      0 ≤ (F.pmul ArithmeticFunction.log * G) p := by
+  have hp1 : (1 : ℝ) < p := by exact_mod_cast hp.one_lt
+  have hlog : 0 < Real.log p := Real.log_pos hp1
+  rw [logDeriv_prime hFG hF1 hp]
+  constructor
+  · intro h
+    have hk := h (ε / 2) (by positivity) (by linarith)
+    rw [tateFamily_prime hFG hF1 hp] at hk
+    have hpk : 0 < (p : ℝ) ^ (ε / 2) - 1 := by
+      have := Real.one_lt_rpow hp1 (by positivity : 0 < ε / 2); linarith
+    exact mul_nonneg (nonneg_of_mul_nonneg_left hk hpk) hlog.le
+  · intro h k hk _
+    rw [tateFamily_prime hFG hF1 hp]
+    have hF : 0 ≤ F p := nonneg_of_mul_nonneg_left h hlog
+    have := Real.one_lt_rpow hp1 hk
+    exact mul_nonneg hF (by linarith)
 
 end GaloisForLFunctions.WindowTowerOfSpecZ

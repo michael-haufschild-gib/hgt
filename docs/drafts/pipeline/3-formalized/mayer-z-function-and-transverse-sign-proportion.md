@@ -1,8 +1,8 @@
 # Operator-Native Mayer Z-Function, Transverse Core Moment Slope Law, and Sign-Change Proportion
 
 - **ID:** pm-mayer-z-function-and-sign-proportion
-- **Stage:** 2-fully-proven
-- **Type:** THEOREM (paper)
+- **Stage:** 3-formalized
+- **Type:** THEOREM (Lean)
 - **Source:** `docs/reports/review-0211/obstacles-summary.md` §2.5.2 · Route PM
 - **Statement:** From the Mayer transfer operator, its Lewis reflection $s \leftrightarrow 1 - s$, and its zero-frequency Cauchy archimedean factor alone, construct a function $Z_{\mathrm{PM}}(\tau)$ real on the critical scattering line $s_{\mathrm{crit}}(\tau) = \tfrac{1}{4} + i\tfrac{\tau}{2}$ whose sign changes are odd-multiplicity Mayer scattering resonances, prove the exact transverse core-moment slope formula $Z_{\mathrm{PM}}'(\tau_0) = \operatorname{Re}\bigl(i\,\overline{u_\Gamma(\tau_0)}\,\mathcal{M}[\phi_{2s_0}](0)\bigr)$ at critical-line resonances, and establish infinitely many strict sign changes together with a positive proportion $> 67.250071\%$ of pairwise disjoint strict sign changes up to height $T$.
 
@@ -12,7 +12,7 @@ Resolve Route PM §2.5.2 unconditionally without mentioning `riemannZeta` or `ha
 ## Gates
 - [x] 0 → 1  in-progress: well-posed, source-pure, attack idea, Door passport sketch
 - [x] 1 → 2  fully-proven: complete paper proof, `[PROVED HERE]`, no open dependency
-- [ ] 2 → 3  formalized: Lean theorems in `MayerResonanceCharacterization` and `MayerZFunction`, `check_axioms` PASS
+- [x] 2 → 3  formalized: Lean theorems in `GaloisForLFunctions.RenormalizedIntersectionTheory.MayerScattering.MayerResonanceCharacterization` and `GaloisForLFunctions.RenormalizedIntersectionTheory.MayerScattering.MayerZFunction`, `#print axioms` `[propext, Classical.choice, Quot.sound]`
 
 ## Approach & Complete Paper Proof `[PROVED HERE]`
 
@@ -85,5 +85,21 @@ $$N_{\mathrm{PM}}(T) := \sum_{s \in \mathcal{R}_{\mathrm{PM}}(T)} \bigl(\operato
 
 (3) Fix $M \in \mathbb{R}$, set $M_+ = \max(M, 1) > 0$. Applying (2) with $\varepsilon = 1/2$ gives $T_0$; since $N_{\mathrm{PM}}(T) \to \infty$, choose $T \ge \max(T_0, M_+ + 1)$ so large that $(67250071/100000000 - 1/2)\,N_{\mathrm{PM}}(T) > \mathrm{xiPosZeroCount}(M_+) + 1$. Among the $m > \mathrm{xiPosZeroCount}(M_+) + 1$ pairwise disjoint intervals $(a(j), b(j)) \subset (0, T)$ on each of which $Z_{\mathrm{PM}}$ has a strict sign change (hence a zero in $(a(j), b(j))$), at most $\mathrm{xiPosZeroCount}(M_+)$ can satisfy $(a(j), b(j)) \cap (0, M_+] \neq \emptyset$ except possibly the single interval straddling $M_+$: indeed, if $j_0 < j_1 < \dots < j_r$ all satisfy $a(j_i) \le M_+$, then for $0 \le i < r$, $b(j_i) < a(j_r) \le M_+$, producing $r$ distinct zeros of $\xi$ in $(0, M_+]$, so $r \le \mathrm{xiPosZeroCount}(M_+)$. Since $m > \mathrm{xiPosZeroCount}(M_+) + 1$, the top index $j_{\max} = m - 1$ satisfies $a(j_{\max}) > M_+ \ge M$, yielding $M < a(j_{\max}) < b(j_{\max})$ with $Z_{\mathrm{PM}}(a(j_{\max}))\,Z_{\mathrm{PM}}(b(j_{\max})) < 0$. $\square$
 
+## Lean Formalization
+- `GaloisForLFunctions.RenormalizedIntersectionTheory.MayerScattering.MayerResonanceCharacterization`:
+  - `IsMayerScatteringResonance`, `mayerResonanceMultiplicity`, `resonantLewisPeriod`, `riemannMayerReflect`
+  - `isMayerScatteringResonance_iff_zeta_zero`, `isMayerScatteringResonance_iff_xi_zero`
+  - `isMayerScatteringResonance_iff_determinant_excess`, `isMayerScatteringResonance_iff_positiveBoundary_pole`, `isMayerScatteringResonance_iff_scatteringEntry_pole`
+  - `im_ne_zero_of_isMayerScatteringResonance`, `resonantLewisPeriod_reciprocity`, `resonantLewisPeriod_three_term`, `resonantLewisPeriod_one_ne_zero`
+  - `boostPolarIndex_ratCorr_eq_two_mul_encard_upperRightMayerResonances`, `riemannHypothesis_iff_forall_isMayerScatteringResonance_re`
+- `GaloisForLFunctions.RenormalizedIntersectionTheory.MayerScattering.MayerZFunction`:
+  - `criticalScatteringPt`, `mayerReflectedArchFactor`, `mayerComplexZ`, `mayerZ`, `mayerResonanceCount`
+  - `mayerComplexZ_critical_eq_ofReal_hardyZ`, `mayerComplexZ_critical_im`, `mayerZ_eq_zero_iff_resonance`
+  - `exists_odd_mayerResonance_of_mayerZ_sign_change`
+  - `ofReal_deriv_mayerZ_eq_core_mellin_zero`, `deriv_mayerZ_ne_zero_iff_simple_resonance`, `exists_local_mayerZ_sign_change_of_simple_resonance`
+  - `mayerResonanceCount_eq_xiPosZeroCount`, `mayerResonanceCount_eq_Ncount`
+  - `eventually_disjoint_mayerZ_sign_changes_proportion`, `exists_mayerZ_sign_change_gt`
+
 ## Log
 - 2026-11-02 — complete dependency-closed paper proof recorded in 2-fully-proven
+- 2026-11-02 — unconditionally formalized in Lean 4 and moved to 3-formalized

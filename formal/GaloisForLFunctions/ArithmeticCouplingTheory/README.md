@@ -190,6 +190,12 @@ exactly. None of these statements is softer than RH, and the theorems say where 
     (`fullWeilNonRatioMatrix_nonneg`). The identity at every overlap
     (`completeWeilEnergy_packetVector_at_every_overlap`) reads
     `E = J_N + ½A_N + Σ F²/n (s_c + e_N + δ − R) − Σ d_n F(n)² + (pole, boundary, near overlap)`.
+    Prime successor edges give the uniform comparison
+    `½A_N(F) ≥ (1/64)[primePoleScale(⌊N/(16Q²)⌋) − primePoleScale(Q)]·nonconstantPacketMass`
+    for every conductor packet through `Q≥2`, every `N≥1`, and overlap above a
+    profile-dependent constant (`prime_successor_edges_control_nonconstant_packets`).
+    The retained edges `(n,pn+1)` sample the coprime-successor gap and have actual weight
+    at least `log p/(2N)`. The shell, pole and archimedean terms remain to be paid jointly.
 22. *Conductor capture.* At every fixed overlap the complete form pays a fixed fraction of the pole
     defect (CACT), so nonpositive unit vectors have bounded jump energy
     (`eventually_poleDefect_le_of_nonpos`). Bounded jump energy is conductor structure (RAPT). Prime

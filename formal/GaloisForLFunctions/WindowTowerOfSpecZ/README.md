@@ -1,8 +1,7 @@
 # The Window Tower of Spec ℤ (WTZ)
 
-Namespace `GaloisForLFunctions.WindowTowerOfSpecZ`; umbrella `WindowTowerOfSpecZ.lean`; 7 modules.
-Every theorem is unconditional. Theorems named `riemannHypothesis_iff_*` are proved equivalences,
-not proofs of RH.
+Namespace `GaloisForLFunctions.WindowTowerOfSpecZ`; umbrella `WindowTowerOfSpecZ.lean`; 8 modules.
+Every theorem is unconditional; none assumes or proves RH.
 
 ## 1. Motivation
 
@@ -40,6 +39,7 @@ the sections, the growth law in `A`, and the place where selection has to happen
 | Centred pole plane | `centredCosh A`, `centredSinh A` | `2cosh((u + A/2)/2)`, `2sinh((u + A/2)/2)` |
 | Sharp window floor | `sharpWindowFloor A` | `deg K_A + 2 sinh(A/2) − A` |
 | Dilation, Adams lift | `dilate r`, RHTower `mPart e` | `(D_rH)(u) = H(u/r)`; `ψ^e f(n^e) = f(n)`, zero off `e`-th powers |
+| Twist, character Euler datum | `twist c`, `twistHom`, `charZeta c`, `charMoebius c` | `f ↦ f·c` for completely multiplicative `c`; `(χζ, χμ)`, the Euler datum of `L(s, χ)` |
 | Adjoint shift | `adjointShift A t` | `(T_t^*H)(u) = 1_{u≥−A}H(u + t)`, the shift toward the left end |
 
 From CWS: `IsWindowTest`, `windowLevel = ⌊e^A⌋`, `foldEnergy`, `canonicalDensity`, `halfChebyshev`,
@@ -119,10 +119,17 @@ powers and the Gamma factor is not dilation invariant. Over a curve the correspo
 adjoint, so Serre duality is the Rosati involution of the window algebra, and Weil's arithmetic term
 is the Rosati symmetrization of `ρ_A(Λ)`.
 
-**G. Selection.** Tate pieces at a prime have the sign of the weight: `J^F_k(p) = F(p)(p^k − 1)` and
+**G. Twists.** Pointwise multiplication by a completely multiplicative function is a ring
+endomorphism of the Dirichlet ring. The Tate flow (`n^{−s}`) and the character twists (`χ`) are two
+families of such twists; they commute, and a twist carries the whole Tate structure: the Tate family
+of `L(s, χ)` is `χ·J_k`, its Tate pieces are the character-weighted point counts
+`χ(m)φ(m)#ℙ^β(ℤ/m)`, and its non-Tate piece is `χΛ`.
+
+**H. Selection.** Tate pieces at a prime have the sign of the weight: `J^F_k(p) = F(p)(p^k − 1)` and
 `λ_F(p) = F(p) log p`. A flip twin has a negative Tate piece at its prime from the stage where the
 flip becomes visible. The shifted datum `ζ(s)ζ(s − ε)`, with zeros `ρ + ε` off the line, is Tate
-positive in every positive dimension. Counts at integer dimensions do not select.
+positive in every positive dimension. Near dimension zero, Tate positivity at the primes is exactly
+the sign of the weight. Counts at integer dimensions do not select.
 
 ## 5. Questions the programme answers
 
@@ -133,6 +140,7 @@ positive in every positive dimension. Counts at integer dimensions do not select
 | Is there a scheme over `ℤ` whose `ℤ/m`-points give the twisted counts and whose "conductor-one" part is the window form? | The punctured affine spaces `𝔸^k∖0` (primitive vectors), with the dimension as parameter: `J_k(m) = φ(m)#ℙ^{k−1}(ℤ/m)` are the Tate pieces (`jordanTotient_eq_card_projPoints`); `∂_kJ_k(m)|₀ = Λ(m)` (`hasDerivAt_jordanTotient_zero`) makes Weil's arithmetic window term the derivative at dimension zero (`hasDerivAt_tateFunction`). |
 | What lattice of rank `≈ 2e^A` carries the sections; with what metric? | The atomic lattice: the integers `m ≤ e^A`, a free rank-one module over the window algebra (`windowRepFun_atomicEmbedding`), of rank `⌊e^A⌋`; the window genus `≥ (2 − η)e^A` (CWS) is twice this rank to main order. Metric `‖φ‖²Σ g(k)h(k)/k` (`integral_atomicEmbedding_mul`); arithmetic term = multiplication by `Λ` (`integral_windowRep_atomicEmbedding`); pole = values at `s = 0, 1` (`poleA_atomicEmbedding`, `poleB_atomicEmbedding`); the Gamma factor enters as the Lévy kernel between atoms. |
 | What growth law does the tower obey? | Negativity `≤ (deg K_A + 2 sinh(A/2) − A)‖H‖² ≤ (−Ω(0) + (4A+1)e^{A/2})‖H‖²` (`weilQuad_ge_neg_sharpWindowFloor`, `sharpWindowFloor_le`). Its exponent lies between the zero width and `½`, with RH iff it is `0` (ACCE `UnconditionalEqualityOfPolarAndFullGroundEnergyRates`, SRT `NegativityRateEqualsMaximalDepth`). |
+| Do the Tate pieces reproduce the degeneration on twisted windows (criterion 6)? | Yes for character twists: twists commute with the Tate flow and carry Tate families (`twist_tateTwist_comm`, `tateFamily_twist`); the Tate pieces of `L(s, χ)` are `χ(m)φ(m)#ℙ^β(ℤ/m)` (`tateFamily_charTwist_succ`) and its non-Tate piece is `χΛ` (`hasDerivAt_tateFamily_charTwist`), the dimension `β` entering as the dimension of projective space. |
 | Is there a Frobenius / base change for the tower; what is Serre duality on it? | Adams lifts are dilations `A ↦ eA` up to a Tate twist (`windowRepFun_mPart_dilate`, `windowShift_dilate`); Serre duality `σ_A` is the Rosati involution (`windowInvolution_windowShift`, `integral_windowRepFun_mul_eq`). |
 | Which axiom fails for the fakes? | Flip twins fail Tate positivity at their prime (`flipDatum_tateFamily_prime_neg`); shifted products `ζ(s)ζ(s−ε)` satisfy it (`shiftedDatum_tateFamily_nonneg`); every algebraic structure of the tower holds for every Euler datum. Selection is the sign of the derivative at dimension zero against the archimedean data, along the whole tower — Weil's form itself. |
 
@@ -149,6 +157,7 @@ positive in every positive dimension. Counts at integer dimensions do not select
 - Centred pole plane; exact capacity by Cauchy–Schwarz; sharp floor and pencil; `ψ_{1/2}` bound by
   telescoping `Σ n^{−1/2} ≤ 2√N`.
 - Dilations of windows and Adams lifts; adjoint shifts and the Rosati involution.
+- Completely multiplicative twists of Euler data; character-weighted Tate pieces.
 
 **Used from the corpus.** CWS (window tests, folds, canonical class, floor, index, genus, flip twins);
 AHD/ADT (`jordanTotient`, `natCard_projPoints_mul_totient`, `natCard_primVec_eq_jordanTotient`); RHTower
@@ -166,8 +175,11 @@ in the dimension.
 
 1. **The derivative at dimension zero.** `τ_H` is an exponential polynomial in `k` whose values at the
    positive integers are counts and whose value at `0` is `‖H‖²`. RH is the statement that
-   `Ω(0)τ_H(0) − 2τ_H′(0) + J_∞(H) + pole ≥ 0` on every window. Which positivity of the family
-   `k ↦ ρ_A(J_k)` (commutators of `Z` with the Tate flow) survives differentiation at `0`?
+   `Ω(0)τ_H(0) − 2τ_H′(0) + J_∞(H) + pole ≥ 0` on every window. Of the positivity of the family
+   `k ↦ ρ_A(J_k)` (commutators of `Z` with the Tate flow), what survives differentiation at `0` at
+   the primes is exactly the sign of the weight (`tateFamily_prime_nonneg_iff`) — the Markov
+   property, soft. Open: a positivity of the whole family, coupled to the archimedean data, that
+   survives the derivative.
 2. **Positivity across a small extension.** The new fold is a socle element of `D_{N+1}`. Find a Schur
    complement or capacity statement transferring window positivity from level `N` to `N + 1`, paying
    the new fold by its end masses.
@@ -200,6 +212,8 @@ in the dimension.
 | Hensel tower of Tate pieces | `jordanTotient_prime_pow_succ`, `hasDerivAt_jordanTotient_prime_pow` |
 | Tate pieces at primes; flip twins; softness | `tateFamily_prime`, `logDeriv_prime`, `tateFamily_prime_mul_log`, `flipDatum_tateFamily_prime_neg`, `shiftedDatum_tateFamily_nonneg` |
 | Atomic lattice = regular representation | `windowShift_atom_of_le`, `windowShift_atom_of_lt`, `windowRepFun_atomicEmbedding`, `integral_atomicEmbedding_mul`, `integral_windowRep_atomicEmbedding`, `poleA_atomicEmbedding`, `poleB_atomicEmbedding` |
+| Twists: ring endomorphisms commuting with the Tate flow; twisted Tate pieces | `twistHom`, `twist_tateTwist_comm`, `tateFamily_twist`, `charZeta_mul_charMoebius`, `tateFamily_charTwist`, `tateFamily_charTwist_succ`, `hasDerivAt_tateFamily_charTwist` |
+| What survives the derivative at dimension zero: the Markov sign | `tateFamily_prime_nonneg_iff` |
 | Adams lifts = dilations; Serre duality = Rosati involution | `windowShift_dilate`, `windowRepFun_mPart_dilate`, `windowInvolution_windowShift`, `integral_windowShift_mul_eq`, `integral_windowRepFun_mul_eq` |
 | Exact pole capacity; sharp floor and pencil; exponent `½` | `pole_eq_centred`, `integral_centredSinh_sq`, `centredSinhPairing_sq_le`, `pole_ge`, `weilQuad_ge_neg_sharpWindowFloor`, `pencil_nonneg_sharp`, `halfChebyshev_le`, `sharpWindowFloor_le` |
 

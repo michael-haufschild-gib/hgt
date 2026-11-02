@@ -1,8 +1,8 @@
 # Lewis Period Reflection Positivity, Co-Isometry Defect, and Krein–Lax–Phillips Realization
 
 - **ID:** pm-lewis-period-reflection-positivity-and-krein
-- **Stage:** 2-fully-proven
-- **Type:** THEOREM (paper)
+- **Stage:** 3-formalized
+- **Type:** THEOREM (Lean)
 - **Source:** `docs/reports/review-0211/obstacles-summary.md` §2.6.2 · Route PM
 - **Statement:** (A) Prove that the fixed-$s$ Lewis modular inversion $(I_s\psi)(z) = z^{-2s}\psi(1/z)$ fixes every resonant Lewis period function and Mayer scattering core both on and off $\operatorname{Re} s = \tfrac{1}{4}$, so any positive-semidefinite pairing or $I_s$-self-pairing $\langle \psi, I_s\psi\rangle$ is identically blind to $\operatorname{Re} s = \tfrac{1}{4}$; (B) construct a canonical $s$-independent positive-definite Hilbert structure $\mathcal{H}_{\mathrm{LP}}$ containing all unsubtracted global Lewis period functions for $0 < \operatorname{Re} s < \tfrac{1}{2}$ on which $I_s^\dagger = I_{1/2 - \bar{s}}$ (unitary iff $\operatorname{Re} s = \tfrac{1}{4}$) and the co-isometry defect $\mathcal{Q}_s(\psi_s) := \|\psi_s\|_{\mathcal{H}_{\mathrm{LP}}}^2 - \|I_s^\dagger \psi_s\|_{\mathcal{H}_{\mathrm{LP}}}^2$ is strictly negative iff $\operatorname{Re} s \neq \tfrac{1}{4}$; (C) prove unconditional linear independence of the actual resonant Lewis/Mayer period cores on $(0, \infty)$ and construct the canonical $s$-independent Krein–Lax–Phillips space $(\mathcal{W}_{\mathrm{PM}}, \langle\cdot,\cdot\rangle_{\mathrm{PM}}^+, \Theta_{\mathrm{PM}}, [\cdot,\cdot]_{\mathrm{PM}}, B_{\mathrm{PM}})$ where $B_{\mathrm{PM}}$ is Krein self-adjoint with eigenvalues $-i(s - \tfrac{1}{4})$, every off-line resonance produces an explicit negative-norm period combination $[\eta_s^-, \eta_s^-]_{\mathrm{PM}} = -2 < 0$, the negative Krein index satisfies $2\kappa_-(\mathcal{W}_{\mathrm{PM}}) = \mathrm{boostPolarIndex}(\mathrm{ratCorr})$, and $[\cdot,\cdot]_{\mathrm{PM}} \ge 0 \iff \mathrm{RiemannHypothesis} \iff \mathrm{RenormalizedHodgeIndex}(\mathrm{ratCorr})$.
 
@@ -12,7 +12,7 @@ Resolve Route PM §2.6.2 completely and unconditionally: separate the modular el
 ## Gates
 - [x] 0 → 1  in-progress: well-posed, source-pure, attack idea, Door passport sketch
 - [x] 1 → 2  fully-proven: complete paper proof, `[PROVED HERE]`, no open dependency
-- [ ] 2 → 3  formalized: Lean theorems in `LewisPeriodReflectionPositivity` and `MayerKreinLaxPhillipsRealization`, `check_axioms` PASS
+- [x] 2 → 3  formalized: Lean theorems in `GaloisForLFunctions.RenormalizedIntersectionTheory.MayerScattering.LewisPeriodReflectionPositivity` and `GaloisForLFunctions.RenormalizedIntersectionTheory.MayerScattering.MayerKreinLaxPhillipsRealization`, `#print axioms` `[propext, Classical.choice, Quot.sound]`
 
 ## No-go closure (for naive fixed-$s$ $I_s$-positivity)
 - **Exact killing theorem/mechanism:** At every Mayer scattering resonance $s$ ($0 < \operatorname{Re} s < \tfrac{1}{2}$, whether $\operatorname{Re} s = \tfrac{1}{4}$ or $\operatorname{Re} s \neq \tfrac{1}{4}$), both the global Lewis period function $\psi_s$ and the finite-energy Mayer/Cauchy cores $\phi_{2s}, \psi_s^{\mathrm{core}}$ are nonzero $+1$ fixed vectors $I_s \psi = \psi$. Hence in *every* positive-semidefinite Hermitian space $(V, h)$, $h(\psi_s, \psi_s) \ge 0$ and the $I_s$-induced Krein self-pairing $h(\psi_s, I_s \psi_s) = h(\psi_s, \psi_s) \ge 0$ (`> 0` if positive-definite) cannot become negative off $\operatorname{Re} s = \tfrac{1}{4}$; moreover, in the $s$-dependent Cauchy–Mellin space $L^2((0, \infty), z^{2\operatorname{Re} s - 1}\,dz)$, $I_s$ is unitary for all $s \in \mathbb{C}$.
@@ -112,5 +112,20 @@ Then unconditionally:
     3. `RiemannHypothesis`;
     4. `RenormalizedHodgeIndex ratCorr`. $\square$
 
+## Lean Formalization
+- `GaloisForLFunctions.RenormalizedIntersectionTheory.MayerScattering.LewisPeriodReflectionPositivity`:
+  - `lewisModularInversion`, `lewisCriticalWeight`, `lewisCriticalInner`, `lewisCriticalNormSq`, `lewisCoIsometryDefect`
+  - `lewisModularInversion_resonantLewisPeriod`, `lewisModularInversion_fieldCore`, `fixed_vector_krein_self_pairing_nonneg`, `cauchyMellinWeight_isometry`
+  - `eq_zero_on_Ioi_of_lewisCriticalNormSq_eq_zero`, `globalLewisPeriod_integrable_lewisCriticalNormSq`, `resonantLewisPeriod_pos_lewisCriticalNormSq`
+  - `lewisCriticalInner_modularInversion_adj`, `lewisModularInversion_isometry_iff`
+  - `lewisCoIsometryDefect_eq_neg_integral`, `resonantLewisPeriod_coIsometryDefect_nonpos`, `resonantLewisPeriod_coIsometryDefect_lt_zero_iff`, `resonantLewisPeriod_coIsometryDefect_eq_zero_iff`
+- `GaloisForLFunctions.RenormalizedIntersectionTheory.MayerScattering.MayerKreinLaxPhillipsRealization`:
+  - `upperMayerResonances`, `mayerPeriodCore`, `mayerPeriodKreinSpace`, `mayerPeriodBasis`, `mayerKreinPosInner`, `mayerKreinReflection`, `mayerKreinForm`, `mayerLaxPhillipsGenerator`, `mayerOffLineNegativeState`, `mayerNegativeSubspace`, `mayerNegativeBasis`
+  - `lewisModularInversion_mayerPeriodCore`, `resonantFieldCore_linearIndependent`, `mayerPeriodCore_linearIndependent`
+  - `mayerKreinPosInner_self_re_eq_zero_iff`, `mayerKreinPosInner_reflection_unitary`, `mayerKreinForm_reflection_invariant`, `mayerKreinForm_laxPhillipsGenerator_selfAdjoint`
+  - `mayerKreinForm_basis_self_of_re_eq_quarter`, `mayerKreinForm_basis_self_of_re_ne_quarter`, `mayerKreinForm_offLineNegativeState_self`, `mayerKreinForm_neg_on_negativeSubspace`
+  - `two_mul_encard_negativeBasisIndex_eq_boostPolarIndex`, `mayerKreinPositivity_iff_upperResonances_critical`, `mayerKreinPositivity_iff_riemannHypothesis`, `mayerKreinPositivity_iff_renormalizedHodgeIndex`
+
 ## Log
 - 2026-11-02 — complete dependency-closed paper proof recorded in 2-fully-proven
+- 2026-11-02 — unconditionally formalized in Lean 4 and moved to 3-formalized

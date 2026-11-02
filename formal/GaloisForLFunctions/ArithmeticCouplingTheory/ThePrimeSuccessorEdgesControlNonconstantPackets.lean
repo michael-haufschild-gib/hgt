@@ -316,7 +316,7 @@ private theorem successor_edge_sum_le_affine {φ : ℝ → ℝ} (hφ : ContDiff 
     rw [hcoe, successorChannels, sum_sigma]
     apply sum_congr rfl
     intro p _
-    exact (mul_sum _ _ _).symm
+    rw [mul_sum]
   rw [← he]
   have hfull : (∑ z : PrimeHorizonIndex N × PrimeHorizonIndex N, V z) =
       affineDirichlet φ c N F := by rw [Fintype.sum_prod_type]; rfl
@@ -347,7 +347,8 @@ private theorem affine_prime_successor_mass_lower {φ : ℝ → ℝ} (hφ : Cont
     have hp0 : (p:ℝ) ≠ 0 := by exact_mod_cast hpP.ne_zero
     calc
       _ = Real.log p/(2*(N:ℝ)) * (((N:ℝ)/(16*p)) * nonconstantPacketMass Q a) := by
-        field_simp [hN0, hp0] <;> ring
+        field_simp [hN0, hp0]
+        ring
       _ ≤ _ := h
   have he : (∑ p ∈ successorPrimes Q N, Real.log p/(p:ℝ))/32 * nonconstantPacketMass Q a =
       ∑ p ∈ successorPrimes Q N, (Real.log p/(p:ℝ))/32 * nonconstantPacketMass Q a := by

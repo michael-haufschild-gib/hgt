@@ -3,10 +3,29 @@ import GaloisForLFunctions.ArithmeticHodgeTheoryOfDegenerations.ThePrimeWindowCo
 /-!
 # The horizon layer is graded by conductor
 
-The second-order term of an untwisted horizon window is Weil's form of the synthesized test plus the
-conductor-one count; that of a window twisted by `c_p` is the conductor-`p` count alone. This file
-shows that the two directions are orthogonal at second order: the normalized Weil pairing of an
-untwisted window and a prime window tends to `0`.
+The second-order term of an untwisted horizon window `x = h/√n` is Weil's form of the synthesized
+test plus the conductor-one count; that of a window `y = c_p(n) g/√n` twisted by the Ramanujan sum
+`c_p` is the conductor-`p` count alone. This file shows that the two directions are orthogonal at
+second order, so the second-order form on their span is the direct sum of the two blocks.
+
+* `cross_layer_vanishes`: `c⁻¹(Q(x + y) − Q(x − y))/∫g² → 0` along every resolution with `c → ∞`
+  and `c log² N/N → 0`. The polarized form splits as in the sharp forms of the two blocks:
+  - mixed pole terms (`exists_abs_crossPole_le`): `|T̂_x(i/2)||T̂_y(−i/2)|` and
+    `|T̂_y(i/2)||T̂_x(−i/2)|` are `O(w²)` because the prime amplitudes are twisted Riemann sums
+    (`O(1/N)` at `i/2`, `O(1)` at `−i/2`) and the untwisted ones are Riemann sums
+    (`norm_horizonRiemannSum_le`); normalized, `O(1/N)`;
+  - the quiet region `|τ| ≤ N e^{−A}/p` (`exists_quietCross_le`): AM–GM with weight `N^{1/4}`
+    between the untwisted domination `|D_x|²/N ≤ C/(1 + τ²)` and the quiet energy `O(N^{−1/2})` of
+    the prime block gives `O(N^{−1/4})`;
+  - the remainder above the cut is uniform in the weights (`tendsto_remainderW`);
+  - the mixed energy `∫|φ̂(wτ)|² Re(D_x D̄_y)/N` is `O(c/N)` (`exists_abs_crossEnergy_le`): by
+    Plancherel it is `(2π/c) Σ_n y_n Σ_m x_m G_{mn}`, the untwisted rows are smooth, and the twist
+    `c_p` has mean zero on the resulting product window (equidistribution on `pℤ`).
+* `atomForm_parallelogram`: the normalized block forms satisfy the parallelogram law.
+* `graded_layer_criticalCurve_of_regularBulk`: along `c^{β+1}/log N → K`,
+  `c⁻¹⟨W(x+y), x+y⟩/∫g² → κ Q(H) + (βJ/K)‖H‖²_{−(β+1)} + (p^{β+1} − 1)(βJ/K)‖G‖²_{−(β+1)}`;
+  for the tilted spline (`graded_layer_criticalCurve_exact`)
+  `κ Q(H) + (7J(1)/K)‖H‖²_{−8} + (7(p − 1)J(p)/K)‖G‖²_{−8}`.
 -/
 
 noncomputable section
@@ -899,6 +918,7 @@ theorem cross_layer_vanishes (hφ : ContDiff ℝ 2 φ) (hφsupp : ∀ u, u ∉ S
       setIntegral_mono_on (hSpi.sub hSmi).abs.integrableOn
         ((hEpi.sub hEmi).abs.const_mul _).integrableOn measurableSet_Icc hpt
     rw [integral_const_mul] at h2
+    have hN1 : (1 : ℝ) ≤ N := by exact_mod_cast hN
     have hlog3 : Real.log (2 + N) ≤ Real.log 3 + Real.log N := by
       rw [← Real.log_mul (by norm_num) hN0.ne']
       exact Real.log_le_log (by positivity) (by linarith)
@@ -996,15 +1016,15 @@ theorem cross_layer_vanishes (hφ : ContDiff ℝ 2 φ) (hφsupp : ∀ u, u ∉ S
       simp only [hRm]
       rw [integral_sub hSmi.integrableOn (hEmi.const_mul _).integrableOn, integral_const_mul]
       ring
-    have hQLe : ∫ τ in Set.Icc (-T₀ N) (T₀ N), Sp N τ - ∫ τ in Set.Icc (-T₀ N) (T₀ N), Sm N τ =
+    have hQLe : (∫ τ in Set.Icc (-T₀ N) (T₀ N), Sp N τ) - ∫ τ in Set.Icc (-T₀ N) (T₀ N), Sm N τ =
         QL N := by
       simp only [hQL]
       rw [integral_sub hSpi.integrableOn hSmi.integrableOn]
-    have hQEe : ∫ τ in Set.Icc (-T₀ N) (T₀ N), Ep N τ - ∫ τ in Set.Icc (-T₀ N) (T₀ N), Em N τ =
+    have hQEe : (∫ τ in Set.Icc (-T₀ N) (T₀ N), Ep N τ) - ∫ τ in Set.Icc (-T₀ N) (T₀ N), Em N τ =
         QE N := by
       simp only [hQE]
       rw [integral_sub hEpi.integrableOn hEmi.integrableOn]
-    have hXe : ∫ τ, Ep N τ - ∫ τ, Em N τ = 4 * Xc N := by
+    have hXe : (∫ τ, Ep N τ) - ∫ τ, Em N τ = 4 * Xc N := by
       simp only [hXc]
       rw [← integral_sub hEpi hEmi, ← integral_const_mul]
       refine integral_congr_ae (Eventually.of_forall fun τ => ?_)
@@ -1027,5 +1047,168 @@ theorem cross_layer_vanishes (hφ : ContDiff ℝ 2 φ) (hφsupp : ∀ u, u ∉ S
   have := ((hPdt.add (hQLt.const_mul M⁻¹)).add ((hRpt.sub hRmt).const_mul M⁻¹)).add
     (((hXt.const_mul 4).sub hQEt).const_mul (M⁻¹ * (2 * Real.pi)⁻¹))
   simpa using this
+
+/-! ### The parallelogram law and the graded limit -/
+
+theorem norm_add_sq_add_norm_sub_sq (a b : ℂ) :
+    ‖a + b‖ ^ 2 + ‖a - b‖ ^ 2 = 2 * ‖a‖ ^ 2 + 2 * ‖b‖ ^ 2 := by
+  rw [← Complex.normSq_eq_norm_sq, ← Complex.normSq_eq_norm_sq, ← Complex.normSq_eq_norm_sq,
+    ← Complex.normSq_eq_norm_sq, Complex.normSq_add, Complex.normSq_sub]
+  ring
+
+theorem poleRe_parallelogram {φ : ℝ → ℝ} (hφ : ContDiff ℝ 2 φ)
+    (hφsupp : ∀ u, u ∉ Set.Icc 0 1 → φ u = 0) (x y : ℕ → ℝ) {c : ℝ} (hc : 0 < c) {N : ℕ}
+    (hN : 1 ≤ N) :
+    poleRe (centredAtomicTest φ (fun n => x n + y n) c N) +
+        poleRe (centredAtomicTest φ (fun n => x n - y n) c N) =
+      2 * poleRe (centredAtomicTest φ x c N) + 2 * poleRe (centredAtomicTest φ y c N) := by
+  have hφc : HasCompactSupport φ := HasCompactSupport.intro isCompact_Icc fun u hu => hφsupp u hu
+  have hT := fun z : ℕ → ℝ => (contDiff_centredAtomicTest hφ z c N).continuous
+  have hTc := fun z : ℕ → ℝ => hasCompactSupport_centredAtomicTest hφsupp z hc hN
+  rw [poleRe_eq (hT (fun n => x n + y n)) (hTc _), poleRe_eq (hT (fun n => x n - y n)) (hTc _),
+    poleRe_eq (hT x) (hTc x), poleRe_eq (hT y) (hTc y)]
+  simp only [paperFT_centredAtomicTest_add hφ.continuous hφc x y hc hN,
+    paperFT_centredAtomicTest_sub hφ.continuous hφc x y hc hN]
+  have e : ∀ a b c d : ℂ, ((a + b) * conj (c + d) + (c + d) * conj (a + b)).re +
+      ((a - b) * conj (c - d) + (c - d) * conj (a - b)).re =
+      2 * (a * conj c + c * conj a).re + 2 * (b * conj d + d * conj b).re := by
+    intro a b c d
+    simp only [map_add, map_sub, Complex.add_re, Complex.sub_re, Complex.mul_re, Complex.conj_re,
+      Complex.conj_im, Complex.add_im, Complex.sub_im]
+    ring
+  exact e _ _ _ _
+
+/-- **The parallelogram law** for normalized block forms with window weights:
+`F(x + y) + F(x − y) = 2F(x) + 2F(y)`. -/
+theorem atomForm_parallelogram (hφ : ContDiff ℝ 2 φ) (hφsupp : ∀ u, u ∉ Set.Icc 0 1 → φ u = 0)
+    (hφ2 : 0 < ∫ u, φ u ^ 2) {x y : ℕ → ℝ} {N : ℕ}
+    (hx : ∀ n : ℕ, 1 ≤ n → Real.log n - Real.log N ∉ Set.Icc (-A) 0 → x n = 0)
+    (hy : ∀ n : ℕ, 1 ≤ n → Real.log n - Real.log N ∉ Set.Icc (-A) 0 → y n = 0) (hA : 0 ≤ A)
+    {c : ℝ} (hc : 0 < c) (hN : 1 ≤ N) (hcN : c ≤ N) :
+    c⁻¹ * (weilQuad (atomicTest N (fun n => x n + y n) (atomDilate φ (c / N))) /
+        ∫ u, atomDilate φ (c / N) u ^ 2) +
+      c⁻¹ * (weilQuad (atomicTest N (fun n => x n - y n) (atomDilate φ (c / N))) /
+        ∫ u, atomDilate φ (c / N) u ^ 2) =
+    2 * (c⁻¹ * (weilQuad (atomicTest N x (atomDilate φ (c / N))) /
+        ∫ u, atomDilate φ (c / N) u ^ 2)) +
+      2 * (c⁻¹ * (weilQuad (atomicTest N y (atomDilate φ (c / N))) /
+        ∫ u, atomDilate φ (c / N) u ^ 2)) := by
+  have hxy : ∀ n : ℕ, 1 ≤ n → Real.log n - Real.log N ∉ Set.Icc (-A) 0 → x n + y n = 0 :=
+    fun n hn h' => by rw [hx n hn h', hy n hn h', add_zero]
+  have hxy' : ∀ n : ℕ, 1 ≤ n → Real.log n - Real.log N ∉ Set.Icc (-A) 0 → x n - y n = 0 :=
+    fun n hn h' => by rw [hx n hn h', hy n hn h', sub_zero]
+  rw [atomForm_eq hφ hφsupp hφ2 hxy hA hc hN hcN, atomForm_eq hφ hφsupp hφ2 hxy' hA hc hN hcN,
+    atomForm_eq hφ hφsupp hφ2 hx hA hc hN hcN, atomForm_eq hφ hφsupp hφ2 hy hA hc hN hcN]
+  have hP := poleRe_parallelogram hφ hφsupp x y hc hN
+  simp only [poleRe] at hP
+  have hi := fun z : ℕ → ℝ => integrable_symbolW hφ hφsupp z hc hN (2 * (A + 1))
+  have hS : (∫ τ, symbolW φ (fun n => x n + y n) c N (Real.exp (2 * (A + 1))) τ) +
+      ∫ τ, symbolW φ (fun n => x n - y n) c N (Real.exp (2 * (A + 1))) τ =
+      2 * (∫ τ, symbolW φ x c N (Real.exp (2 * (A + 1))) τ) +
+        2 * ∫ τ, symbolW φ y c N (Real.exp (2 * (A + 1))) τ := by
+    rw [← integral_add (hi _) (hi _), ← integral_const_mul, ← integral_const_mul,
+      ← integral_add ((hi x).const_mul _) ((hi y).const_mul _)]
+    refine integral_congr_ae (Eventually.of_forall fun τ => ?_)
+    simp only [symbolW]
+    rw [dirichletPoly_add, dirichletPoly_sub]
+    have := norm_add_sq_add_norm_sub_sq (dirichletPoly N x τ) (dirichletPoly N y τ)
+    linear_combination (‖paperFT (cx φ) (((c / N : ℝ) : ℂ) * τ)‖ ^ 2 / N *
+      nuSymbol (Real.exp (2 * (A + 1))) τ) * this
+  linear_combination (1 / (c * (c / N * ∫ u, φ u ^ 2))) * hP + (∫ u, φ u ^ 2)⁻¹ * hS
+
+/-- **The horizon layer is graded by conductor.** For a profile whose bulk energy has the rescaled
+limit `s^β E₁(s) → J`, window profiles `h, g` on `[−A, 0]` and a prime `p`, along
+`c^{β+1}/log N → K`, the window `x + y` with `x = h/√n`, `y = c_p(n) g/√n` has
+`c⁻¹⟨W(x+y), x+y⟩/∫g² → κ Q(H) + (βJ/K)‖H‖²_{−(β+1)} + (p^{β+1} − 1)(βJ/K)‖G‖²_{−(β+1)}`:
+the conductor-one block (Weil's form plus the conductor-one count) and the conductor-`p` block
+(the conductor-`p` count) add without interaction. -/
+theorem graded_layer_criticalCurve_of_regularBulk (hφ : ContDiff ℝ 2 φ)
+    (hφsupp : ∀ u, u ∉ Set.Icc 0 1 → φ u = 0) (hφ2 : 0 < ∫ u, φ u ^ 2) {Cφ q : ℝ} (hq : 4 < q)
+    (hCφ : 0 ≤ Cφ) (hdecay : ∀ u : ℝ, ‖paperFT (cx φ) u‖ ^ 2 ≤ Cφ * (1 + |u|) ^ (-q))
+    {β J : ℝ} (hβ : 0 ≤ β)
+    (hbulk : Tendsto (fun s => s ^ β * completedShellEnergy φ s) atTop (𝓝 J))
+    (hh : ContDiff ℝ 2 h) (hg : ContDiff ℝ 2 g) (hA : 0 ≤ A)
+    (hsupp : ∀ y, y ∉ Set.Icc (-A) 0 → h y = 0) (hgsupp : ∀ y, y ∉ Set.Icc (-A) 0 → g y = 0)
+    {c : ℕ → ℝ} (hc1 : ∀ N, 1 ≤ c N) {K : ℝ} (hK : 0 < K)
+    (hcrit : Tendsto (fun N : ℕ => c N ^ (β + 1) / Real.log N) atTop (𝓝 K)) {p : ℕ} (hp : 1 < p) :
+    Tendsto (fun N : ℕ => (c N)⁻¹ * (weilQuad (atomicTest N (fun n => horizonWeights h N n +
+        twistedWeights g (primeTwist p) N n) (atomDilate φ (c N / N))) /
+          ∫ u, atomDilate φ (c N / N) u ^ 2)) atTop
+      (𝓝 ((∫ u, φ u) ^ 2 / (∫ u, φ u ^ 2) * weilQuad (halfWeight h) +
+        β * J / K * (∫ y, Real.exp (-((β + 1) * y)) * halfWeight h y ^ 2) +
+        ((p : ℝ) ^ (β + 1) - 1) * β * J / K *
+          ∫ y, Real.exp (-((β + 1) * y)) * halfWeight g y ^ 2)) := by
+  obtain ⟨hcinf, hclog, -⟩ := criticalCurve_facts_rpow hc1 (q := β + 1) (by linarith) hK hcrit
+  have hc0 : ∀ N, 0 < c N := fun N => by linarith [hc1 N]
+  have hcN := tendsto_div_of_log_sq hc1 hclog
+  have hx := horizon_layer_criticalCurve_of_regularBulk hφ hφsupp hφ2 hq hCφ hdecay hβ hbulk hh hA
+    hsupp hc1 hK hcrit
+  have hy := prime_layer_criticalCurve_of_regularBulk hφ hφsupp hφ2 hq hCφ hdecay hβ hbulk hg hA
+    hgsupp hc1 hK hcrit hp
+  have hxy := cross_layer_vanishes hφ hφsupp hφ2 hq hCφ hdecay hh hg hA hsupp hgsupp hc1 hcinf
+    hclog hp
+  have hev : ∀ᶠ N : ℕ in atTop, c N ≤ N := by
+    filter_upwards [hcN.eventually (gt_mem_nhds one_pos), eventually_ge_atTop 1] with N h1 hN
+    have hN0 : (0 : ℝ) < N := by exact_mod_cast hN
+    rw [div_lt_iff₀ hN0, one_mul] at h1
+    exact h1.le
+  have hid : ∀ᶠ N : ℕ in atTop,
+      (c N)⁻¹ * (weilQuad (atomicTest N (horizonWeights h N) (atomDilate φ (c N / N))) /
+          ∫ u, atomDilate φ (c N / N) u ^ 2) +
+        (c N)⁻¹ * (weilQuad (atomicTest N (twistedWeights g (primeTwist p) N)
+          (atomDilate φ (c N / N))) / ∫ u, atomDilate φ (c N / N) u ^ 2) +
+        ((c N)⁻¹ * (weilQuad (atomicTest N (fun n => horizonWeights h N n +
+          twistedWeights g (primeTwist p) N n) (atomDilate φ (c N / N))) /
+            ∫ u, atomDilate φ (c N / N) u ^ 2) -
+        (c N)⁻¹ * (weilQuad (atomicTest N (fun n => horizonWeights h N n -
+          twistedWeights g (primeTwist p) N n) (atomDilate φ (c N / N))) /
+            ∫ u, atomDilate φ (c N / N) u ^ 2)) / 2 =
+      (c N)⁻¹ * (weilQuad (atomicTest N (fun n => horizonWeights h N n +
+        twistedWeights g (primeTwist p) N n) (atomDilate φ (c N / N))) /
+          ∫ u, atomDilate φ (c N / N) u ^ 2) := by
+    filter_upwards [hev, eventually_ge_atTop 1] with N hcle hN
+    have := atomForm_parallelogram hφ hφsupp hφ2 (x := horizonWeights h N)
+      (y := twistedWeights g (primeTwist p) N)
+      (fun n _ hy' => by rw [horizonWeights, hsupp _ hy', zero_div])
+      (twistedWeights_eq_zero hgsupp _ N) hA (hc0 N) hN hcle
+    linarith
+  refine Tendsto.congr' hid ?_
+  have := (hx.add hy).add (hxy.div_const 2)
+  rw [zero_div, add_zero] at this
+  exact this
+
+/-- **The graded layer of the tilted spline.** Along `c⁸/log N → K`, the window
+`h/√n + c_p(n) g/√n` has
+`c⁻¹⟨W x, x⟩/∫g² → κ Q(H) + (7 J(1)/K)‖H‖²_{−8} + (7 (p − 1) J(p)/K)‖G‖²_{−8}`: Weil's form,
+the conductor-one count and the conductor-`p` count, each on its own block. -/
+theorem graded_layer_criticalCurve_exact (hh : ContDiff ℝ 2 h) (hg : ContDiff ℝ 2 g) (hA : 0 ≤ A)
+    (hsupp : ∀ y, y ∉ Set.Icc (-A) 0 → h y = 0) (hgsupp : ∀ y, y ∉ Set.Icc (-A) 0 → g y = 0)
+    {c : ℕ → ℝ} (hc1 : ∀ N, 1 ≤ c N) {K : ℝ} (hK : 0 < K)
+    (hcrit : Tendsto (fun N : ℕ => c N ^ 8 / Real.log N) atTop (𝓝 K)) {p : ℕ} (hp : p.Prime) :
+    Tendsto (fun N : ℕ => (c N)⁻¹ * (weilQuad (atomicTest N (fun n => horizonWeights h N n +
+        twistedWeights g (primeTwist p) N n) (atomDilate tiltedUnitSpline (c N / N))) /
+          ∫ u, atomDilate tiltedUnitSpline (c N / N) u ^ 2)) atTop
+      (𝓝 ((∫ u, tiltedUnitSpline u) ^ 2 / (∫ u, tiltedUnitSpline u ^ 2) *
+          weilQuad (halfWeight h) +
+        7 * tiltedJordanOne / K * (∫ y, Real.exp (-(8 * y)) * halfWeight h y ^ 2) +
+        7 * (((p : ℝ) - 1) * ArithmeticDegenerationTheory.jordanCoefficient p) / K *
+          ∫ y, Real.exp (-(8 * y)) * halfWeight g y ^ 2)) := by
+  have hC : 0 ≤ tiltedDecayConst := by unfold tiltedDecayConst; positivity
+  have hcrit' : Tendsto (fun N : ℕ => c N ^ ((7 : ℝ) + 1) / Real.log N) atTop (𝓝 K) := by
+    refine hcrit.congr fun N => ?_
+    rw [show (7 : ℝ) + 1 = ((8 : ℕ) : ℝ) by norm_num, Real.rpow_natCast]
+  have hlim := graded_layer_criticalCurve_of_regularBulk contDiff_tiltedUnitSpline
+    tiltedUnitSpline_support integral_tiltedUnitSpline_sq_pos (q := 8) (by norm_num) hC
+    tiltedUnitSpline_decay (β := 7) (by norm_num) tendsto_rpow_seven_mul_completedShellEnergy_tilted
+    hh hg hA hsupp hgsupp hc1 hK hcrit' hp.one_lt
+  have hp8 : (p : ℝ) ^ ((7 : ℝ) + 1) = (p : ℝ) ^ (8 : ℕ) := by
+    rw [show (7 : ℝ) + 1 = ((8 : ℕ) : ℝ) by norm_num, Real.rpow_natCast]
+  have hint : ∀ k : ℝ → ℝ, ∫ y, Real.exp (-(((7 : ℝ) + 1) * y)) * halfWeight k y ^ 2 =
+      ∫ y, Real.exp (-(8 * y)) * halfWeight k y ^ 2 := fun k => by
+    congr 1; funext y; norm_num
+  rw [hp8, hint h, hint g] at hlim
+  rw [jordanCoefficient_prime hp]
+  convert hlim using 2
+  ring
 
 end GaloisForLFunctions.ArithmeticHodgeTheoryOfDegenerations
