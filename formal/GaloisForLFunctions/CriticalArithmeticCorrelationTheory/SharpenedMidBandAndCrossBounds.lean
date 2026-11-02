@@ -3463,13 +3463,15 @@ theorem exists_overlap_sub_downward_sub_jet_sq_le {φ : ℝ → ℝ}
         3 * K_ext * (c ^ 3 * (R : ℝ) ^ 2 * (Real.log N / N) * ‖u‖ ^ 2) := by ring
     _ ≤ C_near * ((c ^ 4 * (1 + Real.log c) / Real.log N +
           c ^ 3 * (R : ℝ) ^ 2 * (Real.log N / N)) * ‖u‖ ^ 2) := by
-      dsimp only [C_near]
-      have hjet0 : 0 ≤ C_jet ^ 2 := sq_nonneg _
-      nlinarith only [hT_U1, hT_U2, hKnb_pos, hKext_pos, hjet0,
-        mul_nonneg (show (0 : ℝ) ≤ 32 * K_nb * C_jet ^ 2 + 1 by positivity) hT_U1,
-        mul_nonneg (show (0 : ℝ) ≤ 32 * K_nb * C_jet ^ 2 + K_nb * (M_nc ^ 2 + M_2a ^ 2) + 1 by
-          positivity) hT_U2,
-        mul_nonneg (show (0 : ℝ) ≤ K_ext + 1 by positivity) hT_U1]
+      have hjet0 : 0 ≤ K_nb * C_jet ^ 2 := mul_nonneg hKnb_pos (sq_nonneg _)
+      have hM0 : 0 ≤ K_nb * (M_nc ^ 2 + M_2a ^ 2) := by positivity
+      have e1 : 3 * (K_nb * (M_nc ^ 2 + M_2a ^ 2)) ≤ C_near := by
+        dsimp only [C_near]; nlinarith only [hjet0, hM0, hKext_pos]
+      have e2 : 3 * K_ext ≤ C_near := by
+        dsimp only [C_near]; nlinarith only [hjet0, hM0, hKext_pos]
+      have h1 := mul_le_mul_of_nonneg_right e1 hT_U1
+      have h2 := mul_le_mul_of_nonneg_right e2 hT_U2
+      nlinarith only [h1, h2]
 
 
 private theorem identity_euclid_apply' {N : ℕ}

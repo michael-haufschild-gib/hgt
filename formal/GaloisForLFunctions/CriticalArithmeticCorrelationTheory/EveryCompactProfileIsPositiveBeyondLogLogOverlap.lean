@@ -92,7 +92,9 @@ private theorem conductor_span_coercive_of_relative_budget {Q N : ℕ}
   intro x hx
   exact hbound ⟨x, hx⟩
 
-private theorem conductor_span_coercive_of_raw_budget {Q N : ℕ}
+/-- A common positive conductor floor and a summed raw residual budget give
+coercivity on the whole finite conductor span. -/
+theorem conductor_span_coercive_of_raw_budget {Q N : ℕ}
     (hQ : 2 ≤ Q) (hQN : Q * Q ≤ N) (hlog : 18 * (1 + Real.log Q) ≤ Real.log N)
     {A : Matrix (PrimeHorizonIndex N) (PrimeHorizonIndex N) ℝ} (hA : A.IsHermitian)
     (E : ℕ → ℝ) {e : ℝ} (he : 0 < e) (hfloor : ∀ m ∈ Icc 1 Q, e ≤ E m)

@@ -19,6 +19,7 @@ import GaloisForLFunctions.ArithmeticHodgeTheoryOfDegenerations.TheAliasingConst
 import GaloisForLFunctions.ArithmeticHodgeTheoryOfDegenerations.ThePrimesOfAHorizonWindow
 import GaloisForLFunctions.ArithmeticHodgeTheoryOfDegenerations.TheBulkDeterminesTheSecondOrderTerm
 import GaloisForLFunctions.ArithmeticHodgeTheoryOfDegenerations.TheWindowIndex
+import GaloisForLFunctions.ArithmeticHodgeTheoryOfDegenerations.TheCountLawOverEveryFiniteRing
 
 /-!
 # Arithmetic Hodge Theory of Degenerations
@@ -40,6 +41,7 @@ and the exact critical multiple of a window; the primes of a horizon window (dep
 pay their own creation potential); the bulk determines the second-order term (for every profile with
 `s^β E₁(s) → J`, the correction is `(β J/K) ∫ e^{−(β+1)y} H²`); the window index (the pencil Gram
 matrix of a family of windows is the limit of the complete family's horizon Gram matrices, its
-negative index is read by them and bounded by the number of right zeros).
+negative index is read by them and bounded by the number of right zeros); the count law over every
+finite ring (calibration: the first-order count is the same over `ℤ` and `𝔽_q[T]`).
 See `ArithmeticHodgeTheoryOfDegenerations/README.md`.
 -/

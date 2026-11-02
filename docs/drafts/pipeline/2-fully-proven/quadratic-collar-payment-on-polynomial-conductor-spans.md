@@ -52,11 +52,12 @@ half that floor. The constants `aφ,bφ` are independent of `θ`.
 The terminal weighted pairing passed a direct Lean check; its transitive axiom audit
 contains only `propext`, `Classical.choice`, `Quot.sound`.
 
-Written capstones, unchecked:
+Lean status:
 
 - `TerminalSupportLeavesOnlyALinearHighConductorLoss.lean`: stronger linear loss;
-  the quadratic bound follows from `c≤c²` for `c≥1`.
-- `EveryProfileIsPositiveAtSquareRootLogLogOverlapOnPolynomialSpans.lean`.
+  direct check and transitive axiom audit passed. The quadratic bound follows
+  from `c≤c²` for `c≥1`.
+- `EveryProfileIsPositiveAtSquareRootLogLogOverlapOnPolynomialSpans.lean`: unchecked.
 
 The square-root capstone is written as a restriction of the stronger fixed log-log
 theorem in `EveryProfileIsPositiveAtLogLogOverlapOnPolynomialSpans.lean`.

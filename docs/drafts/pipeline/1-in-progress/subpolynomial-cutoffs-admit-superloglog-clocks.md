@@ -7,7 +7,7 @@
 
 ## Mechanism
 
-Put `L=log N`, `t=log L`, `R'=max(R,ceil L)`, and `ρ=(1+log R')/L→0`.
+Put `L=log N`, `t=log L`, `R'=max(R,floor L+2)`, and `ρ=(1+log R')/L→0`.
 Cap the existing spectral clock by `t/sqrt ρ`. Its ratio to `t` still tends
 to infinity; it remains at most `t²`.
 
@@ -22,6 +22,20 @@ budget are already proved throughout the original spectral clock.
 The clock is independent of `η`; the eventual horizon may depend on `η`.
 This would subsume every fixed iterated-log cutoff and identify subpolynomial
 conductor growth as a complete positive class at some super-log-log overlap.
+
+## Uniform horizon bounds
+
+For `L≥2`, put `A=max(1,R)`. Then `R'≤2AL`, so
+`0≤ρ≤log A/L+(1+log 2)/L+t/L→0`.
+Consequently `R'≤N^(1/16)` eventually, and the frame condition follows.
+For `c≤t²`, `1+log c≤2t` and `Q≥L^q/2`, the retained overlap rate is at most
+
+`t sqrt ρ + 2t^5/L + 2t^6/L^(q/2) + 2L^6/N^(1/4)`.
+
+The terminal coefficient is at most `4t^10/L+2L^10/N^(7/8)→0`.
+Thus its budget is discharged, the overlap cost divided by `t` tends to zero,
+and `D+log c+1=o(t)` uniformly. Since `log Q≥qt−log 2`, the high gap exceeds
+one eventually. All polynomial-size geometry follows from `R'≤N^(1/16)`.
 
 ## Gaps
 

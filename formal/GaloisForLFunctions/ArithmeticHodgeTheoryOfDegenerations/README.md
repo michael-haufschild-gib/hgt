@@ -238,7 +238,7 @@ must come from the bulk second-order term or from a carrier.
 | Where does the horizon term of a conductor live? | Only at `e = 1`: `D_e(s;N) − [e=1]N^s/s → ζ(1−s)J_s(e)`. | `tendsto_conductorDirichlet_sub_horizonTerm`, `conductorDirichlet_eq` |
 | Is positivity at one fixed multiple of the critical curve RH? | No: positivity at multiple `K` is `κ Q(H) ≥ −7J(1)‖H‖²_{−8}/K` on every window (sub-RH); every window with `Q(H) < 0` turns negative past `K*(H)`. RH is positivity at every multiple. | `criticalMultiple_exact`, `weilQuad_halfWeight_ge_of_horizon_nonneg`, `eventually_horizon_neg_of_weilQuad_neg` |
 | What does a second-order term do to positivity? | Admissible multiples form a closed initial segment; inheritance below the critical multiple, failure above; negative directions persist. | `admissible_of_le`, `isClosed_admissible`, `admissible_mono`, `neg_persists`, `eventually_pos_of_tendsto`, `eventually_not_nonneg_of_tendsto` |
-| Can the ledger or the first-order count select `ζ`? | No: both hold for every zero configuration and every quotient of `ℤ`. | statements quantified over `ZeroConfig`; `natCard_primVec_eq_jordanTotient` |
+| Can the ledger or the first-order count select `ζ`? | No: the ledgers hold for every zero configuration, and the count law holds over every finite commutative ring — `#Unimod(R^k) = #ℙ^{k−1}(R)·#Rˣ`, over a local ring `#ℙ^{k−1}(R)(|R| − |𝔪|) = |R|^k − |𝔪|^k` — so over the residue rings of `𝔽_q[T]`, where RH holds, the first-order structure is the same. | statements quantified over `ZeroConfig`; `natCard_unimodular_eq`, `natCard_unimodular_local`, `natCard_projSpace_local` |
 | How do the prime atoms of the jump measure enter, and what pays the creation potential `−2Σ Λ(n)/√n`? | On a window of length `A` every prime power `n > e^A` makes a jump that leaves the window and costs exactly `2Λ(n)/√n ‖H‖²`, the creation it adds: the Markov form of a window is that of level `⌊e^A⌋`. At second order the primes enter only through `Q(H)`: the correction `(7J(1)/K)‖H‖²_{−8}` is prime-free (the aliasing is paid by the Gamma factor, `ν ≈ log N/2π`). What pays the creation potential of the primes `≤ e^A` is the open sign question itself. | `primeJump_departing_eq`, `markovForm_eq_of_level`, `weilQuad_halfWeight_eq_markovForm`, `horizon_layer_criticalCurve_exact` |
 | What set does `τ_x(ξ ⋆ ξ′)` count; what are Stepanov's sections over `ℤ`? (AET, ACP) | A naive height on correspondences exists for a cycle iff its orbit Hodge index holds, and for every cycle iff RH; on curves it exists iff the Frobenius is unitary. Stepanov over `ℤ` bounds `log(1/∫P)` by `ψ(n+1)` and pays the primitive `h¹` of hyperelliptic curves of every genus; the sign over `ℤ` is not produced. The degeneration adds: the first-order count is `#ℙ⁷(ℤ/m)`, zero-blind. | AET `orbitHodgeIndex_iff_exists_naiveHeight`, `riemannHypothesis_iff_forall_exists_naiveHeight`, `exists_naiveHeight_iff_unitary`, `log_inv_integral_le_psi`; LST `hyperelliptic_primitiveH1_nonneg` |
 | Which lattice carries the sections of a class of degree `a`, with what metric? (LST) | A lattice whose rank grows with one fibre degree and whose Gaussian scale grows with the other; bounded rank never satisfies the Riemann inequality. On the pole plane it is the tensor square of the base, the Gamma factor its Gaussian weight. | LST `not_riemannInequality_of_bounded_rank`, `kunnethH0_add_neg`, `latticeH0_riemannRoch` |
@@ -313,6 +313,7 @@ must come from the bulk second-order term or from a carrier.
 | Conjecture HB, sharp form: at `c⁸/log N → K`, `c⁻¹⟨Wx,x⟩ → κQ(H) + (7J(1)/K)‖H‖²_{−8}` | `horizon_layer_criticalCurve_exact`, `tendsto_rpow_eight_mul_horizonAlias`, `aliasLimit_eq` | proved |
 | Exact critical multiple `K*(H) = 7J(1)‖H‖²_{−8}/(κ|Q(H)|)` | `criticalMultiple_exact` | proved |
 | The bulk determines the second order: `s^β E₁ → J` gives `κQ(H) + (βJ/K)‖H‖²_{−(β+1)}` | `horizon_layer_criticalCurve_of_regularBulk`, `tendsto_rpow_mul_horizonAlias_of_regularBulk`, `integral_windowAlias_eq`, `abs_aliasDensity_sub_le` | proved |
+| Calibration: the count law over every finite ring; Hensel law over every finite local ring | `natCard_unimodular_eq`, `natCard_unimodular_local`, `natCard_projSpace_local` | proved |
 | The window index: Gram matrices converge to the pencil; the index is read by the family and bounded by the right zeros | `tendsto_horizonGram`, `pencilGram_isHermitian`, `eventually_hermNegIndex_pencilGram_le`, `hermNegIndex_pencilGram_le_offLineCount` | proved |
 | The primes of a window: departing jumps pay their creation; Markov form at level `⌊e^A⌋` | `primeJump_departing_eq`, `markovForm_eq_of_level`, `weilQuad_halfWeight_eq_markovForm` | proved |
 
@@ -331,7 +332,8 @@ must come from the bulk second-order term or from a carrier.
 5. **Prime atoms in the jump measure** and the creation potential (corpus: RAPT/RHTower Markov
    forms); the count of the first Hecke graph `T₂`.
 6. **The integer**: a sectorial multiplier at logarithmic resolution (WD).
-7. **Calibration** over `𝔽_q(T)`: the count law over `𝔽_q[T]/m` and the function-field horizon layer.
+7. **Calibration** over `𝔽_q(T)`: the count law is proved over every finite ring; the function-field
+   complete family, its horizon layer and its second-order term (where the sign is known) are open.
 
 ## 10. Traps
 
@@ -375,7 +377,7 @@ must come from the bulk second-order term or from a carrier.
 | A count reading the primes inside the jump measure, creation potential paid on a window | open (corpus foothold on prime-free cycles) |
 | Gluing theorem with exactly one negative square | AKG `κ + 1`; zero ledger of the bulk is a positive pole gluing |
 | An integer with a structural bound | the window index `ind₋(P_K)`: read by the complete family, bounded by the number of right zeros (proved); a source-defined bound forcing it to `0` (WD's sectorial multiplier): open |
-| Calibrations separating `ζ` from the fakes | negative result: ledgers and counts carry no selection |
+| Calibrations separating `ζ` from the fakes | negative result: ledgers, the count law (over every finite ring, so over `𝔽_q[T]`) and the aliasing constant carry no selection; selection enters only through `Q(H)` |
 
 ## 13. What counts as a contribution
 

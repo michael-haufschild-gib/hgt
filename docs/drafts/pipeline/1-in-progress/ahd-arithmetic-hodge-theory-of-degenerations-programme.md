@@ -21,10 +21,11 @@ TheHorizonBlockOnTheArithmeticSide, TheHorizonLayerBecomesWeilsForm, TheHorizonC
 TheCriticalMultipleOfAWindow, TheAliasingIsCoercive, TheEnergyOfAHorizonBlock,
 TheHorizonBlockBelowTheGridIsSharp, TheSecondOrderTermOfAHorizonBlock,
 TheAliasingIsTheDilationDerivativeOfTheBulk, TheAliasingConstantOfTheTiltedSpline,
-ThePrimesOfAHorizonWindow, TheBulkDeterminesTheSecondOrderTerm, TheWindowIndex.
+ThePrimesOfAHorizonWindow, TheBulkDeterminesTheSecondOrderTerm, TheWindowIndex,
+TheCountLawOverEveryFiniteRing.
 
 ## Status
-- First order = count: `J(m) = J(1) #ℙ⁷(ℤ/m)` [L].
+- First order = count: `J(m) = J(1) #ℙ⁷(ℤ/m)`; count law over every finite ring (𝔽_q[T] calibration) [L].
 - Zero ledgers: bulk (pole only, positive), horizon (Weil summands), window exhaustion [L].
 - Horizon theorem: past the critical curve `c⁻¹⟨Wx,x⟩ → κ Q(H)`; RH ⇔ horizon blocks
   nonnegative past the critical curve [L].

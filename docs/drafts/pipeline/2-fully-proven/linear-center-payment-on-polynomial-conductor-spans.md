@@ -46,7 +46,7 @@ pairing by `e‖p‖‖z‖/8`. Orthogonal splitting retains margin `e/2` on `V_
 - `exists_upwardPrimeVector_norm_le_of_mem_conductorSubspace`: upward norm bound.
 
 - `TerminalSupportLeavesOnlyALinearHighConductorLoss.lean`: stronger linear finite bound
-  written; unchecked.
+  directly checked, with only the three standard axioms in its transitive audit.
 - `EveryProfileIsPositiveAtNearlyLogLogOverlapOnPolynomialSpans.lean`: capstone
   `exists_universal_nearly_loglog_polynomial_span_coercivity` written; unchecked.
 

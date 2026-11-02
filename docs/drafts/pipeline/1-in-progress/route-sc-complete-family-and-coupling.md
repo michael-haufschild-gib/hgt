@@ -64,12 +64,28 @@ the earlier [positive-weight](../3-formalized/two-prime-cone-positive-moment-obs
 [exact-coefficient](../3-formalized/two-prime-cone-prescribed-spline-weights.md)
 models. A further property of actual zeta zeros is required.
 
-The [Gaussian-damped criterion](gaussian-damped-natural-cone-rigidity.md)
-is an active conjecture for actual zeros. Quadratic exponential tails may
-permit finite clock products to isolate any off-line zero. No transfer from
-bounded coupling of the original spline kernel is assumed or proved.
+The [Gaussian-damped criterion](../3-formalized/gaussian-damped-natural-cone-rigidity.md)
+is formalized for actual zeros. For every fixed `τ>0`, multiplying the spline
+residues by `exp(τ(ρ−1/2)²)` makes natural two-prime cone growth at rate
+`σ≥0` equivalent to `zetaZeroWidth≤σ`. Bounded coupling is equivalent to RH,
+without simplicity, uniform spacing, or an attained boundary. The direct
+capstone audit uses only standard axioms. No transfer from bounded coupling
+of the original spline kernel is proved; SC2 remains open.
+
+The [zero-exponent density extension](cone-cancellation-zero-exponent-of-convergence.md)
+is active: retain geometric block counts and supergeometric heights in the
+same exact-spline model to test whether every positive inverse-power height
+sum can converge while cone cancellation persists. This strengthening is
+not yet formalized.
 
 ## Other boundaries
+
+The [growing-packet prime–pole theorem](../3-formalized/growing-packet-full-prime-pole-cancellation.md)
+controls the literal remainder divided by `√Y`, uniformly for bounded
+coefficients and cell indices at most `exp(√log Y/23040000)`, with error
+`O(exp(−√log Y/7680000))`. Its recorded direct and transitive audits use only
+standard axioms. This extends fixed-family cancellation; a uniform upper
+bound for the complete Weil index is still missing.
 
 The finite-sieve Hodge theorem concerns the matched prime form after a scalar
 subtraction. The Gamma and mixed-term comparison needed for the complete

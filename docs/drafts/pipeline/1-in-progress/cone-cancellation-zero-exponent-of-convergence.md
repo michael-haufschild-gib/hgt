@@ -1,6 +1,6 @@
 # Exact spline cone cancellation with zero exponent of convergence
 
-- **Stage:** 0-backlog
+- **Stage:** 1-in-progress
 - **Type:** CONJECTURE
 - **Parent:** SC2; test whether arbitrarily strong polynomial zero-density bounds suffice.
 
@@ -33,4 +33,5 @@ Corpus search found the existing geometric finite-cost theorem and sparse
 exact-spline model, but no zero-exponent conclusion. The size bound and
 summability must be formalized for the same final witness; separate
 existence statements do not establish their conjunction. External priority
-has not been checked. Complete the Gaussian criterion before this extension.
+has not been checked. The Gaussian criterion is formalized; this extension
+now requires the same-witness Lean construction.

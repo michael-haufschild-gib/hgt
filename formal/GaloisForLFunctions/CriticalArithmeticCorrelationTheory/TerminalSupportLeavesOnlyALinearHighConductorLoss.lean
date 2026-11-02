@@ -234,6 +234,4 @@ theorem exists_profile_highConductor_linear_loss_of_terminal_budget {φ : ℝ �
   change (1 / 16 : ℝ) * E + (1 / 4 : ℝ) * Real.log Q - C * c ≤ _
   linarith only [hold, hcost]
 
-#print axioms exists_profile_highConductor_linear_loss_of_terminal_budget
-
 end GaloisForLFunctions.CriticalArithmeticCorrelationTheory

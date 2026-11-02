@@ -58,7 +58,8 @@ Both source statements and the stronger intermediate distance inequality have be
   `exists_overlapMatrix_self_inner_le_linear` directly checked; transitive audit
   contains only `propext`, `Classical.choice`, `Quot.sound`.
 - `TerminalSupportLeavesOnlyALinearHighConductorLoss.lean`:
-  `exists_profile_highConductor_linear_loss_of_terminal_budget` written, unchecked.
+  `exists_profile_highConductor_linear_loss_of_terminal_budget` directly checked;
+  transitive audit contains only `propext`, `Classical.choice`, `Quot.sound`.
 - `EveryProfileIsPositiveAtLogLogOverlapOnPolynomialSpans.lean`:
   `exists_universal_loglog_polynomial_span_coercivity` written, unchecked.
 

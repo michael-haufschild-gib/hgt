@@ -31,11 +31,12 @@ structure SparsePrescribedSplineSchedule (a b d D : ℝ) where
             (γ j:ℂ)*Complex.I)*phase u.val (γ j))=r u
 
 /-- Geometric finite costs and supergeometric masses give separated sparse
-corrections at every stage of the exact nullseries construction. -/
-theorem exists_two_prime_sparse_spline_tail_schedule {p q : ℕ}
+corrections at every stage, with geometric bounds on the same block sizes. -/
+theorem exists_two_prime_sparse_spline_tail_schedule_with_geometric_sizes {p q : ℕ}
     (hp : p.Prime) (hq : q.Prime) (hpq : p ≠ q) {d D : ℝ}
     (hd : 0 < d) (hdD : d < D) :
-    Nonempty (SparsePrescribedSplineSchedule (Real.log p) (Real.log q) d D) := by
+    ∃ ss : SparsePrescribedSplineSchedule (Real.log p) (Real.log q) d D,
+      ∃ U R : ℝ, 0 < U ∧ 1 < R ∧ ∀ k : ℕ, (ss.base.size k:ℝ) ≤ U*R^k := by
   classical
   have ha : 0 < Real.log p := Real.log_pos (by exact_mod_cast hp.one_lt)
   have hb : 0 < Real.log q := Real.log_pos (by exact_mod_cast hq.one_lt)
@@ -157,19 +158,34 @@ theorem exists_two_prime_sparse_spline_tail_schedule {p q : ℕ}
       obtain ⟨γ,hinj,hmem,_,heq⟩ := hcorrect k r hr
       exact ⟨γ,hinj,hmem,heq⟩
   }
-  refine ⟨{ base := base, block_gap := ?_, correct_sparse := hcorrect }⟩
+  have hgap : ∀ k, base.height k+base.span k+1 < base.height (k+1) := by
+    intro k
+    have htail := hstart (start+k) (by omega)
+    have hdom := (hFbound (start+k)).trans htail.1
+    have hnpref : (0:ℝ) ≤ gridPrefixSize n (start+k) := Nat.cast_nonneg _
+    have hH0 := hH₀ (start+k)
+    have hspan2 : span (start+k)+2 ≤ height k := by
+      dsimp only [height,size]
+      linarith only [hdom,hnpref,hH0]
+    have hdbl : 2*height k ≤ height (k+1) := by
+      simpa only [height,size,Nat.add_assoc] using htail.2.2.2
+    change height k+span (start+k)+1 < height (k+1)
+    linarith only [hspan2,hdbl]
+  refine ⟨{base := base, block_gap := hgap, correct_sparse := hcorrect},
+    U*R^start,R,mul_pos hU (pow_pos hRp start),hR,?_⟩
   intro k
-  have htail := hstart (start+k) (by omega)
-  have hdom := (hFbound (start+k)).trans htail.1
-  have hnpref : (0:ℝ) ≤ gridPrefixSize n (start+k) := Nat.cast_nonneg _
-  have hH0 := hH₀ (start+k)
-  have hspan2 : span (start+k)+2 ≤ height k := by
-    dsimp only [height,size]
-    linarith only [hdom,hnpref,hH0]
-  have hdbl : 2*height k ≤ height (k+1) := by
-    simpa only [height,size,Nat.add_assoc] using htail.2.2.2
-  change height k+span (start+k)+1 < height (k+1)
-  linarith only [hspan2,hdbl]
+  change (n (start+k):ℝ) ≤ (U*R^start)*R^k
+  exact (hnU (start+k)).trans_eq (by rw [pow_add]; ring)
 
+/-- The separated sparse correction schedule underlying the exact nullseries. -/
+theorem exists_two_prime_sparse_spline_tail_schedule {p q : ℕ}
+    (hp : p.Prime) (hq : q.Prime) (hpq : p ≠ q) {d D : ℝ}
+    (hd : 0 < d) (hdD : d < D) :
+    Nonempty (SparsePrescribedSplineSchedule (Real.log p) (Real.log q) d D) := by
+  obtain ⟨ss,_,_,_,_,_⟩ :=
+    exists_two_prime_sparse_spline_tail_schedule_with_geometric_sizes hp hq hpq hd hdD
+  exact ⟨ss⟩
+
+#print axioms exists_two_prime_sparse_spline_tail_schedule_with_geometric_sizes
 #print axioms exists_two_prime_sparse_spline_tail_schedule
 end GaloisForLFunctions.ArithmeticCouplingTheory.ConeMoments
