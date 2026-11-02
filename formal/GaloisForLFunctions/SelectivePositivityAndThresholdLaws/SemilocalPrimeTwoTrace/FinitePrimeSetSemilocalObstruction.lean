@@ -624,8 +624,9 @@ theorem inner_ccmVisiblePrimeBlock_prime_pow_eq_valuationLogTrace {p m : ℕ}
     rw [ccmVisiblePrimeBlock_prime_pow_eq hp hm a, ccmPrimeTransportOperator,
       clm_smul_apply, clm_smul_apply, inner_smul_left, inner_smul_left,
       Complex.conj_ofReal, Complex.conj_ofReal, mul_assoc]
-  rw [hlhs, ← inv_mul_sqrt_mul_opTrace_primeValuationLogOperator hp hm,
-    ← opTrace_comp_rankOne_self_of_isSelfAdjoint hS f]
+  exact hlhs.trans (congrArg₂ Mul.mul
+    (inv_mul_sqrt_mul_opTrace_primeValuationLogOperator hp hm).symm
+    (opTrace_comp_rankOne_self_of_isSelfAdjoint hS f).symm)
 
 theorem re_inner_ccmPrimePowerOperator_eq_sum_valuationLogTrace {p : ℕ} (hp : p.Prime)
     (a : SuzukiPositiveAperture) (f : suzukiApertureHilbert a) :
@@ -689,7 +690,10 @@ theorem finitePrimeSetSemilocalFamily_Q_eq_multiPrimeValuationTrace (S : Finset 
     refine Finset.sum_congr rfl fun p hp => ?_
     exact re_inner_ccmPrimePowerOperator_eq_sum_valuationLogTrace
       (Finset.mem_filter.mp hp).2 a (ccmArchimedeanFormToAperture a u)
-  rw [hQ, primeFreeFamily_Q_eq, polarPart_eq_opTrace_re, hsum]
+  exact hQ.trans (congrArg₂ Sub.sub
+    ((primeFreeFamily_Q_eq a u).trans
+      (congrArg (archPart a u + ·) (polarPart_eq_opTrace_re a u)))
+    hsum)
 
 /-! ## 3. Parametric antisymmetric gap probe and the multiplicative syndeticity law -/
 

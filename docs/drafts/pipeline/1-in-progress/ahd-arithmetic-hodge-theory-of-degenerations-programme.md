@@ -13,17 +13,20 @@ Develop the field of §2.7: answer its questions by Lean theorems, build its too
 `formal/GaloisForLFunctions/ArithmeticHodgeTheoryOfDegenerations/`, umbrella
 `ArithmeticHodgeTheoryOfDegenerations.lean`, README there.
 
-## Plan
-1. Zero side of the complete family: translation law of Weil summands; packet Dirichlet
-   polynomials.
-2. Conductor Dirichlet polynomials: Möbius splitting, horizon term `[e=1]N^s/s`, constant term
-   `ζ(1−s)J_s(e)`, remainder `O(|s| σ_{Re s}(e) N^{Re s−1})`.
-3. Zero ledger of fixed packets: rank one at the pole, weight `m_ρ/(ρ(1−ρ))`, positive per
-   reflection quadruple.
-4. Zero ledger of horizon blocks: Weil summand of the synthesized test.
-5. Critical-multiple calculus.
-6. Count: prime atoms in the jump measure; creation potential.
-7. Gluing index theorem; calibration (ledger is configuration-general).
+## Lean modules
+TheHorizonTermOfAConductor, TheZeroLedgerOfTheBulk, TheHorizonLayerReadsWeilSummands,
+TheCriticalMultiple, TheLedgerOfAWindowOfZeros, TheJordanLimitCountsProjectiveSpace,
+TheHorizonBlockIsQuietBelowTheGrid, TheAliasingTailOfAHorizonBlock,
+TheHorizonBlockOnTheArithmeticSide, TheHorizonLayerBecomesWeilsForm, TheHorizonCriterion,
+TheCriticalMultipleOfAWindow, TheAliasingIsCoercive.
+
+## Status
+- First order = count: `J(m) = J(1) #ℙ⁷(ℤ/m)` [L].
+- Zero ledgers: bulk (pole only, positive), horizon (Weil summands), window exhaustion [L].
+- Horizon theorem: past the critical curve `c⁻¹⟨Wx,x⟩ → κ Q(H)`; at it
+  `κ Q(H) + a/K ≤ · ≤ κ Q(H) + b/K` with `0 < a ≤ b` (coercive aliasing); RH ⇔ horizon blocks
+  nonnegative past the critical curve; small multiples positive [L].
 
 ## Open
-see README §9.
+Sharp aliasing constant (HB sharp form); bulk second order; uniform bulk ledger to `N^{1/2−ε}`;
+count of the second order; integer; `𝔽_q[T]` calibration. See README §9.

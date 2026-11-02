@@ -120,3 +120,13 @@ cross, replacing the three `c⁹` inputs above.
 - **Status:** proof plan T1–T4 above; Lean in progress (CACT modules listed below as built).
 
 ## Lean modules
+CACT, compiled (T1 explicit far reserve):
+- `TheTopPrimeSelfFormCostsOnlyALogarithm` — top prime self-form `≤ C c(1+log c) S`.
+- `TheGammaFormPaysEveryFrequencyAboveAThreshold` — `arch ≥ (log T − G₀)·HM_T − (G₀+log 2)·LM_T`; Fourier split of `2|∫fh|`.
+- `ThePrimeCrossOfAPrefixAndATopIsADirichletConvolution` — `P(f_{x+y}) = P(f_x)+P(f_y)+2∫f_y f_{ρ(a∗x)}`.
+- `TheWindowAverageOfAnAtomicTest` — window smoothing `g_h`, multiplier `|1−m_h| ≤ |r|h`, `∫(f_V^{(h)})² ≤ (∫g)² h⁻² ∫W_V²`.
+- `TheWindowSumsOfThePrimeTranslateCancelOffThePole` — dlVP short windows; `∫W² ≤ windowSumBound` (pole moment σ + `O(log K')²` P); `‖ρ(a∗x)‖² ≤ log B·log(2B/A)·P`.
+- `TheFarReserveThroughTheWindowAverage` — explicit reserve `(7/8)D_M + (3/8)δ log N·S − costs(h,T,K')` on `(V_1)ᗮ`.
+
+Remaining: asymptotic choice `log T = (log N)^{α'}`, `h = 1/(T log N)`, `log K' ≍ (log 1/h)²` (T1 corollary);
+T2 (band–far cross via top locality of `upwardPrimeVector`); T3 (row-localized residuals); T4 assembly.

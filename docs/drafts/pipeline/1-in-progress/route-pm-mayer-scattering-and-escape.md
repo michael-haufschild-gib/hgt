@@ -8,9 +8,9 @@
 
 | Task | Required mathematical result | Status |
 |---|---|---|
-| Mayer 1 | Exact Mayer–Selberg product, oriented/unoriented multiplicities, geometric lengths, and scattering normalization | Euler product, actual lengths and inverse-class multiplicities certified; closed-geodesic identification and scattering comparison open |
-| Mayer 2 | Faithful equivalence between actual right-strip zeta zeros and scattering-sector eigenvalue events | Open; operator and parameter conventions must be identified exactly |
-| Mayer 3 | Actual Hermitian structure including scattering, recovering a classical zero-free region from transfer positivity | Open |
+| Mayer 1 | Exact Mayer–Selberg product, oriented/unoriented multiplicities, geometric lengths, and scattering normalization | Genuine closed-geodesic bijection, least lengths, reversal multiplicities, Selberg Euler product and independent scattering/cofactor normalization certified |
+| Mayer 2 | Faithful equivalence between actual right-strip zeta zeros and scattering-sector eigenvalue events | Exact finite relative multiplicity, explicit observable remainder +1 eigenfunctions at strip zeta zeros, and faithful full constant-input inverse poles certified; full eigenspace classification remains open |
+| Mayer 3 | Actual Hermitian structure including scattering, recovering a classical zero-free region from transfer positivity | Actual boundary positivity recovers width `1/(1000 log abs(t))` for `abs(t)≥4`; form on all eigenfunctions remains open |
 | Mayer 4 | Separation of cusp events from scattering events by that form | Open |
 | Mayer 5 | Quantitative scattering-sector spectral gap yielding a fixed zero-free strip | Open |
 | Mayer 6 | Exclusion of all off-line resonances through partner saturation | Open; RH-complete |
@@ -35,8 +35,48 @@ is the attained displacement minimum `L_c=2 log λ_c`, so each factor is
 `1−z^(2ℓ(c)) exp(−(w/2+m)L_c)`. The certified
 [inverse-orientation multiplicities](../3-formalized/gauss-mayer-inverse-orientation-multiplicities.md)
 regroup these factors with exponent one for self-inverse classes and two
-otherwise. [Closed-geodesic identification](gauss-mayer-closed-geodesic-correspondence.md)
-and actual scattering comparison remain open.
+otherwise. The [closed-geodesic identification](../3-formalized/gauss-mayer-closed-geodesic-correspondence.md)
+is now certified through the independently defined periodic modular flow.
+Its least return times are the actual lengths, and its geometric reversal
+fibers give the exact product multiplicities. Thus `D(w,1)D(w,−1)` is the
+geometric Selberg Euler product at `s=w/2` for `Re w>2`.
+The [actual scattering comparison](../3-formalized/gauss-mayer-primitive-cone-scattering-divisor.md)
+now identifies the genuine level-one Poincaré constant coefficient with
+`−π^(1/2)Γ((w−1)/2)B(w,1)/(2Γ(w/2)D(w,1))` for `Re w>2`.
+The cofactor identity `2ζ(w−1)D+ζ(w)B=0` continues throughout `Re w>0`,
+excluding `w=1,2`. Its interpretation as the
+[actual boundary inverse entry](../3-formalized/gauss-mayer-actual-boundary-resolvent.md)
+is certified, including exact pole multiplicity. The exact finite relation `ord D=ord B+ord ζ`
+and actual `R(w)f=f` eigenfunctions at every strip zeta zero are certified. The
+[actual remainder boundary inverse](../3-formalized/gauss-mayer-remainder-boundary-feedback.md)
+has exact pole order `−ord ζ−ord(1+2ζ(·−1))`. Restoring the latter factor
+gives faithful zeta-zero detection. An
+[explicit observable eigenfunction](../3-formalized/gauss-mayer-holomorphic-scattering-state.md)
+is now certified: the continued lattice state satisfies `(I−L_w)H_w=ζ(w)1`
+and `H_w(0)=2ζ(w−1)`, so its evaluation is nonzero at every strip zeta zero. The
+[actual period identities](../3-formalized/gauss-mayer-scattering-period-relations.md)
+now give inversion reciprocity and the three-term Lewis relation on the
+real period segment, throughout `Re w>0`, `w≠2`. The
+[actual boundary positivity argument](../3-formalized/gauss-mayer-boundary-positivity-zero-free-region.md)
+certifies a classical logarithmic zero-free region from the nonnegative
+coefficients `Λ(n)(1−1/n)` of the shifted inverse entry’s logarithmic derivative. The
+[full vector channel](../3-formalized/gauss-mayer-vector-scattering-channel.md)
+has germ `C(w)/(ζ(w)(w−2))` with `C` holomorphic and nowhere zero on
+`Re w>0`. Thus common Fredholm zeros create no additional constant-input
+vector poles; the source points have orders `+1` at one and `−1` at two.
+The [signed-channel classification](../3-formalized/gauss-mayer-signed-scattering-channel.md)
+proves that the negative constant-input germ is everywhere regular and
+nonzero on the source half-plane; its full operator residue at one
+annihilates the constant input.
+The [period Mellin transform](../3-formalized/gauss-mayer-period-mellin-intertwining.md)
+identifies the actual axis-subtracted lattice cone with multiplicative
+convolution and certifies its two-zeta Gamma product in the absolute
+chamber. The [actual Epstein-to-Mayer transform](../3-formalized/gauss-mayer-quadratic-averaging.md)
+maps the independently Poisson-defined rectangular field to the actual
+period by an absolutely convergent Cauchy integral for `Re w>2`, retaining
+both axes and all quadrant multiplicities. Its
+[continuation](gauss-mayer-epstein-continuation.md), full eigenspace
+classification, and a Hermitian form remain open.
 
 ## Operator convention
 
@@ -50,8 +90,7 @@ entry `phiσ` by finite sums of reciprocal Dirichlet L-functions, with equality
 on `Re s>1/2`. The independent level-one completed Poincaré constant term is
 also certified in `ThetaCuspHawkingBMEisensteinActualZeroFourierCoefficient`:
 its two coefficients are `Λ(2s)` and `Λ(2s−1)`. These source results supply
-the scattering normalization; comparison with the Mayer determinant remains
-unproved.
+the independently certified scattering/cofactor normalization above.
 
 ## Escape receiver boundary
 

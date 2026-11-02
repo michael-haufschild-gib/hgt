@@ -1,8 +1,8 @@
 # The zero-density endpoint has positive Euler mass
 
 - **ID:** zero-density-endpoint-conductor-classification
-- **Stage:** 1-in-progress
-- **Type:** CANDIDATE
+- **Stage:** 3-formalized
+- **Type:** THEOREM (Lean)
 - **Source:** review-0111 Γ12; the power-error regime of `TheZeroDensityTwinCarriesTheConductorSeries`.
 - **Statement:** The finite-conductor-packet classification extends from `0<κ<1/4` to `0≤κ<1/4`, with the same error condition `0≤α<1−2κ`.
 
@@ -37,3 +37,14 @@ every power-error class. Extending the positive-κ proof by setting
 `primeSetFlip_harmonicCorrelation_tendsto`,
 `primeSetFlip_hasHyperplaneGap_iff_secular`,
 `hodgeSeparates_primeSetFlip_of_packet`.
+
+## Formal statements
+
+`RenormalizedIntersectionTheory/TheZeroDensityEndpointHasPositiveEulerMass.lean`:
+
+- `primeSetHarmonicDensity_pos_of_logMass_sublinear`.
+- `frequently_logMass_gt_sublinear_of_zero_mass`.
+- `hodgeSeparates_primeSetFlip_iff_packet_of_nonneg_logDensity`.
+
+Direct `lake --old env lean` check passed. Each transitive axiom set is
+exactly `propext`, `Classical.choice`, and `Quot.sound`. Umbrella import present.

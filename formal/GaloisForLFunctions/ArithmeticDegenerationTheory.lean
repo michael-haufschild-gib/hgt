@@ -10,6 +10,11 @@ import GaloisForLFunctions.ArithmeticDegenerationTheory.CompleteDegenerationSele
 import GaloisForLFunctions.ArithmeticDegenerationTheory.TheMonodromyIsEventuallyIdempotent
 import GaloisForLFunctions.ArithmeticDegenerationTheory.TheScalingFormOfTheDegeneration
 import GaloisForLFunctions.ArithmeticDegenerationTheory.TheBranchesAndTheWeightsSeparate
+import GaloisForLFunctions.ArithmeticDegenerationTheory.TheConductorEnergyIsAConeSumOfTopStrata
+import GaloisForLFunctions.ArithmeticDegenerationTheory.TheArchimedeanCarrierIsIndefinite
+import GaloisForLFunctions.ArithmeticDegenerationTheory.TheDegenerationExponentIsSetByTheProfile
+import GaloisForLFunctions.ArithmeticDegenerationTheory.TheSubthresholdBlockInheritsTheJordanForm
+import GaloisForLFunctions.ArithmeticDegenerationTheory.TheGradedPiecesAndTheTopStratumAreMoebiusDual
 
 /-!
 # Arithmetic Degeneration Theory
@@ -22,6 +27,9 @@ limiting polarization; the uniform Jordan law on the subthreshold block; the Mer
 the gluing determinant at the pole; complete degeneration as the signature of `ζ` among its
 prime-flip twins; the eventual idempotence of the monodromy; the exact scaling form of the
 degeneration and inherited polarization on fixed packets; the separation of branches (scaling
-function) and weights (Jordan coefficient).
+function) and weights (Jordan coefficient); the closed-form monodromy and the cone expansion of
+graded-piece energies into top-stratum energies; the indefiniteness of the archimedean trace
+carrier; the degeneration exponent of a profile; the Jordan form on the whole growing subthreshold
+block; the Möbius duality of graded pieces and top stratum.
 See `ArithmeticDegenerationTheory/README.md`.
 -/

@@ -1,4 +1,5 @@
 import GaloisForLFunctions.RenormalizedArithmeticPotentialTheory.TheResolutionThresholdOfAFlippedPrimeIsExact
+import GaloisForLFunctions.RenormalizedArithmeticPotentialTheory.EveryFiniteFlipSetHasAnExactResolutionThreshold
 import GaloisForLFunctions.ArithmeticDegenerationTheory.TheLimitingMixedStructure
 
 /-!
@@ -23,6 +24,10 @@ degenerates to the overlap-independent form `F_λ`.
   for a profile without real Fourier zeros, `F_{ω_p}` is positive on the pole packet
   (`4 log p Σ_j p^{-(2j+1)}`) and negative on some unit packet. Hence the rescaled limit of the
   twin does not exist: `c⁷ E_{ω_p} → −∞` on that packet (`tendsto_rescaled_packetEnergy_primeFlip`).
+
+* **Every finite flip set** (`finiteFlip_residue_indefinite`): the overlap-independent residue
+  `F_{ω_S}` of flipping a nonempty finite set `S` of primes is positive on the pole profile and
+  negative on RAPT's flip-set trial.
 
 So within the twist family, complete degeneration — a limiting structure that tends to zero and has
 a polarized rescaled limit — is the signature of `ζ`. A flip leaves a non-degenerating, indefinite
@@ -164,5 +169,20 @@ theorem tendsto_rescaled_packetEnergy_primeFlip {p : ℕ} (hp : p.Prime) :
     (primeFlipWeight p) T β
   have h7 : Tendsto (fun c : ℝ => c ^ (7 : ℝ)) atTop atTop := tendsto_rpow_atTop (by norm_num)
   exact h7.atTop_mul_neg hneg hlim
+
+/-- **Every finite flip set leaves an indefinite residue.** For a nonempty finite set `S` of primes,
+the overlap-independent twist energy of `ω_S` is positive on the pole profile `y ≡ 1` and negative on
+the flip-set trial. -/
+theorem finiteFlip_residue_indefinite {S : Finset ℕ} (hS : ∀ p ∈ S, p.Prime) (hne : S.Nonempty) :
+    0 < twistLimitEnergy (finiteFlipWeight S) (fun _ => 1) 1 ∧
+      twistLimitEnergy (finiteFlipWeight S) (flipSetTrial S) (flipSetModulus S) < 0 := by
+  constructor
+  · rw [twistLimitEnergy_finiteFlip hS one_pos (fun _ => rfl)]
+    refine sum_pos (fun p hp => ?_) hne
+    have h := twistLimitEnergy_primeFlip_pole_pos (hS p hp)
+    have hprof : packetProfile {1} (fun _ => (1 : ℝ)) = fun _ => 1 := funext packetProfile_pole
+    have hper : packetPeriod ({1} : Finset ℕ) = 1 := by simp [packetPeriod]
+    rwa [hprof, hper] at h
+  · exact twistLimitEnergy_finiteFlip_flipSetTrial_neg hS hne (flipSetModulus_pos hS) dvd_rfl
 
 end GaloisForLFunctions.ArithmeticDegenerationTheory

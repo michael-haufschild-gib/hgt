@@ -127,6 +127,79 @@ theorem tendsto_log_cube_div_natCast :
   refine h.congr fun N => ?_
   simp [Function.comp]
 
+/-- **The error envelope along a schedule.** Below the exponent `1/8`,
+`c⁷(c(1 + log c)² L^{1/k}/L + c⁵L/N) → 0` for the exponent `k` of `exists_tendsto_envelope`. -/
+theorem tendsto_schedule_envelope {α : ℝ} (hα : α < 1 / 8) {c : ℕ → ℝ}
+    (hc : Tendsto c atTop atTop) (hcα : ∀ᶠ N : ℕ in atTop, c N ≤ Real.log N ^ α) {k : ℕ}
+    (henv : Tendsto (fun L : ℝ => L ^ (8 * α) * (1 + Real.log L) ^ 2 *
+      L ^ (1 / (k : ℝ)) / L) atTop (𝓝 0)) :
+    Tendsto (fun N => c N ^ 7 * (c N * (1 + Real.log (c N)) ^ 2 *
+      Real.log N ^ (1 / (k : ℝ)) / Real.log N + c N ^ 5 * Real.log N / (N : ℝ))) atTop (𝓝 0) := by
+  have hL : Tendsto (fun N : ℕ => Real.log N) atTop atTop :=
+    Real.tendsto_log_atTop.comp tendsto_natCast_atTop_atTop
+  set T : ℕ → ℝ := fun N => c N ^ 7 * (c N * (1 + Real.log (c N)) ^ 2 *
+      Real.log N ^ (1 / (k : ℝ)) / Real.log N + c N ^ 5 * Real.log N / (N : ℝ)) with hT
+  change Tendsto T atTop (𝓝 0)
+  have h1 := henv.comp hL
+  have h2 := tendsto_log_cube_div_natCast
+  refine squeeze_zero' ?_ ?_ ((h1.add h2).trans (by simp))
+  · filter_upwards [hc.eventually_ge_atTop 1] with N hN
+    have : 0 ≤ 1 + Real.log (c N) := by linarith [Real.log_nonneg hN]
+    have hN0 : (0 : ℝ) ≤ Real.log N := Real.log_natCast_nonneg N
+    simp only [hT]
+    positivity
+  · filter_upwards [hc.eventually_ge_atTop 1, hcα, hL.eventually_ge_atTop 1] with N hN hNα hLN
+    simp only [hT, Function.comp]
+    set L := Real.log N
+    have hL0 : 0 < L := by linarith
+    have hcL : c N ≤ L := hNα.trans (by
+      rcases le_or_gt α 1 with h | h
+      · calc L ^ α ≤ L ^ (1 : ℝ) := Real.rpow_le_rpow_of_exponent_le hLN h
+          _ = L := Real.rpow_one L
+      · linarith)
+    have hlogc : 0 ≤ Real.log (c N) := Real.log_nonneg hN
+    have hlogcL : Real.log (c N) ≤ Real.log L := Real.log_le_log (by linarith) hcL
+    have hc8 : c N ^ 8 ≤ L ^ (8 * α) := by
+      calc c N ^ 8 ≤ (L ^ α) ^ 8 := pow_le_pow_left₀ (by linarith) hNα 8
+        _ = L ^ (8 * α) := by rw [← Real.rpow_natCast, ← Real.rpow_mul hL0.le]; ring_nf
+    have hc12 : c N ^ 12 ≤ L ^ 2 := by
+      calc c N ^ 12 ≤ (L ^ α) ^ 12 := pow_le_pow_left₀ (by linarith) hNα 12
+        _ = L ^ (12 * α) := by rw [← Real.rpow_natCast, ← Real.rpow_mul hL0.le]; ring_nf
+        _ ≤ L ^ (2 : ℝ) := Real.rpow_le_rpow_of_exponent_le hLN (by linarith)
+        _ = L ^ 2 := Real.rpow_two L
+    have hk0 : 0 ≤ L ^ (1 / (k : ℝ)) := by positivity
+    have e1 : c N ^ 7 * (c N * (1 + Real.log (c N)) ^ 2 * L ^ (1 / (k : ℝ)) / L) =
+        c N ^ 8 * (1 + Real.log (c N)) ^ 2 * L ^ (1 / (k : ℝ)) / L := by ring
+    have e2 : c N ^ 7 * (c N ^ 5 * L / N) = c N ^ 12 * L / N := by ring
+    rw [mul_add, e1, e2]
+    gcongr
+    calc c N ^ 12 * L ≤ L ^ 2 * L := by gcongr
+      _ = L ^ 3 := by ring
+
+/-- Below the exponent `1/8` the overlap is eventually below the square-root horizon. -/
+theorem eventually_size_schedule {α : ℝ} (hα : α < 1 / 8) {c : ℕ → ℝ}
+    (hc : Tendsto c atTop atTop) (hcα : ∀ᶠ N : ℕ in atTop, c N ≤ Real.log N ^ α) :
+    ∀ᶠ N : ℕ in atTop, 4 * (Real.exp 1 + 3) ^ 2 * c N ^ 2 ≤ (N : ℝ) := by
+  have hL : Tendsto (fun N : ℕ => Real.log N) atTop atTop :=
+    Real.tendsto_log_atTop.comp tendsto_natCast_atTop_atTop
+  have hlo := (Real.isLittleO_log_id_atTop.comp_tendsto tendsto_natCast_atTop_atTop).bound
+    (show (0 : ℝ) < 1 / (4 * (Real.exp 1 + 3) ^ 2) by positivity)
+  filter_upwards [hc.eventually_ge_atTop 1, hcα, hL.eventually_ge_atTop 1, hlo] with
+    N hN hNα hLN hlg
+  have hL0 : 0 < Real.log N := by linarith
+  simp only [Function.comp, id, Real.norm_of_nonneg hL0.le,
+    Real.norm_of_nonneg (Nat.cast_nonneg N)] at hlg
+  have hc2 : c N ^ 2 ≤ Real.log N := by
+    calc c N ^ 2 ≤ (Real.log N ^ α) ^ 2 := pow_le_pow_left₀ (by linarith) hNα 2
+      _ = Real.log N ^ (2 * α) := by
+          rw [← Real.rpow_natCast, ← Real.rpow_mul hL0.le]; ring_nf
+      _ ≤ Real.log N ^ (1 : ℝ) := Real.rpow_le_rpow_of_exponent_le hLN (by linarith)
+      _ = Real.log N := Real.rpow_one _
+  have hpos : (0 : ℝ) < 4 * (Real.exp 1 + 3) ^ 2 := by positivity
+  calc 4 * (Real.exp 1 + 3) ^ 2 * c N ^ 2 ≤ 4 * (Real.exp 1 + 3) ^ 2 * Real.log N := by gcongr
+    _ ≤ 4 * (Real.exp 1 + 3) ^ 2 * (1 / (4 * (Real.exp 1 + 3) ^ 2) * N) := by gcongr
+    _ = N := by field_simp
+
 /-! ## The extension data vanish after rescaling -/
 
 /-- **The rescaled extension data vanish** along every schedule `c_N → ∞`, `c_N ≤ (log N)^α`,
@@ -150,42 +223,7 @@ theorem tendsto_rescaled_conductorDeviation {α : ℝ} (hα : α < 1 / 8) {c : �
   -- the envelope `T_N = c⁸(1 + log c)² L^{1/k}/L + c¹² L/N`
   set T : ℕ → ℝ := fun N => c N ^ 7 * (c N * (1 + Real.log (c N)) ^ 2 *
       Real.log N ^ (1 / (k : ℝ)) / Real.log N + c N ^ 5 * Real.log N / (N : ℝ)) with hT
-  have hT0 : Tendsto T atTop (𝓝 0) := by
-    have h1 := henv.comp hL
-    have h2 := tendsto_log_cube_div_natCast
-    refine squeeze_zero' ?_ ?_ ((h1.add h2).trans (by simp))
-    · filter_upwards [hc.eventually_ge_atTop 1] with N hN
-      have : 0 ≤ 1 + Real.log (c N) := by linarith [Real.log_nonneg hN]
-      have hN0 : (0 : ℝ) ≤ Real.log N := Real.log_natCast_nonneg N
-      simp only [hT]
-      positivity
-    · filter_upwards [hc.eventually_ge_atTop 1, hcα, hL.eventually_ge_atTop 1] with N hN hNα hLN
-      simp only [hT, Function.comp]
-      set L := Real.log N
-      have hL0 : 0 < L := by linarith
-      have hcL : c N ≤ L := hNα.trans (by
-        rcases le_or_gt α 1 with h | h
-        · calc L ^ α ≤ L ^ (1 : ℝ) := Real.rpow_le_rpow_of_exponent_le hLN h
-            _ = L := Real.rpow_one L
-        · linarith)
-      have hlogc : 0 ≤ Real.log (c N) := Real.log_nonneg hN
-      have hlogcL : Real.log (c N) ≤ Real.log L := Real.log_le_log (by linarith) hcL
-      have hc8 : c N ^ 8 ≤ L ^ (8 * α) := by
-        calc c N ^ 8 ≤ (L ^ α) ^ 8 := pow_le_pow_left₀ (by linarith) hNα 8
-          _ = L ^ (8 * α) := by rw [← Real.rpow_natCast, ← Real.rpow_mul hL0.le]; ring_nf
-      have hc12 : c N ^ 12 ≤ L ^ 2 := by
-        calc c N ^ 12 ≤ (L ^ α) ^ 12 := pow_le_pow_left₀ (by linarith) hNα 12
-          _ = L ^ (12 * α) := by rw [← Real.rpow_natCast, ← Real.rpow_mul hL0.le]; ring_nf
-          _ ≤ L ^ (2 : ℝ) := Real.rpow_le_rpow_of_exponent_le hLN (by linarith)
-          _ = L ^ 2 := Real.rpow_two L
-      have hk0 : 0 ≤ L ^ (1 / (k : ℝ)) := by positivity
-      have e1 : c N ^ 7 * (c N * (1 + Real.log (c N)) ^ 2 * L ^ (1 / (k : ℝ)) / L) =
-          c N ^ 8 * (1 + Real.log (c N)) ^ 2 * L ^ (1 / (k : ℝ)) / L := by ring
-      have e2 : c N ^ 7 * (c N ^ 5 * L / N) = c N ^ 12 * L / N := by ring
-      rw [mul_add, e1, e2]
-      gcongr
-      calc c N ^ 12 * L ≤ L ^ 2 * L := by gcongr
-        _ = L ^ 3 := by ring
+  have hT0 : Tendsto T atTop (𝓝 0) := tendsto_schedule_envelope hα hc hcα henv
   -- extract the `(e, e')` entry from the relative sum
   have hJe := (tendsto_rpow_seven_mul_completedConductorEnergy_jordan e).comp hc
   have hJe' := (tendsto_rpow_seven_mul_completedConductorEnergy_jordan e').comp hc
@@ -204,24 +242,7 @@ theorem tendsto_rescaled_conductorDeviation {α : ℝ} (hα : α < 1 / 8) {c : �
     simpa [D, mul_assoc] using this
   have hQlog : ∀ᶠ N : ℕ in atTop, (Q : ℝ) ≤ Real.log N ^ (1 : ℝ) := by
     simpa using hL.eventually_ge_atTop (Q : ℝ)
-  have hsize : ∀ᶠ N : ℕ in atTop, 4 * (Real.exp 1 + 3) ^ 2 * c N ^ 2 ≤ (N : ℝ) := by
-    have hlo := (Real.isLittleO_log_id_atTop.comp_tendsto tendsto_natCast_atTop_atTop).bound
-      (show (0 : ℝ) < 1 / (4 * (Real.exp 1 + 3) ^ 2) by positivity)
-    filter_upwards [hc.eventually_ge_atTop 1, hcα, hL.eventually_ge_atTop 1, hlo] with
-      N hN hNα hLN hlg
-    have hL0 : 0 < Real.log N := by linarith
-    simp only [Function.comp, id, Real.norm_of_nonneg hL0.le,
-      Real.norm_of_nonneg (Nat.cast_nonneg N)] at hlg
-    have hc2 : c N ^ 2 ≤ Real.log N := by
-      calc c N ^ 2 ≤ (Real.log N ^ α) ^ 2 := pow_le_pow_left₀ (by linarith) hNα 2
-        _ = Real.log N ^ (2 * α) := by
-            rw [← Real.rpow_natCast, ← Real.rpow_mul hL0.le]; ring_nf
-        _ ≤ Real.log N ^ (1 : ℝ) := Real.rpow_le_rpow_of_exponent_le hLN (by linarith)
-        _ = Real.log N := Real.rpow_one _
-    have hpos : (0 : ℝ) < 4 * (Real.exp 1 + 3) ^ 2 := by positivity
-    calc 4 * (Real.exp 1 + 3) ^ 2 * c N ^ 2 ≤ 4 * (Real.exp 1 + 3) ^ 2 * Real.log N := by gcongr
-      _ ≤ 4 * (Real.exp 1 + 3) ^ 2 * (1 / (4 * (Real.exp 1 + 3) ^ 2) * N) := by gcongr
-      _ = N := by field_simp
+  have hsize := eventually_size_schedule hα hc hcα
   refine squeeze_zero_norm' ?_ (by simpa using (Real.continuous_sqrt.tendsto 0).comp hD)
   filter_upwards [hdevN, hc.eventually_ge_atTop 1, hsize, hQlog, hEpos, hEpos'] with
     N hN hcN hsN hQN hpE hpE'

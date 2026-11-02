@@ -125,7 +125,7 @@ derived here from Lean statements.
 | Γ9 Archimedean continuity vs height decay | No-go | — | Continuous dilation against a decaying finite-adelic reading ⇒ `κ = ∞` [L]. |
 | Γ10 Function-field indistinguishability | Sharpened | — | Local index walls identical over `𝔽_q(X)`; curve edge `≤ 2g`; Frobenius conformal with factor `q`, Hecke dilations boosts; Künneth effectivity on every Frobenius window ⇔ unitarity, and holds by the Stepanov count; links complete over curves, disconnected over `ℤ`; finite divisor over `ℤ`, none for fakes [L]. |
 | Γ11 Pole-blindness of the glue | No-go | — | Simple pole absorbed, double pole costs a square [L]. |
-| Γ12 General gauges | Partially solved (harmonic saturation classified) | sub | Entrywise-nonnegative gauges only on archimedean characters; twisted Selberg source forces `ω(p) = 1` [L]. Open: zero-density twins at `κ = 0`. |
+| Γ12 General gauges | Solved | sub | Entrywise-nonnegative gauges only on archimedean characters; twisted Selberg source forces `ω(p) = 1` [L]. Bare zero-density twins at `κ = 0` satisfy the exact conductor-series criterion, without a density-error rate or positive limiting Euler mass [L]. |
 | Γ13 Source-uniform extinction | No-go | — | Fails at `3/4 + i` [L]. |
 | Γ14 Local counterterm selection | No-go | — | Diagonal counterterms give `Λ` and a flip twin glued index `1` [L]. |
 | Γ15 Functional-equation twins without Euler product | Partially solved (no-go also with nonnegative Ramanujan coefficients) | sub | For every `N`, `k`, `B`, a normalized Dirichlet series agreeing with `ζ³` below `N` has a completion with `k` distinct real zeros beyond `max(B, 3)`, the same functional equation and principal parts [L]: degree-three FE data impose no zero-free right half-plane. Degree-one rigidity holds under its analytic hypotheses [L]. Euler-product-constrained twins open. |
@@ -170,12 +170,12 @@ derived here from Lean statements.
 |---|---|---|---|---|---|---|
 | Σ (36) | 7 (Σ1a, Σ1h, Σ10, Σ12, Σ16, Σ17, Σ24) | 6 (Σ1b, Σ1d, Σ1g, Σ3, Σ6, Σ9) | 6 (Σ1, Σ1i, Σ2, Σ3a, Σ4, Σ5) | 7 (Σ1c, Σ1e, Σ7, Σ8, Σ18, Σ19, Σ20) | 5 (Σ1f, Σ13, Σ14, Σ23, Σ25) | 5 (Σ11, Σ15, Σ21, Σ22, Σ26) |
 | Π (23) | 3 (Π1, Π11g, Π13 paper) | 4 (Π3, Π7, Π9, Π12) | 7 (Π4, Π5, Π6, Π8, Π10, Π15, Π16) | 3 (Π2, Π11f, Π11h) | 6 (Π11a–e, Π14) | — |
-| Γ (19) | 4 (Γ2, Γ6, Γ7, Γ18) | 3 (Γ5, Γ12, Γ15) | 4 (Γ8, Γ10, Γ16, Γ19) | 2 (Γ1, Γ4) | 5 (Γ3, Γ9, Γ11, Γ13, Γ14) | 1 (Γ17) |
+| Γ (19) | 5 (Γ2, Γ6, Γ7, Γ12, Γ18) | 2 (Γ5, Γ15) | 4 (Γ8, Γ10, Γ16, Γ19) | 2 (Γ1, Γ4) | 5 (Γ3, Γ9, Γ11, Γ13, Γ14) | 1 (Γ17) |
 
 Strength of the open walls:
 - **RH:** Σ1, Σ1i (all `K`), Σ2, Σ3 (ascent), Σ3a, Σ5, Σ6, Σ7, Σ8, Σ18, Σ19, Σ20, Π2, Π4, Π11h,
   Π15, Γ1, Γ4, Γ5, Γ8, Γ16, Γ19.
 - **≥qRH:** Σ4 (`K_ζ`), Π5 (fixed scale), Π10 (¾ strip).
 - **sub:** Σ1b–Σ1g, Σ1i (fixed `K`), Π3, Π5 (mean `o(log U)`, density rate `≥ 1`), Π7, Π9, Π11f,
-  Π11h (fixed degree), Π12, Γ12, Γ15.
+  Π11h (fixed degree), Π12, Γ15.
 - **indep.:** Π16 (genus law; implies almost all zeros simple).

@@ -59,8 +59,34 @@ Positive weights alone do not remove this obstruction: the concrete
 to every positive power, distinct nodes of modulus at least `5/4`, and all
 positive integer moments zero. The symmetric single-prime Wolff configuration
 also has locally finite ordinates and positive scalar Toeplitz Grams despite
-off-line support. These are single-clock obstructions, not counterexamples to
-the two-prime zeta cone claim.
+off-line support.
+
+The stronger [two-clock positive atomic construction](../3-formalized/two-prime-cone-positive-moment-obstruction.md)
+now has distinct support, mass two, linear height count, reciprocal weight
+lower bounds, and unattained positive width, while every positive cone moment
+vanishes. Its even Hermitian quartet kernel has cone coupling bounded by
+twenty. Both final direct Lean audits use only standard axioms. Thus those
+generic lower bounds and joint clock separation cannot settle SC2. The model
+does not impose the actual complex spline weights or integer zero multiplicities.
+
+The [eighth-power refinement](../3-formalized/two-prime-cone-spline-sized-weights.md)
+also imposes two-sided eighth-power height decay on the positive weights.
+
+The [exact-coefficient construction](../3-formalized/two-prime-cone-prescribed-spline-weights.md)
+now removes the remaining weight and multiplicity freedoms. It has exact
+coefficients `(sinh z/z)^8`, unit multiplicities, distinct quartets, linear
+height count, and unattained positive width. Every positive two-prime cone
+moment vanishes, and quartet coupling is bounded by twenty. The complete
+existence theorem and its transitive dependencies pass direct Lean audits
+with only standard axioms. Thus these generic zero-side properties cannot
+settle SC2. A further property of actual zeta zeros is required.
+
+The [boundary-repulsion conjecture](cone-coupling-polynomial-boundary-repulsion.md)
+seeks a polynomial lower bound for the gap between each zero and maximal
+width under bounded cone coupling. Its sixth-moment tail estimate, generic
+first-order resolvent bound, and relative regularity of exact spline residues
+are formalized. The full repulsion theorem remains open and would not by
+itself prove RH.
 
 ## Other boundaries
 

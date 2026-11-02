@@ -30,7 +30,11 @@ no-go with survivor, or unconditional theorem), build its tools. Folder
 RegularTailsGiveJordanTotientLimits, TheTiltedSplineHasARegularTail, TheLimitingMixedStructure,
 TheDilationsLowerTheConductor, TheWeightStringsOfTheRescaledLimit,
 TheRescaledLimitTensorizesOverThePrimes, TheSubthresholdBlockIsUniformlyJordan,
-TheMertensFunctionIsAGluingDeterminant, CompleteDegenerationSelectsZeta.
+TheMertensFunctionIsAGluingDeterminant, CompleteDegenerationSelectsZeta,
+TheMonodromyIsEventuallyIdempotent, TheScalingFormOfTheDegeneration,
+TheBranchesAndTheWeightsSeparate, TheConductorEnergyIsAConeSumOfTopStrata,
+TheArchimedeanCarrierIsIndefinite, TheDegenerationExponentIsSetByTheProfile,
+TheSubthresholdBlockInheritsTheJordanForm, TheGradedPiecesAndTheTopStratumAreMoebiusDual.
 
 ## Open
 - Second-order rescaled limit at the critical curve `c⁸ ≍ log N` on fixed packets: deterministic

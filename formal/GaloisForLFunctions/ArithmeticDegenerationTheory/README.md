@@ -63,6 +63,7 @@ is therefore a second-order phenomenon of the degeneration.
 | polarized graded pieces | Jordan coefficients `J(m) > 0` | `jordanCoefficient_pos` |
 | limiting MHS of a product | tensor law `J(1)J(ab) = J(a)J(b)` | `jordanCoefficient_mul_of_coprime` |
 | extension data | cross-conductor residual channels | `conductorDeviation` |
+| polarization recovered from graded pieces and extension data | cone expansion: `⟨W r_e, r_e⟩ = (log N)⁻¹ Σ_g θ_g(e)² Top_{c_g,N/g}(R_{e/(e,g)})` | `completeWeilEnergy_ramanujan_cone_expansion` |
 | nilpotent-orbit theorem | rescaled finite family → Jordan form below exponent `1/8` | `tendsto_rescaledConductorGram` |
 | `SL₂`-orbit approximation (one-variable scaling) | exact scaling form `E_m(c) = J(m)c⁻⁷R_m(c/m)` | `rpow_seven_mul_completedConductorEnergy_eq_scaling` |
 | distance to the nilpotent orbit | relative residual `≍ c^{β+1}/log N` | HWV `exists_relative_conductorDeviation_sum_le` |
@@ -83,7 +84,8 @@ is therefore a second-order phenomenon of the degeneration.
 | Tilted spline data | `splineNumerator`, `splineWeight`, `splineNumeratorMean`, `tiltedTailConstant` | `q(x) = (sinh²1 + sin²x)⁴`, `(1+x²)⁻⁴`, its mean, `A_φ` |
 | Jordan coefficient | `jordanCoefficient` | `J(m) = lim c⁷E_m(c) = (2A_φ/M) ζ(8) J₈(m)/φ(m)` |
 | Conductor entries | `conductorEntry`, `conductorDeviation`, `rescaledConductorGram` | `⟨W r_e, r_{e'}⟩`, its residual channel, `c⁷` times it |
-| Lowering, weights | `conductorLower`, `dilationWeight`, `dilationFactor` | `ℓ_p m`, `w_p(m) ∈ {1, p−1, p}`, `θ_p(m) ∈ {1/√p, √((p−1)/p), 1}` |
+| Lowering, weights | `conductorLower`, `dilationWeight`, `dilationFactor`, `coneFactor` | `ℓ_p m`, `w_p(m) ∈ {1, p−1, p}`, `θ_p(m) ∈ {1/√p, √((p−1)/p), 1}`, `θ_g(m) = √(φ(m)/(gφ(m/(m,g))))` |
+| Top-stratum energy | `topStratumEnergy` | `Σ_{(a,b)=1} W_{c,M}(a,b) y_a y_b` |
 | `p`-integer | `pInteger` | `[8]_p = (p⁸−1)/(p−1)` |
 | Scaling function | `tailProfile`, `shellAverage`, `scalingFunction` | `g(y) = y⁷T(y)`, `R_m(x) = Σ_{(n,m)=1} n^{-8}g(nx)/(A_φ Σ_{(n,m)=1} n^{-8})` |
 | Divisibility, Möbius, Redheffer forms | `divisibilityMatrix`, `moebiusMatrix`, `redhefferMatrix` | `[i∣j]`, `μ(j/i)[i∣j]`, `[i∣j ∨ j=1]` |
@@ -134,6 +136,13 @@ positive; comparing the two readings is the identity `ζ(k) J_k(m) = m^k Σ_{(n,
 `π`-periodic; a block comparison over periods shows that a periodic factor modulating an antitone
 integrable weight contributes its mean, so `c⁷ T(c) → A_φ = (4/π)⁷/(16π) · μ_q/7 > 0`.
 
+**C′. The exponent is the profile's.** For every `C²` profile supported in `[0, 1]`, two
+integrations by parts and Riemann–Lebesgue give `|φ̂(2πt)|² = o(t⁻⁴)`, so `x³T(x) → 0` and
+`c³E_m(c) → 0`: every admissible profile degenerates faster than cubically. The tilted spline
+degenerates at exactly the seventh power: `c^βE_m(c)` tends to `0`, to `J(m)`, or to `∞` according as
+`β < 7`, `β = 7`, `β > 7`. The exponent is analytic (the profile), the coefficients arithmetic (the
+conductor).
+
 **D. The limiting mixed structure.** In the conductor basis
 `⟨W r_e, r_{e'}⟩ = E_e ⟨r_e, r_{e'}⟩ + (extension datum)`. The Gram of the packets tends to the
 identity (RAPT); `c⁷ E_e → J(e)`; HWV bounds the extension data relative to the margins by
@@ -145,9 +154,9 @@ off-diagonal of the exact Gram law joins a conductor only to its tower neighbour
 
 **E. The inheritance radius is the RH exponent.** Below `1/8` the rescaled extension data vanish on
 every fixed pair of conductors; at every multiple of `(log N)^{1/8}` positivity of the conductor Gram
-over all conductors is RH (HWV). The exponent is `1/(β+1)`: margin `c^{-β}` against a residual of
-order `c/log N`. Smoother profiles (larger `β`) push the radius down, never past the RH regime (EHT
-profile covariance).
+over all conductors is RH (HWV). For the tilted spline the exponent is `1/(7+1)`: margin `c^{-7}`
+against a residual of order `c/log N`. For a general profile the same balance reads `1/(β+1)`; EHT's
+profile covariance (RH regime from `c⁴/log N → ∞` for every `C²` profile) is the case `β = 3`.
 
 **F. The monodromy lowers conductors.** Möbius lowering: any Möbius transform `Σ_{d∣m} μ(m/d) g(d)` of
 a function homogeneous along the `p`-tower (`g(pd) = a h(d)`, `g(d) = h(d)` for `p ∤ d`) is `a` (if
@@ -158,6 +167,19 @@ Iterating, a string of length `v = v_p(m)` is exhausted after exactly `v` dilati
 `c_m(p^k n) = φ(p^v) c_{m/p^v}(n)` for `k ≥ v`: the monodromy is eventually idempotent
 (`D_p^v(D_p − 1) = 0` on the string), with spectrum `{0, 1}` instead of the roots of unity of a
 quasi-unipotent monodromy, and `c_m(dn) = φ(m)` whenever `m ∣ d`.
+
+**F′. The monodromy in closed form and the cone expansion.** The weights telescope along a
+factorization: `c_m(gn) = (φ(m)/φ(m/(m,g))) c_{m/(m,g)}(n)` for all `g ≥ 1`, i.e. the dilation by `g`
+lowers `m` to `m/gcd(m,g)`; in the pole gauge `r_m(gn) = θ_g(m) r_{m/(m,g)}(n)`. Combined with the gcd
+stratification (HWV), the energy of a graded piece is a positive combination over the cone of
+top-stratum energies of lowered conductors at the star resolutions:
+`⟨W_{c,N} r_e, r_e⟩ = (log N)⁻¹ Σ_{g≤N} θ_g(e)² Top_{c_g,⌊N/g⌋}(R_{e/(e,g)})`. The polarization of
+every graded piece is reconstructed from top-stratum data: this identifies the extension data of the
+limiting structure with the top coprime stratum. The Möbius gluing of stars inverts the expansion:
+`Top_{c,N}(r_e) = ⟨W r_e, r_e⟩ + (log N)⁻¹ Σ_{2≤d≤N} μ(d) θ_d(e)² ⟨W_{c_d,⌊N/d⌋} R_{e/(e,d)}, R_{e/(e,d)}⟩`.
+Graded pieces and top stratum are a Möbius pair over the cone; the forward direction is sign-free,
+the inverse alternating, which is why positivity of the graded pieces does not pass to the top
+stratum.
 
 **G. Weight strings and the tensor law.** Along a `p`-tower the Jordan coefficient climbs by `[8]_p`
 at the bottom and by `p⁷` per deep step: `J(p^a) = J(1)[8]_p p^{7(a−1)}`. For coprime conductors
@@ -177,6 +199,15 @@ coefficients. The two factors read different data: `R_m` depends only on the pri
 whole `p`-tower degenerates along the single function `R_p`:
 `c⁷E_{p^a}(c) = J(1)[8]_p p^{7(a−1)} R_p(c/p^a)`.
 
+**H′. The whole subthreshold block inherits the Jordan form.** Along every schedule below `1/8` and
+for every `ε`, eventually and for all coefficients on the growing block `{e ≤ c/X(ε)}`,
+`|c⁷⟨Wx, x⟩ − Σ J(e)b_e²| ≤ ε Σ J(e)b_e²`. Three errors are controlled relative to the Jordan form:
+the diagonal (uniform Jordan law), the non-orthogonality of the packets
+(`|⟨r_e, r_{e'}⟩ − δ| ≤ (2ee'(√(φ(e)φ(e')) + 1) + 1)/log N`, from periodicity and orthogonality of
+Ramanujan sums over a period, weighted by the spread `√ζ(8)Q⁴` of the Jordan coefficients: `O(c⁸/log N)`),
+and the extension data (relative Hilbert–Schmidt norm, HWV). This is the inherited polarization on the
+subthreshold block `m ≲ c` past the universal regime `1/9` of the whole space.
+
 **I. Gluing at the pole.** The divisibility form `[i ∣ j]` on `1..N` is unipotent (determinant `1`,
 inverse the Möbius form). Gluing every vertex to the pole — replacing the pole column by `𝟙` — gives
 Redheffer's matrix, whose determinant is the Mertens function (Cramer's rule: the pole coordinate of
@@ -186,9 +217,13 @@ has inertia (`#{μ=1}`, `#{μ=−1}`, `#{μ=0}`) and signature `M(N)` (RHTower):
 readings of the same gluing.
 
 **J. Traces.** The archimedean Weil distribution is a trace, `−W_∞(g ⋆ g*) = Tr(ϑ(g)(1 − P − P̂)ϑ(g)†)`,
-and `1 − P − P̂` is the central Sonin projection modulo compacts (RHTower CCM). The middle operator of
-two projections is indefinite: on every time-limited vector `v` it equals `−‖P̂v‖²`. A trace carrier
-of this shape is not a positivity statement; the pole terms must pay its negative part.
+and `1 − P − P̂` is the central Sonin projection modulo compacts (RHTower CCM). The middle operator
+`A = 1 − P − Q` of two self-adjoint idempotents satisfies `A² + (P − Q)² = 1` and anticommutes with
+`P − Q`, so its generic spectrum is symmetric; `Re⟨Av, v⟩ = −‖Qv‖²` on the range of `P`,
+`−‖Pv‖²` on the range of `Q`, and `A = 1` on the common kernel. The archimedean carrier is therefore
+negative semidefinite on the whole time-limited space and on the whole band-limited space: the trace
+identity at `∞` is an identity with an indefinite middle operator, and the pole terms must pay its
+negative part.
 
 **K. Counts and quantized readings** (LST, AOG, EHT): Gaussian lattice `h⁰` with linear
 Riemann–Roch; Künneth `h¹ = h¹_K + ½δ`; bidegree counts blind; collision charges bound horizon
@@ -200,20 +235,25 @@ limit on Ramanujan packets is `Σ β_m² E_m(c) + F_λ(y)` with `F_λ` independe
 As `c → ∞` it tends to `F_λ`, not to `0`. For `λ = Λ` the defect vanishes and the degeneration is
 complete, with the Jordan rescaled limit. For a prime flip, `F_{ω_p}` is positive on the pole packet
 (`4 log p Σ_j p^{-(2j+1)}`) and negative on some unit packet: the twin degenerates to an indefinite
-form of weight zero, and its rescaled energy tends to `−∞`. Selection here is an identity (`d_Λ = 0`),
-not a margin; it does not decide the sign of `ζ`.
+form of weight zero, and its rescaled energy tends to `−∞`. The same holds for every nonempty finite
+flip set `S`: its residue `F_{ω_S}` is positive on the pole profile and negative on the flip-set trial.
+Selection here is an identity (`d_Λ = 0`), not a margin; it does not decide the sign of `ζ`.
 
 ## 6. Questions and answers
 
 | Question | Answer | Lean |
 |---|---|---|
 | What is the rescaled limit of the degenerating family, and is it polarized? | For a profile with regular tail `x^βT(x) → A`, the rescaled conductor energies converge to `(2A/M)ζ(β+1)J_{β+1}(m)/φ(m) > 0`. For the tilted spline `β = 7` with explicit `A_φ`, and the rescaled finite family converges entrywise to the Jordan form along every schedule below `1/8`. | `tendsto_rpow_mul_completedConductorEnergy`, `tendsto_rpow_seven_mul_spectralTail_tiltedUnitSpline`, `tendsto_rescaledConductorGram` |
+| What sets the rate of the degeneration? | The profile: every admissible profile has `c³E_m(c) → 0`; the tilted spline has exponent exactly `7`. The rate sets the Jordan exponent and the inheritance radius; the arithmetic sets the coefficients. | `tendsto_rpow_three_mul_completedConductorEnergy`, `tiltedUnitSpline_degeneration_exponent` |
 | How does the monodromy act on the graded pieces? | By valuation lowering: `c_m(pn) = w_p(m)c_{ℓ_p m}(n)`, `r_m(pn) = θ_p(m) r_{ℓ_p m}(n)`. Lowerings commute; the pole conductor is the unique common fixed point. | `ramanujanLagCoefficient_prime_mul_eq`, `ramanujanPoleProfile_prime_mul`, `conductorLower_comm` |
 | Is the conductor filtration the weight filtration? | Yes in the rescaled sense: along each tower the Jordan coefficient is a weight string (`[8]_p`, then `p⁷` per step); the polarization tensorizes over the primes. | `jordanCoefficient_tower`, `jordanCoefficient_mul_of_coprime`, `jordanCoefficient_prime_pow` |
 | Where is the inheritance radius? | Exactly at the RH exponent `1/8`: below it the rescaled extension data vanish; at its multiples positivity is RH. | `inheritance_radius` |
+| Is the polarization inherited on the subthreshold block past the universal regime? | Yes: on the whole growing block `{e ≤ c/X(ε)}` along every schedule below `1/8`, `c⁷⟨Wx,x⟩` is within `ε` of the Jordan form, uniformly in the coefficients. | `eventually_subthreshold_block_jordan` |
 | Is the limit exact on growing blocks? | On the whole subthreshold block `m ≤ c/X(ε)`, uniformly; exactly, the degeneration has the scaling form `E_m(c) = J(m)c⁻⁷R_m(c/m)` with `R_m → 1` (degenerating end) and `R_m(x) ≤ Cx` (pure end), uniformly in `m`. | `uniform_jordan_law`, `rpow_seven_mul_completedConductorEnergy_eq_scaling`, `abs_scalingFunction_sub_one_le`, `scalingFunction_le` |
 | What do the two factors of the degeneration see? | The scaling function sees only the branches (prime support), the Jordan coefficient only the weights (valuations); a tower degenerates along one scaling function. | `scalingFunction_eq_of_primeFactors_eq`, `completedConductorEnergy_prime_pow_eq` |
+| Are the extension data the top stratum? | Yes, exactly: every graded-piece energy is a `θ²`-weighted cone sum of top-stratum energies of lowered conductors at the star resolutions, and conversely every top-stratum energy is the Möbius-signed cone sum of lowered graded energies. | `ramanujanLagCoefficient_mul_eq`, `ramanujanPoleProfile_mul_eq`, `completeWeilEnergy_ramanujan_cone_expansion`, `topStratumEnergy_ramanujan_moebius_expansion` |
 | What kind of monodromy is it? | Eventually idempotent, not quasi-unipotent: on a `p`-string of length `v`, `D_p^{v+1} = D_p^v`; the nilpotent length is the valuation. | `ramanujanLagCoefficient_prime_pow_mul`, `dilation_eventually_idempotent`, `ramanujanLagCoefficient_mul_of_dvd` |
+| What does the archimedean trace carrier contribute? | An indefinite middle operator: symmetric generic spectrum, negative on time- and band-limited vectors, identity on their common orthocomplement; positivity must come from the pole terms or from another carrier. | `archimedeanCarrier_twoProjection`, `archimedeanCarrier_negative_on_timeLimited` |
 | Does the limit see the zeros, and does it select `ζ`? | It does not see the zeros: it is computed from the profile's tail and the arithmetic of the conductor; zeros enter at the quantum `1/log N`. It does select `ζ` among prime-flip twins by structure: only `ζ` degenerates completely; every flip degenerates to a nonzero indefinite form and has no rescaled limit. | `tendsto_rpow_mul_completedConductorEnergy`; `primeFlip_degenerates_indefinitely`, `tendsto_rescaled_packetEnergy_primeFlip`, `tendsto_rescaled_packetEnergy_vonMangoldt` |
 | Is there a signature/determinant invariant refining the nerve's Euler characteristic? | The Mertens function is the determinant of the pole gluing of the divisibility form and the signature of the coprimality form; RH is half-power growth of either; unconditionally the gluing determinant oscillates at `±c√N`. | `det_redhefferMatrix`, `riemannHypothesis_iff_det_redhefferMatrix`, `det_redhefferMatrix_omega_pm_sqrt`; RHTower `finiteMobiusCoprimeSignature_eq_sum_Icc` |
 
@@ -223,16 +263,21 @@ not a margin; it does not decide the sign of `ζ`.
 |---|---|---|
 | Jordan-totient rescaled limit for regular tails (Möbius and coprime forms) | `tendsto_rpow_mul_completedShellEnergy`, `tendsto_rpow_mul_completedConductorEnergy`, `tendsto_rpow_mul_completedConductorEnergy_coprime` | proved |
 | Exact spectrum and regular tail of the tilted spline | `shellSpectrum_tiltedUnitSpline`, `periodic_tail_squeeze`, `tendsto_rpow_seven_mul_spectralTail_tiltedUnitSpline` | proved |
+| Degeneration exponent: every admissible profile faster than cubic; the tilted spline exactly seventh order | `tendsto_paperFT_atTop`, `tendsto_rpow_three_mul_spectralTail`, `tendsto_rpow_three_mul_completedConductorEnergy`, `tiltedUnitSpline_degeneration_exponent` | proved |
 | Limiting mixed structure of the complete Weil family | `tendsto_rescaled_conductorDeviation`, `tendsto_rescaledConductorGram`, `tendsto_rescaled_packet`, `eventually_pos_of_rescaled_limit` | proved |
 | Inheritance radius = RH exponent | `inheritance_radius` | proved; equivalence half from HWV |
 | Monodromy: dilation lowers the conductor; commuting cone | `ramanujanLagCoefficient_prime_mul_eq`, `ramanujanPoleProfile_prime_mul`, `conductorLower_comm`, `dilationWeight_cocycle` | proved |
 | Weight strings and tensor law of the limiting polarization | `sum_divisors_moebius_lowering`, `jordanCoefficient_tower`, `jordanCoefficient_mul_of_coprime`, `jordanCoefficient_prime_pow` | proved |
 | Uniform Jordan law on the subthreshold block | `uniform_jordan_law`, `tendsto_ratio_of_subthreshold` | proved |
+| The whole growing subthreshold block inherits the Jordan form below `1/8` | `abs_inner_normalizedRamanujanHorizonVector_sub_le`, `jordanCoefficient_bounds`, `block_bound`, `block_estimate_at`, `eventually_subthreshold_block_jordan` | proved |
 | Exact scaling form; both ends of the scaling function; inherited polarization with small loss | `rpow_seven_mul_completedConductorEnergy_eq_scaling`, `abs_scalingFunction_sub_one_le`, `scalingFunction_le`, `eventually_inherited_polarization` | proved |
 | Eventually idempotent monodromy | `ramanujanLagCoefficient_prime_pow_mul`, `dilation_eventually_idempotent`, `ramanujanLagCoefficient_mul_of_dvd` | proved |
+| Graded pieces and top stratum are Möbius dual over the cone | `topStratumEnergy_ramanujan_moebius_expansion` | proved |
+| Monodromy in closed form; cone expansion into top strata | `ramanujanLagCoefficient_mul_eq`, `ramanujanPoleProfile_mul_eq`, `completeWeilEnergy_ramanujan_cone_expansion` | proved |
+| The archimedean trace carrier is indefinite (two-projection identities; negative on time- and band-limited spaces) | `twoProjection_sq_add_sq`, `twoProjection_anticomm`, `archimedeanCarrier_negative_on_timeLimited`, `archimedeanCarrier_negative_on_bandLimited` | proved |
 | Branches and weights separate; a tower degenerates along one scaling function | `scalingFunction_eq_of_primeFactors_eq`, `completedConductorEnergy_prime_pow_eq` | proved |
 | Mertens function = gluing determinant at the pole; square-root oscillation | `det_redhefferMatrix`, `det_redhefferMatrix_eq_nerveEulerChar`, `riemannHypothesis_iff_det_redhefferMatrix`, `det_redhefferMatrix_omega_pm_sqrt` | proved; equivalence |
-| Complete degeneration selects `ζ` among prime-flip twins | `tendsto_packetEnergy_atTop`, `packetEnergy_vonMangoldt`, `primeFlip_degenerates_indefinitely`, `tendsto_rescaled_packetEnergy_primeFlip` | proved |
+| Complete degeneration selects `ζ` among prime-flip and finite-flip twins | `tendsto_packetEnergy_atTop`, `packetEnergy_vonMangoldt`, `primeFlip_degenerates_indefinitely`, `tendsto_rescaled_packetEnergy_primeFlip`, `finiteFlip_residue_indefinite` | proved |
 
 ## 8. Tools
 
@@ -246,13 +291,19 @@ not a margin; it does not decide the sign of `ζ`.
 - Lowering maps of conductors and their cone.
 - Divisibility/Möbius/Redheffer matrices and the Cramer-rule gluing determinant.
 - Large-overlap limits of twisted limit structures.
+- Closed-form monodromy `c_m(gn) = (φ(m)/φ(m/(m,g))) c_{m/(m,g)}(n)` and the forward and Möbius-dual
+  cone expansions over the gcd stratification.
+- Uniform non-orthogonality bound for Ramanujan packets; a deterministic block bound (diagonal, Gram
+  and extension errors relative to a weighted form); bilinear Cauchy–Schwarz with Hilbert–Schmidt norm.
+- Two-projection calculus for self-adjoint idempotents.
+- Riemann–Lebesgue for the paper transform; tail exponents of profiles.
 
 **To build.**
 - Second-order rescaled limit at the critical curve `c⁸ ≍ log N`.
 - Rescaled limits for twists with non-summable defect (the Liouville twin, cofinite flips).
-- Uniform limiting structure on growing blocks including the extension data (Riesz control of the
-  packets on blocks `m ≤ Q_N`).
-- Exact asymptotics of the pure end of the scaling function (`R_m(x) ≍ x⁷ log(1/x)`).
+- A uniform pure-end law `E_m(c) = log(m/c) + τ(m) + O(1)` for `m ≫ c ≥ 1` (below touching the
+  conductor energy is exactly RAPT's reference energy; the lower bound is RAPT's
+  `log_conductor_sub_log_overlap_le_completedEnergy`).
 
 ## 9. Open research topics
 
@@ -284,7 +335,7 @@ not a margin; it does not decide the sign of `ζ`.
 | Dilation is a Lefschetz operator | On conductors it is a lowering operator; isometric deep in a tower |
 | Lowerings generate positivity | They fix the pole conductor and lower everything else to it; they transport the polarization, they do not create it |
 | The `SL₂` of the pole carries the sign | It is blind on `v₁^⊥` (RIT) |
-| A trace identity is a positivity statement | The archimedean middle operator `1 − P − P̂` is negative on time-limited vectors |
+| A trace identity is a positivity statement | The archimedean middle operator `1 − P − P̂` is negative semidefinite on the time-limited and band-limited spaces (`archimedeanCarrier_negative_on_timeLimited`) |
 | Local unipotent structure glues freely | One rank-one gluing at the pole creates the Mertens function |
 | Soft laws select | Every soft law holds on the fakes |
 | Selecting `ζ` by its limit decides the sign | Complete degeneration separates `ζ` from its flips by an identity; the sign of `ζ` sits in the second-order term |
@@ -307,12 +358,12 @@ not a margin; it does not decide the sign of `ζ`.
 
 | Criterion | Status |
 |---|---|
-| A limiting polarized structure with the prime cone as monodromy, polarized on graded pieces, extension data identified | Rescaled limit, monodromy, weight strings, tensor law, extension data and their vanishing below `1/8`: proved |
-| The inheritance radius determined exactly | `1/8` for the tilted spline (`1/(β+1)` in general): proved below, RH at the radius |
+| A limiting polarized structure with the prime cone as monodromy, polarized on graded pieces, extension data identified | Rescaled limit, monodromy (closed form), weight strings, tensor law, extension data = top stratum (cone expansion), inheritance on the whole growing subthreshold block below `1/8`: proved |
+| The inheritance radius determined exactly | `1/8` for the tilted spline: inheritance proved below it (on every fixed packet and on the whole growing subthreshold block), RH at it; the same balance gives `1/(β+1)` for a profile of tail exponent `β` |
 | Positivity on `v₁^⊥` past the universal regime by an edge-valid mechanism | Open; ADT locates it in the second-order limit at the critical curve |
 | A count or trace equal to `½W` on a growing family, starting with the prime-free window | Open (CCM trace identity at `∞`; pole terms not yet carried) |
 | A gluing theorem with one negative square and an exact coupling | Determinant form at the pole: Redheffer; signature form: coprime inertia; AKG index `κ + 1` |
-| Exact behaviour on the fakes | Prime-flip twins: incomplete degeneration to an indefinite form, no rescaled limit (proved); the limit is zero-blind; Liouville twin and lattice fakes open |
+| Exact behaviour on the fakes | Prime-flip and finite-flip twins: incomplete degeneration to an indefinite residue, no rescaled limit (proved); the limit is zero-blind; Liouville twin and lattice fakes open |
 
 ## 13. What counts as a contribution
 
@@ -333,7 +384,11 @@ invariant, not a common floor. The dilation monoid acts on the graded pieces by 
 conductor, prime by prime, with commuting lowerings and the pole conductor as the unique fixed
 point; along each tower the limiting polarization is a weight string, and over the primes it is a
 tensor product. This is the arithmetic analogue of a nilpotent orbit with a cone of commuting
-monodromies, and it is exact on the whole degenerating block of conductors below the threshold.
+monodromies, and it is exact on the whole degenerating block of conductors below the threshold,
+where the finite family inherits it with arbitrarily small loss. The monodromy is eventually
+idempotent rather than quasi-unipotent, and in closed form it lowers a conductor `m` to `m/gcd(m,g)`;
+through it the energies of the graded pieces and of the top coprime stratum determine each other by a
+Möbius pair over the cone.
 
 The structure is inherited exactly up to the RH exponent. There the extension data — the
 cross-conductor residual channels, which live in the top coprime stratum — reach the size of the

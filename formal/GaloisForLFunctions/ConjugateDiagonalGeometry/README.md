@@ -1,6 +1,6 @@
 # Conjugate-Diagonal Geometry (CDG)
 
-Namespace `GaloisForLFunctions.ConjugateDiagonalGeometry`; umbrella `ConjugateDiagonalGeometry.lean`; 81 modules. All results
+Namespace `GaloisForLFunctions.ConjugateDiagonalGeometry`; umbrella `ConjugateDiagonalGeometry.lean`; 85 modules. All results
 unconditional; every reading is evaluated on the actual zeta divisor with multiplicities, without simplicity, separation or
 zero-free hypotheses.
 
@@ -34,6 +34,7 @@ amplitudes and their first moments — with explicit error certificates. The com
 | Reference tail | `sourceReferenceTail` | $\sum(1-\chi_n)m_\rho/(1+|\gamma(\rho)|^2)$ |
 | Canonical log mass | `xiCanonicalLogMass` | planar log potential of the canonical divisor |
 | Collision kernel | `horizontalCollisionGaussian`, `collisionWindowPairTest`, `finiteThetaCollisionReading` | $e^{-q\Delta y^2}(1-e^{-q\Delta x^2})$ |
+| Szegő collision data | `IsDiskUnit`, `IsOuterPolynomial`, `centeredThetaLaurentLoop`, `centeredThetaCollisionOperator` | closed-disk units, outer polynomial factors, Burnol unit-window Laurent loop and Wiener–Hopf collision operator |
 | Forcing cost | `companionCost` | majorant of the companion-forcing theorem |
 
 ## 3. Language
@@ -104,6 +105,10 @@ amplitudes and their first moments — with explicit error certificates. The com
 | One-sided ($\Re z\ge\frac12$) mollified Green-Jensen source ceiling, superharmonic critical-line no-go, and pure abscissa quarter-gate ($c<\frac14$) | `no_superharmonic_weight_dominates_depthKernel`, `exists_shellDepthSum_add_mollifierCredit_le_abscissa_source_integral`, `exists_pure_abscissa_mollified_shellDepthSum_le_log_quarter` | proved |
 | Full half-gate ($c<\frac12$) dyadic collapse, sharp $(1+\varepsilon)\frac{\log\log T}{\log T}$ almost-all corridor, 4-way $o(\log U)$ TFAE, and exact Laplace zero-density TFAE up to $c_*\le\frac23$ | `exists_dyadicMean_corridor_and_polynomialTheta_le_log_up_to_half`, `eventually_volume_badSharpLogLogCorridor_unitWindows_le`, `dyadicMean_corridor_and_polynomialTheta_littleO_log_up_to_half_tfae`, `dyadicMean_log_bound_iff_nearLine_exp_density_tfae` | proved |
 | Stage-uniform $\gamma$-oscillation bounds, 5-way unit-window min/mean/sup/$C^2$-jet TFAE (dyadic $\Leftrightarrow\mathrm{RH}$ and fixed-$c$), dyadic unit-window $\sup$ collapse ($c<\frac12$), and local-vs-tail separation | `abs_deriv_finiteThetaSourceMomentReading_le`, `riemannHypothesis_unitWindow_min_mean_max_finiteTheta_tfae`, `polynomialTheta_unitWindow_min_mean_max_log_tfae`, `exists_dyadicMean_unitWindow_sup_polynomialTheta_le_log_up_to_half`, `unitWindow_singleWindow_local_vs_offWindow_separation` | proved |
+| Arithmetic reality, canonical Birkhoff–Zhukovsky–Szegő factorization, and 6-way Szegő positivity TFAE | `integerThetaDifferencePoly_real_and_loop_symmetric`, `exists_birkhoffSzego_factorization_integerTheta`, `integerTheta_szego_positivity_tfae`, `centeredTheta_szego_positivity_tfae` | proved |
+| Sharp $\Theta(N^2\log N)$ strip zero-multiplicity law and unconditional $\Omega(\sqrt T)$ stopping-prefix lower bound | `prefixGlobalStripZeroBound_theta_growth`, `firstArtifactFreePrefix_sqrt_lower_bound` | proved |
+| Zero-separation-free discrete-convexity stage avoidance, $O(m\log^2(m+S))$ cumulative stabilization, and optimal $\Theta(\sqrt m)$ Burnol unit-window stabilization | `exists_natStage_avoiding_zhukovsky_ellipses`, `integerThetaCollisionOperator_polynomial_stabilization`, `centeredTheta_sqrtPrefix_stabilization` | proved |
+| Deterministic 6-way $\Theta(\sqrt m)$-prefix Szegő $\Leftrightarrow A/\log|\gamma|$ corridor TFAE, $E_\gamma(c_0\log T)=O(1)$ door-opener implication, and master 9-way $\mathrm{RH}$ door-opener TFAE | `exists_prefix_zero_in_ball_of_xi_zero`, `logStage_sqrtPrefix_szego_iff_invLog_corridor`, `heckeDefect_log_O1_implies_szego_corridor_and_lindelof`, `riemannHypothesis_door_opener_tfae`, `burnolUnit_subexp_sqrtPrefix_szego_of_rh` | proved |
 
 ## 6. Tools
 
@@ -133,19 +138,23 @@ amplitudes and their first moments — with explicit error certificates. The com
   `halfPlane_green_identity_halfPlaneDepthWeight`, `halfPlane_archXi_log_norm_annihilated`,
   `exists_selberg_arbitraryRate_nearLine_zeroDensity`, `exists_shellDepthSum_le_mul_log_up_to_half`,
   `abs_deriv_deriv_finiteThetaSourceMomentReading_le`, `unitWindow_mean_sub_interior_min_le_sixth_sup_deriv2`.
+- Birkhoff–Szegő factorization, strip zero horizon, and Zhukovsky convexity avoidance:
+  `fredholmIndex_eq_zero_of_diskUnit_re_pos`, `isUnit_wienerHopfLift_of_re_pos`, `hankelPlus_circlePolyInv_eq_zero`,
+  `seamSlope_gaussian_lower_bound`, `finiteThetaAmplitude_ne_zero_above_quadratic_horizon`,
+  `zhukovskyEllipseForm_second_diff_ge`, `norm_pairDiffPoly_eval_sub_le_on_zhukovsky`.
 
 **To build**
 - Upgrade dyadic-mean $O(\log U)$ control ($0<c<1/2$, including unit-window $\sup$) to pointwise-in-$T$ $O(1)$ control on $\operatorname{unitWindowDepthCharge}(T,c\log T)$, or prove $o(\log U)$ dyadic-mean decay (equivalent to $100\%$ critical-scale clustering), or extend $O(\log U)$ dyadic-mean collapse into $1/2\le c<2/3$ via log-free near-line exponential zero-density of slope $>1$, or establish a single additive constant across dyadic scales $L_k=2^k c_0\log T$ on `finiteThetaSourceMomentReading` (equivalent to $\mathrm{RH}$).
 - An arithmetic correspondence acting as conjugation on the divisor (Frobenius at infinity), linking $(\rho,\bar\rho)$ to $(\rho,1-\rho)$.
 - A structural bound $\Delta\le D$ uniform in depth and aperture.
-- Bounds on the collision charge (below two) from the finite theta reading.
+- Source-intrinsic arithmetic construction of a closed-disk unit $F\in\mathrm{IsDiskUnit}$ certifying $\Re(F\cdot\mathrm{centeredThetaLaurentLoop})>0$ on $S^1$ at $\Theta(\sqrt m)$ prefixes without spectral corridor input.
 - Selection estimates at the zero spacing; exceptional-set control for the odd detector at zero ordinates.
 
 ## 7. Open questions
 
 1. Can the dyadic-mean $O(\log U)$ bound on `polynomialThetaSourceMomentReading` (and its unit-window supremum) across $0<c<1/2$ be upgraded to $o(\log U)$ (hence $100\%$ critical-scale clustering) or extended into $1/2\le c<2/3$ via log-free near-line exponential zero-density of slope $2c_*$?
 2. What arithmetic structure realizes conjugation on the zero divisor, so that the collided form becomes a Weil form?
-3. Can the finite theta collision reading be bounded independently of the divisor, giving simplicity-type information?
+3. Can Devinatz–Widom closed-disk Szegő sectoriality $\exists F\in\mathrm{IsDiskUnit},\;\Re(F\cdot\mathrm{centeredThetaLaurentLoop})>0$ at $\Theta(\sqrt m)$ prefixes be certified directly from integer-theta arithmetic (either at `logDoorStage c m` for the $A/\log|\gamma|$ corridor or across polynomial stages for $\mathrm{RH}$)?
 4. Can the zero detector be pushed below the zero spacing (radius $\ll1/\log T$) with polynomial resources?
 5. Which positive survivor remains between the conductor horizon and the forcing aperture?
 6. Does two-scale dispersion rigidity combine with another scale to force depth zero?
@@ -169,6 +178,8 @@ amplitudes and their first moments — with explicit error certificates. The com
 | $\Pi_{F_L}$ can be dropped across all $\gamma\in[T,T+1]$ in the dyadic `RH` criterion | Even under $\mathrm{RH}$, anti-nodal ordinates in $[T,T+1]$ force $\|\Pi_{F_L}\|\ge c_T e^L/L^2$; existential unit-window selection of `finiteThetaSourceMomentReading` drops $\Pi_{F_L}$ cleanly |
 | Superharmonic half-plane weight tested purely on $\Re z=\frac12$ dominates `depthKernel` | Vertical mean satisfies $\int\Phi(x+iy)dy\le(x-\frac12)\int\partial_x\Phi(\frac12+iy)dy$; quadratic vanish and exponential growth of `depthKernel` force positive interior $\Delta\Phi$ |
 | Single-window unit-window mean/supremum equals local corridor charge | Minimum on $[T,T+1]$ bounds local `unitWindowDepthCharge` alone; mean and supremum add the nonlocal Lorentzian off-window zero tail, collapsing only asymptotically or in dyadic mean |
+| Naive circle positivity $\Re(\Lambda)>0$ holds for the integer-theta Laurent loop under $\mathrm{RH}$ | False unconditionally: arithmetic reality plus $O(d^2)$ degree growth forces sign changes on $S^1$; the exact law is Devinatz–Widom closed-disk unit sectoriality $\Re(F\Lambda)>0$ (outer polynomial factorization $\Lambda=G_+\overline{H_+}$) |
+| Cumulative stopping prefix `firstArtifactFreePrefix T n` can be polylogarithmic in $T$ | Impossible unconditionally: `prefixGlobalStripZeroBound N` $=\Theta(N^2\log N)$ against $N(T)\asymp\frac{T}{2\pi}\log T$ forces `firstArtifactFreePrefix T n` $\ge c_*\sqrt T$; optimal $\Theta(\sqrt m)$ is achieved on Burnol unit windows |
 
 ## 9. Context
 

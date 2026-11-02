@@ -49,7 +49,7 @@ theorem dilationWeight_eq_totient_ratio {p m : ℕ} (hp : p.Prime) (hm : 0 < m) 
     simp [dilationWeight, hpm]
 
 /-- Lowering by `p` and then by `g'` is lowering by `pg'`. -/
-theorem conductorLower_div_gcd {p m : ℕ} (hp : p.Prime) (hm : 0 < m) (g' : ℕ) :
+theorem conductorLower_div_gcd {p m : ℕ} (hp : p.Prime) (g' : ℕ) :
     conductorLower p m / Nat.gcd (conductorLower p m) g' = m / Nat.gcd m (p * g') := by
   by_cases hpm : p ∣ m
   · rw [conductorLower_of_dvd hpm]
@@ -79,7 +79,7 @@ theorem ramanujanLagCoefficient_mul_eq : ∀ (g m : ℕ), 0 < g → 0 < m → �
         · exact Nat.div_pos (Nat.le_of_dvd hm h) hp.pos
         · exact hm
       rw [hgg, mul_assoc, ramanujanLagCoefficient_prime_mul_eq hp hm,
-        ih g' hlt (conductorLower p m) hg' hl n, conductorLower_div_gcd hp hm g',
+        ih g' hlt (conductorLower p m) hg' hl n, conductorLower_div_gcd hp g',
         dilationWeight_eq_totient_ratio hp hm]
       have ht : (0 : ℝ) < (conductorLower p m).totient := by exact_mod_cast Nat.totient_pos.mpr hl
       field_simp
@@ -112,11 +112,15 @@ theorem ramanujanPoleProfile_mul_eq {g m : ℕ} (hg : 0 < g) (hm : 0 < m) (n : �
   have h2 := Real.sqrt_pos.mpr htL
   have h3 := Real.sqrt_pos.mpr hg0
   have h4 := Real.sqrt_pos.mpr hn0
-  have e1 : Real.sqrt (m.totient : ℝ) * Real.sqrt (m.totient : ℝ) = m.totient := Real.mul_self_sqrt htm.le
-  have e2 : Real.sqrt (L.totient : ℝ) * Real.sqrt (L.totient : ℝ) = L.totient := Real.mul_self_sqrt htL.le
+  have ea : (m.totient : ℝ) = Real.sqrt m.totient * Real.sqrt m.totient :=
+    (Real.mul_self_sqrt htm.le).symm
+  have eb : (L.totient : ℝ) = Real.sqrt L.totient * Real.sqrt L.totient :=
+    (Real.mul_self_sqrt htL.le).symm
+  set a := Real.sqrt (m.totient : ℝ)
+  set b := Real.sqrt (L.totient : ℝ)
+  rw [ea, eb]
   field_simp
-  rw [← e1, ← e2]
-  ring
+  rfl
 
 /-- The top-stratum (coprime) energy `Σ_{(a,b)=1} W_{c,M}(a,b) y_a y_b`. -/
 def topStratumEnergy (φ : ℝ → ℝ) (c : ℝ) (M : ℕ) (y : EuclideanSpace ℝ (PrimeHorizonIndex M)) : ℝ :=

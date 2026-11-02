@@ -108,6 +108,8 @@ as a boundary law plus a refutation witness on a battery of fake weights.
 - Legendre kit: `legP` recurrence polynomials, exact ∫P_{2k}u^{2m}, `legP_perp_even_pow_orthog`, Bessel `integral_sq_even_ge_sum_legCoeff`, moment identity `integral_even_mul_even_pow_eq_sum_legCoeff`.
 - Odd clamp splines with closed-form autocorrelation (`autocorr_oddClampCombo_eq`), Lévy quartic kernel `deltaKerFun` with closed integrals, mollification preserving parity/support.
 - Abel/dyadic Möbius transfer lemmas; Jacobi–Hurwitz bounded-distance law; theta log-volume monotonicity.
+- Generic Hilbert / Schatten-1 / CLM trace kit (`AbstractHilbertTraceToolkit`): `Submodule`-diamond-free `Finset` CLM evaluation (`clm_sum_apply`, `re_inner_clm_sum_left`), finite-sum self-adjointness (`isSelfAdjoint_sum`), rank-one trace characterization of `IsPositive` (`isPositive_iff_forall_opTrace_comp_rankOne_re_nonneg`), Krein polarization (`rankOne_symm_eq_two_smul_half`), and universal positive operator/Gram-trace carrier refutation (`no_positive_operator_trace_carrier_of_exists_neg`, `no_positive_gram_trace_carrier_of_exists_neg`).
+- Parametric antisymmetric gap probe and `Finset` pigeonhole shift-avoidance kit (`weightedPrimeFamily_energy_le_of_log_gap`, `exists_shift_avoiding_finite_prime_powers`).
 
 **To build**
 - Envelope + LDLᵀ pipeline for windows exposing n = 3 (2A > log3), reading w(2) and w(3) jointly.
@@ -138,6 +140,7 @@ as a boundary law plus a refutation witness on a battery of fake weights.
 | Large-sieve majorants yield subquadratic heights | They force inflation q_P(z) ≥ ½|z·z| |
 | Box cohomology satisfies RR on the positive cone | Fails on goldenDatum: h⁰ + h¹ = 0 while χ = n² |
 | The certificate constants are tight analysis | 577/800, 1/5000, 23·10⁻⁶ are certificate margins, not sharp |
+| Finite-prime `{∞} ∪ S` semilocal truncations approximate RH as `|S|` grows | Every finite `S` (and arbitrary weights on `S`-prime-powers) collapses at the full uncompensated pole rate `−Θ(e^A)` and crosses zero; bounded-below energy requires infinitely many primes with `(1 + ε)` short-interval prime-power density |
 
 ## 9. Context
 
