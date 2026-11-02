@@ -35,3 +35,9 @@ summability must be formalized for the same final witness; separate
 existence statements do not establish their conjunction. External priority
 has not been checked. The Gaussian criterion is formalized; this extension
 now requires the same-witness Lean construction.
+
+`exists_two_prime_sparse_spline_tail_schedule_with_geometric_sizes` now
+retains geometric block sizes for the same sparse schedule. The original
+schedule theorem follows as a corollary. Both direct axiom audits contain
+only `propext`, `Classical.choice`, and `Quot.sound`. Inverse-power
+summability and the strengthened final model remain unformalized.

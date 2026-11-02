@@ -51,7 +51,7 @@ theorem eventually_subpolynomial_span_coercivity {φ : ℝ → ℝ}
   have hq : 0 < q := by dsimp only [q]; linarith only [hηlt]
   have hq1 : q ≤ 1 := by dsimp only [q]; linarith only [hη]
   have hqgap : 2 * q + 2 * η < 1 := by dsimp only [q]; linarith only [hηlt]
-  obtain ⟨D, C, hD, hC, hhigh⟩ :=
+  obtain ⟨D, C, _hD, hC, hhigh⟩ :=
     exists_profile_highConductor_gap_of_terminal_and_overlap_rates hφ hsupp hM
   have hLlim : Tendsto (fun N : ℕ => Real.log (N : ℝ)) atTop atTop :=
     Real.tendsto_log_atTop.comp tendsto_natCast_atTop_atTop

@@ -1,7 +1,7 @@
 # Linear moment removes the overlap logarithm
 
-- **Stage:** 2-fully-proven; Lean written, checks pending.
-- **Type:** THEOREM (paper).
+- **Stage:** 3-formalized.
+- **Type:** THEOREM.
 - **Wall:** Σ1d.
 - **Target:** A profile-dependent positive multiple of `log log N` is coercive on every `V_floor(N^θ)`, `0<θ<1/1080`.
 
@@ -61,7 +61,8 @@ Both source statements and the stronger intermediate distance inequality have be
   `exists_profile_highConductor_linear_loss_of_terminal_budget` directly checked;
   transitive audit contains only `propext`, `Classical.choice`, `Quot.sound`.
 - `EveryProfileIsPositiveAtLogLogOverlapOnPolynomialSpans.lean`:
-  `exists_universal_loglog_polynomial_span_coercivity` written, unchecked.
+  `exists_universal_loglog_polynomial_span_coercivity` directly checked;
+  transitive audit contains only `propext`, `Classical.choice`, `Quot.sound`.
 
 The terminal weighted pairing is supplied by
 `TerminalSupportSharpensTheWeightedNearPairing.lean`; direct check passed,

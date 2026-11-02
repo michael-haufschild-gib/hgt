@@ -284,12 +284,21 @@ must come from the bulk second-order term or from a carrier.
 - Equidistribution of a periodic numerator against window weights (`abs_integral_mul_numerator_sub_le`,
   `tendsto_modulated`) and Tannery over the grid harmonics (`tendsto_rpow_eight_mul_horizonAlias`).
 
+**Developed in neighbouring programmes and used here.** Néron–Tate theory and the Tate limit law on
+correspondences (AET); Arakelov `h⁰` of lattices of growing rank, Künneth Riemann–Roch, the
+isotropic cone count and the boost transform (LST); the Lévy–Khintchine form of Weil's functional
+and its Markov splitting (RHTower `WeilMarkovPoleCapacity`); lower semicontinuity of the index
+(HKT); the index bound by the right zeros (ACS); Wiener–Hopf and Szegő factorization (CDG/WD);
+Stepanov over `ℤ` (AET) and over curves (LST).
+
 **To build.**
 - Uniform ledgers: explicit horizon-law remainders `O(|s|σ(e)N^{Re s−1})` with the zero-free region,
   summed over zeros up to a growing height.
-- Nilpotent-orbit and `SL₂`-orbit models (Schmid, Cattani–Kaplan–Schmid); Néron–Tate on
-  `ℤ[ℚ_{>0}^×]`; Arakelov `h⁰` on lattices of growing rank; Zwegers–Vignéras and Voronoi; Lévy
-  forms with prime atoms; Wiener–Hopf factorization; function-field calibration.
+- Twisted horizon windows: Poisson summation of the atom autocorrelation on residue classes, for
+  horizon blocks twisted by Ramanujan sums `c_m(n)`; it should identify their second-order term with
+  the conductor-`m` count `β J(m)/K ‖H‖²` and no Weil's form.
+- The function-field complete family and its horizon layer; Zwegers–Vignéras completions of the
+  isotropic count.
 
 ## 8. Pillar theorems
 
@@ -365,7 +374,10 @@ must come from the bulk second-order term or from a carrier.
 | LatticeSectionTheory | lattice `h⁰`, Künneth RR, jump counts |
 | AdelicKreinGeometry | glued archimedean state, index `κ + 1` |
 | ConjugateDiagonalGeometry (WD) | window index, Szegő factorization |
-| RHTower | partial zeta sums (`zetaStripError`), Euler–Maclaurin carriers, summability of Weil series |
+| RHTower | partial zeta sums (`zetaStripError`), Euler–Maclaurin carriers, summability of Weil series, the Markov splitting of Weil's form (`weil_eq_markovForm_add_pole`), the symbol bounds `mu_ge_log`, `abs_PX_le` |
+| RenormalizedArithmeticPotentialTheory (completed shells) | the completed shell energy `E₁`, its increment law and positive Fourier series, Poisson on the lattice `ℤ/s` (`hasSum_shellSpectrum_int`): AHD differentiates it (`E₁' = −(2/∫φ²) a_φ`) |
+| EffectiveArithmeticHodgeTheory, HeckeKreinToeplitz | polarization of `weilQuad` on real tests, lower semicontinuity of the index, schedules reaching the index |
+| ArithmeticCastelnuovoSeveri | `weilGram`, the index bound by the right zeros (`negIndex_weilGram_le_offLineCount`) |
 
 ## 12. Success criteria
 

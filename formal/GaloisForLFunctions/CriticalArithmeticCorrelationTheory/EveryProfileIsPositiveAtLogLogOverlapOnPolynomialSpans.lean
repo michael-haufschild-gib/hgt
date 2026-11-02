@@ -190,7 +190,7 @@ private theorem eventually_loglog_polynomial_span_horizon {θ b γ C : ℝ}
           (t ^ 2 / L ^ 2 + (N : ℝ) ^ (2 * θ) * t / N) := by gcongr
       _ = (1 + θ) * (t ^ 6 / L + t ^ 5 * L / (N : ℝ) ^ (1 - 2 * θ)) := by
         rw [Real.rpow_sub hN, Real.rpow_one]
-        field_simp <;> ring
+        field_simp
       _ ≤ (1 + θ) * (t ^ 6 / L + L ^ 6 / (N : ℝ) ^ (1 - 2 * θ)) := by
         gcongr
         have hh := mul_le_mul_of_nonneg_right (pow_le_pow_left₀ ht.le htL 5) hL.le
@@ -361,7 +361,5 @@ theorem exists_universal_loglog_polynomial_span_coercivity :
   rw [hhalf, ← hpyth]
   nlinarith only [hpEnergy, hzEnergy, hcrossCost, henergy, hcrossLower, hzReserve, hnonneg]
 
-
-#print axioms exists_universal_loglog_polynomial_span_coercivity
 
 end GaloisForLFunctions.CriticalArithmeticCorrelationTheory

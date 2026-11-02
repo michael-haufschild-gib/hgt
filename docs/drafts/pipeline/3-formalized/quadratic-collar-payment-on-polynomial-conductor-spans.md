@@ -1,6 +1,6 @@
 # Quadratic collar payment on polynomial conductor spans
 
-- **Stage:** 2-fully-proven; Lean written, checks pending.
+- **Stage:** 3-formalized.
 - **Wall:** Σ1d; near Gamma/downward-prime payment.
 - **Theorem:** Every nonzero compact real `C²` profile admits `bφ>0` and an exponential coercivity margin on `V_floor(N^θ)`, `0<θ<1/1080`, uniformly for `1≤c≤bφ sqrt(log log N)`. This includes every `c≤(log log N)^β`, `β<1/2`.
 
@@ -57,7 +57,9 @@ Lean status:
 - `TerminalSupportLeavesOnlyALinearHighConductorLoss.lean`: stronger linear loss;
   direct check and transitive axiom audit passed. The quadratic bound follows
   from `c≤c²` for `c≥1`.
-- `EveryProfileIsPositiveAtSquareRootLogLogOverlapOnPolynomialSpans.lean`: unchecked.
+- `EveryProfileIsPositiveAtSquareRootLogLogOverlapOnPolynomialSpans.lean`:
+  `exists_universal_sqrt_loglog_polynomial_span_coercivity` directly checked;
+  transitive audit contains only `propext`, `Classical.choice`, `Quot.sound`.
 
 The square-root capstone is written as a restriction of the stronger fixed log-log
 theorem in `EveryProfileIsPositiveAtLogLogOverlapOnPolynomialSpans.lean`.

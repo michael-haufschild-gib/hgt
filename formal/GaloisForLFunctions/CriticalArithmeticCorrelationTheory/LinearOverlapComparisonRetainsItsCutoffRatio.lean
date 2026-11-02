@@ -152,7 +152,11 @@ theorem exists_overlapMatrix_high_inner_le_linear_cutoff_rate {φ : ℝ → ℝ}
   have h2 := hov hR hR4 h18 hc hcL hw hv hy
   have h3 := hov hR hR4 h18 hc hcL hw hy hv
   have hnormSum : ‖v‖ * ‖v‖ + ‖v‖ * ‖y‖ + ‖y‖ * ‖v‖ ≤ 5 * ‖v‖ := by
-    nlinarith only [hv20, hy2, norm_nonneg v]
+    have hv1 : ‖v‖ ≤ 1 := by linarith only [hv20]
+    have hvv := mul_le_mul_of_nonneg_left hv1 (norm_nonneg v)
+    have hvy := mul_le_mul_of_nonneg_left hy2 (norm_nonneg v)
+    have hyv := mul_le_mul_of_nonneg_right hy2 (norm_nonneg v)
+    linarith only [hvv, hvy, hyv]
   have hdiff : |⟪A u, u⟫ - ⟪A y, y⟫| ≤
       270 * Cov * (c * (1 + Real.log R) / Real.log N) := by
     rw [hdiffEq]

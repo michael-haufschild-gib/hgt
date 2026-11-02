@@ -1,7 +1,7 @@
 # Zeta zeros and the exact Mellin strip of the scattering core
 
 - **Stage:** 1-in-progress
-- **Type:** CANDIDATE; formalization in progress
+- **Type:** Exact strips formalized; derivative moment in progress
 - **Route:** PM
 - **Source:** actual scattering core and its certified Mellin transform
 
@@ -45,6 +45,16 @@ gives the moment at `w`.
 Local corpus contains the core tail, nonzero scattering charge, reciprocity,
 and central-strip Mellin formula. Searches found no exact convergence-strip
 classification or these derivative moments for this field. This is a local
-novelty check, not a literature claim. Endpoint comparison and removable-limit
-arguments still require Lean certification. No full Mayer eigenspace
+novelty check, not a literature claim. The removable-limit argument
+for the derivative moment still requires Lean certification. No full Mayer eigenspace
 classification or Hermitian-form identity is asserted.
+
+## Lean certificate: convergence strips
+
+`RenormalizedIntersectionTheory/GaussMayerZeroMellinStrip.lean` proves
+`core_mellinConvergent_iff_of_ne_zero`, `core_mellinConvergent_iff_of_zero`,
+and `core_mellinConvergent_zero_iff`, with the incoming limit, exact reflection,
+local integrability and endpoint bounds used in their proofs. The production
+file passed its direct Lean audit; all ten public declarations use only
+`propext`, `Classical.choice`, `Quot.sound`. The derivative-moment claim remains
+unverified.

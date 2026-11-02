@@ -39,6 +39,4 @@ theorem exists_universal_sqrt_loglog_polynomial_span_coercivity :
     nlinarith only [Real.sq_sqrt ht0, Real.sqrt_nonneg (Real.log (Real.log (N : ℝ))), ht1]
   exact hN c hc (hclock.trans (mul_le_mul_of_nonneg_left hroot hb.le)) x hx
 
-#print axioms exists_universal_sqrt_loglog_polynomial_span_coercivity
-
 end GaloisForLFunctions.CriticalArithmeticCorrelationTheory
