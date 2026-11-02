@@ -54,8 +54,8 @@ open GaloisForLFunctions.ConjugateDiagonalGeometry.LogScaleHeckeDefect
 private lemma finset_sum_union_le {α : Type*} [DecidableEq α] (s₁ s₂ : Finset α) {f : α → ℝ}
     (hf : ∀ x, 0 ≤ f x) :
     ∑ x ∈ s₁ ∪ s₂, f x ≤ ∑ x ∈ s₁, f x + ∑ x ∈ s₂, f x := by
-  rw [Finset.sum_union_inter]
-  linarith [Finset.sum_nonneg fun x (_ : x ∈ s₁ ∩ s₂) => hf x]
+  have h := Finset.sum_union_inter (s₁ := s₁) (s₂ := s₂) (f := f)
+  linarith [h, Finset.sum_nonneg fun x (_ : x ∈ s₁ ∩ s₂) => hf x]
 
 private lemma finset_sum_biUnion_le {ι α : Type*} [DecidableEq ι] [DecidableEq α]
     (s : Finset ι) (t : ι → Finset α) {f : α → ℝ} (hf : ∀ x, 0 ≤ f x) :
@@ -304,7 +304,9 @@ theorem exists_zetaLine_littlewood_edge_budget_all_heights :
           obtain ⟨hx, hy⟩ := Complex.mem_reProdIm.mp hrect
           rw [uIcc_of_le (by norm_num)] at hx
           rw [uIcc_of_le hT_lt.le] at hy
-          obtain ⟨hwF, hre_lt1, hxi0⟩ := hmem_F_of_zeta w hx.1 (by linarith) (by linarith) hζ0
+          obtain ⟨hx_lo, _⟩ := hx
+          obtain ⟨hy_lo, hy_hi⟩ := hy
+          obtain ⟨hwF, hre_lt1, hxi0⟩ := hmem_F_of_zeta w hx_lo (by linarith) (by linarith) hζ0
           have hy_ge : T ≤ w.im := by
             by_contra hlt
             push Not at hlt
@@ -356,9 +358,9 @@ theorem exists_zetaLine_littlewood_edge_budget_all_heights :
       (∫ t in a..b, Real.log ‖riemannZeta (((1 / 2 : ℝ) : ℂ) + (t : ℂ) * I)‖) =
         (∫ t in (0 : ℝ)..b, Real.log ‖riemannZeta (((1 / 2 : ℝ) : ℂ) + (t : ℂ) * I)‖) -
           ∫ t in (0 : ℝ)..a, Real.log ‖riemannZeta (((1 / 2 : ℝ) : ℂ) + (t : ℂ) * I)‖ :=
-    fun a b => intervalIntegral.integral_interval_sub_left
+    fun a b => (intervalIntegral.integral_interval_sub_left
       (_root_.RHTower.intervalIntegrable_log_norm_riemannZeta_line 0 b)
-      (_root_.RHTower.intervalIntegrable_log_norm_riemannZeta_line 0 a)
+      (_root_.RHTower.intervalIntegrable_log_norm_riemannZeta_line 0 a)).symm
   have hT_sub_lim : Tendsto (fun n : ℕ => T - δ n) atTop (𝓝 T) := by
     simpa only [sub_zero] using tendsto_const_nhds.sub hδ_zero
   have h2T_add_lim : Tendsto (fun n : ℕ => 2 * T + δ n) atTop (𝓝 (2 * T)) := by
@@ -369,12 +371,12 @@ theorem exists_zetaLine_littlewood_edge_budget_all_heights :
       atTop
       (𝓝 (|(∫ t in T..(2 * T),
           Real.log ‖riemannZeta (((1 / 2 : ℝ) : ℂ) + (t : ℂ) * I)‖) - 2 * Real.pi * S_cl|)) := by
-    have heq : (fun n : ℕ => (∫ t in (T - δ n)..(2 * T + δ n),
-          Real.log ‖riemannZeta (((1 / 2 : ℝ) : ℂ) + (t : ℂ) * I)‖) - 2 * Real.pi * S_cl) =
-        fun n : ℕ => ((∫ t in (0 : ℝ)..(2 * T + δ n),
+    have heq : (fun n : ℕ => |(∫ t in (T - δ n)..(2 * T + δ n),
+          Real.log ‖riemannZeta (((1 / 2 : ℝ) : ℂ) + (t : ℂ) * I)‖) - 2 * Real.pi * S_cl|) =
+        fun n : ℕ => |((∫ t in (0 : ℝ)..(2 * T + δ n),
           Real.log ‖riemannZeta (((1 / 2 : ℝ) : ℂ) + (t : ℂ) * I)‖) -
           ∫ t in (0 : ℝ)..(T - δ n),
-          Real.log ‖riemannZeta (((1 / 2 : ℝ) : ℂ) + (t : ℂ) * I)‖) - 2 * Real.pi * S_cl :=
+          Real.log ‖riemannZeta (((1 / 2 : ℝ) : ℂ) + (t : ℂ) * I)‖) - 2 * Real.pi * S_cl| :=
       funext fun n => by rw [hint_sub]
     rw [heq, hint_sub T (2 * T)]
     exact (((hprim.continuousAt.tendsto.comp h2T_add_lim).sub
@@ -691,7 +693,8 @@ private lemma single_prime_logIntegral_le {p : ℕ} (hp : Nat.Prime p) {T₁ T�
   have hdiff_fac : ∀ s : ℂ, DifferentiableAt ℂ (fun z : ℂ => (1 : ℂ) - (p : ℂ) ^ (-z)) s :=
     fun s => (((hasDerivAt_id s).neg.const_cpow (Or.inl hp_ne0)).const_sub 1).differentiableAt
   have hdiffOn : DifferentiableOn ℂ h_p U := fun s hs =>
-    ((Complex.hasDerivAt_log (hslit s hs)).differentiableAt.comp s (hdiff_fac s)).differentiableWithinAt
+    (DifferentiableAt.comp (g := Complex.log) (f := fun z : ℂ => (1 : ℂ) - (p : ℂ) ^ (-z)) s
+      (Complex.hasDerivAt_log (hslit s hs)).differentiableAt (hdiff_fac s)).differentiableWithinAt
   have hU_open : IsOpen U := isOpen_lt continuous_const Complex.continuous_re
   have hanOn : AnalyticOnNhd ℂ h_p U := hdiffOn.analyticOnNhd hU_open
   -- Pointwise norm bound `‖h_p s‖ ≤ 3 * exp(-log p * s.re)` on `s.re ≥ 1/2`.
@@ -795,12 +798,16 @@ private lemma single_prime_logIntegral_le {p : ℕ} (hp : Nat.Prime p) {T₁ T�
       calc |(h_p ((x : ℂ) + (y : ℂ) * I)).im|
           ≤ ‖h_p ((x : ℂ) + (y : ℂ) * I)‖ := Complex.abs_im_le_norm _
         _ ≤ 3 * Real.exp (-Real.log p * x) :=
-            hre_x ▸ hnorm_hp _ (by rw [hre_x]; exact hx.1.le)
+            (hnorm_hp ((x : ℂ) + (y : ℂ) * I) (by rw [hre_x]; exact hx.1.le)).trans_eq
+              (by rw [hre_x])
     rw [Real.norm_eq_abs] at hnorm_int
     have hftc : ∫ x in (1 / 2 : ℝ)..R, 3 * Real.exp (-Real.log p * x) =
         (-(3 / Real.log p) * Real.exp (-Real.log p * R)) -
           (-(3 / Real.log p) * Real.exp (-Real.log p * (1 / 2))) := by
-      refine intervalIntegral.integral_eq_sub_of_hasDerivAt (fun x _ => ?_)
+      refine intervalIntegral.integral_eq_sub_of_hasDerivAt
+        (f := fun x : ℝ => -(3 / Real.log p) * Real.exp (-Real.log p * x))
+        (f' := fun x : ℝ => 3 * Real.exp (-Real.log p * x))
+        (fun x _ => ?_)
         ((by fun_prop : Continuous fun x : ℝ => 3 * Real.exp (-Real.log p * x)).intervalIntegrable _ _)
       have hd := (((hasDerivAt_id x).const_mul (-Real.log p)).exp).const_mul (-(3 / Real.log p))
       convert hd using 1
@@ -823,7 +830,9 @@ private lemma single_prime_logIntegral_le {p : ℕ} (hp : Nat.Prime p) {T₁ T�
       refine intervalIntegral.norm_integral_le_of_norm_le_const' hT fun y _ => ?_
       rw [Real.norm_eq_abs]
       have hre_R : (((R : ℂ) + (y : ℂ) * I)).re = R := by simp
-      exact (Complex.abs_re_le_norm _).trans (hre_R ▸ hnorm_hp _ (by rw [hre_R]; exact hR_half))
+      exact (Complex.abs_re_le_norm _).trans
+        ((hnorm_hp ((R : ℂ) + (y : ℂ) * I) (by rw [hre_R]; exact hR_half)).trans_eq
+          (by rw [hre_R]))
     rw [Real.norm_eq_abs, abs_of_nonneg (sub_nonneg.mpr hT)] at hnorm_int
     have hexp_R_le : Real.exp (-Real.log p * R) ≤ (T₂ - T₁ + 1)⁻¹ := by
       have hmul_R : -Real.log p * R = -Real.log p - Real.log (T₂ - T₁ + 1) := by
@@ -850,7 +859,8 @@ private lemma single_prime_logIntegral_le {p : ℕ} (hp : Nat.Prime p) {T₁ T�
         |∫ x in (1 / 2 : ℝ)..R, (h_p ((x : ℂ) + (T₂ : ℂ) * I)).im| +
         |∫ y in T₁..T₂, (h_p ((R : ℂ) + (y : ℂ) * I)).re| := by
     exact (abs_add_le _ _).trans (add_le_add (abs_sub _ _) le_rfl)
-  linarith [htri, hhoriz_bd T₁, hhoriz_bd T₂, hright_bd]
+  have h6 : 3 / Real.log p + 3 / Real.log p + 3 = 3 + 6 / Real.log p := by ring
+  linarith [htri, hhoriz_bd T₁, hhoriz_bd T₂, hright_bd, h6]
 
 private lemma log_norm_eulerHeadAnchor_eq_sum {P : Finset ℕ} (hP : ∀ p ∈ P, 2 ≤ p)
     {s : ℂ} (hs : 0 < s.re) :
@@ -864,7 +874,7 @@ private lemma log_norm_eulerHeadAnchor_eq_sum {P : Finset ℕ} (hP : ∀ p ∈ P
     have h1 : (1 : ℂ) - (p : ℂ) ^ (-s) ≠ 0 := _root_.RHTower.eulerFactor_ne_zero hp2 hs
     have h2 : _root_.RHTower.eulerHeadAnchor P s ≠ 0 :=
       _root_.RHTower.eulerHeadAnchor_ne_zero hP' hs
-    unfold _root_.RHTower.eulerHeadAnchor at ih ⊢
+    unfold _root_.RHTower.eulerHeadAnchor at ih h2 ⊢
     rw [Finset.prod_insert hp_not, Finset.sum_insert hp_not, norm_mul,
       Real.log_mul (norm_ne_zero_iff.mpr h1) (norm_ne_zero_iff.mpr h2), ih hP']
 
@@ -880,7 +890,7 @@ theorem exists_abs_window_logIntegral_eulerProductMollifier_le (S : Finset ℕ)
         Real.log ‖(1 : ℂ) - (p : ℂ) ^ (-(((1 / 2 : ℝ) : ℂ) + (t : ℂ) * I))‖ := by
     funext t
     exact log_norm_eulerHeadAnchor_eq_sum
-      (fun _ hp => (Finset.mem_filter.mp hp).2.two_le) (by simp; norm_num)
+      (fun _ hp => (Finset.mem_filter.mp hp).2.two_le) (by simp)
   have hint_fac : ∀ p ∈ S.filter Nat.Prime,
       IntervalIntegrable
         (fun t : ℝ => Real.log ‖(1 : ℂ) - (p : ℂ) ^ (-(((1 / 2 : ℝ) : ℂ) + (t : ℂ) * I))‖)
@@ -895,10 +905,12 @@ theorem exists_abs_window_logIntegral_eulerProductMollifier_le (S : Finset ℕ)
       exact hdiff.continuous.comp (by fun_prop)
     have hcont : Continuous (fun t : ℝ =>
         Real.log ‖(1 : ℂ) - (p : ℂ) ^ (-(((1 / 2 : ℝ) : ℂ) + (t : ℂ) * I))‖) :=
-      Real.continuous_log.comp_continuousOn' hcont_fac.norm.continuousOn fun t _ =>
-        norm_ne_zero_iff.mpr (_root_.RHTower.eulerFactor_ne_zero hp_prime.two_le (by simp; norm_num))
+      continuous_iff_continuousAt.mpr fun t =>
+        (Real.continuousAt_log (norm_ne_zero_iff.mpr
+          (_root_.RHTower.eulerFactor_ne_zero hp_prime.two_le (by simp)))).comp
+          hcont_fac.norm.continuousAt
     exact hcont.intervalIntegrable _ _
-  rw [heq, intervalIntegral.integral_finset_sum hint_fac]
+  rw [heq, intervalIntegral.integral_finsetSum hint_fac]
   exact (Finset.abs_sum_le_sum_abs _ _).trans
     (Finset.sum_le_sum fun p hp => single_prime_logIntegral_le (Finset.mem_filter.mp hp).2 hT)
 
@@ -923,8 +935,8 @@ theorem tendsto_window_logMean_eulerProductMollifier_zero (S : Finset ℕ) :
     (by linarith)
   have h1 : T⁻¹ * |∫ t in T..(2 * T),
       Real.log ‖eulerProductMollifier S (((1 / 2 : ℝ) : ℂ) + (t : ℂ) * I)‖| ≤ B / T := by
-    rw [div_eq_inv_mul]
-    exact mul_le_mul_of_nonneg_left hbd (by positivity)
+    rw [div_eq_inv_mul B T]
+    exact mul_le_mul_of_nonneg_left hbd (inv_nonneg.mpr hT_pos.le)
   have h2 : B / T < ε := by
     rw [div_lt_iff₀ hT_pos]
     have := (div_le_iff₀ hε).mp hTB
@@ -944,8 +956,9 @@ private lemma integral_log_norm_zeta_mul_eulerProductMollifier (S : Finset ℕ)
       Real.log ‖eulerProductMollifier S (((1 / 2 : ℝ) : ℂ) + (t : ℂ) * I)‖) := by
     have h1 : Continuous (fun t : ℝ => eulerProductMollifier S (((1 / 2 : ℝ) : ℂ) + (t : ℂ) * I)) :=
       (differentiable_eulerProductMollifier S).continuous.comp (by fun_prop)
-    exact Real.continuous_log.comp_continuousOn' h1.norm.continuousOn fun t _ =>
-      norm_ne_zero_iff.mpr (eulerProductMollifier_ne_zero S (by simp; norm_num))
+    exact continuous_iff_continuousAt.mpr fun t =>
+      (Real.continuousAt_log (norm_ne_zero_iff.mpr
+        (eulerProductMollifier_ne_zero S (by simp)))).comp h1.norm.continuousAt
   rw [← intervalIntegral.integral_add
     (_root_.RHTower.intervalIntegrable_log_norm_riemannZeta_line T₁ T₂)
     (hcont_M.intervalIntegrable _ _)]
@@ -958,7 +971,7 @@ private lemma integral_log_norm_zeta_mul_eulerProductMollifier (S : Finset ℕ)
     exact ⟨hmem.1.le, hmem.2⟩
   have hζ0 : riemannZeta (((1 / 2 : ℝ) : ℂ) + (t : ℂ) * I) ≠ 0 := fun h => ht ⟨hIcc, h⟩
   have hM0 : eulerProductMollifier S (((1 / 2 : ℝ) : ℂ) + (t : ℂ) * I) ≠ 0 :=
-    eulerProductMollifier_ne_zero S (by simp; norm_num)
+    eulerProductMollifier_ne_zero S (by simp)
   rw [norm_mul, Real.log_mul (norm_ne_zero_iff.mpr hζ0) (norm_ne_zero_iff.mpr hM0)]
 
 private lemma tendsto_const_add_log_two_mul_div_zero (C K : ℝ) (hC : 0 ≤ C) (hK : 0 ≤ K) :
@@ -995,7 +1008,7 @@ private lemma tendsto_const_add_log_two_mul_div_zero (C K : ℝ) (hC : 0 ≤ C) 
   have hrt_pos : 0 < Real.sqrt T := by linarith
   rw [div_lt_iff₀ hT_pos]
   have hmul : A * Real.sqrt T < ε * T := by
-    have h1 : 2 * A < ε * Real.sqrt T := (div_lt_iff₀ hε).mp hrt_gt
+    have h1 : 2 * A < ε * Real.sqrt T := by linarith [(div_lt_iff₀ hε).mp hrt_gt]
     have h2 : (2 * A) * Real.sqrt T < (ε * Real.sqrt T) * Real.sqrt T :=
       mul_lt_mul_of_pos_right h1 hrt_pos
     rw [mul_assoc ε, Real.mul_self_sqrt hT_pos.le] at h2
@@ -1076,7 +1089,7 @@ theorem criticalClustering_logMean_mollifier_hecke_tfae {c : ℝ} (hc0 : 0 < c) 
   tfae_have 1 → 3 := by
     intro h1 M hM
     refine (_root_.RHTower.zetaLine_logMean_le_iff_mollifiedProduct_logMean_le M hM).mp fun η hη => ?_
-    filter_upwards [(Metric.tendsto_atTop.mp h1) η hη] with T hT
+    filter_upwards [eventually_atTop.mpr ((Metric.tendsto_atTop.mp h1) η hη)] with T hT
     rw [Real.dist_eq, sub_zero] at hT
     exact (le_abs_self _).trans hT.le
   tfae_have 3 → 1 := by
@@ -1088,7 +1101,7 @@ theorem criticalClustering_logMean_mollifier_hecke_tfae {c : ℝ} (hc0 : 0 < c) 
     have hfl_lim := tendsto_const_add_log_two_mul_div_zero C_fl K_fl hC_fl.le hK_fl.le
     refine Metric.tendsto_atTop.mpr fun η hη => ?_
     have hev := (hup (η / 2) (half_pos hη)).and
-      (((Metric.tendsto_atTop.mp hfl_lim) (η / 2) (half_pos hη)).and
+      ((eventually_atTop.mpr ((Metric.tendsto_atTop.mp hfl_lim) (η / 2) (half_pos hη))).and
         (eventually_ge_atTop (20 : ℝ)))
     obtain ⟨T₀, hT₀⟩ := eventually_atTop.mp hev
     refine ⟨T₀, fun T hT => ?_⟩
@@ -1126,7 +1139,7 @@ theorem criticalClustering_logMean_mollifier_hecke_tfae {c : ℝ} (hc0 : 0 < c) 
             Real.log ‖riemannZeta (((1 / 2 : ℝ) : ℂ) + (t : ℂ) * I)‖) -
             2 * Real.pi * ∑ z ∈ (shellZeros T (2 * T)).filter (fun z => 1 / 2 < z.re),
               ((analyticOrderAt _root_.RHTower.xi z).toNat : ℝ) * (z.re - 1 / 2)) := by ring
-      rw [heq, abs_mul, abs_inv, abs_of_pos hT_pos, div_eq_inv_mul]
+      rw [heq, abs_mul, abs_inv, abs_of_pos hT_pos, div_eq_inv_mul _ T]
       exact mul_le_mul_of_nonneg_left (hbud T hT21) (inv_nonneg.mpr hT_pos.le)
     have h2pi := h1.sub hdiff_lim
     rw [sub_zero] at h2pi
@@ -1160,7 +1173,7 @@ theorem criticalClustering_logMean_mollifier_hecke_tfae {c : ℝ} (hc0 : 0 < c) 
             Real.log ‖riemannZeta (((1 / 2 : ℝ) : ℂ) + (t : ℂ) * I)‖) -
             2 * Real.pi * ∑ z ∈ (shellZeros T (2 * T)).filter (fun z => 1 / 2 < z.re),
               ((analyticOrderAt _root_.RHTower.xi z).toNat : ℝ) * (z.re - 1 / 2)) := by ring
-      rw [heq, abs_mul, abs_inv, abs_of_pos hT_pos, div_eq_inv_mul]
+      rw [heq, abs_mul, abs_inv, abs_of_pos hT_pos, div_eq_inv_mul _ T]
       exact mul_le_mul_of_nonneg_left (hbud T hT21) (inv_nonneg.mpr hT_pos.le)
     have hsum := hdiff_lim.add (h4.const_mul (2 * Real.pi))
     rw [mul_zero, add_zero] at hsum
@@ -1181,7 +1194,7 @@ theorem criticalClustering_logMean_mollifier_hecke_tfae {c : ℝ} (hc0 : 0 < c) 
         linarith
       exact hc.trans hj2
     have hinv_pow : C_tot / (2 : ℝ) ^ J ≤ ε / 4 := by
-      have h1 : 4 * C_tot ≤ ε * (2 : ℝ) ^ J := (div_le_iff₀ hε).mp hpow_ge
+      have h1 : 4 * C_tot ≤ ε * (2 : ℝ) ^ J := by linarith [(div_le_iff₀ hε).mp hpow_ge]
       rw [div_le_iff₀ (by positivity)]
       linarith
     set η : ℝ := κ * ε / (2 * (J : ℝ))
@@ -1306,14 +1319,16 @@ theorem criticalClustering_logMean_mollifier_hecke_tfae {c : ℝ} (hc0 : 0 < c) 
           ((analyticOrderAt _root_.RHTower.xi z).toNat : ℝ) ≤ (Real.log V / κ) * (η * T_j) := by
         have hpos_div : 0 < κ / Real.log V := div_pos hκ hlogV_pos
         have h1 := (le_div_iff₀' hpos_div).mpr (hcheb.trans hmom_le)
-        rwa [div_div_eq_mul_div, mul_comm _ (Real.log V), ← mul_div_assoc] at h1
+        have h2 : (η * T_j) / (κ / Real.log V) = (Real.log V / κ) * (η * T_j) := by
+          field_simp [hκ.ne', hlogV_pos.ne']
+        exact h1.trans_eq h2
       calc ∑ z ∈ (shellZeros T_j (2 * T_j)).filter (fun z => 1 / 2 + κ / Real.log V ≤ z.re),
               ((analyticOrderAt _root_.RHTower.xi z).toNat : ℝ)
           ≤ (Real.log V / κ) * (η * V) :=
             hcnt_le.trans (mul_le_mul_of_nonneg_left
               (mul_le_mul_of_nonneg_left hTj_le_V hη_pos.le) (by positivity))
         _ = (ε / (2 * (J : ℝ))) * (V * Real.log V) := by
-            dsimp only [η]; field_simp [hκ.ne']; ring
+            dsimp only [η]; field_simp [hκ.ne']
     unfold _root_.RHTower.offLineCountBeyond
     have htot_sum : ∑ z ∈ (_root_.RHTower.stripFinsetPos V).filter
           (fun z => 1 / 2 + κ / Real.log V ≤ z.re),
@@ -1433,7 +1448,7 @@ theorem criticalClustering_logMean_mollifier_hecke_tfae {c : ℝ} (hc0 : 0 < c) 
               (κ / L) * ((analyticOrderAt _root_.RHTower.xi z).toNat : ℝ) := by
             refine Finset.sum_le_sum fun z hz => ?_
             have hlt := not_le.mp (Finset.mem_filter.mp hz).2
-            rw [mul_comm]
+            rw [mul_comm (κ / L)]
             exact mul_le_mul_of_nonneg_left (by linarith) (Nat.cast_nonneg _)
         _ = (κ / L) * ∑ z ∈ F_pos.filter (fun z => ¬ 1 / 2 + κ / L ≤ z.re),
               ((analyticOrderAt _root_.RHTower.xi z).toNat : ℝ) := (Finset.mul_sum _ _ _).symm
@@ -1441,7 +1456,7 @@ theorem criticalClustering_logMean_mollifier_hecke_tfae {c : ℝ} (hc0 : 0 < c) 
             refine mul_le_mul_of_nonneg_left ?_ (by positivity)
             exact (Finset.sum_le_sum_of_subset_of_nonneg hsub_S fun _ _ _ =>
               Nat.cast_nonneg _).trans hcnt_4
-        _ = (4 * C_tot * κ) * T := by field_simp [hlogT_pos.ne']; ring
+        _ = (4 * C_tot * κ) * T := by field_simp [hlogT_pos.ne']
         _ ≤ (ε / 4) * T := mul_le_mul_of_nonneg_right hκ_C hT_pos.le
     -- 2. Intermediate piece: `κ / log(2T) ≤ κ / L ≤ z.re - 1/2 < R / L`.
     have hinter : ∑ z ∈ (F_pos.filter (fun z => 1 / 2 + κ / L ≤ z.re)).filter
@@ -1482,7 +1497,7 @@ theorem criticalClustering_logMean_mollifier_hecke_tfae {c : ℝ} (hc0 : 0 < c) 
             (R / L) * ((analyticOrderAt _root_.RHTower.xi z).toNat : ℝ) := by
             refine Finset.sum_le_sum fun z hz => ?_
             have hlt := not_le.mp (Finset.mem_filter.mp hz).2
-            rw [mul_comm]
+            rw [mul_comm (R / L)]
             exact mul_le_mul_of_nonneg_left (by linarith) (Nat.cast_nonneg _)
         _ = (R / L) * ∑ z ∈ (F_pos.filter (fun z => 1 / 2 + κ / L ≤ z.re)).filter
               (fun z => ¬ 1 / 2 + R / L ≤ z.re),
@@ -1492,7 +1507,7 @@ theorem criticalClustering_logMean_mollifier_hecke_tfae {c : ℝ} (hc0 : 0 < c) 
             exact Finset.sum_le_sum_of_subset_of_nonneg hsub_cl fun _ _ _ => Nat.cast_nonneg _
         _ ≤ (R / L) * ((ε / (4 * R)) * (T * L)) :=
             mul_le_mul_of_nonneg_left hcnt_cl (by positivity)
-        _ = (ε / 4) * T := by field_simp [hlogT_pos.ne', hR_pos.ne']; ring
+        _ = (ε / 4) * T := by field_simp [hlogT_pos.ne', hR_pos.ne']
     -- 3. Far-tail piece (`≥ R / L`): exponential tail bound gives `< (ε / 2) * T`.
     have hfar : ∑ z ∈ (F_pos.filter (fun z => 1 / 2 + κ / L ≤ z.re)).filter
           (fun z => 1 / 2 + R / L ≤ z.re),
@@ -1511,7 +1526,7 @@ theorem criticalClustering_logMean_mollifier_hecke_tfae {c : ℝ} (hc0 : 0 < c) 
           rw [← Real.sqrt_sq (by positivity : 0 ≤ 64 * (K_e + 1) / ε)]
           exact Real.sqrt_lt_sqrt (by positivity) (by linarith)
         have hrt_pos : 0 < Real.sqrt T := Real.sqrt_pos.mpr hT_pos
-        have h1 : 64 * (K_e + 1) < ε * Real.sqrt T := (div_lt_iff₀ hε).mp hrt_gt
+        have h1 : 64 * (K_e + 1) < ε * Real.sqrt T := by linarith [(div_lt_iff₀ hε).mp hrt_gt]
         have h2 : (64 * (K_e + 1)) * Real.sqrt T < (ε * Real.sqrt T) * Real.sqrt T :=
           mul_lt_mul_of_pos_right h1 hrt_pos
         rw [mul_assoc ε, Real.mul_self_sqrt hT_pos.le] at h2
@@ -1530,7 +1545,7 @@ theorem criticalClustering_logMean_mollifier_hecke_tfae {c : ℝ} (hc0 : 0 < c) 
         _ ≤ B_e * Real.exp (-(R / 28)) * T + K_e * L ^ 2 := hbd_R
         _ ≤ (ε / 4) * T + K_e * L ^ 2 :=
             add_le_add_right (mul_le_mul_of_nonneg_right hexp_R hT_pos.le) _
-        _ < (ε / 4) * T + (ε / 4) * T := add_lt_add_left hK_lt _
+        _ < (ε / 4) * T + (ε / 4) * T := by linarith [hK_lt]
         _ = (ε / 2) * T := by ring
     have hsum_lt : ∑ z ∈ F_pos,
         ((analyticOrderAt _root_.RHTower.xi z).toNat : ℝ) * (z.re - 1 / 2) < ε * T := by

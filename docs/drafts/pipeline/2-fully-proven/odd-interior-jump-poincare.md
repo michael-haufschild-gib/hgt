@@ -49,8 +49,10 @@ compact support gives `f(x)=O(1−x)` at the other endpoint.
 
 ## Lean status
 
-The scalar barrier is kernel-checked. The integrated ground-state comparison
-and exact lag-to-pair identity are being formalized. No wall status changed.
+The scalar barrier and folded gap are formalized in
+`LatticeSectionTheory/WindowJumpCounts/OddLogarithmicPairGap.lean`.
+The exact lag-to-pair identity and interval scaling are being verified in
+`LatticeSectionTheory/WindowJumpCounts/OddLogarithmicLagGap.lean`.
 
 ## Remaining extension
 

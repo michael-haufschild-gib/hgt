@@ -87,7 +87,7 @@ private theorem quadratic_band_integral {L U : ℝ} (hL : 1 ≤ L) (hLU : L ≤ 
         have hy0 : y ≠ 0 := ne_of_gt (lt_of_lt_of_le (by norm_num : (0 : ℝ) < 1)
           (hL.trans hy.1.le))
         push_cast
-        field_simp
+        field_simp [Complex.ofReal_ne_zero.mpr hy0]
       _ = _ := by
         rw [setIntegral_const, Real.volume_real_Ioc_of_le hLU, Complex.real_smul]
         push_cast

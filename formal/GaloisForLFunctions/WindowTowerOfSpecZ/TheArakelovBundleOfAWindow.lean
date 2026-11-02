@@ -47,9 +47,11 @@ theorem integral_atomicEmbedding_single (hφ : IsAtomProfile N δ φ) (hc : Cont
     rw [single_apply_self hm0, one_mul, mul_div_assoc', mul_one]
   · rw [Finset.sum_eq_zero fun j _ => by
       rw [single_apply, single_apply]
-      by_cases h1 : j = m
-      · rw [if_neg fun h => hmk (h1.symm.trans h.1), mul_zero, zero_div]
-      · rw [if_neg fun h => h1 h.1, zero_mul, zero_div], mul_zero]
+      split_ifs with h1 h2
+      · exact absurd (h1.1.symm.trans h2.1) hmk
+      · simp
+      · simp
+      · simp, mul_zero]
 
 /-- The summand `𝒪(½ log m)`: its Gaussian count at degree `d` is the theta count of the rank-one
 lattice with generator of squared length `1/m`. -/
@@ -66,14 +68,16 @@ def windowBundleH0 (N : ℕ) (d : ℝ) : ℝ := ∑ m ∈ Finset.Icc 1 N, arithH
 def windowBundleDualH0 (N : ℕ) (d : ℝ) : ℝ := ∑ m ∈ Finset.Icc 1 N, arithH0 (d - Real.log m / 2)
 
 theorem windowBundleH0_nonneg (N : ℕ) (d : ℝ) : 0 ≤ windowBundleH0 N d :=
-  Finset.sum_nonneg fun m _ => Real.log_nonneg (one_le_thetaSum (Real.exp_pos _))
+  Finset.sum_nonneg fun _ _ => Real.log_nonneg (one_le_thetaSum (Real.exp_pos _))
 
 /-- `log N! = Σ_{m ≤ N} log m`. -/
 theorem log_factorial_eq_sum (N : ℕ) : Real.log N.factorial = ∑ m ∈ Finset.Icc 1 N, Real.log m := by
-  rw [← Finset.prod_Icc_id_eq_factorial, Nat.cast_prod, Real.log_prod]
-  intro m hm
-  have := (Finset.mem_Icc.mp hm).1
-  exact_mod_cast (by omega : m ≠ 0)
+  induction N with
+  | zero => simp
+  | succ N ih =>
+    rw [Nat.factorial_succ, Nat.cast_mul, Real.log_mul (by positivity)
+      (by exact_mod_cast (Nat.factorial_pos N).ne'), ih,
+      Finset.sum_Icc_succ_top (by omega : 1 ≤ N + 1), add_comm]
 
 /-- **Riemann–Roch for the window bundle**: `h⁰(ℰ_N, d) − h⁰(ℰ_N^∨, −d) = N d + ½ log N!`. -/
 theorem windowBundleH0_riemannRoch (N : ℕ) (d : ℝ) :

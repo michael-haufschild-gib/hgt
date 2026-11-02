@@ -232,4 +232,48 @@ theorem sum_offset_ramTwist_eq (hφ : ContDiff ℝ 2 φ) (hφsupp : ∀ u, u ∉
   rw [sum_congr rfl hsplit, sum_add_distrib, ← sum_mul, sum_antidiagonal_moebius hm, zero_mul,
     zero_add, ← mul_sum]
 
+/-- **The energy of a Ramanujan window**: for `m ≥ 2` and `1 ≤ c ≤ N/4`,
+`E_N = 2π Σ_{de = m} μ(d) 𝒜_N(c/e) + O(c/N)`. -/
+theorem abs_ramEnergy_sub_le (hφ : ContDiff ℝ 2 φ) (hφsupp : ∀ u, u ∉ Set.Icc 0 1 → φ u = 0)
+    (hh : ContDiff ℝ 2 h) (hA : 0 ≤ A) (hsupp : ∀ y, y ∉ Set.Icc (-A) 0 → h y = 0)
+    {m : ℕ} (hm : 1 < m) :
+    ∃ K : ℝ, 0 ≤ K ∧ ∀ c : ℝ, 1 ≤ c → ∀ N : ℕ, 4 * c ≤ N →
+      |(∫ τ : ℝ, ‖paperFT (cx φ) (((c / N : ℝ) : ℂ) * τ)‖ ^ 2 *
+          (‖dirichletPoly N (twistedWeights h (ramTwist m) N) τ‖ ^ 2 / N)) -
+        2 * Real.pi * ∑ x ∈ m.divisorsAntidiagonal,
+          (ArithmeticFunction.moebius x.1 : ℝ) * horizonAlias φ h (c / x.2) N| ≤ K * c / N := by
+  obtain ⟨K, hK0, hK⟩ := periodicEnergy_le hφ hφsupp hh hA hsupp (M := m) (by omega)
+    (ramTwist_add_self m)
+  refine ⟨K, hK0, fun c hc N hcN => ?_⟩
+  have hc0 : 0 < c := by linarith
+  have hN0 : (0 : ℝ) < N := by linarith
+  have hmain : 2 * Real.pi / c * ∑ n ∈ Icc 1 N, horizonWeights h N n ^ 2 *
+      ∑ δ ∈ Finset.Icc (-(⌈c⌉₊ : ℤ)) ⌈c⌉₊,
+        autoCorr (ramTwist m) m δ * shellAutocorr φ (δ * (c * n / N)⁻¹) =
+      2 * Real.pi * ∑ x ∈ m.divisorsAntidiagonal,
+        (ArithmeticFunction.moebius x.1 : ℝ) * horizonAlias φ h (c / x.2) N := by
+    have e : ∀ n ∈ Icc 1 N, horizonWeights h N n ^ 2 * ∑ δ ∈ Finset.Icc (-(⌈c⌉₊ : ℤ)) ⌈c⌉₊,
+        autoCorr (ramTwist m) m δ * shellAutocorr φ (δ * (c * n / N)⁻¹) =
+        ∑ x ∈ m.divisorsAntidiagonal, 2 * c / N * ((ArithmeticFunction.moebius x.1 : ℝ) *
+          (h (Real.log n - Real.log N) ^ 2 * aliasDensity φ (c / x.2 * n / N))) := fun n hn => by
+      have hn0 : (0 : ℝ) < n := by exact_mod_cast (Finset.mem_Icc.mp hn).1
+      have hnN : (n : ℝ) ≤ N := by exact_mod_cast (Finset.mem_Icc.mp hn).2
+      have ha0 : 0 < c * n / N := by positivity
+      have haD : c * n / N ≤ ⌈c⌉₊ := by
+        refine le_trans ?_ (Nat.le_ceil c)
+        rw [div_le_iff₀ hN0]; exact mul_le_mul_of_nonneg_left hnN hc0.le
+      rw [sum_offset_ramTwist_eq hφ hφsupp hm ha0 haD, horizonWeights, div_pow,
+        Real.sq_sqrt hn0.le, Finset.mul_sum, Finset.mul_sum]
+      refine sum_congr rfl fun x _ => ?_
+      rw [show c * n / N / x.2 = c / x.2 * n / N by ring]
+      field_simp
+    rw [sum_congr rfl e, Finset.sum_comm, Finset.mul_sum, Finset.mul_sum]
+    refine sum_congr rfl fun x _ => ?_
+    unfold horizonAlias
+    rw [← Finset.mul_sum, Finset.mul_sum, Finset.mul_sum, Finset.mul_sum, Finset.mul_sum]
+    refine sum_congr rfl fun n _ => ?_
+    field_simp
+  rw [← hmain]
+  exact hK c hc N hcN
+
 end GaloisForLFunctions.ArithmeticHodgeTheoryOfDegenerations
