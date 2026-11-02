@@ -137,8 +137,10 @@ theorem horizCapFlux_add_adjacent {a b c y₁ y₂ : ℝ} (hab : a ≤ b) (hbc :
         (by fun_prop : Continuous fun u : ℝ => (u : ℂ) + (y : ℂ) * I).continuousAt
       exact (ContinuousAt.comp (g := thetaLogDeriv N)
         (f := fun u : ℝ => (u : ℂ) + (y : ℂ) * I) h1 h2).continuousWithinAt
-    have hi1 := (hcont.mono (Icc_subset_Icc_right hbc)).intervalIntegrable_of_Icc hab
-    have hi2 := (hcont.mono (Icc_subset_Icc_left hab)).intervalIntegrable_of_Icc hbc
+    have hi1 : IntervalIntegrable _ volume a b :=
+      (hcont.mono (Icc_subset_Icc_right hbc)).intervalIntegrable_of_Icc hab
+    have hi2 : IntervalIntegrable _ volume b c :=
+      (hcont.mono (Icc_subset_Icc_left hab)).intervalIntegrable_of_Icc hbc
     exact (intervalIntegral.integral_add_adjacent_intervals hi1 hi2).symm
   unfold horizCapFlux
   rw [hseg y₁ hnz₁, hseg y₂ hnz₂]

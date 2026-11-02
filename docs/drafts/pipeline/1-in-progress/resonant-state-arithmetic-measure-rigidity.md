@@ -55,4 +55,10 @@ The relative phase is analytic and nonconstant on each horizontal slice, so its 
 
 ## Open dependency
 
+The source-side results in `MayerScattering/FareyLewisTransferAndCuspSeparation` distinguish two inputs. `eisensteinLewisPeriod_dyadicCuspEnergy_integrable_iff_resonance` characterizes resonance by finite dyadic cusp energy. The critical-line equivalence additionally requires zero co-isometry defect; no implication from finite cusp energy to that vanishing is proved. Three-term and modular-inversion invariance alone also hold for non-resonant Eisenstein periods. They cannot supply the missing classification.
+
+`MayerWindowFoldTransfer` identifies the co-isometry defect with a logarithmic window-Frobenius defect and bounds it through symmetric and antisymmetric folds. Thus this particular defect is already connected to window geometry; introducing it again would not furnish an independent rigidity mechanism.
+
+Congruence lifting preserves the obstruction: `CongruenceScattering.constantTerm_order` and `fullConstantTerm_pole_iff` retain the complete scattering pole divisor, including multiplicities, at every principal level and height. Changing level alone supplies no restriction on the decay rate.
+
 No microlocal limit, Hecke recurrence, entropy bound or classification selecting β has been proved. The positive finite-measure hypotheses of standard entropy arguments cannot be silently transferred to non-square-integrable resonant states.

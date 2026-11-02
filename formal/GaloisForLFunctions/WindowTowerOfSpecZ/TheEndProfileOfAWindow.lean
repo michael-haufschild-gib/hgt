@@ -276,8 +276,9 @@ theorem weilQuad_ge_windowPotential (hH : IsWindowTest A H) :
         (EF.gammaBracket 0 * H u ^ 2 + exitPotential A u * H u ^ 2) -
           canonicalDensity A u * H u ^ 2 := by
       funext u; simp only [windowPotential]; ring
-    rw [e, integral_sub ((iH.const_mul _).add iE) iK, integral_add (iH.const_mul _) iE,
-      integral_const_mul]
+    have i1 : Integrable fun u => EF.gammaBracket 0 * H u ^ 2 + exitPotential A u * H u ^ 2 :=
+      (iH.const_mul _).add iE
+    rw [e, integral_sub i1 iK, integral_add (iH.const_mul _) iE, integral_const_mul]
   rw [hsplit]
   exact weilQuad_ge_endProfile hH
 

@@ -178,6 +178,7 @@ theorem dyadicEigenResidualAt_integrable_norm_sq {u : ℂ}
     exact pow_le_pow_left₀ (norm_nonneg _) (hb z hz) 2
   refine hi.congr ((ae_restrict_iff' isClosed_fd.measurableSet).mpr
     (Eventually.of_forall fun z hz => ?_))
+  change ‖q z‖ ^ 2 = ‖dyadicEigenResidualAt u Y z‖ ^ 2
   rw [dyadicEigenResidualAt_eq hAu hY hz]
 
 /-- Above cutoff two, the normalized full residual has an exact height-independent mass. -/

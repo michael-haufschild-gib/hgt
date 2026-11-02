@@ -1,6 +1,6 @@
 # The Window Tower of Spec ℤ (WTZ)
 
-Namespace `GaloisForLFunctions.WindowTowerOfSpecZ`; umbrella `WindowTowerOfSpecZ.lean`; 12 modules.
+Namespace `GaloisForLFunctions.WindowTowerOfSpecZ`; umbrella `WindowTowerOfSpecZ.lean`; 14 modules.
 Every theorem is unconditional; none assumes or proves RH.
 
 ## 1. Motivation
@@ -43,6 +43,7 @@ the sections, the growth law in `A`, and the place where selection has to happen
 | Stage datum | `stageForm N` | Weil's form of the weight truncated at `N`: `M_N + ½⟨c,·⟩² − ½⟨s,·⟩²` |
 | Collars, exit tail | `collarWeight A ε`, RHTower `archLevyAntideriv` | `1_{[−ε,0]} + 1_{[−A,−A+ε]}`; `Ω(ε) = ∫_ε^∞ ω`, the Gamma factor's exit tail |
 | Factored indicator, Euler factor | `factoredIndicator s`, `eulerInverse p`, `primesUpTo N` | `e_s` = indicator of the integers with prime factors in `s`; `e_{{p}} = (1 − δ_p)^{−1}` |
+| Exit potential, end profile, window potential | `exitPotential A`, `endProfile`, `windowPotential A` | `e_A(u) = Ω(−u) + Ω(A+u)`; `φ(t) = Ω(t) − ψ_{1/2}(e^t)`; `V_A = Ω_Γ + e_A − k_A` |
 | Adjoint shift | `adjointShift A t` | `(T_t^*H)(u) = 1_{u≥−A}H(u + t)`, the shift toward the left end |
 
 From CWS: `IsWindowTest`, `windowLevel = ⌊e^A⌋`, `foldEnergy`, `canonicalDensity`, `halfChebyshev`,
@@ -157,7 +158,21 @@ is inverted by `1 − δ_p`. On a window of level `N` the window zeta operator i
 its commuting unipotent Euler factors `(1 − p^{−1/2}T_{log p})^{−1}`, `p ≤ e^A`: the factorization of the
 window symbol survives the truncation.
 
-**J. Selection.** Tate pieces at a prime have the sign of the weight: `J^F_k(p) = F(p)(p^k − 1)` and
+**J. The end profile.** A point `u` of the window leaves through the right end under every jump
+longer than `−u` and is entered from beyond the left end under every jump longer than `A + u`.
+Exchanging the jump and point integrals gives the exit-charge inequality `∫ e_A H² ≤ J_∞(H)`,
+`e_A(u) = Ω(−u) + Ω(A + u)`; dropping the nonnegative interior jumps and folds,
+
+`Q(H) ≥ ∫ V_A H² + pole`, `V_A(u) = Ω_Γ + φ(−u) + φ(A + u)`, `φ(t) = Ω(t) − ψ_{1/2}(e^t)`:
+
+one universal end profile, the Gamma factor's exit tail minus the half-weighted Chebyshev count, as
+a function of the distances to the two ends, for every window of the tower. Where `V_A` pays the
+pole capacity `2 sinh(A/2) − A` pointwise, the window is positive. On prime-free windows the
+minimum is at the centre (`Ω` is midpoint convex), and `Ω_Γ + 2Ω(1/24) > 0`: **every window of
+length `≤ 1/12` is positive by its exit charge**, without any estimate of Weil's form. Beyond, `φ`
+turns negative like `−2e^{t/2}` and the interior jumps must pay.
+
+**K. Selection.** Tate pieces at a prime have the sign of the weight: `J^F_k(p) = F(p)(p^k − 1)` and
 `λ_F(p) = F(p) log p`. A flip twin has a negative Tate piece at its prime from the stage where the
 flip becomes visible. The shifted datum `ζ(s)ζ(s − ε)`, with zeros `ρ + ε` off the line, is Tate
 positive in every positive dimension. Near dimension zero, Tate positivity at the primes is exactly
@@ -203,11 +218,14 @@ AHD/ADT (`jordanTotient`, `natCard_projPoints_mul_totient`, `natCard_primVec_eq_
 (`weilQuad`, Cauchy–Schwarz); RHTower `mPart` (power dilation); mathlib `ArithmeticFunction`. The coefficientwise Jordan derivative is
 the window form of RHTower `hasDerivAt_suzukiShiftedCoefficient`.
 
-**To develop.** The full pointwise exit-charge inequality `J_∞(H) ≥ ∫H(u)²(Ω(−u) + Ω(A+u))` and the
-Poincaré inequality for the censored jump process against the end-profile potential
-`Ω_Γ + φ(d₋) + φ(d₊)`, `φ(t) = Ω(t) − ψ_{1/2}(e^t)` (AOT has the smooth-gauge killing potential); the
-higher critical lengths of the window index (the first is SRT's contact aperture); positivity
-principles for exponential polynomials in the dimension.
+- The exit-charge (Hardy-type) inequality for the Gamma factor on a window, by exchanging jump and
+  point integrals; the end-profile potential and pointwise payment; elementary bounds on `Ω`
+  (closed form, `arctan(1/√3) = π/6`, `log 95 ≥ 22/5`).
+
+**To develop.** The Poincaré inequality for the interior (censored) jumps against the end-profile
+potential where `V_A` is negative, uniformly in `A`; the higher critical lengths of the window index
+(the first is SRT's contact aperture); positivity principles for exponential polynomials in the
+dimension.
 
 ## 7. Open research topics
 
@@ -227,8 +245,9 @@ principles for exponential polynomials in the dimension.
    nondecreasing; its first critical length is twice SRT's contact aperture (`zetaContactAperture`,
    `≥ 0.362` off RH), and CWS bounds the index by one below `log 2 + 1/50`. Open: the higher critical
    lengths `A_k = inf{A : ι(A) ≥ k}`, and AOT's spectral jumps resolved by stages.
-4. **Window capacity.** A Poincaré inequality for the interior jumps against `archWindowKilling − k_A`
-   uniform in `A` (RH; shared with CWS §7).
+4. **Window capacity.** The pointwise part is done: `Q ≥ ∫V_A H² + pole` with the universal end
+   profile, and short windows (`≤ 1/12`) are positive by it. Open: a Poincaré inequality for the
+   interior jumps on the region where `V_A < 0`, uniform in `A` (RH; shared with CWS §7).
 5. **The exponent.** Close the gap between the zero width and the negativity exponent without
    no-clustering hypotheses.
 
@@ -248,6 +267,8 @@ principles for exponential polynomials in the dimension.
 | Inverse limit = Dirichlet ring | `iInf_truncIdeal`, `existsUnique_limit` |
 | Jordan family: `J_0 = 1`, `∂J|₀ = Λ`, Tate pieces = point counts | `jordanFun_zero`, `jordanFun_eq`, `hasDerivAt_jordanTotient_zero`, `jordanTotient_eq_card_projPoints`, `jordanTotient_eq_card_primVec`, `windowRepFun_jordan_nonneg` |
 | Weil's form = 1-jet of the Tate function at dimension zero | `tateFunction_zero`, `hasDerivAt_tateFunction`, `tateFunction_succ`, `tateFunction_firstPrime`, `weilQuad_eq_tateJet` |
+| The exit-charge inequality; the end profile; pointwise payment | `integral_exitWeight_mul_le`, `lintegral_exitPotential_le`, `integral_exitPotential_mul_le`, `exitPotential_sub_canonicalDensity`, `weilQuad_ge_endProfile`, `weilQuad_ge_windowPotential`, `weilQuad_nonneg_of_potential` |
+| Short windows are positive by their exit charge | `two_mul_archLevyAntideriv_half_le_exitPotential`, `weilQuad_nonneg_of_primeFree_centre`, `archLevyAntideriv_one_div_24_ge`, `weilQuad_nonneg_of_le_one_twelfth` |
 | Transfer across a stage; composite stages free | `markovForm_succ`, `weilQuad_eq_stageForm_add_fold`, `weilQuad_ge_stageForm_sub_endMass`, `weilQuad_nonneg_of_endCoercive`, `weilQuad_eq_stageForm_of_not_primePow` |
 | The exit charge pays every new fold | `collar_le_jump`, `levyJump_ge_collar`, `primeJumpWeight_le`, `log_three_le_archLevyAntideriv`, `primeJumpWeight_le_archLevyAntideriv`, `weilQuad_ge_reducedStageForm` |
 | The window Euler product | `isMultiplicative_factoredIndicator`, `factoredIndicator_mul_insert`, `prod_factoredIndicator`, `eulerFactor_mul_inverse`, `windowRep_zeta_eq_prod`, `windowRep_eulerFactor_mul_inverse` |
@@ -265,6 +286,7 @@ principles for exponential polynomials in the dimension.
 
 | Trap | Truth |
 |---|---|
+| Positivity of short windows needs an estimate of Weil's form | Up to length `1/12` the exit charge alone pays it, pointwise |
 | The window algebra is the semilocal algebra of the Euler factors at `p ≤ e^A` | It is the Dirichlet ring truncated at `n ≤ e^A`; composites are products, truncation is by size |
 | The tower is a direct limit of finite objects carrying `h¹` | The algebras are finite-dimensional; the modules are not, and no window has a finite-dimensional realization (CWS) |
 | A new prime power is a large perturbation of the window | Algebraically it is a socle element; it composes to zero with every fold until stage `2n` |

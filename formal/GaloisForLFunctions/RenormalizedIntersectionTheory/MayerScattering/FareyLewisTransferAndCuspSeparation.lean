@@ -62,7 +62,7 @@ theorem lewisModularInversion_adj_comp_self (s : ℂ) (f : ℝ → ℂ) {a : ℝ
     ← Complex.cpow_add _ _ haC]
   have hexp : -(2 * riemannMayerReflect s) + 2 * s = ((4 * s.re - 1 : ℝ) : ℂ) := by
     unfold riemannMayerReflect
-    apply Complex.ext <;> simp <;> ring
+    (apply Complex.ext <;> simp); ring
   rw [hexp, ← Complex.ofReal_cpow ha.le]
 
 /-- Dual polar square `(I_s(I_{1/2 - conj s} f))(a) = a^(1 - 4 Re s) f(a)` on `(0, ∞)`. -/
@@ -76,7 +76,7 @@ theorem lewisModularInversion_self_comp_adj (s : ℂ) (f : ℝ → ℂ) {a : ℝ
 
 private theorem integrableOn_lewisCriticalWeight_Ioc {p q : ℝ} (hp : 0 < p) :
     IntegrableOn lewisCriticalWeight (Ioc p q) := by
-  by_cases hpq : p ≤ q
+  by_cases hpq : p < q
   · exact (lewisCriticalWeight_continuousOn.mono
       (fun x hx => lt_of_lt_of_le hp hx.1)).integrableOn_Icc.mono_set Ioc_subset_Icc_self
   · rw [Ioc_eq_empty hpq]
@@ -106,7 +106,7 @@ private theorem indicator_Ioc_normSq_integrable {p q : ℝ} (hp : 0 < p) :
       (Ioc p q).indicator lewisCriticalWeight := by
     ext a
     by_cases ha : a ∈ Ioc p q <;> simp [ha]
-  rw [hfun, integrableOn_indicator_iff measurableSet_Ioc, inter_eq_self_of_subset_right hsub]
+  rw [hfun, integrableOn_indicator_iff measurableSet_Ioc, inter_eq_self_of_subset_left hsub]
   exact integrableOn_lewisCriticalWeight_Ioc hp
 
 private theorem indicator_Ioc_weighted_integral {p q : ℝ} (hp : 0 < p) (w : ℝ → ℝ) :
@@ -250,7 +250,7 @@ theorem integral_Ioi_zero_add_subst {E : Type*} [NormedAddCommGroup E] [NormedSp
   have himg : (fun a : ℝ => a + c) '' Ioi (0 : ℝ) = Ioi c := by
     ext b
     simp only [mem_image, mem_Ioi]
-    exact ⟨fun ⟨a, ha, rfl⟩ => by linarith, fun hb => ⟨b - c, by linarith, sub_add_cancel b c⟩⟩
+    exact ⟨fun ⟨a, ha, hab⟩ => by linarith, fun hb => ⟨b - c, by linarith, sub_add_cancel b c⟩⟩
   have hinj : InjOn (fun a : ℝ => a + c) (Ioi 0) := fun _ _ _ _ h => add_right_cancel h
   have hderiv : ∀ a ∈ Ioi (0 : ℝ), HasDerivWithinAt (fun x : ℝ => x + c) 1 (Ioi 0) a :=
     fun a _ => ((hasDerivAt_id a).add_const c).hasDerivWithinAt
@@ -283,41 +283,41 @@ theorem lewisCriticalNormSq_gaussMayerBranch_zero (s : ℂ) (f : ℝ → ℂ) :
   simpa [add_sub_cancel_right] using hshift
 
 private theorem two_neg_half_ge_half : (1 / 2 : ℝ) ≤ (2 : ℝ) ^ (-(1 / 2 : ℝ)) := by
-  have h4 : (1 / 2 : ℝ) = (4 : ℝ) ^ (-(1 / 2 : ℝ)) := by
-    rw [show (4 : ℝ) = (2 : ℝ) ^ (2 : ℝ) by norm_num, ← Real.rpow_mul (by norm_num)]
+  have hsq : ((2 : ℝ) ^ (-(1 / 2 : ℝ))) ^ 2 = (1 / 2 : ℝ) := by
+    rw [← Real.rpow_natCast, ← Real.rpow_mul (by norm_num)]
     norm_num
-  rw [h4]
-  exact Real.rpow_le_rpow_of_nonpos (by norm_num) (by norm_num) (by norm_num)
+  have hle : ((1 / 2 : ℝ)) ^ 2 ≤ ((2 : ℝ) ^ (-(1 / 2 : ℝ))) ^ 2 := by rw [hsq]; norm_num
+  exact (sq_le_sq₀ (by norm_num) (Real.rpow_pos_of_pos (by norm_num) _).le).mp hle
 
 private theorem weight_shift_ratio_bound_Ioi_one {b : ℝ} (hb : 1 < b) :
     ((b - 1) + (b - 1)⁻¹) ^ (-6 : ℝ) ≤ (4 : ℝ) ^ (6 : ℝ) * (b + b⁻¹) ^ (-6 : ℝ) ∧
       lewisCriticalWeight (b - 1) ≤ (4 : ℝ) ^ (7 : ℝ) * lewisCriticalWeight b := by
-  let u : ℝ := b - 1
-  have hu_pos : 0 < u := sub_pos.mpr hb
+  have hu_pos : 0 < b - 1 := sub_pos.mpr hb
   have hb_pos : 0 < b := zero_lt_one.trans hb
   by_cases hb2 : b ≤ 2
-  · have hu_le1 : u ≤ 1 := by dsimp [u]; linarith
-    have hu6 : (u + u⁻¹) ^ (-6 : ℝ) ≤ u ^ (6 : ℝ) := by
+  · have hu_le1 : b - 1 ≤ 1 := by linarith
+    have hu6 : ((b - 1) + (b - 1)⁻¹) ^ (-6 : ℝ) ≤ (b - 1) ^ (6 : ℝ) := by
       calc
-        (u + u⁻¹) ^ (-6 : ℝ) ≤ (u⁻¹) ^ (-6 : ℝ) :=
+        ((b - 1) + (b - 1)⁻¹) ^ (-6 : ℝ) ≤ ((b - 1)⁻¹) ^ (-6 : ℝ) :=
           Real.rpow_le_rpow_of_nonpos (inv_pos.mpr hu_pos) (by linarith) (by norm_num)
-        _ = u ^ (6 : ℝ) := by rw [Real.inv_rpow hu_pos.le, ← Real.rpow_neg hu_pos.le]; norm_num
-    have hu6_le1 : u ^ (6 : ℝ) ≤ 1 := Real.rpow_le_one hu_pos.le hu_le1 (by norm_num)
+        _ = (b - 1) ^ (6 : ℝ) := by rw [Real.inv_rpow hu_pos.le, ← Real.rpow_neg hu_pos.le]; norm_num
+    have hu6_le1 : (b - 1) ^ (6 : ℝ) ≤ 1 := Real.rpow_le_one hu_pos.le hu_le1 (by norm_num)
     have hb_sum_le : b + b⁻¹ ≤ 3 := by
       have : b⁻¹ ≤ 1 := inv_le_one_of_one_le₀ hb.le
       linarith
     have hb_low : (3 : ℝ) ^ (-6 : ℝ) ≤ (b + b⁻¹) ^ (-6 : ℝ) :=
       Real.rpow_le_rpow_of_nonpos (add_pos hb_pos (inv_pos.mpr hb_pos)) hb_sum_le (by norm_num)
     have hc1 : (1 : ℝ) ≤ (4 : ℝ) ^ (6 : ℝ) * (3 : ℝ) ^ (-6 : ℝ) := by norm_num
-    have hfirst : (u + u⁻¹) ^ (-6 : ℝ) ≤ (4 : ℝ) ^ (6 : ℝ) * (b + b⁻¹) ^ (-6 : ℝ) :=
+    have hfirst : ((b - 1) + (b - 1)⁻¹) ^ (-6 : ℝ) ≤ (4 : ℝ) ^ (6 : ℝ) * (b + b⁻¹) ^ (-6 : ℝ) :=
       (hu6.trans hu6_le1).trans (hc1.trans (mul_le_mul_of_nonneg_left hb_low (by norm_num)))
     refine ⟨hfirst, ?_⟩
     unfold lewisCriticalWeight
-    have hw_u : (u + u⁻¹) ^ (-6 : ℝ) * u ^ (-(1 / 2 : ℝ)) ≤ 1 := by
+    have hw_u : ((b - 1) + (b - 1)⁻¹) ^ (-6 : ℝ) * (b - 1) ^ (-(1 / 2 : ℝ)) ≤ 1 := by
       calc
-        (u + u⁻¹) ^ (-6 : ℝ) * u ^ (-(1 / 2 : ℝ)) ≤ u ^ (6 : ℝ) * u ^ (-(1 / 2 : ℝ)) :=
+        ((b - 1) + (b - 1)⁻¹) ^ (-6 : ℝ) * (b - 1) ^ (-(1 / 2 : ℝ))
+            ≤ (b - 1) ^ (6 : ℝ) * (b - 1) ^ (-(1 / 2 : ℝ)) :=
           mul_le_mul_of_nonneg_right hu6 (Real.rpow_pos_of_pos hu_pos _).le
-        _ = u ^ (11 / 2 : ℝ) := by rw [← Real.rpow_add hu_pos]; norm_num
+        _ = (b - 1) ^ (11 / 2 : ℝ) := by rw [← Real.rpow_add hu_pos]; norm_num
         _ ≤ 1 := Real.rpow_le_one hu_pos.le hu_le1 (by norm_num)
     have hb_half : (2 : ℝ) ^ (-(1 / 2 : ℝ)) ≤ b ^ (-(1 / 2 : ℝ)) :=
       Real.rpow_le_rpow_of_nonpos hb_pos hb2 (by norm_num)
@@ -326,13 +326,12 @@ private theorem weight_shift_ratio_bound_Ioi_one {b : ℝ} (hb : 1 < b) :
     have hc2 : (1 : ℝ) ≤ (4 : ℝ) ^ (7 : ℝ) * ((b + b⁻¹) ^ (-6 : ℝ) * b ^ (-(1 / 2 : ℝ))) :=
       hnum.trans (mul_le_mul_of_nonneg_left hprod (by norm_num))
     exact hw_u.trans hc2
-  · push_neg at hb2
-    have hu_ge : b / 2 ≤ u := by dsimp [u]; linarith
-    have hb_sum_le : b + b⁻¹ ≤ 4 * (u + u⁻¹) := by
+  · rw [not_le] at hb2
+    have hb_sum_le : b + b⁻¹ ≤ 4 * ((b - 1) + (b - 1)⁻¹) := by
       have hbinv : b⁻¹ ≤ 1 := inv_le_one_of_one_le₀ hb.le
-      have huinv : 0 < u⁻¹ := inv_pos.mpr hu_pos
+      have huinv : 0 < (b - 1)⁻¹ := inv_pos.mpr hu_pos
       linarith
-    have hfirst : (u + u⁻¹) ^ (-6 : ℝ) ≤ (4 : ℝ) ^ (6 : ℝ) * (b + b⁻¹) ^ (-6 : ℝ) := by
+    have hfirst : ((b - 1) + (b - 1)⁻¹) ^ (-6 : ℝ) ≤ (4 : ℝ) ^ (6 : ℝ) * (b + b⁻¹) ^ (-6 : ℝ) := by
       have h := Real.rpow_le_rpow_of_nonpos (add_pos hb_pos (inv_pos.mpr hb_pos)) hb_sum_le
         (by norm_num : (-6 : ℝ) ≤ 0)
       rw [Real.mul_rpow (by norm_num) (add_pos hu_pos (inv_pos.mpr hu_pos)).le] at h
@@ -342,10 +341,11 @@ private theorem weight_shift_ratio_bound_Ioi_one {b : ℝ} (hb : 1 < b) :
       linarith
     refine ⟨hfirst, ?_⟩
     unfold lewisCriticalWeight
-    have huhalf : u ^ (-(1 / 2 : ℝ)) ≤ 4 * b ^ (-(1 / 2 : ℝ)) := by
-      have h1 := Real.rpow_le_rpow_of_nonpos (half_pos hb_pos) hu_ge
-        (by norm_num : -(1 / 2 : ℝ) ≤ 0)
-      rw [div_eq_mul_inv, Real.mul_rpow hb_pos.le (by norm_num)] at h1
+    have huhalf : (b - 1) ^ (-(1 / 2 : ℝ)) ≤ 4 * b ^ (-(1 / 2 : ℝ)) := by
+      have hexp_np : (-(1 / 2 : ℝ)) ≤ 0 := by norm_num
+      have h1 : (b - 1) ^ (-(1 / 2 : ℝ)) ≤ (b * (2 : ℝ)⁻¹) ^ (-(1 / 2 : ℝ)) :=
+        Real.rpow_le_rpow_of_nonpos (mul_pos hb_pos (by norm_num)) (by linarith) hexp_np
+      rw [Real.mul_rpow hb_pos.le (by norm_num : (0 : ℝ) ≤ (2 : ℝ)⁻¹)] at h1
       have h2 : ((2 : ℝ)⁻¹) ^ (-(1 / 2 : ℝ)) ≤ 4 := by
         rw [Real.inv_rpow (by norm_num), ← Real.rpow_neg (by norm_num), neg_neg]
         calc
@@ -353,12 +353,12 @@ private theorem weight_shift_ratio_bound_Ioi_one {b : ℝ} (hb : 1 < b) :
             Real.rpow_le_rpow_of_exponent_le (by norm_num) (by norm_num)
           _ = 4 := by norm_num
       calc
-        u ^ (-(1 / 2 : ℝ)) ≤ b ^ (-(1 / 2 : ℝ)) * ((2 : ℝ)⁻¹) ^ (-(1 / 2 : ℝ)) := h1
+        (b - 1) ^ (-(1 / 2 : ℝ)) ≤ b ^ (-(1 / 2 : ℝ)) * ((2 : ℝ)⁻¹) ^ (-(1 / 2 : ℝ)) := h1
         _ ≤ b ^ (-(1 / 2 : ℝ)) * 4 :=
           mul_le_mul_of_nonneg_left h2 (Real.rpow_pos_of_pos hb_pos _).le
         _ = 4 * b ^ (-(1 / 2 : ℝ)) := by ring
     calc
-      (u + u⁻¹) ^ (-6 : ℝ) * u ^ (-(1 / 2 : ℝ))
+      ((b - 1) + (b - 1)⁻¹) ^ (-6 : ℝ) * (b - 1) ^ (-(1 / 2 : ℝ))
           ≤ ((4 : ℝ) ^ (6 : ℝ) * (b + b⁻¹) ^ (-6 : ℝ)) * (4 * b ^ (-(1 / 2 : ℝ))) :=
         mul_le_mul hfirst huhalf (by positivity) (by positivity)
       _ = (4 : ℝ) ^ (7 : ℝ) * ((b + b⁻¹) ^ (-6 : ℝ) * b ^ (-(1 / 2 : ℝ))) := by norm_num; ring
@@ -389,7 +389,7 @@ theorem gaussMayerBranch_zero_normBounded_iff {s : ℂ} (hs0 : 0 ≤ s.re) :
   constructor
   · rintro ⟨C, _, hC⟩
     by_contra hgt
-    push_neg at hgt
+    rw [not_le] at hgt
     let δ : ℝ := 4 * s.re - 1
     have hδ_pos : 0 < δ := by dsimp [δ]; linarith
     let K : ℝ := (2 : ℝ) ^ (6 : ℝ) * (C + 1)
@@ -429,10 +429,11 @@ theorem gaussMayerBranch_zero_normBounded_iff {s : ℂ} (hs0 : 0 ≤ s.re) :
     have hK_lt : K < (R - 1) ^ δ := by
       have h1 : K = (K ^ (1 / δ)) ^ δ := by
         rw [← Real.rpow_mul hK_pos.le, one_div_mul_cancel hδ_pos.ne', Real.rpow_one]
-      have hR2 : K ^ (1 / δ) + 1 < R - 1 := by
-        have := le_max_right 2 (K ^ (1 / δ) + 2); dsimp [R] at *; linarith
+      have hR2 : K ^ (1 / δ) < R - 1 := by
+        have hm : K ^ (1 / δ) + 2 ≤ R := le_max_right 2 (K ^ (1 / δ) + 2)
+        linarith
       rw [h1]
-      exact Real.rpow_lt_rpow (Real.rpow_pos_of_pos hK_pos _).le (by linarith) hδ_pos
+      exact Real.rpow_lt_rpow (Real.rpow_pos_of_pos hK_pos _).le hR2 hδ_pos
     have hlow_pt : ∀ b ∈ Ioc R (R + 1),
         (C + 1) * lewisCriticalWeight b ≤
           ((b - 1) + (b - 1)⁻¹) ^ (-6 : ℝ) * (b - 1) ^ (4 * s.re - 3 / 2) := by
@@ -481,44 +482,43 @@ theorem gaussMayerBranch_zero_normBounded_iff {s : ℂ} (hs0 : 0 ≤ s.re) :
         ‖f b‖ ^ 2 * (((b - 1) + (b - 1)⁻¹) ^ (-6 : ℝ) * (b - 1) ^ (4 * s.re - 3 / 2)) ≤
           (4 : ℝ) ^ (7 : ℝ) * (‖f b‖ ^ 2 * lewisCriticalWeight b) := by
       intro b hb
-      let u : ℝ := b - 1
-      have hu_pos : 0 < u := sub_pos.mpr hb
+      have hu_pos : 0 < b - 1 := sub_pos.mpr hb
       by_cases hb2 : b ≤ 2
-      · have hu_le1 : u ≤ 1 := by dsimp [u]; linarith
-        have hu6 : (u + u⁻¹) ^ (-6 : ℝ) ≤ u ^ (6 : ℝ) := by
+      · have hu_le1 : b - 1 ≤ 1 := by linarith
+        have hu6 : ((b - 1) + (b - 1)⁻¹) ^ (-6 : ℝ) ≤ (b - 1) ^ (6 : ℝ) := by
           calc
-            (u + u⁻¹) ^ (-6 : ℝ) ≤ (u⁻¹) ^ (-6 : ℝ) :=
+            ((b - 1) + (b - 1)⁻¹) ^ (-6 : ℝ) ≤ ((b - 1)⁻¹) ^ (-6 : ℝ) :=
               Real.rpow_le_rpow_of_nonpos (inv_pos.mpr hu_pos) (by linarith) (by norm_num)
-            _ = u ^ (6 : ℝ) := by
+            _ = (b - 1) ^ (6 : ℝ) := by
               rw [Real.inv_rpow hu_pos.le, ← Real.rpow_neg hu_pos.le]; norm_num
-        have hker_le1 : (u + u⁻¹) ^ (-6 : ℝ) * u ^ (4 * s.re - 3 / 2) ≤ 1 := by
+        have hker_le1 : ((b - 1) + (b - 1)⁻¹) ^ (-6 : ℝ) * (b - 1) ^ (4 * s.re - 3 / 2) ≤ 1 := by
           calc
-            (u + u⁻¹) ^ (-6 : ℝ) * u ^ (4 * s.re - 3 / 2)
-                ≤ u ^ (6 : ℝ) * u ^ (4 * s.re - 3 / 2) :=
+            ((b - 1) + (b - 1)⁻¹) ^ (-6 : ℝ) * (b - 1) ^ (4 * s.re - 3 / 2)
+                ≤ (b - 1) ^ (6 : ℝ) * (b - 1) ^ (4 * s.re - 3 / 2) :=
               mul_le_mul_of_nonneg_right hu6 (Real.rpow_pos_of_pos hu_pos _).le
-            _ = u ^ (4 * s.re + 9 / 2) := by rw [← Real.rpow_add hu_pos]; congr 1; ring
+            _ = (b - 1) ^ (4 * s.re + 9 / 2) := by rw [← Real.rpow_add hu_pos]; congr 1; ring
             _ ≤ 1 := Real.rpow_le_one hu_pos.le hu_le1 (by linarith)
         have hstep := hker_le1.trans (one_le_four_pow_seven_mul_weight_Ioc_two hb hb2)
         calc
-          ‖f b‖ ^ 2 * ((u + u⁻¹) ^ (-6 : ℝ) * u ^ (4 * s.re - 3 / 2))
+          ‖f b‖ ^ 2 * (((b - 1) + (b - 1)⁻¹) ^ (-6 : ℝ) * (b - 1) ^ (4 * s.re - 3 / 2))
               ≤ ‖f b‖ ^ 2 * ((4 : ℝ) ^ (7 : ℝ) * lewisCriticalWeight b) :=
             mul_le_mul_of_nonneg_left hstep (sq_nonneg _)
           _ = (4 : ℝ) ^ (7 : ℝ) * (‖f b‖ ^ 2 * lewisCriticalWeight b) := by ring
-      · push_neg at hb2
-        have hu_ge1 : 1 ≤ u := by dsimp [u]; linarith
-        have hu_exp : u ^ (4 * s.re - 3 / 2) ≤ u ^ (-(1 / 2 : ℝ)) :=
+      · rw [not_le] at hb2
+        have hu_ge1 : 1 ≤ b - 1 := by linarith
+        have hu_exp : (b - 1) ^ (4 * s.re - 3 / 2) ≤ (b - 1) ^ (-(1 / 2 : ℝ)) :=
           Real.rpow_le_rpow_of_exponent_le hu_ge1 (by linarith)
-        have hker_le : (u + u⁻¹) ^ (-6 : ℝ) * u ^ (4 * s.re - 3 / 2) ≤
+        have hker_le : ((b - 1) + (b - 1)⁻¹) ^ (-6 : ℝ) * (b - 1) ^ (4 * s.re - 3 / 2) ≤
             (4 : ℝ) ^ (7 : ℝ) * lewisCriticalWeight b := by
           calc
-            (u + u⁻¹) ^ (-6 : ℝ) * u ^ (4 * s.re - 3 / 2)
-                ≤ (u + u⁻¹) ^ (-6 : ℝ) * u ^ (-(1 / 2 : ℝ)) :=
+            ((b - 1) + (b - 1)⁻¹) ^ (-6 : ℝ) * (b - 1) ^ (4 * s.re - 3 / 2)
+                ≤ ((b - 1) + (b - 1)⁻¹) ^ (-6 : ℝ) * (b - 1) ^ (-(1 / 2 : ℝ)) :=
               mul_le_mul_of_nonneg_left hu_exp (by positivity)
             _ = lewisCriticalWeight (b - 1) := rfl
             _ ≤ (4 : ℝ) ^ (7 : ℝ) * lewisCriticalWeight b :=
               (weight_shift_ratio_bound_Ioi_one hb).2
         calc
-          ‖f b‖ ^ 2 * ((u + u⁻¹) ^ (-6 : ℝ) * u ^ (4 * s.re - 3 / 2))
+          ‖f b‖ ^ 2 * (((b - 1) + (b - 1)⁻¹) ^ (-6 : ℝ) * (b - 1) ^ (4 * s.re - 3 / 2))
               ≤ ‖f b‖ ^ 2 * ((4 : ℝ) ^ (7 : ℝ) * lewisCriticalWeight b) :=
             mul_le_mul_of_nonneg_left hker_le (sq_nonneg _)
           _ = (4 : ℝ) ^ (7 : ℝ) * (‖f b‖ ^ 2 * lewisCriticalWeight b) := by ring
@@ -539,8 +539,9 @@ theorem gaussMayerBranch_zero_normBounded_iff {s : ℂ} (hs0 : 0 ≤ s.re) :
         rw [← Ioc_union_Ioi_eq_Ioi zero_le_one]
         exact setIntegral_union (Set.disjoint_left.mpr fun _ hx hy => (not_lt.mpr hx.2) hy)
           measurableSet_Ioi (hf.mono_set Ioc_subset_Ioi_self) hf1
-      rw [hsplit]
-      nlinarith
+      have hle_tot : ∫ b in Ioi (1 : ℝ), ‖f b‖ ^ 2 * lewisCriticalWeight b ≤
+          lewisCriticalNormSq f := by linarith only [hsplit, hrest]
+      exact hmono.trans (mul_le_mul_of_nonneg_left hle_tot (by positivity))
     · rw [integral_undef hint_lhs]
       exact mul_nonneg (by positivity) (lewisCriticalNormSq_nonneg f)
 
@@ -561,6 +562,87 @@ theorem gaussMayerBranch_zero_pair_normBounded_iff {s : ℂ} (hs0 : 0 ≤ s.re) 
   · rintro ⟨h1, h2⟩; linarith
   · intro h; exact ⟨by linarith, by linarith⟩
 
+private theorem weight_add_nat_bound {m : ℕ} (hm : 1 ≤ m) {a : ℝ} (ha : 0 < a) :
+    lewisCriticalWeight a ≤ ((m : ℝ) + 2) ^ (7 : ℝ) * lewisCriticalWeight (a + (m : ℝ)) := by
+  have hmR : (1 : ℝ) ≤ m := by exact_mod_cast hm
+  have hm2_pos : (0 : ℝ) < (m : ℝ) + 2 := by linarith
+  have hK1_pos : (0 : ℝ) < ((m : ℝ) + 2) ^ (7 : ℝ) := Real.rpow_pos_of_pos hm2_pos _
+  have ham_pos : 0 < a + (m : ℝ) := by linarith
+  by_cases ha1 : a ≤ 1
+  · have hw_a : lewisCriticalWeight a ≤ 1 := by
+      unfold lewisCriticalWeight
+      have h6 : (a + a⁻¹) ^ (-6 : ℝ) ≤ a ^ (6 : ℝ) := by
+        calc
+          (a + a⁻¹) ^ (-6 : ℝ) ≤ (a⁻¹) ^ (-6 : ℝ) :=
+            Real.rpow_le_rpow_of_nonpos (inv_pos.mpr ha) (by linarith) (by norm_num)
+          _ = a ^ (6 : ℝ) := by rw [Real.inv_rpow ha.le, ← Real.rpow_neg ha.le]; norm_num
+      calc
+        (a + a⁻¹) ^ (-6 : ℝ) * a ^ (-(1 / 2 : ℝ)) ≤ a ^ (6 : ℝ) * a ^ (-(1 / 2 : ℝ)) :=
+          mul_le_mul_of_nonneg_right h6 (Real.rpow_pos_of_pos ha _).le
+        _ = a ^ (11 / 2 : ℝ) := by rw [← Real.rpow_add ha]; norm_num
+        _ ≤ 1 := Real.rpow_le_one ha.le ha1 (by norm_num)
+    have ham_sum : (a + m) + (a + m)⁻¹ ≤ (m : ℝ) + 2 := by
+      have : (a + (m : ℝ))⁻¹ ≤ 1 := inv_le_one_of_one_le₀ (by linarith)
+      linarith
+    have h6_low : ((m : ℝ) + 2) ^ (-6 : ℝ) ≤ ((a + m) + (a + m)⁻¹) ^ (-6 : ℝ) :=
+      Real.rpow_le_rpow_of_nonpos (add_pos ham_pos (inv_pos.mpr ham_pos)) ham_sum (by norm_num)
+    have hhalf_low : ((m : ℝ) + 2) ^ (-1 : ℝ) ≤ (a + (m : ℝ)) ^ (-(1 / 2 : ℝ)) :=
+      (Real.rpow_le_rpow_of_exponent_le (by linarith) (by norm_num)).trans
+        (Real.rpow_le_rpow_of_nonpos ham_pos (by linarith) (by norm_num))
+    have hprod := mul_le_mul h6_low hhalf_low (by positivity) (by positivity)
+    have hid : ((m : ℝ) + 2) ^ (7 : ℝ) *
+        (((m : ℝ) + 2) ^ (-6 : ℝ) * ((m : ℝ) + 2) ^ (-1 : ℝ)) = 1 := by
+      rw [← Real.rpow_add hm2_pos, ← Real.rpow_add hm2_pos]
+      norm_num
+    unfold lewisCriticalWeight
+    calc
+      (a + a⁻¹) ^ (-6 : ℝ) * a ^ (-(1 / 2 : ℝ)) ≤ 1 := hw_a
+      _ = ((m : ℝ) + 2) ^ (7 : ℝ) *
+            (((m : ℝ) + 2) ^ (-6 : ℝ) * ((m : ℝ) + 2) ^ (-1 : ℝ)) := hid.symm
+      _ ≤ ((m : ℝ) + 2) ^ (7 : ℝ) *
+            (((a + m) + (a + m)⁻¹) ^ (-6 : ℝ) * (a + (m : ℝ)) ^ (-(1 / 2 : ℝ))) :=
+        mul_le_mul_of_nonneg_left hprod hK1_pos.le
+  · rw [not_le] at ha1
+    have ham_le : a + (m : ℝ) ≤ ((m : ℝ) + 2) * a := by
+      have hma : (m : ℝ) ≤ (m : ℝ) * a := le_mul_of_one_le_right (by linarith) ha1.le
+      linarith
+    have hsum_le : (a + m) + (a + m)⁻¹ ≤ ((m : ℝ) + 2) * (a + a⁻¹) := by
+      have hainv : (a + (m : ℝ))⁻¹ ≤ a⁻¹ := (inv_le_inv₀ ham_pos ha).mpr (by linarith)
+      have hminv : a⁻¹ ≤ ((m : ℝ) + 2) * a⁻¹ :=
+        le_mul_of_one_le_left (inv_pos.mpr ha).le (by linarith)
+      linarith
+    have h6_low : ((m : ℝ) + 2) ^ (-6 : ℝ) * (a + a⁻¹) ^ (-6 : ℝ) ≤
+        ((a + m) + (a + m)⁻¹) ^ (-6 : ℝ) := by
+      have h := Real.rpow_le_rpow_of_nonpos (add_pos ham_pos (inv_pos.mpr ham_pos)) hsum_le
+        (by norm_num : (-6 : ℝ) ≤ 0)
+      rwa [Real.mul_rpow hm2_pos.le (add_pos ha (inv_pos.mpr ha)).le] at h
+    have hhalf_low : ((m : ℝ) + 2) ^ (-1 : ℝ) * a ^ (-(1 / 2 : ℝ)) ≤
+        (a + (m : ℝ)) ^ (-(1 / 2 : ℝ)) := by
+      have h := Real.rpow_le_rpow_of_nonpos ham_pos ham_le (by norm_num : (-(1 / 2 : ℝ)) ≤ 0)
+      rw [Real.mul_rpow hm2_pos.le ha.le] at h
+      exact (mul_le_mul_of_nonneg_right
+        (Real.rpow_le_rpow_of_exponent_le (by linarith) (by norm_num))
+        (Real.rpow_pos_of_pos ha _).le).trans h
+    unfold lewisCriticalWeight
+    have hprod := mul_le_mul h6_low hhalf_low (by positivity) (by positivity)
+    have hid : ((m : ℝ) + 2) ^ (7 : ℝ) * ((m : ℝ) + 2) ^ (-6 : ℝ) *
+        ((m : ℝ) + 2) ^ (-1 : ℝ) = 1 := by
+      rw [mul_assoc, ← Real.rpow_add hm2_pos, ← Real.rpow_add hm2_pos]
+      norm_num
+    calc
+      (a + a⁻¹) ^ (-6 : ℝ) * a ^ (-(1 / 2 : ℝ))
+          = (((m : ℝ) + 2) ^ (7 : ℝ) * ((m : ℝ) + 2) ^ (-6 : ℝ) * ((m : ℝ) + 2) ^ (-1 : ℝ)) *
+              ((a + a⁻¹) ^ (-6 : ℝ) * a ^ (-(1 / 2 : ℝ))) := by rw [hid, one_mul]
+      _ = ((m : ℝ) + 2) ^ (7 : ℝ) *
+            ((((m : ℝ) + 2) ^ (-6 : ℝ) * (a + a⁻¹) ^ (-6 : ℝ)) *
+              (((m : ℝ) + 2) ^ (-1 : ℝ) * a ^ (-(1 / 2 : ℝ)))) := by ring
+      _ ≤ ((m : ℝ) + 2) ^ (7 : ℝ) *
+            (((a + m) + (a + m)⁻¹) ^ (-6 : ℝ) * (a + (m : ℝ)) ^ (-(1 / 2 : ℝ))) :=
+        mul_le_mul_of_nonneg_left hprod hK1_pos.le
+
+private def tailBranchInv (m : ℕ) (b : ℝ) : ℝ :=
+  (b - 1)⁻¹ - (m : ℝ)
+
 /-- **Tail Branches (`m ≥ 1`) Are Norm-Bounded Across `s.re ≥ 0`.** -/
 theorem gaussMayerBranch_tail_normBounded {m : ℕ} (hm : 1 ≤ m) {s : ℂ} (hs0 : 0 ≤ s.re) :
     ∃ C : ℝ, 0 ≤ C ∧ ∀ f : ℝ → ℂ,
@@ -568,17 +650,13 @@ theorem gaussMayerBranch_tail_normBounded {m : ℕ} (hm : 1 ≤ m) {s : ℂ} (hs
         lewisCriticalNormSq (gaussMayerBranch m s f) ≤ C * lewisCriticalNormSq f := by
   have hmR : (1 : ℝ) ≤ m := by exact_mod_cast hm
   have hm_pos : (0 : ℝ) < m := lt_of_lt_of_le zero_lt_one hmR
-  let K₁ : ℝ := ((m : ℝ) + 2) ^ (7 : ℝ)
-  have hK₁_pos : 0 < K₁ := by dsimp [K₁]; positivity
-  let C₀ : ℝ := K₁ * (4 : ℝ) ^ (7 : ℝ)
-  refine ⟨C₀, by dsimp [C₀]; positivity, fun f hf => ?_⟩
+  have hC0_pos : (0 : ℝ) < ((m : ℝ) + 2) ^ (7 : ℝ) * (4 : ℝ) ^ (7 : ℝ) := by positivity
+  refine ⟨((m : ℝ) + 2) ^ (7 : ℝ) * (4 : ℝ) ^ (7 : ℝ), hC0_pos.le, fun f hf => ?_⟩
   by_cases hint_m : IntegrableOn
       (fun a : ℝ => ‖gaussMayerBranch m s f a‖ ^ 2 * lewisCriticalWeight a) (Ioi 0)
-  · let S : Set ℝ := Ioo (1 : ℝ) (1 + (m : ℝ)⁻¹)
-    let ψ : ℝ → ℝ := fun b => (b - 1)⁻¹ - (m : ℝ)
-    have hψ_img : ψ '' S = Ioi (0 : ℝ) := by
+  · have hψ_img : tailBranchInv m '' Ioo (1 : ℝ) (1 + (m : ℝ)⁻¹) = Ioi (0 : ℝ) := by
       ext a
-      simp only [S, ψ, mem_image, mem_Ioo, mem_Ioi]
+      simp only [tailBranchInv, mem_image, mem_Ioo, mem_Ioi]
       constructor
       · rintro ⟨b, ⟨hb1, hb2⟩, rfl⟩
         have hu_pos : 0 < b - 1 := sub_pos.mpr hb1
@@ -593,45 +671,61 @@ theorem gaussMayerBranch_tail_normBounded {m : ℕ} (hm : 1 ≤ m) {s : ℂ} (hs
         · have : (a + (m : ℝ))⁻¹ < (m : ℝ)⁻¹ := (inv_lt_inv₀ ham_pos hm_pos).mpr (by linarith)
           linarith
         · simp [add_sub_cancel_left]
-    have hψ_inj : InjOn ψ S := by
-      intro b₁ hb₁ b₂ hb₂ heq
-      dsimp [ψ] at heq
+    have hψ_inj : InjOn (tailBranchInv m) (Ioo 1 (1 + (m : ℝ)⁻¹)) := by
+      intro b₁ _ b₂ _ heq
+      unfold tailBranchInv at heq
       have hinv : (b₁ - 1)⁻¹ = (b₂ - 1)⁻¹ := by linarith
       have hsub := inv_injective hinv
       linarith
-    have hψ_deriv : ∀ b ∈ S, HasDerivWithinAt ψ (-((b - 1) ^ 2)⁻¹) S b := by
+    have hψ_deriv : ∀ b ∈ Ioo (1 : ℝ) (1 + (m : ℝ)⁻¹),
+        HasDerivWithinAt (tailBranchInv m) (-((b - 1) ^ 2)⁻¹) (Ioo 1 (1 + (m : ℝ)⁻¹)) b := by
       intro b hb
       have hu : b - 1 ≠ 0 := (sub_pos.mpr hb.1).ne'
       have hd1 : HasDerivAt (fun x : ℝ => x - 1) 1 b := (hasDerivAt_id b).sub_const 1
-      have hd2 : HasDerivAt (fun x : ℝ => (x - 1)⁻¹ - (m : ℝ)) (-((b - 1) ^ 2)⁻¹ * 1) b :=
-        (hd1.inv_fun).sub_const (m : ℝ)
-      rw [mul_one] at hd2
+      have hd2 : HasDerivAt (tailBranchInv m) (-1 / (b - 1) ^ 2) b :=
+        (hd1.fun_inv hu).sub_const (m : ℝ)
+      rw [neg_div, one_div] at hd2
       exact hd2.hasDerivWithinAt
-    let G : ℝ → ℝ := fun a => ‖gaussMayerBranch m s f a‖ ^ 2 * lewisCriticalWeight a
-    have hint_S : IntegrableOn (fun b => |-((b - 1) ^ 2)⁻¹| • G (ψ b)) S := by
+    have hint_S : IntegrableOn
+        (fun b => |-((b - 1) ^ 2)⁻¹| •
+          (‖gaussMayerBranch m s f (tailBranchInv m b)‖ ^ 2 *
+            lewisCriticalWeight (tailBranchInv m b)))
+        (Ioo 1 (1 + (m : ℝ)⁻¹)) := by
       have hiff := integrableOn_image_iff_integrableOn_abs_deriv_smul measurableSet_Ioo hψ_deriv
-        hψ_inj G
+        hψ_inj (fun a => ‖gaussMayerBranch m s f a‖ ^ 2 * lewisCriticalWeight a)
       rw [hψ_img] at hiff
       exact hiff.mp hint_m
     have heq_int : lewisCriticalNormSq (gaussMayerBranch m s f) =
-        ∫ b in S, |-((b - 1) ^ 2)⁻¹| • G (ψ b) := by
+        ∫ b in Ioo (1 : ℝ) (1 + (m : ℝ)⁻¹),
+          |-((b - 1) ^ 2)⁻¹| •
+            (‖gaussMayerBranch m s f (tailBranchInv m b)‖ ^ 2 *
+              lewisCriticalWeight (tailBranchInv m b)) := by
       unfold lewisCriticalNormSq
-      have h := integral_image_eq_integral_abs_deriv_smul measurableSet_Ioo hψ_deriv hψ_inj G
+      have h := integral_image_eq_integral_abs_deriv_smul measurableSet_Ioo hψ_deriv hψ_inj
+        (fun a => ‖gaussMayerBranch m s f a‖ ^ 2 * lewisCriticalWeight a)
       rw [hψ_img] at h
       exact h
     rw [heq_int]
-    have hS_sub : S ⊆ Ioi 0 := fun b hb => zero_lt_one.trans hb.1
-    have hf_S : IntegrableOn (fun b => C₀ * (‖f b‖ ^ 2 * lewisCriticalWeight b)) S :=
-      (hf.mono_set hS_sub).const_mul C₀
-    have hpt : ∀ b ∈ S,
-        |-((b - 1) ^ 2)⁻¹| • G (ψ b) ≤ C₀ * (‖f b‖ ^ 2 * lewisCriticalWeight b) := by
+    have hS_sub : Ioo (1 : ℝ) (1 + (m : ℝ)⁻¹) ⊆ Ioi 0 := fun _ hb => zero_lt_one.trans hb.1
+    have hf_S : IntegrableOn
+        (fun b => (((m : ℝ) + 2) ^ (7 : ℝ) * (4 : ℝ) ^ (7 : ℝ)) *
+          (‖f b‖ ^ 2 * lewisCriticalWeight b))
+        (Ioo 1 (1 + (m : ℝ)⁻¹)) :=
+      (hf.mono_set hS_sub).const_mul _
+    have hpt : ∀ b ∈ Ioo (1 : ℝ) (1 + (m : ℝ)⁻¹),
+        |-((b - 1) ^ 2)⁻¹| •
+          (‖gaussMayerBranch m s f (tailBranchInv m b)‖ ^ 2 *
+            lewisCriticalWeight (tailBranchInv m b)) ≤
+          (((m : ℝ) + 2) ^ (7 : ℝ) * (4 : ℝ) ^ (7 : ℝ)) *
+            (‖f b‖ ^ 2 * lewisCriticalWeight b) := by
       intro b hb
       have hu_pos : 0 < b - 1 := sub_pos.mpr hb.1
-      have ha_pos : 0 < ψ b := by
+      have ha_pos : 0 < tailBranchInv m b := by
         rw [← mem_Ioi, ← hψ_img]; exact ⟨b, hb, rfl⟩
-      have ham_eq : ψ b + (m : ℝ) = (b - 1)⁻¹ := by dsimp [ψ]; ring
-      have hb_arg : 1 + (ψ b + (m : ℝ))⁻¹ = b := by rw [ham_eq, inv_inv]; ring
-      have hgm : ‖gaussMayerBranch m s f (ψ b)‖ ^ 2 = (b - 1) ^ (4 * s.re) * ‖f b‖ ^ 2 := by
+      have ham_eq : tailBranchInv m b + (m : ℝ) = (b - 1)⁻¹ := by unfold tailBranchInv; ring
+      have hb_arg : 1 + (tailBranchInv m b + (m : ℝ))⁻¹ = b := by rw [ham_eq, inv_inv]; ring
+      have hgm : ‖gaussMayerBranch m s f (tailBranchInv m b)‖ ^ 2 =
+          (b - 1) ^ (4 * s.re) * ‖f b‖ ^ 2 := by
         unfold gaussMayerBranch
         rw [ham_eq, hb_arg, norm_mul, mul_pow,
           Complex.norm_cpow_eq_rpow_re_of_pos (inv_pos.mpr hu_pos)]
@@ -639,75 +733,10 @@ theorem gaussMayerBranch_tail_normBounded {m : ℕ} (hm : 1 ≤ m) {s : ℂ} (hs
         rw [hre, Real.inv_rpow hu_pos.le, ← Real.rpow_neg hu_pos.le, ← Real.rpow_natCast,
           ← Real.rpow_mul hu_pos.le]
         congr 2; push_cast; ring
-      -- Bound `lewisCriticalWeight (ψ b)` by `K₁ * lewisCriticalWeight ((b - 1)⁻¹)`:
-      have hw_ψ : lewisCriticalWeight (ψ b) ≤ K₁ * lewisCriticalWeight (b - 1)⁻¹ := by
-        let a := ψ b
-        have ha : 0 < a := ha_pos
+      have hw_ψ : lewisCriticalWeight (tailBranchInv m b) ≤
+          ((m : ℝ) + 2) ^ (7 : ℝ) * lewisCriticalWeight (b - 1)⁻¹ := by
         rw [← ham_eq]
-        by_cases ha1 : a ≤ 1
-        · have hw_a : lewisCriticalWeight a ≤ 1 := by
-            unfold lewisCriticalWeight
-            have h6 : (a + a⁻¹) ^ (-6 : ℝ) ≤ a ^ (6 : ℝ) := by
-              calc
-                (a + a⁻¹) ^ (-6 : ℝ) ≤ (a⁻¹) ^ (-6 : ℝ) :=
-                  Real.rpow_le_rpow_of_nonpos (inv_pos.mpr ha) (by linarith) (by norm_num)
-                _ = a ^ (6 : ℝ) := by rw [Real.inv_rpow ha.le, ← Real.rpow_neg ha.le]; norm_num
-            calc
-              (a + a⁻¹) ^ (-6 : ℝ) * a ^ (-(1 / 2 : ℝ)) ≤ a ^ (6 : ℝ) * a ^ (-(1 / 2 : ℝ)) :=
-                mul_le_mul_of_nonneg_right h6 (Real.rpow_pos_of_pos ha _).le
-              _ = a ^ (11 / 2 : ℝ) := by rw [← Real.rpow_add ha]; norm_num
-              _ ≤ 1 := Real.rpow_le_one ha.le ha1 (by norm_num)
-          have ham_pos : 0 < a + (m : ℝ) := by linarith
-          have ham_sum : (a + m) + (a + m)⁻¹ ≤ (m : ℝ) + 2 := by
-            have : (a + (m : ℝ))⁻¹ ≤ 1 := inv_le_one_of_one_le₀ (by linarith)
-            linarith
-          have h6_low : ((m : ℝ) + 2) ^ (-6 : ℝ) ≤ ((a + m) + (a + m)⁻¹) ^ (-6 : ℝ) :=
-            Real.rpow_le_rpow_of_nonpos (add_pos ham_pos (inv_pos.mpr ham_pos)) ham_sum (by norm_num)
-          have hhalf_low : ((m : ℝ) + 2) ^ (-1 : ℝ) ≤ (a + (m : ℝ)) ^ (-(1 / 2 : ℝ)) :=
-            (Real.rpow_le_rpow_of_exponent_le (by linarith) (by norm_num)).trans
-              (Real.rpow_le_rpow_of_nonpos ham_pos (by linarith) (by norm_num))
-          have hprod := mul_le_mul h6_low hhalf_low (by positivity) (by positivity)
-          have hid : K₁ * (((m : ℝ) + 2) ^ (-6 : ℝ) * ((m : ℝ) + 2) ^ (-1 : ℝ)) = 1 := by
-            dsimp [K₁]
-            rw [← Real.rpow_add (by linarith : (0 : ℝ) < m + 2),
-              ← Real.rpow_add (by linarith : (0 : ℝ) < m + 2)]
-            norm_num
-          unfold lewisCriticalWeight
-          exact hw_a.trans (hid.symm.trans (mul_le_mul_of_nonneg_left hprod hK₁_pos.le))
-        · push_neg at ha1
-          have ham_pos : 0 < a + (m : ℝ) := by linarith
-          have ham_le : a + (m : ℝ) ≤ ((m : ℝ) + 2) * a := by nlinarith
-          have hsum_le : (a + m) + (a + m)⁻¹ ≤ ((m : ℝ) + 2) * (a + a⁻¹) := by
-            have hainv : (a + (m : ℝ))⁻¹ ≤ a⁻¹ := (inv_le_inv₀ ham_pos ha).mpr (by linarith)
-            have ha_inv_pos : 0 < a⁻¹ := inv_pos.mpr ha
-            nlinarith
-          have h6_low : ((m : ℝ) + 2) ^ (-6 : ℝ) * (a + a⁻¹) ^ (-6 : ℝ) ≤
-              ((a + m) + (a + m)⁻¹) ^ (-6 : ℝ) := by
-            have h := Real.rpow_le_rpow_of_nonpos (add_pos ham_pos (inv_pos.mpr ham_pos)) hsum_le
-              (by norm_num : (-6 : ℝ) ≤ 0)
-            rwa [Real.mul_rpow (by linarith) (add_pos ha (inv_pos.mpr ha)).le] at h
-          have hhalf_low : ((m : ℝ) + 2) ^ (-1 : ℝ) * a ^ (-(1 / 2 : ℝ)) ≤
-              (a + (m : ℝ)) ^ (-(1 / 2 : ℝ)) := by
-            have h := Real.rpow_le_rpow_of_nonpos ham_pos ham_le (by norm_num : -(1 / 2 : ℝ) ≤ 0)
-            rw [Real.mul_rpow (by linarith) ha.le] at h
-            exact (mul_le_mul_of_nonneg_right
-              (Real.rpow_le_rpow_of_exponent_le (by linarith) (by norm_num))
-              (Real.rpow_pos_of_pos ha _).le).trans h
-          unfold lewisCriticalWeight
-          have hprod := mul_le_mul h6_low hhalf_low (by positivity) (by positivity)
-          have hid : K₁ * ((m : ℝ) + 2) ^ (-6 : ℝ) * ((m : ℝ) + 2) ^ (-1 : ℝ) = 1 := by
-            dsimp [K₁]
-            rw [mul_assoc, ← Real.rpow_add (by linarith : (0 : ℝ) < m + 2),
-              ← Real.rpow_add (by linarith : (0 : ℝ) < m + 2)]
-            norm_num
-          calc
-            (a + a⁻¹) ^ (-6 : ℝ) * a ^ (-(1 / 2 : ℝ))
-                = (K₁ * ((m : ℝ) + 2) ^ (-6 : ℝ) * ((m : ℝ) + 2) ^ (-1 : ℝ)) *
-                    ((a + a⁻¹) ^ (-6 : ℝ) * a ^ (-(1 / 2 : ℝ))) := by rw [hid, one_mul]
-            _ = K₁ * ((((m : ℝ) + 2) ^ (-6 : ℝ) * (a + a⁻¹) ^ (-6 : ℝ)) *
-                  (((m : ℝ) + 2) ^ (-1 : ℝ) * a ^ (-(1 / 2 : ℝ)))) := by ring
-            _ ≤ K₁ * (((a + m) + (a + m)⁻¹) ^ (-6 : ℝ) * (a + (m : ℝ)) ^ (-(1 / 2 : ℝ))) :=
-              mul_le_mul_of_nonneg_left hprod hK₁_pos.le
+        exact weight_add_nat_bound hm ha_pos
       have habs : |-((b - 1) ^ 2)⁻¹| = (b - 1) ^ (-2 : ℝ) := by
         rw [abs_neg, abs_of_pos (by positivity), Real.rpow_neg hu_pos.le, Real.rpow_two]
       have hw_inv : (b - 1) ^ (-2 : ℝ) * lewisCriticalWeight (b - 1)⁻¹ =
@@ -752,36 +781,41 @@ theorem gaussMayerBranch_tail_normBounded {m : ℕ} (hm : 1 ≤ m) {s : ℂ} (hs
             congr 1; ring
           _ ≤ 1 := Real.rpow_le_one hu_pos.le hu_le1 (by linarith)
       have h4w := one_le_four_pow_seven_mul_weight_Ioc_two hb.1 hb_le2
-      dsimp only [smul_eq_mul, G]
+      dsimp only [smul_eq_mul]
       rw [habs, hgm]
       calc
-        (b - 1) ^ (-2 : ℝ) * (((b - 1) ^ (4 * s.re) * ‖f b‖ ^ 2) * lewisCriticalWeight (ψ b))
+        (b - 1) ^ (-2 : ℝ) * (((b - 1) ^ (4 * s.re) * ‖f b‖ ^ 2) *
+            lewisCriticalWeight (tailBranchInv m b))
             ≤ (b - 1) ^ (-2 : ℝ) *
-                (((b - 1) ^ (4 * s.re) * ‖f b‖ ^ 2) * (K₁ * lewisCriticalWeight (b - 1)⁻¹)) := by
+                (((b - 1) ^ (4 * s.re) * ‖f b‖ ^ 2) *
+                  (((m : ℝ) + 2) ^ (7 : ℝ) * lewisCriticalWeight (b - 1)⁻¹)) := by
           apply mul_le_mul_of_nonneg_left _ (by positivity)
           exact mul_le_mul_of_nonneg_left hw_ψ (by positivity)
-        _ = K₁ * ‖f b‖ ^ 2 * ((b - 1) ^ (4 * s.re) *
+        _ = ((m : ℝ) + 2) ^ (7 : ℝ) * ‖f b‖ ^ 2 * ((b - 1) ^ (4 * s.re) *
               ((b - 1) ^ (-2 : ℝ) * lewisCriticalWeight (b - 1)⁻¹)) := by ring
-        _ = K₁ * ‖f b‖ ^ 2 * ((b - 1) ^ (4 * s.re) *
+        _ = ((m : ℝ) + 2) ^ (7 : ℝ) * ‖f b‖ ^ 2 * ((b - 1) ^ (4 * s.re) *
               ((b - 1) ^ (-1 : ℝ) * lewisCriticalWeight (b - 1))) := by rw [hw_inv]
-        _ ≤ K₁ * ‖f b‖ ^ 2 * ((4 : ℝ) ^ (7 : ℝ) * lewisCriticalWeight b) :=
+        _ ≤ ((m : ℝ) + 2) ^ (7 : ℝ) * ‖f b‖ ^ 2 * ((4 : ℝ) ^ (7 : ℝ) * lewisCriticalWeight b) :=
           mul_le_mul_of_nonneg_left (hu_ker1.trans h4w) (by positivity)
-        _ = C₀ * (‖f b‖ ^ 2 * lewisCriticalWeight b) := by dsimp [C₀]; ring
+        _ = (((m : ℝ) + 2) ^ (7 : ℝ) * (4 : ℝ) ^ (7 : ℝ)) *
+              (‖f b‖ ^ 2 * lewisCriticalWeight b) := by ring
     have hmono := setIntegral_mono_on hint_S hf_S measurableSet_Ioo hpt
     rw [integral_const_mul] at hmono
-    have hsub_le : ∫ b in S, ‖f b‖ ^ 2 * lewisCriticalWeight b ≤ lewisCriticalNormSq f := by
+    have hsub_le : ∫ b in Ioo (1 : ℝ) (1 + (m : ℝ)⁻¹), ‖f b‖ ^ 2 * lewisCriticalWeight b ≤
+        lewisCriticalNormSq f := by
       unfold lewisCriticalNormSq
-      have hunion : Ioi (0 : ℝ) = S ∪ (Ioi 0 \ S) := (Set.union_sdiff_cancel hS_sub).symm
+      have hunion : Ioi (0 : ℝ) = Ioo 1 (1 + (m : ℝ)⁻¹) ∪ (Ioi 0 \ Ioo 1 (1 + (m : ℝ)⁻¹)) :=
+        (Set.union_sdiff_cancel hS_sub).symm
       conv_rhs => rw [hunion]
       rw [setIntegral_union disjoint_sdiff_self_right (measurableSet_Ioi.diff measurableSet_Ioo)
         (hf.mono_set hS_sub) (hf.mono_set Set.sdiff_subset)]
-      have hrest : 0 ≤ ∫ b in Ioi 0 \ S, ‖f b‖ ^ 2 * lewisCriticalWeight b :=
+      have hrest : 0 ≤ ∫ b in Ioi 0 \ Ioo 1 (1 + (m : ℝ)⁻¹), ‖f b‖ ^ 2 * lewisCriticalWeight b :=
         setIntegral_nonneg (measurableSet_Ioi.diff measurableSet_Ioo) fun b hb =>
           mul_nonneg (sq_nonneg _) (lewisCriticalWeight_pos hb.1).le
       linarith
-    exact hmono.trans (mul_le_mul_of_nonneg_left hsub_le (by dsimp [C₀]; positivity))
+    exact hmono.trans (mul_le_mul_of_nonneg_left hsub_le hC0_pos.le)
   · rw [lewisCriticalNormSq, integral_undef hint_m]
-    exact mul_nonneg (by dsimp [C₀]; positivity) (lewisCriticalNormSq_nonneg f)
+    exact mul_nonneg hC0_pos.le (lewisCriticalNormSq_nonneg f)
 
 /-! ## Part 3: Farey–Lewis three-term operator `M_s = U_1 + V_s`, Koopman adjoints, and self-commutator -/
 

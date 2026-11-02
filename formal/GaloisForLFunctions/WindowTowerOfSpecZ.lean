@@ -10,6 +10,8 @@ import GaloisForLFunctions.WindowTowerOfSpecZ.WeilsWindowFormIsASignedCount
 import GaloisForLFunctions.WindowTowerOfSpecZ.TheTransferAcrossAStage
 import GaloisForLFunctions.WindowTowerOfSpecZ.TheExitChargePaysEveryNewFold
 import GaloisForLFunctions.WindowTowerOfSpecZ.TheEulerFactorizationOfAWindow
+import GaloisForLFunctions.WindowTowerOfSpecZ.TheEndProfileOfAWindow
+import GaloisForLFunctions.WindowTowerOfSpecZ.ShortWindowsArePaidByTheirExitCharge
 
 /-!
 # The Window Tower of Spec ℤ
@@ -25,6 +27,7 @@ tower (Adams lifts as dilations, Serre duality as the Rosati involution); comple
 twists (Tate flow, characters) and the character-weighted Tate pieces of `L(s, χ)`; Weil's window
 form as a signed combination of projective point counts (interpolation of `log`); the transfer
 across a stage and the collar exit charge paying every new fold; the exact Euler factorization of
-the window zeta operator. See
+the window zeta operator; the exit-charge inequality, the universal end profile and the pointwise
+payment of short windows. See
 `WindowTowerOfSpecZ/README.md`.
 -/
