@@ -1,7 +1,7 @@
 # RH proof-route frontier
 
 **RH open · 33 live routes · 16 candidates.**
-**Corpus checkpoint:** `286c79b9e3df68a6ce4117184a75a7c3394630ce`.
+**Corpus checkpoint:** `9403b1c7d3d11dd7c41a432fe38064eb00cd7c3f`.
 
 Live = source observable + proved RH-sufficient receiver + explicit open estimate. Candidate = missing independent source mechanism/landing.
 Evidence: [L] integrated, source-reviewed; [S] unfinished/unintegrated, unverified; [K] individual Lean + standard-only transitive-axiom audit. Untagged established facts: [L].
@@ -44,7 +44,7 @@ Evidence: [L] integrated, source-reviewed; [S] unfinished/unintegrated, unverifi
 
 - **Path:** Complete Weil form → μ(A)≥0 at every aperture → RH.
 - **Established:** Ground minima attained; strict aperture monotonicity; μ≥1/5000 through A=181/500. Exact {∞,2} trace through A=½log3 with polar Krein (+1,−1) split. Finite-prime zero crossing by 2log(|S|+2)+11; bounded-below weighted energy requires Ω_κ(X) active weight in every large (X,κX), κ>1. Shared atomic positivity below.
-- **Open:** Sign at A=½log3, then every aperture, paying low/mixed modes and polar cost. Pointwise [fully calibrated folded-Markov payment fails](rh-killed-routes.md#folded-markov) [S]; Schur payment remains.
+- **Open:** Sign at A=½log3, then every aperture, paying low/mixed modes and polar cost. Pointwise [fully calibrated folded-Markov payment fails](rh-killed-routes.md#folded-markov) [L]; Schur payment remains.
 - **Sources:** C:TheApertureFlowNeverStalls; SP:LiouvilleOddWindowRefutationAndSelectiveFullPositivity; SP:SemilocalPrimeTwoTrace/IntrinsicWeilTraceAndWindowCorollaries; SP:SemilocalPrimeTwoTrace/FinitePrimeSetSemilocalObstruction.
 
 <a id="fu"></a>
@@ -259,7 +259,7 @@ Evidence: [L] integrated, source-reviewed; [S] unfinished/unintegrated, unverifi
 ### SRT — Prime-side one-parameter lag localization
 
 - **Path:** Complete atomic-family sign / horizon-layer asymptotic sign / late-lag bound → RH.
-- **Established:** Full-family/horizon receivers; regular-bulk second-order limit and Gram/index transfer. Window-pencil index stabilizes to Weil index; families exhaust exactly the distinct right zeros.
+- **Established:** Full-family/horizon receivers; regular-bulk second-order limit and Gram/index transfer. Window-pencil index exhausts distinct right zeros. Alternating complete-form second-order law [S]: shared frontier.
 - **Open:** Actual horizon sign or complete-family sign on the fixed Beurling schedule. Subtracting the explicit positive critical-scale correction leaves the open Weil sign.
 - **Sources:** S:EveryWidthDecidesTheCriticalLine; SMAP:TheDyadicSignOfAPoleFreeGeneratorIsRH; AHD:TheHorizonCriterion; AHD:TheBulkDeterminesTheSecondOrderTerm; AHD:TheWindowIndexCountsTheRightZeros.
 
@@ -283,16 +283,16 @@ Evidence: [L] integrated, source-reviewed; [S] unfinished/unintegrated, unverifi
 ### ACS — Arithmetic Castelnuovo–Severi effectivity
 
 - **Path:** Arithmetic effectivity / Rosati heights / bounded Weil coupling → Hodge → RH.
-- **Established:** Exact receivers; finite-grid-blind Künneth effectivity; odd-characteristic Frobenius calibration; all-profile positivity through radius181/500. First-prime graph through radius½log3 [S]. Length A: model Shannon surplus has maximum2e^A; for each 0<η≤1, eventual genus lower bound (2−η)e^A plus multiplicity excess at its natural threshold [S]. Shared atomic positivity below.
-- **Open:** All-aperture primitive effectivity, paying constrained/mixed modes; alternatively dense-lattice/Gaussian-damped cone bounds ([SC](#sc)) or finite product-group tensor index. Two-prime count-height receiver [S] still needs an independent count producer; flooring a nonnegative form assumes its sign. Sharp genus upper law remains open.
-- **Sources:** G:ExactArithmeticSourceEffectivity; LST:RiemannRochOutsideAFiniteDivisorAtEveryDegree; LST:WindowJumpCounts/SinglePrimeWindowJumpGraphAndObstructions [S]; LST:TheStepanovCountPaysThePrimitiveH1OverFiniteFields; G:TheGenusLawForcesSimpleZeros; CWS:TheWindowGenusIsAYoungConjugate [S]; AE:WindowNaiveHeights/MultiplicativeScaleHeightsAndWindowCounts [S].
+- **Established:** Exact receivers; finite-grid-blind Künneth effectivity; odd-characteristic Frobenius calibration; all-profile positivity through radius181/500. First-prime graph through radius½log3 and two-prime integral count-height criterion [L]. Model Shannon maximum2e^A; each 0<η≤1: eventual genus lower bound (2−η)e^A plus multiplicity excess at its natural threshold [S]. Shared atomic positivity below.
+- **Open:** All-aperture primitive effectivity or an independent count producer; flooring a nonnegative form assumes its sign. Windowed Tate receiver [S] has the same gap. Alternatives: dense-lattice/Gaussian-damped bounds ([SC](#sc)), finite product-group tensor index. Sharp genus upper law remains open.
+- **Sources:** G:ExactArithmeticSourceEffectivity; LST:RiemannRochOutsideAFiniteDivisorAtEveryDegree; LST:WindowJumpCounts/SinglePrimeWindowJumpGraphAndObstructions; LST:TheStepanovCountPaysThePrimitiveH1OverFiniteFields; G:TheGenusLawForcesSimpleZeros; CWS:TheWindowGenusIsAYoungConjugate [S]; AE:WindowNaiveHeights/MultiplicativeScaleHeightsAndWindowCounts; CWS:WindowNaiveHeights [S].
 
 <a id="inter-tower-coupling"></a><a id="coupled-tower-signature"></a><a id="sc"></a>
 ### SC — Stokes/Witt–Krein / archimedean successor
 
 - **Path:** Glued affine Weil index≤1 / bounded Gaussian-damped two-prime kernel coupling → RH.
 - **Established:** Exact glued index=κ_ζ+1; complete-matrix/tensor receivers. For distinct primes p,q and fixed τ>0, Gaussian-damped coupling is O(exp(σt)) iff width≤σ, σ≥0, t=m log p+n log q; bounded ℕ² coupling⇔RH, including unattained width. All-detail/growing-coarse prime–pole norm decay and rank-one approximation: [CHMD](#chmd).
-- **Open:** Prime/archimedean bound for damped coupling, or glued index≤1/complete pole-hyperplane sign. √Y-normalized prime–pole decay supplies neither. Undamped bounded coupling admits off-line quartets even with zero exponent of convergence.
+- **Open:** Prime/archimedean bound for damped coupling, or glued index≤1/complete pole-hyperplane sign. √Y-normalized prime–pole decay supplies neither. Undamped off-line countermodels: [RvM-count completion](rh-killed-routes.md#coupling-growth) still needs divisor assembly; count/filler lemmas alone do not establish it.
 - **Sources:** AKG:TheGluingFormulaAtEveryPlace; AKG:TowerCoupling/CoupledTowerSignatureFormula; ACPL:ConeBoundary/GaussianConeKernel; ACPL:ConeBoundary/PolynomialBoundaryRepulsion; ACPL:ConeMoments/ZeroExponentSplineQuartets; AID:AllDetailPrimePoleCancellation.
 
 ## Route candidates
@@ -327,7 +327,7 @@ Promotion requires the missing independent source mechanism/landing below; an un
 |---|---|
 | Tilted spline, eventually uniformly 1≤c≤(log N)^α, 0<α<1/9: full matrix≥κ/(2c⁷)I; W≥bc⁻⁸D_N. Deep stars inherit positivity. Spectral-floor sublevel has D_N≤C log(2c)‖x‖² [L]. | RH iff eventual full/pole-hyperplane sign at every 2K(log N)^(1/8), K>0. Close the full-space rate gap. |
 | c_N→∞, c_N≤(log N)^α, α<1/8: for every ε>0, some X makes the entire growing conductor block e≤⌊c_N/X⌋ eventually ε-relative-close to Σ_e J(e)b_e² after c_N⁷ rescaling [L]. | Transition e≈c_N, larger conductors and mixed complement at every K(log N)^(1/8). Fixed-packet bulk weights do not select the line. |
-| Fixed mean-zero periodic twists are individually zero-blind. Tilted spline, nonzero fixed C² window/twist, 1≤c_N and eventually c_N≤N: normalized complete form≥−ε+a log N/c_N⁸ eventually, a>0. At c_N⁸/log N→K>0, lower limit≥a/K>0 [L]. | Untwisted–twisted cross-terms, growing-twist uniformity and full-zero-sum exchange. Fixed-twist positivity is not full-family positivity. |
+| Fixed mean-zero periodic twists are zero-blind; tilted-spline normalized complete form≥−ε+a log N/c_N⁸ eventually, a>0, for fixed nonzero C² window/twist and 1≤c_N≤N [L]. Alternating x_n=(−1)^nh(log(n/N))/√n: c_N⁻¹Q_N=(log N/∫φ²)[𝒜_N(c_N/2)−𝒜_N(c_N)]+o(1), Q_N atom-mass-normalized, for nonzero C² φ on [0,1], C² h on [−A,0], Fourier-square decay p>1, c_N≥1, c_N→∞, c_N(log N)²/N→0 [S]. | No Weil term in the alternating limit. Untwisted–twisted cross-terms, growing-twist uniformity and full-zero-sum exchange remain; fixed-twist positivity is not full-family positivity. |
 | Scalar scaling c⁷E_m(c)=J(m)R_m(c/m), J(m)=C J₈(m)/ϕ(m); J(m)/J(1)=#P⁷(ℤ/mℤ). 0≤R_m(x)≤Cx; R_m(x)→1 uniformly. Projective orbit/local-count laws hold over every finite commutative/local ring. Λ residue vanishes; every nonempty finite prime-flip set has indefinite residue [L]. | Full growing-conductor complement at RH overlap. Scalar/counting positivity does not give complete-matrix sign or classify infinite twists. |
 | Nonzero C² profile on [0,1], Fourier-square decay p>4, s^βE₁(s)→J, β≥0: c_N^(β+1)/log N→K>0 gives c_N⁻¹Q_N→κQ_Weil(H)+(βJ/K)∫e^(−(β+1)y)H², H=e^(y/2)h, κ=(∫φ)²/∫φ². For κ>0, βJ≥0, finite-pencil index increases to Weil index; supremum over windows/K counts distinct right zeros. At fixed length A, index≤1+2A·horizonFreq(A/2)/π [L]. | Actual Weil/index sign; no aperture-uniform ceiling. Tilted spline threshold K*=7J(1)∫e^(−8y)H²/(κ abs(Q_Weil(H))) for negative windows; equality unresolved. Supercritical sign⇔RH. |
 | Window [−A,0]: Q=Ω(0)‖H‖²+J∞+Σ_n Λ(n)/√n·(fold_n/2−sym_n)+pole; sym_n=½∫(H(u)+H(u+log n))²≥0 on the overlap. For log2≤A<log3, only the 2-fold acts [L]. | Pay symmetric-fold mass, negative diagonal and pole terms at every window. Exact norm realizations require an infinite-dimensional target for A>0 [L]; zero-independent construction open. |
@@ -344,7 +344,7 @@ Promotion requires the missing independent source mechanism/landing below; an un
 Sources:
 
 - **Positivity/payment:** CACT:CollectivePacketCoercivityAndLogarithmicConfinement; CACT:EveryProfileIsPositiveAtLogLogOverlapOnPolynomialSpans; CACT:EveryPolylogConductorSpanIsPositiveAtLogLogOverlap; CACT:EverySubpolynomialSpanHasASuperLogLogPositivityClock; CACT:ThePolynomialConductorComplementIsCoerciveBelowTheEighthRoot; CACT:TheReducedDivisorJetCostsItsDivisorMean; CACT:TheJetPoleComponentCancelsThePole; CACT:SharpenedMidBandAndCrossBounds; CAF:LargePrimeConductorsHaveDisjointHorizonSpikes; CAF:PrimeIncidenceDefectsHaveAnExactHarmonicDiagonal; CAF:LargePrimeIncidencePacketsHaveALogarithmicDefectGap; CSAR:SharpPrimeResidualScale; CSAR:CoprimeSuccessorGap.
-- **Horizon/counts:** AHD:TheCountLawOverEveryFiniteRing; AHD:TheHorizonCriterion; AHD:TheBulkDeterminesTheSecondOrderTerm; AHD:TheWindowIndexCountsTheRightZeros; AHD:TheTwistedHorizonLayerIsZeroBlind; AHD:TheTwistedHorizonLayerIsPositive; CWS:TheWindowDatum; CWS:TheFirstPrimeFold; CWS:WindowRealizations.
+- **Horizon/counts:** AHD:TheCountLawOverEveryFiniteRing; AHD:TheHorizonCriterion; AHD:TheBulkDeterminesTheSecondOrderTerm; AHD:TheWindowIndexCountsTheRightZeros; AHD:TheTwistedHorizonLayerIsZeroBlind; AHD:TheTwistedHorizonLayerIsPositive; AHD:TheAlternatingWindowCountsTheConductorTwoPoints [S]; CWS:TheWindowDatum; CWS:TheFirstPrimeFold; CWS:WindowRealizations.
 - **Receivers:** SSHA:EveryEighthRootMultipleReceivesTheTiltedSpline; RIT:TheZeroDensityEndpointHasTheConductorCriterion; TM:ReceiverRate/SharpLogarithmicOverlapBudget; TM:ReceiverRate/EveryFiniteGramFitsOneCriticalOverlap; RIT:TheHodgeIndexAtCriticalOverlap.
 
 <a id="external-literature"></a>

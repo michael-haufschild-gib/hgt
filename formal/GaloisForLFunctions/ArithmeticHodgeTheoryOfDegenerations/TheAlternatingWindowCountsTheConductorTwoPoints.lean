@@ -1024,7 +1024,8 @@ theorem alternating_layer_sharp (hφ : ContDiff ℝ 2 φ) (hφsupp : ∀ u, u �
         show |symbolW φ (twistedWeights h altSign N) (c N) N (Real.exp (2 * (A + 1))) τ| ≤ _
         refine this.trans (le_of_eq ?_)
         rw [hW]; ring
-    have hI := norm_setIntegral_le_of_norm_le_const measure_Icc_lt_top hbd
+    have hI := norm_setIntegral_le_of_norm_le_const
+      (measure_Icc_lt_top : volume (Set.Icc (-T₀ N) (T₀ N)) < ⊤) hbd
     refine hI.trans ?_
     have hlog3 : Real.log (2 + N) ≤ Real.log 3 + Real.log N := by
       rw [← Real.log_mul (by norm_num) hN0.ne']
@@ -1059,7 +1060,8 @@ theorem alternating_layer_sharp (hφ : ContDiff ℝ 2 φ) (hφsupp : ∀ u, u �
       rw [Real.norm_eq_abs, abs_of_nonneg (by positivity)]
       refine this.trans (le_of_eq ?_)
       rw [hW]; ring
-    have hI := norm_setIntegral_le_of_norm_le_const measure_Icc_lt_top hbd
+    have hI := norm_setIntegral_le_of_norm_le_const
+      (measure_Icc_lt_top : volume (Set.Icc (-T₀ N) (T₀ N)) < ⊤) hbd
     simp only [hLoE]
     rw [norm_mul, Real.norm_eq_abs, abs_of_nonneg hlog0]
     have hW0 : 0 ≤ W := by rw [hW]; positivity
@@ -1131,8 +1133,8 @@ theorem alternating_layer_sharp (hφ : ContDiff ℝ 2 φ) (hφsupp : ∀ u, u �
     have hcle : c N ≤ N := by linarith [hc0 N]
     rw [atomForm_eq hφ hφsupp hφ2 (twistedWeights_eq_zero hsupp altSign N) hA (hc0 N) hN hcle,
       ← hM]
-    have hSi := integrable_symbolW hφ hφsupp (x N) (hc0 N) hN (2 * (A + 1))
-    have hEi := integrable_energyW hφ hφsupp (x N) (hc0 N) hN
+    have hSi : Integrable (S N) := integrable_symbolW hφ hφsupp (x N) (hc0 N) hN (2 * (A + 1))
+    have hEi : Integrable (E N) := integrable_energyW hφ hφsupp (x N) (hc0 N) hN
     have hsplitS := (integral_add_compl (s := Set.Icc (-T₀ N) (T₀ N)) measurableSet_Icc hSi).symm
     have hsplitE := integral_add_compl (s := Set.Icc (-T₀ N) (T₀ N)) measurableSet_Icc hEi
     have hcompl : ∫ τ in (Set.Icc (-T₀ N) (T₀ N))ᶜ, S N τ = Rm N +
