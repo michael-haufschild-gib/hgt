@@ -92,6 +92,7 @@ theorem foldEnergy_le_two_mul_count (hc : Continuous H) (hcs : HasCompactSupport
     · simp only [indicator_of_notMem hu]; norm_num
   have hmono := integral_mono (iD.indicator mI)
     (((iH.indicator mI).add (iHs.indicator mI)).const_mul 2) hpt
+  simp only [Pi.add_apply] at hmono
   rw [integral_const_mul, integral_add (iH.indicator mI) (iHs.indicator mI),
     integral_leftEnd_translate] at hmono
   rw [integral_congr_ae (Eventually.of_forall fun u => inWindowCount_mul A ℓ u fun u => H u ^ 2),

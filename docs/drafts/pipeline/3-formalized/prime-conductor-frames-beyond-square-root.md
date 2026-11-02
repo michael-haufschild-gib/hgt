@@ -1,7 +1,7 @@
 # Prime-conductor frames beyond the square-root horizon
 
-- **Stage:** 2-fully-proven; Lean written, checks pending.
-- **Type:** THEOREM (paper).
+- **Stage:** 3-formalized.
+- **Type:** THEOREM (Lean).
 - **Wall:** Σ1e.
 - **Target:** For `1/2<θ<1`, prime conductor packets supported on `sqrt N<p≤N^θ` have a lower frame bound independent of `N`. No prime-distribution estimate is required.
 
@@ -59,4 +59,5 @@ Written in `CompletedArithmeticForms/LargePrimeConductorsHaveDisjointHorizonSpik
 - `primeConductor_lower_frame_of_disjoint_multiples`;
 - `primeConductorBand_lower_frame`.
 
-All three checks and transitive axiom audits remain pending.
+Direct source check passed. All three transitive axiom audits contain only
+`propext`, `Classical.choice`, and `Quot.sound`. CompletedArithmeticForms umbrella wired.

@@ -58,7 +58,8 @@ margin one. Their sum retains `L^(−η)/4` on `V_R'`, hence on `V_R`.
   cost in the coefficient split; directly checked with only the three standard
   axioms in its transitive audit.
 - `TerminalPaymentRetainsTheGrowingHighConductorGap.lean`: terminal payment with
-  the explicit linear cutoff ratio and cubic lag remainder; written, unchecked.
+  the explicit linear cutoff ratio and cubic lag remainder; directly checked,
+  with only the three standard axioms in its transitive audit.
 - `SubpolynomialConductorRatiosSetExplicitOverlapClocks.lean`: augmented-cutoff
   ratio and divergent clock ratio; written, unchecked.
 - `SubpolynomialCutoffsRetainGrowingHighConductorGaps.lean`: uniform terminal,

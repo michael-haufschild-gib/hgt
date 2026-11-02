@@ -365,8 +365,4 @@ theorem primeConductorBand_lower_frame {N : ℕ} {θ : ℝ}
       Real.log (N : ℝ) ^ 2 * X := by nlinarith only [hmain]
   exact (mul_le_mul_iff_right₀ (sq_pos_of_pos hL)).mp hscaled
 
-#print axioms primeConductor_gram_eq_diagonal_add_rank_two
-#print axioms primeConductor_lower_frame_of_disjoint_multiples
-#print axioms primeConductorBand_lower_frame
-
 end GaloisForLFunctions.CompletedArithmeticForms

@@ -24,8 +24,22 @@ Distinct spike supports are disjoint. Put
 Since `log p>L/2`, the claimed gap follows. This argument needs no upper
 polynomial cutoff on the selected primes and no residual-average estimate.
 
+For `p≤N`, write `d_p=[p/(p−1)]H_floor(N/p)` and
+`t_p=H_floor(N/p)/sqrt(p−1)`. The centered Gram is exactly
+`[diag(d_p)−t tᵀ/H_N]/L`, while the defect matrix is predicted to be
+`diag(d_p log p)/L`. Thus pole centering makes the norm smaller without
+changing the diagonal defect. This rank-one structure suggests interlacing
+of the centered defect eigenvalues with the ordered values `log p`.
+The interlacing claim is a separate, unproved strengthening.
+
 Corpus boundary: `jumpEnergy_eq_poleDefect` identifies the exact Dirichlet
 form, and the incidence packet formula identifies prime-power jumps.
 Existing conductor gap estimates use a below-square-root frame or a small
 multiple of `log Q`; the proposed finite gap reads the disjoint large-prime
 edges directly. Exact incidence reduction and Lean formalization remain open.
+
+`jumpEnergy_incidencePacket` is the exact incidence-square formula.
+For a contributing dilation `k`, its least prime factor lies in the selected
+band. The bound `minFac(k)²≤k` for a positive composite `k` forces `k` itself
+to be prime because `k≤N`. Hence the exact harmonic diagonal follows by
+summing `1/n` on `n≤N/p`.

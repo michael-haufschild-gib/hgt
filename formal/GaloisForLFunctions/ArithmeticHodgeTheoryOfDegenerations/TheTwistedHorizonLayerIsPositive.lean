@@ -52,7 +52,6 @@ theorem nuSymbol_nonneg_of_archHorizon_le {a τ : ℝ} (hτ : archHorizon a ≤ 
   have e : (Real.log (1 + |τ| / 4) - 10) / (2 * Real.pi) - Real.exp (2 * a) ^ 2 / Real.pi =
       (Real.log (1 + |τ| / 4) - 10 - 2 * Real.exp (2 * a) ^ 2) / (2 * Real.pi) := by
     field_simp
-    ring
   rw [e] at h
   exact (div_nonneg (by linarith) (by positivity)).trans h
 
@@ -100,8 +99,8 @@ theorem exists_weilQuad_ge_of_lowFrequency (a : ℝ) :
       (2 * a)
     refine hk.re.congr (Eventually.of_forall fun τ => ?_)
     simp only
-    rw [RHTower.paperFT_weilTest_self_ofReal hcx.continuous hcxc τ, ← Complex.ofReal_mul,
-      Complex.ofReal_re, nuSymbol]
+    rw [RHTower.paperFT_weilTest_self_ofReal hcx.continuous hcxc τ, ← Complex.ofReal_mul]
+    simp only [RCLike.re_to_complex, Complex.ofReal_re, nuSymbol]
   set τ₀ := archHorizon a with hτ₀def
   set s := Set.Icc (-τ₀) τ₀ with hs
   have hin : -(B * (Aν + Real.log (2 + τ₀))) * (2 * τ₀) ≤
@@ -168,7 +167,7 @@ theorem contDiff_centredAtomicTest {φ : ℝ → ℝ} (hφ : ContDiff ℝ 2 φ) 
 /-- A recentred block with window-supported weights lives in `[−A, w]`. -/
 theorem tsupport_centredAtomicTest_subset {φ : ℝ → ℝ} (hφsupp : ∀ u, u ∉ Set.Icc 0 1 → φ u = 0)
     {x : ℕ → ℝ} {A : ℝ} {N : ℕ}
-    (hx : ∀ n, 1 ≤ n → Real.log n - Real.log N ∉ Set.Icc (-A) 0 → x n = 0) {c : ℝ} (hc : 0 < c)
+    (hx : ∀ n : ℕ, 1 ≤ n → Real.log n - Real.log N ∉ Set.Icc (-A) 0 → x n = 0) {c : ℝ} (hc : 0 < c)
     (hN : 1 ≤ N) : tsupport (centredAtomicTest φ x c N) ⊆ Set.Icc (-A) (c / N) := by
   have hN0 : (0 : ℝ) < N := by exact_mod_cast hN
   have hw : 0 < c / N := div_pos hc hN0
@@ -188,7 +187,7 @@ theorem tsupport_centredAtomicTest_subset {φ : ℝ → ℝ} (hφsupp : ∀ u, u
 
 theorem twistedWeights_eq_zero {h : ℝ → ℝ} {A : ℝ} (hsupp : ∀ y, y ∉ Set.Icc (-A) 0 → h y = 0)
     (χ : ℕ → ℝ) (N : ℕ) :
-    ∀ n, 1 ≤ n → Real.log n - Real.log N ∉ Set.Icc (-A) 0 → twistedWeights h χ N n = 0 :=
+    ∀ n : ℕ, 1 ≤ n → Real.log n - Real.log N ∉ Set.Icc (-A) 0 → twistedWeights h χ N n = 0 :=
   fun n _ hy => by rw [twistedWeights, horizonWeights, hsupp _ hy, zero_div, zero_mul]
 
 /-! ### Positivity of twisted windows -/
@@ -239,7 +238,6 @@ theorem norm_sq_dirichletPoly_twisted_le {h : ℝ → ℝ} {A : ℝ} (hh : ContD
   have hsq : ((N : ℝ) ^ (-(1 / 2 : ℝ))) ^ 2 = (N : ℝ)⁻¹ := by
     rw [← Real.rpow_natCast, ← Real.rpow_mul hN0.le]
     norm_num
-    exact Real.rpow_neg_one _
   have h2 := pow_le_pow_left₀ (by positivity) hb' 2
   rw [mul_pow, hsq] at h2
   rw [← le_div_iff₀' (inv_pos.mpr hN0), div_inv_eq_mul, mul_comm] at h2

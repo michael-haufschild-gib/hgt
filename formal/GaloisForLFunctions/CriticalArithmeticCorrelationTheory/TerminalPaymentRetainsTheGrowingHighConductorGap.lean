@@ -237,6 +237,4 @@ theorem exists_profile_highConductor_gap_of_terminal_and_overlap_rates {φ : ℝ
   dsimp only [D₁, Bnear] at *
   linarith only [hold, hcost, hD_eq]
 
-#print axioms exists_profile_highConductor_gap_of_terminal_and_overlap_rates
-
 end GaloisForLFunctions.CriticalArithmeticCorrelationTheory
