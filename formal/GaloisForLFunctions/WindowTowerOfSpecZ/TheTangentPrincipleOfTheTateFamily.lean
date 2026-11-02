@@ -16,6 +16,10 @@ The Tate family lies above its tangent at dimension zero:
   `Q(H) ≥ Ω_Γ‖H‖² + J_∞(H) + pole − (2/k)(τ_H(k) − ‖H‖²)`;
   at `k = β + 1` the bound reads Weil's arithmetic term against the projective point counts
   `φ(m)#ℙ^β(ℤ/m)` of the window.
+* **Every test is dominated by the counts of its modulus** (`weilQuad_ge_absTateCount`): replacing the
+  autocorrelations of `H` by those of `|H|` only raises the arithmetic term, so for every window test and
+  every `k > 0`, `Q(H) ≥ Ω_Γ‖H‖² + J_∞(H) + pole − (2/k)(τ^{|H|}(k) − ‖H‖²)`, where
+  `τ^{|H|}(k) = Σ_{n ≤ e^A} J_k(n) n^{−1/2}∫|H(u)||H(u + log n)|` is the Tate count of the modulus.
 
 Nonnegative tests are where the Markov part of Weil's form is smallest (normal contractions lower
 it); on them the non-Tate piece is controlled by the Tate pieces in every positive dimension, with
@@ -163,6 +167,81 @@ theorem weilQuad_ge_of_nonneg_tangent (hH : IsWindowTest A H) (hpos : ∀ u, 0 �
     rw [le_div_iff₀ hk]; linarith
   have : 2 / k * (tateFunction A H k - ∫ u, H u ^ 2) =
       2 * ((tateFunction A H k - ∫ u, H u ^ 2) / k) := by ring
+  rw [this]
+  linarith
+
+/-! ### All tests: the counts of the modulus -/
+
+/-- The **Tate count of the modulus** `τ^{|H|}(k) = Σ_{n ≤ e^A} J_k(n) n^{−1/2} ∫|H(u)||H(u + log n)|`. -/
+def absTateCount (A : ℝ) (H : ℝ → ℝ) (k : ℝ) : ℝ :=
+  ∑ n ∈ Finset.Icc 1 (windowLevel A), jordanTotient k n / Real.sqrt n *
+    ∫ u, |H u| * |H (u + Real.log n)|
+
+theorem integrable_mul_shift (hH : IsWindowTest A H) (ℓ : ℝ) :
+    MeasureTheory.Integrable fun u => H u * H (u + ℓ) :=
+  (hH.continuous.mul (hH.continuous.comp (continuous_add_const ℓ))).integrable_of_hasCompactSupport
+    (hH.hasCompactSupport.mul_right)
+
+theorem integrable_abs_mul_shift (hH : IsWindowTest A H) (ℓ : ℝ) :
+    MeasureTheory.Integrable fun u => |H u| * |H (u + ℓ)| :=
+  (hH.continuous.abs.mul (hH.continuous.comp (continuous_add_const ℓ)).abs).integrable_of_hasCompactSupport
+    (hH.hasCompactSupport.abs.mul_right)
+
+/-- **Weil's form is bounded below by the Tate counts of the modulus**: for every window test and
+every `k > 0`, `Q(H) ≥ Ω_Γ‖H‖² + J_∞(H) + pole − (2/k)(τ^{|H|}(k) − ‖H‖²)`. -/
+theorem weilQuad_ge_absTateCount (hH : IsWindowTest A H) {k : ℝ} (hk : 0 < k) :
+    EF.gammaBracket 0 * (∫ u, H u ^ 2) + levyJump H +
+        (coshPairing H ^ 2 / 2 - sinhPairing H ^ 2 / 2) -
+          2 / k * (absTateCount A H k - ∫ u, H u ^ 2) ≤ weilQuad H := by
+  -- `⟨ρΛH,H⟩ ≤ (τ^{|H|}(k) − ‖H‖²)/k`, term by term
+  have hterm : ∀ n ∈ Finset.Icc 1 (windowLevel A),
+      ArithmeticFunction.vonMangoldt n / Real.sqrt n * (∫ u, H u * H (u + Real.log n)) ≤
+        ((jordanTotient k n - if n = 1 then 1 else 0) / k) / Real.sqrt n *
+          ∫ u, |H u| * |H (u + Real.log n)| := fun n _ => by
+    have hs : 0 ≤ (Real.sqrt n)⁻¹ := inv_nonneg.mpr (Real.sqrt_nonneg _)
+    have hle : (∫ u, H u * H (u + Real.log n)) ≤ ∫ u, |H u| * |H (u + Real.log n)| :=
+      MeasureTheory.integral_mono (integrable_mul_shift hH _) (integrable_abs_mul_shift hH _)
+        fun u => by rw [← abs_mul]; exact le_abs_self _
+    have hpos : 0 ≤ ∫ u, |H u| * |H (u + Real.log n)| :=
+      MeasureTheory.integral_nonneg fun u => mul_nonneg (abs_nonneg _) (abs_nonneg _)
+    have ht := jordanTotient_ge_tangent hk.le n
+    have hΛ : ArithmeticFunction.vonMangoldt n ≤ (jordanTotient k n - if n = 1 then 1 else 0) / k := by
+      rw [le_div_iff₀ hk]; linarith
+    have hΛ0 : 0 ≤ ArithmeticFunction.vonMangoldt n := ArithmeticFunction.vonMangoldt_nonneg
+    rw [div_eq_mul_inv, div_eq_mul_inv _ (Real.sqrt _)]
+    calc ArithmeticFunction.vonMangoldt n * (Real.sqrt n)⁻¹ * (∫ u, H u * H (u + Real.log n))
+        ≤ ArithmeticFunction.vonMangoldt n * (Real.sqrt n)⁻¹ *
+            ∫ u, |H u| * |H (u + Real.log n)| :=
+          mul_le_mul_of_nonneg_left hle (mul_nonneg hΛ0 hs)
+      _ ≤ _ := mul_le_mul_of_nonneg_right (mul_le_mul_of_nonneg_right hΛ hs) hpos
+  -- the `n = 1` part of the counts is `‖H‖²`
+  have hone : (∑ n ∈ Finset.Icc 1 (windowLevel A), (if n = 1 then (1 : ℝ) else 0) / Real.sqrt n *
+      ∫ u, |H u| * |H (u + Real.log n)|) = ∫ u, H u ^ 2 := by
+    rcases Nat.eq_zero_or_pos (windowLevel A) with h0 | hpos
+    · rw [h0]
+      simp only [Finset.Icc_eq_empty_of_lt zero_lt_one, Finset.sum_empty]
+      have hz : ∀ u, H u = 0 := fun u => hH.vanish u fun hm => by
+        have : A < 0 := by
+          by_contra h
+          have := Nat.one_le_floor_iff _ |>.mpr (Real.one_le_exp (not_lt.mp h))
+          rw [windowLevel] at h0; omega
+        linarith [hm.1, hm.2]
+      simp [hz]
+    · rw [Finset.sum_eq_single_of_mem 1 (Finset.mem_Icc.mpr ⟨le_rfl, hpos⟩) fun n _ hn => by
+        rw [if_neg hn, zero_div, zero_mul]]
+      simp only [if_true, Nat.cast_one, Real.sqrt_one, div_one, one_mul, Real.log_one, add_zero]
+      exact MeasureTheory.integral_congr_ae (Filter.Eventually.of_forall fun u => by
+        show |H u| * |H u| = H u ^ 2
+        rw [← sq, sq_abs])
+  have hsum : ∫ u, windowRepFun A ArithmeticFunction.vonMangoldt H u * H u ≤
+      (absTateCount A H k - ∫ u, H u ^ 2) / k := by
+    rw [integral_windowRep_vonMangoldt_eq_sum hH]
+    refine (Finset.sum_le_sum hterm).trans (le_of_eq ?_)
+    rw [absTateCount, ← hone, ← Finset.sum_sub_distrib, Finset.sum_div]
+    exact Finset.sum_congr rfl fun n _ => by ring
+  rw [weilQuad_eq_windowRep hH]
+  have : 2 / k * (absTateCount A H k - ∫ u, H u ^ 2) =
+      2 * ((absTateCount A H k - ∫ u, H u ^ 2) / k) := by ring
   rw [this]
   linarith
 

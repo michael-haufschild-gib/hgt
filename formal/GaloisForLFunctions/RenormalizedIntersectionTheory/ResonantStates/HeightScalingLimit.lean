@@ -246,9 +246,3 @@ theorem resonant_height_mass_tendsto_zero (u : ℕ → ℂ) (Y : ℕ → ℝ)
 end
 
 end GaloisForLFunctions.RenormalizedIntersectionTheory.ResonantStates
-
-#print axioms GaloisForLFunctions.RenormalizedIntersectionTheory.ResonantStates.powerHeightProbabilityMeasure_probability
-#print axioms GaloisForLFunctions.RenormalizedIntersectionTheory.ResonantStates.resonant_rescaled_height_error
-#print axioms GaloisForLFunctions.RenormalizedIntersectionTheory.ResonantStates.resonant_height_local_mass
-#print axioms GaloisForLFunctions.RenormalizedIntersectionTheory.ResonantStates.resonant_height_escape_bound
-#print axioms GaloisForLFunctions.RenormalizedIntersectionTheory.ResonantStates.resonant_height_mass_tendsto_zero

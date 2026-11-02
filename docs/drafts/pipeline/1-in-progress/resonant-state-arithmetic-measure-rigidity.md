@@ -59,7 +59,7 @@ The three-return decomposition and global integrability are also checked.
 `||(T₂−λ₂)F||² ≥ (2^(Re u)+2^(-Re u)−2)² ||F||²`.
 The coefficient is positive at every negative rate, including the critical rate. An exact residual isometry retains all cross terms before applying the unitary-dilation factorization. [Proof and audit](../3-formalized/resonant-cutoff-packet-gap.md).
 
-**Next candidate.** Classify the actual normalized height marginal and its escape as `Y→∞`. Fourier cancellation suggests a mixture of the cutoff-one marginal with an explicit power-law band, giving a frequency-uniform rescaled height limit. [Precise measure identity and error bound](resonant-cusp-height-law.md).
+**Height law and cusp escape: formalized.** For `κ=-2 Re u`, the actual normalized height marginal is `ν_Y=Y^(-κ)ν_1+κY^(-κ)1_(1,Y](y)y^(κ-1)dy`. After rescaling height by `Y`, every bounded measurable test with `|f|≤M` has error at most `2MY^(-κ)` from the power-law probability `κt^(κ-1)dt` on `(0,1]`. Fixed-height mass is at most `(C/Y)^κ`; it vanishes as `Y→∞` uniformly in ordinate when `κ` stays positive away from zero. This positive limiting law retains the decay rate. [Proof and Lean certificates](../3-formalized/resonant-cusp-height-law.md).
 
 ## Open dependency
 

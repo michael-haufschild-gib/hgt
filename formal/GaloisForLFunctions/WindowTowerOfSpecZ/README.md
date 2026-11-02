@@ -1,6 +1,6 @@
 # The Window Tower of Spec ℤ (WTZ)
 
-Namespace `GaloisForLFunctions.WindowTowerOfSpecZ`; umbrella `WindowTowerOfSpecZ.lean`; 15 modules.
+Namespace `GaloisForLFunctions.WindowTowerOfSpecZ`; umbrella `WindowTowerOfSpecZ.lean`; 19 modules.
 Every theorem is unconditional; none assumes or proves RH.
 
 ## 1. Motivation
@@ -46,6 +46,8 @@ the sections, the growth law in `A`, and the place where selection has to happen
 | Factored indicator, Euler factor | `factoredIndicator s`, `eulerInverse p`, `primesUpTo N` | `e_s` = indicator of the integers with prime factors in `s`; `e_{{p}} = (1 − δ_p)^{−1}` |
 | Exit potential, end profile, window potential | `exitPotential A`, `endProfile`, `windowPotential A` | `e_A(u) = Ω(−u) + Ω(A+u)`; `φ(t) = Ω(t) − ψ_{1/2}(e^t)`; `V_A = Ω_Γ + e_A − k_A` |
 | Adjoint shift | `adjointShift A t` | `(T_t^*H)(u) = 1_{u≥−A}H(u + t)`, the shift toward the left end |
+| Stage of a function | `VanishesBelow a f` | `f(n) = 0` for `n < a`: the fold starts acting at stage `a` |
+| `Ω`-filtration, almost primes | `omegaVanishing k`, `omegaAtLeast k N`, `almostPrimesUpTo k N` | `f = 0` where `Ω(n) < k`; the `n ≤ N` with `Ω(n) ≥ k`, `= k` |
 
 From CWS: `IsWindowTest`, `windowLevel = ⌊e^A⌋`, `foldEnergy`, `canonicalDensity`, `halfChebyshev`,
 `canonicalDegree`, `windowIndex`, `windowGenus`, `exists_flip_twin_of_window`.
@@ -85,7 +87,20 @@ transition is a small extension with one-dimensional kernel spanned by the new f
 element of `m`. The maximal ideal satisfies `m^k ⊆ I_{2^k−1}`, sharply: any `k` folds compose to zero
 on windows shorter than `k log 2`, and `T₂^{k−1}` survives on longer ones. The cotangent space has the
 primes `≤ e^A` as a basis: the primes generate every window algebra; prime powers and composites
-are products.
+are products. More precisely the `m`-adic filtration is the filtration by the number of prime
+factors: `m^k + I_N` is the set of functions vanishing on the `n ≤ N` with `Ω(n) < k`, and `gr_k` has
+the `k`-almost primes `≤ N` as a basis. **The Hilbert function of the window algebra is Landau's
+count** `π_k(N) = #{n ≤ N : Ω(n) = k}`; embedding dimension `π(N)`, Loewy length `⌊log₂ N⌋ + 1`. The
+socle (the part killed by `m`) is spanned by the `δ_n` with `N/2 < n ≤ N`, so the type of `D_N` is
+`⌈N/2⌉` and **the window algebra is Gorenstein exactly when `N ≤ 2`**, i.e. on windows shorter than
+`log 3`: the perfect pairing `(f, g) ↦ (f * g)(N)` exists only before the second prime.
+
+The first index where a function is nonzero is a multiplicative valuation: the stages multiply and
+the leading coefficients multiply. A product of folds acts exactly from the product of their stages
+on, and a fold starting at `n₀ ≥ 2` has nilpotency index `⌊log N/log n₀⌋ + 1`. Every window operator
+is `f(1)` plus a nilpotent: **Wiener's lemma for the window algebra** — `ρ_A(f)` is invertible iff
+`f(1) ≠ 0`, with inverse the truncated geometric series — and the spectrum of `ρ_A(f)` is the single
+point `f(1)`. All spectral information of the arithmetic sits in Weil's form, not in the operators.
 
 **C. Tate pieces and the non-Tate piece.** For an Euler datum `(F, G)` the Tate family
 `J^F_k = twist_{−k}(F) * G` is a cocycle of the Tate flow, `J^F_{k+l} = twist_{−k}(J^F_l) * J^F_k`,
@@ -112,6 +127,13 @@ Weil's window form is an explicit **signed count** — a combination of projecti
 the residue rings `ℤ/m`, `m ≤ e^A`, in dimensions `< e^A`, with the interpolation coefficients of `log`
 as signs.
 
+The Tate family lies above its tangent at dimension zero: `J_k` is multiplicative and nonnegative
+for every real `k ≥ 0`, and `J_k(n) ≥ [n = 1] + kΛ(n)` (at a prime power `p^k − 1 ≥ k log p`). On tests
+with nonnegative autocorrelations (e.g. `H ≥ 0`) this gives `τ_H(k) ≥ ‖H‖² + k⟨ρ_A(Λ)H, H⟩`, hence
+`Q(H) ≥ Ω(0)‖H‖² + J_∞(H) + pole − (2/k)(τ_H(k) − ‖H‖²)` for every `k > 0`: on nonnegative tests
+Weil's arithmetic term is dominated by the projective point counts in every positive dimension,
+with equality in the limit `k → 0`.
+
 **D. The atomic lattice.** Atoms of width `< log((N+1)/N)` at the points `log(m/N)`, `m ≤ N`, are
 moved by the window shifts as the integers are multiplied: `T_{log n}b_m = b_{nm}` (`0` past the
 level). The atomic embedding `ι` intertwines `ρ_A` with multiplication in `D_N`: the integers of
@@ -122,6 +144,12 @@ mutually orthogonal with `‖b_m/√m‖² = 1/m`, so the lattice is the Arakelo
 `ℰ_N = ⊕_{m ≤ e^A} 𝒪(½ log m)` with the theta metric of `Spec ℤ`: Riemann–Roch
 `h⁰(ℰ_N, d) − h⁰(ℰ_N^∨, −d) = Nd + ½ log N!` by Poisson summation on each summand, degree `½ log N!`
 and slope at most `½ log N ≤ A/2`.
+
+On the lattice the arithmetic term is exponentially smaller than on general tests: splitting each
+term `Λ(d)g(m)g(dm)/(dm)` by AM–GM, the first halves sum to the Mertens sum and the second to
+`Σ_{d∣k}Λ(d) = log k`, so `|⟨ρ_A(Λ)ιg, ιg⟩| ≤ ½(Σ_{d≤N}Λ(d)/d + log N)‖ιg‖² ≈ A‖ιg‖²`, against the
+canonical degree `ψ_{1/2}(e^A) ≈ 2e^{A/2}` on wide tests. The canonical class is invisible to the
+integers of the window; window negativity lives on wide tests, where the folds overlap.
 
 **E. The pole plane and the floor.** The pole term `2Ĥ(0)Ĥ(1)` is translation invariant; centred at
 the window it is `½⟨c_A,H⟩² − ½⟨s_A,H⟩²` with `‖s_A‖² = 4 sinh(A/2) − 2A`. Its exact capacity
@@ -173,9 +201,10 @@ Exchanging the jump and point integrals gives the exit-charge inequality `∫ e_
 one universal end profile, the Gamma factor's exit tail minus the half-weighted Chebyshev count, as
 a function of the distances to the two ends, for every window of the tower. Where `V_A` pays the
 pole capacity `2 sinh(A/2) − A` pointwise, the window is positive. On prime-free windows the
-minimum is at the centre (`Ω` is midpoint convex), and `Ω_Γ + 2Ω(1/24) > 0`: **every window of
-length `≤ 1/12` is positive by its exit charge**, without any estimate of Weil's form. Beyond, `φ`
-turns negative like `−2e^{t/2}` and the interior jumps must pay.
+minimum is at the centre (`Ω` is midpoint convex), and `Ω_Γ + 2Ω(1/14) > 2 sinh(1/14) − 1/7`:
+**every window of length `≤ 1/7` is positive by its exit charge**, without any estimate of Weil's
+form (the exact pointwise limit is `≈ 0.174`). Beyond, `φ` turns negative like `−2e^{t/2}` and the
+interior jumps must pay.
 
 **K. Selection.** Tate pieces at a prime have the sign of the weight: `J^F_k(p) = F(p)(p^k − 1)` and
 `λ_F(p) = F(p) log p`. A flip twin has a negative Tate piece at its prime from the stage where the
@@ -187,10 +216,10 @@ the sign of the weight. Counts at integer dimensions do not select.
 
 | Question (obstacles §2.7) | Answer |
 |---|---|
-| What are the restriction maps `W_A → W_{A'}` and their control theorem? | Algebraically and analytically controlled. Analytic control: crossing a stage adds one fold paid by its end mass (`weilQuad_eq_stageForm_add_fold`, `weilQuad_nonneg_of_endCoercive`), composite stages are free (`weilQuad_eq_stageForm_of_not_primePow`), and the collar exit charge pays every new fold uniformly (`levyJump_ge_collar`, `primeJumpWeight_le_archLevyAntideriv`, `weilQuad_ge_reducedStageForm`). Algebraic control: equivalently, equivariant inclusions of window modules over the truncations `D_{⌊e^{A'}⌋} → D_{⌊e^A⌋}` (`windowRepFun_of_le`, `ker_windowRep`). Each stage is a small extension with kernel the new fold (`sub_single_mem_truncIdeal_succ`, `mul_mem_truncIdeal`); the new fold is a socle element until stage `2n` (`windowRep_single_mul_eq_zero`); Loewy length `⌊log₂ N⌋ + 1` (`windowRep_kills_pow_iff`); cotangent space = primes (`mem_sq_sup_truncIdeal_iff`, `single_prime_not_mem`); inverse limit = Dirichlet ring (`existsUnique_limit`, `iInf_truncIdeal`). |
+| What are the restriction maps `W_A → W_{A'}` and their control theorem? | Algebraically and analytically controlled. Analytic control: crossing a stage adds one fold paid by its end mass (`weilQuad_eq_stageForm_add_fold`, `weilQuad_nonneg_of_endCoercive`), composite stages are free (`weilQuad_eq_stageForm_of_not_primePow`), and the collar exit charge pays every new fold uniformly (`levyJump_ge_collar`, `primeJumpWeight_le_archLevyAntideriv`, `weilQuad_ge_reducedStageForm`). Algebraic control: equivalently, equivariant inclusions of window modules over the truncations `D_{⌊e^{A'}⌋} → D_{⌊e^A⌋}` (`windowRepFun_of_le`, `ker_windowRep`). Each stage is a small extension with kernel the new fold (`sub_single_mem_truncIdeal_succ`, `mul_mem_truncIdeal`); the new fold is a socle element until stage `2n` (`windowRep_single_mul_eq_zero`); Loewy length `⌊log₂ N⌋ + 1` (`windowRep_kills_pow_iff`); cotangent space = primes (`mem_sq_sup_truncIdeal_iff`, `single_prime_not_mem`); Hilbert function = almost-prime counts (`mem_pow_sup_truncIdeal_iff`, `sub_restrictTo_almostPrime_mem`, `restrictTo_almostPrime_mem_iff`); socle `(N/2, N]`, Gorenstein iff `N ≤ 2` (`mul_mem_truncIdeal_forall_iff`, `socle_principal_iff`); local with one-point spectra (`isUnit_windowRep_iff`, `isUnit_windowRep_sub_iff`); inverse limit = Dirichlet ring (`existsUnique_limit`, `iInf_truncIdeal`). |
 | What is the count attached to a fold `T_n`; what does `sym₂` count? | `T_n` is `δ_n`; in the Tate function its coefficient is `J_k(n)n^{−1/2}`, a count of primitive vectors of `(ℤ/n)^k` (`tateFunction_eq`, `jordanTotient_eq_card_primVec`). At the first prime the signed fold count `anti₂ − sym₂` is the coefficient of `#ℙ^{k−1}(𝔽₂) = 2^k − 1` (`tateFunction_firstPrime`). It enters Weil's form only through the derivative at `k = 0` (`weilQuad_eq_tateJet`): no integer dimension makes it a count. Equivalently, Weil's window form is a signed combination of the counts `φ(m)#ℙ^{j−1}(ℤ/m)`, `j < e^A`, with the coefficients of the polynomial interpolating `log` at `1, …, ⌊e^A⌋` (`sum_coeff_mul_jordanTotient`, `weilQuad_eq_signedCount`): the window `h¹` is a signed count, and its sign is the sign of that interpolation against the archimedean data. |
 | Is there a scheme over `ℤ` whose `ℤ/m`-points give the twisted counts and whose "conductor-one" part is the window form? | The punctured affine spaces `𝔸^k∖0` (primitive vectors), with the dimension as parameter: `J_k(m) = φ(m)#ℙ^{k−1}(ℤ/m)` are the Tate pieces (`jordanTotient_eq_card_projPoints`); `∂_kJ_k(m)|₀ = Λ(m)` (`hasDerivAt_jordanTotient_zero`) makes Weil's arithmetic window term the derivative at dimension zero (`hasDerivAt_tateFunction`). |
-| What lattice of rank `≈ 2e^A` carries the sections; with what metric? | The atomic lattice: the integers `m ≤ e^A`, a free rank-one module over the window algebra (`windowRepFun_atomicEmbedding`), of rank `⌊e^A⌋`; the window genus `≥ (2 − η)e^A` (CWS) is twice this rank to main order. Metric `‖φ‖²Σ g(k)h(k)/k` (`integral_atomicEmbedding_mul`); arithmetic term = multiplication by `Λ` (`integral_windowRep_atomicEmbedding`); pole = values at `s = 0, 1` (`poleA_atomicEmbedding`, `poleB_atomicEmbedding`); the Gamma factor enters as the Gaussian (theta) metric on each atom and as the Lévy kernel between atoms. As an Arakelov bundle it is `⊕_{m≤e^A} 𝒪(½ log m)` with `h⁰ − h⁰∨ = Nd + ½ log N!` and slope `≤ A/2` (`integral_atomicEmbedding_single`, `windowBundleH0_riemannRoch`, `windowBundle_slope_le`). |
+| What lattice of rank `≈ 2e^A` carries the sections; with what metric? | The atomic lattice (on it the arithmetic term is bounded by the Mertens sum, `abs_sum_vonMangoldt_mul_le`, `abs_integral_windowRep_vonMangoldt_atomic_le`): the integers `m ≤ e^A`, a free rank-one module over the window algebra (`windowRepFun_atomicEmbedding`), of rank `⌊e^A⌋`; the window genus `≥ (2 − η)e^A` (CWS) is twice this rank to main order. Metric `‖φ‖²Σ g(k)h(k)/k` (`integral_atomicEmbedding_mul`); arithmetic term = multiplication by `Λ` (`integral_windowRep_atomicEmbedding`); pole = values at `s = 0, 1` (`poleA_atomicEmbedding`, `poleB_atomicEmbedding`); the Gamma factor enters as the Gaussian (theta) metric on each atom and as the Lévy kernel between atoms. As an Arakelov bundle it is `⊕_{m≤e^A} 𝒪(½ log m)` with `h⁰ − h⁰∨ = Nd + ½ log N!` and slope `≤ A/2` (`integral_atomicEmbedding_single`, `windowBundleH0_riemannRoch`, `windowBundle_slope_le`). |
 | What growth law does the tower obey? | Negativity `≤ (deg K_A + 2 sinh(A/2) − A)‖H‖² ≤ (−Ω(0) + (4A+1)e^{A/2})‖H‖²` (`weilQuad_ge_neg_sharpWindowFloor`, `sharpWindowFloor_le`). Its exponent lies between the zero width and `½`, with RH iff it is `0` (ACCE `UnconditionalEqualityOfPolarAndFullGroundEnergyRates`, SRT `NegativityRateEqualsMaximalDepth`). |
 | Do the Tate pieces reproduce the degeneration on twisted windows (criterion 6)? | Yes for character twists: twists commute with the Tate flow and carry Tate families (`twist_tateTwist_comm`, `tateFamily_twist`); the Tate pieces of `L(s, χ)` are `χ(m)φ(m)#ℙ^β(ℤ/m)` (`tateFamily_charTwist_succ`) and its non-Tate piece is `χΛ` (`hasDerivAt_tateFamily_charTwist`), the dimension `β` entering as the dimension of projective space. |
 | Is there a Frobenius / base change for the tower; what is Serre duality on it? | Adams lifts are dilations `A ↦ eA` up to a Tate twist (`windowRepFun_mPart_dilate`, `windowShift_dilate`); Serre duality `σ_A` is the Rosati involution (`windowInvolution_windowShift`, `integral_windowRepFun_mul_eq`). |
@@ -218,6 +247,11 @@ the sign of the weight. Counts at integer dimensions do not select.
   collars of a window) and the uniform margin `Ω(log(3/2)) ≥ log 3 > 2/e ≥ Λ(n)/√n`.
 - Multiplicativity calculus of factored indicators; the exact window Euler product (the
   factorization of the window symbol into unipotent local factors).
+- The stage valuation (multiplicative leading terms), Wiener's lemma by truncated geometric series,
+  the `Ω`-filtration and its associated graded algebra, the socle calculus.
+- The tangent principle for the Jordan family (convexity of `p^k` at `0`), multiplicativity of `J_k`
+  in real dimension.
+- AM–GM against the divisor structure (`Σ_{d∣k}Λ(d) = log k`) for the atomic arithmetic form.
 
 **Used from the corpus.** CWS (window tests, folds, canonical class, floor, index, genus, flip twins);
 AHD/ADT (`jordanTotient`, `natCard_projPoints_mul_totient`, `natCard_primVec_eq_jordanTotient`); RHTower
@@ -227,7 +261,7 @@ the window form of RHTower `hasDerivAt_suzukiShiftedCoefficient`.
 
 - The exit-charge (Hardy-type) inequality for the Gamma factor on a window, by exchanging jump and
   point integrals; the end-profile potential and pointwise payment; elementary bounds on `Ω`
-  (closed form, `arctan(1/√3) = π/6`, `log 95 ≥ 22/5`).
+  (closed form, `arctan(1/√3) = π/6`, `arctan x ≥ π/4 − (1 − x)/2`, `log 95 ≥ 22/5`, `log 55 ≥ 4`).
 
 **To develop.** The Poincaré inequality for the interior (censored) jumps against the end-profile
 potential where `V_A` is negative, uniformly in `A`; the higher critical lengths of the window index
@@ -253,10 +287,25 @@ dimension.
    `≥ 0.362` off RH), and CWS bounds the index by one below `log 2 + 1/50`. Open: the higher critical
    lengths `A_k = inf{A : ι(A) ≥ k}`, and AOT's spectral jumps resolved by stages.
 4. **Window capacity.** The pointwise part is done: `Q ≥ ∫V_A H² + pole` with the universal end
-   profile, and short windows (`≤ 1/12`) are positive by it. Open: a Poincaré inequality for the
-   interior jumps on the region where `V_A < 0`, uniform in `A` (RH; shared with CWS §7).
+   profile, and short windows (`≤ 1/7`) are positive by it. Open: a Poincaré inequality for the
+   interior jumps on the region where `V_A < 0`, uniform in `A` (RH; shared with CWS §7). Numerically
+   the archimedean form `Ω_Γ‖H‖² + J_∞(H)` alone has negative index `0` below `A₁ ≈ 0.215`, `1` up to
+   `A₂ ≈ 0.762`, then about `2A` (Weyl law for the symbol of the Gamma factor, which vanishes near
+   `ξ = 2π`). So no potential bound for `J_∞` (exit potential, ground-state weights) passes `A₁`: beyond
+   it the pole is indispensable. The second archimedean direction is odd under `σ_A` and appears
+   just after the first prime `log 2`.
 5. **The exponent.** Close the gap between the zero width and the negativity exponent without
    no-clustering hypotheses.
+6. **The Perron state of the pole-free form.** Weil's form without the pole is a Schrödinger form with
+   nonpositive off-diagonal kernel (Lévy jumps and prime folds), so its ground state is positive.
+   Numerically its ground energy is about minus the canonical degree, the rest of its spectrum
+   accumulates at `0` from above, and the pole lifts exactly the Perron state. RH implies that the
+   pole-free form has at most one negative square on every window (the pole has one positive
+   direction). Open: the Perron state and the gap as laws in `A`.
+7. **Parity at the first prime.** On `[log 2, log 3)` the fold `T₂` raises the `σ_A`-odd sector and
+   lowers the even one, while the pole does the opposite (numerics); the odd sector of the prime-free
+   form fails at `A₂ ≈ 0.76`, after the first prime has entered. Open: an identity making the
+   complementarity exact (a candidate for the count at the first prime, obstacles §2.5.1).
 
 ## 8. Pillar theorems
 
@@ -289,12 +338,21 @@ dimension.
 | Adams lifts = dilations; Serre duality = Rosati involution | `windowShift_dilate`, `windowRepFun_mPart_dilate`, `windowInvolution_windowShift`, `integral_windowShift_mul_eq`, `integral_windowRepFun_mul_eq` |
 | The Arakelov bundle of a window | `integral_atomicEmbedding_single`, `arithH0_add_half_log`, `windowBundleH0_riemannRoch`, `windowBundle_slope_le` |
 | Exact pole capacity; sharp floor and pencil; exponent `½` | `pole_eq_centred`, `integral_centredSinh_sq`, `centredSinhPairing_sq_le`, `pole_ge`, `weilQuad_ge_neg_sharpWindowFloor`, `pencil_nonneg_sharp`, `halfChebyshev_le`, `sharpWindowFloor_le` |
+| Windows of length `≤ 1/7` are positive by their exit charge | `archLevyAntideriv_one_div_14_ge`, `weilQuad_nonneg_of_le_one_seventh` |
+| Stage valuation; exact nilpotency; Wiener's lemma; one-point spectrum | `mul_vanishesBelow`, `pow_vanishesBelow`, `windowRep_mul_eq_zero_iff`, `windowRep_pow_eq_zero_iff`, `isUnit_windowRep_iff`, `isUnit_windowRep_sub_iff` |
+| Hilbert function = almost-prime counts; socle; Gorenstein iff `N ≤ 2` | `pow_truncIdeal_one_le_omegaVanishing`, `single_mem_pow_truncIdeal_one`, `mem_pow_sup_truncIdeal_iff`, `sub_restrictTo_almostPrime_mem`, `restrictTo_almostPrime_mem_iff`, `mul_mem_truncIdeal_forall_iff`, `socle_principal_iff` |
+| The tangent principle of the Tate family | `isMultiplicative_jordanFun`, `jordanTotient_nonneg`, `jordanTotient_ge_tangent`, `tateFunction_ge_tangent`, `weilQuad_ge_of_nonneg_tangent` |
+| The atomic lattice sees only the Mertens sum | `abs_term_le`, `abs_sum_vonMangoldt_mul_le`, `abs_integral_windowRep_vonMangoldt_atomic_le` |
 
 ## 9. Traps
 
 | Trap | Truth |
 |---|---|
-| Positivity of short windows needs an estimate of Weil's form | Up to length `1/12` the exit charge alone pays it, pointwise |
+| Positivity of short windows needs an estimate of Weil's form | Up to length `1/7` the exit charge alone pays it, pointwise |
+| A better potential for the jumps reaches the first prime | No bound of `J_∞` by a potential passes `A₁ ≈ 0.215`, where `Ω_Γ + J_∞` itself turns negative (numerics); the pole must enter |
+| The window operators carry spectral information | Each `ρ_A(f)` is `f(1)` plus a nilpotent (Wiener's lemma); the spectrum is in Weil's form, not in the algebra |
+| The atomic lattice sees the canonical class | On atoms the arithmetic term is bounded by the Mertens sum `≈ A`, not by `ψ_{1/2}(e^A) ≈ 2e^{A/2}` |
+| Tate operators are positive in small positive dimension | `ρ_A(J_k)` is positive only for `k` below a horizon that shrinks to `0` as `A` grows (numerics); only the tangent at `0` is uniform |
 | The window algebra is the semilocal algebra of the Euler factors at `p ≤ e^A` | It is the Dirichlet ring truncated at `n ≤ e^A`; composites are products, truncation is by size |
 | The tower is a direct limit of finite objects carrying `h¹` | The algebras are finite-dimensional; the modules are not, and no window has a finite-dimensional realization (CWS) |
 | A new prime power is a large perturbation of the window | Algebraically it is a socle element; it composes to zero with every fold until stage `2n` |

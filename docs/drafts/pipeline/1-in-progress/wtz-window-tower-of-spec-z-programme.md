@@ -17,7 +17,9 @@ TheWindowDirichletAlgebra, TheTowerOfSmallExtensions, TheWindowFormIsTheDerivati
 TheTateFlowOnTheWindowAlgebra, TheAtomicLatticeOfAWindow, TheExactPoleCapacityOfAWindow,
 TheSymmetriesOfTheTower, TheTwistsOfTheTower, WeilsWindowFormIsASignedCount,
 TheTransferAcrossAStage, TheExitChargePaysEveryNewFold, TheEulerFactorizationOfAWindow,
-TheEndProfileOfAWindow, ShortWindowsArePaidByTheirExitCharge, TheArakelovBundleOfAWindow.
+TheEndProfileOfAWindow, ShortWindowsArePaidByTheirExitCharge, TheArakelovBundleOfAWindow,
+TheAtomicLatticeSeesTheMertensSum, TheValuationAndTheUnitsOfTheTower,
+TheTangentPrincipleOfTheTateFamily, TheHilbertFunctionOfTheTower.
 
 ## Status
 - Window algebra = Dirichlet ring truncated at `⌊e^A⌋` (`ker_windowRep`); nesting; `ZMZ⁻¹ = M − ρ(Λ)`;
@@ -35,8 +37,10 @@ TheEndProfileOfAWindow, ShortWindowsArePaidByTheirExitCharge, TheArakelovBundleO
   `Ω(ε)∫_{collars}H² ≤ J_∞` with `Ω(ε) ≥ log 3 > 2/e ≥ w_n` on every stage: every new fold is paid.
 - Euler factorization of the window zeta operator (factored indicators, `e_p(1−δ_p) = 1`).
 - End profile: `∫(Ω(−u)+Ω(A+u))H² ≤ J_∞`; `Q ≥ ∫V_A H² + pole`, `V_A = Ω_Γ + φ(d₋) + φ(d₊)`;
-  windows of length `≤ 1/12` positive by the exit charge alone.
+  windows of length `≤ 1/7` positive by the exit charge alone.
 - Arakelov bundle `⊕_{m≤e^A}𝒪(½log m)`: RR `Nd + ½log N!`, slope `≤ A/2`.
+- Algebra: stage valuation, Wiener's lemma, Hilbert function = almost-prime counts, socle `(N/2,N]`,
+  Gorenstein iff `N ≤ 2`. Tangent principle `J_k ≥ [n=1] + kΛ`. Atomic arithmetic ≤ Mertens sum.
 
 ## Open (README §7)
 Positivity surviving the derivative at dimension zero; positivity across a small extension;

@@ -7,8 +7,9 @@ import GaloisForLFunctions.RHTower.RectIntegralEdges
 /-!
 # Critical-Scale Clustering, All-Heights Littlewood Budget, and the 8-Way Mollified Log-Mean Equivalence
 
-Unconditional resolution of the log-mean / mollifier / near-line zero-density equivalence side of
-Route WD (Obstacles B16 + B44):
+Unconditional equivalence between critical-line log-means, finite Euler-product and linear
+mollifiers, horizontal off-line zero moments, `100%` critical-scale zero clustering, and dyadic
+Hecke defect / polynomial theta-source readings:
 
 1. **Two-sided all-heights Littlewood edge budget**
    (`exists_zetaLine_littlewood_edge_budget_all_heights`):

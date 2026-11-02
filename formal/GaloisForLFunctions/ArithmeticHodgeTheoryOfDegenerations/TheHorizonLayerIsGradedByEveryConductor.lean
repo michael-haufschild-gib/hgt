@@ -3,6 +3,22 @@ import GaloisForLFunctions.ArithmeticHodgeTheoryOfDegenerations.TheSecondOrderTe
 
 /-!
 # The horizon layer is graded by every conductor
+
+The orthogonality of untwisted and prime windows (`TheHorizonLayerIsGradedByConductor`) holds for
+every mean-zero periodic twist: only the mean of the twist enters the mixed energy, the mixed pole
+terms pair a Riemann sum with a twisted Riemann sum, and the quiet region needs only the quiet
+energy of the twisted block (`cross_layer_vanishes_of_twist`). Hence if the twisted window has a
+second-order limit `L_χ`, the window `x + y` has limit `κ Q(H) + (βJ/K)‖H‖² + L_χ`
+(`graded_layer_of_twist`). With Parseval for Ramanujan expansions:
+
+* `graded_ramComb_criticalCurve_of_regularBulk`: for `χ = Σ_{m ∈ S} a_m c_m`, `m ≥ 2`,
+  `c⁻¹⟨W x, x⟩/∫g² → κ Q(H) + (βJ/K)‖H‖²_{−(β+1)} + (Σ_m a_m² J_{β+1}(m))(βJ/K)‖G‖²_{−(β+1)}`;
+* `graded_ramComb_criticalCurve_exact` (tilted spline):
+  `κ Q(H) + (7J(1)/K)‖H‖²_{−8} + (7/K)(Σ_m a_m² φ(m) J(m))‖G‖²_{−8}`.
+
+The second-order form on the span of the untwisted window and the Ramanujan windows is
+block-diagonal by conductor: Weil's form and the conductor-one count on conductor one, the
+conductor-`m` count on conductor `m`.
 -/
 
 noncomputable section
@@ -295,11 +311,10 @@ theorem exists_abs_crossPole_le_of_twist (hφ : ContDiff ℝ 2 φ) (hφsupp : �
 
 /-- Below the first resonance of a twisted block, the polarized energy of an untwisted and a
 twisted block is `O(N^{−1/4})`. -/
-theorem exists_quietCross_le_of_twist (hφ : ContDiff ℝ 2 φ) (hφsupp : ∀ u, u ∉ Set.Icc 0 1 → φ u = 0)
-    {Cφ q : ℝ} (hq : 0 ≤ q) (hCφ : 0 ≤ Cφ)
+theorem exists_quietCross_le_of_twist (hφ : ContDiff ℝ 2 φ)
+    (hφsupp : ∀ u, u ∉ Set.Icc 0 1 → φ u = 0) {Cφ q : ℝ} (hq : 0 ≤ q) (hCφ : 0 ≤ Cφ)
     (hdecay : ∀ u : ℝ, ‖paperFT (cx φ) u‖ ^ 2 ≤ Cφ * (1 + |u|) ^ (-q))
-    (hh : ContDiff ℝ 2 h) (hg : ContDiff ℝ 2 g) (hA : 0 ≤ A)
-    (hsupp : ∀ y, y ∉ Set.Icc (-A) 0 → h y = 0) (hgsupp : ∀ y, y ∉ Set.Icc (-A) 0 → g y = 0)
+    (hh : ContDiff ℝ 2 h) (hA : 0 ≤ A) (hsupp : ∀ y, y ∉ Set.Icc (-A) 0 → h y = 0)
     {χ : ℕ → ℝ} {Mχ : ℕ} (hχ : MeanZeroTwist χ Mχ)
     (hL : ∃ C : ℝ, 0 ≤ C ∧ ∀ N : ℕ, 1 ≤ N → ∀ c : ℝ, 0 < c →
       ∫ τ in Set.Icc (-((N : ℝ) * Real.exp (-(A + Real.log Mχ))))
@@ -479,8 +494,8 @@ theorem cross_layer_vanishes_of_twist (hφ : ContDiff ℝ 2 φ) (hφsupp : ∀ u
   obtain ⟨Cp, hCp0, hCp⟩ := exists_abs_crossPole_le_of_twist hφ hφsupp hφ2 hh hg hA hsupp hgsupp hχ
   obtain ⟨KX, hKX0, hKX⟩ := exists_abs_crossEnergy_le_of_twist hφ hφsupp hq hCφ hdecay hh hg hA hsupp
     hgsupp hχ
-  obtain ⟨CQ, hCQ0, hCQ⟩ := exists_quietCross_le_of_twist hφ hφsupp (by linarith : 0 ≤ q) hCφ hdecay hh hg
-    hA hsupp hgsupp hχ hL
+  obtain ⟨CQ, hCQ0, hCQ⟩ := exists_quietCross_le_of_twist hφ hφsupp (by linarith : 0 ≤ q) hCφ hdecay
+    hh hA hsupp hχ hL
   obtain ⟨Aν, hAν, hν⟩ := exists_abs_nuSymbol_le (Real.exp_pos (2 * (A + 1))).le
   obtain ⟨Bh, -, hB, -⟩ := exists_bound_lipschitz hh hsupp
   obtain ⟨Bg, -, hBg, -⟩ := exists_bound_lipschitz hg hgsupp

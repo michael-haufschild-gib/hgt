@@ -195,7 +195,3 @@ theorem heightPowerBand_below {κ C Y : ℝ} (hCY : C ≤ Y) :
 end
 
 end GaloisForLFunctions.RenormalizedIntersectionTheory.ResonantStates
-
-#print axioms GaloisForLFunctions.RenormalizedIntersectionTheory.ResonantStates.resonant_heightEnergyMeasure
-#print axioms GaloisForLFunctions.RenormalizedIntersectionTheory.ResonantStates.heightProbabilityMeasure_probability
-#print axioms GaloisForLFunctions.RenormalizedIntersectionTheory.ResonantStates.resonant_heightProbabilityMeasure

@@ -26,7 +26,8 @@ TheCountLawOverEveryFiniteRing, TheTwistedHorizonLayerIsZeroBlind, TheWindowInde
 TheTwistedHorizonLayerIsPositive, TheAlternatingWindowCountsTheConductorTwoPoints,
 ThePrimeWindowCountsTheProjectivePoints, TheHorizonLayerIsGradedByConductor,
 TheWindowIndexCountsTheJumpMultiples, TheEnergyOfAPeriodicTwist,
-TheRamanujanWindowCountsEveryConductor, TheSecondOrderTermIsDiagonalInTheRamanujanBasis.
+TheRamanujanWindowCountsEveryConductor, TheSecondOrderTermIsDiagonalInTheRamanujanBasis,
+TheHorizonLayerIsGradedByEveryConductor.
 
 ## Status
 - First order = count: `J(m) = J(1) #ℙ⁷(ℤ/m)`; count law over every finite ring (𝔽_q[T] calibration) [L].
@@ -60,6 +61,8 @@ TheRamanujanWindowCountsEveryConductor, TheSecondOrderTermIsDiagonalInTheRamanuj
   `2π Σ_{de=m} μ(d) 𝒜_N(c/e)`; second order `J_{β+1}(m)βJ/K‖H‖²`, tilted `7φ(m)J(m)/K` [L].
 - Parseval for the count: Ramanujan expansion `Σ a_m c_m` → `(Σ a_m² J_{β+1}(m))βJ/K‖H‖²`;
   distinct conductors orthogonal at every offset [L].
+- Conductor decomposition: untwisted ⊥ every mean-zero quiet twist; `h/√n + Σa_m c_m g/√n` →
+  `κQ(H) + βJ/K‖H‖² + (Σa_m²J_{β+1}(m))βJ/K‖G‖²` [L].
 - Jump multiples: independent family ⇒ `A(H)` posdef and `ind₋(P_K) = #{λ_i < 0, βJ/(−λ_i) < K}`,
   `λ_i` relative eigenvalues of `κW(H)` against `A(H)` [L].
 

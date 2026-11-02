@@ -4,8 +4,9 @@ import GaloisForLFunctions.ConjugateDiagonalGeometry.SzegoCollision.LogStageBess
 /-!
 # Near-Line Zero Density, Almost-All Bessel–Szegő Certificates, Planck Windows, and Strict Separation
 
-Complete unconditional resolution of Question 1 of `obstacles-summary.md` §2.5.3 (Obstacles B16 + B44),
-paired with `ClusteringLogMeanAndMollifierEquivalence`:
+Near-line zero-density hierarchy, critical-scale Planck window occupancy, double-log Bessel–Szegő
+certificates, and bidirectional separation countermodels, paired with
+`ClusteringLogMeanAndMollifierEquivalence`:
 
 1. **Exact equivalence between almost-all `logDoorStage` Bessel–Szegő certificates and log-free
    unit-window occupancy** (`almostAllLogStageBesselCertificate_iff_nearLineWindowOccupancy`),
@@ -146,7 +147,7 @@ private lemma tendsto_one_div_const_mul_nhdsGT_zero {k : ℝ} (hk : 0 < k) :
       have h1 := mul_lt_mul_of_pos_left hc_lt hk
       rwa [show k * (1 / (k * B)) = 1 / B by field_simp [hk.ne']] at h1
     exact (le_div_iff₀ (mul_pos hk hc_pos)).mpr
-      ((le_div_iff₀ hB).mp hmul.le |>.trans_eq (mul_comm B (k * c)))
+      ((mul_comm B (k * c)).trans_le ((le_div_iff₀ hB).mp hmul.le))
 
 private lemma tendsto_one_div_atTop_nhdsGT_zero :
     Tendsto (fun A : ℝ => 1 / A) atTop (𝓝[>] (0 : ℝ)) := by
@@ -1251,11 +1252,40 @@ private lemma mediumShell_orderSum_le {V₁ V₂ : ℝ} (hV₁ : 0 ≤ V₁) (h1
     Real.log_le_log (by linarith) (by linarith [min_le_left V₂ (V₁ + 2)])
   have hl2 : Real.log (M₂ + 4) ≤ Real.log (V₂ + 4) :=
     Real.log_le_log (by linarith) (by linarith [hM₂_hi])
-  have hu1 := (Finset.sum_le_sum_of_subset_of_nonneg hcov fun _ _ _ => Nat.cast_nonneg _).trans
-    (finset_sum_union_le _ _ fun _ => Nat.cast_nonneg _)
+  have hu0 : ∑ z ∈ shellZeros V₁ V₂, ((analyticOrderAt _root_.RHTower.xi z).toNat : ℝ) ≤
+      ∑ z ∈ shellZeros V₁ M₁ ∪ (shellZeros M₁ M₂ ∪ shellZeros M₂ V₂),
+        ((analyticOrderAt _root_.RHTower.xi z).toNat : ℝ) :=
+    Finset.sum_le_sum_of_subset_of_nonneg hcov fun _ _ _ => Nat.cast_nonneg _
+  have hu1 := hu0.trans (finset_sum_union_le (shellZeros V₁ M₁)
+    (shellZeros M₁ M₂ ∪ shellZeros M₂ V₂)
+    (f := fun z => ((analyticOrderAt _root_.RHTower.xi z).toNat : ℝ))
+    (fun _ => Nat.cast_nonneg _))
   have hu2 := finset_sum_union_le (shellZeros M₁ M₂) (shellZeros M₂ V₂)
     (f := fun z => ((analyticOrderAt _root_.RHTower.xi z).toNat : ℝ)) (fun _ => Nat.cast_nonneg _)
   linarith [hu1, hu2, hs1, hs2, hs3, hl1, hl2]
+
+private lemma mediumCap_orderSum_le_logV {V V₁ V₂ : ℝ} (hV32 : 32 ≤ V) (hlog4 : 4 ≤ Real.log V)
+    (hV₁ : 0 ≤ V₁) (h12 : V₁ ≤ V₂) (hlen : V₂ - V₁ ≤ 6) (hV₂_hi : V₂ ≤ 2 * V + 4) :
+    ∑ z ∈ shellZeros V₁ V₂, ((analyticOrderAt _root_.RHTower.xi z).toNat : ℝ) ≤
+      48 * (|_root_.RHTower.xiLineTwoLogDerivConstant| + 2) * Real.log V := by
+  have hm := mediumShell_orderSum_le hV₁ h12 hlen
+  have hV_pos : 0 < V := by linarith
+  have hsq : V₂ + 4 ≤ V ^ 2 := by
+    have h1 : V₂ + 4 ≤ 3 * V := by linarith
+    have h2 : 3 * V ≤ V * V := mul_le_mul_of_nonneg_right (by linarith) hV_pos.le
+    calc V₂ + 4 ≤ 3 * V := h1
+      _ ≤ V * V := h2
+      _ = V ^ 2 := (sq V).symm
+  have hlog_V₂ : Real.log (V₂ + 4) ≤ 2 * Real.log V := by
+    calc Real.log (V₂ + 4) ≤ Real.log (V ^ 2) := Real.log_le_log (by linarith) hsq
+      _ = 2 * Real.log V := by rw [Real.log_pow]; push_cast; rfl
+  have hc_log : |_root_.RHTower.xiLineTwoLogDerivConstant| ≤
+      |_root_.RHTower.xiLineTwoLogDerivConstant| * Real.log V := by
+    calc |_root_.RHTower.xiLineTwoLogDerivConstant|
+        = |_root_.RHTower.xiLineTwoLogDerivConstant| * 1 := (mul_one _).symm
+      _ ≤ |_root_.RHTower.xiLineTwoLogDerivConstant| * Real.log V :=
+          mul_le_mul_of_nonneg_left (by linarith) (abs_nonneg _)
+  linarith [hm, hlog_V₂, hc_log]
 
 /-- Extended dyadic-shell deep zero-multiplicity bound from Selberg's arbitrary-rate estimate. -/
 private lemma deepExtendedShell_orderSum_le {r : ℝ} (hr0 : 0 < r) (hr1 : r < 1) :
@@ -1264,22 +1294,23 @@ private lemma deepExtendedShell_orderSum_le {r : ℝ} (hr0 : 0 < r) (hr1 : r < 1
         ∑ z ∈ (shellZeros (V - 4) (2 * V + 4)).filter (fun z => A / Real.log V ≤ |z.re - 1 / 2|),
           ((analyticOrderAt _root_.RHTower.xi z).toNat : ℝ) ≤
           C_d * (Real.exp (-(r * A)) / A) * V * Real.log V := by
-  let r' : ℝ := (r + 1) / 2
-  let ε' : ℝ := (1 - r) / 4
-  have hr'0 : 0 < r' := by dsimp only [r']; linarith
-  have hr'1 : r' < 1 := by dsimp only [r']; linarith
-  have hε'_pos : 0 < ε' := by dsimp only [ε']; linarith
-  have hε'_le1 : ε' ≤ 1 := by dsimp only [ε']; linarith
+  obtain ⟨r', hr'_def⟩ : ∃ x : ℝ, x = (r + 1) / 2 := ⟨_, rfl⟩
+  obtain ⟨ε', hε'_def⟩ : ∃ x : ℝ, x = (1 - r) / 4 := ⟨_, rfl⟩
+  have hr'0 : 0 < r' := by rw [hr'_def]; linarith
+  have hr'1 : r' < 1 := by rw [hr'_def]; linarith
+  have hε'_pos : 0 < ε' := by rw [hε'_def]; linarith
+  have hε'_le1 : ε' ≤ 1 := by rw [hε'_def]; linarith
   obtain ⟨A_bv, K_bv, η_r, hA_bv, hK_bv, hη_pos, hη_lt, hbv_ev⟩ :=
     exists_selberg_arbitraryRate_nearLine_zeroDensity hr'0 hr'1 hε'_pos
-  let K_log1 : ℝ := 1 / η_r
-  have hK_log1 : 0 < K_log1 := by dsimp only [K_log1]; positivity
-  let κ_r : ℝ := min (1 / 4) (η_r / (4 * r))
-  have hκ_pos : 0 < κ_r := lt_min (by norm_num) (by positivity)
-  let C_d : ℝ := 2 * (1 + ε') * A_bv / Real.pi + 2
-  have hCd_pos : 0 < C_d := by dsimp only [C_d]; positivity
-  let M_err : ℝ := 96 * (|_root_.RHTower.xiLineTwoLogDerivConstant| + 2) + 8 * K_bv
-  have hMerr_pos : 0 < M_err := by dsimp only [M_err]; positivity
+  obtain ⟨K_log1, hK_log1_def⟩ : ∃ x : ℝ, x = 1 / η_r := ⟨_, rfl⟩
+  have hK_log1 : 0 < K_log1 := by rw [hK_log1_def]; positivity
+  obtain ⟨κ_r, hκ_def⟩ : ∃ x : ℝ, x = min (1 / 4) (η_r / (4 * r)) := ⟨_, rfl⟩
+  have hκ_pos : 0 < κ_r := by rw [hκ_def]; exact lt_min (by norm_num) (by positivity)
+  obtain ⟨C_d, hCd_def⟩ : ∃ x : ℝ, x = 2 * (1 + ε') * A_bv / Real.pi + 2 := ⟨_, rfl⟩
+  have hCd_pos : 0 < C_d := by rw [hCd_def]; positivity
+  obtain ⟨M_err, hMerr_def⟩ :
+      ∃ x : ℝ, x = 96 * (|_root_.RHTower.xiLineTwoLogDerivConstant| + 2) + 8 * K_bv := ⟨_, rfl⟩
+  have hMerr_pos : 0 < M_err := by rw [hMerr_def]; positivity
   refine ⟨C_d, κ_r, hCd_pos, hκ_pos, ?_⟩
   have ht_32 : Tendsto (fun V : ℝ => (3 / 2 : ℝ) * V) atTop atTop :=
     tendsto_id.const_mul_atTop (by norm_num)
@@ -1292,24 +1323,25 @@ private lemma deepExtendedShell_orderSum_le {r : ℝ} (hr0 : 0 < r) (hr1 : r < 1
   have hV_pos : 0 < V := by linarith
   have hV1 : 1 ≤ V := by linarith
   have hlogV_pos : 0 < Real.log V := by linarith
-  let S : ℝ := (3 / 2 : ℝ) * V
-  have hS_pos : 0 < S := by dsimp only [S]; positivity
+  obtain ⟨S, hS_def⟩ : ∃ x : ℝ, x = (3 / 2 : ℝ) * V := ⟨_, rfl⟩
+  have hS_pos : 0 < S := by rw [hS_def]; positivity
   have hlogV_le_LS : Real.log V ≤ Real.log S :=
-    Real.log_le_log hV_pos (by dsimp only [S]; linarith)
+    Real.log_le_log hV_pos (by rw [hS_def]; linarith)
   have hLS_le_2logV : Real.log S ≤ 2 * Real.log V := by
-    have h1 : Real.log S ≤ Real.log (2 * V) := Real.log_le_log hS_pos (by dsimp only [S]; linarith)
+    have h1 : Real.log S ≤ Real.log (2 * V) := Real.log_le_log hS_pos (by rw [hS_def]; linarith)
     rw [Real.log_mul zero_lt_two.ne' hV_pos.ne'] at h1
     linarith [h1, Real.log_two_lt_d9, hlog4]
   have hLS_pos : 0 < Real.log S := hlogV_pos.trans_le hlogV_le_LS
   obtain ⟨T₁, hT₁, T₂, hT₂, hbv_S⟩ := hbv_V
-  have hT₁_lo : V < T₁ := by dsimp only [S] at hT₁; linarith [hT₁.1]
-  have hT₁_hi : T₁ < V + 1 := by dsimp only [S] at hT₁; linarith [hT₁.2]
-  have hT₂_lo : 2 * V - 1 < T₂ := by dsimp only [S] at hT₂; linarith [hT₂.1]
-  have hT₂_hi : T₂ < 2 * V := by dsimp only [S] at hT₂; linarith [hT₂.2]
+  rw [← hS_def] at hT₁ hT₂ hbv_S
+  have hT₁_lo : V < T₁ := by linarith [hT₁.1, hS_def]
+  have hT₁_hi : T₁ < V + 1 := by linarith [hT₁.2, hS_def]
+  have hT₂_lo : 2 * V - 1 < T₂ := by linarith [hT₂.1, hS_def]
+  have hT₂_hi : T₂ < 2 * V := by linarith [hT₂.2, hS_def]
   have hT₁2 : T₁ ≤ T₂ := by linarith
-  let b_V : ℝ := A / Real.log V
-  have hbV_pos : 0 < b_V := div_pos (by linarith) hlogV_pos
-  -- Cover `shellZeros (V - 4) (2V + 4)` by `(V - 4, T₁]`, `(T₁, T₂]`, and `(T₂, 2V + 4]`.
+  obtain ⟨b_V, hbV_def⟩ : ∃ x : ℝ, x = A / Real.log V := ⟨_, rfl⟩
+  rw [← hbV_def]
+  have hbV_pos : 0 < b_V := by rw [hbV_def]; exact div_pos (by linarith) hlogV_pos
   have hcov : (shellZeros (V - 4) (2 * V + 4)).filter (fun z => b_V ≤ |z.re - 1 / 2|) ⊆
       shellZeros (V - 4) T₁ ∪
         ((shellZeros T₁ T₂).filter (fun z => b_V ≤ |z.re - 1 / 2|) ∪
@@ -1329,44 +1361,33 @@ private lemma deepExtendedShell_orderSum_le {r : ℝ} (hr0 : 0 < r) (hr1 : r < 1
       · exact Finset.mem_union.mpr (Or.inr (Finset.mem_union.mpr (Or.inr (Finset.mem_filter.mpr
           ⟨_root_.RHTower.mem_stripFinsetPos.mpr ⟨hr0_z, hr1_z, him0, him_hi, hxi⟩,
             not_le.mp hc2⟩))))
-  -- Bound the two medium end-caps.
-  have hcap1 : ∑ z ∈ shellZeros (V - 4) T₁, ((analyticOrderAt _root_.RHTower.xi z).toNat : ℝ) ≤
-      48 * (|_root_.RHTower.xiLineTwoLogDerivConstant| + 2) * Real.log V := by
-    have hm := mediumShell_orderSum_le (V₁ := V - 4) (V₂ := T₁) (by linarith) (by linarith) (by linarith)
-    have hlog_T₁ : Real.log (T₁ + 4) ≤ 2 * Real.log V := by
-      calc Real.log (T₁ + 4) ≤ Real.log (V ^ 2) :=
-            Real.log_le_log (by linarith) (by nlinarith [hV32, hT₁_hi])
-        _ = 2 * Real.log V := by rw [Real.log_pow]; push_cast; rfl
-    nlinarith [hm, hlog_T₁, hlog4, abs_nonneg _root_.RHTower.xiLineTwoLogDerivConstant]
-  have hcap2 : ∑ z ∈ shellZeros T₂ (2 * V + 4), ((analyticOrderAt _root_.RHTower.xi z).toNat : ℝ) ≤
-      48 * (|_root_.RHTower.xiLineTwoLogDerivConstant| + 2) * Real.log V := by
-    have hm := mediumShell_orderSum_le (V₁ := T₂) (V₂ := 2 * V + 4) (by linarith) (by linarith) (by linarith)
-    have hlog_2V : Real.log (2 * V + 4 + 4) ≤ 2 * Real.log V := by
-      calc Real.log (2 * V + 4 + 4) ≤ Real.log (V ^ 2) :=
-            Real.log_le_log (by linarith) (by nlinarith [hV32])
-        _ = 2 * Real.log V := by rw [Real.log_pow]; push_cast; rfl
-    nlinarith [hm, hlog_2V, hlog4, abs_nonneg _root_.RHTower.xiLineTwoLogDerivConstant]
-  -- Bound the interior shell `(T₁, T₂]` via reflection symmetry + `hbv_S`.
-  let a : ℝ := A / (1 + ε')
+  have hcap1 := mediumCap_orderSum_le_logV hV32 hlog4 (V₁ := V - 4) (V₂ := T₁)
+    (by linarith) (by linarith) (by linarith) (by linarith)
+  have hcap2 := mediumCap_orderSum_le_logV hV32 hlog4 (V₁ := T₂) (V₂ := 2 * V + 4)
+    (by linarith) (by linarith) (by linarith) le_rfl
+  obtain ⟨a, ha_def⟩ : ∃ x : ℝ, x = A / (1 + ε') := ⟨_, rfl⟩
   have ha1 : 1 ≤ a := by
-    dsimp only [a]; rw [one_le_div (by positivity)]; linarith [hε'_le1, hA2]
+    rw [ha_def, one_le_div (by positivity)]; linarith [hε'_le1, hA2]
   have ha_pos : 0 < a := zero_lt_one.trans_le ha1
-  have hmin_eq : min ε' 1 = ε' := min_eq_left hε'_le1
+  have hA_q : A ≤ (1 / 4) * Real.log V := by
+    have hk_le : κ_r ≤ 1 / 4 := by rw [hκ_def]; exact min_le_left _ _
+    exact hA_hi.trans (mul_le_mul_of_nonneg_right hk_le hlogV_pos.le)
   have ha_hi : a ≤ (1 / (4 * (1 + min ε' 1))) * Real.log S := by
-    have hA_q : A ≤ (1 / 4) * Real.log V :=
-      hA_hi.trans (mul_le_mul_of_nonneg_right (min_le_left _ _) hlogV_pos.le)
-    rw [hmin_eq]
+    rw [min_eq_left hε'_le1]
     have ha_V : a ≤ (1 / (4 * (1 + ε'))) * Real.log V := by
-      dsimp only [a]
-      rw [div_le_iff₀ (by positivity)]
+      rw [ha_def, div_le_iff₀ (by positivity)]
       calc A ≤ (1 / 4) * Real.log V := hA_q
         _ = (1 / (4 * (1 + ε'))) * Real.log V * (1 + ε') := by
             field_simp [(by positivity : (0 : ℝ) < 1 + ε').ne']
     exact ha_V.trans (mul_le_mul_of_nonneg_left hlogV_le_LS (by positivity))
   have hr'_mul_a : r * A ≤ r' * a := by
-    dsimp only [a, r', ε']
-    rw [le_div_iff₀ (by linarith)]
-    nlinarith [hr0, hr1, hA2]
+    rw [hr'_def, ha_def, hε'_def, mul_div_assoc', le_div_iff₀ (by linarith)]
+    have hdiff : (r + 1) / 2 - r * (1 + (1 - r) / 4) = (1 - r) * (r + 2) / 4 := by ring
+    have hpos_d : 0 ≤ (1 - r) * (r + 2) / 4 :=
+      div_nonneg (mul_nonneg (by linarith) (by linarith)) (by norm_num)
+    have hle_coef : r * (1 + (1 - r) / 4) ≤ (r + 1) / 2 := by linarith
+    calc r * A * (1 + (1 - r) / 4) = (r * (1 + (1 - r) / 4)) * A := by ring
+      _ ≤ ((r + 1) / 2) * A := mul_le_mul_of_nonneg_right hle_coef (by linarith)
   have hint_le : ∑ z ∈ (shellZeros T₁ T₂).filter (fun z => b_V ≤ |z.re - 1 / 2|),
       ((analyticOrderAt _root_.RHTower.xi z).toNat : ℝ) ≤
       (2 * (1 + ε') * A_bv / Real.pi) * (Real.exp (-(r * A)) / A) * V * Real.log V +
@@ -1380,9 +1401,10 @@ private lemma deepExtendedShell_orderSum_le {r : ℝ} (hr0 : 0 < r) (hr1 : r < 1
       obtain ⟨hw_mem, hw_re⟩ := Finset.mem_filter.mp hw
       refine Finset.mem_filter.mpr ⟨hw_mem, ?_⟩
       have h1 : (1 + ε') * (a / Real.log S) = A / Real.log S := by
-        dsimp only [a]; field_simp [(by positivity : (0 : ℝ) < 1 + ε').ne']
-      have h2 : A / Real.log S ≤ b_V :=
-        div_le_div_of_nonneg_left (by linarith) hlogV_pos hlogV_le_LS
+        rw [ha_def]; field_simp [(by positivity : (0 : ℝ) < 1 + ε').ne']
+      have h2 : A / Real.log S ≤ b_V := by
+        rw [hbV_def]
+        exact div_le_div_of_nonneg_left (by linarith) hlogV_pos hlogV_le_LS
       linarith
     have hN_sub : ∑ w ∈ (_root_.RHTower.windowZeros T₁ T₂).filter (fun w => 1 / 2 + b_V ≤ w.re),
         ((analyticOrderAt riemannZeta w).toNat : ℝ) ≤
@@ -1392,9 +1414,11 @@ private lemma deepExtendedShell_orderSum_le {r : ℝ} (hr0 : 0 < r) (hr1 : r < 1
       Finset.sum_le_sum_of_subset_of_nonneg hfilt_sub fun _ _ _ => Nat.cast_nonneg _
     have hbv := hbv_S a ha1 ha_hi (_root_.RHTower.windowZeros T₁ T₂)
       (_root_.RHTower.mem_windowZeros_iff (by linarith) hT₁2)
-    set N_S := ∑ w ∈ (_root_.RHTower.windowZeros T₁ T₂).filter
-        (fun w => 1 / 2 + (1 + ε') * (a / Real.log S) ≤ w.re),
-      ((analyticOrderAt riemannZeta w).toNat : ℝ)
+    obtain ⟨N_S, hNS_def⟩ : ∃ x : ℝ, x =
+        ∑ w ∈ (_root_.RHTower.windowZeros T₁ T₂).filter
+            (fun w => 1 / 2 + (1 + ε') * (a / Real.log S) ≤ w.re),
+          ((analyticOrderAt riemannZeta w).toNat : ℝ) := ⟨_, rfl⟩
+    rw [← hNS_def] at hbv hN_sub
     have h2N : 2 * N_S ≤
         ((T₂ - T₁) * (A_bv * Real.exp (-(r' * a))) + K_bv * S ^ (1 - η_r)) *
           (Real.log S / (Real.pi * a)) := by
@@ -1411,7 +1435,7 @@ private lemma deepExtendedShell_orderSum_le {r : ℝ} (hr0 : 0 < r) (hr1 : r < 1
         mul_le_mul hlen_le (mul_le_mul_of_nonneg_left hexp_le hA_bv.le)
           (by positivity) hV_pos.le
       have hprod2 : Real.log S / (Real.pi * a) ≤ (2 * Real.log V) * (1 + ε') / (Real.pi * A) := by
-        have heq_a : Real.pi * a = Real.pi * A / (1 + ε') := by dsimp only [a]; ring
+        have heq_a : Real.pi * a = Real.pi * A / (1 + ε') := by rw [ha_def]; ring
         rw [heq_a, div_div_eq_mul_div]
         exact div_le_div_of_nonneg_right
           (mul_le_mul_of_nonneg_right hLS_le_2logV (by positivity)) (by positivity)
@@ -1423,11 +1447,13 @@ private lemma deepExtendedShell_orderSum_le {r : ℝ} (hr0 : 0 < r) (hr1 : r < 1
             field_simp [Real.pi_pos.ne', (by linarith : (0 : ℝ) < A).ne']
     have hterm2 : K_bv * S ^ (1 - η_r) * (Real.log S / (Real.pi * a)) ≤
         8 * K_bv * Real.log V * V ^ (1 - η_r) := by
-      have hpi_a : 1 ≤ Real.pi * a := by nlinarith [Real.pi_gt_three, ha1]
+      have hpi_a : 1 ≤ Real.pi * a := by
+        calc (1 : ℝ) ≤ 3 * 1 := by norm_num
+          _ ≤ Real.pi * a := mul_le_mul Real.pi_gt_three.le ha1 zero_le_one Real.pi_pos.le
       have hdiv_le : Real.log S / (Real.pi * a) ≤ 2 * Real.log V :=
         (div_le_self hLS_pos.le hpi_a).trans hLS_le_2logV
       have hS_pow : S ^ (1 - η_r) ≤ 4 * V ^ (1 - η_r) := by
-        have hS_le : S ≤ 2 * V := by dsimp only [S]; linarith
+        have hS_le : S ≤ 2 * V := by rw [hS_def]; linarith
         calc S ^ (1 - η_r)
             ≤ (2 * V) ^ (1 - η_r) := Real.rpow_le_rpow hS_pos.le hS_le (by linarith)
           _ = (2 : ℝ) ^ (1 - η_r) * V ^ (1 - η_r) := Real.mul_rpow zero_le_two hV_pos.le _
@@ -1444,8 +1470,12 @@ private lemma deepExtendedShell_orderSum_le {r : ℝ} (hr0 : 0 < r) (hr1 : r < 1
     have h2right : 2 * ∑ z ∈ (shellZeros T₁ T₂).filter (fun z => 1 / 2 + b_V ≤ z.re),
         ((analyticOrderAt _root_.RHTower.xi z).toNat : ℝ) ≤ 2 * N_S :=
       mul_le_mul_of_nonneg_left (hw_le.trans hN_sub) zero_le_two
-    linarith [h2right, h2N, hterm1, hterm2]
-  -- Absorb caps + interior power-saving error into `2 * (exp(-r A) / A) * V * log V`.
+    have hexpand : ((T₂ - T₁) * (A_bv * Real.exp (-(r' * a))) + K_bv * S ^ (1 - η_r)) *
+        (Real.log S / (Real.pi * a)) =
+        (T₂ - T₁) * (A_bv * Real.exp (-(r' * a))) * (Real.log S / (Real.pi * a)) +
+        K_bv * S ^ (1 - η_r) * (Real.log S / (Real.pi * a)) := add_mul _ _ _
+    rw [hexpand] at h2N
+    exact h2right.trans (h2N.trans (add_le_add hterm1 hterm2))
   have herr_all : 96 * (|_root_.RHTower.xiLineTwoLogDerivConstant| + 2) * Real.log V +
       8 * K_bv * Real.log V * V ^ (1 - η_r) ≤
       2 * (Real.exp (-(r * A)) / A) * V * Real.log V := by
@@ -1453,23 +1483,26 @@ private lemma deepExtendedShell_orderSum_le {r : ℝ} (hr0 : 0 < r) (hr1 : r < 1
     have hcomb_M : 96 * (|_root_.RHTower.xiLineTwoLogDerivConstant| + 2) * Real.log V +
         8 * K_bv * Real.log V * V ^ (1 - η_r) ≤ M_err * Real.log V * V ^ (1 - η_r) := by
       have hc_nn : 0 ≤ 96 * (|_root_.RHTower.xiLineTwoLogDerivConstant| + 2) * Real.log V := by positivity
-      have := mul_le_mul_of_nonneg_left h1_pow hc_nn
-      dsimp only [M_err]; linarith
+      have hm1 := mul_le_mul_of_nonneg_left h1_pow hc_nn
+      rw [hMerr_def]
+      have hring : (96 * (|_root_.RHTower.xiLineTwoLogDerivConstant| + 2) + 8 * K_bv) *
+          Real.log V * V ^ (1 - η_r) =
+          (96 * (|_root_.RHTower.xiLineTwoLogDerivConstant| + 2) * Real.log V) * V ^ (1 - η_r) +
+          8 * K_bv * Real.log V * V ^ (1 - η_r) := by ring
+      linarith
     have hA_pow : A ≤ K_log1 * V ^ (η_r / 4) := by
-      have hA_q : A ≤ (1 / 4) * Real.log V :=
-        hA_hi.trans (mul_le_mul_of_nonneg_right (min_le_left _ _) hlogV_pos.le)
       have hexp_q : (η_r / 4) * Real.log V ≤ V ^ (η_r / 4) := by
         rw [Real.rpow_def_of_pos hV_pos, mul_comm (Real.log V)]
         linarith [Real.add_one_le_exp ((η_r / 4) * Real.log V)]
-      have hmul_q := mul_le_mul_of_nonneg_left hexp_q (by positivity : (0 : ℝ) ≤ 1 / η_r)
-      have hlhs_q : (1 / η_r) * ((η_r / 4) * Real.log V) = (1 / 4) * Real.log V := by
-        field_simp [hη_pos.ne']
-      dsimp only [K_log1]
+      have hmul_q := mul_le_mul_of_nonneg_left hexp_q hK_log1.le
+      have hlhs_q : K_log1 * ((η_r / 4) * Real.log V) = (1 / 4) * Real.log V := by
+        rw [hK_log1_def]; field_simp [hη_pos.ne']
       linarith [hA_q, hmul_q, hlhs_q]
     have hexp_pow : Real.exp (r * A) ≤ V ^ (η_r / 4) := by
       have hrA : r * A ≤ Real.log V * (η_r / 4) := by
+        have hk_le : κ_r ≤ η_r / (4 * r) := by rw [hκ_def]; exact min_le_right _ _
         have h1 : A ≤ (η_r / (4 * r)) * Real.log V :=
-          hA_hi.trans (mul_le_mul_of_nonneg_right (min_le_right _ _) hlogV_pos.le)
+          hA_hi.trans (mul_le_mul_of_nonneg_right hk_le hlogV_pos.le)
         have h2 := mul_le_mul_of_nonneg_left h1 hr0.le
         have heq : r * ((η_r / (4 * r)) * Real.log V) = Real.log V * (η_r / 4) := by
           field_simp [hr0.ne']
@@ -1505,8 +1538,17 @@ private lemma deepExtendedShell_orderSum_le {r : ℝ} (hr0 : 0 < r) (hr1 : r < 1
       _ ≤ (2 * (Real.exp (-(r * A)) / A) * V) * Real.log V :=
           mul_le_mul_of_nonneg_right hdiv_le hlogV_pos.le
       _ = 2 * (Real.exp (-(r * A)) / A) * V * Real.log V := by ring
-  have hu1 := (Finset.sum_le_sum_of_subset_of_nonneg hcov fun _ _ _ => Nat.cast_nonneg _).trans
-    (finset_sum_union_le _ _ fun _ => Nat.cast_nonneg _)
+  have hu0 : ∑ z ∈ (shellZeros (V - 4) (2 * V + 4)).filter (fun z => b_V ≤ |z.re - 1 / 2|),
+      ((analyticOrderAt _root_.RHTower.xi z).toNat : ℝ) ≤
+      ∑ z ∈ shellZeros (V - 4) T₁ ∪
+          ((shellZeros T₁ T₂).filter (fun z => b_V ≤ |z.re - 1 / 2|) ∪
+            shellZeros T₂ (2 * V + 4)),
+        ((analyticOrderAt _root_.RHTower.xi z).toNat : ℝ) :=
+    Finset.sum_le_sum_of_subset_of_nonneg hcov fun _ _ _ => Nat.cast_nonneg _
+  have hu1 := hu0.trans (finset_sum_union_le (shellZeros (V - 4) T₁)
+    ((shellZeros T₁ T₂).filter (fun z => b_V ≤ |z.re - 1 / 2|) ∪ shellZeros T₂ (2 * V + 4))
+    (f := fun z => ((analyticOrderAt _root_.RHTower.xi z).toNat : ℝ))
+    (fun _ => Nat.cast_nonneg _))
   have hu2 := finset_sum_union_le
     ((shellZeros T₁ T₂).filter (fun z => b_V ≤ |z.re - 1 / 2|)) (shellZeros T₂ (2 * V + 4))
     (f := fun z => ((analyticOrderAt _root_.RHTower.xi z).toNat : ℝ)) (fun _ => Nat.cast_nonneg _)
@@ -1514,8 +1556,12 @@ private lemma deepExtendedShell_orderSum_le {r : ℝ} (hr0 : 0 < r) (hr1 : r < 1
       ((analyticOrderAt _root_.RHTower.xi z).toNat : ℝ) ≤
       (2 * (1 + ε') * A_bv / Real.pi) * (Real.exp (-(r * A)) / A) * V * Real.log V +
       2 * (Real.exp (-(r * A)) / A) * V * Real.log V := by
-    linarith [hu1, hu2, hcap1, hcap2, hint_le, herr_all]
-  exact hsum3.trans_eq (by dsimp only [C_d]; ring)
+    have hcaps : ∑ z ∈ shellZeros (V - 4) T₁, ((analyticOrderAt _root_.RHTower.xi z).toNat : ℝ) +
+        ∑ z ∈ shellZeros T₂ (2 * V + 4), ((analyticOrderAt _root_.RHTower.xi z).toNat : ℝ) ≤
+        96 * (|_root_.RHTower.xiLineTwoLogDerivConstant| + 2) * Real.log V := by
+      linarith [hcap1, hcap2]
+    linarith [hu1, hu2, hcaps, hint_le, herr_all]
+  exact hsum3.trans_eq (by rw [hCd_def]; ring)
 
 /-- **Unconditional Critical-Scale Planck-Window Zero-Free Volume Bound (`planckWindow_nearLine_zeroFree_volume_le`).**
 For every rate `0 < r < 1`, there exist `C_r > 0` and `κ_r > 0` such that eventually in `V`,
@@ -1758,7 +1804,8 @@ theorem almostAll_doubleLogStage_besselSzegoCertificate {c : ℝ} (hc0 : 0 < c) 
         ((1 / (16 * n)) / 8) ^
           (∑ w ∈ burnolUnitXiZeros m, (analyticOrderAt _root_.RHTower.xi w).toNat) := by
       refine (htail_log m hm_m₁ N hN).trans_le ?_
-      refine mul_le_mul_of_nonneg_left (pow_le_pow_left₀ (by positivity) ?_ _) (by positivity)
+      refine mul_le_mul_of_nonneg_left (pow_le_pow_left₀ (by positivity) ?_ _)
+        (mul_nonneg burnolGoodLowerConst_pos.le (Real.exp_pos _).le)
       have hn_cast : n ≤ (logDoorStage c m : ℝ) := Nat.cast_le.mpr hn_le_log
       exact div_le_div_of_nonneg_right
         (one_div_le_one_div_of_le (by positivity) (by linarith)) (by norm_num)
@@ -1950,16 +1997,13 @@ def UnitWindowStripZeroModel.CriticalClustering (M : UnitWindowStripZeroModel) :
       (V * Real.log V)) atTop (𝓝 0)
 
 private def critPt (m n k : ℕ) : ℂ :=
-  ((1 / 2 : ℝ) : ℂ) +
-    (((m : ℝ) + 1 / 2 + ((k + 1 : ℕ) : ℝ) / (2 * ((n + 2 : ℕ) : ℝ)) : ℝ) : ℂ) * I
+  ⟨1 / 2, (m : ℝ) + 1 / 2 + ((k + 1 : ℕ) : ℝ) / (2 * ((n + 2 : ℕ) : ℝ))⟩
 
-private def rightPt (m q k : ℕ) (d : ℝ) : ℂ :=
-  (((1 / 2 : ℝ) + d : ℝ) : ℂ) +
-    (((m : ℝ) + ((k + 1 : ℕ) : ℝ) / (2 * ((q + 2 : ℕ) : ℝ)) : ℝ) : ℂ) * I
+private def rightPt (m q : ℕ) (d : ℝ) (k : ℕ) : ℂ :=
+  ⟨1 / 2 + d, (m : ℝ) + ((k + 1 : ℕ) : ℝ) / (2 * ((q + 2 : ℕ) : ℝ))⟩
 
-private def leftPt (m q k : ℕ) (d : ℝ) : ℂ :=
-  (((1 / 2 : ℝ) - d : ℝ) : ℂ) +
-    (((m : ℝ) + ((k + 1 : ℕ) : ℝ) / (2 * ((q + 2 : ℕ) : ℝ)) : ℝ) : ℂ) * I
+private def leftPt (m q : ℕ) (d : ℝ) (k : ℕ) : ℂ :=
+  ⟨1 / 2 - d, (m : ℝ) + ((k + 1 : ℕ) : ℝ) / (2 * ((q + 2 : ℕ) : ℝ))⟩
 
 /-- Parametrized reflection-symmetric unit-window zero packet with `n` simple critical zeros and
 `q` simple conjugate pairs at `1/2 ± d`. -/
@@ -1967,37 +2011,34 @@ private def packetWin (m n q : ℕ) (d : ℝ) : Finset ℂ :=
   (Finset.range n).image (critPt m n) ∪
     ((Finset.range q).image (rightPt m q d) ∪ (Finset.range q).image (leftPt m q d))
 
-private lemma critPt_re (m n k : ℕ) : (critPt m n k).re = 1 / 2 := by simp [critPt]
-private lemma rightPt_re (m q k : ℕ) (d : ℝ) : (rightPt m q k d).re = 1 / 2 + d := by simp [rightPt]
-private lemma leftPt_re (m q k : ℕ) (d : ℝ) : (leftPt m q k d).re = 1 / 2 - d := by simp [leftPt]
+private lemma critPt_re (m n k : ℕ) : (critPt m n k).re = 1 / 2 := rfl
+private lemma rightPt_re (m q : ℕ) (d : ℝ) (k : ℕ) : (rightPt m q d k).re = 1 / 2 + d := rfl
+private lemma leftPt_re (m q : ℕ) (d : ℝ) (k : ℕ) : (leftPt m q d k).re = 1 / 2 - d := rfl
 
 private lemma critPt_inj (m n : ℕ) : Function.Injective (critPt m n) := by
   intro k₁ k₂ h
   have him := congrArg Complex.im h
-  simp only [critPt, Complex.add_im, Complex.ofReal_im, Complex.mul_im, Complex.ofReal_re,
-    Complex.I_im, mul_one, Complex.I_re, mul_zero, add_zero, zero_add] at him
+  dsimp only [critPt] at him
   have h1 : ((k₁ + 1 : ℕ) : ℝ) / (2 * ((n + 2 : ℕ) : ℝ)) =
       ((k₂ + 1 : ℕ) : ℝ) / (2 * ((n + 2 : ℕ) : ℝ)) := by linarith
   have h2 : ((k₁ + 1 : ℕ) : ℝ) = ((k₂ + 1 : ℕ) : ℝ) :=
     (div_left_inj' (by positivity)).mp h1
   exact Nat.succ.inj (Nat.cast_inj.mp h2)
 
-private lemma rightPt_inj (m q : ℕ) (d : ℝ) : Function.Injective (fun k => rightPt m q k d) := by
+private lemma rightPt_inj (m q : ℕ) (d : ℝ) : Function.Injective (rightPt m q d) := by
   intro k₁ k₂ h
   have him := congrArg Complex.im h
-  simp only [rightPt, Complex.add_im, Complex.ofReal_im, Complex.mul_im, Complex.ofReal_re,
-    Complex.I_im, mul_one, Complex.I_re, mul_zero, add_zero, zero_add] at him
+  dsimp only [rightPt] at him
   have h1 : ((k₁ + 1 : ℕ) : ℝ) / (2 * ((q + 2 : ℕ) : ℝ)) =
       ((k₂ + 1 : ℕ) : ℝ) / (2 * ((q + 2 : ℕ) : ℝ)) := by linarith
   have h2 : ((k₁ + 1 : ℕ) : ℝ) = ((k₂ + 1 : ℕ) : ℝ) :=
     (div_left_inj' (by positivity)).mp h1
   exact Nat.succ.inj (Nat.cast_inj.mp h2)
 
-private lemma leftPt_inj (m q : ℕ) (d : ℝ) : Function.Injective (fun k => leftPt m q k d) := by
+private lemma leftPt_inj (m q : ℕ) (d : ℝ) : Function.Injective (leftPt m q d) := by
   intro k₁ k₂ h
   have him := congrArg Complex.im h
-  simp only [leftPt, Complex.add_im, Complex.ofReal_im, Complex.mul_im, Complex.ofReal_re,
-    Complex.I_im, mul_one, Complex.I_re, mul_zero, add_zero, zero_add] at him
+  dsimp only [leftPt] at him
   have h1 : ((k₁ + 1 : ℕ) : ℝ) / (2 * ((q + 2 : ℕ) : ℝ)) =
       ((k₂ + 1 : ℕ) : ℝ) / (2 * ((q + 2 : ℕ) : ℝ)) := by linarith
   have h2 : ((k₁ + 1 : ℕ) : ℝ) = ((k₂ + 1 : ℕ) : ℝ) :=
@@ -2017,9 +2058,7 @@ private lemma packetWin_in_unit_strip {m n q : ℕ} {d : ℝ}
       rw [div_lt_div_iff₀ (by positivity) (by norm_num)]
       have : ((k + 1 : ℕ) : ℝ) < ((n + 2 : ℕ) : ℝ) := by exact_mod_cast (by omega : k + 1 < n + 2)
       linarith
-    simp only [critPt, Complex.add_re, Complex.ofReal_re, Complex.mul_re, Complex.I_re,
-      mul_zero, Complex.ofReal_im, Complex.I_im, add_zero, sub_zero,
-      Complex.add_im, Complex.mul_im, mul_one, zero_add]
+    dsimp only [critPt]
     exact ⟨by norm_num, by norm_num, by linarith, by linarith⟩
   · rcases hd with rfl | ⟨hd0, hd_half⟩
     · simp at hrl
@@ -2031,9 +2070,7 @@ private lemma packetWin_in_unit_strip {m n q : ℕ} {d : ℝ}
           rw [div_lt_one (by positivity)]
           have : ((k + 1 : ℕ) : ℝ) < ((q + 2 : ℕ) : ℝ) := by exact_mod_cast (by omega : k + 1 < q + 2)
           linarith
-        simp only [rightPt, Complex.add_re, Complex.ofReal_re, Complex.mul_re, Complex.I_re,
-          mul_zero, Complex.ofReal_im, Complex.I_im, add_zero, sub_zero,
-          Complex.add_im, Complex.mul_im, mul_one, zero_add]
+        dsimp only [rightPt]
         exact ⟨by linarith, by linarith, by linarith, by linarith⟩
       · obtain ⟨k, hk, rfl⟩ := Finset.mem_image.mp hl
         have hk_lt : k < q := Finset.mem_range.mp hk
@@ -2042,9 +2079,7 @@ private lemma packetWin_in_unit_strip {m n q : ℕ} {d : ℝ}
           rw [div_lt_one (by positivity)]
           have : ((k + 1 : ℕ) : ℝ) < ((q + 2 : ℕ) : ℝ) := by exact_mod_cast (by omega : k + 1 < q + 2)
           linarith
-        simp only [leftPt, Complex.add_re, Complex.ofReal_re, Complex.mul_re, Complex.I_re,
-          mul_zero, Complex.ofReal_im, Complex.I_im, add_zero, sub_zero,
-          Complex.add_im, Complex.mul_im, mul_one, zero_add]
+        dsimp only [leftPt]
         exact ⟨by linarith, by linarith, by linarith, by linarith⟩
 
 private lemma packetWin_refl_mem (m n q : ℕ) (d : ℝ) :
@@ -2054,16 +2089,27 @@ private lemma packetWin_refl_mem (m n q : ℕ) (d : ℝ) :
   rcases Finset.mem_union.mp hz with hc | hrl
   · obtain ⟨k, hk, rfl⟩ := Finset.mem_image.mp hc
     refine Finset.mem_union.mpr (Or.inl (Finset.mem_image.mpr ⟨k, hk, ?_⟩))
-    apply Complex.ext <;> simp [critPt] <;> ring
+    refine Complex.ext ?_ ?_
+    · simp only [critPt, Complex.sub_re, Complex.one_re, Complex.star_def, Complex.conj_re]; ring
+    · simp only [critPt, Complex.sub_im, Complex.one_im, Complex.star_def, Complex.conj_im,
+        zero_sub, neg_neg]
   · rcases Finset.mem_union.mp hrl with hr | hl
     · obtain ⟨k, hk, rfl⟩ := Finset.mem_image.mp hr
       refine Finset.mem_union.mpr (Or.inr (Finset.mem_union.mpr (Or.inr
         (Finset.mem_image.mpr ⟨k, hk, ?_⟩))))
-      apply Complex.ext <;> simp [rightPt, leftPt] <;> ring
+      refine Complex.ext ?_ ?_
+      · simp only [rightPt, leftPt, Complex.sub_re, Complex.one_re, Complex.star_def,
+          Complex.conj_re]; ring
+      · simp only [rightPt, leftPt, Complex.sub_im, Complex.one_im, Complex.star_def,
+          Complex.conj_im, zero_sub, neg_neg]
     · obtain ⟨k, hk, rfl⟩ := Finset.mem_image.mp hl
       refine Finset.mem_union.mpr (Or.inr (Finset.mem_union.mpr (Or.inl
         (Finset.mem_image.mpr ⟨k, hk, ?_⟩))))
-      apply Complex.ext <;> simp [rightPt, leftPt] <;> ring
+      refine Complex.ext ?_ ?_
+      · simp only [rightPt, leftPt, Complex.sub_re, Complex.one_re, Complex.star_def,
+          Complex.conj_re]; ring
+      · simp only [rightPt, leftPt, Complex.sub_im, Complex.one_im, Complex.star_def,
+          Complex.conj_im, zero_sub, neg_neg]
 
 private lemma packetWin_disjoint {m n q : ℕ} {d : ℝ} (hd : q = 0 ∨ 0 < d) :
     Disjoint ((Finset.range n).image (critPt m n))
@@ -2121,14 +2167,18 @@ private lemma packetWin_filter_crit_card {m n q : ℕ} {d : ℝ} (hd : q = 0 ∨
       exact critPt_re m n k
   rw [heq, Finset.card_image_of_injective _ (critPt_inj m n), Finset.card_range]
 
+private lemma packetWin_zero (m n : ℕ) (d : ℝ) :
+    packetWin m n 0 d = (Finset.range n).image (critPt m n) := by
+  simp [packetWin]
+
 private lemma packetWin_right_moment_sum {m n q : ℕ} {d : ℝ} (hd : q = 0 ∨ 0 < d) :
     ∑ z ∈ (packetWin m n q d).filter (fun z => 1 / 2 < z.re),
       (1 : ℝ) * (z.re - 1 / 2) = (q : ℝ) * d := by
   rcases hd with rfl | hd0
   · have heq : (packetWin m n 0 d).filter (fun z => 1 / 2 < z.re) = ∅ := by
+      rw [packetWin_zero]
       ext z
-      simp only [packetWin, Finset.range_zero, Finset.image_empty, Finset.union_empty,
-        Finset.mem_filter, Finset.notMem_empty, iff_false, not_and]
+      simp only [Finset.mem_filter, Finset.notMem_empty, iff_false, not_and]
       intro hc
       obtain ⟨k, _, rfl⟩ := Finset.mem_image.mp hc
       rw [critPt_re]; norm_num
@@ -2152,7 +2202,7 @@ private lemma packetWin_right_moment_sum {m n q : ℕ} {d : ℝ} (hd : q = 0 ∨
         obtain ⟨k, _, rfl⟩ := Finset.mem_image.mp hr
         rw [rightPt_re]; linarith
     rw [heq, Finset.sum_image (fun k₁ _ k₂ _ h => rightPt_inj m q d h)]
-    have hterm : ∀ k ∈ Finset.range q, (1 : ℝ) * ((rightPt m q k d).re - 1 / 2) = d := by
+    have hterm : ∀ k ∈ Finset.range q, (1 : ℝ) * ((rightPt m q d k).re - 1 / 2) = d := by
       intro k _; rw [rightPt_re]; ring
     rw [Finset.sum_congr rfl hterm, Finset.sum_const, Finset.card_range, nsmul_eq_mul]
 
@@ -2162,9 +2212,9 @@ private lemma packetWin_filter_right_card {m n q : ℕ} {d b : ℝ} (hb : 0 < b)
       if b ≤ d then q else 0 := by
   rcases hd with rfl | hd0
   · have heq : (packetWin m n 0 d).filter (fun z => 1 / 2 + b ≤ z.re) = ∅ := by
+      rw [packetWin_zero]
       ext z
-      simp only [packetWin, Finset.range_zero, Finset.image_empty, Finset.union_empty,
-        Finset.mem_filter, Finset.notMem_empty, iff_false, not_and]
+      simp only [Finset.mem_filter, Finset.notMem_empty, iff_false, not_and]
       intro hc
       obtain ⟨k, _, rfl⟩ := Finset.mem_image.mp hc
       rw [critPt_re]; linarith
@@ -2210,9 +2260,9 @@ private lemma packetWin_filter_abs_card {m n q : ℕ} {d b : ℝ} (hb : 0 < b)
       if b ≤ d then 2 * q else 0 := by
   rcases hd with rfl | hd0
   · have heq : (packetWin m n 0 d).filter (fun z => b ≤ |z.re - 1 / 2|) = ∅ := by
+      rw [packetWin_zero]
       ext z
-      simp only [packetWin, Finset.range_zero, Finset.image_empty, Finset.union_empty,
-        Finset.mem_filter, Finset.notMem_empty, iff_false, not_and]
+      simp only [Finset.mem_filter, Finset.notMem_empty, iff_false, not_and]
       intro hc
       obtain ⟨k, _, rfl⟩ := Finset.mem_image.mp hc
       rw [critPt_re, sub_self, abs_zero]; linarith
@@ -2311,6 +2361,183 @@ private lemma one_lt_log_log_of_twoFiftySix {m : ℕ} (hm : 256 ≤ m) :
     Real.log_pos (by exact_mod_cast (by omega : 1 < m))
   exact ⟨h1, (Real.log_le_sub_one_of_pos hlog_pos).trans (by linarith)⟩
 
+private def qSparse (m : ℕ) : ℕ := if m < 256 then 0 else 1
+
+private def nSparse (m : ℕ) : ℕ := if m < 256 then 0 else 2 * basePairs m - 2
+
+private def dSparse (m : ℕ) : ℝ :=
+  if m < 256 then 0 else (1 / 8) * Real.log (Real.log (m : ℝ)) / Real.log (m : ℝ)
+
+private lemma qSparse_dSparse_spec (m : ℕ) :
+    qSparse m = 0 ∨ (0 < dSparse m ∧ dSparse m < 1 / 2) := by
+  by_cases hm : m < 256
+  · exact Or.inl (by simp [qSparse, hm])
+  · refine Or.inr ?_
+    have hm256 : 256 ≤ m := Nat.not_lt.mp hm
+    obtain ⟨hll1, hll_le⟩ := one_lt_log_log_of_twoFiftySix hm256
+    have hlog_pos : 0 < Real.log (m : ℝ) := by linarith
+    simp only [dSparse, if_neg hm]
+    refine ⟨by positivity, ?_⟩
+    have hdiv1 : Real.log (Real.log (m : ℝ)) / Real.log (m : ℝ) ≤ 1 :=
+      (div_le_one hlog_pos).mpr hll_le
+    have : (1 / 8) * Real.log (Real.log (m : ℝ)) / Real.log (m : ℝ) =
+        (1 / 8) * (Real.log (Real.log (m : ℝ)) / Real.log (m : ℝ)) := by ring
+    linarith
+
+private lemma qSparse_dSparse_or (m : ℕ) : qSparse m = 0 ∨ 0 < dSparse m :=
+  (qSparse_dSparse_spec m).imp id And.left
+
+private lemma nSparse_add_two_qSparse (m : ℕ) : nSparse m + 2 * qSparse m = 2 * basePairs m := by
+  by_cases hm : m < 256
+  · simp [nSparse, qSparse, basePairs, hm]
+  · have hbp : 1 ≤ basePairs m := by simp only [basePairs, if_neg hm]; omega
+    simp only [nSparse, qSparse, if_neg hm]; omega
+
+private def sparseModel : UnitWindowStripZeroModel where
+  Z m := packetWin m (nSparse m) (qSparse m) (dSparse m)
+  mult _ := 1
+  in_unit_strip m := packetWin_in_unit_strip (qSparse_dSparse_spec m)
+  mult_pos _ _ _ := zero_lt_one
+  refl_mem m := packetWin_refl_mem m (nSparse m) (qSparse m) (dSparse m)
+  refl_mult _ _ _ := rfl
+  local_rvm := by
+    refine ⟨2, by norm_num, fun m hm => ?_⟩
+    rw [Finset.sum_const, smul_eq_mul, mul_one, packetWin_card (qSparse_dSparse_or m),
+      nSparse_add_two_qSparse m]
+    exact basePairs_rvm hm
+  critical_simple_majority := by
+    filter_upwards [eventually_ge_atTop 256,
+      (Real.tendsto_log_atTop.comp tendsto_natCast_atTop_atTop).eventually_ge_atTop 80]
+      with m hm256 hlog80
+    dsimp only [Function.comp_def] at hlog80
+    rw [Finset.sum_const, smul_eq_mul, mul_one, packetWin_card (qSparse_dSparse_or m),
+      nSparse_add_two_qSparse m, packetWin_filter_crit_card (qSparse_dSparse_or m)]
+    have hm_not : ¬ m < 256 := not_lt.mpr hm256
+    have hbp : 1 ≤ basePairs m := by simp only [basePairs, if_neg hm_not]; omega
+    have hn_eq : (nSparse m : ℝ) = ((2 * basePairs m : ℕ) : ℝ) - 2 := by
+      simp only [nSparse, if_neg hm_not]
+      exact_mod_cast (Nat.cast_sub (by omega : 2 ≤ 2 * basePairs m))
+    rw [hn_eq]
+    have hrvm := (abs_le.mp (basePairs_rvm (by omega : 16 ≤ m))).1
+    have hpi4 : Real.pi < 4 := Real.pi_lt_four
+    have hlog_div : 10 ≤ Real.log (m : ℝ) / (2 * Real.pi) := by
+      rw [le_div_iff₀ (by positivity)]; linarith
+    linarith
+  selberg_arbitrary_rate := by
+    intro r hr0 hr1
+    refine ⟨4 * Real.pi, by positivity, ?_⟩
+    have ht_ll : Tendsto (fun V : ℝ => Real.log (Real.log V)) atTop atTop :=
+      Real.tendsto_log_atTop.comp Real.tendsto_log_atTop
+    filter_upwards [eventually_ge_atTop (512 : ℝ),
+      Real.tendsto_log_atTop.eventually_ge_atTop 16,
+      ht_ll.eventually_ge_atTop 2] with V hV512 hlog16 hll2 a ha1
+    simp only [Nat.cast_one]
+    have hV_pos : 0 < V := by linarith
+    have hlogV_pos : 0 < Real.log V := by linarith
+    have hll_pos : 0 < Real.log (Real.log V) := by linarith
+    -- Every `m ∈ Icc ⌈V⌉ ⌊2V⌋` has `dSparse m ≤ (1 / 4) * log(log V) / log V`.
+    have hd_ub : ∀ m ∈ Finset.Icc (Nat.ceil V) (Nat.floor (2 * V)),
+        dSparse m ≤ (1 / 4) * Real.log (Real.log V) / Real.log V := by
+      intro m hm_I
+      obtain ⟨hm_lo, hm_hi⟩ := Finset.mem_Icc.mp hm_I
+      have hm_ge_V : V ≤ (m : ℝ) := (Nat.le_ceil V).trans (by exact_mod_cast hm_lo)
+      have hm_le_2V : (m : ℝ) ≤ 2 * V :=
+        ((Nat.cast_le (α := ℝ)).mpr hm_hi).trans (Nat.floor_le (by positivity))
+      have hm_not : ¬ m < 256 := by
+        intro hlt; have : (m : ℝ) < 256 := by exact_mod_cast hlt
+        linarith
+      simp only [dSparse, if_neg hm_not]
+      have hlog_ge : Real.log V ≤ Real.log (m : ℝ) := Real.log_le_log hV_pos hm_ge_V
+      have hlog_le : Real.log (m : ℝ) ≤ 2 * Real.log V := by
+        have h1 : Real.log (m : ℝ) ≤ Real.log (2 * V) := Real.log_le_log (by linarith) hm_le_2V
+        rw [Real.log_mul zero_lt_two.ne' hV_pos.ne'] at h1
+        linarith [h1, log_two_lt_one]
+      have hll_le : Real.log (Real.log (m : ℝ)) ≤ 2 * Real.log (Real.log V) := by
+        have h1 : Real.log (Real.log (m : ℝ)) ≤ Real.log (2 * Real.log V) :=
+          Real.log_le_log (by linarith) hlog_le
+        rw [Real.log_mul zero_lt_two.ne' hlogV_pos.ne'] at h1
+        linarith [h1, log_two_lt_one]
+      calc (1 / 8) * Real.log (Real.log (m : ℝ)) / Real.log (m : ℝ)
+          ≤ (1 / 8) * (2 * Real.log (Real.log V)) / Real.log (m : ℝ) :=
+            div_le_div_of_nonneg_right (by linarith) (by linarith)
+        _ ≤ (1 / 8) * (2 * Real.log (Real.log V)) / Real.log V :=
+            div_le_div_of_nonneg_left (by positivity) hlogV_pos hlog_ge
+        _ = (1 / 4) * Real.log (Real.log V) / Real.log V := by ring
+    rcases lt_or_ge ((1 / 4) * Real.log (Real.log V)) a with ha_gt | ha_le
+    · -- `a / log V > dSparse m`, so every window filter is empty!
+      have hzero : ∑ m ∈ Finset.Icc (Nat.ceil V) (Nat.floor (2 * V)),
+          ∑ z ∈ (packetWin m (nSparse m) (qSparse m) (dSparse m)).filter
+            (fun z => 1 / 2 + a / Real.log V ≤ z.re), (1 : ℝ) = 0 := by
+        refine Finset.sum_eq_zero fun m hm_I => ?_
+        rw [Finset.sum_const, nsmul_eq_mul, mul_one, Nat.cast_eq_zero,
+          packetWin_filter_right_card (div_pos (by linarith) hlogV_pos) (qSparse_dSparse_or m),
+          if_neg]
+        have h1 := hd_ub m hm_I
+        have h2 : (1 / 4) * Real.log (Real.log V) / Real.log V < a / Real.log V :=
+          div_lt_div_of_pos_right ha_gt hlogV_pos
+        linarith
+      rw [hzero, mul_zero, mul_zero]
+      positivity
+    · -- `1 ≤ a ≤ (1 / 4) * log(log V)`: at most `1` right-half zero per window.
+      have hcnt_le : ∑ m ∈ Finset.Icc (Nat.ceil V) (Nat.floor (2 * V)),
+          ∑ z ∈ (packetWin m (nSparse m) (qSparse m) (dSparse m)).filter
+            (fun z => 1 / 2 + a / Real.log V ≤ z.re), (1 : ℝ) ≤ 2 * V := by
+        have hterm : ∀ m ∈ Finset.Icc (Nat.ceil V) (Nat.floor (2 * V)),
+            ∑ z ∈ (packetWin m (nSparse m) (qSparse m) (dSparse m)).filter
+              (fun z => 1 / 2 + a / Real.log V ≤ z.re), (1 : ℝ) ≤ 1 := by
+          intro m _
+          rw [Finset.sum_const, nsmul_eq_mul, mul_one,
+            packetWin_filter_right_card (div_pos (by linarith) hlogV_pos) (qSparse_dSparse_or m)]
+          split_ifs
+          · simp only [qSparse]; split_ifs <;> norm_num
+          · norm_num
+        have hcard_I : ((Finset.Icc (Nat.ceil V) (Nat.floor (2 * V))).card : ℝ) ≤ 2 * V := by
+          have h1 : (Finset.Icc (Nat.ceil V) (Nat.floor (2 * V))).card ≤ Nat.floor (2 * V) := by
+            have hc : 1 ≤ Nat.ceil V := Nat.one_le_iff_ne_zero.mpr (by
+              intro h0; have := (Nat.ceil_eq_zero.mp h0); linarith)
+            rw [Nat.card_Icc]; omega
+          exact (Nat.cast_le.mpr h1).trans (Nat.floor_le (by positivity))
+        calc _ ≤ ∑ _m ∈ Finset.Icc (Nat.ceil V) (Nat.floor (2 * V)), (1 : ℝ) :=
+              Finset.sum_le_sum hterm
+          _ = ((Finset.Icc (Nat.ceil V) (Nat.floor (2 * V))).card : ℝ) := by simp
+          _ ≤ 2 * V := hcard_I
+      set u : ℝ := Real.log (Real.log V)
+      have hu_exp : u * (Real.log V)⁻¹ ≤ (4 / 3) * Real.exp (-(r * a)) := by
+        have h34 : (3 / 4) * u ≤ Real.exp ((3 / 4) * u) := by
+          linarith [Real.add_one_le_exp ((3 / 4) * u)]
+        have hu_le : u ≤ (4 / 3) * Real.exp ((3 / 4) * u) := by linarith
+        have hlog_eq : (Real.log V)⁻¹ = Real.exp (-u) := by
+          dsimp only [u]; rw [Real.exp_neg, Real.exp_log hlogV_pos]
+        rw [hlog_eq]
+        calc u * Real.exp (-u)
+            ≤ ((4 / 3) * Real.exp ((3 / 4) * u)) * Real.exp (-u) :=
+              mul_le_mul_of_nonneg_right hu_le (Real.exp_pos _).le
+          _ = (4 / 3) * Real.exp (-(1 / 4 * u)) := by
+              rw [mul_assoc, ← Real.exp_add]; congr 1; ring
+          _ ≤ (4 / 3) * Real.exp (-(r * a)) := by
+              refine mul_le_mul_of_nonneg_left (Real.exp_le_exp.mpr ?_) (by norm_num)
+              have hra : r * a ≤ 1 * a := mul_le_mul_of_nonneg_right hr1.le (by linarith)
+              dsimp only [u]; linarith
+      calc 2 * Real.pi * ((a / Real.log V) *
+            ∑ m ∈ Finset.Icc (Nat.ceil V) (Nat.floor (2 * V)),
+              ∑ z ∈ (packetWin m (nSparse m) (qSparse m) (dSparse m)).filter
+                (fun z => 1 / 2 + a / Real.log V ≤ z.re), (1 : ℝ))
+          ≤ 2 * Real.pi * ((((1 / 4) * u) / Real.log V) * (2 * V)) := by
+            refine mul_le_mul_of_nonneg_left ?_ (by positivity)
+            exact mul_le_mul (div_le_div_of_nonneg_right ha_le hlogV_pos.le) hcnt_le
+              (Finset.sum_nonneg fun _ _ => Finset.sum_nonneg fun _ _ => zero_le_one)
+              (by positivity)
+        _ = Real.pi * (u * (Real.log V)⁻¹) * V := by ring
+        _ ≤ Real.pi * ((4 / 3) * Real.exp (-(r * a))) * V :=
+            mul_le_mul_of_nonneg_right
+              (mul_le_mul_of_nonneg_left hu_exp Real.pi_pos.le) hV_pos.le
+        _ ≤ 4 * Real.pi * Real.exp (-(r * a)) * V := by
+            have hpv : 0 ≤ Real.pi * Real.exp (-(r * a)) * V := by positivity
+            have hdiff : 4 * Real.pi * Real.exp (-(r * a)) * V -
+                Real.pi * ((4 / 3) * Real.exp (-(r * a))) * V =
+                (8 / 3) * (Real.pi * Real.exp (-(r * a)) * V) := by ring
+            linarith
+
 /-- **Sparse-Uniform Countermodel (`exists_sparseUniformModel_logMean_not_cert`).**
 Placing a single off-line conjugate pair at `1/2 ± (1/8) log(log m) / log m` in every unit window
 `m ≥ 256` satisfies `UnitWindowStripZeroModel`, `(L)` (`HorizontalMomentLittleO`), and `100%`
@@ -2322,172 +2549,8 @@ theorem exists_sparseUniformModel_logMean_not_cert :
       M.CriticalClustering ∧
       ¬ M.WindowOccupancy ∧
       ¬ M.LogFreeZeroDensity := by
-  let qSparse : ℕ → ℕ := fun m => if m < 256 then 0 else 1
-  let nSparse : ℕ → ℕ := fun m => if m < 256 then 0 else 2 * basePairs m - 2
-  let dSparse : ℕ → ℝ := fun m =>
-    if m < 256 then 0 else (1 / 8) * Real.log (Real.log (m : ℝ)) / Real.log (m : ℝ)
-  have hd_spec : ∀ m : ℕ, qSparse m = 0 ∨ (0 < dSparse m ∧ dSparse m < 1 / 2) := by
-    intro m
-    by_cases hm : m < 256
-    · exact Or.inl (by simp [qSparse, hm])
-    · refine Or.inr ?_
-      have hm256 : 256 ≤ m := Nat.not_lt.mp hm
-      obtain ⟨hll1, hll_le⟩ := one_lt_log_log_of_twoFiftySix hm256
-      have hlog_pos : 0 < Real.log (m : ℝ) := by linarith
-      simp only [dSparse, if_neg hm]
-      refine ⟨by positivity, ?_⟩
-      have hdiv1 : Real.log (Real.log (m : ℝ)) / Real.log (m : ℝ) ≤ 1 :=
-        (div_le_one hlog_pos).mpr hll_le
-      have : (1 / 8) * Real.log (Real.log (m : ℝ)) / Real.log (m : ℝ) =
-          (1 / 8) * (Real.log (Real.log (m : ℝ)) / Real.log (m : ℝ)) := by ring
-      linarith
-  have hd_or : ∀ m : ℕ, qSparse m = 0 ∨ 0 < dSparse m := fun m =>
-    (hd_spec m).imp id And.left
-  have htot_eq : ∀ m : ℕ, nSparse m + 2 * qSparse m = 2 * basePairs m := by
-    intro m
-    by_cases hm : m < 256
-    · simp [nSparse, qSparse, basePairs, hm]
-    · have hbp : 1 ≤ basePairs m := by simp only [basePairs, if_neg hm]; omega
-      simp only [nSparse, qSparse, if_neg hm]; omega
-  let M : UnitWindowStripZeroModel :=
-    { Z := fun m => packetWin m (nSparse m) (qSparse m) (dSparse m)
-      mult := fun _ => 1
-      in_unit_strip := fun m => packetWin_in_unit_strip (hd_spec m)
-      mult_pos := fun _ _ _ => zero_lt_one
-      refl_mem := fun m => packetWin_refl_mem m (nSparse m) (qSparse m) (dSparse m)
-      refl_mult := fun _ _ _ => rfl
-      local_rvm := by
-        refine ⟨2, by norm_num, fun m hm => ?_⟩
-        rw [Finset.sum_const, smul_eq_mul, mul_one, packetWin_card (hd_or m), htot_eq m]
-        exact basePairs_rvm hm
-      critical_simple_majority := by
-        filter_upwards [eventually_ge_atTop 256,
-          (Real.tendsto_log_atTop.comp tendsto_natCast_atTop_atTop).eventually_ge_atTop 64]
-          with m hm256 hlog64
-        rw [Finset.sum_const, smul_eq_mul, mul_one, packetWin_card (hd_or m), htot_eq m,
-          packetWin_filter_crit_card (hd_or m)]
-        have hm_not : ¬ m < 256 := not_lt.mpr hm256
-        have hbp : 1 ≤ basePairs m := by simp only [basePairs, if_neg hm_not]; omega
-        have hn_eq : (nSparse m : ℝ) = ((2 * basePairs m : ℕ) : ℝ) - 2 := by
-          simp only [nSparse, if_neg hm_not]
-          exact_mod_cast (Nat.cast_sub (by omega : 2 ≤ 2 * basePairs m))
-        rw [hn_eq]
-        have hrvm := (abs_le.mp (basePairs_rvm (by omega : 16 ≤ m))).1
-        have hpi4 : Real.pi < 4 := Real.pi_lt_four
-        have hlog_div : 8 ≤ Real.log (m : ℝ) / (2 * Real.pi) := by
-          rw [le_div_iff₀ (by positivity)]; linarith
-        linarith
-      selberg_arbitrary_rate := by
-        intro r hr0 hr1
-        refine ⟨4 * Real.pi, by positivity, ?_⟩
-        have ht_ll : Tendsto (fun V : ℝ => Real.log (Real.log V)) atTop atTop :=
-          Real.tendsto_log_atTop.comp Real.tendsto_log_atTop
-        filter_upwards [eventually_ge_atTop (512 : ℝ),
-          Real.tendsto_log_atTop.eventually_ge_atTop 16,
-          ht_ll.eventually_ge_atTop 2] with V hV512 hlog16 hll2 a ha1
-        have hV_pos : 0 < V := by linarith
-        have hlogV_pos : 0 < Real.log V := by linarith
-        have hll_pos : 0 < Real.log (Real.log V) := by linarith
-        -- Every `m ∈ Icc ⌈V⌉ ⌊2V⌋` has `dSparse m ≤ (1 / 4) * log(log V) / log V`.
-        have hd_ub : ∀ m ∈ Finset.Icc (Nat.ceil V) (Nat.floor (2 * V)),
-            dSparse m ≤ (1 / 4) * Real.log (Real.log V) / Real.log V := by
-          intro m hm_I
-          obtain ⟨hm_lo, hm_hi⟩ := Finset.mem_Icc.mp hm_I
-          have hm_ge_V : V ≤ (m : ℝ) := (Nat.le_ceil V).trans (by exact_mod_cast hm_lo)
-          have hm_le_2V : (m : ℝ) ≤ 2 * V :=
-            (by exact_mod_cast hm_hi).trans (Nat.floor_le (by positivity))
-          have hm_not : ¬ m < 256 := by
-            intro hlt; have : (m : ℝ) < 256 := by exact_mod_cast hlt
-            linarith
-          simp only [dSparse, if_neg hm_not]
-          have hlog_ge : Real.log V ≤ Real.log (m : ℝ) := Real.log_le_log hV_pos hm_ge_V
-          have hlog_le : Real.log (m : ℝ) ≤ 2 * Real.log V := by
-            have h1 : Real.log (m : ℝ) ≤ Real.log (2 * V) := Real.log_le_log (by linarith) hm_le_2V
-            rw [Real.log_mul zero_lt_two.ne' hV_pos.ne'] at h1
-            linarith [h1, log_two_lt_one]
-          have hll_le : Real.log (Real.log (m : ℝ)) ≤ 2 * Real.log (Real.log V) := by
-            have h1 : Real.log (Real.log (m : ℝ)) ≤ Real.log (2 * Real.log V) :=
-              Real.log_le_log (by linarith) hlog_le
-            rw [Real.log_mul zero_lt_two.ne' hlogV_pos.ne'] at h1
-            linarith [h1, log_two_lt_one]
-          calc (1 / 8) * Real.log (Real.log (m : ℝ)) / Real.log (m : ℝ)
-              ≤ (1 / 8) * (2 * Real.log (Real.log V)) / Real.log (m : ℝ) :=
-                div_le_div_of_nonneg_right (by linarith) (by linarith)
-            _ ≤ (1 / 8) * (2 * Real.log (Real.log V)) / Real.log V :=
-                div_le_div_of_nonneg_left (by positivity) hlogV_pos hlog_ge
-            _ = (1 / 4) * Real.log (Real.log V) / Real.log V := by ring
-        rcases lt_or_ge ((1 / 4) * Real.log (Real.log V)) a with ha_gt | ha_le
-        · -- `a / log V > dSparse m`, so every window filter is empty!
-          have hzero : ∑ m ∈ Finset.Icc (Nat.ceil V) (Nat.floor (2 * V)),
-              ∑ z ∈ (packetWin m (nSparse m) (qSparse m) (dSparse m)).filter
-                (fun z => 1 / 2 + a / Real.log V ≤ z.re), (1 : ℝ) = 0 := by
-            refine Finset.sum_eq_zero fun m hm_I => ?_
-            rw [Finset.sum_const, nsmul_eq_mul, mul_one, Nat.cast_eq_zero,
-              packetWin_filter_right_card (div_pos (by linarith) hlogV_pos) (hd_or m),
-              if_neg]
-            have h1 := hd_ub m hm_I
-            have h2 : (1 / 4) * Real.log (Real.log V) / Real.log V < a / Real.log V :=
-              div_lt_div_of_pos_right ha_gt hlogV_pos
-            linarith
-          rw [hzero, mul_zero, mul_zero]
-          positivity
-        · -- `1 ≤ a ≤ (1 / 4) * log(log V)`: at most `1` right-half zero per window.
-          have hcnt_le : ∑ m ∈ Finset.Icc (Nat.ceil V) (Nat.floor (2 * V)),
-              ∑ z ∈ (packetWin m (nSparse m) (qSparse m) (dSparse m)).filter
-                (fun z => 1 / 2 + a / Real.log V ≤ z.re), (1 : ℝ) ≤ 2 * V := by
-            have hterm : ∀ m ∈ Finset.Icc (Nat.ceil V) (Nat.floor (2 * V)),
-                ∑ z ∈ (packetWin m (nSparse m) (qSparse m) (dSparse m)).filter
-                  (fun z => 1 / 2 + a / Real.log V ≤ z.re), (1 : ℝ) ≤ 1 := by
-              intro m _
-              rw [Finset.sum_const, nsmul_eq_mul, mul_one,
-                packetWin_filter_right_card (div_pos (by linarith) hlogV_pos) (hd_or m)]
-              split_ifs
-              · simp only [qSparse]; split_ifs <;> norm_num
-              · norm_num
-            have hcard_I : ((Finset.Icc (Nat.ceil V) (Nat.floor (2 * V))).card : ℝ) ≤ 2 * V := by
-              have h1 : (Finset.Icc (Nat.ceil V) (Nat.floor (2 * V))).card ≤ Nat.floor (2 * V) := by
-                have hc : 1 ≤ Nat.ceil V := Nat.one_le_iff_ne_zero.mpr (by
-                  intro h0; have := (Nat.ceil_eq_zero.mp h0); linarith)
-                rw [Nat.card_Icc]; omega
-              exact (Nat.cast_le.mpr h1).trans (Nat.floor_le (by positivity))
-            calc _ ≤ ∑ _m ∈ Finset.Icc (Nat.ceil V) (Nat.floor (2 * V)), (1 : ℝ) :=
-                  Finset.sum_le_sum hterm
-              _ = ((Finset.Icc (Nat.ceil V) (Nat.floor (2 * V))).card : ℝ) := by simp
-              _ ≤ 2 * V := hcard_I
-          set u : ℝ := Real.log (Real.log V)
-          have hu_exp : u * (Real.log V)⁻¹ ≤ (4 / 3) * Real.exp (-(r * a)) := by
-            have h34 : (3 / 4) * u ≤ Real.exp ((3 / 4) * u) := by
-              linarith [Real.add_one_le_exp ((3 / 4) * u)]
-            have hu_le : u ≤ (4 / 3) * Real.exp ((3 / 4) * u) := by linarith
-            have hlog_eq : (Real.log V)⁻¹ = Real.exp (-u) := by
-              dsimp only [u]; rw [Real.exp_neg, Real.exp_log hlogV_pos]
-            rw [hlog_eq]
-            calc u * Real.exp (-u)
-                ≤ ((4 / 3) * Real.exp ((3 / 4) * u)) * Real.exp (-u) :=
-                  mul_le_mul_of_nonneg_right hu_le (Real.exp_pos _).le
-              _ = (4 / 3) * Real.exp (-(1 / 4 * u)) := by
-                  rw [mul_assoc, ← Real.exp_add]; congr 1; ring
-              _ ≤ (4 / 3) * Real.exp (-(r * a)) := by
-                  refine mul_le_mul_of_nonneg_left (Real.exp_le_exp.mpr ?_) (by norm_num)
-                  have hra : r * a ≤ 1 * a := mul_le_mul_of_nonneg_right hr1.le (by linarith)
-                  dsimp only [u]; linarith
-          calc 2 * Real.pi * ((a / Real.log V) *
-                ∑ m ∈ Finset.Icc (Nat.ceil V) (Nat.floor (2 * V)),
-                  ∑ z ∈ (packetWin m (nSparse m) (qSparse m) (dSparse m)).filter
-                    (fun z => 1 / 2 + a / Real.log V ≤ z.re), (1 : ℝ))
-              ≤ 2 * Real.pi * ((((1 / 4) * u) / Real.log V) * (2 * V)) := by
-                refine mul_le_mul_of_nonneg_left ?_ (by positivity)
-                exact mul_le_mul (div_le_div_of_nonneg_right ha_le hlogV_pos.le) hcnt_le
-                  (Finset.sum_nonneg fun _ _ => Finset.sum_nonneg fun _ _ => zero_le_one)
-                  (by positivity)
-            _ = Real.pi * (u * (Real.log V)⁻¹) * V := by ring
-            _ ≤ Real.pi * ((4 / 3) * Real.exp (-(r * a))) * V :=
-                mul_le_mul_of_nonneg_right
-                  (mul_le_mul_of_nonneg_left hu_exp Real.pi_pos.le) hV_pos.le
-            _ ≤ 4 * Real.pi * Real.exp (-(r * a)) * V := by
-                nlinarith [Real.pi_pos, Real.exp_pos (-(r * a)), hV_pos] }
-  refine ⟨M, ?_, ?_, ?_, ?_⟩
-  · -- `M.HorizontalMomentLittleO`
+  refine ⟨sparseModel, ?_, ?_, ?_, ?_⟩
+  · -- `sparseModel.HorizontalMomentLittleO`
     refine Metric.tendsto_atTop.mpr fun η hη => ?_
     obtain ⟨V₀, hV₀⟩ := eventually_atTop.mp
       (Real.tendsto_log_atTop.eventually_ge_atTop (max 16 ((4 / η) ^ 2 + 1)))
@@ -2499,48 +2562,53 @@ theorem exists_sparseUniformModel_logMean_not_cert :
     have hlog_η : (4 / η) ^ 2 + 1 ≤ Real.log V := (le_max_right _ _).trans hlog_ge
     have hlogV_pos : 0 < Real.log V := by linarith
     have hsum_nn : 0 ≤ V⁻¹ * ∑ m ∈ Finset.Icc (Nat.ceil V) (Nat.floor (2 * V)),
-        ∑ z ∈ (M.Z m).filter (fun z => 1 / 2 < z.re), (M.mult z : ℝ) * (z.re - 1 / 2) := by
+        ∑ z ∈ (sparseModel.Z m).filter (fun z => 1 / 2 < z.re),
+          (sparseModel.mult z : ℝ) * (z.re - 1 / 2) := by
       refine mul_nonneg (inv_nonneg.mpr hV_pos.le) (Finset.sum_nonneg fun m _ =>
         Finset.sum_nonneg fun z hz => mul_nonneg (Nat.cast_nonneg _) ?_)
       linarith [(Finset.mem_filter.mp hz).2]
     rw [Real.dist_eq, sub_zero, abs_of_nonneg hsum_nn]
     have hterm : ∀ m ∈ Finset.Icc (Nat.ceil V) (Nat.floor (2 * V)),
-        ∑ z ∈ (M.Z m).filter (fun z => 1 / 2 < z.re), (M.mult z : ℝ) * (z.re - 1 / 2) ≤
+        ∑ z ∈ (sparseModel.Z m).filter (fun z => 1 / 2 < z.re),
+          (sparseModel.mult z : ℝ) * (z.re - 1 / 2) ≤
           (1 / 2) * Real.log (Real.log V) / Real.log V := by
       intro m hm_I
       obtain ⟨hm_lo, hm_hi⟩ := Finset.mem_Icc.mp hm_I
       have hm_ge_V : V ≤ (m : ℝ) := (Nat.le_ceil V).trans (by exact_mod_cast hm_lo)
       have hm_le_2V : (m : ℝ) ≤ 2 * V :=
-        (by exact_mod_cast hm_hi).trans (Nat.floor_le (by positivity))
+        ((Nat.cast_le (α := ℝ)).mpr hm_hi).trans (Nat.floor_le (by positivity))
       have hm_not : ¬ m < 256 := by
-        intro hlt; have : (m : ℝ) < 256 := by exact_mod_cast hlt; linarith
-      change ∑ z ∈ (packetWin m (nSparse m) (qSparse m) (dSparse m)).filter (fun z => 1 / 2 < z.re),
-          (1 : ℝ) * (z.re - 1 / 2) ≤ _
-      rw [packetWin_right_moment_sum (hd_or m)]
+        intro hlt
+        have hm_lt : (m : ℝ) < 256 := by exact_mod_cast hlt
+        linarith
+      dsimp only [sparseModel]
+      simp only [Nat.cast_one]
+      rw [packetWin_right_moment_sum (qSparse_dSparse_or m)]
       simp only [qSparse, dSparse, if_neg hm_not, Nat.cast_one, one_mul]
       have hlog_ge_m : Real.log V ≤ Real.log (m : ℝ) := Real.log_le_log hV_pos hm_ge_V
       have hlog_le_m : Real.log (m : ℝ) ≤ 2 * Real.log V := by
         have h1 : Real.log (m : ℝ) ≤ Real.log (2 * V) := Real.log_le_log (by linarith) hm_le_2V
         rw [Real.log_mul zero_lt_two.ne' hV_pos.ne'] at h1
         linarith [h1, log_two_lt_one]
+      have hll1 : 1 ≤ Real.log (Real.log V) := by
+        have hl4 : Real.exp 1 ≤ Real.log V := by
+          have hexp4 : Real.exp 1 < 4 := by
+            have h1 : (2 / 3 : ℝ) ≤ Real.exp (-1 / 3) := by linarith [Real.add_one_le_exp (-1 / 3 : ℝ)]
+            have h2 : (8 / 27 : ℝ) ≤ Real.exp (-1) := by
+              calc (8 / 27 : ℝ) = (2 / 3 : ℝ) ^ (3 : ℕ) := by norm_num
+                _ ≤ (Real.exp (-1 / 3)) ^ (3 : ℕ) := pow_le_pow_left₀ (by norm_num) h1 3
+                _ = Real.exp (-1) := by rw [← Real.exp_nat_mul]; norm_num
+            have h3 : (8 / 27 : ℝ) * Real.exp 1 ≤ 1 := by
+              calc (8 / 27 : ℝ) * Real.exp 1 ≤ Real.exp (-1) * Real.exp 1 :=
+                    mul_le_mul_of_nonneg_right h2 (Real.exp_pos 1).le
+                _ = 1 := by rw [← Real.exp_add]; norm_num
+            linarith
+          linarith
+        rw [← Real.log_exp 1]; exact Real.log_le_log (Real.exp_pos 1) hl4
       have hll_le : Real.log (Real.log (m : ℝ)) ≤ 2 * Real.log (Real.log V) := by
         have h1 : Real.log (Real.log (m : ℝ)) ≤ Real.log (2 * Real.log V) :=
           Real.log_le_log (by linarith) hlog_le_m
         rw [Real.log_mul zero_lt_two.ne' hlogV_pos.ne'] at h1
-        have hll1 : 1 ≤ Real.log (Real.log V) := by
-          have hl4 : Real.exp 1 ≤ Real.log V := by
-            linarith [Real.exp_pos 1, show Real.exp 1 < 4 from by
-              have h1 : (2 / 3 : ℝ) ≤ Real.exp (-1 / 3) := by linarith [Real.add_one_le_exp (-1 / 3 : ℝ)]
-              have h2 : (8 / 27 : ℝ) ≤ Real.exp (-1) := by
-                calc (8 / 27 : ℝ) = (2 / 3 : ℝ) ^ (3 : ℕ) := by norm_num
-                  _ ≤ (Real.exp (-1 / 3)) ^ (3 : ℕ) := pow_le_pow_left₀ (by norm_num) h1 3
-                  _ = Real.exp (-1) := by rw [← Real.exp_nat_mul]; norm_num
-              have h3 : (8 / 27 : ℝ) * Real.exp 1 ≤ 1 := by
-                calc (8 / 27 : ℝ) * Real.exp 1 ≤ Real.exp (-1) * Real.exp 1 :=
-                      mul_le_mul_of_nonneg_right h2 (Real.exp_pos 1).le
-                  _ = 1 := by rw [← Real.exp_add]; norm_num
-              linarith]
-          rw [← Real.log_exp 1]; exact Real.log_le_log (Real.exp_pos 1) hl4
         linarith [h1, log_two_lt_one, hll1]
       calc (1 / 8) * Real.log (Real.log (m : ℝ)) / Real.log (m : ℝ)
           ≤ (1 / 8) * (2 * Real.log (Real.log V)) / Real.log V := by
@@ -2549,7 +2617,11 @@ theorem exists_sparseUniformModel_logMean_not_cert :
               _ ≤ _ := div_le_div_of_nonneg_left (by positivity) hlogV_pos hlog_ge_m
         _ ≤ (1 / 2) * Real.log (Real.log V) / Real.log V := by
             have : 0 ≤ Real.log (Real.log V) / Real.log V :=
-              div_nonneg (Real.log_nonneg (by linarith)) hlogV_pos.le
+              div_nonneg (by linarith) hlogV_pos.le
+            have heq1 : (1 / 8) * (2 * Real.log (Real.log V)) / Real.log V =
+                (1 / 4) * (Real.log (Real.log V) / Real.log V) := by ring
+            have heq2 : (1 / 2) * Real.log (Real.log V) / Real.log V =
+                (1 / 2) * (Real.log (Real.log V) / Real.log V) := by ring
             linarith
     have hcard_I : ((Finset.Icc (Nat.ceil V) (Nat.floor (2 * V))).card : ℝ) ≤ 2 * V := by
       have hc : 1 ≤ Nat.ceil V := Nat.one_le_iff_ne_zero.mpr (by
@@ -2558,12 +2630,14 @@ theorem exists_sparseUniformModel_logMean_not_cert :
         rw [Nat.card_Icc]; omega
       exact (Nat.cast_le.mpr h1).trans (Nat.floor_le (by positivity))
     have htot_le : V⁻¹ * ∑ m ∈ Finset.Icc (Nat.ceil V) (Nat.floor (2 * V)),
-        ∑ z ∈ (M.Z m).filter (fun z => 1 / 2 < z.re), (M.mult z : ℝ) * (z.re - 1 / 2) ≤
+        ∑ z ∈ (sparseModel.Z m).filter (fun z => 1 / 2 < z.re),
+          (sparseModel.mult z : ℝ) * (z.re - 1 / 2) ≤
         Real.log (Real.log V) / Real.log V := by
       have hs := Finset.sum_le_sum hterm
       rw [Finset.sum_const, nsmul_eq_mul] at hs
+      have hll_nn : 0 ≤ Real.log (Real.log V) := Real.log_nonneg (by linarith)
       have h2 := mul_le_mul_of_nonneg_right hcard_I
-        (div_nonneg (mul_nonneg (by norm_num) (Real.log_nonneg (by linarith))) hlogV_pos.le)
+        (div_nonneg (mul_nonneg (by norm_num : (0 : ℝ) ≤ 1 / 2) hll_nn) hlogV_pos.le)
       have h3 := mul_le_mul_of_nonneg_left (hs.trans h2) (inv_nonneg.mpr hV_pos.le)
       calc _ ≤ V⁻¹ * (2 * V * ((1 / 2) * Real.log (Real.log V) / Real.log V)) := h3
         _ = Real.log (Real.log V) / Real.log V := by field_simp [hV_pos.ne']
@@ -2581,7 +2655,7 @@ theorem exists_sparseUniformModel_logMean_not_cert :
       rw [← mul_assoc, mul_div_cancel₀ 4 hη.ne'] at h1
       linarith [hll_rt, h1, hrt_pos]
     exact htot_le.trans_lt hlt_η
-  · -- `M.CriticalClustering`: at most `2` off-line zeros per window, so total is `O(V) = o(V log V)`.
+  · -- `sparseModel.CriticalClustering`: at most `2` off-line zeros per window, so total is `O(V) = o(V log V)`.
     intro κ hκ
     refine Metric.tendsto_atTop.mpr fun η hη => ?_
     obtain ⟨V₀, hV₀⟩ := eventually_atTop.mp
@@ -2590,26 +2664,30 @@ theorem exists_sparseUniformModel_logMean_not_cert :
     have hV16 : 16 ≤ V := (le_max_left _ _).trans hV
     have hV_pos : 0 < V := by linarith
     have hlog_η : 4 / η + 1 ≤ Real.log V := hV₀ V ((le_max_right _ _).trans hV)
-    have hlogV_pos : 0 < Real.log V := by positivity
+    have hlogV_pos : 0 < Real.log V := by
+      have h4η : 0 < 4 / η := by positivity
+      linarith
     have hnn : 0 ≤ (∑ m ∈ Finset.range (Nat.floor V + 1),
-        ∑ z ∈ (M.Z m).filter (fun z => κ / Real.log V ≤ |z.re - 1 / 2|), (M.mult z : ℝ)) /
+        ∑ z ∈ (sparseModel.Z m).filter (fun z => κ / Real.log V ≤ |z.re - 1 / 2|),
+          (sparseModel.mult z : ℝ)) /
         (V * Real.log V) :=
       div_nonneg (Finset.sum_nonneg fun _ _ => Finset.sum_nonneg fun _ _ => Nat.cast_nonneg _)
         (by positivity)
     rw [Real.dist_eq, sub_zero, abs_of_nonneg hnn, div_lt_iff₀ (mul_pos hV_pos hlogV_pos)]
     have hterm : ∀ m ∈ Finset.range (Nat.floor V + 1),
-        ∑ z ∈ (M.Z m).filter (fun z => κ / Real.log V ≤ |z.re - 1 / 2|), (M.mult z : ℝ) ≤ 2 := by
+        ∑ z ∈ (sparseModel.Z m).filter (fun z => κ / Real.log V ≤ |z.re - 1 / 2|),
+          (sparseModel.mult z : ℝ) ≤ 2 := by
       intro m _
-      change ∑ z ∈ (packetWin m (nSparse m) (qSparse m) (dSparse m)).filter
-          (fun z => κ / Real.log V ≤ |z.re - 1 / 2|), (1 : ℝ) ≤ 2
+      dsimp only [sparseModel]
+      simp only [Nat.cast_one]
       rw [Finset.sum_const, nsmul_eq_mul, mul_one,
-        packetWin_filter_abs_card (div_pos hκ hlogV_pos) (hd_or m)]
+        packetWin_filter_abs_card (div_pos hκ hlogV_pos) (qSparse_dSparse_or m)]
       split_ifs
       · simp only [qSparse]; split_ifs <;> norm_num
       · norm_num
     have hsum_le : ∑ m ∈ Finset.range (Nat.floor V + 1),
-        ∑ z ∈ (M.Z m).filter (fun z => κ / Real.log V ≤ |z.re - 1 / 2|), (M.mult z : ℝ) ≤
-        4 * V := by
+        ∑ z ∈ (sparseModel.Z m).filter (fun z => κ / Real.log V ≤ |z.re - 1 / 2|),
+          (sparseModel.mult z : ℝ) ≤ 4 * V := by
       have hs := Finset.sum_le_sum hterm
       rw [Finset.sum_const, Finset.card_range, nsmul_eq_mul] at hs
       have hfl : ((Nat.floor V + 1 : ℕ) : ℝ) ≤ V + 1 := by
@@ -2622,7 +2700,7 @@ theorem exists_sparseUniformModel_logMean_not_cert :
     calc _ ≤ 4 * V := hsum_le
       _ < (η * Real.log V) * V := mul_lt_mul_of_pos_right h4_lt hV_pos
       _ = η * (V * Real.log V) := by ring
-  · -- `¬ M.WindowOccupancy`: for every `A > 0`, eventually `100%` of windows in `[⌈V⌉, ⌊2V⌋]` are bad.
+  · -- `¬ sparseModel.WindowOccupancy`: for every `A > 0`, eventually `100%` of windows in `[⌈V⌉, ⌊2V⌋]` are bad.
     rintro ⟨δ, hδ_lim, hδ_ev⟩
     obtain ⟨A₀, hA₀⟩ := Metric.tendsto_atTop.mp hδ_lim (1 / 4) (by norm_num)
     set A : ℝ := max A₀ 1
@@ -2638,20 +2716,23 @@ theorem exists_sparseUniformModel_logMean_not_cert :
         ((Real.tendsto_log_atTop.eventually_ge_atTop 4).and
           (ht_ll.eventually_ge_atTop (16 * A)))))
     obtain ⟨hocc, hV512, hlog4, hll16A⟩ := hV₁ V₁ le_rfl
-    -- Every `m ∈ Icc ⌈V₁⌉ ⌊2V₁⌋` has `A / log V₁ ≤ dSparse m`.
     have hall : (Finset.Icc (Nat.ceil V₁) (Nat.floor (2 * V₁))).filter
-        (fun m => ∃ z ∈ M.Z m, A / Real.log V₁ ≤ |z.re - 1 / 2|) =
+        (fun m => ∃ z ∈ sparseModel.Z m, A / Real.log V₁ ≤ |z.re - 1 / 2|) =
         Finset.Icc (Nat.ceil V₁) (Nat.floor (2 * V₁)) := by
       refine Finset.filter_eq_self.mpr fun m hm_I => ?_
       obtain ⟨hm_lo, hm_hi⟩ := Finset.mem_Icc.mp hm_I
       have hm_ge_V : V₁ ≤ (m : ℝ) := (Nat.le_ceil V₁).trans (by exact_mod_cast hm_lo)
       have hm_le_2V : (m : ℝ) ≤ 2 * V₁ :=
-        (by exact_mod_cast hm_hi).trans (Nat.floor_le (by linarith))
+        ((Nat.cast_le (α := ℝ)).mpr hm_hi).trans (Nat.floor_le (by linarith))
       have hm_not : ¬ m < 256 := by
-        intro hlt; have : (m : ℝ) < 256 := by exact_mod_cast hlt; linarith
+        intro hlt
+        have hm_lt : (m : ℝ) < 256 := by exact_mod_cast hlt
+        linarith
       have hlogV_pos : 0 < Real.log V₁ := by linarith
-      rw [show M.Z m = packetWin m (nSparse m) (qSparse m) (dSparse m) from rfl,
-        packetWin_exists_abs_iff (div_pos hA_pos hlogV_pos) (hd_or m)]
+      have hlog_m_pos : 0 < Real.log (m : ℝ) :=
+        hlogV_pos.trans_le (Real.log_le_log (by linarith) hm_ge_V)
+      dsimp only [sparseModel]
+      rw [packetWin_exists_abs_iff (div_pos hA_pos hlogV_pos) (qSparse_dSparse_or m)]
       refine ⟨by simp [qSparse, hm_not], ?_⟩
       simp only [dSparse, if_neg hm_not]
       have hlog_le : Real.log (m : ℝ) ≤ 2 * Real.log V₁ := by
@@ -2667,7 +2748,7 @@ theorem exists_sparseUniformModel_logMean_not_cert :
         _ ≤ (1 / 8) * Real.log (Real.log (m : ℝ)) / (2 * Real.log V₁) :=
             div_le_div_of_nonneg_right (by linarith) (by positivity)
         _ ≤ (1 / 8) * Real.log (Real.log (m : ℝ)) / Real.log (m : ℝ) :=
-            div_le_div_of_nonneg_left (by linarith) (by linarith) hlog_le
+            div_le_div_of_nonneg_left (by linarith) hlog_m_pos hlog_le
     rw [hall] at hocc
     have hcard_lo : V₁ / 2 ≤ ((Finset.Icc (Nat.ceil V₁) (Nat.floor (2 * V₁))).card : ℝ) := by
       have hceil_lt : (Nat.ceil V₁ : ℝ) < V₁ + 1 := Nat.ceil_lt_add_one (by linarith)
@@ -2683,8 +2764,9 @@ theorem exists_sparseUniformModel_logMean_not_cert :
             (Nat.floor (2 * V₁) : ℝ) + 1 := by exact_mod_cast this
         linarith
       linarith
-    nlinarith [hocc, hcard_lo, hδ_lt, hV512]
-  · -- `¬ M.LogFreeZeroDensity`: each bad window contributes `2` deep zeros, so `≥ V` total.
+    have hmul_δ : δ A * V₁ < (1 / 4) * V₁ := mul_lt_mul_of_pos_right hδ_lt (by linarith)
+    linarith [hocc, hcard_lo, hmul_δ]
+  · -- `¬ sparseModel.LogFreeZeroDensity`: each bad window contributes `2` deep zeros, so `≥ V / 2` total.
     rintro ⟨ε, hε_lim, hε_ev⟩
     obtain ⟨A₀, hA₀⟩ := Metric.tendsto_atTop.mp hε_lim (1 / 4) (by norm_num)
     set A : ℝ := max A₀ 1
@@ -2701,19 +2783,24 @@ theorem exists_sparseUniformModel_logMean_not_cert :
           (ht_ll.eventually_ge_atTop (16 * A)))))
     obtain ⟨hzd, hV512, hlog4, hll16A⟩ := hV₁ V₁ le_rfl
     have hterm : ∀ m ∈ Finset.Icc (Nat.ceil V₁) (Nat.floor (2 * V₁)),
-        (1 : ℝ) ≤ ∑ z ∈ (M.Z m).filter (fun z => A / Real.log V₁ ≤ |z.re - 1 / 2|), (M.mult z : ℝ) := by
+        (1 : ℝ) ≤ ∑ z ∈ (sparseModel.Z m).filter (fun z => A / Real.log V₁ ≤ |z.re - 1 / 2|),
+          (sparseModel.mult z : ℝ) := by
       intro m hm_I
       obtain ⟨hm_lo, hm_hi⟩ := Finset.mem_Icc.mp hm_I
       have hm_ge_V : V₁ ≤ (m : ℝ) := (Nat.le_ceil V₁).trans (by exact_mod_cast hm_lo)
       have hm_le_2V : (m : ℝ) ≤ 2 * V₁ :=
-        (by exact_mod_cast hm_hi).trans (Nat.floor_le (by linarith))
+        ((Nat.cast_le (α := ℝ)).mpr hm_hi).trans (Nat.floor_le (by linarith))
       have hm_not : ¬ m < 256 := by
-        intro hlt; have : (m : ℝ) < 256 := by exact_mod_cast hlt; linarith
+        intro hlt
+        have hm_lt : (m : ℝ) < 256 := by exact_mod_cast hlt
+        linarith
       have hlogV_pos : 0 < Real.log V₁ := by linarith
-      change (1 : ℝ) ≤ ∑ z ∈ (packetWin m (nSparse m) (qSparse m) (dSparse m)).filter
-          (fun z => A / Real.log V₁ ≤ |z.re - 1 / 2|), (1 : ℝ)
+      have hlog_m_pos : 0 < Real.log (m : ℝ) :=
+        hlogV_pos.trans_le (Real.log_le_log (by linarith) hm_ge_V)
+      dsimp only [sparseModel]
+      simp only [Nat.cast_one]
       rw [Finset.sum_const, nsmul_eq_mul, mul_one,
-        packetWin_filter_abs_card (div_pos hA_pos hlogV_pos) (hd_or m), if_pos]
+        packetWin_filter_abs_card (div_pos hA_pos hlogV_pos) (qSparse_dSparse_or m), if_pos]
       · simp [qSparse, hm_not]
       · simp only [dSparse, if_neg hm_not]
         have hlog_le : Real.log (m : ℝ) ≤ 2 * Real.log V₁ := by
@@ -2729,7 +2816,7 @@ theorem exists_sparseUniformModel_logMean_not_cert :
           _ ≤ (1 / 8) * Real.log (Real.log (m : ℝ)) / (2 * Real.log V₁) :=
               div_le_div_of_nonneg_right (by linarith) (by positivity)
           _ ≤ (1 / 8) * Real.log (Real.log (m : ℝ)) / Real.log (m : ℝ) :=
-              div_le_div_of_nonneg_left (by linarith) (by linarith) hlog_le
+              div_le_div_of_nonneg_left (by linarith) hlog_m_pos hlog_le
     have hcard_lo : V₁ / 2 ≤ ((Finset.Icc (Nat.ceil V₁) (Nat.floor (2 * V₁))).card : ℝ) := by
       have hceil_lt : (Nat.ceil V₁ : ℝ) < V₁ + 1 := Nat.ceil_lt_add_one (by linarith)
       have hfl_gt : 2 * V₁ - 1 < (Nat.floor (2 * V₁) : ℝ) := Nat.sub_one_lt_floor (2 * V₁)
@@ -2745,11 +2832,13 @@ theorem exists_sparseUniformModel_logMean_not_cert :
         linarith
       linarith
     have hsum_lo : V₁ / 2 ≤ ∑ m ∈ Finset.Icc (Nat.ceil V₁) (Nat.floor (2 * V₁)),
-        ∑ z ∈ (M.Z m).filter (fun z => A / Real.log V₁ ≤ |z.re - 1 / 2|), (M.mult z : ℝ) := by
+        ∑ z ∈ (sparseModel.Z m).filter (fun z => A / Real.log V₁ ≤ |z.re - 1 / 2|),
+          (sparseModel.mult z : ℝ) := by
       calc V₁ / 2 ≤ ((Finset.Icc (Nat.ceil V₁) (Nat.floor (2 * V₁))).card : ℝ) := hcard_lo
         _ = ∑ _m ∈ Finset.Icc (Nat.ceil V₁) (Nat.floor (2 * V₁)), (1 : ℝ) := by simp
         _ ≤ _ := Finset.sum_le_sum hterm
-    nlinarith [hzd, hsum_lo, hε_lt, hV512]
+    have hmul_ε : ε A * V₁ < (1 / 4) * V₁ := mul_lt_mul_of_pos_right hε_lt (by linarith)
+    linarith [hzd, hsum_lo, hmul_ε]
 
 private def evenHalves : ℕ → ℕ
   | 0 => 0
@@ -2790,16 +2879,19 @@ private lemma evenHalves_two_pow_mul_odd (v q : ℕ) :
     have hmod : ((2 * M - 1) + 1) % 2 = 0 := by omega
     rw [if_pos hmod, show ((2 * M - 1) + 1) / 2 = M by omega, ih]
 
-private lemma card_Icc_filter_dvd_le (a b D : ℕ) (hD : 0 < D) :
+private lemma card_Icc_filter_dvd_le (a b D : ℕ) :
     ((Finset.Icc a b).filter (fun m => D ∣ m)).card ≤ b / D + 1 := by
   have hmaps : Set.MapsTo (fun m => m / D)
       ((Finset.Icc a b).filter (fun m => D ∣ m) : Set ℕ) (Finset.range (b / D + 1) : Set ℕ) := by
     intro m hm
     obtain ⟨hm_I, _⟩ := Finset.mem_filter.mp hm
     have hle : m / D ≤ b / D := Nat.div_le_div_right (Finset.mem_Icc.mp hm_I).2
-    exact Finset.mem_range.mpr (by omega)
+    rw [Finset.mem_coe, Finset.mem_range]
+    dsimp only
+    omega
   have hinj : Set.InjOn (fun m => m / D) ((Finset.Icc a b).filter (fun m => D ∣ m) : Set ℕ) := by
     intro m₁ hm₁ m₂ hm₂ heq
+    dsimp only at heq
     have hd1 : D ∣ m₁ := (Finset.mem_filter.mp hm₁).2
     have hd2 : D ∣ m₂ := (Finset.mem_filter.mp hm₂).2
     calc m₁ = D * (m₁ / D) := (Nat.mul_div_cancel' hd1).symm
@@ -2827,15 +2919,19 @@ private lemma exists_evenHalves_subset_Icc (v : ℕ) {V : ℝ} (hV : (2 : ℝ) ^
     obtain ⟨hq_lo, hq_hi⟩ := Finset.mem_Icc.mp hq
     have hq_ge_U : U ≤ (q : ℝ) := (Nat.le_ceil U).trans (by exact_mod_cast hq_lo)
     have hq_le_2U : (q : ℝ) ≤ 2 * U - 1 :=
-      (by exact_mod_cast hq_hi).trans (Nat.floor_le (by linarith))
+      ((Nat.cast_le (α := ℝ)).mpr hq_hi).trans (Nat.floor_le (by linarith))
     have hm_ge_V : V ≤ ((2 ^ v * (2 * q + 1) : ℕ) : ℝ) := by
       push_cast
-      have h1 : V = 2 * U * (2 : ℝ) ^ v := by dsimp only [U]; rw [pow_succ]; field_simp [h2v_pos.ne']
-      nlinarith [h1, hq_ge_U, h2v_pos]
+      have h1 : V = (2 : ℝ) ^ v * (2 * U) := by
+        dsimp only [U]; rw [pow_succ]; field_simp [h2v_pos.ne']
+      rw [h1]
+      exact mul_le_mul_of_nonneg_left (by linarith) h2v_pos.le
     have hm_le_2V : ((2 ^ v * (2 * q + 1) : ℕ) : ℝ) ≤ 2 * V := by
       push_cast
-      have h1 : 2 * V = 4 * U * (2 : ℝ) ^ v := by dsimp only [U]; rw [pow_succ]; field_simp [h2v_pos.ne']; ring
-      nlinarith [h1, hq_le_2U, h2v_pos]
+      have h1 : 2 * V = (2 : ℝ) ^ v * (4 * U) := by
+        dsimp only [U]; rw [pow_succ]; field_simp [h2v_pos.ne']; ring
+      rw [h1]
+      exact mul_le_mul_of_nonneg_left (by linarith) h2v_pos.le
     exact Finset.mem_Icc.mpr ⟨Nat.ceil_le.mpr hm_ge_V, Nat.le_floor hm_le_2V⟩
   · intro m hm
     obtain ⟨q, _, rfl⟩ := Finset.mem_image.mp hm
@@ -2863,6 +2959,264 @@ private lemma exists_evenHalves_subset_Icc (v : ℕ) {V : ℝ} (hV : (2 : ℝ) ^
     rw [hU2]
     linarith
 
+private def activeClust (m : ℕ) : Prop :=
+  256 ≤ m ∧ 1 ≤ evenHalves m ∧ (evenHalves m : ℝ) ≤ (1 / 8) * Real.log (m : ℝ)
+
+private def qClust (m : ℕ) : ℕ :=
+  if activeClust m then Nat.floor (Real.log (m : ℝ) / 52) else 0
+
+private def dClust (m : ℕ) : ℝ :=
+  if activeClust m then (evenHalves m : ℝ) / (2 * Real.log (m : ℝ)) else 0
+
+private def nClust (m : ℕ) : ℕ := 2 * basePairs m - 2 * qClust m
+
+private lemma qClust_dClust_spec (m : ℕ) :
+    qClust m = 0 ∨ (0 < dClust m ∧ dClust m < 1 / 2) := by
+  by_cases hact : activeClust m
+  · refine Or.inr ?_
+    have ⟨hm256, hv1, hv_ub⟩ := hact
+    have hlog_pos : 0 < Real.log (m : ℝ) :=
+      Real.log_pos (by exact_mod_cast (by omega : 1 < m))
+    have hv_pos : (0 : ℝ) < (evenHalves m : ℝ) := by exact_mod_cast hv1
+    simp only [dClust, if_pos hact]
+    refine ⟨by positivity, ?_⟩
+    rw [div_lt_iff₀ (by positivity)]
+    linarith
+  · exact Or.inl (by simp [qClust, hact])
+
+private lemma qClust_dClust_or (m : ℕ) : qClust m = 0 ∨ 0 < dClust m :=
+  (qClust_dClust_spec m).imp id And.left
+
+private lemma qClust_le_basePairs (m : ℕ) : qClust m ≤ basePairs m := by
+  by_cases hact : activeClust m
+  · have ⟨hm256, _, _⟩ := hact
+    have hm_not : ¬ m < 256 := not_lt.mpr hm256
+    simp only [qClust, if_pos hact, basePairs, if_neg hm_not]
+    have hlog_nn : 0 ≤ Real.log (m : ℝ) :=
+      Real.log_nonneg (by exact_mod_cast (by omega : 1 ≤ m))
+    have hpi4 : Real.pi < 4 := Real.pi_lt_four
+    have hle_div : Real.log (m : ℝ) / 52 ≤ Real.log (m : ℝ) / (4 * Real.pi) :=
+      div_le_div_of_nonneg_left hlog_nn (by positivity) (by linarith)
+    exact (Nat.floor_mono hle_div).trans (Nat.le_succ _)
+  · simp [qClust, hact]
+
+private lemma nClust_add_two_qClust (m : ℕ) : nClust m + 2 * qClust m = 2 * basePairs m := by
+  have := qClust_le_basePairs m
+  dsimp only [nClust]; omega
+
+private lemma dClust_le_one_sixteenth (m : ℕ) : dClust m ≤ 1 / 16 := by
+  by_cases hact : activeClust m
+  · have ⟨hm256, _, hv_ub⟩ := hact
+    have hlog_pos : 0 < Real.log (m : ℝ) :=
+      Real.log_pos (by exact_mod_cast (by omega : 1 < m))
+    simp only [dClust, if_pos hact]
+    rw [div_le_iff₀ (by positivity)]
+    linarith
+  · simp only [dClust, if_neg hact]; norm_num
+
+private def clusteredModel : UnitWindowStripZeroModel where
+  Z m := packetWin m (nClust m) (qClust m) (dClust m)
+  mult _ := 1
+  in_unit_strip m := packetWin_in_unit_strip (qClust_dClust_spec m)
+  mult_pos _ _ _ := zero_lt_one
+  refl_mem m := packetWin_refl_mem m (nClust m) (qClust m) (dClust m)
+  refl_mult _ _ _ := rfl
+  local_rvm := by
+    refine ⟨2, by norm_num, fun m hm => ?_⟩
+    rw [Finset.sum_const, smul_eq_mul, mul_one, packetWin_card (qClust_dClust_or m),
+      nClust_add_two_qClust m]
+    exact basePairs_rvm hm
+  critical_simple_majority := by
+    filter_upwards [eventually_ge_atTop 256] with m hm256
+    rw [Finset.sum_const, smul_eq_mul, mul_one, packetWin_card (qClust_dClust_or m),
+      nClust_add_two_qClust m, packetWin_filter_crit_card (qClust_dClust_or m)]
+    have hle2q : 2 * qClust m ≤ 2 * basePairs m := Nat.mul_le_mul_left 2 (qClust_le_basePairs m)
+    have hn_eq : (nClust m : ℝ) = ((2 * basePairs m : ℕ) : ℝ) - 2 * (qClust m : ℝ) := by
+      dsimp only [nClust]
+      have hc := Nat.cast_sub (R := ℝ) hle2q
+      push_cast at hc ⊢; exact hc
+    rw [hn_eq]
+    have hm_not : ¬ m < 256 := not_lt.mpr hm256
+    have hlog_nn : 0 ≤ Real.log (m : ℝ) :=
+      Real.log_nonneg (by exact_mod_cast (by omega : 1 ≤ m))
+    have hq_ub : (qClust m : ℝ) ≤ Real.log (m : ℝ) / 52 := by
+      by_cases hact : activeClust m
+      · simp only [qClust, if_pos hact]
+        exact Nat.floor_le (by positivity)
+      · simp only [qClust, if_neg hact, Nat.cast_zero]; positivity
+    have hbp_lb : Real.log (m : ℝ) / (2 * Real.pi) ≤ ((2 * basePairs m : ℕ) : ℝ) := by
+      simp only [basePairs, if_neg hm_not]; push_cast
+      have hlt := Nat.lt_floor_add_one (Real.log (m : ℝ) / (4 * Real.pi))
+      have h2 : 2 * (Real.log (m : ℝ) / (4 * Real.pi)) = Real.log (m : ℝ) / (2 * Real.pi) := by
+        field_simp [Real.pi_pos.ne']; ring
+      linarith
+    have hpi4 : Real.pi < 4 := Real.pi_lt_four
+    have hdiv_cmp : Real.log (m : ℝ) / 8 ≤ Real.log (m : ℝ) / (2 * Real.pi) :=
+      div_le_div_of_nonneg_left hlog_nn (by positivity) (by linarith)
+    linarith
+  selberg_arbitrary_rate := by
+    intro r hr0 hr1
+    refine ⟨4 * Real.pi, by positivity, ?_⟩
+    filter_upwards [eventually_ge_atTop (512 : ℝ),
+      Real.tendsto_log_atTop.eventually_ge_atTop 16] with V hV512 hlog16 a ha1
+    simp only [Nat.cast_one]
+    have hV_pos : 0 < V := by linarith
+    have hlogV_pos : 0 < Real.log V := by linarith
+    rcases lt_or_ge ((1 / 16) * Real.log V) a with ha_gt | ha_le
+    · have hzero : ∑ m ∈ Finset.Icc (Nat.ceil V) (Nat.floor (2 * V)),
+          ∑ z ∈ (packetWin m (nClust m) (qClust m) (dClust m)).filter
+            (fun z => 1 / 2 + a / Real.log V ≤ z.re), (1 : ℝ) = 0 := by
+        refine Finset.sum_eq_zero fun m _ => ?_
+        rw [Finset.sum_const, nsmul_eq_mul, mul_one, Nat.cast_eq_zero,
+          packetWin_filter_right_card (div_pos (by linarith) hlogV_pos) (qClust_dClust_or m),
+          if_neg]
+        have h1 := dClust_le_one_sixteenth m
+        have h2 : 1 / 16 < a / Real.log V := by
+          rw [lt_div_iff₀ hlogV_pos]; linarith
+        linarith
+      rw [hzero, mul_zero, mul_zero]; positivity
+    · -- `1 ≤ a ≤ (1 / 16) * log V`: every bad window is divisible by `2 ^ ⌈2a⌉₊`.
+      set v₀ : ℕ := Nat.ceil (2 * a)
+      set I_V := Finset.Icc (Nat.ceil V) (Nat.floor (2 * V))
+      set Dvd_V := I_V.filter (fun m => 2 ^ v₀ ∣ m)
+      have hzero_off : ∀ m ∈ I_V, m ∉ Dvd_V →
+          ∑ z ∈ (packetWin m (nClust m) (qClust m) (dClust m)).filter
+            (fun z => 1 / 2 + a / Real.log V ≤ z.re), (1 : ℝ) = 0 := by
+        intro m hm_I hnot_dvd
+        rw [Finset.sum_const, nsmul_eq_mul, mul_one, Nat.cast_eq_zero,
+          packetWin_filter_right_card (div_pos (by linarith) hlogV_pos) (qClust_dClust_or m)]
+        split_ifs with hbd
+        · by_cases hact : activeClust m
+          · exfalso; apply hnot_dvd
+            refine Finset.mem_filter.mpr ⟨hm_I, ?_⟩
+            have hm_ge_V : V ≤ (m : ℝ) :=
+              (Nat.le_ceil V).trans (by exact_mod_cast (Finset.mem_Icc.mp hm_I).1)
+            have hm_ne0 : m ≠ 0 := by
+              intro h0; subst h0; simp at hm_ge_V; linarith
+            have hlog_ge : Real.log V ≤ Real.log (m : ℝ) := Real.log_le_log hV_pos hm_ge_V
+            simp only [dClust, if_pos hact] at hbd
+            have h1 : a / Real.log V ≤ (evenHalves m : ℝ) / (2 * Real.log V) :=
+              hbd.trans (div_le_div_of_nonneg_left (Nat.cast_nonneg _)
+                (by positivity) (by linarith))
+            have h2 : 2 * a ≤ (evenHalves m : ℝ) := by
+              have hm_mul := (div_le_div_iff₀ hlogV_pos (by positivity)).mp h1
+              have hrew : a * (2 * Real.log V) = (2 * a) * Real.log V := by ring
+              rw [hrew] at hm_mul
+              exact le_of_mul_le_mul_right hm_mul hlogV_pos
+            exact two_pow_dvd_of_le_evenHalves hm_ne0 (Nat.ceil_le.mpr h2)
+          · simp [qClust, hact]
+        · rfl
+      have hsub_sum : ∑ m ∈ I_V,
+          ∑ z ∈ (packetWin m (nClust m) (qClust m) (dClust m)).filter
+            (fun z => 1 / 2 + a / Real.log V ≤ z.re), (1 : ℝ) =
+          ∑ m ∈ Dvd_V,
+            ∑ z ∈ (packetWin m (nClust m) (qClust m) (dClust m)).filter
+              (fun z => 1 / 2 + a / Real.log V ≤ z.re), (1 : ℝ) := by
+        symm
+        exact Finset.sum_subset (Finset.filter_subset _ _) hzero_off
+      rw [hsub_sum]
+      have hq_ub : ∀ m ∈ Dvd_V,
+          ∑ z ∈ (packetWin m (nClust m) (qClust m) (dClust m)).filter
+            (fun z => 1 / 2 + a / Real.log V ≤ z.re), (1 : ℝ) ≤ Real.log V / 26 := by
+        intro m hm_D
+        have hm_I := (Finset.mem_filter.mp hm_D).1
+        have hm_le_2V : (m : ℝ) ≤ 2 * V :=
+          ((Nat.cast_le (α := ℝ)).mpr (Finset.mem_Icc.mp hm_I).2).trans
+            (Nat.floor_le (by positivity))
+        have hm_ge_V : V ≤ (m : ℝ) :=
+          (Nat.le_ceil V).trans (by exact_mod_cast (Finset.mem_Icc.mp hm_I).1)
+        rw [Finset.sum_const, nsmul_eq_mul, mul_one,
+          packetWin_filter_right_card (div_pos (by linarith) hlogV_pos) (qClust_dClust_or m)]
+        split_ifs
+        · by_cases hact : activeClust m
+          · simp only [qClust, if_pos hact]
+            have hfl : (Nat.floor (Real.log (m : ℝ) / 52) : ℝ) ≤ Real.log (m : ℝ) / 52 :=
+              Nat.floor_le (div_nonneg (Real.log_nonneg (by linarith)) (by norm_num))
+            have hlog2 : Real.log (m : ℝ) ≤ 2 * Real.log V := by
+              have h1 : Real.log (m : ℝ) ≤ Real.log (2 * V) :=
+                Real.log_le_log (by linarith) hm_le_2V
+              rw [Real.log_mul zero_lt_two.ne' hV_pos.ne'] at h1
+              linarith [h1, log_two_lt_one]
+            linarith
+          · simp only [qClust, if_neg hact, Nat.cast_zero]; positivity
+        · simp only [Nat.cast_zero]; positivity
+      have h2v₀_le_V : (2 : ℝ) ^ v₀ ≤ V := by
+        have hv₀_le : (v₀ : ℝ) ≤ 2 * a + 1 := (Nat.ceil_lt_add_one (by positivity)).le
+        have hmul1 : (v₀ : ℝ) * Real.log 2 ≤ (v₀ : ℝ) * 1 :=
+          mul_le_mul_of_nonneg_left log_two_lt_one.le (Nat.cast_nonneg _)
+        have hlog_pow : (v₀ : ℝ) * Real.log 2 ≤ Real.log V := by
+          linarith [hmul1, ha_le, hv₀_le, hlog16]
+        rw [← Real.exp_log (by positivity : (0 : ℝ) < (2 : ℝ) ^ v₀), Real.log_pow,
+          ← Real.exp_log hV_pos]
+        exact Real.exp_le_exp.mpr hlog_pow
+      have hDvd_card : (Dvd_V.card : ℝ) ≤ 3 * V / (2 : ℝ) ^ v₀ := by
+        have hc := card_Icc_filter_dvd_le (Nat.ceil V) (Nat.floor (2 * V)) (2 ^ v₀)
+        have hdiv_le : ((Nat.floor (2 * V) / 2 ^ v₀ : ℕ) : ℝ) ≤ 2 * V / (2 : ℝ) ^ v₀ := by
+          rw [le_div_iff₀ (by positivity)]
+          have h1 : (Nat.floor (2 * V) / 2 ^ v₀) * 2 ^ v₀ ≤ Nat.floor (2 * V) :=
+            Nat.div_mul_le_self _ _
+          have h2 : (((Nat.floor (2 * V) / 2 ^ v₀) * 2 ^ v₀ : ℕ) : ℝ) ≤
+              (Nat.floor (2 * V) : ℝ) := by exact_mod_cast h1
+          push_cast at h2
+          exact h2.trans (Nat.floor_le (by positivity))
+        have h1_le : (1 : ℝ) ≤ V / (2 : ℝ) ^ v₀ := (one_le_div (by positivity)).mpr h2v₀_le_V
+        have hcast : (Dvd_V.card : ℝ) ≤ ((Nat.floor (2 * V) / 2 ^ v₀ : ℕ) : ℝ) + 1 := by
+          exact_mod_cast hc
+        calc (Dvd_V.card : ℝ) ≤ 2 * V / (2 : ℝ) ^ v₀ + V / (2 : ℝ) ^ v₀ := by linarith
+          _ = 3 * V / (2 : ℝ) ^ v₀ := by ring
+      have hpow_exp : ((2 : ℝ) ^ v₀)⁻¹ ≤ Real.exp (-(6 / 5 * a)) := by
+        have hv₀_ge : 2 * a ≤ (v₀ : ℝ) := Nat.le_ceil (2 * a)
+        have hlog2 : (3 / 5 : ℝ) ≤ Real.log 2 := by linarith [Real.log_two_gt_d9]
+        have hmul : 6 / 5 * a ≤ (v₀ : ℝ) * Real.log 2 := by
+          calc 6 / 5 * a = (2 * a) * (3 / 5) := by ring
+            _ ≤ (v₀ : ℝ) * Real.log 2 :=
+              mul_le_mul hv₀_ge hlog2 (by norm_num) (Nat.cast_nonneg _)
+        rw [← Real.exp_log (by positivity : (0 : ℝ) < ((2 : ℝ) ^ v₀)⁻¹),
+          Real.log_inv, Real.log_pow]
+        exact Real.exp_le_exp.mpr (by linarith)
+      have ha_exp : a * Real.exp (-(6 / 5 * a)) ≤ 5 * Real.exp (-(r * a)) := by
+        have h1 : a / 5 ≤ Real.exp (a / 5) := by linarith [Real.add_one_le_exp (a / 5)]
+        have h2 : a * Real.exp (-(6 / 5 * a)) ≤ (5 * Real.exp (a / 5)) * Real.exp (-(6 / 5 * a)) :=
+          mul_le_mul_of_nonneg_right (by linarith) (Real.exp_pos _).le
+        have h3 : (5 * Real.exp (a / 5)) * Real.exp (-(6 / 5 * a)) = 5 * Real.exp (-a) := by
+          rw [mul_assoc, ← Real.exp_add]; congr 1; ring
+        have hra : r * a ≤ 1 * a := mul_le_mul_of_nonneg_right hr1.le (by linarith)
+        have h4 : Real.exp (-a) ≤ Real.exp (-(r * a)) :=
+          Real.exp_le_exp.mpr (by linarith)
+        linarith [h2, h3, mul_le_mul_of_nonneg_left h4 (by norm_num : (0 : ℝ) ≤ 5)]
+      have hsum_Dvd : ∑ m ∈ Dvd_V,
+          ∑ z ∈ (packetWin m (nClust m) (qClust m) (dClust m)).filter
+            (fun z => 1 / 2 + a / Real.log V ≤ z.re), (1 : ℝ) ≤
+          (3 / 26) * Real.exp (-(6 / 5 * a)) * V * Real.log V := by
+        calc _ ≤ ∑ _m ∈ Dvd_V, Real.log V / 26 := Finset.sum_le_sum hq_ub
+          _ = (Dvd_V.card : ℝ) * (Real.log V / 26) := by rw [Finset.sum_const, nsmul_eq_mul]
+          _ ≤ (3 * V * ((2 : ℝ) ^ v₀)⁻¹) * (Real.log V / 26) := by
+              rw [div_eq_mul_inv] at hDvd_card
+              exact mul_le_mul_of_nonneg_right hDvd_card (by positivity)
+          _ ≤ (3 * V * Real.exp (-(6 / 5 * a))) * (Real.log V / 26) :=
+              mul_le_mul_of_nonneg_right
+                (mul_le_mul_of_nonneg_left hpow_exp (by positivity)) (by positivity)
+          _ = (3 / 26) * Real.exp (-(6 / 5 * a)) * V * Real.log V := by ring
+      calc 2 * Real.pi * ((a / Real.log V) *
+            ∑ m ∈ Dvd_V,
+              ∑ z ∈ (packetWin m (nClust m) (qClust m) (dClust m)).filter
+                (fun z => 1 / 2 + a / Real.log V ≤ z.re), (1 : ℝ))
+          ≤ 2 * Real.pi * ((a / Real.log V) *
+              ((3 / 26) * Real.exp (-(6 / 5 * a)) * V * Real.log V)) :=
+            mul_le_mul_of_nonneg_left
+              (mul_le_mul_of_nonneg_left hsum_Dvd (by positivity)) (by positivity)
+        _ = (3 / 13) * Real.pi * (a * Real.exp (-(6 / 5 * a))) * V := by
+            field_simp [hlogV_pos.ne']; ring
+        _ ≤ (3 / 13) * Real.pi * (5 * Real.exp (-(r * a))) * V :=
+            mul_le_mul_of_nonneg_right
+              (mul_le_mul_of_nonneg_left ha_exp (by positivity)) hV_pos.le
+        _ ≤ 4 * Real.pi * Real.exp (-(r * a)) * V := by
+            have hpv : 0 ≤ Real.pi * Real.exp (-(r * a)) * V := by positivity
+            have hdiff : 4 * Real.pi * Real.exp (-(r * a)) * V -
+                (3 / 13) * Real.pi * (5 * Real.exp (-(r * a))) * V =
+                (37 / 13) * (Real.pi * Real.exp (-(r * a)) * V) := by ring
+            linarith
+
 /-- **Clustered `2`-Adic Packet Countermodel (`exists_clusteredPacketModel_cert_not_zeroDensity_not_logMean`).**
 Packing `⌊log m / 52⌋₊` off-line conjugate pairs at `1/2 ± v₂(m) / (2 log m)` in windows with
 `1 ≤ v₂(m) ≤ (1/8) log m` satisfies `UnitWindowStripZeroModel` and `WindowOccupancy`
@@ -2873,247 +3227,8 @@ theorem exists_clusteredPacketModel_cert_not_zeroDensity_not_logMean :
       M.WindowOccupancy ∧
       ¬ M.LogFreeZeroDensity ∧
       ¬ M.HorizontalMomentLittleO := by
-  let activeClust : ℕ → Prop := fun m =>
-    256 ≤ m ∧ 1 ≤ evenHalves m ∧ (evenHalves m : ℝ) ≤ (1 / 8) * Real.log (m : ℝ)
-  let qClust : ℕ → ℕ := fun m =>
-    if activeClust m then Nat.floor (Real.log (m : ℝ) / 52) else 0
-  let dClust : ℕ → ℝ := fun m =>
-    if activeClust m then (evenHalves m : ℝ) / (2 * Real.log (m : ℝ)) else 0
-  let nClust : ℕ → ℕ := fun m => 2 * basePairs m - 2 * qClust m
-  have hd_spec : ∀ m : ℕ, qClust m = 0 ∨ (0 < dClust m ∧ dClust m < 1 / 2) := by
-    intro m
-    by_cases hact : activeClust m
-    · refine Or.inr ?_
-      obtain ⟨hm256, hv1, hv_ub⟩ := hact
-      have hlog_pos : 0 < Real.log (m : ℝ) :=
-        Real.log_pos (by exact_mod_cast (by omega : 1 < m))
-      have hv_pos : (0 : ℝ) < (evenHalves m : ℝ) := by exact_mod_cast hv1
-      simp only [dClust, if_pos hact]
-      refine ⟨by positivity, ?_⟩
-      rw [div_lt_iff₀ (by positivity)]
-      linarith
-    · exact Or.inl (by simp [qClust, hact])
-  have hd_or : ∀ m : ℕ, qClust m = 0 ∨ 0 < dClust m := fun m =>
-    (hd_spec m).imp id And.left
-  have hq_le_bp : ∀ m : ℕ, qClust m ≤ basePairs m := by
-    intro m
-    by_cases hact : activeClust m
-    · obtain ⟨hm256, _, _⟩ := hact
-      have hm_not : ¬ m < 256 := not_lt.mpr hm256
-      simp only [qClust, if_pos hact, basePairs, if_neg hm_not]
-      have hlog_nn : 0 ≤ Real.log (m : ℝ) :=
-        Real.log_nonneg (by exact_mod_cast (by omega : 1 ≤ m))
-      have hpi4 : Real.pi < 4 := Real.pi_lt_four
-      have hle_div : Real.log (m : ℝ) / 52 ≤ Real.log (m : ℝ) / (4 * Real.pi) :=
-        div_le_div_of_nonneg_left hlog_nn (by positivity) (by linarith)
-      exact (Nat.floor_mono hle_div).trans (Nat.le_succ _)
-    · simp [qClust, hact]
-  have htot_eq : ∀ m : ℕ, nClust m + 2 * qClust m = 2 * basePairs m := by
-    intro m
-    have := hq_le_bp m
-    dsimp only [nClust]; omega
-  let M : UnitWindowStripZeroModel :=
-    { Z := fun m => packetWin m (nClust m) (qClust m) (dClust m)
-      mult := fun _ => 1
-      in_unit_strip := fun m => packetWin_in_unit_strip (hd_spec m)
-      mult_pos := fun _ _ _ => zero_lt_one
-      refl_mem := fun m => packetWin_refl_mem m (nClust m) (qClust m) (dClust m)
-      refl_mult := fun _ _ _ => rfl
-      local_rvm := by
-        refine ⟨2, by norm_num, fun m hm => ?_⟩
-        rw [Finset.sum_const, smul_eq_mul, mul_one, packetWin_card (hd_or m), htot_eq m]
-        exact basePairs_rvm hm
-      critical_simple_majority := by
-        filter_upwards [eventually_ge_atTop 256] with m hm256
-        rw [Finset.sum_const, smul_eq_mul, mul_one, packetWin_card (hd_or m), htot_eq m,
-          packetWin_filter_crit_card (hd_or m)]
-        have hle2q : 2 * qClust m ≤ 2 * basePairs m := Nat.mul_le_mul_left 2 (hq_le_bp m)
-        have hn_eq : (nClust m : ℝ) = ((2 * basePairs m : ℕ) : ℝ) - 2 * (qClust m : ℝ) := by
-          dsimp only [nClust]
-          have hc := Nat.cast_sub (R := ℝ) hle2q
-          push_cast at hc ⊢; exact hc
-        rw [hn_eq]
-        have hm_not : ¬ m < 256 := not_lt.mpr hm256
-        have hlog_nn : 0 ≤ Real.log (m : ℝ) :=
-          Real.log_nonneg (by exact_mod_cast (by omega : 1 ≤ m))
-        have hq_ub : (qClust m : ℝ) ≤ Real.log (m : ℝ) / 52 := by
-          by_cases hact : activeClust m
-          · simp only [qClust, if_pos hact]
-            exact Nat.floor_le (by positivity)
-          · simp only [qClust, if_neg hact, Nat.cast_zero]; positivity
-        have hbp_lb : Real.log (m : ℝ) / (2 * Real.pi) ≤ ((2 * basePairs m : ℕ) : ℝ) := by
-          simp only [basePairs, if_neg hm_not]; push_cast
-          have hlt := Nat.lt_floor_add_one (Real.log (m : ℝ) / (4 * Real.pi))
-          have h2 : 2 * (Real.log (m : ℝ) / (4 * Real.pi)) = Real.log (m : ℝ) / (2 * Real.pi) := by
-            field_simp [Real.pi_pos.ne']; ring
-          linarith
-        have hpi4 : Real.pi < 4 := Real.pi_lt_four
-        have hdiv_cmp : Real.log (m : ℝ) / 8 ≤ Real.log (m : ℝ) / (2 * Real.pi) :=
-          div_le_div_of_nonneg_left hlog_nn (by positivity) (by linarith)
-        linarith
-      selberg_arbitrary_rate := by
-        intro r hr0 hr1
-        refine ⟨4 * Real.pi, by positivity, ?_⟩
-        filter_upwards [eventually_ge_atTop (512 : ℝ),
-          Real.tendsto_log_atTop.eventually_ge_atTop 16] with V hV512 hlog16 a ha1
-        have hV_pos : 0 < V := by linarith
-        have hlogV_pos : 0 < Real.log V := by linarith
-        -- Every active window has `dClust m ≤ 1 / 16`.
-        have hd_max : ∀ m : ℕ, dClust m ≤ 1 / 16 := by
-          intro m
-          by_cases hact : activeClust m
-          · obtain ⟨hm256, _, hv_ub⟩ := hact
-            have hlog_pos : 0 < Real.log (m : ℝ) :=
-              Real.log_pos (by exact_mod_cast (by omega : 1 < m))
-            simp only [dClust, if_pos hact]
-            rw [div_le_iff₀ (by positivity)]
-            linarith
-          · simp only [dClust, if_neg hact]; norm_num
-        rcases lt_or_ge ((1 / 16) * Real.log V) a with ha_gt | ha_le
-        · have hzero : ∑ m ∈ Finset.Icc (Nat.ceil V) (Nat.floor (2 * V)),
-              ∑ z ∈ (packetWin m (nClust m) (qClust m) (dClust m)).filter
-                (fun z => 1 / 2 + a / Real.log V ≤ z.re), (1 : ℝ) = 0 := by
-            refine Finset.sum_eq_zero fun m _ => ?_
-            rw [Finset.sum_const, nsmul_eq_mul, mul_one, Nat.cast_eq_zero,
-              packetWin_filter_right_card (div_pos (by linarith) hlogV_pos) (hd_or m), if_neg]
-            have h1 := hd_max m
-            have h2 : 1 / 16 < a / Real.log V := by
-              rw [lt_div_iff₀ hlogV_pos]; linarith
-            linarith
-          rw [hzero, mul_zero, mul_zero]; positivity
-        · -- `1 ≤ a ≤ (1 / 16) * log V`: every bad window is divisible by `2 ^ ⌈2a⌉₊`.
-          set v₀ : ℕ := Nat.ceil (2 * a)
-          have hv₀_pos : 0 < v₀ := Nat.ceil_pos.mpr (by linarith)
-          have h2v₀_pos : 0 < 2 ^ v₀ := Nat.pow_pos (by norm_num)
-          set I_V := Finset.Icc (Nat.ceil V) (Nat.floor (2 * V))
-          set Dvd_V := I_V.filter (fun m => 2 ^ v₀ ∣ m)
-          have hzero_off : ∀ m ∈ I_V, m ∉ Dvd_V →
-              ∑ z ∈ (packetWin m (nClust m) (qClust m) (dClust m)).filter
-                (fun z => 1 / 2 + a / Real.log V ≤ z.re), (1 : ℝ) = 0 := by
-            intro m hm_I hnot_dvd
-            rw [Finset.sum_const, nsmul_eq_mul, mul_one, Nat.cast_eq_zero,
-              packetWin_filter_right_card (div_pos (by linarith) hlogV_pos) (hd_or m)]
-            split_ifs with hbd
-            · by_cases hact : activeClust m
-              · exfalso; apply hnot_dvd
-                refine Finset.mem_filter.mpr ⟨hm_I, ?_⟩
-                have hm_ge_V : V ≤ (m : ℝ) :=
-                  (Nat.le_ceil V).trans (by exact_mod_cast (Finset.mem_Icc.mp hm_I).1)
-                have hm_ne0 : m ≠ 0 := by
-                  intro h0; subst h0; simp at hm_ge_V; linarith
-                have hlog_ge : Real.log V ≤ Real.log (m : ℝ) := Real.log_le_log hV_pos hm_ge_V
-                simp only [dClust, if_pos hact] at hbd
-                have h1 : a / Real.log V ≤ (evenHalves m : ℝ) / (2 * Real.log V) :=
-                  hbd.trans (div_le_div_of_nonneg_left (Nat.cast_nonneg _)
-                    (by positivity) (by linarith))
-                have h2 : 2 * a ≤ (evenHalves m : ℝ) := by
-                  have hm_mul := (div_le_div_iff₀ hlogV_pos (by positivity)).mp h1
-                  nlinarith [hlogV_pos]
-                exact two_pow_dvd_of_le_evenHalves hm_ne0 (Nat.ceil_le.mpr h2)
-              · simp [qClust, hact]
-            · rfl
-          have hsub_sum : ∑ m ∈ I_V,
-              ∑ z ∈ (packetWin m (nClust m) (qClust m) (dClust m)).filter
-                (fun z => 1 / 2 + a / Real.log V ≤ z.re), (1 : ℝ) =
-              ∑ m ∈ Dvd_V,
-                ∑ z ∈ (packetWin m (nClust m) (qClust m) (dClust m)).filter
-                  (fun z => 1 / 2 + a / Real.log V ≤ z.re), (1 : ℝ) := by
-            symm
-            exact Finset.sum_subset (Finset.filter_subset _ _) hzero_off
-          rw [hsub_sum]
-          have hq_ub : ∀ m ∈ Dvd_V,
-              ∑ z ∈ (packetWin m (nClust m) (qClust m) (dClust m)).filter
-                (fun z => 1 / 2 + a / Real.log V ≤ z.re), (1 : ℝ) ≤ Real.log V / 26 := by
-            intro m hm_D
-            have hm_I := (Finset.mem_filter.mp hm_D).1
-            have hm_le_2V : (m : ℝ) ≤ 2 * V :=
-              (by exact_mod_cast (Finset.mem_Icc.mp hm_I).2).trans (Nat.floor_le (by positivity))
-            have hm_ge_V : V ≤ (m : ℝ) :=
-              (Nat.le_ceil V).trans (by exact_mod_cast (Finset.mem_Icc.mp hm_I).1)
-            rw [Finset.sum_const, nsmul_eq_mul, mul_one,
-              packetWin_filter_right_card (div_pos (by linarith) hlogV_pos) (hd_or m)]
-            split_ifs
-            · by_cases hact : activeClust m
-              · simp only [qClust, if_pos hact]
-                have hfl : (Nat.floor (Real.log (m : ℝ) / 52) : ℝ) ≤ Real.log (m : ℝ) / 52 :=
-                  Nat.floor_le (div_nonneg (Real.log_nonneg (by linarith)) (by norm_num))
-                have hlog2 : Real.log (m : ℝ) ≤ 2 * Real.log V := by
-                  have h1 : Real.log (m : ℝ) ≤ Real.log (2 * V) :=
-                    Real.log_le_log (by linarith) hm_le_2V
-                  rw [Real.log_mul zero_lt_two.ne' hV_pos.ne'] at h1
-                  linarith [h1, log_two_lt_one]
-                linarith
-              · simp only [qClust, if_neg hact, Nat.cast_zero]; positivity
-            · simp only [Nat.cast_zero]; positivity
-          -- Bound `Dvd_V.card ≤ 3 * V / 2^v₀`.
-          have h2v₀_le_V : (2 : ℝ) ^ v₀ ≤ V := by
-            have hv₀_le : (v₀ : ℝ) ≤ 2 * a + 1 := (Nat.ceil_lt_add_one (by positivity)).le
-            have hlog_pow : (v₀ : ℝ) * Real.log 2 ≤ Real.log V := by
-              linarith [log_two_lt_one, ha_le, hv₀_le, hlog16]
-            rw [← Real.exp_log (by positivity : (0 : ℝ) < (2 : ℝ) ^ v₀), Real.log_pow,
-              ← Real.exp_log hV_pos]
-            exact Real.exp_le_exp.mpr hlog_pow
-          have hDvd_card : (Dvd_V.card : ℝ) ≤ 3 * V / (2 : ℝ) ^ v₀ := by
-            have hc := card_Icc_filter_dvd_le (Nat.ceil V) (Nat.floor (2 * V)) (2 ^ v₀) h2v₀_pos
-            have hdiv_le : ((Nat.floor (2 * V) / 2 ^ v₀ : ℕ) : ℝ) ≤ 2 * V / (2 : ℝ) ^ v₀ := by
-              rw [le_div_iff₀ (by positivity)]
-              have h1 : (Nat.floor (2 * V) / 2 ^ v₀) * 2 ^ v₀ ≤ Nat.floor (2 * V) :=
-                Nat.div_mul_le_self _ _
-              have h2 : (((Nat.floor (2 * V) / 2 ^ v₀) * 2 ^ v₀ : ℕ) : ℝ) ≤
-                  (Nat.floor (2 * V) : ℝ) := by exact_mod_cast h1
-              push_cast at h2
-              exact h2.trans (Nat.floor_le (by positivity))
-            have h1_le : (1 : ℝ) ≤ V / (2 : ℝ) ^ v₀ := (one_le_div (by positivity)).mpr h2v₀_le_V
-            have hcast : (Dvd_V.card : ℝ) ≤ ((Nat.floor (2 * V) / 2 ^ v₀ : ℕ) : ℝ) + 1 := by
-              exact_mod_cast hc
-            calc (Dvd_V.card : ℝ) ≤ 2 * V / (2 : ℝ) ^ v₀ + V / (2 : ℝ) ^ v₀ := by linarith
-              _ = 3 * V / (2 : ℝ) ^ v₀ := by ring
-          have hpow_exp : ((2 : ℝ) ^ v₀)⁻¹ ≤ Real.exp (-(6 / 5 * a)) := by
-            have hv₀_ge : 2 * a ≤ (v₀ : ℝ) := Nat.le_ceil (2 * a)
-            have hlog2 : (3 / 5 : ℝ) ≤ Real.log 2 := by linarith [Real.log_two_gt_d9]
-            have hmul : 6 / 5 * a ≤ (v₀ : ℝ) * Real.log 2 := by nlinarith [ha1]
-            rw [← Real.exp_log (by positivity : (0 : ℝ) < ((2 : ℝ) ^ v₀)⁻¹),
-              Real.log_inv, Real.log_pow]
-            exact Real.exp_le_exp.mpr (by linarith)
-          have ha_exp : a * Real.exp (-(6 / 5 * a)) ≤ 5 * Real.exp (-(r * a)) := by
-            have h1 : a / 5 ≤ Real.exp (a / 5) := by linarith [Real.add_one_le_exp (a / 5)]
-            have h2 : a * Real.exp (-(6 / 5 * a)) ≤ (5 * Real.exp (a / 5)) * Real.exp (-(6 / 5 * a)) :=
-              mul_le_mul_of_nonneg_right (by linarith) (Real.exp_pos _).le
-            have h3 : (5 * Real.exp (a / 5)) * Real.exp (-(6 / 5 * a)) = 5 * Real.exp (-a) := by
-              rw [mul_assoc, ← Real.exp_add]; congr 1; ring
-            have h4 : Real.exp (-a) ≤ Real.exp (-(r * a)) :=
-              Real.exp_le_exp.mpr (by nlinarith [hr1, ha1])
-            linarith [h2, h3, mul_le_mul_of_nonneg_left h4 (by norm_num : (0 : ℝ) ≤ 5)]
-          have hsum_Dvd : ∑ m ∈ Dvd_V,
-              ∑ z ∈ (packetWin m (nClust m) (qClust m) (dClust m)).filter
-                (fun z => 1 / 2 + a / Real.log V ≤ z.re), (1 : ℝ) ≤
-              (3 / 26) * Real.exp (-(6 / 5 * a)) * V * Real.log V := by
-            calc _ ≤ ∑ _m ∈ Dvd_V, Real.log V / 26 := Finset.sum_le_sum hq_ub
-              _ = (Dvd_V.card : ℝ) * (Real.log V / 26) := by rw [Finset.sum_const, nsmul_eq_mul]
-              _ ≤ (3 * V * ((2 : ℝ) ^ v₀)⁻¹) * (Real.log V / 26) := by
-                  rw [div_eq_mul_inv] at hDvd_card
-                  exact mul_le_mul_of_nonneg_right hDvd_card (by positivity)
-              _ ≤ (3 * V * Real.exp (-(6 / 5 * a))) * (Real.log V / 26) :=
-                  mul_le_mul_of_nonneg_right
-                    (mul_le_mul_of_nonneg_left hpow_exp (by positivity)) (by positivity)
-              _ = (3 / 26) * Real.exp (-(6 / 5 * a)) * V * Real.log V := by ring
-          calc 2 * Real.pi * ((a / Real.log V) *
-                ∑ m ∈ Dvd_V,
-                  ∑ z ∈ (packetWin m (nClust m) (qClust m) (dClust m)).filter
-                    (fun z => 1 / 2 + a / Real.log V ≤ z.re), (1 : ℝ))
-              ≤ 2 * Real.pi * ((a / Real.log V) *
-                  ((3 / 26) * Real.exp (-(6 / 5 * a)) * V * Real.log V)) :=
-                mul_le_mul_of_nonneg_left
-                  (mul_le_mul_of_nonneg_left hsum_Dvd (by positivity)) (by positivity)
-            _ = (3 / 13) * Real.pi * (a * Real.exp (-(6 / 5 * a))) * V := by
-                field_simp [hlogV_pos.ne']; ring
-            _ ≤ (3 / 13) * Real.pi * (5 * Real.exp (-(r * a))) * V :=
-                mul_le_mul_of_nonneg_right
-                  (mul_le_mul_of_nonneg_left ha_exp (by positivity)) hV_pos.le
-            _ ≤ 4 * Real.pi * Real.exp (-(r * a)) * V := by
-                nlinarith [Real.pi_pos, Real.exp_pos (-(r * a)), hV_pos] }
-  refine ⟨M, ?_, ?_, ?_⟩
-  · -- `M.WindowOccupancy` with `δ A = 6 * exp(-A)`.
+  refine ⟨clusteredModel, ?_, ?_, ?_⟩
+  · -- `clusteredModel.WindowOccupancy` with `δ A = 6 * exp(-A)`.
     refine ⟨fun A => 6 * Real.exp (-A), ?_, fun A hA => ?_⟩
     · have h1 : Tendsto (fun A : ℝ => Real.exp (-A)) atTop (𝓝 0) :=
         Real.tendsto_exp_atBot.comp tendsto_neg_atTop_atBot
@@ -3122,38 +3237,28 @@ theorem exists_clusteredPacketModel_cert_not_zeroDensity_not_logMean :
         Real.tendsto_log_atTop.eventually_ge_atTop 16] with V hV512 hlog16
       have hV_pos : 0 < V := by linarith
       have hlogV_pos : 0 < Real.log V := by linarith
-      have hd_max : ∀ m : ℕ, dClust m ≤ 1 / 16 := by
-        intro m
-        by_cases hact : activeClust m
-        · obtain ⟨hm256, _, hv_ub⟩ := hact
-          have hlog_pos : 0 < Real.log (m : ℝ) :=
-            Real.log_pos (by exact_mod_cast (by omega : 1 < m))
-          simp only [dClust, if_pos hact]; rw [div_le_iff₀ (by positivity)]; linarith
-        · simp only [dClust, if_neg hact]; norm_num
       rcases lt_or_ge ((1 / 16) * Real.log V) A with hA_gt | hA_le
       · have hempty : (Finset.Icc (Nat.ceil V) (Nat.floor (2 * V))).filter
-            (fun m => ∃ z ∈ M.Z m, A / Real.log V ≤ |z.re - 1 / 2|) = ∅ := by
+            (fun m => ∃ z ∈ clusteredModel.Z m, A / Real.log V ≤ |z.re - 1 / 2|) = ∅ := by
           ext m
           simp only [Finset.mem_filter, Finset.notMem_empty, iff_false, not_and]
           intro _
-          rw [show M.Z m = packetWin m (nClust m) (qClust m) (dClust m) from rfl,
-            packetWin_exists_abs_iff (div_pos hA hlogV_pos) (hd_or m)]
+          dsimp only [clusteredModel]
+          rw [packetWin_exists_abs_iff (div_pos hA hlogV_pos) (qClust_dClust_or m)]
           rintro ⟨_, hbd⟩
-          have h1 := hd_max m
+          have h1 := dClust_le_one_sixteenth m
           have h2 : 1 / 16 < A / Real.log V := by rw [lt_div_iff₀ hlogV_pos]; linarith
           linarith
         rw [hempty, Finset.card_empty, Nat.cast_zero]; positivity
       · set v₀ : ℕ := max 1 (Nat.ceil (2 * A))
-        have hv₀_pos : 0 < v₀ := lt_of_lt_of_le zero_lt_one (le_max_left _ _)
-        have h2v₀_pos : 0 < 2 ^ v₀ := Nat.pow_pos (by norm_num)
         have hsub : (Finset.Icc (Nat.ceil V) (Nat.floor (2 * V))).filter
-              (fun m => ∃ z ∈ M.Z m, A / Real.log V ≤ |z.re - 1 / 2|) ⊆
+              (fun m => ∃ z ∈ clusteredModel.Z m, A / Real.log V ≤ |z.re - 1 / 2|) ⊆
             (Finset.Icc (Nat.ceil V) (Nat.floor (2 * V))).filter (fun m => 2 ^ v₀ ∣ m) := by
           intro m hm
           obtain ⟨hm_I, hex⟩ := Finset.mem_filter.mp hm
           refine Finset.mem_filter.mpr ⟨hm_I, ?_⟩
-          rw [show M.Z m = packetWin m (nClust m) (qClust m) (dClust m) from rfl,
-            packetWin_exists_abs_iff (div_pos hA hlogV_pos) (hd_or m)] at hex
+          dsimp only [clusteredModel] at hex
+          rw [packetWin_exists_abs_iff (div_pos hA hlogV_pos) (qClust_dClust_or m)] at hex
           obtain ⟨hq_pos, hbd⟩ := hex
           have hact : activeClust m := by
             by_contra hnot; simp [qClust, hnot] at hq_pos
@@ -3166,20 +3271,24 @@ theorem exists_clusteredPacketModel_cert_not_zeroDensity_not_logMean :
             hbd.trans (div_le_div_of_nonneg_left (Nat.cast_nonneg _) (by positivity) (by linarith))
           have h2 : 2 * A ≤ (evenHalves m : ℝ) := by
             have hm_mul := (div_le_div_iff₀ hlogV_pos (by positivity)).mp h1
-            nlinarith [hlogV_pos]
+            have hrew : A * (2 * Real.log V) = (2 * A) * Real.log V := by ring
+            rw [hrew] at hm_mul
+            exact le_of_mul_le_mul_right hm_mul hlogV_pos
           have hv₀_le : v₀ ≤ evenHalves m := max_le hact.2.1 (Nat.ceil_le.mpr h2)
           exact two_pow_dvd_of_le_evenHalves hm_ne0 hv₀_le
         have h2v₀_le_V : (2 : ℝ) ^ v₀ ≤ V := by
           have hv₀_le : (v₀ : ℝ) ≤ 2 * A + 1 := by
             dsimp only [v₀]; rw [Nat.cast_max, Nat.cast_one]
             exact max_le (by linarith) (Nat.ceil_lt_add_one (by positivity)).le
+          have hmul1 : (v₀ : ℝ) * Real.log 2 ≤ (v₀ : ℝ) * 1 :=
+            mul_le_mul_of_nonneg_left log_two_lt_one.le (Nat.cast_nonneg _)
           have hlog_pow : (v₀ : ℝ) * Real.log 2 ≤ Real.log V := by
-            linarith [log_two_lt_one, hA_le, hv₀_le, hlog16]
+            linarith [hmul1, hA_le, hv₀_le, hlog16]
           rw [← Real.exp_log (by positivity : (0 : ℝ) < (2 : ℝ) ^ v₀), Real.log_pow,
             ← Real.exp_log hV_pos]
           exact Real.exp_le_exp.mpr hlog_pow
         have hc := (Finset.card_le_card hsub).trans
-          (card_Icc_filter_dvd_le (Nat.ceil V) (Nat.floor (2 * V)) (2 ^ v₀) h2v₀_pos)
+          (card_Icc_filter_dvd_le (Nat.ceil V) (Nat.floor (2 * V)) (2 ^ v₀))
         have hdiv_le : ((Nat.floor (2 * V) / 2 ^ v₀ : ℕ) : ℝ) ≤ 2 * V / (2 : ℝ) ^ v₀ := by
           rw [le_div_iff₀ (by positivity)]
           have h1 : (Nat.floor (2 * V) / 2 ^ v₀) * 2 ^ v₀ ≤ Nat.floor (2 * V) :=
@@ -3190,10 +3299,10 @@ theorem exists_clusteredPacketModel_cert_not_zeroDensity_not_logMean :
           exact h2.trans (Nat.floor_le (by positivity))
         have h1_le : (1 : ℝ) ≤ V / (2 : ℝ) ^ v₀ := (one_le_div (by positivity)).mpr h2v₀_le_V
         have hcast : (((Finset.Icc (Nat.ceil V) (Nat.floor (2 * V))).filter
-            (fun m => ∃ z ∈ M.Z m, A / Real.log V ≤ |z.re - 1 / 2|)).card : ℝ) ≤
+            (fun m => ∃ z ∈ clusteredModel.Z m, A / Real.log V ≤ |z.re - 1 / 2|)).card : ℝ) ≤
             3 * V * ((2 : ℝ) ^ v₀)⁻¹ := by
           have hcR : (((Finset.Icc (Nat.ceil V) (Nat.floor (2 * V))).filter
-              (fun m => ∃ z ∈ M.Z m, A / Real.log V ≤ |z.re - 1 / 2|)).card : ℝ) ≤
+              (fun m => ∃ z ∈ clusteredModel.Z m, A / Real.log V ≤ |z.re - 1 / 2|)).card : ℝ) ≤
               ((Nat.floor (2 * V) / 2 ^ v₀ : ℕ) : ℝ) + 1 := by exact_mod_cast hc
           have h3 : 2 * V / (2 : ℝ) ^ v₀ + V / (2 : ℝ) ^ v₀ = 3 * V * ((2 : ℝ) ^ v₀)⁻¹ := by ring
           linarith
@@ -3201,13 +3310,20 @@ theorem exists_clusteredPacketModel_cert_not_zeroDensity_not_logMean :
           have hv₀_ge : 2 * A ≤ (v₀ : ℝ) := by
             dsimp only [v₀]; rw [Nat.cast_max]; exact (Nat.le_ceil _).trans (le_max_right _ _)
           have hlog2 : (1 / 2 : ℝ) ≤ Real.log 2 := by linarith [Real.log_two_gt_d9]
-          have hmul : A ≤ (v₀ : ℝ) * Real.log 2 := by nlinarith [hA]
+          have hmul : A ≤ (v₀ : ℝ) * Real.log 2 := by
+            calc A = (2 * A) * (1 / 2) := by ring
+              _ ≤ (v₀ : ℝ) * Real.log 2 :=
+                mul_le_mul hv₀_ge hlog2 (by norm_num) (Nat.cast_nonneg _)
           rw [← Real.exp_log (by positivity : (0 : ℝ) < ((2 : ℝ) ^ v₀)⁻¹), Real.log_inv, Real.log_pow]
           exact Real.exp_le_exp.mpr (by linarith)
         calc _ ≤ 3 * V * ((2 : ℝ) ^ v₀)⁻¹ := hcast
           _ ≤ 3 * V * Real.exp (-A) := mul_le_mul_of_nonneg_left hpow_exp (by positivity)
-          _ ≤ 6 * Real.exp (-A) * V := by nlinarith [Real.exp_pos (-A), hV_pos]
-  · -- `¬ M.LogFreeZeroDensity`: for `A = 1`, windows with `evenHalves m = 4` contribute `Ω(V log V)` zeros.
+          _ ≤ 6 * Real.exp (-A) * V := by
+              have hpv : 0 ≤ Real.exp (-A) * V := by positivity
+              have hdiff : 6 * Real.exp (-A) * V - 3 * V * Real.exp (-A) =
+                  3 * (Real.exp (-A) * V) := by ring
+              linarith
+  · -- `¬ clusteredModel.LogFreeZeroDensity`: for `A = 1`, windows with `evenHalves m = 4` contribute `Ω(V log V)` zeros.
     rintro ⟨ε, _, hε_ev⟩
     obtain ⟨V₁, hV₁⟩ := eventually_atTop.mp
       ((hε_ev 1 zero_lt_one).and ((eventually_ge_atTop (512 : ℝ)).and
@@ -3219,13 +3335,15 @@ theorem exists_clusteredPacketModel_cert_not_zeroDensity_not_logMean :
     obtain ⟨S, hS_sub, hS_ev, hS_card⟩ :=
       exists_evenHalves_subset_Icc 4 (V := V₁) (by norm_num; linarith)
     have hterm : ∀ m ∈ S, Real.log V₁ / 52 ≤
-        ∑ z ∈ (M.Z m).filter (fun z => 1 / Real.log V₁ ≤ |z.re - 1 / 2|), (M.mult z : ℝ) := by
+        ∑ z ∈ (clusteredModel.Z m).filter (fun z => 1 / Real.log V₁ ≤ |z.re - 1 / 2|),
+          (clusteredModel.mult z : ℝ) := by
       intro m hmS
       have hm_I := hS_sub hmS
       have hm_ge_V : V₁ ≤ (m : ℝ) :=
         (Nat.le_ceil V₁).trans (by exact_mod_cast (Finset.mem_Icc.mp hm_I).1)
       have hm_le_2V : (m : ℝ) ≤ 2 * V₁ :=
-        (by exact_mod_cast (Finset.mem_Icc.mp hm_I).2).trans (Nat.floor_le (by linarith))
+        ((Nat.cast_le (α := ℝ)).mpr (Finset.mem_Icc.mp hm_I).2).trans
+          (Nat.floor_le (by linarith))
       have hm256 : 256 ≤ m := by
         by_contra hlt; push Not at hlt
         have : (m : ℝ) < 256 := by exact_mod_cast hlt
@@ -3235,10 +3353,10 @@ theorem exists_clusteredPacketModel_cert_not_zeroDensity_not_logMean :
       have hact : activeClust m := by
         refine ⟨hm256, by omega, ?_⟩
         rw [hev4]; push_cast; linarith
-      change Real.log V₁ / 52 ≤ ∑ z ∈ (packetWin m (nClust m) (qClust m) (dClust m)).filter
-          (fun z => 1 / Real.log V₁ ≤ |z.re - 1 / 2|), (1 : ℝ)
+      dsimp only [clusteredModel]
+      simp only [Nat.cast_one]
       rw [Finset.sum_const, nsmul_eq_mul, mul_one,
-        packetWin_filter_abs_card (div_pos zero_lt_one hlogV_pos) (hd_or m), if_pos]
+        packetWin_filter_abs_card (div_pos zero_lt_one hlogV_pos) (qClust_dClust_or m), if_pos]
       · simp only [qClust, if_pos hact]; push_cast
         have hlt_fl := Nat.lt_floor_add_one (Real.log (m : ℝ) / 52)
         linarith
@@ -3252,13 +3370,14 @@ theorem exists_clusteredPacketModel_cert_not_zeroDensity_not_logMean :
               div_le_div_of_nonneg_left (by norm_num) (by linarith) (by linarith)
     have hsum_S : (V₁ / (2 : ℝ) ^ 6) * (Real.log V₁ / 52) ≤
         ∑ m ∈ Finset.Icc (Nat.ceil V₁) (Nat.floor (2 * V₁)),
-          ∑ z ∈ (M.Z m).filter (fun z => 1 / Real.log V₁ ≤ |z.re - 1 / 2|), (M.mult z : ℝ) := by
+          ∑ z ∈ (clusteredModel.Z m).filter (fun z => 1 / Real.log V₁ ≤ |z.re - 1 / 2|),
+            (clusteredModel.mult z : ℝ) := by
       calc (V₁ / (2 : ℝ) ^ 6) * (Real.log V₁ / 52)
           ≤ (S.card : ℝ) * (Real.log V₁ / 52) :=
             mul_le_mul_of_nonneg_right hS_card (by positivity)
         _ = ∑ _m ∈ S, Real.log V₁ / 52 := by rw [Finset.sum_const, nsmul_eq_mul]
-        _ ≤ ∑ m ∈ S, ∑ z ∈ (M.Z m).filter (fun z => 1 / Real.log V₁ ≤ |z.re - 1 / 2|),
-              (M.mult z : ℝ) := Finset.sum_le_sum hterm
+        _ ≤ ∑ m ∈ S, ∑ z ∈ (clusteredModel.Z m).filter (fun z => 1 / Real.log V₁ ≤ |z.re - 1 / 2|),
+              (clusteredModel.mult z : ℝ) := Finset.sum_le_sum hterm
         _ ≤ _ := Finset.sum_le_sum_of_subset_of_nonneg hS_sub fun _ _ _ =>
               Finset.sum_nonneg fun _ _ => Nat.cast_nonneg _
     have hgt_ε : ε 1 * V₁ < (V₁ / (2 : ℝ) ^ 6) * (Real.log V₁ / 52) := by
@@ -3273,7 +3392,7 @@ theorem exists_clusteredPacketModel_cert_not_zeroDensity_not_logMean :
             mul_lt_mul_of_pos_right h2 (by linarith)
         _ = (V₁ / (2 : ℝ) ^ 6) * (Real.log V₁ / 52) := by ring
     linarith [hzd, hsum_S, hgt_ε]
-  · -- `¬ M.HorizontalMomentLittleO`: windows with `evenHalves m = 1` contribute `≥ V / 3328`.
+  · -- `¬ clusteredModel.HorizontalMomentLittleO`: windows with `evenHalves m = 1` contribute `≥ V / 3328`.
     intro hmom
     obtain ⟨V₀, hV₀⟩ := Metric.tendsto_atTop.mp hmom (1 / 4096) (by norm_num)
     obtain ⟨V₁, hV₁⟩ := eventually_atTop.mp
@@ -3284,48 +3403,54 @@ theorem exists_clusteredPacketModel_cert_not_zeroDensity_not_logMean :
     have hlt_mom := hV₀ V₁ ((le_max_right _ _).trans hV_ge)
     rw [Real.dist_eq, sub_zero] at hlt_mom
     have hmom_ub : V₁⁻¹ * ∑ m ∈ Finset.Icc (Nat.ceil V₁) (Nat.floor (2 * V₁)),
-        ∑ z ∈ (M.Z m).filter (fun z => 1 / 2 < z.re), (M.mult z : ℝ) * (z.re - 1 / 2) < 1 / 4096 :=
+        ∑ z ∈ (clusteredModel.Z m).filter (fun z => 1 / 2 < z.re),
+          (clusteredModel.mult z : ℝ) * (z.re - 1 / 2) < 1 / 4096 :=
       (le_abs_self _).trans_lt hlt_mom
     obtain ⟨S, hS_sub, hS_ev, hS_card⟩ :=
       exists_evenHalves_subset_Icc 1 (V := V₁) (by norm_num; linarith)
     have hterm : ∀ m ∈ S, (1 / 416 : ℝ) ≤
-        ∑ z ∈ (M.Z m).filter (fun z => 1 / 2 < z.re), (M.mult z : ℝ) * (z.re - 1 / 2) := by
+        ∑ z ∈ (clusteredModel.Z m).filter (fun z => 1 / 2 < z.re),
+          (clusteredModel.mult z : ℝ) * (z.re - 1 / 2) := by
       intro m hmS
       have hm_I := hS_sub hmS
       have hm_ge_V : V₁ ≤ (m : ℝ) :=
         (Nat.le_ceil V₁).trans (by exact_mod_cast (Finset.mem_Icc.mp hm_I).1)
       have hm256 : 256 ≤ m := by
         by_contra hlt; push Not at hlt
-        have : (m : ℝ) < 256 := by exact_mod_cast hlt; linarith
+        have hm_lt : (m : ℝ) < 256 := by exact_mod_cast hlt
+        linarith
       have hev1 : evenHalves m = 1 := hS_ev m hmS
       have hlog_ge_m : Real.log V₁ ≤ Real.log (m : ℝ) := Real.log_le_log hV_pos hm_ge_V
       have hlog_m_pos : 0 < Real.log (m : ℝ) := by linarith
       have hact : activeClust m := by
         refine ⟨hm256, by omega, ?_⟩
         rw [hev1]; push_cast; linarith
-      change (1 / 416 : ℝ) ≤ ∑ z ∈ (packetWin m (nClust m) (qClust m) (dClust m)).filter
-          (fun z => 1 / 2 < z.re), (1 : ℝ) * (z.re - 1 / 2)
-      rw [packetWin_right_moment_sum (hd_or m)]
+      dsimp only [clusteredModel]
+      simp only [Nat.cast_one]
+      rw [packetWin_right_moment_sum (qClust_dClust_or m)]
       simp only [qClust, dClust, if_pos hact, hev1, Nat.cast_one]
       have hq_ge : Real.log (m : ℝ) / 104 ≤ (Nat.floor (Real.log (m : ℝ) / 52) : ℝ) := by
         have hlt := Nat.lt_floor_add_one (Real.log (m : ℝ) / 52)
         linarith
-      calc (1 / 416 : ℝ) = (Real.log (m : ℝ) / 104) * (1 / (2 * Real.log (m : ℝ))) := by
+      calc (1 / 416 : ℝ) ≤ (1 / 208 : ℝ) := by norm_num
+        _ = (Real.log (m : ℝ) / 104) * (1 / (2 * Real.log (m : ℝ))) := by
             field_simp [hlog_m_pos.ne']; ring
         _ ≤ (Nat.floor (Real.log (m : ℝ) / 52) : ℝ) * (1 / (2 * Real.log (m : ℝ))) :=
             mul_le_mul_of_nonneg_right hq_ge (by positivity)
     have hsum_lo : V₁ / 3328 ≤ ∑ m ∈ Finset.Icc (Nat.ceil V₁) (Nat.floor (2 * V₁)),
-        ∑ z ∈ (M.Z m).filter (fun z => 1 / 2 < z.re), (M.mult z : ℝ) * (z.re - 1 / 2) := by
+        ∑ z ∈ (clusteredModel.Z m).filter (fun z => 1 / 2 < z.re),
+          (clusteredModel.mult z : ℝ) * (z.re - 1 / 2) := by
       calc V₁ / 3328 = (V₁ / (2 : ℝ) ^ 3) * (1 / 416) := by norm_num; ring
         _ ≤ (S.card : ℝ) * (1 / 416) := mul_le_mul_of_nonneg_right hS_card (by norm_num)
         _ = ∑ _m ∈ S, (1 / 416 : ℝ) := by rw [Finset.sum_const, nsmul_eq_mul]
-        _ ≤ ∑ m ∈ S, ∑ z ∈ (M.Z m).filter (fun z => 1 / 2 < z.re),
-              (M.mult z : ℝ) * (z.re - 1 / 2) := Finset.sum_le_sum hterm
+        _ ≤ ∑ m ∈ S, ∑ z ∈ (clusteredModel.Z m).filter (fun z => 1 / 2 < z.re),
+              (clusteredModel.mult z : ℝ) * (z.re - 1 / 2) := Finset.sum_le_sum hterm
         _ ≤ _ := Finset.sum_le_sum_of_subset_of_nonneg hS_sub fun _ _ _ =>
               Finset.sum_nonneg fun z hz => mul_nonneg (Nat.cast_nonneg _)
                 (by linarith [(Finset.mem_filter.mp hz).2])
     have hdiv_lo : (1 / 3328 : ℝ) ≤ V₁⁻¹ * ∑ m ∈ Finset.Icc (Nat.ceil V₁) (Nat.floor (2 * V₁)),
-        ∑ z ∈ (M.Z m).filter (fun z => 1 / 2 < z.re), (M.mult z : ℝ) * (z.re - 1 / 2) := by
+        ∑ z ∈ (clusteredModel.Z m).filter (fun z => 1 / 2 < z.re),
+          (clusteredModel.mult z : ℝ) * (z.re - 1 / 2) := by
       have hm := mul_le_mul_of_nonneg_left hsum_lo (inv_nonneg.mpr hV_pos.le)
       have hl : V₁⁻¹ * (V₁ / 3328) = 1 / 3328 := by field_simp [hV_pos.ne']
       rwa [hl] at hm

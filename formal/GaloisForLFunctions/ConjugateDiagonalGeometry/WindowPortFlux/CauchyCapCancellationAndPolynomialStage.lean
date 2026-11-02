@@ -6,7 +6,7 @@ import GaloisForLFunctions.RHTower.ZetaZeroFreeRegionAllZeros
 /-!
 # Cauchy Horizontal-Cap Cancellation and Polynomial-Stage `Θ(√m)` Window Energy Laws
 
-Complete answer to the polynomial-stage `Θ(√m)` port-flux cancellation problem (Obstacles B15 + A10)
+Cauchy horizontal-cap cancellation identities and polynomial-stage `Θ(√m)` window energy laws
 building on `PortFluxDecompositionAndBlowup`:
 
 1. **Exact Cauchy horizontal-cap cancellation identity**
@@ -1053,7 +1053,7 @@ theorem besselUnitPrefix_le_polySqrtPrefix_of_le (k m : ℕ) {S : ℕ} (hS : S �
         Nat.mul_le_mul_right s (le_max_right _ _)
 
 /-- **6-way unconditional `RiemannHypothesis` equivalence at polynomial stage and `Θ_k(√m)` prefix.**
-Closes Obstacles A10 + B15 unconditionally: `RiemannHypothesis` holds iff across every polynomial
+`RiemannHypothesis` holds iff across every polynomial
 degree `k : ℕ`, every Burnol unit window `m : ℕ`, and every prefix `N ≥ polySqrtPrefix k m`, at the
 polynomial stage `n_{k,m} = doorUnitStage m ((m + 6)^k)` both `|𝒵_N(t)|²` and the right half-port
 `|𝒫_+(t)|²` are subexponential below the stage threshold `1 / (2 n_{k,m})`, the explicit
