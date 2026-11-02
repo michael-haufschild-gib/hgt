@@ -365,21 +365,19 @@ theorem sum_sum_primeTwist_eq (y : ℕ → ℝ) (G : ℕ → ℕ → ℝ) (hG : 
 
 /-! ### The energy of the prime block -/
 
-/-- **The energy of the prime block**: `E_N = 2π (𝒜_N(c/p) − 𝒜_N(c)) + O(c/N)` for `1 ≤ c ≤ N/4`.
-The sublattice rows are Poisson sums on `ℤ/(a/p)`, the full rows on `ℤ/a`; the outer sums over
-multiples of `p` equidistribute. -/
-theorem abs_primeEnergy_sub_le (hφ : ContDiff ℝ 2 φ) (hφsupp : ∀ u, u ∉ Set.Icc 0 1 → φ u = 0)
-    {Cφ q : ℝ} (hq : 4 < q) (hCφ : 0 ≤ Cφ)
-    (hdecay : ∀ u : ℝ, ‖paperFT (cx φ) u‖ ^ 2 ≤ Cφ * (1 + |u|) ^ (-q))
-    (hh : ContDiff ℝ 2 h) (hA : 0 ≤ A) (hsupp : ∀ y, y ∉ Set.Icc (-A) 0 → h y = 0)
-    {p : ℕ} (hp : 1 < p) :
-    ∃ K : ℝ, 0 ≤ K ∧ ∀ c : ℝ, 1 ≤ c → ∀ N : ℕ, 4 * c ≤ N →
-      |(∫ τ : ℝ, ‖paperFT (cx φ) (((c / N : ℝ) : ℂ) * τ)‖ ^ 2 *
-          (‖dirichletPoly N (twistedWeights h (primeTwist p) N) τ‖ ^ 2 / N)) -
-        2 * Real.pi * (horizonAlias φ h (c / p) N - horizonAlias φ h c N)| ≤ K * c / N := by
-  have hp0 : (0 : ℝ) < p := by exact_mod_cast (show 0 < p by omega)
-  have hp1 : (1 : ℝ) ≤ p := by exact_mod_cast hp.le
-  -- the rows
+/-- Row bounds for a horizon block: the full rows and, at multiples of `p`, the sublattice rows
+are their Poisson values up to `O(c² N^{−3/2})`; the weights are `O(N^{−1/2})`. -/
+theorem exists_prime_row_bounds (hφ : ContDiff ℝ 2 φ) (hφsupp : ∀ u, u ∉ Set.Icc 0 1 → φ u = 0)
+    (hh : ContDiff ℝ 2 h) (hsupp : ∀ y, y ∉ Set.Icc (-A) 0 → h y = 0) {p : ℕ} (hp : 0 < p) :
+    ∃ B X : ℝ, 0 ≤ B ∧ 0 ≤ X ∧ ∀ c : ℝ, 1 ≤ c → ∀ N : ℕ, 4 * c ≤ N → ∀ n ∈ Icc 1 N,
+      |horizonWeights h N n| ≤ B / Real.sqrt N ∧
+      |∑ m ∈ Icc 1 N, horizonWeights h N m * shellAutocorr φ (N * (Real.log m - Real.log n) / c) -
+        horizonWeights h N n * (c * n / N * ((∫ u, φ u) ^ 2 + 2 * aliasDensity φ (c * n / N)))| ≤
+          X * c ^ 2 / (N * Real.sqrt N) ∧
+      (p ∣ n → |∑ m ∈ Icc 1 N, (if p ∣ m then horizonWeights h N m else 0) *
+          shellAutocorr φ (N * (Real.log m - Real.log n) / c) -
+        horizonWeights h N n * (c * n / N / p *
+          ((∫ u, φ u) ^ 2 + 2 * aliasDensity φ (c * n / N / p)))| ≤ X * c ^ 2 / (N * Real.sqrt N)) := by
   obtain ⟨Bk, Lk, hk, hkL⟩ := exists_bound_lipschitz (contDiff_taperedProfile hh)
     (A := A) fun y hy => taperedProfile_eq_zero hsupp hy
   have hG2 := contDiff_shellAutocorr hφ hφsupp
@@ -401,11 +399,52 @@ theorem abs_primeEnergy_sub_le (hφ : ContDiff ℝ 2 φ) (hφsupp : ∀ u, u ∉
     (hkL u v).trans (mul_le_mul_of_nonneg_right (le_abs_self _) (abs_nonneg _))
   have hk0 : ∀ y, 0 < y → taperedProfile h y = 0 := fun y hy =>
     taperedProfile_eq_zero hsupp fun hm => by linarith [hm.2]
-  set X := 5 * (|Lk| * |BG| + 8 * |Bk| * (LG : ℝ)) with hX
-  have hX0 : 0 ≤ X := by positivity
-  -- the outer profiles
+  refine ⟨|Bk|, 5 * (|Lk| * |BG| + 8 * |Bk| * (LG : ℝ)), abs_nonneg _, by positivity,
+    fun c hc N hcN n hn => ?_⟩
+  have hN0 : (0 : ℝ) < N := by linarith
+  have hN : 1 ≤ N := by
+    have : (1 : ℝ) ≤ N := by linarith
+    exact_mod_cast this
+  have hsN : 0 < Real.sqrt N := Real.sqrt_pos.mpr hN0
+  have hn1 := (Finset.mem_Icc.mp hn).1
+  have hnN := (Finset.mem_Icc.mp hn).2
+  have hn0 : (0 : ℝ) < n := by exact_mod_cast hn1
+  have hp0 : (0 : ℝ) < p := by exact_mod_cast hp
+  have hxw : ∀ m, 1 ≤ m → horizonWeights h N m =
+      taperedProfile h (Real.log m - Real.log N) / Real.sqrt N := fun m hm =>
+    horizonWeights_eq_tapered h hN hm
+  refine ⟨?_, ?_, fun hpn => ?_⟩
+  · rw [hxw n hn1, abs_div, abs_of_pos hsN]
+    exact div_le_div_of_nonneg_right (hkb _) hsN.le
+  · have hr := abs_row_sub_le hkb hkL' hGb hGL hG1 hk0 (abs_nonneg _) (abs_nonneg _)
+      (NNReal.coe_nonneg _) (abs_nonneg _) hc hcN hn1 hnN
+    rw [tsum_shellAutocorr_eq hφ hφsupp (a := c * n / N) (by positivity)] at hr
+    rw [sum_congr rfl fun m hm => by rw [hxw m (Finset.mem_Icc.mp hm).1], hxw n hn1]
+    exact hr
+  · have hr := abs_subRow_sub_le hkb hkL' hGb hGL hG1 hk0 (abs_nonneg _) (abs_nonneg _)
+      (NNReal.coe_nonneg _) (abs_nonneg _) hp hc hcN hn1 hnN hpn
+    rw [tsum_shellAutocorr_eq hφ hφsupp (a := c * n / N / p) (by positivity)] at hr
+    rw [sum_congr rfl fun m hm => by rw [hxw m (Finset.mem_Icc.mp hm).1], hxw n hn1]
+    exact hr
+
+/-- The outer sums of the prime block equidistribute on `pℤ`, with error `O(c)`. -/
+theorem exists_prime_outer_bounds (hφ : ContDiff ℝ 2 φ) (hφsupp : ∀ u, u ∉ Set.Icc 0 1 → φ u = 0)
+    {Cφ q : ℝ} (hq : 4 < q) (hCφ : 0 ≤ Cφ)
+    (hdecay : ∀ u : ℝ, ‖paperFT (cx φ) u‖ ^ 2 ≤ Cφ * (1 + |u|) ^ (-q))
+    (hh : ContDiff ℝ 2 h) (hA : 0 ≤ A) (hsupp : ∀ y, y ∉ Set.Icc (-A) 0 → h y = 0)
+    {p : ℕ} (hp : 1 < p) :
+    ∃ K₀ : ℝ, 0 ≤ K₀ ∧ ∀ c : ℝ, 1 ≤ c → ∀ N : ℕ, 1 ≤ N →
+      |∑ n ∈ Icc 1 N, (if p ∣ n then sqWindow h (n / N) *
+          ((∫ u, φ u) ^ 2 + 2 * aliasDensity φ (c * (n / N) / p)) else 0) -
+        (p : ℝ)⁻¹ * ∑ n ∈ Icc 1 N, sqWindow h (n / N) *
+          ((∫ u, φ u) ^ 2 + 2 * aliasDensity φ (c * (n / N) / p))| ≤ 2 * (c * K₀) ∧
+      |∑ n ∈ Icc 1 N, (if p ∣ n then sqWindow h (n / N) *
+          ((∫ u, φ u) ^ 2 + 2 * aliasDensity φ (c * (n / N))) else 0) -
+        (p : ℝ)⁻¹ * ∑ n ∈ Icc 1 N, sqWindow h (n / N) *
+          ((∫ u, φ u) ^ 2 + 2 * aliasDensity φ (c * (n / N)))| ≤ 2 * (c * K₀) := by
+  have hp0 : (0 : ℝ) < p := by exact_mod_cast (show 0 < p by omega)
+  have hp1 : (1 : ℝ) ≤ p := by exact_mod_cast hp.le
   obtain ⟨Bh, Lh0, hB, hLh0⟩ := exists_bound_lipschitz hh hsupp
-  have hBh0 : 0 ≤ Bh := (abs_nonneg _).trans (hB 0)
   obtain ⟨Lu, hLu0, hLu⟩ := exists_lipschitz_sqWindow hh hA hsupp (h := h)
   have hBu : ∀ x, |sqWindow h x| ≤ Bh ^ 2 := fun x => by
     unfold sqWindow
@@ -415,9 +454,7 @@ theorem abs_primeEnergy_sub_le (hφ : ContDiff ℝ 2 φ) (hφsupp : ∀ u, u ∉
   have hu0 : ∀ x, x < Real.exp (-A) → sqWindow h x = 0 := fun x hx =>
     sqWindow_eq_zero_of_lt hsupp hx
   have hu1 : sqWindow h 1 = 0 := by
-    rw [sqWindow, if_pos one_pos, Real.log_one,
-      horizon_zero_at_zero hsupp (fun u v => by
-        have := hLh0 u v; exact this), zero_pow two_ne_zero]
+    rw [sqWindow, if_pos one_pos, Real.log_one, horizon_zero_at_zero hsupp hLh0, zero_pow two_ne_zero]
   set s₀ := Real.exp (-A) / p with hs₀
   have hs₀0 : 0 < s₀ := by positivity
   set Ma := Cφ * (2 * Real.pi * s₀) ^ (-q) * ∑' k : ℕ, ((k : ℝ) + 1) ^ (-q) with hMa
@@ -437,37 +474,26 @@ theorem abs_primeEnergy_sub_le (hφ : ContDiff ℝ 2 φ) (hφsupp : ∀ u, u ∉
     fun s t hs ht => abs_aliasDensity_sub_le hφ hφsupp hq hCφ hdecay hs₀0 hs ht
   set I := ∫ u, φ u with hI
   set M := I ^ 2 + 2 * Ma with hM
-  set K₀ := Lu * M + Bh ^ 2 * (2 * La) with hK₀
-  have hK₀0 : 0 ≤ K₀ := by positivity
-  refine ⟨2 * Real.pi * ((p + 1) ^ 2 * |Bk| * X) + 2 * Real.pi * p * (6 * K₀), by positivity,
-    fun c hc N hcN => ?_⟩
+  refine ⟨Lu * M + Bh ^ 2 * (2 * La), by positivity, fun c hc N hN => ?_⟩
   have hc0 : 0 < c := by linarith
-  have hN0 : (0 : ℝ) < N := by linarith
-  have hN : 1 ≤ N := by
-    have : (1 : ℝ) ≤ N := by linarith
-    exact_mod_cast this
-  have hsN : 0 < Real.sqrt N := Real.sqrt_pos.mpr hN0
-  -- Lipschitz bounds of the outer profiles
-  set G₁ : ℝ → ℝ := fun a => I ^ 2 + 2 * aliasDensity φ (a / p) with hG₁
-  set G₂ : ℝ → ℝ := fun a => I ^ 2 + 2 * aliasDensity φ a with hG₂
   have hs₀le : ∀ a, c * Real.exp (-A) ≤ a → s₀ ≤ a / p := fun a ha => by
     rw [hs₀]
     exact div_le_div_of_nonneg_right (le_trans (by nlinarith [Real.exp_pos (-A)]) ha) hp0.le
   have hs₀le' : ∀ a, c * Real.exp (-A) ≤ a → s₀ ≤ a := fun a ha => by
-    have := hs₀le a ha
     have h0 : 0 ≤ a := le_trans (by positivity) ha
-    calc s₀ ≤ a / p := this
-      _ ≤ a := div_le_self h0 hp1
-  have hf₁ : ∀ x y, |sqWindow h x * G₁ (c * x) - sqWindow h y * G₁ (c * y)| ≤
-      c * K₀ * |x - y| := fun x y => by
-    have := abs_mul_window_sub_le (u := sqWindow h) (G := G₁) (x₀ := Real.exp (-A)) (MG := M)
+    exact (hs₀le a ha).trans (div_le_self h0 hp1)
+  have hKc : Lu * M + Bh ^ 2 * c * (2 * La) ≤ c * (Lu * M + Bh ^ 2 * (2 * La)) := by
+    nlinarith [mul_nonneg hLu0 (show 0 ≤ M by positivity)]
+  have hf₁ : ∀ x y, |sqWindow h x * (I ^ 2 + 2 * aliasDensity φ (c * x / p)) -
+      sqWindow h y * (I ^ 2 + 2 * aliasDensity φ (c * y / p))| ≤
+      c * (Lu * M + Bh ^ 2 * (2 * La)) * |x - y| := fun x y => by
+    have := abs_mul_window_sub_le (u := sqWindow h)
+      (G := fun a => I ^ 2 + 2 * aliasDensity φ (a / p)) (x₀ := Real.exp (-A)) (MG := M)
       (LG := 2 * La) hc0 hLu hBu hu0 (fun a ha => by
-        simp only [hG₁]
         refine (abs_add_le _ _).trans ?_
         rw [abs_mul, abs_two, abs_of_nonneg (sq_nonneg I)]
         linarith [haB _ (hs₀le a ha)])
       (fun a b ha hb => by
-        simp only [hG₁]
         rw [show I ^ 2 + 2 * aliasDensity φ (a / p) - (I ^ 2 + 2 * aliasDensity φ (b / p)) =
           2 * (aliasDensity φ (a / p) - aliasDensity φ (b / p)) by ring, abs_mul, abs_two]
         have h1 := haL _ _ (hs₀le a ha) (hs₀le b hb)
@@ -475,254 +501,54 @@ theorem abs_primeEnergy_sub_le (hφ : ContDiff ℝ 2 φ) (hφsupp : ∀ u, u ∉
           rw [← sub_div, abs_div, abs_of_pos hp0]; exact div_le_self (abs_nonneg _) hp1
         nlinarith [abs_nonneg (a / p - b / p)])
       (by positivity) x y
-    refine this.trans ?_
-    have : Lu * M + Bh ^ 2 * c * (2 * La) ≤ c * K₀ := by
-      rw [hK₀]; nlinarith [mul_nonneg hLu0 (show 0 ≤ M by positivity)]
-    exact mul_le_mul_of_nonneg_right this (abs_nonneg _)
-  have hf₂ : ∀ x y, |sqWindow h x * G₂ (c * x) - sqWindow h y * G₂ (c * y)| ≤
-      c * K₀ * |x - y| := fun x y => by
-    have := abs_mul_window_sub_le (u := sqWindow h) (G := G₂) (x₀ := Real.exp (-A)) (MG := M)
+    exact this.trans (mul_le_mul_of_nonneg_right hKc (abs_nonneg _))
+  have hf₂ : ∀ x y, |sqWindow h x * (I ^ 2 + 2 * aliasDensity φ (c * x)) -
+      sqWindow h y * (I ^ 2 + 2 * aliasDensity φ (c * y))| ≤
+      c * (Lu * M + Bh ^ 2 * (2 * La)) * |x - y| := fun x y => by
+    have := abs_mul_window_sub_le (u := sqWindow h)
+      (G := fun a => I ^ 2 + 2 * aliasDensity φ a) (x₀ := Real.exp (-A)) (MG := M)
       (LG := 2 * La) hc0 hLu hBu hu0 (fun a ha => by
-        simp only [hG₂]
         refine (abs_add_le _ _).trans ?_
         rw [abs_mul, abs_two, abs_of_nonneg (sq_nonneg I)]
         linarith [haB _ (hs₀le' a ha)])
       (fun a b ha hb => by
-        simp only [hG₂]
         rw [show I ^ 2 + 2 * aliasDensity φ a - (I ^ 2 + 2 * aliasDensity φ b) =
           2 * (aliasDensity φ a - aliasDensity φ b) by ring, abs_mul, abs_two]
         have h1 := haL _ _ (hs₀le' a ha) (hs₀le' b hb)
         linarith)
       (by positivity) x y
-    refine this.trans ?_
-    have : Lu * M + Bh ^ 2 * c * (2 * La) ≤ c * K₀ := by
-      rw [hK₀]; nlinarith [mul_nonneg hLu0 (show 0 ≤ M by positivity)]
-    exact mul_le_mul_of_nonneg_right this (abs_nonneg _)
-  have he₁ := abs_sum_dvd_sub_le (show 0 < p by omega) (f := fun x => sqWindow h x * G₁ (c * x))
-    hf₁ hN
-  have he₂ := abs_sum_dvd_sub_le (show 0 < p by omega) (f := fun x => sqWindow h x * G₂ (c * x))
-    hf₂ hN
+    exact this.trans (mul_le_mul_of_nonneg_right hKc (abs_nonneg _))
+  have he₁ := abs_sum_dvd_sub_le (show 0 < p by omega)
+    (f := fun x => sqWindow h x * (I ^ 2 + 2 * aliasDensity φ (c * x / p))) hf₁ hN
+  have he₂ := abs_sum_dvd_sub_le (show 0 < p by omega)
+    (f := fun x => sqWindow h x * (I ^ 2 + 2 * aliasDensity φ (c * x))) hf₂ hN
   simp only [hu1, zero_mul, abs_zero, zero_add] at he₁ he₂
-  -- the double sum
-  set y := horizonWeights h N with hy
-  set Gm : ℕ → ℕ → ℝ := fun m n => shellAutocorr φ (N * (Real.log m - Real.log n) / c) with hGm
-  have hGsym : ∀ m n, Gm m n = Gm n m := fun m n => by
-    simp only [hGm]; rw [← shellAutocorr_neg]; congr 1; ring
-  have htw : ∀ m, twistedWeights h (primeTwist p) N m = y m * primeTwist p m := fun m => rfl
-  rw [atomEnergy_eq hφ hφsupp _ hc0 hN]
-  simp only [htw]
-  rw [show (∑ m ∈ Icc 1 N, ∑ n ∈ Icc 1 N, y m * primeTwist p m * (y n * primeTwist p n) *
-      shellAutocorr φ (N * (Real.log m - Real.log n) / c)) =
-      ∑ m ∈ Icc 1 N, ∑ n ∈ Icc 1 N, y m * primeTwist p m * (y n * primeTwist p n) * Gm m n from rfl,
-    sum_sum_primeTwist_eq y Gm hGsym p (Icc 1 N)]
-  -- the Poisson values of the rows
-  set Vs : ℕ → ℝ := fun n => y n * (c * n / N / p * (I ^ 2 + 2 * aliasDensity φ (c * n / N / p)))
-    with hVs
-  set Vf : ℕ → ℝ := fun n => y n * (c * n / N * (I ^ 2 + 2 * aliasDensity φ (c * n / N)))
-    with hVf
-  have hyb : ∀ n ∈ Icc 1 N, |y n| ≤ |Bk| / Real.sqrt N := fun n hn => by
-    rw [hy, horizonWeights_eq_tapered h hN (Finset.mem_Icc.mp hn).1, abs_div,
-      abs_of_pos hsN]
-    exact div_le_div_of_nonneg_right (hkb _) hsN.le
-  set ε := X * c ^ 2 / (N * Real.sqrt N) with hε
-  have hrowF : ∀ n ∈ Icc 1 N, |∑ m ∈ Icc 1 N, y m * Gm m n - Vf n| ≤ ε := fun n hn => by
-    have hn1 := (Finset.mem_Icc.mp hn).1
-    have hnN := (Finset.mem_Icc.mp hn).2
-    have hn0 : (0 : ℝ) < n := by exact_mod_cast hn1
-    have hr := abs_row_sub_le hkb hkL' hGb hGL hG1 hk0 (abs_nonneg _) (abs_nonneg _)
-      (NNReal.coe_nonneg _) (abs_nonneg _) hc hcN hn1 hnN
-    rw [tsum_shellAutocorr_eq hφ hφsupp (a := c * n / N) (by positivity)] at hr
-    have e1 : ∑ m ∈ Icc 1 N, y m * Gm m n = ∑ m ∈ Icc 1 N,
-        taperedProfile h (Real.log m - Real.log N) / Real.sqrt N *
-          shellAutocorr φ (N * (Real.log m - Real.log n) / c) :=
-      sum_congr rfl fun m hm => by rw [hy, horizonWeights_eq_tapered h hN (Finset.mem_Icc.mp hm).1]
-    have e2 : Vf n = taperedProfile h (Real.log n - Real.log N) / Real.sqrt N *
-        (c * n / N * (I ^ 2 + 2 * aliasDensity φ (c * n / N))) := by
-      rw [hVf, hy, horizonWeights_eq_tapered h hN hn1]
-    rw [e1, e2]
-    simpa [hε, hX] using hr
-  have hrowS : ∀ n ∈ Icc 1 N, p ∣ n →
-      |∑ m ∈ Icc 1 N, (if p ∣ m then y m else 0) * Gm m n - Vs n| ≤ ε := fun n hn hpn => by
-    have hn1 := (Finset.mem_Icc.mp hn).1
-    have hnN := (Finset.mem_Icc.mp hn).2
-    have hn0 : (0 : ℝ) < n := by exact_mod_cast hn1
-    have hr := abs_subRow_sub_le hkb hkL' hGb hGL hG1 hk0 (abs_nonneg _) (abs_nonneg _)
-      (NNReal.coe_nonneg _) (abs_nonneg _) (show 0 < p by omega) hc hcN hn1 hnN hpn
-    rw [tsum_shellAutocorr_eq hφ hφsupp (a := c * n / N / p) (by positivity)] at hr
-    have e1 : ∑ m ∈ Icc 1 N, (if p ∣ m then y m else 0) * Gm m n = ∑ m ∈ Icc 1 N,
-        (if p ∣ m then taperedProfile h (Real.log m - Real.log N) / Real.sqrt N else 0) *
-          shellAutocorr φ (N * (Real.log m - Real.log n) / c) :=
-      sum_congr rfl fun m hm => by
-        rw [hy, horizonWeights_eq_tapered h hN (Finset.mem_Icc.mp hm).1]
-    have e2 : Vs n = taperedProfile h (Real.log n - Real.log N) / Real.sqrt N *
-        (c * n / N / p * (I ^ 2 + 2 * aliasDensity φ (c * n / N / p))) := by
-      rw [hVs, hy, horizonWeights_eq_tapered h hN hn1]
-    rw [e1, e2]
-    simpa [hε, hX] using hr
-  -- the row errors
-  have hD1 : |∑ n ∈ Icc 1 N, (if p ∣ n then y n else 0) *
-      ∑ m ∈ Icc 1 N, (if p ∣ m then y m else 0) * Gm m n -
-      ∑ n ∈ Icc 1 N, (if p ∣ n then y n else 0) * Vs n| ≤ N * (|Bk| / Real.sqrt N * ε) := by
-    rw [← sum_sub_distrib]
-    refine (abs_sum_le_sum_abs _ _).trans ?_
-    have hb : ∀ n ∈ Icc 1 N, |(if p ∣ n then y n else 0) *
-        ∑ m ∈ Icc 1 N, (if p ∣ m then y m else 0) * Gm m n -
-        (if p ∣ n then y n else 0) * Vs n| ≤ |Bk| / Real.sqrt N * ε := fun n hn => by
-      by_cases hpn : p ∣ n
-      · rw [if_pos hpn, ← mul_sub, abs_mul]
-        exact mul_le_mul (hyb n hn) (hrowS n hn hpn) (abs_nonneg _) (by positivity)
-      · rw [if_neg hpn, zero_mul, zero_mul, sub_zero, abs_zero]; positivity
-    refine (sum_le_sum hb).trans (le_of_eq ?_)
-    rw [sum_const, Nat.card_Icc, Nat.add_sub_cancel, nsmul_eq_mul]
-  have hD2 : |∑ n ∈ Icc 1 N, (if p ∣ n then y n else 0) * ∑ m ∈ Icc 1 N, y m * Gm m n -
-      ∑ n ∈ Icc 1 N, (if p ∣ n then y n else 0) * Vf n| ≤ N * (|Bk| / Real.sqrt N * ε) := by
-    rw [← sum_sub_distrib]
-    refine (abs_sum_le_sum_abs _ _).trans ?_
-    have hb : ∀ n ∈ Icc 1 N, |(if p ∣ n then y n else 0) * ∑ m ∈ Icc 1 N, y m * Gm m n -
-        (if p ∣ n then y n else 0) * Vf n| ≤ |Bk| / Real.sqrt N * ε := fun n hn => by
-      rw [← mul_sub, abs_mul]
-      refine mul_le_mul ?_ (hrowF n hn) (abs_nonneg _) (by positivity)
-      split_ifs
-      · exact hyb n hn
-      · rw [abs_zero]; positivity
-    refine (sum_le_sum hb).trans (le_of_eq ?_)
-    rw [sum_const, Nat.card_Icc, Nat.add_sub_cancel, nsmul_eq_mul]
-  have hD3 : |∑ n ∈ Icc 1 N, y n * ∑ m ∈ Icc 1 N, y m * Gm m n -
-      ∑ n ∈ Icc 1 N, y n * Vf n| ≤ N * (|Bk| / Real.sqrt N * ε) := by
-    rw [← sum_sub_distrib]
-    refine (abs_sum_le_sum_abs _ _).trans ?_
-    have hb : ∀ n ∈ Icc 1 N, |y n * ∑ m ∈ Icc 1 N, y m * Gm m n - y n * Vf n| ≤
-        |Bk| / Real.sqrt N * ε := fun n hn => by
-      rw [← mul_sub, abs_mul]
-      exact mul_le_mul (hyb n hn) (hrowF n hn) (abs_nonneg _) (by positivity)
-    refine (sum_le_sum hb).trans (le_of_eq ?_)
-    rw [sum_const, Nat.card_Icc, Nat.add_sub_cancel, nsmul_eq_mul]
-  -- the Poisson values in the variable `x = n/N`
-  have hVs' : ∀ n ∈ Icc 1 N, (if p ∣ n then y n else 0) * Vs n =
-      c / N / p * (if p ∣ n then sqWindow h (n / N) * G₁ (c * (n / N)) else 0) := fun n hn => by
-    have hn1 := (Finset.mem_Icc.mp hn).1
-    have hn0 : (0 : ℝ) < n := by exact_mod_cast hn1
-    split_ifs
-    · rw [hVs, sqWindow_natCast_div h hn1 hN, hG₁, hy, horizonWeights]
-      simp only
-      rw [show c * (n / N) / p = c * n / N / p by ring]
-      field_simp
-      rw [Real.sq_sqrt hn0.le]
-      ring
-    · simp
-  have hVf' : ∀ n ∈ Icc 1 N, (if p ∣ n then y n else 0) * Vf n =
-      c / N * (if p ∣ n then sqWindow h (n / N) * G₂ (c * (n / N)) else 0) := fun n hn => by
-    have hn1 := (Finset.mem_Icc.mp hn).1
-    have hn0 : (0 : ℝ) < n := by exact_mod_cast hn1
-    split_ifs
-    · rw [hVf, sqWindow_natCast_div h hn1 hN, hG₂, hy, horizonWeights]
-      simp only
-      rw [show c * (n / N) = c * n / N by ring]
-      field_simp
-      rw [Real.sq_sqrt hn0.le]
-      ring
-    · simp
-  have hVf'' : ∀ n ∈ Icc 1 N, y n * Vf n = c / N * (sqWindow h (n / N) * G₂ (c * (n / N))) :=
-    fun n hn => by
-      have h1 := hVf' n hn
-      have h2 : (if p ∣ n then y n else 0) * Vf n = y n * Vf n ∨ True := Or.inr trivial
-      have hn1 := (Finset.mem_Icc.mp hn).1
-      have hn0 : (0 : ℝ) < n := by exact_mod_cast hn1
-      rw [hVf, sqWindow_natCast_div h hn1 hN, hG₂, hy, horizonWeights]
-      simp only
-      rw [show c * (n / N) = c * n / N by ring]
-      field_simp
-      rw [Real.sq_sqrt hn0.le]
-      ring
-  have hT : 2 * Real.pi / c * (c / N * ∑ n ∈ Icc 1 N, (sqWindow h (n / N) * G₁ (c * (n / N)) -
-      sqWindow h (n / N) * G₂ (c * (n / N)))) =
-      2 * Real.pi * (horizonAlias φ h (c / p) N - horizonAlias φ h c N) := by
-    unfold horizonAlias
-    rw [← mul_sub, ← sum_sub_distrib]
-    have e : ∀ n ∈ Icc 1 N, sqWindow h (n / N) * G₁ (c * (n / N)) -
-        sqWindow h (n / N) * G₂ (c * (n / N)) = 2 * (h (Real.log n - Real.log N) ^ 2 *
-          aliasDensity φ (c / p * n / N) - h (Real.log n - Real.log N) ^ 2 *
-            aliasDensity φ (c * n / N)) := fun n hn => by
-      rw [sqWindow_natCast_div h (Finset.mem_Icc.mp hn).1 hN, hG₁, hG₂]
-      simp only
-      rw [show c * (n / N) / p = c / p * n / N by ring, show c * (n / N) = c * n / N by ring]
-      ring
-    rw [sum_congr rfl e, ← mul_sum]
-    field_simp
-  -- assembly
-  rw [sum_congr rfl hVs'] at hD1
-  rw [sum_congr rfl hVf'] at hD2
-  rw [sum_congr rfl hVf''] at hD3
-  rw [← mul_sum] at hD1 hD2 hD3
-  set S1 := ∑ n ∈ Icc 1 N, (if p ∣ n then sqWindow h (n / N) * G₁ (c * (n / N)) else 0)
-  set S2 := ∑ n ∈ Icc 1 N, (if p ∣ n then sqWindow h (n / N) * G₂ (c * (n / N)) else 0)
-  set T1 := ∑ n ∈ Icc 1 N, sqWindow h (n / N) * G₁ (c * (n / N))
-  set T2 := ∑ n ∈ Icc 1 N, sqWindow h (n / N) * G₂ (c * (n / N))
-  have hTT : T1 - T2 = ∑ n ∈ Icc 1 N, (sqWindow h (n / N) * G₁ (c * (n / N)) -
-      sqWindow h (n / N) * G₂ (c * (n / N))) := by rw [sum_sub_distrib]
-  rw [← hTT] at hT
-  set P1 := ∑ n ∈ Icc 1 N, (if p ∣ n then y n else 0) *
-      ∑ m ∈ Icc 1 N, (if p ∣ m then y m else 0) * Gm m n
-  set P2 := ∑ n ∈ Icc 1 N, (if p ∣ n then y n else 0) * ∑ m ∈ Icc 1 N, y m * Gm m n
-  set P3 := ∑ n ∈ Icc 1 N, y n * ∑ m ∈ Icc 1 N, y m * Gm m n
-  have hmain : 2 * Real.pi / c * ((p : ℝ) ^ 2 * (c / N / p * S1) - 2 * p * (c / N * S2) +
-      c / N * T2) - 2 * Real.pi * (horizonAlias φ h (c / p) N - horizonAlias φ h c N) =
-      2 * Real.pi / N * (p * (S1 - (p : ℝ)⁻¹ * T1) - 2 * p * (S2 - (p : ℝ)⁻¹ * T2)) := by
-    rw [← hT]
-    field_simp
-    ring
-  have hrow : |2 * Real.pi / c * ((p : ℝ) ^ 2 * P1 - 2 * p * P2 + P3) -
-      2 * Real.pi / c * ((p : ℝ) ^ 2 * (c / N / p * S1) - 2 * p * (c / N * S2) + c / N * T2)| ≤
-      2 * Real.pi / c * (((p : ℝ) ^ 2 + 2 * p + 1) * (N * (|Bk| / Real.sqrt N * ε))) := by
-    rw [← mul_sub, abs_mul, abs_of_pos (by positivity : 0 < 2 * Real.pi / c)]
-    refine mul_le_mul_of_nonneg_left ?_ (by positivity)
-    have e : (p : ℝ) ^ 2 * P1 - 2 * p * P2 + P3 - ((p : ℝ) ^ 2 * (c / N / p * S1) -
-        2 * p * (c / N * S2) + c / N * T2) = (p : ℝ) ^ 2 * (P1 - c / N / p * S1) -
-          2 * p * (P2 - c / N * S2) + (P3 - c / N * T2) := by ring
-    rw [e]
-    refine (abs_add_le _ _).trans ?_
-    refine (add_le_add_right (abs_sub _ _) _).trans ?_
-    rw [abs_mul, abs_mul, abs_mul, abs_of_pos (by positivity : (0 : ℝ) < p ^ 2),
-      abs_of_pos (by positivity : (0 : ℝ) < 2), abs_of_pos hp0]
-    have hNb : 0 ≤ N * (|Bk| / Real.sqrt N * ε) := by positivity
-    nlinarith [hD1, hD2, hD3]
-  have hequi : |2 * Real.pi / N * (p * (S1 - (p : ℝ)⁻¹ * T1) - 2 * p * (S2 - (p : ℝ)⁻¹ * T2))| ≤
-      2 * Real.pi * p * (6 * K₀) * c / N := by
-    rw [abs_mul, abs_of_pos (by positivity : 0 < 2 * Real.pi / N)]
-    have h1 : |p * (S1 - (p : ℝ)⁻¹ * T1) - 2 * p * (S2 - (p : ℝ)⁻¹ * T2)| ≤
-        p * (2 * (c * K₀)) + 2 * p * (2 * (c * K₀)) := by
-      refine (abs_sub _ _).trans ?_
-      rw [abs_mul, abs_mul, abs_of_pos hp0, abs_of_pos (by positivity : (0 : ℝ) < 2 * p)]
-      exact add_le_add (mul_le_mul_of_nonneg_left he₁ hp0.le)
-        (mul_le_mul_of_nonneg_left he₂ (by positivity))
-    calc 2 * Real.pi / N * |p * (S1 - (p : ℝ)⁻¹ * T1) - 2 * p * (S2 - (p : ℝ)⁻¹ * T2)|
-        ≤ 2 * Real.pi / N * (p * (2 * (c * K₀)) + 2 * p * (2 * (c * K₀))) :=
-          mul_le_mul_of_nonneg_left h1 (by positivity)
-      _ = 2 * Real.pi * p * (6 * K₀) * c / N := by field_simp; ring
-  have hrowv : 2 * Real.pi / c * (((p : ℝ) ^ 2 + 2 * p + 1) * (N * (|Bk| / Real.sqrt N * ε))) =
-      2 * Real.pi * ((p + 1) ^ 2 * |Bk| * X) * c / N := by
-    rw [hε]
-    field_simp
-    rw [Real.sq_sqrt hN0.le]
-    ring
-  rw [hrowv] at hrow
-  have := abs_add_le (2 * Real.pi / c * ((p : ℝ) ^ 2 * P1 - 2 * p * P2 + P3) -
-      2 * Real.pi / c * ((p : ℝ) ^ 2 * (c / N / p * S1) - 2 * p * (c / N * S2) + c / N * T2))
-    (2 * Real.pi / c * ((p : ℝ) ^ 2 * (c / N / p * S1) - 2 * p * (c / N * S2) + c / N * T2) -
-      2 * Real.pi * (horizonAlias φ h (c / p) N - horizonAlias φ h c N))
-  rw [hmain] at this
-  have e : 2 * Real.pi / c * ((p : ℝ) ^ 2 * P1 - 2 * p * P2 + P3) -
-      2 * Real.pi * (horizonAlias φ h (c / p) N - horizonAlias φ h c N) =
-      (2 * Real.pi / c * ((p : ℝ) ^ 2 * P1 - 2 * p * P2 + P3) -
-        2 * Real.pi / c * ((p : ℝ) ^ 2 * (c / N / p * S1) - 2 * p * (c / N * S2) + c / N * T2)) +
-      (2 * Real.pi / c * ((p : ℝ) ^ 2 * (c / N / p * S1) - 2 * p * (c / N * S2) + c / N * T2) -
-        2 * Real.pi * (horizonAlias φ h (c / p) N - horizonAlias φ h c N)) := by ring
-  rw [mul_div_assoc, show 2 * Real.pi / c * ((p : ℝ) ^ 2 * P1 - 2 * p * P2 + P3) =
-    2 * Real.pi / c * ((p : ℝ) ^ 2 * P1 - 2 * p * P2 + P3) from rfl, e]
-  rw [hmain] at e ⊢
-  have hfin := (abs_add_le _ _).trans (add_le_add hrow hequi)
-  calc _ ≤ _ := hfin
-    _ = (2 * Real.pi * ((p + 1) ^ 2 * |Bk| * X) + 2 * Real.pi * p * (6 * K₀)) * (c / N) := by
-        ring
+  exact ⟨he₁, he₂⟩
+
+/-- The sum of row errors weighted by bounded weights. -/
+theorem abs_sum_mul_sub_sum_le {a R V : ℕ → ℝ} {N : ℕ} {B ε : ℝ}
+    (h : ∀ n ∈ Icc 1 N, |a n * R n - a n * V n| ≤ B * ε) :
+    |∑ n ∈ Icc 1 N, a n * R n - ∑ n ∈ Icc 1 N, a n * V n| ≤ N * (B * ε) := by
+  rw [← sum_sub_distrib]
+  refine (abs_sum_le_sum_abs _ _).trans ((sum_le_sum h).trans (le_of_eq ?_))
+  rw [sum_const, Nat.card_Icc, Nat.add_sub_cancel, nsmul_eq_mul]
+
+/-- The Poisson values of the prime block in the variable `x = n/N`. -/
+theorem primeRow_values (h : ℝ → ℝ) (φ : ℝ → ℝ) {p : ℕ} (hp : 0 < p) {c : ℝ} {N n : ℕ}
+    (hN : 1 ≤ N) (hn : 1 ≤ n) :
+    horizonWeights h N n * (horizonWeights h N n * (c * n / N / p *
+        ((∫ u, φ u) ^ 2 + 2 * aliasDensity φ (c * n / N / p)))) =
+      c / N / p * (sqWindow h (n / N) * ((∫ u, φ u) ^ 2 + 2 * aliasDensity φ (c * (n / N) / p))) ∧
+    horizonWeights h N n * (horizonWeights h N n * (c * n / N *
+        ((∫ u, φ u) ^ 2 + 2 * aliasDensity φ (c * n / N)))) =
+      c / N * (sqWindow h (n / N) * ((∫ u, φ u) ^ 2 + 2 * aliasDensity φ (c * (n / N)))) := by
+  have hn0 : (0 : ℝ) < n := by exact_mod_cast hn
+  have hN0 : (0 : ℝ) < N := by exact_mod_cast hN
+  have hp0 : (0 : ℝ) < p := by exact_mod_cast hp
+  have hw2 : horizonWeights h N n * horizonWeights h N n = h (Real.log n - Real.log N) ^ 2 / n := by
+    rw [horizonWeights, div_mul_div_comm, Real.mul_self_sqrt hn0.le, sq]
+  rw [sqWindow_natCast_div h hn hN, show c * (n / N) / p = c * n / N / p by ring,
+    show c * (n / N) = c * n / N by ring, ← mul_assoc, ← mul_assoc, hw2]
+  constructor <;> field_simp
 
 end GaloisForLFunctions.ArithmeticHodgeTheoryOfDegenerations
