@@ -207,44 +207,86 @@ theorem ofReal_deriv_mayerZ_eq_of_zero {τ₀ : ℝ} (hzero : mayerZ τ₀ = 0) 
     ((deriv mayerZ τ₀ : ℝ) : ℂ) =
       I * (starRingEnd ℂ) (_root_.RHTower.gammaHardyPhase τ₀) *
         deriv riemannZeta (_root_.RHTower.linePt τ₀) := by
-  have hne1 : _root_.RHTower.linePt τ₀ ≠ 1 := by
-    intro h
-    have hr := congrArg Complex.re h
-    rw [_root_.RHTower.linePt_re] at hr
-    norm_num at hr
-  have hleft : HasDerivAt (fun u : ℝ => riemannZeta (_root_.RHTower.linePt u))
-      (deriv riemannZeta (_root_.RHTower.linePt τ₀) * I) τ₀ := by
-    have hc := HasDerivAt.comp τ₀ (differentiableAt_riemannZeta hne1).hasDerivAt
-      (_root_.RHTower.hasDerivAt_linePt τ₀)
-    simpa [Function.comp] using hc
-  have hZ : HasDerivAt (fun u : ℝ => (mayerZ u : ℂ)) ((deriv mayerZ τ₀ : ℝ) : ℂ) τ₀ := by
-    have hc := (Complex.ofRealCLM.hasDerivAt (x := mayerZ τ₀)).comp τ₀
-      (differentiable_mayerZ τ₀).hasDerivAt
-    simpa [Function.comp] using hc
-  have hprod : (fun u : ℝ => riemannZeta (_root_.RHTower.linePt u)) =
-      fun u : ℝ => _root_.RHTower.gammaHardyPhase u * (mayerZ u : ℂ) := by
-    ext u
-    rw [_root_.RHTower.riemannZeta_line_eq_gammaHardyPhase_mul_hardyZ, mayerZ_eq_hardyZ]
-  have hright : HasDerivAt (fun u : ℝ => _root_.RHTower.gammaHardyPhase u * (mayerZ u : ℂ))
-      (_root_.RHTower.gammaHardyPhase τ₀ * ((deriv mayerZ τ₀ : ℝ) : ℂ)) τ₀ := by
-    have hm := (_root_.RHTower.hasDerivAt_gammaHardyPhase τ₀).mul hZ
-    simpa only [hzero, Complex.ofReal_zero, mul_zero, zero_add] using hm
-  rw [hprod] at hleft
-  have heq := hright.unique hleft
-  have hunit : (starRingEnd ℂ) (_root_.RHTower.gammaHardyPhase τ₀) *
-      _root_.RHTower.gammaHardyPhase τ₀ = 1 :=
-    (_root_.RHTower.gammaHardyPhase_isUnitary τ₀)
-  calc
-    ((deriv mayerZ τ₀ : ℝ) : ℂ) =
-        ((starRingEnd ℂ) (_root_.RHTower.gammaHardyPhase τ₀) *
-          _root_.RHTower.gammaHardyPhase τ₀) * ((deriv mayerZ τ₀ : ℝ) : ℂ) := by
-      rw [hunit, one_mul]
-    _ = (starRingEnd ℂ) (_root_.RHTower.gammaHardyPhase τ₀) *
-          (_root_.RHTower.gammaHardyPhase τ₀ * ((deriv mayerZ τ₀ : ℝ) : ℂ)) := by ring
-    _ = (starRingEnd ℂ) (_root_.RHTower.gammaHardyPhase τ₀) *
-          (deriv riemannZeta (_root_.RHTower.linePt τ₀) * I) := by rw [heq]
-    _ = I * (starRingEnd ℂ) (_root_.RHTower.gammaHardyPhase τ₀) *
-          deriv riemannZeta (_root_.RHTower.linePt τ₀) := by ring
+  have hne1 : _root_.RHTower.linePt τ₀ ≠ 1 := _root_.RHTower.linePt_ne_one τ₀
+  have hζ0 : riemannZeta (_root_.RHTower.linePt τ₀) = 0 := by
+    rw [_root_.RHTower.riemannZeta_line_eq_gammaHardyPhase_mul_hardyZ, ← mayerZ_eq_hardyZ,
+      hzero, Complex.ofReal_zero, mul_zero]
+  let δn : ℕ → ℝ := fun n => ((n : ℝ) + 1)⁻¹
+  have hδn_pos : ∀ n : ℕ, 0 < δn n := fun n => inv_pos.mpr (by positivity)
+  have hδn_lim0 : Tendsto δn atTop (𝓝 0) :=
+    tendsto_inv_atTop_zero.comp (tendsto_natCast_atTop_atTop.atTop_add tendsto_const_nhds)
+  have hδn_punc : Tendsto δn atTop (𝓝[≠] (0 : ℝ)) :=
+    tendsto_nhdsWithin_of_tendsto_nhds_of_eventually_within _ hδn_lim0
+      (Eventually.of_forall fun n => (hδn_pos n).ne')
+  have hw_lim0 : Tendsto (fun n : ℕ => (δn n : ℂ) * I) atTop (𝓝 0) := by
+    simpa using (Complex.continuous_ofReal.continuousAt.tendsto.comp hδn_lim0).mul_const I
+  have hw_punc : Tendsto (fun n : ℕ => (δn n : ℂ) * I) atTop (𝓝[≠] (0 : ℂ)) :=
+    tendsto_nhdsWithin_of_tendsto_nhds_of_eventually_within _ hw_lim0
+      (Eventually.of_forall fun n =>
+        mul_ne_zero (Complex.ofReal_ne_zero.mpr (hδn_pos n).ne') I_ne_zero)
+  have hL : Tendsto
+      (fun n : ℕ => (((δn n)⁻¹ • (mayerZ (τ₀ + δn n) - mayerZ τ₀) : ℝ) : ℂ))
+      atTop (𝓝 ((deriv mayerZ τ₀ : ℝ) : ℂ)) :=
+    Complex.continuous_ofReal.continuousAt.tendsto.comp
+      ((differentiable_mayerZ τ₀).hasDerivAt.tendsto_slope_zero.comp hδn_punc)
+  have hphase_lim : Tendsto
+      (fun n : ℕ => I * (starRingEnd ℂ) (_root_.RHTower.gammaHardyPhase (τ₀ + δn n)))
+      atTop (𝓝 (I * (starRingEnd ℂ) (_root_.RHTower.gammaHardyPhase τ₀))) := by
+    have hshift : Tendsto (fun n : ℕ => τ₀ + δn n) atTop (𝓝 τ₀) := by
+      simpa using tendsto_const_nhds.add hδn_lim0
+    exact tendsto_const_nhds.mul
+      (Complex.continuous_conj.continuousAt.tendsto.comp
+        (_root_.RHTower.continuous_gammaHardyPhase.continuousAt.tendsto.comp hshift))
+  have hζ_lim : Tendsto
+      (fun n : ℕ => ((δn n : ℂ) * I)⁻¹ •
+        (riemannZeta (_root_.RHTower.linePt τ₀ + (δn n : ℂ) * I) -
+          riemannZeta (_root_.RHTower.linePt τ₀)))
+      atTop (𝓝 (deriv riemannZeta (_root_.RHTower.linePt τ₀))) :=
+    (differentiableAt_riemannZeta hne1).hasDerivAt.tendsto_slope_zero.comp hw_punc
+  have hR : Tendsto
+      (fun n : ℕ => (I * (starRingEnd ℂ) (_root_.RHTower.gammaHardyPhase (τ₀ + δn n))) *
+        (((δn n : ℂ) * I)⁻¹ •
+          (riemannZeta (_root_.RHTower.linePt τ₀ + (δn n : ℂ) * I) -
+            riemannZeta (_root_.RHTower.linePt τ₀))))
+      atTop
+      (𝓝 (I * (starRingEnd ℂ) (_root_.RHTower.gammaHardyPhase τ₀) *
+        deriv riemannZeta (_root_.RHTower.linePt τ₀))) :=
+    hphase_lim.mul hζ_lim
+  have hseq_eq :
+      (fun n : ℕ => (((δn n)⁻¹ • (mayerZ (τ₀ + δn n) - mayerZ τ₀) : ℝ) : ℂ)) =
+        fun n : ℕ => (I * (starRingEnd ℂ) (_root_.RHTower.gammaHardyPhase (τ₀ + δn n))) *
+          (((δn n : ℂ) * I)⁻¹ •
+            (riemannZeta (_root_.RHTower.linePt τ₀ + (δn n : ℂ) * I) -
+              riemannZeta (_root_.RHTower.linePt τ₀))) := by
+    ext n
+    have hline : _root_.RHTower.linePt τ₀ + (δn n : ℂ) * I =
+        _root_.RHTower.linePt (τ₀ + δn n) := by
+      unfold _root_.RHTower.linePt
+      push_cast
+      ring
+    have hunit : (starRingEnd ℂ) (_root_.RHTower.gammaHardyPhase (τ₀ + δn n)) *
+        _root_.RHTower.gammaHardyPhase (τ₀ + δn n) = 1 :=
+      _root_.RHTower.gammaHardyPhase_isUnitary (τ₀ + δn n)
+    simp only [smul_eq_mul, hzero, hζ0, sub_zero, hline,
+      _root_.RHTower.riemannZeta_line_eq_gammaHardyPhase_mul_hardyZ, ← mayerZ_eq_hardyZ,
+      Complex.ofReal_mul, Complex.ofReal_inv]
+    calc
+      (δn n : ℂ)⁻¹ * (mayerZ (τ₀ + δn n) : ℂ)
+          = (δn n : ℂ)⁻¹ * (((starRingEnd ℂ) (_root_.RHTower.gammaHardyPhase (τ₀ + δn n)) *
+              _root_.RHTower.gammaHardyPhase (τ₀ + δn n)) * (mayerZ (τ₀ + δn n) : ℂ)) := by
+            rw [hunit, one_mul]
+      _ = (I * ((δn n : ℂ) * I)⁻¹) *
+            ((starRingEnd ℂ) (_root_.RHTower.gammaHardyPhase (τ₀ + δn n)) *
+              (_root_.RHTower.gammaHardyPhase (τ₀ + δn n) * (mayerZ (τ₀ + δn n) : ℂ))) := by
+            congr 1
+            · rw [mul_inv_rev, ← mul_assoc, mul_inv_cancel₀ I_ne_zero, one_mul]
+            · ring
+      _ = I * (starRingEnd ℂ) (_root_.RHTower.gammaHardyPhase (τ₀ + δn n)) *
+            (((δn n : ℂ) * I)⁻¹ *
+              (_root_.RHTower.gammaHardyPhase (τ₀ + δn n) * (mayerZ (τ₀ + δn n) : ℂ))) := by
+            ring
+  rw [hseq_eq] at hL
+  exact tendsto_nhds_unique hL hR
 
 /-- **Transverse Mayer core-moment slope formula.** At every positive critical-line Mayer
 scattering resonance `s₀ = criticalScatteringPt τ₀` (`τ₀ > 0`), the complexified slope
@@ -592,6 +634,7 @@ theorem eventually_disjoint_mayerZ_sign_changes_proportion :
   let δmin : ℝ := (Finset.univ.image δf).min' (hne_univ.image _)
   have hδmin_pos : 0 < δmin := by
     obtain ⟨y, _, hy⟩ := Finset.mem_image.mp (Finset.min'_mem (Finset.univ.image δf) (hne_univ.image _))
+    dsimp only [δmin]
     rw [← hy]
     exact hδf_pos y
   let δ : ℝ := δmin / 2

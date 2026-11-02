@@ -1,7 +1,7 @@
 # RH proof-route frontier
 
 **RH open · 33 live routes · 16 candidates.**
-**Corpus checkpoint:** `7e52eaa58c8ee898db1320c052e8c9c56dbf12fc`.
+**Corpus checkpoint:** `01489022a665a3db7b78e4e66e8da85d9f2aff75`.
 
 Live = source observable + proved RH-sufficient receiver + explicit open estimate. Candidate = missing independent source mechanism/landing.
 Evidence: [L] integrated, source-reviewed; [S] unfinished/unintegrated, unverified; [K] individual Lean + standard-only transitive-axiom audit. Untagged established facts: [L].
@@ -171,9 +171,9 @@ Evidence: [L] integrated, source-reviewed; [S] unfinished/unintegrated, unverifi
 ### PM — Physical-model Haar approximation (FZZ-P)
 
 - **Path:** Faithful scattering source → Krein positivity / nonnegative Lewis defect / escape exclusion → RH.
-- **Established:** Faithful ζ scattering divisor; core Mellin/energy identities, sharp Cauchy norm and global Lewis laws [L]. Resonances⇔ζ(2s)=0; Mayer Z=Hardy Z. Finite critical-weight norms; Lewis defect D_s≤0, equality iff Re s=1/4. Independent resonant cores/Cauchy transforms; coordinate Krein form with Krein-self-adjoint generator and off-line square −2; positivity⇔RH⇔Hodge index. Mixed-height resonant Gram equals the smaller-cutoff Maass–Selberg kernel [S].
+- **Established:** Faithful ζ scattering divisor; core Mellin/energy identities, sharp Cauchy norm and global Lewis laws [L]. Resonances⇔ζ(2s)=0; Mayer Z=Hardy Z. Finite critical-weight norms; Lewis defect D_s≤0, equality iff Re s=1/4. Independent resonant cores/Cauchy transforms; coordinate Krein form with Krein-self-adjoint generator and off-line square −2; positivity⇔RH⇔Hodge index. Mixed-height Gram=min-cutoff Maass–Selberg kernel; normalized Hecke action=two cutoff-height shifts [S].
 - **Open:** Arithmetic proof of Krein positivity or D_s≥0, or source energy/ray bounds excluding off-line poles/escape while retaining 2ζ(w−1)/(w−1). The resonance-indexed coordinate metric is not an independent arithmetic positive realization; [Krein self-adjointness does not imply spectral reality](rh-killed-routes.md#mayer-krein-sign). Full Mayer eigenspace classification remains open.
-- **Sources:** CP:TheEscapeCompletenessCriterion; RIT:GaussMayerScatteringVector; RIT:GaussMayerCoreZeroMoment; RIT:GaussMayerCauchySharpOperator; RIT:GaussMayerGlobalPeriods; RIT:MayerScattering/MayerResonanceCharacterization [S]; RIT:MayerScattering/MayerZFunction [S]; RIT:MayerScattering/LewisPeriodReflectionPositivity [S]; RIT:MayerScattering/MayerKreinLaxPhillipsRealization [S]; RIT:ResonantStates/CutoffGramKernel [S].
+- **Sources:** CP:TheEscapeCompletenessCriterion; RIT:GaussMayerScatteringVector; RIT:GaussMayerCoreZeroMoment; RIT:GaussMayerCauchySharpOperator; RIT:GaussMayerGlobalPeriods; RIT:MayerScattering/MayerResonanceCharacterization [S]; RIT:MayerScattering/MayerZFunction [S]; RIT:MayerScattering/LewisPeriodReflectionPositivity [S]; RIT:MayerScattering/MayerKreinLaxPhillipsRealization [S]; RIT:ResonantStates/CutoffGramKernel [S]; RIT:ResonantStates/HeckeCutoffShifts [S].
 
 <a id="jas"></a>
 ### JAS — Joint ancestry

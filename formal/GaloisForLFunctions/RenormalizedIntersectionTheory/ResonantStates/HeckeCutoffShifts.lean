@@ -28,9 +28,9 @@ theorem hecke_cutoff_shifts {p : ℕ} (hp : p.Prime) {u : ℂ} (hAu : msA u = 0)
     linear_combination hupper
   rw [heckeTruncated_eq hp]
   unfold heckeRemainder weylRemainderTerm truncatedLineModel
-  rw [constantCoefficient_false, constantCoefficient_true, hAu, weylExponent_false,
-    sqrt_inv_mul_cpow_half_sub hp.pos, hupper', cuspConstantPart_eq_msAB, hAu]
-  simp only [zero_mul, add_zero]
+  simp only [constantCoefficient_false, constantCoefficient_true, hAu, weylExponent_false,
+    sqrt_inv_mul_cpow_half_sub hp.pos, hupper', cuspConstantPart_eq_msAB,
+    zero_mul, add_zero]
   split_ifs <;> ring
 
 /-- Complex normalization makes each Hecke action a coefficient-free pair of height shifts. -/

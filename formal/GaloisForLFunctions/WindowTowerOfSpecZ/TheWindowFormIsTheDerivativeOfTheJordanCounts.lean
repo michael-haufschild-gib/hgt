@@ -17,7 +17,9 @@ function (`jordanFun_eq`), so on a window `ρ_A(J_k) = ρ_A(ζ_{(−k)}) ρ_A(μ
   `∂_k J_k(m)|_{k=0} = Σ_{d∣m} μ(m/d) log d = Λ(m)`.
 * **The Tate pieces** (`jordanTotient_eq_card_projPoints`, `jordanTotient_eq_card_primVec`): at
   `k = β + 1` the coefficients are `φ(m)#ℙ^β(ℤ/m)`; the operators `ρ_A(J_{β+1})` preserve
-  positivity (`windowRepFun_jordan_nonneg`).
+  positivity (`windowRepFun_jordan_nonneg`). At the first prime the Tate function is
+  `‖H‖² + (2^k − 1)2^{−1/2}∫H(u)H(u + log 2)` (`tateFunction_firstPrime`): the signed fold count of
+  `T₂` is the coefficient of `#ℙ^{k−1}(𝔽₂) = 2^k − 1`.
 * **Weil's window form is a first-order jet of the Tate function** (`weilQuad_eq_tateJet`): with
   `τ_H(k) = ⟨ρ_A(J_k)H, H⟩` (`tateFunction`),
   `Q(H) = Ω(0) τ_H(0) − 2 τ_H′(0) + J_∞(H) + ½⟨c,H⟩² − ½⟨s,H⟩²`

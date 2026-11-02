@@ -93,12 +93,13 @@ theorem exists_cross_outer_bound (hφ : ContDiff ℝ 2 φ) (hφsupp : ∀ u, u �
   obtain ⟨Bh, Lh0, hB, hLh0⟩ := exists_bound_lipschitz hh hsupp
   obtain ⟨Bg, Lg0, hBg, hLg0⟩ := exists_bound_lipschitz hg hgsupp
   have hBh0 : 0 ≤ Bh := (abs_nonneg _).trans (hB 0)
+  have hBg0 : 0 ≤ Bg := (abs_nonneg _).trans (hBg 0)
   obtain ⟨Lu, hLu0, hLu⟩ := exists_lipschitz_prodWindow hh hg hA hsupp
   have hBu : ∀ x, |prodWindow h g x| ≤ Bh * Bg := fun x => by
     unfold prodWindow
     split_ifs
     · rw [abs_mul]; exact mul_le_mul (hB _) (hBg _) (abs_nonneg _) hBh0
-    · simp; exact mul_nonneg hBh0 ((abs_nonneg _).trans (hBg 0))
+    · simp; exact mul_nonneg hBh0 hBg0
   have hu0 : ∀ x, x < Real.exp (-A) → prodWindow h g x = 0 := fun x hx => by
     unfold prodWindow
     split_ifs with h0
@@ -126,13 +127,14 @@ theorem exists_cross_outer_bound (hφ : ContDiff ℝ 2 φ) (hφsupp : ∀ u, u �
     fun s t hs ht => abs_aliasDensity_sub_le hφ hφsupp hq hCφ hdecay hs₀0 hs ht
   set I := ∫ u, φ u with hI
   set M := I ^ 2 + 2 * Ma with hM
-  refine ⟨Lu * M + Bh * Bg * (2 * La), by positivity, fun c hc N hN => ?_⟩
+  have hM0 : 0 ≤ M := by rw [hM]; positivity
+  refine ⟨Lu * M + Bh * Bg * (2 * La), add_nonneg (mul_nonneg hLu0 hM0)
+    (mul_nonneg (mul_nonneg hBh0 hBg0) (by linarith)), fun c hc N hN => ?_⟩
   have hc0 : 0 < c := by linarith
   have hs₀le : ∀ a, c * Real.exp (-A) ≤ a → s₀ ≤ a := fun a ha =>
     le_trans (by rw [hs₀]; nlinarith [Real.exp_pos (-A)]) ha
   have hKc : Lu * M + Bh * Bg * c * (2 * La) ≤ c * (Lu * M + Bh * Bg * (2 * La)) := by
-    nlinarith [mul_nonneg hLu0 (show 0 ≤ M by positivity),
-      mul_nonneg (mul_nonneg hBh0 ((abs_nonneg _).trans (hBg 0))) hLa0]
+    nlinarith [mul_nonneg hLu0 hM0, mul_nonneg (mul_nonneg hBh0 hBg0) hLa0]
   have hf : ∀ x y, |prodWindow h g x * (I ^ 2 + 2 * aliasDensity φ (c * x)) -
       prodWindow h g y * (I ^ 2 + 2 * aliasDensity φ (c * y))| ≤
       c * (Lu * M + Bh * Bg * (2 * La)) * |x - y| := fun x y => by
@@ -174,7 +176,7 @@ theorem crossEnergy_eq (hφ : ContDiff ℝ 2 φ) (hφsupp : ∀ u, u ∉ Set.Icc
     rw [dirichletPoly_add, dirichletPoly_sub]
     have := norm_add_sq_sub_norm_sub_sq (dirichletPoly N u τ) (dirichletPoly N v τ)
     field_simp
-    linear_combination (‖paperFT (cx φ) (((c / N : ℝ) : ℂ) * τ)‖ ^ 2) * this
+    linear_combination (-2 * ‖paperFT (cx φ) (((c / N : ℝ) : ℂ) * τ)‖ ^ 2) * this
   rw [integral_congr_ae (Eventually.of_forall hpt), integral_div, integral_sub hip him, hplus,
     hminus]
   have hsym : ∀ m n : ℕ, shellAutocorr φ (N * (Real.log m - Real.log n) / c) =
@@ -224,6 +226,7 @@ theorem exists_abs_crossEnergy_le (hφ : ContDiff ℝ 2 φ) (hφsupp : ∀ u, u 
             conj (dirichletPoly N (twistedWeights g (primeTwist p) N) τ)).re / N)| ≤ K * c / N := by
   have hp' : 0 < p := by omega
   have hp0 : (0 : ℝ) < p := by exact_mod_cast hp'
+  have hp1 : (1 : ℝ) ≤ p := by exact_mod_cast hp.le
   obtain ⟨Bh, Xh, hBh0, hXh0, hrowh⟩ := exists_prime_row_bounds hφ hφsupp hh hsupp hp' (A := A)
   obtain ⟨Bg, Xg, hBg0, hXg0, hrowg⟩ := exists_prime_row_bounds hφ hφsupp hg hgsupp hp' (A := A)
   obtain ⟨K₀, hK₀, hout⟩ := exists_cross_outer_bound hφ hφsupp hq hCφ hdecay hh hg hA hsupp
@@ -247,7 +250,7 @@ theorem exists_abs_crossEnergy_le (hφ : ContDiff ℝ 2 φ) (hφsupp : ∀ u, u 
       unfold primeTwist
       split_ifs
       · rw [abs_of_nonneg (by linarith)]; linarith
-      · norm_num; exact_mod_cast hp.le
+      · norm_num; exact hp1
     rw [hv, twistedWeights, abs_mul, mul_comm, mul_div_assoc]
     exact mul_le_mul h2 h1 (abs_nonneg _) hp0.le
   set ε := Xh * c ^ 2 / (N * Real.sqrt N) with hε
@@ -263,20 +266,22 @@ theorem exists_abs_crossEnergy_le (hφ : ContDiff ℝ 2 φ) (hφsupp : ∀ u, u 
       (p : ℝ)⁻¹ * ∑ n ∈ Icc 1 N, prodWindow h g (n / N) *
         (I ^ 2 + 2 * aliasDensity φ (c * (n / N))))) := by
     have hp' : (p : ℝ) ≠ 0 := hp0.ne'
-    rw [mul_sub, ← mul_assoc, mul_inv_cancel₀ hp', one_mul, mul_sum, mul_sum, ← sum_sub_distrib,
-      mul_sum]
+    rw [mul_sub, ← mul_assoc, mul_inv_cancel₀ hp', one_mul, mul_sum, ← sum_sub_distrib, mul_sum]
     refine sum_congr rfl fun n hn => ?_
     have hn1 := (Finset.mem_Icc.mp hn).1
     have hn0 : (0 : ℝ) < n := by exact_mod_cast hn1
-    rw [hv, hVf, twistedWeights, prodWindow_natCast_div h g hn1 hN,
-      show c * ((n : ℝ) / N) = c * n / N by ring, horizonWeights, horizonWeights]
-    simp only [primeTwist]
+    have hkey : horizonWeights g N n * horizonWeights h N n = prodWindow h g (n / N) / n := by
+      rw [prodWindow_natCast_div h g hn1 hN, horizonWeights, horizonWeights, div_mul_div_comm,
+        Real.mul_self_sqrt hn0.le, mul_comm]
+    have hvV : v n * Vf n = horizonWeights g N n * horizonWeights h N n * primeTwist p n *
+        (c * n / N * (I ^ 2 + 2 * aliasDensity φ (c * n / N))) := by
+      rw [hv, hVf, twistedWeights]; ring
+    rw [hvV, hkey, show c * ((n : ℝ) / N) = c * n / N by ring]
+    unfold primeTwist
     split_ifs
     · field_simp
-      rw [Real.sq_sqrt hn0.le]
       ring
     · field_simp
-      rw [Real.sq_sqrt hn0.le]
       ring
   have he := hout c hc N hN
   rw [hmain] at hrow
