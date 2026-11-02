@@ -1,5 +1,5 @@
 import GaloisForLFunctions.SelectivePositivityAndThresholdLaws.SemilocalPrimeTwoTrace.AbstractHilbertTraceToolkit
-import GaloisForLFunctions.SelectivePositivityAndThresholdLaws.SemilocalPrimeTwoTrace.IntrinsicWeilTraceAndWindowCorollaries
+import GaloisForLFunctions.SelectivePositivityAndThresholdLaws.SemilocalPrimeTwoTrace.TentGapProbeVector
 
 /-!
 # Finite-Prime Semilocal Ground-Energy Collapse, Forced Zero Crossings, and Multiplicative Syndeticity
@@ -22,29 +22,31 @@ primes `S : Finset ℕ`:
    `0 < a ≤ ½ log q₀` whenever `S` contains all primes `< q₀`, and `visiblePrimes A` at aperture
    `A`, together with the multi-prime `ValuationShellL2` trace identity via
    `primeValuationLogOperator p m` (`opTrace = m log p`).
-3. **Parametric antisymmetric gap probe and the multiplicative syndeticity law:**
-   Whenever all active weights `w n ≠ 0` avoid a logarithmic interval `(2L - 2δ₀, 2L + 2δ₀)`
-   (`δ₀ = min δ (1/16)`), an antisymmetric pair of smooth bumps at `±L` annihilates
-   `ccmWeightedPrimeOperator w b₀` identically while the odd `sinh` polar mode drives the ground
-   energy below `gapProbeConst δ - gapProbeCoeff δ · (e^{L/2} - e^{-L/2})²`. Consequently, if
-   `(weightedPrimeFamily w).energy` is bounded below across apertures, the active scales must be
-   eventually logarithmically `2δ`-dense for every `δ > 0`, i.e. meet every multiplicative short
-   interval `(X, (1 + ε) X)` for large `X`.
+3. **Explicit tent gap probe, windowed prime charge, syndeticity, and dyadic Chebyshev bound:**
+   The probe is the tent `(1 - |x|/a₀)⁺` of half-width `a₀ = min δ (1/16)` (`tentFormVector`),
+   with `‖u‖² ≤ 150 a₀ + 1/(9 a₀)` and `‖τ‖² = 2a₀/3`. An antisymmetric pair at `±L` gives
+   `(weightedPrimeFamily w).energy (a₀ + L) ≤ 450 + 1/(3a₀²) - a₀ (e^{L/2} - e^{-L/2})² + 2 Σ_window`,
+   the window charge running over `|log n - 2L| < 2a₀` with weights `|w n|/√n`. With an empty
+   window, bounded-below energy forces the active scales to be eventually logarithmically
+   `2δ`-dense (multiplicative short intervals `(X, (1 + ε) X)`); in general it forces
+   `Σ_{X < n ≤ κX} |w n| ≥ (min (log κ / 4) (1/16) / 16) · X` for every `κ > 1` and large `X`.
 4. **Constructive `Finset` pigeonhole avoidance and cardinality-only `-Θ(e^A)` collapse:**
-   For every `r : ℕ`, explicit constants `finitePrimeCollapseConst r` and
-   `finitePrimeCollapseCoeff r > 0` depending **only on `r`** satisfy
-   `(weightedPrimeFamily w).energy A ≤ finitePrimeCollapseConst r - finitePrimeCollapseCoeff r · e^A`
+   For every `r : ℕ`, `(weightedPrimeFamily w).energy A ≤ 450 + 256 (5r + 2)²/3 - e^A / (512 (5r + 2))`
    for all `A ≥ 4`, all `S : Finset ℕ` with `S.card ≤ r`, and all unrestricted weights `w : ℕ → ℝ`
    supported on `{p^k : p ∈ S, p ≥ 2, k ≥ 1}`. No sub-maximal exponential rate `O(e^{θ A})` with
    `θ < 1` can hold.
-5. **Forced zero crossings, positive-trace carrier no-go, quantitative prime counting, and
-   infinitude of primes:**
-   For every `S : Finset ℕ`, `(finitePrimeSetSemilocalFamily S).energy` crosses zero at a critical
-   aperture `a_S ∈ (½ log 2, finitePrimeZeroCrossingCeiling S.card]` (`181 / 500 < a_S` when
-   `2 ∈ S`) where the Friedrichs operator acquires a nonzero kernel state, refuting all positive
-   operator-trace and positive Gram-trace carriers. Conversely, `0 ≤ ccmRestrictedWeilGroundEnergy A`
-   at `A ≥ finitePrimeZeroCrossingCeiling r` forces `r < (visiblePrimes A).card`, and boundedness
-   below of `(primeSetSemilocalFamily P).energy` forces `(P ∩ {p | p.Prime}).Infinite`.
+5. **Rational semilocal collapse, logarithmic ceiling, forced zero crossings, positive-trace
+   carrier no-go, quantitative prime counting, and infinitude of primes:**
+   For every `S : Finset ℕ` and `A ≥ 4`,
+   `(finitePrimeSetSemilocalFamily S).energy A ≤ 1606/3 + 4|S| - (15/1024) e^A
+     ≤ 536 (|S| + 1)² - (15/1024) e^A`: a window of length `1/4 < log 2` holds at most one power of
+   each prime. Hence the energy is `< -1` beyond `finitePrimeZeroCrossingCeiling r = 2 log(r + 2) + 11`
+   and crosses zero at a critical aperture `a_S ∈ (½ log 2, 2 log(|S| + 2) + 11]`
+   (`181 / 500 < a_S` when `2 ∈ S`) where the Friedrichs operator acquires a nonzero kernel state,
+   refuting all positive operator-trace and positive Gram-trace carriers. Conversely,
+   `0 ≤ ccmRestrictedWeilGroundEnergy A` at `A ≥ 2 log(r + 2) + 11` forces
+   `r < (visiblePrimes A).card`, and boundedness below of `(primeSetSemilocalFamily P).energy` forces
+   `(P ∩ {p | p.Prime}).Infinite`.
 -/
 
 noncomputable section
@@ -695,102 +697,110 @@ theorem finitePrimeSetSemilocalFamily_Q_eq_multiPrimeValuationTrace (S : Finset 
       (congrArg (archPart a u + ·) (polarPart_eq_opTrace_re a u)))
     hsum)
 
-/-! ## 3. Parametric antisymmetric gap probe and the multiplicative syndeticity law -/
+/-! ## 3. Explicit tent gap probe, windowed prime charge, and multiplicative syndeticity -/
 
 /-- Reference small aperture `min δ (1 / 16) > 0` for a logarithmic gap probe of half-width `δ`. -/
 def gapProbeSmallAperture (δ : ℝ) (hδ : 0 < δ) : SuzukiPositiveAperture :=
   ⟨min δ (1 / 16), lt_min hδ (by norm_num)⟩
 
-theorem gapProbeRadius_pos {δ : ℝ} (hδ : 0 < δ) : 0 < (gapProbeSmallAperture δ hδ).1 / 2 := by
-  have := (gapProbeSmallAperture δ hδ).2
-  linarith
+theorem gapProbeSmallAperture_le_sixteenth {δ : ℝ} (hδ : 0 < δ) :
+    (gapProbeSmallAperture δ hδ).1 ≤ 1 / 16 :=
+  min_le_right _ _
 
-theorem gapProbeClosedBall_subset {δ : ℝ} (hδ : 0 < δ) :
-    Metric.closedBall (0 : ℝ) ((gapProbeSmallAperture δ hδ).1 / 2) ⊆
-      Ioo (-(gapProbeSmallAperture δ hδ).1) (gapProbeSmallAperture δ hδ).1 := by
-  intro x hx
-  rw [Metric.mem_closedBall, Real.dist_eq, sub_zero, abs_le] at hx
-  have ha := (gapProbeSmallAperture δ hδ).2
-  constructor <;> linarith [hx.1, hx.2]
+theorem gapProbeSmallAperture_val_of_le {δ : ℝ} (hδ : 0 < δ) (hδ16 : δ ≤ 1 / 16) :
+    (gapProbeSmallAperture δ hδ).1 = δ :=
+  min_eq_left hδ16
 
-/-- Reference smooth bump form vector on `gapProbeSmallAperture δ hδ`. -/
+/-- Reference probe: the tent `(1 - |x|/a₀)⁺` of half-width `a₀ = min δ (1/16)`, an
+`H¹₀((-a₀, a₀))` vector of the archimedean form domain at aperture `a₀`. -/
 def gapProbeFormVector (δ : ℝ) (hδ : 0 < δ) :
     CCMArchimedeanFormDomain (gapProbeSmallAperture δ hδ) :=
-  (bumpInteriorSource (gapProbeSmallAperture δ hδ) 0
-    ((gapProbeSmallAperture δ hδ).1 / 2) (gapProbeRadius_pos hδ)
-    (gapProbeClosedBall_subset hδ)).toCCMFormVector
+  tentFormVector (gapProbeSmallAperture δ hδ)
 
 /-- Physical `L²` image of `gapProbeFormVector δ hδ`. -/
 def gapProbeApertureVector (δ : ℝ) (hδ : 0 < δ) :
     suzukiApertureHilbert (gapProbeSmallAperture δ hδ) :=
   ccmArchimedeanFormToAperture (gapProbeSmallAperture δ hδ) (gapProbeFormVector δ hδ)
 
-theorem gapProbeApertureVector_ne_zero {δ : ℝ} (hδ : 0 < δ) :
-    gapProbeApertureVector δ hδ ≠ 0 :=
-  bumpFormVector_aperture_ne_zero (gapProbeSmallAperture δ hδ)
-    ((gapProbeSmallAperture δ hδ).1 / 2) (gapProbeRadius_pos hδ) (gapProbeClosedBall_subset hδ)
+theorem gapProbeApertureVector_eq_tent {δ : ℝ} (hδ : 0 < δ) :
+    gapProbeApertureVector δ hδ = tentApertureVector (gapProbeSmallAperture δ hδ) :=
+  ccmArchimedeanFormToAperture_tentFormVector _
 
-theorem gapProbeApertureVector_norm_sq_pos {δ : ℝ} (hδ : 0 < δ) :
-    0 < ‖gapProbeApertureVector δ hδ‖ ^ 2 :=
-  sq_pos_of_pos (norm_pos_iff.mpr (gapProbeApertureVector_ne_zero hδ))
-
-/-- Additive archimedean ceiling in the logarithmic gap-probe ground-energy bound, depending only
-on the gap half-width `δ`. -/
+/-- Explicit additive constant `450 + 1/(3 a₀²)` of the tent gap probe (`a₀ = min δ (1/16)`). -/
 def gapProbeConst (δ : ℝ) (hδ : 0 < δ) : ℝ :=
-  (4 * ‖gapProbeFormVector δ hδ‖ ^ 2 +
-    |2 * gammaHardyPhaseRate 0 - 1| * (4 * ‖gapProbeApertureVector δ hδ‖ ^ 2)) /
-    (2 * ‖gapProbeApertureVector δ hδ‖ ^ 2)
+  450 + 1 / (3 * (gapProbeSmallAperture δ hδ).1 ^ 2)
 
-/-- Positive hyperbolic polar coefficient in the logarithmic gap-probe ground-energy bound,
-depending only on `δ`. -/
+/-- Explicit hyperbolic coefficient `a₀ = min δ (1/16)` of the tent gap probe. -/
 def gapProbeCoeff (δ : ℝ) (hδ : 0 < δ) : ℝ :=
-  (polarBumpMoment 0 ((gapProbeSmallAperture δ hδ).1 / 2) (gapProbeRadius_pos hδ) (1 / 2) *
-    polarBumpMoment 0 ((gapProbeSmallAperture δ hδ).1 / 2) (gapProbeRadius_pos hδ) (-1 / 2)) /
-    ‖gapProbeApertureVector δ hδ‖ ^ 2
+  (gapProbeSmallAperture δ hδ).1
 
-theorem gapProbeCoeff_pos {δ : ℝ} (hδ : 0 < δ) : 0 < gapProbeCoeff δ hδ := by
-  unfold gapProbeCoeff
-  have hmPos : 0 < polarBumpMoment 0 ((gapProbeSmallAperture δ hδ).1 / 2)
-      (gapProbeRadius_pos hδ) (1 / 2) :=
-    lt_of_lt_of_le (mul_pos (Real.exp_pos _)
-      (polarBumpMass_pos 0 _ (gapProbeRadius_pos hδ)))
-      (le_polarBumpMoment 0 _ (gapProbeRadius_pos hδ) (1 / 2))
-  have hmNeg : 0 < polarBumpMoment 0 ((gapProbeSmallAperture δ hδ).1 / 2)
-      (gapProbeRadius_pos hδ) (-1 / 2) :=
-    lt_of_lt_of_le (mul_pos (Real.exp_pos _)
-      (polarBumpMass_pos 0 _ (gapProbeRadius_pos hδ)))
-      (le_polarBumpMoment 0 _ (gapProbeRadius_pos hδ) (-1 / 2))
-  exact div_pos (mul_pos hmPos hmNeg) (gapProbeApertureVector_norm_sq_pos hδ)
+theorem gapProbeCoeff_pos {δ : ℝ} (hδ : 0 < δ) : 0 < gapProbeCoeff δ hδ :=
+  (gapProbeSmallAperture δ hδ).2
 
-/-- **Parametric antisymmetric gap-probe upper bound:**
-if at `L ≥ 1/4` every active integer `n ∈ [2, ⌊e^{2(a₀ + L)}⌋]` with `w n ≠ 0` avoids the
-logarithmic interval `(2L - 2a₀, 2L + 2a₀)` (`a₀ = min δ (1/16)`), then an antisymmetric pair of
-smooth bumps at `±L` annihilates `ccmWeightedPrimeOperator w b₀` identically and bounds
-`(weightedPrimeFamily w).energy b₀` above by
-`gapProbeConst δ hδ - gapProbeCoeff δ hδ * (e^{L/2} - e^{-L/2})^2`. -/
-theorem weightedPrimeFamily_energy_le_of_log_gap {δ : ℝ} (hδ : 0 < δ) (w : ℕ → ℝ)
-    {L : ℝ} (hL : (1 / 4 : ℝ) ≤ L)
-    (hgap : ∀ n ∈ Finset.Icc 2 (Nat.floor (Real.exp (2 * ((gapProbeSmallAperture δ hδ).1 + L)))),
-      w n ≠ 0 → 2 * (gapProbeSmallAperture δ hδ).1 ≤ |Real.log n - 2 * L|) :
+/-- Weighted prime charge of the window `|log n - 2L| < 2a₀`, the only shifts at which the
+antisymmetric probe at `±L` sees the prime operator. -/
+def gapProbeWindowSum (w : ℕ → ℝ) (a₀ L : ℝ) : ℝ :=
+  ∑ n ∈ (Finset.Icc 2 (Nat.floor (Real.exp (2 * (a₀ + L))))).filter
+      (fun n : ℕ => |Real.log (n : ℝ) - 2 * L| < 2 * a₀),
+    |w n| / Real.sqrt (n : ℝ)
+
+theorem gapProbeWindowSum_nonneg (w : ℕ → ℝ) (a₀ L : ℝ) : 0 ≤ gapProbeWindowSum w a₀ L :=
+  Finset.sum_nonneg fun _ _ => div_nonneg (abs_nonneg _) (Real.sqrt_nonneg _)
+
+theorem gapProbeWindowSum_eq_zero_of_gap {w : ℕ → ℝ} {a₀ L : ℝ}
+    (hgap : ∀ n ∈ Finset.Icc 2 (Nat.floor (Real.exp (2 * (a₀ + L)))),
+      w n ≠ 0 → 2 * a₀ ≤ |Real.log n - 2 * L|) :
+    gapProbeWindowSum w a₀ L = 0 := by
+  unfold gapProbeWindowSum
+  refine Finset.sum_eq_zero fun n hn => ?_
+  obtain ⟨hnI, hwin⟩ := Finset.mem_filter.mp hn
+  by_cases hw : w n = 0
+  · rw [hw, abs_zero, zero_div]
+  · exact absurd (hgap n hnI hw) (not_le.mpr hwin)
+
+/-- **Windowed tent gap probe:**
+for every weight `w`, `δ > 0`, `a₀ = min δ (1/16)` and `L ≥ 1/4`, the antisymmetric tent pair
+`T_{-L} τ - T_L τ` at `b₀ = a₀ + L` gives
+`(weightedPrimeFamily w).energy b₀ ≤ 450 + 1/(3a₀²) - a₀ (e^{L/2} - e^{-L/2})² + 2 Σ_window`,
+where the window sum `gapProbeWindowSum w a₀ L` runs over `|log n - 2L| < 2a₀`.
+The self-shifts `±log n` and outer shifts `log n + 2L` exceed `2a₀`, so a prime block is invisible
+outside the window and bounded by `|w n| n^{-1/2} · 2‖f‖²` inside it; the scalar term is
+nonpositive since `2θ'(0) + 4 < 0`; the polar term is `-2 sinh-diff² m₊ m₋` with
+`m₊ m₋ ≥ e^{-a₀} a₀² ≥ (2/3) a₀²`; and `‖u‖² ≤ 150 a₀ + 1/(9 a₀)`, `‖τ‖² = 2a₀/3`. -/
+theorem weightedPrimeFamily_energy_le_window {δ : ℝ} (hδ : 0 < δ) (w : ℕ → ℝ)
+    {L : ℝ} (hL : (1 / 4 : ℝ) ≤ L) :
     let b₀ : SuzukiPositiveAperture :=
       ⟨(gapProbeSmallAperture δ hδ).1 + L,
         by linarith [(gapProbeSmallAperture δ hδ).2]⟩
     (weightedPrimeFamily w).energy b₀ ≤
-      gapProbeConst δ hδ - gapProbeCoeff δ hδ * (Real.exp (L / 2) - Real.exp (-L / 2)) ^ 2 := by
+      gapProbeConst δ hδ - gapProbeCoeff δ hδ * (Real.exp (L / 2) - Real.exp (-L / 2)) ^ 2 +
+        2 * gapProbeWindowSum w (gapProbeSmallAperture δ hδ).1 L := by
+  intro b₀
   let a₀ := gapProbeSmallAperture δ hδ
+  have ha₀_pos : 0 < a₀.1 := a₀.2
   have ha₀_le : a₀.1 ≤ 1 / 16 := min_le_right _ _
   have hL_pos : 0 < L := lt_of_lt_of_le (by norm_num) hL
-  let b₀ : SuzukiPositiveAperture := ⟨a₀.1 + L, by linarith [a₀.2]⟩
-  obtain ⟨u₀, hu₀⟩ : ∃ u₀ : CCMArchimedeanFormDomain a₀, u₀ = gapProbeFormVector δ hδ := ⟨_, rfl⟩
-  obtain ⟨f₀, hf₀⟩ : ∃ f₀ : suzukiApertureHilbert a₀, f₀ = gapProbeApertureVector δ hδ := ⟨_, rfl⟩
+  obtain ⟨u₀, hu₀⟩ : ∃ u₀ : CCMArchimedeanFormDomain a₀, u₀ = gapProbeFormVector δ hδ :=
+    ⟨_, rfl⟩
+  obtain ⟨f₀, hf₀⟩ : ∃ f₀ : suzukiApertureHilbert a₀, f₀ = tentApertureVector a₀ := ⟨_, rfl⟩
   have hf₀_to : ccmArchimedeanFormToAperture a₀ u₀ = f₀ := by
-    rw [hf₀, hu₀]; rfl
-  have hf₀_pos : 0 < ‖f₀‖ ^ 2 := by
-    rw [hf₀]; exact gapProbeApertureVector_norm_sq_pos hδ
+    rw [hf₀, hu₀]; exact ccmArchimedeanFormToAperture_tentFormVector a₀
+  have hf₀_norm : ‖f₀‖ ^ 2 = 2 * a₀.1 / 3 := by
+    rw [hf₀]; exact norm_sq_tentApertureVector a₀
+  have hu₀_norm : ‖u₀‖ ^ 2 ≤ 150 * a₀.1 + 1 / (9 * a₀.1) := by
+    rw [hu₀]; exact norm_sq_tentFormVector_le_rational a₀
   obtain ⟨mPos, hmPos_def⟩ : ∃ mPos : ℝ,
-      mPos = polarBumpMoment 0 (a₀.1 / 2) (gapProbeRadius_pos hδ) (1 / 2) := ⟨_, rfl⟩
+      mPos = ∫ x, Real.exp (1 / 2 * x) * triangleFn a₀.1 x := ⟨_, rfl⟩
   obtain ⟨mNeg, hmNeg_def⟩ : ∃ mNeg : ℝ,
-      mNeg = polarBumpMoment 0 (a₀.1 / 2) (gapProbeRadius_pos hδ) (-1 / 2) := ⟨_, rfl⟩
+      mNeg = ∫ x, Real.exp (-1 / 2 * x) * triangleFn a₀.1 x := ⟨_, rfl⟩
+  have hmPos_ge : Real.exp (-(1 / 2 * a₀.1)) * a₀.1 ≤ mPos := by
+    have h := exp_neg_abs_mul_le_tentMoment ha₀_pos (1 / 2)
+    rw [abs_of_pos (by norm_num : (0 : ℝ) < 1 / 2)] at h
+    rw [hmPos_def]; exact h
+  have hmNeg_ge : Real.exp (-(1 / 2 * a₀.1)) * a₀.1 ≤ mNeg := by
+    have h := exp_neg_abs_mul_le_tentMoment ha₀_pos (-1 / 2)
+    rw [show |(-1 / 2 : ℝ)| = 1 / 2 by norm_num] at h
+    rw [hmNeg_def]; exact h
   have habPos : a₀.1 + |L| ≤ b₀.1 := by rw [abs_of_pos hL_pos]
   have habNeg : a₀.1 + |-L| ≤ b₀.1 := by rw [abs_neg, abs_of_pos hL_pos]
   obtain ⟨v, hv⟩ : ∃ v : CCMArchimedeanFormDomain b₀,
@@ -821,16 +831,41 @@ theorem weightedPrimeFamily_energy_le_of_log_gap {δ : ℝ} (hδ : 0 < δ) (w : 
       CCMRemainderFamily.re_inner_self, CCMRemainderFamily.re_inner_self,
       norm_logTranslationCLM (-L), norm_logTranslationCLM L]
     ring
-  -- Every active scale `n ∈ [2, ⌊e^{2 b₀}⌋]` has zero matrix element on `f`.
-  have hweight_zero : (inner ℂ (ccmWeightedPrimeOperator w b₀ f) f).re = 0 := by
-    unfold ccmWeightedPrimeOperator
-    refine AbstractToolkit.re_inner_clm_sum_eq_zero_of_forall _ _ f f fun n hn => ?_
-    by_cases hwn : w n = 0
-    · rw [hwn, Complex.ofReal_zero, clm_zero_smul, AbstractToolkit.clm_zero_apply,
-        inner_zero_left, Complex.zero_re]
-    · have hn2 : 2 ≤ n := (Finset.mem_Icc.mp hn).1
+  -- Each prime block is invisible off the window and bounded by `|w n| n^{-1/2} · 2‖f‖²` on it.
+  have hterm : ∀ n ∈ Finset.Icc 2 (Nat.floor (Real.exp (2 * b₀.1))),
+      -(inner ℂ ((((w n : ℝ) : ℂ) • ccmPrimeTransportOperator b₀ n) f) f).re ≤
+        if |Real.log n - 2 * L| < 2 * a₀.1 then |w n| / Real.sqrt n * (2 * ‖f‖ ^ 2)
+        else 0 := by
+    intro n hn
+    rw [re_inner_ofReal_smul_ccmPrimeTransportOperator]
+    split_ifs with hwin
+    · have hshift : ∀ h : ℝ, ‖inner ℂ (logTranslationCLM h f.1) f.1‖ ≤ ‖f‖ ^ 2 := by
+        intro h
+        refine (norm_inner_le_norm _ _).trans_eq ?_
+        rw [norm_logTranslationCLM h, sq]
+        rfl
+      have hR : |(inner ℂ (logTranslationCLM (Real.log n) f.1) f.1 +
+          inner ℂ (logTranslationCLM (-Real.log n) f.1) f.1).re| ≤ 2 * ‖f‖ ^ 2 := by
+        calc _ ≤ ‖inner ℂ (logTranslationCLM (Real.log n) f.1) f.1 +
+              inner ℂ (logTranslationCLM (-Real.log n) f.1) f.1‖ := Complex.abs_re_le_norm _
+          _ ≤ ‖inner ℂ (logTranslationCLM (Real.log n) f.1) f.1‖ +
+              ‖inner ℂ (logTranslationCLM (-Real.log n) f.1) f.1‖ := norm_add_le _ _
+          _ ≤ ‖f‖ ^ 2 + ‖f‖ ^ 2 := add_le_add (hshift _) (hshift _)
+          _ = 2 * ‖f‖ ^ 2 := by ring
+      have hsq : 0 ≤ 1 / Real.sqrt n := by positivity
+      calc _ ≤ |w n * (1 / Real.sqrt n) *
+              (inner ℂ (logTranslationCLM (Real.log n) f.1) f.1 +
+                inner ℂ (logTranslationCLM (-Real.log n) f.1) f.1).re| := neg_le_abs _
+        _ = |w n| * (1 / Real.sqrt n) *
+              |(inner ℂ (logTranslationCLM (Real.log n) f.1) f.1 +
+                inner ℂ (logTranslationCLM (-Real.log n) f.1) f.1).re| := by
+            rw [abs_mul, abs_mul, abs_of_nonneg hsq]
+        _ ≤ |w n| * (1 / Real.sqrt n) * (2 * ‖f‖ ^ 2) :=
+            mul_le_mul_of_nonneg_left hR (by positivity)
+        _ = |w n| / Real.sqrt n * (2 * ‖f‖ ^ 2) := by ring
+    · push Not at hwin
+      have hn2 : 2 ≤ n := (Finset.mem_Icc.mp hn).1
       have hlogn : (1 / 2 : ℝ) < Real.log n := half_lt_log_of_two_le hn2
-      have hdist : 2 * a₀.1 ≤ |Real.log n - 2 * L| := hgap n hn hwn
       obtain ⟨h, hh_def⟩ : ∃ h : ℝ, h = Real.log n := ⟨_, rfl⟩
       have hshift_zero : inner ℂ (logTranslationCLM h f.1) f.1 = 0 := by
         rw [hf_coe, map_sub, inner_sub_left, inner_sub_right, inner_sub_right,
@@ -846,7 +881,7 @@ theorem weightedPrimeFamily_energy_le_of_log_gap {δ : ℝ} (hδ : 0 < δ) (w : 
         have z2 : inner ℂ (logTranslationCLM (h + -L - L) f₀.1) f₀.1 = 0 :=
           inner_logTranslationCLM_eq_zero_of_two_mul_le_abs a₀ f₀ f₀ (by
             rw [show h + -L - L = Real.log n - 2 * L by rw [hh_def]; ring]
-            exact hdist)
+            exact hwin)
         have z3 : inner ℂ (logTranslationCLM (h + L - -L) f₀.1) f₀.1 = 0 :=
           inner_logTranslationCLM_eq_zero_of_two_mul_le_abs a₀ f₀ f₀ (by
             rw [hh_def, abs_of_pos (by linarith)]
@@ -861,17 +896,23 @@ theorem weightedPrimeFamily_energy_le_of_log_gap {δ : ℝ} (hδ : 0 < δ) (w : 
       have hneg_zero : inner ℂ (logTranslationCLM (-h) f.1) f.1 = 0 := by
         rw [inner_logTranslationCLM (-h), neg_neg]
         exact inner_eq_zero_symm.mpr hshift_zero
-      rw [re_inner_ofReal_smul_ccmPrimeTransportOperator, ← hh_def,
-        hshift_zero, hneg_zero, add_zero, Complex.zero_re, mul_zero]
+      rw [← hh_def, hshift_zero, hneg_zero, add_zero, Complex.zero_re, mul_zero, neg_zero]
+  have hprime : -(inner ℂ (ccmWeightedPrimeOperator w b₀ f) f).re ≤
+      2 * ‖f‖ ^ 2 * gapProbeWindowSum w a₀.1 L := by
+    unfold ccmWeightedPrimeOperator
+    rw [AbstractToolkit.re_inner_clm_sum_left, ← Finset.sum_neg_distrib]
+    refine (Finset.sum_le_sum hterm).trans_eq ?_
+    unfold gapProbeWindowSum
+    rw [Finset.sum_filter, Finset.mul_sum]
+    refine Finset.sum_congr rfl fun n _ => ?_
+    split_ifs <;> ring
   -- Polar evaluation on `v`.
   have hpol₀_plus : inner ℂ (ccmPolarApertureVector a₀ (1 / 2)) f₀ = (mPos : ℂ) := by
-    rw [← hf₀_to, hu₀, hmPos_def]
-    exact inner_polar_bumpInteriorSource a₀ 0 (a₀.1 / 2)
-      (gapProbeRadius_pos hδ) (gapProbeClosedBall_subset hδ) (1 / 2)
+    rw [hf₀, hmPos_def]
+    exact inner_ccmPolarApertureVector_tent a₀ (1 / 2)
   have hpol₀_minus : inner ℂ (ccmPolarApertureVector a₀ (-1 / 2)) f₀ = (mNeg : ℂ) := by
-    rw [← hf₀_to, hu₀, hmNeg_def]
-    exact inner_polar_bumpInteriorSource a₀ 0 (a₀.1 / 2)
-      (gapProbeRadius_pos hδ) (gapProbeClosedBall_subset hδ) (-1 / 2)
+    rw [hf₀, hmNeg_def]
+    exact inner_ccmPolarApertureVector_tent a₀ (-1 / 2)
   have hpol_plus : inner ℂ (ccmPolarApertureVector b₀ (1 / 2)) f =
       (((Real.exp (L / 2) - Real.exp (-L / 2)) * mPos : ℝ) : ℂ) := by
     rw [hf, hv, map_sub, inner_sub_right,
@@ -911,41 +952,85 @@ theorem weightedPrimeFamily_energy_le_of_log_gap {δ : ℝ} (hδ : 0 < δ) (w : 
         _ = 2 * ‖u₀‖ := by ring
     calc ‖v‖ ^ 2 ≤ (2 * ‖u₀‖) ^ 2 := pow_le_pow_left₀ (norm_nonneg _) htri 2
       _ = 4 * ‖u₀‖ ^ 2 := by ring
-  have hscal_le : (ccmArchimedeanRemainderScalar * inner ℂ f f).re ≤
-      |2 * gammaHardyPhaseRate 0 - 1| * (4 * ‖f₀‖ ^ 2) := by
-    rw [ccmArchimedeanRemainderScalar, Complex.re_ofReal_mul, CCMRemainderFamily.re_inner_self,
-      hf_norm_sq]
-    calc (2 * gammaHardyPhaseRate 0 - 1) * (2 * ‖f₀‖ ^ 2)
-        ≤ |2 * gammaHardyPhaseRate 0 - 1| * (2 * ‖f₀‖ ^ 2) :=
-          mul_le_mul_of_nonneg_right (le_abs_self _) (by positivity)
-      _ ≤ |2 * gammaHardyPhaseRate 0 - 1| * (4 * ‖f₀‖ ^ 2) :=
-          mul_le_mul_of_nonneg_left (by linarith [hf₀_pos]) (abs_nonneg _)
+  -- The archimedean scalar `2θ'(0) - 1` is negative.
+  have hscal_nonpos : (ccmArchimedeanRemainderScalar * inner ℂ f f).re ≤ 0 := by
+    rw [ccmArchimedeanRemainderScalar, Complex.re_ofReal_mul, CCMRemainderFamily.re_inner_self]
+    have h4 := two_gammaHardyPhaseRate_zero_add_four_neg
+    exact mul_nonpos_of_nonpos_of_nonneg (by linarith) (sq_nonneg _)
   have hQ_le : (weightedPrimeFamily w).Q b₀ v ≤
-      (4 * ‖u₀‖ ^ 2 + |2 * gammaHardyPhaseRate 0 - 1| * (4 * ‖f₀‖ ^ 2)) -
-        2 * (Real.exp (L / 2) - Real.exp (-L / 2)) ^ 2 * (mPos * mNeg) := by
+      4 * ‖u₀‖ ^ 2 - 2 * (Real.exp (L / 2) - Real.exp (-L / 2)) ^ 2 * (mPos * mNeg) +
+        2 * ‖f‖ ^ 2 * gapProbeWindowSum w a₀.1 L := by
     have hsub := weightedPrimeFamily_Q_eq_primeFree_sub w b₀ v
     have hform := primeFreeFamily_Q_expand b₀ v
     rw [← hf] at hsub hform
-    rw [hsub, hweight_zero, sub_zero, hform, hpol_re]
-    linarith only [hv_norm, hscal_le]
+    rw [hsub, hform, hpol_re]
+    linarith only [hv_norm, hscal_nonpos, hprime]
   have hray := (weightedPrimeFamily w).energy_mul_formNorm_sq_le b₀ v
-  rw [← hf, hf_norm_sq] at hray
-  have h2pos : 0 < 2 * ‖f₀‖ ^ 2 := by positivity
-  have hrhs_eq :
-      (gapProbeConst δ hδ - gapProbeCoeff δ hδ * (Real.exp (L / 2) - Real.exp (-L / 2)) ^ 2) *
-        (2 * ‖f₀‖ ^ 2) =
-      (4 * ‖u₀‖ ^ 2 + |2 * gammaHardyPhaseRate 0 - 1| * (4 * ‖f₀‖ ^ 2)) -
-        2 * (Real.exp (L / 2) - Real.exp (-L / 2)) ^ 2 * (mPos * mNeg) := by
-    unfold gapProbeConst gapProbeCoeff
-    rw [← hu₀, ← hf₀, ← hmPos_def, ← hmNeg_def, sub_mul,
-      div_mul_cancel₀ _ h2pos.ne']
-    have hterm : mPos * mNeg / ‖f₀‖ ^ 2 * (Real.exp (L / 2) - Real.exp (-L / 2)) ^ 2 *
-        (2 * ‖f₀‖ ^ 2) =
-        (mPos * mNeg / ‖f₀‖ ^ 2 * ‖f₀‖ ^ 2) *
-          (2 * (Real.exp (L / 2) - Real.exp (-L / 2)) ^ 2) := by ring
-    rw [hterm, div_mul_cancel₀ _ hf₀_pos.ne']
+  rw [← hf, hf_norm_sq, hf₀_norm] at hray
+  rw [hf_norm_sq, hf₀_norm] at hQ_le
+  have hF : 0 < 2 * (2 * a₀.1 / 3) := by positivity
+  obtain ⟨S, hS_def⟩ : ∃ S : ℝ, S = (Real.exp (L / 2) - Real.exp (-L / 2)) ^ 2 := ⟨_, rfl⟩
+  rw [← hS_def] at hQ_le ⊢
+  have hS0 : 0 ≤ S := by rw [hS_def]; exact sq_nonneg _
+  have hM : 2 / 3 * a₀.1 ^ 2 ≤ mPos * mNeg := by
+    have he : (2 / 3 : ℝ) ≤ Real.exp (-(1 / 2 * a₀.1)) * Real.exp (-(1 / 2 * a₀.1)) := by
+      rw [← Real.exp_add]
+      have := Real.add_one_le_exp (-(1 / 2 * a₀.1) + -(1 / 2 * a₀.1))
+      linarith
+    have hexp0 : 0 ≤ Real.exp (-(1 / 2 * a₀.1)) * a₀.1 := by positivity
+    calc 2 / 3 * a₀.1 ^ 2
+        ≤ Real.exp (-(1 / 2 * a₀.1)) * Real.exp (-(1 / 2 * a₀.1)) * a₀.1 ^ 2 :=
+          mul_le_mul_of_nonneg_right he (sq_nonneg _)
+      _ = (Real.exp (-(1 / 2 * a₀.1)) * a₀.1) * (Real.exp (-(1 / 2 * a₀.1)) * a₀.1) := by ring
+      _ ≤ mPos * mNeg := mul_le_mul hmPos_ge hmNeg_ge hexp0 (hexp0.trans hmPos_ge)
+  have hSM : S * (2 / 3 * a₀.1 ^ 2) ≤ S * (mPos * mNeg) := mul_le_mul_of_nonneg_left hM hS0
+  have hG : gapProbeConst δ hδ * (2 * (2 * a₀.1 / 3)) =
+      600 * a₀.1 + 4 * (1 / (9 * a₀.1)) := by
+    unfold gapProbeConst
+    change (450 + 1 / (3 * a₀.1 ^ 2)) * (2 * (2 * a₀.1 / 3)) = _
+    field_simp
     ring
-  exact le_of_mul_le_mul_right (le_trans hray (hQ_le.trans_eq hrhs_eq.symm)) h2pos
+  have hcoeff : gapProbeCoeff δ hδ = a₀.1 := rfl
+  refine le_of_mul_le_mul_right (hray.trans (hQ_le.trans ?_)) hF
+  rw [hcoeff, add_mul, sub_mul, hG]
+  linarith only [hu₀_norm, hSM]
+
+/-- **Antisymmetric tent gap probe:**
+if at `L ≥ 1/4` every active integer `n ∈ [2, ⌊e^{2(a₀ + L)}⌋]` with `w n ≠ 0` avoids the
+logarithmic interval `(2L - 2a₀, 2L + 2a₀)` (`a₀ = min δ (1/16)`), then the window charge vanishes
+and `(weightedPrimeFamily w).energy b₀ ≤ 450 + 1/(3a₀²) - a₀ (e^{L/2} - e^{-L/2})²`. -/
+theorem weightedPrimeFamily_energy_le_of_log_gap {δ : ℝ} (hδ : 0 < δ) (w : ℕ → ℝ)
+    {L : ℝ} (hL : (1 / 4 : ℝ) ≤ L)
+    (hgap : ∀ n ∈ Finset.Icc 2 (Nat.floor (Real.exp (2 * ((gapProbeSmallAperture δ hδ).1 + L)))),
+      w n ≠ 0 → 2 * (gapProbeSmallAperture δ hδ).1 ≤ |Real.log n - 2 * L|) :
+    let b₀ : SuzukiPositiveAperture :=
+      ⟨(gapProbeSmallAperture δ hδ).1 + L,
+        by linarith [(gapProbeSmallAperture δ hδ).2]⟩
+    (weightedPrimeFamily w).energy b₀ ≤
+      gapProbeConst δ hδ - gapProbeCoeff δ hδ * (Real.exp (L / 2) - Real.exp (-L / 2)) ^ 2 := by
+  intro b₀
+  have h : (weightedPrimeFamily w).energy b₀ ≤
+      gapProbeConst δ hδ - gapProbeCoeff δ hδ * (Real.exp (L / 2) - Real.exp (-L / 2)) ^ 2 +
+        2 * gapProbeWindowSum w (gapProbeSmallAperture δ hδ).1 L :=
+    weightedPrimeFamily_energy_le_window hδ w hL
+  rwa [gapProbeWindowSum_eq_zero_of_gap hgap, mul_zero, add_zero] at h
+
+/-- Exponential sinh-difference lower bound `(1/4) e^L ≤ (e^{L/2} - e^{-L/2})^2` for `2 ≤ L`. -/
+theorem quarter_mul_exp_le_sinh_diff_sq {L : ℝ} (hL : 2 ≤ L) :
+    (1 / 4 : ℝ) * Real.exp L ≤ (Real.exp (L / 2) - Real.exp (-L / 2)) ^ 2 := by
+  have hexp_ge2 : (2 : ℝ) ≤ Real.exp (L / 2) := by
+    calc (2 : ℝ) ≤ L / 2 + 1 := by linarith
+      _ ≤ Real.exp (L / 2) := Real.add_one_le_exp (L / 2)
+  have hexp_neg_le1 : Real.exp (-L / 2) ≤ 1 := Real.exp_le_one_iff.mpr (by linarith)
+  have hdiff_ge : (1 / 2 : ℝ) * Real.exp (L / 2) ≤ Real.exp (L / 2) - Real.exp (-L / 2) := by
+    linarith
+  calc (1 / 4 : ℝ) * Real.exp L
+      = ((1 / 2 : ℝ) * Real.exp (L / 2)) ^ 2 := by
+        rw [mul_pow, ← Real.exp_nat_mul]
+        norm_num
+        ring_nf
+    _ ≤ (Real.exp (L / 2) - Real.exp (-L / 2)) ^ 2 :=
+        pow_le_pow_left₀ (by positivity) hdiff_ge 2
 
 /-- **Multiplicative syndeticity / bounded-logarithmic-gap law:**
 if `(weightedPrimeFamily w).energy` is bounded below across apertures, then for every `δ > 0` the
@@ -1058,6 +1143,147 @@ theorem eventually_exists_primePow_in_short_interval_of_primeSetSemilocal_bddBel
   obtain ⟨n, _, hne, hgt, hlt⟩ := hact X hX
   obtain ⟨p, hpP, hp, k, hk1, rfl⟩ := semilocalVonMangoldt_support_primePow hne
   exact ⟨p, hpP, hp, k, hk1, hgt, hlt⟩
+
+/-! ### Dyadic Chebyshev lower bound -/
+
+theorem exp_half_log_eq_sqrt {X : ℝ} (hX : 0 < X) : Real.exp (Real.log X / 2) = Real.sqrt X := by
+  rw [Real.sqrt_eq_rpow, Real.rpow_def_of_pos hX]
+  congr 1
+  ring
+
+/-- **Dyadic Chebyshev lower bound from bounded-below energy:**
+if `(weightedPrimeFamily w).energy ≥ B` at every aperture, then for every `κ > 1` the weights
+carry mass at least `(min (log κ / 4) (1/16) / 16) · X` on every sufficiently large
+multiplicative interval `(X, κX]`. The windowed tent probe at `L = (log X)/2 + a₀` sees exactly
+the shifts `X < n < e^{4a₀} X ≤ κX`, where `n^{-1/2} ≤ X^{-1/2}`, and its polar gain
+`a₀ (e^{L/2} - e^{-L/2})² ≥ a₀ √X / 4` must be paid by the window charge. -/
+theorem dyadic_chebyshev_lower_bound_of_energy_bddBelow {w : ℕ → ℝ}
+    (hbdd : ∃ B : ℝ, ∀ a : SuzukiPositiveAperture, B ≤ (weightedPrimeFamily w).energy a)
+    {κ : ℝ} (hκ : 1 < κ) :
+    ∃ X₀ : ℝ, 0 < X₀ ∧ ∀ X : ℝ, X₀ ≤ X →
+      min (Real.log κ / 4) (1 / 16) / 16 * X ≤
+        ∑ n ∈ Finset.Ioc (Nat.floor X) (Nat.floor (κ * X)), |w n| := by
+  obtain ⟨B, hB⟩ := hbdd
+  have hlogκ : 0 < Real.log κ := Real.log_pos hκ
+  have hδ : 0 < Real.log κ / 4 := by positivity
+  obtain ⟨a₀, ha₀_def⟩ : ∃ a₀ : ℝ, a₀ = (gapProbeSmallAperture (Real.log κ / 4) hδ).1 :=
+    ⟨_, rfl⟩
+  have ha₀_pos : 0 < a₀ := by rw [ha₀_def]; exact (gapProbeSmallAperture _ hδ).2
+  have ha₀_eq : a₀ = min (Real.log κ / 4) (1 / 16) := ha₀_def
+  have ha₀_le : 4 * a₀ ≤ Real.log κ := by
+    have : a₀ ≤ Real.log κ / 4 := by rw [ha₀_eq]; exact min_le_left _ _
+    linarith
+  obtain ⟨G, hG_def⟩ : ∃ G : ℝ, G = gapProbeConst (Real.log κ / 4) hδ := ⟨_, rfl⟩
+  obtain ⟨M, hM_def⟩ : ∃ M : ℝ, M = max 0 (G - B) := ⟨_, rfl⟩
+  have hM0 : 0 ≤ M := by rw [hM_def]; exact le_max_left _ _
+  have hMGB : G - B ≤ M := by rw [hM_def]; exact le_max_right _ _
+  refine ⟨max (Real.exp 4) ((8 * M / a₀) ^ 2),
+    lt_of_lt_of_le (Real.exp_pos 4) (le_max_left _ _), fun X hX => ?_⟩
+  have hX4 : Real.exp 4 ≤ X := le_trans (le_max_left _ _) hX
+  have hXpos : 0 < X := lt_of_lt_of_le (Real.exp_pos 4) hX4
+  have hlogX : 4 ≤ Real.log X := by
+    rw [← Real.log_exp 4]; exact Real.log_le_log (Real.exp_pos 4) hX4
+  obtain ⟨s, hs_def⟩ : ∃ s : ℝ, s = Real.sqrt X := ⟨_, rfl⟩
+  have hs_pos : 0 < s := by rw [hs_def]; exact Real.sqrt_pos.mpr hXpos
+  have hs_sq : s ^ 2 = X := by rw [hs_def]; exact Real.sq_sqrt hXpos.le
+  have hs_ge : 8 * M / a₀ ≤ s := by
+    have h1 : (8 * M / a₀) ^ 2 ≤ X := le_trans (le_max_right _ _) hX
+    have h2 := Real.sqrt_le_sqrt h1
+    rwa [Real.sqrt_sq (by positivity), ← hs_def] at h2
+  have has : 8 * M ≤ a₀ * s := by
+    rw [div_le_iff₀ ha₀_pos] at hs_ge; linarith
+  obtain ⟨L, hL_def⟩ : ∃ L : ℝ, L = Real.log X / 2 + a₀ := ⟨_, rfl⟩
+  have hL2 : 2 ≤ L := by rw [hL_def]; linarith
+  have hL : (1 / 4 : ℝ) ≤ L := by linarith
+  have hwin : (weightedPrimeFamily w).energy
+      ⟨(gapProbeSmallAperture (Real.log κ / 4) hδ).1 + L,
+        by linarith [(gapProbeSmallAperture (Real.log κ / 4) hδ).2]⟩ ≤
+      gapProbeConst (Real.log κ / 4) hδ -
+          gapProbeCoeff (Real.log κ / 4) hδ * (Real.exp (L / 2) - Real.exp (-L / 2)) ^ 2 +
+        2 * gapProbeWindowSum w (gapProbeSmallAperture (Real.log κ / 4) hδ).1 L :=
+    weightedPrimeFamily_energy_le_window hδ w hL
+  have hkey := (hB _).trans hwin
+  rw [← hG_def, show gapProbeCoeff (Real.log κ / 4) hδ = a₀ from ha₀_def.symm,
+    ← ha₀_def] at hkey
+  obtain ⟨T, hT_def⟩ : ∃ T : ℝ,
+      T = ∑ n ∈ Finset.Ioc (Nat.floor X) (Nat.floor (κ * X)), |w n| := ⟨_, rfl⟩
+  have hT0 : 0 ≤ T := by rw [hT_def]; exact Finset.sum_nonneg fun _ _ => abs_nonneg _
+  -- The window is contained in `(X, κX]`, where `n^{-1/2} ≤ X^{-1/2}`.
+  have hW : gapProbeWindowSum w a₀ L ≤ T / s := by
+    unfold gapProbeWindowSum
+    rw [hT_def, Finset.sum_div]
+    have hsub : (Finset.Icc 2 (Nat.floor (Real.exp (2 * (a₀ + L))))).filter
+        (fun n : ℕ => |Real.log (n : ℝ) - 2 * L| < 2 * a₀) ⊆
+          Finset.Ioc (Nat.floor X) (Nat.floor (κ * X)) := by
+      intro n hn
+      obtain ⟨hnI, hwinn⟩ := Finset.mem_filter.mp hn
+      have hn2 : 2 ≤ n := (Finset.mem_Icc.mp hnI).1
+      have hn_pos : (0 : ℝ) < n := by exact_mod_cast (show 0 < n by omega)
+      obtain ⟨hlo, hhi⟩ := abs_lt.mp hwinn
+      have hXn : X < (n : ℝ) := by
+        rw [← Real.log_lt_log_iff hXpos hn_pos]
+        rw [hL_def] at hlo; linarith
+      have hnκ : (n : ℝ) < κ * X := by
+        rw [← Real.log_lt_log_iff hn_pos (by positivity),
+          Real.log_mul (by linarith) hXpos.ne']
+        rw [hL_def] at hhi; linarith
+      refine Finset.mem_Ioc.mpr ⟨(Nat.floor_lt hXpos.le).mpr hXn, ?_⟩
+      exact Nat.le_floor hnκ.le
+    calc ∑ n ∈ (Finset.Icc 2 (Nat.floor (Real.exp (2 * (a₀ + L))))).filter
+            (fun n : ℕ => |Real.log (n : ℝ) - 2 * L| < 2 * a₀), |w n| / Real.sqrt n
+        ≤ ∑ n ∈ (Finset.Icc 2 (Nat.floor (Real.exp (2 * (a₀ + L))))).filter
+            (fun n : ℕ => |Real.log (n : ℝ) - 2 * L| < 2 * a₀), |w n| / s := by
+          refine Finset.sum_le_sum fun n hn => ?_
+          have hXn : X ≤ (n : ℝ) := by
+            have := Finset.mem_Ioc.mp (hsub hn)
+            exact ((Nat.floor_lt hXpos.le).mp this.1).le
+          have hsn : s ≤ Real.sqrt n := by rw [hs_def]; exact Real.sqrt_le_sqrt hXn
+          exact div_le_div_of_nonneg_left (abs_nonneg _) hs_pos hsn
+      _ ≤ ∑ n ∈ Finset.Ioc (Nat.floor X) (Nat.floor (κ * X)), |w n| / s :=
+          Finset.sum_le_sum_of_subset_of_nonneg hsub fun _ _ _ =>
+            div_nonneg (abs_nonneg _) hs_pos.le
+  -- The polar gain is at least `a₀ √X / 4`.
+  have hsinh : s / 4 ≤ (Real.exp (L / 2) - Real.exp (-L / 2)) ^ 2 := by
+    have hexpL : s ≤ Real.exp L := by
+      rw [hL_def, Real.exp_add, exp_half_log_eq_sqrt hXpos, ← hs_def]
+      have := Real.one_le_exp ha₀_pos.le
+      nlinarith
+    have := quarter_mul_exp_le_sinh_diff_sq hL2
+    linarith
+  have hB1 : B ≤ G - a₀ * (s / 4) + 2 * (T / s) := by
+    have h1 : a₀ * (s / 4) ≤ a₀ * (Real.exp (L / 2) - Real.exp (-L / 2)) ^ 2 :=
+      mul_le_mul_of_nonneg_left hsinh ha₀_pos.le
+    linarith
+  have hB2 : B * s ≤ G * s - a₀ * s ^ 2 / 4 + 2 * T := by
+    have h := mul_le_mul_of_nonneg_right hB1 hs_pos.le
+    have hexp : (G - a₀ * (s / 4) + 2 * (T / s)) * s = G * s - a₀ * s ^ 2 / 4 + 2 * T := by
+      field_simp
+    linarith
+  rw [← ha₀_eq, ← hT_def]
+  have hMs : M * s ≤ a₀ * s ^ 2 / 8 := by nlinarith
+  have hGB : (G - B) * s ≤ M * s := mul_le_mul_of_nonneg_right hMGB hs_pos.le
+  rw [← hs_sq]
+  nlinarith
+
+theorem semilocalVonMangoldt_nonneg (P : Set ℕ) (n : ℕ) : 0 ≤ semilocalVonMangoldt P n := by
+  unfold semilocalVonMangoldt
+  split_ifs
+  · exact ArithmeticFunction.vonMangoldt_nonneg
+  · exact le_rfl
+
+/-- **Dyadic Chebyshev lower bound for semilocal prime sets:**
+if `(primeSetSemilocalFamily P).energy` is bounded below, then for every `κ > 1` and all large `X`,
+`Σ_{X < n ≤ κX} Λ_P(n) ≥ (min (log κ / 4) (1/16) / 16) · X`, where `Λ_P` is the von Mangoldt
+function restricted to prime powers of primes in `P`. -/
+theorem dyadic_chebyshev_lower_bound_of_primeSetSemilocal_bddBelow {P : Set ℕ}
+    (hbdd : ∃ B : ℝ, ∀ a : SuzukiPositiveAperture, B ≤ (primeSetSemilocalFamily P).energy a)
+    {κ : ℝ} (hκ : 1 < κ) :
+    ∃ X₀ : ℝ, 0 < X₀ ∧ ∀ X : ℝ, X₀ ≤ X →
+      min (Real.log κ / 4) (1 / 16) / 16 * X ≤
+        ∑ n ∈ Finset.Ioc (Nat.floor X) (Nat.floor (κ * X)), semilocalVonMangoldt P n := by
+  obtain ⟨X₀, hX₀, h⟩ := dyadic_chebyshev_lower_bound_of_energy_bddBelow hbdd hκ
+  refine ⟨X₀, hX₀, fun X hX => (h X hX).trans_eq ?_⟩
+  exact Finset.sum_congr rfl fun n _ => abs_of_nonneg (semilocalVonMangoldt_nonneg P n)
 
 /-! ## 4. Constructive `Finset` pigeonhole avoidance and cardinality-only `-Θ(e^A)` collapse -/
 
@@ -1232,44 +1458,62 @@ theorem exists_shift_avoiding_finite_prime_powers (r : ℕ) (S : Finset ℕ) (hS
   have hmemHit : j ∈ hit ⟨p, k⟩ := Finset.mem_filter.mpr ⟨hjJ, hclose⟩
   exact hjNot (Finset.mem_biUnion.mpr ⟨⟨p, k⟩, hmemBad, hmemHit⟩)
 
-/-- Exponential sinh-difference lower bound `(1/4) e^L ≤ (e^{L/2} - e^{-L/2})^2` for `2 ≤ L`. -/
-theorem quarter_mul_exp_le_sinh_diff_sq {L : ℝ} (hL : 2 ≤ L) :
-    (1 / 4 : ℝ) * Real.exp L ≤ (Real.exp (L / 2) - Real.exp (-L / 2)) ^ 2 := by
-  have hexp_ge2 : (2 : ℝ) ≤ Real.exp (L / 2) := by
-    calc (2 : ℝ) ≤ L / 2 + 1 := by linarith
-      _ ≤ Real.exp (L / 2) := Real.add_one_le_exp (L / 2)
-  have hexp_neg_le1 : Real.exp (-L / 2) ≤ 1 := Real.exp_le_one_iff.mpr (by linarith)
-  have hdiff_ge : (1 / 2 : ℝ) * Real.exp (L / 2) ≤ Real.exp (L / 2) - Real.exp (-L / 2) := by
-    linarith
-  calc (1 / 4 : ℝ) * Real.exp L
-      = ((1 / 2 : ℝ) * Real.exp (L / 2)) ^ 2 := by
-        rw [mul_pow, ← Real.exp_nat_mul]
-        norm_num
-        ring_nf
-    _ ≤ (Real.exp (L / 2) - Real.exp (-L / 2)) ^ 2 :=
-        pow_le_pow_left₀ (by positivity) hdiff_ge 2
+/-- `e^{-2} ≥ 1/8`, from `e < 2.7182818286`. -/
+theorem one_eighth_le_exp_neg_two : (1 / 8 : ℝ) ≤ Real.exp (-2) := by
+  have h := Real.exp_one_lt_d9
+  have he : Real.exp 2 = Real.exp 1 ^ 2 := by rw [← Real.exp_nat_mul]; norm_num
+  have h2 : Real.exp 2 ≤ 8 := by
+    rw [he]
+    nlinarith [Real.exp_pos 1]
+  rw [Real.exp_neg, one_div]
+  exact inv_anti₀ (Real.exp_pos 2) h2
 
-/-- Cardinality-only additive constant `C_r` in the finite-prime `-Θ(e^A)` collapse law. -/
+/-- Cardinality-only additive constant `C_r = 450 + 256 (5r + 2)² / 3` in the finite-prime
+`-Θ(e^A)` collapse law. -/
 def finitePrimeCollapseConst (r : ℕ) : ℝ :=
-  gapProbeConst (finitePrimeGridStep r) (finitePrimeGridStep_pos r)
+  450 + 256 * ((5 * r + 2 : ℕ) : ℝ) ^ 2 / 3
 
-/-- Cardinality-only positive exponential coefficient `c_r > 0` in the finite-prime `-Θ(e^A)`
-collapse law. -/
+/-- Cardinality-only positive exponential coefficient `c_r = 1 / (512 (5r + 2))` in the
+finite-prime `-Θ(e^A)` collapse law. -/
 def finitePrimeCollapseCoeff (r : ℕ) : ℝ :=
-  (1 / 4 : ℝ) * Real.exp (-2) *
-    gapProbeCoeff (finitePrimeGridStep r) (finitePrimeGridStep_pos r)
+  1 / (512 * ((5 * r + 2 : ℕ) : ℝ))
 
-theorem finitePrimeCollapseCoeff_pos (r : ℕ) : 0 < finitePrimeCollapseCoeff r :=
-  mul_pos (mul_pos (by norm_num) (Real.exp_pos _))
-    (gapProbeCoeff_pos (finitePrimeGridStep_pos r))
+theorem finitePrimeCollapseCoeff_pos (r : ℕ) : 0 < finitePrimeCollapseCoeff r := by
+  unfold finitePrimeCollapseCoeff
+  have hN : (0 : ℝ) < ((5 * r + 2 : ℕ) : ℝ) := by exact_mod_cast (show 0 < 5 * r + 2 by omega)
+  positivity
+
+theorem gapProbeConst_finitePrimeGridStep (r : ℕ) :
+    gapProbeConst (finitePrimeGridStep r) (finitePrimeGridStep_pos r) =
+      finitePrimeCollapseConst r := by
+  have hstep : finitePrimeGridStep r ≤ 1 / 16 :=
+    (finitePrimeGridStep_le_one_div_32 r).trans (by norm_num)
+  unfold gapProbeConst finitePrimeCollapseConst
+  rw [gapProbeSmallAperture_val_of_le _ hstep]
+  unfold finitePrimeGridStep
+  have hN : (0 : ℝ) < ((5 * r + 2 : ℕ) : ℝ) := by exact_mod_cast (show 0 < 5 * r + 2 by omega)
+  field_simp
+  ring
+
+theorem gapProbeCoeff_finitePrimeGridStep (r : ℕ) :
+    gapProbeCoeff (finitePrimeGridStep r) (finitePrimeGridStep_pos r) =
+      32 * finitePrimeCollapseCoeff r := by
+  have hstep : finitePrimeGridStep r ≤ 1 / 16 :=
+    (finitePrimeGridStep_le_one_div_32 r).trans (by norm_num)
+  unfold gapProbeCoeff finitePrimeCollapseCoeff
+  rw [gapProbeSmallAperture_val_of_le _ hstep]
+  unfold finitePrimeGridStep
+  have hN : (0 : ℝ) < ((5 * r + 2 : ℕ) : ℝ) := by exact_mod_cast (show 0 < 5 * r + 2 by omega)
+  field_simp
+  ring
 
 /-- **Cardinality-uniform `-Θ(e^A)` ground-energy collapse for unrestricted weights on `S`-prime
 powers:**
 for every `r : ℕ`, every `S : Finset ℕ` with `S.card ≤ r`, every real weight `w : ℕ → ℝ` supported
 on `{p^k : p ∈ S, p ≥ 2, k ≥ 1}` (`n ≥ 2`), and every aperture `A ≥ 4`,
-`(weightedPrimeFamily w).energy A ≤ finitePrimeCollapseConst r - finitePrimeCollapseCoeff r * e^A`,
-where `finitePrimeCollapseConst r` and `finitePrimeCollapseCoeff r > 0` depend **only on `r`**
-(independent of `S` and `w`). -/
+`(weightedPrimeFamily w).energy A ≤ 450 + 256 (5r+2)²/3 - e^A / (512 (5r + 2))`.
+The tent probe of half-width `finitePrimeGridStep r` sits in the pigeonhole gap of
+`[A - 2, A - 1]`, so the window charge vanishes. -/
 theorem weightedPrimeFamily_energy_le_neg_exp_of_finitePrimePowers (r : ℕ) (S : Finset ℕ)
     (hS : S.card ≤ r) (w : ℕ → ℝ)
     (hw : ∀ n : ℕ, 2 ≤ n → w n ≠ 0 → ∃ p ∈ S, 2 ≤ p ∧ ∃ k : ℕ, 1 ≤ k ∧ p ^ k = n)
@@ -1294,33 +1538,27 @@ theorem weightedPrimeFamily_energy_le_neg_exp_of_finitePrimePowers (r : ℕ) (S 
     rw [hlog]
     exact le_trans (by linarith) (havoid p hpS hp2 k hk1)
   have hprobe : (weightedPrimeFamily w).energy b₀ ≤
-      finitePrimeCollapseConst r -
+      gapProbeConst (finitePrimeGridStep r) (finitePrimeGridStep_pos r) -
         gapProbeCoeff (finitePrimeGridStep r) (finitePrimeGridStep_pos r) *
           (Real.exp (L / 2) - Real.exp (-L / 2)) ^ 2 :=
     weightedPrimeFamily_energy_le_of_log_gap (finitePrimeGridStep_pos r) w hL_quarter hgap
-  have hexp_L : Real.exp (-2) * Real.exp A.1 ≤ Real.exp L := by
-    calc Real.exp (-2) * Real.exp A.1
-        = Real.exp (A.1 - 2) := by rw [← Real.exp_add]; congr 1; ring
+  rw [gapProbeConst_finitePrimeGridStep, gapProbeCoeff_finitePrimeGridStep] at hprobe
+  have hexp_L : (1 / 8 : ℝ) * Real.exp A.1 ≤ Real.exp L := by
+    calc (1 / 8 : ℝ) * Real.exp A.1
+        ≤ Real.exp (-2) * Real.exp A.1 :=
+          mul_le_mul_of_nonneg_right one_eighth_le_exp_neg_two (Real.exp_pos _).le
+      _ = Real.exp (A.1 - 2) := by rw [← Real.exp_add]; congr 1; ring
       _ ≤ Real.exp L := Real.exp_le_exp.mpr hL_lo
-  have hsinh_ge : (1 / 4 : ℝ) * Real.exp (-2) * Real.exp A.1 ≤
-      (Real.exp (L / 2) - Real.exp (-L / 2)) ^ 2 := by
-    calc (1 / 4 : ℝ) * Real.exp (-2) * Real.exp A.1
-        = (1 / 4 : ℝ) * (Real.exp (-2) * Real.exp A.1) := by ring
-      _ ≤ (1 / 4 : ℝ) * Real.exp L := mul_le_mul_of_nonneg_left hexp_L (by norm_num)
-      _ ≤ (Real.exp (L / 2) - Real.exp (-L / 2)) ^ 2 := quarter_mul_exp_le_sinh_diff_sq hL2
-  have hc_pos : 0 < gapProbeCoeff (finitePrimeGridStep r) (finitePrimeGridStep_pos r) :=
-    gapProbeCoeff_pos (finitePrimeGridStep_pos r)
+  have hsinh_ge : (1 / 32 : ℝ) * Real.exp A.1 ≤ (Real.exp (L / 2) - Real.exp (-L / 2)) ^ 2 := by
+    have := quarter_mul_exp_le_sinh_diff_sq hL2
+    linarith
+  have hc_pos := finitePrimeCollapseCoeff_pos r
   have hterm_ge : finitePrimeCollapseCoeff r * Real.exp A.1 ≤
-      gapProbeCoeff (finitePrimeGridStep r) (finitePrimeGridStep_pos r) *
-        (Real.exp (L / 2) - Real.exp (-L / 2)) ^ 2 := by
-    unfold finitePrimeCollapseCoeff
-    have hrw : (1 / 4 : ℝ) * Real.exp (-2) *
-        gapProbeCoeff (finitePrimeGridStep r) (finitePrimeGridStep_pos r) * Real.exp A.1 =
-        gapProbeCoeff (finitePrimeGridStep r) (finitePrimeGridStep_pos r) *
-          ((1 / 4 : ℝ) * Real.exp (-2) * Real.exp A.1) := by ring
-    rw [hrw]
-    exact mul_le_mul_of_nonneg_left hsinh_ge hc_pos.le
-  exact le_trans ((weightedPrimeFamily w).energy_antitone hb₀_le_A) (by linarith only [hprobe, hterm_ge])
+      32 * finitePrimeCollapseCoeff r * (Real.exp (L / 2) - Real.exp (-L / 2)) ^ 2 := by
+    have h := mul_le_mul_of_nonneg_left hsinh_ge (by positivity : (0 : ℝ) ≤ 32 * finitePrimeCollapseCoeff r)
+    linarith
+  exact le_trans ((weightedPrimeFamily w).energy_antitone hb₀_le_A)
+    (by linarith only [hprobe, hterm_ge])
 
 /-- **Exponential `-Θ(e^A)` ground-energy collapse for `finitePrimeSetSemilocalFamily S`:**
 every finite-prime semilocal truncation collapses at the maximal uncompensated `s = 1` pole rate,
@@ -1434,29 +1672,206 @@ theorem not_exists_sublinear_exp_lower_bound_for_finitePrimeSetSemilocal (S : Fi
   obtain ⟨p, hpS, hpPrime, k, hk1, rfl⟩ := semilocalVonMangoldt_support_primePow hne
   exact ⟨p, Finset.mem_coe.mp hpS, hpPrime.two_le, k, hk1, rfl⟩
 
-/-! ## 5. Forced zero crossings, positive-trace carrier no-go, prime counting, and infinitude -/
+/-! ## 5. Rational semilocal collapse, logarithmic ceiling, forced zero crossings, carrier no-go,
+prime counting, and infinitude -/
 
-/-- Explicit cardinality-only ceiling `≥ 4` above which every `r`-prime semilocal ground energy is
-strictly below `-1`. -/
+theorem semilocalVonMangoldt_abs_le_log (P : Set ℕ) (n : ℕ) :
+    |semilocalVonMangoldt P n| ≤ Real.log n := by
+  rw [abs_of_nonneg (semilocalVonMangoldt_nonneg P n)]
+  unfold semilocalVonMangoldt
+  split_ifs
+  · exact ArithmeticFunction.vonMangoldt_le_log
+  · exact Real.log_natCast_nonneg n
+
+/-- `log n ≤ 2 √n`, i.e. `log n / √n ≤ 2`, for `n ≥ 1`. -/
+theorem log_div_sqrt_le_two {n : ℕ} (hn : 1 ≤ n) : Real.log n / Real.sqrt n ≤ 2 := by
+  have hn_pos : (0 : ℝ) < n := by exact_mod_cast (show 0 < n by omega)
+  have hs_pos : 0 < Real.sqrt n := Real.sqrt_pos.mpr hn_pos
+  have hlog : Real.log n = 2 * Real.log (Real.sqrt n) := by
+    rw [Real.log_sqrt hn_pos.le]; ring
+  rw [div_le_iff₀ hs_pos, hlog]
+  have := Real.log_le_sub_one_of_pos hs_pos
+  linarith
+
+/-- **Window count for finite prime sets:** a window `|log n - 2L| < 1/8` has length
+`1/4 < log 2`, so it meets at most one power of each prime; `n ↦ minFac n` injects the active
+window into `S`, and each charge `Λ(n)/√n ≤ 2`. -/
+theorem gapProbeWindowSum_semilocalVonMangoldt_le (S : Finset ℕ) (L : ℝ) :
+    gapProbeWindowSum (semilocalVonMangoldt (S : Set ℕ)) (1 / 16) L ≤ 2 * S.card := by
+  classical
+  unfold gapProbeWindowSum
+  obtain ⟨F, hF⟩ : ∃ F : Finset ℕ,
+      F = (Finset.Icc 2 (Nat.floor (Real.exp (2 * (1 / 16 + L))))).filter
+        (fun n : ℕ => |Real.log (n : ℝ) - 2 * L| < 2 * (1 / 16 : ℝ)) := ⟨_, rfl⟩
+  rw [← hF]
+  obtain ⟨F', hF'⟩ : ∃ F' : Finset ℕ,
+      F' = F.filter (fun n => semilocalVonMangoldt (S : Set ℕ) n ≠ 0) := ⟨_, rfl⟩
+  have hsum : ∑ n ∈ F, |semilocalVonMangoldt (S : Set ℕ) n| / Real.sqrt n =
+      ∑ n ∈ F', |semilocalVonMangoldt (S : Set ℕ) n| / Real.sqrt n := by
+    rw [hF', Finset.sum_filter_of_ne]
+    intro n _ hne h0
+    apply hne
+    rw [h0, abs_zero, zero_div]
+  rw [hsum]
+  have hmemF : ∀ n ∈ F', n ∈ F ∧ semilocalVonMangoldt (S : Set ℕ) n ≠ 0 := fun n hn => by
+    rw [hF'] at hn; exact Finset.mem_filter.mp hn
+  have hwinF : ∀ n ∈ F, 2 ≤ n ∧ |Real.log n - 2 * L| < 2 * (1 / 16 : ℝ) := fun n hn => by
+    rw [hF] at hn
+    obtain ⟨hnI, hw⟩ := Finset.mem_filter.mp hn
+    exact ⟨(Finset.mem_Icc.mp hnI).1, hw⟩
+  have hterm : ∀ n ∈ F', |semilocalVonMangoldt (S : Set ℕ) n| / Real.sqrt n ≤ 2 := by
+    intro n hn
+    have hn2 := (hwinF n (hmemF n hn).1).1
+    exact (div_le_div_of_nonneg_right (semilocalVonMangoldt_abs_le_log _ n)
+      (Real.sqrt_nonneg _)).trans (log_div_sqrt_le_two (by omega))
+  have hcard : F'.card ≤ S.card := by
+    refine Finset.card_le_card_of_injOn Nat.minFac ?_ ?_
+    · intro n hn
+      obtain ⟨p, hpS, hp, k, hk, rfl⟩ := semilocalVonMangoldt_support_primePow (hmemF n hn).2
+      rw [hp.pow_minFac (by omega)]
+      exact hpS
+    · intro n₁ hn₁ n₂ hn₂ heq
+      obtain ⟨hF₁, hne₁⟩ := hmemF n₁ hn₁
+      obtain ⟨hF₂, hne₂⟩ := hmemF n₂ hn₂
+      obtain ⟨p, -, hp, k₁, hk₁, rfl⟩ := semilocalVonMangoldt_support_primePow hne₁
+      obtain ⟨q, -, hq, k₂, hk₂, rfl⟩ := semilocalVonMangoldt_support_primePow hne₂
+      have hpq : p = q := by
+        have h := heq
+        rwa [hp.pow_minFac (by omega), hq.pow_minFac (by omega)] at h
+      subst hpq
+      have hw₁ := (hwinF _ hF₁).2
+      have hw₂ := (hwinF _ hF₂).2
+      rw [Nat.cast_pow, Real.log_pow] at hw₁ hw₂
+      have hlogp : (1 / 2 : ℝ) < Real.log p := half_lt_log_of_two_le hp.two_le
+      obtain ⟨h₁lo, h₁hi⟩ := abs_lt.mp hw₁
+      obtain ⟨h₂lo, h₂hi⟩ := abs_lt.mp hw₂
+      by_contra hne
+      have hk : k₁ ≠ k₂ := fun h => hne (by rw [h])
+      rcases Nat.lt_or_gt_of_ne hk with h | h
+      · have h' : (k₁ : ℝ) + 1 ≤ k₂ := by exact_mod_cast h
+        have hmul : ((k₁ : ℝ) + 1) * Real.log p ≤ (k₂ : ℝ) * Real.log p :=
+          mul_le_mul_of_nonneg_right h' (by linarith)
+        linarith
+      · have h' : (k₂ : ℝ) + 1 ≤ k₁ := by exact_mod_cast h
+        have hmul : ((k₂ : ℝ) + 1) * Real.log p ≤ (k₁ : ℝ) * Real.log p :=
+          mul_le_mul_of_nonneg_right h' (by linarith)
+        linarith
+  calc ∑ n ∈ F', |semilocalVonMangoldt (S : Set ℕ) n| / Real.sqrt n
+      ≤ ∑ _n ∈ F', (2 : ℝ) := Finset.sum_le_sum hterm
+    _ = 2 * F'.card := by rw [Finset.sum_const, nsmul_eq_mul]; ring
+    _ ≤ 2 * S.card := by
+        have : (F'.card : ℝ) ≤ S.card := by exact_mod_cast hcard
+        linarith
+
+/-- **Rational semilocal collapse (linear form):** for every finite set `S` and aperture `A ≥ 4`,
+`(finitePrimeSetSemilocalFamily S).energy A ≤ 1606/3 + 4|S| - (15/1024) e^A`.
+The tent probe of half-width `1/16` at `L = A - 1/16` pays at most `4|S|` to the window. -/
+theorem finitePrimeSetSemilocal_energy_le_linear (S : Finset ℕ) (A : SuzukiPositiveAperture)
+    (hA : 4 ≤ A.1) :
+    (finitePrimeSetSemilocalFamily S).energy A ≤
+      1606 / 3 + 4 * S.card - 15 / 1024 * Real.exp A.1 := by
+  have hδ : (0 : ℝ) < 1 / 16 := by norm_num
+  have ha₀ : (gapProbeSmallAperture (1 / 16) hδ).1 = 1 / 16 :=
+    gapProbeSmallAperture_val_of_le hδ le_rfl
+  have hL : (1 / 4 : ℝ) ≤ A.1 - 1 / 16 := by linarith
+  have hL2 : 2 ≤ A.1 - 1 / 16 := by linarith
+  have hwin : (finitePrimeSetSemilocalFamily S).energy
+      ⟨(gapProbeSmallAperture (1 / 16) hδ).1 + (A.1 - 1 / 16),
+        by linarith [(gapProbeSmallAperture (1 / 16) hδ).2]⟩ ≤
+      gapProbeConst (1 / 16) hδ - gapProbeCoeff (1 / 16) hδ *
+          (Real.exp ((A.1 - 1 / 16) / 2) - Real.exp (-(A.1 - 1 / 16) / 2)) ^ 2 +
+        2 * gapProbeWindowSum (semilocalVonMangoldt (S : Set ℕ))
+          (gapProbeSmallAperture (1 / 16) hδ).1 (A.1 - 1 / 16) :=
+    weightedPrimeFamily_energy_le_window hδ _ hL
+  have hb : (⟨(gapProbeSmallAperture (1 / 16) hδ).1 + (A.1 - 1 / 16),
+      by linarith [(gapProbeSmallAperture (1 / 16) hδ).2]⟩ : SuzukiPositiveAperture) = A :=
+    Subtype.ext (by simp only [ha₀]; ring)
+  have hconst : gapProbeConst (1 / 16) hδ = 1606 / 3 := by
+    unfold gapProbeConst; rw [ha₀]; norm_num
+  have hcoeff : gapProbeCoeff (1 / 16) hδ = 1 / 16 := ha₀
+  rw [hb, hconst, hcoeff, ha₀] at hwin
+  have hcount := gapProbeWindowSum_semilocalVonMangoldt_le S (A.1 - 1 / 16)
+  have hsinh := quarter_mul_exp_le_sinh_diff_sq hL2
+  have hexp : 15 / 16 * Real.exp A.1 ≤ Real.exp (A.1 - 1 / 16) := by
+    rw [sub_eq_add_neg, Real.exp_add]
+    have h := Real.add_one_le_exp (-(1 / 16 : ℝ))
+    nlinarith [Real.exp_pos A.1]
+  nlinarith
+
+/-- **Rational semilocal collapse:**
+`(finitePrimeSetSemilocalFamily S).energy A ≤ 536 (|S| + 1)² - (15/1024) e^A` for `A ≥ 4`. -/
+theorem finitePrimeSetSemilocal_energy_le_rational (S : Finset ℕ) (A : SuzukiPositiveAperture)
+    (hA : 4 ≤ A.1) :
+    (finitePrimeSetSemilocalFamily S).energy A ≤
+      536 * ((S.card : ℝ) + 1) ^ 2 - 15 / 1024 * Real.exp A.1 := by
+  have h := finitePrimeSetSemilocal_energy_le_linear S A hA
+  have hs : (0 : ℝ) ≤ S.card := Nat.cast_nonneg _
+  nlinarith
+
+/-- Logarithmic zero-crossing ceiling `2 log(r + 2) + 11`: every `r`-prime semilocal ground energy
+is strictly below `-1` beyond it. -/
 def finitePrimeZeroCrossingCeiling (r : ℕ) : ℝ :=
-  max 4 ((max 0 (finitePrimeCollapseConst r) + 1) / finitePrimeCollapseCoeff r)
+  2 * Real.log ((r : ℝ) + 2) + 11
 
 theorem four_le_finitePrimeZeroCrossingCeiling (r : ℕ) :
-    4 ≤ finitePrimeZeroCrossingCeiling r :=
+    4 ≤ finitePrimeZeroCrossingCeiling r := by
+  unfold finitePrimeZeroCrossingCeiling
+  have : 0 ≤ Real.log ((r : ℝ) + 2) :=
+    Real.log_nonneg (by linarith [(Nat.cast_nonneg r : (0 : ℝ) ≤ r)])
+  linarith
+
+theorem exp_finitePrimeZeroCrossingCeiling (r : ℕ) :
+    Real.exp (finitePrimeZeroCrossingCeiling r) = ((r : ℝ) + 2) ^ 2 * Real.exp 11 := by
+  unfold finitePrimeZeroCrossingCeiling
+  have hpos : (0 : ℝ) < (r : ℝ) + 2 := by positivity
+  rw [Real.exp_add, show 2 * Real.log ((r : ℝ) + 2) = Real.log (((r : ℝ) + 2) ^ 2) by
+    rw [Real.log_pow]; norm_num, Real.exp_log (by positivity)]
+
+theorem thirtySixThousand_lt_exp_eleven : (36660 : ℝ) < Real.exp 11 := by
+  have h := Real.exp_one_gt_d9
+  have he : Real.exp 11 = Real.exp 1 ^ 11 := by rw [← Real.exp_nat_mul]; norm_num
+  rw [he]
+  calc (36660 : ℝ) < 2.7182818283 ^ 11 := by norm_num
+    _ < Real.exp 1 ^ 11 := by gcongr
+
+theorem finitePrimeSetSemilocal_energy_lt_neg_one_of_ceiling_le {r : ℕ} (S : Finset ℕ)
+    (hS : S.card ≤ r) {A : SuzukiPositiveAperture}
+    (hA : finitePrimeZeroCrossingCeiling r ≤ A.1) :
+    (finitePrimeSetSemilocalFamily S).energy A < -1 := by
+  have hA4 : 4 ≤ A.1 := le_trans (four_le_finitePrimeZeroCrossingCeiling r) hA
+  have hlin := finitePrimeSetSemilocal_energy_le_linear S A hA4
+  have hexp : ((r : ℝ) + 2) ^ 2 * Real.exp 11 ≤ Real.exp A.1 := by
+    rw [← exp_finitePrimeZeroCrossingCeiling]; exact Real.exp_le_exp.mpr hA
+  have h11 := thirtySixThousand_lt_exp_eleven
+  have hcard : (S.card : ℝ) ≤ r := by exact_mod_cast hS
+  have hr0 : (0 : ℝ) ≤ r := Nat.cast_nonneg r
+  have hsq : 0 ≤ ((r : ℝ) + 2) ^ 2 := sq_nonneg _
+  have h1 : ((r : ℝ) + 2) ^ 2 * 36660 ≤ Real.exp A.1 :=
+    le_trans (mul_le_mul_of_nonneg_left h11.le hsq) hexp
+  have h2 : 4 * (r : ℝ) + 1606 / 3 + 1 < 537 * ((r : ℝ) + 2) ^ 2 := by nlinarith
+  nlinarith
+
+/-- Cardinality-only ceiling `≥ 4` above which every unrestricted weight on `r` primes has ground
+energy strictly below `-1`. -/
+def weightedFinitePrimeCeiling (r : ℕ) : ℝ :=
+  max 4 ((max 0 (finitePrimeCollapseConst r) + 1) / finitePrimeCollapseCoeff r)
+
+theorem four_le_weightedFinitePrimeCeiling (r : ℕ) :
+    4 ≤ weightedFinitePrimeCeiling r :=
   le_max_left _ _
 
 theorem weightedPrimeFamily_energy_lt_neg_one_of_ceiling_le {r : ℕ} (S : Finset ℕ)
     (hS : S.card ≤ r) (w : ℕ → ℝ)
     (hw : ∀ n : ℕ, 2 ≤ n → w n ≠ 0 → ∃ p ∈ S, 2 ≤ p ∧ ∃ k : ℕ, 1 ≤ k ∧ p ^ k = n)
-    {A : SuzukiPositiveAperture} (hA : finitePrimeZeroCrossingCeiling r ≤ A.1) :
+    {A : SuzukiPositiveAperture} (hA : weightedFinitePrimeCeiling r ≤ A.1) :
     (weightedPrimeFamily w).energy A < -1 := by
-  have hA4 : 4 ≤ A.1 := le_trans (four_le_finitePrimeZeroCrossingCeiling r) hA
+  have hA4 : 4 ≤ A.1 := le_trans (four_le_weightedFinitePrimeCeiling r) hA
   have hcol := weightedPrimeFamily_energy_le_neg_exp_of_finitePrimePowers r S hS w hw A hA4
   have hc := finitePrimeCollapseCoeff_pos r
   have hquot : (max 0 (finitePrimeCollapseConst r) + 1) / finitePrimeCollapseCoeff r <
       Real.exp A.1 := by
     calc (max 0 (finitePrimeCollapseConst r) + 1) / finitePrimeCollapseCoeff r
-        ≤ finitePrimeZeroCrossingCeiling r := le_max_right _ _
+        ≤ weightedFinitePrimeCeiling r := le_max_right _ _
       _ ≤ A.1 := hA
       _ < A.1 + 1 := lt_add_one A.1
       _ ≤ Real.exp A.1 := by linarith [Real.add_one_le_exp A.1]
@@ -1465,15 +1880,6 @@ theorem weightedPrimeFamily_energy_lt_neg_one_of_ceiling_le {r : ℕ} (S : Finse
     have h2 : finitePrimeCollapseConst r ≤ max 0 (finitePrimeCollapseConst r) := le_max_right _ _
     linarith [mul_comm (Real.exp A.1) (finitePrimeCollapseCoeff r)]
   linarith only [hcol, hmul]
-
-theorem finitePrimeSetSemilocal_energy_lt_neg_one_of_ceiling_le {r : ℕ} (S : Finset ℕ)
-    (hS : S.card ≤ r) {A : SuzukiPositiveAperture}
-    (hA : finitePrimeZeroCrossingCeiling r ≤ A.1) :
-    (finitePrimeSetSemilocalFamily S).energy A < -1 := by
-  refine weightedPrimeFamily_energy_lt_neg_one_of_ceiling_le S hS
-    (semilocalVonMangoldt (S : Set ℕ)) (fun n _ hne => ?_) hA
-  obtain ⟨p, hpS, hpPrime, k, hk1, rfl⟩ := semilocalVonMangoldt_support_primePow hne
-  exact ⟨p, Finset.mem_coe.mp hpS, hpPrime.two_le, k, hk1, rfl⟩
 
 /-- **Unconditional zero crossing of every finite-prime semilocal Weil operator:**
 for **every** finite set of primes `S : Finset ℕ`, there exists a critical aperture `a` with
@@ -1567,8 +1973,8 @@ theorem no_positive_operator_trace_carrier_for_weightedFinitePrimePowers {H : Ty
       (∀ a u, ContinuousLinearMap.IsPositive (R a u)) ∧
       (∀ a u, (ContinuousLinearMap.opTrace (R a u)).re = (weightedPrimeFamily w).Q a u) := by
   let a₁ : SuzukiPositiveAperture :=
-    ⟨finitePrimeZeroCrossingCeiling S.card,
-      lt_of_lt_of_le (by norm_num) (four_le_finitePrimeZeroCrossingCeiling S.card)⟩
+    ⟨weightedFinitePrimeCeiling S.card,
+      lt_of_lt_of_le (by norm_num) (four_le_weightedFinitePrimeCeiling S.card)⟩
   have hneg : (weightedPrimeFamily w).energy a₁ < 0 :=
     lt_trans (weightedPrimeFamily_energy_lt_neg_one_of_ceiling_le S le_rfl w hw le_rfl)
       (by norm_num)
@@ -1670,11 +2076,12 @@ theorem infinite_primes_of_primeSetSemilocal_Q_nonneg {P : Set ℕ}
     rwa [(primeSetSemilocalFamily P).normalizedGround_Q] at h
 
 /-- **Complete finite-prime semilocal & multiplicative syndeticity synthesis:**
-packages the multi-prime `ValuationShellL2` trace identity, the cardinality-uniform `-Θ(e^A)`
-ground-energy collapse for arbitrary finite sets of primes `S` and arbitrary prime-power weights,
-the unconditional forced zero crossings and Friedrichs kernels, the impossibility of positive
-operator-trace carriers, the multiplicative `(1 + ε)` short-interval syndeticity law under
-boundedness below, and the infinitude of primes required for global Weil positivity. -/
+packages the multi-prime `ValuationShellL2` trace identity, the rational collapse
+`μ_S(A) ≤ 536 (|S| + 1)² - (15/1024) e^A` for every finite set `S` and `A ≥ 4`, the unconditional
+forced zero crossings below the ceiling `2 log(|S| + 2) + 11` with Friedrichs kernels, the
+impossibility of positive operator-trace carriers, and, under boundedness below, the infinitude of
+primes, the multiplicative `(1 + ε)` short-interval syndeticity law, and the dyadic Chebyshev
+lower bound `Σ_{X < n ≤ κX} Λ_P(n) ≥ (min (log κ / 4) (1/16) / 16) X`. -/
 theorem finite_prime_semilocal_complete_resolution :
     (∀ (S : Finset ℕ) (a : SuzukiPositiveAperture) (u : CCMArchimedeanFormDomain a),
       (finitePrimeSetSemilocalFamily S).Q a u =
@@ -1691,10 +2098,9 @@ theorem finite_prime_semilocal_complete_resolution :
                     (ccmSymmetricLogTranslation (Real.log ((p ^ m : ℕ) : ℝ))) ∘L
                     InnerProductSpace.rankOne ℂ (ccmArchimedeanFormToAperture a u)
                       (ccmArchimedeanFormToAperture a u))).re) ∧
-    (∀ (r : ℕ) (S : Finset ℕ), S.card ≤ r →
-      ∀ (A : SuzukiPositiveAperture), 4 ≤ A.1 →
-        (finitePrimeSetSemilocalFamily S).energy A ≤
-          finitePrimeCollapseConst r - finitePrimeCollapseCoeff r * Real.exp A.1) ∧
+    (∀ (S : Finset ℕ) (A : SuzukiPositiveAperture), 4 ≤ A.1 →
+      (finitePrimeSetSemilocalFamily S).energy A ≤
+        536 * ((S.card : ℝ) + 1) ^ 2 - 15 / 1024 * Real.exp A.1) ∧
     (∀ S : Finset ℕ, ∃ a : SuzukiPositiveAperture,
       Real.log 2 / 2 < a.1 ∧
       a.1 ≤ finitePrimeZeroCrossingCeiling S.card ∧
@@ -1712,15 +2118,19 @@ theorem finite_prime_semilocal_complete_resolution :
     (∀ (P : Set ℕ),
       (∃ B : ℝ, ∀ a : SuzukiPositiveAperture, B ≤ (primeSetSemilocalFamily P).energy a) →
         (P ∩ {p : ℕ | p.Prime}).Infinite ∧
-        ∀ ε : ℝ, 0 < ε → ∃ X₀ : ℝ, 0 < X₀ ∧ ∀ X : ℝ, X₀ ≤ X →
+        (∀ ε : ℝ, 0 < ε → ∃ X₀ : ℝ, 0 < X₀ ∧ ∀ X : ℝ, X₀ ≤ X →
           ∃ p ∈ P, p.Prime ∧ ∃ k : ℕ, 1 ≤ k ∧
-            X < ((p ^ k : ℕ) : ℝ) ∧ ((p ^ k : ℕ) : ℝ) < (1 + ε) * X) :=
+            X < ((p ^ k : ℕ) : ℝ) ∧ ((p ^ k : ℕ) : ℝ) < (1 + ε) * X) ∧
+        ∀ κ : ℝ, 1 < κ → ∃ X₀ : ℝ, 0 < X₀ ∧ ∀ X : ℝ, X₀ ≤ X →
+          min (Real.log κ / 4) (1 / 16) / 16 * X ≤
+            ∑ n ∈ Finset.Ioc (Nat.floor X) (Nat.floor (κ * X)), semilocalVonMangoldt P n) :=
   ⟨finitePrimeSetSemilocalFamily_Q_eq_multiPrimeValuationTrace,
-   fun _ S hS A hA => finitePrimeSetSemilocal_energy_le_neg_exp S hS A hA,
+   finitePrimeSetSemilocal_energy_le_rational,
    exists_finitePrimeSetSemilocal_zero_crossing,
    no_positive_operator_trace_carrier_for_finitePrimeSetSemilocal,
    fun _ hbdd => ⟨infinite_primes_of_primeSetSemilocal_energy_bddBelow hbdd,
-     fun _ hε => eventually_exists_primePow_in_short_interval_of_primeSetSemilocal_bddBelow hbdd hε⟩⟩
+     fun _ hε => eventually_exists_primePow_in_short_interval_of_primeSetSemilocal_bddBelow hbdd hε,
+     fun _ hκ => dyadic_chebyshev_lower_bound_of_primeSetSemilocal_bddBelow hbdd hκ⟩⟩
 
 end GaloisForLFunctions.SelectivePositivityAndThresholdLaws.SemilocalPrimeTwoTrace
 

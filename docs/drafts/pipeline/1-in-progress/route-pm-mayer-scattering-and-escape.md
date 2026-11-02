@@ -74,9 +74,46 @@ convolution and certifies its two-zeta Gamma product in the absolute
 chamber. The [actual Epstein-to-Mayer transform](../3-formalized/gauss-mayer-quadratic-averaging.md)
 maps the independently Poisson-defined rectangular field to the actual
 period by an absolutely convergent Cauchy integral for `Re w>2`, retaining
-both axes and all quadrant multiplicities. Its
-[continuation](gauss-mayer-epstein-continuation.md), full eigenspace
-classification, and a Hermitian form remain open.
+both axes and all quadrant multiplicities. The
+[continued identity](../3-formalized/gauss-mayer-epstein-continuation.md)
+holds on `Re w>0`, `w≠2`, including `w=1`, with absolute convergence and
+holomorphic parameter dependence. The
+[exact Cauchy Mellin multiplier](../3-formalized/gauss-mayer-cauchy-mellin-symbol.md)
+is nonvanishing throughout its convergence strip, preserves both unit
+moments on the full source half-plane, and is strictly positive on the
+central line for real positive parameters. Its
+[strict real-parameter contraction](../3-formalized/gauss-mayer-real-cauchy-contraction.md)
+has an explicit frequency-uniform Gamma bound below one, with the deficit
+given by a strictly positive squared-energy integral.
+[Uniform complex contraction fails](../5-failed/gauss-mayer-complex-cauchy-contraction.md):
+the exact Gamma boundary law gives actual amplifying central Mellin
+integrals at arbitrarily small positive real parts. The
+[sharp high-frequency limit](../3-formalized/gauss-mayer-cauchy-high-frequency.md)
+is `2^((1−σ)/2)`, independently of the fixed real Mellin weight, so every
+fixed `0<σ<1` eventually amplifies. The
+[sharp global central envelope](../3-formalized/gauss-mayer-normalized-cauchy-schur.md)
+is strictly `2^((1−Re w)/2)`, with that exact supremum over spectral
+heights. The
+[exact frequency maximum](../3-formalized/gauss-mayer-cauchy-frequency-maximum.md)
+is attained at `u=w/2`; every frequency on `Re u=Re w/2` lies below
+that sharp envelope and is strictly contractive when `Re w≥1`.
+The [actual Eisenstein lift](../3-formalized/gauss-mayer-actual-eisenstein-lift.md)
+identifies the independently defined geometric Fourier model with the
+Epstein input and its genuine Mayer image on `Re w>0`, `Im w>0`,
+including zeta zeros. Its Gamma and height normalization retains the
+source of the existing Maass–Selberg pairing. The
+[scattering-subtracted core](../3-formalized/gauss-mayer-finite-energy-scattering-core.md)
+has finite central-weight square energy for `0<Re w<2`, `Im w>0`.
+Its actual Cauchy image retains the exact scattering coefficient
+`2ζ(w−1)/(w−1)`; this correction survives at zeta zeros. Its
+[charge-recovery law](../3-formalized/gauss-mayer-scattering-core-charge.md)
+gives `a F_w(a)→−Λ(w−1)/Γ_R(w)≠0` at every strip zeta zero, so the
+canonical core has strictly positive finite weighted energy. The
+[actual logarithmic Cauchy operator](../3-formalized/gauss-mayer-cauchy-l2-operator.md)
+is injective on `L²`, with norm bounded by the central Gamma multiplier.
+Its literal Cauchy image of the canonical core has finite weighted energy
+at most `|m(w,w/2)|²` times the input energy. Full eigenspace
+classification and a Hermitian form remain open.
 
 ## Operator convention
 

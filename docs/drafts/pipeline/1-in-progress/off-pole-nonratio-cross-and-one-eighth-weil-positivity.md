@@ -99,16 +99,39 @@ band–far cross, and the `V_{Q₁}`–complement Schur. Each is replaced as fol
   With `log T₁ ≍ C c log c` every cost is `≤ k₁P/16 + c^{6+o(1)}/log N · S`.
 - Conclusion: `E(w) ≥ (k₁/4)P + (b k₁/(2c⁷))S` whenever `c⁸ (log c)^A ≤ ε log N`.
 
-**T2. Band–far cross.** In `⟨W u, w⟩` the upward term `⟨Up u, w⟩` splits by rows: prefix rows
-pay with `k₁ P_w`; top rows read only `u|_S` (`Up(u)(n)` reads near `kn`), and `Up: S → S` has
-Schur norm `O(c √log c)`, while `‖u|_S‖² ≤ (B/log N)‖u‖²`
-(`harmonicConductorPacket_terminal_le`). Cost `c⁹(log c)²/log² N`.
+**T2. Band–far cross.** In `⟨W u, w⟩` (`u ∈ V_R ∩ V_Q^⊥`, `w ∈ V_R^⊥`) the corpus bounds the
+center, separated, `overlap − downward` and upward channels one at a time
+(`exists_completeWeil_cross_le_c9_split_reserves`). Two of them carry `c⁹`:
+`X = c²(1+log R)(1+log c) G / log N`, `G = Σ (1+log m) a_m²`, from the center collar and from
+`K₂ᵦ·v_jet` (`overlap − downward = K₁ + K₂ₐ + K₂ᵦ v_jet`, `Down(c_m) = log n·c_m − jet_m`).
+Both live on the top rows.
 
-**T3. `V_{Q₁}`–complement Schur.** Split each residual `r_m` at row `N/X_*`,
-`log X_* = (log N)^{1/8}`. Deep rows: near/downward channels vanish, the others decay
-(Mertens-level `1/log(N/n)` for the upward and ratio sources), so
-`Σ_{n ≤ N/X_*} r_m(n)² ≲ m(1+log m)² c^{2+o(1)}/(log N · log X_*)`. Top rows pair with
-`‖u|_{(N/X_*,N]}‖² ≤ (log X_*/log N)‖u‖²` for bands and with the far top reserve for `w`.
+- **Coherent parts cancel.** `jet_m` has the pole component `Λ(m) c_1`, so `K₂ᵦ v_jet` contains
+  `s·(α n/N) v_1`, `s = Σ a_m Λ(m)/√φ(m)` (`α = completeWeilPoleShift`, the `K₂ᵦ` row mass is
+  `α n/N`). An exact band vector is `u = Σ a_m v_m + (s/ℓ) v_1 + …`, since
+  `⟨v_m, v_1⟩ = −Λ(m)/(ℓ√φ(m)) + O(m/N)` (`Σ_{n≤N} c_m(n)/n = −Λ(m) + O(σ(m)/N)`). The center
+  collar `−(α/N) ω` on `(s/ℓ) v_1` returns `−(s/ℓ)(α/N)√n (log n + O(1))/√ℓ`, which is
+  `−s(αn/N)v_1` on the top rows up to a relative `O(1/ℓ)`. Separately, each channel's coherent
+  cross is `≍ α s/√ℓ`; together, `O(α s/ℓ^{3/2})`.
+- **Oscillating remainders need sharp bounds.**
+  (b) center collar on high conductors: near kernel `1/(2|h|)` has multiplier
+  `M_D(ξ) = Σ_{h≤D} cos(2πhξ)/h`, `|M_D(r/m)| ≤ log(m/min(r,m−r)) + 2`, so
+  `φ(m)⁻¹ Σ_{(r,m)=1} M_D(r/m)² = O(m/φ(m))` instead of `(1+log R)²`;
+  (c) `K₂ᵦ` on spiky packets (conductors `> c^{2+ε}`): `‖K₂ᵦ x‖² ≲ (c + c²τ(k)/φ(k))‖x‖²` per
+  conductor `k`, via the shifted Gram `Σ_{n<M} c_k(n+i)c_l(n+j) = [k=l] M c_k(|i−j|)`
+  (`sum_range_ramanujanLagCoefficient_shift_mul`) plus period boundaries `O(R⁵/N)`.
+  With (b), (c): center `c⁹ loglog R/log² N`, jet `c⁸ θ log c/log N` per unit band reserve.
+- **Upward:** split by rows; prefix rows against the prefix reserve, top rows read only `u|_S`.
+
+**T3. `V_{Q₁}`–complement Schur.** Pair `y ∈ V_{Q₁}` with `z = u₀ + u₁ + w` blockwise.
+- `y–w` closes with the existing residual sum (`Σ ‖r_m‖²/E_m ≲ (c⁷+Q²)c²(log N)^{ε−1}`):
+  prefix rows against the prefix reserve `≍ log R` (`c⁹/log² N`), top rows against
+  `κ log N/c⁷` (`c^{16}/log² N`).
+- `y–band` needs the residual on deep rows `n ≤ N/X_*`. Upward channel: available per row,
+  `|affineShellCorrection − c_q(n)·shellCorrection| ≤ C c/(log Y)^k` for every `k`,
+  `Y = N/(2cn)` (`exists_conductor_uniform_affineShellCorrection_linear_log_rate`). Near
+  channels vanish for `n < N/(2c)`; center and separated decay like `n/N`. Prime residual,
+  self, pole and downward channels: deep-row bounds not yet extracted.
 
 **T4. Assembly.** Four blocks `y, u₀, u₁, w` with the corpus band coercivities and band–band
 cross, replacing the three `c⁹` inputs above.
@@ -120,13 +143,14 @@ cross, replacing the three `c⁹` inputs above.
 - **Status:** proof plan T1–T4 above; Lean in progress (CACT modules listed below as built).
 
 ## Lean modules
-CACT, compiled (T1 explicit far reserve):
+CACT, compiled, wired into the umbrella (T1):
 - `TheTopPrimeSelfFormCostsOnlyALogarithm` — top prime self-form `≤ C c(1+log c) S`.
 - `TheGammaFormPaysEveryFrequencyAboveAThreshold` — `arch ≥ (log T − G₀)·HM_T − (G₀+log 2)·LM_T`; Fourier split of `2|∫fh|`.
 - `ThePrimeCrossOfAPrefixAndATopIsADirichletConvolution` — `P(f_{x+y}) = P(f_x)+P(f_y)+2∫f_y f_{ρ(a∗x)}`.
 - `TheWindowAverageOfAnAtomicTest` — window smoothing `g_h`, multiplier `|1−m_h| ≤ |r|h`, `∫(f_V^{(h)})² ≤ (∫g)² h⁻² ∫W_V²`.
-- `TheWindowSumsOfThePrimeTranslateCancelOffThePole` — dlVP short windows; `∫W² ≤ windowSumBound` (pole moment σ + `O(log K')²` P); `‖ρ(a∗x)‖² ≤ log B·log(2B/A)·P`.
+- `TheWindowSumsOfThePrimeTranslateCancelOffThePole` — dlVP short windows; `∫W² ≤ windowSumBound`; `‖ρ(a∗x)‖² ≤ log B·log(2B/A)·P`.
 - `TheFarReserveThroughTheWindowAverage` — explicit reserve `(7/8)D_M + (3/8)δ log N·S − costs(h,T,K')` on `(V_1)ᗮ`.
+- `TheFarReserveBelowTheEighthRoot` — `eventually_completeWeilEnergy_far_reserve_below_one_eighth`: for `α < 1/8`, `θ > 0`, on `(V_1)ᗮ`, `(7/8)D_M + κ/(4c⁷)·log N·S − θ log N·P ≤ E`.
+- `ThePolynomialConductorComplementIsCoerciveBelowTheEighthRoot` — on `(V_{⌊N^θ⌋})ᗮ`, `(c_orth log N/c⁷)‖z‖² ≤ E` for `α < 1/8`; nonpositive subspaces have dimension `≤ ⌊N^θ⌋` (corpus had both below `1/9`).
 
-Remaining: asymptotic choice `log T = (log N)^{α'}`, `h = 1/(T log N)`, `log K' ≍ (log 1/h)²` (T1 corollary);
-T2 (band–far cross via top locality of `upwardPrimeVector`); T3 (row-localized residuals); T4 assembly.
+Open: T2 (coherent cancellation identity, (b), (c), upward split), T3 deep rows, T4 assembly.

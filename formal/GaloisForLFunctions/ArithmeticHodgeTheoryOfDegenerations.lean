@@ -11,6 +11,12 @@ import GaloisForLFunctions.ArithmeticHodgeTheoryOfDegenerations.TheHorizonLayerB
 import GaloisForLFunctions.ArithmeticHodgeTheoryOfDegenerations.TheHorizonCriterion
 import GaloisForLFunctions.ArithmeticHodgeTheoryOfDegenerations.TheCriticalMultipleOfAWindow
 import GaloisForLFunctions.ArithmeticHodgeTheoryOfDegenerations.TheAliasingIsCoercive
+import GaloisForLFunctions.ArithmeticHodgeTheoryOfDegenerations.TheEnergyOfAHorizonBlock
+import GaloisForLFunctions.ArithmeticHodgeTheoryOfDegenerations.TheHorizonBlockBelowTheGridIsSharp
+import GaloisForLFunctions.ArithmeticHodgeTheoryOfDegenerations.TheSecondOrderTermOfAHorizonBlock
+import GaloisForLFunctions.ArithmeticHodgeTheoryOfDegenerations.TheAliasingIsTheDilationDerivativeOfTheBulk
+import GaloisForLFunctions.ArithmeticHodgeTheoryOfDegenerations.TheAliasingConstantOfTheTiltedSpline
+import GaloisForLFunctions.ArithmeticHodgeTheoryOfDegenerations.ThePrimesOfAHorizonWindow
 
 /-!
 # Arithmetic Hodge Theory of Degenerations
@@ -23,7 +29,12 @@ synthesized test); windows of zeros and their exhaustion to Weil's form; the cal
 multiples of a second-order term; the Jordan limit as the point count of `ℙ⁷` over `ℤ/m`; the
 horizon layer on the arithmetic side (Kuzmin–Landau below the atom grid, aliasing tails above it)
 and its limit: past the critical curve it is Weil's form of the synthesized test, at it up to
-`O(1/K)`; the horizon criterion for RH; the critical multiple of a window; coercivity of the aliasing part
-(the second-order term is Weil's form plus a coercive term of exact order `1/K`).
+`O(1/K)`; the horizon criterion for RH; the critical multiple of a window; coercivity of the
+aliasing part; the exact energy of a horizon block (Plancherel and Poisson on the atom grid); the
+sharp part below the grid; the second-order term (Weil's form plus `log N` times the window average
+of the aliasing density); the aliasing density as the dilation derivative of the bulk energy; the
+exact second-order term at the critical curve for the tilted spline, `κ Q(H) + (7 J(1)/K) ∫ e^{−8y} H²`,
+and the exact critical multiple of a window; the primes of a horizon window (departing prime jumps
+pay their own creation potential).
 See `ArithmeticHodgeTheoryOfDegenerations/README.md`.
 -/

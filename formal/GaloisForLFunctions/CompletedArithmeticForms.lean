@@ -91,6 +91,7 @@ import GaloisForLFunctions.CompletedArithmeticForms.ConductorPrefixLeakage
 import GaloisForLFunctions.CompletedArithmeticForms.LogarithmicPacketInterpolation
 import GaloisForLFunctions.CompletedArithmeticForms.WeightedConductorCrossBounds
 import GaloisForLFunctions.CompletedArithmeticForms.SplitPrimeCrossBounds
+import GaloisForLFunctions.CompletedArithmeticForms.TheNearCollarCostsTheMeanLogarithmicMultiplier
 
 /-!
 # Quantitative theory of completed arithmetic forms

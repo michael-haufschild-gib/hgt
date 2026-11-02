@@ -569,28 +569,28 @@ theorem sum_sq_abs_majorized_kernel_le' {N : ℕ} (K U : ℕ → ℕ → ℝ) (x
     _ ≤ ∑ j ∈ Icc 1 N, d j * x j ^ 2 :=
       sum_le_sum fun j hj => mul_le_mul_of_nonneg_right (hcol j hj) (sq_nonneg _)
 
-private def collarKernel (N : ℕ) (n j : ℕ) : ℝ :=
+def collarKernel (N : ℕ) (n j : ℕ) : ℝ :=
   (1 / (N : ℝ)) * archimedeanCenterKernel n j
 
-private def collarNearKernel (D : ℕ) (n j : ℕ) : ℝ :=
+def collarNearKernel (D : ℕ) (n j : ℕ) : ℝ :=
   if n ≠ j ∧ |(n : ℝ) - j| ≤ D then (1 / 2 : ℝ) / |(n : ℝ) - j| else 0
 
-private def collarRowSumHalf (R N : ℕ) (b : ℕ → ℝ) (n : ℕ) : ℝ :=
+def collarRowSumHalf (R N : ℕ) (b : ℕ → ℝ) (n : ℕ) : ℝ :=
   ∑ j ∈ (Icc 1 N).erase n,
     (Real.sqrt n * Real.sqrt j / (2 * (N : ℝ) * ((n : ℝ) + j))) *
       primeHorizonExtension (∑ m ∈ Icc 1 R, b m • normalizedRamanujanHorizonVector m N) j
 
-private def collarRowNear (R N : ℕ) (b : ℕ → ℝ) (n : ℕ) : ℝ :=
+def collarRowNear (R N : ℕ) (b : ℕ → ℝ) (n : ℕ) : ℝ :=
   Real.sqrt ((n : ℝ) / N) * ∑ j ∈ Icc 1 N, collarNearKernel (R ^ 4) n j *
     (Real.sqrt ((j : ℝ) / N) *
       primeHorizonExtension (∑ m ∈ Icc 1 R, b m • normalizedRamanujanHorizonVector m N) j)
 
-private def collarRowFar (R N : ℕ) (b : ℕ → ℝ) (n : ℕ) : ℝ :=
+def collarRowFar (R N : ℕ) (b : ℕ → ℝ) (n : ℕ) : ℝ :=
   (Real.sqrt n / (2 * (N : ℝ) * Real.sqrt (Real.log N))) *
     ∑ j ∈ (Icc 1 N).filter (fun j : ℕ => ((R ^ 4 : ℕ) : ℝ) < |(n : ℝ) - j|),
       (∑ m ∈ Icc 1 R, b m * normalizedRamanujanMode m j) / |(n : ℝ) - j|
 
-private theorem collarMatrix_v1_norm_le {N : ℕ} (hN1 : 1 ≤ N) (hL1 : 1 ≤ Real.log N) :
+theorem collarMatrix_v1_norm_le {N : ℕ} (hN1 : 1 ≤ N) (hL1 : 1 ≤ Real.log N) :
     ‖Matrix.toEuclideanLin (horizonKernelMatrix (collarKernel N) N)
         (normalizedRamanujanHorizonVector 1 N)‖ ≤
       3 * Real.sqrt (Real.log N) := by
@@ -674,7 +674,7 @@ private theorem collarMatrix_v1_norm_le {N : ℕ} (hN1 : 1 ≤ N) (hL1 : 1 ≤ R
     norm_nonneg (Matrix.toEuclideanLin (horizonKernelMatrix (collarKernel N) N)
       (normalizedRamanujanHorizonVector 1 N)), hsL]
 
-private theorem collarRow_eq_sum_three {R N : ℕ} (hR : 2 ≤ R) (hN1 : 1 ≤ N)
+theorem collarRow_eq_sum_three {R N : ℕ} (hR : 2 ≤ R) (hN1 : 1 ≤ N)
     (hL : 0 < Real.log N) (b : ℕ → ℝ) {n : ℕ} (hn : n ∈ Icc 1 N) :
     (∑ j ∈ Icc 1 N, collarKernel N n j *
         primeHorizonExtension (∑ m ∈ Icc 1 R, b m • normalizedRamanujanHorizonVector m N) j) =
@@ -773,7 +773,7 @@ private theorem collarRow_eq_sum_three {R N : ℕ} (hR : 2 ≤ R) (hN1 : 1 ≤ N
     field_simp [hN0.ne', hsL.ne', hsj]
   rw [near_eq, far_eq, sum_filter_add_sum_filter_not]
 
-private theorem sum_collarRowSumHalf_sq_le {R N : ℕ} (hN1 : 1 ≤ N)
+theorem sum_collarRowSumHalf_sq_le {R N : ℕ} (hN1 : 1 ≤ N)
     (b : ℕ → ℝ) {S : ℝ}
     (hlin : (∑ j ∈ Icc 1 N, ((j : ℝ) / N) *
         primeHorizonExtension (∑ m ∈ Icc 1 R, b m • normalizedRamanujanHorizonVector m N) j ^ 2) ≤
@@ -977,7 +977,7 @@ private theorem sum_collarRowNear_sq_le {R N : ℕ} (hN1 : 1 ≤ N)
     _ = (20 * (1 + Real.log R)) ^ 2 / Real.log N * S ^ 2 := by
       dsimp only [M_row]; ring
 
-private theorem sum_collarRowFar_sq_le {R N : ℕ} (hR : 2 ≤ R) (hN1 : 1 ≤ N)
+theorem sum_collarRowFar_sq_le {R N : ℕ} (hR : 2 ≤ R) (hN1 : 1 ≤ N)
     (hL : 0 < Real.log N) (b : ℕ → ℝ) (hb1 : b 1 = 0) {S : ℝ} (hS0 : 0 ≤ S)
     (hb_sq : (∑ m ∈ Icc 1 R, b m ^ 2) ≤ 2 * S ^ 2) :
     (∑ n ∈ Icc 1 N, collarRowFar R N b n ^ 2) ≤ 4 / Real.log N * S ^ 2 := by

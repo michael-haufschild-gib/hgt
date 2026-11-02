@@ -1,18 +1,16 @@
 # Low-conductor spans through weighted residuals
 
 - **ID:** low-conductor-spans-through-weighted-residuals
-- **Stage:** 2-fully-proven
-- **Type:** THEOREM (paper)
+- **Stage:** 3-formalized
+- **Type:** THEOREM
 - **Source:** Σ1d in `docs/reports/review-0111/walls-ledger.md`.
-- **Statement:** For every nonzero real `C²` profile supported on `[0,1]` and every bounded overlap interval `1≤c≤K`, the complete Weil form is eventually uniformly coercive on `conductorSubspace ⌊N^θ⌋ N` for `0<θ<1/1080`. This would include every fixed polylogarithmic conductor span.
+- **Statement:** For every nonzero real `C²` profile supported on `[0,1]` and every compact positive-overlap interval `0<a≤c≤b`, the complete Weil form is eventually uniformly coercive on `conductorSubspace ⌊N^θ⌋ N` for `0<θ<1/1080`. One positive constant also works for every fixed polylogarithmic conductor span; only the waiting horizon depends on its exponent.
 
-## Open core
+## Scope
 
-Single-conductor coercivity does not control cross terms in a growing span.
-The tilted-spline polylogarithmic theorem currently imposes `α+2q<1`;
-collective mid-band coercivity excludes the low-conductor subspace.
-The target is a whole-span estimate, then its maximal growing-overlap range
-determined by the profile's completed conductor floor.
+This controls cross terms on the entire growing conductor span, including
+the pole conductor and profiles with real Fourier zeros. Growing-overlap
+uniformity remains open for general profiles.
 
 ## Proof
 
@@ -41,12 +39,19 @@ orthogonal projection onto `V_Q` and its complement yields
 
 For `R=⌊N^θ⌋`, `0<θ<1/1080`, all high-block horizon conditions eventually
 hold: `R⁶≤N`, `1080(1+log R)≤log N`, and
-`(1+log R)R²log N/N→0`. This completes the mathematical assembly; the
-finite-frame estimates and horizon passage still require Lean verification.
+`(1+log R)R²log N/N→0`.
 
-For profiles with real Fourier zeros, separately establish strict positivity
-of the integrated shell tail from compact support and nontriviality. A
-pointwise Fourier lower bound is not part of the conjecture.
+For a general compact positive-overlap interval, set `w=min(a,1)` and
+`ψ(u)=φ(u/w)`. Then `ψ` is supported on `[0,1]`, has positive mass, and
+`completeWeilMatrix ψ (c/w) N = completeWeilMatrix φ c N` exactly.
+The interval becomes `1≤c/w≤b/w`, so the preceding proof applies.
+Every fixed `(log N)^A` is eventually at most `N^(1/2160)`; subspace
+inclusion gives the polylogarithmic conclusion with a constant independent
+of `A`.
+
+Strict positivity of the integrated shell tail follows from compact support
+and nontriviality, as formalized in
+`EveryNonzeroProfileHasAPositiveConductorFloor.lean`.
 
 ## Corpus boundary
 
@@ -59,4 +64,14 @@ pointwise Fourier lower bound is not part of the conjecture.
 - `Conductor/CoprimeFourierOrder.lean`:
   `log_conductor_sub_log_overlap_le_completedEnergy` holds for every such profile.
 
-No whole-span Lean theorem is claimed.
+## Lean
+
+Module: `CriticalArithmeticCorrelationTheory/EveryProfileIsPositiveOnGrowingConductorSpans.lean`.
+
+- `eventually_profile_polynomialConductor_coercive`
+- `eventually_profile_polylogConductor_coercive`
+- `eventually_profile_polynomialConductor_coercive_on_compact_overlap`
+- `eventually_profile_polylogConductor_coercive_on_compact_overlap`
+
+Direct Lean check passed. All four transitive axiom audits contain only
+`propext`, `Classical.choice`, and `Quot.sound`. Module wired into the umbrella.

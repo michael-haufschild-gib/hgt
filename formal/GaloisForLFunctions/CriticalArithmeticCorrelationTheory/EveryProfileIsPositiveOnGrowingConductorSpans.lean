@@ -408,7 +408,8 @@ theorem eventually_profile_polynomialConductor_coercive {φ : ℝ → ℝ} (hφ 
   have hzReserve : (3 * e / 8) * ‖z‖ ^ 2 ≤ ‖z‖ ^ 2 := by
     have hh := mul_le_mul_of_nonneg_right he1 (sq_nonneg ‖z‖)
     nlinarith only [hh, sq_nonneg ‖z‖, mul_nonneg he.le (sq_nonneg ‖z‖)]
-  nlinarith only [hpEnergy, hzEnergy, hcrossCost, henergy, hcrossLower, hpyth, hzReserve]
+  rw [← hpyth]
+  nlinarith only [hpEnergy, hzEnergy, hcrossCost, henergy, hcrossLower, hzReserve]
 
 /-- One positive constant works for every fixed polylogarithmic conductor cutoff; only its
 waiting horizon depends on the logarithmic exponent. -/
@@ -444,7 +445,83 @@ theorem eventually_profile_polylogConductor_coercive {φ : ℝ → ℝ} (hφ : C
   intro c hc hcK x hx
   exact hpolyN c hc hcK x (conductorSubspace_mono hcut N hx)
 
-end GaloisForLFunctions.CriticalArithmeticCorrelationTheory
+private theorem profile_dilation_energy (φ : ℝ → ℝ) {w : ℝ} (hw : 0 < w)
+    (c : ℝ) (N : ℕ) (x : EuclideanSpace ℝ (PrimeHorizonIndex N)) :
+    completeWeilEnergy (atomDilate φ w) (c / w) N x = completeWeilEnergy φ c N x := by
+  have hatom : atomDilate (atomDilate φ w) (c / w / N) = atomDilate φ (c / N) := by
+    funext t
+    change φ ((t / (c / w / N)) / w) = φ (t / (c / N))
+    have hwidth : (c / w / N) * w = c / N := by
+      calc
+        _ = (c / w * w) / N := by ring
+        _ = _ := by rw [div_mul_cancel₀ c hw.ne']
+    rw [div_div, hwidth]
+  simp only [completeWeilEnergy, completeWeilMatrix, hatom]
 
-#print axioms GaloisForLFunctions.CriticalArithmeticCorrelationTheory.eventually_profile_polynomialConductor_coercive
-#print axioms GaloisForLFunctions.CriticalArithmeticCorrelationTheory.eventually_profile_polylogConductor_coercive
+/-- Polynomial conductor spans are uniformly coercive on every compact interval of positive
+overlaps, including intervals below the touching ratio. -/
+theorem eventually_profile_polynomialConductor_coercive_on_compact_overlap {φ : ℝ → ℝ}
+    (hφ : ContDiff ℝ 2 φ) (hsupp : ∀ x, x ∉ Set.Icc 0 1 → φ x = 0)
+    (hM : 0 < ∫ x, φ x ^ 2) {a b θ : ℝ} (ha : 0 < a) (hab : a ≤ b)
+    (hθ : 0 < θ) (hθlt : θ < 1 / 1080) :
+    ∃ k : ℝ, 0 < k ∧ ∀ᶠ N : ℕ in atTop, ∀ c : ℝ, a ≤ c → c ≤ b →
+      ∀ x ∈ conductorSubspace ⌊(N : ℝ) ^ θ⌋₊ N,
+        k * ‖x‖ ^ 2 ≤ completeWeilEnergy φ c N x := by
+  let w := min a 1
+  let ψ := atomDilate φ w
+  have hw : 0 < w := lt_min ha zero_lt_one
+  have hw1 : w ≤ 1 := min_le_right _ _
+  have hwa : w ≤ a := min_le_left _ _
+  obtain ⟨hψ, hsψ, -⟩ := atomDilate_facts hφ hsupp hw
+  have hψsupp : ∀ x, x ∉ Set.Icc 0 1 → ψ x = 0 := by
+    intro x hx
+    exact hsψ x fun hm => hx ⟨hm.1, hm.2.trans hw1⟩
+  have hψM : 0 < ∫ x, ψ x ^ 2 := by
+    dsimp only [ψ]
+    rw [integral_atomDilate_sq hw]
+    exact mul_pos hw hM
+  have hK : 1 ≤ b / w := (one_le_div hw).mpr (hwa.trans hab)
+  obtain ⟨k, hk, hpos⟩ := eventually_profile_polynomialConductor_coercive
+    hψ hψsupp hψM hK hθ hθlt
+  refine ⟨k, hk, ?_⟩
+  filter_upwards [hpos] with N hN
+  intro c hac hcb x hx
+  have hc1 : 1 ≤ c / w := (one_le_div hw).mpr (hwa.trans hac)
+  have hcK : c / w ≤ b / w := div_le_div_of_nonneg_right hcb hw.le
+  have hh := hN (c / w) hc1 hcK x hx
+  rwa [profile_dilation_energy φ hw c N x] at hh
+
+/-- Every fixed polylogarithmic conductor span shares a positive lower bound on compact
+positive-overlap intervals. The exponent changes only the waiting horizon. -/
+theorem eventually_profile_polylogConductor_coercive_on_compact_overlap {φ : ℝ → ℝ}
+    (hφ : ContDiff ℝ 2 φ) (hsupp : ∀ x, x ∉ Set.Icc 0 1 → φ x = 0)
+    (hM : 0 < ∫ x, φ x ^ 2) {a b : ℝ} (ha : 0 < a) (hab : a ≤ b) :
+    ∃ k : ℝ, 0 < k ∧ ∀ A : ℝ, 0 < A →
+      ∀ᶠ N : ℕ in atTop, ∀ c : ℝ, a ≤ c → c ≤ b →
+        ∀ x ∈ conductorSubspace ⌊Real.log (N : ℝ) ^ A⌋₊ N,
+          k * ‖x‖ ^ 2 ≤ completeWeilEnergy φ c N x := by
+  let w := min a 1
+  let ψ := atomDilate φ w
+  have hw : 0 < w := lt_min ha zero_lt_one
+  have hw1 : w ≤ 1 := min_le_right _ _
+  have hwa : w ≤ a := min_le_left _ _
+  obtain ⟨hψ, hsψ, -⟩ := atomDilate_facts hφ hsupp hw
+  have hψsupp : ∀ x, x ∉ Set.Icc 0 1 → ψ x = 0 := by
+    intro x hx
+    exact hsψ x fun hm => hx ⟨hm.1, hm.2.trans hw1⟩
+  have hψM : 0 < ∫ x, ψ x ^ 2 := by
+    dsimp only [ψ]
+    rw [integral_atomDilate_sq hw]
+    exact mul_pos hw hM
+  have hK : 1 ≤ b / w := (one_le_div hw).mpr (hwa.trans hab)
+  obtain ⟨k, hk, hpos⟩ := eventually_profile_polylogConductor_coercive hψ hψsupp hψM hK
+  refine ⟨k, hk, ?_⟩
+  intro A hA
+  filter_upwards [hpos A hA] with N hN
+  intro c hac hcb x hx
+  have hc1 : 1 ≤ c / w := (one_le_div hw).mpr (hwa.trans hac)
+  have hcK : c / w ≤ b / w := div_le_div_of_nonneg_right hcb hw.le
+  have hh := hN (c / w) hc1 hcK x hx
+  rwa [profile_dilation_energy φ hw c N x] at hh
+
+end GaloisForLFunctions.CriticalArithmeticCorrelationTheory

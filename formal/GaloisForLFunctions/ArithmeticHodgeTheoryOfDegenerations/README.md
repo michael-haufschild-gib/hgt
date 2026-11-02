@@ -45,7 +45,8 @@ semigroup as monodromy, whose positivity is carried through the critical curve
 with one global gluing (one negative square at the pole, distinct primes coupled only through `∞`)
 and calibrations over `𝔽_q` and on the fakes. ADT is the first construction (the rescaled limit).
 AHD identifies the first-order structure as a count, locates exactly where the zeros enter the
-second order, and isolates the one theorem the field still needs.
+second order, computes the second-order term at the critical curve exactly (Weil's form plus the
+monodromy derivative of the first-order count), and isolates the one theorem the field still needs.
 
 ## 2. The degeneration and its two scales
 
@@ -71,14 +72,21 @@ live in the family.
 
 The first order of the degeneration is a count: the Jordan coefficient is the point count of
 projective space, `J(m) = J(1) · #ℙ⁷(ℤ/m)`. The sign question lives in the second order, and there
-it lives in the horizon layer. On the arithmetic side the horizon layer is computed exactly: below
-the atom grid (`|τ| ≤ N e^{−A}`) the block's Dirichlet polynomial is a Riemann sum of `ĥ` and is
-small by Kuzmin–Landau; above it the atoms alias, and the aliasing tail is bounded by mean values
-of Dirichlet polynomials and the decay `(1 + |u|)^{−p}` of the atom transform. **Past the critical
-curve the horizon layer, divided by the overlap, converges to `κ_φ Q(H)`; at the critical curve
-`c⁸ = K log N` it lies between `κ_φ Q(H) + a/K` and `κ_φ Q(H) + b/K` with `0 < a ≤ b`.** The
-second-order term of the degeneration is Weil's form on the horizon windows plus a coercive aliasing
-term of exact order `1/K`.
+it lives in the horizon layer. On the arithmetic side the horizon layer is computed exactly. Its
+energy against the atom spectrum is, by Plancherel and Poisson summation on the atom grid, the
+Riemann sum of `∫ H²` plus the **aliasing** of the grid harmonics; below the grid the block is the
+Riemann sum of the synthesized test; above it the symbol is `log N/2π` up to `O(c^{−p})`. Hence:
+
+**c⁻¹⟨Wx, x⟩ = κ_φ Q(H) − log N · N⁻¹ Σ_n h(log(n/N))² E₁'(cn/N) + o(1),**
+
+where `E₁` is the conductor-one bulk energy, whose rescaled limit is `J(1)`. **The aliasing that a
+horizon block pays at depth `y` is the dilation derivative of the bulk energy at the local overlap
+`c e^y`.** For the tilted spline (`β = 7`) this is exact at the critical curve `c⁸ = K log N`:
+
+**c⁻¹⟨Wx, x⟩ → κ_φ Q(H) + (7 J(1)/K) ∫ e^{−8y} H(y)² dy.**
+
+The second-order term of the degeneration on a horizon window is Weil's form plus `β J(1)/K` times
+a positive weighted norm; its critical multiple is `K*(H) = 7 J(1) ‖H‖²_{−8}/(κ_φ |Q(H)|)`.
 
 ## 3. Objects
 
@@ -100,6 +108,12 @@ term of exact order `1/K`.
 | Centred horizon test, pole amplitudes | `centredHorizonTest`, `alphaPlus`, `alphaMinus` | `T_N(u + log N)`; `φ̂(±iw/2) D_x(±i/2)` (divided by `N` for `−`) |
 | Symbol integrand, aliasing integrand | `horizonSymbolIntegrand`, `aliasIntegrand` | `‖φ̂(wτ)‖² |D_x(τ)|²/N ν(τ)`; its absolute value at `±τ` |
 | Window start, window constant, aliasing constant | `windowStart`, `windowConst`, `aliasConst` | `⌈N e^{−A}⌉`; `L e^{3A/2} + B e^{A/2}`; `K_al` |
+| Aliasing density | `aliasDensity` | `a_φ(s) = Σ_{k≥1} |φ̂(2πks)|²`, the grid harmonics at overlap `s`; `= −(∫φ²/2) E₁'(s)` |
+| Block energy, part below the grid | `blockEnergy`, `lowPart` | `∫ |φ̂(wτ)|² |D_x|²/N` over `ℝ` and over `|τ| ≤ Ne^{−A}` |
+| Aliasing functional | `horizonAlias` | `𝒜_N = (2/N) Σ_n h(log(n/N))² a_φ(cn/N)` |
+| Tapered, logarithmic, aliasing weights | `taperedProfile`, `logProfile`, `aliasWeight` | `e^{−y/2}h(y)`; `g(log x)`; `h(y)² e^{−8y}` |
+| Conductor-one Jordan coefficient of the tilted spline | `tiltedJordanOne` | `J(1) = (2/∫φ²) A_φ ζ(8) = lim c⁷ E₁(c)` |
+| Completed shell energy (bulk, conductor one) | RAPT `completedShellEnergy` | `E₁(s)`, positive, antitone, `→ 0` |
 | Jordan coefficient | ADT `jordanCoefficient`, `jordanTotient` | `J(m) = lim c⁷E_m(c)`; `J_k(m)` |
 | Möbius horizons | RAPT `mobiusHorizon`, `horizonBoundary` | exact zero-side reading of atomic vectors |
 | Correspondences, Rosati form, naive height | AET `intRosatiForm`, `tateLimit` | carrier A |
@@ -122,7 +136,10 @@ term of exact order `1/K`.
   **admissible multiples** of a pair (polarization `J`, second-order term `X`): `K` with
   `J + K X ⪰ 0`; the **critical multiple** is their supremum.
 - **Aliasing energy**: the contribution of the frequencies of a horizon block near the atom grid
-  (`|τ| ≳ N`), where the atoms undersample the synthesized test.
+  (`|τ| ≳ N`), where the atoms undersample the synthesized test; its **density** `a_φ(s)` at
+  overlap `s` is the sum of the grid harmonics `|φ̂(2πks)|²`, `k ≥ 1`.
+- **Local overlap** of a horizon block at depth `y = log(n/N)`: `c e^y`, the number of atoms that
+  overlap at `log n`.
 - **Carrier**: count (A), inherited polarization (B), integer with a structural bound (C).
 
 ## 5. Mechanisms
@@ -155,15 +172,35 @@ polarized? ⇒ inheritance ⇒ RH. The zero side splits the second order into le
   symbol is `≥ log N/(4π)` on windows above the grid, and the mean-value theorem holds from below
   on a window `[U, 2U]` with `U ≍ N`, where `Σ x_n² → ∫ h²`. One such window already carries
   `a log N/c⁸` of the off-window integral, `a > 0`; everything off the window is nonnegative.
+- **The exact second order.** (i) Plancherel: `∫ |φ̂(wτ)|² |D_x|²/N = (2π/c) Σ_{m,n} x_m x_n G(N log(m/n)/c)`,
+  `G` the autocorrelation of `φ`. (ii) Linearize `N log(m/n)/c ≈ (m − n)/a_n`, `a_n = cn/N`, on the
+  `O(c)` neighbours that `G` sees (`O(c N^{−3/2})` per entry), and sum by Poisson on `ℤ/a_n`:
+  `Σ_j G(j/a) = a((∫φ)² + 2 a_φ(a))`. (iii) Below the grid, effective Riemann sums
+  (`|N^{−s}D_x − ĥ(s)| ≤ (L + |s−1|B)e^{2A}/N`) and the Kuzmin–Landau tail give the low part to
+  `O(√(c/N) + R^{−1/2} + R²/N)`. (iv) Above the grid `ν = log N/2π + O(1 + log(|τ|/N))`, and the
+  dyadic blocks with weights `V + j` cost `O(c^{−p})`. Together:
+  `c⁻¹⟨Wx,x⟩ − κ Q(H) − (log N/∫φ²) 𝒜_N → 0` whenever `c → ∞`, `c(log N)²/N → 0`.
+- **The aliasing is the monodromy derivative of the bulk.** The increment law of the completed shell
+  energy, read harmonic by harmonic, is `E₁(c) − E₁(C) = (2/∫φ²) ∫_c^C a_φ`, so
+  `E₁'(s) = −(2/∫φ²) a_φ(s)`: the aliasing density is the rate at which the conductor-one bulk energy
+  decreases under dilation, and `𝒜_N` tests it against the window mass at the local overlaps.
+- **The constant.** For the tilted spline `|φ̂(2πt)|² = (1/64) q(πt/4)(1 + (πt/4)²)^{−4}` with
+  `π`-periodic `q`. On a window the `k`-th harmonic oscillates with frequency `≍ c`; cell-by-cell
+  averaging over periods of `q` against the slowly varying weight gives its mean `μ_q`, Riemann sums
+  see the oscillation only through `c/N`, and the harmonics sum to `ζ(8)`:
+  `c⁸ 𝒜_N → 2(1/64)(4/π)⁸ μ_q ζ(8) ∫ e^{−7y} h² = 7 J(1) ∫φ² · ∫ e^{−8y} H²`. The factor
+  `7 = β` is the pointwise density `−d/ds(J(1) s^{−7})` against the tail integral of the bulk.
 - **Critical multiples.** If the rescaled family converges to `J + K X`, positive definiteness is
   inherited and a negative direction is eventually negative; for `J ⪰ 0` the admissible multiples
   form a closed initial segment, positive semidefinite terms never remove a multiple, and negative
   directions persist as `K` grows.
 
 **C. Integer.** source-defined sectorial multiplier ⇒ window index `0` on every window ⇒ RH (WD).
-In AHD's language the integer is the number of critical multiples below `K` of a horizon window:
-it is `0` for every window and every `K` exactly under RH, and grows to the number of seen right
-zeros as `K → ∞`.
+In AHD's language a horizon window `H` has the exact critical multiple
+`K*(H) = 7 J(1) ‖H‖²_{−8}/(κ |Q(H)|)` (`+∞` when `Q(H) ≥ 0`): the block is positive below it and
+negative above it. The window index at multiple `K` counts the negative directions of
+`κ Q + (7J(1)/K)‖·‖²_{−8}` on a span of windows; it is `0` for every span and every `K` exactly under
+RH, and EAHT shows that atomic Gram matrices reach the full index `κ(K_ζ)` along explicit schedules.
 
 **G. Gluing.** One rank-one gluing at the pole creates the Mertens function (Redheffer, ADT) and
 the one extra negative square (`κ + 1`, AKG). The zero ledger of the bulk is itself a rank-one
@@ -181,12 +218,18 @@ must come from the bulk second-order term or from a carrier.
 | How do the zeros enter the second-order term of fixed packets? | Only through the pole coefficient: `(log N/c) W_ρ/∫g² → m_ρ κ y_1²/(ρ(1−ρ))`, real part `> 0`; at the critical curve `c⁷ W_ρ/∫g² → K m_ρ κ y_1²/(ρ(1−ρ))`. Same for every finite window. | `tendsto_bulkLedger`, `tendsto_bulkLedger_criticalCurve`, `tendsto_sum_bulkLedger`, `re_sum_mult_div_nonneg` |
 | Which packets can see an individual zero? | Not fixed conductor packets (positive pole charge only). Horizon blocks: `W_ρ/(c∫g²) → κ W_ρ(H,H)`, Weil's summand of the synthesized test. | `tendsto_horizonLedger`, `Wsummand_halfWeight` |
 | Is the horizon layer Weil's form? | Yes. In the iterated limit (horizon, then window of zeros) windows exhaust `κ W(H,H)`. Directly: past the critical curve (`(1+log N)/c^p → 0`) `c⁻¹⟨Wx,x⟩ → κ Q(H)`; at `c^p/log N → K_c` it is `κ Q(H)` up to `K/K_c`; for every schedule the error is `ε + K(1+log N)/c^p`. | `horizon_layer_two_sided`, `tendsto_horizon_layer_supercritical`, `horizon_layer_criticalCurve`, `horizon_window_exhaustion` |
-| What is the second-order term at the critical curve (obstacles summary 2.5.4)? | On horizon blocks: Weil's form of the synthesized test (window radius `A/2`, any `A`) plus a coercive aliasing term of exact order `1/K`: eventually `κ Q(H) + a/K − ε ≤ c⁻¹⟨Wx,x⟩ ≤ κ Q(H) + b/K + ε`. At small multiples every horizon block is positive; at large multiples it is Weil's criterion. | `horizonForm_eq`, `integral_aliasing_le`, `horizon_layer_coercive`, `horizon_layer_lower_criticalCurve`, `horizon_layer_criticalCurve`, `eventually_horizon_pos_of_small_multiple` |
-| Which structure polarizes the second-order term? | On the bulk, the Li-type pole charge (positive per zero). On the horizon layer, the aliasing energy at finite `K` and nothing else at `K = ∞`: the limit is Weil's form, polarized exactly under RH. | `re_inv_mul_one_sub_pos`, `horizon_layer_coercive`, `riemannHypothesis_iff_horizon_layer` |
+| What is the second-order term at the critical curve (obstacles summary 2.5.4)? | On horizon blocks, exactly: `c⁻¹⟨Wx,x⟩ → κ Q(H) + (7J(1)/K) ∫ e^{−8y} H²` along `c⁸/log N → K` (tilted spline). For every profile and every schedule with `c → ∞`, `c(log N)²/N → 0`: `c⁻¹⟨Wx,x⟩ = κ Q(H) − log N · N⁻¹ Σ_n h(log(n/N))² E₁'(cn/N) + o(1)`. | `horizon_layer_criticalCurve_exact`, `horizon_layer_sharp`, `horizon_layer_sharp_bulk`, `horizonForm_eq` |
+| Which structure polarizes the second-order term? | The first-order count, through the monodromy. The aliasing density is the dilation derivative of the bulk energy, `a_φ = −(∫φ²/2) E₁'`, positive because `E₁` is antitone; its window average at the local overlaps `c e^y` is `β J(1)` times `‖H‖²_{−8}`. So the second-order term is a pencil: Weil's form plus `1/K` times a positive definite form built from `J(1)`. It is positive at every multiple iff `Q ≥ 0` on horizon windows, i.e. iff RH. On the bulk, the zero charge is the Li-type pole charge (positive per zero). | `hasDerivAt_completedShellEnergy`, `aliasLimit_eq`, `tendsto_rpow_seven_mul_completedShellEnergy_tilted`, `re_inv_mul_one_sub_pos`, `riemannHypothesis_iff_horizon_layer` |
+| What is the critical multiple of a window? | Exactly `K*(H) = 7 J(1) ‖H‖²_{−8}/(κ |Q(H)|)` for `Q(H) < 0` (`+∞` otherwise): positive below, negative above. Before the exact constant: coercive bounds `κ Q(H) + a/K ≤ · ≤ κ Q(H) + b/K`. | `criticalMultiple_exact`, `horizon_layer_coercive`, `horizon_layer_lower_criticalCurve`, `horizon_layer_criticalCurve` |
 | Where does the horizon term of a conductor live? | Only at `e = 1`: `D_e(s;N) − [e=1]N^s/s → ζ(1−s)J_s(e)`. | `tendsto_conductorDirichlet_sub_horizonTerm`, `conductorDirichlet_eq` |
-| Is positivity at one fixed multiple of the critical curve RH? | No: it gives `κ Q(H) ≥ −K/K_c` on every window (sub-RH); conversely every window with `Q(H) < 0` is negative at every multiple `K_c > K/(κ|Q(H)|)`. RH is positivity at every multiple. | `weilQuad_halfWeight_ge_of_horizon_nonneg`, `eventually_horizon_neg_of_weilQuad_neg` |
+| Is positivity at one fixed multiple of the critical curve RH? | No: positivity at multiple `K` is `κ Q(H) ≥ −7J(1)‖H‖²_{−8}/K` on every window (sub-RH); every window with `Q(H) < 0` turns negative past `K*(H)`. RH is positivity at every multiple. | `criticalMultiple_exact`, `weilQuad_halfWeight_ge_of_horizon_nonneg`, `eventually_horizon_neg_of_weilQuad_neg` |
 | What does a second-order term do to positivity? | Admissible multiples form a closed initial segment; inheritance below the critical multiple, failure above; negative directions persist. | `admissible_of_le`, `isClosed_admissible`, `admissible_mono`, `neg_persists`, `eventually_pos_of_tendsto`, `eventually_not_nonneg_of_tendsto` |
 | Can the ledger or the first-order count select `ζ`? | No: both hold for every zero configuration and every quotient of `ℤ`. | statements quantified over `ZeroConfig`; `natCard_primVec_eq_jordanTotient` |
+| How do the prime atoms of the jump measure enter, and what pays the creation potential `−2Σ Λ(n)/√n`? | On a window of length `A` every prime power `n > e^A` makes a jump that leaves the window and costs exactly `2Λ(n)/√n ‖H‖²`, the creation it adds: the Markov form of a window is that of level `⌊e^A⌋`. At second order the primes enter only through `Q(H)`: the correction `(7J(1)/K)‖H‖²_{−8}` is prime-free (the aliasing is paid by the Gamma factor, `ν ≈ log N/2π`). What pays the creation potential of the primes `≤ e^A` is the open sign question itself. | `primeJump_departing_eq`, `markovForm_eq_of_level`, `weilQuad_halfWeight_eq_markovForm`, `horizon_layer_criticalCurve_exact` |
+| What set does `τ_x(ξ ⋆ ξ′)` count; what are Stepanov's sections over `ℤ`? (AET, ACP) | A naive height on correspondences exists for a cycle iff its orbit Hodge index holds, and for every cycle iff RH; on curves it exists iff the Frobenius is unitary. Stepanov over `ℤ` bounds `log(1/∫P)` by `ψ(n+1)` and pays the primitive `h¹` of hyperelliptic curves of every genus; the sign over `ℤ` is not produced. The degeneration adds: the first-order count is `#ℙ⁷(ℤ/m)`, zero-blind. | AET `orbitHodgeIndex_iff_exists_naiveHeight`, `riemannHypothesis_iff_forall_exists_naiveHeight`, `exists_naiveHeight_iff_unitary`, `log_inv_integral_le_psi`; LST `hyperelliptic_primitiveH1_nonneg` |
+| Which lattice carries the sections of a class of degree `a`, with what metric? (LST) | A lattice whose rank grows with one fibre degree and whose Gaussian scale grows with the other; bounded rank never satisfies the Riemann inequality. On the pole plane it is the tensor square of the base, the Gamma factor its Gaussian weight. | LST `not_riemannInequality_of_bounded_rank`, `kunnethH0_add_neg`, `latticeH0_riemannRoch` |
+| What is the logarithmic completion of the isotropic count, and does it commute with boost averaging? (LST) | The isotropic count of the split plane is the divisor count `Γ(σ)(2π)^{−σ}ζ(σ)²` with a double pole, not Poisson-dual; its completion is the logarithm of pole-plane Riemann–Roch. Boost averaging produces `K(s,w)ζ(s+w)ζ(s−w)`: the Euler product appears only after the boost transform. | LST `mellin_coneCount`, `not_exists_FEPair_coneCount`, `integral_splitSeries_mul_exp_eq_zeta` |
+| Why `ζ` and not an Epstein function? (LST) | Definite counts are fakes; a fixed boost `|u| > 1` is a rectangular definite lattice and fake; the self-dual point has no real zeros; only the boost transform carries the Euler product. In AHD: selection enters only through `Q(H)` in the second-order term; the ledgers, the count and the aliasing constant hold for every configuration. | LST `exists_epsteinLambda_eq_zero`, `exists_boost_offLine_zero`, `epsteinLambda_one_neg`; `horizon_layer_criticalCurve_exact` |
 
 ## 7. Tools
 
@@ -213,9 +256,18 @@ must come from the bulk second-order term or from a carrier.
 - The localized explicit formula for real tests and for recentred atomic tests
   (`weilQuad_eq_pole_add_symbol`, `paperFT_comp_add`, `horizonForm_eq`).
 
+- Plancherel for horizon blocks and Poisson summation of the atom autocorrelation on `ℤ/a`, with
+  linearization of `log(m/n)` on the neighbours the autocorrelation sees (`blockEnergy_eq`,
+  `tsum_shellAutocorr_eq`, `abs_row_sub_le`, `abs_blockEnergy_sub_le`).
+- Effective Riemann sums of horizon profiles from derivative bounds (`lipschitzWith_horizonProfile`,
+  `norm_riemannSum_sub_le`) and the sharp part below the grid (`abs_lowPart_sub_le`).
+- Dyadic tails with block-local weights `V + j` (`integral_aliasing_le_of_blocks`), the symbol as
+  `log|τ|/2π + O(1)` (`exists_abs_mu_sub_log_le`, `abs_nuSymbol_sub_log_le`).
+- Harmonic calculus of the bulk energy: `E₁' = −(2/∫φ²) a_φ` (`hasDerivAt_completedShellEnergy`).
+- Equidistribution of a periodic numerator against window weights (`abs_integral_mul_numerator_sub_le`,
+  `tendsto_modulated`) and Tannery over the grid harmonics (`tendsto_rpow_eight_mul_horizonAlias`).
+
 **To build.**
-- The exact aliasing energy of a horizon block: stationary phase in the chirp bands
-  `τ ∈ [2πkN e^{−A}, 2πkN]`.
 - Uniform ledgers: explicit horizon-law remainders `O(|s|σ(e)N^{Re s−1})` with the zero-free region,
   summed over zeros up to a growing height.
 - Nilpotent-orbit and `SL₂`-orbit models (Schmid, Cattani–Kaplan–Schmid); Néron–Tate on
@@ -238,16 +290,19 @@ must come from the bulk second-order term or from a carrier.
 | The horizon criterion: RH iff every horizon block is nonnegative past the critical curve | `riemannHypothesis_iff_horizon_layer`, `riemannHypothesis_iff_halfWeight_nonneg` | equivalence |
 | Coercivity: the aliasing part is at least `a log N/c⁸`; sandwich `κQ(H) + a/K ≤ · ≤ κQ(H) + b/K`; subcritical positivity | `horizon_layer_coercive`, `horizon_layer_lower_criticalCurve`, `eventually_horizon_pos_of_small_multiple`, `aliasing_lower` | proved |
 | Critical multiple of a window: one multiple controls Weil's form up to `O(1/K)`; a negative window is negative at every multiple `K > K₀/(κ|Q(H)|)` | `weilQuad_halfWeight_ge_of_horizon_nonneg`, `eventually_horizon_neg_of_weilQuad_neg` | proved |
-| Exact aliasing constant at the critical curve (Conjecture HB, sharp form: `a = b`) | — | open |
+| Exact energy of a horizon block: Riemann sum of `∫H²` plus `2π𝒜_N` up to `O(c/N)` | `abs_blockEnergy_sub_le`, `blockEnergy_eq`, `tsum_shellAutocorr_eq` | proved |
+| The second-order term: `c⁻¹⟨Wx,x⟩ − κQ(H) − (log N/∫φ²)𝒜_N → 0` | `horizon_layer_sharp`, `abs_lowPart_sub_le`, `abs_remainder_le`, `tendsto_log_mul_energyDefect` | proved |
+| The aliasing is the dilation derivative of the bulk: `E₁' = −(2/∫φ²) a_φ` | `hasDerivAt_completedShellEnergy`, `sub_eq_integral_aliasDensity`, `horizon_layer_sharp_bulk` | proved |
+| Conjecture HB, sharp form: at `c⁸/log N → K`, `c⁻¹⟨Wx,x⟩ → κQ(H) + (7J(1)/K)‖H‖²_{−8}` | `horizon_layer_criticalCurve_exact`, `tendsto_rpow_eight_mul_horizonAlias`, `aliasLimit_eq` | proved |
+| Exact critical multiple `K*(H) = 7J(1)‖H‖²_{−8}/(κ|Q(H)|)` | `criticalMultiple_exact` | proved |
+| The primes of a window: departing jumps pay their creation; Markov form at level `⌊e^A⌋` | `primeJump_departing_eq`, `markovForm_eq_of_level`, `weilQuad_halfWeight_eq_markovForm` | proved |
 
 ## 9. Open research topics
 
-1. **Conjecture HB, sharp form.** The sandwich gives
-   `κ_φ Q(H) + a/K ≤ c⁻¹⟨Wx,x⟩ ≤ κ_φ Q(H) + b/K` at `c^p = K log N`. The sharp form identifies the term:
-   `c⁻¹⟨Wx,x⟩ − κ_φ Q(H) → K⁻¹ 𝒜_φ(H)` with `𝒜_φ(H) = a_φ ∫ e^{−(β+1)y} H(y)² dy`, `a_φ > 0` — the local
-   pole energy `E_1(c e^y)` of the atoms at depth `y`, read in the chirp bands `τ ∈ [2πkNe^{−A}, 2πkN]`
-   by stationary phase. It would make the critical multiple of a window the ratio of the aliasing
-   norm to the negative part of Weil's form.
+1. **The second-order term for every regular tail.** For a profile with `s^β E₁(s) → J(1)` and a
+   regular spectral tail, the window average of `−E₁'` at the local overlaps should give
+   `β J(1) ∫ e^{−(β+1)y} H²` at `c^{β+1} = K log N`. The tilted spline is proved; the general case
+   needs equidistribution of the tail modulation against window weights.
 2. **Bulk second order.** The collective `1/log N` term of fixed packets (the high zeros, read on the
    arithmetic side through primes in progressions to the moduli `e e'`).
 3. **Uniform bulk ledger.** All zeros of height `≤ N^{1/2−ε}` together contribute `o(c/log N)` to every
@@ -272,6 +327,8 @@ must come from the bulk second-order term or from a carrier.
 | A trace identity is positivity | `1 − P − P̂` is negative on time-limited vectors |
 | Local positivity glues | One rank-one gluing creates `M(N)` and one negative square |
 | Soft laws select | Ledgers and counts hold on every configuration and every quotient |
+| The aliasing is an error term to be estimated | It is the monodromy derivative of the bulk count, exactly; it is positive and computable |
+| The sharp constant depends on the zeros | It is `β J(1)`, a property of the profile and the bulk; the zeros enter only through `Q(H)` |
 
 ## 11. Context
 
@@ -295,7 +352,7 @@ must come from the bulk second-order term or from a carrier.
 |---|---|
 | First-order structure identified as a count | proved: `#ℙ⁷(ℤ/m)` |
 | How zeros enter the second order, packets that see a zero classified | proved per zero and per window: bulk (pole only, positive), horizon layer (Weil summands) |
-| Second-order term at the critical curve identified | horizon layer: Weil's form plus a coercive term of exact order `1/K` (proved), exact past the critical curve (proved); sharp aliasing constant and bulk second order: open |
+| Second-order term at the critical curve identified | horizon layer: exactly `κ Q(H) + (7J(1)/K)‖H‖²_{−8}` (proved, tilted spline), in general `κ Q(H)` minus `log N` times the window average of `E₁'` (proved); bulk second order: open |
 | A count reading the primes inside the jump measure, creation potential paid on a window | open (corpus foothold on prime-free cycles) |
 | Gluing theorem with exactly one negative square | AKG `κ + 1`; zero ledger of the bulk is a positive pole gluing |
 | An integer with a structural bound | open |
@@ -339,12 +396,15 @@ unless the conductor is the pole; every point of the strip is therefore a positi
 on the pole of the bulk, and no fixed packet can see an off-line zero. A horizon block reads a zero
 through Weil's summand of the test it synthesizes, and windows of zeros exhaust Weil's form.
 
-On the arithmetic side the horizon layer is computed exactly. Below the atom grid the block is a
-smooth test seen at the density `log n`; above it the atoms alias, and the aliasing costs at most
-`(log N)/c^p` after division by the overlap. Past the critical curve the horizon layer of the
-complete family, divided by the overlap, converges to `(∫φ)²/∫φ²` times Weil's form of the
-synthesized test; at the critical curve it is Weil's form plus a coercive aliasing term of exact
-order `1/K`. The second-order term of the degeneration is Weil's form on the horizon windows,
-carried over the Jordan polarization of the bulk; at small multiples the aliasing pays any negative
-part, at large multiples nothing does, and RH is the statement that every horizon block is nonnegative past the critical curve. What
-the field has not yet built is a mechanism that forces this sign: the count of the second order.
+On the arithmetic side the horizon layer is computed exactly. Below the atom grid the block is the
+Riemann sum of the synthesized test; its total energy is, by Plancherel and Poisson summation on the
+atom grid, that Riemann sum plus the aliasing of the grid harmonics; above the grid the symbol is
+`log N/2π`. The aliasing that a horizon block pays at depth `y` is the dilation derivative of the
+bulk energy at the local overlap `c e^y`. So the second-order term of the degeneration on a horizon
+window is Weil's form of the synthesized test plus the monodromy derivative of the first-order
+count, and for the tilted spline it is exactly `κ Q(H) + (7 J(1)/K) ∫ e^{−8y} H²` at the multiple
+`K` of the critical curve. This pencil is polarized at every multiple exactly when Weil's form is
+nonnegative on horizon windows, which is RH; every window with `Q(H) < 0` has the finite critical
+multiple `7 J(1) ‖H‖²_{−8}/(κ|Q(H)|)`. The count of the first order pays the second order at small
+multiples and nothing at large ones. What the field has not yet built is a mechanism that forces
+the sign of `Q` on horizon windows: a count of the second order that sees the zeros.

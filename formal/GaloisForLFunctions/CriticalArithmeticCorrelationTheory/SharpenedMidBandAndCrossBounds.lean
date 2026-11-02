@@ -77,7 +77,7 @@ private theorem log_two_mul_linearNearRowRadius_le {c : ℝ} (hc1 : 1 ≤ c) :
   have hlc0 : 0 ≤ Real.log c := Real.log_nonneg hc1
   linarith only [hlog_le, hlc0]
 
-private theorem sum_nearBand_sq_le_of_mem_conductorSubspace
+theorem sum_nearBand_sq_le_of_mem_conductorSubspace
     {R N : ℕ} {c M : ℝ} (hR : 2 ≤ R) (hlog : 18 * (1 + Real.log R) ≤ Real.log N)
     (hc1 : 1 ≤ c) (hw : c / N ≤ 1) (hM0 : 0 ≤ M)
     (hRNT : ((R * R : ℕ) + 1 : ℝ) * (linearNearRowRadius c + 1) ≤ N)
@@ -241,7 +241,7 @@ private theorem abs_sum_Ioc_mul_le_total_variation {a b : ℕ} (hab : a ≤ b)
       _ = B_part * (|w b| + ∑ i ∈ range (b - a - 1), |w (a + 1 + (i + 1)) - w (a + 1 + i)|) := by
         dsimp only [L]; ring
 
-private theorem shifted_mode_osc_Ico_le {m l R₂ : ℕ} (hR₂ : 2 ≤ R₂)
+theorem shifted_mode_osc_Ico_le {m l R₂ : ℕ} (hR₂ : 2 ≤ R₂)
     (hm : m ∈ Icc 1 R₂) (hl : l ∈ Icc 1 R₂) (h u v : ℕ) (huv : u ≤ v) :
     |∑ n ∈ Ico u v,
         (normalizedRamanujanMode m n * normalizedRamanujanMode l (n + h) -
@@ -533,39 +533,39 @@ private def midBandSubKernel (φ : ℝ → ℝ) (c : ℝ) (N n j : ℕ) : ℝ :=
     (Real.log (1 / (c / N)) / ∫ t, φ t ^ 2) *
       shellAutocorr φ (|Real.log j - Real.log n| / (c / N))
 
-private def midBandLeadKernel (φ : ℝ → ℝ) (c : ℝ) (N n j : ℕ) : ℝ :=
+def midBandLeadKernel (φ : ℝ → ℝ) (c : ℝ) (N n j : ℕ) : ℝ :=
   shellAutocorr φ (|Real.log j - Real.log n| / (c / N))
 
-private def midBandPacketMode (R₂ : ℕ) (a : ℕ → ℝ) (k : ℕ) : ℝ :=
+def midBandPacketMode (R₂ : ℕ) (a : ℕ → ℝ) (k : ℕ) : ℝ :=
   ∑ m ∈ Icc 1 R₂, a m * normalizedRamanujanMode m k
 
-private def midBandLinearizedWeight (φ : ℝ → ℝ) (c : ℝ) (N h n : ℕ) : ℝ :=
+def midBandLinearizedWeight (φ : ℝ → ℝ) (c : ℝ) (N h n : ℕ) : ℝ :=
   (1 / (n : ℝ)) * shellAutocorr φ ((N : ℝ) / c * ((h : ℝ) / n))
 
-private def midBandLagSum (φ : ℝ → ℝ) (R₂ N : ℕ) (c : ℝ) (a : ℕ → ℝ) : ℝ :=
+def midBandLagSum (φ : ℝ → ℝ) (R₂ N : ℕ) (c : ℝ) (a : ℕ → ℝ) : ℝ :=
   ∑ h ∈ Icc 1 ⌊linearNearRowRadius c⌋₊,
     ∑ n ∈ Ioc ⌊(N : ℝ) / (linearNearRowRadius c + 1)⌋₊ (N - h),
       midBandPacketMode R₂ a n * midBandPacketMode R₂ a (n + h) * (1 / (n : ℝ)) *
         (Real.sqrt n / Real.sqrt (n + h : ℕ) *
           shellAutocorr φ ((N : ℝ) / c * (Real.log (n + h : ℕ) - Real.log n)))
 
-private def midBandLinearizedSum (φ : ℝ → ℝ) (R₂ N : ℕ) (c : ℝ) (a : ℕ → ℝ) : ℝ :=
+def midBandLinearizedSum (φ : ℝ → ℝ) (R₂ N : ℕ) (c : ℝ) (a : ℕ → ℝ) : ℝ :=
   ∑ h ∈ Icc 1 ⌊linearNearRowRadius c⌋₊,
     ∑ n ∈ Ioc ⌊(N : ℝ) / (linearNearRowRadius c + 1)⌋₊ (N - h),
       midBandPacketMode R₂ a n * midBandPacketMode R₂ a (n + h) *
         midBandLinearizedWeight φ c N h n
 
-private def midBandMeanSum (φ : ℝ → ℝ) (R₂ N : ℕ) (c : ℝ) (a : ℕ → ℝ) : ℝ :=
+def midBandMeanSum (φ : ℝ → ℝ) (R₂ N : ℕ) (c : ℝ) (a : ℕ → ℝ) : ℝ :=
   ∑ h ∈ Icc 1 ⌊linearNearRowRadius c⌋₊, ∑ m ∈ Icc 1 R₂,
     a m ^ 2 * (ramanujanLagCoefficient m h / (m.totient : ℝ)) *
       ∑ n ∈ Ioc ⌊(N : ℝ) / (linearNearRowRadius c + 1)⌋₊ (N - h),
         midBandLinearizedWeight φ c N h n
 
-private def midBandOscMode (m l h n : ℕ) : ℝ :=
+def midBandOscMode (m l h n : ℕ) : ℝ :=
   normalizedRamanujanMode m n * normalizedRamanujanMode l (n + h) -
     if m = l then ramanujanLagCoefficient m h / (m.totient : ℝ) else 0
 
-private def midBandOscSum (φ : ℝ → ℝ) (R₂ N : ℕ) (c : ℝ) (a : ℕ → ℝ) : ℝ :=
+def midBandOscSum (φ : ℝ → ℝ) (R₂ N : ℕ) (c : ℝ) (a : ℕ → ℝ) : ℝ :=
   ∑ h ∈ Icc 1 ⌊linearNearRowRadius c⌋₊, ∑ m ∈ Icc 1 R₂, ∑ l ∈ Icc 1 R₂,
     a m * a l *
       ∑ n ∈ Ioc ⌊(N : ℝ) / (linearNearRowRadius c + 1)⌋₊ (N - h),
@@ -797,7 +797,7 @@ private theorem exists_midBand_subKernel_sum_le {φ : ℝ → ℝ}
     (if (N : ℝ) / n < linearNearRowRadius c + 1 then primeHorizonExtension u n else 0) *
       ∑ j ∈ nearRowIndices c N n, midBandSubKernel φ c N n j * primeHorizonExtension u j), hrhs0]
 
-private theorem midBand_leadKernel_sum_eq {φ : ℝ → ℝ}
+theorem midBand_leadKernel_sum_eq {φ : ℝ → ℝ}
     (hφ : ContDiff ℝ 2 φ) (hsupp : ∀ t, t ∉ Set.Icc 0 1 → φ t = 0)
     {R₂ N : ℕ} {c : ℝ} (hL0 : 0 < Real.log N) (hc0 : 0 < c) (hw : c / N ≤ 1)
     (hradN : 4 * (linearNearRowRadius c + 1) ^ 2 ≤ N) (a : ℕ → ℝ) :
@@ -962,7 +962,7 @@ private theorem midBand_leadKernel_sum_eq {φ : ℝ → ℝ}
       exact hhB hhN.1
     exact sum_eq_zero fun n hn => hvanish h hhN n hn (Or.inl hBh)
 
-private theorem exists_midBand_lag_sub_linearized_le {φ : ℝ → ℝ}
+theorem exists_midBand_lag_sub_linearized_le {φ : ℝ → ℝ}
     (hφ : ContDiff ℝ 2 φ) (hsupp : ∀ t, t ∉ Set.Icc 0 1 → φ t = 0)
     (hM : 0 < ∫ t, φ t ^ 2) :
     ∃ C_2 : ℝ, 0 ≤ C_2 ∧
@@ -1231,7 +1231,7 @@ private theorem exists_midBand_lag_sub_linearized_le {φ : ℝ → ℝ}
           (c ^ 5 * Real.log N / N) *
           ‖∑ m ∈ Icc 1 R₂, a m • normalizedRamanujanHorizonVector m N‖ ^ 2 := by ring
 
-private theorem midBandLinearizedSum_eq_mean_add_osc (φ : ℝ → ℝ) (R₂ N : ℕ) (c : ℝ)
+theorem midBandLinearizedSum_eq_mean_add_osc (φ : ℝ → ℝ) (R₂ N : ℕ) (c : ℝ)
     (a : ℕ → ℝ) :
     midBandLinearizedSum φ R₂ N c a =
       midBandMeanSum φ R₂ N c a + midBandOscSum φ R₂ N c a := by
@@ -1485,7 +1485,7 @@ private theorem exists_midBand_mean_sum_le_three_halves {φ : ℝ → ℝ}
           (c * Real.sqrt c * (1 + Real.log c) / Real.sqrt Q₁) *
           ‖∑ m ∈ Icc 1 R₂, a m • normalizedRamanujanHorizonVector m N‖ ^ 2 := by ring
 
-private theorem exists_midBand_osc_sum_le {φ : ℝ → ℝ}
+theorem exists_midBand_osc_sum_le {φ : ℝ → ℝ}
     (hφ : ContDiff ℝ 2 φ) (hsupp : ∀ t, t ∉ Set.Icc 0 1 → φ t = 0)
     (hM : 0 < ∫ t, φ t ^ 2) :
     ∃ C_4 : ℝ, 0 ≤ C_4 ∧

@@ -1,7 +1,7 @@
 # RH proof-route frontier
 
 **RH open · 33 live routes · 16 candidates.**
-**Corpus checkpoint:** `9aabba36ae404e603098b664f16b5852002fda27`.
+**Corpus checkpoint:** `e89bdc3481b6023a93fc29f8a59b8c7915b72c86`.
 
 Live = source observable + proved RH-sufficient receiver + explicit open estimate. Candidate = missing independent source mechanism/landing.
 Evidence: [L] integrated, source-reviewed; [S] unfinished/unintegrated, unverified; [K] individual Lean + standard-only transitive-axiom audit. Untagged established facts: [L].
@@ -44,8 +44,8 @@ Evidence: [L] integrated, source-reviewed; [S] unfinished/unintegrated, unverifi
 
 - **Path:** Complete Weil form → μ(A)≥0 at every aperture → RH.
 - **Established:** Ground minima attained; strict aperture monotonicity; μ≥1/5000 through A=181/500. Exact {∞,2} trace through A=½log3; intrinsic operator-trace positivity equivalent to μ≥0, with polar Krein (+1,−1) split. Shared atomic positivity below.
-- **Open:** Sign at A=½log3, then every aperture, paying low/mixed modes and polar cost. Every fixed finite-prime support has ground energy≤C−ce^A, even with arbitrary weights [S]; a uniform positive gap at unbounded aperture is impossible.
-- **Sources:** C:TheApertureFlowNeverStalls; SP:LiouvilleOddWindowRefutationAndSelectiveFullPositivity; SP:SemilocalPrimeTwoTrace/IntrinsicWeilTraceAndWindowCorollaries; SP:SemilocalPrimeTwoTrace/FinitePrimeSetSemilocalObstruction [S].
+- **Open:** Sign at A=½log3, then every aperture, paying low/mixed modes and polar cost. Every fixed finite-prime support has ground energy≤C−ce^A, even with arbitrary weights; a uniform positive gap at unbounded aperture is impossible.
+- **Sources:** C:TheApertureFlowNeverStalls; SP:LiouvilleOddWindowRefutationAndSelectiveFullPositivity; SP:SemilocalPrimeTwoTrace/IntrinsicWeilTraceAndWindowCorollaries; SP:SemilocalPrimeTwoTrace/FinitePrimeSetSemilocalObstruction.
 
 <a id="fu"></a>
 ### FU — CCM-FU signed prime scheduling
@@ -115,8 +115,8 @@ Evidence: [L] integrated, source-reviewed; [S] unfinished/unintegrated, unverifi
 ### HF — Positive Hodge form on arithmetic cohomology
 
 - **Path:** Complete arithmetic form ≥0 → Hodge index → RH.
-- **Established:** Hodge/Hecke/Riemann–Roch receivers and prime-star decomposition; shared atomic positivity below.
-- **Open:** RH-complete full-family sign, or independent primitive section effectivity. Growing-conductor and mixed-complement costs must fit the vanishing floor.
+- **Established:** Hodge/Hecke/Riemann–Roch receivers; prime-star decomposition; zero-density prime-flip separation classified by the conductor series. Growing subthreshold Jordan blocks and full horizon→Weil limit: shared frontier.
+- **Open:** RH-complete full-family/horizon sign, or independent primitive section effectivity. Transition conductors and mixed-complement costs must fit the vanishing floor; gauge separation is not complete-form positivity.
 - **Sources:** J:TheIndexExit; PL:HeckeInvarianceOfTheCollidedPolarizationIsRH; CACT:CollectivePacketCoercivityAndLogarithmicConfinement.
 
 <a id="chmd"></a>
@@ -147,9 +147,9 @@ Evidence: [L] integrated, source-reviewed; [S] unfinished/unintegrated, unverifi
 ### WD — Ward orientation and horizontal collision
 
 - **Path:** Source current → collision charge<2; alternatively one shared all-dyadic-scale defect bound → RH.
-- **Established:** Collision/index and all-dyadic-bound receivers; fixed-c mean-sup O_c(log U), c<1/2; extremizer attainment/asymptotics. Birkhoff–Szegő/stopping-prefix sectoriality criterion. Stabilization cutoff O((m+1)log²(m+S+4)); centered-theta cutoff O(√m+1) for selected stages near each S≤e^√m in a bounded window containing [m,m+1] [S].
-- **Open:** Actual sectoriality at each height and all sufficiently fine resolutions, or one uniform all-dyadic bound. Fixed-c control permits finite exceptions; averaged corridors permit exceptional heights/shallow zeros. Little-o mean⇔critical-scale clustering; both open.
-- **Sources:** CDG:LogScaleHeckeDefect/FiniteThetaPoleNodalRHEquivalence; CDG:LogScaleHeckeDefect/HalfGateClosureAndDensityEquivalence; CDG:LogScaleHeckeDefect/UnitWindowMinimumAndOscillation; CDG:SzegoCollision/PolynomialPrefixStabilization [S].
+- **Established:** Collision/index receivers; fixed-c mean-sup O_c(log U), c<1/2; extremizer attainment/asymptotics. Explicit stabilized prefixes give nine equivalent RH criteria: sectoriality, outer factorization, invertibility, index<2. Log-stage O(√m) prefixes characterize |Reρ−½|≤A/log|Imρ| at high zeros; a uniform log-scale Hecke-defect bound implies this confinement and Lindelöf.
+- **Open:** Actual all-height/all-resolution sectoriality or uniform all-dyadic defect bound. The log-scale defect bound is also open; its shrinking-strip conclusion permits shallow/finite off-line zeros. Little-o mean⇔critical-scale clustering remains open.
+- **Sources:** CDG:LogScaleHeckeDefect/FiniteThetaPoleNodalRHEquivalence; CDG:LogScaleHeckeDefect/UnitWindowMinimumAndOscillation; CDG:SzegoCollision/PolynomialPrefixStabilization; CDG:SzegoCollision/HeckeDefectCorridorAndRHDoorOpener.
 
 <a id="li"></a>
 ### LI — Paired Li and prime–Gamma balances
@@ -171,9 +171,9 @@ Evidence: [L] integrated, source-reviewed; [S] unfinished/unintegrated, unverifi
 ### PM — Physical-model Haar approximation (FZZ-P)
 
 - **Path:** Global Haar approximation / cofinal damping ε↓0 / every escape limit visible → RH.
-- **Established:** Escape receivers; Mayer product with L_c=2logλ_c, parameter w/2, inverse multiplicities1 (self-inverse)/2 otherwise. Actual modular flow has unit-speed axes and discrete cyclic return groups; equal nonzero integral return data determine one orbit up to phase. D(w,−1)≠0 for real w>0.
-- **Open:** Cofinal complete-energy control/exclusion of escape. Primitive-cycle↔closed-geodesic bijection and least-period identification; faithful ζ/scattering correspondence and critical-strip resonance exclusion.
-- **Sources:** CP:TheEscapeCompletenessCriterion; ACG:RHIsTheVisibilityOfEveryEscapeState; RIT:GaussMayerPrimitiveOrbitProduct; RIT:GaussMayerNegativeUnitResolventPole; RIT:GaussMayerUnorientedProduct; RIT:GaussMayerGeodesicFlow; RIT:GaussMayerGeodesicCentralizer.
+- **Established:** Escape receivers; primitive cycles↔actual closed modular geodesics, least length2logλ and geometric determinant product at w/2 for Re w>2. Positive constant-input Mayer resolvent at w and actual scattering at w/2 have poles exactly at ζ(w)=0 in the strip, with multiplicity; negative channel has none. Classical logarithmic zero-free region. Epstein Cauchy average equals the period for Re w>2.
+- **Open:** Independent positive-energy control excluding off-line scattering poles/cofinal escape. Faithful divisor identification supplies no spectral sign. Continue the Epstein averaging identity into the strip with endpoint control.
+- **Sources:** CP:TheEscapeCompletenessCriterion; ACG:RHIsTheVisibilityOfEveryEscapeState; RIT:GaussMayerGeodesicProduct; RIT:GaussMayerScatteringMultiplicity; RIT:GaussMayerScatteringVector; RIT:GaussMayerSignedScattering; RIT:GaussMayerBoundaryZeroFree; RIT:GaussMayerEpsteinPeriod.
 
 <a id="jas"></a>
 ### JAS — Joint ancestry
@@ -258,10 +258,10 @@ Evidence: [L] integrated, source-reviewed; [S] unfinished/unintegrated, unverifi
 <a id="srt"></a>
 ### SRT — Prime-side one-parameter lag localization
 
-- **Path:** Complete atomic-family sign / late-lag bound / exhaustive tower sign → RH.
-- **Established:** Full-index exhaustion and exact family receivers; shared atomic positivity below.
-- **Open:** Actual sign/index ceiling on an RH-complete family, including the fixed Beurling schedule below. Fixed aperture or subpower index ceiling is insufficient.
-- **Sources:** S:EveryWidthDecidesTheCriticalLine; SMAP:TheDyadicSignOfAPoleFreeGeneratorIsRH; SSHA:EveryEighthRootMultipleReceivesTheTiltedSpline.
+- **Path:** Complete atomic-family sign / horizon-layer asymptotic sign / late-lag bound → RH.
+- **Established:** Full-index exhaustion, exact family receivers and full horizon→Weil limit; RH iff every horizon window has vanishing negative normalized energy on supercritical schedules.
+- **Open:** Actual horizon sign or complete-family sign on the fixed Beurling schedule. At one finite critical multiple, positive aliasing can mask negative Weil energy; all multiples or a vanishing-aliasing schedule are needed.
+- **Sources:** S:EveryWidthDecidesTheCriticalLine; SMAP:TheDyadicSignOfAPoleFreeGeneratorIsRH; SSHA:EveryEighthRootMultipleReceivesTheTiltedSpline; AHD:TheHorizonCriterion; AHD:TheAliasingIsCoercive.
 
 <a id="act"></a>
 ### ACT — Arithmetic criticality / single-shift variation
@@ -284,7 +284,7 @@ Evidence: [L] integrated, source-reviewed; [S] unfinished/unintegrated, unverifi
 
 - **Path:** Arithmetic effectivity / Rosati heights / bounded Weil coupling → Hodge → RH.
 - **Established:** Exact receivers; finite-grid-blind Künneth effectivity at every aperture. Prime-free h¹_prim≥‖f‖²/40 at radius≤1/64. Odd-characteristic hyperelliptic Frobenius calibration gives Hodge/Künneth positivity. All-profile arithmetic Künneth positivity through radius181/500. Shared atomic positivity below.
-- **Open:** Arithmetic primitive effectivity at every aperture, paying constrained modes/mixed coupling; alternatively bounded coupling or finite product-group tensor index. Sharp genus upper law open; N−N_simple=o(T) follows only assuming that law.
+- **Open:** Arithmetic primitive effectivity at every aperture, paying constrained modes/mixed coupling; alternatively bounded dense-lattice coupling or finite product-group tensor index. Natural-cone boundedness alone admits exact spline-weight off-line models. Sharp genus upper law remains open.
 - **Sources:** G:ExactArithmeticSourceEffectivity; LST:RiemannRochOutsideAFiniteDivisorAtEveryDegree; LST:TheExteriorJumpsOfAPrimeFreeCycle; LST:TheStepanovCountPaysThePrimitiveH1OverFiniteFields; G:TheGenusLawForcesSimpleZeros; SP:SemilocalPrimeTwoTrace/IntrinsicWeilTraceAndWindowCorollaries.
 
 <a id="inter-tower-coupling"></a><a id="coupled-tower-signature"></a><a id="sc"></a>
@@ -292,8 +292,8 @@ Evidence: [L] integrated, source-reviewed; [S] unfinished/unintegrated, unverifi
 
 - **Path:** Actual glued affine Weil index≤1 at any place → RH.
 - **Established:** Exact glued index=κ_ζ+1; coupled-source exhaustion and tensor/coupling receivers. Complete-matrix Gram realization and critical-overlap pole-hyperplane receiver: shared frontier. Finite ordinary index gives finite off-line support only.
-- **Open:** Independent glued index≤1, pole-hyperplane sign on the fixed Beurling schedule, or uniform dense-lattice coupling. Matching/differencing supplies no sign or index reduction.
-- **Sources:** AKG:TheGluingFormulaAtEveryPlace; AKG:TowerCoupling/CoupledTowerSignatureFormula; RIT:TheHadamardPowersOfWeilsKernel.
+- **Open:** Independent glued index≤1, pole-hyperplane sign on the fixed Beurling schedule, or uniform dense-lattice coupling. Natural-cone boundedness does not force zero width, even with exact spline weights and unit-multiplicity quartets; a cone argument needs additional ζ-specific rigidity.
+- **Sources:** AKG:TheGluingFormulaAtEveryPlace; AKG:TowerCoupling/CoupledTowerSignatureFormula; RIT:TheHadamardPowersOfWeilsKernel; ACPL:ConeMoments/PrescribedSplineQuartets.
 
 ## Route candidates
 
@@ -315,7 +315,7 @@ Promotion requires the missing independent source mechanism/landing below; an un
 | <a id="candidate-ptr"></a><a id="ptr"></a>**PTR — Photonic source:** prime-faithful lossless stack → real-rooted Ξ limit. | Finite lossless real-rooted stacks; Ξ-limit criterion. Existing converse uses unknown Ξ zeros; continuum port has unit gap. | Independent nonlocal prime-faithful port preserving exact Ξ, or zero-loss mechanism overcoming that gap. | R:PhotonicLosslessProductPortRH; R:PaperPoissonCompletionGap |
 | <a id="rfhm"></a>**RFHM — Support grade:** faithful phase/depth source → non-inverse-covariant wall law. | Full finite-support/phase/grade admission, forward creation and strong cutoff exhaustion. | Source-defined symmetry-breaking phase/depth/compound law with arithmetic wall orientation. Reversible sewing remains inverse-covariant. | R:GammaThetaFullSupportSource; R:PaperRFHMSurvivalInformation |
 | <a id="sec"></a>**SEC — Adjacent prime seam:** exact compactness/Fock boundedness → seam jump zero. | Essential norm=seam jump; exact vanishing and time-one factorial-Fock criteria. | Pre-divisor proof of exact eventual compactness or Fock boundedness at actual zeros. Asymptotic seam smallness is nonselective. | R:XiPrimeSeamAdjacentEssentialNormNoGo; R:TimeOneGammaJetFockRHCriterion |
-| <a id="w1c"></a>**W1C — Clifford–Dirac / centred Lee–Yang:** arithmetic operator or ferromagnetic limit → real-rooted Ξ. | Finite Lee–Yang theorem and Ising-limit receiver; explicit density/field constraints. | Source-defined couplings converging to Riemann's measure with centred slow-field law, or faithful arithmetic scattering denominator. | R:LeeYangIsingGraphDatum; R:IsingLawConvergenceRH; R:HermitianPencilEulerFactorObstruction |
+| <a id="w1c"></a>**W1C — Clifford–Dirac / centred Lee–Yang:** arithmetic operator or ferromagnetic limit → real-rooted Ξ. | Finite Lee–Yang theorem and Ising-limit receiver; explicit density/field constraints. PM supplies a faithful ζ scattering divisor. | Source-defined Ising couplings with centred slow-field convergence, or a positive/self-adjoint realization of the faithful divisor. A meromorphic resolvent alone does not locate poles on the line. | R:LeeYangIsingGraphDatum; R:IsingLawConvergenceRH; R:HermitianPencilEulerFactorObstruction; RIT:GaussMayerScatteringVector |
 | <a id="wbf"></a>**WBF — Source certificates:** arithmetic stream → depth-uniform positive completion → Ξ. | Abstract genealogy Gram/Fredholm recovery and relative determinants; no arithmetic coupling. | Arithmetic certificate stream and source-faithful uniform-depth completion landing on Ξ/Weil positivity. | H:PaperGenealogyFredholmRecovery; H:PaperCriticalGenealogyCompletion |
 
 ## Shared frontier
@@ -326,16 +326,18 @@ Promotion requires the missing independent source mechanism/landing below; an un
 | Established | RH-complete target / obstacle |
 |---|---|
 | Tilted spline, eventually uniformly 1≤c≤(log N)^α, 0<α<1/9: full matrix≥κ/(2c⁷)I; W≥bc⁻⁸D_N. Deep stars inherit positivity. Spectral-floor sublevel has D_N≤C log(2c)‖x‖² [L]. | RH iff eventual full/pole-hyperplane sign at every 2K(log N)^(1/8), K>0. Close the full-space rate gap. |
-| Every fixed finite conductor packet, c_N→∞, c_N≤(log N)^α, α<1/8: eventually c_N⁷W≥(1−ε)Σ_e J(e)b_e² uniformly in coefficients, every ε>0 [L]. | Growing-conductor/mixed-complement control at every K(log N)^(1/8). A single zero's critical-scale bulk limit reads only the pole coefficient, with nonnegative real weight even off-line [S]; fixed-packet leading sign cannot select the line. |
-| Scalar scaling c⁷E_m(c)=J(m)R_m(c/m), J(m)=C J₈(m)/ϕ(m); 0≤R_m(x)≤Cx and R_m(x)→1 uniformly as x→∞. Λ residue vanishes; every single-prime flip has indefinite residue [L]. | Finite-horizon mixed entries and full growing-conductor complement at RH overlap. Scalar transition control does not give complete-matrix sign; single-prime flip exclusion does not classify arbitrary twists. |
+| c_N→∞, c_N≤(log N)^α, α<1/8: for every ε>0, some X makes the entire growing conductor block e≤⌊c_N/X⌋ eventually ε-relative-close to Σ_e J(e)b_e² after c_N⁷ rescaling [L]. | Transition e≈c_N, larger conductors and mixed complement at every K(log N)^(1/8). Fixed-packet/fixed-zero-window leading bulk weights are nonnegative even off-line [L]; they do not select the line. |
+| Scalar scaling c⁷E_m(c)=J(m)R_m(c/m), J(m)=C J₈(m)/ϕ(m); J(m)/J(1)=#P⁷(ℤ/mℤ). 0≤R_m(x)≤Cx; R_m(x)→1 uniformly. Λ residue vanishes; every nonempty finite prime-flip set has indefinite residue [L]. | Full growing-conductor complement at RH overlap. Scalar/counting positivity does not give complete-matrix sign or classify infinite twists. |
+| Horizon vectors x_n=h(log(n/N))/√n: c_N⁻¹Q_N→κQ_Weil(e^(y/2)h(y)), κ=(∫φ)²/∫φ²>0, when c_N=o(N), log N=o(c_N⁸). Vanishing negative normalized energy for every window/such schedule⇔RH [L]. | Prove that sign. For each nonzero window, aliasing is positively of order log N/c_N⁸; at c_N⁸/log N→K it leaves an O(1/K) allowance. One finite K does not remove it. |
 | Mid-band V_⌊N^θ⌋∩V_⌊(log N)^q⌋^⊥ coercive for α<1/4, q>3α, 0<θ≤1/4096 [L]. | This omits low conductors and terminal complement. Their mixed terms remain unpaid at the RH rate. |
-| Top block n>N/L_c, L_c≈c: prime self-form costs O(c(1+log c)) per atom-normalized mass. Prefix/top prime cross-term is an exact Dirichlet convolution; Gamma provides a high-frequency reserve [S]. | Bound the convolution's low/high-frequency masses and mixed terms within the complete Gamma/polar reserve; no full-family sign follows from the decomposition. |
+| Every nonzero compact C² profile has a uniform bounded-overlap conductor floor [L]. On each compact positive-overlap interval, V_⌊N^θ⌋ is uniformly coercive for 0<θ<1/1080 [S]. | Extend beyond bounded overlap and pay the complementary/mixed modes; polynomial conductor growth alone is not RH-complete. |
+| Prefix/top split on V₁⊥: complete energy retains 7D_prefix/8 and 3κc⁻⁷log N/8 per top mass, minus explicit costs. Prime-translate window sums cancel off the pole; Gamma pays high frequencies [S]. | Absorb short-row, smoothing, low-frequency and O(c log c) top costs simultaneously at RH overlap. The assembled bound is not yet a positive full-family floor. |
 | Zero-free logarithmic profile positive through explicit ε₀L(log L)², L=loglog N. Some reciprocal-floor budget with 0<α≤1/128 works at coefficient K iff K≤ε₀ [L]. | For this profile, reach every fixed positive multiple by stronger floor/residual estimates. Its positivity does not transfer to the Beurling profile. |
 | One fixed smooth Beurling profile realizes every finite rational Gram as a positive-mass-weighted complete-matrix compression limit at c_N=2L(log L)², L=loglog N. RH iff eventual pole-hyperplane sign on this single schedule [L]. | Actual sign at c_N. Steklov-profile criterion requires all fixed K≥1; the Beurling criterion does not. |
 | Smooth nonnegative unit-bump pole-hyperplane receiver at every α>0 [L]. | Prove actual sign at any positive-power overlap rate. |
 | Prime-defect decomposition and sharp relative residual scale (log Q)²/log N. Coprime-successor window energy≥(K−Q(Q−1))×nonconstant packet mass for K≥Q(Q−1), gcd(p,Q!)=1 [L]. | Full Gamma/pole/row-potential comparison; successor/prime-defect gaps alone are not complete-Weil positivity. |
 
-Sources: CACT:CollectivePacketCoercivityAndLogarithmicConfinement; CACT:TheTopPrimeSelfFormCostsOnlyALogarithm [S]; CACT:ThePrimeCrossOfAPrefixAndATopIsADirichletConvolution [S]; CACT:TheGammaFormPaysEveryFrequencyAboveAThreshold [S]; SSHA:EveryEighthRootMultipleReceivesTheTiltedSpline; HWV:StarsOfTheCompleteWeilFamily; RIT:TheHodgeIndexAtGrowingOverlap; RAPT:ThePhysicalPrimeKernelRetainsThePoleDefect; CSAR:SharpPrimeResidualScale; CSAR:CoprimeSuccessorGap; ADT:TheScalingFormOfTheDegeneration; ADT:CompleteDegenerationSelectsZeta; AHD:TheZeroLedgerOfTheBulk [S]. Logarithmic profiles: TM:ReceiverRate/TheLogarithmicProfileIsPositiveBelowCriticalOverlap; TM:ReceiverRate/SharpLogarithmicOverlapBudget; TM:ReceiverRate/EveryFiniteGramFitsOneCriticalOverlap; RIT:TheHodgeIndexAtCriticalOverlap.
+Sources: CACT:CollectivePacketCoercivityAndLogarithmicConfinement; CACT:EveryNonzeroProfileHasAPositiveConductorFloor; CACT:EveryProfileIsPositiveOnGrowingConductorSpans [S]; CACT:TheFarReserveThroughTheWindowAverage [S]; SSHA:EveryEighthRootMultipleReceivesTheTiltedSpline; HWV:StarsOfTheCompleteWeilFamily; RIT:TheHodgeIndexAtGrowingOverlap; RIT:TheZeroDensityEndpointHasTheConductorCriterion; RAPT:ThePhysicalPrimeKernelRetainsThePoleDefect; CSAR:SharpPrimeResidualScale; CSAR:CoprimeSuccessorGap; ADT:TheSubthresholdBlockInheritsTheJordanForm; ADT:CompleteDegenerationSelectsZeta; AHD:TheJordanLimitCountsProjectiveSpace; AHD:TheHorizonCriterion; AHD:TheAliasingIsCoercive. Logarithmic profiles: TM:ReceiverRate/TheLogarithmicProfileIsPositiveBelowCriticalOverlap; TM:ReceiverRate/SharpLogarithmicOverlapBudget; TM:ReceiverRate/EveryFiniteGramFitsOneCriticalOverlap; RIT:TheHodgeIndexAtCriticalOverlap.
 
 <a id="external-literature"></a>
 ### Scope guards
@@ -350,7 +352,7 @@ Sources: CACT:CollectivePacketCoercivityAndLogarithmicConfinement; CACT:TheTopPr
 
 PW-B: [retired source-uniform extinction mechanism](rh-killed-routes.md#kr-pwb); surviving critical-line detector feeds PM/scattering. ISC-polar, BVI and ART: support, not independent live routes. [Other killed mechanisms and retired aliases](rh-killed-routes.md).
 
-ADT/AHD: conductor degeneration/horizon analysis supporting HF/ACS/SC ([shared frontier](#shared-frontier)); ADT gluing determinant reformulates [MC](#mc). Support programmes, not independent routes.
+ADT: conductor degeneration supporting HF/ACS/SC; gluing determinant reformulates MC. AHD: horizon-layer RH criterion within SRT/HF/SC ([shared frontier](#shared-frontier)); full horizon sign remains open.
 
 ## Source locator
 

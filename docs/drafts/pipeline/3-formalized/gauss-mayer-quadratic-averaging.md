@@ -66,7 +66,8 @@ only `propext`, `Classical.choice`, and `Quot.sound`.
 
 ## Boundary
 
-The [continued transform](../1-in-progress/gauss-mayer-epstein-continuation.md)
-requires further height bounds and holomorphic parameter integration.
+The [continued transform](gauss-mayer-epstein-continuation.md) extends the
+actual integral identity to `Re w>0`, `w≠2`, with absolute convergence and
+holomorphic parameter dependence.
 No full eigenspace classification or Hermitian form follows here. For
 nonreal `w`, the Cauchy kernel has a variable complex phase.

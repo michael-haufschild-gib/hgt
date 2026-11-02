@@ -51,8 +51,8 @@ critical line. `two_prime_alias_bound_in_Δ` gives joint phase separation
 
 `|Δ log p−2πk₁| log q + |Δ log q−2πk₂| log p ≥ c·min(|Δ|,(2+|Δ|)^(−C))`.
 
-Neither controls residue cancellation while real parts approach an unattained
-supremum. A comparison involving the width gap and zero height remains missing.
+Together with phase-coherent cluster control, these now give the polynomial
+width-gap bound below. That bound still permits unattained positive width.
 
 Positive weights alone do not remove this obstruction: the concrete
 `CircleQuadraturePositive.pcoef` and `ppoint` have positive weights summable
@@ -81,12 +81,16 @@ existence theorem and its transitive dependencies pass direct Lean audits
 with only standard axioms. Thus these generic zero-side properties cannot
 settle SC2. A further property of actual zeta zeros is required.
 
-The [boundary-repulsion conjecture](cone-coupling-polynomial-boundary-repulsion.md)
-seeks a polynomial lower bound for the gap between each zero and maximal
-width under bounded cone coupling. Its sixth-moment tail estimate, generic
-first-order resolvent bound, and relative regularity of exact spline residues
-are formalized. The full repulsion theorem remains open and would not by
-itself prove RH.
+The [polynomial boundary-repulsion theorem](../3-formalized/cone-coupling-polynomial-boundary-repulsion.md)
+proves that bounded natural-cone coupling implies RH or a uniform lower bound
+`D-|Re ρ-1/2|≥c/(1+|Im ρ|)^A`, with `c>0` and integer `A>0`.
+Its final direct Lean audit and transitive axiom check pass. The argument
+handles arbitrarily close clusters and arbitrary actual multiplicities.
+This sharpens the necessary condition; SC2 remains open.
+
+The [local-density conjecture](cone-cancellation-with-bounded-local-density.md)
+tests whether a uniform unit-interval count can coexist with the exact-spline
+cancellation mechanism. No such stronger countermodel is yet proved.
 
 ## Other boundaries
 
