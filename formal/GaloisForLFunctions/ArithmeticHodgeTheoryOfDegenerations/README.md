@@ -105,7 +105,8 @@ conductor counts of the divisors of `d`; and for every conductor `m ≥ 2` the R
 
 **c⁻¹⟨Wx, x⟩ → (7 φ(m) J(m)/K) ∫ e^{−8y} H(y)² dy,   φ(m) J(m) = J(1) φ(m) #ℙ⁷(ℤ/m):**
 
-the count of the first order at every conductor.
+the count of the first order at every conductor. On a Ramanujan expansion `χ = Σ_m a_m c_m` the
+second-order form is diagonal: `→ (7/K) Σ_m a_m² φ(m) J(m) ‖H‖²_{−8}` (Parseval for the count).
 
 The two kinds of direction do not interact: an untwisted window `x` and a prime window `y` are
 orthogonal at second order, so on their span
@@ -301,6 +302,7 @@ the untwisted horizon windows; twisted horizon windows are zero-blind.
 | What is the first-order structure of the degeneration, and why is it polarized? | The point count of projective space: `J(m) = J(1) #ℙ⁷(ℤ/m)`, `#ℙ^{k−1}(ℤ/m) φ(m) = J_k(m)`. Weight strings are Hensel towers, the tensor law is CRT. It is positive because it is a cardinality. | `jordanCoefficient_eq_projPoints`, `natCard_projPoints_mul_totient`, `natCard_primVec_eq_jordanTotient`, `projPoints_prime_mul`, `projPoints_prime_pow_succ`, `primVecCRT` |
 | How do the zeros enter the second-order term of fixed packets? | Only through the pole coefficient: `(log N/c) W_ρ/∫g² → m_ρ κ y_1²/(ρ(1−ρ))`, real part `> 0`; at the critical curve `c⁷ W_ρ/∫g² → K m_ρ κ y_1²/(ρ(1−ρ))`. Same for every finite window. | `tendsto_bulkLedger`, `tendsto_bulkLedger_criticalCurve`, `tendsto_sum_bulkLedger`, `re_sum_mult_div_nonneg` |
 | Which directions of the complete family see an individual zero? | Only the untwisted horizon windows: there `W_ρ/(c∫g²) → κ W_ρ(H,H)`, Weil's summand of the synthesized test. Fixed conductor packets see a zero only through the pole, with positive weight; horizon windows twisted by a mean-zero periodic weight (Ramanujan sums `c_m`, `m ≥ 2`; nonprincipal characters) see no point of the strip: their twisted Riemann sums are `O(1/N)`. | `tendsto_horizonLedger`, `Wsummand_halfWeight`, `tendsto_bulkLedger`, `tendsto_twistedLedger`, `norm_twistedRiemannSum_le` |
+| Do Ramanujan windows of different conductors interact? | No: `Σ_{r<M} c_m(r) c_{m'}(r+s) = [m = m'] M c_m(s)` at every offset (primitive roots of distinct orders never multiply to `1`), so the autocorrelation of a Ramanujan expansion is `Σ a_m² c_m` and its second-order form is `(Σ_m a_m² J_{β+1}(m)) βJ/K ‖H‖²`: diagonal in the Ramanujan basis, with the conductor counts as eigenvalues. | `ramComb_layer_criticalCurve_of_regularBulk`, `ramComb_layer_criticalCurve_exact`, `sum_ramTwist_mul_ramTwist_add`, `autoCorr_ramComb` |
 | Do the twisted directions interact with the untwisted ones? | Not at second order: for `x = h/√n` and `y = c_p(n) g/√n`, `c⁻¹(Q(x+y) − Q(x−y))/∫g² → 0` along every resolution with `c → ∞`, `c log²N/N → 0`. The mixed pole terms are products of a Riemann sum and a twisted Riemann sum (`O(1/N)`), the quiet region couples a dominated untwisted block (`|D_x|²/N ≤ C/(1+τ²)`) with a prime block of quiet energy `O(N^{−1/2})` (AM–GM: `O(N^{−1/4})`), and the mixed energy is `O(c/N)` because `c_p` has mean zero on the smooth untwisted rows. So the second-order form of the span is the direct sum `κQ(H) + (βJ/K)‖H‖² + (p^{β+1} − 1)(βJ/K)‖G‖²`. | `cross_layer_vanishes`, `exists_abs_crossPole_le`, `exists_quietCross_le`, `exists_abs_crossEnergy_le`, `atomForm_parallelogram`, `graded_layer_criticalCurve_of_regularBulk`, `graded_layer_criticalCurve_exact` |
 | Where do the negative directions of the horizon layer live? | Only on untwisted windows. A window twisted by a mean-zero periodic weight has transform `O(1/N)` at low frequencies and at the pole values, and the symbol is nonnegative beyond the archimedean horizon `τ₀(A)`; so at every resolution `0 < c ≤ N` its normalized form is `≥ −C₀(L_h + B_h)²/N²`. Its second-order term is strictly positive: one dyadic window above the grid carries `a log N/c⁸`, so at the multiple `K` of the critical curve it is `≥ a/K − ε`. | `twisted_horizon_form_ge`, `eventually_twisted_horizon_form_ge`, `exists_weilQuad_ge_of_lowFrequency`, `twisted_horizon_layer_coercive`, `twisted_horizon_layer_criticalCurve_ge` |
 | Is the horizon layer Weil's form? | Yes. In the iterated limit (horizon, then window of zeros) windows exhaust `κ W(H,H)`. Directly: past the critical curve (`(1+log N)/c^p → 0`) `c⁻¹⟨Wx,x⟩ → κ Q(H)`; at `c^p/log N → K_c` it is `κ Q(H)` up to `K/K_c`; for every schedule the error is `ε + K(1+log N)/c^p`. | `horizon_layer_two_sided`, `tendsto_horizon_layer_supercritical`, `horizon_layer_criticalCurve`, `horizon_window_exhaustion` |
@@ -383,6 +385,10 @@ the untwisted horizon windows; twisted horizon windows are zero-blind.
 - Ramanujan sums as twists: autocorrelation by roots of unity (`sum_ramTwist_mul_add`), divisor
   lattice sums in the offset (`sum_offset_dvd_eq`), Kuzmin–Landau on sublattices
   (`norm_partial_dvd_cpow_le`, `norm_partial_ramTwist_cpow_le`).
+- The sharp form of a twisted window from its energy and its quiet region
+  (`twisted_layer_sharp_of_energy`); orthogonality of Ramanujan sums at every offset
+  (`sum_ramTwist_mul_ramTwist_add`); Cauchy–Schwarz over conductors for quiet energies
+  (`exists_ramCombLow_energy_le`).
 - Polarization of block forms: linearity of block transforms in the weights, the polarized pole
   part, AM–GM for polarized energies, the mixed Plancherel identity, the parallelogram law
   (`paperFT_centredAtomicTest_add`, `abs_pole_add_sub_le`, `abs_polar_le`, `crossEnergy_eq`,
@@ -422,6 +428,7 @@ Stepanov over `ℤ` (AET) and over curves (LST).
 | The prime window counts `ℙ⁷(𝔽_p)`: `c⁻¹⟨Wx,x⟩ → 7(p−1)J(p)/K ‖H‖²_{−8}` for every prime `p` | `prime_layer_criticalCurve_exact`, `prime_layer_sharp`, `abs_primeEnergy_sub_le`, `exists_primeLow_energy_le` | proved |
 | Divisor windows sum the divisor counts: `→ (7/K) Σ_{e|d,e>1} φ(e)J(e) ‖H‖²_{−8}` for every `d ≥ 2` | `divisor_layer_criticalCurve_exact`, `sum_divisors_jordanTotient`, `totient_mul_jordanCoefficient` | proved |
 | The Ramanujan window counts every conductor: `c⁻¹⟨Wx,x⟩ → J_{β+1}(m)βJ/K ‖H‖²`, tilted `7φ(m)J(m)/K ‖H‖²_{−8}`, every `m ≥ 2` | `ram_layer_criticalCurve_exact`, `ram_layer_criticalCurve_of_regularBulk`, `ram_layer_sharp`, `abs_ramEnergy_sub_le`, `autoCorr_ramTwist` | proved |
+| Parseval for the count: the second-order form of a Ramanujan expansion `Σ_m a_m c_m` is `(Σ_m a_m² J_{β+1}(m)) βJ/K ‖H‖²`, tilted `(7/K) Σ a_m² φ(m)J(m)` | `ramComb_layer_criticalCurve_of_regularBulk`, `ramComb_layer_criticalCurve_exact`, `sum_ramTwist_mul_ramTwist_add`, `autoCorr_ramComb`, `twisted_layer_sharp_of_energy` | proved |
 | The energy of a periodic twist is its autocorrelation: `E_N = (2π/c) Σ_n y_n² Σ_{|δ|≤⌈c⌉} C_χ(δ) G(δ/a_n) + O(c/N)` | `periodicEnergy_le`, `abs_offsetSum_sub_le`, `abs_sum_periodic_sub_le`, `abs_twistRow_sub_le` | proved |
 | The horizon layer is graded by conductor: untwisted and prime windows are orthogonal at second order, `x + y → κQ(H) + 7J(1)/K ‖H‖²_{−8} + 7(p−1)J(p)/K ‖G‖²_{−8}` | `cross_layer_vanishes`, `graded_layer_criticalCurve_of_regularBulk`, `graded_layer_criticalCurve_exact`, `atomForm_parallelogram` | proved |
 | Exhaustion: windows of zeros give Weil's form of the synthesized test | `horizon_window_exhaustion`, `tendsto_sum_horizonLedger` | proved |
@@ -458,7 +465,8 @@ Stepanov over `ℤ` (AET) and over curves (LST).
    (`7 φ(m) J(m)/K`, prime and alternating windows as special cases) through the energy law of
    periodic twists. Open: the second-order form on windows twisted by general periodic weights
    (nonprincipal characters: the energy is `Σ_δ C_χ(δ)G(δ/a)`, which involves shifted-lattice
-   aliasing); the joint form of Ramanujan windows of different conductors; and a count for `κ Q(H)`.
+   aliasing); the orthogonality of the untwisted block to Ramanujan expansions of composite
+   conductor (proved for prime twists); and a count for `κ Q(H)`.
 5. **Prime atoms in the jump measure.** The primes beyond a window pay their own creation potential
    (proved); a count that pays the creation potential of the primes `≤ e^A` acting on a window, and
    the count of the first Hecke graph `T₂`, are open.

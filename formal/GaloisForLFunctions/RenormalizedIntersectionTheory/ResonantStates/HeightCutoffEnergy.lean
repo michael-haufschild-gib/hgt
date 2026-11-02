@@ -195,3 +195,6 @@ theorem resonant_height_weighted_energy (g : ℝ → ℝ) (hg : Continuous g)
 end
 
 end GaloisForLFunctions.RenormalizedIntersectionTheory.ResonantStates
+
+#print axioms GaloisForLFunctions.RenormalizedIntersectionTheory.ResonantStates.height_weighted_energy_increment
+#print axioms GaloisForLFunctions.RenormalizedIntersectionTheory.ResonantStates.resonant_height_weighted_energy

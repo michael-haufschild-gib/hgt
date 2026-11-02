@@ -41,6 +41,7 @@ theorem integral_heightEnergyMeasure (u : ℂ) (Y : ℝ) (g : ℝ → ℝ)
     (Eventually.of_forall fun _ => ENNReal.ofReal_lt_top)]
   apply integral_congr_ae
   exact Eventually.of_forall fun z => by
+    dsimp only
     rw [ENNReal.toReal_ofReal (sq_nonneg _), smul_eq_mul, mul_comm]
 
 /-- The unnormalized power density on a positive height interval. -/
@@ -56,11 +57,14 @@ theorem heightPowerBand_finite (κ : ℝ) {a b : ℝ} (ha : 0 < a) :
 theorem integral_heightPowerBand (κ : ℝ) {a b : ℝ} (ha : 0 ≤ a) (g : ℝ → ℝ) :
     (∫ y, g y ∂heightPowerBand κ a b) = ∫ y in Ioc a b, g y * y ^ (κ - 1) := by
   unfold heightPowerBand
-  rw [integral_withDensity_eq_integral_toReal_smul
+  have hm : Measurable (fun y : ℝ => ENNReal.ofReal (y ^ (κ - 1))) :=
     (measurable_id.pow_const (κ - 1)).ennreal_ofReal
+  rw [integral_withDensity_eq_integral_toReal_smul
+    hm
     (Eventually.of_forall fun _ => ENNReal.ofReal_lt_top)]
   apply setIntegral_congr_fun measurableSet_Ioc
   intro y hy
+  dsimp only
   rw [ENNReal.toReal_ofReal (Real.rpow_nonneg (ha.trans hy.1.le) _), smul_eq_mul, mul_comm]
 
 private theorem bounded_height_integrable (μ : Measure ℝ) [IsFiniteMeasure μ]
@@ -76,6 +80,8 @@ theorem resonant_heightEnergyMeasure {u : ℂ} (hAu : msA u = 0)
   letI := heightEnergyMeasure_finite u hY
   letI := heightEnergyMeasure_finite u (Y := 1) le_rfl
   letI := heightPowerBand_finite (-2 * u.re) (b := Y) zero_lt_one
+  letI := (heightPowerBand (-2 * u.re) 1 Y).smul_finite
+    (c := ENNReal.ofReal (‖msB u‖ ^ 2)) ENNReal.ofReal_ne_top
   apply measure_eq_of_integral_lipschitz_eq
   intro g hg hgb
   rcases hg with ⟨K, hK⟩
@@ -114,13 +120,14 @@ theorem heightProbabilityMeasure_probability {u : ℂ} (hu : u ∈ eisensteinLin
   have hk : 0 < -2 * u.re := by linarith
   have hB : 0 < ‖msB u‖ ^ 2 := sq_pos_of_pos (norm_pos_iff.mpr
     (msB_ne_zero_of_negative_re hu hur))
+  have hB0 : ‖msB u‖ ≠ 0 := norm_ne_zero_iff.mpr (msB_ne_zero_of_negative_re hu hur)
   have hp : 0 < Y ^ (-2 * u.re) := Real.rpow_pos_of_pos (zero_lt_one.trans_le hY) _
   rw [isProbabilityMeasure_iff, heightProbabilityMeasure, Measure.smul_apply, smul_eq_mul,
     heightEnergyMeasure_mass u hY, integral_norm_sq_of_msA_eq_zero hu hur hAu hY,
     ← ENNReal.ofReal_mul (div_nonneg hk.le (mul_nonneg hB.le hp.le))]
   have he : (-2 * u.re) / (‖msB u‖ ^ 2 * Y ^ (-2 * u.re)) *
       (‖msB u‖ ^ 2 * Y ^ (-2 * u.re) / (-2 * u.re)) = 1 := by
-    field_simp [hk.ne', hB.ne', hp.ne']
+    field_simp [hur.ne, hB0, hp.ne']
   rw [he, ENNReal.ofReal_one]
 
 /-- The cutoff-one probability survives with mass `Y^(-κ)`; the rest is an explicit band. -/
@@ -133,9 +140,11 @@ theorem resonant_heightProbabilityMeasure {u : ℂ} (hu : u ∈ eisensteinLineDo
   have hk : 0 < -2 * u.re := by linarith
   have hB : 0 < ‖msB u‖ ^ 2 := sq_pos_of_pos (norm_pos_iff.mpr
     (msB_ne_zero_of_negative_re hu hur))
+  have hB0 : ‖msB u‖ ≠ 0 := norm_ne_zero_iff.mpr (msB_ne_zero_of_negative_re hu hur)
   have hp : 0 < Y ^ (-2 * u.re) := Real.rpow_pos_of_pos (zero_lt_one.trans_le hY) _
   have hn : Y ^ (2 * u.re) = (Y ^ (-2 * u.re))⁻¹ := by
-    convert Real.rpow_neg (zero_lt_one.trans_le hY).le (-2 * u.re) using 1 <;> congr 1 <;> ring
+    rw [show 2 * u.re = -(-2 * u.re) by ring,
+      Real.rpow_neg (zero_lt_one.trans_le hY).le]
   have hc : 0 ≤ (-2 * u.re) / (‖msB u‖ ^ 2 * Y ^ (-2 * u.re)) := by positivity
   unfold heightProbabilityMeasure
   rw [resonant_heightEnergyMeasure hAu hY, smul_add, smul_smul, smul_smul,
@@ -145,12 +154,48 @@ theorem resonant_heightProbabilityMeasure {u : ℂ} (hu : u ∈ eisensteinLineDo
   · congr 1
     apply congrArg ENNReal.ofReal
     rw [hn]
-    field_simp [hk.ne', hB.ne', hp.ne']
+    field_simp [hur.ne, hB0, hp.ne']
   · congr 1
     apply congrArg ENNReal.ofReal
     rw [hn]
-    field_simp [hk.ne', hB.ne', hp.ne']
+    field_simp [hur.ne, hB0, hp.ne']
+
+/-- Positive powers remain integrable at height zero. -/
+theorem heightPowerBand_finite_of_pos {κ a b : ℝ} (hk : 0 < κ) :
+    IsFiniteMeasure (heightPowerBand κ a b) := by
+  have hi : IntegrableOn (fun y : ℝ => y ^ (κ - 1)) (Ioc a b) :=
+    (intervalIntegral.intervalIntegrable_rpow' (by linarith : -1 < κ - 1)).1
+  exact isFiniteMeasure_withDensity_ofReal hi.hasFiniteIntegral
+
+/-- The exact mass of a power-density band. -/
+theorem heightPowerBand_mass {κ a b : ℝ} (hk : 0 < κ) (ha : 0 ≤ a) (hab : a ≤ b) :
+    heightPowerBand κ a b univ = ENNReal.ofReal ((b ^ κ - a ^ κ) / κ) := by
+  have hi : IntegrableOn (fun y : ℝ => y ^ (κ - 1)) (Ioc a b) :=
+    (intervalIntegral.intervalIntegrable_rpow' (by linarith : -1 < κ - 1)).1
+  have hp : 0 ≤ᵐ[volume.restrict (Ioc a b)] (fun y : ℝ => y ^ (κ - 1)) :=
+    (ae_restrict_iff' measurableSet_Ioc).mpr (Eventually.of_forall fun y hy =>
+      Real.rpow_nonneg (ha.trans hy.1.le) _)
+  rw [heightPowerBand, withDensity_apply _ MeasurableSet.univ, Measure.restrict_univ,
+    ← ofReal_integral_eq_lintegral_ofReal hi hp, ← intervalIntegral.integral_of_le hab,
+    integral_rpow (Or.inl (by linarith : -1 < κ - 1))]
+  simp only [sub_add_cancel]
+
+theorem heightPowerBand_below {κ C Y : ℝ} (hCY : C ≤ Y) :
+    heightPowerBand κ 1 Y (Ioc 0 C) = heightPowerBand κ 1 C univ := by
+  have he : Ioc 0 C ∩ Ioc 1 Y = Ioc 1 C := by
+    ext y
+    simp only [mem_inter_iff, mem_Ioc]
+    constructor
+    · exact fun h => ⟨h.2.1, h.1.2⟩
+    · exact fun h => ⟨⟨zero_lt_one.trans h.1, h.2⟩, ⟨h.1, h.2.trans hCY⟩⟩
+  rw [heightPowerBand, withDensity_apply _ measurableSet_Ioc,
+    Measure.restrict_restrict measurableSet_Ioc, he, heightPowerBand,
+    withDensity_apply _ MeasurableSet.univ, Measure.restrict_univ]
 
 end
 
 end GaloisForLFunctions.RenormalizedIntersectionTheory.ResonantStates
+
+#print axioms GaloisForLFunctions.RenormalizedIntersectionTheory.ResonantStates.resonant_heightEnergyMeasure
+#print axioms GaloisForLFunctions.RenormalizedIntersectionTheory.ResonantStates.heightProbabilityMeasure_probability
+#print axioms GaloisForLFunctions.RenormalizedIntersectionTheory.ResonantStates.resonant_heightProbabilityMeasure

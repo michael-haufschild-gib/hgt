@@ -98,16 +98,16 @@ private lemma sq_sum_le_card_mul_sum_sq {α : Type*} (s : Finset α) (f : α →
       simp
     · have hn : (0 : ℝ) < (s.card : ℝ) := Nat.cast_pos.mpr hpos
       set n : ℝ := (s.card : ℝ)
-      set Σ : ℝ := ∑ x ∈ s, f x
+      set S_sum : ℝ := ∑ x ∈ s, f x
       set Q : ℝ := ∑ x ∈ s, (f x) ^ 2
-      have hdiff : 0 ≤ n * (((n + 1) * ((f a) ^ 2 + Q)) - (f a + Σ) ^ 2) := by
-        have hident : n * (((n + 1) * ((f a) ^ 2 + Q)) - (f a + Σ) ^ 2) =
-            (n + 1) * (n * Q - Σ ^ 2) + (n * f a - Σ) ^ 2 := by ring
+      have hdiff : 0 ≤ n * (((n + 1) * ((f a) ^ 2 + Q)) - (f a + S_sum) ^ 2) := by
+        have hident : n * (((n + 1) * ((f a) ^ 2 + Q)) - (f a + S_sum) ^ 2) =
+            (n + 1) * (n * Q - S_sum ^ 2) + (n * f a - S_sum) ^ 2 := by ring
         rw [hident]
-        have h1 : 0 ≤ n * Q - Σ ^ 2 := sub_nonneg.mpr ih
-        have h2 : 0 ≤ (n + 1) * (n * Q - Σ ^ 2) := mul_nonneg (by linarith) h1
-        linarith [sq_nonneg (n * f a - Σ)]
-      have hnonneg : 0 ≤ ((n + 1) * ((f a) ^ 2 + Q)) - (f a + Σ) ^ 2 :=
+        have h1 : 0 ≤ n * Q - S_sum ^ 2 := sub_nonneg.mpr ih
+        have h2 : 0 ≤ (n + 1) * (n * Q - S_sum ^ 2) := mul_nonneg (by linarith) h1
+        linarith [sq_nonneg (n * f a - S_sum)]
+      have hnonneg : 0 ≤ ((n + 1) * ((f a) ^ 2 + Q)) - (f a + S_sum) ^ 2 :=
         nonneg_of_mul_nonneg_right hdiff hn
       linarith
 
@@ -134,8 +134,9 @@ private lemma tendsto_one_div_const_mul_nhdsGT_zero {k : ℝ} (hk : 0 < k) :
   rcases le_or_gt B 0 with hB | hB
   · exact eventually_nhdsWithin_of_forall fun c (hc : 0 < c) =>
       hB.trans (one_div_nonneg.mpr (mul_nonneg hk.le hc.le))
-  · rw [Metric.mem_nhdsWithin_iff]
+  · rw [Filter.Eventually, Metric.mem_nhdsWithin_iff]
     refine ⟨1 / (k * B), by positivity, fun c hc => ?_⟩
+    simp only [Set.mem_setOf_eq]
     have hc_pos : 0 < c := hc.2
     have hc_lt : c < 1 / (k * B) := by
       have h := hc.1
@@ -319,8 +320,9 @@ private lemma hasLogStageBesselCertificate_of_window_zeroFree {c : ℝ} (hc : 0 
   have hV_pos : 0 < V := by linarith
   have hlogV_pos : 0 < Real.log V := Real.log_pos (by linarith)
   obtain ⟨hm_lo, hm_hi⟩ := Finset.mem_Icc.mp hm
-  have hm_ge_V : V ≤ (m : ℝ) := (Nat.le_ceil V).trans (by exact_mod_cast hm_lo)
-  have hm_le_2V : (m : ℝ) ≤ 2 * V := (by exact_mod_cast hm_hi).trans (Nat.floor_le (by positivity))
+  have hm_ge_V : V ≤ (m : ℝ) := (Nat.le_ceil V).trans ((Nat.cast_le (α := ℝ)).mpr hm_lo)
+  have hm_le_2V : (m : ℝ) ≤ 2 * V :=
+    ((Nat.cast_le (α := ℝ)).mpr hm_hi).trans (Nat.floor_le (by positivity))
   have hm_ge_m₁ : m₁ ≤ m := by
     have : (m₁ : ℝ) < (m : ℝ) := by linarith
     exact (Nat.cast_lt.mp this).le
@@ -524,17 +526,20 @@ private lemma not_hasLogStageBesselCertificate_of_deep_unitZero {A : ℝ} (hA : 
       _ ≤ (Nat.ceil (c * Real.log X_m) : ℝ) := Nat.le_ceil _
       _ ≤ (n' : ℝ) := by exact_mod_cast (le_max_right 6 _)
   have hA_gt_inv : 1 / (n' : ℝ) < A / Real.log V := by
-    rw [one_div_lt (by positivity) (div_pos hA hlogV_pos), one_div_div]
+    rw [div_lt_div_iff₀ (by positivity) hlogV_pos, one_mul]
     have h1 := mul_lt_mul_of_pos_left hn_gt_logV hA
-    rwa [← mul_assoc, mul_one_div_cancel hA.ne', one_mul, mul_comm A, div_lt_iff₀ hlogV_pos] at h1
+    rwa [← mul_assoc, mul_one_div_cancel hA.ne', one_mul] at h1
+  have hu_pos : 0 < 1 / (n' : ℝ) := by positivity
+  have hrel2 : 1 / (2 * (n' : ℝ)) = (1 / 2) * (1 / (n' : ℝ)) := by ring
+  have hrel16 : 1 / (16 * (n' : ℝ)) = (1 / 16) * (1 / (n' : ℝ)) := by ring
   have hlo : 1 / 2 - zhukovskyMajorAxis n' < 2 * (z₀.re - 1 / 2) := by
-    rw [zhukovskyMajorAxis_of_six_le hn6]
+    rw [zhukovskyMajorAxis_of_six_le hn6, hrel2]
     have h1 := (abs_le.mp hz₀_re_diff).1
-    have hpos : 0 < 1 / (16 * (n' : ℝ)) := by positivity
     dsimp only [r] at h1
-    linarith [hρ₁_re, hA_gt_inv, h1, hpos]
+    rw [hrel16] at h1
+    linarith [hρ₁_re, hA_gt_inv, h1, hu_pos]
   have hhi : 2 * (z₀.re - 1 / 2) < 1 / 2 + zhukovskyMajorAxis n' := by
-    rw [zhukovskyMajorAxis_of_six_le hn6]
+    rw [zhukovskyMajorAxis_of_six_le hn6, hrel2]
     have him_γ₀ : γ₀ ≤ |ρ₁.im| := by rw [abs_of_pos him₁_pos]; linarith
     have hvk_₁ := hvk_sym ρ₁ hxi_₁ him_γ₀
     rw [abs_of_pos him₁_pos] at hvk_₁
@@ -554,9 +559,9 @@ private lemma not_hasLogStageBesselCertificate_of_deep_unitZero {A : ℝ} (hA : 
       nlinarith [hlog_im_pos]
     have h2 := (abs_le.mp hz₀_re_diff).2
     have h3 := (abs_le.mp hvk_₁).2
-    have hpos : 0 < 1 / (16 * (n' : ℝ)) := by positivity
     dsimp only [r] at h2
-    linarith [hvk_gt, hinv_le_A, h2, h3, hpos]
+    rw [hrel16] at h2
+    linarith [hvk_gt, hinv_le_A, h2, h3, hu_pos]
   have hge2 := W.two_le_fredholmIndex_of_gap_lt_two_mul_depth
     (eval_centeredThetaDifferencePoly_eq_window (burnolUnitLower_le_upper m') N₀ hbdry)
     (fun u => by simpa only [centeredThetaLaurentLoop, polyZhukovskyLaurentLoop_apply] using hnz u)
@@ -828,8 +833,10 @@ theorem logFreeNearLineZeroDensity_implies_windowOccupancy_and_logMean
         pow_le_pow_of_le_one (by norm_num) (by norm_num) (Nat.le_succ _)
       have h2 : C_tot * (1 / 2 : ℝ) ^ K < C_tot * (η / (4 * C_tot)) :=
         mul_lt_mul_of_pos_left (h1.trans_lt hK_pow) hC_tot
-      rw [one_div_pow, ← div_eq_mul_inv] at h2
-      rwa [show C_tot * (η / (4 * C_tot)) = η / 4 by field_simp [hC_tot.ne']] at h2
+      rw [one_div_pow] at h2
+      have h3 : C_tot / (2 : ℝ) ^ K = C_tot * (1 / (2 : ℝ) ^ K) := by ring
+      have h4 : C_tot * (η / (4 * C_tot)) = η / 4 := by field_simp [hC_tot.ne']
+      linarith
     set V_min : ℝ := max ((2 : ℝ) ^ K * max 16 (|V_D| + 1))
       (Real.exp (max (2 * (K : ℝ) * Real.log 2 + 2)
         (4 * (K : ℝ) * (|ε (κ / 2)| + 1) / η + 2)))
@@ -889,8 +896,8 @@ theorem logFreeNearLineZeroDensity_implies_windowOccupancy_and_logMean
           dsimp only [U_j]; rw [pow_succ]; field_simp
         have hUj_ge : V / (2 : ℝ) ^ K ≤ U_j := by
           dsimp only [U_j]
-          exact div_le_div_of_nonneg_left hV_pos.le h2K_pos
-            (pow_le_pow_right₀ one_le_two hjK)
+          exact div_le_div_of_nonneg_left hV_pos.le (by positivity)
+            (pow_le_pow_right₀ one_le_two (Nat.succ_le_of_lt hjK))
         have hUj_pos : 0 < U_j := by linarith
         have hlogUj_ge : (1 / 2) * Real.log V ≤ Real.log U_j := by
           have h1 : Real.log (V / (2 : ℝ) ^ K) ≤ Real.log U_j :=
@@ -936,8 +943,8 @@ theorem logFreeNearLineZeroDensity_implies_windowOccupancy_and_logMean
         intro j hj
         set U_j : ℝ := V / (2 : ℝ) ^ (j + 1)
         have hUj_ge_base : V / (2 : ℝ) ^ K ≤ U_j :=
-          div_le_div_of_nonneg_left hV_pos.le h2K_pos
-            (pow_le_pow_right₀ one_le_two (Finset.mem_range.mp hj))
+          div_le_div_of_nonneg_left hV_pos.le (by positivity)
+            (pow_le_pow_right₀ one_le_two (Nat.succ_le_of_lt (Finset.mem_range.mp hj)))
         have hVD_le : V_D ≤ U_j := by
           have h1 : (2 : ℝ) ^ K * (|V_D| + 1) ≤ V := by
             have := mul_le_mul_of_nonneg_left (le_max_right 16 (|V_D| + 1)) h2K_pos.le
@@ -1025,7 +1032,7 @@ theorem logFreeNearLineZeroDensity_of_windowOccupancy_and_sqMoment
         _ < (η / B_M) * B_M := mul_lt_mul_of_pos_right hδ_lt hBM_pos
         _ = η := div_mul_cancel₀ η hBM_pos.ne'
     have hrt_lim : Tendsto (fun A : ℝ => Real.sqrt (|δ A| * |M A|)) atTop (𝓝 0) := by
-      simpa only [Real.sqrt_zero] using (Real.continuous_sqrt.tendsto 0).comp hprod_lim
+      simpa only [Function.comp_def, Real.sqrt_zero] using (Real.continuous_sqrt.tendsto 0).comp hprod_lim
     simpa only [ε, add_zero] using hrt_lim.add tendsto_one_div_max_one_zero
   refine ⟨ε, hε_lim, fun A hA => ?_⟩
   obtain ⟨hMA_nn, hMA_ev⟩ := hM_spec A hA
@@ -1231,10 +1238,12 @@ private lemma mediumShell_orderSum_le {V₁ V₂ : ℝ} (hV₁ : 0 ≤ V₁) (h1
   have hM₂_hi : M₂ ≤ V₂ := min_le_left _ _
   have hs1 := shortShell_orderSum_le_log hV₁ hM₁_lo (by linarith [min_le_right V₂ (V₁ + 2)])
   have hs2 := shortShell_orderSum_le_log (hV₁.trans hM₁_lo) hM₂_lo (by
+    dsimp only [M₁, M₂]
     rcases le_total V₂ (V₁ + 2) with hle | hgt
     · rw [min_eq_left hle, min_eq_left (hle.trans (by linarith))]; linarith
     · rw [min_eq_right hgt]; linarith [min_le_right V₂ (V₁ + 4)])
   have hs3 := shortShell_orderSum_le_log ((hV₁.trans hM₁_lo).trans hM₂_lo) hM₂_hi (by
+    dsimp only [M₂]
     rcases le_total V₂ (V₁ + 4) with hle | hgt
     · rw [min_eq_left hle]; linarith
     · rw [min_eq_right hgt]; linarith)
@@ -1263,8 +1272,8 @@ private lemma deepExtendedShell_orderSum_le {r : ℝ} (hr0 : 0 < r) (hr1 : r < 1
   have hε'_le1 : ε' ≤ 1 := by dsimp only [ε']; linarith
   obtain ⟨A_bv, K_bv, η_r, hA_bv, hK_bv, hη_pos, hη_lt, hbv_ev⟩ :=
     exists_selberg_arbitraryRate_nearLine_zeroDensity hr'0 hr'1 hε'_pos
-  obtain ⟨K_log1, hK_log1, hlog1⟩ :=
-    exists_one_add_log_pow_le_rpow 1 (by positivity : 0 < η_r / 4)
+  let K_log1 : ℝ := 1 / η_r
+  have hK_log1 : 0 < K_log1 := by dsimp only [K_log1]; positivity
   let κ_r : ℝ := min (1 / 4) (η_r / (4 * r))
   have hκ_pos : 0 < κ_r := lt_min (by norm_num) (by positivity)
   let C_d : ℝ := 2 * (1 + ε') * A_bv / Real.pi + 2
@@ -1447,12 +1456,16 @@ private lemma deepExtendedShell_orderSum_le {r : ℝ} (hr0 : 0 < r) (hr1 : r < 1
       have := mul_le_mul_of_nonneg_left h1_pow hc_nn
       dsimp only [M_err]; linarith
     have hA_pow : A ≤ K_log1 * V ^ (η_r / 4) := by
-      have hA_1log : A ≤ (1 + Real.log V) ^ (1 : ℕ) := by
-        rw [pow_one]
-        have h1 : A ≤ (1 / 4) * Real.log V :=
-          hA_hi.trans (mul_le_mul_of_nonneg_right (min_le_left _ _) hlogV_pos.le)
-        linarith
-      exact hA_1log.trans (hlog1 V hV1)
+      have hA_q : A ≤ (1 / 4) * Real.log V :=
+        hA_hi.trans (mul_le_mul_of_nonneg_right (min_le_left _ _) hlogV_pos.le)
+      have hexp_q : (η_r / 4) * Real.log V ≤ V ^ (η_r / 4) := by
+        rw [Real.rpow_def_of_pos hV_pos, mul_comm (Real.log V)]
+        linarith [Real.add_one_le_exp ((η_r / 4) * Real.log V)]
+      have hmul_q := mul_le_mul_of_nonneg_left hexp_q (by positivity : (0 : ℝ) ≤ 1 / η_r)
+      have hlhs_q : (1 / η_r) * ((η_r / 4) * Real.log V) = (1 / 4) * Real.log V := by
+        field_simp [hη_pos.ne']
+      dsimp only [K_log1]
+      linarith [hA_q, hmul_q, hlhs_q]
     have hexp_pow : Real.exp (r * A) ≤ V ^ (η_r / 4) := by
       have hrA : r * A ≤ Real.log V * (η_r / 4) := by
         have h1 : A ≤ (η_r / (4 * r)) * Real.log V :=
@@ -1610,7 +1623,7 @@ private lemma one_lt_log_log_add_sixtyFour (m : ℕ) :
     have hlog2 := Real.log_two_gt_d9
     have hl : Real.log ((2 : ℝ) ^ (6 : ℕ)) ≤ Real.log ((m + 64 : ℕ) : ℝ) :=
       Real.log_le_log (by norm_num) h64
-    rw [Real.log_pow] at hl; push_cast at hl
+    rw [Real.log_pow, Nat.cast_ofNat] at hl
     linarith
   have hexp_lt : Real.exp 1 < Real.log ((m + 64 : ℕ) : ℝ) := hexp_lt4.trans hlog64
   rw [← Real.log_exp 1]
@@ -1703,11 +1716,10 @@ theorem almostAll_doubleLogStage_besselSzegoCertificate {c : ℝ} (hc0 : 0 < c) 
     calc (B_ext.card : ℝ)
         ≤ C_d * (Real.exp (-(3 / 4 * A_V)) / A_V) * V * Real.log V := h2
       _ ≤ C_d * ((Real.log V)⁻¹ / A_V) * V * Real.log V := by
-          have hm := mul_le_mul_of_nonneg_right
-            (mul_le_mul_of_nonneg_left
-              (div_le_div_of_nonneg_right hexp_le (by positivity)) hCd_pos.le)
-            (mul_nonneg hV_pos.le hlogV_pos.le)
-          linarith [hm]
+          refine mul_le_mul_of_nonneg_right ?_ hlogV_pos.le
+          refine mul_le_mul_of_nonneg_right ?_ hV_pos.le
+          refine mul_le_mul_of_nonneg_left ?_ hCd_pos.le
+          exact div_le_div_of_nonneg_right hexp_le (by linarith [hAV_2])
       _ = (C_d / 2) * V / Real.log (Real.log V) := by
           dsimp only [A_V]
           field_simp [hlogV_pos.ne', hll_pos.ne']
@@ -1730,22 +1742,24 @@ theorem almostAll_doubleLogStage_besselSzegoCertificate {c : ℝ} (hc0 : 0 < c) 
     apply hnot
     intro N hN K hK u
     obtain ⟨hm_lo, hm_hi⟩ := Finset.mem_Icc.mp hm_I
-    have hm_ge_V : V ≤ (m : ℝ) := (Nat.le_ceil V).trans (by exact_mod_cast hm_lo)
+    have hm_ge_V : V ≤ (m : ℝ) := (Nat.le_ceil V).trans ((Nat.cast_le (α := ℝ)).mpr hm_lo)
     have hm_le_2V : (m : ℝ) ≤ 2 * V :=
-      (by exact_mod_cast hm_hi).trans (Nat.floor_le (by positivity))
+      ((Nat.cast_le (α := ℝ)).mpr hm_hi).trans (Nat.floor_le (by positivity))
     have hm_m₁ : m₁ ≤ m := (Nat.cast_lt.mp (by linarith : (m₁ : ℝ) < (m : ℝ))).le
     have hbdry := burnolUnit_bdry_regular m ((burnolPrefix_le_doorSqrtPrefix m).trans hN)
     set n_m : ℕ := doubleLogDoorStage c m
     set n : ℝ := (n_m : ℝ)
     have hn6 : 6 ≤ n_m := le_max_left 6 _
-    have hnR : (6 : ℝ) ≤ n := by exact_mod_cast hn6
+    have hnR : (6 : ℝ) ≤ n := by dsimp only [n]; exact_mod_cast hn6
     have hn_le_log : n_m ≤ logDoorStage c m := doubleLogDoorStage_le_logDoorStage hc0 m
+    have hlog_st_pos : (0 : ℝ) < (logDoorStage c m : ℝ) := by
+      linarith [six_le_logDoorStage_real c m]
     have htail_n : thetaStripTailBound N < burnolGoodLowerConst * Real.exp (-((m + 3 : ℕ) : ℝ)) *
         ((1 / (16 * n)) / 8) ^
           (∑ w ∈ burnolUnitXiZeros m, (analyticOrderAt _root_.RHTower.xi w).toNat) := by
       refine (htail_log m hm_m₁ N hN).trans_le ?_
       refine mul_le_mul_of_nonneg_left (pow_le_pow_left₀ (by positivity) ?_ _) (by positivity)
-      have hn_cast : n ≤ (logDoorStage c m : ℝ) := by exact_mod_cast hn_le_log
+      have hn_cast : n ≤ (logDoorStage c m : ℝ) := Nat.cast_le.mpr hn_le_log
       exact div_le_div_of_nonneg_right
         (one_div_le_one_div_of_le (by positivity) (by linarith)) (by norm_num)
     -- Bound `32 * n * log(log V) ≤ log V`.
@@ -1774,7 +1788,8 @@ theorem almostAll_doubleLogStage_besselSzegoCertificate {c : ℝ} (hc0 : 0 < c) 
                 div_le_div_of_nonneg_left (by positivity) hll_pos hll_m64
         dsimp only [n, n_m, doubleLogDoorStage]
         rw [Nat.cast_max, Nat.cast_ofNat]
-        exact max_le (by positivity) (by linarith)
+        have hnn_div : 0 ≤ c * ((3 / 2) * Real.log V) / Real.log (Real.log V) := by positivity
+        exact max_le (by linarith) (by linarith)
       have hmul_ub : 32 * n * Real.log (Real.log V) ≤
           48 * c * Real.log V + 224 * Real.log (Real.log V) := by
         have hm := mul_le_mul_of_nonneg_right (mul_le_mul_of_nonneg_left hn_ub (by norm_num : (0 : ℝ) ≤ 32)) hll_pos.le
@@ -1842,9 +1857,9 @@ theorem almostAll_doubleLogStage_besselSzegoCertificate {c : ℝ} (hc0 : 0 < c) 
     obtain ⟨⟨hr0, hr1, hy1, hy2⟩, hxi⟩ := (mem_burnolUnitXiZeros_iff m ρ).mp hρ_Z
     have hy1_lo := sub_three_le_burnolUnitLower m
     have hy2_hi := (burnolUnit_coords m).2.2.2.1
-    have hm_ge_V : V ≤ (m : ℝ) := (Nat.le_ceil V).trans (by exact_mod_cast hm_lo)
+    have hm_ge_V : V ≤ (m : ℝ) := (Nat.le_ceil V).trans ((Nat.cast_le (α := ℝ)).mpr hm_lo)
     have hm_le_2V : (m : ℝ) ≤ 2 * V :=
-      (by exact_mod_cast hm_hi).trans (Nat.floor_le (by positivity))
+      ((Nat.cast_le (α := ℝ)).mpr hm_hi).trans (Nat.floor_le (by positivity))
     have him_pos : 0 < ρ.im := by linarith
     have hρ_B : ρ ∈ B_ext := Finset.mem_filter.mpr
       ⟨Finset.mem_filter.mpr

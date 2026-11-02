@@ -29,6 +29,7 @@ import GaloisForLFunctions.ArithmeticHodgeTheoryOfDegenerations.TheHorizonLayerI
 import GaloisForLFunctions.ArithmeticHodgeTheoryOfDegenerations.TheWindowIndexCountsTheJumpMultiples
 import GaloisForLFunctions.ArithmeticHodgeTheoryOfDegenerations.TheEnergyOfAPeriodicTwist
 import GaloisForLFunctions.ArithmeticHodgeTheoryOfDegenerations.TheRamanujanWindowCountsEveryConductor
+import GaloisForLFunctions.ArithmeticHodgeTheoryOfDegenerations.TheSecondOrderTermIsDiagonalInTheRamanujanBasis
 
 /-!
 # Arithmetic Hodge Theory of Degenerations
@@ -57,7 +58,8 @@ zero and lie above the archimedean horizon); the window index counts the right z
 alternating (conductor-two) window has second-order term `7 J(2)/K ‖H‖²_{−8}`, and for every prime
 `p` the conductor-`p` window has `7 (p − 1) J(p)/K ‖H‖²_{−8}`: the conductor-`p` count, and for
 every `m ≥ 2` the Ramanujan window of conductor `m` has `7 φ(m) J(m)/K ‖H‖²_{−8}` (energy law of
-periodic twists through their autocorrelation); the
+periodic twists through their autocorrelation), and on Ramanujan expansions the second-order form
+is diagonal with the conductor counts as eigenvalues (Parseval for the count); the
 horizon layer is graded by conductor (untwisted and prime windows are orthogonal at second order,
 so their span carries the direct sum of the two blocks); the window index of an independent
 family counts its jump multiples `βJ/(−λ_i)`, `λ_i` the relative eigenvalues of Weil's part against

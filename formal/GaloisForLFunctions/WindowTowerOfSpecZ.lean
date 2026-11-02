@@ -16,6 +16,7 @@ import GaloisForLFunctions.WindowTowerOfSpecZ.TheArakelovBundleOfAWindow
 import GaloisForLFunctions.WindowTowerOfSpecZ.TheAtomicLatticeSeesTheMertensSum
 import GaloisForLFunctions.WindowTowerOfSpecZ.TheValuationAndTheUnitsOfTheTower
 import GaloisForLFunctions.WindowTowerOfSpecZ.TheTangentPrincipleOfTheTateFamily
+import GaloisForLFunctions.WindowTowerOfSpecZ.TheHilbertFunctionOfTheTower
 
 /-!
 # The Window Tower of Spec ℤ

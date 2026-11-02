@@ -54,3 +54,9 @@ stage-resolved analytic control (AOT aperture transport); window capacity; expon
 | C3 | Wiener's lemma: `ρ_A(f)` unit ⇔ `f(1) ≠ 0`; spectrum `{f(1)}` | paper | **[L]** same module |
 | C4 | tangent principle `J_k(n) ≥ [n=1] + kΛ(n)` (k ≥ 0) ⇒ nonneg tests: `⟨ρΛH,H⟩ ≤ (τ(k) − ‖H‖²)/k` | paper | **[L]** `TheTangentPrincipleOfTheTateFamily` |
 | N0 | numeric window model (sine basis, Lévy symbol from ω): μ(0.3)=0.225, μ(0.6)=0.0086, μ(0.8)=2e−4, ≈0 beyond 1 | harness `weilwin.py` | tool; precision ~1e−3 |
+| C5 | archimedean index `ι_Γ(A)` = #neg squares of `Ω_Γ + J_∞` on the window: `0` below `A₁ ≈ 0.215`, `1` on `(A₁, A₂ ≈ 0.762)`, then `≈ 2A` (Weyl, symbol zero `ξ₀ ≈ 2π`) | numerics `archindex.py` | observed; second (odd) direction appears after `log 2` |
+| C5' | pointwise-in-`J` mechanisms cannot pass `A₁ ≈ 0.215` (true ground energy of `Ω_Γ + J_∞` crosses 0); Picone parabola weight reaches ≈ 0.20, exit potential 0.18 | numerics `picone.py` | learned: beyond `A₁` the pole is indispensable |
+| C6 | `m^k + I_N = {f : f(n)=0 for n ≤ N, Ω(n) < k}`; `gr_k` has basis the `k`-almost primes ≤ N (Hilbert function = Landau `π_k(N)`) | paper | **[L]** `TheHilbertFunctionOfTheTower` |
+| C7 | socle of `D_N` = span `δ_n`, `N/2 < n ≤ N` (type `⌈N/2⌉`); Gorenstein ⇔ `N ≤ 2` (window `< log 3`) | paper | **[L]** same module |
+| C8 | parity at the first prime: on `[log 2, log 3)` the fold `T₂` raises the σ-odd sector and lowers the σ-even sector; pole does the opposite | numerics `parity.py` (odd min −0.013→+0.030 at A=0.76) | observed |
+
