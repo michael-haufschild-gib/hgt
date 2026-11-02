@@ -186,7 +186,7 @@ theorem isUnit_windowRep_iff {A : ℝ} (hA : 0 ≤ A) (f : ArithmeticFunction �
     have hρ : windowRep A f * windowRep A g = 1 := by
       have h := windowRep_eq_zero_of_mem hpow
       rw [← map_mul, hfg, map_sub, map_one, h]
-      exact sub_zero _
+      exact sub_zero (1 : Module.End ℝ (windowSupported A))
     have hρ' : windowRep A g * windowRep A f = 1 := by
       rw [← map_mul, mul_comm, map_mul, hρ]
     exact ⟨⟨windowRep A f, windowRep A g, hρ, hρ'⟩, rfl⟩
