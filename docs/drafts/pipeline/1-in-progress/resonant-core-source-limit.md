@@ -27,5 +27,12 @@ and nonvanishing of `B(u)` supply the actual state normalization.
 
 This identifies a positive inhomogeneous Hecke source for every admissible rate.
 It does not establish invariance, entropy, or a rate selector for the state measure.
-Lean obligations: phase pushforward, exact square expansion, varying-amplitude
-limit, and normalization from the actual resonant state.
+## Lean status
+
+`ResonantStates/CoreSourceDephasing.lean` is checked: the phase pushforward is
+absolutely continuous, and interference vanishes for jointly continuous amplitudes
+with a convergent real parameter. This holds on the full rectangle, including `x=0`.
+
+`CoreSourceSquare.lean` is checked: `dyadicEigenResidual_normalized_expansion`
+cancels the nonzero Weyl coefficient against the exact Maass–Selberg norm.
+`CoreSourceLimit.lean` contains the weak-limit proof; its audit remains open.

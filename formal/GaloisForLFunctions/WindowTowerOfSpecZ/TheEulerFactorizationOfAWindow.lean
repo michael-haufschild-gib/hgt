@@ -13,7 +13,8 @@ The window zeta operator `Z = ρ_A(ζ)` factors exactly into Euler factors, one 
 * **Euler factors** (`eulerFactor_mul_inverse`): `e_p = e_{{p}}`, the indicator of the powers of `p`,
   is inverted by `1 − δ_p`: `e_p = (1 − δ_p)^{−1}`, the geometric series of the Hecke operator at `p`.
 * **The window Euler product** (`windowRep_zeta_eq_prod`): on a window of level `N`,
-  `Z = ∏_{p ≤ N} ρ_A(e_p)`, `ρ_A(e_p)(1 − p^{−1/2}T_{log p}) = 1`. The truncated Euler product is
+  `Z = ρ_A(∏_{p ≤ N} e_p)`, the product of the commuting window Euler factors `ρ_A(e_p)`, each inverted
+  by `1 − p^{−1/2}T_{log p}` (`windowRep_eulerFactor_mul_inverse`). The truncated Euler product is
   exact in the window algebra, with finitely many factors, each unipotent.
 
 In the tower, the Euler factor at `p` appears at the stage `p` as `1 + p^{−1/2}T_{log p}` and gains
@@ -44,10 +45,10 @@ theorem isMultiplicative_factoredIndicator (s : Finset ℕ) :
   · simp [factoredIndicator_apply]
   rcases eq_or_ne n 0 with rfl | hn
   · simp [factoredIndicator_apply]
-  rw [factoredIndicator_apply, factoredIndicator_apply, factoredIndicator_apply,
-    Nat.primeFactors_mul hm hn, Finset.union_subset_iff]
-  by_cases h1 : m.primeFactors ⊆ s <;> by_cases h2 : n.primeFactors ⊆ s <;>
-    simp [h1, h2, hm, hn]
+  have hmn : m * n ≠ 0 := mul_ne_zero hm hn
+  simp only [factoredIndicator_apply, Nat.primeFactors_mul hm hn, Finset.union_subset_iff, ne_eq,
+    hm, hn, hmn, not_false_eq_true, true_and]
+  by_cases h1 : m.primeFactors ⊆ s <;> by_cases h2 : n.primeFactors ⊆ s <;> simp [h1, h2]
 
 theorem factoredIndicator_prime_pow (s : Finset ℕ) {q : ℕ} (hq : q.Prime) (i : ℕ) :
     factoredIndicator s (q ^ i) = if i = 0 ∨ q ∈ s then 1 else 0 := by
@@ -73,7 +74,7 @@ theorem factoredIndicator_mul_insert {p : ℕ} (hp : p.Prime) {s : Finset ℕ} (
   rw [mul_apply_prime_pow hq]
   simp only [factoredIndicator_prime_pow _ hq, Finset.mem_singleton, Finset.mem_insert]
   rcases eq_or_ne i 0 with rfl | hi
-  · simp
+  · rw [zero_add, Finset.sum_range_one]; simp
   by_cases hqp : q = p
   · subst hqp
     rw [Finset.sum_eq_single i]
@@ -145,8 +146,8 @@ theorem eulerFactor_mul_inverse {p : ℕ} (hp : p.Prime) :
   rw [mul_apply_prime_pow hq]
   simp only [factoredIndicator_prime_pow _ hq, Finset.mem_singleton, eulerInverse_apply]
   rcases eq_or_ne i 0 with rfl | hi
-  · simp [hp.one_lt.ne]
-  have hqi1 : q ^ i ≠ 1 := pow_ne_one_of_ne_one hq.one_lt.ne' hi
+  · rw [zero_add, Finset.sum_range_one]; simp [hp.one_lt.ne]
+  have hqi1 : q ^ i ≠ 1 := (Nat.one_lt_pow hi hq.one_lt).ne'
   rw [ArithmeticFunction.one_apply, if_neg hqi1]
   by_cases hqp : q = p
   · subst hqp
@@ -156,7 +157,7 @@ theorem eulerFactor_mul_inverse {p : ℕ} (hp : p.Prime) :
         (if j = i then 1 else 0) - (if j = i - 1 then 1 else 0) := fun j hj => by
       have hji := Nat.lt_succ_iff.mp (Finset.mem_range.mp hj)
       have e1 : q ^ (i - j) = 1 ↔ j = i := by
-        rw [pow_eq_one_iff_of_ne_zero hq.ne_zero (by omega)]
+        rw [Nat.pow_eq_one]
         constructor
         · intro h
           rcases h with h | h
@@ -180,14 +181,12 @@ theorem eulerFactor_mul_inverse {p : ℕ} (hp : p.Prime) :
         · rw [if_neg (fun h => hb (e2.mp h)), if_neg hb]
     rw [Finset.sum_congr rfl hterm, Finset.sum_sub_distrib, Finset.sum_ite_eq',
       Finset.sum_ite_eq', if_pos (Finset.mem_range.mpr (Nat.lt_succ_self i)),
-      if_pos (Finset.mem_range.mpr (by omega))]
-    ring
+      if_pos (Finset.mem_range.mpr (by omega)), sub_self]
   · rw [Finset.sum_eq_single 0]
-    · have hqpi : ¬ (q ^ i = p ∧ q ^ i ≠ 0) := by
-        rintro ⟨h, -⟩
+    · have hqpi : q ^ i ≠ p := fun h => by
         have hdvd : q ∣ p := h ▸ dvd_pow_self q hi
         exact hqp ((Nat.prime_dvd_prime_iff_eq hq hp).mp hdvd)
-      simp [hqi1, hqpi]
+      simp [hq.one_lt.ne', hi, hqpi]
     · intro j _ hj0
       simp [hj0, hqp]
     · intro h; exact absurd (Finset.mem_range.mpr (Nat.succ_pos i)) h
@@ -202,21 +201,23 @@ theorem zeta_sub_factoredIndicator_mem (N : ℕ) :
     (ArithmeticFunction.zeta : ArithmeticFunction ℝ) - factoredIndicator (primesUpTo N) ∈
       truncIdeal N := by
   intro n h1 hn
+  have hsub : n.primeFactors ⊆ primesUpTo N := fun q hq => by
+    unfold primesUpTo
+    exact Finset.mem_filter.mpr ⟨Finset.mem_range.mpr (Nat.lt_succ_of_le
+      ((Nat.le_of_mem_primeFactors hq).trans hn)), Nat.prime_of_mem_primeFactors hq⟩
   rw [sub_apply', ArithmeticFunction.natCoe_apply, ArithmeticFunction.zeta_apply_ne (by omega),
-    factoredIndicator_apply, if_pos ⟨by omega, fun q hq => ?_⟩]
-  · simp
-  · rw [primesUpTo, Finset.mem_filter, Finset.mem_range]
-    exact ⟨Nat.lt_succ_of_le ((Nat.le_of_mem_primeFactors hq).trans hn),
-      Nat.prime_of_mem_primeFactors hq⟩
+    factoredIndicator_apply, if_pos ⟨by omega, hsub⟩]
+  simp
 
 /-- **The window Euler product**: on a window of level `N = ⌊e^A⌋`, the window zeta operator is the
-product of the window Euler factors over the primes `p ≤ N`. -/
+image of the Euler product over the primes `p ≤ N`. -/
 theorem windowRep_zeta_eq_prod (A : ℝ) :
     windowRep A (ArithmeticFunction.zeta : ArithmeticFunction ℝ) =
-      ∏ p ∈ primesUpTo (windowLevel A), windowRep A (factoredIndicator {p}) := by
-  rw [← map_prod, prod_factoredIndicator _ fun p hp => (Finset.mem_filter.mp hp).2,
-    ← sub_eq_zero, ← map_sub]
-  exact windowRep_eq_zero_of_mem (zeta_sub_factoredIndicator_mem _)
+      windowRep A (∏ p ∈ primesUpTo (windowLevel A), factoredIndicator {p}) := by
+  rw [prod_factoredIndicator (primesUpTo (windowLevel A)) fun p hp => (Finset.mem_filter.mp hp).2]
+  have h := windowRep_eq_zero_of_mem (zeta_sub_factoredIndicator_mem (windowLevel A))
+  rw [map_sub] at h
+  exact sub_eq_zero.mp h
 
 /-- **Each window Euler factor is inverted by `1 − p^{−1/2}T_{log p}`.** -/
 theorem windowRep_eulerFactor_mul_inverse (A : ℝ) {p : ℕ} (hp : p.Prime) :

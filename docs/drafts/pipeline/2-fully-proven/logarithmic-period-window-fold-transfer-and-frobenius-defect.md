@@ -79,9 +79,7 @@ Let `D_δ(u) := (e^(δu) + e^(-δu))(e^(δu) - e^(-δu))² = 8 cosh(δu) sinh²(
 For `0 ≤ u₁ ≤ u₂`, `|δ u₁| ≤ |δ u₂|` implies `cosh(δ u₁) ≤ cosh(δ u₂)` and `sinh²(δ u₁) = sinh²(|δ u₁|) ≤ sinh²(|δ u₂|) = sinh²(δ u₂)`, so `D_δ` is nondecreasing on `[0, ∞)`.
 1. **Universal `n`-th Fold Lower Bound (`A ≥ log n`, `n ≥ 2`):**
    For `x ∈ [-A, -log n]`, `-x ≥ log n ≥ 0`, so `D_δ(-x) ≥ D_δ(log n) = (n^δ + n^(-δ))(n^δ - n^(-δ))²`.
-   For all real `a, b`, `(a + b)² - 2(a - b)² = 8a² - (3a - b)(? )` — check exact SOS:
-   `8 a² - (a + b)² + 2 (a - b)² = 9 a² - 6 a b + b² = (3 a - b)² ≥ 0`!!
-   Therefore `a² ≥ (1/8)(a + b)² - (1/4)(a - b)²` with exact remainder `(1/8)(3a - b)²`!
+   For all real `a, b`, the sum-of-squares identity `8 a² - (a + b)² + 2 (a - b)² = (3 a - b)² ≥ 0` gives `a² ≥ (1/8)(a + b)² - (1/4)(a - b)²` with exact remainder `(1/8)(3a - b)²`.
    Setting `a = H(x)`, `b = H(x + log n)` and integrating over `[-A, -log n]` gives
    ```text
    ∫_{-A}^{-log n} H(x)² dx ≥ (1/4) foldSym A (log n) H - (1/4) foldEnergy A (log n) H,

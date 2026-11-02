@@ -43,7 +43,7 @@ For the `m`-th Gauss–Mayer renewal branch `(G_{m,s} f)(a) = (a + m)^(-2s) f(1 
   ```text
   ‖G_{0,s} f‖_LP² = ∫_1^∞ ‖f(b)‖² ρ_s(b) w_LP(b) db,   ρ_s(b) := (b - 1)^(4 Re s - 1) w_LP(b - 1) / w_LP(b).
   ```
-  Wait: write `u = b - 1 > 0` (`b = u + 1`). For `0 < u ≤ 1` (`1 < b ≤ 2`), `(u + u⁻¹)^(-6) ≤ u^6` and `(b + b⁻¹)^(-6) b^(-1/2) ≥ (2 + 1)^(-6) · 2^(-1/2) = 3^(-6) 2^(-1/2)`, so
+  Write `u = b - 1 > 0` (`b = u + 1`). For `0 < u ≤ 1` (`1 < b ≤ 2`), `(u + u⁻¹)^(-6) ≤ u^6` and `(b + b⁻¹)^(-6) b^(-1/2) ≥ (2 + 1)^(-6) · 2^(-1/2) = 3^(-6) 2^(-1/2)`, so
   `ρ_s(b) ≤ 3^6 √2 · u^(4 Re s + 9/2) ≤ 3^6 √2` for all `Re s > -9/8`.
   For `b ≥ 2` (`u = b - 1 ≥ b/2`), `u + u⁻¹ ≥ b/2` and `b + b⁻¹ ≤ 2b`, so `(u + u⁻¹)^(-6) / (b + b⁻¹)^(-6) = ((b + b⁻¹)/(u + u⁻¹))^6 ≤ 4^6` and `(b/(b - 1))^(1/2) ≤ √2`; when `Re s ≤ 1/4`, `(b - 1)^(4 Re s - 1) ≤ 1` (`b ≥ 2`), giving global boundedness `sup_{b > 1} ρ_s(b) < ∞`.
   Conversely, when `Re s > 1/4` (`4 Re s - 1 > 0`), for `b ≥ 2`, `u + u⁻¹ ≤ b + 1 ≤ 2b ≤ 2(b + b⁻¹)`, so `w_LP(b - 1)/w_LP(b) ≥ 2^(-6)`, whence `ρ_s(b) ≥ 2^(-6) (b - 1)^(4 Re s - 1) → +∞` as `b → +∞`; testing on `1_{(R, R + 1]}` (`R ≥ 2`) disproves boundedness for any `C ≥ 0`.
@@ -77,21 +77,10 @@ Define `(U_1 f)(a) = f(a + 1)`, `(V_s f)(a) = (a + 1)^(-2s) f(a/(a + 1))`, and `
    We prove `μ_s(a) > 1` for all `a > 0` and all `Re s ≤ 1/2`:
    - If `a ≥ 1`: `(a + 1 + (a + 1)⁻¹) - (a + a⁻¹) = 1 - 1/(a(a + 1)) > 0` and `(a + 1)/a > 1`, so `w_LP(a)/w_LP(a + 1) = ((a + 1 + (a + 1)⁻¹)/(a + a⁻¹))^6 ((a + 1)/a)^(1/2) > 1`, while the second term is `> 0`.
    - If `0 < a < 1` and `Re s ≤ 1/2`: `2 - 4 Re s ≥ 0`, so `(a + 1)^(2 - 4 Re s) ≥ 1`. Meanwhile
-     `w_LP(a)/w_LP(a/(a + 1)) = ((2a² + 2a + 1)/((a + 1)(a² + 1)))^6 (a + 1)^(-1/2)`.
-     Squaring compares `((2a² + 2a + 1)/(a³ + a² + a + 1))^12` with `a + 1`: by Bernoulli / binomial lower bound, write `2a² + 2a + 1 = (a³ + a² + a + 1) + a(1 + a - a²)`. On `(0, 1)`, `1 + a - a² > 1` and `a³ + a² + a + 1 < 4`, wait — even simpler and sharper:
-     `(2a² + 2a + 1)² - (a + 1)(a² + 1)² = (4a⁴ + 8a³ + 8a² + 4a + 1) - (a⁵ + a⁴ + 2a³ + 2a² + a + 1) = a(3a + 6a² + 3a³ - a⁴ + 3) > 0`!
-     HOLD ON — CHECK THAT POLYNOMIAL IDENTITY!!
-     `((2a² + 2a + 1)/((a + 1)(a² + 1)))² = (2a² + 2a + 1)² / ((a + 1)²(a² + 1)²)` — we only need the SIXTH power `((2a² + 2a + 1)/((a + 1)(a² + 1)))^6 > (a + 1)^(1/2)`, i.e. `(2a² + 2a + 1)^12 > (a + 1)^13 (a² + 1)^12`? Wait: check `(2a² + 2a + 1)^2 > (a + 1)^3 (a² + 1)^2` at `a = 0.5`:
-     `LHS = (0.5 + 1 + 1)^2 = 6.25`; `RHS = 1.5^3 * 1.25^2 = 3.375 * 1.5625 = 5.2734`!
-     WAIT A SECOND! DOES `(2a² + 2a + 1)^2 > (a + 1)^(7/3) (a² + 1)^2` OR `(2a² + 2a + 1)^3 > (a + 1)^4 (a² + 1)^3` HOLD ON `(0, 1)`?!
-     Check `a → 0⁺`: `(1 + 2a + ...)^3 = 1 + 6a + ...` vs `(1 + a)^4 (1 + a²)^3 = 1 + 4a + ...`! At `a = 1`: `5^3 = 125` vs `2^4 * 2^3 = 128` (barely `<` at `a = 1`, where the FIRST term `w_LP(1)/w_LP(2) = (5/4)^6 √2 ≈ 5.4 > 1` is huge!).
-     Better yet: for `1/2 ≤ a < 1`, look at the FIRST term `w_LP(a)/w_LP(a + 1)` OR sum of both terms, or check `(2a² + 2a + 1)^12 > (a + 1)^13 (a² + 1)^12` at `a = 1`: `5^12 = 244,140,625`, `2^13 * 2^12 = 2^25 = 33,554,432`!!
-     WAIT A SECOND!! `5^12 = 244,140,625` IS **SEVEN TIMES LARGER** THAN `2^25 = 33,554,432`!!
-     CHECK `(2a² + 2a + 1)^4 - (a + 1)^5 (a² + 1)^4` AT `a = 1` AND `a → 0⁺`:
-     At `a = 1`: `5^4 = 625 > 2^5 * 2^4 = 512`!!
-     At `a → 0⁺`: `(1 + 2a)^4 = 1 + 8a + ... > (1 + a)^5 = 1 + 5a + ...`!!
-     And `(2a² + 2a + 1)^4 > (a + 1)^5 (a² + 1)^4` implies `((2a² + 2a + 1)/((a + 1)(a² + 1)))^4 > a + 1`, so raising to `3/2` gives `((2a² + 2a + 1)/((a + 1)(a² + 1)))^6 > (a + 1)^(3/2) > (a + 1)^(1/2)`!!
-     (We will verify the exact polynomial `(2a² + 2a + 1)^4 - (a + 1)^5 (a² + 1)^4 > 0` on `(0, 1]` before Lean — `nlinarith` / explicit positive-coefficient expansion on `a ∈ (0, 1]` makes it a 5-line algebraic proof!)
+     `w_LP(a)/w_LP(a/(a + 1)) = q^6 (a + 1)^(-1/2)` where `q := (2a² + 2a + 1)/((a + 1)(a² + 1))`.
+     On `(0, 1]`, the exact positive-coefficient decomposition
+     `(2a² + 2a + 1)^4 - (a + 1)^5 (a² + 1)^4 = 3a + 18a² + 50a³ + 18a⁴ + 24a⁶ + 20a⁶(1 - a) + 55a⁵(1 - a³) + 34a⁵(1 - a⁴) + 17a⁴(1 - a⁵) + 30a⁴(1 - a⁶) + 14a⁴(1 - a⁷) + 5a⁴(1 - a⁸) + a⁴(1 - a⁹) > 0`
+     gives `q^4 > a + 1 ≥ 1`, hence `(q^6)^2 = (q^4)^3 > (a + 1)^3 ≥ a + 1`, so `q^6 > (a + 1)^(1/2)` and `w_LP(a)/w_LP(a/(a + 1)) > 1`.
    Hence `μ_s(a) > 1` for ALL `a > 0` and `Re s ≤ 1/2`. Since `‖M_s† g‖_LP² = ‖U_1† g‖_LP² + ‖V_s† g‖_LP² = ∫_0^∞ μ_s(a) ‖g(a)‖² w_LP(a) da`, any continuous three-term fixed point `M_s ψ = ψ` in `H_LP \ {0}` satisfies
    `‖M_s ψ‖_LP² - ‖M_s† ψ‖_LP² = ∫_0^∞ (1 - μ_s(a)) ‖ψ(a)‖² w_LP(a) da < 0`.
 

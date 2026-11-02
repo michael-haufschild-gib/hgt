@@ -107,7 +107,6 @@ theorem rightEdgeFlux_add_horizCapFlux_eq_vertFlux {σ₁ y₁ y₂ : ℝ}
     unfold horizCapFlux rightEdgeFlux vertFlux
     rw [show (((3 / 2 : ℝ) : ℂ)) = (3 / 2 : ℂ) by push_cast; rfl]
     dsimp only [g]
-    rw [show (((3 / 2 : ℝ) : ℂ)) = (3 / 2 : ℂ) by push_cast; rfl]
     rw [mul_sub, mul_add, hcancel, hcancel]
     ring
   rw [hexpand] at hmul0
@@ -133,7 +132,7 @@ theorem horizCapFlux_add_adjacent {a b c y₁ y₂ : ℝ} (hab : a ≤ b) (hbc :
         (fun x : ℝ => cexp ((t : ℂ) * (((x : ℂ) + (y : ℂ) * I) - 1 / 2)) *
           thetaLogDeriv N ((x : ℂ) + (y : ℂ) * I)) (Icc a c) := by
       refine ContinuousOn.mul (by fun_prop) fun x hx => ?_
-      exact ((analyticAt_thetaLogDeriv (hnz x hx)).continuousAt.comp
+      exact (ContinuousAt.comp (f := thetaLogDeriv N) (analyticAt_thetaLogDeriv (hnz x hx)).continuousAt
         (by fun_prop : Continuous fun u : ℝ => (u : ℂ) + (y : ℂ) * I).continuousAt).continuousWithinAt
     have hi1 := (hcont.mono (Icc_subset_Icc_right hbc)).intervalIntegrable_of_Icc hab
     have hi2 := (hcont.mono (Icc_subset_Icc_left hab)).intervalIntegrable_of_Icc hbc
@@ -148,7 +147,7 @@ theorem exists_norm_vertFlux_le_exp {σ y₁ y₂ : ℝ} (hy : y₁ ≤ y₂) (N
     ∃ M : ℝ, 0 < M ∧ ∀ t : ℝ,
       ‖vertFlux σ y₁ y₂ N t‖ ≤ M * Real.exp ((σ - 1 / 2) * t) := by
   have hcont : ContinuousOn (fun y : ℝ => thetaLogDeriv N ((σ : ℂ) + (y : ℂ) * I)) (Icc y₁ y₂) :=
-    fun y hy_m => ((analyticAt_thetaLogDeriv (hnz y hy_m)).continuousAt.comp
+    fun y hy_m => (ContinuousAt.comp (f := thetaLogDeriv N) (analyticAt_thetaLogDeriv (hnz y hy_m)).continuousAt
       (by fun_prop : Continuous fun u : ℝ => (σ : ℂ) + (u : ℂ) * I).continuousAt).continuousWithinAt
   obtain ⟨B, hB⟩ := isCompact_Icc.exists_bound_of_continuousOn hcont
   have hB_nn : 0 ≤ B := (norm_nonneg _).trans (hB y₁ ⟨le_rfl, hy⟩)
@@ -314,9 +313,8 @@ theorem exists_burnol_subHalfExp_cap_cancellation (m : ℕ) {N : ℕ}
     exact h4.trans h5
   have hdlog_le : (d : ℝ) * Real.log (8 / r) ≤ 180 * (burnolPrefixConst : ℝ) * ((m : ℝ) + 1) := by
     have hd0 : (0 : ℝ) ≤ d := Nat.cast_nonneg d
-    have hlog_nn : 0 ≤ Real.log (8 / r) := by
-      have h8r : 1 ≤ 8 / r := by dsimp only [r]; rw [le_div_iff₀ hr_pos]; linarith
-      exact Real.log_nonneg h8r
+    have hlog_nn : 0 ≤ Real.log (8 / r) :=
+      Real.log_nonneg (by rw [h8r]; linarith)
     calc (d : ℝ) * Real.log (8 / r)
         ≤ ((burnolPrefixConst : ℝ) * L) * (9 * L) :=
           mul_le_mul hd_le hlog_8r hlog_nn (by positivity)
@@ -393,7 +391,7 @@ theorem exists_burnol_subHalfExp_cap_cancellation (m : ℕ) {N : ℕ}
     by_cases hedge : z.re = 3 / 2 ∨ z.im = burnolUnitLower m ∨ z.im = burnolUnitUpper m
     · exact edge_ne_zero_of_bdry_regular hy_le hbdry
         ⟨by linarith, hx_hi⟩ ⟨hy_lo, hy_hi⟩ (Or.inr hedge) hzero
-    · push_neg at hedge
+    · push Not at hedge
       have hz_open : -1 / 2 < z.re ∧ z.re < 3 / 2 ∧
           burnolUnitLower m < z.im ∧ z.im < burnolUnitUpper m :=
         ⟨by linarith, lt_of_le_of_ne hx_hi hedge.1,
@@ -513,9 +511,11 @@ theorem subexp_windowEnergy_tfae {y₁ y₂ : ℝ} (hy : y₁ ≤ y₂) (N : ℕ
     set δ : ℝ := z₀.re - 1 / 2
     have hδ_pos : 0 < δ := lt_of_lt_of_le hz₁_pos (hmax z₁ hz₁_W)
     have hint_W : IntegrableOn (fun t : ℝ => Real.exp (-(δ * t)) * ‖W.expSum t‖ ^ 2) (Ioi 0) := by
-      have heq : (fun t : ℝ => ‖W.expSum t‖ ^ 2) = fun t => ‖centeredThetaExpSum y₁ y₂ N t‖ ^ 2 :=
+      have heq : (fun t : ℝ => Real.exp (-(δ * t)) * ‖W.expSum t‖ ^ 2) =
+          fun t => Real.exp (-(δ * t)) * ‖centeredThetaExpSum y₁ y₂ N t‖ ^ 2 :=
         funext fun t => by rw [centeredThetaWindow_expSum]
-      simpa only [heq] using h δ hδ_pos
+      rw [heq]
+      exact h δ hδ_pos
     have h2δ := W.lt_of_integrableOn_energy hmax hz₀_W rfl hint_W
     linarith
   tfae_have 4 → 3 := by
@@ -531,7 +531,7 @@ theorem subexp_windowEnergy_tfae {y₁ y₂ : ℝ} (hy : y₁ ≤ y₂) (N : ℕ
       by_cases hedge : z.re = 3 / 2 ∨ z.im = y₁ ∨ z.im = y₂
       · exact edge_ne_zero_of_bdry_regular hy hbdry
           ⟨by linarith, hzx2⟩ ⟨hzy1, hzy2⟩ (Or.inr hedge) hz0
-      · push_neg at hedge
+      · push Not at hedge
         have hre := hpure z (by linarith) (lt_of_le_of_ne hzx2 hedge.1)
           (lt_of_le_of_ne hzy1 hedge.2.1.symm) (lt_of_le_of_ne hzy2 hedge.2.2) hz0
         linarith
@@ -547,11 +547,13 @@ theorem subexp_windowEnergy_tfae {y₁ y₂ : ℝ} (hy : y₁ ≤ y₂) (N : ℕ
         ⟨by simpa using hy, by simp⟩ (Or.inr (Or.inr (Or.inr (by simp))))
     have hcont₁ : ContinuousOn (fun x : ℝ => thetaLogDeriv N ((x : ℂ) + (y₁ : ℂ) * I))
         (Icc (1 / 2) σ₁) := fun x hx =>
-      ((analyticAt_thetaLogDeriv (hnz_h₁ x ⟨hx.1, hx.2.trans (by linarith)⟩)).continuousAt.comp
+      (ContinuousAt.comp (f := thetaLogDeriv N)
+        (analyticAt_thetaLogDeriv (hnz_h₁ x ⟨hx.1, hx.2.trans (by linarith)⟩)).continuousAt
         (by fun_prop : Continuous fun u : ℝ => (u : ℂ) + (y₁ : ℂ) * I).continuousAt).continuousWithinAt
     have hcont₂ : ContinuousOn (fun x : ℝ => thetaLogDeriv N ((x : ℂ) + (y₂ : ℂ) * I))
         (Icc (1 / 2) σ₁) := fun x hx =>
-      ((analyticAt_thetaLogDeriv (hnz_h₂ x ⟨hx.1, hx.2.trans (by linarith)⟩)).continuousAt.comp
+      (ContinuousAt.comp (f := thetaLogDeriv N)
+        (analyticAt_thetaLogDeriv (hnz_h₂ x ⟨hx.1, hx.2.trans (by linarith)⟩)).continuousAt
         (by fun_prop : Continuous fun u : ℝ => (u : ℂ) + (y₂ : ℂ) * I).continuousAt).continuousWithinAt
     obtain ⟨B₁, hB₁⟩ := isCompact_Icc.exists_bound_of_continuousOn hcont₁
     obtain ⟨B₂, hB₂⟩ := isCompact_Icc.exists_bound_of_continuousOn hcont₂
@@ -670,7 +672,8 @@ theorem subexp_windowEnergy_tfae {y₁ y₂ : ℝ} (hy : y₁ ≤ y₂) (N : ℕ
     have hcorr : W.InCorridor n (1 / (4 * (n : ℝ))) := by
       intro z hz
       rw [hre_half z hz, zhukovskyMajorAxis_of_six_le hn6]
-      have : 0 < 1 / (4 * (n : ℝ)) := hη
+      have halg : 1 / 2 - (1 / 2 - 1 / (2 * (n : ℝ))) - 1 / (4 * (n : ℝ)) =
+          1 / (4 * (n : ℝ)) := by ring
       linarith
     have heval := eval_centeredThetaDifferencePoly_eq_window hy N hbdry
     have hK0 := exists_certificate_order (centeredThetaWindowDegree y₁ y₂ N : ℝ) _ hη (by linarith)
@@ -757,12 +760,12 @@ theorem centeredThetaExpSum_eq_zero_above_quadratic_horizon :
   have hsub : (uIcc (centeredWindowLowerLeft y₁).re (centeredWindowUpperRight y₂).re ×ℂ
       uIcc (centeredWindowLowerLeft y₁).im (centeredWindowUpperRight y₂).im) ⊆ U := by
     intro z ⟨hzx, hzy⟩
-    simp only [centeredWindowLowerLeft, centeredWindowUpperRight, Complex.add_re, Complex.neg_re,
-      Complex.div_ofNat_re, Complex.one_re, Complex.mul_re, Complex.ofReal_re, Complex.I_re,
-      mul_zero, Complex.ofReal_im, Complex.I_im, sub_zero, add_zero, Complex.ofNat_re,
-      Complex.add_im, Complex.neg_im, Complex.div_ofNat_im, Complex.one_im, neg_zero, zero_div,
-      Complex.mul_im, mul_one, zero_add, Complex.ofNat_im] at hzx hzy
-    rw [uIcc_of_le (by norm_num), uIcc_of_le hy] at hzx hzy
+    have hl_re : (centeredWindowLowerLeft y₁).re = -1 / 2 := by simp [centeredWindowLowerLeft]
+    have hu_re : (centeredWindowUpperRight y₂).re = 3 / 2 := by simp [centeredWindowUpperRight]
+    have hl_im : (centeredWindowLowerLeft y₁).im = y₁ := by simp [centeredWindowLowerLeft]
+    have hu_im : (centeredWindowUpperRight y₂).im = y₂ := by simp [centeredWindowUpperRight]
+    rw [hl_re, hu_re, uIcc_of_le (by norm_num)] at hzx
+    rw [hl_im, hu_im, uIcc_of_le hy] at hzy
     have hre1 : |z.re - 1 / 2| ≤ 1 := abs_le.mpr ⟨by linarith [hzx.1], by linarith [hzx.2]⟩
     have him_ge : C_hor * ((N + 2 : ℕ) : ℝ) ^ 2 ≤ |z.im| := by
       rcases hheight with hlo | hhi
@@ -818,7 +821,7 @@ private def polyTransferCoeff (k : ℕ) : ℝ :=
 private lemma polyTransferCoeff_pos (k : ℕ) : 0 < polyTransferCoeff k := by
   unfold polyTransferCoeff
   have hlog : 0 ≤ Real.log (128 * (7 + 100 * (burnolPrefixConst : ℝ) ^ 2)) :=
-    Real.log_nonneg (by positivity)
+    Real.log_nonneg (by linarith [sq_nonneg (burnolPrefixConst : ℝ)])
   positivity
 
 /-- Explicit degree-`k` multiplier constant ensuring `polySqrtPrefix k m` dominates both
@@ -861,7 +864,7 @@ theorem besselUnitPrefix_le_polySqrtPrefix_of_le (k m : ℕ) {S : ℕ} (hS : S �
     have hSR : (S : ℝ) ≤ ((m + 6 : ℕ) : ℝ) ^ k := by exact_mod_cast hS
     have hpow_le : ((m + 6 : ℕ) : ℝ) ^ k ≤ ((m + 6 : ℕ) : ℝ) ^ (k + 1) :=
       pow_le_pow_right₀ (by exact_mod_cast (show 1 ≤ m + 6 by omega)) (Nat.le_succ k)
-    push_cast; linarith
+    rw [Nat.cast_add S 6, Nat.cast_ofNat]; linarith
   have hlog7 : Real.log 7 ≤ 3 := by
     have h7_8 : (7 : ℝ) ≤ 2 ^ (3 : ℕ) := by norm_num
     have hln2 : Real.log 2 < 1 := lt_trans Real.log_two_lt_d9 (by norm_num)
@@ -879,7 +882,8 @@ theorem besselUnitPrefix_le_polySqrtPrefix_of_le (k m : ℕ) {S : ℕ} (hS : S �
   have hdoor_prod : (Nat.ceil (Real.log ((m + 5 : ℕ) : ℝ)) + 1) *
       (Nat.ceil (Real.sqrt (Real.log ((S + 6 : ℕ) : ℝ))) + 1) ≤ 150 * (k + 6) * s := by
     have h1 : ((Nat.ceil (Real.log ((m + 5 : ℕ) : ℝ)) + 1 : ℕ) : ℝ) ≤ 3 * L := by
-      have hc := (Nat.ceil_lt_add_one (Real.log_nonneg (by exact_mod_cast (show 1 ≤ m + 5 by omega)))).le
+      have hc := (Nat.ceil_lt_add_one (Real.log_nonneg
+        (by exact_mod_cast (show 1 ≤ m + 5 by omega) : (1 : ℝ) ≤ ((m + 5 : ℕ) : ℝ)))).le
       push_cast; linarith
     have h2 : ((Nat.ceil (Real.sqrt (Real.log ((S + 6 : ℕ) : ℝ))) + 1 : ℕ) : ℝ) ≤
         ((k + 6 : ℕ) : ℝ) * L := by
@@ -908,7 +912,10 @@ theorem besselUnitPrefix_le_polySqrtPrefix_of_le (k m : ℕ) {S : ℕ} (hS : S �
     unfold doorUnitPrefix
     have hinner : s + (Nat.ceil (Real.log ((m + 5 : ℕ) : ℝ)) + 1) *
         (Nat.ceil (Real.sqrt (Real.log ((S + 6 : ℕ) : ℝ))) + 1) ≤ (1 + 150 * (k + 6)) * s := by
-      nlinarith [hdoor_prod]
+      calc s + (Nat.ceil (Real.log ((m + 5 : ℕ) : ℝ)) + 1) *
+              (Nat.ceil (Real.sqrt (Real.log ((S + 6 : ℕ) : ℝ))) + 1)
+          ≤ s + 150 * (k + 6) * s := Nat.add_le_add_left hdoor_prod s
+        _ = (1 + 150 * (k + 6)) * s := by ring
     calc burnolPrefixConst * (s + (Nat.ceil (Real.log ((m + 5 : ℕ) : ℝ)) + 1) *
             (Nat.ceil (Real.sqrt (Real.log ((S + 6 : ℕ) : ℝ))) + 1))
         ≤ burnolPrefixConst * ((1 + 150 * (k + 6)) * s) := Nat.mul_le_mul_left _ hinner
@@ -952,7 +959,7 @@ theorem besselUnitPrefix_le_polySqrtPrefix_of_le (k m : ℕ) {S : ℕ} (hS : S �
         (Real.log (128 * (7 + 100 * (burnolPrefixConst : ℝ) ^ 2)) + ((k + 1 : ℕ) : ℝ)) * L := by
       have hpos_arg : 0 < 128 * ((S : ℝ) + 6 + 2 * burnolOrderBound m ^ 2) := by positivity
       have hlogC_nn : 0 ≤ Real.log (128 * (7 + 100 * (burnolPrefixConst : ℝ) ^ 2)) :=
-        Real.log_nonneg (by positivity)
+        Real.log_nonneg (by linarith [sq_nonneg (burnolPrefixConst : ℝ)])
       calc Real.log (128 * ((S : ℝ) + 6 + 2 * burnolOrderBound m ^ 2))
           ≤ Real.log ((128 * (7 + 100 * (burnolPrefixConst : ℝ) ^ 2)) *
               ((m + 6 : ℕ) : ℝ) ^ (k + 1)) := Real.log_le_log hpos_arg harg_le
@@ -964,7 +971,7 @@ theorem besselUnitPrefix_le_polySqrtPrefix_of_le (k m : ℕ) {S : ℕ} (hS : S �
         _ = (Real.log (128 * (7 + 100 * (burnolPrefixConst : ℝ) ^ 2)) +
               ((k + 1 : ℕ) : ℝ)) * L := by ring
     have hlog_arg_nn : 0 ≤ Real.log (128 * ((S : ℝ) + 6 + 2 * burnolOrderBound m ^ 2)) :=
-      Real.log_nonneg (by have : (0 : ℝ) ≤ S := Nat.cast_nonneg S; positivity)
+      Real.log_nonneg (by linarith [Nat.cast_nonneg S, sq_nonneg (burnolOrderBound m)])
     have hterm_le : burnolOrderBound m *
         Real.log (128 * ((S : ℝ) + 6 + 2 * burnolOrderBound m ^ 2)) ≤
         50 * (burnolPrefixConst : ℝ) *
@@ -974,7 +981,7 @@ theorem besselUnitPrefix_le_polySqrtPrefix_of_le (k m : ℕ) {S : ℕ} (hS : S �
       have hC_nn : 0 ≤ (burnolPrefixConst : ℝ) *
           (Real.log (128 * (7 + 100 * (burnolPrefixConst : ℝ) ^ 2)) + ((k + 1 : ℕ) : ℝ)) := by
         have : 0 ≤ Real.log (128 * (7 + 100 * (burnolPrefixConst : ℝ) ^ 2)) :=
-          Real.log_nonneg (by positivity)
+          Real.log_nonneg (by linarith [sq_nonneg (burnolPrefixConst : ℝ)])
         positivity
       calc burnolOrderBound m * Real.log (128 * ((S : ℝ) + 6 + 2 * burnolOrderBound m ^ 2))
           ≤ ((burnolPrefixConst : ℝ) * L) *
@@ -1117,9 +1124,9 @@ theorem riemannHypothesis_polynomialStage_tfae :
       (le_max_right ((m + 6) ^ k) 6).trans (Finset.mem_Icc.mp (doorUnitStage_spec m _).1).1
     have hn_pos : (0 : ℝ) < n := by exact_mod_cast (show 0 < n by omega)
     have hdom : IntegrableOn
-        (fun t : ℝ => C * Real.exp (-((1 / (4 * (n : ℝ))) * t))) (Ioi (0 : ℝ)) := by
+        (fun t : ℝ => C * Real.exp (-(1 / (4 * (n : ℝ))) * t)) (Ioi (0 : ℝ)) := by
       have hneg : -(1 / (4 * (n : ℝ))) < 0 := neg_lt_zero.mpr (by positivity)
-      simpa only [neg_mul] using (integrableOn_exp_mul_Ioi hneg 0).const_mul C
+      exact (integrableOn_exp_mul_Ioi hneg 0).const_mul C
     have hbdry := burnolUnit_bdry_regular m
       ((burnolPrefix_le_capCancelSqrtPrefix m).trans
         ((capCancelSqrtPrefix_le_polySqrtPrefix k m).trans hN))
@@ -1140,7 +1147,7 @@ theorem riemannHypothesis_polynomialStage_tfae :
             (C * Real.exp ((1 / (4 * (n : ℝ))) * t)) :=
           mul_le_mul_of_nonneg_left (hbd t ht0) (Real.exp_pos _).le
       _ = C * (Real.exp (-((1 / (2 * (n : ℝ))) * t)) * Real.exp ((1 / (4 * (n : ℝ))) * t)) := by ring
-      _ = C * Real.exp (-((1 / (4 * (n : ℝ))) * t)) := by rw [← Real.exp_add]; congr 2; ring
+      _ = C * Real.exp (-(1 / (4 * (n : ℝ))) * t) := by rw [← Real.exp_add]; congr 2; ring
   tfae_have 3 ↔ 4 := by
     constructor <;> intro h k m N hN
     · have hbdry := burnolUnit_bdry_regular m
@@ -1185,10 +1192,12 @@ theorem riemannHypothesis_polynomialStage_tfae :
         (Ioi 0) := by
       have hgap : 1 / 2 - zhukovskyMajorAxis n = 1 / (2 * (n : ℝ)) := by
         rw [zhukovskyMajorAxis_of_six_le hn6]; ring
-      have heq : (fun t : ℝ => ‖W.expSum t‖ ^ 2) =
-          fun t => ‖centeredThetaExpSum (burnolUnitLower m) (burnolUnitUpper m) N t‖ ^ 2 :=
-        funext fun t => by rw [centeredThetaWindow_expSum]
-      simpa only [hgap, heq] using hint k m N hN
+      have heq : (fun t : ℝ => Real.exp (-((1 / 2 - zhukovskyMajorAxis n) * t)) * ‖W.expSum t‖ ^ 2) =
+          fun t => Real.exp (-((1 / (2 * (doorUnitStage m ((m + 6) ^ k) : ℝ))) * t)) *
+            ‖centeredThetaExpSum (burnolUnitLower m) (burnolUnitUpper m) N t‖ ^ 2 :=
+        funext fun t => by rw [hgap, centeredThetaWindow_expSum]
+      rw [heq]
+      exact hint k m N hN
     exact ⟨hnz, W.fredholmIndex_eq_zero_of_integrableOn_energy
       (eval_centeredThetaDifferencePoly_eq_window (burnolUnitLower_le_upper m) N hbdry) hint_W⟩
   tfae_have 6 → 1 := by
@@ -1326,13 +1335,15 @@ theorem invPoly_corridor_iff_fixedDegree_polynomialStage {k : ℕ} (hk : 1 ≤ k
         ((capCancelSqrtPrefix_le_polySqrtPrefix k m).trans hN))
     obtain ⟨hstage, -⟩ := doorUnitStage_spec m S
     set n := fixedPolyDoorStage k c m
+    have hn_def : n = doorUnitStage m S := rfl
     have hn6 : 6 ≤ n := (le_max_right S 6).trans (Finset.mem_Icc.mp hstage).1
     have hn_pos : (0 : ℝ) < (n : ℝ) := by exact_mod_cast (show 0 < n by omega)
     have hn_le : (n : ℝ) ≤ (S : ℝ) + 6 + 2 * ((∑ w ∈ burnolUnitXiZeros m,
         (analyticOrderAt _root_.RHTower.xi w).toNat : ℕ) : ℝ) ^ 2 := by
       have h := (Finset.mem_Icc.mp hstage).2
       have hmax : max S 6 ≤ S + 6 := max_le (by omega) (by omega)
-      exact_mod_cast (show n ≤ S + 6 + 2 * (∑ w ∈ burnolUnitXiZeros m,
+      rw [hn_def]
+      exact_mod_cast (show doorUnitStage m S ≤ S + 6 + 2 * (∑ w ∈ burnolUnitXiZeros m,
         (analyticOrderAt _root_.RHTower.xi w).toNat) ^ 2 by omega)
     have htail := unitStage_tail_lt m S hn6 hn_le hNbessel
     -- Bound `n ≤ 2 * c * (m + 6)^k`.
@@ -1343,12 +1354,12 @@ theorem invPoly_corridor_iff_fixedDegree_polynomialStage {k : ℕ} (hk : 1 ≤ k
         have hrt_m : (Nat.sqrt m : ℝ) ≤ Real.sqrt ((m + 6 : ℕ) : ℝ) := by
           rw [← Real.sqrt_sq (Nat.cast_nonneg (Nat.sqrt m))]
           exact Real.sqrt_le_sqrt (by
-            have h1 : (Nat.sqrt m : ℝ) ^ 2 ≤ (m : ℝ) := by exact_mod_cast Nat.sqrt_le m
+            have h1 : (Nat.sqrt m : ℝ) ^ 2 ≤ (m : ℝ) := by rw [sq]; exact_mod_cast Nat.sqrt_le m
             push_cast; linarith)
         have h1_rt : (1 : ℝ) ≤ Real.sqrt ((m + 6 : ℕ) : ℝ) := by
           rw [← Real.sqrt_one]
           exact Real.sqrt_le_sqrt (by exact_mod_cast (show 1 ≤ m + 6 by omega))
-        push_cast [s]
+        have hs_eq : (s : ℝ) = (Nat.sqrt m : ℝ) + 1 := by dsimp only [s]; push_cast; rfl
         linarith
       have hL_sq : (Real.log ((m + 5 : ℕ) : ℝ)) ^ 2 ≤ 50 * (s : ℝ) := by
         have hle : Real.log ((m + 5 : ℕ) : ℝ) ≤ Real.log ((m + 6 : ℕ) : ℝ) :=
@@ -1382,7 +1393,8 @@ theorem invPoly_corridor_iff_fixedDegree_polynomialStage {k : ℕ} (hk : 1 ≤ k
         rw [← Real.sqrt_sq (by positivity : 0 ≤ 2 * B_ord / c)]
         exact Real.sqrt_le_sqrt hsq
       have h2B_le : 2 * B_ord * Real.sqrt ((m + 6 : ℕ) : ℝ) ≤ c * ((m + 6 : ℕ) : ℝ) ^ k := by
-        have h1 : 2 * B_ord ≤ c * Real.sqrt ((m + 6 : ℕ) : ℝ) := (div_le_iff₀ hc_pos).mp hrt_ge
+        have h1 : 2 * B_ord ≤ c * Real.sqrt ((m + 6 : ℕ) : ℝ) := by
+          linarith [(div_le_iff₀ hc_pos).mp hrt_ge]
         have h2 : 2 * B_ord * Real.sqrt ((m + 6 : ℕ) : ℝ) ≤
             c * (Real.sqrt ((m + 6 : ℕ) : ℝ) * Real.sqrt ((m + 6 : ℕ) : ℝ)) := by
           nlinarith [Real.sqrt_nonneg ((m + 6 : ℕ) : ℝ)]
@@ -1460,10 +1472,10 @@ theorem invPoly_corridor_iff_fixedDegree_polynomialStage {k : ℕ} (hk : 1 ≤ k
           ‖centeredThetaExpSum (burnolUnitLower m) (burnolUnitUpper m) N t‖ ^ 2)
         (Ioi (0 : ℝ)) := by
       have hdom : IntegrableOn
-          (fun t : ℝ => ((W.degree : ℝ) ^ 2 + 1) * Real.exp (-((1 / (3 * (n : ℝ))) * t)))
+          (fun t : ℝ => ((W.degree : ℝ) ^ 2 + 1) * Real.exp (-(1 / (3 * (n : ℝ))) * t))
           (Ioi (0 : ℝ)) := by
         have hneg : -(1 / (3 * (n : ℝ))) < 0 := neg_lt_zero.mpr (by positivity)
-        simpa only [neg_mul] using (integrableOn_exp_mul_Ioi hneg 0).const_mul _
+        exact (integrableOn_exp_mul_Ioi hneg 0).const_mul _
       have hcont_Z : Continuous (centeredThetaExpSum (burnolUnitLower m) (burnolUnitUpper m) N) := by
         have heq : centeredThetaExpSum (burnolUnitLower m) (burnolUnitUpper m) N =
             fun t => W.expSum t :=
@@ -1493,7 +1505,7 @@ theorem invPoly_corridor_iff_fixedDegree_polynomialStage {k : ℕ} (hk : 1 ≤ k
             mul_le_mul_of_nonneg_left hsq (Real.exp_pos _).le
         _ = ((W.degree : ℝ) ^ 2 + 1) *
               (Real.exp (-((1 / (2 * (n : ℝ))) * t)) * Real.exp ((1 / (6 * (n : ℝ))) * t)) := by ring
-        _ = ((W.degree : ℝ) ^ 2 + 1) * Real.exp (-((1 / (3 * (n : ℝ))) * t)) := by
+        _ = ((W.degree : ℝ) ^ 2 + 1) * Real.exp (-(1 / (3 * (n : ℝ))) * t) := by
             rw [← Real.exp_add]; congr 2; ring
     exact ⟨hint_Z, (integrableOn_windowEnergy_iff_rightHalfPort
       (burnolUnitLower_le_upper m) N hbdry (by positivity)).mp hint_Z⟩
@@ -1544,10 +1556,12 @@ theorem invPoly_corridor_iff_fixedDegree_polynomialStage {k : ℕ} (hk : 1 ≤ k
         (Ioi 0) := by
       have hgap : 1 / 2 - zhukovskyMajorAxis n = 1 / (2 * (n : ℝ)) := by
         rw [zhukovskyMajorAxis_of_six_le hn6]; ring
-      have heq : (fun t : ℝ => ‖W.expSum t‖ ^ 2) =
-          fun t => ‖centeredThetaExpSum (burnolUnitLower m) (burnolUnitUpper m) N t‖ ^ 2 :=
-        funext fun t => by rw [centeredThetaWindow_expSum]
-      simpa only [hgap, heq] using (hint m hm N hN).1
+      have heq : (fun t : ℝ => Real.exp (-((1 / 2 - zhukovskyMajorAxis n) * t)) * ‖W.expSum t‖ ^ 2) =
+          fun t => Real.exp (-((1 / (2 * (fixedPolyDoorStage k c m : ℝ))) * t)) *
+            ‖centeredThetaExpSum (burnolUnitLower m) (burnolUnitUpper m) N t‖ ^ 2 :=
+        funext fun t => by rw [hgap, centeredThetaWindow_expSum]
+      rw [heq]
+      exact (hint m hm N hN).1
     exact ⟨hnz, W.fredholmIndex_eq_zero_of_integrableOn_energy
       (eval_centeredThetaDifferencePoly_eq_window (burnolUnitLower_le_upper m) N hbdry) hint_W⟩
   tfae_have 3 → 4 := by
@@ -1570,49 +1584,49 @@ theorem invPoly_corridor_iff_fixedDegree_polynomialStage {k : ℕ} (hk : 1 ≤ k
     · have : 12 ≤ m₂ := (Nat.le_add_left 12 _).trans (le_max_right _ _)
       exact_mod_cast (show 2 ≤ m₂ + 1 by omega)
     · -- Reflect into the upper half-plane via `1 - ρ` if `ρ.im < 0`.
-      set ρ₊ : ℂ := if 0 ≤ ρ.im then ρ else 1 - ρ
-      have hxi_₊ : _root_.RHTower.xi ρ₊ = 0 := by
-        dsimp only [ρ₊]; split_ifs
+      set ρ1 : ℂ := if 0 ≤ ρ.im then ρ else 1 - ρ
+      have hxi_1 : _root_.RHTower.xi ρ1 = 0 := by
+        dsimp only [ρ1]; split_ifs
         · exact hxi_ρ
         · rw [_root_.RHTower.xi_one_sub]; exact hxi_ρ
-      have him_₊ : ρ₊.im = |ρ.im| := by
-        dsimp only [ρ₊]; split_ifs with hnn
+      have him_1 : ρ1.im = |ρ.im| := by
+        dsimp only [ρ1]; split_ifs with hnn
         · exact (abs_of_nonneg hnn).symm
         · simp [abs_of_neg (not_le.mp hnn)]
-      have hre_abs : |ρ₊.re - 1 / 2| = |ρ.re - 1 / 2| := by
-        dsimp only [ρ₊]; split_ifs
+      have hre_abs : |ρ1.re - 1 / 2| = |ρ.re - 1 / 2| := by
+        dsimp only [ρ1]; split_ifs
         · rfl
         · simp only [Complex.sub_re, Complex.one_re]
           rw [show 1 - ρ.re - 1 / 2 = -(ρ.re - 1 / 2) by ring, abs_neg]
-      have hre_lt1 : ρ₊.re < 1 :=
-        not_le.mp fun hge => _root_.RHTower.xi_ne_zero_of_one_le_re hge hxi_₊
-      have hre_gt0 : 0 < ρ₊.re := by
+      have hre_lt1 : ρ1.re < 1 :=
+        not_le.mp fun hge => _root_.RHTower.xi_ne_zero_of_one_le_re hge hxi_1
+      have hre_gt0 : 0 < ρ1.re := by
         by_contra hle
-        push_neg at hle
-        have hge1 : 1 ≤ (1 - ρ₊).re := by simp; linarith
+        push Not at hle
+        have hge1 : 1 ≤ (1 - ρ1).re := by simp; linarith
         exact _root_.RHTower.xi_ne_zero_of_one_le_re hge1
-          (by rw [_root_.RHTower.xi_one_sub]; exact hxi_₊)
-      have hne1 : ρ₊ ≠ 1 := fun h1 => by rw [h1] at hre_lt1; simp at hre_lt1
-      have hzeta_₊ : riemannZeta ρ₊ = 0 :=
-        (_root_.RHTower.xi_eq_zero_iff hre_gt0 hne1).mp hxi_₊
+          (by rw [_root_.RHTower.xi_one_sub]; exact hxi_1)
+      have hne1 : ρ1 ≠ 1 := fun h1 => by rw [h1] at hre_lt1; simp at hre_lt1
+      have hzeta_1 : riemannZeta ρ1 = 0 :=
+        (_root_.RHTower.xi_eq_zero_iff hre_gt0 hne1).mp hxi_1
       have hm₂_12 : 12 ≤ m₂ := (Nat.le_add_left 12 _).trans (le_max_right _ _)
-      have him_ge_m₂ : ((m₂ + 1 : ℕ) : ℝ) ≤ ρ₊.im := him_₊ ▸ hT₁
-      have him_pos : 0 < ρ₊.im := by
+      have him_ge_m₂ : ((m₂ + 1 : ℕ) : ℝ) ≤ ρ1.im := him_1 ▸ hT₁
+      have him_pos : 0 < ρ1.im := by
         have : (0 : ℝ) < ((m₂ + 1 : ℕ) : ℝ) := by positivity
         linarith
-      set m : ℕ := Nat.floor ρ₊.im
+      set m : ℕ := Nat.floor ρ1.im
       have hm_ge_m₂ : m₂ ≤ m := by
         have h1 : m₂ + 1 ≤ m := Nat.le_floor him_ge_m₂
         omega
       have hm_ge_m₀ : m₀ ≤ m := (le_max_left _ _).trans hm_ge_m₂
       have hm_ge_ceil : Nat.ceil ((600 / c) ^ 2) + 12 ≤ m := (le_max_right _ _).trans hm_ge_m₂
-      have hm_le_im : (m : ℝ) ≤ ρ₊.im := Nat.floor_le him_pos.le
-      have him_lt_m1 : ρ₊.im < (m : ℝ) + 1 := Nat.lt_floor_add_one ρ₊.im
-      have hρ_unit : ρ₊ ∈ xiUnitWindowZeros (m : ℝ) :=
+      have hm_le_im : (m : ℝ) ≤ ρ1.im := Nat.floor_le him_pos.le
+      have him_lt_m1 : ρ1.im < (m : ℝ) + 1 := Nat.lt_floor_add_one ρ1.im
+      have hρ_unit : ρ1 ∈ xiUnitWindowZeros (m : ℝ) :=
         mem_xiUnitWindowZeros.mpr
           ⟨(_root_.RHTower.stripZeros_finite ((m : ℝ) + 1)).mem_toFinset.mpr
-            ⟨⟨hre_gt0, hre_lt1, him_pos.le, him_lt_m1⟩, hxi_₊⟩, hm_le_im⟩
-      have hρ_Z : ρ₊ ∈ burnolUnitXiZeros m := xiUnitWindowZeros_subset_burnolUnitXiZeros m hρ_unit
+            ⟨⟨hre_gt0, hre_lt1, him_pos.le, him_lt_m1⟩, hxi_1⟩, hm_le_im⟩
+      have hρ_Z : ρ1 ∈ burnolUnitXiZeros m := xiUnitWindowZeros_subset_burnolUnitXiZeros m hρ_unit
       set S : ℕ := Nat.ceil (c * ((m + 6 : ℕ) : ℝ) ^ k)
       set n : ℕ := fixedPolyDoorStage k c m
       set N : ℕ := polySqrtPrefix k m
@@ -1629,34 +1643,34 @@ theorem invPoly_corridor_iff_fixedDegree_polynomialStage {k : ℕ} (hk : 1 ≤ k
         exact_mod_cast zhukovskyStage_eq_self hn6
       have hn_ge_pow : c * ((m + 6 : ℕ) : ℝ) ^ k ≤ (n : ℝ) :=
         (Nat.le_ceil _).trans (by exact_mod_cast hn_ge_S)
-      rw [← hre_abs, ← him_₊]
+      rw [← hre_abs, ← him_1]
       by_contra hgt
-      push_neg at hgt
-      have him_le_m6 : ρ₊.im ≤ ((m + 6 : ℕ) : ℝ) := by push_cast; linarith
-      have hlo_band : 1 / (4 * (zhukovskyStage n : ℝ)) < |ρ₊.re - 1 / 2| := by
+      push Not at hgt
+      have him_le_m6 : ρ1.im ≤ ((m + 6 : ℕ) : ℝ) := by push_cast; linarith
+      have hlo_band : 1 / (4 * (zhukovskyStage n : ℝ)) < |ρ1.re - 1 / 2| := by
         rw [hs_eq]
-        have hpow_le : ρ₊.im ^ k ≤ ((m + 6 : ℕ) : ℝ) ^ k :=
+        have hpow_le : ρ1.im ^ k ≤ ((m + 6 : ℕ) : ℝ) ^ k :=
           pow_le_pow_left₀ him_pos.le him_le_m6 k
         have h1 : 1 / (4 * (n : ℝ)) ≤ (1 / (4 * c)) / ((m + 6 : ℕ) : ℝ) ^ k := by
           rw [div_div, one_div_le_one_div (by positivity) (by positivity)]
           linarith
-        have h2 : (1 / (4 * c)) / ((m + 6 : ℕ) : ℝ) ^ k ≤ (1 / (4 * c)) / ρ₊.im ^ k :=
+        have h2 : (1 / (4 * c)) / ((m + 6 : ℕ) : ℝ) ^ k ≤ (1 / (4 * c)) / ρ1.im ^ k :=
           div_le_div_of_nonneg_left (by positivity) (by positivity) hpow_le
         exact (h1.trans h2).trans_lt hgt
-      have hhi_band : |ρ₊.re - 1 / 2| < 1 / 2 - 1 / (4 * (zhukovskyStage n : ℝ)) := by
+      have hhi_band : |ρ1.re - 1 / 2| < 1 / 2 - 1 / (4 * (zhukovskyStage n : ℝ)) := by
         rw [hs_eq]
-        have hup := _root_.RHTower.re_le_one_sub_of_zeta_zero hre_gt0 hre_lt1 hzeta_₊
-        have hdn := _root_.RHTower.one_div_le_re_of_zeta_zero hre_gt0 hre_lt1 hzeta_₊
+        have hup := _root_.RHTower.re_le_one_sub_of_zeta_zero hre_gt0 hre_lt1 hzeta_1
+        have hdn := _root_.RHTower.one_div_le_re_of_zeta_zero hre_gt0 hre_lt1 hzeta_1
         rw [abs_of_pos him_pos] at hup hdn
-        have habs_zfr : |ρ₊.re - 1 / 2| ≤ 1 / 2 - 1 / (58 * Real.log ρ₊.im) := by
+        have habs_zfr : |ρ1.re - 1 / 2| ≤ 1 / 2 - 1 / (58 * Real.log ρ1.im) := by
           rw [div_div] at hup hdn
           exact abs_le.mpr ⟨by linarith, by linarith⟩
-        have him_gt1 : 1 < ρ₊.im := by
+        have him_gt1 : 1 < ρ1.im := by
           have : (12 : ℝ) < ((m₂ + 1 : ℕ) : ℝ) := by exact_mod_cast (show 12 < m₂ + 1 by omega)
           linarith
-        have hlog_pos : 0 < Real.log ρ₊.im := Real.log_pos him_gt1
-        have hlog_le_rt : Real.log ρ₊.im ≤ 2 * Real.sqrt ((m + 6 : ℕ) : ℝ) := by
-          have h1 : Real.log ρ₊.im ≤ Real.log ((m + 6 : ℕ) : ℝ) :=
+        have hlog_pos : 0 < Real.log ρ1.im := Real.log_pos him_gt1
+        have hlog_le_rt : Real.log ρ1.im ≤ 2 * Real.sqrt ((m + 6 : ℕ) : ℝ) := by
+          have h1 : Real.log ρ1.im ≤ Real.log ((m + 6 : ℕ) : ℝ) :=
             Real.log_le_log him_pos him_le_m6
           have hsq := sq_log_le_four_mul (x := ((m + 6 : ℕ) : ℝ))
             (by exact_mod_cast (show 1 ≤ m + 6 by omega))
@@ -1676,8 +1690,9 @@ theorem invPoly_corridor_iff_fixedDegree_polynomialStage {k : ℕ} (hk : 1 ≤ k
             push_cast; linarith
           rw [← Real.sqrt_sq (by positivity : 0 ≤ 600 / c)]
           exact Real.sqrt_lt_sqrt (by positivity) hsq
-        have h58_lt : 58 * Real.log ρ₊.im < 4 * (n : ℝ) := by
-          have h1 : 600 < c * Real.sqrt ((m + 6 : ℕ) : ℝ) := (div_lt_iff₀ hc_pos).mp hrt_gt
+        have h58_lt : 58 * Real.log ρ1.im < 4 * (n : ℝ) := by
+          have h1 : 600 < c * Real.sqrt ((m + 6 : ℕ) : ℝ) := by
+            linarith [(div_lt_iff₀ hc_pos).mp hrt_gt]
           have hrt_pos : 0 < Real.sqrt ((m + 6 : ℕ) : ℝ) := Real.sqrt_pos.mpr (by positivity)
           have h2 : 116 * Real.sqrt ((m + 6 : ℕ) : ℝ) < c * ((m + 6 : ℕ) : ℝ) := by
             have hmul : 600 * Real.sqrt ((m + 6 : ℕ) : ℝ) <
@@ -1690,7 +1705,7 @@ theorem invPoly_corridor_iff_fixedDegree_polynomialStage {k : ℕ} (hk : 1 ≤ k
           have h3 : c * ((m + 6 : ℕ) : ℝ) ≤ c * ((m + 6 : ℕ) : ℝ) ^ k :=
             mul_le_mul_of_nonneg_left hpow_ge hc_pos.le
           linarith
-        have hinv_lt : 1 / (4 * (n : ℝ)) < 1 / (58 * Real.log ρ₊.im) :=
+        have hinv_lt : 1 / (4 * (n : ℝ)) < 1 / (58 * Real.log ρ1.im) :=
           one_div_lt_one_div_of_lt (by positivity) h58_lt
         linarith
       have hmult_pos : ∀ w ∈ burnolUnitXiZeros m, 1 ≤ (analyticOrderAt _root_.RHTower.xi w).toNat :=

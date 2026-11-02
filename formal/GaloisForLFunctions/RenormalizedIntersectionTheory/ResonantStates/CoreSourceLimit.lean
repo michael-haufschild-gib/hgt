@@ -147,9 +147,11 @@ private theorem normalized_residual_eq {u : ℂ}
   have he : ofComplex (⟨p.1, p.2⟩ : ℂ) = z := by
     rw [ofComplex_apply_of_im_pos (coreSourceRect_height_pos hp)]
   have hz : z ∈ coreRectangle := ⟨abs_le.mpr hp.1, hp.2⟩
+  have hzre : z.re = p.1 := rfl
+  have hzim : z.im = p.2 := rfl
   rw [he, dyadicEigenResidual_normalized_expansion hu hur hAu hz]
   simp only [sourceDiagonal, sourceCross, sourceH, sourceG, sourceY_eq hp,
-    returnHeight, returnRatio, coreSourcePhase, z, Int.cast_zero, add_zero]
+    returnHeight, returnRatio, coreSourcePhase, hzre, hzim, Int.cast_zero, add_zero]
   ring
 
 /-- Coordinate form of the normalized residual limit on the single-return rectangle. -/
@@ -167,8 +169,10 @@ theorem dyadicEigenResidual_core_coordinate_weak_limit
     (hf.comp continuous_snd).mul sourceDiagonal_continuous
   have hC : Continuous (fun q : ℝ × (ℝ × ℝ) => f q.2 * sourceCross q.1 q.2) :=
     (hf.comp continuous_snd).mul sourceCross_continuous
-  have hlimD := (continuous_parametric_integral_of_continuous hD coreSourceRect_compact).
-    continuousAt.tendsto.comp ha
+  have hcontD : Continuous (fun v : ℝ => ∫ p in coreSourceRect, f p * sourceDiagonal v p) :=
+    continuous_parametric_integral_of_continuous
+      (f := fun v p => f p * sourceDiagonal v p) hD coreSourceRect_compact
+  have hlimD := hcontD.continuousAt.tendsto.comp ha
   have hlimC := coreSourcePhase_varying_cos_dephases
     (fun v p => f p * sourceCross v p) hC ha ht
   have hlim := hlimD.sub hlimC
@@ -220,8 +224,8 @@ theorem dyadicEigenResidual_core_weak_limit
       simp only [F, he, ofComplex_apply]
     rw [← hF, hset, setIntegral_coord_eq_real coreSourceRect_measurable
       (fun p hp => coreSourceRect_height_pos hp)]
-  exact (dyadicEigenResidual_core_coordinate_weak_limit hu hur hAu ha ht f hf).
-    congr (fun n => (hchart n).symm)
+  exact (dyadicEigenResidual_core_coordinate_weak_limit hu hur hAu ha ht f hf).congr
+    (fun n => (hchart n).symm)
 
 end
 

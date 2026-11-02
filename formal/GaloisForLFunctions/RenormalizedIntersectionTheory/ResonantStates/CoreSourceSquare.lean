@@ -35,7 +35,7 @@ private theorem scalar_gap_norm_sq {r : ℝ} (hr : 0 < r) (u : ℂ) :
   have hwim : (u - 1 / 2 : ℂ).im = u.im := by simp
   simp only [hwre, hwim] at hre ⊢
   norm_num [Complex.mul_re, hre]
-  <;> ring
+  ring
 
 /-- Exact square of the full automorphic residual, with its unique interference phase. -/
 theorem dyadicEigenResidual_norm_sq_expansion {u : ℂ} (hAu : msA u = 0)
