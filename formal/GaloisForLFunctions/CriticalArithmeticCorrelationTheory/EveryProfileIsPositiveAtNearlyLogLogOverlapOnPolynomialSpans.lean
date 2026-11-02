@@ -42,6 +42,4 @@ theorem exists_universal_nearly_loglog_polynomial_span_coercivity :
         linarith only [Real.log_nonneg ht1])
   exact hN c hc (hclock.trans (div_le_self (mul_nonneg hb.le ht0) hroot)) x hx
 
-#print axioms exists_universal_nearly_loglog_polynomial_span_coercivity
-
 end GaloisForLFunctions.CriticalArithmeticCorrelationTheory

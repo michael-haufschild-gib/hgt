@@ -1,7 +1,7 @@
 # Linear center payment on polynomial conductor spans
 
-- **Stage:** 2-fully-proven; Lean capstone written, checks pending.
-- **Type:** THEOREM (paper).
+- **Stage:** 3-formalized.
+- **Type:** THEOREM.
 - **Wall:** Σ1d.
 - **Statement:** Every nonzero compact real `C²` profile admits `aφ,bφ>0` and a universal `B>0` such that, for every `0<θ<1/1080`, eventually `Wφ,c,N(x)≥aφ exp(-Bc)‖x‖²` on `V_floor(N^θ)` uniformly for `1≤c≤bφ t/sqrt(1+log t)`, where `t=log log N`.
 
@@ -48,7 +48,8 @@ pairing by `e‖p‖‖z‖/8`. Orthogonal splitting retains margin `e/2` on `V_
 - `TerminalSupportLeavesOnlyALinearHighConductorLoss.lean`: stronger linear finite bound
   directly checked, with only the three standard axioms in its transitive audit.
 - `EveryProfileIsPositiveAtNearlyLogLogOverlapOnPolynomialSpans.lean`: capstone
-  `exists_universal_nearly_loglog_polynomial_span_coercivity` written; unchecked.
+  `exists_universal_nearly_loglog_polynomial_span_coercivity` directly checked;
+  transitive audit contains only `propext`, `Classical.choice`, `Quot.sound`.
 
 The capstone now restricts the stronger fixed log-log theorem in
 `EveryProfileIsPositiveAtLogLogOverlapOnPolynomialSpans.lean`.

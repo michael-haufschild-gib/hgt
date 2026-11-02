@@ -110,13 +110,21 @@ Its actual Cauchy image retains the exact scattering coefficient
 gives `a F_w(a)→−Λ(w−1)/Γ_R(w)≠0` at every strip zeta zero, so the
 canonical core has strictly positive finite weighted energy. The
 [actual logarithmic Cauchy operator](../3-formalized/gauss-mayer-cauchy-l2-operator.md)
-is injective on `L²`, with norm bounded by the central Gamma multiplier.
+is injective on `L²`. Its [sharp operator norm](../3-formalized/gauss-mayer-cauchy-sharp-operator.md)
+equals the central Gamma multiplier modulus. Strict contraction at every
+spectral height holds exactly for `Re w≥1`; every smaller
+positive abscissa admits amplified actual `L²` fields at all large heights.
+A height-independent contraction gap exists exactly for `Re w>1`.
 Its literal Cauchy image of the canonical core has finite weighted energy
 at most `|m(w,w/2)|²` times the input energy. The
 [actual theta factorization and Mellin spectrum](../3-formalized/gauss-mayer-theta-core-mellin.md)
 identify the core with a convergent Gaussian-ray correlation and give
 `M F_w(u)=Γ(u/2)Γ((w−u)/2)ζ(u)ζ(w−u)/Γ(w/2)` whenever
 `Im w>0`, `0<Re u<1`, and `0<Re(w−u)<1`, with absolute convergence.
+The [exact core Mellin strips](../3-formalized/gauss-mayer-zero-mellin-strip.md)
+are `(0,Re w)` away from zeta zeros and `(Re w−1,1)` at zeros, for
+`0<Re w<1`, `Im w>0`. Absolute convergence at `u=0` detects exactly
+those zeros; both moments `u=0,w` equal `ζ′(w)`.
 Full eigenspace classification and a Hermitian form remain open.
 
 ## Operator convention

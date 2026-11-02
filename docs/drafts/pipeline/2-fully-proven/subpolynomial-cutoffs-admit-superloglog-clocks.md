@@ -50,10 +50,13 @@ margin one. Their sum retains `L^(−η)/4` on `V_R'`, hence on `V_R`.
 ## Lean boundary
 
 - The quadratic bound in `TheLinearMomentRemovesTheOverlapLogarithm.lean` is checked
-  with a clean axiom audit. Its bilinear consequence in
-  `LinearOverlapBoundsControlBothPacketArguments.lean` is written, unchecked.
+  with a clean axiom audit. Its bilinear consequence
+  `exists_overlapMatrix_inner_le_linear` in
+  `LinearOverlapBoundsControlBothPacketArguments.lean` is also directly checked,
+  with only `propext`, `Classical.choice`, `Quot.sound` in its transitive audit.
 - `LinearOverlapComparisonRetainsItsCutoffRatio.lean` retains the explicit `cρ`
-  cost in the coefficient split; written, unchecked.
+  cost in the coefficient split; directly checked with only the three standard
+  axioms in its transitive audit.
 - `TerminalPaymentRetainsTheGrowingHighConductorGap.lean`: terminal payment with
   the explicit linear cutoff ratio and cubic lag remainder; written, unchecked.
 - `SubpolynomialConductorRatiosSetExplicitOverlapClocks.lean`: augmented-cutoff

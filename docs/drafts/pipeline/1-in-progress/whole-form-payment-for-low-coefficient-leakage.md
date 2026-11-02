@@ -38,12 +38,6 @@ packet. Its collar near term still costs `(1+log R)/log N`, even after that
 coefficient is removed. Whole-form leakage cancellation alone therefore does
 not remove every `c(1+log R)/log N` term.
 
-A sufficient further estimate would replace the center's global `log R`
-by the coefficient weight `Σ_m(1+log m)a_m²`. The resulting factor `c/log N`
-could be absorbed into prime adjunction whenever `c=o(log N)`.
-This weighted center estimate remains unproved; a conductor-band decomposition
-must control the mixed bands without reintroducing a global logarithm.
-
 The existing collar proof suggests a more direct bound. For a prefix packet
 `z∈V_M∩V_1^⊥` and a larger packet `w∈V_R∩V_1^⊥`, retain the linear moments of
 both arguments in `collar_half_pair_le` and `collar_near_pair_le`.
@@ -58,6 +52,12 @@ one denominator `log N`, because its second argument is arbitrary.
 For coefficient-high packets, the remaining arithmetic pole term involves the
 unweighted sum of mean-zero periodic Ramanujan modes. Finite-period cancellation
 may make that term negligible after its `1/N` factor; this still needs a bound.
+
+With those two bounds, `W(u)=W(y)−W(v)+2⟨Wv,u⟩` would cost only
+`O((1+log Q)ρ²)` for `ρ=(1+log R)/log N`, plus the raw low residual.
+For a sufficiently small fixed polynomial exponent, this is absorbable into
+the `log Q` gap independently of `c≤(log log N)²`. The explicit spectral clock
+would then give the conjectured super-log-log interval.
 
 ## Exact sources
 

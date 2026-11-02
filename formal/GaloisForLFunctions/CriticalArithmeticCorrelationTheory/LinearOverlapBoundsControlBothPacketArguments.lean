@@ -24,7 +24,7 @@ private theorem overlapMatrix_hermitian (φ : ℝ → ℝ) (c : ℝ) (N : ℕ) :
   have hcond : ((j : ℕ) ≠ i ∧ |Real.log (i : ℕ) - Real.log (j : ℕ)| ≤ 2 * (c / N)) ↔
       ((i : ℕ) ≠ j ∧ |Real.log (j : ℕ) - Real.log (i : ℕ)| ≤ 2 * (c / N)) := by
     rw [ne_comm, abs_sub_comm]
-  rw [hcond]
+  simp only [hcond]
   split_ifs
   · rw [atomArchPair_comm _ (j : ℕ) (i : ℕ), archimedeanCenterKernel_comm (j : ℕ) (i : ℕ)]
   · rfl
@@ -76,9 +76,9 @@ theorem exists_overlapMatrix_inner_le_linear {φ : ℝ → ℝ}
   rw [map_smul, real_inner_smul_left, real_inner_smul_right, abs_mul, abs_mul,
     abs_of_pos hvPos, abs_of_pos huPos, norm_smul, norm_smul,
     Real.norm_eq_abs, Real.norm_eq_abs, abs_of_pos hvPos, abs_of_pos huPos] at hh
-  apply (mul_le_mul_iff_right₀ (mul_pos huPos hvPos)).mp
-  convert hh using 1 <;> ring
-
-#print axioms exists_overlapMatrix_inner_le_linear
+  have hscaled : (‖u‖ * ‖v‖) * |⟪A u, v⟫| ≤
+      (‖u‖ * ‖v‖) * (C * c * ‖u‖ * ‖v‖) := by
+    nlinarith only [hh]
+  exact (mul_le_mul_iff_right₀ (mul_pos huPos hvPos)).mp hscaled
 
 end GaloisForLFunctions.CriticalArithmeticCorrelationTheory

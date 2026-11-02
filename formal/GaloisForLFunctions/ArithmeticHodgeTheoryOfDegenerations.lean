@@ -20,6 +20,7 @@ import GaloisForLFunctions.ArithmeticHodgeTheoryOfDegenerations.ThePrimesOfAHori
 import GaloisForLFunctions.ArithmeticHodgeTheoryOfDegenerations.TheBulkDeterminesTheSecondOrderTerm
 import GaloisForLFunctions.ArithmeticHodgeTheoryOfDegenerations.TheWindowIndex
 import GaloisForLFunctions.ArithmeticHodgeTheoryOfDegenerations.TheCountLawOverEveryFiniteRing
+import GaloisForLFunctions.ArithmeticHodgeTheoryOfDegenerations.TheTwistedHorizonLayerIsZeroBlind
 
 /-!
 # Arithmetic Hodge Theory of Degenerations
@@ -42,6 +43,7 @@ pay their own creation potential); the bulk determines the second-order term (fo
 `s^β E₁(s) → J`, the correction is `(β J/K) ∫ e^{−(β+1)y} H²`); the window index (the pencil Gram
 matrix of a family of windows is the limit of the complete family's horizon Gram matrices, its
 negative index is read by them and bounded by the number of right zeros); the count law over every
-finite ring (calibration: the first-order count is the same over `ℤ` and `𝔽_q[T]`).
+finite ring (calibration: the first-order count is the same over `ℤ` and `𝔽_q[T]`); the twisted
+horizon layer is zero-blind (windows twisted by a mean-zero periodic weight see no zero).
 See `ArithmeticHodgeTheoryOfDegenerations/README.md`.
 -/

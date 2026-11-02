@@ -269,6 +269,7 @@ theorem eventually_subpolynomial_high_band_horizon (R : ℕ → ℕ)
     have hh := (div_le_iff₀ hL).mp hρsmall
     linarith only [hh]
   have hH : 1 + Real.log r ≤ L := by linarith only [hframe, Real.log_natCast_nonneg r]
+  -- The small logarithmic ratio also supplies a fixed polynomial envelope.
   have hrpow : (r : ℝ) ≤ (N : ℝ) ^ (1 / 16 : ℝ) := by
     have hlogr : Real.log r ≤ L / 16 := by
       linarith only [hframe, Real.log_natCast_nonneg r]
@@ -315,6 +316,9 @@ theorem eventually_subpolynomial_high_band_horizon (R : ℕ → ℕ)
     dsimp only [linearNearRowRadius, Cnear]
     have hh := mul_le_mul_of_nonneg_right hcL (Real.exp_pos 2).le
     nlinarith only [hh, hL1]
+  have hrad0 : 0 ≤ linearNearRowRadius c + 1 := by
+    dsimp only [linearNearRowRadius]
+    positivity
   have hradSize : 4 * (linearNearRowRadius c + 1) ^ 2 ≤ (N : ℝ) := by
     calc
       _ ≤ 4 * (Cnear * L) ^ 2 := by gcongr
@@ -338,6 +342,7 @@ theorem eventually_subpolynomial_high_band_horizon (R : ℕ → ℕ)
     (mul_le_mul_of_nonneg_left (pow_le_pow_left₀ hc.le hcL 2) (by positivity)).trans
       (by simpa only [Real.rpow_two, Real.rpow_zero, mul_one] using hresWidthN)
   have hterminal := (terminal_coefficient_envelope hL1 ht1 hN1 hc1 hcT hr1 hrpow hH).trans hterminalN
+  -- The clock turns the linear cutoff cost into t * sqrt ρ = o(t).
   have hfirst : c * (1 + Real.log r) / L ≤ t * Real.sqrt ρ := by
     have hh := (le_div_iff₀ (Real.sqrt_pos.mpr hρ)).mp hcCap
     calc

@@ -68,6 +68,23 @@ through mollifiers and Jensen.
 | 21 | Jensen loss as the obstruction: `mean log|ζM| = ½ log E|ζM|² − J`, and `J` computable | reduction | for `Y = log|ζM(½+b/L+it)|`, `J ≈ Var Y ≈ ½E₁(2bθ)` from primes beyond `T^θ`; primes beyond `T` are dual to the zeros near `σ₀`, so `E Y` (not `Var Y`) is the depth sum; higher moments of `ζM` cannot improve the upper bound on `g'(0)` for the convex `g(k) = log E|ζM|^{2k}` |
 | 22 | a-points as calibration | insight | `a`-points (`a ≠ 0`) have mean depth `≍ √(loglog T)/log T`; block 3 is the `o(1)` symmetry `E log⁺|ζ| − E log⁻|ζ| → 0` of the log-normal law of `|ζ(½+it)|`, invisible to Selberg's CLT (precision `o(√loglog T)`) |
 | 23 | Family averaging (Conrey–Iwaniec–Soundararajan asymptotic large sieve) lengthens mollifiers | refuted for ζ | effective `θ > 1` exists only on average over a family of conductors; height averaging is one-dimensional and gives no extra room for a single `ζ` |
+| 24 | A pair functional `Σ k(z+w̄−1)` with `k = ∫e^{tζ}dμ`, `μ ⊂ [−L,L]` (Montgomery range) that separates off-axis pairs | refuted | two such kernels agreeing on the imaginary axis coincide (identity theorem; the odd part of `μ` cancels by reflection); to first order an off-line reflected pair is a double ordinate (block sum 4 vs 2) and depth enters at second order `(tδ)²`; so the `α ≤ 1` constraints admit a positive proportion of off-line pairs (Montgomery's `1/3` double-ordinate ceiling) |
+| 25 | Amplified zero detection / large sieve over zeros with detector length `X = T^θ`, `θ > 1` | refuted | the dual large sieve `Σ_{n≤X}|Σ_ρ c_ρ n^{iγ}|² ≈ X·N·F(log X/log T)` keeps the `X`-term even if `F ≡ 1`; slope `2θ` needs `θ ≤ 1` |
+| 26 | Literal block-3 object (Zhukovsky index at the log stage) from clustering via corpus inputs | reduction | index `≤ 2Σ_{deep z} #near(z)`; Cauchy–Schwarz needs `Σ_z #near(z)² ≪ N` (Selberg–Fujii); the Montgomery–Gram route fails at near neighbours of very deep zeros (pointwise local count `≪ log T`), and the corpus almost-all corridor leaves `O(U/loglog U)` bad windows, too many by `log U/loglog U` |
+| 27 | Stepanov through the reflection `ι(s) = 1 − s̄`: on-line zeros are the fixed points of `ι` among zeros, as rational points are the fixed points of Frobenius | refuted | Stepanov bounds fixed points from above and gets the lower bound from twists whose fixed-point counts sum to a known total; there is no family of twisted involutions of the zero set with a computable total, and auxiliaries vanishing at off-line zeros only (`ζ(s)ζ(1−s)` etc.) vanish at all zeros |
+| 28 | Lee–Yang / Kurasov–Sarnak: real zeros from a stable Bohr lift `Q(z,w) = wÃ(z) + Ã*(z)`, `Ã(z) = Σ_{n≤N} n^{−½} z^{v(n)}` restricted to `z_p = p^{−it}` | refuted | the truncated half has zeros in the closed polydisc (generic for `N ≥ 3`), so `Q` is not stable; the factor `w = e^{2iθ(t)}` has phase `≈ (t/2)log(t/2πe)`, not a linear phase, so `t ↦ Q` is not a line in a torus; the full Euler product is stable on the polydisc but `ξ(½+it)` is not a function on the infinite torus |
+| 29 | The moderate band: block 3 ⟺ `#{κ/L < δ ≤ R/L} = o(N)` for all `0 < κ < R`; attack it by the mollifier zero credit `Σ(β−σ₀)₊ = (T/2π)[E log|ζM| − E log|M|]` | refuted | shallow zeros cost `≤ κT/2π`, the tail beyond `R/L` costs `e^{−2θR}T/4π` (corpus tail law); the moderate band is the whole content. In the log-normal model `E log|M| ≈ −E log|ζ| ≈ 0`, so the credit does not cancel `½ log c`; the loss is the Jensen gap (log-variance of `ζM`), not a missing credit |
+| 30 | Variance projection: certify the Jensen gap `J(Y) ≥ Var(prime part on (T^θ, T])` for `Y = log|ζM|`, doubling the effective mollifier length to `θ = 1` | refuted | `J ≥ Cov(Y,X)²/Var X` needs joint Gaussianity; the conditional-Jensen form `½log E e^{2Y} ≥ EY + ½log E e^{2X}` needs exponential moments of `X`, whose `k`-th moment has length `T^{k}`: the arithmetic cap `kλ ≤ 1` leaves only the variance |
+| 31 | Long mollifiers through the contour form `M(s) = ∮ ζ(s+w)⁻¹ T^{θw}P̂(w)dw` | reduction | for `θ > 1` the zero residues `T^{θ(ρ−s)}/ζ'(ρ)` dominate; `∫|M|²` becomes a zero-pair sum weighted by `1/(ζ'(ρ)ζ̄'(ρ'))`: Gonek–Hejhal negative moments plus pair correlation, open even under RH |
+| 32 | Holomorphic moments `E(ζM)^k = 1` plus `E|ζM|² = c` improve Jensen's `E log|ζM| ≤ ½ log c` | refuted, survivor formalized | the boundary law of `F(w) = r⁻¹(w+r)/(1+rw)`, `r = c^{−½}`, has every holomorphic moment `1`, constant modulus `√c`, log-mean exactly `½ log c`; the mollifier method's loss is intrinsic to its data (`exists_jensen_extremal`) |
+| 33 | All absolute moments `E|ζM|^{2k}` (if known) determine `E log|ζM|` | refuted (structural) | at fixed `θ` the law of `log|ζM|` has positive variance; log-normal moment sequences are indeterminate (Heyde: densities `f(x)(1 + ε sin(2π log x))` share all moments), and the perturbation shifts `E log` by `ε·2π e^{−2π²}`; so no moment method at fixed mollifier length pins the log-mean, only `θ → ∞` (variance `→ 0`) or non-moment structure |
+
+## Formalized
+
+- `RHTower/WD/HolomorphicMomentsCannotBeatJensen.lean`: `integral_log_norm_le_half_log_integral_sq`
+  (Jensen ceiling for any probability law), `exists_jensen_extremal` (sharpness: for every `c > 1`
+  a law with all holomorphic moments `1`, mean square `c`, log-mean `½ log c`). Standard axioms only;
+  wired into `RHTower.lean`.
 
 ## Open core
 
@@ -76,4 +93,4 @@ An unconditional bound for the damped long-range energy, equivalently cancellati
 multiplicity. No mechanism above survives.
 
 ## Log
-- 2026-11-02 — created; rows 1–23; minimal input identified (critical-line log-mean).
+- 2026-11-02 — created; rows 1–33; minimal input identified (critical-line log-mean).

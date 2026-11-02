@@ -189,6 +189,4 @@ theorem exists_overlapMatrix_high_inner_le_linear_cutoff_rate {φ : ℝ → ℝ}
   dsimp only [rate] at hyBound hpay2
   nlinarith only [habs, hdiff, hyBound, hpay1, hpay2]
 
-#print axioms exists_overlapMatrix_high_inner_le_linear_cutoff_rate
-
 end GaloisForLFunctions.CriticalArithmeticCorrelationTheory

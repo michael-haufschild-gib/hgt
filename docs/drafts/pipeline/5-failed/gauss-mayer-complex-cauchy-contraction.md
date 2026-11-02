@@ -68,6 +68,10 @@ spectral frequency. That exact threshold and its full Lean certificate
 strengthen the positive survivor. The
 [global central envelope](../3-formalized/gauss-mayer-normalized-cauchy-schur.md)
 is strictly `2^((1−Re w)/2)` and sharp on every positive abscissa;
-its paper proof and Lean formalization are complete. This retires the scalar contraction
-candidate even after choosing a fixed real Mellin weight; other Mayer
-Hermitian or Krein forms remain open.
+its paper proof and Lean formalization are complete. The
+[sharp actual operator norm](../3-formalized/gauss-mayer-cauchy-sharp-operator.md)
+now equals the central modulus: for every `0<σ<1` and all large heights,
+there are actual logarithmic `L²` fields whose norm increases under Cauchy
+averaging. Strict contraction at every height holds exactly for
+`σ≥1`; a common strict gap exists exactly for `σ>1`. These statements
+have complete paper proofs and seven audited Lean declarations. Other Mayer Hermitian or Krein forms remain open.

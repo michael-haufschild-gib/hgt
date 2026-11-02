@@ -118,6 +118,10 @@ norm, determined by the first-order data `(β, J)` of the bulk; its critical mul
 | Conductor-one Jordan coefficient of the tilted spline | `tiltedJordanOne` | `J(1) = (2/∫φ²) A_φ ζ(8) = lim c⁷ E₁(c)` |
 | Completed shell energy (bulk, conductor one) | RAPT `completedShellEnergy` | `E₁(s)`, positive, antitone, `→ 0` |
 | Jordan coefficient | ADT `jordanCoefficient`, `jordanTotient` | `J(m) = lim c⁷E_m(c)`; `J_k(m)` |
+| Window aliasing | `windowAlias` | `h(log x)² a_φ(c max(x, e^{−A}))`, the integrand of `𝒜_N` |
+| Second-order limit, pencil and horizon Gram matrices | `secondOrderLimit`, `pencilGram`, `horizonGram`, `horizonTest` | `κQ(H) + (βJ/K)‖H‖²_{−(β+1)}`; its polarization on a family; Weil's Gram matrix of the horizon tests |
+| Twisted windows | `twistedWeights`, `MeanZeroTwist`, `twistedLedger` | `χ(n) h(log(n/N))/√n` with `χ` periodic of mean zero |
+| Unimodular vectors, projective space over a ring | `Unimodular`, `ProjSpace` | `R^k` entries generating `R`; modulo `Rˣ` |
 | Möbius horizons | RAPT `mobiusHorizon`, `horizonBoundary` | exact zero-side reading of atomic vectors |
 | Correspondences, Rosati form, naive height | AET `intRosatiForm`, `tateLimit` | carrier A |
 | Jump count | LST `jumpCount` | the primitive `h¹` of a prime-free cycle |
@@ -220,8 +224,11 @@ the one extra negative square (`κ + 1`, AKG). The zero ledger of the bulk is it
 gluing at the pole, of positive sign.
 
 **Cal. Calibration.** The ledger theorems hold for every zero configuration: they carry no
-selection. The count law holds for every quotient of `ℤ`: it carries no selection either. Selection
-must come from the bulk second-order term or from a carrier.
+selection. The count law holds over every finite commutative ring — units act freely on unimodular
+vectors, and over a local ring `#ℙ^{k−1}(R)(|R| − |𝔪|) = |R|^k − |𝔪|^k` — so the first-order structure
+is the same over the residue rings of `ℤ` and of `𝔽_q[T]`. The aliasing constant `βJ` is a property
+of the profile and the bulk. Selection enters the degeneration only through Weil's form `Q(H)` of
+the untwisted horizon windows; twisted horizon windows are zero-blind.
 
 ## 6. Questions and answers
 
@@ -229,7 +236,7 @@ must come from the bulk second-order term or from a carrier.
 |---|---|---|
 | What is the first-order structure of the degeneration, and why is it polarized? | The point count of projective space: `J(m) = J(1) #ℙ⁷(ℤ/m)`, `#ℙ^{k−1}(ℤ/m) φ(m) = J_k(m)`. Weight strings are Hensel towers, the tensor law is CRT. It is positive because it is a cardinality. | `jordanCoefficient_eq_projPoints`, `natCard_projPoints_mul_totient`, `natCard_primVec_eq_jordanTotient`, `projPoints_prime_mul`, `projPoints_prime_pow_succ`, `primVecCRT` |
 | How do the zeros enter the second-order term of fixed packets? | Only through the pole coefficient: `(log N/c) W_ρ/∫g² → m_ρ κ y_1²/(ρ(1−ρ))`, real part `> 0`; at the critical curve `c⁷ W_ρ/∫g² → K m_ρ κ y_1²/(ρ(1−ρ))`. Same for every finite window. | `tendsto_bulkLedger`, `tendsto_bulkLedger_criticalCurve`, `tendsto_sum_bulkLedger`, `re_sum_mult_div_nonneg` |
-| Which packets can see an individual zero? | Not fixed conductor packets (positive pole charge only). Horizon blocks: `W_ρ/(c∫g²) → κ W_ρ(H,H)`, Weil's summand of the synthesized test. | `tendsto_horizonLedger`, `Wsummand_halfWeight` |
+| Which directions of the complete family see an individual zero? | Only the untwisted horizon windows: there `W_ρ/(c∫g²) → κ W_ρ(H,H)`, Weil's summand of the synthesized test. Fixed conductor packets see a zero only through the pole, with positive weight; horizon windows twisted by a mean-zero periodic weight (Ramanujan sums `c_m`, `m ≥ 2`; nonprincipal characters) see no point of the strip: their twisted Riemann sums are `O(1/N)`. | `tendsto_horizonLedger`, `Wsummand_halfWeight`, `tendsto_bulkLedger`, `tendsto_twistedLedger`, `norm_twistedRiemannSum_le` |
 | Is the horizon layer Weil's form? | Yes. In the iterated limit (horizon, then window of zeros) windows exhaust `κ W(H,H)`. Directly: past the critical curve (`(1+log N)/c^p → 0`) `c⁻¹⟨Wx,x⟩ → κ Q(H)`; at `c^p/log N → K_c` it is `κ Q(H)` up to `K/K_c`; for every schedule the error is `ε + K(1+log N)/c^p`. | `horizon_layer_two_sided`, `tendsto_horizon_layer_supercritical`, `horizon_layer_criticalCurve`, `horizon_window_exhaustion` |
 | What is the second-order term at the critical curve (obstacles summary 2.5.4)? | On horizon blocks, exactly: `c⁻¹⟨Wx,x⟩ → κ Q(H) + (βJ/K) ∫ e^{−(β+1)y} H²` along `c^{β+1}/log N → K`, for every profile with bulk limit `s^β E₁(s) → J` (tilted spline: `β = 7`, `J = J(1)`). For every profile and every schedule with `c → ∞`, `c(log N)²/N → 0`: `c⁻¹⟨Wx,x⟩ = κ Q(H) − log N · N⁻¹ Σ_n h(log(n/N))² E₁'(cn/N) + o(1)`. | `horizon_layer_criticalCurve_of_regularBulk`, `horizon_layer_criticalCurve_exact`, `horizon_layer_sharp`, `horizon_layer_sharp_bulk`, `horizonForm_eq` |
 | Which structure polarizes the second-order term? | The first-order count, through the monodromy. The aliasing density is the dilation derivative of the bulk energy, `a_φ = −(∫φ²/2) E₁'`, positive because `E₁` is antitone; its window average at the local overlaps `c e^y` is `β J(1)` times `‖H‖²_{−8}`. So the second-order term is a pencil: Weil's form plus `1/K` times a positive definite form built from `J(1)`. It is positive at every multiple iff `Q ≥ 0` on horizon windows, i.e. iff RH. On the bulk, the zero charge is the Li-type pole charge (positive per zero). | `hasDerivAt_completedShellEnergy`, `aliasLimit_eq`, `tendsto_rpow_seven_mul_completedShellEnergy_tilted`, `re_inv_mul_one_sub_pos`, `riemannHypothesis_iff_horizon_layer` |
@@ -269,7 +276,6 @@ must come from the bulk second-order term or from a carrier.
   (`integral_Ioi_le_of_dyadic`, `integral_window_le`, `block_bound_le`, `tsum_blocks_le`).
 - The localized explicit formula for real tests and for recentred atomic tests
   (`weilQuad_eq_pole_add_symbol`, `paperFT_comp_add`, `horizonForm_eq`).
-
 - Plancherel for horizon blocks and Poisson summation of the atom autocorrelation on `ℤ/a`, with
   linearization of `log(m/n)` on the neighbours the autocorrelation sees (`blockEnergy_eq`,
   `tsum_shellAutocorr_eq`, `abs_row_sub_le`, `abs_blockEnergy_sub_le`).
@@ -283,6 +289,11 @@ must come from the bulk second-order term or from a carrier.
   Lipschitz and size bounds of the aliasing density (`abs_aliasDensity_sub_le`, `aliasDensity_le`).
 - Equidistribution of a periodic numerator against window weights (`abs_integral_mul_numerator_sub_le`,
   `tendsto_modulated`) and Tannery over the grid harmonics (`tendsto_rpow_eight_mul_horizonAlias`).
+- Gram matrices of horizon families and their limits; the window index by lower semicontinuity
+  (`horizonGram_apply`, `tendsto_horizonGram`, `eventually_hermNegIndex_pencilGram_le`).
+- Bounded primitives of mean-zero periodic twists and summation by parts against complex profiles
+  (`abs_sum_range_le`, `norm_sum_mul_real_le`, `norm_twistedRiemannSum_le`).
+- Counting unimodular vectors over finite rings (`natCard_unimodular_eq`, `natCard_unimodular_local`).
 
 **Developed in neighbouring programmes and used here.** Néron–Tate theory and the Tate limit law on
 correspondences (AET); Arakelov `h⁰` of lattices of growing rank, Künneth Riemann–Roch, the
@@ -294,9 +305,9 @@ Stepanov over `ℤ` (AET) and over curves (LST).
 **To build.**
 - Uniform ledgers: explicit horizon-law remainders `O(|s|σ(e)N^{Re s−1})` with the zero-free region,
   summed over zeros up to a growing height.
-- Twisted horizon windows: Poisson summation of the atom autocorrelation on residue classes, for
-  horizon blocks twisted by Ramanujan sums `c_m(n)`; it should identify their second-order term with
-  the conductor-`m` count `β J(m)/K ‖H‖²` and no Weil's form.
+- Twisted horizon windows are zero-blind (proved); their aliasing remains: Poisson summation of the
+  atom autocorrelation on residue classes should identify their second-order term with the
+  conductor-`m` count `β J(m)/K ‖H‖²` and no Weil's form.
 - The function-field complete family and its horizon layer; Zwegers–Vignéras completions of the
   isotropic count.
 
@@ -308,6 +319,7 @@ Stepanov over `ℤ` (AET) and over curves (LST).
 | Horizon law: only the pole conductor has a horizon term | `tendsto_conductorDirichlet_sub_horizonTerm`, `tendsto_conductorDirichlet_of_zeta_eq_zero` | proved |
 | Bulk zero ledger, at every schedule and at the critical curve; positivity of the pole charge | `tendsto_bulkLedger`, `tendsto_bulkLedger_criticalCurve`, `re_inv_mul_one_sub_pos`, `tendsto_sum_bulkLedger` | proved |
 | Horizon ledger: Weil summands of the synthesized test | `tendsto_horizonLedger`, `Wsummand_halfWeight`, `tendsto_horizonDirichlet` | proved |
+| Twisted horizon windows are zero-blind | `tendsto_twistedLedger`, `norm_twistedRiemannSum_le`, `abs_sum_range_le` | proved |
 | Exhaustion: windows of zeros give Weil's form of the synthesized test | `horizon_window_exhaustion`, `tendsto_sum_horizonLedger` | proved |
 | Critical-multiple calculus | `admissible_of_le`, `isClosed_admissible`, `admissible_mono`, `neg_persists`, `eventually_pos_of_tendsto`, `eventually_not_nonneg_of_tendsto` | proved |
 | Horizon layer past the critical curve = Weil's form; at it, up to `O(1/K)` | `horizon_layer_two_sided`, `tendsto_horizon_layer_supercritical`, `horizon_layer_criticalCurve` | proved |
@@ -338,8 +350,9 @@ Stepanov over `ℤ` (AET) and over curves (LST).
    pole-orthogonal fixed packet (horizon-law remainders, zero-free region, `Σ m_ρ/(1 + γ²) < ∞`).
 4. **Count past first order.** A count (cardinality or log-count) for the second-order term, or the
    classification of counts with a Poisson-type duality that read the test component.
-5. **Prime atoms in the jump measure** and the creation potential (corpus: RAPT/RHTower Markov
-   forms); the count of the first Hecke graph `T₂`.
+5. **Prime atoms in the jump measure.** The primes beyond a window pay their own creation potential
+   (proved); a count that pays the creation potential of the primes `≤ e^A` acting on a window, and
+   the count of the first Hecke graph `T₂`, are open.
 6. **The integer**: a sectorial multiplier at logarithmic resolution (WD).
 7. **Calibration** over `𝔽_q(T)`: the count law is proved over every finite ring; the function-field
    complete family, its horizon layer and its second-order term (where the sign is known) are open.
@@ -384,9 +397,9 @@ Stepanov over `ℤ` (AET) and over curves (LST).
 | Criterion | Status |
 |---|---|
 | First-order structure identified as a count | proved: `#ℙ⁷(ℤ/m)` |
-| How zeros enter the second order, packets that see a zero classified | proved per zero and per window: bulk (pole only, positive), horizon layer (Weil summands) |
+| How zeros enter the second order, packets that see a zero classified | proved per zero and per window: bulk (pole only, positive), untwisted horizon windows (Weil summands), twisted horizon windows (none) |
 | Second-order term at the critical curve identified | horizon layer: exactly `κ Q(H) + (βJ/K)‖H‖²_{−(β+1)}` for every profile with bulk limit `s^βE₁ → J` (proved; tilted spline `7J(1)`); bulk second order: open |
-| A count reading the primes inside the jump measure, creation potential paid on a window | open (corpus foothold on prime-free cycles) |
+| A count reading the primes inside the jump measure, creation potential paid on a window | the primes beyond the window pay their own creation (proved); a count for the primes inside it: open (corpus foothold on prime-free cycles) |
 | Gluing theorem with exactly one negative square | AKG `κ + 1`; zero ledger of the bulk is a positive pole gluing |
 | An integer with a structural bound | the window index `ind₋(P_K)`: read by the complete family, bounded by the number of right zeros (proved); a source-defined bound forcing it to `0` (WD's sectorial multiplier): open |
 | Calibrations separating `ζ` from the fakes | negative result: ledgers, the count law (over every finite ring, so over `𝔽_q[T]`) and the aliasing constant carry no selection; selection enters only through `Q(H)` |
@@ -427,7 +440,8 @@ The zeros enter at second order, and the zero side says exactly where. A fixed c
 reads a zero through its Dirichlet polynomial, whose horizon terms cancel by `Σ_{d∣e} μ(e/d) = 0`
 unless the conductor is the pole; every point of the strip is therefore a positive rank-one charge
 on the pole of the bulk, and no fixed packet can see an off-line zero. A horizon block reads a zero
-through Weil's summand of the test it synthesizes, and windows of zeros exhaust Weil's form.
+through Weil's summand of the test it synthesizes, and windows of zeros exhaust Weil's form; a
+horizon block twisted by a Ramanujan sum or a character reads no zero at all.
 
 On the arithmetic side the horizon layer is computed exactly. Below the atom grid the block is the
 Riemann sum of the synthesized test; its total energy is, by Plancherel and Poisson summation on the
@@ -435,9 +449,11 @@ atom grid, that Riemann sum plus the aliasing of the grid harmonics; above the g
 `log N/2π`. The aliasing that a horizon block pays at depth `y` is the dilation derivative of the
 bulk energy at the local overlap `c e^y`. So the second-order term of the degeneration on a horizon
 window is Weil's form of the synthesized test plus the monodromy derivative of the first-order
-count, and for the tilted spline it is exactly `κ Q(H) + (7 J(1)/K) ∫ e^{−8y} H²` at the multiple
-`K` of the critical curve. This pencil is polarized at every multiple exactly when Weil's form is
+count: for every profile with bulk limit `s^β E₁(s) → J` it is exactly
+`κ Q(H) + (β J/K) ∫ e^{−(β+1)y} H²` at the multiple `K` of the critical curve (`7 J(1)` for the tilted
+spline). This pencil is polarized at every multiple exactly when Weil's form is
 nonnegative on horizon windows, which is RH; every window with `Q(H) < 0` has the finite critical
-multiple `7 J(1) ‖H‖²_{−8}/(κ|Q(H)|)`. The count of the first order pays the second order at small
-multiples and nothing at large ones. What the field has not yet built is a mechanism that forces
+multiple `β J ‖H‖²_{−(β+1)}/(κ|Q(H)|)`, and on families of windows the negative index of the pencil
+is read by the complete family and never exceeds the number of right zeros. The count of the first
+order pays the second order at small multiples and nothing at large ones. What the field has not yet built is a mechanism that forces
 the sign of `Q` on horizon windows: a count of the second order that sees the zeros.

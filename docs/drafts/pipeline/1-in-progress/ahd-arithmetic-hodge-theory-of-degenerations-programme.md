@@ -22,11 +22,11 @@ TheCriticalMultipleOfAWindow, TheAliasingIsCoercive, TheEnergyOfAHorizonBlock,
 TheHorizonBlockBelowTheGridIsSharp, TheSecondOrderTermOfAHorizonBlock,
 TheAliasingIsTheDilationDerivativeOfTheBulk, TheAliasingConstantOfTheTiltedSpline,
 ThePrimesOfAHorizonWindow, TheBulkDeterminesTheSecondOrderTerm, TheWindowIndex,
-TheCountLawOverEveryFiniteRing.
+TheCountLawOverEveryFiniteRing, TheTwistedHorizonLayerIsZeroBlind.
 
 ## Status
 - First order = count: `J(m) = J(1) #ℙ⁷(ℤ/m)`; count law over every finite ring (𝔽_q[T] calibration) [L].
-- Zero ledgers: bulk (pole only, positive), horizon (Weil summands), window exhaustion [L].
+- Zero ledgers: bulk (pole only, positive), horizon (Weil summands), twisted horizon (none), window exhaustion [L].
 - Horizon theorem: past the critical curve `c⁻¹⟨Wx,x⟩ → κ Q(H)`; RH ⇔ horizon blocks
   nonnegative past the critical curve [L].
 - Second order exact: `c⁻¹⟨Wx,x⟩ = κQ(H) − log N·N⁻¹Σ h_n² E₁'(cn/N) + o(1)`; aliasing density

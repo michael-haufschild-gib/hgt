@@ -72,11 +72,13 @@ without simplicity, uniform spacing, or an attained boundary. The direct
 capstone audit uses only standard axioms. No transfer from bounded coupling
 of the original spline kernel is proved; SC2 remains open.
 
-The [zero-exponent density extension](cone-cancellation-zero-exponent-of-convergence.md)
-is active: retain geometric block counts and supergeometric heights in the
-same exact-spline model to test whether every positive inverse-power height
-sum can converge while cone cancellation persists. This strengthening is
-not yet formalized.
+The [zero-exponent density extension](../3-formalized/cone-cancellation-zero-exponent-of-convergence.md)
+is formalized for the same exact-spline quartet model. Every positive
+inverse-power absolute-ordinate sum converges, while all cancellation,
+unit-multiplicity, symmetry, local-count and unattained-width conclusions
+persist. Its direct capstone and transitive axiom audits use only standard
+axioms. Polynomial upper density bounds therefore do not supply the
+missing generic rigidity; the actual arithmetic source remains essential.
 
 ## Other boundaries
 
@@ -86,6 +88,12 @@ coefficients and cell indices at most `exp(√log Y/23040000)`, with error
 `O(exp(−√log Y/7680000))`. Its recorded direct and transitive audits use only
 standard axioms. This extends fixed-family cancellation; a uniform upper
 bound for the complete Weil index is still missing.
+
+The [all-detail source extension](all-detail-prime-pole-cancellation.md)
+is active. A support-sensitive trace bound predicts summable normalized
+Haar row tails, extending growing-packet cancellation to every detail
+horizon and a growing coarse range in the original cell masses. The
+quantitative operator theorem remains unformalized.
 
 The finite-sieve Hodge theorem concerns the matched prime form after a scalar
 subtraction. The Gamma and mixed-term comparison needed for the complete

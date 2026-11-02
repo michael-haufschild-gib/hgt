@@ -110,6 +110,7 @@ theorem eventually_subpolynomial_span_coercivity {φ : ℝ → ℝ}
       e / 2 * ‖p‖ ^ 2 ≤ completeWeilEnergy φ c N p :=
     conductor_span_coercive_of_raw_budget hQ2 hQQ hlogQ
       (completeWeilMatrix_isHermitian φ c N) (completedConductorEnergy φ c) he hfloor hres
+  -- Terminal payment and the retained cutoff ratio leave a unit high-block margin.
   have hhighEnergy : ∀ z ∈ conductorSubspace R N, z ∈ (conductorSubspace Q N)ᗮ →
       ‖z‖ ^ 2 ≤ completeWeilEnergy φ c N z := by
     intro z hzR hzQ
