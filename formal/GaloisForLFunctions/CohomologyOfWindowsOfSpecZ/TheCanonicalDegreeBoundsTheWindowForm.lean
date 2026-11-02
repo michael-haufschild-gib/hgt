@@ -139,7 +139,7 @@ theorem weilQuad_ge_neg_windowFloor (hH : IsWindowTest A H) (hA : 0 ≤ A) :
   have hs := sinhPairing_sq_le hH hA
   have hc := sq_nonneg (coshPairing H)
   rw [windowFloor, canonicalDegree_eq_halfChebyshev]
-  nlinarith
+  linarith
 
 theorem windowFloor_nonneg (hA : 0 ≤ A) : 0 ≤ windowFloor A :=
   add_nonneg (canonicalDegree_pos A).le (by positivity)

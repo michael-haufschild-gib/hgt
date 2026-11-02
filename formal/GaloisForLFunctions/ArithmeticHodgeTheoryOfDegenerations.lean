@@ -23,6 +23,7 @@ import GaloisForLFunctions.ArithmeticHodgeTheoryOfDegenerations.TheCountLawOverE
 import GaloisForLFunctions.ArithmeticHodgeTheoryOfDegenerations.TheTwistedHorizonLayerIsZeroBlind
 import GaloisForLFunctions.ArithmeticHodgeTheoryOfDegenerations.TheWindowIndexCountsTheRightZeros
 import GaloisForLFunctions.ArithmeticHodgeTheoryOfDegenerations.TheTwistedHorizonLayerIsPositive
+import GaloisForLFunctions.ArithmeticHodgeTheoryOfDegenerations.TheAlternatingWindowCountsTheConductorTwoPoints
 
 /-!
 # Arithmetic Hodge Theory of Degenerations
@@ -47,6 +48,8 @@ matrix of a family of windows is the limit of the complete family's horizon Gram
 negative index is read by them and bounded by the number of right zeros); the count law over every
 finite ring (calibration: the first-order count is the same over `ℤ` and `𝔽_q[T]`); the twisted
 horizon layer is zero-blind and positive (windows twisted by a mean-zero periodic weight see no
-zero and lie above the archimedean horizon); the window index counts the right zeros.
+zero and lie above the archimedean horizon); the window index counts the right zeros; the
+alternating (conductor-two) window has second-order term `7 J(2)/K ‖H‖²_{−8}`, the conductor-two
+count.
 See `ArithmeticHodgeTheoryOfDegenerations/README.md`.
 -/

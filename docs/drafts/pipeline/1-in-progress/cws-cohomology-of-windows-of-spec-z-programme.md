@@ -4,31 +4,34 @@
 - **Stage:** 1-in-progress
 - **Type:** THEOREM (Lean) programme
 - **Source:** docs/reports/review-0211/obstacles-summary.md §2.7
-- **Statement:** attach to each window length `A` a finite arithmetic object whose `h¹` is Weil's
-  window form; determine the window datum exactly; decide which carriers (count, capacity, placement)
-  can realize `h¹`; calibrate (curves, prime-free windows, first prime); locate selection.
+- **Statement:** attach to each window length `A` the arithmetic object whose `h¹` is Weil's window
+  form; determine the window datum exactly; decide which carriers (count, capacity, placement) can
+  realize `h¹`; calibrate (curves, prime-free windows, first prime); locate selection.
 
 ## Goal
 Develop the field of §2.7: answer its questions by Lean theorems, build its tools. Folder
 `formal/GaloisForLFunctions/CohomologyOfWindowsOfSpecZ/`, umbrella `CohomologyOfWindowsOfSpecZ.lean`,
 README there.
 
-## Lean modules (planned order)
-TheWindowDatum, TheCanonicalClassOfAWindow, TheFirstPrimeFold, TheFrobeniusAtInfinityOfAWindow,
-TheWindowIndex, TheWindowGenusIsAYoungConjugate, WindowRealizations, WindowNaiveHeights,
-TheWindowCohomologyOfACurve, TheSelectionBatteryOfWindows.
+## Lean modules
+TheWindowDatum, TheCanonicalClassOfAWindow, TheFirstPrimeFold, TheCanonicalDegreeBoundsTheWindowForm,
+TheFrobeniusAtInfinityOfAWindow, WindowRealizations, TheWindowIndex, TheWindowGenusIsAYoungConjugate,
+WindowNaiveHeights, TheWindowCohomologyOfACurve, TheSelectionBatteryOfWindows.
 
-## Paper statements (to formalize)
-1. Canonical class: for `H` supported in `[−A,0]`, `n ≤ e^A`, `ℓ = log n`:
-   `w‖H − τ_ℓH‖² − 2w‖H‖² = w∫_{−A}^{−ℓ}(H(u) − H(u+ℓ))² − w∫_W m_n H²`, `m_n = 1[u ≤ −ℓ] + 1[u ≥ ℓ − A]`;
-   `∫_W m_n = 2(A − ℓ)`; Riesz degree `Σ 2w_n(A − log n)`.
-2. First-prime fold: `log 2 ≤ A < log 3` ⇒ active set `{2}`; `log 2 ≤ A < log 4` ⇒ `I₋ ∩ I₊ = ∅`.
-3. Window involution: `Q(H(−A−·)) = Q(H)`; multiplier `e^{−(s−½)A}`.
-4. Young: `2Lx − x(log x − 1) ≤ e^{2L}`, equality iff `x = e^{2L}`.
-5. Realizations: exist ⇔ RH; infinite positive index on every window.
+## Status [L]
+- Window datum: locality in the level and in the Euler factors; window involution an isometry; window criterion.
+- Canonical class: fold identity; `k_A(u) = ψ_{1/2}(e^{−u}) + ψ_{1/2}(e^{A+u})`; degree `2∫_0^A ψ_{1/2}(e^t)dt`.
+- Signed folds: each prime power contributes antisymmetric count − symmetric mass; arithmetic `≤ ∫k_A H²`;
+  prime-free windows archimedean; first prime = one fold of `T₂`.
+- Semiboundedness `Q ≥ −(deg K_A + 2A sinh²(A/2))‖H‖²`; second-order pencil nonnegative at bounded `K`.
+- Window involution on transforms: multiplier `e^{−(s−½)A}`, unitary exactly on `Re s = ½`.
+- Realizations ⇔ RH (zero map); none finite-dimensional. Window index: monotone, finite, `0` to `3/5`,
+  exhausts right zeros (even); RH ⇔ `ι < 2`.
+- Window genus `≥ (2−η)e^A`, Young conjugate of the zero density, theta count of `Spec ℤ`.
+- Windowed Tate law; curve windows (`ℂ^{2g}` realization ⇔ unitary; golden fake has none);
+  flip twins of every bounded window.
 
 ## Open
-See README §7.
-
-## Log
-- 2026-11-02 — created; README first draft written.
+README §7: symmetric fold mass of `T₂` as a count; whole prime-free window from the jump count;
+window capacity uniform in `A`; window naive heights; admissible dilation constant as `A → ∞`;
+window Frobenius at infinity placing the poles of `Λ(s)/Λ(s+1)`.

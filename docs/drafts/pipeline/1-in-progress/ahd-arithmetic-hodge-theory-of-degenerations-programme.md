@@ -23,7 +23,7 @@ TheHorizonBlockBelowTheGridIsSharp, TheSecondOrderTermOfAHorizonBlock,
 TheAliasingIsTheDilationDerivativeOfTheBulk, TheAliasingConstantOfTheTiltedSpline,
 ThePrimesOfAHorizonWindow, TheBulkDeterminesTheSecondOrderTerm, TheWindowIndex,
 TheCountLawOverEveryFiniteRing, TheTwistedHorizonLayerIsZeroBlind, TheWindowIndexCountsTheRightZeros,
-TheTwistedHorizonLayerIsPositive.
+TheTwistedHorizonLayerIsPositive, TheAlternatingWindowCountsTheConductorTwoPoints.
 
 ## Status
 - First order = count: `J(m) = J(1) #ℙ⁷(ℤ/m)`; count law over every finite ring (𝔽_q[T] calibration) [L].
@@ -44,7 +44,10 @@ TheTwistedHorizonLayerIsPositive.
   (symbol ≥ 0 beyond the archimedean horizon; low frequencies and pole values `O(1/N)`); coercive:
   at the critical curve eventually `≥ a/K − ε` (tilted spline; MVT from below, `Σx² → μ_χ∫h²`) [L].
 
-## Open: exact second-order term of twisted windows
+- Conductor-two window `(−1)^n h/√n`: `c⁻¹⟨Wx,x⟩ − (log N/∫φ²)(𝒜(c/2) − 𝒜(c)) → 0`; at the critical
+  curve `→ (2^{β+1}−1)βJ/K‖H‖²`, tilted spline `7J(2)/K‖H‖²_{−8}`, `J(2) = 255 J(1)` [L].
+
+## Open: exact second-order term of twisted windows of conductor m ≥ 3
 Claim: for `χ` `m`-periodic of mean zero, `c⁻¹⟨Wx,x⟩ − (log N/∫φ²)𝒜^χ_N → 0` with
 `𝒜^χ_N = (2/N)Σ_n h_n² Σ_{k} |χ̂(k)|² |φ̂(2πk cn/(mN))|²` (Poisson on residue classes); no Weil
 term (pole amplitudes and the quiet region `|τ| ≤ πNe^{−A}/m` vanish by Kuzmin–Landau with the

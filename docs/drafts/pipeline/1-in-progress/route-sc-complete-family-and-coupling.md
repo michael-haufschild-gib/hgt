@@ -80,6 +80,17 @@ persist. Its direct capstone and transitive axiom audits use only standard
 axioms. Polynomial upper density bounds therefore do not supply the
 missing generic rigidity; the actual arithmetic source remains essential.
 
+The [Riemann–von Mangoldt completion](../3-formalized/cone-cancellation-riemann-von-mangoldt-divisor.md)
+is formalized for a simple sign/conjugation-invariant abstract divisor.
+Critical-line pairs preserve exact nonzero spline weights, absolute
+convergence of every real moment, unattained positive width, and bounded
+natural two-prime cone coupling. Its literal positive count is locally
+finite and satisfies the full two-term Riemann–von Mangoldt law with
+`O(log T)` remainder. The exact full-series decomposition and existence
+theorem pass direct Lean and transitive axiom audits with only standard
+axioms. Thus the counting law alone does not provide generic cone rigidity;
+SC2 remains open for the actual zeta divisor.
+
 ## Other boundaries
 
 The [growing-packet prime–pole theorem](../3-formalized/growing-packet-full-prime-pole-cancellation.md)

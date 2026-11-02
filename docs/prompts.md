@@ -381,10 +381,10 @@ goal is met when 250 discharges could be made.
 
 ## update obstacles
 earlier we created these documents:
-- docs/reports/review-0111/walls-ledger.md
-- docs/reports/review-0111/route-obstacles.md
-- docs/reports/review-0111/route-unification-ledger.md
-- docs/reports/review-0111/obstacles-summary.md
+- docs/reports/review-0211/walls-ledger.md
+- docs/reports/review-0211/route-obstacles.md
+- docs/reports/review-0211/route-unification-ledger.md
+- docs/reports/review-0211/obstacles-summary.md
   
 read:
 - docs/reports/rh-current-frontier-map.md
@@ -418,7 +418,7 @@ first collect information in a working log in logs/ - facts, not process or stat
 
 the reports are not diaries or history log, but status quo reports.
 
-put the reports in folder docs/reports/review-0211/ without history language or "this changed since last review".
+replace the reports in folder docs/reports/review-0211/ without history language or "this changed since last review".
 do not run builds. this is not a task to verify the work of other agents but to create consolidated reports and "big picture" interpretations on their research results.
 
 
@@ -493,9 +493,9 @@ do not run any builds. do not search the web. do not grep for sorry or other shi
 
 Do not use the hgtl7 skill.
 
-read and understand docs/reports/review-0111/obstacles-summary.md
+read and understand docs/reports/review-0211/obstacles-summary.md
 
-under "## 2.7 Does closing RH need a new field?" it describes a new field/research programme 
+under "## 2.7 Does closing RH need a new field?" it describes a new field/research programme called "cohomology of windows of Spec ℤ"
 
 Your task: develop this field/research programme and do the actual research and formalization.
 
@@ -580,16 +580,21 @@ Goal is met when a proof route is fully closed and formalized in lean and RH is 
 
 do not use the hgtl7 skill.
 
-read: docs/reports/review-0111/fable.md
+read: docs/reports/review-0211/obstacles-summary.md
 
-under ### 5.4 Route WD -> Q4.4 — A height-uniform integer reading with a source bound, it asks for a "door opener":
-"The collision charge is the Fredholm index of a Wiener–Hopf operator whose symbol is built from integer-theta data; RH is index `< 2` per window `[L]`; the stopping prefix depends on zero separation (Π13). "
+the document asks two questions, gives two tasks to bring use forward in our RH research as a whole:
 
-where the door opener would be: "a realization of the charge as the index of an operator whose symbol is *nonvanishing on the circle for an arithmetic reason* (a Szegő-type positivity of the integer-theta symbol), giving a height-uniform bound below `2`. Its ≥qRH sub-step: the fixed-scale Hecke-defect bound `E_γ(c log T) = O(1)`, which already gives the inverse-logarithmic corridor and Lindelöf `[L]`"
+1. Prove Weil positivity on window tests of length `A ≤ log 3` by an identity whose terms are
+cardinalities, Lévy jump counts or manifest squares: the archimedean jump count, a count attached to the
+jump `n = 2` (the graph of `T₂`), and the pole term (Q1, steps 1–2).
+2. Construct, for every window length `A`, a count `h_A` (a cardinality, a lattice-point count,
+or a log-count) on window tests with `h_A(H) = ½Q(H)` up to manifest squares — equivalently a naive height
+`h` on `ℤ[ℚ_{>0}^×]`, nonnegative because it counts, with `\|h(ξ) − τ_x(ξ ⋆ ξ′)\| ≤ C_x` for every cycle
+(B20, B32).
 
-your task: answer the question, find a complete solution for the "door opener" and unconditionally formalize it and its implications and collaries in lean.
+your task: answer both questions, find a complete solution for them and unconditionally formalize them and its implications and collaries in lean.
 
-We are not interested in estimates, criterias what the answer could be like, what is not the answer, busywork - we accept only a full and final answer/solution to the posed door opener question.
+We are not interested in estimates, criterias what the answer could be like, what is not the answer, busywork - we accept only a full and final answer/solution to the posed questions/tasks.
 
 **Tools to use:**
 1. Search: use the search tool for our lean corpus, not just rg or grep. make good use of the search tool to find existing work, building blocks, and new ideas. Try to apply existing lean research, try to identify problems and questions the field with your contribution could explain or solve.

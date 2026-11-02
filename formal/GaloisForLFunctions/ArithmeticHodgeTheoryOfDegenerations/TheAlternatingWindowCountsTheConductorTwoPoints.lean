@@ -12,6 +12,18 @@ The alternating sign `(−1)^n` is the Ramanujan sum `c₂(n)`. A horizon window
   odd half-harmonics of the atom grid and removes its zero mode.
 * **Energy of the alternating block** (`abs_altEnergy_sub_le`): Plancherel and the linearized rows
   give `E_N = 2π (𝒜_N(c/2) − 𝒜_N(c)) + O(c/N)`, with no Riemann-sum main term.
+* **Quiet below the first resonance** (`norm_dirichletPoly_alt_le`): the phase increments of
+  `(−1)^n n^{iτ}` stay in `[1/4, 1/2]` for `|τ| ≤ (π/2) N e^{−A}`, so Kuzmin–Landau and summation by
+  parts give `|D_x(τ)| ≤ 7 (L e^{3A/2} + B e^{A/2})/√N` there.
+* **The second-order term** (`alternating_layer_sharp`): along `c → ∞`, `c (log N)²/N → 0`,
+  `c⁻¹⟨W x, x⟩/∫g² − (log N/∫φ²)(𝒜_N(c/2) − 𝒜_N(c)) → 0`. No Weil term appears.
+* **At the critical curve** (`alternating_layer_criticalCurve_of_regularBulk`,
+  `alternating_layer_criticalCurve_exact`): for a bulk limit `s^β E₁(s) → J`,
+  `c⁻¹⟨W x, x⟩/∫g² → (2^{β+1} − 1) β J/K ∫ e^{−(β+1)y} H²`; for the tilted spline this is
+  `7 J(2)/K ∫ e^{−8y} H²` with `J(2) = J(1) #ℙ⁷(𝔽₂) = 255 J(1)` (`jordanCoefficient_two`).
+
+The second-order term of the conductor-two window is the first-order count of conductor two: the
+count of the degeneration reappears at second order on the twisted directions.
 -/
 
 noncomputable section
@@ -1255,7 +1267,7 @@ theorem alternating_layer_criticalCurve_exact (hh : ContDiff ℝ 2 h) (hA : 0 �
   have hcrit' : Tendsto (fun N : ℕ => c N ^ ((7 : ℝ) + 1) / Real.log N) atTop (𝓝 K) := by
     refine hcrit.congr fun N => ?_
     rw [show (7 : ℝ) + 1 = ((8 : ℕ) : ℝ) by norm_num, Real.rpow_natCast]
-  have h := alternating_layer_criticalCurve_of_regularBulk contDiff_tiltedUnitSpline
+  have hlim := alternating_layer_criticalCurve_of_regularBulk contDiff_tiltedUnitSpline
     tiltedUnitSpline_support integral_tiltedUnitSpline_sq_pos (p := 8) (by norm_num) hC
     tiltedUnitSpline_decay (β := 7) (by norm_num) tendsto_rpow_seven_mul_completedShellEnergy_tilted
     hh hA hsupp hc1 hK hcrit'
@@ -1264,9 +1276,9 @@ theorem alternating_layer_criticalCurve_exact (hh : ContDiff ℝ 2 h) (hA : 0 �
   have hint : ∫ y, Real.exp (-(((7 : ℝ) + 1) * y)) * halfWeight h y ^ 2 =
       ∫ y, Real.exp (-(8 * y)) * halfWeight h y ^ 2 := by
     congr 1; funext y; norm_num
-  rw [h256, hint] at h
+  rw [h256, hint] at hlim
   rw [jordanCoefficient_two]
-  convert h using 2
+  convert hlim using 2
   ring
 
 end GaloisForLFunctions.ArithmeticHodgeTheoryOfDegenerations

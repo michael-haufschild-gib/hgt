@@ -3,9 +3,14 @@ import GaloisForLFunctions.ArithmeticCastelnuovoSeveri.TheHodgeDefectCountsTheRi
 import GaloisForLFunctions.ArithmeticCastelnuovoSeveri.CompleteWeilSourceTransfer
 import GaloisForLFunctions.LatticeSectionTheory.ThePrimitiveH1OfPrimeFreeCyclesIsAJumpCount
 import GaloisForLFunctions.RHTower.WeilConditionalConstantSignRigidity
+import GaloisForLFunctions.LatticeSectionTheory.HeckeCorrespondencesAreSimilitudesOfThePrimitiveH1
 
 /-!
 # Realizations of the window `h¹`
+
+The window `h¹` is the primitive `h¹` of the Künneth count of LST on the cycle of a window test
+(`primitiveH1_windowCycle`): `h_K(x) + h_K(−x) = χ(x) + h¹_K(x) + ½Q(H)` with `h¹_K > 0`
+(`kunneth_windowCycle`), so the counts pay everything but half of Weil's window form.
 
 A **realization** of the window `h¹` of length `A` is a real linear map `r` from window tests to a
 normed space with `Q(H) = ‖r H‖²` (`IsWindowRealization`): the `h¹` becomes a squared length.
@@ -56,6 +61,30 @@ theorem weilQuad_nonneg_of_isWindowRealization {E : Type*} [NormedAddCommGroup E
     [NormedSpace ℝ E] {r : windowTests A →ₗ[ℝ] E} (hr : IsWindowRealization A r)
     (H : windowTests A) : 0 ≤ weilQuad H := by
   rw [hr H]; positivity
+
+/-! ### The Künneth `h¹` of a window -/
+
+/-- The cycle `(0, 0, H)` of the scaling surface carried by a window test. -/
+def windowCycle (H : windowTests A) : ScalingCycle :=
+  (0, 0, ⟨H, H.2.contDiff, H.2.hasCompactSupport⟩)
+
+/-- **The window `h¹` is the primitive Künneth `h¹`**: `h¹_prim(x_H) = ½Q(H)`. -/
+theorem primitiveH1_windowCycle (H : windowTests A) :
+    LatticeSectionTheory.primitiveH1 scalingSurface (windowCycle H) = weilQuad H / 2 := by
+  rw [LatticeSectionTheory.primitiveH1_eq, scalingSurface_defect_self]
+  rfl
+
+/-- **Künneth Riemann–Roch on a window**: `h_K(x) + h_K(−x) = χ(x) + h¹_K(x) + ½Q(H)`, and the
+Künneth part `h¹_K` is positive because it is a product of counts. -/
+theorem kunneth_windowCycle (H : windowTests A) :
+    LatticeSectionTheory.kunnethH0 scalingSurface (windowCycle H) +
+        LatticeSectionTheory.kunnethH0 scalingSurface (0 - windowCycle H) =
+      ArithmeticEffectivityTheory.eulerChar scalingSurface 0 0 (windowCycle H) +
+        LatticeSectionTheory.kunnethH1 scalingSurface (windowCycle H) + weilQuad H / 2 ∧
+    0 < LatticeSectionTheory.kunnethH1 scalingSurface (windowCycle H) := by
+  refine ⟨?_, LatticeSectionTheory.kunnethH1_pos _ _⟩
+  rw [LatticeSectionTheory.kunnethH0_add_neg, scalingSurface_defect_self]
+  rfl
 
 /-! ### The zero map -/
 
