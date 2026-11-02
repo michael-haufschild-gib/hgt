@@ -46,7 +46,11 @@ proves the counting law for arbitrary finite blocks of the prescribed sizes;
 its direct Lean and transitive axiom audits use only standard axioms.
 `CriticalSplineSlots.lean` also proves nonzero exact rational-slot weights,
 absolute summability, and bounded critical-pair coupling, with standard
-axiom audits. Divisor geometry and full-series assembly remain unformalized.
+axiom audits. `RVMCompletionGeometry.lean` proves distinct completed atoms,
+local finiteness, and the literal positive count, also with standard axioms.
+`RVMCompletionSeries.lean` proves absolute convergence and the exact full-series
+decomposition, with standard axioms. The final existence theorem remains
+to be assembled and audited.
 The separate count audit found the actual Riemann–von Mangoldt count
 and the theta-tail divisor-capacity theorem. The latter controls radial
 density, without resolving bounded horizontal displacements. No block

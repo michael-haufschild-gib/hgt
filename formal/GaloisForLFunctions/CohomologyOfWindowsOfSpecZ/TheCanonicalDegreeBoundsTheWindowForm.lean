@@ -49,7 +49,7 @@ theorem integrable_canonicalDensity_mul (hc : Continuous H) (hcs : HasCompactSup
     Integrable fun u => canonicalDensity A u * H u ^ 2 := by
   have iH := integrable_sq hc hcs
   simp_rw [canonicalDensity, Finset.sum_mul]
-  refine integrable_finset_sum _ fun n _ => ?_
+  refine integrable_finsetSum _ fun n _ => ?_
   simp_rw [mul_assoc]
   refine Integrable.const_mul ?_ _
   have hpt : (fun u => inWindowCount A (Real.log n) u * H u ^ 2) = fun u =>
@@ -69,26 +69,106 @@ theorem integral_canonicalDensity_mul_le (hH : IsWindowTest A H) :
   · exact mul_le_mul_of_nonneg_right (canonicalDensity_le hu) (sq_nonneg _)
   · simp [hH.vanish u hu]
 
+/-- On the window `|2 sinh(u/2)|² ≤ 4 sinh²(A/2)`. -/
+theorem sq_two_sinh_le {u : ℝ} (hu : u ∈ Icc (-A) 0) :
+    (2 * Real.sinh (u / 2)) ^ 2 ≤ 4 * Real.sinh (A / 2) ^ 2 := by
+  have h1 : |Real.sinh (u / 2)| ≤ Real.sinh (A / 2) := by
+    rw [Real.abs_sinh, Real.sinh_le_sinh, abs_le]
+    constructor <;> linarith [hu.1, hu.2]
+  have h2 : Real.sinh (u / 2) ^ 2 ≤ Real.sinh (A / 2) ^ 2 := by
+    rw [← sq_abs]; exact pow_le_pow_left₀ (abs_nonneg _) h1 2
+  nlinarith
+
+/-- Pointwise AM–GM integrated: `2t|⟨2 sinh(u/2), H⟩| ≤ t²‖H‖² + 4A sinh²(A/2)` for `t ≥ 0`. -/
+theorem two_mul_abs_sinhPairing_le (hH : IsWindowTest A H) (hA : 0 ≤ A) {t : ℝ} (ht : 0 ≤ t) :
+    2 * t * |sinhPairing H| ≤ t ^ 2 * (∫ u, H u ^ 2) + 4 * A * Real.sinh (A / 2) ^ 2 := by
+  have iH := integrable_sq hH.continuous hH.hasCompactSupport
+  have iP : Integrable fun u => H u * (2 * Real.sinh (u / 2)) :=
+    (hH.continuous.mul (by fun_prop)).integrable_of_hasCompactSupport hH.hasCompactSupport.mul_right
+  have iI : Integrable ((Icc (-A) 0).indicator fun _ => 4 * Real.sinh (A / 2) ^ 2) :=
+    (integrable_indicator_iff measurableSet_Icc).mpr (integrableOn_const (by simp [Real.volume_Icc]))
+  have hpt : ∀ u, 2 * t * |H u * (2 * Real.sinh (u / 2))| ≤
+      t ^ 2 * H u ^ 2 + (Icc (-A) 0).indicator (fun _ => 4 * Real.sinh (A / 2) ^ 2) u := fun u => by
+    by_cases hu : u ∈ Icc (-A) 0
+    · rw [indicator_of_mem hu, abs_mul]
+      have hs := sq_two_sinh_le hu
+      have hb : |2 * Real.sinh (u / 2)| ^ 2 ≤ 4 * Real.sinh (A / 2) ^ 2 := by rwa [sq_abs]
+      nlinarith [sq_nonneg (t * |H u| - |2 * Real.sinh (u / 2)|), abs_nonneg (H u),
+        abs_nonneg (2 * Real.sinh (u / 2)), sq_abs (H u)]
+    · rw [indicator_of_notMem hu, hH.vanish u hu]; simp
+  calc 2 * t * |sinhPairing H| ≤ 2 * t * ∫ u, |H u * (2 * Real.sinh (u / 2))| :=
+        mul_le_mul_of_nonneg_left (abs_integral_le_integral_abs) (by positivity)
+    _ = ∫ u, 2 * t * |H u * (2 * Real.sinh (u / 2))| := (integral_const_mul _ _).symm
+    _ ≤ ∫ u, (t ^ 2 * H u ^ 2 +
+          (Icc (-A) 0).indicator (fun _ => 4 * Real.sinh (A / 2) ^ 2) u) :=
+        integral_mono (iP.abs.const_mul _) ((iH.const_mul _).add iI) hpt
+    _ = t ^ 2 * (∫ u, H u ^ 2) + 4 * A * Real.sinh (A / 2) ^ 2 := by
+        rw [integral_add (iH.const_mul _) iI, integral_const_mul,
+          integral_indicator_const _ measurableSet_Icc, Real.volume_real_Icc_of_le (by linarith),
+          smul_eq_mul]
+        ring
+
 /-- **The pole capacity of a window**: `⟨2 sinh(u/2), H⟩² ≤ 4A sinh²(A/2)‖H‖²`. -/
 theorem sinhPairing_sq_le (hH : IsWindowTest A H) (hA : 0 ≤ A) :
     sinhPairing H ^ 2 ≤ 4 * A * Real.sinh (A / 2) ^ 2 * ∫ u, H u ^ 2 := by
-  set g : ℝ → ℝ := (Icc (-A) 0).indicator fun u => 2 * Real.sinh (u / 2) with hg
+  set M := ∫ u, H u ^ 2
+  set G := 4 * A * Real.sinh (A / 2) ^ 2
+  have hM : 0 ≤ M := integral_nonneg fun u => sq_nonneg _
+  have hG : 0 ≤ G := by positivity
+  have hq : ∀ t : ℝ, 0 ≤ M * (t * t) + 2 * (-|sinhPairing H|) * t + G := fun t => by
+    rcases le_total 0 t with ht | ht
+    · have := two_mul_abs_sinhPairing_le hH hA ht
+      nlinarith
+    · nlinarith [abs_nonneg (sinhPairing H), mul_self_nonneg t]
+  have h := abs_le_sqrt_mul_sqrt_of_quadratic_nonneg hM hq
+  rw [abs_neg, abs_abs] at h
+  have h2 := pow_le_pow_left₀ (abs_nonneg _) h 2
+  rw [sq_abs, mul_pow, Real.sq_sqrt hM, Real.sq_sqrt hG] at h2
+  linarith
+
+/-- **The window form is bounded below by the canonical degree**:
+`Q(H) ≥ −(deg K_A + 2A sinh²(A/2))‖H‖²` on window tests. -/
+theorem weilQuad_ge_neg_windowFloor (hH : IsWindowTest A H) (hA : 0 ≤ A) :
+    -(windowFloor A * ∫ u, H u ^ 2) ≤ weilQuad H := by
+  rw [weilQuad_eq_fold_sub_canonical hH]
+  have hJ := levyJump_nonneg H
+  have hF : 0 ≤ ∑ n ∈ Finset.Icc 2 (windowLevel A),
+      primeJumpWeight n * foldEnergy A (Real.log n) H :=
+    Finset.sum_nonneg fun n _ => mul_nonneg (primeJumpWeight_nonneg n) (foldEnergy_nonneg _ _ _)
+  have hk := integral_canonicalDensity_mul_le hH
+  have hs := sinhPairing_sq_le hH hA
+  have hc := sq_nonneg (coshPairing H)
+  rw [windowFloor, canonicalDegree_eq_halfChebyshev]
+  nlinarith
+
+theorem windowFloor_nonneg (hA : 0 ≤ A) : 0 ≤ windowFloor A :=
+  add_nonneg (canonicalDegree_pos A).le (by positivity)
+
+/-- **The second-order pencil is nonnegative at bounded dilation constant**: for `κ > 0`, `p ≥ 0`
+and `c ≥ κ(deg K_A + 2A sinh²(A/2))`, `κQ(H) + c∫e^{−py}H(y)² ≥ 0` on window tests. -/
+theorem pencil_nonneg (hH : IsWindowTest A H) (hA : 0 ≤ A) {κ c p : ℝ} (hκ : 0 < κ)
+    (hp : 0 ≤ p) (hc : κ * windowFloor A ≤ c) :
+    0 ≤ κ * weilQuad H + c * ∫ y, Real.exp (-(p * y)) * H y ^ 2 := by
   have iH := integrable_sq hH.continuous hH.hasCompactSupport
-  have ig : Integrable g := by
-    refine (integrable_indicator_iff measurableSet_Icc).mpr ?_
-    exact (Continuous.integrableOn_Icc (by fun_prop))
-  have ig2 : Integrable fun u => g u ^ 2 := by
-    refine (integrable_indicator_iff measurableSet_Icc).mpr ?_ |>.congr (ae_of_all _ fun u => ?_)
-    · exact fun u => (2 * Real.sinh (u / 2)) ^ 2
-    · exact Continuous.integrableOn_Icc (by fun_prop)
-    · by_cases hu : u ∈ Icc (-A) 0 <;> simp [hg, hu]
-  have iHg : Integrable fun u => H u * g u :=
-    (hH.continuous.integrable_of_hasCompactSupport hH.hasCompactSupport).mul_of_top_left
-      (ig.aestronglyMeasurable.memLp_top_of_bound 2 (Eventually.of_forall fun u => by
-        by_cases hu : u ∈ Icc (-A) 0
-        · simp only [hg, indicator_of_mem hu, Real.norm_eq_abs]
-          sorry
-        · simp [hg, hu])) |>.integrable_mul ?_
-  sorry
+  have hHc := hH.continuous
+  have hcont : Continuous fun y => Real.exp (-(p * y)) * H y ^ 2 := by fun_prop
+  have hcs : HasCompactSupport fun y => Real.exp (-(p * y)) * H y ^ 2 :=
+    HasCompactSupport.intro (isCompact_Icc (a := -A) (b := 0)) fun y hy => by
+      rw [hH.vanish y hy]; ring
+  have iE : Integrable fun y => Real.exp (-(p * y)) * H y ^ 2 :=
+    hcont.integrable_of_hasCompactSupport hcs
+  have hmono : ∫ y, H y ^ 2 ≤ ∫ y, Real.exp (-(p * y)) * H y ^ 2 :=
+    integral_mono iH iE fun y => by
+      by_cases hy : y ∈ Icc (-A) 0
+      · have : 1 ≤ Real.exp (-(p * y)) := Real.one_le_exp (by nlinarith [hy.2])
+        nlinarith [sq_nonneg (H y)]
+      · simp [hH.vanish y hy]
+  have hQ := mul_le_mul_of_nonneg_left (weilQuad_ge_neg_windowFloor hH hA) hκ.le
+  have hW := windowFloor_nonneg hA
+  have hM : 0 ≤ ∫ y, H y ^ 2 := integral_nonneg fun u => sq_nonneg _
+  have hc0 : 0 ≤ c := (mul_nonneg hκ.le hW).trans hc
+  have h1 := mul_le_mul_of_nonneg_left hmono hc0
+  have h2 := mul_le_mul_of_nonneg_right hc hM
+  linarith
 
 end GaloisForLFunctions.CohomologyOfWindowsOfSpecZ

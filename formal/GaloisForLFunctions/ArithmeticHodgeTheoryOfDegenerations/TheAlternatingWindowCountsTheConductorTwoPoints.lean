@@ -885,7 +885,7 @@ theorem exists_abs_altPole_le (hφ : ContDiff ℝ 2 φ) (hφsupp : ∀ u, u ∉ 
 theorem altLow_bounds {Cφ p : ℝ} (hp : 0 ≤ p) (hCφ : 0 ≤ Cφ)
     (hdecay : ∀ u : ℝ, ‖paperFT (cx φ) u‖ ^ 2 ≤ Cφ * (1 + |u|) ^ (-p))
     {Bh L : ℝ} (hsupp : ∀ y, y ∉ Set.Icc (-A) 0 → h y = 0) (hA : 0 ≤ A) (hB : ∀ y, |h y| ≤ Bh)
-    (hL : ∀ u v, |h u - h v| ≤ L * |u - v|) {Aν : ℝ} (hAν : 0 ≤ Aν)
+    (hL : ∀ u v, |h u - h v| ≤ L * |u - v|) {Aν : ℝ}
     (hν : ∀ τ, |nuSymbol (Real.exp (2 * (A + 1))) τ| ≤ Aν + Real.log (2 + |τ|)) {N : ℕ}
     (hN : 1 ≤ N) {c : ℝ} {τ : ℝ} (hτ : |τ| ≤ (N : ℝ) * Real.exp (-A)) :
     ‖paperFT (cx φ) (((c / N : ℝ) : ℂ) * τ)‖ ^ 2 *
@@ -1019,7 +1019,7 @@ theorem alternating_layer_sharp (hφ : ContDiff ℝ 2 φ) (hφsupp : ∀ u, u �
     have hbd : ∀ τ ∈ Set.Icc (-T₀ N) (T₀ N), ‖S N τ‖ ≤ W / (N : ℝ) ^ 2 * (Aν + Real.log (2 + N)) :=
       fun τ hτ => by
         rw [Real.norm_eq_abs]
-        have := (altLow_bounds (by linarith) hCφ hdecay hsupp hA hB hL hAν hν hN (c := c N)
+        have := (altLow_bounds (by linarith) hCφ hdecay hsupp hA hB hL hν hN (c := c N)
           (hquiet N hN τ hτ)).2
         show |symbolW φ (twistedWeights h altSign N) (c N) N (Real.exp (2 * (A + 1))) τ| ≤ _
         refine this.trans (le_of_eq ?_)
@@ -1029,7 +1029,9 @@ theorem alternating_layer_sharp (hφ : ContDiff ℝ 2 φ) (hφsupp : ∀ u, u �
     refine hI.trans ?_
     have hlog3 : Real.log (2 + N) ≤ Real.log 3 + Real.log N := by
       rw [← Real.log_mul (by norm_num) hN0.ne']
-      exact Real.log_le_log (by positivity) (by nlinarith)
+      exact Real.log_le_log (by positivity) (by
+        have : (1 : ℝ) ≤ N := by exact_mod_cast hN
+        linarith)
     have hW0 : 0 ≤ W := by rw [hW]; positivity
     have hA0 : 0 ≤ Aν + Real.log (2 + N) := by
       have := Real.log_nonneg (show (1 : ℝ) ≤ 2 + N by linarith); linarith
@@ -1040,8 +1042,7 @@ theorem alternating_layer_sharp (hφ : ContDiff ℝ 2 φ) (hφsupp : ∀ u, u �
       _ ≤ 2 * W * ((Aν + Real.log 3) / N + Real.log N / N) := by
           gcongr
           rw [← add_div]
-          gcongr
-          linarith
+          exact div_le_div_of_nonneg_right (by linarith) hN0.le
   have hLoEt : Tendsto LoE atTop (𝓝 0) := by
     set W := Cφ * (49 * V ^ 2) with hW
     have hlim : Tendsto (fun N : ℕ => 2 * W * (Real.log N / N)) atTop (𝓝 0) := by
@@ -1053,7 +1054,7 @@ theorem alternating_layer_sharp (hφ : ContDiff ℝ 2 φ) (hφsupp : ∀ u, u �
     have hN0 : (0 : ℝ) < N := by exact_mod_cast hN
     have hlog0 : 0 ≤ Real.log N := Real.log_natCast_nonneg N
     have hbd : ∀ τ ∈ Set.Icc (-T₀ N) (T₀ N), ‖E N τ‖ ≤ W / (N : ℝ) ^ 2 := fun τ hτ => by
-      have := (altLow_bounds (by linarith) hCφ hdecay hsupp hA hB hL hAν hν hN (c := c N)
+      have := (altLow_bounds (by linarith) hCφ hdecay hsupp hA hB hL hν hN (c := c N)
         (hquiet N hN τ hτ)).1
       show ‖‖paperFT (cx φ) (((c N / N : ℝ) : ℂ) * τ)‖ ^ 2 *
         (‖dirichletPoly N (twistedWeights h altSign N) τ‖ ^ 2 / N)‖ ≤ _
@@ -1149,10 +1150,123 @@ theorem alternating_layer_sharp (hφ : ContDiff ℝ 2 φ) (hφsupp : ∀ u, u �
     rw [hSeq, hsplitS, hcompl]
     simp only [hP, hLo, hLoE, hDf]
     rw [← hsplitE]
-    ring
+    have hpi' : Real.pi * Real.pi⁻¹ = 1 := mul_inv_cancel₀ Real.pi_ne_zero
+    linear_combination (-(M⁻¹ * Real.log N * altAlias φ h (c N) N)) * hpi'
   refine Tendsto.congr' hid ?_
   have := (((hPt.add (hLot.const_mul M⁻¹)).add (hRmt.const_mul M⁻¹)).sub
     (hLoEt.const_mul (M⁻¹ * (2 * Real.pi)⁻¹))).add (hDft.const_mul (M⁻¹ * (2 * Real.pi)⁻¹))
   simpa using this
+
+/-! ### At the critical curve: the conductor-two count -/
+
+/-- **The alternating window at the critical curve.** For every profile whose bulk energy has the
+rescaled limit `s^β E₁(s) → J`, along `c^{β+1}/log N → K`:
+`c⁻¹⟨W x, x⟩/∫g² → (2^{β+1} − 1) β J/K ∫ e^{−(β+1)y} H²`. The half-overlap aliasing counts
+`2^{β+1}` times the full one, and the alternating sign removes one copy. -/
+theorem alternating_layer_criticalCurve_of_regularBulk (hφ : ContDiff ℝ 2 φ)
+    (hφsupp : ∀ u, u ∉ Set.Icc 0 1 → φ u = 0) (hφ2 : 0 < ∫ u, φ u ^ 2) {Cφ p : ℝ} (hp : 4 < p)
+    (hCφ : 0 ≤ Cφ) (hdecay : ∀ u : ℝ, ‖paperFT (cx φ) u‖ ^ 2 ≤ Cφ * (1 + |u|) ^ (-p))
+    {β J : ℝ} (hβ : 0 ≤ β)
+    (hbulk : Tendsto (fun s => s ^ β * completedShellEnergy φ s) atTop (𝓝 J))
+    (hh : ContDiff ℝ 2 h) (hA : 0 ≤ A) (hsupp : ∀ y, y ∉ Set.Icc (-A) 0 → h y = 0)
+    {c : ℕ → ℝ} (hc1 : ∀ N, 1 ≤ c N) {K : ℝ} (hK : 0 < K)
+    (hcrit : Tendsto (fun N : ℕ => c N ^ (β + 1) / Real.log N) atTop (𝓝 K)) :
+    Tendsto (fun N : ℕ => (c N)⁻¹ * (weilQuad (atomicTest N (twistedWeights h altSign N)
+        (atomDilate φ (c N / N))) / ∫ u, atomDilate φ (c N / N) u ^ 2)) atTop
+      (𝓝 (((2 : ℝ) ^ (β + 1) - 1) * β * J / K *
+        ∫ y, Real.exp (-((β + 1) * y)) * halfWeight h y ^ 2)) := by
+  obtain ⟨hcinf, hclog, hcN⟩ := criticalCurve_facts_rpow hc1 (q := β + 1) (by linarith) hK hcrit
+  rw [show β + 1 + 1 = β + 2 by ring] at hcN
+  have hsharp := alternating_layer_sharp hφ hφsupp hφ2 (by linarith : (1 : ℝ) < p) hCφ hdecay hh hA
+    hsupp hc1 hcinf hclog
+  set M := ∫ u, φ u ^ 2 with hM
+  set I := ∫ y, Real.exp (-(β * y)) * h y ^ 2 with hI
+  -- the full overlap
+  have h1 := tendsto_rpow_mul_horizonAlias_of_regularBulk hφ hφsupp hφ2 hp hCφ hdecay hbulk
+    hh hA hsupp hc1 hcinf hcN
+  -- the half overlap, along `c' = max(c/2, 1)`
+  set c' : ℕ → ℝ := fun N => max (c N / 2) 1 with hc'
+  have hc'1 : ∀ N, 1 ≤ c' N := fun N => le_max_right _ _
+  have hc'le : ∀ N, c' N ≤ c N := fun N => max_le (by linarith [hc1 N]) (hc1 N)
+  have hc'inf : Tendsto c' atTop atTop :=
+    tendsto_atTop_mono (fun N => le_max_left _ _) (hcinf.atTop_div_const (by norm_num))
+  have hc'N : Tendsto (fun N : ℕ => c' N ^ (β + 2) / N) atTop (𝓝 0) := by
+    refine squeeze_zero (fun N => by have := hc'1 N; positivity) (fun N => ?_) hcN
+    exact div_le_div_of_nonneg_right (Real.rpow_le_rpow (by linarith [hc'1 N]) (hc'le N)
+      (by linarith)) (Nat.cast_nonneg _)
+  have h2 := tendsto_rpow_mul_horizonAlias_of_regularBulk hφ hφsupp hφ2 hp hCφ hdecay hbulk
+    hh hA hsupp hc'1 hc'inf hc'N
+  have hev : ∀ᶠ N : ℕ in atTop, c' N = c N / 2 := by
+    filter_upwards [hcinf.eventually (eventually_ge_atTop 2)] with N hN
+    exact max_eq_left (by linarith)
+  have hinv : Tendsto (fun N : ℕ => Real.log N / c N ^ (β + 1)) atTop (𝓝 K⁻¹) :=
+    (hcrit.inv₀ hK.ne').congr fun N => by rw [inv_div]
+  have hterm : Tendsto (fun N : ℕ => Real.log N / M * altAlias φ h (c N) N) atTop
+      (𝓝 (K⁻¹ * ((2 : ℝ) ^ (β + 1) * (J * (β * I)) - J * (β * I)))) := by
+    refine (hinv.mul ((h2.const_mul ((2 : ℝ) ^ (β + 1))).sub h1)).congr' ?_
+    filter_upwards [hev] with N hN
+    have hc0 : 0 < c N := by linarith [hc1 N]
+    have hcp : 0 < c N ^ (β + 1) := Real.rpow_pos_of_pos hc0 _
+    have hM0 : M ≠ 0 := hφ2.ne'
+    have hsplit : (2 : ℝ) ^ (β + 1) * (c N / 2) ^ (β + 1) = c N ^ (β + 1) := by
+      rw [Real.div_rpow hc0.le (by norm_num), mul_div_cancel₀ _ (by positivity)]
+    simp only [altAlias, hN]
+    rw [← hsplit, ← hM]
+    field_simp
+  have := hsharp.add hterm
+  rw [zero_add] at this
+  have hH : ∫ y, Real.exp (-((β + 1) * y)) * halfWeight h y ^ 2 = I := by
+    rw [hI]; congr 1; funext y
+    rw [halfWeight, mul_pow, ← Real.exp_nat_mul,
+      show Real.exp (-((β + 1) * y)) * (Real.exp ((2 : ℕ) * (y / 2)) * h y ^ 2) =
+        (Real.exp (-((β + 1) * y)) * Real.exp ((2 : ℕ) * (y / 2))) * h y ^ 2 by ring,
+      ← Real.exp_add]
+    congr 2; push_cast; ring
+  rw [hH]
+  have hval : K⁻¹ * ((2 : ℝ) ^ (β + 1) * (J * (β * I)) - J * (β * I)) =
+      ((2 : ℝ) ^ (β + 1) - 1) * β * J / K * I := by
+    field_simp
+  rw [hval] at this
+  refine this.congr fun N => ?_
+  ring
+
+/-- The conductor-two Jordan coefficient counts `#ℙ⁷(𝔽₂) = 255` points: `J(2) = 255 J(1)`. -/
+theorem jordanCoefficient_two :
+    ArithmeticDegenerationTheory.jordanCoefficient 2 = 255 * tiltedJordanOne := by
+  have hJ := ArithmeticDegenerationTheory.jordanTotient_prime_pow Nat.prime_two 8 (a := 1) le_rfl
+  rw [pow_one] at hJ
+  unfold ArithmeticDegenerationTheory.jordanCoefficient tiltedJordanOne
+  rw [hJ, Nat.totient_two]
+  norm_num
+  ring
+
+/-- **The alternating window counts the conductor-two points.** For the tilted spline and a `C²`
+window profile on `[−A, 0]`, along `c⁸/log N → K`: the window `x_n = (−1)^n h(log(n/N))/√n` has
+`c⁻¹⟨W x, x⟩/∫g² → (7 J(2)/K) ∫ e^{−8y} H²`, `J(2) = J(1) #ℙ⁷(𝔽₂)`. The second-order term of the
+conductor-two window is the first-order count of conductor two; there is no Weil term. -/
+theorem alternating_layer_criticalCurve_exact (hh : ContDiff ℝ 2 h) (hA : 0 ≤ A)
+    (hsupp : ∀ y, y ∉ Set.Icc (-A) 0 → h y = 0) {c : ℕ → ℝ} (hc1 : ∀ N, 1 ≤ c N) {K : ℝ}
+    (hK : 0 < K) (hcrit : Tendsto (fun N : ℕ => c N ^ 8 / Real.log N) atTop (𝓝 K)) :
+    Tendsto (fun N : ℕ => (c N)⁻¹ * (weilQuad (atomicTest N (twistedWeights h altSign N)
+        (atomDilate tiltedUnitSpline (c N / N))) / ∫ u, atomDilate tiltedUnitSpline (c N / N) u ^ 2))
+      atTop (𝓝 (7 * ArithmeticDegenerationTheory.jordanCoefficient 2 / K *
+        ∫ y, Real.exp (-(8 * y)) * halfWeight h y ^ 2)) := by
+  have hC : 0 ≤ tiltedDecayConst := by unfold tiltedDecayConst; positivity
+  have hcrit' : Tendsto (fun N : ℕ => c N ^ ((7 : ℝ) + 1) / Real.log N) atTop (𝓝 K) := by
+    refine hcrit.congr fun N => ?_
+    rw [show (7 : ℝ) + 1 = ((8 : ℕ) : ℝ) by norm_num, Real.rpow_natCast]
+  have h := alternating_layer_criticalCurve_of_regularBulk contDiff_tiltedUnitSpline
+    tiltedUnitSpline_support integral_tiltedUnitSpline_sq_pos (p := 8) (by norm_num) hC
+    tiltedUnitSpline_decay (β := 7) (by norm_num) tendsto_rpow_seven_mul_completedShellEnergy_tilted
+    hh hA hsupp hc1 hK hcrit'
+  have h256 : (2 : ℝ) ^ ((7 : ℝ) + 1) = 256 := by
+    rw [show (7 : ℝ) + 1 = ((8 : ℕ) : ℝ) by norm_num, Real.rpow_natCast]; norm_num
+  have hint : ∫ y, Real.exp (-(((7 : ℝ) + 1) * y)) * halfWeight h y ^ 2 =
+      ∫ y, Real.exp (-(8 * y)) * halfWeight h y ^ 2 := by
+    congr 1; funext y; norm_num
+  rw [h256, hint] at h
+  rw [jordanCoefficient_two]
+  convert h using 2
+  ring
 
 end GaloisForLFunctions.ArithmeticHodgeTheoryOfDegenerations

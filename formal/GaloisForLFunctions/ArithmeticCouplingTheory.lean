@@ -105,3 +105,5 @@ See `ArithmeticCouplingTheory/README.md`.
 -/
 import GaloisForLFunctions.ArithmeticCouplingTheory.ConeMoments.RVMCompletionCounts
 import GaloisForLFunctions.ArithmeticCouplingTheory.ConeMoments.CriticalSplineSlots
+import GaloisForLFunctions.ArithmeticCouplingTheory.ConeMoments.RVMCompletionGeometry
+import GaloisForLFunctions.ArithmeticCouplingTheory.ConeMoments.RVMCompletionSeries
