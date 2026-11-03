@@ -129,13 +129,11 @@ private theorem crossRegularization_ne_zero_two (F G : RHTower.SelbergClass) :
 
 /-- Clearing the common poles and multiplying by reciprocal Gamma factors
 realizes the glued quotient as a quotient of entire finite-order functions. -/
-private theorem crossRegularization_eq (F G : RHTower.SelbergClass) {σ : ℝ}
-    (hσ : σ < 1 / 2)
-    (hb : LSeriesSummable (fun n => F.eulerLogCoeff n - G.eulerLogCoeff n) σ) :
+private theorem crossRegularization_eq (F G : RHTower.SelbergClass)
+    (hT : AnalyticOnNhd ℂ (completedEulerQuotient F G) univ) :
     ∀ s, crossRegularization F G s = completedEulerQuotient F G s * crossRegularization G F s := by
   have hA := crossRegularization_analytic F G
-  have hB := (completedEulerQuotient_analyticOnNhd F G hσ hb).mul
-    (crossRegularization_analytic G F)
+  have hB := hT.mul (crossRegularization_analytic G F)
   have hevent : crossRegularization F G =ᶠ[𝓝 (2 : ℂ)]
       (fun s => completedEulerQuotient F G s * crossRegularization G F s) := by
     have hopen : IsOpen {z : ℂ | 1 < z.re} := isOpen_lt continuous_const continuous_re
@@ -164,15 +162,30 @@ private theorem crossRegularization_eq (F G : RHTower.SelbergClass) {σ : ℝ}
   exact fun s => hA.eqOn_of_preconnected_of_eventuallyEq hB isPreconnected_univ
     (mem_univ (2 : ℂ)) hevent (mem_univ s)
 
+/-- Entire continuation of the completed quotient automatically has finite order. -/
+theorem completedEulerQuotient_finiteOrderEnvelope_of_analytic (F G : RHTower.SelbergClass)
+    (hT : AnalyticOnNhd ℂ (completedEulerQuotient F G) univ) :
+    FiniteOrderEnvelope (completedEulerQuotient F G) :=
+  FiniteOrderEnvelope.of_entire_quotient (crossRegularization_analytic G F)
+    (crossRegularization_analytic F G) hT
+    ⟨2, crossRegularization_ne_zero_two G F⟩ ⟨2, crossRegularization_ne_zero_two F G⟩
+    (completedEulerQuotient_ne_zero F G) (crossRegularization_eq F G hT)
+    (crossRegularization_finiteOrder G F) (crossRegularization_finiteOrder F G)
+
 theorem completedEulerQuotient_finiteOrderEnvelope (F G : RHTower.SelbergClass) {σ : ℝ}
     (hσ : σ < 1 / 2)
     (hb : LSeriesSummable (fun n => F.eulerLogCoeff n - G.eulerLogCoeff n) σ) :
     FiniteOrderEnvelope (completedEulerQuotient F G) :=
-  FiniteOrderEnvelope.of_entire_quotient (crossRegularization_analytic G F)
-    (crossRegularization_analytic F G) (completedEulerQuotient_analyticOnNhd F G hσ hb)
-    ⟨2, crossRegularization_ne_zero_two G F⟩ ⟨2, crossRegularization_ne_zero_two F G⟩
-    (completedEulerQuotient_ne_zero F G) (crossRegularization_eq F G hσ hb)
-    (crossRegularization_finiteOrder G F) (crossRegularization_finiteOrder F G)
+  completedEulerQuotient_finiteOrderEnvelope_of_analytic F G
+    (completedEulerQuotient_analyticOnNhd F G hσ hb)
+
+/-- An entire completed Euler quotient is a polynomial exponential. -/
+theorem completedEulerQuotient_eq_exp_polynomial_of_analytic (F G : RHTower.SelbergClass)
+    (hT : AnalyticOnNhd ℂ (completedEulerQuotient F G) univ) :
+    ∃ P : Polynomial ℂ, ∀ s, completedEulerQuotient F G s = Complex.exp (P.eval s) :=
+  exists_polynomial_exp_of_ne_zero (analyticOnNhd_univ_iff_differentiable.mp hT)
+    (completedEulerQuotient_ne_zero F G)
+    (completedEulerQuotient_finiteOrderEnvelope_of_analytic F G hT)
 
 /-- With arbitrary Gamma presentations, a subcritical Euler discrepancy leaves
 only a polynomial exponential in the quotient of the completed functions. -/
@@ -180,8 +193,7 @@ theorem completedEulerQuotient_eq_exp_polynomial (F G : RHTower.SelbergClass) {�
     (hσ : σ < 1 / 2)
     (hb : LSeriesSummable (fun n => F.eulerLogCoeff n - G.eulerLogCoeff n) σ) :
     ∃ P : Polynomial ℂ, ∀ s, completedEulerQuotient F G s = Complex.exp (P.eval s) :=
-  exists_polynomial_exp_of_ne_zero
-    (analyticOnNhd_univ_iff_differentiable.mp (completedEulerQuotient_analyticOnNhd F G hσ hb))
-    (completedEulerQuotient_ne_zero F G) (completedEulerQuotient_finiteOrderEnvelope F G hσ hb)
+  completedEulerQuotient_eq_exp_polynomial_of_analytic F G
+    (completedEulerQuotient_analyticOnNhd F G hσ hb)
 
 end GaloisForLFunctions.SelbergClass

@@ -131,7 +131,8 @@ theorem gammaFactor_analytic_ne_zero (D : SelbergGammaData) {s : ℂ}
     apply mul_ne_zero (Complex.cpow_ne_zero_iff.mpr (.inl (ofReal_ne_zero.mpr D.Q_pos.ne')))
     exact Finset.prod_ne_zero_iff.mpr fun j _ => Complex.Gamma_ne_zero_of_re_pos (harg j)
 
-private theorem value_eventually_ne_zero (G : RHTower.SelbergClass) (s : ℂ) (hs : s ≠ 1) :
+/-- Away from its possible pole, a Selberg function has isolated zeros. -/
+theorem value_eventually_ne_zero (G : RHTower.SelbergClass) (s : ℂ) (hs : s ≠ 1) :
     ∀ᶠ z in 𝓝[≠] s, G z ≠ 0 := by
   have htwo : G.continuation.regularized (2 : ℂ) ≠ 0 := by
     intro hzero

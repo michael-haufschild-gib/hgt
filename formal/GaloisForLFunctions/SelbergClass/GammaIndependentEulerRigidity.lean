@@ -1,4 +1,5 @@
 import GaloisForLFunctions.SelbergClass.CompletedEulerQuotientGrowth
+import GaloisForLFunctions.SelbergClass.CriticalEulerQuotient
 import GaloisForLFunctions.SelbergClass.GammaLogSlope
 import GaloisForLFunctions.SelbergClass.DirichletVerticalDecay
 import GaloisForLFunctions.HTGeometry.AddPolynomialInvariance
@@ -6,7 +7,7 @@ import GaloisForLFunctions.HTGeometry.AddPolynomialInvariance
 /-!
 # Euler rigidity independent of the Gamma presentation
 
-A subcritical absolutely convergent Euler discrepancy gives a completed
+An Euler discrepancy absolutely convergent on the critical line gives a completed
 quotient which is a polynomial exponential. Differentiating its logarithmic
 derivative past the polynomial degree leaves polygamma terms decaying on
 vertical lines. Almost periodicity then kills the Dirichlet coefficients.
@@ -23,7 +24,7 @@ private theorem logDeriv_cexp {f : ℂ → ℂ} {s : ℂ}
   exact mul_div_cancel_left₀ _ (exp_ne_zero _)
 
 private theorem eulerDiscrepancy_deriv (F G : RHTower.SelbergClass) {σ : ℝ}
-    (hσ : σ < 1 / 2)
+    (hσ : σ < 1)
     (hb : LSeriesSummable (fun n => F.eulerLogCoeff n - G.eulerLogCoeff n) σ)
     (P : Polynomial ℂ)
     (hP : ∀ s, completedEulerQuotient F G s = exp (P.eval s))
@@ -58,12 +59,12 @@ private theorem eulerDiscrepancy_deriv (F G : RHTower.SelbergClass) {σ : ℝ}
   linear_combination -hlog
 
 /-- The Euler logarithms agree whenever their discrepancy converges absolutely
-strictly to the left of the critical line, for arbitrary Gamma presentations. -/
-theorem eulerLogCoeff_eq_of_subcritical_discrepancy (F G : RHTower.SelbergClass) {σ : ℝ}
-    (hσ : σ < 1 / 2)
-    (hb : LSeriesSummable (fun n => F.eulerLogCoeff n - G.eulerLogCoeff n) σ) :
+on the critical line, for arbitrary Gamma presentations. -/
+theorem eulerLogCoeff_eq_of_critical_discrepancy (F G : RHTower.SelbergClass)
+    (hb : LSeriesSummable (fun n => F.eulerLogCoeff n - G.eulerLogCoeff n) (1 / 2 : ℝ)) :
     F.eulerLogCoeff = G.eulerLogCoeff := by
-  obtain ⟨P, hP⟩ := completedEulerQuotient_eq_exp_polynomial F G hσ hb
+  obtain ⟨P, hP⟩ := completedEulerQuotient_eq_exp_polynomial_of_analytic F G
+    (completedEulerQuotient_analyticOnNhd_of_critical_discrepancy F G hb)
   let b : ℕ → ℂ := fun n => F.eulerLogCoeff n - G.eulerLogCoeff n
   let m : ℕ := P.derivative.natDegree
   have hjet {s : ℂ} (hs : 1 < s.re) :
@@ -73,7 +74,7 @@ theorem eulerLogCoeff_eq_of_subcritical_discrepancy (F G : RHTower.SelbergClass)
     have hevent : deriv (LSeries b) =ᶠ[𝓝 s]
         (fun z => P.derivative.eval z - gammaLogSlope F.gammaData z + gammaLogSlope G.gammaData z) := by
       filter_upwards [(isOpen_lt continuous_const continuous_re).mem_nhds hs] with z hz
-      exact eulerDiscrepancy_deriv F G hσ hb P hP hz
+      exact eulerDiscrepancy_deriv F G (by norm_num) hb P hP hz
     have hpoly : ContDiffAt ℂ (m + 1 : ℕ) (fun z => P.derivative.eval z) s :=
       ((analyticOnNhd_univ_iff_differentiable.mpr
         (fun z => (P.derivative.hasDerivAt z).differentiableAt)) s (mem_univ s)).contDiffAt
@@ -86,7 +87,7 @@ theorem eulerLogCoeff_eq_of_subcritical_discrepancy (F G : RHTower.SelbergClass)
       Polynomial.eval_zero, zero_sub] at he
     exact he
   have habs : LSeries.abscissaOfAbsConv b < (2 : ℝ) :=
-    hb.abscissaOfAbsConv_le.trans_lt (by exact_mod_cast (show σ < (2 : ℝ) by linarith))
+    hb.abscissaOfAbsConv_le.trans_lt (by norm_num)
   have hlim : Tendsto (fun t : ℝ => iteratedDeriv (m + 2) (LSeries b)
       ((2 : ℂ) + (t : ℂ) * I)) atTop (𝓝 0) := by
     have heq : (fun t : ℝ => iteratedDeriv (m + 2) (LSeries b) ((2 : ℂ) + (t : ℂ) * I)) =
@@ -138,13 +139,20 @@ theorem eulerLogCoeff_eq_of_subcritical_discrepancy (F G : RHTower.SelbergClass)
   rw [hiter] at hz
   exact sub_eq_zero.mp ((mul_eq_zero.mp hz).resolve_left (pow_ne_zero _ hlog))
 
-/-- Strong multiplicity one below the critical Euler abscissa, without fixing
-any part of the Gamma presentation. -/
-theorem coeff_eq_of_subcritical_discrepancy (F G : RHTower.SelbergClass) {σ : ℝ}
+/-- Subcritical absolute convergence implies critical absolute convergence. -/
+theorem eulerLogCoeff_eq_of_subcritical_discrepancy (F G : RHTower.SelbergClass) {σ : ℝ}
     (hσ : σ < 1 / 2)
     (hb : LSeriesSummable (fun n => F.eulerLogCoeff n - G.eulerLogCoeff n) σ) :
+    F.eulerLogCoeff = G.eulerLogCoeff :=
+  eulerLogCoeff_eq_of_critical_discrepancy F G
+    (hb.of_re_le_re (by simpa only [ofReal_re] using hσ.le))
+
+/-- Strong multiplicity one at the critical Euler abscissa, without fixing
+any part of the Gamma presentation. -/
+theorem coeff_eq_of_critical_discrepancy (F G : RHTower.SelbergClass)
+    (hb : LSeriesSummable (fun n => F.eulerLogCoeff n - G.eulerLogCoeff n) (1 / 2 : ℝ)) :
     F.coeff = G.coeff := by
-  have heuler := eulerLogCoeff_eq_of_subcritical_discrepancy F G hσ hb
+  have heuler := eulerLogCoeff_eq_of_critical_discrepancy F G hb
   have hF : LSeries.abscissaOfAbsConv F.coeff < ⊤ :=
     (F.lSeriesSummable 2 (by norm_num)).abscissaOfAbsConv_le.trans_lt (EReal.coe_lt_top _)
   have hG : LSeries.abscissaOfAbsConv G.coeff < ⊤ :=
@@ -158,5 +166,13 @@ theorem coeff_eq_of_subcritical_discrepancy (F G : RHTower.SelbergClass) {σ : �
   · subst n
     simp only [ArithmeticFunction.map_zero]
   · exact LSeries.eq_of_LSeries_eventually_eq hF hG hev hn
+
+/-- Strong multiplicity one below the critical Euler abscissa. -/
+theorem coeff_eq_of_subcritical_discrepancy (F G : RHTower.SelbergClass) {σ : ℝ}
+    (hσ : σ < 1 / 2)
+    (hb : LSeriesSummable (fun n => F.eulerLogCoeff n - G.eulerLogCoeff n) σ) :
+    F.coeff = G.coeff :=
+  coeff_eq_of_critical_discrepancy F G
+    (hb.of_re_le_re (by simpa only [ofReal_re] using hσ.le))
 
 end GaloisForLFunctions.SelbergClass

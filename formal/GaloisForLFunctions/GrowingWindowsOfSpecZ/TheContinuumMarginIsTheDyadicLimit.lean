@@ -107,7 +107,7 @@ theorem continuous_weilQuad_cornerCombo (hφ : φ ∈ realTests) {m : ℕ} (a : 
     funext s
     rw [cornerCombo_eq_sum, weilQuad_sum_scaleShift hφ]
   rw [heq]
-  refine continuous_finset_sum _ fun i _ => continuous_finset_sum _ fun j _ => ?_
+  refine continuous_finsetSum _ fun i _ => continuous_finsetSum _ fun j _ => ?_
   refine continuous_const.mul (hc.comp ?_)
   have hcons : ∀ k : Fin (m + 1), Continuous fun s : Fin m → ℝ => (Fin.cons 0 s : Fin (m + 1) → ℝ) k :=
     fun k => by
@@ -148,7 +148,7 @@ theorem latticeTest_smul (φ : ℝ → ℝ) (h : ℝ) {N : ℕ} (c : ℝ) (x : F
 
 theorem latticeTest_single (φ : ℝ → ℝ) (h : ℝ) {N : ℕ} (k : Fin N) :
     latticeTest φ h (Pi.single k 1) = latticeTranslate φ h k := by
-  rw [latticeTest, Fintype.sum_eq_single k fun j hj => by simp [Pi.single_apply, hj]]
+  rw [latticeTest, Fintype.sum_eq_single k fun j hj => by simp [hj]]
   simp
 
 theorem latticeTest_sum (φ : ℝ → ℝ) (h : ℝ) {N m : ℕ} (x : Fin m → Fin N → ℝ) :
@@ -256,6 +256,8 @@ theorem tendsto_levinsonErr_dyadic_contMargin (hRH : RiemannHypothesis) (hφ : �
       · rw [show ((0 : Fin (N + 1)) : ℕ) = 0 from rfl]; simp [latticeTranslate_zero]
       · refine sum_congr rfl fun i _ => ?_
         rw [latticeTranslate_eq_scaleShift']
+        push_cast
+        rfl
     have hxcons : x = Fin.cons 1 (Fin.tail x) := by
       rw [← hx0]; exact (Fin.cons_self_tail x).symm
     have hpd : ToeplitzPosDef (weilSeq φ h') N :=

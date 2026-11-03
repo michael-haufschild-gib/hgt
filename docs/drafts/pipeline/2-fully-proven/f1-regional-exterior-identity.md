@@ -56,8 +56,9 @@ and the signed prime term has coefficient `log2/√2`. No sign of `D` is used.
 
 ## Lean
 
-Sources: `LST.WindowJumpCounts.RegionalLogarithmicExteriorIdentity` and
-`RegionalLogarithmicLowOddMoments`, and WTZ `TheFirstFoldRetainsTwoMomentCharges`.
-Individual audits in progress.
+LST `RegionalLogarithmicExteriorIdentity` and `RegionalLogarithmicLowOddMoments`
+pass individual Lean and standard-only transitive axiom audits. WTZ
+`TheFirstFoldRetainsTwoMomentCharges` contains the complete-form assembly;
+its individual audit remains pending.
 These retain the exterior term and the low projections discarded by the vanishing-moment
 bound; they do not establish the joint first-fold sign.

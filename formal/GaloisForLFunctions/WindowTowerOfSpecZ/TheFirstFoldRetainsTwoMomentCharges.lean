@@ -66,7 +66,7 @@ private theorem dilation_half_mass {F : ℝ → ℝ} (hF : Continuous F)
       ∫ u, F ((1 / 2) * u) ^ 2 :=
     setIntegral_eq_integral_of_forall_compl_eq_zero (fun u hu => by
       rw [dilation_outside hs hu, zero_pow two_ne_zero])
-  have he := even_integral_unit (hc.pow 2)
+  have he := even_integral_unit (H := fun u => F ((1 / 2) * u) ^ 2) (hc.pow 2)
     (fun x => by rw [dilation_odd ho, neg_sq])
   have hscale := Measure.integral_comp_mul_left (fun x => F x ^ 2) (1 / 2 : ℝ)
   norm_num [smul_eq_mul] at hscale
@@ -82,7 +82,7 @@ private theorem dilation_half_position {F : ℝ → ℝ} (hF : Continuous F)
       ∫ u, u * F ((1 / 2) * u) :=
     setIntegral_eq_integral_of_forall_compl_eq_zero (fun u hu => by
       rw [dilation_outside hs hu, mul_zero])
-  have he := even_integral_unit (continuous_id.mul hc)
+  have he := even_integral_unit (H := fun u => u * F ((1 / 2) * u)) (continuous_id.mul hc)
     (fun x => by rw [dilation_odd ho, neg_mul_neg])
   have hscale := Measure.integral_comp_mul_left (fun x => x * F x) (1 / 2 : ℝ)
   norm_num [smul_eq_mul] at hscale
@@ -95,7 +95,7 @@ private theorem dilation_half_position {F : ℝ → ℝ} (hF : Continuous F)
 private theorem odd_legendre_half {G : ℝ → ℝ} (hG : Continuous G)
     (ho : ∀ x, G (-x) = -G x) {n : ℕ} (hn : (-1 : ℝ) ^ n = -1) :
     regionalLegendreMoment G n = 2 * ∫ u in Ioo (0 : ℝ) 1, G u * legP n u := by
-  apply even_integral_unit (hG.mul (continuous_legP n))
+  apply even_integral_unit (H := fun u => G u * legP n u) (hG.mul (continuous_legP n))
   intro x
   rw [ho, legP_neg, hn, neg_one_mul, neg_mul_neg]
 
@@ -169,7 +169,8 @@ theorem retainedOddGamma_add_reserve_ge_firstFoldTwoMomentForm {F : ℝ → ℝ}
     (Ioo (0 : ℝ) 1) at hExt
   have hMass := dilation_half_mass hF.continuous hs ho
   change (∫ u in Ioo (0 : ℝ) 1, G u ^ 2) = ∫ x, F x ^ 2 at hMass
-  have hFull := even_integral_unit (hG.continuous.pow 2) (fun u => by rw [hGo, neg_sq])
+  have hFull := even_integral_unit (H := fun u => G u ^ 2)
+    (hG.continuous.pow 2) (fun u => by rw [hGo, neg_sq])
   have hM1 : regionalLegendreMoment G 1 = 2 * ∫ u in Ioo (0 : ℝ) 1, u * G u := by
     simpa only [legP_one, mul_comm] using
       odd_legendre_half hG.continuous hGo (n := 1) (by norm_num)
@@ -198,7 +199,7 @@ theorem retainedOddGamma_add_reserve_ge_firstFoldTwoMomentForm {F : ℝ → ℝ}
   change firstFoldTwoMomentForm G ≤ retainedOddGammaLowerForm F + (∫ x, F x ^ 2) / 64
   rw [firstFoldTwoMomentForm, hPotential]
   unfold firstFoldMomentMassCost at hRet ⊢
-  dsimp only [G] at hGap hRewrite ⊢
+  dsimp only [G] at hRet hGap hRewrite ⊢
   nlinarith only [hRet, hGap, hRewrite]
 
 /-- The complete Weil form dominates the explicit two-moment reflection form on the unit window. -/
