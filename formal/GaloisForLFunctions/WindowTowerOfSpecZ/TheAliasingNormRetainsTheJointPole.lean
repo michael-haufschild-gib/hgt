@@ -115,7 +115,7 @@ theorem laplacePair_sq_le_exponentialMass (hH : IsWindowTest A H) (hp : 1 < p)
     Real.sq_sqrt (integral_nonneg fun y => sq_nonneg (D y)), intFD, intD2] at hcs
   simpa only [hF2, exponentialMass] using hcs
 
-/-- The negative capacity of the joint pole in the exponential norm. -/
+/-- The correlated pole cost in the exponential norm. -/
 def jointExponentialPoleCost (p : ℝ) : ℝ :=
   1 / (Real.sqrt (p + 1) * Real.sqrt (p - 1)) - 1 / p
 

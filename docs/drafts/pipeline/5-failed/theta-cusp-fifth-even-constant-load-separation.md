@@ -1,9 +1,9 @@
 # Fifth even theta source: constant load separation
 
-- **Stage:** 2-fully-proven; Lean formalization in progress.
+- **Stage:** 5-failed; constant correction with nonnegative fifth load refuted in Lean.
 - **Wall:** Σ6; the integrated rank-nine sign remains open.
 - **Claim:** No real fourth load and nonnegative fifth load make the corrected source globally positive semidefinite; the actual weighted representative also fails at every critical aperture.
-- **Positive survivor:** Exact signed load region preserving the positive origin head and the positive scale-seven direction at every critical aperture.
+- **Positive survivor:** Exact signed load region preserving the positive origin head and the positive scale-seven direction at every critical aperture; paper proof and Lean formalization complete.
 
 Let `C₀=−S₄(0)/(3Φ(0)²)`. The complete modular coefficient band gives
 `333·10⁹<C₀<10¹²`. The corrected fourth head at zero is positive definite
@@ -44,3 +44,13 @@ at most `w` times the native corrected fourth-head form plus
 the corrected origin head there. Global weighted positivity thus forces
 `C≥C₀`; at scale seven it forces `C+D/1568²≤B_a<C₀`, contradicting `D≥0`.
 The strict uniform gap is `B_a+210·10⁹<C₀`.
+
+Lean: `ThetaCuspSections/FifthEvenInheritedLoadBoundary.lean`, namespace
+`GaloisForLFunctions.ThetaCuspSections.EvenFiveBoundary`.
+`constant_source_repair_fails` excludes simultaneous source positivity at
+the two explicit centers; `constant_weighted_repair_fails` excludes global
+weighted positivity at each critical aperture. The positive survivor is
+`signed_boundary_region_iff` and `exists_signed_boundary_repair`.
+Canonical Lean check passes. All 23 public theorem axiom audits contain only
+`propext`, `Classical.choice`, and `Quot.sound`; the owner umbrella imports
+the module.

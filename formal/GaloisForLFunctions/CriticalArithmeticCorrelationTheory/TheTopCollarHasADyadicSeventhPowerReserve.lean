@@ -2626,5 +2626,3 @@ theorem exists_critical_multiple_far_reserve :
   linarith only [hE, haS, hbP, hc_win, hdP, hθP_nn, hid_top, hid_θ]
 
 end GaloisForLFunctions.CriticalArithmeticCorrelationTheory
-
-#print axioms GaloisForLFunctions.CriticalArithmeticCorrelationTheory.exists_critical_multiple_far_reserve

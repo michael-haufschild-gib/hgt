@@ -479,9 +479,4 @@ theorem exists_joint_critical_multiple_completeWeil_and_all_window_corollaries :
       (by have := tiltedJordanOne_pos; positivity)
       (hPpos_all n hfam hh hsupp hlinh)
 
-#print axioms exists_completeWeilMatrix_tiltedUnitSpline_eventually_posDef_at_critical_multiple
-#print axioms exists_universal_horizonGram_nonneg_and_zero_negIndex_at_critical_multiple
-#print axioms exists_secondOrderLimit_nonneg_and_pencilGram_zero_negIndex_from_completeWeil
-#print axioms exists_joint_critical_multiple_completeWeil_and_all_window_corollaries
-
 end GaloisForLFunctions.ArithmeticHodgeTheoryOfDegenerations

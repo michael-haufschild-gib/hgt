@@ -7,10 +7,10 @@
 At `x=½log(7/π)`, put `f=Φ₁(x)`, `G=3Φ(x)²+2xΦ(x)Φ′(x)`,
 `v=(-658560,47040,-420,1,-1/1568)`, and `E=vᵀH₅(x)v`.
 The two-atom radial recurrence and its finite rational certificates give
-`5·10¹¹f²<E₂<2·10¹²f²`. The all-order Cauchy estimate, summed against
+`5·10¹¹f²<E₂<10¹²f²`. The all-order Cauchy estimate, summed against
 `|v_i v_j|`, gives `|E−E₂|≤3.5·10¹¹f²`. Consequently
 
-`1.5·10¹¹f²<E<2.35·10¹²f²`.
+`1.5·10¹¹f²<E<1.35·10¹²f²`.
 
 The complete source satisfies `G≤−(229/55)f²`. Hence
 `E+10¹²G<0`, and adding `D G/1568²` with `D≥0` preserves strict
@@ -48,5 +48,8 @@ Lean: `ThetaCuspSections/FifthEvenInheritedLoadBoundary.lean`, namespace
 `source_direction_positive`, `two_loads_positive_iff`,
 `weighted_two_loads_positive_iff`,
 `weighted_two_loads_positive_at_every_aperture_iff`, and
-`weightedCapacity_exceeds_source`. Canonical check and all sixteen public
+`weightedCapacity_exceeds_source`. Canonical check and all 23 public
 theorem axiom audits pass with only `propext`, `Classical.choice`, `Quot.sound`.
+The stronger [constant-load separation](theta-cusp-fifth-even-constant-load-separation.md)
+excludes every real fourth load with nonnegative fifth load and classifies
+the signed region surviving the origin-head and scale-seven tests.

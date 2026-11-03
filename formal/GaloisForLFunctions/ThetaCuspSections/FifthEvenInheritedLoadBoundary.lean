@@ -1,4 +1,5 @@
 import GaloisForLFunctions.RHTower.CothInfra
+import GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspModularCompensationDeterminant
 import GaloisForLFunctions.ThetaCuspSections.FifthEvenSourceRepair
 import GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspScaleSevenCompensationSource
 import GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspCenterCompensationTransitionSlack
@@ -6,16 +7,17 @@ import GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspReflectedCauchyTail
 import GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspInheritedOddCompensationBoundary
 
 /-!
-# Inherited load boundary for the fifth even theta source
+# Constant load boundary for the fifth even theta source
 
 An explicit even direction has positive complete-source energy at scale seven.
-The fixed fourth-diagonal correction makes it negative, and every nonnegative
-fifth load worsens it. This persists for every critical aperture in the actual
-weighted flux representative. Exact positive capacities classify the two loads.
+Its load capacity is smaller than the fourth-head threshold at the origin.
+Thus no constant fourth load and nonnegative fifth load give global source
+positivity, including the weighted flux representative at each critical aperture.
+The exact signed region preserving both boundary tests is nonempty.
 -/
 
 noncomputable section
-open Matrix RHTower Polynomial RHTower.ThetaCuspReflectedCauchyTail
+open Matrix Filter Topology RHTower Polynomial RHTower.ThetaCuspReflectedCauchyTail
 open HTGeometry.SignedPoisson
 namespace GaloisForLFunctions.ThetaCuspSections.EvenFiveBoundary
 
@@ -251,7 +253,7 @@ private theorem retained_energy_eq {x : ℝ}
 
 private theorem retained_core_upper {z : ℝ} (hz : 0 ≤ z) (hzU : z ≤ 1/1000000000) :
     directionalPolynomial 49 14 + 8*z*directionalPolynomial 196 35 +
-        16*z^2*directionalPolynomial 784 56 < 2000000000000*121 := by
+        16*z^2*directionalPolynomial 784 56 < 1000000000000*121 := by
   have hsq := mul_self_le_mul_self hz hzU
   norm_num [directionalPolynomial, thetaPairRadialEvenPolynomial, thetaPairRadialEvenStep,
     Polynomial.derivative_sub, Polynomial.derivative_mul, Polynomial.derivative_pow,
@@ -260,7 +262,7 @@ private theorem retained_core_upper {z : ℝ} (hz : 0 ≤ z) (hzU : z ≤ 1/1000
 
 private theorem source_energy_bounds :
     150000000000*thetaCuspSourceTerm witnessCenter 1^2 < sourceEnergy witnessCenter ∧
-    sourceEnergy witnessCenter < 2350000000000*thetaCuspSourceTerm witnessCenter 1^2 := by
+    sourceEnergy witnessCenter < 1350000000000*thetaCuspSourceTerm witnessCenter 1^2 := by
   have hlo := mul_lt_mul_of_pos_left
     (retained_core_lower (Real.exp_pos (-21)).le second_decay_bound)
     (show 0 < 196*Real.exp (witnessCenter-14) by positivity)
@@ -646,5 +648,318 @@ theorem weightedCapacity_exceeds_source {a : ℝ} (ha : 0 < a) (haU : a < 1/2) :
   have hd := neg_pos.mpr (weightedLoad_neg ha haU)
   apply (lt_div_iff₀ hd).mpr
   nlinarith only [h]
+
+
+/-- Minimum fourth-diagonal load allowed by the literal origin head. -/
+def originHeadThreshold : ℝ :=
+  -thetaCuspNativeEvenFourSchur 0 / (3*thetaCuspFullSource 0^2)
+
+private theorem originHeadThreshold_coefficient :
+    3*originHeadThreshold + 1 = thetaCuspNativeEvenCompensationCoefficient := by
+  unfold originHeadThreshold thetaCuspNativeEvenCompensationCoefficient
+  rw [abs_of_neg thetaCuspNativeEvenFourSchur_zero_neg]
+  field_simp [(thetaCuspFullSource_pos_all 0).ne']
+
+private theorem originHeadThreshold_bounds :
+    333000000000 < originHeadThreshold ∧ originHeadThreshold < 1000000000000 := by
+  have h := thetaCuspNativeEvenCompensationCoefficient_bounds
+  have he := originHeadThreshold_coefficient
+  constructor <;> linarith only [h.1, h.2, he]
+
+private theorem origin_modular_reserve {X : ℝ} (hlo : (191/10 : ℝ) ≤ X) :
+    0 < -HTGeometry.modularThetaEvenSeamFourPolynomial X -
+      2000000000000*(HTGeometry.modularThetaEvenSeamHeadPolynomial X *
+        HTGeometry.modularThetaEvenSeamMomentPolynomial 0 X) := by
+  let z := 10*X-191
+  have hz : 0 ≤ z := by dsimp [z]; linarith only [hlo]
+  have hX : X = (z+191)/10 := by dsimp [z]; ring
+  rw [hX]
+  norm_num [HTGeometry.modularThetaEvenSeamFourPolynomial, HTGeometry.modularThetaEvenSeamHeadPolynomial,
+    HTGeometry.modularThetaEvenSeamMomentPolynomial]
+  ring_nf
+  linarith only [hz, pow_nonneg hz 2, pow_nonneg hz 3, pow_nonneg hz 4, pow_nonneg hz 5, pow_nonneg hz 6, pow_nonneg hz 7, pow_nonneg hz 8, pow_nonneg hz 9, pow_nonneg hz 10, pow_nonneg hz 11, pow_nonneg hz 12, pow_nonneg hz 13, pow_nonneg hz 14, pow_nonneg hz 15, pow_nonneg hz 16, pow_nonneg hz 17, pow_nonneg hz 18, pow_nonneg hz 19, pow_nonneg hz 20]
+
+private theorem seam_denominator_pos :
+    0 < HTGeometry.modularThetaEvenSeamHeadPolynomial (thetaCuspSelfDualModularScale^2) *
+      HTGeometry.modularThetaEvenSeamMomentPolynomial 0 (thetaCuspSelfDualModularScale^2) := by
+  have hM : 0 < thetaCuspSelfDualThetaMass := by
+    have h := thetaCuspSelfDualThetaMass_gt_five_thousand_four_hundred_thirty_one_div_five_thousand
+    linarith only [h]
+  have hH := thetaCuspNativeEvenHead_zero_posDef.det_pos
+  rw [thetaCuspNativeEvenHead_zero_det_eq_polynomial] at hH
+  have hhead := (mul_pos_iff_of_pos_left (pow_pos hM 6)).mp hH
+  have he : thetaCuspFullSource 0^2 = thetaCuspSelfDualThetaMass^2 *
+      HTGeometry.modularThetaEvenSeamMomentPolynomial 0 (thetaCuspSelfDualModularScale^2) := by
+    simpa [thetaCuspNativeReflectionJet, pow_two] using
+      thetaCuspNativeEvenMoment_zero_eq_polynomial (0 : Fin 7)
+  have hF := sq_pos_of_pos (thetaCuspFullSource_pos_all 0)
+  rw [he] at hF
+  exact mul_pos hhead ((mul_pos_iff_of_pos_left (pow_pos hM 2)).mp hF)
+
+private theorem origin_coefficient_lower :
+    2000000000000 < thetaCuspNativeEvenCompensationCoefficient := by
+  have hr := origin_modular_reserve thetaCuspSelfDualModularScale_sq_gt_nineteen_point_one.le
+  have hd := seam_denominator_pos
+  have hq : (2000000000000 : ℝ) <
+      -HTGeometry.modularThetaEvenSeamFourPolynomial (thetaCuspSelfDualModularScale^2) /
+        (HTGeometry.modularThetaEvenSeamHeadPolynomial (thetaCuspSelfDualModularScale^2) *
+          HTGeometry.modularThetaEvenSeamMomentPolynomial 0 (thetaCuspSelfDualModularScale^2)) := by
+    apply (lt_div_iff₀ hd).mpr
+    nlinarith only [hr]
+  rw [thetaCuspNativeEvenCompensationCoefficient_eq_modularRatio]
+  rw [neg_div] at hq
+  nlinarith only [hq]
+
+private theorem originHeadThreshold_lower : 660000000000 < originHeadThreshold := by
+  linarith only [origin_coefficient_lower, originHeadThreshold_coefficient]
+
+private theorem weightedCapacity_upper {a : ℝ} (ha : 0 < a) (haU : a < 1/2) :
+    weightedCapacity a < 450000000000 := by
+  have hd := neg_pos.mpr (weightedLoad_neg ha haU)
+  apply (div_lt_iff₀ hd).mpr
+  have hE := mul_lt_mul_of_pos_left source_energy_bounds.2 (witnessWeight_pos ha)
+  have hG := weightedLoad_upper ha haU
+  nlinarith only [hE,hG]
+
+/-- The weighted capacity and origin threshold are separated by a strictly positive uniform gap. -/
+theorem weighted_load_capacity_gap {a : ℝ} (ha : 0 < a) (haU : a < 1/2) :
+    weightedCapacity a + 210000000000 < originHeadThreshold := by
+  linarith only [weightedCapacity_upper ha haU, originHeadThreshold_lower]
+
+private theorem correctionCapacity_upper : correctionCapacity < 330000000000 := by
+  have hd := neg_pos.mpr compensation_negative
+  apply (div_lt_iff₀ hd).mpr
+  have hE := source_energy_bounds.2
+  have hG := compensation_upper witness_scale witness_center_lower
+  nlinarith only [hE, hG, first_mass_pos]
+
+/-- The origin requires strictly more load than the positive scale-seven direction can accept. -/
+theorem native_load_capacity_gap : correctionCapacity + 330000000000 < originHeadThreshold := by
+  linarith only [correctionCapacity_upper, originHeadThreshold_lower]
+
+/-- The exact origin threshold classifies strict positivity of the fourth head. -/
+theorem origin_head_posDef_iff (C : ℝ) :
+    (thetaCuspNativeEvenFourCompensated C 0).PosDef ↔ originHeadThreshold < C := by
+  rw [thetaCuspNativeEvenFourCompensated_posDef_iff le_rfl]
+  have hd : 0 < 3*thetaCuspFullSource 0^2 := by
+    have h := sq_pos_of_pos (thetaCuspFullSource_pos_all 0)
+    positivity
+  rw [originHeadThreshold, div_lt_iff₀ hd]
+  norm_num only [thetaCuspCenterCompensationSource, zero_mul, mul_zero, add_zero]
+  constructor <;> intro h <;> nlinarith only [h]
+
+private theorem origin_load_needed {C : ℝ}
+    (h : (thetaCuspNativeEvenFourCompensated C 0).PosSemidef) : originHeadThreshold ≤ C := by
+  have hdet := h.det_nonneg
+  rw [RHTower.ThetaCuspModularRatio.compensated_det_eq,
+    thetaCuspNativeEvenFourDet_eq_head_mul_schur le_rfl] at hdet
+  have hhead := thetaCuspNativeEvenHead_zero_posDef.det_pos
+  have hs : 0 ≤ thetaCuspNativeEvenFourSchur 0 + C*thetaCuspCenterCompensationSource 0 := by
+    by_contra hn
+    have hm := mul_neg_of_pos_of_neg hhead (lt_of_not_ge hn)
+    nlinarith only [hdet, hm]
+  have hd : 0 < 3*thetaCuspFullSource 0^2 := by
+    have h := sq_pos_of_pos (thetaCuspFullSource_pos_all 0)
+    positivity
+  rw [originHeadThreshold, div_le_iff₀ hd]
+  norm_num only [thetaCuspCenterCompensationSource, zero_mul, mul_zero, add_zero] at hs
+  nlinarith only [hs]
+
+private theorem repair_four_head (C D x : ℝ) :
+    (evenFiveRepair C D x).submatrix Fin.castSucc Fin.castSucc =
+      thetaCuspNativeEvenFourCompensated C x := by
+  ext i j
+  fin_cases i <;> fin_cases j <;>
+    norm_num [evenFiveRepair, RHTower.ThetaCuspGaussianLimit.nativeShiftedMatrix,
+      thetaCuspNativeEvenFourCompensated, Matrix.diagonal]
+
+private theorem source_direction_nonneg_iff (C D : ℝ) :
+    0 ≤ sourceEnergy witnessCenter + C*thetaCuspCenterCompensationSource witnessCenter +
+      D*thetaCuspCenterCompensationSource witnessCenter*(witnessVector 4)^2 ↔
+      C+D/(1568:ℝ)^2 ≤ correctionCapacity := by
+  have hd := neg_pos.mpr compensation_negative
+  rw [correctionCapacity, le_div_iff₀ hd, witnessVector_four]
+  norm_num
+  constructor <;> intro h <;> nlinarith only [h]
+
+/-- A nonnegative fifth load prevents positivity at the origin and scale seven simultaneously,
+regardless of the fourth load. -/
+theorem constant_source_repair_fails (C : ℝ) {D : ℝ} (hD : 0 ≤ D) :
+    ¬ ((evenFiveRepair C D 0).PosSemidef ∧
+      (evenFiveRepair C D witnessCenter).PosSemidef) := by
+  rintro ⟨h0,h7⟩
+  have hh := h0.submatrix Fin.castSucc
+  rw [repair_four_head] at hh
+  have hC := origin_load_needed hh
+  have hE := h7.dotProduct_mulVec_nonneg witnessVector
+  simp only [star_trivial, matrix_energy] at hE
+  have hcap := (source_direction_nonneg_iff C D).mp hE
+  have hD' : 0 ≤ D/(1568:ℝ)^2 := div_nonneg hD (sq_nonneg _)
+  linarith only [hC,hcap,hD',native_load_capacity_gap]
+
+/-- The surviving signed load region has an open origin edge and a closed uniform-aperture edge. -/
+theorem signed_boundary_region_iff (C D : ℝ) :
+    ((thetaCuspNativeEvenFourCompensated C 0).PosDef ∧
+      ∀ a : ℝ, 0 < a → a < 1/2 →
+        0 < witnessWeight a*sourceEnergy witnessCenter + C*weightedLoad a +
+          D*weightedLoad a*(witnessVector 4)^2) ↔
+      (originHeadThreshold < C ∧ D ≤ (1568:ℝ)^2*(correctionCapacity-C)) := by
+  rw [origin_head_posDef_iff, weighted_two_loads_positive_at_every_aperture_iff]
+  have he : C+D/(1568:ℝ)^2 ≤ correctionCapacity ↔
+      D ≤ (1568:ℝ)^2*(correctionCapacity-C) := by
+    norm_num
+    constructor <;> intro h <;> nlinarith only [h]
+  rw [he]
+
+/-- Both boundary tests can be strictly positive with a positive fourth load and negative fifth load.
+This asserts the origin head and explicit direction, not the full fifth source. -/
+theorem exists_signed_boundary_repair :
+    ∃ C D : ℝ, 0 < C ∧ D < 0 ∧
+      (thetaCuspNativeEvenFourCompensated C 0).PosDef ∧
+      (∀ a : ℝ, 0 < a → a < 1/2 →
+        0 < witnessWeight a*sourceEnergy witnessCenter + C*weightedLoad a +
+          D*weightedLoad a*(witnessVector 4)^2) ∧
+      0 < sourceEnergy witnessCenter + C*thetaCuspCenterCompensationSource witnessCenter +
+        D*thetaCuspCenterCompensationSource witnessCenter*(witnessVector 4)^2 := by
+  let C := originHeadThreshold+1
+  let D := (1568:ℝ)^2*(correctionCapacity-C-1)
+  have hC : originHeadThreshold < C := by dsimp [C]; linarith
+  have hCp : 0 < C := by have h := originHeadThreshold_bounds.1; dsimp [C]; linarith
+  have hD : D < 0 := by
+    have h := native_load_capacity_gap
+    dsimp only [C,D]
+    nlinarith only [h]
+  have hregion : D ≤ (1568:ℝ)^2*(correctionCapacity-C) := by dsimp [D]; nlinarith
+  have hb := (signed_boundary_region_iff C D).mpr ⟨hC,hregion⟩
+  refine ⟨C,D,hCp,hD,hb.1,hb.2,?_⟩
+  rw [two_loads_positive_iff]
+  have he : C+D/(1568:ℝ)^2 = correctionCapacity-1 := by dsimp [D]; ring
+  rw [he]
+  linarith
+
+
+private theorem four_diagonal_energy (L : ℝ) (v : Fin 4 → ℝ) :
+    v ⬝ᵥ (Matrix.diagonal (fun i : Fin 4 => if i.val = 3 then L else 0) *ᵥ v) =
+      L*(v 3)^2 := by
+  simp only [dotProduct, Matrix.mulVec_diagonal]
+  rw [Finset.sum_eq_single (3 : Fin 4)]
+  · norm_num
+    ring
+  · intro i hi hne
+    have hv : i.val ≠ 3 := by
+      intro he
+      exact hne (Fin.ext he)
+    simp only [hv, if_false, zero_mul, mul_zero]
+  · simp
+
+private theorem four_weighted_energy (a C D r : ℝ) (v : Fin 4 → ℝ) :
+    v ⬝ᵥ ((centerEvenFiveRepair a C D r).submatrix Fin.castSucc Fin.castSucc *ᵥ v) =
+      (r*Real.sinh (a*r))*(v ⬝ᵥ (thetaCuspNativeEvenFourCompensated C (r/2) *ᵥ v)) +
+      C*(deriv (thetaCuspCenterCompensationFlux a) r -
+        (r*Real.sinh (a*r))*thetaCuspCenterCompensationSource (r/2))*(v 3)^2 := by
+  have he : (centerEvenFiveRepair a C D r).submatrix Fin.castSucc Fin.castSucc =
+      (r*Real.sinh (a*r)) • thetaCuspNativeEvenFourCompensated C (r/2) +
+      Matrix.diagonal (fun i : Fin 4 => if i.val = 3 then
+        C*(deriv (thetaCuspCenterCompensationFlux a) r -
+          (r*Real.sinh (a*r))*thetaCuspCenterCompensationSource (r/2)) else 0) := by
+    ext i j
+    fin_cases i <;> fin_cases j <;>
+      norm_num [centerEvenFiveRepair, thetaCuspNativeEvenFourCompensated,
+        Matrix.diagonal, Matrix.smul_apply, smul_eq_mul]
+    all_goals ring
+  rw [he, Matrix.add_mulVec, dotProduct_add, Matrix.smul_mulVec, dotProduct_smul,
+    smul_eq_mul, four_diagonal_energy]
+
+private theorem flux_slack_bounds {a r : ℝ} (ha : 0 < a) (hr : 0 < r) :
+    0 ≤ deriv (thetaCuspCenterCompensationFlux a) r -
+      (r*Real.sinh (a*r))*thetaCuspCenterCompensationSource (r/2) ∧
+    deriv (thetaCuspCenterCompensationFlux a) r -
+      (r*Real.sinh (a*r))*thetaCuspCenterCompensationSource (r/2) ≤
+      (r*Real.sinh (a*r))*(a*r)*thetaCuspFullSource (r/2)^2 := by
+  have ht := mul_pos ha hr
+  have h0 := sub_nonneg.mpr (RHTower.sinh_lt_mul_cosh ht).le
+  have hU := (aperture_slack_linear ht).le
+  have hF : 0 ≤ r*thetaCuspFullSource (r/2)^2 := mul_nonneg hr.le (sq_nonneg _)
+  have h0' := mul_nonneg hF h0
+  have hU' := mul_le_mul_of_nonneg_left hU hF
+  rw [deriv_thetaCuspCenterCompensationFlux_eq_source_add_slack]
+  constructor <;> nlinarith only [h0',hU']
+
+private def upperHeadForm (a C r : ℝ) (v : Fin 4 → ℝ) : ℝ :=
+  v ⬝ᵥ (thetaCuspNativeEvenFourCompensated C (r/2) *ᵥ v) +
+    |C| * (a*r)*thetaCuspFullSource (r/2)^2*(v 3)^2
+
+private theorem weighted_head_le_upper {a r : ℝ} (ha : 0 < a) (hr : 0 < r)
+    (C D : ℝ) (v : Fin 4 → ℝ) :
+    v ⬝ᵥ ((centerEvenFiveRepair a C D r).submatrix Fin.castSucc Fin.castSucc *ᵥ v) ≤
+      (r*Real.sinh (a*r))*upperHeadForm a C r v := by
+  obtain ⟨h0,hU⟩ := flux_slack_bounds ha hr
+  have hC := mul_le_mul_of_nonneg_right (le_abs_self C) h0
+  have hCU := mul_le_mul_of_nonneg_left hU (abs_nonneg C)
+  have h := mul_le_mul_of_nonneg_right (hC.trans hCU) (sq_nonneg (v 3))
+  rw [four_weighted_energy]
+  unfold upperHeadForm
+  nlinarith only [h]
+
+private theorem upperHeadForm_continuous (a C : ℝ) (v : Fin 4 → ℝ) :
+    Continuous (fun r : ℝ => upperHeadForm a C r v) := by
+  have hM := continuous_thetaCuspNativeEvenFourCompensated C
+  have hF : Continuous thetaCuspFullSource := thetaCuspSchwartzReal.continuous
+  unfold upperHeadForm
+  simp only [dotProduct, Matrix.mulVec]
+  fun_prop
+
+/-- The aperture slack vanishes relative to its positive weight at the origin.
+A continuous upper quadratic form transfers weighted positivity to the native origin head. -/
+private theorem origin_head_of_weighted_positive {a C D : ℝ} (ha : 0 < a)
+    (h : ∀ r : ℝ, 0 < r → (centerEvenFiveRepair a C D r).PosSemidef) :
+    (thetaCuspNativeEvenFourCompensated C 0).PosSemidef := by
+  apply Matrix.PosSemidef.of_dotProduct_mulVec_nonneg
+  · rw [Matrix.IsHermitian]
+    ext i j
+    simp [thetaCuspNativeEvenFourCompensated, add_comm, and_comm]
+  · intro v
+    simp only [star_trivial]
+    have hnonneg (r : ℝ) (hr : 0 < r) : 0 ≤ upperHeadForm a C r v := by
+      have hh := ((h r hr).submatrix Fin.castSucc).dotProduct_mulVec_nonneg v
+      simp only [star_trivial] at hh
+      have hu := hh.trans (weighted_head_le_upper ha hr C D v)
+      have hw : 0 < r*Real.sinh (a*r) :=
+        mul_pos hr (Real.sinh_pos_iff.mpr (mul_pos ha hr))
+      by_contra hn
+      exact (not_lt_of_ge hu) (mul_neg_of_pos_of_neg hw (lt_of_not_ge hn))
+    have ht : Tendsto (fun r : ℝ => upperHeadForm a C r v) (𝓝[>] 0)
+        (𝓝 (v ⬝ᵥ (thetaCuspNativeEvenFourCompensated C 0 *ᵥ v))) := by
+      have hc := (upperHeadForm_continuous a C v).tendsto 0
+      simpa only [upperHeadForm, zero_div, mul_zero, zero_mul, add_zero] using
+        hc.mono_left nhdsWithin_le_nhds
+    apply ge_of_tendsto ht
+    filter_upwards [self_mem_nhdsWithin] with r hr
+    exact hnonneg r hr
+
+private theorem weighted_direction_negative_of_origin {a C D : ℝ}
+    (ha : 0 < a) (haU : a < 1/2) (hD : 0 ≤ D) (hC : originHeadThreshold ≤ C) :
+    witnessWeight a*sourceEnergy witnessCenter + C*weightedLoad a +
+      D*weightedLoad a*(witnessVector 4)^2 < 0 := by
+  have hC0 : 660000000000 ≤ C := originHeadThreshold_lower.le.trans hC
+  have hCw := mul_le_mul_of_nonpos_right hC0 (weightedLoad_neg ha haU).le
+  have hE := mul_lt_mul_of_pos_left source_energy_bounds.2 (witnessWeight_pos ha)
+  have hG := weightedLoad_upper ha haU
+  have hp := mul_pos (witnessWeight_pos ha) first_mass_pos
+  have hD0 := mul_nonpos_of_nonpos_of_nonneg
+    (mul_nonpos_of_nonneg_of_nonpos hD (weightedLoad_neg ha haU).le)
+    (sq_nonneg (witnessVector 4))
+  nlinarith only [hCw,hE,hG,hp,hD0]
+
+/-- No constant fourth load and nonnegative fifth load give a pointwise positive weighted
+representative, at any critical aperture. -/
+theorem constant_weighted_repair_fails {a D : ℝ}
+    (ha : 0 < a) (haU : a < 1/2) (hD : 0 ≤ D) (C : ℝ) :
+    ¬ ∀ r : ℝ, 0 < r → (centerEvenFiveRepair a C D r).PosSemidef := by
+  intro h
+  have hC := origin_load_needed (origin_head_of_weighted_positive ha h)
+  have hw := (h witnessRadius witnessRadius_pos).dotProduct_mulVec_nonneg witnessVector
+  simp only [star_trivial, weighted_matrix_energy] at hw
+  exact (not_lt_of_ge hw) (weighted_direction_negative_of_origin ha haU hD hC)
 
 end GaloisForLFunctions.ThetaCuspSections.EvenFiveBoundary

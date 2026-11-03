@@ -486,7 +486,7 @@ theorem integral_zero_two_shellAutocorr :
     have h := intervalIntegral.integral_comp_neg (a := (0 : ℝ)) (b := 1) (shellAutocorr φ)
     simp only [neg_zero] at h
     rw [← h]
-    exact intervalIntegral.integral_congr fun t _ => (shellAutocorr_neg t).symm
+    exact intervalIntegral.integral_congr fun t _ => shellAutocorr_neg t
   have hsum := intervalIntegral.integral_add_adjacent_intervals (hii (-1) 0) (hii 0 1)
   rw [integral_shellAutocorr_neg_one_one hφ hsupp, hneg] at hsum
   rw [← intervalIntegral.integral_add_adjacent_intervals (hii 0 1) (hii 1 2), h12, add_zero]
@@ -508,7 +508,6 @@ theorem integral_secondDiff_eq {y : ℝ} (hy : 0 ≤ y) :
       2 * shellAutocorr φ ℓ - shellAutocorr φ (y - ℓ) - shellAutocorr φ (y + ℓ) := by
     funext ℓ
     rw [secondDiff, add_comm y ℓ, ← shellAutocorr_neg (y - ℓ), neg_sub]
-    ring_nf
   rw [e, intervalIntegral.integral_sub (hi1.sub hi2) hi3, intervalIntegral.integral_sub hi1 hi2,
     intervalIntegral.integral_const_mul, integral_zero_two_shellAutocorr hφ hsupp,
     intervalIntegral.integral_comp_sub_left (shellAutocorr φ) y,
@@ -520,6 +519,129 @@ theorem integral_secondDiff_eq {y : ℝ} (hy : 0 ≤ y) :
     (by linarith)
   rw [integral_shellAutocorr_neg_one_one hφ hsupp] at hC
   linarith
+
+/-- `∫_0^3 Γ(y)/(2y) dy = ½((∫φ)² log 3 − ∫_{−1}^1 G(t) log(2 + t) dt)` for
+`Γ(y) = ∫_{−1}^{y−2} G`, by integration by parts on `[1, 3]`. -/
+theorem integral_tailMass_div :
+    ∫ y in Set.Ioc (0 : ℝ) 3, (∫ t in (-1 : ℝ)..(y - 2), shellAutocorr φ t) / (2 * y) =
+      ((∫ u, φ u) ^ 2 * Real.log 3 -
+        ∫ t in (-1 : ℝ)..1, shellAutocorr φ t * Real.log (2 + t)) / 2 := by
+  have hcont := continuous_shellAutocorr hφ hsupp
+  set Γ : ℝ → ℝ := fun y => ∫ t in (-1 : ℝ)..(y - 2), shellAutocorr φ t with hΓ
+  have hΓ0 : ∀ y ≤ 1, Γ y = 0 := by
+    intro y hy
+    simp only [hΓ]
+    rw [intervalIntegral.integral_congr (g := fun _ => (0 : ℝ)) fun t ht => by
+      rw [Set.uIcc_of_ge (by linarith)] at ht
+      exact shellAutocorr_eq_zero_of_one_le_abs hφ hsupp (by
+        rw [abs_of_nonpos (by linarith [ht.2])]; linarith [ht.2])]
+    simp
+  have hΓd : ∀ y, HasDerivAt Γ (shellAutocorr φ (y - 2)) y := by
+    intro y
+    have h := intervalIntegral.integral_hasDerivAt_right (hcont.intervalIntegrable (-1) (y - 2))
+      hcont.aestronglyMeasurable.stronglyMeasurableAtFilter hcont.continuousAt
+    exact h.comp_sub_const y 2
+  have hΓc : Continuous Γ := continuous_iff_continuousAt.mpr fun y => (hΓd y).continuousAt
+  have hsplit : Set.Ioc (0 : ℝ) 3 = Set.Ioc 0 1 ∪ Set.Ioc 1 3 := (Set.Ioc_union_Ioc_eq_Ioc (by norm_num)
+    (by norm_num)).symm
+  set M := ∫ u, φ u ^ 2
+  have hΓb : ∀ y, |Γ y / (2 * y)| ≤ M / 2 := by
+    intro y
+    rcases le_or_gt y 1 with hy | hy
+    · rw [hΓ0 y hy, zero_div, abs_zero]; positivity
+    · have h := intervalIntegral.norm_integral_le_of_norm_le_const (a := (-1 : ℝ)) (b := y - 2)
+        (f := shellAutocorr φ) (C := M) fun t _ => by
+          rw [Real.norm_eq_abs]; exact abs_shellAutocorr_le' hφ hsupp t
+      have h' : |Γ y| ≤ M * (y - 1) := by
+        calc |Γ y| = ‖∫ t in (-1 : ℝ)..(y - 2), shellAutocorr φ t‖ := (Real.norm_eq_abs _).symm
+          _ ≤ M * |y - 2 - -1| := h
+          _ = M * (y - 1) := by rw [show y - 2 - -1 = y - 1 by ring, abs_of_pos (by linarith)]
+      rw [abs_div, abs_of_pos (by linarith : (0 : ℝ) < 2 * y), div_le_iff₀ (by linarith)]
+      have hM0 : 0 ≤ M := integral_nonneg fun _ => sq_nonneg _
+      calc |Γ y| ≤ M * (y - 1) := h'
+        _ ≤ M / 2 * (2 * y) := by nlinarith
+  have hint : ∀ a b : ℝ, IntegrableOn (fun y => Γ y / (2 * y)) (Set.Ioc a b) := fun a b =>
+    Measure.integrableOn_of_bounded (M := M / 2) measure_Ioc_lt_top.ne
+      ((hΓc.measurable.div (measurable_const.mul measurable_id)).aestronglyMeasurable)
+      (Eventually.of_forall fun y => by rw [Real.norm_eq_abs]; exact hΓb y)
+  have hsplit : Set.Ioc (0 : ℝ) 3 = Set.Ioc 0 1 ∪ Set.Ioc 1 3 :=
+    (Set.Ioc_union_Ioc_eq_Ioc (by norm_num) (by norm_num)).symm
+  have hdisj : Disjoint (Set.Ioc (0 : ℝ) 1) (Set.Ioc 1 3) := Set.Ioc_disjoint_Ioc_of_le le_rfl
+  change ∫ y in Set.Ioc (0 : ℝ) 3, Γ y / (2 * y) = _
+  rw [hsplit, setIntegral_union hdisj measurableSet_Ioc (hint 0 1) (hint 1 3)]
+  have hlow : ∫ y in Set.Ioc (0 : ℝ) 1, Γ y / (2 * y) = 0 := by
+    rw [setIntegral_congr_fun measurableSet_Ioc (g := fun _ => (0 : ℝ)) fun y hy => by
+      simp only [hΓ0 y hy.2, zero_div]]
+    simp
+  have hparts := intervalIntegral.integral_mul_deriv_eq_deriv_mul (a := (1 : ℝ)) (b := 3)
+    (u := Γ) (u' := fun y => shellAutocorr φ (y - 2)) (v := Real.log) (v' := fun y => y⁻¹)
+    (fun y _ => hΓd y)
+    (fun y hy => Real.hasDerivAt_log (by
+      rw [uIcc_of_le (by norm_num)] at hy; linarith [hy.1]))
+    ((hcont.comp (continuous_id.sub continuous_const)).intervalIntegrable 1 3)
+    (intervalIntegral.intervalIntegrable_inv (fun y hy => by
+      rw [uIcc_of_le (by norm_num)] at hy; linarith [hy.1]) continuousOn_id)
+  have hΓ3 : Γ 3 = (∫ u, φ u) ^ 2 := by
+    simp only [hΓ]; norm_num; exact integral_shellAutocorr_neg_one_one hφ hsupp
+  have hsub := intervalIntegral.integral_comp_sub_right
+    (fun t => shellAutocorr φ t * Real.log (2 + t)) (a := (1 : ℝ)) (b := 3) 2
+  have hlogeq : ∫ y in (1 : ℝ)..3, shellAutocorr φ (y - 2) * Real.log y =
+      ∫ t in (-1 : ℝ)..1, shellAutocorr φ t * Real.log (2 + t) := by
+    have e1 : (1 : ℝ) - 2 = -1 := by norm_num
+    have e2 : (3 : ℝ) - 2 = 1 := by norm_num
+    rw [e1, e2] at hsub
+    rw [← hsub]
+    refine intervalIntegral.integral_congr fun y _ => ?_
+    simp only [add_sub_cancel]
+  have hhigh : ∫ y in Set.Ioc (1 : ℝ) 3, Γ y / (2 * y) = (∫ y in (1 : ℝ)..3, Γ y * y⁻¹) / 2 := by
+    rw [intervalIntegral.integral_of_le (by norm_num), ← integral_div]
+    refine setIntegral_congr_fun measurableSet_Ioc fun y _ => by ring
+  rw [hlow, zero_add, hhigh, hparts, hΓ3, hΓ0 1 le_rfl, Real.log_one, hlogeq]
+  ring
+
+/-- **The integral of the near kernel**:
+`∫_0^2 K_near = κ₀(∫φ)²/2 − ½ ∫_{−1}^1 G(t) log(2 + t) dt`. -/
+theorem integral_nearKernel :
+    ∫ ℓ in (0 : ℝ)..2, nearKernel φ ℓ = nearConstant * (∫ u, φ u) ^ 2 / 2 -
+      (∫ t in (-1 : ℝ)..1, shellAutocorr φ t * Real.log (2 + t)) / 2 := by
+  obtain ⟨K, hK⟩ := exists_lipschitz_shellAutocorr hφ hsupp
+  have hcont := continuous_shellAutocorr hφ hsupp
+  set κ := nearConstant - Real.log 3
+  set F : ℝ → ℝ → ℝ := fun ℓ y => secondDiff φ ℓ y / (2 * y) with hF
+  have hwin : ∫ ℓ in (0 : ℝ)..2, nearKernel φ ℓ =
+      ∫ ℓ in (0 : ℝ)..2, (shellAutocorr φ ℓ * κ + ∫ y in Set.Ioc 0 3, F ℓ y) := by
+    refine intervalIntegral.integral_congr fun ℓ hℓ => ?_
+    rw [uIcc_of_le (by norm_num)] at hℓ
+    exact nearKernel_eq_window hφ hsupp hℓ.1 hℓ.2
+  -- Fubini on the box
+  have hmeas : Measurable (Function.uncurry F) := by
+    have hnum : Continuous fun p : ℝ × ℝ => secondDiff φ p.1 p.2 := by
+      simp only [secondDiff]
+      exact ((continuous_const.mul (hcont.comp continuous_fst)).sub
+        (hcont.comp (continuous_snd.sub continuous_fst))).sub
+          (hcont.comp (continuous_snd.add continuous_fst))
+    exact hnum.measurable.div (measurable_const.mul measurable_snd)
+  have hFint : Integrable (Function.uncurry F)
+      ((volume.restrict (Set.Ioc (0 : ℝ) 2)).prod (volume.restrict (Set.Ioc (0 : ℝ) 3))) :=
+    Integrable.mono' (integrable_const (K : ℝ)) hmeas.aestronglyMeasurable
+      (Eventually.of_forall fun p => by
+        rw [Real.norm_eq_abs]; exact abs_secondDiff_div_le hK p.1 p.2)
+  have hswap := integral_integral_swap hFint
+  have hinner : ∀ y ∈ Set.Ioc (0 : ℝ) 3, ∫ ℓ in Set.Ioc (0 : ℝ) 2, F ℓ y =
+      (∫ t in (-1 : ℝ)..(y - 2), shellAutocorr φ t) / (2 * y) := by
+    intro y hy
+    simp only [hF]
+    rw [integral_div, ← intervalIntegral.integral_of_le (by norm_num),
+      integral_secondDiff_eq hφ hsupp hy.1.le]
+  have hFI : IntervalIntegrable (fun ℓ => ∫ y in Set.Ioc 0 3, F ℓ y) volume 0 2 := by
+    rw [intervalIntegrable_iff_integrableOn_Ioc_of_le (by norm_num)]
+    exact hFint.integral_prod_left
+  rw [hwin, intervalIntegral.integral_add ((hcont.mul continuous_const).intervalIntegrable 0 2) hFI,
+    intervalIntegral.integral_mul_const, integral_zero_two_shellAutocorr hφ hsupp,
+    intervalIntegral.integral_of_le (by norm_num : (0 : ℝ) ≤ 2), hswap,
+    setIntegral_congr_fun measurableSet_Ioc hinner, integral_tailMass_div hφ hsupp]
+  simp only [κ]
+  ring
 
 end Kernel
 

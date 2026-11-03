@@ -29,15 +29,26 @@ For independent loads, positivity in that direction at every critical
 aperture is equivalent to `C+D/1568²≤B`. This classifies the witness
 direction; it does not assert positivity of the whole matrix.
 
+The [constant-load separation](../5-failed/theta-cusp-fifth-even-constant-load-separation.md)
+excludes every real fourth load with nonnegative fifth load. The origin
+requires `C≥C₀>660·10⁹`; scale seven allows `C+D/1568²≤B<330·10⁹`.
+For each critical aperture, weighted positivity still forces the origin
+condition, while its scale-seven capacity satisfies `B_a<450·10⁹`.
+All these bounds are formalized.
+
+The exact surviving boundary region is `C>C₀`,
+`D≤1568²(B−C)`. It is nonempty and forces `D<0`; it asserts only the
+origin fourth head and the specified scale-seven direction.
+
 ## Next conjecture
 
-Every constant pair of nonnegative diagonal loads fails global pointwise
-positivity of the fifth even source. Compare the load required at the
-origin with the exact scale-seven capacity. The fixed inherited pair is
-already excluded; exclusion of all pairs is unproved. The proposed strict
-separation is `C₀>660·10⁹>B_a` for every critical aperture, where
-`C₀=−S₄(0)/(3Φ(0)²)` is the origin head threshold. This requires a sharper
-modular reserve and a sharper bound on the positive aperture slack.
-The integrated
-rank-nine sign still requires a certificate that pays the negative source
-region while preserving the actual mixed entries.
+Signed constant loads also fail global positivity of the full fifth block.
+First decide whether the surviving boundary region intersects full fifth
+positivity at zero. Eliminate the native positive three-dimensional head,
+leaving `[[α+C G₀, β],[β, γ+D G₀]]`, where `G₀=3Φ(0)²` and
+`α=S₄(0)`. The infimum of `C+D/1568²` over strict origin positivity is
+`(−α−γ/1568²+2|β|/1568)/G₀`. Its comparison with `B` is unproved;
+it requires the actual theta moments through order sixteen.
+
+The integrated rank-nine sign remains open. A source certificate must pay
+the negative region while preserving the actual mixed entries.

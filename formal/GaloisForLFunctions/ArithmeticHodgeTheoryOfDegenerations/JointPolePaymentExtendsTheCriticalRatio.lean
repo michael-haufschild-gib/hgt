@@ -79,7 +79,7 @@ theorem pencilGram_posDef_below_jointPoleMultiple {β J R : ℝ} (hβ : 0 < β)
   have hW := hermQuad_weilWindowGram_ge_jointAliasGram (φ := φ) hβ hh hsupp x
   have hB : 0 < hermQuad (aliasGram β h) x := by
     have h₁ := (Matrix.posDef_iff_dotProduct_mulVec.mp (aliasGram_posDef β hh hsupp hlin)).2 hx
-    simpa only [hermQuad] using (Complex.lt_def.mp h₁).1
+    simpa only [hermQuad, Complex.zero_re] using (Complex.lt_def.mp h₁).1
   have hgap : (∫ u, φ u) ^ 2 / (∫ u, φ u ^ 2) * jointExponentialWeilFloor (β + 1) <
       β * J / R := (lt_div_iff₀ hR).mpr hsmall
   have hpos := mul_pos (sub_pos.mpr hgap) hB

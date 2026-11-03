@@ -71,6 +71,33 @@ has a power-saving error. In `exists_upward_bilinear_log_free`, the
 remaining c/log N loss includes the harmonic Gram finite part multiplied
 by shell correction, plus shell-log and shell-jet pairings.
 
+One part already has a sharper consequence. For fixed m > 1 the exact
+reference identity gives
+
+    shellCorrection(c,m) = completeWeilAdjunctionEnergy(1,m)
+                           - log c - E_m(c).
+
+Since E_m(c) → 0, this term is O_m(1+log c), hence o(c).
+For m=1 its linear coefficient is aφ. These follow from
+`completeWeilAdjunctionEnergy_eq_at_one_sub_log`,
+`completedConductorEnergy_eq_sub_shellCorrection` and the proved decay of
+E_m. They isolate the leading conductor; they do not estimate the other
+rows or justify uniformity in growing m.
+
+The seven-channel decomposition narrows the fixed-pair calculation
+further. After multiplication by log N/c_N, the existing bounds send the
+ratio-prime residual, self error and pole error to zero. The center term
+is linear in c and has the explicit `centerSecondOrder` limit. What
+remains is its signed combination with separated cross error, combined
+near-Gamma/downward/center rows, and the upward-prime residual. The
+separated-regime theorem `tendsto_completeWeilBulkEntry` assumes c<1;
+its filename does not authorize using it on a growing critical clock.
+
+The [upward-prime signed limit](critical-upward-residual-signed-limit.md)
+has a discrete horizon-integral derivation: its conjectured leading term
+is −aφ(γ+1)e₁e₁ᵀ, with cancellation of all fixed off-diagonal receiving
+terms. Formalization is pending; the complete signed residual remains open.
+
 **Attack:** the positive low-zero term alone does not prove this limit.
 The high-zero remainder could contribute another signed matrix. Even if
 the fixed-block conjecture holds, growing-conductor receiving charges and
