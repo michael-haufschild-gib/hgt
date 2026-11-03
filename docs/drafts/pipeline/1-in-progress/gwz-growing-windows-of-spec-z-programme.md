@@ -21,7 +21,7 @@ TheLatticeReadsThePrimesCausally,
 TheEvolutionStartsPositive, TheLatticeSelectsTheVonMangoldtWeight, ThePoleIsAHyperbolicPairOfAngles,
 MarginsAreBoundedByRecurrence, TheLatticeHasNoSlackUnderRH, RefiningTheLatticeLowersTheMargin,
 TheSzegoVerblunskyLaw, TheContinuumMarginIsTheDyadicLimit, ForbiddingLatticeZeroModesIsRH,
-TheFirstPrimeStageOpensPositive. Each passes an individual `lake --old env lean` check; key theorems
+TheFirstPrimeStageOpensPositive, TheLatticeSchurDataCoalesce, GapContinuationIsNotStructural. Each passes an individual `lake --old env lean` check; key theorems
 audited to `propext, Classical.choice, Quot.sound`.
 
 ## Status
@@ -43,7 +43,8 @@ audited to `propext, Classical.choice, Quot.sound`.
   margin; Szegő–Verblunsky: collapse ⇔ `Σγ² = ∞`, under RH never square-summable; Lyapunov identity and
   two-sided bounds for `Σγ²`, lower bound by orbit recurrence; RH ⇔ no lattice
   degenerates; zero modes continue uniquely from an end collar; the pole plane has one negative
-  square; the first prime stage opens positive (`log 2 ≤ A ≤ 181/250`).
+  square; the first prime stage opens positive (`log 2 ≤ A ≤ 181/250`); fixed-index Schur data
+  coalesce under refinement; gap continuation fails structurally (three-angle curve).
 
 Relation: CSWT (`CanonicalSystemOfTheWindowTower`, other agent) is the continuum register (closed form
 of the frozen two-collar form via trivial-divisor moments; translation-contraction growth law).

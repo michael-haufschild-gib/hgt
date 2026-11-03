@@ -12,7 +12,7 @@ noncomputable section
 open Real MeasureTheory Set Filter Topology
 open _root_.RHTower.ArchimedeanAnomaly
 namespace GaloisForLFunctions.WindowTowerOfSpecZ
-open SelectivePositivityAndThresholdLaws
+open SelectivePositivityAndThresholdLaws SpacingScaleHarmonicAnalysis
 
 private def pairQ (a b w x y : ℝ) : ℝ := a * x ^ 2 + 2 * w * x * y + b * y ^ 2
 
@@ -158,9 +158,10 @@ private theorem reflection_integral (f : ℝ → ℝ) :
 private theorem blockIntegral_diagonal {f : ℝ → ℝ} (hf : Continuous f) :
     blockIntegral f (fun u => f u + f (stripReflect u)) = ∫ u in (0 : ℝ)..1, f u := by
   unfold blockIntegral
-  rw [intervalIntegral.integral_add (hf.intervalIntegrable _ _)
+  rw [intervalIntegral.integral_add (f := f) (g := fun u => f (stripReflect u))
+    (hf.intervalIntegrable _ _)
     ((hf.comp continuous_reflect).intervalIntegrable _ _), reflection_integral]
-  have h := intervalIntegral.integral_add_adjacent_intervals (hf.intervalIntegrable 0 stripLeft)
+  have h := intervalIntegral.integral_add_adjacent_intervals (μ := volume) (hf.intervalIntegrable 0 stripLeft)
     (hf.intervalIntegrable stripLeft 1)
   linarith only [h]
 
@@ -211,11 +212,15 @@ private theorem polynomial_energy_lower {G : ℝ → ℝ} (hG : Continuous G) :
       have hv := firstFoldPolynomialPotential_bounds ⟨hu.1, hu.2.trans stripLeft_bounds.2⟩
       exact sub_nonneg.mpr (mul_le_mul_of_nonneg_right hv.1 (sq_nonneg _)))
     (fun u hu => sub_nonneg.mpr (firstFoldPolynomial_pair_bounds hu _ _).1)
-  rw [blockIntegral_sub (continuous_potential.mul (hG.pow 2))
+  rw [blockIntegral_sub
+    (f := fun u => firstFoldPolynomialPotential u * G u ^ 2) (g := pairDensity G)
+    (h := fun u => (19 / 50 : ℝ) * G u ^ 2)
+    (k := fun u => (19 / 50 : ℝ) * (G u ^ 2 + G (stripReflect u) ^ 2))
+    (continuous_potential.mul (hG.pow 2))
     (continuous_pairDensity hG) (continuous_const.mul (hG.pow 2))
     (continuous_const.mul ((hG.pow 2).add ((hG.comp continuous_reflect).pow 2))),
     blockIntegral_energy hG, blockIntegral_const_mul,
-    blockIntegral_diagonal (hG.pow 2)] at h
+    blockIntegral_diagonal (f := fun u => G u ^ 2) (hG.pow 2)] at h
   linarith only [h]
 
 private theorem scalar_inverse_chord {a : ℝ}
@@ -259,7 +264,8 @@ private theorem polynomial_energy_young {G P : ℝ → ℝ}
         (fun x y => (firstFoldPolynomial_pair_bounds hu x y).2) _ _ _ _ t)
   simpa (disch := fun_prop) only [blockIntegral_add, blockIntegral_sub, blockIntegral_const_mul,
     blockIntegral_energy hG, blockIntegral_energy hP,
-    blockIntegral_diagonal (hP.mul hG), blockIntegral_diagonal (hP.pow 2)] using h
+    blockIntegral_diagonal (f := fun u => P u * G u) (hP.mul hG),
+    blockIntegral_diagonal (f := fun u => P u ^ 2) (hP.pow 2)] using h
 
 private theorem third_poly (u : ℝ) : legP 3 u = (5 * u ^ 3 - 3 * u) / 2 := by
   norm_num [legP]
@@ -278,9 +284,14 @@ private theorem third_weighted_mass (n : ℕ) :
   have hc (j : ℕ) (c : ℝ) : Continuous (fun u : ℝ => c * u ^ j) :=
     continuous_const.mul (continuous_id.pow _)
   rw [he, intervalIntegral.integral_add
+    (f := fun u : ℝ => (25 / 4 : ℝ) * u ^ (n + 6) - (15 / 2 : ℝ) * u ^ (n + 4))
+    (g := fun u : ℝ => (9 / 4 : ℝ) * u ^ (n + 2))
     (((hc (n + 6) (25 / 4)).sub (hc (n + 4) (15 / 2))).intervalIntegrable _ _)
     ((hc (n + 2) (9 / 4)).intervalIntegrable _ _),
-    intervalIntegral.integral_sub ((hc (n + 6) (25 / 4)).intervalIntegrable _ _)
+    intervalIntegral.integral_sub
+      (f := fun u : ℝ => (25 / 4 : ℝ) * u ^ (n + 6))
+      (g := fun u : ℝ => (15 / 2 : ℝ) * u ^ (n + 4))
+      ((hc (n + 6) (25 / 4)).intervalIntegrable _ _)
       ((hc (n + 4) (15 / 2)).intervalIntegrable _ _)]
   simp only [intervalIntegral.integral_const_mul, integral_pow]
   norm_num [Nat.cast_add, Nat.cast_ofNat]
@@ -359,7 +370,9 @@ private theorem third_potential_lower :
         third_weighted_mass]
     norm_num
   rw [← hval]
-  apply intervalIntegral.integral_mono_on (by norm_num)
+  apply intervalIntegral.integral_mono_on
+    (f := fun u => ((11 / 20 : ℝ) + firstFoldLogPolynomial u) * legP 3 u ^ 2)
+    (g := fun u => firstFoldPolynomialPotential u * legP 3 u ^ 2) (by norm_num)
     (((continuous_const.add continuous_firstFoldLogPolynomial).mul
       ((continuous_legP 3).pow 2)).intervalIntegrable _ _)
     ((continuous_potential.mul ((continuous_legP 3).pow 2)).intervalIntegrable _ _)
@@ -419,9 +432,11 @@ private theorem polynomialEnergy_le_twoMoment_add_charges {F : ℝ → ℝ}
   have hExact : IntegrableOn (fun u =>
       (137 / 60 - firstFoldMomentMassCost - Real.log (1 - u ^ 2) / 2) * G u ^ 2)
       (Ioo (0 : ℝ) 1) := by
-    convert (hmass.const_mul (137 / 60 - firstFoldMomentMassCost - Real.log 2)).add hExt using 1
-    funext u
-    ring
+    have he : (fun u => (137 / 60 - firstFoldMomentMassCost - Real.log (1 - u ^ 2) / 2) * G u ^ 2) =
+        fun u => (137 / 60 - firstFoldMomentMassCost - Real.log 2) * G u ^ 2 +
+          G u ^ 2 * (Real.log 2 - Real.log (1 - u ^ 2) / 2) := by funext u; ring
+    rw [he]
+    exact (hmass.const_mul (137 / 60 - firstFoldMomentMassCost - Real.log 2)).add hExt
   have hPoly : IntegrableOn (fun u => firstFoldPolynomialPotential u * G u ^ 2) (Ioo (0 : ℝ) 1) :=
     (continuous_potential.mul (hG.pow 2)).integrableOn_Icc.mono_set Ioo_subset_Icc_self
   have hle := integral_mono_ae hPoly hExact
@@ -432,13 +447,16 @@ private theorem polynomialEnergy_le_twoMoment_add_charges {F : ℝ → ℝ}
   change firstFoldPolynomialEnergy G ≤ firstFoldTwoMomentForm G + _ + _
   unfold firstFoldPolynomialEnergy firstFoldTwoMomentForm
   rw [intervalIntegral.integral_of_le (by norm_num : (0 : ℝ) ≤ 1), integral_Ioc_eq_integral_Ioo,
-    intervalIntegral.integral_of_le stripLeft_bounds.2, ← integral_Icc_eq_integral_Ioc]
+    intervalIntegral.integral_of_le (show 2 * Real.log 2 - 1 ≤ 1 from stripLeft_bounds.2),
+    ← integral_Icc_eq_integral_Ioc]
+  dsimp only [G] at hle ⊢
   linarith only [hle]
 
-/-- On the unit odd window, the complete Weil form needs only its first-moment charge. -/
-theorem weilQuad_add_first_moment_ge_mass {F : ℝ → ℝ} (hF : ContDiff ℝ 2 F)
+/-- The explicit two-moment lower form pays its third moment, leaving a single debit. -/
+theorem firstFoldTwoMomentForm_add_first_moment_ge_mass {F : ℝ → ℝ} (hF : ContDiff ℝ 2 F)
     (hs : tsupport F ⊆ Icc (-(1 / 2 : ℝ)) (1 / 2)) (ho : ∀ x, F (-x) = -F x) :
-    (∫ x, F x ^ 2) / 1000 ≤ weilQuad F + (5123 / 320 : ℝ) * (∫ x, x * F x) ^ 2 := by
+    (∫ x, F x ^ 2) / 1000 ≤ firstFoldTwoMomentForm (fun u => F ((1 / 2) * u)) +
+      (77 / 20 + 39 / 256 : ℝ) * (∫ u in Ioo (0 : ℝ) 1, u * F ((1 / 2) * u)) ^ 2 := by
   have hG : Continuous (fun u : ℝ => F ((1 / 2) * u)) :=
     hF.continuous.comp (continuous_const.mul continuous_id)
   have hp := firstFoldPolynomialEnergy_sub_third_moment hG
@@ -446,12 +464,20 @@ theorem weilQuad_add_first_moment_ge_mass {F : ℝ → ℝ} (hF : ContDiff ℝ 2
     integral_Ioc_eq_integral_Ioo] at hp
   rw [unit_odd_dilation_half_mass hF.continuous hs ho] at hp
   have hd := polynomialEnergy_le_twoMoment_add_charges hF hs ho
+  linarith only [hp, hd]
+
+/-- On the unit odd window, the complete Weil form needs only its first-moment charge. -/
+theorem weilQuad_add_first_moment_ge_mass {F : ℝ → ℝ} (hF : ContDiff ℝ 2 F)
+    (hs : tsupport F ⊆ Icc (-(1 / 2 : ℝ)) (1 / 2)) (ho : ∀ x, F (-x) = -F x) :
+    (∫ x, F x ^ 2) / 1000 ≤ weilQuad F + (5123 / 320 : ℝ) * (∫ x, x * F x) ^ 2 := by
+  have hd := firstFoldTwoMomentForm_add_first_moment_ge_mass hF hs ho
   have hq := weilQuad_ge_firstFoldTwoMomentForm hF hs ho
   have hpos := unit_odd_dilation_half_position hF.continuous hs ho
   rw [hpos]
-  nlinarith only [hp, hd, hq]
+  nlinarith only [hd, hq]
 
 end GaloisForLFunctions.WindowTowerOfSpecZ
 
 #print axioms GaloisForLFunctions.WindowTowerOfSpecZ.firstFoldPolynomialEnergy_sub_third_moment
+#print axioms GaloisForLFunctions.WindowTowerOfSpecZ.firstFoldTwoMomentForm_add_first_moment_ge_mass
 #print axioms GaloisForLFunctions.WindowTowerOfSpecZ.weilQuad_add_first_moment_ge_mass

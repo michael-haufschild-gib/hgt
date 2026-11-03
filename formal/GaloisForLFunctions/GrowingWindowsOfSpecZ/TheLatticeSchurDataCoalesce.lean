@@ -3,21 +3,23 @@ import GaloisForLFunctions.GrowingWindowsOfSpecZ.ForbiddingLatticeZeroModesIsRH
 /-!
 # Lattice Schur data coalesce under refinement
 
-What survives the continuum limit `h → 0` of the lattice canonical system? Not the Schur parameters at
-a fixed index:
+What survives the continuum limit `h → 0` of the lattice canonical system of a fixed bump `φ`?
+Nothing at fixed scale:
 
 * **The first reflection coefficient tends to `1`** (`tendsto_reflCoeff_zero`): `γ_0(φ, h) = c(h)/c(0)`
   and the orbit correlation is continuous, so `γ_0(φ, h) → 1` as `h → 0`, for every bump with
   `Q(φ) ≠ 0`.
 * **Every fixed-index margin vanishes** (`tendsto_levinsonErr_one`, `tendsto_levinsonErr_of_rh`):
-  `E_1(φ, h) → 0`, and under RH `E_n(φ, h) → 0` as `h → 0` for every `n ≥ 1`: translates at a fixed
-  number of sites coalesce and the lattice window degenerates.
+  `E_1(φ, h) → 0`, and under RH `E_n(φ, h) → 0` as `h → 0` for every `n ≥ 1`.
+* **The continuum corner margin is degenerate** (`contMargin_nonpos`, `contMargin_eq_zero`): a single
+  translate `φ(· − s)` with `s → 0⁻` has `Q(φ − φ(· − s)) = 2(c(0) − c(s)) → 0`, so the infimum of
+  Weil's form over corner combinations is `≤ 0` for every window length `T > 0`, unconditionally,
+  and `= 0` under RH. Hence the margins at fixed total length also tend to `0`
+  (`tendsto_levinsonErr_dyadic_zero`).
 
-So a continuous Schur function of Weil's distribution is not a pointwise limit of lattice Schur
-parameters at fixed index; the invariant that converges is the margin at fixed total length
-(`tendsto_levinsonErr_dyadic_contMargin`), where the number of sites grows as the step shrinks. The
-continuum canonical system is the limit of the lattice systems along fixed total length, and only
-there.
+Translates of a fixed bump coalesce: the unnormalized canonical system has a trivial continuum limit.
+The surviving continuum invariants are the margins rescaled by the step: the first margin is born at
+order `h²` with coefficient the zero energy of `φ'` (`tendsto_levinsonErr_one_div_sq`).
 -/
 
 noncomputable section
@@ -84,5 +86,55 @@ theorem tendsto_levinsonErr_of_rh (hRH : RiemannHypothesis) (hφ : φ ∈ realTe
     | zero => simp
     | succ k ih =>
       exact (levinsonErr_succ_le (hpos h hh _)).trans (ih (by omega))
+
+/-! ### The continuum corner margin is degenerate -/
+
+/-- `Q(φ − φ(· − s)) = 2(c(0) − c(s))`. -/
+theorem weilQuad_cornerCombo_single (hφ : φ ∈ realTests) (s : ℝ) :
+    weilQuad (cornerCombo φ ![-1] ![s]) = 2 * weilQuad φ - 2 * weilOrbitCorr φ s := by
+  rw [cornerCombo_eq_sum, weilQuad_sum_scaleShift hφ]
+  simp only [Fin.sum_univ_succ, Fin.sum_univ_zero, Fin.cons_zero, Fin.cons_succ,
+    Matrix.cons_val_zero, sub_self, zero_sub, sub_zero, weilOrbitCorr_neg, weilOrbitCorr_zero,
+    add_zero]
+  ring
+
+/-- **The continuum corner margin is nonpositive**, unconditionally, for every length `T > 0`. -/
+theorem contMargin_nonpos (hφ : φ ∈ realTests) {T : ℝ} (hT : 0 < T) : contMargin φ T ≤ 0 := by
+  by_cases hb : BddBelow (cornerValues φ T)
+  · have hc := (continuous_weilOrbitCorr hφ).tendsto 0
+    rw [weilOrbitCorr_zero] at hc
+    have hlim : Tendsto (fun s => 2 * weilQuad φ - 2 * weilOrbitCorr φ s) (𝓝[<] 0) (𝓝 0) := by
+      have := (tendsto_const_nhds (x := 2 * weilQuad φ)).sub (hc.const_mul 2)
+      rw [sub_self] at this
+      exact this.mono_left nhdsWithin_le_nhds
+    refine le_of_forall_pos_le_add fun ε hε => ?_
+    obtain ⟨s, hs, hsT⟩ :=
+      ((hlim.eventually (gt_mem_nhds hε)).and (Ioo_mem_nhdsLT (show -T < 0 by linarith))).exists
+    have hmem : weilQuad (cornerCombo φ ![-1] ![s]) ∈ cornerValues φ T :=
+      ⟨1, ![-1], ![s], fun i => by
+        rw [Subsingleton.elim i 0, Matrix.cons_val_zero]; exact ⟨hsT.1.le, hsT.2⟩, rfl⟩
+    have := csInf_le hb hmem
+    rw [weilQuad_cornerCombo_single hφ] at this
+    exact (this.trans hs.le).trans (by linarith)
+  · exact (Real.sInf_of_not_bddBelow hb).le
+
+/-- **Under RH the continuum corner margin vanishes** for every length `T > 0`. -/
+theorem contMargin_eq_zero (hRH : RiemannHypothesis) (hφ : φ ∈ realTests) {T : ℝ} (hT : 0 < T) :
+    contMargin φ T = 0 := by
+  refine le_antisymm (contMargin_nonpos hφ hT) (le_csInf ⟨_, 0, Fin.elim0, Fin.elim0,
+    fun i => i.elim0, rfl⟩ ?_)
+  rintro v ⟨m, a, s, -, rfl⟩
+  have hmem : cornerCombo φ a s ∈ realTests := by
+    rw [cornerCombo_eq_sum]
+    exact Submodule.sum_mem _ fun i _ => Submodule.smul_mem _ _ (scaleShift_mem _ hφ)
+  exact (ArithmeticHodgeTheoryOfDegenerations.riemannHypothesis_iff_weilQuad_nonneg.mp hRH)
+    _ hmem.1 hmem.2
+
+/-- **The margins at fixed total length vanish** under dyadic refinement (RH). -/
+theorem tendsto_levinsonErr_dyadic_zero (hRH : RiemannHypothesis) (hφ : φ ∈ realTests)
+    (hφ0 : φ ≠ 0) {h : ℝ} (hh : 0 < h) {n : ℕ} (hn : 1 ≤ n) :
+    Tendsto (fun j : ℕ => levinsonErr (weilSeq φ (h / 2 ^ j)) (2 ^ j * n)) atTop (𝓝 0) := by
+  have := tendsto_levinsonErr_dyadic_contMargin hRH hφ hφ0 hh hn
+  rwa [contMargin_eq_zero hRH hφ (by positivity)] at this
 
 end GaloisForLFunctions.GrowingWindowsOfSpecZ

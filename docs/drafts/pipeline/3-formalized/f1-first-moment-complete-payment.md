@@ -1,8 +1,8 @@
 # Complete first-fold coercivity away from the first moment
 
 - **ID:** F1-FM
-- **Stage:** 2-fully-proven
-- **Type:** THEOREM (paper; Lean pending)
+- **Stage:** 3-formalized
+- **Type:** THEOREM
 - **Source:** [Two-moment form](../1-in-progress/f1-primitive-variance-joint-payment.md)
 - **Statement:** Every real odd C² unit-window test satisfies
   `Q(F)+(5123/320)(∫xF)²≥∫F²/1000`.
@@ -75,4 +75,11 @@ the stated weighted Cauchy–Schwarz bound. All pairings are integrable on the c
 
 ## Lean
 
-Formalization in progress in WTZ. No numerical experiment is used.
+- WTZ `TheFirstFoldHasAPolynomialSpectralBracket`:
+  `firstFoldLogPolynomial_le_log`, `firstFoldPolynomial_pair_bounds`.
+- WTZ `TheThirdOddMomentIsPaidByTheFirstFold`:
+  `firstFoldPolynomialEnergy_sub_third_moment`,
+  `firstFoldTwoMomentForm_add_first_moment_ge_mass`, `weilQuad_add_first_moment_ge_mass`.
+
+Individual Lean checks and transitive axiom audits pass using only
+`propext`, `Classical.choice`, `Quot.sound`. No positivity input is assumed.

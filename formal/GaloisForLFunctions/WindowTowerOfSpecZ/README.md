@@ -1,6 +1,6 @@
 # The Window Tower of Spec ℤ (WTZ)
 
-Namespace `GaloisForLFunctions.WindowTowerOfSpecZ`; umbrella `WindowTowerOfSpecZ.lean`; 46 modules.
+Namespace `GaloisForLFunctions.WindowTowerOfSpecZ`; umbrella `WindowTowerOfSpecZ.lean`; 48 modules.
 Every theorem is unconditional; none assumes or proves RH.
 
 ## 1. Motivation
@@ -459,6 +459,8 @@ and the pole; the rigidity of the fold weights through the explicit formula with
 | Three positive Gamma tail modes give `Q≥P+E/64` on every odd C² unit-window test; the quintic has `−E/64<P<0` | `gamma_tail_one_reserve`, `weilQuad_ge_retainedOddGamma_add_reserve`, `retainedOddGammaLowerForm_quintic_add_reserve_pos` |
 | Primitive variance retains the first odd moment; primitive and sinh costs leave one moment charge and the exact signed prime correlation | `unit_odd_primitive_variance_le`, `unit_sinhPairing_sub_position_square_le`, `weilQuad_ge_logarithmic_first_moment` |
 | Explicit two-moment reflection form satisfies `D≤P+E/64≤Q` on every odd C² unit-window test | `firstFoldTwoMomentForm`, `retainedOddGamma_add_reserve_ge_firstFoldTwoMomentForm`, `weilQuad_ge_firstFoldTwoMomentForm` |
+| Four logarithmic terms give a signed reflection comparison with spectral bounds `19/50≤B≤37/20` | `firstFoldLogPolynomial_le_log`, `firstFoldPolynomial_pair_bounds` |
+| Third odd moment is paid; complete unit-window coercivity needs only the first-moment charge: `Q+(5123/320)(∫xF)²≥E/1000` | `firstFoldPolynomialEnergy_sub_third_moment`, `firstFoldTwoMomentForm_add_first_moment_ge_mass`, `weilQuad_add_first_moment_ge_mass` |
 | The exit charge pays every new fold | `collar_le_jump`, `levyJump_ge_collar`, `primeJumpWeight_le`, `log_three_le_archLevyAntideriv`, `primeJumpWeight_le_archLevyAntideriv`, `weilQuad_ge_reducedStageForm` |
 | The window Euler product | `isMultiplicative_factoredIndicator`, `factoredIndicator_mul_insert`, `prod_factoredIndicator`, `eulerFactor_mul_inverse`, `windowRep_zeta_eq_prod`, `windowRep_eulerFactor_mul_inverse` |
 | Weil's window form is a signed count | `exists_log_interpolant`, `sum_coeff_mul_jordanTotient`, `integral_windowRep_vonMangoldt_eq_signedCount`, `weilQuad_eq_signedCount` |

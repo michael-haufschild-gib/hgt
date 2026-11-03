@@ -45,9 +45,11 @@ missing floor `P≥−E/64`, hence complete odd unit-window positivity.
 
 On the reflection strip, multiplication and reflection have paired matrix
 `[[A(u),w],[w,A(d−u)]]`; off the strip the coefficient is `A(u)`.
-The issue is joint control of the two moment squares after inverting these positive
-coefficients. Positive paired matrices alone do not establish the conjecture.
-Prove or refute this concrete inequality before adding a generic Lean receiver.
+The [third-moment payment](../3-formalized/f1-first-moment-complete-payment.md) proves
+`D(G)+β(∫₀¹uG)²≥∫₀¹G²/1000`: a polynomial comparison has spectral bounds
+`19/50≤B≤37/20`, and its inverse chord pays the full `P₃` charge.
+Only the first-moment debit remains. Its coupling to the positive complement must still
+be controlled; positivity on the first-moment kernel does not establish this conjecture.
 
 ## Source status
 
@@ -61,4 +63,7 @@ Prove or refute this concrete inequality before adding a generic Lean receiver.
   the lower bound `Q≥L−(c+log2)E−(39/64)m²−2wC(log2)` for every odd C² unit test.
 - The [exact exterior and two-moment assembly](../3-formalized/f1-regional-exterior-identity.md)
   prove `D(G)≤P(F)+E/64≤Q(F)` in Lean, with standard-only transitive axioms.
+- WTZ `firstFoldTwoMomentForm_add_first_moment_ge_mass` and
+  `weilQuad_add_first_moment_ge_mass` prove the first-moment-charged coercivity bounds
+  with standard-only transitive axioms.
 - The displayed joint sign remains unproved; no positivity premise has been added.

@@ -62,8 +62,8 @@ theorem degreeZero_classification (F : RHTower.SelbergClass)
     rw [← norm_degreeZeroReflectionFactor F.toExtendedSelbergClass hr, hfactor, norm_one]
   have hlog : Real.log F.gammaData.Q = 0 := by
     have h := (Real.exp_eq_one_iff _).mp hexp
-    norm_num at h
-    linarith
+    change Real.log F.gammaData.Q * (1 - 2 * 1) = 0 at h
+    linarith only [h]
   have hQ : F.gammaData.Q = 1 := by
     calc F.gammaData.Q = Real.exp (Real.log F.gammaData.Q) :=
         (Real.exp_log F.gammaData.Q_pos).symm

@@ -1,8 +1,8 @@
 # Degree-zero Selberg classification
 
 - **ID:** selberg-degree-zero-classification
-- **Stage:** 2-fully-proven
-- **Type:** THEOREM (paper)
+- **Stage:** 3-formalized
+- **Type:** THEOREM (Lean)
 - **Wall:** Γ15
 - **Statement:** A full Selberg function of presentation degree zero has coefficients equal to the Dirichlet unit; its conductor parameter and root number are both one. For the extended class, degree zero forces finite coefficient support.
 
@@ -36,4 +36,15 @@ The entire function `E` agrees with one on the Euler half-plane, so the identity
 
 ## Formalization
 
-The logarithmic coefficient identity, finite-support rigidity, and entire finite-order continuation compile. The strip/support proof and full capstone are written; their Lean checks and transitive dependency audits remain.
+Namespace `GaloisForLFunctions.SelbergClass`:
+
+- `DegreeZeroContinuation.lean`: `degreeZeroValue_analyticOnNhd`, `degreeZeroEntire`.
+- `DegreeZeroSupport.lean`: `degreeZeroValue_bounded_strip`, `degreeZero_coefficient_index_le`, `degreeZero_finite_support`.
+- `FiniteSupportRigidity.lean`: `coeff_eq_one_of_support_bound`.
+- `DegreeZeroClassification.lean`: `rank_eq_zero_of_degree_eq_zero`, `coeff_eq_one_of_degree_zero`, `degreeZero_classification`.
+
+The coefficient convolution is `RHTower.SelbergClass.logMul_coeff_apply` in `RHTower/SelbergClass/FullEulerLogPrime.lean`.
+
+All five affected modules pass `lake --old env lean`; seven transitive axiom audits contain only `propext`, `Classical.choice`, and `Quot.sound`. New modules are wired into the Selberg-class umbrella.
+
+The classification concerns the coefficients and canonical entire continuation. It does not prescribe a nonminimal pole regularization or its stored value at one. Γ15 remains partially solved in positive degree.

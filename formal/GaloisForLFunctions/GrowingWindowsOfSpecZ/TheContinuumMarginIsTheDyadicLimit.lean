@@ -11,20 +11,19 @@ The **orbit correlation** `c_φ(v) = W(φ(· − v), φ)` (`weilOrbitCorr`) is t
 `hℤ`.
 
 The **continuum corner margin** of `φ` at length `T` (`contMargin`) is the infimum of Weil's form over
-`φ + Σ_i a_iφ(· − s_i)` with finitely many translates `s_i ∈ [−T, 0)` (`cornerCombo`): the distance in
-Weil's form from the corner `φ` to the span of its translates inside the window — the continuum
-counterpart of the margin `E_n`.
+`φ + Σ_i a_iφ(· − s_i)` with finitely many translates `s_i ∈ [−T, 0)` (`cornerCombo`).
 
 * **Translate combinations** (`weilQuad_sum_scaleShift`): `Q(Σ_i b_iφ(· − t_i)) = Σ_{i,j}b_ib_jc_φ(t_i − t_j)`,
   continuous in the translation vector (`continuous_weilQuad_cornerCombo`).
-* **The continuum margin is the dyadic limit** (`tendsto_levinsonErr_dyadic_contMargin`): under RH,
-  for every nonzero bump, step `h > 0` and `n ≥ 1`,
-  `E_{2^jn}(φ, h/2^j) → contMargin(φ, nh)` as `j → ∞`. Lattice margins are continuum margins over
-  dyadic translates; translates are continuous in Weil's form, and dyadic translates are dense.
+* **The dyadic limit** (`tendsto_levinsonErr_dyadic_contMargin`): under RH, for every nonzero bump,
+  step `h > 0` and `n ≥ 1`, `E_{2^jn}(φ, h/2^j) → contMargin(φ, nh)` as `j → ∞`. Lattice margins are
+  corner values over dyadic translates; translates are continuous in Weil's form, and dyadic
+  translates are dense.
 
-So the lattice canonical system converges, margin by margin, to the continuum one: the closed-form
-`2×2` two-collar forms of the lattice are the finite-dimensional approximants of the continuum
-two-collar form, and their margins converge to the continuum margins.
+The limit is degenerate: translates arbitrarily close to the corner are admissible, so
+`contMargin(φ, T) = 0` under RH (`contMargin_eq_zero`). Lattice canonical systems of a fixed bump
+therefore have no unnormalized continuum limit; the continuum invariants are the margins rescaled by
+powers of the step (`tendsto_levinsonErr_one_div_sq`).
 -/
 
 noncomputable section

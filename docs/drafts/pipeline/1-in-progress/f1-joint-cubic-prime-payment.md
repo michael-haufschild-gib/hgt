@@ -29,15 +29,17 @@ Both charges must use disjoint shares of the same jump energy.
 
 ## Gates
 
-- [ ] Prove a joint lower bound retaining the cubic moment, reflected even gain and odd cost.
-- [ ] Check all energy allocations; no jump contribution counted twice.
-- [ ] Formalize the resulting complete-form inequality without an assumed positivity input.
+- [x] Prove and formalize the joint two-moment lower form with signed reflection.
+- [x] Pay the third-moment charge with a positive reserve; audit all energy allocations.
+- [ ] Pay the remaining first-moment charge and mixed terms.
+- [ ] Formalize complete odd unit-window positivity.
 
 [Two-moment complement](../3-formalized/f1-complete-odd-two-moment-complement.md) proves
 `Q(F)≥∫F²/100` on `∫xF=∫x³F=0`, using the regional logarithmic spectrum. Individual Lean
-checks and standard-only axiom audits pass. The two low moments and their cross terms remain
-open. [Regional reflection payment](f1-regional-reflection-payment.md) retains the exterior
-potential and signed reflection as a candidate joint bound; its sign is unproved.
+checks and standard-only axiom audits pass. The
+[first-moment complement](../3-formalized/f1-first-moment-complete-payment.md) strengthens
+the domain: `Q(F)+(5123/320)(∫xF)²≥E/1000` for every odd C² unit test. Thus only
+`∫xF=0` is needed for a positive floor. First-moment payment and its cross terms remain open.
 
 [Exact second lag moment](../3-formalized/f1-odd-second-lag-moment.md) gives
 `M₂=E/3+(∫xF)²`. The retained Gamma comparison now charges `M₁/24+(∫xF)²/16`
@@ -88,4 +90,5 @@ standard-only transitive axiom audits pass. The
 [exact regional assembly](../3-formalized/f1-regional-exterior-identity.md) now proves
 `D(G)≤P(F)+E/64≤Q(F)` with the exterior potential, both low moments and signed reflection
 retained. Individual Lean and standard-only axiom audits pass. The
-[sign of D](f1-primitive-variance-joint-payment.md) remains open.
+[sign of D](f1-primitive-variance-joint-payment.md) remains open. The audited third-moment
+payment proves `D(G)+β(∫₀¹uG)²≥E/1000`, `β=77/20+39/256`; the remaining debit is explicit.

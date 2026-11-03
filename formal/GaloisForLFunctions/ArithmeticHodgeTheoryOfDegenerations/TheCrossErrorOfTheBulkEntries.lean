@@ -38,8 +38,8 @@ theorem one_div_one_sub_exp_neg_sub_one_div {x : ℝ} (hx : 0 < x) :
       rw [← Real.exp_add, add_neg_cancel, Real.exp_zero]
     nlinarith [Real.exp_pos (-x)]
   constructor
-  · rw [sub_nonneg]; exact one_div_le_one_div_of_le hd h1
-  · have e : 1 / x + 1 = (1 + x) / x := by field_simp; ring
+  · exact sub_nonneg.mpr (one_div_le_one_div_of_le hd h1)
+  · have e : 1 + 1 / x = (1 + x) / x := by field_simp; ring
     rw [sub_le_iff_le_add, e, div_le_div_iff₀ hd hx]
     nlinarith
 
@@ -255,7 +255,7 @@ theorem atomCrossErrorKernel_atomDilate_eq {φ : ℝ → ℝ} (hφ : ContDiff �
   set s := |Real.log j - Real.log n| with hs
   obtain ⟨hgC, hgsupp, hgc⟩ := atomDilate_facts hφ hφsupp hw
   have h1 := atomCrossTerm_sub_eq hgC.continuous hgc hgsupp hw.le hws
-  have hI : ∫ u, atomDilate φ w u ^ 2 = w * ∫ u, φ u ^ 2 := integral_atomDilate_sq hw
+  have hI : ∫ u, atomDilate φ w u ^ 2 = w * ∫ u, φ u ^ 2 := integral_atomDilate_sq φ hw
   have hcenter : archimedeanCenterKernel n j = _root_.RHTower.archLevyDensity s := by
     unfold archimedeanCenterKernel
     rw [if_neg (by omega)]
@@ -275,11 +275,11 @@ theorem atomCrossErrorKernel_atomDilate_eq {φ : ℝ → ℝ} (hφ : ContDiff �
     ring
   rw [atomCrossErrorKernel, if_neg hnj, hcenter]
   have hG0 : (∫ u, atomDilate φ w u ^ 2) ≠ 0 := by rw [hI]; positivity
-  have e2 : atomCrossTerm (atomDilate φ w) s / ∫ u, atomDilate φ w u ^ 2 -
+  have e2 : atomCrossTerm (atomDilate φ w) s / (∫ u, atomDilate φ w u ^ 2) -
       (∫ u, atomDilate φ w u) ^ 2 / (∫ u, atomDilate φ w u ^ 2) *
         _root_.RHTower.archLevyDensity s =
       (atomCrossTerm (atomDilate φ w) s - _root_.RHTower.archLevyDensity s *
-        (∫ u, atomDilate φ w u) ^ 2) / ∫ u, atomDilate φ w u ^ 2 := by ring
+        (∫ u, atomDilate φ w u) ^ 2) / (∫ u, atomDilate φ w u ^ 2) := by ring
   rw [e2, h1, hsub, hI]
   field_simp
 
@@ -296,14 +296,14 @@ def crossProfile (φ : ℝ → ℝ) (c : ℝ) (d : ℕ) (u : ℝ) : ℝ :=
 theorem crossSingular_eq (φ : ℝ → ℝ) (c : ℝ) (d : ℕ) (u : ℝ) :
     crossSingular φ (c * u / d) = u * crossProfile φ c d u := by
   unfold crossSingular crossProfile
-  rw [← mul_assoc, mul_comm u, mul_assoc, ← integral_const_mul]
-  congr 2
-  funext τ
-  by_cases hd : (d : ℝ) = 0
-  · simp [hd]
-  · have e : c * u / d / (1 + c * u / d * τ) - c * u / d =
-        u * (c / d * (1 / (1 + c * u / d * τ) - 1)) := by ring
-    rw [e]; ring
+  have hin : (∫ τ, bumpAutocorr φ τ * (c * u / d / (1 + c * u / d * τ) - c * u / d)) =
+      u * ∫ τ, bumpAutocorr φ τ * (c / d * (1 / (1 + c * u / d * τ) - 1)) := by
+    rw [← integral_const_mul]
+    congr 1
+    funext τ
+    ring
+  rw [hin]
+  ring
 
 theorem measurable_rational {a : ℝ} : Measurable fun τ : ℝ => a / (1 + a * τ) - a :=
   (measurable_const.div (measurable_const.add (measurable_const.mul measurable_id))).sub
@@ -327,7 +327,7 @@ theorem abs_crossSingular_sub_le {φ : ℝ → ℝ} (hφ : ContDiff ℝ 2 φ)
     have h1 := hfac x hx τ hτ
     refine (abs_sub _ _).trans (add_le_add ?_ ?_)
     · rw [abs_div, abs_of_nonneg hx.1, abs_of_pos (by linarith)]
-      exact div_le_div₀ (by linarith) hx.2 hρ0 h1
+      exact div_le_div₀ (by linarith [hx.1, hx.2]) hx.2 hρ0 h1
     · rw [abs_of_nonneg hx.1]; exact hx.2
   have hia := integrable_bumpAutocorr_mul hg hgc hφsupp (measurable_rational (a := a))
     (hbd a ha)
@@ -348,20 +348,23 @@ theorem abs_crossSingular_sub_le {φ : ℝ → ℝ} (hφ : ContDiff ℝ 2 φ)
       have h2 := hfac b hb τ hτ
       have hpa : 0 < 1 + a * τ := by linarith
       have hpb : 0 < 1 + b * τ := by linarith
+      have hD : 0 < (1 + a * τ) * (1 + b * τ) := mul_pos hpa hpb
+      have e0 : a / (1 + a * τ) - b / (1 + b * τ) = (a - b) / ((1 + a * τ) * (1 + b * τ)) := by
+        rw [div_sub_div _ _ hpa.ne' hpb.ne']
+        congr 1
+        ring
       have e1 : (a / (1 + a * τ) - a) - (b / (1 + b * τ) - b) =
           (a - b) / ((1 + a * τ) * (1 + b * τ)) - (a - b) := by
-        field_simp; ring
-      rw [e1]
-      refine (abs_sub _ _).trans ?_
-      rw [abs_div, abs_of_pos (by positivity), add_mul, one_mul]
-      refine add_le_add ?_ le_rfl
-      rw [div_le_iff₀ (by positivity), mul_comm (1 / (1 - ρ) ^ 2), mul_assoc]
+        linear_combination e0
       have hprod : (1 - ρ) ^ 2 ≤ (1 + a * τ) * (1 + b * τ) := by
         rw [sq]; exact mul_le_mul h1 h2 hρ0.le (by linarith)
-      calc |a - b| = |a - b| * ((1 / (1 - ρ) ^ 2) * (1 - ρ) ^ 2) := by field_simp
-        _ ≤ |a - b| * ((1 / (1 - ρ) ^ 2) * ((1 + a * τ) * (1 + b * τ))) :=
-            mul_le_mul_of_nonneg_left (mul_le_mul_of_nonneg_left hprod (by positivity))
-              (abs_nonneg _))
+      rw [e1]
+      calc |(a - b) / ((1 + a * τ) * (1 + b * τ)) - (a - b)|
+          ≤ |(a - b) / ((1 + a * τ) * (1 + b * τ))| + |a - b| := abs_sub _ _
+        _ = |a - b| / ((1 + a * τ) * (1 + b * τ)) + |a - b| := by rw [abs_div, abs_of_pos hD]
+        _ ≤ |a - b| / (1 - ρ) ^ 2 + |a - b| := by
+            gcongr
+        _ = (1 / (1 - ρ) ^ 2 + 1) * |a - b| := by ring)
   calc _ ≤ (1 / (1 - ρ) ^ 2 + 1) * |a - b| * ∫ τ, |bumpAutocorr φ τ| := h
     _ = _ := by ring
 
