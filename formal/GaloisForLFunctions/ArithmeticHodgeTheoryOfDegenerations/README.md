@@ -99,6 +99,10 @@ positive energy exactly when its leading pencil is positive; a zero pencil has e
 negative energy (`canonicalCriticalClock_phase_diagram`). At equality, the clocks
 `max(1,c_N+d/c_N)` instead give scaled limit `−(8Bd+DM_10)/K`; two explicit choices of `d`
 give opposite signs at the same limiting ratio (`critical_ratio_equality_admits_both_signs`).
+For every fixed independent finite family, the canonical horizon Gram matrix has eventual
+inertia `(n₊(P_K), n₋(P_K)+n₀(P_K), 0)`, including jump thresholds
+(`canonicalCriticalClock_horizonGram_inertia`). The negative correction is definite on the whole
+family, so all null directions enter the negative phase together.
 
 On the twisted directions the count reappears at second order. The window twisted by the
 conductor-two Ramanujan sum `c₂(n) = (−1)^n` has no Weil term, and at `c⁸ = K log N`
@@ -538,6 +542,13 @@ negative square at every width and its scale grows like `w e^{εw}`.
   (`abs_sum_cos_mul_le`).
 - Gauss sums of primitive characters as spectra (`twistCoeff_charTwist`), cross spectra and the
   polarized second order (`crossPower`, `cross_layer_criticalCurve`).
+- Partial zeta sums below their grid: truncated Poisson for `k^{−iτ}` with the two dual integrals
+  bounded by the first-derivative test, summation by parts on unit intervals
+  (`norm_sum_Ioc_unitPhase_sub_integral_le`, `norm_sum_Ioc_cpow_sub_integral_le`,
+  `norm_zetaStripError_le_grid`); dominated convergence over growing windows of zeros
+  (`tendsto_sum_lowZeros_of_dominated`).
+- Exponential rates of curves: two-sided bounds on tests of length `ℓ` from the lag formula and
+  Turán's power-sum bound (`norm_W_curveConfig_le_exp`, `exists_lagTests_two_sided`).
 
 **Developed in neighbouring programmes and used here.** Néron–Tate theory and the Tate limit law on
 correspondences (AET); Arakelov `h⁰` of lattices of growing rank, Künneth Riemann–Roch, the
@@ -547,8 +558,8 @@ and its Markov splitting (RHTower `WeilMarkovPoleCapacity`); lower semicontinuit
 Stepanov over `ℤ` (AET) and over curves (LST).
 
 **To build.**
-- The ledger at the resolution height `|γ| ≍ N/c`: mean values of conductor polynomials over the
-  zeros where the atoms resolve them.
+- The ledger above the grid: mean values of conductor polynomials over the zeros above `πN/L`
+  (Gonek–Montgomery–Vaughan regime), and Mertens constants in progressions.
 - The function-field complete family and its horizon layer; Zwegers–Vignéras completions of the
   isotropic count.
 
@@ -566,6 +577,8 @@ Stepanov over `ℤ` (AET) and over curves (LST).
 | The rescaled limit of a curve is the Hurwitz form of its Frobenius angles: `a^β E_x(a) → A_φ Σ_i |Σ x_k β_i^k|² (ζ(β+1,u_i) + ζ(β+1,1−u_i))`, `W = −w² E_x'` | `tendsto_rpow_mul_curveBulk`, `hasDerivAt_curveBulk`, `W_curveLatticeTest_eq_density` | proved |
 | The Frobenius angles diagonalize the curve family: `W(T_x,T_x) = w² Σ_i S_{θ_i}(w/log q)|Σ x_k β_i^k|²` at every atom width; positive for pure curves | `W_curveLatticeTest`, `re_W_curveLatticeTest_nonneg` | proved |
 | The bulk below the resolution height: for every `θ < 1` and `c log² N/N^{1−θ} → 0`, the zeros of height `≤ N^θ` give `κ y_1²(2 + γ − log 4π)` at the pole and nothing to pole-free packets | `tendsto_sum_bulkLedger_belowResolution`, `tendsto_sum_bulkLedger_belowResolution_poleFree`, `norm_zetaStripError_le_order`, `norm_conductorDirichlet_sub_horizonTerm_le_order` | proved |
+| The partial zeta sum is quiet below its grid: `|Σ_{k≤M} k^{−w} − M^{1−w}/(1−w) − ζ(w)| ≤ 9M^{−Re w}` for `|Im w| ≤ πM` (truncated Poisson, summation by parts on unit intervals); at a zero `|D_e(s;N) − [e=1]N^s/s| ≤ 24e³N^{Re s−1}` for `|Im s| ≤ π⌊N/e⌋` | `norm_zetaStripError_le_grid`, `norm_sum_Ioc_cpow_sub_integral_le`, `norm_sum_Ioc_unitPhase_sub_integral_le`, `norm_conductorDirichlet_sub_horizonTerm_le_grid` | proved |
+| The bulk is blind below its grid: for conductors `≤ L`, `2λL ≤ π` and every schedule with `c/N → 0`, all zeros of height `≤ λN` give `(c/log N) κ y_1² Σ_ρ m_ρ/(ρ(1−ρ)) + o(c/log N)`; pole-free packets receive `o(c/log N)` | `tendsto_sum_bulkLedger_belowGrid`, `tendsto_sum_bulkLedger_belowGrid_poleFree`, `norm_log_div_mul_bulkLedger_sub_atom_le_grid`, `tendsto_sum_poleLedgerTerm` | proved |
 | The bulk at the pole reads the archimedean genus: the zeros of height `≤ N^θ`, `θ < 2/3`, contribute `κ y_1² (2 + γ − log 4π)` in total | `tendsto_sum_bulkLedger_lowZeros_genus_rpow`, `tendsto_sum_bulkLedger_lowZeros_pole`, `tsum_mult_div_zero_mul_one_sub_eq` | proved |
 | The bulk is blind to the low zeros: all zeros of height `≤ N^θ`, `θ < 2/3`, contribute `o(c/log N)` together to every pole-free packet | `tendsto_sum_bulkLedger_lowZeros_rpow`, `tendsto_sum_bulkLedger_lowZeros`, `norm_log_div_mul_bulkLedger_le` | proved |
 | Horizon ledger: Weil summands of the synthesized test | `tendsto_horizonLedger`, `Wsummand_halfWeight`, `tendsto_horizonDirichlet` | proved |
@@ -624,17 +637,22 @@ Stepanov over `ℤ` (AET) and over curves (LST).
    length resolves and its Shannon number, vanishes below the aperture-independent multiple `K₀`, and is at
    most one on the first-prime windows. Open: close the gap between the resolved-zero count and the
    Shannon number, and locate the jump multiples `βJ/(−λ_i)` in terms of the right zeros.
-2. **Bulk second order.** The collective `1/log N` term of fixed packets: the high zeros, read on the
-   arithmetic side through primes in progressions to the moduli `e e'` (it needs Mertens constants in
-   progressions).
-3. **The ledger at the resolution height.** Below every height `N^θ`, `θ < 1`, the zeros are blind
-   to pole-free packets and give the archimedean genus at the pole, so the count and the second order
-   live on the zeros of height `≍ N/c`. Open: their ledger, i.e. mean values of conductor
-   polynomials over the zeros the atoms resolve.
+2. **Bulk second order.** A fixed packet with conductors `≤ L` is blind below the grid of its
+   conductor polynomials: all zeros of height `≤ λN`, `2λL ≤ π`, give it the archimedean genus at
+   the pole and nothing else, so the zeros the atoms resolve (height `N/c`) carry nothing. The
+   first-order count and the collective `1/log N` term are carried by the zeros above the grid,
+   where the atoms see them through the spectral tail `|φ̂(cγ/N)|²`, `cγ/N ≥ λc`. Read on the
+   arithmetic side they are prime sums in progressions to the moduli `e e'`. Open: the limit, which
+   needs Mertens constants in progressions (a Tauberian theorem beyond PNT in progressions).
+3. **The ledger above the grid.** Open: mean values of conductor polynomials over the zeros above
+   `πN/L`, where the polynomials are shorter than the height (the regime of Gonek and
+   Montgomery–Vaughan) and the off-diagonal terms are `Λ(n/m)` restricted to progressions.
 4. **A count for `κ Q(H)`.** On the twisted directions the second order is a count (Jordan totients,
    spectral Dirichlet series) or a count corrected by `L`-values of squared characters, bounded by
-   the count. Open: a count, or a cardinality, carrying Weil's form on the untwisted windows; this is
-   the RH-hard core of mechanism A inside the degeneration.
+   the count. As a function of the frequency the count has a pole of order `β + 1` at `u = 0`
+   whose finite part is the count `βJ/K` of the untwisted window: `κQ(H)` stands at the pole. Open:
+   a count, or a cardinality, carrying Weil's form on the untwisted windows (a renormalization of
+   this pole); this is the RH-hard core of mechanism A inside the degeneration.
 5. **Prime atoms in the jump measure.** The primes beyond a window pay their own creation, and on the
    first-prime windows the cosh hyperplane absorbs the prime `2`. Open: a count paying the creation
    potential of all primes `≤ e^A` acting on a window, and the count of the first Hecke graph `T₂`.
@@ -779,9 +797,11 @@ of every curve is its zero width `max|Re s − ½|`, in both signs: the extreme 
 on tests of length `ℓ` are `e^{δℓ}` up to polynomial factors, and `δ = 0` exactly for the pure
 curves.
 
-Below the resolution height the bulk is computed as well. Euler–Maclaurin at every order makes the
-remainders of the conductor polynomials uniform in the zero, so the zeros of height `≤ N^θ`,
-`θ < 1`, give a pole-free packet nothing and the pole exactly `κ y_1² (2 + γ − log 4π)`, the
-archimedean genus. Everything else in the bulk lives on the zeros the atoms resolve, at height
-`N/c`. What the field has not yet built is a mechanism that forces the sign of `Q` on horizon
+Below the grid the bulk is computed as well. The partial zeta sums have no stationary point beyond
+their length up to the height `π` times the length, so at a zero the conductor polynomials are their
+pole term up to `O(N^{Re ρ−1})` uniformly up to `πN/L`: the zeros of height `≤ λN` give a
+pole-free packet nothing and the pole exactly `κ y_1² (2 + γ − log 4π)`, the archimedean genus. The
+zeros the atoms resolve, at height `N/c`, carry nothing; the count and the second order of the bulk
+live above the grid of the conductor polynomials, where the atoms see the zeros through their
+spectral tail. What the field has not yet built is a mechanism that forces the sign of `Q` on horizon
 windows: a count of the second order that sees the zeros.

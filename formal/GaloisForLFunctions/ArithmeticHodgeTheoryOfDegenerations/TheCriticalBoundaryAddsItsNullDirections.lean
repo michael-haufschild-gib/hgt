@@ -92,6 +92,7 @@ def canonicalHorizonGram (K : ℝ) (h : ι → ℝ → ℝ) (N : ℕ) : Matrix �
       ∫ u, atomDilate tiltedUnitSpline (canonicalCriticalClock K N / N) u ^ 2 : ℝ) : ℂ) •
     horizonGram tiltedUnitSpline h (canonicalCriticalClock K N) N
 
+omit [Fintype ι] [DecidableEq ι] in
 private theorem canonicalHorizonGram_isHermitian (K : ℝ) (h : ι → ℝ → ℝ) (N : ℕ) :
     (canonicalHorizonGram K h N).IsHermitian := by
   ext j i
@@ -124,6 +125,7 @@ private theorem canonical_energy_correction {h : ℝ → ℝ} {A K : ℝ}
   simp only [secondOrderLimit, show (7 : ℝ) + 1 = 8 by norm_num]
   ring
 
+omit [Fintype ι] [DecidableEq ι] in
 /-- The normalized canonical horizon matrices converge to the leading pencil. -/
 theorem tendsto_canonicalHorizonGram {h : ι → ℝ → ℝ} {A K : ℝ}
     (hh : ∀ i, ContDiff ℝ 2 (h i))
@@ -136,7 +138,7 @@ theorem tendsto_canonicalHorizonGram {h : ι → ℝ → ℝ} {A K : ℝ}
       Tendsto (fun N => tiltedHorizonEnergy g (canonicalCriticalClock K N) N) atTop
         (𝓝 (secondOrderLimit tiltedUnitSpline 7 tiltedJordanOne K g)) := by
     intro g hg hgs
-    simpa only [secondOrderLimit, show (7 : ℝ) + 1 = 8 by norm_num] using
+    simpa only [secondOrderLimit, tiltedHorizonEnergy, show (7 : ℝ) + 1 = 8 by norm_num] using
       horizon_layer_criticalCurve_exact hg hA hgs (canonicalCriticalClock_one_le K) hK
         (criticalCurve_ratio_of_exact (canonicalCriticalClock_exact hK))
   have hp := hlim (fun y => h i y + h j y) ((hh i).add (hh j))
@@ -154,6 +156,7 @@ theorem tendsto_canonicalHorizonGram {h : ι → ℝ → ℝ} {A K : ℝ}
   dsimp only [tiltedHorizonEnergy, horizonTest]
   ring
 
+omit [Fintype ι] [DecidableEq ι] in
 /-- The first matrix correction to the leading pencil is the negative
 exponential Gram matrix of exponent ten. -/
 theorem canonicalHorizonGram_quadratic_correction {h : ι → ℝ → ℝ} {A K : ℝ}
@@ -192,7 +195,7 @@ theorem canonicalHorizonGram_quadratic_correction {h : ι → ℝ → ℝ} {A K 
   refine ((Complex.continuous_ofReal.tendsto _).comp hr).congr' ?_
   filter_upwards [eventually_ge_atTop 1] with N hN
   have hc : 0 < canonicalCriticalClock K N := by linarith [canonicalCriticalClock_one_le K N]
-  simp only [Function.comp_def, Matrix.smul_apply, Pi.sub_apply, canonicalHorizonGram,
+  simp only [Function.comp_def, Matrix.smul_apply, Matrix.sub_apply, canonicalHorizonGram,
     smul_eq_mul, pencilGram]
   rw [horizonGram_apply contDiff_tiltedUnitSpline tiltedUnitSpline_support h hc hN]
   push_cast
@@ -231,7 +234,7 @@ theorem canonicalHorizonGram_inertia {h : ι → ℝ → ℝ} {A K : ℝ}
     rw [twistLimitGram, hermQuad_ofReal_smul]
     have hquad : 0 < hermQuad (aliasGram 9 h) x := by
       have ht := (Matrix.posDef_iff_dotProduct_mulVec.mp hC).2 hx
-      simpa only [hermQuad] using (Complex.lt_def.mp ht).1
+      simpa only [hermQuad, Complex.zero_re] using (Complex.lt_def.mp ht).1
     exact mul_pos (div_pos tiltedNextAliasCoefficient_pos hK) hquad
   have hstrict := eventually_hermQuad_pos_of_tendsto
     (twistLimitGram_isHermitian 9 (tiltedNextAliasCoefficient / K) h) hpos

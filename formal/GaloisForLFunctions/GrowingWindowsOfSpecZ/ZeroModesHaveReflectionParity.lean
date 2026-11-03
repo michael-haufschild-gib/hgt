@@ -13,7 +13,7 @@ A zero mode of a nonnegative window `W_A` is a window test with `Q(H) = 0`; it l
   nonzero zero mode `G` with `σ_AG = G` or `σ_AG = −G`. At a first critical length such a `G` is
   nonzero on both collars, with mirrored values `G(−A − u) = ±G(u)`.
 * **Gap law** (`gap_law`). If a zero mode splits as `G = G₁ + G₂` with `G₁` supported in `[−A, a]`,
-  `G₂` in `[b, 0]`, `a < b` (it vanishes on the interior gap `(a, b)`), then
+  `G₂` in `[b, 0]`, `−A ≤ a < b ≤ 0` (it vanishes on the interior gap `(a, b)`), then
   `Q(G₁) = Q(G₂) = −W(G₁, G₂)`, and the two pieces have the same Weil orbit correlation across the
   gap: `W(G₁, G₁(· − δ)) = W(G₂, G₂(· + δ))` for `0 ≤ δ ≤ b − a`. A zero mode cannot be cut into
   independent pieces: the two sides of a gap are balanced translates of each other in Weil energy.
@@ -55,7 +55,7 @@ theorem weilPair_windowInvolution {F G : ℝ → ℝ} (hF : F ∈ realTests) (hG
   nlinarith
 
 /-- **The reflection of a zero mode is a zero mode.** -/
-theorem zeroMode_windowInvolution (hH : IsWindowTest A H) (h0 : weilQuad H = 0) :
+theorem zeroMode_windowInvolution (h0 : weilQuad H = 0) :
     weilQuad (windowInvolution A H) = 0 := by
   rw [weilQuad_windowInvolution, h0]
 
@@ -64,7 +64,7 @@ theorem weilPair_windowInvolution_zeroMode
     (hpos : ∀ G : ℝ → ℝ, IsWindowTest A G → 0 ≤ weilQuad G) (hH : IsWindowTest A H)
     (h0 : weilQuad H = 0) {G : ℝ → ℝ} (hG : IsWindowTest A G) :
     weilPair (windowInvolution A H) G = 0 :=
-  weilPair_eq_zero_of_zeroMode hpos hH.windowInvolution (zeroMode_windowInvolution hH h0) hG
+  weilPair_eq_zero_of_zeroMode hpos hH.windowInvolution (zeroMode_windowInvolution h0) hG
 
 /-- The radical is a subspace: a combination of zero modes is a zero mode. -/
 theorem zeroMode_lin (hpos : ∀ G : ℝ → ℝ, IsWindowTest A G → 0 ≤ weilQuad G)
@@ -77,12 +77,12 @@ theorem zeroMode_lin (hpos : ∀ G : ℝ → ℝ, IsWindowTest A G → 0 ≤ wei
 /-- **The even part of a zero mode is a zero mode.** -/
 theorem zeroMode_evenPart (hpos : ∀ G : ℝ → ℝ, IsWindowTest A G → 0 ≤ weilQuad G)
     (hH : IsWindowTest A H) (h0 : weilQuad H = 0) : weilQuad (evenPart A H) = 0 :=
-  zeroMode_lin hpos hH hH.windowInvolution h0 (zeroMode_windowInvolution hH h0) _ _
+  zeroMode_lin hpos hH hH.windowInvolution h0 (zeroMode_windowInvolution h0) _ _
 
 /-- **The odd part of a zero mode is a zero mode.** -/
 theorem zeroMode_oddPart (hpos : ∀ G : ℝ → ℝ, IsWindowTest A G → 0 ≤ weilQuad G)
     (hH : IsWindowTest A H) (h0 : weilQuad H = 0) : weilQuad (oddPart A H) = 0 :=
-  zeroMode_lin hpos hH hH.windowInvolution h0 (zeroMode_windowInvolution hH h0) _ _
+  zeroMode_lin hpos hH hH.windowInvolution h0 (zeroMode_windowInvolution h0) _ _
 
 /-- **Every edge has a reflection parity.** If a nonnegative window carries a nonzero zero mode, it
 carries a nonzero zero mode that is `σ_A`-even or `σ_A`-odd. -/
@@ -120,7 +120,8 @@ theorem parity_zeroMode_collars {δ : ℝ} (hδ : 0 < δ)
 `0 ≤ δ ≤ b − a` the two pieces have the same Weil orbit correlation:
 `W(G₁, G₁(· − δ)) = W(G₂, G₂(· + δ))`. -/
 theorem gap_law (hpos : ∀ G : ℝ → ℝ, IsWindowTest A G → 0 ≤ weilQuad G)
-    {G₁ G₂ : ℝ → ℝ} {a b : ℝ} (hab : a < b) (h1 : IsWindowTest A G₁) (h2 : IsWindowTest A G₂)
+    {G₁ G₂ : ℝ → ℝ} {a b : ℝ} (ha : -A ≤ a) (hb : b ≤ 0)
+    (h1 : IsWindowTest A G₁) (h2 : IsWindowTest A G₂)
     (h1s : ∀ y, a < y → G₁ y = 0) (h2s : ∀ y, y < b → G₂ y = 0)
     (h0 : weilQuad (fun u => G₁ u + G₂ u) = 0) :
     weilQuad G₁ = weilQuad G₂ ∧ weilPair G₁ G₂ = -weilQuad G₁ ∧
@@ -143,14 +144,14 @@ theorem gap_law (hpos : ∀ G : ℝ → ℝ, IsWindowTest A G → 0 ≤ weilQuad
   -- `G₂(· + δ)` and `G₁(· − δ)` are still window tests
   have h2δ : IsWindowTest A (fun u => G₂ (u + δ)) :=
     ⟨h2.contDiff.comp (contDiff_id.add contDiff_const), fun y hy => by
-      by_cases hyb : y + δ < b
-      · exact h2s _ hyb
-      · exact h2.vanish _ fun hm => hy ⟨by linarith [hm.1, h1.vanish], by linarith [hm.2]⟩⟩
+      rcases not_and_or.mp hy with hy | hy
+      · exact h2s _ (by linarith [not_le.mp hy])
+      · exact h2.vanish _ fun hm => by linarith [hm.2, not_le.mp hy]⟩
   have h1δ : IsWindowTest A (fun u => G₁ (u - δ)) :=
     ⟨h1.contDiff.comp (contDiff_id.sub contDiff_const), fun y hy => by
-      by_cases hya : a < y - δ
-      · exact h1s _ hya
-      · exact h1.vanish _ fun hm => hy ⟨by linarith [hm.1], by linarith [hm.2]⟩⟩
+      rcases not_and_or.mp hy with hy | hy
+      · exact h1.vanish _ fun hm => by linarith [hm.1, not_le.mp hy]
+      · exact h1s _ (by linarith [not_le.mp hy])⟩
   have f1 := orth h2δ
   have f2 := orth h1δ
   -- translation invariance moves the cross terms onto each other

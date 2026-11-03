@@ -18,6 +18,7 @@ import GaloisForLFunctions.ArithmeticHodgeTheoryOfDegenerations.TheAliasingIsThe
 import GaloisForLFunctions.ArithmeticHodgeTheoryOfDegenerations.TheAliasingConstantOfTheTiltedSpline
 import GaloisForLFunctions.ArithmeticHodgeTheoryOfDegenerations.TheNextAliasingCoefficientIsNegative
 import GaloisForLFunctions.ArithmeticHodgeTheoryOfDegenerations.TheCanonicalCriticalClockEntersFromTheNegativeSide
+import GaloisForLFunctions.ArithmeticHodgeTheoryOfDegenerations.TheCriticalBoundaryAddsItsNullDirections
 import GaloisForLFunctions.ArithmeticHodgeTheoryOfDegenerations.ThePrimesOfAHorizonWindow
 import GaloisForLFunctions.ArithmeticHodgeTheoryOfDegenerations.TheBulkDeterminesTheSecondOrderTerm
 import GaloisForLFunctions.ArithmeticHodgeTheoryOfDegenerations.TheWindowIndex
@@ -62,6 +63,8 @@ import GaloisForLFunctions.ArithmeticHodgeTheoryOfDegenerations.EveryFrequencyAc
 import GaloisForLFunctions.ArithmeticHodgeTheoryOfDegenerations.TheHorizonLayerIsGradedByFrequency
 import GaloisForLFunctions.ArithmeticHodgeTheoryOfDegenerations.EveryFrequencySectorInheritsThePolarization
 import GaloisForLFunctions.ArithmeticHodgeTheoryOfDegenerations.TheMonodromyRateOfACurveIsItsZeroWidth
+import GaloisForLFunctions.ArithmeticHodgeTheoryOfDegenerations.ThePartialZetaSumIsQuietBelowItsGrid
+import GaloisForLFunctions.ArithmeticHodgeTheoryOfDegenerations.TheBulkIsBlindBelowItsGrid
 
 /-!
 # Arithmetic Hodge Theory of Degenerations
@@ -72,8 +75,9 @@ resolution axis (overlap `c`, horizon `N`). See `ArithmeticHodgeTheoryOfDegenera
 * **First order.** The rescaled limit is a count: `J(m) = J(1) #ℙ⁷(ℤ/m)`; the count law holds over
   every finite ring.
 * **Zero ledgers.** A point of the strip enters a fixed packet only through a positive pole weight;
-  uniformly below every height `N^θ`, `θ < 1`, the zeros are blind to pole-free packets and give the
-  archimedean genus `κ y₁²(2 + γ − log 4π)` at the pole. Horizon windows read Weil's summands;
+  uniformly below the grid `λN` of the conductor polynomials (`2λL ≤ π`), far above the resolution
+  height `N/c`, the zeros are blind to pole-free packets and give the archimedean genus
+  `κ y₁²(2 + γ − log 4π)` at the pole. Horizon windows read Weil's summands;
   twisted windows read no zero.
 * **Second order at the critical curve.** On horizon windows `κ Q(H) + (βJ/K) ∫ e^{−(β+1)y} H²`,
   the aliasing being the dilation derivative of the bulk; on twisted windows a spectral Dirichlet
@@ -81,6 +85,9 @@ resolution axis (overlap `c`, horizon `N`). See `ArithmeticHodgeTheoryOfDegenera
   by `L(β+1, ψ̄²)` for characters (graded by parity, equal parities coupled by `L`-values), and the
   Hurwitz form `½(ζ(β+1,u) + ζ(β+1,1−u))` for a frequency `u`, rational or irrational, the layer
   being graded by frequency (trigonometric twists carry `Σ a_k²` times these forms).
+* **Critical boundary.** On the canonical tilted-spline clock, every independent fixed window
+  family has eventual inertia `(n₊(P), n₋(P)+n₀(P), 0)`: the negative inverse-square correction
+  makes every null direction negative. The limiting critical ratio alone permits either sign.
 * **The integer.** The window index of the pencil `κ W(H) + (βJ/K) A(H)`: read by the complete
   family, counting the right zeros, jumping at the critical multiples, between the resolved right
   zeros and the Shannon number; for `β > 0`, `0` below one positive multiple independent of

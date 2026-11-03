@@ -37,11 +37,10 @@ theorem tendsto_hurwitzSum_sub_rpow {k : ℝ} (hk : 1 < k) :
     (f := fun u (n : ℕ) => ((n : ℝ) + 1 + u) ^ (-k)) (g := fun n : ℕ => ((n : ℝ) + 1) ^ (-k))
     (bound := fun n : ℕ => ((n : ℝ) + 1) ^ (-k)) hsum
     (fun n => by
-      have hc : ContinuousAt (fun u : ℝ => ((n : ℝ) + 1 + u) ^ (-k)) 0 :=
-        (continuousAt_const.add continuousAt_id).rpow_const (Or.inl (by positivity))
-      have := hc.tendsto
-      simp only [add_zero] at this
-      exact this.mono_left nhdsWithin_le_nhds)
+      have h1 : Tendsto (fun u : ℝ => (n : ℝ) + 1 + u) (𝓝[>] 0) (𝓝 ((n : ℝ) + 1)) := by
+        simpa using ((tendsto_id (x := 𝓝 (0 : ℝ))).mono_left nhdsWithin_le_nhds).const_add
+          ((n : ℝ) + 1)
+      exact (Real.continuousAt_rpow_const _ _ (Or.inl (by positivity))).tendsto.comp h1)
     (by
       filter_upwards [self_mem_nhdsWithin] with u hu n
       rw [Real.norm_of_nonneg (by have : (0 : ℝ) < u := hu; positivity)]
@@ -51,8 +50,11 @@ theorem tendsto_hurwitzSum_sub_rpow {k : ℝ} (hk : 1 < k) :
   filter_upwards [self_mem_nhdsWithin, Ioo_mem_nhdsGT (show (0 : ℝ) < 1 by norm_num)] with u hu hu1
   have hu0 : (0 : ℝ) < u := hu
   rw [hurwitzSum, (summable_shift_rpow hk hu0 hu1.2.le).tsum_eq_zero_add]
-  simp only [Nat.cast_zero, zero_add, Nat.cast_add, Nat.cast_one]
-  ring_nf
+  simp only [Nat.cast_zero, zero_add]
+  rw [add_sub_cancel_left]
+  congr 1
+  funext n
+  simp only [Nat.cast_add, Nat.cast_one]
 
 /-- `ζ(k, 1 − u) → ζ(k)` as `u → 0⁺`. -/
 theorem tendsto_hurwitzSum_one_sub {k : ℝ} (hk : 1 < k) :
@@ -63,15 +65,14 @@ theorem tendsto_hurwitzSum_one_sub {k : ℝ} (hk : 1 < k) :
     (f := fun u (n : ℕ) => ((n : ℝ) + (1 - u)) ^ (-k)) (g := fun n : ℕ => ((n : ℝ) + 1) ^ (-k))
     (bound := fun n : ℕ => ((n : ℝ) + 1 / 2) ^ (-k)) hsum
     (fun n => by
-      have hc : ContinuousAt (fun u : ℝ => ((n : ℝ) + (1 - u)) ^ (-k)) 0 :=
-        (continuousAt_const.add (continuousAt_const.sub continuousAt_id)).rpow_const
-          (Or.inl (by positivity))
-      have := hc.tendsto
-      simp only [sub_zero] at this
-      exact this.mono_left nhdsWithin_le_nhds)
+      have h1 : Tendsto (fun u : ℝ => (n : ℝ) + (1 - u)) (𝓝[>] 0) (𝓝 ((n : ℝ) + 1)) := by
+        simpa using (((tendsto_id (x := 𝓝 (0 : ℝ))).mono_left nhdsWithin_le_nhds).const_sub
+          (1 : ℝ)).const_add (n : ℝ)
+      exact (Real.continuousAt_rpow_const _ _ (Or.inl (by positivity))).tendsto.comp h1)
     (by
       filter_upwards [Ioo_mem_nhdsGT (show (0 : ℝ) < 1 / 2 by norm_num)] with u hu n
-      rw [Real.norm_of_nonneg (by have := hu.2; positivity)]
+      have hn : (0 : ℝ) ≤ n := Nat.cast_nonneg n
+      rw [Real.norm_of_nonneg (Real.rpow_nonneg (by linarith [hu.2]) _)]
       exact Real.rpow_le_rpow_of_nonpos (by positivity) (by linarith [hu.2]) (by linarith))
   exact hdom
 
@@ -99,7 +100,7 @@ theorem tendsto_rpow_mul_frequencyCount {β A K M : ℝ} (hβ : 0 < β) :
   have hk : 0 < β + 1 := by linarith
   have hpow : Tendsto (fun u : ℝ => u ^ (β + 1)) (𝓝[>] 0) (𝓝 0) := by
     have hc : ContinuousAt (fun u : ℝ => u ^ (β + 1)) 0 :=
-      Real.continuousAt_rpow_const 0 (β + 1) (Or.inr hk)
+      Real.continuousAt_rpow_const 0 (β + 1) (Or.inr hk.le)
     have := hc.tendsto
     rw [Real.zero_rpow hk.ne'] at this
     exact this.mono_left nhdsWithin_le_nhds

@@ -41,7 +41,8 @@ TheSecondOrderOfACharacterWindowReadsAnLValue, TheCharacterWindowsAreGradedByPar
 TheFrequencyOfATwistActsAsAFrobeniusAngle, EveryPeriodicTwistedSectorInheritsThePolarization,
 TheFrequencyTwistIsQuietBelowItsResonance, TheEnergyOfAFrequencyTwist, EveryFrequencyActsAsAFrobeniusAngle,
 TheHorizonLayerIsGradedByFrequency, EveryFrequencySectorInheritsThePolarization,
-TheMonodromyRateOfACurveIsItsZeroWidth.
+TheMonodromyRateOfACurveIsItsZeroWidth, ThePartialZetaSumIsQuietBelowItsGrid,
+TheBulkIsBlindBelowItsGrid.
 
 ## Status
 - First order = count: `J(m) = J(1) #ℙ⁷(ℤ/m)`; count law over every finite ring (𝔽_q[T] calibration) [L].
@@ -97,7 +98,9 @@ TheMonodromyRateOfACurveIsItsZeroWidth.
 - Uniform bulk ledger: pole-free packets receive `o(c/log N)` from all zeros of height `≤ N^θ`,
   `θ < 2/3` (second-order EM at zeros + zero count) [L]; with the pole the low zeros give exactly
   `κ y_1² (2 + γ − log 4π)` (archimedean genus) [L]; both up to every height `N^θ`, `θ < 1`
-  (Euler–Maclaurin of order `m ≥ 1/(1−θ)`) [L].
+  (Euler–Maclaurin of order `m ≥ 1/(1−θ)`) [L]; both up to the grid `λN`, `2λL ≤ π`, for every
+  schedule with `c/N → 0` (truncated Poisson: `|E(w,M)| ≤ 9M^{−Re w}` for `|Im w| ≤ πM`) [L]: the
+  resolution height carries nothing, the bulk lives above the grid.
 - Curves: lattice tests of a pure curve, any atom width: `W = w² Σ_i S_{θ_i}(w/log q)|Σ x_k β_i^k|²`
   (Frobenius angles = twist frequencies); positive at every resolution [L]; rescaled limit under
   dilation = Hurwitz form of the fractional angles [L]; selection: pure without eigenvalue `1` ⇒
@@ -117,5 +120,5 @@ TheMonodromyRateOfACurveIsItsZeroWidth.
   `λ_i` relative eigenvalues of `κW(H)` against `A(H)` [L].
 
 ## Open
-Gap between resolved zeros and Shannon number; bulk ledger at the resolution height `N/c`; count
-of the second order; integer; `𝔽_q(T)` complete family. See README §9.
+Gap between resolved zeros and Shannon number; bulk ledger above the grid (Mertens constants in
+progressions); count of the second order; integer; `𝔽_q(T)` complete family. See README §9.

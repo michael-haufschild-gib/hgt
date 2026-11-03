@@ -46,7 +46,8 @@ interior in the chain law.
 | Frozen two-collar form | `frozenTwoCollar xL y xR` | `Q(x_L+y) + Q(y+x_R) − Q(y) + 2⟨μ(x_L), ν(x_R)⟩` |
 | Frozen pairing | `frozenPair N f g` | polarization of the stage datum `Q_N` |
 
-## 4. Open
+## 4. Remark
 
-The interior infimum `inf_y F` as an operator on collar data (the universal function `Φ_ε` of the
-moments at stage 1); the continuum limit of the chain law as a Riccati equation on the moment space.
+`S^N_ε = inf_y F(x_L, y, x_R)`; at stage 1 it is `Q(x_L) + Q(x_R) + 2⟨μ(x_L), ν(x_R)⟩ + Φ_ε(μ(x_L), ν(x_R))`,
+`Φ_ε(α, β) = inf_y [Q(y) + 2⟨α, ν(y)⟩ + 2⟨μ(y), β⟩]`, one function of the two moment sequences
+(`firstStage_frozen_congr`). The disk law states the stage without this infimum.

@@ -732,32 +732,31 @@ theorem almostAll_unitWindow_rightHalfPort_doubleLog_decay :
     ht_ll.eventually_ge_atTop 2,
     Real.tendsto_log_atTop.eventually_ge_atTop (max 64 ((16 / κ_r) ^ 2 + 1))]
     with V hV_d hV_ge hll2 hlog_ge
-  dsimp only [Function.comp_def] at hll2
   have hV32 : 32 ≤ V := (le_max_left _ _).trans hV_ge
   have hVm₁ : (m₁ : ℝ) + 1 ≤ V := (le_max_right _ _).trans hV_ge
-  have hV_pos : 0 < V := by linarith
+  have hV_pos : 0 < V := by linarith only [hV32]
   have hlog64 : 64 ≤ Real.log V := (le_max_left _ _).trans hlog_ge
   have hlog_κ : (16 / κ_r) ^ 2 + 1 ≤ Real.log V := (le_max_right _ _).trans hlog_ge
-  have hlogV_pos : 0 < Real.log V := by linarith
-  have hll_pos : 0 < Real.log (Real.log V) := by linarith
+  have hlogV_pos : 0 < Real.log V := by linarith only [hlog64]
+  have hll_pos : 0 < Real.log (Real.log V) := by linarith only [hll2]
   have hll_rt : Real.log (Real.log V) ≤ 2 * Real.sqrt (Real.log V) := log_le_two_sqrt_local hlogV_pos
   have hrt_pos : 0 < Real.sqrt (Real.log V) := Real.sqrt_pos.mpr hlogV_pos
   set A_V : ℝ := 2 * Real.log (Real.log V)
-  have hAV_2 : 2 ≤ A_V := by dsimp only [A_V]; linarith
+  have hAV_2 : 2 ≤ A_V := by dsimp only [A_V]; linarith only [hll2]
   have hAV_hi : A_V ≤ κ_r * Real.log V := by
     have hrt_gt : 16 / κ_r < Real.sqrt (Real.log V) := by
       rw [← Real.sqrt_sq (by positivity : 0 ≤ 16 / κ_r)]
-      exact Real.sqrt_lt_sqrt (by positivity) (by linarith)
+      exact Real.sqrt_lt_sqrt (by positivity) (lt_of_lt_of_le (lt_add_one _) hlog_κ)
     have hmul : (16 / κ_r) * Real.sqrt (Real.log V) < Real.log V := by
       have h1 := mul_lt_mul_of_pos_right hrt_gt hrt_pos
       rwa [Real.mul_self_sqrt hlogV_pos.le] at h1
     have hmul_κ : 16 * Real.sqrt (Real.log V) < κ_r * Real.log V := by
       have h1 := mul_lt_mul_of_pos_left hmul hκ_pos
       rwa [← mul_assoc, mul_div_cancel₀ 16 hκ_pos.ne'] at h1
-    dsimp only [A_V]; linarith
+    dsimp only [A_V]; linarith only [hll_rt, hmul_κ]
   -- Check `3 * log(log V) / log V ≤ 1` so `σ_V = 1/2 + 3 * log(log V) / log V ∈ (1/2, 3/2]`.
   set σ_V : ℝ := 1 / 2 + 3 * Real.log (Real.log V) / Real.log V
-  have hσV_lo : 1 / 2 ≤ σ_V := by dsimp only [σ_V]; linarith [div_pos (by positivity : 0 < 3 * Real.log (Real.log V)) hlogV_pos]
+  have hσV_lo : 1 / 2 ≤ σ_V := le_add_of_nonneg_right (by positivity)
   have hσV_hi : σ_V ≤ 3 / 2 := by
     dsimp only [σ_V]
     have hrt8 : 8 ≤ Real.sqrt (Real.log V) := by
@@ -767,8 +766,8 @@ theorem almostAll_unitWindow_rightHalfPort_doubleLog_decay :
             mul_le_mul_of_nonneg_right hrt8 hrt_pos.le
         _ = Real.log V := Real.mul_self_sqrt hlogV_pos.le
     have hdiv1 : 3 * Real.log (Real.log V) / Real.log V ≤ 1 := by
-      rw [div_le_one hlogV_pos]; linarith [hll_rt, hmul8]
-    linarith
+      rw [div_le_one hlogV_pos]; linarith only [hll_rt, hmul8]
+    exact (add_le_add_left hdiv1 (1 / 2)).trans (by norm_num)
   -- Bound deep extended shell at `A_V = 2 * log(log V)`.
   set B_ext := (shellZeros (V - 4) (2 * V + 4)).filter (fun z => A_V / Real.log V ≤ |z.re - 1 / 2|)
   have hB_card : (B_ext.card : ℝ) ≤ (C_d / 2) * V / Real.log (Real.log V) := by
@@ -782,7 +781,7 @@ theorem almostAll_unitWindow_rightHalfPort_doubleLog_decay :
     have h2 := h1.trans (hV_d A_V hAV_2 hAV_hi)
     have hexp_le : Real.exp (-(3 / 4 * A_V)) ≤ (Real.log V)⁻¹ := by
       calc Real.exp (-(3 / 4 * A_V))
-          ≤ Real.exp (-Real.log (Real.log V)) := Real.exp_le_exp.mpr (by dsimp only [A_V]; linarith)
+          ≤ Real.exp (-Real.log (Real.log V)) := Real.exp_le_exp.mpr (by dsimp only [A_V]; linarith only [hll_pos])
         _ = (Real.log V)⁻¹ := by rw [Real.exp_neg, Real.exp_log hlogV_pos]
     calc (B_ext.card : ℝ)
         ≤ C_d * (Real.exp (-(3 / 4 * A_V)) / A_V) * V * Real.log V := h2
@@ -790,7 +789,7 @@ theorem almostAll_unitWindow_rightHalfPort_doubleLog_decay :
           mul_le_mul_of_nonneg_right
             (mul_le_mul_of_nonneg_right
               (mul_le_mul_of_nonneg_left
-                (div_le_div_of_nonneg_right hexp_le (by linarith [hAV_2])) hCd_pos.le)
+                (div_le_div_of_nonneg_right hexp_le (by linarith only [hAV_2])) hCd_pos.le)
               hV_pos.le) hlogV_pos.le
       _ = (C_d / 2) * V / Real.log (Real.log V) := by
           dsimp only [A_V]; field_simp [hlogV_pos.ne', hll_pos.ne']
@@ -808,62 +807,62 @@ theorem almostAll_unitWindow_rightHalfPort_doubleLog_decay :
     intro N hN
     obtain ⟨hm_lo, hm_hi⟩ := Finset.mem_Icc.mp hm_I
     have hm_ge_V : V ≤ (m : ℝ) := (Nat.le_ceil V).trans (by exact_mod_cast hm_lo)
-    have hm_m₁ : m₁ ≤ m := (Nat.cast_lt.mp (by linarith : (m₁ : ℝ) < (m : ℝ))).le
+    have hm_m₁ : m₁ ≤ m := (Nat.cast_lt.mp (by linarith only [hVm₁, hm_ge_V] : (m₁ : ℝ) < (m : ℝ))).le
     have hy_le := burnolUnitLower_le_upper m
     have hbdry := burnolUnit_bdry_regular m ((burnolPrefix_le_doorSqrtPrefix m).trans hN)
     set n_m : ℕ := logDoorStage 1 m
     have hn_ge_logV : Real.log V ≤ (n_m : ℝ) := by
-      have hX : V < ((m + 5 : ℕ) : ℝ) := by push_cast; linarith
+      have hX : V < ((m + 5 : ℕ) : ℝ) := by push_cast; linarith only [hm_ge_V]
       calc Real.log V ≤ 1 * Real.log ((m + 5 : ℕ) : ℝ) := by
             rw [one_mul]; exact Real.log_le_log hV_pos hX.le
         _ ≤ (Nat.ceil (1 * Real.log ((m + 5 : ℕ) : ℝ)) : ℝ) := Nat.le_ceil _
         _ ≤ (n_m : ℝ) := by exact_mod_cast (le_max_right 6 _)
     have hrad_le : 1 / (16 * (n_m : ℝ)) ≤ Real.log (Real.log V) / (2 * Real.log V) := by
       have h1 : 1 / (16 * (n_m : ℝ)) ≤ 1 / (16 * Real.log V) :=
-        one_div_le_one_div_of_le (by positivity) (by linarith)
+        one_div_le_one_div_of_le (by positivity) (mul_le_mul_of_nonneg_left hn_ge_logV (by norm_num))
       have h2 : 1 / (16 * Real.log V) ≤ Real.log (Real.log V) / (2 * Real.log V) := by
         rw [div_le_div_iff₀ (by positivity) (by positivity)]
-        nlinarith [hll2, hlogV_pos]
+        nlinarith only [hll2, hlogV_pos]
       exact h1.trans h2
     have hrect_nz : ∀ z ∈ Icc σ_V (3 / 2) ×ℂ Icc (burnolUnitLower m) (burnolUnitUpper m),
         _root_.RHTower.finiteThetaAmplitude N z ≠ 0 := by
       intro z ⟨⟨hzx1, hzx2⟩, ⟨hzy1, hzy2⟩⟩ hz0
       by_cases hedge : z.re = 3 / 2 ∨ z.im = burnolUnitLower m ∨ z.im = burnolUnitUpper m
-      · exact edge_ne_zero_of_bdry_regular hy_le hbdry ⟨by linarith, hzx2⟩ ⟨hzy1, hzy2⟩
+      · exact edge_ne_zero_of_bdry_regular hy_le hbdry ⟨by linarith only [hzx1, hσV_lo], hzx2⟩ ⟨hzy1, hzy2⟩
           (Or.inr hedge) hz0
       · push Not at hedge
         obtain ⟨w, hw_unit, hzw_dist⟩ := exists_xiZero_near_thetaZero m N
           (r := 1 / (16 * (n_m : ℝ))) (by positivity) (htail m hm_m₁ N hN)
-          ⟨by linarith, lt_of_le_of_ne hzx2 hedge.1,
+          ⟨by linarith only [hzx1, hσV_lo], lt_of_le_of_ne hzx2 hedge.1,
             lt_of_le_of_ne hzy1 hedge.2.1.symm, lt_of_le_of_ne hzy2 hedge.2.2⟩ hz0
         have hw_lt : |w.re - 1 / 2| < A_V / Real.log V := by
           by_contra hge; exact hfree ⟨w, hw_unit, not_lt.mp hge⟩
         have hre_diff : z.re - w.re ≤ 1 / (16 * (n_m : ℝ)) :=
           (le_abs_self _).trans ((Complex.abs_re_le_norm (z - w)).trans
             (by simpa only [Complex.sub_re] using hzw_dist))
-        have hw_re_lt : w.re < 1 / 2 + A_V / Real.log V := by
-          linarith [le_abs_self (w.re - 1 / 2), hw_lt]
+        have hw_re_lt : w.re < 1 / 2 + A_V / Real.log V :=
+          sub_lt_iff_lt_add'.mp ((le_abs_self (w.re - 1 / 2)).trans_lt hw_lt)
         have hz_lt_σ : z.re < σ_V := by
-          dsimp only [σ_V, A_V] at hw_re_lt ⊢
-          have hpos_ll : 0 < Real.log (Real.log V) / (2 * Real.log V) := by positivity
-          have halg : 1 / 2 + 2 * Real.log (Real.log V) / Real.log V +
-              Real.log (Real.log V) / (2 * Real.log V) =
-              1 / 2 + (5 / 2) * Real.log (Real.log V) / Real.log V := by
-            field_simp [hlogV_pos.ne']; ring
-          have hcmp : (5 / 2) * Real.log (Real.log V) / Real.log V <
-              3 * Real.log (Real.log V) / Real.log V :=
-            div_lt_div_of_pos_right (by linarith) hlogV_pos
-          linarith [hw_re_lt, hre_diff, hrad_le, halg, hcmp]
-        linarith
+          have hzw_le : z.re ≤ w.re + 1 / (16 * (n_m : ℝ)) := sub_le_iff_le_add'.mp hre_diff
+          calc z.re ≤ w.re + 1 / (16 * (n_m : ℝ)) := hzw_le
+            _ < (1 / 2 + A_V / Real.log V) + Real.log (Real.log V) / (2 * Real.log V) :=
+                add_lt_add_of_lt_of_le hw_re_lt hrad_le
+            _ = 1 / 2 + (5 / 2) * Real.log (Real.log V) / Real.log V := by
+                dsimp only [A_V]; field_simp [hlogV_pos.ne']; ring
+            _ < σ_V := by
+                dsimp only [σ_V]
+                exact add_lt_add_left
+                  (div_lt_div_of_pos_right (by linarith only [hll_pos]) hlogV_pos) _
+        exact absurd hz_lt_σ (not_lt.mpr hzx1)
     have hnz₁ : ∀ x ∈ Icc (1 / 2 : ℝ) (3 / 2 : ℝ),
         _root_.RHTower.finiteThetaAmplitude N
           ((x : ℂ) + (burnolUnitLower m : ℂ) * I) ≠ 0 := fun x hx =>
-      edge_ne_zero_of_bdry_regular hy_le hbdry ⟨by simp; linarith [hx.1], by simpa using hx.2⟩
+      edge_ne_zero_of_bdry_regular hy_le hbdry ⟨by simp; linarith only [hx.1], by simpa using hx.2⟩
         ⟨by simp, by simpa using hy_le⟩ (Or.inr (Or.inr (Or.inl (by simp))))
     have hnz₂ : ∀ x ∈ Icc (1 / 2 : ℝ) (3 / 2 : ℝ),
         _root_.RHTower.finiteThetaAmplitude N
           ((x : ℂ) + (burnolUnitUpper m : ℂ) * I) ≠ 0 := fun x hx =>
-      edge_ne_zero_of_bdry_regular hy_le hbdry ⟨by simp; linarith [hx.1], by simpa using hx.2⟩
+      edge_ne_zero_of_bdry_regular hy_le hbdry ⟨by simp; linarith only [hx.1], by simpa using hx.2⟩
         ⟨by simpa using hy_le, by simp⟩ (Or.inr (Or.inr (Or.inr (by simp))))
     obtain ⟨⟨C, hC_pos, hpt⟩, _⟩ := exists_rightHalfPort_shifted_inv_decay
       hσV_lo hσV_hi hy_le N hrect_nz hnz₁ hnz₂
@@ -886,25 +885,26 @@ theorem almostAll_unitWindow_rightHalfPort_doubleLog_decay :
     have hm_ge_V : V ≤ (m : ℝ) := (Nat.le_ceil V).trans (by exact_mod_cast hm_lo)
     have hm_le_2V : (m : ℝ) ≤ 2 * V :=
       ((Nat.cast_le (α := ℝ)).mpr hm_hi).trans (Nat.floor_le (by positivity))
-    have him_pos : 0 < ρ.im := by linarith
+    have him_pos : 0 < ρ.im := by linarith only [hV32, hm_ge_V, hy1_lo, hy1]
     have hρ_B : ρ ∈ B_ext := Finset.mem_filter.mpr
       ⟨Finset.mem_filter.mpr
         ⟨_root_.RHTower.mem_stripFinsetPos.mpr
-          ⟨hr0, hr1, him_pos, by linarith, hxi⟩, by linarith⟩,
+          ⟨hr0, hr1, him_pos, by linarith only [hm_le_2V, hy2_hi, hy2], hxi⟩,
+          by linarith only [hm_ge_V, hy1_lo, hy1, hm_le_2V, hy2_hi, hy2]⟩,
         hρ_deep⟩
     refine Finset.mem_biUnion.mpr ⟨ρ, hρ_B, ?_⟩
     have hfl_le : (Nat.floor ρ.im : ℝ) ≤ ρ.im := Nat.floor_le him_pos.le
     have hlt_fl1 : ρ.im < (Nat.floor ρ.im : ℝ) + 1 := Nat.lt_floor_add_one ρ.im
     have hc1 : Nat.floor ρ.im ≤ m + 2 := by
       by_contra hlt
-      have : (m : ℝ) + 3 ≤ (Nat.floor ρ.im : ℝ) := by
+      have hcast : (m : ℝ) + 3 ≤ (Nat.floor ρ.im : ℝ) := by
         exact_mod_cast (show m + 3 ≤ Nat.floor ρ.im by omega)
-      linarith
+      linarith only [hy2, hy2_hi, hfl_le, hcast]
     have hc2 : m ≤ Nat.floor ρ.im + 3 := by
       by_contra hlt
-      have : (Nat.floor ρ.im : ℝ) + 4 ≤ (m : ℝ) := by
+      have hcast : (Nat.floor ρ.im : ℝ) + 4 ≤ (m : ℝ) := by
         exact_mod_cast (show Nat.floor ρ.im + 4 ≤ m by omega)
-      linarith
+      linarith only [hy1, hy1_lo, hlt_fl1, hcast]
     rw [Finset.mem_Icc]; omega
   have hcard_nat : Bad_port.card ≤ 6 * B_ext.card := by
     calc Bad_port.card
@@ -969,10 +969,10 @@ theorem microPlanckWindow_criticalLineFlux_volume_le :
       Real.tendsto_log_atTop.eventually_ge_atTop (max 16 B)] with V hV_lo hlog_lo
     have hV32 : 32 ≤ V := (le_max_left _ _).trans hV_lo
     have hVm₁ : ((m₁ + 2 : ℕ) : ℝ) ≤ V := (le_max_right _ _).trans hV_lo
-    have hV_pos : 0 < V := by linarith
+    have hV_pos : 0 < V := by linarith only [hV32]
     have hlog16 : 16 ≤ Real.log V := (le_max_left _ _).trans hlog_lo
     have hlogB : B ≤ Real.log V := (le_max_right _ _).trans hlog_lo
-    have hlogV_pos : 0 < Real.log V := by linarith
+    have hlogV_pos : 0 < Real.log V := by linarith only [hlog16]
     have hB_div_pos : 0 < B / Real.log V := div_pos hB hlogV_pos
     have hB_div_le1 : B / Real.log V ≤ 1 := (div_le_one hlogV_pos).mpr hlogB
     set S_V := _root_.RHTower.stripFinsetPos (2 * V + 4)
@@ -980,7 +980,7 @@ theorem microPlanckWindow_criticalLineFlux_volume_le :
     have hδB_le : δ_B ≤ 1 / 16 := by
       dsimp only [δ_B]
       rw [div_le_div_iff₀ (by positivity) (by norm_num)]
-      linarith
+      linarith only [hlogB]
     -- Every height `t₀ ∈ [V, 2V]` failing zero-freeness on `[1/2, 3/2] × [t₀, t₀ + B/log V]` lies in `[w.im - 17 B / (16 log V), w.im + B / (16 log V)]` for some `w ∈ S_V`.
     have hcov : {t₀ ∈ Icc V (2 * V) |
         ¬ let N := doorSqrtPrefix (Nat.floor t₀)
@@ -994,7 +994,7 @@ theorem microPlanckWindow_criticalLineFlux_volume_le :
       set m : ℕ := Nat.floor t₀
       set N : ℕ := doorSqrtPrefix m
       set y₂ : ℝ := t₀ + B / Real.log V
-      have hy_le : t₀ ≤ y₂ := by dsimp only [y₂]; linarith
+      have hy_le : t₀ ≤ y₂ := le_add_of_nonneg_right hB_div_pos.le
       -- If `A_N ≠ 0` on `[1/2, 3/2] × [t₀, y₂]`, `exists_criticalLineFlux_inv_decay_of_rightHalfZeroFree` discharges all 4 conjuncts.
       have hex_zero : ∃ z ∈ Icc (1 / 2) (3 / 2) ×ℂ Icc t₀ y₂,
           _root_.RHTower.finiteThetaAmplitude N z = 0 := by
@@ -1003,27 +1003,31 @@ theorem microPlanckWindow_criticalLineFlux_volume_le :
         obtain ⟨h1, h2, h3⟩ := exists_criticalLineFlux_inv_decay_of_rightHalfZeroFree hy_le N hnz_all
         exact hfail ⟨hnz_all, h1, h2, h3⟩
       obtain ⟨z, ⟨⟨hzx1, hzx2⟩, ⟨hzy1, hzy2⟩⟩, hz0⟩ := hex_zero
-      have hm_le_t₀ : (m : ℝ) ≤ t₀ := Nat.floor_le (by linarith [ht₀_I.1])
+      have hm_le_t₀ : (m : ℝ) ≤ t₀ := Nat.floor_le (by linarith only [hV32, ht₀_I.1])
       have ht₀_lt_m1 : t₀ < (m : ℝ) + 1 := Nat.lt_floor_add_one t₀
       have hm₁_le : m₁ ≤ m := by
         by_contra hlt; push Not at hlt
         have h1 : (m : ℝ) + 1 ≤ (m₁ : ℝ) := by exact_mod_cast hlt
-        have h2 : (m₁ : ℝ) + 2 ≤ V := by exact_mod_cast hVm₁
-        linarith [ht₀_I.1]
+        have h2 : (m₁ : ℝ) + 2 ≤ V := by push_cast at hVm₁; exact hVm₁
+        linarith only [h1, h2, hm_le_t₀, ht₀_lt_m1, ht₀_I.1]
       have hcoords := burnolUnit_coords m
-      have hy₁_lt : burnolUnitLower m < t₀ := by linarith [hcoords.2.1]
-      have hy₂_lt : y₂ < burnolUnitUpper m := by dsimp only [y₂]; linarith [hcoords.2.2.1]
+      have hy₁_lt : burnolUnitLower m < t₀ := by linarith only [hm_le_t₀, hcoords.2.1]
+      have hy₂_lt : y₂ < burnolUnitUpper m := by
+        calc y₂ = t₀ + B / Real.log V := rfl
+          _ < ((m : ℝ) + 1) + 1 := add_lt_add_of_lt_of_le ht₀_lt_m1 hB_div_le1
+          _ ≤ burnolUnitUpper m := by linarith only [hcoords.2.2.1]
       have hzx2_lt : z.re < 3 / 2 := by
         refine lt_of_le_of_ne hzx2 fun hre32 => ?_
         exact subrect_vertical_edge_ne_zero N
           (burnolUnit_bdry_regular m (burnolPrefix_le_doorSqrtPrefix m))
-          (Or.inr hre32) (by linarith) (by linarith) hz0
+          (Or.inr hre32) (by linarith only [hy₁_lt, hzy1]) (by linarith only [hy₂_lt, hzy2]) hz0
       set n_m : ℕ := logDoorStage c m
       obtain ⟨w, hw_unit, hzw_dist⟩ := exists_xiZero_near_thetaZero m N
         (r := 1 / (16 * (n_m : ℝ))) (by positivity) (htail m hm₁_le N le_rfl)
-        ⟨by linarith, hzx2_lt, by linarith, by linarith⟩ hz0
+        ⟨by linarith only [hzx1], hzx2_lt,
+          by linarith only [hy₁_lt, hzy1], by linarith only [hy₂_lt, hzy2]⟩ hz0
       have hn_lo : c * Real.log V ≤ (n_m : ℝ) := by
-        have hX : V < ((m + 5 : ℕ) : ℝ) := by push_cast; linarith [ht₀_I.1]
+        have hX : V < ((m + 5 : ℕ) : ℝ) := by push_cast; linarith only [ht₀_I.1, ht₀_lt_m1]
         calc c * Real.log V ≤ c * Real.log ((m + 5 : ℕ) : ℝ) :=
               mul_le_mul_of_nonneg_left (Real.log_le_log hV_pos hX.le) hc_pos.le
           _ ≤ (Nat.ceil (c * Real.log ((m + 5 : ℕ) : ℝ)) : ℝ) := Nat.le_ceil _
@@ -1033,25 +1037,33 @@ theorem microPlanckWindow_criticalLineFlux_volume_le :
         have hrhs : B / (16 * Real.log V) = 1 / (16 * ((1 / B) * Real.log V)) := by
           field_simp [hB.ne', hlogV_pos.ne']
         rw [hrhs]
-        exact one_div_le_one_div_of_le (by positivity) (by linarith)
+        exact one_div_le_one_div_of_le (by positivity)
+          (mul_le_mul_of_nonneg_left hn_lo (by norm_num))
       have him_diff : |z.im - w.im| ≤ 1 / (16 * (n_m : ℝ)) :=
         (Complex.abs_im_le_norm (z - w)).trans (by simpa only [Complex.sub_im] using hzw_dist)
+      have him_16 : |z.im - w.im| ≤ 1 / 16 := him_diff.trans (hrad_le_δ.trans hδB_le)
+      have hy₂_le_2V1 : y₂ ≤ 2 * V + 1 := add_le_add ht₀_I.2 hB_div_le1
       obtain ⟨⟨hw0, hw1, _, _⟩, hw_xi⟩ := (mem_burnolUnitXiZeros_iff m w).mp hw_unit
       have hw_im_pos : 0 < w.im := by
-        have := (abs_le.mp him_diff).1
-        linarith [ht₀_I.1, hzy1, hrad_le_δ, hδB_le]
+        have h1 := (abs_le.mp him_16).1
+        linarith only [hV32, ht₀_I.1, hzy1, h1]
       have hw_im_hi : w.im ≤ 2 * V + 4 := by
-        have := (abs_le.mp him_diff).1
-        dsimp only [y₂] at hzy2
-        linarith [ht₀_I.2, hzy2, hB_div_le1, hrad_le_δ, hδB_le]
+        have h1 := (abs_le.mp him_16).1
+        linarith only [hy₂_le_2V1, hzy2, h1]
       have hw_S : w ∈ S_V := _root_.RHTower.mem_stripFinsetPos.mpr
         ⟨hw0, hw1, hw_im_pos, hw_im_hi, hw_xi⟩
       refine Set.mem_biUnion hw_S ⟨?_, ?_⟩
-      · have := (abs_le.mp him_diff).2
-        dsimp only [y₂] at hzy2
-        linarith [hzy2, hrad_le_δ]
-      · have := (abs_le.mp him_diff).1
-        linarith [hzy1, hrad_le_δ]
+      · have hwz : w.im - z.im ≤ δ_B :=
+          (le_abs_self _).trans ((abs_sub_comm _ _).trans_le (him_diff.trans hrad_le_δ))
+        have hzy2' : z.im - B / Real.log V ≤ t₀ := sub_le_iff_le_add.mpr hzy2
+        calc w.im - B / Real.log V - δ_B
+            = (w.im - z.im - δ_B) + (z.im - B / Real.log V) := by ring
+          _ ≤ 0 + t₀ := add_le_add (sub_nonpos.mpr hwz) hzy2'
+          _ = t₀ := zero_add t₀
+      · have hzw : z.im - w.im ≤ δ_B := (le_abs_self _).trans (him_diff.trans hrad_le_δ)
+        calc t₀ ≤ z.im := hzy1
+          _ = w.im + (z.im - w.im) := by ring
+          _ ≤ w.im + δ_B := add_le_add_left hzw w.im
     -- Bound `#S_V ≤ 6 * C_tot * V * log V` and sum interval lengths `(9 / 8) * B / log V`.
     have hcard_S : (S_V.card : ℝ) ≤ 6 * C_tot * V * Real.log V := by
       have h1 : (S_V.card : ℝ) ≤ ∑ w ∈ S_V, ((analyticOrderAt _root_.RHTower.xi w).toNat : ℝ) := by
@@ -1059,17 +1071,17 @@ theorem microPlanckWindow_criticalLineFlux_volume_le :
         refine Finset.sum_le_sum fun w hw => ?_
         have hxi := (_root_.RHTower.mem_stripFinsetPos.mp hw).2.2.2.2
         exact_mod_cast Nat.pos_of_ne_zero (_root_.RHTower.xi_order_toNat_ne_zero hxi)
-      have h2 := h1.trans (htot (V := 2 * V + 4) (by linarith))
-      have h2V4_le : 2 * V + 4 ≤ 3 * V := by linarith
+      have h2 := h1.trans (htot (V := 2 * V + 4) (by linarith only [hV32]))
+      have h2V4_le : 2 * V + 4 ≤ 3 * V := by linarith only [hV32]
       have hlog_le : Real.log (2 * V + 4) ≤ 2 * Real.log V := by
-        have hsq : 2 * V + 4 ≤ V ^ 2 := by nlinarith [hV32]
-        calc Real.log (2 * V + 4) ≤ Real.log (V ^ 2) := Real.log_le_log (by linarith) hsq
+        have hsq : 2 * V + 4 ≤ V ^ 2 := by nlinarith only [hV32]
+        calc Real.log (2 * V + 4) ≤ Real.log (V ^ 2) := Real.log_le_log (by linarith only [hV32]) hsq
           _ = 2 * Real.log V := by rw [Real.log_pow]; push_cast; rfl
       calc (S_V.card : ℝ)
           ≤ C_tot * (2 * V + 4) * Real.log (2 * V + 4) := h2
         _ ≤ C_tot * (3 * V) * (2 * Real.log V) :=
             mul_le_mul (mul_le_mul_of_nonneg_left h2V4_le hC_tot.le) hlog_le
-              (Real.log_nonneg (by linarith)) (by positivity)
+              (Real.log_nonneg (by linarith only [hV32])) (by positivity)
         _ = 6 * C_tot * V * Real.log V := by ring
     calc volume {t₀ ∈ Icc V (2 * V) | _}
         ≤ volume (⋃ w ∈ S_V, Icc (w.im - B / Real.log V - δ_B) (w.im + δ_B)) := measure_mono hcov
@@ -1085,14 +1097,13 @@ theorem microPlanckWindow_criticalLineFlux_volume_le :
             ENNReal.ofReal_mul (Nat.cast_nonneg _), ENNReal.ofReal_natCast]
       _ ≤ ENNReal.ofReal (8 * C_tot * B * V) := by
           refine ENNReal.ofReal_le_ofReal ?_
-          have h1 : (S_V.card : ℝ) * ((9 / 8) * B / Real.log V) ≤
-              (6 * C_tot * V * Real.log V) * ((9 / 8) * B / Real.log V) :=
-            mul_le_mul_of_nonneg_right hcard_S (by positivity)
-          have h2 : (6 * C_tot * V * Real.log V) * ((9 / 8) * B / Real.log V) =
-              (27 / 4) * (C_tot * B * V) := by
-            field_simp [hlogV_pos.ne']; ring
-          have hpos_cbv : 0 < C_tot * B * V := by positivity
-          linarith [h1, h2, hpos_cbv]
+          calc (S_V.card : ℝ) * ((9 / 8) * B / Real.log V)
+              ≤ (6 * C_tot * V * Real.log V) * ((9 / 8) * B / Real.log V) :=
+                mul_le_mul_of_nonneg_right hcard_S (by positivity)
+            _ = (27 / 4) * (C_tot * B * V) := by field_simp [hlogV_pos.ne']; ring
+            _ ≤ 8 * C_tot * B * V := by
+                have hpos_cbv : 0 ≤ C_tot * B * V := by positivity
+                linarith only [hpos_cbv]
 
 end GaloisForLFunctions.ConjugateDiagonalGeometry.WindowPortFlux
 

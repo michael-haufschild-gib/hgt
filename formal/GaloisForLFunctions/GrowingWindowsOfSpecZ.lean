@@ -1,12 +1,15 @@
 import GaloisForLFunctions.GrowingWindowsOfSpecZ.TheTwoCollarFormOfAStage
 import GaloisForLFunctions.GrowingWindowsOfSpecZ.TheKickIsTheCollarReflection
+import GaloisForLFunctions.GrowingWindowsOfSpecZ.ZeroModesHaveReflectionParity
 import GaloisForLFunctions.GrowingWindowsOfSpecZ.TheLatticeCanonicalSystem
+import GaloisForLFunctions.GrowingWindowsOfSpecZ.TheAnglesOfADegenerateWindow
 import GaloisForLFunctions.GrowingWindowsOfSpecZ.TheSchurParametersOfSpecZ
+import GaloisForLFunctions.GrowingWindowsOfSpecZ.TheLatticeReadsThePrimesCausally
 
 /-!
 # Growing Windows of Spec ℤ (GWZ)
 
 The exact theory of growing windows: two-collar forms and kicks, the lattice canonical system
-(Schur–Levinson evolution of Weil sequences), zero modes and margins. See
+(Schur–Levinson evolution of Weil sequences), zero modes, angles and margins. See
 `GrowingWindowsOfSpecZ/README.md`.
 -/

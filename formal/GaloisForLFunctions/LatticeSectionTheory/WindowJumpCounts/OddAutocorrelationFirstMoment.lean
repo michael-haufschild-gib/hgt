@@ -41,8 +41,7 @@ theorem derivative_autocorr_first_moment {H : ℝ → ℝ} (hH : ContDiff ℝ 1 
     exact continuous_id.mul (continuous_autoCorr (hH.continuous_deriv le_rfl) hcs.deriv)
   have h := HasCompactSupport.integral_Ioi_deriv_eq hW1 hWc 0
   rw [hWe] at h
-  simpa only [W, zero_mul, sub_zero,
-    ArithmeticCompensationTheory.autoCorr_zero_eq_integral_sq] using h
+  simpa only [W, zero_mul, sub_zero, autoCorr, autocorr, add_zero, pow_two] using h
 
 /-- The primitive from the fixed left endpoint `−1` of a unit-window source. -/
 def unitSourcePrimitive (F : ℝ → ℝ) (x : ℝ) : ℝ := ∫ y in (-1 : ℝ)..x, F y

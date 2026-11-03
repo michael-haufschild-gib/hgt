@@ -66,3 +66,4 @@ import GaloisForLFunctions.ArithmeticHodgeTheoryOfDegenerations
 import GaloisForLFunctions.DimensionZeroGeometryOfSpecZ
 import GaloisForLFunctions.GrowingWindowsOfSpecZ
 import GaloisForLFunctions.ArchimedeanTateDomination
+import GaloisForLFunctions.CanonicalSystemOfTheWindowTower

@@ -1,5 +1,6 @@
 import GaloisForLFunctions.RenormalizedIntersectionTheory.MayerScattering.ArithmeticMellinReflection
 import GaloisForLFunctions.HTGeometry.GammaVerticalRatioBound
+import GaloisForLFunctions.HTGeometry.LpContinuousMultiplierNorm
 import GaloisForLFunctions.RHTower.GaussComponentVerticalMagnitude
 
 /-!

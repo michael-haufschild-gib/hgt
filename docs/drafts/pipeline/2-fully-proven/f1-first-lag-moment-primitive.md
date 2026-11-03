@@ -24,6 +24,9 @@ This retains the two source-dependent losses. It does not establish the joint
 prime-reflection and pole sign. Lean obligations: instantiate the compact primitive,
 apply the correlation derivative identities, and audit the Gamma corollary.
 
+Lean targets: `LatticeSectionTheory.WindowJumpCounts.OddAutocorrelationFirstMoment`
+and `WindowTowerOfSpecZ.TheGammaComparisonRetainsItsLagMoments`; source audits pending.
+
 Integration by parts also gives `∫xF=−∫H` and
 `∫2sinh(x/2)F=−∫cosh(x/2)H`. Thus the position square and sinh pole act on the
 same primitive as the first lag cost. These two identities are not yet Lean-audited here.

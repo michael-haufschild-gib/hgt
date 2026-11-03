@@ -47,6 +47,23 @@ theorem weilTest_latticeTranslate (φ : ℝ → ℝ) (h : ℝ) (d : ℤ) (x : �
   refine integral_congr_ae (Eventually.of_forall fun u => ?_)
   simp only [cx, latticeTranslate, Complex.conj_ofReal, Complex.ofReal_mul]
 
+/-- **The weighted Weil sequence is even**, for every weight: `κ^λ(−d) = κ^λ(d)`. -/
+theorem weilSeqW_isEven (lam : ℕ → ℝ) (φ : ℝ → ℝ) (h : ℝ) : IsEvenSeq (weilSeqW lam φ h) := by
+  intro d
+  unfold weilSeqW
+  have e : EF.weilTest (cx φ) (cx (latticeTranslate φ h (-d))) =
+      EF.tilde (EF.weilTest (cx φ) (cx (latticeTranslate φ h d))) := by
+    rw [RHTower.OddResolvent.tilde_weilTest_mixed]
+    funext x
+    rw [RHTower.WeilSpectral.weilTest_apply, RHTower.WeilSpectral.weilTest_apply]
+    conv_rhs => rw [← integral_sub_right_eq_self (μ := volume) _ ((d : ℝ) * h)]
+    congr 1
+    funext u
+    simp only [cx, latticeTranslate, Complex.conj_ofReal, sub_add_cancel]
+    push_cast
+    ring_nf
+  rw [e, RHTower.WeilSpectral.weilFullFunctional_tilde, Complex.conj_re]
+
 /-- The lattice lag vanishes outside the band `|x − dh| ≤ r`. -/
 theorem latticeLag_eq_zero (hφ : ∀ y, y ∉ Icc (-r) 0 → φ y = 0) (d : ℤ) {x : ℝ}
     (hx : r < |x - d * h|) : latticeLag φ h d x = 0 := by
@@ -203,5 +220,45 @@ theorem schurParam_single_kick (hφ : ∀ y, y ∉ Icc (-r) 0 → φ y = 0) (hh 
     nlinarith
   rw [hneg, add_zero] at hkick
   linarith
+
+/-- **Rigidity interval of a prime-power weight.** Let the lattice window of size `m + 1` be positive
+definite for the weight `λ`, and let `mh + r < log n₀`. Replace `λ(n₀)` by `t`. The lattice window
+of size `m + 2` stays positive definite iff
+`|β_m − (t − λ(n₀))n₀^{−1/2}k_{m+1}(log n₀)| < E_m`: the admissible weights of `n₀` at this stage
+form an open interval of length `2√n₀E_m/|k_{m+1}(log n₀)|`, and it shrinks with the margin. -/
+theorem posDef_update_iff (hφ : ∀ y, y ∉ Icc (-r) 0 → φ y = 0) (hh : 0 < h)
+    {lam : ℕ → ℝ} {n₀ : ℕ} (hn₀ : 2 ≤ n₀) {m : ℕ} (hm : (m : ℝ) * h + r < Real.log n₀)
+    (hpd : ToeplitzPosDef (weilSeqW lam φ h) (m + 1)) (t : ℝ) :
+    ToeplitzPosDef (weilSeqW (Function.update lam n₀ t) φ h) (m + 2) ↔
+      |schurParam (weilSeqW lam φ h) m -
+          (t - lam n₀) / Real.sqrt n₀ * latticeLag φ h ((m : ℤ) + 1) (Real.log n₀)| <
+        levinsonErr (weilSeqW lam φ h) m := by
+  have hφe := weilSeqW_isEven lam φ h
+  have hφe' := weilSeqW_isEven (Function.update lam n₀ t) φ h
+  have hupd : ∀ k : ℕ, k ≠ n₀ → Function.update lam n₀ t k = lam k := fun k hk =>
+    Function.update_of_ne hk _ _
+  obtain ⟨hlev, hkick⟩ := schurParam_single_kick hφ hh hn₀ hupd hm
+  rw [Function.update_self] at hkick
+  -- the window of size `m + 1` does not see `n₀`
+  have hpd' : ToeplitzPosDef (weilSeqW (Function.update lam n₀ t) φ h) (m + 1) := by
+    rw [toeplitzForm_posDef_iff hφe']
+    intro k hk
+    have := (toeplitzForm_posDef_iff hφe m).mp hpd k hk
+    have hk' : levinson (weilSeqW (Function.update lam n₀ t) φ h) k =
+        levinson (weilSeqW lam φ h) k :=
+      levinson_weilSeqW_congr hφ hh.le fun j _ hj => by
+        by_cases hjn : j = n₀
+        · subst hjn
+          have : (k : ℝ) ≤ m := by exact_mod_cast hk
+          nlinarith
+        · exact hupd j hjn
+    simp only [levinsonErr, hk'] at this ⊢
+    exact this
+  rw [posDef_succ_iff_abs_schur_lt hφe' hpd']
+  have hE : levinsonErr (weilSeqW (Function.update lam n₀ t) φ h) m =
+      levinsonErr (weilSeqW lam φ h) m := by simp only [levinsonErr, hlev]
+  rw [hE, show schurParam (weilSeqW (Function.update lam n₀ t) φ h) m =
+      schurParam (weilSeqW lam φ h) m - (t - lam n₀) / Real.sqrt n₀ *
+        latticeLag φ h ((m : ℤ) + 1) (Real.log n₀) by linarith]
 
 end GaloisForLFunctions.GrowingWindowsOfSpecZ

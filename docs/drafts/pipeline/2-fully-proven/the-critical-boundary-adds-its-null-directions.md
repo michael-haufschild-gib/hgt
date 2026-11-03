@@ -6,7 +6,7 @@
 - **Statement:** For every fixed linearly independent finite family of compact C² windows and every `K>0`, the tilted-spline horizon Gram matrix on the canonical clock eventually has inertia
   `(n₊(P_K), n₋(P_K)+n₀(P_K), 0)`.
 
-Here `P_K` is the leading pencil. All its zero directions enter the negative phase, so the complete family counts jump multiples with `K_i≤K`, including equality. The starting index depends on the family.
+Here `P_K` is the leading pencil. All its zero directions enter the negative phase, including at jump thresholds. The starting index depends on the family.
 
 ## Paper proof
 

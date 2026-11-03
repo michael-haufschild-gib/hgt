@@ -520,7 +520,6 @@ theorem mayerPeriodCore_mellin_reflect (s : upperMayerResonances) (t : ℝ) :
   have hn : conj (mayerCoreMellinFactor s t) ≠ 0 :=
     (map_ne_zero (starRingEnd ℂ)).mpr (mayerCoreMellinFactor_ne_zero s t)
   field_simp [hn]
-  ring
 
 
 

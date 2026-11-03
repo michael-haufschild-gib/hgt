@@ -173,7 +173,6 @@ theorem weilPair_stage_eq {N : ℕ} (hN : 1 ≤ N) {ε : ℝ} (hε : 0 < ε)
   have s2 := stageForm_eq_weilQuad_add_fold hu' hN hwl
   have s3 := stageForm_eq_weilQuad_add_fold hv' hN hwl
   rw [← hℓ] at s1 s2 s3
-  beta_reduce at s1 s2
   have p1 : ∀ x, (u (x + ε) + v x) * (u (x + ℓ + ε) + v (x + ℓ)) = u (x + ε) * v (x + ℓ) := by
     intro x
     have a1 := mul_shift_length_eq_zero hu (x + ε)

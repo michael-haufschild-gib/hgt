@@ -9,6 +9,7 @@ import GaloisForLFunctions.HTGeometry.CompactSupportIntegrationByParts
 The local expansion of the Gamma jump kernel produces two polynomial lag costs.
 Keeping these integrals preserves the source-dependent part lost by a uniform
 mass estimate, including its coupling to the odd polynomial moments.
+Integration by parts places the position and sinh charges on the same compact primitive.
 -/
 
 noncomputable section
@@ -195,6 +196,20 @@ theorem unit_odd_position_eq_primitive_integral {F : ℝ → ℝ} (hF : Continuo
     (fun x => by simpa only [id] using hasDerivAt_id x) continuous_const
   simpa only [mul_one, mul_comm] using h
 
+/-- The odd sinh pole is a cosh pairing of the same compact primitive. -/
+theorem unit_odd_sinhPairing_eq_primitive_cosh {F : ℝ → ℝ} (hF : Continuous F)
+    (hs : tsupport F ⊆ Icc (-(1 / 2 : ℝ)) (1 / 2)) (ho : ∀ x, F (-x) = -F x) :
+    sinhPairing F = -(∫ x, unitSourcePrimitive F x * Real.cosh (x / 2)) := by
+  have hd (x : ℝ) : HasDerivAt (fun y : ℝ => 2 * Real.sinh (y / 2))
+      (Real.cosh (x / 2)) x := by
+    have hhalf : HasDerivAt (fun y : ℝ => Real.sinh (y / 2))
+        (Real.cosh (x / 2) * (1 / 2)) x := by
+      have h := (Real.hasDerivAt_sinh (x / 2)).comp x ((hasDerivAt_id x).div_const 2)
+      simpa only [Function.comp_def, id] using h
+    refine (hhalf.const_mul (2 : ℝ)).congr_deriv ?_
+    ring
+  exact unit_odd_primitive_pairing hF hs ho hd (by fun_prop)
+
 /-- Both polynomial lag losses are masses or moments of the source's compact primitive. -/
 theorem unit_odd_gamma_primitive_lower {F : ℝ → ℝ}
     (hF : ContDiff ℝ 2 F) (hcs : HasCompactSupport F)
@@ -210,6 +225,20 @@ theorem unit_odd_gamma_primitive_lower {F : ℝ → ℝ}
   simp only [neg_sq, autocorr_zero_eq] at h ⊢
   linarith only [h]
 
+/-- The Gamma correction and odd pole charge act on one compact primitive. -/
+theorem unit_odd_gamma_pole_primitive_lower {F : ℝ → ℝ}
+    (hF : ContDiff ℝ 2 F) (hcs : HasCompactSupport F)
+    (hs : tsupport F ⊆ Icc (-(1 / 2 : ℝ)) (1 / 2)) (ho : ∀ x, F (-x) = -F x) :
+    (∫ t in Ioc (0 : ℝ) 1, (autocorr F 0 - autocorr F t) / t) -
+      (Real.eulerMascheroniConstant + Real.log Real.pi + Real.log 2 + 1 / 48) *
+        (∫ x, F x ^ 2) - (∫ x, unitSourcePrimitive F x ^ 2) / 24 -
+      (∫ x, unitSourcePrimitive F x) ^ 2 / 16 -
+      (∫ x, unitSourcePrimitive F x * Real.cosh (x / 2)) ^ 2 / 2 ≤
+        EF.gammaBracket 0 * (∫ x, F x ^ 2) + biScaleLevyEnergy F - sinhPairing F ^ 2 / 2 := by
+  have h := unit_odd_gamma_primitive_lower hF hcs hs ho
+  rw [unit_odd_sinhPairing_eq_primitive_cosh hF.continuous hs ho, neg_sq]
+  linarith only [h]
+
 end GaloisForLFunctions.WindowTowerOfSpecZ
 
 #print axioms GaloisForLFunctions.WindowTowerOfSpecZ.unit_odd_gamma_lag_moments_lower
@@ -218,3 +247,5 @@ end GaloisForLFunctions.WindowTowerOfSpecZ
 #print axioms GaloisForLFunctions.WindowTowerOfSpecZ.unit_odd_gamma_jump_second_moment_lower
 #print axioms GaloisForLFunctions.WindowTowerOfSpecZ.unit_odd_gamma_primitive_lower
 #print axioms GaloisForLFunctions.WindowTowerOfSpecZ.unit_odd_position_eq_primitive_integral
+#print axioms GaloisForLFunctions.WindowTowerOfSpecZ.unit_odd_sinhPairing_eq_primitive_cosh
+#print axioms GaloisForLFunctions.WindowTowerOfSpecZ.unit_odd_gamma_pole_primitive_lower
