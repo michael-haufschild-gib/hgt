@@ -51,7 +51,8 @@ theorem gammaFactor_analyticAt_of_re_pos (D : SelbergGammaData) {s : ℂ} (hs : 
 theorem gammaFactor_ne_zero_of_re_pos (D : SelbergGammaData) {s : ℂ} (hs : 0 < s.re) :
     D.gammaFactor s ≠ 0 := by
   simp only [SelbergGammaData.gammaFactor, Pi.mul_apply, Finset.prod_apply]
-  apply mul_ne_zero (Complex.cpow_ne_zero _ (Complex.ofReal_ne_zero.mpr D.Q_pos.ne'))
+  apply mul_ne_zero (Complex.cpow_ne_zero_iff.mpr
+    (.inl (Complex.ofReal_ne_zero.mpr D.Q_pos.ne')))
   apply Finset.prod_ne_zero_iff.mpr
   intro j _
   apply Complex.Gamma_ne_zero
@@ -100,10 +101,9 @@ theorem tendsto_gammaFactor_quarter_ratio (D : SelbergGammaData) (hd : 0 < D.deg
     have hτ : Tendsto (fun t : ℝ => D.lambda j * t + (D.mu j).im) atTop atTop :=
       tendsto_atTop_add_const_right _ _ (tendsto_id.const_mul_atTop (D.lambda_pos j))
     have hlim := (tendsto_norm_Gamma_ratio_zero ha hδ).comp hτ
-    convert hlim using 1 <;> congr 1
-    funext t
-    congr 3
-    ring
+    have he : D.lambda j * (1 / 4) + (D.mu j).re + D.lambda j / 2 =
+        D.lambda j * (3 / 4) + (D.mu j).re := by ring
+    simpa only [Function.comp_def, he] using hlim
   have hprod := tendsto_finsetProd Finset.univ (fun j _ => hfac j)
   have hz : (∏ _j : Fin D.rank, (0 : ℝ)) = 0 := by
     apply Finset.prod_eq_zero (Finset.mem_univ (⟨0, hr⟩ : Fin D.rank))
@@ -115,6 +115,6 @@ theorem tendsto_gammaFactor_quarter_ratio (D : SelbergGammaData) (hd : 0 < D.deg
   rw [show (1 / 4 : ℂ) = ((1 / 4 : ℝ) : ℂ) by push_cast; rfl,
     show (3 / 4 : ℂ) = ((3 / 4 : ℝ) : ℂ) by push_cast; rfl,
     norm_gammaFactor_vertical, norm_gammaFactor_vertical, Finset.prod_div_distrib]
-  ring
+  exact div_mul_div_comm _ _ _ _
 
 end GaloisForLFunctions.SelbergClass

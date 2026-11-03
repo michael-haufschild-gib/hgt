@@ -51,7 +51,7 @@ theorem eventually_ordinaryMellin_contour_identity (F : ExtendedSelbergClass)
     · obtain ⟨k, hk, rfl⟩ := Finset.mem_image.1 hp
       have hkK : (k : ℝ) ≤ K := by exact_mod_cast Nat.lt_succ_iff.1 (Finset.mem_range.1 hk)
       have hk0 := Nat.cast_nonneg (α := ℝ) k
-      constructor <;> simp only [Complex.neg_re, Complex.natCast_re] <;> dsimp only [a] <;> linarith
+      constructor <;> simp only [Complex.neg_re, Complex.natCast_re, a] <;> linarith
   have hmero : ∀ p ∈ P, MeromorphicAt (ordinaryMellinIntegrand F 0 (x : ℂ)) p :=
     fun p _ => meromorphicAt_ordinaryMellinIntegrand F 0 hx0 p
   have hoff : ∀ z : ℂ, a ≤ z.re → z.re ≤ 2 → z ∉ P →

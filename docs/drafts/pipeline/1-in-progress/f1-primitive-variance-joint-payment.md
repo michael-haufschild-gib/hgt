@@ -66,6 +66,25 @@ Write `Kᵢⱼ=∫₀¹pᵢqⱼ`, `γ₃=63/20`. The missing scalar Schur bound 
 The third-moment reserve makes the denominator positive. The new sign of `q₁` does
 not bound the mixed term sufficiently to establish this inequality.
 
+### Quantitative conjecture
+
+Try the simultaneous bounds `K₁₁≤9/40`, `K₃₃≤1/4`, `|K₁₃|≤1/25`.
+They would bound the Schur expression by `21141/85000<1280/5123`.
+None of these three estimates is established; the existing third-moment chord bound
+`K₃₃≤1558/4921` is too weak for this allocation.
+
+The explicit inverse suggests an exact density reduction. Put
+`μ(u)=u q₁(u)>0`, `r(u)=(5u²−3)/2`, and `Δ(u)=A(u)A(v)−w²` on the strip.
+Pairwise expansion gives the candidate integral identities
+
+`K₁₁=∫μ`, `K₁₃=∫μr`,
+`K₃₃=∫μr²+(w/2)∫_{d−1}¹ uv(r(u)−r(v))²/Δ(u)du`.
+
+The last term is nonnegative and cannot be discarded in an upper bound.
+Its numerator has `r(u)−r(v)=(5d/2)(u−v)`. Integral justification and Lean
+formalization remain pending; the quantitative estimates, not this algebraic
+reformulation alone, are the required advance.
+
 ## Source status
 
 - `HTGeometry.wirtinger_intervalIntegral` in `CirclePoincareWirtinger`: checked source statement;

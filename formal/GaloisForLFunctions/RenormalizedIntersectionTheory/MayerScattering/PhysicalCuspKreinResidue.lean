@@ -1,0 +1,1 @@
+import GaloisForLFunctions.RenormalizedIntersectionTheory.MayerScattering.CoreScatteringAsymptotics

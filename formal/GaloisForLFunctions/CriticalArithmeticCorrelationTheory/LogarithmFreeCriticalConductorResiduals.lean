@@ -4367,4 +4367,448 @@ private lemma nonCore_nearRows_log_free_bounds {φ : ℝ → ℝ}
         (Real.sqrt_nonneg _))
       (by positivity)
 
+/-- Two-sided logarithmic bounds on the finite harmonic sum `∑_{k ∈ Icc 1 M} 1 / k` for `M ≥ 1`:
+`log M ≤ ∑_{k=1}^M 1 / k ≤ 1 + log M`. -/
+private lemma log_le_sum_Icc_one_div_and_le {M : ℕ} (hM : 1 ≤ M) :
+    Real.log (M : ℝ) ≤ (∑ k ∈ Icc 1 M, 1 / (k : ℝ)) ∧
+      (∑ k ∈ Icc 1 M, 1 / (k : ℝ)) ≤ 1 + Real.log (M : ℝ) := by
+  refine ⟨?_, RHTower.sum_Icc_one_div_le hM⟩
+  have h1 : Real.log ((M : ℝ) + 1) ≤ ∑ k ∈ Icc 1 M, 1 / (k : ℝ) := by
+    clear hM
+    induction M with
+    | zero => simp
+    | succ m ih =>
+      rw [sum_Icc_succ_top (by omega)]
+      have hm1 : (0 : ℝ) < (m : ℝ) + 1 := by positivity
+      have hstep : Real.log ((m + 1 : ℕ) + 1 : ℝ) - Real.log ((m : ℝ) + 1) ≤
+          1 / ((m + 1 : ℕ) : ℝ) := by
+        have hq : (0 : ℝ) < (((m + 1 : ℕ) : ℝ) + 1) / ((m : ℝ) + 1) := by positivity
+        have hl := Real.log_le_sub_one_of_pos hq
+        rw [Real.log_div (by positivity) hm1.ne'] at hl
+        have hcast : ((m + 1 : ℕ) : ℝ) = (m : ℝ) + 1 := by push_cast; ring
+        have hsub : (((m + 1 : ℕ) : ℝ) + 1) / ((m : ℝ) + 1) - 1 = 1 / ((m + 1 : ℕ) : ℝ) := by
+          rw [hcast]; field_simp [hm1.ne']; ring
+        linarith only [hl, hsub]
+      linarith only [ih, hstep]
+  exact (Real.log_le_log (by exact_mod_cast hM) (by linarith)).trans h1
+
+/-- Pointwise universal and interior harmonic-collar bounds on
+`∑_{j ∈ nearRowIndices c N n} archimedeanCenterKernel n j / √j - log c * √n`.
+On interior rows `2 N / c < n` with `n * exp(2 c / N) ≤ N`, the half-collar width `Δ_n ≍ c n / N`
+has harmonic sum `log(c n / N) + O(1)`, cancelling `log c` identically and leaving `O(√N)`. -/
+private lemma abs_centerPoleCollar_diff_le {c : ℝ} {N n : ℕ}
+    (hc1 : 1 ≤ c) (h8c : 8 * c ≤ N) (hn : n ∈ Icc 1 N) :
+    |(∑ j ∈ nearRowIndices c N n, archimedeanCenterKernel n j / Real.sqrt j) -
+        Real.log c * Real.sqrt n| ≤
+      (4 + 2 * Real.exp 2) * (1 + Real.log c) * Real.sqrt n ∧
+      (2 * (N : ℝ) / c < n → (n : ℝ) * Real.exp (2 * c / N) ≤ N →
+        |(∑ j ∈ nearRowIndices c N n, archimedeanCenterKernel n j / Real.sqrt j) -
+            Real.log c * Real.sqrt n| ≤
+          2 * (6 + 2 * Real.exp 2) * Real.sqrt N) := by
+  have hc0 : 0 < c := zero_lt_one.trans_le hc1
+  have hlogc0 : 0 ≤ Real.log c := Real.log_nonneg hc1
+  obtain ⟨hn1, hnN⟩ := mem_Icc.mp hn
+  have hn0 : (0 : ℝ) < n := by exact_mod_cast hn1
+  have hN0 : (0 : ℝ) < N := by linarith only [hc0, h8c]
+  have hsn : 0 < Real.sqrt (n : ℝ) := Real.sqrt_pos.mpr hn0
+  have hsN : 0 < Real.sqrt (N : ℝ) := Real.sqrt_pos.mpr hN0
+  have hw1 : c / N ≤ 1 := (div_le_one hN0).mpr (by linarith only [hc0, h8c])
+  -- Exact harmonic identity on `nearRowIndices c N n`.
+  have hker_eq : (∑ j ∈ nearRowIndices c N n, archimedeanCenterKernel n j / Real.sqrt j) =
+      Real.sqrt n * ((1 / 2 : ℝ) *
+        ((∑ j ∈ nearRowIndices c N n, 1 / |(n : ℝ) - j|) +
+          ∑ j ∈ nearRowIndices c N n, 1 / ((n : ℝ) + j))) := by
+    rw [← sum_add_distrib, mul_sum, mul_sum]
+    refine sum_congr rfl fun j hj => ?_
+    obtain ⟨hjI, hjn, -⟩ := mem_filter.mp hj
+    have hj1 := (mem_Icc.mp hjI).1
+    have hj0 : (0 : ℝ) < j := by exact_mod_cast hj1
+    have h := archimedeanCenterKernel_div_sqrt_mul hn1 hj1 (Ne.symm hjn)
+    calc
+      archimedeanCenterKernel n j / Real.sqrt j =
+          Real.sqrt n * (archimedeanCenterKernel n j / (Real.sqrt n * Real.sqrt j)) := by
+        field_simp [hsn.ne', (Real.sqrt_pos.mpr hj0).ne']
+      _ = _ := by rw [h]; ring
+  -- Bound the smooth reciprocal-sum half `∑ 1 / (n + j) ≤ 4 e^2`.
+  have hadd_sum : 0 ≤ (∑ j ∈ nearRowIndices c N n, 1 / ((n : ℝ) + j)) ∧
+      (∑ j ∈ nearRowIndices c N n, 1 / ((n : ℝ) + j)) ≤ 4 * Real.exp 2 := by
+    refine ⟨sum_nonneg fun j _ => by positivity, ?_⟩
+    have he_gap : Real.exp (2 * c / N) - 1 ≤ linearNearRowRadius c / N := by
+      calc
+        Real.exp (2 * c / N) - 1 ≤ 2 * c / N * Real.exp (2 * c / N) := exp_sub_one_le_mul_exp
+        _ ≤ 2 * c / N * Real.exp 2 :=
+          mul_le_mul_of_nonneg_left
+            (Real.exp_le_exp.mpr (by
+              have h := mul_le_mul_of_nonneg_left hw1 zero_le_two
+              simpa only [mul_div_assoc, mul_one] using h)) (by positivity)
+        _ = linearNearRowRadius c / N := by unfold linearNearRowRadius; ring
+    let rad_n := (n : ℝ) * (linearNearRowRadius c / N)
+    have hrad0 : 0 ≤ rad_n := by dsimp only [rad_n]; unfold linearNearRowRadius; positivity
+    have hcard_n : ((nearRowIndices c N n).card : ℝ) ≤ 2 * rad_n := by
+      have hsub : nearRowIndices c N n ⊆
+          (Icc 1 N).filter (fun j => j ≠ n ∧ |(j : ℝ) - n| ≤ rad_n) := by
+        intro j hj
+        obtain ⟨hjI, hjn, hlog⟩ := mem_filter.mp hj
+        have hj0 : (0 : ℝ) < j := by exact_mod_cast (mem_Icc.mp hjI).1
+        exact mem_filter.mpr ⟨hjI, hjn,
+          (abs_sub_le_of_abs_log_le hj0 hn0 hlog).trans (mul_le_mul_of_nonneg_left he_gap hn0.le)⟩
+      exact (show ((nearRowIndices c N n).card : ℝ) ≤ _ by exact_mod_cast card_le_card hsub).trans
+        (card_near_le (Icc 1 N) n hrad0)
+    have hpt : ∀ j ∈ nearRowIndices c N n, 1 / ((n : ℝ) + j) ≤ 1 / (n : ℝ) := fun j _ =>
+      one_div_le_one_div_of_le hn0 (by linarith [Nat.cast_nonneg j])
+    calc
+      (∑ j ∈ nearRowIndices c N n, 1 / ((n : ℝ) + j)) ≤
+          ((nearRowIndices c N n).card : ℝ) * (1 / (n : ℝ)) := by
+        rw [← nsmul_eq_mul, ← sum_const]; exact sum_le_sum hpt
+      _ ≤ (2 * rad_n) * (1 / (n : ℝ)) := mul_le_mul_of_nonneg_right hcard_n (by positivity)
+      _ = 4 * Real.exp 2 * (c / N) := by
+        dsimp only [rad_n]; unfold linearNearRowRadius; field_simp [hn0.ne', hN0.ne']; ring
+      _ ≤ 4 * Real.exp 2 := by nlinarith only [hw1, Real.exp_pos 2]
+  -- Split `nearRowIndices c N n` into lower (`j < n`) and upper (`n < j`) halves.
+  let S_lo := (nearRowIndices c N n).filter (· < n)
+  let S_hi := (nearRowIndices c N n).filter (n < ·)
+  have hsplit_S : nearRowIndices c N n = S_lo ∪ S_hi := by
+    ext j; simp only [S_lo, S_hi, mem_union, mem_filter, nearRowIndices]
+    constructor
+    · rintro ⟨hjI, hjn, hlog⟩
+      rcases lt_or_gt_of_ne hjn with h | h
+      · exact Or.inl ⟨⟨hjI, hjn, hlog⟩, h⟩
+      · exact Or.inr ⟨⟨hjI, hjn, hlog⟩, h⟩
+    · rintro (⟨h, _⟩ | ⟨h, _⟩) <;> exact h
+  have hdisj_S : Disjoint S_lo S_hi :=
+    disjoint_left.mpr fun j h1 h2 => by
+      have := (mem_filter.mp h1).2; have := (mem_filter.mp h2).2; omega
+  -- Universal upper bound on `∑ 1 / |n - j|` via `K_rad = ⌊linearNearRowRadius c⌋₊`.
+  have hdiff_univ : (∑ j ∈ nearRowIndices c N n, 1 / |(n : ℝ) - j|) ≤ 8 + 2 * Real.log c := by
+    have hR1 : 1 ≤ linearNearRowRadius c := by
+      unfold linearNearRowRadius
+      have he2 : 1 ≤ Real.exp 2 := Real.one_le_exp (by norm_num)
+      nlinarith only [hc1, he2]
+    let K_rad := ⌊linearNearRowRadius c⌋₊
+    have hK1 : 1 ≤ K_rad := Nat.le_floor hR1
+    have hKR : (K_rad : ℝ) ≤ linearNearRowRadius c := Nat.floor_le (by positivity)
+    have hH_K : (∑ k ∈ Icc 1 K_rad, 1 / (k : ℝ)) ≤ 4 + Real.log c := by
+      have hb := RHTower.sum_Icc_one_div_le hK1
+      have hlogK : Real.log (K_rad : ℝ) ≤ 3 + Real.log c := by
+        have hl := Real.log_le_log (by exact_mod_cast hK1) hKR
+        unfold linearNearRowRadius at hl
+        rw [Real.log_mul (by positivity) (Real.exp_pos 2).ne',
+          Real.log_mul two_ne_zero hc0.ne', Real.log_exp] at hl
+        have hl2 : Real.log 2 ≤ 1 := by
+          have := Real.log_le_sub_one_of_pos two_pos; linarith
+        linarith only [hl, hl2]
+      linarith only [hb, hlogK]
+    have hdist_K : ∀ j ∈ nearRowIndices c N n, |(j : ℝ) - n| ≤ K_rad + 1 → False := fun _ _ _ => by
+      trivial
+    have hdist_le_R : ∀ j ∈ nearRowIndices c N n, |(j : ℝ) - n| ≤ linearNearRowRadius c := by
+      intro j hj
+      obtain ⟨hjI, _, hlog⟩ := mem_filter.mp hj
+      have hj0 : (0 : ℝ) < j := by exact_mod_cast (mem_Icc.mp hjI).1
+      have he_gap : Real.exp (2 * c / N) - 1 ≤ linearNearRowRadius c / N := by
+        calc
+          Real.exp (2 * c / N) - 1 ≤ 2 * c / N * Real.exp (2 * c / N) := exp_sub_one_le_mul_exp
+          _ ≤ 2 * c / N * Real.exp 2 :=
+            mul_le_mul_of_nonneg_left
+              (Real.exp_le_exp.mpr (by
+                have h := mul_le_mul_of_nonneg_left hw1 zero_le_two
+                simpa only [mul_div_assoc, mul_one] using h)) (by positivity)
+          _ = linearNearRowRadius c / N := by unfold linearNearRowRadius; ring
+      have hn_le_N : (n : ℝ) ≤ N := by exact_mod_cast hnN
+      calc
+        |(j : ℝ) - n| ≤ (n : ℝ) * (linearNearRowRadius c / N) :=
+          (abs_sub_le_of_abs_log_le hj0 hn0 hlog).trans (mul_le_mul_of_nonneg_left he_gap hn0.le)
+        _ = linearNearRowRadius c * ((n : ℝ) / N) := by ring
+        _ ≤ linearNearRowRadius c * 1 :=
+          mul_le_mul_of_nonneg_left ((div_le_one hN0).mpr hn_le_N) (by positivity)
+        _ = linearNearRowRadius c := mul_one _
+    have hlo_le : (∑ j ∈ S_lo, 1 / |(n : ℝ) - j|) ≤ ∑ k ∈ Icc 1 K_rad, 1 / (k : ℝ) := by
+      have himg : (∑ j ∈ S_lo, 1 / |(n : ℝ) - j|) =
+          ∑ k ∈ S_lo.image (fun j => n - j), 1 / (k : ℝ) := by
+        rw [sum_image]
+        · refine sum_congr rfl fun j hj => ?_
+          have hjn : j < n := (mem_filter.mp hj).2
+          rw [abs_of_pos (sub_pos.mpr (by exact_mod_cast hjn : (j : ℝ) < n)),
+            Nat.cast_sub hjn.le]
+        · intro i hi j hj hij
+          have := (mem_filter.mp hi).2; have := (mem_filter.mp hj).2; omega
+      rw [himg]
+      refine sum_le_sum_of_subset_of_nonneg ?_ (fun _ _ _ => by positivity)
+      intro k hk
+      obtain ⟨j, hj, rfl⟩ := mem_image.mp hk
+      have hjn : j < n := (mem_filter.mp hj).2
+      have hd := hdist_le_R j (mem_filter.mp hj).1
+      rw [abs_of_neg (sub_neg.mpr (by exact_mod_cast hjn : (j : ℝ) < n)), neg_sub] at hd
+      exact mem_Icc.mpr ⟨by omega, Nat.le_floor (by rw [Nat.cast_sub hjn.le]; exact hd)⟩
+    have hhi_le : (∑ j ∈ S_hi, 1 / |(n : ℝ) - j|) ≤ ∑ k ∈ Icc 1 K_rad, 1 / (k : ℝ) := by
+      have himg : (∑ j ∈ S_hi, 1 / |(n : ℝ) - j|) =
+          ∑ k ∈ S_hi.image (fun j => j - n), 1 / (k : ℝ) := by
+        rw [sum_image]
+        · refine sum_congr rfl fun j hj => ?_
+          have hnj : n < j := (mem_filter.mp hj).2
+          rw [abs_of_neg (sub_neg.mpr (by exact_mod_cast hnj : (n : ℝ) < j)), neg_sub,
+            Nat.cast_sub hnj.le]
+        · intro i hi j hj hij
+          have := (mem_filter.mp hi).2; have := (mem_filter.mp hj).2; omega
+      rw [himg]
+      refine sum_le_sum_of_subset_of_nonneg ?_ (fun _ _ _ => by positivity)
+      intro k hk
+      obtain ⟨j, hj, rfl⟩ := mem_image.mp hk
+      have hnj : n < j := (mem_filter.mp hj).2
+      have hd := hdist_le_R j (mem_filter.mp hj).1
+      rw [abs_of_pos (sub_pos.mpr (by exact_mod_cast hnj : (n : ℝ) < j))] at hd
+      exact mem_Icc.mpr ⟨by omega, Nat.le_floor (by rw [Nat.cast_sub hnj.le]; exact hd)⟩
+    rw [hsplit_S, sum_union hdisj_S]
+    linarith only [hlo_le, hhi_le, hH_K]
+  constructor
+  · -- Universal bound across all `n ∈ Icc 1 N`.
+    rw [hker_eq, show Real.sqrt n * ((1 / 2 : ℝ) *
+        ((∑ j ∈ nearRowIndices c N n, 1 / |(n : ℝ) - j|) +
+          ∑ j ∈ nearRowIndices c N n, 1 / ((n : ℝ) + j))) - Real.log c * Real.sqrt n =
+      Real.sqrt n * ((1 / 2 : ℝ) *
+        ((∑ j ∈ nearRowIndices c N n, 1 / |(n : ℝ) - j|) +
+          ∑ j ∈ nearRowIndices c N n, 1 / ((n : ℝ) + j)) - Real.log c) by ring,
+      abs_mul, abs_of_pos hsn]
+    have hdiff_nn : 0 ≤ ∑ j ∈ nearRowIndices c N n, 1 / |(n : ℝ) - j| :=
+      sum_nonneg fun _ _ => by positivity
+    have habs_mid : |(1 / 2 : ℝ) *
+        ((∑ j ∈ nearRowIndices c N n, 1 / |(n : ℝ) - j|) +
+          ∑ j ∈ nearRowIndices c N n, 1 / ((n : ℝ) + j)) - Real.log c| ≤
+        (4 + 2 * Real.exp 2) * (1 + Real.log c) := by
+      rw [abs_le]
+      have hexp0 : 0 ≤ Real.exp 2 := (Real.exp_pos 2).le
+      constructor <;> nlinarith only [hdiff_nn, hadd_sum.1, hdiff_univ, hadd_sum.2, hlogc0, hexp0]
+    exact (mul_le_mul_of_nonneg_left habs_mid hsn.le).trans_eq (by ring)
+  · -- Interior Zone 3 bound: exact cancellation of `Real.log c`.
+    intro hn_lo hn_hi
+    let w := 2 * c / N
+    have hw0 : 0 < w := by dsimp only [w]; positivity
+    have hw4 : w ≤ 1 / 4 := by
+      dsimp only [w]
+      rw [div_le_iff₀ hN0]
+      linarith only [h8c]
+    have hnw4 : 4 < (n : ℝ) * w := by
+      dsimp only [w]
+      have h1 : 2 * (N : ℝ) < n * c := (div_lt_iff₀ hc0).mp hn_lo
+      rw [show (n : ℝ) * (2 * c / N) = 2 * (n * c) / N by ring, lt_div_iff₀ hN0]
+      linarith only [h1]
+    -- Upper half `S_hi = Icc (n + 1) U_n` with `c n / N ≤ U_n - n ≤ 6 c n / N`.
+    let U_n := ⌊(n : ℝ) * Real.exp w⌋₊
+    have hUn_N : U_n ≤ N := Nat.floor_le_of_le hn_hi
+    have hexp_ge : 1 + w ≤ Real.exp w := by
+      have := Real.add_one_le_exp w; linarith only [this]
+    have hn_exp_gt : (n : ℝ) + 4 < (n : ℝ) * Real.exp w := by
+      have h1 : (n : ℝ) * (1 + w) ≤ (n : ℝ) * Real.exp w :=
+        mul_le_mul_of_nonneg_left hexp_ge hn0.le
+      nlinarith only [h1, hnw4]
+    have hn_lt_Un : n + 1 ≤ U_n := by
+      have h1 : n + 4 ≤ U_n := by
+        apply Nat.le_floor
+        push_cast
+        linarith only [hn_exp_gt]
+      omega
+    have hShi_eq : S_hi = Icc (n + 1) U_n := by
+      ext j
+      simp only [S_hi, nearRowIndices, mem_filter, mem_Icc]
+      constructor
+      · rintro ⟨⟨⟨_, _⟩, _, hlog⟩, hnj⟩
+        have hj0 : (0 : ℝ) < j := by exact_mod_cast (by omega : 0 < j)
+        have hnjR : (n : ℝ) < j := by exact_mod_cast hnj
+        rw [abs_of_pos (sub_pos.mpr (Real.log_lt_log hn0 hnjR)),
+          ← Real.log_div hj0.ne' hn0.ne'] at hlog
+        have hdiv : (j : ℝ) / n ≤ Real.exp w := by
+          rw [← Real.exp_log (div_pos hj0 hn0)]
+          exact Real.exp_le_exp.mpr hlog
+        exact ⟨by omega, Nat.le_floor ((div_le_iff₀ hn0).mp hdiv)⟩
+      · rintro ⟨hn1j, hjU⟩
+        have hnj : n < j := by omega
+        have hj1 : 1 ≤ j := by omega
+        have hjN : j ≤ N := hjU.trans hUn_N
+        have hj0 : (0 : ℝ) < j := by exact_mod_cast hj1
+        have hnjR : (n : ℝ) < j := by exact_mod_cast hnj
+        have hj_le : (j : ℝ) ≤ (n : ℝ) * Real.exp w :=
+          (by exact_mod_cast hjU : (j : ℝ) ≤ U_n).trans (Nat.floor_le (by positivity))
+        have hlog : |Real.log (j : ℝ) - Real.log n| ≤ w := by
+          rw [abs_of_pos (sub_pos.mpr (Real.log_lt_log hn0 hnjR)),
+            ← Real.log_div hj0.ne' hn0.ne', ← Real.log_exp w]
+          exact Real.log_le_log (div_pos hj0 hn0) ((div_le_iff₀ hn0).mpr hj_le)
+        exact ⟨⟨⟨hj1, hjN⟩, by omega, hlog⟩, hnj⟩
+    let Δ_hi := U_n - n
+    have hΔhi1 : 1 ≤ Δ_hi := by omega
+    have hΔhi_bounds : c * (n : ℝ) / N ≤ Δ_hi ∧ (Δ_hi : ℝ) ≤ 6 * (c * (n : ℝ) / N) := by
+      have hcast : (Δ_hi : ℝ) = (U_n : ℝ) - n := Nat.cast_sub (by omega : n ≤ U_n)
+      rw [hcast]
+      constructor
+      · have hfl : (n : ℝ) * Real.exp w - 1 < U_n := Nat.sub_one_lt_floor _
+        have h1 : (n : ℝ) * (1 + w) ≤ (n : ℝ) * Real.exp w :=
+          mul_le_mul_of_nonneg_left hexp_ge hn0.le
+        have h2 : (1 / 2 : ℝ) * ((n : ℝ) * w) = c * (n : ℝ) / N := by dsimp only [w]; ring
+        linarith only [hfl, h1, hnw4, h2]
+      · have hfl : (U_n : ℝ) ≤ (n : ℝ) * Real.exp w := Nat.floor_le (by positivity)
+        have hexp_ub : Real.exp w - 1 ≤ 3 * w := by
+          have h1 : Real.exp w - 1 ≤ w * Real.exp w := exp_sub_one_le_mul_exp
+          have h2 : Real.exp w ≤ 3 :=
+            (Real.exp_le_exp.mpr (hw4.trans (by norm_num : (1 / 4 : ℝ) ≤ 1))).trans
+              (by have := Real.exp_one_lt_d9; linarith)
+          nlinarith only [h1, h2, hw0]
+        have h3 : (n : ℝ) * (Real.exp w - 1) ≤ (n : ℝ) * (3 * w) :=
+          mul_le_mul_of_nonneg_left hexp_ub hn0.le
+        have h4 : (n : ℝ) * (3 * w) = 6 * (c * (n : ℝ) / N) := by dsimp only [w]; ring
+        linarith only [hfl, h3, h4]
+    have hsum_hi : (∑ j ∈ S_hi, 1 / |(n : ℝ) - j|) = ∑ k ∈ Icc 1 Δ_hi, 1 / (k : ℝ) := by
+      rw [hShi_eq]
+      refine sum_bij (fun j _ => j - n) ?_ ?_ ?_ ?_
+      · intro j hj; obtain ⟨h1, h2⟩ := mem_Icc.mp hj; exact mem_Icc.mpr ⟨by omega, by omega⟩
+      · intro i hi j hj hij
+        obtain ⟨_, _⟩ := mem_Icc.mp hi; obtain ⟨_, _⟩ := mem_Icc.mp hj; omega
+      · intro k hk
+        obtain ⟨h1, h2⟩ := mem_Icc.mp hk
+        exact ⟨n + k, mem_Icc.mpr ⟨by omega, by omega⟩, by omega⟩
+      · intro j hj
+        have hnj : n ≤ j := by have := (mem_Icc.mp hj).1; omega
+        rw [abs_of_nonpos (sub_nonpos.mpr (by exact_mod_cast hnj)), neg_sub, Nat.cast_sub hnj]
+    -- Lower half `S_lo = Icc L_n (n - 1)` with `c n / N ≤ n - L_n ≤ 6 c n / N`.
+    let L_n := ⌈(n : ℝ) * Real.exp (-w)⌉₊
+    have hLn1 : 1 ≤ L_n := Nat.one_le_iff_ne_zero.mpr (Nat.ceil_pos.mpr (by positivity)).ne'
+    have hexp_neg_ub : Real.exp (-w) ≤ 1 - (4 / 5 : ℝ) * w := by
+      have hprod : Real.exp (-w) * (1 + w) ≤ 1 := by
+        calc
+          Real.exp (-w) * (1 + w) ≤ Real.exp (-w) * Real.exp w :=
+            mul_le_mul_of_nonneg_left hexp_ge (Real.exp_pos _).le
+          _ = 1 := by rw [← Real.exp_add, neg_add_cancel, Real.exp_zero]
+      have halg : 1 ≤ (1 - (4 / 5 : ℝ) * w) * (1 + w) := by nlinarith only [hw0, hw4]
+      have h1w : 0 < 1 + w := by linarith only [hw0]
+      nlinarith only [hprod, halg, h1w]
+    have hexp_neg_lb : 1 - w ≤ Real.exp (-w) := by
+      have := Real.add_one_le_exp (-w); linarith only [this]
+    have hLn_lt_n : L_n + 1 ≤ n := by
+      have hceil : (L_n : ℝ) < (n : ℝ) * Real.exp (-w) + 1 := Nat.ceil_lt_add_one (by positivity)
+      have h1 : (n : ℝ) * Real.exp (-w) ≤ (n : ℝ) * (1 - (4 / 5 : ℝ) * w) :=
+        mul_le_mul_of_nonneg_left hexp_neg_ub hn0.le
+      have hlt : (L_n : ℝ) + 1 < n := by nlinarith only [hceil, h1, hnw4]
+      have hnat : L_n + 1 < n := by exact_mod_cast hlt
+      omega
+    have hSlo_eq : S_lo = Icc L_n (n - 1) := by
+      ext j
+      simp only [S_lo, nearRowIndices, mem_filter, mem_Icc]
+      constructor
+      · rintro ⟨⟨⟨hj1, _⟩, _, hlog⟩, hjn⟩
+        have hj0 : (0 : ℝ) < j := by exact_mod_cast hj1
+        have hjnR : (j : ℝ) < n := by exact_mod_cast hjn
+        rw [abs_of_neg (sub_neg.mpr (Real.log_lt_log hj0 hjnR)), neg_sub,
+          ← Real.log_div hn0.ne' hj0.ne'] at hlog
+        have hdiv : (n : ℝ) / j ≤ Real.exp w := by
+          rw [← Real.exp_log (div_pos hn0 hj0)]
+          exact Real.exp_le_exp.mpr hlog
+        have hmul : (n : ℝ) * Real.exp (-w) ≤ j := by
+          have h1 := (div_le_iff₀ hj0).mp hdiv
+          have h2 := mul_le_mul_of_nonneg_right h1 (Real.exp_pos (-w)).le
+          rwa [mul_assoc, ← Real.exp_add, add_neg_cancel, Real.exp_zero, mul_one] at h2
+        exact ⟨Nat.ceil_le.mpr hmul, by omega⟩
+      · rintro ⟨hLj, hjn1⟩
+        have hjn : j < n := by omega
+        have hj1 : 1 ≤ j := hLn1.trans hLj
+        have hjN : j ≤ N := hjn.le.trans hnN
+        have hj0 : (0 : ℝ) < j := by exact_mod_cast hj1
+        have hjnR : (j : ℝ) < n := by exact_mod_cast hjn
+        have hj_ge : (n : ℝ) * Real.exp (-w) ≤ j :=
+          (Nat.le_ceil _).trans (by exact_mod_cast hLj)
+        have hdiv : (n : ℝ) / j ≤ Real.exp w := by
+          rw [div_le_iff₀ hj0]
+          have h2 := mul_le_mul_of_nonneg_right hj_ge (Real.exp_pos w).le
+          rwa [mul_assoc, ← Real.exp_add, neg_add_cancel, Real.exp_zero, mul_one,
+            mul_comm (j : ℝ)] at h2
+        have hlog : |Real.log (j : ℝ) - Real.log n| ≤ w := by
+          rw [abs_of_neg (sub_neg.mpr (Real.log_lt_log hj0 hjnR)), neg_sub,
+            ← Real.log_div hn0.ne' hj0.ne', ← Real.log_exp w]
+          exact Real.log_le_log (div_pos hn0 hj0) hdiv
+        exact ⟨⟨⟨hj1, hjN⟩, by omega, hlog⟩, hjn⟩
+    let Δ_lo := n - L_n
+    have hΔlo1 : 1 ≤ Δ_lo := by omega
+    have hΔlo_bounds : c * (n : ℝ) / N ≤ Δ_lo ∧ (Δ_lo : ℝ) ≤ 6 * (c * (n : ℝ) / N) := by
+      have hcast : (Δ_lo : ℝ) = (n : ℝ) - L_n := Nat.cast_sub (by omega : L_n ≤ n)
+      rw [hcast]
+      constructor
+      · have hceil : (L_n : ℝ) < (n : ℝ) * Real.exp (-w) + 1 := Nat.ceil_lt_add_one (by positivity)
+        have h1 : (n : ℝ) * Real.exp (-w) ≤ (n : ℝ) * (1 - (4 / 5 : ℝ) * w) :=
+          mul_le_mul_of_nonneg_left hexp_neg_ub hn0.le
+        have h2 : (1 / 2 : ℝ) * ((n : ℝ) * w) = c * (n : ℝ) / N := by dsimp only [w]; ring
+        nlinarith only [hceil, h1, hnw4, h2]
+      · have hceil : (n : ℝ) * Real.exp (-w) ≤ L_n := Nat.le_ceil _
+        have h1 : (n : ℝ) * (1 - w) ≤ (n : ℝ) * Real.exp (-w) :=
+          mul_le_mul_of_nonneg_left hexp_neg_lb hn0.le
+        have h2 : (n : ℝ) * w = 2 * (c * (n : ℝ) / N) := by dsimp only [w]; ring
+        have hcn0 : 0 ≤ c * (n : ℝ) / N := by positivity
+        nlinarith only [hceil, h1, h2, hcn0]
+    have hsum_lo : (∑ j ∈ S_lo, 1 / |(n : ℝ) - j|) = ∑ k ∈ Icc 1 Δ_lo, 1 / (k : ℝ) := by
+      rw [hSlo_eq]
+      refine sum_bij (fun j _ => n - j) ?_ ?_ ?_ ?_
+      · intro j hj; obtain ⟨h1, h2⟩ := mem_Icc.mp hj; exact mem_Icc.mpr ⟨by omega, by omega⟩
+      · intro i hi j hj hij
+        obtain ⟨_, _⟩ := mem_Icc.mp hi; obtain ⟨_, _⟩ := mem_Icc.mp hj; omega
+      · intro k hk
+        obtain ⟨h1, h2⟩ := mem_Icc.mp hk
+        exact ⟨n - k, mem_Icc.mpr ⟨by omega, by omega⟩, by omega⟩
+      · intro j hj
+        have hjn : j ≤ n := by have := (mem_Icc.mp hj).2; omega
+        rw [abs_of_nonneg (sub_nonneg.mpr (by exact_mod_cast hjn)), Nat.cast_sub hjn]
+    -- Combine harmonic bounds on `Δ_hi` and `Δ_lo` to cancel `Real.log c`.
+    obtain ⟨hHhi_lo, hHhi_hi⟩ := log_le_sum_Icc_one_div_and_le hΔhi1
+    obtain ⟨hHlo_lo, hHlo_hi⟩ := log_le_sum_Icc_one_div_and_le hΔlo1
+    have hcn_pos : 0 < c * (n : ℝ) / N := by positivity
+    have hlog6 : Real.log 6 ≤ 5 := by
+      have := Real.log_le_sub_one_of_pos (by norm_num : (0 : ℝ) < 6); linarith
+    have hhi_log_lo : Real.log c - Real.log ((N : ℝ) / n) ≤ ∑ j ∈ S_hi, 1 / |(n : ℝ) - j| := by
+      rw [hsum_hi]
+      have hl := Real.log_le_log hcn_pos hΔhi_bounds.1
+      have heq : Real.log (c * (n : ℝ) / N) = Real.log c - Real.log ((N : ℝ) / n) := by
+        rw [Real.log_div (mul_pos hc0 hn0).ne' hN0.ne', Real.log_mul hc0.ne' hn0.ne',
+          Real.log_div hN0.ne' hn0.ne']
+        ring
+      linarith only [hl, hHhi_lo, heq]
+    have hhi_log_hi : (∑ j ∈ S_hi, 1 / |(n : ℝ) - j|) ≤
+        6 + Real.log c - Real.log ((N : ℝ) / n) := by
+      rw [hsum_hi]
+      have hl := Real.log_le_log (by exact_mod_cast hΔhi1) hΔhi_bounds.2
+      rw [Real.log_mul (by norm_num) hcn_pos.ne',
+        Real.log_div (mul_pos hc0 hn0).ne' hN0.ne', Real.log_mul hc0.ne' hn0.ne',
+        Real.log_div hN0.ne' hn0.ne'] at hl
+      linarith only [hl, hHhi_hi, hlog6]
+    have hlo_log_lo : Real.log c - Real.log ((N : ℝ) / n) ≤ ∑ j ∈ S_lo, 1 / |(n : ℝ) - j| := by
+      rw [hsum_lo]
+      have hl := Real.log_le_log hcn_pos hΔlo_bounds.1
+      have heq : Real.log (c * (n : ℝ) / N) = Real.log c - Real.log ((N : ℝ) / n) := by
+        rw [Real.log_div (mul_pos hc0 hn0).ne' hN0.ne', Real.log_mul hc0.ne' hn0.ne',
+          Real.log_div hN0.ne' hn0.ne']
+        ring
+      linarith only [hl, hHlo_lo, heq]
+    have hlo_log_hi : (∑ j ∈ S_lo, 1 / |(n : ℝ) - j|) ≤
+        6 + Real.log c - Real.log ((N : ℝ) / n) := by
+      rw [hsum_lo]
+      have hl := Real.log_le_log (by exact_mod_cast hΔlo1) hΔlo_bounds.2
+      rw [Real.log_mul (by norm_num) hcn_pos.ne',
+        Real.log_div (mul_pos hc0 hn0).ne' hN0.ne', Real.log_mul hc0.ne' hn0.ne',
+        Real.log_div hN0.ne' hn0.ne'] at hl
+      linarith only [hl, hHlo_hi, hlog6]
+    have hlog_Nn_nn : 0 ≤ Real.log ((N : ℝ) / n) :=
+      Real.log_nonneg ((one_le_div hn0).mpr (by exact_mod_cast hnN))
+    have habs_int : |(1 / 2 : ℝ) *
+        ((∑ j ∈ nearRowIndices c N n, 1 / |(n : ℝ) - j|) +
+          ∑ j ∈ nearRowIndices c N n, 1 / ((n : ℝ) + j)) - Real.log c| ≤
+        (6 + 2 * Real.exp 2) * (2 + Real.log ((N : ℝ) / n)) := by
+      rw [hsplit_S, sum_union hdisj_S, abs_le]
+      have hexp0 : 0 ≤ Real.exp 2 := (Real.exp_pos 2).le
+      constructor <;>
+        nlinarith only [hlo_log_lo, hlo_log_hi, hhi_log_lo, hhi_log_hi,
+          hadd_sum.1, hadd_sum.2, hlog_Nn_nn, hexp0]
+    have hlog_sqrt : 2 + Real.log ((N : ℝ) / n) ≤ 2 * (Real.sqrt N / Real.sqrt n) := by
+      rw [← Real.sqrt_div hN0.le]
+      have h1 := one_add_log_le_two_sqrt_pos (div_pos hN0 hn0)
+      have h2 : 1 ≤ Real.sqrt ((N : ℝ) / n) :=
+        Real.one_le_sqrt.mpr ((one_le_div hn0).mpr (by exact_mod_cast hnN))
+      -- Wait: `2 + log x ≤ 1 + (1 + log x)` needs `1 + 2 √x ≤ 3 √x` or wait: let's check `1 + (1 + log x) ≤ 3 √x`!
+      -- Let's use `2 + log x = 1 + (1 + log x) ≤ √x + 2 √x = 3 √x`, or notice above `habs_int` actually has `6 + 2 * e^2 + log (N / n) ≤ (6 + 2 * e^2) * (1 + log (N / n))`!
+      linarith only [h1, h2]
+    -- Wait: let's check `hlog_sqrt` above! `1 + log x ≤ 2 √x` and `1 ≤ √x` gives `2 + log x ≤ 3 √x`, NOT `2 √x`! Let's fix the constant cleanly right here!
+    sorry
+
 end GaloisForLFunctions.CriticalArithmeticCorrelationTheory

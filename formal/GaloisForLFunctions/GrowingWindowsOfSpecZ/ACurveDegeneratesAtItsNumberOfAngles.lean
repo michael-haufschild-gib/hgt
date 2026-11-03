@@ -103,7 +103,7 @@ theorem curveData_posDef (hS : ∀ z ∈ S, ‖z‖ = 1) (hρ : ∀ z ∈ S, 0 <
     have heval : ∀ z ∈ S, (vecPoly x).eval z = 0 := fun z hz => by
       have := hzero z hz
       rw [mul_eq_zero, or_iff_right (hρ z hz).ne', sq_eq_zero_iff, norm_eq_zero] at this
-      simpa [vecPoly, eval_finset_sum] using this
+      simpa [vecPoly, eval_finsetSum] using this
     have hp := eq_zero_of_natDegree_lt_card_of_eval_eq_zero' _ S heval
       ((natDegree_vecPoly_le x).trans_lt (by omega))
     funext k
@@ -130,8 +130,8 @@ theorem curveData_not_posDef (hS : ∀ z ∈ S, ‖z‖ = 1) (hconj : ∀ z ∈ 
     ¬ ToeplitzPosDef (curveData S ρ) (S.card + 1) := by
   intro hpd
   set P : ℂ[X] := ∏ z ∈ S, (X - C z)
-  have hdeg : P.natDegree = S.card := by simpa using natDegree_finsetProd_X_sub_C_eq_card S id
-  have hmonic : P.Monic := by simpa using monic_prod_X_sub_C id S
+  have hdeg : P.natDegree = S.card := natDegree_finsetProd_X_sub_C_eq_card S id
+  have hmonic : P.Monic := monic_prod_X_sub_C id S
   -- the coefficients of `P` are real
   have hreal : ∀ k, ((P.coeff k).re : ℂ) = P.coeff k := fun k => by
     rw [← Complex.conj_eq_iff_re, ← Polynomial.coeff_map, map_conj_anglePoly hconj]

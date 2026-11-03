@@ -119,6 +119,7 @@ theorem sum_Icc_ite_dvd_eq {M : Type*} [AddCommMonoid M] (N : ℕ) {L : ℕ} (hL
   · intro i _
     rw [Nat.mul_div_cancel_left i hL]
 
+omit [NeZero q] in
 theorem conj_twistLogSum (χ : DirichletCharacter ℂ q) (k : ℕ) :
     conj (twistLogSum χ k) = ∑ m ∈ Icc 1 k, conj (χ m) * (vonMangoldt m : ℂ) / m := by
   unfold twistLogSum
@@ -126,6 +127,7 @@ theorem conj_twistLogSum (χ : DirichletCharacter ℂ q) (k : ℕ) :
   refine Finset.sum_congr rfl fun m _ => ?_
   rw [map_div₀, map_mul, Complex.conj_ofReal, map_natCast (starRingEnd ℂ) m]
 
+omit [NeZero q] in
 /-- **The hyperbola form**: `⟨P X_χ, X_ψ⟩ = Σ_{n ≤ N} χ̄(n)ψ(n)/n (S_ψ(⌊N/n⌋) + S̄_χ(⌊N/n⌋))`. -/
 theorem charPacketPairing_eq (χ ψ : DirichletCharacter ℂ q) (N : ℕ) :
     charPacketPairing χ ψ N = ∑ n ∈ Icc 1 N, conj (χ n) * ψ n / n *

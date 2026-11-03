@@ -29,8 +29,8 @@ private theorem norm_ordinaryExponentialMellinTerm (F : ExtendedSelbergClass)
   rw [ordinaryExponentialMellinTerm, if_neg hn.ne', norm_mul, norm_mul, norm_mul,
     Complex.norm_natCast_cpow_of_pos hn, Complex.norm_cpow_eq_rpow_re_of_pos hx,
     LSeries.norm_term_eq, if_neg hn.ne']
-  simp only [Complex.neg_re, Complex.add_re, Complex.mul_I_re, Complex.ofReal_im,
-    neg_zero, add_zero, Complex.ofNat_re]
+  norm_num only [Complex.neg_re, Complex.add_re, Complex.mul_I_re, Complex.ofReal_im,
+    neg_zero, add_zero, Complex.natCast_re]
   rw [Real.rpow_neg hnR.le]
   ring
 

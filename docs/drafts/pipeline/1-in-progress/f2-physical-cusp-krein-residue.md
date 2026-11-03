@@ -40,4 +40,8 @@ This would supply a literal physical realization of the signed form and identify
 
 ## Status
 
-Corpus novelty audit found no physical cusp-energy realization of the PM coefficient form. Paper proof is dependency-closed using the exact exponential tail and Cauchy moment inputs above. Formalization is required; no Lean theorem claimed.
+Corpus novelty audit found no physical cusp-energy realization of the PM coefficient form. Paper proof is dependency-closed using the exact exponential tail and Cauchy moment inputs above.
+
+The analytic gate is formalized in `MayerScattering/CoreScatteringAsymptotics`: `fieldCore_scattering_remainder_bound`, `mayerPeriodCore_scattering_remainder_bound`, `mayerPeriodCore_scattering_lower_bound`. Individual `lake --old env lean` audit passes without warnings; all three axiom audits contain only `propext`, `Classical.choice`, `Quot.sound`. Umbrella import wired.
+
+The physical energy formula remains under Lean verification.
