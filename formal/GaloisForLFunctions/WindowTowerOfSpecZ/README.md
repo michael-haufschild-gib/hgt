@@ -454,7 +454,7 @@ and the pole; the rigidity of the fold weights through the explicit formula with
 | First fold repairs a negative frozen direction; nonnegative collar loan fails | `cubicWindow_weilQuad_pos`, `exists_first_stage_negative_frozen_positive_complete`, `exists_first_stage_positive_exit_loan_failure` |
 | One cubic moment pays the frozen odd form on the unit window; its kernel is coercive | `stageForm_one_cubicMoment_lower`, `stageForm_one_add_cubicMoment_ge`, `stageForm_one_coercive_of_cubicMoment_zero` |
 | Complete odd unit-window coercivity after first and third moments vanish | `stageForm_two_ge_of_odd_two_moments_zero`, `weilQuad_ge_of_odd_two_moments_zero` |
-| Gamma comparison retains the first two lag costs instead of their worst-case mass bounds | `unit_odd_gamma_lag_moments_lower` |
+| Gamma comparison retains its lag costs; the exact second moment gives a position square and improves the uniform loss to `7/192` | `unit_odd_gamma_lag_moments_lower`, `unit_odd_gamma_position_lower`, `unit_odd_gamma_jump_second_moment_lower` |
 | The exit charge pays every new fold | `collar_le_jump`, `levyJump_ge_collar`, `primeJumpWeight_le`, `log_three_le_archLevyAntideriv`, `primeJumpWeight_le_archLevyAntideriv`, `weilQuad_ge_reducedStageForm` |
 | The window Euler product | `isMultiplicative_factoredIndicator`, `factoredIndicator_mul_insert`, `prod_factoredIndicator`, `eulerFactor_mul_inverse`, `windowRep_zeta_eq_prod`, `windowRep_eulerFactor_mul_inverse` |
 | Weil's window form is a signed count | `exists_log_interpolant`, `sum_coeff_mul_jordanTotient`, `integral_windowRep_vonMangoldt_eq_signedCount`, `weilQuad_eq_signedCount` |

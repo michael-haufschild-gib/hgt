@@ -128,12 +128,12 @@ theorem norm_atomFactor_le {φ : ℝ → ℝ} (hφ : Continuous φ)
   have hgim : |(gammaOf ρ).im| ≤ 1 / 2 := by
     have : (gammaOf ρ).im = -(ρ.re - 1 / 2) := by simp [gammaOf, Complex.div_I]
     rw [this, abs_neg, abs_le]; constructor <;> linarith
+  have hprod : c / N * |(gammaOf ρ).im| ≤ 1 / 2 :=
+    (mul_le_mul hw1 hgim (abs_nonneg _) zero_le_one).trans (by norm_num)
   have him1 : |((((c / N : ℝ) : ℂ) * gammaOf ρ)).im| ≤ 1 / 2 := by
-    rw [Complex.im_ofReal_mul, abs_mul, abs_of_pos hw0]
-    nlinarith [abs_nonneg (gammaOf ρ).im]
+    rw [Complex.im_ofReal_mul, abs_mul, abs_of_pos hw0]; exact hprod
   have him2 : |((((c / N : ℝ) : ℂ) * conj (gammaOf ρ))).im| ≤ 1 / 2 := by
-    rw [Complex.im_ofReal_mul, Complex.conj_im, abs_mul, abs_neg, abs_of_pos hw0]
-    nlinarith [abs_nonneg (gammaOf ρ).im]
+    rw [Complex.im_ofReal_mul, Complex.conj_im, abs_mul, abs_neg, abs_of_pos hw0]; exact hprod
   have h1 := norm_paperFT_profile_le_of_im hφ hφsupp him1
   have h2 := norm_paperFT_profile_le_of_im hφ hφsupp him2
   have hI0 : 0 ≤ ∫ u, |φ u| := integral_nonneg fun u => abs_nonneg _
@@ -195,7 +195,7 @@ theorem norm_log_div_mul_bulkLedger_sub_atom_le_grid {φ : ℝ → ℝ} (hφ : C
     unfold atomFactor
     rw [show (r * D₁) * (r * D₂) = (r * r) * (D₁ * D₂) by ring, hrr]
     push_cast
-    field_simp
+    ring
   rw [hsplit, norm_mul, norm_mul, Complex.norm_natCast]
   -- the atom factor
   have hA_le := norm_atomFactor_le hφ hφsupp hφ2 hc hcN hβ0 hβ1
@@ -276,5 +276,353 @@ theorem norm_log_div_mul_bulkLedger_sub_atom_le_grid {φ : ℝ → ℝ} (hφ : C
   calc (zetaZeroConfig.mult ρ : ℝ) * ‖A‖ * ‖(H₁ * (r * D₂ - H₂) + (r * D₁ - H₁) * H₂ +
         (r * D₁ - H₁) * (r * D₂ - H₂)) / ((N : ℝ) : ℂ)‖
       ≤ (zetaZeroConfig.mult ρ : ℝ) * (Real.exp 1 * (∫ u, |φ u|) ^ 2 / (∫ u, φ u ^ 2)) *
-          ((|y₁| * P * (1 / ‖ρ‖ + 1 / ‖1 - ρ‖) + P ^ 2 / N) / N) := by
-        gcongr
+          ((|y₁| * P * (1 / ‖ρ‖ + 1 / ‖1 - ρ‖) + P ^ 2 / N) / N) :=
+        mul_le_mul (mul_le_mul_of_nonneg_left hA_le hm) hfac (norm_nonneg _)
+          (mul_nonneg hm (by positivity))
+
+/-! ### All zeros below the grid -/
+
+/-- Dominated convergence for growing windows of zeros: if `g_N(ρ) → G(ρ)` with a summable
+majorant, then `Σ_{|γ| ≤ T_N} g_N(ρ) → Σ_ρ G(ρ)` for `T_N → ∞`. -/
+theorem tendsto_sum_lowZeros_of_dominated {T : ℕ → ℝ} (hT : Tendsto T atTop atTop)
+    {g : ℕ → ℂ → ℂ} {G : ℂ → ℂ} {b : ℂ → ℝ}
+    (hb : Summable fun ρ : zetaZeroConfig.carrier => b ρ)
+    (hbound : ∀ᶠ N in atTop, ∀ ρ ∈ zetaZeroConfig.carrier, ‖g N ρ‖ ≤ b ρ)
+    (hlim : ∀ ρ ∈ zetaZeroConfig.carrier, Tendsto (fun N => g N ρ) atTop (𝓝 (G ρ))) :
+    Tendsto (fun N => ∑ ρ ∈ (RHTower.lowZeros_finite (T N)).toFinset, g N ρ) atTop
+      (𝓝 (∑' ρ : zetaZeroConfig.carrier, G ρ)) := by
+  classical
+  have hl := tendsto_tsum_of_dominated_convergence (𝓕 := atTop)
+    (f := fun N (ρ : zetaZeroConfig.carrier) => if |(ρ : ℂ).im| ≤ T N then g N ρ else 0)
+    (g := fun ρ : zetaZeroConfig.carrier => G ρ) (bound := fun ρ => b ρ) hb
+    (fun ρ => (hlim ρ ρ.2).congr' (by
+      filter_upwards [hT.eventually (eventually_ge_atTop |(ρ : ℂ).im|)] with N hN
+      rw [if_pos hN]))
+    (hbound.mono fun N hN ρ => by
+      split_ifs
+      · exact hN ρ ρ.2
+      · rw [norm_zero]; exact (norm_nonneg _).trans (hN ρ ρ.2))
+  refine hl.congr fun N => ?_
+  set s := (RHTower.lowZeros_finite (T N)).toFinset with hs
+  rw [tsum_eq_sum (s := s.subtype (· ∈ zetaZeroConfig.carrier))]
+  · rw [show (∑ ρ ∈ s.subtype (· ∈ zetaZeroConfig.carrier),
+        if |(ρ : ℂ).im| ≤ T N then g N ρ else 0) =
+        ∑ ρ ∈ s.subtype (· ∈ zetaZeroConfig.carrier), g N ρ from
+      sum_congr rfl fun ρ hρ => by
+        rw [Finset.mem_subtype, hs, (RHTower.lowZeros_finite _).mem_toFinset] at hρ
+        rw [if_pos hρ.2]]
+    rw [Finset.sum_subtype_eq_sum_filter (f := fun z : ℂ => g N z)]
+    rw [Finset.filter_true_of_mem fun z hz => by
+      rw [hs, (RHTower.lowZeros_finite _).mem_toFinset] at hz; exact hz.1]
+  · intro ρ hρ
+    rw [Finset.mem_subtype, hs, (RHTower.lowZeros_finite _).mem_toFinset] at hρ
+    rw [if_neg fun h => hρ ⟨ρ.2, h⟩]
+
+/-- A window of zeros carries at most the full sum of a nonnegative summable weight. -/
+theorem sum_lowZeros_le_tsum (T : ℝ) {b : ℂ → ℝ}
+    (hb0 : ∀ ρ ∈ zetaZeroConfig.carrier, 0 ≤ b ρ)
+    (hb : Summable fun ρ : zetaZeroConfig.carrier => b ρ) :
+    ∑ ρ ∈ (RHTower.lowZeros_finite T).toFinset, b ρ ≤ ∑' ρ : zetaZeroConfig.carrier, b ρ := by
+  classical
+  set s := (RHTower.lowZeros_finite T).toFinset with hs
+  have hsub : ∀ z ∈ s, z ∈ zetaZeroConfig.carrier := fun z hz => by
+    rw [hs, (RHTower.lowZeros_finite _).mem_toFinset] at hz; exact hz.1
+  rw [← Finset.filter_true_of_mem hsub, ← Finset.sum_subtype_eq_sum_filter]
+  exact hb.sum_le_tsum _ (fun ρ _ => hb0 ρ ρ.2)
+
+/-- The weight of a zero: `1/|ρ| + 1/|1 − ρ| ≤ 3/√N + 6√N/|ρ(1 − ρ)|`. -/
+theorem inv_norm_add_inv_norm_le {ρ : ℂ} (hρ : ρ ∈ zetaZeroConfig.carrier) {N : ℝ}
+    (hN : 0 < N) :
+    1 / ‖ρ‖ + 1 / ‖1 - ρ‖ ≤ 3 / Real.sqrt N + 6 * Real.sqrt N * (1 / ‖ρ * (1 - ρ)‖) := by
+  obtain ⟨h3, -⟩ := three_lt_norm_of_mem hρ
+  have hρ0 : 0 < ‖ρ‖ := by linarith
+  have h1ρ : ‖ρ‖ / 2 ≤ ‖1 - ρ‖ := by
+    have := norm_sub_norm_le ρ 1
+    rw [norm_one, norm_sub_rev] at this
+    linarith
+  have h1ρu : ‖1 - ρ‖ ≤ 2 * ‖ρ‖ := by
+    have := norm_sub_le (1 : ℂ) ρ
+    rw [norm_one] at this
+    linarith
+  have hs : 0 < Real.sqrt N := Real.sqrt_pos.mpr hN
+  have hprod : ‖ρ * (1 - ρ)‖ ≤ 2 * ‖ρ‖ ^ 2 := by
+    rw [norm_mul]; nlinarith [norm_nonneg (1 - ρ)]
+  have hP : 0 < ‖ρ * (1 - ρ)‖ := by
+    rw [norm_mul]; exact mul_pos hρ0 (by linarith)
+  -- `1/|1 − ρ| ≤ 2/|ρ|`
+  have hb1 : 1 / ‖1 - ρ‖ ≤ 2 * (1 / ‖ρ‖) := by
+    rw [mul_one_div, div_le_div_iff₀ (by linarith) hρ0]; linarith
+  -- `1/|ρ| ≤ 1/√N + √N/|ρ|²`
+  have hb2 : 1 / ‖ρ‖ ≤ 1 / Real.sqrt N + Real.sqrt N * (2 * (1 / ‖ρ * (1 - ρ)‖)) := by
+    have hq : 1 / ‖ρ‖ ^ 2 ≤ 2 * (1 / ‖ρ * (1 - ρ)‖) := by
+      rw [div_le_iff₀ (by positivity)]
+      rw [show 2 * (1 / ‖ρ * (1 - ρ)‖) * ‖ρ‖ ^ 2 = 2 * ‖ρ‖ ^ 2 / ‖ρ * (1 - ρ)‖ by ring,
+        le_div_iff₀ hP]
+      linarith
+    rcases le_or_gt (Real.sqrt N) ‖ρ‖ with h | h
+    · have : 1 / ‖ρ‖ ≤ 1 / Real.sqrt N := one_div_le_one_div_of_le hs h
+      have : 0 ≤ Real.sqrt N * (2 * (1 / ‖ρ * (1 - ρ)‖)) := by positivity
+      linarith
+    · have : 1 / ‖ρ‖ ≤ Real.sqrt N * (1 / ‖ρ‖ ^ 2) := by
+        rw [mul_one_div, le_div_iff₀ (by positivity), one_div, pow_two, ← mul_assoc,
+          inv_mul_cancel₀ hρ0.ne', one_mul]
+        exact h.le
+      have : 0 ≤ 1 / Real.sqrt N := by positivity
+      nlinarith [mul_le_mul_of_nonneg_left hq hs.le]
+  have e1 : 3 / Real.sqrt N = 3 * (1 / Real.sqrt N) := by ring
+  have e2 : 6 * Real.sqrt N * (1 / ‖ρ * (1 - ρ)‖) =
+      3 * (Real.sqrt N * (2 * (1 / ‖ρ * (1 - ρ)‖))) := by ring
+  rw [e1, e2]
+  linarith
+
+/-- `log²(λN)/√N → 0`. -/
+theorem tendsto_log_sq_div_sqrt {lam : ℝ} (hlam : 0 < lam) :
+    Tendsto (fun N : ℕ => Real.log (lam * N) ^ 2 / Real.sqrt N) atTop (𝓝 0) := by
+  have h1 : Tendsto (fun x : ℝ => Real.log x ^ (2 : ℝ) / x ^ (1 / 2 : ℝ)) atTop (𝓝 0) :=
+    (isLittleO_log_rpow_rpow_atTop 2 (by norm_num : (0 : ℝ) < 1 / 2)).tendsto_div_nhds_zero
+  have h2 : Tendsto (fun N : ℕ => lam * (N : ℝ)) atTop atTop :=
+    tendsto_natCast_atTop_atTop.const_mul_atTop hlam
+  have h3 := (h1.comp h2).const_mul (Real.sqrt lam)
+  rw [mul_zero] at h3
+  refine h3.congr' ?_
+  filter_upwards [eventually_ge_atTop 1] with N hN
+  have hN0 : (0 : ℝ) < N := by exact_mod_cast hN
+  simp only [Function.comp_apply]
+  rw [Real.rpow_two, ← Real.sqrt_eq_rpow, Real.sqrt_mul hlam.le]
+  have hs : 0 < Real.sqrt lam := Real.sqrt_pos.mpr hlam
+  have hsN : 0 < Real.sqrt N := Real.sqrt_pos.mpr hN0
+  field_simp
+
+/-- The atom factor of a fixed point tends to `(∫φ)²/∫φ²` when `c_N/N → 0`. -/
+theorem tendsto_atomFactor {φ : ℝ → ℝ} (hφ : Continuous φ) (hφc : HasCompactSupport φ)
+    {c : ℕ → ℝ} (hcN : Tendsto (fun N : ℕ => c N / N) atTop (𝓝 0)) (ρ : ℂ) :
+    Tendsto (fun N : ℕ => atomFactor φ (c N) N ρ) atTop
+      (𝓝 (((∫ u, φ u) ^ 2 / ∫ u, φ u ^ 2 : ℝ) : ℂ)) := by
+  have hF : Continuous (paperFT (cx φ)) :=
+    (RHTower.EvenSector.differentiable_paperFT_of_compact (Complex.continuous_ofReal.comp hφ)
+      (hφc.comp_left Complex.ofReal_zero)).continuous
+  have hw : Tendsto (fun N : ℕ => ((c N / N : ℝ) : ℂ)) atTop (𝓝 0) := by
+    simpa using hcN.ofReal
+  have h1 : Tendsto (fun N : ℕ => paperFT (cx φ) (((c N / N : ℝ) : ℂ) * gammaOf ρ)) atTop
+      (𝓝 (paperFT (cx φ) 0)) := by
+    have := hw.mul_const (gammaOf ρ)
+    rw [zero_mul] at this
+    exact (hF.tendsto 0).comp this
+  have h2 : Tendsto (fun N : ℕ => conj (paperFT (cx φ) (((c N / N : ℝ) : ℂ) * conj (gammaOf ρ))))
+      atTop (𝓝 (conj (paperFT (cx φ) 0))) := by
+    have := hw.mul_const (conj (gammaOf ρ))
+    rw [zero_mul] at this
+    exact (Complex.continuous_conj.tendsto _).comp ((hF.tendsto 0).comp this)
+  have hlim := (h1.mul h2).div_const ((∫ u, φ u ^ 2 : ℝ) : ℂ)
+  rw [paperFT_cx_zero, Complex.conj_ofReal] at hlim
+  have e : ((((∫ u, φ u) ^ 2 / ∫ u, φ u ^ 2 : ℝ)) : ℂ) =
+      ((∫ u, φ u : ℝ) : ℂ) * ((∫ u, φ u : ℝ) : ℂ) / ((∫ u, φ u ^ 2 : ℝ) : ℂ) := by
+    push_cast; ring
+  rw [e]
+  exact hlim
+
+/-- The pole term of one zero, `m_ρ a_N(ρ) y_1²/(ρ(1 − ρ))`. -/
+def poleLedgerTerm (φ : ℝ → ℝ) (E : Finset ℕ) (y : ℕ → ℝ) (c : ℝ) (N : ℕ) (ρ : ℂ) : ℂ :=
+  (zetaZeroConfig.mult ρ : ℂ) * (atomFactor φ c N ρ *
+    (((poleCoefficient E y ^ 2 : ℝ) : ℂ) / (ρ * (1 - ρ))))
+
+/-- **The pole terms of all zeros below a growing height** tend to the archimedean genus
+`κ y_1² Σ_ρ m_ρ/(ρ(1 − ρ))`: dominated convergence, since the atom factor is bounded below the
+resolution and tends to `κ` at every fixed zero. -/
+theorem tendsto_sum_poleLedgerTerm {φ : ℝ → ℝ} (hφ : Continuous φ)
+    (hφsupp : ∀ u, u ∉ Set.Icc 0 1 → φ u = 0) (hφ2 : 0 < ∫ u, φ u ^ 2) (E : Finset ℕ)
+    (y : ℕ → ℝ) {T : ℕ → ℝ} (hT : Tendsto T atTop atTop) {c : ℕ → ℝ} (hc0 : ∀ N, 0 < c N)
+    (hcN : Tendsto (fun N : ℕ => c N / N) atTop (𝓝 0)) :
+    Tendsto (fun N : ℕ => ∑ ρ ∈ (RHTower.lowZeros_finite (T N)).toFinset,
+      poleLedgerTerm φ E y (c N) N ρ) atTop
+      (𝓝 ((((∫ u, φ u) ^ 2 / ∫ u, φ u ^ 2 : ℝ) : ℂ) * ((poleCoefficient E y ^ 2 : ℝ) : ℂ) *
+        ∑' ρ : zetaZeroConfig.carrier, (zetaZeroConfig.mult ρ : ℂ) / ((ρ : ℂ) * (1 - ρ)))) := by
+  have hφc : HasCompactSupport φ := HasCompactSupport.intro isCompact_Icc fun u hu => hφsupp u hu
+  have hcle : ∀ᶠ N : ℕ in atTop, c N ≤ N := by
+    filter_upwards [hcN.eventually (gt_mem_nhds one_pos), eventually_ge_atTop 1] with N h hN
+    have hN0 : (0 : ℝ) < N := by exact_mod_cast hN
+    exact ((div_lt_one hN0).mp h).le
+  obtain ⟨C₀, hC₀⟩ : ∃ C : ℝ, C = Real.exp 1 * (∫ u, |φ u|) ^ 2 / (∫ u, φ u ^ 2) := ⟨_, rfl⟩
+  have h := tendsto_sum_lowZeros_of_dominated hT
+    (g := fun N ρ => poleLedgerTerm φ E y (c N) N ρ)
+    (G := fun ρ => (((∫ u, φ u) ^ 2 / ∫ u, φ u ^ 2 : ℝ) : ℂ) *
+      ((poleCoefficient E y ^ 2 : ℝ) : ℂ) * ((zetaZeroConfig.mult ρ : ℂ) / (ρ * (1 - ρ))))
+    (b := fun ρ => C₀ * poleCoefficient E y ^ 2 * ‖(zetaZeroConfig.mult ρ : ℂ) / (ρ * (1 - ρ))‖)
+    (summable_norm_mult_div.mul_left _) ?_ ?_
+  · rw [tsum_mul_left] at h
+    exact h
+  · filter_upwards [hcle] with N hN ρ hρ
+    have hA := norm_atomFactor_le hφ hφsupp hφ2 (hc0 N) hN hρ.2.1 hρ.2.2
+    rw [← hC₀] at hA
+    unfold poleLedgerTerm
+    rw [norm_mul, norm_mul, norm_div, Complex.norm_natCast, Complex.norm_real,
+      Real.norm_eq_abs, abs_of_nonneg (sq_nonneg _), norm_div, Complex.norm_natCast]
+    have hm : (0 : ℝ) ≤ zetaZeroConfig.mult ρ := Nat.cast_nonneg _
+    have hq : 0 ≤ poleCoefficient E y ^ 2 / ‖ρ * (1 - ρ)‖ := by positivity
+    calc (zetaZeroConfig.mult ρ : ℝ) * (‖atomFactor φ (c N) N ρ‖ *
+          (poleCoefficient E y ^ 2 / ‖ρ * (1 - ρ)‖))
+        ≤ (zetaZeroConfig.mult ρ : ℝ) * (C₀ * (poleCoefficient E y ^ 2 / ‖ρ * (1 - ρ)‖)) :=
+          mul_le_mul_of_nonneg_left (mul_le_mul_of_nonneg_right hA hq) hm
+      _ = C₀ * poleCoefficient E y ^ 2 * ((zetaZeroConfig.mult ρ : ℝ) / ‖ρ * (1 - ρ)‖) := by
+          ring
+  · intro ρ _
+    have h' := ((tendsto_atomFactor hφ hφc hcN ρ).mul_const
+      (((poleCoefficient E y ^ 2 : ℝ) : ℂ) / (ρ * (1 - ρ)))).const_mul
+        (zetaZeroConfig.mult ρ : ℂ)
+    have e : (zetaZeroConfig.mult ρ : ℂ) * ((((∫ u, φ u) ^ 2 / ∫ u, φ u ^ 2 : ℝ) : ℂ) *
+        (((poleCoefficient E y ^ 2 : ℝ) : ℂ) / (ρ * (1 - ρ)))) =
+        (((∫ u, φ u) ^ 2 / ∫ u, φ u ^ 2 : ℝ) : ℂ) * ((poleCoefficient E y ^ 2 : ℝ) : ℂ) *
+          ((zetaZeroConfig.mult ρ : ℂ) / (ρ * (1 - ρ))) := by ring
+    rw [e] at h'
+    exact h'
+
+/-- The remainder bound: `‖Σ_{|γ| ≤ λN} (ledger − pole term)‖ ≤ U_N` with
+`U_N = C₀(|y_1|P(3Kλ log²(λN)/√N + 6S/√N) + P²Kλ log²(λN)/N)`. -/
+theorem eventually_norm_sum_ledger_sub_pole_le {φ : ℝ → ℝ} (hφ : Continuous φ)
+    (hφsupp : ∀ u, u ∉ Set.Icc 0 1 → φ u = 0) (hφ2 : 0 < ∫ u, φ u ^ 2) {E : Finset ℕ}
+    (hE : ∀ e ∈ E, 1 ≤ e) {L : ℕ} (hL1 : 1 ≤ L) (hL : ∀ e ∈ E, e ≤ L) (y : ℕ → ℝ) {lam : ℝ}
+    (hlam0 : 0 < lam) (hlamL : 2 * lam * L ≤ Real.pi) {c : ℕ → ℝ} (hc0 : ∀ N, 0 < c N)
+    (hcle : ∀ᶠ N : ℕ in atTop, c N ≤ N) {K T₀ : ℝ}
+    (hcount : ∀ T : ℝ, T₀ ≤ T → ∑ ρ ∈ (RHTower.lowZeros_finite T).toFinset,
+      (zetaZeroConfig.mult ρ : ℝ) ≤ K * (T * Real.log T ^ 2)) :
+    ∀ᶠ N : ℕ in atTop, ‖∑ ρ ∈ (RHTower.lowZeros_finite (lam * N)).toFinset,
+      (((Real.log N / c N : ℝ) : ℂ) * bulkLedger zetaZeroConfig φ E y (c N) N ρ -
+        poleLedgerTerm φ E y (c N) N ρ)‖ ≤
+      Real.exp 1 * (∫ u, |φ u|) ^ 2 / (∫ u, φ u ^ 2) *
+        (|poleCoefficient E y| * packetConstGrid E y *
+          (3 * K * lam * (Real.log (lam * N) ^ 2 / Real.sqrt N) +
+            6 * (∑' ρ : zetaZeroConfig.carrier,
+              ‖(zetaZeroConfig.mult ρ : ℂ) / ((ρ : ℂ) * (1 - ρ))‖) * (1 / Real.sqrt N)) +
+          packetConstGrid E y ^ 2 * K * lam *
+            ((Real.log (lam * N) ^ 2 / Real.sqrt N) * (1 / Real.sqrt N))) := by
+  obtain ⟨C₀, hC₀⟩ : ∃ C : ℝ, C = Real.exp 1 * (∫ u, |φ u|) ^ 2 / (∫ u, φ u ^ 2) := ⟨_, rfl⟩
+  obtain ⟨S, hSdef⟩ : ∃ S : ℝ, S = ∑' ρ : zetaZeroConfig.carrier,
+      ‖(zetaZeroConfig.mult ρ : ℂ) / ((ρ : ℂ) * (1 - ρ))‖ := ⟨_, rfl⟩
+  obtain ⟨y₁, hy₁⟩ : ∃ y₁ : ℝ, y₁ = poleCoefficient E y := ⟨_, rfl⟩
+  obtain ⟨P, hPdef⟩ : ∃ P : ℝ, P = packetConstGrid E y := ⟨_, rfl⟩
+  rw [← hC₀, ← hSdef, ← hy₁, ← hPdef]
+  have hC₀0 : 0 ≤ C₀ := by rw [hC₀]; positivity
+  have hP0 : 0 ≤ P := hPdef ▸ packetConstGrid_nonneg E y
+  have hT : Tendsto (fun N : ℕ => lam * (N : ℝ)) atTop atTop :=
+    tendsto_natCast_atTop_atTop.const_mul_atTop hlam0
+  have hT₀' : ∀ᶠ N : ℕ in atTop, T₀ ≤ lam * N := hT.eventually (eventually_ge_atTop T₀)
+  filter_upwards [hcle, hT₀', eventually_ge_atTop (2 * L)] with N hcN' hTN hLN
+  have hN2 : 2 ≤ N := by omega
+  have hN0 : (0 : ℝ) < N := by exact_mod_cast (show 0 < N by omega)
+  have hsN : 0 < Real.sqrt N := Real.sqrt_pos.mpr hN0
+  -- the zeros below `λN` lie below the grid `π⌊N/L⌋`
+  have hgrid : lam * N ≤ Real.pi * (N / L : ℕ) := by
+    have hL0 : (0 : ℝ) < L := by exact_mod_cast hL1
+    have h1 : (N : ℝ) / (2 * L) ≤ ((N / L : ℕ) : ℝ) := by
+      have h1 := Nat.lt_div_mul_add (a := N) (b := L) (by omega)
+      have h1' : (N : ℝ) < (((N / L) * L + L : ℕ) : ℝ) := by exact_mod_cast h1
+      push_cast at h1'
+      have h2 : (2 * L : ℝ) ≤ N := by exact_mod_cast hLN
+      rw [div_le_iff₀ (by positivity)]
+      nlinarith
+    calc lam * N = (2 * lam * L) * ((N : ℝ) / (2 * L)) := by field_simp
+      _ ≤ Real.pi * ((N / L : ℕ) : ℝ) :=
+        mul_le_mul hlamL h1 (by positivity) Real.pi_pos.le
+  have hterm : ∀ ρ ∈ (RHTower.lowZeros_finite (lam * N)).toFinset,
+      ‖((Real.log N / c N : ℝ) : ℂ) * bulkLedger zetaZeroConfig φ E y (c N) N ρ -
+        poleLedgerTerm φ E y (c N) N ρ‖ ≤
+      C₀ / N * (|y₁| * P * 3 / Real.sqrt N + P ^ 2 / N) * (zetaZeroConfig.mult ρ : ℝ) +
+        C₀ / N * (|y₁| * P * (6 * Real.sqrt N)) *
+          ‖(zetaZeroConfig.mult ρ : ℂ) / (ρ * (1 - ρ))‖ := by
+    intro ρ hρ
+    rw [(RHTower.lowZeros_finite _).mem_toFinset] at hρ
+    have hb := norm_log_div_mul_bulkLedger_sub_atom_le_grid hφ hφsupp hφ2 hE hL y hρ.1 (hc0 N)
+      hN2 hLN hcN' (hρ.2.trans hgrid)
+    rw [← hC₀, ← hy₁, ← hPdef] at hb
+    have hw := inv_norm_add_inv_norm_le hρ.1 hN0
+    have hm : (0 : ℝ) ≤ zetaZeroConfig.mult ρ := Nat.cast_nonneg _
+    have hnm : ‖(zetaZeroConfig.mult ρ : ℂ) / (ρ * (1 - ρ))‖ =
+        (zetaZeroConfig.mult ρ : ℝ) * (1 / ‖ρ * (1 - ρ)‖) := by
+      rw [norm_div, Complex.norm_natCast]; ring
+    unfold poleLedgerTerm
+    rw [← hy₁]
+    refine hb.trans ?_
+    rw [hnm]
+    have hA : 0 ≤ |y₁| * P := mul_nonneg (abs_nonneg _) hP0
+    have key : |y₁| * P * (1 / ‖ρ‖ + 1 / ‖1 - ρ‖) ≤
+        |y₁| * P * (3 / Real.sqrt N + 6 * Real.sqrt N * (1 / ‖ρ * (1 - ρ)‖)) :=
+      mul_le_mul_of_nonneg_left hw hA
+    have hC : 0 ≤ (zetaZeroConfig.mult ρ : ℝ) * C₀ / N := by positivity
+    calc (zetaZeroConfig.mult ρ : ℝ) * C₀ * ((|y₁| * P * (1 / ‖ρ‖ + 1 / ‖1 - ρ‖) +
+          P ^ 2 / N) / N)
+        = (zetaZeroConfig.mult ρ : ℝ) * C₀ / N * (|y₁| * P * (1 / ‖ρ‖ + 1 / ‖1 - ρ‖) +
+          P ^ 2 / N) := by ring
+      _ ≤ (zetaZeroConfig.mult ρ : ℝ) * C₀ / N * (|y₁| * P * (3 / Real.sqrt N +
+          6 * Real.sqrt N * (1 / ‖ρ * (1 - ρ)‖)) + P ^ 2 / N) :=
+          mul_le_mul_of_nonneg_left (by linarith) hC
+      _ = _ := by ring
+  have hM1 : ∑ ρ ∈ (RHTower.lowZeros_finite (lam * N)).toFinset,
+      (zetaZeroConfig.mult ρ : ℝ) ≤ K * (lam * N * Real.log (lam * N) ^ 2) := hcount _ hTN
+  have hM2 : ∑ ρ ∈ (RHTower.lowZeros_finite (lam * N)).toFinset,
+      ‖(zetaZeroConfig.mult ρ : ℂ) / (ρ * (1 - ρ))‖ ≤ S :=
+    hSdef ▸ sum_lowZeros_le_tsum _ (fun _ _ => norm_nonneg _) summable_norm_mult_div
+  refine (norm_sum_le _ _).trans ((sum_le_sum hterm).trans ?_)
+  rw [sum_add_distrib, ← mul_sum, ← mul_sum]
+  have hα : 0 ≤ C₀ / N * (|y₁| * P * 3 / Real.sqrt N + P ^ 2 / N) := by positivity
+  have hβ : 0 ≤ C₀ / N * (|y₁| * P * (6 * Real.sqrt N)) := by positivity
+  refine (add_le_add (mul_le_mul_of_nonneg_left hM1 hα)
+    (mul_le_mul_of_nonneg_left hM2 hβ)).trans (le_of_eq ?_)
+  have hsq : Real.sqrt N * Real.sqrt N = N := Real.mul_self_sqrt hN0.le
+  field_simp
+  rw [← hsq]
+  ring
+
+/-- **The bulk is blind below its grid.** Let the conductors of the packet be `≤ L` and
+`2λL ≤ π`. Along every overlap schedule with `c_N/N → 0`, all zeros of height `≤ λN` together
+contribute `(c_N/log N) κ y_1² Σ_ρ m_ρ/(ρ(1 − ρ)) + o(c_N/log N)`, `κ = (∫φ)²/∫φ²`, to the
+normalized complete form of the packet: the archimedean genus at the pole and nothing else. -/
+theorem tendsto_sum_bulkLedger_belowGrid {φ : ℝ → ℝ} (hφ : Continuous φ)
+    (hφsupp : ∀ u, u ∉ Set.Icc 0 1 → φ u = 0) (hφ2 : 0 < ∫ u, φ u ^ 2) {E : Finset ℕ}
+    (hE : ∀ e ∈ E, 1 ≤ e) {L : ℕ} (hL1 : 1 ≤ L) (hL : ∀ e ∈ E, e ≤ L) (y : ℕ → ℝ) {lam : ℝ}
+    (hlam0 : 0 < lam) (hlamL : 2 * lam * L ≤ Real.pi) {c : ℕ → ℝ} (hc0 : ∀ N, 0 < c N)
+    (hcN : Tendsto (fun N : ℕ => c N / N) atTop (𝓝 0)) :
+    Tendsto (fun N : ℕ => ∑ ρ ∈ (RHTower.lowZeros_finite (lam * N)).toFinset,
+      ((Real.log N / c N : ℝ) : ℂ) * bulkLedger zetaZeroConfig φ E y (c N) N ρ) atTop
+      (𝓝 ((((∫ u, φ u) ^ 2 / ∫ u, φ u ^ 2 : ℝ) : ℂ) * ((poleCoefficient E y ^ 2 : ℝ) : ℂ) *
+        ∑' ρ : zetaZeroConfig.carrier, (zetaZeroConfig.mult ρ : ℂ) / ((ρ : ℂ) * (1 - ρ)))) := by
+  have hT : Tendsto (fun N : ℕ => lam * (N : ℝ)) atTop atTop :=
+    tendsto_natCast_atTop_atTop.const_mul_atTop hlam0
+  have hcle : ∀ᶠ N : ℕ in atTop, c N ≤ N := by
+    filter_upwards [hcN.eventually (gt_mem_nhds one_pos), eventually_ge_atTop 1] with N h hN
+    have hN0 : (0 : ℝ) < N := by exact_mod_cast hN
+    exact ((div_lt_one hN0).mp h).le
+  obtain ⟨K, T₀, -, -, hcount⟩ := exists_sum_mult_lowZeros_le
+  have hpole := tendsto_sum_poleLedgerTerm hφ hφsupp hφ2 E y hT hc0 hcN
+  have herr := eventually_norm_sum_ledger_sub_pole_le hφ hφsupp hφ2 hE hL1 hL y hlam0 hlamL hc0
+    hcle hcount
+  have hinvsqrt : Tendsto (fun N : ℕ => 1 / Real.sqrt N) atTop (𝓝 0) := by
+    have := tendsto_inv_atTop_zero.comp (Real.tendsto_sqrt_atTop.comp tendsto_natCast_atTop_atTop)
+    simpa [one_div] using this
+  have hL2 := tendsto_log_sq_div_sqrt hlam0
+  have hU := ((((hL2.const_mul (3 * K * lam)).add (hinvsqrt.const_mul
+    (6 * ∑' ρ : zetaZeroConfig.carrier, ‖(zetaZeroConfig.mult ρ : ℂ) / ((ρ : ℂ) * (1 - ρ))‖))).const_mul
+      (|poleCoefficient E y| * packetConstGrid E y)).add
+        ((hL2.mul hinvsqrt).const_mul (packetConstGrid E y ^ 2 * K * lam))).const_mul
+          (Real.exp 1 * (∫ u, |φ u|) ^ 2 / (∫ u, φ u ^ 2))
+  simp only [mul_zero, add_zero] at hU
+  have h0 := squeeze_zero_norm' herr hU
+  have hsum := hpole.add h0
+  rw [add_zero] at hsum
+  refine hsum.congr fun N => ?_
+  rw [← sum_add_distrib]
+  exact sum_congr rfl fun ρ _ => by ring
+
+/-- **Pole-free packets are blind below their grid**: for `y_1 = 0`, all zeros of height `≤ λN`
+together contribute `o(c_N/log N)`. -/
+theorem tendsto_sum_bulkLedger_belowGrid_poleFree {φ : ℝ → ℝ} (hφ : Continuous φ)
+    (hφsupp : ∀ u, u ∉ Set.Icc 0 1 → φ u = 0) (hφ2 : 0 < ∫ u, φ u ^ 2) {E : Finset ℕ}
+    (hE : ∀ e ∈ E, 1 ≤ e) {L : ℕ} (hL1 : 1 ≤ L) (hL : ∀ e ∈ E, e ≤ L) {y : ℕ → ℝ}
+    (hpole : poleCoefficient E y = 0) {lam : ℝ} (hlam0 : 0 < lam) (hlamL : 2 * lam * L ≤ Real.pi)
+    {c : ℕ → ℝ} (hc0 : ∀ N, 0 < c N) (hcN : Tendsto (fun N : ℕ => c N / N) atTop (𝓝 0)) :
+    Tendsto (fun N : ℕ => ∑ ρ ∈ (RHTower.lowZeros_finite (lam * N)).toFinset,
+      ((Real.log N / c N : ℝ) : ℂ) * bulkLedger zetaZeroConfig φ E y (c N) N ρ) atTop (𝓝 0) := by
+  have h := tendsto_sum_bulkLedger_belowGrid hφ hφsupp hφ2 hE hL1 hL y hlam0 hlamL hc0 hcN
+  rw [hpole] at h
+  simpa using h
+
+end GaloisForLFunctions.ArithmeticHodgeTheoryOfDegenerations

@@ -19,10 +19,15 @@ at least `(2log2+π/2−1/2+1/48)E`. Adding
 All integrals exist: the C² compact source controls the logarithmic singularity;
 ordinary moments have continuous integrands on a compact interval.
 
-The existing uniform estimate replaces `M₁` by `3E/4` and `M₂` by `2E/3`.
-The retained bound preserves precisely those discarded nonnegative differences.
+The exact identity `M₂=E/3+(∫xF)²` cancels the `E/48` term, leaving
+
+`ΓE+J∞≥∫₀¹D/t−(γ+logπ+log2)E−M₁/24−(∫xF)²/16`.
+
+Since `M₁≤3E/4` and `(∫xF)²≤E/12`, the uniform Gamma loss is now
+`7/192`, improving `5/96` by `1/64`. The source-dependent bound retains more information.
 
 **Lean:** `WindowTowerOfSpecZ.TheGammaComparisonRetainsItsLagMoments` proves
-`unit_odd_gamma_lag_moments_lower`. Individual `lake --old env lean` source check passes;
+`unit_odd_gamma_lag_moments_lower`, `unit_odd_gamma_position_lower`, and
+`unit_odd_gamma_jump_second_moment_lower`. Individual `lake --old env lean` source check passes;
 transitive axioms are `[propext, Classical.choice, Quot.sound]` only.
-The moment identities and joint low-moment/prime payment remain open formal obligations.
+The first-moment primitive identity and joint low-moment/prime payment remain open formal obligations.

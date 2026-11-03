@@ -38,3 +38,8 @@ Both charges must use disjoint shares of the same jump energy.
 checks and standard-only axiom audits pass. The two low moments and their cross terms remain
 open. [Regional reflection payment](f1-regional-reflection-payment.md) retains the exterior
 potential and signed reflection as a candidate joint bound; its sign is unproved.
+
+[Exact second lag moment](../3-formalized/f1-odd-second-lag-moment.md) gives
+`M₂=E/3+(∫xF)²`. The retained Gamma comparison now charges `M₁/24+(∫xF)²/16`
+instead of a uniform error, with uniform loss improved from `5/96` to `7/192`.
+This preserves a low-moment coupling; it does not close its joint sign with the prime and pole.

@@ -7,10 +7,12 @@ import GaloisForLFunctions.RHTower.FarFieldAnchor
 import Mathlib.Analysis.Complex.SummableUniformlyOn
 import Mathlib.Topology.Algebra.InfiniteSum.TsumUniformlyOn
 
-/-!+# Mellin poles of Gaussian resonance-core sums
+/-!
+# Faithfulness of Gaussian resonance-core synthesis
 
-The continued kernel is written using entire xi and explicit pole factors.
-This form distinguishes a removable pole from the raw total Gamma-function value.
+The actual Mellin transform continues as a normally convergent sum of xi kernels.
+Each pole at `2s - 1` has a nonzero residue and separates one upper-resonance coefficient.
+Consequently, Haar-almost-everywhere vanishing determines every coefficient in the sum.
 -/
 
 set_option autoImplicit false
@@ -29,7 +31,6 @@ namespace GaloisForLFunctions.RenormalizedIntersectionTheory.MayerScattering
 def resonantMellinKernel (s : upperMayerResonances) (u : ℂ) : ℂ :=
   4 * symbol (2 * s.1) u * _root_.RHTower.xi u * _root_.RHTower.xi (2 * s.1 - u) /
     (Gammaℝ (2 * s.1) * u * (u - 1) * (2 * s.1 - u) * (2 * s.1 - u - 1))
-
 
 private theorem gamma_ne_zero_of_re_pos {z : ℂ} (hz : 0 < z.re) : Gamma z ≠ 0 := by
   apply Complex.Gamma_ne_zero
@@ -211,7 +212,7 @@ theorem upperMayerCore_mellin_eq_kernel (s : upperMayerResonances) {u : ℂ}
 #print axioms upperMayerCore_mellin_cleared
 #print axioms upperMayerCore_mellin_eq_kernel
 
-
+/-- The xi integral bound is uniform in height on every closed real strip. -/
 private theorem xi_vertical_strip_bound (a b : ℝ) :
     ∃ C : ℝ, 0 ≤ C ∧ ∀ z : ℂ, a ≤ z.re → z.re ≤ b → ‖_root_.RHTower.xi z‖ ≤ C := by
   have hc : ContinuousOn (fun t : ℝ => _root_.RHTower.xi (t : ℂ)) (Icc a b) :=
@@ -287,6 +288,7 @@ private theorem resonant_gammaR_bound :
     show Real.pi * (2 * s.1.im) / 2 = Real.pi * s.1.im by ring] at h
   exact h
 
+/-- After removing the explicit pole factors, Gamma bounds give exponential height growth. -/
 private theorem resonantMellin_numerator_strip_bound {a b : ℝ} (ha : -1 < a) (hb : b < 1) :
     ∃ C : ℝ, 0 ≤ C ∧ ∀ s : upperMayerResonances, ∀ u : ℂ, a ≤ u.re → u.re ≤ b →
       ‖4 * symbol (2 * s.1) u * _root_.RHTower.xi u * _root_.RHTower.xi (2 * s.1 - u) /
@@ -311,9 +313,6 @@ private theorem resonantMellin_numerator_strip_bound {a b : ℝ} (ha : -1 < a) (
     _ = _ := by
       rw [show 2 * Real.pi * s.1.im = Real.pi * s.1.im + Real.pi * s.1.im by ring, Real.exp_add]
       ring
-
-#print axioms resonantMellin_numerator_strip_bound
-
 
 private theorem resonantMellinKernel_strip_bound {a b δ : ℝ}
     (ha : -1 < a) (hb : b < 1) (hδ : 0 < δ) :
@@ -349,6 +348,7 @@ private theorem pole_distance_on_half_ball {Ω : Set ℂ} {z : ℂ} {r : ℝ}
   rw [← dist_eq_norm, dist_comm u p]
   linarith only [hsep, htri, hu]
 
+/-- A half-ball inside the domain separates every pole uniformly; Gaussian decay sums the bound. -/
 private theorem gaussianKernel_normal_on {ε : ℝ} (hε : 0 < ε)
     (x : ℓ²(zetaZeroConfig.carrier, ℂ)) (J : Set upperMayerResonances) (Ω : Set ℂ)
     (hΩ : IsOpen Ω) (hstrip : ∀ u ∈ Ω, -1 < u.re ∧ u.re < 1)
@@ -401,9 +401,6 @@ private theorem gaussianKernel_normal_on {ε : ℝ} (hε : 0 < ε)
       mul_le_mul (mul_le_mul_of_nonneg_left hx (Real.exp_pos _).le) hk
         (norm_nonneg _) (by positivity)
     _ = _ := by dsimp only [Function.comp_def]; ring
-
-#print axioms gaussianKernel_normal_on
-
 
 /-- The upper Mellin strip with the two translated xi zero sets removed. -/
 def mellinPoleDomain : Set ℂ :=
@@ -512,6 +509,7 @@ private theorem half_add_I_mem_mellinPoleDomain : (1 / 2 + I : ℂ) ∈ mellinPo
   · exact xi_ne_zero_low_upper (by norm_num) (by norm_num) (by norm_num) (by norm_num)
   · exact _root_.RHTower.xi_ne_zero_of_one_lt_re (by norm_num)
 
+/-- Two countable zero sets cannot disconnect an open convex subset of the complex plane. -/
 private theorem mellinPoleDomain_preconnected : IsPreconnected mellinPoleDomain := by
   let V : Set ℂ := {u | -1 < u.re ∧ u.re < 1 ∧ 0 < u.im}
   let Z : Set ℂ := {u | _root_.RHTower.xi u = 0 ∨ _root_.RHTower.xi (u + 1) = 0}
@@ -553,6 +551,365 @@ private theorem mellinPoleDomain_preconnected : IsPreconnected mellinPoleDomain 
 
 #print axioms gaussianMellinContinuation_normal
 #print axioms gaussianMellinContinuation_differentiableOn
-#print axioms mellinPoleDomain_preconnected
+
+private theorem gaussianMellinContinuation_eq_mellin {ε : ℝ} (hε : 0 < ε)
+    (x : ℓ²(zetaZeroConfig.carrier, ℂ)) {u : ℂ} (hu : u ∈ mellinPoleDomain) (hu0 : 0 < u.re) :
+    gaussianMellinContinuation ε x u = mellin (gaussianPhysicalCore ε x) u := by
+  rw [(gaussianPhysicalCore_hasMellin hε x hu0 hu.2.1).2, gaussianMellinContinuation]
+  apply tsum_congr
+  intro s
+  rw [upperMayerCore_mellin_eq_kernel s hu0 hu.2.1
+    (fun he => (upperMayer_poles_not_mem s).1 (he ▸ hu))]
+
+/-- Vanishing on the common physical Mellin strip propagates through the connected pole complement. -/
+private theorem gaussianMellinContinuation_zero_of_mellin_zero {ε : ℝ} (hε : 0 < ε)
+    (x : ℓ²(zetaZeroConfig.carrier, ℂ))
+    (hz : ∀ u : ℂ, 0 < u.re → u.re < 1 → mellin (gaussianPhysicalCore ε x) u = 0) :
+    EqOn (gaussianMellinContinuation ε x) 0 mellinPoleDomain := by
+  have ha := (gaussianMellinContinuation_differentiableOn hε x).analyticOnNhd mellinPoleDomain_isOpen
+  apply ha.eqOn_zero_of_preconnected_of_eventuallyEq_zero mellinPoleDomain_preconnected
+    half_add_I_mem_mellinPoleDomain
+  have hopen : IsOpen (mellinPoleDomain ∩ {u : ℂ | 0 < u.re}) :=
+    mellinPoleDomain_isOpen.inter (isOpen_lt continuous_const Complex.continuous_re)
+  filter_upwards [hopen.mem_nhds ⟨half_add_I_mem_mellinPoleDomain, by norm_num⟩] with u hu
+  rw [gaussianMellinContinuation_eq_mellin hε x hu.1 hu.2, hz u hu.2 hu.1.2.1]
+  rfl
+
+private def mellinResiduePoint (k : upperMayerResonances) : ℂ := 2 * k.1 - 1
+
+private theorem mellinResiduePoint_re (k : upperMayerResonances) :
+    -1 < (mellinResiduePoint k).re ∧ (mellinResiduePoint k).re < 0 := by
+  have he : (mellinResiduePoint k).re = 2 * k.1.re - 1 := by simp [mellinResiduePoint]
+  rw [he]
+  constructor <;> linarith only [k.2.2.1, k.2.2.2.1]
+
+private theorem mellinResiduePoint_im (k : upperMayerResonances) :
+    0 < (mellinResiduePoint k).im := by
+  have he : (mellinResiduePoint k).im = 2 * k.1.im := by simp [mellinResiduePoint]
+  rw [he]
+  linarith only [k.2.1]
+
+private theorem xi_mellinResiduePoint_ne_zero (k : upperMayerResonances) :
+    _root_.RHTower.xi (mellinResiduePoint k) ≠ 0 := by
+  rw [← _root_.RHTower.xi_one_sub (mellinResiduePoint k)]
+  apply _root_.RHTower.xi_ne_zero_of_one_lt_re
+  simp only [Complex.sub_re, Complex.one_re]
+  linarith only [(mellinResiduePoint_re k).2]
+
+private def mellinRestDomain (k : upperMayerResonances) : Set ℂ :=
+  mellinPoleDomain ∪ {mellinResiduePoint k}
+
+/-- Isolation of the selected xi zero permits filling its puncture alone. -/
+private theorem mellinRestDomain_isOpen (k : upperMayerResonances) : IsOpen (mellinRestDomain k) := by
+  let A : Set ℂ := {u | -1 < u.re ∧ u.re < 1 ∧ 0 < u.im ∧ _root_.RHTower.xi u ≠ 0}
+  have hxi : IsOpen {u : ℂ | _root_.RHTower.xi u ≠ 0} :=
+    _root_.RHTower.isClosed_xiZeroSet.isOpen_compl
+  have hAo : IsOpen A := (isOpen_lt continuous_const Complex.continuous_re).inter
+    ((isOpen_lt Complex.continuous_re continuous_const).inter
+      ((isOpen_lt continuous_const Complex.continuous_im).inter hxi))
+  have hqA : mellinResiduePoint k ∈ A :=
+    ⟨(mellinResiduePoint_re k).1, (mellinResiduePoint_re k).2.trans zero_lt_one,
+      mellinResiduePoint_im k, xi_mellinResiduePoint_ne_zero k⟩
+  obtain ⟨r, hr, hball⟩ := Metric.isOpen_iff.mp hAo (mellinResiduePoint k) hqA
+  obtain ⟨δ, hδ, hiso⟩ := _root_.RHTower.xi_zero_isolated (upperMayer_xi_zero k)
+  have hqnhds : mellinRestDomain k ∈ 𝓝 (mellinResiduePoint k) := by
+    apply Metric.mem_nhds_iff.mpr
+    refine ⟨min r δ, lt_min hr hδ, fun u hu => ?_⟩
+    have huA := hball ((Metric.ball_subset_ball (min_le_left r δ)) hu)
+    by_cases heq : u = mellinResiduePoint k
+    · exact Or.inr (Set.mem_singleton_iff.mpr heq)
+    · refine Or.inl ⟨huA.1, huA.2.1, huA.2.2.1, huA.2.2.2, ?_⟩
+      intro hzero
+      have he : 2 * k.1 = mellinResiduePoint k + 1 := by dsimp [mellinResiduePoint]; ring
+      have hd : dist (u + 1) (2 * k.1) < δ := by
+        rw [he, dist_add_right]
+        exact lt_of_lt_of_le hu (min_le_right r δ)
+      have he' := hiso (u + 1) hzero hd
+      apply heq
+      dsimp [mellinResiduePoint]
+      linear_combination he'
+  apply isOpen_iff_mem_nhds.mpr
+  intro u hu
+  rcases hu with hu | hu
+  · exact Filter.mem_of_superset (mellinPoleDomain_isOpen.mem_nhds hu) Set.subset_union_left
+  · rw [Set.mem_singleton_iff.mp hu]
+    exact hqnhds
+
+private theorem mellinRestDomain_strip (k : upperMayerResonances) {u : ℂ}
+    (hu : u ∈ mellinRestDomain k) : -1 < u.re ∧ u.re < 1 := by
+  rcases hu with hu | hu
+  · exact ⟨hu.1, hu.2.1⟩
+  · rw [Set.mem_singleton_iff.mp hu]
+    exact ⟨(mellinResiduePoint_re k).1, (mellinResiduePoint_re k).2.trans zero_lt_one⟩
+
+private theorem zero_not_mellinRestDomain (k : upperMayerResonances) : (0 : ℂ) ∉ mellinRestDomain k := by
+  intro h
+  rcases h with h | h
+  · exact zero_not_mellinPoleDomain h
+  · have hi := mellinResiduePoint_im k
+    rw [← Set.mem_singleton_iff.mp h, Complex.zero_im] at hi
+    exact lt_irrefl 0 hi
+
+private theorem one_not_mellinRestDomain (k : upperMayerResonances) : (1 : ℂ) ∉ mellinRestDomain k := by
+  intro h
+  rcases h with h | h
+  · exact one_not_mellinPoleDomain h
+  · have hi := mellinResiduePoint_im k
+    rw [← Set.mem_singleton_iff.mp h, Complex.one_im] at hi
+    exact lt_irrefl 0 hi
+
+private theorem other_poles_not_mellinRestDomain (k s : upperMayerResonances) (hsk : s ≠ k) :
+    2 * s.1 ∉ mellinRestDomain k ∧ 2 * s.1 - 1 ∉ mellinRestDomain k := by
+  constructor
+  · intro hu
+    rcases hu with hu | hu
+    · exact (upperMayer_poles_not_mem s).1 hu
+    · have hr : 0 < (2 * s.1).re := by simp; linarith only [s.2.2.1]
+      rw [Set.mem_singleton_iff.mp hu] at hr
+      linarith only [hr, (mellinResiduePoint_re k).2]
+  · intro hu
+    rcases hu with hu | hu
+    · exact (upperMayer_poles_not_mem s).2 hu
+    · have he := Set.mem_singleton_iff.mp hu
+      apply hsk
+      apply Subtype.ext
+      dsimp [mellinResiduePoint] at he
+      linear_combination (1 / 2 : ℂ) * he
+
+private def gaussianMellinRest (k : upperMayerResonances) (ε : ℝ)
+    (x : ℓ²(zetaZeroConfig.carrier, ℂ)) (u : ℂ) : ℂ :=
+  ∑' s : {s : upperMayerResonances // s ≠ k},
+    (Real.exp (-ε * s.1.1.im ^ 2) : ℂ) * x (upperMayerZero s.1) * resonantMellinKernel s.1 u
+
+private theorem gaussianMellinRest_normal (k : upperMayerResonances) {ε : ℝ} (hε : 0 < ε)
+    (x : ℓ²(zetaZeroConfig.carrier, ℂ)) :
+    SummableLocallyUniformlyOn
+      (fun s : {s : upperMayerResonances // s ≠ k} => fun u : ℂ =>
+        (Real.exp (-ε * s.1.1.im ^ 2) : ℂ) * x (upperMayerZero s.1) * resonantMellinKernel s.1 u)
+      (mellinRestDomain k) :=
+  gaussianKernel_normal_on hε x {s | s ≠ k} (mellinRestDomain k) (mellinRestDomain_isOpen k)
+    (fun _ hu => mellinRestDomain_strip k hu) (zero_not_mellinRestDomain k)
+    (one_not_mellinRestDomain k) (fun s hs => other_poles_not_mellinRestDomain k s hs)
+
+/-- Removing one summand makes the remaining series holomorphic across its residue point. -/
+private theorem gaussianMellinRest_continuousAt_pole (k : upperMayerResonances) {ε : ℝ} (hε : 0 < ε)
+    (x : ℓ²(zetaZeroConfig.carrier, ℂ)) :
+    ContinuousAt (gaussianMellinRest k ε x) (mellinResiduePoint k) := by
+  have hd : DifferentiableOn ℂ (gaussianMellinRest k ε x) (mellinRestDomain k) := by
+    apply (gaussianMellinRest_normal k hε x).differentiableOn (mellinRestDomain_isOpen k)
+    intro s u hu
+    have hstrip := mellinRestDomain_strip k hu
+    have h0 : u ≠ 0 := fun h => zero_not_mellinRestDomain k (h ▸ hu)
+    have h1 : u ≠ 1 := fun h => one_not_mellinRestDomain k (h ▸ hu)
+    have hw0 : u ≠ 2 * s.1.1 := fun h => (other_poles_not_mellinRestDomain k s.1 s.2).1 (h ▸ hu)
+    have hw1 : u ≠ 2 * s.1.1 - 1 := fun h => (other_poles_not_mellinRestDomain k s.1 s.2).2 (h ▸ hu)
+    exact (resonantMellinKernel_differentiableAt s.1 hstrip.1 hstrip.2 h0 h1 hw0 hw1).const_mul _
+  have hq : mellinResiduePoint k ∈ mellinRestDomain k := Or.inr (Set.mem_singleton _)
+  exact (hd (mellinResiduePoint k) hq).differentiableAt
+    ((mellinRestDomain_isOpen k).mem_nhds hq) |>.continuousAt
+
+private def mellinRegularizedKernel (k : upperMayerResonances) (u : ℂ) : ℂ :=
+  -(4 * symbol (2 * k.1) u * _root_.RHTower.xi u * _root_.RHTower.xi (2 * k.1 - u) /
+    (Gammaℝ (2 * k.1) * u * (u - 1) * (2 * k.1 - u)))
+
+private theorem mellinResiduePoint_ne_zero (k : upperMayerResonances) : mellinResiduePoint k ≠ 0 := by
+  intro h
+  have hi := mellinResiduePoint_im k
+  rw [h, Complex.zero_im] at hi
+  exact lt_irrefl 0 hi
+
+private theorem mellinResiduePoint_ne_one (k : upperMayerResonances) : mellinResiduePoint k ≠ 1 := by
+  intro h
+  have hi := mellinResiduePoint_im k
+  rw [h, Complex.one_im] at hi
+  exact lt_irrefl 0 hi
+
+private theorem mellinRegularizedKernel_continuousAt (k : upperMayerResonances) :
+    ContinuousAt (mellinRegularizedKernel k) (mellinResiduePoint k) := by
+  have hsym := resonantSymbol_differentiableAt k (mellinResiduePoint_re k).1
+    ((mellinResiduePoint_re k).2.trans zero_lt_one)
+  have hxi := _root_.RHTower.xi_differentiable (mellinResiduePoint k)
+  have hshift := (_root_.RHTower.xi_differentiable (2 * k.1 - mellinResiduePoint k)).comp
+    (mellinResiduePoint k) ((differentiableAt_const (2 * k.1)).sub differentiableAt_id)
+  have hd : DifferentiableAt ℂ (fun u : ℂ =>
+      Gammaℝ (2 * k.1) * u * (u - 1) * (2 * k.1 - u)) (mellinResiduePoint k) := by fun_prop
+  have hG : Gammaℝ (2 * k.1) ≠ 0 :=
+    Complex.Gammaℝ_ne_zero_of_re_pos (by simp; linarith only [k.2.2.1])
+  have hwq : 2 * k.1 - mellinResiduePoint k = 1 := by dsimp [mellinResiduePoint]; ring
+  have hden : Gammaℝ (2 * k.1) * mellinResiduePoint k * (mellinResiduePoint k - 1) *
+      (2 * k.1 - mellinResiduePoint k) ≠ 0 := by
+    rw [hwq, mul_one]
+    exact mul_ne_zero (mul_ne_zero hG (mellinResiduePoint_ne_zero k))
+      (sub_ne_zero.mpr (mellinResiduePoint_ne_one k))
+  exact ((((hsym.const_mul 4).mul hxi).mul hshift).div hd hden).neg.continuousAt
+
+/-- The shifted xi value is nonzero by reflection into the Euler-product half-plane. -/
+private theorem mellinRegularizedKernel_ne_zero (k : upperMayerResonances) :
+    mellinRegularizedKernel k (mellinResiduePoint k) ≠ 0 := by
+  have hwq : 2 * k.1 - mellinResiduePoint k = 1 := by dsimp [mellinResiduePoint]; ring
+  have hG : Gammaℝ (2 * k.1) ≠ 0 :=
+    Complex.Gammaℝ_ne_zero_of_re_pos (by simp; linarith only [k.2.2.1])
+  unfold mellinRegularizedKernel
+  rw [hwq, _root_.RHTower.xi_one, mul_one]
+  apply neg_ne_zero.mpr
+  apply div_ne_zero
+  · exact mul_ne_zero (mul_ne_zero (mul_ne_zero (by norm_num)
+      (resonantSymbol_ne_zero k (mellinResiduePoint_re k).1
+        ((mellinResiduePoint_re k).2.trans zero_lt_one))) (xi_mellinResiduePoint_ne_zero k))
+      (by norm_num)
+  · exact mul_ne_zero (mul_ne_zero hG (mellinResiduePoint_ne_zero k))
+      (sub_ne_zero.mpr (mellinResiduePoint_ne_one k))
+
+private theorem mellinRegularizedKernel_eq (k : upperMayerResonances) {u : ℂ}
+    (hu : u ∈ mellinPoleDomain) :
+    (u - mellinResiduePoint k) * resonantMellinKernel k u = mellinRegularizedKernel k u := by
+  have h0 : u ≠ 0 := fun h => zero_not_mellinPoleDomain (h ▸ hu)
+  have h1 : u ≠ 1 := fun h => one_not_mellinPoleDomain (h ▸ hu)
+  have hw : u ≠ 2 * k.1 := fun h => (upperMayer_poles_not_mem k).1 (h ▸ hu)
+  have hq : u ≠ mellinResiduePoint k := by
+    intro h
+    apply (upperMayer_poles_not_mem k).2
+    simpa only [h, mellinResiduePoint] using hu
+  have hG : Gammaℝ (2 * k.1) ≠ 0 :=
+    Complex.Gammaℝ_ne_zero_of_re_pos (by simp; linarith only [k.2.2.1])
+  have he : 2 * k.1 - u - 1 = -(u - mellinResiduePoint k) := by dsimp [mellinResiduePoint]; ring
+  unfold resonantMellinKernel mellinRegularizedKernel
+  rw [he]
+  field_simp [hG, h0, sub_ne_zero.mpr h1, sub_ne_zero.mpr hw.symm, sub_ne_zero.mpr hq]
+
+private theorem eventually_mellinPoleDomain_at_residue (k : upperMayerResonances) :
+    ∀ᶠ u in 𝓝[≠] (mellinResiduePoint k), u ∈ mellinPoleDomain := by
+  have hq : mellinResiduePoint k ∈ mellinRestDomain k := Or.inr (Set.mem_singleton _)
+  have hn : ∀ᶠ u in 𝓝 (mellinResiduePoint k), u ∈ mellinRestDomain k :=
+    (mellinRestDomain_isOpen k).mem_nhds hq
+  have hΩ : ∀ᶠ u in 𝓝[≠] (mellinResiduePoint k), u ∈ mellinRestDomain k :=
+    hn.filter_mono nhdsWithin_le_nhds
+  filter_upwards [hΩ, self_mem_nhdsWithin] with u hu hne
+  have hneq : u ≠ mellinResiduePoint k := by
+    simpa only [mem_compl_iff, mem_singleton_iff] using hne
+  rcases hu with hu | hu
+  · exact hu
+  · exact False.elim (hneq (Set.mem_singleton_iff.mp hu))
+
+private theorem tendsto_regularized_mellin_kernel (k : upperMayerResonances) :
+    Tendsto (fun u : ℂ => (u - mellinResiduePoint k) * resonantMellinKernel k u)
+      (𝓝[≠] (mellinResiduePoint k))
+      (𝓝 (mellinRegularizedKernel k (mellinResiduePoint k))) := by
+  apply ((mellinRegularizedKernel_continuousAt k).tendsto.mono_left nhdsWithin_le_nhds).congr'
+  filter_upwards [eventually_mellinPoleDomain_at_residue k] with u hu
+  exact (mellinRegularizedKernel_eq k hu).symm
+
+private theorem gaussianMellinContinuation_eq_single_add_rest (k : upperMayerResonances)
+    {ε : ℝ} (hε : 0 < ε) (x : ℓ²(zetaZeroConfig.carrier, ℂ)) {u : ℂ}
+    (hu : u ∈ mellinPoleDomain) :
+    gaussianMellinContinuation ε x u =
+      (Real.exp (-ε * k.1.im ^ 2) : ℂ) * x (upperMayerZero k) * resonantMellinKernel k u +
+        gaussianMellinRest k ε x u := by
+  classical
+  have h := (((gaussianMellinContinuation_normal hε x).summable hu).sum_add_tsum_subtype_compl
+    ({k} : Finset upperMayerResonances)).symm
+  have hp : (fun s : upperMayerResonances => s ∉ ({k} : Finset upperMayerResonances)) =
+      (fun s : upperMayerResonances => s ≠ k) := by
+    funext s
+    exact propext Finset.notMem_singleton
+  rw [hp] at h
+  simpa only [Finset.sum_singleton, gaussianMellinContinuation, gaussianMellinRest] using h
+
+/-- A punctured limit kills the holomorphic remainder and isolates the selected coefficient. -/
+private theorem gaussianPhysicalCore_upper_coeff_zero_of_mellin_zero {ε : ℝ} (hε : 0 < ε)
+    (x : ℓ²(zetaZeroConfig.carrier, ℂ))
+    (hz : ∀ u : ℂ, 0 < u.re → u.re < 1 → mellin (gaussianPhysicalCore ε x) u = 0)
+    (k : upperMayerResonances) : x (upperMayerZero k) = 0 := by
+  have hzero := gaussianMellinContinuation_zero_of_mellin_zero hε x hz
+  have hid : Tendsto (fun u : ℂ => u - mellinResiduePoint k) (𝓝 (mellinResiduePoint k))
+      (𝓝 (mellinResiduePoint k - mellinResiduePoint k)) :=
+    (continuous_id.sub continuous_const).continuousAt.tendsto
+  have hid' : Tendsto (fun u : ℂ => u - mellinResiduePoint k)
+      (𝓝[≠] (mellinResiduePoint k)) (𝓝 (0 : ℂ)) := by
+    simpa only [sub_self] using hid.mono_left nhdsWithin_le_nhds
+  have hrest : Tendsto (fun u : ℂ => (u - mellinResiduePoint k) * gaussianMellinRest k ε x u)
+      (𝓝[≠] (mellinResiduePoint k)) (𝓝 (0 : ℂ)) := by
+    simpa only [zero_mul] using hid'.mul
+      ((gaussianMellinRest_continuousAt_pole k hε x).tendsto.mono_left nhdsWithin_le_nhds)
+  have hterm := (tendsto_regularized_mellin_kernel k).const_mul
+    ((Real.exp (-ε * k.1.im ^ 2) : ℂ) * x (upperMayerZero k))
+  have hsum := hterm.add hrest
+  simp only [add_zero] at hsum
+  have hsum' : Tendsto (fun u : ℂ => (u - mellinResiduePoint k) * gaussianMellinContinuation ε x u)
+      (𝓝[≠] (mellinResiduePoint k))
+      (𝓝 (((Real.exp (-ε * k.1.im ^ 2) : ℂ) * x (upperMayerZero k)) *
+        mellinRegularizedKernel k (mellinResiduePoint k))) := by
+    apply hsum.congr'
+    filter_upwards [eventually_mellinPoleDomain_at_residue k] with u hu
+    rw [gaussianMellinContinuation_eq_single_add_rest k hε x hu]
+    ring
+  have hvan : Tendsto (fun u : ℂ => (u - mellinResiduePoint k) * gaussianMellinContinuation ε x u)
+      (𝓝[≠] (mellinResiduePoint k)) (𝓝 (0 : ℂ)) := by
+    apply tendsto_const_nhds.congr'
+    filter_upwards [eventually_mellinPoleDomain_at_residue k] with u hu
+    rw [hzero hu]
+    simp only [Pi.zero_apply, mul_zero]
+  have he := tendsto_nhds_unique hsum' hvan
+  have hcoef := (mul_eq_zero.mp he).resolve_right (mellinRegularizedKernel_ne_zero k)
+  exact (mul_eq_zero.mp hcoef).resolve_left (Complex.ofReal_ne_zero.mpr (Real.exp_ne_zero _))
+
+/-- Almost-everywhere vanishing of the actual Gaussian core sum detects exactly its
+upper-resonance coefficients. Lower-half-plane coordinates do not occur in the sum. -/
+theorem gaussianPhysicalCore_ae_eq_zero_iff {ε : ℝ} (hε : 0 < ε)
+    (x : ℓ²(zetaZeroConfig.carrier, ℂ)) :
+    gaussianPhysicalCore ε x =ᵐ[volume.restrict (Ioi (0 : ℝ))] 0 ↔
+      ∀ s : upperMayerResonances, x (upperMayerZero s) = 0 := by
+  constructor
+  · intro hae k
+    apply gaussianPhysicalCore_upper_coeff_zero_of_mellin_zero hε x _ k
+    intro u _ _
+    change (∫ a in Ioi (0 : ℝ), (a : ℂ) ^ (u - 1) • gaussianPhysicalCore ε x a) = 0
+    calc
+      _ = ∫ _a in Ioi (0 : ℝ), (0 : ℂ) := by
+        apply integral_congr_ae
+        filter_upwards [hae] with a ha
+        rw [ha]
+        exact smul_zero _
+      _ = 0 := integral_zero _ _
+  · intro hx
+    filter_upwards with a
+    simp only [gaussianPhysicalCore, hx, mul_zero, zero_mul, tsum_zero, Pi.zero_apply]
+
+/-- Whole-axis Haar synthesis is faithful on its upper-resonance coordinates. -/
+theorem gaussianWholePhysicalColumn_tsum_eq_zero_iff {ε : ℝ} (hε : 0 < ε)
+    (x : ℓ²(zetaZeroConfig.carrier, ℂ)) :
+    (∑' s : upperMayerResonances,
+      ((Real.exp (-ε * s.1.im ^ 2) : ℂ) * x (upperMayerZero s)) • wholePhysicalCoreColumn s) = 0 ↔
+      ∀ s : upperMayerResonances, x (upperMayerZero s) = 0 := by
+  constructor
+  · intro hzero
+    apply (gaussianPhysicalCore_ae_eq_zero_iff hε x).mp
+    have hrep := gaussianPhysicalCore_eq_wholeLp_tsum hε x
+    rw [hzero] at hrep
+    have hdiv : (fun a => gaussianPhysicalCore ε x a / (Real.sqrt a : ℂ))
+        =ᵐ[volume.restrict (Ioi (0 : ℝ))] 0 := hrep.symm.trans (Lp.coeFn_zero ℂ 2 _)
+    filter_upwards [hdiv, ae_restrict_mem measurableSet_Ioi] with a ha ha0
+    have hsq : (Real.sqrt a : ℂ) ≠ 0 :=
+      Complex.ofReal_ne_zero.mpr (ne_of_gt (Real.sqrt_pos.mpr ha0))
+    exact (div_eq_zero_iff.mp ha).resolve_right hsq
+  · intro hx
+    simp only [hx, mul_zero, zero_smul, tsum_zero]
+
+/-- Pointwise vanishing on the positive axis also determines every upper coefficient. -/
+theorem gaussianPhysicalCore_eq_zero_iff {ε : ℝ} (hε : 0 < ε)
+    (x : ℓ²(zetaZeroConfig.carrier, ℂ)) :
+    (∀ a > 0, gaussianPhysicalCore ε x a = 0) ↔
+      ∀ s : upperMayerResonances, x (upperMayerZero s) = 0 := by
+  constructor
+  · intro hz
+    apply (gaussianPhysicalCore_ae_eq_zero_iff hε x).mp
+    filter_upwards [ae_restrict_mem measurableSet_Ioi] with a ha
+    exact hz a ha
+  · intro hx a _
+    simp only [gaussianPhysicalCore, hx, mul_zero, zero_mul, tsum_zero]
+
+#print axioms gaussianPhysicalCore_ae_eq_zero_iff
+#print axioms gaussianWholePhysicalColumn_tsum_eq_zero_iff
+#print axioms gaussianPhysicalCore_eq_zero_iff
 
 end GaloisForLFunctions.RenormalizedIntersectionTheory.MayerScattering

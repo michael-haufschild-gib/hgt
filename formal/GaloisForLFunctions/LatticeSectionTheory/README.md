@@ -187,6 +187,7 @@ classification of which lattice counts can and cannot touch the second part.
 | Prime-free effectivity | `kunneth_effectivity_realTestsAt`, `kunneth_effectivity_primitiveSmoothRealTestsAt`, `kunneth_effectivity_scalingSubsurface_iff` | proved |
 | The primitive `h¹` of a prime-free cycle is a jump count; positivity from the count | `weilPair_eq_jumpCount_of_primeFree`, `jumpCount_ge`, `abs_poleCross_le`, `jumpCount_derivation_of_primeFree_positivity` (`a ≤ 1/2000`) | proved |
 | Exterior jumps across gaps `≥ a`; positivity from the count for `a ≤ 1/64` | `autocorr_le_half_of_le`, `archLevySinhWeight_ge_exp`, `jumpCount_ge_exterior`, `exteriorJumps_derivation_of_primeFree_positivity`, `primitiveH1_ge_of_exteriorJumps` | proved |
+| Odd quadratic correlation moment `=−(∫xF)²`; unit quadratic jump cost `≤5∫F²/12` | `odd_autocorr_second_moment`, `unit_odd_jump_second_moment`, `unit_odd_jump_second_moment_le` | proved |
 | Riemann–Roch outside a finite divisor at every degree | `kunneth_effectivity_lowBlindTests`, `kunneth_primitive_h1_ge`, `exists_ne_zero_lowBlindTests` | proved |
 | `𝔽_q` calibration | `unitary_iff_forall_window_kunneth`, `goldenDatum_not_forall_window_kunneth`, `genusOne_kunneth_h1_graphCycle`, `genusOne_kunneth_h1_frobenius` | proved |
 | Stepanov counts pay the primitive `h¹` of hyperelliptic curves of every genus | `hyperelliptic_window_hodgeIndex`, `hyperelliptic_kunneth_effectivity`, `hyperelliptic_primitiveH1_nonneg` | proved |

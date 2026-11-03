@@ -51,10 +51,10 @@ theorem eq_zero_of_vanish_off_Icc (hf : Continuous f) {p q : ℝ}
   rcases hu with hu | hu
   · have hsub : Iio u ⊆ {u | f u = 0} := fun v hv' => hv v fun hm => by
       have := mem_Iio.mp hv'; linarith [hm.1]
-    exact hcl.closure_subset_iff.mpr hsub (by rw [closure_Iio]; exact le_rfl)
+    exact hcl.closure_subset_iff.mpr hsub (by rw [closure_Iio u]; exact Set.mem_Iic.mpr le_rfl)
   · have hsub : Ioi u ⊆ {u | f u = 0} := fun v hv' => hv v fun hm => by
       have := mem_Ioi.mp hv'; linarith [hm.2]
-    exact hcl.closure_subset_iff.mpr hsub (by rw [closure_Ioi]; exact le_rfl)
+    exact hcl.closure_subset_iff.mpr hsub (by rw [closure_Ioi u]; exact Set.mem_Ici.mpr le_rfl)
 
 theorem hasCompactSupport_of_vanish_off_Icc {p q : ℝ} (hv : ∀ u, u ∉ Icc p q → f u = 0) :
     HasCompactSupport f :=
@@ -131,9 +131,9 @@ theorem orderedCoupling_add_right (h₁ : OrderedAt a f g) (h₂ : OrderedAt a f
   obtain ⟨R₂, -, hR₂⟩ := exists_supportedIn hgc
   obtain ⟨R₃, -, hR₃⟩ := exists_supportedIn hhc
   set R := max R₁ (max R₂ R₃)
-  have hfR := supportedIn_mono hR₁ (le_max_left _ _)
-  have hgR := supportedIn_mono hR₂ ((le_max_left R₂ R₃).trans (le_max_right _ _))
-  have hhR := supportedIn_mono hR₃ ((le_max_right R₂ R₃).trans (le_max_right _ _))
+  have hfR := supportedIn_mono hR₁ (le_max_left R₁ (max R₂ R₃))
+  have hgR := supportedIn_mono hR₂ ((le_max_left R₂ R₃).trans (le_max_right R₁ (max R₂ R₃)))
+  have hhR := supportedIn_mono hR₃ ((le_max_right R₂ R₃).trans (le_max_right R₁ (max R₂ R₃)))
   rw [e1, tsum_vonMangoldtAtom_mul_crossCorr_eq_sum hfR (supportedIn_add hgR hhR),
     tsum_vonMangoldtAtom_mul_crossCorr_eq_sum hfR hgR,
     tsum_vonMangoldtAtom_mul_crossCorr_eq_sum hfR hhR]
@@ -254,7 +254,7 @@ theorem crossCorr_collars_log_eq_zero {n m : ℕ} (hn : 2 ≤ n) (hm : 2 ≤ m) 
 
 /-- **The two-collar identity**: on a stage test, Weil's form is the frozen two-collar form minus
 the new fold, `Q(x_L + y + x_R) = F(x_L, y, x_R) − 2w⟨x_L, J x_R⟩`. -/
-theorem weilQuad_stageTest {n : ℕ} (hn : 2 ≤ n) {ε : ℝ} (hε : 0 < ε)
+theorem weilQuad_stageTest {n : ℕ} (hn : 2 ≤ n) {ε : ℝ}
     (hεn : Real.log n + ε < Real.log (n + 1)) {xL y xR : ℝ → ℝ}
     (hxL : ContDiff ℝ 2 xL) (hy : ContDiff ℝ 2 y) (hxR : ContDiff ℝ 2 xR)
     (hL : ∀ u, u ∉ Icc (-Real.log n - ε) (-Real.log n) → xL u = 0)
@@ -279,7 +279,7 @@ theorem weilQuad_stageTest {n : ℕ} (hn : 2 ≤ n) {ε : ℝ} (hε : 0 < ε)
 
 /-- **The stage law**: Weil positivity on the stage tests of `n` is equivalent to the frozen
 two-collar form dominating the new fold on every stage test. -/
-theorem stage_nonneg_iff {n : ℕ} (hn : 2 ≤ n) {ε : ℝ} (hε : 0 < ε)
+theorem stage_nonneg_iff {n : ℕ} (hn : 2 ≤ n) {ε : ℝ}
     (hεn : Real.log n + ε < Real.log (n + 1)) :
     (∀ xL y xR : ℝ → ℝ, ContDiff ℝ 2 xL → ContDiff ℝ 2 y → ContDiff ℝ 2 xR →
       (∀ u, u ∉ Icc (-Real.log n - ε) (-Real.log n) → xL u = 0) →
@@ -292,7 +292,7 @@ theorem stage_nonneg_iff {n : ℕ} (hn : 2 ≤ n) {ε : ℝ} (hε : 0 < ε)
   refine forall_congr' fun xL => forall_congr' fun y => forall_congr' fun xR => ?_
   refine forall_congr' fun hxL => forall_congr' fun hy => forall_congr' fun hxR => ?_
   refine forall_congr' fun hL => forall_congr' fun hI => forall_congr' fun hR => ?_
-  rw [weilQuad_stageTest hn hε hεn hxL hy hxR hL hI hR, sub_nonneg]
+  rw [weilQuad_stageTest hn hεn hxL hy hxR hL hI hR, sub_nonneg]
 
 /-! ### The frozen form is the stage datum -/
 
@@ -362,9 +362,9 @@ theorem stageForm_stageTest {N : ℕ} (hN : 1 ≤ N) {ε : ℝ} (hε : 0 < ε)
     · rw [hL u fun hm => by linarith [hm.2], hI u fun hm => by linarith [hm.2],
         hR u fun hm => by linarith [hm.2]]; ring
   have hQ := weilQuad_eq_markovForm_windowLevel hwin
-  rw [windowLevel_stage hε.le hεn, markovForm_succ hwin.continuous hwin.hasCompactSupport hN] at hQ
+  rw [windowLevel_stage hε.le hεn, WindowTowerOfSpecZ.markovForm_succ hwin.continuous hwin.hasCompactSupport hN] at hQ
   have hshift := integral_stageTest_mul_shift (n := N + 1) hε hy.continuous hεl hL hI hR
-  have hstage := weilQuad_stageTest hn hε hεn' hxL hy hxR hL hI hR
+  have hstage := weilQuad_stageTest hn hεn' hxL hy hxR hL hI hR
   have hw : primeJumpWeight (N + 1) = vonMangoldtAtom (N + 1) := by
     unfold primeJumpWeight vonMangoldtAtom; rw [if_pos hn]
   rw [WindowTowerOfSpecZ.stageForm]

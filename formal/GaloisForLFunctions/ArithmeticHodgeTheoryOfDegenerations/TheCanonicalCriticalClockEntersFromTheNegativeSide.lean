@@ -320,7 +320,6 @@ theorem criticalCurve_sq_mul_lowFrequency {φ h : ℝ → ℝ} {A : ℝ}
   dsimp only [Function.comp_def]
   rw [hs1, hs2]
   field_simp
-  ring
 
 /-- The energy defect is smaller than the quadratic correction on the critical clock. -/
 theorem criticalCurve_sq_log_mul_energyDefect (hφ : ContDiff ℝ 2 φ)
@@ -405,6 +404,7 @@ theorem criticalCurve_sq_log_mul_energyDefect (hφ : ContDiff ℝ 2 φ)
     simp only [Real.sqrt_zero] at ht
     refine ht.congr fun N => ?_
     dsimp only [Function.comp_def]
+    have hlog0 := Real.log_natCast_nonneg N
     rw [show c N ^ 5 * Real.log N ^ 2 / N =
       (c N ^ 2 * Real.log N) ^ 2 * (c N / N) by ring,
       Real.sqrt_mul (sq_nonneg _), Real.sqrt_sq (by positivity)]
@@ -541,11 +541,11 @@ theorem criticalCurve_sq_mul_polePart {φ h : ℝ → ℝ} {A : ℝ}
   have hpc : Tendsto (fun N : ℕ => (c N : ℂ) ^ 2 *
       (conj (alphaPlus φ h (c N) N) - conj p0)) atTop (𝓝 0) := by
     have ht := (Complex.continuous_conj.tendsto 0).comp hp
-    simpa only [Function.comp_def, map_mul, map_pow, map_sub, Complex.conj_ofReal, map_zero] using ht
+    simpa only [Function.comp_def, map_mul, map_pow, map_sub, Complex.conj_ofReal, map_zero, p0] using ht
   have hmc : Tendsto (fun N : ℕ => (c N : ℂ) ^ 2 *
       (conj (alphaMinus φ h (c N) N) - conj m0)) atTop (𝓝 0) := by
     have ht := (Complex.continuous_conj.tendsto 0).comp hm
-    simpa only [Function.comp_def, map_mul, map_pow, map_sub, Complex.conj_ofReal, map_zero] using ht
+    simpa only [Function.comp_def, map_mul, map_pow, map_sub, Complex.conj_ofReal, map_zero, m0] using ht
   have ht1 := tendsto_scaled_mul_sub ((Complex.continuous_conj.tendsto _).comp hqm) hp hmc
   have ht2 := tendsto_scaled_mul_sub ((Complex.continuous_conj.tendsto _).comp hqp) hm hpc
   have ht : Tendsto (fun N : ℕ => (c N : ℂ) ^ 2 *
@@ -554,7 +554,9 @@ theorem criticalCurve_sq_mul_polePart {φ h : ℝ → ℝ} {A : ℝ}
         (p0 * conj m0 + m0 * conj p0))) atTop (𝓝 0) := by
     have hh' := ht1.add ht2
     simp only [add_zero] at hh'
-    exact hh'.congr fun N => by ring
+    exact hh'.congr fun N => by
+      dsimp only [p0, m0, Function.comp_def]
+      ring
   have hval : (p0 * conj m0 + m0 * conj p0).re =
       (∫ u, φ u) ^ 2 * (horizonTransform h 0 * conj (horizonTransform h 1) +
         horizonTransform h 1 * conj (horizonTransform h 0)).re := by
@@ -619,6 +621,7 @@ theorem criticalCurve_horizon_remainder {φ h : ℝ → ℝ} {A : ℝ}
     refine (mul_le_mul_of_nonneg_left hb (sq_nonneg _)).trans_eq ?_
     rw [show (8 : ℝ) = (8 : ℕ) by norm_num, Real.rpow_natCast]
     dsimp only [V, Function.comp_def]
+    have hcne : c N ≠ 0 := (hc0 N).ne'
     field_simp
   -- the identity
   have hcle : ∀ᶠ N : ℕ in atTop, c N ≤ N := by
@@ -725,8 +728,7 @@ theorem tiltedHorizonEnergy_quadratic_correction {h : ℝ → ℝ} {A : ℝ}
     refine ht.congr fun N => ?_
     have hcne : c N ≠ 0 := by linarith [hc1 N]
     dsimp only [M, M8]
-    field_simp
-    ring
+    field_simp [integral_tiltedUnitSpline_sq_pos.ne']
   have ht := hrem.add hcor
   simp only [zero_add] at ht
   refine ht.congr fun N => ?_
@@ -897,4 +899,161 @@ theorem canonicalCriticalClock_energy_negative {h : ℝ → ℝ} {A : ℝ}
   tiltedHorizonEnergy_exact_critical_negative hh hsupp hA hne
     (canonicalCriticalClock_one_le K) hK (canonicalCriticalClock_exact hK) hzero
 
+
+/-- On the canonical clock every nonzero window has an eventual strict sign.
+The boundary of the leading pencil belongs to the negative phase. -/
+theorem canonicalCriticalClock_phase_diagram {h : ℝ → ℝ} {A : ℝ}
+    (hh : ContDiff ℝ 2 h) (hsupp : ∀ y, y ∉ Set.Icc (-A) 0 → h y = 0) (hA : 0 ≤ A)
+    (hne : h ≠ 0) {K : ℝ} (hK : 0 < K) :
+    ∀ᶠ N : ℕ in atTop,
+      (0 < tiltedHorizonEnergy h (canonicalCriticalClock K N) N ↔
+        0 < (∫ u, tiltedUnitSpline u) ^ 2 / (∫ u, tiltedUnitSpline u ^ 2) *
+          weilQuad (halfWeight h) + 7 * tiltedJordanOne / K *
+            (∫ y, Real.exp (-(8 * y)) * halfWeight h y ^ 2)) ∧
+      (tiltedHorizonEnergy h (canonicalCriticalClock K N) N < 0 ↔
+        (∫ u, tiltedUnitSpline u) ^ 2 / (∫ u, tiltedUnitSpline u ^ 2) *
+          weilQuad (halfWeight h) + 7 * tiltedJordanOne / K *
+            (∫ y, Real.exp (-(8 * y)) * halfWeight h y ^ 2) ≤ 0) := by
+  let P := (∫ u, tiltedUnitSpline u) ^ 2 / (∫ u, tiltedUnitSpline u ^ 2) *
+    weilQuad (halfWeight h) + 7 * tiltedJordanOne / K *
+      (∫ y, Real.exp (-(8 * y)) * halfWeight h y ^ 2)
+  have hlim : Tendsto (fun N => tiltedHorizonEnergy h (canonicalCriticalClock K N) N)
+      atTop (𝓝 P) :=
+    horizon_layer_criticalCurve_exact hh hA hsupp (canonicalCriticalClock_one_le K) hK
+      (criticalCurve_ratio_of_exact (canonicalCriticalClock_exact hK))
+  by_cases hP : 0 < P
+  · filter_upwards [hlim.eventually (lt_mem_nhds hP)] with N hN
+    exact ⟨iff_of_true hN hP, iff_of_false (not_lt_of_ge hN.le) (not_le_of_gt hP)⟩
+  · have hP0 : P ≤ 0 := le_of_not_gt hP
+    have hneg : ∀ᶠ N : ℕ in atTop,
+        tiltedHorizonEnergy h (canonicalCriticalClock K N) N < 0 := by
+      rcases lt_or_eq_of_le hP0 with hlt | heq
+      · exact hlim.eventually (gt_mem_nhds hlt)
+      · exact canonicalCriticalClock_energy_negative hh hsupp hA hne hK heq
+    filter_upwards [hneg] with N hN
+    exact ⟨iff_of_false (not_lt_of_ge hN.le) hP, iff_of_true hN hP0⟩
+
+
+/-- An inverse-overlap perturbation of the canonical critical clock. -/
+def shiftedCriticalClock (K d : ℝ) (N : ℕ) : ℝ :=
+  max 1 (canonicalCriticalClock K N + d / canonicalCriticalClock K N)
+
+theorem shiftedCriticalClock_one_le (K d : ℝ) (N : ℕ) :
+    1 ≤ shiftedCriticalClock K d N := le_max_left _ _
+
+/-- An inverse-overlap perturbation realizes every finite first shift of the
+critical ratio: `c²(K_N-K) → 8Kd`. -/
+theorem shiftedCriticalClock_ratio_and_shift {K : ℝ} (hK : 0 < K) (d : ℝ) :
+    Tendsto (fun N : ℕ => shiftedCriticalClock K d N ^ 8 / Real.log N) atTop (𝓝 K) ∧
+    Tendsto (fun N : ℕ => shiftedCriticalClock K d N ^ 2 *
+      (shiftedCriticalClock K d N ^ 8 / Real.log N - K)) atTop (𝓝 (8 * K * d)) := by
+  let b := canonicalCriticalClock K
+  have hb : Tendsto b atTop atTop := canonicalCriticalClock_tendsto hK
+  have hb1 (N : ℕ) : 1 ≤ b N := canonicalCriticalClock_one_le K N
+  have hdiv : Tendsto (fun N : ℕ => d / b N) atTop (𝓝 0) := tendsto_const_nhds.div_atTop hb
+  have hraw : Tendsto (fun N : ℕ => b N + d / b N) atTop atTop := by
+    refine tendsto_atTop.mpr fun R => ?_
+    filter_upwards [hb.eventually (eventually_ge_atTop (R + 1)),
+      hdiv.eventually (lt_mem_nhds (by norm_num : (-1 : ℝ) < 0))] with N hbN hdN
+    linarith
+  have hmax : ∀ᶠ N : ℕ in atTop, shiftedCriticalClock K d N = b N + d / b N := by
+    filter_upwards [hraw.eventually (eventually_ge_atTop 1)] with N hN
+    exact max_eq_right hN
+  let u : ℕ → ℝ := fun N => d / b N ^ 2
+  have hu : Tendsto u atTop (𝓝 0) :=
+    tendsto_const_nhds.div_atTop ((tendsto_pow_atTop (by norm_num : 2 ≠ 0)).comp hb)
+  let P : ℝ → ℝ := fun x => 8 + 28 * x + 56 * x ^ 2 + 70 * x ^ 3 +
+    56 * x ^ 4 + 28 * x ^ 5 + 8 * x ^ 6 + x ^ 7
+  have hfactor (x : ℝ) : (1 + x) ^ 8 - 1 = x * P x := by dsimp only [P]; ring
+  have hP : Tendsto (fun N => P (u N)) atTop (𝓝 8) := by
+    have hc : Continuous P := by dsimp only [P]; fun_prop
+    have ht := (hc.tendsto 0).comp hu
+    simpa only [Function.comp_def, P, zero_pow (by norm_num : 2 ≠ 0),
+      zero_pow (by norm_num : 3 ≠ 0), zero_pow (by norm_num : 4 ≠ 0),
+      zero_pow (by norm_num : 5 ≠ 0), zero_pow (by norm_num : 6 ≠ 0),
+      zero_pow (by norm_num : 7 ≠ 0), mul_zero, add_zero] using ht
+  have h1 := hu.const_add 1
+  simp only [add_zero] at h1
+  have hratio := (h1.pow 8).const_mul K
+  simp only [one_pow, mul_one] at hratio
+  have hshift := ((h1.pow 2).mul hP).const_mul (K * d)
+  simp only [one_pow, one_mul] at hshift
+  rw [show K * d * 8 = 8 * K * d by ring] at hshift
+  have heq : ∀ᶠ N : ℕ in atTop,
+      shiftedCriticalClock K d N ^ 8 / Real.log N = K * (1 + u N) ^ 8 ∧
+      shiftedCriticalClock K d N ^ 2 * (shiftedCriticalClock K d N ^ 8 / Real.log N - K) =
+        K * d * ((1 + u N) ^ 2 * P (u N)) := by
+    filter_upwards [hmax, canonicalCriticalClock_exact hK, eventually_ge_atTop 2] with N hcN hbN hN2
+    have hb0 : b N ≠ 0 := by linarith [hb1 N]
+    have hlog : Real.log (N : ℝ) ≠ 0 := ne_of_gt (Real.log_pos (by
+      exact_mod_cast (show 1 < N by omega) : (1 : ℝ) < N))
+    have hcu : shiftedCriticalClock K d N = b N * (1 + u N) := by
+      rw [hcN]
+      dsimp only [u]
+      field_simp
+    have huB : b N ^ 2 * u N = d := by dsimp only [u]; field_simp
+    have hr : shiftedCriticalClock K d N ^ 8 / Real.log N = K * (1 + u N) ^ 8 := by
+      rw [hcu, mul_pow]
+      change b N ^ 8 = K * Real.log N at hbN
+      rw [hbN]
+      field_simp
+    refine ⟨hr, ?_⟩
+    rw [hr, hcu, mul_pow,
+      show K * (1 + u N) ^ 8 - K = K * ((1 + u N) ^ 8 - 1) by ring, hfactor]
+    calc b N ^ 2 * (1 + u N) ^ 2 * (K * (u N * P (u N))) =
+          K * (b N ^ 2 * u N) * ((1 + u N) ^ 2 * P (u N)) := by ring
+      _ = _ := by rw [huB]
+  exact ⟨hratio.congr' (heq.mono fun N hN => hN.1.symm),
+    hshift.congr' (heq.mono fun N hN => hN.2.symm)⟩
+
+/-- Equality of the leading pencil has no schedule-independent sign: two
+explicit clocks with the same critical ratio have opposite eventual signs. -/
+theorem critical_ratio_equality_admits_both_signs {h : ℝ → ℝ} {A : ℝ}
+    (hh : ContDiff ℝ 2 h) (hsupp : ∀ y, y ∉ Set.Icc (-A) 0 → h y = 0) (hA : 0 ≤ A)
+    (hne : h ≠ 0) {K : ℝ} (hK : 0 < K)
+    (hzero : (∫ u, tiltedUnitSpline u) ^ 2 / (∫ u, tiltedUnitSpline u ^ 2) *
+      weilQuad (halfWeight h) + 7 * tiltedJordanOne / K *
+        (∫ y, Real.exp (-(8 * y)) * halfWeight h y ^ 2) = 0) :
+    ∃ cMinus cPlus : ℕ → ℝ,
+      (∀ N, 1 ≤ cMinus N) ∧ (∀ N, 1 ≤ cPlus N) ∧
+      Tendsto (fun N : ℕ => cMinus N ^ 8 / Real.log N) atTop (𝓝 K) ∧
+      Tendsto (fun N : ℕ => cPlus N ^ 8 / Real.log N) atTop (𝓝 K) ∧
+      (∀ᶠ N : ℕ in atTop, tiltedHorizonEnergy h (cMinus N) N < 0) ∧
+      (∀ᶠ N : ℕ in atTop, 0 < tiltedHorizonEnergy h (cPlus N) N) := by
+  let B := 7 * tiltedJordanOne * (∫ y, Real.exp (-(8 * y)) * halfWeight h y ^ 2)
+  let T := tiltedNextAliasCoefficient * (∫ y, Real.exp (-(10 * y)) * halfWeight h y ^ 2)
+  have hB : 0 < B := mul_pos (mul_pos (by norm_num) tiltedJordanOne_pos)
+    (halfWeight_exponentialMoment_pos hh hsupp hne 8)
+  have hT : 0 < T := mul_pos tiltedNextAliasCoefficient_pos
+    (halfWeight_exponentialMoment_pos hh hsupp hne 10)
+  let d := -T / (4 * B)
+  have hclocks := shiftedCriticalClock_ratio_and_shift hK d
+  have hplus : Tendsto (fun N : ℕ => shiftedCriticalClock K d N ^ 2 *
+      tiltedHorizonEnergy h (shiftedCriticalClock K d N) N) atTop (𝓝 (T / K)) := by
+    have ht := tiltedHorizonEnergy_critical_shift_limit hh hsupp hA
+      (shiftedCriticalClock_one_le K d) hK hclocks.1 hclocks.2 hzero
+    have hval : -(B * (8 * K * d) / K ^ 2) - tiltedNextAliasCoefficient / K *
+        (∫ y, Real.exp (-(10 * y)) * halfWeight h y ^ 2) = T / K := by
+      dsimp only [d, T]
+      field_simp
+      ring
+    change Tendsto _ atTop (𝓝 (-(B * (8 * K * d) / K ^ 2) -
+      tiltedNextAliasCoefficient / K * (∫ y, Real.exp (-(10 * y)) * halfWeight h y ^ 2))) at ht
+    rw [hval] at ht
+    exact ht
+  refine ⟨canonicalCriticalClock K, shiftedCriticalClock K d,
+    canonicalCriticalClock_one_le K, shiftedCriticalClock_one_le K d,
+    criticalCurve_ratio_of_exact (canonicalCriticalClock_exact hK), hclocks.1,
+    canonicalCriticalClock_energy_negative hh hsupp hA hne hK hzero, ?_⟩
+  filter_upwards [hplus.eventually (lt_mem_nhds (div_pos hT hK))] with N hN
+  by_contra! hnonpos
+  exact (not_lt_of_ge (mul_nonpos_of_nonneg_of_nonpos (sq_nonneg _) hnonpos)) hN
+
 end GaloisForLFunctions.ArithmeticHodgeTheoryOfDegenerations
+
+#print axioms GaloisForLFunctions.ArithmeticHodgeTheoryOfDegenerations.criticalCurve_horizon_remainder
+#print axioms GaloisForLFunctions.ArithmeticHodgeTheoryOfDegenerations.tiltedHorizonEnergy_quadratic_correction
+#print axioms GaloisForLFunctions.ArithmeticHodgeTheoryOfDegenerations.canonicalCriticalClock_energy_negative
+#print axioms GaloisForLFunctions.ArithmeticHodgeTheoryOfDegenerations.critical_ratio_equality_admits_both_signs
+
+#print axioms GaloisForLFunctions.ArithmeticHodgeTheoryOfDegenerations.canonicalCriticalClock_phase_diagram

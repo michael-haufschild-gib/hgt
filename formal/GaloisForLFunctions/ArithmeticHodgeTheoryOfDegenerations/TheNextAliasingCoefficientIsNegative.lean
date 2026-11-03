@@ -8,7 +8,9 @@ import Mathlib.Analysis.Fourier.RiemannLebesgueLemma
 The periodic numerator has four nonconstant cosine modes. Two integrations
 by parts make their averages against compact C² windows smaller than the
 quadratic inverse-frequency scale. The next rational-tail coefficient can
-therefore be read without an oscillatory term at that scale.
+therefore be read without an oscillatory term at that scale. Along `c → ∞`
+and `c³/N → 0`, the scaled horizon aliasing has a two-term expansion whose
+next coefficient is a negative multiple of the inverse-tenth-power moment.
 -/
 
 noncomputable section
@@ -892,6 +894,5 @@ theorem nextAliasMoment_eq (h : ℝ → ℝ) :
   unfold tiltedNextAliasCoefficient
   have hM := integral_tiltedUnitSpline_sq_pos.ne'
   field_simp
-  ring
 
 end GaloisForLFunctions.ArithmeticHodgeTheoryOfDegenerations

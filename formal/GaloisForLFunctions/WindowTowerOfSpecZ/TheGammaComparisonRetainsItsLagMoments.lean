@@ -1,4 +1,4 @@
-import GaloisForLFunctions.LatticeSectionTheory.WindowJumpCounts.OddAutocorrelationSecondMoment
+import GaloisForLFunctions.LatticeSectionTheory.WindowJumpCounts.OddAutocorrelationFirstMoment
 import GaloisForLFunctions.WindowTowerOfSpecZ.TheCubicMomentPaysTheFrozenOddComplement
 
 /-!
@@ -147,7 +147,7 @@ theorem unit_odd_gamma_position_lower {F : ℝ → ℝ}
   linarith only [h]
 
 /-- Exact odd moment cancellation reduces the unit Gamma loss from `5/96` to `7/192`. -/
-theorem unit_odd_gamma_jump_sharp_lower {F : ℝ → ℝ}
+theorem unit_odd_gamma_jump_second_moment_lower {F : ℝ → ℝ}
     (hF : ContDiff ℝ 2 F) (hcs : HasCompactSupport F)
     (hs : tsupport F ⊆ Icc (-(1 / 2 : ℝ)) (1 / 2)) (ho : ∀ x, F (-x) = -F x) :
     (∫ t in Ioc (0 : ℝ) 1, (autocorr F 0 - autocorr F t) / t) -
@@ -161,9 +161,24 @@ theorem unit_odd_gamma_jump_sharp_lower {F : ℝ → ℝ}
   nlinarith only [h, h1, h2]
 
 
+/-- Both polynomial lag losses are masses or moments of the source's compact primitive. -/
+theorem unit_odd_gamma_primitive_lower {F : ℝ → ℝ}
+    (hF : ContDiff ℝ 2 F) (hcs : HasCompactSupport F)
+    (hs : tsupport F ⊆ Icc (-(1 / 2 : ℝ)) (1 / 2)) (ho : ∀ x, F (-x) = -F x) :
+    (∫ t in Ioc (0 : ℝ) 1, (autocorr F 0 - autocorr F t) / t) -
+      (Real.eulerMascheroniConstant + Real.log Real.pi + Real.log 2 + 1 / 48) *
+        (∫ x, F x ^ 2) - (∫ x, unitSourcePrimitive F x ^ 2) / 24 -
+      (∫ x, x * F x) ^ 2 / 16 ≤
+        EF.gammaBracket 0 * (∫ x, F x ^ 2) + biScaleLevyEnergy F := by
+  have h := unit_odd_gamma_position_lower hF hcs hs ho
+  rw [unit_odd_jump_first_moment hF.continuous hs ho] at h
+  simp only [autocorr_zero_eq] at h ⊢
+  linarith only [h]
+
 end GaloisForLFunctions.WindowTowerOfSpecZ
 
 #print axioms GaloisForLFunctions.WindowTowerOfSpecZ.unit_odd_gamma_lag_moments_lower
 
 #print axioms GaloisForLFunctions.WindowTowerOfSpecZ.unit_odd_gamma_position_lower
-#print axioms GaloisForLFunctions.WindowTowerOfSpecZ.unit_odd_gamma_jump_sharp_lower
+#print axioms GaloisForLFunctions.WindowTowerOfSpecZ.unit_odd_gamma_jump_second_moment_lower
+#print axioms GaloisForLFunctions.WindowTowerOfSpecZ.unit_odd_gamma_primitive_lower

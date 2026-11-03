@@ -1,9 +1,9 @@
 # The second odd lag moment is a position square
 
 - **ID:** F1-M2
-- **Stage:** 2-fully-proven; Lean formalization in progress
-- **Type:** THEOREM (paper)
-- **Source:** [Retained Gamma payment](../3-formalized/f1-gamma-lag-moment-payment.md)
+- **Stage:** 3-formalized
+- **Type:** THEOREM; individually Lean-audited
+- **Source:** [Retained Gamma payment](f1-gamma-lag-moment-payment.md)
 - **Statement:** For a real continuous compact odd source supported in `[-a,a]`,
   `∫₀²ᵃ t²C(t)dt=−(∫xF(x)dx)²`, where `C(t)=∫F(x)F(x+t)dx`.
   Consequently `∫₀²ᵃt²(E−C(t))dt=(8a³/3)E+(∫xF)²`.
@@ -20,5 +20,10 @@ For `a=1/2`, Cauchy–Schwarz gives `(∫xF)²≤E∫_{−1/2}^{1/2}x²=E/12`, h
 `M₂≤5E/12`. Combined with `M₁≤3E/4`, the retained Gamma payment improves the
 uniform loss from `5/96` to `7/192`. The gain is `E/64` for every odd unit-window test.
 
-**Lean:** pending `LatticeSectionTheory.WindowJumpCounts.OddAutocorrelationSecondMoment`
-and its Gamma corollary.
+**Lean:** `LatticeSectionTheory.WindowJumpCounts.OddAutocorrelationSecondMoment` proves
+`odd_autocorr_second_moment`, `unit_odd_jump_second_moment`,
+`unit_position_moment_square_le`, and `unit_odd_jump_second_moment_le`.
+`WindowTowerOfSpecZ.TheGammaComparisonRetainsItsLagMoments` proves the exact position-square
+substitution and the uniform `7/192` corollary. Both individual `lake --old env lean` source
+audits pass; transitive axioms are `[propext, Classical.choice, Quot.sound]` only. Both modules
+are wired into their umbrellas. The complete unit-window sign remains open.

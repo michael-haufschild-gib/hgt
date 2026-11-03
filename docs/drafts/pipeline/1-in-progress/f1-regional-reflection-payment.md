@@ -58,21 +58,26 @@ upper bound after subtracting the linear pole lower bound `121/88200`.
 The final rational sign has a kernel-checked proof. The integral identities, monotone
 enclosure and approximation by C² tests still require their Lean proofs.
 
-The quintic is continuous and Lipschitz, but its zero extension is not C². A support-preserving
-approximation is
-`gₙ(u)=u(1−u²/2)max(1−u²,0)³(Σ_{k<n}u²ᵏ)²`.
-Inside the window this is `g(u)(1−u²ⁿ)²`; outside it is zero. The positive-part cube is C².
-Its derivative is uniformly bounded by `12`: `|g′|≤8` and
-`n rⁿ(1−r)≤1` for `0≤r≤1` control the derivative of the cutoff. Thus the regional energies
-converge by dominated convergence. The weighted potential, reflection and pole terms also
-converge; `g²W≤1/2` controls the endpoint logarithm. These approximation claims still need
-Lean proofs. No C² counterexample is claimed before that audit. This obstruction concerns
-the proposed lower form, not the complete Weil form.
+The quintic is continuous and Lipschitz, but its zero extension is not C². Let `p` be its
+polynomial and `η=Real.smoothTransition`. The support-preserving approximation
+`gₙ(u)=p(u)η(n(1−u²))` is smooth and odd. Its derivative is bounded uniformly by
+`8+2Λ`, where `Λ` bounds `η′`: the transition derivative vanishes unless
+`0≤n(1−u²)≤1`, and the factor `1−u²` in `p` pays the factor `n`.
+The corpus supplies `HTGeometry.exists_bound_deriv_smoothTransition`.
+The regional energies then converge by dominated convergence. The potential, reflection
+and pole terms converge too; `g²W≤1/2` controls the endpoint logarithm. These approximation
+claims still need Lean proofs. No C² counterexample is claimed before that audit. This
+obstruction concerns the proposed lower form, not the complete Weil form.
 
-**Positive survivor to audit:** retain the first and second lag moments in the Gamma
+**Positive survivor:** retain the first and second lag moments in the Gamma
 comparison. With `D(t)=E−C(t)`, it gives
 `ΓE+J∞≥∫₀¹D/t−(γ+logπ+log2)E+E/48−(∫₀¹tD)/24−(∫₀¹t²D)/16`.
 The second moment is `E/3+(∫xF)²`; the first is `E/2+∫(∫_{−∞}ˣF)²`.
 These terms were replaced by worst-case mass bounds in `B`.
+[Retained Gamma payment](../3-formalized/f1-gamma-lag-moment-payment.md) now proves the
+retained inequality, exact second-moment substitution and uniform loss `7/192` in Lean,
+with standard-only axiom audits. The first-moment primitive identity remains under
+[formalization](../2-fully-proven/f1-first-lag-moment-primitive.md). The quintic obstruction above concerns
+the old loss `5/96`; it does not decide the improved lower form.
 
 No numerical evidence is used. Neither proposed positivity statement is established.

@@ -49,13 +49,16 @@ Summing the positive harmonics and their factor `2` gives
 `O(c_N/N+N^(-1)+sqrt(c_N/N)+(log N)^(-2)+(log N)^8/N)`.
 Multiplication by `c_N²log N` sends every term to zero because `c_N⁸≈Klog N`.
 
-For the low-frequency symbol integral split at `R=c_N^6`, below the grid `Ne^(-A)` for all large `N`. The existing Kuzmin–Landau majorant is `C(1+|τ|)^(-3/2)`, for both the discrete integrand and its limit; their tails cost `O(R^(-1/2))=O(c_N^(-3))`.
-On `|τ|≤R`, the normalized horizon Dirichlet polynomial is a Riemann sum for
-`h(log x)x^(-1/2+iτ)`. This compact function has Lipschitz constant `O(1+|τ|)`, giving error `O((1+R)/N)`; the atom transform differs from `∫φ` by `O(c_NR/N)`. Both transforms are uniformly bounded there. Since `|ν(τ)|≤C+log(2+|τ|)≤C'(1+R)`, the integrated product error is `O((c_N+1)R(1+R)²/N)`. Its product with `c_N²` tends to zero.
+For the low-frequency symbol integral split at `R=c_N^6`, below the grid `Ne^(-A)` for all large `N`. The pointwise comparison is bounded by
+`C(sqrt(c_N/N)+R^(-1/2))(1+|τ|)^(-3/2)+C(R/N)1_{[-R,R]}(τ)`.
+The symbol obeys `|ν(τ)|≤C+log(2+|τ|)`. Its product with the decay weight is integrable; on `[-R,R]` it is `O(R)`. Integration therefore gives
+`O(sqrt(c_N/N)+R^(-1/2)+R³/N)`, whose product with `c_N²` tends to zero.
 At the two fixed pole frequencies the same Riemann-sum argument gives `O(1/N)`, and the compact atom transform gives `O(c_N/N)`; the pole-product error is therefore `o(c_N^(-2))` too.
 Thus `c_N²[E_N-κQ(H)-(log N/M)horizonAlias_N]→0`.
 
-Combining steps 2–3 proves the expansion. Since `M_10>0` for nonzero continuous `H`, the exact critical clock gives a strictly negative scaled limit and hence eventual negativity. The perturbed-clock formula follows by expanding `1/K_N` at `K`.
+Combining steps 2–3 proves the expansion. Since `M_10>0` for nonzero continuous `H`, the exact critical clock gives a strictly negative scaled limit and hence eventual negativity. The perturbed-clock formula follows by expanding `1/K_N` at `K`. For explicit clocks, set `b_N=max(1,(K log N)^(1/8))` and `c_N=max(1,b_N+d/b_N)`. Eventually `b_N⁸=K log N` and `c_N=b_N(1+d/b_N²)`, so `K_N=K(1+d/b_N²)⁸` and `c_N²(K_N-K)→8Kd`. Thus the scaled energy tends to `-(8Bd+DM_10)/K`. The choices `d=0` and `d=-DM_10/(4B)` give strictly negative and strictly positive limits, respectively. Both clocks have the same leading critical ratio: equality has no schedule-independent sign.
+
+Together with the existing strict phase limits, every nonzero window on the canonical clock has eventually positive energy exactly when `κQ+B/K>0`, and eventually negative energy exactly when `κQ+B/K≤0`. Thus the canonical phase boundary belongs to the negative phase.
 
 ## Lean obligations
 
