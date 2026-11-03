@@ -68,7 +68,9 @@ private theorem norm_value_three_quarters (F : ExtendedSelbergClass) (t : ℝ) :
         ‖F.gammaData.gammaFactor ((3 / 4 : ℂ) + (t : ℂ) * I)‖) *
         ‖F ((1 / 4 : ℂ) + (t : ℂ) * I)‖ := by
   have hreflect : 1 - star ((1 / 4 : ℂ) + (t : ℂ) * I) =
-      (3 / 4 : ℂ) + (t : ℂ) * I := by apply Complex.ext <;> simp <;> ring
+      (3 / 4 : ℂ) + (t : ℂ) * I := by
+    apply Complex.ext <;> simp
+    ring
   have han : ∀ σ : ℝ, 0 < σ → σ ≠ 1 →
       AnalyticAt ℂ (selbergCompletedValue F.gammaData F.continuation)
         ((σ : ℂ) + (t : ℂ) * I) := by

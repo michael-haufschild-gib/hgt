@@ -381,10 +381,10 @@ goal is met when 250 discharges could be made.
 
 ## update obstacles
 earlier we created these documents:
-- docs/reports/review-0211/walls-ledger.md
-- docs/reports/review-0211/route-obstacles.md
-- docs/reports/review-0211/route-unification-ledger.md
-- docs/reports/review-0211/obstacles-summary.md
+- docs/reports/review-0311/walls-ledger.md
+- docs/reports/review-0311/route-obstacles.md
+- docs/reports/review-0311/route-unification-ledger.md
+- docs/reports/review-0311/obstacles-summary.md
   
 read:
 - docs/reports/rh-current-frontier-map.md
@@ -419,7 +419,7 @@ first collect information in a working log in logs/ - facts, not process or stat
 
 the reports are not diaries or history log, but status quo reports.
 
-place the reports in folder docs/reports/review-0311/ without history language or "this changed since last review".
+replace the reports in folder docs/reports/review-0311/ without history language or "this changed since last review".
 do not run builds. this is not a task to verify the work of other agents but to create consolidated reports and "big picture" interpretations on their research results.
 
 
@@ -455,9 +455,10 @@ do not run any builds. do not read anything outside the formal/ folder. do not r
 Read the following documents:
 1. Route ledger: docs/reports/rh-current-frontier-map.md
 2. Failed/Killed approaches: docs/reports/rh-killed-routes.md
-3. Unification of the routes: docs/reports/review-0111/route-unification-ledger.md
-4. Hard obstacles: docs/reports/review-0111/route-obstacles.md
-5. The hard obstacles (Walls) we have identified and not overcome: docs/reports/review-0111/walls-ledger.md
+3. Unification of the routes: docs/reports/review-0311/route-unification-ledger.md
+4. Hard obstacles: docs/reports/review-0311/route-obstacles.md
+5. A summary by another ai model: docs/reports/review-0311/obstacles-summary.md
+6. The hard obstacles (Walls) we have identified and not overcome: docs/reports/review-0311/walls-ledger.md
    
 and read the current research programmes from oldest to newest: docs/reports/research-programmes.md
     
@@ -486,7 +487,7 @@ The questions for you to answer:
 6. What is the one question the is less hard than proving RH or quasiRH outright and would, when answered, bring a real breakthrough and push the door wide open for us for finding the RH proof?
 7. You can interpret the walls as questions we need to answer and for which we and mathematics as a whole do not have the tools to create these answer - if we would create a new field of mathematics that can supply these tools, what would this field be? What would the questions be, what would be its approach/point of view, what its objects, language, foundational principals, criteria it must fulfill, its research topics?
 
-Write a report in docs docs/reports/review-0111/fable.md
+Write a report in docs docs/reports/review-0311/fable.md
 
 do not run any builds. do not search the web. do not grep for sorry or other shit. your job is not to verify of other agents but to write a consolidated report and big picture interpretation of their research. focus on the mathematics.
 
@@ -654,13 +655,13 @@ Put lean code into the correct subfolder(s), do not bloat RHTower or HTGeometry 
 
 Do not use the hgtl7 skill.
 
-read and understand docs/reports/review-0211/obstacles-summary.md
+read and understand docs/reports/review-0311/obstacles-summary.md
 
-under "## 2.4 A wildly different route" it describes an approach to a different proof route.
+under "## 2.5 Breakthrough questions below RH and quasi-RH" it asks questions.
 
-Your task: develop this proof route and do the actual research and formalization.
- 
-we are not interested in busywork, redressing of existing knowledge, building unnecessary lean infrastructure. focus on the task and solve the actual hard problems to develop this route.
+your task: answer the questions, find a complete solution for each and unconditionally formalize it and its implications and collaries in lean.
+
+We are not interested in estimates, criterias what the answer could be like, what is not the answer, busywork - we accept only a full and final answer/solution to each posed question.
   
 **Tools to use:**
 1. Search: use the search tool for our lean corpus, not just rg or grep. make good use of the search tool to find existing work, building blocks, and new ideas. Try to apply existing lean research, try to identify problems and questions the field with your contribution could explain or solve.

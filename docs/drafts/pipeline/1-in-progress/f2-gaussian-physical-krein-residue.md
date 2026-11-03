@@ -22,21 +22,13 @@ Prove absolute convergence of the physical packet and the finite-depth counterte
 
 For the existing real-window zero coordinates, twice this residue should tend to complete Weil energy as `ε→0+`. This is a literal physical realization of the signed form. Subtracting growing counterterms supplies no positivity by itself.
 
-## Analytic gates
+## Uniform analytic gate [K]
 
-The finite-packet argument uses a positive exponent below every spectral gap. There need not be a common gap for an infinite packet. Replace that argument by the exact lower-cusp estimate
+The [audited uniform cusp bound](../3-formalized/f2-uniform-normalized-cusp-remainder.md) gives
 
-`|κ_s(a)−a^(1−2s)|≤C_s a`,
+`|κ_s(a)−a^(1−2s)|≤C(1+Im s)^4 exp(π Im s) a`.
 
-with `C_s` bounded by a polynomial times an exponential linear in `Im s`. This estimate is a required conclusion, not an assumption on the packet.
-
-The actual kernel satisfies `|k_w(t)|≤|averagingFactor(w)|⁻¹t^(−1−Re w)`. At resonance, `r_w(a)=fieldCore_w(a)+B_w/a=normalizedTail_w(a)`. The existing small-axis bound and exponential tail make `∫_0^∞u^(Re w)|r_w(u)|du` finite. Substitution `u=a/t` in the literal convolution then gives an outgoing error `O(a^(−1−Re w))`; inversion gives `O(a)` at zero.
-
-Uniform spectral control requires a sharper tail estimate than the existing parameter-dependent `tailConst`. The actual Bessel integral and `|cosh z|≤cosh(Re z)` give `|K_ν(y)|≤K_(Re ν)(y)`. The Whittaker coefficient satisfies the corresponding comparison with its real-parameter value. When `|Re ν|≤1/2`, that real parameter belongs to the unit ball about zero. Applying the existing local term majorant at center zero, then summing, yields the proposed uniform bound `|cuspTail_ν(x,Y)|≤tailConst(0)exp(−2πY)` for `Y≥1/2`. Charge normalization should be estimated after cancellation. With `A_w=averagingFactor(w)` and `Λ(z)=ΓR(z)ζ(z)`, the source formulas and functional equation give
-
-`1/(A_w ΓR(w)b_s)=w/Λ(2−w)`, `B_w/(A_w b_s)=w`, where `w=2s`.
-
-Thus the needed constants reduce to inverse Gamma bounds on `1<Re(2−w)<2`, the Euler-region bound for `ζ(2−w)⁻¹`, and the audited reciprocal strip-gap bounds. A separate estimate of the unnormalized charge is unnecessary. The existing `exists_bound_norm_div_Gammaℝ`, applied to the constant function on `[1,2]`, bounds the reciprocal Gamma factor by `C exp(π|Im w|/2)`. Together these estimates should give a uniform polynomial-exponential constant in the exact `O(a)` remainder.
+Real-order Bessel comparison removes height from the Eisenstein tail bound. Charge normalization cancels to `w/Λ(2−w)`, where `w=2s`; the weighted field mass and the exact Cauchy kernel tail yield the boundary exponent. Gamma estimates in the Euler strip and the reciprocal resonance-gap bounds supply the uniform constant. No common spectral gap or separate inverse-charge estimate is assumed.
 
 ## Passage to infinite packets
 
@@ -46,4 +38,4 @@ At fixed `T`, the bound `|(exp(λT)−1)/λ|≤T exp(T)` for `T≥0` avoids any 
 
 ## Status
 
-Finite-packet physical residue: [audited physical realization](../3-formalized/f2-physical-cusp-krein-residue.md). Infinite formula and uniform estimates are conjectural. No complete-Weil positivity claim.
+Finite-packet physical residue: [audited physical realization](../3-formalized/f2-physical-cusp-krein-residue.md). The uniform estimate is formalized; the infinite physical residue remains to be Lean-audited. No complete-Weil positivity claim.

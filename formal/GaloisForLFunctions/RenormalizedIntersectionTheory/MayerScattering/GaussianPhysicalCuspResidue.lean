@@ -1,0 +1,2 @@
+import GaloisForLFunctions.RenormalizedIntersectionTheory.MayerScattering.UniformNormalizedCuspRemainder
+import GaloisForLFunctions.RenormalizedIntersectionTheory.MayerScattering.GaussianPhysicalCoreSynthesis

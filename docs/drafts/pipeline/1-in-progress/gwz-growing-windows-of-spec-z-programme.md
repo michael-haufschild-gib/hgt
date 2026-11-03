@@ -23,7 +23,7 @@ MarginsAreBoundedByRecurrence, TheLatticeHasNoSlackUnderRH, RefiningTheLatticeLo
 TheSzegoVerblunskyLaw, TheContinuumMarginIsTheDyadicLimit, ForbiddingLatticeZeroModesIsRH,
 TheFirstPrimeStageOpensPositive, TheLatticeSchurDataCoalesce, GapContinuationIsNotStructural,
 TheFirstMarginIsBornQuadratically, ACurveDegeneratesAtItsNumberOfAngles,
-SpecZIsACurveOnEveryLattice. Each passes an individual `lake --old env lean` check; key theorems
+SpecZIsACurveOnEveryLattice, RHIsDecidedOnTwoSites, TheHigherMarginsAreBornLater. Each passes an individual `lake --old env lean` check; key theorems
 audited to `propext, Classical.choice, Quot.sound`.
 
 ## Status
@@ -44,7 +44,9 @@ audited to `propext, Classical.choice, Quot.sound`.
   positive and singular); refinement lowers margins; the corner margin is degenerate (`= 0` under RH)
   and the first margin is born at order `h²` with coefficient the second zero moment; a curve with
   `|S|` conjugation-closed angles first degenerates exactly at margin index `|S|`; RH ⇔ every lattice
-  window of Spec ℤ is the window of its folded zero curve, margins dominate finite pieces; Szegő–Verblunsky: collapse ⇔ `Σγ² = ∞`, under RH never square-summable; Lyapunov identity and
+  window of Spec ℤ is the window of its folded zero curve, margins dominate finite pieces; RH ⇔
+  two-site positivity ⇔ strict orbit Cauchy–Schwarz `|c_φ(t)| < Q(φ)` (interior never needed);
+  second-order jet law: `h⁻²E_n → M₂` (n = 1), `→ 0` (n ≥ 2), `E_n ≤ Σ w(2 − 2cos γh)^n`; Szegő–Verblunsky: collapse ⇔ `Σγ² = ∞`, under RH never square-summable; Lyapunov identity and
   two-sided bounds for `Σγ²`, lower bound by orbit recurrence; RH ⇔ no lattice
   degenerates; zero modes continue uniquely from an end collar; the pole plane has one negative
   square; the first prime stage opens positive (`log 2 ≤ A ≤ 181/250`); fixed-index Schur data
@@ -55,5 +57,4 @@ of the frozen two-collar form via trivial-divisor moments; translation-contracti
 
 ## Next directions (README §7)
 All §2.7 questions answered (README §5). Beyond them: closed form of the minimized first-stage form
-`Φ_ε`; a stage-uniform law placing every kick in its interval (RH); continuation across interior
-gaps; the jet system (`h^{−2n}E_n` → Hankel margins); sharp asymptotics of `Σγ²`; AHD's additive angle.
+`Φ_ε`; strict orbit Cauchy–Schwarz (= RH); the jet system (`h^{−2n}E_n` → Hankel margins); sharp asymptotics of `Σγ²`; AHD's additive angle.

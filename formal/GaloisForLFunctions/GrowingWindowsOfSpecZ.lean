@@ -23,6 +23,8 @@ import GaloisForLFunctions.GrowingWindowsOfSpecZ.GapContinuationIsNotStructural
 import GaloisForLFunctions.GrowingWindowsOfSpecZ.TheFirstMarginIsBornQuadratically
 import GaloisForLFunctions.GrowingWindowsOfSpecZ.ACurveDegeneratesAtItsNumberOfAngles
 import GaloisForLFunctions.GrowingWindowsOfSpecZ.SpecZIsACurveOnEveryLattice
+import GaloisForLFunctions.GrowingWindowsOfSpecZ.RHIsDecidedOnTwoSites
+import GaloisForLFunctions.GrowingWindowsOfSpecZ.TheHigherMarginsAreBornLater
 
 /-!
 # Growing Windows of Spec ℤ (GWZ)
