@@ -382,7 +382,7 @@ theorem inv_log_one_add_sub_inv {x : ℝ} (hx : 0 < x) :
   constructor
   · exact sub_nonneg.mpr (one_div_le_one_div_of_le hl h1)
   · rw [sub_le_iff_le_add, div_le_iff₀ hl]
-    have e : (1 + 1 / x) * (x / (1 + x)) = 1 := by field_simp
+    have e : (1 + 1 / x) * (x / (1 + x)) = 1 := by field_simp; ring
     calc (1 : ℝ) = (1 + 1 / x) * (x / (1 + x)) := e.symm
       _ ≤ (1 + 1 / x) * Real.log (1 + x) := mul_le_mul_of_nonneg_left h2 (by positivity)
 
@@ -436,9 +436,9 @@ theorem abs_crossError_sub_profile_le {φ : ℝ → ℝ} (hφ : ContDiff ℝ 2 �
   have hSb : ∀ τ ∈ Set.Icc (-1 : ℝ) 1, |S τ| ≤ 1 / (2 * (s - w)) + 1 / (2 * s) := fun τ hτ => by
     have h1 := hpos τ hτ
     refine (abs_sub _ _).trans (add_le_add ?_ ?_)
-    · rw [abs_of_pos (by positivity)]
-      exact one_div_le_one_div_of_le (by positivity) (by linarith)
-    · rw [abs_of_pos (by positivity)]
+    · rw [abs_of_pos (one_div_pos.mpr (by linarith))]
+      exact one_div_le_one_div_of_le (by linarith) (by linarith)
+    · rw [abs_of_pos (one_div_pos.mpr (by linarith))]
   have hRb : ∀ τ ∈ Set.Icc (-1 : ℝ) 1, |R τ| ≤ 5 / 2 := fun τ hτ => by
     have h1 := hpos τ hτ
     have a1 := abs_archLevyDensity_sub_inv_le (y := s + w * τ) (by linarith)
@@ -463,35 +463,35 @@ theorem abs_crossError_sub_profile_le {φ : ℝ → ℝ} (hφ : ContDiff ℝ 2 �
     simp only [hS, hR]
     ring
   -- the singular part is `σ(w/s)`
-  have hsing : w / (∫ u, φ u ^ 2) * ∫ τ, bumpAutocorr φ τ * S τ = crossSingular φ (w / s) := by
+  have hsing : w / (∫ u, φ u ^ 2) * (∫ τ, bumpAutocorr φ τ * S τ) =
+      crossSingular φ (w / s) := by
     unfold crossSingular
-    rw [show w / (∫ u, φ u ^ 2) = 1 / (2 * ∫ u, φ u ^ 2) * (2 * w) by field_simp,
-      mul_assoc, ← integral_const_mul]
-    congr 1
+    rw [← integral_const_mul, ← integral_const_mul]
     congr 1
     funext τ
     by_cases hτ : τ ∈ Set.Icc (-1 : ℝ) 1
     · have h1 := hpos τ hτ
       have h2 : 0 < s + w * τ := by linarith
+      have hI0 : (∫ u, φ u ^ 2) ≠ 0 := hφ0.ne'
       simp only [hS]
       field_simp
-      ring
     · have : bumpAutocorr φ τ = 0 := bumpAutocorr_profile_eq_zero hφsupp (by
         by_contra h; exact hτ (abs_le.mp (not_lt.mp h)))
       rw [this]; ring
-  have hreg : |w / (∫ u, φ u ^ 2) * ∫ τ, bumpAutocorr φ τ * R τ| ≤
+  have hreg : |w / (∫ u, φ u ^ 2) * (∫ τ, bumpAutocorr φ τ * R τ)| ≤
       w / (∫ u, φ u ^ 2) * (5 / 2 * ∫ τ, |bumpAutocorr φ τ|) := by
     rw [abs_mul, abs_of_pos (by positivity)]
     exact mul_le_mul_of_nonneg_left (abs_integral_bumpAutocorr_mul_le hg hgc hφsupp hRm hRb)
       (by positivity)
   -- the Lipschitz step from `w/s` to `r₀ = cn/(Nd)`
   have hr0 : c * (n / N : ℝ) / d = w * (n / d) := by rw [hw]; ring
+  have hws1 : w / s = w * (1 / s) := div_eq_mul_one_div w s
   have hws_le : w / s ≤ w * (n / d) + w := by
-    rw [div_eq_mul_one_div]
+    rw [hws1]
     have := mul_le_mul_of_nonneg_left (show 1 / s ≤ n / d + 1 by linarith) hw0.le
     linarith
   have hws_ge : w * (n / d) ≤ w / s := by
-    rw [div_eq_mul_one_div]
+    rw [hws1]
     exact mul_le_mul_of_nonneg_left (by linarith) hw0.le
   have hnN : (n : ℝ) + 1 ≤ N := by exact_mod_cast (show n + 1 ≤ N by omega)
   have hnd' : (n : ℝ) / d ≤ n := div_le_self hn0.le (by exact_mod_cast hd)
@@ -512,13 +512,13 @@ theorem abs_crossError_sub_profile_le {φ : ℝ → ℝ} (hφ : ContDiff ℝ 2 �
   have hdist : |w / s - w * (n / d)| ≤ w := by
     rw [abs_of_nonneg (by linarith)]
     linarith
-  calc |crossSingular φ (w / s) + w / (∫ u, φ u ^ 2) * ∫ τ, bumpAutocorr φ τ * R τ -
+  calc |crossSingular φ (w / s) + w / (∫ u, φ u ^ 2) * (∫ τ, bumpAutocorr φ τ * R τ) -
         crossSingular φ (w * (n / d))|
       ≤ |crossSingular φ (w / s) - crossSingular φ (w * (n / d))| +
-          |w / (∫ u, φ u ^ 2) * ∫ τ, bumpAutocorr φ τ * R τ| := by
-        rw [show crossSingular φ (w / s) + w / (∫ u, φ u ^ 2) * ∫ τ, bumpAutocorr φ τ * R τ -
+          |w / (∫ u, φ u ^ 2) * (∫ τ, bumpAutocorr φ τ * R τ)| := by
+        rw [show crossSingular φ (w / s) + w / (∫ u, φ u ^ 2) * (∫ τ, bumpAutocorr φ τ * R τ) -
           crossSingular φ (w * (n / d)) = (crossSingular φ (w / s) - crossSingular φ (w * (n / d))) +
-            w / (∫ u, φ u ^ 2) * ∫ τ, bumpAutocorr φ τ * R τ by ring]
+            w / (∫ u, φ u ^ 2) * (∫ τ, bumpAutocorr φ τ * R τ) by ring]
         exact abs_add_le _ _
     _ ≤ 1 / (2 * ∫ u, φ u ^ 2) * ((1 / (1 - c) ^ 2 + 1) * ∫ τ, |bumpAutocorr φ τ|) * w +
           w / (∫ u, φ u ^ 2) * (5 / 2 * ∫ τ, |bumpAutocorr φ τ|) := by
@@ -551,7 +551,7 @@ theorem abs_crossProfile_sub_le {φ : ℝ → ℝ} (hφ : ContDiff ℝ 2 φ)
     have h1 := hfac x hx τ hτ
     rw [abs_mul, abs_of_nonneg hcd0]
     refine mul_le_mul hcd ((abs_sub _ _).trans (add_le_add ?_ (by simp))) (abs_nonneg _) hc0.le
-    rw [abs_of_pos (by have : (0 : ℝ) < 1 - c := by linarith; positivity)]
+    rw [abs_of_pos (one_div_pos.mpr (by linarith))]
     exact one_div_le_one_div_of_le (by linarith) h1
   have hmeas : ∀ x : ℝ, Measurable fun τ : ℝ => c / d * (1 / (1 + c * x / d * τ) - 1) := fun x =>
     measurable_const.mul ((measurable_const.div (measurable_const.add
@@ -615,12 +615,102 @@ theorem abs_crossProfile_le {φ : ℝ → ℝ} (hφ : ContDiff ℝ 2 φ)
       nlinarith [hτ.1, hτ.2]
     rw [abs_mul, abs_of_nonneg hcd0]
     refine mul_le_mul hcd ((abs_sub _ _).trans (add_le_add ?_ (by simp))) (abs_nonneg _) hc0.le
-    rw [abs_of_pos (by have : (0 : ℝ) < 1 - c := by linarith; positivity)]
+    rw [abs_of_pos (one_div_pos.mpr (by linarith))]
     exact one_div_le_one_div_of_le (by linarith) h1
   unfold crossProfile
   rw [abs_mul, abs_of_pos (by positivity : (0 : ℝ) < 1 / (2 * ∫ u, φ u ^ 2))]
   exact mul_le_mul_of_nonneg_left (abs_integral_bumpAutocorr_mul_le hg hgc hφsupp
     (measurable_const.mul ((measurable_const.div (measurable_const.add
       (measurable_const.mul measurable_id))).sub measurable_const)) hbd) (by positivity)
+
+/-! ### Weighted Riemann sums -/
+
+theorem abs_sum_range_mul_le_real (f g : ℕ → ℝ) (M : ℕ) {B : ℝ}
+    (hB : ∀ k ≤ M, |∑ i ∈ range (k + 1), g i| ≤ B) :
+    |∑ i ∈ range (M + 1), f i * g i| ≤ B * (|f M| + ∑ i ∈ range M, |f (i + 1) - f i|) := by
+  have h := Finset.sum_range_by_parts f g (M + 1)
+  simp only [smul_eq_mul, Nat.add_sub_cancel] at h
+  rw [h]
+  refine (abs_sub _ _).trans ?_
+  rw [mul_add]
+  refine add_le_add ?_ ?_
+  · rw [abs_mul, mul_comm]
+    exact mul_le_mul_of_nonneg_right (hB M le_rfl) (abs_nonneg _)
+  · rw [Finset.mul_sum]
+    refine (Finset.abs_sum_le_sum_abs _ _).trans (Finset.sum_le_sum fun i hi => ?_)
+    rw [abs_mul, mul_comm]
+    exact mul_le_mul_of_nonneg_right (hB i (by simp at hi; omega)) (abs_nonneg _)
+
+theorem continuousOn_of_abs_sub_le {G : ℝ → ℝ} {L : ℝ} {s : Set ℝ}
+    (hL : ∀ u ∈ s, ∀ v ∈ s, |G u - G v| ≤ L * |u - v|) : ContinuousOn G s := by
+  intro u hu
+  rw [Metric.continuousWithinAt_iff]
+  intro ε hε
+  refine ⟨ε / (|L| + 1), by positivity, fun v hv hdist => ?_⟩
+  rw [Real.dist_eq] at hdist ⊢
+  have h1 : |G v - G u| ≤ |L| * |v - u| :=
+    (hL v hv u hu).trans (mul_le_mul_of_nonneg_right (le_abs_self L) (abs_nonneg _))
+  have h2 : |L| * |v - u| ≤ |L| * (ε / (|L| + 1)) :=
+    mul_le_mul_of_nonneg_left hdist.le (abs_nonneg _)
+  have h3 : |L| * (ε / (|L| + 1)) < ε := by
+    rw [mul_div_assoc', div_lt_iff₀ (by positivity)]
+    nlinarith [abs_nonneg L]
+  linarith
+
+/-- **Riemann sums of a Lipschitz function**: `|(1/N)Σ_{n ≤ N} G(n/N) − ∫_0^1 G| ≤ L/N`. -/
+theorem abs_riemannSum_sub_integral_le {G : ℝ → ℝ} {L : ℝ}
+    (hL : ∀ u ∈ Set.Icc (0 : ℝ) 1, ∀ v ∈ Set.Icc (0 : ℝ) 1, |G u - G v| ≤ L * |u - v|)
+    {N : ℕ} (hN : 1 ≤ N) :
+    |(∑ n ∈ Icc 1 N, G (n / N)) / N - ∫ u in (0 : ℝ)..1, G u| ≤ L / N := by
+  have hN0 : (0 : ℝ) < N := by exact_mod_cast hN
+  have hcont := continuousOn_of_abs_sub_le hL
+  have hstep : ∀ i : ℕ, ((i : ℝ) / N) ≤ ((i + 1 : ℕ) : ℝ) / N := fun i => by
+    gcongr; push_cast; linarith
+  have hmem : ∀ i < N, Set.uIcc ((i : ℝ) / N) (((i + 1 : ℕ) : ℝ) / N) ⊆ Set.Icc 0 1 :=
+    fun i hi => by
+      rw [Set.uIcc_of_le (hstep i)]
+      intro u hu
+      refine ⟨le_trans (by positivity) hu.1, hu.2.trans ?_⟩
+      rw [div_le_one hN0]; exact_mod_cast hi
+  have hint : ∀ i < N, IntervalIntegrable G MeasureTheory.volume ((i : ℝ) / N)
+      (((i + 1 : ℕ) : ℝ) / N) := fun i hi => (hcont.mono (hmem i hi)).intervalIntegrable
+  have hsplit := intervalIntegral.sum_integral_adjacent_intervals
+    (a := fun i : ℕ => (i : ℝ) / N) (f := G) (μ := MeasureTheory.volume) (n := N)
+    fun k hk => hint k hk
+  simp only [Nat.cast_zero, zero_div, div_self hN0.ne'] at hsplit
+  rw [← hsplit, ← sum_range_succ_eq_sum_Icc (fun n => G (n / N)), Finset.sum_div,
+    ← Finset.sum_sub_distrib]
+  refine (Finset.abs_sum_le_sum_abs _ _).trans ?_
+  have hterm : ∀ i ∈ range N, |G (((i + 1 : ℕ) : ℝ) / N) / N -
+      ∫ u in (i : ℝ) / N..((i + 1 : ℕ) : ℝ) / N, G u| ≤ L / N / N := fun i hi => by
+    have hi' : i < N := Finset.mem_range.mp hi
+    have hlen : ((i + 1 : ℕ) : ℝ) / N - (i : ℝ) / N = 1 / N := by push_cast; field_simp; ring
+    have e : G (((i + 1 : ℕ) : ℝ) / N) / N - ∫ u in (i : ℝ) / N..((i + 1 : ℕ) : ℝ) / N, G u =
+        ∫ u in (i : ℝ) / N..((i + 1 : ℕ) : ℝ) / N, (G (((i + 1 : ℕ) : ℝ) / N) - G u) := by
+      rw [intervalIntegral.integral_sub intervalIntegrable_const (hint i hi'),
+        intervalIntegral.integral_const, smul_eq_mul, hlen]
+      ring
+    rw [e]
+    have hb := intervalIntegral.norm_integral_le_of_norm_le_const (C := L / N)
+      (f := fun u => G (((i + 1 : ℕ) : ℝ) / N) - G u) (a := (i : ℝ) / N)
+      (b := ((i + 1 : ℕ) : ℝ) / N) (fun u hu => by
+        rw [Set.uIoc_of_le (hstep i), Set.mem_Ioc] at hu
+        have hu' : u ∈ Set.Icc (0 : ℝ) 1 := hmem i hi' (by
+          rw [Set.uIcc_of_le (hstep i)]; exact ⟨hu.1.le, hu.2⟩)
+        have hb' : ((i + 1 : ℕ) : ℝ) / N ∈ Set.Icc (0 : ℝ) 1 := hmem i hi' (by
+          rw [Set.uIcc_of_le (hstep i)]; exact ⟨hstep i, le_rfl⟩)
+        rw [Real.norm_eq_abs]
+        refine (hL _ hb' u hu').trans ?_
+        have hL0 : 0 ≤ L := by
+          have := hL 0 ⟨le_rfl, zero_le_one⟩ 1 ⟨zero_le_one, le_rfl⟩
+          simp at this
+          linarith [abs_nonneg (G 0 - G 1)]
+        refine mul_le_mul_of_nonneg_left ?_ hL0 |>.trans (le_of_eq (by ring))
+        rw [abs_of_nonneg (by linarith)]
+        linarith)
+    rw [Real.norm_eq_abs, hlen.symm ▸ (by
+      rw [abs_of_pos (by positivity : (0 : ℝ) < 1 / N)] : |(1 : ℝ) / N| = 1 / N)] at hb
+    sorry
+  sorry
 
 end GaloisForLFunctions.ArithmeticHodgeTheoryOfDegenerations

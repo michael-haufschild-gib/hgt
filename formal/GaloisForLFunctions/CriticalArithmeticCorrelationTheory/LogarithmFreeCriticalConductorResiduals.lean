@@ -1602,55 +1602,53 @@ theorem fullWeilCenter_bilinear_log_free (α : ℝ) {m l N : ℕ}
       (normalizedRamanujanHorizonVector 1 N) - α • normalizedRamanujanHorizonVector 1 N
     let B_row : ℕ → ℝ := fun n => (α / N) * Real.sqrt n *
       ((harmonic N : ℝ) - ((harmonic (N - n) : ℝ) + harmonic (N + n)) / 2 + 3 / (4 * (n : ℝ)))
-    have hr1_coord : ∀ n : PrimeHorizonIndex N, |r₁ n| ≤ |B_row n| / Real.sqrt (Real.log N) := by
+    have hr1_coord : ∀ n : PrimeHorizonIndex N, r₁ n = B_row n.1 / Real.sqrt (Real.log N) := by
       intro n
       have hn : (n : ℕ) ∈ Icc 1 N := n.2
       have hmode1 : ∀ j : ℕ, ramanujanPoleProfile 1 j = 1 / Real.sqrt j := fun j => by
         rw [ramanujanPoleProfile, normalizedRamanujanMode, ramanujanMode_one,
           Nat.totient_one, Nat.cast_one, Real.sqrt_one, div_one]
-      have heq : r₁ n = B_row n / Real.sqrt (Real.log N) := by
-        change (Matrix.toEuclideanLin (fullWeilCenterMatrix α N)
-            ((Real.sqrt (Real.log N))⁻¹ • ramanujanHorizonVector 1 N)) n -
-          α * ((Real.sqrt (Real.log N))⁻¹ * ramanujanPoleProfile 1 n) = _
-        rw [map_smul]
-        change (Real.sqrt (Real.log N))⁻¹ *
-            ((Matrix.toEuclideanLin
-              (horizonKernelMatrix (fun i j => (α / N) *
-                (Real.sqrt i / Real.sqrt j + Real.sqrt j / Real.sqrt i -
-                  archimedeanCenterKernel i j)) N)
-              (horizonProfileVector (ramanujanPoleProfile 1) N)) n) -
-          α * ((Real.sqrt (Real.log N))⁻¹ * ramanujanPoleProfile 1 n) = _
-        rw [horizonKernelMatrix_apply_profile, hmode1 n]
-        have hsum_eq : (∑ j ∈ Icc 1 N,
-            (α / N) * (Real.sqrt (n : ℕ) / Real.sqrt j + Real.sqrt j / Real.sqrt (n : ℕ) -
-              archimedeanCenterKernel n j) * ramanujanPoleProfile 1 j) =
-            (α / N) * ∑ j ∈ Icc 1 N,
-              ((Real.sqrt (n : ℕ) / Real.sqrt j + Real.sqrt j / Real.sqrt (n : ℕ)) -
-                archimedeanCenterKernel n j) / Real.sqrt j := by
-          rw [mul_sum]
-          refine sum_congr rfl fun j _ => ?_
-          rw [hmode1 j]; ring
-        rw [hsum_eq, sum_pole_minus_center_div_sqrt hn]
-        dsimp only [B_row]
-        have hcanc : (α / N) * ((N : ℝ) / Real.sqrt (n : ℕ) + Real.sqrt (n : ℕ) *
+      change (Matrix.toEuclideanLin (fullWeilCenterMatrix α N)
+          ((Real.sqrt (Real.log N))⁻¹ • ramanujanHorizonVector 1 N)) n -
+        α * ((Real.sqrt (Real.log N))⁻¹ * ramanujanPoleProfile 1 n) = _
+      rw [map_smul]
+      change (Real.sqrt (Real.log N))⁻¹ *
+          ((Matrix.toEuclideanLin
+            (horizonKernelMatrix (fun i j => (α / N) *
+              (Real.sqrt i / Real.sqrt j + Real.sqrt j / Real.sqrt i -
+                archimedeanCenterKernel i j)) N)
+            (horizonProfileVector (ramanujanPoleProfile 1) N)) n) -
+        α * ((Real.sqrt (Real.log N))⁻¹ * ramanujanPoleProfile 1 n) = _
+      rw [horizonKernelMatrix_apply_profile, hmode1 n]
+      have hsum_eq : (∑ j ∈ Icc 1 N,
+          (α / N) * (Real.sqrt (n : ℕ) / Real.sqrt j + Real.sqrt j / Real.sqrt (n : ℕ) -
+            archimedeanCenterKernel n j) * ramanujanPoleProfile 1 j) =
+          (α / N) * ∑ j ∈ Icc 1 N,
+            ((Real.sqrt (n : ℕ) / Real.sqrt j + Real.sqrt j / Real.sqrt (n : ℕ)) -
+              archimedeanCenterKernel n j) / Real.sqrt j := by
+        rw [mul_sum]
+        refine sum_congr rfl fun j _ => ?_
+        rw [hmode1 j]; ring
+      rw [hsum_eq, sum_pole_minus_center_div_sqrt hn]
+      dsimp only [B_row]
+      have hcanc : (α / N) * ((N : ℝ) / Real.sqrt (n : ℕ) + Real.sqrt (n : ℕ) *
+          ((harmonic N : ℝ) - ((harmonic (N - n) : ℝ) + harmonic (N + n)) / 2 +
+            3 / (4 * ((n : ℕ) : ℝ)))) - α * (1 / Real.sqrt (n : ℕ)) =
+          (α / N) * Real.sqrt (n : ℕ) *
             ((harmonic N : ℝ) - ((harmonic (N - n) : ℝ) + harmonic (N + n)) / 2 +
-              3 / (4 * ((n : ℕ) : ℝ)))) - α * (1 / Real.sqrt (n : ℕ)) =
-            (α / N) * Real.sqrt (n : ℕ) *
-              ((harmonic N : ℝ) - ((harmonic (N - n) : ℝ) + harmonic (N + n)) / 2 +
-                3 / (4 * ((n : ℕ) : ℝ))) := by
-          rw [mul_add, div_mul_div_cancel₀ hN0.ne']; ring
-        have hfactor : (Real.sqrt (Real.log N))⁻¹ *
+              3 / (4 * ((n : ℕ) : ℝ))) := by
+        rw [mul_add, div_mul_div_cancel₀ hN0.ne']; ring
+      have hfactor : (Real.sqrt (Real.log N))⁻¹ *
+          ((α / N) * ((N : ℝ) / Real.sqrt (n : ℕ) + Real.sqrt (n : ℕ) *
+            ((harmonic N : ℝ) - ((harmonic (N - n) : ℝ) + harmonic (N + n)) / 2 +
+              3 / (4 * ((n : ℕ) : ℝ))))) -
+          α * ((Real.sqrt (Real.log N))⁻¹ * (1 / Real.sqrt (n : ℕ))) =
+          (Real.sqrt (Real.log N))⁻¹ *
             ((α / N) * ((N : ℝ) / Real.sqrt (n : ℕ) + Real.sqrt (n : ℕ) *
               ((harmonic N : ℝ) - ((harmonic (N - n) : ℝ) + harmonic (N + n)) / 2 +
-                3 / (4 * ((n : ℕ) : ℝ))))) -
-            α * ((Real.sqrt (Real.log N))⁻¹ * (1 / Real.sqrt (n : ℕ))) =
-            (Real.sqrt (Real.log N))⁻¹ *
-              ((α / N) * ((N : ℝ) / Real.sqrt (n : ℕ) + Real.sqrt (n : ℕ) *
-                ((harmonic N : ℝ) - ((harmonic (N - n) : ℝ) + harmonic (N + n)) / 2 +
-                  3 / (4 * ((n : ℕ) : ℝ)))) - α * (1 / Real.sqrt (n : ℕ))) := by ring
-        rw [hfactor, hcanc]; ring
-      rw [heq, abs_div, abs_of_pos (Real.sqrt_pos.mpr hL0)]
-    have hp := abs_inner_of_coord_div_sqrt_log hl r₁ (fun n => |B_row n|) (fun _ => abs_nonneg _) hr1_coord
+                3 / (4 * ((n : ℕ) : ℝ)))) - α * (1 / Real.sqrt (n : ℕ))) := by ring
+      rw [hfactor, hcanc]; ring
+    have hp := abs_inner_of_coord_div_sqrt_log hl r₁ B_row hr1_coord
     let b_bdry : ℕ → ℝ := fun n =>
       (harmonic N : ℝ) - ((harmonic (N - n) : ℝ) + harmonic (N + n)) / 2 + 3 / (4 * (n : ℝ))
     have hb_sq_sum : (∑ n ∈ Icc 1 N, b_bdry n ^ 2) ≤ 6 * (N : ℝ) := by
@@ -1720,67 +1718,73 @@ theorem fullWeilCenter_bilinear_log_free (α : ℝ) {m l N : ℕ}
   · have hm2 : 2 ≤ m := by omega
     rw [if_neg hm1, zero_smul, sub_zero]
     let u := Matrix.toEuclideanLin (fullWeilCenterMatrix α N) (normalizedRamanujanHorizonVector m N)
+    let row_u : ℕ → ℝ := fun n => (α / N) * ∑ j ∈ Icc 1 N,
+      (Real.sqrt n / Real.sqrt j + Real.sqrt j / Real.sqrt n - archimedeanCenterKernel n j) *
+        (normalizedRamanujanMode m j / Real.sqrt j)
     let B : ℕ → ℝ := fun n => 5 * |α| * (m : ℝ) * Real.sqrt n / N
-    have hB0 : ∀ n, 0 ≤ B n := fun n => by dsimp only [B]; positivity
-    have hcoord : ∀ n : PrimeHorizonIndex N, |u n| ≤ B n / Real.sqrt (Real.log N) := by
+    have hcoord : ∀ n : PrimeHorizonIndex N, u n = row_u n.1 / Real.sqrt (Real.log N) := by
       intro n
-      have hn : (n : ℕ) ∈ Icc 1 N := n.2
+      change (Matrix.toEuclideanLin (fullWeilCenterMatrix α N)
+        ((Real.sqrt (Real.log N))⁻¹ • ramanujanHorizonVector m N)) n = _
+      rw [map_smul]
+      change (Real.sqrt (Real.log N))⁻¹ *
+        ((Matrix.toEuclideanLin
+          (horizonKernelMatrix (fun i j => (α / N) *
+            (Real.sqrt i / Real.sqrt j + Real.sqrt j / Real.sqrt i -
+              archimedeanCenterKernel i j)) N)
+          (horizonProfileVector (ramanujanPoleProfile m) N)) n) = _
+      rw [horizonKernelMatrix_apply_profile]
+      dsimp only [row_u]
+      have hsum : (∑ j ∈ Icc 1 N,
+          (α / N) * (Real.sqrt (n : ℕ) / Real.sqrt j + Real.sqrt j / Real.sqrt (n : ℕ) -
+            archimedeanCenterKernel n j) * ramanujanPoleProfile m j) =
+          (α / N) * ∑ j ∈ Icc 1 N,
+            (Real.sqrt (n : ℕ) / Real.sqrt j + Real.sqrt j / Real.sqrt (n : ℕ) -
+              archimedeanCenterKernel n j) * (normalizedRamanujanMode m j / Real.sqrt j) := by
+        rw [mul_sum]
+        refine sum_congr rfl fun j _ => ?_
+        unfold ramanujanPoleProfile; ring
+      rw [hsum]; ring
+    have hrow_le : ∀ n ∈ Icc 1 N, |row_u n| ≤ B n := by
+      intro n hn
       have hm1R : (1 : ℝ) ≤ m := by exact_mod_cast hm
       have hsm_le : Real.sqrt (m : ℝ) ≤ m := by
         have hsq : (Real.sqrt (m : ℝ)) ^ 2 ≤ (m : ℝ) ^ 2 := by
           rw [Real.sq_sqrt (by positivity)]; nlinarith only [hm1R]
         have h := Real.sqrt_le_sqrt hsq
         rwa [Real.sqrt_sq (Real.sqrt_nonneg _), Real.sqrt_sq (by positivity)] at h
-      have heq : u n = ((α / N) * ∑ j ∈ Icc 1 N,
-          (Real.sqrt (n : ℕ) / Real.sqrt j + Real.sqrt j / Real.sqrt (n : ℕ) -
-            archimedeanCenterKernel n j) *
-            (normalizedRamanujanMode m j / Real.sqrt j)) / Real.sqrt (Real.log N) := by
-        change (Matrix.toEuclideanLin (fullWeilCenterMatrix α N)
-          ((Real.sqrt (Real.log N))⁻¹ • ramanujanHorizonVector m N)) n = _
-        rw [map_smul]
-        change (Real.sqrt (Real.log N))⁻¹ *
-          ((Matrix.toEuclideanLin
-            (horizonKernelMatrix (fun i j => (α / N) *
-              (Real.sqrt i / Real.sqrt j + Real.sqrt j / Real.sqrt i -
-                archimedeanCenterKernel i j)) N)
-            (horizonProfileVector (ramanujanPoleProfile m) N)) n) = _
-        rw [horizonKernelMatrix_apply_profile]
-        have hsum : (∑ j ∈ Icc 1 N,
-            (α / N) * (Real.sqrt (n : ℕ) / Real.sqrt j + Real.sqrt j / Real.sqrt (n : ℕ) -
-              archimedeanCenterKernel n j) * ramanujanPoleProfile m j) =
-            (α / N) * ∑ j ∈ Icc 1 N,
-              (Real.sqrt (n : ℕ) / Real.sqrt j + Real.sqrt j / Real.sqrt (n : ℕ) -
-                archimedeanCenterKernel n j) * (normalizedRamanujanMode m j / Real.sqrt j) := by
-          rw [mul_sum]
-          refine sum_congr rfl fun j _ => ?_
-          unfold ramanujanPoleProfile; ring
-        rw [hsum]; ring
-      rw [heq, abs_div, abs_of_pos (Real.sqrt_pos.mpr hL0)]
-      refine div_le_div_of_nonneg_right ?_ (Real.sqrt_nonneg _)
+      dsimp only [row_u]
       rw [abs_mul, abs_div, abs_of_pos hN0]
       have hrow := abs_sum_poleMinusCollar_poleProfile_le hn (Real.sqrt_nonneg (m : ℝ))
         (abs_mode_le_sqrt_conductor hm n)
         (fun a b hab => CompletedArithmeticForms.abs_sum_Ico_normalizedRamanujanMode_le hm2 hab)
       calc
         |α| / N * |∑ j ∈ Icc 1 N,
-            (Real.sqrt (n : ℕ) / Real.sqrt j + Real.sqrt j / Real.sqrt (n : ℕ) -
+            (Real.sqrt n / Real.sqrt j + Real.sqrt j / Real.sqrt n -
               archimedeanCenterKernel n j) * (normalizedRamanujanMode m j / Real.sqrt j)|
-            ≤ |α| / N * ((4 * (m : ℝ) + Real.sqrt m) * Real.sqrt (n : ℕ)) :=
+            ≤ |α| / N * ((4 * (m : ℝ) + Real.sqrt m) * Real.sqrt n) :=
           mul_le_mul_of_nonneg_left hrow (by positivity)
-        _ ≤ |α| / N * ((5 * (m : ℝ)) * Real.sqrt (n : ℕ)) :=
+        _ ≤ |α| / N * ((5 * (m : ℝ)) * Real.sqrt n) :=
           mul_le_mul_of_nonneg_left
             (mul_le_mul_of_nonneg_right (by linarith only [hsm_le]) (Real.sqrt_nonneg _))
             (by positivity)
         _ = B n := by dsimp only [B]; ring
-    have hp := abs_inner_of_coord_div_sqrt_log hl u B hB0 hcoord
-    have hsumB : (∑ n ∈ Icc 1 N, B n / Real.sqrt n) ≤ 5 * |α| * (m : ℝ) := by
-      have hpt : ∀ n ∈ Icc 1 N, B n / Real.sqrt n = 5 * |α| * (m : ℝ) / N := by
+    have hp := abs_inner_of_coord_div_sqrt_log hl u row_u hcoord
+    have hsumB : (∑ n ∈ Icc 1 N, |row_u n| / Real.sqrt n) ≤ 5 * |α| * (m : ℝ) := by
+      have hpt : ∀ n ∈ Icc 1 N, |row_u n| / Real.sqrt n ≤ 5 * |α| * (m : ℝ) / N := by
         intro n hn
         have hn0 : (0 : ℝ) < n := by exact_mod_cast (mem_Icc.mp hn).1
         have hsn : 0 < Real.sqrt (n : ℝ) := Real.sqrt_pos.mpr hn0
-        dsimp only [B]; field_simp [hsn.ne', hN0.ne']
-      rw [sum_congr rfl hpt, sum_const, nsmul_eq_mul, Nat.card_Icc, Nat.add_sub_cancel]
-      field_simp [hN0.ne']; exact le_rfl
+        calc
+          |row_u n| / Real.sqrt n ≤ B n / Real.sqrt n :=
+            div_le_div_of_nonneg_right (hrow_le n hn) hsn.le
+          _ = 5 * |α| * (m : ℝ) / N := by dsimp only [B]; field_simp [hsn.ne', hN0.ne']
+      calc
+        (∑ n ∈ Icc 1 N, |row_u n| / Real.sqrt n)
+            ≤ ∑ _n ∈ Icc 1 N, (5 * |α| * (m : ℝ) / N) := sum_le_sum hpt
+        _ = 5 * |α| * (m : ℝ) := by
+          rw [sum_const, nsmul_eq_mul, Nat.card_Icc, Nat.add_sub_cancel]
+          field_simp [hN0.ne']
     calc
       |⟪u, normalizedRamanujanHorizonVector l N⟫|
           ≤ Real.sqrt l / Real.log N * (5 * |α| * (m : ℝ)) :=
@@ -1900,7 +1904,7 @@ private theorem integral_recip_shellAutocorr_eq {φ : ℝ → ℝ}
     intro x hx
     have hx0 := (hpos x hx).ne'
     simpa only [div_eq_mul_inv] using
-      ((hasDerivAt_inv hx0).const_mul r).congr_deriv (by field_simp [hx0]; ring)
+      ((hasDerivAt_inv hx0).const_mul r).congr_deriv (by field_simp [hx0])
   have hcont_d : ContinuousOn (fun x => -(r / x ^ 2)) (Set.uIcc r 1) :=
     (continuousOn_const.div (continuousOn_pow 2) fun x hx => pow_ne_zero 2 (hpos x hx).ne').neg
   have hgcont : ContinuousOn (fun u => shellAutocorr φ u / u) ((fun y => r / y) '' Set.uIcc r 1) :=
@@ -1979,7 +1983,8 @@ private theorem exists_sum_midBandLinearizedWeight_sub_shellIntegral_le {φ : �
       have h2R : 2 * linearNearRowRadius c ≤ 4 * (linearNearRowRadius c + 1) ^ 2 := by
         have h0 : 0 ≤ linearNearRowRadius c := by unfold linearNearRowRadius; positivity
         nlinarith only [h0]
-      have hR : 2 * (h : ℝ) ≤ N := (by linarith only [hh_Rc]).trans (h2R.trans hradN)
+      have hR : 2 * (h : ℝ) ≤ N :=
+        (mul_le_mul_of_nonneg_left hh_Rc zero_le_two).trans (h2R.trans hradN)
       exact_mod_cast hR
     have hK0_nh : K₀ ≤ N - h := by
       have h1 : (K₀ : ℝ) ≤ (N : ℝ) / (linearNearRowRadius c + 1) :=
@@ -2077,8 +2082,10 @@ private theorem exists_sum_midBandLinearizedWeight_sub_shellIntegral_le {φ : �
     have hrc_inv : 1 / c ≤ r := by
       dsimp only [r]; exact div_le_div_of_nonneg_right hh1R hc0.le
     have hr_sq_inv : 1 / r ^ 2 ≤ c ^ 2 := by
-      have h := one_div_le_one_div_of_le (by positivity) (pow_le_pow_left₀ (by positivity) hrc_inv 2)
-      rwa [div_pow, one_pow, one_div_one_div] at h
+      calc
+        1 / r ^ 2 ≤ 1 / (1 / c) ^ 2 :=
+          one_div_le_one_div_of_le (by positivity) (pow_le_pow_left₀ (by positivity) hrc_inv 2)
+        _ = c ^ 2 := by field_simp [hc0.ne']
     -- Lipschitz constant of `f` on `[0, 1]`.
     let L_f : ℝ := ((K_lip : ℝ) + ∫ t, φ t ^ 2) * c ^ 2
     have hLf0 : 0 ≤ L_f := by dsimp only [L_f]; positivity
@@ -2098,7 +2105,7 @@ private theorem exists_sum_midBandLinearizedWeight_sub_shellIntegral_le {φ : �
         have hd := hG_lip.dist_le_mul (r / x) (r / y)
         rw [Real.dist_eq, Real.dist_eq] at hd
         have hsub_r : r / x - r / y = r * (y - x) / (x * y) := by
-          field_simp [hx0.ne', hy0.ne']; ring
+          field_simp [hx0.ne', hy0.ne']
         have hnn : 0 ≤ r * (y - x) / (x * y) := by
           have : 0 ≤ y - x := sub_nonneg.mpr hxy; positivity
         rwa [hsub_r, abs_of_nonneg hnn] at hd
@@ -2137,9 +2144,9 @@ private theorem exists_sum_midBandLinearizedWeight_sub_shellIntegral_le {φ : �
         rw [abs_mul, abs_of_nonneg hnn]
         calc
           |shellAutocorr φ (r / y)| * ((y - x) / (x * y))
-              ≤ (∫ t, φ t ^ 2) * ((y - x) * (1 / (x * y))) := by
-            rw [div_eq_mul_one_div]
-            exact mul_le_mul_of_nonneg_right (hG_le _) hnn
+              ≤ (∫ t, φ t ^ 2) * ((y - x) / (x * y)) :=
+            mul_le_mul_of_nonneg_right (hG_le _) hnn
+          _ = (∫ t, φ t ^ 2) * ((y - x) * (1 / (x * y))) := by ring
           _ ≤ (∫ t, φ t ^ 2) * ((y - x) * c ^ 2) :=
             mul_le_mul_of_nonneg_left
               (mul_le_mul_of_nonneg_left hden2 (sub_nonneg.mpr hxy)) hM_nn
@@ -2255,9 +2262,8 @@ theorem exists_nearGram_mode_bilinear_approx {φ : ℝ → ℝ}
   have hmR₂ : m ∈ Icc 1 R₂ := mem_Icc.mpr ⟨hm, (le_max_left m l).trans (le_max_right 2 _)⟩
   have hlR₂ : l ∈ Icc 1 R₂ := mem_Icc.mpr ⟨hl, (le_max_right m l).trans (le_max_right 2 _)⟩
   have hc0 : 0 < c := zero_lt_one.trans_le hc1
-  have hN1 : 1 ≤ N := by
-    have : 2 * 2 ≤ R₂ * R₂ := Nat.mul_le_mul hR₂2 hR₂2
-    omega
+  have hN1 : 1 ≤ N :=
+    (by norm_num : 1 ≤ 2 * 2).trans ((Nat.mul_le_mul (le_max_left 2 _) (le_max_left 2 _)).trans hR2N)
   have hN0 : (0 : ℝ) < N := by exact_mod_cast hN1
   have hL1 : 1 ≤ Real.log (N : ℝ) := by
     have hlogR : 0 ≤ Real.log (R₂ : ℝ) := Real.log_natCast_nonneg R₂
@@ -2284,11 +2290,11 @@ theorem exists_nearGram_mode_bilinear_approx {φ : ℝ → ℝ}
     have h := pow_le_pow_left₀ (Nat.cast_nonneg R₂) hR2_le 4
     exact h.trans_eq (by ring)
   have hvm_sq : ‖normalizedRamanujanHorizonVector m N‖ ^ 2 ≤ 4 * (m : ℝ) := by
-    have h := norm_normalizedRamanujanHorizonVector_le_two_sqrt hm N
+    have h := norm_normalizedRamanujanHorizonVector_le_two_sqrt hm hL1
     have hsq := pow_le_pow_left₀ (norm_nonneg _) h 2
     rwa [mul_pow, Real.sq_sqrt (Nat.cast_nonneg m), show (2 : ℝ) ^ 2 = 4 by norm_num] at hsq
   have hvl_sq : ‖normalizedRamanujanHorizonVector l N‖ ^ 2 ≤ 4 * (l : ℝ) := by
-    have h := norm_normalizedRamanujanHorizonVector_le_two_sqrt hl N
+    have h := norm_normalizedRamanujanHorizonVector_le_two_sqrt hl hL1
     have hsq := pow_le_pow_left₀ (norm_nonneg _) h 2
     rwa [mul_pow, Real.sq_sqrt (Nat.cast_nonneg l), show (2 : ℝ) ^ 2 = 4 by norm_num] at hsq
   by_cases hml : m = l
