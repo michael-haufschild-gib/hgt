@@ -1,5 +1,6 @@
 import GaloisForLFunctions.WindowTowerOfSpecZ.TheRetainedGammaLowerFormHasANegativeDirection
 import GaloisForLFunctions.WindowTowerOfSpecZ.TheGammaRemainderPaysAUniformReserve
+import GaloisForLFunctions.WindowTowerOfSpecZ.TheRetainedGammaFormIsContinuous
 import GaloisForLFunctions.«arithmetic-positivity-theory».FactorialRampFullWeilSmoothingLimit
 
 /-!
@@ -231,156 +232,20 @@ theorem unitSmoothQuintic_tendsto (x : ℝ) :
   have h := hd.add (smooth_tendsto_of_continuous continuous_quinticWindow x)
   simpa only [sub_add_cancel, zero_add] using h
 
-private theorem unitSmoothQuintic_autocorr_tendsto (t : ℝ) :
-    Tendsto (fun n => autocorr (unitSmoothQuintic n) t) atTop
-      (𝓝 (autocorr quinticWindow t)) := by
-  have hb : Integrable (fun x : ℝ =>
-      (Icc (-(1/2 : ℝ)) (1/2)).indicator (fun _ => (1 : ℝ)) x) :=
-    continuous_const.integrableOn_Icc.integrable_indicator measurableSet_Icc
-  change Tendsto (fun n => ∫ x, unitSmoothQuintic n x * unitSmoothQuintic n (x+t)) atTop
-    (𝓝 (∫ x, quinticWindow x * quinticWindow (x+t)))
-  refine tendsto_integral_of_dominated_convergence _ (fun n => ?_) hb (fun n => ?_) ?_
-  · exact ((unitSmoothQuintic_contDiff n).continuous.mul
-      ((unitSmoothQuintic_contDiff n).continuous.comp (continuous_add_const t))).aestronglyMeasurable
-  · exact Eventually.of_forall fun x => by
-      by_cases hx : x ∈ Icc (-(1/2 : ℝ)) (1/2)
-      · rw [indicator_of_mem hx, norm_mul, Real.norm_eq_abs, Real.norm_eq_abs]
-        simpa only [one_mul] using mul_le_mul (unitSmoothQuintic_abs_le_one n x)
-          (unitSmoothQuintic_abs_le_one n (x+t)) (abs_nonneg _) (by norm_num : (0 : ℝ) ≤ 1)
-      · rw [indicator_of_notMem hx, unitSmoothQuintic_outside n hx, zero_mul, norm_zero]
-  · exact Eventually.of_forall fun x =>
-      (unitSmoothQuintic_tendsto x).mul (unitSmoothQuintic_tendsto (x+t))
-
 private theorem unitSmoothQuintic_mass_tendsto :
     Tendsto (fun n => ∫ x, unitSmoothQuintic n x ^ 2) atTop
-      (𝓝 (∫ x, quinticWindow x ^ 2)) := by
-  simpa only [autocorr, add_zero, pow_two] using unitSmoothQuintic_autocorr_tendsto 0
-
-/-- Uniform quadratic control of the lag deficit pays its logarithmic singularity. -/
-private theorem unitSmoothQuintic_deficit_bound (n : ℕ) {t : ℝ} (ht : t ∈ Ioc (0 : ℝ) 1) :
-    0 ≤ (∫ x, unitSmoothQuintic n x ^ 2) - autocorr (unitSmoothQuintic n) t ∧
-      (∫ x, unitSmoothQuintic n x ^ 2) - autocorr (unitSmoothQuintic n) t ≤ 576 * t ^ 2 := by
-  let B : ℝ → ℝ := (Icc (-(3/2 : ℝ)) (1/2)).indicator (fun _ => 576 * t ^ 2)
-  have hBi : Integrable B :=
-    continuous_const.integrableOn_Icc.integrable_indicator measurableSet_Icc
-  have hB (x : ℝ) : ‖(unitSmoothQuintic n x - unitSmoothQuintic n (x+t)) ^ 2‖ ≤ B x := by
-    dsimp only [B]
-    by_cases hx : x ∈ Icc (-(3/2 : ℝ)) (1/2)
-    · rw [indicator_of_mem hx, Real.norm_eq_abs, abs_of_nonneg (sq_nonneg _)]
-      have h := unitSmoothQuintic_lipschitz n x (x+t)
-      rw [show x-(x+t) = -t by ring, abs_neg, abs_of_pos ht.1] at h
-      have hs := pow_le_pow_left₀ (abs_nonneg _) h 2
-      rw [sq_abs, mul_pow] at hs
-      norm_num at hs
-      exact hs
-    · have hz : unitSmoothQuintic n x = 0 ∧ unitSmoothQuintic n (x+t) = 0 := by
-        by_cases hl : x < -(3/2 : ℝ)
-        · constructor
-          · apply unitSmoothQuintic_outside n
-            intro hi
-            linarith only [hl, hi.1]
-          · apply unitSmoothQuintic_outside n
-            intro hi
-            linarith only [hl, hi.1, ht.2]
-        · have hr : (1/2 : ℝ) < x := not_le.mp (fun h => hx ⟨not_lt.mp hl, h⟩)
-          constructor
-          · apply unitSmoothQuintic_outside n
-            intro hi
-            linarith only [hr, hi.2]
-          · apply unitSmoothQuintic_outside n
-            intro hi
-            linarith only [hr, hi.2, ht.1]
-      rw [indicator_of_notMem hx, hz.1, hz.2, sub_self]
-      norm_num
-  have hBv : (∫ x, B x) = 1152 * t ^ 2 := by
-    dsimp only [B]
-    rw [integral_indicator measurableSet_Icc, setIntegral_const]
-    norm_num <;> ring
-  have hnn : 0 ≤ ∫ x, (unitSmoothQuintic n x - unitSmoothQuintic n (x+t)) ^ 2 :=
-    integral_nonneg fun _ => sq_nonneg _
-  have hb := norm_integral_le_of_norm_le hBi (Eventually.of_forall hB)
-  rw [Real.norm_eq_abs, abs_of_nonneg hnn, hBv] at hb
-  have he := integral_sub_shift_sq (unitSmoothQuintic_compact n)
-    (unitSmoothQuintic_contDiff n).continuous t
-  have hzero : autocorr (unitSmoothQuintic n) 0 = ∫ x, unitSmoothQuintic n x ^ 2 := by
-    simp only [autocorr, add_zero, pow_two]
-  rw [hzero] at he
-  constructor <;> linarith only [he, hnn, hb]
-
-private theorem unitSmoothQuintic_logarithmic_tendsto :
-    Tendsto (fun n => ∫ t in Ioc (0 : ℝ) 1,
-      ((∫ x, unitSmoothQuintic n x ^ 2) - autocorr (unitSmoothQuintic n) t) / t) atTop
-      (𝓝 (∫ t in Ioc (0 : ℝ) 1,
-        ((∫ x, quinticWindow x ^ 2) - autocorr quinticWindow t) / t)) := by
-  have hb : IntegrableOn (fun t : ℝ => 576 * t) (Ioc (0 : ℝ) 1) :=
-    (continuous_const.mul continuous_id).integrableOn_Icc.mono_set Ioc_subset_Icc_self
-  refine tendsto_integral_of_dominated_convergence _ (fun n => ?_) hb (fun n => ?_) ?_
-  · have hc := _root_.RHTower.ArchimedeanExactForm.continuous_autocorr
-      (unitSmoothQuintic_contDiff n) (unitSmoothQuintic_compact n)
-    exact ((continuous_const.sub hc).measurable.div measurable_id).aestronglyMeasurable.restrict
-  · filter_upwards [ae_restrict_mem measurableSet_Ioc] with t ht
-    obtain ⟨h0, h1⟩ := unitSmoothQuintic_deficit_bound n ht
-    rw [Real.norm_eq_abs, abs_of_nonneg (div_nonneg h0 ht.1.le)]
-    apply (div_le_iff₀ ht.1).mpr
-    nlinarith only [h1]
-  · exact Eventually.of_forall fun t =>
-      (unitSmoothQuintic_mass_tendsto.sub (unitSmoothQuintic_autocorr_tendsto t)).div_const t
-
-private theorem unitSmoothQuintic_first_moment_tendsto :
-    Tendsto (fun n => ∫ t in Ioc (0 : ℝ) 1,
-      t * ((∫ x, unitSmoothQuintic n x ^ 2) - autocorr (unitSmoothQuintic n) t)) atTop
-      (𝓝 (∫ t in Ioc (0 : ℝ) 1,
-        t * ((∫ x, quinticWindow x ^ 2) - autocorr quinticWindow t))) := by
-  have hb : IntegrableOn (fun _ : ℝ => (576 : ℝ)) (Ioc (0 : ℝ) 1) :=
-    continuous_const.integrableOn_Icc.mono_set Ioc_subset_Icc_self
-  refine tendsto_integral_of_dominated_convergence _ (fun n => ?_) hb (fun n => ?_) ?_
-  · have hc := _root_.RHTower.ArchimedeanExactForm.continuous_autocorr
-      (unitSmoothQuintic_contDiff n) (unitSmoothQuintic_compact n)
-    exact (continuous_id.mul (continuous_const.sub hc)).aestronglyMeasurable.restrict
-  · filter_upwards [ae_restrict_mem measurableSet_Ioc] with t ht
-    obtain ⟨h0, h1⟩ := unitSmoothQuintic_deficit_bound n ht
-    rw [Real.norm_eq_abs, abs_of_nonneg (mul_nonneg ht.1.le h0)]
-    have ht2 : t ^ 2 ≤ 1 := by nlinarith only [ht.1, ht.2]
-    have hd : (∫ x, unitSmoothQuintic n x ^ 2) - autocorr (unitSmoothQuintic n) t ≤ 576 := by
-      nlinarith only [h1, ht2]
-    simpa only [one_mul] using mul_le_mul ht.2 hd h0 (by norm_num : (0 : ℝ) ≤ 1)
-  · exact Eventually.of_forall fun t =>
-      (unitSmoothQuintic_mass_tendsto.sub (unitSmoothQuintic_autocorr_tendsto t)).const_mul t
-
-private theorem unitSmoothQuintic_weight_tendsto (g : ℝ → ℝ) (hg : Continuous g) :
-    Tendsto (fun n => ∫ x, unitSmoothQuintic n x * g x) atTop
-      (𝓝 (∫ x, quinticWindow x * g x)) := by
-  have hb : Integrable (fun x : ℝ =>
-      (Icc (-(1/2 : ℝ)) (1/2)).indicator (fun x => |g x|) x) :=
-    hg.abs.integrableOn_Icc.integrable_indicator measurableSet_Icc
-  refine tendsto_integral_of_dominated_convergence _ (fun n => ?_) hb (fun n => ?_) ?_
-  · exact ((unitSmoothQuintic_contDiff n).continuous.mul hg).aestronglyMeasurable
-  · exact Eventually.of_forall fun x => by
-      by_cases hx : x ∈ Icc (-(1/2 : ℝ)) (1/2)
-      · rw [indicator_of_mem hx, norm_mul, Real.norm_eq_abs, Real.norm_eq_abs]
-        simpa only [one_mul] using mul_le_mul_of_nonneg_right
-          (unitSmoothQuintic_abs_le_one n x) (abs_nonneg (g x))
-      · rw [indicator_of_notMem hx, unitSmoothQuintic_outside n hx, zero_mul, norm_zero]
-  · exact Eventually.of_forall fun x => (unitSmoothQuintic_tendsto x).mul_const (g x)
+      (𝓝 (∫ x, quinticWindow x ^ 2)) :=
+  unitWindow_square_mass_tendsto unitSmoothQuintic_contDiff
+    (fun n _ hx => unitSmoothQuintic_outside n hx) unitSmoothQuintic_abs_le_one
+    unitSmoothQuintic_lipschitz unitSmoothQuintic_tendsto
 
 /-- Every term of the retained lower form survives support-preserving smoothing. -/
 theorem retainedOddGammaLowerForm_unitSmoothQuintic_tendsto :
     Tendsto (fun n => retainedOddGammaLowerForm (unitSmoothQuintic n)) atTop
-      (𝓝 (retainedOddGammaLowerForm quinticWindow)) := by
-  have hm : Tendsto (fun n => ∫ x, x * unitSmoothQuintic n x) atTop
-      (𝓝 (∫ x, x * quinticWindow x)) := by
-    simpa only [mul_comm] using unitSmoothQuintic_weight_tendsto (fun x => x) continuous_id
-  have hp : Tendsto (fun n => sinhPairing (unitSmoothQuintic n)) atTop
-      (𝓝 (sinhPairing quinticWindow)) :=
-    unitSmoothQuintic_weight_tendsto (fun x => 2 * Real.sinh (x/2)) (by fun_prop)
-  have harch := unitSmoothQuintic_logarithmic_tendsto.sub
-    (unitSmoothQuintic_mass_tendsto.const_mul
-      (Real.eulerMascheroniConstant + Real.log Real.pi + Real.log 2))
-  have hfirst := harch.sub (unitSmoothQuintic_first_moment_tendsto.div_const 24)
-  have hposition := hfirst.sub ((hm.pow 2).div_const 16)
-  have hpole := hposition.sub ((hp.pow 2).div_const 2)
-  exact hpole.sub
-    ((unitSmoothQuintic_autocorr_tendsto (Real.log 2)).const_mul (2 * (Real.log 2 / Real.sqrt 2)))
+      (𝓝 (retainedOddGammaLowerForm quinticWindow)) :=
+  retainedOddGammaLowerForm_tendsto_of_unit_window unitSmoothQuintic_contDiff
+    (fun n _ hx => unitSmoothQuintic_outside n hx) unitSmoothQuintic_abs_le_one
+    unitSmoothQuintic_lipschitz unitSmoothQuintic_tendsto
 
 /-- Discarding the nonnegative Gamma remainder fails even on smooth odd unit-window tests. -/
 theorem exists_odd_unit_retainedGamma_neg :
