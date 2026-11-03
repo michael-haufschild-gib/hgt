@@ -1,11 +1,12 @@
 import GaloisForLFunctions.WindowTowerOfSpecZ.TheFirstFoldHasAPolynomialSpectralBracket
 
 /-!
-# The first fold pays its third odd moment
+# The first fold pays both low odd moments
 
-The bounded polynomial comparison controls the third Legendre moment by an
-inverse chord estimate. Its remaining positive mass leaves only the first
-moment charge in the complete Weil form.
+The bounded polynomial comparison pays the full third Legendre charge and
+`3/2` of the first charge by one inverse-chord estimate, including their mixed
+term. A mass floor survives. This linear chord cannot pay the entire first
+charge: its first diagonal already exceeds the required reciprocal coefficient.
 -/
 
 noncomputable section
@@ -414,6 +415,7 @@ private theorem first_third_weighted_mass (n : ℕ) :
     ((by fun_prop : Continuous (fun u : ℝ => (3 / 2 : ℝ) * u ^ (n + 2))).intervalIntegrable _ _)]
   simp only [intervalIntegral.integral_const_mul, integral_pow]
   norm_num [Nat.cast_add, Nat.cast_ofNat]
+  ring
 
 private theorem first_third_mass : (∫ u in (0 : ℝ)..1, u * legP 3 u) = 0 := by
   have h := first_third_weighted_mass 0
@@ -488,7 +490,8 @@ private theorem mixed_reflection_bounds :
   have hcu : (613705640 / 1000000000 : ℝ) - 7 * (613705638 / 1000000000) ^ 2 / 2 +
       7 * (613705640 / 1000000000) ^ 3 / 2 - 5 * (613705638 / 1000000000) ^ 4 / 4 +
       (613705640 / 1000000000) ^ 5 / 8 ≤ -(3 / 50 : ℝ) := by norm_num
-  change -(7 / 100 : ℝ) ≤ (∫ u in (2 * Real.log 2 - 1)..1, u * legP 3 (2 * Real.log 2 - u)) ∧ _
+  change -(7 / 100 : ℝ) ≤ (∫ u in (2 * Real.log 2 - 1)..1, u * legP 3 (2 * Real.log 2 - u)) ∧
+    (∫ u in (2 * Real.log 2 - 1)..1, u * legP 3 (2 * Real.log 2 - u)) ≤ -(3 / 50 : ℝ)
   rw [mixed_reflection_identity]
   change -(7 / 100 : ℝ) ≤ mixedReflectionPoly s ∧ mixedReflectionPoly s ≤ -(3 / 50 : ℝ)
   unfold mixedReflectionPoly
@@ -522,6 +525,41 @@ private theorem first_energy_lower : (12 / 25 : ℝ) ≤ firstFoldPolynomialEner
     1 / 10 + 1 / 28 + 1 / 54 + 1 / 88 +
       (Real.log 2 / Real.sqrt 2) * ∫ u in stripLeft..1, u * stripReflect u
   linarith only [hc, hr, hw, firstFold_polynomial_mass_bounds.1]
+
+private theorem first_reflection_upper :
+    (∫ u in stripLeft..1, u * stripReflect u) ≤ (7 / 25 : ℝ) := by
+  let s := 2 - 2 * Real.log 2
+  have hs := overlap_length_bounds
+  change (613705638 / 1000000000 : ℝ) ≤ s ∧ s ≤ 613705640 / 1000000000 at hs
+  have hs0 : 0 ≤ s := by linarith only [hs.1]
+  have h2 := pow_le_pow_left₀ (by norm_num : (0 : ℝ) ≤ 613705638 / 1000000000) hs.1 2
+  have h3 := pow_le_pow_left₀ hs0 hs.2 3
+  have hc : (613705640 / 1000000000 : ℝ) - (613705638 / 1000000000) ^ 2 +
+      (613705640 / 1000000000) ^ 3 / 6 ≤ (7 / 25 : ℝ) := by norm_num
+  change (∫ u in (2 * Real.log 2 - 1)..1, u * (2 * Real.log 2 - u)) ≤ (7 / 25 : ℝ)
+  rw [first_reflection_identity]
+  change s - s ^ 2 + s ^ 3 / 6 ≤ (7 / 25 : ℝ)
+  linarith only [hc, hs.2, h2, h3]
+
+private theorem first_energy_upper : firstFoldPolynomialEnergy (fun u => u) ≤ (1 / 2 : ℝ) := by
+  have hr := mul_le_mul_of_nonneg_left first_reflection_upper firstFold_prime_weight_bounds.1
+  have hw := mul_le_mul_of_nonneg_right firstFold_prime_weight_bounds.2
+    (by norm_num : (0 : ℝ) ≤ 7 / 25)
+  have hc : (14 / 75 + 1 / 10 + 1 / 28 + 1 / 54 + 1 / 88 : ℝ) +
+      (4902 / 10000) * (7 / 25) ≤ 1 / 2 := by norm_num
+  unfold firstFoldPolynomialEnergy
+  rw [first_potential_identity]
+  change (137 / 60 - firstFoldMomentMassCost) / 3 + 1 / 10 + 1 / 28 + 1 / 54 + 1 / 88 +
+    (Real.log 2 / Real.sqrt 2) * (∫ u in stripLeft..1, u * stripReflect u) ≤ (1 / 2 : ℝ)
+  linarith only [hc, hr, hw, firstFold_polynomial_mass_bounds.2]
+
+/-- This linear inverse chord cannot pay the full first charge, even without the third. -/
+theorem firstFold_linear_chord_exceeds_first_capacity :
+    (1280 / 5123 : ℝ) <
+      (((19 / 50 : ℝ) + 37 / 20) / 3 - firstFoldPolynomialEnergy (fun u => u)) /
+        ((19 / 50 : ℝ) * (37 / 20)) := by
+  apply (lt_div_iff₀ (by norm_num : (0 : ℝ) < (19 / 50) * (37 / 20))).mpr
+  linarith only [first_energy_upper]
 
 private def firstThirdPairing : ℝ :=
   (∫ u in (0 : ℝ)..1, firstFoldPolynomialPotential u * (u * legP 3 u)) +
@@ -640,6 +678,8 @@ theorem firstFoldPolynomialEnergy_sub_joint_moments {G : ℝ → ℝ} (hG : Cont
         ((3 / 2 : ℝ) * a) * (u * G u) + ((63 / 20 : ℝ) * b) * (legP 3 u * G u) := by
       funext u; dsimp [P]; ring
     rw [he, intervalIntegral.integral_add
+      (f := fun u => ((3 / 2 : ℝ) * a) * (u * G u))
+      (g := fun u => ((63 / 20 : ℝ) * b) * (legP 3 u * G u))
       ((continuous_const.mul (continuous_id.mul hG)).intervalIntegrable _ _)
       ((continuous_const.mul ((continuous_legP 3).mul hG)).intervalIntegrable _ _),
       intervalIntegral.integral_const_mul, intervalIntegral.integral_const_mul]
@@ -782,3 +822,4 @@ end GaloisForLFunctions.WindowTowerOfSpecZ
 #print axioms GaloisForLFunctions.WindowTowerOfSpecZ.firstFoldPolynomialEnergy_sub_joint_moments
 #print axioms GaloisForLFunctions.WindowTowerOfSpecZ.firstFoldTwoMomentForm_add_reduced_first_moment_ge_mass
 #print axioms GaloisForLFunctions.WindowTowerOfSpecZ.weilQuad_add_reduced_first_moment_ge_mass
+#print axioms GaloisForLFunctions.WindowTowerOfSpecZ.firstFold_linear_chord_exceeds_first_capacity

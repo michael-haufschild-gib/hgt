@@ -46,4 +46,4 @@ At fixed `T`, the bound `|(exp(λT)−1)/λ|≤T exp(T)` for `T≥0` avoids any 
 
 ## Status
 
-Finite-packet physical residue: [separate formalization](f2-physical-cusp-krein-residue.md). Infinite formula and uniform estimates are conjectural. No complete-Weil positivity claim.
+Finite-packet physical residue: [audited physical realization](../3-formalized/f2-physical-cusp-krein-residue.md). Infinite formula and uniform estimates are conjectural. No complete-Weil positivity claim.

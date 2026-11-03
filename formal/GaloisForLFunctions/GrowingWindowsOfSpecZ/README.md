@@ -115,7 +115,12 @@ polynomial has `n + 1` simple zeros on the unit circle (`norm_eq_one_of_critical
 (`degenerate_window_is_curve`): at its first failure a window is the window of a curve over `𝔽_q`.
 Conversely a curve with `|S|` angles closed under conjugation is positive definite through size `|S|`
 and degenerates exactly at margin index `|S|` (`curve_first_critical`): the first critical index of a
-window is the number of its angles, `2g` for a curve of genus `g` with distinct angles.
+window is the number of its angles, `2g` for a curve of genus `g` with distinct angles. Under RH
+Spec ℤ is such a curve on every lattice, with infinitely many angles: the lattice window of `φ` at
+step `h` is `T_N(x) = Σ_ρ m_ρ|φ̂(γ_ρ)|²|Σ_k x_ke^{ikγ_ρh}|²`, the window of the zero ordinates folded
+to `e^{iγ_ρh}`, and RH is this identity (`toeplitzForm_weilSeq_eq_tsum`,
+`riemannHypothesis_iff_folded_curve`). Its margins dominate those of every finite piece of the curve
+(`levinsonErr_truncation_le`).
 The pole is the pair of hyperbolic angles `e^{±h/2}` of every lattice, carrying exactly one negative
 square (`toeplitzForm_polar_eq_hyperbolic`, `polarSeq_signature`). Off RH some lattice degenerates
 exactly, so RH is the absence of such curve-like edges (`riemannHypothesis_iff_no_degenerate_lattice`).
@@ -191,9 +196,10 @@ no-go with its survivor. The topics below are the research that the answers open
    coefficient `M₂(φ)`. The higher margins `h^{−2n}E_n(φ, h)` should converge to the margins of the
    Hankel (Jacobi) system of the zero measure `Σ_ρ m_ρ|φ̂(γ_ρ)|²δ_{γ_ρ}` on the line — the continuum
    canonical system of a bump, for bumps smooth enough that the moments `M_{2n}` converge.
-5. **Asymptotics of the Lyapunov functional.** Under RH the lattice data are moments of the folded zero
-   measure `Σ_ρ m_ρ|φ̂(γ_ρ)|²δ_{e^{ihγ_ρ}}`; the rate of `log(κ(0)/E_n)` along a lattice is governed by
-   the Diophantine properties of the angles `hγ`.
+5. **Asymptotics of the Lyapunov functional.** Under RH the lattice window is the window of the folded
+   zero curve (`toeplitzForm_weilSeq_eq_tsum`), so `E_n` is squeezed between the margins of its finite
+   pieces (`levinsonErr_truncation_le`) and the recurrence bound; the rate of `log(κ(0)/E_n)` along a
+   lattice is governed by the Diophantine properties of the angles `hγ`.
 
 ## 8. Pillar theorems
 
@@ -219,6 +225,7 @@ no-go with its survivor. The topics below are the research that the answers open
 | The angles are simple and number `n + 1` | `hform_zeroMode_eq_zero`, `natDegree_zeroMode`, `not_sq_dvd_zeroMode`, `zeroMode_roots` |
 | A degenerate window is a curve (Carathéodory–Fejér) | `hform_orth_of_eigen`, `eq_sum_cofactor`, `hform_eq_sum_diag`, `degenerate_window_is_curve` |
 | A curve degenerates at its number of angles | `curveData`, `curveData_isEven`, `toeplitzForm_curveData`, `curveData_posDef`, `curveData_not_posDef`, `curve_first_critical` |
+| Spec ℤ is a curve on every lattice | `weilOrbitCorr_eq_tsum`, `toeplitzForm_weilSeq_eq_tsum`, `riemannHypothesis_iff_folded_curve`, `levinsonErr_ge_of_le`, `toeplitzForm_truncation_le`, `levinsonErr_truncation_le` |
 | The pole is a hyperbolic pair of angles | `weilSeq_eq_polar_sub_local`, `toeplitzForm_polar`, `toeplitzForm_polar_eq_hyperbolic` |
 | The trivial angles carry one negative square | `polarSeq_single`, `polarSeq_firstDiff`, `polarSeq_signature`, `weilSeq_eq_polarSeq_sub` |
 | Forbidding lattice zero modes is RH | `weilOrbitCorr_neg`, `levinsonErr_one`, `zeta_orbitCorr_eq`, `exists_short_generic`, `exists_degenerate_lattice_of_not_riemannHypothesis`, `riemannHypothesis_iff_no_degenerate_lattice` |

@@ -1,8 +1,8 @@
 # Joint first- and third-moment payment
 
 - **ID:** F1-JC
-- **Stage:** 2-fully-proven
-- **Type:** THEOREM (paper)
+- **Stage:** 3-formalized
+- **Type:** THEOREM (Lean)
 - **Source:** [Two-moment payment](../1-in-progress/f1-primitive-variance-joint-payment.md)
 - **Statement:** Every real odd C² unit-window test satisfies
   `Q(F)+(3203/320)(∫xF)²≥∫F²/1000`.
@@ -45,8 +45,28 @@ Together with `E_B₀(G)≥(19/50)‖G‖²`, this gives
 `E_B₀(G)−L≥19‖G‖²/12550≥‖G‖²/1000`.
 The established comparison with `D` and `Q`, followed by dilation, gives the statement.
 
+## Boundary of the linear comparison
+
+The same reflection polynomial gives `R₁₁≤7/25`, hence `E₁₁≤1/2` from `a≤14/25`.
+Consequently the first diagonal of this inverse chord satisfies
+
+`((m+M)/3−E₁₁)/(mM)≥730/2109>1280/5123=1/β`.
+
+Thus this particular linear inverse chord cannot pay the full first-moment charge,
+even without the third charge. Tightening its mixed-moment estimates alone cannot
+close the joint sign. The joint payment above is a positive survivor; the remaining
+estimate must use a sharper inverse comparison or more of the logarithmic potential.
+
 ## Status
 
-Exact rational certificates pass a Lean scratch check. Joint Lean proof underway. This pays `3/2` of the
-first-moment coefficient `5123/1280`; its remaining `3203/1280` and full positivity
-are still open.
+WTZ `TheThirdOddMomentIsPaidByTheFirstFold` passes an individual plain Lean audit.
+The transitive axioms of each declaration below are exactly `propext`, `Classical.choice`,
+and `Quot.sound`:
+
+- `firstFoldPolynomialEnergy_sub_joint_moments` — joint polynomial payment.
+- `firstFoldTwoMomentForm_add_reduced_first_moment_ge_mass` — remaining debit `3203/1280` in `D`.
+- `weilQuad_add_reduced_first_moment_ge_mass` — complete-form statement above.
+- `firstFold_linear_chord_exceeds_first_capacity` — strict obstruction to full payment by this chord.
+
+This pays `3/2` of the first-moment coefficient `5123/1280`; its remaining `3203/1280`
+and full positivity are still open. The module is imported by the WTZ umbrella.

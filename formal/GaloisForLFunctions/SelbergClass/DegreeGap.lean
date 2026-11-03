@@ -21,7 +21,7 @@ private theorem summable_zero_of_degree_gap (F : ExtendedSelbergClass)
   obtain ⟨C, _, hC⟩ := exists_exponential_coeff_bound_of_degree_lt_one F hd0 hd1 1
   have hsum : Summable (fun n : ℕ => C * Real.exp (-(n : ℝ))) := by
     simpa only [mul_one] using
-      (summable_exp_neg_nat_mul (by norm_num : (0 : ℝ) < 1)).const_mul C
+      (summable_exp_neg_nat_mul (by norm_num : (0 : ℝ) < 1)).mul_left C
   have ha : Summable (fun n : ℕ => ‖F.coeff n‖) :=
     hsum.of_nonneg_of_le (fun n => norm_nonneg _) (fun n => by simpa using hC n)
   apply Summable.of_norm

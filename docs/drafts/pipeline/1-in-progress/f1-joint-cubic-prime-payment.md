@@ -37,9 +37,10 @@ Both charges must use disjoint shares of the same jump energy.
 [Two-moment complement](../3-formalized/f1-complete-odd-two-moment-complement.md) proves
 `Q(F)≥∫F²/100` on `∫xF=∫x³F=0`, using the regional logarithmic spectrum. Individual Lean
 checks and standard-only axiom audits pass. The
-[first-moment complement](../3-formalized/f1-first-moment-complete-payment.md) strengthens
-the domain: `Q(F)+(5123/320)(∫xF)²≥E/1000` for every odd C² unit test. Thus only
-`∫xF=0` is needed for a positive floor. First-moment payment and its cross terms remain open.
+[joint low-moment payment](../3-formalized/f1-joint-low-moment-chord-payment.md) strengthens
+the domain and reduces the charge: `Q(F)+(3203/320)(∫xF)²≥E/1000` for every odd C² unit test.
+Thus only `∫xF=0` is needed for a positive floor. The remaining first-moment payment
+and its cross terms remain open.
 
 [Exact second lag moment](../3-formalized/f1-odd-second-lag-moment.md) gives
 `M₂=E/3+(∫xF)²`. The retained Gamma comparison now charges `M₁/24+(∫xF)²/16`
@@ -90,5 +91,6 @@ standard-only transitive axiom audits pass. The
 [exact regional assembly](../3-formalized/f1-regional-exterior-identity.md) now proves
 `D(G)≤P(F)+E/64≤Q(F)` with the exterior potential, both low moments and signed reflection
 retained. Individual Lean and standard-only axiom audits pass. The
-[sign of D](f1-primitive-variance-joint-payment.md) remains open. The audited third-moment
-payment proves `D(G)+β(∫₀¹uG)²≥E/1000`, `β=77/20+39/256`; the remaining debit is explicit.
+[sign of D](f1-primitive-variance-joint-payment.md) remains open. The audited joint payment
+proves `D(G)+(3203/1280)(∫₀¹uG)²≥E/1000`. It pays the entire third charge and `3/2`
+of the first charge; the current linear inverse chord provably cannot pay the full first charge.

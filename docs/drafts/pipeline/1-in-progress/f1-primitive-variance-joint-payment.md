@@ -45,11 +45,12 @@ missing floor `P≥−E/64`, hence complete odd unit-window positivity.
 
 On the reflection strip, multiplication and reflection have paired matrix
 `[[A(u),w],[w,A(d−u)]]`; off the strip the coefficient is `A(u)`.
-The [third-moment payment](../3-formalized/f1-first-moment-complete-payment.md) proves
-`D(G)+β(∫₀¹uG)²≥∫₀¹G²/1000`: a polynomial comparison has spectral bounds
-`19/50≤B≤37/20`, and its inverse chord pays the full `P₃` charge.
-Only the first-moment debit remains. Its coupling to the positive complement must still
-be controlled; positivity on the first-moment kernel does not establish this conjecture.
+The [joint low-moment payment](../3-formalized/f1-joint-low-moment-chord-payment.md) proves
+`D(G)+(3203/1280)(∫₀¹uG)²≥∫₀¹G²/1000`: a polynomial comparison has spectral bounds
+`19/50≤B₀≤37/20`, and its inverse chord pays the full `P₃` charge together with `3/2`
+of the first charge. The remaining first-moment debit and its coupling are open.
+The [same linear chord cannot pay the full first charge](../5-failed/f1-linear-inverse-chord-full-payment.md),
+even if the third charge is omitted.
 
 The [positive inverse](../3-formalized/f1-positive-first-moment-inverse.md) gives the exact
 first-moment solution `q₁`: off the strip `q₁=u/A(u)`; on it,
@@ -70,8 +71,8 @@ not bound the mixed term sufficiently to establish this inequality.
 
 Try the simultaneous bounds `K₁₁≤9/40`, `K₃₃≤1/4`, `|K₁₃|≤1/25`.
 They would bound the Schur expression by `21141/85000<1280/5123`.
-None of these three estimates is established; the existing third-moment chord bound
-`K₃₃≤1558/4921` is too weak for this allocation.
+None of these three estimates is established. The audited obstruction rules out obtaining
+the required first bound from the current polynomial linear chord.
 
 The explicit inverse suggests an exact density reduction. Put
 `μ(u)=u q₁(u)>0`, `r(u)=(5u²−3)/2`, and `Δ(u)=A(u)A(v)−w²` on the strip.
@@ -97,9 +98,9 @@ reformulation alone, are the required advance.
   the lower bound `Q≥L−(c+log2)E−(39/64)m²−2wC(log2)` for every odd C² unit test.
 - The [exact exterior and two-moment assembly](../3-formalized/f1-regional-exterior-identity.md)
   prove `D(G)≤P(F)+E/64≤Q(F)` in Lean, with standard-only transitive axioms.
-- WTZ `firstFoldTwoMomentForm_add_first_moment_ge_mass` and
-  `weilQuad_add_first_moment_ge_mass` prove the first-moment-charged coercivity bounds
-  with standard-only transitive axioms.
+- WTZ `firstFoldTwoMomentForm_add_reduced_first_moment_ge_mass` and
+  `weilQuad_add_reduced_first_moment_ge_mass` prove the reduced first-moment-charged
+  coercivity bounds with standard-only transitive axioms.
 - The explicit polynomial and logarithmic first-moment inverses, their positivity and local
   upper bounds pass individual Lean and standard-only transitive axiom audits.
 - The displayed joint sign remains unproved; no positivity premise has been added.

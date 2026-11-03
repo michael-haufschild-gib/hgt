@@ -24,7 +24,7 @@ theorem integral_ordinaryExponentialSeries_mul_exp (F : ExtendedSelbergClass) (n
   let B : ℕ → ℂ := fun m => F.coeff m * Complex.exp ((n : ℂ) - (m : ℂ))
   let T : ℕ → ℝ → ℂ := fun m t =>
     B m * Complex.exp (I * (((n : ℤ) - (m : ℤ) : ℤ) : ℂ) * (t : ℂ))
-  have hterm : ∀ m t, ordinaryExponentialTerm F (1 + (t : ℂ) * I) m *
+  have hterm : ∀ (m : ℕ) (t : ℝ), ordinaryExponentialTerm F (1 + (t : ℂ) * I) m *
       Complex.exp ((n : ℂ) * (1 + (t : ℂ) * I)) = T m t := by
     intro m t
     dsimp [ordinaryExponentialTerm, T, B]
@@ -34,7 +34,8 @@ theorem integral_ordinaryExponentialSeries_mul_exp (F : ExtendedSelbergClass) (n
     ring
   have hnorm : ∀ m t, ‖T m t‖ = Real.exp (n : ℝ) * ‖ordinaryExponentialTerm F 1 m‖ := by
     intro m t
-    rw [T, norm_mul, norm_exp_I_mul_real, mul_one]
+    dsimp only [T]
+    rw [norm_mul, norm_exp_I_mul_real, mul_one]
     simp only [B, ordinaryExponentialTerm, norm_mul, Complex.norm_exp,
       Complex.sub_re, Complex.natCast_re, mul_one, Complex.neg_re]
     rw [Real.exp_sub, Real.exp_neg]
@@ -54,10 +55,10 @@ theorem integral_ordinaryExponentialSeries_mul_exp (F : ExtendedSelbergClass) (n
     ring
   have hsum : Summable (fun m => ∫ t in Ioc (-Real.pi) Real.pi, ‖T m t‖) := by
     simp_rw [hnormint]
-    exact (summable_ordinaryExponentialTerm F (by norm_num : 0 < (1 : ℂ).re)).norm.const_mul _
+    exact (summable_ordinaryExponentialTerm F (by norm_num : 0 < (1 : ℂ).re)).norm.mul_left _
   have hswap := integral_tsum_of_summable_integral_norm
     (μ := volume.restrict (Ioc (-Real.pi) Real.pi)) hint hsum
-  have hpt : ∀ t, ordinaryExponentialSeries F (1 + (t : ℂ) * I) *
+  have hpt : ∀ t : ℝ, ordinaryExponentialSeries F (1 + (t : ℂ) * I) *
       Complex.exp ((n : ℂ) * (1 + (t : ℂ) * I)) = ∑' m, T m t := by
     intro t
     rw [ordinaryExponentialSeries, ← tsum_mul_right]

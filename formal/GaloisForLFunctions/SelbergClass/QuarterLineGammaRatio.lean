@@ -1,6 +1,7 @@
 import GaloisForLFunctions.RHTower.GammaVerticalRatioAsymptotic
 import GaloisForLFunctions.RHTower.SelbergClass.FunctionalEquationLocal
 import GaloisForLFunctions.HTGeometry.GammaAnalyticOffPoles
+import Mathlib.Analysis.SpecialFunctions.Pow.Asymptotics
 
 /-!
 # Gamma decay between the quarter lines
@@ -12,14 +13,15 @@ a vanishing ratio. Both lines lie in the positive Gamma half-plane.
 
 noncomputable section
 open Complex Filter Topology Set
-open GaloisForLFunctions.HTGeometry RHTower
+open RHTower
 
 namespace GaloisForLFunctions.SelbergClass
 
 private theorem tendsto_norm_Gamma_ratio_zero {a δ : ℝ} (ha : 0 ≤ a) (hδ : 0 < δ) :
     Tendsto (fun t : ℝ => ‖Complex.Gamma ((a : ℂ) + (t : ℂ) * I)‖ /
       ‖Complex.Gamma (((a + δ : ℝ) : ℂ) + (t : ℂ) * I)‖) atTop (𝓝 0) := by
-  have h := (gamma_vertical_ratio_norm_rpow_tendsto ha hδ.le).mul (tendsto_rpow_neg_atTop hδ)
+  have h := (gamma_vertical_ratio_norm_rpow_tendsto ha hδ.le).mul
+    (_root_.tendsto_rpow_neg_atTop hδ)
   rw [one_mul] at h
   refine h.congr' ?_
   filter_upwards [eventually_gt_atTop (0 : ℝ)] with t ht
@@ -74,7 +76,7 @@ private theorem norm_gammaFactor_vertical (D : SelbergGammaData) (σ t : ℝ) :
   apply Finset.prod_congr rfl
   intro j _
   congr 2
-  apply Complex.ext <;> simp [Complex.mul_re, Complex.mul_im] <;> ring
+  apply Complex.ext <;> simp [Complex.mul_re, Complex.mul_im]
 
 /-- A positive-degree Gamma product has vanishing quarter-line ratio. -/
 theorem tendsto_gammaFactor_quarter_ratio (D : SelbergGammaData) (hd : 0 < D.degree) :

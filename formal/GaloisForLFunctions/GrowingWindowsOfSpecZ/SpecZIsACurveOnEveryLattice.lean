@@ -95,25 +95,25 @@ theorem toeplitzForm_weilSeq_eq_tsum (hRH : RiemannHypothesis) (hφ : φ ∈ rea
     toeplitzForm (weilSeq φ h) N x = ∑' ρ, zeroTerm (cx φ) ρ *
       ‖∑ k : Fin N, (x k : ℂ) * cexp (((ρ : ℂ).im * h : ℝ) * I) ^ (k : ℕ)‖ ^ 2 := by
   have hsum := summable_zeroTerm hRH (cx_contDiff hφ.1) (cx_hasCompactSupport hφ.2)
-  set w := zeroTerm (cx φ)
   -- every entry is a cosine series
-  have hseq : ∀ d : ℤ, weilSeq φ h d = ∑' ρ, w ρ * Real.cos (d * ((ρ : ℂ).im * h)) := fun d => by
+  have hseq : ∀ d : ℤ, weilSeq φ h d = ∑' ρ, zeroTerm (cx φ) ρ * Real.cos (d * ((ρ : ℂ).im * h)) := fun d => by
     rw [weilSeq_eq_weilOrbitCorr, weilOrbitCorr_eq_tsum hRH hφ]
-    exact tsum_congr fun ρ => by ring_nf
-  have hs : ∀ (d : ℤ) (a : ℝ), Summable fun ρ => w ρ * (Real.cos (d * ((ρ : ℂ).im * h)) * a) :=
+    exact tsum_congr fun ρ => by
+      rw [show (ρ : ℂ).im * ((d : ℝ) * h) = (d : ℝ) * ((ρ : ℂ).im * h) by ring]
+  have hs : ∀ (d : ℤ) (a : ℝ), Summable fun ρ => zeroTerm (cx φ) ρ * (Real.cos (d * ((ρ : ℂ).im * h)) * a) :=
     fun d a => (hsum.mul_right |a|).of_norm_bounded fun ρ => by
       rw [norm_mul, norm_mul, Real.norm_eq_abs, Real.norm_eq_abs, Real.norm_eq_abs,
-        abs_of_nonneg (zeroTerm_nonneg _ _), mul_assoc]
+        abs_of_nonneg (zeroTerm_nonneg _ _)]
       exact mul_le_mul_of_nonneg_left
         (mul_le_of_le_one_left (abs_nonneg a) (Real.abs_cos_le_one _)) (zeroTerm_nonneg _ _)
   calc toeplitzForm (weilSeq φ h) N x
-      = ∑ i : Fin N, ∑ j : Fin N, ∑' ρ, w ρ *
+      = ∑ i : Fin N, ∑ j : Fin N, ∑' ρ, zeroTerm (cx φ) ρ *
           (Real.cos (((i : ℤ) - j : ℤ) * ((ρ : ℂ).im * h)) * (x i * x j)) := by
         simp only [toeplitzForm, hseq]
         refine sum_congr rfl fun i _ => sum_congr rfl fun j _ => ?_
         rw [mul_assoc, ← tsum_mul_right]
         exact tsum_congr fun ρ => by ring
-    _ = ∑' ρ, ∑ i : Fin N, ∑ j : Fin N, w ρ *
+    _ = ∑' ρ, ∑ i : Fin N, ∑ j : Fin N, zeroTerm (cx φ) ρ *
           (Real.cos (((i : ℤ) - j : ℤ) * ((ρ : ℂ).im * h)) * (x i * x j)) := by
         rw [Summable.tsum_finsetSum fun i _ => summable_sum fun j _ => hs _ _]
         refine sum_congr rfl fun i _ => ?_
@@ -169,11 +169,20 @@ theorem toeplitzForm_truncSeq (φ : ℝ → ℝ) (h : ℝ) (F : Finset zetaZeroC
     (x : Fin N → ℝ) :
     toeplitzForm (truncSeq φ h F) N x = ∑ ρ ∈ F, zeroTerm (cx φ) ρ *
       ‖∑ k : Fin N, (x k : ℂ) * cexp (((ρ : ℂ).im * h : ℝ) * I) ^ (k : ℕ)‖ ^ 2 := by
-  simp only [← toeplitzForm_cos, toeplitzForm, truncSeq, Finset.sum_mul, Finset.mul_sum]
-  rw [Finset.sum_comm]
-  refine sum_congr rfl fun i _ => ?_
-  rw [Finset.sum_comm]
-  exact sum_congr rfl fun j _ => sum_congr rfl fun ρ _ => by ring
+  calc toeplitzForm (truncSeq φ h F) N x
+      = ∑ i : Fin N, ∑ j : Fin N, ∑ ρ ∈ F, zeroTerm (cx φ) ρ *
+          (Real.cos (((i : ℤ) - j : ℤ) * ((ρ : ℂ).im * h)) * (x i * x j)) := by
+        refine sum_congr rfl fun i _ => sum_congr rfl fun j _ => ?_
+        rw [truncSeq, mul_assoc, Finset.sum_mul]
+        exact sum_congr rfl fun ρ _ => by ring
+    _ = ∑ ρ ∈ F, ∑ i : Fin N, ∑ j : Fin N, zeroTerm (cx φ) ρ *
+          (Real.cos (((i : ℤ) - j : ℤ) * ((ρ : ℂ).im * h)) * (x i * x j)) :=
+        (sum_congr rfl fun i _ => Finset.sum_comm).trans Finset.sum_comm
+    _ = _ := sum_congr rfl fun ρ _ => by
+        rw [← toeplitzForm_cos, toeplitzForm, Finset.mul_sum]
+        refine sum_congr rfl fun i _ => ?_
+        rw [Finset.mul_sum]
+        exact sum_congr rfl fun j _ => by ring
 
 /-- **The window of a finite piece lies below the window of Spec ℤ** (under RH). -/
 theorem toeplitzForm_truncation_le (hRH : RiemannHypothesis) (hφ : φ ∈ realTests) (h : ℝ)

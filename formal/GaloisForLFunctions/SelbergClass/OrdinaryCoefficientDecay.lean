@@ -56,8 +56,9 @@ private theorem integral_ordinaryCoefficientKernel_eq (F : ExtendedSelbergClass)
   have hd : DifferentiableOn ℂ (ordinaryCoefficientKernel F n)
       (uIcc a 1 ×ℂ uIcc (-Real.pi) Real.pi) := by
     intro z hz
+    have hzIm : z.im ∈ uIcc (-Real.pi) Real.pi := hz.2
     have hy : z.im ∈ Icc (-Real.pi) Real.pi := by
-      simpa only [uIcc_of_le (by linarith [Real.pi_pos] : -Real.pi ≤ Real.pi)] using hz.2
+      simpa only [uIcc_of_le (by linarith [Real.pi_pos] : -Real.pi ≤ Real.pi)] using hzIm
     exact (analyticAt_ordinaryCoefficientKernel F hd0 hd1 n
       (by linarith [hy.1, Real.pi_pos])).differentiableAt.differentiableWithinAt
   have hc := Complex.integral_boundary_rect_eq_zero_of_differentiableOn
@@ -82,10 +83,12 @@ private theorem integral_ordinaryCoefficientKernel_eq (F : ExtendedSelbergClass)
     apply (mul_left_cancel₀ Complex.I_ne_zero)
     exact (sub_eq_zero.mp hc).symm
   rw [hv]
-  convert integral_ordinaryExponentialSeries_mul_exp F n using 1
+  rw [← integral_ordinaryExponentialSeries_mul_exp F n]
   apply intervalIntegral.integral_congr
   intro t _
-  rw [ordinaryCoefficientKernel, ordinaryContinuation_eq_series F hd0 hd1 (by simp),
+  change ordinaryContinuation F (1 + (t : ℂ) * I + 2 * (Real.pi : ℂ) * I) *
+      Complex.exp ((n : ℂ) * (1 + (t : ℂ) * I)) = _
+  rw [ordinaryContinuation_eq_series F hd0 hd1 (by simp),
     ordinaryExponentialSeries_periodic F]
 
 /-- Each negative vertical line yields its own exponential coefficient bound. -/
@@ -129,6 +132,6 @@ theorem exists_exponential_coeff_bound_of_degree_lt_one (F : ExtendedSelbergClas
     show |Real.pi - -Real.pi| = 2 * Real.pi by rw [abs_of_pos (by linarith [Real.pi_pos])]; ring] at hi
   have hi' : (2 * Real.pi) * ‖F.coeff n‖ ≤ (2 * Real.pi) * (C * Real.exp (-R * n)) := by
     nlinarith only [hi]
-  exact (mul_le_mul_left (by positivity : 0 < 2 * Real.pi)).mp hi'
+  exact (mul_le_mul_iff_right₀ (by positivity : 0 < 2 * Real.pi)).mp hi'
 
 end GaloisForLFunctions.SelbergClass

@@ -60,5 +60,8 @@ the remaining jump variance and reflected even gain to pay the moment and reflec
 
 [Complete two-moment complement](../3-formalized/f1-complete-odd-two-moment-complement.md)
 proves `Q(F)≥∫F²/100` for odd C² unit-window tests with `∫xF=∫x³F=0`, including the signed
-prime and pole. Its regional spectrum, density extension and lag bridge are individually
-Lean-audited with standard axioms only. The two remaining moments and cross terms are open.
+prime and pole. The stronger
+[joint low-moment payment](../3-formalized/f1-joint-low-moment-chord-payment.md) gives
+`Q(F)+(3203/320)(∫xF)²≥∫F²/1000` without moment constraints. Individual Lean and
+standard-only transitive axiom audits pass. The remaining first-moment charge and its
+coupling are open; the current linear inverse chord cannot pay the full charge.
