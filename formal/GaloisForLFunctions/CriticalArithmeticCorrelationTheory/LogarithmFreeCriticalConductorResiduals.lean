@@ -2404,7 +2404,7 @@ theorem exists_nearGram_mode_bilinear_approx {φ : ℝ → ℝ}
         _ ≤ 2 * ((2 * Real.exp 2 * c) * (C_w * c ^ 2 / N)) :=
           mul_le_mul_of_nonneg_left (mul_le_mul_of_nonneg_right hB_le (by positivity)) zero_le_two
         _ = 4 * Real.exp 2 * C_w * c ^ 3 / N := by ring
-    have hlag_a := hlag hL0 hc1 hradN a
+    have hlag_a := hlag (R₂ := R₂) hL0 hc1 hradN a
     have hosc_a := hosc hR₂2 hR2N hlog18 hc1 hradN a
     rw [hvec_a] at hlag_a hosc_a
     have hlag_b : |2 * (midBandLagSum φ R₂ N c a - midBandLinearizedSum φ R₂ N c a)| ≤
@@ -2607,7 +2607,6 @@ theorem exists_nearGram_mode_bilinear_approx {φ : ℝ → ℝ}
             nearGram φ c N (primeHorizonExtension (v_m + v_l)) n) =
           2 * midBandLagSum φ R₂ N c a_p := by
         have := congrArg (fun x => Real.log (N : ℝ) * x) hlead_p
-        dsimp only at this
         rw [← mul_assoc (Real.log (N : ℝ)) (Real.log (N : ℝ))⁻¹,
           mul_inv_cancel₀ hL0.ne', one_mul] at this
         linarith only [this, (by ring : Real.log (N : ℝ) * ((∫ t, φ t ^ 2) *
@@ -2621,7 +2620,6 @@ theorem exists_nearGram_mode_bilinear_approx {φ : ℝ → ℝ}
             nearGram φ c N (primeHorizonExtension (v_m - v_l)) n) =
           2 * midBandLagSum φ R₂ N c a_m := by
         have := congrArg (fun x => Real.log (N : ℝ) * x) hlead_m
-        dsimp only at this
         rw [← mul_assoc (Real.log (N : ℝ)) (Real.log (N : ℝ))⁻¹,
           mul_inv_cancel₀ hL0.ne', one_mul] at this
         linarith only [this, (by ring : Real.log (N : ℝ) * ((∫ t, φ t ^ 2) *
@@ -3664,12 +3662,12 @@ private lemma filter_Ico_eq_Ico_of_ordConvex {P : ℕ → Prop} [DecidablePred P
       exact ⟨⟨(mem_Ico.mp hminI).1.trans hlo, hhi'.trans_lt (mem_Ico.mp hmaxI).2⟩,
         hconv hlo hhi' hPmin hPmax⟩
   · rw [Finset.not_nonempty_iff_eq_empty] at hT
-    exact ⟨0, 0, le_rfl, by simp [hT]⟩
+    exact ⟨0, 0, le_rfl, hT.trans Finset.Ico_self.symm⟩
 
 /-- Elementary bounded-variation summation by parts on `Ico a b`: if every interval sum of `g`
 has magnitude `≤ B`, then `|∑_{j ∈ Ico a b} w(j) g(j)| ≤ B * (|w(b - 1)| + ∑ |w(j) - w(j + 1)|)`. -/
 private lemma abs_sum_Ico_mul_le_of_bv {w g : ℕ → ℝ} {B : ℝ}
-    (hB0 : 0 ≤ B) {a b : ℕ}
+    (_hB0 : 0 ≤ B) {a b : ℕ}
     (hg : ∀ l k : ℕ, l ≤ k → |∑ j ∈ Ico l k, g j| ≤ B) :
     |∑ j ∈ Ico a b, w j * g j| ≤
       B * ((if a < b then |w (b - 1)| else 0) +
@@ -3890,8 +3888,10 @@ private lemma exteriorDownward_log_free_bounds {φ : ℝ → ℝ}
             (actualExteriorDownwardRow (atomDilate φ (c / N)) N m i.1 /
               Real.sqrt (Real.log N))) = _
       rw [mul_sum, ← sum_coe_sort (Icc 1 N)]
-      refine sum_congr rfl fun n hn => ?_
-      rw [primeHorizonExtension_coe, downwardRamanujanRow_sub_interior_eq hc0 hn hgsupp m, mul_inv]
+      refine sum_congr rfl fun n _ => ?_
+      rw [primeHorizonExtension_coe]
+      unfold actualExteriorDownwardRow
+      rw [downwardRamanujanRow_sub_interior_eq hc0 n.2 hgsupp m, mul_inv]
       ring
     rw [heq_in]
     have hb := abs_sum_regroupedExterior_bilinear_le hφ hsupp hM hl hm hc1 hN1 hL1 hradN
@@ -4177,7 +4177,8 @@ private lemma nonCore_nearRows_log_free_bounds {φ : ℝ → ℝ}
             _ ≤ (m : ℝ) * 1 := mul_le_mul_of_nonneg_left hn1 (Nat.cast_nonneg m)
             _ ≤ (m : ℝ) ^ 2 := by nlinarith only [hm1R]
         exact hsq.trans (div_le_div_of_nonneg_right
-          (mul_le_mul_of_nonneg_left hmn (by positivity)) hN0.le)
+          ((mul_le_mul_of_nonneg_left hmn
+            (by positivity : 0 ≤ 16 * Real.exp 6 * Cp ^ 2 * c ^ 2)).trans_eq (by ring)) hN0.le)
       have hl2 : nearShellLogRow φ c N m n ^ 2 ≤ 64 * Real.exp 6 * (m : ℝ) ^ 2 * c ^ 2 / N := by
         have hsq := pow_le_pow_left₀ (abs_nonneg _) hl1 2
         rw [sq_abs, div_pow, mul_pow, mul_pow, mul_pow, Real.sq_sqrt (Nat.cast_nonneg m),
@@ -4799,6 +4800,7 @@ private lemma abs_centerPoleCollar_diff_le {c : ℝ} {N n : ℕ}
           ∑ j ∈ nearRowIndices c N n, 1 / ((n : ℝ) + j)) - Real.log c| ≤
         (6 + 2 * Real.exp 2) * (1 + Real.log ((N : ℝ) / n)) := by
       rw [hsplit_S, sum_union hdisj_S, abs_le]
+      rw [hsplit_S] at hadd_sum
       have hexp0 : 0 ≤ Real.exp 2 := (Real.exp_pos 2).le
       have hprod_nn : 0 ≤ Real.exp 2 * Real.log ((N : ℝ) / n) := mul_nonneg hexp0 hlog_Nn_nn
       constructor <;>
@@ -5037,7 +5039,7 @@ private lemma centerPoleCollar_sum_bounds (φ : ℝ → ℝ) :
               (mul_le_mul_of_nonneg_right
                 (mul_le_mul_of_nonneg_left h1c_sq (sq_nonneg C_u)) hN0.le)
               (by dsimp only [S₁]; positivity))
-          _ = 4 * S₁ ^ 2 * C_u ^ 2 * c ^ 3 / N := by field_simp [hN0.ne']; ring
+          _ = 4 * S₁ ^ 2 * C_u ^ 2 * c ^ 3 / N := by field_simp [hN0.ne']
       calc
         _ ≤ (Z₂.card : ℝ) * (4 * S₁ ^ 2 * C_u ^ 2 * c ^ 3 / N) := by
           rw [← nsmul_eq_mul, ← sum_const]; exact sum_le_sum hpt
@@ -5061,7 +5063,7 @@ private lemma centerPoleCollar_sum_bounds (φ : ℝ → ℝ) :
           have h := pow_le_pow_left₀ (abs_nonneg _) hprod 2
           rwa [sq_abs, mul_pow (S₁ * c / N), div_pow, mul_pow S₁ c, mul_pow C_i,
             Real.sq_sqrt hN0.le] at h
-        exact hsq.trans_eq (by field_simp [hN0.ne']; ring)
+        exact hsq.trans_eq (by field_simp [hN0.ne'])
       have hcard_Z3 : (Z₃.card : ℝ) ≤ N := by
         have h : Z₃.card ≤ (Icc 1 N).card := card_le_card (filter_subset _ _)
         rw [Nat.card_Icc, Nat.add_sub_cancel] at h
@@ -5788,13 +5790,21 @@ private lemma coreNearRow_one_log_free_bounds {φ : ℝ → ℝ}
       ((Real.sqrt (Real.log N))⁻¹ *
         ∑ n ∈ Icc 1 N, primeHorizonExtension (normalizedRamanujanHorizonVector l N) n *
           ((completeWeilPoleShift φ c / N) * D_row n))
-    have hsum_bi : |(Real.sqrt (Real.log N))⁻¹ * (∑ n ∈ Icc 1 N, _) +
-          (Real.sqrt (Real.log N))⁻¹ * (∑ n ∈ Icc 1 N, _) +
-          (Real.sqrt (Real.log N))⁻¹ * (∑ n ∈ Icc 1 N, _)| ≤
-        C_bi * Real.sqrt l * (c / Real.log N + c ^ 3 / N) := by
+    have hsum_bi :
+        |(Real.sqrt (Real.log N))⁻¹ *
+              (∑ n ∈ Icc 1 N, primeHorizonExtension (normalizedRamanujanHorizonVector l N) n *
+                (-Real.log c * poleRowDefect φ c N n)) +
+            (Real.sqrt (Real.log N))⁻¹ *
+              (∑ n ∈ Icc 1 N, primeHorizonExtension (normalizedRamanujanHorizonVector l N) n *
+                (-Real.log c * atomPoleErrorCoefficient φ c N * Real.sqrt n)) +
+            (Real.sqrt (Real.log N))⁻¹ *
+              (∑ n ∈ Icc 1 N, primeHorizonExtension (normalizedRamanujanHorizonVector l N) n *
+                ((completeWeilPoleShift φ c / N) * D_row n))| ≤
+          C_bi * Real.sqrt l * (c / Real.log N + c ^ 3 / N) := by
       have hnn1 : 0 ≤ 2 * C_e * Real.sqrt l * (c / Real.log N) := by positivity
       have hnn2 : 0 ≤ (C_P + 8 * Real.sqrt (C_d + 1)) * Real.sqrt l * (c ^ 3 / N) := by positivity
       dsimp only [C_bi]
+      dsimp only [D_row] at htri ⊢
       linarith only [htri, hbi1, hbi2, hbi3, hnn1, hnn2,
         (by ring : ((C_P + 8 * Real.sqrt (C_d + 1)) + 2 * C_e + C_cp) *
             Real.sqrt l * (c / Real.log N + c ^ 3 / N) =
@@ -6092,8 +6102,7 @@ private lemma coreNearRow_ge_two_log_free_bounds {φ : ℝ → ℝ}
               _ = (Real.exp 1 + 4 * Real.exp 5 * (K_lip : ℝ) / (∫ u, φ u ^ 2)) / Real.sqrt n := by
                 unfold linearNearRowRadius
                 field_simp [hM.ne', hc0.ne', hn0.ne', hN0.ne', hsn.ne']
-                rw [show (K_lip : ℝ) * Real.exp 2 * Real.exp 1 * (2 * Real.exp 2) =
-                  2 * (K_lip : ℝ) * (Real.exp 2 * Real.exp 2 * Real.exp 1) by ring, hexp5]
+                rw [← hexp5]
                 ring
         calc
           |∑ j ∈ Ico a b, w_n j * normalizedRamanujanMode m j|

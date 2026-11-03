@@ -455,11 +455,12 @@ theorem abs_rowWindow_sub_le {K : ℝ → ℝ} {α β A L w : ℝ} (hα : 0 ≤ 
       _ ≤ (2 * q + 1) * B * (4 * A + 2 * β * L) / m := by
           rw [mul_one, mul_div_assoc', hbound]
           have hq1 : (1 : ℝ) ≤ 2 * q + 1 := by linarith
-          have : A ≤ (2 * q + 1) * (3 * A + 2 * β * L + β * A) := by
-            nlinarith [mul_nonneg hβ0 hL0, mul_nonneg hβ0 hA0]
+          have hAA : A ≤ (2 * q + 1) * (4 * A + 2 * β * L) := by
+            nlinarith [mul_nonneg hβ0 hL0]
           calc B * A / m = B * A * (1 / m) := by ring
-            _ ≤ (2 * q + 1) * B * (4 * A + 2 * β * L) * (1 / m) := by
-                apply mul_le_mul_of_nonneg_right _ (by positivity); nlinarith
+            _ ≤ B * ((2 * q + 1) * (4 * A + 2 * β * L)) * (1 / m) :=
+                mul_le_mul_of_nonneg_right (mul_le_mul_of_nonneg_left hAA hB0) (by positivity)
+            _ = (2 * q + 1) * B * (4 * A + 2 * β * L) * (1 / m) := by ring
   · -- a nonempty row
     set A₀ := ⌊a⌋₊ + 1 with hA₀
     set M := ⌊b⌋₊ - A₀ with hM
@@ -473,7 +474,7 @@ theorem abs_rowWindow_sub_le {K : ℝ → ℝ} {α β A L w : ℝ} (hα : 0 ≤ 
       have : (⌊b⌋₊ : ℝ) = A₀ + M := by exact_mod_cast hMeq
       linarith
     have hIcc : Finset.Icc A₀ ⌊b⌋₊ =
-        (range (M + 1)).map ⟨fun i => A₀ + i, fun _ _ h => by omega⟩ := by
+        (range (M + 1)).map ⟨fun i => A₀ + i, fun _ _ h => Nat.add_left_cancel h⟩ := by
       ext h
       simp only [Finset.mem_Icc, Finset.mem_map, Finset.mem_range, Function.Embedding.coeFn_mk]
       constructor
