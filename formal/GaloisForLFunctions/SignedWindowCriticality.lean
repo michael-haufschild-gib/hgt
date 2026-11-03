@@ -5,6 +5,7 @@ import GaloisForLFunctions.SignedWindowCriticality.ThePoleChargesTheSupersolutio
 import GaloisForLFunctions.SignedWindowCriticality.ACriticalWindowIsAPoleChargedSolution
 import GaloisForLFunctions.SignedWindowCriticality.TheKickIsAPositiveSourceAndANegativeCollarConductance
 import GaloisForLFunctions.SignedWindowCriticality.TheCollarHankelForm
+import GaloisForLFunctions.SignedWindowCriticality.TheFrozenOddFormIsMarkovAndTheKickIsNot
 
 /-!
 # Signed Window Criticality
@@ -15,7 +16,8 @@ folded criterion is void on the unit odd window; with the pole kept, each square
 pair becomes a charge of the gauge (sinh charge in the odd sector, cosh credit in the even sector)
 and the window form is a signed Dirichlet form plus a pole-charged potential; Rayleigh-critical
 gauges and zero modes solve the pole-charged source equation and represent the window form in their
-own gauge; the kick of a new prime power is a positive source plus a negative anti-diagonal
+own gauge; on odd tests the frozen form is Markov under `F ↦ sign(x)|F|` and the kick of the first
+prime is anti-Markov; the kick of a new prime power is a positive source plus a negative anti-diagonal
 conductance on the collar; on reflection-paired collar data the frozen coupling is the collar Hankel
 form, one pole square against the trivial-zero squares, negative definite on the pole hyperplane.
 -/

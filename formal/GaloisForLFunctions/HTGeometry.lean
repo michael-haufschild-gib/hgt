@@ -1,4 +1,5 @@
 import GaloisForLFunctions.HTGeometry.BoundedSecondDifferences
+import GaloisForLFunctions.HTGeometry.FiniteHorizonLayerCake
 import GaloisForLFunctions.HTGeometry.FiniteNegativeAtomCount
 import GaloisForLFunctions.HTGeometry.WeightedNormInjection
 import GaloisForLFunctions.HTGeometry.FiniteNegativeSupport

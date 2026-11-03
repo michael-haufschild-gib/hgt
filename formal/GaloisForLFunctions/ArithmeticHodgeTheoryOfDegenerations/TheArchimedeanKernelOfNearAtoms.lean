@@ -542,8 +542,6 @@ theorem integral_tailMass_div :
       hcont.aestronglyMeasurable.stronglyMeasurableAtFilter hcont.continuousAt
     exact h.comp_sub_const y 2
   have hΓc : Continuous Γ := continuous_iff_continuousAt.mpr fun y => (hΓd y).continuousAt
-  have hsplit : Set.Ioc (0 : ℝ) 3 = Set.Ioc 0 1 ∪ Set.Ioc 1 3 := (Set.Ioc_union_Ioc_eq_Ioc (by norm_num)
-    (by norm_num)).symm
   set M := ∫ u, φ u ^ 2
   have hΓb : ∀ y, |Γ y / (2 * y)| ≤ M / 2 := by
     intro y
@@ -577,10 +575,10 @@ theorem integral_tailMass_div :
     (u := Γ) (u' := fun y => shellAutocorr φ (y - 2)) (v := Real.log) (v' := fun y => y⁻¹)
     (fun y _ => hΓd y)
     (fun y hy => Real.hasDerivAt_log (by
-      rw [uIcc_of_le (by norm_num)] at hy; linarith [hy.1]))
+      rw [Set.uIcc_of_le (by norm_num)] at hy; linarith [hy.1]))
     ((hcont.comp (continuous_id.sub continuous_const)).intervalIntegrable 1 3)
     (intervalIntegral.intervalIntegrable_inv (fun y hy => by
-      rw [uIcc_of_le (by norm_num)] at hy; linarith [hy.1]) continuousOn_id)
+      rw [Set.uIcc_of_le (by norm_num)] at hy; linarith [hy.1]) continuousOn_id)
   have hΓ3 : Γ 3 = (∫ u, φ u) ^ 2 := by
     simp only [hΓ]; norm_num; exact integral_shellAutocorr_neg_one_one hφ hsupp
   have hsub := intervalIntegral.integral_comp_sub_right
@@ -611,7 +609,7 @@ theorem integral_nearKernel :
   have hwin : ∫ ℓ in (0 : ℝ)..2, nearKernel φ ℓ =
       ∫ ℓ in (0 : ℝ)..2, (shellAutocorr φ ℓ * κ + ∫ y in Set.Ioc 0 3, F ℓ y) := by
     refine intervalIntegral.integral_congr fun ℓ hℓ => ?_
-    rw [uIcc_of_le (by norm_num)] at hℓ
+    rw [Set.uIcc_of_le (by norm_num)] at hℓ
     exact nearKernel_eq_window hφ hsupp hℓ.1 hℓ.2
   -- Fubini on the box
   have hmeas : Measurable (Function.uncurry F) := by
@@ -636,7 +634,9 @@ theorem integral_nearKernel :
   have hFI : IntervalIntegrable (fun ℓ => ∫ y in Set.Ioc 0 3, F ℓ y) volume 0 2 := by
     rw [intervalIntegrable_iff_integrableOn_Ioc_of_le (by norm_num)]
     exact hFint.integral_prod_left
-  rw [hwin, intervalIntegral.integral_add ((hcont.mul continuous_const).intervalIntegrable 0 2) hFI,
+  have hGI : IntervalIntegrable (fun ℓ => shellAutocorr φ ℓ * κ) volume 0 2 :=
+    (hcont.mul continuous_const).intervalIntegrable 0 2
+  rw [hwin, intervalIntegral.integral_add hGI hFI,
     intervalIntegral.integral_mul_const, integral_zero_two_shellAutocorr hφ hsupp,
     intervalIntegral.integral_of_le (by norm_num : (0 : ℝ) ≤ 2), hswap,
     setIntegral_congr_fun measurableSet_Ioc hinner, integral_tailMass_div hφ hsupp]

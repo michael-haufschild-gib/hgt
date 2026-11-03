@@ -256,9 +256,9 @@ theorem levyEnergy_oddAbs_le (hF : Continuous F) (hFo : ∀ x, F (-x) = -F x) {K
     unfold levyEnergy
     have e1 := integral_sub hLF hJF
     have e2 := integral_sub hLG hJG
-    have e3 : (∫ t in Ioi (0 : ℝ), (archLevyDensity t * ∫ u, (F u - F (u + t)) ^ 2 -
+    have e3 : (∫ t in Ioi (0 : ℝ), (archLevyDensity t * (∫ u, (F u - F (u + t)) ^ 2) -
         archLevyDensity t * gaugeJumpProfile P F t)) =
-        ∫ t in Ioi (0 : ℝ), (archLevyDensity t * ∫ u, (G u - G (u + t)) ^ 2 -
+        ∫ t in Ioi (0 : ℝ), (archLevyDensity t * (∫ u, (G u - G (u + t)) ^ 2) -
           archLevyDensity t * gaugeJumpProfile P G t) :=
       setIntegral_congr_fun measurableSet_Ioi fun t _ => by
         rw [← mul_sub, ← mul_sub, hshift t]
@@ -298,12 +298,11 @@ theorem levyEnergy_oddAbs_le (hF : Continuous F) (hFo : ∀ x, F (-x) = -F x) {K
     have hω1 := archLevyDensity_pos hs0
     have hω2 := archLevyDensity_pos (show 0 < z.2 + 2 * z.1 by linarith)
     have hanti : archLevyDensity (z.2 + 2 * z.1) ≤ archLevyDensity z.2 :=
-      SpacingScaleHarmonicAnalysis.archLevyDensity_antitoneOn hs0
-        (show 0 < z.2 + 2 * z.1 by linarith) (by linarith)
+      strictAntiOn_archLevyDensity.antitoneOn hs0
+        (show (0 : ℝ) < z.2 + 2 * z.1 by linarith) (by linarith)
     have hsj : 0 ≤ signedShiftJump P H z.2 z.1 := by
       unfold signedShiftJump; exact mul_nonneg (mul_nonneg (hP0 _) (hP0 _)) (sq_nonneg _)
-    simp only [Function.comp, Prod.fst_swap, Prod.snd_swap, Function.uncurry_apply_pair,
-      Prod.swap]
+    simp only [Function.comp, Function.uncurry_apply_pair, Prod.swap]
     rw [Real.norm_eq_abs, abs_of_nonneg (mul_nonneg (by linarith) hsj)]
     exact mul_le_mul_of_nonneg_right (by linarith) hsj
   have hSF := hsurplus hF hFL
@@ -319,8 +318,8 @@ theorem levyEnergy_oddAbs_le (hF : Continuous F) (hFo : ∀ x, F (-x) = -F x) {K
     have hx0 : 0 < z.1 := hx
     have hs0 : 0 < z.2 := hs
     have hanti : archLevyDensity (z.2 + 2 * z.1) ≤ archLevyDensity z.2 :=
-      SpacingScaleHarmonicAnalysis.archLevyDensity_antitoneOn hs0
-        (show 0 < z.2 + 2 * z.1 by linarith) (by linarith)
+      strictAntiOn_archLevyDensity.antitoneOn hs0
+        (show (0 : ℝ) < z.2 + 2 * z.1 by linarith) (by linarith)
     have e1 : oddAbs F z.1 = |F z.1| := oddAbs_of_nonneg hx0.le
     have e2 : oddAbs F (z.1 + z.2) = |F (z.1 + z.2)| := oddAbs_of_nonneg (by linarith)
     simp only [signedShiftJump, G, e1, e2]
@@ -403,7 +402,7 @@ theorem markovForm_two_sub_one {g : ℝ → ℝ} (hg : Continuous g) (hgc : HasC
     unfold ArchimedeanAnomaly.autocorr; congr 1; funext u; rw [add_zero, sq]
   have hc : ArchimedeanAnomaly.autocorr g (Real.log 2) = ∫ u, g u * g (u + Real.log 2) := rfl
   simp only [markovForm, creationPotential, primeJump, h1, h2, Finset.sum_empty,
-    Finset.sum_singleton]
+    Finset.sum_singleton, Nat.cast_ofNat]
   rw [hsh, h0, hc]
   ring
 

@@ -114,7 +114,7 @@ packet; it does not pay the dual-collar coupling. Verdict:
     d(p) = 1 / (sqrt(p+1) sqrt(p-1)) - 1/p,
     Cjoint(p) = |gammaBracket(0)| + 2 exponentialPrimeMass(p) + d(p).
 
-The candidate lower floor is Q(H) ≥ -Cjoint(p) exponentialMass(p,H).
+The proved lower floor is Q(H) ≥ -Cjoint(p) exponentialMass(p,H).
 It strictly improves the existing floor, whose pole cost is
 1/(p+1) + 1/(p-1). This is a bounded-range bridge, not compensation removal.
 
@@ -139,7 +139,11 @@ weighted-floor threshold 7J/(aφ exponentialWeilFloor(8)).
 calculation, extending the corpus's unweighted centred-pole method to its
 aliasing norm. It supplies no source cancellation for the remaining prime
 or Gamma losses and no claim of new mathematics beyond the corpus audit.
-Lean verification pending.
+The two source modules and their principal results pass Lean with exactly
+`[propext, Classical.choice, Quot.sound]`; see the
+[formalized bounded extension](../3-formalized/joint-pole-payment-extends-the-critical-ratio.md).
+The strict finite-horizon conclusion is per fixed independent family.
+No comparison with the separate whole-space small-band threshold is proved.
 
 ## Rejected compensation mechanism
 
@@ -154,8 +158,8 @@ period or amplitude varies with N.
 
 - [x] Exact target and existing small-band source identified.
 - [ ] Derive and attack an explicit signed interaction or compensation-removal mechanism.
-- [ ] Complete a dependency-closed proof of an unconditional advance.
-- [ ] Formalize and audit the exact result and transitive axioms.
+- [x] Complete a dependency-closed proof of an unconditional bounded advance.
+- [x] Formalize that bounded advance and audit its transitive axioms.
 - [ ] Reach unbounded R or remove compensation; audit the original target.
 
 ## Audit scope

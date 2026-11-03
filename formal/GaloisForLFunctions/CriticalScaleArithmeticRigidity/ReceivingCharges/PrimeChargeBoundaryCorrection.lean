@@ -25,7 +25,7 @@ private theorem cumulative_square (w : ℕ → ℝ) (Q : ℕ) :
   | zero => simp
   | succ Q ih =>
     rw [sum_Icc_succ_top (by omega), sum_Icc_succ_top (by omega),
-      sum_Icc_succ_top (by omega), sum_Icc_succ_top (by omega)]
+      sum_Icc_succ_top (by omega)]
     nlinarith only [ih]
 
 /-- The cumulative prime weights fill one triangle, including its diagonal. -/
@@ -62,7 +62,6 @@ theorem harmonicPrimeCharge_jumpEnergy_boundary {Q : ℕ} (hQ : 2 ≤ Q)
     linarith only [htri]
   rw [hexp]
   field_simp [(primePoleScale_pos hQ).ne']
-  ring
 
 private def mertensBound : ℝ :=
   (Real.log 4 + 4) + (8 + _root_.RHTower.Mertens.mertensTail)
@@ -90,9 +89,15 @@ private theorem cofactor_boundary_le {N p : ℕ} (hp : 1 ≤ p) (hpN : p ≤ N) 
       (harmonicMass (N / p) - (Real.log N - Real.log p) - Real.eulerMascheroniConstant) +
         Real.eulerMascheroniConstant + (primePoleScale p - Real.log p) := by ring
   rw [heq]
-  exact ((abs_add_le _ _).trans
-    (add_le_add_right (abs_add_le _ _) _)).trans
-      (add_le_add (add_le_add_right (hH.trans hfour) _) hB)
+  calc
+    _ ≤ |harmonicMass (N / p) - (Real.log N - Real.log p) -
+          Real.eulerMascheroniConstant + Real.eulerMascheroniConstant| +
+        |primePoleScale p - Real.log p| := abs_add_le _ _
+    _ ≤ (|harmonicMass (N / p) - (Real.log N - Real.log p) -
+          Real.eulerMascheroniConstant| + |Real.eulerMascheroniConstant|) +
+        |primePoleScale p - Real.log p| :=
+      add_le_add (abs_add_le _ _) le_rfl
+    _ ≤ _ := add_le_add (add_le_add (hH.trans hfour) le_rfl) hB
 
 private theorem prime_weight_bounds {p : ℕ} (hp : 1 ≤ p) :
     0 ≤ Real.log p / (p : ℝ) ∧ Real.log p / (p : ℝ) ≤ 1 := by
@@ -124,11 +129,12 @@ theorem abs_primeChargeBoundaryError_le {Q N : ℕ} (hQN : Q ≤ N) :
         |∑ p ∈ P, (Real.log p / p) *
           (harmonicMass (N / p) - Real.log N + primePoleScale p)| +
         (1 / 2) * (∑ p ∈ P, (Real.log p / p) ^ 2) := by
-      simpa only [primeChargeBoundaryError, P, abs_mul,
-        abs_of_nonneg (by norm_num : (0 : ℝ) ≤ 1 / 2), abs_of_nonneg hsq0] using
-          abs_sub (∑ p ∈ P, (Real.log p / p) *
+      have h := abs_sub (∑ p ∈ P, (Real.log p / p) *
             (harmonicMass (N / p) - Real.log N + primePoleScale p))
             ((1 / 2) * ∑ p ∈ P, (Real.log p / p) ^ 2)
+      rw [abs_mul, abs_of_nonneg (by norm_num : (0 : ℝ) ≤ 1 / 2),
+        abs_of_nonneg hsq0] at h
+      exact h
     _ ≤ (∑ p ∈ P, (Real.log p / p) *
         (4 + |Real.eulerMascheroniConstant| + mertensBound)) +
         (1 / 2) * primePoleScale Q :=
@@ -165,7 +171,7 @@ theorem tendsto_harmonicPrimeCharge_boundary (H : ℕ → ℕ) (t : ℝ) :
   refine squeeze_zero_norm' ?_
     (primePoleScale_tendsto_atTop.const_div_atTop (primeChargeBoundaryConstant * t ^ 2))
   filter_upwards [eventually_ge_atTop 2] with Q hQ
-  simpa only [Real.norm_eq_abs, sub_neg_eq_add] using
+  simpa only [Real.norm_eq_abs, sub_neg_eq_add, Nat.cast_add] using
     harmonicPrimeCharge_boundary_error_le hQ (Nat.le_add_right Q (H Q)) t
 
 private theorem diagonal_horizon_error_le {Q : ℕ} (hQ : 2 ≤ Q) (t : ℝ) :

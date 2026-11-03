@@ -50,8 +50,13 @@ For `N ≥ Q`, the floor-harmonic comparison and prime Mertens bound make
 `H_(⌊N/p⌋) − log N + B_p` uniformly bounded. Since `0 ≤ w_p ≤ 1`,
 `|R_(Q,N)| ≤ C B_Q` with an absolute constant. Thus the boundary correction
 tends uniformly to `−t²/2` as `Q → ∞`; at `N = Q`, `J_Q → t²/2`.
-Lean formalization pending. This is a signed boundary term of the dilation
-energy alone; the complete-form classification remains open.
+Lean: `harmonicPrimeCharge_jumpEnergy_boundary`,
+`harmonicPrimeCharge_boundary_error_le`, `tendsto_harmonicPrimeCharge_boundary`,
+`tendsto_harmonicPrimeCharge_cutoff_energy` in
+`CriticalScaleArithmeticRigidity/ReceivingCharges/PrimeChargeBoundaryCorrection.lean`.
+Individual check passed; transitive axioms exactly `propext`, `Classical.choice`,
+`Quot.sound`; module integrated. This is a signed boundary term of dilation
+energy alone; complete-form classification remains open.
 
 ## Complete-form test at the cutoff horizon
 
@@ -93,6 +98,24 @@ no estimate uniform in `M` is needed. This would distinguish the positive
 form on prime-scale charge distributions from the unbounded total-charge
 functional. Complete-form convergence and coprime-fibre transport are
 unproved; these formulas are conjectures beyond the established dilation identity.
+
+Integer-power realization: take `N = X^d`, cutoffs `X^a < X^b`, and normalize
+one band's coefficients by its actual mass `B_(X^b) − B_(X^a)`. The predicted
+energy of charge `t` is
+`t²[d − (a+b)/2]/(b−a)`. With `d = 2^M`, the bands
+`[d−2^(M−j), d−2^(M−j−1)]`, `0 ≤ j < M`, have cost `3t²/2` per unit
+band charge. Giving each charge `t/M` yields `3t²/(2M)`. Integer powers
+avoid floor-cutoff errors; distinct bands have exactly zero polarized
+dilation pairing.
+
+For fixed coprime conductor fibres, the proposed positive limit is the
+same weighted prime-scale form tensored with the period Gram of the base
+Ramanujan modes. Prime dilation outside the base conductors leaves those
+modes unchanged; the finitely many base-prime contributions are bounded
+by the vanishing harmonic input square. The remaining arithmetic input is
+the uniform bounded remainder of the harmonic sum of each periodic product
+`e_m e_l`, whose mean is `δ_(m,l)`. This does not yet control pairing with
+an arbitrary growing Euclidean complement.
 
 ## Gates
 

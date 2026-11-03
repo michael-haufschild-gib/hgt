@@ -50,5 +50,10 @@ leaving `[[α+C G₀, β],[β, γ+D G₀]]`, where `G₀=3Φ(0)²` and
 `(−α−γ/1568²+2|β|/1568)/G₀`. Its comparison with `B` is unproved;
 it requires the actual theta moments through order sixteen.
 
+A sufficient obstruction is negativity of the native principal minor on
+indices `{0,1,2,4}` at zero. It would force `D>0` independently of `C`,
+closing the signed case by the proved capacity gap. This minor's sign is
+currently unproved.
+
 The integrated rank-nine sign remains open. A source certificate must pay
 the negative region while preserving the actual mixed entries.
