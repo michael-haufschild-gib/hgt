@@ -553,6 +553,7 @@ Stepanov over `ℤ` (AET) and over curves (LST).
 | The curve family is stationary along the horizon: Weil's form of a curve is invariant under translating both tests, so a lattice window reads the same form at every horizon and the only degeneration is in the atom width | `W_curveConfig_translate_translate` | proved |
 | One Frobenius orbit makes the dilation scalar: for a datum with eigenvalues `β, β⁻¹` (elliptic curves, genus-one fakes) the lattice Gram matrix at every width is `E(w)/2 · spanGram`; the golden fake is self-similar with one negative square from window `2` on; for every curve `W(f_k, f_l) = log q Σ_i β_i^{k−l} Φ_{β_i}(w)`, `Φ_{β⁻¹} = Φ_β` | `towerGram_eq_smul_spanGram_of_orbit`, `goldenDatum_towerGram_eq_smul_spanGram`, `goldenDatum_negIndex_dilation`, `W_curveConfig_translate_atom`, `lagSeries_inv` | proved |
 | Degeneration selects the pure curves: a pure curve without the eigenvalue `1` has `W(T_x, T_x) → 0` on every lattice test; the golden fake has `W(g_w, g_w) ≥ c w e^{εw}` and `W/w^k → ∞` for every `k` | `tendsto_W_curveLatticeTest_pure`, `goldenDatum_curveAtomEnergy_ge`, `tendsto_goldenDatum_W_div_pow`, `W_curveConfig_atom` | proved |
+| The monodromy rate of a curve is its zero width: with `R = max|β_i|`, `δ = log R/log q = max|Re s − ½|`, tests of length `ℓ` have `|W(f, f)| ≤ (2ℓ + log q) N e^{δℓ}‖f‖²`; for `R > 1` and every `ε > 0`, eventually some tests of length `ℓ` reach `Re W ≤ −e^{(δ−ε)ℓ}‖f‖²` and `Re W ≥ e^{(δ−ε)ℓ}‖f‖²` (Turán); a pure curve grows linearly | `curve_monodromy_rate`, `norm_W_curveConfig_le_exp`, `exists_lagTests_two_sided`, `norm_W_curveConfig_le_of_pure` | proved |
 | The rescaled limit of a curve is the Hurwitz form of its Frobenius angles: `a^β E_x(a) → A_φ Σ_i |Σ x_k β_i^k|² (ζ(β+1,u_i) + ζ(β+1,1−u_i))`, `W = −w² E_x'` | `tendsto_rpow_mul_curveBulk`, `hasDerivAt_curveBulk`, `W_curveLatticeTest_eq_density` | proved |
 | The Frobenius angles diagonalize the curve family: `W(T_x,T_x) = w² Σ_i S_{θ_i}(w/log q)|Σ x_k β_i^k|²` at every atom width; positive for pure curves | `W_curveLatticeTest`, `re_W_curveLatticeTest_nonneg` | proved |
 | The bulk below the resolution height: for every `θ < 1` and `c log² N/N^{1−θ} → 0`, the zeros of height `≤ N^θ` give `κ y_1²(2 + γ − log 4π)` at the pole and nothing to pole-free packets | `tendsto_sum_bulkLedger_belowResolution`, `tendsto_sum_bulkLedger_belowResolution_poleFree`, `norm_zetaStripError_le_order`, `norm_conductorDirichlet_sub_horizonTerm_le_order` | proved |
@@ -634,8 +635,8 @@ Stepanov over `ℤ` (AET) and over curves (LST).
    rescaled limit is their Hurwitz form, a single orbit dilates by a scalar, and degeneration
    separates the pure curves from the golden fake; along the horizon a curve's family is stationary
    (translation invariance), so its only degeneration is in the atom width; and over `ℤ` a twist of
-   any real frequency `u` carries the Hurwitz form of `u`, rational or not. Open: the exponential
-   rate of every impure curve (the logarithm of its spectral radius).
+   any real frequency `u` carries the Hurwitz form of `u`, rational or not; the exponential rate of
+   every curve is its zero width. Open: the complete family over `𝔽_q(T)`, horizon and bulk.
 
 ## 10. Traps
 
@@ -764,7 +765,10 @@ most one. Over a curve the Frobenius angles play the role of the frequencies: th
 lattice tests is diagonal in them at every resolution, and its rescaled limit under dilation is the
 Hurwitz form of the angles, as the Jordan-totient form is over `ℤ`. The type of the degeneration
 selects: a pure curve degenerates completely, the golden fake grows exponentially, its outer
-eigenvalue acting as monodromy of infinite order on a fixed hyperbolic plane.
+eigenvalue acting as monodromy of infinite order on a fixed hyperbolic plane. The exponential rate
+of every curve is its zero width `max|Re s − ½|`, in both signs: the extreme values of Weil's form
+on tests of length `ℓ` are `e^{δℓ}` up to polynomial factors, and `δ = 0` exactly for the pure
+curves.
 
 Below the resolution height the bulk is computed as well. Euler–Maclaurin at every order makes the
 remainders of the conductor polynomials uniform in the zero, so the zeros of height `≤ N^θ`,

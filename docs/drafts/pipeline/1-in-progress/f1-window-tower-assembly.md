@@ -28,8 +28,9 @@ The exact signed fold cost `w(C−F)` can be paid uniformly along the tower. The
 
 ## Audit findings
 
-- The base is already proved through length `181/250`, all real C² tests, by
-  `fullZeroForm_ge_of_support_le_threeHundredSixtyTwoThousandths` (SP). F1's `3/5` base is stale.
+- The all-test base has floor `1/5000` through length `181/250` (SP), and floor `1/8000`
+  through length `2a*`, `a*=enlargedWeilFloorAperture>181/500` (AIP,
+  `fullZeroForm_ge_of_support_le_enlargedWeilFloorAperture`). F1's `3/5` base is stale.
 - ACCE `ThresholdVanishingAndCollarDominanceOfThePrimeShell` already proves the exact threshold
   ladder: every spectral drop between consecutive entrances is frozen-operator domain relaxation.
   Its ground-state collar sandwich also exists. Repackaging these is not a new bridge.
@@ -49,10 +50,15 @@ This disproves the sufficient collar loan while preserving a strictly positive c
 Retain `Q_N+w(F−C)` jointly. Existing variable-hub and two-vertex Schur identities require
 positive pivots and control of the residual Schur scalar; those signs are not provided by
 exit-charge domination. Exact IMS localization and coherent collar transport already exist;
-their signed errors still require arithmetic control. The established complete-form coercivity
-reaches length `181/250`.
+their signed errors still require arithmetic control. The established all-test complete-form coercivity
+reaches length `2a*<1`.
 
 [Cubic moment payment](../3-formalized/f1-rank-one-frozen-odd-payment.md) proves
 `Q₁(F)+20M(F)²≥∫F²/125` on the full unit odd window. Both modules pass individual source checks
 and standard-only axiom audits. [Joint prime-2 payment](f1-joint-cubic-prime-payment.md) must retain
 the remaining jump variance and reflected even gain to pay the moment and reflected odd cost.
+
+[Complete two-moment complement](../3-formalized/f1-complete-odd-two-moment-complement.md)
+proves `Q(F)≥∫F²/100` for odd C² unit-window tests with `∫xF=∫x³F=0`, including the signed
+prime and pole. Its regional spectrum, density extension and lag bridge are individually
+Lean-audited with standard axioms only. The two remaining moments and cross terms are open.

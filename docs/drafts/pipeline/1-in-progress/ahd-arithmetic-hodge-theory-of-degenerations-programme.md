@@ -40,7 +40,8 @@ TheCoshHyperplaneInheritsThePolarization, TheCountPaysTheSecondOrderBelowAUnifor
 TheSecondOrderOfACharacterWindowReadsAnLValue, TheCharacterWindowsAreGradedByParity,
 TheFrequencyOfATwistActsAsAFrobeniusAngle, EveryPeriodicTwistedSectorInheritsThePolarization,
 TheFrequencyTwistIsQuietBelowItsResonance, TheEnergyOfAFrequencyTwist, EveryFrequencyActsAsAFrobeniusAngle,
-TheHorizonLayerIsGradedByFrequency, EveryFrequencySectorInheritsThePolarization.
+TheHorizonLayerIsGradedByFrequency, EveryFrequencySectorInheritsThePolarization,
+TheMonodromyRateOfACurveIsItsZeroWidth.
 
 ## Status
 - First order = count: `J(m) = J(1) #ℙ⁷(ℤ/m)`; count law over every finite ring (𝔽_q[T] calibration) [L].
@@ -101,7 +102,9 @@ TheHorizonLayerIsGradedByFrequency, EveryFrequencySectorInheritsThePolarization.
   (Frobenius angles = twist frequencies); positive at every resolution [L]; rescaled limit under
   dilation = Hurwitz form of the fractional angles [L]; selection: pure without eigenvalue `1` ⇒
   `W → 0` on every lattice test; golden fake ⇒ `W(g_w) ≥ c w e^{εw}` (exponential monodromy) [L];
-  one orbit `β, β⁻¹` (elliptic, golden): lattice Gram at every width `= E(w)/2 · spanGram` [L].
+  one orbit `β, β⁻¹` (elliptic, golden): lattice Gram at every width `= E(w)/2 · spanGram` [L];
+  exponential rate of every curve = zero width `δ = log max|β|/log q`: `|W| ≤ (2ℓ + L)N e^{δℓ}‖f‖²`
+  on tests of length `ℓ`, attained up to `e^{−εℓ}` in both signs (Turán) [L].
 - Inheritance on short windows: independent untwisted horizon families of length `≤ 3/5` are
   eventually positive definite (CWS window positivity + pencil) [L]; up to `log 2 + 1/50` on the
   cosh hyperplane (CWS coercivity), so the window index is `≤ 1` there [L]; every length `A` below

@@ -59,6 +59,7 @@ import GaloisForLFunctions.ArithmeticHodgeTheoryOfDegenerations.TheEnergyOfAFreq
 import GaloisForLFunctions.ArithmeticHodgeTheoryOfDegenerations.EveryFrequencyActsAsAFrobeniusAngle
 import GaloisForLFunctions.ArithmeticHodgeTheoryOfDegenerations.TheHorizonLayerIsGradedByFrequency
 import GaloisForLFunctions.ArithmeticHodgeTheoryOfDegenerations.EveryFrequencySectorInheritsThePolarization
+import GaloisForLFunctions.ArithmeticHodgeTheoryOfDegenerations.TheMonodromyRateOfACurveIsItsZeroWidth
 
 /-!
 # Arithmetic Hodge Theory of Degenerations
@@ -91,5 +92,5 @@ resolution axis (overlap `c`, horizon `N`). See `ArithmeticHodgeTheoryOfDegenera
 * **Calibration over `𝔽_q`.** Lattice tests are diagonal in the Frobenius angles; the rescaled limit
   is their Hurwitz form; the family is stationary along the horizon; a single orbit `β, β⁻¹` dilates
   by a scalar; a pure curve degenerates completely while the golden fake grows exponentially on a
-  fixed hyperbolic plane.
+  fixed hyperbolic plane; the exponential rate of every curve is its zero width `max|Re s − ½|`.
 -/

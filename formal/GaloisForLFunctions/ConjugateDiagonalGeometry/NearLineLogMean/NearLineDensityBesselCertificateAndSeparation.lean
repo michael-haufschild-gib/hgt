@@ -87,7 +87,7 @@ def LogFreeNearLineZeroDensity : Prop :=
       ∑ z ∈ (shellZeros V (2 * V)).filter (fun z => A / Real.log V ≤ |z.re - 1 / 2|),
         ((analyticOrderAt _root_.RHTower.xi z).toNat : ℝ) ≤ ε A * V
 
-private lemma sq_sum_le_card_mul_sum_sq {α : Type*} (s : Finset α) (f : α → ℝ) :
+lemma sq_sum_le_card_mul_sum_sq {α : Type*} (s : Finset α) (f : α → ℝ) :
     (∑ x ∈ s, f x) ^ 2 ≤ (s.card : ℝ) * ∑ x ∈ s, (f x) ^ 2 := by
   induction s using Finset.induction_on with
   | empty => simp
@@ -112,14 +112,14 @@ private lemma sq_sum_le_card_mul_sum_sq {α : Type*} (s : Finset α) (f : α →
         nonneg_of_mul_nonneg_right hdiff hn
       linarith
 
-private lemma finset_sum_union_le {α : Type*} [DecidableEq α] (s₁ s₂ : Finset α)
+lemma finset_sum_union_le {α : Type*} [DecidableEq α] (s₁ s₂ : Finset α)
     {f : α → ℝ} (hf : ∀ a, 0 ≤ f a) :
     ∑ a ∈ s₁ ∪ s₂, f a ≤ ∑ a ∈ s₁, f a + ∑ a ∈ s₂, f a := by
   have h := Finset.sum_union_inter (s₁ := s₁) (s₂ := s₂) (f := f)
   have hnn : 0 ≤ ∑ a ∈ s₁ ∩ s₂, f a := Finset.sum_nonneg fun a _ => hf a
   linarith
 
-private lemma finset_sum_biUnion_le {ι α : Type*} [DecidableEq α] (s : Finset ι)
+lemma finset_sum_biUnion_le {ι α : Type*} [DecidableEq α] (s : Finset ι)
     (t : ι → Finset α) {f : α → ℝ} (hf : ∀ a, 0 ≤ f a) :
     ∑ a ∈ s.biUnion t, f a ≤ ∑ i ∈ s, ∑ a ∈ t i, f a := by
   induction s using Finset.induction_on with
@@ -128,7 +128,7 @@ private lemma finset_sum_biUnion_le {ι α : Type*} [DecidableEq α] (s : Finset
     rw [Finset.biUnion_insert, Finset.sum_insert hi]
     exact (finset_sum_union_le (t i) (s.biUnion t) hf).trans (by linarith [ih])
 
-private lemma tendsto_one_div_const_mul_nhdsGT_zero {k : ℝ} (hk : 0 < k) :
+lemma tendsto_one_div_const_mul_nhdsGT_zero {k : ℝ} (hk : 0 < k) :
     Tendsto (fun c : ℝ => 1 / (k * c)) (𝓝[>] 0) atTop := by
   rw [Filter.tendsto_atTop]
   intro B
@@ -149,7 +149,7 @@ private lemma tendsto_one_div_const_mul_nhdsGT_zero {k : ℝ} (hk : 0 < k) :
     exact (le_div_iff₀ (mul_pos hk hc_pos)).mpr
       ((mul_comm B (k * c)).trans_le ((le_div_iff₀ hB).mp hmul.le))
 
-private lemma tendsto_one_div_atTop_nhdsGT_zero :
+lemma tendsto_one_div_atTop_nhdsGT_zero :
     Tendsto (fun A : ℝ => 1 / A) atTop (𝓝[>] (0 : ℝ)) := by
   rw [tendsto_nhdsWithin_iff]
   refine ⟨Metric.tendsto_atTop.mpr fun ε hε => ?_, ?_⟩
@@ -160,7 +160,7 @@ private lemma tendsto_one_div_atTop_nhdsGT_zero :
   · filter_upwards [eventually_gt_atTop (0 : ℝ)] with A hA
     exact one_div_pos.mpr hA
 
-private lemma tendsto_one_div_max_one_zero :
+lemma tendsto_one_div_max_one_zero :
     Tendsto (fun A : ℝ => 1 / max A 1) atTop (𝓝 (0 : ℝ)) := by
   refine Metric.tendsto_atTop.mpr fun ε hε => ?_
   refine ⟨max 1 (1 / ε + 1), fun A hA => ?_⟩
@@ -170,16 +170,16 @@ private lemma tendsto_one_div_max_one_zero :
     one_div_lt (by positivity) hε]
   linarith
 
-private lemma log_two_lt_one : Real.log 2 < 1 := by
+lemma log_two_lt_one : Real.log 2 < 1 := by
   linarith [Real.log_two_lt_d9]
 
-private lemma log_four_le_two' : Real.log 4 ≤ 2 := by
+lemma log_four_le_two' : Real.log 4 ≤ 2 := by
   have h4 : (4 : ℝ) = (2 : ℝ) ^ (2 : ℕ) := by norm_num
   rw [h4, Real.log_pow]
   push_cast
   linarith [Real.log_two_lt_d9]
 
-private lemma sq_log_le_four_mul' {x : ℝ} (hx : 1 ≤ x) :
+lemma sq_log_le_four_mul' {x : ℝ} (hx : 1 ≤ x) :
     (Real.log x) ^ 2 ≤ 4 * x := by
   have hx_pos : 0 < x := zero_lt_one.trans_le hx
   set u : ℝ := Real.log x / 2
@@ -194,7 +194,7 @@ private lemma sq_log_le_four_mul' {x : ℝ} (hx : 1 ≤ x) :
   have hu_sq : (Real.log x) ^ 2 = 4 * u ^ 2 := by dsimp only [u]; ring
   linarith
 
-private lemma log_le_two_sqrt_of_pos' {x : ℝ} (hx : 0 < x) :
+lemma log_le_two_sqrt_of_pos' {x : ℝ} (hx : 0 < x) :
     Real.log x ≤ 2 * Real.sqrt x := by
   rcases lt_or_ge x 1 with hlt | hge
   · exact (Real.log_nonpos hx.le hlt.le).trans (by positivity)
@@ -1264,7 +1264,7 @@ private lemma mediumShell_orderSum_le {V₁ V₂ : ℝ} (hV₁ : 0 ≤ V₁) (h1
     (f := fun z => ((analyticOrderAt _root_.RHTower.xi z).toNat : ℝ)) (fun _ => Nat.cast_nonneg _)
   linarith [hu1, hu2, hs1, hs2, hs3, hl1, hl2]
 
-private lemma mediumCap_orderSum_le_logV {V V₁ V₂ : ℝ} (hV32 : 32 ≤ V) (hlog4 : 4 ≤ Real.log V)
+lemma mediumCap_orderSum_le_logV {V V₁ V₂ : ℝ} (hV32 : 32 ≤ V) (hlog4 : 4 ≤ Real.log V)
     (hV₁ : 0 ≤ V₁) (h12 : V₁ ≤ V₂) (hlen : V₂ - V₁ ≤ 6) (hV₂_hi : V₂ ≤ 2 * V + 4) :
     ∑ z ∈ shellZeros V₁ V₂, ((analyticOrderAt _root_.RHTower.xi z).toNat : ℝ) ≤
       48 * (|_root_.RHTower.xiLineTwoLogDerivConstant| + 2) * Real.log V := by
@@ -1288,7 +1288,7 @@ private lemma mediumCap_orderSum_le_logV {V V₁ V₂ : ℝ} (hV32 : 32 ≤ V) (
   linarith [hm, hlog_V₂, hc_log]
 
 /-- Extended dyadic-shell deep zero-multiplicity bound from Selberg's arbitrary-rate estimate. -/
-private lemma deepExtendedShell_orderSum_le {r : ℝ} (hr0 : 0 < r) (hr1 : r < 1) :
+lemma deepExtendedShell_orderSum_le {r : ℝ} (hr0 : 0 < r) (hr1 : r < 1) :
     ∃ C_d κ_r : ℝ, 0 < C_d ∧ 0 < κ_r ∧ ∀ᶠ V : ℝ in atTop,
       ∀ A : ℝ, 2 ≤ A → A ≤ κ_r * Real.log V →
         ∑ z ∈ (shellZeros (V - 4) (2 * V + 4)).filter (fun z => A / Real.log V ≤ |z.re - 1 / 2|),
@@ -1996,26 +1996,26 @@ def UnitWindowStripZeroModel.CriticalClustering (M : UnitWindowStripZeroModel) :
         ∑ z ∈ (M.Z m).filter (fun z => κ / Real.log V ≤ |z.re - 1 / 2|), (M.mult z : ℝ)) /
       (V * Real.log V)) atTop (𝓝 0)
 
-private def critPt (m n k : ℕ) : ℂ :=
+def critPt (m n k : ℕ) : ℂ :=
   ⟨1 / 2, (m : ℝ) + 1 / 2 + ((k + 1 : ℕ) : ℝ) / (2 * ((n + 2 : ℕ) : ℝ))⟩
 
-private def rightPt (m q : ℕ) (d : ℝ) (k : ℕ) : ℂ :=
+def rightPt (m q : ℕ) (d : ℝ) (k : ℕ) : ℂ :=
   ⟨1 / 2 + d, (m : ℝ) + ((k + 1 : ℕ) : ℝ) / (2 * ((q + 2 : ℕ) : ℝ))⟩
 
-private def leftPt (m q : ℕ) (d : ℝ) (k : ℕ) : ℂ :=
+def leftPt (m q : ℕ) (d : ℝ) (k : ℕ) : ℂ :=
   ⟨1 / 2 - d, (m : ℝ) + ((k + 1 : ℕ) : ℝ) / (2 * ((q + 2 : ℕ) : ℝ))⟩
 
 /-- Parametrized reflection-symmetric unit-window zero packet with `n` simple critical zeros and
 `q` simple conjugate pairs at `1/2 ± d`. -/
-private def packetWin (m n q : ℕ) (d : ℝ) : Finset ℂ :=
+def packetWin (m n q : ℕ) (d : ℝ) : Finset ℂ :=
   (Finset.range n).image (critPt m n) ∪
     ((Finset.range q).image (rightPt m q d) ∪ (Finset.range q).image (leftPt m q d))
 
-private lemma critPt_re (m n k : ℕ) : (critPt m n k).re = 1 / 2 := rfl
-private lemma rightPt_re (m q : ℕ) (d : ℝ) (k : ℕ) : (rightPt m q d k).re = 1 / 2 + d := rfl
-private lemma leftPt_re (m q : ℕ) (d : ℝ) (k : ℕ) : (leftPt m q d k).re = 1 / 2 - d := rfl
+lemma critPt_re (m n k : ℕ) : (critPt m n k).re = 1 / 2 := rfl
+lemma rightPt_re (m q : ℕ) (d : ℝ) (k : ℕ) : (rightPt m q d k).re = 1 / 2 + d := rfl
+lemma leftPt_re (m q : ℕ) (d : ℝ) (k : ℕ) : (leftPt m q d k).re = 1 / 2 - d := rfl
 
-private lemma critPt_inj (m n : ℕ) : Function.Injective (critPt m n) := by
+lemma critPt_inj (m n : ℕ) : Function.Injective (critPt m n) := by
   intro k₁ k₂ h
   have him := congrArg Complex.im h
   dsimp only [critPt] at him
@@ -2025,7 +2025,7 @@ private lemma critPt_inj (m n : ℕ) : Function.Injective (critPt m n) := by
     (div_left_inj' (by positivity)).mp h1
   exact Nat.succ.inj (Nat.cast_inj.mp h2)
 
-private lemma rightPt_inj (m q : ℕ) (d : ℝ) : Function.Injective (rightPt m q d) := by
+lemma rightPt_inj (m q : ℕ) (d : ℝ) : Function.Injective (rightPt m q d) := by
   intro k₁ k₂ h
   have him := congrArg Complex.im h
   dsimp only [rightPt] at him
@@ -2035,7 +2035,7 @@ private lemma rightPt_inj (m q : ℕ) (d : ℝ) : Function.Injective (rightPt m 
     (div_left_inj' (by positivity)).mp h1
   exact Nat.succ.inj (Nat.cast_inj.mp h2)
 
-private lemma leftPt_inj (m q : ℕ) (d : ℝ) : Function.Injective (leftPt m q d) := by
+lemma leftPt_inj (m q : ℕ) (d : ℝ) : Function.Injective (leftPt m q d) := by
   intro k₁ k₂ h
   have him := congrArg Complex.im h
   dsimp only [leftPt] at him
@@ -2045,7 +2045,7 @@ private lemma leftPt_inj (m q : ℕ) (d : ℝ) : Function.Injective (leftPt m q 
     (div_left_inj' (by positivity)).mp h1
   exact Nat.succ.inj (Nat.cast_inj.mp h2)
 
-private lemma packetWin_in_unit_strip {m n q : ℕ} {d : ℝ}
+lemma packetWin_in_unit_strip {m n q : ℕ} {d : ℝ}
     (hd : q = 0 ∨ (0 < d ∧ d < 1 / 2)) :
     ∀ z ∈ packetWin m n q d, 0 < z.re ∧ z.re < 1 ∧ (m : ℝ) < z.im ∧ z.im < (m : ℝ) + 1 := by
   intro z hz
@@ -2082,7 +2082,7 @@ private lemma packetWin_in_unit_strip {m n q : ℕ} {d : ℝ}
         dsimp only [leftPt]
         exact ⟨by linarith, by linarith, by linarith, by linarith⟩
 
-private lemma packetWin_refl_mem (m n q : ℕ) (d : ℝ) :
+lemma packetWin_refl_mem (m n q : ℕ) (d : ℝ) :
     ∀ z ∈ packetWin m n q d, 1 - star z ∈ packetWin m n q d := by
   intro z hz
   unfold packetWin at hz ⊢
@@ -2132,7 +2132,7 @@ private lemma packetWin_disjoint {m n q : ℕ} {d : ℝ} (hd : q = 0 ∨ 0 < d) 
       have hre := congrArg Complex.re heq
       rw [leftPt_re, rightPt_re] at hre; linarith
 
-private lemma packetWin_card {m n q : ℕ} {d : ℝ} (hd : q = 0 ∨ 0 < d) :
+lemma packetWin_card {m n q : ℕ} {d : ℝ} (hd : q = 0 ∨ 0 < d) :
     (packetWin m n q d).card = n + 2 * q := by
   obtain ⟨hd1, hd2⟩ := packetWin_disjoint (m := m) (n := n) hd
   unfold packetWin
@@ -2143,7 +2143,7 @@ private lemma packetWin_card {m n q : ℕ} {d : ℝ} (hd : q = 0 ∨ 0 < d) :
     Finset.card_range, Finset.card_range]
   omega
 
-private lemma packetWin_filter_crit_card {m n q : ℕ} {d : ℝ} (hd : q = 0 ∨ 0 < d) :
+lemma packetWin_filter_crit_card {m n q : ℕ} {d : ℝ} (hd : q = 0 ∨ 0 < d) :
     ((packetWin m n q d).filter (fun z => z.re = 1 / 2 ∧ (1 : ℕ) = 1)).card = n := by
   have heq : (packetWin m n q d).filter (fun z => z.re = 1 / 2 ∧ (1 : ℕ) = 1) =
       (Finset.range n).image (critPt m n) := by
@@ -2171,7 +2171,7 @@ private lemma packetWin_zero (m n : ℕ) (d : ℝ) :
     packetWin m n 0 d = (Finset.range n).image (critPt m n) := by
   simp [packetWin]
 
-private lemma packetWin_right_moment_sum {m n q : ℕ} {d : ℝ} (hd : q = 0 ∨ 0 < d) :
+lemma packetWin_right_moment_sum {m n q : ℕ} {d : ℝ} (hd : q = 0 ∨ 0 < d) :
     ∑ z ∈ (packetWin m n q d).filter (fun z => 1 / 2 < z.re),
       (1 : ℝ) * (z.re - 1 / 2) = (q : ℝ) * d := by
   rcases hd with rfl | hd0
@@ -2206,7 +2206,7 @@ private lemma packetWin_right_moment_sum {m n q : ℕ} {d : ℝ} (hd : q = 0 ∨
       intro k _; rw [rightPt_re]; ring
     rw [Finset.sum_congr rfl hterm, Finset.sum_const, Finset.card_range, nsmul_eq_mul]
 
-private lemma packetWin_filter_right_card {m n q : ℕ} {d b : ℝ} (hb : 0 < b)
+lemma packetWin_filter_right_card {m n q : ℕ} {d b : ℝ} (hb : 0 < b)
     (hd : q = 0 ∨ 0 < d) :
     ((packetWin m n q d).filter (fun z => 1 / 2 + b ≤ z.re)).card =
       if b ≤ d then q else 0 := by
@@ -2254,7 +2254,7 @@ private lemma packetWin_filter_right_card {m n q : ℕ} {d b : ℝ} (hb : 0 < b)
             rw [leftPt_re]; linarith
       rw [heq]; simp
 
-private lemma packetWin_filter_abs_card {m n q : ℕ} {d b : ℝ} (hb : 0 < b)
+lemma packetWin_filter_abs_card {m n q : ℕ} {d b : ℝ} (hb : 0 < b)
     (hd : q = 0 ∨ 0 < d) :
     ((packetWin m n q d).filter (fun z => b ≤ |z.re - 1 / 2|)).card =
       if b ≤ d then 2 * q else 0 := by
@@ -2306,7 +2306,7 @@ private lemma packetWin_filter_abs_card {m n q : ℕ} {d b : ℝ} (hb : 0 < b)
             rw [leftPt_re, show 1 / 2 - d - 1 / 2 = -d by ring, abs_neg, abs_of_pos hd0]; linarith
       rw [heq]; simp
 
-private lemma packetWin_exists_abs_iff {m n q : ℕ} {d b : ℝ} (hb : 0 < b)
+lemma packetWin_exists_abs_iff {m n q : ℕ} {d b : ℝ} (hb : 0 < b)
     (hd : q = 0 ∨ 0 < d) :
     (∃ z ∈ packetWin m n q d, b ≤ |z.re - 1 / 2|) ↔ (0 < q ∧ b ≤ d) := by
   have hcard := packetWin_filter_abs_card (m := m) (n := n) hb hd
@@ -2319,10 +2319,10 @@ private lemma packetWin_exists_abs_iff {m n q : ℕ} {d b : ℝ} (hb : 0 < b)
   · exact ⟨fun h => ⟨by omega, hbd⟩, fun ⟨hq, _⟩ => by omega⟩
   · exact ⟨fun h => by omega, fun ⟨_, h⟩ => absurd h hbd⟩
 
-private def basePairs (m : ℕ) : ℕ :=
+def basePairs (m : ℕ) : ℕ :=
   if m < 256 then 0 else Nat.floor (Real.log (m : ℝ) / (4 * Real.pi)) + 1
 
-private lemma basePairs_rvm {m : ℕ} (hm : 16 ≤ m) :
+lemma basePairs_rvm {m : ℕ} (hm : 16 ≤ m) :
     |((2 * basePairs m : ℕ) : ℝ) - Real.log (m : ℝ) / (2 * Real.pi)| ≤ 2 := by
   have hm_pos : (0 : ℝ) < (m : ℝ) := by exact_mod_cast (by omega : 0 < m)
   have hm1 : (1 : ℝ) ≤ (m : ℝ) := by exact_mod_cast (by omega : 1 ≤ m)
@@ -2361,14 +2361,14 @@ private lemma one_lt_log_log_of_twoFiftySix {m : ℕ} (hm : 256 ≤ m) :
     Real.log_pos (by exact_mod_cast (by omega : 1 < m))
   exact ⟨h1, (Real.log_le_sub_one_of_pos hlog_pos).trans (by linarith)⟩
 
-private def qSparse (m : ℕ) : ℕ := if m < 256 then 0 else 1
+def qSparse (m : ℕ) : ℕ := if m < 256 then 0 else 1
 
-private def nSparse (m : ℕ) : ℕ := if m < 256 then 0 else 2 * basePairs m - 2
+def nSparse (m : ℕ) : ℕ := if m < 256 then 0 else 2 * basePairs m - 2
 
-private def dSparse (m : ℕ) : ℝ :=
+def dSparse (m : ℕ) : ℝ :=
   if m < 256 then 0 else (1 / 8) * Real.log (Real.log (m : ℝ)) / Real.log (m : ℝ)
 
-private lemma qSparse_dSparse_spec (m : ℕ) :
+lemma qSparse_dSparse_spec (m : ℕ) :
     qSparse m = 0 ∨ (0 < dSparse m ∧ dSparse m < 1 / 2) := by
   by_cases hm : m < 256
   · exact Or.inl (by simp [qSparse, hm])
@@ -2384,16 +2384,16 @@ private lemma qSparse_dSparse_spec (m : ℕ) :
         (1 / 8) * (Real.log (Real.log (m : ℝ)) / Real.log (m : ℝ)) := by ring
     linarith
 
-private lemma qSparse_dSparse_or (m : ℕ) : qSparse m = 0 ∨ 0 < dSparse m :=
+lemma qSparse_dSparse_or (m : ℕ) : qSparse m = 0 ∨ 0 < dSparse m :=
   (qSparse_dSparse_spec m).imp id And.left
 
-private lemma nSparse_add_two_qSparse (m : ℕ) : nSparse m + 2 * qSparse m = 2 * basePairs m := by
+lemma nSparse_add_two_qSparse (m : ℕ) : nSparse m + 2 * qSparse m = 2 * basePairs m := by
   by_cases hm : m < 256
   · simp [nSparse, qSparse, basePairs, hm]
   · have hbp : 1 ≤ basePairs m := by simp only [basePairs, if_neg hm]; omega
     simp only [nSparse, qSparse, if_neg hm]; omega
 
-private def sparseModel : UnitWindowStripZeroModel where
+def sparseModel : UnitWindowStripZeroModel where
   Z m := packetWin m (nSparse m) (qSparse m) (dSparse m)
   mult _ := 1
   in_unit_strip m := packetWin_in_unit_strip (qSparse_dSparse_spec m)
@@ -2840,11 +2840,11 @@ theorem exists_sparseUniformModel_logMean_not_cert :
     have hmul_ε : ε A * V₁ < (1 / 4) * V₁ := mul_lt_mul_of_pos_right hε_lt (by linarith)
     linarith [hzd, hsum_lo, hmul_ε]
 
-private def evenHalves : ℕ → ℕ
+def evenHalves : ℕ → ℕ
   | 0 => 0
   | n + 1 => if (n + 1) % 2 = 0 then evenHalves ((n + 1) / 2) + 1 else 0
 
-private lemma two_pow_dvd_of_le_evenHalves {v : ℕ} :
+lemma two_pow_dvd_of_le_evenHalves {v : ℕ} :
     ∀ {m : ℕ}, m ≠ 0 → v ≤ evenHalves m → 2 ^ v ∣ m := by
   induction v with
   | zero => intro _ _ _; simp
@@ -2862,7 +2862,7 @@ private lemma two_pow_dvd_of_le_evenHalves {v : ℕ} :
         exact mul_dvd_mul_left 2 hdvd
       · omega
 
-private lemma evenHalves_two_pow_mul_odd (v q : ℕ) :
+lemma evenHalves_two_pow_mul_odd (v q : ℕ) :
     evenHalves (2 ^ v * (2 * q + 1)) = v := by
   induction v with
   | zero =>
@@ -2879,7 +2879,7 @@ private lemma evenHalves_two_pow_mul_odd (v q : ℕ) :
     have hmod : ((2 * M - 1) + 1) % 2 = 0 := by omega
     rw [if_pos hmod, show ((2 * M - 1) + 1) / 2 = M by omega, ih]
 
-private lemma card_Icc_filter_dvd_le (a b D : ℕ) :
+lemma card_Icc_filter_dvd_le (a b D : ℕ) :
     ((Finset.Icc a b).filter (fun m => D ∣ m)).card ≤ b / D + 1 := by
   have hmaps : Set.MapsTo (fun m => m / D)
       ((Finset.Icc a b).filter (fun m => D ∣ m) : Set ℕ) (Finset.range (b / D + 1) : Set ℕ) := by
@@ -2899,7 +2899,7 @@ private lemma card_Icc_filter_dvd_le (a b D : ℕ) :
       _ = m₂ := Nat.mul_div_cancel' hd2
   exact (Finset.card_le_card_of_injOn (fun m => m / D) hmaps hinj).trans_eq (Finset.card_range _)
 
-private lemma exists_evenHalves_subset_Icc (v : ℕ) {V : ℝ} (hV : (2 : ℝ) ^ (v + 3) ≤ V) :
+lemma exists_evenHalves_subset_Icc (v : ℕ) {V : ℝ} (hV : (2 : ℝ) ^ (v + 3) ≤ V) :
     ∃ S ⊆ Finset.Icc (Nat.ceil V) (Nat.floor (2 * V)),
       (∀ m ∈ S, evenHalves m = v) ∧ V / (2 : ℝ) ^ (v + 2) ≤ (S.card : ℝ) := by
   set U : ℝ := V / (2 : ℝ) ^ (v + 1)
@@ -2959,18 +2959,18 @@ private lemma exists_evenHalves_subset_Icc (v : ℕ) {V : ℝ} (hV : (2 : ℝ) ^
     rw [hU2]
     linarith
 
-private def activeClust (m : ℕ) : Prop :=
+def activeClust (m : ℕ) : Prop :=
   256 ≤ m ∧ 1 ≤ evenHalves m ∧ (evenHalves m : ℝ) ≤ (1 / 8) * Real.log (m : ℝ)
 
-private def qClust (m : ℕ) : ℕ :=
+def qClust (m : ℕ) : ℕ :=
   if activeClust m then Nat.floor (Real.log (m : ℝ) / 52) else 0
 
-private def dClust (m : ℕ) : ℝ :=
+def dClust (m : ℕ) : ℝ :=
   if activeClust m then (evenHalves m : ℝ) / (2 * Real.log (m : ℝ)) else 0
 
-private def nClust (m : ℕ) : ℕ := 2 * basePairs m - 2 * qClust m
+def nClust (m : ℕ) : ℕ := 2 * basePairs m - 2 * qClust m
 
-private lemma qClust_dClust_spec (m : ℕ) :
+lemma qClust_dClust_spec (m : ℕ) :
     qClust m = 0 ∨ (0 < dClust m ∧ dClust m < 1 / 2) := by
   by_cases hact : activeClust m
   · refine Or.inr ?_
@@ -2984,10 +2984,10 @@ private lemma qClust_dClust_spec (m : ℕ) :
     linarith
   · exact Or.inl (by simp [qClust, hact])
 
-private lemma qClust_dClust_or (m : ℕ) : qClust m = 0 ∨ 0 < dClust m :=
+lemma qClust_dClust_or (m : ℕ) : qClust m = 0 ∨ 0 < dClust m :=
   (qClust_dClust_spec m).imp id And.left
 
-private lemma qClust_le_basePairs (m : ℕ) : qClust m ≤ basePairs m := by
+lemma qClust_le_basePairs (m : ℕ) : qClust m ≤ basePairs m := by
   by_cases hact : activeClust m
   · have ⟨hm256, _, _⟩ := hact
     have hm_not : ¬ m < 256 := not_lt.mpr hm256
@@ -3000,11 +3000,11 @@ private lemma qClust_le_basePairs (m : ℕ) : qClust m ≤ basePairs m := by
     exact (Nat.floor_mono hle_div).trans (Nat.le_succ _)
   · simp [qClust, hact]
 
-private lemma nClust_add_two_qClust (m : ℕ) : nClust m + 2 * qClust m = 2 * basePairs m := by
+lemma nClust_add_two_qClust (m : ℕ) : nClust m + 2 * qClust m = 2 * basePairs m := by
   have := qClust_le_basePairs m
   dsimp only [nClust]; omega
 
-private lemma dClust_le_one_sixteenth (m : ℕ) : dClust m ≤ 1 / 16 := by
+lemma dClust_le_one_sixteenth (m : ℕ) : dClust m ≤ 1 / 16 := by
   by_cases hact : activeClust m
   · have ⟨hm256, _, hv_ub⟩ := hact
     have hlog_pos : 0 < Real.log (m : ℝ) :=
@@ -3014,7 +3014,7 @@ private lemma dClust_le_one_sixteenth (m : ℕ) : dClust m ≤ 1 / 16 := by
     linarith
   · simp only [dClust, if_neg hact]; norm_num
 
-private def clusteredModel : UnitWindowStripZeroModel where
+def clusteredModel : UnitWindowStripZeroModel where
   Z m := packetWin m (nClust m) (qClust m) (dClust m)
   mult _ := 1
   in_unit_strip m := packetWin_in_unit_strip (qClust_dClust_spec m)

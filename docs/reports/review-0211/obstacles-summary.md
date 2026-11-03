@@ -244,7 +244,7 @@ reduces RH to one stage-local statement with every other segment proved or just 
 |---|---|---|
 | RH ⇔ window sign; locality in `n ≤ e^A` | CWS | [L] |
 | Arithmetic = truncated Dirichlet ring; stages = small extensions; primes generate | WTZ | [L] |
-| Base: all real C² tests coercive through total length `181/250`, margin `1/5000` | SP | [L]; A3 closed |
+| Base: all real C² tests coercive through total length `181/250`, margin `1/5000`; through `2a*`, `a*=enlargedWeilFloorAperture>181/500`, margin `1/8000` | SP, AIP | [L]; A3 closed |
 | Short windows by exit charge (`≤ 1/7`) | WTZ | [L] |
 | Entrance: every new fold paid by the collar exit charge; composite stages free | WTZ | [L] |
 | Upper control: sharp floor `(4A+1)e^{A/2}`; negativity confined below an archimedean frequency horizon | WTZ, AHD | [L] |

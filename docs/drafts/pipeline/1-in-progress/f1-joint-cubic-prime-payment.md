@@ -24,7 +24,8 @@ Both charges must use disjoint shares of the same jump energy.
 - WTZ: frozen odd coercivity on `M=0`, margin `1/125`.
 - AIP: exact reflected even/odd strip decomposition; microfold estimates pay strip fluctuations.
 - AIP: joint prime-only Harnack reaches half-aperture `23/40`, with the pole unpaid.
-- Complete all-test positivity is proved only through half-aperture `181/500`.
+- Complete all-test positivity reaches `a*=enlargedWeilFloorAperture>181/500`, with floor
+  `1/8000`; `a*<1/2`. The unit odd window remains beyond that all-test result.
 
 ## Gates
 
@@ -32,6 +33,8 @@ Both charges must use disjoint shares of the same jump energy.
 - [ ] Check all energy allocations; no jump contribution counted twice.
 - [ ] Formalize the resulting complete-form inequality without an assumed positivity input.
 
-[Two-moment complement](../2-fully-proven/f1-complete-odd-two-moment-complement.md) has a paper
-proof of complete positivity on `∫xF=∫x³F=0`, using the regional logarithmic spectrum.
-Its Lean formalization is pending; the two low moments and their cross terms remain open.
+[Two-moment complement](../3-formalized/f1-complete-odd-two-moment-complement.md) proves
+`Q(F)≥∫F²/100` on `∫xF=∫x³F=0`, using the regional logarithmic spectrum. Individual Lean
+checks and standard-only axiom audits pass. The two low moments and their cross terms remain
+open. [Regional reflection payment](f1-regional-reflection-payment.md) retains the exterior
+potential and signed reflection as a candidate joint bound; its sign is unproved.

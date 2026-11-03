@@ -1,8 +1,8 @@
 # Complete odd positivity away from two polynomial moments
 
 - **ID:** F1-MC
-- **Stage:** 2-fully-proven; Lean formalization in progress
-- **Type:** THEOREM (paper), not yet kernel-verified
+- **Stage:** 3-formalized
+- **Type:** THEOREM; individually Lean-audited
 - **Source:** [Joint first-fold payment](../1-in-progress/f1-joint-cubic-prime-payment.md)
 - **Statement:** If a real odd C² test `F` is supported in `[-1/2,1/2]` and
   `∫xF(x)dx=∫x³F(x)dx=0`, then its complete Weil form satisfies `Q(F)≥∫F²/100`.
@@ -83,4 +83,13 @@ The last inequality follows from `γ<577216/1000000`,
   `abs_autoCorrelation_le_half_of_le`; no extra smoothness premise is needed.
 - WTZ `TheCubicMomentPaysTheFrozenOddComplement`: Gamma and hyperbolic remainder mechanisms.
 
-**Open formal obligations:** support scaling and complete first-stage payment.
+## Lean conclusion
+
+`WindowTowerOfSpecZ.TheFirstFoldIsPositiveAwayFromTwoOddMoments` proves
+`stageForm_two_ge_of_odd_two_moments_zero` and `weilQuad_ge_of_odd_two_moments_zero`,
+including support scaling and the exact identification of the complete form with stage two.
+Both declarations have transitive axioms `[propext, Classical.choice, Quot.sound]` only.
+All five changed proof modules passed individual `lake --old env lean` source checks;
+finished modules are imported by their owning umbrellas. No positivity premise is assumed.
+
+**Open:** the two low moments and their cross terms; this is not complete first-stage positivity.
