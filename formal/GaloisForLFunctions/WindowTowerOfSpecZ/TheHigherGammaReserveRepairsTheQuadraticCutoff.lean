@@ -1,4 +1,5 @@
 import GaloisForLFunctions.WindowTowerOfSpecZ.TheUniformGammaReserveHasANegativeDirection
+import GaloisForLFunctions.WindowTowerOfSpecZ.TheUniformGammaReserveCannotPayTheFirstFold
 import GaloisForLFunctions.WindowTowerOfSpecZ.TheGammaRemainderRetainsHigherLags
 import GaloisForLFunctions.WindowTowerOfSpecZ.ThePrimitiveVarianceRetainsTheOddMoment
 import GaloisForLFunctions.ArithmeticIncidencePositivity.CurvedFoldOddWindowPositivity
@@ -12,9 +13,10 @@ supply a positive lower form on the same profile whose mass-only reserve fails.
 -/
 
 noncomputable section
-open Real MeasureTheory Set Filter Topology
+open Real MeasureTheory Set Filter Topology Zeta23
 open _root_.RHTower _root_.RHTower.ArchimedeanAnomaly _root_.RHTower.WeilMarkovPole
 namespace GaloisForLFunctions.WindowTowerOfSpecZ
+open SpacingScaleHarmonicAnalysis
 
 private def quadraticCutoffCorrUpper : ℝ :=
   let l : ℝ := 693147180/1000000000
@@ -59,47 +61,42 @@ private theorem quadraticCutoff_pole_cost_le :
   have h := unit_sinhPairing_square_le_position continuous_quadraticCutoffWindow hs
   simpa only [quadraticCutoffWindow_position_moment, quadraticCutoffWindow_mass] using h
 
-theorem quadraticCutoffWindow_jump_third_moment :
+/-- Every polynomial lag moment of the quadratic cutoff has an exact rational expression. -/
+theorem quadraticCutoffWindow_jump_moment (k : ℕ) :
     (∫ t in Ioc (0 : ℝ) 1,
-      t^3*((∫ x, quadraticCutoffWindow x^2)-autocorr quadraticCutoffWindow t)) =
-      256/(315*6)-128/(21*8)+128/(15*9)-512/(105*11)+128/(63*13)-256/(693*15) := by
+      t^k*((∫ x, quadraticCutoffWindow x^2)-autocorr quadraticCutoffWindow t)) =
+      256/315/((k : ℝ)+3)-128/21/((k : ℝ)+5)+128/15/((k : ℝ)+6)-
+        512/105/((k : ℝ)+8)+128/63/((k : ℝ)+10)-256/693/((k : ℝ)+12) := by
   rw [quadraticCutoffWindow_mass]
-  have he : (∫ t in Ioc (0 : ℝ) 1, t^3*(128/3465-autocorr quadraticCutoffWindow t)) =
+  have he : (∫ t in Ioc (0 : ℝ) 1, t^k*(128/3465-autocorr quadraticCutoffWindow t)) =
       ∫ t in (0 : ℝ)..1,
-        (256/315*t^5-128/21*t^7+128/15*t^8-512/105*t^10+128/63*t^12-256/693*t^14) := by
+        (256/315*t^(k+2)-128/21*t^(k+4)+128/15*t^(k+5)-512/105*t^(k+7)+
+          128/63*t^(k+9)-256/693*t^(k+11)) := by
     rw [intervalIntegral.integral_of_le (by norm_num : (0 : ℝ) ≤ 1)]
     apply setIntegral_congr_fun measurableSet_Ioc
     intro t ht
     dsimp only
     rw [quadraticCutoffWindow_autocorr ht.1.le ht.2]
     unfold quadraticCutoffCorrPoly
+    simp only [pow_add]
     ring
   rw [he]
   simp (disch := exact Continuous.intervalIntegrable (by fun_prop) _ _) only
     [intervalIntegral.integral_add, intervalIntegral.integral_sub,
       intervalIntegral.integral_const_mul, integral_pow]
-  norm_num
+  norm_num [pow_add, Nat.cast_add, Nat.cast_ofNat] <;> ring
+
+theorem quadraticCutoffWindow_jump_third_moment :
+    (∫ t in Ioc (0 : ℝ) 1,
+      t^3*((∫ x, quadraticCutoffWindow x^2)-autocorr quadraticCutoffWindow t)) =
+      256/(315*6)-128/(21*8)+128/(15*9)-512/(105*11)+128/(63*13)-256/(693*15) := by
+  convert quadraticCutoffWindow_jump_moment 3 using 1 <;> norm_num
 
 theorem quadraticCutoffWindow_jump_fourth_moment :
     (∫ t in Ioc (0 : ℝ) 1,
       t^4*((∫ x, quadraticCutoffWindow x^2)-autocorr quadraticCutoffWindow t)) =
       256/(315*7)-128/(21*9)+128/(15*10)-512/(105*12)+128/(63*14)-256/(693*16) := by
-  rw [quadraticCutoffWindow_mass]
-  have he : (∫ t in Ioc (0 : ℝ) 1, t^4*(128/3465-autocorr quadraticCutoffWindow t)) =
-      ∫ t in (0 : ℝ)..1,
-        (256/315*t^6-128/21*t^8+128/15*t^9-512/105*t^11+128/63*t^13-256/693*t^15) := by
-    rw [intervalIntegral.integral_of_le (by norm_num : (0 : ℝ) ≤ 1)]
-    apply setIntegral_congr_fun measurableSet_Ioc
-    intro t ht
-    dsimp only
-    rw [quadraticCutoffWindow_autocorr ht.1.le ht.2]
-    unfold quadraticCutoffCorrPoly
-    ring
-  rw [he]
-  simp (disch := exact Continuous.intervalIntegrable (by fun_prop) _ _) only
-    [intervalIntegral.integral_add, intervalIntegral.integral_sub,
-      intervalIntegral.integral_const_mul, integral_pow]
-  norm_num
+  convert quadraticCutoffWindow_jump_moment 4 using 1 <;> norm_num
 
 private theorem quadraticCutoff_higher_reserve_certificate :
     0 < (128/315-32/21+128/75-512/735+128/567-256/7623 : ℝ) -
@@ -128,6 +125,112 @@ theorem retainedOddGamma_quadraticCutoff_add_higher_reserve_pos :
   linarith only [hg, quadraticCutoff_prime_gain_ge, quadraticCutoff_pole_cost_le,
     quadraticCutoff_higher_reserve_certificate]
 
+private theorem quadraticCutoff_smooth_compact (n : ℕ) :
+    HasCompactSupport (unitSmoothQuadraticCutoff n) :=
+  HasCompactSupport.intro isCompact_Icc (fun _ hx => unitSmoothQuadraticCutoff_outside n hx)
+
+private theorem quadraticCutoff_smooth_mass_tendsto :
+    Tendsto (fun n => ∫ x, unitSmoothQuadraticCutoff n x^2) atTop
+      (𝓝 (∫ x, quadraticCutoffWindow x^2)) :=
+  unitWindow_square_mass_tendsto unitSmoothQuadraticCutoff_contDiff
+    (fun n _ hx => unitSmoothQuadraticCutoff_outside n hx)
+    unitSmoothQuadraticCutoff_abs_le_one unitSmoothQuadraticCutoff_lipschitz
+    unitSmoothQuadraticCutoff_tendsto
+
+private theorem quadraticCutoff_smooth_retained_tendsto :
+    Tendsto (fun n => retainedOddGammaLowerForm (unitSmoothQuadraticCutoff n)) atTop
+      (𝓝 (retainedOddGammaLowerForm quadraticCutoffWindow)) :=
+  retainedOddGammaLowerForm_tendsto_of_unit_window unitSmoothQuadraticCutoff_contDiff
+    (fun n _ hx => unitSmoothQuadraticCutoff_outside n hx)
+    unitSmoothQuadraticCutoff_abs_le_one unitSmoothQuadraticCutoff_lipschitz
+    unitSmoothQuadraticCutoff_tendsto
+
+private theorem quadraticCutoff_smooth_integrand_bound (n : ℕ) (t x : ℝ) :
+    ‖unitSmoothQuadraticCutoff n x * unitSmoothQuadraticCutoff n (x+t)‖ ≤
+      (Icc (-(1/2 : ℝ)) (1/2)).indicator (fun _ => (1 : ℝ)) x := by
+  by_cases hx : x ∈ Icc (-(1/2 : ℝ)) (1/2)
+  · rw [indicator_of_mem hx, norm_mul, Real.norm_eq_abs, Real.norm_eq_abs]
+    simpa only [one_mul] using mul_le_mul (unitSmoothQuadraticCutoff_abs_le_one n x)
+      (unitSmoothQuadraticCutoff_abs_le_one n (x+t)) (abs_nonneg _)
+      (by norm_num : (0 : ℝ) ≤ 1)
+  · rw [indicator_of_notMem hx, unitSmoothQuadraticCutoff_outside n hx, zero_mul, norm_zero]
+
+private theorem quadraticCutoff_smooth_autocorr_tendsto (t : ℝ) :
+    Tendsto (fun n => autocorr (unitSmoothQuadraticCutoff n) t) atTop
+      (𝓝 (autocorr quadraticCutoffWindow t)) := by
+  have hBi : Integrable ((Icc (-(1/2 : ℝ)) (1/2)).indicator (fun _ => (1 : ℝ))) :=
+    continuous_const.integrableOn_Icc.integrable_indicator measurableSet_Icc
+  change Tendsto (fun n => ∫ x, unitSmoothQuadraticCutoff n x * unitSmoothQuadraticCutoff n (x+t))
+    atTop (𝓝 (∫ x, quadraticCutoffWindow x * quadraticCutoffWindow (x+t)))
+  refine tendsto_integral_of_dominated_convergence _ (fun n => ?_) hBi (fun n => ?_) ?_
+  · exact ((unitSmoothQuadraticCutoff_contDiff n).continuous.mul
+      ((unitSmoothQuadraticCutoff_contDiff n).continuous.comp
+        (continuous_add_const t))).aestronglyMeasurable
+  · exact Eventually.of_forall (quadraticCutoff_smooth_integrand_bound n t)
+  · exact Eventually.of_forall fun x =>
+      (unitSmoothQuadraticCutoff_tendsto x).mul (unitSmoothQuadraticCutoff_tendsto (x+t))
+
+private theorem quadraticCutoff_smooth_autocorr_abs_le_one (n : ℕ) (t : ℝ) :
+    |autocorr (unitSmoothQuadraticCutoff n) t| ≤ 1 := by
+  have hBi : Integrable ((Icc (-(1/2 : ℝ)) (1/2)).indicator (fun _ => (1 : ℝ))) :=
+    continuous_const.integrableOn_Icc.integrable_indicator measurableSet_Icc
+  have h := norm_integral_le_of_norm_le hBi
+    (Eventually.of_forall (quadraticCutoff_smooth_integrand_bound n t))
+  rw [integral_indicator measurableSet_Icc, setIntegral_const, Real.norm_eq_abs] at h
+  norm_num at h
+  exact h
+
+/-- Bounded correlations preserve every polynomial lag moment of the smooth cutoff family. -/
+private theorem quadraticCutoff_smooth_lag_tendsto (k : ℕ) :
+    Tendsto (fun n => ∫ t in Ioc (0 : ℝ) 1,
+      t^k*((∫ x, unitSmoothQuadraticCutoff n x^2)-autocorr (unitSmoothQuadraticCutoff n) t))
+      atTop (𝓝 (∫ t in Ioc (0 : ℝ) 1,
+        t^k*((∫ x, quadraticCutoffWindow x^2)-autocorr quadraticCutoffWindow t))) := by
+  have hBi : IntegrableOn (fun t : ℝ => 2*|t^k|) (Ioc (0 : ℝ) 1) :=
+    (continuous_const.mul (continuous_pow k).abs).integrableOn_Icc.mono_set Ioc_subset_Icc_self
+  refine tendsto_integral_of_dominated_convergence _ (fun n => ?_) hBi (fun n => ?_) ?_
+  · have hc := _root_.RHTower.ArchimedeanExactForm.continuous_autocorr
+      (unitSmoothQuadraticCutoff_contDiff n) (quadraticCutoff_smooth_compact n)
+    exact ((continuous_pow k).mul (continuous_const.sub hc)).aestronglyMeasurable.restrict
+  · exact Eventually.of_forall fun t => by
+      have hE : |∫ x, unitSmoothQuadraticCutoff n x^2| ≤ 1 := by
+        simpa only [autocorr, add_zero, pow_two] using
+          quadraticCutoff_smooth_autocorr_abs_le_one n 0
+      have hC := quadraticCutoff_smooth_autocorr_abs_le_one n t
+      have htriangle := abs_add_le (∫ x, unitSmoothQuadraticCutoff n x^2)
+        (-autocorr (unitSmoothQuadraticCutoff n) t)
+      rw [← sub_eq_add_neg, abs_neg] at htriangle
+      have hD : |(∫ x, unitSmoothQuadraticCutoff n x^2)-autocorr (unitSmoothQuadraticCutoff n) t| ≤ 2 := by
+        linarith only [htriangle, hE, hC]
+      rw [norm_mul, Real.norm_eq_abs, Real.norm_eq_abs]
+      simpa only [mul_comm] using mul_le_mul_of_nonneg_left hD (abs_nonneg (t^k))
+  · exact Eventually.of_forall fun t =>
+      (quadraticCutoff_smooth_mass_tendsto.sub
+        (quadraticCutoff_smooth_autocorr_tendsto t)).const_mul (t^k)
+
+/-- Higher Gamma terms repair a smooth test on which the mass-only reserve fails. -/
+theorem exists_odd_unit_reservedGamma_neg_weil_pos :
+    ∃ F : ℝ → ℝ, ContDiff ℝ 2 F ∧ tsupport F ⊆ Icc (-(1/2 : ℝ)) (1/2) ∧
+      (∀ x, F (-x) = -F x) ∧
+      retainedOddGammaLowerForm F+(∫ x, F x^2)/64 < 0 ∧ 0 < weilQuad F := by
+  have hneg := (quadraticCutoff_smooth_retained_tendsto.add
+    (quadraticCutoff_smooth_mass_tendsto.div_const 64)).eventually
+      (Iio_mem_nhds retainedOddGamma_quadraticCutoff_add_reserve_neg)
+  have hgood := ((quadraticCutoff_smooth_retained_tendsto.add
+    (quadraticCutoff_smooth_mass_tendsto.const_mul (193/10000))).add
+      ((quadraticCutoff_smooth_lag_tendsto 3).div_const 960)).add
+        ((quadraticCutoff_smooth_lag_tendsto 4).div_const 192)
+  have hpos := hgood.eventually
+    (Ioi_mem_nhds retainedOddGamma_quadraticCutoff_add_higher_reserve_pos)
+  obtain ⟨n, hn, hp⟩ := (hneg.and hpos).exists
+  exact ⟨_, unitSmoothQuadraticCutoff_contDiff n, unitSmoothQuadraticCutoff_support n,
+    unitSmoothQuadraticCutoff_odd n, hn, hp.trans_le
+      (weilQuad_ge_retainedOddGamma_add_higher_lags (unitSmoothQuadraticCutoff_contDiff n)
+        (unitSmoothQuadraticCutoff_support n) (unitSmoothQuadraticCutoff_odd n))⟩
+
 end GaloisForLFunctions.WindowTowerOfSpecZ
 
 #print axioms GaloisForLFunctions.WindowTowerOfSpecZ.retainedOddGamma_quadraticCutoff_add_higher_reserve_pos
+
+#print axioms GaloisForLFunctions.WindowTowerOfSpecZ.quadraticCutoffWindow_jump_moment
+#print axioms GaloisForLFunctions.WindowTowerOfSpecZ.exists_odd_unit_reservedGamma_neg_weil_pos

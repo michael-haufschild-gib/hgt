@@ -88,7 +88,7 @@ theorem unitSmoothQuadraticCutoff_odd (n : ℕ) (x : ℝ) :
     unitSmoothQuadraticCutoff n (-x) = -unitSmoothQuadraticCutoff n x := by
   simp only [unitSmoothQuadraticCutoff, unitSmoothQuintic_odd, cutoffRatio, neg_sq, neg_mul]
 
-private theorem unitSmoothQuadraticCutoff_abs_le_one (n : ℕ) (x : ℝ) :
+theorem unitSmoothQuadraticCutoff_abs_le_one (n : ℕ) (x : ℝ) :
     |unitSmoothQuadraticCutoff n x| ≤ 1 := by
   by_cases hx : x ∈ Icc (-(1/2 : ℝ)) (1/2)
   · obtain ⟨h0, h1⟩ := cutoffRatio_bounds hx
@@ -98,7 +98,7 @@ private theorem unitSmoothQuadraticCutoff_abs_le_one (n : ℕ) (x : ℝ) :
   · rw [unitSmoothQuadraticCutoff_outside n hx, abs_zero]
     norm_num
 
-private theorem unitSmoothQuadraticCutoff_lipschitz (n : ℕ) (x y : ℝ) :
+theorem unitSmoothQuadraticCutoff_lipschitz (n : ℕ) (x y : ℝ) :
     |unitSmoothQuadraticCutoff n x - unitSmoothQuadraticCutoff n y| ≤ 32*|x-y| := by
   have hon {a b : ℝ} (ha : a ∈ Icc (-(1/2 : ℝ)) (1/2))
       (hb : b ∈ Icc (-(1/2 : ℝ)) (1/2)) :

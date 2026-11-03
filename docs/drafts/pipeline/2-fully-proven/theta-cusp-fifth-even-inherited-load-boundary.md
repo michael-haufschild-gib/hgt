@@ -31,6 +31,12 @@ aperture, and every nonnegative fifth load worsens this direction.
 The weighted capacity `B_a=wE/(-K_a′(r))` is positive, below `10¹²`, and
 the exact positive region is again `C+D/1568²<B_a`.
 
+The sharp region for positivity at **every** critical aperture is the closed
+half-plane `C+D/1568²≤B`. At equality, strict positivity follows from
+`t cosh(t)>sinh(t)`. Above `B`, the bound `t coth(t)−1<t` makes the aperture
+slack smaller than the negative native margin for sufficiently small
+positive `a`. Thus every `B_a>B`, while their infimum is exactly `B`.
+
 The origin-and-tail repair remains valid and formalized. Its compact source
 comparison cannot be positive everywhere. The rank-nine integrated sign
 requires a different certificate.

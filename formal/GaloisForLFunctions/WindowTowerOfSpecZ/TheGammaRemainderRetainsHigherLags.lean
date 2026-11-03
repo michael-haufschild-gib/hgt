@@ -7,6 +7,8 @@ The reciprocal sinh and cosh factors retain positive fourth-order terms
 on the half-unit interval. They give
 `r(t) ≥ t³/960 + t⁴/192` for the exact retained Gamma remainder on `0<t≤1`.
 Integrating keeps two positive lag energies beyond the exterior mass reserve.
+Five exterior Laplace modes strengthen that reserve. Odd correlation cancellation
+also converts the local terms into an explicit mass and first-moment credit.
 -/
 
 noncomputable section
@@ -86,14 +88,13 @@ theorem retainedGammaRemainderWeight_ge_higher_lags {t : ℝ}
   have hm := mul_le_mul_of_nonneg_left hs (le_of_lt (one_div_pos.mpr ht.1))
   have heq : 1/t * ((t/2)/Real.sinh (t/2)) = 1/(2*Real.sinh (t/2)) := by
     field_simp [ht.1.ne', hden]
-    <;> ring
   rw [heq] at hm
   unfold retainedGammaRemainderWeight
   rw [he]
   have hp : 1/t*(1-(t/2)^2/6+(t/2)^4/60) + (1-(t/2)^2/2+(t/2)^4/6)/2 =
       1/t+1/2-t/24-t^2/16+t^3/960+t^4/192 := by
     field_simp [ht.1.ne']
-    <;> ring
+    ring
   have hcHalf := mul_le_mul_of_nonneg_left hc (by norm_num : (0 : ℝ) ≤ 1/2)
   have hcEq : (1/2 : ℝ)*(1/Real.cosh (t/2)) = 1/(2*Real.cosh (t/2)) := by ring
   rw [hcEq] at hcHalf

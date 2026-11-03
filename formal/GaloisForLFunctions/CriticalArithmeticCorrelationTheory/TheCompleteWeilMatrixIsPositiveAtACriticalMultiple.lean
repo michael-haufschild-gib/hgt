@@ -65,14 +65,14 @@ theorem completeWeil_posDef_of_weighted_blocks {Q R₀ R₁ M N : ℕ} {c μ p s
   let E := fun m => completedConductorEnergy tiltedUnitSpline c m
   let r := fun m => Matrix.toEuclideanLin (completeWeilMatrix tiltedUnitSpline c N)
     (normalizedRamanujanHorizonVector m N) - E m • normalizedRamanujanHorizonVector m N
-  let λ := tiltedSplineSpectralFloorConstant / (2 * c ^ 7)
+  let lam := tiltedSplineSpectralFloorConstant / (2 * c ^ 7)
   have hc0 : 0 < c := zero_lt_one.trans_le hc1
-  have hλ : 0 < λ := div_pos tiltedSplineSpectralFloorConstant_pos (by positivity)
+  have hlam : 0 < lam := div_pos tiltedSplineSpectralFloorConstant_pos (by positivity)
   have hE : ∀ m ∈ Icc 1 Q, 0 < E m := by
     intro m hm
     have h := spectralFloor_conductor_energy_ge hc1 (mem_Icc.mp hm).1
-    change λ ≤ E m - λ at h
-    linarith only [h, hλ]
+    change lam ≤ E m - lam at h
+    linarith only [h, hlam]
   have hsum : 0 ≤ ∑ m ∈ Icc 1 Q, E m * a m ^ 2 :=
     sum_nonneg fun m hm => mul_nonneg (hE m hm).le (sq_nonneg _)
   have hlow' := hlow a
@@ -102,13 +102,14 @@ theorem completeWeil_posDef_of_weighted_blocks {Q R₀ R₁ M N : ℕ} {c μ p s
   let S7 := topCollarSeventhMass M N (primeHorizonExtension w)
   have hP : 0 ≤ P := sum_nonneg fun _ _ => sq_nonneg _
   have hS7 : 0 ≤ S7 := topCollarSeventhMass_nonneg _ _ _
-  have hfull : λ * ‖y‖ ^ 2 + 3 * ‖u₀‖ ^ 2 + 3 * ‖u₁‖ ^ 2 + p * P + 2 * s * S7 ≤
+  have hfull : lam * ‖y‖ ^ 2 + 3 * ‖u₀‖ ^ 2 + 3 * ‖u₁‖ ^ 2 + p * P + 2 * s * S7 ≤
       completeWeilEnergy tiltedUnitSpline c N x := by
     rw [← hx_eq] at hsplit
     change completeWeilEnergy tiltedUnitSpline c N x = completeWeilEnergy tiltedUnitSpline c N y +
-      completeWeilEnergy tiltedUnitSpline c N (u₀ + u₁ + w) + _ at hsplit
+      2 * ⟪Matrix.toEuclideanLin (completeWeilMatrix tiltedUnitSpline c N) y, u₀ + u₁ + w⟫ +
+      completeWeilEnergy tiltedUnitSpline c N (u₀ + u₁ + w) at hsplit
     change (1 / 4 : ℝ) * (∑ m ∈ Icc 1 Q, E m * a m ^ 2) ≤
-      completeWeilEnergy tiltedUnitSpline c N y - λ * ‖y‖ ^ 2 at hlow'
+      completeWeilEnergy tiltedUnitSpline c N y - lam * ‖y‖ ^ 2 at hlow'
     change 8 * (∑ m ∈ Icc 1 Q, ⟪r m, u₀ + u₁ + w⟫ ^ 2 / E m) ≤
       ‖u₀‖ ^ 2 + μ * ‖u₁‖ ^ 2 + p * P + s * S7 at hpair'
     change 4 * ‖u₀‖ ^ 2 + (3 + μ) * ‖u₁‖ ^ 2 + 2 * p * P + 3 * s * S7 ≤ _ at hcomp'
@@ -119,9 +120,9 @@ theorem completeWeil_posDef_of_weighted_blocks {Q R₀ R₁ M N : ℕ} {c μ p s
       rw [← sum_primeHorizonExtension_sq w, Ioc_eq_Icc_sdiff_Icc_telescoped M N, add_comm]
       exact (sum_sdiff (Icc_subset_Icc le_rfl hMN)).symm
     linarith only [hsplitw, hS]
-  let δ := min λ (min 3 (min p (2 * s)))
+  let δ := min lam (min 3 (min p (2 * s)))
   have hδ : 0 < δ := by dsimp only [δ]; positivity
-  have hδλ : δ ≤ λ := min_le_left _ _
+  have hδlam : δ ≤ lam := min_le_left _ _
   have hδ3 : δ ≤ 3 := (min_le_right _ _).trans (min_le_left _ _)
   have hδp : δ ≤ p := (min_le_right _ _).trans ((min_le_right _ _).trans (min_le_left _ _))
   have hδs : δ ≤ 2 * s := (min_le_right _ _).trans ((min_le_right _ _).trans (min_le_right _ _))
@@ -132,7 +133,7 @@ theorem completeWeil_posDef_of_weighted_blocks {Q R₀ R₁ M N : ℕ} {c μ p s
     linarith only [h₁, h₂, h₃]
   have hfloor : δ * ‖x‖ ^ 2 ≤ completeWeilEnergy tiltedUnitSpline c N x := by
     rw [hxnorm]
-    have h₁ := mul_le_mul_of_nonneg_right hδλ (sq_nonneg ‖y‖)
+    have h₁ := mul_le_mul_of_nonneg_right hδlam (sq_nonneg ‖y‖)
     have h₂ := mul_le_mul_of_nonneg_right hδ3 (sq_nonneg ‖u₀‖)
     have h₃ := mul_le_mul_of_nonneg_right hδ3 (sq_nonneg ‖u₁‖)
     linarith only [hfull, hwy, h₁, h₂, h₃]

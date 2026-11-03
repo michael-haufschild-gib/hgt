@@ -67,6 +67,7 @@ External: `atomDilate`, `archForm`, `weilQuad` (RHTower/SSHA), `robinEulerThresh
 2. Polynomial costs: residual `‖·‖² ≤ K(c⁵/log N + c¹⁰(log N/N)²)`, energies `≤ Cc²`, defect reserve `a/c⁷` at mass cost `Cc⁹`, conductor floor `c⁻⁷`.
 3. Quantitative arithmetic: fixed-modulus and conductor-uniform PNT (`q ≤ (log X)^A`) give every inverse-log rate for residue readings and Mertens remainders; total variation (not sup) of reciprocal weights makes the affine source linear in `c`.
 4. Direct bilinear conductor residuals save one power of overlap. Symmetric energy-root rescaling gives relative packet error of order `c⁸/log N`, up to arbitrarily small logarithmic losses; fixed packets are positive below exponent `1/8`, and polylogarithmic subspaces are coercive when `α + 2q < 1`.
+5. One small critical multiple gives full-horizon positivity. The band–far cross separates logarithmic eighth-power growth from decaying rates; prefix and seventh-power collar reserves remain separate through the low-packet Schur payment.
 
 **F. Cyclotomic curvature**
 1. `P_m(k) = Σ_{d|m} μ(m/d)(k mod d)(d − k mod d) ≥ φ(m)` when `m ∤ k` (cyclotomic norm ≥ 1 + AM–GM); `A_m(k+u)` interpolates `P_m(k), P_m(k+1)`.
@@ -88,7 +89,8 @@ External: `atomDilate`, `archForm`, `weilQuad` (RHTower/SSHA), `robinEulerThresh
 | Explicit horizon at `c ≥ 1`: `Q ≤ exp(D(Cc¹⁶+1)) + 2`, `N ≥ Q⁴, Hc⁸`, `log N ≳ c¹⁰` | `exists_tiltedUnitSpline_completeWeilMatrix_posDef_explicit_horizon` | proved |
 | Fixed conductor packets positive for `1 ≤ c ≤ (log N)^α`, `0 < α < 1/8` | `eventually_tiltedUnitSpline_fixed_conductorSubspace_pos_below_one_eighth` | proved |
 | Polylogarithmic conductor subspace coercivity: `Q = ⌊(log N)^q⌋`, `0 < α < 1/8`, `q > 0`, `α + 2q < 1` | `eventually_tiltedUnitSpline_polylog_conductorSubspace_energy_ge` | proved |
-| All-vector positivity for `1 ≤ c ≤ (log N)^α`, `0 < α < 1/16` | `eventually_tiltedUnitSpline_completeWeilMatrix_posDef_below_one_sixteenth` | proved |
+| All-vector positivity for `1 ≤ c ≤ (log N)^α`, `0 < α < 1/8` | `eventually_tiltedUnitSpline_completeWeilMatrix_posDef_below_one_eighth` | proved |
+| Some fixed `K > 0`: eventual full-space positivity uniformly for `1 ≤ c ≤ 2K(log N)^(1/8)` | `exists_critical_multiple_completeWeilMatrix_posDef` | Lean checked; standard axioms only |
 | Selectivity: ζ positive, every pole-free sign gauge (Liouville, every cofinite flip) negative at the same `c ≥ 1` | `liouvilleSelector_selective_of_one_le`, `liouvilleSelector_selective_of_cofiniteFlip` | proved |
 | Growing Ramanujan families: `(log(N+1) − log(K+1))Σa² ≤ Σ F_a²`, `K = Q(Q−1)`; annular frames `¼, 5/4` | `ramanujanPoleProfile_family_logarithmic_lower`, `ramanujanPoleProfile_dyadic_twoSided_frame` | proved |
 | Cyclotomic floor `P_m(k) ≥ φ(m)`, `A_m(t)/φ(m) ≥ {t}(1−{t})` | `totient_le_primitiveRootPrefixEnergy`, `fract_quadratic_le_normalized_arithmeticOverlapCurvature` | proved |
@@ -110,14 +112,14 @@ External: `atomDilate`, `archForm`, `weilQuad` (RHTower/SSHA), `robinEulerThresh
 - Explicit profiles: `tiltedUnitSpline`, `tiltedBoxPlateau` (FT `= 2L·Û_L·Û_w⁴` shifted by `iτ`), `liouvilleSelector` (threshold `< 1`).
 
 **To build**
-- Extend all-vector positivity beyond the proved power-logarithmic overlap range.
+- Full-space positivity at every required critical multiple.
 - Uniform low-energy confinement with conductor count growing with `N` (current certificates fix a finite family before the horizon).
 - An exhausting overlapping family (holes below the horizon top persist at `c ≤ 1`).
 - Annular upper bound on `W(2R) − W(R)` from the completed arithmetic expression (needed `39/50`).
 
 ## 7. Open questions
 
-1. Which residual and conductor-confinement estimates extend all-vector positivity beyond exponent `1/16`?
+1. Which source estimate extends full-space positivity from one small critical multiple to every `K > 0`?
 2. Is the `c⁻⁷` Fourier-tail floor sharp for smooth compact profiles, or can a profile family keep a `c`-independent floor?
 3. Can the defect reserve `a/c⁷` be improved to a fixed fraction at growing overlap?
 4. Which overlapping atomic families exhaust compact tests, and what is their low spectrum?
@@ -169,4 +171,4 @@ External: `atomDilate`, `archForm`, `weilQuad` (RHTower/SSHA), `robinEulerThresh
 
 The programme shows that the literal Weil form, with nothing modelled away, is positive on every atomic family whose overlap stays bounded, and that it separates ζ from Liouville and from every cofinite sign flip at the same overlap. Positivity is not an accident of one profile: any smooth profile whose Fourier transform has no real zeros works, and the ground state is always the pole. The mechanism is always the same triangle: a prime-defect reserve confines low energy to finitely many conductors, actual prime sums realize each conductor's energy as an approximate eigenvalue, and a Fourier tail gives every conductor a positive floor.
 
-What this says about the RH proof: positivity through the arithmetic of finitely many conductors is now routine, so the difficulty sits entirely in growth. As overlap grows, the floor decays polynomially, the residual costs grow polynomially, and the conductor cutoff grows exponentially. Fixed packets survive to `(log N)^{1/48}`; the full matrix does not yet survive any growing schedule. An RH proof along this route needs either a conductor-count bound that grows slowly with overlap or a family that exhausts the test space without paying conductor confinement.
+The entire growing horizon is positive uniformly for `1 ≤ c ≤ 2K(log N)^(1/8)` at one fixed `K > 0`. The proof combines low-packet coercivity, deep-row residual control, two intermediate bands, and separate prefix/collar reserves. The remaining RH frontier requires sign at every critical multiple: the small-multiple aliasing reserve does not decide that sign.

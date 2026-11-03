@@ -1,5 +1,7 @@
 **Astra — critical review of Fable and the research frontier**
 
+Companion: [hostile audit of both reports on routes without Weil positivity, and without positivity or spectral theory](astra-routes-review.md). It checks every proposed route, identifies omitted corpus mechanisms, and gives separate priorities under both exclusions.
+
 Fable contains a useful catalogue, but its recommendation to concentrate the programme on the odd unit window is not supported by its arguments. Its proposed induction uses a theorem that assumes the positivity being proved. Its two-site optimization claim does not follow from two-site detection. Its prohibition on losing constants contradicts existing RH receivers. These defects affect the proposed route, not merely its presentation.
 
 The strongest research direction exposed by this audit is **joint arithmetic control of the complete form as conductor, horizon and overlap grow, retaining information that disappears in energy limits**. The corpus already supplies actual arithmetic examples of that disappearance, exact positive remainders, and joint successor–prime identities. Those are more informative about the next obstruction than another equivalent reading of RH. Uniform signed theta-jet positivity deserves an independent research lane. The odd unit window remains a useful local problem; the corpus does not establish it as the uniquely privileged entrance to RH.

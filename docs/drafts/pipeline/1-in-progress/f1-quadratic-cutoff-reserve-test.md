@@ -2,7 +2,7 @@
 
 - **ID:** F1-QC
 - **Stage:** 1-in-progress
-- **Type:** THEOREM (negative direction); positive survivor under audit
+- **Type:** THEOREM; same-profile repair under audit
 - **Source:** [Two-moment payment](f1-primitive-variance-joint-payment.md)
 - **Statement:** The odd unit-window profile `F(x)=2x(1−4x²)²` on `|x|≤1/2`, zero outside, has `P(F)+∫F²/64<0`; the inequality persists under support-preserving smoothing.
 
@@ -42,28 +42,28 @@ preserves the strict retained-energy sign.
 - [x] Strict sign transfers to an odd C² test with exact unit support; individual source check and standard-only transitive-axiom audit pass.
 - [ ] Identify and prove the strongest positive survivor before retiring this target.
 
-## Positive survivor under audit
+## Positive survivor
 
 For `0<t≤1`, the exact local Gamma remainder satisfies
 `r(t)≥t³/960+t⁴/192`. Set `z=t/2`. Taylor bounds give
 `z/sinh z≥1−z²/6+z⁴/60` and `1/cosh z≥1−z²/2+z⁴/6` on `0<z≤1/2`.
 The identity `e^(t/2)/sinh t=1/(2sinh z)+1/(2cosh z)` yields the claim.
 Multiplication by `E−C(t)≥0` retains the corresponding third and fourth lag
-energies. `TheGammaRemainderRetainsHigherLags.lean` contains the proposed proof;
-its individual Lean audit is pending.
+energies. `TheGammaRemainderRetainsHigherLags.lean` compiles with
+`[propext, Classical.choice, Quot.sound]` only.
 
-Five exterior Laplace modes give the sharper candidate reserve `δ>193/20000`,
-using `exp(−1/2)≥60653/100000`. Combined with the local bound, the proposed
+Five exterior Laplace modes give the sharper reserve `δ>193/20000`,
+using `exp(−1/2)≥60653/100000`. Combined with the local bound, the proved
 replacement is `Q≥P+(193/10000)E+M₃/960+M₄/192`, where
 `Mₖ=∫₀¹tᵏ(E−C(t))dt`.
 
-A further candidate consequence uses `∫₀¹(E−C)=E` and
+A further proved consequence uses `∫₀¹(E−C)=E` and
 `∫₀¹t²(E−C)=E/3+(∫xF)²`. The identity
 
 `t³/960+t⁴/192−(13/3840)t²+1/2560
  =(t−1/2)²(t+1/4)/960+(t²−1/4)²/192`
 
-gives local reserve `17E/23040+13(∫xF)²/3840`. Its Lean audit is pending.
+gives local reserve `17E/23040+13(∫xF)²/3840`, with the same standard-only axiom audit.
 
 For the same quadratic cutoff,
 `Mₖ=256/[315(k+3)]−128/[21(k+5)]+128/[15(k+6)]

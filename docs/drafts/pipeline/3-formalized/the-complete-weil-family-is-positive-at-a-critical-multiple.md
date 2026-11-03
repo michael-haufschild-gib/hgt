@@ -1,13 +1,13 @@
 # The complete Weil family is positive at a critical multiple
 
-- **Stage:** 1-in-progress
-- **Type:** CONJECTURE; Lean audit incomplete
-- **Target:** Some fixed `K > 0` gives eventual positive definiteness of
+- **Stage:** 3-formalized
+- **Type:** THEOREM (Lean)
+- **Statement:** Some fixed `K > 0` gives eventual positive definiteness of
   `completeWeilMatrix tiltedUnitSpline c N` on the whole horizon space,
   uniformly for `1 ≤ c ≤ 2K(log N)^(1/8)`.
 - **Route:** F2/A30, complete-family assembly.
 
-## Corrected proof
+## Proof
 
 Write `L = log N`, `t = 1 + log L`, `θ = t⁻⁵`,
 `Q = ⌊L^(13/32)⌋`, `R₀ = ⌊exp √L⌋`, `R₁ = ⌊N^θ⌋`, and
@@ -56,9 +56,9 @@ first-band/second-band cross leaves
 `E(u₀+u₁+w) ≥ 4‖u₀‖² + (3+√L/32)‖u₁‖²`
 `                 + θL P/(16D) + 3gL S₇/(64c⁷)`.
 
-The first-band error requires the corrected conductor cutoff:
+The first-band error at this conductor cutoff satisfies
 `c√c(1+log c)/√Q = O(L^(-1/64)(1+log L))`.
-The former choice `Q = ⌊L^(5/16)⌋` instead gives a growing power `L^(1/32)`.
+At `Q = ⌊L^(5/16)⌋`, the same bound instead has a growing power `L^(1/32)`.
 
 ### Weighted Schur payment
 
@@ -89,15 +89,17 @@ for nonzero `x`. The existing subcritical theorem at exponent `1/16`
 covers `1 ≤ c ≤ L^(1/16)`. Taking the minimum of the far, packet, and
 Schur critical constants gives the claimed uniform interval.
 
-## Lean status
+## Formalization
 
 Capstone source:
 [`exists_critical_multiple_completeWeilMatrix_posDef`](../../../../formal/GaloisForLFunctions/CriticalArithmeticCorrelationTheory/TheCompleteWeilMatrixIsPositiveAtACriticalMultiple.lean).
-Its dependency chain includes the corrected first-band cutoff, two-rate cross
-budget, weighted far reserve, and weighted Schur pairing. Deep-row, first-band,
-and two-rate budget modules pass Lean; the remaining dependency chain and
-transitive axiom audit are pending.
+The first-band cutoff, two-rate cross budget, weighted far reserve, and weighted
+Schur pairing are discharged. Direct audit from `formal/` passed:
+
+`lake --old env lean GaloisForLFunctions/CriticalArithmeticCorrelationTheory/TheCompleteWeilMatrixIsPositiveAtACriticalMultiple.lean`
+
+Transitive axioms: `propext`, `Classical.choice`, `Quot.sound` only.
 
 - [x] Corrected cutoff and terminal-leakage accounting.
-- [ ] Dependency-closed Lean checks.
-- [ ] Standard-only axiom audit and umbrella import.
+- [x] Dependency-closed Lean checks.
+- [x] Standard-only axiom audit and umbrella import.

@@ -275,12 +275,12 @@ private lemma subexp_far_collar_reserve {N : ℕ} {c D g₀ CB : ℝ}
       rw [div_le_div_iff₀ (by norm_num) (by positivity)]
       nlinarith only [hc7_L, hg₀]
     exact h1.trans (h2.trans_le (h3.trans (h4.trans h5)))
-  generalize (∑ n ∈ Icc 1 (N / linearDefectCutoff c), primeHorizonExtension w n ^ 2) = P at
-    hpre hfarw hP0 ⊢
-  generalize (∑ n ∈ Ioc (N / linearDefectCutoff c) N, primeHorizonExtension w n ^ 2) = S at
-    hpre hSw_le hS0
-  generalize topCollarSeventhMass (N / linearDefectCutoff c) N (primeHorizonExtension w) = S7 at
-    hfarw hSw_le hS7_0 ⊢
+  generalize (∑ n ∈ Icc 1 (N / linearDefectCutoff c), primeHorizonExtension w n ^ 2) = P
+    at hpre hfarw hP0 ⊢
+  generalize (∑ n ∈ Ioc (N / linearDefectCutoff c) N, primeHorizonExtension w n ^ 2) = S
+    at hpre hSw_le hS0
+  generalize topCollarSeventhMass (N / linearDefectCutoff c) N (primeHorizonExtension w) = S7
+    at hfarw hSw_le hS7_0 ⊢
   generalize (Real.log (subexpCutoff N : ℝ) / D - 1) = kg at hpre hgap_lo hleak
   generalize (terminalPacketCost (subexpCutoff N) (N / linearDefectCutoff c) N /
     Real.log (N / linearDefectCutoff c : ℕ)) = Bp at hpre hleak
@@ -315,7 +315,7 @@ private lemma critical_band_far_budgetE_le {R M N : ℕ}
     (hk_def : k = L / (2 * D * ℓ ^ 5)) (hb_def : b = (g₀ * D / 4) * ℓ ^ 5)
     (hD : 0 < D) (hg₀ : 0 < g₀) (hCpr : 0 < C_pr) (hCnp : 0 ≤ C_np) (hCB0 : 0 ≤ CB)
     (hK_tot : 1 ≤ K_tot) (hL1 : 1 ≤ L) (hc1 : 1 ≤ c) (hcL : c ≤ L) (hc8_le : c ^ 8 ≤ L)
-    (hR1 : 1 ≤ R) (hRN : L ^ 18 * (R : ℝ) ^ 16 ≤ N)
+    (hR1 : 1 ≤ R) (hMN : M ≤ N) (hRN : L ^ 18 * (R : ℝ) ^ 16 ≤ N)
     (hlR : 1 + Real.log (R : ℝ) ≤ 2 * L / ℓ ^ 5)
     (hTPC : terminalPacketCost R M N ≤ CB * (1 + Real.log c))
     (hSg : Sg₁ ≤ 2 * K_tot * ℓ) (hSg0 : 0 ≤ Sg₁)
@@ -353,12 +353,7 @@ private lemma critical_band_far_budgetE_le {R M N : ℕ}
       (L * b * k) ≤ (2048 * C_pr * CB / g₀) / ℓ := by
     have hTPC_ℓ : terminalPacketCost R M N ≤ CB * ℓ :=
       hTPC.trans (mul_le_mul_of_nonneg_left h1c_ℓ hCB0)
-    have hTPC0 : 0 ≤ terminalPacketCost R M N := by
-      by_cases hMN : M ≤ N
-      · exact terminalPacketCost_nonneg R hMN
-      · unfold terminalPacketCost
-        have : N - M = 0 := Nat.sub_eq_zero_of_le (le_of_not_ge hMN)
-        rw [this, Nat.cast_zero, zero_add]; positivity
+    have hTPC0 : 0 ≤ terminalPacketCost R M N := terminalPacketCost_nonneg R hMN
     have hnum : c ^ 7 * (1 + Real.log (R : ℝ)) * terminalPacketCost R M N ≤
         L * (2 * L / ℓ ^ 5) * (CB * ℓ) :=
       mul_le_mul (mul_le_mul hc7_L hlR hlR0 hL0.le) hTPC_ℓ hTPC0 (by positivity)
@@ -373,14 +368,16 @@ private lemma critical_band_far_budgetE_le {R M N : ℕ}
           (by simpa only [pow_one] using pow_le_pow_right₀ hℓ1 (by norm_num : 1 ≤ 4))
   have hE3 : 32 * c ^ 7 * C_np * bandFarBudgetG R N c Sg₁ / (b * k) ≤
       (512 * C_np * (4 * K_tot ^ 2 + 3) / g₀) / ℓ := by
-    have hc13 : c ^ 13 / N ≤ 1 :=
-      (cpow_Rpow_div_le hL1 hc0.le hcL hR1R hRN (one_div_le_one_div_of_le zero_lt_one hL1)
-        (by norm_num) (by norm_num)).trans (by norm_num)
+    have h1L_le1 : 1 / L ≤ (1 : ℝ) := (div_le_one hL0).mpr hL1
+    have hc13 : c ^ 13 / N ≤ 1 := by
+      have h := cpow_Rpow_div_le hL1 hc0.le hcL hR1R hRN h1L_le1 (i := 13) (j := 0)
+        (by norm_num) (by norm_num)
+      simpa only [pow_zero, mul_one] using h
     have hc11 : c ^ 11 * (R : ℝ) ^ 4 / (N * L) ≤ 1 := by
       have hN0 : (0 : ℝ) < N := lt_of_lt_of_le (by positivity) hRN
       exact (div_le_div_of_nonneg_left (by positivity) hN0 (le_mul_of_one_le_right hN0.le hL1)).trans
-        ((cpow_Rpow_div_le hL1 hc0.le hcL hR1R hRN (one_div_le_one_div_of_le zero_lt_one hL1)
-          (by norm_num) (by norm_num)).trans (by norm_num))
+        (cpow_Rpow_div_le hL1 hc0.le hcL hR1R hRN h1L_le1 (i := 11) (j := 4)
+          (by norm_num) (by norm_num))
     have hSg2 : Sg₁ ^ 2 ≤ 4 * K_tot ^ 2 * ℓ ^ 2 := by
       have hp := pow_le_pow_left₀ hSg0 hSg 2
       linarith only [hp, (by ring : (2 * K_tot * ℓ) ^ 2 = 4 * K_tot ^ 2 * ℓ ^ 2)]
@@ -472,8 +469,9 @@ private lemma critical_band_far_budgetU_le {R M N : ℕ}
   have h1c_ℓ : 1 + Real.log c ≤ ℓ := by rw [hℓdef]; linarith [Real.log_le_log hc0 hcL]
   have h1c0 : 0 ≤ 1 + Real.log c := by linarith [Real.log_nonneg hc1]
   have hℓ5_L14 : ℓ ^ 5 ≤ L ^ (1 / 4 : ℝ) := by linarith only [hpoly5, pow_pos hℓ0 5]
-  have hℓ_L14 : ℓ ≤ L ^ (1 / 4 : ℝ) :=
-    (by simpa only [pow_one] using pow_le_pow_right₀ hℓ1 (by norm_num : 1 ≤ 5)).trans hℓ5_L14
+  have hℓ_L14 : ℓ ≤ L ^ (1 / 4 : ℝ) := by
+    have hℓ_5 : ℓ ≤ ℓ ^ 5 := by simpa only [pow_one] using pow_le_pow_right₀ hℓ1 (by norm_num : 1 ≤ 5)
+    exact hℓ_5.trans hℓ5_L14
   have hℓ3_L14 : ℓ ^ 3 ≤ L ^ (1 / 4 : ℝ) :=
     (pow_le_pow_right₀ hℓ1 (by norm_num : 3 ≤ 5)).trans hℓ5_L14
   have h1c_L14 : 1 + Real.log c ≤ L ^ (1 / 4 : ℝ) := h1c_ℓ.trans hℓ_L14
@@ -498,15 +496,15 @@ private lemma critical_band_far_budgetU_le {R M N : ℕ}
   have hc2_14 : c ^ 2 ≤ L ^ (1 / 4 : ℝ) := by
     have hp := pow_le_rpow_mul hL0 hc0.le hc_L8 2
     exact hp.trans_eq (by congr 1; norm_num)
-  have hc7_78 : c ^ 7 ≤ L ^ (7 / 8 : ℝ) := by
-    have hp := pow_le_rpow_mul hL0 hc0.le hc_L8 7; push_cast at hp; exact hp
-  have hc9_98 : c ^ 9 ≤ L ^ (9 / 8 : ℝ) := by
-    have hp := pow_le_rpow_mul hL0 hc0.le hc_L8 9; push_cast at hp; exact hp
+  have hc7_78 : c ^ 7 ≤ L ^ (7 / 8 : ℝ) :=
+    (pow_le_rpow_mul hL0 hc0.le hc_L8 7).trans_eq (by congr 1; push_cast; ring)
+  have hc9_98 : c ^ 9 ≤ L ^ (9 / 8 : ℝ) :=
+    (pow_le_rpow_mul hL0 hc0.le hc_L8 9).trans_eq (by congr 1; push_cast; ring)
   have hc10_54 : c ^ 10 ≤ L ^ (5 / 4 : ℝ) := by
     have hp := pow_le_rpow_mul hL0 hc0.le hc_L8 10
     exact hp.trans_eq (by congr 1; norm_num)
-  have hc11_118 : c ^ 11 ≤ L ^ (11 / 8 : ℝ) := by
-    have hp := pow_le_rpow_mul hL0 hc0.le hc_L8 11; push_cast at hp; exact hp
+  have hc11_118 : c ^ 11 ≤ L ^ (11 / 8 : ℝ) :=
+    (pow_le_rpow_mul hL0 hc0.le hc_L8 11).trans_eq (by congr 1; push_cast; ring)
   -- Extract the `2 * bandFarBudgetG` contribution (`≤ 1 / 16`) directly from `hsE ≤ 1 / 32`.
   have hU3G : 32 * c ^ 7 * C_np * (2 * bandFarBudgetG R N c Sg₁) / (b * k) ≤ 1 / 16 := by
     have hTPC0 : 0 ≤ terminalPacketCost R M N := terminalPacketCost_nonneg R hMN
@@ -542,7 +540,10 @@ private lemma critical_band_far_budgetU_le {R M N : ℕ}
               (by positivity)
       _ = (4096 * C_pr / g₀) * (L ^ (7 / 8 : ℝ) / L) := by field_simp [hg₀.ne', hL0.ne']; ring
       _ = (4096 * C_pr / g₀) / L ^ (1 / 8 : ℝ) := by
-          rw [← hsplit]; field_simp [hg₀.ne', hL8_pos.ne']
+          have hid : L ^ (7 / 8 : ℝ) / L = 1 / L ^ (1 / 8 : ℝ) := by
+            rw [div_eq_div_iff hL0.ne' hL8_pos.ne']
+            linarith only [hsplit]
+          rw [hid]; ring
   have hβU : c ^ 7 * bandFarBudgetU R N c ρ Sg₁ / L ≤
       (8 * K_res + 1560 * K_tot + 98) / L ^ (1 / 8 : ℝ) := by
     have hsplit : c ^ 7 * bandFarBudgetU R N c ρ Sg₁ / L =
@@ -550,7 +551,7 @@ private lemma critical_band_far_budgetU_le {R M N : ℕ}
           (24 + 780 * Sg₁ + 72 * (R : ℝ) ^ 15 / N) * (c ^ 9 / L ^ 2) +
           c ^ 11 * (1 + Real.log c) / L ^ 2 +
           c ^ 10 * (R : ℝ) ^ 2 / N := by
-      unfold bandFarBudgetU; rw [← hLdef]; field_simp [hL0.ne']; ring
+      unfold bandFarBudgetU; rw [← hLdef]; field_simp [hL0.ne']
     rw [hsplit]
     have hlRL_sq : ((1 + Real.log (R : ℝ)) / L) ^ 2 ≤ 4 := by
       have h1 : (1 + Real.log (R : ℝ)) / L ≤ 2 := (div_le_iff₀ hL0).mpr hlR_2L
@@ -573,13 +574,13 @@ private lemma critical_band_far_budgetU_le {R M N : ℕ}
               ≤ c ^ 7 * (2 * K_res * (c ^ 2 * (1 + Real.log c) ^ 3 * L ^ (1 / 16 : ℝ) / L)) / L :=
             div_le_div_of_nonneg_right (mul_le_mul_of_nonneg_left hρ (by positivity)) hL0.le
           _ = 2 * K_res * ((c ^ 9 * (1 + Real.log c) ^ 3 * L ^ (1 / 16 : ℝ)) / L ^ 2) := by
-            field_simp [hL0.ne']; ring
+            field_simp [hL0.ne']
           _ ≤ 2 * K_res * (L ^ (15 / 8 : ℝ) / (L ^ (15 / 8 : ℝ) * L ^ (1 / 8 : ℝ))) := by
             rw [← hden]
             exact mul_le_mul_of_nonneg_left
               (div_le_div_of_nonneg_right hnum (by positivity)) (by positivity)
           _ = 2 * K_res / L ^ (1 / 8 : ℝ) := by
-            field_simp [(Real.rpow_pos_of_pos hL0 _).ne']; ring
+            field_simp [(Real.rpow_pos_of_pos hL0 _).ne']
       calc
         ((1 + Real.log (R : ℝ)) / L) ^ 2 * (c ^ 7 * ρ / L)
             ≤ 4 * (2 * K_res / L ^ (1 / 8 : ℝ)) :=
@@ -618,7 +619,7 @@ private lemma critical_band_far_budgetU_le {R M N : ℕ}
           exact mul_le_mul_of_nonneg_left
             (div_le_div_of_nonneg_right hnum (by positivity)) (by positivity)
         _ = (1560 * K_tot + 96) / L ^ (1 / 8 : ℝ) := by
-          field_simp [(Real.rpow_pos_of_pos hL0 _).ne']; ring
+          field_simp [(Real.rpow_pos_of_pos hL0 _).ne']
     have ht_11 : c ^ 11 * (1 + Real.log c) / L ^ 2 ≤ 1 / L ^ (1 / 8 : ℝ) := by
       have hnum : c ^ 11 * (1 + Real.log c) ≤ L ^ (15 / 8 : ℝ) := by
         calc
@@ -642,7 +643,7 @@ private lemma critical_band_far_budgetU_le {R M N : ℕ}
   have hβA : c ^ 7 * bandFarBudgetA R N c / L ≤ 1 / L ^ (1 / 8 : ℝ) := by
     have he : c ^ 7 * bandFarBudgetA R N c / L =
         (c ^ 9 * (R : ℝ) ^ 5 / N) * (1 / ((N : ℝ) * L ^ 2)) := by
-      unfold bandFarBudgetA; rw [← hLdef]; field_simp [hN0.ne', hL0.ne']; ring
+      unfold bandFarBudgetA; rw [← hLdef]; field_simp [hN0.ne', hL0.ne']
     rw [he]
     have h1 := cpow_Rpow_div_le hL1 hc0.le hcL hR1R hRN hinvL_L8
       (i := 9) (j := 5) (by norm_num) (by norm_num)
@@ -684,9 +685,9 @@ private lemma critical_band_far_budgetU_le {R M N : ℕ}
               128 * C_up * c ^ 2 * (1 + Real.log c))]) hk_pos.le).trans
           (div_le_div_of_nonneg_left (by positivity) (by positivity) hk_lb)
       _ = (128 * D * C_up) * (L ^ (5 / 8 : ℝ) / (L ^ (5 / 8 : ℝ) * L ^ (1 / 8 : ℝ))) := by
-        rw [← hden]; field_simp [hD.ne']; ring
+        rw [← hden]; field_simp [hD.ne']
       _ = (128 * D * C_up) / L ^ (1 / 8 : ℝ) := by
-        field_simp [(Real.rpow_pos_of_pos hL0 _).ne']; ring
+        field_simp [(Real.rpow_pos_of_pos hL0 _).ne']
   have hU5 : 128 * c ^ 7 * C_upT * c ^ 2 * ((N : ℝ) / M) * (1 + Real.log c) / (L * b * k) ≤
       (2048 * C_upT * (256 * Real.exp 2 + 4) / g₀) / L ^ (1 / 8 : ℝ) := by
     have hnum : ((N : ℝ) / M) * (c ^ 9 * (1 + Real.log c)) ≤
@@ -1043,12 +1044,12 @@ private lemma complement_three_band_collar_reserve_assembly
     rw [← sum_primeHorizonExtension_sq w,
       Ioc_eq_Icc_sdiff_Icc_telescoped (N / linearDefectCutoff c) N, add_comm]
     exact (sum_sdiff (Icc_subset_Icc le_rfl (Nat.div_le_self N _))).symm
-  generalize (∑ n ∈ Icc 1 (N / linearDefectCutoff c), primeHorizonExtension w n ^ 2) = P_w at
-    hdiag2 hcr0w hcr1w hPw0 hw_split ⊢
-  generalize (∑ n ∈ Ioc (N / linearDefectCutoff c) N, primeHorizonExtension w n ^ 2) = S_w at
-    hcr0w hcr1w hSw0 hSw_S7 hw_split
-  generalize topCollarSeventhMass (N / linearDefectCutoff c) N (primeHorizonExtension w) = S7_w at
-    hdiag2 hSw_S7 hS7_0 ⊢
+  generalize (∑ n ∈ Icc 1 (N / linearDefectCutoff c), primeHorizonExtension w n ^ 2) = P_w
+    at hdiag2 hcr0w hcr1w hPw0 hw_split ⊢
+  generalize (∑ n ∈ Ioc (N / linearDefectCutoff c) N, primeHorizonExtension w n ^ 2) = S_w
+    at hcr0w hcr1w hSw0 hSw_S7 hw_split
+  generalize topCollarSeventhMass (N / linearDefectCutoff c) N (primeHorizonExtension w) = S7_w
+    at hdiag2 hSw_S7 hS7_0 ⊢
   have hfloor0 : (κ₀ + 3) * ‖u₀‖ ^ 2 + (1 / 2 : ℝ) * ‖u₀‖ ^ 2 ≤
       ((3 / 4 : ℝ) * Real.log (Q₁ : ℝ) - Real.log c - C_coerc0) * ‖u₀‖ ^ 2 := by
     rw [show (κ₀ + 3) * ‖u₀‖ ^ 2 + (1 / 2 : ℝ) * ‖u₀‖ ^ 2 = (κ₀ + 3 + 1 / 2) * ‖u₀‖ ^ 2 by ring]
@@ -1174,8 +1175,7 @@ private lemma exists_complement_collar_reserves_upper_band :
     eventually_ge_atTop 3] with
       N hfarN hcut hLX hpoly5 hpoly128 hν_max hL34_D hL8_U hL8_floors
       hll_fl0 hll_leak hll_E hL_max hresN hN3
-  dsimp only [Function.comp_def] at hpoly5 hpoly128 hν_max hL34_D hL8_U hL8_floors
-    hll_fl0 hll_leak hll_E hL_max
+  dsimp only [Function.comp_def] at hν_max hL34_D hL8_U hL8_floors
   rw [← hg₀def] at hfarN
   intro c hc_lo hc_hi u₀ u₁ w hu₀_mem hu₀_orthQ hu₁_mem hu₁_orthR₀ hw
   have hL3000 : 3000 ≤ Real.log (N : ℝ) := (le_max_left _ _).trans hL_max
@@ -1302,14 +1302,14 @@ private lemma exists_complement_collar_reserves_upper_band :
       512 * C_np * (4 * K_tot ^ 2 + 3) / g₀) + 1 ≤ ℓ := by
     rw [hℓ_eq]; linarith only [hll_E]
   have hsE0 := critical_band_far_budgetE_le hL_eq hℓ_eq hk₁_eq hb_eq hD hg₀ hCpr hCnp hCB0
-    hK_tot hL1 hc1 hcL hc8_le (by omega : 1 ≤ ⌊Real.exp (L ^ (1 / 2 : ℝ))⌋₊) hRN₀ h1_R₀ hB0_ub
-    hSg_ub (zero_le_one.trans hSg1) hℓ_E
+    hK_tot hL1 hc1 hcL hc8_le (by omega : 1 ≤ ⌊Real.exp (L ^ (1 / 2 : ℝ))⌋₊) (Nat.div_le_self _ _)
+    hRN₀ h1_R₀ hB0_ub hSg_ub (zero_le_one.trans hSg1) hℓ_E
   have hsU0 := critical_band_far_budgetU_le hL_eq hℓ_eq hk₁_eq hb_eq hD hg₀ hCpr hCup hCupT
     hCnp hK_tot hK_res.le hL1 hc1 hc_L8 (by omega) (Nat.div_le_self _ _) hRN₀ h1_R₀ hNM hpoly5
     hSg_ub (zero_le_one.trans hSg1) hρ0 hρ_ub hsE0 hL8_U
   have hsE1 := critical_band_far_budgetE_le hL_eq hℓ_eq hk₁_eq hb_eq hD hg₀ hCpr hCnp hCB0
-    hK_tot hL1 hc1 hcL hc8_le (by omega : 1 ≤ subexpCutoff N) hRN₁ h1_R₁ hB1_ub
-    hSg_ub (zero_le_one.trans hSg1) hℓ_E
+    hK_tot hL1 hc1 hcL hc8_le (by omega : 1 ≤ subexpCutoff N) (Nat.div_le_self _ _)
+    hRN₁ h1_R₁ hB1_ub hSg_ub (zero_le_one.trans hSg1) hℓ_E
   have hsU1 := critical_band_far_budgetU_le hL_eq hℓ_eq hk₁_eq hb_eq hD hg₀ hCpr hCup hCupT
     hCnp hK_tot hK_res.le hL1 hc1 hc_L8 (by omega) (Nat.div_le_self _ _) hRN₁ h1_R₁ hNM hpoly5
     hSg_ub (zero_le_one.trans hSg1) hρ0 hρ_ub hsE1 hL8_U
@@ -1385,8 +1385,8 @@ private lemma exists_complement_collar_reserves_upper_band :
       rw [le_div_iff₀ (by norm_num), le_div_iff₀ hD]; linarith only [h1]
     exact h2.trans (div_le_div_of_nonneg_right hk₁_lb (by norm_num))
   have hS_floor : κ₀ + 2 ≤ g₀ * L / (64 * c ^ 7) := by
-    have hc7_hi : c ^ 7 ≤ L ^ (7 / 8 : ℝ) := by
-      have hp := pow_le_rpow_mul hL0 hc0.le hc_L8 7; push_cast at hp; exact hp
+    have hc7_hi : c ^ 7 ≤ L ^ (7 / 8 : ℝ) :=
+      (pow_le_rpow_mul hL0 hc0.le hc_L8 7).trans_eq (by congr 1; push_cast; ring)
     have hLc7 : L ^ (1 / 8 : ℝ) ≤ L / c ^ 7 := by
       rw [le_div_iff₀ (by positivity)]
       calc
@@ -1507,8 +1507,8 @@ private lemma critical_pairing_sum_le {M N : ℕ} {s : Finset ℕ} {E : ℕ → 
   have ht0 := mul_le_mul htop hΨ hΨ0 (htop0.trans htop)
   have htD := mul_le_mul_of_nonneg_left hΨD (by positivity : (0 : ℝ) ≤ 6 * ‖u₀‖ ^ 2)
   have ht1 := mul_le_mul_of_nonneg_left hΨ (by positivity : (0 : ℝ) ≤ 3 * ‖u₁‖ ^ 2)
-  have htwP := mul_le_mul_of_nonneg_left hΨ (mul_nonneg (by norm_num) hPw0)
-  have htw7 := mul_le_mul_of_nonneg_left hΨ7 (mul_nonneg (by norm_num) hS7_0)
+  have htwP := mul_le_mul_of_nonneg_left hΨ (mul_nonneg (by norm_num : (0 : ℝ) ≤ 6) hPw0)
+  have htw7 := mul_le_mul_of_nonneg_left hΨ7 (mul_nonneg (by norm_num : (0 : ℝ) ≤ 6) hS7_0)
   linarith only [hsum, ht0, htD, ht1, htwP, htw7,
     (by ring : 6 * top * (∑ m ∈ s, ‖r m‖ ^ 2 / E m) = 6 * (top * ∑ m ∈ s, ‖r m‖ ^ 2 / E m)),
     (by ring : 6 * ((ρ_top * ‖u₀‖ ^ 2) * Ψ) + 6 * ‖u₀‖ ^ 2 * Ψ_D =
@@ -1578,7 +1578,8 @@ private lemma critical_schur_posDef_of_collar_blocks {Q₁ R₀ R₁ N : ℕ}
     have hc0 : 0 < c := zero_lt_one.trans_le hc1
     have hs : 0 < tiltedSplineSpectralFloorConstant / (2 * c ^ 7) :=
       div_pos tiltedSplineSpectralFloorConstant_pos (by positivity)
-    exact hs.trans_le (spectralFloor_conductor_energy_ge hc1 (mem_Icc.mp hm).1)
+    have hge := spectralFloor_conductor_energy_ge hc1 (mem_Icc.mp hm).1
+    linarith only [hs, hge]
   have hSy0 : 0 ≤ ∑ m ∈ Icc 1 Q₁, completedConductorEnergy tiltedUnitSpline c m * a m ^ 2 :=
     sum_nonneg fun m hm => mul_nonneg (hE_pos m hm).le (sq_nonneg _)
   have hy_mem' : (∑ m ∈ Icc 1 Q₁, a m • normalizedRamanujanHorizonVector m N) ∈
@@ -1742,7 +1743,7 @@ theorem exists_tiltedUnitSpline_spectralFloorWeilMatrix_posDef_at_critical_multi
     eventually_ge_atTop 3] with
       N hbelow hlowN hcompN hcut hLX hpoly5 hpoly32 hpoly16 hL34_D hL14_960 hL12_384 hL8_deep
       hL_max hN3
-  dsimp only [Function.comp_def] at hpoly5 hpoly32 hpoly16 hL34_D hL14_960 hL12_384 hL8_deep hL_max
+  dsimp only [Function.comp_def] at hL34_D hL14_960 hL12_384 hL8_deep
   intro c hc1 hcup
   by_cases hc16 : c ≤ Real.log (N : ℝ) ^ (1 / 16 : ℝ)
   · exact hbelow c hc1 hc16
@@ -1794,8 +1795,9 @@ theorem exists_tiltedUnitSpline_spectralFloorWeilMatrix_posDef_at_critical_multi
       have hB := linearPrimeStrip_le_four_mul hc1 hcL
       have hL2 : 2 ≤ Real.log (N : ℝ) := by linarith only [hL3000]
       have h8L : 8 * Real.log (N : ℝ) ≤ Real.log (N : ℝ) ^ 8 := by
-        have h7 : (128 : ℝ) ≤ Real.log (N : ℝ) ^ 7 :=
-          (pow_le_pow_left₀ (by norm_num) hL2 7).trans_eq' (by norm_num)
+        have h7 : (128 : ℝ) ≤ Real.log (N : ℝ) ^ 7 := by
+          have hp := pow_le_pow_left₀ (by norm_num : (0 : ℝ) ≤ 2) hL2 7
+          norm_num at hp; exact hp
         have hm := mul_le_mul_of_nonneg_left h7 hL0.le
         linarith only [hm, (by ring : Real.log (N : ℝ) * Real.log (N : ℝ) ^ 7 =
           Real.log (N : ℝ) ^ 8)]
@@ -1833,7 +1835,7 @@ theorem exists_tiltedUnitSpline_spectralFloorWeilMatrix_posDef_at_critical_multi
                 completedConductorEnergy tiltedUnitSpline c m •
                   normalizedRamanujanHorizonVector m N) /
               completedConductorEnergy tiltedUnitSpline c m) * c ^ 7 := by
-        field_simp [hL0.ne']; ring
+        field_simp [hL0.ne']
       linarith only [hm, hid]
     have hRNX := sq_add_one_mul_le_of_pow_six_le hR₀2 hR₀6
     have h18_R₀ : 18 * (1 + Real.log (⌊Real.exp (Real.log (N : ℝ) ^ (1 / 2 : ℝ))⌋₊ : ℝ)) ≤
@@ -1841,6 +1843,7 @@ theorem exists_tiltedUnitSpline_spectralFloorWeilMatrix_posDef_at_critical_multi
       linarith only [h36_R₀, Real.log_natCast_nonneg ⌊Real.exp (Real.log (N : ℝ) ^ (1 / 2 : ℝ))⌋₊]
     -- The four Schur scalar inequalities
     set L := Real.log (N : ℝ) with hL_eq
+    have hlL0 : 0 < 1 + Real.log L := by linarith [Real.log_nonneg hL1]
     have hμ₀ : 48 * L ^ (1 / 4 : ℝ) *
           (2 * (Real.log (2 * (⌊Real.exp (L ^ (1 / 2 : ℝ))⌋₊ : ℝ)) + 3) / L) +
         48 * (8 * ((C_p + 1) / L) *
@@ -1865,19 +1868,25 @@ theorem exists_tiltedUnitSpline_spectralFloorWeilMatrix_posDef_at_critical_multi
               (2 * (Real.log (2 * (⌊Real.exp (L ^ (1 / 2 : ℝ))⌋₊ : ℝ)) + 3) / L)
               ≤ 48 * L ^ (1 / 4 : ℝ) * (10 * L ^ (1 / 2 : ℝ) / L) :=
             mul_le_mul_of_nonneg_left (div_le_div_of_nonneg_right htop_le hL0.le) (by positivity)
+          _ = 480 * ((L ^ (1 / 4 : ℝ) * L ^ (1 / 2 : ℝ)) / L) := by ring
           _ = 480 / L ^ (1 / 4 : ℝ) := by
-            rw [← hsplit]; field_simp [(Real.rpow_pos_of_pos hL0 _).ne']; ring
+            have hid : (L ^ (1 / 4 : ℝ) * L ^ (1 / 2 : ℝ)) / L = 1 / L ^ (1 / 4 : ℝ) := by
+              rw [div_eq_div_iff hL0.ne' (Real.rpow_pos_of_pos hL0 _).ne']
+              linarith only [hsplit]
+            rw [hid]; ring
           _ ≤ 1 / 2 := by rw [div_le_iff₀ (by positivity)]; linarith only [hL14_960]
       have hpart2 : 48 * (8 * ((C_p + 1) / L) *
           ((8 * c ^ 7 + (⌊L ^ (13 / 32 : ℝ)⌋₊ : ℝ) ^ 2 *
             (1 + Real.log (⌊L ^ (13 / 32 : ℝ)⌋₊ : ℝ)) ^ 2) /
             tiltedSplineSpectralFloorConstant)) ≤ 1 / 2 := by
-        have hc7 : c ^ 7 ≤ L ^ (7 / 8 : ℝ) := by
-          have hp := pow_le_rpow_mul hL0 hc0.le hc_L8 7; push_cast at hp; exact hp
+        have hc7 : c ^ 7 ≤ L ^ (7 / 8 : ℝ) :=
+          (pow_le_rpow_mul hL0 hc0.le hc_L8 7).trans_eq (by congr 1; push_cast; ring)
         have hpoly32' : 1 + Real.log L ≤ L ^ (1 / 32 : ℝ) := by
           simpa only [one_mul, pow_one, hL_eq] using hpoly32
-        have hlQ : 1 + Real.log (⌊L ^ (13 / 32 : ℝ)⌋₊ : ℝ) ≤ L ^ (1 / 32 : ℝ) :=
-          (by linarith [Real.log_le_log (by linarith only [hQ1]) hQL]).trans hpoly32'
+        have hlQ : 1 + Real.log (⌊L ^ (13 / 32 : ℝ)⌋₊ : ℝ) ≤ L ^ (1 / 32 : ℝ) := by
+          have hlQ0 : 1 + Real.log (⌊L ^ (13 / 32 : ℝ)⌋₊ : ℝ) ≤ 1 + Real.log L := by
+            linarith [Real.log_le_log (by linarith only [hQ1]) hQL]
+          exact hlQ0.trans hpoly32'
         have hQ2_ub : (⌊L ^ (13 / 32 : ℝ)⌋₊ : ℝ) ^ 2 *
             (1 + Real.log (⌊L ^ (13 / 32 : ℝ)⌋₊ : ℝ)) ^ 2 ≤ L ^ (7 / 8 : ℝ) := by
           have h1 := pow_le_rpow_mul hL0 (by positivity) hQ_le 2
@@ -1893,15 +1902,20 @@ theorem exists_tiltedUnitSpline_spectralFloorWeilMatrix_posDef_at_critical_multi
         calc
           48 * (8 * ((C_p + 1) / L) *
               ((8 * c ^ 7 + (⌊L ^ (13 / 32 : ℝ)⌋₊ : ℝ) ^ 2 *
-                (1 + Real.log (⌊L ^ (13 / 32 : ℝ)⌋₊ : ℝ)) ^ 2) /
+                 (1 + Real.log (⌊L ^ (13 / 32 : ℝ)⌋₊ : ℝ)) ^ 2) /
                 tiltedSplineSpectralFloorConstant))
               ≤ 48 * (8 * ((C_p + 1) / L) *
                   ((9 * L ^ (7 / 8 : ℝ)) / tiltedSplineSpectralFloorConstant)) :=
             mul_le_mul_of_nonneg_left
               (mul_le_mul_of_nonneg_left (div_le_div_of_nonneg_right hsum9 hκ₀.le) (by positivity))
               (by norm_num)
+          _ = (3456 * (C_p + 1) / tiltedSplineSpectralFloorConstant) * (L ^ (7 / 8 : ℝ) / L) := by
+            ring
           _ = (3456 * (C_p + 1) / tiltedSplineSpectralFloorConstant) / L ^ (1 / 8 : ℝ) := by
-            rw [← hsplit]; field_simp [hκ₀.ne', (Real.rpow_pos_of_pos hL0 _).ne']; ring
+            have hid : L ^ (7 / 8 : ℝ) / L = 1 / L ^ (1 / 8 : ℝ) := by
+              rw [div_eq_div_iff hL0.ne' (Real.rpow_pos_of_pos hL0 _).ne']
+              linarith only [hsplit]
+            rw [hid]; ring
           _ ≤ 1 / 2 := by rw [div_le_iff₀ (by positivity)]; linarith only [hL8_deep]
       linarith only [hpart1, hpart2]
     have hμ₁ : 24 * L ^ (1 / 4 : ℝ) ≤ L ^ (1 / 2 : ℝ) / 32 := by
@@ -2061,7 +2075,8 @@ theorem exists_tiltedUnitSpline_growing_conductor_uniformity_at_critical_multipl
       c ^ 7 ≤ (2 * K₁ * Real.log (N : ℝ) ^ (1 / 8 : ℝ)) ^ 7 := pow_le_pow_left₀ hc0.le hcup 7
       _ = (2 * K₁) ^ 7 * (Real.log (N : ℝ) ^ (1 / 8 : ℝ)) ^ 7 := mul_pow _ _ 7
       _ = (2 * K₁) ^ 7 * Real.log (N : ℝ) ^ (7 / 8 : ℝ) := by
-        rw [← Real.rpow_natCast, ← Real.rpow_mul hL_pos.le]; norm_num
+        rw [← Real.rpow_natCast (Real.log (N : ℝ) ^ (1 / 8 : ℝ)) 7, ← Real.rpow_mul hL_pos.le]
+        norm_num
   have hdiv_le : tiltedSplineSpectralFloorConstant /
       (2 * (2 * K₁) ^ 7 * Real.log (N : ℝ) ^ (7 / 8 : ℝ)) ≤
       tiltedSplineSpectralFloorConstant / (2 * c ^ 7) := by
