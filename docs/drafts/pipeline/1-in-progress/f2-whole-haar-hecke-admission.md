@@ -1,7 +1,7 @@
 # F2 — whole-Haar admission of actual window lifts
 
 - **Stage:** 1-in-progress
-- **Conjecture:** For `Re s>0` and a smooth stage-`A` test `H`, the actual first source Hecke image `T₂,s(windowPeriodLift s H)` has finite Haar square energy on `(0,∞)` iff `H(−log2)=0`. Every test is admitted exactly when `A≤log2`.
+- **Conjecture:** For `Re s>0` and a `C²` stage-`A` test `H`, the actual first source Hecke image `T₂,s(windowPeriodLift s H)` has finite Haar square energy on `(0,∞)` iff `H(−log2)=0`. Every test is admitted exactly when `A≤log2`.
 - **Purpose:** Attach the paired WTZ period lift to the whole-axis physical carrier. Existing cusp-energy bounds cover only the upper endpoint; compact-support admission requires a stronger germ condition.
 
 ## Proposed mechanism

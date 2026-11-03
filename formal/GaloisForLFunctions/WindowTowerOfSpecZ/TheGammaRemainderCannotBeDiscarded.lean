@@ -1,4 +1,5 @@
 import GaloisForLFunctions.WindowTowerOfSpecZ.TheRetainedGammaLowerFormHasANegativeDirection
+import GaloisForLFunctions.WindowTowerOfSpecZ.TheGammaRemainderPaysAUniformReserve
 import GaloisForLFunctions.«arithmetic-positivity-theory».FactorialRampFullWeilSmoothingLimit
 
 /-!
@@ -6,6 +7,8 @@ import GaloisForLFunctions.«arithmetic-positivity-theory».FactorialRampFullWei
 
 Mollification followed by a compensating dilation preserves the unit support.
 Uniform Lipschitz bounds dominate the logarithmic lag integrand at zero.
+The exterior Gamma reserve repairs the same negative retained direction,
+giving a smooth test with negative retained form and positive complete form.
 -/
 
 noncomputable section
@@ -13,7 +16,7 @@ open Real MeasureTheory Set Filter Topology
 open _root_.RHTower _root_.RHTower.CHMDDoobGraph
 open _root_.RHTower.ArchimedeanAnomaly _root_.RHTower.WeilMarkovPole
 namespace GaloisForLFunctions.WindowTowerOfSpecZ
-open ArithmeticPositivityTheory
+open ArithmeticPositivityTheory SpacingScaleHarmonicAnalysis
 
 private def quinticPolynomial (x : ℝ) := 2*x-12*x^3+16*x^5
 
@@ -388,9 +391,26 @@ theorem exists_odd_unit_retainedGamma_neg :
   exact ⟨unitSmoothQuintic n, unitSmoothQuintic_contDiff n, unitSmoothQuintic_support n,
     unitSmoothQuintic_odd n, hn⟩
 
+/-- The discarded Gamma remainder repairs a negative retained direction on the same C² test. -/
+theorem exists_odd_unit_retainedGamma_neg_weil_pos :
+    ∃ F : ℝ → ℝ, ContDiff ℝ 2 F ∧ tsupport F ⊆ Icc (-(1/2 : ℝ)) (1/2) ∧
+      (∀ x, F (-x) = -F x) ∧ retainedOddGammaLowerForm F < 0 ∧ 0 < weilQuad F := by
+  have hneg := retainedOddGammaLowerForm_unitSmoothQuintic_tendsto.eventually
+    (Iio_mem_nhds retainedOddGammaLowerForm_quintic_neg)
+  have hpos :=
+    (retainedOddGammaLowerForm_unitSmoothQuintic_tendsto.add
+      (unitSmoothQuintic_mass_tendsto.div_const 64)).eventually
+      (Ioi_mem_nhds retainedOddGammaLowerForm_quintic_add_reserve_pos)
+  obtain ⟨n, hn, hp⟩ := (hneg.and hpos).exists
+  exact ⟨unitSmoothQuintic n, unitSmoothQuintic_contDiff n, unitSmoothQuintic_support n,
+    unitSmoothQuintic_odd n, hn, hp.trans_le
+      (weilQuad_ge_retainedOddGamma_add_reserve (unitSmoothQuintic_contDiff n)
+        (unitSmoothQuintic_support n) (unitSmoothQuintic_odd n))⟩
+
 end GaloisForLFunctions.WindowTowerOfSpecZ
 
 #print axioms GaloisForLFunctions.WindowTowerOfSpecZ.unitSmoothQuintic_support
 #print axioms GaloisForLFunctions.WindowTowerOfSpecZ.unitSmoothQuintic_tendsto
 
 #print axioms GaloisForLFunctions.WindowTowerOfSpecZ.exists_odd_unit_retainedGamma_neg
+#print axioms GaloisForLFunctions.WindowTowerOfSpecZ.exists_odd_unit_retainedGamma_neg_weil_pos

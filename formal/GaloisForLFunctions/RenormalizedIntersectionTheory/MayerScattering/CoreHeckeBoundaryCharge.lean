@@ -1,0 +1,9 @@
+import GaloisForLFunctions.RenormalizedIntersectionTheory.MayerScattering.WholeHaarHeckeWindowAdmission
+import GaloisForLFunctions.RenormalizedIntersectionTheory.MayerScattering.HeckeScatteringBoundaryCorrection
+import GaloisForLFunctions.RenormalizedIntersectionTheory.MayerScattering.ResonantCoreEndpointBounds
+import GaloisForLFunctions.HTGeometry.RealBaseCpowPolar
+import Mathlib.Analysis.Complex.ExponentialBounds
+
+/-!
+# The retained Hecke boundary charge of a resonant Mayer core
+-/

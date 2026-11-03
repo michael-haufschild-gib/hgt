@@ -1,7 +1,7 @@
 # Growing conductors at the critical curve (review-0311 §2.5.4)
 
 - **ID:** R0311-25-4
-- **Stage:** 1-in-progress
+- **Stage:** 3-formalized
 - **Type:** THEOREM (Lean)
 - **Source:** `docs/reports/review-0311/obstacles-summary.md` §2.5.4
 - **Statement:** Along `c⁸ = K log N`, the conductor decomposition of the tilted-spline form —
@@ -48,7 +48,9 @@ windows `h` or `0` and supports `{m}`, `{m, m'}`): `B_N(x_m, x_{m'}) → δ_{mm'
   `not_uniform_countRatio_up_to_N`, `tendsto_criticalCurve_quasimodes`,
   `completedConductorEnergy_eq_scaledCount`.
 
+Wired into `ArithmeticHodgeTheoryOfDegenerations.lean`.
+
 ## Gates
 - [x] 0 → 1  statement
 - [x] 1 → 2  paper proof
-- [ ] 2 → 3  every module passes `lake --old env lean`
+- [x] 2 → 3  every module passes `lake --old env lean`

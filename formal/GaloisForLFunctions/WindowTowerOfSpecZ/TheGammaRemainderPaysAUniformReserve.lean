@@ -36,9 +36,9 @@ private theorem gamma_three_modes_le {t : ℝ} (ht : 0 < t) :
   have h := Summable.sum_le_tsum (Finset.range 3)
     (fun n _ => (Real.exp_pos (-(2 * (n : ℝ) + 1 / 2) * t)).le)
     (hasSum_archLevyDensity ht).summable
-  rw [← archLevyDensity_eq_tsum ht] at h
+  rw [← _root_.RHTower.ArchimedeanAnomaly.archLevyDensity_eq_tsum ht] at h
   norm_num [Finset.sum_range_succ] at h
-  exact h
+  simpa only [neg_mul] using h
 
 /-- Three positive exponential modes give a lower bound for the exact exterior tail. -/
 theorem gamma_tail_one_three_modes :
@@ -52,7 +52,11 @@ theorem gamma_tail_one_three_modes :
   have h := setIntegral_mono_on ((h0.add h1).add h2) hw measurableSet_Ioi
     (fun t ht => gamma_three_modes_le (lt_trans zero_lt_one ht))
   simp only [Pi.add_apply] at h
-  rw [integral_add (h0.add h1) h2, integral_add h0 h1,
+  rw [integral_add
+    (f := fun x : ℝ => Real.exp (-(1 / 2 : ℝ) * x) + Real.exp (-(5 / 2 : ℝ) * x))
+    (g := fun x : ℝ => Real.exp (-(9 / 2 : ℝ) * x)) (h0.add h1) h2,
+    integral_add (f := fun x : ℝ => Real.exp (-(1 / 2 : ℝ) * x))
+      (g := fun x : ℝ => Real.exp (-(5 / 2 : ℝ) * x)) h0 h1,
     integral_exp_mul_Ioi (by norm_num : -(1 / 2 : ℝ) < 0),
     integral_exp_mul_Ioi (by norm_num : -(5 / 2 : ℝ) < 0),
     integral_exp_mul_Ioi (by norm_num : -(9 / 2 : ℝ) < 0),
@@ -126,7 +130,6 @@ theorem weilQuad_ge_retainedOddGamma_add_reserve {F : ℝ → ℝ}
       biScaleLevyEnergy F := by
     norm_num [markovForm, creationPotential, primeJump]
     rw [levyJump_eq_biScale hF hcs]
-    ring
   have hw : primeJumpWeight 2 = Real.log 2 / Real.sqrt 2 := by
     unfold primeJumpWeight
     rw [ArithmeticFunction.vonMangoldt_apply_prime Nat.prime_two]
@@ -207,11 +210,12 @@ private theorem quintic_pole_cost_le :
         linarith only [hxa]
       have hs : |Real.sinh (x / 2)| ≤ |x| / 2 * Real.cosh (1 / 4 : ℝ) := by
         rw [Real.abs_sinh, abs_div, abs_two]
-        exact (sinh_le_mul_cosh (by positivity)).trans
+        exact (ArithmeticIncidencePositivity.sinh_le_mul_cosh (by positivity)).trans
           (mul_le_mul_of_nonneg_left hcosh (by positivity))
       have hx2 : x ^ 2 ≤ 1 / 4 := by
         have h := pow_le_pow_left₀ (abs_nonneg x) hxa 2
-        simpa only [sq_abs] using h
+        norm_num only [sq_abs] at h
+        exact h
       have hnonneg : 0 ≤ x * quinticWindow x := by
         rw [quinticWindow, cubicWindow]
         have he : x * (2 * (x * max (1 - 4 * x ^ 2) 0) * (1 - 2 * x ^ 2)) =

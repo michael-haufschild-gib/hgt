@@ -4,29 +4,39 @@
 - **Stage:** 1-in-progress
 - **Type:** THEOREM (Lean) programme
 - **Source:** docs/reports/review-0311/obstacles-summary.md §2.7 (also §2.4, §2.5.1, §2.6.1)
-- **Statement:** the exact theory of growing windows: two-collar forms, kicks, canonical systems
-  (Schur–Levinson on the lattice), ground states, zero modes and margins along the window tower.
+- **Statement:** the exact theory of growing windows: two-collar forms and kicks (continuum), the
+  lattice canonical system of Spec ℤ (Schur–Levinson evolution of Weil sequences), ground states,
+  zero modes, angles and margins.
 
 ## Goal
 Answer the §2.7 questions by Lean theorems. Folder `formal/GaloisForLFunctions/GrowingWindowsOfSpecZ/`,
-umbrella `GrowingWindowsOfSpecZ.lean` (wire into `MainTheorems.lean`), README there.
+umbrella `GrowingWindowsOfSpecZ.lean` (wired into `MainTheorems.lean`), README there.
 WTZ, DZG, CWS, ACT, F1/F2 cards are owned by other agents: import, never edit.
 
-## Plan
-1. Two-collar calculus on `weilQuad`: interior tests, collar locality of the kick, two-collar form
-   (EReal infimum), kick law, stage criterion, `σ_A`-invariance, sector splitting by the collar
-   reflection `R u = −A − ℓ − u`.
-2. Abstract corner reduction (variational Schur complement, no inverses) for a symmetric bilinear
-   form positive definite on an interior subspace, with an involution swapping two corners.
-3. Lattice canonical system: Weil sequence of a bump, Toeplitz form, predictors, prediction errors,
-   Schur parameters, Levinson law, kick law (newest datum enters `β_m` with coefficient 1),
-   locality in the primes, RH ⇔ all lattice parameters in the open interval.
-4. Degeneration: one-dimensional palindromic kernel at a first critical lattice length, both
-   corners nonzero; continuum zero modes of definite `σ_A`-parity.
-5. Margins: `E_m = E_0∏(1 − γ_k²)`; soft vs exact.
+## Lean modules [L]
+TheTwoCollarFormOfAStage, TheKickIsTheCollarReflection, TheTwoCollarFormIsBornZero,
+ZeroModesHaveReflectionParity, TheLatticeCanonicalSystem, TheAnglesOfADegenerateWindow,
+ADegenerateWindowIsACurve, TheSchurParametersOfSpecZ, TheLatticeReadsThePrimesCausally,
+TheEvolutionStartsPositive, TheLatticeSelectsTheVonMangoldtWeight, ThePoleIsAHyperbolicPairOfAngles,
+MarginsAreBoundedByRecurrence. Each passes an individual `lake --old env lean` check; key theorems
+audited to `propext, Classical.choice, Quot.sound`.
 
 ## Status
-- README first draft written.
+- Continuum: kick reads collar data only; two-collar form (EReal infimum), kick law, stage criterion,
+  reflection invariance; born zero at each stage and monotone in the collar width; the kick is the
+  collar Rosati form, `±` the signature of the collar reflection on the `σ_A`-sectors; parity
+  splitting; frozen-negative tests forced into the source sectors; zero modes have parity; gap law.
+- Lattice: one/two-collar decompositions (`[[E, β], [β, E]]`), Levinson law, positivity ⇔ margins,
+  prediction interval `|β| < E`, kick law, causality, margins as products, monotone, recurrence bound;
+  degeneration: unique palindromic zero mode, `n + 1` simple unit-circle angles, Carathéodory–Fejér
+  (degenerate window = curve window with positive weights); outer predictors.
+- Spec ℤ: Toeplitz identity for lattice tests, independence of translates, RH ⇔ all margins positive
+  ⇔ all reflection coefficients in `(−1, 1)`; degenerate lattice refutes RH; locality/causality in the
+  primes, single-kick formula, rigidity interval of a weight; base positivity to total length
+  `181/250`; selection of `Λ` by the lattice; every kick necessary; free evolution fails; the pole as
+  the hyperbolic pair `e^{±h/2}`.
 
-## Open
-See README §7.
+## Open (README §7)
+Continuum two-collar form at the first prime (A8); stage-uniform ground states; continuum unique
+continuation (exclude the balanced split of the gap law); continuum limit `h → 0` (Krein system with
+atoms); Szegő law / recurrence of Weil orbit correlations under RH; the trivial additive angle (AHD).

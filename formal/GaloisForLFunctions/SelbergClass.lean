@@ -30,3 +30,4 @@ import GaloisForLFunctions.SelbergClass.PositiveFiniteEulerCompletion
 import GaloisForLFunctions.SelbergClass.PositiveFiniteEulerBound
 import GaloisForLFunctions.SelbergClass.PositiveFiniteEulerProduct
 import GaloisForLFunctions.SelbergClass.PositiveFiniteEulerTwins
+import GaloisForLFunctions.SelbergClass.PositiveFiniteEulerRate

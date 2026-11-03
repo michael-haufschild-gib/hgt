@@ -1,4 +1,4 @@
-import GaloisForLFunctions.GrowingWindowsOfSpecZ.TheSchurParametersOfSpecZ
+import GaloisForLFunctions.GrowingWindowsOfSpecZ.AWindowIsTheUnionOfItsLattices
 import GaloisForLFunctions.SelectivePositivityAndThresholdLaws.LiouvilleOddWindowRefutationAndSelectiveFullPositivity
 import GaloisForLFunctions.LatticeSectionTheory.WindowJumpCounts.SinglePrimeWindowJumpGraphAndObstructions
 import GaloisForLFunctions.ArithmeticCastelnuovoSeveri.SourceConeBoundaryApplications
@@ -53,17 +53,6 @@ theorem weilQuad_pos_of_short {G : ℝ → ℝ} (hG : G ∈ realTests) (hG0 : G 
   rw [hQ]
   have : (0 : ℝ) < 1 / 5000 * ∫ x, F x ^ 2 := by positivity
   linarith
-
-/-- A lattice test with `n + 1` sites of a bump supported in `[−r, 0]` is supported in
-`[−(nh + r), 0]`. -/
-theorem latticeTest_eq_zero_of_not_mem (hsupp : ∀ y, y ∉ Icc (-r) 0 → φ y = 0) (hh : 0 ≤ h)
-    {n : ℕ} (x : Fin (n + 1) → ℝ) {u : ℝ} (hu : u ∉ Icc (0 - (n * h + r)) 0) :
-    latticeTest φ h x u = 0 := by
-  rw [latticeTest_apply]
-  refine Finset.sum_eq_zero fun k _ => ?_
-  have hk : ((k : ℕ) : ℝ) ≤ n := by exact_mod_cast Nat.lt_succ_iff.mp k.isLt
-  have hk0 : (0 : ℝ) ≤ (k : ℕ) := Nat.cast_nonneg _
-  rw [hsupp _ fun hm => hu ⟨by nlinarith [hm.1], by nlinarith [hm.2]⟩, mul_zero]
 
 /-- **Short lattices are positive definite.** If `nh + r ≤ 181/250`, the lattice window of size
 `n + 1` of a nonzero bump supported in `[−r, 0]` is positive definite. -/

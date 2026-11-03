@@ -559,7 +559,7 @@ Stepanov over `ℤ` (AET) and over curves (LST).
 
 **To build.**
 - The ledger above the grid: mean values of conductor polynomials over the zeros above `πN/L`
-  (Gonek–Montgomery–Vaughan regime), and Mertens constants in progressions.
+  (Gonek–Montgomery–Vaughan regime).
 - The function-field complete family and its horizon layer; Zwegers–Vignéras completions of the
   isotropic count.
 
@@ -643,8 +643,10 @@ Stepanov over `ℤ` (AET) and over curves (LST).
    the pole and nothing else, so the zeros the atoms resolve (height `N/c`) carry nothing. The
    first-order count and the collective `1/log N` term are carried by the zeros above the grid,
    where the atoms see them through the spectral tail `|φ̂(cγ/N)|²`, `cγ/N ≥ λc`. Read on the
-   arithmetic side they are prime sums in progressions to the moduli `e e'`. Open: the limit, which
-   needs Mertens constants in progressions (a Tauberian theorem beyond PNT in progressions).
+   arithmetic side they are prime sums in progressions to the moduli `e e'`, whose constant terms
+   exist: `Σ_{n ≤ x, n ≡ a} Λ(n)/n = log x/φ(q) + C(q, a) + o(1)` (ArtinMertens, via Newman's
+   analytic theorem and `L(1 + it, χ) ≠ 0`). Open: the limit of the bulk entries in terms of these
+   constants.
 3. **The ledger above the grid.** Open: mean values of conductor polynomials over the zeros above
    `πN/L`, where the polynomials are shorter than the height (the regime of Gonek and
    Montgomery–Vaughan) and the off-diagonal terms are `Λ(n/m)` restricted to progressions.
@@ -703,6 +705,7 @@ Stepanov over `ℤ` (AET) and over curves (LST).
 | RHTower | partial zeta sums (`zetaStripError`), Euler–Maclaurin carriers, summability of Weil series, the Markov splitting of Weil's form (`weil_eq_markovForm_add_pole`), the symbol bounds `mu_ge_log`, `abs_PX_le` |
 | RenormalizedArithmeticPotentialTheory (completed shells) | the completed shell energy `E₁`, its increment law and positive Fourier series, Poisson on the lattice `ℤ/s` (`hasSum_shellSpectrum_int`): AHD differentiates it (`E₁' = −(2/∫φ²) a_φ`) |
 | EffectiveArithmeticHodgeTheory, HeckeKreinToeplitz | polarization of `weilQuad` on real tests, lower semicontinuity of the index, schedules reaching the index |
+| ArtinMertens | the Mertens constants in progressions (`tendsto_sum_residueClass_div_sub_log`, `tendsto_sum_prime_log_div_residueClass_sub_log`), Newman's analytic theorem (`newman_analytic_theorem`): the arithmetic constants of the bulk second order |
 | ArithmeticCastelnuovoSeveri | `weilGram`, the index bound by the right zeros (`negIndex_weilGram_le_offLineCount`); the curve calibration: tower Gram `= log q‖g‖² spanGram`, index `= #{|β| > 1}` (`curve_towerGram_eq_smul_spanGram`, `curve_tower_pontryagin_law`), finite monodromy |
 
 ## 12. Success criteria

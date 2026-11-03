@@ -709,12 +709,14 @@ theorem exists_sum_levyEnergy_dyadicCommutator_le :
       intro u
       have hdsum : deriv (fun v => ∑ n ∈ S_k, y n * h_atom n v) u =
           ∑ n ∈ S_k, y n * deriv (h_atom n) u := by
-        have h0 := HasDerivAt.sum (u := S_k) (x := u) (A := fun n v => y n * h_atom n v)
-          fun n (_ : n ∈ S_k) => ((hh_diff n u).hasDerivAt).const_mul (y n)
-        have h1 : HasDerivAt (fun v => ∑ n ∈ S_k, y n * h_atom n v)
-            (∑ n ∈ S_k, y n * deriv (h_atom n) u) u := by
-          simpa only [Finset.sum_apply] using h0
-        exact h1.deriv
+        have h0 : HasDerivAt (∑ n ∈ S_k, fun v => y n * h_atom n v)
+            (∑ n ∈ S_k, y n * deriv (h_atom n) u) u :=
+          HasDerivAt.sum fun n (_ : n ∈ S_k) => ((hh_diff n u).hasDerivAt).const_mul (y n)
+        have hfn : (∑ n ∈ S_k, fun v => y n * h_atom n v) =
+            fun v => ∑ n ∈ S_k, y n * h_atom n v := by
+          ext v; exact Finset.sum_apply v S_k _
+        rw [hfn] at h0
+        exact h0.deriv
       rw [hdsum]
       let ind : ℕ → ℝ := fun n =>
         (Set.Icc (Real.log n) (Real.log n + w)).indicator (fun _ => (1 : ℝ)) u
@@ -1107,11 +1109,10 @@ theorem exists_top_archForm_dyadic_seventh_reserve :
           (mul_nonneg zero_le_two (Real.exp_pos 1).le)).trans_eq (by ring)
       have h2 : 1 + 2 * Real.exp 1 * ck ≤ (1 + 8 * Real.exp 1) * c := by
         linarith only [hc1, h1]
-      simp only [K_low]
-      rw [mul_assoc]
-      exact mul_le_mul_of_nonneg_left h2
+      have h3 := mul_le_mul_of_nonneg_left h2
         (add_nonneg (add_nonneg factorialSpanGammaOffset_nonneg (Real.log_nonneg one_le_two))
-          (mul_nonneg zero_le_two (abs_nonneg _)))
+          (mul_nonneg zero_le_two (abs_nonneg (gammaHardyPhaseRate 0))))
+      exact h3.trans_eq (by simp only [K_low]; ring)
     linarith only [hpos_gain, hneg_cost]
   -- Coverage of `(M, N]` by the dyadic shells
   have hcov : ∀ n ∈ Ioc M N,
@@ -1226,11 +1227,11 @@ theorem exists_top_archForm_dyadic_seventh_reserve :
       simp_rw [hrestrict, sub_mul, mul_sum]
       rw [sum_sub_distrib, mul_sub]
       congr 1
-      · rw [sum_comm]
+      · rw [sum_comm, mul_sum]
         refine sum_congr rfl fun n _ => ?_
         rw [sum_mul, mul_sum, mul_sum]
         exact sum_congr rfl fun k _ => by ring
-      · rw [sum_comm]
+      · rw [sum_comm, mul_sum]
         refine sum_congr rfl fun n _ => ?_
         rw [sum_mul, mul_sum, mul_sum]
         exact sum_congr rfl fun k _ => by ring
@@ -1323,7 +1324,8 @@ theorem exists_top_archForm_dyadic_seventh_reserve :
             (fun n => dyadicShellBump N k (Real.log n) * y n) g u) -
         648 * L_B ^ 2 * ∫ u, atomicTest N y g u ^ 2 := by
       linarith only [htri_sum, hims]
-    have h648 := mul_le_mul_of_nonneg_left hfy2 (by positivity : 0 ≤ 648 * L_B ^ 2)
+    have h648 := mul_le_mul_of_nonneg_left hfy2
+      (mul_nonneg (by norm_num : (0 : ℝ) ≤ 648) (sq_nonneg L_B))
     have hhalf := mul_le_mul_of_nonneg_left hsum_F (by norm_num : (0 : ℝ) ≤ 1 / 2)
     have hcost_S : (9 * K_low / 2 + C_comm + 648 * L_B ^ 2 * (1 + 2 * Real.exp 1)) * c * G *
         (∑ n ∈ Ioc M N, x n ^ 2) ≤
@@ -1331,59 +1333,58 @@ theorem exists_top_archForm_dyadic_seventh_reserve :
           topCollarSeventhMass M N x :=
       mul_le_mul_of_nonneg_left hS_le_S7
         (mul_nonneg (mul_nonneg (add_nonneg (add_nonneg (by linarith only [hKlow0]) hCcomm0)
-          (mul_nonneg (mul_nonneg (by norm_num) (sq_nonneg L_B))
+          (mul_nonneg (mul_nonneg (by norm_num : (0 : ℝ) ≤ 648) (sq_nonneg L_B))
             (add_nonneg zero_le_one (mul_nonneg zero_le_two (Real.exp_pos 1).le)))) hc0.le) hG.le)
-    have hid_combine :
-        (1 / 2 : ℝ) * (G * (((1 / 2052 : ℝ) ^ 8 * growingMassConstant / (2 * 8 ^ 7 * c ^ 7)) *
-            Real.log N * topCollarSeventhMass M N x -
-            9 * K_low * c * ∑ n ∈ Ioc M N, x n ^ 2)) -
-          C_comm * c * G * (∑ n ∈ Ioc M N, x n ^ 2) -
-          648 * L_B ^ 2 * (G * ((1 + 2 * Real.exp 1) * c) * ∑ n ∈ Ioc M N, x n ^ 2) =
-        18 * (G * (((1 / 2052 : ℝ) ^ 8 * growingMassConstant / (72 * 8 ^ 7 * c ^ 7)) *
-            Real.log N * topCollarSeventhMass M N x)) -
-          (9 * K_low / 2 + C_comm + 648 * L_B ^ 2 * (1 + 2 * Real.exp 1)) * c * G *
-            (∑ n ∈ Ioc M N, x n ^ 2) := by ring
-    have hid_rhs :
-        18 * (G * (((1 / 2052 : ℝ) ^ 8 * growingMassConstant / (72 * 8 ^ 7 * c ^ 7)) *
-            Real.log N * topCollarSeventhMass M N x -
-            ((9 * K_low / 2 + C_comm + 648 * L_B ^ 2 * (1 + 2 * Real.exp 1)) / 18) *
-              c * topCollarSeventhMass M N x)) =
-        18 * (G * (((1 / 2052 : ℝ) ^ 8 * growingMassConstant / (72 * 8 ^ 7 * c ^ 7)) *
-            Real.log N * topCollarSeventhMass M N x)) -
-          (9 * K_low / 2 + C_comm + 648 * L_B ^ 2 * (1 + 2 * Real.exp 1)) * c * G *
-            topCollarSeventhMass M N x := by ring
+    have hid_combine := (fun (G' S S7 L e1 : ℝ) =>
+        (by ring :
+          (1 / 2 : ℝ) * (G' * (((1 / 2052 : ℝ) ^ 8 * growingMassConstant / (2 * 8 ^ 7 * c ^ 7)) *
+              L * S7 - 9 * K_low * c * S)) -
+            C_comm * c * G' * S -
+            648 * L_B ^ 2 * (G' * ((1 + 2 * e1) * c) * S) =
+          18 * (G' * (((1 / 2052 : ℝ) ^ 8 * growingMassConstant / (72 * 8 ^ 7 * c ^ 7)) *
+              L * S7)) -
+            (9 * K_low / 2 + C_comm + 648 * L_B ^ 2 * (1 + 2 * e1)) * c * G' * S))
+      G (∑ n ∈ Ioc M N, x n ^ 2) (topCollarSeventhMass M N x) (Real.log N) (Real.exp 1)
+    have hid_rhs := (fun (G' S7 L e1 : ℝ) =>
+        (by ring :
+          18 * (G' * (((1 / 2052 : ℝ) ^ 8 * growingMassConstant / (72 * 8 ^ 7 * c ^ 7)) *
+              L * S7 -
+              ((9 * K_low / 2 + C_comm + 648 * L_B ^ 2 * (1 + 2 * e1)) / 18) *
+                c * S7)) =
+          18 * (G' * (((1 / 2052 : ℝ) ^ 8 * growingMassConstant / (72 * 8 ^ 7 * c ^ 7)) *
+              L * S7)) -
+            (9 * K_low / 2 + C_comm + 648 * L_B ^ 2 * (1 + 2 * e1)) * c * G' * S7))
+      G (topCollarSeventhMass M N x) (Real.log N) (Real.exp 1)
     linarith only [h18, hhalf, hcomm_s, h648, hcost_S, hid_combine, hid_rhs]
   have hγ_S7 : 2 * |gammaHardyPhaseRate 0| * ∫ u, atomicTest N y g u ^ 2 ≤
       G * (2 * |gammaHardyPhaseRate 0| * (1 + 2 * Real.exp 1) * c * topCollarSeventhMass M N x) := by
-    have h1 := mul_le_mul_of_nonneg_left hfy2 (by positivity : 0 ≤ 2 * |gammaHardyPhaseRate 0|)
+    have hγ0 : 0 ≤ 2 * |gammaHardyPhaseRate 0| :=
+      mul_nonneg zero_le_two (abs_nonneg (gammaHardyPhaseRate 0))
+    have h1 := mul_le_mul_of_nonneg_left hfy2 hγ0
     have h2 := mul_le_mul_of_nonneg_left hS_le_S7
-      (by positivity : 0 ≤ 2 * |gammaHardyPhaseRate 0| * (G * ((1 + 2 * Real.exp 1) * c)))
-    have hid1 : 2 * |gammaHardyPhaseRate 0| * (G * ((1 + 2 * Real.exp 1) * c) *
-        ∑ n ∈ Ioc M N, x n ^ 2) =
-      2 * |gammaHardyPhaseRate 0| * (G * ((1 + 2 * Real.exp 1) * c)) *
-        ∑ n ∈ Ioc M N, x n ^ 2 := by ring
-    have hid2 : 2 * |gammaHardyPhaseRate 0| * (G * ((1 + 2 * Real.exp 1) * c)) *
-        topCollarSeventhMass M N x =
-      G * (2 * |gammaHardyPhaseRate 0| * (1 + 2 * Real.exp 1) * c * topCollarSeventhMass M N x) := by
-      ring
+      (mul_nonneg hγ0 (mul_nonneg hG.le
+        (mul_nonneg (add_nonneg zero_le_one (mul_nonneg zero_le_two (Real.exp_pos 1).le)) hc0.le)))
+    have hid1 := (fun (a G' b S : ℝ) => (by ring : a * (G' * b * S) = a * (G' * b) * S))
+      (2 * |gammaHardyPhaseRate 0|) G ((1 + 2 * Real.exp 1) * c) (∑ n ∈ Ioc M N, x n ^ 2)
+    have hid2 := (fun (a G' e1 S7 : ℝ) =>
+        (by ring : a * (G' * ((1 + 2 * e1) * c)) * S7 = G' * (a * (1 + 2 * e1) * c * S7)))
+      (2 * |gammaHardyPhaseRate 0|) G (Real.exp 1) (topCollarSeventhMass M N x)
     linarith only [h1, h2, hid1, hid2]
   have hid_const : dyadicTopMassConstant / c ^ 7 =
       (1 / 2052 : ℝ) ^ 8 * growingMassConstant / (72 * 8 ^ 7 * c ^ 7) := by
     unfold dyadicTopMassConstant; field_simp [hc0.ne']
   rw [hid_const, harch_eq]
-  have hid_arch : G * (((1 / 2052 : ℝ) ^ 8 * growingMassConstant / (72 * 8 ^ 7 * c ^ 7)) *
-        Real.log N * topCollarSeventhMass M N x -
-        C_arch * c * topCollarSeventhMass M N x) =
-      G * (((1 / 2052 : ℝ) ^ 8 * growingMassConstant / (72 * 8 ^ 7 * c ^ 7)) *
-        Real.log N * topCollarSeventhMass M N x -
-        ((9 * K_low / 2 + C_comm + 648 * L_B ^ 2 * (1 + 2 * Real.exp 1)) / 18) *
-          c * topCollarSeventhMass M N x) -
-      G * (2 * |gammaHardyPhaseRate 0| * (1 + 2 * Real.exp 1) * c * topCollarSeventhMass M N x) := by
-    simp only [C_arch]; ring
+  have hid_arch := (fun (G' A S7 B1 B2 : ℝ) =>
+      (by ring : G' * (A * S7 - (B1 + B2) * c * S7) =
+        G' * (A * S7 - B1 * c * S7) - G' * (B2 * c * S7)))
+    G (((1 / 2052 : ℝ) ^ 8 * growingMassConstant / (72 * 8 ^ 7 * c ^ 7)) * Real.log N)
+    (topCollarSeventhMass M N x)
+    ((9 * K_low / 2 + C_comm + 648 * L_B ^ 2 * (1 + 2 * Real.exp 1)) / 18)
+    (2 * |gammaHardyPhaseRate 0| * (1 + 2 * Real.exp 1))
   rw [hid_arch]
-  linarith only [hγ_fy, hγ_S7, hlev_fy,
-    (by ring : -2 * |gammaHardyPhaseRate 0| * ∫ u, atomicTest N y g u ^ 2 =
-      -(2 * |gammaHardyPhaseRate 0| * ∫ u, atomicTest N y g u ^ 2))]
+  have hid_neg := (fun (a I : ℝ) => (by ring : -2 * a * I = -(2 * a * I)))
+    |gammaHardyPhaseRate 0| (∫ u, atomicTest N y g u ^ 2)
+  linarith only [hγ_fy, hγ_S7, hlev_fy, hid_neg]
 
 /-! ### Logarithm-free prime self-form bound on the top collar -/
 
@@ -2041,6 +2042,41 @@ theorem exists_completeWeilEnergy_prefix_top_window_reserve_seventh :
   linarith only [hAb', hSb, hPb, hYb, hX, hXabs, hfyη, hLMη, hLME, hFhη, hFη, hFlam, hηG,
     hlamHM, hSG, hPG, hfinalF, hfinalW, hfy2, hE2exp]
 
+private theorem two_mul_one_div_two_mul (M : ℝ) : 2 * (1 / (2 * M)) = 1 / M := by
+  rw [one_div_mul_eq_div, mul_div_cancel_left₀ _ two_ne_zero]
+
+private theorem one_eighth_div_mul_eq (g c7 l : ℝ) :
+    (1 / 8 : ℝ) * (g / c7) * l = (g * l) / (8 * c7) := by
+  rw [one_div_mul_eq_div, div_div, mul_comm 8 c7, div_mul_eq_mul_div, mul_comm c7 8]
+
+private theorem mul_eq_quarter_mul {cp c th : ℝ} (hth : th ≠ 0) :
+    cp * c = th / 4 * (4 * cp / th * c) := by
+  field_simp [hth]
+
+private theorem eta_num_eq {A g l c : ℝ} (hc : c ≠ 0) :
+    A * (g * l) = (A * c ^ 7) * ((g / c ^ 7) * l) := by
+  field_simp [hc]
+
+private theorem window_pole_algebraic_eq {u c g0 l s e2 S7 : ℝ}
+    (hg : g0 ≠ 0) (hl : l ≠ 0) (hc : c ≠ 0) :
+    (16 * u * c ^ 8 / (g0 * l) * s) * (8 * e2 * c * S7) =
+      (1 / 8 : ℝ) * (g0 / c ^ 7) * l * S7 *
+        (1024 * u * s * e2 * c ^ 16 / (g0 ^ 2 * l ^ 2)) := by
+  field_simp [hg, hl, hc]; ring
+
+private theorem window_mass_algebraic_eq {u c g0 l s w cb lm P' th : ℝ}
+    (hg : g0 ≠ 0) (hl : l ≠ 0) (hth : th ≠ 0) :
+    16 * u * c ^ 8 / (g0 * l) * s * ((c * w * (cb * lm)) * P') =
+      th / 4 * l * P' * ((64 * u * s * w * cb / (g0 * th)) * (c ^ 9 * lm) / l ^ 2) := by
+  field_simp [hg, hl, hth]; ring
+
+private theorem top_budget_algebraic_eq {g0 c l S : ℝ} (hc : c ≠ 0) :
+    (g0 / (8 * c ^ 7)) * l * S =
+      (3 / 8 : ℝ) * (g0 / c ^ 7) * l * S -
+        (1 / 8 : ℝ) * (g0 / c ^ 7) * l * S -
+        (1 / 8 : ℝ) * (g0 / c ^ 7) * l * S := by
+  field_simp [hc]; ring
+
 /-- **Critical-multiple far reserve on `(V_1)ᗮ`.** There exists a fixed critical multiple
 `K₁_far > 0` such that for any polylogarithmic exponent `B : ℕ` and any `κ_P > 0`, eventually in
 `N` and uniformly across `1 ≤ c ≤ 2 K₁_far (log N)^{1/8}`, every pole-orthogonal vector keeps
@@ -2069,7 +2105,7 @@ theorem exists_critical_multiple_far_reserve :
   have hM_pos : 0 < M_far := zero_lt_one.trans_le hM1
   set K₁_far := 1 / (2 * M_far)
   have hK₁_pos : 0 < K₁_far := by positivity
-  have h2K₁ : 2 * K₁_far = 1 / M_far := by simp only [K₁_far]; field_simp
+  have h2K₁ : 2 * K₁_far = 1 / M_far := two_mul_one_div_two_mul M_far
   have h2K₁_le1 : 2 * K₁_far ≤ 1 := by rw [h2K₁]; exact div_le_one_of_le₀ hM1 hM_pos.le
   refine ⟨K₁_far, hK₁_pos, h2K₁_le1, ?_⟩
   intro B κ_P hκP
@@ -2077,7 +2113,8 @@ theorem exists_critical_multiple_far_reserve :
   have hα'0 : 0 < α' := by simp only [α']; norm_num
   set C_β := 1 + 25 / c₀ ^ 2 + |Real.log t₀|
   have hCβ : 0 ≤ C_β :=
-    add_nonneg (add_nonneg zero_le_one (div_nonneg (by norm_num) (sq_nonneg c₀))) (abs_nonneg _)
+    add_nonneg (add_nonneg zero_le_one (div_nonneg (by norm_num : (0 : ℝ) ≤ 25) (sq_nonneg c₀)))
+      (abs_nonneg _)
   set C_B := C_β + 1 + (Real.log 4 + 4)
   set K₂ := Real.log (8 * Real.exp 1 * (256 * Real.exp 2 + 4)) + 2 * (Real.log 4 + 4)
   have hlogN : Tendsto (fun N : ℕ => Real.log (N : ℝ)) atTop atTop :=
@@ -2121,8 +2158,10 @@ theorem exists_critical_multiple_far_reserve :
   have hℓpos : 0 < ℓ := zero_lt_one.trans_le hℓ1
   have hlogℓ0 : 0 ≤ Real.log ℓ := Real.log_nonneg hℓ1
   have h1logℓ_pos : 0 < (1 + Real.log ℓ) ^ B := pow_pos (by linarith only [hlogℓ0]) B
-  set θ := κ_P / (1 + Real.log ℓ) ^ B
-  have hθ : 0 < θ := div_pos hκP h1logℓ_pos
+  obtain ⟨θ, hθ_def⟩ : ∃ v, v = κ_P / (1 + Real.log ℓ) ^ B := ⟨_, rfl⟩
+  have hθ : 0 < θ := hθ_def.symm ▸ div_pos hκP h1logℓ_pos
+  have hθ_inv : ∀ X : ℝ, X / θ = (X / κ_P) * (1 + Real.log ℓ) ^ B := fun X => by
+    rw [hθ_def, div_div_eq_mul_div, div_mul_eq_mul_div]
   have hc0 : 0 < c := zero_lt_one.trans_le hc1
   have hNR : (0 : ℝ) < N := by exact_mod_cast (show 0 < N by omega)
   have hNexp : Real.exp ℓ = N := Real.exp_log hNR
@@ -2141,8 +2180,10 @@ theorem exists_critical_multiple_far_reserve :
       hLup.trans (mul_le_mul_of_nonneg_left hcℓ hCL.le)
     have hquad := Real.quadratic_le_exp_of_nonneg (show (0 : ℝ) ≤ ℓ / 2 by linarith only [hℓ1])
     have hℓ2_le : (256 * Real.exp 2 + 4) * ℓ ≤ Real.exp (ℓ / 2) := by
-      have : (256 * Real.exp 2 + 4) * ℓ ≤ (ℓ / 2) ^ 2 / 2 := by nlinarith only [hℓ_L]
-      linarith only [this, hquad]
+      have hm := mul_le_mul_of_nonneg_right hℓ_L hℓpos.le
+      have h1 : (256 * Real.exp 2 + 4) * ℓ ≤ (ℓ / 2) ^ 2 / 2 := by
+        linarith only [hm, (by ring : ℓ * ℓ = 8 * ((ℓ / 2) ^ 2 / 2))]
+      linarith only [h1, hquad, hℓ1]
     calc (linearDefectCutoff c : ℝ) ^ 2
         ≤ ((256 * Real.exp 2 + 4) * ℓ) ^ 2 := pow_le_pow_left₀ (Nat.cast_nonneg _) hLc_ℓ 2
       _ ≤ (Real.exp (ℓ / 2)) ^ 2 := pow_le_pow_left₀ (by positivity) hℓ2_le 2
@@ -2156,8 +2197,7 @@ theorem exists_critical_multiple_far_reserve :
   obtain ⟨h, T, lam, β, K', hlam, hlam1, hhdef, hh0, hh1, hT0, hT, hlogT, hTh, hhℓ, hlamG, hK'1,
     ht₀', hpnt', hlogK', hK'le, hβ, hβ0⟩ := exists_far_parameters hCψ hc₀ ht₀1 hℓ1 hC0 hlogℓ
   have hexp := far_exp_le hNexp hc1 hcℓ hℓ1 hα'0 hlam hCβ hβ hQ5
-  have hE := hres hc1 hL2N hz hh0 hh1 hT0 hT hK'1 ht₀'
-  clear hres
+  clear hQ5
   set M := N / linearDefectCutoff c
   set x := primeHorizonExtension z
   set P := ∑ n ∈ Icc 1 M, x n ^ 2
@@ -2179,9 +2219,9 @@ theorem exists_critical_multiple_far_reserve :
     have hp := pow_le_pow_left₀ hc0.le hc_ub 8
     rw [mul_pow, ← Real.rpow_natCast (ℓ ^ (1 / 8 : ℝ)), ← Real.rpow_mul hℓpos.le] at hp
     norm_num at hp
-    rwa [Real.rpow_one] at hp
+    exact hp
   have hc16_ub : c ^ 16 ≤ (2 * K₁_far) ^ 16 * ℓ ^ 2 := by
-    have hp := pow_le_pow_left₀ (by positivity : 0 ≤ c ^ 8) hc8_ub 2
+    have hp := pow_le_pow_left₀ (pow_nonneg hc0.le 8) hc8_ub 2
     linarith only [hp, (by ring : (c ^ 8) ^ 2 = c ^ 16),
       (by ring : ((2 * K₁_far) ^ 8 * ℓ) ^ 2 = (2 * K₁_far) ^ 16 * ℓ ^ 2)]
   -- 1. Top mass cost `C_S c ≤ (1 / 8) (dyadicTopMassConstant / c^7) ℓ`
@@ -2189,16 +2229,17 @@ theorem exists_critical_multiple_far_reserve :
     have hM_CS : 8 * C_S / dyadicTopMassConstant ≤ M_far :=
       (le_max_left _ _).trans (le_max_right _ _)
     have hprod : 8 * C_S * (2 * K₁_far) ^ 8 ≤ dyadicTopMassConstant := by
-      have hmul := mul_le_mul_of_nonneg_left h2K₁_8 (by positivity : 0 ≤ 8 * C_S)
+      have hmul := mul_le_mul_of_nonneg_left h2K₁_8
+        (mul_nonneg (by norm_num : (0 : ℝ) ≤ 8) hCS.le)
       have hdiv : 8 * C_S * (1 / M_far) ≤ dyadicTopMassConstant := by
         rw [mul_one_div, div_le_iff₀ hM_pos]
         have := (div_le_iff₀ hg₀).mp hM_CS
         linarith
       exact hmul.trans hdiv
-    rw [show (1 / 8 : ℝ) * (dyadicTopMassConstant / c ^ 7) * ℓ =
-      (dyadicTopMassConstant * ℓ) / (8 * c ^ 7) by field_simp, le_div_iff₀ (by positivity)]
+    rw [one_eighth_div_mul_eq, le_div_iff₀ (by positivity)]
     calc C_S * c * (8 * c ^ 7) = 8 * C_S * c ^ 8 := by ring
-      _ ≤ 8 * C_S * ((2 * K₁_far) ^ 8 * ℓ) := mul_le_mul_of_nonneg_left hc8_ub (by positivity)
+      _ ≤ 8 * C_S * ((2 * K₁_far) ^ 8 * ℓ) :=
+          mul_le_mul_of_nonneg_left hc8_ub (mul_nonneg (by norm_num : (0 : ℝ) ≤ 8) hCS.le)
       _ = (8 * C_S * (2 * K₁_far) ^ 8) * ℓ := by ring
       _ ≤ dyadicTopMassConstant * ℓ := mul_le_mul_of_nonneg_right hprod hℓpos.le
   -- 2. Prefix mass cost `C_P c ≤ (θ / 4) ℓ`
@@ -2206,12 +2247,15 @@ theorem exists_critical_multiple_far_reserve :
     rw [Real.rpow_one] at hQb
     have h1 : 4 * C_P / θ * c ≤ ℓ := by
       calc 4 * C_P / θ * c ≤ 4 * C_P / θ * ℓ ^ (1 / 8 : ℝ) :=
-            mul_le_mul_of_nonneg_left hc18 (by positivity)
+            mul_le_mul_of_nonneg_left hc18
+              (div_nonneg (mul_nonneg (by norm_num : (0 : ℝ) ≤ 4) hCP.le) hθ.le)
         _ = (4 * C_P / κ_P) * ℓ ^ (1 / 8 : ℝ) * (1 + Real.log ℓ) ^ B := by
-            simp only [θ]; field_simp [hκP.ne', h1logℓ_pos.ne']
+            rw [hθ_inv]; ring
         _ ≤ ℓ := hQb
-    calc C_P * c = θ / 4 * (4 * C_P / θ * c) := by field_simp [hθ.ne']
-      _ ≤ θ / 4 * ℓ := mul_le_mul_of_nonneg_left h1 (by positivity)
+    calc C_P * c = θ / 4 * (4 * C_P / θ * c) := mul_eq_quarter_mul hθ.ne'
+      _ ≤ θ / 4 * ℓ :=
+          mul_le_mul_of_nonneg_left h1 (div_nonneg hθ.le (by norm_num : (0 : ℝ) ≤ 4))
+  clear hQb
   -- 3. Window cost: pole part paid by `(1 / 8) (dyadicTopMassConstant / c^7) ℓ S7`, mass part by `(θ / 4) ℓ P`
   have hc_win : 16 * (1 + 2 * Real.exp 1 * c) / ((dyadicTopMassConstant / c ^ 7) * ℓ) *
         (splineWindowConstant * ((c / N) / h ^ 2)) *
@@ -2243,7 +2287,7 @@ theorem exists_critical_multiple_far_reserve :
         Nat.floor_le (by positivity)
       calc (c / (N : ℝ)) * ⌊(N : ℝ) * Real.exp (c / N)⌋₊
           ≤ (c / (N : ℝ)) * (N * Real.exp (c / N)) := mul_le_mul_of_nonneg_left hBn_le hw0.le
-        _ = c * Real.exp (c / N) := by field_simp [hNR.ne']
+        _ = c * Real.exp (c / N) := by rw [← mul_assoc, div_mul_cancel₀ _ hNR.ne']
         _ ≤ c * Real.exp 1 := mul_le_mul_of_nonneg_left (Real.exp_le_exp.mpr hw1) hc0.le
         _ = Real.exp 1 * c := by ring
     have hAB : ((M : ℝ) / 2) ≤ ⌊(N : ℝ) * Real.exp (c / N)⌋₊ := by
@@ -2268,10 +2312,7 @@ theorem exists_critical_multiple_far_reserve :
       rw [div_le_div_iff₀ (by positivity) (by positivity)]
       have hγ : 1 + 2 * Real.exp 1 * c ≤ (1 + 2 * Real.exp 1) * c := by
         nlinarith only [hc1, Real.exp_pos 1]
-      have e : 16 * (1 + 2 * Real.exp 1 * c) * (dyadicTopMassConstant * ℓ) =
-          (16 * (1 + 2 * Real.exp 1 * c) * c ^ 7) * ((dyadicTopMassConstant / c ^ 7) * ℓ) := by
-        field_simp [hc0.ne']
-      rw [e]
+      rw [eta_num_eq hc0.ne']
       refine mul_le_mul_of_nonneg_right ?_ (by positivity)
       have := mul_le_mul_of_nonneg_left hγ (show (0 : ℝ) ≤ 16 * c ^ 7 by positivity)
       nlinarith only [this]
@@ -2313,8 +2354,8 @@ theorem exists_critical_multiple_far_reserve :
               (mul_le_mul_of_nonneg_left hσ_S7 (by positivity)) (by positivity) (by positivity)
         _ = (1 / 8 : ℝ) * (dyadicTopMassConstant / c ^ 7) * ℓ * S7 *
             (1024 * (1 + 2 * Real.exp 1) * splineWindowConstant * Real.exp 2 * c ^ 16 /
-              (dyadicTopMassConstant ^ 2 * ℓ ^ 2)) := by
-            field_simp [hg₀.ne', hℓpos.ne', hc0.ne']; ring
+              (dyadicTopMassConstant ^ 2 * ℓ ^ 2)) :=
+            window_pole_algebraic_eq hg₀.ne' hℓpos.ne' hc0.ne'
         _ ≤ (1 / 8 : ℝ) * (dyadicTopMassConstant / c ^ 7) * ℓ * S7 * 1 := by
             refine mul_le_mul_of_nonneg_left ?_ (by positivity)
             rw [div_le_one (by positivity)]
@@ -2397,6 +2438,15 @@ theorem exists_critical_multiple_far_reserve :
             hP0) (by positivity) (by positivity)
       refine hb1.trans ?_
       rw [Real.rpow_two] at hQP
+      have hAw_nn : 0 ≤ 64 * (1 + 2 * Real.exp 1) * splineWindowConstant *
+          (100 * Real.exp 2 + 100 * Real.exp 1 + 10) * C_B ^ 2 / (dyadicTopMassConstant * θ) :=
+        div_nonneg (mul_nonneg (mul_nonneg (mul_nonneg
+          (mul_nonneg (by norm_num : (0 : ℝ) ≤ 64)
+            (add_nonneg zero_le_one (mul_nonneg zero_le_two (Real.exp_pos 1).le))) hκ_nn)
+          (add_nonneg (add_nonneg (mul_nonneg (by norm_num : (0 : ℝ) ≤ 100) (Real.exp_pos 2).le)
+            (mul_nonneg (by norm_num : (0 : ℝ) ≤ 100) (Real.exp_pos 1).le))
+            (by norm_num : (0 : ℝ) ≤ 10)))
+          (sq_nonneg C_B)) (mul_nonneg hg₀.le hθ.le)
       have hQP_θ : (64 * (1 + 2 * Real.exp 1) * splineWindowConstant *
           (100 * Real.exp 2 + 100 * Real.exp 1 + 10) * C_B ^ 2 /
           (dyadicTopMassConstant * θ)) * (c ^ 9 * lam ^ 4) ≤ ℓ ^ 2 := by
@@ -2406,23 +2456,18 @@ theorem exists_critical_multiple_far_reserve :
             ≤ (64 * (1 + 2 * Real.exp 1) * splineWindowConstant *
                 (100 * Real.exp 2 + 100 * Real.exp 1 + 10) * C_B ^ 2 /
                 (dyadicTopMassConstant * θ)) * ℓ ^ (13 * α') :=
-              mul_le_mul_of_nonneg_left hc13 (by positivity)
+              mul_le_mul_of_nonneg_left hc13 hAw_nn
           _ = (64 * (1 + 2 * Real.exp 1) * splineWindowConstant *
                 (100 * Real.exp 2 + 100 * Real.exp 1 + 10) * C_B ^ 2 /
                 (dyadicTopMassConstant * κ_P)) * ℓ ^ (13 * α') * (1 + Real.log ℓ) ^ B := by
-              simp only [θ]; field_simp [hg₀.ne', hκP.ne', h1logℓ_pos.ne']
+              rw [← div_div, hθ_inv, div_div]; ring
           _ ≤ ℓ ^ 2 := hQP
-      have e : 16 * (1 + 2 * Real.exp 1) * c ^ 8 / (dyadicTopMassConstant * ℓ) *
-          splineWindowConstant *
-          ((c * (100 * Real.exp 2 + 100 * Real.exp 1 + 10) * (C_B ^ 2 * lam ^ 4)) * P) =
-          θ / 4 * ℓ * P * ((64 * (1 + 2 * Real.exp 1) * splineWindowConstant *
-            (100 * Real.exp 2 + 100 * Real.exp 1 + 10) * C_B ^ 2 /
-            (dyadicTopMassConstant * θ)) * (c ^ 9 * lam ^ 4) / ℓ ^ 2) := by
-        field_simp [hg₀.ne', hℓpos.ne', hθ.ne']; ring
-      rw [e]
+      rw [window_mass_algebraic_eq hg₀.ne' hℓpos.ne' hθ.ne']
       calc _ ≤ θ / 4 * ℓ * P * 1 :=
-            mul_le_mul_of_nonneg_left ((div_le_one (by positivity)).mpr hQP_θ) (by positivity)
+            mul_le_mul_of_nonneg_left ((div_le_one (pow_pos hℓpos 2)).mpr hQP_θ)
+              (mul_nonneg (mul_nonneg (div_nonneg hθ.le (by norm_num : (0 : ℝ) ≤ 4)) hℓpos.le) hP0)
         _ = θ / 4 * ℓ * P := mul_one _
+  clear hQP
   -- 4. Translate cost `≤ (θ / 4) ℓ` via `far_cost_translate`
   have hd : (16 * (1 + 2 * Real.exp 1 * c) / ((dyadicTopMassConstant / c ^ 7) * ℓ) * (T * h) ^ 2 +
         8 / (Real.log T - factorialSpanGammaOffset)) *
@@ -2435,8 +2480,8 @@ theorem exists_critical_multiple_far_reserve :
       have he2 := Real.one_le_exp (show (0 : ℝ) ≤ 2 by norm_num)
       have h1 : 0 ≤ Real.log (8 * Real.exp 1 * (256 * Real.exp 2 + 4)) :=
         Real.log_nonneg (by nlinarith only [he1, he2])
-      have := Real.log_nonneg (show (1 : ℝ) ≤ 4 by norm_num)
-      simp only [K₂]; positivity
+      have hl4 := Real.log_nonneg (show (1 : ℝ) ≤ 4 by norm_num)
+      simp only [K₂]; linarith only [h1, hl4]
     have hΦ := translate_factor_le hc1 h2LN
     set Φ := (1 + 2 * Real.exp 1 * ((c / N) * ⌊(N : ℝ) * Real.exp (c / N)⌋₊)) *
       (Real.log ⌊(N : ℝ) * Real.exp (c / N)⌋₊ *
@@ -2446,7 +2491,10 @@ theorem exists_critical_multiple_far_reserve :
       refine hΦ.trans ?_
       have h1 : 1 + ℓ ≤ 2 * ℓ := by linarith only [hℓ1]
       exact mul_le_mul_of_nonneg_right
-        (mul_le_mul_of_nonneg_left h1 (by positivity)) (by linarith only [hlogc0])
+        (mul_le_mul_of_nonneg_left h1
+          (mul_nonneg (mul_nonneg
+            (add_nonneg zero_le_one (mul_nonneg zero_le_two (Real.exp_pos 2).le)) hK₂) hc0.le))
+        (by linarith only [hlogc0])
     have hΦ0 : 0 ≤ Φ := by
       have hN1 : 1 ≤ N := by omega
       have hBn1 : (1 : ℝ) ≤ ⌊(N : ℝ) * Real.exp (c / N)⌋₊ := by
@@ -2470,46 +2518,46 @@ theorem exists_critical_multiple_far_reserve :
         linarith only [h1, h2]
       have h3 := Real.log_nonneg hrat
       have hl4 := Real.log_nonneg (show (1 : ℝ) ≤ 4 by norm_num)
-      refine mul_nonneg (add_nonneg zero_le_one (mul_nonneg (by positivity)
+      refine mul_nonneg (add_nonneg zero_le_one (mul_nonneg
+        (mul_nonneg zero_le_two (Real.exp_pos 1).le)
         (mul_nonneg (div_nonneg hc0.le hNR.le) (Nat.cast_nonneg _))))
         (mul_nonneg hlogBn (by linarith only [h3, hl4]))
     have hηi : 16 * (1 + 2 * Real.exp 1 * c) / ((dyadicTopMassConstant / c ^ 7) * ℓ) ≤
         16 * (1 + 2 * Real.exp 1) * c ^ 8 / (dyadicTopMassConstant * ℓ) := by
-      rw [div_le_div_iff₀ (by positivity) (by positivity)]
+      rw [div_le_div_iff₀ (mul_pos (div_pos hg₀ (pow_pos hc0 7)) hℓpos) (mul_pos hg₀ hℓpos)]
       have hγ : 1 + 2 * Real.exp 1 * c ≤ (1 + 2 * Real.exp 1) * c := by
         nlinarith only [hc1, Real.exp_pos 1]
-      have e : 16 * (1 + 2 * Real.exp 1 * c) * (dyadicTopMassConstant * ℓ) =
-          (16 * (1 + 2 * Real.exp 1 * c) * c ^ 7) * ((dyadicTopMassConstant / c ^ 7) * ℓ) := by
-        field_simp [hc0.ne']
-      rw [e]
-      refine mul_le_mul_of_nonneg_right ?_ (by positivity)
-      have := mul_le_mul_of_nonneg_left hγ (show (0 : ℝ) ≤ 16 * c ^ 7 by positivity)
+      rw [eta_num_eq hc0.ne']
+      refine mul_le_mul_of_nonneg_right ?_ (mul_pos (div_pos hg₀ (pow_pos hc0 7)) hℓpos).le
+      have := mul_le_mul_of_nonneg_left hγ
+        (mul_nonneg (by norm_num : (0 : ℝ) ≤ 16) (pow_nonneg hc0.le 7))
       nlinarith only [this]
     have h9 := pow_le_rpow_of_le_rpow hc1 hcα' hℓpos.le 9
     norm_num at h9
     have hQd_θ : 256 * (1 + 2 * Real.exp 1) * (1 + 2 * Real.exp 2) * K₂ /
         (dyadicTopMassConstant * θ) * ℓ ^ (9 * α' + 1) * (1 + Real.log ℓ) ^ 1 ≤ ℓ ^ (4 : ℝ) := by
       refine le_trans (le_of_eq ?_) hQd
-      simp only [θ]; rw [pow_one, pow_succ]; field_simp [hg₀.ne', hκP.ne', h1logℓ_pos.ne']; ring
+      rw [← div_div, hθ_inv, div_div, pow_one, pow_succ]
+      ring
     have hQd'_θ : 256 * (1 + 2 * Real.exp 2) * K₂ / θ * ℓ ^ (1 / 8 + 1 : ℝ) *
         (1 + Real.log ℓ) ^ 1 ≤ ℓ ^ (1 + α') := by
       refine le_trans (le_of_eq ?_) hQd'
-      simp only [θ]; rw [pow_one, pow_succ]; field_simp [hκP.ne', h1logℓ_pos.ne']; ring
+      rw [hθ_inv, pow_one, pow_succ]
+      ring
     rw [hTh, hlogT]
     exact far_cost_translate hℓ1 hc1 hθ hg₀ hK₂ hηi hΦ' hΦ0 h9 hc18
       (Real.log_le_log hc0 hcℓ) hlogc0 hQd_θ hQd'_θ hlam hlamG (zero_lt_one.trans_le hlam1)
+  clear hQd hQd'
   -- Assemble all four budgets
+  have hE := hres hc1 hL2N hz hh0 hh1 hT0 hT hK'1 ht₀'
+  clear hres
   have haS := mul_le_mul_of_nonneg_right ha hS7_0
   have hbP := mul_le_mul_of_nonneg_right hb hP0
   have hdP := mul_le_mul_of_nonneg_right hd hP0
-  have hθP_nn : 0 ≤ θ * ℓ * P := by positivity
-  have hid_top : (dyadicTopMassConstant / (8 * c ^ 7)) * ℓ * S7 =
-      (3 / 8 : ℝ) * (dyadicTopMassConstant / c ^ 7) * ℓ * S7 -
-        (1 / 8 : ℝ) * (dyadicTopMassConstant / c ^ 7) * ℓ * S7 -
-        (1 / 8 : ℝ) * (dyadicTopMassConstant / c ^ 7) * ℓ * S7 := by
-    field_simp [hc0.ne']; ring
+  have hθP_nn : 0 ≤ θ * ℓ * P := mul_nonneg (mul_nonneg hθ.le hℓpos.le) hP0
+  have hid_top := top_budget_algebraic_eq (g0 := dyadicTopMassConstant) (l := ℓ) (S := S7) hc0.ne'
   have hid_θ : (κ_P * ℓ / (1 + Real.log ℓ) ^ B) * P = θ * ℓ * P := by
-    simp only [θ]; ring
+    rw [hθ_def]; ring
   linarith only [hE, haS, hbP, hc_win, hdP, hθP_nn, hid_top, hid_θ]
 
 end GaloisForLFunctions.CriticalArithmeticCorrelationTheory

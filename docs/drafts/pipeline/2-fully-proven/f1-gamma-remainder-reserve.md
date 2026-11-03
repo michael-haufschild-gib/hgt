@@ -7,6 +7,7 @@
 - **Statement:** For every real odd C² unit-window test, the complete form satisfies
   `Q(F)≥P(F)+E/64`.
   Here `E=∫F²` and `P` is the source card's exact retained Gamma/prime/pole form.
+  Some such test has `P(F)<0<Q(F)`.
 
 ## Proof
 
@@ -27,9 +28,33 @@ The nonnegative lag deficit and kernel remainder then give `Q−P≥2δE≥E/64`
 All integrals exist by compact C² regularity; the three retained modes are integrable
 exponentials. Prime and pole terms cancel exactly in this comparison.
 
-**Lean:** `TheGammaComparisonRetainsItsLagMoments` now retains the exact exterior tail.
-`TheGammaRemainderPaysAUniformReserve` contains the three-mode and complete-form proofs;
-individual source and transitive-axiom audits remain pending.
+## Repair of the quintic direction
+
+For `F(x)=2x(1−4x²)(1−2x²)` on the unit window, the exact lag data from the
+[retained-form obstruction](../5-failed/f1-quintic-retained-gamma-obstruction.md) give
+`−E/64<P(F)<0`. For the new lower bound, put `l=693147180/10⁹`, `h=693147181/10⁹`.
+Replacing positive powers in its correlation polynomial by their values at `h`, and
+negative powers by their values at `l`, gives a negative rational upper bound `c₊`.
+The prime gain is at least `−2(49/100)c₊`.
+
+The source has the sign of `x`; `|2sinh(x/2)|≤|x|cosh(1/4)` and `cosh(1/4)²≤16/15`
+give `½(sinhPairing F)²≤(8/15)(11/210)²`. Also
+`γ+logπ+log2≤577216/10⁶+1098613/10⁶+31416/30000−1+h`, using
+`logπ≤log3+π/3−1`. Substitution in the exact lag formula gives `P(F)+E/64>0`
+by rational arithmetic. This rational certificate is kernel-checked.
+
+The support-preserving smooth approximants already converge in `P` and in mass.
+Their eventual signs are therefore `P(Fₙ)<0<P(Fₙ)+Eₙ/64≤Q(Fₙ)`.
+Thus the discarded Gamma remainder repairs the same negative retained direction.
+
+**Lean:** `TheGammaComparisonRetainsItsLagMoments` retains the exact exterior tail;
+its individual source and transitive-axiom audit passes with standard axioms only.
+`TheGammaRemainderPaysAUniformReserve` proves `gamma_tail_one_reserve`,
+`weilQuad_ge_retainedOddGamma_add_reserve`, and
+`retainedOddGammaLowerForm_quintic_add_reserve_pos`. Its individual source audit passes,
+with `[propext, Classical.choice, Quot.sound]` only; it is umbrella-imported.
+`TheGammaRemainderCannotBeDiscarded` contains the simultaneous C² sign witness,
+whose final audit remains pending.
 
 ## Remaining sign
 

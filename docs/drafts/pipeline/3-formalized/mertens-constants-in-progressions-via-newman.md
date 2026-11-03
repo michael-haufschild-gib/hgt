@@ -37,5 +37,10 @@ of fixed conductor packets (AHD).
    indicator; the principal character contributes `Σ_{n≤x} Λ(n)/n − log x → −γ` minus the summable
    defect `Σ_{(n,q)>1} Λ(n)/n` over the powers of the primes dividing `q` (`summable_principalDefect`).
 
+4. **Over the primes** (`tendsto_sum_prime_log_div_residueClass_sub_log`). The non-prime prime
+   powers carry a convergent series (`summable_notPrimeVonMangoldt_div`, from Mertens' bounded tail
+   `RHTower.Mertens.tail_bounded`), so `Σ_{p ≤ x, p ≡ a} log p/p − log x/φ(q) → C(q, a) −
+   Σ_{n ≡ a, n not prime} Λ(n)/n`.
+
 ## Log
 - 2026-11-03 — proved and formalized (three modules in `ArtinMertens/`).
