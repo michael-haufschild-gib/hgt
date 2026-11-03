@@ -24,7 +24,9 @@ private def ordinaryThetaCoordinate (z : ℂ) : ℂ :=
 
 private theorem ordinaryThetaCoordinate_im (z : ℂ) :
     (ordinaryThetaCoordinate z).im = z.re / (2 * Real.pi) := by
-  simp [ordinaryThetaCoordinate, Complex.div_ofReal_im]
+  unfold ordinaryThetaCoordinate
+  rw [Complex.div_ofReal_im]
+  simp
 
 private theorem ordinaryExponentialTerm_eq_theta (F : ExtendedSelbergClass) (z : ℂ) (n : ℕ) :
     ordinaryExponentialTerm F z n = thetaTerm F.coeff 1 0 (ordinaryThetaCoordinate z) n := by

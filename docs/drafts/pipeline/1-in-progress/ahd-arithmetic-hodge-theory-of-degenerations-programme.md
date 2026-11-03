@@ -43,7 +43,9 @@ TheFrequencyTwistIsQuietBelowItsResonance, TheEnergyOfAFrequencyTwist, EveryFreq
 TheHorizonLayerIsGradedByFrequency, EveryFrequencySectorInheritsThePolarization,
 TheMonodromyRateOfACurveIsItsZeroWidth, ThePartialZetaSumIsQuietBelowItsGrid,
 TheBulkIsBlindBelowItsGrid, TheUntwistedCountIsTheFinitePartAtZeroFrequency,
-TheBulkSecondOrderOfThePoleIsAStieltjesConstant, TheBulkEntriesAreReadByTheStieltjesConstants.
+TheBulkSecondOrderOfThePoleIsAStieltjesConstant, TheBulkEntriesAreReadByTheStieltjesConstants,
+HyperbolaSumsOfAVonMangoldtTail, TheCharacterPacketsReadTheLogarithmicDerivative, TheCenterPartOfTheBulkEntries,
+TheCrossErrorOfTheBulkEntries, TheBulkEntriesAtEveryOverlap.
 
 ## Status
 - First order = count: `J(m) = J(1) #ℙ⁷(ℤ/m)`; count law over every finite ring (𝔽_q[T] calibration) [L].
@@ -123,7 +125,9 @@ TheBulkSecondOrderOfThePoleIsAStieltjesConstant, TheBulkEntriesAreReadByTheStiel
   `λ_i` relative eigenvalues of `κW(H)` against `A(H)` [L].
 - Bulk second order, prime part: `⟨P R_e, R_{e'}⟩ − (log N − ρ_e)⟨R_e, R_{e'}⟩ → D(e, e')`, a polynomial in
   `γ, γ₁` and logarithms of divisors; `D(p,p) = 2γ₁ + γ² + p log²p/(p−1)²`; no progression constants [L].
+- Complete bulk entries at overlap `0 < c < 1`: `→ −D + C_α − Cr_{φ,c}` (center part, cross error) [L].
+  Character packets: energy `−2 Re L'/L(1,χ)`, second order `−2(φ(q)/q) Re (L'/L)'(1,χ)` [L].
 
 ## Open
 Gap between resolved zeros and Shannon number; bulk ledger above the grid; archimedean and pole
-parts of the bulk entries at overlap `c` (prime part: `D(e, e')` in `γ, γ₁`, proved [L]); count of the second order; integer; `𝔽_q(T)` complete family. See README §9.
+bulk entries along a growing overlap (`c ≥ 1`, critical curve); count of the second order; integer; `𝔽_q(T)` complete family. See README §9.

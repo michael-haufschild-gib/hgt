@@ -22,7 +22,7 @@ TheEvolutionStartsPositive, TheLatticeSelectsTheVonMangoldtWeight, ThePoleIsAHyp
 MarginsAreBoundedByRecurrence, TheLatticeHasNoSlackUnderRH, RefiningTheLatticeLowersTheMargin,
 TheSzegoVerblunskyLaw, TheContinuumMarginIsTheDyadicLimit, ForbiddingLatticeZeroModesIsRH,
 TheFirstPrimeStageOpensPositive, TheLatticeSchurDataCoalesce, GapContinuationIsNotStructural,
-TheFirstMarginIsBornQuadratically. Each passes an individual `lake --old env lean` check; key theorems
+TheFirstMarginIsBornQuadratically, ACurveDegeneratesAtItsNumberOfAngles. Each passes an individual `lake --old env lean` check; key theorems
 audited to `propext, Classical.choice, Quot.sound`.
 
 ## Status
@@ -41,7 +41,8 @@ audited to `propext, Classical.choice, Quot.sound`.
   `181/250`; selection of `Λ` by the lattice; every kick necessary; free evolution fails; the pole as
   the hyperbolic pair `e^{±h/2}`; under RH every lattice is singular (margins → 0; RH ⇔ all lattices
   positive and singular); refinement lowers margins; the corner margin is degenerate (`= 0` under RH)
-  and the first margin is born at order `h²` with coefficient the second zero moment; Szegő–Verblunsky: collapse ⇔ `Σγ² = ∞`, under RH never square-summable; Lyapunov identity and
+  and the first margin is born at order `h²` with coefficient the second zero moment; a curve with
+  `|S|` conjugation-closed angles first degenerates exactly at margin index `|S|`; Szegő–Verblunsky: collapse ⇔ `Σγ² = ∞`, under RH never square-summable; Lyapunov identity and
   two-sided bounds for `Σγ²`, lower bound by orbit recurrence; RH ⇔ no lattice
   degenerates; zero modes continue uniquely from an end collar; the pole plane has one negative
   square; the first prime stage opens positive (`log 2 ≤ A ≤ 181/250`); fixed-index Schur data

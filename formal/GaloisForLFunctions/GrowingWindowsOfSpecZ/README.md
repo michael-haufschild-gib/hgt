@@ -113,6 +113,9 @@ sign with nonzero ends (`toeplitzForm_kernel_of_first_critical`, `levinsonVec_re
 polynomial has `n + 1` simple zeros on the unit circle (`norm_eq_one_of_critical_root`,
 `zeroMode_roots`), and the frozen data are the power sums of these angles with positive weights
 (`degenerate_window_is_curve`): at its first failure a window is the window of a curve over `𝔽_q`.
+Conversely a curve with `|S|` angles closed under conjugation is positive definite through size `|S|`
+and degenerates exactly at margin index `|S|` (`curve_first_critical`): the first critical index of a
+window is the number of its angles, `2g` for a curve of genus `g` with distinct angles.
 The pole is the pair of hyperbolic angles `e^{±h/2}` of every lattice, carrying exactly one negative
 square (`toeplitzForm_polar_eq_hyperbolic`, `polarSeq_signature`). Off RH some lattice degenerates
 exactly, so RH is the absence of such curve-like edges (`riemannHypothesis_iff_no_degenerate_lattice`).
@@ -215,6 +218,7 @@ no-go with its survivor. The topics below are the research that the answers open
 | Outer ground states; angles on the circle | `norm_gt_one_of_predictor_root`, `toeplitz_rows_eq_zero`, `norm_eq_one_of_critical_root` |
 | The angles are simple and number `n + 1` | `hform_zeroMode_eq_zero`, `natDegree_zeroMode`, `not_sq_dvd_zeroMode`, `zeroMode_roots` |
 | A degenerate window is a curve (Carathéodory–Fejér) | `hform_orth_of_eigen`, `eq_sum_cofactor`, `hform_eq_sum_diag`, `degenerate_window_is_curve` |
+| A curve degenerates at its number of angles | `curveData`, `curveData_isEven`, `toeplitzForm_curveData`, `curveData_posDef`, `curveData_not_posDef`, `curve_first_critical` |
 | The pole is a hyperbolic pair of angles | `weilSeq_eq_polar_sub_local`, `toeplitzForm_polar`, `toeplitzForm_polar_eq_hyperbolic` |
 | The trivial angles carry one negative square | `polarSeq_single`, `polarSeq_firstDiff`, `polarSeq_signature`, `weilSeq_eq_polarSeq_sub` |
 | Forbidding lattice zero modes is RH | `weilOrbitCorr_neg`, `levinsonErr_one`, `zeta_orbitCorr_eq`, `exists_short_generic`, `exists_degenerate_lattice_of_not_riemannHypothesis`, `riemannHypothesis_iff_no_degenerate_lattice` |
@@ -287,9 +291,19 @@ The criteria that review-0311 §2.7 sets for the field, and where they are met:
 | Exactness (unbounded rank, no lossy payments) | Levinson evolution and one/two-collar decompositions are identities; `toeplitzForm_posDef_iff`, `stage_criterion` |
 | Signed kicks; the pre-installed sign | `corr_eq_of_even`, `corr_eq_of_odd`, `collar_antisymmetric_of_frozen_negative_even`, `collar_symmetric_of_frozen_negative_odd`, `schurParam_single_kick` |
 | Reflection of Rosati type | `corr_eq_collar_windowInvolution`, `twoCollarForm_windowInvolution`, `window_nonneg_iff_sectors` |
-| Selection by positivity; curves reproduced; node criticality | `lattice_selects_vonMangoldt`, `degenerate_window_is_curve`, `exists_lattice_failure_of_delete`, `exists_free_lattice_failure` |
+| Selection by positivity; curves reproduced; node criticality | `lattice_selects_vonMangoldt`, `degenerate_window_is_curve`, `curve_first_critical`, `exists_lattice_failure_of_delete`, `exists_free_lattice_failure` |
 | Prime-blind output | the lattice evolution is defined for every weight (`weilSeqW`) and selects `Λ` (`lattice_selects_vonMangoldt`, `exists_lattice_failure_of_ne`) |
 | Dimension | DZG: positivity on the imaginary Tate line, none in real dimension |
+
+The first tests that review-0311 §2.7 names, and their status here:
+
+| Test | Status |
+|---|---|
+| A8 (first two-collar form) | Stage criterion and dominance of the kick of `2` for `log 2 ≤ A ≤ 181/250` (`firstStage_criterion_of_le`, `firstStage_kick_le_frozen`); no finite count identity represents the first-stage form (CWS `not_exists_countIdentity`); its closed form is open |
+| A5 (first prime stage to `log 3`) | Proved on `[log 2, 181/250]`; the range `(181/250, log 3)` is a certified computation, outside this programme |
+| 2.5.1 at the second stage | Lattice: closed form at every stage (`toeplitzForm_two_collar`, Levinson law); continuum: open |
+| A10 (function-field calibration) | Curves calibrated: a degenerate window is a curve and a curve first degenerates at its number of angles (`degenerate_window_is_curve`, `curve_first_critical`); twisted horizon layers and higher-genus fakes are AHD's |
+| A6 (odd unit window) | Not addressed here (OWU) |
 
 A contribution must:
 1. concern the passage of positivity through the growth of the window (two-collar forms, kicks,

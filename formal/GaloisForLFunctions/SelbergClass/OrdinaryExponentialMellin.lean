@@ -31,6 +31,7 @@ private theorem norm_ordinaryExponentialMellinTerm (F : ExtendedSelbergClass)
     LSeries.norm_term_eq, if_neg hn.ne']
   norm_num only [Complex.neg_re, Complex.add_re, Complex.mul_I_re, Complex.ofReal_im,
     neg_zero, add_zero, Complex.natCast_re]
+  rw [show (2 : ℂ).re = 2 by norm_num]
   rw [Real.rpow_neg hnR.le]
   ring
 
@@ -41,8 +42,8 @@ private theorem integrable_ordinaryExponentialMellinTerm (F : ExtendedSelbergCla
       funext t; simp [ordinaryExponentialMellinTerm]
     rw [heq]
     exact integrable_zero _ _ _
-  have hΓ : Continuous fun t : ℝ => Complex.Gamma (2 + (t : ℂ) * I) :=
-    continuous_Gamma_line_of_pos (by norm_num : (0 : ℝ) < 2)
+  have hΓ : Continuous fun t : ℝ => Complex.Gamma (2 + (t : ℂ) * I) := by
+    simpa [add_comm] using continuous_Gamma_line_of_pos (by norm_num : (0 : ℝ) < 2)
   have hcont : Continuous (ordinaryExponentialMellinTerm F x n) := by
     have heq : ordinaryExponentialMellinTerm F x n = fun t : ℝ =>
         F.coeff n * (n : ℂ) ^ (-(2 + (t : ℂ) * I)) *
@@ -57,7 +58,7 @@ private theorem integrable_ordinaryExponentialMellinTerm (F : ExtendedSelbergCla
     hcont.aestronglyMeasurable
   filter_upwards with t
   rw [norm_ordinaryExponentialMellinTerm F hx]
-  exact le_of_eq (by ring)
+  exact le_of_eq (by push_cast; ring)
 
 private theorem ordinaryExponentialTerm_eq_mellin (F : ExtendedSelbergClass)
     {x : ℝ} (hx : 0 < x) (n : ℕ) :
@@ -83,7 +84,7 @@ private theorem ordinaryExponentialTerm_eq_mellin (F : ExtendedSelbergClass)
       apply integral_congr_ae
       filter_upwards with t
       have hsplit := ofReal_mul_rpow_cpow_neg hx hn 1 (2 + (t : ℂ) * I)
-      simp only [one_div_one, Real.rpow_one, Complex.ofReal_one, div_one] at hsplit
+      simp only [Real.rpow_one, Complex.ofReal_one, div_one] at hsplit
       rw [ordinaryExponentialMellinTerm, if_neg hn.ne', hsplit]
       ring
 
@@ -117,7 +118,7 @@ theorem ordinaryExponentialSeries_eq_mellin (F : ExtendedSelbergClass)
   rw [tsum_mul_left]
   have hval := F.lSeries_eq_value (2 + (t : ℂ) * I) (by norm_num)
   change _ * LSeries F.coeff (2 + (t : ℂ) * I) = _
-  rw [hval, ordinaryMellinIntegrand, zero_add]
+  rw [hval, ordinaryMellinIntegrand, zero_add, ExtendedSelbergClass.value]
   ring
 
 end GaloisForLFunctions.SelbergClass

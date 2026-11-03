@@ -42,9 +42,11 @@ private theorem ordinaryCoefficientKernel_periodic (F : ExtendedSelbergClass)
     have he : (z + 2 * (Real.pi : ℂ) * I).im = z.im + 2 * Real.pi := by simp
     rw [he]
     linarith
+  have he : Complex.exp ((n : ℂ) * (2 * (Real.pi : ℂ) * I)) = 1 := by
+    rw [Complex.exp_nat_mul, Complex.exp_two_pi_mul_I, one_pow]
   rw [ordinaryCoefficientKernel, ordinaryCoefficientKernel,
     ordinaryContinuation_periodic_upper F hd0 hd1 hz', mul_add, Complex.exp_add,
-    Complex.exp_nat_mul, Complex.exp_two_pi_mul_I, one_pow, mul_one]
+    he, mul_one]
 
 private theorem integral_ordinaryCoefficientKernel_eq (F : ExtendedSelbergClass)
     (hd0 : 0 < F.gammaData.degree) (hd1 : F.gammaData.degree < 1)
@@ -121,8 +123,9 @@ theorem exists_exponential_coeff_bound_of_degree_lt_one (F : ExtendedSelbergClas
     simpa only [g, Complex.ofReal_neg] using
       mul_le_mul_of_nonneg_right (hC t ht') (Real.exp_pos (-R * n)).le
   have hi := intervalIntegral.norm_integral_le_of_norm_le_const hb
+  have htwo : ‖(2 : ℂ)‖ = (2 : ℝ) := by norm_num
   rw [integral_ordinaryCoefficientKernel_eq F hd0 hd1 n (-R), norm_mul, norm_mul,
-    Complex.norm_two, Complex.norm_real, Real.norm_of_nonneg Real.pi_pos.le,
+    htwo, Complex.norm_real, Real.norm_of_nonneg Real.pi_pos.le,
     show |Real.pi - -Real.pi| = 2 * Real.pi by rw [abs_of_pos (by linarith [Real.pi_pos])]; ring] at hi
   have hi' : (2 * Real.pi) * ‖F.coeff n‖ ≤ (2 * Real.pi) * (C * Real.exp (-R * n)) := by
     nlinarith only [hi]

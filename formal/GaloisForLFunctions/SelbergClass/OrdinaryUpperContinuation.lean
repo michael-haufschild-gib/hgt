@@ -56,6 +56,7 @@ theorem ordinaryContinuation_periodic_upper (F : ExtendedSelbergClass)
       (fun w => ordinaryContinuation F (w + 2 * (Real.pi : ℂ) * I))
       {w : ℂ | 0 < w.im} := by
     intro w hw
+    change 0 < w.im at hw
     refine AnalyticAt.comp (g := ordinaryContinuation F)
       (f := fun v : ℂ => v + 2 * (Real.pi : ℂ) * I) (x := w) (han _ ?_) (by fun_prop)
     change 0 < (w + 2 * (Real.pi : ℂ) * I).im

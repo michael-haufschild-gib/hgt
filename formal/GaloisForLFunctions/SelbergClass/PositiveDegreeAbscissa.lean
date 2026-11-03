@@ -84,6 +84,10 @@ private theorem norm_value_three_quarters (F : ExtendedSelbergClass) (t : ℝ) :
   have hn := congrArg norm hfe
   simp only [selbergCompletedValue, selbergConjugateReflection, hreflect, norm_mul,
     norm_star, F.gammaData.rootNumber_norm, one_mul] at hn
+  change ‖F.gammaData.gammaFactor ((1 / 4 : ℂ) + (t : ℂ) * I)‖ *
+      ‖F ((1 / 4 : ℂ) + (t : ℂ) * I)‖ =
+    ‖F.gammaData.gammaFactor ((3 / 4 : ℂ) + (t : ℂ) * I)‖ *
+      ‖F ((3 / 4 : ℂ) + (t : ℂ) * I)‖ at hn
   have hg : ‖F.gammaData.gammaFactor ((3 / 4 : ℂ) + (t : ℂ) * I)‖ ≠ 0 :=
     norm_ne_zero_iff.mpr (gammaFactor_ne_zero_of_re_pos F.gammaData (by norm_num))
   rw [div_mul_eq_mul_div]

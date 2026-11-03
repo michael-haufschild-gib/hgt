@@ -99,7 +99,8 @@ theorem tendsto_gammaFactor_quarter_ratio (D : SelbergGammaData) (hd : 0 < D.deg
       add_nonneg (mul_nonneg (D.lambda_pos j).le (by norm_num)) (D.mu_re_nonneg j)
     have hδ : 0 < D.lambda j / 2 := div_pos (D.lambda_pos j) (by norm_num)
     have hτ : Tendsto (fun t : ℝ => D.lambda j * t + (D.mu j).im) atTop atTop :=
-      tendsto_atTop_add_const_right _ _ (tendsto_id.const_mul_atTop (D.lambda_pos j))
+      tendsto_atTop_add_const_right atTop _
+        (Filter.Tendsto.const_mul_atTop (D.lambda_pos j) tendsto_id)
     have hlim := (tendsto_norm_Gamma_ratio_zero ha hδ).comp hτ
     have he : D.lambda j * (1 / 4) + (D.mu j).re + D.lambda j / 2 =
         D.lambda j * (3 / 4) + (D.mu j).re := by ring

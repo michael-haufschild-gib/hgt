@@ -70,6 +70,11 @@ import GaloisForLFunctions.ArithmeticHodgeTheoryOfDegenerations.TheConductorDeco
 import GaloisForLFunctions.ArithmeticHodgeTheoryOfDegenerations.TheCountFormEndsAtTheResolution
 import GaloisForLFunctions.ArithmeticHodgeTheoryOfDegenerations.TheBulkSecondOrderOfThePoleIsAStieltjesConstant
 import GaloisForLFunctions.ArithmeticHodgeTheoryOfDegenerations.TheBulkEntriesAreReadByTheStieltjesConstants
+import GaloisForLFunctions.ArithmeticHodgeTheoryOfDegenerations.HyperbolaSumsOfAVonMangoldtTail
+import GaloisForLFunctions.ArithmeticHodgeTheoryOfDegenerations.TheCharacterPacketsReadTheLogarithmicDerivative
+import GaloisForLFunctions.ArithmeticHodgeTheoryOfDegenerations.TheCenterPartOfTheBulkEntries
+import GaloisForLFunctions.ArithmeticHodgeTheoryOfDegenerations.TheCrossErrorOfTheBulkEntries
+import GaloisForLFunctions.ArithmeticHodgeTheoryOfDegenerations.TheBulkEntriesAtEveryOverlap
 
 /-!
 # Arithmetic Hodge Theory of Degenerations
@@ -87,7 +92,11 @@ resolution axis (overlap `c`, horizon `N`). See `ArithmeticHodgeTheoryOfDegenera
 * **Bulk second order.** Since `Λ ∗ 1 = log`, the prime matrix pairs conductor packets through
   harmonic and logarithmic harmonic sums; every bulk entry has second order
   `⟨P R_e, R_{e'}⟩ − (log N − ρ_e)⟨R_e, R_{e'}⟩ → D(e, e')`, a polynomial in `γ`, `γ₁` and the
-  logarithms of divisors (`D(1,1) = 2γ₁ + γ²`, `D(p,p) = D(1,1) + p log²p/(p − 1)²`).
+  logarithms of divisors (`D(1,1) = 2γ₁ + γ²`, `D(p,p) = D(1,1) + p log²p/(p − 1)²`). At every
+  overlap `0 < c < 1` the complete entry adds the center part (`α(1 − log 2)` at the pole,
+  `αΛ(e)/φ(e)` on the diagonal) and the cross error of the archimedean smoothing. Character packets
+  `χ(n)/√n` sit at the bounded energy `−2 Re L'(1,χ)/L(1,χ)` with second order
+  `−2(φ(q)/q) Re (L'/L)'(1, χ)`.
 * **Second order at the critical curve.** On horizon windows `κ Q(H) + (βJ/K) ∫ e^{−(β+1)y} H²`,
   the aliasing being the dilation derivative of the bulk; on twisted windows a spectral Dirichlet
   series: Jordan totients for Ramanujan expansions (graded by conductor), the unit count corrected

@@ -1,8 +1,8 @@
 # Bulk entries at overlap c and character packets
 
 - **ID:** BEOC
-- **Stage:** 1-in-progress
-- **Type:** THEOREM (paper), Lean in progress
+- **Stage:** 3-formalized
+- **Type:** THEOREM (Lean)
 - **Source:** AHD README §9 item 2 (after BSOS: the prime part of the bulk entries)
 - **Statement:** (i) character packets `X_χ(n) = χ(n)/√n`, `χ, ψ ≠ 1` mod `q`: `⟨P X_χ, X_ψ⟩ − (S_ψ + S̄_χ)⟨X_χ, X_ψ⟩ →
   [χ = ψ] (φ(q)/q)(I_χ + Ī_χ)`, `S_χ = −L'/L(1, χ)`, `I_χ = −(L'/L)'(1, χ)`; (ii) at overlap `0 < c < 1` the complete Weil
@@ -15,7 +15,11 @@ character packets (where `L'(1, χ)/L(1, χ)` enters: it is the first-order ener
 ## Gates
 - [x] 0 → 1  in-progress
 - [x] 1 → 2  paper proof (below), numerically confirmed
-- [ ] 2 → 3  Lean
+- [x] 2 → 3  formalized: `tendsto_charPacketPairing_sub` (TheCharacterPacketsReadTheLogarithmicDerivative),
+  `tendsto_completeWeilBulkEntry` (TheBulkEntriesAtEveryOverlap), with `tendsto_centerPairing_sub`
+  (TheCenterPartOfTheBulkEntries), `tendsto_crossPairing` (TheCrossErrorOfTheBulkEntries) and the hyperbola
+  lemmas `tendsto_sum_periodic_mul_hyperbola`, `tendsto_sum_hyperbola_sub_integral`
+  (HyperbolaSumsOfAVonMangoldtTail), all in `ArithmeticHodgeTheoryOfDegenerations/`
 
 ## Statements and proofs
 **Characters.** `B(χ,ψ) = Σ_{nm ≤ N} η(n)/n (ψ(m) + χ̄(m))Λ(m)/m`, `η = ψχ̄`, `⟨X_χ, X_ψ⟩ = Σ_{n≤N} η(n)/n`. With
@@ -34,4 +38,4 @@ Cross error: `Cr(n,j) = (w/∫φ²)∫A_φ(τ)(ω(s + wτ) − ω(s))dτ`, `w = 
 limit `[e=e'](c/(φ(e)∫φ²)) Σ_{d≥1} c_e(d) ∫ A_φ(τ)(log(1 + cτ/d)/(cτ) − 1/d) dτ` (numerics: 6 digits, c = 0.5, 0.9).
 
 ## Log
-- 2026-11-03 — statements derived and numerically confirmed; Lean in progress.
+- 2026-11-03 — proved and formalized.
