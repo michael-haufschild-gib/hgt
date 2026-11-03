@@ -25,7 +25,8 @@ private theorem gammaProduct_root_tendsto_zero
     tendsto_norm_Gamma_linear_rpow_inv_nat (hc i) (β i))
   have hpow : Tendsto (fun k : ℕ => (k : ℝ) ^ ((∑ i, c i) - 1)) atTop (𝓝 0) := by
     convert (tendsto_rpow_neg_atTop (sub_pos.mpr hsum)).comp
-      (tendsto_natCast_atTop_atTop (R := ℝ)) using 1 <;> simp [sub_eq_add_neg]
+      (tendsto_natCast_atTop_atTop (R := ℝ)) using 1
+    simp [sub_eq_add_neg, Function.comp_def]
   have hlim := (hP.mul tendsto_div_factorial_rpow_inv).mul hpow
   simp only [mul_zero] at hlim
   refine hlim.congr' ?_
@@ -40,6 +41,7 @@ private theorem gammaProduct_root_tendsto_zero
   have hfr : (k.factorial : ℝ) ^ (1 / (k : ℝ)) ≠ 0 :=
     (Real.rpow_pos_of_pos hfact _).ne'
   field_simp
+  simp only [mul_comm]
 
 /-- Each Gamma scale occurs twice in the reflected ordinary Mellin kernel. -/
 def ordinaryGammaRate (D : RHTower.SelbergGammaData) : Fin D.rank ⊕ Fin D.rank → ℝ :=

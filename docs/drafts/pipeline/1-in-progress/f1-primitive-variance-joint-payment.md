@@ -51,6 +51,21 @@ The [third-moment payment](../3-formalized/f1-first-moment-complete-payment.md) 
 Only the first-moment debit remains. Its coupling to the positive complement must still
 be controlled; positivity on the first-moment kernel does not establish this conjecture.
 
+The [positive inverse](../3-formalized/f1-positive-first-moment-inverse.md) gives the exact
+first-moment solution `q₁`: off the strip `q₁=u/A(u)`; on it,
+`q₁(u)=[A(v)u−wv]/[A(u)A(v)−w²]`, `v=d−u`. The numerator is at least `7451/60000`.
+Thus `q₁>0`, and `q₁<u/A` on the open strip.
+
+For the remaining joint estimate, set `p₁=u`, `p₃=P₃`,
+`qⱼ=pⱼ/A` off the strip and
+`qⱼ(u)=[A(v)pⱼ(u)−wpⱼ(v)]/[A(u)A(v)−w²]` on it.
+Write `Kᵢⱼ=∫₀¹pᵢqⱼ`, `γ₃=63/20`. The missing scalar Schur bound is
+
+`K₁₁+γ₃K₁₃²/(1−γ₃K₃₃)≤1/β`.
+
+The third-moment reserve makes the denominator positive. The new sign of `q₁` does
+not bound the mixed term sufficiently to establish this inequality.
+
 ## Source status
 
 - `HTGeometry.wirtinger_intervalIntegral` in `CirclePoincareWirtinger`: checked source statement;
@@ -66,4 +81,6 @@ be controlled; positivity on the first-moment kernel does not establish this con
 - WTZ `firstFoldTwoMomentForm_add_first_moment_ge_mass` and
   `weilQuad_add_first_moment_ge_mass` prove the first-moment-charged coercivity bounds
   with standard-only transitive axioms.
+- The explicit polynomial and logarithmic first-moment inverses, their positivity and local
+  upper bounds pass individual Lean and standard-only transitive axiom audits.
 - The displayed joint sign remains unproved; no positivity premise has been added.

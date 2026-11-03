@@ -665,7 +665,7 @@ theorem abs_riemannSum_sub_integral_le {G : ℝ → ℝ} {L : ℝ}
   have hN0 : (0 : ℝ) < N := by exact_mod_cast hN
   have hcont := continuousOn_of_abs_sub_le hL
   have hstep : ∀ i : ℕ, ((i : ℝ) / N) ≤ ((i + 1 : ℕ) : ℝ) / N := fun i => by
-    gcongr; push_cast; linarith
+    gcongr; linarith
   have hmem : ∀ i < N, Set.uIcc ((i : ℝ) / N) (((i + 1 : ℕ) : ℝ) / N) ⊆ Set.Icc 0 1 :=
     fun i hi => by
       rw [Set.uIcc_of_le (hstep i)]
@@ -705,12 +705,498 @@ theorem abs_riemannSum_sub_integral_le {G : ℝ → ℝ} {L : ℝ}
           have := hL 0 ⟨le_rfl, zero_le_one⟩ 1 ⟨zero_le_one, le_rfl⟩
           simp at this
           linarith [abs_nonneg (G 0 - G 1)]
-        refine mul_le_mul_of_nonneg_left ?_ hL0 |>.trans (le_of_eq (by ring))
-        rw [abs_of_nonneg (by linarith)]
-        linarith)
-    rw [Real.norm_eq_abs, hlen.symm ▸ (by
-      rw [abs_of_pos (by positivity : (0 : ℝ) < 1 / N)] : |(1 : ℝ) / N| = 1 / N)] at hb
-    sorry
-  sorry
+        have hle : |((i + 1 : ℕ) : ℝ) / N - u| ≤ 1 / N := by
+          rw [abs_of_nonneg (by linarith)]
+          linarith [hlen]
+        calc L * |((i + 1 : ℕ) : ℝ) / N - u| ≤ L * (1 / N) := mul_le_mul_of_nonneg_left hle hL0
+          _ = L / N := by ring)
+    rw [Real.norm_eq_abs, hlen, abs_of_pos (by positivity : (0 : ℝ) < 1 / N)] at hb
+    calc _ ≤ L / N * (1 / N) := hb
+      _ = L / N / N := by ring
+  calc ∑ i ∈ range N, |G (((i + 1 : ℕ) : ℝ) / N) / N -
+        ∫ u in (i : ℝ) / N..((i + 1 : ℕ) : ℝ) / N, G u|
+      ≤ ∑ _i ∈ range N, L / N / N := Finset.sum_le_sum hterm
+    _ = L / N := by rw [Finset.sum_const, Finset.card_range, nsmul_eq_mul]; field_simp
+
+/-- **Weighted Riemann sums**: for a periodic weight `w` and `G` Lipschitz on `[0, 1]`,
+`(1/N)Σ_{n ≤ N − d} w(n) G(n/N) → mean(w) ∫_0^1 G`. -/
+theorem tendsto_weighted_riemannSum {w : ℕ → ℝ} {M : ℕ} (hM : 1 ≤ M)
+    (hper : ∀ n, w (n + M) = w n) {W : ℝ} (hW : ∀ n, |w n| ≤ W) {G : ℝ → ℝ} {L B : ℝ}
+    (hL : ∀ u ∈ Set.Icc (0 : ℝ) 1, ∀ v ∈ Set.Icc (0 : ℝ) 1, |G u - G v| ≤ L * |u - v|)
+    (hB : ∀ u ∈ Set.Icc (0 : ℝ) 1, |G u| ≤ B) (d : ℕ) :
+    Tendsto (fun N : ℕ => (∑ n ∈ Icc 1 (N - d), w n * G (n / N)) / N) atTop
+      (𝓝 ((∑ r ∈ range M, w r) / M * ∫ u in (0 : ℝ)..1, G u)) := by
+  set μ := (∑ r ∈ range M, w r) / M with hμ
+  have hW0 : 0 ≤ W := (abs_nonneg _).trans (hW 0)
+  have hB0 : 0 ≤ B := (abs_nonneg _).trans (hB 0 ⟨le_rfl, zero_le_one⟩)
+  have hL0 : 0 ≤ L := by
+    have := hL 0 ⟨le_rfl, zero_le_one⟩ 1 ⟨zero_le_one, le_rfl⟩
+    simp at this
+    linarith [abs_nonneg (G 0 - G 1)]
+  have hshift : ∑ i ∈ range M, w (i + 1) = ∑ i ∈ range M, w i := by
+    have := sum_range_shift_of_periodic w hper 1
+    simpa [add_comm] using this
+  have hpart : ∀ k, |∑ i ∈ range k, (w (i + 1) - μ)| ≤ 2 * M * W := fun k => by
+    have h := abs_sum_range_sub_mul_mean_le hM (fun i => w (i + 1))
+      (fun i => by rw [show i + M + 1 = i + 1 + M by ring]; exact hper (i + 1))
+      (fun i => hW (i + 1)) k
+    rw [hshift] at h
+    rw [Finset.sum_sub_distrib, Finset.sum_const, Finset.card_range, nsmul_eq_mul]
+    exact h
+  set C : ℝ := |μ| * L + 2 * M * W * (B + L) + d * (W * B)
+  have hbound : ∀ N : ℕ, max d 1 ≤ N →
+      |(∑ n ∈ Icc 1 (N - d), w n * G (n / N)) / N - μ * ∫ u in (0 : ℝ)..1, G u| ≤ C / N := by
+    intro N hN
+    have hN1 : 1 ≤ N := le_of_max_le_right hN
+    have hdN : d ≤ N := le_of_max_le_left hN
+    have hN0 : (0 : ℝ) < N := by exact_mod_cast hN1
+    have hmemG : ∀ n ∈ Icc 1 N, (n : ℝ) / N ∈ Set.Icc (0 : ℝ) 1 := fun n hn => by
+      refine ⟨by positivity, ?_⟩
+      rw [div_le_one hN0]; exact_mod_cast (Finset.mem_Icc.mp hn).2
+    have htail_eq : ∑ n ∈ Icc 1 N, w n * G (n / N) = ∑ n ∈ Icc 1 (N - d), w n * G (n / N) +
+        ∑ n ∈ Ioc (N - d) N, w n * G (n / N) := by
+      rw [Icc_one_eq_Ioc_zero, Icc_one_eq_Ioc_zero,
+        Finset.sum_Ioc_consecutive _ (Nat.zero_le _) (Nat.sub_le N d)]
+    have htail : |∑ n ∈ Ioc (N - d) N, w n * G (n / N)| ≤ d * (W * B) := by
+      refine (Finset.abs_sum_le_sum_abs _ _).trans ?_
+      have hcard : ((Ioc (N - d) N).card : ℝ) = d := by
+        rw [Nat.card_Ioc, Nat.sub_sub_self hdN]
+      calc ∑ n ∈ Ioc (N - d) N, |w n * G (n / N)| ≤ ∑ _n ∈ Ioc (N - d) N, W * B :=
+            Finset.sum_le_sum fun n hn => by
+              rw [abs_mul]
+              have hn' : n ∈ Icc 1 N := by
+                simp only [Finset.mem_Ioc, Finset.mem_Icc] at hn ⊢; omega
+              exact mul_le_mul (hW n) (hB _ (hmemG n hn')) (abs_nonneg _) hW0
+        _ = d * (W * B) := by rw [Finset.sum_const, nsmul_eq_mul, hcard]
+    have hcent : |∑ n ∈ Icc 1 N, (w n - μ) * G (n / N)| ≤ 2 * M * W * (B + L) := by
+      obtain ⟨K, rfl⟩ : ∃ K, N = K + 1 := ⟨N - 1, by omega⟩
+      rw [← sum_range_succ_eq_sum_Icc (fun n => (w n - μ) * G (n / ((K + 1 : ℕ) : ℝ)))]
+      have e : ∑ i ∈ range (K + 1), (w (i + 1) - μ) * G (((i + 1 : ℕ) : ℝ) / ((K + 1 : ℕ) : ℝ)) =
+          ∑ i ∈ range (K + 1), G (((i + 1 : ℕ) : ℝ) / ((K + 1 : ℕ) : ℝ)) * (w (i + 1) - μ) :=
+        Finset.sum_congr rfl fun i _ => mul_comm _ _
+      rw [e]
+      refine (abs_sum_range_mul_le_real _ _ K fun k _ => hpart (k + 1)).trans ?_
+      refine mul_le_mul_of_nonneg_left (add_le_add ?_ ?_) (by positivity)
+      · exact hB _ (hmemG (K + 1) (Finset.mem_Icc.mpr ⟨by omega, le_rfl⟩))
+      · have hK0 : (0 : ℝ) < ((K + 1 : ℕ) : ℝ) := by positivity
+        calc ∑ i ∈ range K, |G (((i + 1 + 1 : ℕ) : ℝ) / ((K + 1 : ℕ) : ℝ)) -
+              G (((i + 1 : ℕ) : ℝ) / ((K + 1 : ℕ) : ℝ))|
+            ≤ ∑ _i ∈ range K, L * (1 / ((K + 1 : ℕ) : ℝ)) :=
+              Finset.sum_le_sum fun i hi => by
+                have hi' : i < K := Finset.mem_range.mp hi
+                refine (hL _ (hmemG _ (Finset.mem_Icc.mpr ⟨by omega, by omega⟩)) _
+                  (hmemG _ (Finset.mem_Icc.mpr ⟨by omega, by omega⟩))).trans ?_
+                refine mul_le_mul_of_nonneg_left (le_of_eq ?_) hL0
+                rw [← sub_div, abs_div, abs_of_pos hK0]
+                push_cast
+                rw [show (i : ℝ) + 1 + 1 - (i + 1) = 1 by ring, abs_one]
+          _ = L * (K / ((K + 1 : ℕ) : ℝ)) := by
+              rw [Finset.sum_const, Finset.card_range, nsmul_eq_mul]; ring
+          _ ≤ L * 1 := by
+              refine mul_le_mul_of_nonneg_left ?_ hL0
+              rw [div_le_one hK0]; push_cast; linarith
+          _ = L := mul_one L
+    have hriem := abs_riemannSum_sub_integral_le hL hN1
+    have hsplit : ∑ n ∈ Icc 1 N, w n * G (n / N) =
+        μ * ∑ n ∈ Icc 1 N, G (n / N) + ∑ n ∈ Icc 1 N, (w n - μ) * G (n / N) := by
+      rw [Finset.mul_sum, ← Finset.sum_add_distrib]
+      exact Finset.sum_congr rfl fun n _ => by ring
+    have h1 : ∑ n ∈ Icc 1 (N - d), w n * G (n / N) = μ * ∑ n ∈ Icc 1 N, G (n / N) +
+        ∑ n ∈ Icc 1 N, (w n - μ) * G (n / N) - ∑ n ∈ Ioc (N - d) N, w n * G (n / N) := by
+      rw [← hsplit, htail_eq]; ring
+    have hkey : (∑ n ∈ Icc 1 (N - d), w n * G (n / N)) / N - μ * ∫ u in (0 : ℝ)..1, G u =
+        μ * ((∑ n ∈ Icc 1 N, G (n / N)) / N - ∫ u in (0 : ℝ)..1, G u) +
+          (∑ n ∈ Icc 1 N, (w n - μ) * G (n / N)) / N -
+          (∑ n ∈ Ioc (N - d) N, w n * G (n / N)) / N := by
+      rw [h1]
+      field_simp
+      ring
+    rw [hkey]
+    have hμL : |μ * ((∑ n ∈ Icc 1 N, G (n / N)) / N - ∫ u in (0 : ℝ)..1, G u)| ≤
+        |μ| * (L / N) := by
+      rw [abs_mul]; exact mul_le_mul_of_nonneg_left hriem (abs_nonneg _)
+    have h2 : |(∑ n ∈ Icc 1 N, (w n - μ) * G (n / N)) / N| ≤ 2 * M * W * (B + L) / N := by
+      rw [abs_div, abs_of_pos hN0]; exact div_le_div_of_nonneg_right hcent hN0.le
+    have h3 : |(∑ n ∈ Ioc (N - d) N, w n * G (n / N)) / N| ≤ d * (W * B) / N := by
+      rw [abs_div, abs_of_pos hN0]; exact div_le_div_of_nonneg_right htail hN0.le
+    have h4 := abs_sub (μ * ((∑ n ∈ Icc 1 N, G (n / N)) / N - ∫ u in (0 : ℝ)..1, G u) +
+          (∑ n ∈ Icc 1 N, (w n - μ) * G (n / N)) / N)
+      ((∑ n ∈ Ioc (N - d) N, w n * G (n / N)) / N)
+    have h5 := abs_add_le (μ * ((∑ n ∈ Icc 1 N, G (n / N)) / N - ∫ u in (0 : ℝ)..1, G u))
+      ((∑ n ∈ Icc 1 N, (w n - μ) * G (n / N)) / N)
+    have h6 : |μ| * (L / N) + 2 * M * W * (B + L) / N + d * (W * B) / N = C / N := by ring
+    linarith
+  have hmaj := tendsto_const_div_atTop_nhds_zero_nat C
+  have hsq : Tendsto (fun N : ℕ => (∑ n ∈ Icc 1 (N - d), w n * G (n / N)) / N -
+      μ * ∫ u in (0 : ℝ)..1, G u) atTop (𝓝 0) := by
+    refine squeeze_zero_norm' ?_ hmaj
+    filter_upwards [eventually_ge_atTop (max d 1)] with N hN
+    rw [Real.norm_eq_abs]; exact hbound N hN
+  have := hsq.add_const (μ * ∫ u in (0 : ℝ)..1, G u)
+  rw [zero_add] at this
+  exact this.congr fun N => by ring
+
+/-! ### The rows of the cross pairing -/
+
+/-- The gap-`d` row of the cross pairing. -/
+def crossRow (φ : ℝ → ℝ) (c : ℝ) (e e' N d : ℕ) : ℝ :=
+  ∑ n ∈ Icc 1 (N - d), (ramanujanLagCoefficient e' n * ramanujanLagCoefficient e (n + d) +
+      ramanujanLagCoefficient e' (n + d) * ramanujanLagCoefficient e n) *
+    atomCrossErrorKernel (atomDilate φ (c / N)) n (n + d) /
+      (Real.sqrt n * Real.sqrt ((n + d : ℕ) : ℝ))
+
+/-- **The cross pairing by gaps**: `⟨Cr R_e, R_{e'}⟩ = Σ_{d ≤ N} row_d/√(φ(e)φ(e'))`. -/
+theorem crossPairing_eq (φ : ℝ → ℝ) (c : ℝ) {e e' : ℕ} (he : 0 < e) (he' : 0 < e') (N : ℕ) :
+    ⟪Matrix.toEuclideanLin (fullWeilCrossErrorMatrix φ c N) (ramanujanHorizonVector e N),
+      ramanujanHorizonVector e' N⟫ =
+      (∑ d ∈ Icc 1 N, crossRow φ c e e' N d) / (Real.sqrt e.totient * Real.sqrt e'.totient) := by
+  rw [EuclideanSpace.inner_eq_star_dotProduct]
+  change ∑ n : PrimeHorizonIndex N, ramanujanPoleProfile e' n *
+    ∑ j : PrimeHorizonIndex N, atomCrossErrorKernel (atomDilate φ (c / N)) n j *
+      ramanujanPoleProfile e j = _
+  rw [Finset.sum_coe_sort (Icc 1 N) (fun n => ramanujanPoleProfile e' n *
+    ∑ j : PrimeHorizonIndex N, atomCrossErrorKernel (atomDilate φ (c / N)) n j *
+      ramanujanPoleProfile e j)]
+  have hinner : ∀ n : ℕ, (∑ j : PrimeHorizonIndex N, atomCrossErrorKernel (atomDilate φ (c / N)) n j *
+      ramanujanPoleProfile e j) = ∑ j ∈ Icc 1 N, atomCrossErrorKernel (atomDilate φ (c / N)) n j *
+        ramanujanPoleProfile e j := fun n =>
+    Finset.sum_coe_sort (Icc 1 N) (fun j => atomCrossErrorKernel (atomDilate φ (c / N)) n j *
+      ramanujanPoleProfile e j)
+  simp only [hinner, Finset.mul_sum]
+  set F : ℕ → ℕ → ℝ := fun n j => ramanujanLagCoefficient e' n * ramanujanLagCoefficient e j *
+    atomCrossErrorKernel (atomDilate φ (c / N)) n j / (Real.sqrt n * Real.sqrt j) with hF
+  have hpt : ∀ n j, ramanujanPoleProfile e' n * (atomCrossErrorKernel (atomDilate φ (c / N)) n j *
+      ramanujanPoleProfile e j) = F n j / (Real.sqrt e.totient * Real.sqrt e'.totient) :=
+    fun n j => by rw [ramanujanPoleProfile_eq he, ramanujanPoleProfile_eq he']; simp only [hF]; ring
+  simp only [hpt, ← Finset.sum_div]
+  congr 1
+  have hsplit : ∀ n j, F n j = (if n < j then F n j else 0) + (if j < n then F n j else 0) :=
+    fun n j => by
+      rcases lt_trichotomy n j with h | h | h
+      · rw [if_pos h, if_neg (by omega)]; ring
+      · subst h; simp [hF]
+      · rw [if_neg (by omega), if_pos h]; ring
+  calc ∑ n ∈ Icc 1 N, ∑ j ∈ Icc 1 N, F n j
+      = ∑ n ∈ Icc 1 N, ∑ j ∈ Icc 1 N, (if n < j then F n j else 0) +
+          ∑ j ∈ Icc 1 N, ∑ n ∈ Icc 1 N, (if j < n then F n j else 0) := by
+        rw [Finset.sum_comm (s := Icc 1 N) (t := Icc 1 N)
+          (f := fun j n => if j < n then F n j else 0), ← Finset.sum_add_distrib]
+        exact Finset.sum_congr rfl fun n _ => by
+          rw [← Finset.sum_add_distrib]; exact Finset.sum_congr rfl fun j _ => hsplit n j
+    _ = ∑ d ∈ Icc 1 N, ∑ n ∈ Icc 1 (N - d), F n (n + d) +
+          ∑ d ∈ Icc 1 N, ∑ j ∈ Icc 1 (N - d), F (j + d) j := by
+        rw [sum_sum_ite_lt F N, sum_sum_ite_lt (fun j n => F n j) N]
+    _ = ∑ d ∈ Icc 1 N, crossRow φ c e e' N d := by
+        rw [← Finset.sum_add_distrib]
+        refine Finset.sum_congr rfl fun d _ => ?_
+        rw [crossRow, ← Finset.sum_add_distrib]
+        refine Finset.sum_congr rfl fun n _ => ?_
+        simp only [hF]
+        rw [atomCrossErrorKernel_comm (atomDilate φ (c / N)) (n + d) n]
+        ring
+
+/-- The weight of the gap-`d` row and its mean `2[e = e'] c_e(d)`. -/
+theorem sum_range_gapWeight {e e' : ℕ} (he : 0 < e) (he' : 0 < e') (d : ℕ) :
+    (∑ r ∈ range (e' * e), (ramanujanLagCoefficient e' r * ramanujanLagCoefficient e (r + d) +
+      ramanujanLagCoefficient e' (r + d) * ramanujanLagCoefficient e r)) / ((e' * e : ℕ) : ℝ) =
+      2 * (if e = e' then ramanujanLagCoefficient e d else 0) := by
+  rw [Finset.sum_add_distrib, sum_range_lag_mul_lag_add he he' d]
+  have h2 := sum_range_lag_mul_lag_add he' he d
+  rw [show ∑ i ∈ range (e' * e), ramanujanLagCoefficient e' (i + d) * ramanujanLagCoefficient e i =
+    ∑ i ∈ range (e * e'), ramanujanLagCoefficient e i * ramanujanLagCoefficient e' (i + d) by
+      rw [mul_comm e' e]; exact Finset.sum_congr rfl fun i _ => mul_comm _ _, h2]
+  have hM0 : ((e' * e : ℕ) : ℝ) ≠ 0 := by positivity
+  by_cases hee : e = e'
+  · subst hee
+    simp only [if_true]
+    field_simp
+    ring
+  · rw [if_neg (Ne.symm hee), if_neg hee, if_neg hee]; simp
+
+theorem sqrt_mul_sqrt_bounds (n d : ℕ) :
+    (n : ℝ) ≤ Real.sqrt n * Real.sqrt ((n + d : ℕ) : ℝ) ∧
+      Real.sqrt n * Real.sqrt ((n + d : ℕ) : ℝ) ≤ ((n + d : ℕ) : ℝ) := by
+  have hn0 : (0 : ℝ) ≤ n := Nat.cast_nonneg n
+  have hle : (n : ℝ) ≤ ((n + d : ℕ) : ℝ) := by push_cast; linarith [(Nat.cast_nonneg d : (0 : ℝ) ≤ d)]
+  have h1 := Real.sqrt_le_sqrt hle
+  constructor
+  · calc (n : ℝ) = Real.sqrt n * Real.sqrt n := (Real.mul_self_sqrt hn0).symm
+      _ ≤ Real.sqrt n * Real.sqrt ((n + d : ℕ) : ℝ) :=
+          mul_le_mul_of_nonneg_left h1 (Real.sqrt_nonneg _)
+  · calc Real.sqrt n * Real.sqrt ((n + d : ℕ) : ℝ) ≤
+          Real.sqrt ((n + d : ℕ) : ℝ) * Real.sqrt ((n + d : ℕ) : ℝ) :=
+          mul_le_mul_of_nonneg_right h1 (Real.sqrt_nonneg _)
+      _ = ((n + d : ℕ) : ℝ) := Real.mul_self_sqrt (Nat.cast_nonneg _)
+
+/-- **The gap-`d` row converges**: `row_d → 2[e = e'] c_e(d) ∫_0^1 G_d`. -/
+theorem tendsto_crossRow {φ : ℝ → ℝ} (hφ : ContDiff ℝ 2 φ)
+    (hφsupp : ∀ u, u ∉ Set.Icc 0 1 → φ u = 0) (hφ0 : 0 < ∫ u, φ u ^ 2) {c : ℝ} (hc0 : 0 < c)
+    (hc1 : c < 1) {e e' : ℕ} (he : 0 < e) (he' : 0 < e') {d : ℕ} (hd : 1 ≤ d) :
+    Tendsto (fun N : ℕ => crossRow φ c e e' N d) atTop
+      (𝓝 (2 * (if e = e' then ramanujanLagCoefficient e d else 0) *
+        ∫ u in (0 : ℝ)..1, crossProfile φ c d u)) := by
+  set σ : ℝ := ∑ t ∈ e.divisors, (t : ℝ)
+  set σ' : ℝ := ∑ t ∈ e'.divisors, (t : ℝ)
+  have hσ : 0 ≤ σ := by positivity
+  have hσ' : 0 ≤ σ' := by positivity
+  set wd : ℕ → ℝ := fun n => ramanujanLagCoefficient e' n * ramanujanLagCoefficient e (n + d) +
+    ramanujanLagCoefficient e' (n + d) * ramanujanLagCoefficient e n with hwd
+  have hW : ∀ n, |wd n| ≤ 2 * σ' * σ := fun n => by
+    simp only [hwd]
+    have a1 := abs_ramanujanLagCoefficient_le e' n
+    have a2 := abs_ramanujanLagCoefficient_le e (n + d)
+    have a3 := abs_ramanujanLagCoefficient_le e' (n + d)
+    have a4 := abs_ramanujanLagCoefficient_le e n
+    refine (abs_add_le _ _).trans ?_
+    rw [abs_mul, abs_mul]
+    have b1 := mul_le_mul a1 a2 (abs_nonneg _) hσ'
+    have b2 := mul_le_mul a3 a4 (abs_nonneg _) hσ'
+    linarith
+  have hP1 : ∀ n, ramanujanLagCoefficient e' (n + e' * e) = ramanujanLagCoefficient e' n :=
+    fun n => ramanujanLagCoefficient_add_mul e' n e
+  have hP2 : ∀ n, ramanujanLagCoefficient e (n + e' * e) = ramanujanLagCoefficient e n := fun n => by
+    rw [mul_comm]; exact ramanujanLagCoefficient_add_mul e n e'
+  have hper : ∀ n, wd (n + e' * e) = wd n := fun n => by
+    simp only [hwd]
+    rw [show n + e' * e + d = n + d + e' * e by ring]
+    simp only [hP1, hP2]
+  have hM1 : 1 ≤ e' * e := Nat.one_le_iff_ne_zero.mpr (by positivity)
+  have hmain := tendsto_weighted_riemannSum hM1 hper hW (G := crossProfile φ c d)
+    (fun u hu v hv => abs_crossProfile_sub_le hφ hφsupp hφ0 hc0 hc1 hd hu hv)
+    (fun u hu => abs_crossProfile_le hφ hφsupp hφ0 hc0 hc1 hd hu) d
+  rw [sum_range_gapWeight he he' d] at hmain
+  set BG : ℝ := 1 / (2 * ∫ u, φ u ^ 2) * (c * (1 / (1 - c) + 1) * ∫ τ, |bumpAutocorr φ τ|)
+  have hAabs : 0 ≤ ∫ τ, |bumpAutocorr φ τ| := integral_nonneg fun _ => abs_nonneg _
+  have hBG : 0 ≤ BG := by
+    have : (0 : ℝ) < 1 - c := by linarith
+    positivity
+  have hLip0 : 0 ≤ crossLip φ c := by
+    unfold crossLip
+    have : (0 : ℝ) < 1 - c := by linarith
+    positivity
+  set K : ℝ := 2 * σ' * σ * (crossLip φ c + BG * d)
+  have hdiff : Tendsto (fun N : ℕ => crossRow φ c e e' N d -
+      (∑ n ∈ Icc 1 (N - d), wd n * crossProfile φ c d (n / N)) / N) atTop (𝓝 0) := by
+    have hmaj := tendsto_harmonic_div_self.const_mul K
+    rw [mul_zero] at hmaj
+    refine squeeze_zero_norm' ?_ hmaj
+    filter_upwards [eventually_ge_atTop 1] with N hN
+    have hN0 : (0 : ℝ) < N := by exact_mod_cast hN
+    rw [crossRow, Finset.sum_div, ← Finset.sum_sub_distrib, Real.norm_eq_abs]
+    refine (Finset.abs_sum_le_sum_abs _ _).trans ?_
+    have hterm : ∀ n ∈ Icc 1 (N - d), |wd n * atomCrossErrorKernel (atomDilate φ (c / N)) n (n + d) /
+        (Real.sqrt n * Real.sqrt ((n + d : ℕ) : ℝ)) - wd n * crossProfile φ c d (n / N) / N| ≤
+        K / N * (1 / n) := fun n hn => by
+      have hn1 : 1 ≤ n := (Finset.mem_Icc.mp hn).1
+      have hnd : n + d ≤ N := by have := (Finset.mem_Icc.mp hn).2; omega
+      have hn0 : (0 : ℝ) < n := by exact_mod_cast hn1
+      have hd0 : (0 : ℝ) < d := by exact_mod_cast hd
+      obtain ⟨hPl, hPu⟩ := sqrt_mul_sqrt_bounds n d
+      set P := Real.sqrt n * Real.sqrt ((n + d : ℕ) : ℝ)
+      have hP0 : 0 < P := lt_of_lt_of_le hn0 hPl
+      have hnd' : ((n + d : ℕ) : ℝ) = n + d := by push_cast; ring
+      set Cr := atomCrossErrorKernel (atomDilate φ (c / N)) n (n + d)
+      set G := crossProfile φ c d (n / N)
+      have hCr : |Cr - (n / N : ℝ) * G| ≤ crossLip φ c / N :=
+        abs_crossError_sub_profile_le hφ hφsupp hφ0 hc0 hc1 hn1 hd hnd
+      have hu : (n : ℝ) / N ∈ Set.Icc (0 : ℝ) 1 := ⟨by positivity, by
+        rw [div_le_one hN0]; exact_mod_cast (show n ≤ N by omega)⟩
+      have hG : |G| ≤ BG := abs_crossProfile_le hφ hφsupp hφ0 hc0 hc1 hd hu
+      have hinv1 : 0 ≤ 1 / (n : ℝ) - 1 / P := by
+        rw [sub_nonneg]; exact one_div_le_one_div_of_le hn0 hPl
+      have hinv2 : 1 / (n : ℝ) - 1 / P ≤ d / ((n : ℝ) * n) := by
+        have h1 : 1 / ((n : ℝ) + d) ≤ 1 / P := one_div_le_one_div_of_le hP0 (hnd' ▸ hPu)
+        have h2 : 1 / (n : ℝ) - 1 / ((n : ℝ) + d) ≤ d / ((n : ℝ) * n) := by
+          rw [div_sub_div _ _ hn0.ne' (by positivity), div_le_div_iff₀ (by positivity) (by positivity)]
+          nlinarith [mul_nonneg (mul_nonneg hd0.le hd0.le) hn0.le]
+        linarith
+      have e : wd n * Cr / P - wd n * G / N =
+          wd n * ((Cr - (n / N : ℝ) * G) / P - (n / N : ℝ) * G * (1 / (n : ℝ) - 1 / P)) := by
+        field_simp
+        ring
+      rw [e, abs_mul]
+      have hA : |(Cr - (n / N : ℝ) * G) / P| ≤ crossLip φ c / N * (1 / n) := by
+        rw [abs_div, abs_of_pos hP0]
+        calc |Cr - (n / N : ℝ) * G| / P ≤ crossLip φ c / N / n :=
+              div_le_div₀ (by positivity) hCr hn0 hPl
+          _ = crossLip φ c / N * (1 / n) := by ring
+      have hB : |(n / N : ℝ) * G * (1 / (n : ℝ) - 1 / P)| ≤ BG * d / N * (1 / n) := by
+        rw [abs_mul, abs_mul, abs_of_nonneg (by positivity : (0 : ℝ) ≤ n / N),
+          abs_of_nonneg hinv1]
+        calc (n / N : ℝ) * |G| * (1 / (n : ℝ) - 1 / P) ≤ (n / N : ℝ) * BG * (d / ((n : ℝ) * n)) := by
+              gcongr
+          _ = BG * d / N * (1 / n) := by field_simp
+      calc |wd n| * |(Cr - (n / N : ℝ) * G) / P - (n / N : ℝ) * G * (1 / (n : ℝ) - 1 / P)|
+          ≤ (2 * σ' * σ) * (crossLip φ c / N * (1 / n) + BG * d / N * (1 / n)) :=
+            mul_le_mul (hW n) ((abs_sub _ _).trans (add_le_add hA hB)) (abs_nonneg _)
+              (by positivity)
+        _ = K / N * (1 / n) := by ring
+    calc ∑ n ∈ Icc 1 (N - d), |wd n * atomCrossErrorKernel (atomDilate φ (c / N)) n (n + d) /
+          (Real.sqrt n * Real.sqrt ((n + d : ℕ) : ℝ)) - wd n * crossProfile φ c d (n / N) / N|
+        ≤ ∑ n ∈ Icc 1 (N - d), K / N * (1 / (n : ℝ)) := Finset.sum_le_sum hterm
+      _ ≤ ∑ n ∈ Icc 1 N, K / N * (1 / (n : ℝ)) :=
+          Finset.sum_le_sum_of_subset_of_nonneg (Finset.Icc_subset_Icc_right (Nat.sub_le N d))
+            fun n _ _ => by positivity
+      _ = K * ((harmonic N : ℝ) / N) := by
+          rw [← Finset.mul_sum, harmonic_eq_sum_Icc_real]
+          simp only [one_div]
+          ring
+  have := hdiff.add hmain
+  rw [zero_add] at this
+  refine this.congr fun N => ?_
+  ring
+
+/-- **The rows are dominated**: `|row_d| ≤ D/d²` uniformly in `N`. -/
+theorem abs_crossRow_le {φ : ℝ → ℝ} (hφ : ContDiff ℝ 2 φ)
+    (hφsupp : ∀ u, u ∉ Set.Icc 0 1 → φ u = 0) (hφ0 : 0 < ∫ u, φ u ^ 2) {c : ℝ} (hc0 : 0 < c)
+    (hc1 : c < 1) (e e' : ℕ) {N d : ℕ} (hd : 1 ≤ d) :
+    |crossRow φ c e e' N d| ≤ 4 * ((∑ t ∈ e'.divisors, (t : ℝ)) * ∑ t ∈ e.divisors, (t : ℝ)) *
+      (38 * (∫ u, |φ u|) ^ 2 / ((∫ u, φ u ^ 2) * (1 - c) ^ 2)) * c ^ 2 / d ^ 2 := by
+  set σ : ℝ := ∑ t ∈ e.divisors, (t : ℝ)
+  set σ' : ℝ := ∑ t ∈ e'.divisors, (t : ℝ)
+  have hσ : 0 ≤ σ := by positivity
+  have hσ' : 0 ≤ σ' := by positivity
+  set K₀ : ℝ := 38 * (∫ u, |φ u|) ^ 2 / ((∫ u, φ u ^ 2) * (1 - c) ^ 2)
+  have hc' : (0 : ℝ) < 1 - c := by linarith
+  have hK₀ : 0 ≤ K₀ := by
+    have : 0 ≤ ∫ u, |φ u| := integral_nonneg fun _ => abs_nonneg _
+    positivity
+  have hd0 : (0 : ℝ) < d := by exact_mod_cast hd
+  rcases Nat.eq_zero_or_pos N with hN | hN
+  · subst hN; simp [crossRow]; positivity
+  have hN0 : (0 : ℝ) < N := by exact_mod_cast hN
+  have hterm : ∀ n ∈ Icc 1 (N - d), |(ramanujanLagCoefficient e' n * ramanujanLagCoefficient e (n + d) +
+      ramanujanLagCoefficient e' (n + d) * ramanujanLagCoefficient e n) *
+      atomCrossErrorKernel (atomDilate φ (c / N)) n (n + d) /
+        (Real.sqrt n * Real.sqrt ((n + d : ℕ) : ℝ))| ≤
+      2 * σ' * σ * K₀ * c ^ 2 / d ^ 2 * (1 / Real.sqrt N * (1 / Real.sqrt n)) := fun n hn => by
+    have hn1 : 1 ≤ n := (Finset.mem_Icc.mp hn).1
+    have hnd : n + d ≤ N := by have := (Finset.mem_Icc.mp hn).2; omega
+    have hn0 : (0 : ℝ) < n := by exact_mod_cast hn1
+    have hW : |ramanujanLagCoefficient e' n * ramanujanLagCoefficient e (n + d) +
+        ramanujanLagCoefficient e' (n + d) * ramanujanLagCoefficient e n| ≤ 2 * σ' * σ := by
+      have a1 := abs_ramanujanLagCoefficient_le e' n
+      have a2 := abs_ramanujanLagCoefficient_le e (n + d)
+      have a3 := abs_ramanujanLagCoefficient_le e' (n + d)
+      have a4 := abs_ramanujanLagCoefficient_le e n
+      refine (abs_add_le _ _).trans ?_
+      rw [abs_mul, abs_mul]
+      have b1 := mul_le_mul a1 a2 (abs_nonneg _) hσ'
+      have b2 := mul_le_mul a3 a4 (abs_nonneg _) hσ'
+      linarith
+    have hRA := abs_atomCrossErrorKernel_atomDilate_le hφ hφsupp hφ0 (w := c / N) (N := N)
+      (div_pos hc0 hN0) hc0.le hc1 le_rfl (Finset.mem_Icc.mpr ⟨hn1, by omega⟩)
+      (Finset.mem_Icc.mpr ⟨by omega, hnd⟩)
+    have hmax : max (n : ℝ) ((n + d : ℕ) : ℝ) = ((n + d : ℕ) : ℝ) :=
+      max_eq_right (by push_cast; linarith)
+    have hgap : |(n : ℝ) - ((n + d : ℕ) : ℝ)| = d := by
+      push_cast; rw [show (n : ℝ) - (n + d) = -d by ring, abs_neg, abs_of_pos hd0]
+    rw [hmax, hgap] at hRA
+    obtain ⟨hPl, hPu⟩ := sqrt_mul_sqrt_bounds n d
+    have hP0 : 0 < Real.sqrt n * Real.sqrt ((n + d : ℕ) : ℝ) := lt_of_lt_of_le hn0 hPl
+    -- the scaling `(c/N)² (n+d)² / √(n(n+d)) ≤ c²/(√N √n)`
+    obtain ⟨a, ha0, ha⟩ : ∃ a, 0 < a ∧ Real.sqrt ((n + d : ℕ) : ℝ) = a :=
+      ⟨_, Real.sqrt_pos.mpr (by positivity), rfl⟩
+    obtain ⟨b, hb0, hb⟩ : ∃ b, 0 < b ∧ Real.sqrt N = b := ⟨_, Real.sqrt_pos.mpr hN0, rfl⟩
+    obtain ⟨r, hr0, hr⟩ : ∃ r, 0 < r ∧ Real.sqrt n = r := ⟨_, Real.sqrt_pos.mpr hn0, rfl⟩
+    have hak : ((n + d : ℕ) : ℝ) = a ^ 2 := by rw [← ha, Real.sq_sqrt (Nat.cast_nonneg _)]
+    have hbk : (N : ℝ) = b ^ 2 := by rw [← hb, Real.sq_sqrt hN0.le]
+    have hab : a ≤ b := by
+      rw [← ha, ← hb]; exact Real.sqrt_le_sqrt (by exact_mod_cast hnd)
+    have hscale : (c / N) ^ 2 * ((n + d : ℕ) : ℝ) ^ 2 / (Real.sqrt n * Real.sqrt ((n + d : ℕ) : ℝ)) ≤
+        c ^ 2 * (1 / Real.sqrt N * (1 / Real.sqrt n)) := by
+      rw [ha, hb, hr, hak, hbk]
+      have h3 : a ^ 3 ≤ b ^ 3 := pow_le_pow_left₀ ha0.le hab 3
+      rw [div_le_iff₀ (by positivity)]
+      have e1 : c ^ 2 * (1 / b * (1 / r)) * (r * a) = c ^ 2 * a / b := by field_simp
+      rw [e1]
+      have e2 : (c / b ^ 2) ^ 2 * (a ^ 2) ^ 2 = c ^ 2 * a ^ 4 / b ^ 4 := by field_simp
+      rw [e2, div_le_div_iff₀ (by positivity) hb0]
+      have h4 : a ^ 4 * b ≤ a * b ^ 4 := by
+        have := mul_le_mul_of_nonneg_left h3 (mul_nonneg ha0.le hb0.le)
+        nlinarith [this]
+      have h5 := mul_le_mul_of_nonneg_left h4 (sq_nonneg c)
+      nlinarith [h5]
+    rw [abs_div, abs_mul, abs_of_pos hP0]
+    calc |ramanujanLagCoefficient e' n * ramanujanLagCoefficient e (n + d) +
+          ramanujanLagCoefficient e' (n + d) * ramanujanLagCoefficient e n| *
+          |atomCrossErrorKernel (atomDilate φ (c / N)) n (n + d)| /
+          (Real.sqrt n * Real.sqrt ((n + d : ℕ) : ℝ))
+        ≤ 2 * σ' * σ * (K₀ * (c / N) ^ 2 * ((n + d : ℕ) : ℝ) ^ 2 / (d : ℝ) ^ 2) /
+          (Real.sqrt n * Real.sqrt ((n + d : ℕ) : ℝ)) :=
+          div_le_div_of_nonneg_right (mul_le_mul hW hRA (abs_nonneg _) (by positivity)) hP0.le
+      _ = 2 * σ' * σ * K₀ / d ^ 2 * ((c / N) ^ 2 * ((n + d : ℕ) : ℝ) ^ 2 /
+          (Real.sqrt n * Real.sqrt ((n + d : ℕ) : ℝ))) := by ring
+      _ ≤ 2 * σ' * σ * K₀ / d ^ 2 * (c ^ 2 * (1 / Real.sqrt N * (1 / Real.sqrt n))) :=
+          mul_le_mul_of_nonneg_left hscale (by positivity)
+      _ = _ := by ring
+  unfold crossRow
+  refine (Finset.abs_sum_le_sum_abs _ _).trans ((Finset.sum_le_sum hterm).trans ?_)
+  rw [← Finset.mul_sum, ← Finset.mul_sum]
+  have hsq := RHTower.sum_one_div_sqrt_le N
+  have hsub : ∑ n ∈ Icc 1 (N - d), 1 / Real.sqrt n ≤ ∑ n ∈ Icc 1 N, (1 : ℝ) / Real.sqrt n :=
+    Finset.sum_le_sum_of_subset_of_nonneg (Finset.Icc_subset_Icc_right (Nat.sub_le N d))
+      fun n _ _ => by positivity
+  have hsN : 0 < Real.sqrt N := Real.sqrt_pos.mpr hN0
+  calc 2 * σ' * σ * K₀ * c ^ 2 / d ^ 2 * (1 / Real.sqrt N * ∑ n ∈ Icc 1 (N - d), 1 / Real.sqrt n)
+      ≤ 2 * σ' * σ * K₀ * c ^ 2 / d ^ 2 * (1 / Real.sqrt N * (2 * Real.sqrt N)) := by
+        gcongr
+        exact hsub.trans hsq
+    _ = 4 * (σ' * σ) * K₀ * c ^ 2 / d ^ 2 := by
+        have h2 : 1 / Real.sqrt N * (2 * Real.sqrt N) = 2 := by
+          rw [one_div, ← mul_assoc, mul_comm _ (2 : ℝ), mul_assoc, inv_mul_cancel₀ hsN.ne',
+            mul_one]
+        rw [h2]
+        ring
+
+/-- The cross second order `Cr(e, e') = Σ_d 2[e = e'] c_e(d) ∫_0^1 G_d / √(φ(e)φ(e'))`. -/
+def crossSecondOrder (φ : ℝ → ℝ) (c : ℝ) (e e' : ℕ) : ℝ :=
+  (∑' d : ℕ, 2 * (if e = e' then ramanujanLagCoefficient e d else 0) *
+    ∫ u in (0 : ℝ)..1, crossProfile φ c d u) / (Real.sqrt e.totient * Real.sqrt e'.totient)
+
+/-- **The cross part of the bulk entries**: `⟨Cr R_e, R_{e'}⟩ → Cr(e, e')`. -/
+theorem tendsto_crossPairing {φ : ℝ → ℝ} (hφ : ContDiff ℝ 2 φ)
+    (hφsupp : ∀ u, u ∉ Set.Icc 0 1 → φ u = 0) (hφ0 : 0 < ∫ u, φ u ^ 2) {c : ℝ} (hc0 : 0 < c)
+    (hc1 : c < 1) {e e' : ℕ} (he : 0 < e) (he' : 0 < e') :
+    Tendsto (fun N : ℕ =>
+      ⟪Matrix.toEuclideanLin (fullWeilCrossErrorMatrix φ c N) (ramanujanHorizonVector e N),
+        ramanujanHorizonVector e' N⟫) atTop (𝓝 (crossSecondOrder φ c e e')) := by
+  simp only [crossPairing_eq φ c he he']
+  unfold crossSecondOrder
+  refine Tendsto.div_const ?_ _
+  set τ : ℕ → ℝ := fun d => 2 * (if e = e' then ramanujanLagCoefficient e d else 0) *
+    ∫ u in (0 : ℝ)..1, crossProfile φ c d u with hτ
+  set D₀ : ℝ := 4 * ((∑ t ∈ e'.divisors, (t : ℝ)) * ∑ t ∈ e.divisors, (t : ℝ)) *
+    (38 * (∫ u, |φ u|) ^ 2 / ((∫ u, φ u ^ 2) * (1 - c) ^ 2)) * c ^ 2
+  have hc' : (0 : ℝ) < 1 - c := by linarith
+  have hD₀ : 0 ≤ D₀ := by
+    have : 0 ≤ ∫ u, |φ u| := integral_nonneg fun _ => abs_nonneg _
+    positivity
+  set F : ℕ → ℕ → ℝ := fun N d => if d ∈ Icc 1 N then crossRow φ c e e' N d else 0 with hF
+  have hsum : ∀ N, ∑ d ∈ Icc 1 N, crossRow φ c e e' N d = ∑' d, F N d := fun N => by
+    rw [tsum_eq_sum (s := Icc 1 N) fun d hd => by simp only [hF, if_neg hd]]
+    exact Finset.sum_congr rfl fun d hd => by simp only [hF, if_pos hd]
+  simp only [hsum]
+  have hτ0 : τ 0 = 0 := by simp [hτ, crossProfile]
+  have hab : ∀ d, Tendsto (fun N => F N d) atTop (𝓝 (τ d)) := fun d => by
+    rcases Nat.eq_zero_or_pos d with hd | hd
+    · subst hd
+      rw [hτ0]
+      exact tendsto_const_nhds.congr fun N => by simp [hF]
+    · refine (tendsto_crossRow hφ hφsupp hφ0 hc0 hc1 he he' hd).congr' ?_
+      filter_upwards [eventually_ge_atTop d] with N hN
+      simp only [hF, if_pos (Finset.mem_Icc.mpr ⟨hd, hN⟩)]
+  have hbd : ∀ N d, ‖F N d‖ ≤ D₀ * (1 / (d : ℝ) ^ 2) := fun N d => by
+    simp only [hF]
+    split_ifs with hd
+    · rw [Real.norm_eq_abs]
+      refine (abs_crossRow_le hφ hφsupp hφ0 hc0 hc1 e e' (Finset.mem_Icc.mp hd).1).trans
+        (le_of_eq ?_)
+      simp only [D₀]
+      ring
+    · rw [norm_zero]; positivity
+  have hsumm : Summable fun d : ℕ => D₀ * (1 / (d : ℝ) ^ 2) :=
+    (Real.summable_one_div_nat_pow.mpr one_lt_two).mul_left D₀
+  exact tendsto_tsum_of_dominated_convergence (𝓕 := atTop) hsumm hab (Eventually.of_forall hbd)
 
 end GaloisForLFunctions.ArithmeticHodgeTheoryOfDegenerations

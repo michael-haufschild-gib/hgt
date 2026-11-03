@@ -10,12 +10,14 @@
 
 For `0 < d < 1`, apply Mellin inversion to the ordinary exponential series `Σ a(n) exp(−nz)`. On a far-left line, the reflected Gamma product has total slope `d`, while the Mellin Gamma denominator has slope one. Their ratio therefore decays faster than every exponential in the line index. Contour shifting should give an entire Taylor remainder plus the contribution of the sole possible pole at one.
 
-The exponential series is `2πi`-periodic. Its continuation near `2πi` transports analyticity to zero, removing the polar contribution. Entire periodic continuation then forces exponential coefficient decay, hence absolute Dirichlet convergence on every vertical line. On a left vertical line, the functional equation and the Euler product give a growing Gamma quotient times a uniformly nonzero reflected series, contradicting boundedness.
+Let `G` be the entire Taylor remainder plus the polar term. It is analytic on `Im z > 0`. Agreement with the ordinary exponential series in the right half-plane propagates `G(z+2πi)=G(z)` throughout the upper half-plane. Applying Cauchy's theorem to `G(z)e^{nz}` on rectangles with heights `π, 3π` transports coefficient extraction to `Re z=-R`, giving `|a(n)|≤C_R e^{-Rn}`. In particular, the Dirichlet series converges absolutely at zero.
+
+The functional equation between `Re s = 1/4` and `3/4` then makes the latter Dirichlet series tend to zero vertically: each Gamma quotient tends to zero. The existing vertical-decay theorem forces all positive-index coefficients to vanish. This argument would exclude the gap in the extended class as well; no Euler lower bound or separate pole-removal theorem is needed.
 
 ## Dependencies to discharge
 
 - Ordinary, rather than degree-normalized, Mellin contour expansion with a uniform far-left bound for `d < 1`.
-- Periodic removal of the polar term, and exponential coefficient decay from the resulting entire continuation.
-- Positive-degree Gamma-quotient growth on a fixed left vertical line, with the Euler lower bound derived from the class axioms.
+- Periodicity of the upper-half-plane continuation and exponential coefficient decay by rectangle transport.
+- Gamma-quotient decay between the quarter lines and identification of the continued Dirichlet series there.
 
 Existing sources: `SelbergCuspLeftLineDecay`, `SelbergCuspExpansion`, `ComplexRayMellinInversionGeneralLine`, and the degree-zero classification. No analytic input may remain as a premise in the final theorem.

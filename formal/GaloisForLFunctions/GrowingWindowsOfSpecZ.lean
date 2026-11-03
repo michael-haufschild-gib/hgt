@@ -20,6 +20,7 @@ import GaloisForLFunctions.GrowingWindowsOfSpecZ.ForbiddingLatticeZeroModesIsRH
 import GaloisForLFunctions.GrowingWindowsOfSpecZ.TheFirstPrimeStageOpensPositive
 import GaloisForLFunctions.GrowingWindowsOfSpecZ.TheLatticeSchurDataCoalesce
 import GaloisForLFunctions.GrowingWindowsOfSpecZ.GapContinuationIsNotStructural
+import GaloisForLFunctions.GrowingWindowsOfSpecZ.TheFirstMarginIsBornQuadratically
 
 /-!
 # Growing Windows of Spec ℤ (GWZ)

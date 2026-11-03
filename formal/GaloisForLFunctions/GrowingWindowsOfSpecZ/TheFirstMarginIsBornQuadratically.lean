@@ -1,4 +1,5 @@
 import GaloisForLFunctions.GrowingWindowsOfSpecZ.TheLatticeSchurDataCoalesce
+import GaloisForLFunctions.GrowingWindowsOfSpecZ.TheLatticeHasNoSlackUnderRH
 import GaloisForLFunctions.RHTower.WeilPositivityConductorObstruction
 import GaloisForLFunctions.RHTower.IsolatedDeepZeroWeilDetection
 import GaloisForLFunctions.RHTower.EvenSectorFullPositivity
@@ -64,7 +65,7 @@ theorem summable_zeroTerm_mul_sq (hRH : RiemannHypothesis) (hφ : φ ∈ realTes
     have h1 : γ ^ 2 ≤ (1 + |γ|) ^ 2 := by nlinarith [sq_abs γ, abs_nonneg γ]
     have h2 : 1 + γ * γ ≤ (1 + |γ|) ^ 2 := by nlinarith [sq_abs γ, abs_nonneg γ]
     calc γ ^ 2 * (1 + γ * γ) ≤ (1 + |γ|) ^ 2 * (1 + |γ|) ^ 2 :=
-          mul_le_mul h1 h2 (by positivity) (by positivity)
+          mul_le_mul h1 h2 (by nlinarith [mul_self_nonneg γ]) (by positivity)
       _ = _ := by ring
   have hkey : F ^ 2 * γ ^ 2 * (1 + γ * γ) ≤ K ^ 2 := by
     calc F ^ 2 * γ ^ 2 * (1 + γ * γ) = F ^ 2 * (γ ^ 2 * (1 + γ * γ)) := by ring
@@ -72,7 +73,7 @@ theorem summable_zeroTerm_mul_sq (hRH : RiemannHypothesis) (hφ : φ ∈ realTes
       _ = (F * (1 + |γ|) ^ 2) ^ 2 := by ring
       _ ≤ K ^ 2 := pow_le_pow_left₀ (by positivity) hFK 2
   simp only [zeroTerm]
-  rw [mul_div_assoc', le_div_iff₀ (by positivity)]
+  rw [mul_div_assoc', le_div_iff₀ (by nlinarith [mul_self_nonneg γ])]
   calc (zetaZeroConfig.mult ρ : ℝ) * F ^ 2 * γ ^ 2 * (1 + γ * γ) =
         (zetaZeroConfig.mult ρ : ℝ) * (F ^ 2 * γ ^ 2 * (1 + γ * γ)) := by ring
     _ ≤ (zetaZeroConfig.mult ρ : ℝ) * K ^ 2 := mul_le_mul_of_nonneg_left hkey hm
@@ -95,7 +96,7 @@ theorem tendsto_one_sub_cos_div_sq (γ : ℝ) :
   -- `|(1 − cos γh)/h² − γ²/2| ≤ (5/96)γ⁴h²` once `|γh| ≤ 1`
   have hsmall : ∀ᶠ h in 𝓝[≠] (0 : ℝ), |γ * h| ≤ 1 := by
     have hc : Tendsto (fun h : ℝ => |γ * h|) (𝓝 0) (𝓝 0) := by
-      have := ((continuous_const.mul continuous_id).abs).tendsto (0 : ℝ)
+      have := ((continuous_const.mul continuous_id : Continuous fun h : ℝ => γ * h).abs).tendsto 0
       simpa using this
     exact (hc.eventually (ge_mem_nhds one_pos)).filter_mono nhdsWithin_le_nhds
   have hbound : ∀ᶠ h in 𝓝[≠] (0 : ℝ),
@@ -110,51 +111,53 @@ theorem tendsto_one_sub_cos_div_sq (γ : ℝ) :
     rw [heq, Real.norm_eq_abs, abs_div, abs_neg, abs_of_pos hh2, div_le_iff₀ hh2]
     calc |Real.cos (γ * h) - (1 - (γ * h) ^ 2 / 2)| ≤ |γ * h| ^ 4 * (5 / 96) := hb
       _ = 5 / 96 * γ ^ 4 * h ^ 2 * h ^ 2 := by
-        rw [abs_mul, mul_pow, mul_pow, show |h| ^ 4 = (h ^ 2) ^ 2 by rw [← sq_abs h]; ring,
-          show |γ| ^ 4 = (γ ^ 2) ^ 2 by rw [← sq_abs γ]; ring]
+        rw [abs_mul, mul_pow, Even.pow_abs ⟨2, rfl⟩, Even.pow_abs ⟨2, rfl⟩]
         ring
   have hlim : Tendsto (fun h : ℝ => 5 / 96 * γ ^ 4 * h ^ 2) (𝓝[≠] 0) (𝓝 0) := by
-    have := ((continuous_const.mul (continuous_id.pow 2)).tendsto (0 : ℝ)).mono_left
-      (nhdsWithin_le_nhds (s := ({0}ᶜ : Set ℝ)))
-    simpa using this
-  have := squeeze_zero_norm' hbound hlim
-  simpa using this.add_const (γ ^ 2 / 2)
+    have h0 : Tendsto (fun h : ℝ => h ^ 2) (𝓝 0) (𝓝 0) := by
+      simpa using (continuous_pow 2).tendsto (0 : ℝ)
+    have := (h0.const_mul (5 / 96 * γ ^ 4)).mono_left (nhdsWithin_le_nhds (s := ({0}ᶜ : Set ℝ)))
+    rwa [mul_zero] at this
+  have := (squeeze_zero_norm' hbound hlim).add_const (γ ^ 2 / 2)
+  rw [zero_add] at this
+  exact this.congr fun h => sub_add_cancel _ _
 
 /-- **The first margin is born quadratically** (under RH): for every nonzero bump `φ`,
 `E_1(φ, h)/h² → M₂(φ)` as `h → 0`. -/
 theorem tendsto_levinsonErr_one_div_sq (hRH : RiemannHypothesis) (hφ : φ ∈ realTests)
     (hφ0 : φ ≠ 0) :
     Tendsto (fun h => levinsonErr (weilSeq φ h) 1 / h ^ 2) (𝓝[≠] 0) (𝓝 (zeroSecondMoment φ)) := by
-  set q := weilQuad φ
-  have hq : 0 < q := by
+  have hq : 0 < weilQuad φ := by
     have := riemannHypothesis_iff_levinsonErr_pos.mp hRH φ hφ hφ0 1 one_pos 0
     rwa [levinsonErr_zero, weilSeq, latticeTranslate_zero] at this
-  set w : zetaZeroConfig.carrier → ℝ := zeroTerm (cx φ)
   -- the defect `c(0) − c(h)` as a cosine series
-  have hdefect : ∀ h, (q - weilOrbitCorr φ h) / h ^ 2 =
-      ∑' ρ, w ρ * ((1 - Real.cos ((ρ : ℂ).im * h)) / h ^ 2) := fun h => by
+  have hdefect : ∀ h, (weilQuad φ - weilOrbitCorr φ h) / h ^ 2 =
+      ∑' ρ, zeroTerm (cx φ) ρ * ((1 - Real.cos ((ρ : ℂ).im * h)) / h ^ 2) := fun h => by
     have h2 := two_mul_weilSeq_sub hφ h 1
     rw [weilQuad_frobeniusDiff_eq hRH hφ h 1, weilSeq_one] at h2
-    have h0 : weilSeq φ h 0 = q := by rw [weilSeq, latticeTranslate_zero]; rfl
+    have h0 : weilSeq φ h 0 = weilQuad φ := by rw [weilSeq, latticeTranslate_zero]; rfl
     rw [h0] at h2
-    have hs : q - weilOrbitCorr φ h = ∑' ρ, w ρ * (1 - Real.cos ((ρ : ℂ).im * h)) := by
-      have : ∑' ρ, w ρ * (2 * (1 - Real.cos ((ρ : ℂ).im * (((1 : ℤ) : ℝ) * h)))) =
-          2 * ∑' ρ, w ρ * (1 - Real.cos ((ρ : ℂ).im * h)) := by
-        rw [← tsum_mul_left]
-        refine tsum_congr fun ρ => ?_
-        push_cast; ring
+    have h2' : ∑' ρ, zeroTerm (cx φ) ρ * (2 * (1 - Real.cos ((ρ : ℂ).im * (((1 : ℤ) : ℝ) * h)))) =
+        2 * ∑' ρ, zeroTerm (cx φ) ρ * (1 - Real.cos ((ρ : ℂ).im * h)) := by
+      rw [← tsum_mul_left]
+      refine tsum_congr fun ρ => ?_
+      simp only [Int.cast_one, one_mul]
+      ring
+    have hs : weilQuad φ - weilOrbitCorr φ h =
+        ∑' ρ, zeroTerm (cx φ) ρ * (1 - Real.cos ((ρ : ℂ).im * h)) := by
       linarith
     rw [hs, ← tsum_div_const]
     refine tsum_congr fun ρ => ?_
     ring
   -- dominated convergence for the defect
   have hsum := summable_zeroTerm_mul_sq hRH hφ
-  have hdom : Tendsto (fun h => ∑' ρ, w ρ * ((1 - Real.cos ((ρ : ℂ).im * h)) / h ^ 2)) (𝓝[≠] 0)
-      (𝓝 (∑' ρ, w ρ * ((ρ : ℂ).im ^ 2 / 2))) := by
-    refine tendsto_tsum_of_dominated_convergence (bound := fun ρ => w ρ * (ρ : ℂ).im ^ 2 / 2)
-      (hsum.div_const 2) (fun ρ => (tendsto_one_sub_cos_div_sq _).const_mul (w ρ)) ?_
+  have hdom : Tendsto (fun h => ∑' ρ, zeroTerm (cx φ) ρ * ((1 - Real.cos ((ρ : ℂ).im * h)) / h ^ 2))
+      (𝓝[≠] 0) (𝓝 (∑' ρ, zeroTerm (cx φ) ρ * ((ρ : ℂ).im ^ 2 / 2))) := by
+    refine tendsto_tsum_of_dominated_convergence
+      (bound := fun ρ => zeroTerm (cx φ) ρ * (ρ : ℂ).im ^ 2 / 2)
+      (hsum.div_const 2) (fun ρ => (tendsto_one_sub_cos_div_sq _).const_mul _) ?_
     refine Eventually.of_forall fun h ρ => ?_
-    have hw : 0 ≤ w ρ := zeroTerm_nonneg _ _
+    have hw : 0 ≤ zeroTerm (cx φ) ρ := zeroTerm_nonneg _ _
     have hc0 : 0 ≤ 1 - Real.cos ((ρ : ℂ).im * h) := by linarith [Real.cos_le_one ((ρ : ℂ).im * h)]
     have hc1 : 1 - Real.cos ((ρ : ℂ).im * h) ≤ ((ρ : ℂ).im * h) ^ 2 / 2 := by
       linarith [Real.one_sub_sq_div_two_le_cos (x := (ρ : ℂ).im * h)]
@@ -167,23 +170,25 @@ theorem tendsto_levinsonErr_one_div_sq (hRH : RiemannHypothesis) (hφ : φ ∈ r
     · rw [div_le_iff₀ (by positivity)]
       calc 1 - Real.cos ((ρ : ℂ).im * h) ≤ ((ρ : ℂ).im * h) ^ 2 / 2 := hc1
         _ = (ρ : ℂ).im ^ 2 / 2 * h ^ 2 := by ring
-  have hM : ∑' ρ, w ρ * ((ρ : ℂ).im ^ 2 / 2) = zeroSecondMoment φ / 2 := by
+  have hM : ∑' ρ, zeroTerm (cx φ) ρ * ((ρ : ℂ).im ^ 2 / 2) = zeroSecondMoment φ / 2 := by
     rw [zeroSecondMoment, ← tsum_div_const]
     refine tsum_congr fun ρ => ?_
     ring
   rw [hM] at hdom
+  have hdef : Tendsto (fun h => (weilQuad φ - weilOrbitCorr φ h) / h ^ 2) (𝓝[≠] 0)
+      (𝓝 (zeroSecondMoment φ / 2)) := hdom.congr fun h => (hdefect h).symm
   -- `(c(0) + c(h))/c(0) → 2`
   have hc := (continuous_weilOrbitCorr hφ).tendsto 0
   rw [weilOrbitCorr_zero] at hc
-  have hratio : Tendsto (fun h => (q + weilOrbitCorr φ h) / q) (𝓝[≠] 0) (𝓝 2) := by
-    have := ((tendsto_const_nhds (x := q)).add hc).div_const q
-    rw [show (q + q) / q = 2 by field_simp; ring] at this
+  have hratio : Tendsto (fun h => (weilQuad φ + weilOrbitCorr φ h) / weilQuad φ) (𝓝[≠] 0)
+      (𝓝 2) := by
+    have := ((tendsto_const_nhds (x := weilQuad φ)).add hc).div_const (weilQuad φ)
+    rw [show (weilQuad φ + weilQuad φ) / weilQuad φ = 2 by field_simp; ring] at this
     exact this.mono_left nhdsWithin_le_nhds
-  have hdef : Tendsto (fun h => (q - weilOrbitCorr φ h) / h ^ 2) (𝓝[≠] 0)
-      (𝓝 (zeroSecondMoment φ / 2)) := hdom.congr fun h => (hdefect h).symm
   have hprod := hdef.mul hratio
   rw [show zeroSecondMoment φ / 2 * 2 = zeroSecondMoment φ by ring] at hprod
   refine hprod.congr fun h => ?_
+  -- `E_1 = (c(0) − c(h))(c(0) + c(h))/c(0)`
   rw [levinsonErr_one, div_mul_eq_mul_div]
   congr 1
   field_simp
