@@ -108,8 +108,9 @@ theorem denseRange_coreEmbedding : DenseRange coreEmbedding := by
   intro x
   rw [Metric.mem_closure_iff]
   intro ε hε
-  have hsum := lp.hasSum_single (p := 2) (by norm_num) x
-  rw [HasSum, Metric.tendsto_atTop] at hsum
+  have hsum : Tendsto (fun S : Finset upperMayerResonances => ∑ s ∈ S, lp.single 2 s (x s))
+      atTop (𝓝 x) := lp.hasSum_single (p := 2) (by norm_num) x
+  rw [Metric.tendsto_atTop] at hsum
   obtain ⟨S, hS⟩ := hsum ε hε
   refine ⟨coreEmbedding (∑ s ∈ S, x s • mayerPeriodBasis s), ⟨_, rfl⟩, ?_⟩
   rw [dist_comm]
@@ -134,11 +135,9 @@ def windowResonanceMap (A : ℝ) : windowTests A →ₗ[ℝ] ResonantSpace where
   map_add' H G := by
     ext s
     simp only [map_add, lp.coeFn_add, Pi.add_apply]
-    rfl
   map_smul' c H := by
     ext s
     simp only [map_smul, lp.coeFn_smul, Pi.smul_apply, RingHom.id_apply]
-    rfl
 
 theorem windowResonanceMap_apply {A : ℝ} (H : windowTests A) (s : upperMayerResonances) :
     windowResonanceMap A H s = windowZeroMap A H (upperMayerZero s) := rfl
@@ -179,8 +178,8 @@ theorem weilQuad_eq_completedKreinForm {A : ℝ} (H : windowTests A) :
   rw [weilQuad_eq_twice_upperMayer_sum H, completedKreinForm]
   congr 2
   refine tsum_congr fun s => ?_
-  rw [windowResonanceMap_apply, windowResonanceMap_apply, ← upperMayerZero_reflect,
-    upperMayerZero_reflect, windowZeroMap_mul_conj_reflect]
+  rw [windowResonanceMap_apply, windowResonanceMap_apply, upperMayerZero_reflect,
+    windowZeroMap_mul_conj_reflect]
   rfl
 
 /-! ### Boundedness -/
@@ -259,6 +258,9 @@ theorem norm_windowResonanceMap_sq_le {A : ℝ} (hA : 0 ≤ A) (H : windowTests 
   have h2 : (0 : ℝ) < (2 : ENNReal).toReal := by norm_num
   have hn := lp.norm_rpow_eq_tsum h2 (windowResonanceMap A H)
   simp only [ENNReal.toReal_ofNat, Real.rpow_two] at hn
+  have hs1 : Summable fun s => ‖windowResonanceMap A H s‖ ^ 2 := by
+    have := (memℓp_gen_iff h2).mp (lp.memℓp (windowResonanceMap A H))
+    simpa only [ENNReal.toReal_ofNat, Real.rpow_two] using this
   rw [hn]
   set w : zetaZeroConfig.carrier → ℝ := fun ρ =>
     (zetaZeroConfig.mult ρ : ℝ) / (1 + Complex.normSq (gammaOf ρ))
@@ -268,8 +270,7 @@ theorem norm_windowResonanceMap_sq_le {A : ℝ} (hA : 0 ≤ A) (H : windowTests 
     hT.comp_injective upperMayerZero_injective
   have hle : ∑' s : upperMayerResonances, ‖windowResonanceMap A H s‖ ^ 2 ≤
       ∑' s : upperMayerResonances, 20 * Real.exp A * sobolevOne H ^ 2 * w (upperMayerZero s) :=
-    Summable.tsum_le_tsum (fun s => norm_zeroCoord_sq_le hA H (upperMayerZero s))
-      ((memℓp_gen_iff h2).mp (lp.memℓp _) |>.congr fun s => by simp [Real.rpow_two])
+    Summable.tsum_le_tsum (fun s => norm_zeroCoord_sq_le hA H (upperMayerZero s)) hs1
       (hsw.mul_left _)
   refine hle.trans ?_
   rw [tsum_mul_left]
@@ -302,11 +303,12 @@ theorem tr_heckePull (H : ℝ → ℝ) {p : ℕ} (hp : 1 ≤ p) (z : ℂ) :
     tr (fun u => (heckePull p H u : ℂ)) z = (p : ℂ) ^ (1 - z) * tr (fun u => (H u : ℂ)) z := by
   have hp0 : (0 : ℝ) < p := by exact_mod_cast hp
   have hfun : (fun u => (heckePull p H u : ℂ)) = fun u =>
-      (Real.sqrt p : ℂ) * translate (-Real.log p) (fun v => (H v : ℂ)) u := by
+      (Real.sqrt p : ℂ) * ArithmeticPolarization.translate (-Real.log p) (fun v => (H v : ℂ)) u := by
     funext u
-    simp only [heckePull, translate, sub_neg_eq_add, Complex.ofReal_mul]
+    simp only [heckePull, ArithmeticPolarization.translate, sub_neg_eq_add, Complex.ofReal_mul]
   rw [hfun, tr, paperFT_const_mul]
-  change (Real.sqrt p : ℂ) * tr (translate (-Real.log p) (fun u => (H u : ℂ))) z = _
+  change (Real.sqrt p : ℂ) *
+    tr (ArithmeticPolarization.translate (-Real.log p) (fun u => (H u : ℂ))) z = _
   rw [tr_translate, ← mul_assoc]
   congr 1
   have hs : (Real.sqrt p : ℂ) = Complex.exp ((Real.log p / 2 : ℝ) : ℂ) := by
@@ -325,9 +327,9 @@ theorem windowZeroMap_heckePull {A : ℝ} {p : ℕ} (hp : 1 ≤ p) (H : windowTe
       (p : ℂ) ^ (1 - (ρ : ℂ)) * windowZeroMap A H ρ := by
   change zeroCoord zetaZeroConfig (cx (heckePull p H)) ρ =
     (p : ℂ) ^ (1 - (ρ : ℂ)) * zeroCoord zetaZeroConfig (cx H) ρ
-  have h := tr_heckePull (H : ℝ → ℝ) hp (ρ : ℂ)
-  simp only [tr] at h
-  simp only [zeroCoord, cx]
+  have h : paperFT (cx (heckePull p H)) (gammaOf ρ) =
+      (p : ℂ) ^ (1 - (ρ : ℂ)) * paperFT (cx H) (gammaOf ρ) := tr_heckePull (H : ℝ → ℝ) hp (ρ : ℂ)
+  simp only [zeroCoord]
   rw [h]
   ring
 
@@ -385,12 +387,13 @@ theorem completedKreinForm_heckeMultiplier {p : ℕ} (hp : 1 ≤ p) (x y : Reson
       conj ((p : ℂ) ^ (1 - 2 * (reflectUpperResonance s).1) * y (reflectUpperResonance s)) = _
   have hr : (reflectUpperResonance s).1 = riemannMayerReflect s.1 := rfl
   have hconj : conj ((p : ℂ) ^ (1 - 2 * riemannMayerReflect s.1)) = (p : ℂ) ^ (2 * s.1) := by
-    have harg : ((p : ℂ)).arg ≠ Real.pi := by
-      rw [Complex.natCast_arg]; exact Real.pi_ne_zero.symm
-    rw [← Complex.conj_natCast (R := ℂ) p, ← Complex.cpow_conj _ _ harg]
-    simp only [riemannMayerReflect, map_sub, map_one, map_mul, map_ofNat, map_div₀,
-      Complex.conj_conj, Complex.conj_natCast]
+    have hl : Complex.log (p : ℂ) = ((Real.log p : ℝ) : ℂ) := by
+      rw [← Complex.ofReal_natCast, Complex.ofReal_log hp0.le]
+    rw [Complex.cpow_def_of_ne_zero hpc, Complex.cpow_def_of_ne_zero hpc, ← Complex.exp_conj,
+      map_mul, hl, Complex.conj_ofReal]
     congr 1
+    simp only [riemannMayerReflect, map_sub, map_one, map_mul, map_ofNat, map_div₀,
+      Complex.conj_conj]
     ring
   rw [hr, map_mul, hconj]
   have hadd : (p : ℂ) ^ (1 - 2 * s.1) * (p : ℂ) ^ (2 * s.1) = p := by
@@ -448,7 +451,5 @@ theorem windowResonanceMap_windowInvolution {A : ℝ} (H : windowTests A)
   rw [windowResonanceMap_eq_period, windowResonanceMap_eq_period, hr, hm, hσ,
     windowMellinPeriod_krein_reflection_one A H s.2.2.1 s.2.2.2.1, map_mul, Complex.conj_ofReal]
   ring
-
-end GaloisForLFunctions.RenormalizedIntersectionTheory.MayerScattering
 
 end GaloisForLFunctions.RenormalizedIntersectionTheory.MayerScattering

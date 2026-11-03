@@ -6,7 +6,7 @@
 - **Source:** [Retained Gamma payment](f1-gamma-lag-moment-payment.md)
 - **Statement:** For a real continuous compact odd source supported in `[-a,a]`,
   `∫₀²ᵃ t²C(t)dt=−(∫xF(x)dx)²`, where `C(t)=∫F(x)F(x+t)dx`.
-  Consequently `∫₀²ᵃt²(E−C(t))dt=(8a³/3)E+(∫xF)²`.
+  On the unit window, `M₂=E/3+(∫xF)²≤5E/12`.
 
 ## Proof
 

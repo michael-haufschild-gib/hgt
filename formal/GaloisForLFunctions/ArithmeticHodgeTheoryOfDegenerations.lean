@@ -65,6 +65,7 @@ import GaloisForLFunctions.ArithmeticHodgeTheoryOfDegenerations.EveryFrequencySe
 import GaloisForLFunctions.ArithmeticHodgeTheoryOfDegenerations.TheMonodromyRateOfACurveIsItsZeroWidth
 import GaloisForLFunctions.ArithmeticHodgeTheoryOfDegenerations.ThePartialZetaSumIsQuietBelowItsGrid
 import GaloisForLFunctions.ArithmeticHodgeTheoryOfDegenerations.TheBulkIsBlindBelowItsGrid
+import GaloisForLFunctions.ArithmeticHodgeTheoryOfDegenerations.TheUntwistedCountIsTheFinitePartAtZeroFrequency
 
 /-!
 # Arithmetic Hodge Theory of Degenerations
@@ -84,7 +85,8 @@ resolution axis (overlap `c`, horizon `N`). See `ArithmeticHodgeTheoryOfDegenera
   series: Jordan totients for Ramanujan expansions (graded by conductor), the unit count corrected
   by `L(β+1, ψ̄²)` for characters (graded by parity, equal parities coupled by `L`-values), and the
   Hurwitz form `½(ζ(β+1,u) + ζ(β+1,1−u))` for a frequency `u`, rational or irrational, the layer
-  being graded by frequency (trigonometric twists carry `Σ a_k²` times these forms).
+  being graded by frequency (trigonometric twists carry `Σ a_k²` times these forms); the frequency
+  counts have a pole of order `β + 1` at zero frequency whose finite part is the untwisted count.
 * **Critical boundary.** On the canonical tilted-spline clock, every independent fixed window
   family has eventual inertia `(n₊(P), n₋(P)+n₀(P), 0)`: the negative inverse-square correction
   makes every null direction negative. The limiting critical ratio alone permits either sign.

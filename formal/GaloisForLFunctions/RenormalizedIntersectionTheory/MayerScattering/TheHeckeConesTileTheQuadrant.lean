@@ -13,9 +13,12 @@ the source operator `T₂`, for `n = 3` its seven cones. The **cone** of a basis
   `u₁' = αu₁ + βu₂`, `u₂' = γu₁ + δu₂`, the Hecke inequalities force `α − γ ≥ 1`, `β − δ ≤ −1`
   (`hecke_shift_bounds`), the inverse change of basis forces `γ + δ ≥ 1`, `α + β ≥ 1`, and the
   unimodularity `αδ − βγ = 1` with the cone coefficients leaves only the identity.
-* **The chain** (`exists_inCone_of_sameLattice`): from a Hecke basis whose second coefficient of a
+* **The chain** (`exists_inCone_of_basis`): from a Hecke basis whose second coefficient of a
   vector `v` (with `x ≥ 1`) is nonnegative, the successor `(u₂, t u₂ − u₁)`, `t = ⌈a/c⌉`, is again a
   Hecke basis of the same lattice; walking the chain reaches a basis whose cone contains `v`.
+* **Prime count** (`heckeConeCount_eq`): for a prime `p` the index-`p` lattices are the `p + 1` lines of
+  `𝔽_p²`; each line through `v` carries exactly one cone through `v`, so `v = (x, y)`, `x ≥ 1`, `y ≥ 0`,
+  lies in `1` cone, or in `p + 1` cones when `p ∣ x` and `p ∣ y`.
 -/
 
 namespace GaloisForLFunctions.RenormalizedIntersectionTheory.MayerScattering
@@ -441,6 +444,7 @@ theorem heckeLabel_eq_of_inLine {ℓ : Option (ZMod p)} {a b c d : ℤ} (h : IsH
       rw [r2]; field_simp
 
 /-- Entries of a Hecke basis of determinant `p` lie in `[0, p]`. -/
+omit hp in
 theorem heckeBasis_bounds {a b c d : ℤ} (h : IsHeckeBasis p a b c d) :
     0 ≤ a ∧ a ≤ p ∧ 0 ≤ b ∧ b ≤ p ∧ 0 ≤ c ∧ c ≤ p ∧ 0 ≤ d ∧ d ≤ p := by
   have hb := h.b_nonneg
@@ -536,7 +540,24 @@ theorem heckeConeCount_eq {x y : ℤ} (hx : 1 ≤ x) (hy : 0 ≤ y) :
   rw [heckeConeCount_eq_card_lines hx hy, card_lines]
   simp only [ZMod.intCast_zmod_eq_zero_iff_dvd]
 
+/-- No cone reaches the line `x ≤ 0`: the first row has `a ≥ 1`. -/
+omit hp in
+theorem heckeConeCount_eq_zero {x y : ℤ} (hx : x < 1) : heckeConeCount p x y = 0 := by
+  classical
+  unfold heckeConeCount
+  rw [Finset.card_eq_zero, Finset.filter_eq_empty_iff]
+  rintro ⟨a, b, c, d⟩ hM ⟨m, k, hm, hk, hxe, -⟩
+  simp only [heckeSet, Finset.mem_filter] at hM
+  have hc := hM.2.c_nonneg
+  have ha := hM.2.c_lt
+  nlinarith
+
 end Prime
+
+/-- Transposing the quadrant and reversing the basis preserves Hecke bases. -/
+theorem IsHeckeBasis.swap {n a b c d : ℤ} (h : IsHeckeBasis n a b c d) :
+    IsHeckeBasis n d c b a :=
+  ⟨h.b_nonneg, h.b_lt, h.c_nonneg, h.c_lt, by linarith [h.det]⟩
 
 
 end GaloisForLFunctions.RenormalizedIntersectionTheory.MayerScattering

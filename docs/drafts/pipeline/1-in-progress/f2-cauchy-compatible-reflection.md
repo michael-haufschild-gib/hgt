@@ -13,7 +13,7 @@ The physical field reflection `J` forces, on the range of `A_s`,
 
 `R_s A_s = A_(s♯) J`.
 
-After Fourier transform and conjugation this becomes division by the nonvanishing symbol: the only possible correction is `B_s=a_(s♯)/conjugate(a_s)`. A bounded compatible reflection should therefore exist exactly for `Re s≥1/4`, with the sharp norm already proposed for `B_s`. In the other direction, it remains a densely defined reflection with explicit Gamma order.
+The Fourier formula predicts the actual adjoint identity `J A_s J=A_s†`. Writing `R_s=T_s J` then turns compatibility into the bounded linear factorization `T_s A_s†=A_(s♯)`. Localized interval tests should force `|a_(s♯)(t)|≤‖T_s‖|a_s(t)|`, without assuming that `T_s` is a multiplier. The only possible correction is therefore `B_s=a_(s♯)/conjugate(a_s)`. A bounded compatible reflection should exist exactly for `Re s≥1/4`, with the sharp norm proposed for `B_s`; dense range should give uniqueness. In the other direction, it remains a densely defined reflection with explicit Gamma order.
 
 ## Proof questions
 

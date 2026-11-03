@@ -193,8 +193,9 @@ theorem unit_odd_position_eq_primitive_integral {F : ℝ → ℝ} (hF : Continuo
     (∫ x, x * F x) = -(∫ x, unitSourcePrimitive F x) := by
   have h := unit_odd_primitive_pairing hF hs ho
     (g := fun x : ℝ => x) (g' := fun _ : ℝ => 1)
-    (fun x => by simpa only [id] using hasDerivAt_id x) continuous_const
-  simpa only [mul_one, mul_comm] using h
+    (fun x => hasDerivAt_id x) continuous_const
+  simp only [mul_one] at h
+  simpa only [mul_comm] using h
 
 /-- The odd sinh pole is a cosh pairing of the same compact primitive. -/
 theorem unit_odd_sinhPairing_eq_primitive_cosh {F : ℝ → ℝ} (hF : Continuous F)

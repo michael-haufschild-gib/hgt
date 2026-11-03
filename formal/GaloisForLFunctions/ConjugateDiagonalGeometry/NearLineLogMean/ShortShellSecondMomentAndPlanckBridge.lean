@@ -1233,7 +1233,8 @@ private lemma logSpacingModel_criticalClustering : logSpacingModel.CriticalClust
       ((U : ℝ) + (High_Dvd.card : ℝ)) * Real.log V := by
     have hs0 : ∑ m ∈ Finset.range (Nat.floor V + 1), g m =
         ∑ m ∈ (Finset.range (Nat.floor V + 1)).filter (fun m => g m ≠ 0), g m :=
-      Finset.sum_filter_ne_zero.symm
+      (Finset.sum_subset (Finset.filter_subset _ _) fun m hm hnot => by
+        simp only [Finset.mem_filter, hm, true_and, not_not] at hnot; exact hnot).symm
     rw [hs0]
     have hs1 : ∑ m ∈ (Finset.range (Nat.floor V + 1)).filter (fun m => g m ≠ 0), g m ≤
         ∑ _m ∈ (Finset.range (Nat.floor V + 1)).filter (fun m => g m ≠ 0), Real.log V :=
@@ -1364,7 +1365,7 @@ private lemma logSpacingModel_sqMoment_lower_bound (A : ℝ) (hA : 0 < A) :
         packetWin_filter_abs_card (div_pos hA hlogV_pos) (qLogSp_dLogSp_or m), if_pos]
       · simp only [qLogSp, if_pos hact]; push_cast
         have hlt := Nat.lt_floor_add_one (Real.log (m : ℝ) / 52)
-        linarith only [hlt, hlog_ge_m]
+        linarith only [hlt, hlog_ge_m, hlog104]
       · simp only [dLogSp, if_pos hact]
         have hlog2 : Real.log (m : ℝ) ≤ 2 * Real.log V := by
           have h1 : Real.log (m : ℝ) ≤ Real.log (2 * V) :=
@@ -1654,8 +1655,14 @@ theorem logFreeNearLineZeroDensity_iff_windowOccupancy_and_clusterTail :
       (fun m => (burnolUnitXiZeros m).filter (fun ρ => A / Real.log V ≤ |ρ.re - 1 / 2|))
       (f := fun z => ((analyticOrderAt _root_.RHTower.xi z).toNat : ℝ))
       (fun _ => Nat.cast_nonneg _)
-    have htot := (Finset.sum_le_sum_of_subset_of_nonneg hcov fun _ _ _ => Nat.cast_nonneg _).trans
-      (finset_sum_union_le _ _ fun _ => Nat.cast_nonneg _)
+    have htot : ∑ z ∈ (shellZeros V (2 * V)).filter (fun z => A / Real.log V ≤ |z.re - 1 / 2|),
+        ((analyticOrderAt _root_.RHTower.xi z).toNat : ℝ) ≤
+        (∑ z ∈ shellZeros V (V + 1), ((analyticOrderAt _root_.RHTower.xi z).toNat : ℝ)) +
+        ∑ z ∈ Bad_occ.biUnion
+          (fun m => (burnolUnitXiZeros m).filter (fun ρ => A / Real.log V ≤ |ρ.re - 1 / 2|)),
+          ((analyticOrderAt _root_.RHTower.xi z).toNat : ℝ) :=
+      (Finset.sum_le_sum_of_subset_of_nonneg hcov fun _ _ _ => Nat.cast_nonneg _).trans
+        (finset_sum_union_le _ _ fun _ => Nat.cast_nonneg _)
     change ∑ m ∈ Bad_occ.biUnion _, _ ≤ ∑ m ∈ Bad_occ, burnolDeepOrderSum m A V at hbi
     dsimp only [ε]
     linarith only [htot, hbi, hsplit, hpart_hi, hpart_lo, hcap]
@@ -1763,7 +1770,7 @@ private lemma vertical_edge_ne_zero_of_outer_bdry {y₁ y_u : ℝ} (N : ℕ)
         if_neg (not_le.mpr hτ_gt)]
       apply Complex.ext
       · simp [centeredWindowLowerLeft, hleft]
-      · simp only [Complex.add_im, Complex.sub_im, Complex.mul_im, Complex.I_re, Complex.I_im,
+      · simp only [Complex.add_im, Complex.mul_im, Complex.I_re, Complex.I_im,
           Complex.ofReal_re, Complex.ofReal_im, hll_im, hur_im, mul_one, mul_zero, add_zero]
         dsimp only [τ]; field_simp [hdy.ne']; ring
     exact hz_eq ▸ houter τ
@@ -1782,7 +1789,7 @@ private lemma vertical_edge_ne_zero_of_outer_bdry {y₁ y_u : ℝ} (N : ℕ)
         _root_.RHTower.rectangleEdgePath, if_neg (not_le.mpr hτ_gt), if_pos hτ_le]
       apply Complex.ext
       · simp [centeredWindowUpperRight, hright]
-      · simp only [Complex.add_im, Complex.sub_im, Complex.mul_im, Complex.I_re, Complex.I_im,
+      · simp only [Complex.add_im, Complex.mul_im, Complex.I_re, Complex.I_im,
           Complex.ofReal_re, Complex.ofReal_im, hll_im, hur_im, mul_one, mul_zero, add_zero]
         dsimp only [τ]; field_simp [hdy.ne']; ring
     exact hz_eq ▸ houter τ
@@ -1826,24 +1833,29 @@ theorem sparseModel_uniformPlanckVolume_not_windowOccupancy :
       have hm_le_2V : (m : ℝ) ≤ 2 * V₁ :=
         ((Nat.cast_le (α := ℝ)).mpr hm_hi).trans (Nat.floor_le (by positivity))
       have hm_not : ¬ m < 256 := by
-        intro hlt; have : (m : ℝ) < 256 := by exact_mod_cast hlt; linarith
+        intro hlt
+        have hm256 : (m : ℝ) < 256 := Nat.cast_lt.mpr hlt
+        linarith only [hV512, hm_ge_V, hm256]
       have hlog_ge : Real.log V₁ ≤ Real.log (m : ℝ) := Real.log_le_log hV_pos hm_ge_V
       have hlog_le : Real.log (m : ℝ) ≤ 2 * Real.log V₁ := by
-        have h1 : Real.log (m : ℝ) ≤ Real.log (2 * V₁) := Real.log_le_log (by linarith) hm_le_2V
+        have h1 : Real.log (m : ℝ) ≤ Real.log (2 * V₁) :=
+          Real.log_le_log (by linarith only [hV512, hm_ge_V]) hm_le_2V
         rw [Real.log_mul zero_lt_two.ne' hV_pos.ne'] at h1
-        linarith [h1, Real.log_two_lt_d9]
+        linarith only [h1, log_two_lt_one, hlog16]
       have hll_m : Real.log (Real.log V₁) ≤ Real.log (Real.log (m : ℝ)) :=
         Real.log_le_log hlogV_pos hlog_ge
       have hd_ge : A₁ / Real.log V₁ ≤ dSparse m := by
         simp only [dSparse, if_neg hm_not]
         calc A₁ / Real.log V₁
             ≤ ((1 / 16) * Real.log (Real.log V₁)) / Real.log V₁ :=
-              div_le_div_of_nonneg_right (by linarith) hlogV_pos.le
+              div_le_div_of_nonneg_right (by linarith only [hll_ge]) hlogV_pos.le
           _ = (1 / 8) * Real.log (Real.log V₁) / (2 * Real.log V₁) := by ring
           _ ≤ (1 / 8) * Real.log (Real.log (m : ℝ)) / Real.log (m : ℝ) := by
               calc _ ≤ (1 / 8) * Real.log (Real.log (m : ℝ)) / (2 * Real.log V₁) :=
-                    div_le_div_of_nonneg_right (by linarith) (by positivity)
-                _ ≤ _ := div_le_div_of_nonneg_left (by positivity) (by linarith) hlog_le
+                    div_le_div_of_nonneg_right (by linarith only [hll_m]) (by positivity)
+                _ ≤ _ := div_le_div_of_nonneg_left
+                    (by linarith only [hA₁_pos, hll_ge, hll_m])
+                    (by linarith only [hlogV_pos, hlog_ge]) hlog_le
       have hcard_pos : 0 < ((sparseModel.Z m).filter
           (fun z => A₁ / Real.log V₁ ≤ |z.re - 1 / 2|)).card := by
         dsimp only [sparseModel]
@@ -1885,26 +1897,31 @@ theorem sparseModel_uniformPlanckVolume_not_windowOccupancy :
         have h1 : (m : ℝ) ≤ (Nat.floor (2 * V) : ℝ) + 1 := by exact_mod_cast hm_hi
         linarith [Nat.floor_le (by positivity : (0 : ℝ) ≤ 2 * V)]
       have hm_not : ¬ m < 256 := by
-        intro hlt; have : (m : ℝ) < 256 := by exact_mod_cast hlt; linarith
+        intro hlt
+        have hm256 : (m : ℝ) < 256 := Nat.cast_lt.mpr hlt
+        linarith only [hV512, hm_ge, hm256]
       simp only [dSparse, if_neg hm_not]
       have hlog_lo : (1 / 2) * Real.log V ≤ Real.log (m : ℝ) := by
-        have h1 : Real.log (V / 2) ≤ Real.log (m : ℝ) := Real.log_le_log (by linarith) (by linarith)
+        have h1 : Real.log (V / 2) ≤ Real.log (m : ℝ) :=
+          Real.log_le_log (by linarith only [hV512]) (by linarith only [hV512, hm_ge])
         rw [Real.log_div hV_pos.ne' zero_lt_two.ne'] at h1
-        linarith [h1, Real.log_two_lt_d9]
+        linarith only [h1, log_two_lt_one, hlog16]
       have hlog_hi : Real.log (m : ℝ) ≤ 2 * Real.log V := by
-        have hsq : (m : ℝ) ≤ V ^ 2 := by nlinarith
-        calc Real.log (m : ℝ) ≤ Real.log (V ^ 2) := Real.log_le_log (by linarith) hsq
+        have hsq : (m : ℝ) ≤ V ^ 2 := by nlinarith only [hV512, hm_le]
+        calc Real.log (m : ℝ) ≤ Real.log (V ^ 2) :=
+              Real.log_le_log (by linarith only [hV512, hm_ge]) hsq
           _ = 2 * Real.log V := by rw [Real.log_pow]; push_cast; rfl
       have hll_hi : Real.log (Real.log (m : ℝ)) ≤ 2 * Real.log (Real.log V) := by
         have h1 : Real.log (Real.log (m : ℝ)) ≤ Real.log (2 * Real.log V) :=
-          Real.log_le_log (by linarith) hlog_hi
+          Real.log_le_log (by linarith only [hlog16, hlog_lo]) hlog_hi
         rw [Real.log_mul zero_lt_two.ne' hlogV_pos.ne'] at h1
-        linarith [h1, Real.log_two_lt_d9]
+        linarith only [h1, log_two_lt_one, hll4]
       calc (1 / 8) * Real.log (Real.log (m : ℝ)) / Real.log (m : ℝ)
           ≤ (1 / 8) * (2 * Real.log (Real.log V)) / Real.log (m : ℝ) :=
-            div_le_div_of_nonneg_right (by linarith) (by linarith)
+            div_le_div_of_nonneg_right (by linarith only [hll_hi])
+              (by linarith only [hlog16, hlog_lo])
         _ ≤ (1 / 8) * (2 * Real.log (Real.log V)) / ((1 / 2) * Real.log V) :=
-            div_le_div_of_nonneg_left (by positivity) (by positivity) hlog_lo
+            div_le_div_of_nonneg_left (by linarith only [hll4]) (by positivity) hlog_lo
         _ = (1 / 2) * Real.log (Real.log V) / Real.log V := by
             field_simp [hlogV_pos.ne']; ring
     rcases lt_or_ge ((1 / 2) * Real.log (Real.log V)) A with hA_gt | hA_le
@@ -1919,21 +1936,21 @@ theorem sparseModel_uniformPlanckVolume_not_windowOccupancy :
           refine Finset.mem_Icc.mpr ⟨?_, ?_⟩
           · by_contra hlt; push Not at hlt
             have h1 : (m : ℝ) + 1 ≤ (Nat.floor V : ℝ) := by exact_mod_cast hlt
-            linarith [Nat.floor_le hV_pos.le, ht_I.1]
+            have hfl := Nat.floor_le hV_pos.le
+            linarith only [h1, hfl, ht_I.1, ht_im, him_m1]
           · by_contra hgt; push Not at hgt
             have h1 : (Nat.floor (2 * V) : ℝ) + 2 ≤ (m : ℝ) := by exact_mod_cast hgt
-            linarith [Nat.lt_floor_add_one (2 * V), ht_I.2]
+            have hfl := Nat.lt_floor_add_one (2 * V)
+            have him_hi : z.im ≤ 2 * V + 1 := him_tB.trans (add_le_add ht_I.2 hB_div_le1)
+            linarith only [h1, hfl, him_m0, him_hi]
         have hcard0 : ((sparseModel.Z m).filter
             (fun w => A / Real.log V ≤ |w.re - 1 / 2|)).card = 0 := by
           dsimp only [sparseModel]
-          rw [packetWin_filter_abs_card (div_pos (by linarith) hlogV_pos) (qSparse_dSparse_or m),
+          rw [packetWin_filter_abs_card (div_pos (by linarith only [hA2]) hlogV_pos) (qSparse_dSparse_or m),
             if_neg]
-          have h1 := hd_ub m hm_J
-          have h2 : (1 / 2) * Real.log (Real.log V) / Real.log V < A / Real.log V :=
-            div_lt_div_of_pos_right hA_gt hlogV_pos
-          linarith
+          exact not_le.mpr ((hd_ub m hm_J).trans_lt (div_lt_div_of_pos_right hA_gt hlogV_pos))
         exact absurd (Finset.mem_filter.mpr ⟨hz_Z, hz_re⟩) (Finset.card_eq_zero.mp hcard0 ▸ Finset.notMem_empty z)
-      rw [hempty, measure_empty]; exact zero_le _
+      rw [hempty, measure_empty]; exact zero_le
     · -- For `2 ≤ A ≤ (1 / 2) * log(log V)`, union-bound over `J_V` and use `A * e^{r A} ≤ log V`.
       set Z_bad := J_V.biUnion (fun m => (sparseModel.Z m).filter
         (fun z => A / Real.log V ≤ |z.re - 1 / 2|))
@@ -2149,7 +2166,8 @@ theorem almostAll_planckWindow_logStage_besselSzegoCertificate
               (centeredWindowLowerLeft t) (centeredWindowUpperRight y₂)
               (by rw [hll_re, hur_re]; norm_num)
               (by rw [hll_im, hur_im]; exact ht_le_y₂) s
-            rw [Complex.mem_reProdIm, hll_re, hll_im, hur_re, hur_im] at hmem_rect
+            rw [Complex.mem_reProdIm, hll_re, hll_im, hur_re, hur_im,
+              uIcc_of_le (by norm_num : (-1 / 2 : ℝ) ≤ 3 / 2), uIcc_of_le ht_le_y₂] at hmem_rect
             have hedges := rectangleBoundaryPath_on_edges_local
               (centeredWindowLowerLeft t) (centeredWindowUpperRight y₂) s
             rw [hll_re, hll_im, hur_re, hur_im] at hedges
@@ -2256,9 +2274,12 @@ theorem almostAll_planckWindow_logStage_besselSzegoCertificate
             have hAc_le : A_c / Real.log V ≤ 1 / (16 * (n_m : ℝ)) := by
               dsimp only [A_c]
               rw [div_le_div_iff₀ hlogV_pos (by positivity), one_mul]
-              have h1 : 1 / (64 * c) * (16 * (3 * c * Real.log V)) = (3 / 4) * Real.log V := by
-                field_simp [hc.ne']; ring
-              nlinarith only [hn_hi, h1, hlogV_pos, hc]
+              calc 1 / (64 * c) * (16 * (n_m : ℝ))
+                  ≤ 1 / (64 * c) * (16 * (3 * c * Real.log V)) :=
+                    mul_le_mul_of_nonneg_left
+                      (mul_le_mul_of_nonneg_left hn_hi (by norm_num)) (by positivity)
+                _ = (3 / 4) * Real.log V := by field_simp [hc.ne']; ring
+                _ ≤ Real.log V := by linarith only [hlogV_pos]
             exact hAc_le.trans (hw_gt.trans (le_abs_self _))
           obtain ⟨⟨hw0, hw1, _, _⟩, hw_xi⟩ := (mem_burnolUnitXiZeros_iff m w).mp hw_unit
           have hδ_le_1 : δ_im ≤ 1 := by
@@ -2270,32 +2291,39 @@ theorem almostAll_planckWindow_logStage_besselSzegoCertificate
                 show 7 / c = 7 * (1 / c) by ring]
               exact mul_le_mul_of_nonneg_right (by norm_num) (by positivity)
             exact h4Ac.trans ((le_add_of_nonneg_right zero_le_one).trans hlog7c)
+          have him_le1 : |z.im - w.im| ≤ 1 := him_diff.trans (hrad_le_δ.trans hδ_le_1)
+          have hy₂_le_2V1 : y₂ ≤ 2 * V + 1 := add_le_add ht_I.2 hB_div_le1
           have hw_im_lo : V - 4 < w.im := by
-            have hd1 := (abs_le.mp him_diff).1
-            linarith only [hd1, ht_I.1, hz_im1, hrad_le_δ, hδ_le_1]
+            have hd2 := (abs_le.mp him_le1).2
+            linarith only [hd2, ht_I.1, hz_im1]
           have hw_im_hi : w.im ≤ 2 * V + 4 := by
-            have hd2 := (abs_le.mp him_diff).2
-            dsimp only [y₂] at hz_im2
-            linarith only [hd2, ht_I.2, hz_im2, hB_div_le1, hrad_le_δ, hδ_le_1]
+            have hd1 := (abs_le.mp him_le1).1
+            linarith only [hd1, hy₂_le_2V1, hz_im2]
           have hw_B : w ∈ B_ext := Finset.mem_filter.mpr
             ⟨Finset.mem_filter.mpr
               ⟨_root_.RHTower.mem_stripFinsetPos.mpr
                 ⟨hw0, hw1, by linarith only [hV32, hw_im_lo], hw_im_hi, hw_xi⟩, hw_im_lo⟩,
               hw_re_ge⟩
           refine Set.mem_biUnion hw_B ⟨?_, ?_⟩
-          · have hd2 := (abs_le.mp him_diff).2
-            dsimp only [y₂] at hz_im2
-            linarith only [hd2, hz_im2, hrad_le_δ]
-          · have hd1 := (abs_le.mp him_diff).1
-            linarith only [hd1, hz_im1, hrad_le_δ]
+          · have hwz : w.im - z.im ≤ δ_im :=
+              (le_abs_self _).trans ((abs_sub_comm _ _).trans_le (him_diff.trans hrad_le_δ))
+            have hz_sub : z.im - B / Real.log V ≤ t := sub_le_iff_le_add.mpr hz_im2.le
+            calc w.im - B / Real.log V - δ_im
+                = (w.im - z.im - δ_im) + (z.im - B / Real.log V) := by ring
+              _ ≤ 0 + t := add_le_add (sub_nonpos.mpr hwz) hz_sub
+              _ = t := zero_add t
+          · have hzw : z.im - w.im ≤ δ_im := (le_abs_self _).trans (him_diff.trans hrad_le_δ)
+            calc t ≤ z.im := hz_im1.le
+              _ = w.im + (z.im - w.im) := by ring
+              _ ≤ w.im + δ_im := add_le_add_left hzw w.im
       -- Step 5: `volume Y_fin = 0` and sum interval lengths over `B_ext`.
       have hvol_Y : volume (Y_fin : Set ℝ) = 0 := by
         have hsub_s : (Y_fin : Set ℝ) ⊆ ⋃ x ∈ Y_fin, Icc x x := by
           intro x hx; rw [Finset.mem_coe] at hx
           exact Set.mem_biUnion hx ⟨le_rfl, le_rfl⟩
-        refine le_antisymm ((measure_mono hsub_s).trans ?_) (zero_le _)
+        refine le_antisymm ((measure_mono hsub_s).trans ?_) zero_le
         refine (measure_biUnion_finset_le Y_fin _).trans ?_
-        simp [Real.volume_Icc]
+        simp
       have hcard_B : (B_ext.card : ℝ) ≤ C_d * (Real.exp (-(r * A_c)) / A_c) * V * Real.log V := by
         have h1 : (B_ext.card : ℝ) ≤ ∑ z ∈ B_ext, ((analyticOrderAt _root_.RHTower.xi z).toNat : ℝ) := by
           rw [Finset.card_eq_sum_ones, Nat.cast_sum]
@@ -2337,8 +2365,8 @@ theorem almostAll_planckWindow_logStage_besselSzegoCertificate
                   ring
     · -- For `c ≥ 1 / 128`, `η c = 1` and `volume [V, 2V] = V`.
       have hη1 : η c = 1 := if_neg (fun h => hc_small h.2)
+      filter_upwards [eventually_ge_atTop (0 : ℝ)] with V _hV0
       rw [hη1, one_mul]
-      filter_upwards [eventually_ge_atTop (0 : ℝ)] with V hV0
       calc volume {t ∈ Icc V (2 * V) | ¬ HasPlanckLogStageBesselCertificate B V c t}
           ≤ volume (Icc V (2 * V)) := measure_mono fun _ ht => ht.1
         _ = ENNReal.ofReal V := by rw [Real.volume_Icc, show 2 * V - V = V by ring]

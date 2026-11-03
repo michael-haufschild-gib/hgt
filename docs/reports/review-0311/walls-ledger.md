@@ -46,7 +46,7 @@ numerical; `[D]` derived here from Lean statements. Window lengths `A`; half-wid
 | Σ1h Smooth logarithmic profile | Solved (to `ε₀·c*`) | sub | Positive to `ε₀L(log L)²`; budget sharp [L]. |
 | Σ1i Second order on horizon blocks | Classified | — | `κQ(H) + (βJ/K)∫e^{−(β+1)y}H²` along `c^{β+1}/log N → K`; pencil index `= #{λ_i < 0 : βJ/(−λ_i) < K}` [L]. |
 | Σ1j Critical-curve decomposition | Partially solved | sub | Every fixed finite family solved [L]: Ramanujan basis diagonal (`Σa_m²J_{β+1}(m)`), prime windows `J(1)φ(p)#ℙ⁷(𝔽_p)`, every mean-zero periodic twist (spectral Dirichlet series, coercive), real frequencies (Hurwitz forms `½(ζ(β+1,u) + ζ(β+1,1−u))`), primitive characters (count `± q^{s−1}‖L(s,ψ̄²)‖`, parity grading, `L(s,ψ̄₁ψ₂)` coupling), trigonometric twists graded by frequency [W]. Open: growing conductors, full-space cross terms, conductors above `√N`. |
-| Σ1k Phase diagram `(A, K)` | Partially solved | sub | Window floor `Q ≥ −(10 + 72e^{A/2})‖H‖²`; every critical multiple `K*(H) ≥ K₀(A) = βJ/(κ(10 + 72e^{A/2}))`; sharp pencil `κQ + c∫e^{−py}H² ≥ 0` for `c ≥ κ(deg K_A + 2sinh(A/2) − A)`; pencil index monotone in `K` [L]. Open: one fixed `K` on windows of every length; equality case. |
+| Σ1k Phase diagram `(A, K)` | Classified [W] | sub | Window floor `Q ≥ −(10 + 72e^{A/2})‖H‖²`; every critical multiple `K*(H) ≥ K₀(A) = βJ/(κ(10 + 72e^{A/2}))`; sharp pencil `κQ + c∫e^{−py}H² ≥ 0` for `c ≥ κ(deg K_A + 2sinh(A/2) − A)`; pencil index monotone in `K` [L]. Open: one fixed `K` on windows of every length; equality case. |
 | Σ1l Polarization inheritance | Partially solved | sub | Eventually positive definite along the critical curve on: every twisted family, every family of windows of length `≤ 3/5`, the cosh hyperplane below `log 2 + 1/50` (at most one negative square there), every window length below `K₀(A)`; twisted directions add no negative square [L]. Untwisted long windows = Σ1. |
 | Σ1m Bulk below the resolution height | Classified | — | Zeros of height `≤ N^θ` (every `θ < 1`) enter a fixed packet only through the pole, contributing `(c/log N)κy₁²(2 + γ − log 4π)`; pole-free packets blind [L]. |
 | Σ2 Edge, zero modes, hard Lefschetz | Sharpened | RH | HR ∧ HL ⇔ strict HR; RH ⇔ HL on the PSD locus [L]. Zero modes of a nonnegative window are its radical, translation stable, nonvanishing on both collars at a first critical length [L]. Under ¬RH the edge exponent of the complete family is exactly `1/8` [D]. |
@@ -179,7 +179,7 @@ numerical; `[D]` derived here from Lean statements. Window lengths `A`; half-wid
 
 | Family | Solved | Partially solved | Sharpened | Open | No-go | Classified | Reduced |
 |---|---|---|---|---|---|---|---|
-| Σ (50) | 10 (Σ1a, Σ1b, Σ1c, Σ1h, Σ10, Σ12, Σ16, Σ24, Σ29, Σ36) | 10 (Σ1d, Σ1e, Σ1g, Σ1j, Σ1k, Σ1l, Σ3, Σ6, Σ9, Σ27) | 10 (Σ1, Σ2, Σ3a, Σ4, Σ7, Σ8, Σ17, Σ19, Σ28, Σ32) | 4 (Σ18, Σ20, Σ30, Σ35) | 5 (Σ1f, Σ13, Σ14, Σ23, Σ25) | 10 (Σ1i, Σ1m, Σ11, Σ15, Σ21, Σ22, Σ26, Σ31, Σ33, Σ34) | 1 (Σ5 → Π17) |
+| Σ (50) | 10 (Σ1a, Σ1b, Σ1c, Σ1h, Σ10, Σ12, Σ16, Σ24, Σ29, Σ36) | 9 (Σ1d, Σ1e, Σ1g, Σ1j, Σ1l, Σ3, Σ6, Σ9, Σ27) | 10 (Σ1, Σ2, Σ3a, Σ4, Σ7, Σ8, Σ17, Σ19, Σ28, Σ32) | 4 (Σ18, Σ20, Σ30, Σ35) | 5 (Σ1f, Σ13, Σ14, Σ23, Σ25) | 11 (Σ1i, Σ1k, Σ1m, Σ11, Σ15, Σ21, Σ22, Σ26, Σ31, Σ33, Σ34) | 1 (Σ5 → Π17) |
 | Π (32) | 4 (Π1, Π10, Π11g, Π13) | 6 (Π3, Π7, Π8, Π9, Π11f, Π12) | 7 (Π4, Π5, Π6, Π11h, Π16, Π17, Π22) | 2 (Π2, Π23) | 9 (Π11a–e, Π14, Π18, Π19, Π20) | 4 (Π15, Π21, Π24, Π25) | — |
 | Γ (31) | 7 (Γ2, Γ6, Γ7, Γ12, Γ18, Γ23, Γ31) | 2 (Γ5, Γ15) | 6 (Γ4, Γ8, Γ10, Γ16, Γ19, Γ24) | 1 (Γ1) | 12 (Γ3, Γ9, Γ11, Γ13, Γ14, Γ21, Γ22, Γ25, Γ26, Γ27, Γ28, Γ29) | 3 (Γ17, Γ20, Γ30) | — |
 
@@ -187,7 +187,7 @@ Strength of the open walls:
 - **RH:** Σ1, Σ2, Σ3a, Σ6, Σ7, Σ8, Σ17, Σ18, Σ19, Σ20, Σ27 (all stages), Σ28 (subexponential), Σ30, Σ32,
   Π2, Π4, Π11h, Π17 (polynomial stage), Π23 (all degrees), Γ1, Γ4, Γ5, Γ8, Γ16, Γ19, Γ24.
 - **≥qRH:** Σ4 (`K_ζ`), Σ28 (exponent `< ½`), Π5 (fixed scale), Π17 (log stage), Π23 (fixed degree).
-- **sub:** Σ1d, Σ1e, Σ1g, Σ1j, Σ1k, Σ1l, Σ4 (zero–one law), Σ27 (each stage), Σ30 (each stage), Π3, Π5
+- **sub:** Σ1d, Σ1e, Σ1g, Σ1j, Σ1l, Σ4 (zero–one law), Σ27 (each stage), Σ30 (each stage), Π3, Π5
   (mean `o(log U)`), Π7, Π9, Π11f, Π11h (fixed length), Π12, Π22, Γ15.
 - **identity:** Σ35.
 - **indep.:** Π16.

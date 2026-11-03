@@ -19,6 +19,7 @@ open ArithmeticCriticalityTheory ArithmeticIncidencePositivity ArithmeticCompens
 theorem derivative_autocorr_first_moment {H : ℝ → ℝ} (hH : ContDiff ℝ 1 H)
     (hcs : HasCompactSupport H) :
     (∫ t in Ioi (0 : ℝ), t * autocorr (deriv H) t) = -(∫ x, H x ^ 2) := by
+  -- Differentiating `A_H - t A_H'` leaves `t A_{H'}`.
   let W : ℝ → ℝ := fun t => autoCorr H t - t * crossCorr H t
   have hAd : deriv (autoCorr H) = crossCorr H :=
     funext fun t => (hasDerivAt_autoCorr hH hcs t).deriv

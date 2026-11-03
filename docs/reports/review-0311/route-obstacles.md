@@ -82,7 +82,7 @@ on windows of growing length and the uniformity of the decomposition in growing 
 | A1 | Explicit constants and horizons: eighth-root theorem, `1/9`, logarithmic profile, Beurling schedule, horizon criterion | — |
 | A2 | General profiles past `θ = 1/1080` and past the super-log-log clocks; transfer of the eighth-root block-reserve scheme to other profiles | — |
 | A3 | Fixed finite twist families: finish the frequency grading [W]; joint families of Ramanujan, character and frequency twists with untwisted windows; characters of different moduli; tables of the `L`-value corrections | — |
-| A4 | Phase diagram: equality case at a critical multiple `K*(H)`; finite-`N` sign at jump thresholds | — |
+| A4 — solved [W] | Canonical tilted clock: every fixed independent window family has eventual inertia `(n₊(P), n₋(P)+n₀(P), 0)`; ratio-only equality admits both signs. AHD `TheCriticalBoundaryAddsItsNullDirections`, `TheCanonicalCriticalClockEntersFromTheNegativeSide` | — |
 | A9 | Window index as a counting function of the length; location of the jump multiples (conditional calculus) | — |
 | B1 | Weil's sign on windows of every length (all equivalent forms, `walls-ledger.md` Σ1) | RH; fixed length sub |
 | B4 | Growing-conductor decomposition at the critical curve: uniformity in the conductor, mixed and bulk–horizon cross terms on the full space; conductors `√N < m ≤ N` need an Elliott–Halberstam-type input | sub |
@@ -326,7 +326,8 @@ form lives.
 
 | | Obstacle | Strength |
 |---|---|---|
-| A3, A4, A9, A10 | Fixed finite twist families; phase diagram; window index vs length; `𝔽_q` twists | — |
+| A3, A9, A10 | Fixed finite twist families; window index vs length; `𝔽_q` twists | — |
+| A4 — solved [W] | Canonical equality adds pencil nullity to the complete family's negative index; the limiting ratio alone does not determine the equality sign | — |
 | B4 | Growing-conductor decomposition | sub |
 | B5 — solved [W] | Aperture-independent weighted floor; one positive range of critical multiples on all windows | sub |
 | B1 | Weil's sign on untwisted windows of every length | RH |
@@ -424,7 +425,7 @@ Established: S1, S2, S3, S4 in full; the degeneration dictionary; band poles = H
 infinity ⇔ RH; correspondence algebra; RR branch of S7; no finite-rank realization.
 Research status: positivity below the critical curve is a theorem; at the critical curve every
 direction except untwisted windows is a positive count; the window algebra has no internal Frobenius.
-- A: A1–A4, A9, A10, A21, A22, A25. B: B1, B4, B6, B7, B8, B9, B10, B21, B23, B30, B31, B39.
+- A: A1–A3, A9, A10, A21, A22, A25. B: B1, B4, B6, B7, B8, B9, B10, B21, B23, B30, B31, B39.
 
 ### CHMD — causal hyperbolic–modular duality
 Established: RH ⇔ `R ≤ ½` on the odd sector; Markov form and sinh capacity; Haar pieces with uniform
@@ -487,7 +488,7 @@ error `≤ 1/(n+1)`; PBM convergence at every `σ > ½` ⇔ RH; RB colossally ab
 
 ### SRT, ACT, AIP — complete atomic matrix
 - SRT: S1 in full; horizon criterion; pencil index counts jump multiples; cluster-product detector at
-  one-logarithm aperture. A: A1, A3, A4, A9, A27. B: B1, B4, B10.
+  one-logarithm aperture. A: A1, A3, A9, A27. B: B1, B4, B10.
 - ACT: collar thresholds pay every modulus outside nine; single-shift receiver; criticality theory
   (odd supersolution criterion, shifted ground states; combinations of shifted ground states fail near
   origin windows). A: A18. B: B1, B3.

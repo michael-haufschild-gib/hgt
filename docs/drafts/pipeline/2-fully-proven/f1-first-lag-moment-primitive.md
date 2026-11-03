@@ -15,18 +15,15 @@ Oddness makes `H` compactly supported and `H′=F`. Thus
 `(A_H(t)−t A_H′(t))′=tC(t)`. Integration over the positive ray leaves
 `−A_H(0)=−∫H²`; the correlation of `F` vanishes past one.
 
-Together with the exact second moment, the Gamma payment becomes
-
-`ΓE+J∞ ≥ ∫₀¹(E−C)/t − (γ+logπ+log2+1/48)E
- −(∫H²)/24−(∫xF)²/16`.
-
-This retains the two source-dependent losses. It does not establish the joint
-prime-reflection and pole sign. Lean obligations: instantiate the compact primitive,
-apply the correlation derivative identities, and audit the Gamma corollary.
-
-Lean targets: `LatticeSectionTheory.WindowJumpCounts.OddAutocorrelationFirstMoment`
-and `WindowTowerOfSpecZ.TheGammaComparisonRetainsItsLagMoments`; source audits pending.
-
 Integration by parts also gives `∫xF=−∫H` and
 `∫2sinh(x/2)F=−∫cosh(x/2)H`. Thus the position square and sinh pole act on the
-same primitive as the first lag cost. These two identities are not yet Lean-audited here.
+same primitive as the first lag cost.
+
+For C² sources, combining the retained Gamma estimate with both lag identities gives
+
+`ΓE+J∞−½(∫2sinh(x/2)F)² ≥ ∫₀¹(E−C)/t − (γ+logπ+log2+1/48)E
+ −(∫H²)/24−(∫H)²/16−½(∫H cosh(x/2))²`.
+
+The signed prime reflection still requires joint payment; this lower bound does not
+establish its sign. Lean targets: `LatticeSectionTheory.WindowJumpCounts.OddAutocorrelationFirstMoment`
+and `WindowTowerOfSpecZ.TheGammaComparisonRetainsItsLagMoments`; source audits pending.

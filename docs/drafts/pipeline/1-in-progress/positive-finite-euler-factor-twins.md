@@ -1,7 +1,7 @@
 # Positive finite-factor twins and the Euler growth threshold
 
 - **ID:** positive-finite-euler-factor-twins
-- **Stage:** 0-backlog
+- **Stage:** 1-in-progress
 - **Type:** CONJECTURE
 - **Wall:** Γ15.
 - **Target:** Positive bounded multiplicative coefficients and a scalar Selberg
@@ -29,3 +29,16 @@ For any `ρ>1/2`, choosing `A=p^ρ+p^(1−ρ)` gives logarithmic coefficients
 Their exponential rate is `p^ρ`, excluding every Euler bound with exponent
 `θ<1/2`. Finite-order continuation and the exact rate require Lean certification;
 no class-membership or novelty claim is certified yet.
+
+## Exact completion target
+
+Construct the degree-one extended Selberg carrier for every prime `p` and real
+`A≥0`, including its finite-order regularization. Prove coefficient positivity,
+boundedness, multiplicativity and the prescribed coefficient prefix. Classify
+the zeros introduced by the quadratic factor and certify the logarithmic
+Euler-coefficient growth threshold. This does not assert a counterexample to
+the full Selberg axioms: the strict Euler growth axiom must be tested explicitly.
+
+The corpus already supplies degree-three interpolation twins and a positive
+degree-two Epstein twin with nonmultiplicative coefficients. Neither gives the
+positive multiplicative degree-one example or its exact local Euler obstruction.

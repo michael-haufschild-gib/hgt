@@ -42,7 +42,7 @@ TheFrequencyOfATwistActsAsAFrobeniusAngle, EveryPeriodicTwistedSectorInheritsThe
 TheFrequencyTwistIsQuietBelowItsResonance, TheEnergyOfAFrequencyTwist, EveryFrequencyActsAsAFrobeniusAngle,
 TheHorizonLayerIsGradedByFrequency, EveryFrequencySectorInheritsThePolarization,
 TheMonodromyRateOfACurveIsItsZeroWidth, ThePartialZetaSumIsQuietBelowItsGrid,
-TheBulkIsBlindBelowItsGrid.
+TheBulkIsBlindBelowItsGrid, TheUntwistedCountIsTheFinitePartAtZeroFrequency.
 
 ## Status
 - First order = count: `J(m) = J(1) #ℙ⁷(ℤ/m)`; count law over every finite ring (𝔽_q[T] calibration) [L].
@@ -95,6 +95,8 @@ TheBulkIsBlindBelowItsGrid.
   Hurwitz form of a Frobenius angle [L]; every real frequency `α` (`2α ∉ ℤ`): same form at `u = {α}`
   (bounded-primitive sharp form, Kuzmin–Landau with rotation, discrepancy energy law) [L];
   trigonometric twists: `Σ a_k²` times the Hurwitz forms, graded by frequency [L].
+- Frequency counts have a pole of order `β+1` at `u = 0`; finite part = untwisted count `βJ/K`;
+  `κQ(H)` occupies the pole [L].
 - Uniform bulk ledger: pole-free packets receive `o(c/log N)` from all zeros of height `≤ N^θ`,
   `θ < 2/3` (second-order EM at zeros + zero count) [L]; with the pole the low zeros give exactly
   `κ y_1² (2 + γ − log 4π)` (archimedean genus) [L]; both up to every height `N^θ`, `θ < 1`

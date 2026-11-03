@@ -1,7 +1,7 @@
 # The critical boundary adds its null directions
 
-- **Stage:** 2-fully-proven
-- **Type:** THEOREM (paper; Lean in progress)
+- **Stage:** 3-formalized
+- **Type:** THEOREM [W]
 - **Wall:** Σ1k / A4, finite-family sign at jump thresholds.
 - **Statement:** For every fixed linearly independent finite family of compact C² windows and every `K>0`, the tilted-spline horizon Gram matrix on the canonical clock eventually has inertia
   `(n₊(P_K), n₋(P_K)+n₀(P_K), 0)`.
@@ -18,6 +18,16 @@ entrywise, where `C_10(i,j)=∫e^(−10y)H_iH_j` and `D>0` is the next alias coe
 
 The sum of the negative and null eigenspaces of `P_K` has dimension `n₋(P_K)+n₀(P_K)` and nonpositive form. Strict decrease makes `G_N` negative definite on this whole subspace. Thus `n₋(G_N)≥n₋(P_K)+n₀(P_K)`. Meanwhile `G_N→P_K`, so lower semicontinuity gives `n₊(G_N)≥n₊(P_K)`. These two lower bounds exhaust the ambient dimension. Both are equalities and `n₀(G_N)=0`. Positive normalization preserves inertia.
 
-## Novelty and Lean obligations
+## Novelty
 
-`TheWindowIndex` proves only `n₋(P_K)≤n₋(G_N)`; `TheWindowIndexCountsTheJumpMultiples` counts strict jumps of the limiting pencil. The new assertion includes its null directions in the complete family's eventual negative index. Required: polarize the proved scalar correction, prove strict-order passage on the nonpositive spectral subspace, assemble and audit the inertia identity.
+`TheWindowIndex` proves only `n₋(P_K)≤n₋(G_N)`; `TheWindowIndexCountsTheJumpMultiples` counts strict jumps of the limiting pencil. The new assertion includes its null directions in the complete family's eventual negative index.
+
+## Lean theorems
+
+AHD `TheCriticalBoundaryAddsItsNullDirections` proves:
+
+- `canonicalHorizonGram_quadratic_correction`: the matrix correction is `(D/K)C_10` below the leading pencil.
+- `canonicalHorizonGram_inertia`: exact eventual inertia of the normalized matrix.
+- `canonicalCriticalClock_horizonGram_inertia`: exact eventual inertia of the complete horizon Gram matrix.
+
+The source passes its canonical `lake --old env lean` check. The full inertia theorem depends only on `propext`, `Classical.choice`, and `Quot.sound`. Profile, averaging, pole and symbol inputs are discharged by the concrete tilted-spline expansion.
