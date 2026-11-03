@@ -36,4 +36,4 @@ Endpoints: `mayerFieldMellin_reflect`, `mayerFieldLog_memLp`, `norm_mayerFieldRe
 
 Final individual plain Lean audit passed without warnings. All eleven printed public endpoints depend only on `propext`, `Classical.choice`, and `Quot.sound`. The module is imported by the RIT umbrella.
 
-The extra Cauchy factor’s sharp norm and domain classification is tracked [separately](../1-in-progress/f2-cauchy-reflection-order.md).
+The extra Cauchy factor’s sharp norm and domain classification is tracked [separately](f2-cauchy-reflection-order.md).

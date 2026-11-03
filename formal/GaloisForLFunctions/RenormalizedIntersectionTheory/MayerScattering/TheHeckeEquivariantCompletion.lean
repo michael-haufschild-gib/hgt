@@ -118,7 +118,7 @@ theorem denseRange_coreEmbedding : DenseRange coreEmbedding := by
   convert this using 2
   rw [map_sum]
   refine Finset.sum_congr rfl fun s _ => ?_
-  rw [map_smul, coreEmbedding_basis, lp.smul_single, smul_eq_mul, mul_one]
+  rw [map_smul, coreEmbedding_basis, ← lp.single_smul, smul_eq_mul, mul_one]
 
 /-! ### The window map -/
 

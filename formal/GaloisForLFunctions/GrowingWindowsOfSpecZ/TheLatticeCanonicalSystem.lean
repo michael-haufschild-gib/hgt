@@ -442,6 +442,13 @@ theorem levinsonErr_succ_eq_mul {n : ℕ} (hE : levinsonErr κ n ≠ 0) :
   rw [levinsonErr_succ, reflCoeff]
   field_simp
 
+/-- **Margins only decrease**: `E_{n+1} ≤ E_n` while `E_n > 0`. -/
+theorem levinsonErr_succ_le {n : ℕ} (hE : 0 < levinsonErr κ n) :
+    levinsonErr κ (n + 1) ≤ levinsonErr κ n := by
+  rw [levinsonErr_succ]
+  have : 0 ≤ schurParam κ n ^ 2 / levinsonErr κ n := div_nonneg (sq_nonneg _) hE.le
+  linarith
+
 /-- **All margins are positive iff `κ(0) > 0` and every reflection coefficient lies in `(−1, 1)`.** -/
 theorem levinsonErr_pos_iff :
     (∀ n, 0 < levinsonErr κ n) ↔ 0 < κ 0 ∧ ∀ n, |reflCoeff κ n| < 1 := by

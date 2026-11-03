@@ -52,6 +52,7 @@ noncomputable section
 namespace GaloisForLFunctions.ConjugateDiagonalGeometry.WindowPortFlux
 
 open GaloisForLFunctions.ConjugateDiagonalGeometry.SzegoCollision
+open GaloisForLFunctions.ConjugateDiagonalGeometry.LogScaleHeckeDefect
 open GaloisForLFunctions.ConjugateDiagonalGeometry.NearLineLogMean
 
 /-! ## §1. Oscillatory integration by parts and shifted-abscissa right-port control -/
@@ -66,13 +67,15 @@ theorem exists_vertFlux_inv_decay {σ y₁ y₂ : ℝ} (hy : y₁ ≤ y₂) (N :
       ‖vertFlux σ y₁ y₂ N t‖ ≤ C_V * Real.exp ((σ - 1 / 2) * t) / (|t| + 1) := by
   set g : ℝ → ℂ := fun y => thetaLogDeriv N ((σ : ℂ) + (y : ℂ) * I)
   set g' : ℝ → ℂ := fun y => I * deriv (thetaLogDeriv N) ((σ : ℂ) + (y : ℂ) * I)
+  have hlin_cont : Continuous (fun u : ℝ => (σ : ℂ) + (u : ℂ) * I) := by fun_prop
   have hg_cont : ContinuousOn g (Icc y₁ y₂) := fun y hy_m =>
-    ((analyticAt_thetaLogDeriv (hnz y hy_m)).continuousAt.comp
-      (by fun_prop : Continuous fun u : ℝ => (σ : ℂ) + (u : ℂ) * I).continuousAt).continuousWithinAt
+    (ContinuousAt.comp (g := thetaLogDeriv N) (f := fun u : ℝ => (σ : ℂ) + (u : ℂ) * I)
+      (analyticAt_thetaLogDeriv (hnz y hy_m)).continuousAt hlin_cont.continuousAt).continuousWithinAt
   have hg'_cont : ContinuousOn g' (Icc y₁ y₂) := fun y hy_m =>
     ContinuousWithinAt.const_smul
-      (((analyticAt_thetaLogDeriv (hnz y hy_m)).deriv.continuousAt.comp
-        (by fun_prop : Continuous fun u : ℝ => (σ : ℂ) + (u : ℂ) * I).continuousAt).continuousWithinAt) I
+      ((ContinuousAt.comp (g := deriv (thetaLogDeriv N)) (f := fun u : ℝ => (σ : ℂ) + (u : ℂ) * I)
+        (analyticAt_thetaLogDeriv (hnz y hy_m)).deriv.continuousAt
+        hlin_cont.continuousAt).continuousWithinAt) I
   obtain ⟨M₀, hM₀_bd⟩ := isCompact_Icc.exists_bound_of_continuousOn hg_cont
   obtain ⟨M₁, hM₁_bd⟩ := isCompact_Icc.exists_bound_of_continuousOn hg'_cont
   have hM₀_nn : 0 ≤ M₀ := (norm_nonneg (g y₁)).trans (hM₀_bd y₁ ⟨le_rfl, hy⟩)
@@ -86,11 +89,11 @@ theorem exists_vertFlux_inv_decay {σ y₁ y₂ : ℝ} (hy : y₁ ≤ y₂) (N :
       (2 * Real.pi : ℂ)⁻¹ * ((Real.exp ((σ - 1 / 2) * t) : ℂ) *
         ∫ y in y₁..y₂, cexp ((t : ℂ) * (y : ℂ) * I) * g y) := by
     unfold vertFlux
-    rw [← intervalIntegral.integral_const_mul]
     congr 1
+    rw [← intervalIntegral.integral_const_mul]
     refine intervalIntegral.integral_congr fun y _ => ?_
     dsimp only [g]
-    rw [← mul_assoc, ← Complex.ofReal_exp, ← Complex.exp_add]
+    rw [← mul_assoc, Complex.ofReal_exp, ← Complex.exp_add]
     congr 2
     push_cast; ring
   have hexp_unit : ∀ y : ℝ, ‖cexp ((t : ℂ) * (y : ℂ) * I)‖ = 1 := fun y => by
@@ -104,10 +107,13 @@ theorem exists_vertFlux_inv_decay {σ y₁ y₂ : ℝ} (hy : y₁ ≤ y₂) (N :
       rw [abs_of_nonneg hdy] at hint
       refine hint.trans ?_
       rw [le_div_iff₀ (by positivity : 0 < |t| + 1)]
+      have h1 : M₀ * (y₂ - y₁) * (|t| + 1) ≤ M₀ * (y₂ - y₁) * 2 :=
+        mul_le_mul_of_nonneg_left (by linarith only [ht1]) (mul_nonneg hM₀_nn hdy)
+      have h2 : 0 ≤ M₁ * (y₂ - y₁) := mul_nonneg hM₁_nn hdy
       dsimp only [K]
-      nlinarith [abs_nonneg t, ht1, hM₀_nn, hM₁_nn, hdy]
+      linarith only [h1, h2, hM₀_nn]
     · replace ht1 : 1 < |t| := not_le.mp ht1
-      have ht_ne : t ≠ 0 := fun h0 => by simp [h0] at ht1
+      have ht_ne : t ≠ 0 := fun h0 => by simp [h0] at ht1; linarith
       have htI_ne : (t : ℂ) * I ≠ 0 := mul_ne_zero (Complex.ofReal_ne_zero.mpr ht_ne) I_ne_zero
       set E : ℝ → ℂ := fun y => cexp ((t : ℂ) * (y : ℂ) * I)
       set H : ℝ → ℂ := fun y => (((t : ℂ) * I)⁻¹ * E y) * g y
@@ -152,7 +158,8 @@ theorem exists_vertFlux_inv_decay {σ y₁ y₂ : ℝ} (hy : y₁ ≤ y₂) (N :
       have hrem : ‖((t : ℂ) * I)⁻¹ * ∫ y in y₁..y₂, E y * g' y‖ ≤ M₁ * (y₂ - y₁) / |t| := by
         rw [norm_mul, hnorm_inv, inv_mul_eq_div]
         exact div_le_div_of_nonneg_right hint_g' (by positivity)
-      rw [show (fun y => cexp ((t : ℂ) * (y : ℂ) * I) * g y) = fun y => E y * g y from rfl, hibp]
+      rw [show (fun y : ℝ => cexp ((t : ℂ) * (y : ℂ) * I) * g y) = fun y : ℝ => E y * g y from rfl,
+        hibp]
       calc ‖H y₂ - H y₁ - ((t : ℂ) * I)⁻¹ * ∫ y in y₁..y₂, E y * g' y‖
           ≤ (‖H y₂‖ + ‖H y₁‖) + ‖((t : ℂ) * I)⁻¹ * ∫ y in y₁..y₂, E y * g' y‖ :=
             (norm_sub_le _ _).trans (add_le_add (norm_sub_le _ _) le_rfl)
@@ -160,9 +167,14 @@ theorem exists_vertFlux_inv_decay {σ y₁ y₂ : ℝ} (hy : y₁ ≤ y₂) (N :
             add_le_add (add_le_add (hH_bd y₂ ⟨hy, le_rfl⟩) (hH_bd y₁ ⟨le_rfl, hy⟩)) hrem
         _ = (2 * M₀ + M₁ * (y₂ - y₁)) / |t| := by ring
         _ ≤ K / (|t| + 1) := by
-            rw [div_le_div_iff₀ (by linarith) (by positivity)]
-            dsimp only [K]
-            nlinarith [ht1, hM₀_nn, hM₁_nn, hdy]
+            rw [div_le_div_iff₀ (by linarith only [ht1]) (by positivity)]
+            have hA : 2 * M₀ + M₁ * (y₂ - y₁) ≤ 2 * M₀ + (M₀ + M₁) * (y₂ - y₁) + 1 := by
+              have h0 : 0 ≤ M₀ * (y₂ - y₁) := mul_nonneg hM₀_nn hdy
+              linarith only [h0]
+            have hB : |t| + 1 ≤ 2 * |t| := by linarith only [ht1]
+            exact (mul_le_mul hA hB (by positivity)
+              (by positivity : 0 ≤ 2 * M₀ + (M₀ + M₁) * (y₂ - y₁) + 1)).trans_eq
+              (by dsimp only [K]; ring)
   rw [hfactor, norm_mul, norm_mul, norm_inv, norm_mul, Complex.norm_ofNat, Complex.norm_real,
     Complex.norm_real, Real.norm_of_nonneg Real.pi_pos.le,
     Real.norm_of_nonneg (Real.exp_pos _).le]
@@ -184,12 +196,14 @@ private lemma exists_norm_right_horiz_integral_le {σ₁ y : ℝ} (hσ : 1 / 2 �
         C_seg * Real.exp ((σ₁ - 1 / 2) * t) / (t + 1) := by
   set g : ℝ → ℂ := fun x => thetaLogDeriv N ((x : ℂ) + (y : ℂ) * I)
   set g' : ℝ → ℂ := fun x => deriv (thetaLogDeriv N) ((x : ℂ) + (y : ℂ) * I)
+  have hlin_cont : Continuous (fun u : ℝ => (u : ℂ) + (y : ℂ) * I) := by fun_prop
   have hg_cont : ContinuousOn g (Icc (1 / 2) σ₁) := fun x hx =>
-    ((analyticAt_thetaLogDeriv (hnz x hx)).continuousAt.comp
-      (by fun_prop : Continuous fun u : ℝ => (u : ℂ) + (y : ℂ) * I).continuousAt).continuousWithinAt
+    (ContinuousAt.comp (g := thetaLogDeriv N) (f := fun u : ℝ => (u : ℂ) + (y : ℂ) * I)
+      (analyticAt_thetaLogDeriv (hnz x hx)).continuousAt hlin_cont.continuousAt).continuousWithinAt
   have hg'_cont : ContinuousOn g' (Icc (1 / 2) σ₁) := fun x hx =>
-    (((analyticAt_thetaLogDeriv (hnz x hx)).deriv.continuousAt.comp
-      (by fun_prop : Continuous fun u : ℝ => (u : ℂ) + (y : ℂ) * I).continuousAt).continuousWithinAt)
+    (ContinuousAt.comp (g := deriv (thetaLogDeriv N)) (f := fun u : ℝ => (u : ℂ) + (y : ℂ) * I)
+      (analyticAt_thetaLogDeriv (hnz x hx)).deriv.continuousAt
+      hlin_cont.continuousAt).continuousWithinAt
   obtain ⟨M₀, hM₀_bd⟩ := isCompact_Icc.exists_bound_of_continuousOn hg_cont
   obtain ⟨M₁, hM₁_bd⟩ := isCompact_Icc.exists_bound_of_continuousOn hg'_cont
   have hM₀_nn : 0 ≤ M₀ := (norm_nonneg (g (1 / 2))).trans (hM₀_bd (1 / 2) ⟨le_rfl, hσ⟩)
@@ -217,7 +231,10 @@ private lemma exists_norm_right_horiz_integral_le {σ₁ y : ℝ} (hσ : 1 / 2 �
     rw [le_div_iff₀ (by linarith)]
     have hexp_pos : 0 < Real.exp ((σ₁ - 1 / 2) * t) := Real.exp_pos _
     have hcoef : M₀ * (σ₁ - 1 / 2) * (t + 1) ≤ C_seg := by
-      dsimp only [C_seg]; nlinarith
+      have h1 : M₀ * (σ₁ - 1 / 2) * (t + 1) ≤ M₀ * (σ₁ - 1 / 2) * 2 :=
+        mul_le_mul_of_nonneg_left (by linarith only [ht1]) (mul_nonneg hM₀_nn hdσ)
+      have h2 : 0 ≤ M₁ * (σ₁ - 1 / 2) := mul_nonneg hM₁_nn hdσ
+      dsimp only [C_seg]; linarith only [h1, h2, hM₀_nn]
     calc Real.exp ((σ₁ - 1 / 2) * t) * M₀ * (σ₁ - 1 / 2) * (t + 1)
         = (M₀ * (σ₁ - 1 / 2) * (t + 1)) * Real.exp ((σ₁ - 1 / 2) * t) := by ring
       _ ≤ C_seg * Real.exp ((σ₁ - 1 / 2) * t) := mul_le_mul_of_nonneg_right hcoef hexp_pos.le
@@ -277,8 +294,8 @@ private lemma exists_norm_right_horiz_integral_le {σ₁ y : ℝ} (hσ : 1 / 2 �
         M₁ * (σ₁ - 1 / 2) * Real.exp ((σ₁ - 1 / 2) * t) / t := by
       rw [norm_mul, norm_inv, Complex.norm_real, Real.norm_of_nonneg ht_pos.le, inv_mul_eq_div]
       exact div_le_div_of_nonneg_right hint_g' ht_pos.le
-    rw [show (fun x => cexp ((t : ℂ) * (((x : ℂ) + (y : ℂ) * I) - 1 / 2)) * g x) =
-      fun x => E x * g x from rfl, hibp]
+    rw [show (fun x : ℝ => cexp ((t : ℂ) * (((x : ℂ) + (y : ℂ) * I) - 1 / 2)) * g x) =
+      fun x : ℝ => E x * g x from rfl, hibp]
     calc ‖H σ₁ - H (1 / 2) - (t : ℂ)⁻¹ * ∫ x in (1 / 2 : ℝ)..σ₁, E x * g' x‖
         ≤ (‖H σ₁‖ + ‖H (1 / 2)‖) + ‖(t : ℂ)⁻¹ * ∫ x in (1 / 2 : ℝ)..σ₁, E x * g' x‖ :=
           (norm_sub_le _ _).trans (add_le_add (norm_sub_le _ _) le_rfl)
@@ -288,9 +305,14 @@ private lemma exists_norm_right_horiz_integral_le {σ₁ y : ℝ} (hσ : 1 / 2 �
       _ = ((2 * M₀ + M₁ * (σ₁ - 1 / 2)) / t) * Real.exp ((σ₁ - 1 / 2) * t) := by ring
       _ ≤ (C_seg / (t + 1)) * Real.exp ((σ₁ - 1 / 2) * t) := by
           refine mul_le_mul_of_nonneg_right ?_ (Real.exp_pos _).le
-          rw [div_le_div_iff₀ ht_pos (by linarith)]
-          dsimp only [C_seg]
-          nlinarith [ht1, hM₀_nn, hM₁_nn, hdσ]
+          rw [div_le_div_iff₀ ht_pos (by linarith only [ht1])]
+          have hA : 2 * M₀ + M₁ * (σ₁ - 1 / 2) ≤ 2 * M₀ + (M₀ + M₁) * (σ₁ - 1 / 2) + 1 := by
+            have h0 : 0 ≤ M₀ * (σ₁ - 1 / 2) := mul_nonneg hM₀_nn hdσ
+            linarith only [h0]
+          have hB : t + 1 ≤ 2 * t := by linarith only [ht1]
+          exact (mul_le_mul hA hB (by positivity)
+            (by positivity : 0 ≤ 2 * M₀ + (M₀ + M₁) * (σ₁ - 1 / 2) + 1)).trans_eq
+            (by dsimp only [C_seg]; ring)
       _ = C_seg * Real.exp ((σ₁ - 1 / 2) * t) / (t + 1) := by ring
 
 /-- **Short horizontal-cap `O(e^{(σ₁ - 1/2) t} / (t + 1))` decay.**
@@ -394,8 +416,8 @@ theorem exists_rightHalfPort_shifted_inv_decay {σ₁ y₁ y₂ : ℝ}
       C ^ 2 * Real.exp (2 * (σ₁ - 1 / 2) * t) / (t + 1) ^ 2 := by
     have h1 := pow_le_pow_left₀ (norm_nonneg _) (hpt t ht0) 2
     refine h1.trans_eq ?_
-    rw [div_pow, mul_pow, sq (Real.exp _), ← Real.exp_add]
-    congr 2; ring
+    rw [div_pow, mul_pow, sq (Real.exp _), ← Real.exp_add,
+      show (σ₁ - 1 / 2) * t + (σ₁ - 1 / 2) * t = 2 * (σ₁ - 1 / 2) * t by ring]
   have hrpow : C ^ 2 / (t + 1) ^ 2 = C ^ 2 * (t + 1) ^ (-2 : ℝ) := by
     rw [div_eq_mul_inv, show (-2 : ℝ) = -((2 : ℕ) : ℝ) by norm_num,
       Real.rpow_neg ht1.le, Real.rpow_natCast]
@@ -529,14 +551,14 @@ theorem rightHalfPort_criticalLineFlux_zeroFree_tfae {y₁ y₂ : ℝ} (hy : y�
         (lt_of_le_of_ne hzy1 hedge.2.1.symm) (lt_of_le_of_ne hzy2 hedge.2.2) hz0
   tfae_have 4 → 5 := by
     intro hopen t
-    have hempty : W.Z = ∅ := by
+    have hempty : (centeredThetaWindow hy N hbdry).Z = ∅ := by
       ext z; simp only [Finset.notMem_empty, iff_false]
       intro hz
       obtain ⟨⟨hx1, hx2, hy1, hy2⟩, hz0⟩ := (mem_centeredThetaWindow_iff hy N hbdry z).mp hz
       exact hopen z hx1 hx2 hy1 hy2 hz0
     rw [← centeredThetaWindow_expSum hy N hbdry t]
     unfold ReflectedWindow.expSum
-    simp [hempty]
+    rw [hempty, Finset.sum_empty]
   tfae_have 5 → 6 := by
     intro hzero t
     have hsum := centeredThetaExpSum_eq_rightHalfPort_add_conj_neg hy N hbdry t
@@ -753,7 +775,7 @@ theorem almostAll_unitWindow_rightHalfPort_doubleLog_decay :
     have hmul_κ : 16 * Real.sqrt (Real.log V) < κ_r * Real.log V := by
       have h1 := mul_lt_mul_of_pos_left hmul hκ_pos
       rwa [← mul_assoc, mul_div_cancel₀ 16 hκ_pos.ne'] at h1
-    dsimp only [A_V]; linarith only [hll_rt, hmul_κ]
+    dsimp only [A_V]; linarith only [hll_rt, hmul_κ, hrt_pos]
   -- Check `3 * log(log V) / log V ≤ 1` so `σ_V = 1/2 + 3 * log(log V) / log V ∈ (1/2, 3/2]`.
   set σ_V : ℝ := 1 / 2 + 3 * Real.log (Real.log V) / Real.log V
   have hσV_lo : 1 / 2 ≤ σ_V := le_add_of_nonneg_right (by positivity)
@@ -766,8 +788,8 @@ theorem almostAll_unitWindow_rightHalfPort_doubleLog_decay :
             mul_le_mul_of_nonneg_right hrt8 hrt_pos.le
         _ = Real.log V := Real.mul_self_sqrt hlogV_pos.le
     have hdiv1 : 3 * Real.log (Real.log V) / Real.log V ≤ 1 := by
-      rw [div_le_one hlogV_pos]; linarith only [hll_rt, hmul8]
-    exact (add_le_add_left hdiv1 (1 / 2)).trans (by norm_num)
+      rw [div_le_one hlogV_pos]; linarith only [hll_rt, hmul8, hrt_pos]
+    exact (add_le_add_right hdiv1 (1 / 2)).trans (by norm_num : (1 / 2 : ℝ) + 1 ≤ 3 / 2)
   -- Bound deep extended shell at `A_V = 2 * log(log V)`.
   set B_ext := (shellZeros (V - 4) (2 * V + 4)).filter (fun z => A_V / Real.log V ≤ |z.re - 1 / 2|)
   have hB_card : (B_ext.card : ℝ) ≤ (C_d / 2) * V / Real.log (Real.log V) := by
@@ -811,6 +833,7 @@ theorem almostAll_unitWindow_rightHalfPort_doubleLog_decay :
     have hy_le := burnolUnitLower_le_upper m
     have hbdry := burnolUnit_bdry_regular m ((burnolPrefix_le_doorSqrtPrefix m).trans hN)
     set n_m : ℕ := logDoorStage 1 m
+    have hn_pos : (0 : ℝ) < (n_m : ℝ) := by linarith only [six_le_logDoorStage_real 1 m]
     have hn_ge_logV : Real.log V ≤ (n_m : ℝ) := by
       have hX : V < ((m + 5 : ℕ) : ℝ) := by push_cast; linarith only [hm_ge_V]
       calc Real.log V ≤ 1 * Real.log ((m + 5 : ℕ) : ℝ) := by
@@ -851,8 +874,8 @@ theorem almostAll_unitWindow_rightHalfPort_doubleLog_decay :
                 dsimp only [A_V]; field_simp [hlogV_pos.ne']; ring
             _ < σ_V := by
                 dsimp only [σ_V]
-                exact add_lt_add_left
-                  (div_lt_div_of_pos_right (by linarith only [hll_pos]) hlogV_pos) _
+                exact add_lt_add_right
+                  (div_lt_div_of_pos_right (by linarith only [hll_pos]) hlogV_pos) (1 / 2)
         exact absurd hz_lt_σ (not_lt.mpr hzx1)
     have hnz₁ : ∀ x ∈ Icc (1 / 2 : ℝ) (3 / 2 : ℝ),
         _root_.RHTower.finiteThetaAmplitude N
@@ -1022,6 +1045,7 @@ theorem microPlanckWindow_criticalLineFlux_volume_le :
           (burnolUnit_bdry_regular m (burnolPrefix_le_doorSqrtPrefix m))
           (Or.inr hre32) (by linarith only [hy₁_lt, hzy1]) (by linarith only [hy₂_lt, hzy2]) hz0
       set n_m : ℕ := logDoorStage c m
+      have hn_pos : (0 : ℝ) < (n_m : ℝ) := by linarith only [six_le_logDoorStage_real c m]
       obtain ⟨w, hw_unit, hzw_dist⟩ := exists_xiZero_near_thetaZero m N
         (r := 1 / (16 * (n_m : ℝ))) (by positivity) (htail m hm₁_le N le_rfl)
         ⟨by linarith only [hzx1], hzx2_lt,
@@ -1045,8 +1069,8 @@ theorem microPlanckWindow_criticalLineFlux_volume_le :
       have hy₂_le_2V1 : y₂ ≤ 2 * V + 1 := add_le_add ht₀_I.2 hB_div_le1
       obtain ⟨⟨hw0, hw1, _, _⟩, hw_xi⟩ := (mem_burnolUnitXiZeros_iff m w).mp hw_unit
       have hw_im_pos : 0 < w.im := by
-        have h1 := (abs_le.mp him_16).1
-        linarith only [hV32, ht₀_I.1, hzy1, h1]
+        have h2 := (abs_le.mp him_16).2
+        linarith only [hV32, ht₀_I.1, hzy1, h2]
       have hw_im_hi : w.im ≤ 2 * V + 4 := by
         have h1 := (abs_le.mp him_16).1
         linarith only [hy₂_le_2V1, hzy2, h1]
@@ -1063,7 +1087,7 @@ theorem microPlanckWindow_criticalLineFlux_volume_le :
       · have hzw : z.im - w.im ≤ δ_B := (le_abs_self _).trans (him_diff.trans hrad_le_δ)
         calc t₀ ≤ z.im := hzy1
           _ = w.im + (z.im - w.im) := by ring
-          _ ≤ w.im + δ_B := add_le_add_left hzw w.im
+          _ ≤ w.im + δ_B := add_le_add_right hzw w.im
     -- Bound `#S_V ≤ 6 * C_tot * V * log V` and sum interval lengths `(9 / 8) * B / log V`.
     have hcard_S : (S_V.card : ℝ) ≤ 6 * C_tot * V * Real.log V := by
       have h1 : (S_V.card : ℝ) ≤ ∑ w ∈ S_V, ((analyticOrderAt _root_.RHTower.xi w).toNat : ℝ) := by
@@ -1108,3 +1132,17 @@ theorem microPlanckWindow_criticalLineFlux_volume_le :
 end GaloisForLFunctions.ConjugateDiagonalGeometry.WindowPortFlux
 
 end
+
+section AxiomAudit
+open GaloisForLFunctions.ConjugateDiagonalGeometry.WindowPortFlux
+#print axioms exists_vertFlux_inv_decay
+#print axioms exists_shortCap_inv_decay
+#print axioms rightHalfPort_eq_vertFlux_add_shortCap
+#print axioms exists_rightHalfPort_shifted_inv_decay
+#print axioms exists_criticalLineFlux_inv_decay_of_rightHalfZeroFree
+#print axioms rightHalfPort_criticalLineFlux_zeroFree_tfae
+#print axioms rightHalfPort_uniformBounded_tfae
+#print axioms exists_burnol_rightHalfPort_subHalfExp_inv_decay
+#print axioms almostAll_unitWindow_rightHalfPort_doubleLog_decay
+#print axioms microPlanckWindow_criticalLineFlux_volume_le
+end AxiomAudit

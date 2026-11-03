@@ -2315,7 +2315,7 @@ theorem almostAll_planckWindow_logStage_besselSzegoCertificate
           · have hzw : z.im - w.im ≤ δ_im := (le_abs_self _).trans (him_diff.trans hrad_le_δ)
             calc t ≤ z.im := hz_im1.le
               _ = w.im + (z.im - w.im) := by ring
-              _ ≤ w.im + δ_im := add_le_add_left hzw w.im
+              _ ≤ w.im + δ_im := add_le_add_right hzw w.im
       -- Step 5: `volume Y_fin = 0` and sum interval lengths over `B_ext`.
       have hvol_Y : volume (Y_fin : Set ℝ) = 0 := by
         have hsub_s : (Y_fin : Set ℝ) ⊆ ⋃ x ∈ Y_fin, Icc x x := by
@@ -2676,3 +2676,21 @@ theorem logFreeNearLineWindowOccupancy_iff_thinPlanckShadow {r : ℝ} (hr0 : 0 <
 end GaloisForLFunctions.ConjugateDiagonalGeometry.NearLineLogMean
 
 end
+
+section AxiomAudit
+open GaloisForLFunctions.ConjugateDiagonalGeometry.NearLineLogMean
+#print axioms burnolDeepOrderSum_le_logV
+#print axioms perWindow_deepOrderSum_rpow_le_selberg
+#print axioms perWindow_deepOrderSum_sq_le_selberg
+#print axioms perWindow_deepOrderSum_sq_doubleLog_le
+#print axioms clusteredModel_sqMoment_lower_bound
+#print axioms exists_logSpacingModel_zeroDensity_not_linearSqMoment
+#print axioms logFreeNearLineZeroDensity_iff_windowOccupancy_and_clusterTail
+#print axioms logFreeNearLineZeroDensity_of_windowOccupancy_and_growingSqMoment
+#print axioms sparseModel_uniformPlanckVolume_not_windowOccupancy
+#print axioms almostAll_planckWindow_logStage_besselSzegoCertificate
+#print axioms mesoscopicWindow_nearLine_zeroFree_volume_le
+#print axioms planckShadow_pos_iff
+#print axioms unitWindow_planckShadow_sum_le
+#print axioms logFreeNearLineWindowOccupancy_iff_thinPlanckShadow
+end AxiomAudit

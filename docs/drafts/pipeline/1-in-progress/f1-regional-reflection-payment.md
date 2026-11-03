@@ -74,10 +74,21 @@ comparison. With `D(t)=E−C(t)`, it gives
 `ΓE+J∞≥∫₀¹D/t−(γ+logπ+log2)E+E/48−(∫₀¹tD)/24−(∫₀¹t²D)/16`.
 The second moment is `E/3+(∫xF)²`; the first is `E/2+∫(∫_{−∞}ˣF)²`.
 These terms were replaced by worst-case mass bounds in `B`.
-[Retained Gamma payment](../3-formalized/f1-gamma-lag-moment-payment.md) now proves the
-retained inequality, exact second-moment substitution and uniform loss `7/192` in Lean,
-with standard-only axiom audits. The first-moment primitive identity remains under
-[formalization](../2-fully-proven/f1-first-lag-moment-primitive.md). The quintic obstruction above concerns
-the old loss `5/96`; it does not decide the improved lower form.
+[Retained Gamma payment](../3-formalized/f1-gamma-lag-moment-payment.md) and the
+[primitive identity](../3-formalized/f1-first-lag-moment-primitive.md) prove both moment
+substitutions, the common-primitive Gamma/pole bound and uniform loss `7/192` in Lean,
+with standard-only transitive axiom audits. The quintic obstruction above concerns
+the old loss `5/96`. For the primitive lower form, the quintic's primitive is
+`H(x)=x²−3x⁴+(8/3)x⁶−5/48` on the unit window, zero outside. Hence
+`∫H²=(25−40+234/5−236/7+43/3−36/11+4/13)/2304` and `∫xF=11/210`.
+Adding `E/32−(∫H²)/24−(∫xF)²/16` to the rational upper certificate still gives a
+strictly negative number (kernel checked). The analytic identification and C² transfer
+remain under audit for this improved form too.
+
+The direct correlation formula avoids the endpoint potential in this audit:
+`C_F(t)=62/1155−(334/315)t²+(2/3)t³+(88/21)t⁴−(86/15)t⁵
+ +(268/105)t⁷−(16/21)t⁹+(64/693)t¹¹` for `0≤t≤1`.
+It gives `∫₀¹(E−C_F)/t=167/315−2/9−22/21+86/75−268/735+16/189−64/7623`.
+`WindowTowerOfSpecZ.TheQuinticWindowHasExactLagData` is under source audit.
 
 No numerical evidence is used. Neither proposed positivity statement is established.

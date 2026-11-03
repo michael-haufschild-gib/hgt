@@ -443,8 +443,8 @@ theorem heckeLabel_eq_of_inLine {ℓ : Option (ZMod p)} {a b c d : ℤ} (h : IsH
       have hc : (c : ZMod p) ≠ 0 := fun hc => h0 ⟨ha, hc⟩
       rw [r2]; field_simp
 
-/-- Entries of a Hecke basis of determinant `p` lie in `[0, p]`. -/
 omit hp in
+/-- Entries of a Hecke basis of determinant `p` lie in `[0, p]`. -/
 theorem heckeBasis_bounds {a b c d : ℤ} (h : IsHeckeBasis p a b c d) :
     0 ≤ a ∧ a ≤ p ∧ 0 ≤ b ∧ b ≤ p ∧ 0 ≤ c ∧ c ≤ p ∧ 0 ≤ d ∧ d ≤ p := by
   have hb := h.b_nonneg
@@ -540,8 +540,8 @@ theorem heckeConeCount_eq {x y : ℤ} (hx : 1 ≤ x) (hy : 0 ≤ y) :
   rw [heckeConeCount_eq_card_lines hx hy, card_lines]
   simp only [ZMod.intCast_zmod_eq_zero_iff_dvd]
 
-/-- No cone reaches the line `x ≤ 0`: the first row has `a ≥ 1`. -/
 omit hp in
+/-- No cone reaches the line `x ≤ 0`: the first row has `a ≥ 1`. -/
 theorem heckeConeCount_eq_zero {x y : ℤ} (hx : x < 1) : heckeConeCount p x y = 0 := by
   classical
   unfold heckeConeCount

@@ -1,9 +1,9 @@
 # The first odd lag cost retains a primitive square
 
 - **ID:** F1-M1
-- **Stage:** 2-fully-proven; Lean formalization in progress
-- **Type:** THEOREM (paper)
-- **Source:** [Retained Gamma payment](../3-formalized/f1-gamma-lag-moment-payment.md)
+- **Stage:** 3-formalized
+- **Type:** THEOREM; individually Lean-audited
+- **Source:** [Retained Gamma payment](f1-gamma-lag-moment-payment.md)
 - **Statement:** For a real continuous odd source supported in `[-1/2,1/2]`,
   put `H(x)=∫_{−1}ˣF`, `E=∫F²`, and `C(t)=∫F(x)F(x+t)dx`. Then
   `∫₀¹tC(t)dt=−∫H²` and `M₁=E/2+∫H²`.
@@ -24,6 +24,11 @@ For C² sources, combining the retained Gamma estimate with both lag identities 
 `ΓE+J∞−½(∫2sinh(x/2)F)² ≥ ∫₀¹(E−C)/t − (γ+logπ+log2+1/48)E
  −(∫H²)/24−(∫H)²/16−½(∫H cosh(x/2))²`.
 
-The signed prime reflection still requires joint payment; this lower bound does not
-establish its sign. Lean targets: `LatticeSectionTheory.WindowJumpCounts.OddAutocorrelationFirstMoment`
-and `WindowTowerOfSpecZ.TheGammaComparisonRetainsItsLagMoments`; source audits pending.
+**Lean:** `LatticeSectionTheory.WindowJumpCounts.OddAutocorrelationFirstMoment` proves
+`derivative_autocorr_first_moment`, `unit_odd_primitive_regular`,
+`unit_odd_autocorr_first_moment`, and `unit_odd_jump_first_moment`.
+`WindowTowerOfSpecZ.TheGammaComparisonRetainsItsLagMoments` proves the position and sinh
+identities and `unit_odd_gamma_pole_primitive_lower`. Both individual `lake --old env lean`
+source audits pass; transitive axioms are `[propext, Classical.choice, Quot.sound]` only.
+Both modules are wired into their umbrellas. The signed prime reflection still requires
+joint payment; this lower bound does not establish its sign.

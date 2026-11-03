@@ -5,6 +5,7 @@ import GaloisForLFunctions.GrowingWindowsOfSpecZ.TheLatticeCanonicalSystem
 import GaloisForLFunctions.GrowingWindowsOfSpecZ.TheAnglesOfADegenerateWindow
 import GaloisForLFunctions.GrowingWindowsOfSpecZ.TheSchurParametersOfSpecZ
 import GaloisForLFunctions.GrowingWindowsOfSpecZ.TheLatticeReadsThePrimesCausally
+import GaloisForLFunctions.GrowingWindowsOfSpecZ.TheEvolutionStartsPositive
 
 /-!
 # Growing Windows of Spec ℤ (GWZ)

@@ -10,40 +10,39 @@
 
 | # | Question | Owner folder | Status |
 |---|---|---|---|
-| 2.5.1 | Two-collar recursion: `S^N_ε`, its evolution law, closed collar coupling at stages 1, 2 | `CanonicalSystemOfTheWindowTower/` | open |
-| 2.5.2 | Hecke-equivariant completion: exact Weil = Krein identity with Hecke ↔ `T_p − Id` | `RenormalizedIntersectionTheory/MayerScattering/` (other agent active on F2 synthesis) | open |
+| 2.5.1 | Two-collar recursion: `S^N_ε`, its evolution law, closed collar coupling at stages 1, 2 | `CanonicalSystemOfTheWindowTower/` | answered, Lean: `3-formalized/r0311-two-collar-recursion.md` |
+| 2.5.2 | Hecke-equivariant completion: exact Weil = Krein identity with Hecke ↔ `T_p − Id` | `RenormalizedIntersectionTheory/MayerScattering/` | answer written; modules compiling |
 | 2.5.3 | Log-free unit-window occupancy `D_win` | `RHTower/WD/` | open |
 | 2.5.4 | Growing conductors at the critical curve, then `M(N) → N` | `ArithmeticHodgeTheoryOfDegenerations/` | open |
 
-## 2.5.1 — mathematical core
+## 2.5.2 — answer
 
-Stage `n = N+1`, `ℓ = log n`, `w = Λ(n)/√n`, `ε < log((n+1)/n)`, `A = ℓ+ε`; collars
-`L = [−A,−ℓ]`, `R = [−ε,0]`, interior `I = [−ℓ,−ε]`; collar coordinate `t ∈ [0,ε]`, the fold is the
-identity `J` in collar coordinates.
+- **Completion** `𝒦 = ℓ²(upper resonances)`, Krein form `[x, y] = Σ_s x_s conj(y_{s♯})`; PM's core space
+  embeds densely and isometrically for the Krein forms; window map `𝓦_A H = (√m_{2s} Φ_H(s, 1))_s`,
+  bounded `‖𝓦_A H‖² ≤ 20e^A T ‖H‖²_{W^{2,1}}`; `Q(H) = 2 Re[𝓦H, 𝓦H]` exactly; reflection is the
+  twisted conjugate Krein reflection (`TheHeckeEquivariantCompletion`).
+- **Every prime.** Hecke cones `X_p = {ad − bc = p, 0 ≤ c < a, 0 ≤ b < d}` tile the quadrant: each
+  vector in one cone, `p`-divisible vectors in `p + 1` (`TheHeckeConesTileTheQuadrant`). Hence
+  `Σ_{X_p} P_w(M(a,b)) = P_w(a,b) + pP_w(pa,pb)` and `T_{p,w/2}P_w(·,1) = (1 + p^{1−w})P_w(·,1)`
+  for `Re w > 2` (`TheBarnesPeriodIsAHeckeEigenfunctionForEveryPrime`). The Eisenstein period
+  `E_w` is holomorphic in `w` on `{Re w > 0} ∖ {1, 2}` at every `a > 0` (three-term propagation from the
+  Mayer disc) and equals `P_w(·,1)` for `Re w > 2`; the identity theorem on this connected set gives
+  `T_{p,s}ψ_s = (1 + p^{1−2s})ψ_s` on the strip and at every resonance
+  (`TheEisensteinPeriodIsAHeckeEigenfunctionForEveryPrime`). So `T_p − Id` acts by `p^{1−2s}`, the
+  Mellin multiplier of `F_pH = √p H(· + log p)`: `T_pΦ_H − Φ_H = Φ_{F_pH}` and
+  `𝓦(F_pH)_s ψ_s = 𝓦(H)_s (T_p − Id)ψ_s` (`TheSourceHeckeOperatorsAreMellinTranslations`).
 
-1. **Ordered coupling.** For `f` supported left of `g`, Weil's complete form satisfies
-   `Q(f+g) = Q(f)+Q(g)+2∫∫f(u)g(v)κ(v−u) − 2Σ_n w_n∫f(u)g(u+log n)` with
-   `κ(x) = 2cosh(x/2) − ω(x) = e^{x/2} − e^{−x/2}/(e^{2x}−1) = e^{x/2} − Σ_{k≥1}e^{−(2k+½)x}`:
-   the trivial divisor of `ζ` (pole `s=1` with `+`, trivial zeros `s=−2k` with `−`); the Gamma pole
-   `s=0` cancels against the pole term.
-2. **Gluing.** `Q(x_L+y+x_R) = Q(x_L+y)+Q(y+x_R)−Q(y)+2κ(x_L,x_R)−2w⟨x_L,x_R⟩`, the three `Q`'s
-   on windows of length `ℓ` (previous level).
-3. **Transmission.** Across an interval the archimedean datum transmits only the moments at the
-   trivial divisor; folds `n ≤ N` add delays (shift couplings). Exact Bellman/Kalman update of the
-   past information form on the mode space = the Riccati law; a prime power adds an impulse.
-4. **Disk law.** Stage positivity ⟺ previous window positive and `|C(x_L,x_R) − w⟨x_L,x_R⟩|² ≤
-   S_L(x_L)S_R(x_R)`: the fold lies in the Carathéodory disk centred at the frozen coupling with
-   radii the one-end complements of the previous window.
+## 2.5.4 — working notes
 
-Numerics (stage 1, piecewise-constant, scratch `collar.py`): frozen coupling has two dominant
-singular values (`≈0.50, 0.48` at `ε=0.069`), the rest `< 10⁻⁶`; on constants it is `≈ w`
-(`0.488` vs `0.490`); frozen Schur parameter norm `1.8 → 39`, full `0.33 → 0.92` for
-`ε = 0.07 → 0.25`.
+Exact conductor law (AHD `ram_layer_sharp`): the conductor-`m` window has second order
+`(log N/∫φ²) Σ_{de=m} μ(d) 𝒜_N(c/e)`; the count `7φ(m)J(m)/K` is its limit when every `c/e → ∞`.
+The quiet region of the Ramanujan block ends at `|τ| ≍ N/m`, the spline band at `|τ| ≍ N/c`: the two
+meet at `m ≍ c`. Candidate answer: count form uniform exactly for `m = o(c_N)`; beyond, the exact
+alias law with the scaling function `R(c/m)`.
 
 ## Ledger
 
 | # | Conjecture | Result |
 |---|---|---|
-
-## Log
-- 2026-11-03 — created
+| 1 | Source Hecke for general `p` from a rational kernel identity as at `p = 2` | replaced: the number of cones grows with `p`; the cone count (tiling) is the uniform mechanism |
+| 2 | Continue the general-`p` eigenvalue in `a` from a segment as at `p = 2, 3` | replaced: branch arguments leave the Mayer disc for `p ≥ 5`; continuation in `w` at every `a > 0` instead |

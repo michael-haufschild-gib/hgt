@@ -33,8 +33,7 @@ def quadrantValue (w : ℂ) (a b : ℝ) (v : ℤ × ℤ) : ℂ :=
 
 theorem summable_quadrantValue {w : ℂ} (hw : 2 < w.re) {a b : ℝ} (ha : 0 < a) (hb : 0 < b) :
     Summable (quadrantValue w a b) := by
-  set c := min a b
-  have hc : 0 < c := lt_min ha hb
+  have hc : 0 < min a b := lt_min ha hb
   have hw0 : -w ≠ 0 := fun h => by
     have := congrArg Complex.re h; simp at this; linarith
   have hmaj := (summable_barnesLattice_rpow ha hb hc hw).mul_left ((2 : ℝ) ^ w.re)
@@ -44,29 +43,25 @@ theorem summable_quadrantValue {w : ℂ} (hw : 2 < w.re) {a b : ℝ} (ha : 0 < a
     exact Prod.ext h.1 h.2
   rw [← hg.summable_iff]
   · refine Summable.of_norm_bounded hmaj fun q => ?_
-    simp only [Function.comp, quadrantValue, Nat.cast_nonneg, and_self, if_true,
+    simp only [Function.comp_apply, quadrantValue, Nat.cast_nonneg, and_self, ↓reduceIte,
       Int.cast_natCast]
-    set r := (q.1 : ℝ) * a + (q.2 : ℝ) * b
+    set r := (q.1 : ℝ) * a + (q.2 : ℝ) * b with hr_def
     have hr0 : 0 ≤ r := by positivity
     have hL : barnesLattice a b q = r := rfl
     rw [hL]
     rcases hr0.lt_or_eq with hr | hr
     · rw [Complex.norm_cpow_eq_rpow_re_of_pos hr, Complex.neg_re]
-      have hcr : c ≤ r := by
-        by_contra h
-        push Not at h
-        have h1 : (q.1 : ℝ) < 1 := by
-          by_contra h1; push Not at h1
-          nlinarith [min_le_left a b, mul_le_mul_of_nonneg_right h1 ha.le,
-            mul_nonneg (Nat.cast_nonneg q.2 : (0 : ℝ) ≤ q.2) hb.le]
-        have h2 : (q.2 : ℝ) < 1 := by
-          by_contra h2; push Not at h2
-          nlinarith [min_le_right a b, mul_le_mul_of_nonneg_right h2 hb.le,
-            mul_nonneg (Nat.cast_nonneg q.1 : (0 : ℝ) ≤ q.1) ha.le]
-        have e1 : q.1 = 0 := by exact_mod_cast Nat.lt_one_iff.mp (by exact_mod_cast h1)
-        have e2 : q.2 = 0 := by exact_mod_cast Nat.lt_one_iff.mp (by exact_mod_cast h2)
-        simp [r, e1, e2] at hr
-      have h1 : (2 * r) ^ (-w.re) ≤ (c + r) ^ (-w.re) :=
+      have hcr : min a b ≤ r := by
+        rcases Nat.eq_zero_or_pos q.1 with h1 | h1
+        · rcases Nat.eq_zero_or_pos q.2 with h2 | h2
+          · exfalso
+            rw [hr_def, h1, h2] at hr
+            simp at hr
+          · have : (1 : ℝ) ≤ q.2 := by exact_mod_cast h2
+            nlinarith [min_le_right a b, mul_nonneg (Nat.cast_nonneg q.1 : (0 : ℝ) ≤ q.1) ha.le]
+        · have : (1 : ℝ) ≤ q.1 := by exact_mod_cast h1
+          nlinarith [min_le_left a b, mul_nonneg (Nat.cast_nonneg q.2 : (0 : ℝ) ≤ q.2) hb.le]
+      have h1 : (2 * r) ^ (-w.re) ≤ (min a b + r) ^ (-w.re) :=
         Real.rpow_le_rpow_of_nonpos (by positivity) (by linarith) (by linarith)
       have h2 : (2 * r) ^ (-w.re) = 2 ^ (-w.re) * r ^ (-w.re) :=
         Real.mul_rpow (by norm_num) hr.le
@@ -75,9 +70,9 @@ theorem summable_quadrantValue {w : ℂ} (hw : 2 < w.re) {a b : ℝ} (ha : 0 < a
       have h4 : 0 ≤ (2 : ℝ) ^ w.re := by positivity
       calc r ^ (-w.re) = (2 : ℝ) ^ w.re * (2 * r) ^ (-w.re) := by
             rw [h2, ← mul_assoc, h3, one_mul]
-        _ ≤ (2 : ℝ) ^ w.re * (c + r) ^ (-w.re) := mul_le_mul_of_nonneg_left h1 h4
+        _ ≤ (2 : ℝ) ^ w.re * (min a b + r) ^ (-w.re) := mul_le_mul_of_nonneg_left h1 h4
     · rw [← hr, Complex.ofReal_zero, Complex.zero_cpow hw0, norm_zero]
-      positivity
+      exact mul_nonneg (by positivity) (Real.rpow_nonneg (by linarith) _)
   · rintro ⟨x, y⟩ hv
     simp only [quadrantValue]
     rw [if_neg]
@@ -123,13 +118,15 @@ theorem barnesBoundaryPeriod_eq_coneSum {α β γ δ : ℤ} (hα : 0 ≤ α) (h�
     simp only [ι₁, Prod.mk.injEq] at h
     obtain ⟨h1, h2⟩ := key ((m : ℤ) - m') ((k : ℤ) - k') (by linear_combination h.1)
       (by linear_combination h.2)
-    exact Prod.ext (by omega) (by omega)
+    rw [Prod.mk.injEq]
+    constructor <;> omega
   have hι₂ : Function.Injective ι₂ := by
     rintro ⟨m, k⟩ ⟨m', k'⟩ h
     simp only [ι₂, Prod.mk.injEq] at h
     obtain ⟨h1, h2⟩ := key ((m : ℤ) - m') ((k : ℤ) - k') (by linear_combination h.1)
       (by linear_combination h.2)
-    exact Prod.ext (by omega) (by omega)
+    rw [Prod.mk.injEq]
+    constructor <;> omega
   have hr₁ : Set.range ι₁ = {v | InHeckeCone α β γ δ v.1 v.2} := by
     ext ⟨x, y⟩
     simp only [Set.mem_range, Set.mem_setOf_eq]
@@ -140,7 +137,7 @@ theorem barnesBoundaryPeriod_eq_coneSum {α β γ δ : ℤ} (hα : 0 ≤ α) (h�
     · rintro ⟨m, k, hm, hk, hx, hy⟩
       refine ⟨((m - 1).toNat, k.toNat), ?_⟩
       simp only [ι₁, Prod.mk.injEq]
-      rw [Int.toNat_of_nonneg (by omega), Int.toNat_of_nonneg hk]
+      rw [Int.toNat_of_nonneg (show (0 : ℤ) ≤ m - 1 by omega), Int.toNat_of_nonneg hk]
       exact ⟨by rw [hx]; ring, by rw [hy]; ring⟩
   have hr₂ : Set.range ι₂ = {v | InHeckeCone δ γ β α v.2 v.1} := by
     ext ⟨x, y⟩
@@ -152,7 +149,7 @@ theorem barnesBoundaryPeriod_eq_coneSum {α β γ δ : ℤ} (hα : 0 ≤ α) (h�
     · rintro ⟨m, k, hm, hk, hy, hx⟩
       refine ⟨(k.toNat, (m - 1).toNat), ?_⟩
       simp only [ι₂, Prod.mk.injEq]
-      rw [Int.toNat_of_nonneg (by omega), Int.toNat_of_nonneg hk]
+      rw [Int.toNat_of_nonneg (show (0 : ℤ) ≤ m - 1 by omega), Int.toNat_of_nonneg hk]
       exact ⟨by rw [hx]; ring, by rw [hy]; ring⟩
   have hnn : ∀ m k : ℕ, ∀ s t : ℤ, 0 ≤ s → 0 ≤ t → 0 ≤ (m : ℤ) * s + (k : ℤ) * t :=
     fun m k s t hs ht => add_nonneg (mul_nonneg (by positivity) hs) (mul_nonneg (by positivity) ht)
@@ -227,9 +224,10 @@ theorem heckeConeCount_cast {x y : ℤ} (hx : 0 ≤ x) (hy : 0 ≤ y) :
       if 1 ≤ x then (if (p : ℤ) ∣ x ∧ (p : ℤ) ∣ y then (p : ℂ) + 1 else 1) else 0 := by
   by_cases h1 : 1 ≤ x
   · rw [heckeConeCount_eq h1 hy, if_pos h1]
-    split_ifs <;> push_cast <;> rfl
+    split_ifs <;> simp
   · rw [heckeConeCount_eq_zero (by omega), if_neg h1, Nat.cast_zero]
 
+omit hp in
 open Classical in
 /-- Summing the cone weights over `X_p` counts the cones through `v` and through its transpose. -/
 theorem sum_coneWeight_heckeSet (x y : ℤ) :
@@ -269,41 +267,60 @@ theorem sum_coneWeight_heckeSet_eq {x y : ℤ} (hx : 0 ≤ x) (hy : 0 ≤ y) :
   by_cases h1 : 1 ≤ x <;> by_cases h2 : 1 ≤ y <;> by_cases h3 : (p : ℤ) ∣ x <;>
     by_cases h4 : (p : ℤ) ∣ y <;> simp [h1, h2, h3, h4, hx, hy] <;> ring
 
+/-- Each `X_p`-cone basis has nonnegative entries and determinant `p`. -/
+theorem barnesBoundaryPeriod_heckeSet_eq {w : ℂ} (hw : 2 < w.re) {a b : ℝ} (ha : 0 < a) (hb : 0 < b)
+    {M : ℤ × ℤ × ℤ × ℤ} (hM : M ∈ heckeSet p) :
+    barnesBoundaryPeriod w (M.1 * a + M.2.1 * b) (M.2.2.1 * a + M.2.2.2 * b) =
+      ∑' v, coneWeight M.1 M.2.1 M.2.2.1 M.2.2.2 v * quadrantValue w a b v := by
+  have hp0 : (0 : ℤ) < p := by exact_mod_cast hp.out.pos
+  simp only [heckeSet, Finset.mem_filter] at hM
+  obtain ⟨b0, -, b2, -, b4, -, b6, -⟩ := heckeBasis_bounds hM.2
+  have hdet : M.1 * M.2.2.2 - M.2.1 * M.2.2.1 ≠ 0 := by rw [hM.2.det]; exact hp0.ne'
+  exact barnesBoundaryPeriod_eq_coneSum b0 b2 b4 b6 hdet hw ha hb
+
+/-- The `X_p` side as one lattice sum. -/
+theorem sum_heckeSet_barnesBoundaryPeriod {w : ℂ} (hw : 2 < w.re) {a b : ℝ} (ha : 0 < a)
+    (hb : 0 < b) :
+    ∑ M ∈ heckeSet p, barnesBoundaryPeriod w (M.1 * a + M.2.1 * b) (M.2.2.1 * a + M.2.2.2 * b) =
+      ∑' v, (∑ M ∈ heckeSet p, coneWeight M.1 M.2.1 M.2.2.1 M.2.2.2 v) * quadrantValue w a b v := by
+  have hs : ∀ M ∈ heckeSet p, Summable fun v =>
+      coneWeight M.1 M.2.1 M.2.2.1 M.2.2.2 v * quadrantValue w a b v :=
+    fun M _ => summable_coneWeight_mul hw ha hb M.1 M.2.1 M.2.2.1 M.2.2.2
+  calc ∑ M ∈ heckeSet p, barnesBoundaryPeriod w (M.1 * a + M.2.1 * b) (M.2.2.1 * a + M.2.2.2 * b)
+      = ∑ M ∈ heckeSet p, ∑' v, coneWeight M.1 M.2.1 M.2.2.1 M.2.2.2 v * quadrantValue w a b v :=
+        Finset.sum_congr rfl fun M hM => barnesBoundaryPeriod_heckeSet_eq hw ha hb hM
+    _ = ∑' v, ∑ M ∈ heckeSet p, coneWeight M.1 M.2.1 M.2.2.1 M.2.2.2 v * quadrantValue w a b v :=
+        (Summable.tsum_finsetSum hs).symm
+    _ = _ := tsum_congr fun v => (Finset.sum_mul _ _ _).symm
+
+/-- The right side as one lattice sum: the identity cone plus `p` times the cone of `p · Id`. -/
+theorem barnesBoundaryPeriod_add_scaled {w : ℂ} (hw : 2 < w.re) {a b : ℝ} (ha : 0 < a)
+    (hb : 0 < b) :
+    barnesBoundaryPeriod w a b + p * barnesBoundaryPeriod w (p * a) (p * b) =
+      ∑' v, (coneWeight 1 0 0 1 v + p * coneWeight p 0 0 p v) * quadrantValue w a b v := by
+  have hp0 : (0 : ℤ) < p := by exact_mod_cast hp.out.pos
+  have hI := barnesBoundaryPeriod_eq_coneSum (α := 1) (β := 0) (γ := 0) (δ := 1) zero_le_one
+    le_rfl le_rfl zero_le_one (by norm_num) hw ha hb
+  have hP := barnesBoundaryPeriod_eq_coneSum (α := p) (β := 0) (γ := 0) (δ := p) hp0.le
+    le_rfl le_rfl hp0.le (by rw [mul_zero, sub_zero]; exact (mul_pos hp0 hp0).ne') hw ha hb
+  simp only [Int.cast_one, Int.cast_zero, Int.cast_natCast, one_mul, zero_mul, add_zero,
+    zero_add] at hI hP
+  rw [hI, hP, ← tsum_mul_left, ← (summable_coneWeight_mul hw ha hb 1 0 0 1).tsum_add
+    ((summable_coneWeight_mul hw ha hb p 0 0 p).mul_left _)]
+  exact tsum_congr fun v => by ring
+
 /-- **The Barnes Hecke identity for every prime**:
 `Σ_{M ∈ X_p} P_w(αa + βb, γa + δb) = P_w(a, b) + p P_w(pa, pb)`. -/
 theorem barnesBoundaryPeriod_hecke_prime {w : ℂ} (hw : 2 < w.re) {a b : ℝ} (ha : 0 < a)
     (hb : 0 < b) :
     ∑ M ∈ heckeSet p, barnesBoundaryPeriod w (M.1 * a + M.2.1 * b) (M.2.2.1 * a + M.2.2.2 * b) =
       barnesBoundaryPeriod w a b + p * barnesBoundaryPeriod w (p * a) (p * b) := by
-  have hp0 : (0 : ℤ) < p := by exact_mod_cast hp.out.pos
-  have hcone : ∀ M ∈ heckeSet p,
-      barnesBoundaryPeriod w (M.1 * a + M.2.1 * b) (M.2.2.1 * a + M.2.2.2 * b) =
-        ∑' v, coneWeight M.1 M.2.1 M.2.2.1 M.2.2.2 v * quadrantValue w a b v := by
-    intro M hM
-    simp only [heckeSet, Finset.mem_filter] at hM
-    obtain ⟨b0, -, b2, -, b4, -, b6, -⟩ := heckeBasis_bounds hM.2
-    exact barnesBoundaryPeriod_eq_coneSum b0 b2 b4 b6 (by rw [hM.2.det]; exact hp0.ne') hw ha hb
-  rw [Finset.sum_congr rfl hcone,
-    ← Summable.tsum_finsetSum fun M _ => summable_coneWeight_mul hw ha hb _ _ _ _]
-  have hI : barnesBoundaryPeriod w a b =
-      ∑' v, coneWeight 1 0 0 1 v * quadrantValue w a b v := by
-    have := barnesBoundaryPeriod_eq_coneSum (α := 1) (β := 0) (γ := 0) (δ := 1) (by norm_num)
-      le_rfl le_rfl (by norm_num) (by norm_num) hw ha hb
-    simpa using this
-  have hP : barnesBoundaryPeriod w (p * a) (p * b) =
-      ∑' v, coneWeight p 0 0 p v * quadrantValue w a b v := by
-    have := barnesBoundaryPeriod_eq_coneSum (α := p) (β := 0) (γ := 0) (δ := p) hp0.le
-      le_rfl le_rfl hp0.le (by simp [hp.out.ne_zero]) hw ha hb
-    simpa using this
-  rw [hI, hP, ← tsum_mul_left, ← (summable_coneWeight_mul hw ha hb 1 0 0 1).tsum_add
-    ((summable_coneWeight_mul hw ha hb p 0 0 p).mul_left _)]
+  rw [sum_heckeSet_barnesBoundaryPeriod hw ha hb, barnesBoundaryPeriod_add_scaled hw ha hb]
   refine tsum_congr fun v => ?_
-  rw [← Finset.sum_mul]
   obtain ⟨x, y⟩ := v
   by_cases hq : 0 ≤ x ∧ 0 ≤ y
   · rw [sum_coneWeight_heckeSet_eq hq.1 hq.2]
-    ring
-  · simp [quadrantValue, hq]
+  · rw [show quadrantValue w a b (x, y) = 0 from if_neg hq, mul_zero, mul_zero]
 
 /-- The **source Hecke operator** of determinant `p`:
 `T_{p,s} f(a) = Σ_{M ∈ X_p} (γa + δ)^{−2s} f((αa + β)/(γa + δ))`. -/
@@ -311,6 +328,7 @@ def lewisHeckeOperator (p : ℕ) (s : ℂ) (f : ℝ → ℂ) (a : ℝ) : ℂ :=
   ∑ M ∈ heckeSet p, (((M.2.2.1 : ℝ) * a + M.2.2.2 : ℝ) : ℂ) ^ (-(2 * s)) *
     f (((M.1 : ℝ) * a + M.2.1) / ((M.2.2.1 : ℝ) * a + M.2.2.2))
 
+omit hp in
 /-- The denominators of the Hecke branches are positive on the positive line. -/
 theorem heckeBranch_pos {M : ℤ × ℤ × ℤ × ℤ} (hM : M ∈ heckeSet p) {a : ℝ} (ha : 0 < a) :
     0 < (M.2.2.1 : ℝ) * a + M.2.2.2 ∧ 0 < (M.1 : ℝ) * a + M.2.1 := by
@@ -328,7 +346,7 @@ theorem barnesBoundaryPeriod_lewisHecke {w : ℂ} (hw : 2 < w.re) {a : ℝ} (ha 
     lewisHeckeOperator p (w / 2) (fun x => barnesBoundaryPeriod w x 1) a =
       (1 + p * (p : ℂ) ^ (-w)) * barnesBoundaryPeriod w a 1 := by
   have hp0 : (0 : ℝ) < p := by exact_mod_cast hp.out.pos
-  unfold lewisHeckeOperator
+  simp only [lewisHeckeOperator]
   rw [show 2 * (w / 2) = w by ring]
   have hterm : ∀ M ∈ heckeSet p,
       (((M.2.2.1 : ℝ) * a + M.2.2.2 : ℝ) : ℂ) ^ (-w) *
@@ -370,7 +388,7 @@ theorem barnesBoundaryPeriod_farey {w : ℂ} (hw : 2 < w.re) {a b : ℝ} (ha : 0
   rw [← add_mul]
   congr 1
   simp (disch := norm_num) only [coneWeight, inHeckeCone_iff_of_det_one]
-  split_ifs <;> first | ring | (exfalso; omega)
+  split_ifs <;> first | (exfalso; omega) | ring
 
 /-- `P_w` is symmetric in its two periods. -/
 theorem barnesBoundaryPeriod_comm (w : ℂ) (a b : ℝ) :

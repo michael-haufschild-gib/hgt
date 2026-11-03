@@ -26,8 +26,18 @@ The exact identity `M₂=E/3+(∫xF)²` cancels the `E/48` term, leaving
 Since `M₁≤3E/4` and `(∫xF)²≤E/12`, the uniform Gamma loss is now
 `7/192`, improving `5/96` by `1/64`. The source-dependent bound retains more information.
 
-**Lean:** `WindowTowerOfSpecZ.TheGammaComparisonRetainsItsLagMoments` proves
+For `H(x)=∫_{−1}ˣF`, the exact first moment is `M₁=E/2+∫H²`.
+Integration by parts gives `∫xF=−∫H` and `sinhPairing F=−∫H cosh(x/2)`.
+Thus the Gamma correction and odd pole share one primitive:
+
+`ΓE+J∞−½(sinhPairing F)² ≥ ∫₀¹D/t−(γ+logπ+log2+1/48)E
+ −(∫H²)/24−(∫H)²/16−½(∫H cosh(x/2))²`.
+
+**Lean:** in `WindowTowerOfSpecZ.TheGammaComparisonRetainsItsLagMoments`,
 `unit_odd_gamma_lag_moments_lower`, `unit_odd_gamma_position_lower`, and
-`unit_odd_gamma_jump_second_moment_lower`. Individual `lake --old env lean` source check passes;
+`unit_odd_gamma_jump_second_moment_lower` give the lag and uniform bounds;
+`unit_odd_gamma_primitive_lower` and `unit_odd_gamma_pole_primitive_lower` give the primitive bounds.
+The position and pole identities are `unit_odd_position_eq_primitive_integral` and
+`unit_odd_sinhPairing_eq_primitive_cosh`. Individual `lake --old env lean` source check passes;
 transitive axioms are `[propext, Classical.choice, Quot.sound]` only.
-The first-moment primitive identity and joint low-moment/prime payment remain open formal obligations.
+Joint payment with the signed prime reflection remains open.

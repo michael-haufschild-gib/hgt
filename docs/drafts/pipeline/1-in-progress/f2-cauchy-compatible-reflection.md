@@ -2,7 +2,7 @@
 
 - **Stage:** 1-in-progress
 - **Question:** Does compatibility with actual Cauchy averaging force the sharp reflection multiplier, even when no multiplier form is assumed for the candidate operator?
-- **Inputs:** The physical field antiunitary in `ArithmeticMellinReflection`; the explicit Cauchy factor and its pending norm classification in `CauchyReflectionOrder`.
+- **Inputs:** The physical field antiunitary in `ArithmeticMellinReflection`; the explicit Cauchy factor and its sharp norm classification in `CauchyReflectionOrder`.
 - **Scope:** The actual Epstein-to-core averaging bridge, not the full Mayer transfer family or Krein positivity.
 
 ## Candidate source statement
