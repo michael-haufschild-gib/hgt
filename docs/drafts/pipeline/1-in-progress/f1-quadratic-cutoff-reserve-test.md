@@ -2,7 +2,7 @@
 
 - **ID:** F1-QC
 - **Stage:** 1-in-progress
-- **Type:** CONJECTURE
+- **Type:** THEOREM (negative direction); positive survivor under audit
 - **Source:** [Two-moment payment](f1-primitive-variance-joint-payment.md)
 - **Statement:** The odd unit-window profile `F(x)=2x(1−4x²)²` on `|x|≤1/2`, zero outside, has `P(F)+∫F²/64<0`; the inequality persists under support-preserving smoothing.
 
@@ -18,16 +18,28 @@ Centering the overlap at `−t/2` reduces the correlation to the integral of
 Thus the logarithmic lag and first lag are rational integrals of this polynomial.
 The sinh pole is at least `m²/2`, since `xF(x)≥0`.
 
-## Consequence after smoothing
+## Proved obstruction
 
-A C² smoothing transfer would refute both the uniform floor `P≥−E/64` and the sufficient two-moment
-sign `D≥0`, because `D≤P+E/64`. It would not refute complete Weil positivity:
+The smooth witness refutes both the uniform floor `P≥−E/64` and the sufficient
+two-moment sign `D≥0`, because `D≤P+E/64`. Complete Weil positivity remains open:
 the exact local Gamma remainder and the reserve beyond `E/64` remain present.
+
+`exists_odd_unit_reservedGamma_neg` and `exists_odd_unit_firstFoldTwoMoment_neg`
+in `TheUniformGammaReserveCannotPayTheFirstFold.lean` pass the individual source
+check with `[propext, Classical.choice, Quot.sound]` only. The polynomial sign and
+smoothing continuity lemmas have the same axiom audit; all are umbrella-imported.
+
+For smoothing, multiply the existing odd unit-supported smooth quintics by
+`(1−4x²)/(1−2x²)`. On the unit interval this multiplier lies in `[0,1]`, has
+Lipschitz constant `8`, and has nonzero denominator. Outside the interval the
+product vanishes locally. The resulting C² family has size at most `1`, Lipschitz
+constant `32`, and the quadratic cutoff as pointwise limit. Dominated convergence
+preserves the strict retained-energy sign.
 
 ## Gates
 
 - [x] Exact correlation and rational sign certificate compile with standard-only transitive axioms.
-- [ ] Transfer the strict sign to a real odd C² test with exact unit support.
+- [x] Strict sign transfers to an odd C² test with exact unit support; individual source check and standard-only transitive-axiom audit pass.
 - [ ] Identify and prove the strongest positive survivor before retiring this target.
 
 ## Positive survivor under audit

@@ -83,11 +83,14 @@ theorem evenFiveRepair_posDef_of_schur {D x : ℝ} (hx : 0 ≤ x)
     rcases i with i | i <;> rcases j with j | j
     · exact congrFun (congrFun (repair_head 1000000000000 D x) i) j
     · fin_cases i <;> fin_cases j <;>
-        norm_num [M, e, evenFiveRepair, nativeShiftedMatrix, border, B, diagonal]
+        norm_num [M, e, finSumFinEquiv, evenFiveRepair, nativeShiftedMatrix, border, B,
+          Matrix.diagonal, Fin.natAdd, Fin.castAdd, Fin.castLE]
     · fin_cases i <;> fin_cases j <;>
-        norm_num [M, e, evenFiveRepair, nativeShiftedMatrix, border, B, diagonal]
+        norm_num [M, e, finSumFinEquiv, evenFiveRepair, nativeShiftedMatrix, border, B,
+          Matrix.diagonal, Fin.natAdd, Fin.castAdd, Fin.castLE]
     · fin_cases i <;> fin_cases j <;>
-        norm_num [M, e, evenFiveRepair, nativeShiftedMatrix, T, diagonal]
+        norm_num [M, e, finSumFinEquiv, evenFiveRepair, nativeShiftedMatrix, T,
+          Matrix.diagonal, Fin.natAdd, Fin.castAdd, Fin.castLE]
   let S : Matrix (Fin 1) (Fin 1) ℝ := T - Bᴴ * A⁻¹ * B
   have hS : S.PosSemidef := by
     apply Matrix.PosSemidef.of_dotProduct_mulVec_nonneg
@@ -112,10 +115,13 @@ theorem evenFiveRepair_posDef_of_schur {D x : ℝ} (hx : 0 ≤ x)
       ring
     rw [he]
     exact hs.ne'
-  have hfull := (hM.posDef_iff_det_ne_zero.mpr hdet).submatrix e.symm.injective
-  convert hfull using 1
-  ext i j
-  simp [M]
+  have hfull : (M.submatrix e.symm e.symm).PosDef :=
+    (hM.posDef_iff_det_ne_zero.mpr hdet).submatrix e.symm.injective
+  have heq : M.submatrix e.symm e.symm = evenFiveRepair 1000000000000 D x := by
+    ext i j
+    simp [M]
+  rw [heq] at hfull
+  exact hfull
 
 /-- The actual source selects a strictly positive repair coefficient. -/
 theorem evenFiveRepairCoefficient_pos : 0 < evenFiveRepairCoefficient := by
@@ -187,11 +193,12 @@ private theorem gaussianFive_posDef : gaussianFive.PosDef := by
   exact hA.conjTranspose_mul_mul_same hD
 
 private def balancedRepair (C D x : ℝ) : Matrix (Fin 5) (Fin 5) ℝ :=
-  (fun i j : Fin 5 => thetaCuspNativeScaledEvenJet (i.val + j.val) x) +
-    diagonal (fun i : Fin 5 =>
-      (if i.val = 3 then C * thetaCuspCenterCompensationSource x
-      else if i.val = 4 then D * thetaCuspCenterCompensationSource x else 0) /
-        (thetaCuspSourceTerm x 1 ^ 2 * thetaCuspSingleAtomReflectionScale 1 x ^ (2 * i.val)))
+  fun i j : Fin 5 => thetaCuspNativeScaledEvenJet (i.val + j.val) x +
+    (Matrix.diagonal (fun k : Fin 5 =>
+      (if k.val = 3 then C * thetaCuspCenterCompensationSource x
+      else if k.val = 4 then D * thetaCuspCenterCompensationSource x else 0) /
+        (thetaCuspSourceTerm x 1 ^ 2 *
+          thetaCuspSingleAtomReflectionScale 1 x ^ (2 * k.val)))) i j
 
 private theorem compensation_sixteen_limit :
     Tendsto (fun x : ℝ => thetaCuspCenterCompensationSource x /
@@ -207,7 +214,6 @@ private theorem compensation_sixteen_limit :
   have hf : thetaCuspSourceTerm x 1 ≠ 0 :=
     (thetaCuspSourceTerm_pos_of_pos_of_nat_pos hx (by norm_num)).ne'
   field_simp [hq, hf]
-  ring
 
 private theorem balancedRepair_limit (C D : ℝ) (i j : Fin 5) :
     Tendsto (fun x => balancedRepair C D x i j) atTop (𝓝 (gaussianFive i j)) := by
@@ -228,19 +234,20 @@ private theorem balancedRepair_limit (C D : ℝ) (i j : Fin 5) :
       · simpa [mul_div_assoc] using
           thetaCuspCenterCompensationSource_twelfth_scaled_tendsto_zero.const_mul C
       · simpa [mul_div_assoc] using compensation_sixteen_limit.const_mul D
-    · simp only [diagonal_apply_ne _ hij]
-      exact tendsto_const_nhds
+    · simpa only [Matrix.diagonal_apply_ne _ hij] using
+        (tendsto_const_nhds : Tendsto (fun _ : ℝ => (0 : ℝ)) atTop (𝓝 0))
   simpa only [balancedRepair, Matrix.add_apply, gaussianFive, add_zero] using hn.add hd
 
 /-- Every pair of fixed diagonal corrections retains the positive Gaussian tail. -/
 theorem evenFiveRepair_posDef_eventually (C D : ℝ) :
     ∀ᶠ x : ℝ in atTop, (evenFiveRepair C D x).PosDef := by
   have hh (x : ℝ) : (balancedRepair C D x).IsHermitian := by
-    apply Matrix.IsHermitian.add
-    · rw [Matrix.IsHermitian]
-      ext i j
-      simp [add_comm]
-    · exact Matrix.isHermitian_diagonal _
+    rw [Matrix.IsHermitian]
+    ext i j
+    by_cases hij : i = j
+    · subst j
+      simp [balancedRepair]
+    · simp [balancedRepair, Matrix.diagonal, hij, Ne.symm hij, add_comm]
   have hp := posDef_eventually_of_tendsto gaussianFive_posDef
     (Filter.Eventually.of_forall hh) (balancedRepair_limit C D)
   filter_upwards [hp, eventually_gt_atTop (0 : ℝ)] with x hx hx0
@@ -272,11 +279,9 @@ theorem evenFiveRepair_posDef_eventually (C D : ℝ) :
     by_cases hij : i = j
     · subst j
       simp only [diagonal_apply_eq, show 2 * i.val = i.val + i.val by omega, pow_add]
-      field_simp [hf, hq]
-      ring
-    · simp only [diagonal_apply_ne _ hij, add_zero, pow_add]
-      field_simp [hf, hq]
-      ring
+      field_simp [hf, hq] <;> ring
+    · simp only [Matrix.diagonal_apply_ne _ hij, add_zero, pow_add]
+      field_simp [hf, hq] <;> ring
   rw [he]
   exact hx.conjTranspose_mul_mul_same hT
 
@@ -305,8 +310,11 @@ def centerEvenFiveRepair (a C D r : ℝ) : Matrix (Fin 5) (Fin 5) ℝ :=
 theorem centerEvenFiveRepair_integrable {a : ℝ} (ha0 : 0 ≤ a) (ha : a < 1/2)
     (C D : ℝ) (i j : Fin 5) :
     IntegrableOn (fun r => centerEvenFiveRepair a C D r i j) (Ioi 0) := by
-  have hi := (integrableOn_thetaCuspWeightedNativeReflectionJet ha0 ha
-    (2*(i.val+j.val))).const_mul ((-1 : ℝ)^(i.val+j.val))
+  have hi : IntegrableOn (fun r : ℝ => (-1 : ℝ)^(i.val+j.val) *
+      (r * Real.sinh (a*r) * thetaCuspNativeReflectionJet (2*(i.val+j.val)) (r/2)))
+      (Ioi 0) :=
+    (integrableOn_thetaCuspWeightedNativeReflectionJet ha0 ha
+      (2*(i.val+j.val))).const_mul ((-1 : ℝ)^(i.val+j.val))
   have habs : |a| < 1 := by rw [abs_of_nonneg ha0]; linarith only [ha]
   have hf := integrableOn_deriv_thetaCuspCenterCompensationFlux habs
   unfold centerEvenFiveRepair
@@ -314,8 +322,8 @@ theorem centerEvenFiveRepair_integrable {a : ℝ} (ha0 : 0 ≤ a) (ha : a < 1/2)
   split_ifs
   · exact hi.add (hf.const_mul C)
   · exact hi.add (hf.const_mul D)
-  · simpa using hi
-  · simpa using hi
+  · simpa only [IntegrableOn, add_zero] using hi
+  · simpa only [IntegrableOn, add_zero] using hi
 
 /-- The two corrections integrate to zero: the complete literal mixed even
 five-dimensional block is preserved entry by entry. -/
@@ -335,12 +343,10 @@ theorem centerEvenFiveRepair_integral {a : ℝ} (ha0 : 0 ≤ a) (ha : a < 1/2)
   unfold centerEvenFiveRepair
   simp only [diagonal_apply]
   split_ifs
-  · rw [integral_add hi (hf.const_mul C), integral_const_mul,
+  · rw [integral_add hi (hf.const_mul C), hbase, integral_const_mul,
       integral_deriv_thetaCuspCenterCompensationFlux habs, mul_zero, add_zero]
-    exact hbase
-  · rw [integral_add hi (hf.const_mul D), integral_const_mul,
+  · rw [integral_add hi (hf.const_mul D), hbase, integral_const_mul,
       integral_deriv_thetaCuspCenterCompensationFlux habs, mul_zero, add_zero]
-    exact hbase
   · simpa using hbase
   · simpa using hbase
 
@@ -364,6 +370,7 @@ theorem centerEvenFiveRepair_posDef_of_source {a C D r : ℝ}
   have hP : P.PosSemidef := by
     apply Matrix.PosSemidef.diagonal
     intro i
+    change 0 ≤ (if i.val = 3 then C*d else if i.val = 4 then D*d else 0)
     split_ifs
     · exact mul_nonneg hC hd
     · exact mul_nonneg hD hd

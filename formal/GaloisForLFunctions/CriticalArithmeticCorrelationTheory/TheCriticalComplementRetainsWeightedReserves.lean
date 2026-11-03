@@ -145,6 +145,12 @@ theorem critical_weighted_complement_assembly
       (show 0 ≤ b * k₁ / c ^ 7 by positivity)
     have e₁ : b / c ^ 7 * k₁ = b * k₁ / c ^ 7 := by ring
     rw [e₁, one_mul] at hP
+    let A := b * k₁ / c ^ 7
+    change A * P_w ≤ k₁ * P_w at hP
+    change A * S_w ≤ A * S7_w at hS
+    rw [show b * k₁ / (2 * c ^ 7) = A / 2 by dsimp only [A]; ring,
+      show 3 * b * k₁ / (8 * c ^ 7) = 3 * A / 8 by dsimp only [A]; ring,
+      show b * k₁ / (32 * c ^ 7) = A / 32 by dsimp only [A]; ring]
     nlinarith only [hP, hS]
   have h3add := completeWeilEnergy_three_add_ge tiltedUnitSpline c u₀ u₁ w
   have hE₀_0 : 0 ≤ primeAdjunctionMass R₀ a₀ := primeAdjunctionMass_nonneg R₀ a₀

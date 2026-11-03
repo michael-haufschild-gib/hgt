@@ -46,13 +46,14 @@ private theorem cutoffRatio_lipschitz :
     (fun x hx => (cutoffRatio_deriv hx).differentiableAt) _ (convex_Icc _ _)
   intro x hx
   change ‖deriv cutoffRatio x‖ ≤ (8 : ℝ)
-  rw [(cutoffRatio_deriv hx).deriv, Real.norm_eq_abs, abs_div,
-    abs_mul, abs_of_nonneg (sq_nonneg (1-2*x^2))]
+  rw [(cutoffRatio_deriv hx).deriv, Real.norm_eq_abs, abs_div, abs_mul]
+  have habs : |(1-2*x^2)^2| = (1-2*x^2)^2 := abs_of_nonneg (sq_nonneg _)
+  rw [habs]
   have hd : (1/2 : ℝ) ≤ 1-2*x^2 := by linarith only [unit_square_le hx]
   have hd2 := pow_le_pow_left₀ (by norm_num : (0 : ℝ) ≤ 1/2) hd 2
   have hdp : 0 < (1-2*x^2)^2 := by nlinarith only [hd2]
   apply (div_le_iff₀ hdp).mpr
-  norm_num only [abs_neg, abs_ofNat]
+  norm_num only [abs_neg]
   nlinarith only [abs_le.mpr hx, hd2]
 
 /-- Smooth unit-window approximations to the quadratic endpoint cutoff. -/
@@ -103,7 +104,8 @@ private theorem unitSmoothQuadraticCutoff_lipschitz (n : ℕ) (x y : ℝ) :
       (hb : b ∈ Icc (-(1/2 : ℝ)) (1/2)) :
       |unitSmoothQuadraticCutoff n a - unitSmoothQuadraticCutoff n b| ≤ 32*|a-b| := by
     have hr := cutoffRatio_lipschitz.dist_le_mul a ha b hb
-    norm_num only [Real.dist_eq] at hr
+    simp only [Real.dist_eq] at hr
+    change |cutoffRatio a-cutoffRatio b| ≤ (8 : ℝ)*|a-b| at hr
     have hq := unitSmoothQuintic_lipschitz n a b
     have h1 := mul_le_mul_of_nonneg_right hq (abs_nonneg (cutoffRatio a))
     have h2 := mul_le_mul_of_nonneg_left hr (abs_nonneg (unitSmoothQuintic n b))

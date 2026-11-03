@@ -115,6 +115,7 @@ theorem eventually_critical_band_far_cross {B : ℝ} (hB : 0 < B) :
       ((div_le_iff₀ hθ).mpr (by linarith only [hθL, hD]))
       ((div_le_iff₀ hθ).mpr (by linarith only [hθL])) hLX hNθ4
   change Real.log (R₁ : ℝ) ≤ θ * L at hlogR₁
+  change 2 ≤ M at hM2
   have hlogR : Real.log (R : ℝ) ≤ θ * L :=
     (Real.log_le_log (by exact_mod_cast (show 0 < R by omega))
       (by exact_mod_cast hRR₁)).trans hlogR₁
@@ -170,8 +171,8 @@ theorem eventually_critical_band_far_cross {B : ℝ} (hB : 0 < B) :
         (one_le_pow₀ (show (1 : ℝ) ≤ R by exact_mod_cast (show 1 ≤ R by omega)))).trans hRN)
   have hρ : ‖poleModeResidual c N‖ ^ 2 ≤ ρ := by
     have h := hresN 1 one_pos (by simp) c hc1 hwidth
-    simpa only [poleModeResidual, Nat.cast_one, Real.log_one, add_zero, one_pow, one_mul,
-      mul_one] using h
+    simpa only [ρ, L, poleModeResidual, Nat.cast_one, Nat.cast_ofNat, Real.log_one,
+      add_zero, one_pow, one_mul, mul_one] using h
   have hρK := pole_rate_le hKres.le hc1 hcL hL1 (by norm_num : 1 ≤ (16 : ℕ))
     (by norm_num : 1 / ((16 : ℕ) : ℝ) ≤ 1 / 16) hL11
   have hlR : 1 + Real.log (R : ℝ) ≤ 2 * θ * L := by

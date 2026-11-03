@@ -134,17 +134,26 @@ theorem continuous_twoSidedGenerator_of_contDiff {z : ℝ → ℝ} (hz : ContDif
   exact (continuous_archTwoSidedGenerator_of_contDiff hz hzc).add
     (continuous_primeTwoSidedGenerator_of_bound hz.continuous hZ')
 
-/-! ### Window Allegretto–Piepenbrink -/
+/-! ### The ground-state representation of a `C²_c` gauge -/
 
-/-- **Window Allegretto–Piepenbrink.** A nonnegative `C²_c` gauge that is a supersolution of the
-Markov generator on `(b, c)` makes the Markov energy nonnegative on every test `Φ(ωu)` with
-`u ∈ C²_c` vanishing off `(b, c)`. -/
-theorem markovEnergy_phiDoob_mul_nonneg_of_windowSupersolution {ω u : ℝ → ℝ} {b c : ℝ}
-    (hω : ContDiff ℝ 2 ω) (hωc : HasCompactSupport ω) (hω0 : ∀ x, 0 ≤ ω x)
-    (hsuper : ∀ x ∈ Ioo b c,
-      riemannKernelReal x * Real.cosh (x / 2) * ω x ≤ twoSidedGenerator ω x)
-    (hu : ContDiff ℝ 2 u) (huc : HasCompactSupport u) (hub : ∀ x, x ∉ Ioo b c → u x = 0) :
-    0 ≤ markovEnergy (fun x => (phiDoobTest (fun y => ω y * u y) x : ℂ)) := by
+/-- The Markov defect `𝓛_D ω − Φ cosh(x/2) ω` of a gauge. -/
+def markovDefect (ω : ℝ → ℝ) (x : ℝ) : ℝ :=
+  twoSidedGenerator ω x - riemannKernelReal x * Real.cosh (x / 2) * ω x
+
+theorem continuous_markovDefect {ω : ℝ → ℝ} (hω : ContDiff ℝ 2 ω) (hωc : HasCompactSupport ω) :
+    Continuous (markovDefect ω) :=
+  (continuous_twoSidedGenerator_of_contDiff hω hωc).sub
+    ((continuous_riemannKernelReal.mul (Real.continuous_cosh.comp
+      (continuous_id.div_const 2))).mul hω.continuous)
+
+/-- **Ground-state representation of a `C²_c` gauge.** For `ω, u ∈ C²_c`,
+`M(Φ(ωu)) = J_{Φω}(u) + ∫ u² ω (𝓛_D ω − Φ cosh(x/2) ω)`. -/
+theorem markovEnergy_phiDoob_mul_eq_signedJump_add_defect {ω u : ℝ → ℝ}
+    (hω : ContDiff ℝ 2 ω) (hωc : HasCompactSupport ω) (hu : ContDiff ℝ 2 u)
+    (huc : HasCompactSupport u) :
+    markovEnergy (fun x => (phiDoobTest (fun y => ω y * u y) x : ℂ)) =
+      signedJumpEnergy (fun y => riemannKernelReal y * ω y) u +
+        ∫ x, u x ^ 2 * ω x * markovDefect ω x := by
   obtain ⟨Z, hZ⟩ := hωc.exists_bound_of_continuous hω.continuous
   have hZ' : ∀ x, |ω x| ≤ Z := fun x => by simpa [Real.norm_eq_abs] using hZ x
   have hZ0 : 0 ≤ Z := le_trans (abs_nonneg _) (hZ' 0)
@@ -166,35 +175,50 @@ theorem markovEnergy_phiDoob_mul_nonneg_of_windowSupersolution {ω u : ℝ → �
           mul_le_mul_of_nonneg_left he (by positivity)
         _ = C * Real.exp (-(24 * |y|)) := by ring
     · rw [hR y (not_le.mp hy), mul_zero, abs_zero]; positivity
-  set g : ℝ → ℝ := fun x =>
-    (twoSidedGenerator ω x - riemannKernelReal x * Real.cosh (x / 2) * ω x) / riemannKernelReal x
+  set g : ℝ → ℝ := fun x => markovDefect ω x / riemannKernelReal x
   have hsrc : ∀ x, twoSidedGenerator ω x - riemannKernelReal x * Real.cosh (x / 2) * ω x =
       riemannKernelReal x * g x := fun x => by
-    simp only [g]; field_simp [(riemannKernelReal_pos x).ne']
+    simp only [g, markovDefect]; field_simp [(riemannKernelReal_pos x).ne']
   have hg : Continuous g :=
-    ((continuous_twoSidedGenerator_of_contDiff hω hωc).sub
-      ((continuous_riemannKernelReal.mul (Real.continuous_cosh.comp
-        (continuous_id.div_const 2))).mul hω.continuous)).div continuous_riemannKernelReal
+    (continuous_markovDefect hω hωc).div continuous_riemannKernelReal
       fun x => (riemannKernelReal_pos x).ne'
   rw [markovEnergy_phiDoob_mul_eq_signedJump_add_source hω hC0 hM
     (integrableOn_archLevy_twoSidedShiftGenerator_of_contDiff hω hωc)
     (summable_atom_twoSidedShiftGenerator hZ') hsrc hg hu huc]
-  set Mg : ℝ → ℝ := fun y => riemannKernelReal y * ω y
-  have hMg0 : ∀ y, 0 ≤ Mg y := fun y => mul_nonneg (riemannKernelReal_pos y).le (hω0 y)
-  have hJ : 0 ≤ signedJumpEnergy Mg u := by
-    unfold signedJumpEnergy
-    have hsj : ∀ t x, 0 ≤ signedShiftJump Mg u t x := fun t x => by
-      unfold signedShiftJump; exact mul_nonneg (mul_nonneg (hMg0 x) (hMg0 _)) (sq_nonneg _)
-    refine add_nonneg (setIntegral_nonneg measurableSet_Ioi fun t ht => ?_)
-      (tsum_nonneg fun n => mul_nonneg (vonMangoldtAtom_nonneg n)
-        (integral_nonneg fun x => hsj _ x))
-    exact mul_nonneg (archLevyDensity_pos ht).le (integral_nonneg fun x => hsj t x)
-  have hS : 0 ≤ ∫ x, u x ^ 2 * Mg x * g x := by
+  congr 1
+  refine integral_congr_ae (Eventually.of_forall fun x => ?_)
+  simp only [g]
+  field_simp [(riemannKernelReal_pos x).ne']
+
+/-- The signed jump energy of a nonnegative test coordinate is nonnegative. -/
+theorem signedJumpEnergy_nonneg {M u : ℝ → ℝ} (hM0 : ∀ y, 0 ≤ M y) :
+    0 ≤ signedJumpEnergy M u := by
+  unfold signedJumpEnergy
+  have hsj : ∀ t x, 0 ≤ signedShiftJump M u t x := fun t x => by
+    unfold signedShiftJump; exact mul_nonneg (mul_nonneg (hM0 x) (hM0 _)) (sq_nonneg _)
+  refine add_nonneg (setIntegral_nonneg measurableSet_Ioi fun t ht => ?_)
+    (tsum_nonneg fun n => mul_nonneg (vonMangoldtAtom_nonneg n)
+      (integral_nonneg fun x => hsj _ x))
+  exact mul_nonneg (archLevyDensity_pos ht).le (integral_nonneg fun x => hsj t x)
+
+/-! ### Window Allegretto–Piepenbrink -/
+
+/-- **Window Allegretto–Piepenbrink.** A nonnegative `C²_c` gauge that is a supersolution of the
+Markov generator on `(b, c)` makes the Markov energy nonnegative on every test `Φ(ωu)` with
+`u ∈ C²_c` vanishing off `(b, c)`. -/
+theorem markovEnergy_phiDoob_mul_nonneg_of_windowSupersolution {ω u : ℝ → ℝ} {b c : ℝ}
+    (hω : ContDiff ℝ 2 ω) (hωc : HasCompactSupport ω) (hω0 : ∀ x, 0 ≤ ω x)
+    (hsuper : ∀ x ∈ Ioo b c,
+      riemannKernelReal x * Real.cosh (x / 2) * ω x ≤ twoSidedGenerator ω x)
+    (hu : ContDiff ℝ 2 u) (huc : HasCompactSupport u) (hub : ∀ x, x ∉ Ioo b c → u x = 0) :
+    0 ≤ markovEnergy (fun x => (phiDoobTest (fun y => ω y * u y) x : ℂ)) := by
+  rw [markovEnergy_phiDoob_mul_eq_signedJump_add_defect hω hωc hu huc]
+  have hJ := signedJumpEnergy_nonneg (u := u)
+    fun y => mul_nonneg (riemannKernelReal_pos y).le (hω0 y)
+  have hS : 0 ≤ ∫ x, u x ^ 2 * ω x * markovDefect ω x := by
     refine integral_nonneg fun x => ?_
     by_cases hx : x ∈ Ioo b c
-    · have hgx : 0 ≤ g x := div_nonneg (sub_nonneg.mpr (hsuper x hx))
-        (riemannKernelReal_pos x).le
-      exact mul_nonneg (mul_nonneg (sq_nonneg _) (hMg0 x)) hgx
+    · exact mul_nonneg (mul_nonneg (sq_nonneg _) (hω0 x)) (sub_nonneg.mpr (hsuper x hx))
     · simp [hub x hx]
   linarith
 

@@ -151,7 +151,7 @@ theorem exists_critical_multiple_schur_payment {κ_P κ_S : ℝ}
     have h := mul_le_mul_of_nonneg_right h7 (show 0 ≤ 48 * L by positivity)
     have he : (c ^ 7 / L * (∑ m ∈ Icc 1 Q, topCollarDualSeventhMass M N (r m) / E m)) *
         (48 * L) = (∑ m ∈ Icc 1 Q, topCollarDualSeventhMass M N (r m) / E m) * (48 * c ^ 7) := by
-      field_simp
+      field_simp <;> ring
     rw [he] at h
     linarith only [h]
   have hE : ∀ m ∈ Icc 1 Q, 0 < E m := by
@@ -185,7 +185,7 @@ theorem exists_critical_multiple_schur_payment {κ_P κ_S : ℝ}
     have h := mul_le_mul_of_nonneg_right hprefix
       (show 0 ≤ κ_P * L ^ (1 / 4 : ℝ) by positivity)
     have he : ((48 / κ_P) * (1 + Real.log L) ^ 5) * (κ_P * L ^ (1 / 4 : ℝ)) =
-        48 * L ^ (1 / 4 : ℝ) * (1 + Real.log L) ^ 5 := by field_simp
+        48 * L ^ (1 / 4 : ℝ) * (1 + Real.log L) ^ 5 := by field_simp <;> ring
     have hpowers : L ^ (3 / 4 : ℝ) * L ^ (1 / 4 : ℝ) = L := by
       rw [← Real.rpow_add hL0]; norm_num
     rw [he] at h
@@ -197,7 +197,11 @@ theorem exists_critical_multiple_schur_payment {κ_P κ_S : ℝ}
   have hpre' := mul_le_mul_of_nonneg_right hpre
     (show 0 ≤ ∑ n ∈ Icc 1 M, primeHorizonExtension w n ^ 2 from sum_nonneg fun _ _ => sq_nonneg _)
   have hcollar_eq : 48 * (κ_S * L / (48 * c ^ 7)) = κ_S * L / c ^ 7 := by ring
-  change 8 * (∑ m ∈ Icc 1 Q, ⟪r m, u₀ + u₁ + w⟫ ^ 2 / E m) ≤ _
+  change 8 * (∑ m ∈ Icc 1 Q, ⟪r m, u₀ + u₁ + w⟫ ^ 2 / E m) ≤
+    ‖u₀‖ ^ 2 + (L ^ (1 / 2 : ℝ) / 32) * ‖u₁‖ ^ 2 +
+      (κ_P * L / (1 + Real.log L) ^ 5) *
+        (∑ n ∈ Icc 1 M, primeHorizonExtension w n ^ 2) +
+      (κ_S * L / c ^ 7) * topCollarSeventhMass M N (primeHorizonExtension w)
   nlinarith only [hpair, hfirst, hsecond', hpre',
     congrArg (fun t => t * topCollarSeventhMass M N (primeHorizonExtension w)) hcollar_eq]
 

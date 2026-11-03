@@ -72,7 +72,6 @@ theorem completeWeil_posDef_of_weighted_blocks {Q R₀ R₁ M N : ℕ} {c μ p s
     intro m hm
     have h := spectralFloor_conductor_energy_ge hc1 (mem_Icc.mp hm).1
     change λ ≤ E m - λ at h
-    change 0 < completedConductorEnergy tiltedUnitSpline c m
     linarith only [h, hλ]
   have hsum : 0 ≤ ∑ m ∈ Icc 1 Q, E m * a m ^ 2 :=
     sum_nonneg fun m hm => mul_nonneg (hE m hm).le (sq_nonneg _)
@@ -116,7 +115,7 @@ theorem completeWeil_posDef_of_weighted_blocks {Q R₀ R₁ M N : ℕ} {c μ p s
   have hfull : λ * ‖y‖ ^ 2 + 3 * ‖u₀‖ ^ 2 + 3 * ‖u₁‖ ^ 2 + p * P + 2 * s * S7 ≤
       completeWeilEnergy tiltedUnitSpline c N x := by
     rw [← hx_eq] at hsplit
-    change _ = completeWeilEnergy tiltedUnitSpline c N y +
+    change completeWeilEnergy tiltedUnitSpline c N x = completeWeilEnergy tiltedUnitSpline c N y +
       completeWeilEnergy tiltedUnitSpline c N (u₀ + u₁ + w) + _ at hsplit
     change (1 / 4 : ℝ) * (∑ m ∈ Icc 1 Q, E m * a m ^ 2) ≤
       completeWeilEnergy tiltedUnitSpline c N y - λ * ‖y‖ ^ 2 at hlow'
@@ -248,6 +247,7 @@ theorem exists_critical_multiple_completeWeilMatrix_posDef :
         (by norm_num : (1 / 2 : ℝ) ≤ 1)).trans_eq (Real.rpow_one _)
   have hstrip : 2 * linearPrimeStrip c ≤ M := by
     obtain ⟨hT3, -, -, hTup⟩ := linearDefectCutoff_bounds hc1
+    change 3 ≤ T at hT3
     have hT : (T : ℝ) ≤ H * L := hTup.trans (mul_le_mul_of_nonneg_left hcL hH.le)
     have hs := linearPrimeStrip_le_four_mul hc1 hcL
     have hprod : ((2 * linearPrimeStrip c * T : ℕ) : ℝ) ≤ N := by
