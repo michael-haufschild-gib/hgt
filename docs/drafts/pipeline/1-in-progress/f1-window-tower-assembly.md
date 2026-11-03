@@ -52,6 +52,7 @@ exit-charge domination. Exact IMS localization and coherent collar transport alr
 their signed errors still require arithmetic control. The established complete-form coercivity
 reaches length `181/250`.
 
-[Cubic moment payment](../2-fully-proven/f1-rank-one-frozen-odd-payment.md) has a dependency-closed
-paper proof of `Q₁(F)+20M(F)²≥∫F²/125` on the full unit odd window. Lean formalization is in
-progress; the bound is not yet used as a proved input to the prime-2 payment.
+[Cubic moment payment](../3-formalized/f1-rank-one-frozen-odd-payment.md) proves
+`Q₁(F)+20M(F)²≥∫F²/125` on the full unit odd window. Both modules pass individual source checks
+and standard-only axiom audits. [Joint prime-2 payment](f1-joint-cubic-prime-payment.md) must retain
+the remaining jump variance and reflected even gain to pay the moment and reflected odd cost.

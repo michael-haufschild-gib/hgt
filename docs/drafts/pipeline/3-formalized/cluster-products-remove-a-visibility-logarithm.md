@@ -2,10 +2,11 @@
 
 - **Stage:** 3-formalized.
 - **Type:** THEOREM.
+- **Scientific status:** Not a frontier advance. The existing `RHTower.zeta_hodge_index_nyquist_horizon` already gives the stronger bound `a ≥ 2000A₀ log(|γ|+3) log(10⁶/δ)` for `|γ|≥102`, without separation assumptions.
 - **Wall:** Π8.
 - **Statement:** For a zero of depth `≥δ>0`, height `|γ|≥2`, and at most `n` distinct zeros in `(γ−101,γ+101]`, the level-`R` Hodge index fails whenever `R≥max(e⁶,1/δ)` and `100((n+1)log R + log(A₀(|γ|+4)))≤R`. For ζ, a smooth negative test on `[-(R+1),R+1]` detects depth `≥1/R` at every height `2≤|γ|≤exp(R/(10⁵A₀log R))−306`.
 
-## New mechanism
+## Product-selection mechanism
 
 The existing halving selection gives a smallest killing distance of order `r/(Cn)^(log₂n)`, then charges that smallest distance to every killed root. Retaining the product avoids this loss.
 
@@ -53,9 +54,11 @@ Subtracting the left side, the size condition bounds the difference below by `33
 
 For ζ, the proved local count gives `n≤202A₀L`, `L=log(|γ|+306)≥1`, and `Λ≤2A₀L`. Hence `10⁵A₀L·log R≤R` implies the required general size condition. Smoothing the negative test increases the aperture by one and gives a `C∞` detector.
 
-## Dependencies and novelty
+## Dependencies and comparison
 
 `ClusterRobustHodgeExclusion`: phase rotation, recentering identities, split tail, complete Weil-form comparison, local ζ count. `SmoothWeilDetectorPolynomialAperture`: smoothing a negative `C²` detector. The previous smallest-distance halving bound costs `n log²R`; the retained product costs `n log R`.
+
+This improves that halving argument, not the corpus's best visibility bound. `SubNyquistHodgeExclusion.not_hodgeIndex_below_nyquist_horizon` already uses exact phase interpolation and contour product selection to obtain `4((n+1)log(10⁶/δ)+log(A₀(|γ|+3)))≤a`. Its linear dependence on the local count is sharp up to constants for fixed depth. The present result also covers `2≤|γ|<102` and includes a smooth witness, but neither distinction establishes a new asymptotic frontier.
 
 ## Lean
 
@@ -70,4 +73,4 @@ All four canonical checks pass; all seven transitive axiom audits contain only `
 
 ## Remaining precision
 
-Π8 partially solved. A logarithmic gap remains between this sufficient aperture and the linear-count Nyquist obstruction; the sharp threshold for arbitrary clusters is open.
+Π8 remains partially solved. The corpus already closes the logarithmic gap in local count for fixed depth. The sharp joint dependence on depth, height and aperture remains open; this card does not change that status.

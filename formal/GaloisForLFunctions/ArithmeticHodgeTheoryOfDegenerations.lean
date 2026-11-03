@@ -49,6 +49,7 @@ import GaloisForLFunctions.ArithmeticHodgeTheoryOfDegenerations.DegenerationSele
 import GaloisForLFunctions.ArithmeticHodgeTheoryOfDegenerations.TheGoldenFakeIsSelfSimilarUnderDilation
 import GaloisForLFunctions.ArithmeticHodgeTheoryOfDegenerations.TheCoshHyperplaneInheritsThePolarization
 import GaloisForLFunctions.ArithmeticHodgeTheoryOfDegenerations.TheCountPaysTheSecondOrderBelowAUniformMultiple
+import GaloisForLFunctions.ArithmeticHodgeTheoryOfDegenerations.OneCriticalMultiplePaysEveryWindow
 import GaloisForLFunctions.ArithmeticHodgeTheoryOfDegenerations.TheSecondOrderOfACharacterWindowReadsAnLValue
 import GaloisForLFunctions.ArithmeticHodgeTheoryOfDegenerations.TheCharacterWindowsAreGradedByParity
 import GaloisForLFunctions.ArithmeticHodgeTheoryOfDegenerations.TheFrequencyOfATwistActsAsAFrobeniusAngle
@@ -56,6 +57,8 @@ import GaloisForLFunctions.ArithmeticHodgeTheoryOfDegenerations.EveryPeriodicTwi
 import GaloisForLFunctions.ArithmeticHodgeTheoryOfDegenerations.TheFrequencyTwistIsQuietBelowItsResonance
 import GaloisForLFunctions.ArithmeticHodgeTheoryOfDegenerations.TheEnergyOfAFrequencyTwist
 import GaloisForLFunctions.ArithmeticHodgeTheoryOfDegenerations.EveryFrequencyActsAsAFrobeniusAngle
+import GaloisForLFunctions.ArithmeticHodgeTheoryOfDegenerations.TheHorizonLayerIsGradedByFrequency
+import GaloisForLFunctions.ArithmeticHodgeTheoryOfDegenerations.EveryFrequencySectorInheritsThePolarization
 
 /-!
 # Arithmetic Hodge Theory of Degenerations
@@ -73,13 +76,17 @@ resolution axis (overlap `c`, horizon `N`). See `ArithmeticHodgeTheoryOfDegenera
   the aliasing being the dilation derivative of the bulk; on twisted windows a spectral Dirichlet
   series: Jordan totients for Ramanujan expansions (graded by conductor), the unit count corrected
   by `L(β+1, ψ̄²)` for characters (graded by parity, equal parities coupled by `L`-values), and the
-  Hurwitz form `½(ζ(β+1,u) + ζ(β+1,1−u))` for a frequency `u`, rational or irrational.
+  Hurwitz form `½(ζ(β+1,u) + ζ(β+1,1−u))` for a frequency `u`, rational or irrational, the layer
+  being graded by frequency (trigonometric twists carry `Σ a_k²` times these forms).
 * **The integer.** The window index of the pencil `κ W(H) + (βJ/K) A(H)`: read by the complete
   family, counting the right zeros, jumping at the critical multiples, between the resolved right
-  zeros and the Shannon number; `0` below `K₀(A) = βJ/(κ(10 + 72e^{A/2}))`, `0` on windows of
+  zeros and the Shannon number; for `β > 0`, `0` below one positive multiple independent of
+  aperture (the exponential weighted Weil floor), `0` on windows of
   length `≤ 3/5`, `≤ 1` on smooth windows of length `< log 2 + 1/50` (cosh hyperplane).
-* **Mechanism B.** Inheritance through the critical curve on every periodic twisted sector, on
-  short windows, on the cosh hyperplane of the first-prime windows, on all windows below `K₀(A)`,
+* **Mechanism B.** Inheritance through the critical curve on every twist with a positive scalar
+  second order (every periodic twist, every trigonometric twist with distinct frequencies), on
+  short windows, on the cosh hyperplane of the first-prime windows, on all windows below one
+  aperture-independent positive multiple,
   and on mixed families.
 * **Calibration over `𝔽_q`.** Lattice tests are diagonal in the Frobenius angles; the rescaled limit
   is their Hurwitz form; the family is stationary along the horizon; a single orbit `β, β⁻¹` dilates

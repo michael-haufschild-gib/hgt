@@ -1,8 +1,8 @@
 # Rank-one payment of the frozen odd direction
 
 - **ID:** F1-OP
-- **Stage:** 2-fully-proven; Lean formalization in progress
-- **Type:** PAPER PROOF, not yet kernel-verified
+- **Stage:** 3-formalized
+- **Type:** THEOREM (Lean)
 - **Source:** [F1 assembly](../1-in-progress/f1-window-tower-assembly.md)
 - **Statement:** For every odd real C² test supported in `[-1/2,1/2]`,
   `Q₁(F)+20(∫F(x)x(1−16x²/5)dx)² ≥ (1/125)∫F²`.
@@ -66,8 +66,16 @@ Thus `Q₁(F)+(115/6)M² ≥ (5849/3360−γ−logπ−3/320)E`.
 The bounds `logπ≤log3+π/3−1` and `γ<577216/1000000` imply
 `5849/3360−γ−logπ−3/320>1/125`. Finally `115/6<20` proves the stated rational bound.
 
-## Lean status
+## Lean proof
 
-`TheOddCubicGaugeRetainsAVariance` proves the kernel minorant, integrated variance, and improved
-folded logarithmic gap. Its dependency audit uses only `propext`, `Classical.choice`, `Quot.sound`.
-The rescaling, Gamma and pole estimates and actual `stageForm 1` bound remain under verification.
+Namespace: `GaloisForLFunctions.WindowTowerOfSpecZ`.
+
+- `TheOddCubicGaugeRetainsAVariance`: `principalOddKernel_cubic_minorant`,
+  `principalOddKernel_cubic_energy_ge`, `folded_logarithmic_jump_cubic_gap`.
+- `TheCubicMomentPaysTheFrozenOddComplement`: `stageForm_one_cubicMoment_lower`,
+  `stageForm_one_add_cubicMoment_ge`, `stageForm_one_coercive_of_cubicMoment_zero`;
+  `unit_odd_gamma_jump_lower` retains the logarithmic energy before any spectral estimate.
+
+Both modules pass individual `lake --old env lean` source checks and are imported by the WTZ
+umbrella. The gap, Gamma comparison and all three stage bounds depend only on `propext`, `Classical.choice`,
+`Quot.sound`. [Joint prime-2 payment](../1-in-progress/f1-joint-cubic-prime-payment.md) remains open.

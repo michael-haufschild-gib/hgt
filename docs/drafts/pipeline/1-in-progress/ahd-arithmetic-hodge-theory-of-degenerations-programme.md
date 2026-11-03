@@ -39,7 +39,8 @@ DegenerationSelectsThePureCurves, TheGoldenFakeIsSelfSimilarUnderDilation,
 TheCoshHyperplaneInheritsThePolarization, TheCountPaysTheSecondOrderBelowAUniformMultiple,
 TheSecondOrderOfACharacterWindowReadsAnLValue, TheCharacterWindowsAreGradedByParity,
 TheFrequencyOfATwistActsAsAFrobeniusAngle, EveryPeriodicTwistedSectorInheritsThePolarization,
-TheFrequencyTwistIsQuietBelowItsResonance, TheEnergyOfAFrequencyTwist, EveryFrequencyActsAsAFrobeniusAngle.
+TheFrequencyTwistIsQuietBelowItsResonance, TheEnergyOfAFrequencyTwist, EveryFrequencyActsAsAFrobeniusAngle,
+TheHorizonLayerIsGradedByFrequency, EveryFrequencySectorInheritsThePolarization.
 
 ## Status
 - First order = count: `J(m) = J(1) #ℙ⁷(ℤ/m)`; count law over every finite ring (𝔽_q[T] calibration) [L].
@@ -90,7 +91,8 @@ TheFrequencyTwistIsQuietBelowItsResonance, TheEnergyOfAFrequencyTwist, EveryFreq
   `ζJ_s(q)/q ± q^{s−1}‖L(s,ψ̄²)‖` [L]; two characters: opposite parity orthogonal, equal parity
   coupled by `L(s,ψ̄₁ψ₂)`, `L(s,ψ̄₁ψ̄₂)` [L]; `cos(2πan/M)`: `½(ζ(s,u)+ζ(s,1−u))`, `u = a/M`, the
   Hurwitz form of a Frobenius angle [L]; every real frequency `α` (`2α ∉ ℤ`): same form at `u = {α}`
-  (bounded-primitive sharp form, Kuzmin–Landau with rotation, discrepancy energy law) [L].
+  (bounded-primitive sharp form, Kuzmin–Landau with rotation, discrepancy energy law) [L];
+  trigonometric twists: `Σ a_k²` times the Hurwitz forms, graded by frequency [L].
 - Uniform bulk ledger: pole-free packets receive `o(c/log N)` from all zeros of height `≤ N^θ`,
   `θ < 2/3` (second-order EM at zeros + zero count) [L]; with the pole the low zeros give exactly
   `κ y_1² (2 + γ − log 4π)` (archimedean genus) [L]; both up to every height `N^θ`, `θ < 1`
@@ -106,7 +108,8 @@ TheFrequencyTwistIsQuietBelowItsResonance, TheEnergyOfAFrequencyTwist, EveryFreq
   the uniform multiple `K₀(A) = βJ/(κ(10 + 72e^{A/2}))` (ACS Weil floor) [L].
 - Inheritance on the twisted sector: independent Ramanujan-twisted families are eventually positive
   definite along the critical curve (mechanism B, unconditional there) [L]; for every nonzero
-  mean-zero periodic twist (spectral constant) [L].
+  mean-zero periodic twist (spectral constant) [L]; every twist with a positive scalar second order,
+  in particular trigonometric twists with distinct frequencies [L].
 - Jump multiples: independent family ⇒ `A(H)` posdef and `ind₋(P_K) = #{λ_i < 0, βJ/(−λ_i) < K}`,
   `λ_i` relative eigenvalues of `κW(H)` against `A(H)` [L].
 

@@ -419,7 +419,7 @@ first collect information in a working log in logs/ - facts, not process or stat
 
 the reports are not diaries or history log, but status quo reports.
 
-replace the reports in folder docs/reports/review-0211/ without history language or "this changed since last review".
+place the reports in folder docs/reports/review-0311/ without history language or "this changed since last review".
 do not run builds. this is not a task to verify the work of other agents but to create consolidated reports and "big picture" interpretations on their research results.
 
 
@@ -494,9 +494,9 @@ do not run any builds. do not search the web. do not grep for sorry or other shi
 
 Do not use the hgtl7 skill.
 
-read and understand docs/reports/review-0211/obstacles-summary.md
+read and understand docs/reports/review-0311/obstacles-summary.md
 
-under "## 2.7 Does closing RH need a new field?" it describes a new field/research programme called "theory of the window tower of Spec ℤ"
+under "## 2.7 Does closing RH need a new field?" it describes a new field/research programme 
 
 Your task: develop this field/research programme and do the actual research and formalization.
 
@@ -581,16 +581,19 @@ Goal is met when a proof route is fully closed and formalized in lean and RH is 
 
 do not use the hgtl7 skill.
 
-read: docs/reports/review-0211/obstacles-summary.md
+read: docs/reports/review-0311/obstacles-summary.md
 
-the document asks two questions, gives two tasks to bring use forward in our RH research via route PM:
+the document asks in "## 2.8 The one question" one question:
+"Is the complete Weil family positive on the whole space at one fixed critical multiple: is there
+`K₁ > 0` such that `completeWeilMatrix tiltedUnitSpline (2K₁(log N)^{1/8}) N` is eventually positive
+(definite, or on the pole hyperplane as in the horizon criterion)?
 
-1. Build from the Mayer operator alone (geodesic Euler product, Lewis period functions, whose three-term relation carries the reflection `s ↔ 1 − s`) a function real on the critical line of the scattering parameter whose sign changes are the scattering resonances — the operator analogue of Hardy's `Z(t)` — and prove infinitely many sign changes (Hardy's theorem), then a positive proportion.
-2. Find a positive-definite Hermitian structure on the space of Lewis period functions (or on the scattering channel of the Mayer operator) invariant under the reflection `ψ(z) ↦ z^{−2s}ψ(1/z)`, such that a resonance off `Re s = 1/4` produces a negative norm — a Krein or Lax–Phillips realization where the resonances are eigenvalues of a definite operator.
+By the critical-curve decomposition this is two statements: growing-conductor uniformity (2.5.4) and the
+weighted window sign `κQ(H) + (βJ/K₁)∫e^{−(β+1)y}H² ≥ 0` on windows of every length (B5)."
 
-your task: answer both questions, find a complete solution for them and unconditionally formalize them and its implications and collaries in lean.
+your task: answer the question, find a complete solution for it and unconditionally formalize it and its implications and collaries in lean.
 
-We are not interested in estimates, criterias what the answer could be like, what is not the answer, busywork - we accept only a full and final answer/solution to the posed questions/tasks.
+We are not interested in estimates, criterias what the answer could be like, what is not the answer, busywork - we accept only a full and final answer/solution to the posed question.
 
 **Tools to use:**
 1. Search: use the search tool for our lean corpus, not just rg or grep. make good use of the search tool to find existing work, building blocks, and new ideas. Try to apply existing lean research, try to identify problems and questions the field with your contribution could explain or solve.
@@ -617,11 +620,11 @@ Put all lean code for the answer into relevant subfolders to not bloat RHTower a
 
 Do not use the hgtl7 skill.
 
-read and understand route WD from docs/reports/rh-current-frontier-map.md
+read and understand docs/reports/review-0211/obstacles-summary.md and docs/reports/rh-current-frontier-map.md
 
-read this todo list for closing route WD docs/reports/review-0111/route-WD.md
+obstacles-summary.md suggest in "### F2. The reflection assembly (PM ⊕ CWS ⊕ WTZ)" to assemble a new route from building blocks of multiple routes and building bridges between the,
 
-your task: work step by step through the todos in docs/reports/review-0111/route-WD.md and bring each step to a full and final solution and formalization.
+your task: assemble this route, build the bridges, formalize this route.
 
 we are not interested in busywork, redressing of existing knowledge, building unnecessary lean infrastructure. stay focused on the task and tackle the actual problems. do not just write lean code for the sake of doing something. solve the actual problems.
   

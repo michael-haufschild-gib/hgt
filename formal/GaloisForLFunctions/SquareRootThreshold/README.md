@@ -229,7 +229,7 @@ and `RHTower` (`ZeroConfig`, `paperFT`, `gammaOf`, `zetaZeroConfig`, explicit fo
 | 18 | Unconditional floors in energy and archimedean normalisation | `exists_fullZeroForm_ge_neg_of_zetaZeroWidth_lt`, `exists_re_W_ge_logWeighted_rate_sharp` |
 | 19 | Every off-line zero has a smooth witness at aperture $\le C(4+|\Im\rho|)^2/\text{depth}^2$ | `RHTower.exists_smooth_weil_negative_quadratic_aperture` |
 | 20 | Function-field calibration | `curveConfig_weil_nonneg_iff_unitary_of_card_le`, `goldenDatum_twoBump_comb_at_threshold` |
-| 21 | Arbitrary clusters: aperture condition `100((n+1)log R + log(A₀(|γ|+4))) ≤ R`; ζ depth `≥1/R`, height `2≤|γ|≤exp(R/(10⁵A₀log R))−306`, smooth detector on `[-(R+1),R+1]` | `SquareRootThreshold.not_hodgeIndex_below_cluster_product_horizon`, `SquareRootThreshold.zeta_smooth_detector_below_product_horizon` |
+| 21 | Arbitrary clusters: `4((n+1)log(10⁶/δ)+log(A₀(|γ|+3)))≤a`; for ζ, `a≥2000A₀log(|γ|+3)log(10⁶/δ)`, `|γ|≥102`. Linear local-count dependence is sharp for fixed depth. A weaker smooth-detector bound also covers `2≤|γ|<102`. | `RHTower.not_hodgeIndex_below_nyquist_horizon`, `RHTower.zeta_hodge_index_nyquist_horizon`, `SquareRootThreshold.zeta_smooth_detector_below_product_horizon` |
 
 ---
 
@@ -278,8 +278,8 @@ and `RHTower` (`ZeroConfig`, `paperFT`, `gammaOf`, `zetaZeroConfig`, explicit fo
 6. **Escape.** Exclude chains of zeros escaping to large height and small amplitude beyond every horizon
    (equivalent to RH under positivity).
 7. **Drift.** Remove the polynomial coherence drift $\sqrt{\log(1/a)/a}$ from record lags.
-8. **Tradeoff asymmetry.** Forward exclusion below $\exp(cR/\log R)$ vs converse height reduction
-   requiring $\exp(7000e^R)$: optimal $(\delta(n,R),T(n,R))$.
+8. **Tradeoff asymmetry.** Forward exclusion below $\exp(cR/\log(C/\delta))$ at depth $\delta$, versus
+   converse height reduction requiring $\exp(7000e^R)$: optimal $(\delta(n,R),T(n,R))$.
 9. **Window incidence → pair payment** at the needed lag and height.
 10. **Every height.** Control $\log\zeta-\sum_{p\le y}p^{-s}$ on the critical line conditioned on head returns.
 11. **Zero-indexed routes.** Produce a per-zero depth meter from the prime source before the zero is known.

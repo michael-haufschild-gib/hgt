@@ -174,19 +174,23 @@ private theorem half_sinh_residual_bound {x : ℝ} (hx : |x| ≤ 1 / 2) :
     abs_mul, abs_two, hab, abs_div, abs_two]
   nlinarith only [ht, hm]
 
-private theorem cubicPoleResidual_square_le {x : ℝ}
-    (hx : x ∈ Icc (-(1 / 2 : ℝ)) (1 / 2)) :
-    cubicPoleResidual x ^ 2 ≤
-      (21 / 20 : ℝ) * (x - (5 / 3 : ℝ) * (x * (1 - 16 * x ^ 2 / 5))) ^ 2 +
-      (7 / 180 : ℝ) * x ^ 6 := by
-  have hr := half_sinh_residual_bound (abs_le.mpr hx)
+/-- The squared sinh remainder is at most `x⁶/540` on the unit support window. -/
+theorem unit_sinh_linear_residual_square_le {x : ℝ} (hx : |x| ≤ 1 / 2) :
+    (2 * Real.sinh (x / 2) - x) ^ 2 ≤ x ^ 6 / 540 := by
+  have hr := half_sinh_residual_bound hx
   rw [← abs_pow] at hr
   have hs := pow_le_pow_left₀ (abs_nonneg _) hr 2
   rw [sq_abs, div_pow, mul_pow, sq_abs] at hs
   have hc := mul_le_mul_of_nonneg_left cosh_quarter_square_bound
     (show 0 ≤ x ^ 6 by positivity)
-  have hr2 : (2 * Real.sinh (x / 2) - x) ^ 2 ≤ x ^ 6 / 540 := by
-    nlinarith only [hs, hc]
+  nlinarith only [hs, hc]
+
+private theorem cubicPoleResidual_square_le {x : ℝ}
+    (hx : x ∈ Icc (-(1 / 2 : ℝ)) (1 / 2)) :
+    cubicPoleResidual x ^ 2 ≤
+      (21 / 20 : ℝ) * (x - (5 / 3 : ℝ) * (x * (1 - 16 * x ^ 2 / 5))) ^ 2 +
+      (7 / 180 : ℝ) * x ^ 6 := by
+  have hr2 := unit_sinh_linear_residual_square_le (abs_le.mpr hx)
   have hy := sq_nonneg ((x - (5 / 3 : ℝ) * (x * (1 - 16 * x ^ 2 / 5))) -
     20 * (2 * Real.sinh (x / 2) - x))
   unfold cubicPoleResidual
@@ -220,20 +224,24 @@ private theorem cubicPoleResidual_integral_le :
       (Icc (-(1 / 2 : ℝ)) (1 / 2)) := hd.integrableOn_Icc
   have hi6 : IntegrableOn (fun x : ℝ => x ^ 6)
       (Icc (-(1 / 2 : ℝ)) (1 / 2)) := (continuous_pow 6).integrableOn_Icc
+  have hiSum : IntegrableOn (fun x : ℝ => (21 / 20 : ℝ) *
+      (x - (5 / 3 : ℝ) * (x * (1 - 16 * x ^ 2 / 5))) ^ 2 + (7 / 180 : ℝ) * x ^ 6)
+      (Icc (-(1 / 2 : ℝ)) (1 / 2)) :=
+    (hiD.const_mul (21 / 20)).add (hi6.const_mul (7 / 180))
   have h6 : (∫ x in Icc (-(1 / 2 : ℝ)) (1 / 2), x ^ 6) = (1 / 448 : ℝ) := by
     rw [integral_Icc_eq_integral_Ioc,
       ← intervalIntegral.integral_of_le (by norm_num : -(1 / 2 : ℝ) ≤ 1 / 2), integral_pow]
     norm_num
-  have h := setIntegral_mono_on (μ := volume)
+  have h := setIntegral_mono_on (μ := volume) (s := Icc (-(1 / 2 : ℝ)) (1 / 2))
     (f := fun x => cubicPoleResidual x ^ 2)
     (g := fun x => (21 / 20 : ℝ) *
       (x - (5 / 3 : ℝ) * (x * (1 - 16 * x ^ 2 / 5))) ^ 2 + (7 / 180 : ℝ) * x ^ 6)
-    hr.integrableOn_Icc ((hiD.const_mul _).add (hi6.const_mul _))
+    hr.integrableOn_Icc hiSum
     measurableSet_Icc (fun x hx => cubicPoleResidual_square_le hx)
   rw [integral_add (f := fun x => (21 / 20 : ℝ) *
       (x - (5 / 3 : ℝ) * (x * (1 - 16 * x ^ 2 / 5))) ^ 2)
       (g := fun x => (7 / 180 : ℝ) * x ^ 6)
-      (hiD.const_mul _) (hi6.const_mul _),
+      (hiD.const_mul (21 / 20)) (hi6.const_mul (7 / 180)),
     integral_const_mul, integral_const_mul, cubic_linear_residual_integral, h6] at h
   norm_num at h
   linarith only [h]
@@ -337,12 +345,13 @@ private theorem unit_gamma_tail_lower :
   norm_num at h
   linarith only [h]
 
-/-- The retained cubic variance pays the frozen Gamma cost on the unit odd window. -/
-private theorem cubic_frozen_arch_lower {F : ℝ → ℝ}
+/-- On the unit odd window, the Gamma form loses only an explicit constant from logarithmic jumps. -/
+theorem unit_odd_gamma_jump_lower {F : ℝ → ℝ}
     (hF : ContDiff ℝ 2 F) (hcs : HasCompactSupport F)
     (hs : tsupport F ⊆ Icc (-(1 / 2 : ℝ)) (1 / 2)) (ho : ∀ x, F (-x) = -F x) :
-    (5849 / 3360 - Real.eulerMascheroniConstant - Real.log Real.pi) * (∫ x, F x ^ 2) ≤
-      EF.gammaBracket 0 * (∫ x, F x ^ 2) + biScaleLevyEnergy F + 15 * cubicOddMoment F ^ 2 := by
+    (∫ t in Ioc (0 : ℝ) 1, (autocorr F 0 - autocorr F t) / t) -
+      (Real.eulerMascheroniConstant + Real.log Real.pi + Real.log 2 + 5 / 96) *
+        (∫ x, F x ^ 2) ≤ EF.gammaBracket 0 * (∫ x, F x ^ 2) + biScaleLevyEnergy F := by
   set M := autocorr F 0
   set D := fun t => M - autocorr F t
   set W := fun t => D t * archLevySinhWeight t
@@ -414,10 +423,6 @@ private theorem cubic_frozen_arch_lower {F : ℝ → ℝ}
     rw [integral_const_mul, hpow] at h
     norm_num at h
     nlinarith only [h]
-  have hlog := odd_logarithmic_jump_cubic_smooth hF hcs hs ho
-  rw [← autocorr_zero_eq] at hlog
-  change (Real.log 2 + 7 / 5 + 11 / 28) * M ≤
-    (∫ t in Ioc (0 : ℝ) 1, D t / t) + 15 * cubicOddMoment F ^ 2 at hlog
   rw [integral_sub hiSub (hit2D.div_const 16), integral_sub hiSum (hitD.div_const 24),
     integral_add hilog (hiD.div_const 2), integral_div, integral_div, integral_div, hD] at hcomp
   have htail : (∫ t in Ioi (1 : ℝ), W t) = 2 * archLevyAntideriv 1 * M := by
@@ -444,11 +449,23 @@ private theorem cubic_frozen_arch_lower {F : ℝ → ℝ}
   have htailM := mul_le_mul_of_nonneg_right unit_gamma_tail_lower hE
   have hGamma := congrArg (fun z : ℝ => z * M) neg_gammaBracket_zero_eq
   rw [← autocorr_zero_eq]
-  change (5849 / 3360 - Real.eulerMascheroniConstant - Real.log Real.pi) * M ≤ _
+  change (∫ t in Ioc (0 : ℝ) 1, D t / t) -
+    (Real.eulerMascheroniConstant + Real.log Real.pi + Real.log 2 + 5 / 96) * M ≤ _
   change (∫ t in Ioc (0 : ℝ) 1, t * D t) ≤ (3 / 4 : ℝ) * M at hmom
-  nlinarith only [hcomp, hlog, hmom, hmom2, hsplit, htailM, hGamma]
+  nlinarith only [hcomp, hmom, hmom2, hsplit, htailM, hGamma]
 
-private theorem levyJump_eq_biScale {F : ℝ → ℝ}
+/-- The retained cubic variance pays the frozen Gamma cost on the unit odd window. -/
+private theorem cubic_frozen_arch_lower {F : ℝ → ℝ}
+    (hF : ContDiff ℝ 2 F) (hcs : HasCompactSupport F)
+    (hs : tsupport F ⊆ Icc (-(1 / 2 : ℝ)) (1 / 2)) (ho : ∀ x, F (-x) = -F x) :
+    (5849 / 3360 - Real.eulerMascheroniConstant - Real.log Real.pi) * (∫ x, F x ^ 2) ≤
+      EF.gammaBracket 0 * (∫ x, F x ^ 2) + biScaleLevyEnergy F + 15 * cubicOddMoment F ^ 2 := by
+  have hgamma := unit_odd_gamma_jump_lower hF hcs hs ho
+  have hlog := odd_logarithmic_jump_cubic_smooth hF hcs hs ho
+  nlinarith only [hgamma, hlog]
+
+/-- The Markov jump count and the autocorrelation Lévy energy agree for compact C² tests. -/
+theorem levyJump_eq_biScale {F : ℝ → ℝ}
     (hF : ContDiff ℝ 2 F) (hcs : HasCompactSupport F) :
     levyJump F = biScaleLevyEnergy F := by
   have he : ∀ t ∈ Ioi (0 : ℝ),
@@ -521,3 +538,6 @@ end GaloisForLFunctions.WindowTowerOfSpecZ
 #print axioms GaloisForLFunctions.WindowTowerOfSpecZ.stageForm_one_add_cubicMoment_ge
 #print axioms GaloisForLFunctions.WindowTowerOfSpecZ.stageForm_one_cubicMoment_lower
 #print axioms GaloisForLFunctions.WindowTowerOfSpecZ.stageForm_one_coercive_of_cubicMoment_zero
+#print axioms GaloisForLFunctions.WindowTowerOfSpecZ.unit_odd_gamma_jump_lower
+
+#print axioms GaloisForLFunctions.WindowTowerOfSpecZ.unit_sinh_linear_residual_square_le

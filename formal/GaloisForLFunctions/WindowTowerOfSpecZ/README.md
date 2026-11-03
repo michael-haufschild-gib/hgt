@@ -1,6 +1,6 @@
 # The Window Tower of Spec ℤ (WTZ)
 
-Namespace `GaloisForLFunctions.WindowTowerOfSpecZ`; umbrella `WindowTowerOfSpecZ.lean`; 36 modules.
+Namespace `GaloisForLFunctions.WindowTowerOfSpecZ`; umbrella `WindowTowerOfSpecZ.lean`; 39 modules.
 Every theorem is unconditional; none assumes or proves RH.
 
 ## 1. Motivation
@@ -39,6 +39,7 @@ the sections, the growth law in `A`, and the place where selection has to happen
 | Window bundle | `windowBundleH0 N`, `windowBundleDualH0 N` | `ℰ_N = ⊕_{m ≤ N} 𝒪(½ log m)`, `h⁰(ℰ_N, d) = Σ_{m≤N} h⁰_ℤ(d + ½ log m)` |
 | Centred pole plane | `centredCosh A`, `centredSinh A` | `2cosh((u + A/2)/2)`, `2sinh((u + A/2)/2)` |
 | Sharp window floor | `sharpWindowFloor A` | `deg K_A + 2 sinh(A/2) − A` |
+| Exponentially weighted floor | `exponentialWeilFloor p` | `|Ω(0)| + 2ΣΛ(n)n^{−(p+1)/2} + 1/(p+1) + 1/(p−1)`; finite for `p > 1`, independent of aperture |
 | Dilation, Adams lift | `dilate r`, RHTower `mPart e` | `(D_rH)(u) = H(u/r)`; `ψ^e f(n^e) = f(n)`, zero off `e`-th powers |
 | Twist, character Euler datum | `twist c`, `twistHom`, `charZeta c`, `charMoebius c` | `f ↦ f·c` for completely multiplicative `c`; `(χζ, χμ)`, the Euler datum of `L(s, χ)` |
 | Stage datum | `stageForm N` | Weil's form of the weight truncated at `N`: `M_N + ½⟨c,·⟩² − ½⟨s,·⟩²` |
@@ -410,7 +411,11 @@ and the pole; the rigidity of the fold weights through the explicit formula with
 7. **Signed repair at the first prime.** The odd unit cubic has frozen archimedean energy
    `<−29‖f‖²/2100` and complete energy `>‖f‖²/100`. Its negative correlation at `log2` supplies
    the positive prime contribution. Both strict signs survive mollification inside a window
-   of length `21/20`. Open: joint Gamma, fold and pole payment for every first-stage test.
+   of length `21/20`. For every odd C² test supported in `[-1/2,1/2]`, the frozen form satisfies
+   `Q₁(F)+20M(F)²≥‖F‖²/125`, where `M(F)=∫F(x)x(1−16x²/5)dx`; its restriction to `M=0`
+   is coercive. The complete form satisfies `Q(F)≥‖F‖²/100` when `∫xF=∫x³F=0`;
+   the signed prime-2 term and sinh pole are included. Open: pay the two low moments and their
+   cross terms, then extend to every first-stage test.
 8. **Rigidity of the fold weights.** Numerically, replacing one weight `Λ(n)` by `λΛ(n)` keeps the
    window positive only for `λ` in an interval that collapses onto `1` within about half a unit of
    length after `log n` (for `n = 2`: `[0.61, 1.62]` at `+0.10`, `[0.964, 1.092]` at `+0.25`,
@@ -447,6 +452,8 @@ and the pole; the rigidity of the fold weights through the explicit formula with
 | Short windows are positive by their exit charge | `two_mul_archLevyAntideriv_half_le_exitPotential`, `weilQuad_nonneg_of_primeFree_centre`, `archLevyAntideriv_one_div_24_ge`, `weilQuad_nonneg_of_le_one_twelfth` |
 | Transfer across a stage; composite stages free | `markovForm_succ`, `weilQuad_eq_stageForm_add_fold`, `weilQuad_ge_stageForm_sub_endMass`, `weilQuad_nonneg_of_endCoercive`, `weilQuad_eq_stageForm_of_not_primePow` |
 | First fold repairs a negative frozen direction; nonnegative collar loan fails | `cubicWindow_weilQuad_pos`, `exists_first_stage_negative_frozen_positive_complete`, `exists_first_stage_positive_exit_loan_failure` |
+| One cubic moment pays the frozen odd form on the unit window; its kernel is coercive | `stageForm_one_cubicMoment_lower`, `stageForm_one_add_cubicMoment_ge`, `stageForm_one_coercive_of_cubicMoment_zero` |
+| Complete odd unit-window coercivity after first and third moments vanish | `stageForm_two_ge_of_odd_two_moments_zero`, `weilQuad_ge_of_odd_two_moments_zero` |
 | The exit charge pays every new fold | `collar_le_jump`, `levyJump_ge_collar`, `primeJumpWeight_le`, `log_three_le_archLevyAntideriv`, `primeJumpWeight_le_archLevyAntideriv`, `weilQuad_ge_reducedStageForm` |
 | The window Euler product | `isMultiplicative_factoredIndicator`, `factoredIndicator_mul_insert`, `prod_factoredIndicator`, `eulerFactor_mul_inverse`, `windowRep_zeta_eq_prod`, `windowRep_eulerFactor_mul_inverse` |
 | Weil's window form is a signed count | `exists_log_interpolant`, `sum_coeff_mul_jordanTotient`, `integral_windowRep_vonMangoldt_eq_signedCount`, `weilQuad_eq_signedCount` |
@@ -460,6 +467,7 @@ and the pole; the rigidity of the fold weights through the explicit formula with
 | Adams lifts = dilations; Serre duality = Rosati involution | `windowShift_dilate`, `windowRepFun_mPart_dilate`, `windowInvolution_windowShift`, `integral_windowShift_mul_eq`, `integral_windowRepFun_mul_eq` |
 | The Arakelov bundle of a window | `integral_atomicEmbedding_single`, `arithH0_add_half_log`, `windowBundleH0_riemannRoch`, `windowBundle_slope_le` |
 | Exact pole capacity; sharp floor and pencil; exponent `½` | `pole_eq_centred`, `integral_centredSinh_sq`, `centredSinhPairing_sq_le`, `pole_ge`, `weilQuad_ge_neg_sharpWindowFloor`, `pencil_nonneg_sharp`, `halfChebyshev_le`, `sharpWindowFloor_le` |
+| Aperture-independent floor `Q(H) ≥ −C(p)∫e^{−pu}H²`, `p > 1`; one positive weighted pencil on every window | `abs_correlation_le_exponentialMass`, `laplaceMoment_sq_le_exponentialMass`, `weilQuad_ge_neg_exponentialMass`, `weighted_pencil_ge` |
 | Windows of length `≤ 1/7` are positive by their exit charge | `archLevyAntideriv_one_div_14_ge`, `weilQuad_nonneg_of_le_one_seventh` |
 | Stage valuation; exact nilpotency; Wiener's lemma; one-point spectrum | `mul_vanishesBelow`, `pow_vanishesBelow`, `windowRep_mul_eq_zero_iff`, `windowRep_pow_eq_zero_iff`, `isUnit_windowRep_iff`, `isUnit_windowRep_sub_iff` |
 | Hilbert function = almost-prime counts; socle; Gorenstein iff `N ≤ 2` | `pow_truncIdeal_one_le_omegaVanishing`, `single_mem_pow_truncIdeal_one`, `mem_pow_sup_truncIdeal_iff`, `sub_restrictTo_almostPrime_mem`, `restrictTo_almostPrime_mem_iff`, `mul_mem_truncIdeal_forall_iff`, `socle_principal_iff` |
