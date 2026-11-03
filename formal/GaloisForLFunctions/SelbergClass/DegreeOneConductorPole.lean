@@ -139,4 +139,12 @@ theorem degreeOne_conductor_bound_or_pole (F : ExtendedSelbergClass)
   rw [hd] at hzero
   exact one_ne_zero hzero
 
+/-- In the normalized full class the first coefficient is one, so conductor
+below two forces a genuine pole at one. -/
+theorem full_degreeOne_conductor_bound_or_pole (F : RHTower.SelbergClass)
+    (hd : F.gammaData.degree = 1) :
+    2 ≤ F.gammaData.conductor ∨ meromorphicOrderAt F.toExtendedSelbergClass 1 < 0 := by
+  have h := degreeOne_conductor_bound_or_pole F.toExtendedSelbergClass hd
+  simpa only [F.firstIndex_eq_one, Nat.cast_one, mul_one] using h
+
 end GaloisForLFunctions.SelbergClass

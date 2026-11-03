@@ -164,7 +164,6 @@ private theorem strip_loss_bound (H : ℝ → ℝ) {x y : ℝ}
         (H x - H y) ^ 2 := by
       unfold stripLoss
       field_simp [hs.ne']
-      ring
     _ ≤ _ := h
     _ = _ := by ring
 

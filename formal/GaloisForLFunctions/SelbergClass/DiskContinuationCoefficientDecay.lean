@@ -1,6 +1,7 @@
 import GaloisForLFunctions.SelbergClass.OrdinaryFourierExtraction
 import GaloisForLFunctions.SelbergClass.PositiveDegreeAbscissa
 import GaloisForLFunctions.HTGeometry.CompactContinuousNormBound
+import GaloisForLFunctions.HTGeometry.BoundedCoefficientLaplaceMellin
 
 /-!+# A disk crossing a full exponential period forces degree zero
 
@@ -92,19 +93,22 @@ theorem exists_exponential_coeff_bound_of_disk_extension (F : ExtendedSelbergCla
     let K : ℂ → ℂ := fun z => g z * Complex.exp ((n : ℂ) * z)
     have hK : DifferentiableOn ℂ K (uIcc (-a) a ×ℂ uIcc (-Real.pi) Real.pi) := by
       intro z hz
+      have hzRe : z.re ∈ uIcc (-a) a := hz.1
+      have hzIm : z.im ∈ uIcc (-Real.pi) Real.pi := hz.2
       have hx : z.re ∈ Icc (-a) a := by
-        simpa only [uIcc_of_le (by linarith : -a ≤ a)] using hz.1
+        simpa only [uIcc_of_le (by linarith : -a ≤ a)] using hzRe
       have hy : z.im ∈ Icc (-Real.pi) Real.pi := by
-        simpa only [uIcc_of_le (by linarith [Real.pi_pos] : -Real.pi ≤ Real.pi)] using hz.2
+        simpa only [uIcc_of_le (by linarith [Real.pi_pos] : -Real.pi ≤ Real.pi)] using hzIm
       exact ((hg z (by simpa only [Metric.mem_ball, dist_zero_right] using hrect z hx hy)).mul
         (by fun_prop)).differentiableAt.differentiableWithinAt
     have hc := Complex.integral_boundary_rect_eq_zero_of_differentiableOn K
       ⟨-a, -Real.pi⟩ ⟨a, Real.pi⟩ hK
-    change ((∫ x in (-a)..a, K ((x : ℂ) + ((-Real.pi : ℝ) : ℂ) * I)) -
+    simp only [Complex.ofReal_neg] at hc
+    change ((∫ x in (-a)..a, K ((x : ℂ) + (-(Real.pi : ℂ)) * I)) -
       (∫ x in (-a)..a, K ((x : ℂ) + (Real.pi : ℂ) * I))) +
       I • (∫ t in (-Real.pi)..Real.pi, K ((a : ℂ) + (t : ℂ) * I)) -
       I • (∫ t in (-Real.pi)..Real.pi, K ((-a : ℂ) + (t : ℂ) * I)) = 0 at hc
-    have hhor : (∫ x in (-a)..a, K ((x : ℂ) + ((-Real.pi : ℝ) : ℂ) * I)) =
+    have hhor : (∫ x in (-a)..a, K ((x : ℂ) + (-(Real.pi : ℂ)) * I)) =
         ∫ x in (-a)..a, K ((x : ℂ) + (Real.pi : ℂ) * I) := by
       apply intervalIntegral.integral_congr
       intro x hx
@@ -136,7 +140,7 @@ theorem exists_exponential_coeff_bound_of_disk_extension (F : ExtendedSelbergCla
   have hf : ContinuousOn f (Icc (-Real.pi) Real.pi) := by
     intro t ht
     have hz : ‖(-a : ℂ) + (t : ℂ) * I‖ < R :=
-      hrect _ (by simp; constructor <;> linarith) (by simpa using ht)
+      hrect _ (by simpa using ha.le) (by simpa using ht)
     exact ((hg _ (by simpa only [Metric.mem_ball, dist_zero_right] using hz)).continuousAt.comp
       (by fun_prop)).continuousWithinAt
   obtain ⟨C, hC0, hC⟩ := exists_compact_continuous_norm_bound isCompact_Icc f hf

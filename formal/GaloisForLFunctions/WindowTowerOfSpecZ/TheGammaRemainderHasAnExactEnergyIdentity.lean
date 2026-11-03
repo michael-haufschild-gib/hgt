@@ -1,4 +1,5 @@
 import GaloisForLFunctions.WindowTowerOfSpecZ.TheGammaRemainderPaysAUniformReserve
+import GaloisForLFunctions.«arithmetic-positivity-theory».MarkovPoleHyperbolicCapacityAndApertureThresholds
 
 /-!
 # The exact remainder of the retained Gamma comparison
@@ -58,6 +59,7 @@ private theorem local_gamma_terms_integrable {F : ℝ → ℝ}
     apply (hi.mono_set hsub).mono'
       ((hdc.measurable.div measurable_id).aestronglyMeasurable.restrict)
     filter_upwards [ae_restrict_mem measurableSet_Ioc] with t ht
+    change ‖D t / t‖ ≤ D t * archLevySinhWeight t
     rw [Real.norm_eq_abs, abs_of_nonneg (div_nonneg (hd t) ht.1.le)]
     have hw := gamma_weight_lower ht.1 ht.2
     have ht2 : t ^ 2 ≤ 1 := by nlinarith only [ht.1, ht.2]
@@ -104,7 +106,8 @@ private theorem gamma_position_remainder_identity {F : ℝ → ℝ}
   have hdc : Continuous D := continuous_const.sub hc
   have hi : IntegrableOn W (Ioi (0 : ℝ)) := integrableOn_biScaleLevyIntegrand hF hcs
   have hsub : Ioc (0 : ℝ) 1 ⊆ Ioi 0 := fun _ ht => ht.1
-  have hsubtail : Ioi (1 : ℝ) ⊆ Ioi 0 := fun t ht => lt_trans zero_lt_one ht
+  have hsubtail : Ioi (1 : ℝ) ⊆ Ioi 0 := fun t ht =>
+    show (0 : ℝ) < t from lt_trans zero_lt_one ht
   have hilog : IntegrableOn (fun t => D t / t) (Ioc (0 : ℝ) 1) :=
     (local_gamma_terms_integrable hF hcs).1
   have hiR : IntegrableOn (fun t => retainedGammaRemainderWeight t * D t) (Ioc (0 : ℝ) 1) :=
@@ -209,7 +212,7 @@ theorem weilQuad_eq_retainedOddGamma_add_remainder {F : ℝ → ℝ}
   change markovForm 2 F = markovForm 1 F - 2 * primeJumpWeight 2 * autocorr F (Real.log 2) at hstep
   rw [hbase, hw] at hstep
   change weilQuad F = markovForm 2 F + coshPairing F ^ 2 / 2 - sinhPairing F ^ 2 / 2 at hfull
-  rw [coshPairing_eq_zero_of_odd ho] at hfull
+  rw [ArithmeticPositivityTheory.coshPairing_eq_zero_of_odd ho] at hfull
   unfold retainedOddGammaLowerForm
   nlinarith only [hgamma, hstep, hfull]
 
