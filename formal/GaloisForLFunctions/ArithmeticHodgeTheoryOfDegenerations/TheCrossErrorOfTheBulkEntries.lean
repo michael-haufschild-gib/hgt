@@ -1,5 +1,6 @@
 import GaloisForLFunctions.ArithmeticHodgeTheoryOfDegenerations.TheCenterPartOfTheBulkEntries
 import GaloisForLFunctions.RenormalizedArithmeticPotentialTheory.TheAtomCrossMatrixIsCloseToItsCenterKernel
+import GaloisForLFunctions.RHTower.PrimeMassLowerBound
 
 /-!
 # The cross error of the bulk entries
@@ -367,5 +368,259 @@ theorem abs_crossSingular_sub_le {φ : ℝ → ℝ} (hφ : ContDiff ℝ 2 φ)
         _ = (1 / (1 - ρ) ^ 2 + 1) * |a - b| := by ring)
   calc _ ≤ (1 / (1 - ρ) ^ 2 + 1) * |a - b| * ∫ τ, |bumpAutocorr φ τ| := h
     _ = _ := by ring
+
+/-- `0 ≤ 1/log(1 + x) − 1/x ≤ 1` for `x > 0`. -/
+theorem inv_log_one_add_sub_inv {x : ℝ} (hx : 0 < x) :
+    0 ≤ 1 / Real.log (1 + x) - 1 / x ∧ 1 / Real.log (1 + x) - 1 / x ≤ 1 := by
+  have hl : 0 < Real.log (1 + x) := Real.log_pos (by linarith)
+  have h1 : Real.log (1 + x) ≤ x := by
+    linarith [Real.log_le_sub_one_of_pos (by linarith : (0 : ℝ) < 1 + x)]
+  have h2 : x / (1 + x) ≤ Real.log (1 + x) := by
+    have := Real.one_sub_inv_le_log_of_pos (by linarith : (0 : ℝ) < 1 + x)
+    have e : 1 - (1 + x)⁻¹ = x / (1 + x) := by field_simp; ring
+    linarith
+  constructor
+  · exact sub_nonneg.mpr (one_div_le_one_div_of_le hl h1)
+  · rw [sub_le_iff_le_add, div_le_iff₀ hl]
+    have e : (1 + 1 / x) * (x / (1 + x)) = 1 := by field_simp
+    calc (1 : ℝ) = (1 + 1 / x) * (x / (1 + x)) := e.symm
+      _ ≤ (1 + 1 / x) * Real.log (1 + x) := mul_le_mul_of_nonneg_left h2 (by positivity)
+
+/-- The entry constant `K(φ, c)`. -/
+def crossLip (φ : ℝ → ℝ) (c : ℝ) : ℝ :=
+  c * (5 / 2 * (∫ τ, |bumpAutocorr φ τ|) / (∫ u, φ u ^ 2) +
+    1 / (2 * ∫ u, φ u ^ 2) * ((1 / (1 - c) ^ 2 + 1) * ∫ τ, |bumpAutocorr φ τ|))
+
+/-- **The entry against its profile**: `|Cr(n, n + d) − (n/N) G_d(n/N)| ≤ K/N` for `n + d ≤ N`. -/
+theorem abs_crossError_sub_profile_le {φ : ℝ → ℝ} (hφ : ContDiff ℝ 2 φ)
+    (hφsupp : ∀ u, u ∉ Set.Icc 0 1 → φ u = 0) (hφ0 : 0 < ∫ u, φ u ^ 2) {c : ℝ} (hc0 : 0 < c)
+    (hc1 : c < 1) {N n d : ℕ} (hn : 1 ≤ n) (hd : 1 ≤ d) (hnd : n + d ≤ N) :
+    |atomCrossErrorKernel (atomDilate φ (c / N)) n (n + d) -
+      (n / N : ℝ) * crossProfile φ c d (n / N)| ≤ crossLip φ c / N := by
+  have hN : 1 ≤ N := by omega
+  have hN0 : (0 : ℝ) < N := by exact_mod_cast hN
+  have hw0 : 0 < c / N := div_pos hc0 hN0
+  have hn0 : (0 : ℝ) < n := by exact_mod_cast hn
+  have hd0 : (0 : ℝ) < d := by exact_mod_cast hd
+  have hg := hφ.continuous
+  have hgc : HasCompactSupport φ := HasCompactSupport.intro isCompact_Icc fun u hu => hφsupp u hu
+  have hAabs : 0 ≤ ∫ τ, |bumpAutocorr φ τ| := integral_nonneg fun _ => abs_nonneg _
+  have hxd : (0 : ℝ) < d / n := by positivity
+  have hs_eq : |Real.log ((n + d : ℕ) : ℝ) - Real.log n| = Real.log (1 + d / n) := by
+    have hlt : Real.log n < Real.log ((n + d : ℕ) : ℝ) :=
+      Real.log_lt_log hn0 (by push_cast; linarith)
+    rw [abs_of_pos (by linarith), ← Real.log_div (by positivity) hn0.ne']
+    congr 1
+    push_cast
+    field_simp
+  have hs0 : 0 < Real.log (1 + d / n) := Real.log_pos (by linarith)
+  obtain ⟨hb0, hb1⟩ := inv_log_one_add_sub_inv hxd
+  rw [one_div_div] at hb0 hb1
+  have hws : c / N < Real.log (1 + d / n) := by
+    have h := HTGeometry.integer_log_gap_sub_window_pos (n := n) (j := n + d) (N := N) (c := c)
+      (w := c / N) (Finset.mem_Icc.mpr ⟨hn, by omega⟩) (Finset.mem_Icc.mpr ⟨by omega, hnd⟩)
+      (by omega) hc0.le hc1 le_rfl
+    rw [abs_sub_comm, hs_eq] at h
+    linarith
+  rw [atomCrossErrorKernel_atomDilate_eq hφ hφsupp hφ0 hw0 hn (by omega) (by omega)
+    (by rw [hs_eq]; exact hws), hs_eq]
+  set w := c / N with hw
+  set s := Real.log (1 + d / n) with hs
+  have hsw : 0 < s - w := by linarith
+  -- the singular and regular parts
+  set S : ℝ → ℝ := fun τ => 1 / (2 * (s + w * τ)) - 1 / (2 * s) with hS
+  set R : ℝ → ℝ := fun τ => (_root_.RHTower.archLevyDensity (s + w * τ) - 1 / (2 * (s + w * τ))) -
+    (_root_.RHTower.archLevyDensity s - 1 / (2 * s)) with hR
+  have hpos : ∀ τ ∈ Set.Icc (-1 : ℝ) 1, s - w ≤ s + w * τ := fun τ hτ => by
+    nlinarith [hτ.1, hτ.2]
+  have hSb : ∀ τ ∈ Set.Icc (-1 : ℝ) 1, |S τ| ≤ 1 / (2 * (s - w)) + 1 / (2 * s) := fun τ hτ => by
+    have h1 := hpos τ hτ
+    refine (abs_sub _ _).trans (add_le_add ?_ ?_)
+    · rw [abs_of_pos (by positivity)]
+      exact one_div_le_one_div_of_le (by positivity) (by linarith)
+    · rw [abs_of_pos (by positivity)]
+  have hRb : ∀ τ ∈ Set.Icc (-1 : ℝ) 1, |R τ| ≤ 5 / 2 := fun τ hτ => by
+    have h1 := hpos τ hτ
+    have a1 := abs_archLevyDensity_sub_inv_le (y := s + w * τ) (by linarith)
+    have a2 := abs_archLevyDensity_sub_inv_le hs0
+    calc |R τ| ≤ 5 / 4 + 5 / 4 := (abs_sub _ _).trans (add_le_add a1 a2)
+      _ = 5 / 2 := by norm_num
+  have hSm : Measurable S :=
+    (measurable_const.div (measurable_const.mul (measurable_const.add
+      (measurable_const.mul measurable_id)))).sub measurable_const
+  have hRm : Measurable R :=
+    ((_root_.RHTower.measurable_archLevyDensity.comp (measurable_const.add
+      (measurable_const.mul measurable_id))).sub (measurable_const.div (measurable_const.mul
+        (measurable_const.add (measurable_const.mul measurable_id))))).sub measurable_const
+  have hiS := integrable_bumpAutocorr_mul hg hgc hφsupp hSm hSb
+  have hiR := integrable_bumpAutocorr_mul hg hgc hφsupp hRm hRb
+  have hsplit : ∫ τ, bumpAutocorr φ τ * (_root_.RHTower.archLevyDensity (s + w * τ) -
+      _root_.RHTower.archLevyDensity s) =
+      (∫ τ, bumpAutocorr φ τ * S τ) + ∫ τ, bumpAutocorr φ τ * R τ := by
+    rw [← integral_add hiS hiR]
+    congr 1
+    funext τ
+    simp only [hS, hR]
+    ring
+  -- the singular part is `σ(w/s)`
+  have hsing : w / (∫ u, φ u ^ 2) * ∫ τ, bumpAutocorr φ τ * S τ = crossSingular φ (w / s) := by
+    unfold crossSingular
+    rw [show w / (∫ u, φ u ^ 2) = 1 / (2 * ∫ u, φ u ^ 2) * (2 * w) by field_simp,
+      mul_assoc, ← integral_const_mul]
+    congr 1
+    congr 1
+    funext τ
+    by_cases hτ : τ ∈ Set.Icc (-1 : ℝ) 1
+    · have h1 := hpos τ hτ
+      have h2 : 0 < s + w * τ := by linarith
+      simp only [hS]
+      field_simp
+      ring
+    · have : bumpAutocorr φ τ = 0 := bumpAutocorr_profile_eq_zero hφsupp (by
+        by_contra h; exact hτ (abs_le.mp (not_lt.mp h)))
+      rw [this]; ring
+  have hreg : |w / (∫ u, φ u ^ 2) * ∫ τ, bumpAutocorr φ τ * R τ| ≤
+      w / (∫ u, φ u ^ 2) * (5 / 2 * ∫ τ, |bumpAutocorr φ τ|) := by
+    rw [abs_mul, abs_of_pos (by positivity)]
+    exact mul_le_mul_of_nonneg_left (abs_integral_bumpAutocorr_mul_le hg hgc hφsupp hRm hRb)
+      (by positivity)
+  -- the Lipschitz step from `w/s` to `r₀ = cn/(Nd)`
+  have hr0 : c * (n / N : ℝ) / d = w * (n / d) := by rw [hw]; ring
+  have hws_le : w / s ≤ w * (n / d) + w := by
+    rw [div_eq_mul_one_div]
+    have := mul_le_mul_of_nonneg_left (show 1 / s ≤ n / d + 1 by linarith) hw0.le
+    linarith
+  have hws_ge : w * (n / d) ≤ w / s := by
+    rw [div_eq_mul_one_div]
+    exact mul_le_mul_of_nonneg_left (by linarith) hw0.le
+  have hnN : (n : ℝ) + 1 ≤ N := by exact_mod_cast (show n + 1 ≤ N by omega)
+  have hnd' : (n : ℝ) / d ≤ n := div_le_self hn0.le (by exact_mod_cast hd)
+  have hbig : w * (n / d) + w ≤ c := by
+    rw [hw]
+    have : c / N * (n / d) + c / N ≤ c / N * n + c / N :=
+      by gcongr
+    calc c / N * (n / d) + c / N ≤ c / N * n + c / N := this
+      _ = c * ((n + 1) / N) := by ring
+      _ ≤ c * 1 := by gcongr; rw [div_le_one hN0]; exact hnN
+      _ = c := mul_one c
+  have hLip := abs_crossSingular_sub_le hφ hφsupp hφ0 (ρ := c) hc1
+    (a := w / s) (b := w * (n / d)) ⟨by positivity, by linarith⟩
+    ⟨by positivity, by linarith⟩
+  have hprof : (n / N : ℝ) * crossProfile φ c d (n / N) = crossSingular φ (w * (n / d)) := by
+    rw [← hr0, crossSingular_eq]
+  rw [hsplit, mul_add, hsing, hprof]
+  have hdist : |w / s - w * (n / d)| ≤ w := by
+    rw [abs_of_nonneg (by linarith)]
+    linarith
+  calc |crossSingular φ (w / s) + w / (∫ u, φ u ^ 2) * ∫ τ, bumpAutocorr φ τ * R τ -
+        crossSingular φ (w * (n / d))|
+      ≤ |crossSingular φ (w / s) - crossSingular φ (w * (n / d))| +
+          |w / (∫ u, φ u ^ 2) * ∫ τ, bumpAutocorr φ τ * R τ| := by
+        rw [show crossSingular φ (w / s) + w / (∫ u, φ u ^ 2) * ∫ τ, bumpAutocorr φ τ * R τ -
+          crossSingular φ (w * (n / d)) = (crossSingular φ (w / s) - crossSingular φ (w * (n / d))) +
+            w / (∫ u, φ u ^ 2) * ∫ τ, bumpAutocorr φ τ * R τ by ring]
+        exact abs_add_le _ _
+    _ ≤ 1 / (2 * ∫ u, φ u ^ 2) * ((1 / (1 - c) ^ 2 + 1) * ∫ τ, |bumpAutocorr φ τ|) * w +
+          w / (∫ u, φ u ^ 2) * (5 / 2 * ∫ τ, |bumpAutocorr φ τ|) := by
+        refine add_le_add (hLip.trans (mul_le_mul_of_nonneg_left hdist (by positivity))) hreg
+    _ = crossLip φ c / N := by
+        rw [hw]; unfold crossLip; field_simp; ring
+
+/-! ### The row profile on `[0, 1]` -/
+
+/-- `G_d` is Lipschitz on `[0, 1]`. -/
+theorem abs_crossProfile_sub_le {φ : ℝ → ℝ} (hφ : ContDiff ℝ 2 φ)
+    (hφsupp : ∀ u, u ∉ Set.Icc 0 1 → φ u = 0) (hφ0 : 0 < ∫ u, φ u ^ 2) {c : ℝ} (hc0 : 0 < c)
+    (hc1 : c < 1) {d : ℕ} (hd : 1 ≤ d) {u v : ℝ} (hu : u ∈ Set.Icc (0 : ℝ) 1)
+    (hv : v ∈ Set.Icc (0 : ℝ) 1) :
+    |crossProfile φ c d u - crossProfile φ c d v| ≤
+      1 / (2 * ∫ u, φ u ^ 2) * (c ^ 2 / (1 - c) ^ 2 * ∫ τ, |bumpAutocorr φ τ|) * |u - v| := by
+  have hg := hφ.continuous
+  have hgc : HasCompactSupport φ := HasCompactSupport.intro isCompact_Icc fun u hu => hφsupp u hu
+  have hd0 : (1 : ℝ) ≤ d := by exact_mod_cast hd
+  have hcd : c / d ≤ c := div_le_self hc0.le hd0
+  have hcd0 : 0 ≤ c / d := by positivity
+  have hfac : ∀ x ∈ Set.Icc (0 : ℝ) 1, ∀ τ ∈ Set.Icc (-1 : ℝ) 1, 1 - c ≤ 1 + c * x / d * τ :=
+    fun x hx τ hτ => by
+      have h1 : c * x / d ≤ c := by
+        rw [mul_div_right_comm]; exact (mul_le_of_le_one_right hcd0 hx.2).trans hcd
+      have h0 : 0 ≤ c * x / d := by have := hx.1; positivity
+      nlinarith [hτ.1, hτ.2]
+  have hbd : ∀ x ∈ Set.Icc (0 : ℝ) 1, ∀ τ ∈ Set.Icc (-1 : ℝ) 1,
+      |c / d * (1 / (1 + c * x / d * τ) - 1)| ≤ c * (1 / (1 - c) + 1) := fun x hx τ hτ => by
+    have h1 := hfac x hx τ hτ
+    rw [abs_mul, abs_of_nonneg hcd0]
+    refine mul_le_mul hcd ((abs_sub _ _).trans (add_le_add ?_ (by simp))) (abs_nonneg _) hc0.le
+    rw [abs_of_pos (by have : (0 : ℝ) < 1 - c := by linarith; positivity)]
+    exact one_div_le_one_div_of_le (by linarith) h1
+  have hmeas : ∀ x : ℝ, Measurable fun τ : ℝ => c / d * (1 / (1 + c * x / d * τ) - 1) := fun x =>
+    measurable_const.mul ((measurable_const.div (measurable_const.add
+      (measurable_const.mul measurable_id))).sub measurable_const)
+  have hiu := integrable_bumpAutocorr_mul hg hgc hφsupp (hmeas u) (hbd u hu)
+  have hiv := integrable_bumpAutocorr_mul hg hgc hφsupp (hmeas v) (hbd v hv)
+  unfold crossProfile
+  rw [← mul_sub, ← integral_sub hiu hiv, abs_mul,
+    abs_of_pos (by positivity : (0 : ℝ) < 1 / (2 * ∫ u, φ u ^ 2)), mul_assoc]
+  refine mul_le_mul_of_nonneg_left ?_ (by positivity)
+  have e : ∀ τ, bumpAutocorr φ τ * (c / d * (1 / (1 + c * u / d * τ) - 1)) -
+      bumpAutocorr φ τ * (c / d * (1 / (1 + c * v / d * τ) - 1)) =
+      bumpAutocorr φ τ * (c / d * (1 / (1 + c * u / d * τ) - 1 / (1 + c * v / d * τ))) :=
+    fun τ => by ring
+  simp_rw [e]
+  have h := abs_integral_bumpAutocorr_mul_le hg hgc hφsupp
+    (F := fun τ => c / d * (1 / (1 + c * u / d * τ) - 1 / (1 + c * v / d * τ)))
+    (measurable_const.mul ((measurable_const.div (measurable_const.add
+      (measurable_const.mul measurable_id))).sub (measurable_const.div (measurable_const.add
+        (measurable_const.mul measurable_id)))))
+    (M := c ^ 2 / (1 - c) ^ 2 * |u - v|) (fun τ hτ => by
+      have h1 := hfac u hu τ hτ
+      have h2 := hfac v hv τ hτ
+      have hc' : (0 : ℝ) < 1 - c := by linarith
+      have hpa : 0 < 1 + c * u / d * τ := by linarith
+      have hpb : 0 < 1 + c * v / d * τ := by linarith
+      have e0 : 1 / (1 + c * u / d * τ) - 1 / (1 + c * v / d * τ) =
+          (c / d * τ * (v - u)) / ((1 + c * u / d * τ) * (1 + c * v / d * τ)) := by
+        rw [div_sub_div _ _ hpa.ne' hpb.ne']
+        congr 1
+        ring
+      rw [e0, abs_mul, abs_of_nonneg hcd0, abs_div, abs_of_pos (mul_pos hpa hpb), abs_mul,
+        abs_mul, abs_of_nonneg hcd0, abs_sub_comm v u]
+      have hτ1 : |τ| ≤ 1 := abs_le.mpr ⟨hτ.1, hτ.2⟩
+      have hprod : (1 - c) ^ 2 ≤ (1 + c * u / d * τ) * (1 + c * v / d * τ) := by
+        rw [sq]; exact mul_le_mul h1 h2 hc'.le (by linarith)
+      calc c / d * (c / d * |τ| * |u - v| / ((1 + c * u / d * τ) * (1 + c * v / d * τ)))
+          ≤ c * (c * 1 * |u - v| / (1 - c) ^ 2) := by
+            gcongr
+      _ = c ^ 2 / (1 - c) ^ 2 * |u - v| := by ring)
+  calc _ ≤ c ^ 2 / (1 - c) ^ 2 * |u - v| * ∫ τ, |bumpAutocorr φ τ| := h
+    _ = _ := by ring
+
+/-- `|G_d| ≤ (1/(2I)) c (1/(1 − c) + 1) ∫|A|` on `[0, 1]`. -/
+theorem abs_crossProfile_le {φ : ℝ → ℝ} (hφ : ContDiff ℝ 2 φ)
+    (hφsupp : ∀ u, u ∉ Set.Icc 0 1 → φ u = 0) (hφ0 : 0 < ∫ u, φ u ^ 2) {c : ℝ} (hc0 : 0 < c)
+    (hc1 : c < 1) {d : ℕ} (hd : 1 ≤ d) {u : ℝ} (hu : u ∈ Set.Icc (0 : ℝ) 1) :
+    |crossProfile φ c d u| ≤
+      1 / (2 * ∫ u, φ u ^ 2) * (c * (1 / (1 - c) + 1) * ∫ τ, |bumpAutocorr φ τ|) := by
+  have hg := hφ.continuous
+  have hgc : HasCompactSupport φ := HasCompactSupport.intro isCompact_Icc fun u hu => hφsupp u hu
+  have hd0 : (1 : ℝ) ≤ d := by exact_mod_cast hd
+  have hcd : c / d ≤ c := div_le_self hc0.le hd0
+  have hcd0 : 0 ≤ c / d := by positivity
+  have hbd : ∀ τ ∈ Set.Icc (-1 : ℝ) 1,
+      |c / d * (1 / (1 + c * u / d * τ) - 1)| ≤ c * (1 / (1 - c) + 1) := fun τ hτ => by
+    have h1 : 1 - c ≤ 1 + c * u / d * τ := by
+      have hh1 : c * u / d ≤ c := by
+        rw [mul_div_right_comm]; exact (mul_le_of_le_one_right hcd0 hu.2).trans hcd
+      have h0 : 0 ≤ c * u / d := by have := hu.1; positivity
+      nlinarith [hτ.1, hτ.2]
+    rw [abs_mul, abs_of_nonneg hcd0]
+    refine mul_le_mul hcd ((abs_sub _ _).trans (add_le_add ?_ (by simp))) (abs_nonneg _) hc0.le
+    rw [abs_of_pos (by have : (0 : ℝ) < 1 - c := by linarith; positivity)]
+    exact one_div_le_one_div_of_le (by linarith) h1
+  unfold crossProfile
+  rw [abs_mul, abs_of_pos (by positivity : (0 : ℝ) < 1 / (2 * ∫ u, φ u ^ 2))]
+  exact mul_le_mul_of_nonneg_left (abs_integral_bumpAutocorr_mul_le hg hgc hφsupp
+    (measurable_const.mul ((measurable_const.div (measurable_const.add
+      (measurable_const.mul measurable_id))).sub measurable_const)) hbd) (by positivity)
 
 end GaloisForLFunctions.ArithmeticHodgeTheoryOfDegenerations

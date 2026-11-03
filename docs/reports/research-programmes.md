@@ -67,3 +67,5 @@
 - formal/GaloisForLFunctions/ArithmeticDegenerationTheory/README.md
 - formal/GaloisForLFunctions/CohomologyOfWindowsOfSpecZ/README.md
 - formal/GaloisForLFunctions/WindowTowerOfSpecZ/README.md
+- formal/GaloisForLFunctions/CanonicalSystemOfTheWindowTower/README.md
+- formal/GaloisForLFunctions/GrowingWindowsOfSpecZ/README.md
