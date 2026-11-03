@@ -75,7 +75,7 @@ theorem pairing_sum_le_deep_prefix_weighted_collar
           6 * ‖u₀‖ ^ 2 * (deepMass X (r m) / E m) +
           6 * S * (topCollarDualSeventhMass M N (r m) / E m)) := by
         refine sum_le_sum fun m hm => ?_
-        convert div_le_div_of_nonneg_right (hrow m) (hE m hm).le using 1 <;> ring
+        exact (div_le_div_of_nonneg_right (hrow m) (hE m hm).le).trans_eq (by ring)
       _ = (6 * T + 3 * ‖u₁‖ ^ 2 + 6 * P) * (∑ m ∈ s, ‖r m‖ ^ 2 / E m) +
           6 * ‖u₀‖ ^ 2 * (∑ m ∈ s, deepMass X (r m) / E m) +
           6 * S * (∑ m ∈ s, topCollarDualSeventhMass M N (r m) / E m) := by

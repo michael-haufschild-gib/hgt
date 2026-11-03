@@ -107,7 +107,7 @@ theorem quadraticCutoffWindow_position_moment :
     ← intervalIntegral.integral_of_le (by norm_num : -(1/2 : ℝ) ≤ 1/2)]
   simp (disch := exact Continuous.intervalIntegrable (by fun_prop) _ _) only
     [intervalIntegral.integral_add, intervalIntegral.integral_sub,
-      intervalIntegral.integral_const_mul, intervalIntegral.integral_pow]
+      intervalIntegral.integral_const_mul, integral_pow]
   norm_num
 
 private def quadraticCutoffLagQuotient (t : ℝ) : ℝ :=
@@ -136,8 +136,8 @@ theorem quadraticCutoffWindow_logarithmic_integral :
   unfold quadraticCutoffLagQuotient
   simp (disch := exact Continuous.intervalIntegrable (by fun_prop) _ _) only
     [intervalIntegral.integral_add, intervalIntegral.integral_sub,
-      intervalIntegral.integral_const_mul, intervalIntegral.integral_pow,
-      intervalIntegral.integral_id]
+      intervalIntegral.integral_const_mul, integral_pow]
+  rw [intervalIntegral.integral_const_mul, integral_id]
   norm_num
 
 theorem quadraticCutoffWindow_jump_first_moment :
@@ -158,7 +158,7 @@ theorem quadraticCutoffWindow_jump_first_moment :
   rw [he]
   simp (disch := exact Continuous.intervalIntegrable (by fun_prop) _ _) only
     [intervalIntegral.integral_add, intervalIntegral.integral_sub,
-      intervalIntegral.integral_const_mul, intervalIntegral.integral_pow]
+      intervalIntegral.integral_const_mul, integral_pow]
   norm_num
 
 private def quadraticCutoffCorrLower : ℝ :=

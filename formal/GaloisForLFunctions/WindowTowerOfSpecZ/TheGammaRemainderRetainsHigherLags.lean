@@ -12,6 +12,7 @@ Integrating keeps two positive lag energies beyond the exterior mass reserve.
 noncomputable section
 open Real MeasureTheory Set Filter Topology
 open _root_.RHTower _root_.RHTower.ArchimedeanAnomaly
+open _root_.RHTower.WeilLevyPoleGauss
 namespace GaloisForLFunctions.WindowTowerOfSpecZ
 open ArithmeticCriticalityTheory
 
@@ -34,7 +35,8 @@ private theorem reciprocal_hyperbolic_lower {z : ℝ} (h0 : 0 < z) (h1 : z ≤ 1
   have hz2 : z^2 ≤ 1/4 := by nlinarith only [h0, h1]
   have hz4 : z^4 ≤ 1/16 := by
     have h := pow_le_pow_left₀ (sq_nonneg z) hz2 2
-    simpa only [← pow_mul] using h
+    norm_num only [← pow_mul] at h
+    exact h
   have hA0 : 0 ≤ 1-z^2/6+z^4/60 := by nlinarith only [hz2, sq_nonneg (z^2)]
   have hA1 : 1-z^2/6+z^4/60 ≤ 1 := by
     have h := mul_le_mul_of_nonneg_left hz2 (sq_nonneg z)
@@ -118,24 +120,89 @@ theorem retainedGammaRemainder_ge_higher_lags {F : ℝ → ℝ}
   have h := mul_le_mul_of_nonneg_right (retainedGammaRemainderWeight_ge_higher_lags ht) hn
   nlinarith only [h]
 
+
+private theorem exp_neg_half_lower : (60653/100000 : ℝ) ≤ Real.exp (-(1/2 : ℝ)) := by
+  have h := exp_le_taylor_seven (x := (1/2 : ℝ)) (by norm_num)
+  norm_num at h
+  have hu : Real.exp (1/2 : ℝ) ≤ 100000/60653 := by linarith only [h]
+  rw [Real.exp_neg, ← one_div]
+  apply (le_div_iff₀ (Real.exp_pos _)).mpr
+  linarith only [hu]
+
+private theorem gamma_four_modes_le {t : ℝ} (ht : 0 < t) :
+    Real.exp (-(1/2 : ℝ)*t) + Real.exp (-(5/2 : ℝ)*t) +
+      Real.exp (-(9/2 : ℝ)*t) + Real.exp (-(13/2 : ℝ)*t) ≤ archLevyDensity t := by
+  have h := Summable.sum_le_tsum (Finset.range 4)
+    (fun n _ => (Real.exp_pos (-(2*(n : ℝ)+1/2)*t)).le)
+    (hasSum_archLevyDensity ht).summable
+  rw [← _root_.RHTower.ArchimedeanAnomaly.archLevyDensity_eq_tsum ht] at h
+  norm_num [Finset.sum_range_succ] at h
+  simpa only [neg_mul] using h
+
+/-- Four positive Laplace modes retain an explicit lower bound for the exterior Gamma tail. -/
+theorem gamma_tail_one_four_modes :
+    2*(Real.exp (-(1/2 : ℝ)) + Real.exp (-(1/2 : ℝ))^5/5 +
+      Real.exp (-(1/2 : ℝ))^9/9 + Real.exp (-(1/2 : ℝ))^13/13) ≤ archLevyAntideriv 1 := by
+  have h0 := integrableOn_exp_mul_Ioi (by norm_num : -(1/2 : ℝ) < 0) 1
+  have h1 := integrableOn_exp_mul_Ioi (by norm_num : -(5/2 : ℝ) < 0) 1
+  have h2 := integrableOn_exp_mul_Ioi (by norm_num : -(9/2 : ℝ) < 0) 1
+  have h3 := integrableOn_exp_mul_Ioi (by norm_num : -(13/2 : ℝ) < 0) 1
+  have hw := WeilLevyCoshCrossover.integrableOn_archLevyDensity_Ioi
+    (by norm_num : (0 : ℝ) < 1)
+  have h := setIntegral_mono_on (((h0.add h1).add h2).add h3) hw measurableSet_Ioi
+    (fun t ht => gamma_four_modes_le (lt_trans zero_lt_one ht))
+  simp only [Pi.add_apply] at h
+  rw [integral_add ((h0.add h1).add h2) h3,
+    integral_add (h0.add h1) h2, integral_add h0 h1,
+    integral_exp_mul_Ioi (by norm_num : -(1/2 : ℝ) < 0),
+    integral_exp_mul_Ioi (by norm_num : -(5/2 : ℝ) < 0),
+    integral_exp_mul_Ioi (by norm_num : -(9/2 : ℝ) < 0),
+    integral_exp_mul_Ioi (by norm_num : -(13/2 : ℝ) < 0),
+    WeilLevyCoshCrossover.integral_archLevyDensity_Ioi (by norm_num : (0 : ℝ) < 1)] at h
+  have he5 : Real.exp (-(5/2 : ℝ)) = Real.exp (-(1/2 : ℝ))^5 := by
+    rw [← Real.exp_nat_mul]; norm_num
+  have he9 : Real.exp (-(9/2 : ℝ)) = Real.exp (-(1/2 : ℝ))^9 := by
+    rw [← Real.exp_nat_mul]; norm_num
+  have he13 : Real.exp (-(13/2 : ℝ)) = Real.exp (-(1/2 : ℝ))^13 := by
+    rw [← Real.exp_nat_mul]; norm_num
+  simp only [mul_one, he5, he9, he13] at h
+  linarith only [h]
+
+/-- Four exterior modes strengthen the mass reserve beyond the first three-mode bound. -/
+theorem gamma_tail_one_stronger_reserve : (193/20000 : ℝ) < retainedGammaTailReserve := by
+  have he := exp_neg_half_lower
+  have he5 := pow_le_pow_left₀ (by norm_num : (0 : ℝ) ≤ 60653/100000) he 5
+  have he9 := pow_le_pow_left₀ (by norm_num : (0 : ℝ) ≤ 60653/100000) he 9
+  have he13 := pow_le_pow_left₀ (by norm_num : (0 : ℝ) ≤ 60653/100000) he 13
+  have hc : Real.log 2 + Real.pi/4 - 1/4 + 1/96 + 193/20000 <
+      2*((60653/100000 : ℝ)+(60653/100000 : ℝ)^5/5+
+        (60653/100000 : ℝ)^9/9+(60653/100000 : ℝ)^13/13) := by
+    have hl := Real.log_two_lt_d9
+    have hp := Real.pi_lt_d4
+    norm_num at hl hp ⊢
+    linarith only [hl, hp]
+  unfold retainedGammaTailReserve
+  linarith only [gamma_tail_one_four_modes, hc, he, he5, he9, he13]
+
 /-- The odd unit-window form retains both higher lag energies as well as its exterior reserve. -/
 theorem weilQuad_ge_retainedOddGamma_add_higher_lags {F : ℝ → ℝ}
     (hF : ContDiff ℝ 2 F) (hs : tsupport F ⊆ Icc (-(1/2 : ℝ)) (1/2))
     (ho : ∀ x, F (-x) = -F x) :
-    retainedOddGammaLowerForm F + (∫ x, F x^2)/64 +
+    retainedOddGammaLowerForm F + (193/10000)*(∫ x, F x^2) +
       (∫ t in Ioc (0 : ℝ) 1, t^3*((∫ x, F x^2)-autocorr F t))/960 +
       (∫ t in Ioc (0 : ℝ) 1, t^4*((∫ x, F x^2)-autocorr F t))/192 ≤ weilQuad F := by
   have hcs : HasCompactSupport F := HasCompactSupport.intro isCompact_Icc
     (fun x hx => image_eq_zero_of_notMem_tsupport fun ht => hx (hs ht))
   have hR := retainedGammaRemainder_ge_higher_lags hF hcs
   have hmass : 0 ≤ ∫ x, F x^2 := integral_nonneg fun x => sq_nonneg (F x)
-  have htail : (1/128 : ℝ) ≤ retainedGammaTailReserve := gamma_tail_one_reserve.le
+  have htail : (193/20000 : ℝ) ≤ retainedGammaTailReserve := gamma_tail_one_stronger_reserve.le
   have hp := mul_le_mul_of_nonneg_right htail hmass
   rw [weilQuad_eq_retainedOddGamma_add_remainder hF hs ho]
   linarith only [hR, hp]
 
 end GaloisForLFunctions.WindowTowerOfSpecZ
 
+#print axioms GaloisForLFunctions.WindowTowerOfSpecZ.gamma_tail_one_stronger_reserve
 #print axioms GaloisForLFunctions.WindowTowerOfSpecZ.retainedGammaRemainderWeight_ge_higher_lags
 #print axioms GaloisForLFunctions.WindowTowerOfSpecZ.retainedGammaRemainder_ge_higher_lags
 #print axioms GaloisForLFunctions.WindowTowerOfSpecZ.weilQuad_ge_retainedOddGamma_add_higher_lags

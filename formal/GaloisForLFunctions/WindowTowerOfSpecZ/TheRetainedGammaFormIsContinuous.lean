@@ -31,12 +31,12 @@ include hFs hs hb hL hlim
 private theorem unit_family_autocorr_tendsto (t : ℝ) :
     Tendsto (fun n => autocorr (Fs n) t) atTop
       (𝓝 (autocorr F t)) := by
-  have hb : Integrable (fun x : ℝ =>
+  have hmajorant : Integrable (fun x : ℝ =>
       (Icc (-(1/2 : ℝ)) (1/2)).indicator (fun _ => (1 : ℝ)) x) :=
     continuous_const.integrableOn_Icc.integrable_indicator measurableSet_Icc
   change Tendsto (fun n => ∫ x, Fs n x * Fs n (x+t)) atTop
     (𝓝 (∫ x, F x * F (x+t)))
-  refine tendsto_integral_of_dominated_convergence _ (fun n => ?_) hb (fun n => ?_) ?_
+  refine tendsto_integral_of_dominated_convergence _ (fun n => ?_) hmajorant (fun n => ?_) ?_
   · exact ((hFs n).continuous.mul
       ((hFs n).continuous.comp (continuous_add_const t))).aestronglyMeasurable
   · exact Eventually.of_forall fun x => by
@@ -109,9 +109,9 @@ private theorem unit_family_logarithmic_tendsto :
       ((∫ x, Fs n x ^ 2) - autocorr (Fs n) t) / t) atTop
       (𝓝 (∫ t in Ioc (0 : ℝ) 1,
         ((∫ x, F x ^ 2) - autocorr F t) / t)) := by
-  have hb : IntegrableOn (fun t : ℝ => K ^ 2 * t) (Ioc (0 : ℝ) 1) :=
+  have hmajorant : IntegrableOn (fun t : ℝ => K ^ 2 * t) (Ioc (0 : ℝ) 1) :=
     (continuous_const.mul continuous_id).integrableOn_Icc.mono_set Ioc_subset_Icc_self
-  refine tendsto_integral_of_dominated_convergence _ (fun n => ?_) hb (fun n => ?_) ?_
+  refine tendsto_integral_of_dominated_convergence _ (fun n => ?_) hmajorant (fun n => ?_) ?_
   · have hc := _root_.RHTower.ArchimedeanExactForm.continuous_autocorr
       (hFs n) (unit_family_compact hs n)
     exact ((continuous_const.sub hc).measurable.div measurable_id).aestronglyMeasurable.restrict
@@ -121,16 +121,17 @@ private theorem unit_family_logarithmic_tendsto :
     apply (div_le_iff₀ ht.1).mpr
     nlinarith only [h1]
   · exact Eventually.of_forall fun t =>
-      (unitWindow_square_mass_tendsto hFs hs hb hL hlim.sub (unit_family_autocorr_tendsto hFs hs hb hL hlim t)).div_const t
+      ((unitWindow_square_mass_tendsto hFs hs hb hL hlim).sub
+        (unit_family_autocorr_tendsto hFs hs hb hL hlim t)).div_const t
 
 private theorem unit_family_first_moment_tendsto :
     Tendsto (fun n => ∫ t in Ioc (0 : ℝ) 1,
       t * ((∫ x, Fs n x ^ 2) - autocorr (Fs n) t)) atTop
       (𝓝 (∫ t in Ioc (0 : ℝ) 1,
         t * ((∫ x, F x ^ 2) - autocorr F t))) := by
-  have hb : IntegrableOn (fun _ : ℝ => (K ^ 2 : ℝ)) (Ioc (0 : ℝ) 1) :=
+  have hmajorant : IntegrableOn (fun _ : ℝ => (K ^ 2 : ℝ)) (Ioc (0 : ℝ) 1) :=
     continuous_const.integrableOn_Icc.mono_set Ioc_subset_Icc_self
-  refine tendsto_integral_of_dominated_convergence _ (fun n => ?_) hb (fun n => ?_) ?_
+  refine tendsto_integral_of_dominated_convergence _ (fun n => ?_) hmajorant (fun n => ?_) ?_
   · have hc := _root_.RHTower.ArchimedeanExactForm.continuous_autocorr
       (hFs n) (unit_family_compact hs n)
     exact (continuous_id.mul (continuous_const.sub hc)).aestronglyMeasurable.restrict
@@ -142,15 +143,16 @@ private theorem unit_family_first_moment_tendsto :
       nlinarith only [h1, mul_le_mul_of_nonneg_left ht2 (sq_nonneg K)]
     simpa only [one_mul] using mul_le_mul ht.2 hd h0 (by norm_num : (0 : ℝ) ≤ 1)
   · exact Eventually.of_forall fun t =>
-      (unitWindow_square_mass_tendsto hFs hs hb hL hlim.sub (unit_family_autocorr_tendsto hFs hs hb hL hlim t)).const_mul t
+      ((unitWindow_square_mass_tendsto hFs hs hb hL hlim).sub
+        (unit_family_autocorr_tendsto hFs hs hb hL hlim t)).const_mul t
 
 private theorem unit_family_weight_tendsto (g : ℝ → ℝ) (hg : Continuous g) :
     Tendsto (fun n => ∫ x, Fs n x * g x) atTop
       (𝓝 (∫ x, F x * g x)) := by
-  have hb : Integrable (fun x : ℝ =>
+  have hmajorant : Integrable (fun x : ℝ =>
       (Icc (-(1/2 : ℝ)) (1/2)).indicator (fun x => |g x|) x) :=
     hg.abs.integrableOn_Icc.integrable_indicator measurableSet_Icc
-  refine tendsto_integral_of_dominated_convergence _ (fun n => ?_) hb (fun n => ?_) ?_
+  refine tendsto_integral_of_dominated_convergence _ (fun n => ?_) hmajorant (fun n => ?_) ?_
   · exact ((hFs n).continuous.mul hg).aestronglyMeasurable
   · exact Eventually.of_forall fun x => by
       by_cases hx : x ∈ Icc (-(1/2 : ℝ)) (1/2)
@@ -170,10 +172,10 @@ theorem retainedOddGammaLowerForm_tendsto_of_unit_window :
   have hp : Tendsto (fun n => sinhPairing (Fs n)) atTop
       (𝓝 (sinhPairing F)) :=
     unit_family_weight_tendsto hFs hs hb hL hlim (fun x => 2 * Real.sinh (x/2)) (by fun_prop)
-  have harch := unit_family_logarithmic_tendsto hFs hs hb hL hlim.sub
-    (unitWindow_square_mass_tendsto hFs hs hb hL hlim.const_mul
+  have harch := (unit_family_logarithmic_tendsto hFs hs hb hL hlim).sub
+    ((unitWindow_square_mass_tendsto hFs hs hb hL hlim).const_mul
       (Real.eulerMascheroniConstant + Real.log Real.pi + Real.log 2))
-  have hfirst := harch.sub (unit_family_first_moment_tendsto hFs hs hb hL hlim.div_const 24)
+  have hfirst := harch.sub ((unit_family_first_moment_tendsto hFs hs hb hL hlim).div_const 24)
   have hposition := hfirst.sub ((hm.pow 2).div_const 16)
   have hpole := hposition.sub ((hp.pow 2).div_const 2)
   exact hpole.sub

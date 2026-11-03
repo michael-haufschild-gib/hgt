@@ -2440,11 +2440,9 @@ theorem exists_nearGram_mode_bilinear_approx {φ : ℝ → ℝ}
       rw [midBandLinearizedSum_eq_mean_add_osc]
       have hlead' : (∫ t, φ t ^ 2) * Real.log N * nearGramModeBilin φ c N m m =
           2 * midBandLagSum φ R₂ N c a := by
-        have := congrArg (fun x => Real.log (N : ℝ) * x) hlead
-        dsimp only at this
-        rw [← mul_assoc, mul_inv_cancel₀ hL0.ne', one_mul] at this
-        linarith only [this, (by ring : Real.log (N : ℝ) * ((∫ t, φ t ^ 2) * nearGramModeBilin φ c N m m) =
-          (∫ t, φ t ^ 2) * Real.log N * nearGramModeBilin φ c N m m)]
+        rw [show (∫ t, φ t ^ 2) * Real.log N * nearGramModeBilin φ c N m m =
+            Real.log N * ((∫ t, φ t ^ 2) * nearGramModeBilin φ c N m m) by ring,
+          hlead, ← mul_assoc, mul_inv_cancel₀ hL0.ne', one_mul]
       have hsc' : (∫ t, φ t ^ 2) * Real.log N * (shellCorrection φ c m / Real.log N) =
           (∫ t, φ t ^ 2) * shellCorrection φ c m := by
         field_simp [hL0.ne']
@@ -3662,7 +3660,7 @@ private lemma filter_Ico_eq_Ico_of_ordConvex {P : ℕ → Prop} [DecidablePred P
       exact ⟨⟨(mem_Ico.mp hminI).1.trans hlo, hhi'.trans_lt (mem_Ico.mp hmaxI).2⟩,
         hconv hlo hhi' hPmin hPmax⟩
   · rw [Finset.not_nonempty_iff_eq_empty] at hT
-    exact ⟨0, 0, le_rfl, hT.trans Finset.Ico_self.symm⟩
+    exact ⟨0, 0, le_rfl, hT.trans (Finset.Ico_eq_empty_of_le le_rfl).symm⟩
 
 /-- Elementary bounded-variation summation by parts on `Ico a b`: if every interval sum of `g`
 has magnitude `≤ B`, then `|∑_{j ∈ Ico a b} w(j) g(j)| ≤ B * (|w(b - 1)| + ∑ |w(j) - w(j + 1)|)`. -/
@@ -5309,16 +5307,13 @@ private lemma centerPoleCollar_sum_bounds (φ : ℝ → ℝ) :
       ((Real.sqrt (Real.log N))⁻¹ * ∑ n ∈ Z₃,
         primeHorizonExtension (normalizedRamanujanHorizonVector l N) n *
           ((completeWeilPoleShift φ c / N) * D_row n))
-    have hsum_bi : |(Real.sqrt (Real.log N))⁻¹ * (∑ n ∈ Z₁, _) +
-          (Real.sqrt (Real.log N))⁻¹ * (∑ n ∈ Z₂, _) +
-          (Real.sqrt (Real.log N))⁻¹ * (∑ n ∈ Z₃, _)| ≤
-        C_bi * Real.sqrt l * (c / Real.log N + c ^ 3 / N) := by
-      have hnn1 : 0 ≤ 4 * (2 * Real.exp 2 + 1) * S₁ * C_u * Real.sqrt l * (c / Real.log N) := by
+    refine le_trans (b := C_bi * Real.sqrt l * (c / Real.log N + c ^ 3 / N)) (htri.trans ?_) ?_
+    · have hnn1 : 0 ≤ 4 * (2 * Real.exp 2 + 1) * S₁ * C_u * Real.sqrt l * (c / Real.log N) := by
         dsimp only [S₁, C_u]; positivity
       have hnn2 : 0 ≤ (4 * S₁ * C_u + 2 * S₁ * C_i) * Real.sqrt l * (c ^ 3 / N) := by
         dsimp only [S₁, C_u, C_i]; positivity
       dsimp only [C_bi]
-      linarith only [htri, hb1, hb2, hb3, hnn1, hnn2,
+      linarith only [hb1, hb2, hb3, hnn1, hnn2,
         (by ring : (4 * S₁ * C_u + 2 * S₁ * C_i + 4 * (2 * Real.exp 2 + 1) * S₁ * C_u) *
             Real.sqrt l * (c / Real.log N + c ^ 3 / N) =
           4 * S₁ * C_u * Real.sqrt l * (c / Real.log N) +
@@ -5326,11 +5321,10 @@ private lemma centerPoleCollar_sum_bounds (φ : ℝ → ℝ) :
             2 * S₁ * C_i * Real.sqrt l * (c / Real.log N) +
             4 * (2 * Real.exp 2 + 1) * S₁ * C_u * Real.sqrt l * (c / Real.log N) +
             (4 * S₁ * C_u + 2 * S₁ * C_i) * Real.sqrt l * (c ^ 3 / N))]
-    refine hsum_bi.trans ?_
-    have : 0 ≤ C_sq := by dsimp only [C_sq, S₁, C_u, C_i]; positivity
-    exact mul_le_mul_of_nonneg_right
-      (mul_le_mul_of_nonneg_right (by linarith only [this]) (Real.sqrt_nonneg _))
-      (by positivity)
+    · have : 0 ≤ C_sq := by dsimp only [C_sq, S₁, C_u, C_i]; positivity
+      exact mul_le_mul_of_nonneg_right
+        (mul_le_mul_of_nonneg_right (by linarith only [this]) (Real.sqrt_nonneg _))
+        (by positivity)
 
 /-- Ground-mode (`m = 1`) logarithm-free `L^2` and bilinear bounds on `coreNearRow φ c N 1`. -/
 private lemma coreNearRow_one_log_free_bounds {φ : ℝ → ℝ}
@@ -6383,30 +6377,27 @@ private lemma coreNearRow_ge_two_log_free_bounds {φ : ℝ → ℝ}
         unfold coreNearRow; ring
       rw [sum_congr rfl hpt, sum_add_distrib, mul_add]
     rw [hsplit]
-    have hsum2 : |(Real.sqrt (Real.log N))⁻¹ * (∑ n ∈ Icc 1 N, _) +
-          (Real.sqrt (Real.log N))⁻¹ * (∑ n ∈ Icc 1 N, _)| ≤
-        C_bi * (m : ℝ) * Real.sqrt l * (c / Real.log N) := by
-      have htri := abs_add_le
-        ((Real.sqrt (Real.log N))⁻¹ *
-          ∑ n ∈ Icc 1 N, primeHorizonExtension (normalizedRamanujanHorizonVector l N) n *
-            (-Real.log c * nearGram φ c N (fun j => normalizedRamanujanMode m j / Real.sqrt j) n))
-        ((Real.sqrt (Real.log N))⁻¹ *
-          ∑ n ∈ Icc 1 N, primeHorizonExtension (normalizedRamanujanHorizonVector l N) n *
-            (∑ j ∈ nearRowIndices c N n,
-              completeWeilPoleShift φ c / N * archimedeanCenterKernel n j *
-                normalizedRamanujanMode m j / Real.sqrt j))
-      dsimp only [C_bi]
-      linarith only [htri, hbi_A, hbi_B,
+    have htri := abs_add_le
+      ((Real.sqrt (Real.log N))⁻¹ *
+        ∑ n ∈ Icc 1 N, primeHorizonExtension (normalizedRamanujanHorizonVector l N) n *
+          (-Real.log c * nearGram φ c N (fun j => normalizedRamanujanMode m j / Real.sqrt j) n))
+      ((Real.sqrt (Real.log N))⁻¹ *
+        ∑ n ∈ Icc 1 N, primeHorizonExtension (normalizedRamanujanHorizonVector l N) n *
+          (∑ j ∈ nearRowIndices c N n,
+            completeWeilPoleShift φ c / N * archimedeanCenterKernel n j *
+              normalizedRamanujanMode m j / Real.sqrt j))
+    refine le_trans (b := C_bi * (m : ℝ) * Real.sqrt l * (c / Real.log N)) (htri.trans ?_) ?_
+    · dsimp only [C_bi]
+      linarith only [hbi_A, hbi_B,
         (by ring : (64 * C_BV + 3 * S₁) * (m : ℝ) * Real.sqrt l * (c / Real.log N) =
           64 * C_BV * (m : ℝ) * Real.sqrt l * (c / Real.log N) +
             3 * S₁ * (m : ℝ) * Real.sqrt l * (c / Real.log N))]
-    refine hsum2.trans ?_
-    have : 0 ≤ C_sq := by dsimp only [C_sq, C_BV, C_half, S₁]; positivity
-    exact mul_le_mul_of_nonneg_right
-      (mul_le_mul_of_nonneg_right
-        (mul_le_mul_of_nonneg_right (by linarith only [this]) (Nat.cast_nonneg m))
-        (Real.sqrt_nonneg _))
-      (by positivity)
+    · have : 0 ≤ C_sq := by dsimp only [C_sq, C_BV, C_half, S₁]; positivity
+      exact mul_le_mul_of_nonneg_right
+        (mul_le_mul_of_nonneg_right
+          (mul_le_mul_of_nonneg_right (by linarith only [this]) (Nat.cast_nonneg m))
+          (Real.sqrt_nonneg _))
+        (by positivity)
 
 /-- **Combined Channels 6 + 7 logarithm-free `L^2` and bilinear bounds.**
 Adding `(√φ(m))⁻¹ • normalizedFullNearGammaDownwardVector φ c N m` and `nearCenterVector φ c N m`
@@ -7631,7 +7622,8 @@ private lemma packetRelBilin_high_sum_le {N Q₁ : ℕ} {c K_vb L r_vb : ℝ}
       _ = (K_vb ^ 2 * r_vb ^ 2) *
             (((Q₁ : ℝ) ^ 2 * (1 + Real.log L) ^ 2 / κ) *
               (∑ l ∈ Icc 1 Q₁, (l : ℝ) / completedConductorEnergy tiltedUnitSpline c l)) := by
-        rw [Finset.sum_mul_sum, sum_const, Nat.card_Icc, Nat.add_sub_cancel, nsmul_eq_mul]; ring
+        rw [sum_const, Nat.card_Icc, Nat.add_sub_cancel, nsmul_eq_mul, ← mul_sum, ← mul_sum]
+        ring
       _ ≤ (K_vb ^ 2 * (65537 ^ 2 * L ^ (-55 / 32 : ℝ))) *
             ((65536 * L ^ (105 / 128 : ℝ) / κ) * (3 * L ^ (7 / 8 : ℝ) / κ)) := by
         refine mul_le_mul (mul_le_mul_of_nonneg_left hr_vb_sq (sq_nonneg _))
@@ -7662,7 +7654,9 @@ private lemma packetRelBilin_high_sum_le {N Q₁ : ℕ} {c K_vb L r_vb : ℝ}
       _ = (K_vb ^ 2 * r_vb ^ 2) *
             ((∑ m ∈ Icc 1 Q₁, (m : ℝ) * (1 + Real.log m) ^ 2 /
                 completedConductorEnergy tiltedUnitSpline c m) * ((Q₁ : ℝ) ^ 2 / κ)) := by
-        rw [Finset.sum_mul_sum, sum_const, Nat.card_Icc, Nat.add_sub_cancel, nsmul_eq_mul]; ring
+        simp_rw [sum_const, Nat.card_Icc, Nat.add_sub_cancel, nsmul_eq_mul]
+        rw [← mul_sum, ← mul_sum, ← sum_mul]
+        ring
       _ ≤ (K_vb ^ 2 * (65537 ^ 2 * L ^ (-55 / 32 : ℝ))) *
             ((65544 * L ^ (7 / 8 : ℝ) / κ) * (L ^ (13 / 16 : ℝ) / κ)) := by
         refine mul_le_mul (mul_le_mul_of_nonneg_left hr_vb_sq (sq_nonneg _))
@@ -7747,7 +7741,7 @@ private lemma packetDualSeventh_sum_le {N M Q₁ : ℕ} {c ε K₁ K_d7 K_vq L r
           _ ≤ (N : ℝ) ^ 2 := le_self_pow₀ (by exact_mod_cast hN1) (by decide)
       have := mul_le_mul_of_nonneg_left hc8N (sq_nonneg c)
       linarith only [show c ^ 10 * L ^ 2 * L = c ^ 2 * (c ^ 8 * L ^ 3) by ring, this]
-    linarith only [ht1, ht2]
+    linarith only [ht1, ht2, (by ring : 3 * c ^ 2 / L = 3 * (c ^ 2 / L))]
   have hd7_low : ∀ m ∈ Icc 1 Q₁,
       (if (m : ℝ) ≤ c then packetDualSeventhRatio c M N m else 0) ≤
         (3 * K_d7 / κ) * (c ^ 9 / L) * (1 / (m : ℝ) ^ 2) := by
@@ -7768,7 +7762,7 @@ private lemma packetDualSeventh_sum_le {N M Q₁ : ℕ} {c ε K₁ K_d7 K_vq L r
           (div_le_div_of_nonneg_right hb (hE_nn m hm1)).trans
             (div_le_div_of_nonneg_left (by positivity) (by positivity) hEm)
         _ = (3 * K_d7 / κ) * (c ^ 9 / L) * (1 / (m : ℝ) ^ 5) := by
-          field_simp [hκ.ne', hc0.ne', hL0.ne', hm0.ne']; ring
+          field_simp [hκ.ne', hc0.ne', hL0.ne', hm0.ne']
         _ ≤ (3 * K_d7 / κ) * (c ^ 9 / L) * (1 / (m : ℝ) ^ 2) := by gcongr
     · positivity
   have hsum_d7_low :

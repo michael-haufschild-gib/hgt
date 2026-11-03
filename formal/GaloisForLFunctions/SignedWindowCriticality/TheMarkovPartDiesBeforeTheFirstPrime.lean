@@ -101,7 +101,7 @@ theorem exists_markovEnergy_neg_of_support_le :
   set w := markovDeathWidth with hw
   have hw0 : 0 < w := markovDeathWidth_pos
   have hw1 : w ≤ 1 := by linarith [markovDeathWidth_lt_half]
-  set φ := plateau η with hφ
+  set φ := SpacingScaleHarmonicAnalysis.plateau η with hφ
   set g := atomDilate φ w with hg
   have hφc : ContDiff ℝ 2 φ := contDiff_plateau η
   have hφsupp : ∀ u, u ∉ Icc 0 1 → φ u = 0 := fun u hu => plateau_eq_zero hη0 hu
@@ -147,7 +147,7 @@ theorem exists_markovEnergy_neg_of_support_le :
       rw [hgsupp _ this, mul_zero]
     · rw [hgsupp u hu, zero_mul]
   have hbridge := ArithmeticCriticalityTheory.markovForm_eq_markovEnergy hgc hgcs hN
-  exact ⟨g, hgc, hgsupp, fun u => plateau_nonneg _, hM0, hform, hbridge ▸ hform⟩
+  exact ⟨g, hgc, hgsupp, fun u => SpacingScaleHarmonicAnalysis.plateau_nonneg _, hM0, hform, hbridge ▸ hform⟩
 
 end GaloisForLFunctions.SignedWindowCriticality
 
