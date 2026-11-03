@@ -1,7 +1,7 @@
 # Deep-row conductor residuals and the eighth-root Schur synthesis
 
 - **ID:** deep-row-residuals-and-the-eighth-root-schur
-- **Stage:** 1-in-progress
+- **Stage:** 3-formalized
 - **Type:** THEOREM (Lean)
 - **Source:** T3 and T4 of `off-pole-nonratio-cross-and-one-eighth-weil-positivity.md`
 - **Statement:** For every `0 < α < 1/8`, eventually in `N` and uniformly in `1 ≤ c ≤ (log N)^α`,
@@ -52,3 +52,22 @@ eventually; with the corpus polylog floor `⟨W'y, y⟩ ≥ (1/4)S_y` (`α + 2q 
   `exists_deepMass_conductorResidual_le` (deep rows `nX ≤ N`, `X > max(2ce², 2c, 2⌈ce⌉+3)`;
   budget `deepResidualBudget`, upward rate `ρ` as hypothesis). Made public for it: the prime,
   self and pole quadratic bounds in `QuadraticOverlapConductorResiduals`.
+- `CriticalArithmeticCorrelationTheory.ThePolynomialConductorComplementIsCoerciveBelowTheEighthRoot`
+  — `eventually_completeWeilEnergy_two_region_on_polynomialConductorOrthogonal_below_one_eighth`
+  (`(θ/8D) L P + g L/(8c⁷) S ≤ E` on `V_{⌊N^θ⌋}^⊥`, `θ ≤ 1/36`).
+- `CriticalArithmeticCorrelationTheory.TheEighthRootComplementKeepsItsBlockReserves` — T4.1:
+  `complement_three_band_reserve_assembly` (block floors `K₀, K₁, K₂`),
+  `exists_band_far_cross_le_reserve_shape` (T2 at `s = k/128`, `t = bk/(128c⁷)`, `γ = bk/(32c⁷)`),
+  `budgetE_le`, `budgetU_le`, `exists_band_far_cross_le_at_cutoff`,
+  `exists_complement_block_reserves_below_one_eighth`:
+  `(κ₀+3)‖u₀‖² + (κ₀+2+√L/32)‖u₁‖² + (κ₀+2+3bk/(16c⁷))‖w‖² ≤ E(u₀+u₁+w)`, `k = θ₁L/(2D)`.
+  Made public for it: the cutoff and split helpers of `TelescopedConductorSplitAndOneNinthWeilPositivity`.
+- `CriticalArithmeticCorrelationTheory.TheDeepRowPairingClosesTheEighthRootSchur` — T3.2, T3.3, T4.2:
+  `sum_topRows_sq_le`, `pairing_sum_le`, `schur_with_deep_pairing_pos`,
+  `spectralFloor_posDef_of_blocks`, `deep_inverse_energy_mass_le` (deep cutoff `X = R₀`, shell
+  scale `Y = X/(2c)`), `schur_scalars_one_eighth`, `deep_cutoff_facts`.
+- `CriticalArithmeticCorrelationTheory.TheCompleteWeilMatrixIsPositiveDefiniteBelowTheEighthRoot` —
+  the statement: `eventually_tiltedUnitSpline_completeWeilMatrix_posDef_below_one_eighth`
+  (via `eventually_tiltedUnitSpline_spectralFloorWeilMatrix_posDef_below_one_eighth`;
+  reserves `μ₀ = 1`, `μ₁ = √L/32`, `μ_S = 3bk/(16c⁷)`, deep cutoff `X = ⌊exp √L⌋`).
+  `#print axioms`: `propext, Classical.choice, Quot.sound`.

@@ -1,6 +1,7 @@
 import GaloisForLFunctions.RenormalizedIntersectionTheory.MayerScattering.FareyLewisTransferAndCuspSeparation
 import GaloisForLFunctions.RenormalizedIntersectionTheory.MayerScattering.MayerWindowFoldTransfer
 import Mathlib.Analysis.Calculus.BumpFunction.InnerProduct
+import Mathlib.Analysis.Calculus.BumpFunction.FiniteDimension
 
 /-!
 # The cusp channel of a window Hecke operator
@@ -61,7 +62,7 @@ theorem lewisHeckeT2_upper_cutoff_iff (s : ℂ) {f : ℝ → ℂ} {R : ℝ}
         have hden : x / (2 - x) + 1 = 2 / (2 - x) := by
           field_simp [hx2.ne']; ring
         rw [hden]
-        field_simp [hx2.ne'] <;> ring
+        field_simp [hx2.ne']
       have hlarge : 2 * R < x / (2 - x) := by
         dsimp [C] at hCx
         linarith [le_max_right B (2 * R)]
@@ -239,5 +240,54 @@ theorem exists_windowTest_hecke_no_cutoff (s : ℂ) {A : ℝ} (hA : Real.log 2 <
 #print axioms hecke_windowPeriodLift_finite_window_iff
 #print axioms hecke_windowPeriodLift_no_cutoff_of_first_prime_ne_zero
 #print axioms exists_windowTest_hecke_no_cutoff
+
+/-- At the first-prime boundary itself, a smooth window can have zero endpoint value but a
+nonzero germ. Such a test has no finite Hecke output cutoff at any spectral parameter. -/
+theorem exists_windowTest_hecke_no_cutoff_of_log_two_le (s : ℂ) {A : ℝ}
+    (hA : Real.log 2 ≤ A) :
+    ∃ H : ℝ → ℝ, IsWindowTest A H ∧ H (-Real.log 2) = 0 ∧
+      ¬ ∃ B : ℝ, 0 ≤ B ∧ ∀ a > B, lewisHeckeT2 s (windowPeriodLift s H) a = 0 := by
+  obtain ⟨H, hsupp, hdiff, -⟩ :=
+    (isOpen_Ioo : IsOpen (Ioo (-Real.log (2 : ℝ)) 0)).exists_contDiff_support_eq (n := 2)
+  have hv : ∀ y, y ∉ Icc (-A) 0 → H y = 0 := by
+    intro y hy
+    by_contra hnz
+    have hm : y ∈ Ioo (-Real.log (2 : ℝ)) 0 := hsupp ▸ hnz
+    exact hy ⟨by linarith [hm.1], hm.2.le⟩
+  refine ⟨H, ⟨hdiff, hv⟩, ?_, ?_⟩
+  · by_contra hnz
+    have hm : -Real.log (2 : ℝ) ∈ Ioo (-Real.log (2 : ℝ)) 0 := hsupp ▸ hnz
+    exact (lt_irrefl _) hm.1
+  · rw [hecke_windowPeriodLift_upper_cutoff_iff s hv]
+    rintro ⟨b, hb, hzero⟩
+    let x := (b + 2) / 2
+    have hxb : b < x := by dsimp [x]; linarith [hb.2]
+    have hx1 : 1 < x := lt_of_le_of_lt hb.1 hxb
+    have hx2 : x < 2 := by dsimp [x]; linarith [hb.2]
+    have hlog2 : Real.log x < Real.log 2 :=
+      (Real.lt_log_iff_exp_lt (by norm_num)).mpr (by rw [Real.exp_log (by linarith)]; exact hx2)
+    have hlog1 : 0 < Real.log x := Real.log_pos hx1
+    have hm : -Real.log x ∈ Function.support H := by
+      rw [hsupp]
+      exact ⟨by linarith, by linarith⟩
+    exact hm (hzero x ⟨hxb, hx2⟩)
+
+/-- The exact stage threshold for preserving finite support on every smooth window test.
+The first prime already creates noncompact tails at equality. -/
+theorem hecke_windowPeriodLift_all_upper_cutoffs_iff (s : ℂ) (A : ℝ) :
+    (∀ H : ℝ → ℝ, IsWindowTest A H →
+      ∃ B : ℝ, 0 ≤ B ∧ ∀ a > B, lewisHeckeT2 s (windowPeriodLift s H) a = 0) ↔
+      A < Real.log 2 := by
+  constructor
+  · intro hall
+    by_contra hnot
+    obtain ⟨H, hH, -, hfail⟩ :=
+      exists_windowTest_hecke_no_cutoff_of_log_two_le s (le_of_not_gt hnot)
+    exact hfail (hall H hH)
+  · intro hA H hH
+    exact hecke_windowPeriodLift_upper_cutoff_of_lt_log_two s hH.vanish hA
+
+#print axioms exists_windowTest_hecke_no_cutoff_of_log_two_le
+#print axioms hecke_windowPeriodLift_all_upper_cutoffs_iff
 
 end GaloisForLFunctions.RenormalizedIntersectionTheory.MayerScattering

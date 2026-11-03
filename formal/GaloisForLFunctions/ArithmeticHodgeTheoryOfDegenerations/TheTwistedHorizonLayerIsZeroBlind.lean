@@ -129,21 +129,20 @@ theorem twistedRiemannSum_eq (h : ℝ → ℝ) (χ : ℕ → ℝ) (s : ℂ) {N :
     ring
   linear_combination (-(h (Real.log r - Real.log N) : ℂ)) * (χ r : ℂ) * key
 
-/-- **Twisted Riemann sums vanish**: `|N^{−s} D_x(γ_s)| ≤ 2 (Σ_{j<m}|χ(j)|) K_s/N`,
-`K_s = (L_h + |s − 1| B_h) e^{2A}`, for `0 ≤ Re s ≤ 2`. -/
-theorem norm_twistedRiemannSum_le (hh : ContDiff ℝ 2 h) (hA : 0 ≤ A)
+/-- **Twisted Riemann sums vanish**: if the partial sums of the twist are bounded by `S`, then
+`|N^{−s} D_x(γ_s)| ≤ 2 S K_s/N`, `K_s = (L_h + |s − 1| B_h) e^{2A}`, for `0 ≤ Re s ≤ 2`. -/
+theorem norm_twistedRiemannSum_le_of_primitive (hh : ContDiff ℝ 2 h) (hA : 0 ≤ A)
     (hsupp : ∀ y, y ∉ Set.Icc (-A) 0 → h y = 0) {Bh : ℝ} (hB : ∀ y, |h y| ≤ Bh)
-    {Lh : NNReal} (hLh : LipschitzWith Lh h) {χ : ℕ → ℝ} {m : ℕ} (hχ : MeanZeroTwist χ m)
+    {Lh : NNReal} (hLh : LipschitzWith Lh h) {χ : ℕ → ℝ} {S : ℝ}
+    (hP : ∀ n, |∑ j ∈ range n, χ j| ≤ S)
     {s : ℂ} (hs0 : 0 ≤ s.re) (hs2 : s.re ≤ 2) {N : ℕ} (hN : 1 ≤ N) :
     ‖((N : ℝ) : ℂ) ^ (-s) * dirichletPoly N (twistedWeights h χ N) (gammaOf s)‖ ≤
-      2 * (∑ j ∈ range m, |χ j|) * (((Lh : ℝ) + ‖s - 1‖ * Bh) * Real.exp (2 * A)) / N := by
+      2 * S * (((Lh : ℝ) + ‖s - 1‖ * Bh) * Real.exp (2 * A)) / N := by
   have hBh0 : 0 ≤ Bh := (abs_nonneg _).trans (hB 0)
   have hN0 : (0 : ℝ) < N := by exact_mod_cast hN
   obtain ⟨K, hK⟩ : ∃ K, K = ((Lh : ℝ) + ‖s - 1‖ * Bh) * Real.exp (2 * A) := ⟨_, rfl⟩
   have hK0 : 0 ≤ K := by rw [hK]; positivity
   rw [← hK]
-  obtain ⟨S, hS⟩ : ∃ S, S = ∑ j ∈ range m, |χ j| := ⟨_, rfl⟩
-  rw [← hS]
   have hlip := lipschitzWith_horizonProfile hh hsupp hA hB hLh hs0 hs2
   rw [← hK] at hlip
   have hg0 : h 0 = 0 := horizon_zero_at_zero hsupp fun u v => by
@@ -162,8 +161,8 @@ theorem norm_twistedRiemannSum_le (hh : ContDiff ℝ 2 h) (hA : 0 ≤ A)
   have hpart : ∀ k ≤ M, |∑ i ∈ range (k + 1), χ (i + 1)| ≤ 2 * S := by
     intro k _
     have e := Finset.sum_range_succ' χ (k + 1)
-    have h1 := hS ▸ abs_sum_range_le hχ (k + 2)
-    have h2 := hS ▸ abs_sum_range_le hχ 1
+    have h1 := hP (k + 2)
+    have h2 := hP 1
     rw [Finset.sum_range_one] at h2
     rw [show k + 2 = k + 1 + 1 by ring, e] at h1
     calc |∑ i ∈ range (k + 1), χ (i + 1)| = |(∑ i ∈ range (k + 1), χ (i + 1) + χ 0) - χ 0| := by
@@ -194,13 +193,22 @@ theorem norm_twistedRiemannSum_le (hh : ContDiff ℝ 2 h) (hA : 0 ≤ A)
     push_cast
     nlinarith
   rw [hlast, zero_add] at hab
-  have hS0 : 0 ≤ S := by rw [hS]; exact Finset.sum_nonneg fun _ _ => abs_nonneg _
+  have hS0 : 0 ≤ S := (abs_nonneg _).trans (hP 0)
   calc ((M + 1 : ℕ) : ℝ)⁻¹ * ‖∑ i ∈ range (M + 1), horizonProfile h s (((i + 1 : ℕ) : ℝ) /
         ((M + 1 : ℕ) : ℝ)) * (χ (i + 1) : ℂ)‖
       ≤ ((M + 1 : ℕ) : ℝ)⁻¹ * (2 * S * K) := by
         refine mul_le_mul_of_nonneg_left (hab.trans ?_) (by positivity)
         exact mul_le_mul_of_nonneg_left hvar (by positivity)
     _ = 2 * S * K / ((M + 1 : ℕ) : ℝ) := by ring
+
+/-- **Twisted Riemann sums are `O(1/N)`** for a mean-zero periodic twist. -/
+theorem norm_twistedRiemannSum_le (hh : ContDiff ℝ 2 h) (hA : 0 ≤ A)
+    (hsupp : ∀ y, y ∉ Set.Icc (-A) 0 → h y = 0) {Bh : ℝ} (hB : ∀ y, |h y| ≤ Bh)
+    {Lh : NNReal} (hLh : LipschitzWith Lh h) {χ : ℕ → ℝ} {m : ℕ} (hχ : MeanZeroTwist χ m)
+    {s : ℂ} (hs0 : 0 ≤ s.re) (hs2 : s.re ≤ 2) {N : ℕ} (hN : 1 ≤ N) :
+    ‖((N : ℝ) : ℂ) ^ (-s) * dirichletPoly N (twistedWeights h χ N) (gammaOf s)‖ ≤
+      2 * (∑ j ∈ range m, |χ j|) * (((Lh : ℝ) + ‖s - 1‖ * Bh) * Real.exp (2 * A)) / N :=
+  norm_twistedRiemannSum_le_of_primitive hh hA hsupp hB hLh (abs_sum_range_le hχ) hs0 hs2 hN
 
 /-- Twisted Riemann sums tend to `0` on the critical strip. -/
 theorem tendsto_twistedRiemannSum (hh : ContDiff ℝ 2 h) (hA : 0 ≤ A)

@@ -1,8 +1,8 @@
 # Off-Pole Non-Ratio Cross Norm and Weil Positivity Up to the Eighth-Root Ceiling
 
 - **ID:** off-pole-nonratio-cross-and-one-eighth-weil-positivity
-- **Stage:** 1-in-progress
-- **Type:** CONJECTURE
+- **Stage:** 3-formalized
+- **Type:** THEOREM (Lean)
 - **Source:** docs/reports/review-3110/obstacles-summary.md · Q1 / Σ-2 / Σ-3 (remaining `c⁹ → c⁸`)
 - **Statement:** For every `0 < α < 1/8`, eventually in `N` and uniformly across `1 ≤ c ≤ (log N)^α`,
   `completeWeilMatrix tiltedUnitSpline c N` is positive definite on all vectors.
@@ -14,8 +14,8 @@ exponent would equal the RH-detection exponent of the tilted spline, so
 
 ## Gates
 - [x] 0 → 1  in-progress: well-posed, source-pure, attack idea
-- [ ] 1 → 2  fully-proven
-- [ ] 2 → 3  formalized
+- [x] 1 → 2  fully-proven
+- [x] 2 → 3  formalized
 
 ## Approach
 The `1/9` proof loses `c⁹` (vs. the necessary `c⁸`) at three places; each must drop to `c⁸·polylog c`.
@@ -140,7 +140,8 @@ cross, replacing the three `c⁹` inputs above.
 - **Killed:** terminal-pole-orthogonal smallness of `NR_PT` (counterexample above).
 - **Positive survivor:** rank-one coherent structure `NR_PT ≈ σ â ⊗ p̂ + E`; exact prefix-pole
   column law from `Σ_{k|n} Λ(k) = log n`; target `‖E‖² ≤ c (log N)^{1+δ}`.
-- **Status:** proof plan T1–T4 above; Lean in progress (CACT modules listed below as built).
+- **Status:** T1–T4 in Lean; `eventually_tiltedUnitSpline_completeWeilMatrix_posDef_below_one_eighth`
+  (axioms `propext, Classical.choice, Quot.sound`).
 
 ## Lean modules
 CACT, compiled, wired into the umbrella (T1):
@@ -161,6 +162,13 @@ T2, compiled, wired into the umbrellas (details on `band-far-cross-below-one-eig
   channel paid by a free reserve parameter; non-prime channels share `bandFarChannelBudget`
   (`c^{8+o(1)}/log N` per unit band reserve at `M = N/L_c`).
 
-Open: T2 specialization to the assembly shape (`(1/32)E + (1/4)‖u‖² + (k₁/32)P + (bk₁/(32c⁷))(S + ‖w‖²)`,
-eventual smallness, `ρ` from the quadratic residual bound), T3 deep rows (no paper proof yet),
-T4 assembly.
+T3, T4, compiled, wired into the umbrella (details on `deep-row-residuals-and-the-eighth-root-schur.md`):
+- `TheConductorResidualsAreSmallOnTheDeepRows` — deep-row residual `≤ 8 · deepResidualBudget`.
+- `TheEighthRootComplementKeepsItsBlockReserves` — T2 in the assembly shape; complement coercivity
+  with block reserves below `1/8`.
+- `TheDeepRowPairingClosesTheEighthRootSchur` — row-split pairing, Schur with block reserves,
+  deep inverse-energy mass, scalar closure.
+- `TheCompleteWeilMatrixIsPositiveDefiniteBelowTheEighthRoot` —
+  `eventually_tiltedUnitSpline_spectralFloorWeilMatrix_posDef_below_one_eighth`,
+  `eventually_tiltedUnitSpline_completeWeilEnergy_ge_spectral_floor_below_one_eighth`,
+  `eventually_tiltedUnitSpline_completeWeilMatrix_posDef_below_one_eighth`.

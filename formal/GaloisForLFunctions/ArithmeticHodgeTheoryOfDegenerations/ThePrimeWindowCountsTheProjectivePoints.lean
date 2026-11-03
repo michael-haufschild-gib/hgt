@@ -959,11 +959,13 @@ theorem norm_dirichletPoly_prime_le {Bh L : ℝ} (hsupp : ∀ y, y ∉ Set.Icc (
   · rw [abs_of_pos hpos] at hτ ⊢
     exact key τ hpos hτ
 
-/-- The pole terms of a window with a mean-zero periodic twist are `O(N^{−2})` after
+/-- The pole terms of a window whose twist has partial sums bounded by `S` are `O(N^{−2})` after
 normalization. -/
-theorem exists_abs_twistedPole_le (hφ : ContDiff ℝ 2 φ) (hφsupp : ∀ u, u ∉ Set.Icc 0 1 → φ u = 0)
+theorem exists_abs_twistedPole_le_of_primitive (hφ : ContDiff ℝ 2 φ)
+    (hφsupp : ∀ u, u ∉ Set.Icc 0 1 → φ u = 0)
     (hφ2 : 0 < ∫ u, φ u ^ 2) (hh : ContDiff ℝ 2 h) (hA : 0 ≤ A)
-    (hsupp : ∀ y, y ∉ Set.Icc (-A) 0 → h y = 0) {χ : ℕ → ℝ} {m : ℕ} (hχ : MeanZeroTwist χ m) :
+    (hsupp : ∀ y, y ∉ Set.Icc (-A) 0 → h y = 0) {χ : ℕ → ℝ} {S : ℝ}
+    (hP : ∀ n, |∑ j ∈ range n, χ j| ≤ S) :
     ∃ Cp : ℝ, 0 ≤ Cp ∧ ∀ N : ℕ, 1 ≤ N → ∀ c : ℝ, 0 < c → c ≤ N →
       |(paperFT (EF.weilTest (cx (centredAtomicTest φ (twistedWeights h χ N) c N))
           (cx (centredAtomicTest φ (twistedWeights h χ N) c N))) (Complex.I / 2) +
@@ -976,9 +978,8 @@ theorem exists_abs_twistedPole_le (hφ : ContDiff ℝ 2 φ) (hφsupp : ∀ u, u 
   obtain ⟨Lh, hLh⟩ := ContDiff.lipschitzWith_of_hasCompactSupport
     (hasCompactSupport_of_window hsupp) hh (by norm_num)
   have hBh0 : 0 ≤ Bh := (abs_nonneg _).trans (hB 0)
-  set S := ∑ j ∈ range m, |χ j| with hS
   set K := ((Lh : ℝ) + 1 * Bh) * Real.exp (2 * A) with hK
-  have hS0 : 0 ≤ S := Finset.sum_nonneg fun _ _ => abs_nonneg _
+  have hS0 : 0 ≤ S := (abs_nonneg _).trans (hP 0)
   have hK0 : 0 ≤ K := by positivity
   refine ⟨2 * Φ ^ 2 * (2 * S * K) ^ 2 / ∫ u, φ u ^ 2, by positivity, fun N hN c hc hcN => ?_⟩
   have hN0 : (0 : ℝ) < N := by exact_mod_cast hN
@@ -987,7 +988,7 @@ theorem exists_abs_twistedPole_le (hφ : ContDiff ℝ 2 φ) (hφsupp : ∀ u, u 
   have hD : ∀ s : ℂ, 0 ≤ s.re → s.re ≤ 2 → ‖s - 1‖ ≤ 1 →
       ‖((N : ℝ) : ℂ) ^ (-s) * dirichletPoly N x (gammaOf s)‖ ≤ 2 * S * K / N := by
     intro s h0 h2 h1
-    refine (norm_twistedRiemannSum_le hh hA hsupp hB hLh hχ h0 h2 hN).trans ?_
+    refine (norm_twistedRiemannSum_le_of_primitive hh hA hsupp hB hLh hP h0 h2 hN).trans ?_
     rw [hK]
     gcongr
   have hD0 : ‖dirichletPoly N x (Complex.I / 2)‖ ≤ 2 * S * K / N := by
@@ -1025,6 +1026,19 @@ theorem exists_abs_twistedPole_le (hφ : ContDiff ℝ 2 φ) (hφsupp : ∀ u, u 
         (c * (c / N * ∫ u, φ u ^ 2)) := by
     field_simp
   nlinarith [hpole, hprod, key]
+
+/-- The pole terms of a window with a mean-zero periodic twist are `O(N^{−2})` after
+normalization. -/
+theorem exists_abs_twistedPole_le (hφ : ContDiff ℝ 2 φ) (hφsupp : ∀ u, u ∉ Set.Icc 0 1 → φ u = 0)
+    (hφ2 : 0 < ∫ u, φ u ^ 2) (hh : ContDiff ℝ 2 h) (hA : 0 ≤ A)
+    (hsupp : ∀ y, y ∉ Set.Icc (-A) 0 → h y = 0) {χ : ℕ → ℝ} {m : ℕ} (hχ : MeanZeroTwist χ m) :
+    ∃ Cp : ℝ, 0 ≤ Cp ∧ ∀ N : ℕ, 1 ≤ N → ∀ c : ℝ, 0 < c → c ≤ N →
+      |(paperFT (EF.weilTest (cx (centredAtomicTest φ (twistedWeights h χ N) c N))
+          (cx (centredAtomicTest φ (twistedWeights h χ N) c N))) (Complex.I / 2) +
+        paperFT (EF.weilTest (cx (centredAtomicTest φ (twistedWeights h χ N) c N))
+          (cx (centredAtomicTest φ (twistedWeights h χ N) c N))) (-Complex.I / 2)).re /
+          (c * (c / N * ∫ u, φ u ^ 2))| ≤ Cp / (N : ℝ) ^ 2 :=
+  exists_abs_twistedPole_le_of_primitive hφ hφsupp hφ2 hh hA hsupp (abs_sum_range_le hχ)
 
 theorem tendsto_log_div_sqrt : Tendsto (fun N : ℕ => Real.log N / Real.sqrt N) atTop (𝓝 0) := by
   have h := (isLittleO_log_rpow_atTop (r := 1 / 2) (by norm_num)).tendsto_div_nhds_zero

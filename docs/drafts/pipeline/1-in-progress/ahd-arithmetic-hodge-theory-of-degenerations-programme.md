@@ -27,7 +27,19 @@ TheTwistedHorizonLayerIsPositive, TheAlternatingWindowCountsTheConductorTwoPoint
 ThePrimeWindowCountsTheProjectivePoints, TheHorizonLayerIsGradedByConductor,
 TheWindowIndexCountsTheJumpMultiples, TheEnergyOfAPeriodicTwist,
 TheRamanujanWindowCountsEveryConductor, TheSecondOrderTermIsDiagonalInTheRamanujanBasis,
-TheHorizonLayerIsGradedByEveryConductor, TheWindowIndexResolvesTheZerosOfItsLength.
+TheHorizonLayerIsGradedByEveryConductor, TheWindowIndexResolvesTheZerosOfItsLength,
+TheSecondOrderTermOfAPeriodicTwist, TheTwistedDirectionsCarryNoNegativeSquares,
+TheTwistedSectorInheritsThePolarization, TheEnergyOfATwistIsItsSpectrum,
+TheSecondOrderTermOfEveryPeriodicTwist, TheBulkIsBlindToTheLowZeros,
+TheBulkAtThePoleReadsTheArchimedeanGenus, TheBulkIsBlindBelowTheResolutionHeight,
+TheFrobeniusAnglesDiagonalizeTheCurveFamily, TheShortWindowsInheritThePolarization,
+TheSecondOrderTermIsTheDirichletSeriesOfTheSpectrum,
+TheRescaledLimitOfACurveIsTheHurwitzFormOfItsAngles, TheSpectrumOfARamanujanSumIsTheUnitGroup,
+DegenerationSelectsThePureCurves, TheGoldenFakeIsSelfSimilarUnderDilation,
+TheCoshHyperplaneInheritsThePolarization, TheCountPaysTheSecondOrderBelowAUniformMultiple,
+TheSecondOrderOfACharacterWindowReadsAnLValue, TheCharacterWindowsAreGradedByParity,
+TheFrequencyOfATwistActsAsAFrobeniusAngle, EveryPeriodicTwistedSectorInheritsThePolarization,
+TheFrequencyTwistIsQuietBelowItsResonance, TheEnergyOfAFrequencyTwist, EveryFrequencyActsAsAFrobeniusAngle.
 
 ## Status
 - First order = count: `J(m) = J(1) #ℙ⁷(ℤ/m)`; count law over every finite ring (𝔽_q[T] calibration) [L].
@@ -65,9 +77,39 @@ TheHorizonLayerIsGradedByEveryConductor, TheWindowIndexResolvesTheZerosOfItsLeng
   `κQ(H) + βJ/K‖H‖² + (Σa_m²J_{β+1}(m))βJ/K‖G‖²` [L].
 - Window length: windows of length `2a` have window index ≥ #right zeros resolved at level `a`
   (finite-level inertia of ζ), ≤ Shannon number [L].
+- Periodic twists: quiet region for every mean-zero periodic twist (KL on residue classes);
+  even autocorrelation `Σ b_m c_m` ⇒ second order `(Σ b_m J_{β+1}(m))βJ/K‖H‖²`; Legendre symbol:
+  `(p^{β+1}−1)/p` [L].
+- Mixed families: Gram → `fromBlocks P_K 0 0 (ΛA(G))`; index = ind₋(P_K): twisted windows add no
+  negative squares [L].
+- Every mean-zero periodic twist: energy = spectrum (DFT of `C_χ`, Poisson on `ℤ + k/M`); second
+  order `(βA_φ/(K∫φ²)) Σ_k |χ̂(k)|² (ζ(β+1,k/M) + ζ(β+1,1−k/M)) ‖H‖²`, `≥ 2M⁻¹Σχ²` factor [L];
+  counting form `2M^{β+1} Σ_j |χ̂(j)|² j^{−(β+1)}` [L]; for `c_m` spectrum = units, sum
+  `2ζ(s)J_s(m)`, agreeing with the energy law [L]; `Re(cψ)`, `ψ` primitive mod `q`: spectral sum
+  `|c|²ζ(s)J_s(q)/q + q^{s−2}Re(c²ψ̄(−1)τ(ψ)²L(s,ψ̄²))`, on `|c| = 1` exactly
+  `ζJ_s(q)/q ± q^{s−1}‖L(s,ψ̄²)‖` [L]; two characters: opposite parity orthogonal, equal parity
+  coupled by `L(s,ψ̄₁ψ₂)`, `L(s,ψ̄₁ψ̄₂)` [L]; `cos(2πan/M)`: `½(ζ(s,u)+ζ(s,1−u))`, `u = a/M`, the
+  Hurwitz form of a Frobenius angle [L]; every real frequency `α` (`2α ∉ ℤ`): same form at `u = {α}`
+  (bounded-primitive sharp form, Kuzmin–Landau with rotation, discrepancy energy law) [L].
+- Uniform bulk ledger: pole-free packets receive `o(c/log N)` from all zeros of height `≤ N^θ`,
+  `θ < 2/3` (second-order EM at zeros + zero count) [L]; with the pole the low zeros give exactly
+  `κ y_1² (2 + γ − log 4π)` (archimedean genus) [L]; both up to every height `N^θ`, `θ < 1`
+  (Euler–Maclaurin of order `m ≥ 1/(1−θ)`) [L].
+- Curves: lattice tests of a pure curve, any atom width: `W = w² Σ_i S_{θ_i}(w/log q)|Σ x_k β_i^k|²`
+  (Frobenius angles = twist frequencies); positive at every resolution [L]; rescaled limit under
+  dilation = Hurwitz form of the fractional angles [L]; selection: pure without eigenvalue `1` ⇒
+  `W → 0` on every lattice test; golden fake ⇒ `W(g_w) ≥ c w e^{εw}` (exponential monodromy) [L];
+  one orbit `β, β⁻¹` (elliptic, golden): lattice Gram at every width `= E(w)/2 · spanGram` [L].
+- Inheritance on short windows: independent untwisted horizon families of length `≤ 3/5` are
+  eventually positive definite (CWS window positivity + pencil) [L]; up to `log 2 + 1/50` on the
+  cosh hyperplane (CWS coercivity), so the window index is `≤ 1` there [L]; every length `A` below
+  the uniform multiple `K₀(A) = βJ/(κ(10 + 72e^{A/2}))` (ACS Weil floor) [L].
+- Inheritance on the twisted sector: independent Ramanujan-twisted families are eventually positive
+  definite along the critical curve (mechanism B, unconditional there) [L]; for every nonzero
+  mean-zero periodic twist (spectral constant) [L].
 - Jump multiples: independent family ⇒ `A(H)` posdef and `ind₋(P_K) = #{λ_i < 0, βJ/(−λ_i) < K}`,
   `λ_i` relative eigenvalues of `κW(H)` against `A(H)` [L].
 
 ## Open
-Gap between resolved zeros and Shannon number; bulk second order; uniform bulk
-ledger to `N^{1/2−ε}`; count of the second order; integer; `𝔽_q(T)` complete family. See README §9.
+Gap between resolved zeros and Shannon number; bulk ledger at the resolution height `N/c`; count
+of the second order; integer; `𝔽_q(T)` complete family. See README §9.

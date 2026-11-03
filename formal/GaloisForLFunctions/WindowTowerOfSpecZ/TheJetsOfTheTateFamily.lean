@@ -54,7 +54,7 @@ theorem logPow_zero : logPow 0 = (ArithmeticFunction.zeta : ArithmeticFunction �
 theorem degD_logPow (j : ℕ) : degD (logPow j) = logPow (j + 1) := by
   ext n
   rcases Nat.eq_zero_or_pos n with rfl | hn
-  · simp [degD_apply, logPow]
+  · simp [logPow]
   · rw [degD_apply, logPow_apply hn.ne', logPow_apply hn.ne', pow_succ]
 
 theorem genVonMangoldt_zero : genVonMangoldt 0 = 1 := by
@@ -117,7 +117,7 @@ theorem genVonMangoldt_eq_zero_of_lt {j n : ℕ} (h : j < ArithmeticFunction.car
     have hcard : ArithmeticFunction.cardDistinctFactors n ≤
         1 + ArithmeticFunction.cardDistinctFactors x.2 := by
       rw [cardDistinctFactors_eq_card, cardDistinctFactors_eq_card, ← hxn,
-        Nat.primeFactors_mul (by rw [← hpe]; positivity) hx2, ← hpe,
+        Nat.primeFactors_mul (by rw [← hpe]; exact pow_ne_zero _ hp.ne_zero) hx2, ← hpe,
         Nat.primeFactors_prime_pow he.ne' hp]
       exact (Finset.card_union_le _ _).trans (by rw [Finset.card_singleton])
     rw [ih (by omega), mul_zero]
@@ -143,10 +143,8 @@ theorem hasDerivAt_tateJet (j n : ℕ) (k : ℝ) :
   refine HasDerivAt.fun_sum fun x hx => ?_
   have hx1 : (0 : ℝ) < x.1 := by
     exact_mod_cast Nat.pos_of_mem_divisors (Nat.fst_mem_divisors_of_mem_antidiagonal hx)
-  have h := ((Real.hasStrictDerivAt_const_rpow hx1 k).hasDerivAt.const_mul
-    (Real.log x.1 ^ j)).mul_const (ArithmeticFunction.moebius x.2 : ℝ)
-  convert h using 1
-  ring
+  exact (((Real.hasStrictDerivAt_const_rpow hx1 k).hasDerivAt.const_mul
+    (Real.log x.1 ^ j)).mul_const (ArithmeticFunction.moebius x.2 : ℝ)).congr_deriv (by ring)
 
 /-- **The `j`-th jet at dimension zero is `Λ_j`.** -/
 theorem tateJet_zero_dim (j n : ℕ) : tateJet j n 0 = genVonMangoldt j n := by
@@ -167,10 +165,15 @@ theorem hasSum_tateJet (n : ℕ) (k : ℝ) :
   have he := NormedSpace.expSeries_div_hasSum_exp (k * Real.log x.1)
   rw [← Real.exp_eq_exp_ℝ, mul_comm k, ← Real.rpow_def_of_pos hx1] at he
   have := (he.mul_right (ArithmeticFunction.moebius x.2 : ℝ))
-  convert this using 1
-  · funext j
+  have hf : (fun j : ℕ => k ^ j * (Real.log x.1 ^ j * (x.1 : ℝ) ^ (0 : ℝ) *
+      (ArithmeticFunction.moebius x.2 : ℝ)) / j.factorial) =
+      fun i : ℕ => (Real.log x.1 * k) ^ i / i.factorial * (ArithmeticFunction.moebius x.2 : ℝ) := by
+    funext j
     rw [Real.rpow_zero, mul_one, mul_pow]
     ring
-  · rw [pow_zero, one_mul]
+  have hv : Real.log x.1 ^ 0 * (x.1 : ℝ) ^ k * (ArithmeticFunction.moebius x.2 : ℝ) =
+      (x.1 : ℝ) ^ k * (ArithmeticFunction.moebius x.2 : ℝ) := by rw [pow_zero, one_mul]
+  rw [hf, hv]
+  exact this
 
 end GaloisForLFunctions.WindowTowerOfSpecZ

@@ -11,7 +11,7 @@
 | Mayer 1 | Exact Mayer–Selberg product, oriented/unoriented multiplicities, geometric lengths, and scattering normalization | Genuine closed-geodesic bijection, least lengths, reversal multiplicities, Selberg Euler product and independent scattering/cofactor normalization certified |
 | Mayer 2 | Faithful equivalence between actual right-strip zeta zeros and scattering-sector eigenvalue events | Exact finite relative multiplicity, explicit observable remainder +1 eigenfunctions at strip zeta zeros, and faithful full constant-input inverse poles certified; full eigenspace classification remains open |
 | Mayer 3 | Actual Hermitian structure including scattering, recovering a classical zero-free region from transfer positivity | Actual boundary positivity recovers width `1/(1000 log abs(t))` for `abs(t)≥4`; form on all eigenfunctions remains open |
-| Mayer 4 | Separation of cusp events from scattering events by that form | Open |
+| Mayer 4 | Separation of cusp events from scattering events by that form | Certified on `0<Re s<1/2`: positive-semidefinite dyadic cusp form `∫_1^∞ ‖ψ(2a)−2^(1−2s)ψ(a)‖² da/a` is finite iff `c=0` (`IsMayerScatteringResonance s` on `Ψ_s^Eis`), while co-isometry defect `Q_s(Ψ_s^Eis)=0 ↔ Re s=1/4` |
 | Mayer 5 | Quantitative scattering-sector spectral gap yielding a fixed zero-free strip | Open |
 | Mayer 6 | Exclusion of all off-line resonances through partner saturation | Open; RH-complete |
 | Escape a | Divergent actual receiver energy produces two-prime Euler laws modulo finite energy | Open |
@@ -135,7 +135,17 @@ The [exact core Mellin strips](../3-formalized/gauss-mayer-zero-mellin-strip.md)
 are `(0,Re w)` away from zeta zeros and `(Re w−1,1)` at zeros, for
 `0<Re w<1`, `Im w>0`. Absolute convergence at `u=0` detects exactly
 those zeros; both moments `u=0,w` equal `ζ′(w)`.
-Full eigenspace classification and a Hermitian form remain open.
+The [source-side Farey–Hecke calculus and dyadic cusp separation](../3-formalized/source-side-farey-hecke-commutator-and-dyadic-cusp-separation.md)
+certifies the polar square and critical-line boundedness dichotomy of `I_s` and
+`G_{0,s}` on `H_LP`, strict co-expansivity `M_s M_s† = μ_s > 1` (`Re s ≤ 1/2`),
+universal `T_{2,s}` intertwining, the off-line continuous Eisenstein counterexample
+to naive `(I_s, M_s)` reflection positivity, and exact cusp-energy separation
+`∫_1^∞ ‖ψ(2a)−2^(1−2s)ψ(a)‖² da/a < ∞ ↔ c = 0` across `0 < Re s < 1/2`. The
+[logarithmic period window-fold bridge](../3-formalized/logarithmic-period-window-fold-transfer-and-frobenius-defect.md)
+identifies `H_LP` unitarily with `L²(ℝ)`, intertwines `I_s` with
+`windowMultiplier u (2s)`, and proves two-sided quantitative transfer bounds
+between `-lewisCoIsometryDefect s` and `(foldSym, foldEnergy)`.
+Full eigenspace classification remains open.
 
 ## Operator convention
 

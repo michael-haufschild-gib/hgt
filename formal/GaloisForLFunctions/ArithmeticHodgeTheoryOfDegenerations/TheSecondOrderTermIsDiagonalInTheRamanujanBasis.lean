@@ -36,24 +36,24 @@ variable {φ h : ℝ → ℝ} {A : ℝ}
 
 /-! ### The sharp form of a twisted window from its energy -/
 
-/-- **The sharp form of a twisted window from its energy.** For a mean-zero `M`-periodic twist whose
-block energy is `2π Ξ_N(c) + O(c/N)` and whose energy below `N e^{−A}/M` is `O(N^{−1/2})`:
-`c⁻¹⟨W x, x⟩/∫g² − (log N/∫φ²) Ξ_N(c) → 0` along every schedule with `c → ∞`,
-`c (log N)²/N → 0`. -/
-theorem twisted_layer_sharp_of_energy (hφ : ContDiff ℝ 2 φ) (hφsupp : ∀ u, u ∉ Set.Icc 0 1 → φ u = 0)
+/-- **The sharp form of a twisted window from its energy, general twists.** For a twist with
+`|χ| ≤ B`, partial sums bounded by `S`, block energy `2π Ξ_N(c) + O(c/N)` and energy below
+`N e^{−A'}`, `A' ≥ A`, of size `O(N^{−1/2})`: `c⁻¹⟨W x, x⟩/∫g² − (log N/∫φ²) Ξ_N(c) → 0` along every
+schedule with `c → ∞`, `c (log N)²/N → 0`. -/
+theorem twisted_layer_sharp_of_energy_of_bounded (hφ : ContDiff ℝ 2 φ) (hφsupp : ∀ u, u ∉ Set.Icc 0 1 → φ u = 0)
     (hφ2 : 0 < ∫ u, φ u ^ 2) {Cφ q : ℝ} (hq : 4 < q) (hCφ : 0 ≤ Cφ)
     (hdecay : ∀ u : ℝ, ‖paperFT (cx φ) u‖ ^ 2 ≤ Cφ * (1 + |u|) ^ (-q))
     (hh : ContDiff ℝ 2 h) (hA : 0 ≤ A) (hsupp : ∀ y, y ∉ Set.Icc (-A) 0 → h y = 0)
     {c : ℕ → ℝ} (hc1 : ∀ N, 1 ≤ c N) (hcinf : Tendsto c atTop atTop)
     (hclog : Tendsto (fun N : ℕ => c N * Real.log N ^ 2 / N) atTop (𝓝 0))
-    {χ : ℕ → ℝ} {Mχ : ℕ} (hχ : MeanZeroTwist χ Mχ) (Ξ : ℝ → ℕ → ℝ)
+    {χ : ℕ → ℝ} {S' Sp : ℝ} (hBχ : ∀ n, |χ n| ≤ S') (hP : ∀ n, |∑ j ∈ range n, χ j| ≤ Sp)
+    {A' : ℝ} (hAA' : A ≤ A') (Ξ : ℝ → ℕ → ℝ)
     (hE : ∃ K : ℝ, 0 ≤ K ∧ ∀ c : ℝ, 1 ≤ c → ∀ N : ℕ, 4 * c ≤ N →
       |(∫ τ : ℝ, ‖paperFT (cx φ) (((c / N : ℝ) : ℂ) * τ)‖ ^ 2 *
           (‖dirichletPoly N (twistedWeights h χ N) τ‖ ^ 2 / N)) - 2 * Real.pi * Ξ c N| ≤
         K * c / N)
     (hL : ∃ C : ℝ, 0 ≤ C ∧ ∀ N : ℕ, 1 ≤ N → ∀ c : ℝ, 0 < c →
-      ∫ τ in Set.Icc (-((N : ℝ) * Real.exp (-(A + Real.log Mχ))))
-          ((N : ℝ) * Real.exp (-(A + Real.log Mχ))),
+      ∫ τ in Set.Icc (-((N : ℝ) * Real.exp (-A'))) ((N : ℝ) * Real.exp (-A')),
         ‖paperFT (cx φ) (((c / N : ℝ) : ℂ) * τ)‖ ^ 2 *
           (‖dirichletPoly N (twistedWeights h χ N) τ‖ ^ 2 / N) ≤ C / Real.sqrt N) :
     Tendsto (fun N : ℕ => (c N)⁻¹ * (weilQuad (atomicTest N (twistedWeights h (χ) N)
@@ -61,11 +61,7 @@ theorem twisted_layer_sharp_of_energy (hφ : ContDiff ℝ 2 φ) (hφsupp : ∀ u
       Real.log N / (∫ u, φ u ^ 2) * Ξ (c N) N) atTop (𝓝 0) := by
   have hc0 : ∀ N, 0 < c N := fun N => by linarith [hc1 N]
   have hcN := tendsto_div_of_log_sq hc1 hclog
-  have hm' : 0 < Mχ := hχ.pos
-  have hlogp : 0 ≤ Real.log Mχ := Real.log_nonneg (by exact_mod_cast hχ.pos)
-  obtain ⟨S', hS'⟩ : ∃ S', S' = ∑ j ∈ range Mχ, |χ j| := ⟨_, rfl⟩
-  obtain ⟨Cp, hCp0, hCp⟩ := exists_abs_twistedPole_le hφ hφsupp hφ2 hh hA hsupp
-    (hχ)
+  obtain ⟨Cp, hCp0, hCp⟩ := exists_abs_twistedPole_le_of_primitive hφ hφsupp hφ2 hh hA hsupp hP
   obtain ⟨KE, hKE0, hKE⟩ := hE
   obtain ⟨CL, hCL0, hCL⟩ := hL
   obtain ⟨C, hC0, hC⟩ := exists_abs_mu_sub_log_le
@@ -73,7 +69,6 @@ theorem twisted_layer_sharp_of_energy (hφ : ContDiff ℝ 2 φ) (hφsupp : ∀ u
   obtain ⟨Bh, L, hB, hL⟩ := exists_bound_lipschitz hh hsupp
   have hBh0 : 0 ≤ Bh := (abs_nonneg _).trans (hB 0)
   set M := ∫ u, φ u ^ 2 with hM
-  set A' := A + Real.log Mχ with hA'
   set x : ℕ → ℕ → ℝ := fun N => twistedWeights h (χ) N with hx
   set T₀ : ℕ → ℝ := fun N => (N : ℝ) * Real.exp (-A') with hT₀
   set S : ℕ → ℝ → ℝ := fun N => symbolW φ (x N) (c N) N (Real.exp (2 * (A + 1))) with hS
@@ -139,8 +134,8 @@ theorem twisted_layer_sharp_of_energy (hφ : ContDiff ℝ 2 φ) (hφsupp : ∀ u
     have hN1 : (1 : ℝ) ≤ N := by exact_mod_cast hN
     have hsN : 0 < Real.sqrt N := Real.sqrt_pos.mpr hN0
     have hT₀N : T₀ N ≤ N := by
-      simp only [hT₀, hA']
-      have : Real.exp (-(A + Real.log Mχ)) ≤ 1 := Real.exp_le_one_iff.mpr (by linarith)
+      simp only [hT₀]
+      have : Real.exp (-A') ≤ 1 := Real.exp_le_one_iff.mpr (by linarith)
       nlinarith
     have hWl : 0 ≤ Aν + Real.log (2 + N) := by
       have := Real.log_nonneg (show (1 : ℝ) ≤ 2 + N by linarith); linarith
@@ -191,8 +186,7 @@ theorem twisted_layer_sharp_of_energy (hφ : ContDiff ℝ 2 φ) (hφsupp : ∀ u
       simp only [hx, twistedWeights, mul_pow]
       rw [mul_comm]
       refine mul_le_mul_of_nonneg_right ?_ (sq_nonneg _)
-      have hb := abs_periodic_le hm' hχ.periodic n
-      rw [← hS'] at hb
+      have hb := hBχ n
       rw [← sq_abs]
       exact pow_le_pow_left₀ (abs_nonneg _) hb 2
     have hS1 : ∑ n ∈ Icc 1 N, x N n ^ 2 ≤ (S' * Bh) ^ 2 * Real.exp A' := by
@@ -201,7 +195,6 @@ theorem twisted_layer_sharp_of_energy (hφ : ContDiff ℝ 2 φ) (hφsupp : ∀ u
       refine mul_le_mul_of_nonneg_left ((sum_horizonWeights_sq_le hsupp hB hN).trans ?_)
         (by positivity)
       gcongr
-      linarith
     have hS2 : ∑ n ∈ Icc 1 N, (n : ℝ) * x N n ^ 2 ≤ N * (S' * Bh) ^ 2 := by
       refine (sum_le_sum fun n _ => mul_le_mul_of_nonneg_left (hsq n) (Nat.cast_nonneg n)).trans ?_
       have := sum_mul_horizonWeights_sq_le hB N (h := h)
@@ -268,6 +261,33 @@ theorem twisted_layer_sharp_of_energy (hφ : ContDiff ℝ 2 φ) (hφsupp : ∀ u
   have := (((hPt.add (hLot.const_mul M⁻¹)).add (hRmt.const_mul M⁻¹)).sub
     (hLoEt.const_mul (M⁻¹ * (2 * Real.pi)⁻¹))).add (hDft.const_mul (M⁻¹ * (2 * Real.pi)⁻¹))
   simpa using this
+
+/-- **The sharp form of a twisted window from its energy.** For a mean-zero `M`-periodic twist whose
+block energy is `2π Ξ_N(c) + O(c/N)` and whose energy below `N e^{−A}/M` is `O(N^{−1/2})`:
+`c⁻¹⟨W x, x⟩/∫g² − (log N/∫φ²) Ξ_N(c) → 0` along every schedule with `c → ∞`,
+`c (log N)²/N → 0`. -/
+theorem twisted_layer_sharp_of_energy (hφ : ContDiff ℝ 2 φ) (hφsupp : ∀ u, u ∉ Set.Icc 0 1 → φ u = 0)
+    (hφ2 : 0 < ∫ u, φ u ^ 2) {Cφ q : ℝ} (hq : 4 < q) (hCφ : 0 ≤ Cφ)
+    (hdecay : ∀ u : ℝ, ‖paperFT (cx φ) u‖ ^ 2 ≤ Cφ * (1 + |u|) ^ (-q))
+    (hh : ContDiff ℝ 2 h) (hA : 0 ≤ A) (hsupp : ∀ y, y ∉ Set.Icc (-A) 0 → h y = 0)
+    {c : ℕ → ℝ} (hc1 : ∀ N, 1 ≤ c N) (hcinf : Tendsto c atTop atTop)
+    (hclog : Tendsto (fun N : ℕ => c N * Real.log N ^ 2 / N) atTop (𝓝 0))
+    {χ : ℕ → ℝ} {Mχ : ℕ} (hχ : MeanZeroTwist χ Mχ) (Ξ : ℝ → ℕ → ℝ)
+    (hE : ∃ K : ℝ, 0 ≤ K ∧ ∀ c : ℝ, 1 ≤ c → ∀ N : ℕ, 4 * c ≤ N →
+      |(∫ τ : ℝ, ‖paperFT (cx φ) (((c / N : ℝ) : ℂ) * τ)‖ ^ 2 *
+          (‖dirichletPoly N (twistedWeights h χ N) τ‖ ^ 2 / N)) - 2 * Real.pi * Ξ c N| ≤
+        K * c / N)
+    (hL : ∃ C : ℝ, 0 ≤ C ∧ ∀ N : ℕ, 1 ≤ N → ∀ c : ℝ, 0 < c →
+      ∫ τ in Set.Icc (-((N : ℝ) * Real.exp (-(A + Real.log Mχ))))
+          ((N : ℝ) * Real.exp (-(A + Real.log Mχ))),
+        ‖paperFT (cx φ) (((c / N : ℝ) : ℂ) * τ)‖ ^ 2 *
+          (‖dirichletPoly N (twistedWeights h χ N) τ‖ ^ 2 / N) ≤ C / Real.sqrt N) :
+    Tendsto (fun N : ℕ => (c N)⁻¹ * (weilQuad (atomicTest N (twistedWeights h (χ) N)
+        (atomDilate φ (c N / N))) / ∫ u, atomDilate φ (c N / N) u ^ 2) -
+      Real.log N / (∫ u, φ u ^ 2) * Ξ (c N) N) atTop (𝓝 0) :=
+  twisted_layer_sharp_of_energy_of_bounded hφ hφsupp hφ2 hq hCφ hdecay hh hA hsupp hc1 hcinf hclog
+    (fun n => abs_periodic_le hχ.pos hχ.periodic n) (abs_sum_range_le hχ)
+    (by have := Real.log_nonneg (show (1 : ℝ) ≤ Mχ by exact_mod_cast hχ.pos); linarith) Ξ hE hL
 
 /-! ### Ramanujan expansions -/
 

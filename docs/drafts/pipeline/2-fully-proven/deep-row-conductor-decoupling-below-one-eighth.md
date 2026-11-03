@@ -3,7 +3,7 @@
 - **Stage:** 2-fully-proven.
 - **Type:** THEOREM (paper); Lean assembly pending.
 - **Wall:** Σ1b; completion of the all-vector range `α<1/8`.
-- **Parent:** [eighth-root positivity](../1-in-progress/off-pole-nonratio-cross-and-one-eighth-weil-positivity.md).
+- **Parent:** [eighth-root positivity](../3-formalized/off-pole-nonratio-cross-and-one-eighth-weil-positivity.md).
 
 ## Target
 

@@ -32,40 +32,57 @@ import GaloisForLFunctions.ArithmeticHodgeTheoryOfDegenerations.TheRamanujanWind
 import GaloisForLFunctions.ArithmeticHodgeTheoryOfDegenerations.TheSecondOrderTermIsDiagonalInTheRamanujanBasis
 import GaloisForLFunctions.ArithmeticHodgeTheoryOfDegenerations.TheHorizonLayerIsGradedByEveryConductor
 import GaloisForLFunctions.ArithmeticHodgeTheoryOfDegenerations.TheWindowIndexResolvesTheZerosOfItsLength
+import GaloisForLFunctions.ArithmeticHodgeTheoryOfDegenerations.TheSecondOrderTermOfAPeriodicTwist
+import GaloisForLFunctions.ArithmeticHodgeTheoryOfDegenerations.TheTwistedDirectionsCarryNoNegativeSquares
+import GaloisForLFunctions.ArithmeticHodgeTheoryOfDegenerations.TheTwistedSectorInheritsThePolarization
+import GaloisForLFunctions.ArithmeticHodgeTheoryOfDegenerations.TheEnergyOfATwistIsItsSpectrum
+import GaloisForLFunctions.ArithmeticHodgeTheoryOfDegenerations.TheSecondOrderTermOfEveryPeriodicTwist
+import GaloisForLFunctions.ArithmeticHodgeTheoryOfDegenerations.TheBulkIsBlindToTheLowZeros
+import GaloisForLFunctions.ArithmeticHodgeTheoryOfDegenerations.TheBulkAtThePoleReadsTheArchimedeanGenus
+import GaloisForLFunctions.ArithmeticHodgeTheoryOfDegenerations.TheBulkIsBlindBelowTheResolutionHeight
+import GaloisForLFunctions.ArithmeticHodgeTheoryOfDegenerations.TheFrobeniusAnglesDiagonalizeTheCurveFamily
+import GaloisForLFunctions.ArithmeticHodgeTheoryOfDegenerations.TheShortWindowsInheritThePolarization
+import GaloisForLFunctions.ArithmeticHodgeTheoryOfDegenerations.TheSecondOrderTermIsTheDirichletSeriesOfTheSpectrum
+import GaloisForLFunctions.ArithmeticHodgeTheoryOfDegenerations.TheRescaledLimitOfACurveIsTheHurwitzFormOfItsAngles
+import GaloisForLFunctions.ArithmeticHodgeTheoryOfDegenerations.TheSpectrumOfARamanujanSumIsTheUnitGroup
+import GaloisForLFunctions.ArithmeticHodgeTheoryOfDegenerations.DegenerationSelectsThePureCurves
+import GaloisForLFunctions.ArithmeticHodgeTheoryOfDegenerations.TheGoldenFakeIsSelfSimilarUnderDilation
+import GaloisForLFunctions.ArithmeticHodgeTheoryOfDegenerations.TheCoshHyperplaneInheritsThePolarization
+import GaloisForLFunctions.ArithmeticHodgeTheoryOfDegenerations.TheCountPaysTheSecondOrderBelowAUniformMultiple
+import GaloisForLFunctions.ArithmeticHodgeTheoryOfDegenerations.TheSecondOrderOfACharacterWindowReadsAnLValue
+import GaloisForLFunctions.ArithmeticHodgeTheoryOfDegenerations.TheCharacterWindowsAreGradedByParity
+import GaloisForLFunctions.ArithmeticHodgeTheoryOfDegenerations.TheFrequencyOfATwistActsAsAFrobeniusAngle
+import GaloisForLFunctions.ArithmeticHodgeTheoryOfDegenerations.EveryPeriodicTwistedSectorInheritsThePolarization
+import GaloisForLFunctions.ArithmeticHodgeTheoryOfDegenerations.TheFrequencyTwistIsQuietBelowItsResonance
+import GaloisForLFunctions.ArithmeticHodgeTheoryOfDegenerations.TheEnergyOfAFrequencyTwist
+import GaloisForLFunctions.ArithmeticHodgeTheoryOfDegenerations.EveryFrequencyActsAsAFrobeniusAngle
 
 /-!
 # Arithmetic Hodge Theory of Degenerations
 
 Umbrella for the arithmetic Hodge theory of the degeneration of the scaling surface along the
-resolution axis: the horizon term of a conductor (only the pole conductor carries one); the zero
-ledger of the bulk (a point of the strip enters a fixed conductor packet only through a positive
-pole weight); the horizon layer (a point enters a horizon block through Weil's summand of the
-synthesized test); windows of zeros and their exhaustion to Weil's form; the calculus of critical
-multiples of a second-order term; the Jordan limit as the point count of `ℙ⁷` over `ℤ/m`; the
-horizon layer on the arithmetic side (Kuzmin–Landau below the atom grid, aliasing tails above it)
-and its limit: past the critical curve it is Weil's form of the synthesized test, at it up to
-`O(1/K)`; the horizon criterion for RH; the critical multiple of a window; coercivity of the
-aliasing part; the exact energy of a horizon block (Plancherel and Poisson on the atom grid); the
-sharp part below the grid; the second-order term (Weil's form plus `log N` times the window average
-of the aliasing density); the aliasing density as the dilation derivative of the bulk energy; the
-exact second-order term at the critical curve for the tilted spline, `κ Q(H) + (7 J(1)/K) ∫ e^{−8y} H²`,
-and the exact critical multiple of a window; the primes of a horizon window (departing prime jumps
-pay their own creation potential); the bulk determines the second-order term (for every profile with
-`s^β E₁(s) → J`, the correction is `(β J/K) ∫ e^{−(β+1)y} H²`); the window index (the pencil Gram
-matrix of a family of windows is the limit of the complete family's horizon Gram matrices, its
-negative index is read by them and bounded by the number of right zeros); the count law over every
-finite ring (calibration: the first-order count is the same over `ℤ` and `𝔽_q[T]`); the twisted
-horizon layer is zero-blind and positive (windows twisted by a mean-zero periodic weight see no
-zero and lie above the archimedean horizon); the window index counts the right zeros; the
-alternating (conductor-two) window has second-order term `7 J(2)/K ‖H‖²_{−8}`, and for every prime
-`p` the conductor-`p` window has `7 (p − 1) J(p)/K ‖H‖²_{−8}`: the conductor-`p` count, and for
-every `m ≥ 2` the Ramanujan window of conductor `m` has `7 φ(m) J(m)/K ‖H‖²_{−8}` (energy law of
-periodic twists through their autocorrelation), and on Ramanujan expansions the second-order form
-is diagonal with the conductor counts as eigenvalues (Parseval for the count); the
-horizon layer is graded by conductor (untwisted and prime windows are orthogonal at second order,
-so their span carries the direct sum of the two blocks); the window index of an independent
-family counts its jump multiples `βJ/(−λ_i)`, `λ_i` the relative eigenvalues of Weil's part against
-the aliasing part, and windows of length `2a` resolve every right zero below the level-`a` Nyquist
-height (two-sided with the Shannon bound).
-See `ArithmeticHodgeTheoryOfDegenerations/README.md`.
+resolution axis (overlap `c`, horizon `N`). See `ArithmeticHodgeTheoryOfDegenerations/README.md`.
+
+* **First order.** The rescaled limit is a count: `J(m) = J(1) #ℙ⁷(ℤ/m)`; the count law holds over
+  every finite ring.
+* **Zero ledgers.** A point of the strip enters a fixed packet only through a positive pole weight;
+  uniformly below every height `N^θ`, `θ < 1`, the zeros are blind to pole-free packets and give the
+  archimedean genus `κ y₁²(2 + γ − log 4π)` at the pole. Horizon windows read Weil's summands;
+  twisted windows read no zero.
+* **Second order at the critical curve.** On horizon windows `κ Q(H) + (βJ/K) ∫ e^{−(β+1)y} H²`,
+  the aliasing being the dilation derivative of the bulk; on twisted windows a spectral Dirichlet
+  series: Jordan totients for Ramanujan expansions (graded by conductor), the unit count corrected
+  by `L(β+1, ψ̄²)` for characters (graded by parity, equal parities coupled by `L`-values), and the
+  Hurwitz form `½(ζ(β+1,u) + ζ(β+1,1−u))` for a frequency `u`, rational or irrational.
+* **The integer.** The window index of the pencil `κ W(H) + (βJ/K) A(H)`: read by the complete
+  family, counting the right zeros, jumping at the critical multiples, between the resolved right
+  zeros and the Shannon number; `0` below `K₀(A) = βJ/(κ(10 + 72e^{A/2}))`, `0` on windows of
+  length `≤ 3/5`, `≤ 1` on smooth windows of length `< log 2 + 1/50` (cosh hyperplane).
+* **Mechanism B.** Inheritance through the critical curve on every periodic twisted sector, on
+  short windows, on the cosh hyperplane of the first-prime windows, on all windows below `K₀(A)`,
+  and on mixed families.
+* **Calibration over `𝔽_q`.** Lattice tests are diagonal in the Frobenius angles; the rescaled limit
+  is their Hurwitz form; the family is stationary along the horizon; a single orbit `β, β⁻¹` dilates
+  by a scalar; a pure curve degenerates completely while the golden fake grows exponentially on a
+  fixed hyperbolic plane.
 -/

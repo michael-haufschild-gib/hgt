@@ -1,6 +1,6 @@
 # CompletedArithmeticForms
 
-Namespace `GaloisForLFunctions.CompletedArithmeticForms`; umbrella `CompletedArithmeticForms.lean`; 78 modules.
+Namespace `GaloisForLFunctions.CompletedArithmeticForms`; umbrella `CompletedArithmeticForms.lean`; 106 modules.
 All results unconditional; each module ends with `#print axioms` for its main theorems.
 
 ## 1. Motivation
@@ -133,6 +133,11 @@ External: `completeWeilMatrix`, `completedConductorEnergy`, `normalizedRamanujan
 | Euler completion uniform along growing cutoffs | `tendsto_fullErrorEnergy_iff_finiteSourceEnergy_on_schedule` | proved |
 | Chebyshev energy ≤ 60N + R/3; strips ⇔ remainder exponents | `chebyshevEnergy_cyclotomic_bounds`, `five_sixths_strip_iff_chebyshevCyclotomicRemainder_subpower` | proved |
 | Far cyclotomic modes O(N^{3/2}) | `chebyshevCyclotomicFar_sqrt_le` | proved |
+| First-mode Mellin multiplier nonzero for Re s > 0, Im s > 2π | `firstCyclotomicMellin_ne_zero` | proved |
+| Actual first-mode difference paid by first-band energy for N ≥ 7; real-horizon interpolation costs ≤ 12π | `norm_chebyshevFirstCyclotomicPacket_sq_le`, `norm_chebyshevFirstCyclotomicPacket_sub_floor_le` | proved |
+| On Re s > 1/2, the continuous first-mode Mellin transform equals the literal Chebyshev divisor current times its cyclotomic multiplier | `hasMellin_chebyshevFirstCyclotomicContinuous`, `mellin_chebyshevFirstCyclotomicContinuous_eq_logDeriv` | proved |
+| Continuous and discrete first-mode packets differ by at most 80π for every real horizon ≥ 2 | `norm_chebyshevFirstCyclotomicContinuous_sub_packet_le` | proved |
+| Fixed first band, and every eventually positive bandwidth, has exponent infimum 2Θ among r ≥ 1; its N^(1+ε) bounds are equivalent to RH | `chebyshevFirstCyclotomicBand_exponent_inf`, `chebyshevCyclotomicBand_exponent_inf`, `riemannHypothesis_iff_chebyshevFirstCyclotomicBand` | proved |
 | Complete Weil index ≤ N − M on Young range | `eventually_completeWeil_negative_subspace_dim_le_young_tail` | proved |
 | Uniform prefix inverse cost 20 | `eventually_plateauPrefixSchur_quadratic_payment` | proved |
 | Sharp inverse cost 1/E₁(c) | `eventually_tiltedWeil_inverse_cost_le`, `eventually_tiltedWeil_inverse_cost_gt` | proved |

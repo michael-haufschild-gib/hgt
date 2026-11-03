@@ -1,7 +1,7 @@
 # Band–far cross of the complete Weil matrix below the eighth root
 
 - **ID:** band-far-cross-below-one-eighth
-- **Stage:** 1-in-progress
+- **Stage:** 3-formalized
 - **Type:** THEOREM (Lean)
 - **Source:** T2 of `off-pole-nonratio-cross-and-one-eighth-weil-positivity.md`
 - **Statement:** For `α < 1/8`, eventually, uniformly in `1 ≤ c ≤ (log N)^α`, for a band
@@ -74,8 +74,12 @@ Write `v_jet = Σ_k J_k v_k`, `J_k = Σ_m a_m w(m,k) √(φ(k)/φ(m))`,
   six non-prime channels share `bandFarChannelBudget`, pole mode through `ρ ≥ ‖r₁‖²`).
   `#print axioms`: `propext, Classical.choice, Quot.sound`.
 
+- `CriticalArithmeticCorrelationTheory.TheEighthRootComplementKeepsItsBlockReserves` — the statement
+  above: `exists_band_far_cross_le_reserve_shape` (`s = k/128`, `t = bk/(128c⁷)`, `γ = bk/(32c⁷)`),
+  scalar budgets `budgetE_le`, `budgetU_le` from `c⁸(1 + log c)Sg²/L ≤ σ` (`8α + 4ν ≤ 1`),
+  `exists_band_far_cross_le_at_cutoff` at `R ∈ {R₀, R₁}`, `k = θ₁L/(2D)`, `ρ` from
+  `exists_tiltedUnitSpline_quadratic_conductor_residual_variable_rate` at `m = 1`.
+
 ## Status
-Steps 1–6 are in Lean in channel form. Not yet in Lean: the specialization to the statement above
-(choose `s, t, γ` from `k₁`, verify smallness eventually below `1/8` with `ρ` from
-`exists_tiltedUnitSpline_quadratic_conductor_residual_variable_rate`).
+Steps 1–6 and the specialization to the statement are in Lean.
 

@@ -3,6 +3,7 @@ import GaloisForLFunctions.ArithmeticGaugeTheory.ApproximateRingEndomorphisms
 import GaloisForLFunctions.ArithmeticGaugeTheory.TheDivisorCollapse
 import GaloisForLFunctions.ArithmeticGaugeTheory.TheShellDecomposition
 import GaloisForLFunctions.ArithmeticGaugeTheory.TheGaugeExponent
+import GaloisForLFunctions.ArithmeticGaugeTheory.TheBaireGenericExponentIsOne
 import GaloisForLFunctions.ArithmeticGaugeTheory.FactorialRatiosHaveBoundedMultiplicity
 import GaloisForLFunctions.ArithmeticGaugeTheory.TheCoherencePrinciple
 import GaloisForLFunctions.ArithmeticGaugeTheory.TheArchimedeanLineCarriesTheExponent
@@ -44,7 +45,9 @@ invariance of the gauge exponent along the archimedean line and under finite pri
 Adams operations, on whose fixed points the Frobenius equation `x^q = x` lives; the major arcs of the
 shells (finite gauge subgroups keep the shells with `q ∣ j`); the triviality of affine-invariant
 kernels; the impossibility of gauge-invariant exponent certificates below `3/4`; the exponent one of
-the Liouville points; the zero–one law and the typical exponent, which is exactly `1/2`; the large sieve as the statement that
+the Liouville points; the zero–one law and the Haar-typical exponent, which is exactly `1/2`,
+whereas the Baire-generic exponent is one and exceeds every prescribed sublinear benchmark;
+the large sieve as the statement that
 the finite gauge points sample Haar measure; the constant source, typical with exponent `1/2` almost
 surely, has exponent `0` or `1` on the whole special locus (typical modulo the pole); the trivial point
 is never better than typical, so RH is the equality of its exponent with the typical one; the same holds

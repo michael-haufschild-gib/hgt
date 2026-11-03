@@ -1,6 +1,6 @@
 # ArithmeticGaugeTheory
 
-Namespace `GaloisForLFunctions.ArithmeticGaugeTheory`; umbrella `ArithmeticGaugeTheory.lean`; 30 modules.
+Namespace `GaloisForLFunctions.ArithmeticGaugeTheory`; umbrella `ArithmeticGaugeTheory.lean`; 31 modules.
 All results unconditional; RH and GRH appear only inside equivalences.
 
 ## 1. Motivation
@@ -99,7 +99,7 @@ External: `RHTower.zetaZeroAbscissa` (Θ), `RHTower.zeroAbscissa` (Θ_χ),
 | Exponent constant on archimedean lines and under finite flips | `gaugeExponent_add_verticalShift`, `gaugeExponent_moebius_eq_of_agree_off_finset` | proved |
 | Zero-one law; a.e. exponent = ½ | `gaugeHaar_gaugeExponent_le_eq_zero_or_one'`, `typicalExponent_eq_half`, `ae_gaugeExponent_moebius_eq_half` | proved |
 | Θ ≥ ½; RH ⇔ θ_μ(0) = typical | `half_le_gaugeExponent_moebius_trivial`, `riemannHypothesis_iff_trivialPoint_eq_typical` | proved |
-| {θ_μ > ½} null and residual; {θ_μ ≥ ¾} residual | `moebius_exponent_exceptional_null_and_residual`, `moebius_exponent_threeQuarters_residual` | proved |
+| {θ_μ = 1} null and residual; every prescribed sublinear rate exceeded generically | `moebius_exponent_one_residual_and_null`, `residual_moebius_exceeds_sublinear` | proved |
 | Gauge-invariant bounds ≥ ¾; finitely determined bounds ≥ 1 | `threeQuarters_le_of_gaugeInvariant_bound`, `one_le_of_cylinder_bound` | proved |
 | Twin tails and Liouville point have exponent 1 | `gaugeExponent_moebius_twinTail`, `gaugeExponent_moebius_liouville` | proved |
 | Constant source: 0 at nonprincipal Dirichlet lines, 1 at principal/trivial | `gaugeExponent_one_dirichletGauge_verticalShift`, `gaugeExponent_one_special_ne_typical` | proved |

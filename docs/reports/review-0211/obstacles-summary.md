@@ -139,12 +139,11 @@ They are three readings of one statement: **on the odd sector of every window, t
 jump process has a positive ground state and its sinh capacity is at most one.**
 
 ### 1.9 Where the edge is
-All tests are positive for `A ≤ 3/5` (estimates) and `A ≤ 1/7` (exit charge); the jump count pays to
-`1/32`; the odd sector is paid by a count on the whole prime-free window and by estimates to `0.724`;
-cosh-orthogonal tests are coercive to `log 2 + 1/50` [L]. Below `log 2 + 1/50` every window has at
-most one negative direction and positivity is one scalar cosh-capacity inequality of one even
-direction [L]. The first unproved windows (`3/5 < A < log 2`) involve no prime: their open content is
-that even direction. At the first prime the open content is an inequality, not an identity.
+All real C² tests are coercive through total window length `A=181/250`, with margin `1/5000`
+(SP `fullZeroForm_ge_of_support_le_threeHundredSixtyTwoThousandths`) [L]. This includes the entire
+prime-free range and the first part of the prime-2 stage. The earlier cosh-capacity base task is
+therefore closed. Beyond `181/250`, the open content is joint Gamma, prime and pole payment;
+the exact stage identity alone supplies no sign.
 
 ## 2.1 Obstacles that are just work
 
@@ -152,7 +151,7 @@ that even direction. At the first prime the open content is an inequality, not a
 |---|---|---|---|
 | A1 | Eighth-root join: band–far specialization, top mass and pairing (T3.2–T3.3), Schur synthesis (T4.2), discharge of the upward-rate parameter; result: tilted-spline whole-space positivity for every `α < 1/8` | HF, SRT, AIP, ACS, SC | plan complete on the cards; far reserve, polynomial complement, three-band reserves, band–far channels, jet–pole cancellation, deep-row residuals in Lean |
 | A2 | Explicit horizons and constants (`1/9`, `1/8`, logarithmic profile, Beurling schedule, horizon criterion, window-index convergence) | HF, SRT, AIP, ACS, RW, SC | constants |
-| A3 | Prime-free windows: certify the one cosh-capacity inequality below `log 2 + 1/50`; derive it from the jump count with the logarithmic jump-gap method of the odd sector | RW, EWU, CWS, ACS, HF | Gamma factor only; margin `≈ 10⁻³` [N] |
+| A3 | Closed: all-parity coercivity through total length `181/250`, beyond `log 2 + 1/50` | RW, EWU, CWS, ACS, HF | SP `fullZeroForm_ge_of_support_le_threeHundredSixtyTwoThousandths`, margin `1/5000` [L] |
 | A4 | Certified first-fold and later stages (Lehmann–Goerisch with a Lévy comparison operator): margins `1.5×10⁻⁵` (odd), `5.6×10⁻⁸` (even) at `½log3`; `< 10⁻¹⁴` at `5, 7` | RW, OWU, EWU, CWS | finite computation; not scalable |
 | A5 | Phase diagram with the sharp floor; `K*(A)` table; equality case; finite-`N` sign at jump thresholds | HF, SRT, AHD, CWS | explicit forms |
 | A6 | Fixed-conductor Tate decomposition: Ramanujan-basis diagonalization (joint conductors), character twists, cross terms for fixed finite conductor sets, bulk second order, uniform bulk ledger to `N^{1/2−ε}` | HF, SRT, AHD | the `m = 2`, prime and Ramanujan proofs are templates |
@@ -183,7 +182,7 @@ that even direction. At the first prime the open content is an inequality, not a
 | # | Problem | Strength | Routes |
 |---|---|---|---|
 | B1 | Weil's sign on windows of every length (≡ fold capacity ≡ horizon criterion ≡ Beurling schedule ≡ every `2K(log N)^{1/8}` ≡ `ι(A) = 0` ∀A ≡ Mayer Krein positivity) | RH; fixed length sub | HF, SRT, AIP, ACT, ACS, SC, RW, EWU, OWU, CHMD, TT, MSC, FEL, PM |
-| B2 | Exact stage step (each new fold = one collar-to-collar correlation, paid without AM–GM loss); its lossy form, bulk room, is sufficient and may fail | RH as induction; each step sub | RW, CWS/WTZ, HF |
+| B2 | Exact stage step (each new fold = one collar-to-collar correlation, paid without AM–GM loss); its lossy form, bulk room, is sufficient and fails at the first stage [K] | RH as induction; each step sub | RW, CWS/WTZ, HF |
 | B3 | Window capacity: Poincaré inequality for the censored jumps where `V_A < 0`; Agmon ground state of the arithmetic jump process | RH; fixed length sub | CWS/WTZ, RW, CHMD, TT, OWU, HF |
 | B4 | Positivity surviving the derivative at dimension zero (parity on windows) | method; uniform RH | CWS/WTZ, ACS, AHD |
 | B5 | Growing-conductor Tate decomposition; conductors above `√N` | sub | HF, SRT, AIP, ACS, SC, AHD |
@@ -245,8 +244,8 @@ reduces RH to one stage-local statement with every other segment proved or just 
 |---|---|---|
 | RH ⇔ window sign; locality in `n ≤ e^A` | CWS | [L] |
 | Arithmetic = truncated Dirichlet ring; stages = small extensions; primes generate | WTZ | [L] |
-| Base: odd prime-free sector paid by a count; index `≤ 1` below `log 2 + 1/50`; one cosh-capacity scalar | LST, CWS | [L] + A3 |
-| Short windows by exit charge (`≤ 1/7`), all tests to `3/5` | WTZ, ACS | [L] |
+| Base: all real C² tests coercive through total length `181/250`, margin `1/5000` | SP | [L]; A3 closed |
+| Short windows by exit charge (`≤ 1/7`) | WTZ | [L] |
 | Entrance: every new fold paid by the collar exit charge; composite stages free | WTZ | [L] |
 | Upper control: sharp floor `(4A+1)e^{A/2}`; negativity confined below an archimedean frequency horizon | WTZ, AHD | [L] |
 | Nonlocal payment tools: variable-hub Schur squares and `T₂`-stick elimination; two-sided fold–Frobenius bounds; logarithmic jump gap | ACT-L, RIT [S], LST | [L/S] |
@@ -260,8 +259,10 @@ exactness (doubly-exponential margins).
 
 The core in its sharpest form: for every `N` and every `A ∈ [log(N+1), log(N+2))`,
 `Q_N(H) ≥ 2w_{N+1}∫H(u)H(u+log(N+1))du` (left collar) on `W_A`, exactly. The lossy version (bulk room,
-`Q_N ≥ Ω(ε)∫_{collars}H²`) is sufficient and affordable only if near-null tests are doubly-exponentially
-quiet on the collars. Under RH the exact step says [D]: near-null tests of the frozen form anticipate
+`Q_N ≥ Ω(ε)∫_{collars}H²`) is false already at the first stage: a real C² test supported in
+`[-21/20,0]` has `Q₁(H)<0<Q(H)` [K]
+(`WTZ.exists_first_stage_positive_exit_loan_failure`). Prime `2` repairs the negative frozen
+direction; the signed fold must be retained. Under RH the exact step says [D]: near-null tests of the frozen form anticipate
 every new prime-power fold — their end-to-end correlation at the lag `log(N+1)` is nonpositive up to the
 margin. Understanding that anticipation is the core.
 
@@ -270,11 +271,29 @@ PM supplies the reflection as a Hilbert adjoint, a Krein space whose negative in
 defect, Hecke operators that intertwine the inversion and the three-term operator [S], and an explicit
 negative-norm vector for each off-line resonance [L]. The window side supplies the reflection as the
 Rosati involution of the window algebra and fold energies that bound the Frobenius defect [L/S]. The
-bridge `U_LP` [S] makes them one object: RH ⇔ Krein positivity of Mayer periods ⇔ window sign.
-Bypassed: PM's lack of an operator symmetry; the window side's lack of a spectral realization.
-Residual: positivity of the Rosati/Krein form (B34, B38). Value: a Hecke operator on windows that
-commutes with `σ_A` and acts as a similitude of `Q` would turn Rosati positivity plus similitude into
-`|α|² = q`, exactly Weil's argument; F2 is where such an operator would be found.
+bridge `U_LP` [S] transports the weighted period integral pairing to logarithmic `L²` and relates
+the co-isometry defect to window fold energies. It does **not** identify the coefficient-defined
+PM Krein pairing with the complete Weil window form. Fixed-parameter modular inversion fixes
+each period; the Krein reflection exchanges spectral parameters. RH ⇔ PM Krein positivity ⇔
+window positivity follows from separate criteria; the integral map alone supplies no form identification.
+Available: [the actual completed Lewis period has source Hecke eigenvalue
+`1+2·2^(−2s)`](../../drafts/pipeline/3-formalized/f2-global-lewis-hecke-eigenvalue.md) throughout the
+open strip and positive line, individually Lean-audited. The [window reflection
+centralizer](../../drafts/pipeline/3-formalized/f2-window-reflection-centralizer.md) is scalar:
+a non-scalar commuting correspondence must include adjoints or larger stages. The [sharp cusp law](../../drafts/pipeline/3-formalized/f2-sharp-hecke-cusp-admission.md) admits every smooth window test exactly below `log2`; at and above that stage, the first-prime germ controls the Hecke tail [K]. The [audited
+Mellin correspondence](../../drafts/pipeline/3-formalized/f2-hecke-window-mellin-correspondence.md)
+realizes `T₂−Id` as `√2 H(·+log2)` into stage `A+log2`, scales the complete Weil form by two,
+and recovers its full zero sum. Reflection exchanges this branch with `√2 H`; the parameter
+reflection includes conjugation and an exponential twist. PM's boundary-subtracted core carries
+an [audited nonzero Hecke correction](../../drafts/pipeline/3-formalized/f2-hecke-scattering-boundary-correction.md)
+at every upper resonance [K]. [Positive odd window tests rule out a literal linear
+form-isometry intertwining Serre duality with PM's Krein reflection](../../drafts/pipeline/5-failed/f2-literal-linear-reflection-isometry.md) [K].
+The [audited core-sum bridge](../../drafts/pipeline/3-formalized/f2-weil-form-as-core-packet-limit.md) now identifies complete Weil energy as the limit of twice the real Krein squares of finite sums of actual PM cores, with the exact twisted reflection and source Hecke coefficient transport [K].
+Every positive-length window [surjects onto every finite core span](../../drafts/pipeline/3-formalized/f2-finite-core-projection-and-tail-compensation.md) [K]. Such a projection is positive on all tests iff its resonances lie on the critical line. If an off-line pair occurs, short-window coercivity requires a strictly compensating omitted tail; it cannot establish positivity of that projection.
+First-step compact admission does not iterate: [every positive window contains one test with compact first Hecke image and noncompact second image at every complex parameter](../../drafts/pipeline/3-formalized/f2-second-hecke-endpoint-admission.md) [K]. Below `log(4/3)`, the exact second-step admission condition is vanishing on a left germ at endpoint `0`. The [stable cusp-carrier theorem](../../drafts/pipeline/3-formalized/f2-hecke-cusp-decay-carrier.md) proves that every finite ordered word in `T₂,T₃` on a window lift retains `O((1+a)^(−2 Re s))` decay and finite upper Haar square and dyadic cusp energies for `Re s>0`, at every aperture [K].
+The [second-prime source correspondence](../../drafts/pipeline/3-formalized/f2-second-prime-source-hecke.md) is also audited [K]: seven determinant-three branches give `T₃E_s=(1+3·3^(−2s))E_s`, and `T₃−Id` realizes `√3 H(·+log3)` with complete Weil similitude factor three. Thus both prime grids have actual source realizations.
+[Actual PM cores belong to the same stable decay carrier](../../drafts/pipeline/3-formalized/f2-physical-core-cusp-carrier.md) throughout the upper open strip; every finite mixed Hecke word has finite upper Haar square and dyadic cusp energy [K]. These parameter-dependent bounds do not yet justify infinite physical-core synthesis.
+Residual: prove positivity of this signed correspondence from arithmetic or a compatible positive source metric (B34, B38). The integral metric and factor-two similitude alone supply no such sign.
 
 ### F3. The density–index assembly (WD ⊕ AHD ⊕ CWS ⊕ AKLT)
 WD: almost all unit windows certified at the double-log stage [S]; Planck windows zero-free beyond

@@ -727,7 +727,7 @@ theorem gaussMayerBranch_tail_normBounded {m : ℕ} (hm : 1 ≤ m) {s : ℂ} (hs
       have hgm : ‖gaussMayerBranch m s f (tailBranchInv m b)‖ ^ 2 =
           (b - 1) ^ (4 * s.re) * ‖f b‖ ^ 2 := by
         unfold gaussMayerBranch
-        rw [ham_eq, hb_arg, norm_mul, mul_pow,
+        rw [hb_arg, ham_eq, norm_mul, mul_pow,
           Complex.norm_cpow_eq_rpow_re_of_pos (inv_pos.mpr hu_pos)]
         have hre : (-(2 * s)).re = -2 * s.re := by simp
         rw [hre, Real.inv_rpow hu_pos.le, ← Real.rpow_neg hu_pos.le, ← Real.rpow_natCast,
@@ -851,38 +851,39 @@ def lewisFareyMultiplier (s : ℂ) (a : ℝ) : ℝ :=
   lewisCriticalWeight a / lewisCriticalWeight (a + 1) +
     (a + 1) ^ (2 - 4 * s.re) * (lewisCriticalWeight a / lewisCriticalWeight (a / (a + 1)))
 
+private theorem image_mobius_Ioi_zero :
+    (fun a : ℝ => a / (a + 1)) '' Ioi (0 : ℝ) = Ioo (0 : ℝ) 1 := by
+  ext c
+  simp only [mem_image, mem_Ioi, mem_Ioo]
+  refine ⟨?_, ?_⟩
+  · rintro ⟨a, ha, rfl⟩
+    exact ⟨div_pos ha (by linarith), (div_lt_one (by linarith)).mpr (by linarith)⟩
+  · rintro ⟨hc0, hc1⟩
+    exact ⟨c / (1 - c), div_pos hc0 (sub_pos.mpr hc1),
+      by field_simp [(sub_pos.mpr hc1).ne']; ring⟩
+
+private theorem injOn_mobius_Ioi_zero : InjOn (fun a : ℝ => a / (a + 1)) (Ioi 0) := by
+  intro a₁ ha₁ a₂ ha₂ heq
+  rw [div_eq_div_iff (by linarith [show 0 < a₁ from ha₁])
+    (by linarith [show 0 < a₂ from ha₂])] at heq
+  linarith
+
+private theorem hasDerivWithinAt_mobius_Ioi_zero {a : ℝ} (ha : a ∈ Ioi (0 : ℝ)) :
+    HasDerivWithinAt (fun x : ℝ => x / (x + 1)) (((a + 1) ^ 2)⁻¹) (Ioi 0) a := by
+  have ha1 : a + 1 ≠ 0 := by linarith [show 0 < a from ha]
+  have hd := (hasDerivAt_id a).div ((hasDerivAt_id a).add_const 1) ha1
+  refine (hd.congr_deriv ?_).hasDerivWithinAt
+  simp only [id_eq]
+  field_simp [ha1]
+  ring
+
 /-- Möbius change of variables `c = a / (a + 1)` mapping `(0, ∞)` onto `(0, 1)`. -/
 theorem integral_Ioi_zero_mobius_subst {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
     (h : ℝ → E) :
     (∫ c in Ioo (0 : ℝ) 1, h c) = ∫ a in Ioi (0 : ℝ), ((a + 1) ^ (-2 : ℝ)) • h (a / (a + 1)) := by
-  let φ : ℝ → ℝ := fun a => a / (a + 1)
-  have himg : φ '' Ioi (0 : ℝ) = Ioo (0 : ℝ) 1 := by
-    ext c
-    simp only [φ, mem_image, mem_Ioi, mem_Ioo]
-    constructor
-    · rintro ⟨a, ha, rfl⟩
-      exact ⟨div_pos ha (by linarith), (div_lt_one (by linarith)).mpr (by linarith)⟩
-    · rintro ⟨hc0, hc1⟩
-      have h1c : 0 < 1 - c := sub_pos.mpr hc1
-      refine ⟨c / (1 - c), div_pos hc0 h1c, ?_⟩
-      field_simp [h1c.ne']
-      ring
-  have hinj : InjOn φ (Ioi 0) := by
-    intro a₁ ha₁ a₂ ha₂ heq
-    dsimp [φ] at heq
-    have h1 : a₁ + 1 ≠ 0 := by linarith [show 0 < a₁ from ha₁]
-    have h2 : a₂ + 1 ≠ 0 := by linarith [show 0 < a₂ from ha₂]
-    rw [div_eq_div_iff h1 h2] at heq
-    linarith
-  have hderiv : ∀ a ∈ Ioi (0 : ℝ), HasDerivWithinAt φ (((a + 1) ^ 2)⁻¹) (Ioi 0) a := by
-    intro a ha
-    have ha1 : a + 1 ≠ 0 := by linarith [show 0 < a from ha]
-    have hd := (hasDerivAt_id a).div ((hasDerivAt_id a).add_const 1) ha1
-    have hval : (1 * (a + 1) - a * (1 + 0)) / (a + 1) ^ 2 = ((a + 1) ^ 2)⁻¹ := by
-      field_simp [ha1]; ring
-    exact (hval ▸ hd).hasDerivWithinAt
-  have hint := integral_image_eq_integral_abs_deriv_smul measurableSet_Ioi hderiv hinj h
-  rw [himg] at hint
+  have hint := integral_image_eq_integral_abs_deriv_smul measurableSet_Ioi
+    (fun _ ha => hasDerivWithinAt_mobius_Ioi_zero ha) injOn_mobius_Ioi_zero h
+  rw [image_mobius_Ioi_zero] at hint
   rw [hint]
   refine setIntegral_congr_fun measurableSet_Ioi fun a ha => ?_
   have ha1 : 0 < a + 1 := by linarith [show 0 < a from ha]
@@ -909,9 +910,13 @@ theorem lewisCriticalInner_shift_adj (f g : ℝ → ℂ) :
     · have hb0 : 0 < b := zero_lt_one.trans hb
       have hwb : (lewisCriticalWeight b : ℂ) ≠ 0 :=
         Complex.ofReal_ne_zero.mpr (lewisCriticalWeight_pos hb0).ne'
-      simp only [lewisShiftAdj, if_pos hb, mem_Ioi, indicator_of_mem hb, map_mul,
-        Complex.conj_ofReal, Complex.ofReal_div]
-      field_simp [hwb]
+      have hbm : b ∈ Ioi (1 : ℝ) := hb
+      rw [indicator_of_mem hbm]
+      unfold lewisShiftAdj
+      rw [if_pos hb, Complex.ofReal_div, map_mul, map_div₀, Complex.conj_ofReal,
+        Complex.conj_ofReal]
+      linear_combination
+        f b * (starRingEnd ℂ) (g (b - 1)) * div_mul_cancel₀ (lewisCriticalWeight (b - 1) : ℂ) hwb
     · simp [lewisShiftAdj, hb, mem_Ioi]
   rw [hrhs_ind, setIntegral_indicator measurableSet_Ioi,
     inter_eq_self_of_subset_right (Ioi_subset_Ioi zero_le_one)]
@@ -1048,7 +1053,6 @@ theorem lewisFarey_comp_fareyAdj (s : ℂ) (g : ℝ → ℂ) {a : ℝ} (ha : 0 <
         (((a + 1) ^ (2 - 4 * s.re) : ℝ) : ℂ) := by
       rw [← Complex.cpow_add _ _ ha1C, hexp, ← Complex.ofReal_cpow ha1.le]
     rw [← mul_assoc, ← mul_assoc, hpow, Complex.ofReal_mul]
-    ring
   rw [hterm1, hterm2]
   unfold lewisFareyMultiplier
   push_cast
@@ -1089,8 +1093,10 @@ theorem one_lt_lewisFareyMultiplier {s : ℂ} (hs : s.re ≤ 1 / 2) {a : ℝ} (h
     have hsum_lt : a + a⁻¹ < (a + 1) + (a + 1)⁻¹ := by
       have hdiff : ((a + 1) + (a + 1)⁻¹) - (a + a⁻¹) = (a * (a + 1) - 1) / (a * (a + 1)) := by
         field_simp [ha.ne', ha1.ne']; ring
-      have hprod_gt : 1 < a * (a + 1) :=
-        lt_of_le_of_lt (by linarith) (lt_mul_of_one_le_of_lt hge1 (by linarith) (by positivity))
+      have hprod_gt : 1 < a * (a + 1) := by
+        calc
+          (1 : ℝ) < 1 * (a + 1) := by linarith
+          _ ≤ a * (a + 1) := mul_le_mul_of_nonneg_right hge1 ha1.le
       have hnum : 0 < a * (a + 1) - 1 := sub_pos.mpr hprod_gt
       have hpos : 0 < ((a + 1) + (a + 1)⁻¹) - (a + a⁻¹) := by rw [hdiff]; positivity
       linarith
@@ -1139,7 +1145,7 @@ theorem one_lt_lewisFareyMultiplier {s : ℂ} (hs : s.re ≤ 1 / 2) {a : ℝ} (h
         have hpos_a : 0 < a + a⁻¹ := add_pos ha (inv_pos.mpr ha)
         have hpos_c : 0 < a / (a + 1) + (a / (a + 1))⁻¹ := add_pos hc_pos (inv_pos.mpr hc_pos)
         rw [Real.rpow_neg hpos_a.le, Real.rpow_neg hpos_c.le,
-          inv_div_inv (by positivity) (by positivity), ← Real.div_rpow hpos_c.le hpos_a.le,
+          inv_div_inv, ← Real.div_rpow hpos_c.le hpos_a.le,
           hq_ratio]
         exact Real.rpow_ofNat q 6
       have hhalf_eq : a ^ (-(1 / 2 : ℝ)) / (a / (a + 1)) ^ (-(1 / 2 : ℝ)) =
@@ -1166,34 +1172,9 @@ theorem one_lt_lewisFareyMultiplier {s : ℂ} (hs : s.re ≤ 1 / 2) {a : ℝ} (h
               (lewisCriticalWeight a / lewisCriticalWeight (a / (a + 1))) :=
           mul_lt_mul_of_le_of_lt_of_nonneg_of_pos hpow_ge1 hw_ratio_gt1 zero_le_one
             (Real.rpow_pos_of_pos ha1 _)
-    have hterm1_pos : 0 < lewisCriticalWeight a / lewisCriticalWeight (a + 1) :=
+    have term1_pos : 0 < lewisCriticalWeight a / lewisCriticalWeight (a + 1) :=
       div_pos hw_a hw_a1
     linarith
-
-private theorem image_mobius_Ioi_zero :
-    (fun a : ℝ => a / (a + 1)) '' Ioi (0 : ℝ) = Ioo (0 : ℝ) 1 := by
-  ext c
-  simp only [mem_image, mem_Ioi, mem_Ioo]
-  refine ⟨?_, ?_⟩
-  · rintro ⟨a, ha, rfl⟩
-    exact ⟨div_pos ha (by linarith), (div_lt_one (by linarith)).mpr (by linarith)⟩
-  · rintro ⟨hc0, hc1⟩
-    exact ⟨c / (1 - c), div_pos hc0 (sub_pos.mpr hc1),
-      by field_simp [(sub_pos.mpr hc1).ne']; ring⟩
-
-private theorem injOn_mobius_Ioi_zero : InjOn (fun a : ℝ => a / (a + 1)) (Ioi 0) := by
-  intro a₁ ha₁ a₂ ha₂ heq
-  rw [div_eq_div_iff (by linarith [show 0 < a₁ from ha₁])
-    (by linarith [show 0 < a₂ from ha₂])] at heq
-  linarith
-
-private theorem hasDerivWithinAt_mobius_Ioi_zero {a : ℝ} (ha : a ∈ Ioi (0 : ℝ)) :
-    HasDerivWithinAt (fun x : ℝ => x / (x + 1)) (((a + 1) ^ 2)⁻¹) (Ioi 0) a := by
-  have ha1 : a + 1 ≠ 0 := by linarith [show 0 < a from ha]
-  have hd := (hasDerivAt_id a).div ((hasDerivAt_id a).add_const 1) ha1
-  have hval : (1 * (a + 1) - a * (1 + 0)) / (a + 1) ^ 2 = ((a + 1) ^ 2)⁻¹ := by
-    field_simp [ha1]; ring
-  exact (hval ▸ hd).hasDerivWithinAt
 
 private theorem lewisShift_normBounded {f : ℝ → ℂ}
     (hf : IntegrableOn (fun a => ‖f a‖ ^ 2 * lewisCriticalWeight a) (Ioi 0)) :
@@ -1220,7 +1201,8 @@ private theorem lewisShift_normBounded {f : ℝ → ℂ}
         (hcont_rat.aestronglyMeasurable measurableSet_Ioi)).congr ?_
       filter_upwards [ae_restrict_mem measurableSet_Ioi] with b hb
       have hwb : lewisCriticalWeight b ≠ 0 := (lewisCriticalWeight_pos (zero_lt_one.trans hb)).ne'
-      field_simp [hwb]
+      dsimp only [Pi.mul_apply]
+      linear_combination ‖f b‖ ^ 2 * div_mul_cancel₀ (lewisCriticalWeight (b - 1)) hwb
     refine (hf1.const_mul ((4 : ℝ) ^ (7 : ℝ))).mono' hasm ?_
     filter_upwards [ae_restrict_mem measurableSet_Ioi] with b hb
     have hnn : 0 ≤ ‖f b‖ ^ 2 * lewisCriticalWeight (b - 1) :=
@@ -1280,7 +1262,7 @@ private theorem parabolic_weight_kernel_bound {s : ℂ} (hs0 : 0 ≤ s.re)
   have hu : 0 < c⁻¹ - 1 := sub_pos.mpr hb_gt1
   have h1c_pos : 0 < 1 - c := sub_pos.mpr hc.2
   have hcd_eq : c / (1 - c) = (c⁻¹ - 1)⁻¹ := by
-    field_simp [hc.1.ne', h1c_pos.ne', hu.ne']; ring
+    field_simp [hc.1.ne', h1c_pos.ne', hu.ne']
   have h1c_b : 1 - c = (c⁻¹ - 1) / c⁻¹ := by
     field_simp [hc.1.ne', hb0.ne']
   have hw_cd : lewisCriticalWeight (c / (1 - c)) =
@@ -1294,22 +1276,24 @@ private theorem parabolic_weight_kernel_bound {s : ℂ} (hs0 : 0 ≤ s.re)
       rw [← Real.rpow_add hu]; congr 2; norm_num
     rw [h1, Real.rpow_one]; ring
   have hw_c_eq : lewisCriticalWeight c = c⁻¹ * lewisCriticalWeight c⁻¹ := by
-    conv_lhs => rw [← inv_inv c]
     unfold lewisCriticalWeight
-    rw [inv_inv, add_comm (c⁻¹)⁻¹ c⁻¹, Real.inv_rpow hb0.le, ← Real.rpow_neg hb0.le, neg_neg]
-    have h1 : (c⁻¹ + (c⁻¹)⁻¹) ^ (-6 : ℝ) * (c⁻¹) ^ (1 / 2 : ℝ) =
-        (c⁻¹ + (c⁻¹)⁻¹) ^ (-6 : ℝ) * ((c⁻¹) ^ (1 : ℝ) * (c⁻¹) ^ (-(1 / 2 : ℝ))) := by
-      rw [← Real.rpow_add hb0]; congr 2; norm_num
-    rw [h1, Real.rpow_one]; ring
+    rw [inv_inv, add_comm c⁻¹ c, Real.inv_rpow hc.1.le, ← Real.rpow_neg hc.1.le, neg_neg]
+    have h1 : c⁻¹ * ((c + c⁻¹) ^ (-6 : ℝ) * c ^ (1 / 2 : ℝ)) =
+        (c + c⁻¹) ^ (-6 : ℝ) * (c⁻¹ * c ^ (1 / 2 : ℝ)) := by ring
+    have h2 : c⁻¹ * c ^ (1 / 2 : ℝ) = c ^ (-(1 / 2 : ℝ)) := by
+      rw [← Real.rpow_neg_one c, ← Real.rpow_add hc.1]
+      congr 1; norm_num
+    rw [h1, h2]
   have hker_eq : (1 - c) ^ (4 * s.re - 2) * lewisCriticalWeight (c / (1 - c)) =
       ((c⁻¹ - 1) / c⁻¹) ^ (4 * s.re - 1) * (c⁻¹ * lewisCriticalWeight (c⁻¹ - 1)) := by
-    rw [h1c_b, hw_cd, Real.div_rpow hu.le hb0.le, Real.div_rpow hu.le hb0.le]
+    rw [hw_cd, h1c_b, Real.div_rpow hu.le hb0.le, Real.div_rpow hu.le hb0.le]
     have h1 : (c⁻¹ - 1) ^ (4 * s.re - 1) = (c⁻¹ - 1) ^ (4 * s.re - 2) * (c⁻¹ - 1) ^ (1 : ℝ) := by
       rw [← Real.rpow_add hu]; congr 1; ring
     have h2 : (c⁻¹) ^ (4 * s.re - 1) = (c⁻¹) ^ (4 * s.re - 2) * (c⁻¹) ^ (1 : ℝ) := by
       rw [← Real.rpow_add hb0]; congr 1; ring
     rw [h1, h2, Real.rpow_one, Real.rpow_one]
-    field_simp [(Real.rpow_pos_of_pos hb0 _).ne', hb0.ne']
+    have hp_ne : (c⁻¹) ^ (4 * s.re - 2) ≠ 0 := (Real.rpow_pos_of_pos hb0 _).ne'
+    field_simp [hp_ne, hb0.ne', hc.1.ne']
   by_cases hb2 : c⁻¹ ≤ 2
   · have hu_le1 : c⁻¹ - 1 ≤ 1 := by linarith
     have hu6 : ((c⁻¹ - 1) + (c⁻¹ - 1)⁻¹) ^ (-6 : ℝ) ≤ (c⁻¹ - 1) ^ (6 : ℝ) := by
@@ -1348,10 +1332,12 @@ private theorem parabolic_weight_kernel_bound {s : ℂ} (hs0 : 0 ≤ s.re)
         rw [div_eq_mul_inv, hinv_b]; ring
       _ ≤ c⁻¹ * ((2 : ℝ) ^ (4 * s.re + 2) * 1) := by
         apply mul_le_mul_of_nonneg_left _ hb0.le
-        exact mul_le_mul hb_pow_le hnum_le (by positivity) (by positivity)
+        exact mul_le_mul hb_pow_le hnum_le
+          (mul_nonneg (Real.rpow_nonneg hu.le _) (lewisCriticalWeight_pos hu).le)
+          (Real.rpow_nonneg zero_le_two _)
       _ ≤ c⁻¹ * ((2 : ℝ) ^ (4 * s.re + 2) * ((4 : ℝ) ^ (7 : ℝ) * lewisCriticalWeight c⁻¹)) := by
         apply mul_le_mul_of_nonneg_left _ hb0.le
-        exact mul_le_mul_of_nonneg_left h4w (by positivity)
+        exact mul_le_mul_of_nonneg_left h4w (Real.rpow_nonneg zero_le_two _)
       _ = ((4 : ℝ) ^ (7 : ℝ) * (2 : ℝ) ^ (4 * s.re + 2)) * (c⁻¹ * lewisCriticalWeight c⁻¹) := by ring
   · rw [not_le] at hb2
     have hq_pos : 0 < (c⁻¹ - 1) / c⁻¹ := div_pos hu hb0
@@ -1376,7 +1362,8 @@ private theorem parabolic_weight_kernel_bound {s : ℂ} (hs0 : 0 ≤ s.re)
     calc
       ((c⁻¹ - 1) / c⁻¹) ^ (4 * s.re - 1) * (c⁻¹ * lewisCriticalWeight (c⁻¹ - 1))
           ≤ (2 : ℝ) ^ (4 * s.re + 2) * (c⁻¹ * ((4 : ℝ) ^ (7 : ℝ) * lewisCriticalWeight c⁻¹)) := by
-        refine mul_le_mul hq_pow ?_ (by positivity) (by positivity)
+        refine mul_le_mul hq_pow ?_ (mul_nonneg hb0.le (lewisCriticalWeight_pos hu).le)
+          (Real.rpow_nonneg zero_le_two _)
         exact mul_le_mul_of_nonneg_left hw_sh hb0.le
       _ = ((4 : ℝ) ^ (7 : ℝ) * (2 : ℝ) ^ (4 * s.re + 2)) * (c⁻¹ * lewisCriticalWeight c⁻¹) := by ring
 
@@ -1396,7 +1383,7 @@ private theorem lewisParabolic_normBounded {s : ℂ} (hs0 : 0 ≤ s.re) {f : ℝ
     have h1c : 1 - a / (a + 1) = (a + 1)⁻¹ := by field_simp [ha1.ne']; ring
     have hc_div : (a / (a + 1)) / (1 - a / (a + 1)) = a := by rw [h1c]; field_simp [ha1.ne']
     dsimp only [smul_eq_mul, parabolicNormPullback, lewisParabolic]
-    rw [norm_mul, mul_pow, Complex.norm_cpow_eq_rpow_re_of_pos ha1, h1c, hc_div]
+    rw [norm_mul, mul_pow, Complex.norm_cpow_eq_rpow_re_of_pos ha1, hc_div, h1c]
     have hre : (-(2 * s)).re = -2 * s.re := by simp
     rw [hre, ← Real.rpow_natCast, ← Real.rpow_mul ha1.le, Real.inv_rpow ha1.le,
       ← Real.rpow_neg ha1.le]
@@ -1430,7 +1417,10 @@ private theorem lewisParabolic_normBounded {s : ℂ} (hs0 : 0 ≤ s.re) {f : ℝ
       filter_upwards [ae_restrict_mem measurableSet_Ioo] with c hc
       have hwc : lewisCriticalWeight c ≠ 0 := (lewisCriticalWeight_pos hc.1).ne'
       unfold parabolicNormPullback
-      field_simp [hwc]
+      dsimp only [Pi.mul_apply]
+      linear_combination
+        ‖f c‖ ^ 2 *
+          div_mul_cancel₀ ((1 - c) ^ (4 * s.re - 2) * lewisCriticalWeight (c / (1 - c))) hwc
     refine (hf_Ioo.const_mul ((4 : ℝ) ^ (7 : ℝ) * (2 : ℝ) ^ (4 * s.re + 2))).mono' hasm ?_
     filter_upwards [ae_restrict_mem measurableSet_Ioo] with c hc
     have hnn : 0 ≤ parabolicNormPullback s f c :=
@@ -1521,12 +1511,17 @@ theorem lewisFarey_normBounded {s : ℂ} (hs0 : 0 ≤ s.re) :
             mul_le_mul_of_nonneg_right (hsq1.trans hsq2) hw_nn
           _ = 2 * (‖lewisShift f a‖ ^ 2 * lewisCriticalWeight a +
                 ‖lewisParabolic s f a‖ ^ 2 * lewisCriticalWeight a) := by ring
-    rw [integral_const_mul, integral_add hintU hintV] at hmono
+    rw [integral_const_mul] at hmono
+    simp only [Pi.add_apply] at hmono
+    rw [integral_add hintU hintV] at hmono
     change lewisCriticalNormSq (lewisFarey s f) ≤
       2 * (lewisCriticalNormSq (lewisShift f) + lewisCriticalNormSq (lewisParabolic s f)) at hmono
     linarith
   · rw [lewisCriticalNormSq, integral_undef hintM]
-    exact mul_nonneg (by positivity) (lewisCriticalNormSq_nonneg f)
+    exact mul_nonneg (mul_nonneg zero_le_two
+      (add_nonneg (Real.rpow_nonneg (by norm_num) _)
+        (mul_nonneg (Real.rpow_nonneg (by norm_num) _) (Real.rpow_nonneg zero_le_two _))))
+      (lewisCriticalNormSq_nonneg f)
 
 private def parabolicAdjNormDensity (s : ℂ) (g : ℝ → ℂ) (c : ℝ) : ℝ :=
   (1 - c) ^ (4 * s.re - 4) *
@@ -1553,7 +1548,10 @@ private theorem integrableOn_and_normSq_fareyAdj (s : ℂ) (g : ℝ → ℂ)
     ext x
     by_cases hx : 1 < x
     · have hnot : x ∉ Ioo (0 : ℝ) 1 := fun hm => by linarith [hm.2]
-      simp [lewisFareyAdj, lewisParabolicAdj, hx, hnot, mem_Ioi]
+      have hxm : x ∈ Ioi (1 : ℝ) := hx
+      rw [indicator_of_mem hxm]
+      unfold lewisFareyAdj lewisParabolicAdj
+      rw [if_neg hnot, add_zero]
     · simp [lewisShiftAdj, hx, mem_Ioi]
   have hind_V : (fun x : ℝ => ‖lewisParabolicAdj s g x‖ ^ 2 * lewisCriticalWeight x) =
       (Ioo (0 : ℝ) 1).indicator (fun x => ‖lewisFareyAdj s g x‖ ^ 2 * lewisCriticalWeight x) := by
@@ -1588,9 +1586,11 @@ private theorem integrableOn_and_normSq_fareyAdj (s : ℂ) (g : ℝ → ℂ)
       · have hb0 : 0 < b := zero_lt_one.trans hb
         have hb1 : 0 < b - 1 := sub_pos.mpr hb
         have hwb : lewisCriticalWeight b ≠ 0 := (lewisCriticalWeight_pos hb0).ne'
-        simp only [lewisShiftAdj, if_pos hb, mem_Ioi, indicator_of_mem hb, norm_mul, mul_pow,
-          Complex.norm_real, Real.norm_of_nonneg (div_pos (lewisCriticalWeight_pos hb1)
-            (lewisCriticalWeight_pos hb0)).le]
+        have hbm : b ∈ Ioi (1 : ℝ) := hb
+        rw [indicator_of_mem hbm]
+        unfold lewisShiftAdj
+        rw [if_pos hb, norm_mul, mul_pow, Complex.norm_real,
+          Real.norm_of_nonneg (div_pos (lewisCriticalWeight_pos hb1) (lewisCriticalWeight_pos hb0)).le]
         field_simp [hwb]
       · simp [lewisShiftAdj, hb, mem_Ioi]
     rw [h1, setIntegral_indicator measurableSet_Ioi,
@@ -1626,13 +1626,16 @@ private theorem integrableOn_and_normSq_fareyAdj (s : ℂ) (g : ℝ → ℂ)
     · have h1c : 0 < 1 - c := sub_pos.mpr hc.2
       have hcd : 0 < c / (1 - c) := div_pos hc.1 h1c
       have hwc : lewisCriticalWeight c ≠ 0 := (lewisCriticalWeight_pos hc.1).ne'
-      have hre : (2 * (starRingEnd ℂ) s - 2).re = 2 * s.re - 2 := by simp
-      simp only [lewisParabolicAdj, if_pos hc, indicator_of_mem hc, parabolicAdjNormDensity,
-        norm_mul, mul_pow, Complex.norm_cpow_eq_rpow_re_of_pos h1c, hre, Complex.norm_real,
-        Real.norm_of_nonneg (div_pos (lewisCriticalWeight_pos hcd) (lewisCriticalWeight_pos hc.1)).le,
-        ← Real.rpow_natCast, ← Real.rpow_mul h1c.le]
-      have hexp : (2 * s.re - 2) * ((2 : ℕ) : ℝ) = 4 * s.re - 4 := by push_cast; ring
-      rw [hexp]
+      have hpow_1c : ‖((1 - c : ℝ) : ℂ) ^ (2 * (starRingEnd ℂ) s - 2)‖ ^ 2 =
+          (1 - c) ^ (4 * s.re - 4) := by
+        have hre : (2 * (starRingEnd ℂ) s - 2).re = 2 * s.re - 2 := by simp
+        rw [Complex.norm_cpow_eq_rpow_re_of_pos h1c, hre, ← Real.rpow_natCast,
+          ← Real.rpow_mul h1c.le]
+        congr 1; push_cast; ring
+      rw [indicator_of_mem hc]
+      unfold lewisParabolicAdj parabolicAdjNormDensity
+      rw [if_pos hc, norm_mul, norm_mul, mul_pow, mul_pow, hpow_1c, Complex.norm_real,
+        Real.norm_of_nonneg (div_pos (lewisCriticalWeight_pos hcd) (lewisCriticalWeight_pos hc.1)).le]
       field_simp [hwc]
     · simp [lewisParabolicAdj, hc]
   have hFV_mob : ∀ a ∈ Ioi (0 : ℝ),
@@ -1644,7 +1647,7 @@ private theorem integrableOn_and_normSq_fareyAdj (s : ℂ) (g : ℝ → ℂ)
     have h1c : 1 - a / (a + 1) = (a + 1)⁻¹ := by field_simp [ha1.ne']; ring
     have hc_div : (a / (a + 1)) / (1 - a / (a + 1)) = a := by rw [h1c]; field_simp [ha1.ne']
     dsimp only [smul_eq_mul, parabolicAdjNormDensity]
-    rw [h1c, hc_div, Real.inv_rpow ha1.le, ← Real.rpow_neg ha1.le]
+    rw [hc_div, h1c, Real.inv_rpow ha1.le, ← Real.rpow_neg ha1.le]
     have hcomb : (a + 1) ^ (-2 : ℝ) *
         ((a + 1) ^ (-(4 * s.re - 4)) *
           (lewisCriticalWeight a / lewisCriticalWeight (a / (a + 1))) *
@@ -1687,7 +1690,6 @@ private theorem integrableOn_and_normSq_fareyAdj (s : ℂ) (g : ℝ → ℂ)
   rw [hsum_adj, hU_eq, hV_eq, ← integral_add hint_m1 hint_m2]
   refine setIntegral_congr_fun measurableSet_Ioi fun a _ => ?_
   unfold lewisFareyMultiplier
-  simp only [Pi.add_apply]
   ring
 
 /-- Exact squared-norm identity `‖M_s† g‖_LP² = ∫_0^∞ μ_s(a) ‖g(a)‖² w_LP(a) da` on `H_LP`. -/
@@ -1833,6 +1835,7 @@ theorem lewisModularInversion_heckeT2 (s : ℂ) (f : ℝ → ℂ) {a : ℝ} (ha 
   have h2pos : (0 : ℝ) < 2 := by norm_num
   have h2ne : (2 : ℂ) ≠ 0 := two_ne_zero
   unfold lewisModularInversion lewisHeckeT2
+  dsimp only
   have hp_2a : ((2 * a : ℝ) : ℂ) ^ (-(2 * s)) = (2 : ℂ) ^ (-(2 * s)) * (a : ℂ) ^ (-(2 * s)) := by
     simpa using ofReal_mul_cpow_pos h2pos ha (-(2 * s))
   have hp_a2 : ((a / 2 : ℝ) : ℂ) ^ (-(2 * s)) = (a : ℂ) ^ (-(2 * s)) * (2 : ℂ) ^ (2 * s) := by
@@ -1847,7 +1850,7 @@ theorem lewisModularInversion_heckeT2 (s : ℂ) (f : ℝ → ℂ) {a : ℝ} (ha 
   have hp_ainv1 : (a : ℂ) ^ (-(2 * s)) * ((a⁻¹ + 1 : ℝ) : ℂ) ^ (-(2 * s)) =
       ((a + 1 : ℝ) : ℂ) ^ (-(2 * s)) := by
     rw [← ofReal_mul_cpow_pos ha ha_inv1]
-    congr 1; congr 1; field_simp [ha.ne']
+    congr 1; congr 1; field_simp [ha.ne']; ring
   have h2_cancel : (2 : ℂ) ^ (-(2 * s)) * (2 : ℂ) ^ (2 * s) = 1 := by
     rw [← Complex.cpow_add _ _ h2ne]; simp
   have ha1_cancel : ((a + 1 : ℝ) : ℂ) ^ (-(2 * s)) * ((a + 1 : ℝ) : ℂ) ^ (2 * s) = 1 := by
@@ -1860,9 +1863,9 @@ theorem lewisModularInversion_heckeT2 (s : ℂ) (f : ℝ → ℂ) {a : ℝ} (ha 
     field_simp [ha.ne', ha1.ne']; ring
   rw [hp_2a, hp_a2, hp_a1_2, hp_2a_a1, harg1, harg2, harg3, harg4]
   linear_combination
-    -f (2 * a⁻¹) * (a : ℂ) ^ (-(2 * s)) * h2_cancel -
-    f (((a + 1) / 2)⁻¹) * hp_ainv1 +
-    f (((a + 1) / 2)⁻¹) * ((a + 1 : ℝ) : ℂ) ^ (-(2 * s)) * h2_cancel +
+    -f (2 * a⁻¹) * (a : ℂ) ^ (-(2 * s)) * h2_cancel +
+    f (((a + 1) / 2)⁻¹) * hp_ainv1 -
+    f (((a + 1) / 2)⁻¹) * ((a + 1 : ℝ) : ℂ) ^ (-(2 * s)) * h2_cancel -
     f ((a⁻¹ + 1) / 2) * (2 : ℂ) ^ (-(2 * s)) * (a : ℂ) ^ (-(2 * s)) * ha1_cancel
 
 /-- **Universal Three-Term Hecke Intertwining `(1 - M_s)(T_{2,s} f) = T̃_{2,s}((1 - M_s) f)` on `(0, ∞)`.**
@@ -1877,18 +1880,19 @@ theorem lewisThreeTermDefect_heckeT2 (s : ℂ) (f : ℝ → ℂ) {a : ℝ} (ha :
   have h2pos : (0 : ℝ) < 2 := by norm_num
   have h2ne : (2 : ℂ) ≠ 0 := two_ne_zero
   unfold lewisHeckeT2Companion lewisHeckeT2 lewisFarey lewisShift lewisParabolic
+  dsimp only
   -- Normalize shifted arguments:
   have h_a1_add1 : a + 1 + 1 = a + 2 := by ring
   have h_2_a1 : 2 * (a + 1) = 2 * a + 2 := by ring
   have h_2_div : 2 * (a / (a + 1)) = 2 * a / (a + 1) := by ring
-  have h_div_2 : (a / (a + 1)) / 2 = a / (2 * a + 2) := by field_simp [ha1.ne']; ring
+  have h_div_2 : (a / (a + 1)) / 2 = a / (2 * a + 2) := by field_simp [ha1.ne']
   have h_add1_div2 : (a / (a + 1) + 1) / 2 = (2 * a + 1) / (2 * a + 2) := by
     field_simp [ha1.ne']; ring
   have h_add1_frac : a / (a + 1) + 1 = (2 * a + 1) / (a + 1) := by field_simp [ha1.ne']; ring
   have h_2_frac_div : 2 * (a / (a + 1)) / (a / (a + 1) + 1) = 2 * a / (2 * a + 1) := by
     field_simp [ha1.ne', h2a1.ne']; ring
   have h_a2_add1 : a / 2 + 1 = (a + 2) / 2 := by ring
-  have h_a2_frac : (a / 2) / (a / 2 + 1) = a / (a + 2) := by field_simp [ha2.ne']; ring
+  have h_a2_frac : (a / 2) / (a / 2 + 1) = a / (a + 2) := by field_simp [ha2.ne']
   have h_2a1_add1 : 2 * a + 1 + 1 = 2 * a + 2 := by ring
   have h_aa2_add1 : a / (a + 2) + 1 = (2 * a + 2) / (a + 2) := by field_simp [ha2.ne']; ring
   have h_aa2_frac : (a / (a + 2)) / (a / (a + 2) + 1) = a / (2 * a + 2) := by
@@ -1914,8 +1918,8 @@ theorem lewisThreeTermDefect_heckeT2 (s : ℂ) (f : ℝ → ℂ) {a : ℝ} (ha :
       (2 : ℂ) ^ (-(2 * s)) * ((a + 1 : ℝ) : ℂ) ^ (-(2 * s)) := by
     rw [← ofReal_mul_cpow_pos ha2 (div_pos (by linarith) ha2)]
     rw [show (a + 2) * ((2 * a + 2) / (a + 2)) = 2 * a + 2 by field_simp [ha2.ne'], hp_2a2]
-  rw [h_a1_add1, h_2_a1, h_2_div, h_div_2, h_add1_div2, h_2_frac_div, h_add1_frac,
-    h_a2_frac, h_a2_add1, h_aa2_frac, h_aa2_add1, h_2a1_add1, hp_2a2]
+  rw [h_2_frac_div, h_add1_div2, h_div_2, h_2_div, h_add1_frac,
+    h_a2_frac, h_a2_add1, h_aa2_frac, h_aa2_add1, h_a1_add1, h_2_a1, h_2a1_add1, hp_2a2]
   linear_combination
     -f (2 * a / (2 * a + 1)) * hp_2a1_prod +
     f (a / (a + 2)) * hp_a2_prod +
@@ -1974,11 +1978,13 @@ theorem extension_eq_eps_transfer_sub {w ε c : ℂ} (hw : 0 < w.re) (hε : ε ^
     have hu_out : u ∈ outer := Metric.ball_subset_closedBall hu
     have hex := extension_eq_plane hw hε f hf hu
     have htr : ε * (transfer w f u - c) = plane f u := by
-      rw [show transfer w f u = transfer w f ⟨u, hu_out⟩ from rfl,
-        transfer_eq_source hw f ⟨u, hu_out⟩, hf, map_add, map_smul, smul_eq_mul]
-      have hval : ε * (ε * evaluation ⟨u, hu_out⟩ f + c - c) = evaluation ⟨u, hu_out⟩ f := by
-        linear_combination evaluation ⟨u, hu_out⟩ f * hε
-      exact hval.trans (plane_eq f ⟨u, hu_out⟩).symm
+      let q : Disc := ⟨u, hu_out⟩
+      have hq : transfer w f u = evaluation q (regularized w hw f) := transfer_eq_source hw f q
+      have hcq : evaluation q (constant c) = c := rfl
+      rw [hq, hf, map_add, map_smul, smul_eq_mul, hcq]
+      have hval : ε * (ε * evaluation q f + c - c) = evaluation q f := by
+        linear_combination evaluation q f * hε
+      exact hval.trans (plane_eq f q).symm
     dsimp [D]
     rw [hex, htr, sub_self]
   have hc : IsPreconnected halfPlane := (convex_halfSpace_re_gt (-(1 / 2 : ℝ))).isPreconnected
@@ -2073,17 +2079,20 @@ theorem tsum_add_rpow_neg_succ_le {σ a : ℝ} (hσ : 0 < σ) (ha : 1 ≤ a) :
         have hm := hstep ((m : ℝ) + a) (by positivity)
         have hcast : (((m + 1 : ℕ) : ℝ) + a) = ((m : ℝ) + a) + 1 := by push_cast; ring
         rwa [hcast]
-      have htel_eq : (∑ m ∈ Finset.range n,
+      have htel_eq : ∀ k : ℕ, (∑ m ∈ Finset.range k,
           (((m : ℝ) + a) ^ (-σ) - (((m + 1 : ℕ) : ℝ) + a) ^ (-σ)) / σ) =
-          (a ^ (-σ) - ((n : ℝ) + a) ^ (-σ)) / σ := by
-        have hdiv : (fun m : ℕ =>
-            (((m : ℝ) + a) ^ (-σ) - (((m + 1 : ℕ) : ℝ) + a) ^ (-σ)) / σ) =
-            fun m => ((m : ℝ) + a) ^ (-σ) / σ - (((m + 1 : ℕ) : ℝ) + a) ^ (-σ) / σ := by
-          ext m; ring
-        rw [hdiv, Finset.sum_range_sub' (fun m : ℕ => ((m : ℝ) + a) ^ (-σ) / σ)]
-        simp [zero_add, sub_div]
+          (a ^ (-σ) - ((k : ℝ) + a) ^ (-σ)) / σ := by
+        intro k
+        induction k with
+        | zero => simp
+        | succ j ih =>
+          rw [Finset.sum_range_succ, ih]
+          ring
+      have htel_n := htel_eq n
+      rw [sub_div] at htel_n
       have hrem_nn : 0 ≤ ((n : ℝ) + a) ^ (-σ) / σ := by positivity
-      linarith [show a ^ (-σ) + a ^ (-σ) / σ = (1 + 1 / σ) * a ^ (-σ) by ring]
+      linarith [htel_le, htel_n, ha_first, hrem_nn,
+        show a ^ (-σ) + a ^ (-σ) / σ = (1 + 1 / σ) * a ^ (-σ) by ring]
   exact le_of_tendsto_of_tendsto hsum.hasSum.tendsto_sum_nat tendsto_const_nhds
     (Eventually.of_forall hpartial)
 
@@ -2237,6 +2246,23 @@ private theorem norm_dyadicRemainderTerm_le {w : ℂ} (hw0 : 0 < w.re) (f : Disc
       (16 + ‖w‖) * ‖f‖ * ((k : ℝ) + a) ^ (-w.re - 1) := by ring
   linarith
 
+private theorem tsum_even_add_odd_explicit (g : ℕ → ℂ)
+    (hev : Summable (fun k => g (2 * k))) (hod : Summable (fun k => g (2 * k + 1))) :
+    (∑' n, g n) = (∑' k, g (2 * k)) + ∑' k, g (2 * k + 1) :=
+  (tsum_even_add_odd (f := g) hev hod).symm
+
+private theorem tsum_mul_left_explicit (c : ℂ) (g : ℕ → ℂ) :
+    c * (∑' k, g k) = ∑' k, c * g k :=
+  (tsum_mul_left (a := c) (f := g)).symm
+
+private theorem tsum_add_explicit (g₁ g₂ : ℕ → ℂ) (h₁ : Summable g₁) (h₂ : Summable g₂) :
+    (∑' k, g₁ k) + (∑' k, g₂ k) = ∑' k, (g₁ k + g₂ k) :=
+  (h₁.tsum_add h₂).symm
+
+private theorem tsum_sub_explicit (g₁ g₂ : ℕ → ℂ) (h₁ : Summable g₁) (h₂ : Summable g₂) :
+    (∑' k, g₁ k) - (∑' k, g₂ k) = ∑' k, (g₁ k - g₂ k) :=
+  (h₁.tsum_sub h₂).symm
+
 /-- **Quantitative Autonomous Dyadic Cusp-Forcing Bound (`a ≥ 1`, `s.re > 0`, `2s ≠ 1`).**
 For any signed Mayer solution `(f ∈ DiscSpace, c ∈ ℂ, ε² = 1)` with global period
 `ψ(a) = period (2s) ε c f a`, the dyadic cusp extractor cancels both the outgoing `a^(1 - 2s)`
@@ -2301,21 +2327,39 @@ theorem dyadicCuspExtractor_bound {s ε c : ℂ} (hs0 : 0 < s.re) (hs_ne : 2 * s
     have hsplit : (∑' n : ℕ, term (2 * s) f n (((2 * a : ℝ) : ℂ) - 1)) =
         (∑' k : ℕ, term (2 * s) f (2 * k) (((2 * a : ℝ) : ℂ) - 1)) +
           ∑' k : ℕ, term (2 * s) f (2 * k + 1) (((2 * a : ℝ) : ℂ) - 1) :=
-      (tsum_even_add_odd hsum_ev hsum_od).symm
+      tsum_even_add_odd_explicit (fun n : ℕ => term (2 * s) f n (((2 * a : ℝ) : ℂ) - 1))
+        hsum_ev hsum_od
     have hmul_a : (2 : ℂ) ^ (1 - 2 * s) * (∑' k : ℕ, term (2 * s) f k ((a : ℂ) - 1)) =
         ∑' k : ℕ, (2 : ℂ) ^ (1 - 2 * s) * term (2 * s) f k ((a : ℂ) - 1) :=
-      tsum_mul_left.symm
+      tsum_mul_left_explicit ((2 : ℂ) ^ (1 - 2 * s)) (fun k : ℕ => term (2 * s) f k ((a : ℂ) - 1))
     have hcomb_tsum :
         (∑' k : ℕ, term (2 * s) f (2 * k) (((2 * a : ℝ) : ℂ) - 1)) +
           (∑' k : ℕ, term (2 * s) f (2 * k + 1) (((2 * a : ℝ) : ℂ) - 1)) -
           (∑' k : ℕ, (2 : ℂ) ^ (1 - 2 * s) * term (2 * s) f k ((a : ℂ) - 1)) =
         ∑' k : ℕ, (-(RHTower.etaTerm (2 * s) k * plane f 0) + dyadicRemainderTerm (2 * s) f a k) := by
-      rw [← hsum_ev.tsum_add hsum_od, ← (hsum_ev.add hsum_od).tsum_sub
-        (hsum_a.mul_left ((2 : ℂ) ^ (1 - 2 * s)))]
+      have hadd := tsum_add_explicit
+        (fun k : ℕ => term (2 * s) f (2 * k) (((2 * a : ℝ) : ℂ) - 1))
+        (fun k : ℕ => term (2 * s) f (2 * k + 1) (((2 * a : ℝ) : ℂ) - 1))
+        hsum_ev hsum_od
+      have hsub := tsum_sub_explicit
+        (fun k : ℕ => term (2 * s) f (2 * k) (((2 * a : ℝ) : ℂ) - 1) +
+          term (2 * s) f (2 * k + 1) (((2 * a : ℝ) : ℂ) - 1))
+        (fun k : ℕ => (2 : ℂ) ^ (1 - 2 * s) * term (2 * s) f k ((a : ℂ) - 1))
+        (hsum_ev.add hsum_od) (hsum_a.mul_left ((2 : ℂ) ^ (1 - 2 * s)))
+      rw [hadd, hsub]
       exact tsum_congr (dyadicRemainderTerm_pair_eq (2 * s) f a ha)
     have heta_val : (∑' k : ℕ, -(RHTower.etaTerm (2 * s) k * plane f 0)) =
         -((1 - (2 : ℂ) ^ (1 - 2 * s)) * riemannZeta (2 * s) * plane f 0) := by
       rw [tsum_neg, tsum_mul_right, ← RHTower.etaPair, RHTower.etaPair_eq (2 * s) hw0 hs_ne]
+    have hsplit_δR :
+        (∑' k : ℕ, (-(RHTower.etaTerm (2 * s) k * plane f 0) +
+          dyadicRemainderTerm (2 * s) f a k)) =
+        (∑' k : ℕ, -(RHTower.etaTerm (2 * s) k * plane f 0)) +
+          ∑' k : ℕ, dyadicRemainderTerm (2 * s) f a k :=
+      (tsum_add_explicit
+        (fun k : ℕ => -(RHTower.etaTerm (2 * s) k * plane f 0))
+        (dyadicRemainderTerm (2 * s) f a)
+        hsum_eta.neg hsum_δR).symm
     rw [hsplit]
     calc
       (riemannZeta (2 * s) * plane f 0 +
@@ -2334,7 +2378,7 @@ theorem dyadicCuspExtractor_bound {s ε c : ℂ} (hs0 : 0 < s.re) (hs_ne : 2 * s
       _ = (1 - (2 : ℂ) ^ (1 - 2 * s)) * riemannZeta (2 * s) * plane f 0 +
             ((∑' k : ℕ, -(RHTower.etaTerm (2 * s) k * plane f 0)) +
               ∑' k : ℕ, dyadicRemainderTerm (2 * s) f a k) := by
-        rw [hsum_eta.neg.tsum_add hsum_δR]
+        rw [hsplit_δR]
       _ = ∑' k : ℕ, dyadicRemainderTerm (2 * s) f a k := by rw [heta_val]; ring
   rw [hcomb_ε, htr_diff, norm_mul, hnorm_ε, one_mul]
   calc
@@ -2393,10 +2437,9 @@ theorem dyadicCuspExtractor_sq_div_integrableOn_iff {s ε c : ℂ}
       have hsq : ‖ε‖ ^ 2 = 1 := by rw [← norm_pow, hε, norm_one]
       exact (sq_eq_one_iff.mp hsq).resolve_right (by linarith [norm_nonneg ε])
     have h2_gt1 : 1 < ‖(2 : ℂ) ^ (1 - 2 * s)‖ := by
-      have h2C : (2 : ℂ) = ((2 : ℝ) : ℂ) := by norm_num
-      rw [h2C, Complex.norm_cpow_eq_rpow_re_of_pos (by norm_num : (0 : ℝ) < 2)]
-      have hre : (1 - 2 * s).re = 1 - 2 * s.re := by simp
-      rw [hre]
+      rw [show (2 : ℂ) ^ (1 - 2 * s) = ((2 : ℝ) : ℂ) ^ (1 - 2 * s) by norm_num,
+        Complex.norm_cpow_eq_rpow_re_of_pos (by norm_num : (0 : ℝ) < 2),
+        show (1 - 2 * s).re = 1 - 2 * s.re by simp]
       exact Real.one_lt_rpow (by norm_num) (by linarith)
     have h12_ne : 1 - (2 : ℂ) ^ (1 - 2 * s) ≠ 0 := by
       intro hz
@@ -2423,9 +2466,10 @@ theorem dyadicCuspExtractor_sq_div_integrableOn_iff {s ε c : ℂ}
         rw [← Real.rpow_mul (by positivity), one_div_mul_cancel (by linarith), Real.rpow_one] at h1
         exact h1
       have hrem_le : B * a ^ (-2 * s.re) ≤ L / 2 := by
-        rw [Real.rpow_neg ha_pos.le, ← div_eq_mul_inv, div_le_iff₀ (Real.rpow_pos_of_pos ha_pos _)]
+        rw [show (-2 * s.re : ℝ) = -(2 * s.re) by ring, Real.rpow_neg ha_pos.le,
+          ← div_eq_mul_inv, div_le_iff₀ (Real.rpow_pos_of_pos ha_pos _)]
         have hmul := mul_le_mul_of_nonneg_left hpow_ge (half_pos hL_pos).le
-        have hlhs : (L / 2) * ((2 * B + 1) / L) = B + 1 / 2 := by field_simp [hL_pos.ne']; ring
+        have hlhs : (L / 2) * ((2 * B + 1) / L) = B + 1 / 2 := by field_simp [hL_pos.ne']
         linarith
       have hbd := dyadicCuspExtractor_bound hs0 hs_ne hε f hf ha_ge1
       have htri : L ≤ ‖dyadicCuspExtractor s ψ a + ε * (1 - (2 : ℂ) ^ (1 - 2 * s)) * c‖ +
@@ -2454,10 +2498,10 @@ theorem dyadicCuspExtractor_sq_div_integrableOn_iff {s ε c : ℂ}
       have ha0 : 0 < a := hA₀_pos.trans ha
       rw [Real.norm_of_nonneg (mul_nonneg (sq_nonneg _) (Real.rpow_pos_of_pos ha0 _).le)]
       exact hlow_pt a ha
-    have hint_rpow : IntegrableOn (fun a : ℝ => a ^ (-1 : ℝ)) (Ioi A₀) := by
-      have h := hint_har.const_mul (((L / 2) ^ 2)⁻¹)
-      refine h.congr_fun (fun a _ => ?_) measurableSet_Ioi
-      field_simp [(sq_pos_of_pos (half_pos hL_pos)).ne']
+    have hint_rpow : IntegrableOn (fun a : ℝ => a ^ (-1 : ℝ)) (Ioi A₀) :=
+      IntegrableOn.congr_fun (hint_har.const_mul (((L / 2) ^ 2)⁻¹))
+        (fun a _ => inv_mul_cancel_left₀ (sq_pos_of_pos (half_pos hL_pos)).ne' (a ^ (-1 : ℝ)))
+        measurableSet_Ioi
     have hlt := (integrableOn_Ioi_rpow_iff hA₀_pos).mp hint_rpow
     linarith
   · rintro rfl
@@ -2505,13 +2549,11 @@ private theorem state_regularized_eisenstein {s : ℂ} (hs0 : 0 < s.re) (hs1 : s
   have hne2 : 2 * s ≠ 2 := fun h => by rw [h] at hw1; norm_num at hw1
   have hst := state_equation hw0 hne1 hne2
   have hconst_neg : constant (-riemannZeta (2 * s)) = -(riemannZeta (2 * s) • constant 1) := by
-    apply Subtype.ext; ext z; simp [constant]
-  rw [← source_eq hw0, one_smul, hconst_neg]
-  exact eq_add_neg_of_sub_eq hst.symm |> fun _ => by
-    have : source (2 * s) (state (2 * s)) = state (2 * s) - riemannZeta (2 * s) • constant 1 := by
-      have h1 := congrArg (fun x => state (2 * s) - x) hst
-      simpa [sub_sub_cancel] using h1.symm
-    rw [this, sub_eq_add_neg]
+    apply Subtype.ext; ext z
+    change -riemannZeta (2 * s) = -(riemannZeta (2 * s) * 1)
+    ring
+  rw [← source_eq hw0, one_smul, hconst_neg, ← hst]
+  abel
 
 /-- Across the entire open strip `0 < Re s < 1/2`, `eisensteinLewisPeriod s` belongs to `H_LP`
 (together with its Riemann–Mayer reflected partner) and satisfies both `I_s Ψ = Ψ` and `M_s Ψ = Ψ`
@@ -2538,11 +2580,12 @@ theorem eisensteinLewisPeriod_properties {s : ℂ} (hs0 : 0 < s.re) (hs1 : s.re 
     exact hrec.symm
   · intro a ha
     unfold lewisFarey lewisShift lewisParabolic eisensteinLewisPeriod
+    dsimp only
     have htt := MayerGlobalPeriods.three_term hw0 (by norm_num : (1 : ℂ) ^ 2 = 1) (state (2 * s))
       hreg (a := (a : ℂ)) (by simpa using ha)
     have hc1 : ((a : ℂ) + 1) = ((a + 1 : ℝ) : ℂ) := by push_cast; ring
     have hc2 : ((a : ℂ) / ((a : ℂ) + 1)) = ((a / (a + 1) : ℝ) : ℂ) := by push_cast; ring
-    rw [hc1, hc2] at htt
+    rw [hc2, hc1] at htt
     exact htt.symm
 
 private def eisensteinDefectIntegrand (s : ℂ) (b : ℝ) : ℝ :=
@@ -2582,7 +2625,7 @@ theorem eisensteinLewisPeriod_coIsometryDefect_lt_zero_iff {s : ℂ}
       simp [sub_self] at hlt
     · intro hne
       -- Autonomous non-vanishing on `(1, ∞)` from `tendsto_dyadicCuspExtractor`:
-      have hex_gt1 : ∃ b₀ > 1, eisensteinLewisPeriod s b₀ ≠ 0 := by
+      have hex_gt1 : ∃ b₀ : ℝ, 1 < b₀ ∧ eisensteinLewisPeriod s b₀ ≠ 0 := by
         by_contra hall
         push Not at hall
         have htend := tendsto_dyadicCuspExtractor hs0 hs_ne (by norm_num : (1 : ℂ) ^ 2 = 1)
@@ -2590,13 +2633,14 @@ theorem eisensteinLewisPeriod_coIsometryDefect_lt_zero_iff {s : ℂ}
         have hev0 : dyadicCuspExtractor s (fun x => eisensteinLewisPeriod s x) =ᶠ[atTop] 0 := by
           filter_upwards [eventually_gt_atTop (1 : ℝ)] with a ha
           unfold dyadicCuspExtractor
+          dsimp only
           rw [hall (2 * a) (by linarith), hall a ha]
           simp
         have hlim0 : Tendsto (dyadicCuspExtractor s (fun x => eisensteinLewisPeriod s x))
             atTop (𝓝 0) := tendsto_const_nhds.congr' hev0.symm
         have heq_lim := tendsto_nhds_unique htend hlim0
         have h2_gt1 : 1 < ‖(2 : ℂ) ^ (1 - 2 * s)‖ := by
-          rw [show (2 : ℂ) = ((2 : ℝ) : ℂ) by norm_num,
+          rw [show (2 : ℂ) ^ (1 - 2 * s) = ((2 : ℝ) : ℂ) ^ (1 - 2 * s) by norm_num,
             Complex.norm_cpow_eq_rpow_re_of_pos (by norm_num : (0 : ℝ) < 2),
             show (1 - 2 * s).re = 1 - 2 * s.re by simp]
           exact Real.one_lt_rpow (by norm_num) (by linarith)
@@ -2802,9 +2846,9 @@ theorem nonresonant_real_strip_eisenstein_counterexample {σ : ℝ}
       (fun a : ℝ =>
         ‖dyadicCuspExtractor (σ : ℂ) (fun x => eisensteinLewisPeriod (σ : ℂ) x) a‖ ^ 2 / a)
       (Ioi 1) := by
-  have hs0 : 0 < (σ : ℂ).re := by simp [h0]
-  have hs1 : (σ : ℂ).re < 1 / 2 := by simp [h1]
-  have hs_ne : (σ : ℂ).re ≠ 1 / 4 := by simp [hne]
+  have hs0 : 0 < (σ : ℂ).re := by simpa using h0
+  have hs1 : (σ : ℂ).re < 1 / 2 := by simpa using h1
+  have hs_ne : (σ : ℂ).re ≠ 1 / 4 := by simpa using hne
   have hzeta_ne : riemannZeta (2 * (σ : ℂ)) ≠ 0 := by
     rw [show 2 * (σ : ℂ) = ((2 * σ : ℝ) : ℂ) by push_cast; ring]
     exact RHTower.riemannZeta_real_strip_ne_zero (by linarith) (by linarith)
@@ -2818,8 +2862,8 @@ theorem nonresonant_real_strip_eisenstein_counterexample {σ : ℝ}
       (fun a : ℝ =>
         ‖dyadicCuspExtractor (σ : ℂ) (fun x => eisensteinLewisPeriod (σ : ℂ) x) a‖ ^ 2 / a)
       (Ioi 1) := by
-    rw [eisensteinLewisPeriod,
-      dyadicCuspExtractor_sq_div_integrableOn_iff hs0 hs1 (by norm_num) (state (2 * (σ : ℂ)))
+    unfold eisensteinLewisPeriod
+    rw [dyadicCuspExtractor_sq_div_integrableOn_iff hs0 hs1 (by norm_num) (state (2 * (σ : ℂ)))
         (state_regularized_eisenstein hs0 hs1),
       neg_eq_zero]
     exact hzeta_ne
@@ -2839,8 +2883,8 @@ theorem eisensteinLewisPeriod_dyadicCuspEnergy_integrable_iff_resonance {s : ℂ
       (fun a : ℝ =>
         ‖dyadicCuspExtractor s (fun x => eisensteinLewisPeriod s x) a‖ ^ 2 / a)
       (Ioi 1) ↔ IsMayerScatteringResonance s := by
-  rw [eisensteinLewisPeriod,
-    dyadicCuspExtractor_sq_div_integrableOn_iff hs0 hs1 (by norm_num) (state (2 * s))
+  unfold eisensteinLewisPeriod
+  rw [dyadicCuspExtractor_sq_div_integrableOn_iff hs0 hs1 (by norm_num) (state (2 * s))
       (state_regularized_eisenstein hs0 hs1),
     neg_eq_zero, isMayerScatteringResonance_iff_zeta_zero hs0 hs1]
 

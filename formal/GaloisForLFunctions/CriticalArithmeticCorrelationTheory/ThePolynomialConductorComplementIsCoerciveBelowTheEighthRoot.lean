@@ -10,6 +10,8 @@ On `(conductorSubspace R N)ᗮ` with `R = ⌊N^θ⌋₊`, the prefix pole defect
 `θ' log N` below `k / 4`, then leaves `(k/2) P` on the prefix and `κ/(8c⁷) · log N` per unit
 top mass, because the leakage `k B = O(log c)` is below `κ log N / c⁷` once `c⁸ = o(log N)`.
 
+* `eventually_completeWeilEnergy_two_region_on_polynomialConductorOrthogonal_below_one_eighth`:
+  for `0 < θ ≤ 1/36`, `(θ/8D) log N` per unit prefix mass and `g log N/(8c⁷)` per unit top mass.
 * `eventually_completeWeilEnergy_ge_on_polynomialConductorOrthogonal_below_one_eighth`:
   for `θ > 0` and `0 < α < 1/8`, eventually in `N` and uniformly across `1 ≤ c ≤ (log N)^α`,
   `(c_orth log N / c⁷) ‖z‖² ≤ completeWeilEnergy` on `(conductorSubspace ⌊N^θ⌋₊ N)ᗮ`.

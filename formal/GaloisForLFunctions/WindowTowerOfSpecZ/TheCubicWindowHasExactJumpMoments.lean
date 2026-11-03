@@ -13,6 +13,7 @@ noncomputable section
 open Real MeasureTheory Set intervalIntegral
 namespace GaloisForLFunctions.WindowTowerOfSpecZ
 
+/-- An odd continuous cubic supported on the unit window. -/
 def cubicWindow (x : ℝ) : ℝ := x * max (1 - 4 * x ^ 2) 0
 
 theorem continuous_cubicWindow : Continuous cubicWindow := by
@@ -41,15 +42,16 @@ theorem compact_cubicWindow : HasCompactSupport cubicWindow :=
 theorem cubicWindow_odd (x : ℝ) : cubicWindow (-x) = -cubicWindow x := by
   simp only [cubicWindow, neg_sq, neg_mul]
 
+/-- Positive-lag correlation of the cubic for `0 ≤ t ≤ 1`. -/
 def cubicCorrPoly (t : ℝ) : ℝ :=
   2 / 105 - 2 / 5 * t ^ 2 + 2 / 3 * t ^ 3 - 2 / 5 * t ^ 5 + 4 / 35 * t ^ 7
 
-def cubicCorrAnti (t x : ℝ) : ℝ :=
+private def cubicCorrAnti (t x : ℝ) : ℝ :=
   16 * x ^ 7 / 7 + 8 * t * x ^ 6 + (48 * t ^ 2 - 8) * x ^ 5 / 5 +
   (4 * t ^ 3 - 4 * t) * x ^ 4 + (1 - 12 * t ^ 2) * x ^ 3 / 3 +
   (t - 4 * t ^ 3) * x ^ 2 / 2
 
-theorem deriv_cubicCorrAnti (t x : ℝ) :
+private theorem deriv_cubicCorrAnti (t x : ℝ) :
     HasDerivAt (cubicCorrAnti t)
       (x * (1 - 4 * x ^ 2) * ((x + t) * (1 - 4 * (x + t) ^ 2))) x := by
   have h1 := ((hasDerivAt_pow 7 x).const_mul 16).div_const 7
@@ -61,6 +63,7 @@ theorem deriv_cubicCorrAnti (t x : ℝ) :
   have h := ((((h1.add h2).add h3).add h4).add h5).add h6
   exact h.congr_deriv (by ring)
 
+/-- Integrating over the overlap gives the exact correlation polynomial. -/
 theorem cubicWindow_autocorr {t : ℝ} (ht : 0 ≤ t) (ht1 : t ≤ 1) :
     (∫ x, cubicWindow x * cubicWindow (x + t)) = cubicCorrPoly t := by
   have he : (fun x => cubicWindow x * cubicWindow (x + t)) =
@@ -93,6 +96,7 @@ theorem cubicWindow_autocorr_tail {t : ℝ} (ht : 1 < t) :
     (∫ x, cubicWindow x * cubicWindow (x + t)) = 0 := by
   apply integral_eq_zero_of_ae
   exact Filter.Eventually.of_forall fun x => by
+    change cubicWindow x * cubicWindow (x + t) = 0
     by_cases hx : x ∈ Icc (-(1 / 2 : ℝ)) (1 / 2)
     · rw [cubicWindow_outside (x := x + t)
         (by intro h; linarith only [hx.1, h.2, ht]), mul_zero]
@@ -132,9 +136,18 @@ theorem cubicWindow_logarithmic_integral :
       ∫ t in Ioc (0 : ℝ) 1, cubicLagQuotient t := by
     apply setIntegral_congr_fun measurableSet_Ioc
     intro t ht
+    change (2 / 105 - cubicCorrPoly t) / t = cubicLagQuotient t
     rw [cubicCorrPoly_deficit, mul_div_cancel_left₀ _ ht.1.ne']
   rw [he, ← intervalIntegral.integral_of_le (by norm_num : (0 : ℝ) ≤ 1)]
   exact integral_cubicLagQuotient
+
+/-- The apparent singularity of the logarithmic deficit is removable at zero. -/
+theorem integrableOn_cubicWindow_logarithmic_deficit :
+    IntegrableOn (fun t : ℝ => (2 / 105 - cubicCorrPoly t) / t) (Ioc (0 : ℝ) 1) := by
+  have hc : Continuous cubicLagQuotient := by unfold cubicLagQuotient; fun_prop
+  refine (hc.integrableOn_Icc.mono_set Ioc_subset_Icc_self).congr ?_
+  filter_upwards [ae_restrict_mem measurableSet_Ioc] with t ht
+  rw [cubicCorrPoly_deficit, mul_div_cancel_left₀ _ ht.1.ne']
 
 /-- Oddness cancels the correlation over all positive lags. -/
 theorem integral_cubicCorrPoly :

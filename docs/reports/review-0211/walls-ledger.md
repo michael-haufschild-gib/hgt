@@ -43,7 +43,7 @@ plan; `[N]` numerical; `[D]` derived here from Lean statements. Window lengths `
 | Σ1b Rough regime, tilted spline | Partially solved | sub | All vectors `1 ≤ c ≤ (log N)^α`, `α < 1/9` [L]. Below `1/8` [L]: far reserve `(7/8)D_M + κ/(4c⁷)·log N·S − θlog N·P` on `V_1^⊥`; polynomial-conductor complement floor `c_orth log N/c⁷`, nonpositive subspaces of dimension `≤ ⌊N^θ⌋`; three-band complement keeps floors `κ₀+3`, `κ₀+2+√L/32`, `κ₀+2+3bk/(16c⁷)` after internal cross payments; band–far cross with every channel paid by a free reserve parameter; coherent jet–pole cancellation; deep-row conductor residuals; growing subthreshold block Jordan. Whole-space positivity for every `α < 1/8`: plan complete, assembly open [P]. Terminal-pole orthogonality of the prefix–terminal block refuted; survivor: rank-one coherent structure [P]. |
 | Σ1c Joint shell–pole payment | Partially solved | sub | Actual prime-successor edges pay nonconstant packet mass, `½affineDirichlet ≥ [P(⌊N/16Q²⌋) − P(Q)]·mass/64` [L]; separate shell payment costs `c⁹` at `ε = c⁻⁷`; joint top-band coefficient `O_φ(G(c + log N))` [L]. Open: shell, pole, Gamma and row-potential payment coupled to the complement at the critical overlap. |
 | Σ1d General profiles | Partially solved | sub | Universal rate `ae^{−Bc}` on polynomial spans `θ < 1/1080` for `c ≤ b log log N`; subpolynomial spans to a super-log-log clock [L]. Full space past `log log N` open. |
-| Σ1e Square-root conductor barrier | Open | sub | Frames and residual averages need `m² ≤ N`; above `√N` an Elliott–Halberstam-type input; prime conductors above `√N` have disjoint spikes [L]. |
+| Σ1e Square-root conductor barrier | Partially solved | sub | Frames and residual averages need `m² ≤ N`; above `√N` an Elliott–Halberstam-type input; prime conductors above `√N` have disjoint spikes [L]. |
 | Σ1f Defect-only confinement | No-go | — | `Q < 2^k` witnesses [L]. |
 | Σ1g Haar / Gamma graph | Partially solved | sub | All-detail prime–pole cancellation `O(exp(−√log Y/92160000))`; index `≤ R + A`; growing Euler heads unbounded [L]. Joint Gamma graph + signed diagonal + poles open. |
 | Σ1h Rough regime, smooth profiles | Solved (to `ε₀·c*`) | sub | Logarithmic profile positive to `ε₀L(log L)²`, budget sharp [L]. |
@@ -94,9 +94,9 @@ plan; `[N]` numerical; `[D]` derived here from Lean statements. Window lengths `
 | Π5 Conjugate diagonal (Hecke defect) | Sharpened | sub → ≥qRH → RH | Means `O_c(log U)` for `c < ½`; `o(log U)` ⇔ critical-scale clustering [L], one of eight equivalent forms (Π22) [S]; one dyadic constant ⇔ RH [L]. |
 | Π6 Averages versus all heights | Sharpened | — | Almost all unit windows zero-free at depth `(1+ε)log log T/log T`; right-half depth moment `o(V)` [L]; Planck windows zero-free beyond `A/log V` outside relative measure `O(e^{−rA}/A)`; all but `O_c(V/log log V)` unit windows certified at the double-log stage [S]. |
 | Π7 Census / pair surplus | Partially solved | sub / LH | Simple critical `≥ 0.67250071`; positivity-only certificates cannot reach `3/4` [L]. |
-| Π8 Depth visibility | Sharpened | — | Isolated pairs visible at aperture `a` iff `S_δ(a) > (1/2π)log(ξ/2π)`; clusters not excluded [L/D]. |
+| Π8 Depth visibility | Partially solved | — | Isolated pairs visible at aperture `a` iff `S_δ(a) > (1/2π)log(ξ/2π)`; clusters not excluded [L/D]. |
 | Π9 Exceptional moduli | Partially solved | sub | Uniform zero-free region and Siegel for `q ≤ (log x)^A` [L]. |
-| Π10 Frequency localization | Sharpened | ≥qRH; RH | Every band `⌈N^δ⌉` retains `2Θ` [L]. |
+| Π10 Frequency localization | Solved (localization) | ≥qRH; RH | Every band `⌈N^δ⌉` retains `2Θ` [L]. |
 | Π11a–e Cone, bidegree, fixed-rank, definite, Siegel counts | No-go | — | Excluded as independent sign producers; fakes `ℤ ⊕ yℤ`, `m² + 64n²` [L]. |
 | Π11f Logarithmic duality of the split surface | Partially solved | sub | Pole plane: Abel completion `A(t) > 0`, `A(1/t) = tA(t)`, logarithmic RR; boost count `B(1/t) = tB(t) + (1+t)log t + c(t−1)`; `B(t) = 4∫₀^∞C(t cosh v)dv` [L]. Primitive part open. |
 | Π11g Boost transform | Solved (identity) | — | `∫Z⁺(s,u)e^{2wu}du = K(s,w)ζ(s+w)ζ(s−w)` [L]. |
@@ -170,15 +170,15 @@ plan; `[N]` numerical; `[D]` derived here from Lean statements. Window lengths `
 
 | Family | Solved | Partially solved | Sharpened | Open | No-go | Classified | Reduced |
 |---|---|---|---|---|---|---|---|
-| Σ (44) | 7 (Σ1a, Σ1h, Σ10, Σ12, Σ16, Σ24, Σ29) | 10 (Σ1b, Σ1c, Σ1d, Σ1g, Σ1j, Σ1k, Σ3, Σ6, Σ9, Σ27) | 11 (Σ1, Σ2, Σ3a, Σ4, Σ7, Σ8, Σ17, Σ19, Σ28, Σ31, Σ32) | 4 (Σ1e, Σ18, Σ20, Σ30) | 5 (Σ1f, Σ13, Σ14, Σ23, Σ25) | 6 (Σ1i, Σ11, Σ15, Σ21, Σ22, Σ26) | 1 (Σ5 → Π17) |
-| Π (30) | 3 (Π1, Π11g, Π13) | 5 (Π3, Π7, Π9, Π11f, Π12) | 9 (Π4, Π5, Π6, Π8, Π10, Π11h, Π16, Π17, Π22) | 2 (Π2, Π23) | 9 (Π11a–e, Π14, Π18, Π19, Π20) | 2 (Π15, Π21) | — |
+| Σ (44) | 7 (Σ1a, Σ1h, Σ10, Σ12, Σ16, Σ24, Σ29) | 11 (Σ1b, Σ1c, Σ1d, Σ1e, Σ1g, Σ1j, Σ1k, Σ3, Σ6, Σ9, Σ27) | 11 (Σ1, Σ2, Σ3a, Σ4, Σ7, Σ8, Σ17, Σ19, Σ28, Σ31, Σ32) | 3 (Σ18, Σ20, Σ30) | 5 (Σ1f, Σ13, Σ14, Σ23, Σ25) | 6 (Σ1i, Σ11, Σ15, Σ21, Σ22, Σ26) | 1 (Σ5 → Π17) |
+| Π (30) | 4 (Π1, Π10, Π11g, Π13) | 6 (Π3, Π7, Π8, Π9, Π11f, Π12) | 7 (Π4, Π5, Π6, Π11h, Π16, Π17, Π22) | 2 (Π2, Π23) | 9 (Π11a–e, Π14, Π18, Π19, Π20) | 2 (Π15, Π21) | — |
 | Γ (27) | 6 (Γ2, Γ6, Γ7, Γ12, Γ18, Γ23) | 2 (Γ5, Γ15) | 6 (Γ4, Γ8, Γ10, Γ16, Γ19, Γ24) | 1 (Γ1) | 10 (Γ3, Γ9, Γ11, Γ13, Γ14, Γ21, Γ22, Γ25, Γ26, Γ27) | 2 (Γ17, Γ20) | — |
 
 Strength of the open walls:
 - **RH:** Σ1, Σ2, Σ3a, Σ6, Σ7, Σ8, Σ17, Σ18, Σ19, Σ20, Σ27 (all stages), Σ28 (subexponential), Σ30,
   Σ31 (uniform), Σ32, Π2, Π4, Π11h, Π17 (polynomial stage), Π23 (all degrees), Γ1, Γ4, Γ5, Γ8, Γ16, Γ19,
   Γ24.
-- **≥qRH:** Σ4 (`K_ζ`), Σ28 (exponent `< ½`), Π5 (fixed scale), Π10, Π17 (log stage), Π23 (fixed
+- **≥qRH:** Σ4 (`K_ζ`), Σ28 (exponent `< ½`), Π5 (fixed scale), Π17 (log stage), Π23 (fixed
   degree).
 - **sub:** Σ1b–Σ1e, Σ1g, Σ1j, Σ1k, Σ4 (zero–one law), Σ27 (each stage), Σ30 (each stage), Π3, Π5 (mean
   `o(log U)`), Π7, Π9, Π11f, Π11h (fixed length), Π12, Π22, Γ15.

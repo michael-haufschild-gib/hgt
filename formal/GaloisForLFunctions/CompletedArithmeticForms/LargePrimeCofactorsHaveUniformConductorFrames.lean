@@ -50,7 +50,7 @@ private theorem profile_mul_prime {d p : ℕ} (hd : 0 < d) (hp : p.Prime)
     ramanujanCoefficient_prime hp]
   split_ifs <;> ring
 
-private theorem cofactorProfile_mul_prime {D p : ℕ} (hp : p.Prime)
+private theorem cofactorProfile_mul_prime {D p : ℕ}
     (hcp : ∀ d ∈ Icc 1 D, d.Coprime p) (a : ℕ → ℝ) (n : ℕ) :
     cofactorProfile D a (p * n) = cofactorProfile D a n / Real.sqrt p := by
   unfold cofactorProfile
@@ -155,13 +155,12 @@ private theorem sum_cofactorSpikes_sq (S : Finset ℕ) (D N : ℕ)
       · intro n hn
         exact (Nat.mul_comm p (n / p)).trans (Nat.div_mul_cancel (mem_filter.mp hn).2)
       · intro j _
-        rw [cofactorProfile_mul_prime (hP p hp) (hcp p hp), mul_pow, div_pow,
+        rw [cofactorProfile_mul_prime (hcp p hp), mul_pow, div_pow,
           div_pow, Real.sq_sqrt (Nat.cast_nonneg _), Real.sq_sqrt (Nat.cast_nonneg _)]
         have hp0 : (p : ℝ) ≠ 0 := by exact_mod_cast (hP p hp).ne_zero
         have ht0 : (p.totient : ℝ) ≠ 0 := by
           exact_mod_cast (Nat.totient_pos.mpr (hP p hp).pos).ne'
         field_simp [hp0, ht0]
-        ring
 
 private theorem cofactorProfile_upper {D N : ℕ} (hDN : D * D ≤ N)
     (hL : 4 * Real.exp 7 ≤ Real.log N) (a : ℕ → ℝ) :
@@ -194,4 +193,175 @@ private theorem spike_sub_background_bound {M N : ℕ} (hMN : M ≤ N)
   have hc := mul_le_mul_of_nonneg_right hδ1 hx0
   nlinarith only [ht, hb, hhead, hc]
 
+private theorem norm_primeCofactorHorizonPacket_sq (S : Finset ℕ) (D N : ℕ)
+    (a : ℕ → ℕ → ℝ) :
+    ‖primeCofactorHorizonPacket S D N a‖ ^ 2 =
+      (∑ n ∈ Icc 1 N,
+        (∑ p ∈ S, ∑ d ∈ Icc 1 D, a p d * ramanujanPoleProfile (d * p) n) ^ 2) /
+          Real.log N := by
+  have hcoord (n : PrimeHorizonIndex N) : primeCofactorHorizonPacket S D N a n =
+      (∑ p ∈ S, ∑ d ∈ Icc 1 D, a p d * ramanujanPoleProfile (d * p) n) /
+        Real.sqrt (Real.log N) := by
+    simp only [primeCofactorHorizonPacket, normalizedRamanujanHorizonVector,
+      ramanujanHorizonVector, WithLp.ofLp_sum, Finset.sum_apply,
+      PiLp.smul_apply, smul_eq_mul]
+    rw [sum_div]
+    refine sum_congr rfl fun p _ => ?_
+    rw [sum_div]
+    exact sum_congr rfl fun d _ => by ring
+  rw [EuclideanSpace.real_norm_sq_eq]
+  simp_rw [hcoord, div_pow, Real.sq_sqrt (Real.log_natCast_nonneg N)]
+  rw [← sum_div]
+  congr 1
+  exact sum_coe_sort (Icc 1 N) (fun n =>
+    (∑ p ∈ S, ∑ d ∈ Icc 1 D, a p d * ramanujanPoleProfile (d * p) n) ^ 2)
+
+/-- A growing small cofactor preserves the large-prime frame beyond the square-root
+horizon. The constant is uniform in both conductor indices and all coefficients. -/
+theorem primeCofactorBand_lower_frame {N D : ℕ} {θ ε : ℝ}
+    (hL : 4 * Real.exp 7 ≤ Real.log (N : ℝ)) (hD : 2 ≤ D)
+    (hθ : (1 / 2 : ℝ) < θ) (hε : 0 ≤ ε) (hrange : θ + 2 * ε < 1)
+    (hDN : (D : ℝ) ≤ (N : ℝ) ^ ε)
+    (S : Finset ℕ) (hP : ∀ p ∈ S, p.Prime)
+    (hband : ∀ p ∈ S, Real.sqrt (N : ℝ) < p ∧ (p : ℝ) ≤ (N : ℝ) ^ θ)
+    (a : ℕ → ℕ → ℝ) :
+    ((1 - 4 * ε) * (1 - θ - 2 * ε) / 26) *
+        (∑ p ∈ S, ∑ d ∈ Icc 1 D, a p d ^ 2) ≤
+      ‖primeCofactorHorizonPacket S D N a‖ ^ 2 := by
+  have hL0 : 0 < Real.log (N : ℝ) := (by positivity : 0 < 4 * Real.exp 7).trans_le hL
+  have hN2 : 2 ≤ N := by
+    by_contra hn
+    have hh : N = 0 ∨ N = 1 := by omega
+    rcases hh with rfl | rfl <;> norm_num at hL0
+  have hN1 : (1 : ℝ) < N := by exact_mod_cast hN2
+  have hN0 : (0 : ℝ) < N := zero_lt_one.trans hN1
+  have hD0 : (0 : ℝ) < D := by exact_mod_cast (show 0 < D by omega)
+  have hε4 : ε < 1 / 4 := by linarith only [hθ, hrange]
+  have hDlog : Real.log D ≤ ε * Real.log N := by
+    have hh := Real.log_le_log hD0 hDN
+    rwa [Real.log_rpow hN0] at hh
+  have hDroot : (D : ℝ) < Real.sqrt N := by
+    rw [Real.sqrt_eq_rpow]
+    exact hDN.trans_lt (Real.rpow_lt_rpow_of_exponent_lt hN1 (by linarith only [hε4]))
+  have hDNsq : D * D ≤ N := by
+    have hh := pow_le_pow_left₀ (Nat.cast_nonneg D) hDroot.le 2
+    rw [Real.sq_sqrt hN0.le] at hh
+    rw [pow_two] at hh
+    exact_mod_cast hh
+  have hcp : ∀ p ∈ S, ∀ d ∈ Icc 1 D, d.Coprime p := by
+    intro p hp d hd
+    have hdp : d < p := by
+      have hdD : (d : ℝ) ≤ D := by exact_mod_cast (mem_Icc.mp hd).2
+      exact_mod_cast (hdD.trans_lt hDroot).trans (hband p hp).1
+    exact ((hP p hp).coprime_iff_not_dvd.mpr
+      (fun hpd => (not_le_of_gt hdp) (Nat.le_of_dvd (mem_Icc.mp hd).1 hpd))).symm
+  have hdisj : ∀ p ∈ S, ∀ q ∈ S, p ≠ q → N < p * q := by
+    intro p hp q hq _
+    have hp0 : (0 : ℝ) < p := by exact_mod_cast (hP p hp).pos
+    have hh := mul_lt_mul (hband p hp).1 (hband q hq).1.le
+      (Real.sqrt_pos.mpr hN0) hp0.le
+    rw [← sq, Real.sq_sqrt hN0.le] at hh
+    exact_mod_cast hh
+  let M := ⌊Real.sqrt (N : ℝ)⌋₊
+  let δ := (1 / 2 : ℝ) - 2 * ε
+  let t := 1 - θ - 2 * ε
+  let b := fun d => ∑ p ∈ S, a p d / Real.sqrt (p.totient : ℝ)
+  have hδ : 0 < δ := by dsimp only [δ]; linarith only [hε4]
+  have hδ1 : δ ≤ 1 / 2 := by dsimp only [δ]; linarith only [hε]
+  have ht : 0 < t := by dsimp only [t]; linarith only [hrange]
+  have hMroot : (M : ℝ) ≤ Real.sqrt N := Nat.floor_le (Real.sqrt_nonneg _)
+  have hrootN : Real.sqrt (N : ℝ) ≤ N := by
+    nlinarith only [Real.sq_sqrt hN0.le, Real.sqrt_nonneg (N : ℝ), hN1]
+  have hMN : M ≤ N := by exact_mod_cast hMroot.trans hrootN
+  have hMp : ∀ p ∈ S, M < p := by
+    intro p hp
+    exact_mod_cast hMroot.trans_lt (hband p hp).1
+  have hheadlog : Real.log N / 2 ≤ Real.log ((M : ℝ) + 1) := by
+    have hh := Real.log_le_log (Real.sqrt_pos.mpr hN0)
+      (Nat.lt_floor_add_one (Real.sqrt (N : ℝ))).le
+    have he := congrArg Real.log (Real.sq_sqrt hN0.le)
+    rw [Real.log_pow] at he
+    norm_num only [Nat.cast_ofNat] at he
+    linarith only [hh, he]
+  have hb_low : δ * Real.log N * (∑ d ∈ Icc 1 D, b d ^ 2) ≤
+      ∑ n ∈ Icc 1 M, cofactorBackground S D a n ^ 2 := by
+    have hcoef : δ * Real.log N ≤ Real.log ((M : ℝ) + 1) - 2 * Real.log D := by
+      dsimp only [δ]
+      nlinarith only [hheadlog, hDlog]
+    exact (mul_le_mul_of_nonneg_right hcoef (sum_nonneg fun _ _ => sq_nonneg _)).trans
+      (ramanujanPoleProfile_family_squareRoot_lower hD b M)
+  have hb_up : (∑ n ∈ Icc 1 N, cofactorBackground S D a n ^ 2) ≤
+      6 * Real.log N * ∑ d ∈ Icc 1 D, b d ^ 2 := cofactorProfile_upper hDNsq hL b
+  have hb : δ * (∑ n ∈ Icc 1 N, cofactorBackground S D a n ^ 2) ≤
+      6 * ∑ n ∈ Icc 1 M, cofactorBackground S D a n ^ 2 := by
+    have hh := mul_le_mul_of_nonneg_left hb_up hδ.le
+    nlinarith only [hh, hb_low]
+  have hs : t * Real.log N * (∑ p ∈ S, ∑ d ∈ Icc 1 D, a p d ^ 2) ≤
+      ∑ n ∈ Icc 1 N, cofactorSpikes S D a n ^ 2 := by
+    rw [sum_cofactorSpikes_sq S D N a hP hcp hdisj, mul_sum]
+    refine sum_le_sum fun p hp => ?_
+    have hp0 : (0 : ℝ) < p := by exact_mod_cast (hP p hp).pos
+    have htot : (0 : ℝ) < p.totient := by exact_mod_cast Nat.totient_pos.mpr (hP p hp).pos
+    have hratio : 1 ≤ (p : ℝ) / p.totient := (one_le_div htot).mpr
+      (by exact_mod_cast Nat.totient_le p)
+    have hfloor : (N : ℝ) / p < (N / p : ℕ) + 1 := by
+      simpa only [Nat.floor_div_natCast, Nat.floor_natCast] using
+        Nat.lt_floor_add_one ((N : ℝ) / p)
+    have hlog := Real.log_le_log (div_pos hN0 hp0) hfloor.le
+    rw [Real.log_div hN0.ne' hp0.ne'] at hlog
+    have hlogp := Real.log_le_log hp0 (hband p hp).2
+    rw [Real.log_rpow hN0] at hlogp
+    have hcoef : t * Real.log N ≤ Real.log ((N / p : ℕ) + 1 : ℝ) - 2 * Real.log D := by
+      dsimp only [t]
+      nlinarith only [hlog, hlogp, hDlog]
+    have hlower := (mul_le_mul_of_nonneg_right hcoef
+      (sum_nonneg fun _ _ => sq_nonneg _)).trans
+      (ramanujanPoleProfile_family_squareRoot_lower hD (a p) (N / p))
+    exact hlower.trans (le_mul_of_one_le_left (sum_nonneg fun _ _ => sq_nonneg _) hratio)
+  have hpaid := spike_sub_background_bound hMN (cofactorSpikes S D a)
+    (cofactorBackground S D a) hδ hδ1
+    (fun n hn => cofactorSpikes_vanishes_before S D a hMp (mem_Icc.mp hn).1 (mem_Icc.mp hn).2) hb
+  have hnrm : (∑ n ∈ Icc 1 N,
+      (cofactorSpikes S D a n - cofactorBackground S D a n) ^ 2) =
+      Real.log N * ‖primeCofactorHorizonPacket S D N a‖ ^ 2 := by
+    rw [norm_primeCofactorHorizonPacket_sq]
+    have hrows := sum_congr rfl fun n (_ : n ∈ Icc 1 N) => congrArg (fun x : ℝ => x ^ 2)
+      (cofactor_profile_split S a hP hcp n).symm
+    rw [hrows]
+    field_simp [hL0.ne']
+  rw [hnrm] at hpaid
+  have hmain := (mul_le_mul_of_nonneg_left hs hδ.le).trans hpaid
+  have hc : Real.log N * (δ * t / 13 * (∑ p ∈ S, ∑ d ∈ Icc 1 D, a p d ^ 2)) ≤
+      Real.log N * ‖primeCofactorHorizonPacket S D N a‖ ^ 2 := by
+    nlinarith only [hmain]
+  have hresult := (mul_le_mul_iff_right₀ hL0).mp hc
+  have hcoef_eq : (1 - 4 * ε) * (1 - θ - 2 * ε) / 26 = δ * t / 13 := by
+    dsimp only [δ, t]
+    ring
+  rw [hcoef_eq]
+  exact hresult
+
+/-- The composite family has a fixed positive lower frame constant throughout
+every exponent range `1/2 < θ` and `θ + 2ε < 1`. -/
+theorem exists_primeCofactorBand_uniform_lower_frame {θ ε : ℝ}
+    (hθ : (1 / 2 : ℝ) < θ) (hε : 0 < ε) (hrange : θ + 2 * ε < 1) :
+    ∃ κ : ℝ, 0 < κ ∧ ∀ᶠ N : ℕ in atTop,
+      ∀ D : ℕ, 2 ≤ D → (D : ℝ) ≤ (N : ℝ) ^ ε →
+      ∀ S : Finset ℕ, (∀ p ∈ S, p.Prime) →
+        (∀ p ∈ S, Real.sqrt (N : ℝ) < p ∧ (p : ℝ) ≤ (N : ℝ) ^ θ) →
+      ∀ a : ℕ → ℕ → ℝ,
+        κ * (∑ p ∈ S, ∑ d ∈ Icc 1 D, a p d ^ 2) ≤
+          ‖primeCofactorHorizonPacket S D N a‖ ^ 2 := by
+  have hfirst : 0 < 1 - 4 * ε := by linarith only [hθ, hrange]
+  have hsecond : 0 < 1 - θ - 2 * ε := by linarith only [hrange]
+  refine ⟨(1 - 4 * ε) * (1 - θ - 2 * ε) / 26, by positivity, ?_⟩
+  have hlog : Tendsto (fun N : ℕ => Real.log (N : ℝ)) atTop atTop :=
+    Real.tendsto_log_atTop.comp tendsto_natCast_atTop_atTop
+  filter_upwards [hlog.eventually_ge_atTop (4 * Real.exp 7)] with N hL
+  intro D hD hDN S hP hband a
+  exact primeCofactorBand_lower_frame hL hD hθ hε.le hrange hDN S hP hband a
+
 end GaloisForLFunctions.CompletedArithmeticForms
+
+#print axioms GaloisForLFunctions.CompletedArithmeticForms.primeCofactorBand_lower_frame
+#print axioms GaloisForLFunctions.CompletedArithmeticForms.exists_primeCofactorBand_uniform_lower_frame
