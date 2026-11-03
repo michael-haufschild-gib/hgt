@@ -131,6 +131,9 @@ theorem exists_critical_multiple_schur_payment {κ_P κ_S : ℝ}
   let E := fun m => completedConductorEnergy tiltedUnitSpline c m
   let r := fun m => Matrix.toEuclideanLin (completeWeilMatrix tiltedUnitSpline c N)
     (normalizedRamanujanHorizonVector m N) - E m • normalizedRamanujanHorizonVector m N
+  change 1 ≤ L at hL1
+  change 768 ≤ L ^ (1 / 4 : ℝ) at hlarge
+  change (48 / κ_P) * (1 + Real.log L) ^ 5 ≤ L ^ (3 / 4 : ℝ) at hprefix
   have hL0 : 0 < L := zero_lt_one.trans_le hL1
   have hc0 : 0 < c := zero_lt_one.trans_le hc1
   have hc7 : 0 < c ^ 7 := pow_pos hc0 7
@@ -161,6 +164,15 @@ theorem exists_critical_multiple_schur_payment {κ_P κ_S : ℝ}
   have hpair := pairing_sum_le_deep_prefix_weighted_collar
     (X := (R : ℝ)) hMN hE u₀ u₁ w hΨ hD h7'
   have hfirst := hT u₀ hu₀
+  change (∑ m ∈ Icc 1 Q, ⟪r m, u₀ + u₁ + w⟫ ^ 2 / E m) ≤
+    6 * L ^ (1 / 4 : ℝ) * (∑ n ∈ topRows N (R : ℝ), primeHorizonExtension u₀ n ^ 2) +
+    6 * (1 / 96 : ℝ) * ‖u₀‖ ^ 2 + 3 * L ^ (1 / 4 : ℝ) * ‖u₁‖ ^ 2 +
+    6 * L ^ (1 / 4 : ℝ) * (∑ n ∈ Icc 1 M, primeHorizonExtension w n ^ 2) +
+    6 * (κ_S * L / (48 * c ^ 7)) *
+      topCollarSeventhMass M N (primeHorizonExtension w) at hpair
+  change 48 * L ^ (1 / 4 : ℝ) *
+    (∑ n ∈ topRows N (R : ℝ), primeHorizonExtension u₀ n ^ 2) ≤
+      (1 / 2 : ℝ) * ‖u₀‖ ^ 2 at hfirst
   have hsecond : 24 * L ^ (1 / 4 : ℝ) ≤ L ^ (1 / 2 : ℝ) / 32 := by
     have he : L ^ (1 / 4 : ℝ) * L ^ (1 / 4 : ℝ) = L ^ (1 / 2 : ℝ) := by
       rw [← Real.rpow_add hL0]; norm_num

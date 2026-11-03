@@ -258,7 +258,7 @@ theorem exists_critical_multiple_weighted_complement :
     have h' := (le_div_iff₀ (show 0 < t ^ 5 by positivity)).mpr (by linarith only [h] :
       L ^ (1 / 2 : ℝ) * t ^ 5 ≤ L)
     change L ^ (1 / 2 : ℝ) ≤ 1 / t ^ 5 * L
-    linarith only [h']
+    exact h'.trans_eq (by ring)
   have hR₀R₁ : R₀ ≤ R₁ := by
     apply Nat.floor_mono
     rw [Real.rpow_def_of_pos hN0]

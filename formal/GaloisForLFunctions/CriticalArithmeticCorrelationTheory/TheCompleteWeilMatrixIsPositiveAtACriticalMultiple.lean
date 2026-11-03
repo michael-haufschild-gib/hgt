@@ -71,12 +71,13 @@ theorem completeWeil_posDef_of_weighted_blocks {Q R₀ R₁ M N : ℕ} {c μ p s
   have hE : ∀ m ∈ Icc 1 Q, 0 < E m := by
     intro m hm
     have h := spectralFloor_conductor_energy_ge hc1 (mem_Icc.mp hm).1
+    change λ ≤ E m - λ at h
     change 0 < completedConductorEnergy tiltedUnitSpline c m
     linarith only [h, hλ]
   have hsum : 0 ≤ ∑ m ∈ Icc 1 Q, E m * a m ^ 2 :=
     sum_nonneg fun m hm => mul_nonneg (hE m hm).le (sq_nonneg _)
   have hlow' := hlow a
-  rw [ha, spectralFloorWeilMatrix_inner] at hlow'
+  rw [← ha, spectralFloorWeilMatrix_inner] at hlow'
   have hvz : ∀ m ∈ Icc 1 Q, ⟪normalizedRamanujanHorizonVector m N, u₀ + u₁ + w⟫ = 0 := by
     intro m hm
     let a' : ℕ → ℝ := fun k => if k = m then 1 else 0
@@ -93,7 +94,7 @@ theorem completeWeil_posDef_of_weighted_blocks {Q R₀ R₁ M N : ℕ} {c μ p s
     exact Submodule.inner_right_of_mem_orthogonal hv hz
   have hcross : ⟪Matrix.toEuclideanLin (completeWeilMatrix tiltedUnitSpline c N) y,
       u₀ + u₁ + w⟫ = ∑ m ∈ Icc 1 Q, a m * ⟪r m, u₀ + u₁ + w⟫ := by
-    rw [← ha, map_sum, sum_inner]
+    rw [ha, map_sum, sum_inner]
     refine sum_congr rfl fun m hm => ?_
     rw [map_smul, real_inner_smul_left]
     congr 1
@@ -232,7 +233,7 @@ theorem exists_critical_multiple_completeWeilMatrix_posDef :
     have h' := (le_div_iff₀ (show 0 < t ^ 5 by positivity)).mpr (by linarith only [h] :
       L ^ (1 / 2 : ℝ) * t ^ 5 ≤ L)
     change L ^ (1 / 2 : ℝ) ≤ 1 / t ^ 5 * L
-    linarith only [h']
+    exact h'.trans_eq (by ring)
   have hR₀R₁ : R₀ ≤ R₁ := by
     apply Nat.floor_mono
     rw [Real.rpow_def_of_pos hN0]
@@ -241,7 +242,8 @@ theorem exists_critical_multiple_completeWeilMatrix_posDef :
     calc
       _ ≤ ((N : ℝ) ^ (1 / 36 : ℝ)) ^ 18 := pow_le_pow_left₀ hL0.le hLX 18
       _ = (N : ℝ) ^ (1 / 2 : ℝ) := by
-        rw [← Real.rpow_natCast, ← Real.rpow_mul hN0.le]; norm_num
+        rw [← Real.rpow_natCast ((N : ℝ) ^ (1 / 36 : ℝ)),
+          ← Real.rpow_mul hN0.le]; norm_num
       _ ≤ N := (Real.rpow_le_rpow_of_exponent_le (by exact_mod_cast hN1)
         (by norm_num : (1 / 2 : ℝ) ≤ 1)).trans_eq (Real.rpow_one _)
   have hstrip : 2 * linearPrimeStrip c ≤ M := by

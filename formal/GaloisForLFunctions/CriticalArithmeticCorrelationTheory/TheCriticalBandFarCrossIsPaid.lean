@@ -94,7 +94,7 @@ theorem eventually_critical_band_far_cross {B : ℝ} (hB : 0 < B) :
       simpa only [Real.rpow_one] using hpoly
     have h := (le_div_iff₀ (show 0 < t ^ 5 by positivity)).mpr hpoly'
     change 4 * D + 4 ≤ 1 / t ^ 5 * L
-    linarith only [h]
+    exact h.trans_eq (by ring)
   have hc0 : 0 < c := zero_lt_one.trans_le hc1
   have hcL : c ≤ L := hc.trans ((Real.rpow_le_rpow_of_exponent_le hL1
     (by norm_num : (1 / 8 : ℝ) ≤ 1)).trans_eq (Real.rpow_one L))

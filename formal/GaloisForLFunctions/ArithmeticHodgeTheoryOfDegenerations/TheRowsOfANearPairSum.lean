@@ -799,6 +799,7 @@ theorem abs_rowWindow_le {K : ℝ → ℝ} {α β A w : ℝ} (hw : 0 < w) (hα :
   have hm0 : (0 : ℝ) < m := by exact_mod_cast hm
   have hB0 : 0 ≤ B := (abs_nonneg _).trans (hB 0)
   set b : ℝ := m * (Real.exp (β * w) - 1)
+  have hA0 : 0 ≤ A := (abs_nonneg _).trans (hA α ⟨le_rfl, hαβ⟩)
   have hterm : ∀ h ∈ Finset.Icc 1 (N - m), |(if α * w < Real.log (1 + h / m) ∧
       Real.log (1 + h / m) ≤ β * w then p (m + h) * rowKernel K w m h else 0)| ≤
       if (h : ℝ) ≤ b then B * (A / m) else 0 := by
@@ -813,9 +814,8 @@ theorem abs_rowWindow_le {K : ℝ → ℝ} {α β A w : ℝ} (hw : 0 < w) (hα :
       rw [abs_mul, rowKernel, abs_div, abs_of_pos (lt_of_lt_of_le hm0 hs)]
       exact mul_le_mul (hB _) (div_le_div₀ ((abs_nonneg _).trans hK) hK hm0 hs) (by positivity) hB0
     · exact absurd ((log_window_iff hm (Nat.cast_nonneg h)).mp hw').2 hb
+    · simp only [abs_zero]; positivity
     · simp
-    · simp
-  have hA0 : 0 ≤ A := (abs_nonneg _).trans (hA α ⟨le_rfl, hαβ⟩)
   have hb0 : 0 ≤ b := mul_nonneg hm0.le (by
     have := Real.add_one_le_exp (β * w); nlinarith [mul_nonneg (hα.trans hαβ) hw.le])
   have hcard : (((Finset.Icc 1 (N - m)).filter (fun h : ℕ => (h : ℝ) ≤ b)).card : ℝ) ≤ b := by
@@ -834,5 +834,186 @@ theorem abs_rowWindow_le {K : ℝ → ℝ} {α β A w : ℝ} (hw : 0 < w) (hα :
         rw [← Finset.sum_filter, Finset.sum_const, nsmul_eq_mul]
     _ ≤ b * (B * (A / m)) := mul_le_mul_of_nonneg_right hcard (by positivity)
     _ = B * A * (Real.exp (β * w) - 1) := by simp only [b]; field_simp
+
+theorem abs_integral_kernel_le {K : ℝ → ℝ} {α β A w : ℝ} (hα : 0 ≤ α) (hαβ : α ≤ β) (hw : 0 < w)
+    (hβw : β * w ≤ 1) (hA : ∀ ℓ ∈ Icc α β, |K ℓ| ≤ A) :
+    |∫ ℓ in α..β, K ℓ * (w * Real.exp (w * ℓ / 2))| ≤ 2 * A * β * w := by
+  have hA0 : 0 ≤ A := (abs_nonneg _).trans (hA α ⟨le_rfl, hαβ⟩)
+  have he : Real.exp (1 / 2) ≤ 2 := by
+    have h := Real.abs_exp_sub_one_le (x := 1 / 2) (by norm_num)
+    rw [abs_of_pos (by norm_num : (0:ℝ) < 1 / 2)] at h
+    linarith [le_abs_self (Real.exp (1 / 2) - 1)]
+  have hpt : ∀ ℓ ∈ uIoc α β, ‖K ℓ * (w * Real.exp (w * ℓ / 2))‖ ≤ 2 * A * w := by
+    intro ℓ hℓ
+    rw [uIoc_of_le hαβ] at hℓ
+    rw [Real.norm_eq_abs, abs_mul, abs_mul, abs_of_pos hw, abs_of_pos (Real.exp_pos _)]
+    have hK := hA ℓ ⟨hℓ.1.le, hℓ.2⟩
+    have hexp : Real.exp (w * ℓ / 2) ≤ 2 := by
+      refine (Real.exp_le_exp.mpr ?_).trans he
+      have : w * ℓ ≤ β * w := by nlinarith [hℓ.2]
+      linarith
+    calc |K ℓ| * (w * Real.exp (w * ℓ / 2)) ≤ A * (w * 2) :=
+          mul_le_mul hK (mul_le_mul_of_nonneg_left hexp hw.le) (by positivity) hA0
+      _ = 2 * A * w := by ring
+  have h := intervalIntegral.norm_integral_le_of_norm_le_const hpt
+  rw [Real.norm_eq_abs, abs_of_nonneg (sub_nonneg.mpr hαβ)] at h
+  calc _ ≤ 2 * A * w * (β - α) := h
+    _ ≤ 2 * A * w * β := mul_le_mul_of_nonneg_left (by linarith) (by positivity)
+    _ = 2 * A * β * w := by ring
+
+/-- **The near pair sum.** A pair sum over the window `(αw, βw]` with `q`-periodic weights is the row
+integral `w ∫_α^β K e^{wℓ/2}` against `Σ_m ρ(m)(u(m)v̄ + v(m)ū)`, up to `O(log(βwN))` and the
+`O((βwN)βw)` of the rows that reach the horizon. -/
+theorem abs_nearPairSum_sub_le {K : ℝ → ℝ} {α β A L w : ℝ} (hα : 0 ≤ α) (hαβ : α ≤ β) (hβ : 0 < β)
+    (hw : 0 < w) (hβw : β * w ≤ 1) (hA : ∀ ℓ ∈ Icc α β, |K ℓ| ≤ A)
+    (hL : ∀ x ∈ Icc α β, ∀ y ∈ Icc α β, |K x - K y| ≤ L * |x - y|) (hL0 : 0 ≤ L)
+    {u v : ℕ → ℝ} {q : ℕ} (hq : 0 < q) (hu : ∀ n, u (n + q) = u n) (hv : ∀ n, v (n + q) = v n)
+    {B : ℝ} (huB : ∀ n, |u n| ≤ B) (hvB : ∀ n, |v n| ≤ B)
+    {ρ : ℕ → ℝ} {R : ℝ} (hρ : ∀ n, |ρ n| ≤ R) {N : ℕ} (hN : 1 ≤ N) (hc : 1 ≤ 2 * β * w * N) :
+    |nearPairSum K α β w N u v ρ - (∫ ℓ in α..β, K ℓ * (w * Real.exp (w * ℓ / 2))) *
+        ∑ m ∈ Finset.Icc 1 N, ρ m * (u m * periodicMean v q + v m * periodicMean u q)| ≤
+      2 * R * B * (2 * B * A + (2 * q + 1) * B * (4 * A + 2 * β * L) *
+        (1 + Real.log (2 * β * w * N)) + (β * w * N + 1) * (4 * B * A * β * w)) := by
+  have hA0 : 0 ≤ A := (abs_nonneg _).trans (hA α ⟨le_rfl, hαβ⟩)
+  have hB0 : 0 ≤ B := (abs_nonneg _).trans (huB 0)
+  have hR0 : 0 ≤ R := (abs_nonneg _).trans (hρ 0)
+  have hq0 : (0 : ℝ) < q := by exact_mod_cast hq
+  have hN0 : (0 : ℝ) < N := by exact_mod_cast hN
+  have hβw0 : 0 < β * w := mul_pos hβ hw
+  set I := ∫ ℓ in α..β, K ℓ * (w * Real.exp (w * ℓ / 2)) with hI
+  have hIb : |I| ≤ 2 * A * β * w := abs_integral_kernel_le hα hαβ hw hβw hA
+  set C := (2 * q + 1) * B * (4 * A + 2 * β * L) with hC
+  have hC0 : 0 ≤ C := by positivity
+  have hmeanB : ∀ {p : ℕ → ℝ}, (∀ n, |p n| ≤ B) → |periodicMean p q| ≤ B := by
+    intro p hp
+    rw [periodicMean, abs_div, abs_of_pos hq0, div_le_iff₀ hq0]
+    refine (Finset.abs_sum_le_sum_abs _ _).trans ?_
+    calc ∑ r ∈ range q, |p r| ≤ ∑ _r ∈ range q, B := Finset.sum_le_sum fun r _ => hp r
+      _ = B * q := by rw [sum_const, card_range, nsmul_eq_mul]; ring
+  -- the pointwise row bound
+  set X : ℝ := 1 / (β * w) with hX
+  set Y : ℝ := 1 / (2 * β * w) with hY
+  set Z : ℝ := N * Real.exp (-(β * w)) with hZ
+  set F : ℕ → ℝ := fun m => (if (m : ℝ) < X then 2 * B * A * β * w else 0) +
+    (if Y ≤ (m : ℝ) then C * (1 / m) else 0) + (if Z < (m : ℝ) then 4 * B * A * β * w else 0)
+    with hF
+  have hrow : ∀ {p : ℕ → ℝ}, (∀ n, p (n + q) = p n) → (∀ n, |p n| ≤ B) →
+      ∀ m ∈ Finset.Icc 1 N, |rowWindow K α β w N m p - periodicMean p q * I| ≤ F m := by
+    intro p hper hp m hm
+    have hm1 : 1 ≤ m := (Finset.mem_Icc.mp hm).1
+    have hmN : m ≤ N := (Finset.mem_Icc.mp hm).2
+    have hm0 : (0 : ℝ) < m := by exact_mod_cast hm1
+    have hexp1 : β * w ≤ Real.exp (β * w) - 1 := by linarith [Real.add_one_le_exp (β * w)]
+    have hexp2 : Real.exp (β * w) - 1 ≤ 2 * (β * w) := by
+      have h := Real.abs_exp_sub_one_le (x := β * w) (by rw [abs_of_pos hβw0]; exact hβw)
+      rw [abs_of_pos hβw0] at h
+      linarith [le_abs_self (Real.exp (β * w) - 1)]
+    have hF0 : ∀ a b c : ℝ, 0 ≤ a → 0 ≤ b → 0 ≤ c → a ≤ a + b + c := fun a b c _ hb hc => by
+      linarith
+    have hpI : |periodicMean p q * I| ≤ 2 * B * A * β * w := by
+      rw [abs_mul]
+      calc |periodicMean p q| * |I| ≤ B * (2 * A * β * w) :=
+            mul_le_mul (hmeanB hp) hIb (abs_nonneg _) hB0
+        _ = 2 * B * A * β * w := by ring
+    have hnn1 : 0 ≤ (if (m : ℝ) < X then 2 * B * A * β * w else 0) := by
+      split_ifs <;> positivity
+    have hnn2 : 0 ≤ (if Y ≤ (m : ℝ) then C * (1 / m) else 0) := by split_ifs <;> positivity
+    have hnn3 : 0 ≤ (if Z < (m : ℝ) then 4 * B * A * β * w else 0) := by split_ifs <;> positivity
+    by_cases h1 : (m : ℝ) * (Real.exp (β * w) - 1) < 1
+    · rw [rowWindow_eq_zero_of_lt hm1 h1, zero_sub, abs_neg]
+      have hmX : (m : ℝ) < X := by
+        rw [hX, lt_div_iff₀ hβw0]
+        nlinarith
+      have : (if (m : ℝ) < X then 2 * B * A * β * w else 0) = 2 * B * A * β * w := if_pos hmX
+      simp only [hF]
+      linarith
+    · push_neg at h1
+      have hmY : Y ≤ (m : ℝ) := by
+        rw [hY, div_le_iff₀ (by positivity)]
+        nlinarith
+      by_cases htop : (m : ℝ) * (Real.exp (β * w) - 1) ≤ (N - m : ℕ)
+      · have h := abs_rowWindow_sub_le hα hαβ hw hβw hA hL hL0 hq hper hp hm1 htop
+        have e : (if Y ≤ (m : ℝ) then C * (1 / m) else 0) = C * (1 / m) := if_pos hmY
+        simp only [hF]
+        calc _ ≤ C / m := by rw [← hI] at h; exact h
+          _ = C * (1 / m) := by ring
+          _ ≤ _ := by linarith
+      · push_neg at htop
+        have hmZ : Z < (m : ℝ) := by
+          rw [Nat.cast_sub hmN] at htop
+          have h2 : (N : ℝ) < m * Real.exp (β * w) := by linarith
+          rw [hZ, Real.exp_neg, ← div_eq_mul_inv, div_lt_iff₀ (Real.exp_pos _)]
+          exact h2
+        have hRW := abs_rowWindow_le hw hα hαβ hA hp hm1 (N := N)
+        have e : (if Z < (m : ℝ) then 4 * B * A * β * w else 0) = 4 * B * A * β * w := if_pos hmZ
+        simp only [hF]
+        have hRW' : |rowWindow K α β w N m p| ≤ 2 * B * A * β * w := by
+          refine hRW.trans ?_
+          calc B * A * (Real.exp (β * w) - 1) ≤ B * A * (2 * (β * w)) :=
+                mul_le_mul_of_nonneg_left hexp2 (by positivity)
+            _ = 2 * B * A * β * w := by ring
+        calc _ ≤ |rowWindow K α β w N m p| + |periodicMean p q * I| := abs_sub _ _
+          _ ≤ 4 * B * A * β * w := by linarith
+          _ ≤ _ := by linarith
+  -- summing the row bound
+  have hsumF : ∑ m ∈ Finset.Icc 1 N, F m ≤ 2 * B * A + C * (1 + Real.log (2 * β * w * N)) +
+      (β * w * N + 1) * (4 * B * A * β * w) := by
+    simp only [hF, Finset.sum_add_distrib]
+    have h1 : ∑ m ∈ Finset.Icc 1 N, (if (m : ℝ) < X then 2 * B * A * β * w else 0) ≤ 2 * B * A := by
+      rw [← Finset.sum_filter, Finset.sum_const, nsmul_eq_mul]
+      have hcard := card_filter_lt_le N (X := X) (by positivity)
+      calc _ ≤ X * (2 * B * A * β * w) := mul_le_mul_of_nonneg_right hcard (by positivity)
+        _ = 2 * B * A := by rw [hX]; field_simp
+    have h2 : ∑ m ∈ Finset.Icc 1 N, (if Y ≤ (m : ℝ) then C * (1 / m) else 0) ≤
+        C * (1 + Real.log (2 * β * w * N)) := by
+      rw [← Finset.sum_filter, ← Finset.mul_sum]
+      refine mul_le_mul_of_nonneg_left ?_ hC0
+      have hYN : Y ≤ N := by
+        rw [hY, div_le_iff₀ (by positivity)]; linarith
+      have h := sum_filter_le_inv_le hN (X := Y) (by positivity) hYN
+      have e : (N : ℝ) / Y = 2 * β * w * N := by rw [hY]; field_simp
+      rwa [e] at h
+    have h3 : ∑ m ∈ Finset.Icc 1 N, (if Z < (m : ℝ) then 4 * B * A * β * w else 0) ≤
+        (β * w * N + 1) * (4 * B * A * β * w) := by
+      rw [← Finset.sum_filter, Finset.sum_const, nsmul_eq_mul]
+      have hZ0 : 0 ≤ Z := by positivity
+      have hZN : Z ≤ N := by
+        rw [hZ]; exact mul_le_of_le_one_right hN0.le (Real.exp_le_one_iff.mpr (by linarith))
+      have hcard := card_filter_gt_le N hZ0 hZN
+      have hNZ : (N : ℝ) - Z ≤ β * w * N := by
+        rw [hZ]
+        have := Real.add_one_le_exp (-(β * w))
+        nlinarith
+      calc _ ≤ ((N : ℝ) - Z + 1) * (4 * B * A * β * w) :=
+            mul_le_mul_of_nonneg_right hcard (by positivity)
+        _ ≤ (β * w * N + 1) * (4 * B * A * β * w) :=
+            mul_le_mul_of_nonneg_right (by linarith) (by positivity)
+    linarith
+  -- assembling
+  rw [nearPairSum_eq_rows K hα hw N u v ρ, Finset.mul_sum, ← Finset.sum_sub_distrib]
+  have hpt : ∀ m ∈ Finset.Icc 1 N,
+      |ρ m * (u m * rowWindow K α β w N m v + v m * rowWindow K α β w N m u) -
+        I * (ρ m * (u m * periodicMean v q + v m * periodicMean u q))| ≤ R * B * (2 * F m) := by
+    intro m hm
+    have e : ρ m * (u m * rowWindow K α β w N m v + v m * rowWindow K α β w N m u) -
+        I * (ρ m * (u m * periodicMean v q + v m * periodicMean u q)) =
+        ρ m * (u m * (rowWindow K α β w N m v - periodicMean v q * I) +
+          v m * (rowWindow K α β w N m u - periodicMean u q * I)) := by ring
+    rw [e, abs_mul]
+    have hv' := hrow hv hvB m hm
+    have hu' := hrow hu huB m hm
+    calc |ρ m| * |u m * (rowWindow K α β w N m v - periodicMean v q * I) +
+          v m * (rowWindow K α β w N m u - periodicMean u q * I)|
+        ≤ R * (B * F m + B * F m) := by
+          refine mul_le_mul (hρ m) ((abs_add_le _ _).trans (add_le_add ?_ ?_)) (abs_nonneg _) hR0
+          · rw [abs_mul]; exact mul_le_mul (huB m) hv' (abs_nonneg _) hB0
+          · rw [abs_mul]; exact mul_le_mul (hvB m) hu' (abs_nonneg _) hB0
+      _ = R * B * (2 * F m) := by ring
+  calc |∑ m ∈ Finset.Icc 1 N, (ρ m * (u m * rowWindow K α β w N m v + v m * rowWindow K α β w N m u) -
+        I * (ρ m * (u m * periodicMean v q + v m * periodicMean u q)))|
+      ≤ ∑ m ∈ Finset.Icc 1 N, R * B * (2 * F m) :=
+        (Finset.abs_sum_le_sum_abs _ _).trans (Finset.sum_le_sum hpt)
+    _ = 2 * R * B * ∑ m ∈ Finset.Icc 1 N, F m := by rw [← Finset.mul_sum]; ring
+    _ ≤ _ := mul_le_mul_of_nonneg_left hsumF (by positivity)
 
 end GaloisForLFunctions.ArithmeticHodgeTheoryOfDegenerations

@@ -203,7 +203,8 @@ theorem exists_critical_multiple_weighted_far_complement :
     change 1 / (1 + Real.log L) ^ 5 * L ≤ θ * L at h₂
     calc
       _ ≤ L / (1 + Real.log L) ^ 5 := h₁
-      _ ≤ θ * L := by linarith only [h₂]
+      _ ≤ θ * L := (by ring : L / (1 + Real.log L) ^ 5 =
+        1 / (1 + Real.log L) ^ 5 * L).trans_le h₂
   have h2θ : 2 / θ ≤ L := by
     rw [div_le_iff₀ hθ]
     linarith only [hθL, hD]
@@ -230,6 +231,7 @@ theorem exists_critical_multiple_weighted_far_complement :
   obtain ⟨hR2, hTN, hRM, hM2, hhalf, hlogM, hgap, hlogR⟩ :=
     critical_prefix_cutoff_geometry hθ hθ36 hc1 hcL hL2000
       (by linarith only [hlarge]) h2θ h4Dθ hLX hNθ4
+  change Real.log (R : ℝ) ≤ θ * L at hlogR
   have hlogM0 : 0 < Real.log (M : ℝ) := (by positivity : 0 < L / 2).trans_le hhalf
   have hk : 0 < Real.log (R : ℝ) / D - 1 := (by positivity : 0 < θ / (4 * D) * L).trans_le hgap
   have hscale : D ≤ Real.log (R : ℝ) := by
@@ -317,7 +319,12 @@ theorem exists_critical_multiple_weighted_far_complement :
     convert h using 1 <;> ring
   have hgapP := mul_le_mul_of_nonneg_right hgap hP
   change θ / (4 * D) * L * P ≤ k * P at hgapP
-  have hθDP : 0 ≤ θ * L / D * P := by positivity
+  let A := θ * L / D * P
+  have hA : 0 ≤ A := by dsimp only [A]; positivity
+  have hgapA : A / 4 ≤ k * P := by
+    convert hgapP using 1 <;> dsimp only [A] <;> ring
+  have hcostA : (1 / (16 * D) * L / (1 + Real.log L) ^ 5) * P ≤ A / 16 :=
+    hprefixCost.trans_eq (by dsimp only [A]; ring)
   simp only [mul_div_assoc] at hpre
   change k * ((15 / 16 : ℝ) * P - 2 * B * S) ≤ poleDefect M (primeHorizonExtension z) at hpre
   change (7 / 8 : ℝ) * poleDefect M (primeHorizonExtension z) +
@@ -326,7 +333,8 @@ theorem exists_critical_multiple_weighted_far_complement :
   change (θ * L / (8 * D)) * P + (g * L / (16 * c ^ 7)) * S7 ≤ _
   have hid : (g / (8 * c ^ 7)) * L = 2 * (g * L / (16 * c ^ 7)) := by ring
   rw [hid] at hf
-  nlinarith only [hpre, hf, hleakS, hprefixCost, hgapP, hθDP]
+  rw [show θ * L / (8 * D) * P = A / 8 by dsimp only [A]; ring]
+  nlinarith only [hpre, hf, hleakS, hcostA, hgapA, hA]
 
 end GaloisForLFunctions.CriticalArithmeticCorrelationTheory
 

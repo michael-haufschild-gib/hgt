@@ -35,3 +35,15 @@ repair near zero and at infinity; it does not prove positivity in between.
 Lean source: `ThetaCuspSections/FifthEvenSourceRepair.lean`; checks pending.
 The rank-nine statement remains unproved. A sufficient source obligation for this correction is
 `S(x)+D G(x)>0` on the intervening compact interval.
+
+## Inherited-load obstruction to test
+
+At `q=πe^(2x)=7`, consider the even coefficient vector
+`v=(-658560,47040,-420,1,-1/1568)`. Its native energy is determined exactly
+by the existing atom-pair radial recurrence through order sixteen; the
+all-order two-atom Cauchy estimate controls the omitted source.
+Conjecture: `vᵀ H₅(x) v + 10¹²G(x) < 0`. Since `G(x)<0` at this center,
+that inequality would rule out every nonnegative fifth-diagonal coefficient
+while retaining the fixed fourth correction. No such inequality is yet
+proved. The earlier odd-rank obstruction motivates this test but does not
+prove it for the even fifth block.

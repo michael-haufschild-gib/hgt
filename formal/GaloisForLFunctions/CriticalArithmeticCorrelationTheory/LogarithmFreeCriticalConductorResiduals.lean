@@ -2652,8 +2652,8 @@ theorem exists_nearGram_mode_bilinear_approx {φ : ℝ → ℝ}
         nlinarith only [hsq, sq_nonneg (‖v_m‖ - ‖v_l‖)]
       have hml_sum : (m : ℝ) + l ≤ 2 * ((m : ℝ) * l) := by nlinarith only [hm1R, hl1R]
       nlinarith only [h2, hvm_sq, hvl_sq, hml_sum]
-    have hlag_p := hlag hL0 hc1 hradN a_p
-    have hlag_m := hlag hL0 hc1 hradN a_m
+    have hlag_p := hlag (R₂ := R₂) hL0 hc1 hradN a_p
+    have hlag_m := hlag (R₂ := R₂) hL0 hc1 hradN a_m
     have hosc_p := hosc hR₂2 hR2N hlog18 hc1 hradN a_p
     have hosc_m := hosc hR₂2 hR2N hlog18 hc1 hradN a_m
     rw [hvec_p] at hlag_p hosc_p
@@ -2711,15 +2711,16 @@ theorem exists_nearGram_mode_bilinear_approx {φ : ℝ → ℝ}
       set X₂ := midBandLagSum φ R₂ N c a_m - midBandLinearizedSum φ R₂ N c a_m
       set Y₁ := midBandOscSum φ R₂ N c a_p
       set Y₂ := midBandOscSum φ R₂ N c a_m
-      have ht1 := abs_sub (2 * X₁ - 2 * X₂ + 2 * Y₁) (2 * Y₂)
-      have ht2 := abs_add_le (2 * X₁ - 2 * X₂) (2 * Y₁)
-      have ht3 := abs_sub (2 * X₁) (2 * X₂)
-      simp only [abs_mul, Nat.abs_ofNat] at ht1 ht2 ht3
+      have htri4 : |2 * X₁ - 2 * X₂ + 2 * Y₁ - 2 * Y₂| ≤
+          2 * |X₁| + 2 * |X₂| + 2 * |Y₁| + 2 * |Y₂| :=
+        abs_le.mpr
+          ⟨by linarith only [neg_le_abs X₁, le_abs_self X₂, neg_le_abs Y₁, le_abs_self Y₂],
+           by linarith only [le_abs_self X₁, neg_le_abs X₂, le_abs_self Y₁, neg_le_abs Y₂]⟩
       have hcw0 : 0 ≤ 4 * Real.exp 2 * C_w * ((m : ℝ) * l) ^ 5 * (c ^ 5 * Real.log N / N) := by
         positivity
       have hc2_0 : 0 ≤ C_2 * ((m : ℝ) * l) ^ 5 * (c ^ 5 * Real.log N / N) := by positivity
       have hc4_0 : 0 ≤ C_4 * ((m : ℝ) * l) ^ 5 * (c ^ 5 * Real.log N / N) := by positivity
-      linarith only [ht1, ht2, ht3, hb_lp, hb_lm, hb_op, hb_om, hcw0, hc2_0, hc4_0,
+      linarith only [htri4, hb_lp, hb_lm, hb_op, hb_om, hcw0, hc2_0, hc4_0,
         (by ring : 4 * (64 * C_2 + 1024 * C_4 + 4 * Real.exp 2 * C_w) *
           ((m : ℝ) * l) ^ 5 * (c ^ 5 * Real.log N / N) =
           64 * (C_2 * ((m : ℝ) * l) ^ 5 * (c ^ 5 * Real.log N / N)) +
@@ -8045,10 +8046,5 @@ theorem exists_critical_multiple_low_packet_and_collar_budget {ε : ℝ} (hε : 
       hc8_le hc16_div hK₁_pos hK₁_d7 hQ₁_le h1Q_le hQ_logL_sq hr_q0 (hL_def ▸ hr_q) hL_hid7
       (fun hm1 => hd7_lf hm1 hc1 (hL_def ▸ hL1) hlarge hradN hc4N h2BM)
       (fun m hm1 hmQ => hqN m hm1 (hL_def ▸ hmQ) c hc1 hlarge)
-
-#print axioms inner_sq_le_prefix_add_topCollarSeventh
-#print axioms exists_completeWeil_bilinear_conductor_residual_log_free
-#print axioms exists_completeWeil_dualSeventh_conductor_residual_log_free
-#print axioms exists_critical_multiple_low_packet_and_collar_budget
 
 end GaloisForLFunctions.CriticalArithmeticCorrelationTheory

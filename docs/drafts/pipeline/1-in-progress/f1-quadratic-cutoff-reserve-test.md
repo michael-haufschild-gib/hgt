@@ -18,15 +18,15 @@ Centering the overlap at `−t/2` reduces the correlation to the integral of
 Thus the logarithmic lag and first lag are rational integrals of this polynomial.
 The sinh pole is at least `m²/2`, since `xF(x)≥0`.
 
-## Consequence if verified
+## Consequence after smoothing
 
-This would refute both the uniform floor `P≥−E/64` and the sufficient two-moment
+A C² smoothing transfer would refute both the uniform floor `P≥−E/64` and the sufficient two-moment
 sign `D≥0`, because `D≤P+E/64`. It would not refute complete Weil positivity:
 the exact local Gamma remainder and the reserve beyond `E/64` remain present.
 
 ## Gates
 
-- [ ] Audit the exact correlation and rational sign certificate in Lean.
+- [x] Exact correlation and rational sign certificate compile with standard-only transitive axioms.
 - [ ] Transfer the strict sign to a real odd C² test with exact unit support.
 - [ ] Identify and prove the strongest positive survivor before retiring this target.
 
@@ -39,5 +39,18 @@ The identity `e^(t/2)/sinh t=1/(2sinh z)+1/(2cosh z)` yields the claim.
 Multiplication by `E−C(t)≥0` retains the corresponding third and fourth lag
 energies. `TheGammaRemainderRetainsHigherLags.lean` contains the proposed proof;
 its individual Lean audit is pending.
+
+Four exterior Laplace modes give the sharper candidate reserve `δ>193/20000`,
+using `exp(−1/2)≥60653/100000`. Combined with the local bound, the proposed
+replacement is `Q≥P+(193/10000)E+M₃/960+M₄/192`, where
+`Mₖ=∫₀¹tᵏ(E−C(t))dt`.
+
+For the same quadratic cutoff,
+`Mₖ=256/[315(k+3)]−128/[21(k+5)]+128/[15(k+6)]
+−512/[105(k+8)]+128/[63(k+10)]−256/[693(k+12)]`.
+The exact candidate certificate in
+`TheHigherGammaReserveRepairsTheQuadraticCutoff.lean` tests whether these retained
+terms repair the same direction. This certificate and its smoothing transfer
+remain unverified.
 
 The full joint Gamma/prime/pole inequality remains active.
