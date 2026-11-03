@@ -45,6 +45,14 @@ using `exp(−1/2)≥60653/100000`. Combined with the local bound, the proposed
 replacement is `Q≥P+(193/10000)E+M₃/960+M₄/192`, where
 `Mₖ=∫₀¹tᵏ(E−C(t))dt`.
 
+A further candidate consequence uses `∫₀¹(E−C)=E` and
+`∫₀¹t²(E−C)=E/3+(∫xF)²`. The identity
+
+`t³/960+t⁴/192−(13/3840)t²+1/2560
+ =(t−1/2)²(t+1/4)/960+(t²−1/4)²/192`
+
+gives local reserve `17E/23040+13(∫xF)²/3840`. Its Lean audit is pending.
+
 For the same quadratic cutoff,
 `Mₖ=256/[315(k+3)]−128/[21(k+5)]+128/[15(k+6)]
 −512/[105(k+8)]+128/[63(k+10)]−256/[693(k+12)]`.

@@ -268,8 +268,8 @@ theorem exists_critical_multiple_weighted_far_complement :
   have hkL : k ≤ L / D := by
     have h₁ := div_le_div_of_nonneg_right hlogR hD.le
     have h₂ := div_le_div_of_nonneg_right (mul_le_mul_of_nonneg_right hθ1 hL0.le) hD.le
-    dsimp only [k]
-    linarith only [h₁, h₂]
+    simp only [one_mul] at h₂
+    exact (sub_le_self _ zero_le_one).trans (h₁.trans h₂)
   have hleak : (7 / 4 : ℝ) * k * B ≤ g * L / (16 * c ^ 7) := by
     have hbound : (7 / 4 : ℝ) * k * B ≤ C * c := by
       calc

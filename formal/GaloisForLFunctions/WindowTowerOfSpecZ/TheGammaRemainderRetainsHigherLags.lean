@@ -121,6 +121,53 @@ theorem retainedGammaRemainder_ge_higher_lags {F : ℝ → ℝ}
   nlinarith only [h]
 
 
+/-- Odd correlation cancellation converts higher lags into mass and first-moment reserves. -/
+theorem retainedGammaRemainder_ge_moment_reserve {F : ℝ → ℝ}
+    (hF : ContDiff ℝ 2 F) (hcs : HasCompactSupport F)
+    (hs : tsupport F ⊆ Icc (-(1/2 : ℝ)) (1/2)) (ho : ∀ x, F (-x) = -F x) :
+    (17/23040)*(∫ x, F x^2)+(13/3840)*(∫ x, x*F x)^2 ≤
+      ∫ t in Ioc (0 : ℝ) 1, retainedGammaRemainderWeight t*((∫ x, F x^2)-autocorr F t) := by
+  let E := ∫ x, F x^2
+  let D := fun t => E-autocorr F t
+  have hc := _root_.RHTower.ArchimedeanExactForm.continuous_autocorr hF hcs
+  have hd : Continuous D := continuous_const.sub hc
+  have hiD : IntegrableOn D (Ioc (0 : ℝ) 1) :=
+    hd.integrableOn_Icc.mono_set Ioc_subset_Icc_self
+  have hi2 : IntegrableOn (fun t => t^2*D t) (Ioc (0 : ℝ) 1) :=
+    ((continuous_pow 2).mul hd).integrableOn_Icc.mono_set Ioc_subset_Icc_self
+  have hiR := (retainedGammaRemainder_integrable_nonneg hF hcs).1
+  simp only [autocorr_zero_eq] at hiR
+  have hzero := LatticeSectionTheory.odd_autocorr_integral_zero ⟨hF, hcs⟩ hs ho
+  norm_num at hzero
+  have hD : (∫ t in Ioc (0 : ℝ) 1, D t) = E := by
+    change (∫ t in Ioc (0 : ℝ) 1, E-autocorr F t) = E
+    rw [integral_sub (f := fun _ : ℝ => E) (g := autocorr F)
+      (continuous_const.integrableOn_Icc.mono_set Ioc_subset_Icc_self)
+      (hc.integrableOn_Icc.mono_set Ioc_subset_Icc_self), hzero, sub_zero, setIntegral_const]
+    norm_num
+  have hD2 := LatticeSectionTheory.unit_odd_jump_second_moment hF hcs hs ho
+  simp only [autocorr_zero_eq] at hD2
+  change (∫ t in Ioc (0 : ℝ) 1, t^2*D t) = E/3+(∫ x, x*F x)^2 at hD2
+  have hiP : IntegrableOn (fun t => (13/3840)*(t^2*D t)-(1/2560)*D t) (Ioc (0 : ℝ) 1) :=
+    (hi2.const_mul _).sub (hiD.const_mul _)
+  have h := setIntegral_mono_on hiP hiR measurableSet_Ioc (fun t ht => by
+    have hn : 0 ≤ D t := by
+      have hb := (le_abs_self (autocorr F t)).trans (abs_autocorr_le_zero hcs hF.continuous t)
+      simpa only [autocorr_zero_eq] using sub_nonneg.mpr hb
+    have hpoly : (13/3840)*t^2-1/2560 ≤ t^3/960+t^4/192 := by
+      have hsq : 0 ≤ (t-1/2)^2*(t+1/4)/960+(t^2-1/4)^2/192 := by
+        have ht0 := ht.1
+        positivity
+      nlinarith only [hsq]
+    have hp := mul_le_mul_of_nonneg_right
+      (hpoly.trans (retainedGammaRemainderWeight_ge_higher_lags ht)) hn
+    dsimp only [D, E] at hp ⊢
+    nlinarith only [hp])
+  rw [integral_sub (hi2.const_mul _) (hiD.const_mul _),
+    integral_const_mul, integral_const_mul, hD2, hD] at h
+  dsimp only [E, D] at h
+  linarith only [h]
+
 private theorem exp_neg_half_lower : (60653/100000 : ℝ) ≤ Real.exp (-(1/2 : ℝ)) := by
   have h := exp_le_taylor_seven (x := (1/2 : ℝ)) (by norm_num)
   norm_num at h
@@ -200,9 +247,26 @@ theorem weilQuad_ge_retainedOddGamma_add_higher_lags {F : ℝ → ℝ}
   rw [weilQuad_eq_retainedOddGamma_add_remainder hF hs ho]
   linarith only [hR, hp]
 
+
+/-- The first two odd correlation identities supply a uniform Gamma reserve and a moment credit. -/
+theorem weilQuad_ge_retainedOddGamma_add_moment_reserve {F : ℝ → ℝ}
+    (hF : ContDiff ℝ 2 F) (hs : tsupport F ⊆ Icc (-(1/2 : ℝ)) (1/2))
+    (ho : ∀ x, F (-x) = -F x) :
+    retainedOddGammaLowerForm F+(193/10000+17/23040)*(∫ x, F x^2)+
+      (13/3840)*(∫ x, x*F x)^2 ≤ weilQuad F := by
+  have hcs : HasCompactSupport F := HasCompactSupport.intro isCompact_Icc
+    (fun x hx => image_eq_zero_of_notMem_tsupport fun ht => hx (hs ht))
+  have hR := retainedGammaRemainder_ge_moment_reserve hF hcs hs ho
+  have hmass : 0 ≤ ∫ x, F x^2 := integral_nonneg fun x => sq_nonneg (F x)
+  have hp := mul_le_mul_of_nonneg_right gamma_tail_one_stronger_reserve.le hmass
+  rw [weilQuad_eq_retainedOddGamma_add_remainder hF hs ho]
+  linarith only [hR, hp]
+
 end GaloisForLFunctions.WindowTowerOfSpecZ
 
 #print axioms GaloisForLFunctions.WindowTowerOfSpecZ.gamma_tail_one_stronger_reserve
 #print axioms GaloisForLFunctions.WindowTowerOfSpecZ.retainedGammaRemainderWeight_ge_higher_lags
 #print axioms GaloisForLFunctions.WindowTowerOfSpecZ.retainedGammaRemainder_ge_higher_lags
 #print axioms GaloisForLFunctions.WindowTowerOfSpecZ.weilQuad_ge_retainedOddGamma_add_higher_lags
+
+#print axioms GaloisForLFunctions.WindowTowerOfSpecZ.weilQuad_ge_retainedOddGamma_add_moment_reserve

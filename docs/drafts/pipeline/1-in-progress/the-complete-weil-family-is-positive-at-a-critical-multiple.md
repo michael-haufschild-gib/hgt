@@ -94,8 +94,9 @@ Schur critical constants gives the claimed uniform interval.
 Capstone source:
 [`exists_critical_multiple_completeWeilMatrix_posDef`](../../../../formal/GaloisForLFunctions/CriticalArithmeticCorrelationTheory/TheCompleteWeilMatrixIsPositiveAtACriticalMultiple.lean).
 Its dependency chain includes the corrected first-band cutoff, two-rate cross
-budget, weighted far reserve, and weighted Schur pairing. The deep-row module
-passes Lean; remaining modules and transitive axiom audit are pending.
+budget, weighted far reserve, and weighted Schur pairing. Deep-row, first-band,
+and two-rate budget modules pass Lean; the remaining dependency chain and
+transitive axiom audit are pending.
 
 - [x] Corrected cutoff and terminal-leakage accounting.
 - [ ] Dependency-closed Lean checks.

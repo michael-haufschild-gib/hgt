@@ -927,7 +927,7 @@ theorem abs_nearPairSum_sub_le {K : ℝ → ℝ} {α β A L w : ℝ} (hα : 0 �
       have : (if (m : ℝ) < X then 2 * B * A * β * w else 0) = 2 * B * A * β * w := if_pos hmX
       simp only [hF]
       linarith
-    · push_neg at h1
+    · push Not at h1
       have hmY : Y ≤ (m : ℝ) := by
         rw [hY, div_le_iff₀ (by positivity)]
         nlinarith
@@ -938,7 +938,7 @@ theorem abs_nearPairSum_sub_le {K : ℝ → ℝ} {α β A L w : ℝ} (hα : 0 �
         calc _ ≤ C / m := by rw [← hI] at h; exact h
           _ = C * (1 / m) := by ring
           _ ≤ _ := by linarith
-      · push_neg at htop
+      · push Not at htop
         have hmZ : Z < (m : ℝ) := by
           rw [Nat.cast_sub hmN] at htop
           have h2 : (N : ℝ) < m * Real.exp (β * w) := by linarith
@@ -1013,7 +1013,8 @@ theorem abs_nearPairSum_sub_le {K : ℝ → ℝ} {α β A L w : ℝ} (hα : 0 �
         I * (ρ m * (u m * periodicMean v q + v m * periodicMean u q)))|
       ≤ ∑ m ∈ Finset.Icc 1 N, R * B * (2 * F m) :=
         (Finset.abs_sum_le_sum_abs _ _).trans (Finset.sum_le_sum hpt)
-    _ = 2 * R * B * ∑ m ∈ Finset.Icc 1 N, F m := by rw [← Finset.mul_sum]; ring
+    _ = 2 * R * B * ∑ m ∈ Finset.Icc 1 N, F m := by
+        rw [Finset.mul_sum]; exact Finset.sum_congr rfl fun m _ => by ring
     _ ≤ _ := mul_le_mul_of_nonneg_left hsumF (by positivity)
 
 end GaloisForLFunctions.ArithmeticHodgeTheoryOfDegenerations

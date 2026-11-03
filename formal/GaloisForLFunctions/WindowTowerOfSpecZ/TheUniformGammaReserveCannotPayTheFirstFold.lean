@@ -47,7 +47,7 @@ private theorem cutoffRatio_lipschitz :
   intro x hx
   change ‖deriv cutoffRatio x‖ ≤ (8 : ℝ)
   rw [(cutoffRatio_deriv hx).deriv, Real.norm_eq_abs, abs_div,
-    abs_mul, abs_of_nonneg (sq_nonneg _)]
+    abs_mul, abs_of_nonneg (sq_nonneg (1-2*x^2))]
   have hd : (1/2 : ℝ) ≤ 1-2*x^2 := by linarith only [unit_square_le hx]
   have hd2 := pow_le_pow_left₀ (by norm_num : (0 : ℝ) ≤ 1/2) hd 2
   have hdp : 0 < (1-2*x^2)^2 := by nlinarith only [hd2]
@@ -103,7 +103,7 @@ private theorem unitSmoothQuadraticCutoff_lipschitz (n : ℕ) (x y : ℝ) :
       (hb : b ∈ Icc (-(1/2 : ℝ)) (1/2)) :
       |unitSmoothQuadraticCutoff n a - unitSmoothQuadraticCutoff n b| ≤ 32*|a-b| := by
     have hr := cutoffRatio_lipschitz.dist_le_mul a ha b hb
-    simp only [Real.dist_eq] at hr
+    norm_num only [Real.dist_eq] at hr
     have hq := unitSmoothQuintic_lipschitz n a b
     have h1 := mul_le_mul_of_nonneg_right hq (abs_nonneg (cutoffRatio a))
     have h2 := mul_le_mul_of_nonneg_left hr (abs_nonneg (unitSmoothQuintic n b))

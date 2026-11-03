@@ -47,3 +47,8 @@ that inequality would rule out every nonnegative fifth-diagonal coefficient
 while retaining the fixed fourth correction. No such inequality is yet
 proved. The earlier odd-rank obstruction motivates this test but does not
 prove it for the even fifth block.
+
+The corresponding positive survivor is the exact directional load region
+`C+D/1568² < B`, where `B=(vᵀH₅v)/(-G)` at this center. The proposed
+complete-source bounds give `0<B<10¹²`; their finite radial certificates
+and all-order Cauchy error estimate still require kernel verification.

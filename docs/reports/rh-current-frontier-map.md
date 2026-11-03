@@ -1,7 +1,7 @@
 # RH proof-route frontier
 
 **RH open · 32 live routes · 17 candidates.**
-**Corpus checkpoint:** `59a19ca72f26bd027fe124e7e9bacb9db658925e`.
+**Corpus checkpoint:** `1d3c7b97f8245f67d39930f99ba7cd066a5a5f52`.
 
 Live = source observable + proved RH-sufficient receiver + explicit open estimate. Candidate = missing independent source mechanism/landing.
 Evidence: [L] integrated, source-reviewed; [S] unfinished/unintegrated, unverified; [K] individual Lean + standard-only transitive-axiom audit. Untagged established facts: [L].
@@ -236,8 +236,8 @@ Evidence: [L] integrated, source-reviewed; [S] unfinished/unintegrated, unverifi
 
 - **Path:** Actual odd Weil positivity at every aperture → RH.
 - **Established:** Odd RH criterion; prime-free floor; Q≥R_ret+E/64 on odd C² unit-window tests, E=‖F‖² [L]. Joint moment bound Q+(3203/320)(∫xF)²≥E/1000; positive first-moment reflection inverse; exact Gamma remainder; strip+prime2 floor1/16 [K]. Stronger Q≥R_ret+(193/10000)E+M₃/960+M₄/192, Mₖ=∫₀¹tᵏ(E−C_F(t))dt [S].
-- **Open:** Complete joint Gamma/prime/pole sign, including first/third-moment cross-charge and off-strip terms; then all apertures. [Two-moment comparison and E/64 repair have negative C² tests](rh-killed-routes.md#retained-gamma-lower-form) [S]; higher-lag correction pays the explicit quadratic cutoff only [S]. Folded-source branch requires [exact origin charge](rh-killed-routes.md#folded-origin-charge) [K].
-- **Sources:** R:WeilMarkovOddPositivity; WTZ:TheGammaRemainderCannotBeDiscarded [L]; WTZ:TheThirdOddMomentIsPaidByTheFirstFold; WTZ:TheFirstMomentHasAPositiveReflectionInverse; WTZ:TheGammaRemainderHasAnExactEnergyIdentity; WTZ:TheLogarithmicStripPaysTheFirstFold [K]; WTZ:TheUniformGammaReserveCannotPayTheFirstFold; WTZ:TheGammaRemainderRetainsHigherLags; WTZ:TheHigherGammaReserveRepairsTheQuadraticCutoff [S].
+- **Open:** Complete joint Gamma/prime/pole sign, including first/third-moment cross-charge and off-strip terms; then all apertures. [Quadratic cutoff defeats the E/64 repair](rh-killed-routes.md#retained-gamma-lower-form) [K]; C² transfer, negative two-moment comparison and higher-lag repair remain [S]. Folded-source branch requires [exact origin charge](rh-killed-routes.md#folded-origin-charge) [K].
+- **Sources:** R:WeilMarkovOddPositivity; WTZ:TheGammaRemainderCannotBeDiscarded [L]; WTZ:TheThirdOddMomentIsPaidByTheFirstFold; WTZ:TheFirstMomentHasAPositiveReflectionInverse; WTZ:TheGammaRemainderHasAnExactEnergyIdentity; WTZ:TheLogarithmicStripPaysTheFirstFold; WTZ:TheUniformGammaReserveHasANegativeDirection [K]; WTZ:TheUniformGammaReserveCannotPayTheFirstFold; WTZ:TheGammaRemainderRetainsHigherLags; WTZ:TheHigherGammaReserveRepairsTheQuadraticCutoff [S].
 
 <a id="pbm"></a>
 ### PBM — Regularized prime/log-ζ abscissa

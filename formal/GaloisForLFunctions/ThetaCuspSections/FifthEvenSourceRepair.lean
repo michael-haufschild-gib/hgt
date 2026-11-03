@@ -22,14 +22,16 @@ namespace GaloisForLFunctions.ThetaCuspSections
 
 /-- Native fifth even block with independent corrections on its last two diagonals. -/
 def evenFiveRepair (C D x : ℝ) : Matrix (Fin 5) (Fin 5) ℝ :=
-  nativeShiftedMatrix 5 0 x + diagonal (fun i =>
+  nativeShiftedMatrix 5 0 x + diagonal (fun i : Fin 5 =>
     if i.val = 3 then C * thetaCuspCenterCompensationSource x
     else if i.val = 4 then D * thetaCuspCenterCompensationSource x else 0)
 
-private def head (x : ℝ) := thetaCuspNativeEvenFourCompensated 1000000000000 x
+private def head (x : ℝ) : Matrix (Fin 4) (Fin 4) ℝ :=
+  thetaCuspNativeEvenFourCompensated 1000000000000 x
 
 private def border (x : ℝ) : Matrix (Fin 4) (Fin 1) ℝ :=
-  fun i _ => (-1 : ℝ) ^ (i.val + 4) * thetaCuspNativeReflectionJet (2 * (i.val + 4)) x
+  fun (i : Fin 4) (_ : Fin 1) =>
+    (-1 : ℝ) ^ (i.val + 4) * thetaCuspNativeReflectionJet (2 * (i.val + 4)) x
 
 /-- The fifth coordinate after retaining the fixed repair of the fourth block. -/
 def evenFiveSchur (x : ℝ) : ℝ :=
@@ -67,12 +69,13 @@ theorem evenFiveRepair_top_only_not_posSemidef (D : ℝ) :
 theorem evenFiveRepair_posDef_of_schur {D x : ℝ} (hx : 0 ≤ x)
     (hs : 0 < evenFiveSchur x + D * thetaCuspCenterCompensationSource x) :
     (evenFiveRepair 1000000000000 D x).PosDef := by
-  let A := head x
-  let B := border x
+  let A : Matrix (Fin 4) (Fin 4) ℝ := head x
+  let B : Matrix (Fin 4) (Fin 1) ℝ := border x
   let T : Matrix (Fin 1) (Fin 1) ℝ := fun _ _ =>
     thetaCuspNativeReflectionJet 16 x + D * thetaCuspCenterCompensationSource x
   let e : Fin 4 ⊕ Fin 1 ≃ Fin 5 := finSumFinEquiv
-  let M := (evenFiveRepair 1000000000000 D x).submatrix e e
+  let M : Matrix (Fin 4 ⊕ Fin 1) (Fin 4 ⊕ Fin 1) ℝ :=
+    (evenFiveRepair 1000000000000 D x).submatrix e e
   have hA : A.PosDef := thetaCuspNativeEvenFourFixed_posDef hx
   letI : Invertible A := hA.isUnit.invertible
   have hblock : M = fromBlocks A B Bᴴ T := by
@@ -85,7 +88,7 @@ theorem evenFiveRepair_posDef_of_schur {D x : ℝ} (hx : 0 ≤ x)
         norm_num [M, e, evenFiveRepair, nativeShiftedMatrix, border, B, diagonal]
     · fin_cases i <;> fin_cases j <;>
         norm_num [M, e, evenFiveRepair, nativeShiftedMatrix, T, diagonal]
-  let S := T - Bᴴ * A⁻¹ * B
+  let S : Matrix (Fin 1) (Fin 1) ℝ := T - Bᴴ * A⁻¹ * B
   have hS : S.PosSemidef := by
     apply Matrix.PosSemidef.of_dotProduct_mulVec_nonneg
     · rw [Matrix.IsHermitian]
@@ -161,11 +164,12 @@ theorem evenFiveRepair_posDef_near_zero :
   exact ⟨δ, hδ, fun x hx => hb (by simpa [Real.dist_eq] using hx)⟩
 
 private def gaussianFive : Matrix (Fin 5) (Fin 5) ℝ :=
-  fun i j => gaussianMoment (i.val + j.val)
+  fun i j : Fin 5 => gaussianMoment (i.val + j.val)
 
 private theorem gaussianFive_posDef : gaussianFive.PosDef := by
-  let A := _root_.HTGeometry.momentHankelMatrix (gammaShapeMoment (1/2)) 5
-  let D : Matrix (Fin 5) (Fin 5) ℝ := diagonal (fun i => (16 : ℝ)^i.val)
+  let A : Matrix (Fin 5) (Fin 5) ℝ :=
+    _root_.HTGeometry.momentHankelMatrix (gammaShapeMoment (1/2)) 5
+  let D : Matrix (Fin 5) (Fin 5) ℝ := diagonal (fun i : Fin 5 => (16 : ℝ)^i.val)
   have hA : A.PosDef := gammaShapeMoment_momentHankelMatrix_posDef (by norm_num) 5
   have hD : Function.Injective D.mulVec := by
     intro v w h
@@ -183,8 +187,8 @@ private theorem gaussianFive_posDef : gaussianFive.PosDef := by
   exact hA.conjTranspose_mul_mul_same hD
 
 private def balancedRepair (C D x : ℝ) : Matrix (Fin 5) (Fin 5) ℝ :=
-  (fun i j => thetaCuspNativeScaledEvenJet (i.val + j.val) x) +
-    diagonal (fun i =>
+  (fun i j : Fin 5 => thetaCuspNativeScaledEvenJet (i.val + j.val) x) +
+    diagonal (fun i : Fin 5 =>
       (if i.val = 3 then C * thetaCuspCenterCompensationSource x
       else if i.val = 4 then D * thetaCuspCenterCompensationSource x else 0) /
         (thetaCuspSourceTerm x 1 ^ 2 * thetaCuspSingleAtomReflectionScale 1 x ^ (2 * i.val)))
@@ -242,7 +246,7 @@ theorem evenFiveRepair_posDef_eventually (C D : ℝ) :
   filter_upwards [hp, eventually_gt_atTop (0 : ℝ)] with x hx hx0
   let q := thetaCuspSingleAtomReflectionScale 1 x
   let f := thetaCuspSourceTerm x 1
-  let T : Matrix (Fin 5) (Fin 5) ℝ := diagonal (fun i => f * q ^ i.val)
+  let T : Matrix (Fin 5) (Fin 5) ℝ := diagonal (fun i : Fin 5 => f * q ^ i.val)
   have hq : q ≠ 0 := by dsimp [q, thetaCuspSingleAtomReflectionScale]; positivity
   have hf : f ≠ 0 := (thetaCuspSourceTerm_pos_of_pos_of_nat_pos hx0 (by norm_num)).ne'
   have hT : Function.Injective T.mulVec := by
@@ -292,7 +296,7 @@ theorem evenFiveRepair_compact_gap :
 /-- Literal weighted matrix with the derivative of the same zero-boundary flux
 on the last two diagonal entries. -/
 def centerEvenFiveRepair (a C D r : ℝ) : Matrix (Fin 5) (Fin 5) ℝ :=
-  fun i j => (-1 : ℝ)^(i.val + j.val) *
+  fun i j : Fin 5 => (-1 : ℝ)^(i.val + j.val) *
     (r * Real.sinh (a*r) * thetaCuspNativeReflectionJet (2*(i.val+j.val)) (r/2)) +
     (diagonal (fun k : Fin 5 => if k.val = 3 then C * deriv (thetaCuspCenterCompensationFlux a) r
       else if k.val = 4 then D * deriv (thetaCuspCenterCompensationFlux a) r else 0)) i j
@@ -355,7 +359,7 @@ theorem centerEvenFiveRepair_posDef_of_source {a C D r : ℝ}
     convert deriv_thetaCuspCenterCompensationFlux_lower ha.le hr.le using 1
     unfold w thetaCuspCenterCompensationSource
     ring
-  let P : Matrix (Fin 5) (Fin 5) ℝ := diagonal (fun i =>
+  let P : Matrix (Fin 5) (Fin 5) ℝ := diagonal (fun i : Fin 5 =>
     if i.val = 3 then C*d else if i.val = 4 then D*d else 0)
   have hP : P.PosSemidef := by
     apply Matrix.PosSemidef.diagonal

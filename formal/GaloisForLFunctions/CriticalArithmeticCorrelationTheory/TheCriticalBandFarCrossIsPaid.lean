@@ -114,6 +114,7 @@ theorem eventually_critical_band_far_cross {B : ℝ} (hB : 0 < B) :
       (by linarith only [hL3000]) (by linarith only [hlarge])
       ((div_le_iff₀ hθ).mpr (by linarith only [hθL, hD]))
       ((div_le_iff₀ hθ).mpr (by linarith only [hθL])) hLX hNθ4
+  change Real.log (R₁ : ℝ) ≤ θ * L at hlogR₁
   have hlogR : Real.log (R : ℝ) ≤ θ * L :=
     (Real.log_le_log (by exact_mod_cast (show 0 < R by omega))
       (by exact_mod_cast hRR₁)).trans hlogR₁
@@ -134,7 +135,9 @@ theorem eventually_critical_band_far_cross {B : ℝ} (hB : 0 < B) :
   obtain ⟨hT3, -, -, hTup⟩ := linearDefectCutoff_bounds hc1
   have hNM : (N : ℝ) / M ≤ 2 * H * c := by
     have h := nat_div_div_le_two_mul (by omega : 1 ≤ T) hTN
-    linarith only [h, hTup]
+    exact h.trans ((mul_le_mul_of_nonneg_left hTup zero_le_two).trans_eq (by
+      dsimp only [H]
+      ring))
   have hTPC : terminalPacketCost R M N ≤ CB * (1 + Real.log c) := by
     have hcost := terminalPacketCost_nat_div_le (Q := R) (by omega : 1 ≤ T) hTN hRM
     change terminalPacketCost R M N ≤ 4 + Real.log (2 * (T : ℝ)) at hcost
