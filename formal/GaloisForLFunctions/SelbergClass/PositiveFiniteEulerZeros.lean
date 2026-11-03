@@ -152,7 +152,7 @@ theorem quadratic_logCoeff_bound {p : ℕ} (hp : 1 < p) {A : ℝ}
   have hnum : ‖1 - α ^ k - β ^ k‖ ≤ 1 + ‖α‖ ^ k + ‖β‖ ^ k := by
     calc _ ≤ ‖1 - α ^ k‖ + ‖β ^ k‖ := norm_sub_le _ _
       _ ≤ (‖(1 : ℂ)‖ + ‖α ^ k‖) + ‖β ^ k‖ :=
-        add_le_add_right (norm_sub_le _ _) _
+        add_le_add (norm_sub_le _ _) le_rfl
       _ = _ := by rw [norm_one, norm_pow, norm_pow]
   rw [hα, hβ] at hnum
   have hk1 : (1 : ℝ) ≤ k := by exact_mod_cast Nat.one_le_iff_ne_zero.mpr hk

@@ -2,7 +2,7 @@
 
 - **ID:** F1-RP
 - **Stage:** 1-in-progress
-- **Type:** CONJECTURE; quintic obstruction under audit
+- **Type:** CONJECTURE; stronger lag-form positivity refuted
 - **Source:** [Joint first-fold payment](f1-joint-cubic-prime-payment.md)
 - **Statement:** The lower form below is nonnegative for every real odd C² function supported
   in `[-1,1]`.
@@ -39,7 +39,7 @@ strictly weaker than `B`; reject it if its exact moment matrix has a negative di
 - [ ] Prove the actual low-moment payment or identify the discarded positive term needed.
 - [ ] Formalize any dependency-closed proof, then apply it to the complete first stage.
 
-## Quintic obstruction under audit
+## Quintic obstruction
 
 For `g(u)=u(1−u²)(1−u²/2)` on `[-1,1]`, zero outside, the exact formulas are
 
@@ -48,12 +48,14 @@ For `g(u)=u(1−u²)(1−u²/2)` on `[-1,1]`, zero outside, the exact formulas a
 - `J(g)/4=121/3675+3179/85050+548/654885`;
 - `∫₀¹Wg²=4/9−23/25+572/735−563/1890+1627/38115−(62/1155)log2`.
 
-The [retained-form obstruction](../2-fully-proven/f1-quintic-retained-gamma-obstruction.md)
+The [retained-form obstruction](../5-failed/f1-quintic-retained-gamma-obstruction.md)
 uses the exact correlation of `F(x)=g(2x)` directly. It proves negativity of the stronger
 lag-moment Gamma lower form on this continuous quintic, including the prime and pole,
 with standard-only transitive Lean axioms. This avoids an endpoint-logarithm or
-reflection-integral enclosure. The quintic's zero extension is not C²; support-preserving
-mollification and rescaling remain under formalization. No C² counterexample is claimed yet.
+reflection-integral enclosure. Support-preserving mollification and rescaling give
+`exists_odd_unit_retainedGamma_neg`, an individually Lean-audited C² counterexample to
+the stronger lag form, with standard-only transitive axioms. Identifying `B` with the old
+uniform lag form remains necessary to close this regional statement in Lean.
 
 **Positive survivor:** retain the first and second lag moments in the Gamma
 comparison. With `D(t)=E−C(t)`, it gives

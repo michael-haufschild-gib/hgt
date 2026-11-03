@@ -1,12 +1,14 @@
 # The quintic defeats the retained Gamma lower form
 
 - **ID:** F1-QG
-- **Stage:** 2-fully-proven; Lean audit in progress
-- **Type:** THEOREM (continuous test); C² transfer open
+- **Stage:** 5-failed; retained-lower-form positivity refuted
+- **Type:** REFUTED CONJECTURE; C² counterexample individually Lean-audited
 - **Source:** [Joint first-fold payment](../1-in-progress/f1-joint-cubic-prime-payment.md)
-- **Statement:** The continuous odd unit-window source
-  `F(x)=2x(1−4x²)(1−2x²)` inside `[-1/2,1/2]`, zero outside, has `P(F)<0`,
+- **Rejected statement:** `P(F)≥0` for every real odd C² unit-window test.
+- **Counterexample:** Some real odd C² test supported in `[-1/2,1/2]` has `P(F)<0`,
   where `P` is the retained Gamma/prime/pole lower form on the source card.
+  The continuous quintic `2x(1−4x²)(1−2x²)`, zero outside this window, has negative
+  form; support-preserving smoothing transfers that strict sign.
 
 ## Proof
 
@@ -37,9 +39,7 @@ in the corpus and mathlib. Therefore
 `WindowTowerOfSpecZ.TheQuinticWindowHasExactLagData` proves the exact lag and position
 data. `WindowTowerOfSpecZ.TheRetainedGammaLowerFormHasANegativeDirection` proves
 `retainedOddGammaLowerForm_quintic_neg`, including every integral identification,
-constant bound and the signed prime/pole enclosure. Both individual `lake --old env lean`
-source audits pass with `[propext, Classical.choice, Quot.sound]` only. Both modules are
-wired into the umbrella. The remaining proof is the C² transfer below.
+constant bound and the signed prime/pole enclosure.
 
 ## Scope and survivor
 
@@ -51,10 +51,20 @@ rescaled sources have Lipschitz constant at most `24` and converge pointwise to 
 The increment identity gives `0≤(Eₙ−Cₙ(t))/t≤576t` for `0<t≤1`: the union of the two
 translated supports has measure at most two. Dominated convergence proves convergence
 of the logarithmic term and all remaining compact integrals, hence eventual negativity.
-This C² transfer still needs its Lean proof. The complete Weil form's sign is not
-decided by this obstruction, and the first-fold route remains active.
+`WindowTowerOfSpecZ.TheGammaRemainderCannotBeDiscarded` proves the transfer and
+`exists_odd_unit_retainedGamma_neg`. All three individual `lake --old env lean` source
+audits pass; the counterexample's transitive axioms are
+`[propext, Classical.choice, Quot.sound]` only. All three modules are umbrella-imported.
+The complete Weil form's sign is not decided by this obstruction; the first-fold route
+remains active.
 
 The positive survivors are the [exact retained Gamma identities](../3-formalized/f1-gamma-lag-moment-payment.md)
 and [complete coercivity off two odd moments](../3-formalized/f1-complete-odd-two-moment-complement.md),
-both individually Lean-audited with standard-only transitive axioms. The Gamma remainder
-discarded in `P` remains available to pay the low moments jointly with the signed reflection.
+both paper-proved and individually Lean-audited with standard-only transitive axioms:
+`unit_odd_gamma_pole_primitive_lower` retains the common primitive charges, and
+`weilQuad_ge_of_odd_two_moments_zero` gives `Q(F)≥∫F²/100` off the first two odd moments.
+Thus the obstruction is confined to their coupled block, not the coercive complement.
+The new constraint is exact: even retaining both lag moments, the pole and signed prime
+is insufficient after discarding the nonnegative Gamma remainder. Joint payment must
+retain that remainder or use a different lower bound. Its exact decomposition on the
+source card is a paper identity; no Lean proof of the complete joint sign is claimed.

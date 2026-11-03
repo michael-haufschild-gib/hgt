@@ -1,6 +1,6 @@
 # The Window Tower of Spec ℤ (WTZ)
 
-Namespace `GaloisForLFunctions.WindowTowerOfSpecZ`; umbrella `WindowTowerOfSpecZ.lean`; 42 modules.
+Namespace `GaloisForLFunctions.WindowTowerOfSpecZ`; umbrella `WindowTowerOfSpecZ.lean`; 43 modules.
 Every theorem is unconditional; none assumes or proves RH.
 
 ## 1. Motivation
@@ -455,7 +455,7 @@ and the pole; the rigidity of the fold weights through the explicit formula with
 | One cubic moment pays the frozen odd form on the unit window; its kernel is coercive | `stageForm_one_cubicMoment_lower`, `stageForm_one_add_cubicMoment_ge`, `stageForm_one_coercive_of_cubicMoment_zero` |
 | Complete odd unit-window coercivity after first and third moments vanish | `stageForm_two_ge_of_odd_two_moments_zero`, `weilQuad_ge_of_odd_two_moments_zero` |
 | Gamma correction and sinh pole share one compact primitive; uniform Gamma loss is `7/192` | `unit_odd_gamma_primitive_lower`, `unit_odd_gamma_pole_primitive_lower`, `unit_odd_gamma_jump_second_moment_lower` |
-| The continuous odd quintic has a negative retained Gamma lower form, including both lag corrections, prime two and sinh pole | `quinticWindow_autocorr`, `quinticWindow_logarithmic_integral`, `quinticWindow_jump_first_moment`, `retainedOddGammaLowerForm_quintic_neg` |
+| Exact quintic lag data and a smooth odd unit-window counterexample to positivity of the retained Gamma lower form, including prime two and sinh pole | `quinticWindow_autocorr`, `quinticWindow_logarithmic_integral`, `quinticWindow_jump_first_moment`, `exists_odd_unit_retainedGamma_neg` |
 | The exit charge pays every new fold | `collar_le_jump`, `levyJump_ge_collar`, `primeJumpWeight_le`, `log_three_le_archLevyAntideriv`, `primeJumpWeight_le_archLevyAntideriv`, `weilQuad_ge_reducedStageForm` |
 | The window Euler product | `isMultiplicative_factoredIndicator`, `factoredIndicator_mul_insert`, `prod_factoredIndicator`, `eulerFactor_mul_inverse`, `windowRep_zeta_eq_prod`, `windowRep_eulerFactor_mul_inverse` |
 | Weil's window form is a signed count | `exists_log_interpolant`, `sum_coeff_mul_jordanTotient`, `integral_windowRep_vonMangoldt_eq_signedCount`, `weilQuad_eq_signedCount` |

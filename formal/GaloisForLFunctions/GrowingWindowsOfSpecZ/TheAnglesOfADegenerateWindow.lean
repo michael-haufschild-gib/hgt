@@ -1,6 +1,7 @@
 import GaloisForLFunctions.GrowingWindowsOfSpecZ.TheLatticeCanonicalSystem
 import Mathlib.Algebra.Polynomial.Div
 import Mathlib.Analysis.Complex.Basic
+import Mathlib.Analysis.Complex.Polynomial.Basic
 
 /-!
 # The angles of a degenerate window
@@ -45,6 +46,12 @@ def hform (κ : ℤ → ℝ) (N : ℕ) (p q : ℂ[X]) : ℂ :=
 theorem hform_sub_left (N : ℕ) (p p' q : ℂ[X]) :
     hform κ N (p - p') q = hform κ N p q - hform κ N p' q := by
   simp only [hform, coeff_sub, ← sum_sub_distrib]
+  refine sum_congr rfl fun j _ => sum_congr rfl fun k _ => ?_
+  ring
+
+theorem hform_add_left (N : ℕ) (p p' q : ℂ[X]) :
+    hform κ N (p + p') q = hform κ N p q + hform κ N p' q := by
+  simp only [hform, coeff_add, ← sum_add_distrib]
   refine sum_congr rfl fun j _ => sum_congr rfl fun k _ => ?_
   ring
 
@@ -253,7 +260,7 @@ theorem norm_gt_one_of_predictor_root (hκ : IsEvenSeq κ) {n : ℕ}
     have hcm : conj m = conj q / conj z₀ := by rw [hm, map_div₀]
     have hq : conj q = q := by rw [conj_hform hκ]
     rw [hcm, hq]
-    have hcz : conj z₀ ≠ 0 := (map_ne_zero _).mpr hz0
+    have hcz : conj z₀ ≠ 0 := (_root_.map_ne_zero _).mpr hz0
     field_simp
     ring
   have hFpos := re_hform_self_pos hpd hFne hdegF
@@ -387,7 +394,7 @@ theorem norm_eq_one_of_critical_root (hκ : IsEvenSeq κ) {n : ℕ}
     have hm : m = q / z₀ := by rw [h1]; field_simp
     have := h2
     rw [hm, map_div₀, hq] at this
-    have hcz : conj z₀ ≠ 0 := (map_ne_zero _).mpr hz0
+    have hcz : conj z₀ ≠ 0 := (_root_.map_ne_zero _).mpr hz0
     field_simp at this
     linear_combination this
   have hzz : z₀ * conj z₀ = ((‖z₀‖ ^ 2 : ℝ) : ℂ) := by
@@ -402,5 +409,111 @@ theorem norm_eq_one_of_critical_root (hκ : IsEvenSeq κ) {n : ℕ}
     · linarith
   have := norm_nonneg z₀
   nlinarith
+
+/-! ### The angles of a degenerate window are distinct -/
+
+/-- The zero mode is in the radical of the Hermitian form of the degenerate window. -/
+theorem hform_zeroMode_eq_zero (hκ : IsEvenSeq κ) {n : ℕ} (hpd : ToeplitzPosDef κ (n + 1))
+    (h0 : levinsonErr κ (n + 1) = 0) (G : ℂ[X]) :
+    hform κ (n + 1) (vecPoly (levinsonVec κ (n + 1))) G = 0 := by
+  obtain ⟨hpsd, hker⟩ := toeplitzForm_kernel_of_first_critical hκ hpd h0
+  have hv : toeplitzForm κ (n + 2) (levinsonVec κ (n + 1)) = 0 :=
+    (hker _).mpr (funext fun k => by simp [levinsonVec])
+  have hrows := toeplitz_rows_eq_zero hκ hpsd hv
+  exact hform_eq_zero_of_orth _ G fun k hk _ => hrows ⟨k, by omega⟩
+
+/-- The last coefficient of the Levinson vector of size `n + 2` is `−γ_n`. -/
+theorem levinsonVec_last (n : ℕ) :
+    levinsonVec κ (n + 1) (Fin.last (n + 1)) = -reflCoeff κ n := by
+  rw [levinsonVec, show (Fin.last (n + 1) : Fin (n + 2)) = (Fin.last n).succ from rfl,
+    Fin.cons_succ, levinsonPred_succ, Fin.snoc_last]
+
+/-- **The zero mode has degree exactly `n + 1`**: its last coefficient is `−γ_n = ∓1`. -/
+theorem natDegree_zeroMode (hκ : IsEvenSeq κ) {n : ℕ} (hpd : ToeplitzPosDef κ (n + 1))
+    (h0 : levinsonErr κ (n + 1) = 0) : (vecPoly (levinsonVec κ (n + 1))).natDegree = n + 1 := by
+  have hE := (toeplitzForm_posDef_iff hκ n).mp hpd n le_rfl
+  have hγ := reflCoeff_sq_of_critical hE.ne' h0
+  refine natDegree_eq_of_le_of_coeff_ne_zero (natDegree_vecPoly_le _) ?_
+  rw [coeff_vecPoly, dif_pos (by omega)]
+  have : (⟨n + 1, by omega⟩ : Fin (n + 2)) = Fin.last (n + 1) := rfl
+  rw [this, levinsonVec_last]
+  intro hc
+  have : reflCoeff κ n = 0 := neg_eq_zero.mp (Complex.ofReal_eq_zero.mp hc)
+  rw [this] at hγ
+  norm_num at hγ
+
+/-- **The angles of a degenerate window are simple**: no `(z − z₀)²` divides the zero mode. -/
+theorem not_sq_dvd_zeroMode (hκ : IsEvenSeq κ) {n : ℕ} (hpd : ToeplitzPosDef κ (n + 1))
+    (h0 : levinsonErr κ (n + 1) = 0) (z₀ : ℂ) :
+    ¬ (X - C z₀) ^ 2 ∣ vecPoly (levinsonVec κ (n + 1)) := by
+  rintro ⟨R, hR⟩
+  set V := vecPoly (levinsonVec κ (n + 1))
+  have hroot : V.IsRoot z₀ := by
+    rw [IsRoot, hR, eval_mul, eval_pow, eval_sub, eval_X, eval_C, sub_self]; ring
+  have hz1 := norm_eq_one_of_critical_root hκ hpd h0 hroot
+  have hrad : ∀ G, hform κ (n + 1) V G = 0 := hform_zeroMode_eq_zero hκ hpd h0
+  have hdegV : V.natDegree = n + 1 := natDegree_zeroMode hκ hpd h0
+  have hVne : V ≠ 0 := fun h => by rw [h, natDegree_zero] at hdegV; omega
+  have hRne : R ≠ 0 := fun h => hVne (by rw [hR, h, mul_zero])
+  have hdegR : R.natDegree + 2 = n + 1 := by
+    have h1 := natDegree_mul (pow_ne_zero 2 (X_sub_C_ne_zero z₀)) hRne
+    rw [← hR, hdegV, natDegree_pow, natDegree_X_sub_C] at h1
+    omega
+  have hRn1 : R.coeff (n + 1) = 0 := coeff_eq_zero_of_natDegree_lt (by omega)
+  have hXRn1 : (X * R).coeff (n + 1) = 0 := by
+    rw [coeff_X_mul]; exact coeff_eq_zero_of_natDegree_lt (by omega)
+  have hXX : hform κ (n + 1) (X * R) (X * R) = hform κ (n + 1) R R :=
+    hform_X_mul (n + 1) hRn1 hRn1
+  have hXXX : hform κ (n + 1) (X * (X * R)) (X * R) = hform κ (n + 1) (X * R) R :=
+    hform_X_mul (n + 1) hXRn1 hRn1
+  have hRX : hform κ (n + 1) R (X * R) = conj (hform κ (n + 1) (X * R) R) := by
+    rw [conj_hform hκ]
+  -- `⟨V, zR⟩ = 0` with `V = z²R − z₀zR − z₀zR + z₀²R`
+  have hVexp : V = X * (X * R) - C z₀ * (X * R) - C z₀ * (X * R) + C z₀ * (C z₀ * R) := by
+    rw [hR]; ring
+  have heq : hform κ (n + 1) (X * R) R - 2 * z₀ * hform κ (n + 1) R R +
+      z₀ ^ 2 * conj (hform κ (n + 1) (X * R) R) = 0 := by
+    have := hrad (X * R)
+    rw [hVexp, hform_add_left, hform_sub_left, hform_sub_left, hform_smul_left, hform_smul_left,
+      hform_smul_left, hXXX, hXX, hRX] at this
+    linear_combination this
+  -- then `Q = (z − z₀)R` has `⟨Q, Q⟩ = 0`
+  have hzz : conj z₀ * z₀ = 1 := by
+    rw [mul_comm, Complex.mul_conj, Complex.normSq_eq_norm_sq, hz1]; norm_num
+  have hQQ : hform κ (n + 1) (X * R - C z₀ * R) (X * R - C z₀ * R) = 0 := by
+    rw [hform_sub_left, hform_sub_right, hform_sub_right, hform_smul_left, hform_smul_left,
+      hform_smul_right, hform_smul_right, hXX, hRX]
+    linear_combination (-conj z₀) * heq +
+      (z₀ * conj (hform κ (n + 1) (X * R) R) - hform κ (n + 1) R R) * hzz
+  have hQeq : X * R - C z₀ * R = (X - C z₀) * R := by ring
+  have hQne : X * R - C z₀ * R ≠ 0 := by
+    rw [hQeq]; exact mul_ne_zero (X_sub_C_ne_zero z₀) hRne
+  have hdegQ : (X * R - C z₀ * R).natDegree ≤ n := by
+    rw [hQeq]
+    refine (natDegree_mul_le).trans ?_
+    rw [natDegree_X_sub_C]; omega
+  have hQn1 : (X * R - C z₀ * R).coeff (n + 1) = 0 := coeff_eq_zero_of_natDegree_lt (by omega)
+  have hpos := re_hform_self_pos hpd hQne hdegQ
+  rw [← hform_succ_of_coeff n hQn1 hQn1, hQQ, Complex.zero_re] at hpos
+  exact lt_irrefl _ hpos
+
+/-- **A degenerate window has exactly `n + 1` distinct angles, all on the unit circle.** If the lattice
+window of size `n + 1` is positive definite and the next margin vanishes, the zero-mode polynomial has
+`n + 1` roots, without repetition, each of modulus one: the window of a curve with `n + 1`
+Frobenius angles. -/
+theorem zeroMode_roots (hκ : IsEvenSeq κ) {n : ℕ} (hpd : ToeplitzPosDef κ (n + 1))
+    (h0 : levinsonErr κ (n + 1) = 0) :
+    (vecPoly (levinsonVec κ (n + 1))).roots.Nodup ∧
+      Multiset.card (vecPoly (levinsonVec κ (n + 1))).roots = n + 1 ∧
+      ∀ z ∈ (vecPoly (levinsonVec κ (n + 1))).roots, ‖z‖ = 1 := by
+  classical
+  set V := vecPoly (levinsonVec κ (n + 1))
+  have hdegV : V.natDegree = n + 1 := natDegree_zeroMode hκ hpd h0
+  have hVne : V ≠ 0 := fun h => by rw [h, natDegree_zero] at hdegV; omega
+  refine ⟨Multiset.nodup_iff_count_le_one.mpr fun z => ?_, ?_, fun z hz => ?_⟩
+  · rw [count_roots]
+    exact (rootMultiplicity_le_iff hVne z 1).mpr (not_sq_dvd_zeroMode hκ hpd h0 z)
+  · rw [← (IsAlgClosed.splits V).natDegree_eq_card_roots, hdegV]
+  · exact norm_eq_one_of_critical_root hκ hpd h0 ((mem_roots hVne).mp hz)
 
 end GaloisForLFunctions.GrowingWindowsOfSpecZ

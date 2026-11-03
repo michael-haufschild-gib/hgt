@@ -47,23 +47,23 @@ The [first lag identity](../3-formalized/f1-first-lag-moment-primitive.md) gives
 All these identities and the resulting Gamma/pole bound pass individual Lean and
 standard-only transitive axiom audits.
 
-## Primitive candidate
+## Refuted primitive lower form
 
 With `C(t)=∫F(x)F(x+t)dx`, the retained bound suggests the sufficient lower form
 
 `P(F)=∫₀¹(E−C(t))/t dt−(γ+logπ+log2+1/48)E−(∫H²)/24−(∫H)²/16
  −½(∫H cosh(x/2))²−(√2 log2)C(log2)`.
 
-Conjecture: `P(F)≥0` for every real odd C² unit-window test.
-The [quintic obstruction](../2-fully-proven/f1-quintic-retained-gamma-obstruction.md)
-now proves `P(F)<0` for the continuous odd source `F(x)=2x(1−4x²)(1−2x²)` on the
-unit window, zero outside. Its integral identities and analytic sign assembly are
-kernel checked, with standard axioms only. The support-preserving C² transfer remains
-under formalization; no C² counterexample is claimed before that check.
+The conjecture `P(F)≥0` is refuted by the
+[quintic obstruction](../5-failed/f1-quintic-retained-gamma-obstruction.md).
+`exists_odd_unit_retainedGamma_neg` proves a real odd C² counterexample with the exact
+unit support, by smoothing `F(x)=2x(1−4x²)(1−2x²)`. Exact integral identities, signed
+prime/pole bounds and support-preserving transfer pass individual Lean source audits,
+with standard-only transitive axioms.
 
 The two primitive moment squares, primitive mass and signed prime reflection must be
-paid together. If the obstruction closes, the discarded Gamma remainder must be
-retained; failure of this lower form would not refute positivity of the complete Weil form.
+paid together with the discarded Gamma remainder. The complete Weil-form conjecture
+remains open.
 
 The exact terms omitted from `P` are
 `∫₀¹r(t)(E−C(t))dt+2δE`, with

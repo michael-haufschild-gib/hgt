@@ -1,80 +1,66 @@
-# Positive finite-factor twins and the Euler growth threshold
+# Positive Euler twins and the strict square-root threshold
 
 - **ID:** positive-finite-euler-factor-twins
 - **Stage:** 1-in-progress
-- **Type:** CONJECTURE
-- **Wall:** Γ15.
-- **Target:** Positive bounded multiplicative coefficients and a scalar Selberg
-  functional equation do not exclude zeros off the critical line; the logarithmic
-  prime-power bound in the Euler axiom remains essential.
+- **Wall:** Γ15; positive multiplicative functional-equation twins.
+- **Target:** Every finite zeta coefficient prefix extends to a degree-one
+  positive multiplicative Euler series with a zero at any prescribed real
+  part `1/2 < σ < 1`. Its logarithmic coefficients obey `3n^σ`; no full
+  Selberg carrier has the same ordinary coefficients.
 
-For a prime `p`, put
-`D_A(s)=ζ(s)[1+A p⁻ˢ+p p⁻²ˢ]`, `A≥0`.
-Its coefficients are `1+A·1_(p∣n)+p·1_(p²∣n)` for `n≥1`.
-They are positive, bounded, multiplicative, normalized, and agree with those of
-`ζ` below `p`. Its completion is
-`Λ(s)[pˢ+A+p^(1−s)]`, with conductor `p²`; the bracket is reflection-even.
+## Construction and proof
 
-Writing `t=pˢ`, the new zeros solve `t²+At+p=0`.
-They all lie on the critical line exactly when `0≤A≤2√p`.
-At equality they are double. For `A>2√p`, two reflected vertical arithmetic
-progressions leave the line. For `p=2`, `A=17/6`, the roots are `−3/2` and `−4/3`,
-so both progressions lie strictly inside the critical strip.
-For `A=9/2`, the roots are `−4` and `−1/2`; the zero
-`2+iπ/log 2` directly contradicts the full carrier's exponential Euler identity
-on `Re s>1`.
+Choose a prime `p>N`, put `r=p^σ`, `q=p^(1−σ)`, and `A=r+q`.
+The Dirichlet series
+`D_A(s)=ζ(s)(1+A p⁻ˢ+p p⁻²ˢ)` has coefficients
+`a(n)=1+A·1_(p∣n)+p·1_(p²∣n)` for `n≥1`.
+Thus `1≤a(n)≤1+A+p`, `a(1)=1`, and `a(n)=1` for `n≤N`.
+Coprime multiplicativity follows because at most one factor is divisible by `p`.
 
-For any `ρ>1/2`, choosing `A=p^ρ+p^(1−ρ)` gives logarithmic coefficients
-`b(p^k)=[1+(-1)^(k+1)(p^(ρk)+p^((1−ρ)k))]/k`.
-Their exponential rate is `p^ρ`, excluding every Euler bound with exponent
-`θ<1/2`. The finite-order continuation and extended-class carrier are formalized;
-the Euler exclusion still requires the coefficient-identification audit.
+Its completion is `Λ(s)(pˢ+A+p^(1−s))`, with degree one, conductor `p²`
+and root number one. The bracket is reflection-even. An entire finite-order
+regularization is
+`ξ(s)π^(s/2)/Γ(s/2+1) · (1+A p⁻ˢ+p p⁻²ˢ)`;
+it equals `(s−1)D_A(s)` away from the pole.
+The explicit zero `(log r+iπ)/log p` has real part `σ`.
 
-## Exact completion target
+For any `A≥0`, each added zero satisfies `Re s=1/2 ↔ A≤2√p`:
+writing `t=pˢ` gives `t²+At+p=0`, whose root norm is `√p` precisely
+below this threshold.
 
-Construct the degree-one extended Selberg carrier for every prime `p` and real
-`A≥0`, including its finite-order regularization. Prove coefficient positivity,
-boundedness, multiplicativity and the prescribed coefficient prefix. Classify
-the zeros introduced by the quadratic factor and certify the logarithmic
-Euler-coefficient growth threshold. This does not assert a counterexample to
-the full Selberg axioms: the strict Euler growth axiom must be tested explicitly.
+Let `α+β=−A`, `αβ=p`. The prime-power Euler logarithm is
+`b(p^k)=(1−α^k−β^k)/k`; at other prime powers it is `1/k`, and elsewhere zero.
+For the displayed construction, `α=−p^σ`, `β=−p^(1−σ)`.
+Both root norms are at most `p^σ<p`, so the logarithm converges absolutely
+throughout `Re s>1`, exponentiates to `D_A`, and satisfies `|b(n)|≤3n^σ`.
 
-The corpus already supplies degree-three interpolation twins and a positive
-degree-two Epstein twin with nonmultiplicative coefficients. Neither gives the
-positive multiplicative degree-one example or its exact local Euler obstruction.
+For every real `A`, the strict Euler bound fails. If it held with exponent
+`θ<1/2`, normalize the roots by `√p` and put
+`u_k=(α^k+β^k)/p^(k/2)`. The bound implies `u_k→0`, whereas
+`u_(2k)=u_k²−2` forces `0=−2`. Below `A=2√p`, the matching bound
+`|b(p^k)|≤3p^(k/2)` holds. Any purported full Selberg logarithm has these same
+coefficients: differentiate the equality of exponentials, then use Dirichlet
+series injectivity. The obstruction therefore excludes every full presentation,
+including presentations with different gamma data.
 
-## Algebraic boundary
+## Lean declarations
 
-Let `t=pˢ`. The added zero equation is `t²+At+p=0`. For `A≥0`,
-every root has `|t|=√p` exactly when `A≤2√p`: the nonreal roots are
-conjugate; real roots collide at `−√p` and split into reciprocal negative
-roots beyond that threshold. Thus every added zero is critical below the
-threshold and every added zero is off-line above it.
+Namespace `GaloisForLFunctions.SelbergClass.PositiveFiniteEuler`:
 
-For `r>0`, set `A=r+p/r`. The explicit zero is
-`(log r+iπ)/log p`, with its reflected progression at real part
-`1−log r/log p`. Choosing `√p<r<p` puts both progressions in the strip.
-The completed factor is `pˢ+A+p^(1−s)`, so the ordinary completion has
-Gamma data `Q=p/√π`, `λ=1/2`, `μ=0`, root number one, conductor `p²`.
+- `PositiveFiniteEulerCoefficients`: `lSeriesHasSum`, `coeff_bounds`,
+  `arithmeticCoeffs_isMultiplicative`, `ramanujan`.
+- `PositiveFiniteEulerCompletion`: `extendedClass`, `extendedClass_degree`,
+  `extendedClass_conductor`, `orderOneEnvelope_regularized`.
+- `PositiveFiniteEulerZeros`: `localFactor_zero_critical_iff`,
+  `localFactor_factorZero`, `quadratic_logCoeff_bound`.
+- `PositiveFiniteEulerBound`: `fullClass_eulerLogCoeff_prime_pow`,
+  `not_strictEulerBound`, `not_fullClass`.
+- `PositiveFiniteEulerProduct`: `eulerLogCoeff_primePower`,
+  `eulerLogCoeff_bound`, `logarithmicCoeffs_summable`, `logarithmicCoeffs_exp`.
+- `PositiveFiniteEulerTwins`: `exists_positive_multiplicative_euler_twin_at`,
+  `exists_positive_multiplicative_twin`.
 
-Write `α,β` for the quadratic roots, so `αβ=p`, `α+β=−A`.
-The local logarithmic coefficients are `(1−α^k−β^k)/k` at `p^k`.
-Their predicted sharp exponential rate is `max(|α|,|β|)`, at least `√p`. In the real-root
-case even powers give the lower bound directly. For conjugate roots,
-`u_k=(α^k+β^k)/p^(k/2)` satisfies `u_(2k)=u_k²−2`, so one of
-`|u_k|,|u_(2k)|` is at least one. This supplies arbitrarily large lower
-bounds and excludes every strict Euler exponent `θ<1/2`.
-
-A root-free obstruction follows from the same identity: if
-`|(1−u_k)/k|≤C p^(θk)` with `θ<1/2`, then `u_k/p^(k/2)→0` and
-`u_(2k)/p^k→0`. Dividing `u_(2k)=u_k²−2p^k` by `p^k` gives `0=−2`.
-Thus the strict Euler bound fails even when all added zeros are critical.
-Lean integration must identify these coefficients with any purported full
-Selberg logarithm; the algebraic obstruction alone is not a class exclusion.
-
-## Remaining proof obligations
-
-Certify the critical-circle threshold, the degree-one completion and the
-strict Euler-growth obstruction. Identify the computed logarithmic
-coefficients with every purported full Selberg carrier before using the
-obstruction. The full Euler-constrained face remains open until that audit.
+The existential assembly is formalized. All 20 audited declarations depend
+only on `propext`, `Classical.choice`, `Quot.sound`. Canonical source checks
+remain pending.
+The full Selberg-constrained face of Γ15 remains open.
