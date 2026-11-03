@@ -45,9 +45,9 @@ theorem exists_tendsto_diagonal {f : ℕ → ℕ → ℝ} (hlim : ∀ k, Tendsto
   have hTle : ∀ k, T k ≤ T' k := fun k =>
     (single_le_sum (fun j _ => Nat.zero_le (T j)) (self_mem_range_succ k)).trans (Nat.le_add_right _ _)
   have hkle : ∀ k, k ≤ T' k := fun k => Nat.le_add_left _ _
-  let P : ℕ → ℕ → Prop := fun N k => T' k ≤ N
-  set M : ℕ → ℕ := fun N => Nat.findGreatest (P N) N with hM
-  have hMge : ∀ k N, T' k ≤ N → k ≤ M N := fun k N h => Nat.le_findGreatest ((hkle k).trans h) h
+  set M : ℕ → ℕ := fun N => Nat.findGreatest (fun k => T' k ≤ N) N with hM
+  have hMge : ∀ k N, T' k ≤ N → k ≤ M N := fun k N h =>
+    Nat.le_findGreatest (P := fun k => T' k ≤ N) ((hkle k).trans h) h
   have hMtop : Tendsto M atTop atTop :=
     tendsto_atTop.mpr fun k => eventually_atTop.mpr ⟨T' k, fun N hN => hMge k N hN⟩
   refine ⟨M, hMtop, ?_⟩
@@ -56,7 +56,7 @@ theorem exists_tendsto_diagonal {f : ℕ → ℕ → ℝ} (hlim : ∀ k, Tendsto
       (tendsto_atTop_add_const_right _ 1 (tendsto_natCast_atTop_atTop.comp hMtop))
   refine squeeze_zero_norm' ?_ hinv
   filter_upwards [eventually_ge_atTop (T' 0)] with N hN
-  have hP : P N (M N) := Nat.findGreatest_spec (P := P N) ((hkle 0).trans hN) hN
+  have hP : T' (M N) ≤ N := Nat.findGreatest_spec (P := fun k => T' k ≤ N) ((hkle 0).trans hN) hN
   exact (hT (M N) N ((hTle (M N)).trans hP)).le
 
 /-! ### The windows and their pairing -/

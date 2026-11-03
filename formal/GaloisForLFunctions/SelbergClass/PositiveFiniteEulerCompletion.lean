@@ -49,7 +49,7 @@ private theorem zetaRegularization_eq {s : ℂ} (hs : s ≠ 1) :
 private theorem zetaRegularization_eq_poleUnit : zetaRegularization = RHTower.zetaPoleUnit := by
   have hZ := Complex.analyticOnNhd_univ_iff_differentiable.mpr differentiable_zetaRegularization
   have hP := Complex.analyticOnNhd_univ_iff_differentiable.mpr RHTower.differentiable_zetaPoleUnit
-  apply hZ.eq_of_eventuallyEq hP (x := (2 : ℂ))
+  apply hZ.eq_of_eventuallyEq hP (z₀ := (2 : ℂ))
   filter_upwards [isOpen_compl_singleton.mem_nhds (by norm_num : (2 : ℂ) ≠ 1)] with s hs
   exact (zetaRegularization_eq hs).trans (RHTower.zetaPoleUnit_of_ne hs).symm
 
@@ -83,13 +83,13 @@ theorem regularized_eq {p : ℕ} (A : ℝ) {s : ℂ} (hs : s ≠ 1) :
   rw [regularized, zetaRegularization_eq hs]
   ring
 
-/-- The pole is simple: its residue is the positive finite Euler factor at one. -/
+/-- The pole-cleared value at one equals the finite local factor at one. -/
 theorem regularized_one (p : ℕ) (A : ℝ) : regularized p A 1 = localFactor p A 1 := by
   rw [regularized, zetaRegularization_eq_poleUnit, RHTower.zetaPoleUnit_one, one_mul]
 
 theorem orderOneEnvelope_regularized {p : ℕ} (hp : p ≠ 0) (A : ℝ) :
     OrderOneEnvelope (regularized p A) := by
-  have he := orderOneEnvelope_natCast_cpow_neg hp
+  have he := orderOneEnvelope_natCast_cpow_neg (Nat.pos_of_ne_zero hp)
   have hlocal : OrderOneEnvelope (localFactor p A) :=
     ((orderOneEnvelope_const 1).add (he.const_mul (A : ℂ))).add
       ((he.mul he).const_mul (p : ℂ)) |>.congr fun s => by rw [localFactor, pow_two]
@@ -141,9 +141,8 @@ theorem cpow_mul_localFactor {p : ℕ} (hp : p ≠ 0) (A : ℝ) (s : ℂ) :
     (p : ℂ) ^ s * localFactor p A s = completedFactor p A s := by
   have hpC : (p : ℂ) ≠ 0 := by exact_mod_cast hp
   have ht : (p : ℂ) ^ s ≠ 0 := cpow_ne_zero_iff.mpr (.inl hpC)
-  rw [localFactor, completedFactor, cpow_sub hpC, cpow_one, cpow_neg]
+  rw [localFactor, completedFactor, cpow_sub _ _ hpC, cpow_one, cpow_neg]
   field_simp [ht]
-  ring
 
 /-- The zeta completion with its balanced reciprocal factor. -/
 def completed (p : ℕ) (A : ℝ) (s : ℂ) : ℂ :=
@@ -175,9 +174,10 @@ theorem gammaFactor_eq {p : ℕ} (hp : 0 < p) (s : ℂ) :
       Real.log_mul hpR.ne' (Real.exp_ne_zero _), Real.log_exp]
     push_cast
     ring
-  simp only [RHTower.SelbergGammaData.gammaFactor, gammaData, Pi.mul_apply,
-    Finset.prod_apply, Fin.prod_univ_one, Complex.ofReal_div, Complex.ofReal_one,
-    Complex.ofReal_ofNat, one_div_mul_eq_div, zero_add, add_zero]
+  change (((p : ℝ) * Real.exp (-Real.log Real.pi / 2) : ℝ) : ℂ) ^ s *
+    (∏ _j : Fin 1, Gamma (((1 / 2 : ℝ) : ℂ) * s + 0)) = _
+  simp only [Fin.prod_univ_one, Complex.ofReal_div, Complex.ofReal_one,
+    Complex.ofReal_ofNat, one_div_mul_eq_div, add_zero]
   rw [Gammaℝ, cpow_def_of_ne_zero
     (Complex.ofReal_ne_zero.mpr (mul_pos hpR (Real.exp_pos _)).ne'), hlog,
     cpow_def_of_ne_zero hpC, cpow_def_of_ne_zero (Complex.ofReal_ne_zero.mpr Real.pi_ne_zero),
@@ -187,7 +187,8 @@ theorem gammaFactor_eq {p : ℕ} (hp : 0 < p) (s : ℂ) :
   ring
 
 theorem gammaData_degree {p : ℕ} (hp : 0 < p) : (gammaData hp).degree = 1 := by
-  norm_num [RHTower.SelbergGammaData.degree, gammaData]
+  change 2 * (∑ _j : Fin 1, (1 / 2 : ℝ)) = 1
+  norm_num
 
 theorem gammaData_conductor {p : ℕ} (hp : 0 < p) : (gammaData hp).conductor = (p : ℝ) ^ 2 := by
   have he : Real.exp (-Real.log Real.pi / 2) ^ 2 = Real.pi⁻¹ := by
@@ -195,7 +196,9 @@ theorem gammaData_conductor {p : ℕ} (hp : 0 < p) : (gammaData hp).conductor = 
     rw [show -Real.log Real.pi / 2 + -Real.log Real.pi / 2 = -Real.log Real.pi by ring,
       Real.exp_neg, Real.exp_log Real.pi_pos]
   rw [RHTower.SelbergGammaData.conductor, gammaData_degree]
-  simp only [gammaData, Real.rpow_one, Fin.prod_univ_one]
+  change (2 * Real.pi) ^ (1 : ℝ) * ((p : ℝ) * Real.exp (-Real.log Real.pi / 2)) ^ 2 *
+    (∏ _j : Fin 1, (1 / 2 : ℝ) ^ (2 * (1 / 2 : ℝ))) = _
+  simp only [Real.rpow_one, Fin.prod_univ_one]
   norm_num only [show (2 : ℝ) * (1 / 2) = 1 by norm_num, Real.rpow_one]
   rw [mul_pow, he]
   field_simp [Real.pi_ne_zero]
@@ -294,8 +297,8 @@ theorem functionalEquation {p : ℕ} (hp : p.Prime) (A : ℝ) :
   filter_upwards [hgood, hzero, hone] with s hgs hs0 hs1
   have hs0' : s ≠ 0 := hs0
   have hs1' : s ≠ 1 := hs1
-  have hΓs : Gammaℝ s ≠ 0 := gamma_nonzero (ne_zero_of_mul_ne_zero_left hgs)
-  have hΓ1s : Gammaℝ (1 - s) ≠ 0 := gamma_nonzero (ne_zero_of_mul_ne_zero_right hgs)
+  have hΓs : Gammaℝ s ≠ 0 := gamma_nonzero (mul_ne_zero_iff.mp hgs).1
+  have hΓ1s : Gammaℝ (1 - s) ≠ 0 := gamma_nonzero (mul_ne_zero_iff.mp hgs).2
   have h1s0 : 1 - s ≠ 0 := sub_ne_zero.mpr hs1'.symm
   have h1s1 : 1 - s ≠ 1 := by
     intro h
@@ -307,14 +310,14 @@ theorem functionalEquation {p : ℕ} (hp : p.Prime) (A : ℝ) :
     representedCompleted_eq hp A hs0' hs1' hΓs,
     representedCompleted_eq hp A h1s0 h1s1 hΓ1s, completed_one_sub]
 
-/-- Positive finite Euler modifications are genuine degree-one members of the extended class. -/
+/-- Reciprocal finite Euler modifications are degree-one members of the extended class. -/
 def extendedClass {p : ℕ} (hp : p.Prime) (A : ℝ) : RHTower.ExtendedSelbergClass where
   coeff := arithmeticCoeffs p A
   coeff_ne_zero := by
     intro h
     have h1 := congrArg (fun f : ArithmeticFunction ℂ => f 1) h
-    simpa only [arithmeticCoeffs_apply, coeff_one hp, Complex.ofReal_one,
-      ArithmeticFunction.zero_apply, one_ne_zero] using h1
+    simp only [arithmeticCoeffs_apply, coeff_one hp, Complex.ofReal_one,
+      ArithmeticFunction.zero_apply, one_ne_zero] at h1
   lSeriesSummable := fun _ hs => (lSeriesHasSum hp A hs).LSeriesSummable
   continuation := continuation hp.ne_zero A
   lSeries_eq_value := by

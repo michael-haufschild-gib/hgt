@@ -28,7 +28,7 @@ all-scale far reserve on `(V_1)ᗮ` uniformly across `1 ≤ c ≤ 2 K₁_far (lo
 set_option autoImplicit false
 noncomputable section
 
-open MeasureTheory Finset Filter Topology Set RHTower Zeta23 ArithmeticFunction
+open MeasureTheory Finset Filter Topology RHTower Zeta23 ArithmeticFunction
 open scoped Classical BigOperators RealInnerProductSpace ArithmeticFunction Matrix CompactlySupported
 
 namespace GaloisForLFunctions.CriticalArithmeticCorrelationTheory
@@ -127,7 +127,7 @@ theorem levyEnergy_le_mul_integral_deriv_sq {h : ℝ → ℝ} (hh : ContDiff ℝ
     (hhc : HasCompactSupport h) :
     levyEnergy h ≤ 18 * ∫ u, deriv h u ^ 2 := by
   let hc : C_c(ℝ, ℝ) := ⟨⟨h, hh.continuous⟩, hhc⟩
-  have hpoint : ∀ y ∈ Ioi (0 : ℝ),
+  have hpoint : ∀ y ∈ Set.Ioi (0 : ℝ),
       levyIntegrand h y ≤ (y ^ 2 * archLevyDensity y) * ∫ u, deriv h u ^ 2 := by
     intro y hy
     have htr := BiScaleUncertainty.SobolevShear.integral_compactSource_translation_sq_le hc hh y
@@ -143,10 +143,10 @@ theorem levyEnergy_le_mul_integral_deriv_sq {h : ℝ → ℝ} (hh : ContDiff ℝ
     (RHTower.integrableOn_sq_mul_archLevyDensity.mul_const _) measurableSet_Ioi hpoint
   have hd0 : 0 ≤ ∫ u, deriv h u ^ 2 := integral_nonneg fun _ => sq_nonneg _
   unfold levyEnergy
-  change (∫ y in Ioi (0 : ℝ), levyIntegrand h y) ≤ _
-  calc (∫ y in Ioi (0 : ℝ), levyIntegrand h y)
-      ≤ ∫ y in Ioi (0 : ℝ), (y ^ 2 * archLevyDensity y) * ∫ u, deriv h u ^ 2 := hint
-    _ = (∫ y in Ioi (0 : ℝ), y ^ 2 * archLevyDensity y) * ∫ u, deriv h u ^ 2 :=
+  change (∫ y in Set.Ioi (0 : ℝ), levyIntegrand h y) ≤ _
+  calc (∫ y in Set.Ioi (0 : ℝ), levyIntegrand h y)
+      ≤ ∫ y in Set.Ioi (0 : ℝ), (y ^ 2 * archLevyDensity y) * ∫ u, deriv h u ^ 2 := hint
+    _ = (∫ y in Set.Ioi (0 : ℝ), y ^ 2 * archLevyDensity y) * ∫ u, deriv h u ^ 2 :=
         integral_mul_const _ _
     _ ≤ 18 * ∫ u, deriv h u ^ 2 := mul_le_mul_of_nonneg_right RHTower.levySecondMoment_le hd0
 
@@ -185,14 +185,14 @@ theorem baseShellBump_nonneg (t : ℝ) : 0 ≤ (baseShellBump : ℝ → ℝ) t :
 theorem baseShellBump_le_one (t : ℝ) : (baseShellBump : ℝ → ℝ) t ≤ 1 :=
   ContDiffBump.le_one _
 
-theorem contDiff_baseShellBump : ContDiff ℝ (↑(⊤ : ℕ∞)) (baseShellBump : ℝ → ℝ) :=
-  ContDiffBump.contDiff _
+theorem contDiff_baseShellBump {n : ℕ∞} : ContDiff ℝ n (baseShellBump : ℝ → ℝ) :=
+  baseShellBump.contDiff
 
 theorem hasCompactSupport_baseShellBump : HasCompactSupport (baseShellBump : ℝ → ℝ) :=
   ContDiffBump.hasCompactSupport _
 
 theorem baseShellBump_eq_one {t : ℝ} (ht : |t| ≤ 1) : (baseShellBump : ℝ → ℝ) t = 1 :=
-  ContDiffBump.one_of_mem_closedBall _ (by simpa [Real.dist_eq] using ht)
+  baseShellBump.one_of_mem_closedBall (by simpa [Metric.mem_closedBall, Real.dist_eq, baseShellBump] using ht)
 
 theorem baseShellBump_eq_zero {t : ℝ} (ht : 2 ≤ |t|) : (baseShellBump : ℝ → ℝ) t = 0 := by
   have h := ContDiffBump.support_eq baseShellBump
@@ -205,7 +205,7 @@ theorem exists_baseShellBump_deriv_bound :
     ∃ L_B : ℝ, 0 ≤ L_B ∧ (∀ t, |deriv (baseShellBump : ℝ → ℝ) t| ≤ L_B) ∧
       ∀ a b, |(baseShellBump : ℝ → ℝ) a - (baseShellBump : ℝ → ℝ) b| ≤ L_B * |a - b| := by
   have hcd : Continuous (deriv (baseShellBump : ℝ → ℝ)) :=
-    contDiff_baseShellBump.continuous_deriv (by exact_mod_cast le_top)
+    (contDiff_baseShellBump (n := 2)).continuous_deriv (by norm_num)
   have hcs : HasCompactSupport (deriv (baseShellBump : ℝ → ℝ)) :=
     hasCompactSupport_baseShellBump.deriv
   obtain ⟨C, hC⟩ := hcs.exists_bound_of_continuous hcd
@@ -217,10 +217,10 @@ theorem exists_baseShellBump_deriv_bound :
     exact this.trans (le_max_left _ _)
   refine ⟨L_B, hLB0, hd, fun a b => ?_⟩
   have hdiff : Differentiable ℝ (baseShellBump : ℝ → ℝ) :=
-    contDiff_baseShellBump.differentiable (by exact_mod_cast ENat.one_ne_top.symm.le.trans le_top)
-  have hmvt := Convex.norm_image_sub_le_of_norm_deriv_le (s := univ)
+    (contDiff_baseShellBump (n := 2)).differentiable (by norm_num)
+  have hmvt := Convex.norm_image_sub_le_of_norm_deriv_le (s := Set.univ)
     (fun x _ => hdiff.differentiableAt)
-    (fun x _ => by rw [Real.norm_eq_abs]; exact hd x) convex_univ (mem_univ b) (mem_univ a)
+    (fun x _ => by rw [Real.norm_eq_abs]; exact hd x) convex_univ (Set.mem_univ b) (Set.mem_univ a)
   simpa only [Real.norm_eq_abs] using hmvt
 
 /-- Log-space center `log N − (k + 1) log 2` of the `k`-th dyadic shell below `N`. -/
@@ -239,7 +239,7 @@ theorem dyadicShellBump_le_one (N k : ℕ) (u : ℝ) : dyadicShellBump N k u ≤
   baseShellBump_le_one _
 
 theorem contDiff_dyadicShellBump (N k : ℕ) : ContDiff ℝ 2 (dyadicShellBump N k) :=
-  (contDiff_baseShellBump.of_le (by exact_mod_cast le_top)).comp (contDiff_id.sub contDiff_const)
+  (contDiff_baseShellBump (n := 2)).comp (contDiff_id.sub contDiff_const)
 
 theorem dyadicShellBump_eq_zero {N k : ℕ} {u : ℝ} (hu : 2 ≤ |u - shellCenter N k|) :
     dyadicShellBump N k u = 0 :=
@@ -291,7 +291,7 @@ theorem sum_levyEnergy_dyadicShellBump_mul_le {L_B : ℝ}
       (∑ k ∈ s, ∫ u, (dyadicShellBump N k u * f u - dyadicShellBump N k (u + y) * f (u + y)) ^ 2) ≤
         18 * (∫ u, (f u - f (u + y)) ^ 2) + 36 * L_B ^ 2 * y ^ 2 * ∫ u, f u ^ 2 := by
     intro y hy
-    rw [← integral_finset_sum s fun k _ =>
+    rw [← integral_finsetSum s fun k _ =>
       RHTower.WeilMarkovPole.integrable_sub_shift_sq (hχf k).continuous (hχfc k) y]
     have hpt : ∀ u : ℝ,
         (∑ k ∈ s, (dyadicShellBump N k u * f u - dyadicShellBump N k (u + y) * f (u + y)) ^ 2) ≤
@@ -353,9 +353,10 @@ theorem sum_levyEnergy_dyadicShellBump_mul_le {L_B : ℝ}
           _ = 2 * dyadicShellBump N k u ^ 2 * (f u - f (u + y)) ^ 2 +
                 2 * (dyadicShellBump N k u - dyadicShellBump N k (u + y)) ^ 2 * f (u + y) ^ 2 := by
               ring
-          _ ≤ _ := add_le_add
+          _ ≤ _ := (add_le_add
               (mul_le_mul_of_nonneg_right (mul_le_mul_of_nonneg_left h1 zero_le_two) (sq_nonneg _))
-              (mul_le_mul_of_nonneg_right (mul_le_mul_of_nonneg_left h2 zero_le_two) (sq_nonneg _))
+              (mul_le_mul_of_nonneg_right (mul_le_mul_of_nonneg_left h2 zero_le_two)
+                (sq_nonneg _))).trans_eq (by ring)
       have hc1 : ∑ k ∈ s, (if |u - shellCenter N k| ≤ 2 then (1 : ℝ) else 0) ≤ 9 := by
         rw [← sum_filter, sum_const, nsmul_eq_mul, mul_one]
         exact (card_shellCenter_near_le s N u (by norm_num : (0 : ℝ) ≤ 2)).trans_eq (by norm_num)
@@ -378,49 +379,64 @@ theorem sum_levyEnergy_dyadicShellBump_mul_le {L_B : ℝ}
             have ha := mul_le_mul_of_nonneg_right (show 2 * (∑ k ∈ s, if |u - shellCenter N k| ≤ 2 then (1 : ℝ) else 0) ≤ 18 by linarith) (sq_nonneg (f u - f (u + y)))
             have hb := mul_le_mul_of_nonneg_right (mul_le_mul_of_nonneg_left (show (∑ k ∈ s, if |u - shellCenter N k| ≤ 2 then (1 : ℝ) else 0) + (∑ k ∈ s, if |u + y - shellCenter N k| ≤ 2 then (1 : ℝ) else 0) ≤ 18 by linarith) (by positivity : 0 ≤ 2 * L_B ^ 2 * y ^ 2)) (sq_nonneg (f (u + y)))
             linarith
-    have hi1 := RHTower.WeilMarkovPole.integrable_sub_shift_sq hf.continuous hfc y
-    have hi2 : Integrable fun u => f (u + y) ^ 2 :=
-      (integrable_sq_of_continuous hf.continuous hfc).comp_add_right y
-    have himono := integral_mono
-      (integrable_finset_sum s fun k _ =>
+    have hi1 : Integrable (fun u => 18 * (f u - f (u + y)) ^ 2) :=
+      (RHTower.WeilMarkovPole.integrable_sub_shift_sq hf.continuous hfc y).const_mul 18
+    have hi2 : Integrable (fun u => 36 * L_B ^ 2 * y ^ 2 * f (u + y) ^ 2) :=
+      ((integrable_sq_of_continuous hf.continuous hfc).comp_add_right y).const_mul
+        (36 * L_B ^ 2 * y ^ 2)
+    have himono : (∫ u, ∑ k ∈ s,
+        (dyadicShellBump N k u * f u - dyadicShellBump N k (u + y) * f (u + y)) ^ 2) ≤
+        ∫ u, (18 * (f u - f (u + y)) ^ 2 + 36 * L_B ^ 2 * y ^ 2 * f (u + y) ^ 2) :=
+      integral_mono (integrable_finsetSum s fun k _ =>
         RHTower.WeilMarkovPole.integrable_sub_shift_sq (hχf k).continuous (hχfc k) y)
-      ((hi1.const_mul 18).add (hi2.const_mul (36 * L_B ^ 2 * y ^ 2))) hpt
-    rw [integral_add (hi1.const_mul 18) (hi2.const_mul _), integral_const_mul, integral_const_mul,
-      integral_add_right_eq_self (fun u => f u ^ 2) y] at himono
-    linarith
+        (hi1.add hi2) hpt
+    calc (∫ u, ∑ k ∈ s,
+          (dyadicShellBump N k u * f u - dyadicShellBump N k (u + y) * f (u + y)) ^ 2)
+        ≤ ∫ u, (18 * (f u - f (u + y)) ^ 2 + 36 * L_B ^ 2 * y ^ 2 * f (u + y) ^ 2) := himono
+      _ = (∫ u, 18 * (f u - f (u + y)) ^ 2) +
+            ∫ u, 36 * L_B ^ 2 * y ^ 2 * f (u + y) ^ 2 := integral_add hi1 hi2
+      _ = 18 * (∫ u, (f u - f (u + y)) ^ 2) + 36 * L_B ^ 2 * y ^ 2 * ∫ u, f u ^ 2 := by
+          rw [integral_const_mul, integral_const_mul,
+            integral_add_right_eq_self (fun u => f u ^ 2) y]
   have hsum_y : ∑ k ∈ s, levyEnergy (fun u => dyadicShellBump N k u * f u) =
-      ∫ y in Ioi (0 : ℝ), ∑ k ∈ s, levyIntegrand (fun u => dyadicShellBump N k u * f u) y := by
+      ∫ y in Set.Ioi (0 : ℝ), ∑ k ∈ s, levyIntegrand (fun u => dyadicShellBump N k u * f u) y := by
     unfold levyEnergy
-    exact (integral_finset_sum s fun k _ => integrableOn_levyIntegrand (hχf k) (hχfc k)).symm
+    exact (integral_finsetSum s fun k _ => integrableOn_levyIntegrand (hχf k) (hχfc k)).symm
   rw [hsum_y]
-  have hdom : IntegrableOn (fun y => 18 * levyIntegrand f y +
-      (36 * L_B ^ 2 * ∫ u, f u ^ 2) * (y ^ 2 * archLevyDensity y)) (Ioi 0) :=
-    ((integrableOn_levyIntegrand hf hfc).const_mul 18).add
-      (RHTower.integrableOn_sq_mul_archLevyDensity.const_mul _)
-  have hmono := setIntegral_mono_on
-    (integrable_finset_sum s fun k _ => integrableOn_levyIntegrand (hχf k) (hχfc k)) hdom
-    measurableSet_Ioi fun y hy => by
-      have hω := (archLevyDensity_pos hy).le
-      calc ∑ k ∈ s, levyIntegrand (fun u => dyadicShellBump N k u * f u) y
-          = archLevyDensity y * ∑ k ∈ s, ∫ u,
-              (dyadicShellBump N k u * f u - dyadicShellBump N k (u + y) * f (u + y)) ^ 2 := by
-            unfold levyIntegrand; rw [mul_sum]
-        _ ≤ archLevyDensity y * (18 * (∫ u, (f u - f (u + y)) ^ 2) +
-              36 * L_B ^ 2 * y ^ 2 * ∫ u, f u ^ 2) :=
-            mul_le_mul_of_nonneg_left (hsum_u y hy) hω
-        _ = 18 * levyIntegrand f y +
-              (36 * L_B ^ 2 * ∫ u, f u ^ 2) * (y ^ 2 * archLevyDensity y) := by
-            unfold levyIntegrand; ring
-  rw [integral_add ((integrableOn_levyIntegrand hf hfc).const_mul 18)
-      (RHTower.integrableOn_sq_mul_archLevyDensity.const_mul _),
-    integral_const_mul, integral_const_mul] at hmono
+  have hiL : IntegrableOn (fun y => 18 * levyIntegrand f y) (Set.Ioi 0) :=
+    (integrableOn_levyIntegrand hf hfc).const_mul 18
+  have hiM : IntegrableOn (fun y => (36 * L_B ^ 2 * ∫ u, f u ^ 2) * (y ^ 2 * archLevyDensity y))
+      (Set.Ioi 0) :=
+    RHTower.integrableOn_sq_mul_archLevyDensity.const_mul _
+  have hmono : (∫ y in Set.Ioi (0 : ℝ),
+        ∑ k ∈ s, levyIntegrand (fun u => dyadicShellBump N k u * f u) y) ≤
+      ∫ y in Set.Ioi (0 : ℝ),
+        (18 * levyIntegrand f y +
+          (36 * L_B ^ 2 * ∫ u, f u ^ 2) * (y ^ 2 * archLevyDensity y)) :=
+    setIntegral_mono_on
+      (integrable_finsetSum s fun k _ => integrableOn_levyIntegrand (hχf k) (hχfc k))
+      (hiL.add hiM) measurableSet_Ioi fun y hy => by
+        have hω := (archLevyDensity_pos hy).le
+        calc ∑ k ∈ s, levyIntegrand (fun u => dyadicShellBump N k u * f u) y
+            = archLevyDensity y * ∑ k ∈ s, ∫ u,
+                (dyadicShellBump N k u * f u - dyadicShellBump N k (u + y) * f (u + y)) ^ 2 := by
+              unfold levyIntegrand; rw [mul_sum]
+          _ ≤ archLevyDensity y * (18 * (∫ u, (f u - f (u + y)) ^ 2) +
+                36 * L_B ^ 2 * y ^ 2 * ∫ u, f u ^ 2) :=
+              mul_le_mul_of_nonneg_left (hsum_u y hy) hω
+          _ = 18 * levyIntegrand f y +
+                (36 * L_B ^ 2 * ∫ u, f u ^ 2) * (y ^ 2 * archLevyDensity y) := by
+              unfold levyIntegrand; ring
+  have hsplit_int : (∫ y in Set.Ioi (0 : ℝ),
+        (18 * levyIntegrand f y +
+          (36 * L_B ^ 2 * ∫ u, f u ^ 2) * (y ^ 2 * archLevyDensity y))) =
+      18 * levyEnergy f + (36 * L_B ^ 2 * ∫ u, f u ^ 2) * RHTower.levySecondMoment := by
+    rw [integral_add hiL hiM, integral_const_mul, integral_const_mul]
+    rfl
   have hf2 : 0 ≤ 36 * L_B ^ 2 * ∫ u, f u ^ 2 :=
     mul_nonneg (by positivity) (integral_nonneg fun _ => sq_nonneg _)
   have hm2 := mul_le_mul_of_nonneg_left RHTower.levySecondMoment_le hf2
-  unfold levyEnergy
-  change _ ≤ 18 * (∫ y in Ioi (0 : ℝ), levyIntegrand f y) + _
-  unfold RHTower.levySecondMoment at hm2
-  linarith
+  linarith [hmono, hsplit_int, hm2]
 
 /-! ### Shell horizon and point-multiplier commutator in `H¹` -/
 
@@ -470,6 +486,7 @@ theorem atomicTest_dyadicShellHorizon_eq {N k : ℕ} (hN : 1 ≤ N) (y : ℕ →
   have hgt : dyadicShellHorizon N k < n := by
     by_contra hle
     exact hnot (mem_Icc.mpr ⟨hn1, not_lt.mp hle⟩)
+  dsimp only
   rw [dyadicShellBump_log_eq_zero_of_gt_horizon hN hnN hgt, zero_mul, zero_mul]
 
 /-- **Dyadic commutator bound in Lévy energy.** Replacing smooth multiplication `χ_k · f_y` by
@@ -516,7 +533,7 @@ theorem exists_sum_levyEnergy_dyadicCommutator_le :
   have hdiff_φ : Differentiable ℝ tiltedUnitSpline :=
     contDiff_tiltedUnitSpline.differentiable (by norm_num)
   have hdiff_B : Differentiable ℝ (baseShellBump : ℝ → ℝ) :=
-    contDiff_baseShellBump.differentiable (by exact_mod_cast ENat.one_ne_top.symm.le.trans le_top)
+    (contDiff_baseShellBump (n := 2)).differentiable (by norm_num)
   -- Bound each shell commutator by its filtered H¹ norm
   have hshell : ∀ k ∈ s,
       levyEnergy (fun u => dyadicShellBump N k u * atomicTest N y g u -
@@ -544,8 +561,8 @@ theorem exists_sum_levyEnergy_dyadicCommutator_le :
       have hgt3 : 3 < |Real.log n - shellCenter N k| :=
         lt_of_not_ge fun hle => hnot (mem_filter.mpr ⟨hn, hle⟩)
       dsimp only [h_atom]
-      by_cases huw : u - Real.log n ∈ Icc 0 w
-      · obtain ⟨hu0, huw'⟩ := mem_Icc.mp huw
+      by_cases huw : u - Real.log n ∈ Set.Icc 0 w
+      · obtain ⟨hu0, huw'⟩ := Set.mem_Icc.mp huw
         have h1 : 2 ≤ |Real.log n - shellCenter N k| := by linarith
         have h2 : 2 ≤ |u - shellCenter N k| := by
           have htri := abs_sub_abs_le_abs_sub (Real.log n - shellCenter N k) (Real.log n - u)
@@ -574,11 +591,11 @@ theorem exists_sum_levyEnergy_dyadicCommutator_le :
         (hg.comp (contDiff_id.sub contDiff_const))).differentiable (by norm_num)
     have hderiv_atom : ∀ (n : ℕ) (u : ℝ),
         |deriv (h_atom n) u| ≤
-          K₀ * (Icc (Real.log n) (Real.log n + w)).indicator (fun _ => (1 : ℝ)) u := by
+          K₀ * (Set.Icc (Real.log n) (Real.log n + w)).indicator (fun _ => (1 : ℝ)) u := by
       intro n u
-      by_cases huI : u ∈ Icc (Real.log n) (Real.log n + w)
-      · rw [indicator_of_mem huI, mul_one]
-        obtain ⟨hu_lo, hu_hi⟩ := mem_Icc.mp huI
+      by_cases huI : u ∈ Set.Icc (Real.log n) (Real.log n + w)
+      · rw [Set.indicator_of_mem huI, mul_one]
+        obtain ⟨hu_lo, hu_hi⟩ := Set.mem_Icc.mp huI
         have hd1 : HasDerivAt (fun v => dyadicShellBump N k v - dyadicShellBump N k (Real.log n))
             (deriv (baseShellBump : ℝ → ℝ) (u - shellCenter N k)) u := by
           simpa only [sub_zero] using
@@ -615,22 +632,22 @@ theorem exists_sum_levyEnergy_dyadicCommutator_le :
               add_le_add (mul_le_mul (hdB _) hv2 (abs_nonneg _) hLB0)
                 (mul_le_mul hv1 hd2_le (abs_nonneg _) (mul_nonneg hLB0 hw.le))
           _ = K₀ := by dsimp only [K₀]; field_simp [hw.ne']; ring
-      · rw [indicator_of_notMem huI, mul_zero]
+      · rw [Set.indicator_of_notMem huI, mul_zero]
         have hev : h_atom n =ᶠ[𝓝 u] 0 := by
           refine Filter.eventually_of_mem (isClosed_Icc.isOpen_compl.mem_nhds huI) fun v hv => ?_
-          have hvw : v - Real.log n ∉ Icc 0 w := fun hmem =>
-            hv (mem_Icc.mpr ⟨by linarith [hmem.1], by linarith [hmem.2]⟩)
+          have hvw : v - Real.log n ∉ Set.Icc 0 w := fun hmem =>
+            hv (Set.mem_Icc.mpr ⟨by linarith [hmem.1], by linarith [hmem.2]⟩)
           dsimp only [h_atom]
           rw [hsupp _ hvw, mul_zero]; rfl
         rw [hev.deriv_eq, deriv_const, abs_zero]
     -- Overlap count of intervals `[log n, log n + w]` at any point `u`
     have hoverlap : ∀ u : ℝ,
-        ∑ n ∈ S_k, (Icc (Real.log n) (Real.log n + w)).indicator (fun _ => (1 : ℝ)) u ≤
+        ∑ n ∈ S_k, (Set.Icc (Real.log n) (Real.log n + w)).indicator (fun _ => (1 : ℝ)) u ≤
           (Real.exp 1 + 1) * c := by
       intro u
       by_cases hu_hi : Real.log N + w < u
-      · have hz : ∑ n ∈ S_k, (Icc (Real.log n) (Real.log n + w)).indicator (fun _ => (1 : ℝ)) u = 0 := by
-          refine sum_eq_zero fun n hn => indicator_of_notMem ?_ _ _
+      · have hz : ∑ n ∈ S_k, (Set.Icc (Real.log n) (Real.log n + w)).indicator (fun _ => (1 : ℝ)) u = 0 := by
+          refine sum_eq_zero fun n hn => Set.indicator_of_notMem ?_ _ _
           intro hmem
           have hnN : (n : ℝ) ≤ N := by exact_mod_cast (mem_Icc.mp (mem_filter.mp hn).1).2
           have hn1 : (0 : ℝ) < n := by exact_mod_cast (mem_Icc.mp (mem_filter.mp hn).1).1
@@ -638,7 +655,7 @@ theorem exists_sum_levyEnergy_dyadicCommutator_le :
           linarith [hmem.2]
         rw [hz]; positivity
       · push_neg at hu_hi
-        have hsub : S_k.filter (fun n => u ∈ Icc (Real.log n) (Real.log n + w)) ⊆
+        have hsub : S_k.filter (fun n => u ∈ Set.Icc (Real.log n) (Real.log n + w)) ⊆
             S_k.filter (fun n : ℕ => Real.exp (u - w) ≤ (n : ℝ) ∧ (n : ℝ) ≤ Real.exp u) := by
           intro n hn
           obtain ⟨hnS, hmem⟩ := mem_filter.mp hn
@@ -646,11 +663,11 @@ theorem exists_sum_levyEnergy_dyadicCommutator_le :
           refine mem_filter.mpr ⟨hnS, ?_, ?_⟩
           · rw [← Real.exp_log hn0]; exact Real.exp_le_exp.mpr (by linarith [hmem.2])
           · rw [← Real.exp_log hn0]; exact Real.exp_le_exp.mpr hmem.1
-        have hsum_ind : ∑ n ∈ S_k, (Icc (Real.log n) (Real.log n + w)).indicator (fun _ => (1 : ℝ)) u =
-            ((S_k.filter fun n => u ∈ Icc (Real.log n) (Real.log n + w)).card : ℝ) := by
+        have hsum_ind : ∑ n ∈ S_k, (Set.Icc (Real.log n) (Real.log n + w)).indicator (fun _ => (1 : ℝ)) u =
+            ((S_k.filter fun n => u ∈ Set.Icc (Real.log n) (Real.log n + w)).card : ℝ) := by
           rw [← sum_const_one, Nat.cast_sum, sum_filter]
           refine sum_congr rfl fun n _ => ?_
-          by_cases hm : u ∈ Icc (Real.log n) (Real.log n + w)
+          by_cases hm : u ∈ Set.Icc (Real.log n) (Real.log n + w)
           · simp [hm]
           · simp [hm]
         rw [hsum_ind]
@@ -676,7 +693,7 @@ theorem exists_sum_levyEnergy_dyadicCommutator_le :
     have hpt_sq : ∀ u : ℝ,
         deriv (fun v => ∑ n ∈ S_k, y n * h_atom n v) u ^ 2 ≤
           K₀ ^ 2 * ((Real.exp 1 + 1) * c) *
-            ∑ n ∈ S_k, y n ^ 2 * (Icc (Real.log n) (Real.log n + w)).indicator (fun _ => (1 : ℝ)) u := by
+            ∑ n ∈ S_k, y n ^ 2 * (Set.Icc (Real.log n) (Real.log n + w)).indicator (fun _ => (1 : ℝ)) u := by
       intro u
       have hdsum : deriv (fun v => ∑ n ∈ S_k, y n * h_atom n v) u =
           ∑ n ∈ S_k, y n * deriv (h_atom n) u := by
@@ -686,11 +703,11 @@ theorem exists_sum_levyEnergy_dyadicCommutator_le :
         exact h1.deriv
       rw [hdsum]
       set ind : ℕ → ℝ := fun n =>
-        (Icc (Real.log n) (Real.log n + w)).indicator (fun _ => (1 : ℝ)) u
+        (Set.Icc (Real.log n) (Real.log n + w)).indicator (fun _ => (1 : ℝ)) u
       have hind_sq : ∀ n, ind n ^ 2 = ind n := fun n => by
-        dsimp only [ind]; by_cases hm : u ∈ Icc (Real.log n) (Real.log n + w) <;> simp [hm]
+        dsimp only [ind]; by_cases hm : u ∈ Set.Icc (Real.log n) (Real.log n + w) <;> simp [hm]
       have hind0 : ∀ n, 0 ≤ ind n := fun n => by
-        dsimp only [ind]; by_cases hm : u ∈ Icc (Real.log n) (Real.log n + w) <;> simp [hm]
+        dsimp only [ind]; by_cases hm : u ∈ Set.Icc (Real.log n) (Real.log n + w) <;> simp [hm]
       have habs : |∑ n ∈ S_k, y n * deriv (h_atom n) u| ≤
           K₀ * ∑ n ∈ S_k, ind n * (|y n| * ind n) := by
         calc |∑ n ∈ S_k, y n * deriv (h_atom n) u|
@@ -717,20 +734,30 @@ theorem exists_sum_levyEnergy_dyadicCommutator_le :
       integrable_sq_of_continuous (hRk_cd.continuous_deriv (by norm_num)) hRk_cs.deriv
     have hint_ind : ∀ n : ℕ,
         Integrable (fun u => y n ^ 2 *
-          (Icc (Real.log n) (Real.log n + w)).indicator (fun _ => (1 : ℝ)) u) := fun n =>
+          (Set.Icc (Real.log n) (Real.log n + w)).indicator (fun _ => (1 : ℝ)) u) := fun n =>
       ((integrableOn_const (hs := measure_Icc_lt_top.ne)).integrable_indicator
         measurableSet_Icc).const_mul (y n ^ 2)
-    have himono := integral_mono hint_lhs
-      ((integrable_finset_sum S_k fun n _ => hint_ind n).const_mul
-        (K₀ ^ 2 * ((Real.exp 1 + 1) * c))) hpt_sq
-    rw [integral_const_mul, integral_finset_sum S_k fun n _ => hint_ind n] at himono
-    have hind_int : ∀ n : ℕ,
-        (∫ u, y n ^ 2 * (Icc (Real.log n) (Real.log n + w)).indicator (fun _ => (1 : ℝ)) u) =
-          w * y n ^ 2 := fun n => by
-      rw [integral_const_mul, integral_indicator measurableSet_Icc, setIntegral_const, smul_eq_mul,
-        mul_one, Real.volume_real_Icc_of_le (by linarith)]
-      ring
-    simp_rw [hind_int, ← mul_sum] at himono
+    have himono : (∫ u, deriv (fun v => ∑ n ∈ S_k, y n * h_atom n v) u ^ 2) ≤
+        K₀ ^ 2 * ((Real.exp 1 + 1) * c) * (w * ∑ n ∈ S_k, y n ^ 2) := by
+      have h1 := integral_mono hint_lhs
+        ((integrable_finsetSum S_k fun n _ => hint_ind n).const_mul
+          (K₀ ^ 2 * ((Real.exp 1 + 1) * c))) hpt_sq
+      have hind_int : ∀ n : ℕ,
+          (∫ u, y n ^ 2 * (Set.Icc (Real.log n) (Real.log n + w)).indicator (fun _ => (1 : ℝ)) u) =
+            w * y n ^ 2 := fun n => by
+        rw [integral_const_mul, MeasureTheory.integral_indicator measurableSet_Icc, setIntegral_const,
+          smul_eq_mul, mul_one, Real.volume_real_Icc_of_le (by linarith)]
+        ring
+      calc (∫ u, deriv (fun v => ∑ n ∈ S_k, y n * h_atom n v) u ^ 2)
+          ≤ ∫ u, K₀ ^ 2 * ((Real.exp 1 + 1) * c) *
+              ∑ n ∈ S_k, y n ^ 2 *
+                (Set.Icc (Real.log n) (Real.log n + w)).indicator (fun _ => (1 : ℝ)) u := h1
+        _ = K₀ ^ 2 * ((Real.exp 1 + 1) * c) *
+              ∑ n ∈ S_k, ∫ u, y n ^ 2 *
+                (Set.Icc (Real.log n) (Real.log n + w)).indicator (fun _ => (1 : ℝ)) u := by
+            rw [integral_const_mul, integral_finsetSum S_k fun n _ => hint_ind n]
+        _ = K₀ ^ 2 * ((Real.exp 1 + 1) * c) * (w * ∑ n ∈ S_k, y n ^ 2) := by
+            simp_rw [hind_int, ← mul_sum]
     calc levyEnergy (fun v => ∑ n ∈ S_k, y n * h_atom n v)
         ≤ 18 * ∫ u, deriv (fun v => ∑ n ∈ S_k, y n * h_atom n v) u ^ 2 := hlev
       _ ≤ 18 * (K₀ ^ 2 * ((Real.exp 1 + 1) * c) * (w * ∑ n ∈ S_k, y n ^ 2)) :=

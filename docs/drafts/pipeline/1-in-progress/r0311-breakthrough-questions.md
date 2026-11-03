@@ -40,9 +40,21 @@ The quiet region of the Ramanujan block ends at `|τ| ≍ N/m`, the spline band 
 meet at `m ≍ c`. Candidate answer: count form uniform exactly for `m = o(c_N)`; beyond, the exact
 alias law with the scaling function `R(c/m)`.
 
+## 2.5.3 — working notes
+
+`D_win` ⟺ thin-Planck-shadow windows are `o(V)` (corpus): the total shadow measure of deep zeros is
+`≤ Ce^{−rA}V/A` unconditionally, so `D_win` fails only through windows holding few, spread-out deep
+zeros. Every deep zero is detected only on its own `1/log V` neighbourhood; a unit window holds
+`log V` such cells.
+
 ## Ledger
 
 | # | Conjecture | Result |
 |---|---|---|
 | 1 | Source Hecke for general `p` from a rational kernel identity as at `p = 2` | replaced: the number of cones grows with `p`; the cone count (tiling) is the uniform mechanism |
 | 2 | Continue the general-`p` eigenvalue in `a` from a segment as at `p = 2, 3` | replaced: branch arguments leave the Mayer disc for `p ≥ 5`; continuation in `w` at every `a > 0` instead |
+| 3 | `D_win` from Selberg's density `N(½ + A/log V, 2V) ≪ e^{−A/4}V log V` | fails by one `log V`: consistent with an `e^{−cA}` fraction of zeros deep and one per window |
+| 4 | `D_win` from Littlewood's lemma on each Burnol window at `σ₁ = ½ + A/(2 log V)` | the linear and quadratic Taylor terms of `log ζM` have window averages `O(e^{−cA/2}/log V)` (signal `A/log V` wins), but the cubic remainder `∫|ζM − 1|³` has no cancellation and is `e^{−cA}` per window: loses `log V` |
+| 5 | `D_win` from a Laguerre-inequality violation at a deep pair | the pair gives `2/δ² = 2log²V/A²`, the real zeros `≍ log²V`: no violation for large `A` |
+| 6 | Sup-norm zero detection by `ζM ≈ 1` on unit windows | the mollified residual has `≍ log V` independent values per window; its maximum is `≍ e^{−Aθ}√(log log V)` → ∞ for fixed `A` |
+

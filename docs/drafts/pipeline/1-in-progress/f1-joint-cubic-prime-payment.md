@@ -54,13 +54,22 @@ With `C(t)=∫F(x)F(x+t)dx`, the retained bound suggests the sufficient lower fo
 `P(F)=∫₀¹(E−C(t))/t dt−(γ+logπ+log2+1/48)E−(∫H²)/24−(∫H)²/16
  −½(∫H cosh(x/2))²−(√2 log2)C(log2)`.
 
-Conjecture: `P(F)≥0` for every real odd C² unit-window test. A quintic obstruction is
-under audit. For `F(x)=g(2x)`, with `g` from the regional card, the correction from
-the old lower form is exactly `E/32−(∫H²)/24−(∫xF)²/16`. The same rational upper
-certificate stays strictly negative after adding this correction; its sign is kernel
-checked. The integral identities and support-preserving C² approximation still need
-their Lean proofs. No C² counterexample is claimed before those checks.
+Conjecture: `P(F)≥0` for every real odd C² unit-window test.
+The [quintic obstruction](../2-fully-proven/f1-quintic-retained-gamma-obstruction.md)
+now proves `P(F)<0` for the continuous odd source `F(x)=2x(1−4x²)(1−2x²)` on the
+unit window, zero outside. Its integral identities and analytic sign assembly are
+kernel checked, with standard axioms only. The support-preserving C² transfer remains
+under formalization; no C² counterexample is claimed before that check.
 
 The two primitive moment squares, primitive mass and signed prime reflection must be
 paid together. If the obstruction closes, the discarded Gamma remainder must be
 retained; failure of this lower form would not refute positivity of the complete Weil form.
+
+The exact terms omitted from `P` are
+`∫₀¹r(t)(E−C(t))dt+2δE`, with
+`r(t)=e^(t/2)/sinh t−1/t−1/2+t/24+t²/16` and
+`δ=archLevyAntideriv(1)−log2−π/4+1/4−1/96`.
+Both are nonnegative by the proved Gamma kernel and tail bounds. Splitting the exact
+Gamma integral and substituting `M₂=E/3+(∫xF)²` gives `Q=P+∫r(E−C)+2δE` on this
+odd unit window. This equality is a paper identity; the joint sign with these terms
+retained remains the target.

@@ -51,8 +51,14 @@ private theorem powerLogCoeff_term {p : ℕ} (hp : 1 < p) (α s : ℂ) :
     rw [LSeries.term_of_ne_zero (pow_ne_zero k hp0), powerLogCoeff_pow hp,
       (pow_injective hp).extend_apply]
     have hpow : ((p ^ k : ℕ) : ℂ) ^ s = ((p : ℂ) ^ s) ^ k := by
-      rw [Nat.cast_pow, ← Complex.cpow_nat_mul, mul_comm (k : ℂ) s,
-        Complex.cpow_mul_nat]
+      induction k with
+      | zero => simp only [pow_zero, Nat.cast_one, one_cpow]
+      | succ k ih =>
+        calc ((p ^ (k + 1) : ℕ) : ℂ) ^ s =
+            ((p ^ k : ℕ) : ℂ) ^ s * (p : ℂ) ^ s := by
+              rw [pow_succ, Nat.cast_mul]
+              exact Complex.natCast_mul_natCast_cpow _ _ _
+          _ = ((p : ℂ) ^ s) ^ (k + 1) := by rw [ih, pow_succ]
     rw [hpow, mul_pow, Complex.cpow_neg, inv_pow]
     ring
   · rw [Function.extend_apply' _ _ n hn]
@@ -81,7 +87,7 @@ theorem eulerLogCoeff_prime_pow {p : ℕ} (hp : p.Prime) (α β : ℂ) {k : ℕ}
     eulerLogCoeff p α β (p ^ k) = (1 - α ^ k - β ^ k) / (k : ℂ) := by
   obtain ⟨j, rfl⟩ := Nat.exists_eq_succ_of_ne_zero hk
   simp only [eulerLogCoeff, Pi.add_apply, powerLogCoeff_pow hp.one_lt,
-    RHTower.eulerLogDirichletCoeff_prime_pow_succ _ _ hp, Nat.cast_add, Nat.cast_one]
+    RHTower.eulerLogDirichletCoeff_prime_pow_succ _ _ hp, Nat.cast_succ]
   ring
 
 theorem hasSum_eulerLogCoeff {p : ℕ} (hp : p.Prime) (α β : ℂ) {s : ℂ}
@@ -130,7 +136,7 @@ private theorem exists_log_halfplane {p : ℕ} (hp : 1 < p) (α β : ℂ) :
     simpa only [pow_zero, one_mul] using Real.tendsto_pow_mul_exp_neg_atTop_nhds_zero 0
   have ht : Tendsto (fun x : ℝ => max ‖α‖ ‖β‖ * Real.exp (-(Real.log p * x)))
       atTop (𝓝 0) := by
-    simpa only [mul_zero] using
+    simpa only [mul_zero, Function.comp_apply, id_eq] using
       (hbase.comp (Filter.Tendsto.const_mul_atTop hl tendsto_id)).const_mul (max ‖α‖ ‖β‖)
   obtain ⟨B, hB⟩ := eventually_atTop.mp (ht.eventually_lt_const (by norm_num : (0 : ℝ) < 1))
   refine ⟨max B 1, le_max_right _ _, fun s hs => ?_⟩
@@ -151,8 +157,12 @@ private theorem coeff_eq_of_exp_lSeries_eq {f g : ℕ → ℂ} {B : ℝ}
     (hg : ∀ s : ℂ, B < s.re → LSeriesSummable g s)
     (he : ∀ s : ℂ, B < s.re → Complex.exp (LSeries f s) = Complex.exp (LSeries g s))
     {n : ℕ} (hn : 1 < n) : f n = g n := by
-  have hfa := (hf (B + 1) (by simp only [Complex.add_re, Complex.ofReal_re, Complex.one_re]; linarith)).abscissaOfAbsConv_le
-  have hga := (hg (B + 1) (by simp only [Complex.add_re, Complex.ofReal_re, Complex.one_re]; linarith)).abscissaOfAbsConv_le
+  have hfa : LSeries.abscissaOfAbsConv f ≤ (B + 1 : ℝ) := by
+    simpa only [Complex.ofReal_re] using
+      (hf ((B + 1 : ℝ) : ℂ) (by simp only [Complex.ofReal_re]; linarith)).abscissaOfAbsConv_le
+  have hga : LSeries.abscissaOfAbsConv g ≤ (B + 1 : ℝ) := by
+    simpa only [Complex.ofReal_re] using
+      (hg ((B + 1 : ℝ) : ℂ) (by simp only [Complex.ofReal_re]; linarith)).abscissaOfAbsConv_le
   have hfbs {s : ℂ} (hs : B + 1 < s.re) : LSeries.abscissaOfAbsConv f < s.re :=
     hfa.trans_lt (by exact_mod_cast hs)
   have hgbs {s : ℂ} (hs : B + 1 < s.re) : LSeries.abscissaOfAbsConv g < s.re :=
@@ -170,8 +180,8 @@ private theorem coeff_eq_of_exp_lSeries_eq {f g : ℕ → ℂ} {B : ℝ}
     rw [he s (by linarith)] at h
     have hcancel := mul_left_cancel₀ (Complex.exp_ne_zero (LSeries g s)) h
     exact neg_injective hcancel
-  have hlogf := LSeriesSummable_logMul_of_lt_re (hfbs (s := (B + 2 : ℝ)) (by simp; linarith))
-  have hlogg := LSeriesSummable_logMul_of_lt_re (hgbs (s := (B + 2 : ℝ)) (by simp; linarith))
+  have hlogf := LSeriesSummable_logMul_of_lt_re (hfbs (s := (B + 2 : ℝ)) (by simp))
+  have hlogg := LSeriesSummable_logMul_of_lt_re (hgbs (s := (B + 2 : ℝ)) (by simp))
   have hc : LSeries.logMul f n = LSeries.logMul g n := by
     apply LSeries.eq_of_LSeries_eventually_eq
       (hlogf.abscissaOfAbsConv_le.trans_lt (EReal.coe_lt_top _))
@@ -208,7 +218,7 @@ private theorem quadratic_roots (p : ℕ) (A : ℝ) :
   let d : ℂ := ((A : ℂ) ^ 2 - 4 * p) ^ (2⁻¹ : ℂ)
   have hd : d ^ 2 = (A : ℂ) ^ 2 - 4 * p := Complex.cpow_nat_inv_pow _ (by norm_num)
   refine ⟨(-(A : ℂ) + d) / 2, (-(A : ℂ) - d) / 2, by ring, ?_⟩
-  calc (-(A : ℂ) + d) / 2 * (-(A : ℂ) - d) / 2 = ((A : ℂ) ^ 2 - d ^ 2) / 4 := by ring
+  calc (-(A : ℂ) + d) / 2 * ((-(A : ℂ) - d) / 2) = ((A : ℂ) ^ 2 - d ^ 2) / 4 := by ring
     _ = p := by rw [hd]; ring
 
 /-- Reciprocal roots cannot have logarithmic coefficients growing with exponent below one half. -/
@@ -227,6 +237,7 @@ theorem not_strictEulerBound {p : ℕ} (hp : 1 < p) {α β : ℂ} (hmul : α * �
   have hq0 : 0 ≤ q := by positivity
   have hq1 : q < 1 := by
     apply (div_lt_one hR0).mpr
+    change (p : ℝ) ^ θ < Real.sqrt p
     rw [Real.sqrt_eq_rpow]
     exact Real.rpow_lt_rpow_of_exponent_lt hpR hθ
   have hpow (k : ℕ) : ((p ^ k : ℕ) : ℝ) ^ θ = ((p : ℝ) ^ θ) ^ k := by
@@ -273,7 +284,7 @@ theorem not_strictEulerBound {p : ℕ} (hp : 1 < p) {α β : ℂ} (hmul : α * �
   have hgeom : Tendsto (fun k : ℕ => R⁻¹ ^ k) atTop (𝓝 0) :=
     tendsto_pow_atTop_nhds_zero_of_lt_one (inv_nonneg.mpr hR0.le) ((inv_lt_one₀ hR0).mpr hR1)
   have hlin : Tendsto (fun k : ℕ => (k : ℝ) * q ^ k) atTop (𝓝 0) := by
-    have hsum := summable_pow_mul_geometric_of_norm_lt_one 1
+    have hsum := summable_pow_mul_geometric_of_norm_lt_one 1 (r := q)
       (by simpa only [Real.norm_eq_abs, abs_of_nonneg hq0] using hq1)
     simpa only [pow_one] using hsum.tendsto_atTop_zero
   have hupper : Tendsto (fun k : ℕ => R⁻¹ ^ k + C * ((k : ℝ) * q ^ k)) atTop (𝓝 0) := by

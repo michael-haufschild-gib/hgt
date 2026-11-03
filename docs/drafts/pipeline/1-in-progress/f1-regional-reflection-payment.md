@@ -48,26 +48,12 @@ For `g(u)=u(1−u²)(1−u²/2)` on `[-1,1]`, zero outside, the exact formulas a
 - `J(g)/4=121/3675+3179/85050+548/654885`;
 - `∫₀¹Wg²=4/9−23/25+572/735−563/1890+1627/38115−(62/1155)log2`.
 
-Centering the reflection at `l=log2` gives
-`g(l+v)g(l−v)=(l²−v²)[(1−l²−v²)²−4l²v²][(1−(l²+v²)/2)²−l²v²]`.
-On its overlap, both bracketed factors decrease with `l`. Bound them at
-`693147/1000000`, the first factor at `693148/1000000`, and enlarge the integration
-interval to `|v|≤1−693147/1000000`. The resulting rational polynomial integral,
-`w≤4902/10000`, `γ>577215/1000000`, and `logπ≥log3+1−3/π` give a strictly negative
-upper bound after subtracting the linear pole lower bound `121/88200`.
-The final rational sign has a kernel-checked proof. The integral identities, monotone
-enclosure and approximation by C² tests still require their Lean proofs.
-
-The quintic is continuous and Lipschitz, but its zero extension is not C². Let `p` be its
-polynomial and `η=Real.smoothTransition`. The support-preserving approximation
-`gₙ(u)=p(u)η(n(1−u²))` is smooth and odd. Its derivative is bounded uniformly by
-`8+2Λ`, where `Λ` bounds `η′`: the transition derivative vanishes unless
-`0≤n(1−u²)≤1`, and the factor `1−u²` in `p` pays the factor `n`.
-The corpus supplies `HTGeometry.exists_bound_deriv_smoothTransition`.
-The regional energies then converge by dominated convergence. The potential, reflection
-and pole terms converge too; `g²W≤1/2` controls the endpoint logarithm. These approximation
-claims still need Lean proofs. No C² counterexample is claimed before that audit. This
-obstruction concerns the proposed lower form, not the complete Weil form.
+The [retained-form obstruction](../2-fully-proven/f1-quintic-retained-gamma-obstruction.md)
+uses the exact correlation of `F(x)=g(2x)` directly. It proves negativity of the stronger
+lag-moment Gamma lower form on this continuous quintic, including the prime and pole,
+with standard-only transitive Lean axioms. This avoids an endpoint-logarithm or
+reflection-integral enclosure. The quintic's zero extension is not C²; support-preserving
+mollification and rescaling remain under formalization. No C² counterexample is claimed yet.
 
 **Positive survivor:** retain the first and second lag moments in the Gamma
 comparison. With `D(t)=E−C(t)`, it gives
@@ -77,18 +63,12 @@ These terms were replaced by worst-case mass bounds in `B`.
 [Retained Gamma payment](../3-formalized/f1-gamma-lag-moment-payment.md) and the
 [primitive identity](../3-formalized/f1-first-lag-moment-primitive.md) prove both moment
 substitutions, the common-primitive Gamma/pole bound and uniform loss `7/192` in Lean,
-with standard-only transitive axiom audits. The quintic obstruction above concerns
-the old loss `5/96`. For the primitive lower form, the quintic's primitive is
-`H(x)=x²−3x⁴+(8/3)x⁶−5/48` on the unit window, zero outside. Hence
-`∫H²=(25−40+234/5−236/7+43/3−36/11+4/13)/2304` and `∫xF=11/210`.
-Adding `E/32−(∫H²)/24−(∫xF)²/16` to the rational upper certificate still gives a
-strictly negative number (kernel checked). The analytic identification and C² transfer
-remain under audit for this improved form too.
+with standard-only transitive axiom audits. For `H(x)=∫_{−1}ˣF`, the gain over the old
+uniform lag form is exactly `E/32−(∫H²)/24−(∫xF)²/16`. The bounds `∫H²≤E/4` and
+`(∫xF)²≤E/12` make that gain at least `E/64`. The equality identifying the regional
+form `B` with the old uniform lag form still needs its Lean proof.
 
-The direct correlation formula avoids the endpoint potential in this audit:
-`C_F(t)=62/1155−(334/315)t²+(2/3)t³+(88/21)t⁴−(86/15)t⁵
- +(268/105)t⁷−(16/21)t⁹+(64/693)t¹¹` for `0≤t≤1`.
-It gives `∫₀¹(E−C_F)/t=167/315−2/9−22/21+86/75−268/735+16/189−64/7623`.
-`WindowTowerOfSpecZ.TheQuinticWindowHasExactLagData` is under source audit.
-
-No numerical evidence is used. Neither proposed positivity statement is established.
+The direct quintic correlation and its lag moments are proved in
+`WindowTowerOfSpecZ.TheQuinticWindowHasExactLagData`. The negative continuous retained
+form is `retainedOddGammaLowerForm_quintic_neg`. The complete Weil form's sign remains
+open; its omitted nonnegative Gamma remainder must be retained in the joint payment.

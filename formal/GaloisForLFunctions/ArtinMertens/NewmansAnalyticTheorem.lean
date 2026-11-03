@@ -458,8 +458,8 @@ theorem tendsto_leftPart_zero {g : ℂ → ℂ} {R δ : ℝ} (hR : 0 < R) (hδ :
       intro T x hx
       rw [uIoc_of_le (by linarith)] at hx
       have hgx := hM _ (hmem x s ⟨hx.1.le, hx.2⟩ hsR)
-      have hk := norm_kernel_horizontal_le hR (abs_le.mpr ⟨by linarith [hx.1], by linarith [hx.2]⟩)
-        hs
+      have hk := norm_kernel_horizontal_le (x := x) hR
+        (abs_le.mpr ⟨by linarith [hx.1], by linarith [hx.2]⟩) hs
       have him : |((x : ℂ) + (s : ℂ) * I).im| = R := by
         simp only [Complex.add_im, Complex.ofReal_im, Complex.mul_im, Complex.ofReal_re,
           Complex.I_im, Complex.I_re, mul_zero, mul_one, zero_add, add_zero]
@@ -549,7 +549,7 @@ theorem rightPart_sub (F G : ℂ → ℂ) {R : ℝ}
 `2π|g(0) − g_T(0)| ≤ 32B/R + |left part over the small rectangle|`. -/
 theorem norm_sub_truncLaplace_zero_le {f : ℝ → ℂ} {B : ℝ}
     (hfm : AEStronglyMeasurable f (volume.restrict (Ioi 0))) (hB : ∀ t, 0 < t → ‖f t‖ ≤ B)
-    {g : ℂ → ℂ} {R δ : ℝ} (hR : 0 < R) (hδ : 0 < δ) (hδR : δ ≤ R)
+    {g : ℂ → ℂ} {R δ : ℝ} (hR : 0 < R) (hδ : 0 < δ)
     (hg : ∀ z ∈ uIcc (-δ) R ×ℂ uIcc (-R) R, AnalyticAt ℂ g z)
     (hlap : ∀ z : ℂ, 0 < z.re → g z = ∫ t in Ioi (0 : ℝ), f t * cexp (-(z * t)))
     {T : ℝ} (hT : 0 ≤ T) :
@@ -634,7 +634,7 @@ theorem norm_sub_truncLaplace_zero_le {f : ℝ → ℂ} {B : ℝ}
       ≤ ‖rightPart (fun z => (g z - truncLaplace f T z) * newmanKernel R T z * (z - 0)⁻¹) R‖ +
           ‖leftPart (fun z => g z * newmanKernel R T z * (z - 0)⁻¹) δ R‖ +
           ‖leftPart (fun z => truncLaplace f T z * newmanKernel R T z * (z - 0)⁻¹) R R‖ :=
-        (norm_sub_le _ _).trans (add_le_add_right (norm_add_le _ _) _)
+        (norm_sub_le _ _).trans (by gcongr; exact norm_add_le _ _)
     _ ≤ 16 * B / R + ‖leftPart (fun z => g z * newmanKernel R T z * (z - 0)⁻¹) δ R‖ +
           16 * B / R := by gcongr
     _ = _ := by ring
@@ -688,7 +688,7 @@ theorem newman_analytic_theorem {f : ℝ → ℂ} {B : ℝ}
   obtain ⟨T₀, hT₀⟩ := (Metric.tendsto_atTop.mp hleft) (Real.pi * ε) (by positivity)
   refine ⟨max T₀ 0, fun T hT => ?_⟩
   have hT0 : 0 ≤ T := le_trans (le_max_right _ _) hT
-  have hkey := norm_sub_truncLaplace_zero_le hfm hB hR hδ hδR hrect hlap hT0
+  have hkey := norm_sub_truncLaplace_zero_le hfm hB hR hδ hrect hlap hT0
   have hl := hT₀ T (le_trans (le_max_left _ _) hT)
   rw [dist_zero_right] at hl
   have htr : truncLaplace f T 0 = ∫ t in (0 : ℝ)..T, f t := by

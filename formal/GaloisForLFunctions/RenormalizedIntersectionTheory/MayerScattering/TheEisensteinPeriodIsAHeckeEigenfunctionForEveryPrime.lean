@@ -132,7 +132,7 @@ theorem differentiableAt_periodValue {w : ℂ} (hw : 0 < w.re) (hw2 : w ≠ 2) {
 theorem positive_line_induction {Q : ℝ → Prop} (hbase : ∀ a ∈ Ioo (1 / 2 : ℝ) (7 / 2), Q a)
     (hstep : ∀ a, 2 ≤ a → Q a → Q (a / (a + 1)) → Q (a + 1))
     (hinv : ∀ a, 0 < a → Q (1 / a) → Q a) : ∀ a, 0 < a → Q a := by
-  have hn : ∀ n : ℕ, ∀ a, 1 / 2 < a → a ≤ n + 3 → Q a := by
+  have hn : ∀ n : ℕ, ∀ a : ℝ, 1 / 2 < a → a ≤ (n : ℝ) + 3 → Q a := by
     intro n
     induction n with
     | zero =>
@@ -220,6 +220,7 @@ section Prime
 
 variable {p : ℕ} [hp : Fact p.Prime]
 
+omit hp in
 theorem lewisHeckeOperator_const_mul (s c : ℂ) (f : ℝ → ℂ) (a : ℝ) :
     lewisHeckeOperator p s (fun x => c * f x) a = c * lewisHeckeOperator p s f a := by
   simp only [lewisHeckeOperator, Finset.mul_sum]

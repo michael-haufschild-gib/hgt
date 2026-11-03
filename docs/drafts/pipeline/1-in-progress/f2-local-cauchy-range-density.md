@@ -8,7 +8,7 @@
 
 The Cauchy Fourier symbol decays exponentially and never vanishes. Therefore the adjoint image of any `L²` vector should extend holomorphically to a strip. Orthogonality to all averaged inputs supported in `I` forces this adjoint image to vanish on `I`. Analytic uniqueness then forces global vanishing; injectivity of the adjoint gives the zero vector.
 
-If both averaging operators have this analytic regularity, local linear factorization extends globally: every adjoint image of `T A_s†−A_(s♯)` is analytic and vanishes on `I`. For the original conjugate-linear law `R A_s=A_(s♯)J`, instead put `S=J R` and apply `J` to the output. The local equation becomes `S A_s=A_(s♯)†`; its adjoint rows are again analytic. Thus the arbitrary-factorization classification should apply without any large-window assumption.
+If both averaging operators have this analytic regularity, local linear factorization extends globally: every adjoint image of `T A_s†−A_(s♯)` is analytic and vanishes on `I`. For the original conjugate-linear law `R A_s=A_(s♯)J`, instead put `S=J R` and apply `J` to the output. The local equation becomes `S A_s=A_(s♯)†`; its adjoint rows are again analytic. Thus the [audited arbitrary-factorization classification](../3-formalized/f2-cauchy-compatible-reflection.md) should apply without any large-window assumption.
 
 ## Gaps
 

@@ -34,16 +34,25 @@ in the corpus and mathlib. Therefore
 
 `P(F) ≤ L−c₀E−M₁/24−(11/210)²/16−121/88200−2(4902/10000)c₋ < 0`.
 
-The final strict rational inequality is kernel checked. The integral identities and
-analytic assembly are in `WindowTowerOfSpecZ.TheQuinticWindowHasExactLagData` and
-`WindowTowerOfSpecZ.TheRetainedGammaLowerFormHasANegativeDirection`; final audits pending.
+`WindowTowerOfSpecZ.TheQuinticWindowHasExactLagData` proves the exact lag and position
+data. `WindowTowerOfSpecZ.TheRetainedGammaLowerFormHasANegativeDirection` proves
+`retainedOddGammaLowerForm_quintic_neg`, including every integral identification,
+constant bound and the signed prime/pole enclosure. Both individual `lake --old env lean`
+source audits pass with `[propext, Classical.choice, Quot.sound]` only. Both modules are
+wired into the umbrella. The remaining proof is the C² transfer below.
 
 ## Scope and survivor
 
-The zero extension is not C². Transfer to C² tests inside the same window remains open
-in Lean: contract the source slightly, then mollify; continuity of the logarithmic
-lag form must be proved at the singular endpoint. The complete Weil form's sign is
-not decided by this obstruction, and the first-fold route remains active.
+The zero extension is not C². The support-preserving transfer uses
+`rₙ=1/(4(n+1))`, `aₙ=1+2rₙ`, and `Fₙ(x)=(ηₙ*F)(aₙx)`, with the corpus's even
+normalized mollifier of radius `rₙ`. Each `Fₙ` is smooth, odd and supported in the
+same unit window. The quintic is globally Lipschitz with constant `16`; the smoothed,
+rescaled sources have Lipschitz constant at most `24` and converge pointwise to `F`.
+The increment identity gives `0≤(Eₙ−Cₙ(t))/t≤576t` for `0<t≤1`: the union of the two
+translated supports has measure at most two. Dominated convergence proves convergence
+of the logarithmic term and all remaining compact integrals, hence eventual negativity.
+This C² transfer still needs its Lean proof. The complete Weil form's sign is not
+decided by this obstruction, and the first-fold route remains active.
 
 The positive survivors are the [exact retained Gamma identities](../3-formalized/f1-gamma-lag-moment-payment.md)
 and [complete coercivity off two odd moments](../3-formalized/f1-complete-odd-two-moment-complement.md),

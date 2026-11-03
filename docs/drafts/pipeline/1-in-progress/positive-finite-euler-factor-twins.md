@@ -27,8 +27,8 @@ on `Re s>1`.
 For any `ρ>1/2`, choosing `A=p^ρ+p^(1−ρ)` gives logarithmic coefficients
 `b(p^k)=[1+(-1)^(k+1)(p^(ρk)+p^((1−ρ)k))]/k`.
 Their exponential rate is `p^ρ`, excluding every Euler bound with exponent
-`θ<1/2`. Finite-order continuation and the exact rate require Lean certification;
-no class-membership or novelty claim is certified yet.
+`θ<1/2`. The finite-order continuation and extended-class carrier are formalized;
+the Euler exclusion still requires the coefficient-identification audit.
 
 ## Exact completion target
 

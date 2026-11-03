@@ -1132,17 +1132,3 @@ theorem microPlanckWindow_criticalLineFlux_volume_le :
 end GaloisForLFunctions.ConjugateDiagonalGeometry.WindowPortFlux
 
 end
-
-section AxiomAudit
-open GaloisForLFunctions.ConjugateDiagonalGeometry.WindowPortFlux
-#print axioms exists_vertFlux_inv_decay
-#print axioms exists_shortCap_inv_decay
-#print axioms rightHalfPort_eq_vertFlux_add_shortCap
-#print axioms exists_rightHalfPort_shifted_inv_decay
-#print axioms exists_criticalLineFlux_inv_decay_of_rightHalfZeroFree
-#print axioms rightHalfPort_criticalLineFlux_zeroFree_tfae
-#print axioms rightHalfPort_uniformBounded_tfae
-#print axioms exists_burnol_rightHalfPort_subHalfExp_inv_decay
-#print axioms almostAll_unitWindow_rightHalfPort_doubleLog_decay
-#print axioms microPlanckWindow_criticalLineFlux_volume_le
-end AxiomAudit

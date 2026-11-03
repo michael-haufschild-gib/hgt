@@ -25,7 +25,9 @@ theorem localFactor_zero_iff {p : ℕ} (hp : p ≠ 0) (A : ℝ) (s : ℂ) :
   rw [← hid, mul_eq_zero]
   simp only [pow_ne_zero 2 ht, or_false]
 
-private theorem normSq_quadratic_root {q A : ℝ} (hq : 0 < q) (hA : 0 ≤ A)
+/-- A root of the reciprocal quadratic lies on its critical circle exactly
+when its real middle coefficient is at most the repeated-root threshold. -/
+theorem normSq_quadratic_root {q A : ℝ} (hq : 0 < q) (hA : 0 ≤ A)
     {z : ℂ} (hz : z ^ 2 + (A : ℂ) * z + q = 0) :
     Complex.normSq z = q ↔ A ≤ 2 * Real.sqrt q := by
   have hre := congrArg Complex.re hz
@@ -126,5 +128,38 @@ theorem localFactor_factorZero {p : ℕ} (hp : 1 < p) {r : ℝ} (hr : 0 < r) :
   simp only [factorZero, Complex.div_ofReal_re, Complex.add_re, Complex.mul_re,
     Complex.ofReal_re, Complex.ofReal_im, Complex.I_re, Complex.I_im,
     mul_zero, zero_mul, sub_zero, add_zero]
+
+/-- At and below the repeated-root threshold, the square-root exponential
+bound holds for the logarithmic prime-power coefficients. -/
+theorem quadratic_logCoeff_bound {p : ℕ} (hp : 1 < p) {A : ℝ}
+    (hA : 0 ≤ A) (hbound : A ≤ 2 * Real.sqrt p) {α β : ℂ}
+    (hadd : α + β = -(A : ℂ)) (hmul : α * β = p) {k : ℕ} (hk : k ≠ 0) :
+    ‖(1 - α ^ k - β ^ k) / (k : ℂ)‖ ≤ 3 * (Real.sqrt p) ^ k := by
+  have hpR : (1 : ℝ) < p := by exact_mod_cast hp
+  have hsqrt : 0 ≤ Real.sqrt p := Real.sqrt_nonneg _
+  have hsq : (Real.sqrt p) ^ 2 = (p : ℝ) := Real.sq_sqrt (by positivity)
+  have hR1 : 1 ≤ Real.sqrt p := by nlinarith only [hsqrt, hsq, hpR]
+  have hn (z w : ℂ) (ha : z + w = -(A : ℂ)) (hm : z * w = p) :
+      ‖z‖ = Real.sqrt p := by
+    have hz : z ^ 2 + (A : ℂ) * z + p = 0 := by
+      calc _ = z * (z + w + A) := by rw [← hm]; ring
+        _ = 0 := by rw [ha]; ring
+    have hnorm := (normSq_quadratic_root (q := p) (by positivity) hA hz).mpr hbound
+    rw [Complex.normSq_eq_norm_sq] at hnorm
+    nlinarith only [hnorm, hsq, hsqrt, norm_nonneg z]
+  have hα := hn α β hadd hmul
+  have hβ := hn β α (by rw [add_comm]; exact hadd) (by rw [mul_comm]; exact hmul)
+  have hnum : ‖1 - α ^ k - β ^ k‖ ≤ 1 + ‖α‖ ^ k + ‖β‖ ^ k := by
+    calc _ ≤ ‖1 - α ^ k‖ + ‖β ^ k‖ := norm_sub_le _ _
+      _ ≤ (‖(1 : ℂ)‖ + ‖α ^ k‖) + ‖β ^ k‖ :=
+        add_le_add_right (norm_sub_le _ _) _
+      _ = _ := by rw [norm_one, norm_pow, norm_pow]
+  rw [hα, hβ] at hnum
+  have hk1 : (1 : ℝ) ≤ k := by exact_mod_cast Nat.one_le_iff_ne_zero.mpr hk
+  have hRk : (1 : ℝ) ≤ (Real.sqrt p) ^ k := one_le_pow₀ hR1
+  rw [norm_div, Complex.norm_natCast]
+  calc ‖1 - α ^ k - β ^ k‖ / (k : ℝ) ≤ ‖1 - α ^ k - β ^ k‖ :=
+      div_le_self (norm_nonneg _) hk1
+    _ ≤ 3 * (Real.sqrt p) ^ k := by linarith only [hnum, hRk]
 
 end GaloisForLFunctions.SelbergClass.PositiveFiniteEuler
