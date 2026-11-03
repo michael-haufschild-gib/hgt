@@ -118,7 +118,24 @@ theorem retainedGammaRemainder_ge_higher_lags {F : ℝ → ℝ}
   have h := mul_le_mul_of_nonneg_right (retainedGammaRemainderWeight_ge_higher_lags ht) hn
   nlinarith only [h]
 
+/-- The odd unit-window form retains both higher lag energies as well as its exterior reserve. -/
+theorem weilQuad_ge_retainedOddGamma_add_higher_lags {F : ℝ → ℝ}
+    (hF : ContDiff ℝ 2 F) (hs : tsupport F ⊆ Icc (-(1/2 : ℝ)) (1/2))
+    (ho : ∀ x, F (-x) = -F x) :
+    retainedOddGammaLowerForm F + (∫ x, F x^2)/64 +
+      (∫ t in Ioc (0 : ℝ) 1, t^3*((∫ x, F x^2)-autocorr F t))/960 +
+      (∫ t in Ioc (0 : ℝ) 1, t^4*((∫ x, F x^2)-autocorr F t))/192 ≤ weilQuad F := by
+  have hcs : HasCompactSupport F := HasCompactSupport.intro isCompact_Icc
+    (fun x hx => image_eq_zero_of_notMem_tsupport fun ht => hx (hs ht))
+  have hR := retainedGammaRemainder_ge_higher_lags hF hcs
+  have hmass : 0 ≤ ∫ x, F x^2 := integral_nonneg fun x => sq_nonneg (F x)
+  have htail : (1/128 : ℝ) ≤ retainedGammaTailReserve := gamma_tail_one_reserve.le
+  have hp := mul_le_mul_of_nonneg_right htail hmass
+  rw [weilQuad_eq_retainedOddGamma_add_remainder hF hs ho]
+  linarith only [hR, hp]
+
 end GaloisForLFunctions.WindowTowerOfSpecZ
 
 #print axioms GaloisForLFunctions.WindowTowerOfSpecZ.retainedGammaRemainderWeight_ge_higher_lags
 #print axioms GaloisForLFunctions.WindowTowerOfSpecZ.retainedGammaRemainder_ge_higher_lags
+#print axioms GaloisForLFunctions.WindowTowerOfSpecZ.weilQuad_ge_retainedOddGamma_add_higher_lags

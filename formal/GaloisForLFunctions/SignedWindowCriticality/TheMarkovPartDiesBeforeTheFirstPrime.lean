@@ -30,7 +30,7 @@ noncomputable section
 
 namespace GaloisForLFunctions.SignedWindowCriticality
 
-open RHTower RHTower.WeilMarkovPole SpacingScaleHarmonicAnalysis
+open _root_.RHTower _root_.RHTower.WeilMarkovPole SpacingScaleHarmonicAnalysis Zeta23
 
 /-- The width of the Markov-negative plateau, `e^{−3/4}`. -/
 def markovDeathWidth : ℝ := Real.exp (-(3 / 4))
@@ -39,7 +39,7 @@ theorem markovDeathWidth_pos : 0 < markovDeathWidth := Real.exp_pos _
 
 theorem markovDeathWidth_lt_half : markovDeathWidth < 1 / 2 := by
   unfold markovDeathWidth
-  have h := Real.add_one_le_exp (3 / 4 : ℝ)
+  have h := Real.quadratic_le_exp_of_nonneg (x := (3 / 4 : ℝ)) (by norm_num)
   rw [Real.exp_neg, inv_lt_comm₀ (Real.exp_pos _) (by norm_num)]
   linarith
 
@@ -61,13 +61,14 @@ theorem levyJump_eq_levyEnergy {g : ℝ → ℝ} (hg : Continuous g) : levyJump 
 theorem markovForm_one (g : ℝ → ℝ) :
     markovForm 1 g = EF.gammaBracket 0 * (∫ u, g u ^ 2) + levyJump g := by
   have h : Finset.Icc 2 1 = (∅ : Finset ℕ) := by decide
-  simp [markovForm, creationPotential, primeJump, h]
+  simp only [markovForm, creationPotential, primeJump, h, Finset.sum_empty]
+  ring
 
 /-- The constant of the plateau estimate is negative. -/
 theorem markovDeath_constant_neg :
     EF.gammaBracket 0 + (3 / 4 + (2 * Real.log 2 + π / 2) + (1 + 1 / 100)) +
       Real.exp (1 / 2) / 2 * markovDeathWidth ≤ -(1 / 40) := by
-  rw [ArchimedeanAnomaly.gammaBracket_zero_eq]
+  rw [_root_.RHTower.ArchimedeanAnomaly.gammaBracket_zero_eq]
   have h8 : Real.log (8 * π) = 3 * Real.log 2 + Real.log π := by
     rw [Real.log_mul (by norm_num) Real.pi_ne_zero, show (8 : ℝ) = 2 ^ 3 by norm_num,
       Real.log_pow]

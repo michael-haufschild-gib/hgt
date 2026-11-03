@@ -275,11 +275,9 @@ theorem eventually_critical_cross_payment_constants
   have hEid : (512 * D * Cpr * CB / b + 512 * D * Cnp / b) * σ = XE / t ^ 2 := by
     dsimp only [b, σ, XE]
     field_simp
-    ring
   have hGid : 1024 * D * Cnp / b * σ = XG / t ^ 2 := by
     dsimp only [b, σ, XG]
     field_simp
-    ring
   have hcoef : 1024 * D * Cpr + 1024 * D * Cpr / b +
       64 * D * Cnp * (4 * θ ^ 2 * Kρ + 880) / (b * θ) +
       256 * D * Cup / θ + 512 * D * CupT * Hc / (b * θ) ≤ X * t ^ 5 := by
@@ -309,6 +307,6 @@ theorem eventually_critical_cross_payment_constants
       rw [hGid, div_le_iff₀ (by positivity)]
       linarith only [hGt]
     have h := (mul_le_mul_of_nonneg_right hcoef hτ0).trans hXτ
-    linarith only [h, hG]
+    exact (add_le_add h hG).trans (by norm_num)
 
 end GaloisForLFunctions.CriticalArithmeticCorrelationTheory

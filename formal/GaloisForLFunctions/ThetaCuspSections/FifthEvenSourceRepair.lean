@@ -9,6 +9,8 @@ The fourth native even block is indefinite at the origin, so a correction
 confined to the new diagonal cannot repair the fifth block. Retaining its
 fixed zero-flux correction leaves one scalar Schur coordinate. A coefficient
 selected from that coordinate repairs the origin and a neighborhood of it.
+Gaussian balancing preserves the positive tail. The corresponding weighted
+flux derivatives integrate to zero in every corrected entry.
 -/
 
 noncomputable section

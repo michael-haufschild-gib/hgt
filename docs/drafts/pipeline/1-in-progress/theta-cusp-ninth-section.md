@@ -33,5 +33,5 @@ moment after integration. This constructs a single aperture-independent
 repair near zero and at infinity; it does not prove positivity in between.
 
 Lean source: `ThetaCuspSections/FifthEvenSourceRepair.lean`; checks pending.
-The rank-nine statement remains unproved. Its present source obligation is
+The rank-nine statement remains unproved. A sufficient source obligation for this correction is
 `S(x)+D G(x)>0` on the intervening compact interval.

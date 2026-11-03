@@ -206,7 +206,9 @@ theorem exists_critical_multiple_weighted_complement :
     ((tendsto_rpow_atTop (by norm_num : (0 : ℝ) < 1 / 128)).comp hLlim).eventually_ge_atTop
       (18 * Csmall + 4 * Ccross + 32 * Cband)]
     with N hfarN hcrossN hcut hLX hL3000 hll hpoly hhalf hBpoly hlarge
-  intro c hclo hc u₀ hu₀ hu₀Q u₁ hu₁ hu₁R w hw
+  intro c hclo hc
+  dsimp only
+  intro u₀ hu₀ hu₀Q u₁ hu₁ hu₁R w hw
   let L := Real.log (N : ℝ)
   let t := 1 + Real.log L
   let θ := 1 / t ^ 5
@@ -316,8 +318,7 @@ theorem exists_critical_multiple_weighted_complement :
     have h := hcrossN c hc1 hcroot R hR2 hRR₁ a ha v hv
     refine h.trans_eq ?_
     dsimp only [b, k, θ, D]
-    field_simp
-    ring
+    field_simp <;> ring
   have h := critical_weighted_complement_assembly hQ2 hQR₀ hc1 hb hbc7 hk
     (hband0 hQ2 hQR₀ hR₀6 h36₀ hc1 hcL hw1 hrad hnear₀ hsmall₀)
     (hband1 hR₀2 hR₀R₁ hR₁6 h1080 hc1 hcL hw1 hnear₁

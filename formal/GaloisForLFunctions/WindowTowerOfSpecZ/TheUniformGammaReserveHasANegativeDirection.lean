@@ -19,7 +19,8 @@ def quadraticCutoffWindow (x : ℝ) : ℝ := 2 * cubicWindow x * (1 - 4 * x ^ 2)
 
 theorem continuous_quadraticCutoffWindow : Continuous quadraticCutoffWindow := by
   unfold quadraticCutoffWindow
-  fun_prop
+  exact (continuous_const.mul continuous_cubicWindow).mul
+    (continuous_const.sub (continuous_const.mul (continuous_pow 2)))
 
 theorem quadraticCutoffWindow_inside {x : ℝ}
     (hl : -(1 / 2 : ℝ) ≤ x) (hr : x ≤ 1 / 2) :
@@ -59,7 +60,9 @@ private theorem centeredCorrAnti_deriv (t x : ℝ) :
   have h4 := ((h.pow 5).const_mul (4+2*t^2+10*t^6)).div_const 10
   have h5 := ((h.pow 3).const_mul (1+2*t^4-8*t^6+5*t^8)).div_const 6
   have h6 := (h.const_mul (t^2*(1-t^2)^4)).div_const 2
-  exact (((((h1.sub h2).add h3).sub h4).add h5).sub h6).congr_deriv (by ring)
+  exact (((((h1.sub h2).add h3).sub h4).add h5).sub h6).congr_deriv (by
+    simp only [id_eq]
+    ring)
 
 /-- Centering the overlap reduces the correlation to an even polynomial integral. -/
 theorem quadraticCutoffWindow_autocorr {t : ℝ} (ht : 0 ≤ t) (ht1 : t ≤ 1) :
@@ -114,7 +117,7 @@ private theorem quadraticCutoffLagQuotient_eq {t : ℝ} (ht : t ≠ 0) :
     (128 / 3465 - quadraticCutoffCorrPoly t) / t = quadraticCutoffLagQuotient t := by
   unfold quadraticCutoffCorrPoly quadraticCutoffLagQuotient
   field_simp
-  <;> ring
+  ring
 
 theorem quadraticCutoffWindow_logarithmic_integral :
     (∫ t in Ioc (0 : ℝ) 1,
@@ -127,6 +130,7 @@ theorem quadraticCutoffWindow_logarithmic_integral :
     rw [intervalIntegral.integral_of_le (by norm_num : (0 : ℝ) ≤ 1)]
     apply setIntegral_congr_fun measurableSet_Ioc
     intro t ht
+    dsimp only
     rw [quadraticCutoffWindow_autocorr ht.1.le ht.2, quadraticCutoffLagQuotient_eq ht.1.ne']
   rw [he]
   unfold quadraticCutoffLagQuotient
@@ -147,6 +151,7 @@ theorem quadraticCutoffWindow_jump_first_moment :
     rw [intervalIntegral.integral_of_le (by norm_num : (0 : ℝ) ≤ 1)]
     apply setIntegral_congr_fun measurableSet_Ioc
     intro t ht
+    dsimp only
     rw [quadraticCutoffWindow_autocorr ht.1.le ht.2]
     unfold quadraticCutoffCorrPoly
     ring

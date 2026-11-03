@@ -30,4 +30,14 @@ the exact local Gamma remainder and the reserve beyond `E/64` remain present.
 - [ ] Transfer the strict sign to a real odd C² test with exact unit support.
 - [ ] Identify and prove the strongest positive survivor before retiring this target.
 
+## Positive survivor under audit
+
+For `0<t≤1`, the exact local Gamma remainder satisfies
+`r(t)≥t³/960+t⁴/192`. Set `z=t/2`. Taylor bounds give
+`z/sinh z≥1−z²/6+z⁴/60` and `1/cosh z≥1−z²/2+z⁴/6` on `0<z≤1/2`.
+The identity `e^(t/2)/sinh t=1/(2sinh z)+1/(2cosh z)` yields the claim.
+Multiplication by `E−C(t)≥0` retains the corresponding third and fourth lag
+energies. `TheGammaRemainderRetainsHigherLags.lean` contains the proposed proof;
+its individual Lean audit is pending.
+
 The full joint Gamma/prime/pole inequality remains active.

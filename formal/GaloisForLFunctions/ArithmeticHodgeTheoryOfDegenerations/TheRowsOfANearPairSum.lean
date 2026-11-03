@@ -701,17 +701,17 @@ theorem sum_Icc_ite_lt_eq (g : ℕ → ℝ) (n N : ℕ) :
   rw [← Finset.sum_filter]
   refine Finset.sum_nbij' (fun j => j - n) (fun h => n + h) ?_ ?_ ?_ ?_ ?_
   · intro j hj
-    simp only [Finset.mem_filter, Finset.mem_Icc, Finset.mem_coe] at hj ⊢
+    simp only [Finset.mem_filter, Finset.mem_Icc] at hj ⊢
     omega
   · intro h hh
-    simp only [Finset.mem_filter, Finset.mem_Icc, Finset.mem_coe] at hh ⊢
+    simp only [Finset.mem_filter, Finset.mem_Icc] at hh ⊢
     omega
   · intro j hj
-    simp only [Finset.mem_filter, Finset.mem_Icc, Finset.mem_coe] at hj
+    simp only [Finset.mem_filter, Finset.mem_Icc] at hj
     omega
   · intro h _; omega
   · intro j hj
-    simp only [Finset.mem_filter, Finset.mem_Icc, Finset.mem_coe] at hj
+    simp only [Finset.mem_filter, Finset.mem_Icc] at hj
     congr 1; omega
 
 theorem log_add_sub_log {n h : ℕ} (hn : 1 ≤ n) :
@@ -781,5 +781,58 @@ theorem nearPairSum_eq_rows (K : ℝ → ℝ) {α β w : ℝ} (hα : 0 ≤ α) (
         · refine Finset.sum_congr rfl fun j hj => ?_
           rw [sum_Icc_ite_lt_eq (fun n => T n j) j N, hdown j hj]
     _ = _ := by rw [← Finset.sum_add_distrib]; exact Finset.sum_congr rfl fun m _ => by ring
+
+/-! ### The pair sum -/
+
+theorem rowWindow_eq_zero_of_lt {K : ℝ → ℝ} {α β w : ℝ} {N m : ℕ} (hm : 1 ≤ m)
+    (h : (m : ℝ) * (Real.exp (β * w) - 1) < 1) (p : ℕ → ℝ) : rowWindow K α β w N m p = 0 := by
+  refine Finset.sum_eq_zero fun h' hh => ?_
+  rw [if_neg]
+  intro hw
+  have h1 : (1 : ℝ) ≤ h' := by exact_mod_cast (Finset.mem_Icc.mp hh).1
+  have := ((log_window_iff hm (Nat.cast_nonneg h')).mp hw).2
+  linarith
+
+theorem abs_rowWindow_le {K : ℝ → ℝ} {α β A w : ℝ} (hw : 0 < w) (hα : 0 ≤ α) (hαβ : α ≤ β)
+    (hA : ∀ ℓ ∈ Icc α β, |K ℓ| ≤ A) {p : ℕ → ℝ} {B : ℝ} (hB : ∀ n, |p n| ≤ B) {N m : ℕ}
+    (hm : 1 ≤ m) : |rowWindow K α β w N m p| ≤ B * A * (Real.exp (β * w) - 1) := by
+  have hm0 : (0 : ℝ) < m := by exact_mod_cast hm
+  have hB0 : 0 ≤ B := (abs_nonneg _).trans (hB 0)
+  set b : ℝ := m * (Real.exp (β * w) - 1)
+  have hterm : ∀ h ∈ Finset.Icc 1 (N - m), |(if α * w < Real.log (1 + h / m) ∧
+      Real.log (1 + h / m) ≤ β * w then p (m + h) * rowKernel K w m h else 0)| ≤
+      if (h : ℝ) ≤ b then B * (A / m) else 0 := by
+    intro h _
+    split_ifs with hw' hb
+    · have hmem := (log_window_iff hm (Nat.cast_nonneg h)).mp hw'
+      have ha0 : 0 ≤ (m : ℝ) * (Real.exp (α * w) - 1) := mul_nonneg hm0.le (by
+        have := Real.add_one_le_exp (α * w); nlinarith [mul_nonneg hα hw.le])
+      have hK := hA _ (log_div_mem_Icc hw hm ⟨hmem.1.le, hmem.2⟩)
+      have hs : (m : ℝ) ≤ Real.sqrt (m * (m + h)) := by
+        rw [Real.le_sqrt hm0.le (by positivity)]; nlinarith [(Nat.cast_nonneg h : (0:ℝ) ≤ h)]
+      rw [abs_mul, rowKernel, abs_div, abs_of_pos (lt_of_lt_of_le hm0 hs)]
+      exact mul_le_mul (hB _) (div_le_div₀ ((abs_nonneg _).trans hK) hK hm0 hs) (by positivity) hB0
+    · exact absurd ((log_window_iff hm (Nat.cast_nonneg h)).mp hw').2 hb
+    · simp
+    · simp
+  have hA0 : 0 ≤ A := (abs_nonneg _).trans (hA α ⟨le_rfl, hαβ⟩)
+  have hb0 : 0 ≤ b := mul_nonneg hm0.le (by
+    have := Real.add_one_le_exp (β * w); nlinarith [mul_nonneg (hα.trans hαβ) hw.le])
+  have hcard : (((Finset.Icc 1 (N - m)).filter (fun h : ℕ => (h : ℝ) ≤ b)).card : ℝ) ≤ b := by
+    have hsub : (Finset.Icc 1 (N - m)).filter (fun h : ℕ => (h : ℝ) ≤ b) ⊆ Finset.Icc 1 ⌊b⌋₊ := by
+      intro h hh
+      simp only [Finset.mem_filter, Finset.mem_Icc] at hh ⊢
+      exact ⟨hh.1.1, Nat.le_floor hh.2⟩
+    calc (((Finset.Icc 1 (N - m)).filter (fun h : ℕ => (h : ℝ) ≤ b)).card : ℝ)
+        ≤ ((Finset.Icc 1 ⌊b⌋₊).card : ℝ) := by exact_mod_cast Finset.card_le_card hsub
+      _ = ⌊b⌋₊ := by simp
+      _ ≤ b := Nat.floor_le hb0
+  calc |rowWindow K α β w N m p|
+      ≤ ∑ h ∈ Finset.Icc 1 (N - m), (if (h : ℝ) ≤ b then B * (A / m) else 0) :=
+        (Finset.abs_sum_le_sum_abs _ _).trans (Finset.sum_le_sum hterm)
+    _ = (((Finset.Icc 1 (N - m)).filter (fun h : ℕ => (h : ℝ) ≤ b)).card : ℝ) * (B * (A / m)) := by
+        rw [← Finset.sum_filter, Finset.sum_const, nsmul_eq_mul]
+    _ ≤ b * (B * (A / m)) := mul_le_mul_of_nonneg_right hcard (by positivity)
+    _ = B * A * (Real.exp (β * w) - 1) := by simp only [b]; field_simp
 
 end GaloisForLFunctions.ArithmeticHodgeTheoryOfDegenerations

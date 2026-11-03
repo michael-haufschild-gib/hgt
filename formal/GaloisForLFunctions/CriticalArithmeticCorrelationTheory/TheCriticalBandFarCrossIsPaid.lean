@@ -62,7 +62,9 @@ theorem eventually_critical_band_far_cross {B : ℝ} (hB : 0 < B) :
     hLlim.eventually (eventually_critical_cross_payment_constants hD hB hA
       hCpr.le hCnp hCup hCupT hCB (zero_le_one.trans hH1) (show 0 ≤ 2 * Kres by positivity)),
     hres 0 le_rfl 16 (by norm_num)] with N hLX hlarge hll hpoly hmon hpay hresN
-  intro c hc1 hc R hR2 hRR₁ a hu w hw
+  intro c hc1 hc
+  dsimp only
+  intro R hR2 hRR₁ a hu w hw
   let L := Real.log (N : ℝ)
   let t := 1 + Real.log L
   let θ := 1 / t ^ 5
@@ -135,6 +137,7 @@ theorem eventually_critical_band_far_cross {B : ℝ} (hB : 0 < B) :
     linarith only [h, hTup]
   have hTPC : terminalPacketCost R M N ≤ CB * (1 + Real.log c) := by
     have hcost := terminalPacketCost_nat_div_le (Q := R) (by omega : 1 ≤ T) hTN hRM
+    change terminalPacketCost R M N ≤ 4 + Real.log (2 * (T : ℝ)) at hcost
     have hT0 : (0 : ℝ) < T := by exact_mod_cast (show 0 < T by omega)
     have h := Real.log_le_log (show 0 < 2 * (T : ℝ) by positivity)
       (mul_le_mul_of_nonneg_left hTup zero_le_two)
@@ -156,7 +159,7 @@ theorem eventually_critical_band_far_cross {B : ℝ} (hB : 0 < B) :
     linarith only [hlogR₁, h, hL3000])
   obtain ⟨hm1, hm2, hLτ, h7τ⟩ := hmon c Sg hc1 hc hSg1 hSgA
   have hLσ : 1 / L ≤ A ^ 2 * t ^ 3 :=
-    (div_le_one hL0).mpr hL1 |>.trans
+    ((div_le_one hL0).mpr hL1).trans
       (one_le_mul_of_one_le_of_one_le (one_le_pow₀ hA) (one_le_pow₀ ht1))
   have hL11 : L ^ 11 ≤ N :=
     (pow_le_pow_right₀ hL1 (by norm_num : 11 ≤ 18)).trans
@@ -190,8 +193,7 @@ theorem eventually_critical_band_far_cross {B : ℝ} (hB : 0 < B) :
     (fun v hv => hw v (conductorSubspace_mono hRR₁ N hv))
   refine hx.trans_eq ?_
   dsimp only [b, θ, L, t, D]
-  field_simp
-  ring
+  field_simp <;> ring
 
 end GaloisForLFunctions.CriticalArithmeticCorrelationTheory
 
