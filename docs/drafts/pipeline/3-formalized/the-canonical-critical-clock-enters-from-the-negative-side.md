@@ -1,7 +1,7 @@
 # The canonical critical clock enters from the negative side
 
-- **Stage:** 2-fully-proven
-- **Type:** THEOREM (paper; Lean in progress)
+- **Stage:** 3-formalized
+- **Type:** THEOREM [W]
 - **Wall:** Σ1k, equality case.
 - **Statement:** For a nonzero compact C² window `H=e^{y/2}h` with `Q(H)<0`, the tilted-spline horizon energy is eventually negative on the exact clock `c_N⁸=K*(H)log N`, where its leading pencil vanishes.
 
@@ -60,6 +60,15 @@ Combining steps 2–3 proves the expansion. Since `M_10>0` for nonzero continuou
 
 Together with the existing strict phase limits, every nonzero window on the canonical clock has eventually positive energy exactly when `κQ+B/K>0`, and eventually negative energy exactly when `κQ+B/K≤0`. Thus the canonical phase boundary belongs to the negative phase.
 
-## Lean obligations
+## Lean theorems
 
-No final Lean theorem is claimed yet. Required: quadratic numerator averaging; two-term harmonic sum; quantitative low-frequency and pole convergence; assembly and axiom audit. Existing corpus anchors: `shellSpectrum_tiltedUnitSpline`, `abs_riemann_modulated_sub_le`, `paperFT_deriv_deriv_of_compact`, `horizonDirichlet_sq_div_le`, and the explicit estimates inside `TheSecondOrderTermOfAHorizonBlock`.
+AHD `TheNextAliasingCoefficientIsNegative` proves `tendsto_twoTerm_horizonAlias` and `tiltedNextAliasCoefficient_pos`.
+AHD `TheCanonicalCriticalClockEntersFromTheNegativeSide` proves:
+
+- `criticalCurve_horizon_remainder`: non-aliasing error is `o(c⁻²)`.
+- `tiltedHorizonEnergy_quadratic_correction`: the full next-order expansion.
+- `canonicalCriticalClock_phase_diagram`: the canonical boundary belongs to the negative phase.
+- `tiltedHorizonEnergy_critical_shift_limit`: exact response to the first clock shift.
+- `critical_ratio_equality_admits_both_signs`: two explicit clocks at the same limiting ratio have opposite eventual signs on every nonzero equality-face window.
+
+Both source files pass canonical `lake --old env lean` checks. The audited remainder, expansion, canonical sign and phase diagram, and both-sign theorem depend only on `propext`, `Classical.choice`, and `Quot.sound`.

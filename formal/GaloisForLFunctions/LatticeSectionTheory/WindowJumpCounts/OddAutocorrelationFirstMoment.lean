@@ -1,4 +1,4 @@
-import GaloisForLFunctions.LatticeSectionTheory.WindowJumpCounts.OddAutocorrelationSecondMoment
+import GaloisForLFunctions.LatticeSectionTheory.ThePrimitiveH1OfPrimeFreeCyclesIsAJumpCount
 import GaloisForLFunctions.ArithmeticCompensationTheory.TheResolventIdentityAndSecondHorizonCorrection
 import GaloisForLFunctions.HTGeometry.CompactPrimitive
 
@@ -30,6 +30,7 @@ theorem derivative_autocorr_first_moment {H : ℝ → ℝ} (hH : ContDiff ℝ 1 
   have hWd (t : ℝ) : HasDerivAt W (t * autoCorr (deriv H) t) t := by
     refine ((hasDerivAt_autoCorr hH hcs t).sub
       ((hasDerivAt_id t).mul (hasDerivAt_crossCorr hH hcs t))).congr_deriv ?_
+    dsimp only [id]
     ring
   have hWe : deriv W = fun t => t * autoCorr (deriv H) t :=
     funext fun t => (hWd t).deriv
@@ -40,12 +41,14 @@ theorem derivative_autocorr_first_moment {H : ℝ → ℝ} (hH : ContDiff ℝ 1 
     exact continuous_id.mul (continuous_autoCorr (hH.continuous_deriv le_rfl) hcs.deriv)
   have h := HasCompactSupport.integral_Ioi_deriv_eq hW1 hWc 0
   rw [hWe] at h
-  simpa only [W, zero_mul, sub_zero, autoCorr_zero_eq_integral_sq] using h
+  simpa only [W, zero_mul, sub_zero,
+    ArithmeticCompensationTheory.autoCorr_zero_eq_integral_sq] using h
 
 /-- The primitive from the fixed left endpoint `−1` of a unit-window source. -/
 def unitSourcePrimitive (F : ℝ → ℝ) (x : ℝ) : ℝ := ∫ y in (-1 : ℝ)..x, F y
 
-private theorem unit_odd_primitive_regular {F : ℝ → ℝ} (hF : Continuous F)
+/-- An odd unit-window source has a compact continuously differentiable primitive. -/
+theorem unit_odd_primitive_regular {F : ℝ → ℝ} (hF : Continuous F)
     (hs : tsupport F ⊆ Icc (-(1 / 2 : ℝ)) (1 / 2)) (ho : ∀ x, F (-x) = -F x) :
     ContDiff ℝ 1 (unitSourcePrimitive F) ∧ HasCompactSupport (unitSourcePrimitive F) ∧
       deriv (unitSourcePrimitive F) = F := by
@@ -66,9 +69,10 @@ private theorem unit_odd_primitive_regular {F : ℝ → ℝ} (hF : Continuous F)
     rw [integral_congr_ae (Eventually.of_forall ho), integral_neg] at h
     linarith only [h]
   have hmi : (∫ x in (-1 : ℝ)..1, F x) = 0 := by
-    rw [intervalIntegral.integral_of_le (by norm_num : (-1 : ℝ) ≤ 1),
-      setIntegral_eq_integral_of_forall_compl_eq_zero
-        (fun x hx => hz x (fun hi => hx ⟨hi.1, hi.2.le⟩)), hm]
+    have hI : (∫ x in Ioc (-1 : ℝ) 1, F x) = ∫ x, F x :=
+      setIntegral_eq_integral_of_forall_compl_eq_zero (s := Ioc (-1 : ℝ) 1)
+        (fun x hx => hz x (fun hi => hx ⟨hi.1, hi.2.le⟩))
+    rw [intervalIntegral.integral_of_le (by norm_num : (-1 : ℝ) ≤ 1), hI, hm]
   have hp := HTGeometry.primitive_eq_zero_outside hF hz hmi
   have hc : HasCompactSupport (unitSourcePrimitive F) := by
     apply HasCompactSupport.intro (K := Icc (-1 : ℝ) 1) isCompact_Icc

@@ -52,7 +52,7 @@ theorem cutoff_of_ge {a b x : ℝ} (hab : a < b) (hx : b ≤ x) : cutoff a b x =
 
 /-! ### Windows and their translates -/
 
-theorem IsWindowTest.mem_realTests {A : ℝ} {H : ℝ → ℝ} (hH : IsWindowTest A H) :
+theorem mem_realTests_of_windowTest {A : ℝ} {H : ℝ → ℝ} (hH : IsWindowTest A H) :
     H ∈ realTests := ⟨hH.contDiff, hH.hasCompactSupport⟩
 
 theorem isWindowTest_translate {ℓ ε : ℝ} {u : ℝ → ℝ} (hu : IsWindowTest ℓ u) (hε : 0 ≤ ε) :
@@ -90,7 +90,7 @@ theorem window_nonneg_iff_contraction {ℓ ε : ℝ} (hε : 0 < ε) (hεℓ : ε
       ⟨(contDiff_const.mul hu'.contDiff).add (contDiff_const.mul hv.contDiff), fun y hy => by
         simp only [hu'.vanish y hy, hv'.vanish y hy, mul_zero, add_zero]⟩
     have := h _ hH
-    rw [weilQuad_plane hu'.mem_realTests hv'.mem_realTests s 1, weilQuad_translate] at this
+    rw [weilQuad_plane (mem_realTests_of_windowTest hu') (mem_realTests_of_windowTest hv') s 1, weilQuad_translate] at this
     nlinarith [this]
   · rintro ⟨hpos, hdisk⟩ H hH
     set χ := cutoff (-ℓ) (-ε) with hχ
@@ -106,14 +106,14 @@ theorem window_nonneg_iff_contraction {ℓ ε : ℝ} (hε : 0 < ε) (hεℓ : ε
       simp only [u₀]
       rcases hy' with hy' | hy'
       · rw [hH.vanish (y - ε) fun hm => by linarith [hm.1], mul_zero]
-      · rw [cutoff_of_ge hab (by linarith), zero_mul]
+      · rw [hχ, cutoff_of_ge hab (by linarith), zero_mul]
     have hv : IsWindowTest ℓ v := by
       refine ⟨(contDiff_const.sub hχc).mul hH.contDiff, fun y hy => ?_⟩
       have hy' : y < -ℓ ∨ 0 < y := by
         by_contra hc; push Not at hc; exact hy ⟨hc.1, hc.2⟩
       simp only [v]
       rcases hy' with hy' | hy'
-      · rw [cutoff_of_le hab hy'.le, sub_self, zero_mul]
+      · rw [hχ, cutoff_of_le hab hy'.le, sub_self, zero_mul]
       · rw [hH.vanish y fun hm => by linarith [hm.2], mul_zero]
     have hsplit : H = fun x => 1 * u₀ (x + ε) + 1 * v x := by
       funext x
@@ -121,7 +121,7 @@ theorem window_nonneg_iff_contraction {ℓ ε : ℝ} (hε : 0 < ε) (hεℓ : ε
       ring
     have hu' := isWindowTest_translate hu₀ hε.le
     have hv' : IsWindowTest (ℓ + ε) v := hv.mono (by linarith)
-    rw [hsplit, weilQuad_plane hu'.mem_realTests hv'.mem_realTests 1 1, weilQuad_translate]
+    rw [hsplit, weilQuad_plane (mem_realTests_of_windowTest hu') (mem_realTests_of_windowTest hv') 1 1, weilQuad_translate]
     have ha := hpos u₀ hu₀
     have hc := hpos v hv
     have hb := hdisk u₀ v hu₀ hv
@@ -141,12 +141,13 @@ theorem stageForm_eq_weilQuad_add_fold {A : ℝ} {H : ℝ → ℝ} (hH : IsWindo
   linarith
 
 /-- A test on a window of length `ℓ` does not meet its own translate by `ℓ`. -/
-theorem IsWindowTest.mul_shift_length {ℓ : ℝ} {u : ℝ → ℝ} (hu : IsWindowTest ℓ u) (x : ℝ) :
+theorem mul_shift_length_eq_zero {ℓ : ℝ} {u : ℝ → ℝ} (hu : IsWindowTest ℓ u) (x : ℝ) :
     u x * u (x + ℓ) = 0 := by
   by_cases hx : x ≤ -ℓ
-  · rw [eq_zero_of_vanish_off_Icc hu.continuous hu.vanish (Or.inl hx), zero_mul]
+  · rw [eq_zero_of_vanish_off_Icc (u := x) hu.continuous hu.vanish (Or.inl hx), zero_mul]
   · push Not at hx
-    rw [eq_zero_of_vanish_off_Icc hu.continuous hu.vanish (Or.inr (by linarith)), mul_zero]
+    rw [eq_zero_of_vanish_off_Icc (u := x + ℓ) hu.continuous hu.vanish (Or.inr (by linarith)),
+      mul_zero]
 
 /-- The **frozen pairing** of level `N`: the polarization of the stage datum `Q_N`. -/
 def frozenPair (N : ℕ) (f g : ℝ → ℝ) : ℝ :=
@@ -171,17 +172,15 @@ theorem weilPair_stage_eq {N : ℕ} (hN : 1 ≤ N) {ε : ℝ} (hε : 0 < ε)
   have s1 := stageForm_eq_weilQuad_add_fold hsum hN hwl
   have s2 := stageForm_eq_weilQuad_add_fold hu' hN hwl
   have s3 := stageForm_eq_weilQuad_add_fold hv' hN hwl
-  have z2 : ∫ x, u (x + ε) * u (x + ε + ℓ) = 0 := by
-    simp only [fun x => (hu.mul_shift_length (x + ε)), integral_zero]
-  have z3 : ∫ x, v x * v (x + ℓ) = 0 := by
-    simp only [hv.mul_shift_length, integral_zero]
+  rw [← hℓ] at s1 s2 s3
+  beta_reduce at s1 s2
   have p1 : ∀ x, (u (x + ε) + v x) * (u (x + ℓ + ε) + v (x + ℓ)) = u (x + ε) * v (x + ℓ) := by
     intro x
-    have a1 := hu.mul_shift_length (x + ε)
-    have a2 := hv.mul_shift_length x
+    have a1 := mul_shift_length_eq_zero hu (x + ε)
+    have a2 := mul_shift_length_eq_zero hv x
     have a3 : v x * u (x + ℓ + ε) = 0 := by
       by_cases hx : x ≤ -ℓ
-      · rw [eq_zero_of_vanish_off_Icc hv.continuous hv.vanish (Or.inl hx), zero_mul]
+      · rw [eq_zero_of_vanish_off_Icc (u := x) hv.continuous hv.vanish (Or.inl hx), zero_mul]
       · push Not at hx
         rw [hu.vanish (x + ℓ + ε) fun hm => by linarith [hm.2], mul_zero]
     rw [show x + ε + ℓ = x + ℓ + ε by ring] at a1
@@ -190,15 +189,23 @@ theorem weilPair_stage_eq {N : ℕ} (hN : 1 ≤ N) {ε : ℝ} (hε : 0 < ε)
     unfold crossCorr
     rw [← integral_add_right_eq_self (fun y => u y * v (y + (ℓ - ε))) ε]
     congr 1; funext x; congr 2; ring
-  simp only [p1, show ∀ x, x + ℓ + ε = x + ε + ℓ from fun x => by ring] at s1
-  rw [hc] at s1
-  simp only [show ∀ x, x + ε + ℓ = x + ℓ + ε from fun x => by ring] at s2
-  rw [show (∫ x, u (x + ε) * u (x + ℓ + ε)) = 0 by
-    simpa only [show ∀ x, x + ε + ℓ = x + ℓ + ε from fun x => by ring] using z2] at s2
-  rw [z3] at s3
-  have hplane := weilQuad_plane hu'.mem_realTests hv'.mem_realTests 1 1
-  simp only [one_mul, one_pow] at hplane
+  have i1 : ∫ x, (u (x + ε) + v x) * (u (x + ℓ + ε) + v (x + ℓ)) = crossCorr u v (ℓ - ε) := by
+    rw [show (fun x => (u (x + ε) + v x) * (u (x + ℓ + ε) + v (x + ℓ))) =
+      fun x => u (x + ε) * v (x + ℓ) from funext p1, hc]
+  have i2 : ∫ x, u (x + ε) * u (x + ℓ + ε) = 0 := by
+    have h0 : ∀ x, u (x + ε) * u (x + ℓ + ε) = 0 := fun x => by
+      have := mul_shift_length_eq_zero hu (x + ε)
+      rwa [show x + ε + ℓ = x + ℓ + ε by ring] at this
+    simp only [h0, integral_zero]
+  have i3 : ∫ x, v x * v (x + ℓ) = 0 := by
+    simp only [mul_shift_length_eq_zero hv, integral_zero]
+  rw [i1] at s1
+  rw [i2] at s2
+  rw [i3] at s3
+  have hplane := weilQuad_plane (mem_realTests_of_windowTest hu') (mem_realTests_of_windowTest hv') 1 1
+  simp only [one_mul, one_pow, mul_one] at hplane
   unfold frozenPair
+  beta_reduce
   rw [s1, s2, s3, hplane]
   ring
 
@@ -249,12 +256,11 @@ theorem riemannHypothesis_iff_translation_contraction :
         · exact ih A hA0 hsmall H hH
         · push Not at hsmall
           have hk : (0 : ℝ) ≤ k := Nat.cast_nonneg k
-          set ε : ℝ := 1 / 2000
-          have hε : 0 < ε := by norm_num
-          have hεℓ : ε < A - ε := by push_cast at hA hsmall ⊢; linarith
+          have hε : (0 : ℝ) < 1 / 2000 := by norm_num
+          have hεℓ : (1 / 2000 : ℝ) < A - 1 / 2000 := by push_cast at hA hsmall ⊢; linarith
           have hgrow := (window_nonneg_iff_contraction hε hεℓ).mpr
-            ⟨fun v hv => ih (A - ε) (by linarith) (by push_cast at hA ⊢; linarith) v hv,
-              hc (A - ε) ε hε hεℓ⟩
+            ⟨fun v hv => ih (A - 1 / 2000) (by linarith) (by push_cast at hA ⊢; linarith) v hv,
+              hc (A - 1 / 2000) (1 / 2000) hε hεℓ⟩
           exact hgrow H (by rwa [sub_add_cancel])
     intro A hA0 H hH
     obtain ⟨k, hk⟩ := exists_nat_ge (2000 * A)

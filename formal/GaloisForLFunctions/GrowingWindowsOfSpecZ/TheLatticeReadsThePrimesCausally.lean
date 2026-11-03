@@ -166,15 +166,33 @@ theorem schurParam_single_kick (hφ : ∀ y, y ∉ Icc (-r) 0 → φ y = 0) (hh 
     levinson (weilSeqW lam φ h) m = levinson (weilSeqW lam' φ h) m ∧
       schurParam (weilSeqW lam φ h) m - schurParam (weilSeqW lam' φ h) m =
         -((lam n₀ - lam' n₀) / Real.sqrt n₀) * latticeLag φ h ((m : ℤ) + 1) (Real.log n₀) := by
-  have hlev : levinson (weilSeqW lam φ h) m = levinson (weilSeqW lam' φ h) m :=
-    levinson_weilSeqW_congr hφ hh.le fun k _ hk => by
+  -- the frozen data `κ(0), …, κ(m)` do not see `n₀`
+  have hagree : ∀ d : ℕ, d ≤ m → weilSeqW lam φ h d = weilSeqW lam' φ h d := fun d hd =>
+    weilSeqW_congr hφ fun k _ hk => by
       by_cases hkn : k = n₀
-      · subst hkn; exact absurd hk (not_le.mpr hm)
+      · subst hkn
+        have hdm : (d : ℝ) ≤ m := by exact_mod_cast hd
+        have : |((d : ℤ) : ℝ) * h| = (d : ℝ) * h := by
+          rw [abs_of_nonneg (by push_cast; positivity)]; push_cast; ring
+        rw [this] at hk
+        nlinarith
       · exact hlam k hkn
+  have hlev : levinson (weilSeqW lam φ h) m = levinson (weilSeqW lam' φ h) m :=
+    levinson_congr m hagree
   refine ⟨hlev, ?_⟩
   rw [schurParam_eq, schurParam_eq]
   simp only [levinsonPred]
   rw [hlev]
+  have hfp : frozenPrediction (weilSeqW lam φ h) m (levinson (weilSeqW lam' φ h) m).2 =
+      frozenPrediction (weilSeqW lam' φ h) m (levinson (weilSeqW lam' φ h) m).2 := by
+    unfold frozenPrediction
+    congr 1
+    refine sum_congr rfl fun k _ => ?_
+    have hk : (k : ℕ) < m := k.isLt
+    have := hagree ((k : ℕ) + 1) (by omega)
+    push_cast at this
+    rw [this]
+  rw [hfp]
   have hkick := weilSeqW_single_kick (h := h) hφ hn₀ hlam ((m : ℤ) + 1)
   have hneg : latticeLag φ h ((m : ℤ) + 1) (-Real.log n₀) = 0 := by
     refine latticeLag_eq_zero hφ _ ?_
@@ -184,7 +202,6 @@ theorem schurParam_single_kick (hφ : ∀ y, y ∉ Icc (-r) 0 → φ y = 0) (hh 
     push_cast
     nlinarith
   rw [hneg, add_zero] at hkick
-  push_cast at hkick ⊢
   linarith
 
 end GaloisForLFunctions.GrowingWindowsOfSpecZ

@@ -91,6 +91,15 @@ term of the degeneration on a horizon window is Weil's form plus `β J/K` times 
 norm, determined by the first-order data `(β, J)` of the bulk; its critical multiple is
 `K*(H) = β J ‖H‖²_{−(β+1)}/(κ_φ |Q(H)|)`.
 
+For the tilted spline the next term resolves equality. Put `M_j = ∫e^{−jy}H²`,
+`B = 7J(1)M_8` and `D = tiltedNextAliasCoefficient > 0`. If `K_N = c_N⁸/log N → K > 0`,
+then `c_N²(E_N − κ_φQ(H) − B/K_N) → −DM_10/K`.
+On the canonical clock `c_N = max(1,(K log N)^{1/8})`, every nonzero window has eventually
+positive energy exactly when its leading pencil is positive; a zero pencil has eventually
+negative energy (`canonicalCriticalClock_phase_diagram`). At equality, the clocks
+`max(1,c_N+d/c_N)` instead give scaled limit `−(8Bd+DM_10)/K`; two explicit choices of `d`
+give opposite signs at the same limiting ratio (`critical_ratio_equality_admits_both_signs`).
+
 On the twisted directions the count reappears at second order. The window twisted by the
 conductor-two Ramanujan sum `c₂(n) = (−1)^n` has no Weil term, and at `c⁸ = K log N`
 

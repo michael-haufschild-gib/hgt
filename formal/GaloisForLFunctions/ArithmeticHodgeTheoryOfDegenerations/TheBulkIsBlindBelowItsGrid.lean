@@ -426,6 +426,42 @@ def poleLedgerTerm (φ : ℝ → ℝ) (E : Finset ℕ) (y : ℕ → ℝ) (c : �
   (zetaZeroConfig.mult ρ : ℂ) * (atomFactor φ c N ρ *
     (((poleCoefficient E y ^ 2 : ℝ) : ℂ) / (ρ * (1 - ρ))))
 
+/-- Below the resolution the pole term of a zero is dominated by `e I₁²/∫φ² · y_1² m_ρ/|ρ(1 − ρ)|`. -/
+theorem norm_poleLedgerTerm_le {φ : ℝ → ℝ} (hφ : Continuous φ)
+    (hφsupp : ∀ u, u ∉ Set.Icc 0 1 → φ u = 0) (hφ2 : 0 < ∫ u, φ u ^ 2) (E : Finset ℕ)
+    (y : ℕ → ℝ) {c : ℝ} (hc : 0 < c) {N : ℕ} (hcN : c ≤ N) {ρ : ℂ} (hρ0 : 0 < ρ.re)
+    (hρ1 : ρ.re < 1) :
+    ‖poleLedgerTerm φ E y c N ρ‖ ≤ Real.exp 1 * (∫ u, |φ u|) ^ 2 / (∫ u, φ u ^ 2) *
+      poleCoefficient E y ^ 2 * ‖(zetaZeroConfig.mult ρ : ℂ) / (ρ * (1 - ρ))‖ := by
+  have hA := norm_atomFactor_le hφ hφsupp hφ2 hc hcN hρ0 hρ1
+  unfold poleLedgerTerm
+  rw [norm_mul, norm_mul, norm_div, Complex.norm_natCast, Complex.norm_real,
+    Real.norm_eq_abs, abs_of_nonneg (sq_nonneg _), norm_div, Complex.norm_natCast]
+  have hm : (0 : ℝ) ≤ zetaZeroConfig.mult ρ := Nat.cast_nonneg _
+  have hq : 0 ≤ poleCoefficient E y ^ 2 / ‖ρ * (1 - ρ)‖ := by positivity
+  calc (zetaZeroConfig.mult ρ : ℝ) * (‖atomFactor φ c N ρ‖ *
+        (poleCoefficient E y ^ 2 / ‖ρ * (1 - ρ)‖))
+      ≤ (zetaZeroConfig.mult ρ : ℝ) * (Real.exp 1 * (∫ u, |φ u|) ^ 2 / (∫ u, φ u ^ 2) *
+          (poleCoefficient E y ^ 2 / ‖ρ * (1 - ρ)‖)) :=
+        mul_le_mul_of_nonneg_left (mul_le_mul_of_nonneg_right hA hq) hm
+    _ = _ := by ring
+
+/-- At a fixed zero the pole term tends to `κ y_1² m_ρ/(ρ(1 − ρ))` when `c_N/N → 0`. -/
+theorem tendsto_poleLedgerTerm {φ : ℝ → ℝ} (hφ : Continuous φ) (hφc : HasCompactSupport φ)
+    (E : Finset ℕ) (y : ℕ → ℝ) {c : ℕ → ℝ} (hcN : Tendsto (fun N : ℕ => c N / N) atTop (𝓝 0))
+    (ρ : ℂ) :
+    Tendsto (fun N : ℕ => poleLedgerTerm φ E y (c N) N ρ) atTop
+      (𝓝 ((((∫ u, φ u) ^ 2 / ∫ u, φ u ^ 2 : ℝ) : ℂ) * ((poleCoefficient E y ^ 2 : ℝ) : ℂ) *
+        ((zetaZeroConfig.mult ρ : ℂ) / (ρ * (1 - ρ))))) := by
+  have h := ((tendsto_atomFactor hφ hφc hcN ρ).mul_const
+    (((poleCoefficient E y ^ 2 : ℝ) : ℂ) / (ρ * (1 - ρ)))).const_mul (zetaZeroConfig.mult ρ : ℂ)
+  have e : (zetaZeroConfig.mult ρ : ℂ) * ((((∫ u, φ u) ^ 2 / ∫ u, φ u ^ 2 : ℝ) : ℂ) *
+      (((poleCoefficient E y ^ 2 : ℝ) : ℂ) / (ρ * (1 - ρ)))) =
+      (((∫ u, φ u) ^ 2 / ∫ u, φ u ^ 2 : ℝ) : ℂ) * ((poleCoefficient E y ^ 2 : ℝ) : ℂ) *
+        ((zetaZeroConfig.mult ρ : ℂ) / (ρ * (1 - ρ))) := by ring
+  rw [e] at h
+  exact h
+
 /-- **The pole terms of all zeros below a growing height** tend to the archimedean genus
 `κ y_1² Σ_ρ m_ρ/(ρ(1 − ρ))`: dominated convergence, since the atom factor is bounded below the
 resolution and tends to `κ` at every fixed zero. -/
@@ -442,39 +478,20 @@ theorem tendsto_sum_poleLedgerTerm {φ : ℝ → ℝ} (hφ : Continuous φ)
     filter_upwards [hcN.eventually (gt_mem_nhds one_pos), eventually_ge_atTop 1] with N h hN
     have hN0 : (0 : ℝ) < N := by exact_mod_cast hN
     exact ((div_lt_one hN0).mp h).le
-  obtain ⟨C₀, hC₀⟩ : ∃ C : ℝ, C = Real.exp 1 * (∫ u, |φ u|) ^ 2 / (∫ u, φ u ^ 2) := ⟨_, rfl⟩
+  have hbound : ∀ᶠ N : ℕ in atTop, ∀ ρ ∈ zetaZeroConfig.carrier,
+      ‖poleLedgerTerm φ E y (c N) N ρ‖ ≤ Real.exp 1 * (∫ u, |φ u|) ^ 2 / (∫ u, φ u ^ 2) *
+        poleCoefficient E y ^ 2 * ‖(zetaZeroConfig.mult ρ : ℂ) / (ρ * (1 - ρ))‖ := by
+    filter_upwards [hcle] with N hN ρ hρ
+    obtain ⟨-, hβ0, hβ1⟩ : riemannZeta ρ = 0 ∧ 0 < ρ.re ∧ ρ.re < 1 := ⟨hρ.1, hρ.2.1, hρ.2.2⟩
+    exact norm_poleLedgerTerm_le hφ hφsupp hφ2 E y (hc0 N) hN hβ0 hβ1
   have h := tendsto_sum_lowZeros_of_dominated hT
     (g := fun N ρ => poleLedgerTerm φ E y (c N) N ρ)
     (G := fun ρ => (((∫ u, φ u) ^ 2 / ∫ u, φ u ^ 2 : ℝ) : ℂ) *
       ((poleCoefficient E y ^ 2 : ℝ) : ℂ) * ((zetaZeroConfig.mult ρ : ℂ) / (ρ * (1 - ρ))))
-    (b := fun ρ => C₀ * poleCoefficient E y ^ 2 * ‖(zetaZeroConfig.mult ρ : ℂ) / (ρ * (1 - ρ))‖)
-    (summable_norm_mult_div.mul_left _) ?_ ?_
-  · rw [tsum_mul_left] at h
-    exact h
-  · filter_upwards [hcle] with N hN ρ hρ
-    have hA := norm_atomFactor_le hφ hφsupp hφ2 (hc0 N) hN hρ.2.1 hρ.2.2
-    rw [← hC₀] at hA
-    unfold poleLedgerTerm
-    rw [norm_mul, norm_mul, norm_div, Complex.norm_natCast, Complex.norm_real,
-      Real.norm_eq_abs, abs_of_nonneg (sq_nonneg _), norm_div, Complex.norm_natCast]
-    have hm : (0 : ℝ) ≤ zetaZeroConfig.mult ρ := Nat.cast_nonneg _
-    have hq : 0 ≤ poleCoefficient E y ^ 2 / ‖ρ * (1 - ρ)‖ := by positivity
-    calc (zetaZeroConfig.mult ρ : ℝ) * (‖atomFactor φ (c N) N ρ‖ *
-          (poleCoefficient E y ^ 2 / ‖ρ * (1 - ρ)‖))
-        ≤ (zetaZeroConfig.mult ρ : ℝ) * (C₀ * (poleCoefficient E y ^ 2 / ‖ρ * (1 - ρ)‖)) :=
-          mul_le_mul_of_nonneg_left (mul_le_mul_of_nonneg_right hA hq) hm
-      _ = C₀ * poleCoefficient E y ^ 2 * ((zetaZeroConfig.mult ρ : ℝ) / ‖ρ * (1 - ρ)‖) := by
-          ring
-  · intro ρ _
-    have h' := ((tendsto_atomFactor hφ hφc hcN ρ).mul_const
-      (((poleCoefficient E y ^ 2 : ℝ) : ℂ) / (ρ * (1 - ρ)))).const_mul
-        (zetaZeroConfig.mult ρ : ℂ)
-    have e : (zetaZeroConfig.mult ρ : ℂ) * ((((∫ u, φ u) ^ 2 / ∫ u, φ u ^ 2 : ℝ) : ℂ) *
-        (((poleCoefficient E y ^ 2 : ℝ) : ℂ) / (ρ * (1 - ρ)))) =
-        (((∫ u, φ u) ^ 2 / ∫ u, φ u ^ 2 : ℝ) : ℂ) * ((poleCoefficient E y ^ 2 : ℝ) : ℂ) *
-          ((zetaZeroConfig.mult ρ : ℂ) / (ρ * (1 - ρ))) := by ring
-    rw [e] at h'
-    exact h'
+    (summable_norm_mult_div.mul_left _) hbound
+    (fun ρ _ => tendsto_poleLedgerTerm hφ hφc E y hcN ρ)
+  rw [tsum_mul_left] at h
+  exact h
 
 /-- The remainder bound: `‖Σ_{|γ| ≤ λN} (ledger − pole term)‖ ≤ U_N` with
 `U_N = C₀(|y_1|P(3Kλ log²(λN)/√N + 6S/√N) + P²Kλ log²(λN)/N)`. -/
@@ -567,9 +584,12 @@ theorem eventually_norm_sum_ledger_sub_pole_le {φ : ℝ → ℝ} (hφ : Continu
   have hβ : 0 ≤ C₀ / N * (|y₁| * P * (6 * Real.sqrt N)) := by positivity
   refine (add_le_add (mul_le_mul_of_nonneg_left hM1 hα)
     (mul_le_mul_of_nonneg_left hM2 hβ)).trans (le_of_eq ?_)
-  have hsq : Real.sqrt N * Real.sqrt N = N := Real.mul_self_sqrt hN0.le
+  generalize Real.log (lam * N) ^ 2 = ℓ
+  obtain ⟨r, hr⟩ : ∃ r, r = Real.sqrt N := ⟨_, rfl⟩
+  have hr0 : 0 < r := hr ▸ hsN
+  have hNr : (N : ℝ) = r * r := by rw [hr]; exact (Real.mul_self_sqrt hN0.le).symm
+  rw [← hr, hNr]
   field_simp
-  rw [← hsq]
   ring
 
 /-- **The bulk is blind below its grid.** Let the conductors of the packet be `≤ L` and
@@ -597,7 +617,8 @@ theorem tendsto_sum_bulkLedger_belowGrid {φ : ℝ → ℝ} (hφ : Continuous φ
     hcle hcount
   have hinvsqrt : Tendsto (fun N : ℕ => 1 / Real.sqrt N) atTop (𝓝 0) := by
     have := tendsto_inv_atTop_zero.comp (Real.tendsto_sqrt_atTop.comp tendsto_natCast_atTop_atTop)
-    simpa [one_div] using this
+    refine this.congr fun N => ?_
+    simp [one_div]
   have hL2 := tendsto_log_sq_div_sqrt hlam0
   have hU := ((((hL2.const_mul (3 * K * lam)).add (hinvsqrt.const_mul
     (6 * ∑' ρ : zetaZeroConfig.carrier, ‖(zetaZeroConfig.mult ρ : ℂ) / ((ρ : ℂ) * (1 - ρ))‖))).const_mul

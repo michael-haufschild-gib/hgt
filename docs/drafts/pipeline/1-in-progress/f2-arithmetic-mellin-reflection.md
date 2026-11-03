@@ -30,3 +30,13 @@ Its Gamma quotient suggests frequency order `1/2−Re w`; boundedness on one fix
 - [ ] Prove the literal imaginary-axis Mellin identity for resonant fields and averaged cores.
 - [ ] Determine the exact physical operator domain and norm law.
 - [ ] Formalize the resulting source theorem; retain any regularity obstruction explicitly.
+
+## Sharper domain question
+
+The Cauchy factor is defined throughout `0<Re s<1/2`, independently of the resonance equation. Put `a=Re s+1/2`, `b=1−Re s`, and `τ=Im s−t/2`. Its modulus is
+
+`C(s) |Γ(b+iτ)| / |Γ(a+iτ)|`,
+
+with `C(s)=|Γℝ(2s)Γ(s+1/2)| / |Γℝ(2s♯)Γ(s♯+1/2)| > 0`.
+
+Proposed sharp classification: bounded exactly when `Re s≥1/4`; maximum at `t=2 Im s`. The renormalized modulus at `t=2(Im s−τ)`, multiplied by `τ^(2 Re s−1/2)`, tends to `C(s)`. Both directions are bounded exactly on the critical line. This would obstruct this particular fixed-Haar Mellin realization throughout the full strip, while preserving the normalized-field antiunitary and an exact regularity law. It would not exclude other reflection operators or prove positivity.

@@ -1,5 +1,7 @@
 import GaloisForLFunctions.LatticeSectionTheory.WindowJumpCounts.OddAutocorrelationFirstMoment
+import GaloisForLFunctions.LatticeSectionTheory.WindowJumpCounts.OddAutocorrelationSecondMoment
 import GaloisForLFunctions.WindowTowerOfSpecZ.TheCubicMomentPaysTheFrozenOddComplement
+import GaloisForLFunctions.HTGeometry.CompactSupportIntegrationByParts
 
 /-!
 # Gamma payment with its lag moments retained
@@ -161,6 +163,38 @@ theorem unit_odd_gamma_jump_second_moment_lower {F : ℝ → ℝ}
   nlinarith only [h, h1, h2]
 
 
+private theorem unit_odd_primitive_pairing {F g g' : ℝ → ℝ} (hF : Continuous F)
+    (hs : tsupport F ⊆ Icc (-(1 / 2 : ℝ)) (1 / 2)) (ho : ∀ x, F (-x) = -F x)
+    (hg : ∀ x, HasDerivAt g (g' x) x) (hg' : Continuous g') :
+    (∫ x, F x * g x) = -(∫ x, unitSourcePrimitive F x * g' x) := by
+  obtain ⟨hP, hPc, hPd⟩ := unit_odd_primitive_regular hF hs ho
+  have hgc : Continuous g := continuous_iff_continuousAt.mpr fun x => (hg x).continuousAt
+  have hFc : HasCompactSupport F :=
+    HasCompactSupport.intro (K := Icc (-(1 / 2 : ℝ)) (1 / 2)) isCompact_Icc
+      (fun x hx => image_eq_zero_of_notMem_tsupport (fun ht => hx (hs ht)))
+  have hd (x : ℝ) : HasDerivAt (fun x => unitSourcePrimitive F x * g x)
+      (F x * g x + unitSourcePrimitive F x * g' x) x := by
+    have h := (hP.differentiable one_ne_zero x).hasDerivAt
+    rw [hPd] at h
+    exact h.mul (hg x)
+  have hzero := HTGeometry.integral_deriv_eq_zero_of_hasCompactSupport hd
+    ((hF.mul hgc).add (hP.continuous.mul hg')) hPc.mul_right
+  have hi1 : Integrable (fun x => F x * g x) :=
+    (hF.mul hgc).integrable_of_hasCompactSupport hFc.mul_right
+  have hi2 : Integrable (fun x => unitSourcePrimitive F x * g' x) :=
+    (hP.continuous.mul hg').integrable_of_hasCompactSupport hPc.mul_right
+  rw [integral_add hi1 hi2] at hzero
+  linarith only [hzero]
+
+/-- The first position moment is minus the integral of the compact primitive. -/
+theorem unit_odd_position_eq_primitive_integral {F : ℝ → ℝ} (hF : Continuous F)
+    (hs : tsupport F ⊆ Icc (-(1 / 2 : ℝ)) (1 / 2)) (ho : ∀ x, F (-x) = -F x) :
+    (∫ x, x * F x) = -(∫ x, unitSourcePrimitive F x) := by
+  have h := unit_odd_primitive_pairing hF hs ho
+    (g := fun x : ℝ => x) (g' := fun _ : ℝ => 1)
+    (fun x => by simpa only [id] using hasDerivAt_id x) continuous_const
+  simpa only [mul_one, mul_comm] using h
+
 /-- Both polynomial lag losses are masses or moments of the source's compact primitive. -/
 theorem unit_odd_gamma_primitive_lower {F : ℝ → ℝ}
     (hF : ContDiff ℝ 2 F) (hcs : HasCompactSupport F)
@@ -168,11 +202,12 @@ theorem unit_odd_gamma_primitive_lower {F : ℝ → ℝ}
     (∫ t in Ioc (0 : ℝ) 1, (autocorr F 0 - autocorr F t) / t) -
       (Real.eulerMascheroniConstant + Real.log Real.pi + Real.log 2 + 1 / 48) *
         (∫ x, F x ^ 2) - (∫ x, unitSourcePrimitive F x ^ 2) / 24 -
-      (∫ x, x * F x) ^ 2 / 16 ≤
+      (∫ x, unitSourcePrimitive F x) ^ 2 / 16 ≤
         EF.gammaBracket 0 * (∫ x, F x ^ 2) + biScaleLevyEnergy F := by
   have h := unit_odd_gamma_position_lower hF hcs hs ho
   rw [unit_odd_jump_first_moment hF.continuous hs ho] at h
-  simp only [autocorr_zero_eq] at h ⊢
+  rw [unit_odd_position_eq_primitive_integral hF.continuous hs ho] at h
+  simp only [neg_sq, autocorr_zero_eq] at h ⊢
   linarith only [h]
 
 end GaloisForLFunctions.WindowTowerOfSpecZ
@@ -182,3 +217,4 @@ end GaloisForLFunctions.WindowTowerOfSpecZ
 #print axioms GaloisForLFunctions.WindowTowerOfSpecZ.unit_odd_gamma_position_lower
 #print axioms GaloisForLFunctions.WindowTowerOfSpecZ.unit_odd_gamma_jump_second_moment_lower
 #print axioms GaloisForLFunctions.WindowTowerOfSpecZ.unit_odd_gamma_primitive_lower
+#print axioms GaloisForLFunctions.WindowTowerOfSpecZ.unit_odd_position_eq_primitive_integral

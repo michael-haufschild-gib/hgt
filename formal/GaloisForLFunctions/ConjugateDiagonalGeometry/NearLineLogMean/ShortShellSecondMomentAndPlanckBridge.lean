@@ -2208,10 +2208,6 @@ theorem almostAll_planckWindow_logStage_besselSzegoCertificate
           have hδ_le_1 : δ_im ≤ 1 := by
             dsimp only [δ_im]
             rw [div_le_one hlogV_pos]
-            have hk_le : κ_r ≤ 1 / 4 := by
-              -- Recall `4 * A_c ≤ Real.log V` since `A_c ≤ κ_r * log V`? Check directly from `hlog7c`!
-              -- `A_c = 1 / (64 * c) < 7 / (4 * c)`, so `4 * A_c < 7 / c < Real.log V`!
-              linarith
             dsimp only [A_c] at hlog7c ⊢
             have h4Ac : 4 * (1 / (64 * c)) ≤ 7 / c := by
               rw [show 4 * (1 / (64 * c)) = (1 / 16) * (1 / c) by ring,
