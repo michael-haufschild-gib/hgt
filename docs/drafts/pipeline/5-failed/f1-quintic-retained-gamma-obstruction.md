@@ -73,6 +73,6 @@ both paper-proved and individually Lean-audited with standard-only transitive ax
 Thus the obstruction is confined to their coupled block, not the coercive complement.
 The new constraint is exact: even retaining both lag moments, the pole and signed prime
 is insufficient after discarding the nonnegative Gamma remainder. Joint payment must
-retain that remainder or use a different lower bound. Its exact decomposition on the
-source card is a paper identity; the uniform reserve and same-test repair are formalized,
-while the general joint sign remains open.
+retain that remainder or use a different lower bound. Its
+[exact decomposition](../3-formalized/f1-exact-gamma-remainder-identity.md), uniform reserve
+and same-test repair are formalized; the general joint sign remains open.

@@ -426,8 +426,11 @@ conductances changes the operator; its exact remainder still needs payment. This
 not exclude the complete Weil form. The two-moment logarithmic reflection target is refuted:
 a smooth odd unit-window test has `P+E/64<0`, hence `D<0` [WTZ
 `exists_odd_unit_firstFoldTwoMoment_neg`; individual Lean and standard-only axiom audit].
-The replacement must retain more of the Gamma remainder; complete odd unit-window positivity
-remains open.
+The stronger proved reserve is
+`Q≥P+(193/10000+17/23040)E+(13/3840)(∫xF)²`.
+Higher lag terms repair the same smooth direction: `P+E/64<0<Q`
+[WTZ `exists_odd_unit_reservedGamma_neg_weil_pos`; individual Lean and standard-only axiom audit].
+Complete odd unit-window positivity remains open.
 
 *Why the answer tells where the proof must be.*
 - A proof would advance the odd base case; the even sector and the remaining prime stages would

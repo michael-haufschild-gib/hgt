@@ -3,7 +3,7 @@
 - **ID:** F1-FM
 - **Stage:** 3-formalized
 - **Type:** THEOREM
-- **Source:** [Two-moment form](../1-in-progress/f1-primitive-variance-joint-payment.md)
+- **Source:** [Two-moment form](../5-failed/f1-primitive-variance-joint-payment.md)
 - **Statement:** Every real odd C² unit-window test satisfies
   `Q(F)+(5123/320)(∫xF)²≥∫F²/1000`.
 

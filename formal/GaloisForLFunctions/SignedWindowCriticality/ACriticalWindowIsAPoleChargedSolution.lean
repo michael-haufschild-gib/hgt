@@ -98,16 +98,29 @@ theorem fullZeroForm_phiDoob_add (ha : ContDiff ℝ 2 a) (hac : HasCompactSuppor
       (∫ x, b' x * markovDefect a x) -
         2 * oddPoleMoment (phiDoobTest a) * oddPoleMoment (phiDoobTest b') +
         2 * evenPoleMoment (phiDoobTest a) * evenPoleMoment (phiDoobTest b') := by
-    rw [oddPoleMoment_phiDoobTest b', evenPoleMoment_phiDoobTest b', ← integral_const_mul,
-      ← integral_const_mul]
-    have h1 := hD.sub ((integrable_mul_kernel_sinh hb.continuous hbc).const_mul
-      (2 * oddPoleMoment (phiDoobTest a)))
-    have h2 := (integrable_mul_kernel_cosh hb.continuous hbc).const_mul
-      (2 * evenPoleMoment (phiDoobTest a))
-    rw [← integral_sub hD ((integrable_mul_kernel_sinh hb.continuous hbc).const_mul _),
-      ← integral_add h1 h2]
-    exact integral_congr_ae (Eventually.of_forall fun x => by
-      simp only [weilSource, Pi.sub_apply, Pi.add_apply]; ring)
+    set O := oddPoleMoment (phiDoobTest a)
+    set E := evenPoleMoment (phiDoobTest a)
+    have hs := (integrable_mul_kernel_sinh hb.continuous hbc).const_mul (2 * O)
+    have hc := (integrable_mul_kernel_cosh hb.continuous hbc).const_mul (2 * E)
+    have h1 : (∫ x, ((b' x * markovDefect a x -
+          2 * O * (b' x * (riemannKernelReal x * Real.sinh (x / 2)))) +
+          2 * E * (b' x * (riemannKernelReal x * Real.cosh (x / 2))))) =
+        (∫ x, (b' x * markovDefect a x -
+          2 * O * (b' x * (riemannKernelReal x * Real.sinh (x / 2))))) +
+          ∫ x, 2 * E * (b' x * (riemannKernelReal x * Real.cosh (x / 2))) :=
+      integral_add (hD.sub hs) hc
+    have h2 : (∫ x, (b' x * markovDefect a x -
+          2 * O * (b' x * (riemannKernelReal x * Real.sinh (x / 2))))) =
+        (∫ x, b' x * markovDefect a x) -
+          ∫ x, 2 * O * (b' x * (riemannKernelReal x * Real.sinh (x / 2))) :=
+      integral_sub hD hs
+    have h0 : (∫ x, b' x * weilSource a x) =
+        ∫ x, ((b' x * markovDefect a x -
+          2 * O * (b' x * (riemannKernelReal x * Real.sinh (x / 2)))) +
+          2 * E * (b' x * (riemannKernelReal x * Real.cosh (x / 2)))) :=
+      integral_congr_ae (Eventually.of_forall fun x => by simp only [weilSource, O, E]; ring)
+    rw [h0, h1, h2, integral_const_mul, integral_const_mul, oddPoleMoment_phiDoobTest b',
+      evenPoleMoment_phiDoobTest b']
   unfold fullZeroForm
   rw [markovEnergy_phiDoob_add ha hac hb hbc, hO, hE, hS]
   unfold markovDefect
@@ -143,34 +156,34 @@ theorem weilSource_eq_of_rayleighCritical (ha : ContDiff ℝ 2 a) (hac : HasComp
   have hint : ∀ g : ℝ → ℝ, ContDiff ℝ ∞ g → HasCompactSupport g → tsupport g ⊆ Ioo b c →
       ∫ x, g x • K x = 0 := by
     intro g hg hgc hgs
-    have hg2 : ContDiff ℝ 2 g := hg.of_le (by exact_mod_cast le_top)
+    have hg2 : ContDiff ℝ 2 g := by exact_mod_cast contDiff_infty.mp hg 2
     have hgb : ∀ x, x ∉ Ioo b c → g x = 0 := fun x hx =>
       image_eq_zero_of_notMem_tsupport fun h => hx (hgs h)
     have hAg : Integrable fun x => g x * weilSource a x :=
       (hg2.continuous.mul (continuous_weilSource ha hac)).integrable_of_hasCompactSupport
         hgc.mul_right
-    have hPg : Integrable fun x => riemannKernelReal x ^ 2 * a x * g x :=
-      (((continuous_riemannKernelReal.pow 2).mul ha.continuous).mul hg2.continuous)
-        .integrable_of_hasCompactSupport hgc.mul_left
+    have hPg : Integrable fun x => riemannKernelReal x ^ 2 * a x * g x := by
+      have hcont : Continuous fun x => riemannKernelReal x ^ 2 * a x * g x :=
+        ((continuous_riemannKernelReal.pow 2).mul ha.continuous).mul hg2.continuous
+      exact hcont.integrable_of_hasCompactSupport hgc.mul_left
     have hPa : Integrable fun x => phiDoobTest a x ^ 2 :=
-      ((continuous_riemannKernelReal.mul ha.continuous).pow 2).integrable_of_hasCompactSupport
-        (by simpa [phiDoobTest] using (hac.mul_left (f' := riemannKernelReal)).comp_left
-          (g := fun z : ℝ => z ^ 2) (by norm_num))
+      ((contDiff_phiDoobTest ha).continuous.pow 2).integrable_of_hasCompactSupport
+        (ArithmeticCriticalityTheory.hasCompactSupport_sq (hasCompactSupport_phiDoobTest hac))
     have hPg2 : Integrable fun x => phiDoobTest g x ^ 2 :=
-      ((continuous_riemannKernelReal.mul hg2.continuous).pow 2).integrable_of_hasCompactSupport
-        (by simpa [phiDoobTest] using (hgc.mul_left (f' := riemannKernelReal)).comp_left
-          (g := fun z : ℝ => z ^ 2) (by norm_num))
+      ((contDiff_phiDoobTest hg2).continuous.pow 2).integrable_of_hasCompactSupport
+        (ArithmeticCriticalityTheory.hasCompactSupport_sq (hasCompactSupport_phiDoobTest hgc))
     set α := fullZeroForm (phiDoobTest g) - μ * ∫ x, phiDoobTest g x ^ 2
     set β := (∫ x, g x * weilSource a x) - μ * ∫ x, riemannKernelReal x ^ 2 * a x * g x
     have hq : ∀ t : ℝ, 0 ≤ α * (t * t) + (2 * β) * t + 0 := by
       intro t
       have hv : ContDiff ℝ 2 fun y => a y + t * g y := ha.add (contDiff_const.mul hg2)
-      have hvc : HasCompactSupport fun y => a y + t * g y := hac.add (hgc.mul_left)
+      have htg : HasCompactSupport fun y => t * g y :=
+        hgc.comp_left (g := fun z : ℝ => t * z) (by simp)
+      have hvc : HasCompactSupport fun y => a y + t * g y := hac.add htg
       have hvb : ∀ x, x ∉ Ioo b c → a x + t * g x = 0 := fun x hx => by
         rw [hab x hx, hgb x hx]; ring
       have h1 := hbound _ hv hvc hvb
-      have hpol := fullZeroForm_phiDoob_add ha hac (contDiff_const.mul hg2) (hgc.mul_left (f' :=
-        fun _ => t))
+      have hpol := fullZeroForm_phiDoob_add ha hac (contDiff_const.mul hg2) htg
       rw [fullZeroForm_phiDoob_const_mul hg2 hgc t] at hpol
       have hcross : (∫ x, t * g x * weilSource a x) = t * ∫ x, g x * weilSource a x := by
         rw [← integral_const_mul]
@@ -178,22 +191,40 @@ theorem weilSource_eq_of_rayleighCritical (ha : ContDiff ℝ 2 a) (hac : HasComp
       have hL2 : (∫ x, phiDoobTest (fun y => a y + t * g y) x ^ 2) =
           (∫ x, phiDoobTest a x ^ 2) + 2 * t * (∫ x, riemannKernelReal x ^ 2 * a x * g x) +
             t ^ 2 * ∫ x, phiDoobTest g x ^ 2 := by
-        rw [← integral_const_mul, ← integral_const_mul, ← integral_add hPa (hPg.const_mul _),
-          ← integral_add (hPa.add (hPg.const_mul _)) (hPg2.const_mul _)]
-        exact integral_congr_ae (Eventually.of_forall fun x => by
-          simp only [phiDoobTest, Pi.add_apply]; ring)
+        have e1 : (∫ x, ((phiDoobTest a x ^ 2 + (2 * t) * (riemannKernelReal x ^ 2 * a x * g x)) +
+            t ^ 2 * phiDoobTest g x ^ 2)) =
+            (∫ x, (phiDoobTest a x ^ 2 + (2 * t) * (riemannKernelReal x ^ 2 * a x * g x))) +
+              ∫ x, t ^ 2 * phiDoobTest g x ^ 2 :=
+          integral_add (hPa.add (hPg.const_mul _)) (hPg2.const_mul _)
+        have e2 : (∫ x, (phiDoobTest a x ^ 2 + (2 * t) * (riemannKernelReal x ^ 2 * a x * g x))) =
+            (∫ x, phiDoobTest a x ^ 2) + ∫ x, (2 * t) * (riemannKernelReal x ^ 2 * a x * g x) :=
+          integral_add hPa (hPg.const_mul _)
+        have e0 : (∫ x, phiDoobTest (fun y => a y + t * g y) x ^ 2) =
+            ∫ x, ((phiDoobTest a x ^ 2 + (2 * t) * (riemannKernelReal x ^ 2 * a x * g x)) +
+              t ^ 2 * phiDoobTest g x ^ 2) :=
+          integral_congr_ae (Eventually.of_forall fun x => by simp only [phiDoobTest]; ring)
+        rw [e0, e1, e2, integral_const_mul, integral_const_mul]
       rw [hpol, hcross, hcrit, hL2] at h1
-      nlinarith
+      have hαd : α = fullZeroForm (phiDoobTest g) - μ * ∫ x, phiDoobTest g x ^ 2 := rfl
+      have hβd : β = (∫ x, g x * weilSource a x) -
+          μ * ∫ x, riemannKernelReal x ^ 2 * a x * g x := rfl
+      rw [hαd, hβd]
+      nlinarith [h1]
     have hd := discrim_le_zero hq
     unfold discrim at hd
     have hβ : β = 0 := by nlinarith [sq_nonneg β]
     have hsplit : (∫ x, g x • K x) = β := by
-      simp only [smul_eq_mul, K, β]
-      rw [← integral_const_mul, ← integral_sub hAg (hPg.const_mul _)]
-      exact integral_congr_ae (Eventually.of_forall fun x => by simp only; ring)
+      have e1 : (∫ x, (g x * weilSource a x - μ * (riemannKernelReal x ^ 2 * a x * g x))) =
+          (∫ x, g x * weilSource a x) - ∫ x, μ * (riemannKernelReal x ^ 2 * a x * g x) :=
+        integral_sub hAg (hPg.const_mul _)
+      rw [integral_const_mul] at e1
+      have hβd : β = (∫ x, g x * weilSource a x) -
+          μ * ∫ x, riemannKernelReal x ^ 2 * a x * g x := rfl
+      rw [hβd, ← e1]
+      exact integral_congr_ae (Eventually.of_forall fun x => by simp only [smul_eq_mul, K]; ring)
     rw [hsplit, hβ]
   have hae := isOpen_Ioo.ae_eq_zero_of_integral_contDiff_smul_eq_zero
-    hK.locallyIntegrable.locallyIntegrableOn hint
+    (hK.locallyIntegrable.locallyIntegrableOn (Ioo b c)) hint
   have hres : K =ᵐ[volume.restrict (Ioo b c)] fun _ => 0 :=
     (ae_restrict_iff' measurableSet_Ioo).mpr hae
   have heq := Measure.eqOn_open_of_ae_eq hres isOpen_Ioo hK.continuousOn continuousOn_const

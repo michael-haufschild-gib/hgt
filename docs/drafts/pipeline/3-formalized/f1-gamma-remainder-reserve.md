@@ -60,6 +60,8 @@ All three individual `lake --old env lean` source audits pass with
 
 ## Remaining sign
 
-The sufficient floor `P≥−E/64` is [refuted by a smooth quadratic-cutoff approximation](../1-in-progress/f1-quadratic-cutoff-reserve-test.md).
+The sufficient floor `P≥−E/64` is [refuted by a smooth quadratic-cutoff approximation](../5-failed/f1-primitive-variance-joint-payment.md).
 The complete form retains the exact local Gamma remainder and the exterior reserve beyond
 `E/64`; their joint payment remains open. The earlier quintic repair above remains valid.
+The [higher-lag reserve](f1-higher-gamma-reserve.md) proves stronger universal bounds
+and repairs that same smooth quadratic-cutoff direction: `P+E/64<0<Q`.

@@ -3,8 +3,12 @@
 - **ID:** F1-SM
 - **Stage:** 1-in-progress
 - **Type:** CONJECTURE
-- **Source:** [Two-moment payment](f1-primitive-variance-joint-payment.md)
+- **Source:** [Two-moment payment](../5-failed/f1-primitive-variance-joint-payment.md)
 - **Statement:** The two-moment comparison `D` has a negative odd C² unit-window direction.
+
+This existence target is now proved by the
+[quadratic cutoff](../5-failed/f1-primitive-variance-joint-payment.md).
+The septic-specific calculations below remain conjectural and are not needed for that result.
 
 The proposed polynomial test on `[0,1]` is
 

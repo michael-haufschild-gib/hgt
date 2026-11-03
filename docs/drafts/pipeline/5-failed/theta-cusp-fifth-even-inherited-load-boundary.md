@@ -1,8 +1,8 @@
 # Fifth even theta block: inherited load boundary
 
-- **Stage:** 2-fully-proven; complete-source Lean formalization in progress.
+- **Stage:** 5-failed; fixed inherited pointwise repair refuted in Lean.
 - **Wall:** Σ6; obstruction to the fixed pointwise repair, not to the integrated sign.
-- **Positive survivor:** Exact positive load capacities for the native and weighted source.
+- **Positive survivor:** Sharp native, fixed-aperture, and aperture-uniform directional capacities; paper proof and Lean formalization complete.
 
 At `x=½log(7/π)`, put `f=Φ₁(x)`, `G=3Φ(x)²+2xΦ(x)Φ′(x)`,
 `v=(-658560,47040,-420,1,-1/1568)`, and `E=vᵀH₅(x)v`.
@@ -35,8 +35,18 @@ The sharp region for positivity at **every** critical aperture is the closed
 half-plane `C+D/1568²≤B`. At equality, strict positivity follows from
 `t cosh(t)>sinh(t)`. Above `B`, the bound `t coth(t)−1<t` makes the aperture
 slack smaller than the negative native margin for sufficiently small
-positive `a`. Thus every `B_a>B`, while their infimum is exactly `B`.
+positive `a`. Thus every `B_a>B`, and `B` is the sharp aperture-uniform threshold.
 
 The origin-and-tail repair remains valid and formalized. Its compact source
 comparison cannot be positive everywhere. The rank-nine integrated sign
 requires a different certificate.
+
+Lean: `ThetaCuspSections/FifthEvenInheritedLoadBoundary.lean`, namespace
+`GaloisForLFunctions.ThetaCuspSections.EvenFiveBoundary`. Matrix obstructions:
+`inherited_matrix_not_posSemidef`, `weighted_inherited_matrix_not_posSemidef`,
+`selected_repair_schur_nonpos`. Positive classification:
+`source_direction_positive`, `two_loads_positive_iff`,
+`weighted_two_loads_positive_iff`,
+`weighted_two_loads_positive_at_every_aperture_iff`, and
+`weightedCapacity_exceeds_source`. Canonical check and all sixteen public
+theorem axiom audits pass with only `propext`, `Classical.choice`, `Quot.sound`.

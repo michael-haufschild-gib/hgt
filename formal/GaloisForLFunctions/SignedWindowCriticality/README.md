@@ -36,10 +36,11 @@ Three facts organize the field.
    the even sector the primes are positive and the only negative conductance is the pole at long
    range. The pole frustrates the even sector, the primes frustrate the odd sector.
 3. **The Markov ground state dies before the first prime.** `M` is a translation-invariant Z-type
-   form; its ground energy on windows of length `L` is negative already for `L ≳ 0.22`, far below
-   the first prime stage `L = log 2`. By Allegretto–Piepenbrink no positive supersolution of the
-   Markov generator — two-sided or folded, in any gauge — exists on any window longer than that.
-   A certificate on the first prime stage must keep the pole.
+   form; a smooth plateau of width `e^{−3/4} < ½ < log 2` has `M ≤ −‖F‖²/40` (numerically `M` is
+   indefinite from length `≈ 0.22`). By the easy half of Allegretto–Piepenbrink no positive
+   supersolution of the Markov generator — two-sided, or folded in ACT's sense — exists on any
+   interval longer than `e^{−3/4}`, in particular not on the unit odd window. A certificate on the
+   first prime stage must keep the pole.
 
 So the object of the field is not a Markov ground state but a signed one: a positive gauge whose
 Doob-transformed form has negative conductances exactly on the frustration loci, and whose negative
@@ -135,27 +136,46 @@ to be judged by the rate it controls.
    place and the pole together; in the odd sector every failure of positivity sits on a prime
    anti-diagonal. The even fold `κ(|x − y|) + κ(x + y)` is negative at long range; the pole's
    positive square is the only anti-Markov term (RHTower).
-3. **Markov death.** `M` is translation invariant and Z-type, so its ground energy on windows of
-   length `L` is nonincreasing in `L`, attained by an even positive (Perron) state; an explicit test
-   makes it negative at an explicit length. A positive supersolution of the Markov generator on a
-   half-window forces `M ≥ 0` on every test supported there; hence none exists past `L_M`.
-4. **Pole capacities by sector.** Odd: `W₋ ≥ 0` iff `M ≥ 0` on odd tests and the sinh capacity is at
-   most `1`; the negative pole square is paid by the odd Markov energy. Even: `W₊ ≥ 0` iff `M` has at
-   most one negative even square and the cosh square pays it (Sherman–Morrison); the positive pole
-   square pays the Markov Perron state.
+3. **Markov death.** `M` is translation invariant and Z-type. A smooth plateau of width
+   `w = e^{−3/4}` has self-energy `(log(1/w) + 2c_∞ + β/‖φ‖²)‖F‖² + O(w)‖F‖²` with
+   `2c_∞ = 2log 2 + π/2` (SSHA); the `π/2` cancels against `Γ`, leaving
+   `−γ − log 2 − log π + 3/4 + 1 + e^{−1/4}/2 + o(1) < −1/40`. In ACT's ground-state representation
+   `M(Φωu) = J_{Φω}(u) + ∫u²ω(𝓛_Dω − Φcosh ω)` a nonnegative `C²_c` supersolution on an interval
+   makes both terms nonnegative for every `u` vanishing off the interval, so a translate of the
+   plateau excludes it. The folded generator is the two-sided generator of `ω∘|·|` on `[0, ∞)`, and
+   lowering a gauge away from a point raises its generator there; a cut-off reduces ACT's folded
+   criterion on `(0, a)` to the two-sided one.
+4. **Pole charges.** On a window `S` with gauge `ω`, `M = Φω`, put `m_s = M sinh(x/2)`,
+   `m_c = M cosh(x/2)`, `σ_s = ∫_S m_s`, `σ_c = ∫_S m_c`. Then exactly
+   `Ẑ(Φωu) = J_{Φω}(u) + ∫u²ω𝒢_S(ω) + 2V_s(u) − 2V_c(u)` with the pole-charged defect
+   `𝒢_S = (𝓛_Dω − Φcosh ω) − 2σ_sΦ sinh + 2σ_cΦ cosh` and charge variances
+   `V = (∫_S m)(∫u²m) − (∫um)²`; `2V_s − 2V_c = −∫∫_{S²}M(x)M(y)cosh((x−y)/2)(u(x)−u(y))²` is the pole as
+   a long-range negative conductance. The negative square is a **sinh charge**: if `m_s ≥ 0` and the
+   defect carries `2σ_sΦ sinh`, then `Ẑ ≥ J + 2A²`. The positive square is a **cosh credit**: if
+   `ω ≥ 0` and the defect is at least `−2σ_cΦ cosh`, then `Ẑ ≥ J − 2V_c − 2B²`. Globally, the odd
+   capacity form of RHTower/ACT and the cosh capacity criterion of CWS are the two sector shadows.
 5. **Signed ground-state representation.** For every gauge, `W(hu) = D_h(u) + ∫g_hh²u²`, with the
    sign of each Doob conductance equal to `sign(c_±)·sign(h(x)h(y))`. With `h` the sector ground
    state, `g_h = μ_±` and `D_h ≥ 0`: a positive ground state is a signed supersolution.
 6. **Kron reduction of negative edges.** A signed Dirichlet form `D = D⁺ − D⁻` with `D⁻` carried by a
    terminal set is nonnegative iff the Kron reduction of `D⁺` onto the terminals dominates `D⁻`. For
    one negative edge this is effective conductance; at a stage it is the two-collar form of GWZ.
-7. **Stage passage.** At stage `n` the kick on odd tests is `2w_n⟨U, τU⟩` on the collar: `+2w_n` on
-   `τ`-symmetric and `−2w_n` on `τ`-antisymmetric collar data (GWZ: the collar Rosati form). It is
-   positive on every positive function, in particular on the Perron state of the frozen form; the
-   frozen-negative direction is lifted by the kick.
-8. **Criticality.** Under RH the sector ground energies tend to `0` doubly exponentially (ACT, GWZ),
-   and margins have no slack (GWZ). Numerically the critical ground state is positive and its edge
-   value tends to `0`.
+7. **Stage passage.** For odd `F` the lag-`ℓ` correlation is anti-diagonal,
+   `c_F(ℓ) = −∫F(s)F(ℓ − s)ds`. In any gauge `F = hu` the kick is
+   `−2wc_F(ℓ) = 2w∫h h∘τ u² − w∫h h∘τ(u − u∘τ)²`, `τs = ℓ − s`: a positive source plus a negative
+   anti-diagonal conductance. On `τ`-symmetric profiles it is the pure source, on `τ`-antisymmetric
+   ones minus it (GWZ: the collar Rosati form). On odd tests supported in `[−a, a]`, `a ≤ ℓ`, that are
+   nonnegative on `[0, ∞)`, the kick is nonnegative: it lifts every positive odd profile, in
+   particular the Perron state of the Z-type frozen odd form.
+8. **Criticality.** The Weil form polarizes through the Weil source
+   `𝒮(a) = (𝓛_Da − Φcosh a) − 2B(Φa)Φ sinh + 2A(Φa)Φ cosh`: `Ẑ(Φ(a + b)) = Ẑ(Φa) + Ẑ(Φb) + 2∫b𝒮(a)`.
+   A gauge vanishing off `S` that attains the Rayleigh bound `μ` of the window solves `𝒮(a) = μΦ²a`
+   on `S`; in its own gauge `Ẑ(Φau) = J_{Φa}(u) + μ∫u²(Φa)² + 2V_s − 2V_c`. A zero mode of a
+   nonnegative window is a pole-charged harmonic gauge, and in its gauge the window form is the
+   signed Dirichlet form `J + 2V_s − 2V_c` with no potential. Under RH the sector ground energies tend
+   to `0` doubly exponentially (ACT, GWZ) and margins have no slack (GWZ). Numerically the critical
+   ground state is positive, the `k`-th sector eigenfunction has `k` nodes, even and odd eigenvalues
+   interlace, and the edge value of the ground state tends to `0`.
 9. **The growth step is one mixed pairing.** `W ≥ 0` on `W_{ℓ+ε}` iff `W ≥ 0` on `W_ℓ` and
    `W(τ_εu, v)² ≤ W(u)W(v)` for all `u, v` on `W_ℓ`; at a stage `ℓ = log(N+1)` the pairing is the
    frozen pairing minus the new fold at lag `ℓ − ε`, and the step is a Carathéodory disk (CSTW).
@@ -202,25 +222,38 @@ to be judged by the rate it controls.
 
 | Question (review-0311 §2.7, §2.8) | Status |
 |---|---|
-| Does the first prime stage admit a signed supersolution (2.8)? | Literal form (positive supersolution of the folded Markov generator): **no**, on every window past `L_M` (mechanism 3). Survivor: the odd sector form `W₋` with the prime-2 anti-diagonal retained; numerically its ground state is positive on `(0, ½]` with energy `≈ 1.95·10⁻⁴`, i.e. a signed supersolution exists; a certificate of it is open |
-| How does a supersolution pass a stage? | Through the collar reflection: the kick is `2w⟨U, τU⟩`; the frozen Perron state is `τ`-positive and is lifted; the `τ`-antisymmetric collar data must be paid by the Kron-reduced frozen form |
-| What replaces Allegretto–Piepenbrink when the full form carries a rank-two indefinite pole term? | Allegretto–Piepenbrink for the Markov part plus one capacity per sector (mechanism 4); with frustration, the signed supersolution with Kron domination (mechanisms 5–6) |
-| What is the Agmon ground state of a critical window, and how does it relate to the zero modes of a first failure? | Target: Perron and oscillation properties, edge behaviour, the zero mode at a first failure as the critical ground state |
+| Does the first prime stage admit a signed supersolution (2.8)? | Literal form: **no.** No `C²_c` function nonnegative on `[0, ∞)` and positive on `(0, a)` satisfies ACT's folded supersolution inequality on `(0, a)` for any `a > e^{−3/4}`, in particular on the unit odd window (`not_exists_foldedWindowSupersolution_half`); no nonnegative `C²_c` gauge is a two-sided Markov supersolution on an interval longer than `e^{−3/4}` (`not_exists_markovWindowSupersolution`). Survivor: the pole-charged supersolution of mechanism 4 in the odd sector — an odd gauge whose Markov defect carries the sinh charge — gives `Ẑ ≥ J_{Φω}` (`signedJumpEnergy_add_le_fullZeroForm_of_sinhCharged`), and the remaining condition is the nonnegativity of the signed Dirichlet form, whose only negative conductances are the prime-2 anti-diagonal. Numerically the odd ground state is positive on `(0, ½]` with energy `≈ 1.95·10⁻⁴`; it is a signed supersolution in this sense. Its certificate is open |
+| How does a supersolution pass a stage? | In any gauge the kick is a positive source plus a negative anti-diagonal conductance on the collar (`kick_eq_source_sub_collarConductance`); on `τ`-symmetric profiles it is the pure source, on `τ`-antisymmetric ones minus it; it is nonnegative on every positive odd profile (`kick_nonneg_of_nonneg_of_support`). A supersolution passes the stage by absorbing the source into its potential and dominating the new negative conductance by the light cone; the `τ`-antisymmetric collar data carry the whole cost |
+| What replaces Allegretto–Piepenbrink when the full form carries a rank-two indefinite pole term? | The pole-charged representation (`fullZeroForm_phiDoob_mul_eq`): each square becomes a charge of the gauge — the negative square must be carried by the defect as `2σ_sΦ sinh`, the positive square allows a deficit `2σ_cΦ cosh` at the price of a rank-one negative conductance — and positivity reduces to a pointwise charged inequality plus nonnegativity of a signed Dirichlet form. For the Markov part alone the easy half holds on windows (`markovEnergy_phiDoob_mul_nonneg_of_windowSupersolution`) and is void past `e^{−3/4}` |
+| What is the Agmon ground state of a critical window, and how does it relate to the zero modes of a first failure? | A Rayleigh-critical gauge solves the pole-charged source equation `𝒮(a) = μΦ²a` on the window (`weilSource_eq_of_rayleighCritical`) and represents the window form in its own gauge as a signed Dirichlet form plus `μ` times mass (`fullZeroForm_phiDoob_mul_eq_of_rayleighCritical`). A zero mode of a first failure is a pole-charged harmonic gauge, its Markov defect exactly `2BΦ sinh − 2AΦ cosh`, and in its gauge the window form has no potential (`weilSource_eq_zero_of_zeroMode`, `fullZeroForm_phiDoob_mul_eq_of_zeroMode`). Perron, oscillation and edge behaviour of the critical ground state are numerical (mechanism 8) and open |
 | What exactly remains on the odd unit window? | With `L(F) = ∫xF`, `b = 3203/320` and `R(F) = W(F) + bL(F)²` on odd `C²` tests supported in `[−½, ½]`: `R(F) ≥ ‖F‖²/1000` (WTZ), so the open statement is the capacity bound `b·sup_{F≠0} L(F)²/R(F) ≤ 1`; the exact Gamma remainder and the signed prime-2 correlation must be kept (the retained Gamma lower form has a negative direction, and the exterior Gamma reserve alone cannot restore its sign, WTZ). A certificate of it is a bounded-window advance and the template for the first mixed pairing; no induction law follows from it |
 | Which identity pays the mixed pairing of a growth step with premises on the shorter window? | Open at every stage past the proved lengths; stage one is the inequality `W(x_L) + W(x_R) + 2⟨μ(x_L), ν(x_R)⟩ + Φ_ε(μ(x_L), ν(x_R)) ≥ 2w₂∫x_L(u)x_R(u + log 2)du` of the trivial-divisor moment sequences against one lag overlap (CSTW closed form), equivalently the contraction `W(τ_εu, v)² ≤ W(u)W(v)` on `W_{log 2}`; stage two adds only the `T₂` transports |
 | Which term of the complete form pays a receiving charge that energy limits erase? | Open; the first test is the complete energy on the harmonic-pole-neutral prime-charge families and their coprime fibre products at `c ≍ (log N)^{1/8}`, with every term of the decomposition retained: paid by the affine successor energy, cancelled by shell–pole terms, or a signed residual against the complement |
 | What is the Schur form of the conductor block against the coercive complement at the critical curve, as the cutoff grows? | Open; separate positive blocks do not suffice; the all-`R`, all-vector conductor Gram is the landing |
-| What is the spectral theory of the collar Hankel form `|μ_1|² − Σ_k|μ_{−2k}|²` on collar classes? | Open; its continuum shadow is the Gamma symbol `Re ψ(¼ + iξ/2) − log π` with Weyl law `≈ 2A` negative directions and the zero-free band `|ξ| < γ_1` of Weil's spectral measure |
+| What is the spectral theory of the collar Hankel form `|μ_1|² − Σ_k|μ_{−2k}|²` on collar classes? | On reflection-paired data `g = f∘R`, `R(v) = 2m − v`, CSTW's moment pairing is `𝓗_m(f) = e^mμ_{1/2}(f)² − Σ_k e^{2mσ_k}μ_{σ_k}(f)²` (`momentPairing_collarReflect`). For collar tests in `[p, q]`, `q < m`: the trivial zeros see every test (`eq_zero_of_trivialMoments_eq_zero`); `𝓗_m` is negative definite on the pole hyperplane (`collarHankel_neg_of_poleMoment_zero`) and has at most one positive square (`exists_collarHankel_nonpos`); its trivial-zero squares decay like `e^{−(4k+5)(m−q)}`, so it is a rank-`(1, K)` form up to `‖f‖₁²e^{−(4K+5)(m−q)}/(1 − e^{−4(m−q)})` (`abs_collarHankel_sub_truncation_le`). Open: its eigenvalue asymptotics and its domination by the pieces' forms; its continuum shadow is the Gamma symbol `Re ψ(¼ + iξ/2) − log π` with Weyl law `≈ 2A` negative directions and the zero-free band `|ξ| < γ_1` of Weil's spectral measure |
 
 ## 6. Tools
 
+**Developed.**
+- Markov-negative plateaus: exact self-energy of a smooth plateau atom against the creation
+  potential; translation invariance of the Markov form; the death width `e^{−3/4}`.
+- Ground-state representation of every `C²_c` gauge in the Doob gauge, continuity of the two-sided
+  generator (dominated convergence, locally uniform prime summability), window
+  Allegretto–Piepenbrink, quotients `G/(Φω)` through gauges positive on an interval.
+- Folded-to-two-sided reduction and the comparison principle for lowered gauges.
+- Pole charges: sinh and cosh charges of a gauge on a window, the pole-charged defect, charge
+  variances with Cauchy–Schwarz, the exact pole-charged representation.
+- Polarization of the Weil form through the Weil source; variational source law on a window via the
+  fundamental lemma; own-gauge representation of critical gauges.
+- Collar reflection calculus: anti-diagonal form of odd correlations, source/conductance split of
+  the kick, sector values.
+- Collar Hankel calculus: reflected moments, trivial-zero completeness by polynomial moments in
+  `e^{2u}`, inertia, geometric truncation.
+
 **To be developed here.**
-- Sector calculus on symmetric windows: parity projections, `W`-orthogonality, sector pole squares.
-- Explicit Markov-negative tests and the Markov threshold.
-- Signed ground-state representations in any gauge, finite and continuum.
 - Kron reduction of signed Dirichlet forms; effective conductance; packed paths.
-- Sherman–Morrison capacities in each sector.
-- Collar reflection calculus at a stage.
+- The light cone of a general odd gauge: the archimedean signed jump energy as a nonnegative form
+  on even profiles, and the prime parts split into same-side and anti-diagonal terms.
 - Mixed-pairing calculus: bounds on `W(τ_εu, v)` whose premises are positivity on the shorter
   window and arithmetic; the collar Hankel form on reflection-paired data.
 - Charge-retaining limits: passages to the critical curve that keep receiving charges or prove
@@ -268,13 +301,27 @@ first-fold form is negative on a smooth test); APol (second difference of the co
 
 ## 8. Pillar theorems
 
-To be filled as they are proved.
+| Theorem | Lean | Status |
+|---|---|---|
+| The Markov part is negative on a plateau of width `e^{−3/4}` | `exists_markovEnergy_neg_of_support_le`, `exists_markovEnergy_neg_of_support_Icc` | unconditional |
+| Window Allegretto–Piepenbrink for the Markov part | `markovEnergy_phiDoob_mul_eq_signedJump_add_defect`, `markovEnergy_phiDoob_mul_nonneg_of_windowSupersolution` | unconditional |
+| No Markov ground state on an interval longer than `e^{−3/4}` | `not_exists_markovWindowSupersolution` | unconditional |
+| The folded criterion is void on the unit odd window | `foldedGenerator_eq_twoSidedGenerator_abs`, `twoSidedGenerator_le_of_le_of_eqOn`, `not_exists_foldedWindowSupersolution`, `not_exists_foldedWindowSupersolution_half` | unconditional |
+| Pole-charged representation; sinh charge; cosh credit | `fullZeroForm_phiDoob_mul_eq`, `signedJumpEnergy_add_le_fullZeroForm_of_sinhCharged`, `signedJumpEnergy_sub_le_fullZeroForm_of_coshCharged`, `chargeVariance_nonneg` | unconditional |
+| Polarization through the Weil source; source law of critical gauges; own-gauge representation | `fullZeroForm_phiDoob_add`, `weilSource_eq_of_rayleighCritical`, `fullZeroForm_phiDoob_mul_eq_of_rayleighCritical` | unconditional |
+| Zero modes are pole-charged harmonic gauges | `weilSource_eq_zero_of_zeroMode`, `fullZeroForm_phiDoob_mul_eq_of_zeroMode` | unconditional (zero modes exist only off RH) |
+| The kick is a positive source and a negative collar conductance | `integral_mul_shift_eq_neg_antidiagonal`, `kick_eq_source_sub_collarConductance`, `kick_eq_source_of_symmetric`, `kick_eq_neg_source_of_antisymmetric`, `kick_nonneg_of_nonneg_of_support` | unconditional |
+| The collar Hankel form: reflection pairing, completeness, inertia, truncation | `momentPairing_collarReflect`, `momentPairing_neg_collarReflect`, `eq_zero_of_trivialMoments_eq_zero`, `collarHankel_neg_of_poleMoment_zero`, `exists_collarHankel_nonpos`, `abs_collarHankel_sub_truncation_le` | unconditional |
 
 ## 9. Traps
 
 | Trap | Truth |
 |---|---|
-| A positive folded supersolution certifies the odd sector | It certifies the Markov part only, and forces `M ≥ 0` on every test supported in the half-window; `M` is indefinite past `L_M ≈ 0.22` |
+| A positive folded supersolution certifies the odd sector | It certifies the Markov part only, and forces `M ≥ 0` on every test supported in the half-window; `M` is negative on a plateau of width `e^{−3/4} < ½` |
+| The window must be prime-free for a Markov certificate to fail | The Markov part dies at width `e^{−3/4} < log 2`, before the first prime acts; the base `181/250` is already out of reach of Markov certificates |
+| A supersolution has to be positive up to the window edge | A `C²_c` gauge vanishing at an endpoint fails the inequality next to it; window gauges are positive on a neighbourhood of the closed interval and arbitrary outside |
+| The zero mode of a first failure is an arbitrary test | It is a pole-charged harmonic gauge on the window, and in its gauge the window form has no potential |
+| The trivial-zero squares of the collar coupling are a small correction | They are an injective positive Hankel form: on the pole hyperplane the collar coupling is negative definite |
 | The pole is a perturbation of a Markov form | It is a square of fixed sign in each sector; in the even sector it pays the Markov Perron state, in the odd sector it is the debt |
 | Frustration comes from the primes | Only in the odd sector; in the even sector the primes are positive and the pole frustrates |
 | A gauge can remove a negative conductance | Positive gauges never change the sign of a conductance |

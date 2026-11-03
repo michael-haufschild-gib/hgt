@@ -84,7 +84,7 @@ The joint sign with these terms retained remains the target.
 
 The [three-mode exterior reserve](../3-formalized/f1-gamma-remainder-reserve.md)
 proves `Q≥P+E/64` in Lean with standard-only transitive axioms. The sufficient floor
-`P≥−E/64` is refuted by the [quadratic-cutoff obstruction](f1-quadratic-cutoff-reserve-test.md):
+`P≥−E/64` is refuted by the [quadratic-cutoff obstruction](../5-failed/f1-primitive-variance-joint-payment.md):
 a smooth odd unit-window test has `P+E/64<0`. Additional Gamma terms must be retained.
 The same three-mode reserve repairs the earlier C² quintic approximation:
 `exists_odd_unit_retainedGamma_neg_weil_pos` proves `P<0<Q` on one unit-window test,
@@ -97,6 +97,14 @@ standard-only transitive axiom audits pass. The
 [exact regional assembly](../3-formalized/f1-regional-exterior-identity.md) now proves
 `D(G)≤P(F)+E/64≤Q(F)` with the exterior potential, both low moments and signed reflection
 retained. Individual Lean and standard-only axiom audits pass. The
-[sign of D](f1-primitive-variance-joint-payment.md) is refuted by the same smooth witness. The audited joint payment
+[sign of D](../5-failed/f1-primitive-variance-joint-payment.md) is refuted by the same smooth witness. The audited joint payment
 proves `D(G)+(3203/1280)(∫₀¹uG)²≥E/1000`. It pays the entire third charge and `3/2`
 of the first charge; the current linear inverse chord provably cannot pay the full first charge.
+
+The [higher Gamma reserve](../3-formalized/f1-higher-gamma-reserve.md) proves
+`Q≥P+(193/10000)E+M₃/960+M₄/192` and
+`Q≥P+(193/10000+17/23040)E+(13/3840)(∫xF)²`.
+It repairs the same smooth quadratic-cutoff direction: an odd C² unit-window test
+satisfies `P+E/64<0<Q`. Both universal bounds and the simultaneous signs pass
+individual Lean checks and standard-only transitive-axiom audits.
+The all-test joint sign remains open.

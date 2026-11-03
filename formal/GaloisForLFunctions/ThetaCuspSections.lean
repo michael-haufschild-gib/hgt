@@ -1,5 +1,6 @@
 import GaloisForLFunctions.ThetaCuspSections.StrictEighthSection
 import GaloisForLFunctions.ThetaCuspSections.FifthEvenSourceRepair
+import GaloisForLFunctions.ThetaCuspSections.FifthEvenInheritedLoadBoundary
 
 /-!
 # Finite signed sections of the theta cusp
@@ -7,5 +8,6 @@ import GaloisForLFunctions.ThetaCuspSections.FifthEvenSourceRepair
 Strict positivity of the eighth signed center-mixed Hankel section and its
 native successor integral, obtained by retaining the positive aperture tail.
 The fifth even source admits an entry-preserving zero-flux repair near the
-origin and on a cofinal ray; its intervening sign is not asserted.
+origin and on a cofinal ray. An explicit positive native direction rules out
+its fixed inherited load globally and gives the sharp uniform load capacity.
 -/

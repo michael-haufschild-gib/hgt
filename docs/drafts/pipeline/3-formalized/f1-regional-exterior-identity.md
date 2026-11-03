@@ -3,7 +3,7 @@
 - **ID:** F1-REI
 - **Stage:** 3-formalized
 - **Type:** THEOREM (Lean)
-- **Source:** [Primitive variance payment](../1-in-progress/f1-primitive-variance-joint-payment.md)
+- **Source:** [Primitive variance payment](../5-failed/f1-primitive-variance-joint-payment.md)
 - **Statement:** The logarithmic lag energy retains its exact exterior potential;
   the fifth regional gap retains its two explicit low odd moment charges.
 
@@ -47,7 +47,7 @@ of `G` with `P`, is `3M₁²+77M₃²/6`. Expanding the gap gives the stated cha
 For the unit source `F` and `G(u)=F(u/2)`, the
 [primitive reduction](../3-formalized/f1-primitive-variance-reduction.md), the two preceding
 identities and oddness give `D(G)≤P(F)+E/64≤Q(F)`, where `D` is exactly the explicit form in
-[F1-PV](../1-in-progress/f1-primitive-variance-joint-payment.md).
+[F1-PV](../5-failed/f1-primitive-variance-joint-payment.md).
 Indeed `∫₀¹G²=∫F²`, `∫₀¹uG=2∫xF`, and each full regional odd moment is twice
 its positive-half integral. Reflection and dilation give
 `C_F(log2)=−½∫_{2log2−1}¹G(u)G(2log2−u)du`.

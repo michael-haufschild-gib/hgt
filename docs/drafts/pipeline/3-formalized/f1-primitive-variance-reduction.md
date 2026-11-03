@@ -42,5 +42,7 @@ Source: `WTZ.ThePrimitiveVarianceRetainsTheOddMoment`:
 transitive axioms are exactly `propext`, `Classical.choice`, `Quot.sound`.
 The variance and sinh remainder estimates require only continuity and unit support
 (with oddness for the primitive). No positivity input is assumed.
-The resulting lower form's sign, and the two-moment regional payment in
-[F1-PV](../1-in-progress/f1-primitive-variance-joint-payment.md), remain open.
+The sufficient two-moment regional sign is
+[refuted](../5-failed/f1-primitive-variance-joint-payment.md). Complete odd unit-window
+positivity remains open; the [stronger Gamma reserve](f1-higher-gamma-reserve.md)
+retains additional positive terms.

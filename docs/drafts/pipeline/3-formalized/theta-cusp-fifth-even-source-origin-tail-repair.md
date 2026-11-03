@@ -31,3 +31,8 @@ Main declarations: `evenFiveRepair_top_only_not_posSemidef`,
 `centerEvenFiveRepair_compact_gap`. Canonical Lean check and all eleven
 public-declaration axiom audits pass; only `propext`, `Classical.choice`,
 and `Quot.sound` occur.
+
+The intervening comparison is refuted by the
+[inherited-load boundary](../5-failed/theta-cusp-fifth-even-inherited-load-boundary.md).
+The origin and tail statements above remain valid; the integrated rank-nine
+sign remains open.

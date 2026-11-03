@@ -251,4 +251,276 @@ theorem abs_atomArchPair_sub_nearKernel_le (hM : 0 < ∫ u, φ u ^ 2) {w : ℝ} 
 
 end Profile
 
+/-! ### The kernel on the window `[0, 2]` -/
+
+/-- The second difference `2G(ℓ) − G(y − ℓ) − G(y + ℓ)`. -/
+def secondDiff (φ : ℝ → ℝ) (ℓ y : ℝ) : ℝ :=
+  2 * shellAutocorr φ ℓ - shellAutocorr φ (y - ℓ) - shellAutocorr φ (y + ℓ)
+
+theorem abs_secondDiff_le {φ : ℝ → ℝ} {K : NNReal} (hK : LipschitzWith K (shellAutocorr φ))
+    (ℓ y : ℝ) : |secondDiff φ ℓ y| ≤ 2 * K * |y| := by
+  have h1 := hK.dist_le_mul ℓ (ℓ - y)
+  have h2 := hK.dist_le_mul ℓ (ℓ + y)
+  rw [Real.dist_eq, Real.dist_eq] at h1 h2
+  have e1 : |ℓ - (ℓ - y)| = |y| := by ring_nf
+  have e2 : |ℓ - (ℓ + y)| = |y| := by rw [show ℓ - (ℓ + y) = -y by ring, abs_neg]
+  rw [e1] at h1; rw [e2] at h2
+  have hneg : shellAutocorr φ (y - ℓ) = shellAutocorr φ (ℓ - y) := by
+    rw [← shellAutocorr_neg, neg_sub]
+  have e : secondDiff φ ℓ y = (shellAutocorr φ ℓ - shellAutocorr φ (ℓ - y)) +
+      (shellAutocorr φ ℓ - shellAutocorr φ (ℓ + y)) := by
+    rw [secondDiff, hneg, add_comm y ℓ]; ring
+  rw [e]
+  calc _ ≤ |shellAutocorr φ ℓ - shellAutocorr φ (ℓ - y)| +
+        |shellAutocorr φ ℓ - shellAutocorr φ (ℓ + y)| := abs_add_le _ _
+    _ ≤ K * |y| + K * |y| := add_le_add h1 h2
+    _ = 2 * K * |y| := by ring
+
+theorem abs_secondDiff_div_le {φ : ℝ → ℝ} {K : NNReal} (hK : LipschitzWith K (shellAutocorr φ))
+    (ℓ y : ℝ) : |secondDiff φ ℓ y / (2 * y)| ≤ K := by
+  rcases eq_or_ne y 0 with h | h
+  · subst h; simp
+  · rw [abs_div, abs_mul, abs_two, div_le_iff₀ (by positivity)]
+    have := abs_secondDiff_le hK ℓ y
+    linarith
+
+/-- The second difference is Lipschitz in `ℓ`, uniformly at small `y`: it vanishes at `y = 0` by
+symmetry, and its `y`-derivative changes by at most twice the Lipschitz constant of `G′`. -/
+theorem abs_secondDiff_sub_le {φ : ℝ → ℝ} (hG : Differentiable ℝ (shellAutocorr φ)) {K₂ : NNReal}
+    (hK₂ : LipschitzWith K₂ (deriv (shellAutocorr φ))) (ℓ₁ ℓ₂ : ℝ) {y : ℝ} (hy : 0 ≤ y) :
+    |secondDiff φ ℓ₁ y - secondDiff φ ℓ₂ y| ≤ 2 * K₂ * |ℓ₁ - ℓ₂| * y := by
+  set G := shellAutocorr φ
+  set D : ℝ → ℝ := fun t => secondDiff φ ℓ₁ t - secondDiff φ ℓ₂ t with hD
+  set D' : ℝ → ℝ := fun t => (-deriv G (t - ℓ₁) - deriv G (t + ℓ₁)) -
+    (-deriv G (t - ℓ₂) - deriv G (t + ℓ₂)) with hD'
+  have hsd : ∀ ℓ t : ℝ, HasDerivAt (fun t => secondDiff φ ℓ t)
+      (-deriv G (t - ℓ) - deriv G (t + ℓ)) t := by
+    intro ℓ t
+    have hs : HasDerivAt (fun t => G (t - ℓ)) (deriv G (t - ℓ)) t := by
+      have h := HasDerivAt.comp_add_const t (-ℓ) (hG (t + -ℓ)).hasDerivAt
+      simpa only [← sub_eq_add_neg] using h
+    have ha : HasDerivAt (fun t => G (t + ℓ)) (deriv G (t + ℓ)) t :=
+      HasDerivAt.comp_add_const t ℓ (hG (t + ℓ)).hasDerivAt
+    have h := ((hasDerivAt_const t (2 * G ℓ)).sub hs).sub ha
+    exact (h.congr_deriv (by ring)).congr_of_eventuallyEq
+      (Eventually.of_forall fun x => by simp only [secondDiff, Pi.sub_apply, G])
+  have hderiv : ∀ t, HasDerivAt D (D' t) t := fun t => (hsd ℓ₁ t).sub (hsd ℓ₂ t)
+  have hD0 : D 0 = 0 := by
+    have hz : ∀ ℓ : ℝ, secondDiff φ ℓ 0 = 0 := fun ℓ => by
+      rw [secondDiff, zero_sub, zero_add]
+      have : G (-ℓ) = G ℓ := shellAutocorr_neg ℓ
+      simp only [G] at this ⊢
+      rw [this]; ring
+    simp only [hD, hz, sub_self]
+  have hbound : ∀ t ∈ Ico 0 y, ‖D' t‖ ≤ 2 * K₂ * |ℓ₁ - ℓ₂| := by
+    intro t _
+    have h1 := hK₂.dist_le_mul (t - ℓ₂) (t - ℓ₁)
+    have h2 := hK₂.dist_le_mul (t + ℓ₂) (t + ℓ₁)
+    rw [Real.dist_eq, Real.dist_eq] at h1 h2
+    have e1 : |t - ℓ₂ - (t - ℓ₁)| = |ℓ₁ - ℓ₂| := by ring_nf
+    have e2 : |t + ℓ₂ - (t + ℓ₁)| = |ℓ₁ - ℓ₂| := by
+      rw [show t + ℓ₂ - (t + ℓ₁) = -(ℓ₁ - ℓ₂) by ring, abs_neg]
+    rw [e1] at h1; rw [e2] at h2
+    rw [Real.norm_eq_abs]
+    have e : D' t = (deriv G (t - ℓ₂) - deriv G (t - ℓ₁)) + (deriv G (t + ℓ₂) - deriv G (t + ℓ₁)) := by
+      rw [hD']; ring
+    rw [e]
+    calc _ ≤ |deriv G (t - ℓ₂) - deriv G (t - ℓ₁)| + |deriv G (t + ℓ₂) - deriv G (t + ℓ₁)| :=
+          abs_add_le _ _
+      _ ≤ K₂ * |ℓ₁ - ℓ₂| + K₂ * |ℓ₁ - ℓ₂| := add_le_add h1 h2
+      _ = 2 * K₂ * |ℓ₁ - ℓ₂| := by ring
+  have hmv := norm_image_sub_le_of_norm_deriv_le_segment' (f := D) (a := 0) (b := y)
+    (fun t _ => (hderiv t).hasDerivWithinAt) hbound y ⟨hy, le_rfl⟩
+  rw [hD0, sub_zero, sub_zero, Real.norm_eq_abs] at hmv
+  exact hmv
+
+section Kernel
+
+variable {φ : ℝ → ℝ} (hφ : ContDiff ℝ 2 φ) (hsupp : ∀ u : ℝ, u ∉ Set.Icc (0 : ℝ) 1 → φ u = 0)
+include hφ hsupp
+
+theorem integrableOn_secondDiff_div (ℓ a W : ℝ) :
+    IntegrableOn (fun y => secondDiff φ ℓ y / (2 * y)) (Ioc a W) := by
+  obtain ⟨K, hK⟩ := exists_lipschitz_shellAutocorr hφ hsupp
+  have hG := continuous_shellAutocorr hφ hsupp
+  have hnum : Continuous fun y => secondDiff φ ℓ y :=
+    (continuous_const.sub (hG.comp (continuous_id.sub continuous_const))).sub
+      (hG.comp (continuous_id.add continuous_const))
+  have hmeas : AEStronglyMeasurable (fun y => secondDiff φ ℓ y / (2 * y)) volume :=
+    (hnum.measurable.div (measurable_const.mul measurable_id)).aestronglyMeasurable
+  exact Measure.integrableOn_of_bounded (M := K) measure_Ioc_lt_top.ne hmeas
+    (Eventually.of_forall fun y => by rw [Real.norm_eq_abs]; exact abs_secondDiff_div_le hK ℓ y)
+
+/-- On `[0, 2]` the kernel reads the fixed window `(0, 3]`:
+`K_near(ℓ) = G(ℓ)(κ₀ − log 3) + ∫_0^3 (2G(ℓ) − G(y − ℓ) − G(y + ℓ))/(2y) dy`. -/
+theorem nearKernel_eq_window {ℓ : ℝ} (hℓ0 : 0 ≤ ℓ) (hℓ2 : ℓ ≤ 2) :
+    nearKernel φ ℓ = shellAutocorr φ ℓ * (nearConstant - Real.log 3) +
+      ∫ y in Ioc 0 3, secondDiff φ ℓ y / (2 * y) := by
+  have hsplit : Ioc (0 : ℝ) 3 = Ioc 0 (1 + ℓ) ∪ Ioc (1 + ℓ) 3 :=
+    (Set.Ioc_union_Ioc_eq_Ioc (by linarith) (by linarith)).symm
+  have hdisj : Disjoint (Ioc (0 : ℝ) (1 + ℓ)) (Ioc (1 + ℓ) 3) :=
+    Set.Ioc_disjoint_Ioc_of_le le_rfl
+  rw [hsplit, setIntegral_union hdisj measurableSet_Ioc
+    (integrableOn_secondDiff_div hφ hsupp ℓ _ _) (integrableOn_secondDiff_div hφ hsupp ℓ _ _)]
+  have htail : ∫ y in Ioc (1 + ℓ) 3, secondDiff φ ℓ y / (2 * y) =
+      shellAutocorr φ ℓ * (Real.log 3 - Real.log (1 + ℓ)) := by
+    have hpt : ∀ y ∈ Ioc (1 + ℓ) 3, secondDiff φ ℓ y / (2 * y) = shellAutocorr φ ℓ * y⁻¹ := by
+      intro y hy
+      have hy0 : 0 < y := by linarith [hy.1]
+      rw [secondDiff, shellAutocorr_eq_zero_of_one_le hφ hsupp (x := y - ℓ) (by linarith [hy.1]),
+        shellAutocorr_eq_zero_of_one_le hφ hsupp (x := y + ℓ) (by linarith [hy.1])]
+      field_simp
+      ring
+    rw [setIntegral_congr_fun measurableSet_Ioc hpt, ← intervalIntegral.integral_of_le
+      (by linarith), intervalIntegral.integral_const_mul,
+      integral_inv_of_pos (by linarith) (by norm_num), Real.log_div (by norm_num) (by linarith)]
+  rw [htail, nearKernel, nearShape]
+  simp only [secondDiff]
+  ring
+
+theorem hasCompactSupport_shellAutocorr : HasCompactSupport (shellAutocorr φ) := by
+  apply HasCompactSupport.intro (show IsCompact (Set.Icc (-1 : ℝ) 1) from isCompact_Icc)
+  intro t ht
+  apply shellAutocorr_eq_zero_of_one_le_abs hφ hsupp
+  by_contra h
+  exact ht (abs_le.mp (lt_of_not_ge h).le)
+
+theorem abs_shellAutocorr_le' (t : ℝ) : |shellAutocorr φ t| ≤ ∫ u, φ u ^ 2 :=
+  abs_bumpCorr_le hφ.continuous (hasCompactSupport_profile hsupp) t
+
+/-- `G′` is Lipschitz. -/
+theorem exists_lipschitz_deriv_shellAutocorr :
+    ∃ K₂ : NNReal, LipschitzWith K₂ (deriv (shellAutocorr φ)) := by
+  have h2 := contDiff_shellAutocorr hφ hsupp
+  have h1 : ContDiff ℝ 1 (deriv (shellAutocorr φ)) := h2.deriv'
+  exact ContDiff.lipschitzWith_of_hasCompactSupport
+    (hasCompactSupport_shellAutocorr hφ hsupp).deriv h1 (by norm_num)
+
+/-- **The near kernel is bounded and Lipschitz on `[0, 2]`.** -/
+theorem exists_nearKernel_bounds : ∃ A L : ℝ, 0 ≤ L ∧
+    (∀ ℓ ∈ Icc (0 : ℝ) 2, |nearKernel φ ℓ| ≤ A) ∧
+    ∀ x ∈ Icc (0 : ℝ) 2, ∀ y ∈ Icc (0 : ℝ) 2, |nearKernel φ x - nearKernel φ y| ≤ L * |x - y| := by
+  obtain ⟨K, hK⟩ := exists_lipschitz_shellAutocorr hφ hsupp
+  obtain ⟨K₂, hK₂⟩ := exists_lipschitz_deriv_shellAutocorr hφ hsupp
+  have hGd : Differentiable ℝ (shellAutocorr φ) :=
+    (contDiff_shellAutocorr hφ hsupp).differentiable (by norm_num)
+  set M := ∫ u, φ u ^ 2
+  set κ := nearConstant - Real.log 3
+  have hvol : volume.real (Ioc (0 : ℝ) 3) = 3 := by simp
+  refine ⟨M * |κ| + 3 * K, K * |κ| + 3 * K₂, by positivity, ?_, ?_⟩
+  · intro ℓ hℓ
+    rw [nearKernel_eq_window hφ hsupp hℓ.1 hℓ.2]
+    have hI : ‖∫ y in Ioc 0 3, secondDiff φ ℓ y / (2 * y)‖ ≤ K * volume.real (Ioc (0 : ℝ) 3) :=
+      norm_setIntegral_le_of_norm_le_const measure_Ioc_lt_top fun y _ => by
+        rw [Real.norm_eq_abs]; exact abs_secondDiff_div_le hK ℓ y
+    rw [Real.norm_eq_abs, hvol] at hI
+    calc _ ≤ |shellAutocorr φ ℓ * κ| + |∫ y in Ioc 0 3, secondDiff φ ℓ y / (2 * y)| :=
+          abs_add_le _ _
+      _ ≤ M * |κ| + K * 3 := by
+          rw [abs_mul]
+          exact add_le_add (mul_le_mul_of_nonneg_right (abs_shellAutocorr_le' hφ hsupp ℓ)
+            (abs_nonneg _)) hI
+      _ = M * |κ| + 3 * K := by ring
+  · intro x hx y hy
+    rw [nearKernel_eq_window hφ hsupp hx.1 hx.2, nearKernel_eq_window hφ hsupp hy.1 hy.2]
+    have hdiff : (∫ z in Ioc 0 3, secondDiff φ x z / (2 * z)) -
+        (∫ z in Ioc 0 3, secondDiff φ y z / (2 * z)) =
+        ∫ z in Ioc 0 3, (secondDiff φ x z - secondDiff φ y z) / (2 * z) := by
+      rw [← integral_sub (integrableOn_secondDiff_div hφ hsupp x 0 3)
+        (integrableOn_secondDiff_div hφ hsupp y 0 3)]
+      refine setIntegral_congr_fun measurableSet_Ioc fun z _ => by ring
+    have hI : ‖∫ z in Ioc 0 3, (secondDiff φ x z - secondDiff φ y z) / (2 * z)‖ ≤
+        K₂ * |x - y| * volume.real (Ioc (0 : ℝ) 3) := by
+      refine norm_setIntegral_le_of_norm_le_const measure_Ioc_lt_top fun z hz => ?_
+      have hz0 : 0 < z := hz.1
+      have h := abs_secondDiff_sub_le hGd hK₂ x y hz0.le
+      rw [Real.norm_eq_abs, abs_div, abs_of_pos (by positivity : (0:ℝ) < 2 * z),
+        div_le_iff₀ (by positivity)]
+      nlinarith
+    rw [Real.norm_eq_abs, hvol] at hI
+    have hG := hK.dist_le_mul x y
+    rw [Real.dist_eq, Real.dist_eq] at hG
+    have e : shellAutocorr φ x * κ + (∫ z in Ioc 0 3, secondDiff φ x z / (2 * z)) -
+        (shellAutocorr φ y * κ + ∫ z in Ioc 0 3, secondDiff φ y z / (2 * z)) =
+        (shellAutocorr φ x - shellAutocorr φ y) * κ +
+          ∫ z in Ioc 0 3, (secondDiff φ x z - secondDiff φ y z) / (2 * z) := by
+      rw [← hdiff]; ring
+    rw [e]
+    calc _ ≤ |(shellAutocorr φ x - shellAutocorr φ y) * κ| +
+          |∫ z in Ioc 0 3, (secondDiff φ x z - secondDiff φ y z) / (2 * z)| := abs_add_le _ _
+      _ ≤ K * |x - y| * |κ| + K₂ * |x - y| * 3 := by
+          rw [abs_mul]; exact add_le_add (mul_le_mul_of_nonneg_right hG (abs_nonneg _)) hI
+      _ = (K * |κ| + 3 * K₂) * |x - y| := by ring
+
+/-! ### The integral of the kernel -/
+
+theorem integral_shellAutocorr_neg_one_one :
+    ∫ t in (-1 : ℝ)..1, shellAutocorr φ t = (∫ u, φ u) ^ 2 := by
+  have h : ∫ t, shellAutocorr φ t = (∫ u, φ u) ^ 2 :=
+    integral_bumpAutocorr hφ.continuous (hasCompactSupport_profile hsupp)
+  rw [← h, intervalIntegral.integral_of_le (by norm_num)]
+  refine setIntegral_eq_integral_of_forall_compl_eq_zero fun t ht => ?_
+  apply shellAutocorr_eq_zero_of_one_le_abs hφ hsupp
+  by_contra hlt
+  push Not at hlt
+  exact ht ⟨by linarith [(abs_lt.mp hlt).1], (abs_lt.mp hlt).2.le⟩
+
+theorem integral_shellAutocorr_eq_zero_of_one_le {a b : ℝ} (ha : 1 ≤ a) (hb : 1 ≤ b) :
+    ∫ t in a..b, shellAutocorr φ t = 0 := by
+  rw [intervalIntegral.integral_congr (g := fun _ => (0 : ℝ)) fun t ht => by
+    have : 1 ≤ t := by
+      rcases le_total a b with h | h
+      · rw [uIcc_of_le h] at ht; linarith [ht.1]
+      · rw [uIcc_of_ge h] at ht; linarith [ht.1]
+    exact shellAutocorr_eq_zero_of_one_le hφ hsupp this]
+  simp
+
+theorem integral_zero_two_shellAutocorr :
+    ∫ t in (0 : ℝ)..2, shellAutocorr φ t = (∫ u, φ u) ^ 2 / 2 := by
+  have hcont := continuous_shellAutocorr hφ hsupp
+  have hii : ∀ a b : ℝ, IntervalIntegrable (shellAutocorr φ) volume a b :=
+    fun a b => hcont.intervalIntegrable a b
+  have h12 := integral_shellAutocorr_eq_zero_of_one_le hφ hsupp (a := 1) (b := 2) le_rfl
+    (by norm_num)
+  have hneg : ∫ t in (-1 : ℝ)..0, shellAutocorr φ t = ∫ t in (0 : ℝ)..1, shellAutocorr φ t := by
+    have h := intervalIntegral.integral_comp_neg (a := (0 : ℝ)) (b := 1) (shellAutocorr φ)
+    simp only [neg_zero] at h
+    rw [← h]
+    exact intervalIntegral.integral_congr fun t _ => (shellAutocorr_neg t).symm
+  have hsum := intervalIntegral.integral_add_adjacent_intervals (hii (-1) 0) (hii 0 1)
+  rw [integral_shellAutocorr_neg_one_one hφ hsupp, hneg] at hsum
+  rw [← intervalIntegral.integral_add_adjacent_intervals (hii 0 1) (hii 1 2), h12, add_zero]
+  linarith
+
+/-- The kernel's second difference integrates over `ℓ ∈ [0, 2]` to `∫_{−1}^{y−2} G`. -/
+theorem integral_secondDiff_eq {y : ℝ} (hy : 0 ≤ y) :
+    ∫ ℓ in (0 : ℝ)..2, secondDiff φ ℓ y = ∫ t in (-1 : ℝ)..(y - 2), shellAutocorr φ t := by
+  have hcont := continuous_shellAutocorr hφ hsupp
+  have hii : ∀ a b : ℝ, IntervalIntegrable (shellAutocorr φ) volume a b :=
+    fun a b => hcont.intervalIntegrable a b
+  have hi1 : IntervalIntegrable (fun ℓ => 2 * shellAutocorr φ ℓ) volume 0 2 :=
+    (continuous_const.mul hcont).intervalIntegrable 0 2
+  have hi2 : IntervalIntegrable (fun ℓ => shellAutocorr φ (y - ℓ)) volume 0 2 :=
+    (hcont.comp (continuous_const.sub continuous_id)).intervalIntegrable 0 2
+  have hi3 : IntervalIntegrable (fun ℓ => shellAutocorr φ (y + ℓ)) volume 0 2 :=
+    (hcont.comp (continuous_const.add continuous_id)).intervalIntegrable 0 2
+  have e : (fun ℓ => secondDiff φ ℓ y) = fun ℓ =>
+      2 * shellAutocorr φ ℓ - shellAutocorr φ (y - ℓ) - shellAutocorr φ (y + ℓ) := by
+    funext ℓ
+    rw [secondDiff, add_comm y ℓ, ← shellAutocorr_neg (y - ℓ), neg_sub]
+    ring_nf
+  rw [e, intervalIntegral.integral_sub (hi1.sub hi2) hi3, intervalIntegral.integral_sub hi1 hi2,
+    intervalIntegral.integral_const_mul, integral_zero_two_shellAutocorr hφ hsupp,
+    intervalIntegral.integral_comp_sub_left (shellAutocorr φ) y,
+    intervalIntegral.integral_comp_add_left (shellAutocorr φ) y, sub_zero, add_zero]
+  have hA := intervalIntegral.integral_add_adjacent_intervals (hii (y - 2) y) (hii y (y + 2))
+  have hB := intervalIntegral.integral_add_adjacent_intervals (hii (y - 2) 1) (hii 1 (y + 2))
+  have hC := intervalIntegral.integral_add_adjacent_intervals (hii (-1) (y - 2)) (hii (y - 2) 1)
+  have hz := integral_shellAutocorr_eq_zero_of_one_le hφ hsupp (a := 1) (b := y + 2) le_rfl
+    (by linarith)
+  rw [integral_shellAutocorr_neg_one_one hφ hsupp] at hC
+  linarith
+
+end Kernel
+
 end GaloisForLFunctions.ArithmeticHodgeTheoryOfDegenerations

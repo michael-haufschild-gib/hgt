@@ -3,7 +3,7 @@
 - **ID:** F1-JC
 - **Stage:** 3-formalized
 - **Type:** THEOREM (Lean)
-- **Source:** [Two-moment payment](../1-in-progress/f1-primitive-variance-joint-payment.md)
+- **Source:** [Two-moment payment](../5-failed/f1-primitive-variance-joint-payment.md)
 - **Statement:** Every real odd C² unit-window test satisfies
   `Q(F)+(3203/320)(∫xF)²≥∫F²/1000`.
 

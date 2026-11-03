@@ -3,7 +3,7 @@
 - **ID:** F1-PI
 - **Stage:** 3-formalized
 - **Type:** THEOREM
-- **Source:** [Remaining first-moment payment](../1-in-progress/f1-primitive-variance-joint-payment.md)
+- **Source:** [Remaining first-moment payment](../5-failed/f1-primitive-variance-joint-payment.md)
 - **Statement:** Both polynomial and exact logarithmic reflection forms have explicit positive
   first-moment inverses. For the exact form, `0<q(u)≤u/A(u)` for `0<u<1`, with strict upper
   inequality on the active strip.

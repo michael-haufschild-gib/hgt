@@ -1,0 +1,21 @@
+import GaloisForLFunctions.SignedWindowCriticality.TheMarkovPartDiesBeforeTheFirstPrime
+import GaloisForLFunctions.SignedWindowCriticality.NoMarkovGroundStateOnAWindowLongerThanTheDeathWidth
+import GaloisForLFunctions.SignedWindowCriticality.TheFoldedCriterionIsVoidOnTheUnitWindow
+import GaloisForLFunctions.SignedWindowCriticality.ThePoleChargesTheSupersolution
+import GaloisForLFunctions.SignedWindowCriticality.ACriticalWindowIsAPoleChargedSolution
+import GaloisForLFunctions.SignedWindowCriticality.TheKickIsAPositiveSourceAndANegativeCollarConductance
+import GaloisForLFunctions.SignedWindowCriticality.TheCollarHankelForm
+
+/-!
+# Signed Window Criticality
+
+Umbrella for the ground-state theory of Weil's form on windows with every sign kept: the Markov
+part dies at length `e^{−3/4}` and admits no positive supersolution on any longer window, so the
+folded criterion is void on the unit odd window; with the pole kept, each square of the hyperbolic
+pair becomes a charge of the gauge (sinh charge in the odd sector, cosh credit in the even sector)
+and the window form is a signed Dirichlet form plus a pole-charged potential; Rayleigh-critical
+gauges and zero modes solve the pole-charged source equation and represent the window form in their
+own gauge; the kick of a new prime power is a positive source plus a negative anti-diagonal
+conductance on the collar; on reflection-paired collar data the frozen coupling is the collar Hankel
+form, one pole square against the trivial-zero squares, negative definite on the pole hyperplane.
+-/

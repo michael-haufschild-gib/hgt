@@ -393,7 +393,7 @@ private lemma critical_band_far_budgetE_le {R M N : ℕ}
           div_le_div_of_nonneg_right
             (mul_le_mul (mul_le_mul hc8_le hSg2 (sq_nonneg _) hL0.le) h1c_ℓ h1c0 (by positivity))
             hL0.le
-        _ = 4 * K_tot ^ 2 * ℓ ^ 3 := by field_simp [hL0.ne']; ring
+        _ = 4 * K_tot ^ 2 * ℓ ^ 3 := by field_simp [hL0.ne']
     have hℓ3_1 : 1 ≤ ℓ ^ 3 := one_le_pow₀ hℓ1
     have hG_inner : c ^ 7 * bandFarBudgetG R N c Sg₁ ≤
         (1 + Real.log (R : ℝ)) * ((4 * K_tot ^ 2 + 3) * ℓ ^ 3) := by
@@ -410,7 +410,7 @@ private lemma critical_band_far_budgetE_le {R M N : ℕ}
       _ ≤ 32 * C_np * ((2 * L / ℓ ^ 5) * ((4 * K_tot ^ 2 + 3) * ℓ ^ 3)) / (g₀ * L / 8) :=
           div_le_div_of_nonneg_right
             (mul_le_mul_of_nonneg_left
-              (hG_inner.trans (mul_le_mul_of_nonneg_right hlR (by positivity))) hCnp)
+              (hG_inner.trans (mul_le_mul_of_nonneg_right hlR (by positivity))) (by positivity))
             (by positivity)
       _ = (512 * C_np * (4 * K_tot ^ 2 + 3) / g₀) / ℓ ^ 2 := by
           field_simp [hg₀.ne', hL0.ne', hℓ0.ne']; ring
@@ -1214,7 +1214,8 @@ private lemma exists_complement_collar_reserves_upper_band :
   obtain ⟨hRM1, hlogM1, hB1_ub, hhalf_M⟩ :=
     linear_prefix_horizon_bounds_one_ninth hN1 hR₁2 hc1 hL3000 hLX hcL h36_R₁
   rw [← hCBdef] at hB0_ub hB1_ub
-  have hM2 : 2 ≤ N / linearDefectCutoff c := (by omega : 2 ≤ subexpCutoff N * subexpCutoff N).trans hRM1
+  have hM2 : 2 ≤ N / linearDefectCutoff c :=
+    (hR₁2.trans (Nat.le_mul_of_pos_right _ (by omega : 0 < subexpCutoff N))).trans hRM1
   have hM1 : 1 ≤ N / linearDefectCutoff c := by omega
   have h1c_ℓ : 1 + Real.log c ≤ 1 + Real.log (Real.log (N : ℝ)) := by
     linarith [Real.log_le_log hc0 hcL]
@@ -1277,7 +1278,7 @@ private lemma exists_complement_collar_reserves_upper_band :
     rw [hSg₁_eq, hℓ_eq]
     exact loglog_budget_le (by linarith only [hK_tot]) hL1
       (by linarith only [h1080_R₁, Real.log_natCast_nonneg (subexpCutoff N)])
-  set ρ := K_res * (c ^ 2 * (1 + Real.log c) ^ 3 * L ^ (1 / (16 : ℕ)) / L +
+  set ρ := K_res * (c ^ 2 * (1 + Real.log c) ^ 3 * L ^ ((1 : ℝ) / (16 : ℕ)) / L +
       c ^ 10 * (L / N) ^ 2) with hρ_eq
   have hρ_norm : ‖poleModeResidual c N‖ ^ 2 ≤ ρ := by
     have h := hresN 1 one_pos (by simp) c hc1 hwidth
@@ -1622,7 +1623,8 @@ private lemma critical_schur_posDef_of_collar_blocks {Q₁ R₀ R₁ N : ℕ}
           completedConductorEnergy tiltedUnitSpline c m • normalizedRamanujanHorizonVector m N,
         u₀ + u₁ + w⟫) hE_pos
   rw [← hcross_eq] at hcross_abs
-  have hΦ := critical_pairing_sum_le (Nat.div_le_self N _) hE_pos (htop hu₀_mem) hΨ hΨD hΨ7
+  have hΦ := critical_pairing_sum_le (u₁ := u₁) (w := w) (Nat.div_le_self N _) hE_pos
+    (htop hu₀_mem) hΨ hΨD hΨ7
   have hz_floor := hcomp hu₀_mem hu₀_orthQ hu₁_mem hu₁_orthR₀ hw_orthR₁
   have hz_A : 2 * ‖u₀ + u₁ + w‖ ^ 2 + μ₀ * ‖u₀‖ ^ 2 + μ₁ * ‖u₁‖ ^ 2 +
       μ_P * (∑ n ∈ Icc 1 (N / linearDefectCutoff c), primeHorizonExtension w n ^ 2) +
@@ -1798,8 +1800,8 @@ theorem exists_tiltedUnitSpline_spectralFloorWeilMatrix_posDef_at_critical_multi
         have h7 : (128 : ℝ) ≤ Real.log (N : ℝ) ^ 7 := by
           have hp := pow_le_pow_left₀ (by norm_num : (0 : ℝ) ≤ 2) hL2 7
           norm_num at hp; exact hp
-        have hm := mul_le_mul_of_nonneg_left h7 hL0.le
-        linarith only [hm, (by ring : Real.log (N : ℝ) * Real.log (N : ℝ) ^ 7 =
+        have hm := mul_le_mul_of_nonneg_right h7 hL0.le
+        linarith only [hm, hL0, (by ring : Real.log (N : ℝ) ^ 7 * Real.log (N : ℝ) =
           Real.log (N : ℝ) ^ 8)]
       have h2B_R₀ : ((2 * linearPrimeStrip c : ℕ) : ℝ) ≤
           (⌊Real.exp (Real.log (N : ℝ) ^ (1 / 2 : ℝ))⌋₊ : ℝ) := by
@@ -1916,7 +1918,11 @@ theorem exists_tiltedUnitSpline_spectralFloorWeilMatrix_posDef_at_critical_multi
               rw [div_eq_div_iff hL0.ne' (Real.rpow_pos_of_pos hL0 _).ne']
               linarith only [hsplit]
             rw [hid]; ring
-          _ ≤ 1 / 2 := by rw [div_le_iff₀ (by positivity)]; linarith only [hL8_deep]
+          _ ≤ 1 / 2 := by
+            rw [div_le_iff₀ (by positivity)]
+            linarith only [hL8_deep,
+              (by ring : 6912 * (C_p + 1) / tiltedSplineSpectralFloorConstant =
+                2 * (3456 * (C_p + 1) / tiltedSplineSpectralFloorConstant))]
       linarith only [hpart1, hpart2]
     have hμ₁ : 24 * L ^ (1 / 4 : ℝ) ≤ L ^ (1 / 2 : ℝ) / 32 := by
       have hsplit : L ^ (1 / 4 : ℝ) * L ^ (1 / 4 : ℝ) = L ^ (1 / 2 : ℝ) := by
@@ -2088,11 +2094,5 @@ theorem exists_tiltedUnitSpline_growing_conductor_uniformity_at_critical_multipl
   refine ⟨(mul_le_mul_of_nonneg_right hdiv_le (sq_nonneg ‖z‖)).trans hf, fun hz_ne => ?_⟩
   exact (mul_pos (div_pos tiltedSplineSpectralFloorConstant_pos (by positivity))
     (sq_pos_of_pos (norm_pos_iff.mpr hz_ne))).trans_le hf
-
-#print axioms exists_tiltedUnitSpline_spectralFloorWeilMatrix_posDef_at_critical_multiple
-#print axioms exists_tiltedUnitSpline_completeWeilEnergy_ge_spectral_floor_at_critical_multiple
-#print axioms exists_tiltedUnitSpline_completeWeilMatrix_posDef_at_critical_multiple
-#print axioms exists_tiltedUnitSpline_weilQuad_nonneg_at_critical_multiple
-#print axioms exists_tiltedUnitSpline_growing_conductor_uniformity_at_critical_multiple
 
 end GaloisForLFunctions.CriticalArithmeticCorrelationTheory

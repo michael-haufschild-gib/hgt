@@ -1,7 +1,7 @@
 # RH proof-route frontier
 
 **RH open · 32 live routes · 17 candidates.**
-**Corpus checkpoint:** `4d5f923c4a91c3bb9bf4ffd158c18812eaa3acf3`.
+**Corpus checkpoint:** `74a421b70e7e79d7616cac125a51db94664289ac`.
 
 Live = source observable + proved RH-sufficient receiver + explicit open estimate. Candidate = missing independent source mechanism/landing.
 Evidence: [L] integrated, source-reviewed; [S] unfinished/unintegrated, unverified; [K] individual Lean + standard-only transitive-axiom audit. Untagged established facts: [L].
@@ -43,9 +43,9 @@ Evidence: [L] integrated, source-reviewed; [S] unfinished/unintegrated, unverifi
 ### RW — Restricted Weil ground energy
 
 - **Path:** Complete Weil form → μ(a)≥0 at every radius → RH.
-- **Established:** Attained, strictly radius-decreasing minima; μ≥1/5000 through a=181/500, ≥1/8000 through a*=enlargedWeilFloorAperture>181/500. Exact {∞,2} trace through a=½log3; local Gamma/Tate domination for length≤2a*, 0≤k≤1/160000. Window sign⇔all fitting lattices; all-window sign⇔RH; all-test strict orbit bound⇔two-site positivity⇔RH [L]. Pole-charged gauge identity Q(Φωu)=J+∫u²ω𝒢+2V_s−2V_c [S]. [Odd](#owu) / [lattice](#shared-frontier) frontiers.
-- **Open:** Independent all-test orbit/contraction bound paying signed prime folds and moment cross-terms. Charged-gauge branch needs an actual gauge and signed jump/variance payment; [compact bare/folded supersolutions fail past e^(−3/4), including half-window1/2](rh-killed-routes.md#prime-free-markov) [S]. [Collar parity assumes enlarged-window positivity](rh-killed-routes.md#collar-positivity-induction); it supplies no induction step. Frozen-stage branch needs interior infimum attainment; [end-collar uniqueness is not interior-gap continuation](rh-killed-routes.md#lattice-interior-gap).
-- **Sources:** C:TheApertureFlowNeverStalls; I:AnExplicitLargerApertureRetainsAWeilFloor; ATD:FirstFoldStageDomination; SP:SemilocalPrimeTwoTrace/IntrinsicWeilTraceAndWindowCorollaries; CSTW:WindowGrowthIsATranslationContraction; CSTW:TheFrozenFormInClosedForm; GWZ:RHIsDecidedOnTwoSites; GWZ:TheFirstPrimeStageOpensPositive [L]; SWC:ThePoleChargesTheSupersolution [S].
+- **Established:** Attained, strictly radius-decreasing minima; μ≥1/5000 through a=181/500, ≥1/8000 through a*=enlargedWeilFloorAperture>181/500. Exact {∞,2} trace through a=½log3; local Gamma/Tate domination for length≤2a*, 0≤k≤1/160000. All-window/lattice positivity and all-test strict two-site orbit bound⇔RH [L]. A compact C² Rayleigh minimizer satisfies 𝒮ω=μΦ²ω and Q(Φωu)=J+μ·mass+2V_s−2V_c [S]. [Odd](#owu) / [lattice](#shared-frontier) frontiers.
+- **Open:** Independent all-test orbit/contraction bound paying signed prime folds and moment cross-terms. Charged-gauge branch needs nonzero smooth attainment and signed jump/variance payment; [compact bare/folded supersolutions fail past e^(−3/4), including half-window1/2](rh-killed-routes.md#prime-free-markov) [S]. [Collar parity assumes enlarged-window positivity](rh-killed-routes.md#collar-positivity-induction); it supplies no induction step. Frozen-stage branch needs interior infimum attainment; [end-collar uniqueness is not interior-gap continuation](rh-killed-routes.md#lattice-interior-gap).
+- **Sources:** C:TheApertureFlowNeverStalls; I:AnExplicitLargerApertureRetainsAWeilFloor; ATD:FirstFoldStageDomination; SP:SemilocalPrimeTwoTrace/IntrinsicWeilTraceAndWindowCorollaries; CSTW:WindowGrowthIsATranslationContraction; CSTW:TheFrozenFormInClosedForm; GWZ:RHIsDecidedOnTwoSites; GWZ:TheFirstPrimeStageOpensPositive [L]; SWC:ACriticalWindowIsAPoleChargedSolution [S].
 
 <a id="fu"></a>
 ### FU — CCM-FU signed prime scheduling
@@ -235,9 +235,9 @@ Evidence: [L] integrated, source-reviewed; [S] unfinished/unintegrated, unverifi
 ### OWU — Odd Weil-weight uniqueness
 
 - **Path:** Actual odd Weil positivity at every aperture → RH.
-- **Established:** Odd RH criterion; prime-free floor. On odd C² unit-window tests, E=‖F‖², m₁=∫xF: Q+(3203/320)m₁²≥E/1000; exact Gamma remainder, strip+prime2 floor1/16 and Q≥R_ret+(193/10000+17/23040)E+(13/3840)m₁² [K].
-- **Open:** All-test joint Gamma/prime/pole sign, including low-moment cross-charge and off-strip terms; then all apertures. [R_ret+E/64 and its two-moment comparison fail on smooth tests](rh-killed-routes.md#retained-gamma-lower-form) [K]. [Compact nonnegative folded supersolutions fail already at half-window1/2](rh-killed-routes.md#prime-free-markov) [S]; charged replacements require [exact origin charge](rh-killed-routes.md#folded-origin-charge) [K].
-- **Sources:** R:WeilMarkovOddPositivity; WTZ:TheThirdOddMomentIsPaidByTheFirstFold; WTZ:TheGammaRemainderHasAnExactEnergyIdentity; WTZ:TheLogarithmicStripPaysTheFirstFold; WTZ:TheUniformGammaReserveCannotPayTheFirstFold; WTZ:TheGammaRemainderRetainsHigherLags [K]; SWC:TheFoldedCriterionIsVoidOnTheUnitWindow [S].
+- **Established:** Odd RH criterion; prime-free floor. On odd C² unit-window tests, E=‖F‖², m₁=∫xF: Q+(3203/320)m₁²≥E/1000; exact Gamma remainder, strip+prime2 floor1/16 and Q≥R_ret+(193/10000+17/23040)E+(13/3840)m₁² [K]. Odd prime kick=source−collar conductance; nonnegative on half-line-positive profiles with support radius≤lag [S].
+- **Open:** All-test joint Gamma/prime/pole sign: low-moment cross-charge, negative collar conductance and off-strip terms; then all apertures. [R_ret+E/64 and its two-moment comparison fail on smooth tests](rh-killed-routes.md#retained-gamma-lower-form) [K]. [Compact nonnegative folded supersolutions fail already at half-window1/2](rh-killed-routes.md#prime-free-markov) [S]; charged replacements require [exact origin charge](rh-killed-routes.md#folded-origin-charge) [K].
+- **Sources:** R:WeilMarkovOddPositivity; WTZ:TheThirdOddMomentIsPaidByTheFirstFold; WTZ:TheGammaRemainderHasAnExactEnergyIdentity; WTZ:TheLogarithmicStripPaysTheFirstFold; WTZ:TheUniformGammaReserveCannotPayTheFirstFold; WTZ:TheGammaRemainderRetainsHigherLags; WTZ:TheHigherGammaReserveRepairsTheQuadraticCutoff [K]; SWC:TheFoldedCriterionIsVoidOnTheUnitWindow; SWC:TheKickIsAPositiveSourceAndANegativeCollarConductance [S].
 
 <a id="pbm"></a>
 ### PBM — Regularized prime/log-ζ abscissa
@@ -275,9 +275,9 @@ Evidence: [L] integrated, source-reviewed; [S] unfinished/unintegrated, unverifi
 ### AIP — Arithmetic incidence positivity
 
 - **Path:** Prime incidence + plateau gauge → all-aperture global allocation → odd positivity → RH.
-- **Established:** Allocation receiver; full tilted-spline matrix≥κ/(2c⁷)I uniformly 1≤c≤(log N)^α, 0<α<1/8 [L]. Source capstone extends that floor to one small critical multiple [S]: [shared frontier](#shared-frontier).
-- **Open:** Global allocation or full sign at c=2K(log N)^(1/8) for every K>0. Small-critical assembly is written; dependency checks/axiom audit remain pending. One small K does not discharge the all-K receiver. Alternative: all-window translation contraction from the short-window seed.
-- **Sources:** I:GlobalIncidenceAllocationCondition; I:GlobalSharedSurplusAllocation; CACT:TheCompleteWeilMatrixIsPositiveDefiniteBelowTheEighthRoot.
+- **Established:** Allocation receiver; subcritical full tilted-spline floorκ/(2c⁷) [L]; full-horizon positive definiteness through one small critical multiple [K]. Quantitative critical floor remains [S]: [shared frontier](#shared-frontier).
+- **Open:** Global allocation or full sign at c=2K(log N)^(1/8) for every K>0; the audited small-K range does not discharge the all-K receiver. Alternative: all-window translation contraction from the short-window seed.
+- **Sources:** I:GlobalIncidenceAllocationCondition; I:GlobalSharedSurplusAllocation; CACT:TheCompleteWeilMatrixIsPositiveDefiniteBelowTheEighthRoot [L]; CACT:TheCompleteWeilMatrixIsPositiveAtACriticalMultiple [K].
 
 <a id="inter-tower-coupling"></a><a id="coupled-tower-signature"></a><a id="sc"></a>
 ### SC — Stokes/Witt–Krein / archimedean successor
@@ -338,7 +338,7 @@ Twist/pencil limits: C² profile on [0,1], positive square mass, Fourier-square 
 
 Sources:
 
-- **Full matrix / frames:** CACT:TheCompleteWeilMatrixIsPositiveDefiniteBelowTheEighthRoot; CACT:EverySubpolynomialSpanHasASuperLogLogPositivityClock; CAF:LargePrimeCofactorsHaveUniformConductorFrames [L]; CACT:TheCompleteWeilMatrixIsPositiveAtACriticalMultiple [K]; CACT:CriticalMultipleCompleteWeilPositivity [S].
+- **Full matrix / frames:** CACT:TheCompleteWeilMatrixIsPositiveDefiniteBelowTheEighthRoot; CACT:EverySubpolynomialSpanHasASuperLogLogPositivityClock; CAF:LargePrimeCofactorsHaveUniformConductorFrames [L]; CACT:TheCompleteWeilMatrixIsPositiveAtACriticalMultiple [K]; CACT:CriticalMultipleCompleteWeilPositivity; AHD:CompleteWeilCriticalMultipleAndWindowCorollaries [S].
 - **Horizon / twists:** AHD:TheWindowIndexCountsTheRightZeros; AHD:TheTwistedDirectionsCarryNoNegativeSquares; AHD:EveryFrequencySectorInheritsThePolarization; AHD:OneCriticalMultiplePaysEveryWindow; AHD:TheCoshHyperplaneInheritsThePolarization; AHD:TheCanonicalCriticalClockEntersFromTheNegativeSide; AHD:TheCriticalBoundaryAddsItsNullDirections; AHD:TheUntwistedCountIsTheFinitePartAtZeroFrequency; AHD:TheBulkIsBlindBelowItsGrid [L]; AHD:TheConductorDecompositionHoldsOnAGrowingRange; AHD:TheCountFormEndsAtTheResolution [L].
 - **Bulk second order:** AHD:TheBulkEntriesAreReadByTheStieltjesConstants; AHD:TheCharacterPacketsReadTheLogarithmicDerivative; AHD:TheBulkEntriesAtEveryOverlap; AHD:TheCrossErrorOfTheBulkEntries [L]; AHD:TheRowsOfANearPairSum; AHD:TheArchimedeanKernelOfNearAtoms [S].
 - **Windows:** WTZ:TheAliasingWeightPaysEveryWindow; DZG:TheGroundStateRepresentationOfAStage; ATD:FirstFoldStageDomination; GWZ:TheTwoCollarFormIsBornZero; GWZ:ZeroModesHaveReflectionParity; CSTW:TheFrozenFormInClosedForm; CSTW:WindowGrowthIsATranslationContraction [L].

@@ -1,3 +1,4 @@
+import GaloisForLFunctions.RHTower.CothInfra
 import GaloisForLFunctions.ThetaCuspSections.FifthEvenSourceRepair
 import GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspScaleSevenCompensationSource
 import GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspCenterCompensationTransitionSlack
@@ -465,13 +466,28 @@ theorem weighted_two_loads_positive_iff {a : ℝ} (ha : 0 < a) (haU : a < 1/2)
   constructor <;> intro h <;> nlinarith only [h]
 
 
+private theorem native_matrix_energy (x : ℝ) :
+    witnessVector ⬝ᵥ (RHTower.ThetaCuspGaussianLimit.nativeShiftedMatrix 5 0 x *ᵥ
+      witnessVector) = sourceEnergy x := by
+  simp only [dotProduct, Matrix.mulVec, Finset.mul_sum, sourceEnergy,
+    RHTower.ThetaCuspGaussianLimit.nativeShiftedMatrix, Nat.add_zero]
+  exact Finset.sum_congr rfl fun i _ => Finset.sum_congr rfl fun j _ => by ring
+
+private theorem diagonal_energy (C D G : ℝ) :
+    witnessVector ⬝ᵥ (Matrix.diagonal (fun i : Fin 5 =>
+      if i.val = 3 then C*G else if i.val = 4 then D*G else 0) *ᵥ witnessVector) =
+      C*G + D*G*(witnessVector 4)^2 := by
+  simp only [dotProduct, Matrix.mulVec_diagonal]
+  rw [witnessVector_four]
+  norm_num [Fin.sum_univ_succ, witnessVector]
+  ring
+
 private theorem matrix_energy (C D x : ℝ) :
     witnessVector ⬝ᵥ (evenFiveRepair C D x *ᵥ witnessVector) = sourceEnergy x +
       C*thetaCuspCenterCompensationSource x +
       D*thetaCuspCenterCompensationSource x*(witnessVector 4)^2 := by
-  rw [witnessVector_four]
-  norm_num [dotProduct, Matrix.mulVec, Fin.sum_univ_succ, witnessVector, sourceEnergy,
-    evenFiveRepair, RHTower.ThetaCuspGaussianLimit.nativeShiftedMatrix, Matrix.diagonal]
+  rw [evenFiveRepair, Matrix.add_mulVec, dotProduct_add,
+    native_matrix_energy, diagonal_energy]
   ring
 
 /-- No nonnegative fifth load repairs the inherited source at scale seven. -/
@@ -495,9 +511,17 @@ private theorem weighted_matrix_energy (a C D : ℝ) :
     witnessVector ⬝ᵥ (centerEvenFiveRepair a C D witnessRadius *ᵥ witnessVector) =
       witnessWeight a*sourceEnergy witnessCenter + C*weightedLoad a +
       D*weightedLoad a*(witnessVector 4)^2 := by
-  rw [witnessVector_four]
-  norm_num [dotProduct, Matrix.mulVec, Fin.sum_univ_succ, witnessVector, sourceEnergy,
-    centerEvenFiveRepair, Matrix.diagonal, witnessWeight, weightedLoad, witness_half]
+  have he : centerEvenFiveRepair a C D witnessRadius =
+      witnessWeight a • RHTower.ThetaCuspGaussianLimit.nativeShiftedMatrix 5 0 witnessCenter +
+        Matrix.diagonal (fun i : Fin 5 =>
+          if i.val = 3 then C*weightedLoad a else if i.val = 4 then D*weightedLoad a else 0) := by
+    ext i j
+    simp only [centerEvenFiveRepair, Matrix.add_apply, Matrix.smul_apply, smul_eq_mul,
+      RHTower.ThetaCuspGaussianLimit.nativeShiftedMatrix, Nat.add_zero,
+      witnessWeight, weightedLoad, witness_half]
+    ring
+  rw [he, Matrix.add_mulVec, dotProduct_add, Matrix.smul_mulVec, dotProduct_smul,
+    native_matrix_energy, diagonal_energy]
   ring
 
 /-- The actual zero-flux representative fails pointwise positivity at every critical aperture. -/
@@ -508,5 +532,119 @@ theorem weighted_inherited_matrix_not_posSemidef {a D : ℝ}
   have hh := h.dotProduct_mulVec_nonneg witnessVector
   simp only [star_trivial, weighted_matrix_energy] at hh
   exact (not_lt_of_ge hh) (weighted_inherited_extension_negative ha haU hD)
+
+
+private theorem weightedLoad_eq (a : ℝ) :
+    weightedLoad a = witnessWeight a*thetaCuspCenterCompensationSource witnessCenter +
+      witnessRadius*thetaCuspFullSource witnessCenter^2*
+        (a*witnessRadius*Real.cosh (a*witnessRadius)-Real.sinh (a*witnessRadius)) := by
+  have h := deriv_thetaCuspCenterCompensationFlux_eq_source_add_slack a witnessRadius
+  rw [witness_half] at h
+  exact h
+
+private theorem aperture_slack_linear {t : ℝ} (ht : 0 < t) :
+    t*Real.cosh t-Real.sinh t < t*Real.sinh t := by
+  have hs := Real.sinh_pos_iff.mpr ht
+  have h := RHTower.rcoth_lt_one_add_inv ht
+  unfold RHTower.rcoth at h
+  have hm := mul_lt_mul_of_pos_left ((div_lt_iff₀ hs).mp h) ht
+  have he : t*((1+1/t)*Real.sinh t) = t*Real.sinh t+Real.sinh t := by
+    field_simp [ht.ne']
+  rw [he] at hm
+  linarith only [hm]
+
+private theorem weighted_direction_decomposition (a L : ℝ) :
+    witnessWeight a*sourceEnergy witnessCenter + L*weightedLoad a =
+      witnessWeight a*(sourceEnergy witnessCenter +
+        L*thetaCuspCenterCompensationSource witnessCenter) +
+      L*witnessRadius*thetaCuspFullSource witnessCenter^2*
+        (a*witnessRadius*Real.cosh (a*witnessRadius)-Real.sinh (a*witnessRadius)) := by
+  rw [weightedLoad_eq]
+  ring
+
+private theorem uniform_direction_pos_of_le {L : ℝ} (hL : L ≤ correctionCapacity)
+    {a : ℝ} (ha : 0 < a) (haU : a < 1/2) :
+    0 < witnessWeight a*sourceEnergy witnessCenter + L*weightedLoad a := by
+  have hw := witnessWeight_pos ha
+  by_cases hL0 : L ≤ 0
+  · exact add_pos_of_pos_of_nonneg (mul_pos hw source_direction_positive)
+      (mul_nonneg_of_nonpos_of_nonpos hL0 (weightedLoad_neg ha haU).le)
+  · have hLp : 0 < L := lt_of_not_ge hL0
+    have hd := neg_pos.mpr compensation_negative
+    have hb := (le_div_iff₀ hd).mp
+      (show L ≤ sourceEnergy witnessCenter/(-thetaCuspCenterCompensationSource witnessCenter)
+        from hL)
+    have hbase : 0 ≤ sourceEnergy witnessCenter +
+        L*thetaCuspCenterCompensationSource witnessCenter := by nlinarith only [hb]
+    have hslack := sub_pos.mpr
+      (RHTower.sinh_lt_mul_cosh (mul_pos ha witnessRadius_pos))
+    have hPhi := sq_pos_of_pos (thetaCuspFullSource_pos_all witnessCenter)
+    have hterm : 0 < L*witnessRadius*thetaCuspFullSource witnessCenter^2*
+        (a*witnessRadius*Real.cosh (a*witnessRadius)-Real.sinh (a*witnessRadius)) := by
+      exact mul_pos (mul_pos (mul_pos hLp witnessRadius_pos) hPhi) hslack
+    rw [weighted_direction_decomposition]
+    exact add_pos_of_nonneg_of_pos (mul_nonneg hw.le hbase) hterm
+
+/-- Strict positivity at every critical aperture includes the exact native capacity boundary. -/
+theorem uniform_direction_positive_iff (L : ℝ) :
+    (∀ a : ℝ, 0 < a → a < 1/2 →
+      0 < witnessWeight a*sourceEnergy witnessCenter + L*weightedLoad a) ↔
+      L ≤ correctionCapacity := by
+  constructor
+  · intro hall
+    by_contra hn
+    have hLC : correctionCapacity < L := lt_of_not_ge hn
+    have hLp := correctionCapacity_bounds.1.trans hLC
+    have hden := neg_pos.mpr compensation_negative
+    have hb := (div_lt_iff₀ hden).mp
+      (show sourceEnergy witnessCenter/(-thetaCuspCenterCompensationSource witnessCenter)<L
+        from hLC)
+    have hneg : sourceEnergy witnessCenter +
+        L*thetaCuspCenterCompensationSource witnessCenter < 0 := by nlinarith only [hb]
+    let d := -(sourceEnergy witnessCenter + L*thetaCuspCenterCompensationSource witnessCenter)
+    let k := L*witnessRadius*thetaCuspFullSource witnessCenter^2
+    have hd : 0 < d := neg_pos.mpr hneg
+    have hk : 0 < k := mul_pos (mul_pos hLp witnessRadius_pos)
+      (sq_pos_of_pos (thetaCuspFullSource_pos_all witnessCenter))
+    let a := min (1/4 : ℝ) (d/(2*k))
+    have ha : 0 < a := lt_min (by norm_num) (div_pos hd (by positivity))
+    have haU : a < 1/2 := (min_le_left _ _).trans_lt (by norm_num)
+    have hasmall : a ≤ d/(2*k) := min_le_right _ _
+    have hsmall : k*a ≤ d/2 := by
+      have h := (le_div_iff₀ (show 0 < 2*k by positivity)).mp hasmall
+      nlinarith only [h]
+    have hslack := mul_le_mul_of_nonneg_left
+      (aperture_slack_linear (mul_pos ha witnessRadius_pos)).le hk.le
+    have he : witnessWeight a*sourceEnergy witnessCenter + L*weightedLoad a ≤
+        witnessWeight a*(-d+k*a) := by
+      rw [weighted_direction_decomposition]
+      dsimp only [d, k, witnessWeight] at hslack ⊢
+      nlinarith only [hslack]
+    have hsmallneg : -d+k*a < 0 := by linarith only [hd, hsmall]
+    have hfailure := he.trans_lt (mul_neg_of_pos_of_neg (witnessWeight_pos ha) hsmallneg)
+    exact (not_lt_of_ge (hall a ha haU).le) hfailure
+  · intro hL a ha haU
+    exact uniform_direction_pos_of_le hL ha haU
+
+/-- The aperture-uniform positive load region is a closed half-plane. -/
+theorem weighted_two_loads_positive_at_every_aperture_iff (C D : ℝ) :
+    (∀ a : ℝ, 0 < a → a < 1/2 →
+      0 < witnessWeight a*sourceEnergy witnessCenter + C*weightedLoad a +
+        D*weightedLoad a*(witnessVector 4)^2) ↔
+      C+D/(1568 : ℝ)^2 ≤ correctionCapacity := by
+  have he (a : ℝ) : witnessWeight a*sourceEnergy witnessCenter + C*weightedLoad a +
+      D*weightedLoad a*(witnessVector 4)^2 =
+      witnessWeight a*sourceEnergy witnessCenter + (C+D/(1568 : ℝ)^2)*weightedLoad a := by
+    rw [witnessVector_four]
+    ring
+  simpa only [he] using uniform_direction_positive_iff (C+D/(1568 : ℝ)^2)
+
+/-- Every positive aperture strictly enlarges the native directional capacity. -/
+theorem weightedCapacity_exceeds_source {a : ℝ} (ha : 0 < a) (haU : a < 1/2) :
+    correctionCapacity < weightedCapacity a := by
+  have h := uniform_direction_pos_of_le (L := correctionCapacity) le_rfl ha haU
+  have hd := neg_pos.mpr (weightedLoad_neg ha haU)
+  apply (lt_div_iff₀ hd).mpr
+  nlinarith only [h]
 
 end GaloisForLFunctions.ThetaCuspSections.EvenFiveBoundary

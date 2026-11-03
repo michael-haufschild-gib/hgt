@@ -70,3 +70,11 @@ prime and pole. The stronger
 `Q(F)+(3203/320)(∫xF)²≥∫F²/1000` without moment constraints. Individual Lean and
 standard-only transitive axiom audits pass. The remaining first-moment charge and its
 coupling are open; the current linear inverse chord cannot pay the full charge.
+
+The sufficient signs `P+E/64≥0` and `D≥0` are
+[refuted by a smooth quadratic-cutoff test](../5-failed/f1-primitive-variance-joint-payment.md).
+The [formalized positive survivor](../3-formalized/f1-higher-gamma-reserve.md) retains
+`M₃/960+M₄/192` and the stronger exterior reserve `(193/10000)E`; it also gives
+`Q≥P+(193/10000+17/23040)E+(13/3840)(∫xF)²`.
+The same smooth test has `P+E/64<0<Q`, with individual Lean and standard-only axiom audits.
+Complete odd unit-window positivity and the all-stage signed payment remain open.
