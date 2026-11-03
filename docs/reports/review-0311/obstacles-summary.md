@@ -423,8 +423,11 @@ explicit problem. Odd positivity on this window is within one first-moment direc
 *Precise boundary.* The raw positive folded-supersolution proposal is excluded for nonnegative
 decaying profiles by ACT's origin jump-moment law, including compact profiles. Removing negative
 conductances changes the operator; its exact remainder still needs payment. This obstruction does
-not exclude the complete Weil form. The explicit two-moment logarithmic reflection form in
-`f1-primitive-variance-joint-payment.md` is a sufficient target whose sign remains open.
+not exclude the complete Weil form. The two-moment logarithmic reflection target is refuted:
+a smooth odd unit-window test has `P+E/64<0`, hence `D<0` [WTZ
+`exists_odd_unit_firstFoldTwoMoment_neg`; individual Lean and standard-only axiom audit].
+The replacement must retain more of the Gamma remainder; complete odd unit-window positivity
+remains open.
 
 *Why the answer tells where the proof must be.*
 - A proof would advance the odd base case; the even sector and the remaining prime stages would

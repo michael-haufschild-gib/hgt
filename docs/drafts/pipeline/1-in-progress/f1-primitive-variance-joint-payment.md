@@ -2,10 +2,13 @@
 
 - **ID:** F1-PV
 - **Stage:** 1-in-progress
-- **Type:** CONJECTURE
+- **Type:** REFUTED TARGET; positive survivor under audit
 - **Source:** [Joint first-fold payment](f1-joint-cubic-prime-payment.md)
-- **Statement:** The explicit two-moment form below is nonnegative for every real odd C²
+- **Refuted statement:** The explicit two-moment form below is nonnegative for every real odd C²
   function `G` supported in `[-1,1]`.
+- **Obstruction:** A [smooth quadratic-cutoff approximation](f1-quadratic-cutoff-reserve-test.md)
+  has `P(F)+E/64<0`, hence `D(G)<0`. Its individual Lean and standard-only axiom audits pass.
+  Retirement awaits the stronger Gamma reserve's positive-survivor audit.
 
 Put `d=2log2`, `w=log2/√2`, `W(u)=−½log(1−u²)`, `P₃(u)=(5u³−3u)/2`, and
 
@@ -41,7 +44,7 @@ The regional/exterior identity, scaling and fifth harmonic gap give
 This gives the audited reduction `D(G)≤P(F)+E/64≤Q(F)`. Its sign would give the
 missing floor `P≥−E/64`, hence complete odd unit-window positivity.
 
-## Actual remaining inequality
+## The refuted joint sign
 
 On the reflection strip, multiplication and reflection have paired matrix
 `[[A(u),w],[w,A(d−u)]]`; off the strip the coefficient is `A(u)`.
@@ -57,34 +60,10 @@ first-moment solution `q₁`: off the strip `q₁=u/A(u)`; on it,
 `q₁(u)=[A(v)u−wv]/[A(u)A(v)−w²]`, `v=d−u`. The numerator is at least `7451/60000`.
 Thus `q₁>0`, and `q₁<u/A` on the open strip.
 
-For the remaining joint estimate, set `p₁=u`, `p₃=P₃`,
-`qⱼ=pⱼ/A` off the strip and
-`qⱼ(u)=[A(v)pⱼ(u)−wpⱼ(v)]/[A(u)A(v)−w²]` on it.
-Write `Kᵢⱼ=∫₀¹pᵢqⱼ`, `γ₃=63/20`. The missing scalar Schur bound is
-
-`K₁₁+γ₃K₁₃²/(1−γ₃K₃₃)≤1/β`.
-
-The third-moment reserve makes the denominator positive. The new sign of `q₁` does
-not bound the mixed term sufficiently to establish this inequality.
-
-### Quantitative conjecture
-
-Try the simultaneous bounds `K₁₁≤9/40`, `K₃₃≤1/4`, `|K₁₃|≤1/25`.
-They would bound the Schur expression by `21141/85000<1280/5123`.
-None of these three estimates is established. The audited obstruction rules out obtaining
-the required first bound from the current polynomial linear chord.
-
-The explicit inverse suggests an exact density reduction. Put
-`μ(u)=u q₁(u)>0`, `r(u)=(5u²−3)/2`, and `Δ(u)=A(u)A(v)−w²` on the strip.
-Pairwise expansion gives the candidate integral identities
-
-`K₁₁=∫μ`, `K₁₃=∫μr`,
-`K₃₃=∫μr²+(w/2)∫_{d−1}¹ uv(r(u)−r(v))²/Δ(u)du`.
-
-The last term is nonnegative and cannot be discarded in an upper bound.
-Its numerator has `r(u)−r(v)=(5d/2)(u−v)`. Integral justification and Lean
-formalization remain pending; the quantitative estimates, not this algebraic
-reformulation alone, are the required advance.
+The global sign `D≥0` is false. Seeking sufficient inverse-matrix estimates for this
+sign cannot close the first fold. The complete form retains the exact local Gamma
+remainder and exterior reserve; these terms remain available for a replacement
+joint payment.
 
 ## Source status
 
@@ -103,4 +82,4 @@ reformulation alone, are the required advance.
   coercivity bounds with standard-only transitive axioms.
 - The explicit polynomial and logarithmic first-moment inverses, their positivity and local
   upper bounds pass individual Lean and standard-only transitive axiom audits.
-- The displayed joint sign remains unproved; no positivity premise has been added.
+- The displayed joint sign is refuted by `exists_odd_unit_firstFoldTwoMoment_neg`; no positivity premise is added.

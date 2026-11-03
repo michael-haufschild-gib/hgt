@@ -196,6 +196,7 @@ theorem exists_critical_multiple_completeWeilMatrix_posDef :
   let R₁ := ⌊(N : ℝ) ^ θ⌋₊
   let T := linearDefectCutoff c
   let M := N / T
+  change 2 + 8 * H ≤ L at hlarge
   have hL1 : 1 ≤ L := by linarith only [hlarge, hH]
   have hL0 : 0 < L := zero_lt_one.trans_le hL1
   have hc0 : 0 < c := zero_lt_one.trans_le hc1
@@ -236,7 +237,7 @@ theorem exists_critical_multiple_completeWeilMatrix_posDef :
   have hR₀R₁ : R₀ ≤ R₁ := by
     apply Nat.floor_mono
     rw [Real.rpow_def_of_pos hN0]
-    exact Real.exp_le_exp.mpr (by linarith only [hLhalf])
+    exact Real.exp_le_exp.mpr (hLhalf.trans_eq (by dsimp only [L]; ring))
   have hL18 : L ^ 18 ≤ (N : ℝ) := by
     calc
       _ ≤ ((N : ℝ) ^ (1 / 36 : ℝ)) ^ 18 := pow_le_pow_left₀ hL0.le hLX 18
