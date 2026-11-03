@@ -1,7 +1,7 @@
 # F2 — closed Cauchy reflection across the strip
 
 - **Stage:** 1-in-progress
-- **Conjecture:** At every `0<Re s<1/2`, actual Cauchy compatibility determines a densely defined closed conjugate-linear reflection. Reflected parameters give inverse operators. Every positive-length source interval determines the same closed graph.
+- **Conjecture:** At every `0<Re s<1/2`, closing the actual Cauchy source pairs gives a canonical densely defined closed conjugate-linear reflection. Reflected parameters give inverse operators. Every positive-length source interval determines the same closed graph.
 - **Purpose:** Recover the full-strip operator identity after bounded fixed-Haar compatibility fails, without assuming any positivity or changing the arithmetic source.
 
 ## Proposed graph
@@ -22,4 +22,4 @@ Conjugating the second graph coordinate by `J` recovers the actual reflection. T
 
 ## Gaps
 
-Prove graph-core density, the exact inverse relation, and interval determination in Lean. This does not yet intertwine the full weighted Mayer transfer family or identify a positive Weil metric. WTZ period lifts have paired branches; unrestricted interval sources must not be confused with those lifts.
+Prove graph-core density, the exact inverse relation, and interval determination in Lean. The construction selects the minimal closed extension; compatibility alone is not a uniqueness claim for arbitrary larger closed extensions. This does not yet intertwine the full weighted Mayer transfer family or identify a positive Weil metric. WTZ period lifts have paired branches; unrestricted interval sources must not be confused with those lifts.

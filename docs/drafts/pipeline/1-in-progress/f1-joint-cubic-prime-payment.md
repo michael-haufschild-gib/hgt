@@ -73,3 +73,8 @@ Both are nonnegative by the proved Gamma kernel and tail bounds. Splitting the e
 Gamma integral and substituting `M₂=E/3+(∫xF)²` gives `Q=P+∫r(E−C)+2δE` on this
 odd unit window. This equality is a paper identity; the joint sign with these terms
 retained remains the target.
+
+The [three-mode exterior reserve](../2-fully-proven/f1-gamma-remainder-reserve.md)
+gives the paper bound `Q≥P+E/64`; its Lean audit is pending. The next sufficient joint
+inequality is `P≥−E/64`, with both low moments, their cross terms, prime and pole retained.
+This floor is unproved.

@@ -117,7 +117,6 @@ theorem tendsto_sq_div_log_of_criticalCurve {c : ℕ → ℝ} (hc1 : ∀ N, 1 �
   refine this.congr fun N => ?_
   have hc0 : c N ≠ 0 := by linarith [hc1 N]
   field_simp
-  ring
 
 /-- **The exact decomposition up to `N^θ` along the critical curve**: for every `θ < ½` the
 normalized Ramanujan horizon vectors of the conductors `m ≤ N^θ` are collective quasimodes of the

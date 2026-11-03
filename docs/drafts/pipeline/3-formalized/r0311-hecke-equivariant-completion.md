@@ -1,7 +1,7 @@
 # The Hecke-equivariant completion of the window tower (review-0311 §2.5.2)
 
 - **ID:** R0311-25-2
-- **Stage:** 1-in-progress
+- **Stage:** 3-formalized
 - **Type:** THEOREM (Lean)
 - **Source:** `docs/reports/review-0311/obstacles-summary.md` §2.5.2
 - **Statement:** One bounded real-linear map from window tests into the completed PM resonant space
@@ -62,9 +62,12 @@ for `Re w > 2`. Determinant-one cones give the Farey splitting, inversion and th
   `eisensteinPeriod_eq_barnes`, `eisensteinPeriod_lewisHecke`, `eisensteinLewisPeriod_lewisHecke`,
   `resonantLewisPeriod_lewisHecke`.
 - `TheSourceHeckeOperatorsAreMellinTranslations`: `lewisHeckeOperator_windowMellinPeriod`,
-  `windowResonanceMap_heckePull_intertwines`.
+  `windowResonanceMap_heckePull_intertwines`, `lewisHeckeOperator_two` (the cone operator at `p = 2`
+  is the source operator `T₂`).
+
+Wired into `RenormalizedIntersectionTheory.lean`.
 
 ## Gates
 - [x] 0 → 1  statement
 - [x] 1 → 2  paper proof
-- [ ] 2 → 3  every module passes `lake --old env lean`
+- [x] 2 → 3  every module passes `lake --old env lean`

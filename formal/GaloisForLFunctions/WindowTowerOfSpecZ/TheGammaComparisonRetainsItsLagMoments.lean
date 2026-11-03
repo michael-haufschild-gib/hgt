@@ -42,15 +42,17 @@ private theorem retained_gamma_tail_lower :
   norm_num at h
   linarith only [h]
 
-/-- Retaining the first two lag moments avoids replacing their Gamma cost by a mass bound. -/
-theorem unit_odd_gamma_lag_moments_lower {F : ℝ → ℝ}
+/-- The lag comparison retains the exact exterior Gamma tail. -/
+theorem unit_odd_gamma_lag_moments_with_tail_lower {F : ℝ → ℝ}
     (hF : ContDiff ℝ 2 F) (hcs : HasCompactSupport F)
     (hs : tsupport F ⊆ Icc (-(1 / 2 : ℝ)) (1 / 2)) (ho : ∀ x, F (-x) = -F x) :
     (∫ t in Ioc (0 : ℝ) 1, (autocorr F 0 - autocorr F t) / t) -
       (Real.eulerMascheroniConstant + Real.log Real.pi + Real.log 2) * (∫ x, F x ^ 2) +
       (∫ x, F x ^ 2) / 48 -
       (∫ t in Ioc (0 : ℝ) 1, t * (autocorr F 0 - autocorr F t)) / 24 -
-      (∫ t in Ioc (0 : ℝ) 1, t ^ 2 * (autocorr F 0 - autocorr F t)) / 16 ≤
+      (∫ t in Ioc (0 : ℝ) 1, t ^ 2 * (autocorr F 0 - autocorr F t)) / 16 +
+      2 * (archLevyAntideriv 1 - Real.log 2 - Real.pi / 4 + 1 / 4 - 1 / 96) *
+        (∫ x, F x ^ 2) ≤
         EF.gammaBracket 0 * (∫ x, F x ^ 2) + biScaleLevyEnergy F := by
   set M := autocorr F 0
   set D := fun t => M - autocorr F t
@@ -121,18 +123,29 @@ theorem unit_odd_gamma_lag_moments_lower {F : ℝ → ℝ}
       Ioc_union_Ioi_eq_Ioi (by norm_num : (0 : ℝ) ≤ 1)]
     rfl
   rw [htail] at hsplit
-  have hE : 0 ≤ M := by
-    change 0 ≤ autocorr F 0
-    rw [autocorr_zero_eq]
-    exact integral_nonneg fun x => sq_nonneg _
-  have htailM := mul_le_mul_of_nonneg_right retained_gamma_tail_lower hE
   have hGamma := congrArg (fun z : ℝ => z * M) neg_gammaBracket_zero_eq
   rw [← autocorr_zero_eq]
   change (∫ t in Ioc (0 : ℝ) 1, D t / t) -
     (Real.eulerMascheroniConstant + Real.log Real.pi + Real.log 2) * M + M / 48 -
     (∫ t in Ioc (0 : ℝ) 1, t * D t) / 24 -
-    (∫ t in Ioc (0 : ℝ) 1, t ^ 2 * D t) / 16 ≤ _
-  nlinarith only [hcomp, hsplit, htailM, hGamma]
+    (∫ t in Ioc (0 : ℝ) 1, t ^ 2 * D t) / 16 +
+    2 * (archLevyAntideriv 1 - Real.log 2 - Real.pi / 4 + 1 / 4 - 1 / 96) * M ≤ _
+  nlinarith only [hcomp, hsplit, hGamma]
+
+/-- Retaining the first two lag moments avoids replacing their Gamma cost by a mass bound. -/
+theorem unit_odd_gamma_lag_moments_lower {F : ℝ → ℝ}
+    (hF : ContDiff ℝ 2 F) (hcs : HasCompactSupport F)
+    (hs : tsupport F ⊆ Icc (-(1 / 2 : ℝ)) (1 / 2)) (ho : ∀ x, F (-x) = -F x) :
+    (∫ t in Ioc (0 : ℝ) 1, (autocorr F 0 - autocorr F t) / t) -
+      (Real.eulerMascheroniConstant + Real.log Real.pi + Real.log 2) * (∫ x, F x ^ 2) +
+      (∫ x, F x ^ 2) / 48 -
+      (∫ t in Ioc (0 : ℝ) 1, t * (autocorr F 0 - autocorr F t)) / 24 -
+      (∫ t in Ioc (0 : ℝ) 1, t ^ 2 * (autocorr F 0 - autocorr F t)) / 16 ≤
+        EF.gammaBracket 0 * (∫ x, F x ^ 2) + biScaleLevyEnergy F := by
+  have h := unit_odd_gamma_lag_moments_with_tail_lower hF hcs hs ho
+  have hE : 0 ≤ ∫ x, F x ^ 2 := integral_nonneg fun x => sq_nonneg _
+  have htailM := mul_le_mul_of_nonneg_right retained_gamma_tail_lower hE
+  nlinarith only [h, htailM]
 
 
 /-- The quadratic lag cost is exactly the square of the first odd position moment. -/
@@ -242,6 +255,7 @@ theorem unit_odd_gamma_pole_primitive_lower {F : ℝ → ℝ}
 
 end GaloisForLFunctions.WindowTowerOfSpecZ
 
+#print axioms GaloisForLFunctions.WindowTowerOfSpecZ.unit_odd_gamma_lag_moments_with_tail_lower
 #print axioms GaloisForLFunctions.WindowTowerOfSpecZ.unit_odd_gamma_lag_moments_lower
 
 #print axioms GaloisForLFunctions.WindowTowerOfSpecZ.unit_odd_gamma_position_lower

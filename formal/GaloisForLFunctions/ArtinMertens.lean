@@ -11,6 +11,9 @@ import GaloisForLFunctions.ArtinMertens.TheIdealCountHasAPowerSavingErrorTerm
 import GaloisForLFunctions.ArtinMertens.TheMertensTheoremForPrimeIdealsHasABoundedError
 import GaloisForLFunctions.ArtinMertens.PrimePowerWeightsHavePowerBounds
 import GaloisForLFunctions.ArtinMertens.TheFrobeniusDensityTheoremWithBoundedError
+import GaloisForLFunctions.ArtinMertens.NewmansAnalyticTheorem
+import GaloisForLFunctions.ArtinMertens.TheTwistedVonMangoldtSeriesConvergesAtOne
+import GaloisForLFunctions.ArtinMertens.TheMertensConstantsInProgressionsExist
 
 /-!
 # Mertens' theorem for Artin L-functions
@@ -25,5 +28,8 @@ the permutation character `π_H(Frob_p)`; Mertens for permutation characters; Ar
 theorem in Mertens form); lattice points in dilates of domains with Lipschitz boundary; the
 Lipschitz frontier of the norm ball in the fundamental cone; Weber's `I_K(s) = c_K s + O(s^{1−1/n})`;
 Mertens with bounded error for prime ideals; and
-`Σ_{p ≤ x} φ(Frob_p) log p/p = ⟨φ, 1⟩ log x + O(1)` for every division-constant `φ`.
+`Σ_{p ≤ x} φ(Frob_p) log p/p = ⟨φ, 1⟩ log x + O(1)` for every division-constant `φ`. Over `ℚ(ζ_q)`
+the error is a constant: Newman's analytic theorem and `L(1 + it, χ) ≠ 0` give
+`Σ_{n ≤ x} χ(n)Λ(n)/n → −L'(1, χ)/L(1, χ)` for `χ ≠ 1`, hence the Mertens constants in progressions,
+`Σ_{n ≤ x, n ≡ a} Λ(n)/n = log x/φ(q) + C(q, a) + o(1)`.
 -/

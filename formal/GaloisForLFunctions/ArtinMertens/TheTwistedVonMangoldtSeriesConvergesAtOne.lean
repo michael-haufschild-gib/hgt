@@ -333,7 +333,6 @@ theorem sum_twist_vonMangoldt_div_eq {x : ℝ} (hx : 1 ≤ x) :
     have : (Complex.exp (u : ℂ)) ≠ 0 := Complex.exp_ne_zero _
     field_simp
   rw [← hint]
-  push_cast
   ring
 
 /-- **The twisted von Mangoldt series converges at `s = 1`**: for a nontrivial character `χ`,

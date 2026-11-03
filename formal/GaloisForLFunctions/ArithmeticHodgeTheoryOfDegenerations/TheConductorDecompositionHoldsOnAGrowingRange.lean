@@ -204,6 +204,7 @@ theorem tendsto_layerForm_graded {k : ℝ → ℝ} (hk : ContDiff ℝ 2 k)
   rw [e]
   exact hlim
 
+omit hh hsupp in
 /-- The zero window. -/
 theorem tendsto_layerForm_twisted {S : Finset ℕ} (hS : ∀ m ∈ S, 1 < m) :
     Tendsto (fun N => layerForm (c N) N (twistedWeights g (ramComb S fun _ => 1) N)) atTop
@@ -236,10 +237,11 @@ theorem tendsto_layerForm_untwisted :
     Tendsto (fun N => layerForm (c N) N (horizonWeights h N)) atTop (𝓝 (untwistedLimit h K)) :=
   horizon_layer_criticalCurve_exact hh hA hsupp hc1 hK hcrit
 
+omit hh hsupp in
 theorem tendsto_layerForm_conductor {j : ℕ} (hj : 1 < j) :
     Tendsto (fun N => layerForm (c N) N (twistedWeights g (ramTwist j) N)) atTop
       (𝓝 (twistedCount g K j)) := by
-  have := tendsto_layerForm_twisted hh hg hA hsupp hgsupp hc1 hK hcrit (S := {j}) (by simpa using hj)
+  have := tendsto_layerForm_twisted hg hA hgsupp hc1 hK hcrit (S := {j}) (by simpa using hj)
   rw [Finset.sum_singleton] at this
   refine this.congr fun N => ?_
   congr 1
@@ -260,10 +262,11 @@ theorem tendsto_layerPair_untwisted_conductor {j : ℕ} (hj : 1 < j) :
     funext n
     simp only [twistedWeights, ramComb_single]
   have := tendsto_layerPair_of_forms hc1 (tendsto_layerForm_untwisted hh hA hsupp hc1 hK hcrit)
-    (tendsto_layerForm_conductor hh hg hA hsupp hgsupp hc1 hK hcrit hj) h3'
+    (tendsto_layerForm_conductor hg hA hgsupp hc1 hK hcrit hj) h3'
   rwa [show (untwistedLimit h K + twistedCount g K j - untwistedLimit h K - twistedCount g K j) / 2
     = 0 by ring] at this
 
+omit hh hsupp in
 /-- Two different conductors `j, j' ≥ 2`: the mixed pairing vanishes. -/
 theorem tendsto_layerPair_conductor_conductor {j j' : ℕ} (hj : 1 < j) (hj' : 1 < j')
     (hne : j ≠ j') :
@@ -274,7 +277,7 @@ theorem tendsto_layerPair_conductor_conductor {j j' : ℕ} (hj : 1 < j) (hj' : 1
     rcases Finset.mem_insert.mp hm with rfl | hm
     · exact hj
     · rw [Finset.mem_singleton.mp hm]; exact hj'
-  have h3 := tendsto_layerForm_twisted hh hg hA hsupp hgsupp hc1 hK hcrit hS
+  have h3 := tendsto_layerForm_twisted hg hA hgsupp hc1 hK hcrit hS
   rw [Finset.sum_pair hne] at h3
   have h3' : Tendsto (fun N => layerForm (c N) N (fun n => twistedWeights g (ramTwist j) N n +
       twistedWeights g (ramTwist j') N n)) atTop (𝓝 (twistedCount g K j + twistedCount g K j')) := by
@@ -283,8 +286,8 @@ theorem tendsto_layerPair_conductor_conductor {j j' : ℕ} (hj : 1 < j) (hj' : 1
     funext n
     simp only [twistedWeights, ramComb, Finset.sum_pair hne, one_mul, mul_add]
   have := tendsto_layerPair_of_forms hc1
-    (tendsto_layerForm_conductor hh hg hA hsupp hgsupp hc1 hK hcrit hj)
-    (tendsto_layerForm_conductor hh hg hA hsupp hgsupp hc1 hK hcrit hj') h3'
+    (tendsto_layerForm_conductor hg hA hgsupp hc1 hK hcrit hj)
+    (tendsto_layerForm_conductor hg hA hgsupp hc1 hK hcrit hj') h3'
   rwa [show (twistedCount g K j + twistedCount g K j' - twistedCount g K j - twistedCount g K j') / 2
     = 0 by ring] at this
 
@@ -305,9 +308,9 @@ theorem tendsto_layerPair_conductorWindow {m m' : ℕ} (hm : 1 ≤ m) (hm' : 1 �
     by_cases he : m = m'
     · subst he
       simp only [if_true, conductorLimit, if_neg hm1.ne']
-      exact tendsto_layerForm_conductor hh hg hA hsupp hgsupp hc1 hK hcrit hm1
+      exact tendsto_layerForm_conductor hg hA hgsupp hc1 hK hcrit hm1
     · rw [if_neg he]
-      exact tendsto_layerPair_conductor_conductor hh hg hA hsupp hgsupp hc1 hK hcrit hm1 hm1' he
+      exact tendsto_layerPair_conductor_conductor hg hA hgsupp hc1 hK hcrit hm1 hm1' he
 
 /-- **The conductor decomposition is uniform on a growing range.** There is `M(N) → ∞` such that for
 every `ε > 0`, eventually, for all coefficients `b`,

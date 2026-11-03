@@ -1,7 +1,8 @@
 # Positive Euler twins and the strict square-root threshold
 
 - **ID:** positive-finite-euler-factor-twins
-- **Stage:** 1-in-progress
+- **Stage:** 3-formalized
+- **Type:** THEOREM (Lean).
 - **Wall:** Γ15; positive multiplicative functional-equation twins.
 - **Target:** Every finite zeta coefficient prefix extends to a degree-one
   positive multiplicative Euler series with a zero at any prescribed real
@@ -60,7 +61,7 @@ Namespace `GaloisForLFunctions.SelbergClass.PositiveFiniteEuler`:
 - `PositiveFiniteEulerTwins`: `exists_positive_multiplicative_euler_twin_at`,
   `exists_positive_multiplicative_twin`.
 
-The existential assembly is formalized. All 20 audited declarations depend
-only on `propext`, `Classical.choice`, `Quot.sound`. Canonical source checks
-remain pending.
+All six canonical source checks passed. All 20 audited declarations depend
+only on `propext`, `Classical.choice`, `Quot.sound`. The modules are imported
+by the SelbergClass umbrella.
 The full Selberg-constrained face of Γ15 remains open.

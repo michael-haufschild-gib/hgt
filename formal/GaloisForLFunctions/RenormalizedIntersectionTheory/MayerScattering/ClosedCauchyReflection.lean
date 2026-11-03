@@ -1,4 +1,6 @@
 import GaloisForLFunctions.RenormalizedIntersectionTheory.MayerScattering.CauchyWindowRangeDensity
+import GaloisForLFunctions.HTGeometry.OrthogonalClosureCriterion
+import Mathlib.Analysis.InnerProductSpace.ProdL2
 
 /-!
 # Closed Cauchy reflection across the strip

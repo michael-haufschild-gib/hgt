@@ -11,9 +11,9 @@
 | # | Question | Owner folder | Status |
 |---|---|---|---|
 | 2.5.1 | Two-collar recursion: `S^N_ε`, its evolution law, closed collar coupling at stages 1, 2 | `CanonicalSystemOfTheWindowTower/` | answered, Lean: `3-formalized/r0311-two-collar-recursion.md` |
-| 2.5.2 | Hecke-equivariant completion: exact Weil = Krein identity with Hecke ↔ `T_p − Id` | `RenormalizedIntersectionTheory/MayerScattering/` | answer written; modules compiling |
+| 2.5.2 | Hecke-equivariant completion: exact Weil = Krein identity with Hecke ↔ `T_p − Id` | `RenormalizedIntersectionTheory/MayerScattering/` | answered, Lean: `3-formalized/r0311-hecke-equivariant-completion.md` |
 | 2.5.3 | Log-free unit-window occupancy `D_win` | `RHTower/WD/` | open |
-| 2.5.4 | Growing conductors at the critical curve, then `M(N) → N` | `ArithmeticHodgeTheoryOfDegenerations/` | open |
+| 2.5.4 | Growing conductors at the critical curve, then `M(N) → N` | `ArithmeticHodgeTheoryOfDegenerations/` | answer written (`r0311-growing-conductors-at-the-critical-curve.md`); final checks running |
 
 ## 2.5.2 — answer
 
