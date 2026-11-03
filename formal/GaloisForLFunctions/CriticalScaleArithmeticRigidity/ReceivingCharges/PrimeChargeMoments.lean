@@ -29,12 +29,13 @@ private theorem prime_count_square_le {P : Finset ℕ}
           if p = q then (if p ∣ n then 1 else 0) else 0 := by
     by_cases hpq : p = q
     · subst q
+      simp only [if_pos rfl]
       split_ifs <;> norm_num
     · simp only [if_neg hpq, add_zero]
       by_cases hpn : p ∣ n
       · by_cases hqn : q ∣ n
-        · have hpqn := ((Nat.coprime_primes (hP p hp) (hP q hq)).2 hpq).
-            mul_dvd_of_dvd_of_dvd hpn hqn
+        · have hcop := (Nat.coprime_primes (hP p hp) (hP q hq)).2 hpq
+          have hpqn := hcop.mul_dvd_of_dvd_of_dvd hpn hqn
           simp only [if_pos hpn, if_pos hqn, if_pos hpqn, one_mul, le_refl]
         · simp only [if_pos hpn, if_neg hqn, mul_zero]
           split_ifs <;> norm_num
@@ -50,7 +51,7 @@ private theorem prime_count_square_le {P : Finset ℕ}
           if p = q then (if p ∣ n then 1 else 0) else 0) :=
       sum_le_sum fun p hp => sum_le_sum fun q hq => hpair p hp q hq
     _ = _ := by
-      simp only [sum_add_distrib, sum_ite_eq, ite_true]
+      simp only [sum_add_distrib, sum_ite_eq]
       rw [primePairDivisorCount, primeDivisorCount]
       congr 1
       exact sum_congr rfl fun p hp => if_pos hp
@@ -86,8 +87,6 @@ private theorem count_moment_le {P : Finset ℕ} (hP : ∀ p ∈ P, p.Prime)
     _ = _ := by
       simp only [Nat.cast_mul, div_eq_mul_inv, mul_inv_rev, one_mul, sq,
         mul_add, mul_sum, sum_mul]
-      congr 1
-      exact sum_congr rfl fun p _ => sum_congr rfl fun q _ => by ring
 
 /-- Ordinary second moment of prime incidence, with no cutoff-separation loss. -/
 theorem primeDivisorCount_second_moment_le {P : Finset ℕ}
@@ -107,7 +106,7 @@ private theorem harmonic_divisibility_le (N : ℕ) {d : ℕ} (hd : 0 < d) :
     intro n _ _
     exact div_nonneg zero_le_one (Nat.cast_nonneg n)
   calc
-    (∑ n ∈ Icc 1 (N / d), 1 / (d * n : ℕ)) = harmonicMass (N / d) / d := by
+    (∑ n ∈ Icc 1 (N / d), 1 / ((d * n : ℕ) : ℝ)) = harmonicMass (N / d) / d := by
       rw [harmonicMass, sum_div]
       exact sum_congr rfl fun n _ => by rw [Nat.cast_mul]; ring
     _ ≤ _ := div_le_div_of_nonneg_right hmono (Nat.cast_nonneg d)
@@ -189,9 +188,9 @@ theorem centeredPrimeDivisorCount_harmonic_second_moment_le {P : Finset ℕ}
     _ = 2 * (∑ n ∈ Icc 1 N, primeDivisorCount P n ^ 2 / (n : ℝ)) +
         2 * harmonicMass N * (∑ p ∈ P, 1 / (p : ℝ)) ^ 2 := by
       simp only [add_div, mul_div_assoc, sum_add_distrib, ← mul_sum]
-      rw [harmonicMass, sum_mul]
+      rw [harmonicMass, mul_assoc, sum_mul]
       congr 1
-      rw [mul_sum]
+      congr 1
       exact sum_congr rfl fun n _ => by ring
     _ ≤ _ := by
       have h := primeDivisorCount_harmonic_second_moment_le hP N

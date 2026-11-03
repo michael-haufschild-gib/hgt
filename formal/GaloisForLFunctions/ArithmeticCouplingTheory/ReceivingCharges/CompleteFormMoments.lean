@@ -1,6 +1,7 @@
 import GaloisForLFunctions.ArithmeticCouplingTheory.TheShellDegreeHasAnExplicitRowBound
 import GaloisForLFunctions.RenormalizedArithmeticPotentialTheory.TheCenterCorrectionRetainsThePrimeDefect
 import GaloisForLFunctions.CompletedArithmeticForms.ConductorBandPrimeAndCenterBounds
+import GaloisForLFunctions.ArithmeticCouplingTheory.ReceivingCharges.NearOverlapMoments
 
 /-!
 # Ordinary and harmonic moments in the complete form
@@ -255,11 +256,68 @@ theorem abs_complete_packet_diagonal_le {φ : ℝ → ℝ}
           (add_le_add (add_le_add (abs_selfFinitePart_le hc φ) hself) hfloor) hmert
     _ = _ := by rw [← sum_mul, mul_comm]
 
+/-- Every term of the complete form is retained in a two-moment error bound. -/
+theorem exists_complete_packet_moment_bound {φ : ℝ → ℝ}
+    (hφ : ContDiff ℝ 2 φ) (hφ0 : ∀ u, 0 ≤ φ u)
+    (hsupp : ∀ u, u ∉ Set.Icc 0 1 → φ u = 0) (hM : 0 < ∫ u, φ u ^ 2) :
+    ∃ C : ℝ, 0 ≤ C ∧ ∀ (c : ℝ) (N : ℕ), 1 ≤ c → 1 ≤ N → c / N ≤ 1 / 3 →
+      ∀ F : ℕ → ℝ, (∑ n ∈ Icc 1 N, F n / (n : ℝ) = 0) →
+      |completeWeilEnergy φ c N (packetVector F N) - jumpEnergy N F| ≤
+        (|completeWeilSelfFinitePart φ 1| + Real.log c + Real.exp (1 / 2) / 2 +
+          Real.log 2 + (Real.log 4 + 4 + Real.eulerMascheroniConstant) +
+          2 * (Real.log 4 + 4) * Real.exp (5 / 2) * c +
+          4 * (152 * (∫ u, |φ u|) ^ 2 / (∫ u, φ u ^ 2)) * c ^ 2) *
+            (∑ n ∈ Icc 1 N, F n ^ 2 / (n : ℝ)) +
+        ((2 * Real.exp (3 / 2) * c * (Real.log N + 1) +
+          c * ((harmonic N : ℝ) + 1) +
+          2 * CriticalArithmeticCorrelationTheory.linearNearRowRadius c ^ 2 *
+            (Real.log N + C + c * (Real.log N + 2))) / N) *
+              ∑ n ∈ Icc 1 N, F n ^ 2 := by
+  obtain ⟨C, hC, hov⟩ := exists_abs_overlap_packet_le hφ hsupp hM
+  refine ⟨C, hC, ?_⟩
+  intro c N hc hN hw F hF
+  have hc0 : 0 < c := zero_lt_one.trans_le hc
+  have hN0 : (0 : ℝ) < N := by exact_mod_cast hN
+  have hcN : c ≤ N := (div_le_one hN0).1 (by linarith only [hw])
+  have hshell := (abs_half_affine_sub_shell_le hφ0 hsupp hM hc0 N F).trans
+    (shell_packet_moments_le hφ hsupp hM hc0 hcN F)
+  have hdiag := abs_complete_packet_diagonal_le hφ hsupp hM hc hN hcN F
+  have hcenter := abs_center_packet_le hφ.continuous hsupp hM hc0.le N F hF
+  have hcross := abs_separatedCross_packet_le hφ hsupp hM hc0 hN F
+  have hoverlap := hov c N hc hN hw F
+  have heq := completeWeilEnergy_packetVector_at_every_overlap hφ hsupp hM hc0 hN F
+  rw [poleError_packet_eq_zero φ c N F hF, add_zero] at heq
+  have halgebra : completeWeilEnergy φ c N (packetVector F N) - jumpEnergy N F =
+      ((1 / 2) * affineDirichlet φ c N F -
+        ∑ n : PrimeHorizonIndex N, shellDegree φ c N n * F n ^ 2) +
+      (∑ n ∈ Icc 1 N, F n ^ 2 / (n : ℝ) *
+        (completeWeilSelfFinitePart φ c + completeWeilSelfError φ c N +
+          floorDefect N n - mertensRemainder (N / n))) +
+      ⟪Matrix.toEuclideanLin (fullWeilCenterMatrix (completeWeilPoleShift φ c) N)
+        (packetVector F N), packetVector F N⟫ -
+      ⟪Matrix.toEuclideanLin (separatedCrossErrorMatrix φ c N) (packetVector F N),
+        packetVector F N⟫ +
+      ⟪Matrix.toEuclideanLin (overlapMatrix φ c N) (packetVector F N), packetVector F N⟫ := by
+    rw [heq]
+    ring
+  have htriangle (a b d e f : ℝ) :
+      |a + b + d - e + f| ≤ |a| + |b| + |d| + |e| + |f| := by
+    calc
+      _ ≤ |a + b + d - e| + |f| := abs_add_le _ _
+      _ ≤ (|a + b + d| + |e|) + |f| := add_le_add (abs_sub _ _) le_rfl
+      _ ≤ _ := add_le_add (add_le_add (abs_add_three _ _ _) le_rfl) le_rfl
+  rw [halgebra]
+  refine (htriangle _ _ _ _ _).trans ?_
+  have hsum := add_le_add (add_le_add (add_le_add (add_le_add hshell hdiag) hcenter) hcross)
+    hoverlap
+  exact hsum.trans_eq (by ring)
+
 #print axioms poleError_packet_eq_zero
 #print axioms abs_center_packet_le
 #print axioms abs_separatedCross_packet_le
 #print axioms abs_half_affine_sub_shell_le
 #print axioms shell_packet_moments_le
 #print axioms abs_complete_packet_diagonal_le
+#print axioms exists_complete_packet_moment_bound
 
 end GaloisForLFunctions.ArithmeticCouplingTheory
