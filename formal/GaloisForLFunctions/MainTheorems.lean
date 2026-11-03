@@ -67,3 +67,4 @@ import GaloisForLFunctions.DimensionZeroGeometryOfSpecZ
 import GaloisForLFunctions.GrowingWindowsOfSpecZ
 import GaloisForLFunctions.ArchimedeanTateDomination
 import GaloisForLFunctions.CanonicalSystemOfTheWindowTower
+import GaloisForLFunctions.ThetaCuspSections

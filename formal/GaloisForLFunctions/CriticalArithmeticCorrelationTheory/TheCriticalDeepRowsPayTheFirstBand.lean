@@ -4,7 +4,7 @@ import GaloisForLFunctions.CriticalArithmeticCorrelationTheory.TheDeepRowPairing
 # Deep rows pay the first band at the critical overlap
 
 Through conductor `(log N)^(13/32)`, the deep inverse-energy residual tends
- to zero even at `c = (log N)^(1/8)`. The first band's top rows have mass
+to zero even at `c = (log N)^(1/8)`. The first band's top rows have mass
 `O((log N)^(-1/2))`, which pays the full `O((log N)^(1/4))` residual budget.
 -/
 
@@ -65,7 +65,10 @@ theorem eventually_critical_deep_residual_payment :
   let L := Real.log (N : ℝ)
   let Q := ⌊L ^ (13 / 32 : ℝ)⌋₊
   let R := ⌊Real.exp (L ^ (1 / 2 : ℝ))⌋₊
+  change 6912 * (C_p + 1) / κ ≤ L ^ (1 / 8 : ℝ) at hlargeD
+  change 960 ≤ L ^ (1 / 4 : ℝ) at hlargeT
   obtain ⟨hQ2, hQR, -, hQup, -, -, hRup, hRlow, h36, -, -, -⟩ := hcut
+  change 2 ≤ Q at hQ2
   have hL2000 : 2000 ≤ L := by linarith only [hlarge, abs_nonneg Kβ, abs_nonneg Y₀]
   have hL1 : 1 ≤ L := by linarith only [hL2000]
   have hL0 : 0 < L := zero_lt_one.trans_le hL1
@@ -73,7 +76,7 @@ theorem eventually_critical_deep_residual_payment :
     by_contra hn
     have : N = 0 := by omega
     subst this
-    simpa [L] using hL0
+    simp [L] at hL0
   have hc0 : 0 < c := zero_lt_one.trans_le hc1
   have hcL : c ≤ L := hc.trans ((Real.rpow_le_rpow_of_exponent_le hL1
     (by norm_num : (1 / 8 : ℝ) ≤ 1)).trans_eq (Real.rpow_one L))
@@ -88,7 +91,7 @@ theorem eventually_critical_deep_residual_payment :
     simpa only [one_mul, pow_one] using hpoly
   have hpoly16' : 16 * (1 + Real.log L) ≤ L ^ (1 / 2 : ℝ) := by
     simpa only [pow_one] using hpoly16
-  obtain ⟨hR8, hlogY, hYY₀, hQY⟩ := deep_cutoff_facts
+  obtain ⟨hR8, hlogY, hYY₀, hQY⟩ := deep_cutoff_facts (Y₀ := Y₀)
     (by linarith only [hL2000]) hc1 hcL hpoly16' hR1 hRlow
     (by linarith only [hlarge, le_abs_self Y₀, abs_nonneg Kβ]) hQhalf
   have hNL : L ^ 18 ≤ (N : ℝ) := by
@@ -102,12 +105,14 @@ theorem eventually_critical_deep_residual_payment :
         (by norm_num : (1 / 2 : ℝ) ≤ 1)).trans_eq (Real.rpow_one _)
   have hD := deep_inverse_energy_mass_le (Q := Q) hCp hCs hCq hKup hdeep (hY₀ _ hYY₀).2
     (by linarith only [hL2000]) hc1 hcL hQL hQY hR8 hNL
-    (by field_simp) hlogY (by linarith only [hlarge, le_abs_self Kβ, abs_nonneg Y₀])
+    (by field_simp) hlogY (by
+      change Kβ ≤ L
+      linarith only [hlarge, le_abs_self Kβ, abs_nonneg Y₀])
   have hc7 : c ^ 7 ≤ L ^ (7 / 8 : ℝ) := by
-    simpa only [show (7 : ℝ) * (1 / 8 : ℝ) = 7 / 8 by norm_num] using
-      pow_le_rpow_mul hL0 hc0.le hc 7
-  have hlogQ : 1 + Real.log (Q : ℝ) ≤ L ^ (1 / 64 : ℝ) :=
-    (add_le_add_left (Real.log_le_log hQ0 hQL) 1).trans hpoly'
+    convert pow_le_rpow_mul hL0 hc0.le hc 7 using 1 <;> norm_num
+  have hlogQ : 1 + Real.log (Q : ℝ) ≤ L ^ (1 / 64 : ℝ) := by
+    have h := Real.log_le_log hQ0 hQL
+    linarith only [h, hpoly']
   have hQterm : (Q : ℝ) ^ 2 * (1 + Real.log Q) ^ 2 ≤ L ^ (7 / 8 : ℝ) := by
     have h₁ := pow_le_rpow_mul hL0 (Nat.cast_nonneg Q) hQup 2
     have h₂ := pow_le_rpow_mul hL0
@@ -123,7 +128,7 @@ theorem eventually_critical_deep_residual_payment :
             (show 8 * c ^ 7 + (Q : ℝ) ^ 2 * (1 + Real.log Q) ^ 2 ≤
               9 * L ^ (7 / 8 : ℝ) by linarith only [hc7, hQterm]) hκ.le)
           (show 0 ≤ 8 * ((C_p + 1) / L) by positivity)
-        convert h using 1 <;> ring
+        exact h.trans_eq (by ring)
       _ = 72 * (C_p + 1) / κ / L ^ (1 / 8 : ℝ) := by
         have he : L ^ (7 / 8 : ℝ) * L ^ (1 / 8 : ℝ) = L := by
           rw [← Real.rpow_add hL0]; norm_num
@@ -131,7 +136,8 @@ theorem eventually_critical_deep_residual_payment :
         nlinarith only [he]
       _ ≤ 1 / 96 := by
         rw [div_le_iff₀ (by positivity)]
-        linarith only [hlargeD]
+        have he : 6912 * (C_p + 1) / κ = 96 * (72 * (C_p + 1) / κ) := by ring
+        linarith only [hlargeD, he]
   refine ⟨hD.trans hDsmall, ?_⟩
   intro u hu
   obtain ⟨-, -, -, -, hR6, -, -, -, -, -, -, -⟩ :=
@@ -150,7 +156,7 @@ theorem eventually_critical_deep_residual_payment :
       _ ≤ 480 * (L ^ (1 / 4 : ℝ) * L ^ (1 / 2 : ℝ) / L) := by
         have h := mul_le_mul_of_nonneg_left (div_le_div_of_nonneg_right hnum hL0.le)
           (show 0 ≤ 48 * L ^ (1 / 4 : ℝ) by positivity)
-        convert h using 1 <;> ring
+        exact h.trans_eq (by ring)
       _ = 480 / L ^ (1 / 4 : ℝ) := by
         have he : L ^ (1 / 4 : ℝ) * L ^ (1 / 2 : ℝ) * L ^ (1 / 4 : ℝ) = L := by
           rw [← Real.rpow_add hL0, ← Real.rpow_add hL0]; norm_num

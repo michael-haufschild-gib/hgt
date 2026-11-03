@@ -47,6 +47,11 @@ This disproves the sufficient collar loan while preserving a strictly positive c
 
 ## Remaining bridge
 
+The raw ACT positive folded-supersolution construction is excluded for nonzero nonnegative
+decaying profiles, not merely shifted combinations: its normalized defect at zero tends to
+`−2∫M dm<0` (`FoldedSourceOriginJumpMomentLaw`). A modified operator needs its own exact
+signed energy payment. See [origin boundary charge](../5-failed/f1-folded-origin-boundary.md).
+
 Retain `Q_N+w(F−C)` jointly. Existing variable-hub and two-vertex Schur identities require
 positive pivots and control of the residual Schur scalar; those signs are not provided by
 exit-charge domination. Exact IMS localization and coherent collar transport already exist;

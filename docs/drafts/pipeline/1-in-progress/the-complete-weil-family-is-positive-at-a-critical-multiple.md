@@ -1,7 +1,7 @@
 # The complete Weil family is positive at a critical multiple
 
-- **Stage:** 2-fully-proven
-- **Type:** THEOREM (paper); Lean formalization in progress
+- **Stage:** 1-in-progress
+- **Type:** CONJECTURE; endpoint assembly incomplete
 - **Wall:** Σ1b, Σ1k; route obstacles B4 (`2.5.4`) and B5 (`2.8`)
 - **Statement:** There exists `K₁ > 0` such that eventually in `N` and uniformly across `1 ≤ c ≤ 2 K₁ (log N)^{1/8}`, `spectralFloorWeilMatrix c N` and `completeWeilMatrix tiltedUnitSpline c N` are positive definite on `EuclideanSpace ℝ (PrimeHorizonIndex N)`.
 
@@ -9,7 +9,17 @@
 
 Resolves Section 2.8 of `obstacles-summary.md` in the affirmative on the whole space: there is a fixed positive critical multiple `K₁ > 0` at which `completeWeilMatrix tiltedUnitSpline (2 K (log N)^{1/8}) N` is eventually positive definite on all vectors (hence also positive on the pole hyperplane `v₁^⊥`, satisfying Hodge–Riemann and hard Lefschetz) for every `0 < K ≤ K₁`, with a common `K₁ > 0` simultaneously inside the aperture-independent window-pencil range of `OneCriticalMultiplePaysEveryWindow`.
 
-## Proof [PROVED HERE]
+## Proof sketch — unresolved dependencies
+
+The cutoff `Q₁ = ⌊L^(5/16)⌋` below does not make the cited mid-band error
+`c√c(1+log c)/√Q₁` small at `c ≍ L^(1/8)`: its power is `L^(1/32)`.
+Use `Q₁ = ⌊L^(13/32)⌋` instead; the power becomes `L^(-1/64)`.
+The log-free residual module states that larger cutoff but does not yet pass
+a direct Lean check. Step 3 also omits the terminal leakage in the prefix
+pole-defect bound and needs a weighted complement theorem. The argument is
+therefore not dependency-closed.
+
+Current bridge: [F2 assembly](f2-complete-family-assembly.md).
 
 Write `L = log N` and split `[1, 2 K₁ L^{1/8}] = [1, L^{1/16}] ∪ [L^{1/16}, 2 K₁ L^{1/8}]`. On `[1, L^{1/16}]`, `eventually_tiltedUnitSpline_spectralFloorWeilMatrix_posDef_below_one_eighth` at `α = 1/16 < 1/8` gives `(spectralFloorWeilMatrix c N).PosDef`. Assume `L^{1/16} ≤ c ≤ 2 K₁ L^{1/8}` with `0 < K₁ ≤ 1/2`.
 
@@ -54,5 +64,5 @@ Thus `(spectralFloorWeilMatrix c N).PosDef` holds across `1 ≤ c ≤ 2 K₁ L^{
 ## Gates
 
 - [x] 0 → 1  in-progress: well-posed, source-pure, attack idea
-- [x] 1 → 2  fully-proven: complete paper proof, `[PROVED HERE]`, no open dependency
+- [ ] 1 → 2  fully-proven: corrected cutoff, residual proofs, prefix leakage and all cross payments
 - [ ] 2 → 3  formalized: Lean theorems, foreground `lake --old env lean` checks, `#print axioms` PASS

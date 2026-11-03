@@ -106,7 +106,7 @@ exclude density-zero exceptional sets.
 ### 1.10 The live paths
 | Class | Statement | First test | Status |
 |---|---|---|---|
-| P1 signed criticality | a positive supersolution / ground-state representation of the folded arithmetic jump operator, with the sign of every fold used and the pole's negative square paid, stage by stage | odd unit window `[−½, ½]` (one first-moment direction open); first prime stage `A < log 3` | live; criterion `riemannHypothesis_of_foldedSupersolution` [L] |
+| P1 signed criticality | exact signed stage payment, retaining reflected energy and the pole's negative square | odd unit window `[−½, ½]` (one first-moment direction open); first prime stage `A < log 3` | live; raw positive folded supersolutions fail for nonnegative decaying profiles [L: ACT origin law] |
 | P2 prime-blind positivity | archimedean + pole part `≥ 0` on signed combinations of autocorrelations vanishing on `±log ℕ_{≥2}` | finite-level cones `C_A`, `A ≤ log 6` | live; solved on nonnegative and separated-bump cones; heuristic against finite-level slack [D] |
 | P3 PM reflection | arithmetic `D_s ≥ 0` on resonances | — | reduced to the zero side; no candidate mechanism |
 | P4 square-root cancellation | `c_ψ(t) = O(1)` for one smoothed short-window prime sum | — | live; classical; parity barrier for sieve-type producers |
@@ -154,7 +154,7 @@ exclude density-zero exceptional sets.
 |---|---|---|---|
 | B1 | Weil's sign on windows of every length (≡ two-site band ≡ lattice Schur parameters in `(−1,1)` ≡ translation contraction ≡ fold capacity ≡ horizon criterion ≡ Beurling schedule ≡ `ι(A) = 0` ∀A ≡ Krein positivity of zero coordinates ≡ PBAP) | RH; fixed length sub | all sign routes |
 | B2 | Kick admission at every prime-power stage | RH as induction; each stage sub | RW, GWZ, CSTW, WTZ, HF |
-| B3 | Signed criticality: a positive supersolution at every length with the fold signs used | RH; fixed length sub | P1 routes |
+| B3 | Signed criticality: an exact signed certificate at every length, including reflected and pole charges | RH; fixed length sub | P1 routes |
 | B4 | Twisted-sector positivity through all conductors and frequencies at every multiple | sub | HF, SRT, AIP, AHD |
 | B6 | Full-space positivity of general profiles past `log log N` | sub | HF, SRT, AIP, SC |
 | B7 | Exact SOS on one two-prime lattice | RH | HF, SC, ACS |
@@ -234,11 +234,14 @@ which mechanism they offer for it.
 | Base: all real `C²` tests positive through `181/250`; first stage opens positive to `181/250` | SPATL, GWZ | [L] |
 | Stage criterion; kick = collar Rosati pairing; frozen form in closed form; Carathéodory disk; Levinson admission | GWZ, CSTW | [L] |
 | Odd unit window off one first-moment direction; exact retained-Gamma identity; strip coercivity | WTZ, LST | [L] |
-| Odd supersolution criterion | ACT | [L] |
-| Core: a signed supersolution / exact signed stage step in every stage | — | B2, B3 (RH) |
+| Conditional odd supersolution criterion; nonnegative decaying profiles excluded by the origin jump-moment law | ACT | [L] |
+| Core: exact signed stage step in every stage | — | B2, B3 (RH) |
 
 It bypasses conductors, dimension zero, counts, density and PM. It does not bypass exactness, and every
 shortcut in 1.9 (cost-only, sign-blind, Markov, finite identities, slack) is excluded at its core.
+The ACT criterion is sufficient, not an existence theorem: for `ω=M/Φ`,
+`(𝓛_Nω−Φcosh(x/2)ω)/Φ→−2∫M dm` at zero. A nonzero nonnegative decaying `M`
+has positive jump-measure moment. This excludes that construction, not signed stage payment.
 
 ### F2. The complete-family assembly (blind)
 Subcritical PD (CACT) + critical decomposition (AHD) + aperture-independent floor (WTZ) + far reserve
@@ -326,17 +329,16 @@ positivity on untwisted windows of radius `½log K`: the window problem of RW at
 ## 2.6 Breakthrough questions that open the path to RH
 
 ### 2.6.1 Whole programme — signed window criticality
-**Question.** For every window length, construct a positive supersolution `ω` of the folded arithmetic
-jump operator — archimedean jumps with kernel `e^{x/2}/sinh x`, prime jumps of length `log n` with rate
-`Λ(n)/√n`, potential `Φcosh(x/2)` — with `𝓛ω ≥ Φcosh(x/2)ω` on the odd sector, every odd test factoring
-through `ω`, passing each stage by a correction on the two collars.
-- **Why it opens the path.** It is RH (`riemannHypothesis_of_foldedSupersolution` [L]). It turns the
-  sign of a form into one positive function satisfying a pointwise inequality, and writes Weil's form as
-  an exact sum of jump-difference squares of `H/ω` plus a nonnegative remainder — an identity of
-  unbounded rank, the only kind the no-slack facts allow.
+**Question.** For every window length, prove the exact signed stage payment, retaining the reflected
+prime contribution and paying the pole square. Any transformed generator must come with an exact
+energy identity and payment of its remaining signed terms.
+- **Why it opens the path.** All-stage payment implies all-window Weil positivity and hence RH.
+  `riemannHypothesis_of_foldedSupersolution` is only a sufficient criterion: its raw Neumann-folded
+  generator has no nonzero nonnegative decaying profile supersolution near zero.
 - **Constraints from the corpus.** Markov passage fails cofinally (`KR-BD`); full calibration fails at
-  `a = ½log 2` (`#folded-markov`); shifted ground-state combinations fail near the origin and at
-  infinity (ACT); Barta/Picone weights are sign-blind. The construction must therefore use the signs of
+  `a = ½log 2` (`#folded-markov`); every nonzero nonnegative `C¹` profile with
+  `|M|,|M'|≤Ce^(−8|x|)` fails near the origin and at infinity (ACT
+  `FoldedSourceOriginJumpMomentLaw`); Barta/Picone weights are sign-blind. The construction must use the signs of
   the folds, eliminate negative folded conductances (variable-hub Schur survives), and pay the pole's
   one negative square. Under RH margins collapse (Szegő singular), so `ω` is a critical, not
   subcritical, ground state.
@@ -388,8 +390,8 @@ never with slack.
 6. Use the functional equation and the Euler product together (Hamburger, Beurling).
 
 *Questions it must answer.*
-- Does the first prime stage admit a signed supersolution (2.8)?
-- How does a supersolution pass a stage: which collar correction absorbs the kick, given that the kick is
+- Does the first prime stage admit a complete signed certificate (2.8)?
+- How does a signed certificate pass a stage: which collar correction absorbs the kick, given that the kick is
   a positive source exactly on even–antisymmetric and odd–symmetric collar data?
 - What replaces Allegretto–Piepenbrink for forms whose jump part is Markov but whose full form carries
   a rank-two indefinite pole term?
@@ -410,27 +412,22 @@ measure rigidity on the PM side (tested); PM operator symmetry off `Re s = ¼`.
 
 ## 2.8 The one question
 
-**Does the odd sector of the first prime stage admit a signed folded supersolution? Precisely: on the
-unit odd window `[−½, ½]` (length `1 ∈ (181/250, log 3)`, where the frozen form is indefinite and only
-the prime `2` acts), is there `ω > 0` on `(0, ½]` with `𝓛ω ≥ Φcosh(x/2)ω` for the folded generator with
-the prime-2 jump retained, through which every odd `C²` test factors admissibly — so that the
-ground-state representation proves odd positivity there?**
+**Can the complete odd unit-window form be proved nonnegative by a signed certificate retaining
+prime two, the Gamma remainder and the pole?** The unit window has length
+`1 ∈ (181/250, log 3)`. Its frozen form is indefinite and only prime two acts.
 
 *Why it is less hard than RH or quasi-RH.* One window, one prime, the odd sector: a finite,
 explicit problem. Odd positivity on this window is within one first-moment direction of being proved
 (`Q + (3203/320)(∫xF)² ≥ ‖F‖²/1000` [L]); the question asks for the mechanism, not for the numbers.
 
-*Why it is not ruled out.* The killed boundaries are Markov passage (`KR-BD`), full calibration with
-`c₀ = 4` at `a = ½log 2` (`#folded-markov`), shifted ground-state combinations (ACT), sign-blind weights
-and finite identities. A supersolution of the folded generator with the prime jump retained and
-negative folded conductances removed by Schur elimination is none of these.
+*Precise boundary.* The raw positive folded-supersolution proposal is excluded for nonnegative
+decaying profiles by ACT's origin jump-moment law, including compact profiles. Removing negative
+conductances changes the operator; its exact remainder still needs payment. This obstruction does
+not exclude the complete Weil form. The explicit two-moment logarithmic reflection form in
+`f1-primitive-variance-joint-payment.md` is a sufficient target whose sign remains open.
 
 *Why the answer tells where the proof must be.*
-- **Yes.** Signed criticality (P1) works at its first instance, where every cost-only, Markov and
-  finite mechanism fails. The proof of RH is then a stage-by-stage construction of supersolutions:
-  the questions of 2.7 (how a supersolution passes a stage, how the pole's square is paid) become the
-  whole programme, and the base case is in hand.
-- **No.** The criticality mechanism in the corpus's precise form fails at its first instance. With
-  counts closed (1.6) and PM reduced to the zero side (1.5), the remaining paths are prime-blind
-  positivity (P2: archimedean positivity on signed blind combinations) and square-root cancellation
-  (P4: `c_ψ(t) = O(1)` for one smoothed prime sum). Effort moves to A28 and to the parity problem.
+- A proof would advance the odd base case; the even sector and the remaining prime stages would
+  still require independent payment.
+- Failure of a particular lower form or supersolution does not retire P1. It identifies terms
+  that the next exact signed certificate must retain.

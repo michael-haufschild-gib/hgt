@@ -21,6 +21,11 @@ collar reserve, then low-packet Schur payment with separate prefix and
 collar norms. A scalar full-residual bound cannot pay the collar at the
 critical exponent.
 
+The band–far norm budget must retain two rates. For `t = 1 + log L`,
+`c⁸(1+log c)Sg²/L ≤ A²t³`, while its other monomials are `≤ L⁻¹⁄¹⁶`.
+Taking `θ=t⁻⁵` and `b=B/θ` reduces the critical cost to `O(t⁻²)`;
+the remaining cost is `O(t⁵L⁻¹⁄¹⁶)`. A single common rate loses this decay.
+
 ## Proof status
 
 The earlier paper card uses `Q = ⌊L^(5/16)⌋`; current residual theorem uses

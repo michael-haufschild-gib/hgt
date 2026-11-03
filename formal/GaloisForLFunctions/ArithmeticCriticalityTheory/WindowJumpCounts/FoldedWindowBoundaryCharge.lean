@@ -122,6 +122,31 @@ theorem compact_positive_profile_origin_failure {M b : ℝ → ℝ}
   rw [hb0]
   exact compact_folded_origin_charge_pos hM hMc hM0 hnn hy₀ hpos
 
+/-- No positive compact odd gauge can be repaired by a correction vanishing at the origin. -/
+theorem compact_odd_gauge_origin_failure {ω b : ℝ → ℝ}
+    (hω : ContDiff ℝ 1 ω) (hωc : HasCompactSupport ω)
+    (hodd : ∀ x, ω (-x) = -ω x) (hnn : ∀ y, 0 ≤ y → 0 ≤ ω y)
+    {y₀ : ℝ} (hy₀ : 0 < y₀) (hpos : 0 < ω y₀)
+    (hb : ContinuousAt b 0) (hb0 : b 0 = 0) :
+    ∃ δ > 0, ∀ x ∈ Ioo 0 δ,
+      foldedGenerator ω x + b x < riemannKernelReal x * Real.cosh (x / 2) * ω x := by
+  have hM : ContDiff ℝ 1 (phiDoobTest ω) := contDiff_riemannKernelReal.mul hω
+  have hM0 : phiDoobTest ω 0 = 0 := by rw [phiDoobTest, odd_apply_zero hodd, mul_zero]
+  have hMnn : ∀ y, 0 ≤ y → 0 ≤ phiDoobTest ω y := fun y hy =>
+    mul_nonneg (riemannKernelReal_pos y).le (hnn y hy)
+  have hMpos : 0 < phiDoobTest ω y₀ := mul_pos (riemannKernelReal_pos y₀) hpos
+  have h := compact_positive_profile_origin_failure hM (hasCompactSupport_phiDoobTest hωc)
+    hM0 hMnn hy₀ hMpos hb hb0
+  have he : (fun y => phiDoobTest ω y / riemannKernelReal y) = ω := by
+    funext y
+    exact mul_div_cancel_left₀ (ω y) (riemannKernelReal_pos y).ne'
+  rw [he] at h
+  obtain ⟨δ, hδ, hs⟩ := h
+  refine ⟨δ, hδ, fun x hx => ?_⟩
+  have h := hs x hx
+  rw [show phiDoobTest ω x / riemannKernelReal x = ω x from congrFun he x] at h
+  exact h
+
 end GaloisForLFunctions.ArithmeticCriticalityTheory
 
 #print axioms GaloisForLFunctions.ArithmeticCriticalityTheory.tendsto_corrected_foldedSource_of_compactSupport
@@ -129,3 +154,4 @@ end GaloisForLFunctions.ArithmeticCriticalityTheory
 #print axioms GaloisForLFunctions.ArithmeticCriticalityTheory.exists_origin_window_corrected_foldedSource_pos
 #print axioms GaloisForLFunctions.ArithmeticCriticalityTheory.exists_origin_window_corrected_foldedSource_neg
 #print axioms GaloisForLFunctions.ArithmeticCriticalityTheory.compact_positive_profile_origin_failure
+#print axioms GaloisForLFunctions.ArithmeticCriticalityTheory.compact_odd_gauge_origin_failure

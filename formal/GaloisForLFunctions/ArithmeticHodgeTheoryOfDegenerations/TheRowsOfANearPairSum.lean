@@ -560,21 +560,26 @@ theorem abs_rowWindow_sub_le {K : ℝ → ℝ} {α β A L w : ℝ} (hα : 0 ≤ 
           (∫ x in a..(A₀ : ℝ), rowKernel K w m x) - ∫ x in (⌊b⌋₊ : ℝ)..b, rowKernel K w m x := by
         ring
       rw [e]
+      have hX := abs_sub ((∑ i ∈ range M, rowKernel K w m ((A₀ : ℝ) + i) -
+            ∫ x in (A₀ : ℝ)..(A₀ : ℝ) + M, rowKernel K w m x) + f M -
+          (∫ x in a..(A₀ : ℝ), rowKernel K w m x)) (∫ x in (⌊b⌋₊ : ℝ)..b, rowKernel K w m x)
+      have hY := abs_sub ((∑ i ∈ range M, rowKernel K w m ((A₀ : ℝ) + i) -
+            ∫ x in (A₀ : ℝ)..(A₀ : ℝ) + M, rowKernel K w m x) + f M)
+          (∫ x in a..(A₀ : ℝ), rowKernel K w m x)
+      have hZ := abs_add_le (∑ i ∈ range M, rowKernel K w m ((A₀ : ℝ) + i) -
+            ∫ x in (A₀ : ℝ)..(A₀ : ℝ) + M, rowKernel K w m x) (f M)
       calc _ ≤ |∑ i ∈ range M, rowKernel K w m ((A₀ : ℝ) + i) -
               ∫ x in (A₀ : ℝ)..(A₀ : ℝ) + M, rowKernel K w m x| + |f M| +
             |∫ x in a..(A₀ : ℝ), rowKernel K w m x| +
-            |∫ x in (⌊b⌋₊ : ℝ)..b, rowKernel K w m x| := by
-            refine (abs_sub _ _).trans (add_le_add_right ((abs_sub _ _).trans
-              (add_le_add_right (abs_add_le _ _) _)) _)
+            |∫ x in (⌊b⌋₊ : ℝ)..b, rowKernel K w m x| := by linarith only [hX, hY, hZ]
         _ ≤ lam * M + A / m + A / m + A / m := by gcongr
         _ = lam * M + 3 * (A / m) := by ring
     have hlamM : lam * M ≤ (2 * β * L + A) / m := by
       calc lam * M ≤ lam * (2 * β * w * m) :=
             mul_le_mul_of_nonneg_left (hMba.trans ((sub_le_self _ ha0).trans hbw)) hlam0
-        _ = (2 * β * L + A * (β * w)) / m := by rw [hlam]; field_simp; ring
-        _ ≤ (2 * β * L + A) / m := by
-            apply div_le_div_of_nonneg_right _ hm0.le
-            nlinarith
+        _ = (2 * β * L + A * (β * w)) / m := by rw [hlam]; field_simp
+        _ ≤ (2 * β * L + A) / m :=
+            div_le_div_of_nonneg_right (add_le_add le_rfl (mul_le_of_le_one_right hA0 hβw)) hm0.le
     have hmain : |∑ i ∈ range (M + 1), f i * p (m + A₀ + i) -
         periodicMean p q * ∫ x in a..b, rowKernel K w m x| ≤
         2 * q * B * (A / m + lam * M) + B * (lam * M + 3 * (A / m)) := by
@@ -589,10 +594,10 @@ theorem abs_rowWindow_sub_le {K : ℝ → ℝ} {α β A L w : ℝ} (hα : 0 ≤ 
     refine hmain.trans ?_
     rw [hbound]
     have h1 : A / m + lam * M ≤ (2 * A + 2 * β * L) * (1 / m) := by
-      calc A / m + lam * M ≤ A / m + (2 * β * L + A) / m := by linarith
+      calc A / m + lam * M ≤ A / m + (2 * β * L + A) / m := add_le_add le_rfl hlamM
         _ = (2 * A + 2 * β * L) * (1 / m) := by ring
     have h2 : lam * M + 3 * (A / m) ≤ (4 * A + 2 * β * L) * (1 / m) := by
-      calc lam * M + 3 * (A / m) ≤ (2 * β * L + A) / m + 3 * (A / m) := by linarith
+      calc lam * M + 3 * (A / m) ≤ (2 * β * L + A) / m + 3 * (A / m) := add_le_add hlamM le_rfl
         _ = (4 * A + 2 * β * L) * (1 / m) := by ring
     have hm1 : (0 : ℝ) ≤ 1 / m := by positivity
     calc 2 * q * B * (A / m + lam * M) + B * (lam * M + 3 * (A / m))
@@ -600,10 +605,88 @@ theorem abs_rowWindow_sub_le {K : ℝ → ℝ} {α β A L w : ℝ} (hα : 0 ≤ 
           add_le_add (mul_le_mul_of_nonneg_left h1 (by positivity))
             (mul_le_mul_of_nonneg_left h2 hB0)
       _ ≤ (2 * q + 1) * B * (4 * A + 2 * β * L) * (1 / m) := by
-          have : 2 * q * B * ((2 * A + 2 * β * L) * (1 / m)) ≤
+          have h3 : 2 * q * B * ((2 * A + 2 * β * L) * (1 / m)) ≤
               2 * q * B * ((4 * A + 2 * β * L) * (1 / m)) := by
             apply mul_le_mul_of_nonneg_left _ (by positivity)
             exact mul_le_mul_of_nonneg_right (by linarith) hm1
-          nlinarith
+          calc 2 * q * B * ((2 * A + 2 * β * L) * (1 / m)) + B * ((4 * A + 2 * β * L) * (1 / m))
+              ≤ 2 * q * B * ((4 * A + 2 * β * L) * (1 / m)) + B * ((4 * A + 2 * β * L) * (1 / m)) :=
+                add_le_add h3 le_rfl
+            _ = (2 * q + 1) * B * (4 * A + 2 * β * L) * (1 / m) := by ring
+
+/-! ### Counting rows -/
+
+theorem card_filter_lt_le (N : ℕ) {X : ℝ} (hX : 0 ≤ X) :
+    (((Finset.Icc 1 N).filter (fun m : ℕ => (m : ℝ) < X)).card : ℝ) ≤ X := by
+  have hsub : (Finset.Icc 1 N).filter (fun m : ℕ => (m : ℝ) < X) ⊆ Finset.Icc 1 ⌊X⌋₊ := by
+    intro m hm
+    simp only [Finset.mem_filter, Finset.mem_Icc] at hm ⊢
+    exact ⟨hm.1.1, Nat.le_floor hm.2.le⟩
+  calc (((Finset.Icc 1 N).filter (fun m : ℕ => (m : ℝ) < X)).card : ℝ)
+      ≤ ((Finset.Icc 1 ⌊X⌋₊).card : ℝ) := by exact_mod_cast Finset.card_le_card hsub
+    _ = ⌊X⌋₊ := by simp
+    _ ≤ X := Nat.floor_le hX
+
+theorem card_filter_gt_le (N : ℕ) {Y : ℝ} (hY : 0 ≤ Y) :
+    (((Finset.Icc 1 N).filter (fun m : ℕ => Y < m)).card : ℝ) ≤ N - Y + 1 := by
+  have hsub : (Finset.Icc 1 N).filter (fun m : ℕ => Y < m) ⊆ Finset.Icc (⌊Y⌋₊ + 1) N := by
+    intro m hm
+    simp only [Finset.mem_filter, Finset.mem_Icc] at hm ⊢
+    exact ⟨Nat.succ_le_of_lt ((Nat.floor_lt hY).mpr hm.2), hm.1.2⟩
+  calc (((Finset.Icc 1 N).filter (fun m : ℕ => Y < m)).card : ℝ)
+      ≤ ((Finset.Icc (⌊Y⌋₊ + 1) N).card : ℝ) := by exact_mod_cast Finset.card_le_card hsub
+    _ = ((N + 1 - (⌊Y⌋₊ + 1) : ℕ) : ℝ) := by rw [Nat.card_Icc]
+    _ ≤ N - Y + 1 := by
+        rcases le_or_gt (⌊Y⌋₊ + 1) (N + 1) with h | h
+        · rw [Nat.cast_sub h]; push_cast
+          linarith [Nat.lt_floor_add_one Y]
+        · rw [Nat.sub_eq_zero_of_le h.le]; push_cast
+          have : (N : ℝ) + 1 < ⌊Y⌋₊ + 1 := by exact_mod_cast h
+          linarith [Nat.floor_le hY]
+
+/-- The harmonic tail from `X`: `Σ_{X ≤ m ≤ N} 1/m ≤ 1 + log(N/X)`. -/
+theorem sum_filter_le_inv_le {N : ℕ} (hN : 1 ≤ N) {X : ℝ} (hX : 0 < X) (hXN : X ≤ N) :
+    ∑ m ∈ (Finset.Icc 1 N).filter (fun m : ℕ => X ≤ m), (1 / (m : ℝ)) ≤
+      1 + Real.log (N / X) := by
+  set m₀ := max 1 ⌈X⌉₊ with hm₀
+  have hm₀1 : 1 ≤ m₀ := le_max_left _ _
+  have hsub : (Finset.Icc 1 N).filter (fun m : ℕ => X ≤ m) ⊆ Finset.Icc m₀ N := by
+    intro m hm
+    simp only [Finset.mem_filter, Finset.mem_Icc] at hm ⊢
+    exact ⟨max_le hm.1.1 (Nat.ceil_le.mpr hm.2), hm.1.2⟩
+  have hle : ∑ m ∈ (Finset.Icc 1 N).filter (fun m : ℕ => X ≤ m), (1 / (m : ℝ)) ≤
+      ∑ m ∈ Finset.Icc m₀ N, (1 / (m : ℝ)) :=
+    Finset.sum_le_sum_of_subset_of_nonneg hsub fun _ _ _ => by positivity
+  refine hle.trans ?_
+  rcases le_or_gt m₀ N with hmN | hmN
+  · have hsplit : ∑ m ∈ Finset.Icc 1 N, (1 / (m : ℝ)) = ∑ m ∈ Finset.Icc 1 (m₀ - 1), (1 / (m : ℝ)) +
+        ∑ m ∈ Finset.Icc m₀ N, (1 / (m : ℝ)) := by
+      have h := Finset.sum_Ioc_consecutive (fun m : ℕ => 1 / (m : ℝ)) (Nat.zero_le (m₀ - 1))
+        (show m₀ - 1 ≤ N by omega)
+      have e1 : Finset.Ioc 0 N = Finset.Icc 1 N := by ext; simp; omega
+      have e2 : Finset.Ioc 0 (m₀ - 1) = Finset.Icc 1 (m₀ - 1) := by ext; simp; omega
+      have e3 : Finset.Ioc (m₀ - 1) N = Finset.Icc m₀ N := by ext; simp; omega
+      rw [e1, e2, e3] at h
+      exact h.symm
+    have hH : ∀ n : ℕ, ∑ m ∈ Finset.Icc 1 n, (1 / (m : ℝ)) = harmonic n := fun n => by
+      rw [harmonic_eq_sum_Icc]; push_cast; simp [one_div]
+    have h1 := harmonic_le_one_add_log N
+    have h2 := log_add_one_le_harmonic (m₀ - 1)
+    rw [hH] at hsplit
+    rw [hH] at hsplit
+    have hcast : ((m₀ - 1 : ℕ) : ℝ) + 1 = m₀ := by
+      rw [Nat.cast_sub hm₀1]; push_cast; ring
+    rw [hcast] at h2
+    have hlogm : Real.log X ≤ Real.log m₀ := by
+      apply Real.log_le_log hX
+      exact (Nat.le_ceil X).trans (by exact_mod_cast le_max_right 1 ⌈X⌉₊)
+    rw [Real.log_div (by positivity) hX.ne']
+    have : ∑ m ∈ Finset.Icc m₀ N, (1 / (m : ℝ)) = harmonic N - harmonic (m₀ - 1) := by
+      linarith only [hsplit]
+    rw [this]
+    linarith only [h1, h2, hlogm]
+  · rw [Finset.Icc_eq_empty (by omega), Finset.sum_empty]
+    have h1 : 0 ≤ Real.log (N / X) := Real.log_nonneg (by rw [le_div_iff₀ hX]; linarith)
+    linarith
 
 end GaloisForLFunctions.ArithmeticHodgeTheoryOfDegenerations
