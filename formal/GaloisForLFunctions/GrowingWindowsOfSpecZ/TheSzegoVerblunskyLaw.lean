@@ -16,6 +16,10 @@ For a positive lattice evolution the margins are `E_n = κ(0)∏_{k<n}(1 − γ_
   Spec ℤ are not square-summable, and RH is equivalent to every lattice evolution being positive with
   `Σ_k γ_k² = ∞`. The exact collapse of the margins is the failure of `ℓ²`-decay of the Schur
   parameters: they cannot decay faster than `k^{−1/2}` on average, on any lattice.
+* **The growth of `Σγ²`** (`log_div_levinsonErr_eq`, `sum_sq_le_log_le`, `log_le_sum_of_recurrence`):
+  the Lyapunov functional `log(κ(0)/E_n) = −Σ_{k<n}log(1 − γ_k²)` is sandwiched between `Σγ_k²` and
+  `Σγ_k²/(1 − γ_k²)`, and for Spec ℤ it is bounded below by `log(Q(φ)/Q(φ − φ(· + nh)))`: the
+  accumulation of the Schur parameters at `±1` is at least the recurrence of the orbit.
 -/
 
 noncomputable section
@@ -24,7 +28,7 @@ open Finset Filter Topology
 
 namespace GaloisForLFunctions.GrowingWindowsOfSpecZ
 
-open ArithmeticCastelnuovoSeveri
+open ArithmeticCastelnuovoSeveri SpacingScaleHarmonicAnalysis
 
 /-! ### Infinite products `∏(1 − x_k)` -/
 
@@ -150,5 +154,60 @@ theorem riemannHypothesis_iff_not_summable :
   ⟨fun hRH _ hφ hφ0 _ hh => ⟨(tendsto_levinsonErr_of_riemannHypothesis hRH hφ hφ0 hh).1,
       not_summable_reflCoeff_sq_of_riemannHypothesis hRH hφ hφ0 hh⟩,
     fun H => riemannHypothesis_iff_levinsonErr_pos.mpr fun φ hφ hφ0 h hh => (H φ hφ hφ0 h hh).1⟩
+
+/-! ### The growth of `Σγ²`: the Lyapunov functional -/
+
+/-- **The Lyapunov identity**: `log(κ(0)/E_n) = −Σ_{k<n} log(1 − γ_k²)` for a positive evolution. -/
+theorem log_div_levinsonErr_eq (hE : ∀ n, 0 < levinsonErr κ n) (n : ℕ) :
+    Real.log (κ 0 / levinsonErr κ n) = -∑ k ∈ range n, Real.log (1 - reflCoeff κ k ^ 2) := by
+  have h0 : 0 < κ 0 := hE 0
+  have hfac : ∀ k ∈ range n, 0 < 1 - reflCoeff κ k ^ 2 := fun k _ => by
+    linarith [reflCoeff_sq_lt_one_of_pos hE k]
+  have hP := Finset.prod_pos hfac
+  rw [levinsonErr_eq_prod n fun k _ => (hE k).ne',
+    show κ 0 / (κ 0 * ∏ k ∈ range n, (1 - reflCoeff κ k ^ 2)) =
+      (∏ k ∈ range n, (1 - reflCoeff κ k ^ 2))⁻¹ by field_simp,
+    Real.log_inv, Real.log_prod fun k hk => (hfac k hk).ne']
+
+/-- **Growth of `Σγ²`, two-sided**: for a positive evolution,
+`Σ_{k<n} γ_k² ≤ log(κ(0)/E_n) ≤ Σ_{k<n} γ_k²/(1 − γ_k²)`. The margin collapse measures the growth of the
+square sum of the Schur parameters up to the factors `(1 − γ_k²)^{−1}`. -/
+theorem sum_sq_le_log_le (hE : ∀ n, 0 < levinsonErr κ n) (n : ℕ) :
+    ∑ k ∈ range n, reflCoeff κ k ^ 2 ≤ Real.log (κ 0 / levinsonErr κ n) ∧
+      Real.log (κ 0 / levinsonErr κ n) ≤
+        ∑ k ∈ range n, reflCoeff κ k ^ 2 / (1 - reflCoeff κ k ^ 2) := by
+  rw [log_div_levinsonErr_eq hE, ← Finset.sum_neg_distrib]
+  constructor
+  · refine Finset.sum_le_sum fun k _ => ?_
+    have h1 : 0 < 1 - reflCoeff κ k ^ 2 := by linarith [reflCoeff_sq_lt_one_of_pos hE k]
+    have := Real.log_le_sub_one_of_pos h1
+    linarith
+  · refine Finset.sum_le_sum fun k _ => ?_
+    have h1 : 0 < 1 - reflCoeff κ k ^ 2 := by linarith [reflCoeff_sq_lt_one_of_pos hE k]
+    have := Real.log_le_sub_one_of_pos (inv_pos.mpr h1)
+    rw [Real.log_inv] at this
+    have e : (1 - reflCoeff κ k ^ 2)⁻¹ - 1 = reflCoeff κ k ^ 2 / (1 - reflCoeff κ k ^ 2) := by
+      field_simp; ring
+    linarith
+
+/-- **A computable lower bound for Spec ℤ.** If the lattice evolution of `φ` at step `h` is positive,
+then for every `m`, `Σ_{k≤m} γ_k²/(1 − γ_k²) ≥ log(Q(φ)/Q(φ − φ(· + (m + 1)h)))`: the Schur parameters
+accumulate at `±1` at least as fast as the Frobenius differences of the orbit recur. -/
+theorem log_le_sum_of_recurrence {φ : ℝ → ℝ} (hφ : φ ∈ realTests) {h : ℝ}
+    (hE : ∀ n, 0 < levinsonErr (weilSeq φ h) n) (m : ℕ) :
+    Real.log (weilQuad φ / weilQuad (fun u => 1 * φ u + -1 * latticeTranslate φ h ((m : ℤ) + 1) u)) ≤
+      ∑ k ∈ range (m + 1), reflCoeff (weilSeq φ h) k ^ 2 / (1 - reflCoeff (weilSeq φ h) k ^ 2) := by
+  have hpd : ToeplitzPosDef (weilSeq φ h) (m + 1) :=
+    (toeplitzForm_posDef_iff (weilSeq_isEven φ h) m).mpr fun k _ => hE k
+  have hrec := levinsonErr_weilSeq_le hφ hpd
+  have h0 : weilSeq φ h 0 = weilQuad φ := by rw [weilSeq, latticeTranslate_zero]; rfl
+  have hκ0 : 0 < weilQuad φ := h0 ▸ hE 0
+  have hlog : Real.log (weilQuad φ / weilQuad (fun u => 1 * φ u + -1 *
+      latticeTranslate φ h ((m : ℤ) + 1) u)) ≤ Real.log (weilQuad φ / levinsonErr (weilSeq φ h) (m + 1)) :=
+    Real.log_le_log (div_pos hκ0 (lt_of_lt_of_le (hE _) hrec))
+      (div_le_div_of_nonneg_left hκ0.le (hE _) hrec)
+  have := (sum_sq_le_log_le hE (m + 1)).2
+  rw [h0] at this
+  linarith
 
 end GaloisForLFunctions.GrowingWindowsOfSpecZ

@@ -17,6 +17,7 @@ import GaloisForLFunctions.GrowingWindowsOfSpecZ.RefiningTheLatticeLowersTheMarg
 import GaloisForLFunctions.GrowingWindowsOfSpecZ.TheSzegoVerblunskyLaw
 import GaloisForLFunctions.GrowingWindowsOfSpecZ.TheContinuumMarginIsTheDyadicLimit
 import GaloisForLFunctions.GrowingWindowsOfSpecZ.ForbiddingLatticeZeroModesIsRH
+import GaloisForLFunctions.GrowingWindowsOfSpecZ.TheFirstPrimeStageOpensPositive
 
 /-!
 # Growing Windows of Spec ℤ (GWZ)

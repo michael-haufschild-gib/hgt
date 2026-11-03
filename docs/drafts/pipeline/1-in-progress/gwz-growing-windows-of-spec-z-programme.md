@@ -19,7 +19,9 @@ ZeroModesHaveReflectionParity, TheLatticeCanonicalSystem, TheAnglesOfADegenerate
 ADegenerateWindowIsACurve, TheSchurParametersOfSpecZ, AWindowIsTheUnionOfItsLattices,
 TheLatticeReadsThePrimesCausally,
 TheEvolutionStartsPositive, TheLatticeSelectsTheVonMangoldtWeight, ThePoleIsAHyperbolicPairOfAngles,
-MarginsAreBoundedByRecurrence, TheLatticeHasNoSlackUnderRH, RefiningTheLatticeLowersTheMargin. Each passes an individual `lake --old env lean` check; key theorems
+MarginsAreBoundedByRecurrence, TheLatticeHasNoSlackUnderRH, RefiningTheLatticeLowersTheMargin,
+TheSzegoVerblunskyLaw, TheContinuumMarginIsTheDyadicLimit, ForbiddingLatticeZeroModesIsRH,
+TheFirstPrimeStageOpensPositive. Each passes an individual `lake --old env lean` check; key theorems
 audited to `propext, Classical.choice, Quot.sound`.
 
 ## Status
@@ -37,12 +39,16 @@ audited to `propext, Classical.choice, Quot.sound`.
   primes, single-kick formula, rigidity interval of a weight; base positivity to total length
   `181/250`; selection of `Λ` by the lattice; every kick necessary; free evolution fails; the pole as
   the hyperbolic pair `e^{±h/2}`; under RH every lattice is singular (margins → 0; RH ⇔ all lattices
-  positive and singular); refinement lowers margins, dyadic limits exist under RH.
+  positive and singular); refinement lowers margins and the dyadic limit is the continuum corner
+  margin; Szegő–Verblunsky: collapse ⇔ `Σγ² = ∞`, under RH never square-summable; Lyapunov identity and
+  two-sided bounds for `Σγ²`, lower bound by orbit recurrence; RH ⇔ no lattice
+  degenerates; zero modes continue uniquely from an end collar; the pole plane has one negative
+  square; the first prime stage opens positive (`log 2 ≤ A ≤ 181/250`).
 
 Relation: CSWT (`CanonicalSystemOfTheWindowTower`, other agent) is the continuum register (closed form
 of the frozen two-collar form via trivial-divisor moments; translation-contraction growth law).
 
-## Open (README §7)
-Continuum two-collar form at the first prime (A8); stage-uniform ground states; continuum unique
-continuation (exclude the balanced split of the gap law); continuum limit `h → 0` (Krein system with
-atoms); the rate of margin collapse; the trivial additive angle (AHD).
+## Next directions (README §7)
+All §2.7 questions answered (README §5). Beyond them: closed form of the minimized first-stage form
+`Φ_ε`; a stage-uniform law placing every kick in its interval (RH); continuation across interior
+gaps; limits of Schur parameters (Krein system); sharp asymptotics of `Σγ²`; AHD's additive angle.

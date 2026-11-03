@@ -113,18 +113,20 @@ sign with nonzero ends (`toeplitzForm_kernel_of_first_critical`, `levinsonVec_re
 polynomial has `n + 1` simple zeros on the unit circle (`norm_eq_one_of_critical_root`,
 `zeroMode_roots`), and the frozen data are the power sums of these angles with positive weights
 (`degenerate_window_is_curve`): at its first failure a window is the window of a curve over `𝔽_q`.
-The pole is the pair of hyperbolic angles `e^{±h/2}` of every lattice (`toeplitzForm_polar_eq_hyperbolic`).
+The pole is the pair of hyperbolic angles `e^{±h/2}` of every lattice, carrying exactly one negative
+square (`toeplitzForm_polar_eq_hyperbolic`, `polarSeq_signature`). Off RH some lattice degenerates
+exactly, so RH is the absence of such curve-like edges (`riemannHypothesis_iff_no_degenerate_lattice`).
 
 ## 5. Questions and answers
 
 | Question (review-0311 §2.7) | Answer |
 |---|---|
-| What is the two-collar form of a stage, and what law carries it across a prime kick (2.5.1)? | **Continuum:** the infimum `S^N_A` of the frozen form over interior tests; it depends only on collar data (`twoCollarForm_add_interior`), is `σ_A`-invariant (`twoCollarForm_windowInvolution`), and the kick subtracts `2w c_H(ℓ)` from it exactly (`iInf_weilQuad_add_interior`); the window is nonnegative iff `2w c_H ≤ S^N_A` (`stage_criterion`). Within the stage both sides are born zero — `S^N_ℓ ≡ 0` and `c_H(ℓ) = 0` on `W_ℓ` (`twoCollarForm_birth`, `corr_birth`) — and the two-collar form grows with the collar width (`twoCollarForm_mono`): positivity is a race between two collar functionals, restarted at every prime power. The closed form of the frozen datum on stage tests `x_L + y + x_R` — trivial-divisor moments and earlier-fold transports, explicit at the first two stages — and the growth law of a window as a translation contraction (the Carathéodory disk of a stage) are CSWT's (`frozenTwoCollar_eq_transmitted`, `stage_nonneg_iff_disk`). **Lattice (closed form):** the two-collar form of a stage is `[[E_n, β_n], [β_n, E_n]]` (`toeplitzForm_two_collar`, `twoCollar_isLeast`), the equal diagonal coming from the reflection; across the stage the law is `E_{n+1} = E_n − β_n²/E_n` with the new predictor `(a − γJa, −γ)` (`isPredictor_snoc`, `predErr_snoc`); the newest datum enters `β_n` with coefficient one, `β_n = κ(n+1) − π_n` (`schurParam_eq`), and a prime kick moves exactly one Schur parameter (`schurParam_single_kick`). |
+| What is the two-collar form of a stage, and what law carries it across a prime kick (2.5.1)? | **Continuum:** the infimum `S^N_A` of the frozen form over interior tests; it depends only on collar data (`twoCollarForm_add_interior`), is `σ_A`-invariant (`twoCollarForm_windowInvolution`), and the kick subtracts `2w c_H(ℓ)` from it exactly (`iInf_weilQuad_add_interior`); the window is nonnegative iff `2w c_H ≤ S^N_A` (`stage_criterion`). Within the stage both sides are born zero — `S^N_ℓ ≡ 0` and `c_H(ℓ) = 0` on `W_ℓ` (`twoCollarForm_birth`, `corr_birth`) — and the two-collar form grows with the collar width (`twoCollarForm_mono`): positivity is a race between two collar functionals, restarted at every prime power. The closed form of the frozen datum on stage tests `x_L + y + x_R` — trivial-divisor moments and earlier-fold transports, explicit at the first two stages — and the growth law of a window as a translation contraction (the Carathéodory disk of a stage) are CSWT's (`frozenTwoCollar_eq_transmitted`, `stage_nonneg_iff_disk`). **Lattice (closed form):** the two-collar form of a stage is `[[E_n, β_n], [β_n, E_n]]` (`toeplitzForm_two_collar`, `twoCollar_isLeast`), the equal diagonal coming from the reflection; across the stage the law is `E_{n+1} = E_n − β_n²/E_n` with the new predictor `(a − γJa, −γ)` (`isPredictor_snoc`, `predErr_snoc`); the newest datum enters `β_n` with coefficient one, `β_n = κ(n+1) − π_n` (`schurParam_eq`), and a prime kick moves exactly one Schur parameter (`schurParam_single_kick`). **Continuum limit of the closed form:** refining a lattice lowers its margin (`levinsonErr_refine_le`), and under RH the dyadic margins converge to the continuum corner margin — the infimum of Weil's form over the corner plus its translates inside the window (`tendsto_levinsonErr_dyadic_contMargin`): the `2×2` lattice forms are the finite approximants of the continuum two-collar minimization. **First prime stage:** the two-collar form of the stage of `2` dominates the kick on every collar class for `log 2 ≤ A ≤ 181/250`, and the prime-free frozen form dominates the kick of `2` there (`firstStage_criterion_of_le`, `firstStage_kick_le_frozen`). |
 | Does the window jump process have a positive ground state at every length, and how does it pass a stage (2.6.1)? | **Lattice: yes, exactly when the window is positive.** Positive definiteness of a lattice window is the positivity of every margin of its Levinson evolution (`toeplitzForm_posDef_iff`); the ground state (Levinson vector) is then outer (`norm_gt_one_of_predictor_root`), and it passes a stage by the Levinson step. **RH-equivalent for Spec ℤ:** RH iff every lattice margin of every bump at every step is positive (`riemannHypothesis_iff_levinsonErr_pos`); unconditionally every lattice is positive while its total length stays below `181/250`, past the first prime (`levinsonErr_pos_of_short`). **Selection:** for an arbitrary prime weight, all margins stay positive iff RH and the weight is `Λ` (`lattice_selects_vonMangoldt`); deleting one prime power or all of them makes some lattice degenerate (`exists_lattice_failure_of_delete`, `exists_free_lattice_failure`). Continuum: the passage is exact in every gauge (DZG); existence at every length is RH. |
-| Is there a unique-continuation principle forbidding a zero mode with full mass on both collars? | **Lattice: the zero mode is rigid.** At a first critical length the radical is one line (`toeplitzForm_kernel_of_first_critical`), spanned by a palindrome up to the sign `−γ_n` with end coefficients `1` and `−γ_n = ∓1` (`levinsonVec_rev_of_sq_eq_one`, `reflCoeff_sq_of_critical`), its polynomial has exactly `n + 1` simple zeros, all on the unit circle (`zeroMode_roots`), and the frozen window is the Toeplitz form of the power sums of these angles with positive weights (`degenerate_window_is_curve`); for Spec ℤ such a window refutes RH (`not_riemannHypothesis_of_first_critical`). **Continuum:** the radical is `σ_A`-invariant, every edge has a reflection parity (`exists_parity_zeroMode`), and a zero mode vanishing on an interior gap splits into two pieces of equal energy with equal Weil orbit correlations across the gap (`gap_law`). A continuum UCP excluding the balanced split is open. |
+| Is there a unique-continuation principle forbidding a zero mode with full mass on both collars? | **Lattice: the zero mode is rigid.** At a first critical length the radical is one line (`toeplitzForm_kernel_of_first_critical`), spanned by a palindrome up to the sign `−γ_n` with end coefficients `1` and `−γ_n = ∓1` (`levinsonVec_rev_of_sq_eq_one`, `reflCoeff_sq_of_critical`), its polynomial has exactly `n + 1` simple zeros, all on the unit circle (`zeroMode_roots`), and the frozen window is the Toeplitz form of the power sums of these angles with positive weights (`degenerate_window_is_curve`); for Spec ℤ such a window refutes RH (`not_riemannHypothesis_of_first_critical`). **Continuum: unique continuation from an end collar holds.** At a first critical length a zero mode vanishing on an end collar of any width vanishes, and two zero modes agreeing on one end collar coincide (`eq_zero_of_zeroMode_vanish_collar`, `zeroMode_eq_of_eq_on_collar`); the radical is `σ_A`-invariant, every edge has a reflection parity (`exists_parity_zeroMode`), and a zero mode vanishing on an interior gap is a balanced split (`gap_law`). **Forbidding the zero modes is RH:** RH holds iff no lattice window of Spec ℤ degenerates (`riemannHypothesis_iff_no_degenerate_lattice`); off RH a short generic bump has an exactly degenerate two-site lattice (`exists_degenerate_lattice_of_not_riemannHypothesis`, via the continuity of orbit correlations and AOG's one-orbit criterion). So the principle asked for exists in its collar form, and in its forbidding form it is equivalent to RH. |
 | Which positive involution on two-collar data makes `σ_A` a Rosati positivity? | **The collar reflection `R`.** The kick is the collar Rosati form `c_H = ∫_L H·(σ_AH)∘R` (`corr_eq_collar_windowInvolution`), and on the two `σ_A`-sectors it is `±` the signature form of `R` (`corr_eq_of_even`, `corr_eq_of_odd`). The kick is a positive source exactly on the even–`R`-antisymmetric and odd–`R`-symmetric collar data; on a nonnegative window every frozen-negative even (odd) test is forced into the `R`-antisymmetric (symmetric) sector (`collar_antisymmetric_of_frozen_negative_even`, `collar_symmetric_of_frozen_negative_odd`). Positivity of the stage is the domination of this Rosati form by the frozen two-collar form. |
-| What is the `ℤ`-analogue of the trivial Frobenius angle, and what weight does Weil's form carry there (2.6.4)? | **Lattice reading:** a lattice of step `h` folds the zero ordinates to angles `hγ mod 2π`. The trivial Frobenius eigenvalues are the pole: on every lattice it is the hyperbolic pair of angles `e^{±h/2}`, contributing the pole plane `2A(φ)B(φ)·V(e^{h/2})V(e^{−h/2})` (`weilSeq_eq_polar_sub_local`, `toeplitzForm_polar`, `toeplitzForm_polar_eq_hyperbolic`), exactly as `1` and `q` normalized by `√q` over `𝔽_q`. A degenerate lattice window has finitely many simple unitary angles with positive weights (`degenerate_window_is_curve`): it is a curve window. Under RH no lattice of Spec ℤ degenerates (`toeplitzPosDef_of_riemannHypothesis`): Spec ℤ has infinitely many angles on every lattice. The weight of the untwisted horizon window at the trivial additive angle is AHD's question (2.6.4) and is not decided here. |
-| How do the soft horizons `≍ e^{−A/2}` become the exact doubly exponential margins? | **Margins are products of Schur factors:** `E_n = κ(0)∏_{k<n}(1 − γ_k²)` (`levinsonErr_eq_prod`). Exact collapse of margins is the accumulation of the Schur parameters at `±1`; each kick is admissible only in an interval of length `2√n₀E_m/|k_{m+1}(log n₀)|` (`posDef_update_iff`), which shrinks with the margin, and no value other than `Λ(n₀)` survives every lattice (`exists_lattice_failure_of_ne`): the exact form of the rigidity of the fold weights and of the Weil cone being a point. Margins only decrease (`levinsonErr_succ_le`) and are bounded by the recurrence defect of the orbit correlation, `E_p(φ, h) ≤ Q(φ − φ(· + ph)) = 2(κ(0) − κ(p))` (`levinsonErr_le_recurrence`, `levinsonErr_weilSeq_le`): exact collapse is recurrence of the orbit. **Under RH every lattice of Spec ℤ has no slack:** the Frobenius difference is the cosine series `Σ_ρ m_ρ|φ̂(γ_ρ)|²·2(1 − cos(γ_ρph))` (`weilQuad_frobeniusDiff_eq`), which simultaneous Dirichlet approximation makes arbitrarily small (`exists_frobeniusDiff_lt`), so the margins tend to `0` (`tendsto_levinsonErr_of_riemannHypothesis`), and RH is equivalent to every lattice evolution being positive and singular (`riemannHypothesis_iff_singular_lattices`); the soft regime is the initial segment where every kick lands in its interval for every lattice (`abs_schurParam_lt_of_short`, total length `≤ 181/250`). |
+| What is the `ℤ`-analogue of the trivial Frobenius angle, and what weight does Weil's form carry there (2.6.4)? | **Lattice reading:** a lattice of step `h` folds the zero ordinates to angles `hγ mod 2π`. The trivial Frobenius eigenvalues are the pole: on every lattice it is the hyperbolic pair of angles `e^{±h/2}`, contributing the pole plane `2A(φ)B(φ)·V(e^{h/2})V(e^{−h/2})` (`weilSeq_eq_polar_sub_local`, `toeplitzForm_polar`, `toeplitzForm_polar_eq_hyperbolic`), exactly as `1` and `q` normalized by `√q` over `𝔽_q`. A degenerate lattice window has finitely many simple unitary angles with positive weights (`degenerate_window_is_curve`): it is a curve window. **The weight there:** for `A(φ)B(φ) > 0` the trivial angles carry exactly an indefinite plane — positive on one site, negative on the first difference (`4ab(1 − cosh(h/2)) < 0`), zero on the pole hyperplane (`polarSeq_signature`); the Weil sequence is this polar sequence minus the local one (`weilSeq_eq_polarSeq_sub`). Weil's form carries the trivial angles with one negative square, and it is nonnegative on every lattice iff the archimedean place and the primes pay that square everywhere, i.e. iff RH (`riemannHypothesis_iff_levinsonErr_pos`); then no lattice degenerates (`riemannHypothesis_iff_no_degenerate_lattice`) and Spec ℤ has infinitely many unitary angles on every lattice. In AHD's complete family the corresponding statement is the horizon criterion (the sign of the untwisted horizon windows), likewise RH. |
+| How do the soft horizons `≍ e^{−A/2}` become the exact doubly exponential margins? | **Margins are products of Schur factors:** `E_n = κ(0)∏_{k<n}(1 − γ_k²)` (`levinsonErr_eq_prod`). Exact collapse of margins is the accumulation of the Schur parameters at `±1`; each kick is admissible only in an interval of length `2√n₀E_m/|k_{m+1}(log n₀)|` (`posDef_update_iff`), which shrinks with the margin, and no value other than `Λ(n₀)` survives every lattice (`exists_lattice_failure_of_ne`): the exact form of the rigidity of the fold weights and of the Weil cone being a point. Margins only decrease (`levinsonErr_succ_le`) and are bounded by the recurrence defect of the orbit correlation, `E_p(φ, h) ≤ Q(φ − φ(· + ph)) = 2(κ(0) − κ(p))` (`levinsonErr_le_recurrence`, `levinsonErr_weilSeq_le`): exact collapse is recurrence of the orbit. **Under RH every lattice of Spec ℤ has no slack:** the Frobenius difference is the cosine series `Σ_ρ m_ρ|φ̂(γ_ρ)|²·2(1 − cos(γ_ρph))` (`weilQuad_frobeniusDiff_eq`), which simultaneous Dirichlet approximation makes arbitrarily small (`exists_frobeniusDiff_lt`), so the margins tend to `0` (`tendsto_levinsonErr_of_riemannHypothesis`), and RH is equivalent to every lattice evolution being positive and singular (`riemannHypothesis_iff_singular_lattices`). **The exact rate is the `ℓ²` threshold (Szegő–Verblunsky):** for a positive evolution the margins tend to `0` iff `Σ_k γ_k² = ∞` and stay above a positive constant iff `Σ_k γ_k² < ∞` (`tendsto_levinsonErr_zero_iff`, `levinsonErr_bounded_below_iff`); under RH the reflection coefficients of every lattice of Spec ℤ are not square-summable, and RH is equivalent to this together with positivity (`not_summable_reflCoeff_sq_of_riemannHypothesis`, `riemannHypothesis_iff_not_summable`). **The growth of `Σγ²`:** the Lyapunov functional satisfies `log(κ(0)/E_n) = −Σ_{k<n}log(1 − γ_k²)` and `Σ_{k<n}γ_k² ≤ log(κ(0)/E_n) ≤ Σ_{k<n}γ_k²/(1 − γ_k²)`, and for Spec ℤ it is at least `log(Q(φ)/Q(φ − φ(· + nh)))` (`log_div_levinsonErr_eq`, `sum_sq_le_log_le`, `log_le_sum_of_recurrence`): the Schur parameters accumulate at `±1` at least as fast as the orbit recurs; the soft regime is the initial segment where every kick lands in its interval for every lattice (`abs_schurParam_lt_of_short`, total length `≤ 181/250`). |
 
 ## 6. Tools
 
@@ -158,36 +160,35 @@ pairing, `realTests`, positive definiteness under RH, pole coordinates and `loca
 uniqueness of the Weil cone, the zero sum under RH, translates in the transform); SPATL and LST
 (coercivity of tests of support length `181/250`); HTGeometry (simultaneous Dirichlet approximation).
 
-**To develop.**
-- The continuum limit `h → 0` of the lattice canonical system (Krein's continuous Schur algorithm with
-  atoms at `log n`); its first step — monotonicity of margins under refinement and existence of the
-  dyadic limits under RH — is proved.
-- Szegő's limit law in full (a positive a.c. part gives a positive limit margin); for Spec ℤ the
-  singular half is proved under RH (`tendsto_levinsonErr_of_riemannHypothesis`).
-- A continuum unique-continuation principle for the window Euler–Lagrange equation.
+**Developed beyond the lattice.**
+- Continuity of orbit correlations (`continuous_weilOrbitCorr`, via the lag structure of SRT/AOG) and
+  the density of dyadic translates: lattice margins converge to continuum corner margins.
+- The Szegő–Verblunsky dichotomy for infinite products `∏(1 − x_k)` (`tendsto_prod_one_sub_zero_iff`).
+- Short generic bumps (`exists_short_generic`) and the intermediate value argument in the lattice step
+  that produces exact degenerations off RH.
 
 ## 7. Open research topics
 
-1. **The continuum two-collar form at the first prime** (A8). CSWT reduces the frozen datum at the
-   first stage to `Q(x_L) + Q(x_R) + Φ_ε(μ(x_L), ν(x_R))`, a function of the trivial-divisor moments;
-   open is `Φ_ε` itself, i.e. the minimization over the interior. On the lattice the minimization is
-   done: `[[E, β], [β, E]]`.
-2. **Ground states at every length (2.6.1).** Lattice: outer Levinson vectors exist exactly as long
-   as the margins are positive. Open: a stage-uniform construction for Spec ℤ, i.e. a reason why each
-   kick lands in its prediction interval.
-3. **Continuum unique continuation.** Exclude the balanced split of `gap_law`; on the lattice the
-   zero mode is already rigid.
-4. **The continuum limit.** Refining a lattice lowers its margin, `E_{kn}(φ, h/k) ≤ E_n(φ, h)`
-   (`levinsonErr_refine_le`), and under RH the dyadic refinements of a fixed total length converge
-   (`levinsonErr_dyadic_antitone`, `tendsto_levinsonErr_dyadic`). Open: identify the limit with the
-   continuum two-collar margin, and the limits of Schur parameters and predictors — the Krein system
-   of Weil's distribution with jumps at `log n`.
-5. **Exact margins.** Under RH the margins of every lattice tend to `0`
-   (`tendsto_levinsonErr_of_riemannHypothesis`); open is the rate — how fast the Schur parameters of
-   Spec ℤ accumulate at `±1` along a lattice, and the corresponding collapse of the rigidity
-   intervals of the prime-power weights.
-6. **The trivial angle.** Combine the lattice angle reading with AHD's additive-frequency
-   decomposition of the horizon layer.
+The questions of review-0311 §2.7 are answered in §5. The directions below go beyond them.
+
+1. **The continuum two-collar form in closed form.** The minimization over the interior is the
+   dyadic limit of the lattice forms `[[E, β], [β, E]]`, and CSWT gives the frozen datum in closed form
+   through trivial-divisor moments and earlier-fold transports; an explicit formula for the minimized
+   first-stage form `Φ_ε(μ(x_L), ν(x_R))` would turn the first-stage race into an inequality between
+   moments.
+2. **A stage-uniform reason for the kicks to land.** Every kick must land in an interval of length
+   `2√n₀E_m/|k_{m+1}(log n₀)|`, the intervals collapse (`Σγ² = ∞` under RH), and only `Λ` survives
+   all of them. A proof of RH in this language is a law that places every kick inside its interval.
+3. **Unique continuation across interior gaps.** Collar continuation holds; excluding the balanced
+   split of `gap_law` would show that edges have no interior gaps.
+4. **The Krein system of Weil's distribution.** Margins converge under refinement; the limits of the
+   Schur parameters and predictors are the continuous Schur function of Weil's distribution, with
+   jumps at `log n`.
+5. **Sharp collapse rates.** `Σ_{k<n}γ_k²` is pinned between `log(κ(0)/E_n)` and its weighted form and
+   bounded below by the recurrence of the orbit; the exact asymptotics along a lattice depend on the
+   Diophantine properties of the angles `hγ`.
+6. **The trivial additive angle of AHD.** Relate the hyperbolic pole pair of the lattice to the
+   additive-frequency decomposition of the horizon layer.
 
 ## 8. Pillar theorems
 
@@ -200,6 +201,8 @@ uniqueness of the Weil cone, the zero sum under RH, translates in the transform)
 | The kick is the collar reflection | `corr_eq_collar_windowInvolution`, `corr_eq_of_even`, `corr_eq_of_odd`, `weilQuad_eq_of_even`, `weilQuad_eq_of_odd` |
 | Parity splitting; pre-installed sign | `weilPair_even_odd`, `window_nonneg_iff_sectors`, `collar_antisymmetric_of_frozen_negative_even`, `collar_symmetric_of_frozen_negative_odd` |
 | Zero modes have reflection parity; gap law | `weilPair_windowInvolution`, `zeroMode_evenPart`, `zeroMode_oddPart`, `exists_parity_zeroMode`, `parity_zeroMode_collars`, `gap_law` |
+| Unique continuation from an end collar | `eq_zero_of_zeroMode_vanish_collar`, `zeroMode_eq_of_eq_on_collar` |
+| The first prime stage opens positive | `weilQuad_nonneg_of_short`, `windowLevel_eq_two`, `firstStage_criterion_of_le`, `firstStage_kick_le_frozen` |
 | One- and two-collar decompositions of a lattice stage | `toeplitzForm_cons`, `toeplitzForm_snoc`, `toeplitzForm_two_collar`, `twoCollar_isLeast` |
 | Levinson evolution | `isPredictor_snoc`, `predErr_snoc`, `levinson_isPredictor`, `predErr_levinson`, `levinsonErr_succ_eq_mul` |
 | Positivity is the evolution; prediction interval | `posDef_succ_iff`, `toeplitzForm_posDef_iff`, `posDef_succ_iff_abs_schur_lt`, `levinsonErr_pos_iff` |
@@ -209,6 +212,11 @@ uniqueness of the Weil cone, the zero sum under RH, translates in the transform)
 | The angles are simple and number `n + 1` | `hform_zeroMode_eq_zero`, `natDegree_zeroMode`, `not_sq_dvd_zeroMode`, `zeroMode_roots` |
 | A degenerate window is a curve (Carathéodory–Fejér) | `hform_orth_of_eigen`, `eq_sum_cofactor`, `hform_eq_sum_diag`, `degenerate_window_is_curve` |
 | The pole is a hyperbolic pair of angles | `weilSeq_eq_polar_sub_local`, `toeplitzForm_polar`, `toeplitzForm_polar_eq_hyperbolic` |
+| The trivial angles carry one negative square | `polarSeq_single`, `polarSeq_firstDiff`, `polarSeq_signature`, `weilSeq_eq_polarSeq_sub` |
+| Forbidding lattice zero modes is RH | `weilOrbitCorr_neg`, `levinsonErr_one`, `zeta_orbitCorr_eq`, `exists_short_generic`, `exists_degenerate_lattice_of_not_riemannHypothesis`, `riemannHypothesis_iff_no_degenerate_lattice` |
+| Szegő–Verblunsky law; the rate for Spec ℤ | `tendsto_prod_one_sub_zero_iff`, `tendsto_levinsonErr_zero_iff`, `levinsonErr_bounded_below_iff`, `not_summable_reflCoeff_sq_of_riemannHypothesis`, `riemannHypothesis_iff_not_summable` |
+| The Lyapunov functional and the growth of `Σγ²` | `log_div_levinsonErr_eq`, `sum_sq_le_log_le`, `log_le_sum_of_recurrence` |
+| The continuum margin is the dyadic limit | `continuous_weilOrbitCorr`, `weilQuad_sum_scaleShift`, `continuous_weilQuad_cornerCombo`, `contMargin`, `tendsto_levinsonErr_dyadic_contMargin` |
 | Margins are bounded by recurrence | `toeplitzForm_recurrence`, `levinsonErr_le_recurrence`, `two_mul_weilSeq_sub`, `levinsonErr_weilSeq_le` |
 | Refining the lattice lowers the margin; dyadic limits | `toeplitzForm_levinsonVec`, `levinsonErr_le_toeplitzForm`, `latticeTest_refineVec`, `levinsonErr_refine_le`, `levinsonErr_dyadic_antitone`, `tendsto_levinsonErr_dyadic` |
 | No slack: lattices of Spec ℤ are singular (RH-equivalence) | `weilQuad_frobeniusDiff_eq`, `exists_frobeniusDiff_lt`, `tendsto_levinsonErr_of_riemannHypothesis`, `riemannHypothesis_iff_singular_lattices` |
@@ -234,6 +242,8 @@ uniqueness of the Weil cone, the zero sum under RH, translates in the transform)
 | A degenerate window has an arbitrary zero mode | It is a single palindrome up to sign with nonzero ends and `n + 1` simple zeros on the unit circle; the window is then a curve window with positive weights |
 | The pole is a nuisance term of the lattice form | It is the hyperbolic pair of angles `e^{±h/2}`, the trivial Frobenius eigenvalues of the lattice |
 | The continuum zero mode can be cut along a gap into independent pieces | The pieces have equal energy and equal Weil orbit correlations across the gap (`gap_law`) |
+| Zero modes are a separate phenomenon from RH | Off RH some lattice degenerates exactly; forbidding lattice zero modes is RH (`riemannHypothesis_iff_no_degenerate_lattice`) |
+| Margin collapse needs a quantitative rate to be meaningful | Its exact content is the `ℓ²` threshold of the Schur parameters (`tendsto_levinsonErr_zero_iff`) |
 | A canonical-system formulation removes the wall | It changes the toolset, not the wall: margins are products `∏(1 − γ_k²)` that the arithmetic must keep away from zero at every stage |
 
 ## 10. Place in the research and relation to other programmes
@@ -256,8 +266,9 @@ The programme succeeds when each question of §5 has a theorem as answer — an 
 equivalence, a classification, or a no-go with its strongest positive survivor — and the stage step
 is reduced to an exact statement about collar data alone. In the lattice register this is achieved:
 the stage step is `|β_n| < E_n` for one new datum, with the frozen data closed under the Levinson law.
-In the continuum the stage step is the stage criterion on collar classes; the continuum canonical
-system and unique continuation remain.
+In the continuum the stage step is the stage criterion on collar classes, the lattice forms converge
+to the continuum margins, zero modes continue uniquely from either end collar, and forbidding the
+zero modes of the tower is RH. Every question of review-0311 §2.7 has a theorem as answer (§5).
 
 The criteria that review-0311 §2.7 sets for the field, and where they are met:
 
@@ -298,9 +309,11 @@ margin. A positive lattice window has an outer ground state; a degenerate one ha
 with simple angles on the unit circle and is the window of a curve with positive multiplicities, the
 pole being the hyperbolic pair `e^{±h/2}`. A window of length `A` is exactly its lattices of total
 length `≤ A`. RH is the statement that, for every bump and every step, Spec ℤ never degenerates:
-every margin of its causal evolution stays positive — and only the weight `Λ` can achieve this.
-Under RH these margins also tend to zero along every lattice: the evolution is singular, with no
-slack anywhere.
+every margin of its causal evolution stays positive — equivalently, no lattice ever degenerates into
+a curve — and only the weight `Λ` can achieve this. Under RH these margins also tend to zero along
+every lattice, exactly at the `ℓ²` threshold of the Schur parameters: the evolution is singular,
+with no slack anywhere. Refining the lattice, the margins converge to the continuum margins of the
+window, and the edges of the continuum cone continue uniquely from either end collar.
 
 What GWZ does not supply is a reason for the kicks to land in their prediction intervals. The
 evolution is exact and causal, the margins are products that collapse, and the prime-power weights

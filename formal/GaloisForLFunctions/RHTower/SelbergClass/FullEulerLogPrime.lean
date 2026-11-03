@@ -4,12 +4,11 @@ import Mathlib.NumberTheory.LSeries.Deriv
 import Mathlib.NumberTheory.LSeries.Injectivity
 
 /-!
-# Prime layer of a full Euler logarithm
+# Coefficient identity for a full Euler logarithm
 
-The exponentiated Euler identity in `SelbergClass` already determines its
-prime coefficient.  Differentiation gives an equality of two absolutely
-convergent Dirichlet series, and coefficient injectivity reduces its prime
-coefficient to the two divisor pairs `(1,p)` and `(p,1)`.
+Differentiating the exponentiated Euler identity gives a convolution identity
+for every coefficient. At a prime, the two divisor pairs `(1,p)` and `(p,1)`
+show that the Dirichlet coefficient equals its Euler-log coefficient.
 -/
 
 open Complex Filter Topology
@@ -41,11 +40,14 @@ private theorem mul_apply_prime {R : Type*} [Semiring R]
   rw [ArithmeticFunction.mul_apply, hanti]
   simp [hp.ne_one]
 
-/-- The Dirichlet coefficient at a prime equals the corresponding coefficient
-of the Euler logarithm. -/
-theorem SelbergClass.coeff_prime_eq_eulerLogCoeff
-    (F : SelbergClass) {p : ℕ} (hp : p.Prime) :
-    F.coeff p = F.eulerLogCoeff p := by
+/-- Logarithmic differentiation of the Euler product identifies every
+log-weighted coefficient with its Dirichlet convolution. -/
+theorem SelbergClass.logMul_coeff_apply (F : SelbergClass) (n : ℕ) :
+    LSeries.logMul F.coeff n = ∑ ij ∈ n.divisorsAntidiagonal,
+      F.coeff ij.1 * LSeries.logMul F.eulerLogCoeff ij.2 := by
+  by_cases hn : n = 0
+  · subst n
+    simp [LSeries.logMul]
   let D : ArithmeticFunction ℂ :=
     ⟨LSeries.logMul F.eulerLogCoeff, by simp [LSeries.logMul]⟩
   have hderivMul : ∀ s : ℂ, 2 < s.re →
@@ -126,13 +128,23 @@ theorem SelbergClass.coeff_prime_eq_eulerLogCoeff
   have hconv4 : LSeriesSummable (fun n => (F.coeff * D) n) (4 : ℂ) := by
     simpa using ArithmeticFunction.LSeriesSummable_mul
       (F.lSeriesSummable (4 : ℂ) (by norm_num)) hD4
-  have hcoeff : LSeries.logMul F.coeff p = (F.coeff * D) p := by
+  have hcoeff : LSeries.logMul F.coeff n = (F.coeff * D) n := by
     apply LSeries.eq_of_LSeries_eventually_eq
     · exact hlogA4.abscissaOfAbsConv_le.trans_lt (EReal.coe_lt_top _)
     · exact hconv4.abscissaOfAbsConv_le.trans_lt (EReal.coe_lt_top _)
     · filter_upwards [eventually_gt_atTop (2 : ℝ)] with x hx
       exact hderivMul (x : ℂ) (by simpa using hx)
-    · exact hp.ne_zero
+    · exact hn
+  exact hcoeff
+
+/-- The Dirichlet coefficient at a prime equals the corresponding coefficient
+of the Euler logarithm. -/
+theorem SelbergClass.coeff_prime_eq_eulerLogCoeff
+    (F : SelbergClass) {p : ℕ} (hp : p.Prime) :
+    F.coeff p = F.eulerLogCoeff p := by
+  let D : ArithmeticFunction ℂ :=
+    ⟨LSeries.logMul F.eulerLogCoeff, by simp [LSeries.logMul]⟩
+  have hcoeff := F.logMul_coeff_apply p
   have hD_one : D 1 = 0 := by simp [D, LSeries.logMul]
   have hD_prime : D p = Complex.log (p : ℂ) * F.eulerLogCoeff p := by rfl
   change Complex.log (p : ℂ) * F.coeff p = (F.coeff * D) p at hcoeff

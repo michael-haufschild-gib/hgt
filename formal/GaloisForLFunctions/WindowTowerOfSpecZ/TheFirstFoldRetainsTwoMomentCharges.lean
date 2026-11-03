@@ -57,7 +57,8 @@ private theorem dilation_outside {F : ℝ → ℝ}
 private theorem dilation_odd {F : ℝ → ℝ} (ho : ∀ x, F (-x) = -F x) (x : ℝ) :
     F ((1 / 2) * (-x)) = -F ((1 / 2) * x) := by rw [mul_neg, ho]
 
-private theorem dilation_half_mass {F : ℝ → ℝ} (hF : Continuous F)
+/-- Odd dilation preserves the positive-half square mass. -/
+theorem unit_odd_dilation_half_mass {F : ℝ → ℝ} (hF : Continuous F)
     (hs : tsupport F ⊆ Icc (-(1 / 2 : ℝ)) (1 / 2)) (ho : ∀ x, F (-x) = -F x) :
     (∫ u in Ioo (0 : ℝ) 1, F ((1 / 2) * u) ^ 2) = ∫ x, F x ^ 2 := by
   have hc : Continuous (fun u => F ((1 / 2 : ℝ) * u)) :=
@@ -73,7 +74,8 @@ private theorem dilation_half_mass {F : ℝ → ℝ} (hF : Continuous F)
   rw [hcut, hscale] at he
   linarith only [he]
 
-private theorem dilation_half_position {F : ℝ → ℝ} (hF : Continuous F)
+/-- The positive-half first moment of the dilate is twice the original position moment. -/
+theorem unit_odd_dilation_half_position {F : ℝ → ℝ} (hF : Continuous F)
     (hs : tsupport F ⊆ Icc (-(1 / 2 : ℝ)) (1 / 2)) (ho : ∀ x, F (-x) = -F x) :
     (∫ x, x * F x) = (∫ u in Ioo (0 : ℝ) 1, u * F ((1 / 2) * u)) / 2 := by
   have hc : Continuous (fun u => F ((1 / 2 : ℝ) * u)) :=
@@ -167,7 +169,7 @@ theorem retainedOddGamma_add_reserve_ge_firstFoldTwoMomentForm {F : ℝ → ℝ}
   obtain ⟨hExt, hLag⟩ := unit_odd_logarithmic_lag_and_exterior hF hs ho
   change IntegrableOn (fun u => G u ^ 2 * (Real.log 2 - Real.log (1 - u ^ 2) / 2))
     (Ioo (0 : ℝ) 1) at hExt
-  have hMass := dilation_half_mass hF.continuous hs ho
+  have hMass := unit_odd_dilation_half_mass hF.continuous hs ho
   change (∫ u in Ioo (0 : ℝ) 1, G u ^ 2) = ∫ x, F x ^ 2 at hMass
   have hFull := even_integral_unit (H := fun u => G u ^ 2)
     (hG.continuous.pow 2) (fun u => by rw [hGo, neg_sq])
@@ -175,7 +177,7 @@ theorem retainedOddGamma_add_reserve_ge_firstFoldTwoMomentForm {F : ℝ → ℝ}
     simpa only [legP_one, mul_comm] using
       odd_legendre_half hG.continuous hGo (n := 1) (by norm_num)
   have hM3 := odd_legendre_half hG.continuous hGo (n := 3) (by norm_num)
-  have hPos := dilation_half_position hF.continuous hs ho
+  have hPos := unit_odd_dilation_half_position hF.continuous hs ho
   change (∫ x, x * F x) = (∫ u in Ioo (0 : ℝ) 1, u * G u) / 2 at hPos
   have hGap := regionalLogEnergy_ge_fifth_gap_sub_low_odd_moments hG hGo
   rw [hFull, hMass, hM1, hM3] at hGap

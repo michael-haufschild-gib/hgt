@@ -1,8 +1,8 @@
 # Critical Euler rigidity with arbitrary Gamma factors
 
 - **ID:** selberg-critical-euler-rigidity
-- **Stage:** 1-in-progress
-- **Type:** CANDIDATE
+- **Stage:** 3-formalized
+- **Type:** THEOREM (Lean)
 - **Wall:** Γ15
 - **Statement:** For full Selberg functions, absolute convergence of the difference of their Euler logarithms at `Re s = 1/2` forces equality of all Dirichlet coefficients.
 
@@ -18,6 +18,12 @@ Let `A_F(s) = (s−1)^m_F F(s)` denote the entire pole regularization. The cross
 
 On `Re s > 1`, logarithmic differentiation gives `L(b)' = P' − γ_F'/γ_F + γ_G'/γ_G`. Differentiate beyond the degree of `P'`. Every remaining positive-order polygamma term tends to zero on `Re s = 2` as imaginary part tends to infinity. The corresponding logarithmically weighted Dirichlet series converges absolutely there, is almost periodic, and therefore vanishes identically. Bohr coefficient extraction gives `b(n) = 0` for `n ≥ 2`; prime-power support and arithmetic-function normalization give `b(1) = b(0) = 0`. The Euler products agree on `Re s > 1`, and Dirichlet-series uniqueness gives `a_F = a_G`.
 
-## Remaining proof obligation
+## Lean
 
-Complete the Lean checks and dependency audit. General Γ15 remains partial: this theorem excludes critical-absolutely-summable discrepancies, not every possible functional-equation twin.
+- `SelbergClass/CriticalEulerQuotient.lean`: `eulerQuotient_mul_value_of_summable_closed`, `completedEulerQuotient_analyticOnNhd_of_critical_discrepancy`.
+- `SelbergClass/CompletedEulerQuotientGrowth.lean`: `completedEulerQuotient_eq_exp_polynomial_of_analytic`.
+- `SelbergClass/GammaIndependentEulerRigidity.lean`: `eulerLogCoeff_eq_of_critical_discrepancy`, `coeff_eq_of_critical_discrepancy`; the subcritical statements follow as corollaries.
+
+Five canonical `lake --old env lean` checks pass. Six transitive axiom audits, including the arbitrary-Gamma finite-prime corollary, use only `propext`, `Classical.choice`, and `Quot.sound`.
+
+General Γ15 remains partial: this theorem excludes critical-absolutely-summable discrepancies, not every possible functional-equation twin.

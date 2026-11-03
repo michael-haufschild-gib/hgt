@@ -1066,27 +1066,32 @@ theorem exists_separatedCrossError_bounds {φ : ℝ → ℝ}
         have h3 : (N : ℝ) * (32 * K₀ ^ 2 * (m : ℝ) * c ^ 4 / (N : ℝ) ^ 2) ≤
             32 * K₀ ^ 2 * (m : ℝ) * c ^ 2 := by
           have hc4 : c ^ 4 ≤ c ^ 2 * (N : ℝ) := by
-            have := mul_le_mul_of_nonneg_left hc2N (sq_nonneg c)
-            linarith [show c ^ 2 * c ^ 2 = c ^ 4 by ring]
+            have h := mul_le_mul_of_nonneg_left hc2N (sq_nonneg c)
+            rwa [show c ^ 2 * c ^ 2 = c ^ 4 by ring] at h
           rw [mul_div_assoc', div_le_iff₀ (pow_pos hN0 2)]
-          have hm0' : 0 ≤ 32 * K₀ ^ 2 * (m : ℝ) * (N : ℝ) := by positivity
-          nlinarith
-        linarith
+          calc
+            (N : ℝ) * (32 * K₀ ^ 2 * (m : ℝ) * c ^ 4)
+                = (32 * K₀ ^ 2 * (m : ℝ) * (N : ℝ)) * c ^ 4 := by ring
+            _ ≤ (32 * K₀ ^ 2 * (m : ℝ) * (N : ℝ)) * (c ^ 2 * (N : ℝ)) :=
+              mul_le_mul_of_nonneg_left hc4 (by positivity)
+            _ = 32 * K₀ ^ 2 * (m : ℝ) * c ^ 2 * (N : ℝ) ^ 2 := by ring
+        exact (add_le_add h2 h3).trans_eq (by ring)
       calc
         _ ≤ (1 / Real.log N) * (2080 * K₀ ^ 2 * (m : ℝ) * c ^ 2) :=
           hsq_sum.trans (mul_le_mul_of_nonneg_left hsum_tot (by positivity))
         _ ≤ (2080 * K₀ ^ 2 + 40 * K₀ + 1) * (m : ℝ) * c ^ 2 / Real.log N := by
           rw [one_div_mul_eq_div]
           refine div_le_div_of_nonneg_right ?_ hL0.le
-          nlinarith [show (0 : ℝ) ≤ (40 * K₀ + 1) * (m : ℝ) * c ^ 2 by positivity]
+          have hex : (0 : ℝ) ≤ (40 * K₀ + 1) * (m : ℝ) * c ^ 2 := by positivity
+          linarith only [hex, (by ring : (2080 * K₀ ^ 2 + 40 * K₀ + 1) * (m : ℝ) * c ^ 2 =
+            2080 * K₀ ^ 2 * (m : ℝ) * c ^ 2 + (40 * K₀ + 1) * (m : ℝ) * c ^ 2)]
     · have hN1 : N = 1 := by
         by_contra h; exact hL0 (Real.log_pos (by exact_mod_cast (show 2 ≤ N by omega)))
       subst hN1
-      simp only [Nat.cast_one, Real.log_one, div_zero]
       have hu0 : Matrix.toEuclideanLin (separatedCrossErrorMatrix φ c 1)
           (normalizedRamanujanHorizonVector m 1) = 0 := by
         ext i; simpa [Real.log_one] using hcoord i
-      simp [hu0]
+      rw [Nat.cast_one, hu0, norm_zero, zero_pow (by decide), Real.log_one, div_zero]
   · -- Bilinear bound
     intro l hl
     by_cases hL0 : 0 < Real.log (N : ℝ)
@@ -1132,7 +1137,7 @@ theorem exists_separatedCrossError_bounds {φ : ℝ → ℝ}
                   4 * K₀ * Real.sqrt m * c ^ 2 * (2 * Real.sqrt N)
                       = (8 * K₀ * Real.sqrt m * c) * (c * Real.sqrt N) := by ring
                   _ ≤ (8 * K₀ * Real.sqrt m * c) * N := mul_le_mul_of_nonneg_left h1 hm0'
-              linarith
+              linarith only [hterm2]
       calc
         _ ≤ (Real.sqrt l / Real.log N) * (40 * K₀ * Real.sqrt m * c) :=
           hp.trans (mul_le_mul_of_nonneg_left hsum_l1 (by positivity))
@@ -1140,15 +1145,18 @@ theorem exists_separatedCrossError_bounds {φ : ℝ → ℝ}
           rw [Real.sqrt_mul (Nat.cast_nonneg m)]; ring
         _ ≤ (2080 * K₀ ^ 2 + 40 * K₀ + 1) * Real.sqrt ((m : ℝ) * l) * c / Real.log N := by
           refine div_le_div_of_nonneg_right ?_ hL0.le
-          nlinarith [show (0 : ℝ) ≤ (2080 * K₀ ^ 2 + 1) * Real.sqrt ((m : ℝ) * l) * c by positivity]
+          have hex : (0 : ℝ) ≤ (2080 * K₀ ^ 2 + 1) * Real.sqrt ((m : ℝ) * l) * c := by positivity
+          linarith only [hex, (by ring :
+            (2080 * K₀ ^ 2 + 40 * K₀ + 1) * Real.sqrt ((m : ℝ) * l) * c =
+              40 * K₀ * Real.sqrt ((m : ℝ) * l) * c +
+                (2080 * K₀ ^ 2 + 1) * Real.sqrt ((m : ℝ) * l) * c)]
     · have hN1 : N = 1 := by
         by_contra h; exact hL0 (Real.log_pos (by exact_mod_cast (show 2 ≤ N by omega)))
       subst hN1
-      simp only [Nat.cast_one, Real.log_one, div_zero]
       have hu0 : Matrix.toEuclideanLin (separatedCrossErrorMatrix φ c 1)
           (normalizedRamanujanHorizonVector m 1) = 0 := by
         ext i; simpa [Real.log_one] using hcoord i
-      simp [hu0]
+      rw [Nat.cast_one, hu0, inner_zero_left, abs_zero, Real.log_one, div_zero]
 
 /-! ## Section 3: Channel 8 Dual-Collar Bound and Adjoint Downward-Divisor Bilinear Bound -/
 
@@ -1280,7 +1288,8 @@ theorem exists_upward_dual_seventh_log_free {φ : ℝ → ℝ}
         · rw [if_pos hex]
           have h := (abs_sum_le_sum_abs _ (Icc 1 B)).trans
             (sum_le_sum fun h _ => abs_linearizedUpwardOffset_sub_reciprocal_le hφ hsupp c N m n k h)
-          simpa only [L_val, sum_const, nsmul_eq_mul, Nat.card_Icc, Nat.add_sub_cancel] using h
+          rw [sum_const, nsmul_eq_mul, Nat.card_Icc, Nat.add_sub_cancel] at h
+          exact h.trans_eq (by dsimp only [L_val]; ring)
         · rw [if_neg hex]
           have hz : (∑ h ∈ Icc 1 B, (linearizedUpwardOffset φ c N m n k h -
               reciprocalUpwardOffset φ c N m n k h)) = 0 := by
@@ -1388,7 +1397,7 @@ theorem exists_upward_dual_seventh_log_free {φ : ℝ → ℝ}
           _ = 4 * d * (m.totient : ℝ) * c := by ring
       have hb2 : b n ^ 2 ≤ 16 * d ^ 2 * (m.totient : ℝ) ^ 2 * c ^ 2 / n := by
         have hsq := pow_le_pow_left₀ (abs_nonneg _) hbn 2
-        rw [sq_abs, div_pow, Real.sq_sqrt hn0.le] at hsq
+        rw [sq_abs, div_pow (4 * d * (m.totient : ℝ) * c), Real.sq_sqrt hn0.le] at hsq
         exact hsq.trans_eq (by ring)
       have hw7 : ((n : ℝ) / N) ^ 7 ≤ (n : ℝ) / N := by
         have h01 : (n : ℝ) / N ≤ 1 := (div_le_one hN0).mpr hnNR
@@ -1469,7 +1478,8 @@ theorem exists_upward_dual_seventh_log_free {φ : ℝ → ℝ}
         linarith only [htri, h1, h2]
       have hr2 : r n ^ 2 ≤ 16 * (Real.log 4 + 4) ^ 2 * (m.totient : ℝ) ^ 2 * c ^ 2 / n := by
         have hsq := pow_le_pow_left₀ (abs_nonneg _) hrn 2
-        rw [sq_abs, div_pow, Real.sq_sqrt hn0.le] at hsq
+        rw [sq_abs, div_pow (4 * (Real.log 4 + 4) * (m.totient : ℝ) * c),
+          Real.sq_sqrt hn0.le] at hsq
         exact hsq.trans_eq (by ring)
       have hw7 : ((n : ℝ) / N) ^ 7 ≤ (n : ℝ) / N := by
         have h01 : (n : ℝ) / N ≤ 1 := (div_le_one hN0).mpr hnNR
@@ -1564,7 +1574,7 @@ theorem exists_upward_dual_seventh_log_free {φ : ℝ → ℝ}
     (m.totient : ℝ)⁻¹ * topCollarDualSeventhMass M N (normalizedUpwardPrimeResidual φ c N m)
         ≤ (m.totient : ℝ)⁻¹ * (C_tot * (m.totient : ℝ) ^ 2 * rate) :=
           mul_le_mul_of_nonneg_left htot_sum (by positivity)
-    _ = C_tot * (m.totient : ℝ) * rate := by field_simp [htot_pos.ne']; ring
+    _ = C_tot * (m.totient : ℝ) * rate := by field_simp [htot_pos.ne']
     _ ≤ C_tot * (m : ℝ) * rate :=
           mul_le_mul_of_nonneg_right
             (mul_le_mul_of_nonneg_left htot_le (by dsimp only [C_tot, d]; positivity))
