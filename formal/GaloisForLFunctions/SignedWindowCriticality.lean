@@ -6,6 +6,7 @@ import GaloisForLFunctions.SignedWindowCriticality.ACriticalWindowIsAPoleCharged
 import GaloisForLFunctions.SignedWindowCriticality.TheKickIsAPositiveSourceAndANegativeCollarConductance
 import GaloisForLFunctions.SignedWindowCriticality.TheCollarHankelForm
 import GaloisForLFunctions.SignedWindowCriticality.TheFrozenOddFormIsMarkovAndTheKickIsNot
+import GaloisForLFunctions.SignedWindowCriticality.OnReflectionPairsTheCouplingIsTheSmoothedPrimeCount
 
 /-!
 # Signed Window Criticality
@@ -19,5 +20,6 @@ gauges and zero modes solve the pole-charged source equation and represent the w
 own gauge; on odd tests the frozen form is Markov under `F ↦ sign(x)|F|` and the kick of the first
 prime is anti-Markov; the kick of a new prime power is a positive source plus a negative anti-diagonal
 conductance on the collar; on reflection-paired collar data the frozen coupling is the collar Hankel
-form, one pole square against the trivial-zero squares, negative definite on the pole hyperplane.
+form, one pole square against the trivial-zero squares, negative definite on the pole hyperplane,
+and the full coupling of a reflection pair is that form minus the smoothed prime count.
 -/

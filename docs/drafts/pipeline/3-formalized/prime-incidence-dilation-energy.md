@@ -17,6 +17,10 @@ Proof. A Mangoldt-supported dilation changes only one prime incidence coordinate
 
 Declarations: `jumpEnergy_sub_const`, `jumpEnergy_divisibilityIndicator`, `vonMangoldt_incidence_jump_square`, `jumpEnergy_incidencePacket_diagonal`.
 
+The prime-packet identity is equivalent to
+`CompletedArithmeticForms.jumpEnergy_prime_incidence_eq_harmonic_diagonal`;
+the integer-comb statement also allows composite `d`.
+
 Individual `lake --old env lean` check passed; transitive axioms are exactly `propext`, `Classical.choice`, `Quot.sound`. Imported by the `ArithmeticCouplingTheory` umbrella.
 
 The identity evaluates the dilation term only. Joint cancellation with the shell, Gamma and pole terms in Q6 remains open.

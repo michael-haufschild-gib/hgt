@@ -23,6 +23,7 @@ import GaloisForLFunctions.CriticalScaleArithmeticRigidity.AdjunctionResidualCoe
 
 import GaloisForLFunctions.CriticalScaleArithmeticRigidity.TerminalPrimeResiduals
 import GaloisForLFunctions.CriticalScaleArithmeticRigidity.ReceivingCharges.PrimeChargeBoundaryCorrection
+import GaloisForLFunctions.CriticalScaleArithmeticRigidity.ReceivingCharges.PrimeChargeMoments
 
 /-!
 # Arithmetic rigidity at critical scale

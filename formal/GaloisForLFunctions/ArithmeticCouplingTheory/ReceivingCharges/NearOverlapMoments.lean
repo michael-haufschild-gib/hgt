@@ -20,6 +20,7 @@ namespace GaloisForLFunctions.ArithmeticCouplingTheory
 
 open RenormalizedArithmeticPotentialTheory CriticalArithmeticCorrelationTheory
   SpacingScaleHarmonicAnalysis ArithmeticElectrostatics HTGeometry
+  RenormalizedArithmeticPotentialTheory.CompletedShell
 
 private theorem near_mem_symm {c : ℝ} {N n j : ℕ}
     (hn : n ∈ Icc 1 N) (hj : j ∈ Icc 1 N) :
@@ -41,7 +42,7 @@ theorem abs_near_packet_form_le {c M : ℝ} {N : ℕ}
   have hr : 0 ≤ linearNearRowRadius c := by unfold linearNearRowRadius; positivity
   have hU0 (n j : ℕ) : 0 ≤ U n j := by dsimp only [U]; split_ifs <;> positivity
   have hUsym (n : ℕ) (hn : n ∈ Icc 1 N) (j : ℕ) (hj : j ∈ Icc 1 N) :
-      U n j = U j n := by dsimp only [U]; rw [near_mem_symm hn hj]
+      U n j = U j n := by simp only [U, near_mem_symm hn hj]
   have hcard (n : ℕ) (hn : n ∈ Icc 1 N) :
       ((nearRowIndices c N n).card : ℝ) ≤
         2 * linearNearRowRadius c ^ 2 * (n : ℝ) / N := by
@@ -138,7 +139,7 @@ private theorem overlap_packet_eq (φ : ℝ → ℝ) (c : ℝ) (N : ℕ) (F : �
   rw [horizonKernelMatrix_inner]
   have hext (n : ℕ) (hn : n ∈ Icc 1 N) :
       primeHorizonExtension (packetVector F N) n = F n / Real.sqrt n := by
-    simp only [primeHorizonExtension, hn, if_true]
+    simp only [primeHorizonExtension, hn]
     rfl
   apply sum_congr rfl
   intro n hn
@@ -146,7 +147,7 @@ private theorem overlap_packet_eq (φ : ℝ → ℝ) (c : ℝ) (N : ℕ) (F : �
   apply sum_congr rfl
   intro j hj
   rw [hext n hn, hext j hj]
-  simp only [mul_ite, mul_zero, ne_comm]
+  simp only [mul_ite, mul_zero, ne_comm, mul_div_assoc]
 
 /-- The actual overlap matrix costs a terminal ordinary moment, including its center correction. -/
 theorem exists_abs_overlap_packet_le {φ : ℝ → ℝ}
@@ -167,14 +168,17 @@ theorem exists_abs_overlap_packet_le {φ : ℝ → ℝ}
     Real.log_nonneg ((le_div_iff₀ hw0).2 (by linarith only [hw]))
   have hLN : Real.log (1 / (c / N)) ≤ Real.log N := by
     apply Real.log_le_log (by positivity)
-    rw [le_div_iff₀ hw0]
-    convert hc using 1 <;> field_simp [hN0.ne']
+    rw [div_le_iff₀ hw0]
+    have hcancel : (N : ℝ) * (c / N) = c := by
+      rw [mul_comm, div_mul_cancel₀ _ hN0.ne']
+    simpa only [hcancel] using hc
   rw [overlap_packet_eq]
   apply abs_near_packet_form_le hc0 hN (by linarith only [hw])
     (by positivity)
   intro n hn j hj
   have hjN := (mem_filter.mp hj).1
-  have hnear := (mem_filter.mp hj).2.2
+  have hnear : |Real.log j - Real.log n| ≤ 2 * (c / N) := by
+    simpa only [mul_div_assoc] using (mem_filter.mp hj).2.2
   have hcorr : |shellAutocorr φ (|Real.log j - Real.log n| / (c / N))| ≤ ∫ u, φ u ^ 2 :=
     abs_bumpCorr_le hφ.continuous (hasCompactSupport_profile hsupp) _
   have hmain : |Real.log (1 / (c / N)) *

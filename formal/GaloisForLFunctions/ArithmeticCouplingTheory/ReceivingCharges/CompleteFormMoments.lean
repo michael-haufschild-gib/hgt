@@ -171,6 +171,15 @@ theorem abs_half_affine_sub_shell_le {φ : ℝ → ℝ} (hφ0 : ∀ u, 0 ≤ φ 
         F n ^ 2 * ∑ j : PrimeHorizonIndex N, nonRatioWeight φ c N n j := hschur
     _ = _ := sum_congr rfl fun n _ => mul_comm _ _
 
+/-- The affine term itself is at most four shell diagonals. -/
+theorem affineDirichlet_le_four_shell {φ : ℝ → ℝ} (hφ0 : ∀ u, 0 ≤ φ u)
+    (hsupp : ∀ u, u ∉ Set.Icc 0 1 → φ u = 0) (hM : 0 < ∫ u, φ u ^ 2)
+    {c : ℝ} (hc : 0 < c) (N : ℕ) (F : ℕ → ℝ) :
+    affineDirichlet φ c N F ≤
+      4 * ∑ n : PrimeHorizonIndex N, shellDegree φ c N n * F n ^ 2 := by
+  have h := (abs_le.mp (abs_half_affine_sub_shell_le hφ0 hsupp hM hc N F)).2
+  linarith only [h]
+
 /-- The shell degree retains the ordinary terminal moment without a conductor-separation premise. -/
 theorem shell_packet_moments_le {φ : ℝ → ℝ}
     (hφ : ContDiff ℝ 2 φ) (hsupp : ∀ u, u ∉ Set.Icc 0 1 → φ u = 0)
@@ -312,6 +321,91 @@ theorem exists_complete_packet_moment_bound {φ : ℝ → ℝ}
     hoverlap
   exact hsum.trans_eq (by ring)
 
+private theorem diagonal_coefficient_le (D A X : ℝ) {c : ℝ} (hc : 1 ≤ c) :
+    D + Real.log c + A * c + X * c ^ 2 ≤ (|D| + 1 + |A| + |X|) * c ^ 2 := by
+  have hc0 : 0 < c := zero_lt_one.trans_le hc
+  have hc2 : c ≤ c ^ 2 := by nlinarith only [mul_nonneg hc0.le (sub_nonneg.mpr hc)]
+  have h12 : 1 ≤ c ^ 2 := hc.trans hc2
+  have hD : D ≤ |D| * c ^ 2 := calc
+    D ≤ |D| := le_abs_self D
+    _ = |D| * 1 := by ring
+    _ ≤ _ := mul_le_mul_of_nonneg_left h12 (abs_nonneg D)
+  have hlog := (Real.log_le_sub_one_of_pos hc0).trans ((sub_le_self c zero_le_one).trans hc2)
+  have hA := (mul_le_mul_of_nonneg_right (le_abs_self A) hc0.le).trans
+    (mul_le_mul_of_nonneg_left hc2 (abs_nonneg A))
+  have hX := mul_le_mul_of_nonneg_right (le_abs_self X) (sq_nonneg c)
+  nlinarith only [hD, hlog, hA, hX]
+
+private theorem terminal_coefficient_le (B : ℝ) {C c L H : ℝ}
+    (hC : 0 ≤ C) (hc : 1 ≤ c) (hL : 0 ≤ L) (hH : H ≤ 1 + L) :
+    B * c * (L + 1) + c * (H + 1) +
+      2 * CriticalArithmeticCorrelationTheory.linearNearRowRadius c ^ 2 *
+        (L + C + c * (L + 2)) ≤
+      (|B| + 2 + 8 * Real.exp 2 ^ 2 * (C + 3)) * c ^ 3 * (L + 1) := by
+  have hc0 : 0 < c := zero_lt_one.trans_le hc
+  have hc2 : 1 ≤ c ^ 2 := by nlinarith only [sq_nonneg (c - 1), hc]
+  have hc3 : c ≤ c ^ 3 := by
+    have h := mul_le_mul_of_nonneg_left hc2 hc0.le
+    nlinarith only [h]
+  have hL1 : 0 ≤ L + 1 := by linarith only [hL]
+  have hcl1 : 1 ≤ c * (L + 1) := by
+    have h := mul_nonneg hc0.le hL
+    nlinarith only [h, hc]
+  have hsmall : L + C + c * (L + 2) ≤ (C + 3) * c * (L + 1) := by
+    have h1 : L ≤ c * (L + 1) := by
+      have h := mul_nonneg (sub_nonneg.mpr hc) hL
+      nlinarith only [h, hc]
+    have h2 := mul_le_mul_of_nonneg_left hcl1 hC
+    have h3 : c * (L + 2) ≤ 2 * c * (L + 1) := by
+      have h := mul_nonneg hc0.le hL
+      nlinarith only [h]
+    nlinarith only [h1, h2, h3]
+  have hB : B * c * (L + 1) ≤ |B| * c ^ 3 * (L + 1) :=
+    mul_le_mul_of_nonneg_right
+      ((mul_le_mul_of_nonneg_right (le_abs_self B) hc0.le).trans
+        (mul_le_mul_of_nonneg_left hc3 (abs_nonneg B))) hL1
+  have hcenter : c * (H + 1) ≤ 2 * c ^ 3 * (L + 1) := by
+    calc
+      _ ≤ c * (L + 2) := mul_le_mul_of_nonneg_left (by linarith only [hH]) hc0.le
+      _ ≤ 2 * c * (L + 1) := by nlinarith only [mul_nonneg hc0.le hL]
+      _ ≤ _ := mul_le_mul_of_nonneg_right
+        (mul_le_mul_of_nonneg_left hc3 zero_le_two) hL1
+  have hoverlap := mul_le_mul_of_nonneg_left hsmall
+    (show 0 ≤ 2 * CriticalArithmeticCorrelationTheory.linearNearRowRadius c ^ 2 by positivity)
+  unfold CriticalArithmeticCorrelationTheory.linearNearRowRadius at hoverlap ⊢
+  nlinarith only [hB, hcenter, hoverlap]
+
+/-- A uniform two-moment bound on the full neutral form, with every overlap term included. -/
+theorem exists_complete_packet_two_moment_bound {φ : ℝ → ℝ}
+    (hφ : ContDiff ℝ 2 φ) (hφ0 : ∀ u, 0 ≤ φ u)
+    (hsupp : ∀ u, u ∉ Set.Icc 0 1 → φ u = 0) (hM : 0 < ∫ u, φ u ^ 2) :
+    ∃ A B : ℝ, 0 ≤ A ∧ 0 ≤ B ∧
+      ∀ (c : ℝ) (N : ℕ), 1 ≤ c → 1 ≤ N → c / N ≤ 1 / 3 →
+      ∀ F : ℕ → ℝ, (∑ n ∈ Icc 1 N, F n / (n : ℝ) = 0) →
+      |completeWeilEnergy φ c N (packetVector F N) - jumpEnergy N F| ≤
+        A * c ^ 2 * (∑ n ∈ Icc 1 N, F n ^ 2 / (n : ℝ)) +
+        (B * c ^ 3 * (Real.log N + 1) / N) * ∑ n ∈ Icc 1 N, F n ^ 2 := by
+  obtain ⟨C, hC, hbound⟩ := exists_complete_packet_moment_bound hφ hφ0 hsupp hM
+  let D := |completeWeilSelfFinitePart φ 1| + Real.exp (1 / 2) / 2 +
+    Real.log 2 + (Real.log 4 + 4 + Real.eulerMascheroniConstant)
+  let X := 4 * (152 * (∫ u, |φ u|) ^ 2 / (∫ u, φ u ^ 2))
+  let A₀ := 2 * (Real.log 4 + 4) * Real.exp (5 / 2)
+  let B₀ := 2 * Real.exp (3 / 2)
+  refine ⟨|D| + 1 + |A₀| + |X|, |B₀| + 2 + 8 * Real.exp 2 ^ 2 * (C + 3),
+    by positivity, by positivity, ?_⟩
+  intro c N hc hN hw F hF
+  have hdiag := diagonal_coefficient_le D A₀ X hc
+  have hterminal := terminal_coefficient_le B₀ hC hc (Real.log_natCast_nonneg N)
+    (harmonic_le_one_add_log N)
+  have hH0 : 0 ≤ ∑ n ∈ Icc 1 N, F n ^ 2 / (n : ℝ) :=
+    sum_nonneg fun n _ => div_nonneg (sq_nonneg _) (Nat.cast_nonneg n)
+  have hO0 : 0 ≤ ∑ n ∈ Icc 1 N, F n ^ 2 := sum_nonneg fun _ _ => sq_nonneg _
+  have h := add_le_add (mul_le_mul_of_nonneg_right hdiag hH0)
+    (mul_le_mul_of_nonneg_right
+      (div_le_div_of_nonneg_right hterminal (Nat.cast_nonneg N)) hO0)
+  refine (hbound c N hc hN hw F hF).trans ?_
+  convert h using 1 <;> dsimp only [D, A₀, B₀, X] <;> ring
+
 #print axioms poleError_packet_eq_zero
 #print axioms abs_center_packet_le
 #print axioms abs_separatedCross_packet_le
@@ -319,5 +413,6 @@ theorem exists_complete_packet_moment_bound {φ : ℝ → ℝ}
 #print axioms shell_packet_moments_le
 #print axioms abs_complete_packet_diagonal_le
 #print axioms exists_complete_packet_moment_bound
+#print axioms exists_complete_packet_two_moment_bound
 
 end GaloisForLFunctions.ArithmeticCouplingTheory

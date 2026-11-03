@@ -18,11 +18,15 @@ exponentially small corrections, and `𝒞_m(f)` is the error of the prime count
 * **Two-site identity** (`weilQuad_add_collarReflect`, `weilQuad_sub_collarReflect`).
   `W(f ± f∘R) = 2W(f) ± 2𝒞_m(f)`: the window form of a reflection pair is the self-energy of one
   site plus or minus the prime-count error.
-* **The band under RH** (`abs_coupling_le_weilQuad_of_riemannHypothesis`). Under RH,
-  `|𝓗_m(f) − Σ_n Λ(n)n^{−1/2}(f⋆f)(2m − log n)| ≤ W(f)` for every such `f` and every `m`: the
-  ψ⋆ψ-smoothed prime count matches its Hankel main term within the self-energy of the bump, at
-  every scale. This is the classical square-root form of RH read through the pole square and the
-  trivial-zero squares (review-0311 §1.1).
+* **The growth step on a reflection sector** (`weilQuad_stage_even`, `weilQuad_stage_odd`). For a
+  collar piece `x_L` left of a cut `a ≤ m` and an interior piece `y` with `y∘R = ±y`,
+  `W(x_L + y ± x_L∘R) = 2W(x_L + y) − W(y) ± 2𝒞_m(x_L)`: on each reflection sector the stage form
+  reads only forms on the shorter window and the prime-count error of the collar piece.
+* **The band is positivity on the pair** (`abs_coupling_le_weilQuad_iff`).
+  `|𝓗_m(f) − Σ_n Λ(n)n^{−1/2}(f⋆f)(2m − log n)| ≤ W(f)` iff `W ≥ 0` on `f ± f∘R`: the ψ⋆ψ-smoothed
+  prime count matches its Hankel main term within the self-energy of the bump exactly when the
+  reflection pair is nonnegative. Across all scales this is the classical square-root form of RH
+  read through the pole square and the trivial-zero squares (review-0311 §1.1).
 -/
 
 open MeasureTheory Set Filter Topology
@@ -33,7 +37,7 @@ noncomputable section
 namespace GaloisForLFunctions.SignedWindowCriticality
 
 open GaloisForLFunctions.CanonicalSystemOfTheWindowTower _root_.RHTower
-open SpacingScaleHarmonicAnalysis
+open SpacingScaleHarmonicAnalysis Zeta23
 
 /-- The self-convolution `(f⋆f)(s) = ∫ f(u) f(s − u) du`. -/
 def selfConv (f : ℝ → ℝ) (s : ℝ) : ℝ := ∫ u, f u * f (s - u)
@@ -41,8 +45,8 @@ def selfConv (f : ℝ → ℝ) (s : ℝ) : ℝ := ∫ u, f u * f (s - u)
 variable {f : ℝ → ℝ} {m : ℝ}
 
 theorem crossCorr_collarReflect (f : ℝ → ℝ) (m x : ℝ) :
-    crossCorr f (collarReflect m f) x = selfConv f (2 * m - x) := by
-  unfold crossCorr collarReflect selfConv
+    CanonicalSystemOfTheWindowTower.crossCorr f (collarReflect m f) x = selfConv f (2 * m - x) := by
+  unfold CanonicalSystemOfTheWindowTower.crossCorr collarReflect selfConv
   exact integral_congr_ae (Eventually.of_forall fun u => by simp only; ring_nf)
 
 theorem orderedAt_collarReflect (hf : ∀ u, m < u → f u = 0) : OrderedAt m f (collarReflect m f) :=
@@ -100,6 +104,19 @@ theorem weilQuad_add_collarReflect (hf : ContDiff ℝ 2 f) (hfc : HasCompactSupp
     orderedCoupling_collarReflect hf hfc hm]
   ring
 
+/-- The coupling with the negated reflection is the negated coupling. -/
+theorem orderedCoupling_neg_collarReflect (f : ℝ → ℝ) (m : ℝ) :
+    orderedCoupling f (fun v => -collarReflect m f v) = -orderedCoupling f (collarReflect m f) := by
+  have hc : ∀ x, CanonicalSystemOfTheWindowTower.crossCorr f (fun v => -collarReflect m f v) x =
+      -CanonicalSystemOfTheWindowTower.crossCorr f (collarReflect m f) x := fun x => by
+    unfold CanonicalSystemOfTheWindowTower.crossCorr
+    rw [← integral_neg]
+    exact integral_congr_ae (Eventually.of_forall fun u => by simp only; ring)
+  unfold orderedCoupling
+  simp_rw [hc, mul_neg, tsum_neg]
+  rw [integral_neg]
+  ring
+
 /-- **Two-site identity, odd sign.** `W(f − f∘R) = 2W(f) − 2𝒞_m(f)`. -/
 theorem weilQuad_sub_collarReflect (hf : ContDiff ℝ 2 f) (hfc : HasCompactSupport f)
     (hm : ∀ u, m < u → f u = 0) :
@@ -111,34 +128,82 @@ theorem weilQuad_sub_collarReflect (hf : ContDiff ℝ 2 f) (hfc : HasCompactSupp
     simp only [g, collarReflect, hm _ (by linarith : m < 2 * m - u), neg_zero]⟩
   have hg : ContDiff ℝ 2 g := (contDiff_collarReflect hf).neg
   have hgc : HasCompactSupport g := (hasCompactSupport_collarReflect hfc).neg
-  have hneg : orderedCoupling f g = -orderedCoupling f (collarReflect m f) := by
-    have hc : ∀ x, crossCorr f g x = -crossCorr f (collarReflect m f) x := fun x => by
-      unfold crossCorr
-      rw [← integral_neg]
-      exact integral_congr_ae (Eventually.of_forall fun u => by simp only [g]; ring)
-    unfold orderedCoupling
-    simp_rw [hc, mul_neg, tsum_neg]
-    rw [integral_neg]
-    ring
+  have hneg : orderedCoupling f g = -orderedCoupling f (collarReflect m f) :=
+    orderedCoupling_neg_collarReflect f m
   rw [weilQuad_add_of_ordered hord hf hfc hg hgc, hneg, orderedCoupling_collarReflect hf hfc hm,
     show weilQuad g = weilQuad (collarReflect m f) from weilQuad_neg _, weilQuad_collarReflect]
   ring
 
-/-- **The band under RH.** Under RH the reflection-pair coupling is bounded by the self-energy:
-`|𝓗_m(f) − Σ_n Λ(n)n^{−1/2}(f⋆f)(2m − log n)| ≤ W(f)`. -/
-theorem abs_coupling_le_weilQuad_of_riemannHypothesis (hRH : RiemannHypothesis)
-    (hf : ContDiff ℝ 2 f) (hfc : HasCompactSupport f) (hm : ∀ u, m < u → f u = 0) :
+/-- **The band is positivity on the reflection pair.**
+`|𝓗_m(f) − Σ_n Λ(n)n^{−1/2}(f⋆f)(2m − log n)| ≤ W(f)` iff `W(f + f∘R) ≥ 0` and `W(f − f∘R) ≥ 0`. -/
+theorem abs_coupling_le_weilQuad_iff (hf : ContDiff ℝ 2 f) (hfc : HasCompactSupport f)
+    (hm : ∀ u, m < u → f u = 0) :
     |collarHankel m f - ∑' n : ℕ, vonMangoldtAtom n * selfConv f (2 * m - Real.log n)| ≤
-      weilQuad f := by
-  have hW := ArithmeticHodgeTheoryOfDegenerations.riemannHypothesis_iff_weilQuad_nonneg.mp hRH
-  have h1 := hW _ (hf.add (contDiff_collarReflect hf))
-    (hfc.add (hasCompactSupport_collarReflect hfc))
-  have h2 := hW _ (hf.add (contDiff_collarReflect hf).neg)
-    (hfc.add (hasCompactSupport_collarReflect hfc).neg)
-  rw [weilQuad_add_collarReflect hf hfc hm] at h1
-  rw [weilQuad_sub_collarReflect hf hfc hm] at h2
-  rw [abs_le]
-  constructor <;> linarith
+        weilQuad f ↔
+      0 ≤ weilQuad (fun u => f u + collarReflect m f u) ∧
+        0 ≤ weilQuad (fun u => f u + -collarReflect m f u) := by
+  rw [weilQuad_add_collarReflect hf hfc hm, weilQuad_sub_collarReflect hf hfc hm, abs_le]
+  constructor
+  · rintro ⟨h1, h2⟩; constructor <;> linarith
+  · rintro ⟨h1, h2⟩; constructor <;> linarith
+
+/-! ### The growth step on a reflection sector -/
+
+/-- **The growth step on the even reflection sector.** For a collar test `x_L` vanishing right of
+`a ≤ m` and an interior test `y` vanishing left of `a` with `y∘R = y`:
+`W(x_L + y + x_L∘R) = 2W(x_L + y) − W(y) + 2𝒞_m(x_L)`. -/
+theorem weilQuad_stage_even {xL y : ℝ → ℝ} {a : ℝ} (hxL : ContDiff ℝ 2 xL)
+    (hxLc : HasCompactSupport xL) (hy : ContDiff ℝ 2 y) (hyc : HasCompactSupport y)
+    (ham : a ≤ m) (hL : ∀ u, a < u → xL u = 0) (hI : ∀ u, u < a → y u = 0)
+    (hsym : ∀ u, y (2 * m - u) = y u) :
+    weilQuad (fun u => xL u + y u + collarReflect m xL u) =
+      2 * weilQuad (fun u => xL u + y u) - weilQuad y +
+        2 * (collarHankel m xL -
+          ∑' n : ℕ, vonMangoldtAtom n * selfConv xL (2 * m - Real.log n)) := by
+  have hm : ∀ u, m < u → xL u = 0 := fun u hu => hL u (by linarith)
+  have hord1 : OrderedAt a xL y := ⟨hL, hI⟩
+  have hord2 : OrderedAt (2 * m - a) y (collarReflect m xL) := by
+    refine ⟨fun u hu => ?_, fun u hu => ?_⟩
+    · rw [← hsym u]; exact hI _ (by linarith)
+    · exact hL _ (by linarith)
+  have hchain := weilQuad_chain_three hord1 hord2 (by linarith) hxL hxLc hy hyc
+    (contDiff_collarReflect hxL) (hasCompactSupport_collarReflect hxLc)
+  have hrefl : weilQuad (fun u => y u + collarReflect m xL u) = weilQuad (fun u => xL u + y u) := by
+    have h : (fun u => y u + collarReflect m xL u) =
+        collarReflect m (fun u => xL u + y u) := by
+      funext v; simp only [collarReflect]; rw [hsym v]; ring
+    rw [h, weilQuad_collarReflect]
+  rw [hchain, hrefl, orderedCoupling_collarReflect hxL hxLc hm]
+  ring
+
+/-- **The growth step on the odd reflection sector.** With `y∘R = −y`:
+`W(x_L + y − x_L∘R) = 2W(x_L + y) − W(y) − 2𝒞_m(x_L)`. -/
+theorem weilQuad_stage_odd {xL y : ℝ → ℝ} {a : ℝ} (hxL : ContDiff ℝ 2 xL)
+    (hxLc : HasCompactSupport xL) (hy : ContDiff ℝ 2 y) (hyc : HasCompactSupport y)
+    (ham : a ≤ m) (hL : ∀ u, a < u → xL u = 0) (hI : ∀ u, u < a → y u = 0)
+    (hanti : ∀ u, y (2 * m - u) = -y u) :
+    weilQuad (fun u => xL u + y u + -collarReflect m xL u) =
+      2 * weilQuad (fun u => xL u + y u) - weilQuad y -
+        2 * (collarHankel m xL -
+          ∑' n : ℕ, vonMangoldtAtom n * selfConv xL (2 * m - Real.log n)) := by
+  have hm : ∀ u, m < u → xL u = 0 := fun u hu => hL u (by linarith)
+  have hord1 : OrderedAt a xL y := ⟨hL, hI⟩
+  have hord2 : OrderedAt (2 * m - a) y (fun v => -collarReflect m xL v) := by
+    refine ⟨fun u hu => ?_, fun u hu => ?_⟩
+    · have := hanti (2 * m - u)
+      rw [show 2 * m - (2 * m - u) = u by ring] at this
+      rw [this, hI _ (by linarith), neg_zero]
+    · simp only [collarReflect, hL _ (by linarith : a < 2 * m - u), neg_zero]
+  have hchain := weilQuad_chain_three hord1 hord2 (by linarith) hxL hxLc hy hyc
+    (contDiff_collarReflect hxL).neg (hasCompactSupport_collarReflect hxLc).neg
+  have hrefl : weilQuad (fun u => y u + -collarReflect m xL u) =
+      weilQuad (fun u => xL u + y u) := by
+    have h : (fun u => y u + -collarReflect m xL u) =
+        fun v => -collarReflect m (fun u => xL u + y u) v := by
+      funext v; simp only [collarReflect]; rw [hanti v]; ring
+    rw [h, weilQuad_neg, weilQuad_collarReflect]
+  rw [hchain, hrefl, orderedCoupling_neg_collarReflect, orderedCoupling_collarReflect hxL hxLc hm]
+  ring
 
 end GaloisForLFunctions.SignedWindowCriticality
 

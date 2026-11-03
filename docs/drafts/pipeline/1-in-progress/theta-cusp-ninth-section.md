@@ -17,43 +17,33 @@ adds `10¹²G e₃e₃ᵀ+D G e₄e₄ᵀ`, with `D>0` selected from the actual
 fifth Schur coordinate and `G=3Φ²+2xΦΦ′`. Its weighted flux derivatives
 preserve every mixed entry. It is positive near zero and cofinally.
 
-The [inherited-load boundary](../5-failed/theta-cusp-fifth-even-inherited-load-boundary.md)
-refutes its global pointwise positivity. At `q=7`, the explicit even vector
-`(-658560,47040,-420,1,-1/1568)` has native energy `E>0`, but the inherited
-fourth correction makes it negative for every nonnegative fifth load,
-including in the actual weighted representative at every critical aperture.
-The origin-selected fifth Schur comparison is therefore nonpositive there.
+The [full origin obstruction](../5-failed/theta-cusp-fifth-even-origin-obstruction.md)
+excludes global pointwise positivity for every real constant pair `(C,D)`,
+including the actual weighted representative at each critical aperture.
+The native principal minor on indices `{0,1,2,4}` is negative at zero.
+Thus full origin positivity forces `D≥D₀>0`; the proved origin/scale-seven
+capacity gap excludes every such pair.
 
-Its exact native directional capacity is `B=E/(-G)`, with `0<B<10¹²`.
-For independent loads, positivity in that direction at every critical
-aperture is equivalent to `C+D/1568²≤B`. This classifies the witness
-direction; it does not assert positivity of the whole matrix.
+The exact positive origin region is `D>D₀` and `C>C₀(D)`, where both
+thresholds are actual Schur coordinates. For every `D>D₀`, a positive
+fourth load gives a positive full origin matrix. This classification and
+the all-signed obstruction are formalized.
 
-The [constant-load separation](../5-failed/theta-cusp-fifth-even-constant-load-separation.md)
-excludes every real fourth load with nonnegative fifth load. The origin
-requires `C≥C₀>660·10⁹`; scale seven allows `C+D/1568²≤B<330·10⁹`.
-For each critical aperture, weighted positivity still forces the origin
-condition, while its scale-seven capacity satisfies `B_a<450·10⁹`.
-All these bounds are formalized.
-
-The exact surviving boundary region is `C>C₀`,
-`D≤1568²(B−C)`. It is nonempty and forces `D<0`; it asserts only the
-origin fourth head and the specified scale-seven direction.
+At `x₇=½log(7/π)`, the vector
+`v=(-658560,47040,-420,1,-1/1568)` has native energy `E₇>0`.
+Its native capacity is `B<330·10⁹`; its weighted capacity is
+`B_a<450·10⁹` for each `0<a<1/2`. The previously surviving signed region
+for the origin fourth head and this direction requires `D<0`, so it
+cannot satisfy the full fifth origin test.
 
 ## Next conjecture
 
-Signed constant loads also fail global positivity of the full fifth block.
-First decide whether the surviving boundary region intersects full fifth
-positivity at zero. Eliminate the native positive three-dimensional head,
-leaving `[[α+C G₀, β],[β, γ+D G₀]]`, where `G₀=3Φ(0)²` and
-`α=S₄(0)`. The infimum of `C+D/1568²` over strict origin positivity is
-`(−α−γ/1568²+2|β|/1568)/G₀`. Its comparison with `B` is unproved;
-it requires the actual theta moments through order sixteen.
-
-A sufficient obstruction is negativity of the native principal minor on
-indices `{0,1,2,4}` at zero. It would force `D>0` independently of `C`,
-closing the signed case by the proved capacity gap. This minor's sign is
-currently unproved.
+A common zero-boundary flux multiplied by any constant matrix also fails.
+Test the same vector `v` at the origin: the sufficient inequality is
+`vᵀH₅(0)v+1.35·10¹²Φ(0)²<0`. It would force `vᵀMv>450·10⁹` for any
+constant matrix correction `G M`, contradicting the scale-seven capacity.
+This stronger origin inequality is unproved.
 
 The integrated rank-nine sign remains open. A source certificate must pay
-the negative region while preserving the actual mixed entries.
+the negative region while preserving the actual mixed entries; radius-dependent
+matrix fluxes remain outside the constant-load obstructions.

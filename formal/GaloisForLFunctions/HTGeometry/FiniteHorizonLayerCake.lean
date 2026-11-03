@@ -101,7 +101,66 @@ theorem tendsto_linear_log_horizon_mass :
   rw [sum_range_eq_add_Ico w (by omega : 0 < N)]
   simp only [w, Nat.cast_zero, zero_mul, zero_add]
 
+
+/-- A bounded prefix contributes only its cardinality to an otherwise small row sum. -/
+theorem abs_sum_range_le_of_prefix_bounds (f : ℕ → ℝ) (N M : ℕ)
+    {C D : ℝ} (hC : 0 ≤ C) (hD : 0 ≤ D)
+    (hhead : ∀ n < N, n < M → |f n| ≤ C)
+    (htail : ∀ n < N, M ≤ n → |f n| ≤ D) :
+    |∑ n ∈ range N, f n| ≤ C * M + D * N := by
+  have hpoint : ∀ n ∈ range N, |f n| ≤ (if n < M then C else 0) + D := by
+    intro n hn
+    by_cases hnm : n < M
+    · rw [if_pos hnm]
+      exact (hhead n (mem_range.mp hn) hnm).trans (le_add_of_nonneg_right hD)
+    · rw [if_neg hnm, zero_add]
+      exact htail n (mem_range.mp hn) (Nat.le_of_not_gt hnm)
+  have hcard : ((range N).filter (fun n => n < M)).card ≤ M := by
+    have hsub : (range N).filter (fun n => n < M) ⊆ range M :=
+      fun n hn => mem_range.mpr (mem_filter.mp hn).2
+    simpa only [card_range] using card_le_card hsub
+  calc
+    _ ≤ ∑ n ∈ range N, |f n| := abs_sum_le_sum_abs _ _
+    _ ≤ ∑ n ∈ range N, ((if n < M then C else 0) + D) := sum_le_sum hpoint
+    _ = (((range N).filter (fun n => n < M)).card : ℝ) * C + (N : ℝ) * D := by
+      rw [sum_add_distrib, ← sum_filter, sum_const, sum_const, card_range, nsmul_eq_mul,
+        nsmul_eq_mul]
+    _ ≤ C * M + D * N := by
+      have hc : (((range N).filter (fun n => n < M)).card : ℝ) ≤ M := by exact_mod_cast hcard
+      have h := mul_le_mul_of_nonneg_right hc hC
+      nlinarith only [h]
+
+/-- Uniformly small tails determine a mean when the exceptional prefixes have zero density. -/
+theorem tendsto_triangular_mean_zero_of_sparse_prefixes
+    (f : ℕ → ℕ → ℝ) {C : ℝ} (hC : 0 ≤ C)
+    (hbound : ∀ᶠ N : ℕ in atTop, ∀ n < N, |f N n| ≤ C)
+    (htail : ∀ ε : ℝ, 0 < ε → ∃ M : ℕ → ℕ,
+      Tendsto (fun N : ℕ => (M N : ℝ) / N) atTop (𝓝 0) ∧
+      ∀ᶠ N : ℕ in atTop, ∀ n < N, M N ≤ n → |f N n| ≤ ε) :
+    Tendsto (fun N : ℕ => (N : ℝ)⁻¹ * ∑ n ∈ range N, f N n) atTop (𝓝 0) := by
+  apply Metric.tendsto_nhds.2
+  intro ε hε
+  obtain ⟨M, hM, htailM⟩ := htail (ε / 2) (by positivity)
+  have hsmall : ∀ᶠ N : ℕ in atTop, C * ((M N : ℝ) / N) < ε / 2 := by
+    have hlim := hM.const_mul C
+    simp only [mul_zero] at hlim
+    exact hlim.eventually (gt_mem_nhds (by positivity))
+  filter_upwards [hbound, htailM, hsmall, eventually_ge_atTop 1] with N hb ht hs hN
+  have hN0 : (0 : ℝ) < N := by exact_mod_cast hN
+  rw [dist_zero_right, Real.norm_eq_abs, abs_mul,
+    abs_of_nonneg (inv_nonneg.mpr hN0.le)]
+  calc
+    _ ≤ (N : ℝ)⁻¹ * (C * M N + (ε / 2) * N) :=
+      mul_le_mul_of_nonneg_left
+        (abs_sum_range_le_of_prefix_bounds (f N) N (M N) hC (by positivity)
+          (fun n hn _ => hb n hn) ht)
+        (inv_nonneg.mpr hN0.le)
+    _ = C * ((M N : ℝ) / N) + ε / 2 := by field_simp [hN0.ne']
+    _ < ε := by linarith only [hs]
+
 end GaloisForLFunctions.HTGeometry
 
 #print axioms GaloisForLFunctions.HTGeometry.sum_pair_log_max_eq_horizon_layers
 #print axioms GaloisForLFunctions.HTGeometry.tendsto_linear_log_horizon_mass
+
+#print axioms GaloisForLFunctions.HTGeometry.tendsto_triangular_mean_zero_of_sparse_prefixes

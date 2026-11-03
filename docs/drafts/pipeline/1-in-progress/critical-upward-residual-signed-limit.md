@@ -55,29 +55,29 @@ does not yet apply.
 
 **Logarithmic row.** If Slog denotes its bilinear pairing from the source,
 then L·Slog=Σ A_ij log(N/j). Replace j by max(i,j). The change has absolute
-value at most wΣ|A_ij|=O_m,l(c²/N): the kernel sees only logarithmic gaps
-≤w, each row has O(wi) sites, and each entry is O_m,l(1/i).
+value at most 2wΣ|A_ij|=O_m,l(c²/N), by the near-row gap bound and the
+linear raw mass estimate.
 The replacement has the exact finite identity
 
     Σ A_ij log(N/max(i,j))
       = Σ_(T=1)^(N−1) B_T log((T+1)/T).
 
-Split at T≈N/sqrt(c). Above that cutoff the existing near-Gram theorem
-applies uniformly once N is large: T tends to infinity, the conductors
-stay fixed, and its radius condition follows from c²=o(N). It gives
+Fix ε>0. Choose U≥1 so that the shell correction divided by overlap
+is within ε of its polar limit for every overlap u≥U. Split at
+M_N=max(B,ceil(U N/c)), where the fixed B satisfies the conductor and
+logarithmic-horizon conditions of the near-Gram theorem. Its radius
+condition holds uniformly on M_N≤T≤N once N is large: writing u=cT/N,
+u²/T≤c²/N→0. The theorem gives
 
     B_T = [m=l] shellCorrection(cT/N,m)
           + O_m,l((cT/N)⁵ log T/T).
 
 After division by u=cT/N, this error is at most O_m,l(c⁴ log N/N),
 uniformly for T≤N.
-For u≥1,
-
-    shellCorrection(u,m) = aφ u[m=1] + O_m(1+log u).
-
-On the retained horizons u≥sqrt(c), so the shell remainder divided by u
-is O_m((1+log c)/sqrt(c)). The omitted horizons cost O_m,l(1/sqrt(c)+1/N)
-by the linear raw bound and T log((T+1)/T)≤1. Finally
+The omitted horizons have density M_N/N→0. Their contribution to the
+normalized logarithmic sum vanishes by the raw bound |B_T|≤C_m,l u
+and T log((T+1)/T)≤1. On the retained horizons, B_T/u is within
+ε+O_m,l(c⁴ log N/N) of aφ[m=1][l=1]. Finally
 
     (1/N) Σ_(T=1)^(N−1) T log((T+1)/T) → 1,
 
@@ -117,8 +117,10 @@ near-Gamma terms whose leading signs must be retained together.
 
 Verdict: `SURVIVES PRELIMINARY ATTACK` relative to the local corpus.
 The generic finite layer identity and its unit-mass limit are verified in
-`HTGeometry/FiniteHorizonLayerCake.lean`; their audited axioms are exactly
-`[propext, Classical.choice, Quot.sound]`. The application to the arithmetic
-kernel and its uniform error remain Lean obligations. The stated signed
+`HTGeometry/FiniteHorizonLayerCake.lean`. The arithmetic layer identity,
+receiving-index replacement bound and linear raw mass estimate are verified
+in `TheLogarithmicRowIsAnIntegralOfHorizons.lean`; the audited axioms are
+exactly `[propext, Classical.choice, Quot.sound]`. The uniform arithmetic
+limit remains a Lean obligation. The stated signed
 limit is not yet a kernel-verified theorem. No claim of novelty beyond
 the local corpus audit is made.

@@ -54,3 +54,8 @@ weighted positivity at each critical aperture. The positive survivor is
 Canonical Lean check passes. All 23 public theorem axiom audits contain only
 `propext`, `Classical.choice`, and `Quot.sound`; the owner umbrella imports
 the module.
+
+The [full origin obstruction](theta-cusp-fifth-even-origin-obstruction.md)
+forces a positive fifth load and therefore excludes the remaining signed
+constant pairs. The boundary-test region above does not lift to a positive
+full origin block.
