@@ -100,7 +100,8 @@ theorem eulerQuotient_mul_value_of_summable (F G : RHTower.SelbergClass) {σ : �
   exact ((div_eq_div_iff (pow_ne_zero _ (sub_ne_zero.mpr hs1))
     (pow_ne_zero _ (sub_ne_zero.mpr hs1))).mpr hcross).symm
 
-private theorem gammaFactor_analytic_ne_zero (D : SelbergGammaData) {s : ℂ}
+/-- Gamma factors are holomorphic and nonzero in the open right half-plane. -/
+theorem gammaFactor_analytic_ne_zero (D : SelbergGammaData) {s : ℂ}
     (hs : 0 < s.re) : AnalyticAt ℂ D.gammaFactor s ∧ D.gammaFactor s ≠ 0 := by
   have harg (j : Fin D.rank) : 0 < ((D.lambda j : ℂ) * s + D.mu j).re := by
     simp only [add_re, mul_re, ofReal_re, ofReal_im, zero_mul, sub_zero]
@@ -149,15 +150,16 @@ private theorem value_eventually_ne_zero (G : RHTower.SelbergClass) (s : ℂ) (h
   filter_upwards [hn', hone] with z hz hz1
   exact div_ne_zero hz (pow_ne_zero _ (sub_ne_zero.mpr hz1))
 
-/-- The actual functional equations reflect the holomorphic Euler quotient on
-the overlap strip, including the common zeros of the two functions. -/
-theorem eulerQuotient_reflection (F G : RHTower.SelbergClass) {σ : ℝ}
+/-- A holomorphic quotient of completed values inherits their functional equations,
+including at common zeros by analytic continuation. -/
+theorem completedQuotient_reflection (F G : RHTower.SelbergClass) {σ : ℝ}
+    {R : ℂ → ℂ}
     (hσ0 : 0 ≤ σ)
-    (hb : LSeriesSummable (fun n => F.eulerLogCoeff n - G.eulerLogCoeff n) σ)
-    (hgamma : F.gammaData.gammaFactor = G.gammaData.gammaFactor)
+    (hR : AnalyticOnNhd ℂ R {s : ℂ | σ < s.re})
+    (hquot : ∀ z : ℂ, σ < z.re → z ≠ 1 →
+      R z * (G.gammaData.gammaFactor z * G z) = F.gammaData.gammaFactor z * F z)
     {s : ℂ} (hs : σ < s.re) (hs' : s.re < 1 - σ) :
-    eulerQuotient F G s = F.gammaData.rootNumber / G.gammaData.rootNumber *
-      star (eulerQuotient F G (1 - star s)) := by
+    R s = F.gammaData.rootNumber / G.gammaData.rootNumber * star (R (1 - star s)) := by
   have hroot : G.gammaData.rootNumber ≠ 0 := by
     intro hzero
     have := G.gammaData.rootNumber_norm
@@ -165,8 +167,7 @@ theorem eulerQuotient_reflection (F G : RHTower.SelbergClass) {σ : ℝ}
     norm_num at this
   have hrefl (z : ℂ) : (1 - star z).re = 1 - z.re := by simp
   have hpoint (z : ℂ) (hz : σ < z.re) (hz' : z.re < 1 - σ) (hne : G z ≠ 0) :
-      eulerQuotient F G z = F.gammaData.rootNumber / G.gammaData.rootNumber *
-        star (eulerQuotient F G (1 - star z)) := by
+      R z = F.gammaData.rootNumber / G.gammaData.rootNumber * star (R (1 - star z)) := by
     have hz0 : 0 < z.re := lt_of_le_of_lt hσ0 hz
     have hr0 : 0 < (1 - star z).re := by rw [hrefl]; linarith
     have hzr : σ < (1 - star z).re := by rw [hrefl]; linarith
@@ -185,41 +186,51 @@ theorem eulerQuotient_reflection (F G : RHTower.SelbergClass) {σ : ℝ}
       (hcomp F z hz0 hz1) (hcomp F (1 - star z) hr0 hr1)
     have eG := G.toExtendedSelbergClass.completedFE_eq_of_analytic_pair
       (hcomp G z hz0 hz1) (hcomp G (1 - star z) hr0 hr1)
-    have hvz := eulerQuotient_mul_value_of_summable F G (by linarith) hb hz hz1
-    have hvr := eulerQuotient_mul_value_of_summable F G (by linarith) hb hzr hr1
     change F.gammaData.gammaFactor z * F z = F.gammaData.rootNumber *
       star (F.gammaData.gammaFactor (1 - star z) * F (1 - star z)) at eF
     change G.gammaData.gammaFactor z * G z = G.gammaData.rootNumber *
       star (G.gammaData.gammaFactor (1 - star z) * G (1 - star z)) at eG
-    rw [hgamma, ← hvz, ← hvr] at eF
+    rw [← hquot z hz hz1, ← hquot (1 - star z) hzr hr1] at eF
     simp only [star_mul] at eF eG
-    have hcancel : (eulerQuotient F G z * G.gammaData.rootNumber -
-        F.gammaData.rootNumber * star (eulerQuotient F G (1 - star z))) *
+    have hcancel : (R z * G.gammaData.rootNumber -
+        F.gammaData.rootNumber * star (R (1 - star z))) *
         (G.gammaData.gammaFactor z * G z) = 0 := by
       linear_combination G.gammaData.rootNumber * eF -
-        F.gammaData.rootNumber * star (eulerQuotient F G (1 - star z)) * eG
+        F.gammaData.rootNumber * star (R (1 - star z)) * eG
     have heq := sub_eq_zero.mp ((mul_eq_zero.mp hcancel).resolve_right
       (mul_ne_zero (gammaFactor_analytic_ne_zero G.gammaData hz0).2 hne))
     apply (mul_right_cancel₀ hroot)
-    calc eulerQuotient F G z * G.gammaData.rootNumber = _ := heq
+    calc R z * G.gammaData.rootNumber = _ := heq
       _ = (F.gammaData.rootNumber / G.gammaData.rootNumber *
-          star (eulerQuotient F G (1 - star z))) * G.gammaData.rootNumber := by
+          star (R (1 - star z))) * G.gammaData.rootNumber := by
             field_simp
   have hs1 : s ≠ 1 := by intro heq; rw [heq] at hs'; norm_num at hs'; linarith
   have hU : IsOpen {z : ℂ | σ < z.re ∧ z.re < 1 - σ} :=
     (isOpen_lt continuous_const continuous_re).inter (isOpen_lt continuous_re continuous_const)
-  have hevent : eulerQuotient F G =ᶠ[𝓝[≠] s]
+  have hevent : R =ᶠ[𝓝[≠] s]
       (fun z => F.gammaData.rootNumber / G.gammaData.rootNumber *
-        star (eulerQuotient F G (1 - star z))) := by
+        star (R (1 - star z))) := by
     filter_upwards [Filter.Eventually.filter_mono nhdsWithin_le_nhds (hU.mem_nhds ⟨hs, hs'⟩),
       value_eventually_ne_zero G s hs1] with z hz hne
     exact hpoint z hz.1 hz.2 hne
-  have hR := eulerQuotient_analyticOnNhd F G hb
   have hr : σ < (1 - star s).re := by rw [hrefl]; linarith
   exact ((ContinuousAt.eventuallyEq_nhds_iff_eventuallyEq_nhdsNE
     (hR s hs).continuousAt
     (analyticAt_const.mul (analyticAt_selbergConjugateReflection (hR _ hr))).continuousAt).mp
       hevent).eq_of_nhds
+
+/-- The actual functional equations reflect the holomorphic Euler quotient on
+the overlap strip, including the common zeros of the two functions. -/
+theorem eulerQuotient_reflection (F G : RHTower.SelbergClass) {σ : ℝ}
+    (hσ0 : 0 ≤ σ)
+    (hb : LSeriesSummable (fun n => F.eulerLogCoeff n - G.eulerLogCoeff n) σ)
+    (hgamma : F.gammaData.gammaFactor = G.gammaData.gammaFactor)
+    {s : ℂ} (hs : σ < s.re) (hs' : s.re < 1 - σ) :
+    eulerQuotient F G s = F.gammaData.rootNumber / G.gammaData.rootNumber *
+      star (eulerQuotient F G (1 - star s)) := by
+  apply completedQuotient_reflection F G hσ0 (eulerQuotient_analyticOnNhd F G hb) _ hs hs'
+  intro z hz hz1
+  rw [hgamma, mul_left_comm, eulerQuotient_mul_value_of_summable F G (by linarith) hb hz hz1]
 
 private theorem bounded_reflection_constant {R : ℂ → ℂ} {σ C : ℝ} {ε : ℂ}
     (hσ : σ < 1 / 2) (hε : ‖ε‖ = 1)
@@ -306,5 +317,149 @@ theorem coeff_eq_of_subcritical_euler_discrepancy (F G : RHTower.SelbergClass)
   · subst n
     simp only [ArithmeticFunction.map_zero]
   · simpa only [hc1, one_mul] using hcoeff n hn
+
+/-- The archimedean Gamma product, excluding the positive exponential parameter. -/
+def archGammaFactor (D : SelbergGammaData) (s : ℂ) : ℂ :=
+  ∏ j, Gamma ((D.lambda j : ℂ) * s + D.mu j)
+
+theorem gammaFactor_eq_exp_mul_archGammaFactor (D : SelbergGammaData) (s : ℂ) :
+    D.gammaFactor s = Complex.exp ((Real.log D.Q : ℂ) * s) * archGammaFactor D s := by
+  simp only [SelbergGammaData.gammaFactor, Pi.mul_apply, Finset.prod_apply,
+    archGammaFactor, Complex.cpow_def_of_ne_zero (ofReal_ne_zero.mpr D.Q_pos.ne'),
+    ← Complex.ofReal_log D.Q_pos.le]
+
+private theorem gammaFactor_eq_conductor_mul (F G : RHTower.SelbergClass)
+    (hgamma : archGammaFactor F.gammaData = archGammaFactor G.gammaData) (s : ℂ) :
+    F.gammaData.gammaFactor s =
+      Complex.exp (((Real.log F.gammaData.Q - Real.log G.gammaData.Q : ℝ) : ℂ) * s) *
+        G.gammaData.gammaFactor s := by
+  rw [gammaFactor_eq_exp_mul_archGammaFactor, gammaFactor_eq_exp_mul_archGammaFactor,
+    hgamma, ← mul_assoc, ← Complex.exp_add]
+  congr 2
+  push_cast
+  ring
+
+/-- Normalized Dirichlet coefficients fix the Euler quotient at real infinity. -/
+theorem eulerQuotient_tendsto_atTop (F G : RHTower.SelbergClass) :
+    Tendsto (fun x : ℝ => eulerQuotient F G x) atTop (𝓝 1) := by
+  have hlim (H : RHTower.SelbergClass) :
+      Tendsto (fun x : ℝ => LSeries H.coeff x) atTop (𝓝 1) := by
+    simpa only [H.coeff_one] using LSeries.tendsto_atTop
+      ((H.lSeriesSummable 2 (by norm_num)).abscissaOfAbsConv_le.trans_lt (EReal.coe_lt_top _))
+  have hlimdiv := (hlim F).div (hlim G) (one_ne_zero : (1 : ℂ) ≠ 0)
+  simp only [div_one] at hlimdiv
+  apply hlimdiv.congr'
+  filter_upwards [eventually_gt_atTop (1 : ℝ)] with x hx
+  change LSeries F.coeff (x : ℂ) / LSeries G.coeff (x : ℂ) = eulerQuotient F G x
+  rw [F.lSeries_eq_value _ hx, G.lSeries_eq_value _ hx]
+  have hne : G (x : ℂ) ≠ 0 := by
+    change G.continuation.value (x : ℂ) ≠ 0
+    rw [← G.eulerProduct (x : ℂ) hx]
+    exact Complex.exp_ne_zero _
+  exact (div_eq_iff hne).mpr (eulerQuotient_mul_value F G hx).symm
+
+private theorem rigidity_of_ordered_conductors (F G : RHTower.SelbergClass)
+    (hgamma : archGammaFactor F.gammaData = archGammaFactor G.gammaData)
+    (hQ : F.gammaData.Q ≤ G.gammaData.Q) {σ : ℝ} (hσ0 : 0 ≤ σ) (hσ : σ < 1 / 2)
+    (hb : LSeriesSummable (fun n => F.eulerLogCoeff n - G.eulerLogCoeff n) σ) :
+    F.coeff = G.coeff ∧ F.gammaData.Q = G.gammaData.Q ∧
+      F.gammaData.rootNumber = G.gammaData.rootNumber := by
+  let d : ℝ := Real.log F.gammaData.Q - Real.log G.gammaData.Q
+  let T (s : ℂ) := Complex.exp ((d : ℂ) * s) * eulerQuotient F G s
+  have hd : d ≤ 0 := sub_nonpos.mpr (Real.log_le_log F.gammaData.Q_pos hQ)
+  have hT : AnalyticOnNhd ℂ T {s : ℂ | σ < s.re} := by
+    intro s hs
+    exact (show AnalyticAt ℂ (fun z : ℂ => Complex.exp ((d : ℂ) * z)) s by fun_prop).mul
+      (eulerQuotient_analyticOnNhd F G hb s hs)
+  have href (s : ℂ) (hs : σ < s.re) (hs' : s.re < 1 - σ) :
+      T s = F.gammaData.rootNumber / G.gammaData.rootNumber * star (T (1 - star s)) := by
+    apply completedQuotient_reflection F G hσ0 hT _ hs hs'
+    intro z hz hz1
+    rw [gammaFactor_eq_conductor_mul F G hgamma]
+    have hv := eulerQuotient_mul_value_of_summable F G (by linarith) hb hz hz1
+    dsimp only [T, d]
+    rw [← hv]
+    ring
+  have hphase : ‖F.gammaData.rootNumber / G.gammaData.rootNumber‖ = 1 := by
+    rw [norm_div, F.gammaData.rootNumber_norm, G.gammaData.rootNumber_norm, div_one]
+  obtain ⟨c, hc⟩ := bounded_reflection_constant hσ hphase hT
+    (fun s hs => show ‖T s‖ ≤ _ from by
+      have hexp : ‖Complex.exp ((d : ℂ) * s)‖ ≤ 1 := by
+        rw [Complex.norm_exp]
+        apply Real.exp_le_one_iff.mpr
+        simpa only [mul_re, ofReal_re, ofReal_im, zero_mul, sub_zero] using
+          mul_nonpos_of_nonpos_of_nonneg hd (by linarith : 0 ≤ s.re)
+      exact (norm_mul_le _ _).trans ((mul_le_mul_of_nonneg_right hexp (norm_nonneg _)).trans
+        (by simpa only [one_mul] using norm_eulerQuotient_le F G hb (hσ.le.trans hs)))) href
+  have hcne : c ≠ 0 := by
+    rw [← hc 2 (by change σ < (2 : ℝ); linarith)]
+    exact mul_ne_zero (Complex.exp_ne_zero _) (Complex.exp_ne_zero _)
+  have hd0 : d = 0 := by
+    by_contra hdn
+    have hdn' : d < 0 := lt_of_le_of_ne hd hdn
+    have he : Tendsto (fun x : ℝ => Real.exp (d * x)) atTop (𝓝 0) :=
+      Real.tendsto_exp_atBot.comp (tendsto_id.const_mul_atTop_of_neg hdn')
+    have hR : Tendsto (fun x : ℝ => ‖eulerQuotient F G x‖) atTop (𝓝 1) := by
+      simpa only [norm_one] using (eulerQuotient_tendsto_atTop F G).norm
+    have hzero : Tendsto (fun _ : ℝ => ‖c‖) atTop (𝓝 0) := by
+      have hprod := he.mul hR
+      simp only [zero_mul] at hprod
+      apply hprod.congr'
+      filter_upwards [eventually_gt_atTop σ] with x hx
+      rw [← hc x (by simpa only [ofReal_re] using hx)]
+      simp only [T, norm_mul, Complex.norm_exp, mul_re, ofReal_re, ofReal_im,
+        mul_zero, sub_zero]
+    exact hcne (norm_eq_zero.mp (tendsto_nhds_unique tendsto_const_nhds hzero))
+  have hQeq : F.gammaData.Q = G.gammaData.Q :=
+    Real.log_injOn_pos F.gammaData.Q_pos G.gammaData.Q_pos (sub_eq_zero.mp hd0)
+  have hfull : F.gammaData.gammaFactor = G.gammaData.gammaFactor := by
+    funext s
+    rw [gammaFactor_eq_conductor_mul F G hgamma]
+    change Complex.exp ((d : ℂ) * s) * G.gammaData.gammaFactor s = _
+    simp only [hd0, ofReal_zero, zero_mul, Complex.exp_zero, one_mul]
+  have hcoeff := coeff_eq_of_subcritical_euler_discrepancy F G hfull hσ hb
+  have hc1 : c = 1 := by
+    have hlim : Tendsto (fun _ : ℝ => c) atTop (𝓝 1) := by
+      apply (eulerQuotient_tendsto_atTop F G).congr'
+      filter_upwards [eventually_gt_atTop σ] with x hx
+      have heq := hc x (by simpa only [ofReal_re] using hx)
+      simpa only [T, hd0, ofReal_zero, zero_mul, Complex.exp_zero, one_mul] using heq
+    exact tendsto_nhds_unique tendsto_const_nhds hlim
+  have hroot : F.gammaData.rootNumber = G.gammaData.rootNumber := by
+    have heq := href (1 / 2) (by norm_num; linarith) (by norm_num; linarith)
+    rw [hc _ (by norm_num; linarith), hc _ (by norm_num; linarith), hc1] at heq
+    simp only [star_one, mul_one] at heq
+    apply (div_eq_one_iff_eq ?_).mp heq.symm
+    intro hzero
+    have hn := G.gammaData.rootNumber_norm
+    simp only [hzero, norm_zero] at hn
+    norm_num at hn
+  exact ⟨hcoeff, hQeq, hroot⟩
+
+/-- A subcritical Euler discrepancy cannot change coefficients, the positive
+exponential parameter, or the root number when the bare Gamma products agree. -/
+theorem rigidity_of_subcritical_euler_discrepancy (F G : RHTower.SelbergClass)
+    (hgamma : archGammaFactor F.gammaData = archGammaFactor G.gammaData) {σ : ℝ}
+    (hσ : σ < 1 / 2)
+    (hb : LSeriesSummable (fun n => F.eulerLogCoeff n - G.eulerLogCoeff n) σ) :
+    F.coeff = G.coeff ∧ F.gammaData.Q = G.gammaData.Q ∧
+      F.gammaData.rootNumber = G.gammaData.rootNumber := by
+  let τ := max σ 0
+  have hτ : τ < 1 / 2 := max_lt hσ (by norm_num)
+  have hτ0 : 0 ≤ τ := le_max_right σ 0
+  have hbτ : LSeriesSummable (fun n => F.eulerLogCoeff n - G.eulerLogCoeff n) τ :=
+    hb.of_re_le_re (by simpa only [ofReal_re] using le_max_left σ 0)
+  rcases le_total F.gammaData.Q G.gammaData.Q with hQ | hQ
+  · exact rigidity_of_ordered_conductors F G hgamma hQ hτ0 hτ hbτ
+  · have hb' : LSeriesSummable (fun n => G.eulerLogCoeff n - F.eulerLogCoeff n) τ := by
+      have heq : (fun n => G.eulerLogCoeff n - F.eulerLogCoeff n) =
+          -(fun n => F.eulerLogCoeff n - G.eulerLogCoeff n) := by
+        funext n
+        exact (neg_sub _ _).symm
+      rw [heq]
+      exact hbτ.neg
+    obtain ⟨hcoeff, hQeq, hroot⟩ :=
+      rigidity_of_ordered_conductors G F hgamma.symm hQ hτ0 hτ hb'
+    exact ⟨hcoeff.symm, hQeq.symm, hroot.symm⟩
 
 end GaloisForLFunctions.SelbergClass

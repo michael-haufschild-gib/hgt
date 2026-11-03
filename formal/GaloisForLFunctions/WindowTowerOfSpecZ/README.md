@@ -1,6 +1,6 @@
 # The Window Tower of Spec ℤ (WTZ)
 
-Namespace `GaloisForLFunctions.WindowTowerOfSpecZ`; umbrella `WindowTowerOfSpecZ.lean`; 44 modules.
+Namespace `GaloisForLFunctions.WindowTowerOfSpecZ`; umbrella `WindowTowerOfSpecZ.lean`; 45 modules.
 Every theorem is unconditional; none assumes or proves RH.
 
 ## 1. Motivation
@@ -455,8 +455,9 @@ and the pole; the rigidity of the fold weights through the explicit formula with
 | One cubic moment pays the frozen odd form on the unit window; its kernel is coercive | `stageForm_one_cubicMoment_lower`, `stageForm_one_add_cubicMoment_ge`, `stageForm_one_coercive_of_cubicMoment_zero` |
 | Complete odd unit-window coercivity after first and third moments vanish | `stageForm_two_ge_of_odd_two_moments_zero`, `weilQuad_ge_of_odd_two_moments_zero` |
 | Gamma correction and sinh pole share one compact primitive; uniform Gamma loss is `7/192` | `unit_odd_gamma_primitive_lower`, `unit_odd_gamma_pole_primitive_lower`, `unit_odd_gamma_jump_second_moment_lower` |
-| Exact quintic lag data and a smooth odd unit-window counterexample to positivity of the retained Gamma lower form, including prime two and sinh pole | `quinticWindow_autocorr`, `quinticWindow_logarithmic_integral`, `quinticWindow_jump_first_moment`, `exists_odd_unit_retainedGamma_neg` |
+| Exact quintic lag data and a smooth odd unit-window test with negative retained Gamma form but positive complete Weil form | `quinticWindow_autocorr`, `quinticWindow_logarithmic_integral`, `quinticWindow_jump_first_moment`, `exists_odd_unit_retainedGamma_neg_weil_pos` |
 | Three positive Gamma tail modes give `Q≥P+E/64` on every odd C² unit-window test; the quintic has `−E/64<P<0` | `gamma_tail_one_reserve`, `weilQuad_ge_retainedOddGamma_add_reserve`, `retainedOddGammaLowerForm_quintic_add_reserve_pos` |
+| Primitive variance retains the first odd moment; primitive and sinh costs leave one moment charge and the exact signed prime correlation | `unit_odd_primitive_variance_le`, `unit_sinhPairing_sub_position_square_le`, `weilQuad_ge_logarithmic_first_moment` |
 | The exit charge pays every new fold | `collar_le_jump`, `levyJump_ge_collar`, `primeJumpWeight_le`, `log_three_le_archLevyAntideriv`, `primeJumpWeight_le_archLevyAntideriv`, `weilQuad_ge_reducedStageForm` |
 | The window Euler product | `isMultiplicative_factoredIndicator`, `factoredIndicator_mul_insert`, `prod_factoredIndicator`, `eulerFactor_mul_inverse`, `windowRep_zeta_eq_prod`, `windowRep_eulerFactor_mul_inverse` |
 | Weil's window form is a signed count | `exists_log_interpolant`, `sum_coeff_mul_jordanTotient`, `integral_windowRep_vonMangoldt_eq_signedCount`, `weilQuad_eq_signedCount` |

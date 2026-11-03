@@ -42,7 +42,8 @@ TheFrequencyOfATwistActsAsAFrobeniusAngle, EveryPeriodicTwistedSectorInheritsThe
 TheFrequencyTwistIsQuietBelowItsResonance, TheEnergyOfAFrequencyTwist, EveryFrequencyActsAsAFrobeniusAngle,
 TheHorizonLayerIsGradedByFrequency, EveryFrequencySectorInheritsThePolarization,
 TheMonodromyRateOfACurveIsItsZeroWidth, ThePartialZetaSumIsQuietBelowItsGrid,
-TheBulkIsBlindBelowItsGrid, TheUntwistedCountIsTheFinitePartAtZeroFrequency.
+TheBulkIsBlindBelowItsGrid, TheUntwistedCountIsTheFinitePartAtZeroFrequency,
+TheBulkSecondOrderOfThePoleIsAStieltjesConstant, TheBulkEntriesAreReadByTheStieltjesConstants.
 
 ## Status
 - First order = count: `J(m) = J(1) #ℙ⁷(ℤ/m)`; count law over every finite ring (𝔽_q[T] calibration) [L].
@@ -120,7 +121,9 @@ TheBulkIsBlindBelowItsGrid, TheUntwistedCountIsTheFinitePartAtZeroFrequency.
   in particular trigonometric twists with distinct frequencies [L].
 - Jump multiples: independent family ⇒ `A(H)` posdef and `ind₋(P_K) = #{λ_i < 0, βJ/(−λ_i) < K}`,
   `λ_i` relative eigenvalues of `κW(H)` against `A(H)` [L].
+- Bulk second order, prime part: `⟨P R_e, R_{e'}⟩ − (log N − ρ_e)⟨R_e, R_{e'}⟩ → D(e, e')`, a polynomial in
+  `γ, γ₁` and logarithms of divisors; `D(p,p) = 2γ₁ + γ² + p log²p/(p−1)²`; no progression constants [L].
 
 ## Open
-Gap between resolved zeros and Shannon number; bulk ledger above the grid (Mertens constants in
-progressions); count of the second order; integer; `𝔽_q(T)` complete family. See README §9.
+Gap between resolved zeros and Shannon number; bulk ledger above the grid; archimedean and pole
+parts of the bulk entries at overlap `c` (prime part: `D(e, e')` in `γ, γ₁`, proved [L]); count of the second order; integer; `𝔽_q(T)` complete family. See README §9.

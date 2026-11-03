@@ -924,6 +924,289 @@ theorem levyEnergy_atomicTest_ge_of_ge {c : ℝ} (hc0 : 1 / 2052 ≤ c) {N : ℕ
           (∑ n ∈ Icc 1 N, z n ^ 2)) := by ring
   linarith only [hgamma, hlev_eq, hbandTerm, hγ, hcost, hid1, hid2]
 
+private theorem two_pow_le_linearDefectCutoff {c : ℝ} (hc1 : 1 ≤ c) {k : ℕ}
+    (hk : k ∈ range (dyadicShellCount c)) :
+    (2 : ℝ) ^ k ≤ linearDefectCutoff c := by
+  obtain ⟨hL3, -, -, -⟩ := linearDefectCutoff_bounds hc1
+  have hLc_R : (3 : ℝ) ≤ linearDefectCutoff c := by exact_mod_cast hL3
+  have hk_le : (k : ℝ) ≤ Real.log (linearDefectCutoff c) / Real.log 2 := by
+    have hk_nat : k ≤ ⌊Real.log (linearDefectCutoff c) / Real.log 2⌋₊ :=
+      Nat.lt_succ_iff.mp (mem_range.mp hk)
+    exact (Nat.cast_le.mpr hk_nat).trans (Nat.floor_le
+      (div_nonneg (Real.log_nonneg (by linarith)) (Real.log_pos one_lt_two).le))
+  have hl2 : 0 < Real.log 2 := Real.log_pos one_lt_two
+  have hmul : (k : ℝ) * Real.log 2 ≤ Real.log (linearDefectCutoff c) := (le_div_iff₀ hl2).mp hk_le
+  calc (2 : ℝ) ^ k = Real.exp ((k : ℝ) * Real.log 2) := by
+        rw [← Real.log_pow, Real.exp_log (by positivity)]
+    _ ≤ Real.exp (Real.log (linearDefectCutoff c)) := Real.exp_le_exp.mpr hmul
+    _ = linearDefectCutoff c := Real.exp_log (by linarith)
+
+private theorem dyadicShell_levyEnergy_ge {c : ℝ} {N : ℕ} (hc1 : 1 ≤ c)
+    (hL2N : (linearDefectCutoff c : ℝ) ^ 2 ≤ N) (y : ℕ → ℝ) {k : ℕ}
+    (hk : k ∈ range (dyadicShellCount c)) :
+    (((1 / 2052 : ℝ) ^ 8 * growingMassConstant / (c * (dyadicShellHorizon N k : ℝ) / N) ^ 7) *
+        (Real.log N / 2) -
+      (factorialSpanGammaOffset + Real.log 2 + 2 * |gammaHardyPhaseRate 0|) *
+        (1 + 8 * Real.exp 1) * c) * ((c / N) * ∫ u, tiltedUnitSpline u ^ 2) *
+      (∑ n ∈ Icc 1 N, dyadicShellBump N k (Real.log n) ^ 2 * y n ^ 2) ≤
+    levyEnergy (atomicTest (dyadicShellHorizon N k)
+      (fun n => dyadicShellBump N k (Real.log n) * y n)
+      (atomDilate tiltedUnitSpline (c / N))) := by
+  obtain ⟨hL3, h4c, -, hLup⟩ := linearDefectCutoff_bounds hc1
+  let Lc := linearDefectCutoff c
+  have hc0 : 0 < c := zero_lt_one.trans_le hc1
+  have hLc_R : (3 : ℝ) ≤ Lc := by exact_mod_cast hL3
+  have hNR : (9 : ℝ) ≤ N := (by norm_num : (9 : ℝ) ≤ 3 ^ 2).trans
+    ((pow_le_pow_left₀ (by norm_num) hLc_R 2).trans hL2N)
+  have hN1 : 1 ≤ N := by
+    have : (1 : ℝ) ≤ N := by linarith
+    exact_mod_cast this
+  have hN_pos : (0 : ℝ) < N := by linarith
+  have hcN : c ≤ (N : ℝ) := by nlinarith [h4c]
+  have hw : 0 < c / (N : ℝ) := div_pos hc0 hN_pos
+  have hG : 0 < (c / (N : ℝ)) * ∫ u, tiltedUnitSpline u ^ 2 :=
+    mul_pos hw integral_tiltedUnitSpline_sq_pos
+  have h2k : (2 : ℝ) ^ k ≤ Lc := two_pow_le_linearDefectCutoff hc1 hk
+  let Nk := dyadicShellHorizon N k
+  have hsqrt_le : Real.sqrt N ≤ Nk := by
+    have hsq : Real.sqrt N * Lc ≤ N := by
+      have h1 : (Lc : ℝ) ≤ Real.sqrt N := by
+        rw [← Real.sqrt_sq (by linarith : (0 : ℝ) ≤ Lc)]
+        exact Real.sqrt_le_sqrt hL2N
+      calc Real.sqrt N * Lc ≤ Real.sqrt N * Real.sqrt N :=
+            mul_le_mul_of_nonneg_left h1 (Real.sqrt_nonneg _)
+        _ = N := Real.mul_self_sqrt hN_pos.le
+    have h4N : Real.sqrt N + 1 ≤ 4 * (N : ℝ) / (2 : ℝ) ^ k := by
+      have hdiv : Real.sqrt N ≤ (N : ℝ) / (2 : ℝ) ^ k := by
+        rw [le_div_iff₀ (by positivity)]
+        exact (mul_le_mul_of_nonneg_left h2k (Real.sqrt_nonneg _)).trans hsq
+      have hsq3 : 3 ≤ Real.sqrt N := by
+        rw [← Real.sqrt_sq (by norm_num : (0 : ℝ) ≤ 3)]
+        exact Real.sqrt_le_sqrt (by linarith)
+      calc Real.sqrt N + 1 ≤ 4 * Real.sqrt N := by linarith only [hsq3]
+        _ ≤ 4 * ((N : ℝ) / (2 : ℝ) ^ k) := mul_le_mul_of_nonneg_left hdiv (by norm_num)
+        _ = 4 * (N : ℝ) / (2 : ℝ) ^ k := (mul_div_assoc _ _ _).symm
+    have hfl : Real.sqrt N ≤ ⌊4 * (N : ℝ) / (2 : ℝ) ^ k⌋₊ := by
+      have := Nat.lt_floor_add_one (4 * (N : ℝ) / (2 : ℝ) ^ k)
+      linarith
+    have hN_sq : Real.sqrt N ≤ N := by
+      have hsq1 : 1 ≤ Real.sqrt N := by
+        rw [← Real.sqrt_one]; exact Real.sqrt_le_sqrt (by linarith)
+      calc Real.sqrt N = Real.sqrt N * 1 := (mul_one _).symm
+        _ ≤ Real.sqrt N * Real.sqrt N := mul_le_mul_of_nonneg_left hsq1 (Real.sqrt_nonneg _)
+        _ = N := Real.mul_self_sqrt hN_pos.le
+    simp only [Nk, dyadicShellHorizon]
+    rw [Nat.cast_min, le_min_iff]
+    exact ⟨hN_sq, hfl⟩
+  have hNk_lb : (N : ℝ) / (2 : ℝ) ^ k ≤ Nk := by
+    have hdiv3 : 3 ≤ (N : ℝ) / (2 : ℝ) ^ k := by
+      rw [le_div_iff₀ (by positivity)]
+      have : 3 * (2 : ℝ) ^ k ≤ (Lc : ℝ) * Lc :=
+        mul_le_mul hLc_R h2k (by positivity) (by linarith)
+      nlinarith [hL2N]
+    have hfl : (N : ℝ) / (2 : ℝ) ^ k ≤ ⌊4 * (N : ℝ) / (2 : ℝ) ^ k⌋₊ := by
+      have h4 : (N : ℝ) / (2 : ℝ) ^ k + 1 ≤ 4 * (N : ℝ) / (2 : ℝ) ^ k := by
+        calc (N : ℝ) / (2 : ℝ) ^ k + 1 ≤ 4 * ((N : ℝ) / (2 : ℝ) ^ k) := by linarith only [hdiv3]
+          _ = 4 * (N : ℝ) / (2 : ℝ) ^ k := (mul_div_assoc _ _ _).symm
+      have := Nat.lt_floor_add_one (4 * (N : ℝ) / (2 : ℝ) ^ k)
+      linarith
+    have hN_div : (N : ℝ) / (2 : ℝ) ^ k ≤ N :=
+      div_le_self hN_pos.le (one_le_pow₀ one_le_two)
+    simp only [Nk, dyadicShellHorizon]
+    rw [Nat.cast_min, le_min_iff]
+    exact ⟨hN_div, hfl⟩
+  have hNk_ub : (Nk : ℝ) ≤ 4 * (N : ℝ) / (2 : ℝ) ^ k :=
+    (Nat.cast_le.mpr (min_le_right N _)).trans (Nat.floor_le (by positivity))
+  let ck := c * (Nk : ℝ) / N
+  have hNk_pos : (0 : ℝ) < Nk := lt_of_lt_of_le (Real.sqrt_pos.mpr hN_pos) hsqrt_le
+  have hck_min : 1 / 2052 ≤ ck := by
+    have he2 : Real.exp 2 < 8 := by
+      have he1 : Real.exp 1 < 11 / 4 := by have := Real.exp_one_lt_d9; linarith
+      have he2' : Real.exp 2 = Real.exp 1 * Real.exp 1 := by rw [← Real.exp_add]; norm_num
+      rw [he2']; nlinarith [Real.exp_pos 1]
+    have hLc_ub : (Lc : ℝ) ≤ 2052 * c := by nlinarith [hLup, hc0]
+    have h1 : c / (2 : ℝ) ^ k ≤ ck := by
+      simp only [ck]
+      rw [div_le_div_iff₀ (by positivity) hN_pos]
+      have := mul_le_mul_of_nonneg_left ((div_le_iff₀ (by positivity)).mp hNk_lb) hc0.le
+      linarith
+    have h2 : 1 / 2052 ≤ c / (2 : ℝ) ^ k := by
+      rw [div_le_div_iff₀ (by norm_num) (by positivity), one_mul]
+      linarith only [h2k, hLc_ub]
+    exact h2.trans h1
+  have hck_4c : ck ≤ 4 * c := by
+    simp only [ck]
+    rw [div_le_iff₀ hN_pos]
+    have : (Nk : ℝ) ≤ 4 * N := hNk_ub.trans
+      (div_le_self (by positivity) (one_le_pow₀ one_le_two))
+    nlinarith
+  have hck_Nk : ck ≤ Nk := by
+    simp only [ck]
+    rw [div_le_iff₀ hN_pos]
+    nlinarith [hcN, hNk_pos]
+  have hck_div : ck / Nk = c / N := by
+    simp only [ck]
+    field_simp [hN_pos.ne', hNk_pos.ne']
+  have hlogNk : Real.log N / 2 ≤ Real.log Nk := by
+    have h1 := Real.log_le_log (Real.sqrt_pos.mpr hN_pos) hsqrt_le
+    rwa [Real.log_sqrt hN_pos.le] at h1
+  have hsum_eq : ∑ n ∈ Icc 1 Nk, (dyadicShellBump N k (Real.log n) * y n) ^ 2 =
+      ∑ n ∈ Icc 1 N, dyadicShellBump N k (Real.log n) ^ 2 * y n ^ 2 := by
+    have hsub := sum_subset (Icc_subset_Icc (le_rfl : 1 ≤ 1) (min_le_left N _))
+      (f := fun n : ℕ => dyadicShellBump N k (Real.log n) ^ 2 * y n ^ 2) fun n hn hnot => by
+        obtain ⟨hn1, hnN⟩ := mem_Icc.mp hn
+        have hgt : Nk < n := by
+          by_contra hle; exact hnot (mem_Icc.mpr ⟨hn1, not_lt.mp hle⟩)
+        rw [dyadicShellBump_log_eq_zero_of_gt_horizon hN1 hnN hgt, sq, zero_mul, zero_mul]
+    rw [← hsub]
+    exact sum_congr rfl fun n _ => mul_pow _ _ 2
+  have hlev0 := levyEnergy_atomicTest_ge_of_ge hck_min hck_Nk
+    (fun n => dyadicShellBump N k (Real.log n) * y n)
+  rw [hck_div, hsum_eq] at hlev0
+  refine le_trans ?_ hlev0
+  have hZ : 0 ≤ ∑ n ∈ Icc 1 N, dyadicShellBump N k (Real.log n) ^ 2 * y n ^ 2 :=
+    sum_nonneg fun _ _ => mul_nonneg (sq_nonneg _) (sq_nonneg _)
+  refine mul_le_mul_of_nonneg_right (mul_le_mul_of_nonneg_right ?_ hG.le) hZ
+  have hpos_gain : ((1 / 2052 : ℝ) ^ 8 * growingMassConstant / ck ^ 7) * (Real.log N / 2) ≤
+      ((1 / 2052 : ℝ) ^ 8 * growingMassConstant / ck ^ 7) * Real.log Nk :=
+    mul_le_mul_of_nonneg_left hlogNk
+      (div_nonneg (mul_nonneg (by norm_num : (0 : ℝ) ≤ (1 / 2052 : ℝ) ^ 8)
+        growingMassConstant_pos.le)
+        (pow_nonneg (lt_of_lt_of_le (by norm_num : (0 : ℝ) < 1 / 2052) hck_min).le 7))
+  have hneg_cost : (factorialSpanGammaOffset + Real.log 2 + 2 * |gammaHardyPhaseRate 0|) *
+      (1 + 2 * Real.exp 1 * ck) ≤
+      (factorialSpanGammaOffset + Real.log 2 + 2 * |gammaHardyPhaseRate 0|) *
+        (1 + 8 * Real.exp 1) * c := by
+    have h1 : 2 * Real.exp 1 * ck ≤ 8 * Real.exp 1 * c :=
+      (mul_le_mul_of_nonneg_left hck_4c
+        (mul_nonneg zero_le_two (Real.exp_pos 1).le)).trans_eq (by ring)
+    have h2 : 1 + 2 * Real.exp 1 * ck ≤ (1 + 8 * Real.exp 1) * c := by
+      linarith only [hc1, h1]
+    exact (mul_le_mul_of_nonneg_left h2
+      (add_nonneg (add_nonneg factorialSpanGammaOffset_nonneg (Real.log_nonneg one_le_two))
+        (mul_nonneg zero_le_two (abs_nonneg (gammaHardyPhaseRate 0))))).trans_eq
+      (mul_assoc _ _ _).symm
+  linarith only [hpos_gain, hneg_cost]
+
+private theorem inv_eighth_c_pow_seven_eq {B c n N : ℝ} (hN : N ≠ 0) (hn : n ≠ 0) (hc : c ≠ 0) :
+    (N / n) ^ 7 / (B ^ 7 * c ^ 7) = 1 / (B * c * n / N) ^ 7 := by
+  field_simp [hN, hn, hc]
+
+private theorem dyadicShell_seventh_coverage_ge {c : ℝ} {N : ℕ} (hc1 : 1 ≤ c)
+    (hL2N : (linearDefectCutoff c : ℝ) ^ 2 ≤ N) {n : ℕ}
+    (hn : n ∈ Ioc (N / linearDefectCutoff c) N) :
+    (((N : ℝ) / n) ^ 7 / (8 ^ 7 * c ^ 7)) ≤
+      ∑ k ∈ range (dyadicShellCount c), (1 / (c * (dyadicShellHorizon N k : ℝ) / N) ^ 7) *
+        dyadicShellBump N k (Real.log n) ^ 2 := by
+  obtain ⟨hL3, -, -, -⟩ := linearDefectCutoff_bounds hc1
+  let Lc := linearDefectCutoff c
+  let M := N / Lc
+  have hL_pos : 0 < Lc := by omega
+  have hc0 : 0 < c := zero_lt_one.trans_le hc1
+  have hLc_R : (3 : ℝ) ≤ Lc := by exact_mod_cast hL3
+  have hNR : (9 : ℝ) ≤ N := (by norm_num : (9 : ℝ) ≤ 3 ^ 2).trans
+    ((pow_le_pow_left₀ (by norm_num) hLc_R 2).trans hL2N)
+  have hN1 : 1 ≤ N := by
+    have : (1 : ℝ) ≤ N := by linarith
+    exact_mod_cast this
+  have hN_pos : (0 : ℝ) < N := by linarith
+  obtain ⟨hMn, hnN⟩ := mem_Ioc.mp hn
+  have hn1 : 1 ≤ n := Nat.succ_le_of_lt (Nat.lt_of_le_of_lt (Nat.zero_le M) hMn)
+  have hn0 : (0 : ℝ) < n := by exact_mod_cast hn1
+  have hl2 : 0 < Real.log 2 := Real.log_pos one_lt_two
+  have hrat1 : 1 ≤ (N : ℝ) / n := (one_le_div hn0).mpr (by exact_mod_cast hnN)
+  have hrat_lt : (N : ℝ) / n < Lc := by
+    rw [div_lt_iff₀ hn0]
+    have h1 : N < Lc * (M + 1) := Nat.lt_mul_div_succ N hL_pos
+    have h2 : Lc * (M + 1) ≤ Lc * n := Nat.mul_le_mul_left Lc hMn
+    have h3 : (N : ℝ) < (Lc : ℝ) * n := by exact_mod_cast h1.trans_le h2
+    linarith only [h3, (by ring : (Lc : ℝ) * n = (Lc : ℝ) * (n : ℝ))]
+  let t := Real.log ((N : ℝ) / n) / Real.log 2
+  have ht0 : 0 ≤ t := div_nonneg (Real.log_nonneg hrat1) hl2.le
+  let k₀ := ⌊t⌋₊
+  have hk₀_mem : k₀ ∈ range (dyadicShellCount c) := by
+    refine mem_range.mpr (Nat.lt_succ_of_le (Nat.floor_mono ?_))
+    exact div_le_div_of_nonneg_right
+      (Real.log_le_log (lt_of_lt_of_le zero_lt_one hrat1) hrat_lt.le) hl2.le
+  have hk₀_lo : (k₀ : ℝ) * Real.log 2 ≤ Real.log N - Real.log n := by
+    rw [← Real.log_div hN_pos.ne' hn0.ne']
+    exact (le_div_iff₀ hl2).mp (Nat.floor_le ht0)
+  have hk₀_hi : Real.log N - Real.log n < ((k₀ : ℝ) + 1) * Real.log 2 := by
+    rw [← Real.log_div hN_pos.ne' hn0.ne']
+    exact (div_lt_iff₀ hl2).mp (Nat.lt_floor_add_one t)
+  have hbump1 : dyadicShellBump N k₀ (Real.log n) = 1 := by
+    apply dyadicShellBump_eq_one
+    have hid : Real.log n - shellCenter N k₀ =
+        ((k₀ : ℝ) + 1) * Real.log 2 - (Real.log N - Real.log n) := by
+      unfold shellCenter; ring
+    rw [hid, abs_of_nonneg (by linarith)]
+    have hl2_le1 : Real.log 2 ≤ 1 := by have := Real.log_two_lt_d9; linarith
+    linarith
+  have hck₀_ub : c * (dyadicShellHorizon N k₀ : ℝ) / N ≤ 8 * c * n / N := by
+    have h2k₀_gt : (N : ℝ) / n < 2 * (2 : ℝ) ^ k₀ := by
+      have hexp := Real.exp_lt_exp.mpr hk₀_hi
+      rw [Real.exp_sub, Real.exp_log hN_pos, Real.exp_log hn0, add_mul, one_mul,
+        Real.exp_add, Real.exp_log zero_lt_two,
+        show (k₀ : ℝ) * Real.log 2 = Real.log ((2 : ℝ) ^ k₀) by rw [Real.log_pow],
+        Real.exp_log (by positivity)] at hexp
+      linarith
+    have hNk₀ : (dyadicShellHorizon N k₀ : ℝ) ≤ 8 * n := by
+      have h1 : (dyadicShellHorizon N k₀ : ℝ) ≤ 4 * (N : ℝ) / (2 : ℝ) ^ k₀ :=
+        (Nat.cast_le.mpr (min_le_right N _)).trans (Nat.floor_le (by positivity))
+      have h2 : 4 * (N : ℝ) / (2 : ℝ) ^ k₀ ≤ 8 * n := by
+        rw [div_le_iff₀ (by positivity)]
+        have := (div_lt_iff₀ hn0).mp h2k₀_gt
+        linarith
+      exact h1.trans h2
+    calc c * (dyadicShellHorizon N k₀ : ℝ) / N
+        ≤ c * (8 * n) / N := div_le_div_of_nonneg_right
+          (mul_le_mul_of_nonneg_left hNk₀ hc0.le) hN_pos.le
+      _ = 8 * c * n / N := by ring
+  have hNk₀_pos : (0 : ℝ) < dyadicShellHorizon N k₀ := by
+    have hdiv1 : (1 : ℝ) ≤ 4 * (N : ℝ) / (2 : ℝ) ^ k₀ := by
+      rw [one_le_div (by positivity)]
+      have hLc_4N : (Lc : ℝ) ≤ 4 * N := by nlinarith only [hLc_R, hL2N]
+      exact (two_pow_le_linearDefectCutoff hc1 hk₀_mem).trans hLc_4N
+    have hpos : 1 ≤ dyadicShellHorizon N k₀ := le_min hN1 ((Nat.one_le_floor_iff _).mpr hdiv1)
+    exact_mod_cast hpos
+  have hsingle : (1 / (c * (dyadicShellHorizon N k₀ : ℝ) / N) ^ 7) *
+        dyadicShellBump N k₀ (Real.log n) ^ 2 ≤
+      ∑ k ∈ range (dyadicShellCount c), (1 / (c * (dyadicShellHorizon N k : ℝ) / N) ^ 7) *
+        dyadicShellBump N k (Real.log n) ^ 2 :=
+    single_le_sum (f := fun k => (1 / (c * (dyadicShellHorizon N k : ℝ) / N) ^ 7) *
+        dyadicShellBump N k (Real.log n) ^ 2)
+      (fun k _ => mul_nonneg (one_div_nonneg.mpr (pow_nonneg (by positivity) 7)) (sq_nonneg _))
+      hk₀_mem
+  refine le_trans ?_ hsingle
+  rw [hbump1, one_pow, mul_one, inv_eighth_c_pow_seven_eq hN_pos.ne' hn0.ne' hc0.ne']
+  exact one_div_le_one_div_of_le (by positivity) (pow_le_pow_left₀ (by positivity) hck₀_ub 7)
+
+private theorem shell_term_div_eq (A0 B7 c7 L q x2 : ℝ) :
+    (A0 / (2 * B7 * c7)) * L * (q * x2) = A0 * (L / 2) * ((q / (B7 * c7)) * x2) := by
+  rw [show 2 * B7 * c7 = (B7 * c7) * 2 by ring, ← div_div,
+    div_eq_mul_one_div A0 (B7 * c7), div_eq_mul_one_div q (B7 * c7)]
+  ring
+
+private theorem top_arch_levy_combine {A0 B7 c G S S7 L K_low C_comm L_B e1 : ℝ} :
+    (1 / 2 : ℝ) * (G * ((A0 / (2 * B7 * c ^ 7)) * L * S7 - 9 * K_low * c * S)) -
+        C_comm * c * G * S -
+        648 * L_B ^ 2 * (G * ((1 + 2 * e1) * c) * S) =
+      18 * (G * ((A0 / (72 * B7 * c ^ 7)) * L * S7)) -
+        (9 * K_low / 2 + C_comm + 648 * L_B ^ 2 * (1 + 2 * e1)) * c * G * S := by
+  rw [show 72 * B7 * c ^ 7 = (2 * B7 * c ^ 7) * 36 by ring, ← div_div]
+  ring
+
+private theorem top_arch_levy_rhs (A B1 c G S7 : ℝ) :
+    18 * (G * (A * S7 - (B1 / 18) * c * S7)) =
+      18 * (G * (A * S7)) - B1 * c * G * S7 := by
+  ring
+
+private theorem dyadicTopMassConstant_div_eq (c : ℝ) :
+    dyadicTopMassConstant / c ^ 7 =
+      (1 / 2052 : ℝ) ^ 8 * growingMassConstant / (72 * 8 ^ 7 * c ^ 7) := by
+  unfold dyadicTopMassConstant
+  rw [div_div]
+
 /-- **Dyadic seventh-power archimedean reserve on the top collar.** Summing the shell reserves via
 smooth IMS and subtracting the `H¹` commutator upgrades the top `archForm` floor to
 `topCollarSeventhMass` at only linear `O(c)` mass cost. -/
@@ -938,26 +1221,28 @@ theorem exists_top_archForm_dyadic_seventh_reserve :
             (atomDilate tiltedUnitSpline (c / N))) := by
   obtain ⟨L_B, hLB0, -, hlipB⟩ := exists_baseShellBump_deriv_bound
   obtain ⟨C_comm, hCcomm0, hcomm⟩ := exists_sum_levyEnergy_dyadicCommutator_le
-  let K_low := (factorialSpanGammaOffset + Real.log 2 + 2 * |gammaHardyPhaseRate 0|) *
-    (1 + 8 * Real.exp 1)
+  set K_low := (factorialSpanGammaOffset + Real.log 2 + 2 * |gammaHardyPhaseRate 0|) *
+    (1 + 8 * Real.exp 1) with hKlow_def
   have hKlow0 : 0 ≤ K_low :=
     mul_nonneg (add_nonneg (add_nonneg factorialSpanGammaOffset_nonneg
       (Real.log_nonneg one_le_two)) (by positivity)) (by positivity)
-  let C_arch := (9 * K_low / 2 + C_comm + 648 * L_B ^ 2 * (1 + 2 * Real.exp 1)) / 18 +
+  set C_arch := (9 * K_low / 2 + C_comm + 648 * L_B ^ 2 * (1 + 2 * Real.exp 1)) / 18 +
     2 * |gammaHardyPhaseRate 0| * (1 + 2 * Real.exp 1)
-  refine ⟨C_arch, by simp only [C_arch]; positivity, ?_⟩
+  refine ⟨C_arch, add_nonneg (div_nonneg (add_nonneg (add_nonneg (div_nonneg
+    (mul_nonneg (by norm_num : (0 : ℝ) ≤ 9) hKlow0) zero_le_two) hCcomm0)
+    (mul_nonneg (mul_nonneg (by norm_num : (0 : ℝ) ≤ 648) (sq_nonneg L_B))
+      (add_nonneg zero_le_one (mul_nonneg zero_le_two (Real.exp_pos 1).le))))
+    (by norm_num : (0 : ℝ) ≤ 18))
+    (mul_nonneg (mul_nonneg zero_le_two (abs_nonneg _))
+      (add_nonneg zero_le_one (mul_nonneg zero_le_two (Real.exp_pos 1).le))), ?_⟩
   intro c N hc1 hL2N x
-  obtain ⟨hL3, h4c, -, hLup⟩ := linearDefectCutoff_bounds hc1
+  obtain ⟨hL3, h4c, -, -⟩ := linearDefectCutoff_bounds hc1
   let Lc := linearDefectCutoff c
   let M := N / Lc
-  have hL_pos : 0 < Lc := by omega
   have hc0 : 0 < c := zero_lt_one.trans_le hc1
   have hLc_R : (3 : ℝ) ≤ Lc := by exact_mod_cast hL3
   have hNR : (9 : ℝ) ≤ N := (by norm_num : (9 : ℝ) ≤ 3 ^ 2).trans
     ((pow_le_pow_left₀ (by norm_num) hLc_R 2).trans hL2N)
-  have hN1 : 1 ≤ N := by
-    have : (1 : ℝ) ≤ N := by linarith
-    exact_mod_cast this
   have hN_pos : (0 : ℝ) < N := by linarith
   have hcN : c ≤ (N : ℝ) := by nlinarith [h4c]
   have hMN : M ≤ N := Nat.div_le_self N Lc
@@ -976,231 +1261,22 @@ theorem exists_top_archForm_dyadic_seventh_reserve :
   have hfy : ContDiff ℝ 2 (atomicTest N y g) := contDiff_atomicTest hg N y
   have hfyc : HasCompactSupport (atomicTest N y g) := hasCompactSupport_atomicTest hsupp N y
   let s := range (dyadicShellCount c)
-  -- Shell bounds for every `k ∈ s`
-  have h2k_le : ∀ k ∈ s, (2 : ℝ) ^ k ≤ Lc := by
-    intro k hk
-    have hk_le : (k : ℝ) ≤ Real.log Lc / Real.log 2 := by
-      have hk_nat : k ≤ ⌊Real.log Lc / Real.log 2⌋₊ := Nat.lt_succ_iff.mp (mem_range.mp hk)
-      exact (Nat.cast_le.mpr hk_nat).trans (Nat.floor_le
-        (div_nonneg (Real.log_nonneg (by linarith)) (Real.log_pos one_lt_two).le))
-    have hl2 : 0 < Real.log 2 := Real.log_pos one_lt_two
-    have hmul : (k : ℝ) * Real.log 2 ≤ Real.log Lc := (le_div_iff₀ hl2).mp hk_le
-    calc (2 : ℝ) ^ k = Real.exp ((k : ℝ) * Real.log 2) := by
-          rw [← Real.log_pow, Real.exp_log (by positivity)]
-      _ ≤ Real.exp (Real.log Lc) := Real.exp_le_exp.mpr hmul
-      _ = Lc := Real.exp_log (by linarith)
-  have hshell_lev : ∀ k ∈ s,
-      (((1 / 2052 : ℝ) ^ 8 * growingMassConstant / (c * (dyadicShellHorizon N k : ℝ) / N) ^ 7) *
-          (Real.log N / 2) - K_low * c) * G *
-        (∑ n ∈ Icc 1 N, dyadicShellBump N k (Real.log n) ^ 2 * y n ^ 2) ≤
-      levyEnergy (atomicTest (dyadicShellHorizon N k)
-        (fun n => dyadicShellBump N k (Real.log n) * y n) g) := by
-    intro k hk
-    have h2k := h2k_le k hk
-    let Nk := dyadicShellHorizon N k
-    have hsqrt_le : Real.sqrt N ≤ Nk := by
-      have hsq : Real.sqrt N * Lc ≤ N := by
-        have h1 : (Lc : ℝ) ≤ Real.sqrt N := by
-          rw [← Real.sqrt_sq (by linarith : (0 : ℝ) ≤ Lc)]
-          exact Real.sqrt_le_sqrt hL2N
-        calc Real.sqrt N * Lc ≤ Real.sqrt N * Real.sqrt N :=
-              mul_le_mul_of_nonneg_left h1 (Real.sqrt_nonneg _)
-          _ = N := Real.mul_self_sqrt hN_pos.le
-      have h4N : Real.sqrt N + 1 ≤ 4 * (N : ℝ) / (2 : ℝ) ^ k := by
-        have hdiv : Real.sqrt N ≤ (N : ℝ) / (2 : ℝ) ^ k := by
-          rw [le_div_iff₀ (by positivity)]
-          exact (mul_le_mul_of_nonneg_left h2k (Real.sqrt_nonneg _)).trans hsq
-        have hsq3 : 3 ≤ Real.sqrt N := by
-          rw [← Real.sqrt_sq (by norm_num : (0 : ℝ) ≤ 3)]
-          exact Real.sqrt_le_sqrt (by linarith)
-        calc Real.sqrt N + 1 ≤ 4 * Real.sqrt N := by linarith only [hsq3]
-          _ ≤ 4 * ((N : ℝ) / (2 : ℝ) ^ k) := mul_le_mul_of_nonneg_left hdiv (by norm_num)
-          _ = 4 * (N : ℝ) / (2 : ℝ) ^ k := (mul_div_assoc _ _ _).symm
-      have hfl : Real.sqrt N ≤ ⌊4 * (N : ℝ) / (2 : ℝ) ^ k⌋₊ := by
-        have := Nat.lt_floor_add_one (4 * (N : ℝ) / (2 : ℝ) ^ k)
-        linarith
-      have hN_sq : Real.sqrt N ≤ N := by
-        have hsq1 : 1 ≤ Real.sqrt N := by
-          rw [← Real.sqrt_one]; exact Real.sqrt_le_sqrt (by linarith)
-        calc Real.sqrt N = Real.sqrt N * 1 := (mul_one _).symm
-          _ ≤ Real.sqrt N * Real.sqrt N := mul_le_mul_of_nonneg_left hsq1 (Real.sqrt_nonneg _)
-          _ = N := Real.mul_self_sqrt hN_pos.le
-      simp only [Nk, dyadicShellHorizon]
-      rw [Nat.cast_min, le_min_iff]
-      exact ⟨hN_sq, hfl⟩
-    have hNk_lb : (N : ℝ) / (2 : ℝ) ^ k ≤ Nk := by
-      have hdiv3 : 3 ≤ (N : ℝ) / (2 : ℝ) ^ k := by
-        rw [le_div_iff₀ (by positivity)]
-        have : 3 * (2 : ℝ) ^ k ≤ (Lc : ℝ) * Lc :=
-          mul_le_mul hLc_R h2k (by positivity) (by linarith)
-        nlinarith [hL2N]
-      have hfl : (N : ℝ) / (2 : ℝ) ^ k ≤ ⌊4 * (N : ℝ) / (2 : ℝ) ^ k⌋₊ := by
-        have h4 : (N : ℝ) / (2 : ℝ) ^ k + 1 ≤ 4 * (N : ℝ) / (2 : ℝ) ^ k := by
-          calc (N : ℝ) / (2 : ℝ) ^ k + 1 ≤ 4 * ((N : ℝ) / (2 : ℝ) ^ k) := by linarith only [hdiv3]
-            _ = 4 * (N : ℝ) / (2 : ℝ) ^ k := (mul_div_assoc _ _ _).symm
-        have := Nat.lt_floor_add_one (4 * (N : ℝ) / (2 : ℝ) ^ k)
-        linarith
-      have hN_div : (N : ℝ) / (2 : ℝ) ^ k ≤ N :=
-        div_le_self hN_pos.le (one_le_pow₀ one_le_two)
-      simp only [Nk, dyadicShellHorizon]
-      rw [Nat.cast_min, le_min_iff]
-      exact ⟨hN_div, hfl⟩
-    have hNk_ub : (Nk : ℝ) ≤ 4 * (N : ℝ) / (2 : ℝ) ^ k :=
-      (Nat.cast_le.mpr (min_le_right N _)).trans (Nat.floor_le (by positivity))
-    let ck := c * (Nk : ℝ) / N
-    have hNk_pos : (0 : ℝ) < Nk := lt_of_lt_of_le (Real.sqrt_pos.mpr hN_pos) hsqrt_le
-    have hck_min : 1 / 2052 ≤ ck := by
-      have he2 : Real.exp 2 < 8 := by
-        have he1 : Real.exp 1 < 11 / 4 := by have := Real.exp_one_lt_d9; linarith
-        have he2' : Real.exp 2 = Real.exp 1 * Real.exp 1 := by rw [← Real.exp_add]; norm_num
-        rw [he2']; nlinarith [Real.exp_pos 1]
-      have hLc_ub : (Lc : ℝ) ≤ 2052 * c := by nlinarith [hLup, hc0]
-      have h1 : c / (2 : ℝ) ^ k ≤ ck := by
-        simp only [ck]
-        rw [div_le_div_iff₀ (by positivity) hN_pos]
-        have := mul_le_mul_of_nonneg_left ((div_le_iff₀ (by positivity)).mp hNk_lb) hc0.le
-        linarith
-      have h2 : 1 / 2052 ≤ c / (2 : ℝ) ^ k := by
-        rw [div_le_div_iff₀ (by norm_num) (by positivity), one_mul]
-        linarith only [h2k, hLc_ub]
-      exact h2.trans h1
-    have hck_4c : ck ≤ 4 * c := by
-      simp only [ck]
-      rw [div_le_iff₀ hN_pos]
-      have : (Nk : ℝ) ≤ 4 * N := hNk_ub.trans
-        (div_le_self (by positivity) (one_le_pow₀ one_le_two))
-      nlinarith
-    have hck_Nk : ck ≤ Nk := by
-      simp only [ck]
-      rw [div_le_iff₀ hN_pos]
-      nlinarith [hcN, hNk_pos]
-    have hck_div : ck / Nk = w := by
-      simp only [ck, w]
-      field_simp [hN_pos.ne', hNk_pos.ne']
-    have hlogNk : Real.log N / 2 ≤ Real.log Nk := by
-      have h1 := Real.log_le_log (Real.sqrt_pos.mpr hN_pos) hsqrt_le
-      rwa [Real.log_sqrt hN_pos.le] at h1
-    have hsum_eq : ∑ n ∈ Icc 1 Nk, (dyadicShellBump N k (Real.log n) * y n) ^ 2 =
-        ∑ n ∈ Icc 1 N, dyadicShellBump N k (Real.log n) ^ 2 * y n ^ 2 := by
-      have hsub := sum_subset (Icc_subset_Icc (le_rfl : 1 ≤ 1) (min_le_left N _))
-        (f := fun n : ℕ => dyadicShellBump N k (Real.log n) ^ 2 * y n ^ 2) fun n hn hnot => by
-          obtain ⟨hn1, hnN⟩ := mem_Icc.mp hn
-          have hgt : Nk < n := by
-            by_contra hle; exact hnot (mem_Icc.mpr ⟨hn1, not_lt.mp hle⟩)
-          rw [dyadicShellBump_log_eq_zero_of_gt_horizon hN1 hnN hgt, sq, zero_mul, zero_mul]
-      rw [← hsub]
-      exact sum_congr rfl fun n _ => mul_pow _ _ 2
-    have hlev0 := levyEnergy_atomicTest_ge_of_ge hck_min hck_Nk
-      (fun n => dyadicShellBump N k (Real.log n) * y n)
-    rw [hck_div, hsum_eq] at hlev0
-    refine le_trans ?_ hlev0
-    have hZ : 0 ≤ ∑ n ∈ Icc 1 N, dyadicShellBump N k (Real.log n) ^ 2 * y n ^ 2 :=
-      sum_nonneg fun _ _ => mul_nonneg (sq_nonneg _) (sq_nonneg _)
-    refine mul_le_mul_of_nonneg_right (mul_le_mul_of_nonneg_right ?_ hG.le) hZ
-    have hpos_gain : ((1 / 2052 : ℝ) ^ 8 * growingMassConstant / ck ^ 7) * (Real.log N / 2) ≤
-        ((1 / 2052 : ℝ) ^ 8 * growingMassConstant / ck ^ 7) * Real.log Nk :=
-      mul_le_mul_of_nonneg_left hlogNk
-        (div_nonneg (mul_nonneg (by norm_num) growingMassConstant_pos.le)
-          (pow_nonneg (lt_of_lt_of_le (by norm_num) hck_min).le 7))
-    have hneg_cost : (factorialSpanGammaOffset + Real.log 2 + 2 * |gammaHardyPhaseRate 0|) *
-        (1 + 2 * Real.exp 1 * ck) ≤ K_low * c := by
-      have h1 : 2 * Real.exp 1 * ck ≤ 8 * Real.exp 1 * c :=
-        (mul_le_mul_of_nonneg_left hck_4c
-          (mul_nonneg zero_le_two (Real.exp_pos 1).le)).trans_eq (by ring)
-      have h2 : 1 + 2 * Real.exp 1 * ck ≤ (1 + 8 * Real.exp 1) * c := by
-        linarith only [hc1, h1]
-      have h3 := mul_le_mul_of_nonneg_left h2
-        (add_nonneg (add_nonneg factorialSpanGammaOffset_nonneg (Real.log_nonneg one_le_two))
-          (mul_nonneg zero_le_two (abs_nonneg (gammaHardyPhaseRate 0))))
-      exact h3.trans_eq (by simp only [K_low]; ring)
-    linarith only [hpos_gain, hneg_cost]
-  -- Coverage of `(M, N]` by the dyadic shells
-  have hcov : ∀ n ∈ Ioc M N,
-      (((N : ℝ) / n) ^ 7 / (8 ^ 7 * c ^ 7)) ≤
-        ∑ k ∈ s, (1 / (c * (dyadicShellHorizon N k : ℝ) / N) ^ 7) *
-          dyadicShellBump N k (Real.log n) ^ 2 := by
-    intro n hn
-    obtain ⟨hMn, hnN⟩ := mem_Ioc.mp hn
-    have hn1 : 1 ≤ n := Nat.succ_le_of_lt (Nat.lt_of_le_of_lt (Nat.zero_le M) hMn)
-    have hn0 : (0 : ℝ) < n := by exact_mod_cast hn1
-    have hl2 : 0 < Real.log 2 := Real.log_pos one_lt_two
-    have hrat1 : 1 ≤ (N : ℝ) / n := (one_le_div hn0).mpr (by exact_mod_cast hnN)
-    have hrat_lt : (N : ℝ) / n < Lc := by
-      rw [div_lt_iff₀ hn0]
-      have h1 : N < Lc * (M + 1) := Nat.lt_mul_div_succ N hL_pos
-      have h2 : Lc * (M + 1) ≤ Lc * n := Nat.mul_le_mul_left Lc hMn
-      have h3 : (N : ℝ) < (Lc : ℝ) * n := by exact_mod_cast h1.trans_le h2
-      linarith only [h3, (by ring : (Lc : ℝ) * n = (Lc : ℝ) * (n : ℝ))]
-    let t := Real.log ((N : ℝ) / n) / Real.log 2
-    have ht0 : 0 ≤ t := div_nonneg (Real.log_nonneg hrat1) hl2.le
-    let k₀ := ⌊t⌋₊
-    have hk₀_mem : k₀ ∈ s := by
-      refine mem_range.mpr (Nat.lt_succ_of_le (Nat.floor_mono ?_))
-      exact div_le_div_of_nonneg_right
-        (Real.log_le_log (lt_of_lt_of_le zero_lt_one hrat1) hrat_lt.le) hl2.le
-    have hk₀_lo : (k₀ : ℝ) * Real.log 2 ≤ Real.log N - Real.log n := by
-      rw [← Real.log_div hN_pos.ne' hn0.ne']
-      exact (le_div_iff₀ hl2).mp (Nat.floor_le ht0)
-    have hk₀_hi : Real.log N - Real.log n < ((k₀ : ℝ) + 1) * Real.log 2 := by
-      rw [← Real.log_div hN_pos.ne' hn0.ne']
-      exact (div_lt_iff₀ hl2).mp (Nat.lt_floor_add_one t)
-    have hbump1 : dyadicShellBump N k₀ (Real.log n) = 1 := by
-      apply dyadicShellBump_eq_one
-      have hid : Real.log n - shellCenter N k₀ =
-          ((k₀ : ℝ) + 1) * Real.log 2 - (Real.log N - Real.log n) := by
-        unfold shellCenter; ring
-      rw [hid, abs_of_nonneg (by linarith)]
-      have hl2_le1 : Real.log 2 ≤ 1 := by have := Real.log_two_lt_d9; linarith
-      linarith
-    have hck₀_ub : c * (dyadicShellHorizon N k₀ : ℝ) / N ≤ 8 * c * n / N := by
-      have h2k₀_gt : (N : ℝ) / n < 2 * (2 : ℝ) ^ k₀ := by
-        have hexp := Real.exp_lt_exp.mpr hk₀_hi
-        rw [Real.exp_sub, Real.exp_log hN_pos, Real.exp_log hn0, add_mul, one_mul,
-          Real.exp_add, Real.exp_log zero_lt_two,
-          show (k₀ : ℝ) * Real.log 2 = Real.log ((2 : ℝ) ^ k₀) by rw [Real.log_pow],
-          Real.exp_log (by positivity)] at hexp
-        linarith
-      have hNk₀ : (dyadicShellHorizon N k₀ : ℝ) ≤ 8 * n := by
-        have h1 : (dyadicShellHorizon N k₀ : ℝ) ≤ 4 * (N : ℝ) / (2 : ℝ) ^ k₀ :=
-          (Nat.cast_le.mpr (min_le_right N _)).trans (Nat.floor_le (by positivity))
-        have h2 : 4 * (N : ℝ) / (2 : ℝ) ^ k₀ ≤ 8 * n := by
-          rw [div_le_iff₀ (by positivity)]
-          have := (div_lt_iff₀ hn0).mp h2k₀_gt
-          linarith
-        exact h1.trans h2
-      calc c * (dyadicShellHorizon N k₀ : ℝ) / N
-          ≤ c * (8 * n) / N := div_le_div_of_nonneg_right
-            (mul_le_mul_of_nonneg_left hNk₀ hc0.le) hN_pos.le
-        _ = 8 * c * n / N := by ring
-    have hNk₀_pos : (0 : ℝ) < dyadicShellHorizon N k₀ := by
-      have hdiv1 : (1 : ℝ) ≤ 4 * (N : ℝ) / (2 : ℝ) ^ k₀ := by
-        rw [one_le_div (by positivity)]
-        have hLc_4N : (Lc : ℝ) ≤ 4 * N := by nlinarith only [hLc_R, hL2N]
-        exact (h2k_le k₀ hk₀_mem).trans hLc_4N
-      have hpos : 1 ≤ dyadicShellHorizon N k₀ := le_min hN1 ((Nat.one_le_floor_iff _).mpr hdiv1)
-      exact_mod_cast hpos
-    have hsingle : (1 / (c * (dyadicShellHorizon N k₀ : ℝ) / N) ^ 7) *
-          dyadicShellBump N k₀ (Real.log n) ^ 2 ≤
-        ∑ k ∈ s, (1 / (c * (dyadicShellHorizon N k : ℝ) / N) ^ 7) *
-          dyadicShellBump N k (Real.log n) ^ 2 :=
-      single_le_sum (f := fun k => (1 / (c * (dyadicShellHorizon N k : ℝ) / N) ^ 7) *
-          dyadicShellBump N k (Real.log n) ^ 2)
-        (fun k _ => mul_nonneg (one_div_nonneg.mpr (pow_nonneg (by positivity) 7)) (sq_nonneg _))
-        hk₀_mem
-    refine le_trans ?_ hsingle
-    rw [hbump1, one_pow, mul_one]
-    have hpow := pow_le_pow_left₀ (by positivity) hck₀_ub 7
-    have hid : ((N : ℝ) / n) ^ 7 / (8 ^ 7 * c ^ 7) = 1 / (8 * c * n / N) ^ 7 := by
-      field_simp [hN_pos.ne', hn0.ne', hc0.ne']
-    rw [hid]
-    exact one_div_le_one_div_of_le (by positivity) hpow
   -- Sum the shell Lévy energies
   have hsum_F : G * (((1 / 2052 : ℝ) ^ 8 * growingMassConstant / (2 * 8 ^ 7 * c ^ 7)) *
         Real.log N * topCollarSeventhMass M N x -
         9 * K_low * c * ∑ n ∈ Ioc M N, x n ^ 2) ≤
       ∑ k ∈ s, levyEnergy (atomicTest (dyadicShellHorizon N k)
         (fun n => dyadicShellBump N k (Real.log n) * y n) g) := by
-    refine le_trans ?_ (sum_le_sum hshell_lev)
+    have hshell : ∀ k ∈ s,
+        (((1 / 2052 : ℝ) ^ 8 * growingMassConstant / (c * (dyadicShellHorizon N k : ℝ) / N) ^ 7) *
+            (Real.log N / 2) - K_low * c) * G *
+          (∑ n ∈ Icc 1 N, dyadicShellBump N k (Real.log n) ^ 2 * y n ^ 2) ≤
+        levyEnergy (atomicTest (dyadicShellHorizon N k)
+          (fun n => dyadicShellBump N k (Real.log n) * y n) g) := by
+      intro k hk
+      rw [hKlow_def]
+      exact dyadicShell_levyEnergy_ge hc1 hL2N y hk
+    refine le_trans ?_ (sum_le_sum hshell)
     have hswap : ∑ k ∈ s,
           (((1 / 2052 : ℝ) ^ 8 * growingMassConstant / (c * (dyadicShellHorizon N k : ℝ) / N) ^ 7) *
             (Real.log N / 2) - K_low * c) * G *
@@ -1240,11 +1316,12 @@ theorem exists_top_archForm_dyadic_seventh_reserve :
     · have h1 : ∑ n ∈ Ioc M N, (((N : ℝ) / n) ^ 7 / (8 ^ 7 * c ^ 7)) * x n ^ 2 ≤
           ∑ n ∈ Ioc M N, (∑ k ∈ s, (1 / (c * (dyadicShellHorizon N k : ℝ) / N) ^ 7) *
             dyadicShellBump N k (Real.log n) ^ 2) * x n ^ 2 :=
-        sum_le_sum fun n hn => mul_le_mul_of_nonneg_right (hcov n hn) (sq_nonneg _)
-      have hlog0 : 0 ≤ (1 / 2052 : ℝ) ^ 8 * growingMassConstant * (Real.log N / 2) := by
-        have := growingMassConstant_pos
-        have := Real.log_natCast_nonneg N
-        positivity
+        sum_le_sum fun n hn =>
+          mul_le_mul_of_nonneg_right (dyadicShell_seventh_coverage_ge hc1 hL2N hn) (sq_nonneg _)
+      have hlog0 : 0 ≤ (1 / 2052 : ℝ) ^ 8 * growingMassConstant * (Real.log N / 2) :=
+        mul_nonneg (mul_nonneg (by norm_num : (0 : ℝ) ≤ (1 / 2052 : ℝ) ^ 8)
+          growingMassConstant_pos.le)
+          (div_nonneg (Real.log_natCast_nonneg N) zero_le_two)
       calc ((1 / 2052 : ℝ) ^ 8 * growingMassConstant / (2 * 8 ^ 7 * c ^ 7)) *
             Real.log N * topCollarSeventhMass M N x
           = (1 / 2052 : ℝ) ^ 8 * growingMassConstant * (Real.log N / 2) *
@@ -1252,7 +1329,8 @@ theorem exists_top_archForm_dyadic_seventh_reserve :
             unfold topCollarSeventhMass
             rw [mul_sum, mul_sum]
             refine sum_congr rfl fun n _ => ?_
-            field_simp [hc0.ne']
+            exact shell_term_div_eq ((1 / 2052 : ℝ) ^ 8 * growingMassConstant) (8 ^ 7) (c ^ 7)
+              (Real.log N) (((N : ℝ) / n) ^ 7) (x n ^ 2)
         _ ≤ _ := mul_le_mul_of_nonneg_left h1 hlog0
     · have hsum9 : ∑ n ∈ Ioc M N, (∑ k ∈ s, dyadicShellBump N k (Real.log n) ^ 2) * x n ^ 2 ≤
           9 * ∑ n ∈ Ioc M N, x n ^ 2 := by
@@ -1292,7 +1370,7 @@ theorem exists_top_archForm_dyadic_seventh_reserve :
     linarith only [hsub]
   have hims := sum_levyEnergy_dyadicShellBump_mul_le hlipB s N hfy hfyc
   have hcomm_s := hcomm hc1 hcN s y
-  clear hcomm hshell_lev hcov
+  clear hcomm hL2N hLc_R hNR hMN
   rw [hy_eq] at hcomm_s
   have hfy2 : ∫ u, atomicTest N y g u ^ 2 ≤
       G * ((1 + 2 * Real.exp 1) * c) * ∑ n ∈ Ioc M N, x n ^ 2 := by
@@ -1302,6 +1380,7 @@ theorem exists_top_archForm_dyadic_seventh_reserve :
       (sum_nonneg fun _ _ => sq_nonneg _))
     nlinarith only [hc1, Real.exp_pos 1]
   have harch_eq := archForm_eq_levyEnergy hfy hfyc
+  clear hy_eq hg hgc hsupp hfy hfyc
   have hγ_fy : -2 * |gammaHardyPhaseRate 0| * ∫ u, atomicTest N y g u ^ 2 ≤
       2 * gammaHardyPhaseRate 0 * ∫ u, atomicTest N y g u ^ 2 := by
     have hf0 : 0 ≤ ∫ u, atomicTest N y g u ^ 2 := integral_nonneg fun _ => sq_nonneg _
@@ -1309,7 +1388,6 @@ theorem exists_top_archForm_dyadic_seventh_reserve :
       have := neg_abs_le (gammaHardyPhaseRate 0); linarith only [this]
     exact mul_le_mul_of_nonneg_right habs_rate hf0
   have hS_le_S7 := sum_sq_Ioc_le_topCollarSeventhMass M N x
-  have hS7_0 := topCollarSeventhMass_nonneg M N x
   -- Combine all pieces into `archForm (atomicTest N y g)`
   have hlev_fy : G * (((1 / 2052 : ℝ) ^ 8 * growingMassConstant / (72 * 8 ^ 7 * c ^ 7)) *
         Real.log N * topCollarSeventhMass M N x -
@@ -1332,29 +1410,18 @@ theorem exists_top_archForm_dyadic_seventh_reserve :
         (9 * K_low / 2 + C_comm + 648 * L_B ^ 2 * (1 + 2 * Real.exp 1)) * c * G *
           topCollarSeventhMass M N x :=
       mul_le_mul_of_nonneg_left hS_le_S7
-        (mul_nonneg (mul_nonneg (add_nonneg (add_nonneg (by linarith only [hKlow0]) hCcomm0)
+        (mul_nonneg (mul_nonneg (add_nonneg (add_nonneg
+          (div_nonneg (mul_nonneg (by norm_num : (0 : ℝ) ≤ 9) hKlow0) zero_le_two) hCcomm0)
           (mul_nonneg (mul_nonneg (by norm_num : (0 : ℝ) ≤ 648) (sq_nonneg L_B))
             (add_nonneg zero_le_one (mul_nonneg zero_le_two (Real.exp_pos 1).le)))) hc0.le) hG.le)
-    have hid_combine := (fun (G' S S7 L e1 : ℝ) =>
-        (by ring :
-          (1 / 2 : ℝ) * (G' * (((1 / 2052 : ℝ) ^ 8 * growingMassConstant / (2 * 8 ^ 7 * c ^ 7)) *
-              L * S7 - 9 * K_low * c * S)) -
-            C_comm * c * G' * S -
-            648 * L_B ^ 2 * (G' * ((1 + 2 * e1) * c) * S) =
-          18 * (G' * (((1 / 2052 : ℝ) ^ 8 * growingMassConstant / (72 * 8 ^ 7 * c ^ 7)) *
-              L * S7)) -
-            (9 * K_low / 2 + C_comm + 648 * L_B ^ 2 * (1 + 2 * e1)) * c * G' * S))
-      G (∑ n ∈ Ioc M N, x n ^ 2) (topCollarSeventhMass M N x) (Real.log N) (Real.exp 1)
-    have hid_rhs := (fun (G' S7 L e1 : ℝ) =>
-        (by ring :
-          18 * (G' * (((1 / 2052 : ℝ) ^ 8 * growingMassConstant / (72 * 8 ^ 7 * c ^ 7)) *
-              L * S7 -
-              ((9 * K_low / 2 + C_comm + 648 * L_B ^ 2 * (1 + 2 * e1)) / 18) *
-                c * S7)) =
-          18 * (G' * (((1 / 2052 : ℝ) ^ 8 * growingMassConstant / (72 * 8 ^ 7 * c ^ 7)) *
-              L * S7)) -
-            (9 * K_low / 2 + C_comm + 648 * L_B ^ 2 * (1 + 2 * e1)) * c * G' * S7))
-      G (topCollarSeventhMass M N x) (Real.log N) (Real.exp 1)
+    have hid_combine := top_arch_levy_combine (A0 := (1 / 2052 : ℝ) ^ 8 * growingMassConstant)
+      (B7 := 8 ^ 7) (c := c) (G := G) (S := ∑ n ∈ Ioc M N, x n ^ 2)
+      (S7 := topCollarSeventhMass M N x) (L := Real.log N) (K_low := K_low)
+      (C_comm := C_comm) (L_B := L_B) (e1 := Real.exp 1)
+    have hid_rhs := top_arch_levy_rhs
+      (((1 / 2052 : ℝ) ^ 8 * growingMassConstant / (72 * 8 ^ 7 * c ^ 7)) * Real.log N)
+      (9 * K_low / 2 + C_comm + 648 * L_B ^ 2 * (1 + 2 * Real.exp 1))
+      c G (topCollarSeventhMass M N x)
     linarith only [h18, hhalf, hcomm_s, h648, hcost_S, hid_combine, hid_rhs]
   have hγ_S7 : 2 * |gammaHardyPhaseRate 0| * ∫ u, atomicTest N y g u ^ 2 ≤
       G * (2 * |gammaHardyPhaseRate 0| * (1 + 2 * Real.exp 1) * c * topCollarSeventhMass M N x) := by
@@ -1370,10 +1437,7 @@ theorem exists_top_archForm_dyadic_seventh_reserve :
         (by ring : a * (G' * ((1 + 2 * e1) * c)) * S7 = G' * (a * (1 + 2 * e1) * c * S7)))
       (2 * |gammaHardyPhaseRate 0|) G (Real.exp 1) (topCollarSeventhMass M N x)
     linarith only [h1, h2, hid1, hid2]
-  have hid_const : dyadicTopMassConstant / c ^ 7 =
-      (1 / 2052 : ℝ) ^ 8 * growingMassConstant / (72 * 8 ^ 7 * c ^ 7) := by
-    unfold dyadicTopMassConstant; field_simp [hc0.ne']
-  rw [hid_const, harch_eq]
+  rw [dyadicTopMassConstant_div_eq c, harch_eq]
   have hid_arch := (fun (G' A S7 B1 B2 : ℝ) =>
       (by ring : G' * (A * S7 - (B1 + B2) * c * S7) =
         G' * (A * S7 - B1 * c * S7) - G' * (B2 * c * S7)))
@@ -2043,7 +2107,8 @@ theorem exists_completeWeilEnergy_prefix_top_window_reserve_seventh :
     hlamHM, hSG, hPG, hfinalF, hfinalW, hfy2, hE2exp]
 
 private theorem two_mul_one_div_two_mul (M : ℝ) : 2 * (1 / (2 * M)) = 1 / M := by
-  rw [one_div_mul_eq_div, mul_div_cancel_left₀ _ two_ne_zero]
+  rw [mul_comm 2 M, ← div_div]
+  ring
 
 private theorem one_eighth_div_mul_eq (g c7 l : ℝ) :
     (1 / 8 : ℝ) * (g / c7) * l = (g * l) / (8 * c7) := by
@@ -2533,7 +2598,7 @@ theorem exists_critical_multiple_far_reserve :
         (mul_nonneg (by norm_num : (0 : ℝ) ≤ 16) (pow_nonneg hc0.le 7))
       nlinarith only [this]
     have h9 := pow_le_rpow_of_le_rpow hc1 hcα' hℓpos.le 9
-    norm_num at h9
+    push_cast at h9
     have hQd_θ : 256 * (1 + 2 * Real.exp 1) * (1 + 2 * Real.exp 2) * K₂ /
         (dyadicTopMassConstant * θ) * ℓ ^ (9 * α' + 1) * (1 + Real.log ℓ) ^ 1 ≤ ℓ ^ (4 : ℝ) := by
       refine le_trans (le_of_eq ?_) hQd

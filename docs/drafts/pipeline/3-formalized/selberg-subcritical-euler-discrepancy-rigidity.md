@@ -1,7 +1,7 @@
 # Subcritical Euler discrepancy determines a Selberg function
 
-- **Stage:** 2-fully-proven
-- **Type:** THEOREM (paper)
+- **Stage:** 3-formalized
+- **Type:** THEOREM (Lean)
 - **Wall:** Γ15
 - **Statement:** Two full Selberg-class functions with the same completed gamma factor and Euler-log discrepancy absolutely convergent at some real `σ < 1/2` have identical Dirichlet coefficients. In particular, finite-prime changes cannot produce a distinct twin with that gamma factor.
 
@@ -17,7 +17,12 @@ For a finite set `P` of exceptional primes, let `θ = max(θ_F,θ_G) < 1/2`. The
 
 ## Formalization
 
-`SelbergClass/SubcriticalEulerRigidity.lean`: quotient continuation, reflection, Liouville and coefficient equality. `SelbergClass/FinitePrimeRigidity.lean`: convergence from the strict Euler bound and finite-prime rigidity. Final checks pending.
+`formal/GaloisForLFunctions/SelbergClass/`:
+
+- `SubcriticalEulerRigidity.lean`: `eulerQuotient_mul_value_of_summable`, `eulerQuotient_reflection`, `coeff_eq_of_subcritical_euler_discrepancy`.
+- `FinitePrimeRigidity.lean`: `lSeriesSummable_of_finite_prime_support`, `coeff_eq_of_finite_prime_discrepancy`.
+
+Both canonical `lake --old env lean` checks pass. Eight transitive axiom audits contain only `propext`, `Classical.choice`, `Quot.sound`. Both modules are wired into `SelbergClass.lean`.
 
 ## Scope
 

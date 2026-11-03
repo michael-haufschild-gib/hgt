@@ -68,6 +68,8 @@ import GaloisForLFunctions.ArithmeticHodgeTheoryOfDegenerations.TheBulkIsBlindBe
 import GaloisForLFunctions.ArithmeticHodgeTheoryOfDegenerations.TheUntwistedCountIsTheFinitePartAtZeroFrequency
 import GaloisForLFunctions.ArithmeticHodgeTheoryOfDegenerations.TheConductorDecompositionHoldsOnAGrowingRange
 import GaloisForLFunctions.ArithmeticHodgeTheoryOfDegenerations.TheCountFormEndsAtTheResolution
+import GaloisForLFunctions.ArithmeticHodgeTheoryOfDegenerations.TheBulkSecondOrderOfThePoleIsAStieltjesConstant
+import GaloisForLFunctions.ArithmeticHodgeTheoryOfDegenerations.TheBulkEntriesAreReadByTheStieltjesConstants
 
 /-!
 # Arithmetic Hodge Theory of Degenerations
@@ -82,6 +84,10 @@ resolution axis (overlap `c`, horizon `N`). See `ArithmeticHodgeTheoryOfDegenera
   height `N/c`, the zeros are blind to pole-free packets and give the archimedean genus
   `κ y₁²(2 + γ − log 4π)` at the pole. Horizon windows read Weil's summands;
   twisted windows read no zero.
+* **Bulk second order.** Since `Λ ∗ 1 = log`, the prime matrix pairs conductor packets through
+  harmonic and logarithmic harmonic sums; every bulk entry has second order
+  `⟨P R_e, R_{e'}⟩ − (log N − ρ_e)⟨R_e, R_{e'}⟩ → D(e, e')`, a polynomial in `γ`, `γ₁` and the
+  logarithms of divisors (`D(1,1) = 2γ₁ + γ²`, `D(p,p) = D(1,1) + p log²p/(p − 1)²`).
 * **Second order at the critical curve.** On horizon windows `κ Q(H) + (βJ/K) ∫ e^{−(β+1)y} H²`,
   the aliasing being the dilation derivative of the bulk; on twisted windows a spectral Dirichlet
   series: Jordan totients for Ramanujan expansions (graded by conductor), the unit count corrected

@@ -1,8 +1,8 @@
 # Gamma remainder and joint first-fold floor
 
 - **ID:** F1-GR
-- **Stage:** 2-fully-proven; Lean audit pending
-- **Type:** THEOREM (paper)
+- **Stage:** 3-formalized
+- **Type:** THEOREM; individually Lean-audited
 - **Source:** [Joint first-fold payment](../1-in-progress/f1-joint-cubic-prime-payment.md)
 - **Statement:** For every real odd C² unit-window test, the complete form satisfies
   `Q(F)≥P(F)+E/64`.
@@ -53,8 +53,10 @@ its individual source and transitive-axiom audit passes with standard axioms onl
 `weilQuad_ge_retainedOddGamma_add_reserve`, and
 `retainedOddGammaLowerForm_quintic_add_reserve_pos`. Its individual source audit passes,
 with `[propext, Classical.choice, Quot.sound]` only; it is umbrella-imported.
-`TheGammaRemainderCannotBeDiscarded` contains the simultaneous C² sign witness,
-whose final audit remains pending.
+`TheGammaRemainderCannotBeDiscarded` proves
+`exists_odd_unit_retainedGamma_neg_weil_pos`, including the simultaneous C² signs.
+All three individual `lake --old env lean` source audits pass with
+`[propext, Classical.choice, Quot.sound]` only. All modules are umbrella-imported.
 
 ## Remaining sign
 

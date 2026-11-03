@@ -17,8 +17,13 @@ A zero mode of a nonnegative window `W_A` is a window test with `Q(H) = 0`; it l
   `Q(G₁) = Q(G₂) = −W(G₁, G₂)`, and the two pieces have the same Weil orbit correlation across the
   gap: `W(G₁, G₁(· − δ)) = W(G₂, G₂(· + δ))` for `0 ≤ δ ≤ b − a`. A zero mode cannot be cut into
   independent pieces: the two sides of a gap are balanced translates of each other in Weil energy.
-  This is the exact constraint that a unique-continuation principle for the window Euler–Lagrange
-  equation would have to turn into a contradiction.
+  This is the exact constraint that a unique-continuation principle across interior gaps would have
+  to turn into a contradiction.
+* **Unique continuation from an end collar** (`eq_zero_of_zeroMode_vanish_collar`,
+  `zeroMode_eq_of_eq_on_collar`): at a first critical length a zero mode vanishing on an end collar
+  of any width vanishes, and two zero modes agreeing on one end collar coincide. The radical restricts
+  injectively to each end collar: the edge of the positive cone is determined by the data on which
+  the newest fold acts.
 -/
 
 noncomputable section
@@ -160,6 +165,44 @@ theorem gap_law (hpos : ∀ G : ℝ → ℝ, IsWindowTest A G → 0 ≤ weilQuad
     have := DimensionZeroGeometryOfSpecZ.weilPair_comp_sub G₁ (fun u => G₂ (u + δ)) δ
     simp only [sub_add_cancel] at this
     exact this
+  linarith
+
+/-! ### Unique continuation from an end collar -/
+
+/-- **A zero mode vanishing on an end collar vanishes.** If every shorter window (by `δ`) is positive
+definite, a test of Weil energy zero vanishing on the left collar `(−A, −A + δ)` or on the right
+collar `(−δ, 0)` is zero. -/
+theorem eq_zero_of_zeroMode_vanish_collar {δ : ℝ} (hδ : 0 < δ)
+    (hpd : ∀ G : ℝ → ℝ, IsWindowTest (A - δ) G → (∃ u, G u ≠ 0) → 0 < weilQuad G)
+    (hH : IsWindowTest A H) (h0 : weilQuad H = 0)
+    (hcol : (∀ u ∈ Set.Ioo (-A) (-A + δ), H u = 0) ∨ ∀ u ∈ Set.Ioo (-δ) 0, H u = 0) : H = 0 := by
+  funext u
+  by_contra hu
+  rcases hcol with hl | hr
+  · obtain ⟨v, hv, hv0⟩ := zeroMode_ne_zero_on_left_collar hδ hpd hH h0 ⟨u, hu⟩
+    exact hv0 (hl v hv)
+  · obtain ⟨v, hv, hv0⟩ := zeroMode_ne_zero_on_right_collar hδ hpd hH h0 ⟨u, hu⟩
+    exact hv0 (hr v hv)
+
+/-- **Unique continuation from an end collar.** At a first critical length two zero modes of a
+nonnegative window that agree on one end collar, however thin, agree everywhere: the radical of the
+window restricts injectively to either end collar. -/
+theorem zeroMode_eq_of_eq_on_collar (hpos : ∀ G : ℝ → ℝ, IsWindowTest A G → 0 ≤ weilQuad G)
+    {δ : ℝ} (hδ : 0 < δ)
+    (hpd : ∀ G : ℝ → ℝ, IsWindowTest (A - δ) G → (∃ u, G u ≠ 0) → 0 < weilQuad G)
+    {G₁ G₂ : ℝ → ℝ} (h1 : IsWindowTest A G₁) (h2 : IsWindowTest A G₂) (h10 : weilQuad G₁ = 0)
+    (h20 : weilQuad G₂ = 0)
+    (hcol : (∀ u ∈ Set.Ioo (-A) (-A + δ), G₁ u = G₂ u) ∨ ∀ u ∈ Set.Ioo (-δ) 0, G₁ u = G₂ u) :
+    G₁ = G₂ := by
+  have hD : IsWindowTest A (fun u => 1 * G₁ u + -1 * G₂ u) := isWindowTest_lin h1 h2 1 (-1)
+  have hD0 := zeroMode_lin hpos h1 h2 h10 h20 1 (-1)
+  have hz := eq_zero_of_zeroMode_vanish_collar hδ hpd hD hD0 (by
+    rcases hcol with hl | hr
+    · exact Or.inl fun u hu => by rw [hl u hu]; ring
+    · exact Or.inr fun u hu => by rw [hr u hu]; ring)
+  funext u
+  have := congrFun hz u
+  simp only [Pi.zero_apply] at this
   linarith
 
 end GaloisForLFunctions.GrowingWindowsOfSpecZ

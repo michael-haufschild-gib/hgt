@@ -45,7 +45,8 @@ theorem integral_log_div_self {a b : ℝ} (ha : 0 < a) (hab : a ≤ b) :
     rw [Set.uIcc_of_le hab] at ht
     have ht0 : t ≠ 0 := by linarith [ht.1]
     refine (((Real.hasDerivAt_log ht0).pow 2).div_const 2).congr_deriv ?_
-    norm_num <;> field_simp <;> ring
+    norm_num
+    field_simp
   rw [intervalIntegral.integral_eq_sub_of_hasDerivAt hd]
   · ring
   · refine ContinuousOn.intervalIntegrable fun t ht => ?_
@@ -103,14 +104,13 @@ theorem exists_tendsto_logHarmonic_sub :
     push_cast; ring
   have hanti : Antitone a := antitone_nat_of_succ_le fun N => by
     simp only [ha]
-    rw [show N + 1 + 3 = N + 3 + 1 by ring, logHarmonic_succ, hcast']
+    rw [show N + 1 + 3 = N + 3 + 1 by ring, logHarmonic_succ (N + 3), hcast']
     have h := (log_div_le_half_sq_sub (hk3 N)).1
     linarith
   have hmono : Monotone b := monotone_nat_of_le_succ fun N => by
     simp only [hb]
-    rw [show N + 1 + 3 = N + 3 + 1 by ring, logHarmonic_succ, hcast']
+    rw [show N + 1 + 3 = N + 3 + 1 by ring, logHarmonic_succ (N + 3), hcast']
     have h := (log_div_le_half_sq_sub (k := ((N + 3 : ℕ) : ℝ) + 1) (by linarith [hk3 N])).2
-    rw [show ((N + 3 : ℕ) : ℝ) + 1 + 1 = ((N + 3 : ℕ) : ℝ) + 1 + 1 by ring] at h
     linarith
   have hab : ∀ N, b N ≤ a N := fun N => by
     simp only [ha, hb]
@@ -142,7 +142,7 @@ theorem sum_divisors_ne_vonMangoldt {j : ℕ} (hj : 0 < j) :
   refine Finset.sum_congr rfl fun n hn => ?_
   split_ifs with h
   · rfl
-  · push_neg at h; rw [h, Nat.div_self hj, ArithmeticFunction.vonMangoldt_apply_one]
+  · push Not at h; rw [h, Nat.div_self hj, ArithmeticFunction.vonMangoldt_apply_one]
 
 /-- The upper half `U(n, j) = [n ∣ j, n ≠ j] Λ(j/n)/√(j/n)` of the prime kernel. -/
 def primeKernelUp (n j : ℕ) : ℝ :=
@@ -188,7 +188,7 @@ theorem sum_primeKernelUp_pole (N : ℕ) :
       have hs2 : 0 < Real.sqrt j := Real.sqrt_pos.mpr hj0
       field_simp
       rw [Real.sq_sqrt hj0.le]
-    · push_neg at hne
+    · push Not at hne
       rw [if_neg (fun h => h.2 hne), if_neg (not_not.mpr hne), zero_mul]
   rw [hsub, ← Finset.sum_div, sum_divisors_ne_vonMangoldt hj1]
 
@@ -303,14 +303,13 @@ theorem tendsto_log_mul_poleResidual :
   refine tendsto_poleResidualPairing.congr' ?_
   filter_upwards [eventually_ge_atTop 2] with N hN
   have hlog : 0 < Real.log N := Real.log_pos (by exact_mod_cast (by omega : 1 < N))
-  have hs : Real.sqrt (Real.log N) ^ 2 = Real.log N := Real.sq_sqrt hlog.le
-  have hs0 : Real.sqrt (Real.log N) ≠ 0 := (Real.sqrt_pos.mpr hlog).ne'
+  obtain ⟨r, hr0, hr⟩ : ∃ r, 0 < r ∧ Real.sqrt (Real.log N) = r :=
+    ⟨_, Real.sqrt_pos.mpr hlog, rfl⟩
+  have hlr : Real.log N = r ^ 2 := by rw [← hr, Real.sq_sqrt hlog.le]
   unfold normalizedRamanujanHorizonVector
   rw [map_smul, inner_smul_left, inner_smul_right, norm_smul, mul_pow, Real.norm_eq_abs,
-    abs_inv, abs_of_pos (Real.sqrt_pos.mpr hlog), inv_pow, hs]
+    abs_inv, hr, abs_of_pos hr0, hlr]
   simp only [conj_trivial]
   field_simp
-  rw [← hs]
-  ring
 
 end GaloisForLFunctions.ArithmeticHodgeTheoryOfDegenerations

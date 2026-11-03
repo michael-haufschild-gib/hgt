@@ -1,4 +1,5 @@
 import GaloisForLFunctions.SelbergClass.SubcriticalEulerRigidity
+import GaloisForLFunctions.SelbergClass.GammaIndependentEulerRigidity
 import Mathlib.Topology.Algebra.InfiniteSum.NatInt
 
 /-!
@@ -6,7 +7,8 @@ import Mathlib.Topology.Algebra.InfiniteSum.NatInt
 
 The strict Euler bound makes any discrepancy supported on finitely many
 prime-power sequences converge to the left of the critical line. With the
-same gamma factor, reflection then forces equality of all coefficients.
+same bare Gamma product, reflection forces equality of all coefficients,
+the positive exponential parameter, and the root number.
 -/
 
 noncomputable section
@@ -18,7 +20,7 @@ private def primePowerTerm (b : ℕ → ℂ) (σ : ℝ) (p : ℕ) : ℕ → ℂ 
   Function.extend (fun k : ℕ => p ^ k) (fun k => LSeries.term b σ (p ^ k)) 0
 
 private theorem primePowerTerm_summable {b : ℕ → ℂ} {C θ σ : ℝ}
-    (hC : 0 ≤ C) (hbound : ∀ n : ℕ, n ≠ 0 → ‖b n‖ ≤ C * (n : ℝ) ^ θ)
+    (hbound : ∀ n : ℕ, n ≠ 0 → ‖b n‖ ≤ C * (n : ℝ) ^ θ)
     (hσ : θ < σ) {p : ℕ} (hp : p.Prime) : Summable (primePowerTerm b σ p) := by
   have hp0 : (0 : ℝ) < p := by exact_mod_cast hp.pos
   have hr0 : 0 ≤ (p : ℝ) ^ (θ - σ) := Real.rpow_nonneg hp0.le _
@@ -48,13 +50,23 @@ private theorem primePowerTerm_summable {b : ℕ → ℂ} {C θ σ : ℝ}
 /-- A finite union of prime-power sequences has absolute-convergence exponent
 at most the exponent of its coefficients, with no additional density cost. -/
 theorem lSeriesSummable_of_finite_prime_support {b : ℕ → ℂ} (P : Finset ℕ)
-    (hP : ∀ p ∈ P, p.Prime) {C θ σ : ℝ} (hC : 0 ≤ C)
+    (hP : ∀ p ∈ P, p.Prime) {C θ σ : ℝ}
     (hbound : ∀ n : ℕ, n ≠ 0 → ‖b n‖ ≤ C * (n : ℝ) ^ θ)
     (hsupport : ∀ n : ℕ, b n ≠ 0 → ∃ p ∈ P, ∃ k : ℕ, n = p ^ k)
     (hσ : θ < σ) : LSeriesSummable b σ := by
   classical
-  have hsum : Summable (fun n => ∑ p ∈ P, ‖primePowerTerm b σ p n‖) :=
-    Finset.summable_sum fun p hp => (primePowerTerm_summable hC hbound hσ (hP p hp)).norm
+  have hsum : Summable (fun n => ∑ p ∈ P, ‖primePowerTerm b σ p n‖) := by
+    clear hsupport
+    revert hP
+    induction P using Finset.induction_on with
+    | empty =>
+        intro _
+        simpa only [Finset.sum_empty] using (summable_zero : Summable (fun _ : ℕ => (0 : ℝ)))
+    | @insert p P hp ih =>
+        intro hP
+        simp only [Finset.sum_insert hp]
+        exact (primePowerTerm_summable hbound hσ (hP p (Finset.mem_insert_self p P))).norm.add
+          (ih fun q hq => hP q (Finset.mem_insert_of_mem hq))
   apply Summable.of_norm_bounded hsum
   intro n
   by_cases hzero : LSeries.term b σ n = 0
@@ -69,22 +81,22 @@ theorem lSeriesSummable_of_finite_prime_support {b : ℕ → ℂ} (P : Finset �
     rw [← heq]
     exact Finset.single_le_sum (fun q _ => norm_nonneg (primePowerTerm b σ q (p ^ k))) hp
 
-/-- Removing finitely many Euler factors cannot distinguish two normalized
-full Selberg functions with the same gamma factor. -/
-theorem coeff_eq_of_finite_prime_discrepancy (F G : RHTower.SelbergClass)
-    (hgamma : F.gammaData.gammaFactor = G.gammaData.gammaFactor)
+/-- The strict Euler bounds give subcritical absolute convergence for any
+discrepancy supported on finitely many primes. -/
+theorem exists_subcritical_of_finite_prime_discrepancy (F G : RHTower.SelbergClass)
     (P : Finset ℕ) (hP : ∀ p ∈ P, p.Prime)
     (hagree : ∀ p : ℕ, p.Prime → p ∉ P → ∀ k : ℕ, 0 < k →
       F.eulerLogCoeff (p ^ k) = G.eulerLogCoeff (p ^ k)) :
-    F.coeff = G.coeff := by
+    ∃ σ : ℝ, σ < 1 / 2 ∧
+      LSeriesSummable (fun n => F.eulerLogCoeff n - G.eulerLogCoeff n) σ := by
   obtain ⟨CF, hCF, hF⟩ := F.eulerLogBound
   obtain ⟨CG, hCG, hG⟩ := G.eulerLogBound
   let θ := max F.eulerTheta G.eulerTheta
   have hθ : θ < 1 / 2 := max_lt F.eulerTheta_lt_half G.eulerTheta_lt_half
   obtain ⟨σ, hθσ, hσ⟩ := exists_between hθ
-  apply coeff_eq_of_subcritical_euler_discrepancy F G hgamma hσ
+  refine ⟨σ, hσ, ?_⟩
   apply lSeriesSummable_of_finite_prime_support P hP (C := CF + CG) (θ := θ)
-    (by linarith) _ _ hθσ
+    _ _ hθσ
   · intro n hn
     have hn1 : (1 : ℝ) ≤ n := by exact_mod_cast Nat.one_le_iff_ne_zero.mpr hn
     calc ‖F.eulerLogCoeff n - G.eulerLogCoeff n‖
@@ -109,5 +121,38 @@ theorem coeff_eq_of_finite_prime_discrepancy (F G : RHTower.SelbergClass)
       by_contra hpP
       exact hn (sub_eq_zero.mpr (hagree p hp hpP k hk))
     exact ⟨p, hpP, k, rfl⟩
+
+/-- Removing finitely many Euler factors cannot distinguish two normalized
+full Selberg functions with the same gamma factor. -/
+theorem coeff_eq_of_finite_prime_discrepancy (F G : RHTower.SelbergClass)
+    (hgamma : F.gammaData.gammaFactor = G.gammaData.gammaFactor)
+    (P : Finset ℕ) (hP : ∀ p ∈ P, p.Prime)
+    (hagree : ∀ p : ℕ, p.Prime → p ∉ P → ∀ k : ℕ, 0 < k →
+      F.eulerLogCoeff (p ^ k) = G.eulerLogCoeff (p ^ k)) :
+    F.coeff = G.coeff := by
+  obtain ⟨σ, hσ, hb⟩ := exists_subcritical_of_finite_prime_discrepancy F G P hP hagree
+  exact coeff_eq_of_subcritical_euler_discrepancy F G hgamma hσ hb
+
+/-- Finite-prime changes cannot alter coefficients, the positive exponential
+parameter, or the root number while preserving the bare Gamma product. -/
+theorem rigidity_of_finite_prime_discrepancy (F G : RHTower.SelbergClass)
+    (hgamma : archGammaFactor F.gammaData = archGammaFactor G.gammaData)
+    (P : Finset ℕ) (hP : ∀ p ∈ P, p.Prime)
+    (hagree : ∀ p : ℕ, p.Prime → p ∉ P → ∀ k : ℕ, 0 < k →
+      F.eulerLogCoeff (p ^ k) = G.eulerLogCoeff (p ^ k)) :
+    F.coeff = G.coeff ∧ F.gammaData.Q = G.gammaData.Q ∧
+      F.gammaData.rootNumber = G.gammaData.rootNumber := by
+  obtain ⟨σ, hσ, hb⟩ := exists_subcritical_of_finite_prime_discrepancy F G P hP hagree
+  exact rigidity_of_subcritical_euler_discrepancy F G hgamma hσ hb
+
+/-- Full Selberg functions agreeing outside finitely many Euler factors have
+identical coefficients, independently of their Gamma presentations. -/
+theorem coeff_eq_of_finite_prime_discrepancy_arbitrary_gamma (F G : RHTower.SelbergClass)
+    (P : Finset ℕ) (hP : ∀ p ∈ P, p.Prime)
+    (hagree : ∀ p : ℕ, p.Prime → p ∉ P → ∀ k : ℕ, 0 < k →
+      F.eulerLogCoeff (p ^ k) = G.eulerLogCoeff (p ^ k)) :
+    F.coeff = G.coeff := by
+  obtain ⟨σ, hσ, hb⟩ := exists_subcritical_of_finite_prime_discrepancy F G P hP hagree
+  exact coeff_eq_of_subcritical_discrepancy F G hσ hb
 
 end GaloisForLFunctions.SelbergClass

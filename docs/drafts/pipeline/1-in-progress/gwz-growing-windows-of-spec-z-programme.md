@@ -16,9 +16,10 @@ WTZ, DZG, CWS, ACT, F1/F2 cards are owned by other agents: import, never edit.
 ## Lean modules [L]
 TheTwoCollarFormOfAStage, TheKickIsTheCollarReflection, TheTwoCollarFormIsBornZero,
 ZeroModesHaveReflectionParity, TheLatticeCanonicalSystem, TheAnglesOfADegenerateWindow,
-ADegenerateWindowIsACurve, TheSchurParametersOfSpecZ, TheLatticeReadsThePrimesCausally,
+ADegenerateWindowIsACurve, TheSchurParametersOfSpecZ, AWindowIsTheUnionOfItsLattices,
+TheLatticeReadsThePrimesCausally,
 TheEvolutionStartsPositive, TheLatticeSelectsTheVonMangoldtWeight, ThePoleIsAHyperbolicPairOfAngles,
-MarginsAreBoundedByRecurrence. Each passes an individual `lake --old env lean` check; key theorems
+MarginsAreBoundedByRecurrence, TheLatticeHasNoSlackUnderRH, RefiningTheLatticeLowersTheMargin. Each passes an individual `lake --old env lean` check; key theorems
 audited to `propext, Classical.choice, Quot.sound`.
 
 ## Status
@@ -30,13 +31,18 @@ audited to `propext, Classical.choice, Quot.sound`.
   prediction interval `|β| < E`, kick law, causality, margins as products, monotone, recurrence bound;
   degeneration: unique palindromic zero mode, `n + 1` simple unit-circle angles, Carathéodory–Fejér
   (degenerate window = curve window with positive weights); outer predictors.
-- Spec ℤ: Toeplitz identity for lattice tests, independence of translates, RH ⇔ all margins positive
+- Spec ℤ: Toeplitz identity for lattice tests, independence of translates, window `W_A` ⇔ all lattices
+  of total length `≤ A`, RH ⇔ all margins positive
   ⇔ all reflection coefficients in `(−1, 1)`; degenerate lattice refutes RH; locality/causality in the
   primes, single-kick formula, rigidity interval of a weight; base positivity to total length
   `181/250`; selection of `Λ` by the lattice; every kick necessary; free evolution fails; the pole as
-  the hyperbolic pair `e^{±h/2}`.
+  the hyperbolic pair `e^{±h/2}`; under RH every lattice is singular (margins → 0; RH ⇔ all lattices
+  positive and singular); refinement lowers margins, dyadic limits exist under RH.
+
+Relation: CSWT (`CanonicalSystemOfTheWindowTower`, other agent) is the continuum register (closed form
+of the frozen two-collar form via trivial-divisor moments; translation-contraction growth law).
 
 ## Open (README §7)
 Continuum two-collar form at the first prime (A8); stage-uniform ground states; continuum unique
 continuation (exclude the balanced split of the gap law); continuum limit `h → 0` (Krein system with
-atoms); Szegő law / recurrence of Weil orbit correlations under RH; the trivial additive angle (AHD).
+atoms); the rate of margin collapse; the trivial additive angle (AHD).

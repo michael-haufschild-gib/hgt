@@ -74,7 +74,16 @@ Gamma integral and substituting `M₂=E/3+(∫xF)²` gives `Q=P+∫r(E−C)+2δE
 odd unit window. This equality is a paper identity; the joint sign with these terms
 retained remains the target.
 
-The [three-mode exterior reserve](../2-fully-proven/f1-gamma-remainder-reserve.md)
+The [three-mode exterior reserve](../3-formalized/f1-gamma-remainder-reserve.md)
 proves `Q≥P+E/64` in Lean with standard-only transitive axioms. The next sufficient joint
 inequality is `P≥−E/64`, with both low moments, their cross terms, prime and pole retained.
-This floor is unproved.
+This floor is unproved. The same reserve repairs a C² quintic approximation:
+`exists_odd_unit_retainedGamma_neg_weil_pos` proves `P<0<Q` on one unit-window test,
+with an individual source and standard-only transitive-axiom audit.
+
+The [primitive variance reduction](../3-formalized/f1-primitive-variance-reduction.md)
+proves `∫H²−(∫H)²≤E/(4π²)` and combines the primitive and sinh costs into a single
+first-moment charge, retaining the signed prime correlation. Individual Lean and
+standard-only transitive axiom audits pass. The further
+[two-moment regional payment](f1-primitive-variance-joint-payment.md) is still a paper
+reduction with an unproved sign.

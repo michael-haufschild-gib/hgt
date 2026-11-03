@@ -55,8 +55,15 @@ of the logarithmic term and all remaining compact integrals, hence eventual nega
 `exists_odd_unit_retainedGamma_neg`. All three individual `lake --old env lean` source
 audits pass; the counterexample's transitive axioms are
 `[propext, Classical.choice, Quot.sound]` only. All three modules are umbrella-imported.
-The complete Weil form's sign is not decided by this obstruction; the first-fold route
-remains active.
+The full-space Weil sign is not decided by this obstruction; the first-fold route remains active.
+
+The [Gamma reserve](../3-formalized/f1-gamma-remainder-reserve.md) gives a new positive
+survivor on the same domain: `Q(F)≥P(F)+E/64` for every odd C² unit test, and some such
+test satisfies `P(F)<0<Q(F)`. Three positive exterior Gamma modes supply the reserve;
+the quintic satisfies `−E/64<P<0`, and support-preserving smoothing retains both signs.
+The exact Lean declarations are `weilQuad_ge_retainedOddGamma_add_reserve` and
+`exists_odd_unit_retainedGamma_neg_weil_pos`. Both paper proofs and individual Lean
+source audits are complete, with standard-only transitive axioms.
 
 The positive survivors are the [exact retained Gamma identities](../3-formalized/f1-gamma-lag-moment-payment.md)
 and [complete coercivity off two odd moments](../3-formalized/f1-complete-odd-two-moment-complement.md),
@@ -67,4 +74,5 @@ Thus the obstruction is confined to their coupled block, not the coercive comple
 The new constraint is exact: even retaining both lag moments, the pole and signed prime
 is insufficient after discarding the nonnegative Gamma remainder. Joint payment must
 retain that remainder or use a different lower bound. Its exact decomposition on the
-source card is a paper identity; no Lean proof of the complete joint sign is claimed.
+source card is a paper identity; the uniform reserve and same-test repair are formalized,
+while the general joint sign remains open.
