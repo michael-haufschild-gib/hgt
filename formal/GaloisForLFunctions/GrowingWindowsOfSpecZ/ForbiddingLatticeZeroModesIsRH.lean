@@ -72,11 +72,11 @@ theorem exists_short_generic :
       (cx_hasCompactSupport realBump_mem.2)
   have hcount := HTGeometry.countable_zeros_of_entire_nonzero hd paperFT_realBump_zero
   set B : Set ℝ := {0} ∪ ⋃ ρ ∈ zetaZeroConfig.carrier,
-    (fun l : ℝ => (l : ℂ) * SquareRootThreshold.gammaOf ρ) ⁻¹' {t | paperFT (cx realBump) t = 0}
+    (fun l : ℝ => (l : ℂ) * gammaOf ρ) ⁻¹' {t | paperFT (cx realBump) t = 0}
   have hBc : B.Countable := by
     refine (Set.countable_singleton 0).union
       ((SquareRootThreshold.carrier_countable zetaZeroConfig).biUnion fun ρ _ => ?_)
-    by_cases hγ : SquareRootThreshold.gammaOf ρ = 0
+    by_cases hγ : gammaOf ρ = 0
     · refine Set.Countable.mono (fun l hl => ?_) (Set.countable_empty : (∅ : Set ℝ).Countable)
       simp only [Set.mem_preimage, Set.mem_setOf_eq, hγ, mul_zero] at hl
       exact paperFT_realBump_zero hl
@@ -114,9 +114,8 @@ theorem exists_short_generic :
     · rw [abs_of_neg (by linarith [hlI.2])]; linarith [hlI.2]
     · rw [abs_of_pos (by linarith [hlI.1])]; linarith [hlI.1]
   · -- a translate of a generic test is generic
-    have htr := RHTower.OddResolvent.paperFT_comp_sub_const (cx g) (-(2 * l))
-      (SquareRootThreshold.gammaOf ρ)
-    have hcx : cx ψ = fun u => cx g (u - -(2 * l)) := rfl
+    have htr := RHTower.WeilSpectral.paperFT_transl (-(2 * l)) (cx g) (gammaOf ρ)
+    have hcx : cx ψ = RHTower.WeilSpectral.transl (-(2 * l)) (cx g) := rfl
     rw [← hcx, hz, paperFT_dilateTest hl0] at htr
     have habs : ((|l| : ℝ) : ℂ) ≠ 0 := by exact_mod_cast abs_ne_zero.mpr hl0
     have := (mul_eq_zero.mp htr.symm).resolve_left (Complex.exp_ne_zero _)
@@ -149,7 +148,9 @@ theorem exists_degenerate_lattice_of_not_riemannHypothesis (hRH : ¬ RiemannHypo
   have hcs₁ : |c s₁| = |c t₁| := by
     rcases abs_choice t₁ with h | h
     · rw [show s₁ = t₁ from h]
-    · rw [show s₁ = -t₁ from h, weilOrbitCorr_neg]
+    · rw [show s₁ = -t₁ from h]
+      show |weilOrbitCorr ψ (-t₁)| = |weilOrbitCorr ψ t₁|
+      rw [weilOrbitCorr_neg]
   -- the margin function `E₁(s) = c(0) − c(s)²/c(0)`
   set F : ℝ → ℝ := fun s => weilQuad ψ - c s ^ 2 / weilQuad ψ
   have hF : ∀ s, levinsonErr (weilSeq ψ s) 1 = F s := fun s => levinsonErr_one ψ s

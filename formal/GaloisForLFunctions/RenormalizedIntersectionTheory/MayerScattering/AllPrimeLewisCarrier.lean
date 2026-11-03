@@ -1,0 +1,19 @@
+import GaloisForLFunctions.RenormalizedIntersectionTheory.MayerScattering.HeckePositiveWordReduction
+import GaloisForLFunctions.RenormalizedIntersectionTheory.MayerScattering.HeckeWordHarmonicTransport
+import GaloisForLFunctions.RenormalizedIntersectionTheory.MayerScattering.BoundaryRestorationCarrier
+
+/-!
+# Prime Hecke transport of the complete Lewis carrier
+
+Finite positive-word partitions transport the three-term equation and its boundary
+evaluation through the actual Hecke cones, retaining the physical boundary coordinate.
+-/
+
+set_option autoImplicit false
+noncomputable section
+open Complex Set
+open GaloisForLFunctions RenormalizedIntersectionTheory MayerScatteringCore MayerCoding
+
+namespace GaloisForLFunctions.RenormalizedIntersectionTheory.MayerScattering
+
+end GaloisForLFunctions.RenormalizedIntersectionTheory.MayerScattering

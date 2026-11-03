@@ -84,6 +84,8 @@ with an individual source and standard-only transitive-axiom audit.
 The [primitive variance reduction](../3-formalized/f1-primitive-variance-reduction.md)
 proves `∫H²−(∫H)²≤E/(4π²)` and combines the primitive and sinh costs into a single
 first-moment charge, retaining the signed prime correlation. Individual Lean and
-standard-only transitive axiom audits pass. The further
-[two-moment regional payment](f1-primitive-variance-joint-payment.md) is still a paper
-reduction with an unproved sign.
+standard-only transitive axiom audits pass. The
+[exact regional assembly](../3-formalized/f1-regional-exterior-identity.md) now proves
+`D(G)≤P(F)+E/64≤Q(F)` with the exterior potential, both low moments and signed reflection
+retained. Individual Lean and standard-only axiom audits pass. The
+[sign of D](f1-primitive-variance-joint-payment.md) remains open.

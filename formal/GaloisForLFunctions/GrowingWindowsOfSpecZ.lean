@@ -14,6 +14,9 @@ import GaloisForLFunctions.GrowingWindowsOfSpecZ.ThePoleIsAHyperbolicPairOfAngle
 import GaloisForLFunctions.GrowingWindowsOfSpecZ.MarginsAreBoundedByRecurrence
 import GaloisForLFunctions.GrowingWindowsOfSpecZ.TheLatticeHasNoSlackUnderRH
 import GaloisForLFunctions.GrowingWindowsOfSpecZ.RefiningTheLatticeLowersTheMargin
+import GaloisForLFunctions.GrowingWindowsOfSpecZ.TheSzegoVerblunskyLaw
+import GaloisForLFunctions.GrowingWindowsOfSpecZ.TheContinuumMarginIsTheDyadicLimit
+import GaloisForLFunctions.GrowingWindowsOfSpecZ.ForbiddingLatticeZeroModesIsRH
 
 /-!
 # Growing Windows of Spec ℤ (GWZ)

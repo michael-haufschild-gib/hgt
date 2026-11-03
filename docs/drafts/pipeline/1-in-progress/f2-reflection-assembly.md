@@ -48,6 +48,8 @@ At every upper resonance this is nonzero: `ζ(2s)=0`, `c≠0`, `|4q|>1`. Thus th
 
 **Corrected all-prime core transport [K].** The values at `1,2` recover both boundary coefficients through the nonzero determinant `1−(2s+1)2^(−2s)`. Adding their exact source-Hecke errors gives `T̂_(p,s)core_s=(1+p^(1−2s))core_s` for every prime and every upper-strip parameter. At resonances the zeta-axis channel vanishes; the scattering coefficient is `core_s(1)/(2s−3)`. This realizes the arithmetic eigenlaw on actual cores while retaining their boundary correction. [Proof and declarations](../3-formalized/f2-global-core-hecke-correction.md).
 
+**Retained-boundary source carrier [K].** Restoration loses exactly the zeta-axis direction; retaining its evaluation coordinate gives unique reconstruction. Inversion and the Lewis three-term equation force the first-prime boundary eigenvalue and carrier invariance. Corrected `T₂` intertwines with the actual source operator on this whole carrier, which contains every upper-strip core. [Proof and declarations](../3-formalized/f2-boundary-restoration-carrier.md). All-prime carrier transport and signed-form descent remain open.
+
 ## Across-stage Mellin correspondence [K]
 
 Set `L=log2`, `F₂H(u)=√2H(u+L)`, `V₂H(u)=√2H(u)`, and

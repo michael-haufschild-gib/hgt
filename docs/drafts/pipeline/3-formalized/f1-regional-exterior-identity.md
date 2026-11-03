@@ -1,8 +1,8 @@
 # Regional logarithmic exterior and low-moment charges
 
 - **ID:** F1-REI
-- **Stage:** 2-fully-proven
-- **Type:** THEOREM (paper)
+- **Stage:** 3-formalized
+- **Type:** THEOREM (Lean)
 - **Source:** [Primitive variance payment](../1-in-progress/f1-primitive-variance-joint-payment.md)
 - **Statement:** The logarithmic lag energy retains its exact exterior potential;
   the fifth regional gap retains its two explicit low odd moment charges.
@@ -56,9 +56,15 @@ and the signed prime term has coefficient `log2/√2`. No sign of `D` is used.
 
 ## Lean
 
-LST `RegionalLogarithmicExteriorIdentity` and `RegionalLogarithmicLowOddMoments`
-pass individual Lean and standard-only transitive axiom audits. WTZ
-`TheFirstFoldRetainsTwoMomentCharges` contains the complete-form assembly;
-its individual audit remains pending.
-These retain the exterior term and the low projections discarded by the vanishing-moment
-bound; they do not establish the joint first-fold sign.
+LST `RegionalLogarithmicExteriorIdentity` proves
+`odd_logarithmic_lag_eq_regional_exterior` and
+`unit_odd_logarithmic_lag_eq_regional_exterior`.
+`RegionalLogarithmicLowOddMoments` proves
+`regionalLogEnergy_ge_fifth_gap_sub_low_odd_moments`.
+WTZ `TheFirstFoldRetainsTwoMomentCharges` proves
+`retainedOddGamma_add_reserve_ge_firstFoldTwoMomentForm` and
+`weilQuad_ge_firstFoldTwoMomentForm`.
+
+All three modules pass individual `lake --old env lean` audits. Transitive axioms:
+`propext`, `Classical.choice`, `Quot.sound` only. Both umbrellas include the modules.
+The sign of `D` remains open.

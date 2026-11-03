@@ -38,7 +38,7 @@ Substitution in the exact primitive expression for `P` gives
 The regional/exterior identity, scaling and fifth harmonic gap give
 `L=J(G)/4+log2 E+∫₀¹WG²`, `m=½∫₀¹uG`, and
 `J(G)/4≥(137/60)E−(77/20)(∫₀¹uG)²−(63/20)(∫₀¹P₃G)²`.
-This proves the displayed sufficient reduction on paper. Its sign would give the
+This gives the audited reduction `D(G)≤P(F)+E/64≤Q(F)`. Its sign would give the
 missing floor `P≥−E/64`, hence complete odd unit-window positivity.
 
 ## Actual remaining inequality
@@ -59,6 +59,6 @@ Prove or refute this concrete inequality before adding a generic Lean receiver.
 - The [primitive variance and joint Gamma/pole reduction](../3-formalized/f1-primitive-variance-reduction.md)
   pass individual Lean and standard-only transitive axiom audits. They establish
   the lower bound `Q≥L−(c+log2)E−(39/64)m²−2wC(log2)` for every odd C² unit test.
-- The exact regional/exterior identity and the assembled two-moment reduction still
-  need their Lean proofs.
+- The [exact exterior and two-moment assembly](../3-formalized/f1-regional-exterior-identity.md)
+  prove `D(G)≤P(F)+E/64≤Q(F)` in Lean, with standard-only transitive axioms.
 - The displayed joint sign remains unproved; no positivity premise has been added.

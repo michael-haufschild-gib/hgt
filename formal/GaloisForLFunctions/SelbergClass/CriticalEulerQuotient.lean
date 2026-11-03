@@ -186,7 +186,8 @@ private theorem completedEulerQuotient_analyticAt_critical
     (G.continuation.analyticAt_value_of_ne_one hs1)
   have hstrip : ∀ᶠ z in 𝓝 s, 0 < z.re ∧ z.re < 1 :=
     ((isOpen_lt continuous_const continuous_re).inter
-      (isOpen_lt continuous_re continuous_const)).mem_nhds (by simp only [hs]; norm_num)
+      (isOpen_lt continuous_re continuous_const)).mem_nhds
+        (show 0 < s.re ∧ s.re < 1 by rw [hs]; norm_num)
   have hgn : ∀ᶠ z in 𝓝[≠] s, g z ≠ 0 := by
     filter_upwards [hstrip.filter_mono nhdsWithin_le_nhds,
       value_eventually_ne_zero G s hs1] with z hz hn
