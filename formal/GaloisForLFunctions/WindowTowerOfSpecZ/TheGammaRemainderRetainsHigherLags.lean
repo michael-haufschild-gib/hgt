@@ -94,7 +94,10 @@ theorem retainedGammaRemainderWeight_ge_higher_lags {t : ℝ}
       1/t+1/2-t/24-t^2/16+t^3/960+t^4/192 := by
     field_simp [ht.1.ne']
     <;> ring
-  linarith only [hm, hc, hp]
+  have hcHalf := mul_le_mul_of_nonneg_left hc (by norm_num : (0 : ℝ) ≤ 1/2)
+  have hcEq : (1/2 : ℝ)*(1/Real.cosh (t/2)) = 1/(2*Real.cosh (t/2)) := by ring
+  rw [hcEq] at hcHalf
+  linarith only [hm, hcHalf, hp]
 
 /-- Higher lag energies are paid by the discarded local Gamma term itself. -/
 theorem retainedGammaRemainder_ge_higher_lags {F : ℝ → ℝ}
@@ -114,6 +117,7 @@ theorem retainedGammaRemainder_ge_higher_lags {F : ℝ → ℝ}
   rw [← integral_div, ← integral_div, ← integral_add (hi3.div_const 960) (hi4.div_const 192)]
   apply setIntegral_mono_on ((hi3.div_const 960).add (hi4.div_const 192)) hiR measurableSet_Ioc
   intro t ht
+  dsimp only [Pi.add_apply]
   have hn : 0 ≤ (∫ x, F x^2)-autocorr F t := by
     have h := (le_abs_self (autocorr F t)).trans (abs_autocorr_le_zero hcs hF.continuous t)
     simpa only [autocorr_zero_eq] using sub_nonneg.mpr h
