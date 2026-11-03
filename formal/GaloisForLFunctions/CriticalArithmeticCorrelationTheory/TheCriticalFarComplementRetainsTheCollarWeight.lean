@@ -23,7 +23,8 @@ open SpacingScaleHarmonicAnalysis ArithmeticLorentzianGeometry
   RenormalizedArithmeticPotentialTheory CompletedArithmeticForms
   CriticalScaleArithmeticRigidity ArithmeticElectrostatics ArithmeticEffectivityTheory
 
-private theorem critical_prefix_cutoff_geometry {θ c : ℝ} {N : ℕ} (hθ : 0 < θ) (hθ36 : θ ≤ 1 / 36)
+/-- The conductor cutoff lies inside the retained prefix and keeps its logarithmic gap. -/
+theorem critical_prefix_cutoff_geometry {θ c : ℝ} {N : ℕ} (hθ : 0 < θ) (hθ36 : θ ≤ 1 / 36)
     (hc1 : 1 ≤ c) (hcL : c ≤ Real.log N) (hL2000 : 2000 ≤ Real.log N)
     (hHL : 256 * Real.exp 2 + 4 ≤ Real.log N)
     (hL2θ : 2 / θ ≤ Real.log N)
@@ -180,7 +181,6 @@ theorem exists_critical_multiple_weighted_far_complement :
     hLlim.eventually (RHTower.eventually_const_mul_polylog_le_rpow 5
       (by norm_num : (0 : ℝ) < 1) (4 * D + 4))]
     with N hfarN hLX hlarge hpoly
-  dsimp only [Function.comp_def] at hpoly
   intro c θ hc1 hc hθlo hθhi z hz
   let L := Real.log (N : ℝ)
   let T := linearDefectCutoff c
@@ -200,6 +200,7 @@ theorem exists_critical_multiple_weighted_far_complement :
       simpa only [Real.rpow_one] using hpoly
     have h₁ := (le_div_iff₀ ht).mpr hpoly'
     have h₂ := mul_le_mul_of_nonneg_right hθlo hL0.le
+    change 1 / (1 + Real.log L) ^ 5 * L ≤ θ * L at h₂
     calc
       _ ≤ L / (1 + Real.log L) ^ 5 := h₁
       _ ≤ θ * L := by linarith only [h₂]
@@ -258,7 +259,10 @@ theorem exists_critical_multiple_weighted_far_complement :
     have hcost : terminalPacketCost R M N ≤ 4 + Real.log (2 * H) + c := by
       linarith only [hTB, hlog2T]
     have hnum : 0 ≤ 4 + Real.log (2 * H) + c := by positivity
-    nlinarith only [hcost, hhalf, hL0, hnum]
+    change L / 2 ≤ Real.log (M : ℝ) at hhalf
+    have h₁ := mul_le_mul_of_nonneg_right hcost hL0.le
+    have h₂ := mul_le_mul_of_nonneg_left hhalf hnum
+    nlinarith only [h₁, h₂]
   have hkL : k ≤ L / D := by
     have h₁ := div_le_div_of_nonneg_right hlogR hD.le
     have h₂ := div_le_div_of_nonneg_right (mul_le_mul_of_nonneg_right hθ1 hL0.le) hD.le
@@ -286,7 +290,7 @@ theorem exists_critical_multiple_weighted_far_complement :
       calc
         _ ≤ (2 * K * L ^ (1 / 8 : ℝ)) ^ 8 := pow_le_pow_left₀ hc0.le hc 8
         _ = (2 * K) ^ 8 * L := by
-          rw [mul_pow, ← Real.rpow_natCast, ← Real.rpow_mul hL0.le]; norm_num
+          rw [mul_pow, ← Real.rpow_natCast (L ^ (1 / 8 : ℝ)), ← Real.rpow_mul hL0.le]; norm_num
         _ ≤ _ := mul_le_mul_of_nonneg_right h2K8 hL0.le
     have hCK : 32 * C * K ≤ g := by
       have h := (le_div_iff₀ (show 0 < 64 * (C + 1) by positivity)).mp hKC
@@ -312,7 +316,9 @@ theorem exists_critical_multiple_weighted_far_complement :
     have h := mul_le_mul_of_nonneg_right hθlo (show 0 ≤ L / (16 * D) by positivity)
     convert h using 1 <;> ring
   have hgapP := mul_le_mul_of_nonneg_right hgap hP
-  have hθP : 0 ≤ θ * L * P := by positivity
+  change θ / (4 * D) * L * P ≤ k * P at hgapP
+  have hθDP : 0 ≤ θ * L / D * P := by positivity
+  simp only [mul_div_assoc] at hpre
   change k * ((15 / 16 : ℝ) * P - 2 * B * S) ≤ poleDefect M (primeHorizonExtension z) at hpre
   change (7 / 8 : ℝ) * poleDefect M (primeHorizonExtension z) +
     (g / (8 * c ^ 7)) * L * S7 -
@@ -320,7 +326,7 @@ theorem exists_critical_multiple_weighted_far_complement :
   change (θ * L / (8 * D)) * P + (g * L / (16 * c ^ 7)) * S7 ≤ _
   have hid : (g / (8 * c ^ 7)) * L = 2 * (g * L / (16 * c ^ 7)) := by ring
   rw [hid] at hf
-  nlinarith only [hpre, hf, hleakS, hprefixCost, hgapP, hθP]
+  nlinarith only [hpre, hf, hleakS, hprefixCost, hgapP, hθDP]
 
 end GaloisForLFunctions.CriticalArithmeticCorrelationTheory
 

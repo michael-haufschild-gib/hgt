@@ -172,7 +172,7 @@ theorem eventually_critical_band_far_monomials {A : ℝ} (hA : 1 ≤ A) :
   have hSgν := hSg.trans hpoly
   have hc8 : c ^ 8 ≤ L := by
     have h := pow_le_pow_left₀ hc0.le hc 8
-    rwa [← Real.rpow_natCast, ← Real.rpow_mul hL0.le,
+    rwa [← Real.rpow_natCast (L ^ (1 / 8 : ℝ)), ← Real.rpow_mul hL0.le,
       show (1 / 8 : ℝ) * (8 : ℕ) = 1 by norm_num, Real.rpow_one] at h
   refine ⟨?_, ?_, ?_, ?_⟩
   · apply (div_le_iff₀ hL0).mpr
@@ -240,10 +240,10 @@ theorem eventually_critical_cross_payment_constants
   have ht1 : 1 ≤ t := by dsimp only [t]; linarith only [Real.log_nonneg hL1]
   have ht0 : 0 < t := zero_lt_one.trans_le ht1
   have ht5 : 1 ≤ t ^ 5 := one_le_pow₀ ht1
-  have ht2 : t ≤ t ^ 2 := by simpa only [pow_one] using
-    pow_le_pow_right₀ ht1 (by norm_num : 1 ≤ 2)
-  have ht15 : t ≤ t ^ 5 := by simpa only [pow_one] using
-    pow_le_pow_right₀ ht1 (by norm_num : 1 ≤ 5)
+  have ht2 : t ≤ t ^ 2 := by
+    simpa only [pow_one] using pow_le_pow_right₀ ht1 (by norm_num : 1 ≤ 2)
+  have ht15 : t ≤ t ^ 5 := by
+    simpa only [pow_one] using pow_le_pow_right₀ ht1 (by norm_num : 1 ≤ 5)
   have hTt : T ≤ t := by
     have h := Real.log_le_log (Real.exp_pos T) hLT
     rw [Real.log_exp] at h

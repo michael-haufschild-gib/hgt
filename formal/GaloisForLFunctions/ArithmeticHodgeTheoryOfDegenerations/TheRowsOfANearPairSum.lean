@@ -627,7 +627,7 @@ theorem card_filter_lt_le (N : ℕ) {X : ℝ} (hX : 0 ≤ X) :
     _ = ⌊X⌋₊ := by simp
     _ ≤ X := Nat.floor_le hX
 
-theorem card_filter_gt_le (N : ℕ) {Y : ℝ} (hY : 0 ≤ Y) :
+theorem card_filter_gt_le (N : ℕ) {Y : ℝ} (hY : 0 ≤ Y) (hYN : Y ≤ N) :
     (((Finset.Icc 1 N).filter (fun m : ℕ => Y < m)).card : ℝ) ≤ N - Y + 1 := by
   have hsub : (Finset.Icc 1 N).filter (fun m : ℕ => Y < m) ⊆ Finset.Icc (⌊Y⌋₊ + 1) N := by
     intro m hm
@@ -641,8 +641,7 @@ theorem card_filter_gt_le (N : ℕ) {Y : ℝ} (hY : 0 ≤ Y) :
         · rw [Nat.cast_sub h]; push_cast
           linarith [Nat.lt_floor_add_one Y]
         · rw [Nat.sub_eq_zero_of_le h.le]; push_cast
-          have : (N : ℝ) + 1 < ⌊Y⌋₊ + 1 := by exact_mod_cast h
-          linarith [Nat.floor_le hY]
+          linarith
 
 /-- The harmonic tail from `X`: `Σ_{X ≤ m ≤ N} 1/m ≤ 1 + log(N/X)`. -/
 theorem sum_filter_le_inv_le {N : ℕ} (hN : 1 ≤ N) {X : ℝ} (hX : 0 < X) (hXN : X ≤ N) :
@@ -674,9 +673,7 @@ theorem sum_filter_le_inv_le {N : ℕ} (hN : 1 ≤ N) {X : ℝ} (hX : 0 < X) (hX
     have h2 := log_add_one_le_harmonic (m₀ - 1)
     rw [hH] at hsplit
     rw [hH] at hsplit
-    have hcast : ((m₀ - 1 : ℕ) : ℝ) + 1 = m₀ := by
-      rw [Nat.cast_sub hm₀1]; push_cast; ring
-    rw [hcast] at h2
+    rw [Nat.sub_add_cancel hm₀1] at h2
     have hlogm : Real.log X ≤ Real.log m₀ := by
       apply Real.log_le_log hX
       exact (Nat.le_ceil X).trans (by exact_mod_cast le_max_right 1 ⌈X⌉₊)
@@ -688,5 +685,101 @@ theorem sum_filter_le_inv_le {N : ℕ} (hN : 1 ≤ N) {X : ℝ} (hX : 0 < X) (hX
   · rw [Finset.Icc_eq_empty (by omega), Finset.sum_empty]
     have h1 : 0 ≤ Real.log (N / X) := Real.log_nonneg (by rw [le_div_iff₀ hX]; linarith)
     linarith
+
+/-! ### Pairs as rows -/
+
+/-- A pair sum over the logarithmic window `(αw, βw]`, with a row weight `ρ` at the smaller index:
+`Σ_{n,j} ρ(min(n,j)) u(n) v(j) K(|log(j/n)|/w)/√(nj)`. -/
+def nearPairSum (K : ℝ → ℝ) (α β w : ℝ) (N : ℕ) (u v ρ : ℕ → ℝ) : ℝ :=
+  ∑ n ∈ Finset.Icc 1 N, ∑ j ∈ Finset.Icc 1 N,
+    if α * w < |Real.log j - Real.log n| ∧ |Real.log j - Real.log n| ≤ β * w then
+      ρ (min n j) * u n * v j * K (|Real.log j - Real.log n| / w) / (Real.sqrt n * Real.sqrt j)
+    else 0
+
+theorem sum_Icc_ite_lt_eq (g : ℕ → ℝ) (n N : ℕ) :
+    ∑ j ∈ Finset.Icc 1 N, (if n < j then g j else 0) = ∑ h ∈ Finset.Icc 1 (N - n), g (n + h) := by
+  rw [← Finset.sum_filter]
+  refine Finset.sum_nbij' (fun j => j - n) (fun h => n + h) ?_ ?_ ?_ ?_ ?_
+  · intro j hj
+    simp only [Finset.mem_filter, Finset.mem_Icc, Finset.mem_coe] at hj ⊢
+    omega
+  · intro h hh
+    simp only [Finset.mem_filter, Finset.mem_Icc, Finset.mem_coe] at hh ⊢
+    omega
+  · intro j hj
+    simp only [Finset.mem_filter, Finset.mem_Icc, Finset.mem_coe] at hj
+    omega
+  · intro h _; omega
+  · intro j hj
+    simp only [Finset.mem_filter, Finset.mem_Icc, Finset.mem_coe] at hj
+    congr 1; omega
+
+theorem log_add_sub_log {n h : ℕ} (hn : 1 ≤ n) :
+    Real.log ((n + h : ℕ) : ℝ) - Real.log n = Real.log (1 + h / n) := by
+  have hn0 : (0 : ℝ) < n := by exact_mod_cast hn
+  rw [← Real.log_div (by positivity) hn0.ne']
+  congr 1; push_cast; field_simp
+
+theorem sqrt_mul_sqrt_add {n h : ℕ} :
+    Real.sqrt n * Real.sqrt ((n + h : ℕ) : ℝ) = Real.sqrt (n * (n + h)) := by
+  rw [← Real.sqrt_mul (Nat.cast_nonneg n)]; push_cast; ring_nf
+
+/-- **Pairs as rows.** Each unordered pair is read from its smaller index `m` with offset
+`h = j − m`. -/
+theorem nearPairSum_eq_rows (K : ℝ → ℝ) {α β w : ℝ} (hα : 0 ≤ α) (hw : 0 < w) (N : ℕ)
+    (u v ρ : ℕ → ℝ) :
+    nearPairSum K α β w N u v ρ = ∑ m ∈ Finset.Icc 1 N,
+      ρ m * (u m * rowWindow K α β w N m v + v m * rowWindow K α β w N m u) := by
+  set T : ℕ → ℕ → ℝ := fun n j =>
+    if α * w < |Real.log j - Real.log n| ∧ |Real.log j - Real.log n| ≤ β * w then
+      ρ (min n j) * u n * v j * K (|Real.log j - Real.log n| / w) / (Real.sqrt n * Real.sqrt j)
+    else 0 with hT
+  have hdiag : ∀ n, T n n = 0 := fun n => by
+    simp only [hT, sub_self, abs_zero]
+    rw [if_neg (fun h => absurd h.1 (not_lt.mpr (mul_nonneg hα hw.le)))]
+  have hsplit : ∀ n j, T n j = (if n < j then T n j else 0) + (if j < n then T n j else 0) :=
+    fun n j => by
+      rcases lt_trichotomy n j with h | h | h
+      · rw [if_pos h, if_neg (by omega), add_zero]
+      · subst h; rw [hdiag, if_neg (lt_irrefl _), add_zero]
+      · rw [if_neg (by omega), if_pos h, zero_add]
+  have hup : ∀ n ∈ Finset.Icc 1 N, ∑ h ∈ Finset.Icc 1 (N - n), T n (n + h) =
+      ρ n * (u n * rowWindow K α β w N n v) := by
+    intro n hn
+    have hn1 : 1 ≤ n := (Finset.mem_Icc.mp hn).1
+    rw [rowWindow, Finset.mul_sum, Finset.mul_sum]
+    refine Finset.sum_congr rfl fun h _ => ?_
+    have hlog : |Real.log ((n + h : ℕ) : ℝ) - Real.log n| = Real.log (1 + h / n) := by
+      rw [log_add_sub_log hn1]
+      exact abs_of_nonneg (Real.log_nonneg (by linarith [show (0:ℝ) ≤ h / n by positivity]))
+    simp only [hT, hlog, min_eq_left (Nat.le_add_right n h), sqrt_mul_sqrt_add]
+    split_ifs <;> simp [rowKernel]; ring
+  have hdown : ∀ j ∈ Finset.Icc 1 N, ∑ h ∈ Finset.Icc 1 (N - j), T (j + h) j =
+      ρ j * (v j * rowWindow K α β w N j u) := by
+    intro j hj
+    have hj1 : 1 ≤ j := (Finset.mem_Icc.mp hj).1
+    rw [rowWindow, Finset.mul_sum, Finset.mul_sum]
+    refine Finset.sum_congr rfl fun h _ => ?_
+    have hlog : |Real.log j - Real.log ((j + h : ℕ) : ℝ)| = Real.log (1 + h / j) := by
+      rw [abs_sub_comm, log_add_sub_log hj1]
+      exact abs_of_nonneg (Real.log_nonneg (by linarith [show (0:ℝ) ≤ h / j by positivity]))
+    simp only [hT, hlog, min_eq_right (Nat.le_add_right j h)]
+    rw [mul_comm (Real.sqrt ((j + h : ℕ) : ℝ)), sqrt_mul_sqrt_add]
+    split_ifs <;> simp [rowKernel]; ring
+  calc nearPairSum K α β w N u v ρ = ∑ n ∈ Finset.Icc 1 N, ∑ j ∈ Finset.Icc 1 N, T n j := rfl
+    _ = ∑ n ∈ Finset.Icc 1 N, ∑ j ∈ Finset.Icc 1 N, (if n < j then T n j else 0) +
+        ∑ j ∈ Finset.Icc 1 N, ∑ n ∈ Finset.Icc 1 N, (if j < n then T n j else 0) := by
+        rw [Finset.sum_comm (s := Finset.Icc 1 N) (t := Finset.Icc 1 N)
+          (f := fun j n => if j < n then T n j else 0), ← Finset.sum_add_distrib]
+        exact Finset.sum_congr rfl fun n _ => by
+          rw [← Finset.sum_add_distrib]; exact Finset.sum_congr rfl fun j _ => hsplit n j
+    _ = ∑ m ∈ Finset.Icc 1 N, ρ m * (u m * rowWindow K α β w N m v) +
+        ∑ m ∈ Finset.Icc 1 N, ρ m * (v m * rowWindow K α β w N m u) := by
+        congr 1
+        · refine Finset.sum_congr rfl fun n hn => ?_
+          rw [sum_Icc_ite_lt_eq (fun j => T n j) n N, hup n hn]
+        · refine Finset.sum_congr rfl fun j hj => ?_
+          rw [sum_Icc_ite_lt_eq (fun n => T n j) j N, hdown j hj]
+    _ = _ := by rw [← Finset.sum_add_distrib]; exact Finset.sum_congr rfl fun m _ => by ring
 
 end GaloisForLFunctions.ArithmeticHodgeTheoryOfDegenerations
