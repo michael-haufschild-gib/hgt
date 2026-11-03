@@ -97,7 +97,9 @@ theorem mixedBumpRobin_eq_integral {f d : ℝ → ℝ} (hf : Continuous f) (hfc 
     have h3 : HasCompactSupport fun u => (g u - g (u + y)) * (g u - g (u + y)) := h2.mul_left
     have hc : Continuous fun u => g u - g (u + y) :=
       hg.sub (hg.comp (continuous_id.add continuous_const))
-    simpa only [pow_two] using (hc.mul hc).integrable_of_hasCompactSupport h3
+    have h4 : Integrable fun u => (g u - g (u + y)) * (g u - g (u + y)) :=
+      (hc.mul hc).integrable_of_hasCompactSupport h3
+    simpa only [pow_two] using h4
   have hkey : ∀ y : ℝ, (∫ u, ((f u + d u) - (f (u + y) + d (u + y))) ^ 2) -
       (∫ u, ((-f u + d u) - (-f (u + y) + d (u + y))) ^ 2) =
       4 * ∫ u, (f u - f (u + y)) * (d u - d (u + y)) := by

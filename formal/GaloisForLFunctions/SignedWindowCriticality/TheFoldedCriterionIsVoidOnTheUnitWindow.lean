@@ -39,7 +39,7 @@ theorem foldedShiftGenerator_eq_twoSidedShiftGenerator_abs (ω : ℝ → ℝ) {t
     (hx : 0 ≤ x) :
     foldedShiftGenerator ω t x = twoSidedShiftGenerator (fun y => ω |y|) t x := by
   unfold foldedShiftGenerator twoSidedShiftGenerator
-  rw [abs_of_nonneg hx, abs_of_nonneg (by linarith : 0 ≤ x + t)]
+  simp only [abs_of_nonneg hx, abs_of_nonneg (show 0 ≤ x + t by linarith)]
 
 /-- The folded generator at `x ≥ 0` is the two-sided generator of the even extension. -/
 theorem foldedGenerator_eq_twoSidedGenerator_abs (ω : ℝ → ℝ) {x : ℝ} (hx : 0 ≤ x) :
@@ -177,8 +177,16 @@ theorem not_exists_foldedWindowSupersolution {a : ℝ} (ha : markovDeathWidth < 
   have hχin : ∀ y ∈ Icc (ε / 4) (a - ε / 4), χ y = 1 := by
     intro y hy
     refine SpacingScaleHarmonicAnalysis.plateau_eq_one hη0 ⟨?_, ?_⟩
-    · rw [le_div_iff₀ hL0]; simp only [α]; nlinarith [hy.1]
-    · rw [div_le_iff₀ hL0]; simp only [α]; nlinarith [hy.2]
+    · rw [le_div_iff₀ hL0]
+      have := hy.1
+      simp only [α]
+      linarith [hηL]
+    · rw [div_le_iff₀ hL0]
+      have := hy.2
+      have h1 : (1 - η) * L = L - ε / 8 := by rw [sub_mul, one_mul, hηL]
+      have hLd : L = a - ε / 4 := rfl
+      simp only [α]
+      linarith
   set ν : ℝ → ℝ := fun y => χ y * ω y
   have hνc : ContDiff ℝ 2 ν := hχc.mul hω
   have hνout : ∀ y, y ∉ Icc α (α + L) → ν y = 0 := fun y hy => by simp [ν, hχout y hy]
