@@ -289,7 +289,8 @@ theorem exists_critical_multiple_weighted_complement :
       simpa only [one_mul, pow_one] using hpoly
     linarith only [h, hp]
   obtain ⟨hsmall₀, hsmall01, hfloor₀, hfloor₁⟩ := critical_first_band_scalar_smallness
-    (κ₀ := 1) hc1 hcroot hL1 rfl (by norm_num) hCsmall hCcross hVc hsqrtQ hlogQ hH₀ hlogR₀
+    (κ₀ := 1) (C_coerc0 := Ccoerc) (C_band1 := Cband)
+    hc1 hcroot hL1 rfl (by norm_num) hCsmall hCcross hVc hsqrtQ hlogQ hH₀ hlogR₀
     htail₀ hc5 hc3R4 hc3R2
     (by linarith only [hlarge, hCcross, hCband])
     (by linarith only [hlarge, hCsmall, hCband])
@@ -309,7 +310,12 @@ theorem exists_critical_multiple_weighted_complement :
         (primeHorizonExtension v) ≤ completeWeilEnergy tiltedUnitSpline c N v := by
     intro v hv
     have h := hfarN c θ hc1 hc le_rfl hθhi v hv
-    convert h using 1 <;> dsimp only [b, k, θ, B, D, g] <;> field_simp <;> ring
+    change (θ * L / (8 * D)) *
+      (∑ n ∈ Icc 1 (N / linearDefectCutoff c), primeHorizonExtension v n ^ 2) +
+      (g * L / (16 * c ^ 7)) * topCollarSeventhMass (N / linearDefectCutoff c) N
+        (primeHorizonExtension v) ≤ _ at h
+    convert h using 1 <;> dsimp only [b, k, θ, B] <;>
+      field_simp [hD.ne', ht0.ne', hc0.ne'] <;> ring
   have hcrossShape {R : ℕ} (hR2 : 2 ≤ R) (hRR₁ : R ≤ R₁) (a : ℕ → ℝ)
       (ha : (∑ m ∈ Icc 1 R, a m • normalizedRamanujanHorizonVector m N) ∈
         (conductorSubspace 1 N)ᗮ) {v : EuclideanSpace ℝ (PrimeHorizonIndex N)}
@@ -322,9 +328,15 @@ theorem exists_critical_multiple_weighted_complement :
         (b * k / (32 * c ^ 7)) * (∑ n ∈ Ioc (N / linearDefectCutoff c) N, primeHorizonExtension v n ^ 2) +
         (b * k / (32 * c ^ 7)) * ‖v‖ ^ 2 := by
     have h := hcrossN c hc1 hcroot R hR2 hRR₁ a ha v hv
+    change _ ≤ (1 / 32 : ℝ) * primeAdjunctionMass R a +
+      (1 / 4 : ℝ) * ‖∑ m ∈ Icc 1 R, a m • normalizedRamanujanHorizonVector m N‖ ^ 2 +
+      (θ * L / (64 * D)) *
+        (∑ n ∈ Icc 1 (N / linearDefectCutoff c), primeHorizonExtension v n ^ 2) +
+      (B * L / (64 * D * c ^ 7)) *
+        ((∑ n ∈ Ioc (N / linearDefectCutoff c) N, primeHorizonExtension v n ^ 2) + ‖v‖ ^ 2) at h
     refine h.trans_eq ?_
-    dsimp only [b, k, θ, D]
-    field_simp <;> ring
+    dsimp only [b, k, θ]
+    field_simp [hD.ne', ht0.ne', hc0.ne'] <;> ring
   have h := critical_weighted_complement_assembly hQ2 hQR₀ hc1 hb hbc7 hk
     (hband0 hQ2 hQR₀ hR₀6 h36₀ hc1 hcL hw1 hrad hnear₀ hsmall₀)
     (hband1 hR₀2 hR₀R₁ hR₁6 h1080 hc1 hcL hw1 hnear₁
@@ -334,7 +346,13 @@ theorem exists_critical_multiple_weighted_complement :
       hc1 hw1 hnear₀ hup₀ hH₀ hsmall01)
     (hcrossShape hR₀2 hR₀R₁) (hcrossShape hR₁2 le_rfl)
     hfloor₀ hfloor₁ hu₀ hu₀Q hu₁ hu₁R hw
-  convert h using 1 <;> dsimp only [b, k, θ, B, D, g] <;> field_simp <;> ring
+  change 4 * ‖u₀‖ ^ 2 + (3 + L ^ (1 / 2 : ℝ) / 32) * ‖u₁‖ ^ 2 +
+    (θ * L / (16 * D)) *
+      (∑ n ∈ Icc 1 (N / linearDefectCutoff c), primeHorizonExtension w n ^ 2) +
+    (3 * g * L / (64 * c ^ 7)) *
+      topCollarSeventhMass (N / linearDefectCutoff c) N (primeHorizonExtension w) ≤ _
+  convert h using 1 <;> dsimp only [b, k, θ, B] <;>
+    field_simp [hD.ne', ht0.ne', hc0.ne'] <;> ring
 
 end GaloisForLFunctions.CriticalArithmeticCorrelationTheory
 

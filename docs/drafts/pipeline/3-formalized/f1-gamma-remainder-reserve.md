@@ -60,8 +60,6 @@ All three individual `lake --old env lean` source audits pass with
 
 ## Remaining sign
 
-The separate conjecture `P(F)≥−E/64` retains both primitive moment squares, primitive
-mass, signed prime reflection and pole. The proved quintic counterexample to `P≥0`
-does not establish or refute this weaker floor. A proof must control the two low odd
-moments and their cross terms with the coercive complement; prime-only Harnack
-payment does not settle this joint inequality.
+The sufficient floor `P≥−E/64` is [refuted by a smooth quadratic-cutoff approximation](../1-in-progress/f1-quadratic-cutoff-reserve-test.md).
+The complete form retains the exact local Gamma remainder and the exterior reserve beyond
+`E/64`; their joint payment remains open. The earlier quintic repair above remains valid.

@@ -1,7 +1,7 @@
 # RH proof-route frontier
 
 **RH open · 32 live routes · 17 candidates.**
-**Corpus checkpoint:** `1d3c7b97f8245f67d39930f99ba7cd066a5a5f52`.
+**Corpus checkpoint:** `e06e864036ceceffaa6e58e5a5ea429534f138f7`.
 
 Live = source observable + proved RH-sufficient receiver + explicit open estimate. Candidate = missing independent source mechanism/landing.
 Evidence: [L] integrated, source-reviewed; [S] unfinished/unintegrated, unverified; [K] individual Lean + standard-only transitive-axiom audit. Untagged established facts: [L].
@@ -43,9 +43,9 @@ Evidence: [L] integrated, source-reviewed; [S] unfinished/unintegrated, unverifi
 ### RW — Restricted Weil ground energy
 
 - **Path:** Complete Weil form → μ(a)≥0 at every radius → RH.
-- **Established:** Attained, strictly radius-decreasing minima; μ≥1/5000 through a=181/500, ≥1/8000 through a*=enlargedWeilFloorAperture>181/500. Exact {∞,2} trace through a=½log3; local Gamma/Tate domination for length≤2a*, 0≤k≤1/160000. Window sign⇔all fitting lattices; RH⇔no first degeneration. RH⇔strict orbit bound abs(cφ(t))<Q(φ) for every nonzero compact test and t≠0⇔all two-site windows positive definite [L]. Frozen/two-collar forms pay the first prime kick for log2≤A≤181/250. Under RH, even fixed-total-length lattice refinement has zero limiting margin [L]. [Odd frontier](#owu); [lattice frontier](#shared-frontier).
-- **Open:** Independent all-test strict orbit bound, or all-stage contraction/Schur sign paying signed prime folds and low-moment cross-terms. [Bare Markov positivity already fails before the first prime](rh-killed-routes.md#prime-free-markov) [S]; retain the pole. [Compact folded supersolutions require the exact origin charge](rh-killed-routes.md#folded-origin-charge) [K]. Frozen-stage branch needs interior infimum attainment; end-collar determination does not imply [interior-gap continuation](rh-killed-routes.md#lattice-interior-gap). [Fixed positive lattice slack fails](rh-killed-routes.md#lattice-positive-slack).
-- **Sources:** C:TheApertureFlowNeverStalls; I:AnExplicitLargerApertureRetainsAWeilFloor; ATD:FirstFoldStageDomination; SP:SemilocalPrimeTwoTrace/IntrinsicWeilTraceAndWindowCorollaries; CSTW:WindowGrowthIsATranslationContraction; CSTW:TheFrozenFormInClosedForm; GWZ:AWindowIsTheUnionOfItsLattices; GWZ:TheLatticeHasNoSlackUnderRH; GWZ:ZeroModesHaveReflectionParity; GWZ:ForbiddingLatticeZeroModesIsRH; GWZ:TheFirstPrimeStageOpensPositive [L].
+- **Established:** Attained, strictly radius-decreasing minima; μ≥1/5000 through a=181/500, ≥1/8000 through a*=enlargedWeilFloorAperture>181/500. Exact {∞,2} trace through a=½log3; local Gamma/Tate domination for length≤2a*, 0≤k≤1/160000. Window sign⇔all fitting lattices; all-window sign⇔RH; all-test strict orbit bound⇔two-site positivity⇔RH [L]. Pole-charged gauge identity Q(Φωu)=J+∫u²ω𝒢+2V_s−2V_c [S]. [Odd](#owu) / [lattice](#shared-frontier) frontiers.
+- **Open:** Independent all-test orbit/contraction bound paying signed prime folds and moment cross-terms. Charged-gauge branch needs an actual gauge and signed jump/variance payment; [bare Markov supersolutions fail](rh-killed-routes.md#prime-free-markov) [S]. [Collar parity assumes enlarged-window positivity](rh-killed-routes.md#collar-positivity-induction); it supplies no induction step. Frozen-stage branch needs interior infimum attainment; [end-collar uniqueness is not interior-gap continuation](rh-killed-routes.md#lattice-interior-gap).
+- **Sources:** C:TheApertureFlowNeverStalls; I:AnExplicitLargerApertureRetainsAWeilFloor; ATD:FirstFoldStageDomination; SP:SemilocalPrimeTwoTrace/IntrinsicWeilTraceAndWindowCorollaries; CSTW:WindowGrowthIsATranslationContraction; CSTW:TheFrozenFormInClosedForm; GWZ:RHIsDecidedOnTwoSites; GWZ:TheFirstPrimeStageOpensPositive [L]; SWC:ThePoleChargesTheSupersolution [S].
 
 <a id="fu"></a>
 ### FU — CCM-FU signed prime scheduling
@@ -115,7 +115,7 @@ Evidence: [L] integrated, source-reviewed; [S] unfinished/unintegrated, unverifi
 ### HF — Positive Hodge form on arithmetic cohomology
 
 - **Path:** Complete arithmetic form ≥0 → Hodge index → RH.
-- **Established:** Hodge/Hecke/Riemann–Roch receivers; full-matrix positivity at every overlap exponent0<α<1/8. Aperture-independent small-critical positivity for each fixed family; fixed twisted sectors positive; critical conductor-diagonal convergence uniform on some M(N)→∞ [L]. Full growing-horizon positivity for one small critical multiple has a capstone source [S]: [shared frontier](#shared-frontier).
+- **Established:** Hodge/Hecke/Riemann–Roch receivers; full-matrix positivity at every overlap exponent0<α<1/8. Aperture-independent small-critical positivity for each fixed family; fixed twisted sectors positive; critical conductor-diagonal convergence uniform on some M(N)→∞ [L]. Full-horizon c⁻⁷ floor at one small critical multiple is stated in source [S]: [shared frontier](#shared-frontier).
 - **Open:** Full growing-family critical-overlap sign at every required multiple, or independent all-window positive realization. Small-critical capstone awaits dependency-closed verification. Small-K aliasing masks Weil sign; [leading equality turns negative](rh-killed-routes.md#critical-pencil-nullspace). [Count/Tate shortcuts fail](rh-killed-routes.md#count-hodge-source); [twisted sectors leave untwisted Weil sign unpaid](rh-killed-routes.md#untwisted-tate-piece).
 - **Sources:** J:TheIndexExit; [critical matrix, twists and conductors](#shared-frontier).
 
@@ -131,9 +131,9 @@ Evidence: [L] integrated, source-reviewed; [S] unfinished/unintegrated, unverifi
 ### TH — Theta moment positivity
 
 - **Path:** Signed center-mixed theta jets → all-rank Hankel positivity → RH.
-- **Established:** Signed center-mixed Hankel rank8 positive definite and I₇(a)>0 for every 0<a<1/2 [K]. Rank9 source: two-diagonal zero-flux repair preserves the literal even block and is positive near zero and on a cofinal tail [S].
-- **Open:** Rank9: sign of I₈(a); proposed repair needs S(x)+DG(x)>0 on the intervening compact interval. [New-diagonal-only repair fails](rh-killed-routes.md#ninth-section-diagonal) [S]. All ranks: uniform signed-flux payment.
-- **Sources:** R:ThetaCusp/ThetaCuspCenterMixedSignedJetCompleteness; TCS:StrictEighthSection [K]; TCS:FifthEvenSourceRepair [S].
+- **Established:** Signed center-mixed Hankel rank8 positive definite and I₇(a)>0 for every 0<a<1/2 [K]. Two-diagonal zero-flux repair preserves every literal even5 mixed moment; one aperture-independent correction is positive near zero and on a cofinal tail [K].
+- **Open:** Rank9: sign of I₈(a); sufficient source comparison S(x)+DG(x)>0 on the compact middle remains unproved. [New-diagonal-only repair fails](rh-killed-routes.md#ninth-section-diagonal) [K]. All ranks: uniform signed-flux payment.
+- **Sources:** R:ThetaCusp/ThetaCuspCenterMixedSignedJetCompleteness; TCS:StrictEighthSection; TCS:FifthEvenSourceRepair [K].
 
 <a id="rn"></a>
 ### RN — Theta renewal and singular comparison
@@ -235,9 +235,9 @@ Evidence: [L] integrated, source-reviewed; [S] unfinished/unintegrated, unverifi
 ### OWU — Odd Weil-weight uniqueness
 
 - **Path:** Actual odd Weil positivity at every aperture → RH.
-- **Established:** Odd RH criterion; prime-free floor; Q≥R_ret+E/64 on odd C² unit-window tests, E=‖F‖² [L]. Joint moment bound Q+(3203/320)(∫xF)²≥E/1000; positive first-moment reflection inverse; exact Gamma remainder; strip+prime2 floor1/16 [K]. Stronger Q≥R_ret+(193/10000)E+M₃/960+M₄/192, Mₖ=∫₀¹tᵏ(E−C_F(t))dt [S].
-- **Open:** Complete joint Gamma/prime/pole sign, including first/third-moment cross-charge and off-strip terms; then all apertures. [Quadratic cutoff defeats the E/64 repair](rh-killed-routes.md#retained-gamma-lower-form) [K]; C² transfer, negative two-moment comparison and higher-lag repair remain [S]. Folded-source branch requires [exact origin charge](rh-killed-routes.md#folded-origin-charge) [K].
-- **Sources:** R:WeilMarkovOddPositivity; WTZ:TheGammaRemainderCannotBeDiscarded [L]; WTZ:TheThirdOddMomentIsPaidByTheFirstFold; WTZ:TheFirstMomentHasAPositiveReflectionInverse; WTZ:TheGammaRemainderHasAnExactEnergyIdentity; WTZ:TheLogarithmicStripPaysTheFirstFold; WTZ:TheUniformGammaReserveHasANegativeDirection [K]; WTZ:TheUniformGammaReserveCannotPayTheFirstFold; WTZ:TheGammaRemainderRetainsHigherLags; WTZ:TheHigherGammaReserveRepairsTheQuadraticCutoff [S].
+- **Established:** Odd RH criterion; prime-free floor. On odd C² unit-window tests, E=‖F‖², m₁=∫xF: Q≥R_ret+E/64 [L]; Q+(3203/320)m₁²≥E/1000, exact Gamma remainder and strip+prime2 floor1/16 [K]. Retained higher-lag source gives Q≥R_ret+(193/10000+17/23040)E+(13/3840)m₁² [S].
+- **Open:** Complete joint Gamma/prime/pole sign, including low-moment cross-charge and off-strip terms; then all apertures. [R_ret+E/64 and its two-moment lower comparison are negative on smooth odd unit tests](rh-killed-routes.md#retained-gamma-lower-form) [K]. Stronger Gamma reserve needs audit and all-test payment. Folded gauges require [exact origin charge](rh-killed-routes.md#folded-origin-charge) [K].
+- **Sources:** R:WeilMarkovOddPositivity; WTZ:TheThirdOddMomentIsPaidByTheFirstFold; WTZ:TheGammaRemainderHasAnExactEnergyIdentity; WTZ:TheLogarithmicStripPaysTheFirstFold; WTZ:TheUniformGammaReserveCannotPayTheFirstFold [K]; WTZ:TheGammaRemainderRetainsHigherLags [S].
 
 <a id="pbm"></a>
 ### PBM — Regularized prime/log-ζ abscissa
@@ -275,7 +275,7 @@ Evidence: [L] integrated, source-reviewed; [S] unfinished/unintegrated, unverifi
 ### AIP — Arithmetic incidence positivity
 
 - **Path:** Prime incidence + plateau gauge → all-aperture global allocation → odd positivity → RH.
-- **Established:** Allocation receiver; full tilted-spline matrix≥κ/(2c⁷)I uniformly 1≤c≤(log N)^α, 0<α<1/8 [L]. Full-space small-critical capstone combines low packet, weighted complement and Schur payment [S]: [shared frontier](#shared-frontier).
+- **Established:** Allocation receiver; full tilted-spline matrix≥κ/(2c⁷)I uniformly 1≤c≤(log N)^α, 0<α<1/8 [L]. Source capstone extends that floor to one small critical multiple [S]: [shared frontier](#shared-frontier).
 - **Open:** Global allocation or full sign at c=2K(log N)^(1/8) for every K>0. Small-critical assembly is written; dependency checks/axiom audit remain pending. One small K does not discharge the all-K receiver. Alternative: all-window translation contraction from the short-window seed.
 - **Sources:** I:GlobalIncidenceAllocationCondition; I:GlobalSharedSurplusAllocation; CACT:TheCompleteWeilMatrixIsPositiveDefiniteBelowTheEighthRoot.
 
@@ -283,9 +283,9 @@ Evidence: [L] integrated, source-reviewed; [S] unfinished/unintegrated, unverifi
 ### SC — Stokes/Witt–Krein / archimedean successor
 
 - **Path:** Glued affine Weil index≤1 / bounded Gaussian-damped two-prime kernel coupling → RH.
-- **Established:** Exact glued index=κ_ζ+1; complete-matrix/tensor receivers. For distinct primes p,q and fixed τ>0, Gaussian-damped coupling is O(exp(σt)) iff width≤σ, σ≥0, t=m log p+n log q; bounded ℕ² coupling⇔RH, including unattained width. All-detail/growing-coarse prime–pole norm decay and rank-one approximation: [CHMD](#chmd).
-- **Open:** Prime/archimedean bound for damped coupling, or glued index≤1/complete pole-hyperplane sign. √Y-normalized prime–pole decay supplies neither. [Undamped coupling plus full RvM counts admits off-line exact-spline model divisors](rh-killed-routes.md#coupling-growth); arithmetic source control is essential.
-- **Sources:** AKG:TheGluingFormulaAtEveryPlace; AKG:TowerCoupling/CoupledTowerSignatureFormula; ACPL:ConeBoundary/GaussianConeKernel; ACPL:ConeBoundary/PolynomialBoundaryRepulsion; ACPL:ConeMoments/RVMCompletedSplineDivisor; AID:AllDetailPrimePoleCancellation.
+- **Established:** Glued index=κ_ζ+1; complete-matrix receiver. Fixed spline: tensor bounds abs(c(t))^k≤C_k exp(L_k t), L_k/k→0, imply RH; one fixed exponent for all k⇔RH [L]. For distinct primes and fixed Gaussian damping, ℕ² coupling has rate≤σ iff zero width≤σ; bounded coupling⇔RH, including unattained width. Normalized prime–pole decay: [CHMD](#chmd).
+- **Open:** Arithmetic bound for damped coupling, sublinear tensor loss, or glued index≤1/complete pole-hyperplane sign. Linear-in-order tensor loss only repeats the existing width bound. √Y-normalized prime–pole decay supplies no zero rate; [undamped coupling plus full RvM counts admits off-line model divisors](rh-killed-routes.md#coupling-growth).
+- **Sources:** AKG:TheGluingFormulaAtEveryPlace; AKG:TowerCoupling/CoupledTowerSignatureFormula; CP:TheBaseIsAFixedLoss; ACPL:ConeBoundary/GaussianConeKernel; ACPL:ConeBoundary/PolynomialBoundaryRepulsion; ACPL:ConeMoments/RVMCompletedSplineDivisor; AID:AllDetailPrimePoleCancellation.
 
 ## Route candidates
 
@@ -321,13 +321,13 @@ Twist/pencil limits: C² profile on [0,1], positive square mass, Fourier-square 
 | Established | RH-complete target / obstacle |
 |---|---|
 | Tilted spline: eventually, uniformly 1≤c≤(log N)^α, every 0<α<1/8, full matrix≥κ/(2c⁷)I. Low-block, complement and residual Schur bounds jointly discharged [L]. | Full/pole-hyperplane sign at every c=2K(log N)^(1/8), K>0. Subcritical exponents do not reach this endpoint. |
-| Some fixed K₀>0: eventual full-horizon positive definiteness, uniformly 1≤c≤2K₀(log N)^(1/8) [S]. Capstone discharges low-packet, weighted complement and Schur inputs at common cutoffs; prefix leakage and seventh-power collar reserve retained. | Dependency-closed checks/axiom audit pending. RH still requires every K>0; one small multiple leaves an aliasing reserve masking possible negative Weil directions. |
+| Source capstones: some K₀>0 gives full-horizon W≥κ₀/(2c⁷)I, κ₀=tiltedSplineSpectralFloorConstant, eventually uniformly 1≤c≤2K₀(log N)^(1/8); prefix leakage and seventh-power collar reserve retained [S]. | Dependency-closed checks/axiom audit pending. RH requires every K>0; one small multiple retains an aliasing reserve masking possible negative Weil directions. |
 | Fixed nonzero mean-zero periodic χ: exact second-order coefficient is its nonnegative Fourier-power Hurwitz sum; every fixed independent window family has eventual positive Gram. Fixed Ramanujan-twisted/untwisted mixed limit splits; negative index equals the untwisted pencil's index [L]. | Uniformity in growing periods/families; untwisted Weil sign. Positivity is not uniform over the entire growing horizon space. |
 | Fixed finite nonresonant cosine twists have the exact nonnegative Fourier-power Hurwitz coefficient and eventual positive Gram on each independent family; character sectors decouple across opposite parities, not equal parities. Subtracting the zero-frequency pole leaves the untwisted aliasing count βJ/K [L]. | Moving/coalescing frequencies and growing-family uniformity; the finite-part identity does not control the joint frequency/horizon limit. |
 | Critical pencil=κWeil+(βJ/K)weighted Gram, K=lim c^(β+1)/log N. Q(H)≥−C_p∫e^(−pu)H² on every negative-half-line window, p>1, C_p aperture-independent. One 0<K≤K₀ works at every aperture, eventually for each fixed family. Length A≤3/5: every K>0; smooth A<log2+1/50: cosh-hyperplane positivity/index≤1 [L]. | Every required K and full growing-family sign. Small-K aliasing reserve masks possible negative Weil directions; starting N still depends on the family. |
 | Exact clock c⁸=Klog N: each fixed independent family has eventual inertia (n₊(P), n₋(P)+n₀(P), 0). Correction is −B₁₀/K times the exponent-10 weighted Gram; O(c⁻¹) clock shifts give either sign on a nullvector [L]. | Strict leading positivity or second-order clock payment; growing-family uniformity. Nullvector existence is not established; [equality is not a sign certificate](rh-killed-routes.md#critical-pencil-nullspace). |
 | Length-2a windows carry level-a Weil index; supremum over windows/K counts distinct right zeros. Fixed conductor packets e≤L, 0<2λL≤π, c_N>0, c_N/N→0: rescaled sum through |γ|≤λN tends κ·poleCoefficient²·Σρ mρ/[ρ(1−ρ)]; pole-free limit0 [L]. | High-zero tail above λN and growing packets; this bulk detects only the pole coefficient. |
-| Fixed-conductor second order explicit in Stieltjes constants/divisor logs; complete bulk residual for 0<c<1 and fixed nonprincipal-character diagonal −2φ(q)/q·Re((L′/L)′(1,χ)) [L]. Periodic near pairs: exact row decomposition and summed error O(1+q[1+log(2βwN)]+N(βw)²+βw), βw≤1≤2βwN, for fixed kernel/weight bounds [S]. | Apply the summed estimate at receiver-scale overlap with growing conductors/moduli; control principal/mixed sectors and high-zero tail. Horizon-end cost is retained, not discarded. |
+| Fixed-conductor second order explicit in Stieltjes constants/divisor logs; complete bulk residual for 0<c<1 and fixed nonprincipal-character diagonal −2φ(q)/q·Re((L′/L)′(1,χ)) [L]. Periodic near-pair sum error O(1+q[1+log(2βwN)]+N(βw)²+βw), βw≤1≤2βwN, for fixed kernel/weight bounds [S]. | Uniform near-atom archimedean expansion; receiver-scale growing conductors/moduli; principal/mixed sectors and high-zero tail. Near-kernel source currently supplies its constant and polarization, not the claimed O(w) pairing theorem [S]. |
 | Subcritical conductor blocks have relative Jordan-diagonal control; J(m)/J(1)=#P⁷(ℤ/mℤ) [L]. Critical c⁸/logN→K: some M(N)→∞ gives coefficient-uniform diagonal convergence. Exact E_m(c)=J(m)c⁻⁷R_m(c/m)≥0; count ratio→1 uniformly for m≤M=o(c). Collective squared-residual ratio→0 through N^θ, 0<θ<1/2 [L]. | Prescribed growth rate and complement/cross-term sign. [Bare count approximation fails for m≥Lc](rh-killed-routes.md#conductor-count-resolution); collective quasimodes do not imply a full-matrix lower bound. |
 | Large-prime/cofactor norm frames uniform for d≤N^ε, √N<p≤N^θ, θ>1/2, ε≥0, θ+2ε<1 [L]. | Complete-Weil comparison, smaller primes and remaining composite bands. |
 | RH⇔all translation contractions abs(W(τ_εu,v))²≤Q(u)Q(v), from the short-window floor. Full two-window decomposition; stage=frozen pairing−incoming prime correlation. Two-collar infimum decreases with collar width and equals0 at birth if the current window is nonnegative. First-critical zero modes are determined by either end collar [L]. | Independent signed fold/cross-term payment; frozen interior infimum finiteness/attainment. End-collar uniqueness does not exclude a nonzero mode. [Uniform Tate horizons fail](rh-killed-routes.md#tate-domination). |
@@ -338,9 +338,9 @@ Twist/pencil limits: C² profile on [0,1], positive square mass, Fourier-square 
 
 Sources:
 
-- **Full matrix / frames:** CACT:TheCompleteWeilMatrixIsPositiveDefiniteBelowTheEighthRoot; CACT:EverySubpolynomialSpanHasASuperLogLogPositivityClock; CAF:LargePrimeCofactorsHaveUniformConductorFrames [L]; CACT:TheCompleteWeilMatrixIsPositiveAtACriticalMultiple [S].
+- **Full matrix / frames:** CACT:TheCompleteWeilMatrixIsPositiveDefiniteBelowTheEighthRoot; CACT:EverySubpolynomialSpanHasASuperLogLogPositivityClock; CAF:LargePrimeCofactorsHaveUniformConductorFrames [L]; CACT:TheCompleteWeilMatrixIsPositiveAtACriticalMultiple; CACT:CriticalMultipleCompleteWeilPositivity [S].
 - **Horizon / twists:** AHD:TheWindowIndexCountsTheRightZeros; AHD:TheTwistedDirectionsCarryNoNegativeSquares; AHD:EveryFrequencySectorInheritsThePolarization; AHD:OneCriticalMultiplePaysEveryWindow; AHD:TheCoshHyperplaneInheritsThePolarization; AHD:TheCanonicalCriticalClockEntersFromTheNegativeSide; AHD:TheCriticalBoundaryAddsItsNullDirections; AHD:TheUntwistedCountIsTheFinitePartAtZeroFrequency; AHD:TheBulkIsBlindBelowItsGrid [L]; AHD:TheConductorDecompositionHoldsOnAGrowingRange; AHD:TheCountFormEndsAtTheResolution [L].
-- **Bulk second order:** AHD:TheBulkEntriesAreReadByTheStieltjesConstants [L]; AHD:TheCharacterPacketsReadTheLogarithmicDerivative; AHD:TheBulkEntriesAtEveryOverlap; AHD:TheCrossErrorOfTheBulkEntries [L]; AHD:TheRowsOfANearPairSum [S].
+- **Bulk second order:** AHD:TheBulkEntriesAreReadByTheStieltjesConstants; AHD:TheCharacterPacketsReadTheLogarithmicDerivative; AHD:TheBulkEntriesAtEveryOverlap; AHD:TheCrossErrorOfTheBulkEntries [L]; AHD:TheRowsOfANearPairSum; AHD:TheArchimedeanKernelOfNearAtoms [S].
 - **Windows:** WTZ:TheAliasingWeightPaysEveryWindow; DZG:TheGroundStateRepresentationOfAStage; ATD:FirstFoldStageDomination; GWZ:TheTwoCollarFormIsBornZero; GWZ:ZeroModesHaveReflectionParity; CSTW:TheFrozenFormInClosedForm; CSTW:WindowGrowthIsATranslationContraction [L].
 - **Lattices:** GWZ:AWindowIsTheUnionOfItsLattices; GWZ:TheLatticeSelectsTheVonMangoldtWeight; GWZ:ForbiddingLatticeZeroModesIsRH; GWZ:TheLatticeHasNoSlackUnderRH; GWZ:TheSzegoVerblunskyLaw; GWZ:TheLatticeSchurDataCoalesce; GWZ:GapContinuationIsNotStructural; GWZ:TheFirstMarginIsBornQuadratically [L]; GWZ:ACurveDegeneratesAtItsNumberOfAngles [K]; GWZ:SpecZIsACurveOnEveryLattice [L]; GWZ:RHIsDecidedOnTwoSites; GWZ:TheHigherMarginsAreBornLater [L].
 - **Receivers:** SSHA:EveryEighthRootMultipleReceivesTheTiltedSpline; TM:ReceiverRate/SharpLogarithmicOverlapBudget; TM:ReceiverRate/EveryFiniteGramFitsOneCriticalOverlap; RIT:TheHodgeIndexAtCriticalOverlap.

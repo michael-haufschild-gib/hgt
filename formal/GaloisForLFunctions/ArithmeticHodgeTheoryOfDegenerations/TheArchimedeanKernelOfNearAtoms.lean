@@ -66,8 +66,11 @@ theorem integral_increment_mul_increment {φ : ℝ → ℝ} (hφ : Continuous φ
       φ (u + 0) * φ (u + -ℓ) - φ (u + 0) * φ (u + (y - ℓ)) - φ (u + y) * φ (u + -ℓ) +
         φ (u + y) * φ (u + (y - ℓ)) := by
     funext u; simp only [add_zero, ← sub_eq_add_neg]; ring_nf
-  rw [e, integral_add ((hint 0 (-ℓ)).sub (hint 0 (y - ℓ)) |>.sub (hint y (-ℓ))) (hint y (y - ℓ)),
-    integral_sub ((hint 0 (-ℓ)).sub (hint 0 (y - ℓ))) (hint y (-ℓ)),
+  have i1 : Integrable fun u => φ (u + 0) * φ (u + -ℓ) - φ (u + 0) * φ (u + (y - ℓ)) :=
+    (hint 0 (-ℓ)).sub (hint 0 (y - ℓ))
+  have i2 : Integrable fun u => φ (u + 0) * φ (u + -ℓ) - φ (u + 0) * φ (u + (y - ℓ)) -
+      φ (u + y) * φ (u + -ℓ) := i1.sub (hint y (-ℓ))
+  rw [e, integral_add i2 (hint y (y - ℓ)), integral_sub i1 (hint y (-ℓ)),
     integral_sub (hint 0 (-ℓ)) (hint 0 (y - ℓ)), hshift, hshift, hshift, hshift]
   have h1 : shellAutocorr φ (-ℓ - 0) = shellAutocorr φ ℓ := by rw [sub_zero, shellAutocorr_neg]
   have h2 : shellAutocorr φ (-ℓ - y) = shellAutocorr φ (y + ℓ) := by
@@ -86,18 +89,29 @@ theorem mixedBumpRobin_eq_integral {f d : ℝ → ℝ} (hf : Continuous f) (hfc 
       (Ioc 0 W)) :
     mixedBumpRobin f d W =
       ∫ y in Ioc 0 W, (∫ u, (f u - f (u + y)) * (d u - d (u + y))) / (2 * y) := by
-  rw [mixedBumpRobin, bumpRobin, bumpRobin, ← integral_sub hp hm, ← integral_div]
+  have hsq : ∀ y : ℝ, ∀ g : ℝ → ℝ, Continuous g → HasCompactSupport g →
+      Integrable fun u => (g u - g (u + y)) ^ 2 := by
+    intro y g hg hgc
+    have h1 : HasCompactSupport fun u => g (u + y) := hgc.comp_homeomorph (Homeomorph.addRight y)
+    have h2 : HasCompactSupport fun u => g u - g (u + y) := hgc.sub h1
+    have h3 : HasCompactSupport fun u => (g u - g (u + y)) * (g u - g (u + y)) := h2.mul_left
+    have hc : Continuous fun u => g u - g (u + y) :=
+      hg.sub (hg.comp (continuous_id.add continuous_const))
+    simpa only [pow_two] using (hc.mul hc).integrable_of_hasCompactSupport h3
+  have hkey : ∀ y : ℝ, (∫ u, ((f u + d u) - (f (u + y) + d (u + y))) ^ 2) -
+      (∫ u, ((-f u + d u) - (-f (u + y) + d (u + y))) ^ 2) =
+      4 * ∫ u, (f u - f (u + y)) * (d u - d (u + y)) := by
+    intro y
+    have hP : Integrable fun u => ((f u + d u) - (f (u + y) + d (u + y))) ^ 2 :=
+      hsq y (fun u => f u + d u) (hf.add hd) (hfc.add hdc)
+    have hM : Integrable fun u => ((-f u + d u) - (-f (u + y) + d (u + y))) ^ 2 :=
+      hsq y (fun u => -f u + d u) (hf.neg.add hd) (hfc.neg.add hdc)
+    rw [← integral_sub hP hM, ← integral_const_mul]
+    exact integral_congr_ae (Eventually.of_forall fun u => by ring)
+  unfold mixedBumpRobin bumpRobin
+  rw [← integral_sub hp hm, ← integral_div]
   refine setIntegral_congr_fun measurableSet_Ioc fun y _ => ?_
-  have hsq : ∀ g : ℝ → ℝ, Continuous g → HasCompactSupport g →
-      Integrable fun u => (g u - g (u + y)) ^ 2 := fun g hg hgc =>
-    ((hg.sub (hg.comp (continuous_id.add continuous_const))).pow 2).integrable_of_hasCompactSupport
-      ((hgc.sub (hgc.comp_homeomorph (Homeomorph.addRight y))).comp_left (by norm_num))
-  have hP := hsq (fun u => f u + d u) (hf.add hd) (hfc.add hdc)
-  have hM := hsq (fun u => -f u + d u) (hf.neg.add hd) (hfc.neg.add hdc)
-  simp only at hP hM
-  rw [← sub_div, ← integral_sub hP hM, div_div, ← integral_div]
-  refine integral_congr_ae (Eventually.of_forall fun u => ?_)
-  simp only
+  rw [← sub_div, hkey y]
   ring
 
 end GaloisForLFunctions.ArithmeticHodgeTheoryOfDegenerations

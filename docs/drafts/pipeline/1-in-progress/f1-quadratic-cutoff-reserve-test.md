@@ -52,7 +52,7 @@ Multiplication by `E−C(t)≥0` retains the corresponding third and fourth lag
 energies. `TheGammaRemainderRetainsHigherLags.lean` contains the proposed proof;
 its individual Lean audit is pending.
 
-Four exterior Laplace modes give the sharper candidate reserve `δ>193/20000`,
+Five exterior Laplace modes give the sharper candidate reserve `δ>193/20000`,
 using `exp(−1/2)≥60653/100000`. Combined with the local bound, the proposed
 replacement is `Q≥P+(193/10000)E+M₃/960+M₄/192`, where
 `Mₖ=∫₀¹tᵏ(E−C(t))dt`.

@@ -79,18 +79,8 @@ theorem completeWeil_posDef_of_weighted_blocks {Q R₀ R₁ M N : ℕ} {c μ p s
   rw [← ha, spectralFloorWeilMatrix_inner] at hlow'
   have hvz : ∀ m ∈ Icc 1 Q, ⟪normalizedRamanujanHorizonVector m N, u₀ + u₁ + w⟫ = 0 := by
     intro m hm
-    let a' : ℕ → ℝ := fun k => if k = m then 1 else 0
-    have he : (∑ k ∈ Icc 1 Q, a' k • normalizedRamanujanHorizonVector k N) =
-        normalizedRamanujanHorizonVector m N := by
-      dsimp only [a']
-      rw [sum_eq_single m]
-      · simp
-      · intro k _ hkm; rw [if_neg hkm, zero_smul]
-      · intro hnot; exact False.elim (hnot hm)
-    have hv : normalizedRamanujanHorizonVector m N ∈ conductorSubspace Q N := by
-      rw [← he]
-      exact sum_normalizedRamanujanHorizonVector_mem_conductorSubspace Q N a'
-    exact Submodule.inner_right_of_mem_orthogonal hv hz
+    exact Submodule.inner_right_of_mem_orthogonal
+      (mem_conductorSubspace_normalizedRamanujanHorizonVector hm) hz
   have hcross : ⟪Matrix.toEuclideanLin (completeWeilMatrix tiltedUnitSpline c N) y,
       u₀ + u₁ + w⟫ = ∑ m ∈ Icc 1 Q, a m * ⟪r m, u₀ + u₁ + w⟫ := by
     rw [ha, map_sum, sum_inner]
