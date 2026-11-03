@@ -107,7 +107,7 @@ theorem exists_degreeOne_disk_extension_of_order_nonneg (F : ExtendedSelbergClas
       intro k hk
       have hre := congrArg Complex.re hk
       simp [ExtendedSelbergClass.cuspPole, hd] at hre
-      have := Nat.cast_nonneg (R := ℝ) k
+      have : (0 : ℝ) ≤ k := Nat.cast_nonneg k
       linarith
     have h1 := F.hasSum_cuspExpansion hdpos 0 hs hzi hzΔ
     have h2 := hps.hasSum (hmem z hz)

@@ -213,7 +213,7 @@ theorem abs_log_one_add_div_sub_le {m : ℝ} (hm : 0 < m) {x y : ℝ} (hx : 0 �
     rw [this]
     nlinarith [div_nonneg hy hm.le]
   · rw [le_div_iff₀ hpos, one_mul]
-    exact add_le_add_left (div_le_div_of_nonneg_right hxy hm.le) 1
+    linarith [div_le_div_of_nonneg_right hxy hm.le]
 
 /-- **The row kernel is Lipschitz** on `x ≥ 0` whenever `K` is, on the range it reads. -/
 theorem abs_rowKernel_sub_le {K : ℝ → ℝ} {A L w : ℝ} (hw : 0 < w) {m : ℕ} (hm : 1 ≤ m)
@@ -251,7 +251,7 @@ theorem abs_rowKernel_sub_le {K : ℝ → ℝ} {A L w : ℝ} (hw : 0 < w) {m : �
     _ ≤ L * (|x - y| / (m * w)) * (1 / m) + A * (|x - y| / (2 * (m : ℝ) ^ 2)) := by
         gcongr
         exact hKL.trans (mul_le_mul_of_nonneg_left hl hL)
-    _ = (L / w + A / 2) / (m : ℝ) ^ 2 * |x - y| := by field_simp; ring
+    _ = (L / w + A / 2) / (m : ℝ) ^ 2 * |x - y| := by field_simp
 
 /-- **The logarithmic substitution**: `∫_a^b K(log(1 + x/m)/w)/√(m(m+x)) dx = w ∫_α^β K(ℓ) e^{wℓ/2} dℓ`
 for `a = m(e^{αw} − 1)`, `b = m(e^{βw} − 1)`. -/
@@ -316,5 +316,293 @@ theorem integral_rowKernel_eq {K : ℝ → ℝ} {α β w : ℝ} (hw : 0 < w) (h�
     rw [← Real.exp_add]; ring_nf
   rw [hE]
   field_simp
+
+/-! ### One row -/
+
+/-- One row: the offsets `1 ≤ h ≤ N − m` with `log(1 + h/m) ∈ (αw, βw]`, weighted by `p(m + h)`. -/
+def rowWindow (K : ℝ → ℝ) (α β w : ℝ) (N m : ℕ) (p : ℕ → ℝ) : ℝ :=
+  ∑ h ∈ Icc 1 (N - m), if α * w < Real.log (1 + h / m) ∧ Real.log (1 + h / m) ≤ β * w then
+    p (m + h) * rowKernel K w m h else 0
+
+theorem log_window_iff {α β w : ℝ} {m : ℕ} (hm : 1 ≤ m) {x : ℝ} (hx : 0 ≤ x) :
+    (α * w < Real.log (1 + x / m) ∧ Real.log (1 + x / m) ≤ β * w) ↔
+      (m * (Real.exp (α * w) - 1) < x ∧ x ≤ m * (Real.exp (β * w) - 1)) := by
+  have hm0 : (0 : ℝ) < m := by exact_mod_cast hm
+  have hpos : 0 < 1 + x / m := by positivity
+  rw [Real.lt_log_iff_exp_lt hpos, Real.log_le_iff_le_exp hpos]
+  constructor
+  · rintro ⟨h1, h2⟩
+    refine ⟨?_, ?_⟩
+    · have : Real.exp (α * w) - 1 < x / m := by linarith
+      rwa [lt_div_iff₀ hm0, mul_comm] at this
+    · have : x / m ≤ Real.exp (β * w) - 1 := by linarith
+      rwa [div_le_iff₀ hm0, mul_comm] at this
+  · rintro ⟨h1, h2⟩
+    refine ⟨?_, ?_⟩
+    · have : Real.exp (α * w) - 1 < x / m := by rw [lt_div_iff₀ hm0, mul_comm]; exact h1
+      linarith
+    · have : x / m ≤ Real.exp (β * w) - 1 := by rw [div_le_iff₀ hm0, mul_comm]; exact h2
+      linarith
+
+theorem log_div_mem_Icc {α β w : ℝ} (hw : 0 < w) {m : ℕ} (hm : 1 ≤ m) {x : ℝ}
+    (hx : x ∈ Icc (m * (Real.exp (α * w) - 1)) (m * (Real.exp (β * w) - 1))) :
+    Real.log (1 + x / m) / w ∈ Icc α β := by
+  have hm0 : (0 : ℝ) < m := by exact_mod_cast hm
+  have hpos : 0 < 1 + x / m := by
+    have : -m < x := lt_of_lt_of_le (by nlinarith [Real.exp_pos (α * w)]) hx.1
+    have : -1 < x / m := by rw [lt_div_iff₀ hm0]; linarith
+    linarith
+  constructor
+  · rw [le_div_iff₀ hw, Real.le_log_iff_exp_le hpos]
+    have : Real.exp (α * w) - 1 ≤ x / m := by rw [le_div_iff₀ hm0, mul_comm]; exact hx.1
+    linarith
+  · rw [div_le_iff₀ hw, Real.log_le_iff_le_exp hpos]
+    have : x / m ≤ Real.exp (β * w) - 1 := by rw [div_le_iff₀ hm0, mul_comm]; exact hx.2
+    linarith
+
+/-- **One row is a Riemann sum.** For a kernel bounded by `A` and `L`-Lipschitz on `[α, β]` and a
+`q`-periodic weight bounded by `B`, a row that fits below the horizon is
+`p̄ · w ∫_α^β K(ℓ) e^{wℓ/2} dℓ` up to `(2q + 1)B(4A + 2βL)/m`. -/
+theorem abs_rowWindow_sub_le {K : ℝ → ℝ} {α β A L w : ℝ} (hα : 0 ≤ α) (hαβ : α ≤ β) (hw : 0 < w)
+    (hβw : β * w ≤ 1) (hA : ∀ ℓ ∈ Icc α β, |K ℓ| ≤ A)
+    (hL : ∀ x ∈ Icc α β, ∀ y ∈ Icc α β, |K x - K y| ≤ L * |x - y|) (hL0 : 0 ≤ L)
+    {p : ℕ → ℝ} {q : ℕ} (hq : 0 < q) (hper : ∀ n, p (n + q) = p n) {B : ℝ} (hB : ∀ n, |p n| ≤ B)
+    {N m : ℕ} (hm : 1 ≤ m) (htop : (m : ℝ) * (Real.exp (β * w) - 1) ≤ (N - m : ℕ)) :
+    |rowWindow K α β w N m p - periodicMean p q * ∫ ℓ in α..β, K ℓ * (w * Real.exp (w * ℓ / 2))| ≤
+      (2 * q + 1) * B * (4 * A + 2 * β * L) / m := by
+  have hm0 : (0 : ℝ) < m := by exact_mod_cast hm
+  have hA0 : 0 ≤ A := (abs_nonneg _).trans (hA α ⟨le_rfl, hαβ⟩)
+  have hB0 : 0 ≤ B := (abs_nonneg _).trans (hB 0)
+  have hq0 : (0 : ℝ) < q := by exact_mod_cast hq
+  have hβ0 : 0 ≤ β := hα.trans hαβ
+  set a : ℝ := m * (Real.exp (α * w) - 1) with ha
+  set b : ℝ := m * (Real.exp (β * w) - 1) with hb
+  have ha0 : 0 ≤ a := mul_nonneg hm0.le (by
+    have := Real.add_one_le_exp (α * w); nlinarith [mul_nonneg hα hw.le])
+  have hab : a ≤ b := mul_le_mul_of_nonneg_left (by
+    have := Real.exp_le_exp.mpr (mul_le_mul_of_nonneg_right hαβ hw.le); linarith) hm0.le
+  have hbw : b ≤ 2 * β * w * m := by
+    have h := Real.abs_exp_sub_one_le (x := β * w) (by
+      rw [abs_of_nonneg (mul_nonneg hβ0 hw.le)]; exact hβw)
+    rw [abs_of_nonneg (mul_nonneg hβ0 hw.le)] at h
+    have h' : Real.exp (β * w) - 1 ≤ 2 * (β * w) := (le_abs_self _).trans h
+    calc b = m * (Real.exp (β * w) - 1) := rfl
+      _ ≤ m * (2 * (β * w)) := mul_le_mul_of_nonneg_left h' hm0.le
+      _ = 2 * β * w * m := by ring
+  -- the mean, the kernel and its constants
+  have hmean : |periodicMean p q| ≤ B := by
+    rw [periodicMean, abs_div, abs_of_pos hq0, div_le_iff₀ hq0]
+    refine (Finset.abs_sum_le_sum_abs _ _).trans ?_
+    calc ∑ r ∈ range q, |p r| ≤ ∑ _r ∈ range q, B := Finset.sum_le_sum fun r _ => hB r
+      _ = B * q := by rw [sum_const, card_range, nsmul_eq_mul]; ring
+  set lam : ℝ := (L / w + A / 2) / (m : ℝ) ^ 2 with hlam
+  have hlam0 : 0 ≤ lam := by positivity
+  have hfl : ∀ x ∈ Icc a b, ∀ y ∈ Icc a b,
+      |rowKernel K w m x - rowKernel K w m y| ≤ lam * |x - y| := by
+    intro x hx y hy
+    have hx0 : 0 ≤ x := ha0.trans hx.1
+    have hy0 : 0 ≤ y := ha0.trans hy.1
+    exact abs_rowKernel_sub_le hw hm hx0 hy0 (hA _ (log_div_mem_Icc hw hm hy))
+      (hL _ (log_div_mem_Icc hw hm hx) _ (log_div_mem_Icc hw hm hy)) hL0
+  have hfA : ∀ x ∈ Icc a b, |rowKernel K w m x| ≤ A / m := by
+    intro x hx
+    have hx0 : 0 ≤ x := ha0.trans hx.1
+    have hK := hA _ (log_div_mem_Icc hw hm hx)
+    have hs : (m : ℝ) ≤ Real.sqrt (m * (m + x)) := by
+      rw [Real.le_sqrt hm0.le (by positivity)]; nlinarith
+    rw [rowKernel, abs_div, abs_of_pos (lt_of_lt_of_le hm0 hs)]
+    exact div_le_div₀ hA0 hK hm0 hs
+  have hKcont : ContinuousOn K (Icc α β) := continuousOn_of_abs_sub_le hL
+  have hint : ∫ x in a..b, rowKernel K w m x = ∫ ℓ in α..β, K ℓ * (w * Real.exp (w * ℓ / 2)) :=
+    integral_rowKernel_eq hw hαβ hKcont hm
+  have hfcont : ContinuousOn (rowKernel K w m) (Icc a b) := continuousOn_of_abs_sub_le hfl
+  -- the row is a sum over an integer interval
+  have hfilter : (Finset.Icc 1 (N - m)).filter (fun h : ℕ => α * w < Real.log (1 + h / m) ∧
+      Real.log (1 + h / m) ≤ β * w) = Finset.Icc (⌊a⌋₊ + 1) ⌊b⌋₊ := by
+    ext h
+    simp only [Finset.mem_filter, Finset.mem_Icc, log_window_iff hm (Nat.cast_nonneg h)]
+    constructor
+    · rintro ⟨-, h1, h2⟩
+      exact ⟨Nat.succ_le_of_lt ((Nat.floor_lt ha0).mpr h1), Nat.le_floor h2⟩
+    · rintro ⟨h1, h2⟩
+      have hb0 : 0 ≤ b := ha0.trans hab
+      have h2' : (h : ℝ) ≤ b := (Nat.le_floor_iff hb0).mp h2
+      refine ⟨⟨by omega, ?_⟩, (Nat.floor_lt ha0).mp (by omega), h2'⟩
+      exact_mod_cast h2'.trans htop
+  have hrow : rowWindow K α β w N m p =
+      ∑ h ∈ Finset.Icc (⌊a⌋₊ + 1) ⌊b⌋₊, p (m + h) * rowKernel K w m h := by
+    rw [rowWindow, ← Finset.sum_filter, hfilter]
+  have hbound : (2 * q + 1) * B * (4 * A + 2 * β * L) / m =
+      (2 * q + 1) * B * (4 * A + 2 * β * L) * (1 / m) := by ring
+  rw [hrow, ← hint]
+  rcases lt_or_ge ⌊b⌋₊ (⌊a⌋₊ + 1) with hempty | hne
+  · -- an empty row: the window is shorter than one
+    rw [Finset.Icc_eq_empty (by omega), Finset.sum_empty, zero_sub, abs_neg, abs_mul]
+    have hba : b - a < 1 := by
+      have h1 := Nat.lt_floor_add_one b
+      have h2 := Nat.floor_le ha0
+      have h3 : (⌊b⌋₊ : ℝ) + 1 ≤ ⌊a⌋₊ + 1 := by exact_mod_cast hempty
+      linarith
+    have hI : |∫ x in a..b, rowKernel K w m x| ≤ A / m * (b - a) := by
+      have := intervalIntegral.norm_integral_le_of_norm_le_const (a := a) (b := b)
+        (f := rowKernel K w m) (C := A / m) (fun x hx => by
+          rw [uIoc_of_le hab] at hx
+          exact hfA x ⟨hx.1.le, hx.2⟩)
+      rwa [Real.norm_eq_abs, abs_of_nonneg (sub_nonneg.mpr hab)] at this
+    calc |periodicMean p q| * |∫ x in a..b, rowKernel K w m x|
+        ≤ B * (A / m * 1) := mul_le_mul hmean (hI.trans (mul_le_mul_of_nonneg_left hba.le
+          (by positivity))) (abs_nonneg _) hB0
+      _ ≤ (2 * q + 1) * B * (4 * A + 2 * β * L) / m := by
+          rw [mul_one, mul_div_assoc', hbound]
+          have hq1 : (1 : ℝ) ≤ 2 * q + 1 := by linarith
+          have : A ≤ (2 * q + 1) * (3 * A + 2 * β * L + β * A) := by
+            nlinarith [mul_nonneg hβ0 hL0, mul_nonneg hβ0 hA0]
+          calc B * A / m = B * A * (1 / m) := by ring
+            _ ≤ (2 * q + 1) * B * (4 * A + 2 * β * L) * (1 / m) := by
+                apply mul_le_mul_of_nonneg_right _ (by positivity); nlinarith
+  · -- a nonempty row
+    set A₀ := ⌊a⌋₊ + 1 with hA₀
+    set M := ⌊b⌋₊ - A₀ with hM
+    have hA₀a : a < A₀ := by rw [hA₀]; push_cast; exact Nat.lt_floor_add_one a
+    have hA₀a1 : (A₀ : ℝ) ≤ a + 1 := by rw [hA₀]; push_cast; linarith [Nat.floor_le ha0]
+    have hb0 : 0 ≤ b := ha0.trans hab
+    have hBb : (⌊b⌋₊ : ℝ) ≤ b := Nat.floor_le hb0
+    have hBb1 : b < ⌊b⌋₊ + 1 := Nat.lt_floor_add_one b
+    have hMeq : ⌊b⌋₊ = A₀ + M := by omega
+    have hMba : (M : ℝ) ≤ b - a := by
+      have : (⌊b⌋₊ : ℝ) = A₀ + M := by exact_mod_cast hMeq
+      linarith
+    have hIcc : Finset.Icc A₀ ⌊b⌋₊ =
+        (range (M + 1)).map ⟨fun i => A₀ + i, fun _ _ h => by omega⟩ := by
+      ext h
+      simp only [Finset.mem_Icc, Finset.mem_map, Finset.mem_range, Function.Embedding.coeFn_mk]
+      constructor
+      · rintro ⟨h1, h2⟩; exact ⟨h - A₀, by omega, by omega⟩
+      · rintro ⟨i, hi, rfl⟩; omega
+    rw [hIcc, Finset.sum_map]
+    simp only [Function.Embedding.coeFn_mk]
+    set f : ℕ → ℝ := fun i => rowKernel K w m ((A₀ + i : ℕ) : ℝ) with hf
+    have hmem : ∀ i ≤ M, ((A₀ + i : ℕ) : ℝ) ∈ Icc a b := by
+      intro i hi
+      push_cast
+      have : (i : ℝ) ≤ M := by exact_mod_cast hi
+      have : (⌊b⌋₊ : ℝ) = A₀ + M := by exact_mod_cast hMeq
+      constructor <;> linarith
+    have hsum_eq : ∑ i ∈ range (M + 1), p (m + (A₀ + i)) * rowKernel K w m ((A₀ + i : ℕ) : ℝ) =
+        ∑ i ∈ range (M + 1), f i * p (m + A₀ + i) := by
+      refine Finset.sum_congr rfl fun i _ => ?_
+      rw [hf, ← add_assoc]; ring
+    rw [hsum_eq]
+    -- periodic averaging
+    have havg := abs_sum_range_mul_shift_sub_mean_le hq hper hB (m + A₀) f M
+    have hfM : |f M| ≤ A / m := hfA _ (hmem M le_rfl)
+    have hvar : ∑ i ∈ range M, |f (i + 1) - f i| ≤ lam * M := by
+      calc ∑ i ∈ range M, |f (i + 1) - f i| ≤ ∑ _i ∈ range M, lam := by
+            refine Finset.sum_le_sum fun i hi => ?_
+            have hi' : i < M := Finset.mem_range.mp hi
+            have h := hfl _ (hmem (i + 1) hi') _ (hmem i hi'.le)
+            have hd : |((A₀ + (i + 1) : ℕ) : ℝ) - ((A₀ + i : ℕ) : ℝ)| = 1 := by
+              push_cast; ring_nf; norm_num
+            rw [hd, mul_one] at h
+            exact h
+        _ = lam * M := by rw [sum_const, card_range, nsmul_eq_mul]; ring
+    -- the sum against the integral
+    have hEM : |∑ i ∈ range (M + 1), f i - ∫ x in a..b, rowKernel K w m x| ≤ lam * M + 3 * (A / m) := by
+      have hsplit : ∑ i ∈ range (M + 1), f i = ∑ i ∈ range M, rowKernel K w m ((A₀ : ℝ) + i) + f M := by
+        rw [Finset.sum_range_succ]
+        congr 1
+        exact Finset.sum_congr rfl fun i _ => by rw [hf]; push_cast; ring_nf
+      have hR := abs_sum_range_sub_integral_le (f := rowKernel K w m) (lam := lam) (A₀ : ℝ) M
+        (fun x hx y hy => hfl x ⟨hA₀a.le.trans hx.1, hx.2.trans (by
+          have : (⌊b⌋₊ : ℝ) = A₀ + M := by exact_mod_cast hMeq
+          linarith)⟩ y ⟨hA₀a.le.trans hy.1, hy.2.trans (by
+          have : (⌊b⌋₊ : ℝ) = A₀ + M := by exact_mod_cast hMeq
+          linarith)⟩)
+      have hBM : ((A₀ : ℝ) + M) = ⌊b⌋₊ := by exact_mod_cast hMeq.symm
+      have hii : ∀ u v, u ∈ Icc a b → v ∈ Icc a b → IntervalIntegrable (rowKernel K w m) volume u v :=
+        fun u v hu hv => (hfcont.mono (Set.uIcc_subset_Icc hu hv)).intervalIntegrable
+      have hA₀mem : (A₀ : ℝ) ∈ Icc a b := ⟨hA₀a.le, by rw [← hBM] at hBb; linarith [(Nat.cast_nonneg M : (0:ℝ) ≤ M)]⟩
+      have hBmem : (⌊b⌋₊ : ℝ) ∈ Icc a b := ⟨by rw [← hBM]; linarith [hA₀mem.1, (Nat.cast_nonneg M : (0:ℝ) ≤ M)], hBb⟩
+      have hamem : a ∈ Icc a b := ⟨le_rfl, hab⟩
+      have hbmem : b ∈ Icc a b := ⟨hab, le_rfl⟩
+      have hthree : ∫ x in a..b, rowKernel K w m x = (∫ x in a..(A₀ : ℝ), rowKernel K w m x) +
+          (∫ x in (A₀ : ℝ)..(A₀ : ℝ) + M, rowKernel K w m x) +
+          ∫ x in (⌊b⌋₊ : ℝ)..b, rowKernel K w m x := by
+        rw [hBM, intervalIntegral.integral_add_adjacent_intervals (hii _ _ hamem hA₀mem)
+          (hii _ _ hA₀mem hBmem), intervalIntegral.integral_add_adjacent_intervals
+          (hii _ _ hamem hBmem) (hii _ _ hBmem hbmem)]
+      have hlow : |∫ x in a..(A₀ : ℝ), rowKernel K w m x| ≤ A / m := by
+        have := intervalIntegral.norm_integral_le_of_norm_le_const (a := a) (b := (A₀ : ℝ))
+          (f := rowKernel K w m) (C := A / m) (fun x hx => by
+            rw [uIoc_of_le hA₀a.le] at hx
+            exact hfA x ⟨hx.1.le, hx.2.trans hA₀mem.2⟩)
+        rw [Real.norm_eq_abs, abs_of_nonneg (sub_nonneg.mpr hA₀a.le)] at this
+        calc _ ≤ A / m * ((A₀ : ℝ) - a) := this
+          _ ≤ A / m * 1 := mul_le_mul_of_nonneg_left (by linarith) (by positivity)
+          _ = A / m := mul_one _
+      have hhigh : |∫ x in (⌊b⌋₊ : ℝ)..b, rowKernel K w m x| ≤ A / m := by
+        have := intervalIntegral.norm_integral_le_of_norm_le_const (a := (⌊b⌋₊ : ℝ)) (b := b)
+          (f := rowKernel K w m) (C := A / m) (fun x hx => by
+            rw [uIoc_of_le hBb] at hx
+            exact hfA x ⟨hBmem.1.trans hx.1.le, hx.2⟩)
+        rw [Real.norm_eq_abs, abs_of_nonneg (sub_nonneg.mpr hBb)] at this
+        calc _ ≤ A / m * (b - ⌊b⌋₊) := this
+          _ ≤ A / m * 1 := mul_le_mul_of_nonneg_left (by linarith) (by positivity)
+          _ = A / m := mul_one _
+      rw [hsplit, hthree]
+      have e : ∑ i ∈ range M, rowKernel K w m ((A₀ : ℝ) + i) + f M -
+          ((∫ x in a..(A₀ : ℝ), rowKernel K w m x) +
+            (∫ x in (A₀ : ℝ)..(A₀ : ℝ) + M, rowKernel K w m x) +
+            ∫ x in (⌊b⌋₊ : ℝ)..b, rowKernel K w m x) =
+          (∑ i ∈ range M, rowKernel K w m ((A₀ : ℝ) + i) -
+            ∫ x in (A₀ : ℝ)..(A₀ : ℝ) + M, rowKernel K w m x) + f M -
+          (∫ x in a..(A₀ : ℝ), rowKernel K w m x) - ∫ x in (⌊b⌋₊ : ℝ)..b, rowKernel K w m x := by
+        ring
+      rw [e]
+      calc _ ≤ |∑ i ∈ range M, rowKernel K w m ((A₀ : ℝ) + i) -
+              ∫ x in (A₀ : ℝ)..(A₀ : ℝ) + M, rowKernel K w m x| + |f M| +
+            |∫ x in a..(A₀ : ℝ), rowKernel K w m x| +
+            |∫ x in (⌊b⌋₊ : ℝ)..b, rowKernel K w m x| := by
+            refine (abs_sub _ _).trans (add_le_add_right ((abs_sub _ _).trans
+              (add_le_add_right (abs_add_le _ _) _)) _)
+        _ ≤ lam * M + A / m + A / m + A / m := by gcongr
+        _ = lam * M + 3 * (A / m) := by ring
+    have hlamM : lam * M ≤ (2 * β * L + A) / m := by
+      calc lam * M ≤ lam * (2 * β * w * m) :=
+            mul_le_mul_of_nonneg_left (hMba.trans ((sub_le_self _ ha0).trans hbw)) hlam0
+        _ = (2 * β * L + A * (β * w)) / m := by rw [hlam]; field_simp; ring
+        _ ≤ (2 * β * L + A) / m := by
+            apply div_le_div_of_nonneg_right _ hm0.le
+            nlinarith
+    have hmain : |∑ i ∈ range (M + 1), f i * p (m + A₀ + i) -
+        periodicMean p q * ∫ x in a..b, rowKernel K w m x| ≤
+        2 * q * B * (A / m + lam * M) + B * (lam * M + 3 * (A / m)) := by
+      have e : ∑ i ∈ range (M + 1), f i * p (m + A₀ + i) -
+          periodicMean p q * ∫ x in a..b, rowKernel K w m x =
+          (∑ i ∈ range (M + 1), f i * p (m + A₀ + i) - periodicMean p q * ∑ i ∈ range (M + 1), f i) +
+            periodicMean p q * (∑ i ∈ range (M + 1), f i - ∫ x in a..b, rowKernel K w m x) := by ring
+      rw [e]
+      refine (abs_add_le _ _).trans (add_le_add (havg.trans ?_) ?_)
+      · exact mul_le_mul_of_nonneg_left (add_le_add hfM hvar) (by positivity)
+      · rw [abs_mul]; exact mul_le_mul hmean hEM (abs_nonneg _) hB0
+    refine hmain.trans ?_
+    rw [hbound]
+    have h1 : A / m + lam * M ≤ (2 * A + 2 * β * L) * (1 / m) := by
+      calc A / m + lam * M ≤ A / m + (2 * β * L + A) / m := by linarith
+        _ = (2 * A + 2 * β * L) * (1 / m) := by ring
+    have h2 : lam * M + 3 * (A / m) ≤ (4 * A + 2 * β * L) * (1 / m) := by
+      calc lam * M + 3 * (A / m) ≤ (2 * β * L + A) / m + 3 * (A / m) := by linarith
+        _ = (4 * A + 2 * β * L) * (1 / m) := by ring
+    have hm1 : (0 : ℝ) ≤ 1 / m := by positivity
+    calc 2 * q * B * (A / m + lam * M) + B * (lam * M + 3 * (A / m))
+        ≤ 2 * q * B * ((2 * A + 2 * β * L) * (1 / m)) + B * ((4 * A + 2 * β * L) * (1 / m)) :=
+          add_le_add (mul_le_mul_of_nonneg_left h1 (by positivity))
+            (mul_le_mul_of_nonneg_left h2 hB0)
+      _ ≤ (2 * q + 1) * B * (4 * A + 2 * β * L) * (1 / m) := by
+          have : 2 * q * B * ((2 * A + 2 * β * L) * (1 / m)) ≤
+              2 * q * B * ((4 * A + 2 * β * L) * (1 / m)) := by
+            apply mul_le_mul_of_nonneg_left _ (by positivity)
+            exact mul_le_mul_of_nonneg_right (by linarith) hm1
+          nlinarith
 
 end GaloisForLFunctions.ArithmeticHodgeTheoryOfDegenerations

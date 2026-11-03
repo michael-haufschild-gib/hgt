@@ -1,8 +1,8 @@
 # Exact remainder of the retained Gamma comparison
 
 - **ID:** F1-GE
-- **Stage:** 2-fully-proven
-- **Type:** THEOREM (paper)
+- **Stage:** 3-formalized
+- **Type:** THEOREM (Lean)
 - **Source:** [Joint first-fold payment](../1-in-progress/f1-joint-cubic-prime-payment.md)
 - **Statement:** For every real odd C² function supported in `[-1/2,1/2]`,
   `Q(F)=P(F)+∫₀¹r(t)(E−C(t))dt+2δE`.
@@ -25,5 +25,12 @@ the remaining prime and sinh terms agree exactly with those in `P`.
 All summands are integrable: the original Gamma integrand and logarithmic
 jump term are integrable, and the polynomial lag terms are continuous.
 
-`[PROVED HERE]`. Formalization in progress; this identity alone supplies no
-new sign for `P` or `Q`.
+## Lean status
+
+WTZ `TheGammaRemainderHasAnExactEnergyIdentity` proves
+`weilQuad_eq_retainedOddGamma_add_remainder` and
+`retainedGammaRemainder_integrable_nonneg`.
+
+The individual `lake --old env lean` source check passes. Both declarations
+have only `propext`, `Classical.choice`, and `Quot.sound` as transitive axioms.
+The identity alone supplies no new sign for `P` or `Q`.

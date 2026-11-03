@@ -46,4 +46,4 @@ Both individual `lake --old env lean` audits pass without warnings. All five tra
 
 ## Remaining bridge
 
-[Gaussian physical residue](../1-in-progress/f2-gaussian-physical-krein-residue.md): prove height-uniform normalized cusp bounds and pass to the existing infinite zero coordinates. Arithmetic control of the counterterms and complete Weil positivity remain open.
+[Gaussian physical residue](f2-gaussian-physical-krein-residue.md) and [height-uniform normalized cusp bounds](f2-uniform-normalized-cusp-remainder.md) are formalized. The existing infinite zero coordinates recover complete Weil energy through the iterated physical cusp limit. Arithmetic control of the counterterms and complete Weil positivity remain open.

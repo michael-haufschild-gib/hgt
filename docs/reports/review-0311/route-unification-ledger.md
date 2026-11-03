@@ -1,6 +1,6 @@
 # Route unification ledger — status quo
 
-The 33 live routes and 16 candidates are faces of three core problems — **U-Σ** (sign), **U-Π**
+The 32 live routes and 17 candidates are faces of three core problems — **U-Σ** (sign), **U-Π**
 (precision and production), **U-Γ** (selection and reflection) — and the three core problems are one
 statement read three ways: the **two-site band** `|c_ψ(t)| < Q(ψ)` of a bump and its translate,
 `c_ψ(t) = W(ψ(· − t), ψ)`. All read one even integer `κ = κ(K_ζ) = #` distinct zeros right of the
@@ -8,7 +8,7 @@ critical line, on one object, the window tower `A ↦ W_A`, and all are decided 
 
 - **One criterion, one minimal object.** Every sign face is Weil's form on windows of every length
   [L], and windows are decided on two sites: RH ⇔ every two-site lattice window is positive definite
-  ⇔ strict orbit Cauchy–Schwarz [U/L]. One generic bump decides; eventual boundedness of its orbit
+  ⇔ strict orbit Cauchy–Schwarz [L]. One generic bump decides; eventual boundedness of its orbit
   correlation decides; its growth rate is the zero width [L].
 - **Sign = precision.** The two-site entry is the trivial-divisor moment term minus the `ψ⋆ψ`-smoothed
   prime sum over `[e^{t−2r}, e^{t+2r}]` [L/D]: U-Σ on two sites is U-Π at one point.
@@ -31,10 +31,14 @@ critical line, on one object, the window tower `A ↦ W_A`, and all are decided 
   prime-blind nonemptiness is node-critical [L].
 - **One density statement and one mode.** Near-line density is one statement in eight forms;
   `D_win` ⇔ thin Planck shadows; one cyclotomic mode carries `2Θ` [L].
-- **One missing fact.** Over `𝔽_q` the 2×2 Gram of the diagonal and the graph of Frobenius is negative
-  definite on primitive classes by the Hodge index, proved from Riemann–Roch; this is the Hasse–Weil
-  bound. Over ℤ the same Gram, of `ψ` and `τ_tψ`, is RH. Missing: a count-valued Hodge index on the
-  rank-2 spans `{ψ, τ_tψ}`, uniform in the scale `t`.
+- **One missing mechanism.** Over `𝔽_q` the 2×2 Gram of the diagonal and the graph of Frobenius is
+  positive on primitive classes by the Hodge index, proved from Riemann–Roch counts. Over ℤ the same
+  Gram, of `ψ` and `τ_tψ`, is RH, but the count mechanism is closed: no archimedean family dominates the
+  Tate counts, positive dimension descends nothing, every concrete count type is excluded [L], and the
+  count/Hodge/degeneration programme cannot close RH [D]. Missing: a signed positivity certificate of
+  unbounded rank on every window (P1, signed criticality), or archimedean positivity on signed
+  prime-blind combinations (P2), or square-root cancellation of one smoothed prime sum (P4). PM's
+  reflection (P3) is the zero side itself.
 
 Evidence: `[L]` committed and in its umbrella; `[U]` committed, not in an umbrella; `[W]` working tree
 or work in progress; `[D]` derived here; `[M]` model statement; `[P]` paper.
@@ -45,7 +49,7 @@ or work in progress; `[D]` derived here; `[M]` model statement; `[P]` paper.
 |---|---|---|
 | Index | `κ = #{ρ : Re ρ > ½}` (distinct), even; RH ⇔ `κ < 2` | HKT, AKLT, AOG, ACS [L] |
 | Window index | `ι(A)` monotone, `0` for `A ≤ 3/5`, `sup_A ι(A) = κ` | CWS, AHD [L] |
-| Two sites | RH ⇔ `[[Q(ψ), c_ψ(t)],[c_ψ(t), Q(ψ)]] ≻ 0` ∀ψ, t; first failure two-site | GWZ [U/L] |
+| Two sites | RH ⇔ `[[Q(ψ), c_ψ(t)],[c_ψ(t), Q(ψ)]] ≻ 0` ∀ψ, t; first failure two-site | GWZ [L] |
 | Orbit | RH ⇔ the orbit correlation of one generic bump is eventually bounded; rate = zero width | AOG [L] |
 | Two-site entry | pole moment − trivial-zero moments − smoothed prime sum on `[e^{t−2r}, e^{t+2r}]` | CSTW [L]; [D] |
 | Lattice | Weil sequences Toeplitz; RH ⇔ Schur parameters in `(−1,1)` ⇔ positive with `Σγ² = ∞` | GWZ [L] |
@@ -124,13 +128,13 @@ identity.
 | C10 Pre-divisor | a section defined before the divisor | APF, BSH, CDC, DR, EWJ, HJ, PCS, RFHM, SEC, WBF | zero-independent forcing (Γ5) |
 | C11 Local zero location | window energy, Hecke defect, near-line density, census, clusters | WD-energy, WD-Hecke, census, HEF, SRT-local, IGP, TTPC | abscissa = 2·depth; eight-form density; thin Planck shadows [L] |
 | C12 Hodge–Lefschetz / gluing | HL on the positive locus; zero modes; top gcd stratum | HF-Hodge, ACS-Hodge, RIT, EHT, TG, DZG, GWZ | zero modes = radical; first failure two-site [L] |
-| C13 Sections, counts, Tate family | count-valued primitive `h¹`; naive height; Tate jet | ACS-effectivity, HF-RR, IRK, AE, WTZ, LST | Künneth `h¹ = ½Q`; Weil = Tate jet = signed count [L]; rank-2 form on `{ψ, τ_tψ}` [D] |
+| C13 Sections, counts, Tate family | count-valued primitive `h¹`; naive height; Tate jet | ACS-effectivity, HF-RR, IRK, AE, WTZ, LST | Künneth `h¹ = ½Q`; Weil = Tate jet = signed count [L]; closed as a sign mechanism [D] |
 | C14 Reflection | Rosati involution; Lewis defect; Krein form | PM-scattering, HF band poles, W1C, CWS Frobenius | exact completion `Q = 2Re[𝓦H,𝓦H]`; kick = collar Rosati pairing [L] — face of C1 |
 | C15 Window tower and canonical system | `W_A`; stages; collars; lattices; Schur parameters | CWS, WTZ, DZG, GWZ, CSTW; SZ | stage criterion; Levinson; translation contraction [L] — meets C1, C4, C13, C14, C19 |
 | C16 Prime-blind cone | archimedean + pole part on blind tests | PBAP | Weil cone `⊆ {Λ}`; zero-side identity [L] — face of C1 |
 | C17 Dimension zero | domination of point counts | ATD, DZG (classified) | bare domination ⇔ `Q ≥ 0` [L] |
 | C18 Angle dictionary | Hurwitz forms of angles / frequencies | AHD, ACS, LST, GWZ | angle `u` over `𝔽_q` ≡ frequency `u`; trivial angle = pole [L] |
-| C19 Two-site band | `|c_ψ(t)| < Q(ψ)` | GWZ, AOG; every route of C1, C7, C14, C15 | RH ⇔ two-site PD [U/L]; entry = moments − smoothed prime sum [L/D] |
+| C19 Two-site band | `|c_ψ(t)| < Q(ψ)` | GWZ, AOG; every route of C1, C7, C14, C15 | RH ⇔ two-site PD [L] (lattice form of AOG's Hasse–Weil criterion); entry = moments − smoothed prime sum [L/D]: a reformulation, no mechanism |
 | C20 Selberg-class rigidity | Euler-log discrepancy at `σ = ½`; degree | SEL; ACS, HF fakes | Gamma-independent rigidity; degree gap [L/W] — selection calibration |
 
 C1, C2, C4, C7, C14, C15, C16 and C17 are one quantity, read at its minimal size in C19. C3 is a face
@@ -147,7 +151,7 @@ the stage.
 | Layer | Status | Anchor |
 |---|---|---|
 | Receivers | window, two-site, lattice, translation contraction, horizon, schedule, `K·c*`, index, fold capacity, odd sector, Krein, PBAP, domination | CWS, GWZ, CSTW, AHD, RIT, TM, CHMD, RHTower, DZG [L] |
-| Minimal object | two-site window; first failure two-site | GWZ [U/L] |
+| Minimal object | two-site window; first failure two-site | GWZ [L] |
 | Canonical system | Levinson recursion; Schur parameters; outer predictors; Szegő–Verblunsky; Carathéodory–Fejér | GWZ [L] |
 | Stage | two-collar form; kick law; collar Rosati sectors; frozen form in closed form; Carathéodory disk | GWZ, CSTW [L] |
 | Archimedean transmission | trivial divisor: pole `+`, trivial zeros `−` | CSTW [L] |
@@ -169,7 +173,7 @@ the stage.
 | Dimension zero | ATD, DZG | equivalent to the window sign |
 | Edge / zero modes / Kähler | EHT, HWV, RW, DZG, GWZ | no zero mode; first failure two-site |
 | Stars / gluing | HWV, CSAR, ADT | top gcd stratum |
-| Effectivity / RR | ACS, LST, RIT, HF, AE | count-valued Hodge index (U-Π production); rank 2 suffices |
+| Effectivity / RR | ACS, LST, RIT, HF, AE | count-valued Hodge index; closed as a mechanism (dimension zero) [D] |
 | Rank / degree / approximation | TH, LA, HCF, PA, GTA, ART | Laguerre–Pólya |
 | Scheduled prime sums | FU, CFC, RP, SZ, LI, FEL, EGC | scheduled energy lower bound |
 | Screw / Krein–Schur | SZ | the canonical system of GWZ/CSTW |
@@ -195,7 +199,7 @@ on the prime side — and its production by an exact count.
 | Near-line density | WD, CDG, RBG, HEF, census | eight forms; thin Planck shadows (Π5, Π22) |
 | Census / clusters | SRT, IGP, Zeta23, CDG, TTPC | signed pair data beyond bandwidth one; cluster detection |
 | Tate jet / parity | WTZ, DZG, ATD, AHD | classified (Π24, Π25) |
-| Sections / heights | ACS, LST, AOG, AET, AE, RIT, SPTL, CWS | count-valued Hodge index, rank 2 on `{ψ, τ_tψ}` (Π11h) |
+| Sections / heights | ACS, LST, AOG, AET, AE, RIT, SPTL, CWS | count-valued Hodge index; closed as a mechanism (Π11h, Σ31) [D] |
 | Bulk second order | AHD, ArtinMertens | Stieltjes constants, `L'/L(1,χ)` (Π26) |
 | Finite realizations | RIT, CWS | no-go (Π18) |
 | Genus | ACS, RHTower, LST, CWS, WTZ | upper law open (Π16) |
@@ -254,7 +258,7 @@ Krein reflection, the kick is the collar Rosati pairing. Positivity of the refle
 | Σ: one axis | window length = total lattice length = two-site step + support = radius `½log K` = log of the matched height (model) | AHD, GWZ, SquareRootThreshold [L/M] |
 | Σ ∩ Π: no slack | Weil cone a point; doubly-exponential margins; Szegő singular | RHTower, M, GWZ [L] |
 | Σ ∩ Π: one gluing | Redheffer, nerve `χ̃`, glued index | ADT, HWV, AKG, MC [L] |
-| Σ ∩ Π ∩ Γ: counts | Künneth counts pay all but `½Q`; naive height ⇔ sign; rank-2 Hodge index suffices | CWS, WTZ, LST, AE, ACS, RIT, GWZ [L]; [D] |
+| Σ ∩ Π ∩ Γ: counts | Künneth counts pay all but `½Q`; naive height ⇔ sign; no count produces the sign (dimension zero) | CWS, WTZ, LST, AE, ACS, RIT, ATD, DZG [L]; [D] |
 | Σ ∩ Γ: angle dictionary | angle over `𝔽_q` ≡ frequency over ℤ; trivial angle = pole | AHD [L] |
 | Σ ∩ Γ: one Frobenius | Frobenius at scale `t` = translation; Hecke = Mellin translation | DZG, RIT [L] |
 | Π: window integer = window power sum | collision charge = Wiener–Hopf index | WD, TG, SC-heat [L] |
@@ -287,7 +291,7 @@ Krein reflection, the kick is the collar Rosati pairing. Positivity of the refle
 | PM | Γ (Σ) | C9, C14 | exact zero-coordinate Krein space; Hecke = translation |
 | JAS, CTF, PBM, RB | Π | C7, C19 | one-sided count |
 | XN, BAG | Γ | C8 | typicality / recurrence |
-| ACS | Π (Σ, Γ) | C13, C1, C12, C15, C18, C20 | count-valued Hodge index (rank 2 suffices); fakes; Selberg rigidity |
+| ACS | Π (Σ, Γ) | C13, C1, C12, C15, C18, C20 | count face closed; remaining sign content = Weil's window form; fakes; Selberg rigidity |
 | APF, EWJ, WBF, IRK | Γ (Π) | C10, C13 | source lift with integral count |
 | BSH, CDC, HJ, SEC, PCS, RFHM, DR | Γ | C10 | pre-divisor constructions |
 | EGC, FEL, MSC | Σ | C6, C1 | contour / likelihood / Sonin |
@@ -300,12 +304,12 @@ Krein reflection, the kick is the collar Rosati pairing. Positivity of the refle
 | Needed | Present over ℤ | Missing |
 |---|---|---|
 | Sign of the minimal object | RH ⇔ two-site band; explicit entry; free trajectory leaves the band; every prime power necessary | the band at every step (B42) |
-| Mechanism for the sign | stage criterion; kick law and collar Rosati sectors; frozen form in closed form; Levinson admission; base to `0.7243` | an exact signed stage step (B2), first at the prime 2 (A5, A6, A8) |
+| Mechanism for the sign | stage criterion; kick law and collar Rosati sectors; frozen form in closed form; Levinson admission; base to `0.7243`; odd supersolution criterion | a signed supersolution / exact signed stage step (B2, B3), first at the prime 2 (A5, A6, A8); cost-only, sign-blind, Markov and finite certificates excluded |
 | Full-space structure | PD below `1/8`; twisted directions positive counts; one small multiple pays fixed families | full space at one small multiple (A30); twisted sector at every multiple (B4) |
 | Uniformity in `A` | each length finite; canonical-degree horizons; contact aperture defined | the contact law (B43); subexponential window negativity |
 | Nondegeneracy | zero modes = radical, parity, two-site at first failure | no degenerate two-site lattice (B8 = B42) |
 | Precision | one-sided count ⇔ RH; one mode carries `2Θ`; eight-form density; caps to `σ_m` | square-root size of one smoothed short-window prime count; inner caps; `D_win` |
-| Count from geometry | Künneth `h¹ = ½Q`; Weil's form a signed count; finite-field Stepanov | a count-valued Hodge index on the spans `{ψ, τ_tψ}` (B21, rank 2) |
+| Count from geometry | Künneth `h¹ = ½Q`; Weil's form a signed count; finite-field Stepanov | — (closed: no count produces the sign [D]) |
 | Canonical selector | Weil cone `{Λ}`; lattice selection; Selberg rigidity at `σ = ½` | — (automatic after positivity) |
 | Reflection | exact zero-coordinate Krein space; Hecke = translation; twisted conjugate-linear involution | positivity of the reflection (B34 = B1) |
 | Integrality with homotopy invariance | window index; `{0,∞}` laws | a zero–one law for `κ`; a structural bound on the window index |

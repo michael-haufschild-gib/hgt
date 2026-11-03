@@ -1,6 +1,6 @@
 # Degree-one Selberg classification
 
-- **Stage:** 1-in-progress
+- **Stage:** 0-backlog
 - **Type:** CONJECTURE
 - **Wall:** Γ15
 - **Target:** Every full Selberg function of degree one is a primitive Dirichlet L-function, with the possible imaginary translation allowed by its continuation. In particular, positive coefficients force the zeta function.
@@ -13,14 +13,10 @@ The existing cusp expansion gives the exact radius `Δ = m₀/q` at degree one, 
 
 ## First consequence: a pole or conductor at least `2m₀`
 
-**Claim:** Every extended degree-one function satisfies
+Every extended degree-one function satisfies
 `q ≥ 2m₀` or `meromorphicOrderAt F 1 < 0`.
 
-Suppose the order at one is nonnegative. Its analytic punctured germ makes the polar residue in the cusp expansion zero. Scaling the cusp coordinate gives a holomorphic extension `G` of the ordinary exponential series to `|z| < 2πm₀/q`. If `q < 2m₀`, this radius exceeds `π`.
-
-The identity theorem propagates `G(z+πi)=G(z−πi)` across the overlap disk. Choose a rectangle with imaginary coordinates `−π,π` and real coordinates `−a,a`, where `a>0` and the rectangle lies inside the extension disk. Integrating `G(z)e^{nz}` cancels the horizontal edges. The right edge extracts `2πa(n)`; boundedness on the compact left edge gives `|a(n)|≤C e^(−an)`. Hence the Dirichlet series converges absolutely at zero, which the existing unconditional abscissa theorem excludes at positive degree.
-
-Paper proof dependency-closed; Lean formalization in progress. The meromorphic order avoids dependence on the arbitrary totalized value or nonminimal pole-clearing exponent at one.
+Formalized as `degreeOne_conductor_bound_or_pole`; see [certificate](../3-formalized/selberg-degree-one-conductor-pole.md). This consequence belongs to Γ33 and does not settle the classification target. Meromorphic order avoids dependence on the arbitrary totalized value or nonminimal pole-clearing exponent at one.
 
 ## Open dependencies
 

@@ -621,9 +621,9 @@ Put all lean code for the answer into relevant subfolders to not bloat RHTower a
 
 Do not use the hgtl7 skill.
 
-read and understand docs/reports/review-0211/obstacles-summary.md and docs/reports/rh-current-frontier-map.md
+read and understand docs/reports/review-0311/obstacles-summary.md and docs/reports/rh-current-frontier-map.md
 
-obstacles-summary.md suggest in "### F2. The reflection assembly (PM ⊕ CWS ⊕ WTZ)" to assemble a new route from building blocks of multiple routes and building bridges between the,
+obstacles-summary.md suggest in "### F1. The tower assembly (P1; recommended)" to assemble a new route from building blocks of multiple routes and building bridges between the,
 
 your task: assemble this route, build the bridges, formalize this route.
 

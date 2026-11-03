@@ -2,22 +2,23 @@
 
 Three wall families block every route: **Σ** the critical sign, **Π** precision and production,
 **Γ** selection and reflection. All three read one even integer, `κ = κ(K_ζ) = #` distinct zeros right
-of the critical line, on one object, the window tower `A ↦ W_A` (`κ = sup_A ι(A)`), and all three are
-decided on its smallest piece: the **two-site window** `{ψ, τ_tψ}` of a bump and its translate.
+of the critical line, on the window tower `A ↦ W_A` (`κ = sup_A ι(A)`), and all three are decided on the
+**two-site window** `{ψ, τ_tψ}` — the lattice form of AOG's Hasse–Weil criterion [L].
 
-- **Σ is the two-site band.** RH ⇔ `|c_ψ(t)| < Q(ψ)` for every bump and every `t ≠ 0` ⇔ every two-site
-  lattice window is positive definite; a first failure is two-site, with no interior [U/L]. In tower
-  form: every prime kick must land in the prediction interval of the frozen data — the kick moves one
-  Schur parameter, and positivity is `|γ_n| < 1` at every stage [L]. The kick is the collar Rosati
-  pairing; frozen forms are indefinite, so the kick is a positive source [L].
-- **Π is the same band at one point.** The two-site entry is the trivial-divisor moment term minus the
-  `ψ⋆ψ`-smoothed prime sum over `[e^{t−2r}, e^{t+2r}]` [L/D]: square-root precision of a short-window
-  prime count with the explicit constant `Q(ψ)`. One cyclotomic mode carries `2Θ` [L]; positive
-  dimension descends nothing [L]; production needs an exact count of unbounded rank, or a count-valued
-  Hodge index on every rank-2 span `{ψ, τ_tψ}`.
+- **Σ is the sign of every window, decided on two sites.** RH ⇔ `|c_ψ(t)| < Q(ψ)` for every bump and
+  `t ≠ 0` [L]. In tower form every prime kick must land in the prediction interval of the frozen data
+  (one Schur parameter per kick) [L]; frozen forms are indefinite, so the kick is a positive source [L].
+  Cost-only, sign-blind, Markov and finite certificates are refuted; the live mechanism is signed
+  criticality (P1).
+- **Π is the same band read on the prime side.** The two-site entry is the trivial-divisor moment term
+  minus the `ψ⋆ψ`-smoothed prime sum on `[e^{t−2r}, e^{t+2r}]` [L/D]: the classical square-root form of
+  RH with constant `Q(ψ)`. Production by counts is closed: positive dimension descends nothing and no
+  archimedean family dominates the Tate counts [L]; the count/Hodge/degeneration programme cannot close
+  RH [D]. The live Π mechanism is square-root cancellation (P4).
 - **Γ is reflection positivity.** The completed PM space is `ℓ²(zeros)` with reflection `ρ ↦ 1 − ρ̄` and
-  `Q = 2Re[𝓦H, 𝓦H]` exactly; Hecke is translation; the window has no internal Frobenius [L].
-  Selection is automatic after positivity (Weil cone `{Λ}`; lattice selection) [L].
+  `Q = 2Re[𝓦H, 𝓦H]` exactly; Hecke is translation; the window has no internal Frobenius [L]. Selection
+  is automatic after positivity [L]; the functional equation and positivity determine `ζ` [L]. The
+  prime-blind form of positivity (P2) is the one Γ-side path with no primes.
 
 Status: **Solved** (the face is a theorem), **Partially solved**, **Sharpened** (open, with its exact
 form a theorem), **Open**, **No-go** (the mechanism is refuted), **Classified** (answered by a
@@ -73,20 +74,21 @@ numerical. Window lengths `A`; half-widths `a = A/2`; `c_ψ(t) = W(ψ(·−t), �
 | Σ24 Finite divisor | Solved | — | Coercive off `i/2` and a finite grid [L]. |
 | Σ25 Semilocal and trace carriers | No-go | — | No `{∞,p}` positive carrier; exact `{∞,2}` trace through `½log 3` [L]. |
 | Σ26 Approximation by RH-true objects | Classified | — | Closure class Laguerre–Pólya [L/D]. |
-| Σ27 Window stages | Partially solved | sub (each stage); RH (all) | All real `C²` tests positive through total length `181/250·(1+6·10⁻⁷)`; first prime stage opens positive on `[log 2, 181/250]` (kick ≤ two-collar form, even ≤ prime-free frozen form); odd unit window `Q + (3203/320)(∫xF)² ≥ ‖F‖²/1000`, `Q ≥ ‖F‖²/100` off two odd moments, frozen odd form `Q₁ + 20M² ≥ ‖F‖²/125`; second stage path `α² + β ≤ 1` [L]. No sign theorem on `[0.7243, log 3)` [N margins `1.5×10⁻⁵` odd, `5.6×10⁻⁸` even]. |
+| Σ27 Window stages | Partially solved | sub (each stage); RH (all) | All real `C²` tests positive through total length `181/250·(1+6·10⁻⁷)`; first prime stage opens positive on `[log 2, 181/250]` (kick ≤ two-collar form, even ≤ prime-free frozen form); odd unit window `Q + (3203/320)(∫xF)² ≥ ‖F‖²/1000`, `Q ≥ ‖F‖²/100` off two odd moments, exact retained-Gamma identity `Q = R_ret + ∫(nonnegative remainder) + 2·reserve‖F‖²`, prime-2 strip coercivity `‖G‖²/16`, frozen odd form `Q₁ + 20M² ≥ ‖F‖²/125`; second stage path `α² + β ≤ 1` [L]. One first-moment direction of the odd unit window open. No sign theorem on `[0.7243, log 3)` [N margins `1.5×10⁻⁵` odd, `5.6×10⁻⁸` even]. |
 | Σ28 Window negativity budget | Sharpened | ≥qRH (exponent `< ½`); RH (subexponential) | Floor `−(deg K_A + 2sinh(A/2) − A)‖H‖²`; two-bump negativity rate = maximal depth; orbit-correlation rate = zero width [L]. |
 | Σ29 Low-frequency localization | Solved | — | Negativity only at the poles and below `τ₀(a)` [L]. |
 | Σ30 The stage step | Sharpened | RH (as induction); each stage sub | Stage criterion `2wc_H(ℓ) ≤ S^N_A(H)`; kick law; `S` born zero, monotone in the collar width; kick = collar Rosati pairing, positive source on even–antisymmetric and odd–symmetric data; stage test `Q = F − 2w⟨x_L, Jx_R⟩` with `F` in closed form; Carathéodory disk; lattice admission `|β_n − kick| < E_n` [L]. Lossy forms refuted at the first prime [L]. |
-| Σ31 Positivity across dimension zero | Classified | equivalent to Σ1 | Bare domination ⇔ `Q ≥ 0`; no uniform archimedean family; Euler-product pole weight forced and refuted [L]. |
+| Σ31 Positivity across dimension zero | Classified | equivalent to Σ1 | Bare domination ⇔ `Q ≥ 0`; no uniform archimedean family; Euler-product pole weight forced and refuted [L]. Consequence: the count/Hodge/degeneration programme cannot close RH [D]; a count-based positivity would have to beat parity at first order (Bombieri's `Λ_j`). |
 | Σ32 Prime-blind positivity | Sharpened | RH | Weil cone `{Λ}`; node-critical; finite-level Farkas duality; zero-side identity on blind tests; solved on nonnegative and separated-bump cones [L]. |
 | Σ33 Tate positivity horizon | Classified | — | Exact horizons at stages 1–2; no `k > 0` uniform [L]. |
 | Σ34 Canonical-degree horizon | Classified | — | Every soft deformation paid by the counts has horizon `≍ e^{−A/2}`; exact margins doubly exponential [L/D]. |
-| Σ35 Two-collar recursion | Solved (identity) | identity | Lattice: Levinson recursion, margins `κ(0)∏(1−γ_k²)`, newest datum linear in `β_n`, causality [L]. Continuum: translation contraction, Carathéodory disk [L]; no unnormalized limit, first margin born at `h²` with coefficient `Σm_ργ_ρ²|φ̂(γ_ρ)|²` [L]. |
+| Σ35 Two-collar recursion | Partially solved | identity | Lattice: Levinson recursion, margins `κ(0)∏(1−γ_k²)`, newest datum linear in `β_n`, causality [L]. Continuum: translation contraction and Carathéodory disk [L]; no unnormalized continuum limit; the `n`-th margin is born at order `h^{2n}` (first at `h²` with coefficient `Σm_ργ_ρ²|φ̂(γ_ρ)|²`) [L]. A continuum canonical system (Hamiltonian with the prime kicks) is not constructed. |
 | Σ36 Rational Hecke-graph reading | Solved (identity) | — | Window arithmetic on finite `S ⊂ ℚ_{>0}` = Hecke operator of `ℤ[ℚ^×_{>0}]` [L]. |
 | Σ37 Lattice canonical system | Solved (identity) | — | Window ⇔ all lattices of total length `≤ A`; positive windows have outer predictors; refinement lowers margins; single-kick law; admission interval for a new weight [L]. |
-| Σ38 Two-site decision | Classified | — | RH ⇔ two-site PD ⇔ strict orbit Cauchy–Schwarz; off RH equality `|c_ψ(s)| = Q(ψ)` for a short generic bump [U/L]. |
+| Σ38 Two-site decision | Classified | — | RH ⇔ two-site PD ⇔ strict orbit Cauchy–Schwarz; off RH equality `|c_ψ(s)| = Q(ψ)` for a short generic bump [L]. |
 | Σ39 Trivial-divisor transmission | Solved (identity) | — | Ordered tests couple through `e^{x/2} − Σ_{k≥1}e^{−(2k+½)x}` (pole `+`, trivial zeros `−`) and the prime lags; across prime-free separations only the moments `μ_s ν_s`, `s ∈ {1, −2k}` [L]. |
 | Σ40 Degenerations are curves | Classified | — | Degenerate lattice windows are finite curves (Carathéodory–Fejér); a conjugation-closed curve fails exactly at its number of angles; Spec ℤ under RH is the curve with angles `e^{iγ_ρh}` on every lattice, Szegő singular (`Σγ² = ∞`, margins `→ 0`) [L]. The pole is the hyperbolic pair `e^{±h/2}` with one negative square [L]. |
+| Σ42 Markov and sign-blind ground states | No-go | — | No cofinal Markov (Beurling–Deny) passage (`KR-BD`); full folded calibration fails at `a = ½log 2` (`#folded-markov`); lossless local allocation fails (`KR-LGP`); shifted ground-state combinations fail (ACT) [L]; Barta/Picone weights are sign-blind [L/D]. Survivors: variable-hub Schur elimination; signed supersolutions; the odd supersolution criterion `riemannHypothesis_of_foldedSupersolution` [L]. |
 | Σ41 Contact law | Open | sub | RH to height `T` ⇒ windows to length `c log T`? Model boundary sharp at `c = ½` in both directions [M]; contact aperture `≥ 3/10` and bounded above by near-top zeros [L]. |
 
 ## Π — precision and production
@@ -106,7 +108,7 @@ numerical. Window lengths `A`; half-widths `a = A/2`; `c_ψ(t) = W(ψ(·−t), �
 | Π11a–e Cone, bidegree, fixed-rank, definite, Siegel counts | No-go | — | Excluded as independent sign producers [L]. |
 | Π11f Logarithmic duality | Partially solved | sub | Pole plane: Abel completion, logarithmic RR [L]. |
 | Π11g Boost transform | Solved (identity) | — | `∫Z⁺(s,u)e^{2wu}du = K(s,w)ζ(s+w)ζ(s−w)` [L]. |
-| Π11h Count-valued primitive `h¹` | Sharpened | RH; fixed length sub | Window `h¹ = ½Q`; Weil's form a signed count [L]. Two sites suffice: a count-valued Hodge index on every rank-2 span `{ψ, τ_tψ}` is RH [D]. |
+| Π11h Count-valued primitive `h¹` | Sharpened | RH; fixed length sub | Window `h¹ = ½Q`; Weil's form a signed count [L]. As a mechanism closed with Σ31 [D]: every concrete count type is excluded (Π11a–e, Π20) and no corpus result exempts rank-2 spans `{ψ, τ_tψ}`. |
 | Π12 Subconvexity / heat floor | Partially solved | sub | `μ(½) ≤ 33/200`; heat floors `133/200`, `2/3 + ε` [L]. |
 | Π13 Prefix scale | Solved | — | Strip zeros `Θ(N² log N)`; stabilization `Θ(√m)` [L]. |
 | Π14 Amplifier rank | No-go (finite support) | — | Growing losses keep radius `Be^λ` [L]. |
@@ -151,7 +153,7 @@ numerical. Window lengths `A`; half-widths `a = A/2`; `c_ψ(t) = W(ψ(·−t), �
 | Γ21 Density selection on the natural cone | No-go | — | RvM-count exact-spline countermodels [L]. |
 | Γ22 Contractive scattering positivity | No-go | — | Blaschke pairs keep every Schur inequality [L]. |
 | Γ23 Weil cone uniqueness | Solved | — | Full Weil positivity forces `Λ`; lattice margins all positive only for `λ = Λ` and RH; every single prime power, deletion, or the free evolution degenerates some lattice [L]. |
-| Γ24 Mayer reflection positivity | Sharpened | RH | Resonance ⇔ `ζ(2s) = 0`; `D_s ≤ 0`, `= 0` iff `Re s = ¼`; Krein positivity ⇔ RH; exact completion `Q = 2Re[𝓦H, 𝓦H]`; physical cusp energy minus counterterms has mean the Krein form on finite packets [L]. Open: finite cusp energy ⇒ `D_s = 0`. |
+| Γ24 Mayer reflection positivity | Sharpened | RH | Resonance ⇔ `ζ(2s) = 0`; `D_s ≤ 0`, `= 0` iff `Re s = ¼`; Krein positivity ⇔ RH; exact completion `Q = 2Re[𝓦H, 𝓦H]`; finite packets: renormalized mean cusp energy = Krein square, counterterm subtraction does not preserve positivity [L]. Bounded reflection only for `Re s ≥ ¼` [L]. Open: finite cusp energy ⇒ `D_s = 0`; no candidate mechanism. |
 | Γ25 Two reflection centres | No-go (as operator symmetry) | — | Transfer reflects about `Re w = 1`, zeta events about `Re w = ½` [P]. |
 | Γ26 Resonant-state selectors | No-go | — | Inversion fixes every resonant period; cutoff Grams retain the rate [L]. |
 | Γ27 Tate counts as a selector | No-go | — | `ζ(s)ζ(s−ε)` Tate positive, not Weil positive [L]. |
@@ -160,7 +162,7 @@ numerical. Window lengths `A`; half-widths `a = A/2`; `c_ψ(t) = W(ψ(·−t), �
 | Γ30 Completed Tate family | Classified | — | Unimodular on the line [L]. |
 | Γ31 Degeneration type over `𝔽_q` | Solved (calibration) | — | Pure curves degenerate completely; impure curves have exponential monodromy at exactly their zero width in both signs; golden fake rate `log φ/log 5` [L]. |
 | Γ32 Hecke-equivariant completion | Solved (identity) | identity | `𝒦 = ℓ²(upper Mayer resonances)`, `[x,y] = Σx_s conj(y_{s♯})`; PM cores dense; bounded window map; Hecke multiplier `p^{1−2s}`; reflection twisted conjugate-linear [L]. |
-| Γ33 Euler rigidity in the Selberg class | Solved | — | Euler-log discrepancy absolutely convergent at `σ = ½` ⇒ equality, no Gamma matching; finite-prime and finite-support rigidity; degree zero = Dirichlet unit [L]; no degree in `(0,1)` [W]. |
+| Γ33 Euler rigidity in the Selberg class | Solved | — | Euler-log discrepancy absolutely convergent at `σ = ½` ⇒ equality, no Gamma matching; finite-prime and finite-support rigidity; degree zero = Dirichlet unit; no degree in `(0,1)` [L]; degree one: conductor `≥ 2` or a pole at `1` [U]. |
 | Γ34 Hecke cones and periods | Solved | — | Hecke cones of determinant `n` tile the quadrant; Barnes and Eisenstein/Lewis periods are Hecke eigenfunctions with eigenvalue `1 + p^{1−2s}` for every prime; positive-determinant Hecke operators preserve the Lewis carrier [L]. |
 | Γ35 Beurling and Hamburger rigidity | Classified | — | Positive prime measures with integers more regular than `ℕ` (`N(x) − ρx − C → 0`) admit a zero at any `Re s ∈ (½, 2/3)`, any height (continuous Beurling systems) [L]; a positive measure with Riemann's functional equation is the counting measure of `ℕ`, and a discrete Beurling system with it is the rational primes [L]. The functional equation together with the Euler product is the minimal input of any proof. |
 
@@ -169,7 +171,7 @@ numerical. Window lengths `A`; half-widths `a = A/2`; `c_ψ(t) = W(ψ(·−t), �
 | Bridge | Anchor |
 |---|---|
 | `κ(K_ζ)` = right zeros = `sup_A ι(A)` = band poles of `Λ(s)/Λ(s+1)` = upper-right Mayer resonances; even; RH ⇔ `κ < 2` | HKT, RIT, CWS, AOG [L] |
-| Window sign ⇔ two-site sign; first failure two-site | GWZ [U/L], AOG [L] |
+| Window sign ⇔ two-site sign; first failure two-site | GWZ [L], AOG [L] |
 | Two-site entry = trivial-divisor moments − smoothed prime sum (Σ on two sites = Π at one point) | CSTW [L]; [D] |
 | Window ⇔ its lattices; Weil sequence ⇔ Toeplitz data; kick ⇔ one Schur parameter | GWZ [L] |
 | Degenerate window ⇔ finite curve; Spec ℤ under RH ⇔ infinite-angle curve, Szegő singular | GWZ [L] |
@@ -188,7 +190,7 @@ numerical. Window lengths `A`; half-widths `a = A/2`; `c_ψ(t) = W(ψ(·−t), �
 
 | Family | Solved | Partially solved | Sharpened | Open | No-go | Classified | Reduced |
 |---|---|---|---|---|---|---|---|
-| Σ (57) | 14 (Σ1a, Σ1b, Σ1c, Σ1h, Σ1n, Σ10, Σ12, Σ16, Σ24, Σ29, Σ35, Σ36, Σ37, Σ39) | 9 (Σ1d, Σ1e, Σ1g, Σ1j, Σ1l, Σ3, Σ6, Σ9, Σ27) | 11 (Σ1, Σ2, Σ3a, Σ4, Σ7, Σ8, Σ17, Σ19, Σ28, Σ30, Σ32) | 3 (Σ18, Σ20, Σ41) | 6 (Σ1f, Σ2a, Σ13, Σ14, Σ23, Σ25) | 13 (Σ1i, Σ1k, Σ1m, Σ11, Σ15, Σ21, Σ22, Σ26, Σ31, Σ33, Σ34, Σ38, Σ40) | 1 (Σ5 → Π17) |
+| Σ (58) | 13 (Σ1a, Σ1b, Σ1c, Σ1h, Σ1n, Σ10, Σ12, Σ16, Σ24, Σ29, Σ36, Σ37, Σ39) | 10 (Σ1d, Σ1e, Σ1g, Σ1j, Σ1l, Σ3, Σ6, Σ9, Σ27, Σ35) | 11 (Σ1, Σ2, Σ3a, Σ4, Σ7, Σ8, Σ17, Σ19, Σ28, Σ30, Σ32) | 3 (Σ18, Σ20, Σ41) | 7 (Σ1f, Σ2a, Σ13, Σ14, Σ23, Σ25, Σ42) | 13 (Σ1i, Σ1k, Σ1m, Σ11, Σ15, Σ21, Σ22, Σ26, Σ31, Σ33, Σ34, Σ38, Σ40) | 1 (Σ5 → Π17) |
 | Π (34) | 5 (Π1, Π10, Π11g, Π13, Π26) | 6 (Π3, Π7, Π8, Π9, Π11f, Π12) | 7 (Π4, Π5, Π6, Π11h, Π16, Π17, Π22) | 2 (Π2, Π23) | 10 (Π11a–e, Π14, Π18, Π19, Π20, Π27) | 4 (Π15, Π21, Π24, Π25) | — |
 | Γ (35) | 10 (Γ2, Γ6, Γ7, Γ12, Γ18, Γ23, Γ31, Γ32, Γ33, Γ34) | 2 (Γ5, Γ15) | 6 (Γ4, Γ8, Γ10, Γ16, Γ19, Γ24) | 1 (Γ1) | 12 (Γ3, Γ9, Γ11, Γ13, Γ14, Γ21, Γ22, Γ25, Γ26, Γ27, Γ28, Γ29) | 4 (Γ17, Γ20, Γ30, Γ35) | — |
 
@@ -196,6 +198,7 @@ Strength of the open walls:
 - **RH:** Σ1 (minimal form: the two-site band), Σ2, Σ3a, Σ6, Σ7, Σ8, Σ17, Σ18, Σ19, Σ20, Σ27 (all
   stages), Σ28 (subexponential), Σ30, Σ32, Π2, Π4, Π11h, Π17 (polynomial stage), Π23 (all degrees), Γ1,
   Γ4, Γ5, Γ8, Γ16, Γ19, Γ24.
+- **identity:** Σ35 (continuum canonical system).
 - **≥qRH:** Σ4 (`K_ζ`), Σ28 (exponent `< ½`), Π5 (fixed scale), Π17 (log stage), Π23 (fixed degree).
 - **sub:** Σ1d, Σ1e, Σ1g, Σ1j, Σ1l, Σ4 (zero–one law), Σ27 (each stage), Σ30 (each stage), Σ41, Π3, Π5
   (mean `o(log U)`), Π7, Π9, Π11f, Π11h (fixed length), Π12, Π22, Γ15.

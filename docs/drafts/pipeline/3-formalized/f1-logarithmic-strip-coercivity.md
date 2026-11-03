@@ -1,8 +1,8 @@
 # The regional logarithmic energy pays the signed first fold
 
 - **ID:** F1-LS
-- **Stage:** 2-fully-proven
-- **Type:** THEOREM (paper)
+- **Stage:** 3-formalized
+- **Type:** THEOREM (Lean)
 - **Source:** [Joint first-fold payment](../1-in-progress/f1-joint-cubic-prime-payment.md)
 - **Statement:** The logarithmic principal energy restricted to the prime-two strip,
   together with its signed reflection, has a positive mass floor `1/16`.
@@ -45,6 +45,9 @@ using `49/100≤w≤4902/10000`. No energy outside the strip is spent.
 
 ## Lean status
 
-Formalization in progress. Required inputs already audited: the regional first
-Legendre gap and elementary prime-two weight bounds. The normalized theorem and
-its physical-strip identification must both be checked before this bridge is complete.
+WTZ `TheLogarithmicStripPaysTheFirstFold` proves
+`firstFold_strip_mean_lower` and `firstFold_strip_coercive`, including normalized
+estimates and the exact change to physical strip coordinates.
+
+The individual `lake --old env lean` source check passes. All four public
+theorems have only `propext`, `Classical.choice`, and `Quot.sound` as transitive axioms.

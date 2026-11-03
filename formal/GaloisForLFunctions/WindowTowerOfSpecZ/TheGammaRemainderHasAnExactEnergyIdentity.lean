@@ -126,6 +126,12 @@ private theorem gamma_position_remainder_identity {F : ℝ → ℝ}
       (continuous_const.integrableOn_Icc.mono_set Ioc_subset_Icc_self)
       (hc.integrableOn_Icc.mono_set Ioc_subset_Icc_self), hzero, sub_zero, setIntegral_const]
     norm_num
+  have hiSum : IntegrableOn (fun t => D t / t + D t / 2) (Ioc (0 : ℝ) 1) :=
+    hilog.add (hiD.div_const 2)
+  have hiSub : IntegrableOn (fun t => D t / t + D t / 2 - t * D t / 24)
+      (Ioc (0 : ℝ) 1) := hiSum.sub (hitD.div_const 24)
+  have hiPoly : IntegrableOn (fun t => D t / t + D t / 2 - t * D t / 24 - t ^ 2 * D t / 16)
+      (Ioc (0 : ℝ) 1) := hiSub.sub (hit2D.div_const 16)
   have hlocal : (∫ t in Ioc (0 : ℝ) 1, W t) =
       (∫ t in Ioc (0 : ℝ) 1, D t / t) + M / 2 -
       (∫ t in Ioc (0 : ℝ) 1, t * D t) / 24 -
@@ -136,16 +142,19 @@ private theorem gamma_position_remainder_identity {F : ℝ → ℝ}
       funext t
       dsimp [W, retainedGammaRemainderWeight]
       ring
-    rw [he, integral_add
+    rw [he, integral_add (μ := volume.restrict (Ioc (0 : ℝ) 1))
       (f := fun t => D t / t + D t / 2 - t * D t / 24 - t ^ 2 * D t / 16)
       (g := fun t => retainedGammaRemainderWeight t * D t)
-      (((hilog.add (hiD.div_const 2)).sub (hitD.div_const 24)).sub (hit2D.div_const 16)) hiR,
-      integral_sub (f := fun t => D t / t + D t / 2 - t * D t / 24)
+      hiPoly hiR,
+      integral_sub (μ := volume.restrict (Ioc (0 : ℝ) 1))
+        (f := fun t => D t / t + D t / 2 - t * D t / 24)
         (g := fun t => t ^ 2 * D t / 16)
-        ((hilog.add (hiD.div_const 2)).sub (hitD.div_const 24)) (hit2D.div_const 16),
-      integral_sub (f := fun t => D t / t + D t / 2) (g := fun t => t * D t / 24)
-        (hilog.add (hiD.div_const 2)) (hitD.div_const 24),
-      integral_add (f := fun t => D t / t) (g := fun t => D t / 2) hilog (hiD.div_const 2),
+        hiSub (hit2D.div_const 16),
+      integral_sub (μ := volume.restrict (Ioc (0 : ℝ) 1))
+        (f := fun t => D t / t + D t / 2) (g := fun t => t * D t / 24)
+        hiSum (hitD.div_const 24),
+      integral_add (μ := volume.restrict (Ioc (0 : ℝ) 1))
+        (f := fun t => D t / t) (g := fun t => D t / 2) hilog (hiD.div_const 2),
       integral_div, integral_div, integral_div, hD]
   have htail : (∫ t in Ioi (1 : ℝ), W t) = 2 * archLevyAntideriv 1 * M := by
     have he : ∀ t ∈ Ioi (1 : ℝ), W t = 2 * archLevyDensity t * M := by

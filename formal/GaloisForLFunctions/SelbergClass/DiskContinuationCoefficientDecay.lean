@@ -123,7 +123,7 @@ theorem exists_exponential_coeff_bound_of_disk_extension (F : ExtendedSelbergCla
       have he : (x : ℂ) + (Real.pi : ℂ) * I =
           ((x : ℂ) - (Real.pi : ℂ) * I) + 2 * (Real.pi : ℂ) * I := by ring
       dsimp only [K]
-      simp only [Complex.ofReal_neg, neg_mul, ← sub_eq_add_neg]
+      simp only [neg_mul, ← sub_eq_add_neg]
       rw [hp, he, mul_add, Complex.exp_add, hexp, mul_one]
     rw [hhor, sub_self, zero_add, smul_eq_mul, smul_eq_mul] at hc
     have hv := (mul_left_cancel₀ Complex.I_ne_zero (sub_eq_zero.mp hc)).symm

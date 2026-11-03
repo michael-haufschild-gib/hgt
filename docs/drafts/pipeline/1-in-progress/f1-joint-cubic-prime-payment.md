@@ -24,6 +24,10 @@ Both charges must use disjoint shares of the same jump energy.
 - WTZ: frozen odd coercivity on `M=0`, margin `1/125`.
 - AIP: exact reflected even/odd strip decomposition; microfold estimates pay strip fluctuations.
 - AIP: joint prime-only Harnack reaches half-aperture `23/40`, with the pole unpaid.
+- LST/WTZ: [logarithmic strip payment](../3-formalized/f1-logarithmic-strip-coercivity.md)
+  gives a strip mass floor `1/16` and retains its mean-square gain. It spends
+  the strip's principal logarithmic energy; off-strip pairs, exterior potential,
+  and pole payment remain separate.
 - Complete all-test positivity reaches `a*=enlargedWeilFloorAperture>181/500`, with floor
   `1/8000`; `a*<1/2`. The unit odd window remains beyond that all-test result.
 
@@ -72,10 +76,11 @@ The exact terms omitted from `P` are
 `∫₀¹r(t)(E−C(t))dt+2δE`, with
 `r(t)=e^(t/2)/sinh t−1/t−1/2+t/24+t²/16` and
 `δ=archLevyAntideriv(1)−log2−π/4+1/4−1/96`.
-Both are nonnegative by the proved Gamma kernel and tail bounds. Splitting the exact
-Gamma integral and substituting `M₂=E/3+(∫xF)²` gives `Q=P+∫r(E−C)+2δE` on this
-odd unit window. This equality is a paper identity; the joint sign with these terms
-retained remains the target.
+Both are nonnegative by the proved Gamma kernel and tail bounds. The
+[exact remainder identity](../3-formalized/f1-exact-gamma-remainder-identity.md)
+`Q=P+∫r(E−C)+2δE`, including local remainder integrability and nonnegativity,
+now passes individual Lean and standard-only transitive axiom audits.
+The joint sign with these terms retained remains the target.
 
 The [three-mode exterior reserve](../3-formalized/f1-gamma-remainder-reserve.md)
 proves `Q≥P+E/64` in Lean with standard-only transitive axioms. The next sufficient joint

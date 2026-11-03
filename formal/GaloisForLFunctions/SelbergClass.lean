@@ -58,3 +58,5 @@ import GaloisForLFunctions.SelbergClass.OrdinaryCoefficientDecay
 import GaloisForLFunctions.SelbergClass.QuarterLineGammaRatio
 import GaloisForLFunctions.SelbergClass.PositiveDegreeAbscissa
 import GaloisForLFunctions.SelbergClass.DegreeGap
+import GaloisForLFunctions.SelbergClass.DiskContinuationCoefficientDecay
+import GaloisForLFunctions.SelbergClass.DegreeOneConductorPole

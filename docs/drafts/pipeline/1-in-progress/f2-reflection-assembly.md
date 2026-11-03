@@ -114,7 +114,9 @@ For every finite PM vector, normalize each actual core by `κ_s=−core_s/b_s`, 
 
 `[∫_0^T|Ψ_v|² − Re Σ_(λ_st≠0)c_s conjugate(c_t)(exp(λ_st T)−1)/λ_st]/T → Re[v,v]_PM`,
 
-with `λ_st=2s+2 conjugate(t)−1`. Scattering remainders make the actual-minus-model energy integrable; zero exponents pair exactly reflected resonances. No reflection-closed support assumption is needed. [Proof and declarations](../3-formalized/f2-physical-cusp-krein-residue.md). This realizes the signed form physically, but subtracting growing terms supplies no positivity. The [Gaussian extension](f2-gaussian-physical-krein-residue.md) requires height-uniform normalized cusp control.
+with `λ_st=2s+2 conjugate(t)−1`. Scattering remainders make the actual-minus-model energy integrable; zero exponents pair exactly reflected resonances. No reflection-closed support assumption is needed. [Proof and declarations](../3-formalized/f2-physical-cusp-krein-residue.md). This realizes the signed form physically, but subtracting growing terms supplies no positivity. The [uniform exact cusp bound](../3-formalized/f2-uniform-normalized-cusp-remainder.md) is audited: `|κ_s(a)−a^(1−2s)|≤C(1+Im s)^4 exp(π Im s)a`.
+
+**Gaussian physical residue [K].** For every positive damping parameter and every existing CWS zero-space vector, the normalized physical series and every finite-depth counterterm converge absolutely. The same renormalized mean formula holds for the complete infinite packet. Retaining each resonance's strip gap makes the physical-minus-model energy integrable. For original real window coordinates, twice the residue equals the Gaussian Weil energy; removing damping recovers the complete Weil form as a literal iterated physical-energy limit. [Proof and declarations](../3-formalized/f2-gaussian-physical-krein-residue.md). Counterterm subtraction leaves positivity open.
 
 ## Completion gates
 
@@ -122,4 +124,4 @@ with `λ_st=2s+2 conjugate(t)−1`. Scattering remainders make the actual-minus-
 - [x] Across-stage WTZ correspondence and complete Weil-form identity, Lean audited.
 - [x] Corrected core/signed-form reflection identification.
 - [ ] Missing positivity proved without sign or resonance-admission assumptions.
-- [ ] Individual final audits, standard-only transitive axioms, umbrella imports.
+- [x] Completed bridge modules individually audited, standard-only transitive axioms, umbrella imports.
