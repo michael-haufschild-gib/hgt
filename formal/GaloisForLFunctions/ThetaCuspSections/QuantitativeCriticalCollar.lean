@@ -19,7 +19,7 @@ open _root_.RHTower
 open GaloisForLFunctions.ThetaCuspSections.CriticalCollar
 
 /-- The moment matrix of uniform measure on the unit interval. -/
-private def unitMomentMatrix (N : ℕ) : Matrix (Fin N) (Fin N) ℝ :=
+def unitMomentMatrix (N : ℕ) : Matrix (Fin N) (Fin N) ℝ :=
   fun i j => 1 / ((i.val+j.val:ℕ)+1:ℝ)
 
 private theorem unitMomentMatrix_posDef (N : ℕ) : (unitMomentMatrix N).PosDef := by
@@ -140,7 +140,7 @@ private theorem coercive_of_inverse_quadratic {N : ℕ} {A : Matrix (Fin N) (Fin
   linarith only [h]
 
 /-- The integer determinant floor and cofactor bound give a factorial coercivity constant. -/
-private theorem unitMomentMatrix_coercive (n : ℕ) (v : Fin (n+1) → ℝ) :
+theorem unitMomentMatrix_coercive (n : ℕ) (v : Fin (n+1) → ℝ) :
     v ⬝ᵥ v ≤ (Nat.factorial (n+1):ℝ)*(Nat.factorial (2*(n+1)):ℝ)^(n+1)*
       (v ⬝ᵥ unitMomentMatrix (n+1)*ᵥv) := by
   apply coercive_of_inverse_quadratic (unitMomentMatrix_posDef (n+1)) (by positivity)
@@ -230,7 +230,7 @@ private theorem current_difference_le (u₀ u v₀ v : ℂ) :
   simp only [norm_mul,Complex.norm_conj,norm_neg,Complex.norm_I,one_mul]
 
 /-- Xi and its derivative retain exponential decay under aperture differences. -/
-private theorem current_lipschitz_exp : ∃ C : ℝ, 0<C ∧
+theorem current_lipschitz_exp : ∃ C : ℝ, 0<C ∧
     ∀ a : ℝ, |a-1/2|≤1/8 → ∀ b : ℝ,
       |current a b-current (1/2) b| ≤ C*|a-1/2| *Real.exp (-((Real.pi/4)*|b|)) := by
   let δ : ℝ := Real.pi/8
@@ -342,10 +342,11 @@ open Filter Topology _root_.RHTower
 open GaloisForLFunctions.ThetaCuspSections.CriticalCollar
 
 /-- Uniform moments on a compact interval supporting a positive current floor. -/
-private def compactMomentMatrix (r : ℝ) (N : ℕ) : Matrix (Fin N) (Fin N) ℝ :=
+def compactMomentMatrix (r : ℝ) (N : ℕ) : Matrix (Fin N) (Fin N) ℝ :=
   fun i j => r^(i.val+j.val+1)/((i.val+j.val:ℕ)+1:ℝ)
 
-private theorem compactMomentMatrix_quad (r : ℝ) (hr : 0 < r) (N : ℕ) (v : Fin N → ℝ) :
+/-- The compact moment quadratic form is a polynomial-square integral. -/
+theorem compactMomentMatrix_quad (r : ℝ) (hr : 0 < r) (N : ℕ) (v : Fin N → ℝ) :
     v ⬝ᵥ compactMomentMatrix r N*ᵥv =
       ∫ b : ℝ in Ioc 0 r, ((Polynomial.ofFn N v).eval b)^2 := by
   let μ : Measure ℝ := volume.restrict (Ioc 0 r)
@@ -359,7 +360,8 @@ private theorem compactMomentMatrix_quad (r : ℝ) (hr : 0 < r) (N : ℕ) (v : F
   rw [HTGeometry.dotProduct_mulVec_momentHankelMatrix,
     HTGeometry.momentFunctional_pow_two_eq_integral_sq _ hs hi]
 
-private theorem compactMomentMatrix_scale (r : ℝ) (N : ℕ) (v : Fin N → ℝ) :
+/-- Rescaling a uniform interval is a scalar times a diagonal congruence. -/
+theorem compactMomentMatrix_scale (r : ℝ) (N : ℕ) (v : Fin N → ℝ) :
     v ⬝ᵥ compactMomentMatrix r N*ᵥv =
       r*((fun i : Fin N => r^i.val*v i) ⬝ᵥ unitMomentMatrix N*ᵥ
         (fun i : Fin N => r^i.val*v i)) := by
@@ -368,7 +370,8 @@ private theorem compactMomentMatrix_scale (r : ℝ) (N : ℕ) (v : Fin N → ℝ
   refine Finset.sum_congr rfl fun i _ => Finset.sum_congr rfl fun j _ => ?_
   ring
 
-private theorem scaled_vector_floor {r : ℝ} (hr : 0 < r) (hr1 : r≤1)
+/-- Geometric diagonal rescaling loses at most `r^(2N)` in the coefficient norm. -/
+theorem scaled_vector_floor {r : ℝ} (hr : 0 < r) (hr1 : r≤1)
     (N : ℕ) (v : Fin N → ℝ) :
     r^(2*N)*(v ⬝ᵥ v) ≤
       (fun i : Fin N => r^i.val*v i) ⬝ᵥ (fun i : Fin N => r^i.val*v i) := by
@@ -381,7 +384,8 @@ private theorem scaled_vector_floor {r : ℝ} (hr : 0 < r) (hr1 : r≤1)
   have h := mul_le_mul_of_nonneg_right hp (sq_nonneg (v i))
   nlinarith only [h]
 
-private theorem current_boundary_floor : ∃ m r : ℝ, 0 < m ∧ 0 < r ∧ r≤1 ∧
+/-- The boundary current has a fixed positive lower bound on a compact frequency interval. -/
+theorem current_boundary_floor : ∃ m r : ℝ, 0 < m ∧ 0 < r ∧ r≤1 ∧
     ∀ b : ℝ, b∈Icc 0 r → m≤ current (1/2) b := by
   let m : ℝ := current (1/2) 0/2
   have h0 := current_boundary_pos 0

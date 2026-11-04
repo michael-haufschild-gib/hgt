@@ -228,21 +228,22 @@ checked with standard-only transitive axioms and integrated.
 to zero against every unit neutral receiver at each fixed polynomial ratio;
 individual check and standard-only transitive axiom audit pass; integrated.
 Written, checks pending:
-`CoprimePrimeChargeWindows`, `CoprimePrimeChargeLogWindows`,
+`CoprimePrimeChargeLogWindows`,
 `CoprimePrimeChargeWindowScales`, `CoprimePrimeChargeTailMass`,
 `CoprimePrimeChargeTailPairing`, `CoprimePrimeChargeTailLimits`, `CoprimePrimeChargeTailNorms`,
 `CoprimePrimeChargeTailVectors`, `CoprimePrimeChargeSignedReceiver`.
-These include the full raw limit
-`t²(d/a−1/2)`, vanishing physical complete energy and adjunction, and the
-fixed-mode terminal projection bound and the diagonal signed complement law
-`⟨Wv_m,r_l⟩→δ_ml t/80`. Finite-fibre polarization remains to be assembled;
-the fibre modules remain unchecked.
+These contain the fixed-mode terminal projection bound and the diagonal
+signed complement law `⟨Wv_m,r_l⟩→δ_ml t/80`. Their checks and the finite-fibre
+signed assembly remain pending.
 
 `CompleteFormMomentCosts` proves the common scalar/fibre mixed moment bounds,
 checked with standard-only transitive axioms and integrated.
 
 The terminal fibre contrast may be projected off the common cutoff `R X²`
 for any fixed positive `R`; its predicted square limit remains `1/20`.
+`CoprimePrimeChargeWindows` proves the exact endpoint cancellation, mode-square
+window comparison and projection bound `128m²Q³(1+|κ|)²/((A+1)²(log N)²)`;
+individual check and standard-only transitive axiom audit pass; integrated.
 Deleting the primes dividing `m` changes every tail row by at most
 `m|t/B_(m,Q)|`, since each omitted prime tower has mass at most one.
 Increasing-weight Abel summation bounds the centered conductor-product ramp

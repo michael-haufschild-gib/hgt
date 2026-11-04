@@ -1,4 +1,5 @@
 import GaloisForLFunctions.ArithmeticHodgeTheoryOfDegenerations.TerminalPolarSourceIsNonzero
+import GaloisForLFunctions.ArithmeticHodgeTheoryOfDegenerations.CompleteWeilCriticalMultipleAndWindowCorollaries
 import GaloisForLFunctions.CriticalArithmeticCorrelationTheory.LogarithmFreeCriticalConductorResiduals
 import GaloisForLFunctions.CompletedArithmeticForms.ConductorOverlapDecay
 
@@ -242,8 +243,33 @@ theorem exists_intrinsic_critical_pole_linear_collar_cost :
       (topCollarDualSeventhMass_antitone hcut _) hE0)
     (div_nonneg (pow_nonneg (zero_lt_one.trans_le (hc N)).le 7) hL0))
 
+/-- No fixed absolute collar budget covers all positive critical ratios, even for the pole alone. -/
+theorem exists_critical_ratio_exceeding_every_pole_collar_budget (B : ℝ) :
+    ∃ R : ℝ, 0 < R ∧ ∀ᶠ N : ℕ in atTop,
+      B < canonicalCriticalCurve R N ^ 7 / Real.log N *
+        (topCollarDualSeventhMass (N / linearDefectCutoff (canonicalCriticalCurve R N)) N
+            (terminalPoleResidual (canonicalCriticalCurve R N) N) /
+          completedConductorEnergy tiltedUnitSpline (canonicalCriticalCurve R N) 1) := by
+  obtain ⟨κ, hκ, hcost⟩ := exists_intrinsic_critical_pole_linear_collar_cost
+  let R := (|B| + 1) / κ + 1
+  have hR1 : 1 ≤ R := le_add_of_nonneg_left (by positivity)
+  have hR : 0 < R := zero_lt_one.trans_le hR1
+  have hκR : κ * R = |B| + 1 + κ := by
+    dsimp only [R]
+    field_simp [hκ.ne']
+  have hlarge : B < κ * R ^ 2 := by
+    have hRR : R ≤ R ^ 2 := by nlinarith only [hR1]
+    have hm := mul_le_mul_of_nonneg_left hRR hκ.le
+    rw [hκR] at hm
+    linarith only [hm, le_abs_self B, hκ]
+  refine ⟨R, hR, ?_⟩
+  filter_upwards [hcost (one_le_canonicalCriticalCurve R) hR
+    (tendsto_canonicalCriticalCurve_pow_eight hR)] with N hN
+  exact hlarge.trans_le hN
+
 end GaloisForLFunctions.CriticalArithmeticCorrelationTheory
 
 #print axioms GaloisForLFunctions.CriticalArithmeticCorrelationTheory.tendsto_terminalPoleResidual_witness
 #print axioms GaloisForLFunctions.CriticalArithmeticCorrelationTheory.exists_intrinsic_critical_pole_collar_cost
 #print axioms GaloisForLFunctions.CriticalArithmeticCorrelationTheory.exists_intrinsic_critical_pole_linear_collar_cost
+#print axioms GaloisForLFunctions.CriticalArithmeticCorrelationTheory.exists_critical_ratio_exceeding_every_pole_collar_budget

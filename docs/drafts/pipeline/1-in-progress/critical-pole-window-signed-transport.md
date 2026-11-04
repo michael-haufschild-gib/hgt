@@ -413,9 +413,33 @@ Cauchy–Schwarz inequality gives the left side at least
 This paper reduction uses the explicit conductor-energy upper bound,
 so it needs neither a new Jordan asymptotic nor an exact collar-mass
 limit. `TheCriticalPoleHasAnIntrinsicCollarCost.lean` implements this
-reduction; its first audit still depends on the pending complete-source
-and witness audits. The no-go conclusion remains unproved until that
-dependency chain passes.
+reduction; its first audit awaits the witness audit. The no-go conclusion
+remains unproved until that dependency chain passes.
+
+The actual cutoff in the small-band proof is also covered: for c≥1,
+`linearDefectCutoff(c)≥3`, hence `N/linearDefectCutoff(c)≤N/2`.
+The dual collar mass increases when its lower endpoint decreases.
+Thus the same lower bound transfers to that literal cutoff, and choosing
+R with κR²>B exceeds any prescribed budget B on its canonical clock.
+These two corollaries are implemented in the same pending module.
+
+The nonpolar interior source has a closed paper assembly as well.
+The exact coefficient identity is
+
+    nearCoefficient_m(n,j)
+      =c_m(j)[nearGammaRemainder−log(c)q−log(j/N)q]
+        +jet_m(j)q.
+
+The Gamma remainder minus separated cross has zero mean for m>1;
+the joint near center and near logarithm also have zero mean against
+the untwisted terminal receiver. The only surviving full-center and
+jet means are opposite charges `−aΛ(m)∫F` and `+aΛ(m)∫F`.
+Both exact prime annihilations and all four error transfers apply to
+every fixed m. Therefore the complete mixed limit is zero on interior
+support for m≥2. The new finite identities and zero Gamma-center limit
+are implemented in `TerminalConductorPairingsRetainTheDivisorJet.lean`;
+the complete assembly is in `TerminalNonpolarSourceAboveHalf.lean`.
+Their audits and the terminal divisor-jet audit remain pending.
 
 The conductor-one upward row has a closed paper reduction for the same
 F, under c_N≥1, c_N→∞ and c_N⁴(log N)²/N→0:

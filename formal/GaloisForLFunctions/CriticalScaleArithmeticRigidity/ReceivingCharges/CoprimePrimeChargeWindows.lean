@@ -1,4 +1,5 @@
 import GaloisForLFunctions.CriticalScaleArithmeticRigidity.ReceivingCharges.PrimeChargeWindows
+import GaloisForLFunctions.ArithmeticCouplingTheory.ReceivingCharges.DilationPacketOperator
 
 /-!
 # Terminal contrasts on a fixed receiving conductor
@@ -62,7 +63,8 @@ theorem abs_modeProduct_harmonic_window_le {m l A B : ℕ}
     _ = |(G B - δ * (harmonic B : ℝ) + I) - (G A - δ * (harmonic A : ℝ) + I)| := by
       congr 1
       ring
-    _ ≤ _ := (abs_sub _ _).trans ((add_le_add hB hA).trans (by linarith only [hden]))
+    _ ≤ _ := (abs_sub _ _).trans ((add_le_add hB hA).trans
+      ((add_le_add hden le_rfl).trans_eq (by ring)))
 
 /-- Exact harmonic balancing removes the diagonal term even after multiplying two modes. -/
 theorem abs_primeChargeWindowContrast_modeProduct_pairing_le {m l A B C N : ℕ}
@@ -89,7 +91,7 @@ theorem abs_primeChargeWindowContrast_modeProduct_pairing_le {m l A B C N : ℕ}
     _ = |(G B C - δ * primeChargeWindowMass B C) -
         κ * (G A B - δ * primeChargeWindowMass A B)| := by
       congr 1
-      linear_combination δ * hcancel
+      linear_combination -δ * hcancel
     _ ≤ |G B C - δ * primeChargeWindowMass B C| +
         |κ| * |G A B - δ * primeChargeWindowMass A B| := by
       simpa only [abs_mul] using abs_sub (G B C - δ * primeChargeWindowMass B C)
@@ -185,7 +187,12 @@ theorem abs_fibreChargeWindowVector_norm_sq_sub_le {m A B C N : ℕ}
     refine (abs_add_le _ _).trans ?_
     rw [abs_mul, abs_of_nonneg (sq_nonneg κ)]
     exact add_le_add (hupper.trans hden) (mul_le_mul_of_nonneg_left hlower (sq_nonneg κ))
-  exact (div_le_div_of_nonneg_right hsum hL.le).trans_eq (by dsimp only [κ]; ring)
+  have hfactor (z : ℝ) :
+      (8 * (m : ℝ) ^ 2 / ((A : ℝ) + 1) + z ^ 2 * (8 * (m : ℝ) ^ 2 / ((A : ℝ) + 1))) /
+          Real.log N =
+        8 * (m : ℝ) ^ 2 * (1 + z ^ 2) / (((A : ℝ) + 1) * Real.log N) := by
+    field_simp [hL.ne', show (A : ℝ) + 1 ≠ 0 by positivity]
+  exact (div_le_div_of_nonneg_right hsum hL.le).trans_eq (hfactor κ)
 
 theorem fibreChargeWindowVector_inner (m A B C l N : ℕ) :
     ⟪fibreChargeWindowVector m A B C N, normalizedRamanujanHorizonVector l N⟫ =

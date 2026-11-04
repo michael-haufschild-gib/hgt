@@ -82,15 +82,16 @@ theorem integral_terminalPolarWitnessLinear_pos :
     0 < ∫ x in (0 : ℝ)..1, terminalPolarWitnessLinear x := by
   obtain ⟨u, hu⟩ : ∃ u : ℝ, tiltedUnitSpline u ≠ 0 := by
     by_contra hn
-    push_neg at hn
+    push Not at hn
     have hi := RenormalizedIntersectionTheory.integral_tiltedUnitSpline_pos
     change 0 < ∫ u, tiltedUnitSpline u at hi
     simp only [hn, integral_zero, lt_self_iff_false] at hi
   have hx : terminalPolarWitnessLinear ((u + 254) / 256) ≠ 0 := by
     have he : 256 * ((u + 254) / 256) - 254 = u := by ring
     simpa only [terminalPolarWitnessLinear, he] using hu
-  have hi := contDiff_terminalPolarWitnessLinear.continuous.integral_pos_of_hasCompactSupport_nonneg_nonzero
-    hasCompactSupport_terminalPolarWitnessLinear terminalPolarWitnessLinear_nonneg hx
+  have hi : 0 < ∫ x, terminalPolarWitnessLinear x :=
+    contDiff_terminalPolarWitnessLinear.continuous.integral_pos_of_hasCompactSupport_nonneg_nonzero
+      hasCompactSupport_terminalPolarWitnessLinear terminalPolarWitnessLinear_nonneg hx
   rw [intervalIntegral.integral_of_le zero_le_one,
     setIntegral_eq_integral_of_forall_compl_eq_zero]
   · exact hi
@@ -137,7 +138,8 @@ theorem terminalPolarWitnessLinear_le_source (x : ℝ) :
 theorem terminalPolarWitness_source_integral_pos :
     0 < (∫ x in (0 : ℝ)..1, polarCenterProfile (logProfile terminalPolarWitness) x) -
       Real.log (2 * Real.pi) * ∫ x in (0 : ℝ)..1, logProfile terminalPolarWitness x := by
-  simp_rw [logProfile_terminalPolarWitness]
+  rw [show logProfile terminalPolarWitness = terminalPolarWitnessLinear from
+    funext logProfile_terminalPolarWitness]
   obtain ⟨LF, hLF⟩ := ContDiff.lipschitzWith_of_hasCompactSupport
     hasCompactSupport_terminalPolarWitnessLinear contDiff_terminalPolarWitnessLinear (by norm_num)
   have hFL : ∀ x ∈ Set.Icc (0 : ℝ) 1, ∀ y ∈ Set.Icc (0 : ℝ) 1,
@@ -151,7 +153,8 @@ theorem terminalPolarWitness_source_integral_pos :
   have hP : IntervalIntegrable (polarCenterProfile terminalPolarWitnessLinear) volume 0 1 :=
     (show ContinuousOn (polarCenterProfile terminalPolarWitnessLinear) (Set.uIcc 0 1) by
       simpa only [Set.uIcc_of_le zero_le_one] using hcont).intervalIntegrable
-  have hF := contDiff_terminalPolarWitnessLinear.continuous.intervalIntegrable (0 : ℝ) 1
+  have hF : IntervalIntegrable terminalPolarWitnessLinear volume (0 : ℝ) 1 :=
+    contDiff_terminalPolarWitnessLinear.continuous.intervalIntegrable (0 : ℝ) 1
   have hC := hF.const_mul (Real.log (2 * Real.pi))
   have hi := intervalIntegral.integral_mono_on zero_le_one hF (hP.sub hC)
     (fun x _ => terminalPolarWitnessLinear_le_source x)

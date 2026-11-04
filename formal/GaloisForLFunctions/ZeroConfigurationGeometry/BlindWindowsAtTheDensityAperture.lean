@@ -100,18 +100,23 @@ theorem exists_window_blind_to_expPoly_zeros {ι : Type*} (S : Finset ι) (c : �
   rw [hft, hb1, mul_one]
   exact hz
 
-/-- **Sine multipliers.** Shifting by `±c` multiplies the transform by `sin(c(w − τ))`. -/
-theorem apertureWindow_sine {r₀ c τ : ℝ} (hc : 0 ≤ c) {g : ℝ → ℂ} (hg : ApertureWindow r₀ g) :
-    ∃ f : ℝ → ℂ, ApertureWindow (r₀ + c) f ∧
-      ∀ w : ℂ, paperFT f w = Complex.sin (c * (w - τ)) * paperFT g w := by
-  obtain ⟨hf, hft⟩ := apertureWindow_expPoly Finset.univ
-    (fun k : Bool => if k then -cexp (I * c * τ) / (2 * I) else cexp (-(I * c * τ)) / (2 * I))
-    (fun k : Bool => if k then c else -c) (W := c)
-    (fun k _ => by cases k <;> simp [abs_of_nonneg hc]) hg
-  refine ⟨_, hf, fun w => ?_⟩
-  rw [hft, Fintype.sum_bool]
-  congr 1
-  simp only [if_true, Bool.false_eq_true, if_false, Complex.ofReal_neg]
+/-- The coefficients of the two shifts `±c` producing `sin(c(w − τ))`. -/
+def sineCoeff (c τ : ℝ) (k : Bool) : ℂ :=
+  if k then -cexp (I * c * τ) / (2 * I) else cexp (-(I * c * τ)) / (2 * I)
+
+/-- The shifts `±c`. -/
+def sineShiftAmount (c : ℝ) (k : Bool) : ℝ := if k then c else -c
+
+/-- The sine-multiplied window `Σ_± a_± g(· ± c)`. -/
+def sineShift (c τ : ℝ) (g : ℝ → ℂ) : ℝ → ℂ :=
+  fun u => ∑ k ∈ Finset.univ, sineCoeff c τ k * g (u + sineShiftAmount c k)
+
+theorem sum_sineCoeff_eq (c τ : ℝ) (w : ℂ) :
+    ∑ k ∈ Finset.univ, sineCoeff c τ k * cexp (-(I * w * sineShiftAmount c k)) =
+      Complex.sin (c * (w - τ)) := by
+  rw [Fintype.sum_bool]
+  simp only [sineCoeff, sineShiftAmount, if_true, Bool.false_eq_true, if_false,
+    Complex.ofReal_neg]
   have e1 : cexp (I * c * τ) * cexp (-(I * w * c)) = cexp (-(c * (w - τ)) * I) := by
     rw [← Complex.exp_add]; congr 1; ring
   have e2 : cexp (-(I * c * τ)) * cexp (-(I * w * -c)) = cexp ((c * (w - τ)) * I) := by
@@ -120,6 +125,23 @@ theorem apertureWindow_sine {r₀ c τ : ℝ} (hc : 0 ≤ c) {g : ℝ → ℂ} (
   have hI : I * I = -1 := Complex.I_mul_I
   field_simp
   linear_combination (cexp (c * (w - τ) * I) - cexp (-(c * (w - τ) * I))) * hI
+
+theorem sineShift_props {r₀ c τ : ℝ} (hc : 0 ≤ c) {g : ℝ → ℂ} (hg : ApertureWindow r₀ g) :
+    ApertureWindow (r₀ + c) (sineShift c τ g) ∧
+      ∀ w : ℂ, paperFT (sineShift c τ g) w = Complex.sin (c * (w - τ)) * paperFT g w := by
+  obtain ⟨hf, hft⟩ := apertureWindow_expPoly Finset.univ (sineCoeff c τ) (sineShiftAmount c)
+    (W := c) (fun k _ => by cases k <;> simp [sineShiftAmount, abs_of_nonneg hc]) hg
+  exact ⟨hf, fun w => (hft w).trans (by rw [sum_sineCoeff_eq])⟩
+
+theorem contDiff_sineShift {n : WithTop ℕ∞} (c τ : ℝ) {g : ℝ → ℂ} (hg : ContDiff ℝ n g) :
+    ContDiff ℝ n (sineShift c τ g) :=
+  ContDiff.sum fun _ _ => contDiff_const.mul (hg.comp (contDiff_id.add contDiff_const))
+
+/-- **Sine multipliers.** Shifting by `±c` multiplies the transform by `sin(c(w − τ))`. -/
+theorem apertureWindow_sine {r₀ c τ : ℝ} (hc : 0 ≤ c) {g : ℝ → ℂ} (hg : ApertureWindow r₀ g) :
+    ∃ f : ℝ → ℂ, ApertureWindow (r₀ + c) f ∧
+      ∀ w : ℂ, paperFT f w = Complex.sin (c * (w - τ)) * paperFT g w :=
+  ⟨sineShift c τ g, sineShift_props hc hg⟩
 
 /-- **Products of sine multipliers.** -/
 theorem exists_window_prod_sine {ι : Type*} [DecidableEq ι] (S : Finset ι) (c τ : ι → ℝ)

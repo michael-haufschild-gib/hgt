@@ -155,7 +155,8 @@ theorem paperFT_divWindow {r : ℝ} {f : ℝ → ℂ} (hf1 : ContDiff ℝ 1 f)
     funext u
     rw [deriv_divWindow hfc]
     ring
-  rw [hfeq, paperFT_add_smul (hg1.continuous_deriv le_rfl) hgc.deriv hg1.continuous hgc,
+  conv_lhs => rw [hfeq]
+  rw [paperFT_add_smul (hg1.continuous_deriv le_rfl) hgc.deriv hg1.continuous hgc,
     _root_.RHTower.EvenSector.paperFT_deriv_of_compact hg1 hgc]
   ring
 
