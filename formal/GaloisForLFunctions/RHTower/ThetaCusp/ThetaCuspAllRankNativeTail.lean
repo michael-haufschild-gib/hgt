@@ -73,7 +73,8 @@ private theorem gaussianMoment_add (s n : ℕ) :
     push_cast
     ring
 
-private theorem gaussian_matrix_posDef (N s : ℕ) :
+/-- Every finite shifted Gaussian moment matrix is strictly positive definite. -/
+theorem gaussian_matrix_posDef (N s : ℕ) :
     Matrix.PosDef (fun i j : Fin N => gaussianMoment (i.val+j.val+s)) := by
   let A := _root_.HTGeometry.momentHankelMatrix (gammaShapeMoment ((s : ℝ)+1/2)) N
   let D : Matrix (Fin N) (Fin N) ℝ := diagonal (fun i => (16 : ℝ)^i.val)

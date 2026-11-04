@@ -8,8 +8,9 @@ shortcuts, the mechanism class, the obstacles that are **(A) just work** and the
 Evidence: `[L]` committed Lean declaration; `[W]` working-tree Lean module (not committed); `[D]` derived
 here from Lean statements; `[M]` exact model statement; `[N]` numerical; `[P]` paper only. Killed
 shortcuts are cited by their anchor in `rh-killed-routes.md` (`#anchor`) or by row title.
-Strength: **RH**; **≥qRH** (zero-free half-plane or Lindelöf); **sub** (strictly below quasi-RH);
-**indep.**; **identity**; **method**. A means known mathematics, finite computation, effectivization or
+Strength: **RH**; **≥qRH** (zero-free half-plane or Lindelöf); **RH-adjacent** (a zero-location statement
+about the lowest off-line zeros, neither RH nor sub); **sub** (strictly below quasi-RH); **indep.**;
+**identity**; **method**. A means known mathematics, finite computation, effectivization or
 assembly of proved pieces; an A item whose difficulty is not established carries `(difficulty unverified)`.
 
 Notation. Window tests live on `[−a, a]` (half-width `a`, length `2a`) or on half-windows `[−c, 0]`;

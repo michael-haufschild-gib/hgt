@@ -653,3 +653,59 @@ cost-only payments, smooth extremals. Not excluded: retained-variance theta gaug
 (exact below `log 4`), pole-charged supersolutions with non-compact gauges, variable-hub Schur elimination,
 packed nonlocal paths, and any exact identity that uses the trivial-zero Hankel squares and the sliver
 signatures.
+
+## 2.9 The big impact question
+
+**Which off-line zeros can a window see?** Determine the onset law of window negativity: for a zero
+configuration `Z` (the zeros of `ζ` or any tempered FE-symmetric configuration with Riemann–von Mangoldt
+local counts), the least half-width `a*(Z)` at which Weil's form is negative on some window, as a function
+of the depth `δ`, the height `T` and the coherence `k` (number of off-line zeros within height distance
+`≲ 1/a`) of the off-line part. Prove both directions:
+- **(V1) seeing:** window positivity at half-width `a` excludes every off-line configuration with
+  `a*(Z) ≤ a`;
+- **(V2) hiding:** every configuration with `a*(Z) > a` leaves all windows of half-width `≤ a` positive.
+
+Expected shape [D]: `a* ≈ (1/2δ)·log(Cδ log T/k)` for a coherent cluster (`≈ (1/2δ)log log T` for an
+isolated zero), `a* ≈ ¼log T` for spread lattice-like off-line sets (Π29), and `a* = ∞` iff `Z` is on the
+line. For `ζ`, RH ⇔ `a*(ζ) = ∞`.
+
+*Why it is less hard than RH.* Both directions are statements about the zero side of the explicit formula
+for arbitrary configurations — sampling and large-sieve bounds for functions of exponential type, Jensen,
+Poisson summation, explicit tilted tests — and assume and conclude no sign of Weil's form for `ζ`. The
+corpus holds the rate: the fall rate of the window ground energy is the zero width, two-sided when finitely
+many zeros are off the line, with doubly exponential height reach (SquareRootThreshold, DCI [L]). The
+question asks for the onset constant of that rate.
+
+*What it decides across the programme.*
+
+| Effect | Routes and walls | How |
+|---|---|---|
+| Kills height locality | contact law B18; height-induction assemblies; deciding a fixed window from zeros below an exponential height plus tail bounds (A30 as a decision tool; SRT's high-zero-tail strategy at fixed aperture) | V1: a window of length `L` sees deep zeros up to height `≈ exp(e^{δL}/(Cδ))`; a contact law at scale `c log T` is a zero-location statement (1.11) |
+| Gives P1 a zero-location output | RW, EWU, OWU, ACT, TT, CHMD, SZ, MSC; SWC, GWZ, CSTW, WTZ | V1: each certified window — the first stages, `log 4`, `log 5` (2.8) — becomes a zero-free region of log-log shape; stage progress is measured in excluded zeros |
+| Gives HF's threshold a zero meaning | HF, SRT, AIP; AHD, CACT | the failure aperture of `R₁(A) = ⊤` is `a*(ζ)` up to the radius–aperture dictionary |
+| Merges four routes at one obstacle | window tower (P1), LA/heat (`Λ_X ≍ δ²/log X`), WD (depth `A/log V`), ZCG/SquareRootThreshold (density `¼log T`) | V2: what windows of half-width `a` cannot see is exactly the shallow zeros `δ ≲ (log log T)/a` and spread sets; every route's residual becomes the shallow-zero problem (B21, B22), so one theorem on shallow near-line zeros advances all four |
+| Separates identification from sign | ZCG, SquareRootThreshold (Γ36, Γ40, Π29) | the camera reads density (`¼log T`), sign reads depth (`log log T`); V2 for perturbed columns decides whether `λ = ½` is a general sign law or a lattice artefact |
+| Fixes the aperture–height duality | Σ28, Σ41 | the excluded-depth law (`e^{R/polylog R}`) is sharp only at depth `1/R`; V1 gives the depth-resolved law |
+
+*How each answer moves the map.*
+- **V1 and V2 with the expected shape:** windows, heat, near-line density and the camera become one
+  depth calculus; RH is the statement that `ζ` has no configuration visible at any aperture; the open core of
+  every window route is the shallow-zero problem, shared with WD and LA.
+- **V2 fails for shallow coherent sets** (many shallow zeros within `1/a` already visible): windows see more
+  than depth `≳ (log log T)/a`; positivity at moderate apertures excludes shallow clusters, which is new
+  information for WD's cluster tail (B21).
+- **V2 fails for perturbed spread sets** (columns visible below `¼log T` once perturbed): the square-root
+  threshold is a lattice artefact for sign; identification and sign separate completely, and Π29 loses its
+  role as a general hiding law.
+
+*First tests.* (1) A34: the isolated-zero law in the model "on-line RvM background + one off-line quartet",
+with explicit constants. (2) Coherence: `k` off-line zeros within height distance `1/a`, against the
+unconditional unit-window depth-mass bound `Σ(Im z)² ≤ 40σ²log(180|T|)` (DCI). (3) Hiding beyond lattices:
+bounded perturbations of off-line columns, with the corpus's perturbed-lattice product bounds.
+
+*Why this question and not another.* The one question (2.8) decides whether P1 has a sign mechanism, but
+only for P1. B43 (local inversion) is sign-free and serves ZCG. The PM second formula (B38) and collision
+exclusion (B14) are RH-strength. Finite free factorization (2.4) opens one new route. The visibility law is
+sub-RH, attackable with the corpus's own harmonic analysis, and each of its answers kills, merges or
+quantifies routes in every window-based class (C1, C4, C15, C19), in C5 (heat), C11 (density) and C21/C23
+(camera) at once.

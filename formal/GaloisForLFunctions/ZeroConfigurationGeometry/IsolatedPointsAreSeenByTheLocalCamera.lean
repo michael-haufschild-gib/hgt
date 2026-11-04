@@ -178,44 +178,80 @@ theorem half_le_norm_sin_shift {H θ : ℝ} (hH : 0 < H) (hθ0 : 1 / 4 < θ) (h�
   have := HTGeometry.two_mul_distToInt_le_abs_sin θ
   linarith
 
-/-- **Uniform isolating windows.** For a spacing `H`, an aperture `r > π/H`, a matching distance
-`L`, an isolation radius `η` and a decay order `k` there are `c > 0` and `M` such that: every family
-`λ_i`, `i ∈ P`, of depth `≤ 1/2` matched injectively to `τ_i H` at distance `≤ L`, and every
-`w₀ ∈ i[−½, ½]` at distance `≥ η` from it, admit a window of aperture `r` blind to `P` with
-`|f̂(w₀)| ≥ c` and `|f̂(w)| (1 + |Re w|)^k ≤ M` on the strip `|Im w| ≤ 1/2`. -/
-theorem exists_uniform_isolating_window {H L r η : ℝ} (hH : 0 < H) (hr : π / H < r)
-    (hL : 0 ≤ L) (hη : 0 < η) (k : ℕ) :
-    ∃ c M : ℝ, 0 < c ∧ 0 ≤ M ∧ ∀ {ι : Type} (lam : ι → ℂ) (τ : ι → ℤ) (P : Set ι),
-      Set.InjOn τ P → (∀ i ∈ P, ‖lam i - τ i * H‖ ≤ L) → (∀ i ∈ P, |(lam i).im| ≤ 1 / 2) →
-      ∀ w₀ : ℂ, w₀.re = 0 → |w₀.im| ≤ 1 / 2 → (∀ i ∈ P, η ≤ ‖w₀ - lam i‖) →
-      ∃ f : ℝ → ℂ, ApertureWindow r f ∧ (∀ i ∈ P, paperFT f (lam i) = 0) ∧
-        c ≤ ‖paperFT f w₀‖ ∧
-        ∀ w : ℂ, |w.im| ≤ 1 / 2 → ‖paperFT f w‖ * (1 + |w.re|) ^ k ≤ M := by
+/-- The slack `L + 2H` of the lattice filled at the unmatched sites. -/
+def windowSlack (H L : ℝ) : ℝ := L + 2 * H
+
+/-- The growth exponent of the isolating product on the strip. -/
+def windowExponent (H L : ℝ) : ℝ := 3 * windowSlack H L * (4 * (1 + windowSlack H L) / H)
+
+/-- The growth constant of the isolating product on the strip. -/
+def windowGrowth (H L : ℝ) : ℝ :=
+  nearestConstStrip H (windowSlack H L) *
+    Real.exp (3 * windowSlack H L * nearFarConst H (windowSlack H L))
+
+/-- The floor of the isolating window at the target. -/
+def windowFloor (H L η : ℝ) : ℝ :=
+  1 / 2 * (isoConst (windowSlack H L) (min η (H / 2)) *
+    Real.exp (-(isoRate (windowSlack H L) (min η (H / 2)) * nearFarConst H (windowSlack H L))))
+
+theorem windowGrowth_nonneg {H L : ℝ} (hH : 0 < H) (hL : 0 ≤ L) : 0 ≤ windowGrowth H L := by
+  have hS : 0 ≤ windowSlack H L := by rw [windowSlack]; linarith
+  rw [windowGrowth, nearestConstStrip]
+  refine mul_nonneg (mul_nonneg (add_nonneg (mul_nonneg (mul_nonneg (by positivity)
+    (by linarith)) (by linarith)) zero_le_one) (Real.exp_pos _).le) (Real.exp_pos _).le
+
+theorem windowFloor_pos {H L η : ℝ} (hH : 0 < H) (hL : 0 ≤ L) (hη : 0 < η) :
+    0 < windowFloor H L η := by
+  have hS : 0 ≤ windowSlack H L := by rw [windowSlack]; linarith
+  rw [windowFloor]
+  exact mul_pos (by norm_num) (mul_pos (isoConst_pos hS (lt_min hη (by linarith)))
+    (Real.exp_pos _))
+
+/-- **Isolating windows from a bump.** Let `b` be a smooth bump on `[−ε, ε]` with `|b̂(iy)| ≥ 1`
+and decay `(1 + |w|)^m |b̂(w)| ≤ C_m e^{ε|Im w|}`, `|b̂(w)| ≤ C_0 e^{ε|Im w|}`, where
+`m ≥ windowExponent H L + k`. Let `λ_i`, `i ∈ P`, of depth `≤ 1/2` be matched injectively to
+`τ_i H` at distance `≤ L`, and `w₀ ∈ i[−½, ½]` at distance `≥ η` from them. Then some window of
+aperture `π/H + 2ε` is blind to `P`, has `|f̂(w₀)| ≥ windowFloor H L η`, and has
+`|f̂(w)| (1 + |Re w|)^k ≤ windowGrowth H L · C_m C_0 e^{ε}` on the strip `|Im w| ≤ 1/2`. -/
+theorem isolating_window_of_bump {H L r η ε : ℝ} (hH : 0 < H) (hL : 0 ≤ L) (hη : 0 < η)
+    (hε : 0 < ε) (hεr : π / H + 2 * ε ≤ r) {b : ℝ → ℂ} (hb : ContDiff ℝ (⊤ : ℕ∞) b)
+    (hbs : tsupport b ⊆ Icc (-ε) ε) (hb1 : ∀ y : ℝ, 1 ≤ ‖paperFT b ((y : ℂ) * I)‖) {k m : ℕ}
+    (hm : windowExponent H L + k ≤ m) {Cm C0 : ℝ}
+    (hCm : ∀ w : ℂ, (1 + ‖w‖) ^ m * ‖paperFT b w‖ ≤ Cm * Real.exp (ε * |w.im|))
+    (hC0 : ∀ w : ℂ, ‖paperFT b w‖ ≤ C0 * Real.exp (ε * |w.im|))
+    {ι : Type} (lam : ι → ℂ) (τ : ι → ℤ) (P : Set ι) (hτ : Set.InjOn τ P)
+    (hPL : ∀ i ∈ P, ‖lam i - τ i * H‖ ≤ L) (hPim : ∀ i ∈ P, |(lam i).im| ≤ 1 / 2) {w₀ : ℂ}
+    (hw₀re : w₀.re = 0) (hw₀im : |w₀.im| ≤ 1 / 2) (hw₀P : ∀ i ∈ P, η ≤ ‖w₀ - lam i‖) :
+    ∃ f : ℝ → ℂ, ApertureWindow r f ∧ (∀ i ∈ P, paperFT f (lam i) = 0) ∧
+      windowFloor H L η ≤ ‖paperFT f w₀‖ ∧
+      ∀ w : ℂ, |w.im| ≤ 1 / 2 →
+        ‖paperFT f w‖ * (1 + |w.re|) ^ k ≤ windowGrowth H L * Cm * C0 * Real.exp ε := by
   classical
-  -- the bump and the constants, fixed before the point set
-  obtain ⟨ε, hε⟩ : ∃ ε, ε = (r - π / H) / 3 := ⟨_, rfl⟩
-  have hε0 : 0 < ε := by rw [hε]; linarith
-  obtain ⟨b, hb, hbs, hb1⟩ := exists_bump_one_le_norm_paperFT_I_mul hε0
   have hbc : HasCompactSupport b := isCompact_Icc.of_isClosed_subset (isClosed_tsupport b) hbs
-  obtain ⟨L', hL'⟩ : ∃ L', L' = L + 2 * H := ⟨_, rfl⟩
-  have hL'0 : 0 ≤ L' := by rw [hL']; linarith
+  have hCm0 : 0 ≤ Cm := by
+    have h1 := hCm 0
+    rw [Complex.zero_im, abs_zero, mul_zero, Real.exp_zero, mul_one] at h1
+    exact le_trans (by positivity) h1
+  have hC00 : 0 ≤ C0 := by
+    have h1 := hC0 0
+    rw [Complex.zero_im, abs_zero, mul_zero, Real.exp_zero, mul_one] at h1
+    exact le_trans (norm_nonneg _) h1
+  obtain ⟨L', hL'⟩ : ∃ L', L' = windowSlack H L := ⟨_, rfl⟩
+  have hL'0 : 0 ≤ L' := by rw [hL', windowSlack]; linarith
   obtain ⟨η', hη'⟩ : ∃ η', η' = min η (H / 2) := ⟨_, rfl⟩
   have hη'0 : 0 < η' := by rw [hη']; exact lt_min hη (by linarith)
-  obtain ⟨K, hK⟩ : ∃ K, K = nearestConstStrip H L' * Real.exp (3 * L' * nearFarConst H L') :=
-    ⟨_, rfl⟩
-  have hK0 : 0 ≤ K := by
-    rw [hK, nearestConstStrip]
-    refine mul_nonneg (mul_nonneg (add_nonneg (mul_nonneg (mul_nonneg (by positivity)
-      (by linarith)) (by linarith)) zero_le_one) (Real.exp_pos _).le) (Real.exp_pos _).le
-  obtain ⟨p, hp⟩ : ∃ p, p = 3 * L' * (4 * (1 + L') / H) := ⟨_, rfl⟩
-  obtain ⟨Cb, hCb0, hCb⟩ := exists_pow_mul_norm_paperFT_le_exp hb hε0.le hbs (⌈p⌉₊ + k)
-  obtain ⟨C0, hC00, hC0⟩ := exists_pow_mul_norm_paperFT_le_exp hb hε0.le hbs 0
+  obtain ⟨K, hK⟩ : ∃ K, K = windowGrowth H L := ⟨_, rfl⟩
+  have hK' : K = nearestConstStrip H L' * Real.exp (3 * L' * nearFarConst H L') := by
+    rw [hK, windowGrowth, hL']
+  have hK0 : 0 ≤ K := hK ▸ windowGrowth_nonneg hH hL
+  obtain ⟨p, hp⟩ : ∃ p, p = windowExponent H L := ⟨_, rfl⟩
+  have hp' : p = 3 * L' * (4 * (1 + L') / H) := by rw [hp, windowExponent, hL']
+  rw [← hp] at hm
   obtain ⟨φ, hφ⟩ : ∃ φ, φ = isoConst L' η' * Real.exp (-(isoRate L' η' * nearFarConst H L')) :=
     ⟨_, rfl⟩
   have hφ0 : 0 < φ := by rw [hφ]; exact mul_pos (isoConst_pos hL'0 hη'0) (Real.exp_pos _)
-  refine ⟨1 / 2 * φ, K * Cb * C0 * Real.exp ε, by positivity,
-    mul_nonneg (mul_nonneg (mul_nonneg hK0 hCb0) hC00) (Real.exp_pos _).le, ?_⟩
-  intro ι lam τ P hτ hPL hPim w₀ hw₀re hw₀im hw₀P
+  have hfl : windowFloor H L η = 1 / 2 * φ := by rw [windowFloor, hφ, hL', hη']
+  rw [hfl, ← hK]
   -- fill the unmatched sites at the half-shifted lattice
   set ν : ℤ → ℂ := fun j => if hj : ∃ i ∈ P, τ i = j then lam hj.choose
     else (((j : ℝ) * H + H / 2 : ℝ) : ℂ) with hν
@@ -267,12 +303,13 @@ theorem exists_uniform_isolating_window {H L r η : ℝ} (hH : 0 < H) (hr : π /
         show lam v - ((τ v : ℂ) * H + ((θ * H : ℝ) : ℂ)) =
           (lam v - (τ v : ℂ) * H) - ((θ * H : ℝ) : ℂ) by ring]
       refine (norm_sub_le _ _).trans ?_
-      rw [Complex.norm_real, Real.norm_eq_abs, abs_of_pos (mul_pos (by linarith) hH), hL']
+      rw [Complex.norm_real, Real.norm_eq_abs, abs_of_pos (mul_pos (by linarith) hH), hL',
+        windowSlack]
       have := hPL v hvP
       nlinarith
     · rw [hνout j hj, ← Complex.ofReal_sub, Complex.norm_real, Real.norm_eq_abs,
         show (j : ℝ) * H + H / 2 - latPt H θ j = H * (1 / 2 - θ) by rw [latPt]; ring, abs_mul,
-        abs_of_pos hH, hL']
+        abs_of_pos hH, hL', windowSlack]
       have : |1 / 2 - θ| ≤ 1 := by rw [abs_le]; constructor <;> linarith
       nlinarith
   -- the sine window and the limit window
@@ -329,27 +366,22 @@ theorem exists_uniform_isolating_window {H L r η : ℝ} (hH : 0 < H) (hr : π /
           hφ0.le (by positivity)) hbw₀ zero_le_one (by positivity)
   · -- the decay on the strip
     have hoff : ∀ w : ℂ, |w.im| ≤ 1 / 2 → (∀ j, w ≠ latPt H θ j) →
-        ‖paperFT F w‖ * (1 + |w.re|) ^ k ≤ K * Cb * C0 * Real.exp ε := by
+        ‖paperFT F w‖ * (1 + |w.re|) ^ k ≤ K * Cm * C0 * Real.exp ε := by
       intro w hw hwl
       have hsp := norm_sin_mul_tprod_pertFactor_le_strip hH hθ hνb hνim hw hwl
-      rw [← hK, ← hp] at hsp
+      rw [← hK', ← hp'] at hsp
       have h1 : (1 : ℝ) ≤ 1 + |w.re| := by linarith [abs_nonneg w.re]
-      have hpn : (1 + |w.re|) ^ p ≤ (1 + |w.re|) ^ ⌈p⌉₊ := by
-        rw [← Real.rpow_natCast]
-        exact Real.rpow_le_rpow_of_exponent_le h1 (Nat.le_ceil p)
-      have hb1' := hCb w
-      have hb0' := hC0 w
-      rw [pow_zero, one_mul] at hb0'
-      have hre : (1 + |w.re|) ^ (⌈p⌉₊ + k) ≤ (1 + ‖w‖) ^ (⌈p⌉₊ + k) :=
+      have hpn : (1 + |w.re|) ^ p * (1 + |w.re|) ^ k ≤ (1 + |w.re|) ^ m := by
+        rw [← Real.rpow_natCast (1 + |w.re|) k, ← Real.rpow_add (by linarith),
+          ← Real.rpow_natCast]
+        exact Real.rpow_le_rpow_of_exponent_le h1 hm
+      have hre : (1 + |w.re|) ^ m ≤ (1 + ‖w‖) ^ m :=
         pow_le_pow_left₀ (by positivity) (by linarith [Complex.abs_re_le_norm w]) _
       have hexp : Real.exp (ε * |w.im|) * Real.exp (ε * |w.im|) ≤ Real.exp ε := by
         rw [← Real.exp_add]
         exact Real.exp_le_exp.mpr (by nlinarith [abs_nonneg w.im])
-      have hA : ‖Complex.sin (((π / H : ℝ) : ℂ) * (w - ((θ * H : ℝ) : ℂ))) *
-          ∏' j, pertFactor H θ ν j w‖ ≤ K * (1 + |w.re|) ^ ⌈p⌉₊ :=
-        hsp.trans (mul_le_mul_of_nonneg_left hpn hK0)
-      have hB : (1 + |w.re|) ^ (⌈p⌉₊ + k) * ‖paperFT b w‖ ≤ Cb * Real.exp (ε * |w.im|) :=
-        (mul_le_mul_of_nonneg_right hre (norm_nonneg _)).trans hb1'
+      have hB : (1 + |w.re|) ^ m * ‖paperFT b w‖ ≤ Cm * Real.exp (ε * |w.im|) :=
+        (mul_le_mul_of_nonneg_right hre (norm_nonneg _)).trans (hCm w)
       rw [hFt, hfz w hwl, hf₀t]
       calc ‖Complex.sin (((π / H : ℝ) : ℂ) * (w - ((θ * H : ℝ) : ℂ))) * paperFT b w *
             (∏' j, pertFactor H θ ν j w) * paperFT b w‖ * (1 + |w.re|) ^ k
@@ -357,17 +389,21 @@ theorem exists_uniform_isolating_window {H L r η : ℝ} (hH : 0 < H) (hr : π /
               ∏' j, pertFactor H θ ν j w‖ * ((1 + |w.re|) ^ k * ‖paperFT b w‖) *
                 ‖paperFT b w‖ := by
             rw [norm_mul, norm_mul, norm_mul, norm_mul]; ring
-        _ ≤ K * (1 + |w.re|) ^ ⌈p⌉₊ * ((1 + |w.re|) ^ k * ‖paperFT b w‖) * ‖paperFT b w‖ :=
-            mul_le_mul_of_nonneg_right (mul_le_mul_of_nonneg_right hA (by positivity))
+        _ ≤ K * (1 + |w.re|) ^ p * ((1 + |w.re|) ^ k * ‖paperFT b w‖) * ‖paperFT b w‖ :=
+            mul_le_mul_of_nonneg_right (mul_le_mul_of_nonneg_right hsp (by positivity))
               (norm_nonneg _)
-        _ = K * ((1 + |w.re|) ^ (⌈p⌉₊ + k) * ‖paperFT b w‖) * ‖paperFT b w‖ := by
-            rw [pow_add]; ring
-        _ ≤ K * (Cb * Real.exp (ε * |w.im|)) * (C0 * Real.exp (ε * |w.im|)) :=
-            mul_le_mul (mul_le_mul_of_nonneg_left hB hK0) hb0' (norm_nonneg _)
-              (mul_nonneg hK0 (mul_nonneg hCb0 (Real.exp_pos _).le))
-        _ = K * Cb * C0 * (Real.exp (ε * |w.im|) * Real.exp (ε * |w.im|)) := by ring
-        _ ≤ K * Cb * C0 * Real.exp ε :=
-            mul_le_mul_of_nonneg_left hexp (mul_nonneg (mul_nonneg hK0 hCb0) hC00)
+        _ = K * ((1 + |w.re|) ^ p * (1 + |w.re|) ^ k) * ‖paperFT b w‖ * ‖paperFT b w‖ := by
+            ring
+        _ ≤ K * (1 + |w.re|) ^ m * ‖paperFT b w‖ * ‖paperFT b w‖ :=
+            mul_le_mul_of_nonneg_right (mul_le_mul_of_nonneg_right
+              (mul_le_mul_of_nonneg_left hpn hK0) (norm_nonneg _)) (norm_nonneg _)
+        _ = K * ((1 + |w.re|) ^ m * ‖paperFT b w‖) * ‖paperFT b w‖ := by ring
+        _ ≤ K * (Cm * Real.exp (ε * |w.im|)) * (C0 * Real.exp (ε * |w.im|)) :=
+            mul_le_mul (mul_le_mul_of_nonneg_left hB hK0) (hC0 w) (norm_nonneg _)
+              (mul_nonneg hK0 (mul_nonneg hCm0 (Real.exp_pos _).le))
+        _ = K * Cm * C0 * (Real.exp (ε * |w.im|) * Real.exp (ε * |w.im|)) := by ring
+        _ ≤ K * Cm * C0 * Real.exp ε :=
+            mul_le_mul_of_nonneg_left hexp (mul_nonneg (mul_nonneg hK0 hCm0) hC00)
     -- the lattice points by continuity
     have hΦ : Continuous fun w : ℂ => ‖paperFT F w‖ * (1 + |w.re|) ^ k :=
       ((_root_.RHTower.EvenSector.differentiable_paperFT_of_compact hFsmooth.continuous
@@ -391,6 +427,38 @@ theorem exists_uniform_isolating_window {H L r η : ℝ} (hH : 0 < H) (hr : π /
       have := congrArg Complex.im e
       rw [him', Complex.ofReal_im] at this
       linarith
+
+/-- **Uniform isolating windows.** For a spacing `H`, an aperture `r > π/H`, a matching distance
+`L`, an isolation radius `η` and a decay order `k` there are `c > 0` and `M` such that: every family
+`λ_i`, `i ∈ P`, of depth `≤ 1/2` matched injectively to `τ_i H` at distance `≤ L`, and every
+`w₀ ∈ i[−½, ½]` at distance `≥ η` from it, admit a window of aperture `r` blind to `P` with
+`|f̂(w₀)| ≥ c` and `|f̂(w)| (1 + |Re w|)^k ≤ M` on the strip `|Im w| ≤ 1/2`. -/
+theorem exists_uniform_isolating_window {H L r η : ℝ} (hH : 0 < H) (hr : π / H < r)
+    (hL : 0 ≤ L) (hη : 0 < η) (k : ℕ) :
+    ∃ c M : ℝ, 0 < c ∧ 0 ≤ M ∧ ∀ {ι : Type} (lam : ι → ℂ) (τ : ι → ℤ) (P : Set ι),
+      Set.InjOn τ P → (∀ i ∈ P, ‖lam i - τ i * H‖ ≤ L) → (∀ i ∈ P, |(lam i).im| ≤ 1 / 2) →
+      ∀ w₀ : ℂ, w₀.re = 0 → |w₀.im| ≤ 1 / 2 → (∀ i ∈ P, η ≤ ‖w₀ - lam i‖) →
+      ∃ f : ℝ → ℂ, ApertureWindow r f ∧ (∀ i ∈ P, paperFT f (lam i) = 0) ∧
+        c ≤ ‖paperFT f w₀‖ ∧
+        ∀ w : ℂ, |w.im| ≤ 1 / 2 → ‖paperFT f w‖ * (1 + |w.re|) ^ k ≤ M := by
+  obtain ⟨ε, hε⟩ : ∃ ε, ε = (r - π / H) / 3 := ⟨_, rfl⟩
+  have hε0 : 0 < ε := by rw [hε]; linarith
+  obtain ⟨b, hb, hbs, hb1⟩ := exists_bump_one_le_norm_paperFT_I_mul hε0
+  obtain ⟨Cm, hCm0, hCm⟩ :=
+    exists_pow_mul_norm_paperFT_le_exp hb hε0.le hbs (⌈windowExponent H L⌉₊ + k)
+  obtain ⟨C0, hC00, hC0⟩ := exists_pow_mul_norm_paperFT_le_exp hb hε0.le hbs 0
+  have hC0' : ∀ w : ℂ, ‖paperFT b w‖ ≤ C0 * Real.exp (ε * |w.im|) := fun w => by
+    have := hC0 w
+    rwa [pow_zero, one_mul] at this
+  have hm : windowExponent H L + k ≤ ((⌈windowExponent H L⌉₊ + k : ℕ) : ℝ) := by
+    push_cast
+    linarith [Nat.le_ceil (windowExponent H L)]
+  refine ⟨windowFloor H L η, windowGrowth H L * Cm * C0 * Real.exp ε, windowFloor_pos hH hL hη,
+    mul_nonneg (mul_nonneg (mul_nonneg (windowGrowth_nonneg hH hL) hCm0) hC00)
+      (Real.exp_pos _).le, ?_⟩
+  intro ι lam τ P hτ hPL hPim w₀ hw₀re hw₀im hw₀P
+  exact isolating_window_of_bump hH hL hη hε0 (by rw [hε]; linarith) hb hbs hb1 hm hCm hC0' lam τ
+    P hτ hPL hPim hw₀re hw₀im hw₀P
 
 /-! ### The local camera -/
 
@@ -418,38 +486,79 @@ theorem one_le_norm_multDiff {Z Z' : ZeroConfig} {z : ℂ} (hz : multDiff Z Z' z
   rw [Complex.norm_intCast]
   exact_mod_cast Int.one_le_abs hm0
 
-/-- **The local camera.** Let `Z, Z'` be tempered mimics at aperture `a` and `z₀` a point of their
-cluster at height `X`. If every other cluster point with height in `[X − R, X + R]` is `η`-far
-from `z₀`, and these points have count bound `(D, C₀)` with `πD < 2a`, then
-`(1 + R)^{2k−2} ≤ B (1 + |X|)² Σ_z |c(z)|/(1 + |γ_z|²)`, with `B` depending only on
-`a, D, C₀, η, k`. -/
-theorem one_add_pow_le_of_isolated_cancellation {a D C₀ η : ℝ} (hD : 0 < D) (hDa : π * D < 2 * a)
-    (hη : 0 < η) {k : ℕ} (hk : 1 ≤ k) :
-    ∃ B : ℝ, 0 ≤ B ∧ ∀ (Z Z' : ZeroConfig), TemperedConfig Z → TemperedConfig Z' →
-      (∀ f, ApertureWindow a f → Z.W f f = Z'.W f f) →
-      ∀ (z₀ : ℂ) (R : ℝ), 0 ≤ R → multDiff Z Z' z₀ ≠ 0 →
-      (∀ z, z ≠ z₀ → multDiff Z Z' z ≠ 0 → |z.im - z₀.im| ≤ R → η ≤ ‖z - z₀‖) →
-      (∀ (s : Finset ℂ) (x y : ℝ), x ≤ y →
-        (∀ z ∈ s, multDiff Z Z' z ≠ 0 ∧ |z.im - z₀.im| ≤ R ∧ z.im ∈ Icc x y) →
-          (s.card : ℝ) ≤ D * (y - x) + C₀) →
-      (1 + R) ^ (2 * k - 2) ≤
-        B * (1 + |z₀.im|) ^ 2 * ∑' z, ‖multDiff Z Z' z‖ / (1 + Complex.normSq (gammaOf z)) := by
+/-- The matching distance `(|C₀| + 1)/(2D) + 1/D + 1/2` of a cluster of count `(D, C₀)` in the
+half lattice `2D⁻¹ℤ`. -/
+def localSlack (D C₀ : ℝ) : ℝ := (|C₀| + 1) / 2 * D⁻¹ + D⁻¹ + 1 / 2
+
+/-- The constant of the local camera: `M² e^a (5/4)/c²`, with `M` the strip decay and `c` the floor
+of the isolating windows built from a bump of decay constants `C_m, C_0` and aperture `ε`. -/
+def localCameraConst (a D C₀ η ε Cm C0 : ℝ) : ℝ :=
+  (windowGrowth (2 * D⁻¹) (localSlack D C₀) * Cm * C0 * Real.exp ε) ^ 2 * Real.exp a *
+    (5 / 4) / windowFloor (2 * D⁻¹) (localSlack D C₀) η ^ 2
+
+/-- **The local camera, explicitly.** Let `b` be a bump on `[−ε, ε]` with `|b̂(iy)| ≥ 1` and decay
+constants `C_m, C_0`, where `m ≥ windowExponent (2/D) (localSlack D C₀) + k` and
+`πD/2 + 2ε ≤ a`. Let `Z, Z'` be tempered mimics at aperture `a` and `z₀` a point of their
+cluster at height `X`. Suppose the other cluster points with height in `[X − R, X + R]` are
+`η`-far from `z₀` and have count bound `(D, C₀)`. Then
+`(1 + R)^{2k−2} ≤ localCameraConst a D C₀ η ε C_m C_0 · (1 + |X|)² Σ_z |c(z)|/(1 + |γ_z|²)`. -/
+theorem one_add_pow_le_of_isolated_cancellation_of_bump {a D C₀ η ε : ℝ} (hD : 0 < D)
+    (hη : 0 < η) (hε : 0 < ε) (hεa : π * D / 2 + 2 * ε ≤ a) {b : ℝ → ℂ}
+    (hb : ContDiff ℝ (⊤ : ℕ∞) b) (hbs : tsupport b ⊆ Icc (-ε) ε)
+    (hb1 : ∀ y : ℝ, 1 ≤ ‖paperFT b ((y : ℂ) * I)‖) {k m : ℕ} (hk : 1 ≤ k)
+    (hm : windowExponent (2 * D⁻¹) (localSlack D C₀) + k ≤ m) {Cm C0 : ℝ}
+    (hCm : ∀ w : ℂ, (1 + ‖w‖) ^ m * ‖paperFT b w‖ ≤ Cm * Real.exp (ε * |w.im|))
+    (hC0 : ∀ w : ℂ, ‖paperFT b w‖ ≤ C0 * Real.exp (ε * |w.im|))
+    {Z Z' : ZeroConfig} (hZ : TemperedConfig Z) (hZ' : TemperedConfig Z')
+    (hW : ∀ f, ApertureWindow a f → Z.W f f = Z'.W f f) {z₀ : ℂ} {R : ℝ} (hR : 0 ≤ R)
+    (hc : multDiff Z Z' z₀ ≠ 0)
+    (hiso : ∀ z, z ≠ z₀ → multDiff Z Z' z ≠ 0 → |z.im - z₀.im| ≤ R → η ≤ ‖z - z₀‖)
+    (hcount : ∀ (s : Finset ℂ) (x y : ℝ), x ≤ y →
+      (∀ z ∈ s, multDiff Z Z' z ≠ 0 ∧ |z.im - z₀.im| ≤ R ∧ z.im ∈ Icc x y) →
+        (s.card : ℝ) ≤ D * (y - x) + C₀) :
+    (1 + R) ^ (2 * k - 2) ≤ localCameraConst a D C₀ η ε Cm C0 * (1 + |z₀.im|) ^ 2 *
+      ∑' z, ‖multDiff Z Z' z‖ / (1 + Complex.normSq (gammaOf z)) := by
   classical
   obtain ⟨h, hh_def⟩ : ∃ h, h = D⁻¹ := ⟨_, rfl⟩
   have hh : 0 < h := by rw [hh_def]; exact inv_pos.mpr hD
   have hDh : D * h = 1 := by rw [hh_def]; field_simp
-  obtain ⟨L, hL⟩ : ∃ L, L = (|C₀| + 1) / 2 * h + h + 1 / 2 := ⟨_, rfl⟩
+  obtain ⟨L, hLs⟩ : ∃ L, L = localSlack D C₀ := ⟨_, rfl⟩
+  have hL : L = (|C₀| + 1) / 2 * h + h + 1 / 2 := by rw [hLs, localSlack, hh_def]
   have hL0 : 0 ≤ L := by rw [hL]; positivity
-  have hr : π / (2 * h) < a := by
-    rw [div_lt_iff₀ (by positivity)]
-    have : a * (2 * h) = 2 * a / D := by rw [hh_def]; field_simp
-    rw [this, lt_div_iff₀ hD]
-    linarith
+  have hr : π / (2 * h) + 2 * ε ≤ a := by
+    rw [show π / (2 * h) = π * D / 2 by rw [hh_def]; field_simp]
+    exact hεa
   have ha : 0 ≤ a := by nlinarith [Real.pi_pos]
-  obtain ⟨c, M, hc0, hM0, hwin⟩ := exists_uniform_isolating_window (by positivity : 0 < 2 * h)
-    hr hL0 hη k
-  refine ⟨M * M * Real.exp a * (5 / 4) / (c * c), by positivity, ?_⟩
-  intro Z Z' hZ hZ' hW z₀ R hR hc hiso hcount
+  have hm' : windowExponent (2 * h) L + k ≤ m := by rw [hh_def, hLs]; exact hm
+  have hCm0 : 0 ≤ Cm := by
+    have h1 := hCm 0
+    rw [Complex.zero_im, abs_zero, mul_zero, Real.exp_zero, mul_one] at h1
+    exact le_trans (by positivity) h1
+  have hC00 : 0 ≤ C0 := by
+    have h1 := hC0 0
+    rw [Complex.zero_im, abs_zero, mul_zero, Real.exp_zero, mul_one] at h1
+    exact le_trans (norm_nonneg _) h1
+  obtain ⟨c, hcdef⟩ : ∃ c, c = windowFloor (2 * h) L η := ⟨_, rfl⟩
+  obtain ⟨M, hMdef⟩ : ∃ M, M = windowGrowth (2 * h) L * Cm * C0 * Real.exp ε := ⟨_, rfl⟩
+  have hc0 : 0 < c := by rw [hcdef]; exact windowFloor_pos (by positivity) hL0 hη
+  have hM0 : 0 ≤ M := by
+    rw [hMdef]
+    exact mul_nonneg (mul_nonneg (mul_nonneg (windowGrowth_nonneg (by positivity) hL0) hCm0)
+      hC00) (Real.exp_pos _).le
+  have hBdef : localCameraConst a D C₀ η ε Cm C0 = M * M * Real.exp a * (5 / 4) / (c * c) := by
+    rw [localCameraConst, ← hh_def, ← hLs, ← hcdef, ← hMdef]
+    ring
+  have hwin : ∀ {ι : Type} (lam : ι → ℂ) (τ : ι → ℤ) (P : Set ι),
+      Set.InjOn τ P → (∀ i ∈ P, ‖lam i - τ i * ((2 * h : ℝ) : ℂ)‖ ≤ L) →
+      (∀ i ∈ P, |(lam i).im| ≤ 1 / 2) →
+      ∀ w₀ : ℂ, w₀.re = 0 → |w₀.im| ≤ 1 / 2 → (∀ i ∈ P, η ≤ ‖w₀ - lam i‖) →
+      ∃ f : ℝ → ℂ, ApertureWindow a f ∧ (∀ i ∈ P, paperFT f (lam i) = 0) ∧
+        c ≤ ‖paperFT f w₀‖ ∧
+        ∀ w : ℂ, |w.im| ≤ 1 / 2 → ‖paperFT f w‖ * (1 + |w.re|) ^ k ≤ M := by
+    intro ι lam τ P hτ hPL hPim w₀ h1 h2 h3
+    rw [hcdef, hMdef]
+    exact isolating_window_of_bump (by positivity) hL0 hη hε hr hb hbs hb1 hm' hCm hC0 lam τ P
+      hτ hPL hPim h1 h2 h3
   obtain ⟨X, hX⟩ : ∃ X, X = z₀.im := ⟨_, rfl⟩
   rw [← hX] at hiso hcount ⊢
   -- the local cluster, matched into `D⁻¹ℤ`
@@ -643,9 +752,44 @@ theorem one_add_pow_le_of_isolated_cancellation {a D C₀ η : ℝ} (hD : 0 < D)
       calc c * c ≤ _ := this
         _ = _ := by ring
     rwa [le_div_iff₀ hQ0] at h1
-  rw [show M * M * Real.exp a * (5 / 4) / (c * c) * (1 + |X|) ^ 2 * Sg =
+  rw [hBdef, show M * M * Real.exp a * (5 / 4) / (c * c) * (1 + |X|) ^ 2 * Sg =
     (M * M * Real.exp a * (5 / 4) * (1 + |X|) ^ 2 * Sg) / (c * c) by ring,
     le_div_iff₀ (by positivity)]
   linarith
+
+
+/-- **The local camera.** Let `Z, Z'` be tempered mimics at aperture `a` and `z₀` a point of their
+cluster at height `X`. If every other cluster point with height in `[X − R, X + R]` is `η`-far
+from `z₀`, and these points have count bound `(D, C₀)` with `πD < 2a`, then
+`(1 + R)^{2k−2} ≤ B (1 + |X|)² Σ_z |c(z)|/(1 + |γ_z|²)`, with `B` depending only on
+`a, D, C₀, η, k`. -/
+theorem one_add_pow_le_of_isolated_cancellation {a D C₀ η : ℝ} (hD : 0 < D) (hDa : π * D < 2 * a)
+    (hη : 0 < η) {k : ℕ} (hk : 1 ≤ k) :
+    ∃ B : ℝ, 0 ≤ B ∧ ∀ (Z Z' : ZeroConfig), TemperedConfig Z → TemperedConfig Z' →
+      (∀ f, ApertureWindow a f → Z.W f f = Z'.W f f) →
+      ∀ (z₀ : ℂ) (R : ℝ), 0 ≤ R → multDiff Z Z' z₀ ≠ 0 →
+      (∀ z, z ≠ z₀ → multDiff Z Z' z ≠ 0 → |z.im - z₀.im| ≤ R → η ≤ ‖z - z₀‖) →
+      (∀ (s : Finset ℂ) (x y : ℝ), x ≤ y →
+        (∀ z ∈ s, multDiff Z Z' z ≠ 0 ∧ |z.im - z₀.im| ≤ R ∧ z.im ∈ Icc x y) →
+          (s.card : ℝ) ≤ D * (y - x) + C₀) →
+      (1 + R) ^ (2 * k - 2) ≤
+        B * (1 + |z₀.im|) ^ 2 * ∑' z, ‖multDiff Z Z' z‖ / (1 + Complex.normSq (gammaOf z)) := by
+  obtain ⟨ε, hε⟩ : ∃ ε, ε = (a - π * D / 2) / 3 := ⟨_, rfl⟩
+  have hε0 : 0 < ε := by rw [hε]; linarith
+  obtain ⟨b, hb, hbs, hb1⟩ := exists_bump_one_le_norm_paperFT_I_mul hε0
+  obtain ⟨Cm, -, hCm⟩ := exists_pow_mul_norm_paperFT_le_exp hb hε0.le hbs
+    (⌈windowExponent (2 * D⁻¹) (localSlack D C₀)⌉₊ + k)
+  obtain ⟨C0, -, hC0⟩ := exists_pow_mul_norm_paperFT_le_exp hb hε0.le hbs 0
+  have hC0' : ∀ w : ℂ, ‖paperFT b w‖ ≤ C0 * Real.exp (ε * |w.im|) := fun w => by
+    have := hC0 w
+    rwa [pow_zero, one_mul] at this
+  have hm : windowExponent (2 * D⁻¹) (localSlack D C₀) + k ≤
+      ((⌈windowExponent (2 * D⁻¹) (localSlack D C₀)⌉₊ + k : ℕ) : ℝ) := by
+    push_cast
+    linarith [Nat.le_ceil (windowExponent (2 * D⁻¹) (localSlack D C₀))]
+  refine ⟨localCameraConst a D C₀ η ε Cm C0, by unfold localCameraConst; positivity,
+    fun Z Z' hZ hZ' hW z₀ R hR hc hiso hcount => ?_⟩
+  exact one_add_pow_le_of_isolated_cancellation_of_bump hD hη hε0 (by rw [hε]; linarith) hb hbs
+    hb1 hk hm hCm hC0' hZ hZ' hW hR hc hiso hcount
 
 end GaloisForLFunctions.ZeroConfigurationGeometry

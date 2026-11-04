@@ -1,7 +1,7 @@
 # Zero Configuration Geometry (ZCG)
 
 Namespace `GaloisForLFunctions.ZeroConfigurationGeometry`; umbrella `ZeroConfigurationGeometry.lean`;
-42 modules.
+49 modules.
 
 ## 1. Motivation
 
@@ -123,6 +123,11 @@ primes below the mean spacing.
    cluster at aperture `a`, counted point by point, has density `≥ 2a/π`, at any depth. A separated
    union has at most two cluster points per height. Hence mimics need near-collisions below every
    `g > π/a`, whatever the depths.
+   *Locally.* Only the cluster near the height `X` of a point `z₀` has to be counted. Translate it
+   to height `0`, blind its two halves with windows whose floor at `z₀` and decay on the strip do
+   not depend on the cluster, and modulate back by `e^{−iXu}`. The far cluster then enters with
+   weight `(1 + |X|)²/(1 + R)^{2k−2}` for every decay order `k`. So an isolated cancelling point at
+   height `X` forces density `≥ 2a/π` within distance `R ≍ (1 + |X|)^{1/(k−1)}` of `X`.
 
 **Kernel design.**
 10. *Multipliers.* Shifts multiply the transform by exponential polynomials, at the cost of their
@@ -135,6 +140,10 @@ primes below the mean spacing.
     line the sine absorbs the nearest factor and harmonic sums bound the rest, so
     `|sin · Π r_k| ≤ K(1 + |x|)^p` uniformly. The stages converge uniformly, and the limit is blind
     to every `ν_k`. This works for complex `ν_k` of depth `≤ ½`, since `|i − ν| ≥ |i − Re ν|/2`.
+    On the strip `|Im z| ≤ ½` the same bound holds with `|sin|` periodic in `Re z`. At a point
+    `η`-far from every `ν_k` and `h/4`-far from the lattice the product has an explicit floor
+    `c₀ e^{−κC}(1 + |Re z|)^{−q}`, uniformly in the index set. Every factor is `≥ η/((η + L)(1 + L))`,
+    and the factors near `1` are `≥ e^{−2|r_k − 1|}`.
 12. *Blind windows are entire functions.* An entire function of type `A` that decays on horizontal
     lines is the transform of a smooth window in `[−A, A]`; the proof is a contour shift, Fourier
     inversion and the identity theorem. So blind windows above `τ` exist exactly when entire
@@ -167,7 +176,12 @@ primes below the mean spacing.
     de Bruijn law.
 19. *Repulsion in model families.* Above its horizon the Euler stage `Λ_X` moves by a phase of speed
     `½ log(t/2π)`, up to the prime weight `W/2`. Its zeros there are on the line, simple, and exactly
-    the preimage of `πℤ`. In the function field `∏ h'(α) = Res(h, h') ∈ ℤ` forces distinct trace
+    the preimage of `πℤ`. The mechanism needs only a symmetric half, zero-free on `Re z > ½` with
+    dominated logarithmic derivative. So it holds for every finite real Dirichlet carrier
+    `Γ_ℝ(z) exp(Σ_{n ≤ X} a(n) n^{−z})` above the horizon `log(t/2π) > W_a + 6/t`. Read backwards,
+    a tilted zero at height `t` costs prime weight `W_a ≥ log(t/2π) − 6/t`. The twins are tilted at
+    every height and pay this price as soon as the weight grows like `log` of the height, as the
+    weight of `ζ` does. In the function field `∏ h'(α) = Res(h, h') ∈ ℤ` forces distinct trace
     points apart. The image of `ζ` has neither a dominating phase speed below the horizon nor
     integrality.
 
@@ -210,10 +224,16 @@ primes below the mean spacing.
 | Exponential polynomials, finite unions of lattices, transforms of densities | `exists_window_blind_to_expPoly_zeros`, `exists_window_blind_to_lattices`, `exists_window_blind_to_densityTransform_zeros` | unconditional |
 | Division at transform zeros; isolating windows | `exists_window_div`, `exists_isolating_window`, `exists_window_isolating_lattice_point` | unconditional |
 | Products over a perturbed lattice, real and complex | `summable_norm_pertFactor_sub_one`, `tprod_pertFactor_ne_zero`, `norm_I_sub_re_le`, `norm_sin_mul_prod_pertFactor_le` | unconditional |
+| Products on the strip; the floor at an isolated point | `norm_sin_mul_prod_pertFactor_le_strip`, `isoConst_le_norm_pertFactor`, `norm_prod_pertFactor_ge_strip`, `norm_tprod_pertFactor_ge_strip`, `norm_sin_mul_tprod_pertFactor_le_strip` | unconditional |
 | Blind windows for perturbed lattices, real and complex | `exists_stage_window`, `exists_blind_limit_window`, `exists_window_blind_to_perturbed_lattice`, `exists_window_blind_to_complex_perturbed_lattice`, `exists_window_blind_to_perturbed_lattices` | unconditional |
 | Converse Paley–Wiener; blind windows are entire functions | `exists_smooth_source_of_entire`, `exists_window_of_entire`, `blind_windows_iff_entire` | unconditional |
 | Blind windows at the uniform density | `card_le_card_biUnion_intNbhd`, `exists_injective_near_int`, `exists_window_blind_of_count_le`, `exists_window_blind_of_count_le_complex`, `exists_window_blind_of_separated` | unconditional |
 | Blindness costs the density aperture; `πD` is exact | `pi_mul_le_aperture_of_blind`, `eq_zero_of_blind_of_unbounded_density`, `eq_zero_of_blind_to_real_zeros_of_xi`, `blind_aperture_threshold` | unconditional |
+| Uniform isolating windows: blind to a matched cluster, explicit floor at the target, strip decay independent of the cluster | `exists_bump_one_le_norm_paperFT_I_mul`, `windowFloor`, `windowGrowth`, `isolating_window_of_bump`, `exists_uniform_isolating_window` | unconditional |
+| **Local camera** | | |
+| Far zeros are faint in the local camera | `localWindow`, `paperFT_localWindow`, `norm_paperFT_localWindow_mul_le`, `norm_pointImage_mul_le`, `decay_le_tempered`, `tsum_far_le`, `norm_tsum_far_le`, `tsum_far_multDiff_le`, `tsum_far_zeta_le` | unconditional |
+| Isolated points are seen by the local camera, with explicit constant | `apertureWindow_localWindow`, `localCameraConst`, `one_add_pow_le_of_isolated_cancellation_of_bump`, `one_add_pow_le_of_isolated_cancellation` | unconditional |
+| The zeros of `ζ` have the sharp local density | `mu_le`, `card_le_ncount`, `ncount_le_of_goodHeight`, `exists_card_le_sharp`, `exists_card_le_sharp_centred`, `exists_card_le_sharp_centred_abs` | unconditional |
 | Cosine camera: real zeros, complex additive rigidity | `im_eq_zero_of_cosineWindowTransform_eq_zero`, `no_complex_additive_zero_triple` | unconditional, `0 < θ < π/2` |
 | **Arithmetic fakes** | | |
 | Ramanujan is reality | `localFactor_zero_depth`, `localFactor_zero_re_eq_half_iff`, `curveDatum_pure_iff_tracePoints` | unconditional |
@@ -226,6 +246,9 @@ primes below the mean spacing.
 | Laguerre steps never deepen; shift averages contract | `rootsInStrip_heatStep`, `heatStep_keeps_triple_edge_root`, `im_eq_zero_or_sq_add_sq_le_of_shiftAverage`, `roots_shiftAvgList_im_sq_le` | unconditional |
 | Euler stages repel above the horizon; counted by their phase | `stageLine_eq_mul_exp`, `eulerStage_deriv_ne_zero_above_horizon`, `eulerStage_ne_zero_of_lt_gap`, `exists_eulerStage_zero_within`, `eulerStage_eq_zero_iff_phase`, `ncard_eulerStage_zeros` | unconditional |
 | Integral configurations collide or repel | `prod_derivative_roots_eq_resultant`, `collide_or_repel` | unconditional |
+| Symmetric halves are phase lattices | `SymmetricHalf`, `sym_linePt`, `line_eq_mul_exp`, `sym_eq_zero_iff_phase`, `sym_deriv_ne_zero`, `sym_ne_zero_of_phase_lt`, `exists_sym_zero_of_phase_ge`, `ncard_sym_zeros`, `norm_lt_of_speed_pos`, `sym_ne_zero_near_line` | unconditional |
+| Finite carriers are real above their horizon; the Euler-depth descent | `carrierHalf`, `carrierWeight`, `re_carrierLogDeriv_ge`, `carrier_ne_zero_near_line`, `carrier_deriv_ne_zero`, `carrier_eq_zero_iff_phase`, `ncard_carrier_zeros`, `eulerDepthCoeff`, `carrierWeight_eulerDepth`, `eulerDepth_ne_zero_near_line`, `eulerDepth_deriv_ne_zero` | unconditional |
+| Tilts cost prime weight: the twin calibration of O3 | `log_le_carrierWeight_of_tilted_zero`, `log_le_eulerDepth_weight_of_tilted_zero`, `localFactor_twin_tilted_zero`, `twin_tilt_costs_weight`, `exists_twin_tilt_beyond_every_weight` | unconditional |
 | **Certification** | | |
 | Function-field certification at the identification threshold | `pure_iff_of_powerSum_eq`, `pure_iff_of_weil_eq_on_aperture`, `isPure_of_curveImage_eq` | unconditional |
 | Bounded images certify purity; growth reads the deepest eigenvalue | `exists_simultaneous_return`, `curveImage_growth`, `isPure_iff_bounded_curveImage` | unconditional |
@@ -271,6 +294,10 @@ arithmetic images, forces every point onto the real curve?*
   finitely many arbitrary points above `πD` (`eq_of_mimic_of_perturbed_lattices_and_finset`). Euler
   columns cancel against on-line lattices exactly below their dual frequency
   (`eulerColumn_mimic_iff`).
+- Locally: let `z₀` be a cluster point at height `X`, `η`-isolated within `R`, with the cluster
+  near `X` of count `(D, C₀)` and `πD < 2a`. Then `(1 + R)^{2k−2} ≤ B (1 + |X|)² Σ |c|/(1 + |γ|²)`,
+  with `B = B(a, D, C₀, η, k)` (`one_add_pow_le_of_isolated_cancellation`). An isolated cancelling
+  point therefore needs density `2a/π` within a power `(1 + |X|)^{1/(k−1)}` of its height.
 - *Open:* whether deep configurations hide at union separations between `π/(2a)` and `π/a`.
 
 **Q3 Sub-spacing geometry.** *What does the image say below the mean spacing?*
@@ -290,6 +317,13 @@ arithmetic images, forces every point onto the real curve?*
 - Model repulsion laws: above its horizon the Euler stage `Λ_X` is a simple on-line phase lattice
   (`eulerStage_deriv_ne_zero_above_horizon`, `ncard_eulerStage_zeros`). Integral configurations
   collide or repel (`collide_or_repel`).
+- Every finite real carrier `Γ_ℝ(z) exp(Σ_{n ≤ X} a(n) n^{−z})`, symmetrized, is a symmetric half.
+  Above `log(t/2π) > W_a + 6/t` it has no zero with `0 < |Re z − ½| ≤ u₀`, and its zeros on the
+  line are simple and counted exactly by the phase (`carrier_ne_zero_near_line`,
+  `ncard_carrier_zeros`). Along the Euler depth `a = sΛ/log n` the weight is `|s| W_Λ`
+  (`carrierWeight_eulerDepth`). The deformation from the archimedean carrier (`s = 0`) to the
+  Euler stage (`s = 1`) is collision-free at height `t` for `s < (log(t/2π) − 6/t)/W_Λ`
+  (`eulerDepth_ne_zero_near_line`). This is the Euler-depth analogue of route steps 1–3.
 - *Open:* a repulsion law that reaches tilt `0`, i.e. reality of `ζ` itself, along backward heat
   time or Euler depth.
 
@@ -315,6 +349,13 @@ arithmetic images, forces every point onto the real curve?*
   root datum mimics the pure datum exactly up to lag `g log q` (`identification_threshold_sharp`).
 - Mimicry of arithmetic data lives only at the level of configurations: at the level of data every
   fake is separated at its first prime.
+- Domination is not selective. It holds for every finite real carrier above its horizon, including
+  flips, twin truncations and Davenport–Heilbronn data. A tilted carrier zero at height `t` costs
+  weight `W_a ≥ log(t/2π) − 6/t` (`log_le_carrierWeight_of_tilted_zero`). The twin is tilted at every
+  height (`localFactor_twin_tilted_zero`), and for every weight bound some tilted twin zero is out
+  of reach (`exists_twin_tilt_beyond_every_weight`). Since `W_Λ(X)` also grows like `log` of the
+  height, the size of the weight cannot separate `ζ` from the twins. The selective input must be how
+  the prime sum of `ζ` cancels below the horizon.
 
 ## 7. Tools
 
@@ -333,6 +374,11 @@ arithmetic images, forces every point onto the real curve?*
   periodization. Products over perturbed lattices with their uniform bound on the real line, and
   uniform limits of windows. The converse Paley–Wiener theorem, Hall matching of configurations of
   bounded local count into lattices, two-window isolation, and Jensen's bound for blind windows.
+- The local camera: product bounds and floors on the strip, uniform isolating windows, modulation
+  to height `X`, the far-tail bound for tempered clusters, and the sharp local zero count of `ζ`
+  (density `(1/2π) log((X + R)/2π)`, error `O(log X)`).
+- Symmetric halves: phase lattices of holomorphic functions with dominated logarithmic derivative,
+  and the prime weight of finite real carriers.
 - Newton and Dickson reciprocity for Frobenius spectra, simultaneous return of unimodular numbers,
   and resultants of trace polynomials.
 - Sign-change persistence and closedness of real-rootedness. The heat operator with its coefficient
@@ -340,6 +386,8 @@ arithmetic images, forces every point onto the real curve?*
   and the phase law of Euler stages.
 
 **To build.**
+- Explicit constants for the local camera: `B(a, D, C₀, η, k)` as an explicit function, from a bump
+  with explicit transform decay (a smooth bump convolved with a box power `sinc^m`).
 - Resolution of deep configurations between `π/(2a)` and `π/a`.
 - The Beurling–Malliavin radius of a configuration, through the equivalence with entire functions.
 - Signed prime geometry below the mean spacing, as input to the coalescent channel.
@@ -351,6 +399,7 @@ arithmetic images, forces every point onto the real curve?*
 | Visibility means a negative Weil form | Identification is sign-free; finite modifications are seen at every aperture, while negativity is guaranteed only beyond a logarithmic aperture (`finiteOffLine_visible`) |
 | A cluster can hide in a bounded region | Finite modifications never hide; hiding needs infinitely many points |
 | Cancelling clusters can be sparse or perturbed | Every cluster of upper uniform density `< 2a/π`, counted point by point and at any depth, is trivial; the lattice pair cancels at density `2a/π` |
+| The density criterion needs a global count, so it says nothing for `ζ` | Only the count near the height matters: an isolated cancelling point at height `X` forces density `2a/π` within `R` with `(1 + R)^{2k−2} ≤ B (1 + |X|)² S` |
 | The resolution scale of off-line pairs is worse than Ingham's | Shallow configurations are resolved at every `g > π/(2a)`, and every depth at `g > π/a` |
 | An image matching the on-line shadow certifies the line | Lattices, Euler columns and band-limited modulations hide below their dual frequency |
 | Bounded bandwidth excludes arithmetic fakes | For every aperture some prime carries Euler columns of every depth that hide |
@@ -362,16 +411,18 @@ arithmetic images, forces every point onto the real curve?*
 | Each heat step contracts the depth | Laguerre steps only keep the strip, since a multiple edge root survives a step; shift averages contract strictly |
 | Repulsion needs a positivity or a sign | In the function field it follows from integrality (`Res(h, h')` is a nonzero integer), for Euler stages from the archimedean phase speed; neither is available for `ζ` below the horizon |
 | Euler products separate `ζ` from twins at finite resolution | Only the Ramanujan bound at each prime does |
+| Domination is a property of `ζ` | Domination holds for every finite real Dirichlet carrier above the horizon set by its coefficient size; it is `ζ`-specific only through how the Euler product controls the prime sum below that horizon |
+| A strong enough domination bound excludes the twins | Domination excludes tilts of a finite carrier only below its weight; the twins' tilts sit at every height and are reached as soon as the weight grows like `log` height, as the weight of `ζ` does |
 
 ## 9. Context
 
 | Direction | Programmes (module imports) |
 |---|---|
-| Uses | RHTower 12, SquareRootThreshold 9, HTGeometry 7, ArithmeticCastelnuovoSeveri 4, SelbergClass 1, IncommensurableGaborPinching 1, Zeta23 |
+| Uses | RHTower 14, SquareRootThreshold 9, HTGeometry 9, Zeta23 4, ArithmeticCastelnuovoSeveri 4, SelbergClass 1, IncommensurableGaborPinching 1 |
 
 | Neighbour | Interface |
 |---|---|
-| Zeta23 | `ZeroConfig`, `paperFT`, `gammaOf`, Weil form, Gram summands of the matrix explicit formula |
+| Zeta23 | `ZeroConfig`, `paperFT`, `gammaOf`, Weil form, Gram summands of the matrix explicit formula; the zero-counting contour (Backlund, good heights, the Γ side) behind the sharp local count |
 | SquareRootThreshold | `multDiff`, `TemperedConfig`, the lag structure of two-bump tests, separated Ingham; the sign-based visibility apertures that ZCG contrasts with identification |
 | RHTower | vertical lattices and their Nyquist blindness; the unconditional explicit formula; the scaled bump and its decay; de Bruijn–Newman and the collision criterion; de Bruijn's strip contraction; Euler stages |
 | ArithmeticCastelnuovoSeveri | curve data and their lag formula; the inverse transform `invFT` and its sup bound |
@@ -413,7 +464,7 @@ Euler logarithm to exponentiate. The route carries the domination down to `ζ` i
 | 2. RH is the descent | RH holds iff the local de Bruijn–Newman constant `Λ_X` vanishes at every height (`riemannHypothesis_iff_forall_localNewmanConstant_eq_zero`) | Lean |
 | 3. Exit only through collision | Along the descent `t ↓ 0`, a zero leaves the line only at a double zero (`riemannHypothesis_iff_forall_zeros_simple`, `exists_first_collision`) | Lean |
 | 4. The pincer | A zero of depth `d` at height `X` forces `Λ_X ≥ c d²/log X` (`exists_le_localNewmanConstant_of_offLine_zero`), so any tilt is created by a collision at heat `t ∈ [c d²/log X, t_X]` | Lean |
-| 5. The camera fixes the start | The descent is determined by the configuration of `ζ` at `t = 0`, and only there is the image arithmetic: the heat flow destroys the Euler product for `t > 0`. At bandwidth `λ > ½` hiding needs density `≥ 2a/π` (`eq_of_mimic_of_count_le`), while the zeros at height `X` have density `L/π`. So the image at aperture `λL` should determine the configuration near `X`, up to near-collisions, which it reads at second order through the `(log n)²`-weighted prime sum (`norm_pairSignal_sub_sq_mul_curvature_le`, `deriv_deriv_primeChannel_modulate`) | Lean for uniform density; local form open (O2) |
+| 5. The camera fixes the start | The descent is determined by the configuration of `ζ` at `t = 0`, and only there is the image arithmetic: the heat flow destroys the Euler product for `t > 0`. Hiding needs density `≥ 2a/π` near the height of the hidden point (`one_add_pow_le_of_isolated_cancellation`). The zeros of `ζ` and of a mimic with the same local density have joint density `(1/π) log(X/2π)` near `X` (`exists_card_le_sharp_centred`). So at aperture `λ log X`, `λ > ½`, the image determines the isolated points near `X`. It reads near-collisions at second order through the `(log n)²`-weighted prime sum (`norm_pairSignal_sub_sq_mul_curvature_le`, `deriv_deriv_primeChannel_modulate`) | Lean with non-explicit `B`; explicit `B` open (O2) |
 | 6. Close the descent | The configuration fixed in step 5 evolves without collision on `(0, t_X]`: it has no tilted pair, and no cluster that collides in the last stretch | open (O1, O3) |
 
 **Obstacles.**
@@ -422,11 +473,19 @@ Euler logarithm to exponentiate. The route carries the domination down to `ζ` i
   (Bourgain's `μ(½) ≤ 13/84` gives `13/21`). Lindelöf would give `Λ_X = o(1/log X)`, still not `0`.
   Closing the route needs domination that knows the configuration at the scale `1/log X`, not only
   the size of `ζ`.
-- **O2 The local camera.** The density criterion and the Ingham-scale resolution are proved for
-  configurations of finite uniform density on the whole line. The zeros of `ζ` have density
-  `L(X)/π`, with `L = ½ log(X/2π)`. Needed: the local form at height `X`, with the far zeros
-  controlled through window decay (`exists_pow_mul_norm_paperFT_le_exp`) and the zero count
-  (`zeroCount_upper`). This is analysis inside the programme, and the next target.
+- **O2 The local camera, quantitatively.** The local density criterion is proved
+  (`one_add_pow_le_of_isolated_cancellation`), and so is its count input for `ζ`
+  (`exists_card_le_sharp_centred`). For `ζ` the parameters grow with the height: aperture
+  `a = λ log X`, density `D ≍ log X`, count error `C₀ ≍ log X`, and isolation `η ≍ 1/log X` at
+  the mean spacing. The theorem applies at height `X` once `(1 + R)^{2k−2} > B(1 + X)² S` for some
+  `R ≤ X/2`, the range of the sharp count. So `B` must be explicit. It is, given the bump:
+  `B = localCameraConst a D C₀ η ε C_m C_0 = (windowGrowth · C_m C_0 e^ε)² e^a (5/4)/windowFloor²`
+  (`one_add_pow_le_of_isolated_cancellation_of_bump`). The window constants are of size
+  `X^{O(log log X)}` and `X^{−O(log(1/η) log log X)}`. With a bump of explicit decay
+  `C_m ≤ c^m (1 + m/ε)^m` (a smooth bump convolved with a box power), `B ≤ X^{O((log log X)²)}` is
+  expected. Then `k ≍ (log log X)²` gives `R = X^δ` for every
+  `δ > 0`, and the local camera of `ζ` works at every bandwidth `λ > ½`. This is analysis inside
+  the programme, and the next target.
 - **O3 Repulsion in the last stretch.** Every tilted pair of `ζ` at height `X` must disappear by a
   collision before heat time `t_X`, since `H_{t_X}` is real there. An isolated pair of squared
   half-gap `−δ²` collides at heat `δ²/2` (the single-pair law `w² + 2t`, proved for polynomials),
@@ -435,13 +494,17 @@ Euler logarithm to exponentiate. The route carries the domination down to `ζ` i
   step 5 to exclude both: shallow tilts, which it reads only at second order through coalescent
   prime pairs below the mean spacing (`primeCoalSum_eq_oddEvenShiftPrimeCoalSum`), and colliding
   clusters. This is the arithmetic input of Q3. It must use the Euler product with the strict
-  Euler bound, since for the twins the same descent fails.
+  Euler bound, since for the twins the same descent fails. The calibration is exact
+  (`twin_tilt_costs_weight`, `exists_twin_tilt_beyond_every_weight`). Finite pieces of the twin's
+  data are on the line above their horizon, yet the twin is tilted at every height. The two facts
+  are reconciled only by weights growing like `log` of the height, and the weight of `ζ` grows the
+  same way. So O3 cannot be closed by the size of the prime sum, only by its cancellation.
 - **The endpoint.** `Λ ≥ 0` (Rodgers–Tao): the descent cannot continue past `t = 0`. So whatever
   closes O3 must use a property that `ζ` has exactly at `t = 0`. The Euler product is such a
   property: the heat flow destroys it for `t > 0`.
 
-**Status.** Steps 1–4 are proved in the corpus. Step 5 is proved for configurations of uniform
-density, and its local form (O2) is within reach. O1 and O3 are where RH lies. The route is not
+**Status.** Steps 1–4 are proved in the corpus. Step 5 is proved in local form with a
+non-explicit constant; making the constant explicit (O2) is analysis within reach. O1 and O3 are where RH lies. The route is not
 closed. What it contributes is the split. ζ-specific domination gives reality down to heat time
 `t_X`, and the pincer confines every tilt to the last stretch. The camera fixes the configuration
 whose descent must be collision-free. The only arithmetic left is that this configuration has no

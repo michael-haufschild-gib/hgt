@@ -79,12 +79,23 @@ Pillars (module — main theorems), all checked with `lake --old env lean`, umbr
   `exists_window_blind_to_densityTransform_zeros`
 - TheCosineCameraHasOnlyRealKernelZeros — `cosineWindowTransform_closed_form`,
   `im_eq_zero_of_cosineWindowTransform_eq_zero`, `no_complex_additive_zero_triple`
+- ProductsOverPerturbedLatticesOnTheStrip — `norm_sin_mul_prod_pertFactor_le_strip`,
+  `isoConst_le_norm_pertFactor`, `norm_prod_pertFactor_ge_strip`
+- FarZerosAreFaintInTheLocalCamera — `paperFT_localWindow`, `norm_tsum_far_le`, `tsum_far_multDiff_le`,
+  `tsum_far_zeta_le`
+- IsolatedPointsAreSeenByTheLocalCamera — `exists_bump_one_le_norm_paperFT_I_mul`,
+  `exists_uniform_isolating_window`, `one_add_pow_le_of_isolated_cancellation`
+- ZetaZerosHaveTheSharpLocalDensity — `ncount_le_of_goodHeight`, `exists_card_le_sharp_centred`
+- SymmetricHalvesArePhaseLattices, FiniteCarriersAreRealAboveTheirHorizon, TiltsCostPrimeWeight —
+  `ncard_sym_zeros`, `carrier_ne_zero_near_line`, `eulerDepth_ne_zero_near_line`,
+  `twin_tilt_costs_weight`, `exists_twin_tilt_beyond_every_weight`
 
 ## Open core
 The route to RH is on its own card (`zcg-rh-route.md`). It runs from archimedean domination of the
 heat flow above `2π e^{(2/3+ε)/t}`, through a collision-free descent, to `ζ`. Open: O1 domination
-below the mean spacing; O2 the local camera at height `X` (programme-internal, next target); O3
-reality of the coalescent near-collisions in the last stretch. Internal open tools: the depth range
+below the mean spacing; O2 explicit constants of the local camera, whose qualitative form is proved
+(`one_add_pow_le_of_isolated_cancellation`; programme-internal, next target); O3 reality of the
+coalescent near-collisions in the last stretch. Internal open tools: the depth range
 of the Ingham scale between `π/(2a)` and `π/a`, and the Beurling–Malliavin radius.
 
 ## Log

@@ -33,7 +33,7 @@ theorem terminal_logarithmic_gap_antitone (d : ℕ) {m n : ℕ}
   simp only [Nat.cast_add, add_div, div_self hm0.ne', div_self hn0.ne']
   have hdiv : (d : ℝ) / n ≤ (d : ℝ) / m :=
     div_le_div_of_nonneg_left (Nat.cast_nonneg d) hm0 hmnR
-  exact add_le_add_left hdiv 1
+  exact add_le_add (le_refl 1) hdiv
 
 /-- The long-index interval selected by a logarithmic annulus. -/
 def terminalLogarithmicGapInterval (α β w : ℝ) (N d : ℕ) : Finset ℕ :=
@@ -168,14 +168,14 @@ theorem abs_terminal_annular_offset_sub_linear_le
   have hn0 : (0 : ℝ) < n := by exact_mod_cast hn
   let Kt := fun s : ℝ => K (T * s)
   let KLt : NNReal := ⟨T * (KL : ℝ), mul_nonneg hT0.le KL.2⟩
+  have hKLtval : (KLt : ℝ) = T * (KL : ℝ) := rfl
   have hKLt : LipschitzWith KLt Kt := by
     apply LipschitzWith.of_dist_le_mul
     intro x y
     have hh := hKL.dist_le_mul (T * x) (T * y)
     rw [Real.dist_eq, Real.dist_eq] at hh ⊢
     exact hh.trans_eq (by
-      rw [← mul_sub, abs_mul, abs_of_pos hT0]
-      simp only [KLt, NNReal.coe_mk]
+      rw [← mul_sub, abs_mul, abs_of_pos hT0, hKLtval]
       ring)
   have hTc1 : 1 ≤ T * c := by
     simpa only [one_mul] using mul_le_mul hT hc zero_le_one hT0.le
@@ -187,7 +187,7 @@ theorem abs_terminal_annular_offset_sub_linear_le
     field_simp [hT0.ne', hc0.ne', hn0.ne'] <;> ring
   dsimp only [terminalNearOffsetPair, terminalLinearOffsetPair, Kt] at ht
   rw [hlog, hlin] at ht
-  exact ht.trans_eq (by simp only [KLt, NNReal.coe_mk]; ring)
+  exact ht.trans_eq (by rw [hKLtval]; ring)
 
 /-- Periodic cancellation on a sharp annulus retains explicit quadratic and cubic outer-gap costs. -/
 theorem abs_terminal_annular_pair_div_overlap_le_long_index

@@ -1,9 +1,9 @@
 # Long-index cancellation on growing logarithmic annuli
 
 - **ID:** terminal-annular-long-index-cancellation
-- **Stage:** 1-in-progress
-- **Type:** THEOREM, paper proof awaiting Lean
-- **Parent:** [sources beyond the logarithmic packet](terminal-sources-beyond-the-logarithmic-packet.md)
+- **Stage:** 3-formalized
+- **Type:** THEOREM (Lean)
+- **Parent:** [sources beyond the logarithmic packet](../1-in-progress/terminal-sources-beyond-the-logarithmic-packet.md)
 - **Verdict:** `BRIDGE`. Quantitative periodic cancellation, not a new positivity theorem.
 
 ## Exact statement
@@ -12,11 +12,11 @@ Let F vanish on `x≤1/2`, with `|F|≤B_F` and Lipschitz constant L_F.
 Let K be bounded by B_K with Lipschitz constant L_K. Let p have positive
 integer period q, zero period mean and `|p|≤B`. For
 
-    c≥1, T≥1, 0≤α≤β≤T, 8Tc≤N,
+    c≥1, T≥1, 0≤α, β≤T, 8Tc≤N,
     C_W(T)=20B_F B_K+64B_F L_K T+4B_K L_F,
     C_K(T)=64L_K T+4B_K,
 
-the target finite bound is
+the checked finite bound is
 
     |endpointNearPairSum(K,F,α,β,c/N,N,1,p)/c|
       ≤ [8qBT C_W(T)+8B_F B C_K(T)T²c]/N.
@@ -24,12 +24,12 @@ the target finite bound is
 The period may exceed overlap. No relation between q and c is assumed.
 The estimate concerns the literal logarithmic kernel and both triangles.
 
-## Internal attack
+## Scope
 
-Existing periodic interval estimates already supply cancellation. The
-missing transfer is the moving logarithmic selector and its explicit
-dependence on T. Fixed-T convergence does not imply this finite bound.
-The proposed remainder allows T to grow while staying below N/(8c).
+Periodic interval estimates supply cancellation on the exact moving
+logarithmic selector, with explicit dependence on T. Fixed-T convergence
+alone does not imply this finite bound. The remainder allows T to grow
+while staying below N/(8c).
 Its loss is quadratic in T in the periodic term and cubic in T in the
 kernel replacement. No all-conductor Gram approximation follows.
 
@@ -70,15 +70,17 @@ Tc and kernel `s↦K(Ts)`; this avoids reproving the analytic replacement.
 
 ## Application boundary
 
-Clamp the near Gamma profile to [0,2] and the separated profile to
-[2,T]; existing Lipschitz constants give the required global extensions.
-The actual entry errors are O(c/N). The checked separated tail is
-`O(B²/T+B²c/N)` after division by c. Taking T=N^(1/8) would give a
-power-saving nonpolar Gamma estimate. The complete terminal source still
-requires matching the full center, completed divisor jet and remaining
-channels with their conductor dependence. This card does not claim that
-assembly or the parent polynomial-packet conjecture.
+The near Gamma and separated profiles have bounded Lipschitz extensions
+from [0,2] and [2,T]. Their actual entry errors are O(c/N); the checked
+separated tail is `O(B²/T+B²c/N)` after division by c. The quantitative
+transfer to these literal Gamma profiles remains open. The complete
+terminal source also requires matching the full center, completed
+divisor jet and remaining channels with their conductor dependence.
+Neither a Gamma power-saving theorem nor the parent polynomial-packet
+conjecture is asserted here.
 
 **Lean status:** `TerminalLogarithmicAnnuliCancelAlongTheLongIndex.lean`
-implements the selector, triangle reindexing, rescaled error and final
-bound. Actual-path audit pending; no endpoint is counted as checked.
+formalizes the selector, triangle reindexing, rescaled error and final
+bound. All five printed endpoints pass their actual-path source audit
+with exactly `[propext, Classical.choice, Quot.sound]`. The module is
+imported by `ArithmeticHodgeTheoryOfDegenerations.lean`.

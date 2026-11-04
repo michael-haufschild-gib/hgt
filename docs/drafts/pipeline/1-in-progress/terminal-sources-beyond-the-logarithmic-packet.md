@@ -206,16 +206,16 @@ new globally differentiable full Gamma profile.
 
 For the remaining annulus, the source already supplies bounded
 Lipschitz near and cross-singular profiles and an entry error O_φ(c/N).
-The long-index argument would suffice with polynomial losses
-`qB(1+T)²/N + B(1+T)³c/N`. Its missing finite step is cancellation on
-the moving integer interval selected by the logarithmic gap cutoffs.
+The long-index argument needs polynomial losses
+`qB(1+T)²/N + B(1+T)³c/N`. Cancellation on the moving integer interval
+selected by the logarithmic gap cutoffs is now checked.
 At a fixed integer gap d, `log(1+d/n)` decreases with n, so that selector
 is an interval; an interval version of the periodic prefix estimate
-pays both endpoints. A [closed finite proof](terminal-annular-long-index-cancellation.md)
-now gives the explicit quadratic/cubic T-dependence and its Lean
-implementation. Its audit is pending. **[OPEN CORE]** Transfer the
-checked bound to the literal Gamma profiles and assemble every complete
-source channel with its conductor dependence.
+pays both endpoints. The [formalized finite bound](../3-formalized/terminal-annular-long-index-cancellation.md)
+retains explicit quadratic/cubic T-dependence. Its five endpoints pass
+their actual-path audit with `[propext, Classical.choice, Quot.sound]`.
+**[OPEN CORE]** Transfer that bound to the literal Gamma profiles and
+assemble every complete source channel with its conductor dependence.
 
 Choosing T=N^(1/8) gives a weaker but sufficient candidate complete bound
 

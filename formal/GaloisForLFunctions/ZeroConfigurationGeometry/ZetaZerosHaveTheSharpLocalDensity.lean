@@ -2,6 +2,7 @@ import Zeta23.RvM.MainTerm
 import Zeta23.GammaFacts.Complete
 import Zeta23.Statement.SeamClosed
 import GaloisForLFunctions.ZeroConfigurationGeometry.FiniteCarriersAreRealAboveTheirHorizon
+import GaloisForLFunctions.RHTower.EvenLandauPairTest
 
 /-!
 # The zeros of ζ have the sharp local density
@@ -23,9 +24,10 @@ of the density `μ(t) = (1/π) Re ψ_ℝ(½ + it)` (`gamma_side`). Pointwise
   `N(T₁, T₂) ≤ (T₂ − T₁)(log((T₂ + 1)/2π) + 6/T₁)/2π + |C_B|(log T₁ + log T₂) + 1`.
 * **The sharp local count** (`exists_card_le_sharp`), for distinct zeros in a closed height
   interval, in the form consumed by the local camera.
-* **Centred at a height** (`exists_card_le_sharp_centred`). The zeros at height distance `≤ R` from
-  `X` inside `[x, y]` number at most `D (y − x) + C₀` with
-  `D = (log((X + R + 2)/2π) + 6/(X − R − 2))/2π` and `C₀ = 3D + A log(X + R + 2) + 1`.
+* **Centred at a height** (`exists_card_le_sharp_centred`, `exists_card_le_sharp_centred_abs`).
+  The zeros at height distance `≤ R` from `X` inside `[x, y]` number at most `D (y − x) + C₀`
+  with `D = (log((X + R + 2)/2π) + 6/(X − R − 2))/2π` and `C₀ = 3D + A log(X + R + 2) + 1`; for
+  negative heights by the conjugation symmetry of the zeros, with `|X|` in place of `X`.
 -/
 
 open Complex MeasureTheory Set
@@ -254,5 +256,35 @@ theorem exists_card_le_sharp_centred : ∃ T₀ A : ℝ, 8 ≤ T₀ ∧ 0 ≤ A 
     have : 0 ≤ D * (y - x) := mul_nonneg hD0 (by linarith)
     have : 0 ≤ A * Real.log (X + R + 2) := mul_nonneg hA hlogp
     linarith
+
+/-- **Both half-lines.** The centred sharp count at every height `X` with `|X| − R ≥ T₀`, the
+negative heights by the conjugation symmetry of the zeros. -/
+theorem exists_card_le_sharp_centred_abs : ∃ T₀ A : ℝ, 8 ≤ T₀ ∧ 0 ≤ A ∧
+    ∀ X R : ℝ, 0 ≤ R → T₀ ≤ |X| - R → ∀ x y : ℝ, x ≤ y → ∀ s : Finset ℂ,
+      (∀ z ∈ s, IsNontrivialZero z ∧ |z.im - X| ≤ R ∧ z.im ∈ Icc x y) →
+        (s.card : ℝ) ≤ (Real.log ((|X| + R + 2) / (2 * Real.pi)) + 6 / (|X| - R - 2)) /
+            (2 * Real.pi) * (y - x) +
+          (3 * ((Real.log ((|X| + R + 2) / (2 * Real.pi)) + 6 / (|X| - R - 2)) / (2 * Real.pi)) +
+            A * Real.log (|X| + R + 2) + 1) := by
+  classical
+  obtain ⟨T₀, A, hT₀, hA, hc⟩ := exists_card_le_sharp_centred
+  refine ⟨T₀, A, hT₀, hA, fun X R hR hX x y hxy s hs => ?_⟩
+  rcases le_or_gt 0 X with hX0 | hX0
+  · rw [abs_of_nonneg hX0] at hX ⊢
+    exact hc X R hR hX x y hxy s hs
+  · rw [abs_of_neg hX0] at hX ⊢
+    have hinj : Set.InjOn (starRingEnd ℂ) (s : Set ℂ) := fun a _ b _ h =>
+      by simpa using congrArg (starRingEnd ℂ) h
+    have hcard := Finset.card_image_of_injOn hinj
+    have h := hc (-X) R hR hX (-y) (-x) (by linarith) (s.image (starRingEnd ℂ)) fun w hw => by
+      obtain ⟨z, hz, rfl⟩ := Finset.mem_image.mp hw
+      obtain ⟨h1, h2, h3, h4⟩ := hs z hz
+      refine ⟨_root_.RHTower.isNontrivialZero_conj h1, ?_, ?_, ?_⟩
+      · rw [Complex.conj_im, show -z.im - -X = -(z.im - X) by ring, abs_neg]; exact h2
+      · rw [Complex.conj_im]; linarith
+      · rw [Complex.conj_im]; linarith
+    rw [hcard] at h
+    rw [show -x - -y = y - x by ring] at h
+    exact h
 
 end GaloisForLFunctions.ZeroConfigurationGeometry

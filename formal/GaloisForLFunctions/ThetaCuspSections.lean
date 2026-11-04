@@ -33,6 +33,9 @@ unique positive compensation zero. One explicit
 positive cross-load repairs both the origin and scale seven, preserving every
 mixed integral; its weighted scale-seven repair is strict at every positive aperture.
 The same cross-load is strict near both endpoints and on a cofinal source ray.
+At scale eight it is not positive semidefinite. Its scalar multiples have a
+sharp capacity strictly between one half and one: positivity holds below the
+capacity, and the boundary matrix is positive semidefinite and singular.
 Every individual theta atom has a strict fifth even section at reflection scale at least five.
 -/
 import GaloisForLFunctions.ThetaCuspSections.FifthEvenLeadingPairReserve
@@ -40,3 +43,6 @@ import GaloisForLFunctions.ThetaCuspSections.FifthEvenThreeAtomRemainder
 import GaloisForLFunctions.ThetaCuspSections.FifthEvenNativeRay
 import GaloisForLFunctions.ThetaCuspSections.FifthEvenEffectiveCrossRay
 import GaloisForLFunctions.ThetaCuspSections.FifthEvenCrossLoadPolynomialEnvelope
+import GaloisForLFunctions.ThetaCuspSections.FifthEvenScaleEightData
+import GaloisForLFunctions.ThetaCuspSections.FifthEvenScaleEightSourceBounds
+import GaloisForLFunctions.ThetaCuspSections.FifthEvenScaleEightCapacity
