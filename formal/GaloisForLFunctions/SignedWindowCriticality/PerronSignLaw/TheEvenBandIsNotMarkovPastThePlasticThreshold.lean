@@ -133,7 +133,7 @@ lemma abs_eq_of_bumps (hr0 : 0 < r) (hr4 : 4 * r ≤ c) (ha0 : ∀ u, 0 ≤ a u)
     rw [hb, sub_zero, add_zero, abs_of_nonneg (ha0 u)]
 
 /-- **The pole pays on the frustrated pair**: `P(G) − P(f) ≥ 16cosh((c − r)/2)(∫a)(∫b)`. -/
-lemma poleSquare_sub_ge (hr0 : 0 < r) (hr4 : 4 * r ≤ c) (hca : Continuous a) (hcb : Continuous b)
+lemma poleSquare_sub_ge (hr4 : 4 * r ≤ c) (hca : Continuous a) (hcb : Continuous b)
     (hac : HasCompactSupport a) (hbc : HasCompactSupport b) (ha0 : ∀ u, 0 ≤ a u)
     (hb0 : ∀ u, 0 ≤ b u) (has : ∀ u, a u ≠ 0 → -c < u ∧ u < -c + r)
     (hf : ∀ u, f u = a u - b u) (hG : ∀ u, G u = a u + b u) :
@@ -411,7 +411,7 @@ theorem evenPoleBand_lt_of_bumps {c r : ℝ} (hc0 : 0 < c) (hc : c < Real.log 2)
     exact ⟨B, fun u => by simpa [Real.norm_eq_abs] using hB u⟩
   have hSf := summable_expMoment_sq hc0.le hBf hf0 hfl
   have hSG := summable_expMoment_sq hc0.le hBG hG0 hGl
-  have hpole := poleSquare_sub_ge hr0 hr4 ha.continuous hb.continuous hac hbc ha0 hb0 has hf hG
+  have hpole := poleSquare_sub_ge hr4 ha.continuous hb.continuous hac hbc ha0 hb0 has hf hG
   have hmom := tsum_expMoment_sq_sub_le (by linarith) ha.continuous hb.continuous hac hbc ha0 hb0
     has hbs hf hG hSf hSG
   have hlev := levy_sub_le hr0 hr4 ha hb hac hbc ha0 hb0 has hbs hf hG
@@ -507,6 +507,16 @@ theorem evenBand_markov_iff {c : ℝ} (hc0 : 0 ≤ c) (hc : c < Real.log 2) {w�
     rw [evenPoleBand_one, evenPoleBand_one]
     exact evenBand_abs_le_of_frustrationFree hc0 hc hf h0 hl
       (evenFrustrationFree_of_le_threshold hct h0 hl) hw₂ hw₃
+
+#print axioms exists_evenPoleBand_lt_abs
+#print axioms evenBand_markov_iff
+#print axioms evenPerronMargin_le_sup
+#print axioms exists_neg_of_evenMargin_gt
+#print axioms evenPositivityMargin_le_sup
+#print axioms oddPerronMargin_le
+#print axioms exists_neg_of_poleHyperplane
+#print axioms mem_evenBandWeights_iff
+#print axioms mem_oddBandWeights_iff
 
 end GaloisForLFunctions.SignedWindowCriticality.PerronSignLaw
 

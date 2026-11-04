@@ -838,9 +838,12 @@ private theorem exists_cosh_mul_sub_eq (a b u : ℝ) :
       Real.cosh (b * u) - Real.cosh (a * u) = u * Real.sinh (ξ * u) * (b - a) := by
   have hderiv : ∀ y : ℝ, HasDerivAt (fun z => Real.cosh (z * u)) (Real.sinh (y * u) * u) y :=
     fun y => by
-      have h1 : HasDerivAt Real.cosh (Real.sinh (y * u)) (y * u) := Real.hasDerivAt_cosh (y * u)
       have h2 : HasDerivAt (fun z : ℝ => z * u) (1 * u) y := (hasDerivAt_id y).mul_const u
-      exact ((h1.hasFDerivAt.comp y h2.hasFDerivAt).hasDerivAt).congr_deriv (by simp; ring)
+      have hcosh : (fun z : ℝ => Real.cosh (z * u)) =
+          fun z => (Real.exp (z * u) + Real.exp (-(z * u))) / 2 :=
+        funext fun z => Real.cosh_eq (z * u)
+      rw [hcosh]
+      exact ((h2.exp.add h2.neg.exp).div_const 2).congr_deriv (by rw [Real.sinh_eq]; ring)
   rcases lt_trichotomy a b with hlt | rfl | hgt
   · obtain ⟨ξ, hξ, hcd⟩ := exists_hasDerivAt_eq_slope (fun y => Real.cosh (y * u))
       (fun y => Real.sinh (y * u) * u) hlt (by fun_prop) fun y _ => hderiv y
