@@ -169,7 +169,7 @@ theorem kodaira_slope_gap_eps {η : ℝ} (hη : 0 < η) :
   have hpos : 0 < 1 / 6 - 2 * ε := by linarith
   by_cases hX : X ≤ 0
   · nlinarith
-  push_neg at hX
+  push Not at hX
   have hX' : X ≤ (6 * δ + C) / (1 / 6 - 2 * ε) := by
     rw [le_div_iff₀ hpos]; linarith
   have h6 : 6 / (1 / 6 - 2 * ε) ≤ 36 + η := by

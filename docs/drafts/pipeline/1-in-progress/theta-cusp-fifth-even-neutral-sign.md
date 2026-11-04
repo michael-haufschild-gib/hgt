@@ -19,12 +19,18 @@ The complete fifth source is strict at scale seven, and one cross-load
 is strict near the origin, near scale seven, and on a cofinal ray.
 Neither result determines the source at the compensation zero.
 
-The proposed exact test uses the eighth Gaussian Hermite polynomial
-with variance `8q`, where `q=π exp(2x)`. At `q=7` this is the already
-used common-kernel vector. Its radial energy and the full fifth matrix
-must be compared with the actual theta remainder on the transition
-interval. A directional positive sign alone would not establish the
-matrix target; a negative sign would exclude every constant matrix load.
+Every individual atom's fifth even matrix is now strict when its own scale
+is at least five; see [the atom theorem](../3-formalized/theta-cusp-fifth-even-first-atom.md).
+Thus the first atom is strict throughout the neutral interval. The complete
+source still requires control of unequal atom pairs and the omitted tail.
+The three-atom Cauchy bound is
+`n!·8000 f₁(x)² exp(-(529/50)q)/(3/20)^n`, valid for `q≥3`.
+
+The retained affine target is `A(q)+8zB(q) ≻ 0` for `q≥5` and
+`0≤z≤5^15/(20^5 q^15)`, where `Aᵢⱼ=P_(i+j)(q²,2q)` and
+`Bᵢⱼ=P_(i+j)(4q²,5q)`. The actual weight `z=exp(-3q)` lies in this
+interval by the exponential tangent inequality. An explicit quadratic
+reserve is needed to absorb pairs `(1,3)`, `(2,3)` and the omitted tail.
 
 **Unproved:** the transition-source sign. No positivity or obstruction
 is asserted at `τ`.

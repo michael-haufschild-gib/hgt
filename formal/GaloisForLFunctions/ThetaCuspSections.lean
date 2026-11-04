@@ -2,6 +2,7 @@ import GaloisForLFunctions.ThetaCuspSections.StrictEighthSection
 import GaloisForLFunctions.ThetaCuspSections.FiniteRankCriticalCollar
 import GaloisForLFunctions.ThetaCuspSections.QuantitativeCriticalCollar
 import GaloisForLFunctions.ThetaCuspSections.LogarithmicCriticalCollar
+import GaloisForLFunctions.ThetaCuspSections.FifthEvenFirstAtom
 import GaloisForLFunctions.ThetaCuspSections.FifthEvenSourceRepair
 import GaloisForLFunctions.ThetaCuspSections.FifthEvenInheritedLoadBoundary
 import GaloisForLFunctions.ThetaCuspSections.FifthEvenOriginObstruction
@@ -31,4 +32,5 @@ with an explicit quadratic floor in normalized Schur coordinates. One explicit
 positive cross-load repairs both the origin and scale seven, preserving every
 mixed integral; its weighted scale-seven repair is strict at every positive aperture.
 The same cross-load is strict near both endpoints and on a cofinal source ray.
+Every individual theta atom has a strict fifth even section at reflection scale at least five.
 -/

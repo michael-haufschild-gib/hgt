@@ -150,8 +150,9 @@ at most `m|t/B_(m,Q)|`.
 `CoprimePrimeChargeWindows` checks endpoint cancellation, mode-square window
 comparison and projection bound
 `128m²Q³(1+|κ|)²/((A+1)²(log N)²)`.
-The remaining terminal chain is source awaiting checks:
-`CoprimePrimeChargeLogWindows`, `CoprimePrimeChargeWindowScales`,
+`CoprimePrimeChargeLogWindows` checks the logarithmic mode-product window
+bound with standard-only transitive axioms. The remaining terminal chain is
+source awaiting checks: `CoprimePrimeChargeWindowScales`,
 `CoprimePrimeChargeTailMass`, `CoprimePrimeChargeTailNorms`,
 `CoprimePrimeChargeTailPairing`, `CoprimePrimeChargeTailLimits`,
 `CoprimePrimeChargeTailVectors`, `CoprimePrimeChargeSignedReceiver`.
@@ -184,7 +185,9 @@ the correction's full critical output tends to zero. This gives the proposed
 simultaneous signed law `⟨Wv,r_l⟩→t_l/80`, zero for absent modes.
 `CommonPrimeFibreRestriction`, `CommonPrimeFibreCentering` and
 `CommonPrimeFibreSignedReceiver` contain the dependency-closed paper assembly
-and Lean source; checks pending.
+and Lean source; checks pending. `SimultaneousCompleteReceivingLaw` specializes
+to the tilted spline and common exclusion `R!` for arbitrary charges in modes
+`1,…,R`; its exact-coordinate, energy and signed-limit assembly is unchecked.
 
 ## Cutoff dependence and complete cancellation
 
@@ -281,8 +284,21 @@ All completed energies are nonnegative and satisfy
 Thus the remaining polar diagonal costs only `(|selfφ(1)|+3)a_1²`.
 `PrimeChargeCompletedDiagonal` checks the full diagonal bound and
 `Σa_m²≤a_pole_bound²+s²S_Q`, with standard-only transitive axioms.
-`PrimeChargeUniformFiniteBounds` contains the small-cutoff complete-energy
-assembly and exact physical pole orthogonality; check pending.
+`PrimeChargeUniformFiniteBounds` checks exact physical pole orthogonality and
+the small-cutoff bound under the same frame and near-radius conditions,
+with `D=|selfφ(1)|+3`, `P=(|t|+8|t|/B)/log N`:
+
+`|Ephysical|≤D[P²+s²(S+B)]`
+`+[K(Q⁵c/log N+Q¹¹c⁵log N/N)+9D(1+log Q)²/log N](P²+s²S)`.
+
+`PrimeChargeIntermediateBounds` checks the coherent norm, divisor mean
+and polar coefficient in every quadratic channel, the physical prime bound
+`0≤J_N(F)/log N≤2t²/B_Q`, and the physical moment comparison, with standard-only
+transitive axioms.
+`PrimeChargeUniformGeometry` and `PrimeChargeUniformScales` contain the uniform
+frame geometry and independent cutoff/horizon decay laws; checks pending.
+`PrimeChargeDenseCutoffEnergy` and `PrimeChargeSmallCutoffEnergy` contain the
+first two regime limits for independently growing cutoff and horizon; checks pending.
 
 The proposed uniform physical-energy proof splits at `Q⁶⁴=N` and
 `Q=(log N)^(1/32)`, with `L=log N`, `B=B_Q`, `S=S_Q`:
@@ -302,6 +318,10 @@ domination and the uniform energy theorem remain to be formalized.
 Quadratic transposition does not apply to arbitrary complementary receivers.
 The reduced-jet, coherent pole-cancellation and sharp near-collar bounds in the
 corpus do not yet supply the required uniform upward nonratio remainder here.
+A proposed replacement splits rows at `exp(√log N)` and primes at a power of
+`log N`: short rows require a prime-progression upper bound; long rows require
+a weighted affine-incidence covariance bound, with exceptional primes dividing
+`kh′−k′h`. Neither required bound has yet been established for the literal kernel.
 
 ## Gates
 

@@ -52,7 +52,7 @@ theorem tendsto_critical_pole_window_cost {c : ℕ → ℝ} (hc : ∀ N, 1 ≤ c
     with N hL
   change 0 < Real.log (N : ℝ) at hL
   have hc0 : 0 < c N := zero_lt_one.trans_le (hc N)
-  dsimp only [rescaledConductorGram, conductorEntry]
+  dsimp only [Pi.div_apply, rescaledConductorGram, conductorEntry]
   rw [show (7 : ℝ) = ((7 : ℕ) : ℝ) from rfl, Real.rpow_natCast]
   field_simp [hc0.ne', hL.ne']
 
@@ -71,7 +71,7 @@ theorem tendsto_complete_window_add_pole_corrector
       (c N)⁻¹ * ⟪Matrix.toEuclideanLin (completeWeilMatrix tiltedUnitSpline (c N) N) z, z⟫)
       atTop (𝓝 (((∫ u, tiltedUnitSpline u) ^ 2 / ∫ u, tiltedUnitSpline u ^ 2) *
         weilQuad (halfWeight h) +
-        7 * tiltedJordanOne / R * ∫ y, Real.exp (-(8 * y)) * halfWeight h y ^ 2 +
+        7 * tiltedJordanOne / R * (∫ y, Real.exp (-(8 * y)) * halfWeight h y ^ 2) +
         2 * t * interiorTerminalPolarSource h + t ^ 2 * criticalPoleWindowCost R)) := by
   let x := fun N : ℕ => horizonProfileVector (horizonWeights h N) N
   let v := fun N : ℕ => normalizedRamanujanHorizonVector 1 N
@@ -155,6 +155,7 @@ theorem exists_critical_band_window_pencil_ge_polar_source_square :
     let z := horizonProfileVector (horizonWeights h N) N +
       ((-S / D) * Real.sqrt (Real.log N)) • normalizedRamanujanHorizonVector 1 N
     have hz := hN (c N) (hc N) hband.1 z
+    have hκ := tiltedSplineSpectralFloorConstant_pos
     have hz0 : 0 ≤ completeWeilEnergy tiltedUnitSpline (c N) N z :=
       (by positivity : 0 ≤ tiltedSplineSpectralFloorConstant / (2 * c N ^ 7) * ‖z‖ ^ 2).trans hz
     exact mul_nonneg (inv_nonneg.mpr hc0.le) hz0

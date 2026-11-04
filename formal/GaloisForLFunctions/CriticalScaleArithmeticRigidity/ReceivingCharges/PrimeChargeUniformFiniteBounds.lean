@@ -152,11 +152,17 @@ theorem exists_harmonicPrimeCharge_small_cutoff_bound {φ : ℝ → ℝ}
         9 * D * (1 + Real.log Q) ^ 2 / Real.log N) * A := by
     refine herr.trans ?_
     have hMom := mul_le_mul_of_nonneg_left
-      (add_le_add (mul_le_mul_of_nonneg_left h2 (by positivity))
-        (mul_le_mul_of_nonneg_left h5 (by positivity))) hK.le
-    have hG := mul_le_mul_of_nonneg_left hGram
-      (show 0 ≤ 9 * (1 + Real.log Q) / Real.log N by positivity)
-    exact (add_le_add hMom (by simpa only [mul_assoc] using hG)).trans_eq (by dsimp only [D, A]; ring)
+      (add_le_add (mul_le_mul_of_nonneg_left h2
+        (show 0 ≤ c / Real.log N by positivity))
+        (mul_le_mul_of_nonneg_left h5
+          (show 0 ≤ c ^ 5 * Real.log N / N by positivity))) hK.le
+    have hG : 9 * (1 + Real.log Q) / Real.log N *
+        Real.sqrt (∑ m ∈ Icc 1 Q, (completedConductorEnergy φ c m * a m) ^ 2) *
+          Real.sqrt (∑ m ∈ Icc 1 Q, a m ^ 2) ≤
+        (9 * (1 + Real.log Q) / Real.log N) * (D * (1 + Real.log Q) * A) := by
+      simpa only [mul_assoc, D, A] using mul_le_mul_of_nonneg_left hGram
+        (show 0 ≤ 9 * (1 + Real.log Q) / Real.log N by positivity)
+    exact (add_le_add hMom hG).trans_eq (by dsimp only [D, A]; ring)
   have hErr' := hErr.trans (mul_le_mul_of_nonneg_left hA (by
     dsimp only [D]
     have hlog := Real.log_natCast_nonneg Q
@@ -165,13 +171,14 @@ theorem exists_harmonicPrimeCharge_small_cutoff_bound {φ : ℝ → ℝ}
   have hDiag0 := harmonicPrimeCharge_completed_diagonal_nonneg hφ hsupp hM
     (zero_lt_one.trans_le hc) Q N t
   calc
+    _ = |(completeWeilEnergy φ c N (harmonicPrimeChargeVector Q N t) -
+        ∑ m ∈ Icc 1 Q, completedConductorEnergy φ c m * a m ^ 2) +
+        ∑ m ∈ Icc 1 Q, completedConductorEnergy φ c m * a m ^ 2| := by
+      congr 1
+      ring
     _ ≤ |completeWeilEnergy φ c N (harmonicPrimeChargeVector Q N t) -
         ∑ m ∈ Icc 1 Q, completedConductorEnergy φ c m * a m ^ 2| +
-        |∑ m ∈ Icc 1 Q, completedConductorEnergy φ c m * a m ^ 2| := by
-      simpa only [sub_add_cancel] using abs_add_le
-        (completeWeilEnergy φ c N (harmonicPrimeChargeVector Q N t) -
-          ∑ m ∈ Icc 1 Q, completedConductorEnergy φ c m * a m ^ 2)
-        (∑ m ∈ Icc 1 Q, completedConductorEnergy φ c m * a m ^ 2)
+        |∑ m ∈ Icc 1 Q, completedConductorEnergy φ c m * a m ^ 2| := abs_add_le _ _
     _ ≤ _ := by
       rw [abs_of_nonneg hDiag0]
       exact (add_le_add hErr' hDiag).trans_eq (by dsimp only [D, Z]; ring)

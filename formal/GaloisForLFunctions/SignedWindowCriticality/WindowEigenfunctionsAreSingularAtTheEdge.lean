@@ -9,7 +9,27 @@ import GaloisForLFunctions.HTGeometry.CompactSupportIntegrationByParts
 /-!
 # Window eigenfunctions are singular at the edge
 
-DRAFT
+Weil's form is translation invariant, so `d/dx` is skew for it (`weilPair_deriv_left`) and for the
+`L²` pairing. Hence the derivative of a window eigenfunction is a window eigenfunction with the same
+eigenvalue (`isWindowEigen_deriv`), and so are all its jets. A smooth compactly supported function
+cannot carry this. Its jet norms `N_k = ‖g^{(k)}‖₂²` are log-convex (`jetNormSq_sq_le`) with
+unbounded ratios, since geometric growth of the jets forces a compactly supported function to vanish
+(`eq_zero_of_sq_iteratedDeriv_le`, by iterated integration); and the Gamma symbol grows
+logarithmically (`archForm_deriv_ge`). So `W(g^{(k)})/N_k → ∞` (`exists_weilQuad_iteratedDeriv_gt`).
+
+* **No window eigenfunction is smooth** (`eq_zero_of_isWindowEigen`): a smooth test supported in
+  `[−a, a]` with `W(H, G) = μ⟨H, G⟩` for every smooth test `G` of the window is zero.
+* **Window infima are not attained on smooth tests** (`eq_zero_of_isMin`): a minimizer of
+  `W − μ‖·‖²` is a window eigenfunction (first variation, `isWindowEigen_of_isMin`).
+* **A nonnegative window is positive definite on smooth tests** (`weilQuad_pos_of_window_nonneg`):
+  no zero mode of a nonnegative window, in particular no zero mode of a first failure, is smooth.
+* **The band at the centre is strict on smooth tests** (`abs_centreCoupling_lt_of_window_nonneg`):
+  on a nonnegative window `|𝒞₀(f)| < W(f)` for every nonzero smooth half-window test `f`; a tight
+  band and its reflection-pair zero mode exist only in the energy completion.
+
+The Agmon ground state of a window and the zero mode of a first failure are singular at the window
+edge: they cannot vanish there to infinite order. The critical objects of the tower are boundary
+objects.
 -/
 
 open MeasureTheory Set Filter Topology
@@ -19,7 +39,7 @@ noncomputable section
 
 namespace GaloisForLFunctions.SignedWindowCriticality
 
-open ArithmeticCastelnuovoSeveri SpacingScaleHarmonicAnalysis
+open ArithmeticCastelnuovoSeveri SpacingScaleHarmonicAnalysis DimensionZeroGeometryOfSpecZ
 open Zeta23
 open _root_.RHTower (levyEnergy primeSum gammaHardyPhaseRate coshHalfMoment sinhHalfMoment archForm)
 
@@ -391,6 +411,231 @@ theorem archForm_deriv_ge {g : ℝ → ℝ} (hg : ContDiff ℝ 3 g) (hgc : HasCo
   rw [harch, one_div, ← div_eq_inv_mul, le_div_iff₀ hπ]
   nlinarith [mul_le_mul_of_nonneg_left hlow hL]
 
+/-- **Weil's form dominates the archimedean form up to an `L²` window constant**:
+`W(f) ≥ archForm f − c_R‖f‖²`, `c_R = 2P_R + 4R cosh²(R/2)`. -/
+theorem weilQuad_ge_archForm {R : ℝ} (hf : ContDiff ℝ 2 f) (hfc : HasCompactSupport f)
+    (hfR : SupportedIn R f) (hR : 0 ≤ R) :
+    archForm f - (2 * primeMass R + 4 * R * Real.cosh (R / 2) ^ 2) * ∫ u, f u ^ 2 ≤
+      weilQuad f := by
+  rw [weilQuad_eq hf hfc, _root_.RHTower.archForm_eq_levyEnergy hf hfc]
+  have hP := abs_primeSum_le hf.continuous hfc hfR
+  have hS := abs_moment_le hf.continuous hfc hfR (by fun_prop) (fun u hu => abs_sinh_half_le hu)
+  have hS2 := pow_le_pow_left₀ (abs_nonneg _) hS 2
+  rw [sq_abs, mul_pow] at hS2
+  have hA := integral_abs_le_sqrt hf.continuous hfc hfR hR
+  have hA0 : 0 ≤ ∫ u, |f u| := integral_nonneg fun _ => abs_nonneg _
+  have hA2 := pow_le_pow_left₀ hA0 hA 2
+  rw [mul_pow, Real.sq_sqrt (by linarith), Real.sq_sqrt (integral_nonneg fun _ => sq_nonneg _)]
+    at hA2
+  have hch : 0 ≤ Real.cosh (R / 2) ^ 2 := sq_nonneg _
+  have hS' : sinhHalfMoment f ^ 2 ≤ Real.cosh (R / 2) ^ 2 * (2 * R * ∫ u, f u ^ 2) :=
+    hS2.trans (mul_le_mul_of_nonneg_left hA2 hch)
+  nlinarith [abs_le.mp hP, sq_nonneg (coshHalfMoment f)]
+
+/-- **Weil's form blows up on the high jets**: for a nonzero smooth compactly supported `g` and any
+`M`, some jet has `W(g^{(k)}) > M ‖g^{(k)}‖²`. -/
+theorem exists_weilQuad_iteratedDeriv_gt {g : ℝ → ℝ} (hg : ContDiff ℝ ∞ g)
+    (hgc : HasCompactSupport g) (hg0 : g ≠ 0) (M : ℝ) :
+    ∃ k, M * jetNormSq g k < weilQuad (iteratedDeriv k g) := by
+  obtain ⟨R, hR0, hR⟩ := exists_supportedIn_of_hasCompactSupport hgc
+  set c := 2 * primeMass R + 4 * R * Real.cosh (R / 2) ^ 2
+  have hc : 0 ≤ c := by have := primeMass_nonneg R; positivity
+  set T := 2 * (|M| + 10 + c + 1)
+  have hT : 0 ≤ T := by positivity
+  set Λ := 4 * (Real.exp T - 1)
+  have hΛ : 0 ≤ Λ := by
+    have := Real.add_one_le_exp T; simp only [Λ]; linarith
+  have hlogΛ : Real.log (1 + Λ / 4) = T := by
+    rw [show 1 + Λ / 4 = Real.exp T by simp only [Λ]; ring, Real.log_exp]
+  obtain ⟨K, hK⟩ := exists_jetNormSq_ratio_ge hg hgc hg0 (2 * Λ ^ 2)
+  have hKK := hK K le_rfl
+  refine ⟨K + 1, ?_⟩
+  set h := iteratedDeriv K g
+  have hh : ContDiff ℝ ∞ h := contDiff_iteratedDeriv_of_smooth hg K
+  have hh3 : ContDiff ℝ 3 h := by exact_mod_cast contDiff_infty.mp hh 3
+  have hhc : HasCompactSupport h := (iteratedDeriv_mem_realTests hg hgc K).2
+  have hd : iteratedDeriv (K + 1) g = deriv h := iteratedDeriv_succ
+  have harch := archForm_deriv_ge hh3 hhc hΛ
+  have hW := weilQuad_ge_archForm (R := R) (f := deriv h) hh3.deriv' hhc.deriv
+    (by rw [← hd]; exact iteratedDeriv_supportedIn hR (K + 1)) hR0
+  have hN1 : jetNormSq g (K + 1) = ∫ u, deriv h u ^ 2 := by rw [jetNormSq, hd]
+  have hN0 : jetNormSq g K = ∫ u, h u ^ 2 := rfl
+  rw [hlogΛ, ← hN1, ← hN0] at harch
+  rw [← hN1] at hW
+  rw [hd]
+  have hpos := jetNormSq_pos hg hgc hg0 (K + 1)
+  have hM : M ≤ |M| := le_abs_self M
+  nlinarith [mul_le_mul_of_nonneg_left hKK hT]
+
+/-! ### Window eigenfunctions -/
+
+/-- `H` is a **window eigenfunction** with eigenvalue `μ` on `[−a, a]`: `W(H, G) = μ⟨H, G⟩` for
+every smooth test `G` supported in `[−a, a]`. -/
+def IsWindowEigen (a μ : ℝ) (H : ℝ → ℝ) : Prop :=
+  ∀ G : ℝ → ℝ, ContDiff ℝ ∞ G → SupportedIn a G → weilPair H G = μ * ∫ u, H u * G u
+
+/-- **The derivative of a window eigenfunction is a window eigenfunction with the same eigenvalue**
+(translation invariance: `d/dx` is skew for `W` and for `⟨·,·⟩`). -/
+theorem isWindowEigen_deriv {a μ : ℝ} {H : ℝ → ℝ} (hH : ContDiff ℝ ∞ H) (hHa : SupportedIn a H)
+    (h : IsWindowEigen a μ H) : IsWindowEigen a μ (deriv H) := by
+  intro G hG hGa
+  have hHc := hasCompactSupport_of_supportedIn' hHa
+  have hGc := hasCompactSupport_of_supportedIn' hGa
+  rw [weilPair_deriv_left hH hHc hG hGc, h (deriv G) (contDiff_deriv_of_smooth hG)
+    (supportedIn_deriv hGa)]
+  have hibp := integral_deriv_mul_eq_neg (f := H) (g := G)
+    (by exact_mod_cast contDiff_infty.mp hH 1) hHc (by exact_mod_cast contDiff_infty.mp hG 1)
+  rw [hibp]
+  ring
+
+theorem isWindowEigen_iteratedDeriv {a μ : ℝ} {H : ℝ → ℝ} (hH : ContDiff ℝ ∞ H)
+    (hHa : SupportedIn a H) (h : IsWindowEigen a μ H) (k : ℕ) :
+    IsWindowEigen a μ (iteratedDeriv k H) := by
+  induction k with
+  | zero => simpa using h
+  | succ k ih =>
+    rw [iteratedDeriv_succ]
+    exact isWindowEigen_deriv (contDiff_iteratedDeriv_of_smooth hH k)
+      (iteratedDeriv_supportedIn hHa k) ih
+
+/-- **No window eigenfunction is smooth.** A smooth test supported in `[−a, a]` with
+`W(H, G) = μ⟨H, G⟩` for every smooth test `G` of the window vanishes: all its jets would be
+eigenfunctions with the same eigenvalue, while their Rayleigh quotients blow up. -/
+theorem eq_zero_of_isWindowEigen {a μ : ℝ} {H : ℝ → ℝ} (hH : ContDiff ℝ ∞ H)
+    (hHa : SupportedIn a H) (h : IsWindowEigen a μ H) : H = 0 := by
+  by_contra hne
+  have hHc := hasCompactSupport_of_supportedIn' hHa
+  obtain ⟨k, hk⟩ := exists_weilQuad_iteratedDeriv_gt hH hHc hne μ
+  have he := isWindowEigen_iteratedDeriv hH hHa h k (iteratedDeriv k H)
+    (contDiff_iteratedDeriv_of_smooth hH k) (iteratedDeriv_supportedIn hHa k)
+  have hQ : weilQuad (iteratedDeriv k H) = μ * jetNormSq H k := by
+    show weilPair _ _ = _
+    rw [he, jetNormSq]; congr 1; congr 1; funext u; ring
+  linarith
+
+theorem smooth_add_smul {H G : ℝ → ℝ} (hH : ContDiff ℝ ∞ H) (hG : ContDiff ℝ ∞ G) (t : ℝ) :
+    ContDiff ℝ ∞ (H + t • G) := hH.add (hG.const_smul t)
+
+theorem supportedIn_add_smul {a : ℝ} {H G : ℝ → ℝ} (hH : SupportedIn a H) (hG : SupportedIn a G)
+    (t : ℝ) : SupportedIn a (H + t • G) := fun u hu => by simp [hH u hu, hG u hu]
+
+theorem smooth_mem_realTests {a : ℝ} {H : ℝ → ℝ} (hH : ContDiff ℝ ∞ H) (hHa : SupportedIn a H) :
+    H ∈ realTests :=
+  ⟨by exact_mod_cast contDiff_infty.mp hH 2, hasCompactSupport_of_supportedIn' hHa⟩
+
+/-- A real quadratic `2tX + t²Y ≥ 0` for every `t` has `X = 0`. -/
+theorem eq_zero_of_forall_quadratic_nonneg {X Y : ℝ} (h : ∀ t : ℝ, 0 ≤ 2 * t * X + t ^ 2 * Y) :
+    X = 0 := by
+  by_contra hX
+  have := h (-X / (|Y| + 1))
+  have hY : 0 < |Y| + 1 := by positivity
+  have hYle : Y ≤ |Y| := le_abs_self Y
+  have hX2 : 0 < X ^ 2 := by positivity
+  have e : 2 * (-X / (|Y| + 1)) * X + (-X / (|Y| + 1)) ^ 2 * Y =
+      X ^ 2 * (Y - 2 * (|Y| + 1)) / (|Y| + 1) ^ 2 := by
+    field_simp; ring
+  rw [e] at this
+  have : X ^ 2 * (Y - 2 * (|Y| + 1)) / (|Y| + 1) ^ 2 < 0 :=
+    div_neg_of_neg_of_pos (mul_neg_of_pos_of_neg hX2 (by linarith)) (by positivity)
+  linarith
+
+/-- **First variation**: a minimizer of `W − μ‖·‖²` on the smooth tests of a window is a window
+eigenfunction. -/
+theorem isWindowEigen_of_isMin {a μ : ℝ} {H : ℝ → ℝ} (hH : ContDiff ℝ ∞ H) (hHa : SupportedIn a H)
+    (hfloor : ∀ G : ℝ → ℝ, ContDiff ℝ ∞ G → SupportedIn a G → μ * ∫ u, G u ^ 2 ≤ weilQuad G)
+    (heq : weilQuad H = μ * ∫ u, H u ^ 2) : IsWindowEigen a μ H := by
+  intro G hG hGa
+  have hHr := smooth_mem_realTests hH hHa
+  have hGr := smooth_mem_realTests hG hGa
+  refine sub_eq_zero.mp (eq_zero_of_forall_quadratic_nonneg (Y := weilQuad G - μ * ∫ u, G u ^ 2)
+    fun t => ?_)
+  have hf := hfloor (H + t • G) (smooth_add_smul hH hG t) (supportedIn_add_smul hHa hGa t)
+  have htG : t • G ∈ realTests := realTests.smul_mem t hGr
+  rw [weilQuad_add hHr htG] at hf
+  have e1 : weilPair H (t • G) = t * weilPair H G := weilPair_smul_right t H G
+  have e2 : weilQuad (t • G) = t ^ 2 * weilQuad G := by
+    show weilPair (t • G) (t • G) = _
+    rw [weilPair_smul_left, weilPair_smul_right, show weilQuad G = weilPair G G from rfl]; ring
+  have hi1 := integrable_sq_of_continuous hHr.1.continuous hHr.2
+  have hi2 := integrable_sq_of_continuous hGr.1.continuous hGr.2
+  have hi3 : Integrable fun u => H u * G u :=
+    (hHr.1.continuous.mul hGr.1.continuous).integrable_of_hasCompactSupport hHr.2.mul_right
+  have e3 : ∫ u, (H + t • G) u ^ 2 =
+      (∫ u, H u ^ 2) + 2 * t * (∫ u, H u * G u) + t ^ 2 * ∫ u, G u ^ 2 := by
+    have : (fun u => (H + t • G) u ^ 2) =
+        fun u => (H u ^ 2 + (2 * t) * (H u * G u)) + t ^ 2 * G u ^ 2 := by
+      funext u; simp only [Pi.add_apply, Pi.smul_apply, smul_eq_mul]; ring
+    have j0 : Integrable fun u => 2 * t * (H u * G u) := hi3.const_mul _
+    have j1 : Integrable fun u => H u ^ 2 + 2 * t * (H u * G u) := hi1.add j0
+    have j2 : Integrable fun u => t ^ 2 * G u ^ 2 := hi2.const_mul _
+    rw [this, integral_add j1 j2, integral_add hi1 j0, integral_const_mul, integral_const_mul]
+  rw [e1, e2, heq] at hf
+  rw [e3] at hf
+  nlinarith
+
+/-- **The infimum of a window is never attained on a nonzero smooth test.** -/
+theorem eq_zero_of_isMin {a μ : ℝ} {H : ℝ → ℝ} (hH : ContDiff ℝ ∞ H) (hHa : SupportedIn a H)
+    (hfloor : ∀ G : ℝ → ℝ, ContDiff ℝ ∞ G → SupportedIn a G → μ * ∫ u, G u ^ 2 ≤ weilQuad G)
+    (heq : weilQuad H = μ * ∫ u, H u ^ 2) : H = 0 :=
+  eq_zero_of_isWindowEigen hH hHa (isWindowEigen_of_isMin hH hHa hfloor heq)
+
+/-- **A nonnegative window is positive definite on smooth tests**: no zero mode of a nonnegative
+window is a smooth test. -/
+theorem weilQuad_pos_of_window_nonneg {a : ℝ}
+    (hnn : ∀ G : ℝ → ℝ, ContDiff ℝ ∞ G → SupportedIn a G → 0 ≤ weilQuad G) {H : ℝ → ℝ}
+    (hH : ContDiff ℝ ∞ H) (hHa : SupportedIn a H) (hne : H ≠ 0) : 0 < weilQuad H := by
+  refine lt_of_le_of_ne (hnn H hH hHa) fun h0 => hne ?_
+  exact eq_zero_of_isMin (μ := 0) hH hHa (fun G hG hGa => by simpa using hnn G hG hGa)
+    (by rw [← h0]; ring)
+
+/-! ### The band at the centre is strict on smooth tests -/
+
+/-- **The band is strict on smooth tests.** On a nonnegative window `[−a, a]`, every nonzero smooth
+half-window test `f` (supported in `[−a, 0]`) has `|𝒞₀(f)| < W(f)`: a tight band, hence a
+reflection-pair zero mode, never occurs on a smooth test. -/
+theorem abs_centreCoupling_lt_of_window_nonneg {a : ℝ}
+    (hnn : ∀ G : ℝ → ℝ, ContDiff ℝ ∞ G → SupportedIn a G → 0 ≤ weilQuad G) {f : ℝ → ℝ}
+    (hf : ContDiff ℝ ∞ f) (h0 : ∀ u, 0 < u → f u = 0) (hfa : SupportedIn a f) (hne : f ≠ 0) :
+    |centreCoupling f| < weilQuad f := by
+  have hf2 : ContDiff ℝ 2 f := by exact_mod_cast contDiff_infty.mp hf 2
+  have hfc := hasCompactSupport_of_supportedIn' hfa
+  have hR : ContDiff ℝ ∞ (collarReflect 0 f) := hf.comp (contDiff_const.sub contDiff_id)
+  have hRa : SupportedIn a (collarReflect 0 f) := fun u hu => by
+    simp only [collarReflect, mul_zero, zero_sub]; exact hfa (-u) (by rwa [abs_neg])
+  -- a point left of the centre where `f` does not vanish
+  obtain ⟨v, hv, hfv⟩ : ∃ v, v < 0 ∧ f v ≠ 0 := by
+    by_contra hcon
+    push Not at hcon
+    refine hne (funext fun u => ?_)
+    rcases lt_trichotomy u 0 with hu | hu | hu
+    · exact hcon u hu
+    · subst hu
+      have hcont := hf2.continuous
+      have hlim : Tendsto f (𝓝[<] 0) (𝓝 (f 0)) := hcont.continuousAt.tendsto.mono_left
+        nhdsWithin_le_nhds
+      have hev : f =ᶠ[𝓝[<] (0 : ℝ)] fun _ => 0 :=
+        eventually_nhdsWithin_of_forall fun w hw => hcon w hw
+      exact tendsto_nhds_unique hlim (tendsto_const_nhds.congr' hev.symm)
+    · exact h0 u hu
+  have hRv : collarReflect 0 f v = 0 := by
+    simp only [collarReflect, mul_zero, zero_sub]; exact h0 (-v) (by linarith)
+  have hp : 0 < weilQuad (fun u => f u + collarReflect 0 f u) := by
+    refine weilQuad_pos_of_window_nonneg hnn (hf.add hR) (fun u hu => by
+      simp [hfa u hu, hRa u hu]) fun hz => hfv ?_
+    have := congrFun hz v
+    simpa [hRv] using this
+  have hm : 0 < weilQuad (fun u => f u + -collarReflect 0 f u) := by
+    refine weilQuad_pos_of_window_nonneg hnn (hf.add hR.neg) (fun u hu => by
+      simp [hfa u hu, hRa u hu]) fun hz => hfv ?_
+    have := congrFun hz v
+    simpa [hRv] using this
+  rw [weilQuad_add_collarReflect hf2 hfc h0] at hp
+  rw [weilQuad_sub_collarReflect hf2 hfc h0] at hm
+  unfold centreCoupling
+  rw [abs_lt]
+  constructor <;> linarith
+
 end GaloisForLFunctions.SignedWindowCriticality
 
 end
+

@@ -1,7 +1,7 @@
 # Zero Configuration Geometry (ZCG)
 
 Namespace `GaloisForLFunctions.ZeroConfigurationGeometry`; umbrella `ZeroConfigurationGeometry.lean`;
-25 modules.
+27 modules.
 
 ## 1. Motivation
 
@@ -201,7 +201,12 @@ programme locates exactly where it leaves the sign-free world.
     `g' + iκg` multiplies the transform by `−i(w − κ)`, and at a zero `κ` of `f̂` the solution of
     `g' + iκg = f` vanishes outside the support of `f` (above it, it equals `e^{−iκu} f̂(κ) = 0`).
     Dividing a blind window at a simple zero gives an isolating window: one camera of the density
-    aperture sees a chosen lattice point and no other. For one lattice
+    aperture sees a chosen lattice point and no other. Dividing at every lattice point and
+    multiplying by the perturbed point, one factor at a time, builds windows blind to a perturbed
+    lattice. On the real line the transform stays `sin·b̂·Π_k r_k` with
+    `r_k − 1 = (x − i)(ν_k − μ_k)/((x − μ_k)(i − ν_k))`. The sine absorbs the nearest factor, and
+    the others are controlled by harmonic sums over the lattice: `|sin·Π r_k| ≤ K(1 + |x|)^p`
+    uniformly. The stage windows therefore converge uniformly, and the limit keeps the aperture. For one lattice
     nothing cheaper exists: below `π/h` the periodization of a blind window has vanishing Fourier
     coefficients and non-overlapping translates, so the window is zero.
 
@@ -240,6 +245,8 @@ programme locates exactly where it leaves the sign-free world.
 | Windows blind to a lattice | `paperFT_shift`, `exists_window_blind_to_lattice` | unconditional |
 | Blind windows at the density aperture; exponential-polynomial zero sets | `apertureWindow_expPoly`, `exists_window_blind_to_expPoly_zeros`, `exists_window_prod_sine`, `exists_window_blind_to_lattices` | unconditional |
 | Windows blind to zero sets of transforms of densities | `densityTransform`, `integrable_mul_cexp_of_support`, `exists_window_blind_to_densityTransform_zeros` | unconditional |
+| Products over a perturbed lattice | `pertFactor_sub_one`, `summable_norm_pertFactor_sub_one`, `tprod_pertFactor_ne_zero`, `sum_inv_max_dist_le`, `sum_inv_sq_far_le`, `norm_sin_mul_prod_pertFactor_le` | unconditional |
+| Every bounded perturbation of a lattice is blinded at the density aperture; finite unions | `exists_stage_window`, `exists_blind_limit_window`, `exists_window_blind_to_perturbed_lattice`, `exists_window_blind_to_perturbed_lattices` | unconditional |
 | Division at transform zeros; isolating windows | `exists_window_div`, `exists_isolating_window`, `exists_window_isolating_lattice_point` | unconditional |
 | The lattice threshold `π/h` is sharp | `tsum_add_int_eq_zero_of_fourier_eq_zero`, `eq_zero_of_blind_to_lattice`, `exists_window_blind_to_lattice_iff` | unconditional |
 | Cosine camera: real zeros, complex additive rigidity | `im_eq_zero_of_cosineWindowTransform_eq_zero`, `no_complex_additive_zero_triple` | unconditional, `0 < θ < π/2` |
@@ -303,9 +310,15 @@ programme locates exactly where it leaves the sign-free world.
   (`exists_window_blind_to_expPoly_zeros`), and so has every configuration inside the zero set of
   `Φ(w) = ∫ φ(t) e^{−iwt} dt` for an integrable density `φ` on `[−W, W]`
   (`exists_window_blind_to_densityTransform_zeros`). The latter class contains perturbed lattices
-  such as the zeros of `J₀`, of density `1/π`, blinded at every aperture `> 1 = πD`. *Open:*
-  configurations of positive density inside no such zero set; there, sufficiency needs sine-type
-  functions and a converse Paley–Wiener theorem. Isolation also costs no aperture: for every
+  such as the zeros of `J₀`, of density `1/π`, blinded at every aperture `> 1 = πD`. Every bounded
+  perturbation of a lattice is blinded at the density aperture: if `|ν_k − kh| ≤ L` for all
+  `k ∈ ℤ`, with any `L` and no separation, every aperture `> π/h` has a window blind to all `ν_k`
+  that sees any given `z₀` off them (`exists_window_blind_to_perturbed_lattice`), and finite unions
+  of such configurations with arbitrary spacings are blinded at every aperture `> π Σ_j 1/h_j`
+  (`exists_window_blind_to_perturbed_lattices`). *Open:*
+  configurations of positive density that are no bounded perturbation of a lattice, for instance
+  of non-uniform density; there, the sine-type function must be replaced by a product adapted to
+  the local density. Isolation also costs no aperture: for every
   `r > π/h` one window sees exactly one point of `hℤ` (`exists_window_isolating_lattice_point`).
 - **Q6 Selectivity.** Euler columns at `p` are mimics of on-line lattices at aperture `a` exactly
   when `a ≤ log p/2`, and are excluded only by the Ramanujan bound at `p`. Bounded apertures exclude
@@ -340,12 +353,14 @@ programme locates exactly where it leaves the sign-free world.
 - Closed forms for the cosine transform at complex frequency and for lattice-blind windows;
   exponential and sine multipliers of windows (shifts multiply the transform by an exponential
   polynomial at the cost of its width in aperture); Poisson periodization of Fourier-blind
-  windows; convolution with densities; division of a window at a transform zero.
+  windows; convolution with densities; division of a window at a transform zero, with its
+  smooth version; harmonic sums over separated points and the uniform bound for products over a
+  perturbed lattice; uniform limits of windows with converging transforms.
 
 **To build.**
 - The optimal resolution scale `g(V, s)` of the depth-uniform constraint.
-- Kernel design against real configurations of positive density inside no zero set of the
-  transform of a compactly supported density (sine-type functions, converse Paley–Wiener).
+- Kernel design against real configurations of positive density that are not bounded
+  perturbations of a lattice (products adapted to a varying density).
 
 ## 8. Traps
 

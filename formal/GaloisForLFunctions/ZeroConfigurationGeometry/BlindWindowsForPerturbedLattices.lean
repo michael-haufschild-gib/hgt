@@ -1,6 +1,7 @@
 import GaloisForLFunctions.ZeroConfigurationGeometry.IsolatingWindows
 import GaloisForLFunctions.ZeroConfigurationGeometry.PerturbedLatticeProducts
 import GaloisForLFunctions.ArithmeticCastelnuovoSeveri.AnnihilatingTestsForSparseSpectra
+import GaloisForLFunctions.SquareRootThreshold.GroundEnergyAbscissaAndLagGridAttainmentBridge
 
 /-!
 # Blind windows for perturbed lattices
@@ -13,7 +14,9 @@ aperture `r` whose transform vanishes at every `ν_k` and not at `z₀`.
 
 The density of the `ν_k` is `1/h`, so `π/h` is the Jensen aperture, and for `L = 0` it is sharp
 (`exists_window_blind_to_lattice_iff`). No separation of the `ν_k` and no smallness of `L` is
-needed.
+needed. Convolution adds apertures and multiplies transforms (`apertureWindow_convolution`), so
+finite unions of perturbed lattices of total density `D` are blinded at every aperture `> πD`
+(`exists_window_blind_to_perturbed_lattices`).
 
 Construction. Shift the lattice to `μ_k = (k + θ)h` with `θ` avoiding the countably many
 coincidences. Start from a smooth window with transform `sin((π/h)(w − θh)) b̂(w)`. For each
@@ -246,10 +249,10 @@ theorem exists_blind_limit_window {h θ L A : ℝ} (hh : 0 < h) (hθ : |θ| ≤ 
               (1 + |x|) ^ (n + 2) * ‖paperFT b x‖ := by ring
             _ ≤ C := hbx
       _ ≤ D x := by
-          rw [hD]
-          simp only
-          rw [mul_assoc, div_eq_mul_inv]
-          gcongr
+          have hKC : 0 ≤ K * C := mul_nonneg hK0 hC0
+          calc K * (C / (1 + |x|) ^ 2) = K * C / (1 + |x|) ^ 2 := by ring
+            _ ≤ K * C / (1 + x ^ 2) := div_le_div_of_nonneg_left hKC (by positivity) hsq
+            _ = D x := by rw [hD, div_eq_mul_inv]
   have hnull : ∀ᵐ x : ℝ, ∀ k, (x : ℂ) ≠ latPt h θ k := by
     have hcount : (Set.range fun k : ℤ => latPt h θ k).Countable := Set.countable_range _
     filter_upwards [hcount.ae_notMem volume] with x hx k e
@@ -277,6 +280,7 @@ theorem exists_blind_limit_window {h θ L A : ℝ} (hh : 0 < h) (hθ : |θ| ≤ 
       (fun N => by
         filter_upwards [hnull, hconv] with x hx hxc
         rw [Real.norm_eq_abs, abs_of_nonneg (norm_nonneg _)]
+        show ‖paperFT (F N) x - G x‖ ≤ 2 * D x
         have hGx : ‖G x‖ ≤ D x := le_of_tendsto' (hxc.norm) fun M => hdom M x hx
         linarith [norm_sub_le (paperFT (F N) x) (G x), hdom N x hx])
       (by
@@ -319,7 +323,8 @@ theorem exists_blind_limit_window {h θ L A : ℝ} (hh : 0 < h) (hθ : |θ| ≤ 
       have hsub : paperFT (F N) z - paperFT f z = paperFT (fun u => F N u + (-1) * f u) z := by
         rw [paperFT_add_smul (hF N).continuous (hFc N) hfc hfcs]; ring
       rw [hsub]
-      refine (norm_paperFT_le_of_tsupport hA ?_ (fun u => ?_) z).trans (le_of_eq (by ring))
+      refine (norm_paperFT_le_of_tsupport (M := (2 * π)⁻¹ * ∫ x : ℝ, ‖paperFT (F N) x - G x‖)
+        hA ?_ (fun u => ?_) z).trans (le_of_eq (by ring))
       · exact (tsupport_add _ _).trans (Set.union_subset (hFs N)
           ((tsupport_mul_subset_right (f := fun _ => (-1 : ℂ))).trans hfs))
       · rw [show F N u + -1 * f u = F N u - f u by ring]
@@ -344,5 +349,172 @@ theorem exists_blind_limit_window {h θ L A : ℝ} (hh : 0 < h) (hθ : |θ| ≤ 
     refine tendsto_nhds_unique (htrans z₀) ?_
     refine (tendsto_congr fun N => (hFeq N z₀ hz₀).symm).mp ?_
     exact (hprod z₀ hz₀).const_mul _
+
+/-! ### Smoothing and the theorem -/
+
+/-- Convolving a window of aperture `A` with a bump of aperture `ε` gives aperture `A + ε`. -/
+theorem convolution_eq_zero_of_lt {f β : ℝ → ℂ} {A ε : ℝ} (hfs : tsupport f ⊆ Icc (-A) A)
+    (hβs : tsupport β ⊆ Icc (-ε) ε) {u : ℝ} (hu : A + ε < |u|) :
+    convolution f β (ContinuousLinearMap.mul ℝ ℂ) volume u = 0 := by
+  rw [convolution_def]
+  refine integral_eq_zero_of_ae (Eventually.of_forall fun t => ?_)
+  simp only [ContinuousLinearMap.mul_apply', Pi.zero_apply]
+  by_cases hft : f t = 0
+  · rw [hft, zero_mul]
+  · by_cases hβt : β (u - t) = 0
+    · rw [hβt, mul_zero]
+    · exfalso
+      obtain ⟨h1, h2⟩ := hfs (subset_tsupport _ hft)
+      obtain ⟨h3, h4⟩ := hβs (subset_tsupport _ hβt)
+      rcases lt_abs.mp hu with h | h <;> linarith
+
+/-- **Blind windows for perturbed lattices.** Let `ν_k` be real with `|ν_k − kh| ≤ L` for all
+`k ∈ ℤ`. For every aperture `r > π/h` and every `z₀` off the `ν_k` there is a window of aperture
+`r` whose transform vanishes at every `ν_k` and not at `z₀`. -/
+theorem exists_window_blind_to_perturbed_lattice {h L r : ℝ} (hh : 0 < h) (hr : π / h < r)
+    (ν : ℤ → ℝ) (hν : ∀ k : ℤ, |ν k - k * h| ≤ L) {z₀ : ℂ} (hz₀ : ∀ k, z₀ ≠ ν k) :
+    ∃ f : ℝ → ℂ, ApertureWindow r f ∧ (∀ k, paperFT f (ν k) = 0) ∧ paperFT f z₀ ≠ 0 := by
+  classical
+  -- a lattice shift avoiding all coincidences
+  set E : Set ℝ := (Set.range fun q : ℤ × ℤ => ν q.1 / h - q.2) ∪
+    Set.range fun k : ℤ => z₀.re / h - k with hE
+  have hEc : E.Countable := (Set.countable_range _).union (Set.countable_range _)
+  obtain ⟨θ, ⟨hθ0, hθ1⟩, hθE⟩ :=
+    SquareRootThreshold.exists_mem_Ioo_notMem_of_countable (by norm_num : (0 : ℝ) < 1) hEc
+  have hθ : |θ| ≤ 1 := by rw [abs_of_pos hθ0]; linarith
+  have hνlat : ∀ j k, ν j ≠ latPt h θ k := by
+    intro j k e
+    apply hθE
+    refine Or.inl ⟨(j, k), ?_⟩
+    simp only [e, latPt]
+    field_simp
+    ring
+  have hz₀lat : ∀ k, z₀ ≠ latPt h θ k := by
+    intro k e
+    apply hθE
+    refine Or.inr ⟨k, ?_⟩
+    simp only [e, Complex.ofReal_re, latPt]
+    field_simp
+    ring
+  have hL' : ∀ k, |ν k - latPt h θ k| ≤ L + h := by
+    intro k
+    have := hν k
+    rw [latPt, show ν k - ((k : ℝ) + θ) * h = (ν k - k * h) - θ * h by ring]
+    refine (abs_sub _ _).trans ?_
+    rw [abs_of_pos (by positivity : 0 < θ * h)]
+    nlinarith
+  -- the sine window
+  set ε := (r - π / h) / 3 with hε
+  have hε0 : 0 < ε := by rw [hε]; linarith
+  obtain ⟨b, hb, hbc, hbs, hb1⟩ := exists_smooth_window_paperFT_eq_one hε0 z₀
+  have hbw : ApertureWindow ε b := ⟨hb.of_le (by norm_cast), hbs⟩
+  obtain ⟨hf₀w, hf₀t⟩ := sineShift_props (τ := θ * h) (by positivity : (0 : ℝ) ≤ π / h) hbw
+  have hf₀ : ContDiff ℝ (⊤ : ℕ∞) (sineShift (π / h) (θ * h) b) := contDiff_sineShift _ _ hb
+  -- the limit window
+  obtain ⟨f, hfc, hfs, hfν, hfz⟩ := exists_blind_limit_window hh hθ (by positivity) hL' hb hbc hf₀
+    hf₀w.2 hf₀t hνlat hz₀lat
+  -- smoothing
+  obtain ⟨β, hβ, hβc, hβs, hβ1⟩ := exists_smooth_window_paperFT_eq_one hε0 z₀
+  have hfcs : HasCompactSupport f := isCompact_Icc.of_isClosed_subset (isClosed_tsupport f) hfs
+  set F := convolution f β (ContinuousLinearMap.mul ℝ ℂ) volume with hF
+  have hFsmooth : ContDiff ℝ (⊤ : ℕ∞) F :=
+    hβc.contDiff_convolution_right (ContinuousLinearMap.mul ℝ ℂ) hfc.locallyIntegrable hβ
+  have hFs : tsupport F ⊆ Icc (-r) r := by
+    refine closure_minimal (fun u hu => ?_) isClosed_Icc
+    by_contra hout
+    apply hu
+    refine convolution_eq_zero_of_lt hfs hβs ?_
+    by_contra hle
+    push Not at hle
+    apply hout
+    have := abs_le.mp hle
+    constructor <;> linarith
+  have hFt : ∀ z, paperFT F z = paperFT f z * paperFT β z := fun z =>
+    _root_.RHTower.WeilHerglotz.paperFT_convolution (hfc.integrable_of_hasCompactSupport hfcs)
+      (hβ.continuous.integrable_of_hasCompactSupport hβc) hfcs hβc z
+  refine ⟨F, ⟨hFsmooth.of_le (by norm_cast), hFs⟩, fun k => by
+    rw [hFt, hfν k, zero_mul], ?_⟩
+  rw [hFt, hβ1, mul_one, hfz, hf₀t, hb1, mul_one]
+  refine mul_ne_zero ?_ (tprod_pertFactor_ne_zero hh hθ hL' hz₀lat hz₀)
+  intro h0
+  obtain ⟨n, hn⟩ := Complex.sin_eq_zero_iff.mp h0
+  apply hz₀lat n
+  have hπ : (π : ℂ) ≠ 0 := Complex.ofReal_ne_zero.mpr Real.pi_ne_zero
+  have hh' : (h : ℂ) ≠ 0 := Complex.ofReal_ne_zero.mpr hh.ne'
+  rw [latPt]
+  push_cast at hn ⊢
+  field_simp at hn
+  linear_combination hn
+
+/-- Convolution of two windows: apertures add and transforms multiply. -/
+theorem apertureWindow_convolution {f g : ℝ → ℂ} {A B : ℝ} (hf : ApertureWindow A f)
+    (hg : ApertureWindow B g) :
+    ApertureWindow (A + B) (convolution f g (ContinuousLinearMap.mul ℝ ℂ) volume) ∧
+      ∀ z, paperFT (convolution f g (ContinuousLinearMap.mul ℝ ℂ) volume) z =
+        paperFT f z * paperFT g z := by
+  have hfc := hf.hasCompactSupport
+  have hgc := hg.hasCompactSupport
+  refine ⟨⟨hgc.contDiff_convolution_right (ContinuousLinearMap.mul ℝ ℂ)
+      hf.1.continuous.locallyIntegrable hg.1, ?_⟩, fun z =>
+    _root_.RHTower.WeilHerglotz.paperFT_convolution
+      (hf.1.continuous.integrable_of_hasCompactSupport hfc)
+      (hg.1.continuous.integrable_of_hasCompactSupport hgc) hfc hgc z⟩
+  refine closure_minimal (fun u hu => ?_) isClosed_Icc
+  by_contra hout
+  apply hu
+  refine convolution_eq_zero_of_lt hf.2 hg.2 ?_
+  by_contra hle
+  push Not at hle
+  apply hout
+  have := abs_le.mp hle
+  constructor <;> linarith
+
+/-- **Finite unions of perturbed lattices at the density aperture.** For finitely many bounded
+perturbations `ν_j` of lattices `h_jℤ`, of total density `D = Σ_j 1/h_j`, every aperture
+`r > πD` has a window blind to all `ν_j(k)` that sees any given `z₀` off them. -/
+theorem exists_window_blind_to_perturbed_lattices {ι : Type*} [DecidableEq ι] (T : Finset ι)
+    (h L : ι → ℝ) (hh : ∀ j ∈ T, 0 < h j) (ν : ι → ℤ → ℝ)
+    (hν : ∀ j ∈ T, ∀ k : ℤ, |ν j k - k * h j| ≤ L j) {r : ℝ}
+    (hr : π * ∑ j ∈ T, (h j)⁻¹ < r) {z₀ : ℂ} (hz₀ : ∀ j ∈ T, ∀ k, z₀ ≠ ν j k) :
+    ∃ f : ℝ → ℂ, ApertureWindow r f ∧ (∀ j ∈ T, ∀ k, paperFT f (ν j k) = 0) ∧
+      paperFT f z₀ ≠ 0 := by
+  classical
+  set δ := (r - π * ∑ j ∈ T, (h j)⁻¹) / (T.card + 1) with hδ
+  have hδ0 : 0 < δ := by rw [hδ]; exact div_pos (by linarith) (by positivity)
+  have key : ∀ U ⊆ T, ∃ f : ℝ → ℂ, ApertureWindow (δ + ∑ j ∈ U, (π / h j + δ)) f ∧
+      (∀ j ∈ U, ∀ k, paperFT f (ν j k) = 0) ∧ paperFT f z₀ ≠ 0 := by
+    intro U
+    induction U using Finset.induction_on with
+    | empty =>
+      intro _
+      obtain ⟨b, hb, -, hbs, hb1⟩ := exists_smooth_window_paperFT_eq_one hδ0 z₀
+      refine ⟨b, ?_, by simp, by rw [hb1]; exact one_ne_zero⟩
+      rw [Finset.sum_empty, add_zero]
+      exact ⟨hb.of_le (by norm_cast), hbs⟩
+    | insert j U hj ih =>
+      intro hsub
+      obtain ⟨f, hf, hfz, hf0⟩ := ih ((Finset.subset_insert j U).trans hsub)
+      have hjT := hsub (Finset.mem_insert_self j U)
+      obtain ⟨g, hg, hgz, hg0⟩ := exists_window_blind_to_perturbed_lattice (hh j hjT)
+        (show π / h j < π / h j + δ by linarith) (ν j) (hν j hjT) (hz₀ j hjT)
+      obtain ⟨hw, hwt⟩ := apertureWindow_convolution hf hg
+      refine ⟨convolution f g (ContinuousLinearMap.mul ℝ ℂ) volume, ?_, fun i hi k => ?_, ?_⟩
+      · rw [Finset.sum_insert hj]
+        convert hw using 1
+        ring
+      · rw [hwt]
+        rcases Finset.mem_insert.mp hi with rfl | hi
+        · rw [hgz k, mul_zero]
+        · rw [hfz i hi k, zero_mul]
+      · rw [hwt]; exact mul_ne_zero hf0 hg0
+  obtain ⟨f, hf, hfz, hf0⟩ := key T le_rfl
+  have hap : δ + ∑ j ∈ T, (π / h j + δ) = r := by
+    rw [Finset.sum_add_distrib, Finset.sum_const, nsmul_eq_mul, hδ]
+    have hc : (T.card : ℝ) + 1 ≠ 0 := by positivity
+    rw [show ∑ j ∈ T, π / h j = π * ∑ j ∈ T, (h j)⁻¹ by
+      rw [Finset.mul_sum]; exact Finset.sum_congr rfl fun j _ => by ring]
+    field_simp
+    ring
+  exact ⟨f, hap ▸ hf, hfz, hf0⟩
 
 end GaloisForLFunctions.ZeroConfigurationGeometry

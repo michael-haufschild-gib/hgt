@@ -1,4 +1,5 @@
 import GaloisForLFunctions.CriticalScaleArithmeticRigidity.ReceivingCharges.CoprimePrimeChargeWindows
+import GaloisForLFunctions.CriticalScaleArithmeticRigidity.ReceivingCharges.CoprimePrimeChargePairing
 import GaloisForLFunctions.SuccessorShellArithmetic.Conductor.ScalarPrimePacketNorm
 import GaloisForLFunctions.SignedArithmeticHodgeTheory.GrowingRamanujanFamiliesHaveAUniformGramBudget
 
@@ -32,22 +33,7 @@ theorem abs_modeProduct_harmonic_prefix_le {m l : ℕ}
     |∑ n ∈ Icc 1 N,
       (normalizedRamanujanMode m n * normalizedRamanujanMode l n -
         (if m = l then 1 else 0)) / (n : ℝ)| ≤ 2 * (m : ℝ) * l := by
-  have h := ramanujanPoleProfile_gram_error_le ⟨m, hm⟩ ⟨l, hl⟩ N
-  have hδ : (if (⟨m, hm⟩ : ℕ+) = ⟨l, hl⟩ then (1 : ℝ) else 0) =
-      (if m = l then 1 else 0) := by
-    by_cases he : m = l
-    · subst l
-      rw [if_pos rfl, if_pos rfl]
-    · rw [if_neg he, if_neg (fun h => he (congrArg Subtype.val h))]
-  have hprod (n : ℕ) : ramanujanPoleProfile m n * ramanujanPoleProfile l n =
-      normalizedRamanujanMode m n * normalizedRamanujanMode l n / (n : ℝ) := by
-    rw [ramanujanPoleProfile, ramanujanPoleProfile, div_mul_div_comm, ← sq,
-      Real.sq_sqrt (Nat.cast_nonneg n)]
-  rw [hδ] at h
-  change |(∑ n ∈ Icc 1 N, ramanujanPoleProfile m n * ramanujanPoleProfile l n) -
-    (if m = l then 1 else 0) * (∑ n ∈ Icc 1 N, 1 / (n : ℝ))| ≤
-      2 * (m : ℝ) * l at h
-  simp only [hprod] at h
+  have h := abs_normalizedMode_product_harmonic_sub_le hm hl N
   have he : (∑ n ∈ Icc 1 N,
       (normalizedRamanujanMode m n * normalizedRamanujanMode l n -
         (if m = l then 1 else 0)) / (n : ℝ)) =

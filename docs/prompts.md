@@ -10,7 +10,7 @@ always use the search tool for our lean corpus. make sure you are note missing e
 
 are you actually working on removing roadblocks and mathematical obstacles to close route CHMD for the final RH proof, or are you taking shortcuts just to create lean files that build? this here does not look like you are actually solving the problems but are just busy creating lean code that does nothing to our research problem
 
-do not just search. create new knowledge with an open-ended loop of conjecture -> proof or fail and learn and pivot ->  conjecture -> proof or fail and learn and pivot ->  ... do not give up after a few failed conjectures. always learn and pivot even if it takes thousands of conjectures. be creative. follow unusual and fringe ideas as well as straight forward ideas. it cost almost nothing to try things.
+reminder: do not just search. create new knowledge with an open-ended loop of conjecture -> proof or fail and learn and pivot ->  conjecture -> proof or fail and learn and pivot ->  ... do not give up after a few failed conjectures. always learn and pivot even if it takes thousands of conjectures. be creative. follow unusual and fringe ideas as well as straight forward ideas. it cost almost nothing to try things.
 
 Reminder: 
 1. create new knowledge, do not just search and pivot when hitting an unsolved problem - solve it using an open-ended loop of conjecture -> proof or fail and learn and pivot ->  conjecture -> proof or fail and learn and pivot ->  ... do not give up after a few failed conjectures. always learn and pivot even if it takes thousands of conjectures.
@@ -103,7 +103,7 @@ The goal is met when route ACS is fully closed and formalized unconditionally in
 find as many places as possible in our lean corpus to apply theorems-lemmas-propositions-correlateries from the listed papers to our lean corpus, formalize them and see what happens. this is experimental. it does not have to be about rh or anything, purely mechanical. it has no goal other than this task done in as many places as possible. explain in chat whenever you find something what this could be about.
 
 papers:
-- https://github.com/openai/math/blob/main/preprints/Ordinary-two-point-correlations-of-multiplicative-functions-September-24-2026/final.pdf
+- https://arxiv.org/abs/2611.05217
 
 **Lean rules:**
 1. Proofs must be unconditional, no hypotheses, no added axioms, no premises, ...
@@ -270,7 +270,6 @@ goal is met when paper is written and passes a hostile review that confirms that
 
 ## Open Research - New field of mathematics 
 
-
 do not use the hgtl7 skill. 
 
 our current research programmes:
@@ -289,16 +288,16 @@ Not valid are improvements of numbers, nogos, redressing existing knowledge in n
 do not use the hgtl7 skill. this is open research into developing a new fields of mathematics. 
 
 read fully:
-formal/GaloisForLFunctions/ArithmeticOfSquareRootPrecision/README.md
+formal/GaloisForLFunctions/SignedWindowCriticality/README.md
 
 on every turn: 
 research, derive, formalize a significant contribution to the field that significantly helps to either:
-- find an answer to an open question in a research programme
-- gain one of the mathematical tools a research programme is missing
+- find an answer to an open question in the research programme
+- gain one of the mathematical tools the research programme is missing
 - gain a deeper insight about the problem the field is exploring and the nature of the field itself 
 - prove a significant theorem that significantly advances our research about the RH as a whole 
 
-Not valid are improvements of numbers, nogos, redressing existing knowledge in new language, anything that does not clearly count as significant progress, or that is not something that needs to exist in this field and couldnt exist otherwise.
+Not valid are improvements of not signficant numbers, redressing existing knowledge in new language, anything that does not clearly count as significant progress, or that is not something that needs to exist in this field and couldnt exist otherwise.
 
 **Tools to use:**
 1. Search: use the search tool for our lean corpus, not just rg or grep. make good use of the search tool to find existing work, building blocks, and new ideas. Try to apply existing lean research, try to identify problems and questions the field with your contribution could explain or solve.
@@ -402,11 +401,13 @@ write new reports to reflect the current status quo and frontier of our research
    2.5.2 route PM
    2.5.3 route WD
    2.5.4 route HF
+   2.5.5 route ZCG
    2.6 ideate and describe a breakthrough question that would clearly open wide the path to the RH proof for:
    2.6.1 our RH proof research as a whole
    2.6.2 route PM
    2.6.3 route WD
    2.6.4 route HF
+   2.6.5 route ZCG
    2.7 ideates whether solving all obstacles to reach the RH proof would require a new field of mathematics, what this field would be about, what it would be like, what criteria it must meet, what questions it must answer, what tools it aims to develop, what objects and language and mechanisms it must be built on or would aim to discover
    2.8 What is the one question the is less hard than proving RH or quasiRH outright and would, when answered, bring a real breakthrough and push the door wide open for us for finding the RH proof?
 3. based on that an updated wall-ledger where walls have changed, were solved, or new walls were added.
@@ -652,7 +653,7 @@ Do not use the hgtl7 skill.
 
 read and understand docs/reports/review-0311/fable.md
 
-under "## 4. Q3 — Breakthrough questions less hard than RH or quasi-RH" it asks questions.
+under "## 5. Q4 — Breakthrough questions that open the path to RH" it asks questions.
 
 your task: answer the questions, find a complete solution for each and unconditionally formalize it and its implications and collaries in lean.
 
