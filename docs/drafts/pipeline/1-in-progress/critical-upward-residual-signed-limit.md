@@ -39,7 +39,7 @@ and c_N⁴(log N)²/N→0. The critical clock is a particular case.
   The two shell-row definitions there are private; their exact finite sums
   must be exposed or reconstructed before formalization.
 
-## Paper derivation to formalize
+## Proof
 
 Write L=log N, w=c/N, e_m(n)=c_m(n)/sqrt(φ(m)), and
 
@@ -112,15 +112,19 @@ For m>1 all leading terms vanish. This yields the stated limit.
 The argument uses actual finite-horizon kernels and their proved
 conductor means; it assumes no Weil positivity or zero-location claim.
 The low-zero genus theorem does not imply this individual channel law.
-The complete residual still contains center, separated cross and combined
-near-Gamma terms whose leading signs must be retained together.
+The complete residual also contains center, separated cross and combined
+near-Gamma terms. Their subsequent signed joint calculation is recorded in
+[the Gamma–center card](critical-gamma-center-signed-limit.md).
 
-Verdict: `SURVIVES PRELIMINARY ATTACK` relative to the local corpus.
-The generic finite layer identity and its unit-mass limit are verified in
-`HTGeometry/FiniteHorizonLayerCake.lean`. The arithmetic layer identity,
-receiving-index replacement bound and linear raw mass estimate are verified
-in `TheLogarithmicRowIsAnIntegralOfHorizons.lean`; the audited axioms are
-exactly `[propext, Classical.choice, Quot.sound]`. The uniform arithmetic
-limit remains a Lean obligation. The stated signed
-limit is not yet a kernel-verified theorem. No claim of novelty beyond
-the local corpus audit is made.
+Verdict: `BRIDGE` relative to the local corpus. The exact channel law
+sharpens the previous absolute bound; its complete-form consequence uses
+the separate Gamma–center cancellation.
+
+`TheUpwardPrimeResidueHasASignedPolarLimit.tendsto_upwardPrime_residual_signed_limit`
+checks with exactly `[propext, Classical.choice, Quot.sound]`. Its inputs
+include the verified discrete horizon integral, uniform near-Gram error,
+polar shell limit, logarithmic mean, divisor-jet mean and public exterior
+estimate. `TheCriticalUpwardResidueIsSupportedAtThePole.tendsto_critical_upwardPrime_residual`
+passes its actual-path no-olean audit with the same three axioms, for
+every R>0. Final no-olean checks of the supporting modules remain
+pending. No novelty beyond the local corpus audit is claimed.

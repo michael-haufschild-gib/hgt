@@ -2,11 +2,20 @@ import GaloisForLFunctions.SignedWindowCriticality.TheMarkovPartDiesBeforeTheFir
 import GaloisForLFunctions.SignedWindowCriticality.NoMarkovGroundStateOnAWindowLongerThanTheDeathWidth
 import GaloisForLFunctions.SignedWindowCriticality.TheFoldedCriterionIsVoidOnTheUnitWindow
 import GaloisForLFunctions.SignedWindowCriticality.ThePoleChargesTheSupersolution
+import GaloisForLFunctions.SignedWindowCriticality.ShiftedGroundStatesArePoleChargedOnEveryWindow
+import GaloisForLFunctions.SignedWindowCriticality.TheWindowReadsTheOutsideChargesOfAThetaGauge
 import GaloisForLFunctions.SignedWindowCriticality.ACriticalWindowIsAPoleChargedSolution
 import GaloisForLFunctions.SignedWindowCriticality.TheKickIsAPositiveSourceAndANegativeCollarConductance
+import GaloisForLFunctions.SignedWindowCriticality.TheLightConeOfACollarCarriesItsReflection
+import GaloisForLFunctions.SignedWindowCriticality.TheCollarRatioIsSharp
+import GaloisForLFunctions.SignedWindowCriticality.TheOddLightConeInTheDoobGauge
 import GaloisForLFunctions.SignedWindowCriticality.TheCollarHankelForm
+import GaloisForLFunctions.SignedWindowCriticality.TheCollarHankelSpectrumDecaysGeometrically
 import GaloisForLFunctions.SignedWindowCriticality.TheFrozenOddFormIsMarkovAndTheKickIsNot
 import GaloisForLFunctions.SignedWindowCriticality.OnReflectionPairsTheCouplingIsTheSmoothedPrimeCount
+import GaloisForLFunctions.SignedWindowCriticality.TheZeroModeOfATightBandIsAReflectionPair
+import GaloisForLFunctions.SignedWindowCriticality.TheParitySectorsAreTheBandAtTheCentre
+import GaloisForLFunctions.SignedWindowCriticality.TheFirstStageRejectsTheFlip
 
 /-!
 # Signed Window Criticality
@@ -15,7 +24,10 @@ Umbrella for the ground-state theory of Weil's form on windows with every sign k
 part dies at length `e^{−3/4}` and admits no positive supersolution on any longer window, so the
 folded criterion is void on the unit odd window; with the pole kept, each square of the hyperbolic
 pair becomes a charge of the gauge (sinh charge in the odd sector, cosh credit in the even sector)
-and the window form is a signed Dirichlet form plus a pole-charged potential; Rayleigh-critical
+and the window form is a signed Dirichlet form plus a pole-charged potential; ACT's shifted ground
+states are strict pole-charged supersolutions on every window, the slack being their sinh charge
+outside the window, and every theta gauge is critical on the line while a window reads its outside
+charges with the pole's signs (slack in the odd sector, deficit in the even sector); Rayleigh-critical
 gauges and zero modes solve the pole-charged source equation and represent the window form in their
 own gauge; on odd tests the frozen form is Markov under `F ↦ sign(x)|F|` and the kick of the first
 prime is anti-Markov; the kick of a new prime power is a positive source plus a negative anti-diagonal

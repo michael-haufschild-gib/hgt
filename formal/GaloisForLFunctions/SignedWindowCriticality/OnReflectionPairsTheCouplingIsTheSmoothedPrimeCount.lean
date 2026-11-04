@@ -1,5 +1,6 @@
 import GaloisForLFunctions.SignedWindowCriticality.TheCollarHankelForm
 import GaloisForLFunctions.CohomologyOfWindowsOfSpecZ.TheWindowDatum
+import GaloisForLFunctions.GrowingWindowsOfSpecZ.TheEvolutionStartsPositive
 
 /-!
 # On reflection pairs the coupling is the smoothed prime count
@@ -18,6 +19,9 @@ exponentially small corrections, and `𝒞_m(f)` is the error of the prime count
 * **Two-site identity** (`weilQuad_add_collarReflect`, `weilQuad_sub_collarReflect`).
   `W(f ± f∘R) = 2W(f) ± 2𝒞_m(f)`: the window form of a reflection pair is the self-energy of one
   site plus or minus the prime-count error.
+* **The first prime stage opens positive on reflection pairs** (`abs_coupling_le_weilQuad_of_short`).
+  For `f` supported in `[p, m]` with `2(m − p) ≤ 181/250` the band holds unconditionally (base
+  positivity of SPATL/GWZ); for `2(m − p) ≥ log 2` the prime `2` is inside the sum.
 * **The growth step on a reflection sector** (`weilQuad_stage_even`, `weilQuad_stage_odd`). For a
   collar piece `x_L` left of a cut `a ≤ m` and an interior piece `y` with `y∘R = ±y`,
   `W(x_L + y ± x_L∘R) = 2W(x_L + y) − W(y) ± 2𝒞_m(x_L)`: on each reflection sector the stage form
@@ -146,6 +150,47 @@ theorem abs_coupling_le_weilQuad_iff (hf : ContDiff ℝ 2 f) (hfc : HasCompactSu
   constructor
   · rintro ⟨h1, h2⟩; constructor <;> linarith
   · rintro ⟨h1, h2⟩; constructor <;> linarith
+
+/-- `W ≥ 0` on every `C²_c` test supported in an interval of length at most `181/250` (SPATL, GWZ). -/
+theorem weilQuad_nonneg_of_short {G : ℝ → ℝ} (hG : ContDiff ℝ 2 G) (hGc : HasCompactSupport G)
+    {c L : ℝ} (hL : L ≤ 181 / 250) (hsupp : ∀ u, u ∉ Icc (c - L) c → G u = 0) :
+    0 ≤ weilQuad G := by
+  by_cases h0 : G = 0
+  · subst h0
+    rw [weilQuad_eq hG hGc]
+    simp [levyEnergy, primeSum, coshHalfMoment, sinhHalfMoment]
+  · exact (GrowingWindowsOfSpecZ.weilQuad_pos_of_short ⟨hG, hGc⟩ h0 hL hsupp).le
+
+/-- **The first prime stage opens positive on reflection pairs.** For `f` supported in `[p, m]`
+with `2(m − p) ≤ 181/250`, `|𝓗_m(f) − Σ_nΛ(n)n^{−1/2}(f⋆f)(2m − log n)| ≤ W(f)`. When
+`2(m − p) ≥ log 2` the prime `2` is inside the sum. -/
+theorem abs_coupling_le_weilQuad_of_short (hf : ContDiff ℝ 2 f) (hfc : HasCompactSupport f)
+    {p : ℝ} (hp : ∀ u, u < p → f u = 0) (hm : ∀ u, m < u → f u = 0)
+    (hL : 2 * (m - p) ≤ 181 / 250) :
+    |collarHankel m f - ∑' n : ℕ, vonMangoldtAtom n * selfConv f (2 * m - Real.log n)| ≤
+      weilQuad f := by
+  rw [abs_coupling_le_weilQuad_iff hf hfc hm]
+  have hsupp : ∀ g : ℝ → ℝ, (∀ u, u ∉ Icc p m → g u = 0) →
+      ∀ u, u ∉ Icc (2 * m - p - 2 * (m - p)) (2 * m - p) →
+        g u + collarReflect m g u = 0 ∧ g u + -collarReflect m g u = 0 := by
+    intro g hg u hu
+    have hu' : u < p ∨ 2 * m - p < u := by
+      by_contra h
+      rcases not_or.mp h with ⟨h1, h2⟩
+      exact hu ⟨by linarith [not_lt.mp h1], not_lt.mp h2⟩
+    have h1 : g u = 0 := hg u fun h => by rcases hu' with h' | h' <;> linarith [h.1, h.2]
+    have h2 : collarReflect m g u = 0 := by
+      unfold collarReflect
+      exact hg _ fun h => by rcases hu' with h' | h' <;> linarith [h.1, h.2]
+    rw [h1, h2]; simp
+  have hfs : ∀ u, u ∉ Icc p m → f u = 0 := fun u hu => by
+    by_cases h : u < p
+    · exact hp u h
+    · exact hm u (by by_contra h'; exact hu ⟨not_lt.mp h, not_lt.mp h'⟩)
+  refine ⟨weilQuad_nonneg_of_short (hf.add (contDiff_collarReflect hf))
+      (hfc.add (hasCompactSupport_collarReflect hfc)) hL fun u hu => (hsupp f hfs u hu).1,
+    weilQuad_nonneg_of_short (hf.add (contDiff_collarReflect hf).neg)
+      (hfc.add (hasCompactSupport_collarReflect hfc).neg) hL fun u hu => (hsupp f hfs u hu).2⟩
 
 /-! ### The growth step on a reflection sector -/
 

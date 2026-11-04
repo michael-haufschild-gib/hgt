@@ -12,7 +12,8 @@ The literal complex source and its first two atoms are compared before
 differentiation. Opposite translations cancel their exponential prefactors,
 so the entire omitted double sum admits one common disk majorant. Cauchy
 estimates then control every real reflected jet, without an order cutoff
-or an assumed derivative bound on the omitted source.
+or an assumed derivative bound on the omitted source. Retaining the scale in
+the exponential gives a sharper uniform budget from scale seven onward.
 -/
 
 open Complex Real
@@ -347,10 +348,11 @@ noncomputable def complexReflectedError (x : ℝ) (z : ℂ) : ℂ :=
   thetaCuspStripSource ((x:ℂ)+z)*thetaCuspStripSource ((x:ℂ)-z)-
     twoComplex ((x:ℂ)+z)*twoComplex ((x:ℂ)-z)
 
-/-- Uniform disk bound retaining every omitted source atom and both cross terms. -/
-theorem complex_reflected_error_bound {x : ℝ}
+/-- The complete reflected tail has an explicit exponential bound at every scale above five. -/
+theorem complex_reflected_error_exponential {x : ℝ}
     (hq : 5 ≤ thetaCuspSingleAtomReflectionScale 1 x) {z : ℂ} (hz : ‖z‖ ≤ 3/20) :
-    ‖complexReflectedError x z‖ ≤ thetaCuspSourceTerm x 1^2/500000000 := by
+    ‖complexReflectedError x z‖ ≤ 1000*thetaCuspSourceTerm x 1^2*
+      Real.exp (-(27/5)*thetaCuspSingleAtomReflectionScale 1 x) := by
   let q := thetaCuspSingleAtomReflectionScale 1 x
   let a := (37/50)*q
   let Kp := atomPrefactor x z.re
@@ -402,8 +404,17 @@ theorem complex_reflected_error_bound {x : ℝ}
       calc
         _ = 1000*thetaCuspSourceTerm x 1^2*(Real.exp (2*q)*Real.exp (-10*a)) := by ring
         _ = _ := by rw [he]
+
+/-- Uniform disk bound retaining every omitted source atom and both cross terms. -/
+theorem complex_reflected_error_bound {x : ℝ}
+    (hq : 5 ≤ thetaCuspSingleAtomReflectionScale 1 x) {z : ℂ} (hz : ‖z‖ ≤ 3/20) :
+    ‖complexReflectedError x z‖ ≤ thetaCuspSourceTerm x 1^2/500000000 := by
+  calc
+    _ ≤ 1000*thetaCuspSourceTerm x 1^2*
+        Real.exp (-(27/5)*thetaCuspSingleAtomReflectionScale 1 x) :=
+      complex_reflected_error_exponential hq hz
     _ ≤ 1000*thetaCuspSourceTerm x 1^2*Real.exp (-27) :=
-      mul_le_mul_of_nonneg_left (Real.exp_le_exp.mpr (by dsimp [q]; linarith)) (by positivity)
+      mul_le_mul_of_nonneg_left (Real.exp_le_exp.mpr (by linarith only [hq])) (by positivity)
     _ ≤ _ := by
       have hm := mul_le_mul_of_nonneg_left exp_twenty_seven_inverse
         (show 0 ≤ 1000*thetaCuspSourceTerm x 1^2 by positivity)
@@ -426,10 +437,10 @@ private theorem reflected_analytic {x : ℝ} {z : ℂ} (hz : z ∈ thetaCuspStri
     (((htwo.analyticAt _).comp (analyticAt_const.add analyticAt_id)).mul
       ((htwo.analyticAt _).comp (analyticAt_const.sub analyticAt_id)))
 
-private theorem complex_jet_bound (n : ℕ) {x : ℝ}
-    (hq : 5 ≤ thetaCuspSingleAtomReflectionScale 1 x) :
+private theorem complex_jet_bound_of_disk (n : ℕ) (x B : ℝ)
+    (hB : ∀ z : ℂ, ‖z‖ ≤ 3/20 → ‖complexReflectedError x z‖ ≤ B) :
     ‖iteratedDeriv n (complexReflectedError x) 0‖ ≤
-      (n.factorial:ℝ)*(thetaCuspSourceTerm x 1^2/500000000)/(3/20)^n := by
+      (n.factorial:ℝ)*B/(3/20)^n := by
   have hd : DifferentiableOn ℂ (complexReflectedError x) thetaCuspStrip :=
     fun z hz => (reflected_analytic hz).differentiableAt.differentiableWithinAt
   have hdisc : Metric.closedBall (0:ℂ) (3/20) ⊆ thetaCuspStrip := by
@@ -438,9 +449,15 @@ private theorem complex_jet_bound (n : ℕ) {x : ℝ}
     simpa using shifted_mem_strip 0 hn
   exact Complex.norm_iteratedDeriv_le_of_forall_mem_sphere_norm_le n (by norm_num)
     (hd.diffContOnCl_ball hdisc) (fun z hz =>
-      complex_reflected_error_bound hq (by
+      hB z (by
         have he : ‖z‖ = 3/20 := by simpa using hz
         exact he.le))
+
+private theorem complex_jet_bound (n : ℕ) {x : ℝ}
+    (hq : 5 ≤ thetaCuspSingleAtomReflectionScale 1 x) :
+    ‖iteratedDeriv n (complexReflectedError x) 0‖ ≤
+      (n.factorial:ℝ)*(thetaCuspSourceTerm x 1^2/500000000)/(3/20)^n :=
+  complex_jet_bound_of_disk n x _ (fun _ hz => complex_reflected_error_bound hq hz)
 
 private theorem restriction_jet {H : ℂ → ℂ}
     (ha : ∀ t : ℝ, AnalyticAt ℂ H (t:ℂ)) (n : ℕ) (t : ℝ) :
@@ -488,6 +505,46 @@ theorem native_twoAtom_cauchy_error (n : ℕ) {x : ℝ}
   have h := complex_jet_bound n hq
   rw [real_reflected_jet, Complex.norm_real, Real.norm_eq_abs] at h
   exact h
+
+/-- Complete-source jet error retaining its scale-dependent exponential decay. -/
+theorem native_twoAtom_cauchy_error_exponential (n : ℕ) {x : ℝ}
+    (hq : 5 ≤ thetaCuspSingleAtomReflectionScale 1 x) :
+    |thetaCuspNativeReflectionJet n x-thetaCuspTwoAtomReflectionJet n x| ≤
+      (n.factorial:ℝ)*(1000*thetaCuspSourceTerm x 1^2*
+        Real.exp (-(27/5)*thetaCuspSingleAtomReflectionScale 1 x))/(3/20)^n := by
+  have h := complex_jet_bound_of_disk n x _
+    (fun _ hz => complex_reflected_error_exponential hq hz)
+  rw [real_reflected_jet,Complex.norm_real,Real.norm_eq_abs] at h
+  exact h
+
+private theorem scale_seven_exponential_budget {q : ℝ} (hq : 7 ≤ q) :
+    1000*Real.exp (-(27/5)*q) ≤ 1/10000000000000 := by
+  have h36 := pow_le_pow_left₀ (by norm_num : (0:ℝ)≤20) exp_three_lower 12
+  rw [← Real.exp_nat_mul] at h36
+  norm_num at h36
+  have h1 : (5/2:ℝ) ≤ Real.exp 1 := by linarith only [Real.exp_one_gt_d9]
+  have hp := mul_le_mul h36 h1 (by norm_num : (0:ℝ)≤5/2) (Real.exp_pos 36).le
+  rw [← Real.exp_add] at hp
+  norm_num at hp
+  have he : (10000000000000000:ℝ) ≤ Real.exp ((27/5)*q) := by
+    have hm := Real.exp_le_exp.mpr (show (37:ℝ) ≤ (27/5)*q by linarith only [hq])
+    linarith only [hp,hm]
+  rw [show -(27/5)*q = -((27/5)*q) by ring,Real.exp_neg]
+  change 1000/Real.exp ((27/5)*q) ≤ 1/10000000000000
+  apply (div_le_iff₀ (Real.exp_pos _)).mpr
+  linarith only [he]
+
+/-- On the scale-seven ray, every reflected jet has a twenty-thousandfold sharper tail budget. -/
+theorem native_twoAtom_cauchy_error_of_seven_le (n : ℕ) {x : ℝ}
+    (hq : 7 ≤ thetaCuspSingleAtomReflectionScale 1 x) :
+    |thetaCuspNativeReflectionJet n x-thetaCuspTwoAtomReflectionJet n x| ≤
+      (n.factorial:ℝ)*(thetaCuspSourceTerm x 1^2/10000000000000)/(3/20)^n := by
+  have h := native_twoAtom_cauchy_error_exponential n (show 5 ≤ thetaCuspSingleAtomReflectionScale 1 x by linarith only [hq])
+  have hb := mul_le_mul_of_nonneg_left (scale_seven_exponential_budget hq)
+    (show 0 ≤ (n.factorial:ℝ)*thetaCuspSourceTerm x 1^2/(3/20)^n by positivity)
+  apply h.trans
+  convert hb using 1 <;> ring
+
 
 end
 end RHTower.ThetaCuspReflectedCauchyTail

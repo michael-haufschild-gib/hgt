@@ -9,6 +9,9 @@ at the modular seam. Its Schur coordinate gives the sharp positive fifth-load
 threshold for a full origin repair. Together with the scale-seven capacity gap,
 this excludes every real pair of constant diagonal loads, including the actual
 weighted representative at each critical aperture.
+
+Two coupled loads have a positive three-dimensional common kernel at the
+origin; the four-dimensional kernel of the last-pair load alone is indefinite.
 -/
 
 noncomputable section
@@ -175,6 +178,35 @@ private theorem skipped_polynomial_negative {X : ℝ} (hlo : (191/10 : ℝ) ≤ 
     q00,q00A,q00AA,q20,q20A,q11,q11A,q02,q02A,q40,q31,q22,q13,q04]
   ring_nf
   linarith only [pow_nonneg hz 1, pow_nonneg hz 2, pow_nonneg hz 3, pow_nonneg hz 4, pow_nonneg hz 5, pow_nonneg hz 6, pow_nonneg hz 7, pow_nonneg hz 8, pow_nonneg hz 9, pow_nonneg hz 10, pow_nonneg hz 11, pow_nonneg hz 12, pow_nonneg hz 13, pow_nonneg hz 14, pow_nonneg hz 15, pow_nonneg hz 16, pow_nonneg hz 17, pow_nonneg hz 18, pow_nonneg hz 19, pow_nonneg hz 20, hp 21, hp 22]
+private def vector : Fin 5 → ℝ := ![-658560,47040,-420,1,-(1/1568)]
+private def originEnergy (X : ℝ) : ℝ :=
+  ∑ i : Fin 5, ∑ j : Fin 5, vector i*vector j*M (i.val+j.val) X
+
+private def linearEnergy (X : ℝ) : ℝ :=
+  658560^2*M 0 X - 2*658560*47040*M 1 X +
+  (47040^2+2*658560*420)*M 2 X -
+  (2*658560+2*47040*420)*M 3 X +
+  (420^2+2*47040+2*658560/1568)*M 4 X -
+  (2*420+2*47040/1568)*M 5 X +
+  (1+2*420/1568)*M 6 X - 2/1568*M 7 X + 1/1568^2*M 8 X
+
+private theorem originEnergy_eq (X : ℝ) : originEnergy X = linearEnergy X := by
+  norm_num [originEnergy,vector,Fin.sum_univ_succ,linearEnergy,
+    Matrix.cons_val_two,Matrix.cons_val_three,Matrix.vecHead,Matrix.vecTail]
+  ring
+
+private theorem originEnergy_positive {X : ℝ} (hlo : (191/10 : ℝ) ≤ X) :
+    0 < originEnergy X := by
+  let z := 10*X-191
+  have hz : 0 ≤ z := by dsimp [z]; linarith only [hlo]
+  have hX : X = (z+191)/10 := by dsimp [z]; ring
+  rw [originEnergy_eq,hX]
+  norm_num [linearEnergy,M,P,Finset.sum_range_succ,Nat.choose,
+    source14_eq,source16_eq,source14,source16,HTGeometry.modularThetaEvenSeamSourcePolynomial,
+    q00,q00A,q00AA,q20,q20A,q11,q11A,q02,q02A,q40,q31,q22,q13,q04]
+  ring_nf
+  positivity
+
 private theorem native_eight :
     thetaCuspNativeReflectionJet 16 0 = thetaCuspSelfDualThetaMass^2 *
       M 8 (thetaCuspSelfDualModularScale^2) := by
@@ -199,6 +231,51 @@ private theorem native_eight :
   norm_num [thetaCuspNativeReflectionJet_eq,M,Finset.sum_range_succ,Nat.choose,
       h0,h1,h2,h3,h4,h5,h6,h7,h8,h9,h10,h11,h12,h13,h14,h15,h16]
   ring
+
+private theorem native_all (k : Fin 9) :
+    (-1:ℝ)^k.val*thetaCuspNativeReflectionJet (2*k.val) 0 =
+      thetaCuspSelfDualThetaMass^2*M k.val (thetaCuspSelfDualModularScale^2) := by
+  have h0 : thetaCuspNativeReflectionJet 0 0 =
+      thetaCuspSelfDualThetaMass^2*M 0 (thetaCuspSelfDualModularScale^2) := by
+    have h := source_even (0 : Fin 9)
+    norm_num at h
+    norm_num [thetaCuspNativeReflectionJet_eq, M, Finset.sum_range_succ, h]
+    ring
+  have h1 := native_value (0:Fin 7)
+  have h2 := native_value (1:Fin 7)
+  have h3 := native_value (2:Fin 7)
+  have h4 := native_value (3:Fin 7)
+  have h5 := native_value (4:Fin 7)
+  have h6 := native_value (5:Fin 7)
+  have h7 := native_value (6:Fin 7)
+  norm_num at h1 h2 h3 h4 h5 h6 h7
+  fin_cases k <;> norm_num [h0,h1,h2,h3,h4,h5,h6,h7,native_eight]
+
+private theorem sourceEnergy_zero_eq :
+    EvenFiveBoundary.sourceEnergy 0 = thetaCuspSelfDualThetaMass^2 *
+      originEnergy (thetaCuspSelfDualModularScale^2) := by
+  unfold EvenFiveBoundary.sourceEnergy originEnergy
+  simp only [Finset.mul_sum]
+  apply Finset.sum_congr rfl
+  intro i hi
+  apply Finset.sum_congr rfl
+  intro j hj
+  have h := native_all ⟨i.val+j.val, by omega⟩
+  dsimp only at h
+  rw [h]
+  change vector i*(thetaCuspSelfDualThetaMass^2 *
+      M (i.val+j.val) (thetaCuspSelfDualModularScale^2))*vector j = _
+  ring
+
+/-- The scale-seven direction also has strictly positive complete-source energy at the origin. -/
+theorem boundary_direction_positive_at_origin : 0 < EvenFiveBoundary.sourceEnergy 0 := by
+  rw [sourceEnergy_zero_eq]
+  have hM : 0 < thetaCuspSelfDualThetaMass := by
+    have h := thetaCuspSelfDualThetaMass_gt_five_thousand_four_hundred_thirty_one_div_five_thousand
+    linarith only [h]
+  exact mul_pos (pow_pos hM 2) (originEnergy_positive
+    thetaCuspSelfDualModularScale_sq_gt_nineteen_point_one.le)
+
 
 open Matrix
 private theorem symmetric_four_det (a b c d e u v w t : ℝ) :
@@ -624,5 +701,851 @@ theorem constant_weighted_repair_fails {a : ℝ} (ha : 0 < a) (haU : a < 1/2) (C
   have h0 := origin_of_weighted_positive ha h
   have hD := originFifthThreshold_pos.trans_le (origin_fifth_load_required C D h0)
   exact EvenFiveBoundary.constant_weighted_repair_fails ha haU hD.le C h
+
+private theorem moment_0 (X : ℝ) : M 0 X =
+    9 / 64 + X * (-3 / 64) + X ^ 2 * (1 / 256) := by
+  norm_num [M,P,Finset.sum_range_succ,Nat.choose,
+    source14_eq,source16_eq,source14,source16,HTGeometry.modularThetaEvenSeamSourcePolynomial,
+    q00,q00A,q00AA,q20,q20A,q11,q11A,q02,q02A,q40,q31,q22,q13,q04]
+  ring
+
+private theorem moment_1 (X : ℝ) : M 1 X =
+    45 / 64 + X * (-165 / 256) + X ^ 2 * (21 / 256) + X ^ 3 * (1 / 1024) := by
+  norm_num [M,P,Finset.sum_range_succ,Nat.choose,
+    source14_eq,source16_eq,source14,source16,HTGeometry.modularThetaEvenSeamSourcePolynomial,
+    q00,q00A,q00AA,q20,q20A,q11,q11A,q02,q02A,q40,q31,q22,q13,q04]
+  ring
+
+private theorem moment_2 (X : ℝ) : M 2 X =
+    765 / 64 + X * (-2505 / 128) + X ^ 2 * (4461 / 1024) + X ^ 3 * (77 / 1024) + X ^ 4 * (27 / 4096) := by
+  norm_num [M,P,Finset.sum_range_succ,Nat.choose,
+    source14_eq,source16_eq,source14,source16,HTGeometry.modularThetaEvenSeamSourcePolynomial,
+    q00,q00A,q00AA,q20,q20A,q11,q11A,q02,q02A,q40,q31,q22,q13,q04]
+  ring
+
+private theorem moment_3 (X : ℝ) : M 3 X =
+    24345 / 64 + X * (-243615 / 256) + X ^ 2 * (333759 / 1024) + X ^ 3 * (31519 / 4096) + X ^ 4 *
+    (8199 / 4096) + X ^ 5 * (-21 / 16384) := by
+  norm_num [M,P,Finset.sum_range_succ,Nat.choose,
+    source14_eq,source16_eq,source14,source16,HTGeometry.modularThetaEvenSeamSourcePolynomial,
+    q00,q00A,q00AA,q20,q20A,q11,q11A,q02,q02A,q40,q31,q22,q13,q04]
+  ring
+
+private theorem moment_4 (X : ℝ) : M 4 X =
+    1207665 / 64 + X * (-2122095 / 32) + X ^ 2 * (16407993 / 512) + X ^ 3 * (1024127 / 1024) + X ^ 4
+    * (7963857 / 16384) + X ^ 5 * (-30027 / 16384) + X ^ 6 * (5133 / 65536) := by
+  norm_num [M,P,Finset.sum_range_succ,Nat.choose,
+    source14_eq,source16_eq,source14,source16,HTGeometry.modularThetaEvenSeamSourcePolynomial,
+    q00,q00A,q00AA,q20,q20A,q11,q11A,q02,q02A,q40,q31,q22,q13,q04]
+  ring
+
+private theorem moment_5 (X : ℝ) : M 5 X =
+    85066245 / 64 + X * (-1591823865 / 256) + X ^ 2 * (2049802467 / 512) + X ^ 3 * (327670217 /
+    2048) + X ^ 4 * (1966854177 / 16384) + X ^ 5 * (-62366877 / 65536) + X ^ 6 * (3218985 / 65536) +
+    X ^ 7 * (-725859 / 262144) := by
+  norm_num [M,P,Finset.sum_range_succ,Nat.choose,
+    source14_eq,source16_eq,source14,source16,HTGeometry.modularThetaEvenSeamSourcePolynomial,
+    q00,q00A,q00AA,q20,q20A,q11,q11A,q02,q02A,q40,q31,q22,q13,q04]
+  ring
+
+private theorem moment_6 (X : ℝ) : M 6 X =
+    8028542565 / 64 + X * (-96262740255 / 128) + X ^ 2 * (634560122211 / 1024) + X ^ 3 * (1975395347
+    / 64) + X ^ 4 * (529421297031 / 16384) + X ^ 5 * (-13501200603 / 32768) + X ^ 6 * (6251467509 /
+    262144) + X ^ 7 * (-888527835 / 262144) + X ^ 8 * (-10466793 / 1048576) := by
+  norm_num [M,P,Finset.sum_range_succ,Nat.choose,
+    source14_eq,source16_eq,source14,source16,HTGeometry.modularThetaEvenSeamSourcePolynomial,
+    q00,q00A,q00AA,q20,q20A,q11,q11A,q02,q02A,q40,q31,q22,q13,q04]
+  ring
+
+private theorem moment_7 (X : ℝ) : M 7 X =
+    975220892145 / 64 + X * (-29124679352115 / 256) + X ^ 2 * (119242543472409 / 1024) + X ^ 3 *
+    (28953599674549 / 4096) + X ^ 4 * (159032056610583 / 16384) + X ^ 5 * (-11525159347845 / 65536)
+    + X ^ 6 * (2939734839795 / 262144) + X ^ 7 * (-3025910283417 / 1048576) + X ^ 8 * (-16707449205
+    / 1048576) + X ^ 9 * (-202414761 / 4194304) := by
+  norm_num [M,P,Finset.sum_range_succ,Nat.choose,
+    source14_eq,source16_eq,source14,source16,HTGeometry.modularThetaEvenSeamSourcePolynomial,
+    q00,q00A,q00AA,q20,q20A,q11,q11A,q02,q02A,q40,q31,q22,q13,q04]
+  ring
+
+private theorem moment_8 (X : ℝ) : M 8 X =
+    147972940725465 / 64 + X * (-1345440989479065 / 64) + X ^ 2 * (1671683363523321 / 64) + X ^ 3 *
+    (971257441098301 / 512) + X ^ 4 * (26851592045541915 / 8192) + X ^ 5 * (-321887823511059 / 4096)
+    + X ^ 6 * (359400635300889 / 65536) + X ^ 7 * (-288451649154465 / 131072) + X ^ 8 *
+    (-73300953671271 / 4194304) + X ^ 9 * (-684133624179 / 4194304) + X ^ 10 * (139969720953 /
+    16777216) := by
+  norm_num [M,P,Finset.sum_range_succ,Nat.choose,
+    source14_eq,source16_eq,source14,source16,HTGeometry.modularThetaEvenSeamSourcePolynomial,
+    q00,q00A,q00AA,q20,q20A,q11,q11A,q02,q02A,q40,q31,q22,q13,q04]
+  ring
+
+private def coupledCof (X : ℝ) : ℝ :=
+  let a := M 0 X
+  let b := M 1 X
+  let c := M 2 X
+  let d := M 3 X
+  let e := M 4 X
+  let u := M 3 X - M 4 X/1568
+  let v := M 4 X - M 5 X/1568
+  let w := M 5 X - M 6 X/1568
+  (a*c*e+2*b*c*d-a*d^2-c^3-b^2*e)*
+      (M 6 X-2*M 7 X/1568+M 8 X/1568^2) -
+    ((c*e-d^2)*u^2+2*(c*d-b*e)*u*v+2*(b*d-c^2)*u*w+
+      (a*e-c^2)*v^2+2*(b*c-a*d)*v*w+(a*c-b^2)*w^2)
+private theorem coupledCof_negative {X : ℝ} (hlo : (191/10 : ℝ) ≤ X) (hhi : X ≤ 96/5) :
+    coupledCof X < 0 := by
+  let z := 10*X-191
+  have hz : 0 ≤ z := by dsimp [z]; linarith only [hlo]
+  have hzU : z ≤ 1 := by dsimp [z]; linarith only [hhi]
+  have hX : X = (z+191)/10 := by dsimp [z]; ring
+  have hp (n : ℕ) : z^n ≤ 1 := by simpa using pow_le_pow_left₀ hz hzU n
+  rw [hX]
+  simp only [coupledCof,moment_0,moment_1,moment_2,moment_3,moment_4,moment_5,moment_6,moment_7,moment_8]
+  ring_nf
+  linarith only [pow_nonneg hz 1,pow_nonneg hz 2,pow_nonneg hz 3,pow_nonneg hz 4,
+    pow_nonneg hz 5,pow_nonneg hz 6,pow_nonneg hz 7,pow_nonneg hz 8,pow_nonneg hz 9,
+    pow_nonneg hz 10,pow_nonneg hz 11,pow_nonneg hz 12,pow_nonneg hz 13,pow_nonneg hz 14,
+    pow_nonneg hz 15,pow_nonneg hz 16,pow_nonneg hz 17,pow_nonneg hz 18,
+    pow_nonneg hz 19,pow_nonneg hz 20,pow_nonneg hz 21,pow_nonneg hz 22,
+    hp 1,hp 2,hp 3,hp 4,hp 5,hp 6,hp 7,hp 8,hp 9,hp 10,hp 11,hp 12,hp 13,hp 14,
+    hp 15,hp 16,hp 17,hp 18,hp 19,hp 20,hp 21,hp 22]
+
+
+private def headTwoCof (X : ℝ) : ℝ :=
+  let a := M 0 X
+  let b := M 1 X
+  let c := M 2 X
+  let u := -420*M 2 X+M 3 X-M 4 X/1568
+  let v := -420*M 3 X+M 4 X-M 5 X/1568
+  let t := 176400*M 4 X-840*M 5 X+(1+840/1568)*M 6 X-
+    2*M 7 X/1568+M 8 X/1568^2
+  (a*c-b^2)*t-(c*u^2-2*b*u*v+a*v^2)
+
+private theorem headTwoCof_positive {X : ℝ} (hlo : (191/10 : ℝ) ≤ X) (hhi : X ≤ 96/5) :
+    0 < headTwoCof X := by
+  let z := 10*X-191
+  have hz : 0 ≤ z := by dsimp [z]; linarith only [hlo]
+  have hzU : z ≤ 1 := by dsimp [z]; linarith only [hhi]
+  have hX : X = (z+191)/10 := by dsimp [z]; ring
+  have hp (n : ℕ) : z^n ≤ 1 := by simpa using pow_le_pow_left₀ hz hzU n
+  rw [hX]
+  simp only [headTwoCof,moment_0,moment_1,moment_2,moment_3,moment_4,moment_5,moment_6,moment_7,moment_8]
+  ring_nf
+  linarith only [pow_nonneg hz 1,pow_nonneg hz 2,pow_nonneg hz 3,pow_nonneg hz 4,
+    pow_nonneg hz 5,pow_nonneg hz 6,pow_nonneg hz 7,pow_nonneg hz 8,pow_nonneg hz 9,
+    pow_nonneg hz 10,pow_nonneg hz 11,pow_nonneg hz 12,pow_nonneg hz 13,pow_nonneg hz 14,
+    pow_nonneg hz 15,pow_nonneg hz 16,pow_nonneg hz 17,pow_nonneg hz 18,
+    pow_nonneg hz 19,pow_nonneg hz 20,pow_nonneg hz 21,pow_nonneg hz 22,
+    hp 1,hp 2,hp 3,hp 4,hp 5,hp 6,hp 7,hp 8,hp 9,hp 10,hp 11,hp 12,hp 13,hp 14,
+    hp 15,hp 16,hp 17,hp 18,hp 19,hp 20,hp 21,hp 22]
+
+
+
+/-- Coordinates for the common kernel of the two coupled source loads. -/
+def coherentKernelBasis : Matrix (Fin 5) (Fin 3) ℝ :=
+  !![1,0,0; 0,1,0; 0,0,-420; 0,0,1; 0,0,-1/1568]
+
+/-- The native form restricted to the common kernel of the coupled loads. -/
+def coherentKernel (x : ℝ) : Matrix (Fin 3) (Fin 3) ℝ :=
+  coherentKernelBasisᴴ * nativeShiftedMatrix 5 0 x * coherentKernelBasis
+
+/-- Kernel coordinates for the single load on the last two entries. -/
+def singleCoherentKernelBasis : Matrix (Fin 5) (Fin 4) ℝ :=
+  !![1,0,0,0; 0,1,0,0; 0,0,1,0; 0,0,0,1; 0,0,0,-1/1568]
+
+/-- The larger kernel left unchanged by a single coupled load. -/
+def singleCoherentKernel (x : ℝ) : Matrix (Fin 4) (Fin 4) ℝ :=
+  singleCoherentKernelBasisᴴ * nativeShiftedMatrix 5 0 x * singleCoherentKernelBasis
+
+private theorem native_hankel_zero (i j : Fin 5) :
+    nativeShiftedMatrix 5 0 0 i j = thetaCuspSelfDualThetaMass^2 *
+      M (i.val+j.val) (thetaCuspSelfDualModularScale^2) := by
+  simpa only [nativeShiftedMatrix, Nat.add_zero] using
+    native_all ⟨i.val+j.val, by omega⟩
+
+private def kernelMoments (X : ℝ) : Matrix (Fin 3) (Fin 3) ℝ :=
+  let u := -420*M 2 X+M 3 X-M 4 X/1568
+  let v := -420*M 3 X+M 4 X-M 5 X/1568
+  let t := 176400*M 4 X-840*M 5 X+(1+840/1568)*M 6 X-
+    2*M 7 X/1568+M 8 X/1568^2
+  !![M 0 X,M 1 X,u; M 1 X,M 2 X,v; u,v,t]
+
+private def singleKernelMoments (X : ℝ) : Matrix (Fin 4) (Fin 4) ℝ :=
+  let u := M 3 X-M 4 X/1568
+  let v := M 4 X-M 5 X/1568
+  let w := M 5 X-M 6 X/1568
+  let t := M 6 X-2*M 7 X/1568+M 8 X/1568^2
+  !![M 0 X,M 1 X,M 2 X,u; M 1 X,M 2 X,M 3 X,v;
+    M 2 X,M 3 X,M 4 X,w; u,v,w,t]
+
+private theorem coherentKernel_zero : coherentKernel 0 =
+    thetaCuspSelfDualThetaMass^2 • kernelMoments (thetaCuspSelfDualModularScale^2) := by
+  ext i j
+  fin_cases i <;> fin_cases j <;>
+    norm_num [coherentKernel, coherentKernelBasis, kernelMoments, Matrix.mul_apply,
+      Matrix.conjTranspose_apply, Fin.sum_univ_succ, native_hankel_zero,
+      Matrix.smul_apply, Matrix.cons_val_two, Matrix.cons_val_three,
+      Matrix.vecHead, Matrix.vecTail] <;> ring
+
+private theorem singleCoherentKernel_zero : singleCoherentKernel 0 =
+    thetaCuspSelfDualThetaMass^2 • singleKernelMoments (thetaCuspSelfDualModularScale^2) := by
+  ext i j
+  fin_cases i <;> fin_cases j <;>
+    norm_num [singleCoherentKernel, singleCoherentKernelBasis, singleKernelMoments,
+      Matrix.mul_apply, Matrix.conjTranspose_apply, Fin.sum_univ_succ, native_hankel_zero,
+      Matrix.smul_apply, Matrix.cons_val_two, Matrix.cons_val_three,
+      Matrix.vecHead, Matrix.vecTail] <;> ring
+
+private theorem coherentKernel_det : (coherentKernel 0).det =
+    thetaCuspSelfDualThetaMass^6*headTwoCof (thetaCuspSelfDualModularScale^2) := by
+  rw [coherentKernel_zero, Matrix.det_smul]
+  norm_num [kernelMoments, Matrix.det_fin_three, headTwoCof,
+    Matrix.cons_val_two, Matrix.vecHead, Matrix.vecTail]
+  ring
+
+private theorem singleCoherentKernel_det : (singleCoherentKernel 0).det =
+    thetaCuspSelfDualThetaMass^8*coupledCof (thetaCuspSelfDualModularScale^2) := by
+  rw [singleCoherentKernel_zero, Matrix.det_smul]
+  simp only [singleKernelMoments]
+  rw [symmetric_four_det]
+  norm_num only [Fintype.card_fin]
+  unfold coupledCof
+  ring
+
+private theorem seamMass_pos : 0 < thetaCuspSelfDualThetaMass := by
+  have h := thetaCuspSelfDualThetaMass_gt_five_thousand_four_hundred_thirty_one_div_five_thousand
+  linarith only [h]
+
+/-- A single load leaves an indefinite four-dimensional origin kernel. -/
+theorem singleCoherentKernel_zero_not_posSemidef : ¬ (singleCoherentKernel 0).PosSemidef := by
+  have hd : (singleCoherentKernel 0).det < 0 := by
+    rw [singleCoherentKernel_det]
+    exact mul_neg_of_pos_of_neg (pow_pos seamMass_pos 8) (coupledCof_negative
+      thetaCuspSelfDualModularScale_sq_gt_nineteen_point_one.le
+      thetaCuspSelfDualModularScale_sq_lt_ninetySix_fifths.le)
+  intro h
+  exact (not_lt_of_ge h.det_nonneg) hd
+
+private theorem three_posDef_of_head_det (K : Matrix (Fin 3) (Fin 3) ℝ)
+    (hK : K.IsHermitian) (hA : (K.submatrix Fin.castSucc Fin.castSucc).PosDef)
+    (hd : 0 < K.det) : K.PosDef := by
+  let A : Matrix (Fin 2) (Fin 2) ℝ := K.submatrix Fin.castSucc Fin.castSucc
+  let b : Matrix (Fin 2) (Fin 1) ℝ := fun i _ => K (Fin.castSucc i) 2
+  let t : Matrix (Fin 1) (Fin 1) ℝ := fun _ _ => K 2 2
+  let e : Fin 2 ⊕ Fin 1 ≃ Fin 3 := finSumFinEquiv
+  have hsym (i j : Fin 3) : K i j = K j i := by
+    have h := congrArg (fun Q : Matrix (Fin 3) (Fin 3) ℝ => Q j i)
+      (show Kᴴ = K from hK)
+    simpa only [Matrix.conjTranspose_apply, star_trivial] using h
+  have he : K.submatrix e e = fromBlocks A b bᴴ t := by
+    ext i j
+    rcases i with i | i <;> rcases j with j | j <;>
+      fin_cases i <;> fin_cases j <;>
+      norm_num [A,b,t,e,finSumFinEquiv,Fin.castAdd,Fin.natAdd,Fin.castLE] <;>
+      first | rfl | exact hsym _ _
+  letI : Invertible A := hA.isUnit.invertible
+  let g := K 2 2-(bᴴ*A⁻¹*b) 0 0
+  have hedet : K.det = A.det*g := by
+    have h := congrArg Matrix.det he
+    rw [Matrix.det_submatrix_equiv_self, Matrix.det_fromBlocks₁₁,
+      Matrix.invOf_eq_nonsing_inv, Matrix.det_fin_one] at h
+    simpa only [t,Matrix.sub_apply,g] using h
+  have hg : 0 < g := (mul_pos_iff_of_pos_left hA.det_pos).mp (by rwa [← hedet])
+  have hs : (t-bᴴ*A⁻¹*b).PosSemidef := by
+    apply Matrix.PosSemidef.of_dotProduct_mulVec_nonneg
+    · rw [Matrix.IsHermitian]
+      ext i j
+      fin_cases i
+      fin_cases j
+      simp
+    · intro v
+      simp only [star_trivial,dotProduct,Matrix.mulVec,Fin.sum_univ_one]
+      change 0 ≤ v 0*(g*v 0)
+      nlinarith only [mul_nonneg hg.le (sq_nonneg (v 0))]
+  have hb := (Matrix.PosDef.fromBlocks₁₁ b t hA).mpr hs
+  rw [← he] at hb
+  have hk : K.PosSemidef := by
+    have h := hb.submatrix e.symm
+    simpa using h
+  exact hk.posDef_iff_det_ne_zero.mpr hd.ne'
+
+/-- The common kernel of the two coupled loads is strictly positive at the actual origin. -/
+theorem coherentKernel_zero_posDef : (coherentKernel 0).PosDef := by
+  apply three_posDef_of_head_det
+  · rw [coherentKernel_zero, Matrix.IsHermitian]
+    ext i j
+    fin_cases i <;> fin_cases j <;>
+      norm_num [kernelMoments, Matrix.conjTranspose_apply]
+  · have he : (coherentKernel 0).submatrix Fin.castSucc Fin.castSucc =
+        (thetaCuspNativeEvenHead 0).submatrix Fin.castSucc Fin.castSucc := by
+      ext i j
+      fin_cases i <;> fin_cases j <;>
+        norm_num [coherentKernel, coherentKernelBasis, Matrix.mul_apply,
+          Matrix.conjTranspose_apply, Fin.sum_univ_succ, thetaCuspNativeEvenHead,
+          finiteHankelMatrix, nativeShiftedMatrix]
+    rw [he]
+    exact thetaCuspNativeEvenHead_zero_posDef.submatrix (Fin.castSucc_injective 2)
+  · rw [coherentKernel_det]
+    exact mul_pos (pow_pos seamMass_pos 6) (headTwoCof_positive
+      thetaCuspSelfDualModularScale_sq_gt_nineteen_point_one.le
+      thetaCuspSelfDualModularScale_sq_lt_ninetySix_fifths.le)
+
+
+private def headDet (X : ℝ) : ℝ := M 0 X*M 2 X-(M 1 X)^2
+private def adjPair (X p q r s : ℝ) : ℝ :=
+  M 2 X*p*r-M 1 X*(p*s+q*r)+M 0 X*q*s
+private def fixedLoad (C X : ℝ) : ℝ := 3*C*M 0 X
+private def s00 (C _D X : ℝ) : ℝ :=
+  headDet X*(M 4 X+fixedLoad C X)-adjPair X (M 2 X) (M 3 X) (M 2 X) (M 3 X)
+private def s01 (C _D X : ℝ) : ℝ :=
+  headDet X*(M 5 X+420*fixedLoad C X)-adjPair X (M 2 X) (M 3 X) (M 3 X) (M 4 X)
+private def s02 (_C _D X : ℝ) : ℝ :=
+  headDet X*M 6 X-adjPair X (M 2 X) (M 3 X) (M 4 X) (M 5 X)
+private def s11 (C D X : ℝ) : ℝ :=
+  headDet X*(M 6 X+176400*fixedLoad C X+fixedLoad D X)-adjPair X (M 3 X) (M 4 X) (M 3 X) (M 4 X)
+private def s12 (_C D X : ℝ) : ℝ :=
+  headDet X*(M 7 X+1568*fixedLoad D X)-adjPair X (M 3 X) (M 4 X) (M 4 X) (M 5 X)
+private def s22 (_C D X : ℝ) : ℝ :=
+  headDet X*(M 8 X+2458624*fixedLoad D X)-adjPair X (M 4 X) (M 5 X) (M 4 X) (M 5 X)
+private def minorTwo (C D X : ℝ) : ℝ := s00 C D X*s11 C D X-(s01 C D X)^2
+private def minorThree (C D X : ℝ) : ℝ :=
+  s00 C D X*s11 C D X*s22 C D X+2*s01 C D X*s02 C D X*s12 C D X-s00 C D X*(s12 C D X)^2-
+    s11 C D X*(s02 C D X)^2-s22 C D X*(s01 C D X)^2
+
+private theorem common_second_negative {X : ℝ} (hlo : (191/10 : ℝ) ≤ X) (hhi : X ≤ 96/5) :
+    minorTwo 1000000000 1000000000 X < 0 := by
+  let z := 10*X-191
+  have hz : 0 ≤ z := by dsimp [z]; linarith only [hlo]
+  have hzU : z ≤ 1 := by dsimp [z]; linarith only [hhi]
+  have hX : X = (z+191)/10 := by dsimp [z]; ring
+  have hp (n : ℕ) : z^n ≤ 1 := by simpa using pow_le_pow_left₀ hz hzU n
+  rw [hX]
+  simp only [minorTwo,s00,s01,s11,headDet,adjPair,fixedLoad,moment_0,moment_1,moment_2,moment_3,moment_4,moment_5,moment_6]
+  ring_nf
+  linarith only [pow_nonneg hz 1, pow_nonneg hz 2, pow_nonneg hz 3, pow_nonneg hz 4, pow_nonneg hz 5, pow_nonneg hz 6, pow_nonneg hz 7, pow_nonneg hz 8, pow_nonneg hz 9, pow_nonneg hz 10, pow_nonneg hz 11, pow_nonneg hz 12, pow_nonneg hz 13, pow_nonneg hz 14, pow_nonneg hz 15, pow_nonneg hz 16, pow_nonneg hz 17, pow_nonneg hz 18, pow_nonneg hz 19, pow_nonneg hz 20, pow_nonneg hz 21, pow_nonneg hz 22, pow_nonneg hz 23, pow_nonneg hz 24, pow_nonneg hz 25, pow_nonneg hz 26, hp 1, hp 2, hp 3, hp 4, hp 5, hp 6, hp 7, hp 8, hp 9, hp 10, hp 11, hp 12, hp 13, hp 14, hp 15, hp 16, hp 17, hp 18, hp 19, hp 20, hp 21, hp 22, hp 23, hp 24, hp 25, hp 26]
+
+private theorem unequal_second_positive {X : ℝ} (hlo : (191/10 : ℝ) ≤ X) (hhi : X ≤ 96/5) :
+    0 < minorTwo 100000000 1000000000000 X := by
+  let z := 10*X-191
+  have hz : 0 ≤ z := by dsimp [z]; linarith only [hlo]
+  have hzU : z ≤ 1 := by dsimp [z]; linarith only [hhi]
+  have hX : X = (z+191)/10 := by dsimp [z]; ring
+  have hp (n : ℕ) : z^n ≤ 1 := by simpa using pow_le_pow_left₀ hz hzU n
+  rw [hX]
+  simp only [minorTwo,s00,s01,s11,headDet,adjPair,fixedLoad,moment_0,moment_1,moment_2,moment_3,moment_4,moment_5,moment_6]
+  ring_nf
+  linarith only [pow_nonneg hz 1, pow_nonneg hz 2, pow_nonneg hz 3, pow_nonneg hz 4, pow_nonneg hz 5, pow_nonneg hz 6, pow_nonneg hz 7, pow_nonneg hz 8, pow_nonneg hz 9, pow_nonneg hz 10, pow_nonneg hz 11, pow_nonneg hz 12, pow_nonneg hz 13, pow_nonneg hz 14, pow_nonneg hz 15, pow_nonneg hz 16, pow_nonneg hz 17, pow_nonneg hz 18, pow_nonneg hz 19, pow_nonneg hz 20, pow_nonneg hz 21, pow_nonneg hz 22, pow_nonneg hz 23, pow_nonneg hz 24, pow_nonneg hz 25, pow_nonneg hz 26, hp 1, hp 2, hp 3, hp 4, hp 5, hp 6, hp 7, hp 8, hp 9, hp 10, hp 11, hp 12, hp 13, hp 14, hp 15, hp 16, hp 17, hp 18, hp 19, hp 20, hp 21, hp 22, hp 23, hp 24, hp 25, hp 26]
+
+private theorem unequal_third_positive {X : ℝ} (hlo : (191/10 : ℝ) ≤ X) (hhi : X ≤ 96/5) :
+    0 < minorThree 100000000 1000000000000 X := by
+  let z := 10*X-191
+  have hz : 0 ≤ z := by dsimp [z]; linarith only [hlo]
+  have hzU : z ≤ 1 := by dsimp [z]; linarith only [hhi]
+  have hX : X = (z+191)/10 := by dsimp [z]; ring
+  have hp (n : ℕ) : z^n ≤ 1 := by simpa using pow_le_pow_left₀ hz hzU n
+  rw [hX]
+  simp only [minorThree,s00,s01,s02,s11,s12,s22,headDet,adjPair,fixedLoad,moment_0,moment_1,moment_2,moment_3,moment_4,moment_5,moment_6,moment_7,moment_8]
+  ring_nf
+  linarith only [pow_nonneg hz 1, pow_nonneg hz 2, pow_nonneg hz 3, pow_nonneg hz 4, pow_nonneg hz 5, pow_nonneg hz 6, pow_nonneg hz 7, pow_nonneg hz 8, pow_nonneg hz 9, pow_nonneg hz 10, pow_nonneg hz 11, pow_nonneg hz 12, pow_nonneg hz 13, pow_nonneg hz 14, pow_nonneg hz 15, pow_nonneg hz 16, pow_nonneg hz 17, pow_nonneg hz 18, pow_nonneg hz 19, pow_nonneg hz 20, pow_nonneg hz 21, pow_nonneg hz 22, pow_nonneg hz 23, pow_nonneg hz 24, pow_nonneg hz 25, pow_nonneg hz 26, pow_nonneg hz 27, pow_nonneg hz 28, pow_nonneg hz 29, pow_nonneg hz 30, pow_nonneg hz 31, pow_nonneg hz 32, pow_nonneg hz 33, pow_nonneg hz 34, pow_nonneg hz 35, pow_nonneg hz 36, pow_nonneg hz 37, pow_nonneg hz 38, pow_nonneg hz 39, pow_nonneg hz 40, pow_nonneg hz 41, pow_nonneg hz 42, hp 1, hp 2, hp 3, hp 4, hp 5, hp 6, hp 7, hp 8, hp 9, hp 10, hp 11, hp 12, hp 13, hp 14, hp 15, hp 16, hp 17, hp 18, hp 19, hp 20, hp 21, hp 22, hp 23, hp 24, hp 25, hp 26, hp 27, hp 28, hp 29, hp 30, hp 31, hp 32, hp 33, hp 34, hp 35, hp 36, hp 37, hp 38, hp 39, hp 40, hp 41, hp 42]
+
+
+private theorem unequal_first_positive {X : ℝ} (hlo : (191/10 : ℝ) ≤ X) :
+    0 < s00 100000000 1000000000000 X := by
+  let z := 10*X-191
+  have hz : 0 ≤ z := by dsimp [z]; linarith only [hlo]
+  have hX : X = (z+191)/10 := by dsimp [z]; ring
+  rw [hX]
+  simp only [s00,headDet,adjPair,fixedLoad,moment_0,moment_1,moment_2,moment_3,moment_4]
+  ring_nf
+  linarith only [pow_nonneg hz 1, pow_nonneg hz 2, pow_nonneg hz 3, pow_nonneg hz 4, pow_nonneg hz 5, pow_nonneg hz 6, pow_nonneg hz 7, pow_nonneg hz 8, pow_nonneg hz 9, pow_nonneg hz 10, pow_nonneg hz 11, pow_nonneg hz 12]
+
+/-- The two coupled loads with independent coefficients. -/
+def coupledLoad (C D : ℝ) : Matrix (Fin 5) (Fin 5) ℝ :=
+  !![0,0,0,0,0; 0,0,0,0,0; 0,0,C,420*C,0;
+    0,0,420*C,176400*C+D,1568*D; 0,0,0,1568*D,2458624*D]
+
+/-- Independent coupled corrections of the fifth native even source. -/
+def coupledRepair (C D x : ℝ) : Matrix (Fin 5) (Fin 5) ℝ :=
+  nativeShiftedMatrix 5 0 x + thetaCuspCenterCompensationSource x • coupledLoad C D
+
+private def normHead (X : ℝ) : Matrix (Fin 2) (Fin 2) ℝ :=
+  !![M 0 X,M 1 X; M 1 X,M 2 X]
+private def normBorder (X : ℝ) : Matrix (Fin 2) (Fin 3) ℝ :=
+  !![M 2 X,M 3 X,M 4 X; M 3 X,M 4 X,M 5 X]
+private def normTail (C D X : ℝ) : Matrix (Fin 3) (Fin 3) ℝ :=
+  !![M 4 X+fixedLoad C X,M 5 X+420*fixedLoad C X,M 6 X;
+    M 5 X+420*fixedLoad C X,M 6 X+176400*fixedLoad C X+fixedLoad D X,
+      M 7 X+1568*fixedLoad D X;
+    M 6 X,M 7 X+1568*fixedLoad D X,M 8 X+2458624*fixedLoad D X]
+private def schurNumerator (C D X : ℝ) : Matrix (Fin 3) (Fin 3) ℝ :=
+  !![s00 C D X,s01 C D X,s02 C D X;
+    s01 C D X,s11 C D X,s12 C D X;
+    s02 C D X,s12 C D X,s22 C D X]
+
+private theorem normHead_posDef : (normHead (thetaCuspSelfDualModularScale^2)).PosDef := by
+  have h := coherentKernel_zero_posDef.submatrix (Fin.castSucc_injective 2)
+  have he : (coherentKernel 0).submatrix Fin.castSucc Fin.castSucc =
+      thetaCuspSelfDualThetaMass^2 • normHead (thetaCuspSelfDualModularScale^2) := by
+    rw [coherentKernel_zero]
+    ext i j
+    fin_cases i <;> fin_cases j <;> norm_num [kernelMoments,normHead]
+  rw [he] at h
+  have hp := h.smul (inv_pos.mpr (pow_pos seamMass_pos 2))
+  simpa only [smul_smul,inv_mul_cancel₀ (pow_pos seamMass_pos 2).ne',one_smul] using hp
+
+private theorem headDet_pos : 0 < headDet (thetaCuspSelfDualModularScale^2) := by
+  simpa [normHead,Matrix.det_fin_two,headDet,pow_two] using normHead_posDef.det_pos
+
+private theorem normHead_inverse (X : ℝ) (hd : headDet X ≠ 0) :
+    (normHead X)⁻¹ = (headDet X)⁻¹ • (!![M 2 X,-M 1 X; -M 1 X,M 0 X] : Matrix (Fin 2) (Fin 2) ℝ) := by
+  let Q : Matrix (Fin 2) (Fin 2) ℝ :=
+    (headDet X)⁻¹ • !![M 2 X,-M 1 X; -M 1 X,M 0 X]
+  have hl : Q*normHead X=1 := by
+    ext i j
+    fin_cases i <;> fin_cases j <;>
+      norm_num [Q,normHead,Matrix.mul_apply,Fin.sum_univ_succ,Matrix.one_apply] <;>
+      field_simp [hd] <;> simp only [headDet] <;> ring
+  have hr : normHead X*Q=1 := by
+    ext i j
+    fin_cases i <;> fin_cases j <;>
+      norm_num [Q,normHead,Matrix.mul_apply,Fin.sum_univ_succ,Matrix.one_apply] <;>
+      field_simp [hd] <;> simp only [headDet] <;> ring
+  letI : Invertible (normHead X) := ⟨Q,hl,hr⟩
+  rw [← Matrix.invOf_eq_nonsing_inv]
+  rfl
+
+private theorem norm_schur (C D X : ℝ) (hd : headDet X ≠ 0) :
+    normTail C D X-(normBorder X)ᴴ*(normHead X)⁻¹*normBorder X =
+      (headDet X)⁻¹ • schurNumerator C D X := by
+  rw [normHead_inverse X hd]
+  ext i j
+  fin_cases i <;> fin_cases j <;>
+    norm_num [normTail,normBorder,schurNumerator,s00,s01,s02,s11,s12,s22,adjPair,
+      Matrix.mul_apply,Matrix.conjTranspose_apply,Fin.sum_univ_succ,
+      Matrix.cons_val_two,Matrix.vecHead,Matrix.vecTail] <;>
+    field_simp [hd] <;> ring
+
+private theorem coupled_origin_block (C D : ℝ) :
+    (coupledRepair C D 0).submatrix (finSumFinEquiv : Fin 2 ⊕ Fin 3 ≃ Fin 5)
+      (finSumFinEquiv : Fin 2 ⊕ Fin 3 ≃ Fin 5) =
+    thetaCuspSelfDualThetaMass^2 • fromBlocks
+      (normHead (thetaCuspSelfDualModularScale^2))
+      (normBorder (thetaCuspSelfDualModularScale^2))
+      (normBorder (thetaCuspSelfDualModularScale^2))ᴴ
+      (normTail C D (thetaCuspSelfDualModularScale^2)) := by
+  have hphi : thetaCuspFullSource 0^2 = thetaCuspSelfDualThetaMass^2*M 0 (thetaCuspSelfDualModularScale^2) := by
+    have h := native_all (0 : Fin 9)
+    simpa [thetaCuspNativeReflectionJet_zero,thetaCuspSourceReflectionJetZero,pow_two] using h
+  have hg : thetaCuspCenterCompensationSource 0 =
+      3*thetaCuspSelfDualThetaMass^2*M 0 (thetaCuspSelfDualModularScale^2) := by
+    simp only [thetaCuspCenterCompensationSource,mul_zero,zero_mul,add_zero,hphi]
+    ring
+  ext i j
+  rcases i with i | i <;> rcases j with j | j <;>
+    fin_cases i <;> fin_cases j <;>
+    norm_num [coupledRepair,coupledLoad,Matrix.submatrix_apply,Matrix.add_apply,Matrix.smul_apply,
+      native_hankel_zero,hg,normHead,normBorder,normTail,fixedLoad,Matrix.conjTranspose_apply,
+      finSumFinEquiv,Fin.castAdd,Fin.natAdd,Fin.castLE,Matrix.cons_val_two,Matrix.cons_val_three,
+      Matrix.vecHead,Matrix.vecTail] <;> ring
+
+private theorem two_posDef_of_minors (a b c : ℝ) (ha : 0 < a) (hd : 0 < a*c-b^2) :
+    (!![a,b;b,c] : Matrix (Fin 2) (Fin 2) ℝ).PosDef := by
+  apply Matrix.PosDef.of_dotProduct_mulVec_pos
+  · rw [Matrix.IsHermitian]
+    ext i j
+    fin_cases i <;> fin_cases j <;> simp
+  · intro v hv
+    simp only [star_trivial,dotProduct,Matrix.mulVec,Fin.sum_univ_two]
+    change 0 < v 0*(a*v 0+b*v 1)+v 1*(b*v 0+c*v 1)
+    by_cases h1 : v 1=0
+    · have h0 : v 0 ≠ 0 := by
+        intro hz
+        apply hv
+        ext i
+        fin_cases i <;> simp [hz,h1]
+      simp only [h1,mul_zero,zero_mul,add_zero]
+      nlinarith only [mul_pos ha (sq_pos_of_ne_zero h0)]
+    · have hp := add_pos_of_nonneg_of_pos (sq_nonneg (a*v 0+b*v 1))
+        (mul_pos hd (sq_pos_of_ne_zero h1))
+      have he : (a*v 0+b*v 1)^2+(a*c-b^2)*(v 1)^2 =
+          a*(v 0*(a*v 0+b*v 1)+v 1*(b*v 0+c*v 1)) := by ring
+      rw [he] at hp
+      exact (mul_pos_iff_of_pos_left ha).mp hp
+
+private theorem unequal_schur_posDef :
+    (schurNumerator 100000000 1000000000000 (thetaCuspSelfDualModularScale^2)).PosDef := by
+  have hlo := thetaCuspSelfDualModularScale_sq_gt_nineteen_point_one.le
+  have hhi := thetaCuspSelfDualModularScale_sq_lt_ninetySix_fifths.le
+  apply three_posDef_of_head_det
+  · rw [Matrix.IsHermitian]
+    ext i j
+    fin_cases i <;> fin_cases j <;> simp [schurNumerator]
+  · have he : (schurNumerator 100000000 1000000000000 (thetaCuspSelfDualModularScale^2)).submatrix
+        Fin.castSucc Fin.castSucc = !![
+          s00 100000000 1000000000000 (thetaCuspSelfDualModularScale^2),
+          s01 100000000 1000000000000 (thetaCuspSelfDualModularScale^2);
+          s01 100000000 1000000000000 (thetaCuspSelfDualModularScale^2),
+          s11 100000000 1000000000000 (thetaCuspSelfDualModularScale^2)] := by
+      ext i j
+      fin_cases i <;> fin_cases j <;> rfl
+    rw [he]
+    exact two_posDef_of_minors _ _ _ (unequal_first_positive hlo)
+      (unequal_second_positive hlo hhi)
+  · have he : (schurNumerator 100000000 1000000000000 (thetaCuspSelfDualModularScale^2)).det =
+        minorThree 100000000 1000000000000 (thetaCuspSelfDualModularScale^2) := by
+      norm_num [schurNumerator,Matrix.det_fin_three,Matrix.cons_val_two,
+        Matrix.vecHead,Matrix.vecTail,minorThree]
+      ring
+    rw [he]
+    exact unequal_third_positive hlo hhi
+
+private theorem coupled_zero_posDef_of_schur (C D : ℝ)
+    (hs : (schurNumerator C D (thetaCuspSelfDualModularScale^2)).PosDef) :
+    (coupledRepair C D 0).PosDef := by
+  let X := thetaCuspSelfDualModularScale^2
+  let A := normHead X
+  let B := normBorder X
+  let T := normTail C D X
+  have hA : A.PosDef := normHead_posDef
+  letI : Invertible A := hA.isUnit.invertible
+  have hS : (T-Bᴴ*A⁻¹*B).PosDef := by
+    rw [show T-Bᴴ*A⁻¹*B = normTail C D X-
+      (normBorder X)ᴴ*(normHead X)⁻¹*normBorder X from rfl,
+      norm_schur _ _ _ headDet_pos.ne']
+    exact hs.smul (inv_pos.mpr headDet_pos)
+  have hp : (fromBlocks A B Bᴴ T).PosDef := by
+    have hh := (Matrix.PosDef.fromBlocks₁₁ B T hA).mpr hS.posSemidef
+    apply hh.posDef_iff_det_ne_zero.mpr
+    rw [Matrix.det_fromBlocks₁₁,Matrix.invOf_eq_nonsing_inv]
+    exact mul_ne_zero hA.det_pos.ne' hS.det_pos.ne'
+  have hfull := hp.smul (pow_pos seamMass_pos 2)
+  rw [← coupled_origin_block] at hfull
+  have hh := hfull.submatrix (finSumFinEquiv : Fin 2 ⊕ Fin 3 ≃ Fin 5).symm.injective
+  simpa using hh
+
+/-- A fixed unequal pair of coupled loads repairs the actual origin. -/
+theorem coupledRepair_unequal_zero_posDef :
+    (coupledRepair 100000000 1000000000000 0).PosDef :=
+  coupled_zero_posDef_of_schur _ _ unequal_schur_posDef
+
+/-- A billion units on both coupled loads still leaves a negative fourth origin minor. -/
+theorem coupledRepair_common_billion_not_posSemidef :
+    ¬ (coupledRepair 1000000000 1000000000 0).PosSemidef := by
+  intro h
+  let X := thetaCuspSelfDualModularScale^2
+  let A := normHead X
+  let B := normBorder X
+  let T := normTail 1000000000 1000000000 X
+  have hA : A.PosDef := normHead_posDef
+  letI : Invertible A := hA.isUnit.invertible
+  have hn := (h.submatrix (finSumFinEquiv : Fin 2 ⊕ Fin 3 ≃ Fin 5)).smul
+    (inv_pos.mpr (pow_pos seamMass_pos 2)).le
+  rw [coupled_origin_block,smul_smul,inv_mul_cancel₀ (pow_pos seamMass_pos 2).ne',one_smul] at hn
+  have hS := (Matrix.PosDef.fromBlocks₁₁ B T hA).mp hn
+  change (normTail 1000000000 1000000000 X-(normBorder X)ᴴ*(normHead X)⁻¹*normBorder X).PosSemidef at hS
+  rw [norm_schur _ _ _ headDet_pos.ne'] at hS
+  have hc := hS.smul headDet_pos.le
+  rw [smul_smul,mul_inv_cancel₀ headDet_pos.ne',one_smul] at hc
+  have hd := (hc.submatrix Fin.castSucc).det_nonneg
+  have he : ((schurNumerator 1000000000 1000000000 X).submatrix Fin.castSucc Fin.castSucc).det =
+      minorTwo 1000000000 1000000000 X := by
+    norm_num [schurNumerator,Matrix.det_fin_two,Matrix.submatrix_apply,minorTwo]
+    ring
+  rw [he] at hd
+  exact (not_lt_of_ge hd) (common_second_negative
+    thetaCuspSelfDualModularScale_sq_gt_nineteen_point_one.le
+    thetaCuspSelfDualModularScale_sq_lt_ninetySix_fifths.le)
+
+
+
+
+private theorem coupledLoad_one_posSemidef : (coupledLoad 1 1).PosSemidef := by
+  let U : Matrix (Fin 2) (Fin 5) ℝ := !![0,0,1,420,0; 0,0,0,1,1568]
+  have he : coupledLoad 1 1=Uᴴ*U := by
+    ext i j
+    fin_cases i <;> fin_cases j <;>
+      norm_num [coupledLoad,U,Matrix.mul_apply,Matrix.conjTranspose_apply,Fin.sum_univ_succ,
+        Matrix.cons_val_two,Matrix.cons_val_three,Matrix.vecHead,Matrix.vecTail]
+  rw [he]
+  exact Matrix.posSemidef_conjTranspose_mul_self U
+
+private theorem coupledLoad_hermitian (C D : ℝ) : (coupledLoad C D).IsHermitian := by
+  rw [Matrix.IsHermitian]
+  ext i j
+  fin_cases i <;> fin_cases j <;>
+    norm_num [coupledLoad,Matrix.conjTranspose_apply,Matrix.cons_val_two,Matrix.cons_val_three,
+      Matrix.vecHead,Matrix.vecTail]
+
+private theorem coupledRepair_hermitian (C D x : ℝ) : (coupledRepair C D x).IsHermitian := by
+  apply Matrix.IsHermitian.add
+  · rw [Matrix.IsHermitian]
+    ext i j
+    simp [nativeShiftedMatrix,add_comm]
+  · exact (coupledLoad_hermitian C D).smul (by simp [IsSelfAdjoint])
+
+private theorem coupledRepair_continuous (C D : ℝ) : Continuous (coupledRepair C D) := by
+  have hF : Continuous thetaCuspFullSource := thetaCuspSchwartzReal.continuous
+  have hd : Continuous (deriv thetaCuspFullSource) :=
+    (SchwartzMap.derivCLM ℝ ℝ thetaCuspSchwartzReal).continuous
+  have hj := continuous_thetaCuspNativeReflectionJet
+  apply continuous_pi
+  intro i
+  apply continuous_pi
+  intro j
+  unfold coupledRepair nativeShiftedMatrix thetaCuspCenterCompensationSource
+  simp only [Matrix.add_apply,Matrix.smul_apply,smul_eq_mul]
+  fun_prop
+
+/-- The common load must exceed a billion already at the origin. -/
+theorem coupled_common_origin_load_needed {C : ℝ}
+    (h : (coupledRepair C C 0).PosSemidef) : 1000000000 < C := by
+  by_contra hC
+  have hc : C ≤ 1000000000 := le_of_not_gt hC
+  have hg : 0 < thetaCuspCenterCompensationSource 0 := by
+    simp only [thetaCuspCenterCompensationSource,mul_zero,zero_mul,add_zero]
+    exact mul_pos (by norm_num) (sq_pos_of_pos (thetaCuspFullSource_pos_all 0))
+  have hp := h.add (coupledLoad_one_posSemidef.smul
+    (mul_nonneg (sub_nonneg.mpr hc) hg.le))
+  have he : coupledRepair C C 0 +
+      ((1000000000-C)*thetaCuspCenterCompensationSource 0) • coupledLoad 1 1 =
+      coupledRepair 1000000000 1000000000 0 := by
+    ext i j
+    fin_cases i <;> fin_cases j <;>
+      norm_num [coupledRepair,coupledLoad,Matrix.cons_val_two,Matrix.cons_val_three,
+        Matrix.vecHead,Matrix.vecTail] <;> ring
+  rw [he] at hp
+  exact coupledRepair_common_billion_not_posSemidef hp
+
+private theorem coupled_witness_center_pos : 0 < EvenFiveBoundary.witnessCenter := by
+  unfold EvenFiveBoundary.witnessCenter
+  apply div_pos _ (by norm_num)
+  apply Real.log_pos
+  apply (one_lt_div Real.pi_pos).mpr
+  linarith only [Real.pi_lt_d2]
+
+/-- No real common coefficient makes both coupled source loads globally positive. -/
+theorem coupled_common_source_fails (C : ℝ) :
+    ¬ ∀ x : ℝ, 0 ≤ x → (coupledRepair C C x).PosSemidef := by
+  intro h
+  have hc := coupled_common_origin_load_needed (h 0 le_rfl)
+  have hp := (h EvenFiveBoundary.witnessCenter coupled_witness_center_pos.le).diag_nonneg (i := (2 : Fin 5))
+  have hn := EvenFiveBoundary.fourth_moment_load_negative_of_oneBillion_le hc.le
+  norm_num [coupledRepair,coupledLoad,nativeShiftedMatrix,Matrix.cons_val_two,
+    Matrix.vecHead,Matrix.vecTail] at hp
+  nlinarith only [hp,hn]
+
+/-- The literal weighted source with independent coupled zero-flux loads. -/
+def coupledWeightedRepair (a C D r : ℝ) : Matrix (Fin 5) (Fin 5) ℝ :=
+  (r*Real.sinh (a*r)) • nativeShiftedMatrix 5 0 (r/2) +
+    deriv (thetaCuspCenterCompensationFlux a) r • coupledLoad C D
+
+private theorem coupled_weighted_energy (a C r : ℝ) (v : Fin 5 → ℝ) :
+    v ⬝ᵥ (coupledWeightedRepair a C C r *ᵥ v) =
+      (r*Real.sinh (a*r))*(v ⬝ᵥ (coupledRepair C C (r/2) *ᵥ v)) +
+      C*(deriv (thetaCuspCenterCompensationFlux a) r-
+        (r*Real.sinh (a*r))*thetaCuspCenterCompensationSource (r/2))*
+        (v ⬝ᵥ (coupledLoad 1 1 *ᵥ v)) := by
+  have he : coupledWeightedRepair a C C r =
+      (r*Real.sinh (a*r)) • coupledRepair C C (r/2) +
+      (C*(deriv (thetaCuspCenterCompensationFlux a) r-
+        (r*Real.sinh (a*r))*thetaCuspCenterCompensationSource (r/2))) • coupledLoad 1 1 := by
+    ext i j
+    fin_cases i <;> fin_cases j <;>
+      norm_num [coupledWeightedRepair,coupledRepair,coupledLoad,Matrix.cons_val_two,
+        Matrix.cons_val_three,Matrix.vecHead,Matrix.vecTail] <;> ring
+  simp only [he,Matrix.add_mulVec,dotProduct_add,Matrix.smul_mulVec,dotProduct_smul,smul_eq_mul]
+
+private def coupledUpper (a C r : ℝ) (v : Fin 5 → ℝ) : ℝ :=
+  v ⬝ᵥ (coupledRepair C C (r/2) *ᵥ v)+
+    (a*r)*thetaCuspFullSource (r/2)^2 * |C| *(v ⬝ᵥ (coupledLoad 1 1 *ᵥ v))
+
+private theorem coupled_weighted_le_upper {a r : ℝ} (ha : 0 < a) (hr : 0 < r)
+    (C : ℝ) (v : Fin 5 → ℝ) :
+    v ⬝ᵥ (coupledWeightedRepair a C C r *ᵥ v) ≤
+      (r*Real.sinh (a*r))*coupledUpper a C r v := by
+  obtain ⟨h0,hU⟩ := flux_slack_bounds ha hr
+  have hC := mul_le_mul_of_nonneg_right (le_abs_self C) h0
+  have hCU := mul_le_mul_of_nonneg_left hU (abs_nonneg C)
+  have hN := coupledLoad_one_posSemidef.dotProduct_mulVec_nonneg v
+  simp only [star_trivial] at hN
+  have hh := mul_le_mul_of_nonneg_right (hC.trans hCU) hN
+  rw [coupled_weighted_energy]
+  unfold coupledUpper
+  nlinarith only [hh]
+
+private theorem coupledUpper_continuous (a C : ℝ) (v : Fin 5 → ℝ) :
+    Continuous (fun r => coupledUpper a C r v) := by
+  have hM := coupledRepair_continuous C C
+  have hF : Continuous thetaCuspFullSource := thetaCuspSchwartzReal.continuous
+  unfold coupledUpper
+  simp only [dotProduct,Matrix.mulVec]
+  fun_prop
+
+private theorem coupled_origin_of_weighted {a C : ℝ} (ha : 0 < a)
+    (h : ∀ r : ℝ, 0 < r → (coupledWeightedRepair a C C r).PosSemidef) :
+    (coupledRepair C C 0).PosSemidef := by
+  apply Matrix.PosSemidef.of_dotProduct_mulVec_nonneg (coupledRepair_hermitian C C 0)
+  intro v
+  simp only [star_trivial]
+  have hnonneg (r : ℝ) (hr : 0 < r) : 0 ≤ coupledUpper a C r v := by
+    have hh := (h r hr).dotProduct_mulVec_nonneg v
+    simp only [star_trivial] at hh
+    have hu := hh.trans (coupled_weighted_le_upper ha hr C v)
+    have hw : 0 < r*Real.sinh (a*r) := mul_pos hr (Real.sinh_pos_iff.mpr (mul_pos ha hr))
+    by_contra hn
+    exact (not_lt_of_ge hu) (mul_neg_of_pos_of_neg hw (lt_of_not_ge hn))
+  have ht : Tendsto (fun r => coupledUpper a C r v) (𝓝[>] 0)
+      (𝓝 (v ⬝ᵥ (coupledRepair C C 0 *ᵥ v))) := by
+    have hc := (coupledUpper_continuous a C v).tendsto 0
+    simpa only [coupledUpper,zero_div,mul_zero,zero_mul,add_zero] using
+      hc.mono_left nhdsWithin_le_nhds
+  apply ge_of_tendsto ht
+  filter_upwards [self_mem_nhdsWithin] with r hr
+  exact hnonneg r hr
+
+/-- Equal coupled coefficients also fail for every literal critical-aperture representative. -/
+theorem coupled_common_weighted_fails {a : ℝ} (ha : 0 < a) (haU : a < 1/2) (C : ℝ) :
+    ¬ ∀ r : ℝ, 0 < r → (coupledWeightedRepair a C C r).PosSemidef := by
+  intro h
+  have hc := coupled_common_origin_load_needed (coupled_origin_of_weighted ha h)
+  have hr : 0 < EvenFiveBoundary.witnessRadius := by
+    unfold EvenFiveBoundary.witnessRadius
+    exact mul_pos (by norm_num) coupled_witness_center_pos
+  have hp := (h EvenFiveBoundary.witnessRadius hr).diag_nonneg (i := (2 : Fin 5))
+  have hn := EvenFiveBoundary.fourth_moment_weighted_load_negative_of_oneBillion_le ha haU hc.le
+  norm_num [coupledWeightedRepair,coupledLoad,nativeShiftedMatrix,Matrix.cons_val_two,
+    Matrix.vecHead,Matrix.vecTail,EvenFiveBoundary.witnessRadius,
+    EvenFiveBoundary.witnessWeight,EvenFiveBoundary.weightedLoad] at hp hn
+  nlinarith only [hp,hn]
+
+
+
+private theorem reduced_first_positive {X : ℝ} (hlo : (191/10 : ℝ) ≤ X) (hhi : X ≤ 96/5) :
+    0 < s00 10000000 1000000000000 X := by
+  let z := 10*X-191
+  have hz : 0 ≤ z := by dsimp [z]; linarith only [hlo]
+  have hzU : z ≤ 1 := by dsimp [z]; linarith only [hhi]
+  have hp (n : ℕ) : z^n ≤ 1 := by simpa using pow_le_pow_left₀ hz hzU n
+  have hX : X = (z+191)/10 := by dsimp [z]; ring
+  rw [hX]
+  simp only [s00,headDet,adjPair,fixedLoad,moment_0,moment_1,moment_2,moment_3,moment_4]
+  ring_nf
+  linarith only [pow_nonneg hz 1, pow_nonneg hz 2, pow_nonneg hz 3, pow_nonneg hz 4, pow_nonneg hz 5, pow_nonneg hz 6, pow_nonneg hz 7, pow_nonneg hz 8, pow_nonneg hz 9, pow_nonneg hz 10, pow_nonneg hz 11, pow_nonneg hz 12, hp 1, hp 2, hp 3, hp 4, hp 5, hp 6, hp 7, hp 8, hp 9, hp 10, hp 11, hp 12]
+
+
+private theorem reduced_second_positive {X : ℝ} (hlo : (191/10 : ℝ) ≤ X) (hhi : X ≤ 96/5) :
+    0 < minorTwo 10000000 1000000000000 X := by
+  let z := 10*X-191
+  have hz : 0 ≤ z := by dsimp [z]; linarith only [hlo]
+  have hzU : z ≤ 1 := by dsimp [z]; linarith only [hhi]
+  have hX : X = (z+191)/10 := by dsimp [z]; ring
+  have hp (n : ℕ) : z^n ≤ 1 := by simpa using pow_le_pow_left₀ hz hzU n
+  rw [hX]
+  simp only [minorTwo,s00,s01,s11,headDet,adjPair,fixedLoad,moment_0,moment_1,moment_2,moment_3,moment_4,moment_5,moment_6]
+  ring_nf
+  linarith only [pow_nonneg hz 1, pow_nonneg hz 2, pow_nonneg hz 3, pow_nonneg hz 4, pow_nonneg hz 5, pow_nonneg hz 6, pow_nonneg hz 7, pow_nonneg hz 8, pow_nonneg hz 9, pow_nonneg hz 10, pow_nonneg hz 11, pow_nonneg hz 12, pow_nonneg hz 13, pow_nonneg hz 14, pow_nonneg hz 15, pow_nonneg hz 16, pow_nonneg hz 17, pow_nonneg hz 18, pow_nonneg hz 19, pow_nonneg hz 20, pow_nonneg hz 21, pow_nonneg hz 22, pow_nonneg hz 23, pow_nonneg hz 24, pow_nonneg hz 25, pow_nonneg hz 26, hp 1, hp 2, hp 3, hp 4, hp 5, hp 6, hp 7, hp 8, hp 9, hp 10, hp 11, hp 12, hp 13, hp 14, hp 15, hp 16, hp 17, hp 18, hp 19, hp 20, hp 21, hp 22, hp 23, hp 24, hp 25, hp 26]
+private theorem reduced_third_positive {X : ℝ} (hlo : (191/10 : ℝ) ≤ X) (hhi : X ≤ 96/5) :
+    0 < minorThree 10000000 1000000000000 X := by
+  let z := 10*X-191
+  have hz : 0 ≤ z := by dsimp [z]; linarith only [hlo]
+  have hzU : z ≤ 1 := by dsimp [z]; linarith only [hhi]
+  have hX : X = (z+191)/10 := by dsimp [z]; ring
+  have hp (n : ℕ) : z^n ≤ 1 := by simpa using pow_le_pow_left₀ hz hzU n
+  rw [hX]
+  simp only [minorThree,s00,s01,s02,s11,s12,s22,headDet,adjPair,fixedLoad,moment_0,moment_1,moment_2,moment_3,moment_4,moment_5,moment_6,moment_7,moment_8]
+  ring_nf
+  linarith only [pow_nonneg hz 1, pow_nonneg hz 2, pow_nonneg hz 3, pow_nonneg hz 4, pow_nonneg hz 5, pow_nonneg hz 6, pow_nonneg hz 7, pow_nonneg hz 8, pow_nonneg hz 9, pow_nonneg hz 10, pow_nonneg hz 11, pow_nonneg hz 12, pow_nonneg hz 13, pow_nonneg hz 14, pow_nonneg hz 15, pow_nonneg hz 16, pow_nonneg hz 17, pow_nonneg hz 18, pow_nonneg hz 19, pow_nonneg hz 20, pow_nonneg hz 21, pow_nonneg hz 22, pow_nonneg hz 23, pow_nonneg hz 24, pow_nonneg hz 25, pow_nonneg hz 26, pow_nonneg hz 27, pow_nonneg hz 28, pow_nonneg hz 29, pow_nonneg hz 30, pow_nonneg hz 31, pow_nonneg hz 32, pow_nonneg hz 33, pow_nonneg hz 34, pow_nonneg hz 35, pow_nonneg hz 36, pow_nonneg hz 37, pow_nonneg hz 38, pow_nonneg hz 39, pow_nonneg hz 40, pow_nonneg hz 41, pow_nonneg hz 42, hp 1, hp 2, hp 3, hp 4, hp 5, hp 6, hp 7, hp 8, hp 9, hp 10, hp 11, hp 12, hp 13, hp 14, hp 15, hp 16, hp 17, hp 18, hp 19, hp 20, hp 21, hp 22, hp 23, hp 24, hp 25, hp 26, hp 27, hp 28, hp 29, hp 30, hp 31, hp 32, hp 33, hp 34, hp 35, hp 36, hp 37, hp 38, hp 39, hp 40, hp 41, hp 42]
+private theorem reduced_schur_posDef :
+    (schurNumerator 10000000 1000000000000 (thetaCuspSelfDualModularScale^2)).PosDef := by
+  have hlo := thetaCuspSelfDualModularScale_sq_gt_nineteen_point_one.le
+  have hhi := thetaCuspSelfDualModularScale_sq_lt_ninetySix_fifths.le
+  apply three_posDef_of_head_det
+  · rw [Matrix.IsHermitian]
+    ext i j
+    fin_cases i <;> fin_cases j <;> simp [schurNumerator]
+  · have he : (schurNumerator 10000000 1000000000000 (thetaCuspSelfDualModularScale^2)).submatrix
+        Fin.castSucc Fin.castSucc = !![
+          s00 10000000 1000000000000 (thetaCuspSelfDualModularScale^2),
+          s01 10000000 1000000000000 (thetaCuspSelfDualModularScale^2);
+          s01 10000000 1000000000000 (thetaCuspSelfDualModularScale^2),
+          s11 10000000 1000000000000 (thetaCuspSelfDualModularScale^2)] := by
+      ext i j
+      fin_cases i <;> fin_cases j <;> rfl
+    rw [he]
+    exact two_posDef_of_minors _ _ _ (reduced_first_positive hlo hhi)
+      (reduced_second_positive hlo hhi)
+  · have he : (schurNumerator 10000000 1000000000000 (thetaCuspSelfDualModularScale^2)).det =
+        minorThree 10000000 1000000000000 (thetaCuspSelfDualModularScale^2) := by
+      norm_num [schurNumerator,Matrix.det_fin_three,Matrix.cons_val_two,
+        Matrix.vecHead,Matrix.vecTail,minorThree]
+      ring
+    rw [he]
+    exact reduced_third_positive hlo hhi
+
+/-- The smaller first coupled coefficient still gives a strict actual origin. -/
+theorem coupledRepair_reduced_zero_posDef :
+    (coupledRepair 10000000 1000000000000 0).PosDef :=
+  coupled_zero_posDef_of_schur _ _ reduced_schur_posDef
+
+/-- The first nine origin moment polynomials, extended by zero for indices above eight. -/
+def originMomentPolynomial (X : ℝ) (k : ℕ) : ℝ :=
+  if k=0 then (9 / 64 + X * (-3 / 64) + X ^ 2 * (1 / 256)) else
+  if k=1 then (45 / 64 + X * (-165 / 256) + X ^ 2 * (21 / 256) + X ^ 3 * (1 / 1024)) else
+  if k=2 then (765 / 64 + X * (-2505 / 128) + X ^ 2 * (4461 / 1024) + X ^ 3 * (77 / 1024) + X ^ 4 * (27 / 4096)) else
+  if k=3 then (24345 / 64 + X * (-243615 / 256) + X ^ 2 * (333759 / 1024) + X ^ 3 * (31519 / 4096) + X ^ 4 *
+    (8199 / 4096) + X ^ 5 * (-21 / 16384)) else
+  if k=4 then (1207665 / 64 + X * (-2122095 / 32) + X ^ 2 * (16407993 / 512) + X ^ 3 * (1024127 / 1024) + X ^ 4
+    * (7963857 / 16384) + X ^ 5 * (-30027 / 16384) + X ^ 6 * (5133 / 65536)) else
+  if k=5 then (85066245 / 64 + X * (-1591823865 / 256) + X ^ 2 * (2049802467 / 512) + X ^ 3 * (327670217 /
+    2048) + X ^ 4 * (1966854177 / 16384) + X ^ 5 * (-62366877 / 65536) + X ^ 6 * (3218985 / 65536) +
+    X ^ 7 * (-725859 / 262144)) else
+  if k=6 then (8028542565 / 64 + X * (-96262740255 / 128) + X ^ 2 * (634560122211 / 1024) + X ^ 3 * (1975395347
+    / 64) + X ^ 4 * (529421297031 / 16384) + X ^ 5 * (-13501200603 / 32768) + X ^ 6 * (6251467509 /
+    262144) + X ^ 7 * (-888527835 / 262144) + X ^ 8 * (-10466793 / 1048576)) else
+  if k=7 then (975220892145 / 64 + X * (-29124679352115 / 256) + X ^ 2 * (119242543472409 / 1024) + X ^ 3 *
+    (28953599674549 / 4096) + X ^ 4 * (159032056610583 / 16384) + X ^ 5 * (-11525159347845 / 65536)
+    + X ^ 6 * (2939734839795 / 262144) + X ^ 7 * (-3025910283417 / 1048576) + X ^ 8 * (-16707449205
+    / 1048576) + X ^ 9 * (-202414761 / 4194304)) else
+  if k=8 then (147972940725465 / 64 + X * (-1345440989479065 / 64) + X ^ 2 * (1671683363523321 / 64) + X ^ 3 *
+    (971257441098301 / 512) + X ^ 4 * (26851592045541915 / 8192) + X ^ 5 * (-321887823511059 / 4096)
+    + X ^ 6 * (359400635300889 / 65536) + X ^ 7 * (-288451649154465 / 131072) + X ^ 8 *
+    (-73300953671271 / 4194304) + X ^ 9 * (-684133624179 / 4194304) + X ^ 10 * (139969720953 /
+    16777216)) else
+  0
+
+private theorem moment_eq_polynomial (X : ℝ) (k : Fin 9) :
+    M k.val X = originMomentPolynomial X k.val := by
+  fin_cases k <;>
+    norm_num [originMomentPolynomial,moment_0,moment_1,moment_2,moment_3,moment_4,
+      moment_5,moment_6,moment_7,moment_8]
+
+/-- Dividing the native origin matrix by its center compensation cancels the self-dual mass. -/
+theorem native_normalized_zero (i j : Fin 5) :
+    nativeShiftedMatrix 5 0 0 i j/thetaCuspCenterCompensationSource 0 =
+      originMomentPolynomial (thetaCuspSelfDualModularScale^2) (i.val+j.val)/
+        (3*originMomentPolynomial (thetaCuspSelfDualModularScale^2) 0) := by
+  have hij : M (i.val+j.val) (thetaCuspSelfDualModularScale^2) =
+      originMomentPolynomial (thetaCuspSelfDualModularScale^2) (i.val+j.val) :=
+    moment_eq_polynomial _ ⟨i.val+j.val,by omega⟩
+  have hzero : M 0 (thetaCuspSelfDualModularScale^2) =
+      originMomentPolynomial (thetaCuspSelfDualModularScale^2) 0 :=
+    moment_eq_polynomial _ (0 : Fin 9)
+  rw [← hij,← hzero]
+  have hphi : thetaCuspFullSource 0^2 =
+      thetaCuspSelfDualThetaMass^2*M 0 (thetaCuspSelfDualModularScale^2) := by
+    have h := native_all (0 : Fin 9)
+    simpa [thetaCuspNativeReflectionJet_zero,thetaCuspSourceReflectionJetZero,pow_two] using h
+  have hg : thetaCuspCenterCompensationSource 0 =
+      3*thetaCuspSelfDualThetaMass^2*M 0 (thetaCuspSelfDualModularScale^2) := by
+    simp only [thetaCuspCenterCompensationSource,mul_zero,zero_mul,add_zero,hphi]
+    ring
+  have hx : thetaCuspSelfDualModularScale^2-6 ≠ 0 := by
+    have h := thetaCuspSelfDualModularScale_sq_gt_nineteen_point_one
+    linarith only [h]
+  have hm : M 0 (thetaCuspSelfDualModularScale^2) ≠ 0 := by
+    apply ne_of_gt
+    rw [moment_0]
+    nlinarith only [sq_pos_of_ne_zero hx]
+  rw [native_hankel_zero,hg]
+  field_simp [seamMass_pos.ne',hm]
 
 end GaloisForLFunctions.ThetaCuspSections.EvenFiveOrigin

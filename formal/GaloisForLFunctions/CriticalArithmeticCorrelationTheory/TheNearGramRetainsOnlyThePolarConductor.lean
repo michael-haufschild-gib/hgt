@@ -54,7 +54,8 @@ theorem eventually_nearGram_radius_budget {c : ℕ → ℝ} (hc : ∀ N, 1 ≤ c
     simpa only [mul_zero] using he.const_mul D
   have hlog := Real.tendsto_log_atTop.comp tendsto_natCast_atTop_atTop
   filter_upwards [hlog.eventually_ge_atTop 1, eventually_ge_atTop 1,
-    hlim.eventually (le_mem_nhds (by norm_num : (0 : ℝ) < 1))] with N hL hN hb
+    (hlim.eventually (gt_mem_nhds (by norm_num : (0 : ℝ) < 1))).mono
+      (fun _ h => h.le)] with N hL hN hb
   have hN0 : (0 : ℝ) < N := by exact_mod_cast hN
   have hc0 : 0 ≤ c N := (zero_le_one.trans (hc N))
   have h24 : c N ^ 2 ≤ c N ^ 4 := pow_le_pow_right₀ (hc N) (by norm_num)
@@ -112,7 +113,7 @@ theorem tendsto_fixedWidthNearGram_div_overlap {φ : ℝ → ℝ} (hφ : ContDif
     calc
       _ ≤ (C * ((m : ℝ) * l) ^ 5 * (c N ^ 5 * Real.log N / N)) / c N :=
         div_le_div_of_nonneg_right (herr hm hl hN.1 hN.2.1 (hc N) hN.2.2) hc0.le
-      _ = _ := by field_simp [hc0.ne']; ring
+      _ = _ := by field_simp [hc0.ne']
   have hs := (tendsto_shellCorrection_div_overlap hφ hsupp hM hm).comp hcinf
   by_cases hml : m = l
   · simp only [if_pos hml] at hz ⊢
@@ -163,13 +164,12 @@ theorem exists_fixedWidthNearGram_subhorizon_error {φ : ℝ → ℝ} (hφ : Con
           split_ifs <;> ring
         _ = _ := by rw [abs_div, abs_of_pos hu0]
     rw [hleft]
-    exact h.trans_eq (by field_simp [hu0.ne']; ring)
+    exact h.trans_eq (by field_simp [hu0.ne'])
   have hscale : u ^ 4 * Real.log T / T ≤ c ^ 4 * Real.log N / N := by
     calc
       _ = (c / N) * u ^ 3 * Real.log T := by
         dsimp [u]
         field_simp [hT0.ne', hN0.ne']
-        ring
       _ ≤ (c / N) * c ^ 3 * Real.log N :=
         mul_le_mul (mul_le_mul_of_nonneg_left (pow_le_pow_left₀ hu0.le huc 3)
             (div_nonneg hc.le hN0.le))

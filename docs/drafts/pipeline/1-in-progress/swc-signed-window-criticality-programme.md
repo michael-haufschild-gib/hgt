@@ -30,10 +30,29 @@ DZG, CWS, LST and the F1 cards belong to other agents: import, never edit.
   at the window edge.
 - `M` odd and the frozen even form have ground states with a node (frustration).
 
+## Lean modules [L]
+TheMarkovPartDiesBeforeTheFirstPrime, NoMarkovGroundStateOnAWindowLongerThanTheDeathWidth,
+TheFoldedCriterionIsVoidOnTheUnitWindow, ThePoleChargesTheSupersolution,
+ShiftedGroundStatesArePoleChargedOnEveryWindow, TheWindowReadsTheOutsideChargesOfAThetaGauge,
+ACriticalWindowIsAPoleChargedSolution, TheKickIsAPositiveSourceAndANegativeCollarConductance,
+TheCollarHankelForm, TheFrozenOddFormIsMarkovAndTheKickIsNot,
+OnReflectionPairsTheCouplingIsTheSmoothedPrimeCount, TheZeroModeOfATightBandIsAReflectionPair,
+TheLightConeOfACollarCarriesItsReflection, TheParitySectorsAreTheBandAtTheCentre, TheCollarHankelSpectrumDecaysGeometrically, TheCollarRatioIsSharp, TheOddLightConeInTheDoobGauge, TheFirstStageRejectsTheFlip.
+Each passes an individual
+`lake --old env lean` check; umbrella `SignedWindowCriticality.lean` wired into `MainTheorems.lean`.
+
+## Open
+- Certificate of the odd unit-window survivor: `2S_a − D_a + 8τ_{1/2}(a)∫u²m_a sinh ≥ 0` for one shift
+  (sufficient). Odd unit-window positivity itself is equivalent (proved) to
+  `W(f) ≥ 𝓗₀(f) − (log 2/√2)(f⋆f)(−log 2)` for every `C²` `f` on `[−½, 0]`.
+- Growth-step inequality `2W(x_L + y) − W(y) ± 2𝒞_m(x_L) ≥ 0` past `181/250`.
+- Perron/oscillation of window ground states; edge value at criticality (numerical only).
+
 ## Gates
 - [x] 0 → 1: questions fixed, corpus dictionary read (ACT, GWZ, CSTW, WTZ, DZG, CWS, RHTower Markov–pole).
-- [ ] README first draft.
-- [ ] Pillars in Lean (see README §8).
+- [x] README first draft.
+- [x] Pillars in Lean (README §8).
+- [ ] Survivor certificate on the unit odd window.
 
 ## Log
 - 2026-11-03 — created.

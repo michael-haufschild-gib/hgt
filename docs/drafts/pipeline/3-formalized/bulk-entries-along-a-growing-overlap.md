@@ -1,13 +1,14 @@
 # Bulk entries along a growing overlap
 
 - **ID:** BEGO
-- **Stage:** 1-in-progress
-- **Type:** THEOREM (paper), Lean in progress
+- **Stage:** 3-formalized
+- **Type:** THEOREM (Lean)
 - **Source:** AHD README §9 item 2 (after BEOC: bulk entries at every overlap `0 < c < 1`)
 - **Statement:** along `c = c_N → ∞`, `c² log² N/N → 0`, for every pair of conductors
   `X_N(e,e') := ⟨W R_e, R_{e'}⟩ − E_e(c)⟨R_e, R_{e'}⟩ = [e = e' = 1] c κ_φ (2 + γ − log 4π) + o(c)`,
   `κ_φ = (∫φ)²/∫φ²`, `E_e` the completed conductor energy. At the critical curve `c^{β+1}/log N → K`:
-  `c^β ⟨W r_e, r_{e'}⟩ → J(e) δ_{ee'} + [e = e' = 1] K κ_φ (2 + γ − log 4π)`.
+  `c^β ⟨W r_e, r_{e'}⟩ → J(e) δ_{ee'} + [e = e' = 1] K κ_φ (2 + γ − log 4π)` (formalized for the tilted
+  spline, `β = 7`, where `c⁷ E_e(c) → J(e)` is proved).
 
 ## Goal
 The second order of every bulk entry when the atoms overlap. The arithmetic constants of the separated regime
@@ -20,7 +21,7 @@ rank-one gluing at the pole.
 ## Gates
 - [x] 0 → 1  in-progress
 - [x] 1 → 2  paper proof (below), numerically confirmed
-- [ ] 2 → 3  Lean
+- [x] 2 → 3  Lean: `tendsto_completeWeilBulkEntry_div_overlap`, `tendsto_tiltedUnitSpline_bulkEntry_critical`
 
 ## Numerics (tilted-cubic profile `(u(1−u))³`, `κ = 0.612857`, exact matrix with overlapping atoms)
 `X_N(1,1)` at `N = 16000`: `c = 2: 0.0564` (pred `0.0566`), `c = 4: 0.1128` (`0.1132`), `c = 8: 0.2247` (`0.2265`).
@@ -56,5 +57,26 @@ RAPT exact decomposition at every overlap: `W = (log N + F(c) − γ + s_N)I −
    `(1,e')`: `−κΛ(e')/√φ(e') + κΛ(e')/√φ(e') = 0`; distinct `e,e' > 1`: `0`;
    `(1,1)`: `κ(1 − log 2) + κγ + κ(2 + κ₀) + κ(log 2 − 1 + γ) − κ log 2 = κ(2 + γ − log 4π)`. All remainders `O(log² c)`.
 
+## Lean
+All in `ArithmeticHodgeTheoryOfDegenerations/`, wired into the umbrella.
+- `TheBulkEntriesAlongAGrowingOverlap`: `tendsto_completeWeilBulkEntry_div_overlap` (the statement, `c_N → ∞`,
+  `c_N² log² N/N → 0`), `bulkEntry_decomposition` (exact split), `bulkGrowingLimit_eq` (the constant),
+  `tendsto_tiltedUnitSpline_bulkEntry_critical` (critical curve `c⁸/log N → K > 0`), shell asymptotics
+  `shellCorrection_eq_of_pos`, `tendsto_shellCorrection_mul_gram`, `tendsto_shellCorrection_log`, growing-width
+  pole/self errors `tendsto_poleErrorPairing_div_overlap`, `tendsto_selfError_mul_gram_div_overlap`.
+- `TheNearBlockAlongAGrowingOverlap`: `nearBlock_eq` (step 4, exact), `tendsto_nearBlock_div_overlap`; jets
+  `tendsto_jetNearPair_div`, `periodicMean_ramanujanLogDivisorJet`; exterior `tendsto_nrExterior_div`.
+- `TheLogarithmicWeightOfTheNearPairs`: `abs_nearPairSum_sub_le_weighted`, `abs_logNearPairSum_sub_le` (the
+  `log(w min)` weight, Stirling).
+- `TheShellMassOfTheNearPairs`: `abs_shellMass_sub_le` (`O(c²/N)`, step 4).
+- `TheFarCrossErrorAtGrowingOverlap`: `abs_farCrossPairing_sub_le`, `tendsto_farCrossPairing_div_overlap` (step 5
+  cross error).
+- `TheNonRatioPrimesOnConductorPackets`: `inner_nonRatio_ramanujan_eq`, `nrSum_eq_interior_add_exterior`,
+  `abs_nrExterior_le` (step 2).
+- Imported from the corpus: `tendsto_nearCenterPair_finite_part` (near-centre add-back),
+  `tendsto_nearArchimedeanRemainderPair_div_overlap` (near Gamma remainder), `abs_farCross_pair_tail_le`,
+  `TheRowsOfANearPairSum`, `TheArchimedeanKernelOfNearAtoms`.
+
 ## Log
-- 2026-11-03 — numerics, paper proof; Lean in progress.
+- 2026-11-03 — numerics, paper proof.
+- 2026-11-04 — formalized.

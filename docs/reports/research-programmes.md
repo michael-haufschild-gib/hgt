@@ -70,3 +70,4 @@
 - formal/GaloisForLFunctions/CanonicalSystemOfTheWindowTower/README.md
 - formal/GaloisForLFunctions/GrowingWindowsOfSpecZ/README.md
 - formal/GaloisForLFunctions/SignedWindowCriticality/README.md
+- formal/GaloisForLFunctions/ZeroConfigurationGeometry/README.md

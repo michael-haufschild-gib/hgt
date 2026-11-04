@@ -31,7 +31,7 @@ theorem packetVector_norm_sq (F : ℕ → ℝ) (N : ℕ) :
 
 private theorem packet_extension {N n : ℕ} (hn : n ∈ Icc 1 N) (F : ℕ → ℝ) :
     primeHorizonExtension (packetVector F N) n = F n / Real.sqrt n := by
-  simp only [primeHorizonExtension, hn, if_true]
+  simp only [primeHorizonExtension, hn]
   rfl
 
 /-- The Euclidean pole coordinate is the harmonic mean of packet amplitudes. -/
@@ -107,7 +107,7 @@ theorem abs_center_packet_le {φ : ℝ → ℝ}
       rw [packet_extension hn, packet_extension hj]
   rw [fullWeilCenterMatrix_inner_of_harmonicSum_zero _ _ hneutral, hquad,
     abs_mul, abs_neg, abs_of_nonneg (completeWeilPoleShift_nonneg φ hc),
-    abs_div, abs_of_nonneg (Nat.cast_nonneg N)]
+    abs_div, abs_of_nonneg (a := (N : ℝ)) (Nat.cast_nonneg N)]
   calc
     _ ≤ c * ((((harmonic N : ℝ) + 1) * ∑ n ∈ Icc 1 N, F n ^ 2) / N) :=
       mul_le_mul (completeWeilPoleShift_le hφ hsupp hM hc)
@@ -198,8 +198,8 @@ theorem shell_packet_moments_le {φ : ℝ → ℝ}
     have hlog : Real.log n ≤ Real.log N :=
       Real.log_le_log (by exact_mod_cast (mem_Icc.mp hn).1)
         (by exact_mod_cast (mem_Icc.mp hn).2)
-    exact (mul_le_mul_of_nonneg_left (add_le_add_right hlog 1) (sq_nonneg _)).trans_eq
-      (mul_comm _ _)
+    have hlog1 : Real.log n + 1 ≤ Real.log N + 1 := by linarith only [hlog]
+    exact (mul_le_mul_of_nonneg_left hlog1 (sq_nonneg (F n))).trans_eq (mul_comm _ _)
   have h := shellDegree_packet_payment_le hφ hsupp hM hc hcN F
   rw [sum_coe_sort (Icc 1 N) (fun n : ℕ => F n ^ 2 / (n : ℝ))] at h
   refine h.trans ?_
@@ -236,8 +236,10 @@ theorem abs_complete_packet_diagonal_le {φ : ℝ → ℝ}
   have hN0 : (0 : ℝ) < N := by exact_mod_cast hN
   have hself : |completeWeilSelfError φ c N| ≤ Real.exp (1 / 2) / 2 :=
     (abs_completeWeilSelfError_le_of_width_le_one hφ hsupp hM hc0 hN hcN).trans
-      (by simpa only [mul_one] using mul_le_mul_of_nonneg_left
-        ((div_le_one hN0).2 hcN) (by positivity : 0 ≤ Real.exp (1 / 2) / 2))
+      (by
+        have hw : c / (N : ℝ) ≤ 1 := (div_le_one hN0).2 hcN
+        simpa only [mul_one] using
+          (mul_le_mul_of_nonneg_left hw (by positivity : 0 ≤ Real.exp (1 / 2) / 2)))
   calc
     _ ≤ ∑ n ∈ Icc 1 N, |F n ^ 2 / (n : ℝ) *
         (completeWeilSelfFinitePart φ c + completeWeilSelfError φ c N +
@@ -404,7 +406,9 @@ theorem exists_complete_packet_two_moment_bound {φ : ℝ → ℝ}
     (mul_le_mul_of_nonneg_right
       (div_le_div_of_nonneg_right hterminal (Nat.cast_nonneg N)) hO0)
   refine (hbound c N hc hN hw F hF).trans ?_
-  convert h using 1 <;> dsimp only [D, A₀, B₀, X] <;> ring
+  convert h using 1
+  dsimp only [D, A₀, B₀, X]
+  ring
 
 #print axioms poleError_packet_eq_zero
 #print axioms abs_center_packet_le

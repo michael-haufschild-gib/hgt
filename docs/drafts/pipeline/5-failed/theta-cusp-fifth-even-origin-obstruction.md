@@ -51,6 +51,12 @@ where the added term vanishes. Global weighted positivity therefore
 forces full native origin positivity, hence `D>0`; the proved weighted
 capacity gap gives the contradiction at every `0<a<1/2`.
 
+The same scale-seven test vector has **positive** native energy at the origin.
+Its normalized energy is a degree-ten polynomial with positive coefficients
+after `X=(191+z)/10`, `z≥0`; the complete even seam identities identify it
+with the actual source form. Thus this vector does not extend the diagonal
+obstruction to an arbitrary constant matrix correction.
+
 Lean: `ThetaCuspSections/FifthEvenOriginObstruction.lean`, namespace
 `GaloisForLFunctions.ThetaCuspSections.EvenFiveOrigin`.
 `originFifthThreshold_pos` and `origin_fifth_load_required` prove the
@@ -60,3 +66,18 @@ positive origin requirement. `origin_posDef_iff` and
 all real constant pairs. All six public axiom audits contain only `propext`,
 `Classical.choice`, and `Quot.sound`. The canonical Lean check passes, and
 the owner umbrella imports the module.
+
+`boundary_direction_positive_at_origin` proves the additional directional
+positivity; its axiom audit also contains only the same three standard axioms.
+
+The [coupled repair](../3-formalized/theta-cusp-fifth-even-coherent-origin-tail-repair.md)
+escapes this diagonal obstruction near the origin and on a cofinal tail.
+Its two positive loads annihilate the scale-seven vector and preserve all
+mixed integrals. The prescribed last-pair load alone fails; the two-load
+common kernel is positive. These actual source statements are formalized.
+The [common-coefficient route](theta-cusp-fifth-even-common-coupled-obstruction.md)
+is now refuted globally. The explicit
+[unequal repair](../3-formalized/theta-cusp-fifth-even-unequal-origin-repair.md)
+retains the formalized origin-and-tail conclusions but fails the
+[sixth-degree test](theta-cusp-fifth-even-large-coupled-load-obstruction.md).
+Smaller unequal coefficients remain open.

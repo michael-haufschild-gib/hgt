@@ -18,6 +18,26 @@ import GaloisForLFunctions.ArithmeticHodgeTheoryOfDegenerations.TheAliasingIsThe
 import GaloisForLFunctions.ArithmeticHodgeTheoryOfDegenerations.TheAliasingConstantOfTheTiltedSpline
 import GaloisForLFunctions.ArithmeticHodgeTheoryOfDegenerations.TheNextAliasingCoefficientIsNegative
 import GaloisForLFunctions.ArithmeticHodgeTheoryOfDegenerations.TheCanonicalCriticalClockEntersFromTheNegativeSide
+import GaloisForLFunctions.ArithmeticHodgeTheoryOfDegenerations.TheCriticalUpwardResidueIsSupportedAtThePole
+import GaloisForLFunctions.ArithmeticHodgeTheoryOfDegenerations.TheNearAndFarGammaProfilesHaveOneFinitePart
+import GaloisForLFunctions.ArithmeticHodgeTheoryOfDegenerations.TheGrowingNearPairMeanIsPolar
+import GaloisForLFunctions.ArithmeticHodgeTheoryOfDegenerations.TerminalWeightsPreserveThePolarNearMean
+import GaloisForLFunctions.ArithmeticHodgeTheoryOfDegenerations.TerminalWeightsReadEitherEndOfANearPair
+import GaloisForLFunctions.ArithmeticHodgeTheoryOfDegenerations.TerminalNearPairsRetainLogarithmicAccuracy
+import GaloisForLFunctions.ArithmeticHodgeTheoryOfDegenerations.TerminalWindowsRetainTheSignedGammaMean
+import GaloisForLFunctions.ArithmeticHodgeTheoryOfDegenerations.TheSeparatedGammaTailIsUniformAtGrowingOverlap
+import GaloisForLFunctions.ArithmeticHodgeTheoryOfDegenerations.TheGrowingGammaPairMeanIsPolar
+import GaloisForLFunctions.ArithmeticHodgeTheoryOfDegenerations.TheNearCenterRetainsItsHarmonicFinitePart
+import GaloisForLFunctions.ArithmeticHodgeTheoryOfDegenerations.TheActualNearCenterHasItsSignedFinitePart
+import GaloisForLFunctions.ArithmeticHodgeTheoryOfDegenerations.TerminalWeightsPreserveHarmonicGapRows
+import GaloisForLFunctions.ArithmeticHodgeTheoryOfDegenerations.TerminalHarmonicMeansRetainTheirFiniteParts
+import GaloisForLFunctions.ArithmeticHodgeTheoryOfDegenerations.TerminalNearCenterHasAHarmonicModel
+import GaloisForLFunctions.ArithmeticHodgeTheoryOfDegenerations.TerminalWindowsRetainTheNearCenterFinitePart
+import GaloisForLFunctions.ArithmeticHodgeTheoryOfDegenerations.TerminalWindowsReadThePolarCenter
+import GaloisForLFunctions.ArithmeticHodgeTheoryOfDegenerations.TheGrowingGammaCenterResidueIsSupportedAtThePole
+import GaloisForLFunctions.ArithmeticHodgeTheoryOfDegenerations.TheCompleteCriticalResidueIsSupportedAtThePole
+import GaloisForLFunctions.ArithmeticHodgeTheoryOfDegenerations.WindowConductorCoordinatesVanishUniformly
+import GaloisForLFunctions.ArithmeticHodgeTheoryOfDegenerations.CriticalWindowsSurviveLowConductorRemoval
 import GaloisForLFunctions.ArithmeticHodgeTheoryOfDegenerations.TheCriticalBoundaryAddsItsNullDirections
 import GaloisForLFunctions.ArithmeticHodgeTheoryOfDegenerations.ThePrimesOfAHorizonWindow
 import GaloisForLFunctions.ArithmeticHodgeTheoryOfDegenerations.TheBulkDeterminesTheSecondOrderTerm
@@ -53,6 +73,7 @@ import GaloisForLFunctions.ArithmeticHodgeTheoryOfDegenerations.TheGoldenFakeIsS
 import GaloisForLFunctions.ArithmeticHodgeTheoryOfDegenerations.TheCoshHyperplaneInheritsThePolarization
 import GaloisForLFunctions.ArithmeticHodgeTheoryOfDegenerations.TheCountPaysTheSecondOrderBelowAUniformMultiple
 import GaloisForLFunctions.ArithmeticHodgeTheoryOfDegenerations.OneCriticalMultiplePaysEveryWindow
+import GaloisForLFunctions.ArithmeticHodgeTheoryOfDegenerations.TheCriticalThresholdOfAWindow
 import GaloisForLFunctions.ArithmeticHodgeTheoryOfDegenerations.JointPolePaymentExtendsTheCriticalRatio
 import GaloisForLFunctions.ArithmeticHodgeTheoryOfDegenerations.TheSecondOrderOfACharacterWindowReadsAnLValue
 import GaloisForLFunctions.ArithmeticHodgeTheoryOfDegenerations.TheCharacterWindowsAreGradedByParity
@@ -78,6 +99,12 @@ import GaloisForLFunctions.ArithmeticHodgeTheoryOfDegenerations.TheCrossErrorOfT
 import GaloisForLFunctions.ArithmeticHodgeTheoryOfDegenerations.TheBulkEntriesAtEveryOverlap
 import GaloisForLFunctions.ArithmeticHodgeTheoryOfDegenerations.TheRowsOfANearPairSum
 import GaloisForLFunctions.ArithmeticHodgeTheoryOfDegenerations.TheArchimedeanKernelOfNearAtoms
+import GaloisForLFunctions.ArithmeticHodgeTheoryOfDegenerations.TheNonRatioPrimesOnConductorPackets
+import GaloisForLFunctions.ArithmeticHodgeTheoryOfDegenerations.TheShellMassOfTheNearPairs
+import GaloisForLFunctions.ArithmeticHodgeTheoryOfDegenerations.TheFarCrossErrorAtGrowingOverlap
+import GaloisForLFunctions.ArithmeticHodgeTheoryOfDegenerations.TheLogarithmicWeightOfTheNearPairs
+import GaloisForLFunctions.ArithmeticHodgeTheoryOfDegenerations.TheNearBlockAlongAGrowingOverlap
+import GaloisForLFunctions.ArithmeticHodgeTheoryOfDegenerations.TheBulkEntriesAlongAGrowingOverlap
 import GaloisForLFunctions.ArithmeticHodgeTheoryOfDegenerations.CompleteWeilCriticalMultipleAndWindowCorollaries
 
 /-!
@@ -98,7 +125,12 @@ resolution axis (overlap `c`, horizon `N`). See `ArithmeticHodgeTheoryOfDegenera
   `⟨P R_e, R_{e'}⟩ − (log N − ρ_e)⟨R_e, R_{e'}⟩ → D(e, e')`, a polynomial in `γ`, `γ₁` and the
   logarithms of divisors (`D(1,1) = 2γ₁ + γ²`, `D(p,p) = D(1,1) + p log²p/(p − 1)²`). At every
   overlap `0 < c < 1` the complete entry adds the center part (`α(1 − log 2)` at the pole,
-  `αΛ(e)/φ(e)` on the diagonal) and the cross error of the archimedean smoothing. Character packets
+  `αΛ(e)/φ(e)` on the diagonal) and the cross error of the archimedean smoothing. Along a growing
+  overlap `c → ∞`, `c² log² N/N → 0`, the entry minus `E_e(c)⟨R_e, R_{e'}⟩` is
+  `[e = e' = 1] κ c (2 + γ − log 4π) + o(c)`: the logarithms `κ c log c` of the shells, the near
+  center and the near pairs cancel, as do the divisor jets and the center constants; on the tilted
+  spline, the critical curve `c⁸ ≍ K log N` adds `K κ (2 + γ − log 4π)` at the pole to the Jordan
+  limit. Character packets
   `χ(n)/√n` sit at the bounded energy `−2 Re L'(1,χ)/L(1,χ)` with second order
   `−2(φ(q)/q) Re (L'/L)'(1, χ)`.
 * **Second order at the critical curve.** On horizon windows `κ Q(H) + (βJ/K) ∫ e^{−(β+1)y} H²`,

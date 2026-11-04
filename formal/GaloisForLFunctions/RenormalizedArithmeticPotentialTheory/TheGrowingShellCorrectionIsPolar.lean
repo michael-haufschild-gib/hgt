@@ -79,7 +79,7 @@ theorem tendsto_shellCorrection_div_overlap {φ : ℝ → ℝ} (hφ : ContDiff �
   apply hlim.congr'
   filter_upwards [eventually_gt_atTop (0 : ℝ)] with c hc
   rw [shellCorrection_eq_polar_sub_log φ hc hm]
-  split_ifs <;> (field_simp [hc.ne']; ring)
+  split_ifs <;> (field_simp [hc.ne'] <;> ring)
 
 end GaloisForLFunctions.RenormalizedArithmeticPotentialTheory
 

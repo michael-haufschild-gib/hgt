@@ -29,6 +29,8 @@ import GaloisForLFunctions.ArithmeticGaugeTheory.TheFunctionFieldCalibrationIsDe
 import GaloisForLFunctions.ArithmeticGaugeTheory.TheShellsHaveLevelOfDistributionOneHalf
 import GaloisForLFunctions.ArithmeticGaugeTheory.AffinePositivityIsThePoleAndHaar
 import GaloisForLFunctions.ArithmeticGaugeTheory.TheShortShellsHaveNoConductor
+import GaloisForLFunctions.ArithmeticGaugeTheory.TheExponentIsInvariantOnSparsePrimeSets
+import GaloisForLFunctions.ArithmeticGaugeTheory.AnExplicitPointHasExponentOneHalf
 
 /-!
 # Arithmetic Gauge Theory of the ring ℤ

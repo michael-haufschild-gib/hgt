@@ -82,6 +82,10 @@ to be judged by the rate it controls.
 | Doob form | `D_h(u) = ½∫∫ c_±(x, y)h(x)h(y)(u(x) − u(y))²`, a signed Dirichlet form |
 | Signed potential | `g_h = (W_±h)/h`, the pointwise defect of the gauge |
 | Signed supersolution | `h > 0` on `(0, a)` with `g_h ≥ 0` and `D_h ≥ 0` |
+| Pole charges | of a gauge `ω` on a window `S`: the sinh charge `∫_S Φω sinh(x/2)` and the cosh charge `∫_S Φω cosh(x/2)`; charge variances `V^S(u) = (∫_S m)(∫u²m) − (∫um)²` for `m = Φω sinh(x/2)`, `Φω cosh(x/2)` |
+| Weil source | `𝒮(a) = (𝓛_D a − Φcosh(x/2)a) − 2B(Φa)Φ sinh(x/2) + 2A(Φa)Φ cosh(x/2)`, the operator through which `W` polarizes in the Doob gauge |
+| Theta gauge, outside charges | `ω = Σ_j α_jτ_{b_j}`, `τ_b = Φ(· − b)/Φ`, with total charges `A/2`, `B/2` (`A = Σα_j cosh(b_j/2)`, `B = Σα_j sinh(b_j/2)`); outside charges: total charge minus the charge on `S` |
+| Collar regional energy, collar light cone | on a collar `C = [c − h, c + h]`: `E_C(f) = ∫_C∫_C (f(u) − f(v))²/(2|u − v|)` and `A_C(f) = ½∫_C∫_C ω(|u − v|)(f(u) − f(v))²` |
 | Pole capacities | `cap₋(a) = sup ⟨s, F⟩²/(2M(F))` over odd tests (sinh capacity); the cosh charge of the even Perron state |
 | Collar, collar reflection | at stage `n`: `I = [log n − a, a]`, `τx = log n − x`; the kick on odd tests is `2w_n⟨U, τU⟩_I` |
 | Kron reduction | Schur complement of a form onto a set of terminals; preserves Z-type |
@@ -108,7 +112,11 @@ to be judged by the rate it controls.
   **Dirichlet** forms of a reflected edge are the two ways of writing `(aα + bβ)²`; only the Neumann
   form has a nonnegative remainder, only the Dirichlet form has the odd generator as potential.
 - **Kron domination**: the negative network is dominated by the Kron reduction of the positive
-  network onto the frustration locus.
+  network onto the frustration locus. **Packed path**: a payment of negative conductances by
+  positive ones that uses no positive conductance beyond its capacity; on a collar, the payment of
+  the reflection by the collar's light cone at the first Legendre gap.
+- **Pole-charged supersolution**: a gauge whose Markov defect carries its own sinh charge
+  (`≥ 2σ_sΦ sinh`); **pole-charged harmonic**: a gauge whose Weil source vanishes on the window.
 - **Critical**: the sector ground energy tends to `0` along the tower. **Agmon ground state**: the
   minimizer of `W_±` on a window, normalized; **edge value**: its value at `x = a`.
 - **Perron property**: the sector ground state has no node in `(0, a)`. **Oscillation property**: the
@@ -158,6 +166,16 @@ to be judged by the rate it controls.
    defect carries `2σ_sΦ sinh`, then `Ẑ ≥ J + 2A²`. The positive square is a **cosh credit**: if
    `ω ≥ 0` and the defect is at least `−2σ_cΦ cosh`, then `Ẑ ≥ J − 2V_c − 2B²`. Globally, the odd
    capacity form of RHTower/ACT and the cosh capacity criterion of CWS are the two sector shadows.
+   Explicit pole-charged gauges exist on every window: ACT's shifted ground state `ω_a` carries the
+   whole charge `sinh(a/2)/2` of the half-line in its source, the window reads only the part
+   inside, and `Ẑ(Φω_au) = 2S_a − D_a + 8V_c + 8τ_c(a)∫_{x>0}u²m_a sinh` exactly, with outside charge
+   `τ_c(a) = ∫_{x≥c}m_a sinh > 0`. More generally, every theta gauge `ω = Σα_jτ_{b_j}` has source
+   `−Φ(A cosh − B sinh)` with total charges `A/2`, `B/2`, and for every set `S`
+   `Ẑ(Φωu) = J_M + 2V_s^S − 2V_c^S + 2τ_s^S∫u²M sinh − 2τ_c^S∫u²M cosh`: theta gauges are critical on
+   the line, and a window reads the charges outside it with the pole's signs — slack in the odd
+   sector, deficit in the even sector. In an even theta gauge with `M ≥ 0` the even window form is
+   at most its Markov Dirichlet form minus the outside cosh deficit. Windows are subcritical in odd
+   theta gauges and supercritical in even ones, matching the numerical order `μ₊ < μ₋`.
 5. **Signed ground-state representation.** For every gauge, `W(hu) = D_h(u) + ∫g_hh²u²`, with the
    sign of each Doob conductance equal to `sign(c_±)·sign(h(x)h(y))`. With `h` the sector ground
    state, `g_h = μ_±` and `D_h ≥ 0`: a positive ground state is a signed supersolution.
@@ -165,7 +183,13 @@ to be judged by the rate it controls.
    terminal set is nonnegative iff the Kron reduction of `D⁺` onto the terminals dominates `D⁻`; Kron
    reduction never creates frustration, and pairwise healing decides positivity on the terminals
    (SAEI, finite forms). For one negative edge this is effective conductance; at a stage it is the
-   two-collar form of GWZ.
+   two-collar form of GWZ. In the continuum the prime anti-diagonal is the reflection of its
+   collar, and the regional logarithmic light cone conducts that reflection at its first Legendre
+   gap: `∫_C f(u)f(2c − u) ≥ −½E_C(f)`, sharp on the linear profile, so the collar's own light cone
+   carries the kick of `n` at the ratio `2Λ(n)n^{−1/2}e^{h}`, and this is sharp: on admissible odd
+   tests no constant below `2Λ(n)n^{−1/2}/(1 + 4h)` works. For small `h` the ratio is below `1` at
+   the first prime, at proper prime powers and at primes `p ≥ 79`, and above `1` for
+   `3 ≤ p ≤ 73`, whose collars cannot pay their own frustration.
 7. **Stage passage.** For odd `F` the lag-`ℓ` correlation is anti-diagonal,
    `c_F(ℓ) = −∫F(s)F(ℓ − s)ds`. In any gauge `F = hu` the kick is
    `−2wc_F(ℓ) = 2w∫h h∘τ u² − w∫h h∘τ(u − u∘τ)²`, `τs = ℓ − s`: a positive source plus a negative
@@ -190,7 +214,12 @@ to be judged by the rate it controls.
    when the pair is nonnegative; across all scales this is the square-root form of §1.1 of the
    review. On each reflection sector the growth
    step is exact: `W(x_L + y ± x_L∘R) = 2W(x_L + y) − W(y) ± 2𝒞_m(x_L)` for an interior piece
-   `y∘R = ±y`; the only arithmetic of the step is the prime-count error of the collar piece.
+   `y∘R = ±y`; the only arithmetic of the step is the prime-count error of the collar piece. At
+   the centre of a symmetric window the reflection is the parity, and a cut-off at the centre with
+   bounded height and shrinking width moves Weil's form by a vanishing amount; so each parity
+   sector of `[−a, a]` is exactly the band `±𝒞₀(f) ≤ W(f)` on the half-window `[−a, 0]`, and a
+   window certificate is a statement about one half-window, one Hankel form and the prime values
+   `(f⋆f)(−log n)`, `log n ≤ 2a`.
 10. **The growth step is one mixed pairing.** `W ≥ 0` on `W_{ℓ+ε}` iff `W ≥ 0` on `W_ℓ` and
    `W(τ_εu, v)² ≤ W(u)W(v)` for all `u, v` on `W_ℓ`; at a stage `ℓ = log(N+1)` the pairing is the
    frozen pairing minus the new fold at lag `ℓ − ε`, and the step is a Carathéodory disk (CSTW).
@@ -237,15 +266,15 @@ to be judged by the rate it controls.
 
 | Question (review-0311 §2.7, §2.8) | Status |
 |---|---|
-| Does the first prime stage admit a signed supersolution (2.8)? | Literal form: **no.** No `C²_c` function nonnegative on `[0, ∞)` and positive on `(0, a)` satisfies ACT's folded supersolution inequality on `(0, a)` for any `a > e^{−3/4}`, in particular on the unit odd window (`not_exists_foldedWindowSupersolution_half`); no nonnegative `C²_c` gauge is a two-sided Markov supersolution on an interval longer than `e^{−3/4}` (`not_exists_markovWindowSupersolution`). Survivor: the pole-charged supersolution of mechanism 4 in the odd sector — an odd gauge whose Markov defect carries the sinh charge — gives `Ẑ ≥ J_{Φω}` (`signedJumpEnergy_add_le_fullZeroForm_of_sinhCharged`), and the remaining condition is the nonnegativity of the signed Dirichlet form, whose only negative conductances are the prime-2 anti-diagonal. Numerically the odd ground state is positive on `(0, ½]` with energy `≈ 1.95·10⁻⁴`; it is a signed supersolution in this sense. Its certificate is open |
-| How does a supersolution pass a stage? | In any gauge the kick is a positive source plus a negative anti-diagonal conductance on the collar (`kick_eq_source_sub_collarConductance`); on `τ`-symmetric profiles it is the pure source, on `τ`-antisymmetric ones minus it; it is nonnegative on every positive odd profile (`kick_nonneg_of_nonneg_of_support`). A supersolution passes the stage by absorbing the source into its potential and dominating the new negative conductance by the light cone; the `τ`-antisymmetric collar data carry the whole cost |
+| Does the first prime stage admit a signed supersolution (2.8)? | Literal form: **no.** No `C²_c` function nonnegative on `[0, ∞)` and positive on `(0, a)` satisfies ACT's folded supersolution inequality on `(0, a)` for any `a > e^{−3/4}`, in particular on the unit odd window (`not_exists_foldedWindowSupersolution_half`); no nonnegative `C²_c` gauge is a two-sided Markov supersolution on an interval longer than `e^{−3/4}` (`not_exists_markovWindowSupersolution`). Survivor: the pole-charged supersolution of mechanism 4 in the odd sector — an odd gauge whose Markov defect carries the sinh charge — gives `Ẑ ≥ J_{Φω}` (`signedJumpEnergy_add_le_fullZeroForm_of_sinhCharged`), and the remaining condition is the nonnegativity of the signed Dirichlet form, whose only negative conductances are the prime-2 anti-diagonal. Explicit survivors exist: every shifted ground state is a strict pole-charged supersolution on the unit window, `Ẑ(Φω_au) ≥ 2S_a(u) − D_a(u) + 8τ_{1/2}(a)∫_{x>0}u²m_a sinh` with `τ_{1/2}(a) > 0` (`fullZeroForm_shiftedGroundState_ge`, `outsideCharge_pos`); on the line the slack vanishes and the inequality at one shift is RH (ACT). Numerically the odd ground state is positive on `(0, ½]` with energy `≈ 1.95·10⁻⁴`; it is a signed supersolution in this sense. **Exact content:** the complete odd unit window is equivalent to the half-window Markov–Hankel inequality `4S(f)² ≤ M(f) + Σ_{j≥0}m_j(f)² + w₂(f⋆f)(−log 2)` on `[−½, 0]` (`odd_unit_nonneg_iff_markov_hankel`), which reads the arithmetic only through `w₂` and is convex in it (`convex_unitBandWeights`). Its truth is a quantitative statement with margin `≈ 2·10⁻⁴`; its certificate is open |
+| How does a supersolution pass a stage? | In any gauge the kick is a positive source plus a negative anti-diagonal conductance on the collar (`kick_eq_source_sub_collarConductance`); on `τ`-symmetric profiles it is the pure source, on `τ`-antisymmetric ones minus it; it is nonnegative on every positive odd profile (`kick_nonneg_of_nonneg_of_support`). A supersolution passes the stage by absorbing the source into its potential and dominating the new negative conductance by the light cone; the `τ`-antisymmetric collar data carry the whole cost. The collar correction that absorbs the kick is the collar's own light cone: on odd tests the anti-diagonal of `n` is carried at the ratio `2Λ(n)n^{−1/2}e^{h}` (`kick_add_collarLevyEnergy_nonneg`), below `1` for thin collars of the first prime (`√2 log 2 < 1`), above `1` for `3 ≤ p ≤ 73`, where jumps leaving the collar, the source or the pole must pay |
 | What replaces Allegretto–Piepenbrink when the full form carries a rank-two indefinite pole term? | The pole-charged representation (`fullZeroForm_phiDoob_mul_eq`): each square becomes a charge of the gauge — the negative square must be carried by the defect as `2σ_sΦ sinh`, the positive square allows a deficit `2σ_cΦ cosh` at the price of a rank-one negative conductance — and positivity reduces to a pointwise charged inequality plus nonnegativity of a signed Dirichlet form. For the Markov part alone the easy half holds on windows (`markovEnergy_phiDoob_mul_nonneg_of_windowSupersolution`) and is void past `e^{−3/4}` |
-| What is the Agmon ground state of a critical window, and how does it relate to the zero modes of a first failure? | A Rayleigh-critical gauge solves the pole-charged source equation `𝒮(a) = μΦ²a` on the window (`weilSource_eq_of_rayleighCritical`) and represents the window form in its own gauge as a signed Dirichlet form plus `μ` times mass (`fullZeroForm_phiDoob_mul_eq_of_rayleighCritical`). A zero mode of a first failure is a pole-charged harmonic gauge, its Markov defect exactly `2BΦ sinh − 2AΦ cosh`, and in its gauge the window form has no potential (`weilSource_eq_zero_of_zeroMode`, `fullZeroForm_phiDoob_mul_eq_of_zeroMode`). Perron, oscillation and edge behaviour of the critical ground state are numerical (mechanism 8) and open |
-| What exactly remains on the odd unit window? | With `L(F) = ∫xF`, `b = 3203/320` and `R(F) = W(F) + bL(F)²` on odd `C²` tests supported in `[−½, ½]`: `R(F) ≥ ‖F‖²/1000` (WTZ), so the open statement is the capacity bound `b·sup_{F≠0} L(F)²/R(F) ≤ 1`; the exact Gamma remainder and the signed prime-2 correlation must be kept (the retained Gamma lower form has a negative direction, and the exterior Gamma reserve alone cannot restore its sign, WTZ). A certificate of it is a bounded-window advance and the template for the first mixed pairing; no induction law follows from it |
+| What is the Agmon ground state of a critical window, and how does it relate to the zero modes of a first failure? | A Rayleigh-critical gauge solves the pole-charged source equation `𝒮(a) = μΦ²a` on the window (`weilSource_eq_of_rayleighCritical`) and represents the window form in its own gauge as a signed Dirichlet form plus `μ` times mass (`fullZeroForm_phiDoob_mul_eq_of_rayleighCritical`). A zero mode of a first failure is a pole-charged harmonic gauge, its Markov defect exactly `2BΦ sinh − 2AΦ cosh`, and in its gauge the window form has no potential (`weilSource_eq_zero_of_zeroMode`, `fullZeroForm_phiDoob_mul_eq_of_zeroMode`). On a nonnegative window symmetric about `m` the two-site band holds for every collar test (`abs_coupling_le_weilQuad_of_window`), and a first failure of it is a reflection pair: if `|𝒞_m(f)| = W(f)`, then `F₀ = f + εf∘R` (`ε = ±1`, two sites and one sign) is a zero of the window form with `F₀∘R = εF₀`, and its gauge `F₀/Φ` is pole-charged harmonic on the window (`zeroMode_of_tight_band`); its collar shape is the mirror image of the collar piece. Perron, oscillation and edge behaviour of the critical ground state are numerical (mechanism 8) and open |
+| What exactly remains on the odd unit window? | **In half-window form:** the odd unit window is nonnegative iff `W(f) ≥ 𝓗₀(f) − (log 2/√2)(f⋆f)(−log 2)` for every `C²` test `f` supported in `[−½, 0]` (`odd_unit_nonneg_iff`): Weil's form on a half-window of length `½` (archimedean there), the collar Hankel form at the centre, and one prime value. The condition is linear in the prime-two weight: the odd unit window holds iff `w₂ = log 2/√2` lies in an interval of admissible weights (`odd_unit_nonneg_iff_mem_unitBandWeights`, `convex_unitBandWeights`), so it reads exactly one arithmetic number. **In Markov–Hankel form:** since `ω(t) = Σ_j e^{−(2j+½)t}`, the archimedean coupling of a half-window test with its mirror is the positive Hankel form `Σ_j m_j(f)²`, `m_j(f) = ∫f(u)e^{(2j+½)u}du`, and the odd unit window holds iff `4S(f)² ≤ M(f) + Σ_{j≥0}m_j(f)² + w₂(f⋆f)(−log 2)` (`odd_unit_nonneg_iff_markov_hankel`): the pole debt of the pair is paid by the Markov part of the half — which alone dies at width `e^{−3/4} < ½` — the reflection squares and the prime value. On every symmetric window the odd sector is `4S² ≤ M + Σ_jm_j² + P` and the even sector `Σ_jm_j² + P ≤ M + 4C²`, `P(f) = Σ_nw_n(f⋆f)(−log n)` (`odd_nonneg_iff_markov_hankel`, `even_nonneg_iff_markov_hankel`): across the centre the archimedean place pays the odd sinh debt and charges the even cosh credit. More generally each parity sector of `[−a, a]` is the band at the centre, `±𝒞₀(f) ≤ W(f)` for every half-window test (`odd_nonneg_iff_centreCoupling_le`, `even_nonneg_iff_neg_centreCoupling_le`). In moment form: with `L(F) = ∫xF`, `b = 3203/320` and `R(F) = W(F) + bL(F)²` on odd `C²` tests supported in `[−½, ½]`: `R(F) ≥ ‖F‖²/1000` (WTZ), so the open statement is the capacity bound `b·sup_{F≠0} L(F)²/R(F) ≤ 1`; the exact Gamma remainder and the signed prime-2 correlation must be kept (the retained Gamma lower form has a negative direction, and the exterior Gamma reserve alone cannot restore its sign, WTZ). A certificate of it is a bounded-window advance and the template for the first mixed pairing; no induction law follows from it |
 | Which identity pays the mixed pairing of a growth step with premises on the shorter window? | On each reflection sector the step is the exact identity `W(x_L + y ± x_L∘R) = 2W(x_L + y) − W(y) ± 2𝒞_m(x_L)` (`weilQuad_stage_even`, `weilQuad_stage_odd`), with `𝒞_m(x_L)` the collar Hankel form minus the smoothed prime count of the collar piece (`orderedCoupling_collarReflect`); the premises `W(x_L + y), W(y)` live on the shorter window. The inequality `2W(x_L + y) − W(y) ± 2𝒞_m(x_L) ≥ 0` is open at every stage past the proved lengths. Without reflection pairing, stage one is the inequality `W(x_L) + W(x_R) + 2⟨μ(x_L), ν(x_R)⟩ + Φ_ε(μ(x_L), ν(x_R)) ≥ 2w₂∫x_L(u)x_R(u + log 2)du` of the trivial-divisor moment sequences against one lag overlap (CSTW closed form), equivalently the contraction `W(τ_εu, v)² ≤ W(u)W(v)` on `W_{log 2}`; stage two adds only the `T₂` transports |
 | Which term of the complete form pays a receiving charge that energy limits erase? | Open; the first test is the complete energy on the harmonic-pole-neutral prime-charge families and their coprime fibre products at `c ≍ (log N)^{1/8}`, with every term of the decomposition retained: paid by the affine successor energy, cancelled by shell–pole terms, or a signed residual against the complement |
 | What is the Schur form of the conductor block against the coercive complement at the critical curve, as the cutoff grows? | Open; separate positive blocks do not suffice; the all-`R`, all-vector conductor Gram is the landing |
-| What is the spectral theory of the collar Hankel form `|μ_1|² − Σ_k|μ_{−2k}|²` on collar classes? | On reflection-paired data `g = f∘R`, `R(v) = 2m − v`, CSTW's moment pairing is `𝓗_m(f) = e^mμ_{1/2}(f)² − Σ_k e^{2mσ_k}μ_{σ_k}(f)²` (`momentPairing_collarReflect`). For collar tests in `[p, q]`, `q < m`: the trivial zeros see every test (`eq_zero_of_trivialMoments_eq_zero`); `𝓗_m` is negative definite on the pole hyperplane (`collarHankel_neg_of_poleMoment_zero`) and has at most one positive square (`exists_collarHankel_nonpos`); its trivial-zero squares decay like `e^{−(4k+5)(m−q)}`, so it is a rank-`(1, K)` form up to `‖f‖₁²e^{−(4K+5)(m−q)}/(1 − e^{−4(m−q)})` (`abs_collarHankel_sub_truncation_le`). Open: its eigenvalue asymptotics and its domination by the pieces' forms; its continuum shadow is the Gamma symbol `Re ψ(¼ + iξ/2) − log π` with Weyl law `≈ 2A` negative directions and the zero-free band `|ξ| < γ_1` of Weil's spectral measure |
+| What is the spectral theory of the collar Hankel form `|μ_1|² − Σ_k|μ_{−2k}|²` on collar classes? | On reflection-paired data `g = f∘R`, `R(v) = 2m − v`, CSTW's moment pairing is `𝓗_m(f) = e^mμ_{1/2}(f)² − Σ_k e^{2mσ_k}μ_{σ_k}(f)²` (`momentPairing_collarReflect`). For collar tests in `[p, q]`, `q < m`: the trivial zeros see every test (`eq_zero_of_trivialMoments_eq_zero`); `𝓗_m` is negative definite on the pole hyperplane (`collarHankel_neg_of_poleMoment_zero`) and has at most one positive square (`exists_collarHankel_nonpos`); its trivial-zero squares decay like `e^{−(4k+5)(m−q)}`, so it is a rank-`(1, K)` form up to `‖f‖₁²e^{−(4K+5)(m−q)}/(1 − e^{−4(m−q)})` (`abs_collarHankel_sub_truncation_le`). On nonnegative collar data the sign flips at the plastic distance: `𝓗_m(f) ≥ (∫f)²(e^d − e^{−5d}/(1 − e^{−4d}))`, `d = m − q`, so `𝓗_m > 0` once `e^{6d} − e^{2d} > 1` (`2d > log ρ`, `ρ³ = ρ + 1`) and the positive index is exactly one (`collarHankel_pos_of_nonneg`); within the plastic distance `𝓗_m < 0` on nonnegative data (`collarHankel_neg_of_nonneg`). **Spectral decay:** on the collar tests annihilating the pole moment and the first `K` trivial-zero moments, `−(q − p)ε_K‖f‖₂² ≤ 𝓗_m(f) ≤ 0` with `ε_K = e^{−(4K+5)d}/(1 − e^{−4d})` (`abs_collarHankel_le_sq_of_moments_zero`), so by min–max at most `K + 1` eigenvalues have modulus above `(q − p)ε_K`: the spectrum decays at least geometrically with ratio `e^{−4d}`. Its negative index is infinite: for every `n` there are `n` collar tests on whose span it is negative definite (`exists_collarHankel_negDefinite`), so beyond the plastic distance its inertia is `(1, ∞)`. Open: the matching lower bound (exact asymptotics) and its domination by the pieces' forms; its continuum shadow is the Gamma symbol `Re ψ(¼ + iξ/2) − log π` with Weyl law `≈ 2A` negative directions and the zero-free band `|ξ| < γ_1` of Weil's spectral measure |
 
 ## 6. Tools
 
@@ -270,19 +299,32 @@ to be judged by the rate it controls.
   support transfer, comparison of AIP surplus energies on the quadrant, anti-diagonal kick
   comparison.
 
+- Packed nonlocal paths on collars: the reflection inequality `∫(F − F∘R)² + ½E(F + F∘R) ≤ 2E(F)`
+  from the first regional Legendre gap (sharp on the linear profile), its physical rescaling, the
+  comparison `e^{−h}E_C ≤ 2A_C` with the collar's light cone, and the bound of every prime
+  anti-diagonal on odd tests by its collar's light cone at the ratio `2Λ(n)n^{−1/2}e^{h}`.
+
+- Sharpness of the packed path: the Legendre gap `2` is the infimum of the regional Rayleigh
+  quotient on admissible odd profiles (edge layers cost `O(δ^{1/2})`), `2A_C ≤ (1 + 4h)E_C`, and
+  for `λ(1 + 4h) < 2w` an admissible odd test defeats `λ` times the collar light cone; the best
+  constant lies in `[2w/(1 + 4h), 2we^{h}]`. The ratio `2Λ(n)/√n` is below `1` for `n = 2` (as
+  `log 2 < 1/√2`) and every proper prime power, above `1` exactly for the primes `3 ≤ p ≤ 73`, for
+  which the frustration must be paid by jumps leaving the collar, by the source or by the pole. The
+  first-fold strip version with the Gamma floor is WTZ's, the finite Kron theory SAEI's.
+
+- The odd light cone in the Doob gauge: for every odd gauge positive on the half-line and every
+  even profile, each shift splits as twice the same-side jumps minus the anti-diagonal jumps, and
+  the archimedean part of `J_{Φω}` folds to `2∫∫(ω(s) − ω(s + 2x))J_s(x) ≥ 0`.
+
 **To be developed here.**
-- Packed nonlocal paths: effective conductance of the archimedean light cone between the two ends of
-  a prime anti-diagonal, in the continuum (the finite Kron theory is SAEI's).
-- The light cone of a general odd gauge in the Doob gauge: the archimedean part of `J_{Φω}` as a
-  nonnegative form on even profiles, and the prime parts split into same-side and anti-diagonal
-  terms.
 - Mixed-pairing calculus: bounds on `W(τ_εu, v)` whose premises are positivity on the shorter
   window and arithmetic; the collar Hankel form on reflection-paired data.
 - Charge-retaining limits: passages to the critical curve that keep receiving charges or prove
   their cancellation in the complete form.
 - Schur forms of conductor blocks against coercive complements.
 
-**Used from the corpus.** ACT (ground-state identities, folded generator, light cone, two-moment
+**Used from the corpus.** WTZ (the first regional Legendre gap pays the variation on the prime-two
+strip, `firstFold_strip_coercive`: the packed path of the first fold); ACT (ground-state identities, folded generator, light cone, two-moment
 law, Allegretto–Piepenbrink for finite jump forms, hub/Schur steps); RHTower (`markovForm`,
 `weil_eq_markovForm_add_pole`, sinh capacity, CCM ground energy); GWZ (two-collar form, kick as collar
 Rosati form, two sites decide, zero modes); CSTW (frozen form in closed form); CWS (window form,
@@ -299,25 +341,33 @@ first-fold form is negative on a smooth test); APol (second difference of the co
 
 ## 7. Open research topics
 
-1. Certify the signed supersolution of the odd unit window: an explicit positive gauge with
-   `g_h ≥ 0` and Kron domination of the prime-2 anti-diagonal.
-2. The even sector of the first prime stage: Perron state of `M`, cosh charge, and its passage.
+The topics are of three kinds. Topics 6, 8, 9 and 11 are RH-strength: taken at every stage, for every
+coefficient vector or with zero rate, each is equivalent to RH. Topics 1 and 2 are bounded
+inequalities with explicit small margins, whose certificates are quantitative. Topics 3, 4, 5, 7
+and 10 are structural.
+
+1. Certify the odd unit window: the half-window Markov–Hankel inequality
+   `4S² ≤ M + Σ_jm_j² + w₂(f⋆f)(−log 2)` on `[−½, 0]`, or the signed Dirichlet form
+   `2S_a − D_a + 8τ_{1/2}(a)∫u²m_a sinh` of one shifted gauge; margin `≈ 2·10⁻⁴`.
+2. The even sector of the first prime stage: `Σ_jm_j² + P ≤ M + 4C²` on the half-window, the
+   Perron state of `M` and its cosh charge.
 3. Perron and oscillation properties of `W` on windows.
 4. The critical ground state: edge value, shape at the collars, limit along the tower.
-5. Calibration: flips, Euler twins, `ζ(s)ζ(s − ε)`, Epstein and golden data must fail.
+5. Calibration across the tower: a single window reads finitely many weights, convexly; the first
+   stage rejects the frozen and flipped weights and forces the sign of `Λ(2)`. Euler twins,
+   `ζ(s)ζ(s − ε)`, Epstein and golden data must fail on some window of the tower.
 6. The mixed-pairing bound of the growth step at every stage, with premises on the shorter window;
    stage one in CSTW's moment form, stage two with the `T₂` transports, stage three on the weighted
    path `2, 3, 2` and the rational Hecke graphs of WTZ.
-7. The collar Hankel form: spectral theory of one pole square against the trivial-zero squares on
-   collar classes, and its coupling to the archimedean jumps.
+7. The collar Hankel form: the lower bound matching its geometric spectral decay `e^{−4d}`, and
+   its coupling to the archimedean jumps.
 8. Charge accounting on the complete family: the complete energy of the prime-charge families and
    their coprime fibres at the critical overlap, term by term; classification of which modes'
    charges survive vanishing energy; the term that pays.
 9. The Schur form of the conductor block against the complement at the critical curve as the
    cutoff grows; dependency closure of the critical-multiple capstone.
-10. The continuum canonical system of a bump (the Hankel system of the zero measure; the lattice
-    jet system is its first terms) and the replacement of Allegretto–Piepenbrink for a form with a
-    rank-two indefinite pole term, stated for the critical (zero-margin) case.
+10. The continuum canonical system of a bump: the Hankel system of the zero measure, of which the
+    lattice jet system gives the first terms.
 11. Rate certificates: estimates landing on the spline-orbit or tensor-loss receivers, where
     constants are free.
 
@@ -333,10 +383,19 @@ first-fold form is negative on a smooth test); APol (second difference of the co
 | Polarization through the Weil source; source law of critical gauges; own-gauge representation | `fullZeroForm_phiDoob_add`, `weilSource_eq_of_rayleighCritical`, `fullZeroForm_phiDoob_mul_eq_of_rayleighCritical` | unconditional |
 | Zero modes are pole-charged harmonic gauges | `weilSource_eq_zero_of_zeroMode`, `fullZeroForm_phiDoob_mul_eq_of_zeroMode` | unconditional (zero modes exist only off RH) |
 | The kick is a positive source and a negative collar conductance | `integral_mul_shift_eq_neg_antidiagonal`, `kick_eq_source_sub_collarConductance`, `kick_eq_source_of_symmetric`, `kick_eq_neg_source_of_antisymmetric`, `kick_nonneg_of_nonneg_of_support` | unconditional |
-| The collar Hankel form: reflection pairing, completeness, inertia, truncation | `momentPairing_collarReflect`, `momentPairing_neg_collarReflect`, `eq_zero_of_trivialMoments_eq_zero`, `collarHankel_neg_of_poleMoment_zero`, `exists_collarHankel_nonpos`, `abs_collarHankel_sub_truncation_le` | unconditional |
+| The spectrum of the collar Hankel form decays geometrically on the annihilators of its moments; its negative index is infinite | `abs_collarHankel_le_of_moments_zero`, `sq_integral_abs_le`, `abs_collarHankel_le_sq_of_moments_zero`, `exists_collarHankel_negDefinite` | unconditional |
+| The collar Hankel form: reflection pairing, completeness, inertia, truncation, plastic distance | `momentPairing_collarReflect`, `momentPairing_neg_collarReflect`, `eq_zero_of_trivialMoments_eq_zero`, `collarHankel_neg_of_poleMoment_zero`, `exists_collarHankel_nonpos`, `abs_collarHankel_sub_truncation_le`, `collarHankel_ge_of_nonneg`, `collarHankel_pos_of_nonneg`, `collarHankel_neg_of_nonneg` | unconditional |
+| Theta gauges: total charges, outside-charge identity, criticality on the line, even-sector deficit | `integral_thetaGauge_mul_cosh`, `integral_thetaGauge_mul_sinh`, `fullZeroForm_thetaGauge_eq`, `fullZeroForm_thetaGauge_eq_univ`, `fullZeroForm_evenThetaGauge_window`, `fullZeroForm_evenThetaGauge_le` | unconditional |
+| Shifted ground states are strict pole-charged supersolutions on every window | `fullZeroForm_shiftedGroundState_window`, `fullZeroForm_shiftedGroundState_ge`, `outsideCharge_pos`, `sq_setIntegral_mul_le` | unconditional |
 | The frozen odd form is Markov and the kick is not | `levyEnergy_oddAbs_le`, `sq_sinhPairing_le_oddAbs`, `frozenOddForm_oddAbs_le`, `kick_le_kick_oddAbs`, `markovForm_two_sub_one`, `firstStage_frustration` | unconditional |
 | On reflection pairs the coupling is the smoothed prime count; the growth step on a reflection sector | `crossCorr_collarReflect`, `orderedCoupling_collarReflect`, `weilQuad_add_collarReflect`, `weilQuad_sub_collarReflect`, `weilQuad_stage_even`, `weilQuad_stage_odd` | unconditional |
-| The band is positivity on the reflection pair | `abs_coupling_le_weilQuad_iff` | unconditional |
+| The band is positivity on the reflection pair; the first prime stage opens positive on reflection pairs of total length `≤ 181/250` | `abs_coupling_le_weilQuad_iff`, `abs_coupling_le_weilQuad_of_short` | unconditional |
+| The light cone of a collar carries its reflection; prime anti-diagonals on odd tests are carried at the ratio `2Λ(n)n^{−1/2}e^{h}`; the ratio is below `1` for prime `2`, above for `3` | `integral_sub_reflect_sq_add_le`, `integral_sub_reflect_sq_id`, `neg_half_regionalLogEnergy_le_integral_mul_reflect`, `collarLogEnergy_eq`, `neg_half_collarLogEnergy_le`, `exp_neg_mul_collarLogEnergy_le`, `neg_collarLogEnergy_le_kick`, `kick_add_collarLevyEnergy_nonneg`, `two_mul_log_two_div_sqrt_two_lt_one`, `one_lt_two_mul_log_three_div_sqrt_three` | unconditional |
+| The parity sectors of a symmetric window are the band at its centre; the odd unit window in half-window form reads one prime weight, convexly | `le_weilQuad_of_centreCutoff`, `odd_nonneg_iff_centreCoupling_le`, `even_nonneg_iff_neg_centreCoupling_le`, `centreCoupling_eq_of_half`, `odd_unit_nonneg_iff`, `odd_unit_nonneg_iff_mem_unitBandWeights`, `convex_unitBandWeights`, `odd_unit_nonneg_iff_markov_hankel`, `centreCoupling_eq_moments`, `odd_nonneg_iff_markov_hankel`, `even_nonneg_iff_markov_hankel` | unconditional |
+| The first stage rejects the frozen and the flipped divisor; the sign of `Λ(2)` is forced | `firstStageForm_zeta`, `convex_firstStageWeights`, `zero_notMem_firstStageWeights`, `neg_notMem_firstStageWeights`, `pos_of_mem_firstStageWeights` | unconditional |
+| The odd light cone in the Doob gauge: per-shift split into same-side and anti-diagonal jumps; the archimedean part is a nonnegative folded form | `integral_signedShiftJump_eq_split_of_odd`, `integral_arch_mul_gaugeJumpProfile_eq_fold_of_odd`, `integral_arch_mul_gaugeJumpProfile_nonneg_of_odd` | unconditional |
+| The collar ratio is sharp: the Legendre gap is the infimum on admissible odd profiles; the collar of prime `3` does not pay its own frustration | `regionalLogEnergy_le_of_layer`, `abs_regionalLogPair_le`, `exists_odd_profile_ratio_lt`, `two_mul_collarLevyEnergy_le`, `exists_kick_add_collarLevyEnergy_neg`, `exists_prime_three_collar_unpaid` | unconditional |
+| Weil's form is ACT's full zero form; on a nonnegative symmetric window the band holds, and a tight band has a reflection-pair zero mode with pole-charged harmonic gauge | `fullZeroForm_eq_weilQuad`, `abs_coupling_le_weilQuad_of_window`, `zeroMode_of_tight_band_even`, `zeroMode_of_tight_band_odd`, `zeroMode_of_tight_band` | unconditional |
 
 ## 9. Traps
 
@@ -345,8 +404,12 @@ first-fold form is negative on a smooth test); APol (second difference of the co
 | A positive folded supersolution certifies the odd sector | It certifies the Markov part only, and forces `M ≥ 0` on every test supported in the half-window; `M` is negative on a plateau of width `e^{−3/4} < ½` |
 | The window must be prime-free for a Markov certificate to fail | The Markov part dies at width `e^{−3/4} < log 2`, before the first prime acts; the base `181/250` is already out of reach of Markov certificates |
 | A supersolution has to be positive up to the window edge | A `C²_c` gauge vanishing at an endpoint fails the inequality next to it; window gauges are positive on a neighbourhood of the closed interval and arbitrary outside |
+| The archimedean jumps across the centre are neutral between the sectors | They are the positive Hankel form `Σ_j m_j(f)²` of the half-window test: a gain in the odd sector, a cost in the even sector |
+| Both sectors gain from cutting the window | Only the odd sector: an odd theta gauge keeps its outside sinh charge as slack, an even theta gauge loses its outside cosh charge as deficit |
+| The window slack of a shifted ground state is a free gain | The identity is exact: a large outside charge `τ_c(a)` comes with a large reflected energy `D_a`; the slack measures how far the window is from the critical (whole-line) case |
 | The zero mode of a first failure is an arbitrary test | It is a pole-charged harmonic gauge on the window, and in its gauge the window form has no potential |
 | The trivial-zero squares of the collar coupling are a small correction | They are an injective positive Hankel form: on the pole hyperplane the collar coupling is negative definite |
+| The sign of the collar coupling on positive data is fixed | It flips at the plastic distance `log ρ`: positive for reflection pairs farther apart, negative closer in — the same threshold at which `2cosh(x/2) − ω(x)` changes sign |
 | `|F|` is the worst odd test | On the first odd stage `sign(x)|F|` lowers the frozen form and raises the kick; neither `F` nor `F̃` dominates |
 | The growth step needs the whole window | On a reflection sector it reads two forms on the shorter window and one number of the collar piece, `𝒞_m(x_L)` |
 | The pole is a perturbation of a Markov form | It is a square of fixed sign in each sector; in the even sector it pays the Markov Perron state, in the odd sector it is the debt |
@@ -354,6 +417,7 @@ first-fold form is negative on a smooth test); APol (second difference of the co
 | A gauge can remove a negative conductance | Positive gauges never change the sign of a conductance |
 | Kato's inequality handles frustrated edges | It compares with the form whose kick has the wrong sign, which is more negative than the frozen form |
 | The kick is a cost | It is positive on every positive function; it lifts the frozen Perron state |
+| Every prime's frustration can be paid inside its collar | The collar's light cone carries a prime anti-diagonal at the ratio `2Λ(n)n^{−1/2}e^{h}`, and no better than `2Λ(n)n^{−1/2}/(1 + 4h)` on admissible odd tests: below `1` for `2` (as `log 2 < 1/√2`), above `1` for `3` through `73`, whose collars provably do not pay (`exists_prime_three_collar_unpaid`) |
 | The collar inequalities of GWZ give an induction across stages | They assume `W ≥ 0` on the enlarged window and conclude a strict inequality of collar masses, not sector membership; the growth step is the contraction law, whose mixed pairing must be bounded with premises on the shorter window |
 | A proof must keep sharp constants everywhere | Only the window and lattice forms have no slack; the spline-orbit and tensor-loss receivers accept constant losses and reject only a positive rate |
 | Convergence of inputs in energy controls the output | A constant charge `t` survives adjunction energy `t²/B_M → 0` and vanishing physical input; every nonconstant mode's charge is carried the same way through the derivation law |
@@ -361,6 +425,7 @@ first-fold form is negative on a smooth test); APol (second difference of the co
 | The infimum of critical multiples over negative windows is a sub-RH invariant | `R₁(A) = inf R*(H)` over negative tests on `[−A, 0]` is nonincreasing in `A`; a lower bound tending to infinity is RH; `R₁(A) = ∞` is window positivity at length `A` |
 | Positivity at one multiple of the critical curve continues to all multiples by continuity | On the equality face of the pencil the canonical clock is eventually negative; passing a zero margin needs new input |
 | Bounded two-prime coupling with exact zero counts forces zero width | An abstract sign- and conjugation-symmetric divisor with exact spline weights, the full Riemann–von Mangoldt count and bounded coupling has positive unattained width (ACoT) |
+| A certificate of the odd unit window would select `ζ` | It reads only `w₂ = log 2/√2`, convexly; fakes with the same archimedean place, pole and weight at `2` share it |
 | The positive Euler twins show that only the strict Euler bound can select | Among positivity, the functional equation, an Euler product and Ramanujan bounds, the strict bound `θ < ½` is what excludes them; their conductor is `p²`, so exact source data also distinguish them |
 
 ## 10. Place in the research and relation to other programmes
@@ -386,6 +451,15 @@ The criteria review-0311 §2.7 sets for the field: reproduce the base `181/250` 
 stage; pay the pole's negative square; be critical; deliver the two-site band; force `Λ` and fail
 for flips, twins, `ζ(s)ζ(s − ε)`, Epstein and golden data; use the functional equation and the Euler
 product together.
+
+| Criterion | Status in SWC |
+|---|---|
+| Base `181/250` and first prime stage | The two-site band with the prime `2` inside holds on every reflection pair of total length `≤ 181/250` (`abs_coupling_le_weilQuad_of_short`, from the SPATL base); a signed-supersolution proof of the base itself is open (a Markov one cannot exist past `e^{−3/4}`) |
+| The pole's negative square | Paid by a sinh charge of the gauge (`signedJumpEnergy_add_le_fullZeroForm_of_sinhCharged`); shifted ground states carry it with window slack (`fullZeroForm_shiftedGroundState_ge`) |
+| Criticality | Critical gauges solve the pole-charged source equation and represent the window form without slack in their own gauge (`weilSource_eq_of_rayleighCritical`, `fullZeroForm_phiDoob_mul_eq_of_zeroMode`); on the line the shifted-gauge slack vanishes |
+| Two-site band | Exact form `|𝓗_m(f) − Σ_nΛ(n)n^{−1/2}(f⋆f)(2m − log n)| ≤ W(f)` ⇔ positivity of the reflection pair (`abs_coupling_le_weilQuad_iff`) |
+| Force `Λ`; fail for fakes | At the first prime stage (window length `21/20`) the admissible prime-two weights form an interval that excludes the frozen weight `0` and the flipped weight `−w₂` (`convex_firstStageWeights`, `zero_notMem_firstStageWeights`, `neg_notMem_firstStageWeights`); if the first stage of `ζ` is nonnegative, every admissible weight is positive, so the sign of `Λ(2)` is forced (`pos_of_mem_firstStageWeights`). A single window cannot force `Λ` beyond such intervals: the odd unit window reads exactly the weight `w₂` and is a convex condition on it (`convex_unitBandWeights`), so every divisor with the archimedean place, pole and weight at `2` of `ζ` passes or fails it with `ζ`. Selection is a property of the tower (GWZ lattice selection, ACT selectivity), read by SWC certificates only through the kicks |
+| Functional equation and Euler product | The pole's hyperbolic pair and the trivial divisor (functional equation) meet the prime anti-diagonals (Euler product) in the same signed form; no SWC statement uses one without the other |
 
 A contribution must be exact (an identity, an equivalence, a classification, or a no-go with its
 strongest positive survivor), keep every sign of the form, say which primes and which lengths it
@@ -419,3 +493,15 @@ lattice margins collapse, the Weil cone is a point, the equality face of the pen
 the certificate of this field is therefore a Liouville theorem for a critical signed form — bounded
 along the dilation flow, hence constant — and not a spectral gap. Constants may be lost only on the
 rate landings; a positive exponential rate may never be lost, since it is the zero width.
+
+On a single window the theorems of this field fix where the sign sits. The Markov part dies at
+width `e^{−3/4}`, before the first prime, so every certificate past it is pole-charged: the odd
+square is carried by the sinh charge of the gauge, and the even square is a cosh credit paid for by
+a rank-one negative conductance. Theta gauges are critical on the line, and a window reads the
+charges outside it with the pole's signs: slack in the odd sector, deficit in the even sector. On
+a reflection sector the growth step is a single identity whose only unknown is one number of the
+collar piece, the collar Hankel form minus the smoothed prime count. The collar Hankel form has one
+positive square, sees every test through the trivial zeros, and changes sign on positive data at
+the plastic distance. A first failure of the band is a reflection pair whose gauge is pole-charged
+harmonic. What remains is one inequality per stage, with no slack to lose: the certificate of the
+odd unit window, and the growth-step inequality past `181/250`.

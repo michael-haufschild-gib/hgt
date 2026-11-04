@@ -69,3 +69,4 @@ import GaloisForLFunctions.ArchimedeanTateDomination
 import GaloisForLFunctions.CanonicalSystemOfTheWindowTower
 import GaloisForLFunctions.SignedWindowCriticality
 import GaloisForLFunctions.ThetaCuspSections
+import GaloisForLFunctions.ZeroConfigurationGeometry

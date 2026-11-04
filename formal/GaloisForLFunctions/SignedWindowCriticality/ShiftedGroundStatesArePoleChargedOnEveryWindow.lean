@@ -108,9 +108,10 @@ theorem outsideCharge_pos {a c : ℝ} (ha : 0 < a) (hc : 0 < c) : 0 < outsideCha
       · rintro (h | h)
         · exact h.1
         · exact lt_of_lt_of_le hc h
-    rw [hset, setIntegral_union (Set.disjoint_left.mpr fun x hx hx' =>
-        absurd hx.2 (not_lt.mpr hx')) measurableSet_Ici
-      (hint.mono_set (hset ▸ subset_union_left)) (hint.mono_set (hset ▸ subset_union_right))]
+    have hdis : Disjoint (Ioo (0 : ℝ) c) (Ici c) :=
+      Set.disjoint_left.mpr fun x hx hx' => absurd hx.2 (not_lt.mpr hx')
+    rw [hset, setIntegral_union (s := Ioo (0 : ℝ) c) (t := Ici c) hdis measurableSet_Ici
+      (hint.mono_set Ioo_subset_Ioi_self) (hint.mono_set fun x hx => lt_of_lt_of_le hc hx)]
   have hpos : 0 < ∫ x in Ici c, shiftDifference a x * Real.sinh (x / 2) := by
     have hsub : (∫ x in Icc c (c + 1), shiftDifference a x * Real.sinh (x / 2)) ≤
         ∫ x in Ici c, shiftDifference a x * Real.sinh (x / 2) :=

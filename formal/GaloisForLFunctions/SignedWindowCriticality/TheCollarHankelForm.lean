@@ -28,6 +28,11 @@ For collar tests supported in `[p, q]`, `q < m`:
   negative definite on the pole hyperplane `μ_{1/2}(f) = 0`; every plane of collar tests contains a
   nonzero test with `𝓗_m ≤ 0`. So the collar Hankel form has at most one positive square and
   infinitely many negative ones.
+* **The plastic distance** (`collarHankel_pos_of_nonneg`, `collarHankel_neg_of_nonneg`). On
+  nonnegative collar data, `𝓗_m(f) ≥ (∫f)²(e^d − e^{−5d}/(1 − e^{−4d}))` with `d = m − q`, so
+  `𝓗_m > 0` once `e^{6d} − e^{2d} > 1`, i.e. `2d > log ρ` (`ρ³ = ρ + 1`, the plastic number of the
+  sign change of `2cosh(x/2) − ω(x)`); then the positive index is exactly one. Within the plastic
+  distance (`e^{6(m−p)} − e^{2(m−p)} < 1`) `𝓗_m < 0` on nonnegative data.
 * **Finite-rank shadow** (`abs_collarHankel_sub_truncation_le`). Keeping the first `K` trivial
   zeros changes `𝓗_m(f)` by at most `‖f‖₁² e^{−(4K+5)(m−q)}/(1 − e^{−4(m−q)})`.
 
@@ -304,6 +309,183 @@ theorem abs_collarHankel_sub_truncation_le (hf : Continuous f)
       (Real.exp m * leftMoment f (1 / 2) ^ 2 - ∑ k ∈ Finset.range K, a k) =
       -(∑' k : ℕ, a (k + K)) by ring, abs_neg, abs_of_nonneg htail0]
   exact htail
+
+
+/-! ### Nonnegative collar data and the plastic distance -/
+
+theorem leftMoment_half_ge (hf : Continuous f) (hsupp : ∀ u, u ∉ Icc p q → f u = 0)
+    (hf0 : ∀ u, 0 ≤ f u) : Real.exp (-(q / 2)) * ∫ u, f u ≤ leftMoment f (1 / 2) := by
+  have hfc : HasCompactSupport f := HasCompactSupport.intro isCompact_Icc hsupp
+  unfold leftMoment
+  rw [← integral_const_mul]
+  refine integral_mono ((hf.integrable_of_hasCompactSupport hfc).const_mul _)
+    ((hf.mul (by fun_prop)).integrable_of_hasCompactSupport hfc.mul_right) fun u => ?_
+  by_cases hu : u ∈ Icc p q
+  · have : Real.exp (-(q / 2)) ≤ Real.exp (-(1 / 2 * u)) := Real.exp_le_exp.mpr (by linarith [hu.2])
+    simp only; nlinarith [hf0 u]
+  · simp [hsupp u hu]
+
+theorem leftMoment_half_le (hf : Continuous f) (hsupp : ∀ u, u ∉ Icc p q → f u = 0)
+    (hf0 : ∀ u, 0 ≤ f u) : leftMoment f (1 / 2) ≤ Real.exp (-(p / 2)) * ∫ u, f u := by
+  have hfc : HasCompactSupport f := HasCompactSupport.intro isCompact_Icc hsupp
+  unfold leftMoment
+  rw [← integral_const_mul]
+  refine integral_mono ((hf.mul (by fun_prop)).integrable_of_hasCompactSupport hfc.mul_right)
+    ((hf.integrable_of_hasCompactSupport hfc).const_mul _) fun u => ?_
+  by_cases hu : u ∈ Icc p q
+  · have : Real.exp (-(1 / 2 * u)) ≤ Real.exp (-(p / 2)) := Real.exp_le_exp.mpr (by linarith [hu.1])
+    simp only; nlinarith [hf0 u]
+  · simp [hsupp u hu]
+
+theorem leftMoment_trivial_ge (hf : Continuous f) (hsupp : ∀ u, u ∉ Icc p q → f u = 0)
+    (hf0 : ∀ u, 0 ≤ f u) (k : ℕ) :
+    Real.exp (-(trivialExponent k * p)) * ∫ u, f u ≤ leftMoment f (trivialExponent k) := by
+  have hfc : HasCompactSupport f := HasCompactSupport.intro isCompact_Icc hsupp
+  have hσ := neg_trivialExponent_pos k
+  unfold leftMoment
+  rw [← integral_const_mul]
+  refine integral_mono ((hf.integrable_of_hasCompactSupport hfc).const_mul _)
+    ((hf.mul (by fun_prop)).integrable_of_hasCompactSupport hfc.mul_right) fun u => ?_
+  by_cases hu : u ∈ Icc p q
+  · have : Real.exp (-(trivialExponent k * p)) ≤ Real.exp (-(trivialExponent k * u)) :=
+      Real.exp_le_exp.mpr (by nlinarith [hu.1])
+    simp only; nlinarith [hf0 u]
+  · simp [hsupp u hu]
+
+/-- **Lower bound on nonnegative collar data.** For `f ≥ 0` supported in `[p, q]`, `d = m − q > 0`:
+`𝓗_m(f) ≥ (∫f)² (e^d − e^{−5d}/(1 − e^{−4d}))`. -/
+theorem collarHankel_ge_of_nonneg (hf : Continuous f) (hsupp : ∀ u, u ∉ Icc p q → f u = 0)
+    (hf0 : ∀ u, 0 ≤ f u) (hqm : q < m) :
+    (∫ u, f u) ^ 2 * (Real.exp (m - q) -
+        Real.exp (-(5 * (m - q))) / (1 - Real.exp (-(4 * (m - q))))) ≤ collarHankel m f := by
+  have hI0 : 0 ≤ ∫ u, f u := integral_nonneg hf0
+  have habs : (∫ u, |f u|) = ∫ u, f u := integral_congr_ae (Eventually.of_forall fun u => by
+    simp only [abs_of_nonneg (hf0 u)])
+  have hμ := leftMoment_half_ge hf hsupp hf0
+  have hpole : Real.exp (m - q) * (∫ u, f u) ^ 2 ≤ Real.exp m * leftMoment f (1 / 2) ^ 2 := by
+    have h1 : (Real.exp (-(q / 2)) * ∫ u, f u) ^ 2 ≤ leftMoment f (1 / 2) ^ 2 :=
+      pow_le_pow_left₀ (by positivity) hμ 2
+    have he : Real.exp m * (Real.exp (-(q / 2)) * ∫ u, f u) ^ 2 =
+        Real.exp (m - q) * (∫ u, f u) ^ 2 := by
+      rw [mul_pow, ← mul_assoc, ← Real.exp_nat_mul, ← Real.exp_add]; congr 2; push_cast; ring
+    rw [← he]
+    exact mul_le_mul_of_nonneg_left h1 (Real.exp_pos _).le
+  set r := Real.exp (-(4 * (m - q)))
+  have hr0 : 0 ≤ r := (Real.exp_pos _).le
+  have hr1 : r < 1 := Real.exp_lt_one_iff.mpr (by linarith)
+  have hsum := summable_trivialSquares hf hsupp hqm
+  have hgeo : Summable fun k : ℕ => (∫ u, f u) ^ 2 * Real.exp (-(5 * (m - q))) * r ^ k :=
+    (summable_geometric_of_lt_one hr0 hr1).mul_left _
+  have htsum : (∑' k : ℕ, Real.exp (2 * m * trivialExponent k) *
+      leftMoment f (trivialExponent k) ^ 2) ≤
+      (∫ u, f u) ^ 2 * (Real.exp (-(5 * (m - q))) / (1 - r)) := by
+    calc (∑' k : ℕ, Real.exp (2 * m * trivialExponent k) * leftMoment f (trivialExponent k) ^ 2)
+        ≤ ∑' k : ℕ, (∫ u, f u) ^ 2 * Real.exp (-(5 * (m - q))) * r ^ k :=
+          Summable.tsum_le_tsum (fun k => by
+            have := atom_trivial_le (m := m) hf hsupp k
+            rw [exp_two_trivialExponent_mul, habs] at this
+            linarith) hsum hgeo
+      _ = (∫ u, f u) ^ 2 * (Real.exp (-(5 * (m - q))) / (1 - r)) := by
+          rw [tsum_mul_left, tsum_geometric_of_lt_one hr0 hr1]; ring
+  unfold collarHankel
+  have : (∫ u, f u) ^ 2 * (Real.exp (m - q) - Real.exp (-(5 * (m - q))) / (1 - r)) =
+      Real.exp (m - q) * (∫ u, f u) ^ 2 - (∫ u, f u) ^ 2 * (Real.exp (-(5 * (m - q))) / (1 - r)) := by
+    ring
+  rw [this]
+  linarith
+
+/-- **Beyond the plastic distance the collar Hankel form is positive on positive data.** If
+`e^{6d} − e^{2d} > 1`, `d = m − q` (that is, `2d > log ρ`, `ρ³ = ρ + 1`), every nonzero nonnegative
+continuous collar test supported in `[p, q]` has `𝓗_m(f) > 0`. With `exists_collarHankel_nonpos`
+the collar Hankel form then has exactly one positive square. -/
+theorem collarHankel_pos_of_nonneg (hf : Continuous f) (hsupp : ∀ u, u ∉ Icc p q → f u = 0)
+    (hf0 : ∀ u, 0 ≤ f u) (hne : ∃ u, f u ≠ 0) (hqm : q < m)
+    (hplastic : 1 < Real.exp (6 * (m - q)) - Real.exp (2 * (m - q))) : 0 < collarHankel m f := by
+  have hfc : HasCompactSupport f := HasCompactSupport.intro isCompact_Icc hsupp
+  obtain ⟨u₀, hu₀⟩ := hne
+  have hI : 0 < ∫ u, f u :=
+    hf.integral_pos_of_hasCompactSupport_nonneg_nonzero hfc (fun u => hf0 u) hu₀
+  set d := m - q
+  have hd : 0 < d := by simp only [d]; linarith
+  have h4 : 0 < 1 - Real.exp (-(4 * d)) := by
+    have : Real.exp (-(4 * d)) < 1 := Real.exp_lt_one_iff.mpr (by linarith)
+    linarith
+  have hbr : 0 < Real.exp d - Real.exp (-(5 * d)) / (1 - Real.exp (-(4 * d))) := by
+    rw [sub_pos, div_lt_iff₀ h4]
+    have e1 : Real.exp d * (1 - Real.exp (-(4 * d))) * Real.exp (5 * d) =
+        Real.exp (6 * d) - Real.exp (2 * d) := by
+      rw [mul_sub, mul_one, sub_mul, ← Real.exp_add, ← Real.exp_add, ← Real.exp_add]
+      congr 1 <;> congr 1 <;> ring
+    have e2 : Real.exp (-(5 * d)) * Real.exp (5 * d) = 1 := by
+      rw [← Real.exp_add]; simp
+    have hpos5 := Real.exp_pos (5 * d)
+    nlinarith
+  have hge := collarHankel_ge_of_nonneg hf hsupp hf0 hqm
+  have : 0 < (∫ u, f u) ^ 2 * (Real.exp d - Real.exp (-(5 * d)) / (1 - Real.exp (-(4 * d)))) :=
+    mul_pos (pow_pos hI 2) hbr
+  linarith
+
+/-- **Within the plastic distance the collar Hankel form is negative on positive data.** If
+`e^{6d'} − e^{2d'} < 1`, `d' = m − p`, every nonzero nonnegative continuous collar test supported in
+`[p, q]` has `𝓗_m(f) < 0`. -/
+theorem collarHankel_neg_of_nonneg (hf : Continuous f) (hsupp : ∀ u, u ∉ Icc p q → f u = 0)
+    (hf0 : ∀ u, 0 ≤ f u) (hne : ∃ u, f u ≠ 0) (hpq : p ≤ q) (hqm : q < m)
+    (hplastic : Real.exp (6 * (m - p)) - Real.exp (2 * (m - p)) < 1) : collarHankel m f < 0 := by
+  have hfc : HasCompactSupport f := HasCompactSupport.intro isCompact_Icc hsupp
+  obtain ⟨u₀, hu₀⟩ := hne
+  have hI : 0 < ∫ u, f u :=
+    hf.integral_pos_of_hasCompactSupport_nonneg_nonzero hfc (fun u => hf0 u) hu₀
+  set d := m - p
+  have hd : 0 < d := by simp only [d]; linarith
+  set r := Real.exp (-(4 * d))
+  have hr0 : 0 ≤ r := (Real.exp_pos _).le
+  have hr1 : r < 1 := Real.exp_lt_one_iff.mpr (by linarith)
+  have hμ := leftMoment_half_le hf hsupp hf0
+  have hμ0 : 0 ≤ leftMoment f (1 / 2) := le_trans (by positivity) (leftMoment_half_ge hf hsupp hf0)
+  have hpole : Real.exp m * leftMoment f (1 / 2) ^ 2 ≤ Real.exp d * (∫ u, f u) ^ 2 := by
+    have h1 : leftMoment f (1 / 2) ^ 2 ≤ (Real.exp (-(p / 2)) * ∫ u, f u) ^ 2 :=
+      pow_le_pow_left₀ hμ0 hμ 2
+    have he : Real.exp m * (Real.exp (-(p / 2)) * ∫ u, f u) ^ 2 = Real.exp d * (∫ u, f u) ^ 2 := by
+      rw [mul_pow, ← mul_assoc, ← Real.exp_nat_mul, ← Real.exp_add]; congr 2; push_cast
+      simp only [d]; ring
+    rw [← he]
+    exact mul_le_mul_of_nonneg_left h1 (Real.exp_pos _).le
+  have hsum := summable_trivialSquares hf hsupp hqm
+  have hgeo : Summable fun k : ℕ => (∫ u, f u) ^ 2 * Real.exp (-(5 * d)) * r ^ k :=
+    (summable_geometric_of_lt_one hr0 hr1).mul_left _
+  have hlow : (∫ u, f u) ^ 2 * (Real.exp (-(5 * d)) / (1 - r)) ≤
+      ∑' k : ℕ, Real.exp (2 * m * trivialExponent k) * leftMoment f (trivialExponent k) ^ 2 := by
+    calc (∫ u, f u) ^ 2 * (Real.exp (-(5 * d)) / (1 - r))
+        = ∑' k : ℕ, (∫ u, f u) ^ 2 * Real.exp (-(5 * d)) * r ^ k := by
+          rw [tsum_mul_left, tsum_geometric_of_lt_one hr0 hr1]; ring
+      _ ≤ _ := Summable.tsum_le_tsum (fun k => by
+          have hk := leftMoment_trivial_ge hf hsupp hf0 k
+          have hk0 : 0 ≤ Real.exp (-(trivialExponent k * p)) * ∫ u, f u := by positivity
+          have hsq := pow_le_pow_left₀ hk0 hk 2
+          have he : Real.exp (2 * m * trivialExponent k) *
+              (Real.exp (-(trivialExponent k * p)) * ∫ u, f u) ^ 2 =
+              (∫ u, f u) ^ 2 * (Real.exp (-(5 * d)) * r ^ k) := by
+            rw [← exp_two_trivialExponent_mul, mul_pow, ← mul_assoc, ← Real.exp_nat_mul,
+              ← Real.exp_add]
+            simp only [d]; push_cast; ring_nf
+          calc (∫ u, f u) ^ 2 * Real.exp (-(5 * d)) * r ^ k
+              = Real.exp (2 * m * trivialExponent k) *
+                  (Real.exp (-(trivialExponent k * p)) * ∫ u, f u) ^ 2 := by rw [he]; ring
+            _ ≤ _ := mul_le_mul_of_nonneg_left hsq (Real.exp_pos _).le) hgeo hsum
+  have h4 : 0 < 1 - r := by linarith
+  have hbr : Real.exp d - Real.exp (-(5 * d)) / (1 - r) < 0 := by
+    rw [sub_neg, lt_div_iff₀ h4]
+    have e1 : Real.exp d * (1 - r) * Real.exp (5 * d) = Real.exp (6 * d) - Real.exp (2 * d) := by
+      simp only [r]
+      rw [mul_sub, mul_one, sub_mul, ← Real.exp_add, ← Real.exp_add, ← Real.exp_add]
+      congr 1 <;> congr 1 <;> ring
+    have e2 : Real.exp (-(5 * d)) * Real.exp (5 * d) = 1 := by
+      rw [← Real.exp_add]; simp
+    have hpos5 := Real.exp_pos (5 * d)
+    nlinarith
+  unfold collarHankel
+  have : 0 < (∫ u, f u) ^ 2 := pow_pos hI 2
+  nlinarith [mul_neg_of_pos_of_neg this hbr]
 
 end GaloisForLFunctions.SignedWindowCriticality
 

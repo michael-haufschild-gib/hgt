@@ -1,3 +1,4 @@
+import GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspRadialCoefficients
 import GaloisForLFunctions.RHTower.CothInfra
 import GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspModularCompensationDeterminant
 import GaloisForLFunctions.ThetaCuspSections.FifthEvenSourceRepair
@@ -9,11 +10,16 @@ import GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspInheritedOddCompensationBo
 /-!
 # Constant load boundary for the fifth even theta source
 
-An explicit even direction has positive complete-source energy at scale seven.
-Its load capacity is smaller than the fourth-head threshold at the origin.
+Explicit even directions have positive complete-source energy at scale seven.
+Their native and weighted capacities give exact positive load regions and
+exclude large diagonal and coupled corrections. The eighth-degree capacity
+is smaller than the fourth-head threshold at the origin.
 Thus no constant fourth load and nonnegative fifth load give global source
 positivity, including the weighted flux representative at each critical aperture.
 The exact signed region preserving both boundary tests is nonempty.
+A further Schur direction excludes a smaller coupled pair while retaining
+positive native energy and exact native and weighted load capacities.
+A polarized two-atom estimate controls every fifth-section entry at scale seven.
 -/
 
 noncomputable section
@@ -961,5 +967,873 @@ theorem constant_weighted_repair_fails {a D : ℝ}
   have hw := (h witnessRadius witnessRadius_pos).dotProduct_mulVec_nonneg witnessVector
   simp only [star_trivial, weighted_matrix_energy] at hw
   exact (not_lt_of_ge hw) (weighted_direction_negative_of_origin ha haU hD hC)
+
+
+private theorem fourth_retained_upper :
+    thetaCuspTwoAtomReflectionJet 8 witnessCenter ≤
+      2000000000*thetaCuspSourceTerm witnessCenter 1^2 := by
+  have ht0 := (Real.exp_pos (-21 : ℝ)).le
+  have ht := second_decay_bound
+  have ht2 := mul_self_le_mul_self ht0 ht
+  have hp : (thetaPairRadialEvenPolynomial 49 4).eval 14+
+      8*Real.exp (-21)*(thetaPairRadialEvenPolynomial 196 4).eval 35+
+      16*Real.exp (-21)^2*(thetaPairRadialEvenPolynomial 784 4).eval 56 ≤
+        2000000000*121 := by
+    norm_num [eval_thetaPairRadialEvenPolynomial,Finset.sum_range_succ,
+      radialCoeffs_4_0,radialCoeffs_4_1,radialCoeffs_4_2,radialCoeffs_4_3,
+      radialCoeffs_4_4,radialCoeffs_4_5,radialCoeffs_4_6,radialCoeffs_4_7,
+      radialCoeffs_4_8,radialCoeffs_4_9]
+    nlinarith only [ht0,ht,ht2]
+  have hr := retained_moment 4 witness_scale
+  norm_num only [even_two, Even.neg_one_pow, one_mul] at hr
+  have hm := mul_le_mul_of_nonneg_left hp
+    (show 0 ≤ 196*Real.exp (witnessCenter-14) by positivity)
+  rw [hr,first_mass_square witness_scale]
+  nlinarith only [hm]
+
+private theorem fourth_moment_upper :
+    thetaCuspNativeReflectionJet 8 witnessCenter <
+      3000000000*thetaCuspSourceTerm witnessCenter 1^2 := by
+  have herr := native_twoAtom_cauchy_error 8
+    (show 5 ≤ thetaCuspSingleAtomReflectionScale 1 witnessCenter by rw [witness_scale]; norm_num)
+  have hu := (le_abs_self (thetaCuspNativeReflectionJet 8 witnessCenter-
+    thetaCuspTwoAtomReflectionJet 8 witnessCenter)).trans herr
+  have hf := first_mass_pos
+  have hret := fourth_retained_upper
+  norm_num [Nat.factorial] at hu
+  nlinarith only [hu,hret,hf]
+
+/-- The fourth even source moment cannot pay a billion units of compensation at scale seven. -/
+theorem fourth_moment_load_negative :
+    thetaCuspNativeReflectionJet 8 witnessCenter+
+      1000000000*thetaCuspCenterCompensationSource witnessCenter < 0 := by
+  have hu := fourth_moment_upper
+  have hf := first_mass_pos
+  have hg := compensation_upper witness_scale witness_center_lower
+  nlinarith only [hu,hg,hf]
+
+/-- Every critical aperture has a negative fourth-moment direction at a billion units of load. -/
+theorem fourth_moment_weighted_load_negative {a : ℝ} (ha : 0 < a) (haU : a < 1/2) :
+    witnessWeight a*thetaCuspNativeReflectionJet 8 witnessCenter+
+      1000000000*weightedLoad a < 0 := by
+  have hu := mul_lt_mul_of_pos_left fourth_moment_upper (witnessWeight_pos ha)
+  have hg := weightedLoad_upper ha haU
+  nlinarith only [hu,hg]
+
+/-- Every larger common source load retains the negative fourth-moment direction. -/
+theorem fourth_moment_load_negative_of_oneBillion_le {C : ℝ} (hC : 1000000000 ≤ C) :
+    thetaCuspNativeReflectionJet 8 witnessCenter+
+      C*thetaCuspCenterCompensationSource witnessCenter < 0 := by
+  have hg := compensation_upper witness_scale witness_center_lower
+  have hG : thetaCuspCenterCompensationSource witnessCenter ≤ 0 := by
+    nlinarith only [hg,sq_nonneg (thetaCuspSourceTerm witnessCenter 1)]
+  have hm := mul_nonpos_of_nonneg_of_nonpos (sub_nonneg.mpr hC) hG
+  nlinarith only [fourth_moment_load_negative,hm]
+
+/-- Every larger common weighted load has the same negative coordinate. -/
+theorem fourth_moment_weighted_load_negative_of_oneBillion_le {a C : ℝ}
+    (ha : 0 < a) (haU : a < 1/2) (hC : 1000000000 ≤ C) :
+    witnessWeight a*thetaCuspNativeReflectionJet 8 witnessCenter+
+      C*weightedLoad a < 0 := by
+  have hm := mul_nonpos_of_nonneg_of_nonpos (sub_nonneg.mpr hC) (weightedLoad_neg ha haU).le
+  nlinarith only [fourth_moment_weighted_load_negative ha haU,hm]
+
+
+/-- The normalized sixth Hermite direction at variance fifty-six. -/
+def sixthVector : Fin 4 → ℝ := ![-6272,336,-2,1/420]
+
+private def sixthDirectionalPolynomial (a X : ℝ) : ℝ :=
+  ∑ i : Fin 4, ∑ j : Fin 4, sixthVector i*sixthVector j *
+    (thetaPairRadialEvenPolynomial a (i.val+j.val)).eval X
+
+/-- Complete-source energy in the sixth-degree scale-seven direction. -/
+def sixthEnergy (x : ℝ) : ℝ :=
+  ∑ i : Fin 4, ∑ j : Fin 4, sixthVector i *
+    ((-1 : ℝ)^(i.val+j.val)*thetaCuspNativeReflectionJet (2*(i.val+j.val)) x)*sixthVector j
+
+private def sixthRetainedEnergy (x : ℝ) : ℝ :=
+  ∑ i : Fin 4, ∑ j : Fin 4, sixthVector i *
+    ((-1 : ℝ)^(i.val+j.val)*thetaCuspTwoAtomReflectionJet (2*(i.val+j.val)) x)*sixthVector j
+
+private theorem sixth_error_constant :
+    (∑ i : Fin 4, ∑ j : Fin 4,
+      |sixthVector i| * |sixthVector j| * ((2*(i.val+j.val)).factorial:ℝ) /
+        (500000000*(3/20:ℝ)^(2*(i.val+j.val)))) ≤ 1000000 := by
+  norm_num [sixthVector,Fin.sum_univ_succ,Nat.factorial]
+private theorem sixth_retained_lower {z : ℝ} (hz : 0 ≤ z) (hzU : z ≤ 1/1000000000) :
+    89000000*121 < sixthDirectionalPolynomial 49 14+8*z*sixthDirectionalPolynomial 196 35+16*z^2*sixthDirectionalPolynomial 784 56 := by
+  have hsq := mul_self_le_mul_self hz hzU
+  norm_num [sixthDirectionalPolynomial,sixthVector,Fin.sum_univ_succ,eval_thetaPairRadialEvenPolynomial,Finset.sum_range_succ,
+    radialCoeffs_0_0,radialCoeffs_0_1,radialCoeffs_1_0,radialCoeffs_1_1,radialCoeffs_1_2,
+    radialCoeffs_1_3,radialCoeffs_2_0,radialCoeffs_2_1,radialCoeffs_2_2,radialCoeffs_2_3,
+    radialCoeffs_2_4,radialCoeffs_2_5,radialCoeffs_3_0,radialCoeffs_3_1,radialCoeffs_3_2,
+    radialCoeffs_3_3,radialCoeffs_3_4,radialCoeffs_3_5,radialCoeffs_3_6,radialCoeffs_3_7,
+    radialCoeffs_4_0,radialCoeffs_4_1,radialCoeffs_4_2,radialCoeffs_4_3,radialCoeffs_4_4,
+    radialCoeffs_4_5,radialCoeffs_4_6,radialCoeffs_4_7,radialCoeffs_4_8,radialCoeffs_4_9,
+    radialCoeffs_5_0,radialCoeffs_5_1,radialCoeffs_5_2,radialCoeffs_5_3,radialCoeffs_5_4,
+    radialCoeffs_5_5,radialCoeffs_5_6,radialCoeffs_5_7,radialCoeffs_5_8,radialCoeffs_5_9,
+    radialCoeffs_5_10,radialCoeffs_5_11,radialCoeffs_6_0,radialCoeffs_6_1,radialCoeffs_6_2,
+    radialCoeffs_6_3,radialCoeffs_6_4,radialCoeffs_6_5,radialCoeffs_6_6,radialCoeffs_6_7,
+    radialCoeffs_6_8,radialCoeffs_6_9,radialCoeffs_6_10,radialCoeffs_6_11,radialCoeffs_6_12,
+    radialCoeffs_6_13]
+  nlinarith only [hz,hzU,hsq,sq_nonneg z]
+private theorem sixth_retained_upper {z : ℝ} (hz : 0 ≤ z) (hzU : z ≤ 1/1000000000) :
+    sixthDirectionalPolynomial 49 14+8*z*sixthDirectionalPolynomial 196 35+16*z^2*sixthDirectionalPolynomial 784 56 < 199000000*121 := by
+  have hsq := mul_self_le_mul_self hz hzU
+  norm_num [sixthDirectionalPolynomial,sixthVector,Fin.sum_univ_succ,eval_thetaPairRadialEvenPolynomial,Finset.sum_range_succ,
+    radialCoeffs_0_0,radialCoeffs_0_1,radialCoeffs_1_0,radialCoeffs_1_1,radialCoeffs_1_2,
+    radialCoeffs_1_3,radialCoeffs_2_0,radialCoeffs_2_1,radialCoeffs_2_2,radialCoeffs_2_3,
+    radialCoeffs_2_4,radialCoeffs_2_5,radialCoeffs_3_0,radialCoeffs_3_1,radialCoeffs_3_2,
+    radialCoeffs_3_3,radialCoeffs_3_4,radialCoeffs_3_5,radialCoeffs_3_6,radialCoeffs_3_7,
+    radialCoeffs_4_0,radialCoeffs_4_1,radialCoeffs_4_2,radialCoeffs_4_3,radialCoeffs_4_4,
+    radialCoeffs_4_5,radialCoeffs_4_6,radialCoeffs_4_7,radialCoeffs_4_8,radialCoeffs_4_9,
+    radialCoeffs_5_0,radialCoeffs_5_1,radialCoeffs_5_2,radialCoeffs_5_3,radialCoeffs_5_4,
+    radialCoeffs_5_5,radialCoeffs_5_6,radialCoeffs_5_7,radialCoeffs_5_8,radialCoeffs_5_9,
+    radialCoeffs_5_10,radialCoeffs_5_11,radialCoeffs_6_0,radialCoeffs_6_1,radialCoeffs_6_2,
+    radialCoeffs_6_3,radialCoeffs_6_4,radialCoeffs_6_5,radialCoeffs_6_6,radialCoeffs_6_7,
+    radialCoeffs_6_8,radialCoeffs_6_9,radialCoeffs_6_10,radialCoeffs_6_11,radialCoeffs_6_12,
+    radialCoeffs_6_13]
+  nlinarith only [hz,hzU,hsq,sq_nonneg z]
+private theorem sixth_energy_error_bound {x : ℝ}
+    (hq : thetaCuspSingleAtomReflectionScale 1 x = 7) :
+    |sixthEnergy x-sixthRetainedEnergy x| ≤ 1000000*thetaCuspSourceTerm x 1^2 := by
+  let f := thetaCuspSourceTerm x 1
+  unfold sixthEnergy sixthRetainedEnergy
+  rw [← Finset.sum_sub_distrib]
+  calc
+    _ ≤ ∑ i : Fin 4, ∑ j : Fin 4, |sixthVector i| * |sixthVector j| *
+        (((2*(i.val+j.val)).factorial:ℝ)*(f^2/500000000)/(3/20)^(2*(i.val+j.val))) := by
+      apply (Finset.abs_sum_le_sum_abs _ _).trans
+      apply Finset.sum_le_sum
+      intro i hi
+      rw [← Finset.sum_sub_distrib]
+      apply (Finset.abs_sum_le_sum_abs _ _).trans
+      apply Finset.sum_le_sum
+      intro j hj
+      have hb := native_twoAtom_cauchy_error (2*(i.val+j.val)) (by rw [hq]; norm_num)
+      have he (a b : ℝ) : sixthVector i*((-1:ℝ)^(i.val+j.val)*a)*sixthVector j-
+          sixthVector i*((-1:ℝ)^(i.val+j.val)*b)*sixthVector j =
+          sixthVector i*sixthVector j*(-1:ℝ)^(i.val+j.val)*(a-b) := by ring
+      rw [he]
+      simp only [abs_mul, abs_pow, abs_neg, abs_one, one_pow, mul_one]
+      exact mul_le_mul_of_nonneg_left hb (mul_nonneg (abs_nonneg _) (abs_nonneg _))
+    _ = (∑ i : Fin 4, ∑ j : Fin 4,
+        |sixthVector i| * |sixthVector j| * ((2*(i.val+j.val)).factorial:ℝ) /
+        (500000000*(3/20:ℝ)^(2*(i.val+j.val))))*f^2 := by
+      simp only [Finset.sum_mul]
+      apply Finset.sum_congr rfl
+      intro i hi
+      apply Finset.sum_congr rfl
+      intro j hj
+      ring
+    _ ≤ 1000000*f^2 := mul_le_mul_of_nonneg_right sixth_error_constant (sq_nonneg f)
+
+private theorem sixth_retained_energy_eq {x : ℝ}
+    (hq : thetaCuspSingleAtomReflectionScale 1 x = 7) :
+    sixthRetainedEnergy x = 196*Real.exp (x-14)*
+      (sixthDirectionalPolynomial 49 14 + 8*Real.exp (-21)*sixthDirectionalPolynomial 196 35 +
+        16*Real.exp (-21)^2*sixthDirectionalPolynomial 784 56) := by
+  unfold sixthRetainedEnergy
+  simp only [retained_moment _ hq]
+  norm_num [Fin.sum_univ_succ, sixthVector, sixthDirectionalPolynomial]
+  ring
+
+
+/-- The complete sixth-degree energy is positive, but smaller than two hundred million first-atom squares. -/
+theorem sixth_energy_bounds :
+    88000000*thetaCuspSourceTerm witnessCenter 1^2 < sixthEnergy witnessCenter ∧
+    sixthEnergy witnessCenter < 200000000*thetaCuspSourceTerm witnessCenter 1^2 := by
+  have hlo := mul_lt_mul_of_pos_left
+    (sixth_retained_lower (Real.exp_pos (-21)).le second_decay_bound)
+    (show 0 < 196*Real.exp (witnessCenter-14) by positivity)
+  have hhi := mul_lt_mul_of_pos_left
+    (sixth_retained_upper (Real.exp_pos (-21)).le second_decay_bound)
+    (show 0 < 196*Real.exp (witnessCenter-14) by positivity)
+  have he := sixth_energy_error_bound witness_scale
+  have hl := (neg_le_abs (sixthEnergy witnessCenter-sixthRetainedEnergy witnessCenter)).trans he
+  have hu := (le_abs_self (sixthEnergy witnessCenter-sixthRetainedEnergy witnessCenter)).trans he
+  rw [sixth_retained_energy_eq witness_scale] at hl hu
+  rw [first_mass_square witness_scale] at hl hu ⊢
+  constructor <;> nlinarith only [hlo,hhi,hl,hu]
+
+/-- The sixth-degree source direction is strictly positive before compensation. -/
+theorem sixth_energy_pos : 0 < sixthEnergy witnessCenter := by
+  have h := sixth_energy_bounds.1
+  nlinarith only [h,first_mass_pos]
+
+private theorem sixth_compensation_lower :
+    -(11/2 : ℝ)*thetaCuspSourceTerm witnessCenter 1^2 <
+      thetaCuspCenterCompensationSource witnessCenter := by
+  let x := witnessCenter
+  let f := thetaCuspSourceTerm x 1
+  let F := thetaCuspFullSource x
+  have hx : 0 < x := by dsimp [x]; linarith only [witness_center_lower]
+  have hf : 0 < f := thetaCuspSourceTerm_pos_of_pos_of_nat_pos hx (by norm_num)
+  have hF : 0 < F := thetaCuspFullSource_pos_all x
+  have hq : thetaCuspSingleAtomReflectionScale 1 x=7 := witness_scale
+  have hmass : f ≤ F := by
+    have hR := (thetaCuspLikelihoodSourceRemainder_signed_bounds_of_seven_le
+      (n := 0) (by norm_num) (x := x) (by rw [hq])).1
+    simp only [pow_zero,one_mul,iteratedDeriv_zero] at hR
+    have hz := thetaCuspFullSource_derivative_sub_first_eq 0 hx
+    norm_num only [Finset.sum_range_succ,Finset.sum_range_zero,Nat.choose_zero_right,
+      Nat.choose_self,Nat.cast_one,Nat.reduceSub,one_mul,iteratedDeriv_zero,add_zero,zero_add] at hz
+    have hp := mul_nonneg hf.le hR
+    change F-f=f*thetaCuspLikelihoodSourceRemainder x at hz
+    linarith only [hp,hz]
+  have hmassU : F ≤ (101/100)*f :=
+    (thetaCuspFullSource_mass_slope_le_scaleSeven (by rw [hq])).1
+  have hslope : deriv (fun y : ℝ => thetaCuspSourceTerm y 1) x = -(197/22 : ℝ)*f := by
+    have hd := iteratedDeriv_firstAtom_eq_gaussianScaleJets 1 x
+    rw [iteratedDeriv_one] at hd
+    rw [hd]
+    dsimp only [thetaCuspGaussianScaleJet,thetaCuspGaussianScaleMoment,f]
+    rw [thetaCuspSourceTerm_one_eq_scale_profile,hq]
+    ring
+  have he := pow_mul_regimeOneLikelihoodScale_le_of_seven_le (k := 0) (by norm_num)
+    (show 7 ≤ thetaCuspSingleAtomReflectionScale 1 x by rw [hq])
+  simp only [pow_zero,one_mul] at he
+  have hε : 36*regimeOneLikelihoodScale x ≤ 1/100 := by linarith only [he]
+  have h1 := abs_thetaCuspFullSource_derivative_sub_first_le_effective 1 hx (by rw [hq]; norm_num)
+  simp only [iteratedDeriv_one,pow_one,hq,hslope] at h1
+  have hm := mul_le_mul_of_nonneg_right hε (show 0 ≤ 7*f by positivity)
+  have hd : -(91/10 : ℝ)*f ≤ deriv thetaCuspFullSource x := by
+    have hl := (abs_le.mp h1).1
+    dsimp only [f] at hm ⊢
+    nlinarith only [hl,hm,hf]
+  have hxu : x ≤ 7/16 := by
+    have h := witnessRadius_le
+    unfold witnessRadius at h
+    dsimp only [x]
+    linarith only [h]
+  have hs := mul_self_le_mul_self hf.le hmass
+  have hFF := mul_le_mul_of_nonneg_right hmassU hf.le
+  have hxFF := mul_le_mul_of_nonneg_left hFF hx.le
+  have hxf := mul_le_mul_of_nonneg_right hxu (sq_nonneg f)
+  have hprod := mul_le_mul_of_nonneg_left hd (show 0 ≤ 2*x*F by positivity)
+  change -(11/2 : ℝ)*f^2 < 3*F^2+2*x*F*deriv thetaCuspFullSource x
+  nlinarith only [hs,hxFF,hxf,hprod,sq_pos_of_pos hf]
+
+/-- Exact native load capacity in the sixth-degree direction. -/
+def sixthCapacity : ℝ := sixthEnergy witnessCenter / (-thetaCuspCenterCompensationSource witnessCenter)
+
+/-- The sixth-degree direction allows fewer than fifty million units of source load. -/
+theorem sixthCapacity_bounds : 16000000 < sixthCapacity ∧ sixthCapacity < 50000000 := by
+  have hd := neg_pos.mpr compensation_negative
+  constructor
+  · rw [sixthCapacity,lt_div_iff₀ hd]
+    have hE := sixth_energy_bounds.1
+    have hG := sixth_compensation_lower
+    nlinarith only [hE,hG]
+  · rw [sixthCapacity,div_lt_iff₀ hd]
+    have hE := sixth_energy_bounds.2
+    have hG := compensation_upper witness_scale witness_center_lower
+    nlinarith only [hE,hG,first_mass_pos]
+
+/-- Exact half-plane preserving strict positivity in the sixth-degree direction. -/
+theorem sixth_coupled_positive_iff (C D : ℝ) :
+    0 < sixthEnergy witnessCenter+(C+D/176400)*thetaCuspCenterCompensationSource witnessCenter ↔
+      C+D/176400 < sixthCapacity := by
+  have hd := neg_pos.mpr compensation_negative
+  rw [sixthCapacity,lt_div_iff₀ hd]
+  constructor <;> intro h <;> nlinarith only [h]
+
+/-- Every nonnegative second load fails when the first coupled load reaches one hundred million. -/
+theorem sixth_coupled_negative {C D : ℝ} (hC : 100000000 ≤ C) (hD : 0 ≤ D) :
+    sixthEnergy witnessCenter+(C+D/176400)*thetaCuspCenterCompensationSource witnessCenter < 0 := by
+  have hc : 50000000 < C+D/176400 := by linarith only [hC,hD]
+  have hd := neg_pos.mpr compensation_negative
+  have hb := (div_lt_iff₀ hd).mp (sixthCapacity_bounds.2.trans hc)
+  nlinarith only [hb]
+
+/-- Exact weighted load capacity in the sixth-degree direction. -/
+def sixthWeightedCapacity (a : ℝ) : ℝ :=
+  witnessWeight a*sixthEnergy witnessCenter / (-weightedLoad a)
+
+/-- Positive aperture slack strictly increases the sixth-degree directional capacity. -/
+theorem sixthWeightedCapacity_exceeds_source {a : ℝ} (ha : 0 < a) (haU : a < 1/2) :
+    sixthCapacity < sixthWeightedCapacity a := by
+  have hd := neg_pos.mpr compensation_negative
+  have hw := neg_pos.mpr (weightedLoad_neg ha haU)
+  have hs := sub_pos.mpr (RHTower.sinh_lt_mul_cosh (mul_pos ha witnessRadius_pos))
+  have hterm := mul_pos
+    (mul_pos witnessRadius_pos (sq_pos_of_pos (thetaCuspFullSource_pos_all witnessCenter))) hs
+  have hL : witnessWeight a*thetaCuspCenterCompensationSource witnessCenter < weightedLoad a := by
+    rw [weightedLoad_eq]
+    linarith only [hterm]
+  rw [sixthCapacity,sixthWeightedCapacity,div_lt_div_iff₀ hd hw]
+  have h := mul_lt_mul_of_pos_left hL sixth_energy_pos
+  nlinarith only [h]
+
+/-- Critical apertures admit fewer than seventy million units in this direction. -/
+theorem sixthWeightedCapacity_bounds {a : ℝ} (ha : 0 < a) (haU : a < 1/2) :
+    16000000 < sixthWeightedCapacity a ∧ sixthWeightedCapacity a < 70000000 := by
+  have hd := neg_pos.mpr (weightedLoad_neg ha haU)
+  constructor
+  · exact sixthCapacity_bounds.1.trans (sixthWeightedCapacity_exceeds_source ha haU)
+  · rw [sixthWeightedCapacity,div_lt_iff₀ hd]
+    have hE := mul_lt_mul_of_pos_left sixth_energy_bounds.2 (witnessWeight_pos ha)
+    have hG := weightedLoad_upper ha haU
+    have hf := mul_pos (witnessWeight_pos ha) first_mass_pos
+    nlinarith only [hE,hG,hf]
+
+/-- The weighted sixth-degree test also defines an exact half-plane. -/
+theorem sixth_coupled_weighted_positive_iff {a : ℝ} (ha : 0 < a) (haU : a < 1/2) (C D : ℝ) :
+    0 < witnessWeight a*sixthEnergy witnessCenter+(C+D/176400)*weightedLoad a ↔
+      C+D/176400 < sixthWeightedCapacity a := by
+  have hd := neg_pos.mpr (weightedLoad_neg ha haU)
+  rw [sixthWeightedCapacity,lt_div_iff₀ hd]
+  constructor <;> intro h <;> nlinarith only [h]
+
+/-- Nonnegative second loads also fail at every critical aperture when the first reaches one hundred million. -/
+theorem sixth_coupled_weighted_negative {a C D : ℝ}
+    (ha : 0 < a) (haU : a < 1/2) (hC : 100000000 ≤ C) (hD : 0 ≤ D) :
+    witnessWeight a*sixthEnergy witnessCenter+(C+D/176400)*weightedLoad a < 0 := by
+  have hc : 70000000 < C+D/176400 := by linarith only [hC,hD]
+  have hd := neg_pos.mpr (weightedLoad_neg ha haU)
+  have hb := (div_lt_iff₀ hd).mp ((sixthWeightedCapacity_bounds ha haU).2.trans hc)
+  nlinarith only [hb]
+
+/- The first-atom moments are normalized by its mass square at scale seven.
+Subtract the fixed coupled load with compensation coefficient 229/55,
+then eliminate its first two coordinates. A second Schur elimination
+fixes a rational direction with last coordinate -1/1568. -/
+private def schurFirstMoment (k : ℕ) : ℝ := (thetaPairRadialEvenPolynomial 49 k).eval 14 / 121
+private def schurHeadDet : ℝ := schurFirstMoment 0*schurFirstMoment 2-schurFirstMoment 1^2
+private def schurAdjPair (a b c e : ℝ) : ℝ := schurFirstMoment 2*a*c-schurFirstMoment 1*(a*e+b*c)+schurFirstMoment 0*b*e
+private def schurFixedTailLoad : Matrix (Fin 3) (Fin 3) ℝ :=
+ !![10000000,420*10000000,0;
+    420*10000000,176400*10000000+1000000000000,1568*1000000000000;
+    0,1568*1000000000000,2458624*1000000000000]
+private def schurEntry (i j : Fin 3) : ℝ :=
+ schurHeadDet*(schurFirstMoment (i.val+j.val+4)-(229/55)*schurFixedTailLoad i j)-
+ schurAdjPair (schurFirstMoment (i.val+2)) (schurFirstMoment (i.val+3)) (schurFirstMoment (j.val+2)) (schurFirstMoment (j.val+3))
+private def schurTwoDet : ℝ := schurEntry 0 0*schurEntry 1 1-schurEntry 0 1^2
+private def schurTailTwo : ℝ := (schurEntry 1 1*schurEntry 0 2-schurEntry 0 1*schurEntry 1 2)/(1568*schurTwoDet)
+private def schurTailThree : ℝ := (schurEntry 0 0*schurEntry 1 2-schurEntry 0 1*schurEntry 0 2)/(1568*schurTwoDet)
+private def schurTailFour : ℝ := -1/1568
+private def schurBorderZero : ℝ := schurFirstMoment 2*schurTailTwo+schurFirstMoment 3*schurTailThree+schurFirstMoment 4*schurTailFour
+private def schurBorderOne : ℝ := schurFirstMoment 3*schurTailTwo+schurFirstMoment 4*schurTailThree+schurFirstMoment 5*schurTailFour
+private def schurHeadZero : ℝ := -(schurFirstMoment 2*schurBorderZero-schurFirstMoment 1*schurBorderOne)/schurHeadDet
+private def schurHeadOne : ℝ := -(-schurFirstMoment 1*schurBorderZero+schurFirstMoment 0*schurBorderOne)/schurHeadDet
+/-- Rational direction obtained by eliminating the positive fourth head of the scale-seven upper core. -/
+def schurWitness : Fin 5 → ℝ := ![schurHeadZero,schurHeadOne,schurTailTwo,schurTailThree,schurTailFour]
+private def schurDirectionalPolynomial (a X : ℝ) : ℝ :=
+ let P := fun k => (thetaPairRadialEvenPolynomial a k).eval X
+ schurHeadZero^2*P 0+2*schurHeadZero*schurHeadOne*P 1+(schurHeadOne^2+2*schurHeadZero*schurTailTwo)*P 2+
+ (2*schurHeadZero*schurTailThree+2*schurHeadOne*schurTailTwo)*P 3+(schurTailTwo^2+2*schurHeadZero*schurTailFour+2*schurHeadOne*schurTailThree)*P 4+
+ (2*schurHeadOne*schurTailFour+2*schurTailTwo*schurTailThree)*P 5+(schurTailThree^2+2*schurTailTwo*schurTailFour)*P 6+2*schurTailThree*schurTailFour*P 7+schurTailFour^2*P 8
+private def schurFixedLoadCost : ℝ := 10000000*(schurTailTwo+420*schurTailThree)^2+1000000000000*(schurTailThree+1568*schurTailFour)^2
+private def schurError : ℝ :=
+ ∑ i : Fin 5, ∑ j : Fin 5, |schurWitness i| * |schurWitness j| * ((2*(i.val+j.val)).factorial:ℝ) /
+   (10000000000000*(3/20:ℝ)^(2*(i.val+j.val)))
+private theorem radial_eight_coeff (a : ℝ) (k : ℕ) :
+ radialCoeffs a 8 k = radialStepCoeff a (radialCoeffs a 7) k := rfl
+private theorem radial_seven_zero_16 (a : ℝ) : radialCoeffs a 7 16=0 :=
+ radialCoeffs_eq_zero a (by norm_num)
+private theorem radial_seven_zero_17 (a : ℝ) : radialCoeffs a 7 17=0 :=
+ radialCoeffs_eq_zero a (by norm_num)
+private theorem radial_seven_zero_18 (a : ℝ) : radialCoeffs a 7 18=0 :=
+ radialCoeffs_eq_zero a (by norm_num)
+private theorem radial_seven_zero_19 (a : ℝ) : radialCoeffs a 7 19=0 :=
+ radialCoeffs_eq_zero a (by norm_num)
+
+private theorem schur_retained_positive {z : ℝ} (hz : 0 ≤ z) (hzU : z ≤ 1/1000000000) :
+ 121*schurError < schurDirectionalPolynomial 49 14+8*z*schurDirectionalPolynomial 196 35+16*z^2*schurDirectionalPolynomial 784 56 := by
+  have hs := mul_self_le_mul_self hz hzU
+  norm_num [schurDirectionalPolynomial,schurFixedLoadCost,schurError,schurWitness,schurHeadZero,
+    schurHeadOne,schurBorderZero,schurBorderOne,schurTailTwo,schurTailThree,schurTailFour,
+    schurTwoDet,Fin.sum_univ_succ,Nat.factorial,schurEntry,schurHeadDet,schurAdjPair,
+    schurFirstMoment,schurFixedTailLoad,Matrix.cons_val_two,Matrix.cons_val_three,Matrix.vecHead,
+    Matrix.vecTail,eval_thetaPairRadialEvenPolynomial,Finset.sum_range_succ,radialCoeffs_0_0,
+    radialCoeffs_0_1,radialCoeffs_1_0,radialCoeffs_1_1,radialCoeffs_1_2,radialCoeffs_1_3,
+    radialCoeffs_2_0,radialCoeffs_2_1,radialCoeffs_2_2,radialCoeffs_2_3,radialCoeffs_2_4,
+    radialCoeffs_2_5,radialCoeffs_3_0,radialCoeffs_3_1,radialCoeffs_3_2,radialCoeffs_3_3,
+    radialCoeffs_3_4,radialCoeffs_3_5,radialCoeffs_3_6,radialCoeffs_3_7,radialCoeffs_4_0,
+    radialCoeffs_4_1,radialCoeffs_4_2,radialCoeffs_4_3,radialCoeffs_4_4,radialCoeffs_4_5,
+    radialCoeffs_4_6,radialCoeffs_4_7,radialCoeffs_4_8,radialCoeffs_4_9,radialCoeffs_5_0,
+    radialCoeffs_5_1,radialCoeffs_5_2,radialCoeffs_5_3,radialCoeffs_5_4,radialCoeffs_5_5,
+    radialCoeffs_5_6,radialCoeffs_5_7,radialCoeffs_5_8,radialCoeffs_5_9,radialCoeffs_5_10,
+    radialCoeffs_5_11,radialCoeffs_6_0,radialCoeffs_6_1,radialCoeffs_6_2,radialCoeffs_6_3,
+    radialCoeffs_6_4,radialCoeffs_6_5,radialCoeffs_6_6,radialCoeffs_6_7,radialCoeffs_6_8,
+    radialCoeffs_6_9,radialCoeffs_6_10,radialCoeffs_6_11,radialCoeffs_6_12,radialCoeffs_6_13,
+    radialCoeffs_7_0,radialCoeffs_7_1,radialCoeffs_7_2,radialCoeffs_7_3,radialCoeffs_7_4,
+    radialCoeffs_7_5,radialCoeffs_7_6,radialCoeffs_7_7,radialCoeffs_7_8,radialCoeffs_7_9,
+    radialCoeffs_7_10,radialCoeffs_7_11,radialCoeffs_7_12,radialCoeffs_7_13,radialCoeffs_7_14,
+    radialCoeffs_7_15,radial_eight_coeff,radial_seven_zero_16,radial_seven_zero_17,
+    radial_seven_zero_18,radial_seven_zero_19,radialStepCoeff,radialInnerCoeff]
+  nlinarith only [hz,hzU,hs,sq_nonneg z]
+private theorem schur_retained_corrected_negative {z : ℝ} (hz : 0 ≤ z) (hzU : z ≤ 1/1000000000) :
+ schurDirectionalPolynomial 49 14+8*z*schurDirectionalPolynomial 196 35+16*z^2*schurDirectionalPolynomial 784 56+
+ 121*schurError-(229/55)*121*schurFixedLoadCost < 0 := by
+  have hs := mul_self_le_mul_self hz hzU
+  norm_num [schurDirectionalPolynomial,schurFixedLoadCost,schurError,schurWitness,schurHeadZero,
+    schurHeadOne,schurBorderZero,schurBorderOne,schurTailTwo,schurTailThree,schurTailFour,
+    schurTwoDet,Fin.sum_univ_succ,Nat.factorial,schurEntry,schurHeadDet,schurAdjPair,
+    schurFirstMoment,schurFixedTailLoad,Matrix.cons_val_two,Matrix.cons_val_three,Matrix.vecHead,
+    Matrix.vecTail,eval_thetaPairRadialEvenPolynomial,Finset.sum_range_succ,radialCoeffs_0_0,
+    radialCoeffs_0_1,radialCoeffs_1_0,radialCoeffs_1_1,radialCoeffs_1_2,radialCoeffs_1_3,
+    radialCoeffs_2_0,radialCoeffs_2_1,radialCoeffs_2_2,radialCoeffs_2_3,radialCoeffs_2_4,
+    radialCoeffs_2_5,radialCoeffs_3_0,radialCoeffs_3_1,radialCoeffs_3_2,radialCoeffs_3_3,
+    radialCoeffs_3_4,radialCoeffs_3_5,radialCoeffs_3_6,radialCoeffs_3_7,radialCoeffs_4_0,
+    radialCoeffs_4_1,radialCoeffs_4_2,radialCoeffs_4_3,radialCoeffs_4_4,radialCoeffs_4_5,
+    radialCoeffs_4_6,radialCoeffs_4_7,radialCoeffs_4_8,radialCoeffs_4_9,radialCoeffs_5_0,
+    radialCoeffs_5_1,radialCoeffs_5_2,radialCoeffs_5_3,radialCoeffs_5_4,radialCoeffs_5_5,
+    radialCoeffs_5_6,radialCoeffs_5_7,radialCoeffs_5_8,radialCoeffs_5_9,radialCoeffs_5_10,
+    radialCoeffs_5_11,radialCoeffs_6_0,radialCoeffs_6_1,radialCoeffs_6_2,radialCoeffs_6_3,
+    radialCoeffs_6_4,radialCoeffs_6_5,radialCoeffs_6_6,radialCoeffs_6_7,radialCoeffs_6_8,
+    radialCoeffs_6_9,radialCoeffs_6_10,radialCoeffs_6_11,radialCoeffs_6_12,radialCoeffs_6_13,
+    radialCoeffs_7_0,radialCoeffs_7_1,radialCoeffs_7_2,radialCoeffs_7_3,radialCoeffs_7_4,
+    radialCoeffs_7_5,radialCoeffs_7_6,radialCoeffs_7_7,radialCoeffs_7_8,radialCoeffs_7_9,
+    radialCoeffs_7_10,radialCoeffs_7_11,radialCoeffs_7_12,radialCoeffs_7_13,radialCoeffs_7_14,
+    radialCoeffs_7_15,radial_eight_coeff,radial_seven_zero_16,radial_seven_zero_17,
+    radial_seven_zero_18,radial_seven_zero_19,radialStepCoeff,radialInnerCoeff]
+  nlinarith only [hz,hzU,hs,sq_nonneg z]
+
+/-- Coupled load seen by the Schur direction. -/
+def schurLoad (C D : ℝ) : ℝ :=
+ C*(schurWitness 2+420*schurWitness 3)^2+D*(schurWitness 3+1568*schurWitness 4)^2
+
+/-- Complete-source energy in the Schur direction. -/
+def schurEnergy (x : ℝ) : ℝ :=
+ ∑ i : Fin 5, ∑ j : Fin 5, schurWitness i *
+  ((-1:ℝ)^(i.val+j.val)*thetaCuspNativeReflectionJet (2*(i.val+j.val)) x)*schurWitness j
+
+private def schurRetainedEnergy (x : ℝ) : ℝ :=
+ ∑ i : Fin 5, ∑ j : Fin 5, schurWitness i *
+  ((-1:ℝ)^(i.val+j.val)*thetaCuspTwoAtomReflectionJet (2*(i.val+j.val)) x)*schurWitness j
+
+private theorem schur_energy_error_bound {x : ℝ}
+    (hq : thetaCuspSingleAtomReflectionScale 1 x = 7) :
+    |schurEnergy x-schurRetainedEnergy x| ≤ schurError*thetaCuspSourceTerm x 1^2 := by
+  let f := thetaCuspSourceTerm x 1
+  unfold schurEnergy schurRetainedEnergy
+  rw [← Finset.sum_sub_distrib]
+  calc
+    _ ≤ ∑ i : Fin 5, ∑ j : Fin 5, |schurWitness i| * |schurWitness j| *
+        (((2*(i.val+j.val)).factorial:ℝ)*(f^2/10000000000000)/(3/20)^(2*(i.val+j.val))) := by
+      apply (Finset.abs_sum_le_sum_abs _ _).trans
+      apply Finset.sum_le_sum
+      intro i hi
+      rw [← Finset.sum_sub_distrib]
+      apply (Finset.abs_sum_le_sum_abs _ _).trans
+      apply Finset.sum_le_sum
+      intro j hj
+      have hb := native_twoAtom_cauchy_error_of_seven_le (2*(i.val+j.val)) (by rw [hq])
+      have he (a b : ℝ) : schurWitness i*((-1:ℝ)^(i.val+j.val)*a)*schurWitness j-
+          schurWitness i*((-1:ℝ)^(i.val+j.val)*b)*schurWitness j =
+          schurWitness i*schurWitness j*(-1:ℝ)^(i.val+j.val)*(a-b) := by ring
+      rw [he]
+      simp only [abs_mul, abs_pow, abs_neg, abs_one, one_pow, mul_one]
+      exact mul_le_mul_of_nonneg_left hb (mul_nonneg (abs_nonneg _) (abs_nonneg _))
+    _ = (∑ i : Fin 5, ∑ j : Fin 5,
+        |schurWitness i| * |schurWitness j| * ((2*(i.val+j.val)).factorial:ℝ) /
+        (10000000000000*(3/20:ℝ)^(2*(i.val+j.val))))*f^2 := by
+      simp only [Finset.sum_mul]
+      apply Finset.sum_congr rfl
+      intro i hi
+      apply Finset.sum_congr rfl
+      intro j hj
+      ring
+    _ = schurError*f^2 := rfl
+
+private theorem schur_retained_energy_eq {x : ℝ}
+    (hq : thetaCuspSingleAtomReflectionScale 1 x=7) :
+    schurRetainedEnergy x = 196*Real.exp (x-14)*
+      (schurDirectionalPolynomial 49 14+8*Real.exp (-21)*schurDirectionalPolynomial 196 35+
+        16*Real.exp (-21)^2*schurDirectionalPolynomial 784 56) := by
+  unfold schurRetainedEnergy
+  simp only [retained_moment _ hq]
+  norm_num [Fin.sum_univ_succ,schurWitness,schurDirectionalPolynomial]
+  ring
+
+/-- The complete native source is strictly positive in the Schur direction. -/
+theorem schur_energy_pos : 0 < schurEnergy witnessCenter := by
+  have hp := mul_lt_mul_of_pos_left
+    (schur_retained_positive (Real.exp_pos (-21)).le second_decay_bound)
+    (show 0 < 196*Real.exp (witnessCenter-14) by positivity)
+  have he := schur_energy_error_bound witness_scale
+  have hret : schurError*thetaCuspSourceTerm witnessCenter 1^2 <
+      schurRetainedEnergy witnessCenter := by
+    rw [first_mass_square witness_scale,schur_retained_energy_eq witness_scale]
+    nlinarith only [hp]
+  have hlo := (abs_le.mp he).1
+  linarith only [hret,hlo]
+
+/-- The reduced coupled pair loses the full Schur direction at scale seven. -/
+theorem reduced_schur_energy_negative :
+    schurEnergy witnessCenter+schurLoad 10000000 1000000000000*
+      thetaCuspCenterCompensationSource witnessCenter < 0 := by
+  have hp := mul_lt_mul_of_pos_left
+    (schur_retained_corrected_negative (Real.exp_pos (-21)).le second_decay_bound)
+    (show 0 < 196*Real.exp (witnessCenter-14) by positivity)
+  have he := schur_energy_error_bound witness_scale
+  have hret : schurRetainedEnergy witnessCenter+
+      schurError*thetaCuspSourceTerm witnessCenter 1^2-
+      (229/55)*thetaCuspSourceTerm witnessCenter 1^2*schurFixedLoadCost < 0 := by
+    rw [first_mass_square witness_scale,schur_retained_energy_eq witness_scale]
+    nlinarith only [hp]
+  have hQ : 0 ≤ schurFixedLoadCost := by unfold schurFixedLoadCost; positivity
+  have hG := mul_le_mul_of_nonneg_right
+    (compensation_upper witness_scale witness_center_lower) hQ
+  have hu := (abs_le.mp he).2
+  change schurEnergy witnessCenter+schurFixedLoadCost*
+    thetaCuspCenterCompensationSource witnessCenter < 0
+  nlinarith only [hret,hG,hu]
+
+/-- Exact native capacity in the Schur direction. -/
+def schurCapacity : ℝ := schurEnergy witnessCenter/(-thetaCuspCenterCompensationSource witnessCenter)
+
+/-- The actual positive capacity lies below the reduced pair's load. -/
+theorem schurCapacity_bounds : 0 < schurCapacity ∧ schurCapacity < schurLoad 10000000 1000000000000 := by
+  have hd := neg_pos.mpr compensation_negative
+  constructor
+  · exact div_pos schur_energy_pos hd
+  · rw [schurCapacity,div_lt_iff₀ hd]
+    nlinarith only [reduced_schur_energy_negative]
+
+/-- Exact half-plane preserving the complete Schur direction. -/
+theorem schur_coupled_positive_iff (C D : ℝ) :
+    0 < schurEnergy witnessCenter+schurLoad C D*thetaCuspCenterCompensationSource witnessCenter ↔
+      schurLoad C D < schurCapacity := by
+  have hd := neg_pos.mpr compensation_negative
+  rw [schurCapacity,lt_div_iff₀ hd]
+  constructor <;> intro h <;> nlinarith only [h]
+
+/-- Exact weighted capacity in the Schur direction. -/
+def schurWeightedCapacity (a : ℝ) : ℝ := witnessWeight a*schurEnergy witnessCenter/(-weightedLoad a)
+
+/-- Positive aperture slack increases the Schur-direction capacity. -/
+theorem schurWeightedCapacity_exceeds_source {a : ℝ} (ha : 0 < a) (haU : a < 1/2) :
+    schurCapacity < schurWeightedCapacity a := by
+  have hd := neg_pos.mpr compensation_negative
+  have hw := neg_pos.mpr (weightedLoad_neg ha haU)
+  have hs := sub_pos.mpr (RHTower.sinh_lt_mul_cosh (mul_pos ha witnessRadius_pos))
+  have hterm := mul_pos
+    (mul_pos witnessRadius_pos (sq_pos_of_pos (thetaCuspFullSource_pos_all witnessCenter))) hs
+  have hL : witnessWeight a*thetaCuspCenterCompensationSource witnessCenter < weightedLoad a := by
+    rw [weightedLoad_eq]
+    linarith only [hterm]
+  rw [schurCapacity,schurWeightedCapacity,div_lt_div_iff₀ hd hw]
+  have h := mul_lt_mul_of_pos_left hL schur_energy_pos
+  nlinarith only [h]
+
+/-- Exact weighted half-plane preserving the complete Schur direction. -/
+theorem schur_coupled_weighted_positive_iff {a : ℝ} (ha : 0 < a) (haU : a < 1/2) (C D : ℝ) :
+    0 < witnessWeight a*schurEnergy witnessCenter+schurLoad C D*weightedLoad a ↔
+      schurLoad C D < schurWeightedCapacity a := by
+  have hd := neg_pos.mpr (weightedLoad_neg ha haU)
+  rw [schurWeightedCapacity,lt_div_iff₀ hd]
+  constructor <;> intro h <;> nlinarith only [h]
+
+/-- The same pair fails at every sufficiently small positive aperture. -/
+theorem reduced_schur_weighted_negative_small :
+    ∃ δ : ℝ, 0 < δ ∧ δ ≤ 1/2 ∧ ∀ a : ℝ, 0 < a → a < δ →
+      witnessWeight a*schurEnergy witnessCenter+schurLoad 10000000 1000000000000*weightedLoad a < 0 := by
+  let Q := schurLoad 10000000 1000000000000
+  let E := schurEnergy witnessCenter
+  let G := thetaCuspCenterCompensationSource witnessCenter
+  let η := -(E+Q*G)
+  let T := witnessRadius*thetaCuspFullSource witnessCenter^2*Q
+  have hQ : 0 < Q := schurCapacity_bounds.1.trans schurCapacity_bounds.2
+  have hη : 0 < η := neg_pos.mpr reduced_schur_energy_negative
+  have hT : 0 < T := mul_pos (mul_pos witnessRadius_pos
+    (sq_pos_of_pos (thetaCuspFullSource_pos_all witnessCenter))) hQ
+  refine ⟨min (1/2) (η/(2*T)),lt_min (by norm_num) (div_pos hη (by positivity)),
+    min_le_left _ _,fun a ha haδ => ?_⟩
+  have haT : a*T < η/2 := by
+    have hh := (lt_div_iff₀ (show 0 < 2*T by positivity)).mp (haδ.trans_le (min_le_right _ _))
+    nlinarith only [hh]
+  have hw := witnessWeight_pos ha
+  have hs := (flux_slack_bounds ha witnessRadius_pos).2
+  rw [witness_half] at hs
+  change weightedLoad a-witnessWeight a*G ≤
+    witnessWeight a*(a*witnessRadius)*thetaCuspFullSource witnessCenter^2 at hs
+  have hm := mul_le_mul_of_nonneg_right hs hQ.le
+  have hnegative : E+Q*G+a*T < 0 := by
+    dsimp only [η] at haT hη
+    linarith only [haT,hη]
+  change witnessWeight a*E+Q*weightedLoad a < 0
+  calc
+    _ ≤ witnessWeight a*(E+Q*G+a*T) := by
+      dsimp only [T] at hm ⊢
+      nlinarith only [hm]
+    _ < 0 := mul_neg_of_pos_of_neg hw hnegative
+
+/-- Polarized radial polynomial for two fifth-section coefficient vectors. -/
+def scaleSevenPolynomial (v w : Fin 5 → ℝ) (a X : ℝ) : ℝ :=
+  ∑ i : Fin 5, ∑ j : Fin 5, v i*w j*(thetaPairRadialEvenPolynomial a (i.val+j.val)).eval X
+
+/-- Complete native bilinear form of the fifth even section. -/
+def scaleSevenEnergy (v w : Fin 5 → ℝ) (x : ℝ) : ℝ :=
+  ∑ i : Fin 5, ∑ j : Fin 5, v i*
+    ((-1:ℝ)^(i.val+j.val)*thetaCuspNativeReflectionJet (2*(i.val+j.val)) x)*w j
+
+private def scaleSevenRetainedEnergy (v w : Fin 5 → ℝ) (x : ℝ) : ℝ :=
+  ∑ i : Fin 5, ∑ j : Fin 5, v i*
+    ((-1:ℝ)^(i.val+j.val)*thetaCuspTwoAtomReflectionJet (2*(i.val+j.val)) x)*w j
+
+/-- Cauchy remainder in a polarized fifth-section entry at scale seven. -/
+def scaleSevenTailError (v w : Fin 5 → ℝ) : ℝ :=
+  ∑ i : Fin 5, ∑ j : Fin 5, |v i| * |w j| * ((2*(i.val+j.val)).factorial:ℝ) /
+    (10000000000000*(3/20:ℝ)^(2*(i.val+j.val)))
+
+/-- Explicit full-source error relative to the first atom, including both retained mixed terms. -/
+def scaleSevenError (v w : Fin 5 → ℝ) : ℝ :=
+  ((8/1000000000)*|scaleSevenPolynomial v w 196 35|+
+    (16/1000000000^2)*|scaleSevenPolynomial v w 784 56|)/121+scaleSevenTailError v w
+
+private theorem scaleSeven_cauchy_error (v w : Fin 5 → ℝ) {x : ℝ}
+    (hq : thetaCuspSingleAtomReflectionScale 1 x = 7) :
+    |scaleSevenEnergy v w x-scaleSevenRetainedEnergy v w x| ≤ scaleSevenTailError v w*thetaCuspSourceTerm x 1^2 := by
+  let f := thetaCuspSourceTerm x 1
+  unfold scaleSevenEnergy scaleSevenRetainedEnergy
+  rw [← Finset.sum_sub_distrib]
+  calc
+    _ ≤ ∑ i : Fin 5, ∑ j : Fin 5, |v i| * |w j| *
+        (((2*(i.val+j.val)).factorial:ℝ)*(f^2/10000000000000)/(3/20)^(2*(i.val+j.val))) := by
+      apply (Finset.abs_sum_le_sum_abs _ _).trans
+      apply Finset.sum_le_sum
+      intro i hi
+      rw [← Finset.sum_sub_distrib]
+      apply (Finset.abs_sum_le_sum_abs _ _).trans
+      apply Finset.sum_le_sum
+      intro j hj
+      have hb := native_twoAtom_cauchy_error_of_seven_le (2*(i.val+j.val)) (by rw [hq])
+      have he (a b : ℝ) : v i*((-1:ℝ)^(i.val+j.val)*a)*w j-
+          v i*((-1:ℝ)^(i.val+j.val)*b)*w j =
+          v i*w j*(-1:ℝ)^(i.val+j.val)*(a-b) := by ring
+      rw [he]
+      simp only [abs_mul, abs_pow, abs_neg, abs_one, one_pow, mul_one]
+      exact mul_le_mul_of_nonneg_left hb (mul_nonneg (abs_nonneg _) (abs_nonneg _))
+    _ = (∑ i : Fin 5, ∑ j : Fin 5,
+        |v i| * |w j| * ((2*(i.val+j.val)).factorial:ℝ) /
+        (10000000000000*(3/20:ℝ)^(2*(i.val+j.val))))*f^2 := by
+      simp only [Finset.sum_mul]
+      apply Finset.sum_congr rfl
+      intro i hi
+      apply Finset.sum_congr rfl
+      intro j hj
+      ring
+    _ = scaleSevenTailError v w*f^2 := rfl
+
+private theorem scaleSeven_retained_energy_eq (v w : Fin 5 → ℝ) {x : ℝ}
+    (hq : thetaCuspSingleAtomReflectionScale 1 x=7) :
+    scaleSevenRetainedEnergy v w x = 196*Real.exp (x-14)*
+      (scaleSevenPolynomial v w 49 14+8*Real.exp (-21)*scaleSevenPolynomial v w 196 35+
+        16*Real.exp (-21)^2*scaleSevenPolynomial v w 784 56) := by
+  unfold scaleSevenRetainedEnergy
+  simp only [retained_moment _ hq]
+  norm_num [Fin.sum_univ_succ,scaleSevenPolynomial]
+  ring
+
+/-- Every polarized entry has an explicit complete-source error bound at scale seven. -/
+theorem scaleSeven_bilinear_error (v w : Fin 5 → ℝ) :
+    |scaleSevenEnergy v w witnessCenter-
+      (thetaCuspSourceTerm witnessCenter 1^2/121)*scaleSevenPolynomial v w 49 14| ≤
+        scaleSevenError v w*thetaCuspSourceTerm witnessCenter 1^2 := by
+  let f := thetaCuspSourceTerm witnessCenter 1
+  let z := Real.exp (-21 : ℝ)
+  let P := scaleSevenPolynomial v w
+  have hz : 0 ≤ z := (Real.exp_pos _).le
+  have hzU : z ≤ 1/1000000000 := second_decay_bound
+  have hz2 := mul_self_le_mul_self hz hzU
+  have hc := scaleSeven_cauchy_error v w witness_scale
+  have hret : scaleSevenRetainedEnergy v w witnessCenter-(f^2/121)*P 49 14 =
+      (f^2/121)*(8*z*P 196 35+16*z^2*P 784 56) := by
+    dsimp only [f,P,z]
+    rw [scaleSeven_retained_energy_eq v w witness_scale,first_mass_square witness_scale]
+    ring
+  have hpoly : |8*z*P 196 35+16*z^2*P 784 56| ≤
+      (8/1000000000)*|P 196 35|+(16/1000000000^2)*|P 784 56| := by
+    calc
+      _ ≤ |8*z*P 196 35|+|16*z^2*P 784 56| := abs_add_le _ _
+      _ = (8*z)*|P 196 35|+(16*z^2)*|P 784 56| := by
+        simp only [abs_mul,abs_pow,abs_of_nonneg hz]
+        norm_num
+      _ ≤ _ := add_le_add
+        (mul_le_mul_of_nonneg_right (by nlinarith only [hzU]) (abs_nonneg _))
+        (mul_le_mul_of_nonneg_right (by nlinarith only [hz2]) (abs_nonneg _))
+  have hrem : |scaleSevenRetainedEnergy v w witnessCenter-(f^2/121)*P 49 14| ≤
+      (f^2/121)*((8/1000000000)*|P 196 35|+(16/1000000000^2)*|P 784 56|) := by
+    rw [hret,abs_mul,abs_of_nonneg (by positivity : 0 ≤ f^2/121)]
+    exact mul_le_mul_of_nonneg_left hpoly (by positivity)
+  change |scaleSevenEnergy v w witnessCenter-(f^2/121)*P 49 14| ≤ scaleSevenError v w*f^2
+  calc
+    _ ≤ |scaleSevenEnergy v w witnessCenter-scaleSevenRetainedEnergy v w witnessCenter|+
+        |scaleSevenRetainedEnergy v w witnessCenter-(f^2/121)*P 49 14| := by
+      exact abs_sub_le _ _ _
+    _ ≤ scaleSevenTailError v w*f^2+
+        (f^2/121)*((8/1000000000)*|P 196 35|+(16/1000000000^2)*|P 784 56|) :=
+      add_le_add hc hrem
+    _ = scaleSevenError v w*f^2 := by unfold scaleSevenError; dsimp only [P]; ring
+
+private theorem witness_center_le_401_div_1000 : witnessCenter ≤ (401/1000 : ℝ) := by
+  have h := Real.sum_le_exp_of_nonneg (x := (401/500 : ℝ)) (by norm_num) 6
+  norm_num [Finset.sum_range_succ,Nat.factorial] at h
+  have he : (2229/1000 : ℝ) ≤ Real.exp (401/500) := by linarith only [h]
+  have hpi : (31415/10000 : ℝ) < Real.pi := by linarith only [Real.pi_gt_d4]
+  have hp := mul_le_mul_of_nonneg_right he Real.pi_pos.le
+  have hq : 7/Real.pi ≤ Real.exp (401/500) := by
+    apply (div_le_iff₀ Real.pi_pos).mpr
+    nlinarith only [hp,hpi]
+  have hl : Real.log (7/Real.pi) ≤ (401/500 : ℝ) := by
+    apply Real.exp_le_exp.mp
+    rwa [Real.exp_log (by positivity : (0:ℝ)<7/Real.pi)]
+  unfold witnessCenter
+  linarith only [hl]
+
+/-- Loss obtained from the center, mass and first-derivative bounds at scale seven. -/
+def scaleSevenCompensationLoss : ℝ :=
+  2*(401/1000)*(1000001/1000000)*(1791/200)-3
+
+/-- The complete compensation has the explicit normalized lower bound at scale seven. -/
+theorem scaleSeven_compensation_lower :
+    -scaleSevenCompensationLoss*thetaCuspSourceTerm witnessCenter 1^2 ≤
+      thetaCuspCenterCompensationSource witnessCenter := by
+  let x := witnessCenter
+  let f := thetaCuspSourceTerm x 1
+  let F := thetaCuspFullSource x
+  have hx : 0 < x := by dsimp [x]; linarith only [witness_center_lower]
+  have hf : 0 < f := thetaCuspSourceTerm_pos_of_pos_of_nat_pos hx (by norm_num)
+  have hF : 0 < F := thetaCuspFullSource_pos_all x
+  have hq : thetaCuspSingleAtomReflectionScale 1 x=7 := witness_scale
+  have hmass : f ≤ F := by
+    have hR := (thetaCuspLikelihoodSourceRemainder_signed_bounds_of_seven_le
+      (n := 0) (by norm_num) (x := x) (by rw [hq])).1
+    simp only [pow_zero,one_mul,iteratedDeriv_zero] at hR
+    have hz := thetaCuspFullSource_derivative_sub_first_eq 0 hx
+    norm_num only [Finset.sum_range_succ,Finset.sum_range_zero,Nat.choose_zero_right,
+      Nat.choose_self,Nat.cast_one,Nat.reduceSub,one_mul,iteratedDeriv_zero,add_zero,zero_add] at hz
+    have hp := mul_nonneg hf.le hR
+    change F-f=f*thetaCuspLikelihoodSourceRemainder x at hz
+    linarith only [hp,hz]
+  have he := pow_mul_regimeOneLikelihoodScale_le_of_seven_le (k := 0) (by norm_num)
+    (show 7 ≤ thetaCuspSingleAtomReflectionScale 1 x by rw [hq])
+  simp only [pow_zero,one_mul] at he
+  have hmassU : F ≤ (1000001/1000000)*f := by
+    have hε : 3*regimeOneLikelihoodScale x ≤ 1/1000000 := by linarith only [he]
+    have h0 := abs_thetaCuspFullSource_derivative_sub_first_le_effective 0 hx (by norm_num [hq])
+    simp only [iteratedDeriv_zero,pow_zero,mul_one] at h0
+    have hm := mul_le_mul_of_nonneg_right hε hf.le
+    have hu := (abs_le.mp h0).2
+    change F-f ≤ 3*regimeOneLikelihoodScale x*f at hu
+    nlinarith only [hu,hm]
+  have hslope : deriv (fun y : ℝ => thetaCuspSourceTerm y 1) x = -(197/22 : ℝ)*f := by
+    have hd := iteratedDeriv_firstAtom_eq_gaussianScaleJets 1 x
+    rw [iteratedDeriv_one] at hd
+    rw [hd]
+    dsimp only [thetaCuspGaussianScaleJet,thetaCuspGaussianScaleMoment,f]
+    rw [thetaCuspSourceTerm_one_eq_scale_profile,hq]
+    ring
+  have hε : 252*regimeOneLikelihoodScale x ≤ 1/100000 := by linarith only [he]
+  have h1 := abs_thetaCuspFullSource_derivative_sub_first_le_effective 1 hx (by norm_num [hq])
+  simp only [iteratedDeriv_one,pow_one,hq,hslope] at h1
+  have hm := mul_le_mul_of_nonneg_right hε hf.le
+  have hd : -(1791/200 : ℝ)*f ≤ deriv thetaCuspFullSource x := by
+    have hl := (abs_le.mp h1).1
+    dsimp only [f] at hm ⊢
+    nlinarith only [hl,hm,hf]
+  have hxu : x ≤ 401/1000 := witness_center_le_401_div_1000
+  have hs := mul_self_le_mul_self hf.le hmass
+  have hFF := mul_le_mul_of_nonneg_right hmassU hf.le
+  have hxFF := mul_le_mul_of_nonneg_left hFF hx.le
+  have hxf := mul_le_mul_of_nonneg_right hxu (sq_nonneg f)
+  have hprod := mul_le_mul_of_nonneg_left hd (show 0 ≤ 2*x*F by positivity)
+  change -(2*(401/1000)*(1000001/1000000)*(1791/200)-3)*f^2 ≤
+    3*F^2+2*x*F*deriv thetaCuspFullSource x
+  nlinarith only [hs,hxFF,hxf,hprod]
+
+
+private theorem scaleSeven_exponential_lower : (25000000000/19:ℝ) ≤ Real.exp 21 := by
+  have hp := pow_le_pow_left₀ (by norm_num : (0:ℝ) ≤ 2.7182818283)
+    Real.exp_one_gt_d9.le 21
+  rw [← Real.exp_nat_mul] at hp
+  simp only [Nat.cast_ofNat,mul_one] at hp
+  exact (by norm_num : (25000000000/19:ℝ) ≤ (2.7182818283:ℝ)^21).trans hp
+
+private theorem scaleSeven_exponential_upper : Real.exp 21 ≤ (4000000000/3:ℝ) := by
+  have hp := pow_le_pow_left₀ (Real.exp_pos 1).le Real.exp_one_lt_d9.le 21
+  rw [← Real.exp_nat_mul] at hp
+  simp only [Nat.cast_ofNat,mul_one] at hp
+  exact hp.trans (by norm_num : (2.7182818286:ℝ)^21 ≤ (4000000000/3:ℝ))
+
+private theorem scaleSeven_ratio_bounds :
+    (3/4000000000:ℝ) ≤ Real.exp (-21) ∧ Real.exp (-21) ≤ (19/25000000000:ℝ) := by
+  rw [Real.exp_neg,inv_eq_one_div]
+  constructor
+  · have h := one_div_le_one_div_of_le (Real.exp_pos 21) scaleSeven_exponential_upper
+    norm_num at h
+    simpa only [one_div] using h
+  · have h := one_div_le_one_div_of_le (by norm_num : (0:ℝ) < 25000000000/19)
+      scaleSeven_exponential_lower
+    norm_num at h
+    simpa only [one_div] using h
+
+/-- Rational two-atom model at the upper endpoint of the retained-ratio interval. -/
+def scaleSevenRetainedModel (v w : Fin 5 → ℝ) : ℝ :=
+  (scaleSevenPolynomial v w 49 14+
+    8*(19/25000000000)*scaleSevenPolynomial v w 196 35+
+    16*(19/25000000000:ℝ)^2*scaleSevenPolynomial v w 784 56)/121
+
+/-- Error around the retained model, including the narrow ratio interval and the Cauchy tail. -/
+def scaleSevenRetainedError (v w : Fin 5 → ℝ) : ℝ :=
+  (8*((19/25000000000:ℝ)-(3/4000000000))*|scaleSevenPolynomial v w 196 35|+
+    16*((19/25000000000:ℝ)^2-(3/4000000000:ℝ)^2)*|scaleSevenPolynomial v w 784 56|)/121+
+    scaleSevenTailError v w
+
+/-- The complete fifth-section bilinear form is close to the rational retained two-atom model. -/
+theorem scaleSeven_retained_bilinear_error (v w : Fin 5 → ℝ) :
+    |scaleSevenEnergy v w witnessCenter-
+      thetaCuspSourceTerm witnessCenter 1^2*scaleSevenRetainedModel v w| ≤
+        scaleSevenRetainedError v w*thetaCuspSourceTerm witnessCenter 1^2 := by
+  let f := thetaCuspSourceTerm witnessCenter 1
+  let z := Real.exp (-21 : ℝ)
+  let l : ℝ := 3/4000000000
+  let r : ℝ := 19/25000000000
+  let P := scaleSevenPolynomial v w
+  have hz : 0 ≤ z := (Real.exp_pos _).le
+  have hl : 0 ≤ l := by norm_num [l]
+  have hzL : l ≤ z := scaleSeven_ratio_bounds.1
+  have hzU : z ≤ r := scaleSeven_ratio_bounds.2
+  have hz2L : l^2 ≤ z^2 := by nlinarith only [mul_self_le_mul_self hl hzL]
+  have hz2U : z^2 ≤ r^2 := by nlinarith only [mul_self_le_mul_self hz hzU]
+  have hdiff : |z-r| ≤ r-l := by
+    rw [abs_of_nonpos (sub_nonpos.mpr hzU)]
+    linarith only [hzL]
+  have hdiff2 : |z^2-r^2| ≤ r^2-l^2 := by
+    rw [abs_of_nonpos (sub_nonpos.mpr hz2U)]
+    linarith only [hz2L]
+  have hc := scaleSeven_cauchy_error v w witness_scale
+  have hret : scaleSevenRetainedEnergy v w witnessCenter-f^2*scaleSevenRetainedModel v w =
+      (f^2/121)*(8*(z-r)*P 196 35+16*(z^2-r^2)*P 784 56) := by
+    dsimp only [f,z,r,P,scaleSevenRetainedModel]
+    rw [scaleSeven_retained_energy_eq v w witness_scale,first_mass_square witness_scale]
+    ring
+  have hpoly : |8*(z-r)*P 196 35+16*(z^2-r^2)*P 784 56| ≤
+      8*(r-l)*|P 196 35|+16*(r^2-l^2)*|P 784 56| := by
+    calc
+      _ ≤ |8*(z-r)*P 196 35|+|16*(z^2-r^2)*P 784 56| := abs_add_le _ _
+      _ = 8*|z-r| * |P 196 35|+16*|z^2-r^2| * |P 784 56| := by
+        simp only [abs_mul]
+        norm_num
+      _ ≤ _ := add_le_add
+        (mul_le_mul_of_nonneg_right (mul_le_mul_of_nonneg_left hdiff (by norm_num)) (abs_nonneg _))
+        (mul_le_mul_of_nonneg_right (mul_le_mul_of_nonneg_left hdiff2 (by norm_num)) (abs_nonneg _))
+  have hrem : |scaleSevenRetainedEnergy v w witnessCenter-f^2*scaleSevenRetainedModel v w| ≤
+      (f^2/121)*(8*(r-l)*|P 196 35|+16*(r^2-l^2)*|P 784 56|) := by
+    rw [hret,abs_mul,abs_of_nonneg (by positivity : 0 ≤ f^2/121)]
+    exact mul_le_mul_of_nonneg_left hpoly (by positivity)
+  change |scaleSevenEnergy v w witnessCenter-f^2*scaleSevenRetainedModel v w| ≤
+    scaleSevenRetainedError v w*f^2
+  calc
+    _ ≤ |scaleSevenEnergy v w witnessCenter-scaleSevenRetainedEnergy v w witnessCenter|+
+        |scaleSevenRetainedEnergy v w witnessCenter-f^2*scaleSevenRetainedModel v w| :=
+      abs_sub_le _ _ _
+    _ ≤ scaleSevenTailError v w*f^2+
+        (f^2/121)*(8*(r-l)*|P 196 35|+16*(r^2-l^2)*|P 784 56|) := add_le_add hc hrem
+    _ = scaleSevenRetainedError v w*f^2 := by
+      dsimp only [scaleSevenRetainedError,P,r,l]
+      ring
 
 end GaloisForLFunctions.ThetaCuspSections.EvenFiveBoundary

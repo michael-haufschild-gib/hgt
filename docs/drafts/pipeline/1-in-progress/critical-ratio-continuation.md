@@ -33,26 +33,30 @@ at every fixed critical multiple c = 2K(log N)^(1/8).
 
 ## Open core
 
-The present low-packet and far-collar bounds absorb dimensionless losses
+The remaining dual-collar and far-reserve bounds absorb dimensionless losses
 R = c⁸/log N and R². Their smallness cannot be obtained by increasing N at
 fixed R. Recover the signed arithmetic interaction behind these losses, or
 construct a source-preserving replacement whose compensation vanishes.
 No unproved positivity, residual improvement, or continuation assumption
 may enter a theorem's premises.
 
-## Signed residual conjecture
+## Signed residual
 
 Let B(c,N) be `completeWeilMatrix tiltedUnitSpline c N`, v_m(N) the
 normalized Ramanujan horizon vector, E_m(c) its completed conductor energy,
 and g = 2 + γ - log(4π) > 0. For each fixed m,l ≥ 1 and R > 0,
-with c_N = max(1,(R log N)^(1/8)), conjecture
+with c_N≥1 and c_N⁸/log N→R, the checked theorem gives
 
-    (log N / c_N) (⟨B(c_N,N)v_m,v_l⟩ - [m=l] E_m(c_N))
+    (log N / c_N) ⟨B(c_N,N)v_m - E_m(c_N)v_m,v_l⟩
       → aφ g [m=1][l=1].
 
-Together with the proved Jordan law c⁷E_m(c) → J(m), this would give
+Together with the proved Jordan law c⁷E_m(c) → J(m) and Gram convergence,
+the checked fixed-block corollary gives
 the critical limit diag(J(m)) + R aφ g e₁e₁ᵀ on every fixed finite
-conductor block, positive for every R. It is not a whole-space conclusion.
+conductor block, positive for every R.
+`TheCriticalConductorFormRetainsThePolarGenus.lean` passes its final
+actual-path audit with `[propext, Classical.choice, Quot.sound]` and is
+wired into its umbrella. It is not a whole-space conclusion.
 
 **Existing support, not new conjectures:**
 `TheZerosSeeEveryAtomicVectorThroughItsMobiusHorizons` already represents
@@ -60,16 +64,16 @@ every atomic vector by its exact Möbius horizons.
 `TheHorizonChargeIsBlindToTheRealPartsOfTheZeros` already proves positivity
 of the individual pole charge throughout the open zero strip.
 `TheBulkAtThePoleReadsTheArchimedeanGenus` already proves the stated positive
-rank-one contribution from all low zeros. The conjecture concerns the
+rank-one contribution from all low zeros. The new limit concerns the
 complete form after its conductor energy is subtracted; none of those
 results controls that remaining signed contribution at critical scale.
 
-**First unproved step:** identify the joint leading term of the near-Gamma,
-shell-log, divisor-jet, upward-prime and pole rows, instead of bounding their
-absolute values separately. `exists_nearGram_mode_bilinear_approx` already
-has a power-saving error. In `exists_upward_bilinear_log_free`, the
-remaining c/log N loss includes the harmonic Gram finite part multiplied
-by shell correction, plus shell-log and shell-jet pairings.
+**Current proof boundary:** the complete seven-channel signed limit is
+checked with the standard three axioms, including its actual-path no-olean
+audit. The growing packet through Q=floor((log N)^(13/32)) now has the
+same signed polar correction, with relative error ≤εΣE_m b_m² uniformly
+in coefficients at every fixed R>0. Its main transfer passes the final
+actual-path check; the complement retains separate R and R² losses.
 
 One part already has a sharper consequence. For fixed m > 1 the exact
 reference identity gives
@@ -87,25 +91,41 @@ rows or justify uniformity in growing m.
 The seven-channel decomposition narrows the fixed-pair calculation
 further. After multiplication by log N/c_N, the existing bounds send the
 ratio-prime residual, self error and pole error to zero. The center term
-is linear in c and has the explicit `centerSecondOrder` limit. What
-remains is its signed combination with separated cross error, combined
-near-Gamma/downward/center rows, and the upward-prime residual. The
+is linear in c and has the explicit `centerSecondOrder` limit. Its signed
+combination with separated cross error, combined near-Gamma/downward/center
+rows, and the upward-prime residual supplies the stated genus. The
 separated-regime theorem `tendsto_completeWeilBulkEntry` assumes c<1;
 its filename does not authorize using it on a growing critical clock.
 
 The [upward-prime signed limit](critical-upward-residual-signed-limit.md)
-has a discrete horizon-integral derivation: its conjectured leading term
-is −aφ(γ+1)e₁e₁ᵀ, with cancellation of all fixed off-diagonal receiving
-terms. Formalization is pending; the complete signed residual remains open.
+now checks in Lean: its leading term is −aφ(γ+1)e₁e₁ᵀ, with cancellation
+of all other fixed conductor pairs. The critical-curve corollary holds
+at every R>0 and passes its no-olean audit with the standard three axioms.
+The [joint Gamma–center limit](critical-gamma-center-signed-limit.md) now
+passes its final no-olean audit with the standard three axioms;
+its listed support-file audits remain pending. The complete signed residual passes its actual-path no-olean
+audit with the same axioms.
 
-**Attack:** the positive low-zero term alone does not prove this limit.
-The high-zero remainder could contribute another signed matrix. Even if
-the fixed-block conjecture holds, growing-conductor receiving charges and
-coupling to the horizon complement remain. The existing m²l² residual
+**Attack:** the positive low-zero term alone did not identify this limit;
+the complete arithmetic calculation was needed. Growing-conductor receiving
+charges and coupling to the horizon complement remain. The existing m²l² residual
 majorant, divided by conductor energies ≳m⁷/c⁷ below overlap, has summable
-weights m⁻³. This makes a finite-block/tail argument plausible for the low
-packet; it does not pay the dual-collar coupling. Verdict:
-`SURVIVES PRELIMINARY ATTACK`; no paper proof or Lean theorem claimed.
+weights m⁻³. They give the checked growing-packet transfer; they do not
+pay the dual-collar coupling. Verdict: `BRIDGE`. The remaining issue is
+coupling to the horizon complement and that complement's energy.
+No whole-space all-R theorem follows. See the
+[growing-packet proof](../3-formalized/critical-low-packet-signed-compactness.md) and
+[window-complement localization theorem](../3-formalized/critical-windows-survive-low-conductor-removal.md).
+The [signed pole–window transport conjecture](critical-pole-window-signed-transport.md)
+targets the inverse-energy mixed pairing needed for optimized arithmetic
+correctors, which ordinary orthogonal removal does not control.
+The [receiving-capacity growth question](critical-receiving-capacity-growth.md)
+separately tests whether the new arbitrarily small raw prime-charge costs
+occur fast enough on the critical clock. Its dilation capacity is now
+proved to be `log log N+O(1)`, with a final actual-path audit using the
+standard three axioms. The critical-scale corollary and complete-energy
+transfer remain separate obligations. The existing raw-cost obstruction
+supplies no prescribed rate.
 
 ## Surviving bounded-range improvement
 
@@ -153,6 +173,14 @@ a nonnegative Jordan-weighted aliasing mass; `tendsto_mixedGram` gives zero
 mixed block. The positive survivor is this exact graded decomposition.
 This excludes that fixed-period correction mechanism, not correctors whose
 period or amplitude varies with N.
+
+Some moving correctors are covered too. `exists_uniform_conductor_range`
+in `TheConductorDecompositionHoldsOnAGrowingRange` gives a range M(N)→∞
+with quadratic error ≤εΣb_m², uniformly in coefficients, for fixed window
+profiles. Thus corrections supported in that range with bounded Σb_m²
+cannot lower the untwisted limit. This last consequence is an elementary
+deduction; the theorem supplies no prescribed growth rate for M(N), and
+does not control coefficients with unbounded square mass.
 
 ## Gates
 
