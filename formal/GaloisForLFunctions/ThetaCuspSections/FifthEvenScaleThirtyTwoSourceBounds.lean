@@ -254,10 +254,10 @@ private theorem hyperbolic_remainder_upper {u : ℝ} (hu : 0 ≤ u) (hu1 : u ≤
   have hs := HTGeometry.self_le_sinh_of_nonneg hu
   linarith only [hp,hs]
 
-/-- Every critical aperture retains the negative differentiated profile at this center. -/
-theorem weighted_derivative_upper {a : ℝ} (ha0 : 0 ≤ a) (ha : a < 1/2) :
+/-- The aperture remainder recovers at most three seventieths of the negative coefficient. -/
+theorem weighted_derivative_relative_upper {a : ℝ} (ha0 : 0 ≤ a) (ha : a < 1/2) :
     deriv (FifthPolynomialCross.flux a) (2*center) ≤
-      (2*center*Real.sinh (a*(2*center)))*(-268*thetaCuspFullSource center^2) := by
+      (2*center*Real.sinh (a*(2*center)))*((67/70)*FifthPolynomialCross.compensation center) := by
   have hx := center_pos.le
   have hr : 0 ≤ 2*center := by positivity
   have hu : 0 ≤ a*(2*center) := mul_nonneg ha0 hr
@@ -282,6 +282,16 @@ theorem weighted_derivative_upper {a : ℝ} (ha0 : 0 ≤ a) (ha : a < 1/2) :
   have hmain := mul_le_mul_of_nonneg_left profile_compensation_upper (mul_nonneg hr hs)
   rw [FifthPolynomialCross.deriv_flux_remainder,show 2*center/2=center by ring]
   nlinarith only [hrem,hprof,hmain]
+
+/-- Every critical aperture retains the negative differentiated profile at this center. -/
+theorem weighted_derivative_upper {a : ℝ} (ha0 : 0 ≤ a) (ha : a < 1/2) :
+    deriv (FifthPolynomialCross.flux a) (2*center) ≤
+      (2*center*Real.sinh (a*(2*center)))*(-268*thetaCuspFullSource center^2) := by
+  have hr : 0 ≤ 2*center := mul_nonneg (by norm_num) center_pos.le
+  have hs := Real.sinh_nonneg_iff.mpr (mul_nonneg ha0 hr)
+  have h := mul_le_mul_of_nonneg_left profile_compensation_upper
+    (mul_nonneg (mul_nonneg hr hs) (by norm_num : (0 : ℝ) ≤ 67/70))
+  exact (weighted_derivative_relative_upper ha0 ha).trans (by nlinarith only [h])
 
 /-- Uniform normalized loss of the literal coefficient throughout the critical apertures. -/
 theorem normalized_weighted_derivative_upper {a : ℝ} (ha0 : 0 < a) (ha : a < 1/2) :

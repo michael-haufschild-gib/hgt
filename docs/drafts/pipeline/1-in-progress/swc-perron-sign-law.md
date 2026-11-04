@@ -115,31 +115,55 @@ operator.
   `−λ₀′(c) = lim_{t→0} ψ(−c+t)² log(1/t)`). The edge amplitude that carries Perron is the rate at
   which the window approaches criticality.
 
-## No-go: robust Perron (route closed)
-- **Killing mechanism.** Perron margins vanish with the window ground energy. No argument that also
-  proves Perron for pole strengths in `[4, 4(1 + η)]` or kick strengths in `[1, 1 + η]` with a fixed
-  `η > 0` can work beyond `c ≈ 0.45` (even) or `c ≈ 0.55` (odd): pointwise or averaged
-  Beurling–Deny comparison with slack, kernel domination, gap-independent anti-maximum principles.
-  Any proof must use the arithmetic weights to precision `O(λ₀)`.
+## No-go: robust Perron
+Even band as a pole family `E_s = E_0 + s·P`, `P(f) = (∫ f·2ch)²` (pole `κ = 4s`); odd band as a
+kick family `O_t = O_0 + t·K`, `K(f) = w₂(f⋆f)(−log 2) + w₃(f⋆f)(−log 3)`.
+- **Killing mechanism [L]** (`PerronSignLaw/ThePerronMarginIsBoundedByThePoleSaturationGap.lean`).
+  Let `λ ≤ E_{s₀}` at `ψ`, `‖ψ‖₂ = 1`, `ψ` an `ε`-ground state of `E_{s₁}` against a competitor `g`
+  on the pole hyperplane `∫ g ch = 0` (where `E_s(g) = E_1(g)` for all `s`). Then
+  `(s₁ − s₀) P(ψ) ≤ E_1(g) − λ + ε` (`evenPerronMargin_le`); for Perron `0 ≤ ψ ≤ M`,
+  `4(s₁ − s₀) ≤ M²(E_1(g) − λ + ε)` (`evenPerronMargin_le_sup`), and past that margin the ground
+  state changes sign (`exists_neg_of_evenMargin_gt`). Lower side: positivity at `s_w < s₀` forces
+  `4(s₀ − s_w) ≤ M² E_{s₀}(ψ)` (`evenPositivityMargin_le_sup`). Odd: against `g` with `K(g) ≤ 0`,
+  `(t₁ − t₀) K(ψ) ≤ O_0(g) − λ + ε`, and `K(ψ) ≥ 0` for Perron `ψ` (`oddPerronMargin_le`,
+  `kickEnergy_nonneg`). Every nonzero test on the pole hyperplane changes sign
+  (`exists_neg_of_poleHyperplane`). So an argument proving Perron at pole strength `4(1 + η)`
+  certifies `4η ≤ M²(λ_⊥ − λ₀)`, `λ_⊥` the band ground energy on the pole hyperplane.
+- **Beurling–Deny and kernel domination closed exactly at `t_*` [L]**
+  (`PerronSignLaw/TheEvenBandIsNotMarkovPastThePlasticThreshold.lean`). For `t_* < c < log 2`, all
+  weights `w₂, w₃` and every pole strength `κ ≥ 4`, a smooth test `f = a − b` (`a ≥ 0` at the edge
+  `(−c, −c + r)`, `b ≥ 0` at the centre `(−r, 0)`) has `E_κ(f) < E_κ(|f|)`
+  (`exists_evenPoleBand_lt_abs`); kernel form
+  `E_κ(|f|) − E_κ(f) ≥ 4(∫a)(∫b)[4cosh((c − r)/2) − ω(c − 2r) − ω(c − r)]`, no prime reflection
+  joins the bumps. With nonnegative weights the arithmetic even band is Markov iff `c ≤ t_*`
+  (`evenBand_markov_iff`).
+- **Numerical part [N].** The thresholds `c ≈ 0.45` (even) and `c ≈ 0.55` (odd) for gap-limited
+  arguments, including gap-independent anti-maximum principles, are hp-DG values of `λ₀`,
+  `λ_⊥ − λ₀ ≤ λ₁(E) − λ₀` and `κ_c − 4` (tables above). Lean has no certified bound on
+  `λ_⊥ − λ₀` (that needs a certified eigenvalue computation) and no a priori bound on `M = sup ψ`;
+  the observed `κ_c − 4 ∝ λ₀` is finer than the `[L]` bound `∝ λ_⊥ − λ₀`.
 - **Strongest positive survivor (Lean).** Frustration localization
   `evenBand_abs_le_of_frustrationFree`: for every `c < log 2` and nonnegative prime weights, the even
   band form does not increase under `f ↦ |f|` unless `f` changes sign across a frustrated pair
-  (`EvenFrustrationFree`); Markov regime `evenSector_abs_le` (`c ≤ t_*`); sharpness
-  `evenKernel_neg_of_threshold_lt`. Odd analogue: the frozen odd form is Markov and the kick is the
-  only frustration (`TheFrozenOddFormIsMarkovAndTheKickIsNot`).
-- **New insight.** Beyond the Markov regimes, positivity of the ground state is not a soft property:
-  it is controlled by the edge amplitude `β`, with `|β| = √(−λ₀′/K)` by the Hadamard law. The size of
-  the window ground state at its edge and the approach of the window to criticality are one quantity.
-- **Status.** Numerics [N] (converged hp-DG, `p = 5, 7`); Lean survivors clean, axioms standard.
+  (`EvenFrustrationFree`); Markov regime `evenSector_abs_le` (`c ≤ t_*`), sharp at form level
+  (`evenBand_markov_iff`). Odd analogue: the frozen odd form is Markov and the kick is the only
+  frustration (`TheFrozenOddFormIsMarkovAndTheKickIsNot`).
+- **New insight.** The Perron margin in the frustration strength is the pole saturation gap over the
+  squared pole moment of the ground state [L]. Beyond the Markov regimes positivity of the ground
+  state is controlled by the edge amplitude `β`, with `|β| = √(−λ₀′/K)` by the Hadamard law [N].
+- **Status.** Mechanism and Beurling–Deny closure: Lean, axioms standard. Threshold values and
+  Hadamard law: numerics [N] (converged hp-DG, `p = 5, 7`).
 
 ## Status
 - C8 holds numerically on `0 < c ≤ 0.69` in both sectors (converged hp-DG).
 - Proved: Perron by Beurling–Deny in the Markov regimes (odd `c ≤ ½ log 2`, corpus; even
-  `c ≤ t_*`, Lean, sharp at the level of the kernel).
+  `c ≤ t_*`, Lean, sharp at the level of the form: `evenBand_markov_iff`); margin law for robust
+  Perron in both sectors (Lean).
 - Open: `t_* < c < log 2` (even) and `½ log 2 < c < log 2` (odd). There Perron holds numerically
-  but critically (margins `∝ λ₀`); robust routes are closed (no-go above). The Hadamard law gives
-  only `|β| = √(−λ₀′/K)`: the edge amplitude vanishes exactly where `λ₀` stops decreasing in `c`; the
-  sign of `β` and the absence of interior zeros remain open.
+  but critically (margins `∝ λ₀`); robust arguments reduce to the gap inequality [L], whose failure
+  beyond `c ≈ 0.45 / 0.55` is numerical [N]. The Hadamard law gives only `|β| = √(−λ₀′/K)`: the
+  edge amplitude vanishes exactly where `λ₀` stops decreasing in `c`; the sign of `β` and the
+  absence of interior zeros remain open.
 
 ## Log
 - 2026-11-04 — created in 1-in-progress

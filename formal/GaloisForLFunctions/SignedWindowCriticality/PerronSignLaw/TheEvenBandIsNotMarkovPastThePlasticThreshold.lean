@@ -9,9 +9,9 @@ failure of the Beurling–Deny property of the band form itself, uniformly in th
 in the prime weights.
 
 * `evenPoleBand_lt_of_bumps` — let `a ≥ 0` live in `(−c, −c + r)` (edge) and `b ≥ 0` in `(−r, 0)`
-  (centre), `4r ≤ c`, `2r ≤ log 2 − c`. In kernel form
-  `E_s(a + b) − E_s(a − b) ≥ 4(∫a)(∫b)[4s·cosh((c − r)/2) − ω(c − 2r) − ω(c − r)]`: the pole pays
-  at least `4s·cosh((c − r)/2)` on the pair, the Lévy jumps return at most `ω(c − 2r)` (no lag
+  (centre), `4r ≤ c`, `2r ≤ log 2 − c`, `s ≥ 1`. In kernel form
+  `E_s(a + b) − E_s(a − b) ≥ 4(∫a)(∫b)[4cosh((c − r)/2) − ω(c − 2r) − ω(c − r)]`: the pole pays
+  at least `4cosh((c − r)/2)` on the pair, the Lévy jumps return at most `ω(c − 2r)` (no lag
   below `c − 2r` joins opposite signs), the trivial-zero squares at most `ω(c − r)`, and no prime
   reflection `u ↦ −log n − u` joins the two bumps.
 * `exists_evenPoleBand_lt_abs` — for `t_* < c < log 2`, all weights `w₂, w₃` and every pole strength
@@ -507,16 +507,6 @@ theorem evenBand_markov_iff {c : ℝ} (hc0 : 0 ≤ c) (hc : c < Real.log 2) {w�
     rw [evenPoleBand_one, evenPoleBand_one]
     exact evenBand_abs_le_of_frustrationFree hc0 hc hf h0 hl
       (evenFrustrationFree_of_le_threshold hct h0 hl) hw₂ hw₃
-
-#print axioms exists_evenPoleBand_lt_abs
-#print axioms evenBand_markov_iff
-#print axioms evenPerronMargin_le_sup
-#print axioms exists_neg_of_evenMargin_gt
-#print axioms evenPositivityMargin_le_sup
-#print axioms oddPerronMargin_le
-#print axioms exists_neg_of_poleHyperplane
-#print axioms mem_evenBandWeights_iff
-#print axioms mem_oddBandWeights_iff
 
 end GaloisForLFunctions.SignedWindowCriticality.PerronSignLaw
 

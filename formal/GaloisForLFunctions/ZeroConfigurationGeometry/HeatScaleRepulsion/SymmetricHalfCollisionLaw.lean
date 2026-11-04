@@ -57,10 +57,15 @@ noncomputable section
 For `t > 0` and `X ∈ ℝ`, `H_t(X) = 2 Re Q_{t,X}(0)`. -/
 theorem riemannHeat_ofReal_eq_two_re_halfGauss {t : ℝ} (ht : 0 < t) (X : ℝ) :
     riemannHeat t (X : ℂ) = ((2 * (halfGaussTransform t (xiLine X) 0).re : ℝ) : ℂ) := by
-  have h := riemannHeat_eq_halfGaussAverage ht X 0
+  have h : riemannHeat t ((X : ℂ) + I * (0 : ℝ)) =
+      halfGaussTransform t (xiLine X) (-(0 : ℝ)) +
+        starRingEnd ℂ (halfGaussTransform t (xiLine X) 0) :=
+    riemannHeat_eq_halfGaussAverage ht X 0
   simp only [ofReal_zero, mul_zero, add_zero, neg_zero] at h
   rw [h]
-  apply Complex.ext <;> simp <;> ring
+  apply Complex.ext
+  · simp [mul_comm]
+  · simp
 
 /-- **Real-axis derivative of `H_t` via the half-line Gaussian transform.**
 For `t > 0` and `X ∈ ℝ`, `H_t'(X) = −2 Im Q_{t,X}'(0)`, where
@@ -94,7 +99,9 @@ theorem deriv_riemannHeat_ofReal_eq_neg_two_im_deriv_halfGauss {t : ℝ} (ht : 0
   rw [hfun] at hL
   have heq : deriv (riemannHeat t) (X : ℂ) * I = -D₀ + starRingEnd ℂ D₀ := hL.unique hR
   have hD_im : -D₀ + starRingEnd ℂ D₀ = ((-2 * D₀.im : ℝ) : ℂ) * I := by
-    apply Complex.ext <;> simp <;> ring
+    apply Complex.ext
+    · simp
+    · simp; ring
   rw [hD_im] at heq
   rw [← hQ, hQderiv]
   exact mul_right_cancel₀ Complex.I_ne_zero heq
@@ -310,10 +317,15 @@ theorem exists_eventually_localHeatThreshold_le_subWeyl {ε : ℝ} (hε : 0 < ε
     linarith
   have htX₁ : X₁ + 2 ≤ t := ((le_max_left _ _).trans (le_max_right _ _)).trans ht
   have htB : Real.exp B + 1 ≤ t := ((le_max_right _ _).trans (le_max_right _ _)).trans ht
-  have hB0 : 0 < B := by rw [hBdef]; positivity
-  have htm1_gt1 : 1 < t - 1 := by
-    have : 1 < Real.exp B := Real.one_lt_exp_iff.mpr hB0
+  have hB4 : 4 ≤ B := by
+    rw [hBdef]
+    have hlog2 : 0 ≤ Real.log 2 := Real.log_nonneg (by norm_num)
+    have hterm : 0 ≤ (2 / ε) * (6600 / 9991 + ε) * Real.log 2 := by positivity
     linarith
+  have h5_le_exp : 5 ≤ Real.exp B := by
+    have := Real.add_one_le_exp B
+    linarith
+  have htm1_gt1 : 1 < t - 1 := by linarith
   have hlog_tm1_pos : 0 < Real.log (t - 1) := Real.log_pos htm1_gt1
   have hM0 : 0 ≤ (6600 / 9991 + ε / 2) / Real.log (t - 1) := by positivity
   have hloc : ∀ X : ℝ, |X - t| ≤ 1 →
@@ -344,10 +356,16 @@ theorem exists_eventually_localHeatThreshold_le_subWeyl {ε : ℝ} (hε : 0 < ε
     have heq : (ε / 2) * ((2 / ε) * (6600 / 9991 + ε) * Real.log 2) =
         (6600 / 9991 + ε) * Real.log 2 := by field_simp
     linarith
-  have h3 : (6600 / 9991 + ε / 2) * Real.log (t + 1) ≤
-      (6600 / 9991 + ε / 2) * (Real.log 2 + Real.log (t - 1)) :=
-    mul_le_mul_of_nonneg_left hlog_tp1 (by positivity)
-  linarith
+  have h2_sub : (6600 / 9991 + ε / 2) * Real.log 2 ≤ (6600 / 9991 + ε) * Real.log 2 :=
+    mul_le_mul_of_nonneg_right (by linarith) (Real.log_nonneg (by norm_num))
+  calc Real.log (t + 1) * (6600 / 9991 + ε / 2)
+      = (6600 / 9991 + ε / 2) * Real.log (t + 1) := mul_comm _ _
+    _ ≤ (6600 / 9991 + ε / 2) * (Real.log 2 + Real.log (t - 1)) :=
+        mul_le_mul_of_nonneg_left hlog_tp1 (by positivity)
+    _ = (6600 / 9991 + ε / 2) * Real.log 2 + (6600 / 9991 + ε / 2) * Real.log (t - 1) :=
+        mul_add _ _ _
+    _ ≤ (ε / 2) * Real.log (t - 1) + (6600 / 9991 + ε / 2) * Real.log (t - 1) := by linarith
+    _ = (6600 / 9991 + ε) * Real.log (t - 1) := by ring
 
 /-! ## 4. Exact closed form and order-2 real collision of `pairModelHeat` -/
 
@@ -384,8 +402,15 @@ private theorem integrable_and_integral_gaussDensity_tilt_quad {t : ℝ} (ht : 0
         (Real.exp (a * u) * (Polynomial.C (δ ^ 2) - Polynomial.X ^ 2).eval (0 + u)) : ℝ) : ℂ) := by
     intro u
     simp only [Polynomial.eval_one, Polynomial.eval_X, Polynomial.eval_sub, Polynomial.eval_C,
-      Polynomial.eval_pow, zero_add]
-    push_cast
+      Polynomial.eval_pow, zero_add, mul_one]
+    have hc1 : ((gaussDensity t u * (Real.exp (a * u) * u) : ℝ) : ℂ) =
+        ((gaussDensity t u * Real.exp (a * u) : ℝ) : ℂ) * (u : ℂ) := by
+      rw [← mul_assoc, Complex.ofReal_mul]
+    have hc2 : ((gaussDensity t u * (Real.exp (a * u) * (δ ^ 2 - u ^ 2)) : ℝ) : ℂ) =
+        ((gaussDensity t u * Real.exp (a * u) : ℝ) : ℂ) * ((δ : ℂ) ^ 2 - (u : ℂ) ^ 2) := by
+      rw [← mul_assoc, Complex.ofReal_mul, Complex.ofReal_sub, Complex.ofReal_pow,
+        Complex.ofReal_pow]
+    rw [hc1, hc2]
     have hI2 : ((u : ℂ) * I) ^ 2 = -(u : ℂ) ^ 2 := by rw [mul_pow, Complex.I_sq]; ring
     linear_combination ((gaussDensity t u * Real.exp (a * u) : ℝ) : ℂ) * hI2
   have ic0 : Integrable (fun u : ℝ =>
@@ -395,18 +420,30 @@ private theorem integrable_and_integral_gaussDensity_tilt_quad {t : ℝ} (ht : 0
       ((gaussDensity t u *
         (Real.exp (a * u) * (Polynomial.X : Polynomial ℝ).eval (0 + u)) : ℝ) : ℂ)) :=
     (Complex.ofRealCLM.integrable_comp i1).const_mul (2 * z * I)
+  have ic01 : Integrable (fun u : ℝ =>
+      z ^ 2 * ((gaussDensity t u * (Real.exp (a * u) * (1 : Polynomial ℝ).eval (0 + u)) : ℝ) : ℂ) +
+      (2 * z * I) * ((gaussDensity t u *
+        (Real.exp (a * u) * (Polynomial.X : Polynomial ℝ).eval (0 + u)) : ℝ) : ℂ)) :=
+    ic0.add ic1
   have ic2 : Integrable (fun u : ℝ =>
       ((gaussDensity t u *
         (Real.exp (a * u) * (Polynomial.C (δ ^ 2) - Polynomial.X ^ 2).eval (0 + u)) : ℝ) : ℂ)) :=
     Complex.ofRealCLM.integrable_comp i2
-  refine ⟨(ic0.add ic1).add ic2 |>.congr (Eventually.of_forall fun u => (hpt u).symm), ?_⟩
-  rw [integral_congr_ae (Eventually.of_forall hpt), integral_add (ic0.add ic1) ic2,
+  refine ⟨(ic01.add ic2).congr (Eventually.of_forall fun u => (hpt u).symm), ?_⟩
+  rw [integral_congr_ae (Eventually.of_forall hpt), integral_add ic01 ic2,
     integral_add ic0 ic1, integral_const_mul, integral_const_mul,
     integral_complex_ofReal, integral_complex_ofReal, integral_complex_ofReal,
     v0, v1, v2, forwardPolyHeat_one, forwardPolyHeat_X, forwardPolyHeat_C_sub_X_sq]
   simp only [Polynomial.eval_one, Polynomial.eval_X, Polynomial.eval_sub, Polynomial.eval_C,
-    Polynomial.eval_pow, zero_add, show 2 * t * a ^ 2 / 2 = t * a ^ 2 by ring]
-  push_cast
+    Polynomial.eval_pow, zero_add, show 2 * t * a ^ 2 / 2 = t * a ^ 2 by ring, mul_one]
+  have hd1 : ((Real.exp (t * a ^ 2) * (2 * t * a) : ℝ) : ℂ) =
+      ((Real.exp (t * a ^ 2) : ℝ) : ℂ) * ((2 * t * a : ℝ) : ℂ) := Complex.ofReal_mul _ _
+  have hd2 : ((Real.exp (t * a ^ 2) * (δ ^ 2 - 2 * t - (2 * t * a) ^ 2) : ℝ) : ℂ) =
+      ((Real.exp (t * a ^ 2) : ℝ) : ℂ) *
+        ((δ : ℂ) ^ 2 - 2 * (t : ℂ) - ((2 * t * a : ℝ) : ℂ) ^ 2) := by
+    rw [Complex.ofReal_mul, Complex.ofReal_sub, Complex.ofReal_sub, Complex.ofReal_pow,
+      Complex.ofReal_pow, Complex.ofReal_mul, Complex.ofReal_ofNat]
+  rw [hd1, hd2]
   have hI2 : (I * ((2 * t * a : ℝ) : ℂ)) ^ 2 = -((2 * t * a : ℝ) : ℂ) ^ 2 := by
     rw [mul_pow, Complex.I_sq]; ring
   linear_combination -(((Real.exp (t * a ^ 2) : ℝ) : ℂ) * hI2)
@@ -496,7 +533,11 @@ private theorem deriv_pairModelHeat_eq {L δ t : ℝ} (ht : 0 < t) (z : ℂ) :
   have hd2 : HasDerivAt (fun w : ℂ => pairBranch L δ t (-w)) (-pairBranchDeriv L δ t (-z)) z := by
     have h := (hasDerivAt_pairBranch L δ t (-z)).comp z (hasDerivAt_neg z)
     simpa [Function.comp_def] using h
-  have hsum := (hd1.add hd2).const_mul ((Real.exp (t * L ^ 2 / 4) / 2 : ℝ) : ℂ)
+  have hsum : HasDerivAt (fun w =>
+      ((Real.exp (t * L ^ 2 / 4) / 2 : ℝ) : ℂ) * (pairBranch L δ t w + pairBranch L δ t (-w)))
+      (((Real.exp (t * L ^ 2 / 4) / 2 : ℝ) : ℂ) *
+        (pairBranchDeriv L δ t z + -pairBranchDeriv L δ t (-z))) z :=
+    (hd1.add hd2).const_mul ((Real.exp (t * L ^ 2 / 4) / 2 : ℝ) : ℂ)
   rw [hsum.deriv]
   ring
 
@@ -516,8 +557,10 @@ theorem pairCriticalHeat_pos_and_bounds {L δ : ℝ} (hL : 0 < L) (hδ : 0 < δ)
   have hs_sq : s ^ 2 = 1 + L ^ 2 * δ ^ 2 := by
     rw [hs]; exact Real.sq_sqrt (by positivity)
   have hs1 : 1 < s := by
-    rw [hs, ← Real.sqrt_one]
-    exact Real.sqrt_lt_sqrt (by norm_num) (by linarith [mul_pos hL2 (sq_pos_of_pos hδ)])
+    calc (1 : ℝ) = Real.sqrt 1 := Real.sqrt_one.symm
+      _ < Real.sqrt (1 + L ^ 2 * δ ^ 2) :=
+          Real.sqrt_lt_sqrt (by norm_num) (by linarith [mul_pos hL2 (sq_pos_of_pos hδ)])
+      _ = s := hs.symm
   have ht_pos : 0 < pairCriticalHeat L δ := by
     unfold pairCriticalHeat; rw [← hs]; exact div_pos (by linarith) hL2
   have hquad : (L * pairCriticalHeat L δ) ^ 2 + 2 * pairCriticalHeat L δ = δ ^ 2 := by
@@ -532,7 +575,7 @@ theorem pairCriticalHeat_pos_and_bounds {L δ : ℝ} (hL : 0 < L) (hδ : 0 < δ)
   have hLt_lt : L * pairCriticalHeat L δ < δ := by
     have hsq_lt : (L * pairCriticalHeat L δ) ^ 2 < δ ^ 2 := by linarith
     nlinarith [mul_pos hL ht_pos]
-  exact ⟨ht_pos, hquad, hlt_sq, (lt_div_iff₀ hL).mpr hLt_lt⟩
+  exact ⟨ht_pos, hquad, hlt_sq, (lt_div_iff₀ hL).mpr (by linarith)⟩
 
 /-- **Exact nondegenerate order-2 real collision of `pairModelHeat` at `z = 0, t = t_*`.**
 For every `L > 0` and `δ > 0`, at `t_* = pairCriticalHeat L δ > 0`:
@@ -554,8 +597,8 @@ theorem pairModelHeat_orderTwo_collision {L δ : ℝ} (hL : 0 < L) (hδ : 0 < δ
     ring
   have hval : pairModelHeat L δ t 0 = 0 := by
     have hI0 := pairModelHeat_mul_I (L := L) (δ := δ) ht 0
-    simp only [zero_mul, mul_zero, zero_div, neg_zero, Real.exp_zero, one_mul, zero_add,
-      zero_sub, neg_sq] at hI0
+    simp only [Complex.ofReal_zero, zero_mul, mul_zero, zero_div, neg_zero, Real.exp_zero,
+      one_mul, zero_add, zero_sub, neg_sq] at hI0
     rw [hI0]
     have h0 : δ ^ 2 - 2 * t - (L * t) ^ 2 = 0 := by linarith
     simp [h0]
@@ -604,10 +647,10 @@ theorem pairModelHeat_orderTwo_collision {L δ : ℝ} (hL : 0 < L) (hδ : 0 < δ
     exact (hbd0.sub hbd_neg0).const_mul _
   have hd₂_simp : d₂ = ((2 * (1 + L ^ 2 * t) : ℝ) : ℂ) := by
     rw [hd₂def]
-    simp only [mul_zero, zero_div, Complex.exp_zero, one_mul, zero_sub]
-    have hq0 : (-I * (L : ℂ) * (t : ℂ)) ^ 2 + (δ : ℂ) ^ 2 - 2 * (t : ℂ) = 0 := by
-      have hI2 : (-I * (L : ℂ) * (t : ℂ)) ^ 2 = -(((L * t) ^ 2 : ℝ) : ℂ) := by
-        push_cast; rw [mul_pow, mul_pow, neg_sq, Complex.I_sq]; ring
+    simp only [mul_zero, zero_div, zero_mul, Complex.exp_zero, one_mul, zero_sub]
+    have hq0 : (-(I * (L : ℂ) * (t : ℂ))) ^ 2 + (δ : ℂ) ^ 2 - 2 * (t : ℂ) = 0 := by
+      have hI2 : (-(I * (L : ℂ) * (t : ℂ))) ^ 2 = -(((L * t) ^ 2 : ℝ) : ℂ) := by
+        rw [neg_sq, mul_pow, mul_pow, Complex.I_sq]; push_cast; ring
       rw [hI2]
       have hreal : -((L * t) ^ 2) + δ ^ 2 - 2 * t = 0 := by linarith
       exact_mod_cast hreal
@@ -773,8 +816,8 @@ theorem question_2_6_5_global_equivalence {δ ε : ℝ} (hδ : 0 < δ) (hε : 0 
       push Not at hnot_simple
       obtain ⟨x, hx0, hdx0⟩ := hnot_simple
       -- Symmetrize to `|x| ≥ 0`.
-      have habs_col : riemannHeat newmanConstant (|x| : ℂ) = 0 ∧
-          deriv (riemannHeat newmanConstant) (|x| : ℂ) = 0 := by
+      have habs_col : riemannHeat newmanConstant ((|x| : ℝ) : ℂ) = 0 ∧
+          deriv (riemannHeat newmanConstant) ((|x| : ℝ) : ℂ) = 0 := by
         rcases le_or_gt 0 x with hnonneg | hneg
         · rwa [abs_of_nonneg hnonneg]
         · rw [abs_of_neg hneg, ofReal_neg, riemannHeat_neg hpos.le,

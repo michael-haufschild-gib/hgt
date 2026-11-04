@@ -30,10 +30,15 @@ The base capacity `0<τ<1`, its exact PD/PSD intervals, and its singular boundar
 are formalized by `ThirtyTwoCrossCapacity.exact_scaling_capacity`.
 For the literal weighted source, write
 `α(a)=[deriv(flux a)(2x₃₂)/(2x₃₂ sinh(2ax₃₂))]/G_P(x₃₂)`.
-The proposed aperture capacity is exactly `τ/α(a)`, with `0<α(a)≤1` and
+The aperture capacity is exactly `τ/α(a)`, with `0<α(a)≤1` and
 `0<τ≤τ/α(a)<1` throughout `0<a<1/2`.
 The coefficient bounds give the stronger targets `τ<27/35` and
 `τ/α(a)<54/67`: multiplying `−280·61²` by `27/35`, or `−268·61²`
 by `54/67`, reaches the certified negative comparison `−216·61²`.
 Existing origin, scale-eight, explicit-interval and cofinal positivity
 remain valid; they do not establish the intervening sign.
+
+Relative gain: the same remainder bound gives
+`D/w≤G_P+12F²≤(67/70)G_P`, since `G_P≤−280F²`.
+Dividing by the negative `G_P` yields `67/70≤α(a)≤1`, hence
+`τ≤τ/α(a)≤(70/67)τ`. This sharper comparison is derived; Lean verification pending.

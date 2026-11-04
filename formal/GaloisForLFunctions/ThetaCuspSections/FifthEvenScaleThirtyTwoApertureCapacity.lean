@@ -67,6 +67,22 @@ theorem fraction_bounds {a : ℝ} (ha0 : 0 < a) (ha : a < 1/2) :
     have hn := mul_neg_of_pos_of_neg (sub_pos.mpr (lt_of_not_ge h)) hG
     nlinarith only [hn,he,hl]
 
+/-- Every critical aperture retains at least sixty-seven seventieths of the base coefficient. -/
+theorem fraction_lower {a : ℝ} (ha0 : 0 < a) (ha : a < 1/2) : 67/70 ≤ fraction a := by
+  have hw := weight_pos ha0
+  have hG := compensation_negative
+  have hd : deriv (FifthPolynomialCross.flux a) (2*center)/weight a ≤
+      (67/70)*FifthPolynomialCross.compensation center := by
+    apply (div_le_iff₀ hw).mpr
+    simpa only [weight,mul_comm] using weighted_derivative_relative_upper ha0.le ha
+  have he : fraction a*FifthPolynomialCross.compensation center=
+      deriv (FifthPolynomialCross.flux a) (2*center)/weight a := by
+    unfold fraction
+    field_simp [hG.ne]
+  by_contra h
+  have hn := mul_neg_of_pos_of_neg (sub_pos.mpr (lt_of_not_ge h)) hG
+  nlinarith only [hn,he,hd]
+
 private theorem source_eq {a : ℝ} (ha : 0 < a) (t : ℝ) :
     scaledSource a t=weight a • ThirtyTwoCrossCapacity.scaledSource (t*fraction a) := by
   have hw := weight_pos ha
@@ -137,33 +153,20 @@ theorem boundary {a : ℝ} (ha0 : 0 < a) (ha : a < 1/2) :
   have hd := hp.posDef_iff_det_ne_zero.mpr hn
   exact (not_lt_of_ge le_rfl) ((posDef_iff ha0 ha).mp hd)
 
+/-- Aperture dependence increases the exact capacity by at most the factor seventy over sixty-seven. -/
+theorem capacity_gain_bound {a : ℝ} (ha0 : 0 < a) (ha : a < 1/2) :
+    capacity a ≤ (70/67)*ThirtyTwoCrossCapacity.capacity := by
+  have hc := ThirtyTwoCrossCapacity.capacity_bounds.1
+  have hα := (fraction_bounds ha0 ha).1
+  apply (div_le_iff₀ hα).mpr
+  have h := mul_le_mul_of_nonneg_left (fraction_lower ha0 ha)
+    (mul_nonneg (by norm_num : (0 : ℝ) ≤ 70/67) hc.le)
+  nlinarith only [h]
+
 /-- One explicit load bound excludes every critical aperture simultaneously. -/
 theorem capacity_upper {a : ℝ} (ha0 : 0 < a) (ha : a < 1/2) : capacity a < 54/67 := by
-  have hw := weight_pos ha0
-  have hG := compensation_negative
-  have hα := (fraction_bounds ha0 ha).1
-  have he : fraction a*FifthPolynomialCross.compensation center=
-      deriv (FifthPolynomialCross.flux a) (2*center)/weight a := by
-    unfold fraction
-    field_simp [hG.ne]
-  have hn : ¬ (ThirtyTwoCrossCapacity.scaledSource ((54/67)*fraction a)).PosSemidef := by
-    apply loaded_not_posSemidef
-    have h := mul_le_mul_of_nonneg_left (normalized_weighted_derivative_upper ha0 ha)
-      (by norm_num : (0 : ℝ) ≤ 54/67)
-    change (54/67)*((deriv (FifthPolynomialCross.flux a) (2*center)/weight a)/
-      FifthRemainder.sourceUnit center) ≤ (54/67)*(-268*61^2) at h
-    change (((54/67)*fraction a)*FifthPolynomialCross.compensation center)/
-      FifthRemainder.sourceUnit center ≤ _
-    calc
-      _ = (54/67)*((deriv (FifthPolynomialCross.flux a) (2*center)/weight a)/
-          FifthRemainder.sourceUnit center) := by
-        rw [show ((54/67)*fraction a)*FifthPolynomialCross.compensation center=
-          (54/67)*(fraction a*FifthPolynomialCross.compensation center) by ring,he]
-        ring
-      _ ≤ -216*61^2 := by nlinarith only [h]
-  by_contra h
-  have ht : (54/67)*fraction a ≤ ThirtyTwoCrossCapacity.capacity :=
-    (le_div_iff₀ hα).mp (le_of_not_gt h)
-  exact hn (ThirtyTwoCrossCapacity.posSemidef_iff.mpr ht)
+  have h := mul_lt_mul_of_pos_left ThirtyTwoCrossCapacity.capacity_upper
+    (by norm_num : (0 : ℝ) < 70/67)
+  exact (capacity_gain_bound ha0 ha).trans_lt (by nlinarith only [h])
 
 end GaloisForLFunctions.ThetaCuspSections.ThirtyTwoApertureCapacity

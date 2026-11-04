@@ -137,6 +137,8 @@ import GaloisForLFunctions.CriticalScaleArithmeticRigidity.ReceivingCharges.Comm
 
 import GaloisForLFunctions.CriticalScaleArithmeticRigidity.ReceivingCharges.CommonPrimeFibreRestriction
 
+import GaloisForLFunctions.CriticalScaleArithmeticRigidity.ReceivingCharges.CommonPrimeFibreCentering
+
 /-!
 # Arithmetic rigidity at critical scale
 
