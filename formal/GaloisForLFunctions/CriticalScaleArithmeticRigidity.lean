@@ -77,6 +77,8 @@ import GaloisForLFunctions.CriticalScaleArithmeticRigidity.ReceivingCharges.Prim
 
 import GaloisForLFunctions.CriticalScaleArithmeticRigidity.ReceivingCharges.PrimeChargeUniformCoefficients
 
+import GaloisForLFunctions.CriticalScaleArithmeticRigidity.ReceivingCharges.PrimeChargeQuadraticChannels
+
 /-!
 # Arithmetic rigidity at critical scale
 
