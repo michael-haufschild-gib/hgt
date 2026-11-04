@@ -1,14 +1,16 @@
 import GaloisForLFunctions.ZeroConfigurationGeometry.IsolationIdentifiesTheCluster
 import GaloisForLFunctions.ZeroConfigurationGeometry.EulerColumnsAreSeenJustAboveTheirPrime
+import GaloisForLFunctions.SquareRootThreshold.EvenAndOddTwoBumpTestsDecideTheCriticalLine
 
 /-!
 # Positivity certifies isolable tilts
 
-Weil's criterion read through the camera. The image of a configuration on the diagonal window pair
-is `W_Z(f, f) = Σ_ρ m_ρ f̂(γ_ρ) conj f̂(conj γ_ρ)`. A point on the critical line has a real `γ_ρ`
-and contributes `m_ρ |f̂(γ_ρ)|² ≥ 0`. A point `ρ` off the line pairs with its partner `1 − ρ̄`,
-whose ordinate is `conj γ_ρ` (`gammaOf_reflect_eq_conj`), into
-`2 m_ρ Re(f̂(γ_ρ) conj f̂(conj γ_ρ))`, which has no sign.
+Weil's criterion read through the camera of `ZeroConfigurationGeometry`: a sign-based visibility
+law, complementary to the sign-free identification of that programme. The image of a
+configuration on the diagonal window pair is `W_Z(f, f) = Σ_ρ m_ρ f̂(γ_ρ) conj f̂(conj γ_ρ)`.
+A point on the critical line has a real `γ_ρ` and contributes `m_ρ |f̂(γ_ρ)|² ≥ 0`. A point `ρ`
+off the line pairs with its partner `1 − ρ̄`, whose ordinate is `conj γ_ρ`
+(`gammaOf_reflect_eq_conj`), into `2 m_ρ Re(f̂(γ_ρ) conj f̂(conj γ_ρ))`, which has no sign.
 
 * **An isolated tilt makes the image negative** (`exists_window_re_W_neg`). If `ρ₀` is off the
   line and both `ρ₀` and `1 − ρ̄₀` have windows of aperture `a` isolating them in the carrier,
@@ -39,14 +41,9 @@ open scoped ComplexConjugate
 
 noncomputable section
 
-namespace GaloisForLFunctions.ZeroConfigurationGeometry
+namespace GaloisForLFunctions.SquareRootThreshold
 
-open Zeta23 SquareRootThreshold
-
-/-- The partner `1 − ρ̄` of `ρ` has the conjugate ordinate. -/
-theorem gammaOf_reflect_eq_conj (ρ : ℂ) : gammaOf (reflect ρ) = conj (gammaOf ρ) := by
-  apply Complex.ext <;> simp [gammaOf, reflect]
-  ring
+open Zeta23 ZeroConfigurationGeometry
 
 /-- An image whose transform vanishes off a finite set is a finite sum. -/
 theorem W_eq_sum_of_support (Z : ZeroConfig) {f g : ℝ → ℂ} (S : Finset ℂ)
@@ -185,4 +182,4 @@ theorem offLineLattice_re_W_nonneg {L δ : ℝ} (hL : 0 < L) (hδ : 0 < δ) (hδ
   · rintro _ (⟨k, rfl⟩ | ⟨k, rfl⟩) h <;>
       simp only [_root_.RHTower.verticalLatticePoint] at h <;> linarith
 
-end GaloisForLFunctions.ZeroConfigurationGeometry
+end GaloisForLFunctions.SquareRootThreshold

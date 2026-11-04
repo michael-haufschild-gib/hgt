@@ -24,8 +24,8 @@ The general target is the literal complete-matrix limit
 
     (sqrt(L)/c_N)⟨B_Nv_m,x_N⟩ → S_A(h)[m=1].
 
-Its dependency-closed paper proof and Lean source are complete; the
-exterior and final assembly audits remain pending. The
+Both general source limits pass their actual-path Lean audits with the
+standard three axioms. The
 finite-prime formulation avoids interchanging infinite prime sums.
 Identifying its finite sum with `∫F(x)ψ(1/x)dx` is not needed by that source.
 
@@ -144,14 +144,15 @@ three are respectively `O_m(c⁻²)`, `O_m(L/N²)` and
 `O_m((c⁴L²/N)²)`. The diagonal uses the stronger coordinate estimate
 `|⟨v_m,x_N⟩|=O_h(L⁻¹/²)` and costs `O_m((1+log c)/c)`.
 
-### Exterior boundary, paper proof; audit pending
+### Checked exterior boundary
 
 Actual exterior rows are supported on `n≥N−linearPrimeStrip(c)`, where
 `linearPrimeStrip(c)≤(e+1)c`. There are O(c) rows, each O_m(c).
 Since n≥N/2 eventually and F is bounded, their normalized pairing is
 `O_(F,m)(c/sqrt(N))→0`. No gap below x=1 or prime-distribution estimate
-is needed. `TerminalExteriorDownwardSourcesDisappear` implements the
-finite bound and critical limit; neither is yet counted as checked.
+is needed. The finite bound and critical limit in
+`TerminalExteriorDownwardSourcesDisappear` pass their actual-path audit;
+the limit depends only on the standard three axioms.
 
 ### Upward finite-prime transport
 
@@ -210,8 +211,8 @@ Lipschitz and zero below δ. Continuity of the zero extension gives
 `h(0)=F(1)=0`, as required by the full-center theorem. The critical clock
 implies `c log c/N→0`, `c⁴/N→0` and `c→∞`. Adding the literal channel
 limits yields S_A(h); for m≥2 all remaining sources cancel or vanish.
-`TheCompleteTerminalSourceIsPolar` implements this paper assembly;
-its general polar and nonpolar endpoints remain unaudited.
+Both general endpoints in `TheCompleteTerminalSourceIsPolar` pass their
+actual-path audit with the standard three axioms.
 
 ## Uniformity exposed by the existing conductor bounds
 
@@ -230,10 +231,11 @@ The actual conductor floor `c_N⁷E_m≥κm⁷` for m≤c_N yields
 
 The bracket tends to R. The uniform coordinate bound and
 `E_m≤C_φ+2log m+3` restore the reference diagonal without losing
-summability. This fifth-power envelope is checked for interior support;
-the support-adapted transfer is written in
-`TerminalWindowsHaveMovingCollarCutoffs` and
-`EveryTerminalWindowHasSummableConductorSources`, pending audits.
+summability. The general fifth-power envelope, its restored complete
+version and the support-adapted cutoff estimates are checked in
+`EveryTerminalWindowHasSummableConductorSources` and
+`TerminalWindowsHaveMovingCollarCutoffs`. All five public endpoints pass
+their actual-path audits with the standard three axioms.
 
 Above overlap, the checked receiver-independent estimate is
 
@@ -280,9 +282,19 @@ implements the finite budget, its limit, the sharp uniform bound and the
 attaining pole coefficient; none is yet kernel checked. Its arbitrary-window
 use also depends on the pending source audits.
 
+The existing horizon limit is `aQ(H)+7J(1)M₈(H)/R`. Adding the attained
+energy difference gives the complete corrected limit
+`aQ(H)+7J(1)M₈(H)/R−S_A(h)²/D_R` for every compact window. On the
+established positive critical band, choose the canonical clock; every
+finite corrected vector then has nonnegative complete energy. Passage
+to the limit proves `S_A(h)²/D_R≤aQ(H)+7J(1)M₈(H)/R`, without the old
+interior-support restriction. This is a stronger compensated inequality,
+not an enlargement to unbounded R. These two corollaries are included
+in the pending sharp-capacity formalization.
+
 ## Remaining frontier
 
-1. Complete exterior, general assembly and envelope audits.
+1. Complete the general moving-packet audit.
 2. Formalize the sharp correction capacity and its general-window consequence.
 3. Supply additional growing arithmetic receiving channels or control the
    complementary window energy directly. A rank-one correction leaves the

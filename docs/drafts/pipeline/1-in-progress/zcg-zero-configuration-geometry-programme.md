@@ -81,10 +81,11 @@ Pillars (module — main theorems), all checked with `lake --old env lean`, umbr
   `im_eq_zero_of_cosineWindowTransform_eq_zero`, `no_complex_additive_zero_triple`
 
 ## Open core
-Certification (Q0): from finitely many images reality is a signature condition; sign-free routes need
-unbounded aperture (growth) or deformation, both ending at signed prime geometry below the mean spacing
-(the second-moment image of near-collisions, Q3). Open tools: depth range of the Ingham scale (shallow configurations resolved at every g > π/(2a), optimal); Euler-depth repulsion, density criterion for clusters closed (density < 2a/π never cancels, any depth, sharp), coalescent channel
-as an identity at λ > 1, repulsion law in a model family, Beurling–Malliavin radius below the uniform density.
+The route to RH is on its own card (`zcg-rh-route.md`). It runs from archimedean domination of the
+heat flow above `2π e^{(2/3+ε)/t}`, through a collision-free descent, to `ζ`. Open: O1 domination
+below the mean spacing; O2 the local camera at height `X` (programme-internal, next target); O3
+reality of the coalescent near-collisions in the last stretch. Internal open tools: the depth range
+of the Ingham scale between `π/(2a)` and `π/a`, and the Beurling–Malliavin radius.
 
 ## Log
 - 2026-11-04 — created; forty pillar modules checked; README written.

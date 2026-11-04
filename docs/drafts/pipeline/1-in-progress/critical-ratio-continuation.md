@@ -136,7 +136,10 @@ in that packet has zero limiting gain on the source kernel, uniformly
 even for unbounded coefficients; an explicit nonzero kernel test is checked.
 These windows already lie in the known positive range `A≤181/250`.
 This constrains the correction mechanism without extending unweighted
-positivity. General-window transport must retain the upward prime channel.
+positivity. General-window fixed-conductor transport is now checked: its
+polar limit retains `aφ ΣΛ(k)∫₀^(1/k)F` with a negative sign, and every
+fixed nonpolar source vanishes. The general moving-packet and sharp-capacity
+audits remain pending; no growing-aperture uniformity is claimed.
 At the other endpoint, the checked
 [full-horizon reference-metric obstruction](../3-formalized/full-horizon-conductor-metric-degeneration.md)
 gives an explicit terminal reconstruction whose complete energy divided

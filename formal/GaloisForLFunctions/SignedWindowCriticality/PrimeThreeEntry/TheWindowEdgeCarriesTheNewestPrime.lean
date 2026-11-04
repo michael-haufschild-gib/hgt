@@ -154,13 +154,9 @@ theorem levyTail_mul_edgeMass_le_levyEnergy (hf : ContDiff ℝ 2 f) (hfc : HasCo
     have hshift : (∫ u, g (u + x)) = m := by
       rw [integral_add_right_eq_self g x]
       exact integral_indicator measurableSet_Icc
-    have hsq : Integrable fun u => (f u - f (u + x)) ^ 2 := by
-      have hd : Continuous fun u => f u - f (u + x) :=
-        hf.continuous.sub (hf.continuous.comp (continuous_add_const x))
-      have hdc : HasCompactSupport fun u => f u - f (u + x) :=
-        hfc.sub (hfc.comp_homeomorph (Homeomorph.addRight x))
-      exact (hd.pow 2).integrable_of_hasCompactSupport
-        (hdc.comp_left (g := fun z : ℝ => z ^ 2) (by norm_num))
+    have hsq : Integrable fun u => (f u - f (u + x)) ^ 2 :=
+      (SpacingScaleHarmonicAnalysis.integrable_sub_shift_mul hf.continuous hfc hf.continuous
+        x).congr (Eventually.of_forall fun u => (sq _).symm)
     rw [← hshift]
     refine integral_mono_of_nonneg
       (Eventually.of_forall fun u => indicator_nonneg (fun w _ => sq_nonneg (f w)) _) hsq
@@ -376,7 +372,8 @@ theorem levyTail_ge_log {δ : ℝ} (hδ : 0 < δ) (hδ1 : δ ≤ 1) :
     WeilLevyCoshCrossover.integrableOn_archLevyDensity_Ioi hδ
   have hsub : (∫ x in Ioc δ 1, archLevyDensity x) ≤ ∫ x in Ioi δ, archLevyDensity x :=
     setIntegral_mono_set hint
-      (ae_restrict_of_forall_mem measurableSet_Ioi fun x hx => (archLevyDensity_pos hx).le)
+      (ae_restrict_of_forall_mem measurableSet_Ioi fun x hx =>
+        (archLevyDensity_pos (lt_trans hδ hx)).le)
       (Eventually.of_forall fun x hx => hx.1)
   have hlow : Real.exp (-1 / 2) / 2 * Real.log (1 / δ) ≤ ∫ x in Ioc δ 1, archLevyDensity x := by
     rw [← intervalIntegral.integral_of_le hδ1, ← integral_inv_of_pos hδ one_pos,

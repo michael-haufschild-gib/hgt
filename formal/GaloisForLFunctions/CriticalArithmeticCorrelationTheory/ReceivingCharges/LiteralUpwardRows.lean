@@ -50,6 +50,38 @@ theorem logarithmicUpwardProfileCoefficient_eq_rows (φ : ℝ → ℝ) (c : ℝ)
     positiveLiteralUpwardRow, negativeLiteralUpwardRow]
   ring
 
+/-- The exact finite coefficient preserves addition of arithmetic profiles. -/
+theorem logarithmicUpwardProfileCoefficient_add (φ : ℝ → ℝ) (c : ℝ)
+    (B N : ℕ) (F G : ℕ → ℝ) (n : ℕ) :
+    logarithmicUpwardProfileCoefficient φ c B N (fun j => F j + G j) n =
+      logarithmicUpwardProfileCoefficient φ c B N F n +
+        logarithmicUpwardProfileCoefficient φ c B N G n := by
+  simp only [logarithmicUpwardProfileCoefficient_eq_rows, positiveLiteralUpwardRow,
+    negativeLiteralUpwardRow, add_mul, mul_add, sum_add_distrib]
+  ring
+
+/-- The exact finite coefficient preserves scalar multiplication. -/
+theorem logarithmicUpwardProfileCoefficient_const_mul (φ : ℝ → ℝ) (c : ℝ)
+    (B N : ℕ) (F : ℕ → ℝ) (r : ℝ) (n : ℕ) :
+    logarithmicUpwardProfileCoefficient φ c B N (fun j => r * F j) n =
+      r * logarithmicUpwardProfileCoefficient φ c B N F n := by
+  have hscale (T : ℕ → ℕ → ℕ) (K : ℕ → ℕ → ℝ) :
+      (∑ k ∈ Icc 1 (N + B), (ArithmeticFunction.vonMangoldt k : ℝ) / k *
+        ∑ h ∈ Icc 1 B, (r * F (T k h)) * K k h) =
+      r * ∑ k ∈ Icc 1 (N + B), (ArithmeticFunction.vonMangoldt k : ℝ) / k *
+        ∑ h ∈ Icc 1 B, F (T k h) * K k h := by
+    simp only [mul_sum]
+    apply sum_congr rfl
+    intro k _
+    apply sum_congr rfl
+    intro h _
+    ring
+  rw [logarithmicUpwardProfileCoefficient_eq_rows,
+    logarithmicUpwardProfileCoefficient_eq_rows]
+  unfold positiveLiteralUpwardRow negativeLiteralUpwardRow
+  rw [hscale, hscale]
+  ring
+
 /-- Both cutoff kernels remain nonnegative for a nonnegative atom. -/
 theorem literalUpwardKernels_nonneg {φ : ℝ → ℝ} (hφ0 : ∀ u, 0 ≤ φ u)
     (c : ℝ) (N k h n : ℕ) :
@@ -140,8 +172,10 @@ theorem exists_literalUpwardKernels_variation {φ : ℝ → ℝ} (hφ : ContDiff
       1 ≤ A → A ≤ Z → 1 ≤ k → 2 * h ≤ A →
       discreteVariation (positiveLiteralUpwardKernel φ c N k h) A Z ≤ C ∧
       discreteVariation (negativeLiteralUpwardKernel φ c N k h) A Z ≤ C := by
-  simpa only [positiveLiteralUpwardKernel, negativeLiteralUpwardKernel] using
-    exists_literal_upward_kernel_variation hφ hsupp
+  obtain ⟨C, hC, hbound⟩ := exists_literal_upward_kernel_variation hφ hsupp
+  refine ⟨C, hC, ?_⟩
+  intro c hc A Z N k h hA hAZ hk haway
+  exact hbound hc hA hAZ hk haway
 
 #print axioms abs_literalUpwardKernels_le_of_separation
 #print axioms exists_literalUpwardKernels_variation

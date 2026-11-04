@@ -61,13 +61,25 @@ corpus margins odd `1.50·10⁻⁵`, even `5.6·10⁻⁸` at `c = ½ log 3`)
 ## Conjectures
 - **C1 (signature, not potential).** On every window `c ∈ (½ log 3 + 0.006, log 2)` no certificate
   that replaces `w₃ s₃` by `±w₃ ∫_I f²` exists; the prime 3 must enter through the sign of the sliver
-  reflection. [N]
+  reflection. [N] Explicit witness at `c₁ = 287/500 < ½ log 3 + 1/40`: `f(u) = (u − a)(b − u)(1 +
+  11.88 u/c₁ + 19.05 (u/c₁)²)` on `[a, b] = [−c₁ + 1/400, −1/400]` gives
+  `𝓗₀(f) − w₂s₂(f) + w₃∫_I f² − W(f) = 0.0301 ‖f‖²` (independent 30-digit quadrature): the prime-2
+  term is a cost there (`s₂ < 0`) and the prime-3 term helps (`s₃ > 0`). Lean certification is the
+  next step (scale of `TwoProfileRefutationBelowLogFour`).
 - **C2 (Perron).** For `0 < c < log 2` both sector ground states of the band are nonnegative. [N]
 - **C3 (selection by stages).** The admissible `w_p` slice is `ℝ` at the entry of `p` and shrinks to
   a window of the order of the sector margins; the newest prime is the loosest. [N]
-- **C4 (edge carries the newest prime).** Exact: `w_n |(f⋆f)(−log n)| ≤ (Λ(n)e^c/(2n)) levyEnergy f`;
-  at entry the outward jumps carry the lag at ratio `w_n e^h/2`. Lean:
-  `PrimeThreeEntry/TheWindowEdgeCarriesTheNewestPrime.lean`.
+- **C4 (edge carries the newest prime) — PROVED [L].** For `f` vanishing left of `−c`:
+  `(f⋆f)(−ℓ) = ∫_I (f₊² − f₋²)` on the sliver `I = [−c, c − ℓ]`, `|(f⋆f)(−ℓ)| ≤ ∫_I f²`,
+  `Ω(δ)∫_I f² ≤ levyEnergy f` with `Ω(δ) ≥ max(2e^{−δ/2}, (e^{−1/2}/2) log(1/δ))`; hence
+  `w_n|(f⋆f)(−log n)| ≤ (Λ(n)e^c/(2n)) levyEnergy f`, at entry `≤ (w_n e^h/2) levyEnergy ≤ e^{h−1} levyEnergy`,
+  and below `log 4` `w₂|s₂| + w₃|s₃| ≤ (log 2/2 + log 3/3) levyEnergy`.
+  `PrimeThreeEntry/TheWindowEdgeCarriesTheNewestPrime.lean` (clean, axioms standard).
+- **C5 (soft entry) — PROVED [L].** `belowLogFourBandWeights c = oddBandWeights c ∩ evenBandWeights c`
+  (both convex; at the arithmetic weights each is its parity sector); for `2c ≤ log 3` both are
+  cylinders in `w₃`; a sector band with Lévy margin `η` admits every `w₃'` with
+  `|w₃' − w₃| ≤ η Ω(2c − log 3)`, in particular `≤ η (e^{−1/2}/2) log(1/(2c − log 3))`.
+  `PrimeThreeEntry/TheNewestPrimeEntersSoftly.lean` (clean, axioms standard).
 
 ## No-go closure (mandatory when falsified)
 

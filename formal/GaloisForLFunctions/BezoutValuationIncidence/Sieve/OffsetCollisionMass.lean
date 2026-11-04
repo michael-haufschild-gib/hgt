@@ -13,6 +13,38 @@ set_option autoImplicit false
 open Finset ArithmeticFunction
 namespace GaloisForLFunctions.BezoutValuationIncidence
 
+/-- The reciprocal Mangoldt weight restricted to multipliers prime to the source modulus. -/
+def unitMangoldtWeight (p k : ℕ) : ℝ :=
+  if p.Coprime k then vonMangoldt k / (k : ℝ) else 0
+
+theorem unitMangoldtWeight_nonneg (p k : ℕ) : 0 ≤ unitMangoldtWeight p k := by
+  unfold unitMangoldtWeight
+  split_ifs
+  · exact div_nonneg vonMangoldt_nonneg (Nat.cast_nonneg k)
+  · exact le_rfl
+
+theorem unitMangoldtWeight_le (p k : ℕ) :
+    unitMangoldtWeight p k ≤ vonMangoldt k / (k : ℝ) := by
+  unfold unitMangoldtWeight
+  split_ifs
+  · exact le_rfl
+  · exact div_nonneg vonMangoldt_nonneg (Nat.cast_nonneg k)
+
+/-- Unit-weight collision sums are exactly the filtered affine collision rows. -/
+theorem unitMangoldtWeight_collision_sum (p Y l b d : ℕ) (f : ℕ → ℝ) :
+    (∑ k ∈ Icc 1 Y, if multiplierResidue p k b ≡ multiplierResidue p l d [MOD p]
+      then unitMangoldtWeight p k * f k else 0) =
+    ∑ k ∈ (Icc 1 Y).filter (fun k => p.Coprime k ∧
+      multiplierResidue p k b ≡ multiplierResidue p l d [MOD p]),
+      (vonMangoldt k / (k : ℝ)) * f k := by
+  rw [sum_filter]
+  apply sum_congr rfl
+  intro k _
+  by_cases hpk : p.Coprime k <;>
+    by_cases hres : multiplierResidue p k b ≡ multiplierResidue p l d [MOD p] <;>
+    simp only [unitMangoldtWeight, hpk, hres, if_true, if_false, true_and,
+      false_and, zero_mul]
+
 /-- Finite offset strips retain the reciprocal-prime collision gain. -/
 theorem exists_offset_collision_mass_upper :
     ∃ p₀ : ℕ, 8 ≤ p₀ ∧ ∀ p H X Y l : ℕ,

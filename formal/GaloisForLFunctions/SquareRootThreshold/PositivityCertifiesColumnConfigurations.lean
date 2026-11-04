@@ -1,4 +1,4 @@
-import GaloisForLFunctions.ZeroConfigurationGeometry.PositivityCertifiesIsolableTilts
+import GaloisForLFunctions.SquareRootThreshold.PositivityCertifiesIsolableTilts
 
 /-!
 # Positivity certifies column configurations
@@ -35,9 +35,9 @@ open scoped Real ComplexConjugate
 
 noncomputable section
 
-namespace GaloisForLFunctions.ZeroConfigurationGeometry
+namespace GaloisForLFunctions.SquareRootThreshold
 
-open Zeta23 SquareRootThreshold
+open Zeta23 ZeroConfigurationGeometry
 
 /-- **Finite unions of complex perturbed lattices.** For finitely many complex perturbations `ν_j`
 of lattices `h_jℤ`, with imaginary parts in `[−½, ½]` and total density `D = Σ_j 1/h_j`, every
@@ -210,4 +210,4 @@ theorem re_eq_half_of_re_W_nonneg_of_curve_columns {Z : ZeroConfig} {g : ℕ} {q
   obtain ⟨j, k, hk⟩ := hS z hz
   exact Or.inl ⟨j, Finset.mem_univ _, k, hk⟩
 
-end GaloisForLFunctions.ZeroConfigurationGeometry
+end GaloisForLFunctions.SquareRootThreshold

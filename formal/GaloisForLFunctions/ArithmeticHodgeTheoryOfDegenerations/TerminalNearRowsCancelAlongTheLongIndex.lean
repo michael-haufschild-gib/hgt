@@ -212,7 +212,7 @@ theorem abs_terminalNearOffsetPair_sub_linear_le
   have hkernel : |Real.sqrt n / Real.sqrt (n + d : ℕ) *
         K ((Real.log (n + d : ℕ) - Real.log n) / (c / N)) -
       K ((d : ℝ) * N / (c * n))| ≤ (64 * (KL : ℝ) + 4 * BK) * c / N := by
-    exact hk.trans_eq (by field_simp [hc0.ne']; ring)
+    exact hk.trans_eq (by field_simp [hc0.ne'] <;> ring)
   have hAabs : |A| ≤ 2 * BF * B := by
     dsimp only [A]
     refine (abs_add_le _ _).trans ?_
@@ -319,7 +319,7 @@ theorem abs_terminal_near_pair_div_overlap_le_long_index
           rw [sum_const, Nat.card_Icc, Nat.add_sub_cancel, nsmul_eq_mul]
         _ ≤ (N : ℝ) * (8 * BF * B * CK * c / (N : ℝ) ^ 2) :=
           mul_le_mul_of_nonneg_right (by exact_mod_cast Nat.sub_le N d) (by positivity)
-        _ = _ := by field_simp [hN0.ne']; ring
+        _ = _ := by field_simp [hN0.ne'] <;> ring
     calc
       _ = |(∑ n ∈ Icc 1 (N - d),
             (terminalNearOffsetPair K F c N p d n - terminalLinearOffsetPair K F c N p d n)) +
@@ -335,7 +335,7 @@ theorem abs_terminal_near_pair_div_overlap_le_long_index
       rw [sum_const, Nat.card_Icc, Nat.add_sub_cancel, nsmul_eq_mul]
     _ ≤ (c * P) / c :=
       div_le_div_of_nonneg_right (mul_le_mul_of_nonneg_right (Nat.floor_le hc0.le) hP) hc0.le
-    _ = _ := by dsimp only [P, CW, CK]; field_simp [hc0.ne']; ring
+    _ = _ := by dsimp only [P, CW, CK]; field_simp [hc0.ne'] <;> ring
 
 end GaloisForLFunctions.ArithmeticHodgeTheoryOfDegenerations
 

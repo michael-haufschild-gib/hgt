@@ -46,7 +46,7 @@ theorem affine_collision_weight_le {p H X Y l b c : ℕ}
     _ ≤ ∑ k ∈ S, if k ∈ T then U * (vonMangoldt k / (k : ℝ)) else 0 :=
       sum_le_sum hterm
     _ = ∑ k ∈ S.filter (fun k => k ∈ T), U * (vonMangoldt k / (k : ℝ)) := by
-      rw [sum_filter]
+      conv_rhs => rw [sum_filter]
     _ ≤ ∑ k ∈ T, U * (vonMangoldt k / (k : ℝ)) := by
       apply sum_le_sum_of_subset_of_nonneg (fun k hk => (mem_filter.mp hk).2)
       intro k _ _

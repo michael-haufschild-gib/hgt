@@ -1,7 +1,7 @@
 # Zero Configuration Geometry (ZCG)
 
 Namespace `GaloisForLFunctions.ZeroConfigurationGeometry`; umbrella `ZeroConfigurationGeometry.lean`;
-43 modules.
+42 modules.
 
 ## 1. Motivation
 
@@ -25,8 +25,10 @@ every aperture and pinned by the primes. Hiding has a price in density: a cancel
 aperture `a` has density at least `2a/π`, and inside a separated union it needs a near-collision
 in height. Certification is the hard part. In the function field it happens at the
 identification threshold, by positions. The zeros of `ζ` have unbounded density, so no finite
-camera identifies or certifies them, and every route meets the same missing input: signed prime
-geometry below the mean spacing.
+camera identifies or certifies them. The route to RH (§10) therefore rests on the one ζ-specific
+geometric mechanism available, the archimedean contraction of the functional equation, and uses
+the camera to carry it down to `ζ`. It meets the same missing input as every route: the geometry of
+primes below the mean spacing.
 
 ## 2. Objects
 
@@ -170,11 +172,7 @@ geometry below the mean spacing.
     integrality.
 
 **Certification.**
-20. *Positivity certifies what the camera isolates.* If `ρ₀` and `1 − ρ̄₀` have isolating windows of
-    aperture `a`, the window `f_A + c f_B` with `f̂(conj γ₀) = −f̂(γ₀)` has `W(f, f) < 0`. So positivity
-    at one aperture puts thin and finite configurations on the line. The off-line lattice of
-    density `L/π` is positive at every aperture `≤ L/2`.
-21. *Function-field certificates.* The exact image up to the genus certifies purity by the
+20. *Function-field certificates.* The exact image up to the genus certifies purity by the
     positions of the trace points. A size bound at all orders does too: by simultaneous return, the
     image grows like the deepest eigenvalue, so purity is boundedness of the image. This is the
     function-field Landau principle.
@@ -229,7 +227,6 @@ geometry below the mean spacing.
 | Euler stages repel above the horizon; counted by their phase | `stageLine_eq_mul_exp`, `eulerStage_deriv_ne_zero_above_horizon`, `eulerStage_ne_zero_of_lt_gap`, `exists_eulerStage_zero_within`, `eulerStage_eq_zero_iff_phase`, `ncard_eulerStage_zeros` | unconditional |
 | Integral configurations collide or repel | `prod_derivative_roots_eq_resultant`, `collide_or_repel` | unconditional |
 | **Certification** | | |
-| Positivity certifies isolable tilts; positivity has a density threshold | `exists_window_re_W_neg`, `re_eq_half_of_re_W_nonneg_of_lattices_and_finset`, `re_eq_half_of_re_W_nonneg_of_finite`, `offLineLattice_re_W_nonneg` | unconditional |
 | Function-field certification at the identification threshold | `pure_iff_of_powerSum_eq`, `pure_iff_of_weil_eq_on_aperture`, `isPure_of_curveImage_eq` | unconditional |
 | Bounded images certify purity; growth reads the deepest eigenvalue | `exists_simultaneous_return`, `curveImage_growth`, `isPure_iff_bounded_curveImage` | unconditional |
 
@@ -241,11 +238,8 @@ arithmetic images, forces every point onto the real curve?*
   `[−2, 2]` (`pure_iff_of_weil_eq_on_aperture`, `isPure_of_curveImage_eq`). Also boundedness of the
   image at all orders (`isPure_iff_bounded_curveImage`). A size bound at finitely many orders
   certifies nothing.
-- The side of `ζ`: positivity certifies exactly what the camera isolates (`exists_window_re_W_neg`).
-  One aperture puts thin and finite configurations on the line. The off-line lattice is positive at
-  every aperture `≤ L/2` (`offLineLattice_re_W_nonneg`).
-- *Open:* a certificate for `ζ`. Its zeros have unbounded density, so no finite aperture isolates a
-  tilt (`eq_zero_of_blind_to_real_zeros_of_xi`); see §10.
+- *Open:* a sign-free certificate for `ζ`. Its zeros have unbounded density, so no finite aperture isolates a
+  tilt (`eq_zero_of_blind_to_real_zeros_of_xi`); see §10 and §11.
 
 **Q1 Identifiability.** *When, and how stably, does the image determine the configuration?*
 - Finite modifications are identified at every aperture, constructively and stably
@@ -362,7 +356,6 @@ arithmetic images, forces every point onto the real curve?*
 | Bounded bandwidth excludes arithmetic fakes | For every aperture some prime carries Euler columns of every depth that hide |
 | Depth is read at first order | The depth and gap signals are quadratic near a collision |
 | Certifying reality needs a sign | In the function field, identification at lag `g log q` certifies purity by positions; Weil positivity is proved to decide only with `2g` lags (`curveConfig_weil_nonneg_iff_unitary_of_card_le`) |
-| Weil positivity at one large aperture certifies RH-type statements | It certifies exactly the tilts the camera isolates; the off-line lattice is positive at every aperture `≤ L/2`, and the unbounded density of `ζ` defeats every finite aperture |
 | Identification certifies reality for `ζ` too | No finite aperture identifies the zeros of `ζ`: lattice columns of RvM density hide up to `λ = ½` |
 | Reality can leave the line smoothly | Only through a collision, a real double root |
 | Collisions signal non-purity | Pure configurations collide freely (a trace root at `±2`, a double trace root); a collision criterion characterizes exits, not states |
@@ -385,9 +378,76 @@ arithmetic images, forces every point onto the real curve?*
 | HTGeometry | Newton identities, multiset determination, closedness of real-rootedness; the contour shift and compact inverse behind converse Paley–Wiener; Jensen counting; separated point counts |
 | SelbergClass | reciprocal Euler factors of the positive twins |
 | IncommensurableGaborPinching | the cosine kernel and its real additive rigidity |
-| ArithmeticOrientationGeometry | growth-rate and index laws; the unbounded-aperture certificates of §10 |
+| ArithmeticOrientationGeometry | growth-rate and index laws; the unbounded-aperture certificates of §11 |
 
-## 10. Big picture
+## 10. The route to RH
+
+The camera theory of §4–§6 holds for every tempered configuration. A route to RH needs a mechanism
+that only `ζ` has. ZCG takes it from the functional equation and the Euler product: **archimedean
+contraction**.
+
+**The ζ-specific mechanism.** Off the line the functional-equation factor contracts:
+`log|χ(σ + it)| ≤ −(σ − ½)(log(t/2π) − 4/t² − π/t)` (`norm_zetaChi_le_right_line_exp`). The rate,
+`log(t/2π)` per unit depth, is `2π` times the zero density at height `t`. Whatever the functional
+equation reflects loses this much off the line. Two families are proved to be dominated by it.
+- *Euler carriers.* Let `E_N` be the exponential of the Euler logarithm truncated at `N`. Then
+  `E_N(s) + χ(s)E_N(1 − s)` has all its strip zeros on the line above height `2π e^{2ψ(N)+1}`
+  (`eulerCarrier_re_eq_half`). There it is a simple phase lattice, counted by its phase
+  (`eulerStage_deriv_ne_zero_above_horizon`, `ncard_eulerStage_zeros`). The contraction pays for
+  the prime mass `ψ(N)`.
+- *Heat.* For `0 < t ≤ 1/8` the zeros of the heat flow `H_t` above height `2π e^{(2/3+ε)/t}` are real
+  and simple (`riemannHeat_zeros_real_simple_twoThirds`). The constant `2/3` is `4μ(½)`, with
+  `μ(½) ≤ 1/6` the Weyl exponent, and is the floor of the method. Here contraction and Gaussian
+  smoothing pay for the size of `ζ` near the line.
+
+In `ζ`, reality is a *domination phenomenon*: the archimedean phase outruns the arithmetic, and the
+dominated configuration is a simple on-line phase lattice. The twins share this domination above
+their own horizon but have tilted columns at every height, and Davenport–Heilbronn data have no
+Euler logarithm to exponentiate. The route carries the domination down to `ζ` itself.
+
+**The route.**
+
+| Step | Statement | Status |
+|---|---|---|
+| 1. Start dominated | At height `X` the heat flow is real for `t ≥ t_X = (2/3 + ε)/log X` (`eventually_localNewmanConstant_le_twoThirds`) | Lean |
+| 2. RH is the descent | RH holds iff the local de Bruijn–Newman constant `Λ_X` vanishes at every height (`riemannHypothesis_iff_forall_localNewmanConstant_eq_zero`) | Lean |
+| 3. Exit only through collision | Along the descent `t ↓ 0`, a zero leaves the line only at a double zero (`riemannHypothesis_iff_forall_zeros_simple`, `exists_first_collision`) | Lean |
+| 4. The pincer | A zero of depth `d` at height `X` forces `Λ_X ≥ c d²/log X` (`exists_le_localNewmanConstant_of_offLine_zero`), so any tilt is created by a collision at heat `t ∈ [c d²/log X, t_X]` | Lean |
+| 5. The camera fixes the start | The descent is determined by the configuration of `ζ` at `t = 0`, and only there is the image arithmetic: the heat flow destroys the Euler product for `t > 0`. At bandwidth `λ > ½` hiding needs density `≥ 2a/π` (`eq_of_mimic_of_count_le`), while the zeros at height `X` have density `L/π`. So the image at aperture `λL` should determine the configuration near `X`, up to near-collisions, which it reads at second order through the `(log n)²`-weighted prime sum (`norm_pairSignal_sub_sq_mul_curvature_le`, `deriv_deriv_primeChannel_modulate`) | Lean for uniform density; local form open (O2) |
+| 6. Close the descent | The configuration fixed in step 5 evolves without collision on `(0, t_X]`: it has no tilted pair, and no cluster that collides in the last stretch | open (O1, O3) |
+
+**Obstacles.**
+- **O1 Domination below the mean spacing.** Step 1 stops at `t_X ≍ 4μ(½)/log X`, because size
+  bounds on `ζ` near the line do not see below the mean spacing. Better exponents lower the floor
+  (Bourgain's `μ(½) ≤ 13/84` gives `13/21`). Lindelöf would give `Λ_X = o(1/log X)`, still not `0`.
+  Closing the route needs domination that knows the configuration at the scale `1/log X`, not only
+  the size of `ζ`.
+- **O2 The local camera.** The density criterion and the Ingham-scale resolution are proved for
+  configurations of finite uniform density on the whole line. The zeros of `ζ` have density
+  `L(X)/π`, with `L = ½ log(X/2π)`. Needed: the local form at height `X`, with the far zeros
+  controlled through window decay (`exists_pow_mul_norm_paperFT_le_exp`) and the zero count
+  (`zeroCount_upper`). This is analysis inside the programme, and the next target.
+- **O3 Repulsion in the last stretch.** Every tilted pair of `ζ` at height `X` must disappear by a
+  collision before heat time `t_X`, since `H_{t_X}` is real there. An isolated pair of squared
+  half-gap `−δ²` collides at heat `δ²/2` (the single-pair law `w² + 2t`, proved for polynomials),
+  so an isolated tilt at height `X` would need `δ² ≲ 2t_X ≍ 1/log X`. Deeper tilts need a cluster of
+  zeros at the heat scale `√t_X` that drives the collision. O3 asks the arithmetic image fixed in
+  step 5 to exclude both: shallow tilts, which it reads only at second order through coalescent
+  prime pairs below the mean spacing (`primeCoalSum_eq_oddEvenShiftPrimeCoalSum`), and colliding
+  clusters. This is the arithmetic input of Q3. It must use the Euler product with the strict
+  Euler bound, since for the twins the same descent fails.
+- **The endpoint.** `Λ ≥ 0` (Rodgers–Tao): the descent cannot continue past `t = 0`. So whatever
+  closes O3 must use a property that `ζ` has exactly at `t = 0`. The Euler product is such a
+  property: the heat flow destroys it for `t > 0`.
+
+**Status.** Steps 1–4 are proved in the corpus. Step 5 is proved for configurations of uniform
+density, and its local form (O2) is within reach. O1 and O3 are where RH lies. The route is not
+closed. What it contributes is the split. ζ-specific domination gives reality down to heat time
+`t_X`, and the pincer confines every tilt to the last stretch. The camera fixes the configuration
+whose descent must be collision-free. The only arithmetic left is that this configuration has no
+shallow tilt and no colliding cluster at the heat scale.
+
+## 11. Big picture
 
 ZCG splits the explicit formula's information into what an image *identifies*, what it can
 *hide*, and what it can *certify*.
@@ -411,12 +471,12 @@ squared gap only at second order, through the `(log n)²`-weighted prime sum. Re
 model families, from integrality in the function field and from the archimedean phase speed above
 the horizon of an Euler stage. For `ζ` neither mechanism exists below the horizon.
 
-For RH the programme reduces the missing step to one statement about configurations: *the
-arithmetic image excludes tilted near-collisions at every height*. The estimate routes need the
-same input. ZCG states it as a property of positions and gaps, instead of a cancellation bound, a
-sign or a count.
+For RH the programme reduces the missing step to one statement about configurations: *in the last
+stretch of the heat descent, the arithmetic image excludes tilted near-collisions at every height*
+(§10). The estimate routes need the same input. ZCG states it as a property of positions and gaps,
+instead of a cancellation bound, a sign or a count.
 
-## 11. Success criteria and contributions
+## 12. Success criteria and contributions
 
 The programme succeeds when two things hold. First, a theorem of the form "the arithmetic image at
 every height excludes a tilted point" is proved without a sign of a form, a spectrum, a count or a

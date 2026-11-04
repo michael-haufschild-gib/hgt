@@ -215,7 +215,7 @@ theorem abs_terminal_reciprocal_gap_interval_le
       hq hp hz hB hN (show a - 1 ≤ N by omega) hs t
     change |∑ n ∈ Icc a b, row n| ≤ _
     rw [heq]
-    exact ((abs_sub_le _ _).trans (add_le_add h₁ h₂)).trans_eq (by ring)
+    exact ((abs_sub _ _).trans (add_le_add h₁ h₂)).trans_eq (by ring)
   · rw [Icc_eq_empty_of_lt (lt_of_not_ge hab), sum_empty, abs_zero]
     positivity
 

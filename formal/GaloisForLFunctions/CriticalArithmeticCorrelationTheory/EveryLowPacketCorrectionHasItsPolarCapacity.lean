@@ -17,7 +17,7 @@ open scoped RealInnerProductSpace
 namespace GaloisForLFunctions.CriticalArithmeticCorrelationTheory
 open ArithmeticHodgeTheoryOfDegenerations ArithmeticDegenerationTheory
   RenormalizedArithmeticPotentialTheory RenormalizedArithmeticPotentialTheory.CompletedShell
-  SpacingScaleHarmonicAnalysis
+  SpacingScaleHarmonicAnalysis ArithmeticElectrostatics
 
 private theorem conductor_energy_pos {c : ℝ} (hc : 1 ≤ c) {m : ℕ} (hm : 0 < m) :
     0 < completedConductorEnergy tiltedUnitSpline c m := by
@@ -314,9 +314,82 @@ theorem tendsto_pole_corrector_attains_terminal_capacity
   dsimp only [M, x, v]
   ring
 
+/-- The optimally corrected complete energy retains precisely the polar capacity. -/
+theorem tendsto_optimized_terminal_window_energy
+    {h : ℝ → ℝ} {A : ℝ} (hh : ContDiff ℝ 2 h) (hA : 0 ≤ A)
+    (hsupp : ∀ y, y ∉ Set.Icc (-A) 0 → h y = 0)
+    {c : ℕ → ℝ} (hc : ∀ N, 1 ≤ c N) {R : ℝ} (hR : 0 < R)
+    (hcrit : Tendsto (fun N : ℕ => c N ^ 8 / Real.log N) atTop (𝓝 R)) :
+    Tendsto (fun N : ℕ =>
+      let x := horizonProfileVector (horizonWeights h N) N
+      let z := x + ((-generalTerminalPolarSource A h / criticalPoleWindowCost R) *
+        Real.sqrt (Real.log N)) • normalizedRamanujanHorizonVector 1 N
+      ⟪Matrix.toEuclideanLin (completeWeilMatrix tiltedUnitSpline (c N) N) z, z⟫ / c N)
+      atTop (𝓝 (((∫ u, tiltedUnitSpline u) ^ 2 / ∫ u, tiltedUnitSpline u ^ 2) *
+        weilQuad (halfWeight h) +
+        7 * tiltedJordanOne / R * (∫ y, Real.exp (-(8 * y)) * halfWeight h y ^ 2) -
+        generalTerminalPolarSource A h ^ 2 / criticalPoleWindowCost R)) := by
+  let x := fun N : ℕ => horizonProfileVector (horizonWeights h N) N
+  let B := fun N : ℕ => Matrix.toEuclideanLin (completeWeilMatrix tiltedUnitSpline (c N) N)
+  have hbase : Tendsto (fun N : ℕ => (c N)⁻¹ * ⟪B N (x N), x N⟫) atTop
+      (𝓝 (((∫ u, tiltedUnitSpline u) ^ 2 / ∫ u, tiltedUnitSpline u ^ 2) *
+        weilQuad (halfWeight h) +
+        7 * tiltedJordanOne / R * ∫ y, Real.exp (-(8 * y)) * halfWeight h y ^ 2)) := by
+    refine (horizon_layer_criticalCurve_exact hh hA hsupp hc hR hcrit).congr' ?_
+    filter_upwards [eventually_ge_atTop 1] with N hN
+    dsimp only [B, x]
+    rw [completeWeilMatrix_inner_eq_weilQuad contDiff_tiltedUnitSpline tiltedUnitSpline_support
+      (zero_lt_one.trans_le (hc N)) hN]
+    have ht := atomicTest_congr (N := N)
+      (x := primeHorizonExtension (horizonProfileVector (horizonWeights h N) N))
+      (x' := horizonWeights h N)
+      (fun n hn => primeHorizonExtension_coe (horizonProfileVector (horizonWeights h N) N) ⟨n, hn⟩)
+      (atomDilate tiltedUnitSpline (c N / N))
+    rw [ht]
+  have ht := hbase.add (tendsto_pole_corrector_attains_terminal_capacity hh hA hsupp hc hR hcrit)
+  simp only [← sub_eq_add_neg] at ht
+  apply ht.congr
+  intro N
+  dsimp only [B, x]
+  ring
+
+/-- The established critical band pays the optimized polar charge of every compact window. -/
+theorem exists_critical_band_all_windows_ge_polar_capacity :
+    ∃ K : ℝ, 0 < K ∧ 2 * K ≤ 1 ∧
+      ∀ R : ℝ, 0 < R → R ≤ (2 * K) ^ 8 →
+        ∀ {h : ℝ → ℝ} {A : ℝ}, ContDiff ℝ 2 h → 0 ≤ A →
+          (∀ y, y ∉ Set.Icc (-A) 0 → h y = 0) →
+          generalTerminalPolarSource A h ^ 2 / criticalPoleWindowCost R ≤
+            ((∫ u, tiltedUnitSpline u) ^ 2 / ∫ u, tiltedUnitSpline u ^ 2) *
+              weilQuad (halfWeight h) +
+            7 * tiltedJordanOne / R * ∫ y, Real.exp (-(8 * y)) * halfWeight h y ^ 2 := by
+  obtain ⟨K, hK, h2K, hfloor⟩ :=
+    exists_tiltedUnitSpline_completeWeilEnergy_ge_spectral_floor_at_critical_multiple
+  refine ⟨K, hK, h2K, ?_⟩
+  intro R hR hRK h A hh hA hsupp
+  let c := canonicalCriticalCurve R
+  have hc : ∀ N, 1 ≤ c N := one_le_canonicalCriticalCurve R
+  have hcrit := tendsto_canonicalCriticalCurve_pow_eight hR
+  have ht := tendsto_optimized_terminal_window_energy hh hA hsupp hc hR hcrit
+  apply sub_nonneg.mp
+  apply ge_of_tendsto ht
+  filter_upwards [hfloor, eventually_canonicalCriticalCurve_le_and_eq hK hR hRK]
+    with N hN hband
+  have hc0 : 0 < c N := zero_lt_one.trans_le (hc N)
+  let z := horizonProfileVector (horizonWeights h N) N +
+    ((-generalTerminalPolarSource A h / criticalPoleWindowCost R) *
+      Real.sqrt (Real.log N)) • normalizedRamanujanHorizonVector 1 N
+  have hz := hN (c N) (hc N) hband.1 z
+  have hκ := tiltedSplineSpectralFloorConstant_pos
+  have hz0 : 0 ≤ completeWeilEnergy tiltedUnitSpline (c N) N z :=
+    (by positivity : 0 ≤ tiltedSplineSpectralFloorConstant / (2 * c N ^ 7) * ‖z‖ ^ 2).trans hz
+  exact div_nonneg hz0 hc0.le
+
 end GaloisForLFunctions.CriticalArithmeticCorrelationTheory
 
 #print axioms GaloisForLFunctions.CriticalArithmeticCorrelationTheory.eventually_low_packet_correction_ge_retained_pole_budget
 #print axioms GaloisForLFunctions.CriticalArithmeticCorrelationTheory.tendsto_retainedPoleCorrectionBudget
 #print axioms GaloisForLFunctions.CriticalArithmeticCorrelationTheory.eventually_low_packet_correction_ge_sharp_polar_capacity
 #print axioms GaloisForLFunctions.CriticalArithmeticCorrelationTheory.tendsto_pole_corrector_attains_terminal_capacity
+#print axioms GaloisForLFunctions.CriticalArithmeticCorrelationTheory.tendsto_optimized_terminal_window_energy
+#print axioms GaloisForLFunctions.CriticalArithmeticCorrelationTheory.exists_critical_band_all_windows_ge_polar_capacity
