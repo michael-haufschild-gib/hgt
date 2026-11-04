@@ -79,11 +79,11 @@ theorem filledEndpointNearPairSum_eq {K F : ℝ → ℝ} (hK : K 0 = 1)
         F ((n : ℝ) / N) * v j * K (|Real.log j - Real.log n| / w) /
           (Real.sqrt n * Real.sqrt j) else 0) =
       ∑ j ∈ Icc 1 N,
-        (if 0 * w < |Real.log j - Real.log n| ∧
+        ((if 0 * w < |Real.log j - Real.log n| ∧
             |Real.log j - Real.log n| ≤ 2 * w then
           F ((n : ℝ) / N) * 1 * v j * K (|Real.log j - Real.log n| / w) /
             (Real.sqrt n * Real.sqrt j) else 0) +
-        (if j = n then F ((n : ℝ) / N) * v n / n else 0) := by
+        (if j = n then F ((n : ℝ) / N) * v n / n else 0)) := by
     apply sum_congr rfl
     intro j hj
     by_cases hjn : j = n
@@ -137,6 +137,7 @@ theorem terminal_near_jet_sub_prime_pair_eq_filled
         F w N (ramanujanLogDivisorJet m) -
       ∑ n ∈ Icc 1 N, F ((n : ℝ) / N) * Real.log n * ramanujanLagCoefficient m n / n := by
   have hK : (fun s => shellAutocorr φ s / ∫ u, φ u ^ 2) 0 = 1 := by
+    change shellAutocorr φ 0 / (∫ u, φ u ^ 2) = 1
     rw [shellAutocorr_zero, div_self hM.ne']
   rw [filledEndpointNearPairSum_eq hK hw N, terminal_prime_pair_eq_log_sub_jet hlow hN m]
   have he : (∑ n ∈ Icc 1 N, F ((n : ℝ) / N) *

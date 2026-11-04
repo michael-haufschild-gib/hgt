@@ -1,9 +1,9 @@
 # Signed transport between the critical pole and a terminal window
 
 - **ID:** critical-pole-window-signed-transport
-- **Stage:** 1-in-progress
-- **Type:** CONJECTURE
-- **Parent:** [critical-ratio continuation](critical-ratio-continuation.md)
+- **Stage:** 3-formalized
+- **Type:** THEOREM (Lean)
+- **Parent:** [critical-ratio continuation](../1-in-progress/critical-ratio-continuation.md)
 - **Verdict:** `BRIDGE`. No external novelty claim; no all-R positivity conclusion.
 
 ## Exact target and established scope
@@ -248,13 +248,13 @@ give
     Σ_(2≤m≤Q_N)|⟨B_Nv_m,x_N⟩|²/(c_NE_m)→0,
     Σ_(1≤m≤Q_N)|⟨B_Nv_m,x_N⟩|²/(c_NE_m)→S_A(h)²R/J(1).
 
-`TerminalConductorSourcesConcentrateAtThePole` checks this for interior
-support. `EveryTerminalWindowHasAPolarConductorSource` implements the
-same conclusion for every compact window; its audit is pending.
+`EveryTerminalWindowHasAPolarConductorSource` checks these limits for
+every compact window. Its five printed capstones pass their actual-path
+audit with the standard three axioms.
 Constants may depend on the fixed aperture; no growing-aperture theorem
 is claimed.
 
-## Sharp correction capacity: paper reduction, not yet formalized
+## Checked sharp correction capacity
 
 The checked `eventually_completeWeil_low_packet_signed_approx` gives,
 uniformly over all coefficients b,
@@ -276,11 +276,13 @@ The polar budget equals
 Letting η decrease to zero bounds every limiting correction gain by
 `S_A(h)²/D_R`. The single pole coefficient
 `b₁=−S_A(h)sqrt(L)/D_R`, all others zero, attains that value by the
-complete mixed and pole-self limits. This is the exact proposed optimum;
-no further Gram estimate is missing. `EveryLowPacketCorrectionHasItsPolarCapacity`
-implements the finite budget, its limit, the sharp uniform bound and the
-attaining pole coefficient; none is yet kernel checked. Its arbitrary-window
-use also depends on the pending source audits.
+complete mixed and pole-self limits. This is the exact optimum, uniformly
+over all coefficient families, including unbounded ones.
+`EveryLowPacketCorrectionHasItsPolarCapacity` proves the finite budget,
+its limit, the sharp uniform bound and the attaining pole coefficient.
+All six printed endpoints pass the actual-path audit with exactly
+`[propext, Classical.choice, Quot.sound]`; the module is wired into its
+programme umbrella.
 
 The existing horizon limit is `aQ(H)+7J(1)M₈(H)/R`. Adding the attained
 energy difference gives the complete corrected limit
@@ -289,16 +291,16 @@ established positive critical band, choose the canonical clock; every
 finite corrected vector then has nonnegative complete energy. Passage
 to the limit proves `S_A(h)²/D_R≤aQ(H)+7J(1)M₈(H)/R`, without the old
 interior-support restriction. This is a stronger compensated inequality,
-not an enlargement to unbounded R. These two corollaries are included
-in the pending sharp-capacity formalization.
+not an enlargement to unbounded R. Both corollaries are included in the
+checked sharp-capacity module.
 
 ## Remaining frontier
 
-1. Complete the general moving-packet audit.
-2. Formalize the sharp correction capacity and its general-window consequence.
-3. Supply additional growing arithmetic receiving channels or control the
-   complementary window energy directly. A rank-one correction leaves the
-   full aliasing mass on its source kernel.
+Supply additional growing arithmetic receiving channels or control the
+complementary window energy directly. Every correction in this packet has
+zero limiting benefit on the source kernel, for every fixed compact window.
+The explicit nonzero kernel witness above lies in the already positive
+interior window range; it is not a negative-energy witness.
 
 The all-R positive low packet is not the whole horizon. Independently,
 the far-complement proof pays `C_S c S₇` with `g₀L S₇/(8c⁷)`, requiring

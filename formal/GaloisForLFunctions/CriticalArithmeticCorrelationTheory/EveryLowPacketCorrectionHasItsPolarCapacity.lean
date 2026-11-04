@@ -114,6 +114,7 @@ theorem eventually_low_packet_correction_ge_retained_pole_budget
     apply sum_congr rfl
     intro m _
     dsimp only [retainedPoleCorrectionBudget, p, d, E, P, M, x]
+    simp only [div_mul_eq_div_div]
     ring
   rw [hbudget]
   change ⟪M x, x⟫ / c N - _ ≤ _
@@ -163,6 +164,7 @@ private theorem retainedPoleCorrectionBudget_eq
     have hm1 : m ≠ 1 := by have := (mem_Icc.mp hm).1; omega
     rw [if_neg hm1, add_zero]
     unfold terminalConductorSourceSquare
+    simp only [div_mul_eq_div_div]
     ring
 
 private theorem tendsto_critical_pole_reference_cost
@@ -178,7 +180,9 @@ private theorem tendsto_critical_pole_reference_cost
     with N hL
   change 0 < Real.log (N : ℝ) at hL
   have hc0 : 0 < c N := zero_lt_one.trans_le (hc N)
-  dsimp only [Function.comp_def]
+  change (c N ^ (7 : ℝ) * completedConductorEnergy tiltedUnitSpline (c N) 1) /
+      (c N ^ 8 / Real.log N) =
+    Real.log N / c N * completedConductorEnergy tiltedUnitSpline (c N) 1
   rw [show (7 : ℝ) = ((7 : ℕ) : ℝ) from rfl, Real.rpow_natCast]
   field_simp [hc0.ne', hL.ne'] <;> ring
 
@@ -217,7 +221,7 @@ theorem tendsto_retainedPoleCorrectionBudget
 private theorem criticalPoleWindowCost_eq {R : ℝ} (hR : 0 < R) :
     criticalPoleWindowCost R = jordanCoefficient 1 / R + tiltedPolarFinitePart := by
   unfold criticalPoleWindowCost criticalGenusCoefficient tiltedPolarFinitePart RHTower.poleSharpConstant
-  field_simp [hR.ne'] <;> ring
+  field_simp [hR.ne']
 
 /-- No low-packet coefficient family improves a compact window beyond its exact polar capacity. -/
 theorem eventually_low_packet_correction_ge_sharp_polar_capacity

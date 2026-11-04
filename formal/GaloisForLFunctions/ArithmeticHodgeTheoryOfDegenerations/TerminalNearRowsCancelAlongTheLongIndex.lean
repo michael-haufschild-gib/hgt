@@ -18,7 +18,8 @@ open Finset
 namespace GaloisForLFunctions.ArithmeticHodgeTheoryOfDegenerations
 open RenormalizedArithmeticPotentialTheory CriticalArithmeticCorrelationTheory
 
-private theorem sum_zero_diagonal_eq_gap_triangles (G : ℕ → ℕ → ℝ) (N : ℕ)
+/-- A zero-diagonal double sum is the sum of its positive-gap triangles. -/
+theorem sum_zero_diagonal_eq_gap_triangles (G : ℕ → ℕ → ℝ) (N : ℕ)
     (hdiag : ∀ n, G n n = 0) :
     (∑ n ∈ Icc 1 N, ∑ j ∈ Icc 1 N, G n j) =
       ∑ d ∈ Icc 1 N, ∑ n ∈ Icc 1 (N - d), (G n (n + d) + G (n + d) n) := by

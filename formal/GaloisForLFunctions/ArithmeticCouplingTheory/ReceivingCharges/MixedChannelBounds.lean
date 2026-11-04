@@ -35,9 +35,10 @@ theorem complete_orthogonal_dilation_error_le {φ : ℝ → ℝ}
         (Real.log 8 + 4) * ‖packetVector F N‖) * ‖packetVector G N‖ := by
   have htriangle (a b d e f : EuclideanSpace ℝ (PrimeHorizonIndex N)) :
       ‖a - b + d - e - f‖ ≤ ‖a‖ + ‖b‖ + ‖d‖ + ‖e‖ + ‖f‖ := by
-    exact (norm_sub_le _ _).trans (add_le_add_right
-      ((norm_sub_le _ _).trans (add_le_add_right
-        ((norm_add_le _ _).trans (add_le_add_right (norm_sub_le a b) ‖d‖)) ‖e‖)) ‖f‖)
+    exact (norm_sub_le _ _).trans (add_le_add
+      ((norm_sub_le _ _).trans (add_le_add
+        ((norm_add_le _ _).trans (add_le_add (norm_sub_le a b) (le_refl ‖d‖))) (le_refl ‖e‖)))
+      (le_refl ‖f‖))
   calc
     _ = |⟪Matrix.toEuclideanLin (fullWeilCenterMatrix (completeWeilPoleShift φ c) N)
           (packetVector F N) -
@@ -49,7 +50,7 @@ theorem complete_orthogonal_dilation_error_le {φ : ℝ → ℝ}
       rw [complete_orthogonal_dilation_channels hφ hsupp hM hc hN F G hF hG hFG]
       simp only [inner_sub_left, inner_add_left]
     _ ≤ _ := (abs_real_inner_le_norm _ _).trans (mul_le_mul_of_nonneg_right
-      ((htriangle _ _ _ _ _).trans (add_le_add_left (mertens_remainder_norm N F) _))
+      ((htriangle _ _ _ _ _).trans (add_le_add (le_refl _) (mertens_remainder_norm N F)))
       (norm_nonneg _))
 
 #print axioms complete_orthogonal_dilation_error_le

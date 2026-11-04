@@ -22,14 +22,16 @@ def compensationPolynomial (q : ℝ) : ℝ :=
   3*(2*q-3)^2-(1000001/1000000)*(q/7-99/500)*
     ((2*q-3)*(8*q^2-30*q+15)/2+(2*q-3)^2/100000)
 
-private def firstSlope (q : ℝ) : ℝ := (8*q^2-30*q+15)/(2*(2*q-3))
+/-- Negative logarithmic slope of the first source atom. -/
+def firstSlope (q : ℝ) : ℝ := (8*q^2-30*q+15)/(2*(2*q-3))
 
 private theorem firstSlope_pos {q : ℝ} (hq : 7 ≤ q) : 0 < firstSlope q := by
   apply div_pos
   · nlinarith only [hq,sq_nonneg (q-7)]
   · linarith only [hq]
 
-private theorem first_derivative {x : ℝ}
+/-- The first atom derivative is its mass times the explicit logarithmic slope. -/
+theorem first_derivative {x : ℝ}
     (hq : 7 ≤ thetaCuspSingleAtomReflectionScale 1 x) :
     deriv (fun y : ℝ => thetaCuspSourceTerm y 1) x =
       -firstSlope (thetaCuspSingleAtomReflectionScale 1 x)*thetaCuspSourceTerm x 1 := by
@@ -68,7 +70,8 @@ theorem center_tangent {x : ℝ} (hx : 0 ≤ x) :
   simp only [thetaCuspSingleAtomReflectionScale,Nat.cast_one,one_pow,mul_one]
   nlinarith only [ht,hs]
 
-private theorem mass_slope_bounds {x : ℝ}
+/-- Uniform mass and derivative bounds relative to the first atom above scale seven. -/
+theorem mass_slope_bounds {x : ℝ}
     (hq : 7 ≤ thetaCuspSingleAtomReflectionScale 1 x) :
     thetaCuspSourceTerm x 1 ≤ thetaCuspFullSource x ∧
     thetaCuspFullSource x ≤ (1000001/1000000)*thetaCuspSourceTerm x 1 ∧
@@ -106,7 +109,8 @@ private theorem mass_slope_bounds {x : ℝ}
     change -(firstSlope q+1/100000)*f ≤ _
     nlinarith only [hl,hm1]
 
-private theorem first_mass_square (x : ℝ) :
+/-- The first atom square equals the common pair amplitude times its quadratic profile. -/
+theorem first_mass_square (x : ℝ) :
     thetaCuspSourceTerm x 1^2 =
       sourceUnit x*(2*thetaCuspSingleAtomReflectionScale 1 x-3)^2 := by
   rw [thetaCuspSourceTerm_one_eq_scale_profile]

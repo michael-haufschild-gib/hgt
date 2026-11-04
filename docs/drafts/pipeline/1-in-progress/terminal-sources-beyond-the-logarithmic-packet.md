@@ -205,8 +205,11 @@ The long-index argument would suffice with polynomial losses
 the moving integer interval selected by the logarithmic gap cutoffs.
 At a fixed integer gap d, `log(1+d/n)` decreases with n, so that selector
 is an interval; an interval version of the periodic prefix estimate
-pays both endpoints. **[OPEN CORE]** Formalize this annular bound and
-retain its T-dependence through the actual-kernel replacement.
+pays both endpoints. A [closed finite proof](terminal-annular-long-index-cancellation.md)
+now gives the explicit quadratic/cubic T-dependence and its Lean
+implementation. Its audit is pending. **[OPEN CORE]** Transfer the
+checked bound to the literal Gamma profiles and assemble every complete
+source channel with its conductor dependence.
 
 Choosing T=N^(1/8) gives a weaker but sufficient candidate complete bound
 

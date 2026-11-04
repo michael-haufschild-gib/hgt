@@ -128,7 +128,7 @@ private def ccWitness : C_c(ℝ, ℝ) :=
 
 /-! ### 2. The exact autocorrelation `A(t) = c₁ C(t/c₁)` -/
 
-private lemma hasDerivAt_succ_pow' (c : ℝ) (k : ℕ) (x : ℝ) :
+lemma hasDerivAt_succ_pow' (c : ℝ) (k : ℕ) (x : ℝ) :
     HasDerivAt (fun u : ℝ => c * u ^ (k + 1)) (c * (((k : ℝ) + 1) * x ^ k)) x := by
   simpa [Nat.add_sub_cancel] using (hasDerivAt_pow (k + 1) x).const_mul c
 
@@ -317,7 +317,7 @@ private lemma hasDerivAt_witnessMajAnti (s : ℝ) :
   unfold witnessMajorant witnessDivS witnessLevyReg
   ring
 
-private lemma deficit_nonneg' {G : ℝ → ℝ} (hGc : HasCompactSupport G) (hG : Continuous G)
+lemma deficit_nonneg' {G : ℝ → ℝ} (hGc : HasCompactSupport G) (hG : Continuous G)
     (t : ℝ) : 0 ≤ autocorr G 0 - autocorr G t := by
   have h := integral_sub_shift_sq hGc hG t
   have hn : 0 ≤ ∫ x, (G x - G (x + t)) ^ 2 := integral_nonneg fun _ => sq_nonneg _
@@ -375,7 +375,6 @@ theorem levyTail_le_exp {L : ℝ} (hL : 0 < L) :
       integral_exp_mul_Ioi (by norm_num : -(1 / 2 : ℝ) < 0) L,
       integral_exp_mul_Ioi (by norm_num : -(5 / 2 : ℝ) < 0) L]
     field_simp
-    ring
   exact hmono.trans_eq hrhs
 
 /-- The tail value `T(c₁) = 2e^{−c₁} + (2/5) e^{−5c₁}/(1 − e^{−4c₁})` of `Ω(2c₁)`. -/
@@ -526,7 +525,7 @@ private lemma witness_weilQuad_add_two_oddPole_sq_eq :
     rw [he1, he2] at hm
     have hsp : sinhPairing witness = 2 * oddPoleMoment witness := by
       unfold sinhPairing oddPoleMoment
-      rw [← integral_const_mul]
+      rw [← MeasureTheory.integral_const_mul]
       exact integral_congr_ae (Eventually.of_forall fun _ => by ring)
     rw [hm]
     rw [hc, hsp] at hp
@@ -553,7 +552,7 @@ theorem abs_sinh_sub_quintic_le {z : ℝ} (hz : |z| ≤ 1) :
   rw [hid, abs_div, abs_two]
   have h1' : |Real.exp z - (1 + z + z ^ 2 / 2 + z ^ 3 / 6 + z ^ 4 / 24 + z ^ 5 / 120 + z ^ 6 / 720)|
       ≤ |z| ^ 7 * (8 / 35280) := by
-    convert h1 using 2 <;> ring
+    convert h1 using 2; ring
   have h2' : |Real.exp (-z) - (1 + -z + (-z) ^ 2 / 2 + (-z) ^ 3 / 6 + (-z) ^ 4 / 24 +
       (-z) ^ 5 / 120 + (-z) ^ 6 / 720)| ≤ |z| ^ 7 * (8 / 35280) := by
     convert h2 using 2 <;> ring
@@ -590,26 +589,16 @@ private lemma oddTPoly_eq (x : ℝ) :
 
 /-- `|P(u)| ≤ (33/2)|u|` on `[−1, 1]`. -/
 private lemma abs_witnessPoly_le {u : ℝ} (hu : |u| ≤ 1) : |witnessPoly u| ≤ (33 / 2) * |u| := by
-  unfold witnessPoly
-  have h0 := abs_nonneg u
-  have h3 : |u| ^ 3 ≤ |u| := by
-    calc |u| ^ 3 = |u| * |u| ^ 2 := by ring
-      _ ≤ |u| * 1 := mul_le_mul_of_nonneg_left (pow_le_one₀ h0 hu) h0
-      _ = |u| := mul_one _
-  have h5 : |u| ^ 5 ≤ |u| := by
-    calc |u| ^ 5 = |u| * |u| ^ 4 := by ring
-      _ ≤ |u| * 1 := mul_le_mul_of_nonneg_left (pow_le_one₀ h0 hu) h0
-      _ = |u| := mul_one _
-  have h7 : |u| ^ 7 ≤ |u| := by
-    calc |u| ^ 7 = |u| * |u| ^ 6 := by ring
-      _ ≤ |u| * 1 := mul_le_mul_of_nonneg_left (pow_le_one₀ h0 hu) h0
-      _ = |u| := mul_one _
-  have t1 := abs_add (u - (7 / 2) * u ^ 3 - (19 / 4) * u ^ 5) ((29 / 4) * u ^ 7)
-  have t2 := abs_sub (u - (7 / 2) * u ^ 3) ((19 / 4) * u ^ 5)
-  have t3 := abs_sub u ((7 / 2) * u ^ 3)
-  rw [abs_mul, abs_pow] at t1 t2 t3
-  norm_num at t1 t2 t3
-  linarith
+  have ht1 : u ^ 2 ≤ 1 := by rw [← sq_abs]; exact pow_le_one₀ (abs_nonneg u) hu
+  have ht0 : 0 ≤ u ^ 2 := sq_nonneg u
+  have h22 : (u ^ 2) ^ 2 ≤ u ^ 2 := by nlinarith
+  have h23 : (u ^ 2) ^ 3 ≤ u ^ 2 := by nlinarith
+  have hq : |1 - (7 / 2) * u ^ 2 - (19 / 4) * (u ^ 2) ^ 2 + (29 / 4) * (u ^ 2) ^ 3| ≤ 33 / 2 := by
+    rw [abs_le]; constructor <;> nlinarith [sq_nonneg (u ^ 2), pow_nonneg ht0 3]
+  have he : witnessPoly u = u * (1 - (7 / 2) * u ^ 2 - (19 / 4) * (u ^ 2) ^ 2 +
+      (29 / 4) * (u ^ 2) ^ 3) := by unfold witnessPoly; ring
+  rw [he, abs_mul, mul_comm]
+  exact mul_le_mul_of_nonneg_right hq (abs_nonneg u)
 
 /-- **Pole moment**: `S(F) = ∫ F sinh(x/2) ≤ U < 0` with `U` the Taylor value plus remainder. -/
 private lemma witness_oddPoleMoment_le :
@@ -634,7 +623,9 @@ private lemma witness_oddPoleMoment_le :
     have hxc : |x / c₁| ≤ 1 := by
       rw [abs_div, abs_of_pos hc, div_le_one hc]; exact abs_le.mpr hx
     have hz : |x / 2| ≤ 1 := by
-      rw [abs_div, abs_two]; have := abs_le.mpr hx; linarith
+      have h1 := abs_le.mpr hx
+      have h2 : c₁ ≤ 2 := by norm_num
+      rw [abs_div, abs_two]; linarith
     have hs := abs_sinh_sub_quintic_le hz
     have hp := abs_witnessPoly_le hxc
     have hsplit : witnessPoly (x / c₁) * Real.sinh (x / 2) =
@@ -650,24 +641,27 @@ private lemma witness_oddPoleMoment_le :
       have hprod := mul_le_mul hp hs (abs_nonneg _) (by positivity)
       have hpow : (33 / 2) * |x / c₁| * (|x / 2| ^ 7 * (8 / 35280)) =
           (33 / 2) * (8 / 35280) / (128 * c₁) * x ^ 8 := by
-        rw [abs_div, abs_div, abs_of_pos hc, abs_two, div_pow]
-        have : |x| * |x| ^ 7 = x ^ 8 := by
-          rw [← pow_succ', show (7 + 1 : ℕ) = 8 by norm_num, pow_abs, abs_of_nonneg (by positivity)]
+        rw [abs_div x c₁, abs_div x 2, abs_of_pos hc, abs_two, div_pow]
+        have h8 : |x| ^ 8 = x ^ 8 := by
+          rw [pow_abs]; exact abs_of_nonneg (by positivity)
+        rw [← h8]
         field_simp
-        rw [← this]; ring
+        ring
       linarith
     show _ ≤ oddTPoly x + _
     linarith
   have hcont : Continuous fun x => witnessPoly (x / c₁) * Real.sinh (x / 2) := by
     unfold witnessPoly; fun_prop
   have hgc : Continuous g := by simp only [g]; unfold oddTPoly; fun_prop
-  have hmono := intervalIntegral.integral_mono_on (by norm_num : -c₁ ≤ c₁)
+  have hmono := intervalIntegral.integral_mono_on (μ := volume) (by norm_num : -c₁ ≤ c₁)
     (hcont.intervalIntegrable _ _) (hgc.intervalIntegrable _ _) hpt
   have hg_int : (∫ x in (-c₁)..c₁, g x) =
       (oddTAnti c₁ - oddTAnti (-c₁)) + (33 / 2) * (8 / 35280) / (128 * c₁) * (2 * c₁ ^ 9 / 9) := by
     simp only [g]
-    rw [intervalIntegral.integral_add (by unfold oddTPoly; fun_prop)
-        ((continuous_const.mul (continuous_pow 8)).intervalIntegrable _ _),
+    rw [intervalIntegral.integral_add
+        ((by unfold oddTPoly; fun_prop : Continuous oddTPoly).intervalIntegrable _ _)
+        ((by fun_prop : Continuous fun x : ℝ =>
+          (33 / 2) * (8 / 35280) / (128 * c₁) * x ^ 8).intervalIntegrable _ _),
       intervalIntegral.integral_eq_sub_of_hasDerivAt (fun x _ => hasDerivAt_oddTAnti x)
         ((by unfold oddTPoly; fun_prop : Continuous oddTPoly).intervalIntegrable _ _),
       intervalIntegral.integral_const_mul, integral_pow]
@@ -712,7 +706,7 @@ private lemma hasDerivAt_witnessCorr (u : ℝ) : HasDerivAt witnessCorr (witness
   unfold witnessCorrDeriv; ring
 
 /-- Mean-value lower bound for a polynomial with bounded derivative. -/
-private lemma poly_ge_of_deriv_bound' {Q Q' : ℝ → ℝ} {a b s₀ s M : ℝ}
+lemma poly_ge_of_deriv_bound' {Q Q' : ℝ → ℝ} {a b s₀ s M : ℝ}
     (ha : a ≤ s₀) (hs₀ : s₀ ≤ b) (has : a ≤ s) (hsb : s ≤ b)
     (hcQ' : Continuous Q') (hdQ : ∀ u, HasDerivAt Q (Q' u) u)
     (hbQ' : ∀ u ∈ Icc a b, |Q' u| ≤ M) :
@@ -740,8 +734,8 @@ private lemma poly_ge_of_deriv_bound' {Q Q' : ℝ → ℝ} {a b s₀ s M : ℝ}
     rw [abs_of_nonpos (by linarith)]
     linarith
 
-/-- `A(log 2) ≥ 0.0298`. -/
-private lemma witness_autocorr_log_two_ge : (298 / 10000 : ℝ) ≤ autocorr witness (Real.log 2) := by
+/-- `A(log 2) ≥ 0.0297`. -/
+private lemma witness_autocorr_log_two_ge : (297 / 10000 : ℝ) ≤ autocorr witness (Real.log 2) := by
   have hl2 := Real.log_two_gt_d9
   have hu2 := Real.log_two_lt_d9
   rw [autocorr_witness (by linarith) (by norm_num; linarith)]
@@ -784,18 +778,18 @@ private lemma witness_autocorr_log_two_ge : (298 / 10000 : ℝ) ≤ autocorr wit
   have hcd : Continuous witnessCorrDeriv := by unfold witnessCorrDeriv; fun_prop
   have hmv := poly_ge_of_deriv_bound' (s₀ := 12096809 / 10000000) (s := s) (by norm_num)
     (by norm_num) hs_in.1 hs_in.2 hcd hasDerivAt_witnessCorr hb
-  have hv : (298 / 10000 : ℝ) / c₁ ≤ witnessCorr (12096809 / 10000000) - 2000 * (1 / 10000000) := by
+  have hv : (297 / 10000 : ℝ) / c₁ ≤ witnessCorr (12096809 / 10000000) - 2000 * (1 / 10000000) := by
     unfold witnessCorr; norm_num
   have hM : 2000 * |s - 12096809 / 10000000| ≤ 2000 * (1 / 10000000) :=
     mul_le_mul_of_nonneg_left hs_ball (by norm_num)
-  have : (298 / 10000 : ℝ) / c₁ ≤ witnessCorr s := by linarith
+  have : (297 / 10000 : ℝ) / c₁ ≤ witnessCorr s := by linarith
   rw [div_le_iff₀ hc] at this
   linarith
 
 /-! ### 7. The archimedean constant and the exponential tail -/
 
 /-- `Γ = gammaBracket 0 ≤ −5.370`. -/
-private lemma gammaBracket_zero_le : EF.gammaBracket 0 ≤ -(5370 / 1000 : ℝ) := by
+lemma gammaBracket_zero_le : EF.gammaBracket 0 ≤ -(5370 / 1000 : ℝ) := by
   have hγ : (5769 / 10000 : ℝ) < Real.eulerMascheroniConstant := by
     have h := RHTower.harmonic_mascheroni_le_half_sub_twelfth (n := 8) (by norm_num)
     have hlog8 : Real.log (8 : ℝ) = 3 * Real.log 2 := by
@@ -807,10 +801,11 @@ private lemma gammaBracket_zero_le : EF.gammaBracket 0 ≤ -(5370 / 1000 : ℝ) 
     have hq := Real.one_sub_inv_le_log_of_pos (show 0 < Real.pi / 3 by positivity)
     rw [Real.log_div Real.pi_ne_zero (by norm_num), inv_div] at hq
     linarith
-  have hpi := Real.pi_gt_d4
+  have hpi : (31415 / 10000 : ℝ) ≤ Real.pi := by
+    have h := Real.pi_gt_d4; norm_num at h; linarith
   have h3pi : 1 - 3 / Real.pi ≥ (1 - 3 / (31415 / 10000) : ℝ) := by
     have : 3 / Real.pi ≤ 3 / (31415 / 10000 : ℝ) :=
-      div_le_div_of_nonneg_left (by norm_num) (by norm_num) hpi.le
+      div_le_div_of_nonneg_left (by norm_num) (by norm_num) hpi
     linarith
   have he := neg_gammaBracket_zero_eq
   have hl3 := Real.log_three_gt_d9
@@ -882,11 +877,12 @@ private lemma witness_collarMass_ge :
   have hc : (0 : ℝ) < c₁ := by norm_num
   have hl3 := Real.log_three_lt_d9
   set a' : ℝ := 5246123 / 10000000
+  have hc574 : c₁ ≤ 287 / 500 := by norm_num
   have hsub : Icc a' c₁ ⊆ Icc (Real.log 3 - 287 / 500) (287 / 500) := fun x hx =>
-    ⟨by simp only [a'] at hx; linarith [hx.1], by linarith [hx.2]⟩
+    ⟨by simp only [a'] at hx; linarith [hx.1], le_trans hx.2 hc574⟩
   have hint : IntegrableOn (fun x => witness x ^ 2) (Icc (Real.log 3 - 287 / 500) (287 / 500)) :=
     (continuous_witness.pow 2).integrableOn_Icc
-  have hmono := setIntegral_mono_set hint
+  have hmono := setIntegral_mono_set (s := Icc a' c₁) hint
     (ae_restrict_of_forall_mem measurableSet_Icc fun x _ => sq_nonneg (witness x))
     (Eventually.of_forall hsub)
   have hval : (∫ x in Icc a' c₁, witness x ^ 2) =
@@ -909,11 +905,11 @@ private lemma witness_collarMass_ge :
 
 /-! ### 9. The certificate gap of the witness -/
 
-private lemma vonMangoldtAtom_three_eq : vonMangoldtAtom 3 = primeJumpWeight 3 := by
+lemma vonMangoldtAtom_three_eq : vonMangoldtAtom 3 = primeJumpWeight 3 := by
   unfold vonMangoldtAtom primeJumpWeight
   rw [if_pos (by norm_num)]
 
-private lemma primeJumpWeight_bounds :
+lemma primeJumpWeight_bounds :
     (693147 / 1000000 : ℝ) / (141422 / 100000) ≤ primeJumpWeight 2 ∧
       (1098612 / 1000000 : ℝ) / (173206 / 100000) ≤ primeJumpWeight 3 := by
   have hs2_hi : Real.sqrt 2 ≤ 141422 / 100000 := by
@@ -939,7 +935,7 @@ private lemma witness_gap :
       -(1 / 100) := by
   have hid := witness_weilQuad_add_two_oddPole_sq_eq
   have hlevy := witness_levy_le.2
-  have hA0 := autocorr_witness_zero
+  have hA0 : autocorr witness 0 = 86141 / 273000 := by rw [autocorr_witness_zero]; norm_num
   have hΓ := gammaBracket_zero_le
   have htail := witnessTail_le
   have hS := witness_oddPoleMoment_sq_ge
@@ -947,23 +943,30 @@ private lemma witness_gap :
   have hm := witness_collarMass_ge
   obtain ⟨hw2, hw3⟩ := primeJumpWeight_bounds
   rw [vonMangoldtAtom_three_eq]
-  have hA0pos : (0 : ℝ) < autocorr witness 0 := by rw [hA0]; norm_num
-  have hΓA : EF.gammaBracket 0 * autocorr witness 0 ≤ -(5370 / 1000 : ℝ) * autocorr witness 0 :=
-    mul_le_mul_of_nonneg_right hΓ hA0pos.le
-  have htA : 2 * autocorr witness 0 * witnessTail ≤
-      2 * autocorr witness 0 *
-        (2 * (1 / (17735 / 10000)) + (2 / 5) * (1 / (175 / 10)) / (1 - 1 / (989 / 100))) :=
-    mul_le_mul_of_nonneg_left htail (by positivity)
-  have hw2A : (693147 / 1000000 : ℝ) / (141422 / 100000) * (298 / 10000) ≤
-      primeJumpWeight 2 * autocorr witness (Real.log 2) :=
-    mul_le_mul hw2 hA2 (by norm_num) (primeJumpWeight_nonneg 2)
-  have hw3m : (1098612 / 1000000 : ℝ) / (173206 / 100000) * (176 / 10000) ≤
-      primeJumpWeight 3 * ∫ x in Icc (Real.log 3 - 287 / 500) (287 / 500), witness x ^ 2 :=
-    mul_le_mul hw3 hm (by norm_num) (primeJumpWeight_nonneg 3)
   have hMaj : c₁ * witnessMajAnti 2 ≤ (10196 / 10000 : ℝ) := by unfold witnessMajAnti; norm_num
-  rw [hA0] at hΓA htA
-  norm_num at hΓA htA hw2A hw3m hS
-  nlinarith
+  have hJ : biScaleLevyEnergy witness ≤ 10196 / 10000 + 2 * (86141 / 273000) *
+      (2 * (1 / (17735 / 10000)) + (2 / 5) * (1 / (175 / 10)) / (1 - 1 / (989 / 100))) := by
+    have h := mul_le_mul_of_nonneg_left htail (by norm_num : (0 : ℝ) ≤ 2 * (86141 / 273000))
+    rw [hA0] at hlevy
+    linarith
+  have hΓA : EF.gammaBracket 0 * autocorr witness 0 ≤ -(5370 / 1000) * (86141 / 273000) := by
+    rw [hA0]; exact mul_le_mul_of_nonneg_right hΓ (by norm_num)
+  have hw2A : 2 * ((693147 / 1000000 : ℝ) / (141422 / 100000) * (297 / 10000)) ≤
+      2 * primeJumpWeight 2 * autocorr witness (Real.log 2) := by
+    have h := mul_le_mul hw2 hA2 (by norm_num) (primeJumpWeight_nonneg 2)
+    have e : 2 * primeJumpWeight 2 * autocorr witness (Real.log 2) =
+        2 * (primeJumpWeight 2 * autocorr witness (Real.log 2)) := by ring
+    rw [e]; linarith
+  have hw3m : 2 * ((1098612 / 1000000 : ℝ) / (173206 / 100000) * (176 / 10000)) ≤
+      2 * primeJumpWeight 3 * ∫ x in Icc (Real.log 3 - 287 / 500) (287 / 500), witness x ^ 2 := by
+    have h := mul_le_mul hw3 hm (by norm_num) (primeJumpWeight_nonneg 3)
+    have e : 2 * primeJumpWeight 3 *
+        (∫ x in Icc (Real.log 3 - 287 / 500) (287 / 500), witness x ^ 2) =
+        2 * (primeJumpWeight 3 *
+          ∫ x in Icc (Real.log 3 - 287 / 500) (287 / 500), witness x ^ 2) := by ring
+    rw [e]; linarith
+  norm_num at hJ hΓA hw2A hw3m hS
+  linarith
 
 /-! ### 10. The collar bound behind the certificate -/
 
@@ -1004,16 +1007,16 @@ theorem abs_autocorr_le_collarMass {F : ℝ → ℝ} (hF : Continuous F) {c ℓ 
         integral_mono_of_nonneg (Eventually.of_forall fun _ => abs_nonneg _)
           ((hg1.add hg2).div_const 2) (Eventually.of_forall hpt)
     _ = ∫ x in Icc (ℓ - c) c, F x ^ 2 := by
-        rw [integral_div, integral_add hg1 hg2, hi1, hi2, hmass]; ring
+        rw [MeasureTheory.integral_div, integral_add hg1 hg2, hi1, hi2, hmass]; ring
 
 /-! ### 11. Mollification and the failure of the certificate -/
 
-private lemma mollifier_even'' (k : ℕ) (t : ℝ) :
+lemma mollifier_even'' (k : ℕ) (t : ℝ) :
     CHMDDoobGraph.mollifier k (-t) = CHMDDoobGraph.mollifier k t := by
   unfold CHMDDoobGraph.mollifier
   rw [ContDiffBump.normed_def, ContDiffBump.normed_def, ContDiffBump.neg]
 
-private lemma smooth_odd' {G : ℝ → ℝ} (hodd : ∀ x, G (-x) = -G x) (k : ℕ) (x : ℝ) :
+lemma smooth_odd' {G : ℝ → ℝ} (hodd : ∀ x, G (-x) = -G x) (k : ℕ) (x : ℝ) :
     CHMDDoobGraph.smooth G k (-x) = -CHMDDoobGraph.smooth G k x := by
   change (∫ t, CHMDDoobGraph.mollifier k t * G (-x - t)) =
     -(∫ t, CHMDDoobGraph.mollifier k t * G (x - t))
@@ -1024,7 +1027,7 @@ private lemma smooth_odd' {G : ℝ → ℝ} (hodd : ∀ x, G (-x) = -G x) (k : �
   rw [mollifier_even'', show -x - -t = -(x - t) by ring, hodd, mul_neg]
 
 /-- Mollification at level `k ≥ 249` widens the support by at most `1/1000`. -/
-private lemma smooth_eq_zero_of_narrow' {G : ℝ → ℝ} {R : ℝ} (hR : ∀ x, R ≤ |x| → G x = 0)
+lemma smooth_eq_zero_of_narrow' {G : ℝ → ℝ} {R : ℝ} (hR : ∀ x, R ≤ |x| → G x = 0)
     {k : ℕ} (hk : 249 ≤ k) {x : ℝ} (hx : R + 1 / 1000 < |x|) :
     CHMDDoobGraph.smooth G k x = 0 := by
   have hkr : (249 : ℝ) ≤ k := by exact_mod_cast hk
@@ -1086,7 +1089,10 @@ theorem exists_odd_test_sliverPotential_fails :
     CHMDDoobGraph.smooth_compact compact_witness k, smooth_odd' witness_odd k,
     fun x hx => smooth_eq_zero_of_narrow' (R := c₁) (fun y hy => witness_eq_zero_of_far hy) hk
       (by rw [show c₁ + 1 / 1000 = 287 / 500 by norm_num]; exact hx), ?_⟩
-  simp only [Set.mem_Iio] at hneg
+  have h : weilQuad (CHMDDoobGraph.smooth witness k) +
+      2 * vonMangoldtAtom 3 * autocorr (CHMDDoobGraph.smooth witness k) (Real.log 3) -
+      2 * vonMangoldtAtom 3 * (∫ x in Icc (Real.log 3 - 287 / 500) (287 / 500),
+        CHMDDoobGraph.smooth witness k x ^ 2) < 0 := hneg
   linarith
 
 /-- **No window of half-width `c ≥ 287/500` admits the sliver-potential certificate of the prime `3`**:
@@ -1106,12 +1112,15 @@ theorem not_sliverPotentialCertificate {c : ℝ} (hc : 287 / 500 ≤ c) :
     fun x hx => ⟨by linarith [hx.1], by linarith [hx.2]⟩
   have hint : IntegrableOn (fun x => F x ^ 2) (Icc (Real.log 3 - c) c) :=
     (hF.continuous.pow 2).integrableOn_Icc
-  have hmono := setIntegral_mono_set hint
+  have hmono := setIntegral_mono_set (s := Icc (Real.log 3 - 287 / 500) (287 / 500)) hint
     (ae_restrict_of_forall_mem measurableSet_Icc fun x _ => sq_nonneg (F x))
     (Eventually.of_forall hsub)
-  have hw : 0 ≤ vonMangoldtAtom 3 := vonMangoldtAtom_nonneg' 3
-  nlinarith
+  have hw : 0 ≤ vonMangoldtAtom 3 := RHTower.vonMangoldtAtom_nonneg' 3
+  have := mul_le_mul_of_nonneg_left hmono (by linarith : (0 : ℝ) ≤ 2 * vonMangoldtAtom 3)
+  linarith
 
 end GaloisForLFunctions.SignedWindowCriticality.PrimeThreeEntry
 
 end
+
+#print axioms GaloisForLFunctions.SignedWindowCriticality.PrimeThreeEntry.not_sliverPotentialCertificate

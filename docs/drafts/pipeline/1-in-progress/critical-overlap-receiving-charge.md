@@ -352,8 +352,8 @@ scale-independent Jacobian/logarithm variation and initial-segment truncation.
 `LiteralUpwardKernelVariation` identifies both actual logarithmic kernels
 and checks variation at most `2K+4M`, retaining both horizon cutoffs,
 with standard-only transitive axioms.
-Exact normalization of the upward matrix, prime-progression averaging and
-complete-row assembly remain open. The rows with multiplier below `Q²` occupy a terminal
+Exact normalization, literal support and uniform kernel variation are checked.
+Prime-progression averaging for the literal source and complete-row assembly remain open. The rows with multiplier below `Q²` occupy a terminal
 harmonic width `O((log Q+log c)/log N)` and need a separate bound.
 
 ## Gates
@@ -375,5 +375,9 @@ are checked (`PeriodicWeightedCovariance`, `PeriodicGram`, `PrimeBlockGram`).
 Affine prime-progressions and the full proper-power remainder are checked
 (`AffinePrimeProgressions`, `PrimePowerTails`, `AffineMangoldtProgressions`).
 The latter also handles a nonunit multiplier with unit target: its progression
-is empty. Literal-row specialization and the uniform complete mixed-form
+is empty. `AffineCollisionMass` excludes collisions with a nonunit comparison
+multiplier when offset targets are units. `UpwardProfileNormalization`,
+`LiteralUpwardKernelBounds`, `LiteralUpwardKernelSupport` and `LiteralUpwardRows`
+check the exact finite coefficient, both signed cutoffs, amplitude, support
+and variation. Literal prime-band averaging and the uniform complete mixed-form
 comparison remain open.

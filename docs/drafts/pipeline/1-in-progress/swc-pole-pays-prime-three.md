@@ -81,7 +81,30 @@ corpus margins odd `1.50·10⁻⁵`, even `5.6·10⁻⁸` at `c = ½ log 3`)
   `|w₃' − w₃| ≤ η Ω(2c − log 3)`, in particular `≤ η (e^{−1/2}/2) log(1/(2c − log 3))`.
   `PrimeThreeEntry/TheNewestPrimeEntersSoftly.lean` (clean, axioms standard).
 
+- **C6 (confinement) — Lean pending.** For `½ log 3 < c < log 2`, `belowLogFourBandWeights c` is
+  compact and convex: one bump centred at `−½ log n` (symmetric under the sliver reflection, so
+  `(f⋆f)(−log n) = ∫ f² > 0`, and missing the other prime's reflection) pins `w_n` from both sides.
+  `PrimeThreeEntry/TheWindowConfinesThePrimeWeights.lean`.
+
+## Answer
+- The pole does not pay the prime 3. At its entry the prime-3 coupling is carried locally by the
+  window's outward edge jumps (C4, exact; ratio `w₃e^h/2`, against `2w₃e^h > 1` for the inside
+  collar jumps of `TheCollarRatioIsSharp`), but no certificate can spend that edge energy: the
+  sliver-potential certificate is false on every window `c ≥ 287/500` (C1, Lean pending). The
+  prime 3 must enter through the sign of its reflection; in the odd sector it is a necessary payer
+  from `c ≈ 0.557` [N].
+- Budgets [N]: even sector — the pole `4C²` is the only payer; odd sector — the pole is a 3 % debt,
+  the archimedean cross-Hankel (Gamma-pole mode + trivial zeros) and the prime 2 pay.
+- The binding constraint below `log 4` is the even sector's cap on `w₂` (`2·10⁻⁷` above `Λ(2)/√2`
+  at `c = ½ log 3 + 1/40`) [N]: pole credit against the prime 2, not the prime 3.
+
 ## No-go closure (mandatory when falsified)
+- **Exact killing mechanism:** the sliver-potential certificate (prime-3 kick bounded by its
+  collar mass) fails on an explicit odd test on every window `c ≥ 287/500` (C1).
+- **Strongest positive survivor:** the signature law and the edge carrying law (C4, Lean), soft
+  entry (C5, Lean), confinement (C6).
+- **New insight:** local resources for the newest prime exist (the window edge carries it at ratio
+  `< 1`), so the obstruction to collar-local payment is criticality (no slack), not locality.
 
 ## Log
 - 2026-11-04 — created in 1-in-progress

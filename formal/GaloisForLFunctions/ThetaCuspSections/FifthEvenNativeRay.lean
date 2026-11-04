@@ -33,10 +33,12 @@ def normalizedGram (x : ℝ) (A : Matrix (Fin 5) (Fin 5) ℝ) :
 def sourceGram (x : ℝ) : Matrix (Fin 5) (Fin 5) ℝ :=
   normalizedGram x (nativeShiftedMatrix 5 0 x)
 
-private def pureMatrix (n : ℕ) (x : ℝ) : Matrix (Fin 5) (Fin 5) ℝ :=
+/-- Signed even moment matrix of one diagonal atom pair. -/
+def pureMatrix (n : ℕ) (x : ℝ) : Matrix (Fin 5) (Fin 5) ℝ :=
   fun i j => (-1 : ℝ)^(i.val+j.val)*thetaCuspAtomPairReflectionJet (2*(i.val+j.val)) n n x
 
-private def pureGram (n : ℕ) (x : ℝ) : Matrix (Fin 5) (Fin 5) ℝ :=
+/-- One diagonal atom pair in normalized Gaussian coordinates. -/
+def pureGram (n : ℕ) (x : ℝ) : Matrix (Fin 5) (Fin 5) ℝ :=
   normalizedGram x (pureMatrix n x)
 
 /-- Triangular change from Gaussian coordinates to native moment coordinates. -/
@@ -116,7 +118,8 @@ private theorem signed_threeAtom_decomposition (k : ℕ) (x : ℝ) :
   norm_num
   linear_combination p11+p12+p21+p13+p31+p23+p32
 
-private theorem sourceGram_decomposition {x : ℝ}
+/-- The complete source separates into leading pairs, a controlled remainder, and two pure atoms. -/
+theorem sourceGram_decomposition {x : ℝ}
     (hq : 5 ≤ thetaCuspSingleAtomReflectionScale 1 x) :
     sourceGram x =
       gaussianGram (leadingMatrix (thetaCuspSingleAtomReflectionScale 1 x)

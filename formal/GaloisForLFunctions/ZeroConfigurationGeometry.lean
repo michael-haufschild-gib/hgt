@@ -40,6 +40,7 @@ import GaloisForLFunctions.ZeroConfigurationGeometry.BoundedImagesCertifyPurity
 import GaloisForLFunctions.ZeroConfigurationGeometry.EulerStagesRepelAboveTheHorizon
 import GaloisForLFunctions.ZeroConfigurationGeometry.IntegralConfigurationsRepel
 import GaloisForLFunctions.ZeroConfigurationGeometry.EulerStagesAreCountedByTheirPhase
+import GaloisForLFunctions.ZeroConfigurationGeometry.FarZerosAreFaintInTheLocalCamera
 
 /-!
 # Zero Configuration Geometry

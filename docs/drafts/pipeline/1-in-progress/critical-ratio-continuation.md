@@ -126,20 +126,23 @@ coupling to the horizon complement and that complement's energy.
 No whole-space all-R theorem follows. See the
 [growing-packet proof](../3-formalized/critical-low-packet-signed-compactness.md) and
 [window-complement localization theorem](../3-formalized/critical-windows-survive-low-conductor-removal.md).
-The [signed pole–window transport conjecture](critical-pole-window-signed-transport.md)
-targets the inverse-energy mixed pairing needed for optimized arithmetic
-correctors, which ordinary orthogonal removal does not control.
-For profiles supported inside `(1/2,1)` in the linear horizon coordinate,
-the complete source and its inverse-energy sum through
-`floor((log N)^(13/32))` are now checked and exactly polar. Every correction
-in that packet has zero limiting gain on the source kernel, uniformly
-even for unbounded coefficients; an explicit nonzero kernel test is checked.
-These windows already lie in the known positive range `A≤181/250`.
-This constrains the correction mechanism without extending unweighted
-positivity. General-window fixed-conductor transport is now checked: its
-polar limit retains `aφ ΣΛ(k)∫₀^(1/k)F` with a negative sign, and every
-fixed nonpolar source vanishes. The general moving-packet and sharp-capacity
-audits remain pending; no growing-aperture uniformity is claimed.
+The [signed pole–window transport theorem](../3-formalized/critical-pole-window-signed-transport.md)
+now determines the inverse-energy mixed pairing and the exact optimal
+arithmetic correction, which ordinary orthogonal removal does not control.
+The complete source and its inverse-energy sum through
+`floor((log N)^(13/32))` are now checked on every fixed compact terminal
+window and are exactly polar. The polar limit retains the finite upward
+prime-power mean with a negative sign; every nonpolar source vanishes,
+jointly across that packet. The checked sharp capacity is
+`S_A(h)²/[J(1)/R+aφg]`, attained by the single coefficient
+`b₁=−S_A(h)√log N/[J(1)/R+aφg]`. No coefficient family in the packet
+improves it. Consequently every compact window on the established positive
+band satisfies `aφQ(H)+7JM₈(H)/R≥S_A(h)²/[J(1)/R+aφg]`.
+The correction vanishes on the source kernel, including for unbounded
+coefficient families. An explicit nonzero kernel test lies in the known
+positive range `A≤181/250`; no unweighted sign extension or
+growing-aperture uniformity is claimed. All six sharp-capacity endpoints
+pass their actual-path audit with the standard three axioms.
 At the other endpoint, the checked
 [full-horizon reference-metric obstruction](../3-formalized/full-horizon-conductor-metric-degeneration.md)
 gives an explicit terminal reconstruction whose complete energy divided

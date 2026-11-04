@@ -180,8 +180,8 @@ theorem norm_paperFT_le_of_tsupport {g : ℝ → ℂ} {A M : ℝ} (hA : 0 ≤ A)
 /-! ### The limit window -/
 
 /-- **The limit window.** The stage windows of `f₀ = sin((π/h)(· − θh)) b̂` converge uniformly
-to a continuous window of the same aperture, blind to every `ν_j`, whose transform at `z₀` is
-`f̂₀(z₀) Π_k r_k(z₀)`. -/
+to a continuous window of the same aperture, blind to every `ν_j`, whose transform off the lattice is
+`f̂₀ Π_k r_k`. -/
 theorem exists_blind_limit_window {h θ L A : ℝ} (hh : 0 < h) (hθ : |θ| ≤ 1) (hA : 0 ≤ A)
     {ν : ℤ → ℂ} (hL : ∀ k, ‖ν k - latPt h θ k‖ ≤ L) (him : ∀ k, |(ν k).im| ≤ 1 / 2)
     {b f₀ : ℝ → ℂ}
@@ -189,9 +189,10 @@ theorem exists_blind_limit_window {h θ L A : ℝ} (hh : 0 < h) (hθ : |θ| ≤ 
     (hf₀ : ContDiff ℝ (⊤ : ℕ∞) f₀) (hf₀s : tsupport f₀ ⊆ Icc (-A) A)
     (hf₀t : ∀ w : ℂ, paperFT f₀ w =
       Complex.sin (((π / h : ℝ) : ℂ) * (w - ((θ * h : ℝ) : ℂ))) * paperFT b w)
-    (hνlat : ∀ j k, ν j ≠ latPt h θ k) {z₀ : ℂ} (hz₀ : ∀ k, z₀ ≠ latPt h θ k) :
+    (hνlat : ∀ j k, ν j ≠ latPt h θ k) :
     ∃ f : ℝ → ℂ, Continuous f ∧ tsupport f ⊆ Icc (-A) A ∧ (∀ j, paperFT f (ν j) = 0) ∧
-      paperFT f z₀ = paperFT f₀ z₀ * ∏' k, pertFactor h θ ν k z₀ := by
+      ∀ z : ℂ, (∀ k, z ≠ latPt h θ k) →
+        paperFT f z = paperFT f₀ z * ∏' k, pertFactor h θ ν k z := by
   classical
   have hL0 : 0 ≤ L := (norm_nonneg _).trans (hL 0)
   have hh' : (h : ℂ) ≠ 0 := Complex.ofReal_ne_zero.mpr hh.ne'
@@ -345,10 +346,11 @@ theorem exists_blind_limit_window {h θ L A : ℝ} (hh : 0 < h) (hθ : |θ| ≤ 
     have hne : ∏ k ∈ S N, (ν j - latPt h θ k) ≠ 0 :=
       Finset.prod_ne_zero_iff.mpr fun k _ => sub_ne_zero.mpr (hνlat j k)
     exact ((mul_eq_zero.mp h1).resolve_left hne).symm
-  · -- the value at `z₀`
-    refine tendsto_nhds_unique (htrans z₀) ?_
-    refine (tendsto_congr fun N => (hFeq N z₀ hz₀).symm).mp ?_
-    exact (hprod z₀ hz₀).const_mul _
+  · -- the transform off the lattice
+    intro z hz
+    refine tendsto_nhds_unique (htrans z) ?_
+    refine (tendsto_congr fun N => (hFeq N z hz).symm).mp ?_
+    exact (hprod z hz).const_mul _
 
 /-! ### Smoothing and the theorem -/
 
@@ -414,9 +416,9 @@ theorem exists_window_blind_to_complex_perturbed_lattice {h L r : ℝ} (hh : 0 <
   obtain ⟨hf₀w, hf₀t⟩ := sineShift_props (τ := θ * h) (by positivity : (0 : ℝ) ≤ π / h) hbw
   have hf₀ : ContDiff ℝ (⊤ : ℕ∞) (sineShift (π / h) (θ * h) b) := contDiff_sineShift _ _ hb
   -- the limit window
-  obtain ⟨f, hfc, hfs, hfν, hfz⟩ := exists_blind_limit_window hh hθ (by positivity) hL' him hb hbc
-    hf₀
-    hf₀w.2 hf₀t hνlat hz₀lat
+  obtain ⟨f, hfc, hfs, hfν, hfz'⟩ := exists_blind_limit_window hh hθ (by positivity) hL' him hb hbc
+    hf₀ hf₀w.2 hf₀t hνlat
+  have hfz := hfz' z₀ hz₀lat
   -- smoothing
   obtain ⟨β, hβ, hβc, hβs, hβ1⟩ := exists_smooth_window_paperFT_eq_one hε0 z₀
   have hfcs : HasCompactSupport f := isCompact_Icc.of_isClosed_subset (isClosed_tsupport f) hfs
