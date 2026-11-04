@@ -70,7 +70,7 @@ Combine the four unconditional sub-Weyl zeta bounds (`SubWeylZetaProfiles`: `(½
 where `E_η(w)` equals:
 - `33/200 + η − (97/200) w` on `[0, 1/9]`,
 - `1/9 + η − (5/13)(w − 1/9)` on `(1/9, 3/14]`,
-- `1/14 + η − (13/53)(w − 3/14)` on `(3/14, 1/3]`,
+- `1/14 + η − (15/53)(w − 3/14)` on `(3/14, 1/3]`,
 - `((2/53 + η)/(1/6 + 2η))(½ + 2η − w)` on `(1/3, ½ + 2η]`.
 
 Completing the square on each piece at `η = δ_0 = 0`:

@@ -74,4 +74,17 @@ theorem exact_scaling_capacity : ∃ τ : ℝ, 0 < τ ∧ τ < 1 ∧
   ⟨capacity,capacity_bounds.1,capacity_bounds.2,
     fun _ => posDef_iff,fun _ => posSemidef_iff,boundary.2⟩
 
+/-- The explicit negative comparison excludes the load twenty-seven thirty-fifths. -/
+theorem capacity_upper : capacity < 27/35 := by
+  have hn : ¬ (scaledSource (27/35)).PosSemidef := by
+    apply loaded_not_posSemidef
+    have h := mul_le_mul_of_nonneg_left normalized_compensation_upper
+      (by norm_num : (0 : ℝ) ≤ 27/35)
+    change ((27/35)*FifthPolynomialCross.compensation center)/FifthRemainder.sourceUnit center ≤ _
+    calc
+      _ = (27/35)*(FifthPolynomialCross.compensation center/FifthRemainder.sourceUnit center) := by ring
+      _ ≤ -216*61^2 := by nlinarith only [h]
+  by_contra h
+  exact hn (posSemidef_iff.mpr (le_of_not_gt h))
+
 end GaloisForLFunctions.ThetaCuspSections.ThirtyTwoCrossCapacity

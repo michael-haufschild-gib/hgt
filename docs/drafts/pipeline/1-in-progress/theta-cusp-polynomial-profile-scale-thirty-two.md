@@ -32,5 +32,8 @@ For the literal weighted source, write
 `α(a)=[deriv(flux a)(2x₃₂)/(2x₃₂ sinh(2ax₃₂))]/G_P(x₃₂)`.
 The proposed aperture capacity is exactly `τ/α(a)`, with `0<α(a)≤1` and
 `0<τ≤τ/α(a)<1` throughout `0<a<1/2`.
+The coefficient bounds give the stronger targets `τ<27/35` and
+`τ/α(a)<54/67`: multiplying `−280·61²` by `27/35`, or `−268·61²`
+by `54/67`, reaches the certified negative comparison `−216·61²`.
 Existing origin, scale-eight, explicit-interval and cofinal positivity
 remain valid; they do not establish the intervening sign.

@@ -90,7 +90,7 @@ theorem commonPrimeFibre_adjunction_le {M Q : ℕ} (hM : 0 < M)
   have h := mul_le_mul_of_nonneg_left
     (sum_le_sum fun m hm => primeAdjunctionMass_commonPrimeFibre_le hM
       (hS m hm).1 (hS m hm).2 (t m) hB) (Nat.cast_nonneg S.card)
-  exact h.trans_eq (by simp only [div_eq_mul_inv, ← sum_mul, mul_assoc])
+  exact h.trans_eq (by simp only [div_eq_mul_inv, sum_mul, mul_assoc])
 
 /-- Simultaneous exact receiving coordinates survive adjunction tending to zero. -/
 theorem tendsto_commonPrimeFibre_adjunction {M : ℕ} (hM : 0 < M)

@@ -15,9 +15,10 @@ distance `≥ η` from `z₀`. Write `c = m_Z − m_{Z'}`, `ω = γ_{z₀}`, and
 with `c_η = windowFloor`, `M` the strip decay of the isolating windows, `N = Σ_{disc} |c|` and
 `S = Σ_z |c(z)|/(1 + |γ_z|²)`.
 
-So the net multiplicity `μ₀` of the disc vanishes (`discMoment_zero_eq_zero`). The first and second
+So the net multiplicity `μ₀` of the disc vanishes (`sum_multDiff_eq_zero_of_disc`). The first and second
 moments vanish to orders `r²` and `r³`. For a pair `c ± w/2` of `Z` against `c' ± w'/2` of `Z'`
-this fixes the centre to `O(r²)` and the squared gap `w²` to `O(r³)`. The sign of `w²` (a real pair
+this fixes the centre to `O(r²)` and the squared gap `w²` to `O(r³)`, since
+`w² − w'² = 2μ₂ − 2μ₁(p + p' − 2ω)` (`pair_moments`). The sign of `w²` (a real pair
 for `w² > 0`, an FE pair of depth `δ` for `w² = −4δ²`) is therefore read from the image.
 
 Proof. The windows of `exists_local_isolating_pair` are blind to the cluster outside the disc and
@@ -448,5 +449,342 @@ theorem norm_discMoment_le {a D C₀ η ε r : ℝ} (hD : 0 < D) (hη : 0 < η) 
       have e : M * M = M ^ 2 := (sq M).symm
       rw [sq] at h1
       linarith
+
+/-- **The net multiplicity of a near-coincident cluster vanishes.** Under the hypotheses of
+`norm_discMoment_le` at `j = 0`, if the right-hand side is below `c_η²`, the cluster in the disc
+has net multiplicity `0`: `Σ_{disc} m_Z = Σ_{disc} m_{Z'}`. -/
+theorem sum_multDiff_eq_zero_of_disc {Z Z' : ZeroConfig} {s : Finset ℂ} {z₀ : ℂ} {c B : ℝ}
+    (hc : 0 < c) (hB : c ^ 2 * ‖∑ z ∈ s, multDiff Z Z' z * (gammaOf z - gammaOf z₀) ^ 0‖ ≤ B)
+    (hsmall : B < c ^ 2) : ∑ z ∈ s, multDiff Z Z' z = 0 := by
+  classical
+  have hint : ∀ z, ∃ m : ℤ, multDiff Z Z' z = m := fun z => by
+    refine ⟨(if z ∈ Z.carrier then (Z.mult z : ℤ) else 0) -
+      (if z ∈ Z'.carrier then (Z'.mult z : ℤ) else 0), ?_⟩
+    simp only [multDiff, Set.indicator_apply]
+    split_ifs <;> push_cast <;> ring
+  choose m hm using hint
+  have hsum : ∑ z ∈ s, multDiff Z Z' z = ((∑ z ∈ s, m z : ℤ) : ℂ) := by
+    push_cast; exact Finset.sum_congr rfl fun z _ => hm z
+  simp only [pow_zero, mul_one] at hB
+  have hlt : ‖∑ z ∈ s, multDiff Z Z' z‖ < 1 := by
+    by_contra hge
+    push Not at hge
+    have : c ^ 2 * 1 ≤ c ^ 2 * ‖∑ z ∈ s, multDiff Z Z' z‖ :=
+      mul_le_mul_of_nonneg_left hge (by positivity)
+    linarith
+  rw [hsum, Complex.norm_intCast] at hlt
+  have h0 : (∑ z ∈ s, m z : ℤ) = 0 := by
+    have : |((∑ z ∈ s, m z : ℤ) : ℝ)| < 1 := by exact_mod_cast hlt
+    have h1 : |(∑ z ∈ s, m z : ℤ)| < 1 := by exact_mod_cast this
+    have h2 := abs_lt.mp h1
+    omega
+  rw [hsum, h0, Int.cast_zero]
+
+/-- **Pairs are read by the first two moments.** For a pair `p ± w/2` of one configuration against
+`p' ± w'/2` of the other, the disc moments about `ω` are `μ₁ = 2(p − p')` and
+`μ₂ = 2(p − ω)² + w²/2 − 2(p' − ω)² − w'²/2`. So `w² − w'² = 2μ₂ − 2μ₁(p + p' − 2ω)`. -/
+theorem pair_moments (p w p' w' ω : ℂ) :
+    ((p + w / 2 - ω) + (p - w / 2 - ω) - (p' + w' / 2 - ω) - (p' - w' / 2 - ω) = 2 * (p - p')) ∧
+      w ^ 2 - w' ^ 2 = 2 * ((p + w / 2 - ω) ^ 2 + (p - w / 2 - ω) ^ 2 - (p' + w' / 2 - ω) ^ 2 -
+        (p' - w' / 2 - ω) ^ 2) - 2 * (2 * (p - p')) * (p + p' - 2 * ω) :=
+  ⟨by ring, by ring⟩
+
+/-! ### The moments of a near-coincident cluster of `ζ` -/
+
+/-- `(GC e^ε/F)² ≤ exp(2G' + 2 log C + 2ε + 2F')` from `log G ≤ G'` and `log F⁻¹ ≤ F'`. -/
+theorem sq_div_floor_le_exp {G Cm F ε G' F' : ℝ} (hG : 0 < G) (hCm : 0 < Cm) (hF : 0 < F)
+    (hG' : Real.log G ≤ G') (hF' : Real.log F⁻¹ ≤ F') :
+    (G * Cm * 1 * Real.exp ε / F) ^ 2 ≤ Real.exp (2 * G' + 2 * Real.log Cm + 2 * ε + 2 * F') := by
+  have hx : ∀ x : ℝ, Real.exp x ^ 2 = Real.exp (2 * x) := fun x => by
+    rw [sq, ← Real.exp_add, two_mul]
+  have e : (G * Cm * 1 * Real.exp ε / F) ^ 2 =
+      Real.exp (2 * Real.log G + 2 * Real.log Cm + 2 * ε + 2 * Real.log F⁻¹) := by
+    rw [Real.exp_add, Real.exp_add, Real.exp_add, ← hx, ← hx, ← hx, ← hx, Real.exp_log hG,
+      Real.exp_log hCm, Real.exp_log (inv_pos.mpr hF)]
+    field_simp
+  rw [e]
+  exact Real.exp_le_exp.mpr (by linarith)
+
+/-- The Lipschitz part of the moment bound is `e^{O(L²)}`. -/
+theorem disc_lipschitz_term_le {lam L a Ψ C : ℝ} (hL1 : 1 ≤ L) (hlam : 0 < lam)
+    (ha : a = lam * L) (hΨ : Ψ ≤ (C - 4 * lam ^ 2 - lam) * L ^ 2) :
+    4 * a ^ 2 * Real.exp (a / 2) * Real.exp Ψ ≤ Real.exp (C * L ^ 2) := by
+  have h1 : 4 * a ^ 2 ≤ Real.exp (4 * a ^ 2) := by
+    have := Real.add_one_le_exp (4 * a ^ 2); linarith
+  have h2 : a / 2 ≤ lam * L ^ 2 := by
+    rw [ha]; nlinarith
+  calc 4 * a ^ 2 * Real.exp (a / 2) * Real.exp Ψ
+      ≤ Real.exp (4 * a ^ 2) * Real.exp (a / 2) * Real.exp Ψ := by gcongr
+    _ = Real.exp (4 * a ^ 2 + a / 2 + Ψ) := by rw [Real.exp_add, Real.exp_add]
+    _ ≤ Real.exp (C * L ^ 2) := by
+        apply Real.exp_le_exp.mpr
+        rw [ha] at *
+        nlinarith
+
+/-- **The camera reads the moments of every near-coincident cluster of `ζ`.** For a bandwidth
+`λ > 1/4 + πμ/2`, `κ > 0` and `K ≥ 0` there are `C` and `X₀` with the following property. Let `X ≥ X₀`
+and let `Z'` be a tempered mimic of `ζ` at aperture `λ log X`, of local density `≤ μ log X`. Let
+`z₀` be a point of height `X` and `r λ log X ≤ 1`. Suppose the cluster near `X` lies in the disc
+`‖z − z₀‖ ≤ r` or at distance `≥ exp(−κ log X/(1 + log log X))` from `z₀`. Then the moments of the
+disc satisfy `‖μ_j‖ ≤ N r^{j+1} e^{C (log X)²} + e^{−K (log X)²}` for `j ≤ 2`. -/
+theorem norm_discMoment_zeta_le {lam μ A' S' κ K : ℝ} (hlam : 1 / 4 + π * μ / 2 < lam)
+    (hμ : 0 ≤ μ) (hA' : 0 ≤ A') (hκ : 0 < κ) (hK : 0 ≤ K) :
+    ∃ C X₀ : ℝ, ∀ X : ℝ, X₀ ≤ X → ∀ Z' : ZeroConfig, TemperedConfig Z' →
+      (∀ f, ApertureWindow (lam * Real.log X) f → zetaZeroConfig.W f f = Z'.W f f) →
+      ∑' z, ‖multDiff zetaZeroConfig Z' z‖ / (1 + Complex.normSq (gammaOf z)) ≤ S' →
+      (∀ (s : Finset ℂ) (x y : ℝ), x ≤ y →
+        (∀ z ∈ s, z ∈ Z'.carrier ∧ |z.im - X| ≤ X / 2 ∧ z.im ∈ Icc x y) →
+          (s.card : ℝ) ≤ μ * Real.log X * (y - x) + A' * Real.log X) →
+      ∀ z₀ : ℂ, z₀.im = X → |z₀.re - 1 / 2| ≤ 1 / 2 → ∀ r : ℝ, 0 ≤ r →
+      r * (lam * Real.log X) ≤ 1 →
+      (∀ z, multDiff zetaZeroConfig Z' z ≠ 0 → |z.im - X| ≤ X / 2 →
+        ‖z - z₀‖ ≤ r ∨ Real.exp (-(κ * Real.log X / (1 + Real.log (Real.log X)))) ≤ ‖z - z₀‖) →
+      ∀ s : Finset ℂ, (∀ z ∈ s, ‖z - z₀‖ ≤ r) →
+      (∀ z, multDiff zetaZeroConfig Z' z ≠ 0 → ‖z - z₀‖ ≤ r → z ∈ s) →
+      ∀ j ≤ 2, ‖∑ z ∈ s, multDiff zetaZeroConfig Z' z * (gammaOf z - gammaOf z₀) ^ j‖ ≤
+        (∑ z ∈ s, ‖multDiff zetaZeroConfig Z' z‖) * r ^ (j + 1) * Real.exp (C * Real.log X ^ 2) +
+          Real.exp (-(K * Real.log X ^ 2)) := by
+  classical
+  obtain ⟨T₀, A, hT₀, hA, hζ⟩ := exists_card_le_sharp_centred
+  have hπ := Real.pi_gt_three
+  have hlam0 : 0 < lam := by nlinarith
+  obtain ⟨β, hβ⟩ : ∃ β, β = lam - 1 / 4 - π * μ / 2 := ⟨_, rfl⟩
+  have hβ0 : 0 < β := by rw [hβ]; linarith
+  have hβlam : β ≤ lam := by rw [hβ]; nlinarith
+  obtain ⟨ℓ, hℓ⟩ : ∃ ℓ, ℓ = 3 + (2 * A + A' + 1) * π / lam := ⟨_, rfl⟩
+  have hℓ0 : 0 ≤ ℓ := by rw [hℓ]; positivity
+  obtain ⟨e, he⟩ : ∃ e, e = 6 * slackBound ℓ * (1 + slackBound ℓ) := ⟨_, rfl⟩
+  have hσ0 : 0 ≤ slackBound ℓ := by unfold slackBound; linarith
+  have he0 : 0 ≤ e := by rw [he]; positivity
+  have hg0 := growthRate_nonneg hℓ0
+  have hf0 := floorRate_nonneg hℓ0
+  obtain ⟨G₀, hG₀⟩ : ∃ G₀, G₀ = 2 * growthRate ℓ * lam ^ 2 := ⟨_, rfl⟩
+  obtain ⟨F₀, hF₀⟩ : ∃ F₀, F₀ = floorRate ℓ * (4 * lam ^ 2 + κ * lam * (1 + |Real.log lam|)) :=
+    ⟨_, rfl⟩
+  obtain ⟨c, hc⟩ : ∃ c, c = 2 * G₀ + 2 * F₀ := ⟨_, rfl⟩
+  have hc0 : 0 ≤ c := by rw [hc, hG₀, hF₀]; positivity
+  obtain ⟨K', hK'⟩ : ∃ K', K' = c + K + 1 := ⟨_, rfl⟩
+  have hK'1 : 1 ≤ K' := by rw [hK']; linarith
+  obtain ⟨ρ, hρ⟩ : ∃ ρ, ρ = 4 * (e * lam + K' + 4) / β := ⟨_, rfl⟩
+  have hρ0 : 0 ≤ ρ := by rw [hρ]; positivity
+  obtain ⟨q, hq⟩ : ∃ q, q = Real.log (4 * (1 + ρ)) := ⟨_, rfl⟩
+  have hq0 : 0 ≤ q := by rw [hq]; exact Real.log_nonneg (by linarith)
+  obtain ⟨S'', hS''⟩ : ∃ S'', S'' = max S' 1 := ⟨_, rfl⟩
+  have hS''1 : 1 ≤ S'' := by rw [hS'']; exact le_max_right _ _
+  have hlS : 0 ≤ Real.log S'' := Real.log_nonneg hS''1
+  obtain ⟨b₁, hb₁⟩ : ∃ b₁, b₁ = 2 * q * (e * lam + K' + 4) + 2 * lam + 3 := ⟨_, rfl⟩
+  have hb₁0 : 0 ≤ b₁ := by rw [hb₁]; positivity
+  obtain ⟨L₀, hL₀⟩ : ∃ L₀, L₀ = max (max 1 (π / lam)) (max (1 / (2 * β))
+      (b₁ + Real.log S'' + 4)) := ⟨_, rfl⟩
+  refine ⟨4 * lam ^ 2 + lam + c + b₁ + 3, max (2 * T₀ + 16) (Real.exp L₀), ?_⟩
+  intro X hX Z' hZ' hW hS hZ'count z₀ hz₀ hz₀re r hr hra hiso s hsd hds j hj
+  have hX1 : 2 * T₀ + 16 ≤ X := (le_max_left _ _).trans hX
+  have hX0 : 0 < X := by linarith
+  obtain ⟨L, hL⟩ : ∃ L, L = Real.log X := ⟨_, rfl⟩
+  rw [← hL] at hW hZ'count hiso hra ⊢
+  have hLL₀ : L₀ ≤ L := by
+    rw [hL, ← Real.log_exp L₀]
+    exact Real.log_le_log (Real.exp_pos _) ((le_max_right _ _).trans hX)
+  rw [hL₀] at hLL₀
+  have hL1 : 1 ≤ L := ((le_max_left _ _).trans (le_max_left _ _)).trans hLL₀
+  have hLπ : π / lam ≤ L := ((le_max_right _ _).trans (le_max_left _ _)).trans hLL₀
+  have hLβ : 1 / (2 * β) ≤ L := ((le_max_left _ _).trans (le_max_right _ _)).trans hLL₀
+  have hLb : b₁ + Real.log S'' + 4 ≤ L := ((le_max_right _ _).trans (le_max_right _ _)).trans hLL₀
+  have hXL : X = Real.exp L := by rw [hL, Real.exp_log hX0]
+  -- the parameters
+  obtain ⟨ε, hε⟩ : ∃ ε, ε = β * L / 4 := ⟨_, rfl⟩
+  have hε0 : 0 < ε := by rw [hε]; positivity
+  obtain ⟨D, hD⟩ : ∃ D, D = (β / π + 1 / (2 * π) + μ) * L := ⟨_, rfl⟩
+  have hDa : π * D / 2 + 2 * ε ≤ lam * L := by rw [hε]; exact camera_aperture_eq hβ hD
+  have hDlow := camera_density_ge hμ hβ (by linarith) hD
+  have hDup := camera_density_le hμ hβ hβ0 (by linarith) hD
+  have hD1 : 1 ≤ D := by
+    refine le_trans ?_ hDlow
+    rw [le_div_iff₀ Real.pi_pos]
+    have := (div_le_iff₀ hlam0).mp hLπ
+    linarith only [this]
+  have hD0 : 0 < D := by linarith
+  obtain ⟨η, hη⟩ : ∃ η, η = Real.exp (-(κ * L / (1 + Real.log L))) := ⟨_, rfl⟩
+  have hη0 : 0 < η := by rw [hη]; exact Real.exp_pos _
+  have hη1 : η ≤ 1 := by
+    have h0 : 0 ≤ κ * L / (1 + Real.log L) := by
+      have := Real.log_nonneg hL1; positivity
+    rw [hη]; exact Real.exp_le_one_iff.mpr (by linarith)
+  have hlogη : Real.log (1 / η) = κ * L / (1 + Real.log L) := by
+    rw [hη, one_div, ← Real.exp_neg, neg_neg, Real.log_exp]
+  obtain ⟨C₀, hC₀ℓ, hcount⟩ := zeta_cluster_count hA hA' hμ hlam0 hζ hX1 hT₀ hL hL1
+    (camera_density_count hβ0 hLβ hD) hDlow hℓ hZ'count
+  -- the decay order and the bump
+  obtain ⟨k, hk⟩ : ∃ k : ℕ, k = ⌈K' * L⌉₊ := ⟨_, rfl⟩
+  have hkL : K' * L ≤ k := by rw [hk]; exact Nat.le_ceil _
+  have hkle : (k : ℝ) ≤ K' * L + 1 := by
+    rw [hk]; exact (Nat.ceil_lt_add_one (by positivity)).le
+  have hk1 : 1 ≤ k := by
+    have h1 : (1 : ℝ) ≤ K' * L := one_le_mul_of_one_le_of_one_le hK'1 hL1
+    have : (1 : ℝ) ≤ k := h1.trans hkL
+    exact_mod_cast this
+  obtain ⟨W, hWdef⟩ : ∃ W, W = windowExponent (2 * D⁻¹) (localSlack D C₀) := ⟨_, rfl⟩
+  have hW0 : 0 ≤ W := by
+    rw [hWdef, windowExponent]
+    have := windowSlack_localSlack_nonneg (C₀ := C₀) hD0
+    positivity
+  have hWle : W ≤ e * D := by rw [hWdef, he]; exact windowExponent_le hD1 hC₀ℓ
+  obtain ⟨m, hmdef⟩ : ∃ m : ℕ, m = ⌈W⌉₊ + (k + 2) := ⟨_, rfl⟩
+  have hm : windowExponent (2 * D⁻¹) (localSlack D C₀) + ((k + 2 : ℕ) : ℝ) ≤ m := by
+    rw [hmdef, ← hWdef]; push_cast; linarith [Nat.le_ceil W]
+  have hmle : (m : ℝ) ≤ (e * lam + K' + 4) * L := by
+    rw [hmdef]; push_cast
+    have h1 : (⌈W⌉₊ : ℝ) ≤ W + 1 := (Nat.ceil_lt_add_one hW0).le
+    have h2 : e * D ≤ e * (lam * L) := mul_le_mul_of_nonneg_left hDup he0
+    have h3 : (e * lam + K' + 4) * L = e * (lam * L) + K' * L + 4 * L := by ring
+    rw [h3]
+    linarith only [h1, h2, hWle, hkle, hL1]
+  have hmε : (m : ℝ) / ε ≤ ρ := by
+    rw [div_le_iff₀ hε0, hρ, hε]
+    have : 4 * (e * lam + K' + 4) / β * (β * L / 4) = (e * lam + K' + 4) * L := by
+      field_simp
+    rw [this]; exact hmle
+  obtain ⟨b, hb, hbs, hb1, hb0, hbm⟩ := exists_explicit_bump hε0 m
+  have hCm0 : 0 < (4 * (1 + m / ε)) ^ m := by positivity
+  have hlogCm : Real.log ((4 * (1 + m / ε)) ^ m) ≤ m * q := by
+    rw [Real.log_pow, hq]
+    exact mul_le_mul_of_nonneg_left (Real.log_le_log (by positivity) (by linarith))
+      (Nat.cast_nonneg _)
+  -- the moment bound
+  have hrR : r ≤ X / 2 := by
+    have h1 : 1 ≤ lam * L := by
+      have := (div_le_iff₀ hlam0).mp hLπ; nlinarith
+    have : r ≤ 1 := by nlinarith
+    linarith
+  have hiso' : ∀ z, multDiff zetaZeroConfig Z' z ≠ 0 → |z.im - z₀.im| ≤ X / 2 →
+      ‖z - z₀‖ ≤ r ∨ η ≤ ‖z - z₀‖ := fun z hcz hzR => by
+    rw [hη]; exact hiso z hcz (by rwa [hz₀] at hzR)
+  have hmom := norm_discMoment_le (k := k) (C0 := 1) hD0 hη0 hε0 hDa hb hbs hb1 hk1 hm hbm
+    (fun w => by rw [one_mul]; exact hb0 w) temperedConfig_zeta hZ' hW hz₀re
+    (R := X / 2) (by positivity) hr hrR hra hiso'
+    (fun t x y hxy ht => hcount t x y hxy (by rwa [hz₀] at ht)) hsd hds hj
+  rw [hz₀] at hmom
+  -- the size of the window constants
+  obtain ⟨Gw, hGw⟩ : ∃ Gw, Gw = windowGrowth (2 * D⁻¹) (localSlack D C₀) := ⟨_, rfl⟩
+  obtain ⟨Fl, hFl⟩ : ∃ Fl, Fl = windowFloor (2 * D⁻¹) (localSlack D C₀) η := ⟨_, rfl⟩
+  have hL0 := localSlack_nonneg (C₀ := C₀) hD0
+  have hGw0 : 0 < Gw := by rw [hGw]; exact windowGrowth_pos (by positivity) hL0
+  have hFl0 : 0 < Fl := by rw [hFl]; exact windowFloor_pos (by positivity) hL0 hη0
+  rw [← hGw, ← hFl] at hmom
+  have hGl : Real.log Gw ≤ G₀ * L ^ 2 := by
+    rw [hGw, hG₀]; exact (log_windowGrowth_le hD1 hC₀ℓ).trans (growth_term_le hg0 hD1 hDup)
+  have hFll : Real.log Fl⁻¹ ≤ F₀ * L ^ 2 := by
+    have h := log_inv_windowFloor_le_of_le_one hD1 hC₀ℓ hη0 hη1
+    rw [hlogη] at h
+    rw [hFl, hF₀]
+    exact h.trans (floor_term_le_of_small hf0 hD1 hlam0 hL1 hκ.le hDup)
+  obtain ⟨Ψ, hΨ⟩ : ∃ Ψ, Ψ = 2 * (G₀ * L ^ 2) + 2 * Real.log ((4 * (1 + m / ε)) ^ m) +
+      2 * ε + 2 * (F₀ * L ^ 2) := ⟨_, rfl⟩
+  have hratio := sq_div_floor_le_exp hGw0 hCm0 hFl0 hGl hFll
+  rw [← hΨ] at hratio
+  have hΨle : Ψ ≤ c * L ^ 2 + 2 * q * (e * lam + K' + 4) * L + β * L / 2 := by
+    rw [hΨ, hc, hε]
+    have : 2 * Real.log ((4 * (1 + m / ε)) ^ m) ≤ 2 * q * (e * lam + K' + 4) * L := by
+      nlinarith [mul_le_mul_of_nonneg_right hmle hq0]
+    linarith
+  obtain ⟨Mw, hMw⟩ : ∃ Mw, Mw = Gw * (4 * (1 + m / ε)) ^ m * 1 * Real.exp ε := ⟨_, rfl⟩
+  rw [← hMw] at hmom
+  have hMw0 : 0 ≤ Mw := by rw [hMw]; positivity
+  have hratio' : (Mw / Fl) ^ 2 ≤ Real.exp Ψ := by rw [hMw]; exact hratio
+  -- divide by the floor
+  have hFl2 : 0 < Fl ^ 2 := by positivity
+  obtain ⟨N, hN⟩ : ∃ N, N = ∑ z ∈ s, ‖multDiff zetaZeroConfig Z' z‖ := ⟨_, rfl⟩
+  have hN0 : 0 ≤ N := by rw [hN]; exact Finset.sum_nonneg fun z _ => norm_nonneg _
+  rw [← hN] at hmom ⊢
+  obtain ⟨Sg, hSg⟩ : ∃ Sg,
+      Sg = ∑' z, ‖multDiff zetaZeroConfig Z' z‖ / (1 + Complex.normSq (gammaOf z)) := ⟨_, rfl⟩
+  have hSg0 : 0 ≤ Sg := by
+    rw [hSg]; exact tsum_nonneg fun z => div_nonneg (norm_nonneg _)
+      (by have := Complex.normSq_nonneg (gammaOf z); linarith)
+  rw [← hSg] at hmom hS
+  -- the Lipschitz term
+  have hT1 : r ^ (j + 1) * (4 * (lam * L) ^ 2 * Mw ^ 2 * Real.exp (lam * L / 2)) / Fl ^ 2 ≤
+      r ^ (j + 1) * Real.exp ((4 * lam ^ 2 + lam + c + b₁ + 3) * L ^ 2) := by
+    have e1 : r ^ (j + 1) * (4 * (lam * L) ^ 2 * Mw ^ 2 * Real.exp (lam * L / 2)) / Fl ^ 2 =
+        r ^ (j + 1) * (4 * (lam * L) ^ 2 * Real.exp (lam * L / 2) * (Mw / Fl) ^ 2) := by
+      field_simp
+    rw [e1]
+    refine mul_le_mul_of_nonneg_left ?_ (by positivity)
+    have hlip := disc_lipschitz_term_le (Ψ := Ψ) (C := 4 * lam ^ 2 + lam + c + b₁ + 3) hL1
+      hlam0 rfl (by
+        have h1 : 2 * q * (e * lam + K' + 4) * L ≤ b₁ * L ^ 2 := by
+          have : 2 * q * (e * lam + K' + 4) ≤ b₁ := by rw [hb₁]; linarith
+          nlinarith
+        have h2 : β * L / 2 ≤ 3 * L ^ 2 := by nlinarith
+        nlinarith)
+    calc 4 * (lam * L) ^ 2 * Real.exp (lam * L / 2) * (Mw / Fl) ^ 2
+        ≤ 4 * (lam * L) ^ 2 * Real.exp (lam * L / 2) * Real.exp Ψ :=
+          mul_le_mul_of_nonneg_left hratio' (by positivity)
+      _ ≤ _ := hlip
+  -- the tail term
+  have hT2 : Mw ^ 2 * Real.exp (lam * L) * (5 / 4 * (1 + |X|) ^ 2 / (1 + X / 2) ^ (2 * k - 2)) *
+      Sg / Fl ^ 2 ≤ Real.exp (-(K * L ^ 2)) := by
+    have hlow := camera_lower_bound hX0 hXL hk1
+    have hpos : 0 < (1 + X / 2) ^ (2 * k - 2) := by positivity
+    have hXim : (1 + |X|) ^ 2 ≤ 4 * Real.exp (2 * L) := by
+      rw [abs_of_pos hX0, show 2 * L = L + L by ring, Real.exp_add, ← hXL]
+      nlinarith
+    have h5 : (5 : ℝ) ≤ Real.exp 2 := by
+      have := Real.quadratic_le_exp_of_nonneg (by norm_num : (0 : ℝ) ≤ 2)
+      linarith
+    have hSle : Sg ≤ Real.exp (Real.log S'') := by
+      rw [Real.exp_log (by linarith)]; exact hS.trans (by rw [hS'']; exact le_max_left _ _)
+    have e1 : Mw ^ 2 * Real.exp (lam * L) * (5 / 4 * (1 + |X|) ^ 2 / (1 + X / 2) ^ (2 * k - 2)) *
+        Sg / Fl ^ 2 = (Mw / Fl) ^ 2 * Real.exp (lam * L) * (5 / 4 * (1 + |X|) ^ 2) * Sg /
+          (1 + X / 2) ^ (2 * k - 2) := by
+      field_simp
+    rw [e1, div_le_iff₀ hpos]
+    have hexp : (Mw / Fl) ^ 2 * Real.exp (lam * L) * (5 / 4 * (1 + |X|) ^ 2) * Sg ≤
+        Real.exp (Ψ + lam * L + 2 * L + Real.log S'' + 2) := by
+      calc (Mw / Fl) ^ 2 * Real.exp (lam * L) * (5 / 4 * (1 + |X|) ^ 2) * Sg
+          ≤ Real.exp Ψ * Real.exp (lam * L) * (5 / 4 * (4 * Real.exp (2 * L))) *
+              Real.exp (Real.log S'') := by
+            gcongr
+        _ = 5 * (Real.exp Ψ * Real.exp (lam * L) * Real.exp (2 * L) *
+              Real.exp (Real.log S'')) := by ring
+        _ ≤ Real.exp 2 * (Real.exp Ψ * Real.exp (lam * L) * Real.exp (2 * L) *
+              Real.exp (Real.log S'')) := mul_le_mul_of_nonneg_right h5 (by positivity)
+        _ = Real.exp (Ψ + lam * L + 2 * L + Real.log S'' + 2) := by
+            simp only [Real.exp_add]; ring
+    refine hexp.trans ?_
+    calc Real.exp (Ψ + lam * L + 2 * L + Real.log S'' + 2)
+        ≤ Real.exp (-(K * L ^ 2)) * Real.exp (((k : ℝ) - 1) * L) := by
+          rw [← Real.exp_add]
+          apply Real.exp_le_exp.mpr
+          have h1 : (K' * L - 1) * L ≤ ((k : ℝ) - 1) * L :=
+            mul_le_mul_of_nonneg_right (by linarith) (by linarith)
+          have h2 : (b₁ + Real.log S'' + 4) * L ≤ L * L := mul_le_mul_of_nonneg_right hLb
+            (by linarith)
+          have h3 : Real.log S'' + 4 ≤ (Real.log S'' + 4) * L := le_mul_of_one_le_right
+            (by linarith) hL1
+          have h4 : 2 * q * (e * lam + K' + 4) + β / 2 + lam + 2 ≤ b₁ := by rw [hb₁]; linarith
+          have h5' : (2 * q * (e * lam + K' + 4) + β / 2 + lam + 2) * L ≤ b₁ * L :=
+            mul_le_mul_of_nonneg_right h4 (by linarith)
+          rw [hK'] at h1
+          nlinarith
+      _ ≤ Real.exp (-(K * L ^ 2)) * (1 + X / 2) ^ (2 * k - 2) :=
+          mul_le_mul_of_nonneg_left hlow (Real.exp_pos _).le
+  -- combine
+  have hfinal : Fl ^ 2 * ‖∑ z ∈ s, multDiff zetaZeroConfig Z' z * (gammaOf z - gammaOf z₀) ^ j‖ ≤
+      Fl ^ 2 * (N * (r ^ (j + 1) * Real.exp ((4 * lam ^ 2 + lam + c + b₁ + 3) * L ^ 2)) +
+        Real.exp (-(K * L ^ 2))) := by
+    have hA1 := (div_le_iff₀ hFl2).mp hT1
+    have hA2 := (div_le_iff₀ hFl2).mp hT2
+    calc Fl ^ 2 * ‖∑ z ∈ s, multDiff zetaZeroConfig Z' z * (gammaOf z - gammaOf z₀) ^ j‖
+        ≤ N * r ^ (j + 1) * (4 * (lam * L) ^ 2 * Mw ^ 2 * Real.exp (lam * L / 2)) +
+            Mw ^ 2 * Real.exp (lam * L) *
+              (5 / 4 * (1 + |X|) ^ 2 / (1 + X / 2) ^ (2 * k - 2)) * Sg := hmom
+      _ ≤ N * (r ^ (j + 1) * Real.exp ((4 * lam ^ 2 + lam + c + b₁ + 3) * L ^ 2) * Fl ^ 2) +
+            Real.exp (-(K * L ^ 2)) * Fl ^ 2 := by
+          have := mul_le_mul_of_nonneg_left hA1 hN0
+          nlinarith
+      _ = _ := by ring
+  have := le_of_mul_le_mul_left hfinal hFl2
+  linarith
 
 end GaloisForLFunctions.ZeroConfigurationGeometry

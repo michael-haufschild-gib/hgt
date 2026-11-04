@@ -61,19 +61,8 @@ theorem weightedRepair_not_posSemidef {a : ℝ} (ha0 : 0 < a) (ha : a < 1/2) :
   let w := 2*center*Real.sinh (a*(2*center))
   have hw : 0 < w := mul_pos (mul_pos (by norm_num) center_pos)
     (Real.sinh_pos_iff.mpr (mul_pos ha0 (mul_pos (by norm_num) center_pos)))
-  have hK := sourceUnit_pos (x := center) (by rw [center_scale]; norm_num)
-  have hf := thetaCuspSourceTerm_pos_of_pos_of_nat_pos center_pos (by norm_num : 0 < (1 : ℕ))
-  have hq : 7 ≤ thetaCuspSingleAtomReflectionScale 1 center := by rw [center_scale]; norm_num
-  have hm := mul_self_le_mul_self hf.le (FifthCrossEnvelope.mass_slope_bounds hq).1
-  have hs := FifthCrossEnvelope.first_mass_square center
-  rw [center_scale] at hs
-  have hd : deriv (FifthPolynomialCross.flux a) (2*center)/w ≤
-      -268*thetaCuspFullSource center^2 := by
-    apply (div_le_iff₀ hw).mpr
-    simpa only [w,mul_comm] using weighted_derivative_upper ha0.le ha
-  have hc : (deriv (FifthPolynomialCross.flux a) (2*center)/w)/sourceUnit center ≤ -216*61^2 := by
-    apply (div_le_iff₀ hK).mpr
-    nlinarith only [hd,hm,hs,hK.le]
+  have hc : (deriv (FifthPolynomialCross.flux a) (2*center)/w)/sourceUnit center ≤ -216*61^2 :=
+    (normalized_weighted_derivative_upper ha0 ha).trans (by norm_num)
   intro h
   have he : (1/w) • FifthPolynomialCross.weightedRepair a (2*center) =
       loadedSource (deriv (FifthPolynomialCross.flux a) (2*center)/w) := by

@@ -46,12 +46,12 @@ Gaussian-weighted strip value `g_t(w − v) ‖xiLine X w‖` is bounded by `e^{
 `u`-anchored Euler-product scale. -/
 theorem gaussDensity_mul_norm_xiLine_le_anchor_of_profile {E : ℝ → ℝ} {K η m t X v u w : ℝ}
     (ht : 0 < t)
-    (hE0 : 0 ≤ E w) (hE2 : E w ≤ (1 / 2 + 2 * η) / 2)
+    (_hE0 : 0 ≤ E w) (hE2 : E w ≤ (1 / 2 + 2 * η) / 2)
     (hK : ∀ X w u : ℝ, 16 ≤ X → 0 ≤ w → w ≤ 1 / 2 + 2 * η → 1 / 2 + 2 * η ≤ u → u ≤ X →
       ‖xiLine X w‖ ≤ K * X ^ (E w) * (X / (2 * Real.pi)) ^ ((w - u) / 2) * ‖xiLine X u‖)
     (hK0 : 0 ≤ K) (hX : 16 ≤ X) (_ : 0 ≤ (horizontalSlope X).re)
     (hu1 : 1 / 2 + 2 * η ≤ u) (huX : u ≤ X)
-    (hη0 : 0 ≤ η)
+    (_hη0 : 0 ≤ η)
     (hw0 : 0 ≤ w) (hw1 : w ≤ 1 / 2 + 2 * η)
     (hexp_le : -(w - v) ^ 2 + 4 * (2 * t * (horizontalSlope X).re) * E w +
       2 * (2 * t * (horizontalSlope X).re) * (w - u) +
@@ -265,89 +265,72 @@ theorem re_slope_mul_conj_pos_of_profile {E : ℝ → ℝ} {K η δ₀ γ m t X 
   have hα0 : 0 ≤ (horizontalSlope X).re := by linarith
   have hv : |v| ≤ 1 / 2 := hvδ.trans hδ₀2
   have hv_lo : -δ₀ ≤ v := (abs_le.mp hvδ).1
-  obtain ⟨a, hadef⟩ : ∃ a, a = horizontalSlope X := ⟨_, rfl⟩
-  obtain ⟨α, hαdef⟩ : ∃ α, α = a.re := ⟨_, rfl⟩
-  have hαeq : α = (horizontalSlope X).re := by rw [hαdef, hadef]
-  obtain ⟨u, hudef⟩ : ∃ u, u = v + 2 * t * α := ⟨_, rfl⟩
-  obtain ⟨N, hN⟩ : ∃ N, N = ‖xiLine X u‖ := ⟨_, rfl⟩
-  obtain ⟨W, hWdef⟩ : ∃ W, W = 2 * t * α + α ^ 2 := ⟨_, rfl⟩
-  obtain ⟨η', hη'⟩ : ∃ η', η' = 2 * η := ⟨_, rfl⟩
-  have hη'pos : 0 < η' := by rw [hη']; positivity
-  obtain ⟨b, hbdef⟩ : ∃ b, b = 9 / 2 * (1 / η' + 3) := ⟨_, rfl⟩
+  set a := horizontalSlope X with hadef
+  set α := a.re with hαdef
+  set u := v + 2 * t * α with hudef
+  set N := ‖xiLine X u‖ with hN
+  set W := 2 * t * α + α ^ 2 with hWdef
+  set η' := 2 * η with hη'
+  have hη'pos : 0 < η' := by positivity
+  set b := 9 / 2 * (1 / η' + 3) with hbdef
   have hv2 := (abs_le.mp hv).2
-  have hα1' : 1 ≤ α := by rwa [hαeq]
-  have hα0' : 0 ≤ α := by rwa [hαeq]
-  have hWu : u ≤ W := by rw [hudef, hWdef]; linarith [one_le_pow₀ hα1' (n := 2)]
-  have hu_sep : 1 / 2 + η' + γ ≤ u := by rw [hudef, hη', hαeq]; linarith
-  have hWX' : W ≤ X / 32 - 1 / 2 := by rw [hWdef, hαeq]; exact hWX
-  have hW9' : 9 / 2 ≤ W := by rw [hWdef, hαeq]; exact hW9
-  have hu : u ∈ Icc (1 / 2 + η') (X / 32 - 1 / 2) := ⟨by linarith, hWu.trans hWX'⟩
+  have hWu : u ≤ W := by rw [hudef, hWdef]; linarith [one_le_pow₀ hα1 (n := 2)]
+  have hu_sep : 1 / 2 + η' + γ ≤ u := by rw [hudef, hη']; linarith
+  have hu : u ∈ Icc (1 / 2 + η') (X / 32 - 1 / 2) :=
+    ⟨by linarith, hWu.trans hWX⟩
   have hw1W : 1 / 2 + η' ≤ W := hu.1.trans hWu
-  have hN0 : 0 ≤ N := by rw [hN]; exact norm_nonneg _
+  have hN0 : 0 ≤ N := norm_nonneg _
   have hNpos : 0 < N := by
     rw [hN, norm_pos_iff]
     unfold xiLine
     rw [xiLine_point]
     exact xi_ne_zero_of_one_lt_re (by simp; linarith [hu.1])
-  obtain ⟨P, hP⟩ : ∃ P, P = N * Real.exp (-(t * α ^ 2)) := ⟨_, rfl⟩
-  have hP0 : 0 < P := by rw [hP]; positivity
+  set P := N * Real.exp (-(t * α ^ 2)) with hP
+  have hP0 : 0 < P := by positivity
   have hmodel : ∀ w ∈ Icc (1 / 2 + η') W, ‖xiLine X w - xiLine X u *
       Complex.exp (((w - u : ℝ) : ℂ) * a)‖ ≤
-        ‖xiLine X u‖ * Real.exp ((w - u) * a.re) * (Real.exp ((1 / η' + 3) * |w - u|) - 1) := by
-    intro w hw
-    rw [hadef]
-    exact norm_xiLine_sub_model_le_near hX hη'pos hu ⟨hw.1, hw.2.trans hWX'⟩
+        ‖xiLine X u‖ * Real.exp ((w - u) * a.re) * (Real.exp ((1 / η' + 3) * |w - u|) - 1) :=
+    fun w hw => norm_xiLine_sub_model_le_near hX hη'pos hu ⟨hw.1, hw.2.trans hWX⟩
   have hderiv : ∀ w ∈ Icc (1 / 2 + η') W, ‖xiLineDeriv X w - a * xiLine X w‖ ≤
-      (1 / η' + 3) * ‖xiLine X w‖ := by
-    intro w hw
-    rw [hadef]
-    exact norm_xiLineDeriv_sub_le_near hX hη'pos hw.1 (hw.2.trans hWX')
-  have hη₁0 : 0 ≤ 1 / η' + 3 := by positivity
+      (1 / η' + 3) * ‖xiLine X w‖ :=
+    fun w hw => norm_xiLineDeriv_sub_le_near hX hη'pos hw.1 (hw.2.trans hWX)
   have hQ := norm_halfGaussTransform_sub_main_le ht (continuous_xiLine X)
-    (integrable_exp_mul_norm_xiLine ht X) (y := v) hη₁0 (by linarith) hw1W hmodel
+    (integrable_exp_mul_norm_xiLine ht X) (y := v) (by positivity) (by linarith) hw1W hmodel
   have hD := norm_slope_sub_mul_le ht (hasDerivAt_xiLine X) (continuous_xiLineDeriv X)
     (integrable_exp_mul_norm_xiLine ht X) (y := v) (by linarith) hw1W hderiv
-  have hT1 := chernoff_lowerTail_le ht hγ (show 1 / 2 + η' + γ ≤ v + 2 * t * α by
-    rw [← hudef]; exact hu_sep) hN0
-  have hT2 := upperTail_le (W := W) ht hv hN0 (α := α)
+  have hT1 := chernoff_lowerTail_le ht hγ hu_sep hN0
+  have hT2 := upperTail_le ht hv hN0 (α := α)
   have hT3 := sharp_modelError_le (η := η') (α := α) (y := v) ht hη'pos hN0
-  have hM := sharp_windowMass_le (η := η') (W := W) ht hη'pos hX hu hWX'
+  have hM := sharp_windowMass_le (η := η') ht hη'pos hX hu hWX
   have hcX : u ≤ X := by have := hu.2; linarith
   have hexp_strip : ∀ w ∈ Icc (0 : ℝ) (1 / 2 + 2 * η),
-      -(w - v) ^ 2 + 4 * (2 * t * (horizontalSlope X).re) * E w +
-        2 * (2 * t * (horizontalSlope X).re) * (w - u) +
-        (2 * t * (horizontalSlope X).re) ^ 2 ≤ -m := fun w hw => by
-    rw [hudef, hαeq]
+      -(w - v) ^ 2 + 4 * (2 * t * α) * E w +
+        2 * (2 * t * α) * (w - u) + (2 * t * α) ^ 2 ≤ -m := fun w hw => by
+    rw [hudef]
     exact strip_exponent_collar_le hw.1 ((abs_nonneg v).trans hvδ) hv_lo
       (by linarith [hw.2]) (hm w hw)
   obtain ⟨hSA, hOA, hB1⟩ := strip_terms_le_anchor_of_profile ht hη hE0 hE2 hK hK0
-    (by linarith) hv hα0 (by rw [← hη']; exact hu.1) hcX hexp_strip
-  have hFWb : ‖xiLine X W‖ ≤ (Real.exp b * N) * Real.exp ((W - u) * (α + 1 / 8)) := by
-    rw [hN, hαeq]
-    exact norm_xiLine_far_end_le hX hη'pos hu hW9' hWu hWX'
-  obtain ⟨hSC, hOC, hB2⟩ := far_terms_le_of_bound (b := b) ht ht8 hX hv hα1 hW9'
-    (by rwa [← hαeq])
+    (by linarith) hv hα0 hu.1 hcX hexp_strip
+  have hFWb : ‖xiLine X W‖ ≤ (Real.exp b * N) * Real.exp ((W - u) * (α + 1 / 8)) :=
+    norm_xiLine_far_end_le hX hη'pos hu hW9 hWu hWX
+  obtain ⟨hSC, hOC, hB2⟩ := far_terms_le_of_bound (b := b) ht ht8 hX hv hα1 hW9 hFWb
   have hph := gaussPhase_ge ht8 ht
   have hmain := norm_main_eq (t := t) (X := X) (y := v) (xiLine X u)
   rw [← hadef, ← hαdef, ← hudef] at hmain
   have hmain' : ‖xiLine X u * Complex.exp (-((u : ℂ) * a)) *
       Complex.exp (v * a + t * a ^ 2)‖ = P * Real.exp (-(t * (Real.pi / 4) ^ 2)) := by
     rw [hmain, hP, hN]
-  obtain ⟨S₁, hS₁⟩ : ∃ S₁, S₁ = chernoffLowerR1 γ t + kklR2 t α + sharpR3 η' t +
-    sharpStripErr K η' m t α + Real.exp b * kklRC t α := ⟨_, rfl⟩
-  obtain ⟨S₂, hS₂⟩ : ∃ S₂, S₂ = 2 * sharpStripErr K η' m t α +
-    Real.exp b * (kklRC t α + kklRB t α) + (1 / η' + 3) * (1 + sharpR3 η' t) := ⟨_, rfl⟩
-  have hS1' : S₁ ≤ 1 / 5 := by rw [hS₁, hbdef, hη', hαeq]; exact hS1
-  have hS2' : S₂ < 18 / 25 * α := by rw [hS₂, hbdef, hη', hαeq]; exact hS2
-  rw [← hadef, ← hαeq, ← hN, ← hη'] at hQ hD hSA hOA hB1 hSC hOC hB2 hM
-  rw [← hαdef] at hQ
+  set S₁ := chernoffLowerR1 γ t + kklR2 t α + sharpR3 η' t + sharpStripErr K η' m t α +
+    Real.exp b * kklRC t α with hS₁
+  set S₂ := 2 * sharpStripErr K η' m t α + Real.exp b * (kklRC t α + kklRB t α) +
+    (1 / η' + 3) * (1 + sharpR3 η' t) with hS₂
   refine re_mul_conj_pos_of_estimates (Main := xiLine X u * Complex.exp (-((u : ℂ) * a)) *
       Complex.exp (v * a + t * a ^ 2)) (E₁ := P * S₁) (E₂ := P * S₂) hα0 ?_ ?_ ?_ ?_
   · refine hQ.trans ?_
-    have e : N * Real.exp (-(u * α)) *
-        ((∫ w in Iic (1 / 2 + η' : ℝ), gaussDensity t (w - v) * Real.exp (w * α)) +
-          (∫ w in Ioi W, gaussDensity t (w - v) * Real.exp (w * α)) +
-          ∫ w, gaussDensity t (w - v) * Real.exp (w * α) *
+    have e : ‖xiLine X u‖ * Real.exp (-(u * a.re)) *
+        ((∫ w in Iic (1 / 2 + η' : ℝ), gaussDensity t (w - v) * Real.exp (w * a.re)) +
+          (∫ w in Ioi W, gaussDensity t (w - v) * Real.exp (w * a.re)) +
+          ∫ w, gaussDensity t (w - v) * Real.exp (w * a.re) *
             (Real.exp ((1 / η' + 3) * |w - u|) - 1)) =
         N * Real.exp (-(u * α)) * (∫ w in Iic (1 / 2 + η' : ℝ),
             gaussDensity t (w - v) * Real.exp (w * α)) +
@@ -356,16 +339,14 @@ theorem re_slope_mul_conj_pos_of_profile {E : ℝ → ℝ} {K η δ₀ γ m t X 
           ∫ w, gaussDensity t (w - v) * Real.exp (w * α) *
             (Real.exp ((1 / η' + 3) * |w - u|) - 1) := by ring
     rw [e]
-    rw [← hudef] at hT1 hT2 hT3
-    rw [← hP] at hT1 hT2 hT3 hOA
     have hOC' : ∫ w in Ioi W, gaussDensity t (w - v) * ‖xiLine X w‖ ≤
         P * (Real.exp b * kklRC t α) := hOC.trans (le_of_eq (by rw [hP]; ring))
+    rw [← hudef] at hT1 hT3
     have hsum : P * chernoffLowerR1 γ t + P * kklR2 t α + P * sharpR3 η' t +
         P * sharpStripErr K η' m t α + P * (Real.exp b * kklRC t α) = P * S₁ := by
       rw [hS₁]; ring
     linarith
   · refine hD.trans ?_
-    rw [← hP] at hSA hB1 hM
     have hSC' : ∫ w in Ioi W, (|(w - v) / (2 * t)| + ‖a‖) * gaussDensity t (w - v) *
         ‖xiLine X w‖ ≤ P * (Real.exp b * kklRC t α) := hSC.trans (le_of_eq (by rw [hP]; ring))
     have hB2' : gaussDensity t (W - v) * ‖xiLine X W‖ ≤ P * (Real.exp b * kklRB t α) :=
@@ -378,17 +359,16 @@ theorem re_slope_mul_conj_pos_of_profile {E : ℝ → ℝ} {K η δ₀ γ m t X 
     linarith
   · rw [hmain']
     have h1 := mul_le_mul_of_nonneg_left hph hP0.le
-    have h2 : P * S₁ ≤ P * (1 / 5) := mul_le_mul_of_nonneg_left hS1' hP0.le
+    have : P * S₁ ≤ P * (1 / 5) := mul_le_mul_of_nonneg_left hS1 hP0.le
     linarith
   · rw [hmain']
     have h1 := mul_le_mul_of_nonneg_left hph hP0.le
-    have h2 : P * S₁ ≤ P * (1 / 5) := mul_le_mul_of_nonneg_left hS1' hP0.le
-    have h3 : P * S₂ < P * (18 / 25 * α) := mul_lt_mul_of_pos_left hS2' hP0
+    have h2 : P * S₁ ≤ P * (1 / 5) := mul_le_mul_of_nonneg_left hS1 hP0.le
+    have h3 : P * S₂ < P * (18 / 25 * α) := mul_lt_mul_of_pos_left hS2 hP0
     have h4 : 18 / 25 * P ≤ P * Real.exp (-(t * (Real.pi / 4) ^ 2)) - P * S₁ := by linarith
     have h5 : α * (18 / 25 * P) ≤ α * (P * Real.exp (-(t * (Real.pi / 4) ^ 2)) - P * S₁) :=
-      mul_le_mul_of_nonneg_left h4 hα0'
+      mul_le_mul_of_nonneg_left h4 hα0
     have h6 : P * (18 / 25 * α) = α * (18 / 25 * P) := by ring
-    rw [← hαeq]
     linarith
 
 private theorem setIntegral_Ioi_neg_shift_le {t X y W : ℝ} (ht : 0 < t) (hy0 : 0 ≤ y)

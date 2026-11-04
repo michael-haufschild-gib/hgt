@@ -172,17 +172,21 @@ theorem profile_compensation_upper :
   rw [he]
   nlinarith only [hG,htp,hpay,sq_nonneg (thetaCuspFullSource center)]
 
-/-- The same strict loss in the common first-pair normalization. -/
-theorem normalized_compensation_upper :
-    FifthPolynomialCross.compensation center/sourceUnit center ≤ -280*61^2 := by
+private theorem full_mass_square_lower :
+    sourceUnit center*61^2 ≤ thetaCuspFullSource center^2 := by
   have hq : 7 ≤ thetaCuspSingleAtomReflectionScale 1 center := by rw [center_scale]; norm_num
-  have hK := sourceUnit_pos (x := center) (by rw [center_scale]; norm_num)
   have hf := thetaCuspSourceTerm_pos_of_pos_of_nat_pos center_pos (by norm_num : 0 < (1 : ℕ))
   have hm := mul_self_le_mul_self hf.le (mass_slope_bounds hq).1
   have hs := first_mass_square center
   rw [center_scale] at hs
+  nlinarith only [hm,hs]
+
+/-- The same strict loss in the common first-pair normalization. -/
+theorem normalized_compensation_upper :
+    FifthPolynomialCross.compensation center/sourceUnit center ≤ -280*61^2 := by
+  have hK := sourceUnit_pos (x := center) (by rw [center_scale]; norm_num)
   apply (div_le_iff₀ hK).mpr
-  nlinarith only [profile_compensation_upper,hm,hs]
+  nlinarith only [profile_compensation_upper,full_mass_square_lower]
 
 private theorem normalized_entry_difference (k : ℕ) :
     (-1 : ℝ)^k*thetaCuspNativeReflectionJet (2*k) center/
@@ -278,5 +282,21 @@ theorem weighted_derivative_upper {a : ℝ} (ha0 : 0 ≤ a) (ha : a < 1/2) :
   have hmain := mul_le_mul_of_nonneg_left profile_compensation_upper (mul_nonneg hr hs)
   rw [FifthPolynomialCross.deriv_flux_remainder,show 2*center/2=center by ring]
   nlinarith only [hrem,hprof,hmain]
+
+/-- Uniform normalized loss of the literal coefficient throughout the critical apertures. -/
+theorem normalized_weighted_derivative_upper {a : ℝ} (ha0 : 0 < a) (ha : a < 1/2) :
+    (deriv (FifthPolynomialCross.flux a) (2*center)/
+      (2*center*Real.sinh (a*(2*center))))/sourceUnit center ≤ -268*61^2 := by
+  let w := 2*center*Real.sinh (a*(2*center))
+  change (deriv (FifthPolynomialCross.flux a) (2*center)/w)/sourceUnit center ≤ -268*61^2
+  have hw : 0 < w := mul_pos (mul_pos (by norm_num) center_pos)
+    (Real.sinh_pos_iff.mpr (mul_pos ha0 (mul_pos (by norm_num) center_pos)))
+  have hd : deriv (FifthPolynomialCross.flux a) (2*center)/w ≤
+      -268*thetaCuspFullSource center^2 := by
+    apply (div_le_iff₀ hw).mpr
+    simpa only [w,mul_comm] using weighted_derivative_upper ha0.le ha
+  have hK := sourceUnit_pos (x := center) (by rw [center_scale]; norm_num)
+  apply (div_le_iff₀ hK).mpr
+  nlinarith only [hd,full_mass_square_lower]
 
 end GaloisForLFunctions.ThetaCuspSections.ThirtyTwoCrossSource

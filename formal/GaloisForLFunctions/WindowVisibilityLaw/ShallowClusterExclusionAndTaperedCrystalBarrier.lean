@@ -103,7 +103,10 @@ theorem macroscopic_coherent_cluster_cancels_log_height (Z : ZeroConfig) {A₀ :
   have hX_le_sq : X ≤ |γ₀| ^ 2 := by
     have hX2 : X ≤ 2 * |γ₀| := by dsimp [X]; linarith
     nlinarith
-  have hX_pos : 0 < X := by linarith
+  have hX_pos : 0 < X := by
+    have := one_le_log_abs_add_three γ₀
+    dsimp [X]
+    positivity
   have hlog_X : Real.log X ≤ 2 * Real.log |γ₀| := by
     calc Real.log X ≤ Real.log (|γ₀| ^ 2) := Real.log_le_log hX_pos hX_le_sq
       _ = 2 * Real.log |γ₀| := by rw [Real.log_pow]; ring
@@ -228,19 +231,21 @@ theorem summable_Wsummand_of_tempered {Z : ZeroConfig} (hZ : TemperedConfig Z) {
   set maj : Z.carrier → ℝ := fun τ =>
     4 / 3 * C ^ 2 * ((Z.mult τ : ℝ) / (1 + Complex.normSq (gammaOf τ)))
   refine Summable.of_norm_bounded (hZ.mul_left (4 / 3 * C ^ 2)) fun τ => ?_
-  have him := abs_im_gammaOf_le Z τ
+  have him := GaloisForLFunctions.ArithmeticCastelnuovoSeveri.abs_im_gammaOf_le Z τ
   have him_conj : |(conj (gammaOf τ)).im| ≤ 1 / 2 := by
     rw [Complex.conj_im, abs_neg]; exact him
-  have hb1 := (RHTower.norm_paperFT_le_decay hf hsupp (gammaOf τ)).trans
-    (div_le_div_of_nonneg_right
-      (mul_le_mul_of_nonneg_right
-        (Real.exp_le_exp.mpr (by nlinarith [abs_nonneg (gammaOf τ).im])) (by positivity))
-      (by positivity))
-  have hb2 := (RHTower.norm_paperFT_le_decay hf hsupp (conj (gammaOf τ))).trans
-    (div_le_div_of_nonneg_right
-      (mul_le_mul_of_nonneg_right
-        (Real.exp_le_exp.mpr (by nlinarith [abs_nonneg (conj (gammaOf τ)).im])) (by positivity))
-      (by positivity))
+  have hb1 : ‖paperFT f (gammaOf τ)‖ ≤ C / (1 + |(gammaOf τ).re|) ^ 2 :=
+    (RHTower.norm_paperFT_le_decay hf hsupp (gammaOf τ)).trans
+      (div_le_div_of_nonneg_right
+        (mul_le_mul_of_nonneg_right
+          (Real.exp_le_exp.mpr (by nlinarith [abs_nonneg (gammaOf τ).im])) (by positivity))
+        (by positivity))
+  have hb2 : ‖paperFT f (conj (gammaOf τ))‖ ≤ C / (1 + |(conj (gammaOf τ)).re|) ^ 2 :=
+    (RHTower.norm_paperFT_le_decay hf hsupp (conj (gammaOf τ))).trans
+      (div_le_div_of_nonneg_right
+        (mul_le_mul_of_nonneg_right
+          (Real.exp_le_exp.mpr (by nlinarith [abs_nonneg (conj (gammaOf τ)).im])) (by positivity))
+        (by positivity))
   have hb2' : ‖paperFT f (conj (gammaOf τ))‖ ≤ C :=
     hb2.trans (div_le_self hC0 (one_le_pow₀ (by linarith [abs_nonneg (conj (gammaOf τ)).re])))
   have hden : 1 / (1 + |(gammaOf τ).re|) ^ 2 ≤ (4 / 3) / (1 + Complex.normSq (gammaOf τ)) := by
@@ -365,7 +370,7 @@ theorem re_W_ge_of_onLineLattice_and_offLineDepthMass {Z : ZeroConfig} (hZ : Tem
   -- Embed the on-line lattice into `Z.carrier`
   let emb : Set.range (verticalLatticePoint L 0) → Z.carrier := fun ρ => ⟨ρ.1, hsub ρ.2⟩
   have hemb_inj : Function.Injective emb := fun ρ₁ ρ₂ h =>
-    Subtype.ext (congrArg Subtype.val h)
+    Subtype.ext (congrArg (fun x : Z.carrier => (x : ℂ)) h)
   set onTerm : Z.carrier → ℝ := fun τ =>
     if (τ : ℂ) ∈ Set.range (verticalLatticePoint L 0) then
       (m₀ : ℝ) / 2 * (Z₀.Wsummand f f τ).re
@@ -375,9 +380,11 @@ theorem re_W_ge_of_onLineLattice_and_offLineDepthMass {Z : ZeroConfig} (hZ : Tem
     · intro τ hτ
       have hnot : (τ : ℂ) ∉ Set.range (verticalLatticePoint L 0) := fun hm =>
         hτ ⟨⟨τ.1, hm⟩, Subtype.ext rfl⟩
-      simp [onTerm, hnot]
+      dsimp only [onTerm]
+      exact if_neg hnot
     · refine hlat_re.congr_fun fun ρ => ?_
-      simp [onTerm, emb, ρ.2]
+      dsimp only [Function.comp_apply, onTerm, emb]
+      exact if_pos ρ.2
   -- Off-line conjugate-difference majorant
   set offTerm : Z.carrier → ℝ := fun τ =>
     if (τ : ℂ).re ≠ 1 / 2 then
@@ -414,27 +421,37 @@ theorem re_W_ge_of_onLineLattice_and_offLineDepthMass {Z : ZeroConfig} (hZ : Tem
   have hpt : ∀ τ : Z.carrier, onTerm τ - offTerm τ ≤ (Z.Wsummand f f τ).re := by
     intro τ
     by_cases hre : (τ : ℂ).re = 1 / 2
-    · have hoff0 : offTerm τ = 0 := by simp [offTerm, hre]
+    · have hoff0 : offTerm τ = 0 := by
+        dsimp only [offTerm]
+        exact if_neg (not_not.mpr hre)
       rw [hoff0, sub_zero]
       by_cases hmem : (τ : ℂ) ∈ Set.range (verticalLatticePoint L 0)
-      · obtain ⟨k, hk⟩ := hmem
-        have h1 : onTerm τ = (m₀ : ℝ) / 2 * (Z₀.Wsummand f f τ).re := by simp [onTerm, k, hk]
+      · have h1 : onTerm τ = (m₀ : ℝ) / 2 * (Z₀.Wsummand f f τ).re := by
+          dsimp only [onTerm]
+          exact if_pos hmem
+        obtain ⟨k, hk⟩ := hmem
         rw [h1, re_Wsummand_onLine_eq Z₀ f hre, re_Wsummand_onLine_eq Z f hre, ← hk,
           hZ₀_mult k]
         have hm : (m₀ : ℝ) ≤ Z.mult (verticalLatticePoint L 0 k) := by exact_mod_cast hmult k
         have hsq : 0 ≤ ‖paperFT f (verticalLatticePoint L 0 k).im‖ ^ 2 := sq_nonneg _
         nlinarith
-      · simp only [onTerm, hmem, ↓reduceIte]
+      · have hon0 : onTerm τ = 0 := by
+          dsimp only [onTerm]
+          exact if_neg hmem
+        rw [hon0]
         exact re_Wsummand_onLine_nonneg Z f hre
     · have hnot_lat : (τ : ℂ) ∉ Set.range (verticalLatticePoint L 0) := by
         rintro ⟨k, hk⟩
         apply hre
         rw [← hk]
         simp [verticalLatticePoint]
-      have hon0 : onTerm τ = 0 := by simp [onTerm, hnot_lat]
+      have hon0 : onTerm τ = 0 := by
+        dsimp only [onTerm]
+        exact if_neg hnot_lat
       have hoff_eq : offTerm τ =
           (Z.mult τ : ℝ) * ‖paperFT f (gammaOf τ) - paperFT f (conj (gammaOf τ))‖ ^ 2 / 4 := by
-        simp [offTerm, hre]
+        dsimp only [offTerm]
+        exact if_pos hre
       rw [hon0, hoff_eq, zero_sub]
       linarith [neg_quarter_norm_sub_sq_le_re_Wsummand Z f τ]
   have hW_summ : Summable (fun τ : Z.carrier => (Z.Wsummand f f τ).re) :=
@@ -527,9 +544,7 @@ theorem biquadraticProfile_pos (k₀ : ℤ) {M : ℕ} {δ : ℝ} (hδ : 0 < δ) 
   have hMpos : 0 < (M : ℝ) := by
     have : (0 : ℤ) < (M : ℤ) := lt_of_le_of_lt (abs_nonneg _) hk
     exact_mod_cast this
-  have habs : |(k : ℝ) - (k₀ : ℝ)| < (M : ℝ) := by
-    have : (|k - k₀| : ℝ) < (M : ℝ) := by exact_mod_cast hk
-    rwa [Int.cast_abs, Int.cast_sub] at this
+  have habs : |(k : ℝ) - (k₀ : ℝ)| < (M : ℝ) := by exact_mod_cast hk
   have hsq : ((k : ℝ) - (k₀ : ℝ)) ^ 2 < (M : ℝ) ^ 2 := by
     rw [← sq_abs ((k : ℝ) - (k₀ : ℝ))]
     exact pow_lt_pow_left₀ habs (abs_nonneg _) (by norm_num)
@@ -543,9 +558,7 @@ theorem biquadraticProfile_le (k₀ : ℤ) (M : ℕ) {δ : ℝ} (hδ : 0 ≤ δ)
   have hMpos : 0 < (M : ℝ) := by
     have : (0 : ℤ) < (M : ℤ) := lt_of_le_of_lt (abs_nonneg _) hk
     exact_mod_cast this
-  have habs : |(k : ℝ) - (k₀ : ℝ)| < (M : ℝ) := by
-    have : (|k - k₀| : ℝ) < (M : ℝ) := by exact_mod_cast hk
-    rwa [Int.cast_abs, Int.cast_sub] at this
+  have habs : |(k : ℝ) - (k₀ : ℝ)| < (M : ℝ) := by exact_mod_cast hk
   have hsq : ((k : ℝ) - (k₀ : ℝ)) ^ 2 ≤ (M : ℝ) ^ 2 := by
     rw [← sq_abs ((k : ℝ) - (k₀ : ℝ))]
     exact (pow_lt_pow_left₀ habs (abs_nonneg _) (by norm_num)).le
@@ -567,9 +580,7 @@ private theorem zeroExt_biquadratic_eq_poly (k₀ : ℤ) (M : ℕ) (δ : ℝ) {k
       rw [mem_taperedSupport_iff]; omega
     rw [zeroExt, if_neg hnot]
     unfold biquadraticPoly
-    have habs : |(k : ℝ) - (k₀ : ℝ)| = (M : ℝ) := by
-      have : (|k - k₀| : ℝ) = (M : ℝ) := by exact_mod_cast heq
-      rwa [Int.cast_abs, Int.cast_sub] at this
+    have habs : |(k : ℝ) - (k₀ : ℝ)| = (M : ℝ) := by exact_mod_cast heq
     have hsq : ((k : ℝ) - (k₀ : ℝ)) ^ 2 = (M : ℝ) ^ 2 := by
       rw [← sq_abs ((k : ℝ) - (k₀ : ℝ)), habs]
     rw [hsq, sub_self]
@@ -630,7 +641,7 @@ private theorem biquadratic_first_diff_bound (k₀ : ℤ) {M : ℕ} (hM : 2 ≤ 
     calc δ * (|((M : ℝ) ^ 2 - t ^ 2) ^ 2 - ((M : ℝ) ^ 2 - (t - 1) ^ 2) ^ 2| / (M : ℝ) ^ 4)
         ≤ δ * (4 * (M : ℝ) ^ 3 / (M : ℝ) ^ 4) :=
           mul_le_mul_of_nonneg_left (div_le_div_of_nonneg_right hnum (by positivity)) hδ
-      _ = 4 * δ / (M : ℝ) := by field_simp [hMpos.ne']; ring
+      _ = 4 * δ / (M : ℝ) := by field_simp [hMpos.ne']
   · rw [hout k hk, abs_zero]
     positivity
 
@@ -680,7 +691,7 @@ private theorem biquadratic_second_diff_bound (k₀ : ℤ) {M : ℕ} (hM : 2 ≤
       calc δ * ((2 * (M : ℝ) - 1) ^ 2 / (M : ℝ) ^ 4)
           ≤ δ * (4 * (M : ℝ) ^ 2 / (M : ℝ) ^ 4) :=
             mul_le_mul_of_nonneg_left (div_le_div_of_nonneg_right hsq (by positivity)) hδ
-        _ = 4 * δ / (M : ℝ) ^ 2 := by field_simp [hMpos.ne']; ring
+        _ = 4 * δ / (M : ℝ) ^ 2 := by field_simp [hMpos.ne']
         _ ≤ 8 * δ / (M : ℝ) ^ 2 := div_le_div_of_nonneg_right (by linarith) (by positivity)
     · by_cases hright : k = k₀ + (M : ℤ) + 1
       · subst hright
@@ -702,7 +713,7 @@ private theorem biquadratic_second_diff_bound (k₀ : ℤ) {M : ℕ} (hM : 2 ≤
         calc δ * ((2 * (M : ℝ) - 1) ^ 2 / (M : ℝ) ^ 4)
             ≤ δ * (4 * (M : ℝ) ^ 2 / (M : ℝ) ^ 4) :=
               mul_le_mul_of_nonneg_left (div_le_div_of_nonneg_right hsq (by positivity)) hδ
-          _ = 4 * δ / (M : ℝ) ^ 2 := by field_simp [hMpos.ne']; ring
+          _ = 4 * δ / (M : ℝ) ^ 2 := by field_simp [hMpos.ne']
           _ ≤ 8 * δ / (M : ℝ) ^ 2 := div_le_div_of_nonneg_right (by linarith) (by positivity)
       · -- Interior range `k₀ - M + 2 ≤ k ≤ k₀ + M`: all three points lie in `[k₀ - M, k₀ + M]`
         have hk0_in : |k - k₀| ≤ (M : ℤ) := abs_le.mpr ⟨by omega, by omega⟩
@@ -716,8 +727,11 @@ private theorem biquadratic_second_diff_bound (k₀ : ℤ) {M : ℕ} (hM : 2 ≤
         unfold biquadraticPoly
         set s : ℝ := ((k - 1 : ℤ) : ℝ) - (k₀ : ℝ)
         have hs_lo : -((M : ℝ) - 1) ≤ s := by
-          dsimp [s]; push_cast
-          exact_mod_cast (show -(M : ℤ) + 1 ≤ k - 1 - k₀ by omega)
+          have h1 : -(M : ℤ) + 1 ≤ k - 1 - k₀ := by omega
+          have h2 : ((-(M : ℤ) + 1 : ℤ) : ℝ) ≤ ((k - 1 - k₀ : ℤ) : ℝ) := Int.cast_le.mpr h1
+          dsimp [s]
+          push_cast at h2 ⊢
+          linarith
         have hs_hi : s ≤ (M : ℝ) - 1 := by
           dsimp [s]; push_cast
           exact_mod_cast (show k - 1 - k₀ ≤ (M : ℤ) - 1 by omega)
@@ -737,7 +751,7 @@ private theorem biquadratic_second_diff_bound (k₀ : ℤ) {M : ℕ} (hM : 2 ≤
         calc δ * (|12 * s ^ 2 - 4 * (M : ℝ) ^ 2 + 2| / (M : ℝ) ^ 4)
             ≤ δ * (8 * (M : ℝ) ^ 2 / (M : ℝ) ^ 4) :=
               mul_le_mul_of_nonneg_left (div_le_div_of_nonneg_right hnum (by positivity)) hδ
-          _ = 8 * δ / (M : ℝ) ^ 2 := by field_simp [hMpos.ne']; ring
+          _ = 8 * δ / (M : ℝ) ^ 2 := by field_simp [hMpos.ne']
   · rw [hout k hk, abs_zero]
     positivity
 
@@ -822,17 +836,20 @@ private theorem abs_sinh_sub_sinh_le {x y B : ℝ} (hx : |x| ≤ B) (hy : |y| �
 private theorem exists_cosh_mul_sub_eq (a b u : ℝ) :
     ∃ ξ : ℝ, min a b ≤ ξ ∧ ξ ≤ max a b ∧
       Real.cosh (b * u) - Real.cosh (a * u) = u * Real.sinh (ξ * u) * (b - a) := by
+  have hderiv : ∀ y : ℝ, HasDerivAt (fun z => Real.cosh (z * u)) (Real.sinh (y * u) * u) y :=
+    fun y => by
+      have h1 : HasDerivAt Real.cosh (Real.sinh (y * u)) (y * u) := Real.hasDerivAt_cosh (y * u)
+      have h2 : HasDerivAt (fun z : ℝ => z * u) (1 * u) y := (hasDerivAt_id y).mul_const u
+      exact ((h1.hasFDerivAt.comp y h2.hasFDerivAt).hasDerivAt).congr_deriv (by simp; ring)
   rcases lt_trichotomy a b with hlt | rfl | hgt
   · obtain ⟨ξ, hξ, hcd⟩ := exists_hasDerivAt_eq_slope (fun y => Real.cosh (y * u))
-      (fun y => Real.sinh (y * u) * u) hlt (by fun_prop) fun y _ => by
-        simpa using (Real.hasDerivAt_cosh (y * u)).comp y ((hasDerivAt_id y).mul_const u)
+      (fun y => Real.sinh (y * u) * u) hlt (by fun_prop) fun y _ => hderiv y
     rw [eq_div_iff (by linarith)] at hcd
     exact ⟨ξ, (min_eq_left hlt.le).symm ▸ hξ.1.le, (max_eq_right hlt.le).symm ▸ hξ.2.le,
       by linarith⟩
-  · exact ⟨a, le_min le_rfl le_rfl, max_le le_rfl le_rfl, by ring⟩
+  · exact ⟨a, min_le_left a a, le_max_left a a, by ring⟩
   · obtain ⟨ξ, hξ, hcd⟩ := exists_hasDerivAt_eq_slope (fun y => Real.cosh (y * u))
-      (fun y => Real.sinh (y * u) * u) hgt (by fun_prop) fun y _ => by
-        simpa using (Real.hasDerivAt_cosh (y * u)).comp y ((hasDerivAt_id y).mul_const u)
+      (fun y => Real.sinh (y * u) * u) hgt (by fun_prop) fun y _ => hderiv y
     rw [eq_div_iff (by linarith)] at hcd
     exact ⟨ξ, (min_eq_right hgt.le).symm ▸ hξ.1.le, (max_eq_left hgt.le).symm ▸ hξ.2.le,
       by linarith⟩
@@ -853,19 +870,23 @@ private theorem abs_secondDiff_cosh_le {u δ y₀ y₁ y₂ : ℝ} (hδ : 0 ≤ 
   have hξ₂_dist : |ξ₂ - y₁| ≤ |y₂ - y₁| := by
     rw [abs_le]
     rcases le_total y₁ y₂ with h | h
-    · rw [min_eq_left h, max_eq_right h] at hξ₂_lo hξ₂_hi
+    · rw [min_eq_left h] at hξ₂_lo
+      rw [max_eq_right h] at hξ₂_hi
       rw [abs_of_nonneg (by linarith)]
       exact ⟨by linarith, by linarith⟩
-    · rw [min_eq_right h, max_eq_left h] at hξ₂_lo hξ₂_hi
+    · rw [min_eq_right h] at hξ₂_lo
+      rw [max_eq_left h] at hξ₂_hi
       rw [abs_of_nonpos (by linarith)]
       exact ⟨by linarith, by linarith⟩
   have hξ₁_dist : |y₁ - ξ₁| ≤ |y₁ - y₀| := by
     rw [abs_le]
     rcases le_total y₀ y₁ with h | h
-    · rw [min_eq_left h, max_eq_right h] at hξ₁_lo hξ₁_hi
+    · rw [min_eq_left h] at hξ₁_lo
+      rw [max_eq_right h] at hξ₁_hi
       rw [abs_of_nonneg (by linarith)]
       exact ⟨by linarith, by linarith⟩
-    · rw [min_eq_right h, max_eq_left h] at hξ₁_lo hξ₁_hi
+    · rw [min_eq_right h] at hξ₁_lo
+      rw [max_eq_left h] at hξ₁_hi
       rw [abs_of_nonpos (by linarith)]
       exact ⟨by linarith, by linarith⟩
   have hξ_diff : |ξ₂ - ξ₁| ≤ |y₂ - y₁| + |y₁ - y₀| :=
@@ -997,10 +1018,12 @@ theorem norm_biquadraticCrystal_sum_le {L u δ : ℝ} (hL : 0 < L) (hu : u ≠ 0
           (2 * (Real.cosh (g (k - 2) * u) - 1)) : ℝ) : ℂ) := by
       dsimp [c]; push_cast; ring
     rw [hreal, Complex.norm_real, Real.norm_eq_abs]
-    exact abs_secondDiff_cosh_le hδ (hg_in k) (hg_in (k - 1)) (hg_in (k - 2))
+    exact abs_secondDiff_cosh_le hδ (hg_in (k - 2)) (hg_in (k - 1)) (hg_in k)
   obtain ⟨hd1_out, _⟩ := biquadratic_first_diff_bound k₀ hM hδ
   obtain ⟨hd2_out, _⟩ := biquadratic_second_diff_bound k₀ hM hδ
   obtain ⟨hsum_d1, hsum_d2⟩ := biquadratic_tsum_diff_bounds k₀ hM hδ
+  change ∑' k : ℤ, (g k - g (k - 1)) ^ 2 ≤ 32 * δ ^ 2 / (M : ℝ) at hsum_d1
+  change ∑' k : ℤ, |g k - 2 * g (k - 1) + g (k - 2)| ≤ 24 * δ / (M : ℝ) at hsum_d2
   have hs_d2 : Summable fun k : ℤ => |g k - 2 * g (k - 1) + g (k - 2)| :=
     summable_of_ne_finset_zero (s := Finset.Icc (k₀ - (M : ℤ) + 1) (k₀ + (M : ℤ) + 1))
       fun k hk => by rw [hd2_out k hk, abs_zero]
@@ -1010,11 +1033,13 @@ theorem norm_biquadraticCrystal_sum_le {L u δ : ℝ} (hL : 0 < L) (hu : u ≠ 0
   have hs_d1_shift : Summable fun k : ℤ => (g (k - 1) - g (k - 2)) ^ 2 := by
     have h := hs_d1.comp_injective (Equiv.subRight (1 : ℤ)).injective
     refine h.congr fun k => ?_
-    simp only [Function.comp_apply, Equiv.coe_subRight, show k - 1 - 1 = k - 2 by omega]
+    dsimp [Equiv.subRight]
+    rw [show k - 1 - 1 = k - 2 by omega]
   have htsum_shift : (∑' k : ℤ, (g (k - 1) - g (k - 2)) ^ 2) = ∑' k : ℤ, (g k - g (k - 1)) ^ 2 := by
-    rw [← (Equiv.subRight (1 : ℤ)).tsum_eq]
+    rw [← (Equiv.subRight (1 : ℤ)).tsum_eq (fun k => (g k - g (k - 1)) ^ 2)]
     congr 1 with k
-    simp only [Equiv.coe_subRight, show k - 1 - 1 = k - 2 by omega]
+    dsimp [Equiv.subRight]
+    rw [show k - 1 - 1 = k - 2 by omega]
   have hs_rhs : Summable fun k : ℤ =>
       2 * u ^ 2 * Real.cosh (δ * |u|) *
         (δ * |g k - 2 * g (k - 1) + g (k - 2)| +
@@ -1033,6 +1058,8 @@ theorem norm_biquadraticCrystal_sum_le {L u δ : ℝ} (hL : 0 < L) (hu : u ≠ 0
       calc δ * ∑' k : ℤ, |g k - 2 * g (k - 1) + g (k - 2)|
           ≤ δ * (24 * δ / (M : ℝ)) := mul_le_mul_of_nonneg_left hsum_d2 hδ
         _ = 24 * δ ^ 2 / (M : ℝ) := by ring
+    have hcomb : (24 * δ ^ 2 / (M : ℝ)) + 2 * (32 * δ ^ 2 / (M : ℝ)) +
+        2 * (32 * δ ^ 2 / (M : ℝ)) = 152 * δ ^ 2 / (M : ℝ) := by ring
     linarith
   have h1z_sq_pos : 0 < ‖1 - z‖ ^ 2 := sq_pos_of_pos (norm_pos_iff.mpr h1z)
   have hlow_sq : 16 * u ^ 2 / L ^ 2 ≤ ‖1 - z‖ ^ 2 := by
@@ -1089,7 +1116,9 @@ theorem re_W_biquadraticCrystal_ge {L δ a : ℝ} (hL : 0 < L) (k₀ : ℤ) {M :
       refine mul_le_mul (norm_weilTest_self_le hf.continuous hfc u) ?_ (norm_nonneg _) hE0
       refine (norm_biquadraticCrystal_sum_le hL h0 (by linarith) k₀ hM hδ0.le).trans ?_
       refine mul_le_mul_of_nonneg_left ?_ (by positivity)
-      rw [Real.cosh_le_cosh, abs_of_nonneg (by positivity), abs_of_nonneg (by positivity)]
+      apply Real.cosh_le_cosh.mpr
+      rw [abs_of_nonneg (show 0 ≤ δ * |u| by positivity),
+        abs_of_nonneg (show 0 ≤ 2 * δ * a by positivity)]
       nlinarith
   have hbound : ‖∫ u, F u‖ ≤
       (∫ t, ‖f t‖ ^ 2) * (19 * L ^ 2 * δ ^ 2 / (M : ℝ) * Real.cosh (2 * δ * a)) * (4 * a) := by
@@ -1167,7 +1196,7 @@ theorem exists_hidden_inv_aperture_zero_above_single_exp {a L : ℝ} (ha2 : 2 �
   have hcenter : verticalLatticePoint L (1 / a) k₀ ∈ Z.carrier := by
     have hd_eq : biquadraticProfile k₀ M (1 / a) k₀ = 1 / a :=
       biquadraticProfile_center k₀ (by omega) (1 / a)
-    exact Or.inl (Or.inr ⟨⟨k₀, hk₀_mem⟩, by rw [hd_eq]⟩)
+    exact Or.inl (Or.inr ⟨⟨k₀, hk₀_mem⟩, by dsimp only; rw [hd_eq]⟩)
   have hre_eq : (verticalLatticePoint L (1 / a) k₀).re - 1 / 2 = 1 / a := by
     simp [verticalLatticePoint]
   have hfin_off : {ρ ∈ Z.carrier | ρ.re ≠ 1 / 2}.Finite := by
@@ -1222,10 +1251,10 @@ theorem doubly_exponential_height_nonlocality {a δ : ℝ} (ha : 0 < a) (hδ : 0
   have htemp_off : TemperedConfig Z_off :=
     temperedConfig_multiplicityPairConfig 1 le_rfl hL hδ hδ' H
   have hon_line : ∀ ρ ∈ Z_on.carrier, ρ.re = 1 / 2 := by
-    rintro _ ((⟨k, rfl⟩ | ⟨k, hk⟩) | ⟨k, hk⟩)
+    rintro _ ((⟨k, rfl⟩ | ⟨k, _⟩) | ⟨k, _⟩)
     · simp [verticalLatticePoint]
-    · exact absurd k.2 (by simp)
-    · exact absurd k.2 (by simp)
+    · exact False.elim (Finset.notMem_empty k.1 k.2)
+    · exact False.elim (Finset.notMem_empty k.1 k.2)
   have hon_top : onsetAperture Z_on = ⊤ :=
     (onsetAperture_eq_top_iff_onLine htemp_on).mpr hon_line
   have hon_pos : WindowPositiveAt Z_on a :=
@@ -1245,23 +1274,19 @@ theorem doubly_exponential_height_nonlocality {a δ : ℝ} (ha : 0 < a) (hδ : 0
   refine ⟨Z_on, Z_off, htemp_on, htemp_off, ?_, hon_pos, hon_top, hoff_neg, hoff_lt⟩
   intro z hz
   have hnot_pos : z ≠ offLinePoint δ H := fun heq => by
-    rw [heq] at hz
-    simp only [offLinePoint, Complex.add_im, Complex.ofReal_im, Complex.mul_im, Complex.I_re,
-      Complex.I_im, Complex.ofReal_re, one_mul, zero_mul, add_zero, div_ofNat_im,
-      Complex.one_im, zero_div] at hz
+    have him : (offLinePoint δ H).im = H := by simp [offLinePoint]
+    rw [heq, him] at hz
     linarith [le_abs_self H]
   have hnot_neg : z ≠ offLinePoint (-δ) H := fun heq => by
-    rw [heq] at hz
-    simp only [offLinePoint, Complex.add_im, Complex.ofReal_im, Complex.mul_im, Complex.I_re,
-      Complex.I_im, Complex.ofReal_re, one_mul, zero_mul, add_zero, div_ofNat_im,
-      Complex.one_im, zero_div] at hz
+    have him : (offLinePoint (-δ) H).im = H := by simp [offLinePoint]
+    rw [heq, him] at hz
     linarith [le_abs_self H]
   have hmem_on : z ∈ Z_on.carrier ↔ z ∈ Set.range (verticalLatticePoint L 0) := by
     constructor
     · rintro ((⟨k, rfl⟩ | ⟨k, _⟩) | ⟨k, _⟩)
       · exact ⟨k.1, rfl⟩
-      · exact absurd k.2 (by simp)
-      · exact absurd k.2 (by simp)
+      · exact False.elim (Finset.notMem_empty k.1 k.2)
+      · exact False.elim (Finset.notMem_empty k.1 k.2)
     · rintro ⟨k, rfl⟩
       exact Or.inl (Or.inl ⟨⟨k, by simp⟩, rfl⟩)
   have hmem_off : z ∈ Z_off.carrier ↔ z ∈ Set.range (verticalLatticePoint L 0) := by

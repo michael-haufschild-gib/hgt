@@ -100,118 +100,108 @@ lemma exists_halfWindowBump (x₀ : ℝ) {R : ℝ} (hR : 0 < R) :
   rw [hR'] at h
   constructor <;> linarith [h.1, h.2]
 
-/-! ### 3. The two-bump comparison -/
+/-! ### 3. Two bumps across the frustrated pair
 
-/-- **The frustrated pair breaks the contraction.** For bumps `a ≥ 0` in `(−c, −c + r)` and
-`b ≥ 0` in `(−r, 0)` with `4r ≤ c`, `2r ≤ log 2 − c`, `ω(c − 2r) + ω(c − r) < 4cosh((c − r)/2)`
-and pole strength `s ≥ 1`: `E_s(a − b) < E_s(a + b)` for all weights. -/
-theorem evenPoleBand_lt_of_bumps {c r : ℝ} (hc0 : 0 < c) (hc : c < Real.log 2) (hr0 : 0 < r)
-    (hr4 : 4 * r ≤ c) (hrl : 2 * r ≤ Real.log 2 - c)
-    (hkr : archLevyDensity (c - 2 * r) + archLevyDensity (c - r) < 4 * Real.cosh ((c - r) / 2))
-    {a b : ℝ → ℝ} (ha : ContDiff ℝ 2 a) (hb : ContDiff ℝ 2 b) (hac : HasCompactSupport a)
-    (hbc : HasCompactSupport b) (ha0 : ∀ u, 0 ≤ a u) (hb0 : ∀ u, 0 ≤ b u)
-    (hapos : 0 < ∫ u, a u) (hbpos : 0 < ∫ u, b u)
+Throughout, `a ≥ 0` vanishes off `(−c, −c + r)`, `b ≥ 0` vanishes off `(−r, 0)`, `f = a − b`,
+`G = a + b`. -/
+
+section TwoBumps
+
+variable {c r : ℝ} {a b f G : ℝ → ℝ}
+
+/-- Both bumps vanish off the window. -/
+lemma bumps_eq_zero_off (hr0 : 0 < r) (hr4 : 4 * r ≤ c)
+    (has : ∀ u, a u ≠ 0 → -c < u ∧ u < -c + r) (hbs : ∀ u, b u ≠ 0 → -r < u ∧ u < 0) {u : ℝ}
+    (hu : 0 < u ∨ u < -c) : a u = 0 ∧ b u = 0 := by
+  constructor
+  · by_contra h
+    rcases hu with hu | hu <;> linarith [(has u h).1, (has u h).2]
+  · by_contra h
+    rcases hu with hu | hu <;> linarith [(hbs u h).1, (hbs u h).2]
+
+/-- `|a − b| = a + b`: the two bumps have disjoint supports. -/
+lemma abs_eq_of_bumps (hr0 : 0 < r) (hr4 : 4 * r ≤ c) (ha0 : ∀ u, 0 ≤ a u) (hb0 : ∀ u, 0 ≤ b u)
     (has : ∀ u, a u ≠ 0 → -c < u ∧ u < -c + r) (hbs : ∀ u, b u ≠ 0 → -r < u ∧ u < 0)
-    (w₂ w₃ : ℝ) {s : ℝ} (hs : 1 ≤ s) :
-    evenPoleBand w₂ w₃ s (fun u => a u - b u) < evenPoleBand w₂ w₃ s (fun u => a u + b u) := by
-  set f : ℝ → ℝ := fun u => a u - b u with hf_def
-  set G : ℝ → ℝ := fun u => a u + b u with hG_def
-  set α := ∫ u, a u with hα
-  set β := ∫ u, b u with hβ
-  have hca : Continuous a := ha.continuous
-  have hcb : Continuous b := hb.continuous
-  -- supports
-  have haz : ∀ u, (u ≤ -c ∨ -c + r ≤ u) → a u = 0 := fun u hu => by
-    by_contra h
-    have := has u h
-    rcases hu with hu | hu <;> linarith [this.1, this.2]
-  have hbz : ∀ u, (u ≤ -r ∨ 0 ≤ u) → b u = 0 := fun u hu => by
-    by_contra h
-    have := hbs u h
-    rcases hu with hu | hu <;> linarith [this.1, this.2]
-  have hdisj : ∀ u, a u = 0 ∨ b u = 0 := fun u => by
-    by_cases h : a u = 0
-    · exact Or.inl h
-    · exact Or.inr (hbz u (Or.inl (by linarith [(has u h).2])))
-  have habs : (fun u => |f u|) = G := by
-    funext u
-    simp only [hf_def, hG_def]
-    rcases hdisj u with h | h
-    · rw [h, zero_sub, zero_add, abs_neg, abs_of_nonneg (hb0 u)]
-    · rw [h, sub_zero, add_zero, abs_of_nonneg (ha0 u)]
-  have hf2 : ContDiff ℝ 2 f := ha.sub hb
-  have hG2 : ContDiff ℝ 2 G := ha.add hb
-  have hfc : HasCompactSupport f := hac.sub hbc
-  have hGc : HasCompactSupport G := hac.add hbc
-  have hf0 : ∀ u, 0 < u → f u = 0 := fun u hu => by
-    simp only [hf_def, haz u (Or.inr (by linarith)), hbz u (Or.inr hu.le), sub_zero]
-  have hfl : ∀ u, u < -c → f u = 0 := fun u hu => by
-    simp only [hf_def, haz u (Or.inl hu.le), hbz u (Or.inl (by linarith)), sub_zero]
-  have hG0 : ∀ u, 0 < u → G u = 0 := fun u hu => by
-    simp only [hG_def, haz u (Or.inr (by linarith)), hbz u (Or.inr hu.le), add_zero]
-  have hGl : ∀ u, u < -c → G u = 0 := fun u hu => by
-    simp only [hG_def, haz u (Or.inl hu.le), hbz u (Or.inl (by linarith)), add_zero]
-  have hfs : ∀ x, c < |x| → f x = 0 := fun x hx => by
-    rcases le_or_gt 0 x with h | h
-    · rw [abs_of_nonneg h] at hx; exact hf0 x (by linarith)
-    · rw [abs_of_neg h] at hx; exact hfl x (by linarith)
+    (hf : ∀ u, f u = a u - b u) (hG : ∀ u, G u = a u + b u) : (fun u => |f u|) = G := by
+  funext u
+  rw [hf, hG]
+  by_cases h : a u = 0
+  · rw [h, zero_sub, zero_add, abs_neg, abs_of_nonneg (hb0 u)]
+  · have hb : b u = 0 := by
+      by_contra h'
+      linarith [(has u h).2, (hbs u h').1]
+    rw [hb, sub_zero, add_zero, abs_of_nonneg (ha0 u)]
+
+/-- **The pole pays on the frustrated pair**: `P(G) − P(f) ≥ 16cosh((c − r)/2)(∫a)(∫b)`. -/
+lemma poleSquare_sub_ge (hr0 : 0 < r) (hr4 : 4 * r ≤ c) (hca : Continuous a) (hcb : Continuous b)
+    (hac : HasCompactSupport a) (hbc : HasCompactSupport b) (ha0 : ∀ u, 0 ≤ a u)
+    (hb0 : ∀ u, 0 ≤ b u) (has : ∀ u, a u ≠ 0 → -c < u ∧ u < -c + r)
+    (hf : ∀ u, f u = a u - b u) (hG : ∀ u, G u = a u + b u) :
+    16 * Real.cosh ((c - r) / 2) * ((∫ u, a u) * ∫ u, b u) ≤ poleSquare G - poleSquare f := by
+  have hcw : Continuous coshWeight := by unfold coshWeight; fun_prop
   have hIa : Integrable a := hca.integrable_of_hasCompactSupport hac
   have hIb : Integrable b := hcb.integrable_of_hasCompactSupport hbc
-  -- signs of `f`: positive only at the edge, negative only at the centre
-  have hfpos : ∀ u, 0 < f u → u < -c + r := fun u hu => by
-    have : a u ≠ 0 := fun h => by
-      simp only [hf_def, h, zero_sub] at hu; linarith [hb0 u]
-    exact (has u this).2
-  have hfneg : ∀ u, f u < 0 → -r < u := fun u hu => by
-    have : b u ≠ 0 := fun h => by
-      simp only [hf_def, h, sub_zero] at hu; linarith [ha0 u]
-    exact (hbs u this).1
-  /- The pole: `P(a + b) − P(a − b) = 4(∫ah)(∫bh) ≥ 16cosh((c − r)/2) αβ`. -/
-  have hcw : Continuous coshWeight := by unfold coshWeight; fun_prop
   have hIah : Integrable fun u => a u * coshWeight u :=
     (hca.mul hcw).integrable_of_hasCompactSupport (hac.mono fun u hu h0 => hu (by simp [h0]))
   have hIbh : Integrable fun u => b u * coshWeight u :=
     (hcb.mul hcw).integrable_of_hasCompactSupport (hbc.mono fun u hu h0 => hu (by simp [h0]))
-  set κ := Real.cosh ((c - r) / 2) with hκ
-  have hκ0 : 0 < κ := Real.cosh_pos _
-  have hAh : 2 * κ * α ≤ ∫ u, a u * coshWeight u := by
-    rw [hα, ← integral_const_mul]
+  have hκ0 : 0 < Real.cosh ((c - r) / 2) := Real.cosh_pos _
+  have hAh : 2 * Real.cosh ((c - r) / 2) * (∫ u, a u) ≤ ∫ u, a u * coshWeight u := by
+    rw [← integral_const_mul]
     refine integral_mono (hIa.const_mul _) hIah fun u => ?_
-    show 2 * κ * a u ≤ a u * coshWeight u
+    show 2 * Real.cosh ((c - r) / 2) * a u ≤ a u * coshWeight u
     by_cases h : a u = 0
     · rw [h]; simp
     have hu := has u h
     have hcr2 : 0 < (c - r) / 2 := by linarith
     have hu2 : u / 2 < 0 := by linarith [hu.2]
-    have hcosh : κ ≤ Real.cosh (u / 2) := by
-      rw [hκ, Real.cosh_le_cosh, abs_of_pos hcr2, abs_of_neg hu2]
+    have hcosh : Real.cosh ((c - r) / 2) ≤ Real.cosh (u / 2) := by
+      rw [Real.cosh_le_cosh, abs_of_pos hcr2, abs_of_neg hu2]
       linarith [hu.2]
+    have hm := mul_le_mul_of_nonneg_left hcosh (ha0 u)
     unfold coshWeight
-    nlinarith [ha0 u]
-  have hBh : 2 * β ≤ ∫ u, b u * coshWeight u := by
-    rw [hβ, ← integral_const_mul]
+    linarith
+  have hBh : 2 * (∫ u, b u) ≤ ∫ u, b u * coshWeight u := by
+    rw [← integral_const_mul]
     refine integral_mono (hIb.const_mul _) hIbh fun u => ?_
     show 2 * b u ≤ b u * coshWeight u
-    have : 2 ≤ coshWeight u := by unfold coshWeight; linarith [Real.one_le_cosh (u / 2)]
-    nlinarith [hb0 u]
+    have h2 : 2 ≤ coshWeight u := by unfold coshWeight; linarith [Real.one_le_cosh (u / 2)]
+    have hm := mul_le_mul_of_nonneg_left h2 (hb0 u)
+    linarith
   have hPG : (∫ u, G u * coshWeight u) =
       (∫ u, a u * coshWeight u) + ∫ u, b u * coshWeight u := by
     rw [← integral_add hIah hIbh]
-    exact integral_congr_ae (Eventually.of_forall fun u => by simp only [hG_def]; ring)
+    exact integral_congr_ae (Eventually.of_forall fun u => by
+      show G u * coshWeight u = a u * coshWeight u + b u * coshWeight u
+      rw [hG]; ring)
   have hPf : (∫ u, f u * coshWeight u) =
       (∫ u, a u * coshWeight u) - ∫ u, b u * coshWeight u := by
     rw [← integral_sub hIah hIbh]
-    exact integral_congr_ae (Eventually.of_forall fun u => by simp only [hf_def]; ring)
-  have hpole : 16 * κ * (α * β) ≤ poleSquare G - poleSquare f := by
-    unfold poleSquare
-    rw [hPG, hPf]
-    have h1 : 0 ≤ 2 * κ * α := (mul_pos (mul_pos two_pos hκ0) hapos).le
-    have h2 := mul_le_mul hAh hBh (by linarith) (h1.trans hAh)
-    nlinarith [h2]
-  have hpole0 : 0 ≤ poleSquare G - poleSquare f :=
-    le_trans (mul_pos (mul_pos (by norm_num) hκ0) (mul_pos hapos hbpos)).le hpole
-  /- The trivial-zero squares: `Σ_j (ν_j(a + b)² − ν_j(a − b)²) ≤ 4 ω(c − r) αβ`. -/
+    exact integral_congr_ae (Eventually.of_forall fun u => by
+      show f u * coshWeight u = a u * coshWeight u - b u * coshWeight u
+      rw [hf]; ring)
+  have hα0 : 0 ≤ ∫ u, a u := integral_nonneg fun u => ha0 u
+  have hβ0 : 0 ≤ ∫ u, b u := integral_nonneg fun u => hb0 u
+  have h1 : 0 ≤ 2 * Real.cosh ((c - r) / 2) * (∫ u, a u) :=
+    mul_nonneg (mul_nonneg zero_le_two hκ0.le) hα0
+  have h2 := mul_le_mul hAh hBh (by linarith) (h1.trans hAh)
+  unfold poleSquare
+  rw [hPG, hPf]
+  linarith
+
+/-- **The trivial-zero squares give back at most `4ω(c − r)(∫a)(∫b)`**: mode by mode
+`ν_j(G)² − ν_j(f)² = 4ν_j(a)ν_j(b) ≤ 4(∫a)(∫b)e^{−(2j+1/2)(c − r)}`. -/
+lemma tsum_expMoment_sq_sub_le (hrc : r < c) (hca : Continuous a) (hcb : Continuous b)
+    (hac : HasCompactSupport a) (hbc : HasCompactSupport b) (ha0 : ∀ u, 0 ≤ a u)
+    (hb0 : ∀ u, 0 ≤ b u) (has : ∀ u, a u ≠ 0 → -c < u ∧ u < -c + r)
+    (hbs : ∀ u, b u ≠ 0 → -r < u ∧ u < 0)
+    (hf : ∀ u, f u = a u - b u) (hG : ∀ u, G u = a u + b u)
+    (hSf : Summable fun j => expMoment f j ^ 2) (hSG : Summable fun j => expMoment G j ^ 2) :
+    (∑' j, expMoment G j ^ 2) - (∑' j, expMoment f j ^ 2) ≤
+      4 * ((∫ u, a u) * ∫ u, b u) * archLevyDensity (c - r) := by
   have hew (j : ℕ) : Continuous (expWeight j) := by unfold expWeight; fun_prop
+  have hIa : Integrable a := hca.integrable_of_hasCompactSupport hac
+  have hIb : Integrable b := hcb.integrable_of_hasCompactSupport hbc
   have hIae (j : ℕ) : Integrable fun u => a u * expWeight j u :=
     (hca.mul (hew j)).integrable_of_hasCompactSupport (hac.mono fun u hu h0 => hu (by simp [h0]))
   have hIbe (j : ℕ) : Integrable fun u => b u * expWeight j u :=
@@ -219,69 +209,91 @@ theorem evenPoleBand_lt_of_bumps {c r : ℝ} (hc0 : 0 < c) (hc : c < Real.log 2)
   have hνG (j : ℕ) : expMoment G j = expMoment a j + expMoment b j := by
     unfold expMoment
     rw [← integral_add (hIae j) (hIbe j)]
-    exact integral_congr_ae (Eventually.of_forall fun u => by simp only [hG_def]; ring)
+    exact integral_congr_ae (Eventually.of_forall fun u => by
+      show G u * expWeight j u = a u * expWeight j u + b u * expWeight j u
+      rw [hG]; ring)
   have hνf (j : ℕ) : expMoment f j = expMoment a j - expMoment b j := by
     unfold expMoment
     rw [← integral_sub (hIae j) (hIbe j)]
-    exact integral_congr_ae (Eventually.of_forall fun u => by simp only [hf_def]; ring)
-  have hνa0 (j : ℕ) : 0 ≤ expMoment a j := by
-    unfold expMoment
-    exact integral_nonneg fun u => mul_nonneg (ha0 u) (by unfold expWeight; positivity)
+    exact integral_congr_ae (Eventually.of_forall fun u => by
+      show f u * expWeight j u = a u * expWeight j u - b u * expWeight j u
+      rw [hf]; ring)
   have hνb0 (j : ℕ) : 0 ≤ expMoment b j := by
     unfold expMoment
     exact integral_nonneg fun u => mul_nonneg (hb0 u) (by unfold expWeight; positivity)
-  have hνa (j : ℕ) : expMoment a j ≤
-      α * Real.exp (-((2 * (j : ℝ) + 1 / 2) * (c - r))) := by
+  have hνa (j : ℕ) :
+      expMoment a j ≤ (∫ u, a u) * Real.exp (-((2 * (j : ℝ) + 1 / 2) * (c - r))) := by
     unfold expMoment
-    rw [hα, ← integral_mul_const]
+    rw [← integral_mul_const]
     refine integral_mono (hIae j) (hIa.mul_const _) fun u => ?_
     show a u * expWeight j u ≤ a u * Real.exp (-((2 * (j : ℝ) + 1 / 2) * (c - r)))
     by_cases h : a u = 0
     · rw [h]; simp
-    have hu := has u h
     have hj : (0 : ℝ) ≤ 2 * (j : ℝ) + 1 / 2 := by positivity
+    have hm := mul_le_mul_of_nonneg_left (has u h).2.le hj
     refine mul_le_mul_of_nonneg_left ?_ (ha0 u)
     unfold expWeight
-    exact Real.exp_le_exp.mpr (by nlinarith [hu.2])
-  have hνb (j : ℕ) : expMoment b j ≤ β := by
+    exact Real.exp_le_exp.mpr (by linarith)
+  have hνb (j : ℕ) : expMoment b j ≤ ∫ u, b u := by
     unfold expMoment
-    rw [hβ]
     refine integral_mono (hIbe j) hIb fun u => ?_
     show b u * expWeight j u ≤ b u
     by_cases h : b u = 0
     · rw [h]; simp
-    have hu := hbs u h
     have hj : (0 : ℝ) ≤ 2 * (j : ℝ) + 1 / 2 := by positivity
+    have hm := mul_le_mul_of_nonneg_left (hbs u h).2.le hj
     have he : expWeight j u ≤ 1 := by
       unfold expWeight
-      exact Real.exp_le_one_iff.mpr (by nlinarith [hu.2])
-    nlinarith [hb0 u]
-  obtain ⟨Bf, hBf⟩ : ∃ B, ∀ u, |f u| ≤ B := by
-    obtain ⟨B, hB⟩ := hfc.exists_bound_of_continuous hf2.continuous
-    exact ⟨B, fun u => by simpa [Real.norm_eq_abs] using hB u⟩
-  obtain ⟨BG, hBG⟩ : ∃ B, ∀ u, |G u| ≤ B := by
-    obtain ⟨B, hB⟩ := hGc.exists_bound_of_continuous hG2.continuous
-    exact ⟨B, fun u => by simpa [Real.norm_eq_abs] using hB u⟩
-  have hSf := summable_expMoment_sq hc0.le hBf hf0 hfl
-  have hSG := summable_expMoment_sq hc0.le hBG hG0 hGl
+      exact Real.exp_le_one_iff.mpr (by linarith)
+    have hm' := mul_le_mul_of_nonneg_left he (hb0 u)
+    linarith
+  have hα0 : 0 ≤ ∫ u, a u := integral_nonneg fun u => ha0 u
   have hcr : 0 < c - r := by linarith
-  have hmom : (∑' j, expMoment G j ^ 2) - (∑' j, expMoment f j ^ 2) ≤
-      4 * (α * β) * archLevyDensity (c - r) := by
-    rw [← hSG.tsum_sub hSf, _root_.RHTower.archLevyDensity_eq_tsum hcr, ← tsum_mul_left]
-    refine Summable.tsum_le_tsum (fun j => ?_) (hSG.sub hSf)
-      ((summable_levyModes hcr).mul_left _)
-    rw [hνG, hνf]
-    have h := mul_le_mul (hνa j) (hνb j) (hνb0 j) (mul_pos hapos (Real.exp_pos _)).le
-    nlinarith [h]
-  /- The Lévy jumps: `𝒥(a − b) − 𝒥(a + b) ≤ 4 ω(c − 2r) αβ`. -/
+  rw [← hSG.tsum_sub hSf, _root_.RHTower.archLevyDensity_eq_tsum hcr, ← tsum_mul_left]
+  refine Summable.tsum_le_tsum (fun j => ?_) (hSG.sub hSf) ((summable_levyModes hcr).mul_left _)
+  rw [hνG, hνf]
+  have h := mul_le_mul (hνa j) (hνb j) (hνb0 j) (mul_nonneg hα0 (Real.exp_pos _).le)
+  linarith
+
+/-- **The Lévy jumps give back at most `4ω(c − 2r)(∫a)(∫b)`**: `f` takes opposite signs only at
+lags `> c − 2r`, where `ω ≤ ω(c − 2r)`, and the total opposite-sign mass is `2(∫a)(∫b)`. -/
+lemma levy_sub_le (hr0 : 0 < r) (hr4 : 4 * r ≤ c) (ha : ContDiff ℝ 2 a) (hb : ContDiff ℝ 2 b)
+    (hac : HasCompactSupport a) (hbc : HasCompactSupport b) (ha0 : ∀ u, 0 ≤ a u)
+    (hb0 : ∀ u, 0 ≤ b u) (has : ∀ u, a u ≠ 0 → -c < u ∧ u < -c + r)
+    (hbs : ∀ u, b u ≠ 0 → -r < u ∧ u < 0)
+    (hf : ∀ u, f u = a u - b u) (hG : ∀ u, G u = a u + b u) :
+    biScaleLevyEnergy f - biScaleLevyEnergy G ≤
+      4 * ((∫ u, a u) * ∫ u, b u) * archLevyDensity (c - 2 * r) := by
+  have hfe : f = fun u => a u - b u := funext hf
+  have hf2 : ContDiff ℝ 2 f := by rw [hfe]; exact ha.sub hb
+  have hfc : HasCompactSupport f := by rw [hfe]; exact hac.sub hbc
+  have habs := abs_eq_of_bumps hr0 hr4 ha0 hb0 has hbs hf hG
+  have hoff : ∀ x, c < |x| → 0 < x ∨ x < -c := fun x hx => by
+    rcases le_or_gt 0 x with h | h
+    · left; rw [abs_of_nonneg h] at hx; linarith
+    · right; rw [abs_of_neg h] at hx; linarith
+  have hfs : ∀ x, c < |x| → f x = 0 := fun x hx => by
+    obtain ⟨h1, h2⟩ := bumps_eq_zero_off hr0 hr4 has hbs (hoff x hx)
+    rw [hf, h1, h2, sub_zero]
+  -- `f > 0` only at the edge, `f < 0` only at the centre
+  have hfpos : ∀ u, 0 < f u → u < -c + r := fun u hu => by
+    rw [hf] at hu
+    have h : a u ≠ 0 := fun h => by rw [h] at hu; linarith [hb0 u]
+    exact (has u h).2
+  have hfneg : ∀ u, f u < 0 → -r < u := fun u hu => by
+    rw [hf] at hu
+    have h : b u ≠ 0 := fun h => by rw [h] at hu; linarith [ha0 u]
+    exact (hbs u h).1
   have hJf := integrableOn_biScaleLevyIntegrand hf2 hfc
   have hJg := integrableOn_levy_abs hf2.continuous hfc hJf
   have hlevy := levy_sub_eq hJf hJg
   have h00 : autocorr (fun u => |f u|) 0 = autocorr f 0 := by
     unfold autocorr; simp only [add_zero, abs_mul_abs_self]
   have hgs : ∀ x, c < |x| → |f x| = 0 := fun x hx => by rw [hfs x hx, abs_zero]
-  have hIAg := integrable_autocorr' (G := fun u => |f u|) hf2.continuous.abs hgs
-  have hIAf := integrable_autocorr' hf2.continuous hfs
+  have hIAg : Integrable (autocorr fun u => |f u|) :=
+    integrable_autocorr' hf2.continuous.abs hgs
+  have hIAf : Integrable (autocorr f) := integrable_autocorr' hf2.continuous hfs
+  -- no opposite-sign pair at lags `≤ c − 2r`
   have hD0 : ∀ x, 0 < x → x ≤ c - 2 * r →
       autocorr (fun u => |f u|) x - autocorr f x = 0 := fun x hx hxr => by
     rw [← integral_pairDefect_shift' hf2.continuous hfc x]
@@ -315,59 +327,110 @@ theorem evenPoleBand_lt_of_bumps {c r : ℝ} (hc0 : 0 < c) (hc : c < Real.log 2)
     refine setIntegral_mono_on hI1 hI2 measurableSet_Ioi fun x hx => ?_
     have hx0 : 0 < x := hx
     rcases le_or_gt x (c - 2 * r) with hxr | hxr
-    · simp [hD0 x hx0 hxr]
+    · rw [hD0 x hx0 hxr, mul_zero, mul_zero]
     · exact mul_le_mul_of_nonneg_right
         (CHMDPolar.strictAntiOn_archLevyDensity_Ioi.antitoneOn hc2r hx0 hxr.le) (hDnn x)
+  -- the opposite-sign mass
+  have hIa : Integrable a := ha.continuous.integrable_of_hasCompactSupport hac
+  have hIb : Integrable b := hb.continuous.integrable_of_hasCompactSupport hbc
+  have i1 : (∫ u, |f u|) = (∫ u, a u) + ∫ u, b u := by
+    rw [habs, ← integral_add hIa hIb]
+    exact integral_congr_ae (Eventually.of_forall fun u => hG u)
+  have i2 : (∫ u, f u) = (∫ u, a u) - ∫ u, b u := by
+    rw [← integral_sub hIa hIb]
+    exact integral_congr_ae (Eventually.of_forall fun u => hf u)
+  have e1 : ((∫ u, a u) + ∫ u, b u) ^ 2 =
+      2 * ∫ x in Ioi (0 : ℝ), autocorr (fun u => |f u|) x := by
+    rw [← i1]; exact sq_integral_eq_two_mul_integral_autocorr hf2.continuous.abs hfc.abs
+  have e2 : ((∫ u, a u) - ∫ u, b u) ^ 2 = 2 * ∫ x in Ioi (0 : ℝ), autocorr f x := by
+    rw [← i2]; exact sq_integral_eq_two_mul_integral_autocorr hf2.continuous hfc
   have hmass : (∫ x in Ioi (0 : ℝ), (autocorr (fun u => |f u|) x - autocorr f x)) =
-      2 * (α * β) := by
+      2 * ((∫ u, a u) * ∫ u, b u) := by
     rw [integral_sub hIAg.integrableOn hIAf.integrableOn]
-    have e1 := sq_integral_eq_two_mul_integral_autocorr (G := fun u => |f u|)
-      hf2.continuous.abs hfc.abs
-    have e2 := sq_integral_eq_two_mul_integral_autocorr hf2.continuous hfc
-    have i1 : (∫ u, |f u|) = α + β := by
-      rw [habs]
-      show (∫ u, a u + b u) = α + β
-      rw [hα, hβ, integral_add hIa hIb]
-    have i2 : (∫ u, f u) = α - β := by
-      show (∫ u, a u - b u) = α - β
-      rw [hα, hβ, integral_sub hIa hIb]
-    rw [i1] at e1
-    rw [i2] at e2
-    nlinarith [e1, e2]
-  have hlev : biScaleLevyEnergy f - biScaleLevyEnergy G ≤
-      4 * (α * β) * archLevyDensity (c - 2 * r) := by
-    rw [← habs, hlevy]
-    rw [hmass] at hJbound
-    nlinarith [hJbound]
-  /- No prime reflection joins the two bumps. -/
+    linarith
+  rw [hmass] at hJbound
+  rw [← habs, hlevy]
+  linarith
+
+/-- **No prime reflection joins the two bumps**: `(G⋆G)(t) = (f⋆f)(t)` for `t ≤ −(c + r)`. -/
+lemma selfConv_eq_of_bumps (has : ∀ u, a u ≠ 0 → -c < u ∧ u < -c + r)
+    (hbs : ∀ u, b u ≠ 0 → -r < u ∧ u < 0) (hf : ∀ u, f u = a u - b u)
+    (hG : ∀ u, G u = a u + b u) {t : ℝ} (ht : t ≤ -(c + r)) : selfConv G t = selfConv f t := by
   have hab : ∀ u v, u + v ≤ -(c + r) → a u * b v = 0 := fun u v huv => by
     by_contra h
     have h1 := has u (left_ne_zero_of_mul h)
     have h2 := hbs v (right_ne_zero_of_mul h)
     linarith [h1.1, h2.1]
-  have hprime : ∀ t, t ≤ -(c + r) → selfConv G t = selfConv f t := fun t ht => by
-    unfold selfConv
-    refine integral_congr_ae (Eventually.of_forall fun u => ?_)
-    have h1 := hab u (t - u) (by linarith)
-    have h2 := hab (t - u) u (by linarith)
-    simp only [hf_def, hG_def]
-    linear_combination 2 * h1 + 2 * h2
+  unfold selfConv
+  refine integral_congr_ae (Eventually.of_forall fun u => ?_)
+  have h1 := hab u (t - u) (by linarith)
+  have h2 := hab (t - u) u (by linarith)
+  show G u * G (t - u) = f u * f (t - u)
+  simp only [hf, hG]
+  linear_combination 2 * h1 + 2 * h2
+
+end TwoBumps
+
+/-- **The frustrated pair breaks the contraction.** For bumps `a ≥ 0` in `(−c, −c + r)` and
+`b ≥ 0` in `(−r, 0)` with `4r ≤ c`, `2r ≤ log 2 − c`, `ω(c − 2r) + ω(c − r) < 4cosh((c − r)/2)`
+and pole strength `s ≥ 1`: `E_s(a − b) < E_s(a + b)` for all weights. -/
+theorem evenPoleBand_lt_of_bumps {c r : ℝ} (hc0 : 0 < c) (hc : c < Real.log 2) (hr0 : 0 < r)
+    (hr4 : 4 * r ≤ c) (hrl : 2 * r ≤ Real.log 2 - c)
+    (hkr : archLevyDensity (c - 2 * r) + archLevyDensity (c - r) < 4 * Real.cosh ((c - r) / 2))
+    {a b : ℝ → ℝ} (ha : ContDiff ℝ 2 a) (hb : ContDiff ℝ 2 b) (hac : HasCompactSupport a)
+    (hbc : HasCompactSupport b) (ha0 : ∀ u, 0 ≤ a u) (hb0 : ∀ u, 0 ≤ b u)
+    (hapos : 0 < ∫ u, a u) (hbpos : 0 < ∫ u, b u)
+    (has : ∀ u, a u ≠ 0 → -c < u ∧ u < -c + r) (hbs : ∀ u, b u ≠ 0 → -r < u ∧ u < 0)
+    (w₂ w₃ : ℝ) {s : ℝ} (hs : 1 ≤ s) :
+    evenPoleBand w₂ w₃ s (fun u => a u - b u) < evenPoleBand w₂ w₃ s (fun u => a u + b u) := by
+  generalize hfe : (fun u => a u - b u) = f
+  generalize hGe : (fun u => a u + b u) = G
+  have hf : ∀ u, f u = a u - b u := fun u => by rw [← hfe]
+  have hG : ∀ u, G u = a u + b u := fun u => by rw [← hGe]
+  have hf2 : ContDiff ℝ 2 f := by rw [← hfe]; exact ha.sub hb
+  have hG2 : ContDiff ℝ 2 G := by rw [← hGe]; exact ha.add hb
+  have hfc : HasCompactSupport f := by rw [← hfe]; exact hac.sub hbc
+  have hGc : HasCompactSupport G := by rw [← hGe]; exact hac.add hbc
+  have hf0 : ∀ u, 0 < u → f u = 0 := fun u hu => by
+    obtain ⟨h1, h2⟩ := bumps_eq_zero_off hr0 hr4 has hbs (Or.inl hu)
+    rw [hf, h1, h2, sub_zero]
+  have hfl : ∀ u, u < -c → f u = 0 := fun u hu => by
+    obtain ⟨h1, h2⟩ := bumps_eq_zero_off hr0 hr4 has hbs (Or.inr hu)
+    rw [hf, h1, h2, sub_zero]
+  have hG0 : ∀ u, 0 < u → G u = 0 := fun u hu => by
+    obtain ⟨h1, h2⟩ := bumps_eq_zero_off hr0 hr4 has hbs (Or.inl hu)
+    rw [hG, h1, h2, add_zero]
+  have hGl : ∀ u, u < -c → G u = 0 := fun u hu => by
+    obtain ⟨h1, h2⟩ := bumps_eq_zero_off hr0 hr4 has hbs (Or.inr hu)
+    rw [hG, h1, h2, add_zero]
+  obtain ⟨Bf, hBf⟩ : ∃ B, ∀ u, |f u| ≤ B := by
+    obtain ⟨B, hB⟩ := hfc.exists_bound_of_continuous hf2.continuous
+    exact ⟨B, fun u => by simpa [Real.norm_eq_abs] using hB u⟩
+  obtain ⟨BG, hBG⟩ : ∃ B, ∀ u, |G u| ≤ B := by
+    obtain ⟨B, hB⟩ := hGc.exists_bound_of_continuous hG2.continuous
+    exact ⟨B, fun u => by simpa [Real.norm_eq_abs] using hB u⟩
+  have hSf := summable_expMoment_sq hc0.le hBf hf0 hfl
+  have hSG := summable_expMoment_sq hc0.le hBG hG0 hGl
+  have hpole := poleSquare_sub_ge hr0 hr4 ha.continuous hb.continuous hac hbc ha0 hb0 has hf hG
+  have hmom := tsum_expMoment_sq_sub_le (by linarith) ha.continuous hb.continuous hac hbc ha0 hb0
+    has hbs hf hG hSf hSG
+  have hlev := levy_sub_le hr0 hr4 ha hb hac hbc ha0 hb0 has hbs hf hG
   have hlog3 : Real.log 2 ≤ Real.log 3 := Real.log_le_log (by norm_num) (by norm_num)
-  have hp2 := hprime (-Real.log 2) (by linarith)
-  have hp3 := hprime (-Real.log 3) (by linarith)
-  have hA0 : autocorr G 0 = autocorr f 0 := by rw [← habs]; exact h00
-  /- Assemble in kernel form. -/
-  have hJG := integrableOn_biScaleLevyIntegrand hG2 hGc
-  have eG := evenSector_eq hG2.continuous hc0.le hc hG0 hGl hJG
-  have ef := evenSector_eq hf2.continuous hc0.le hc hf0 hfl hJf
+  have hp2 := selfConv_eq_of_bumps has hbs hf hG (t := -Real.log 2) (by linarith)
+  have hp3 := selfConv_eq_of_bumps has hbs hf hG (t := -Real.log 3) (by linarith)
+  have habs := abs_eq_of_bumps hr0 hr4 ha0 hb0 has hbs hf hG
+  have hA0 : autocorr G 0 = autocorr f 0 := by
+    rw [← habs]; unfold autocorr; simp only [add_zero, abs_mul_abs_self]
+  have eG := evenSector_eq hG2.continuous hc0.le hc hG0 hGl
+    (integrableOn_biScaleLevyIntegrand hG2 hGc)
+  have ef := evenSector_eq hf2.continuous hc0.le hc hf0 hfl
+    (integrableOn_biScaleLevyIntegrand hf2 hfc)
   rw [hA0] at eG
-  have hαβ : 0 < α * β := mul_pos hapos hbpos
-  have hker : 4 * (α * β) * (archLevyDensity (c - 2 * r) + archLevyDensity (c - r)) <
-      16 * κ * (α * β) := by
-    nlinarith [mul_lt_mul_of_pos_left hkr hαβ]
-  have hspole : poleSquare G - poleSquare f ≤ s * (poleSquare G - poleSquare f) := by
-    nlinarith [mul_nonneg (sub_nonneg.mpr hs) hpole0]
-  show evenPoleBand w₂ w₃ s f < evenPoleBand w₂ w₃ s G
+  have hαβ : 0 < (∫ u, a u) * ∫ u, b u := mul_pos hapos hbpos
+  have hker := mul_lt_mul_of_pos_left hkr hαβ
+  have hpole0 : 0 ≤ poleSquare G - poleSquare f :=
+    le_trans (mul_pos (mul_pos (by norm_num) (Real.cosh_pos _)) hαβ).le hpole
+  have hspole := mul_nonneg (sub_nonneg.mpr hs) hpole0
   unfold evenPoleBand
   rw [hp2, hp3]
   unfold poleSquare at hpole hspole ⊢

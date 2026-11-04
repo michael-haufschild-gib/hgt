@@ -83,7 +83,9 @@ theorem incidencePacket_common_charge {m M Q : ℕ} (hM : 0 < M) (hmM : m ∣ M)
   have hscale (P : Finset ℕ) (s : ℝ) :
       incidencePacket P (fun _ => s) n = s * incidencePacket P (fun _ => 1) n := by
     simp only [incidencePacket, one_mul, mul_sum]
-  rw [hscale, hscale, incidencePacket_common_difference hM hmM hMQ]
+  rw [hscale (fibrePrimes M Q) (t / fibreScale M Q),
+    hscale (fibrePrimes m Q) (t / fibreScale m Q),
+    incidencePacket_common_difference hM hmM hMQ]
   have he : (fibreScale m Q / fibreScale M Q) * (t / fibreScale m Q) =
       t / fibreScale M Q := by
     calc
