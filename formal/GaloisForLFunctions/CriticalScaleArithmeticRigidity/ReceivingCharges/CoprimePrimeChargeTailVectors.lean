@@ -93,9 +93,12 @@ theorem eventually_fibrePrimeTailVector_norm_le {m : ℕ} (hm : 0 < m) (t : ℝ)
     have h := abs_fibreTail_le_activity hm (X ^ 2) (X ^ 40 / n) n t
     have ha := primeActivityMass_le_primePoleScale_add_eight (X ^ 2)
     refine h.trans ((mul_le_mul_of_nonneg_left
-      (add_le_add_right ha (m : ℝ)) (abs_nonneg _)).trans ?_)
+      (add_le_add ha (le_refl (m : ℝ))) (abs_nonneg _)).trans ?_)
     rw [abs_div, abs_of_pos hB0]
-    exact le_trans (le_of_eq (by ring)) hh
+    calc
+      _ = |t| * (primePoleScale (X ^ 2) / fibreScale m (X ^ 2) +
+          (8 + m : ℝ) / fibreScale m (X ^ 2)) := by ring
+      _ ≤ _ := hh
   have hm0 := (modeBound_pos hm).le
   have h := physical_packet_norm_le hl
     (fun n => normalizedRamanujanMode m n *

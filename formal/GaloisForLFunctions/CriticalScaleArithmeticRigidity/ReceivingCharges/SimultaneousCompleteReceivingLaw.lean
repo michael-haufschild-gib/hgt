@@ -117,7 +117,8 @@ theorem tendsto_simultaneousReceiving_signed_pairing {K : ℝ} (hK : 0 < K)
           (simultaneousReceivingPacket R X t),
         fibreChargeTerminalReceiver l R.factorial X⟫)
       atTop (𝓝 (if (l : ℕ) ≤ R then t l / 80 else 0)) := by
-  simpa only [mem_Icc, l.property, true_and] using
+  have hl1 : 1 ≤ (l : ℕ) := l.property
+  simpa only [mem_Icc, hl1, true_and] using
     tendsto_commonPrimeFibre_complete_terminalReceiver contDiff_tiltedUnitSpline
       receiving_tilted_nonneg tiltedUnitSpline_eq_zero integral_tiltedUnitSpline_sq_pos hK
         (Nat.factorial_pos R) l.property (Icc 1 R) (receiving_factorial_modes R) t

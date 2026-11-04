@@ -40,10 +40,16 @@ theorem unitMangoldtWeight_collision_sum (p Y l b d : ℕ) (f : ℕ → ℝ) :
   rw [sum_filter]
   apply sum_congr rfl
   intro k _
-  by_cases hpk : p.Coprime k <;>
-    by_cases hres : multiplierResidue p k b ≡ multiplierResidue p l d [MOD p] <;>
-    simp only [unitMangoldtWeight, hpk, hres, if_true, if_false, true_and,
-      false_and, zero_mul]
+  unfold unitMangoldtWeight
+  by_cases hpk : p.Coprime k
+  · rw [if_pos hpk]
+    by_cases hres : multiplierResidue p k b ≡ multiplierResidue p l d [MOD p]
+    · rw [if_pos hres, if_pos ⟨hpk, hres⟩]
+    · rw [if_neg hres, if_neg (fun h => hres h.2)]
+  · have hnot : ¬(p.Coprime k ∧
+        multiplierResidue p k b ≡ multiplierResidue p l d [MOD p]) := fun h => hpk h.1
+    rw [if_neg hpk, zero_mul, if_neg hnot]
+    split_ifs <;> rfl
 
 /-- Finite offset strips retain the reciprocal-prime collision gain. -/
 theorem exists_offset_collision_mass_upper :

@@ -98,112 +98,6 @@ private def v01 : ℝ := (213634858032934921254755799410551877313697330561115055
       14041017665401062551032600744433606521171141052968880291713038237335744796262196866630722221364016126742770502256899354500040305195305520000000000
 private def v11 : ℝ := (6252277575739794174596338789602460218609276873477589919459839916656154203221402741336384649789533473691285534227998318787688891731167030613030733844902491683:ℝ)/
       864062625563142310832775430426683478225916372490392633336186968451430449000750576408044444391631761645708953985039960276925557242788032000000000
-private def delta (A : Matrix (Fin 5) (Fin 5) ℝ) : ℝ := A 0 0*A 1 1-(A 0 1)^2
-private def tailIndex (i : Fin 3) : Fin 5 := ⟨i.val+2,by omega⟩
-private def schur (A : Matrix (Fin 5) (Fin 5) ℝ) (i j : Fin 3) : ℝ :=
-  delta A*A (tailIndex i) (tailIndex j)-
-    (A 1 1*A 0 (tailIndex i)*A 0 (tailIndex j)-
-      A 0 1*(A 0 (tailIndex i)*A 1 (tailIndex j)+A 1 (tailIndex i)*A 0 (tailIndex j))+
-      A 0 0*A 1 (tailIndex i)*A 1 (tailIndex j))
-private def minor (A : Matrix (Fin 5) (Fin 5) ℝ) : ℝ := schur A 0 0*schur A 1 1-(schur A 0 1)^2
-private def determinant (A : Matrix (Fin 5) (Fin 5) ℝ) : ℝ := minor A*schur A 2 2-
-  (schur A 1 1*(schur A 0 2)^2-2*schur A 0 1*schur A 0 2*schur A 1 2+schur A 0 0*(schur A 1 2)^2)
-
-private def tailQuadratic (A : Matrix (Fin 5) (Fin 5) ℝ) (u v w : ℝ) : ℝ :=
-  schur A 0 0*u^2+2*schur A 0 1*u*v+2*schur A 0 2*u*w+
-    schur A 1 1*v^2+2*schur A 1 2*v*w+schur A 2 2*w^2
-private theorem tail_square_completion (A : Matrix (Fin 5) (Fin 5) ℝ) (u v w : ℝ) :
-    (schur A 0 0*minor A)*tailQuadratic A u v w =
-      minor A*(schur A 0 0*u+schur A 0 1*v+schur A 0 2*w)^2+
-      (minor A*v+(schur A 0 0*schur A 1 2-schur A 0 1*schur A 0 2)*w)^2+
-      schur A 0 0*determinant A*w^2 := by
-  unfold tailQuadratic determinant minor
-  ring
-private theorem tailQuadratic_pos {A : Matrix (Fin 5) (Fin 5) ℝ}
-    (hs : 0 < schur A 0 0) (hm : 0 < minor A) (hd : 0 < determinant A)
-    (u v w : ℝ) (h : u ≠ 0 ∨ v ≠ 0 ∨ w ≠ 0) : 0 < tailQuadratic A u v w := by
-  apply pos_of_mul_pos_right ?_ (mul_pos hs hm).le
-  rw [tail_square_completion]
-  by_cases hw : w = 0
-  · subst w
-    simp only [mul_zero, add_zero, zero_pow (by decide : (2 : ℕ) ≠ 0)]
-    by_cases hv : v = 0
-    · subst v
-      simp only [mul_zero, add_zero, zero_pow (by decide : (2 : ℕ) ≠ 0)]
-      have hu : u ≠ 0 := h.resolve_right (by simp)
-      exact mul_pos hm (sq_pos_of_ne_zero (mul_ne_zero hs.ne' hu))
-    · exact add_pos_of_nonneg_of_pos (mul_nonneg hm.le (sq_nonneg _))
-        (sq_pos_of_ne_zero (mul_ne_zero hm.ne' hv))
-  · exact add_pos_of_nonneg_of_pos
-      (add_nonneg (mul_nonneg hm.le (sq_nonneg _)) (sq_nonneg _))
-      (mul_pos (mul_pos hs hd) (sq_pos_of_ne_zero hw))
-private def quadratic (A : Matrix (Fin 5) (Fin 5) ℝ) (x0 x1 x2 x3 x4 : ℝ) : ℝ :=
-  A 0 0*x0^2+2*A 0 1*x0*x1+2*A 0 2*x0*x2+2*A 0 3*x0*x3+2*A 0 4*x0*x4+
-  A 1 1*x1^2+2*A 1 2*x1*x2+2*A 1 3*x1*x3+2*A 1 4*x1*x4+
-  A 2 2*x2^2+2*A 2 3*x2*x3+2*A 2 4*x2*x4+A 3 3*x3^2+2*A 3 4*x3*x4+A 4 4*x4^2
-private def firstCoordinate (A : Matrix (Fin 5) (Fin 5) ℝ) (x0 x1 x2 x3 x4 : ℝ) : ℝ :=
-  A 0 0*x0+A 0 1*x1+A 0 2*x2+A 0 3*x3+A 0 4*x4
-private def secondCoordinate (A : Matrix (Fin 5) (Fin 5) ℝ) (x1 x2 x3 x4 : ℝ) : ℝ :=
-  delta A*x1+A 0 0*(A 1 2*x2+A 1 3*x3+A 1 4*x4)-A 0 1*(A 0 2*x2+A 0 3*x3+A 0 4*x4)
-private theorem quadratic_square_completion (A : Matrix (Fin 5) (Fin 5) ℝ) (x0 x1 x2 x3 x4 : ℝ) :
-    (A 0 0*delta A)*quadratic A x0 x1 x2 x3 x4 =
-      delta A*(firstCoordinate A x0 x1 x2 x3 x4)^2+
-      (secondCoordinate A x1 x2 x3 x4)^2+A 0 0*tailQuadratic A x2 x3 x4 := by
-  simp only [quadratic, firstCoordinate, secondCoordinate, tailQuadratic, schur, delta,
-    show tailIndex 0 = 2 by rfl, show tailIndex 1 = 3 by rfl, show tailIndex 2 = 4 by rfl]
-  ring
-private theorem quadratic_pos {A : Matrix (Fin 5) (Fin 5) ℝ}
-    (hr : 0 < A 0 0) (hd : 0 < delta A) (hs : 0 < schur A 0 0)
-    (hm : 0 < minor A) (htd : 0 < determinant A) (x0 x1 x2 x3 x4 : ℝ)
-    (h : x0 ≠ 0 ∨ x1 ≠ 0 ∨ x2 ≠ 0 ∨ x3 ≠ 0 ∨ x4 ≠ 0) :
-    0 < quadratic A x0 x1 x2 x3 x4 := by
-  apply pos_of_mul_pos_right ?_ (mul_pos hr hd).le
-  rw [quadratic_square_completion]
-  by_cases ht : x2 ≠ 0 ∨ x3 ≠ 0 ∨ x4 ≠ 0
-  · exact add_pos_of_nonneg_of_pos
-      (add_nonneg (mul_nonneg hd.le (sq_nonneg _)) (sq_nonneg _))
-      (mul_pos hr (tailQuadratic_pos hs hm htd x2 x3 x4 ht))
-  · push Not at ht
-    rcases ht with ⟨h2,h3,h4⟩
-    subst x2; subst x3; subst x4
-    simp only [firstCoordinate, secondCoordinate, tailQuadratic, mul_zero,
-      add_zero, sub_zero, zero_pow (by decide : (2 : ℕ) ≠ 0)]
-    by_cases h1 : x1 = 0
-    · subst x1
-      simp only [mul_zero, add_zero, zero_pow (by decide : (2 : ℕ) ≠ 0)]
-      have h0 : x0 ≠ 0 := h.resolve_right (by simp)
-      exact mul_pos hd (sq_pos_of_ne_zero (mul_ne_zero hr.ne' h0))
-    · exact add_pos_of_nonneg_of_pos (mul_nonneg hd.le (sq_nonneg _))
-        (sq_pos_of_ne_zero (mul_ne_zero hd.ne' h1))
-private theorem matrix_energy {A : Matrix (Fin 5) (Fin 5) ℝ}
-    (hA : ∀ i j, A i j = A j i) (v : Fin 5 → ℝ) :
-    v ⬝ᵥ (A *ᵥ v) = quadratic A (v 0) (v 1) (v 2) (v 3) (v 4) := by
-  norm_num [dotProduct, Matrix.mulVec, Fin.sum_univ_succ]
-  simp only [show (Fin.succ (2 : Fin 4) : Fin 5) = 3 by rfl,
-    show (Fin.succ (Fin.succ (2 : Fin 3)) : Fin 5) = 4 by rfl]
-  simp only [hA 1 0,hA 2 0,hA 3 0,hA 4 0,hA 2 1,hA 3 1,hA 4 1,hA 3 2,hA 4 2,hA 4 3,quadratic]
-  ring
-private theorem posDef_of_schur_signs {A : Matrix (Fin 5) (Fin 5) ℝ}
-    (hA : ∀ i j, A i j = A j i) (hr : 0 < A 0 0) (hd : 0 < delta A)
-    (hs : 0 < schur A 0 0) (hm : 0 < minor A) (htd : 0 < determinant A) : A.PosDef := by
-  refine Matrix.posDef_iff_dotProduct_mulVec.mpr ⟨?_, ?_⟩
-  · ext i j
-    simp only [Matrix.conjTranspose_apply, star_trivial, hA]
-  · intro v hv
-    simp only [star_trivial, matrix_energy hA]
-    apply quadratic_pos hr hd hs hm htd
-    by_contra h
-    push Not at h
-    rcases h with ⟨h0,h1,h2,h3,h4⟩
-    apply hv
-    funext i
-    fin_cases i
-    · exact h0
-    · exact h1
-    · exact h2
-    · exact h3
-    · exact h4
-
 /-- Quartic lower compensation bound obtained from the scale-eight tangent. -/
 def g (q : ℝ) : ℝ :=
   3*(2*q-3)^2-(1000001/1000000)*(q/8-13/200)*
@@ -507,129 +401,6 @@ private theorem pure_three_bound_4 (j : Fin 5) : |(pureGram 72) 4 j| ≤ 1000000
     entryPoly,e00,e01,e02,e03,e04,e11,e12,e13,e14,e22,e23,e24,e33,e34,e44]
 
 
-private theorem radial_eight_coeff (a : ℝ) (k : ℕ) :
- radialCoeffs a 8 k = radialStepCoeff a (radialCoeffs a 7) k := rfl
-private theorem radial_seven_zero_16 (a : ℝ) : radialCoeffs a 7 16=0 :=
- radialCoeffs_eq_zero a (by norm_num)
-private theorem radial_seven_zero_17 (a : ℝ) : radialCoeffs a 7 17=0 :=
- radialCoeffs_eq_zero a (by norm_num)
-private theorem radial_seven_zero_18 (a : ℝ) : radialCoeffs a 7 18=0 :=
- radialCoeffs_eq_zero a (by norm_num)
-private theorem radial_seven_zero_19 (a : ℝ) : radialCoeffs a 7 19=0 :=
- radialCoeffs_eq_zero a (by norm_num)
-
-
-
-local macro "reduce_radial" : tactic =>
-  `(tactic| norm_num only [eval_thetaPairRadialEvenPolynomial, Finset.sum_range_succ, radialCoeffs_0_0,
-    radialCoeffs_0_1, radialCoeffs_1_0, radialCoeffs_1_1, radialCoeffs_1_2, radialCoeffs_1_3,
-    radialCoeffs_2_0, radialCoeffs_2_1, radialCoeffs_2_2, radialCoeffs_2_3, radialCoeffs_2_4,
-    radialCoeffs_2_5, radialCoeffs_3_0, radialCoeffs_3_1, radialCoeffs_3_2, radialCoeffs_3_3,
-    radialCoeffs_3_4, radialCoeffs_3_5, radialCoeffs_3_6, radialCoeffs_3_7, radialCoeffs_4_0,
-    radialCoeffs_4_1, radialCoeffs_4_2, radialCoeffs_4_3, radialCoeffs_4_4, radialCoeffs_4_5,
-    radialCoeffs_4_6, radialCoeffs_4_7, radialCoeffs_4_8, radialCoeffs_4_9, radialCoeffs_5_0,
-    radialCoeffs_5_1, radialCoeffs_5_2, radialCoeffs_5_3, radialCoeffs_5_4, radialCoeffs_5_5,
-    radialCoeffs_5_6, radialCoeffs_5_7, radialCoeffs_5_8, radialCoeffs_5_9, radialCoeffs_5_10,
-    radialCoeffs_5_11, radialCoeffs_6_0, radialCoeffs_6_1, radialCoeffs_6_2, radialCoeffs_6_3,
-    radialCoeffs_6_4, radialCoeffs_6_5, radialCoeffs_6_6, radialCoeffs_6_7, radialCoeffs_6_8,
-    radialCoeffs_6_9, radialCoeffs_6_10, radialCoeffs_6_11, radialCoeffs_6_12,
-    radialCoeffs_6_13, radialCoeffs_7_0, radialCoeffs_7_1, radialCoeffs_7_2, radialCoeffs_7_3,
-    radialCoeffs_7_4, radialCoeffs_7_5, radialCoeffs_7_6, radialCoeffs_7_7, radialCoeffs_7_8,
-    radialCoeffs_7_9, radialCoeffs_7_10, radialCoeffs_7_11, radialCoeffs_7_12,
-    radialCoeffs_7_13, radialCoeffs_7_14, radialCoeffs_7_15, radial_eight_coeff,
-    radial_seven_zero_16, radial_seven_zero_17, radial_seven_zero_18, radial_seven_zero_19,
-    radialStepCoeff, radialInnerCoeff, Nat.reduceAdd, Nat.reduceMul, Nat.reducePow])
-private theorem radial_0 (q : ℝ) :
-    (thetaPairRadialEvenPolynomial (q^2) 0).eval (2*q) = r0 q := by
-  reduce_radial
-  simp only [r0]
-  ring
-private theorem mixed_0 (q : ℝ) :
-    (thetaPairRadialEvenPolynomial (4*q^2) 0).eval (5*q) = b0 q := by
-  reduce_radial
-  simp only [b0]
-  ring
-private theorem radial_1 (q : ℝ) :
-    (thetaPairRadialEvenPolynomial (q^2) 1).eval (2*q) = r1 q := by
-  reduce_radial
-  simp only [r1]
-  ring
-private theorem mixed_1 (q : ℝ) :
-    (thetaPairRadialEvenPolynomial (4*q^2) 1).eval (5*q) = b1 q := by
-  reduce_radial
-  simp only [b1]
-  ring
-private theorem radial_2 (q : ℝ) :
-    (thetaPairRadialEvenPolynomial (q^2) 2).eval (2*q) = r2 q := by
-  reduce_radial
-  simp only [r2]
-  ring
-private theorem mixed_2 (q : ℝ) :
-    (thetaPairRadialEvenPolynomial (4*q^2) 2).eval (5*q) = b2 q := by
-  reduce_radial
-  simp only [b2]
-  ring
-private theorem radial_3 (q : ℝ) :
-    (thetaPairRadialEvenPolynomial (q^2) 3).eval (2*q) = r3 q := by
-  reduce_radial
-  simp only [r3]
-  ring
-private theorem mixed_3 (q : ℝ) :
-    (thetaPairRadialEvenPolynomial (4*q^2) 3).eval (5*q) = b3 q := by
-  reduce_radial
-  simp only [b3]
-  ring
-private theorem radial_4 (q : ℝ) :
-    (thetaPairRadialEvenPolynomial (q^2) 4).eval (2*q) = r4 q := by
-  reduce_radial
-  simp only [r4]
-  ring
-private theorem mixed_4 (q : ℝ) :
-    (thetaPairRadialEvenPolynomial (4*q^2) 4).eval (5*q) = b4 q := by
-  reduce_radial
-  simp only [b4]
-  ring
-private theorem radial_5 (q : ℝ) :
-    (thetaPairRadialEvenPolynomial (q^2) 5).eval (2*q) = r5 q := by
-  reduce_radial
-  simp only [r5]
-  ring
-private theorem mixed_5 (q : ℝ) :
-    (thetaPairRadialEvenPolynomial (4*q^2) 5).eval (5*q) = b5 q := by
-  reduce_radial
-  simp only [b5]
-  ring
-private theorem radial_6 (q : ℝ) :
-    (thetaPairRadialEvenPolynomial (q^2) 6).eval (2*q) = r6 q := by
-  reduce_radial
-  simp only [r6]
-  ring
-private theorem mixed_6 (q : ℝ) :
-    (thetaPairRadialEvenPolynomial (4*q^2) 6).eval (5*q) = b6 q := by
-  reduce_radial
-  simp only [b6]
-  ring
-private theorem radial_7 (q : ℝ) :
-    (thetaPairRadialEvenPolynomial (q^2) 7).eval (2*q) = r7 q := by
-  reduce_radial
-  simp only [r7]
-  ring
-private theorem mixed_7 (q : ℝ) :
-    (thetaPairRadialEvenPolynomial (4*q^2) 7).eval (5*q) = b7 q := by
-  reduce_radial
-  simp only [b7]
-  ring
-private theorem radial_8 (q : ℝ) :
-    (thetaPairRadialEvenPolynomial (q^2) 8).eval (2*q) = r8 q := by
-  reduce_radial
-  simp only [r8]
-  ring
-private theorem mixed_8 (q : ℝ) :
-    (thetaPairRadialEvenPolynomial (4*q^2) 8).eval (5*q) = b8 q := by
-  reduce_radial
-  simp only [b8]
-  ring
-
 theorem radial_eq (q : ℝ) (k : ℕ) (hk : k ≤ 8) :
     (thetaPairRadialEvenPolynomial (q^2) k).eval (2*q) = rMoment q k := by
   interval_cases k
@@ -656,44 +427,19 @@ theorem mixed_eq (q : ℝ) (k : ℕ) (hk : k ≤ 8) :
   · exact mixed_7 q
   · exact mixed_8 q
 
-private theorem gaussian_row_0 (m : ℕ → ℝ) (j : Fin 5) :
-    gaussianGram (fun a b : Fin 5 => m (a.val+b.val)) 0 j = gaussianEntry m 0 j := by
-  fin_cases j <;> norm_num [gaussianGram,gaussianEntry,entryPoly,gaussianBasis,
-    Fin.sum_univ_succ,e00,e01,e02,e03,e04,e11,e12,e13,e14,e22,e23,e24,e33,e34,e44] <;> ring
-
-private theorem gaussian_row_1 (m : ℕ → ℝ) (j : Fin 5) :
-    gaussianGram (fun a b : Fin 5 => m (a.val+b.val)) 1 j = gaussianEntry m 1 j := by
-  fin_cases j <;> norm_num [gaussianGram,gaussianEntry,entryPoly,gaussianBasis,
-    Fin.sum_univ_succ,e00,e01,e02,e03,e04,e11,e12,e13,e14,e22,e23,e24,e33,e34,e44] <;> ring
-
-private theorem gaussian_row_2 (m : ℕ → ℝ) (j : Fin 5) :
-    gaussianGram (fun a b : Fin 5 => m (a.val+b.val)) 2 j = gaussianEntry m 2 j := by
-  fin_cases j <;> norm_num [gaussianGram,gaussianEntry,entryPoly,gaussianBasis,
-    Fin.sum_univ_succ,e00,e01,e02,e03,e04,e11,e12,e13,e14,e22,e23,e24,e33,e34,e44] <;> ring
-
-private theorem gaussian_row_3 (m : ℕ → ℝ) (j : Fin 5) :
-    gaussianGram (fun a b : Fin 5 => m (a.val+b.val)) 3 j = gaussianEntry m 3 j := by
-  fin_cases j <;> norm_num [gaussianGram,gaussianEntry,entryPoly,gaussianBasis,
-    Fin.sum_univ_succ,e00,e01,e02,e03,e04,e11,e12,e13,e14,e22,e23,e24,e33,e34,e44] <;> ring
-
-private theorem gaussian_row_4 (m : ℕ → ℝ) (j : Fin 5) :
-    gaussianGram (fun a b : Fin 5 => m (a.val+b.val)) 4 j = gaussianEntry m 4 j := by
-  fin_cases j <;> norm_num [gaussianGram,gaussianEntry,entryPoly,gaussianBasis,
-    Fin.sum_univ_succ,e00,e01,e02,e03,e04,e11,e12,e13,e14,e22,e23,e24,e33,e34,e44] <;> ring
-
+/-- The explicit entries are the Gaussian congruence of the Hankel moments. -/
 theorem gaussian_eq (m : ℕ → ℝ) :
     gaussianGram (fun a b : Fin 5 => m (a.val+b.val)) = gaussianEntry m := by
   ext i j
-  fin_cases i
-  · exact gaussian_row_0 m j
-  · exact gaussian_row_1 m j
-  · exact gaussian_row_2 m j
-  · exact gaussian_row_3 m j
-  · exact gaussian_row_4 m j
+  have h := FifthLeadingPair.entry_eq_entryPoly m i j
+  change gaussianGram (fun a b : Fin 5 => m (a.val+b.val)) i j-
+    (if i.val=j.val then m 0/1000 else 0)=entryPoly m i j at h
+  simp only [gaussianEntry]
+  linarith only [h]
 
 private theorem entryPoly_symmetric (m : ℕ → ℝ) (i j : Fin 5) :
-    entryPoly m i j = entryPoly m j i := by
-  fin_cases i <;> fin_cases j <;> rfl
+    entryPoly m i j = entryPoly m j i :=
+  FifthLeadingPair.entryPoly_symmetric m i j
 
 private theorem polyModel_symmetric (q z c e : ℝ) (i j : Fin 5) :
     polyModel q z c e i j = polyModel q z c e j i := by
@@ -768,39 +514,12 @@ theorem pure_three_bound (i j : Fin 5) : |(pureGram 72) i j| ≤ 100000000000000
   · exact pure_three_bound_3 j
   · exact pure_three_bound_4 j
 
-local macro "norm_endpoint" : tactic =>
-  `(tactic| norm_num [loss,EvenFiveBoundary.scaleSevenCompensationLoss,Fin.sum_univ_succ,gap,schur2,kernelNum,
-    crossZero,crossOne,schur3,headDet,adj,mOrigin,EvenFiveOrigin.originMomentPolynomial,
-    mSeven,retainedRatio,eval_thetaPairRadialEvenPolynomial,Finset.sum_range_succ,
-    radialCoeffs_0_0,radialCoeffs_0_1,radialCoeffs_1_0,radialCoeffs_1_1,radialCoeffs_1_2,
-    radialCoeffs_1_3,radialCoeffs_2_0,radialCoeffs_2_1,radialCoeffs_2_2,radialCoeffs_2_3,
-    radialCoeffs_2_4,radialCoeffs_2_5,radialCoeffs_3_0,radialCoeffs_3_1,radialCoeffs_3_2,
-    radialCoeffs_3_3,radialCoeffs_3_4,radialCoeffs_3_5,radialCoeffs_3_6,radialCoeffs_3_7,
-    radialCoeffs_4_0,radialCoeffs_4_1,radialCoeffs_4_2,radialCoeffs_4_3,radialCoeffs_4_4,
-    radialCoeffs_4_5,radialCoeffs_4_6,radialCoeffs_4_7,radialCoeffs_4_8,radialCoeffs_4_9,
-    radialCoeffs_5_0,radialCoeffs_5_1,radialCoeffs_5_2,radialCoeffs_5_3,radialCoeffs_5_4,
-    radialCoeffs_5_5,radialCoeffs_5_6,radialCoeffs_5_7,radialCoeffs_5_8,radialCoeffs_5_9,
-    radialCoeffs_5_10,radialCoeffs_5_11,radialCoeffs_6_0,radialCoeffs_6_1,radialCoeffs_6_2,
-    radialCoeffs_6_3,radialCoeffs_6_4,radialCoeffs_6_5,radialCoeffs_6_6,radialCoeffs_6_7,
-    radialCoeffs_6_8,radialCoeffs_6_9,radialCoeffs_6_10,radialCoeffs_6_11,radialCoeffs_6_12,
-    radialCoeffs_6_13,radialCoeffs_7_0,radialCoeffs_7_1,radialCoeffs_7_2,radialCoeffs_7_3,
-    radialCoeffs_7_4,radialCoeffs_7_5,radialCoeffs_7_6,radialCoeffs_7_7,radialCoeffs_7_8,
-    radialCoeffs_7_9,radialCoeffs_7_10,radialCoeffs_7_11,radialCoeffs_7_12,radialCoeffs_7_13,
-    radialCoeffs_7_14,radialCoeffs_7_15,radial_eight_coeff,radial_seven_zero_16,
-    radial_seven_zero_17,radial_seven_zero_18,radial_seven_zero_19,radialStepCoeff,
-    radialInnerCoeff])
-
-
-
-private theorem paid00 : paidSevenSchur 0 0 = v00 := by
-  simp only [paidSevenSchur,v00]
-  norm_endpoint
-private theorem paid01 : paidSevenSchur 0 1 = v01 := by
-  simp only [paidSevenSchur,v01]
-  norm_endpoint
-private theorem paid11 : paidSevenSchur 1 1 = v11 := by
-  simp only [paidSevenSchur,v11]
-  norm_endpoint
+private theorem paid00 : paidSevenSchur 0 0 = v00 :=
+  paidSevenSchur_00
+private theorem paid01 : paidSevenSchur 0 1 = v01 :=
+  paidSevenSchur_01
+private theorem paid11 : paidSevenSchur 1 1 = v11 :=
+  paidSevenSchur_11
 private theorem paid10 : paidSevenSchur 1 0 = v01 := by
   have h := congrFun (congrFun crossCoefficient_posDef.isHermitian 0) 1
   simp only [Matrix.conjTranspose_apply,star_trivial,paid01] at h

@@ -23,17 +23,23 @@ open Matrix
 namespace GaloisForLFunctions.ThetaCuspSections.FifthLeadingPair
 open _root_.RHTower Polynomial
 -- Two Schur eliminations certify a real symmetric matrix from five scalar signs.
-private def delta (A : Matrix (Fin 5) (Fin 5) ℝ) : ℝ := A 0 0*A 1 1-(A 0 1)^2
-private def tailIndex (i : Fin 3) : Fin 5 := ⟨i.val+2,by omega⟩
-private def schur (A : Matrix (Fin 5) (Fin 5) ℝ) (i j : Fin 3) : ℝ :=
+/-- The leading two-coordinate determinant. -/
+def delta (A : Matrix (Fin 5) (Fin 5) ℝ) : ℝ := A 0 0*A 1 1-(A 0 1)^2
+/-- Embedding of the three tail coordinates after the leading two. -/
+def tailIndex (i : Fin 3) : Fin 5 := ⟨i.val+2,by omega⟩
+/-- The tail Schur complement multiplied by the leading two-coordinate determinant. -/
+def schur (A : Matrix (Fin 5) (Fin 5) ℝ) (i j : Fin 3) : ℝ :=
   delta A*A (tailIndex i) (tailIndex j)-
     (A 1 1*A 0 (tailIndex i)*A 0 (tailIndex j)-
       A 0 1*(A 0 (tailIndex i)*A 1 (tailIndex j)+A 1 (tailIndex i)*A 0 (tailIndex j))+
       A 0 0*A 1 (tailIndex i)*A 1 (tailIndex j))
-private def minor (A : Matrix (Fin 5) (Fin 5) ℝ) : ℝ := schur A 0 0*schur A 1 1-(schur A 0 1)^2
-private def determinant (A : Matrix (Fin 5) (Fin 5) ℝ) : ℝ := minor A*schur A 2 2-
+/-- The leading two-coordinate minor of the cleared tail Schur form. -/
+def minor (A : Matrix (Fin 5) (Fin 5) ℝ) : ℝ := schur A 0 0*schur A 1 1-(schur A 0 1)^2
+/-- The determinant polynomial of the symmetric cleared tail Schur form. -/
+def determinant (A : Matrix (Fin 5) (Fin 5) ℝ) : ℝ := minor A*schur A 2 2-
   (schur A 1 1*(schur A 0 2)^2-2*schur A 0 1*schur A 0 2*schur A 1 2+schur A 0 0*(schur A 1 2)^2)
-private def tailQuadratic (A : Matrix (Fin 5) (Fin 5) ℝ) (u v w : ℝ) : ℝ :=
+/-- The quadratic form of the symmetric cleared tail Schur matrix. -/
+def tailQuadratic (A : Matrix (Fin 5) (Fin 5) ℝ) (u v w : ℝ) : ℝ :=
   schur A 0 0*u^2+2*schur A 0 1*u*v+2*schur A 0 2*u*w+
     schur A 1 1*v^2+2*schur A 1 2*v*w+schur A 2 2*w^2
 private theorem tail_square_completion (A : Matrix (Fin 5) (Fin 5) ℝ) (u v w : ℝ) :
@@ -61,15 +67,19 @@ private theorem tailQuadratic_pos {A : Matrix (Fin 5) (Fin 5) ℝ}
   · exact add_pos_of_nonneg_of_pos
       (add_nonneg (mul_nonneg hm.le (sq_nonneg _)) (sq_nonneg _))
       (mul_pos (mul_pos hs hd) (sq_pos_of_ne_zero hw))
-private def quadratic (A : Matrix (Fin 5) (Fin 5) ℝ) (x0 x1 x2 x3 x4 : ℝ) : ℝ :=
+/-- The quadratic form represented by the upper triangle of a five-coordinate matrix. -/
+def quadratic (A : Matrix (Fin 5) (Fin 5) ℝ) (x0 x1 x2 x3 x4 : ℝ) : ℝ :=
   A 0 0*x0^2+2*A 0 1*x0*x1+2*A 0 2*x0*x2+2*A 0 3*x0*x3+2*A 0 4*x0*x4+
   A 1 1*x1^2+2*A 1 2*x1*x2+2*A 1 3*x1*x3+2*A 1 4*x1*x4+
   A 2 2*x2^2+2*A 2 3*x2*x3+2*A 2 4*x2*x4+A 3 3*x3^2+2*A 3 4*x3*x4+A 4 4*x4^2
-private def firstCoordinate (A : Matrix (Fin 5) (Fin 5) ℝ) (x0 x1 x2 x3 x4 : ℝ) : ℝ :=
+/-- The first head coordinate in the Schur square completion. -/
+def firstCoordinate (A : Matrix (Fin 5) (Fin 5) ℝ) (x0 x1 x2 x3 x4 : ℝ) : ℝ :=
   A 0 0*x0+A 0 1*x1+A 0 2*x2+A 0 3*x3+A 0 4*x4
-private def secondCoordinate (A : Matrix (Fin 5) (Fin 5) ℝ) (x1 x2 x3 x4 : ℝ) : ℝ :=
+/-- The second head coordinate after eliminating the first. -/
+def secondCoordinate (A : Matrix (Fin 5) (Fin 5) ℝ) (x1 x2 x3 x4 : ℝ) : ℝ :=
   delta A*x1+A 0 0*(A 1 2*x2+A 1 3*x3+A 1 4*x4)-A 0 1*(A 0 2*x2+A 0 3*x3+A 0 4*x4)
-private theorem quadratic_square_completion (A : Matrix (Fin 5) (Fin 5) ℝ) (x0 x1 x2 x3 x4 : ℝ) :
+/-- Two head squares separate the five-coordinate form from its cleared Schur tail. -/
+theorem quadratic_square_completion (A : Matrix (Fin 5) (Fin 5) ℝ) (x0 x1 x2 x3 x4 : ℝ) :
     (A 0 0*delta A)*quadratic A x0 x1 x2 x3 x4 =
       delta A*(firstCoordinate A x0 x1 x2 x3 x4)^2+
       (secondCoordinate A x1 x2 x3 x4)^2+A 0 0*tailQuadratic A x2 x3 x4 := by
@@ -99,7 +109,8 @@ private theorem quadratic_pos {A : Matrix (Fin 5) (Fin 5) ℝ}
       exact mul_pos hd (sq_pos_of_ne_zero (mul_ne_zero hr.ne' h0))
     · exact add_pos_of_nonneg_of_pos (mul_nonneg hd.le (sq_nonneg _))
         (sq_pos_of_ne_zero (mul_ne_zero hd.ne' h1))
-private theorem matrix_energy {A : Matrix (Fin 5) (Fin 5) ℝ}
+/-- A symmetric matrix evaluates to its upper-triangle quadratic expression. -/
+theorem matrix_energy {A : Matrix (Fin 5) (Fin 5) ℝ}
     (hA : ∀ i j, A i j = A j i) (v : Fin 5 → ℝ) :
     v ⬝ᵥ (A *ᵥ v) = quadratic A (v 0) (v 1) (v 2) (v 3) (v 4) := by
   norm_num [dotProduct, Matrix.mulVec, Fin.sum_univ_succ]
@@ -107,7 +118,8 @@ private theorem matrix_energy {A : Matrix (Fin 5) (Fin 5) ℝ}
     show (Fin.succ (Fin.succ (2 : Fin 3)) : Fin 5) = 4 by rfl]
   simp only [hA 1 0,hA 2 0,hA 3 0,hA 4 0,hA 2 1,hA 3 1,hA 4 1,hA 3 2,hA 4 2,hA 4 3,quadratic]
   ring
-private theorem posDef_of_schur_signs {A : Matrix (Fin 5) (Fin 5) ℝ}
+/-- Five strictly positive Schur signs certify a real symmetric five-coordinate matrix. -/
+theorem posDef_of_schur_signs {A : Matrix (Fin 5) (Fin 5) ℝ}
     (hA : ∀ i j, A i j = A j i) (hr : 0 < A 0 0) (hd : 0 < delta A)
     (hs : 0 < schur A 0 0) (hm : 0 < minor A) (htd : 0 < determinant A) : A.PosDef := by
   refine Matrix.posDef_iff_dotProduct_mulVec.mpr ⟨?_, ?_⟩
@@ -569,14 +581,16 @@ private theorem entry_row_4 (m : ℕ → ℝ) (j : Fin 5) :
   fin_cases j
   all_goals norm_num [entry,entryPoly,gaussianBasis,Fin.sum_univ_succ, e00, e01, e02, e03, e04, e11, e12, e13, e14, e22, e23, e24, e33, e34, e44]
   all_goals ring
-private theorem entry_eq_entryPoly (m : ℕ → ℝ) (i j : Fin 5) : entry m i j = entryPoly m i j := by
+/-- The Gaussian Hankel form minus its diagonal reserve equals the displayed moment polynomial. -/
+theorem entry_eq_entryPoly (m : ℕ → ℝ) (i j : Fin 5) : entry m i j = entryPoly m i j := by
   fin_cases i
   · exact entry_row_0 m j
   · exact entry_row_1 m j
   · exact entry_row_2 m j
   · exact entry_row_3 m j
   · exact entry_row_4 m j
-private theorem entryPoly_symmetric (m : ℕ → ℝ) (i j : Fin 5) :
+/-- The displayed Gaussian Hankel entry polynomial is symmetric. -/
+theorem entryPoly_symmetric (m : ℕ → ℝ) (i j : Fin 5) :
     entryPoly m i j = entryPoly m j i := by
   fin_cases i <;> fin_cases j <;> rfl
 private def coefficients (j : Fin 25) : ℕ → ℝ :=
@@ -1119,92 +1133,110 @@ local macro "reduce_radial" : tactic =>
     radialCoeffs_7_13, radialCoeffs_7_14, radialCoeffs_7_15, radial_eight_coeff,
     radial_seven_zero_16, radial_seven_zero_17, radial_seven_zero_18, radial_seven_zero_19,
     radialStepCoeff, radialInnerCoeff, Nat.reduceAdd, Nat.reduceMul, Nat.reducePow])
-private theorem radial_0 (q : ℝ) :
+/-- The explicit diagonal-pair radial moment of order 0. -/
+theorem radial_0 (q : ℝ) :
     (thetaPairRadialEvenPolynomial (q^2) 0).eval (2*q) = r0 q := by
   reduce_radial
   simp only [r0]
   ring
-private theorem mixed_0 (q : ℝ) :
+/-- The explicit unequal-pair radial moment of order 0. -/
+theorem mixed_0 (q : ℝ) :
     (thetaPairRadialEvenPolynomial (4*q^2) 0).eval (5*q) = b0 q := by
   reduce_radial
   simp only [b0]
   ring
-private theorem radial_1 (q : ℝ) :
+/-- The explicit diagonal-pair radial moment of order 1. -/
+theorem radial_1 (q : ℝ) :
     (thetaPairRadialEvenPolynomial (q^2) 1).eval (2*q) = r1 q := by
   reduce_radial
   simp only [r1]
   ring
-private theorem mixed_1 (q : ℝ) :
+/-- The explicit unequal-pair radial moment of order 1. -/
+theorem mixed_1 (q : ℝ) :
     (thetaPairRadialEvenPolynomial (4*q^2) 1).eval (5*q) = b1 q := by
   reduce_radial
   simp only [b1]
   ring
-private theorem radial_2 (q : ℝ) :
+/-- The explicit diagonal-pair radial moment of order 2. -/
+theorem radial_2 (q : ℝ) :
     (thetaPairRadialEvenPolynomial (q^2) 2).eval (2*q) = r2 q := by
   reduce_radial
   simp only [r2]
   ring
-private theorem mixed_2 (q : ℝ) :
+/-- The explicit unequal-pair radial moment of order 2. -/
+theorem mixed_2 (q : ℝ) :
     (thetaPairRadialEvenPolynomial (4*q^2) 2).eval (5*q) = b2 q := by
   reduce_radial
   simp only [b2]
   ring
-private theorem radial_3 (q : ℝ) :
+/-- The explicit diagonal-pair radial moment of order 3. -/
+theorem radial_3 (q : ℝ) :
     (thetaPairRadialEvenPolynomial (q^2) 3).eval (2*q) = r3 q := by
   reduce_radial
   simp only [r3]
   ring
-private theorem mixed_3 (q : ℝ) :
+/-- The explicit unequal-pair radial moment of order 3. -/
+theorem mixed_3 (q : ℝ) :
     (thetaPairRadialEvenPolynomial (4*q^2) 3).eval (5*q) = b3 q := by
   reduce_radial
   simp only [b3]
   ring
-private theorem radial_4 (q : ℝ) :
+/-- The explicit diagonal-pair radial moment of order 4. -/
+theorem radial_4 (q : ℝ) :
     (thetaPairRadialEvenPolynomial (q^2) 4).eval (2*q) = r4 q := by
   reduce_radial
   simp only [r4]
   ring
-private theorem mixed_4 (q : ℝ) :
+/-- The explicit unequal-pair radial moment of order 4. -/
+theorem mixed_4 (q : ℝ) :
     (thetaPairRadialEvenPolynomial (4*q^2) 4).eval (5*q) = b4 q := by
   reduce_radial
   simp only [b4]
   ring
-private theorem radial_5 (q : ℝ) :
+/-- The explicit diagonal-pair radial moment of order 5. -/
+theorem radial_5 (q : ℝ) :
     (thetaPairRadialEvenPolynomial (q^2) 5).eval (2*q) = r5 q := by
   reduce_radial
   simp only [r5]
   ring
-private theorem mixed_5 (q : ℝ) :
+/-- The explicit unequal-pair radial moment of order 5. -/
+theorem mixed_5 (q : ℝ) :
     (thetaPairRadialEvenPolynomial (4*q^2) 5).eval (5*q) = b5 q := by
   reduce_radial
   simp only [b5]
   ring
-private theorem radial_6 (q : ℝ) :
+/-- The explicit diagonal-pair radial moment of order 6. -/
+theorem radial_6 (q : ℝ) :
     (thetaPairRadialEvenPolynomial (q^2) 6).eval (2*q) = r6 q := by
   reduce_radial
   simp only [r6]
   ring
-private theorem mixed_6 (q : ℝ) :
+/-- The explicit unequal-pair radial moment of order 6. -/
+theorem mixed_6 (q : ℝ) :
     (thetaPairRadialEvenPolynomial (4*q^2) 6).eval (5*q) = b6 q := by
   reduce_radial
   simp only [b6]
   ring
-private theorem radial_7 (q : ℝ) :
+/-- The explicit diagonal-pair radial moment of order 7. -/
+theorem radial_7 (q : ℝ) :
     (thetaPairRadialEvenPolynomial (q^2) 7).eval (2*q) = r7 q := by
   reduce_radial
   simp only [r7]
   ring
-private theorem mixed_7 (q : ℝ) :
+/-- The explicit unequal-pair radial moment of order 7. -/
+theorem mixed_7 (q : ℝ) :
     (thetaPairRadialEvenPolynomial (4*q^2) 7).eval (5*q) = b7 q := by
   reduce_radial
   simp only [b7]
   ring
-private theorem radial_8 (q : ℝ) :
+/-- The explicit diagonal-pair radial moment of order 8. -/
+theorem radial_8 (q : ℝ) :
     (thetaPairRadialEvenPolynomial (q^2) 8).eval (2*q) = r8 q := by
   reduce_radial
   simp only [r8]
   ring
-private theorem mixed_8 (q : ℝ) :
+/-- The explicit unequal-pair radial moment of order 8. -/
+theorem mixed_8 (q : ℝ) :
     (thetaPairRadialEvenPolynomial (4*q^2) 8).eval (5*q) = b8 q := by
   reduce_radial
   simp only [b8]

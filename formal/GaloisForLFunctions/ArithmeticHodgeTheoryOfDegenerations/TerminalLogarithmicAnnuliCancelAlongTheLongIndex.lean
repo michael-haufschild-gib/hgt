@@ -22,14 +22,18 @@ theorem terminal_logarithmic_gap_antitone (d : ℕ) {m n : ℕ}
     (hm : 0 < m) (hmn : m ≤ n) :
     Real.log (n + d : ℕ) - Real.log n ≤ Real.log (m + d : ℕ) - Real.log m := by
   have hm0 : (0 : ℝ) < m := by exact_mod_cast hm
-  have hn0 : (0 : ℝ) < n := hm0.trans_le (by exact_mod_cast hmn)
-  have hmd0 : (0 : ℝ) < (m + d : ℕ) := by positivity
-  have hnd0 : (0 : ℝ) < (n + d : ℕ) := by positivity
+  have hmnR : (m : ℝ) ≤ n := by exact_mod_cast hmn
+  have hn0 : (0 : ℝ) < n := hm0.trans_le hmnR
+  have hmd0 : (0 : ℝ) < (m + d : ℕ) := by
+    exact_mod_cast (show 0 < m + d by omega)
+  have hnd0 : (0 : ℝ) < (n + d : ℕ) := by
+    exact_mod_cast (show 0 < n + d by omega)
   rw [← Real.log_div hnd0.ne' hn0.ne', ← Real.log_div hmd0.ne' hm0.ne']
   apply Real.log_le_log (div_pos hnd0 hn0)
   simp only [Nat.cast_add, add_div, div_self hm0.ne', div_self hn0.ne']
-  exact add_le_add_left (div_le_div_of_nonneg_left (Nat.cast_nonneg d) hm0
-    (by exact_mod_cast hmn)) 1
+  have hdiv : (d : ℝ) / n ≤ (d : ℝ) / m :=
+    div_le_div_of_nonneg_left (Nat.cast_nonneg d) hm0 hmnR
+  exact add_le_add_left hdiv 1
 
 /-- The long-index interval selected by a logarithmic annulus. -/
 def terminalLogarithmicGapInterval (α β w : ℝ) (N d : ℕ) : Finset ℕ :=
@@ -124,9 +128,7 @@ theorem endpointNearPairSum_eq_annular_offset_sum (K F : ℝ → ℝ) (p : ℕ �
     simp only [G, abs_sub_comm (Real.log n) (Real.log (n + d : ℕ)), abs_of_pos hlog,
       terminalNearOffsetPair, mul_comm (Real.sqrt (n + d : ℕ)) (Real.sqrt n)]
     split_ifs <;> ring
-  change (∑ n ∈ Icc 1 N, ∑ j ∈ Icc 1 N,
-    if _ then F ((n : ℝ) / N) * 1 * p j * K _ / _ else 0) = _
-  simp only [mul_one]
+  simp only [endpointNearPairSum, mul_one]
   change (∑ n ∈ Icc 1 N, ∑ j ∈ Icc 1 N, G n j) = _
   rw [sum_zero_diagonal_eq_gap_triangles G N hdiag, htri]
   have hfloorN : ⌊T * c⌋₊ ≤ N := by
@@ -139,7 +141,10 @@ theorem endpointNearPairSum_eq_annular_offset_sum (K F : ℝ → ℝ) (p : ℕ �
     apply sum_eq_zero
     intro n hn
     obtain ⟨hn, hgap⟩ := mem_filter.mp hn
-    have hnN : n + d ≤ N := by have := (mem_Icc.mp hn).2; omega
+    have hnN : n + d ≤ N := by
+      have := (mem_Icc.mp hn).1
+      have := (mem_Icc.mp hn).2
+      omega
     have hlog : Real.log (n + d : ℕ) - Real.log n ≤ (T * c) / N := by
       exact hgap.2.trans ((mul_le_mul_of_nonneg_right hβT hw.le).trans_eq (by ring))
     have hg := terminal_gap_le_overlap_of_log_gap (mul_pos hT hc).le
@@ -170,7 +175,7 @@ theorem abs_terminal_annular_offset_sub_linear_le
     rw [Real.dist_eq, Real.dist_eq] at hh ⊢
     exact hh.trans_eq (by
       rw [← mul_sub, abs_mul, abs_of_pos hT0]
-      dsimp only [KLt]
+      simp only [KLt, NNReal.coe_mk]
       ring)
   have hTc1 : 1 ≤ T * c := by
     simpa only [one_mul] using mul_le_mul hT hc zero_le_one hT0.le
@@ -182,7 +187,7 @@ theorem abs_terminal_annular_offset_sub_linear_le
     field_simp [hT0.ne', hc0.ne', hn0.ne'] <;> ring
   dsimp only [terminalNearOffsetPair, terminalLinearOffsetPair, Kt] at ht
   rw [hlog, hlin] at ht
-  exact ht.trans_eq (by dsimp only [KLt]; ring)
+  exact ht.trans_eq (by simp only [KLt, NNReal.coe_mk]; ring)
 
 /-- Periodic cancellation on a sharp annulus retains explicit quadratic and cubic outer-gap costs. -/
 theorem abs_terminal_annular_pair_div_overlap_le_long_index
@@ -242,7 +247,10 @@ theorem abs_terminal_annular_pair_div_overlap_le_long_index
         rw [← sum_add_distrib]
         exact sum_congr rfl fun _ _ => by unfold terminalLinearOffsetPair; ring
       rw [he]
-      exact ((abs_add_le _ _).trans (add_le_add h₁ h₂)).trans_eq (by dsimp only [CW]; ring)
+      apply (abs_add_le _ _).trans
+      calc
+        _ ≤ 4 * q * B * CW / N + 4 * q * B * CW / N := add_le_add h₁ h₂
+        _ = _ := by ring
     have hcard : (S.card : ℝ) ≤ N := by
       have hh : S.card ≤ N := by
         calc
@@ -262,7 +270,10 @@ theorem abs_terminal_annular_pair_div_overlap_le_long_index
           intro n hn
           have hni := (mem_filter.mp hn).1
           exact abs_terminal_annular_offset_sub_linear_le hKL hF hK hlow hB hT hc hsmall
-            (mem_Icc.mp hni).1 hd0 hdc (by have := (mem_Icc.mp hni).2; omega)
+            (mem_Icc.mp hni).1 hd0 hdc (by
+              have := (mem_Icc.mp hni).1
+              have := (mem_Icc.mp hni).2
+              omega)
         _ = (S.card : ℝ) * (8 * BF * B * CK * T * c / (N : ℝ) ^ 2) := by
           rw [sum_const, nsmul_eq_mul]
         _ ≤ (N : ℝ) * (8 * BF * B * CK * T * c / (N : ℝ) ^ 2) :=

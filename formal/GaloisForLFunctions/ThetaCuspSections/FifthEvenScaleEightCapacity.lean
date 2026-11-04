@@ -120,8 +120,8 @@ private theorem interior_posDef_of_posSemidef {t : ℝ}
     (scaledGram capacity).PosDef := by
   have hc : 0 < capacity := by linarith only [capacity_bounds.1]
   have ht0 : 0 < t := hc.trans ht
-  have hλ : 0 < capacity/t := div_pos hc ht0
-  have hλ1 : capacity/t < 1 := (div_lt_one ht0).mpr ht
+  have hweight : 0 < capacity/t := div_pos hc ht0
+  have hweight_lt : capacity/t < 1 := (div_lt_one ht0).mpr ht
   have he : scaledGram capacity=(1-capacity/t) • scaledGram 0+(capacity/t) • scaledGram t := by
     ext i j
     simp only [scaledGram_eq,Matrix.add_apply,Matrix.smul_apply,smul_eq_mul,zero_mul]
@@ -134,7 +134,7 @@ private theorem interior_posDef_of_posSemidef {t : ℝ}
   simp only [star_trivial] at h0 h1 ⊢
   rw [he]
   simp only [Matrix.add_mulVec,Matrix.smul_mulVec,dotProduct_add,dotProduct_smul,smul_eq_mul]
-  exact add_pos_of_pos_of_nonneg (mul_pos (sub_pos.mpr hλ1) h0) (mul_nonneg hλ.le h1)
+  exact add_pos_of_pos_of_nonneg (mul_pos (sub_pos.mpr hweight_lt) h0) (mul_nonneg hweight.le h1)
 
 /-- Nonnegativity includes the capacity endpoint and no larger load. -/
 theorem posSemidef_iff {t : ℝ} : (scaledGram t).PosSemidef ↔ t ≤ capacity := by

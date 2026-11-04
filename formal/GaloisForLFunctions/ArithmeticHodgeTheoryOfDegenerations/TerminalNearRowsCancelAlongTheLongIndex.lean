@@ -1,4 +1,5 @@
 import GaloisForLFunctions.ArithmeticHodgeTheoryOfDegenerations.TerminalReciprocalRowsCancelAlongTheLongIndex
+import GaloisForLFunctions.ArithmeticHodgeTheoryOfDegenerations.TerminalWeightsReadEitherEndOfANearPair
 import GaloisForLFunctions.CriticalArithmeticCorrelationTheory.TheUpwardPrimeRowsHaveUniformKernelBounds
 import GaloisForLFunctions.HTGeometry.IntegerLogGap
 
@@ -156,7 +157,10 @@ theorem endpointNearPairSum_eq_terminal_offset_sum
     apply sum_eq_zero
     intro n hn
     exact terminalNearOffsetPair_eq_zero_of_overlap_lt hK F p hc (mem_Icc.mp hn).1
-      (mem_Icc.mp hd).1 (by have := (mem_Icc.mp hn).2; omega) hcd
+      (mem_Icc.mp hd).1 (by
+        have := (mem_Icc.mp hn).2
+        have := (mem_Icc.mp hd).2
+        omega) hcd
 
 /-- On terminal support the actual pair and its reciprocal model differ by `O(c/N²)`. -/
 theorem abs_terminalNearOffsetPair_sub_linear_le
@@ -303,7 +307,10 @@ theorem abs_terminal_near_pair_div_overlap_le_long_index
         rw [← sum_add_distrib]
         exact sum_congr rfl fun _ _ => by unfold terminalLinearOffsetPair; ring
       rw [he]
-      exact ((abs_add_le _ _).trans (add_le_add h₁ h₂)).trans_eq (by dsimp only [CW]; ring)
+      apply (abs_add_le _ _).trans
+      calc
+        _ ≤ 2 * q * B * CW / N + 2 * q * B * CW / N := add_le_add h₁ h₂
+        _ = _ := by ring
     have herr : |∑ n ∈ Icc 1 (N - d),
         (terminalNearOffsetPair K F c N p d n - terminalLinearOffsetPair K F c N p d n)| ≤
         8 * BF * B * CK * c / N := by

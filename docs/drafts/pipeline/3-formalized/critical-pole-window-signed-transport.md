@@ -46,11 +46,16 @@ and the Mertens limit give the candidate density
 
     D(y)=exp(-y)−ψ(exp(-y))−log(2π)−½log(1−exp(2y)),  y<0.
 
-Thus `S_A(h)=a∫exp(y)h(y)D(y)dy` is the proposed continuum identification.
-Its polar mass is consistent with the checked genus: partial summation
-and Mertens give `∫₁ˣ(t−ψ(t))/t²dt→γ+1`, while the boundary logarithm
-contributes `1−log 2`; the total is g. This consistency calculation is
-paper only, not the discrete transfer proof.
+**[OPEN IDENTIFICATION]** `S_A(h)=a∫exp(y)h(y)D(y)dy` remains a proposed
+continuum identification, not a completed paper proof. Its scalar inputs
+already exist in Lean: `integral_chebyshevError_div_sq` in
+`RHTower/MertensVonMangoldtEulerConstant` gives the arithmetic mass
+`γ+1`; `integral_exp_neg_mul_poleBoundaryLog_two_mul` and
+`abs_poleSelfBoundaryPrimitive_sub_le` in `RHTower/PoleBoundaryLogSharpConstant`
+give the boundary coefficient `1−log 2`. The complete pole diagonal has
+limit `g` by `tendsto_poleDiagonalExplicit_div_exp` in `RHTower/PoleSelfEnergyLimit`.
+These scalar theorems do not identify the proposed functional with the
+checked discrete source.
 
 The potential failure was an additional R-dependent aliasing cross term.
 The discrete near row instead cancels log N before any estimate. For

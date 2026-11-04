@@ -136,8 +136,8 @@ error; a generic residual norm does not do that.
 
 ## Long-index estimate for the actual near kernel
 
-A dependency-closed paper argument now gives the following finite
-estimate; its actual-kernel Lean transfer remains pending. Assume F
+A checked finite argument gives the following actual-kernel
+estimate. Assume F
 vanishes on `x≤1/2`, `|F|≤B_F`, and `Lip(F)≤L_F`. Let K vanish on
 `[1,∞)`, satisfy `|K|≤B_K`, and have Lipschitz constant L_K. Let p
 be q-periodic with zero mean and `|p|≤B`. For c≥1 and `8c≤N`, put
@@ -145,7 +145,7 @@ be q-periodic with zero mean and `|p|≤B`. For c≥1 and `8c≤N`, put
     C_W = 20B_FB_K+64B_FL_K+4B_KL_F,
     C_K = 64L_K+4B_K.
 
-Then the proposed exact-kernel bound is
+The exact-kernel bound is
 
     |endpointNearPairSum(K,F,0,2,c/N,N,1,p)/c|
       ≤ [4qB C_W+8B_FB C_K c]/N.
@@ -169,7 +169,8 @@ actual row unchanged. Applying the checked
 bounds its absolute sum by `2qB C_W/N`, independently of d and c.
 The reciprocal-row statement is implemented in
 `TerminalReciprocalRowsCancelAlongTheLongIndex.lean`, together with its
-moving-interval version at twice the prefix constant; audit pending.
+moving-interval version at twice the prefix constant. All three capstones
+pass their actual-path audit with `[propext, Classical.choice, Quot.sound]`.
 
 For the actual kernel, apply the checked
 `abs_sqrt_log_kernel_sub_linear_le` with A=4, B=c, x=n, y=n+d.
@@ -180,7 +181,10 @@ indices costs `8B_FB C_K c/N` per gap. There are at most c gaps.
 After division by c, the two reciprocal estimates and this error give
 the displayed bound. Zero receiver coefficients contribute nothing.
 `TerminalNearRowsCancelAlongTheLongIndex.lean` implements the exact
-strip, triangle reindexing, kernel error and final bound; audits pending.
+strip, triangle reindexing, kernel error and final bound. All four printed
+capstones pass their actual-path audit with exactly
+`[propext, Classical.choice, Quot.sound]`. Both long-index modules are
+wired into the programme umbrella.
 
 This cancellation uses the long terminal index. It imposes no relation
 between q and c. Apply it to the centered divisor jet and retain its

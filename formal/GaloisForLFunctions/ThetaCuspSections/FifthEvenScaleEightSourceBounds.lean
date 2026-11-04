@@ -138,7 +138,7 @@ private theorem pure_source_eq (n : ℕ) :
   have hk : sourceUnit center=4*8^2*Real.exp (center-2*8) := by
     simp only [sourceUnit,center_scale]
   rw [hk]
-  field_simp [Real.exp_ne_zero] <;> ring
+  field_simp [Real.exp_ne_zero]
 
 private theorem pure_two_small (i j : Fin 5) :
     |FifthNativeRay.pureGram 2 center i j| ≤ (1/1000 : ℝ) := by
@@ -211,9 +211,20 @@ private theorem source_error_entry (i j : Fin 5) :
     simp only [Matrix.add_apply,Matrix.sub_apply]
     ring
   rw [hid]
-  exact (abs_add_le _ _).trans ((add_le_add_right ((abs_add_le _ _).trans
-    (add_le_add_right ((abs_add_le _ _).trans (add_le_add he hr)) _)) _).trans
-      (by linarith only [hp2,hp3]))
+  calc
+    _ ≤ |(gaussianGram (leadingMatrix 8 (Real.exp (-24)))-gaussianGram (leadingMatrix 8 weight)) i j|+
+        |remainderGram center i j|+|FifthNativeRay.pureGram 2 center i j|+
+        |FifthNativeRay.pureGram 3 center i j| := by
+      have ht (a b c d : ℝ) : |a+b+c+d| ≤ |a|+|b|+|c|+|d| := by
+        have h1 := abs_add_le a b
+        have h2 := abs_add_le (a+b) c
+        have h3 := abs_add_le (a+b+c) d
+        linarith only [h1,h2,h3]
+      exact ht _ _ _ _
+    _ ≤ ((1/100 : ℝ)+147/20000)+1/1000+1/1000 :=
+      add_le_add (add_le_add (add_le_add he hr) hp2) hp3
+    _ ≤ _ := by norm_num
+
 
 /-- The complete native source lies within one tenth of the retained Gaussian form. -/
 theorem source_error (v : Fin 5 → ℝ) :
