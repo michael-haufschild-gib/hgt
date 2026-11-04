@@ -172,20 +172,20 @@ for `m,l|M`, `⟨G(e_mF_b),e_l⟩period=δ_mlΣ_p b_p log p/p`.
 `PrimeFibreCoordinates` and `CommonPrimeFibrePackets` are checked, including
 global harmonic neutrality and the entire simultaneous coordinate vector.
 For a finite prescribed vector `(t_m)`,
-the common packet has prospective raw limit `Σ_m t_m²(d/a−1/2)`, vanishing
-physical energy, and adjunction at most
+the common packet has raw limit `Σ_m t_m²(d/a−1/2)`, vanishing physical
+energy and input square, and adjunction at most
 `|S|Σ_m(2(log m+tameDifferent m)+1)t_m²/B_(M,Q)`.
-The remaining source modules are `CommonPrimeFibreMoments`,
+These statements are checked in `CommonPrimeFibreMoments`,
 `CommonPrimeFibreAdjunction`, `CommonPrimeFibreDilation`, `CommonPrimeFibreCompleteEnergy`.
 
 Common exclusion differs from each original fibre by the fixed prime set
 `{p|M:p∤m}` once `Q≥M`. Its exact profile is `(B_m/B_M)` times the original
 fibre minus `(t/B_M)` times that fixed incidence packet. Centering is linear;
-the correction's full critical output tends to zero. This gives the proposed
+the correction's full critical output tends to zero. This gives the checked
 simultaneous signed law `⟨Wv,r_l⟩→t_l/80`, zero for absent modes.
 `CommonPrimeFibreRestriction`, `CommonPrimeFibreCentering` and
-`CommonPrimeFibreSignedReceiver` contain the dependency-closed paper assembly
-and Lean source; checks pending. `SimultaneousCompleteReceivingLaw` specializes
+`CommonPrimeFibreSignedReceiver` formalize the exact finite-deletion identity
+and its complete-form limit. `SimultaneousCompleteReceivingLaw` specializes
 to the tilted spline and common exclusion `R!` for arbitrary charges in modes
 `1,…,R`; its exact-coordinate, energy and signed-limit assembly is unchecked.
 
@@ -259,7 +259,8 @@ and the physical-cost obstruction; check pending.
 
 The continuum form suggested by the finite grids is
 `∫₀¹(1−u)f(u)²du=∫₀¹uT′(u)²du`, `T(u)=∫_(1−u)^1 f(v)dv`.
-Its continuum and finite-fibre extensions are unformalized.
+The continuum form and conductor-fibre extensions of this scale-grid
+classification remain unformalized.
 
 ## Uniform horizon frontier
 
@@ -354,8 +355,8 @@ harmonic width and reciprocal-square prime tail are proved bounds, not
 additional distribution assumptions.
 
 For a unit-invariant profile `G` with `|G|≤V`, the exact prime centering
-numerator is `−(s/p)Σ_(N/p<k≤N)G(k)/k`. Hence the band centering coefficient
-satisfies
+numerator is `−(s/p)Σ_(N/p<k≤N)G(k)/k`. For `N≥2`, the band centering
+coefficient satisfies
 
 `|η|≤V|s|(1+8/log 2)(Σ_Plog p/p)/log N`.
 

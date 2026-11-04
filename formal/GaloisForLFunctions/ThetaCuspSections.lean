@@ -40,6 +40,10 @@ A quartic center-flux profile preserves every fifth even mixed entry and gives
 positivity near the origin, near scale eight, and on a cofinal source ray.
 Its correction is nonnegative throughout `1/2 ≤ x²`, `0 ≤ x ≤ 3/4`,
 where the complete profiled source is positive definite.
+At scale thirty-two the quartic repair fails semidefiniteness at every
+critical aperture. Its base scalar capacity satisfies `0 < τ < 27/35`;
+the literal aperture capacity is `τ/α`, with `67/70 ≤ α ≤ 1`, hence is
+at most `70τ/67 < 54/67`. Both capacities have singular semidefinite endpoints.
 Every individual theta atom has a strict fifth even section at reflection scale at least five.
 -/
 import GaloisForLFunctions.ThetaCuspSections.FifthEvenLeadingPairReserve
@@ -49,7 +53,13 @@ import GaloisForLFunctions.ThetaCuspSections.FifthEvenEffectiveCrossRay
 import GaloisForLFunctions.ThetaCuspSections.FifthEvenCrossLoadPolynomialEnvelope
 import GaloisForLFunctions.ThetaCuspSections.FifthEvenScaleEightData
 import GaloisForLFunctions.ThetaCuspSections.FifthEvenScaleEightSourceBounds
+import GaloisForLFunctions.ThetaCuspSections.CrossLoadCapacity
 import GaloisForLFunctions.ThetaCuspSections.FifthEvenScaleEightCapacity
 import GaloisForLFunctions.ThetaCuspSections.FifthEvenPolynomialCrossLoad
 import GaloisForLFunctions.ThetaCuspSections.FifthEvenPolynomialCrossTail
 import GaloisForLFunctions.ThetaCuspSections.FifthEvenPolynomialCrossInterval
+import GaloisForLFunctions.ThetaCuspSections.FifthEvenScaleThirtyTwoData
+import GaloisForLFunctions.ThetaCuspSections.FifthEvenScaleThirtyTwoSourceBounds
+import GaloisForLFunctions.ThetaCuspSections.FifthEvenPolynomialCrossObstruction
+import GaloisForLFunctions.ThetaCuspSections.FifthEvenScaleThirtyTwoCapacity
+import GaloisForLFunctions.ThetaCuspSections.FifthEvenScaleThirtyTwoApertureCapacity

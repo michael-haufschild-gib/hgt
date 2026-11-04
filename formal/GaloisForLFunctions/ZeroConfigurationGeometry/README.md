@@ -1,7 +1,7 @@
 # Zero Configuration Geometry (ZCG)
 
 Namespace `GaloisForLFunctions.ZeroConfigurationGeometry`; umbrella `ZeroConfigurationGeometry.lean`;
-55 modules.
+60 modules.
 
 ## 1. Motivation
 
@@ -238,6 +238,8 @@ same input as every route: cancellation of the prime sum below the mean spacing.
 | Spline bumps decay at an explicit rate | `norm_paperFT_le_of_prob`, `one_add_mul_norm_sincC_le`, `splineBump`, `splineStage_props`, `one_add_norm_pow_mul_norm_paperFT_splineBump_le`, `one_le_norm_paperFT_splineBump_I`, `exists_explicit_bump` | unconditional |
 | The local camera constant is quasi-polynomial in the density | `windowSlack_localSlack_le`, `nearFarConst_two_mul_inv_le`, `windowExponent_le`, `log_windowGrowth_le`, `log_inv_windowFloor_le` | unconditional |
 | **The local camera fixes the isolated zeros of `ζ` at every aperture `> L`; cancelling clusters are near-coincidences at scale `exp(−κ log X/(1 + log log X))`** | `localCameraConst_le`, `localCameraConst_le_of`, `zeta_cluster_count`, `zeta_camera_budget_of`, `log_inv_windowFloor_le_of_le_one`, `multDiff_zeta_eq_zero_of_isolated`, `exists_near_point_of_zeta_mimic`, `multDiff_zeta_eq_zero_of_nearly_isolated`, `exists_near_coincidence_of_zeta_mimic` | unconditional |
+| **Sub-spacing local inversion down to `T^{−M}` and `o(1/log T)`; sharp Nyquist threshold (`λ = 1` for RvM pairs, `λ = ½` for subset carriers and `ζ` multiplicity readout)** | `exists_rvm_pair_mimic_disjoint_up_to_one`, `log_inv_windowFloor_subspacing_le`, `exists_subspacing_isolating_windows`, `multDiff_eq_zero_of_subspacing_isolated`, `exists_nearCollision_littleO_inv_log`, `rvm_coincide_of_extra_density_littleO`, `rvm_local_inversion_dichotomy`, `zeta_coincide_of_extra_density_littleO`, `zeta_isolated_zero_multiplicity_readout_at_squareRoot_rpow`, `zeta_isolated_zero_multiplicity_readout_at_squareRoot_littleO` | unconditional |
+| Near-coincident clusters are read through their first three moments; for `ζ` at quasi-polynomial scale | `annihilatePow_props`, `norm_paperFT_sub_le_of_bounded`, `norm_le_of_paperFT_decay`, `norm_pairImage_sub_le`, `exists_local_isolating_pair`, `norm_discMoment_le`, `sum_multDiff_eq_zero_of_disc`, `pair_moments`, `norm_discMoment_zeta_le` | unconditional |
 | Shallow configurations are resolved locally at the Ingham scale, with explicit far error | `inghamConst_mul_normSq_le_of_small`, `exists_maximal_nearSite`, `tsum_near_siteWeight_sq_le`, `tsum_far_siteWeight_le`, `norm_multDiff_sq_le_of_locally_shallow`, `exists_local_resolution_at_ingham_scale`, `eq_of_locally_shallow_at_ingham_scale` | unconditional |
 | Cosine camera: real zeros, complex additive rigidity | `im_eq_zero_of_cosineWindowTransform_eq_zero`, `no_complex_additive_zero_triple` | unconditional, `0 < θ < π/2` |
 | **Arithmetic fakes** | | |
@@ -254,6 +256,7 @@ same input as every route: cancellation of the prime sum below the mean spacing.
 | Symmetric halves are phase lattices | `SymmetricHalf`, `sym_linePt`, `line_eq_mul_exp`, `sym_eq_zero_iff_phase`, `sym_deriv_ne_zero`, `sym_ne_zero_of_phase_lt`, `exists_sym_zero_of_phase_ge`, `ncard_sym_zeros`, `norm_lt_of_speed_pos`, `sym_ne_zero_near_line` | unconditional |
 | Finite carriers are real above their horizon; the Euler-depth descent | `carrierHalf`, `carrierWeight`, `re_carrierLogDeriv_ge`, `carrier_ne_zero_near_line`, `carrier_deriv_ne_zero`, `carrier_eq_zero_iff_phase`, `ncard_carrier_zeros`, `eulerDepthCoeff`, `carrierWeight_eulerDepth`, `eulerDepth_ne_zero_near_line`, `eulerDepth_deriv_ne_zero` | unconditional |
 | Tilts cost prime weight: the twin calibration of the descent | `log_le_carrierWeight_of_tilted_zero`, `log_le_eulerDepth_weight_of_tilted_zero`, `localFactor_twin_tilted_zero`, `twin_tilt_costs_weight`, `exists_twin_tilt_beyond_every_weight` | unconditional |
+| **Symmetric-half collision law of `H_t`, sub-Weyl collision-free horizon at `6600/9991`, and order-2 real collision of `pairModelHeat` below `½/log X`** | `riemannHeat_ofReal_collision_iff_halfGauss`, `norm_deriv_riemannHeat_ofReal_eq_of_eq_zero`, `riemannHeat_zeros_real_simple_subWeyl`, `riemannHeat_no_collision_near_height_subWeyl_logX`, `subWeyl_margin_pos_iff`, `eventually_localNewmanConstant_le_subWeyl_logX`, `pairModelHeat_orderTwo_collision`, `no_collision_upto_twoThirds_iff_upto_subWeyl`, `question_2_6_5_global_equivalence` | unconditional |
 | **Certification** | | |
 | Function-field certification at the identification threshold | `pure_iff_of_powerSum_eq`, `pure_iff_of_weil_eq_on_aperture`, `isPure_of_curveImage_eq` | unconditional |
 | Bounded images certify purity; growth reads the deepest eigenvalue | `exists_simultaneous_return`, `curveImage_growth`, `isPure_iff_bounded_curveImage` | unconditional |
@@ -283,14 +286,26 @@ arithmetic images, forces every point onto the real curve?*
   density, the matrix camera identifies exactly above exponent `λ = ½` (`rvmLattice_mimic_iff`).
 - Function field: order `m` of the camera fixes the coefficient of degree `g − m`, so the genus is
   the exact threshold (`curveImage_eq_iff_coeff_eq`, `exists_pure_mimics`).
-- For `ζ` itself: at every aperture above `L`, a mimic of the density of `ζ` agrees with `ζ` at every
-  zero isolated at a fixed fraction of the mean spacing (`multDiff_zeta_eq_zero_of_isolated`). In the
-  normalization `a = λL` the thresholds are: Euler columns hide exactly for `λ ≤ ½`
-  (`rvmLattice_mimic_iff`); isolated points are fixed for `λ > 1`; at `λ = 1` lattice pairs of the
-  density of `ζ` cancel (`exists_onLine_mimic_at_density`).
-- *Open:* near-coincidences. For `ζ` the image fixes everything except clusters of points closer
-  than `exp(−κ log X/(1 + log log X))` (`exists_near_coincidence_of_zeta_mimic`). The camera reads
-  them only through their moments, at second order in the gaps, which is the coalescent question Q3.
+- For `ζ` itself: in the normalization `a = λL` (`L = ½ log(T/2π)`), Euler columns hide for `λ ≤ ½`
+  (`rvmLattice_mimic_iff`); disjoint simple-zero RvM pairs hide across `0 < λ ≤ 1` with uniform gap
+  `π/log(T/2π)` (`exists_rvm_pair_mimic_disjoint_up_to_one`); arbitrary RvM pairs coincide for
+  `λ > 1` (`rvm_pair_coincide_outside_nearCollisions_above_one`); and at the square-root threshold
+  `λ > ½`, `ζ` coincides with subset-carrier mimics (`zeta_coincide_subset_carrier_at_squareRoot_littleO`)
+  and every `T^{−M}`-isolated zero has its exact integer multiplicity read by one window pair
+  (`zeta_isolated_zero_multiplicity_readout_at_squareRoot_rpow`).
+- Near-coincidences are read through their moments. Take a cluster in a disc of radius `r`,
+  isolated at `η` from the rest of the cluster. Its moments `μ_j = Σ c(z)(γ_z − ω)^j`, `j ≤ 2`,
+  satisfy `c_η² |μ_j| ≤ N r^{j+1}·4a²M²e^{a/2} + tail` (`norm_discMoment_le`). So the net
+  multiplicity vanishes (`sum_multDiff_eq_zero_of_disc`). For a pair `p ± w/2` against `p' ± w'/2`,
+  `w² − w'² = 2μ₂ − 2μ₁(p + p' − 2ω)` (`pair_moments`): the image fixes the centre to `O(r²)` and the
+  squared gap to `O(r³)`. For `ζ`, at isolation `exp(−κ log X/(1 + log log X))`,
+  `|μ_j| ≤ N r^{j+1} e^{C (log X)²} + e^{−K (log X)²}` for every `K` (`norm_discMoment_zeta_le`).
+- *Open:* near-coincidences below polynomial scale. For `ζ` the image fixes everything except
+  clusters of points closer than `T^{−M}` for every `M ≥ 0` (`rvm_coincide_of_extra_density_rpow`,
+  `zeta_coincide_of_extra_density_littleO`). Their first three moments are fixed once the cluster
+  is tight against its isolation, `r ≤ exp(−C (log X)²)`. Second-order reading at polynomial
+  scales needs a window floor polynomial in the isolation radius. The sign of the squared gap read
+  from primes is the coalescent question Q3.
 
 **Q2 Cancelling clusters.** *Which clusters cancel, and why can arithmetic not produce them?*
 - Finite clusters never cancel (`infinite_modification_of_mimic`).
@@ -305,12 +320,13 @@ arithmetic images, forces every point onto the real curve?*
   finitely many arbitrary points above `πD` (`eq_of_mimic_of_perturbed_lattices_and_finset`). Euler
   columns cancel against on-line lattices exactly below their dual frequency
   (`eulerColumn_mimic_iff`).
-- For `ζ`: at every aperture above `L`, every cancelling cluster against a mimic of the density of
-  `ζ` consists of near-coincidences. Each of its points at height `X` has another within
-  `exp(−κ log X/(1 + log log X))`, for every `κ > 0` (`exists_near_coincidence_of_zeta_mimic`). The
-  floor of the isolating windows costs only `D (1 + log D) log(1/η)`
-  (`log_inv_windowFloor_le_of_le_one`), so isolation far below the mean spacing still has a camera
-  constant `e^{O((log X)²)}`.
+- For `ζ`: at every aperture `λL` above `(1 + μ)/2 · L` (against a mimic of extra-carrier density
+  `μ`), every cancelling cluster consists of polynomial near-coincidences: each of its points in
+  `|Im z − T| ≤ T/4` has another within `T^{−M}`, for every `M ≥ 0`
+  (`rvm_coincide_of_extra_density_rpow`, `zeta_coincide_of_extra_density_littleO`). The floor of
+  the isolating windows costs only `D (1 + log D) (1 + log D + max(0, log(1/η)))`
+  (`log_inv_windowFloor_subspacing_le`), so polynomial isolation `η = T^{−M}` has camera constant
+  `e^{O((log T)³)}` beaten by spline order `k ≍ (log T)²` (`exists_subspacing_isolating_windows`).
 - Shallow configurations are resolved at the Ingham scale locally at height `X`, with explicit far
   error (`norm_multDiff_sq_le_of_locally_shallow`, `eq_of_locally_shallow_at_ingham_scale`).
 - Locally: let `z₀` be a cluster point at height `X`, `η`-isolated within `R`, with the cluster
@@ -349,9 +365,13 @@ arithmetic images, forces every point onto the real curve?*
   (`carrierWeight_eulerDepth`). The deformation from the archimedean carrier (`s = 0`) to the
   Euler stage (`s = 1`) is collision-free at height `t` for `s < (log(t/2π) − 6/t)/W_Λ`
   (`eulerDepth_ne_zero_near_line`). This is the Euler-depth analogue of route steps 1–3.
-- Simplicity of `H_t` is the phase speed of its symmetric half `Q_t`, and domination of the half
-  gives repulsion for `t ≥ (6600/9991 + ε)/log X` [P: `zcg-heat-scale-source-repulsion`]. Size
-  domination is impossible below `½/log X`, where the Gaussian saddle enters the strip.
+- Simplicity of `H_t` is the phase speed of its symmetric half `Q_t`
+  (`riemannHeat_ofReal_collision_iff_halfGauss`, `norm_deriv_riemannHeat_ofReal_eq_of_eq_zero`), and
+  domination of the half gives repulsion for `t ≥ (6600/9991 + ε)/log X`
+  (`riemannHeat_zeros_real_simple_subWeyl`, `riemannHeat_no_collision_near_height_subWeyl_logX`,
+  sharp for the four-piece sub-Weyl profile via `subWeyl_margin_pos_iff`). Size domination is
+  impossible below `½/log X`, where the Gaussian saddle enters the strip (`gaussianSaddle_gt_one_iff`)
+  and `pairModelHeat` collides at order `2` (`pairModelHeat_orderTwo_collision`).
 - *Open:* a half of `H_t` from Euler and Gamma data that dominates its reflection for
   `t ∈ (0, ½/log X]` (B49). This is reality of `ζ` itself.
 
@@ -451,7 +471,7 @@ arithmetic images, forces every point onto the real curve?*
 
 | Direction | Programmes (module imports) |
 |---|---|
-| Uses | RHTower 14, SquareRootThreshold 9, HTGeometry 9, Zeta23 4, ArithmeticCastelnuovoSeveri 4, SelbergClass 1, IncommensurableGaborPinching 1 |
+| Uses | RHTower 18, SquareRootThreshold 9, HTGeometry 9, Zeta23 4, ArithmeticCastelnuovoSeveri 4, ArithmeticHarmonicAnalysis 1, SelbergClass 1, IncommensurableGaborPinching 1 |
 
 | Neighbour | Interface |
 |---|---|
@@ -483,29 +503,33 @@ to be dominated by it.
 - *Heat.* `H_t = 2 Re Q_t` for the symmetric half
   `Q_t(X, y) = ∫_0^∞ g_t(w − y) ξ(½ + w + iX) dw`, and at a real zero
   `|H_t'| = 2|Re(D₀ conj Q_t)|/|Q_t|`: simplicity is the phase speed of the half, the law of Euler
-  stages [P: `zcg-heat-scale-source-repulsion`]. Domination `|Q_t^#| < |Q_t|` makes the zeros of
+  stages [L: `riemannHeat_ofReal_collision_iff_halfGauss`,
+  `norm_deriv_riemannHeat_ofReal_eq_of_eq_zero`]. Domination `|Q_t^#| < |Q_t|` makes the zeros of
   `H_t` near `X` real and simple for `t ≥ (2/3 + ε)/log X` [L:
   `riemannHeat_zeros_real_simple_twoThirds`], and for `t ≥ (6600/9991 + ε)/log X` from four sub-Weyl
-  profiles, sharp for that method [P].
+  profiles, sharp for that method [L: `riemannHeat_zeros_real_simple_subWeyl`,
+  `riemannHeat_no_collision_near_height_subWeyl_logX`, `subWeyl_margin_pos_iff`].
 
 **What size domination cannot reach.** Below `½/log X` the Gaussian saddle
-`σ* = ½ + t log(X/2π)` lies inside the strip, so domination needs a lower bound for `ζ` on a
-horizontal segment inside the strip: zero-free-region information. In the pair model (one off-line
-pair of depth `δ` in an on-line lattice of the density of `ζ`) the pair collides at
-`t* = (√(1 + L²δ²) − 1)/L² < 1/(2L)` [P]. So every model tilt has collided by `½/log X`, and the
-band `[½, 6600/9991]/log X` carries no zero information [D]. The twins are dominated above their
-horizon and tilted at every height (`twin_tilt_costs_weight`, `exists_twin_tilt_beyond_every_weight`)
-[L]. Whatever works below `½/log X` must therefore use cancellation of the prime sum, not its size.
+`σ* = ½ + t log(X/2π)` lies inside the strip (`gaussianSaddle_gt_one_iff`) [L], so domination needs
+a lower bound for `ζ` on a horizontal segment inside the strip: zero-free-region information. In the
+pair model (one off-line pair of depth `δ` in an on-line lattice of the density of `ζ`) the pair
+collides at `t* = (√(1 + L²δ²) − 1)/L² < 1/(2L)` [L: `pairModelHeat_orderTwo_collision`,
+`exists_pairModelHeat_real_collision_below_scale`]. So every model tilt has collided by `½/log X`,
+and the band `[½, 6600/9991]/log X` carries no zero information [D]. The twins are dominated above
+their horizon and tilted at every height (`twin_tilt_costs_weight`,
+`exists_twin_tilt_beyond_every_weight`) [L]. Whatever works below `½/log X` must therefore use
+cancellation of the prime sum, not its size.
 
 **The route.**
 
 | Step | Statement | Status |
 |---|---|---|
-| 1. Start dominated | Near height `X` the heat flow is real and simple for `t ≥ (6600/9991 + ε)/log X` | `(2/3 + ε)/log X` [L]; `6600/9991` [P]; carries no zero information, since it lies above `½/log X` |
-| 2. RH is the descent | RH holds iff `Λ_X = 0` at every height (`riemannHypothesis_iff_forall_localNewmanConstant_eq_zero`) | [L] |
+| 1. Start dominated | Near height `X` the heat flow is real and simple for `t ≥ (6600/9991 + ε)/log X` (`riemannHeat_no_collision_near_height_subWeyl_logX`, `eventually_localNewmanConstant_le_subWeyl_logX`) | [L]; carries no zero information, since it lies above `½/log X` |
+| 2. RH is the descent | RH holds iff `Λ_X = 0` at every height (`riemannHypothesis_iff_forall_localNewmanConstant_eq_zero`, `question_2_6_5_global_equivalence`) | [L] |
 | 3. Exit only through collision | Along `t ↓ 0` a zero leaves the line only at a double zero (`riemannHypothesis_iff_forall_zeros_simple`, `exists_first_collision`) | [L] |
 | 4. The pincer | A zero of depth `d` at height `X` forces `Λ_X ≥ c d²/log X` (`exists_le_localNewmanConstant_of_offLine_zero`) | [L] |
-| 5. The camera fixes the start | At `t = 0`, the only time the image is arithmetic, the image at aperture above `L = ½ log(X/2π)` fixes the configuration of `ζ` outside near-coincidence clusters. In Lean: every `exp(−κ log X/(1 + log log X))`-isolated point, against mimics of local density `μ log X` at aperture `λ log X`, `λ > ¼ + πμ/2` (`multDiff_zeta_eq_zero_of_nearly_isolated`). On paper: uniformly in `X`, outside `X^{−M}` clusters, and at `λ > ½` (units `L`) against mimics that differ from `ζ` on a set of density `< (2λ − 1)L/π` | [L] at `exp(−κ log X/(1 + log log X))`; [P: `zcg-square-root-local-inversion`] at `X^{−M}`, Lean assembly in progress |
+| 5. The camera fixes the start | At `t = 0`, the only time the image is arithmetic, the image at aperture `λL` (`L = ½ log(X/2π)`) fixes the configuration of `ζ` uniformly in `X` outside polynomial `X^{−M}` (and `o(1/log X)`) near-coincidence clusters: for `λ > 1` against arbitrary RvM configurations (`zeta_coincide_with_rvm_above_one_littleO`, sharp by `exists_rvm_pair_mimic_disjoint_up_to_one`), for `λ > ½` against mimics whose extra carrier has density `< (2λ − 1)L/π` (`zeta_coincide_of_extra_density_littleO`), and at `λ > ½` for single-zero integer multiplicity readout (`zeta_isolated_zero_multiplicity_readout_at_squareRoot_rpow`) | [L] |
 | 6. Close the descent | No collision near `X` for `t ∈ (0, ½/log X]`, and reality inside near-coincidence clusters | open: (a) and (b) below |
 
 **The residual.**
@@ -514,8 +538,11 @@ horizon and tilted at every height (`twin_tilt_costs_weight`, `exists_twin_tilt_
   aperture `(1 + ε)L` should fix the centre and the squared gap `w²` of every near-coincident pair
   (`w² = −4δ²` for an FE pair, `> 0` for a real pair). The camera reads `w²` linearly at second order
   (`norm_pairSignal_add_sq_mul_secondMoment_le`, `norm_pairSignal_sub_sq_mul_curvature_le`) through
-  the `(log n)²`-weighted coalescent channel (`deriv_deriv_primeChannel_modulate`) [L]. Doing this
-  uniformly in height is B51. The sign of that prime-side quantity is B44 in prime form.
+  the `(log n)²`-weighted coalescent channel (`deriv_deriv_primeChannel_modulate`) [L]. For `ζ` the
+  first three moments of every cluster of radius `r`, isolated at `exp(−κ log X/(1 + log log X))`,
+  are fixed to `N r^{j+1} e^{C (log X)²} + e^{−K (log X)²}` (`norm_discMoment_zeta_le`) [L]. This is
+  B51 at quasi-polynomial scale. Polynomial scales need a floor polynomial in the isolation
+  radius. The sign of the squared gap read from primes is B44 in prime form.
 - **(b) A Hermite–Biehler half below the size floor (B49).** Construct a half `Q` from Euler and
   Gamma data, with `H_t = Q + Q^#` near `X` and `|Q^#| < |Q|` off the line for every
   `t ∈ (0, ½/log X]`, uniformly in `X`. At every height and every `t > 0` this is RH (`Λ_X = 0`), and
@@ -527,13 +554,13 @@ horizon and tilted at every height (`twin_tilt_costs_weight`, `exists_twin_tilt_
   must use a property that `ζ` has exactly at `t = 0`. The Euler product is such a property, and the
   heat flow destroys it for `t > 0`.
 
-**Status.** Steps 1–4 are proved. Step 5 is proved in Lean up to near-coincidences at scale
-`exp(−κ log X/(1 + log log X))`, and on paper up to `X^{−M}`. Step 6 is RH, in the two forms (a) and
-(b). **Killed: the camera as a producer.** Identification is complete and sign-free, so it closes
-nothing alone: an on-line competitor with the image of `ζ` would already be Weil positivity [D]. The
-camera's role in the route is to fix the start of the descent. The residual of ZCG is not an
-identification problem but a precision problem: square-root-type cancellation of the prime sum
-inside the strip, at the Gaussian saddle of the heat source.
+**Status.** Steps 1–5 are proved unconditionally in Lean, up to polynomial near-coincidences `X^{−M}`
+(and `o(1/log X)`) at every height. Step 6 is RH, in the two forms (a) and (b). **Killed: the camera
+as a producer.** Identification is complete and sign-free, so it closes nothing alone: an on-line
+competitor with the image of `ζ` would already be Weil positivity [D]. The camera's role in the
+route is to fix the start of the descent. The residual of ZCG is not an identification problem but a
+precision problem: square-root-type cancellation of the prime sum inside the strip, at the Gaussian
+saddle of the heat source.
 
 ## 11. Big picture
 

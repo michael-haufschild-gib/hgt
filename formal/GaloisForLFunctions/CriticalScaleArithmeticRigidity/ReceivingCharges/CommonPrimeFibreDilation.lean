@@ -125,8 +125,8 @@ theorem jumpPairing_sum_profiles {ι κ : Type*} (S : Finset ι) (T : Finset κ)
       ∑ i ∈ S, ∑ j ∈ T, jumpPairing N (F i) (G j) := by
   simp only [jumpPairing, ← sum_sub_distrib, sum_mul, mul_sum,
     div_eq_mul_inv]
-  simp only [sum_mul, mul_sum]
   rw [sum_comm]
+  conv_rhs => rw [sum_comm]
   apply sum_congr rfl
   intro i _
   rw [sum_comm]

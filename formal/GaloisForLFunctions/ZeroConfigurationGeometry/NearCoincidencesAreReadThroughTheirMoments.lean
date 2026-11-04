@@ -559,7 +559,7 @@ theorem zeta_disc_ratio_le {lam L D C₀ ℓ κ η ε β e K' q ρ : ℝ} {m : �
 
 /-- The Lipschitz term of the moment bound for `ζ`. -/
 theorem zeta_disc_term1_le {lam β L c b₁ q e K' Mw Fl Ψ r : ℝ} {j : ℕ} (hL1 : 1 ≤ L)
-    (hlam0 : 0 < lam) (hβlam : β ≤ lam) (hβ0 : 0 < β) (hq0 : 0 ≤ q) (he0 : 0 ≤ e) (hK'0 : 0 ≤ K')
+    (hlam0 : 0 < lam) (hβlam : β ≤ lam) (hq0 : 0 ≤ q) (he0 : 0 ≤ e) (hK'0 : 0 ≤ K')
     (hb₁ : b₁ = 2 * q * (e * lam + K' + 4) + 2 * lam + 3) (hFl0 : 0 < Fl) (hr : 0 ≤ r)
     (hratio : (Mw / Fl) ^ 2 ≤ Real.exp Ψ)
     (hΨle : Ψ ≤ c * L ^ 2 + 2 * q * (e * lam + K' + 4) * L + β * L / 2) :
@@ -588,7 +588,7 @@ theorem zeta_disc_term1_le {lam β L c b₁ q e K' Mw Fl Ψ r : ℝ} {j : ℕ} (
 
 /-- The tail term of the moment bound for `ζ`. -/
 theorem zeta_disc_term2_le {lam β L K K' c b₁ q e X Mw Fl Ψ Sg S'' : ℝ} {k : ℕ}
-    (hL1 : 1 ≤ L) (hlam0 : 0 < lam) (hβlam : β ≤ lam) (hβ0 : 0 < β) (hK' : K' = c + K + 1)
+    (hL1 : 1 ≤ L) (hlam0 : 0 < lam) (hβlam : β ≤ lam) (hK' : K' = c + K + 1)
     (hb₁ : b₁ = 2 * q * (e * lam + K' + 4) + 2 * lam + 3) (hLb : b₁ + Real.log S'' + 4 ≤ L)
     (hS''1 : 1 ≤ S'') (hX0 : 0 < X) (hXL : X = Real.exp L) (hkL : K' * L ≤ k) (hk1 : 1 ≤ k)
     (hFl0 : 0 < Fl) (hratio : (Mw / Fl) ^ 2 ≤ Real.exp Ψ)
@@ -598,6 +598,7 @@ theorem zeta_disc_term2_le {lam β L K K' c b₁ q e X Mw Fl Ψ Sg S'' : ℝ} {k
       Fl ^ 2 ≤ Real.exp (-(K * L ^ 2)) := by
   have hlow := camera_lower_bound hX0 hXL hk1
   have hpos : 0 < (1 + X / 2) ^ (2 * k - 2) := by positivity
+  have hX1 : 1 ≤ X := by rw [hXL]; exact Real.one_le_exp (by linarith)
   have hXim : (1 + |X|) ^ 2 ≤ 4 * Real.exp (2 * L) := by
     rw [abs_of_pos hX0, show 2 * L = L + L by ring, Real.exp_add, ← hXL]
     nlinarith
@@ -644,7 +645,7 @@ theorem zeta_disc_term2_le {lam β L K K' c b₁ q e X Mw Fl Ψ Sg S'' : ℝ} {k
 
 /-- The moment bound for `ζ` from the two terms. -/
 theorem zeta_disc_budget {lam β L K K' c b₁ q e X Mw Fl Ψ N Sg S'' r μn : ℝ} {k j : ℕ}
-    (hL1 : 1 ≤ L) (hlam0 : 0 < lam) (hβlam : β ≤ lam) (hβ0 : 0 < β) (hq0 : 0 ≤ q) (he0 : 0 ≤ e)
+    (hL1 : 1 ≤ L) (hlam0 : 0 < lam) (hβlam : β ≤ lam) (hq0 : 0 ≤ q) (he0 : 0 ≤ e)
     (hK' : K' = c + K + 1) (hK'0 : 0 ≤ K') (hb₁ : b₁ = 2 * q * (e * lam + K' + 4) + 2 * lam + 3)
     (hLb : b₁ + Real.log S'' + 4 ≤ L) (hS''1 : 1 ≤ S'') (hX0 : 0 < X) (hXL : X = Real.exp L)
     (hkL : K' * L ≤ k) (hk1 : 1 ≤ k) (hFl0 : 0 < Fl) (hratio : (Mw / Fl) ^ 2 ≤ Real.exp Ψ)
@@ -654,9 +655,9 @@ theorem zeta_disc_budget {lam β L K K' c b₁ q e X Mw Fl Ψ N Sg S'' r μn : �
       Mw ^ 2 * Real.exp (lam * L) * (5 / 4 * (1 + |X|) ^ 2 / (1 + X / 2) ^ (2 * k - 2)) * Sg) :
     μn ≤ N * r ^ (j + 1) * Real.exp ((4 * lam ^ 2 + 2 * lam + c + b₁ + 3) * L ^ 2) +
       Real.exp (-(K * L ^ 2)) := by
-  have hT1 := zeta_disc_term1_le (j := j) hL1 hlam0 hβlam hβ0 hq0 he0 hK'0 hb₁ hFl0 hr hratio
+  have hT1 := zeta_disc_term1_le (j := j) hL1 hlam0 hβlam hq0 he0 hK'0 hb₁ hFl0 hr hratio
     hΨle
-  have hT2 := zeta_disc_term2_le (K := K) hL1 hlam0 hβlam hβ0 hK' hb₁ hLb hS''1 hX0 hXL hkL hk1
+  have hT2 := zeta_disc_term2_le (K := K) hL1 hlam0 hβlam hK' hb₁ hLb hS''1 hX0 hXL hkL hk1
     hFl0 hratio hΨle hSg0 hSle
   have hFl2 : 0 < Fl ^ 2 := by positivity
   have hA1 := (div_le_iff₀ hFl2).mp hT1
@@ -797,10 +798,13 @@ theorem norm_discMoment_zeta_le {lam μ A' S' κ K : ℝ} (hlam : 1 / 4 + π * �
   obtain ⟨b, hb, hbs, hb1, hb0, hbm⟩ := exists_explicit_bump hε0 m
   -- the moment bound
   have hrR : r ≤ X / 2 := by
-    have h1 : 1 ≤ lam * L := by
-      have := (div_le_iff₀ hlam0).mp hLπ; nlinarith
-    have : r ≤ 1 := by nlinarith
-    linarith
+    have h0 : π ≤ lam * L := by rw [mul_comm]; exact (div_le_iff₀ hlam0).mp hLπ
+    have h1 : 1 ≤ lam * L := by linarith only [h0, hπ]
+    have h2 : r ≤ 1 :=
+      calc r = r * 1 := (mul_one r).symm
+        _ ≤ r * (lam * L) := mul_le_mul_of_nonneg_left h1 hr
+        _ ≤ 1 := hra
+    linarith only [h2, hX1, hT₀]
   have hiso' : ∀ z, multDiff zetaZeroConfig Z' z ≠ 0 → |z.im - z₀.im| ≤ X / 2 →
       ‖z - z₀‖ ≤ r ∨ η ≤ ‖z - z₀‖ := fun z hcz hzR => by
     rw [hη]; exact hiso z hcz (by rwa [hz₀] at hzR)
@@ -823,7 +827,7 @@ theorem norm_discMoment_zeta_le {lam μ A' S' κ K : ℝ} (hlam : 1 / 4 + π * �
   have hSg0 : 0 ≤ ∑' z, ‖multDiff zetaZeroConfig Z' z‖ / (1 + Complex.normSq (gammaOf z)) :=
     tsum_nonneg fun z => div_nonneg (norm_nonneg _)
       (by have := Complex.normSq_nonneg (gammaOf z); linarith)
-  exact zeta_disc_budget hL1 hlam0 hβlam hβ0 hq0 he0 hK' (by linarith) hb₁ hLb hS''1 hX0 hXL hkL
+  exact zeta_disc_budget hL1 hlam0 hβlam hq0 he0 hK' (by linarith) hb₁ hLb hS''1 hX0 hXL hkL
     hk1 hFl0 hratio hΨle (Finset.sum_nonneg fun z _ => norm_nonneg _) hSg0
     (hS.trans (by rw [hS'']; exact le_max_left _ _)) hr hmom
 

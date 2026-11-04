@@ -64,7 +64,7 @@ theorem riemannHeat_ofReal_eq_two_re_halfGauss {t : ℝ} (ht : 0 < t) (X : ℝ) 
   simp only [ofReal_zero, mul_zero, add_zero, neg_zero] at h
   rw [h]
   apply Complex.ext
-  · simp [mul_comm]
+  · simp; ring
   · simp
 
 /-- **Real-axis derivative of `H_t` via the half-line Gaussian transform.**
@@ -499,6 +499,9 @@ theorem pairModelHeat_eq_closed {L δ t : ℝ} (ht : 0 < t) (z : ℂ) :
   have ha2 : t * (L / 2) ^ 2 = t * L ^ 2 / 4 := by ring
   rw [ha1, ha2]
   unfold pairBranch
+  have hexp_neg : Complex.exp ((L : ℂ) * (-z) / 2 * I) = Complex.exp (-((L : ℂ) * z / 2 * I)) := by
+    congr 1; ring
+  rw [hexp_neg]
   push_cast
   ring
 
@@ -740,7 +743,7 @@ the following are unconditionally equivalent:
 4. `(∀ t ∈ Ioc (0 : ℝ) (1 / 8), ∀ x : ℝ, |x| ≤ X₁ → riemannHeat t x = 0 → deriv (riemannHeat t) x ≠ 0)`
    and `∀ X ≥ X₁, ∀ t ∈ Ioc (0 : ℝ) ((6600 / 9991 + δ) / Real.log X), (halfGaussTransform t (xiLine X) 0).re = 0 → (deriv (halfGaussTransform t (xiLine X)) 0).im ≠ 0`;
 5. `RiemannHypothesis`. -/
-theorem question_2_6_5_global_equivalence {δ ε : ℝ} (hδ : 0 < δ) (hε : 0 ≤ ε)
+theorem question_2_6_5_global_equivalence {δ ε : ℝ} (hδ : 0 < δ) (_hε : 0 ≤ ε)
     (hle : 6600 / 9991 + δ ≤ 2 / 3 + ε) :
     ∃ X₁ : ℝ, 30 ≤ X₁ ∧
       (((∀ X : ℝ, localNewmanConstant X = 0) ↔
@@ -819,7 +822,8 @@ theorem question_2_6_5_global_equivalence {δ ε : ℝ} (hδ : 0 < δ) (hε : 0 
       have habs_col : riemannHeat newmanConstant ((|x| : ℝ) : ℂ) = 0 ∧
           deriv (riemannHeat newmanConstant) ((|x| : ℝ) : ℂ) = 0 := by
         rcases le_or_gt 0 x with hnonneg | hneg
-        · rwa [abs_of_nonneg hnonneg]
+        · rw [abs_of_nonneg hnonneg]
+          exact ⟨hx0, hdx0⟩
         · rw [abs_of_neg hneg, ofReal_neg, riemannHeat_neg hpos.le,
             deriv_riemannHeat_neg hpos.le, hx0, hdx0, neg_zero]
           exact ⟨rfl, rfl⟩

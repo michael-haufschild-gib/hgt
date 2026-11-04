@@ -51,7 +51,13 @@ import GaloisForLFunctions.ZeroConfigurationGeometry.TiltsCostPrimeWeight
 import GaloisForLFunctions.ZeroConfigurationGeometry.ZetaZerosHaveTheSharpLocalDensity
 import GaloisForLFunctions.ZeroConfigurationGeometry.SplineBumpsDecayAtAnExplicitRate
 import GaloisForLFunctions.ZeroConfigurationGeometry.TheLocalCameraFixesTheIsolatedZerosOfZeta
+import GaloisForLFunctions.ZeroConfigurationGeometry.NearCoincidencesAreReadThroughTheirMoments
 import GaloisForLFunctions.ZeroConfigurationGeometry.ShallowConfigurationsAreResolvedLocally
+import GaloisForLFunctions.ZeroConfigurationGeometry.SquareRootInversion.ShiftedHalfLatticeCounterexample
+import GaloisForLFunctions.ZeroConfigurationGeometry.SquareRootInversion.SubSpacingLocalInversion
+import GaloisForLFunctions.ZeroConfigurationGeometry.SquareRootInversion.ZetaAndRvMCorollaries
+import GaloisForLFunctions.ZeroConfigurationGeometry.HeatScaleRepulsion.SubWeylCollisionFreeHorizon
+import GaloisForLFunctions.ZeroConfigurationGeometry.HeatScaleRepulsion.SymmetricHalfCollisionLaw
 
 /-!
 # Zero Configuration Geometry
@@ -60,7 +66,9 @@ Umbrella for the explicit formula read as a camera.
 
 * The camera: depth as tilt, the pair and depth signals, the second-order law of the squared gap.
 * Identification: finite modifications are seen at every aperture, with an explicit and stable
-  inverse by differential windows; the primes pin every finite piece of the zeros of `ζ`.
+  inverse by differential windows; the primes pin every finite piece of the zeros of `ζ`; local
+  inversion at and above the square-root threshold down to polynomial separation `T^{−M}`, with the
+  sharp Nyquist half-shift counterexample across `(0, 1]`.
 * Hiding: on-line mimics need near-collisions; Ingham's inequality with tilts and its block form
   for FE pairs; resolution uniform in depth, so that every mimic needs a near-collision in height
   or a deep point; shallow configurations are resolved at the optimal Ingham scale `π/(2a)`.
@@ -69,7 +77,8 @@ Umbrella for the explicit formula read as a camera.
   the square-root threshold for columns of Riemann–von Mangoldt density.
 * Deformations: the collision exit theorem, the heat-time spread law and the bounded backward
   exit, Laguerre steps never deepen, heat steps never shrink the mesh, shift averages contract the
-  depth.
+  depth, the symmetric-half collision law of `H_t`, the sub-Weyl collision-free horizon at
+  `6600/9991`, and the exact order-2 real collision of `pairModelHeat` below `1/(2 log X)`.
 * Window design: real kernel zeros of the cosine camera, windows blind to a real lattice, to
   finite unions of lattices at the density aperture, to zero sets of exponential polynomials and
   of transforms of densities, to every bounded perturbation of a lattice, and to every real

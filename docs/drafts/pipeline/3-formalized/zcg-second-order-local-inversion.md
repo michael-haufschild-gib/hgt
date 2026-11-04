@@ -1,8 +1,8 @@
 # The camera reads a near-coincident cluster through its first three moments
 
 - **ID:** zcg-second-order-local-inversion
-- **Stage:** 1-in-progress
-- **Type:** THEOREM (Lean target)
+- **Stage:** 3-formalized
+- **Type:** THEOREM (Lean)
 - **Source:** docs/reports/review-0411/obstacles-summary_v2.md §2.5.5 (B51) · ZCG README §10 (a)
 - **Statement:** Let `Z, Z'` be tempered mimics at aperture `a`, `z₀` a point at height `X`, and
   `0 < r ≤ η`. Suppose every cluster point with height in `[X − R, X + R]` lies in the disc
@@ -37,9 +37,19 @@ radius `r ≤ exp(−C (log X)²)`. The worst-case floor of a window blind to a 
 Riemann–von Mangoldt type is not polynomial in the isolation radius. Polynomial pair scales
 (`T^{−M}` inside `T^{−M'}`, `M' < M`) are beyond this method.
 
+## Lean
+`formal/GaloisForLFunctions/ZeroConfigurationGeometry/NearCoincidencesAreReadThroughTheirMoments.lean`:
+`norm_discMoment_le` (the statement), `sum_multDiff_eq_zero_of_disc` (`μ₀ = 0`), `pair_moments`
+(centre and squared gap from `μ₁, μ₂`), `norm_discMoment_zeta_le` (for `ζ`: for every `K` there are
+`C, X₀` with `‖μ_j‖ ≤ N r^{j+1} e^{C (log X)²} + e^{−K (log X)²}` at isolation
+`exp(−κ log X/(1 + log log X))`). Supporting: `exists_local_isolating_pair` (in
+`IsolatedPointsAreSeenByTheLocalCamera`), `annihilatePow_props`, `norm_paperFT_sub_le_of_bounded`,
+`norm_le_of_paperFT_decay`, `norm_pairImage_sub_le`. Unconditional; axioms `propext`,
+`Classical.choice`, `Quot.sound`.
+
 ## Gates
 - [x] 0 → 1  in-progress
-- [ ] 2 → 3  formalized
+- [x] 2 → 3  formalized
 
 ## Log
-- 2026-11-04 — created
+- 2026-11-04 — created; formalized

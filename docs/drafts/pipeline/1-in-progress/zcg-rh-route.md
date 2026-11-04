@@ -27,8 +27,11 @@ no spectrum, no count is used as the decisive step.
 
 ## The residual
 - **(a) B44.** Reality at near-coincident clusters below the isolation scale. Second-order local
-  inversion (B51) would fix centre and squared gap `w²` of every near-coincident pair at aperture
-  `(1 + ε)L`, uniformly in height. The squared gap is read linearly through the `(log n)²`-weighted
+  inversion (B51) fixes centre and squared gap `w²` of every near-coincident pair. In Lean for `ζ` at
+  quasi-polynomial scale: clusters of radius `r` isolated at `exp(−κ log X/(1 + log log X))` have
+  moments fixed to `N r^{j+1} e^{C (log X)²} + e^{−K (log X)²}` (`norm_discMoment_zeta_le`, card
+  `zcg-second-order-local-inversion`). Polynomial scales need a floor polynomial in the isolation
+  radius. The squared gap is read linearly through the `(log n)²`-weighted
   coalescent channel (`norm_pairSignal_sub_sq_mul_curvature_le`, `deriv_deriv_primeChannel_modulate`).
   Its sign is B44 in prime form.
 - **(b) B49.** A Hermite–Biehler half `Q` from Euler and Gamma data with `H_t = Q + Q^#` and
