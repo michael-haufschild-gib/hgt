@@ -457,8 +457,8 @@ theorem exists_uniform_isolating_window {H L r η : ℝ} (hH : 0 < H) (hr : π /
     mul_nonneg (mul_nonneg (mul_nonneg (windowGrowth_nonneg hH hL) hCm0) hC00)
       (Real.exp_pos _).le, ?_⟩
   intro ι lam τ P hτ hPL hPim w₀ hw₀re hw₀im hw₀P
-  obtain ⟨f, -, hf⟩ := isolating_window_of_bump hH hL hη hε0 (by rw [hε]; linarith) hb hbs hb1 hm
-    hCm hC0' lam τ P hτ hPL hPim hw₀re hw₀im hw₀P
+  obtain ⟨f, -, hf⟩ := isolating_window_of_bump (r := r) hH hL hη hε0 (by rw [hε]; linarith) hb
+    hbs hb1 hm hCm hC0' lam τ P hτ hPL hPim hw₀re hw₀im hw₀P
   exact ⟨f, hf⟩
 
 /-! ### The local camera -/

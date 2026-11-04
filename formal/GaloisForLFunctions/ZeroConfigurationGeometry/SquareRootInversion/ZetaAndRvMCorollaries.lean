@@ -322,7 +322,11 @@ theorem exists_hasRvMLocalCount_zeta :
     exact_mod_cast h'
   have hcnt := ncount_le_of_goodHeight hB hmax_le h12 hg1 hg2
   have hv15 : 15 ≤ v := by linarith
+  have hv0 : 0 < v := by linarith
+  have hT₂'pos : 0 < T₂' + 1 := by linarith
   have hT₁'13 : 13 ≤ T₁' := by linarith
+  have hT₁'0 : 0 < T₁' := by linarith
+  have hT0 : 0 < T := by linarith
   have hlogT1 : 1 ≤ Real.log T := by
     rw [← Real.log_exp 1]
     exact Real.log_le_log (Real.exp_pos 1) (by linarith [Real.exp_one_lt_d9])

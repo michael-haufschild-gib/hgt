@@ -1,7 +1,7 @@
 # RH proof-route frontier
 
 **RH open · 32 live routes · 17 candidates.**
-**Corpus checkpoint:** `cfb93dcd47ffd2de03a2303b0b656d279ac856ab`.
+**Corpus checkpoint:** `f93c85d5e1b7d0080d641aaf4a776302eac4aebb`.
 
 Live = source observable + proved RH-sufficient receiver + explicit open estimate. Candidate = missing independent source mechanism/landing.
 Evidence: [L] integrated, source-reviewed; [S] unfinished/unintegrated, unverified; [K] individual Lean + standard-only transitive-axiom audit. Untagged established facts: [L].
@@ -220,9 +220,9 @@ Evidence: [L] integrated, source-reviewed; [S] unfinished/unintegrated, unverifi
 ### EWU — Even pole-weight uniqueness
 
 - **Path:** Even blind minimum≥0 at every aperture → even positivity → RH.
-- **Established:** Weight rigidity; attained aperture-antitone blind minima; even sign⇔−C≤Q⇔Hamburger jet moments. Smooth constrained ground states excluded. E(abs(f))≤E(f) for C² half-window tests through c=logρ, ρ³=ρ+1. For c<log2, nonnegative {2,3} weights retain contraction whenever opposite-sign pairs meet only nonnegative folded kernel [L].
-- **Open:** All-aperture lower-band bound, including low/mixed modes and sign changes crossing negative-kernel pairs. Restricted contraction supplies no floor; universal pointwise payment [fails above logρ](rh-killed-routes.md#folded-markov). [Prime-entry stability](#prime-entry) needs a sector margin; [variance-free cosh certificates fail](rh-killed-routes.md#theta-gauge-cosh-defect) [K].
-- **Sources:** R:{EvenSectorPoleWeightUniqueness,EvenSectorBlindVariationalAttainment}; SWC:{TheParitySectorsAreTheBandAtTheCentre,TheSectorsAreTheMomentConditionsOfTheJets,CapacitiesAndConstrainedGroundStatesAreSingularAtTheEdge,PerronSignLaw/TheEvenSectorIsMarkovUpToThePlasticThreshold} [L]; SWC:BelowLogFour/GaugeExtensionInvarianceAndHalfNormDual [K].
+- **Established:** Weight rigidity; attained aperture-antitone blind minima; even sign⇔−C≤Q⇔Hamburger moments. Absolute-value contraction through logρ, ρ³=ρ+1; below log2 for nonnegative weights when opposite-sign pairs avoid negative kernel [L]. Normalized Perron ε-minimizer ψ≤M at s₁≥s₀: 4(s₁−s₀)≤M²(E₁(g)−λ+ε), for pole-null competitor g and lower bound λ at s₀ [S].
+- **Open:** All-aperture lower-band bound, including mixed modes and negative-kernel pairs. Perron branch needs actual saturation-gap/height control at arithmetic pole strength1. [Pointwise payment fails above logρ](rh-killed-routes.md#folded-markov); [prime-entry stability](#prime-entry) still requires a sector margin.
+- **Sources:** R:{EvenSectorPoleWeightUniqueness,EvenSectorBlindVariationalAttainment}; SWC:{TheParitySectorsAreTheBandAtTheCentre,TheSectorsAreTheMomentConditionsOfTheJets,CapacitiesAndConstrainedGroundStatesAreSingularAtTheEdge,PerronSignLaw/TheEvenSectorIsMarkovUpToThePlasticThreshold} [L]; SWC:PerronSignLaw/ThePerronMarginIsBoundedByThePoleSaturationGap [S].
 
 <a id="gta"></a>
 ### GTA — Transverse Schur charge

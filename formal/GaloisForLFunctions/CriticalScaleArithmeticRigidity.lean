@@ -119,6 +119,10 @@ import GaloisForLFunctions.CriticalScaleArithmeticRigidity.ReceivingCharges.Copr
 
 import GaloisForLFunctions.CriticalScaleArithmeticRigidity.ReceivingCharges.CoprimeHarmonicMean
 
+import GaloisForLFunctions.CriticalScaleArithmeticRigidity.ReceivingCharges.CoprimePrimeChargeTailMass
+
+import GaloisForLFunctions.CriticalScaleArithmeticRigidity.ReceivingCharges.CoprimePrimeChargeTailNorms
+
 /-!
 # Arithmetic rigidity at critical scale
 

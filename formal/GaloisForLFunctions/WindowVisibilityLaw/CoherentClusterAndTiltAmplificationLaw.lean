@@ -729,7 +729,7 @@ theorem sinhTest_energy_sq_ge {a δ : ℝ} (hδ : 0 < δ) (hδa : 2 ≤ δ * a) 
         field_simp [hδ.ne']
         ring
     _ = (w * (w * a) ^ (5 / 2 : ℝ) * (Real.exp (δ * a) / 8) ^ 2) ^ 2 := by
-        symm; rw [mul_pow, mul_pow, hwa_sq]; ring
+        symm; rw [mul_pow, mul_pow, hwa_sq]
     _ ≤ (w * (w * a) ^ (5 / 2 : ℝ) * Real.sinh x ^ 2) ^ 2 := by
         gcongr
 
@@ -999,7 +999,7 @@ theorem re_Wsummand_pair_modulatedTest_le (Z : ZeroConfig) (γ₀ : ℝ) {ρ : �
 /-- Unit-window multiplicity bound on a finite set of zeros in `[γ₀ − R, γ₀ + R]`. -/
 theorem sum_mult_unit_ball_le (Z : ZeroConfig) {A₀ : ℝ} (hA₀ : 1 ≤ A₀)
     (hloc : ∀ t : ℝ, (Z.N t (t + 1) : ℝ) ≤ A₀ * Real.log (|t| + 3))
-    {γ₀ R : ℝ} (hR : 0 ≤ R) (F : Finset ℂ) (hFc : ∀ ρ ∈ F, ρ ∈ Z.carrier)
+    {γ₀ R : ℝ} (_hR : 0 ≤ R) (F : Finset ℂ) (hFc : ∀ ρ ∈ F, ρ ∈ Z.carrier)
     (hFr : ∀ ρ ∈ F, |ρ.im - γ₀| ≤ R) (T : ℝ) :
     (∑ ρ ∈ F with |ρ.im - T| ≤ 1, Z.mult ρ) ≤
       ⌈3 * A₀ * Real.log (|γ₀| + R + 6)⌉₊ := by
@@ -1067,7 +1067,6 @@ theorem sum_mult_unit_ball_le (Z : ZeroConfig) {A₀ : ℝ} (hA₀ : 1 ≤ A₀)
     exact Nat.le_ceil _ |>.trans' (by exact_mod_cast le_rfl) |>.trans' (by
       exact Nat.cast_le.mp (hreal.trans (Nat.le_ceil _)))
   · rw [Finset.not_nonempty_iff_eq_empty] at hne
-    change ∑ ρ ∈ P, Z.mult ρ ≤ _
     rw [hne, Finset.sum_empty]
     exact Nat.zero_le _
 
@@ -1099,11 +1098,13 @@ theorem sum_norm_Wsummand_near_le_of_depth_le (Z : ZeroConfig) {A₀ : ℝ} (hA�
     rw [hset, Set.encard_coe_eq_coe_finsetCard]
     exact_mod_cast (by
       have hcard_eq : sT.card = ∑ ρ ∈ F with |ρ.im - T| ≤ 1, Z.mult ρ := by
-        rw [Finset.card_eq_sum_ones, show sT = Finset.univ.filter (fun q : ι => |x q - T| ≤ 1) from rfl,
-          Finset.sum_filter, Fintype.sum_sigma]
-        simp only [x, Finset.sum_const, Finset.card_univ, Fintype.card_fin, smul_eq_mul, mul_one]
-        rw [Finset.sum_filter, ← Finset.univ_eq_attach]
-        exact (Finset.sum_attach F fun ρ => if |ρ.im - T| ≤ 1 then Z.mult ρ else 0).trans rfl
+        rw [Finset.card_eq_sum_ones,
+          show sT = Finset.univ.filter (fun q : ι => |x q - T| ≤ 1) from rfl,
+          Finset.sum_filter, Fintype.sum_sigma, Finset.sum_filter]
+        refine (Finset.sum_congr rfl fun ρ _ => ?_).trans
+          (Finset.univ_eq_attach (s := F) ▸ Finset.sum_attach F
+            fun ρ => if |ρ.im - T| ≤ 1 then Z.mult ρ else 0)
+        by_cases h : |(ρ : ℂ).im - T| ≤ 1 <;> simp [x, h]
       rw [hcard_eq]
       exact sum_mult_unit_ball_le Z hA₀ hloc hR F hFc hFr T)
   let y₁ : ι → ℝ := fun q => 1 / 2 - (q.1 : ℂ).re
@@ -1116,22 +1117,26 @@ theorem sum_norm_Wsummand_near_le_of_depth_le (Z : ZeroConfig) {A₀ : ℝ} (hA�
   have hft_eq : ∀ z, paperFT f z = testTransform f z := fun _ => rfl
   have hsum₁ : (∑ q : ι, ‖testTransform f ((x q : ℂ) + (y₁ q : ℂ) * I)‖ ^ 2) =
       ∑ ρ ∈ F, (Z.mult ρ : ℝ) * ‖paperFT f (gammaOf ρ)‖ ^ 2 := by
-    rw [Finset.sum_sigma']
-    simp only [Finset.univ_eq_attach, x, y₁, hft_eq]
+    rw [Fintype.sum_sigma]
     refine (Finset.sum_congr rfl fun ρ _ => ?_).trans
-      (Finset.sum_attach F fun ρ => (Z.mult ρ : ℝ) * ‖testTransform f (gammaOf ρ)‖ ^ 2)
+      (Finset.univ_eq_attach (s := F) ▸ Finset.sum_attach F
+        fun ρ => (Z.mult ρ : ℝ) * ‖paperFT f (gammaOf ρ)‖ ^ 2)
     have hg : ((ρ : ℂ).im : ℂ) + ((1 / 2 - (ρ : ℂ).re : ℝ) : ℂ) * I = gammaOf ρ := by
       apply Complex.ext <;> simp [WeilEF.gammaOf_re, WeilEF.gammaOf_im]
-    simp [hg, Finset.sum_const, nsmul_eq_mul]
+    dsimp only [x, y₁]
+    rw [hg, ← hft_eq]
+    simp
   have hsum₂ : (∑ q : ι, ‖testTransform f ((x q : ℂ) + (y₂ q : ℂ) * I)‖ ^ 2) =
       ∑ ρ ∈ F, (Z.mult ρ : ℝ) * ‖paperFT f (conj (gammaOf ρ))‖ ^ 2 := by
-    rw [Finset.sum_sigma']
-    simp only [Finset.univ_eq_attach, x, y₂, hft_eq]
+    rw [Fintype.sum_sigma]
     refine (Finset.sum_congr rfl fun ρ _ => ?_).trans
-      (Finset.sum_attach F fun ρ => (Z.mult ρ : ℝ) * ‖testTransform f (conj (gammaOf ρ))‖ ^ 2)
+      (Finset.univ_eq_attach (s := F) ▸ Finset.sum_attach F
+        fun ρ => (Z.mult ρ : ℝ) * ‖paperFT f (conj (gammaOf ρ))‖ ^ 2)
     have hg : ((ρ : ℂ).im : ℂ) + (((ρ : ℂ).re - 1 / 2 : ℝ) : ℂ) * I = conj (gammaOf ρ) := by
       apply Complex.ext <;> simp [WeilEF.gammaOf_re, WeilEF.gammaOf_im]
-    simp [hg, Finset.sum_const, nsmul_eq_mul]
+    dsimp only [x, y₂]
+    rw [hg, ← hft_eq]
+    simp
   rw [hsum₁] at hs₁
   rw [hsum₂] at hs₂
   have hpt : ∀ ρ ∈ F, ‖Z.Wsummand f f ρ‖ ≤
@@ -1550,6 +1555,7 @@ theorem windowPositiveAt_global_sea_cluster_bound (Z : ZeroConfig) {A₀ : ℝ} 
       rw [← Real.exp_add]; congr 1; ring
     rw [← hexp_eq]
     field_simp [hδ.ne']
+    ring
   rw [← hlhs, hrhs] at hmain
   dsimp only [R] at hmain
   rw [← add_assoc |γ₀|] at hmain
@@ -1601,7 +1607,8 @@ theorem enlargedWeilFloor_excludes_zeta_coherent_cluster :
   obtain ⟨A₀, hA₀, hloc⟩ := Zeta23.RvM.zetaZeroConfig_local_count
   refine ⟨A₀, hA₀, fun {γ₀ a δ R σ} ha ha_le hδ hδa hR hσ S hSc hSδ hSγ hnear => ?_⟩
   have hpos : WindowPositiveAt zetaZeroConfig a :=
-    windowPositiveAt_antitone ha_le windowPositiveAt_zeta_enlargedWeilFloorAperture
+    (windowPositiveAt_iff_le_onsetAperture temperedConfig_zetaZeroConfig ha.le).mpr
+      ((EReal.coe_le_coe_iff.mpr ha_le).trans enlargedWeilFloorAperture_le_onsetAperture_zeta)
   exact windowPositiveAt_coherent_cluster_bound zetaZeroConfig hA₀ hloc hδ hδa hR hσ hpos
     S hSc hSδ hSγ hnear
 
