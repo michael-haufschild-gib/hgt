@@ -3,7 +3,30 @@ import GaloisForLFunctions.SignedWindowCriticality.TheJetMinorsArePositiveOnEver
 /-!
 # The continuum canonical system splits into the parity sectors
 
-DRAFT
+The jet Gram `J_n = [W(φ^{(i)}, φ^{(j)})]` of a bump vanishes off the parity blocks
+(`weilPair_iteratedDeriv_eq_zero_of_odd`), so it is the direct sum of the even-order jet Gram
+`E = [W(φ^{(2p)}, φ^{(2q)})]` and the odd-order one `O = [W(φ^{(2p+1)}, φ^{(2q+1)})]`. For an even
+bump the even jets are even tests and the odd jets odd tests: the two blocks live in the two parity
+sectors of SWC.
+
+* **Parity** (`weilPair_odd_even`, `iteratedDeriv_parity`): odd and even tests are `W`-orthogonal,
+  and the jets of an even bump alternate in parity.
+* **Each sector is positive definite on smooth tests once nonnegative**
+  (`weilQuad_pos_of_sector_nonneg`): a sector minimizer is a window eigenfunction
+  (`isWindowEigen_of_sector_isMin`), hence zero; the zero mode of the first failure of one sector
+  is never smooth.
+* **The block decomposition** (`det_jetGram_eq_mul`): `det J_n = det E_{⌈n/2⌉} · det O_{⌊n/2⌋}`.
+* **The margins alternate between the sectors** (`tendsto_levinsonErr_even_odd`): the even-order
+  lattice margins converge to the even-sector Stieltjes ratios, `h^{−4m}E_{2m} → det E_{m+1}/det E_m`,
+  the odd-order ones to the odd-sector ratios, `h^{−4m−2}E_{2m+1} → det O_{m+1}/det O_m`.
+* **Each sector carries its half** (`evenJetGram_posDef`, `oddJetGram_posDef`,
+  `tendsto_levinsonErr_even_odd_of_sectors_nonneg`): for a nonzero even smooth bump, `E` is positive
+  definite as soon as the even sector of its window is nonnegative and `O` as soon as the odd sector
+  is, and then all these limits are positive.
+
+So the lattice canonical system of an even bump reads, order by order, the even sector and the odd
+sector alternately: the derivative ladder `even → odd → even` of the jets is the parity of the
+canonical system.
 -/
 
 open MeasureTheory Set Filter Topology
@@ -355,3 +378,6 @@ theorem tendsto_levinsonErr_even_odd_of_sectors_nonneg {a : ℝ}
 end GaloisForLFunctions.SignedWindowCriticality
 
 end
+
+#print axioms GaloisForLFunctions.SignedWindowCriticality.tendsto_levinsonErr_even_odd_of_sectors_nonneg
+#print axioms GaloisForLFunctions.SignedWindowCriticality.weilQuad_pos_of_sector_nonneg

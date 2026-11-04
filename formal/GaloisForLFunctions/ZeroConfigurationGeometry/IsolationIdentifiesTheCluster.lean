@@ -144,11 +144,6 @@ theorem eq_of_mimic_of_isolable {Z Z' : ZeroConfig} (hZ : TemperedConfig Z)
   obtain ⟨f₀, hf₀, hblind, hsee⟩ := hiso z₀ hc
   exact hc (multDiff_eq_zero_of_isolated hZ hZ' ha hW hf₀ hblind hsee)
 
-theorem gammaOf_injective : Function.Injective gammaOf := fun z w h => by
-  have h' : (z - 1 / 2) / I = (w - 1 / 2) / I := h
-  rw [div_left_inj' Complex.I_ne_zero] at h'
-  linear_combination h'
-
 /-- **Clusters in a simple zero set do not cancel.** Mimics at aperture `a` whose cluster lies in
 the simple zero set of the transform of one window of aperture `a` are equal. -/
 theorem eq_of_mimic_of_simple_zeros {Z Z' : ZeroConfig} (hZ : TemperedConfig Z)
