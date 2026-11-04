@@ -605,4 +605,187 @@ private theorem retained_paid_4_4 :
   ring
 
 
+private theorem sevenRetainedRaw_symm (i j : Fin 5) :
+    sevenRetainedRaw i j=sevenRetainedRaw j i := by
+  rw [sevenRetainedRaw_eq_hankel,sevenRetainedRaw_eq_hankel]
+  exact hankelBilinear_symm _ _ _
+
+private theorem sevenLoadRaw_symm (i j : Fin 5) : sevenLoadRaw i j=sevenLoadRaw j i := by
+  unfold sevenLoadRaw
+  rw [Finset.sum_comm]
+  apply Finset.sum_congr rfl
+  intro a ha
+  apply Finset.sum_congr rfl
+  intro b hb
+  have h := congrFun (congrFun paidSevenSchur_hermitian a) b
+  simp only [Matrix.conjTranspose_apply,star_trivial] at h
+  rw [h]
+  ring
+
+private theorem retained_paid_entry (i j : Fin 5) :
+    sevenRetainedRaw i j/loss-sevenLoadRaw i j =
+      if i=j then (if i.val<3 then diag i else (5/32)*diag i) else 0 := by
+  fin_cases i <;> fin_cases j
+  · exact retained_paid_0_0
+  · exact retained_paid_0_1
+  · exact retained_paid_0_2
+  · exact retained_paid_0_3
+  · exact retained_paid_0_4
+  · rw [sevenRetainedRaw_symm,sevenLoadRaw_symm]
+    exact retained_paid_0_1
+  · exact retained_paid_1_1
+  · exact retained_paid_1_2
+  · exact retained_paid_1_3
+  · exact retained_paid_1_4
+  · rw [sevenRetainedRaw_symm,sevenLoadRaw_symm]
+    exact retained_paid_0_2
+  · rw [sevenRetainedRaw_symm,sevenLoadRaw_symm]
+    exact retained_paid_1_2
+  · exact retained_paid_2_2
+  · exact retained_paid_2_3
+  · exact retained_paid_2_4
+  · rw [sevenRetainedRaw_symm,sevenLoadRaw_symm]
+    exact retained_paid_0_3
+  · rw [sevenRetainedRaw_symm,sevenLoadRaw_symm]
+    exact retained_paid_1_3
+  · rw [sevenRetainedRaw_symm,sevenLoadRaw_symm]
+    exact retained_paid_2_3
+  · exact retained_paid_3_3
+  · exact retained_paid_3_4
+  · rw [sevenRetainedRaw_symm,sevenLoadRaw_symm]
+    exact retained_paid_0_4
+  · rw [sevenRetainedRaw_symm,sevenLoadRaw_symm]
+    exact retained_paid_1_4
+  · rw [sevenRetainedRaw_symm,sevenLoadRaw_symm]
+    exact retained_paid_2_4
+  · rw [sevenRetainedRaw_symm,sevenLoadRaw_symm]
+    exact retained_paid_3_4
+  · exact retained_paid_4_4
+
+private theorem sevenBasis_load_entry (a : Fin 2) (j : Fin 5) :
+    (loadMap*sevenBasis) a j = sevenLoad j a/Real.sqrt (diag j) := by
+  fin_cases a <;> fin_cases j <;>
+    norm_num [loadMap,sevenBasis,sevenVector,liftTail,projectTail,kernelTail,sevenLoad,
+      loadColumn,Matrix.mul_apply,Fin.sum_univ_succ,Matrix.cons_val_two,Matrix.cons_val_three,
+      Matrix.vecHead,Matrix.vecTail]
+    <;> ring
+
+private def sevenLoadGram : Matrix (Fin 5) (Fin 5) ℝ :=
+  sevenBasisᴴ*crossLoad paidSevenSchur*sevenBasis
+
+private theorem sevenLoadGram_entry (i j : Fin 5) :
+    sevenLoadGram i j=sevenLoadRaw i j/(Real.sqrt (diag i)*Real.sqrt (diag j)) := by
+  have he : sevenLoadGram=(loadMap*sevenBasis)ᴴ*paidSevenSchur*(loadMap*sevenBasis) := by
+    simp only [sevenLoadGram,crossLoad,Matrix.conjTranspose_mul,Matrix.mul_assoc]
+  rw [he]
+  simp only [Matrix.mul_apply,Matrix.conjTranspose_apply,star_trivial,sevenBasis_load_entry,
+    sevenLoadRaw,Finset.sum_mul,Finset.sum_div]
+  rw [Finset.sum_comm]
+  apply Finset.sum_congr rfl
+  intro a ha
+  apply Finset.sum_congr rfl
+  intro b hb
+  simp only [div_eq_mul_inv,_root_.mul_inv_rev]
+  ring
+
+private theorem sevenLoadGram_hermitian : sevenLoadGram.IsHermitian := by
+  unfold sevenLoadGram crossLoad
+  exact Matrix.isHermitian_conjTranspose_mul_mul sevenBasis
+    (Matrix.isHermitian_conjTranspose_mul_mul loadMap paidSevenSchur_hermitian)
+
+private theorem sevenSourceGram_hermitian : sevenSourceGram.IsHermitian := by
+  have hn : (nativeShiftedMatrix 5 0 EvenFiveBoundary.witnessCenter).IsHermitian := by
+    rw [Matrix.IsHermitian]
+    ext i j
+    simp [nativeShiftedMatrix,add_comm]
+  have hg := Matrix.isHermitian_conjTranspose_mul_mul sevenBasis hn
+  rw [Matrix.IsHermitian]
+  ext i j
+  simp only [sevenSourceGram,Matrix.conjTranspose_apply,Matrix.smul_apply,smul_eq_mul,star_trivial]
+  have he := congrFun (congrFun hg i) j
+  simp only [Matrix.conjTranspose_apply,star_trivial] at he
+  rw [he]
+
+private theorem sevenModelGram_paid : sevenModelGram-sevenLoadGram=paidDiagonal := by
+  ext i j
+  rw [Matrix.sub_apply,sevenLoadGram_entry]
+  let t := Real.sqrt (diag i)*Real.sqrt (diag j)
+  change sevenRetainedRaw i j/(loss*t)-sevenLoadRaw i j/t = paidDiagonal i j
+  have he : sevenRetainedRaw i j/(loss*t)-sevenLoadRaw i j/t =
+      (sevenRetainedRaw i j/loss-sevenLoadRaw i j)/t := by
+    simp only [div_eq_mul_inv,_root_.mul_inv_rev]
+    ring
+  rw [he,retained_paid_entry]
+  by_cases hij : i=j
+  · subst j
+    rw [if_pos rfl]
+    have hroot : Real.sqrt (diag i)*Real.sqrt (diag i)=diag i := by
+      nlinarith only [Real.sq_sqrt (diag_pos i).le]
+    dsimp only [t]
+    rw [hroot]
+    simp only [paidDiagonal,Matrix.diagonal_apply_eq]
+    split_ifs with hi
+    · exact div_self (diag_pos i).ne'
+    · field_simp [(diag_pos i).ne']
+  · rw [if_neg hij]
+    simp [paidDiagonal,Matrix.diagonal_apply_ne _ hij]
+
+private theorem seven_corrected_gram_posDef : (sevenSourceGram-sevenLoadGram).PosDef := by
+  let P := sevenSourceGram-sevenModelGram
+  have hP : P.IsHermitian := by
+    apply sevenSourceGram_hermitian.sub
+    rw [eq_add_of_sub_eq sevenModelGram_paid]
+    exact paidDiagonal_hermitian.add sevenLoadGram_hermitian
+  obtain ⟨ε,hε,hεlt,hbound⟩ := strict_entry_uniform P sevenSourceGram_error_strict
+  have hsmall : ε*(Fintype.card (Fin 5):ℝ) < (5/32:ℝ) := by
+    norm_num only [Fintype.card_fin,Nat.cast_ofNat]
+    linarith only [hεlt]
+  have h := RHTower.posDef_add_of_coercive paidDiagonal P paidDiagonal_hermitian hP
+    hε paidDiagonal_floor hbound hsmall
+  have he : paidDiagonal+P=sevenSourceGram-sevenLoadGram := by
+    rw [← sevenModelGram_paid]
+    dsimp only [P]
+    abel
+  rwa [he] at h
+
+private theorem seven_normalized_repair_posDef :
+    ((loss*thetaCuspSourceTerm EvenFiveBoundary.witnessCenter 1^2)⁻¹ •
+      nativeShiftedMatrix 5 0 EvenFiveBoundary.witnessCenter-crossLoad paidSevenSchur).PosDef := by
+  apply posDef_of_gram sevenBasis_det_ne_zero
+  simpa only [Matrix.mul_sub,Matrix.sub_mul,Matrix.mul_smul,Matrix.smul_mul,
+    sevenSourceGram,sevenLoadGram] using seven_corrected_gram_posDef
+
+/-- The same explicit positive cross-load repairs the complete fifth even source at scale seven. -/
+theorem scaleSeven_cross_load_posDef :
+    (nativeShiftedMatrix 5 0 EvenFiveBoundary.witnessCenter+
+      thetaCuspCenterCompensationSource EvenFiveBoundary.witnessCenter • crossLoad paidSevenSchur).PosDef := by
+  let a := loss*thetaCuspSourceTerm EvenFiveBoundary.witnessCenter 1^2
+  have ha : 0 < a := mul_pos loss_pos (sq_pos_of_pos first_mass_pos)
+  have hp : (a • ((a⁻¹) • nativeShiftedMatrix 5 0 EvenFiveBoundary.witnessCenter-
+      crossLoad paidSevenSchur)).PosDef := seven_normalized_repair_posDef.smul ha
+  have hload : (crossLoad paidSevenSchur).PosSemidef :=
+    crossCoefficient_posDef.posSemidef.conjTranspose_mul_mul_same loadMap
+  have hrem : 0 ≤ a+thetaCuspCenterCompensationSource EvenFiveBoundary.witnessCenter := by
+    have h := EvenFiveBoundary.scaleSeven_compensation_lower
+    change -loss*thetaCuspSourceTerm EvenFiveBoundary.witnessCenter 1^2 ≤
+      thetaCuspCenterCompensationSource EvenFiveBoundary.witnessCenter at h
+    dsimp only [a]
+    linarith only [h]
+  have h := hp.add_posSemidef (hload.smul hrem)
+  have he : a • ((a⁻¹) • nativeShiftedMatrix 5 0 EvenFiveBoundary.witnessCenter-crossLoad paidSevenSchur)+
+      (a+thetaCuspCenterCompensationSource EvenFiveBoundary.witnessCenter) • crossLoad paidSevenSchur =
+      nativeShiftedMatrix 5 0 EvenFiveBoundary.witnessCenter+
+        thetaCuspCenterCompensationSource EvenFiveBoundary.witnessCenter • crossLoad paidSevenSchur := by
+    simp only [smul_sub,smul_smul,mul_inv_cancel₀ ha.ne',one_smul,add_smul]
+    abel
+  rwa [he] at h
+
+/-- One explicit positive cross-load repairs both complete fifth-section endpoints. -/
+theorem coupled_endpoints_posDef :
+    paidSevenSchur.PosDef ∧
+    (nativeShiftedMatrix 5 0 0+thetaCuspCenterCompensationSource 0 • crossLoad paidSevenSchur).PosDef ∧
+    (nativeShiftedMatrix 5 0 EvenFiveBoundary.witnessCenter+
+      thetaCuspCenterCompensationSource EvenFiveBoundary.witnessCenter • crossLoad paidSevenSchur).PosDef :=
+  ⟨crossCoefficient_posDef,origin_cross_load_posDef,scaleSeven_cross_load_posDef⟩
+
 end GaloisForLFunctions.ThetaCuspSections.EvenFiveEndpoint

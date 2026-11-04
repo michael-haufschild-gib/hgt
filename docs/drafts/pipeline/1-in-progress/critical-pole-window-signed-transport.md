@@ -254,8 +254,8 @@ its limit by O(1/N). Moving the weight to either endpoint costs O(c_N/N).
 Hence multiplication by log(c_N) still gives zero when c_N→∞ and
 c_N log(c_N)/N→0. The required fourth-order logarithmic clock implies
 this condition. `TerminalNearPairsRetainLogarithmicAccuracy.lean` now
-passes its olean-producing check with the standard three axioms; its
-final no-olean audit is pending. The literal joint subtraction is
+passes its final actual-path no-olean audit with the standard three
+axioms. The literal joint subtraction is
 implemented in `TerminalWindowsRetainTheJointNearCenter.lean` and awaits
 its own audit. Plain convergence of the weighted near mean would not
 supply this rate.

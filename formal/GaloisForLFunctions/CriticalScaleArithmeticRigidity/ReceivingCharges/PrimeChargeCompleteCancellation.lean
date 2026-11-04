@@ -42,7 +42,8 @@ theorem harmonicPrimeChargeVector_sq_le_adjunction {Q N : ℕ}
     (fun p => (t / primePoleScale Q) * primePoleWitness p)
   rw [(normalizedPrimeCharge_response_and_energy hQ t).2] at h
   rw [harmonicPrimeChargeVector_norm_sq, packetVector_norm_sq]
-  simpa only [conductorHorizonProfile, div_pow, Real.sq_sqrt (Nat.cast_nonneg _)] using h
+  simpa only [harmonicPrimeChargeCoefficients, conductorHorizonProfile, div_pow,
+    Real.sq_sqrt (Nat.cast_nonneg _)] using h
 
 /-- Exact charge and arbitrarily small input coexist with cancellation of the entire complete output. -/
 theorem exists_primeCharge_complete_cancellation {c : ℕ → ℝ}

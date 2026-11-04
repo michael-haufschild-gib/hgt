@@ -66,7 +66,8 @@ theorem exists_fibreCharge_complete_cancellation {c : ℕ → ℝ}
   have hin : ‖harmonicFibreChargeVector m Q N t‖ ^ 2 < ε := by
     rw [harmonicFibreChargeVector_norm_sq, packetVector_norm_sq]
     have h := hinput.trans_lt hsmall
-    simpa only [conductorHorizonProfile, div_pow, Real.sq_sqrt (Nat.cast_nonneg _)] using h
+    simpa only [harmonicFibreChargeCoefficients, conductorHorizonProfile, div_pow,
+      Real.sq_sqrt (Nat.cast_nonneg _)] using h
   have hout := hN₀ N ((le_max_right (m * Q) N₀).trans hN)
   refine ⟨hzero, hcharge, hadj.trans_lt hsmall, hin, hout.trans_le hδle, ?_⟩
   have hv : ‖harmonicFibreChargeVector m Q N t‖ ≤ ε + 1 := by

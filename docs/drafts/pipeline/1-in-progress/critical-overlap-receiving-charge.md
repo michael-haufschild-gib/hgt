@@ -400,6 +400,10 @@ Swapping conductor and lag sums isolates the exact polar near-mean term
 `a_1² Σ_h nearWeightMass(h)`. Abel cancellation bounds the remainder by
 `C(1+log c)Σ_(m≠1) a_m² σ_1(m)/φ(m)`, preserving each coefficient's
 divisor mean. `PrimeChargeNearMean` contains this refinement; check pending.
+`PrimeChargeNearGram` propagates it through linearization and the periodic
+oscillation error: the near-Gram form costs
+`C[(c⁵/N+c³Q⁴/(N log N))‖u‖² + (1+log c)(Σ_(m≠1)a_m²σ₁(m)/φ(m)+c a₁²)/log N]`.
+Its check is pending; the polar coefficient remains explicit.
 
 The centering coefficient itself satisfies
 `|H_N a_1−t|≤8|t|Q/(N B_Q)≤8|t|/B_Q` for all `N≥Q≥2`.

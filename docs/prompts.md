@@ -419,7 +419,7 @@ first collect information in a working log in logs/ - facts, not process or stat
 
 the reports are not diaries or history log, but status quo reports.
 
-replace the reports in folder docs/reports/review-0311/ without history language or "this changed since last review".
+place the reports in folder docs/reports/review-0411/ without history language or "this changed since last review".
 do not run builds. this is not a task to verify the work of other agents but to create consolidated reports and "big picture" interpretations on their research results.
 
 
@@ -495,11 +495,11 @@ do not run any builds. do not search the web. do not grep for sorry or other shi
 
 Do not use the hgtl7 skill.
 
-read and understand docs/reports/review-0311/obstacles-summary.md
+read and understand docs/reports/review-0311/fable-zero-configuration-geometry.md
 
-under "## 2.7 Does closing RH need a new field?" it describes a new field/research programme 
+it describes a new rh proof route/research programme 
 
-Your task: develop this field/research programme and do the actual research and formalization.
+Your task: develop this route/research programme and do the actual research and formalization.
 
 Follow the example of other research programmes: formal/GaloisForLFunctions/ArithmeticCastelnuovoSeveri or formal/GaloisForLFunctions/ArithmeticOrientationGeometry
 
@@ -521,7 +521,7 @@ Follow the example of other research programmes: formal/GaloisForLFunctions/Arit
 
 Make good use of the search tool for our lean corpus to find existing work and get leads for new ideas and solutions for your work.
 
-The goal is done when the field is fully developed, the questions are answered, the tools are developed as described in the original document.
+The goal is done when the route is fully developed, the questions are answered, the tools are developed as described in the original document.
 
 Start with writing the first draft of README.md
 
@@ -582,15 +582,10 @@ Goal is met when a proof route is fully closed and formalized in lean and RH is 
 
 do not use the hgtl7 skill.
 
-read: docs/reports/review-0311/obstacles-summary.md
+read: docs/reports/review-0311/fable.md
 
-the document asks in "## 2.8 The one question" one question:
-"Is the complete Weil family positive on the whole space at one fixed critical multiple: is there
-`K₁ > 0` such that `completeWeilMatrix tiltedUnitSpline (2K₁(log N)^{1/8}) N` is eventually positive
-(definite, or on the pole hyperplane as in the horizon criterion)?
-
-By the critical-curve decomposition this is two statements: growing-conductor uniformity (2.5.4) and the
-weighted window sign `κQ(H) + (βJ/K₁)∫e^{−(β+1)y}H² ≥ 0` on windows of every length (B5)."
+the document asks in "## 7. Q6 — The one question" one question:
+"Does the complete form at the critical overlap pay the receiving charge that energy limits erase?"
 
 your task: answer the question, find a complete solution for it and unconditionally formalize it and its implications and collaries in lean.
 
@@ -623,7 +618,7 @@ Do not use the hgtl7 skill.
 
 read and understand docs/reports/review-0311/obstacles-summary.md and docs/reports/rh-current-frontier-map.md
 
-obstacles-summary.md suggest in "### F1. The tower assembly (P1; recommended)" to assemble a new route from building blocks of multiple routes and building bridges between the,
+obstacles-summary.md suggest in "### F2. The complete-family assembly (blind)" to assemble a new route from building blocks of multiple routes and building bridges between the,
 
 your task: assemble this route, build the bridges, formalize this route.
 
@@ -655,9 +650,9 @@ Put lean code into the correct subfolder(s), do not bloat RHTower or HTGeometry 
 
 Do not use the hgtl7 skill.
 
-read and understand docs/reports/review-0311/obstacles-summary.md
+read and understand docs/reports/review-0311/fable.md
 
-under "## 2.5 Breakthrough questions below RH and quasi-RH" it asks questions.
+under "## 4. Q3 — Breakthrough questions less hard than RH or quasi-RH" it asks questions.
 
 your task: answer the questions, find a complete solution for each and unconditionally formalize it and its implications and collaries in lean.
 

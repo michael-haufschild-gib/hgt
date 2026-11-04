@@ -116,7 +116,7 @@ theorem pairSum_vanishes_of_weil_eq (Z Z' : ZeroConfig) (hZ : TemperedConfig Z)
     intro v hv
     have hva : (((2 : ℕ) : ℝ) - 1) / 2 * |v| + w ≤ a := by
       have := abs_le.mpr hv
-      push_cast
+      rw [show (((2 : ℕ) : ℝ) - 1) / 2 = 1 / 2 by norm_num]
       linarith
     have hpol := lagStructure_eq_of_weil_twoBump_eq_at Z Z' hZ hZ' hb hbs |v| fun τ _ =>
       hW _ (contDiff_bumpTest hb |v| ![1, τ])

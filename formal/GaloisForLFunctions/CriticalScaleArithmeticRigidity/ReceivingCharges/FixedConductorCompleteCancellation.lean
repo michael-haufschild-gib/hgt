@@ -62,7 +62,8 @@ theorem tendsto_fixedConductor_critical_residual_norm_of_atom {φ : ℝ → ℝ}
     simp only [Real.sqrt_zero] at hsix
     apply hsix.congr
     intro N
-    rw [Real.sqrt_div, show c N ^ 6 = (c N ^ 3) ^ 2 by ring,
+    rw [Real.sqrt_div (pow_nonneg (zero_le_one.trans (hc N)) 6),
+      show c N ^ 6 = (c N ^ 3) ^ 2 by ring,
       Real.sqrt_sq (pow_nonneg (zero_le_one.trans (hc N)) _)]
   have hboundary := (criticalCurve_pow_log_div_natCast hc hR hcrit 5 1).pow 2
   have hlim := ((hfive.add hboundary).add hthree).const_mul (K * (m : ℝ) ^ 4)
