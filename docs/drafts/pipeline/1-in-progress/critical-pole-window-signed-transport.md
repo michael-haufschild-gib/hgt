@@ -25,7 +25,7 @@ The general target is the literal complete-matrix limit
     (sqrt(L)/c_N)⟨B_Nv_m,x_N⟩ → S_A(h)[m=1].
 
 Its dependency-closed paper proof and Lean source are complete; the
-exterior, actual-source and final assembly audits remain pending. The
+exterior and final assembly audits remain pending. The
 finite-prime formulation avoids interchanging infinite prime sums.
 Identifying its finite sum with `∫F(x)ψ(1/x)dx` is not needed by that source.
 
@@ -199,8 +199,9 @@ exchange, both summed model bounds and both model limits are checked in
 `TerminalUpwardShellsHaveTheirPolarMean`, `TerminalPrimeMeansAreFiniteRiemannSums`
 and `TerminalUpwardModelsHaveFinitePrimeSources`.
 `TerminalUpwardSourcesHaveFinitePrimeMeans` adds the actual-row error;
-its audit is pending. Thus the proposed actual upward limits need only
-`c→∞` and `c⁴/N→0`, not a new prime estimate.
+all three principal endpoints pass their actual-path audits with the
+standard three axioms. The actual upward limits need only `c→∞` and
+`c⁴/N→0`, not a new prime estimate.
 
 ### Assembly
 
@@ -281,7 +282,7 @@ use also depends on the pending source audits.
 
 ## Remaining frontier
 
-1. Complete actual-source, exterior, general assembly and envelope audits.
+1. Complete exterior, general assembly and envelope audits.
 2. Formalize the sharp correction capacity and its general-window consequence.
 3. Supply additional growing arithmetic receiving channels or control the
    complementary window energy directly. A rank-one correction leaves the

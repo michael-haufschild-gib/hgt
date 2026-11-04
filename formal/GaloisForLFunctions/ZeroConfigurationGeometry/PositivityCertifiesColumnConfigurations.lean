@@ -23,8 +23,11 @@ blinded by windows of every aperture above `π` times their density
   `2a > 2g log q`, puts them on the line. The off-line lattice shows that no aperture
   `≤ (log q)/2` suffices for one column pair (`offLineLattice_re_W_nonneg`).
 
-So the lag at which Weil positivity decides purity for curves is the density aperture of their
-configuration: the function-field threshold is the camera's isolation threshold.
+So the classical lag `2g log q` at which Weil positivity decides purity for curves is the
+isolation aperture `πD` of their configuration. For one column pair the exact threshold is `πD/2`
+(`offLineLattice_re_W_nonneg`, `offLineLattice_separated_above_nyquist`); whether positivity
+certifies every column configuration above `πD/2`, i.e. at the identification lag `g log q` for
+curves, is open.
 -/
 
 open MeasureTheory Complex Set

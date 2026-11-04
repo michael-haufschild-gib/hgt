@@ -46,10 +46,8 @@ theorem logarithmicUpwardProfileCoefficient_eq_rows (φ : ℝ → ℝ) (c : ℝ)
         F (k * n - h) * negativeLiteralUpwardKernel φ c N k h n := by
     simp only [logarithmicUpwardProfileOffset, positiveLiteralUpwardKernel,
       negativeLiteralUpwardKernel, mul_ite, mul_zero]
-  simp only [logarithmicUpwardProfileCoefficient, he, sum_add_distrib, mul_add]
-  rw [sum_add_distrib]
-  change (1 / (∫ u, φ u ^ 2)) *
-      (positiveLiteralUpwardRow φ c B N F n + negativeLiteralUpwardRow φ c B N F n) = _
+  simp only [logarithmicUpwardProfileCoefficient, he, sum_add_distrib, mul_add,
+    positiveLiteralUpwardRow, negativeLiteralUpwardRow]
   ring
 
 /-- Both cutoff kernels remain nonnegative for a nonnegative atom. -/

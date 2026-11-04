@@ -370,5 +370,10 @@ have variation bounded independently of horizon and multiplier
 (`LiteralUpwardKernelVariation`). Fixing a coprime conductor residue
 preserves the prime covariance density; finite periodic factors multiply
 it by their exact period mean (`ResidueSlices`, `PeriodicCovariance`).
-These inputs are checked. Their weighted Gram assembly and uniform
-complete mixed-form comparison remain open.
+The weighted periodic Gram bound and exact equal-prime block decomposition
+are checked (`PeriodicWeightedCovariance`, `PeriodicGram`, `PrimeBlockGram`).
+Affine prime-progressions and the full proper-power remainder are checked
+(`AffinePrimeProgressions`, `PrimePowerTails`, `AffineMangoldtProgressions`).
+The latter also handles a nonunit multiplier with unit target: its progression
+is empty. Literal-row specialization and the uniform complete mixed-form
+comparison remain open.

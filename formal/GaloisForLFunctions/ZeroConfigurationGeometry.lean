@@ -41,6 +41,7 @@ import GaloisForLFunctions.ZeroConfigurationGeometry.EulerStagesRepelAboveTheHor
 import GaloisForLFunctions.ZeroConfigurationGeometry.IntegralConfigurationsRepel
 import GaloisForLFunctions.ZeroConfigurationGeometry.PositivityCertifiesIsolableTilts
 import GaloisForLFunctions.ZeroConfigurationGeometry.EulerStagesAreCountedByTheirPhase
+import GaloisForLFunctions.ZeroConfigurationGeometry.PositivityCertifiesColumnConfigurations
 
 /-!
 # Zero Configuration Geometry

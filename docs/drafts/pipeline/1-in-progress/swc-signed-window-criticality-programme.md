@@ -42,7 +42,8 @@ TheContinuumCanonicalSystemIsTheJetHankelSystem, WindowEigenfunctionsAreSingular
 TheContinuumCanonicalSystemSplitsIntoTheParitySectors,
 TheSectorsAreTheMomentConditionsOfTheJets,
 TheLatticeReflectionCoefficientsAlternateInTheContinuumLimit,
-CapacitiesAndConstrainedGroundStatesAreSingularAtTheEdge.
+CapacitiesAndConstrainedGroundStatesAreSingularAtTheEdge,
+TheGammaFormRisesAlongTheDerivativeLadder.
 Each passes an individual
 `lake --old env lean` check; umbrella `SignedWindowCriticality.lean` wired into `MainTheorems.lean`.
 

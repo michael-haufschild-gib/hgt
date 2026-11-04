@@ -38,7 +38,7 @@ theorem abs_terminal_exteriorDownward_pairing_div_overlap_le
   obtain ⟨hg, hgsupp, _⟩ := atomDilate_facts hφ hsupp (div_pos hc0 hN0)
   have hG : 0 < ∫ u, g u ^ 2 := by
     dsimp only [g]
-    rw [integral_atomDilate_sq (div_pos hc0 hN0)]
+    rw [SpacingScaleHarmonicAnalysis.integral_atomDilate_sq (div_pos hc0 hN0)]
     exact mul_pos (div_pos hc0 hN0) hM
   have hDN : D ≤ N := by dsimp only [D]; omega
   have hsub : S ⊆ Icc 1 N := by

@@ -225,3 +225,4 @@ theorem archForm_meanZero_floor_of_odd_floor
 end GaloisForLFunctions.SignedWindowCriticality
 
 end
+
