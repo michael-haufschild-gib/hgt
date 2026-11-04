@@ -38,18 +38,18 @@ theorem periodic_prime_block_main_le {α : Type*} (P : Finset ℕ) (I : Finset �
     (hp : ∀ p ∈ P, 0 < p)
     (hz : ∀ p ∈ P, ∀ i ∈ I, ∀ r ∈ range M, |z p i r| ≤ V)
     (hv : ∀ p ∈ P, ∀ i ∈ I, 0 ≤ v p i)
-    (hD : ∀ p ∈ P, 0 ≤ D p) (hC : ∀ p ∈ P, 0 ≤ C p) (hE : ∀ p ∈ P, 0 ≤ E p)
+    (hC : ∀ p ∈ P, 0 ≤ C p) (hE : ∀ p ∈ P, 0 ≤ E p)
     (htotal : ∀ p ∈ P, (∑ i ∈ I, v p i) ≤ D p)
     (hrow : ∀ p ∈ P, ∀ j ∈ I,
       (∑ i ∈ I, if a p i ≡ a p j [MOD p] then v p i else 0) ≤ C p / p + E p) :
     (∑ p ∈ P, ∑ i ∈ I, ∑ j ∈ I,
       v p i * v p j * periodicPrimeResidueMean M p p (a p i) (a p j) (z p i) (z p j)) ≤
-      V ^ 2 * ∑ p ∈ P, D p * (C p + D p) / (p : ℝ) ^ 2 + D p * E p / p := by
+      V ^ 2 * (∑ p ∈ P, (D p * (C p + D p) / (p : ℝ) ^ 2 + D p * E p / p)) := by
   rw [mul_sum]
   apply sum_le_sum
   intro p hpP
   have hmain := same_prime_quadratic_mass I (v p) (a p) (hp p hpP)
-    (hD p hpP) (hC p hpP) (hE p hpP) (hv p hpP) (htotal p hpP) (hrow p hpP)
+    (hC p hpP) (hE p hpP) (hv p hpP) (htotal p hpP) (hrow p hpP)
   calc
     _ ≤ ∑ i ∈ I, ∑ j ∈ I,
         v p i * v p j *
@@ -71,9 +71,12 @@ theorem periodic_prime_block_main_le {α : Type*} (P : Finset ℕ) (I : Finset �
         (mul_nonneg (hv p hpP i hi) (hv p hpP j hj))).trans_eq (by ring)
     _ = V ^ 2 * (∑ i ∈ I, ∑ j ∈ I, v p i * v p j *
         |(if a p i ≡ a p j [MOD p] then 1 / (p : ℝ) else 0) - 1 / (p : ℝ) ^ 2|) := by
-      rw [← sum_mul]
-      simp_rw [← sum_mul]
-      rw [mul_comm]
+      simp only [mul_sum]
+      apply sum_congr rfl
+      intro i _
+      apply sum_congr rfl
+      intro j _
+      ring
     _ ≤ _ := mul_le_mul_of_nonneg_left hmain (sq_nonneg V)
 
 /-- The covariance mean decomposes exactly into equal-prime blocks before receiving-row summation. -/
@@ -117,6 +120,60 @@ theorem periodic_prime_Gram_main_eq_blocks {α : Type*} (P : Finset ℕ) (I : Fi
   simp_rw [hterm]
   simp_rw [sum_comm (s := I) (t := Icc A B)]
   rw [sum_comm (s := P) (t := Icc A B)]
+
+/-- Collision-row control and bounded variation give the full finite periodic Gram bound. -/
+theorem periodic_prime_block_Gram_le {α : Type*} (P : Finset ℕ) (I : Finset α)
+    (a : ℕ → α → ℕ) (w : ℕ → α → ℝ) (z f : ℕ → α → ℕ → ℝ)
+    {U K V : ℝ} (hU : 0 ≤ U) (hK : 0 ≤ K) (hV : 0 ≤ V)
+    {A B M : ℕ} (hA : 1 ≤ A) (hAB : A ≤ B) (hM : 0 < M)
+    (hp : ∀ p ∈ P, p.Prime) (hMp : ∀ p ∈ P, M.Coprime p)
+    (hw : ∀ p ∈ P, ∀ i ∈ I, 0 ≤ w p i)
+    (hz : ∀ p ∈ P, ∀ i ∈ I, ∀ r ∈ range M, |z p i r| ≤ V)
+    (hf0 : ∀ p ∈ P, ∀ i ∈ I, ∀ n ∈ Icc A B, 0 ≤ f p i n)
+    (hf : ∀ p ∈ P, ∀ i ∈ I, ∀ n ∈ Icc A B, |f p i n| ≤ U)
+    (hfv : ∀ p ∈ P, ∀ i ∈ I, discreteVariation (f p i) A B ≤ K)
+    (D C E : ℕ → ℕ → ℝ)
+    (hC : ∀ n ∈ Icc A B, ∀ p ∈ P, 0 ≤ C n p)
+    (hE : ∀ n ∈ Icc A B, ∀ p ∈ P, 0 ≤ E n p)
+    (htotal : ∀ n ∈ Icc A B, ∀ p ∈ P, (∑ i ∈ I, w p i * f p i n) ≤ D n p)
+    (hrow : ∀ n ∈ Icc A B, ∀ p ∈ P, ∀ j ∈ I,
+      (∑ i ∈ I, if a p i ≡ a p j [MOD p] then w p i * f p i n else 0) ≤
+        C n p / p + E n p) :
+    (∑ n ∈ Icc A B, (∑ i ∈ P ×ˢ I,
+        w i.1 i.2 * f i.1 i.2 n *
+          (z i.1 i.2 (n % M) * centeredResidue i.1 (a i.1 i.2) n)) ^ 2 / (n : ℝ)) ≤
+      V ^ 2 * (∑ n ∈ Icc A B,
+        (∑ p ∈ P, (D n p * (C n p + D n p) / (p : ℝ) ^ 2 + D n p * E n p / p)) / (n : ℝ)) +
+      (4 * (M : ℝ) * V ^ 2 * (2 * U ^ 2 + 2 * U * K) / A) *
+        (∑ i ∈ P ×ˢ I, |w i.1 i.2|) ^ 2 := by
+  classical
+  have h := periodic_prime_covariance_Gram (P ×ˢ I) Prod.fst
+    (fun i => a i.1 i.2) (fun i => w i.1 i.2)
+    (fun i => z i.1 i.2) (fun i => f i.1 i.2) hU hK hV hA hAB hM
+    (fun i hi => hp i.1 (mem_product.mp hi).1)
+    (fun i hi => hMp i.1 (mem_product.mp hi).1)
+    (fun i hi => hz i.1 (mem_product.mp hi).1 i.2 (mem_product.mp hi).2)
+    (fun i hi => hf i.1 (mem_product.mp hi).1 i.2 (mem_product.mp hi).2)
+    (fun i hi => hfv i.1 (mem_product.mp hi).1 i.2 (mem_product.mp hi).2)
+  have hupper := (abs_le.mp h).2
+  rw [periodic_prime_Gram_main_eq_blocks] at hupper
+  have hmain :
+      (∑ n ∈ Icc A B, (∑ p ∈ P, ∑ i ∈ I, ∑ j ∈ I,
+        (w p i * f p i n) * (w p j * f p j n) *
+          periodicPrimeResidueMean M p p (a p i) (a p j) (z p i) (z p j)) / (n : ℝ)) ≤
+      V ^ 2 * (∑ n ∈ Icc A B,
+        (∑ p ∈ P, (D n p * (C n p + D n p) / (p : ℝ) ^ 2 + D n p * E n p / p)) / (n : ℝ)) := by
+    rw [mul_sum]
+    apply sum_le_sum
+    intro n hn
+    have hm := periodic_prime_block_main_le P I hM a z (fun p i => w p i * f p i n)
+      hV (D n) (C n) (E n) (fun p hpP => (hp p hpP).pos) hz
+      (fun p hpP i hi => mul_nonneg (hw p hpP i hi) (hf0 p hpP i hi n hn))
+      (hC n hn) (hE n hn) (htotal n hn) (hrow n hn)
+    exact (div_le_div_of_nonneg_right hm (Nat.cast_nonneg n)).trans_eq (by ring)
+  linarith only [hupper, hmain]
+
+#print axioms periodic_prime_block_Gram_le
 
 #print axioms periodic_prime_block_main_le
 #print axioms periodic_prime_Gram_main_eq_blocks

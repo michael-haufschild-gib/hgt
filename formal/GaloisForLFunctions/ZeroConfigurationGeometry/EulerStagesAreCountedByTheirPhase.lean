@@ -115,7 +115,7 @@ theorem ncard_eulerStage_zeros {X : ℕ} {t₀ T : ℝ} (ht₀ : 4 ≤ t₀)
   have hinj : Function.Injective fun k : ℕ => (k : ℝ) * Real.pi := fun a b h => by
     have := mul_right_cancel₀ Real.pi_ne_zero h
     exact_mod_cast this
-  rw [← Set.ncard_image_of_injOn (hmono.injOn.mono fun t ht => ht.1), himage,
+  rw [← (hmono.injOn.mono fun t ht => ht.1).ncard_image, himage,
     Set.ncard_image_of_injective _ hinj, Set.ncard_coe_finset, Finset.card_range]
 
 /-- **Riemann–von Mangoldt up to the prime weight.** Above the horizon, after a zero `t₀`, the

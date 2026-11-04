@@ -60,7 +60,8 @@ theorem eventually_low_packet_correction_ge_retained_pole_budget
   let p := fun m => ⟪M (normalizedRamanujanHorizonVector m N), x⟫
   have hc0 : 0 < c N := zero_lt_one.trans_le (hc N)
   have hα : 0 < 1 - η := sub_pos.mpr hη1
-  have hP : 0 ≤ P := mul_nonneg tiltedPolarFinitePart_nonneg (by positivity)
+  have hP : 0 ≤ P := mul_nonneg tiltedPolarFinitePart_nonneg
+    (div_nonneg hc0.le (zero_le_one.trans hL))
   have hQ : 1 ≤ Q := Nat.le_floor
     (by exact_mod_cast Real.one_le_rpow hL (by norm_num : (0 : ℝ) ≤ 13 / 32))
   have h1 : 1 ∈ Icc 1 Q := mem_Icc.mpr ⟨le_rfl, hQ⟩

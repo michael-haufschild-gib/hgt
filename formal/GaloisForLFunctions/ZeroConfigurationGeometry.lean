@@ -38,6 +38,8 @@ import GaloisForLFunctions.ZeroConfigurationGeometry.TheCurveCameraIdentifiesAtT
 import GaloisForLFunctions.ZeroConfigurationGeometry.BoundedImagesCertifyPurity
 import GaloisForLFunctions.ZeroConfigurationGeometry.EulerStagesRepelAboveTheHorizon
 import GaloisForLFunctions.ZeroConfigurationGeometry.IntegralConfigurationsRepel
+import GaloisForLFunctions.ZeroConfigurationGeometry.PositivityCertifiesIsolableTilts
+import GaloisForLFunctions.ZeroConfigurationGeometry.EulerStagesAreCountedByTheirPhase
 
 /-!
 # Zero Configuration Geometry
@@ -65,4 +67,3 @@ Umbrella for the explicit formula read as a camera.
 
 See `ZeroConfigurationGeometry/README.md`.
 -/
-import GaloisForLFunctions.ZeroConfigurationGeometry.PositivityCertifiesIsolableTilts

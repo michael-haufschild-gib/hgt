@@ -192,7 +192,7 @@ theorem cross_weight_upper {q : ℝ} (hq : 7 ≤ q) :
     rw [Real.exp_neg,inv_eq_one_div]
     have h := one_div_le_one_div_of_le (by norm_num : (0 : ℝ) < 25000000000/19) hb
     norm_num at h
-    exact h
+    simpa only [one_div] using h
   have hs := mul_le_mul_of_nonneg_left hd (show (0 : ℝ) ≤ 7^15 by positivity)
   apply (le_div_iff₀ (pow_pos hq0 15)).mpr
   nlinarith only [hm,hs]

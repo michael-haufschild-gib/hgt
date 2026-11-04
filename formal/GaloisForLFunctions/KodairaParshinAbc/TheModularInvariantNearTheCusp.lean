@@ -45,10 +45,12 @@ theorem exists_cusp_bounds_lambdaInvariant :
   set E := Real.exp (Real.pi * τ.im) with hEdef
   have hE : 0 < E := Real.exp_pos _
   -- `|L| E = |u|`
+  have hexp : ‖Complex.exp (-(Real.pi * Complex.I * (τ : ℂ)))‖ = E := by
+    rw [Complex.norm_exp, hEdef]
+    congr 1
+    simp [Complex.mul_re, Complex.mul_im, UpperHalfPlane.coe_im]
   have hLE : ‖L‖ * E = ‖u‖ := by
-    rw [hudef, norm_mul, ← neg_mul, ← neg_mul, show -(↑Real.pi * Complex.I * (τ : ℂ)) =
-      ↑Real.pi * Complex.I * (-(τ : ℂ)) by ring, norm_exp_pi_I_mul]
-    simp [hEdef, UpperHalfPlane.coe_im]
+    rw [hudef, norm_mul, hexp]
   -- bounds on `|u|`, `|L - 1|`, `|L² - L + 1|`
   have hu_lo : 8 < ‖u‖ := by
     have := norm_sub_norm_le (16 : ℂ) u
@@ -92,7 +94,6 @@ theorem exists_cusp_bounds_lambdaInvariant :
     have : ‖(256 : ℂ)‖ = 256 := by norm_num
     rw [this]
     field_simp
-    ring
   have hE2 : Real.exp (2 * Real.pi * τ.im) = E ^ 2 := by
     rw [hEdef, ← Real.exp_nat_mul]
     congr 1

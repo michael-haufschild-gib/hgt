@@ -40,13 +40,15 @@ theorem abs_same_residue_mean_le (p a b : ℕ) :
       (if a ≡ b [MOD p] then 1 / (p : ℝ) else 0) + 1 / (p : ℝ) ^ 2 := by
   have hδ : 0 ≤ (if a ≡ b [MOD p] then 1 / (p : ℝ) else 0) := by
     split_ifs <;> positivity
-  simpa only [abs_of_nonneg hδ, abs_of_nonneg (by positivity : 0 ≤ 1 / (p : ℝ) ^ 2)]
-    using abs_sub (if a ≡ b [MOD p] then 1 / (p : ℝ) else 0) (1 / (p : ℝ) ^ 2)
+  have h := abs_sub (if a ≡ b [MOD p] then 1 / (p : ℝ) else 0) (1 / (p : ℝ) ^ 2)
+  rw [abs_of_nonneg hδ, show |(1 : ℝ) / (p : ℝ) ^ 2| = (1 : ℝ) / (p : ℝ) ^ 2 from
+    abs_of_nonneg (by positivity)] at h
+  exact h
 
 /-- An averaged affine congruence gains a second reciprocal prime factor. -/
 theorem same_prime_quadratic_mass {α : Type*} (I : Finset α)
     (v : α → ℝ) (a : α → ℕ) {p : ℕ} (hp : 0 < p) {D C E : ℝ}
-    (hD : 0 ≤ D) (hC : 0 ≤ C) (hE : 0 ≤ E)
+    (hC : 0 ≤ C) (hE : 0 ≤ E)
     (hv : ∀ i ∈ I, 0 ≤ v i) (htotal : (∑ i ∈ I, v i) ≤ D)
     (hrow : ∀ j ∈ I,
       (∑ i ∈ I, if a i ≡ a j [MOD p] then v i else 0) ≤ C / (p : ℝ) + E) :
@@ -71,7 +73,7 @@ theorem same_prime_quadratic_mass {α : Type*} (I : Finset α)
     _ = (∑ i ∈ I, ∑ j ∈ I, v i * v j *
           (if a i ≡ a j [MOD p] then (1 : ℝ) else 0)) / p +
         (∑ i ∈ I, v i) ^ 2 / (p : ℝ) ^ 2 := by
-      rw [pow_two, sum_mul_sum]
+      rw [pow_two (∑ i ∈ I, v i), sum_mul_sum]
       simp only [sum_div, ← sum_add_distrib]
       apply sum_congr rfl
       intro i _

@@ -1,7 +1,7 @@
 # Zero Configuration Geometry (ZCG)
 
 Namespace `GaloisForLFunctions.ZeroConfigurationGeometry`; umbrella `ZeroConfigurationGeometry.lean`;
-40 modules.
+42 modules.
 
 ## 1. Motivation
 
@@ -285,6 +285,10 @@ programme locates exactly where it leaves the sign-free world.
 | Sparse on-line clusters never cancel: density `< 2a/π`, sharp | `multDiff_eq_zero_of_pointImage_isolated`, `exists_window_blind_of_injOn_near_lattice`, `eq_of_mimic_of_onLine_count_le`, `eq_of_mimic_of_onLine_separated`, `exists_onLine_mimic_at_density` | unconditional |
 | Euler stages repel above the horizon (phase lattice of `Λ_X` on the line) | `stageLine_eq_mul_exp`, `eulerStage_ne_zero_of_phase_lt`, `exists_eulerStage_zero_of_phase_ge`, `eulerStage_deriv_ne_zero`, `re_stageSpeed_ge`, `re_stageSpeed_le`, `eulerStage_deriv_ne_zero_above_horizon`, `eulerStage_ne_zero_of_lt_gap`, `exists_eulerStage_zero_within` | unconditional |
 | Integral configurations collide or repel (function-field model) | `prod_derivative_roots_eq_resultant`, `one_le_norm_prod_derivative`, `one_le_norm_sub_mul_pow`, `collide_or_repel` | unconditional |
+| Thin backgrounds hide no tilted point | `exists_window_isolating_in_perturbed_lattices`, `exists_window_vanishing_on_finset`, `exists_isolating_window_of_lattices_and_finset`, `eq_of_mimic_of_perturbed_lattices_and_finset` | unconditional |
+| Positivity certifies isolable tilts; positivity has a density threshold | `gammaOf_reflect_eq_conj`, `exists_window_re_W_neg`, `re_eq_half_of_re_W_nonneg`, `re_eq_half_of_re_W_nonneg_of_lattices_and_finset`, `re_eq_half_of_re_W_nonneg_of_finite`, `re_W_nonneg_of_onLine`, `offLineLattice_re_W_nonneg` | unconditional |
+| Euler stages are counted by their phase | `eulerStage_eq_zero_iff_phase`, `stagePhase_re_strictMonoOn`, `ncard_eulerStage_zeros`, `ncard_eulerStage_zeros_bounds` | unconditional |
+| The twins are seen exactly at their prime (data) | `twinPowerSum`, `twinData`, `twinData_firstDisagreement`, `twinData_mimic_iff` | unconditional |
 | Division at transform zeros; isolating windows | `exists_window_div`, `exists_isolating_window`, `exists_window_isolating_lattice_point` | unconditional |
 | The lattice threshold `π/h` is sharp | `tsum_add_int_eq_zero_of_fourier_eq_zero`, `eq_zero_of_blind_to_lattice`, `exists_window_blind_to_lattice_iff` | unconditional |
 | Cosine camera: real zeros, complex additive rigidity | `im_eq_zero_of_cosineWindowTransform_eq_zero`, `no_complex_additive_zero_triple` | unconditional, `0 < θ < π/2` |
@@ -335,7 +339,9 @@ programme locates exactly where it leaves the sign-free world.
   inside the simple zero set of one transform of aperture `a`, on the lattice `{½ + ikh}` above
   `π/h`, or on finite unions of bounded perturbations of lattices on the line above `πD` are
   trivial (`eq_of_mimic_of_perturbed_lattices`). This is a density criterion for cancelling
-  clusters, sharp against Euler columns, which cancel up to `π/h`. Splitting the camera between
+  clusters, sharp against Euler columns, which cancel up to `π/h`. Clusters inside perturbed real
+  lattices of density `D` plus a finite set of arbitrary or tilted points never cancel at
+  `a > πD` (`eq_of_mimic_of_perturbed_lattices_and_finset`). Splitting the camera between
   its two windows doubles the reach. Match the heights of an on-line cluster into `D⁻¹ℤ` and split
   by the parity of the lattice index; each window then has to be blind to one half only, of
   density `D/2`. So mimics at aperture `a` whose cluster lies on the critical line with upper
@@ -384,7 +390,14 @@ programme locates exactly where it leaves the sign-free world.
   with roots in `|z| ≤ 2√q`, `∏_α h'(α) = Res(h, h') ∈ ℤ` (`prod_derivative_roots_eq_resultant`).
   So either `h` has a multiple root, or any two distinct roots satisfy
   `|α − β| ≥ (4√q)^{−((g − 1)² + g − 2)}` (`collide_or_repel`). The image of `ζ`, prime sums
-  weighted by `log p`, has no such discreteness; this is exactly the missing repulsion input. In the
+  weighted by `log p`, has no such discreteness; this is exactly the missing repulsion input. In
+  count form, from a zero `t₀` on the line, `t` is a zero of `Λ_X` if and only if
+  `Re Θ(t) = ∫_{t₀}^{t} Re L_X ∈ πℤ`, on the whole line (`eulerStage_eq_zero_iff_phase`). Above the
+  horizon `Re Θ` is strictly increasing (`stagePhase_re_strictMonoOn`), so the zeros in `[t₀, T]`
+  number exactly `⌊Re Θ(T)/π⌋ + 1` (`ncard_eulerStage_zeros`), between `⌊m(T − t₀)/π⌋ + 1` and
+  `⌊M_T(T − t₀)/π⌋ + 1` (`ncard_eulerStage_zeros_bounds`). Above its horizon the Euler-stage
+  configuration is on the line, simple, and the preimage of `πℤ` under a phase of speed
+  `½ log(t/2π)` up to the prime weight `W/2`. In the
   function-field model a trace polynomial of genus `g` is pure if and only if its circle polynomial
   `z^g Q(z + z⁻¹)` has every root on `|z| = 1` (`isPure_iff_circle`). Along any continuous family
   of fixed degree purity is closed, simple pure points are interior, and purity is lost only at a
@@ -437,11 +450,26 @@ programme locates exactly where it leaves the sign-free world.
   datum exactly up to lag `g log q`. At the level of arithmetic data the camera family separates
   every fake with the archimedean place and pole of `ζ` exactly at its first prime. Data agreeing
   with `Λ` below `n₀` and differing at `n₀` have equal images on every window of aperture `r`
-  if and only if `2r ≤ log n₀` (`arithmeticImage_eq_iff`). Prime flips with least prime `p₀`,
+  if and only if `2r ≤ log n₀` (`arithmeticImage_eq_iff`). For `A ≠ 0` the data of the twin
+  `ζ(s)(1 + Ap^{−s} + p^{1−2s})`, which are `Λ(n) − s_k log p` at `n = p^k` with `s_k` the power
+  sums of the roots of `x² + Ax + p`, are separated from `Λ` exactly above aperture `½ log p`
+  (`twinData_mimic_iff`). This is the aperture at which the twin's Euler column stops hiding
+  (`eulerColumn_mimic_iff`): data and configuration give the same threshold. Prime flips with least prime `p₀`,
   however sparse, are seen exactly above `½ log p₀` (`flipData_mimic_iff`). Mimicry lives only at
   the level of configurations.
 - **Q0 Certification.** In the function field, purity is certified at the identification threshold
-  by the positions of the trace points. The model has two certificates. One is the exact image up
+  by the positions of the trace points. On the side of `ζ`, Weil positivity certifies exactly what
+  the camera isolates. If `ρ₀` is off the line and `ρ₀`, `1 − ρ̄₀` have isolating windows of
+  aperture `a`, the window `f_A + c f_B` with `f̂(conj γ₀) = −f̂(γ₀)` gives
+  `W(f, f) = −2m|f̂(γ₀)|² < 0` (`exists_window_re_W_neg`), with no temperedness. So positivity at one
+  aperture `a > πD` puts on the line every configuration whose ordinates lie on perturbed real
+  lattices of density `D` plus finitely many arbitrary points
+  (`re_eq_half_of_re_W_nonneg_of_lattices_and_finset`), and every finite configuration at any
+  aperture (`re_eq_half_of_re_W_nonneg_of_finite`). Positivity has a density threshold: the
+  off-line lattice `{½ ± δ + 2πik/L}`, with `L/π` points per unit height, is positive at every
+  aperture `≤ L/2` and has no point on the line (`offLineLattice_re_W_nonneg`). The ordinates of
+  `ζ` have unbounded density, so no finite aperture isolates a tilt; this is why Weil's criterion
+  needs all apertures at once. In the function-field model there are two certificates. One is the exact image up
   to the genus (`isPure_of_curveImage_eq`). The other is a size bound at all orders: purity holds
   if and only if the image is bounded (`isPure_iff_bounded_curveImage`), and the Weil bound is
   `|S_m| ≤ 2g` (`norm_curveImage_le_of_isPure`). The image grows like the deepest eigenvalue:
@@ -503,6 +531,7 @@ programme locates exactly where it leaves the sign-free world.
 | The resolution scale of off-line pairs is worse than Ingham's | Shallow configurations are resolved at every `g > π/(2a)`; only deep points cost separation |
 | Collisions signal non-purity | In the function-field model purity is lost only at a collision, but pure configurations collide freely (a trace root at `±2` or a double trace root keeps purity); a collision criterion characterizes exits, not states |
 | Repulsion needs a positivity or a sign | In the function-field model repulsion of distinct trace points follows from integrality of the image: `Res(h, h')` is a nonzero integer. In the Euler-stage family it follows from the archimedean phase speed dominating the prime weight. Neither mechanism is available for `ζ` below the horizon |
+| Weil positivity at a large enough single aperture certifies RH-type statements | It certifies exactly the tilts the camera isolates (thin or finite configurations). The off-line lattice is positive at every aperture `≤ L/2`, and the unbounded density of `ζ` defeats every finite aperture |
 | Identification certifies reality for `ζ` too | No finite aperture identifies the zeros of `ζ`: lattice columns of RvM density hide up to `λ = ½`, and infinite mimics beyond columns are not classified |
 | Reality can leave the line smoothly | Only through a collision, a real double root |
 | Euler products separate `ζ` from twins at finite resolution | Only the Ramanujan bound at each prime does |

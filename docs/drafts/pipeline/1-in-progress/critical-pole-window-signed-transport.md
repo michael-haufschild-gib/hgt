@@ -12,7 +12,7 @@ Let `L=log N`, `c_N≥1`, `c_N⁸/L→R>0`, `B_N` be the complete
 tilted-spline matrix, `v_m` its normalized Ramanujan horizon vector,
 `E_m(c)` the completed reference conductor energy, and
 `x_N(n)=F(n/N)/sqrt(n)`, where `F=logProfile h` and h is C²,
-supported in `[-A,0]`, `A≥0`. Write
+supported in `[-A,0]`, `A≥0`. Set `φ=tiltedUnitSpline` and write
 
     a=(∫φ)²/∫φ²,  g=2+γ−log(4π)>0,
     M₈(H)=∫ exp(-8y)H(y)²dy,  H(y)=exp(y/2)h(y),
@@ -25,7 +25,7 @@ The general target is the literal complete-matrix limit
     (sqrt(L)/c_N)⟨B_Nv_m,x_N⟩ → S_A(h)[m=1].
 
 Its dependency-closed paper proof and Lean source are complete; the
-actual-row, exterior and final assembly audits remain pending. The
+exterior, actual-source and final assembly audits remain pending. The
 finite-prime formulation avoids interchanging infinite prime sums.
 Identifying its finite sum with `∫F(x)ψ(1/x)dx` is not needed by that source.
 
@@ -175,8 +175,9 @@ Consequently
       ≤ [6Bφ(m)CφC₀/(δM)+63Bφ(m)P_b/δ] c⁴/N.
 
 The clock condition `c≥1`, `c⁴/N→0` also eventually ensures the finite
-comparison conditions `4cH≤N`, `2H≤N`. This paper proof is implemented
-in `TerminalUpwardRowReplacementDisappears`; audit pending.
+comparison conditions `4cH≤N`, `2H≤N`. Both the finite quartic bound and
+its vanishing consequence in `TerminalUpwardRowReplacementDisappears`
+pass their actual-path audits with the standard three axioms.
 
 For the polar shell, the checked Riemann estimate gives
 `upwardShellModel(φ,c,N,1,H,p)=acp/N+O_(φ,δ)(1)` uniformly for δN≤p≤N.
@@ -280,7 +281,7 @@ use also depends on the pending source audits.
 
 ## Remaining frontier
 
-1. Complete actual-row, exterior, general assembly and envelope audits.
+1. Complete actual-source, exterior, general assembly and envelope audits.
 2. Formalize the sharp correction capacity and its general-window consequence.
 3. Supply additional growing arithmetic receiving channels or control the
    complementary window energy directly. A rank-one correction leaves the

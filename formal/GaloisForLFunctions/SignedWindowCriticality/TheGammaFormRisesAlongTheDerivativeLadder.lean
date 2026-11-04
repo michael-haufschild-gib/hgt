@@ -109,13 +109,17 @@ theorem archForm_mul_le (hg : ContDiff ℝ 3 g) (hgc : HasCompactSupport g) :
   have i1 : Integrable fun r => F r * a r - a ρ * F r := hFai.sub (hFi.const_mul _)
   have i2 : Integrable fun r => ρ ^ 2 * (G r * a r) - a ρ * ρ ^ 2 * G r :=
     (hGai.const_mul _).sub (hGi.const_mul _)
-  have hint := integral_nonneg (f := fun r => (a r - a ρ) * (r ^ 2 - ρ ^ 2) * G r) hpt
+  have hint : 0 ≤ ∫ r, (a r - a ρ) * (r ^ 2 - ρ ^ 2) * G r := integral_nonneg hpt
   rw [hexp, integral_sub i1 i2, integral_sub hFai (hFi.const_mul _),
     integral_sub (hGai.const_mul _) (hGi.const_mul _), integral_const_mul, integral_const_mul,
     integral_const_mul] at hint
-  have hρG : ρ ^ 2 * ∫ r, G r = ∫ r, F r := by rw [hρ]; field_simp
+  have hρG : ρ ^ 2 * ∫ r, G r = ∫ r, F r := by
+    rw [hρ]
+    show (∫ r, F r) / (∫ r, G r) * ∫ r, G r = ∫ r, F r
+    exact div_mul_cancel₀ _ hG0.ne'
   have hcheb : (∫ r, G r * a r) * (∫ r, F r) ≤ (∫ r, F r * a r) * ∫ r, G r := by
-    have h1 : ρ ^ 2 * (∫ r, G r * a r) ≤ ∫ r, F r * a r := by nlinarith
+    have h3 : a ρ * ρ ^ 2 * ∫ r, G r = a ρ * ∫ r, F r := by rw [mul_assoc, hρG]
+    have h1 : ρ ^ 2 * (∫ r, G r * a r) ≤ ∫ r, F r * a r := by linarith
     calc (∫ r, G r * a r) * (∫ r, F r) = (ρ ^ 2 * ∫ r, G r * a r) * ∫ r, G r := by
           rw [← hρG]; ring
       _ ≤ (∫ r, F r * a r) * ∫ r, G r := mul_le_mul_of_nonneg_right h1 hG0.le
