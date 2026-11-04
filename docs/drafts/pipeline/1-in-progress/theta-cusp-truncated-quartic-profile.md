@@ -3,8 +3,9 @@
 - **Stage:** 1-in-progress
 - **Type:** CONJECTURE
 - **Wall:** Σ6
-- **Target:** Global pointwise positivity of the fifth even source obtained from
-  `P₊(r)=max(1−r²/2,0)²` times the literal center compensation flux.
+- **Target:** Positive definiteness of the truncated fifth even repair for every
+  `x≥0`, and of its literal weighted source for `0<a<1/2`, `r>0`.
+  The flux profile is `P₊(r)=max(1−r²/2,0)²`.
 
 The untruncated quartic fails at theta scale thirty-two, beyond its double
 zero. Truncation removes that branch. The profile is continuously

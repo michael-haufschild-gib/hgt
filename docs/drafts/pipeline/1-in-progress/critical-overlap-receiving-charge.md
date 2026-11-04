@@ -193,8 +193,8 @@ to the tilted spline and common exclusion `R!` for arbitrary charges in modes
 
 At `Q=N`, finite Ramanujan inversion makes the conductor span the whole horizon;
 its complement is zero. The physical energy still tends to zero, with raw
-limit `t²/2`. `PrimeChargeFullHorizon` contains the complement statement;
-check pending. The terminal witness above has raw limit `39t²/2` and nonzero
+limit `t²/2`. `PrimeChargeFullHorizon` checks the complement statement.
+The terminal witness above has raw limit `39t²/2` and nonzero
 complementary pairing. Thus charge and small physical energy alone do not
 specify a complementary response.
 

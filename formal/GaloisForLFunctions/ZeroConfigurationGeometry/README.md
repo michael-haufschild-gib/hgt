@@ -438,8 +438,10 @@ arithmetic images, forces every point onto the real curve?*
 
 **To build.**
 - Resolution of deep configurations between `π/(2a)` and `π/a`.
-- Second-order local inversion uniform in height (B51): equal images at aperture `(1 + ε)L` fix the
-  centre and squared gap of every near-coincident pair.
+- Second-order local inversion at polynomial scales (B51). The quasi-polynomial form is proved
+  (`norm_discMoment_zeta_le`). The polynomial form needs isolating windows whose floor is
+  polynomial in the isolation radius; the worst-case floor of a window blind to a configuration of
+  Riemann–von Mangoldt type is not.
 - A Hermite–Biehler half of the heat source below `½/log X` from Euler and Gamma data (B49).
 
 ## 8. Traps
