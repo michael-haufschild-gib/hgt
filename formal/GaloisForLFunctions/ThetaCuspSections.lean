@@ -38,6 +38,8 @@ sharp capacity strictly between one half and one: positivity holds below the
 capacity, and the boundary matrix is positive semidefinite and singular.
 A quartic center-flux profile preserves every fifth even mixed entry and gives
 positivity near the origin, near scale eight, and on a cofinal source ray.
+Its correction is nonnegative throughout `1/2 ≤ x²`, `0 ≤ x ≤ 3/4`,
+where the complete profiled source is positive definite.
 Every individual theta atom has a strict fifth even section at reflection scale at least five.
 -/
 import GaloisForLFunctions.ThetaCuspSections.FifthEvenLeadingPairReserve
@@ -50,3 +52,4 @@ import GaloisForLFunctions.ThetaCuspSections.FifthEvenScaleEightSourceBounds
 import GaloisForLFunctions.ThetaCuspSections.FifthEvenScaleEightCapacity
 import GaloisForLFunctions.ThetaCuspSections.FifthEvenPolynomialCrossLoad
 import GaloisForLFunctions.ThetaCuspSections.FifthEvenPolynomialCrossTail
+import GaloisForLFunctions.ThetaCuspSections.FifthEvenPolynomialCrossInterval

@@ -1,7 +1,7 @@
 # Zero Configuration Geometry (ZCG)
 
 Namespace `GaloisForLFunctions.ZeroConfigurationGeometry`; umbrella `ZeroConfigurationGeometry.lean`;
-49 modules.
+53 modules.
 
 ## 1. Motivation
 
@@ -234,6 +234,9 @@ primes below the mean spacing.
 | Far zeros are faint in the local camera | `localWindow`, `paperFT_localWindow`, `norm_paperFT_localWindow_mul_le`, `norm_pointImage_mul_le`, `decay_le_tempered`, `tsum_far_le`, `norm_tsum_far_le`, `tsum_far_multDiff_le`, `tsum_far_zeta_le` | unconditional |
 | Isolated points are seen by the local camera, with explicit constant | `apertureWindow_localWindow`, `localCameraConst`, `one_add_pow_le_of_isolated_cancellation_of_bump`, `one_add_pow_le_of_isolated_cancellation` | unconditional |
 | The zeros of `ζ` have the sharp local density | `mu_le`, `card_le_ncount`, `ncount_le_of_goodHeight`, `exists_card_le_sharp`, `exists_card_le_sharp_centred`, `exists_card_le_sharp_centred_abs` | unconditional |
+| Spline bumps decay at an explicit rate | `norm_paperFT_le_of_prob`, `one_add_mul_norm_sincC_le`, `splineBump`, `splineStage_props`, `one_add_norm_pow_mul_norm_paperFT_splineBump_le`, `one_le_norm_paperFT_splineBump_I`, `exists_explicit_bump` | unconditional |
+| The local camera constant is quasi-polynomial in the density | `windowSlack_localSlack_le`, `nearFarConst_two_mul_inv_le`, `windowExponent_le`, `log_windowGrowth_le`, `log_inv_windowFloor_le` | unconditional |
+| **The local camera fixes the isolated zeros of `ζ` at every bandwidth `λ > ½`** | `localCameraConst_le`, `zeta_cluster_count`, `zeta_camera_budget`, `multDiff_zeta_eq_zero_of_isolated` | unconditional |
 | Cosine camera: real zeros, complex additive rigidity | `im_eq_zero_of_cosineWindowTransform_eq_zero`, `no_complex_additive_zero_triple` | unconditional, `0 < θ < π/2` |
 | **Arithmetic fakes** | | |
 | Ramanujan is reality | `localFactor_zero_depth`, `localFactor_zero_re_eq_half_iff`, `curveDatum_pure_iff_tracePoints` | unconditional |
@@ -386,8 +389,7 @@ arithmetic images, forces every point onto the real curve?*
   and the phase law of Euler stages.
 
 **To build.**
-- Explicit constants for the local camera: `B(a, D, C₀, η, k)` as an explicit function, from a bump
-  with explicit transform decay (a smooth bump convolved with a box power `sinc^m`).
+- The local form of the Ingham-scale resolution, for near-collisions below the isolation scale.
 - Resolution of deep configurations between `π/(2a)` and `π/a`.
 - The Beurling–Malliavin radius of a configuration, through the equivalence with entire functions.
 - Signed prime geometry below the mean spacing, as input to the coalescent channel.
@@ -464,7 +466,7 @@ Euler logarithm to exponentiate. The route carries the domination down to `ζ` i
 | 2. RH is the descent | RH holds iff the local de Bruijn–Newman constant `Λ_X` vanishes at every height (`riemannHypothesis_iff_forall_localNewmanConstant_eq_zero`) | Lean |
 | 3. Exit only through collision | Along the descent `t ↓ 0`, a zero leaves the line only at a double zero (`riemannHypothesis_iff_forall_zeros_simple`, `exists_first_collision`) | Lean |
 | 4. The pincer | A zero of depth `d` at height `X` forces `Λ_X ≥ c d²/log X` (`exists_le_localNewmanConstant_of_offLine_zero`), so any tilt is created by a collision at heat `t ∈ [c d²/log X, t_X]` | Lean |
-| 5. The camera fixes the start | The descent is determined by the configuration of `ζ` at `t = 0`, and only there is the image arithmetic: the heat flow destroys the Euler product for `t > 0`. Hiding needs density `≥ 2a/π` near the height of the hidden point (`one_add_pow_le_of_isolated_cancellation`). The zeros of `ζ` and of a mimic with the same local density have joint density `(1/π) log(X/2π)` near `X` (`exists_card_le_sharp_centred`). So at aperture `λ log X`, `λ > ½`, the image determines the isolated points near `X`. It reads near-collisions at second order through the `(log n)²`-weighted prime sum (`norm_pairSignal_sub_sq_mul_curvature_le`, `deriv_deriv_primeChannel_modulate`) | Lean with non-explicit `B`; explicit `B` open (O2) |
+| 5. The camera fixes the start | The descent is determined by the configuration of `ζ` at `t = 0`, and only there is the image arithmetic: the heat flow destroys the Euler product for `t > 0`. For every `λ > 1/4 + πμ/2` and every large height `X`, a tempered mimic of `ζ` at aperture `λ log X` with local density `≤ μ log X` has the multiplicity of `ζ` at every point of height `X` that is `π/(λ log X)`-isolated in the cluster (`multDiff_zeta_eq_zero_of_isolated`). For mimics with the density of `ζ`, `μ = 1/2π`, this is every `λ > ½`. Near-collisions below `π/(λ log X)` are read only at second order, through the `(log n)²`-weighted prime sum (`norm_pairSignal_sub_sq_mul_curvature_le`, `deriv_deriv_primeChannel_modulate`) | Lean for isolated points; near-collisions open |
 | 6. Close the descent | The configuration fixed in step 5 evolves without collision on `(0, t_X]`: it has no tilted pair, and no cluster that collides in the last stretch | open (O1, O3) |
 
 **Obstacles.**
@@ -473,19 +475,13 @@ Euler logarithm to exponentiate. The route carries the domination down to `ζ` i
   (Bourgain's `μ(½) ≤ 13/84` gives `13/21`). Lindelöf would give `Λ_X = o(1/log X)`, still not `0`.
   Closing the route needs domination that knows the configuration at the scale `1/log X`, not only
   the size of `ζ`.
-- **O2 The local camera, quantitatively.** The local density criterion is proved
-  (`one_add_pow_le_of_isolated_cancellation`), and so is its count input for `ζ`
-  (`exists_card_le_sharp_centred`). For `ζ` the parameters grow with the height: aperture
-  `a = λ log X`, density `D ≍ log X`, count error `C₀ ≍ log X`, and isolation `η ≍ 1/log X` at
-  the mean spacing. The theorem applies at height `X` once `(1 + R)^{2k−2} > B(1 + X)² S` for some
-  `R ≤ X/2`, the range of the sharp count. So `B` must be explicit. It is, given the bump:
-  `B = localCameraConst a D C₀ η ε C_m C_0 = (windowGrowth · C_m C_0 e^ε)² e^a (5/4)/windowFloor²`
-  (`one_add_pow_le_of_isolated_cancellation_of_bump`). The window constants are of size
-  `X^{O(log log X)}` and `X^{−O(log(1/η) log log X)}`. With a bump of explicit decay
-  `C_m ≤ c^m (1 + m/ε)^m` (a smooth bump convolved with a box power), `B ≤ X^{O((log log X)²)}` is
-  expected. Then `k ≍ (log log X)²` gives `R = X^δ` for every
-  `δ > 0`, and the local camera of `ζ` works at every bandwidth `λ > ½`. This is analysis inside
-  the programme, and the next target.
+- **O2 The local camera below the isolation scale.** The isolated points are fixed
+  (`multDiff_zeta_eq_zero_of_isolated`): with `L = log X`, the camera constant is `e^{O(L²)}`
+  (`TheLocalCameraConstantIsQuasiPolynomial`, `exists_explicit_bump`), and decay order `k ≍ L`
+  beats it. What remains open is the cluster below the isolation scale `π/(λ log X)`: points of the
+  cluster closer than that to another one. They are pairs or clusters near collision, which the
+  camera reads only at second order. The local form of the Ingham-scale resolution
+  (`exists_depth_resolving_at_ingham_scale`) is the next tool, and the rest is O3.
 - **O3 Repulsion in the last stretch.** Every tilted pair of `ζ` at height `X` must disappear by a
   collision before heat time `t_X`, since `H_{t_X}` is real there. An isolated pair of squared
   half-gap `−δ²` collides at heat `δ²/2` (the single-pair law `w² + 2t`, proved for polynomials),
@@ -503,8 +499,9 @@ Euler logarithm to exponentiate. The route carries the domination down to `ζ` i
   closes O3 must use a property that `ζ` has exactly at `t = 0`. The Euler product is such a
   property: the heat flow destroys it for `t > 0`.
 
-**Status.** Steps 1–4 are proved in the corpus. Step 5 is proved in local form with a
-non-explicit constant; making the constant explicit (O2) is analysis within reach. O1 and O3 are where RH lies. The route is not
+**Status.** Steps 1–4 are proved in the corpus. Step 5 is proved for the zeros of `ζ` at every
+bandwidth `λ > ½`, for points isolated at a fixed fraction of the mean spacing. Near-collisions
+below that scale (O2) are where step 5 meets O3. O1 and O3 are where RH lies. The route is not
 closed. What it contributes is the split. ζ-specific domination gives reality down to heat time
 `t_X`, and the pincer confines every tilt to the last stretch. The camera fixes the configuration
 whose descent must be collision-free. The only arithmetic left is that this configuration has no

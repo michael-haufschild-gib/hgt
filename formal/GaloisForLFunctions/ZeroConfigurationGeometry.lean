@@ -49,6 +49,7 @@ import GaloisForLFunctions.ZeroConfigurationGeometry.FiniteCarriersAreRealAboveT
 import GaloisForLFunctions.ZeroConfigurationGeometry.TiltsCostPrimeWeight
 import GaloisForLFunctions.ZeroConfigurationGeometry.ZetaZerosHaveTheSharpLocalDensity
 import GaloisForLFunctions.ZeroConfigurationGeometry.SplineBumpsDecayAtAnExplicitRate
+import GaloisForLFunctions.ZeroConfigurationGeometry.TheLocalCameraFixesTheIsolatedZerosOfZeta
 
 /-!
 # Zero Configuration Geometry

@@ -20,7 +20,12 @@ the Lévy jumps together with the trivial-zero squares.
   `e^{−α|p−q|} + e^{−α(p+q)} = 2e^{−αM}cosh(αm) ≥ 2e^{−αM}cosh(m/2)` (`M, m` the max and min,
   `α = 2j + 1/2`), so the sum is at least `2cosh(m/2) ω(M) ≥ 4cosh(m/2)cosh(M/2)` below the
   plastic threshold `t_* = log ρ`, where `ω(t_*) = 2cosh(t_*/2)`.
-* `evenSector_abs_le` — **the even sector is Markov for `c ≤ t_*`**: `E(|f|) ≤ E(f)`.
+* `evenBand_abs_le_of_frustrationFree` — **frustration localization**: for every `c < log 2`,
+  nonnegative prime weights and every test whose sign changes avoid the pairs where the kernel is
+  negative (`EvenFrustrationFree`), the even band form does not increase under `f ↦ |f|`. The prime
+  reflections only grow (`selfConv_le_selfConv_abs`); the pole is the only frustration.
+* `evenSector_abs_le` — **the even sector is Markov for `c ≤ t_*`**: every sign change is
+  frustration-free there (`evenFrustrationFree_of_le_threshold`), so `E(|f|) ≤ E(f)`.
 * `evenKernel_neg_of_threshold_lt` — the range is sharp: for `c > t_*` the kernel is negative at
   the pair (window edge, centre) `(−c, 0)`.
 -/
@@ -143,13 +148,19 @@ theorem evenKernel_neg_of_threshold_lt {c : ℝ} (hc : screwSignThreshold < c) :
 
 /-! ### 2. Weil's form on a short half-window -/
 
-/-- No prime meets a test supported in `[−c, c]` with `2c < log 2`:
+/-- No prime meets a test vanishing off `[−c, 0]`, `c < log 2`:
 `W(F) = Γ‖F‖² + 𝒥(F) + 2(∫ e^{u/2}F)(∫ e^{−u/2}F)`. -/
-lemma weilQuad_eq_of_short {F : ℝ → ℝ} (hF : Continuous F) (hFc : HasCompactSupport F) {c : ℝ}
-    (hc : 2 * c < Real.log 2) (hFs : ∀ x, c < |x| → F x = 0)
+lemma weilQuad_eq_of_halfWindow {F : ℝ → ℝ} (hF : Continuous F) {c : ℝ} (hc : c < Real.log 2)
+    (h0 : ∀ u, 0 < u → F u = 0) (hl : ∀ u, u < -c → F u = 0)
     (hJ : IntegrableOn (fun x => (autocorr F 0 - autocorr F x) * archLevySinhWeight x) (Ioi 0)) :
     weilQuad F = EF.gammaBracket 0 * autocorr F 0 + biScaleLevyEnergy F +
       2 * ((∫ u, Real.exp (u / 2) * F u) * ∫ u, Real.exp (-(u / 2)) * F u) := by
+  have hFc : HasCompactSupport F :=
+    HasCompactSupport.intro (isCompact_Icc (a := -c) (b := 0)) fun x hx => by
+      simp only [mem_Icc, not_and_or, not_le] at hx
+      rcases hx with h | h
+      · exact hl x h
+      · exact h0 x h
   let Fc : C_c(ℝ, ℝ) := ⟨⟨F, hF⟩, hFc⟩
   have hfull := re_weilFullFunctional_eq_of_compact_finite_jump Fc hJ
   change weilQuad F = EF.gammaBracket 0 * autocorr F 0 + biScaleLevyEnergy F -
@@ -157,12 +168,16 @@ lemma weilQuad_eq_of_short {F : ℝ → ℝ} (hF : Continuous F) (hFc : HasCompa
   have hprime : (∑' n : ℕ, primeTerm (autocorr F) n) = 0 := by
     refine (tsum_congr fun n => ?_).trans tsum_zero
     by_cases h2 : 2 ≤ n
-    · have hlog : 2 * c < |Real.log n| := by
-        have h2' : (2 : ℝ) ≤ n := by exact_mod_cast h2
-        have hl : Real.log 2 ≤ Real.log n := Real.log_le_log (by norm_num) h2'
-        rw [abs_of_nonneg (le_trans (Real.log_nonneg (by norm_num)) hl)]
-        linarith
-      have hz : autocorr F (Real.log n) = 0 := autocorr_eq_zero_of_far hFs hlog
+    · have hl2 : Real.log 2 ≤ Real.log n :=
+        Real.log_le_log (by norm_num) (by exact_mod_cast h2)
+      have hz : autocorr F (Real.log n) = 0 := by
+        unfold autocorr
+        refine integral_eq_zero_of_ae (Eventually.of_forall fun u => ?_)
+        show F u * F (u + Real.log n) = 0
+        by_cases hu : F u = 0
+        · rw [hu, zero_mul]
+        · have hu0 : -c ≤ u := not_lt.mp fun h => hu (hl u h)
+          rw [h0 (u + Real.log n) (by linarith), mul_zero]
       simp only [SignedPrimePolar.primeTerm, if_pos h2, hz, mul_zero]
     · simp only [SignedPrimePolar.primeTerm, if_neg h2]
   have hpolar := integral_polar_autocorr_eq_moments Fc
@@ -187,6 +202,17 @@ lemma pairDefect_eq_zero_of_left {f : ℝ → ℝ} {u v : ℝ} (h : f u = 0) :
 lemma pairDefect_eq_zero_of_right {f : ℝ → ℝ} {u v : ℝ} (h : f v = 0) :
     pairDefect f u v = 0 := by
   simp [pairDefect, h]
+
+/-- The prime reflection grows under the contraction: `(f⋆f)(s) ≤ (|f|⋆|f|)(s)`. -/
+lemma selfConv_le_selfConv_abs {f : ℝ → ℝ} (hf : Continuous f) (hfc : HasCompactSupport f)
+    (s : ℝ) : selfConv f s ≤ selfConv (fun u => |f u|) s := by
+  unfold selfConv
+  refine integral_mono
+    ((by fun_prop : Continuous fun u => f u * f (s - u)).integrable_of_hasCompactSupport
+      (hfc.mono fun u hu h0 => hu (by simp [h0])))
+    ((by fun_prop : Continuous fun u => |f u| * |f (s - u)|).integrable_of_hasCompactSupport
+      (hfc.mono fun u hu h0 => hu (by simp [h0]))) fun u => ?_
+  rw [← abs_mul]; exact le_abs_self _
 
 /-- The weight `h(u) = 2cosh(u/2)` of the pole. -/
 def coshWeight (u : ℝ) : ℝ := 2 * Real.cosh (u / 2)
@@ -392,26 +418,32 @@ lemma summable_expMoment_sq {F : ℝ → ℝ} {c B : ℝ} (hc : 0 ≤ c)
 
 /-! ### 6. The defect inequality -/
 
+/-- **Frustration-free sign changes**: at every pair where `f` changes sign the even kernel is
+nonnegative, `4cosh(u/2)cosh(v/2) ≤ ω(|u − v|) + ω(−u − v)`. -/
+def EvenFrustrationFree (f : ℝ → ℝ) : Prop :=
+  ∀ u v, f u * f v < 0 →
+    4 * Real.cosh (u / 2) * Real.cosh (v / 2) ≤ archLevyDensity |u - v| + archLevyDensity (-u - v)
+
+lemma mul_neg_of_pairDefect_ne_zero {f : ℝ → ℝ} {u v : ℝ} (h : pairDefect f u v ≠ 0) :
+    f u * f v < 0 := by
+  by_contra hn
+  exact h (by unfold pairDefect; rw [← abs_mul, abs_of_nonneg (not_lt.mp hn), sub_self])
+
 /-- Pointwise kernel bound on the pair `(u, u + x)`, `x > 0`. -/
-lemma pairDefect_kernel_le {c : ℝ} (hct : c ≤ screwSignThreshold) {f : ℝ → ℝ}
-    (h0 : ∀ u, 0 < u → f u = 0) (hl : ∀ u, u < -c → f u = 0) {x : ℝ} (hx : 0 < x) (u : ℝ) :
+lemma pairDefect_kernel_le {f : ℝ → ℝ} (hfr : EvenFrustrationFree f)
+    (h0 : ∀ u, 0 < u → f u = 0) {x : ℝ} (hx : 0 < x) (u : ℝ) :
     ENNReal.ofReal (pairDefect f u (u + x) * (coshWeight u * coshWeight (u + x))) ≤
       ENNReal.ofReal (archLevyDensity x * pairDefect f u (u + x)) +
         ∑' j, ENNReal.ofReal (pairDefect f u (u + x) * (expWeight j u * expWeight j (u + x))) := by
   by_cases hD : pairDefect f u (u + x) = 0
   · rw [hD, zero_mul, ENNReal.ofReal_zero]; exact zero_le
-  have hfu : f u ≠ 0 := fun h => hD (pairDefect_eq_zero_of_left h)
   have hfv : f (u + x) ≠ 0 := fun h => hD (pairDefect_eq_zero_of_right h)
-  have hu0 : u ≤ 0 := not_lt.mp fun h => hfu (h0 u h)
-  have huc : -c ≤ u := not_lt.mp fun h => hfu (hl u h)
   have hv0 : u + x ≤ 0 := not_lt.mp fun h => hfv (h0 _ h)
-  have hvc : -c ≤ u + x := not_lt.mp fun h => hfv (hl _ h)
-  have hk := four_mul_cosh_mul_cosh_le (p := -u) (q := -(u + x)) (by linarith) (by linarith)
-    (by linarith) (by linarith) (by intro h; linarith)
-  have habs : |-u - -(u + x)| = x := by
-    rw [show -u - -(u + x) = x by ring, abs_of_pos hx]
-  have hsum : 0 < -u + -(u + x) := by linarith
-  have hmodes : ∀ j : ℕ, Real.exp (-((2 * (j : ℝ) + 1 / 2) * (-u + -(u + x)))) =
+  have hk := hfr u (u + x) (mul_neg_of_pairDefect_ne_zero hD)
+  have habs : |u - (u + x)| = x := by
+    rw [show u - (u + x) = -x by ring, abs_neg, abs_of_pos hx]
+  have hsum : 0 < -u - (u + x) := by linarith
+  have hmodes : ∀ j : ℕ, Real.exp (-((2 * (j : ℝ) + 1 / 2) * (-u - (u + x)))) =
       expWeight j u * expWeight j (u + x) := fun j => by
     unfold expWeight; rw [← Real.exp_add]; congr 1; ring
   rw [habs, _root_.RHTower.archLevyDensity_eq_tsum hsum] at hk
@@ -424,21 +456,20 @@ lemma pairDefect_kernel_le {c : ℝ} (hct : c ≤ screwSignThreshold) {f : ℝ �
   have hew : ∀ j, 0 ≤ pairDefect f u (u + x) * (expWeight j u * expWeight j (u + x)) :=
     fun j => mul_nonneg hD0 (by unfold expWeight; positivity)
   have hcw : coshWeight u * coshWeight (u + x) =
-      4 * Real.cosh (-u / 2) * Real.cosh (-(u + x) / 2) := by
-    unfold coshWeight; rw [neg_div, Real.cosh_neg, neg_div, Real.cosh_neg]; ring
+      4 * Real.cosh (u / 2) * Real.cosh ((u + x) / 2) := by
+    unfold coshWeight; ring
   rw [← ENNReal.ofReal_tsum_of_nonneg hew (hS.mul_left _),
     ← ENNReal.ofReal_add (mul_nonneg (archLevyDensity_pos hx).le hD0) (tsum_nonneg hew)]
   apply ENNReal.ofReal_le_ofReal
   rw [tsum_mul_left, hcw]
-  calc pairDefect f u (u + x) * (4 * Real.cosh (-u / 2) * Real.cosh (-(u + x) / 2))
+  calc pairDefect f u (u + x) * (4 * Real.cosh (u / 2) * Real.cosh ((u + x) / 2))
       ≤ pairDefect f u (u + x) * (archLevyDensity x +
           ∑' j, expWeight j u * expWeight j (u + x)) := mul_le_mul_of_nonneg_left hk hD0
     _ = _ := by ring
 
 /-- Lag by lag: `Δ_h(x) ≤ ω(x) Δ_1(x) + Σ_j Δ_{e_j}(x)` in `[0, ∞]`. -/
-lemma perLag_le {c : ℝ} (hct : c ≤ screwSignThreshold) {f : ℝ → ℝ} (hf : Continuous f)
-    (hfc : HasCompactSupport f) (h0 : ∀ u, 0 < u → f u = 0) (hl : ∀ u, u < -c → f u = 0)
-    {x : ℝ} (hx : 0 < x) :
+lemma perLag_le {f : ℝ → ℝ} (hfr : EvenFrustrationFree f) (hf : Continuous f)
+    (hfc : HasCompactSupport f) (h0 : ∀ u, 0 < u → f u = 0) {x : ℝ} (hx : 0 < x) :
     ENNReal.ofReal (∫ u, pairDefect f u (u + x) * (coshWeight u * coshWeight (u + x))) ≤
       ENNReal.ofReal (archLevyDensity x * ∫ u, pairDefect f u (u + x)) +
         ∑' j, ENNReal.ofReal
@@ -466,11 +497,11 @@ lemma perLag_le {c : ℝ} (hct : c ≤ screwSignThreshold) {f : ℝ → ℝ} (hf
       (Eventually.of_forall (hnn _ (hexp j)))
   rw [hsum, ← lintegral_add_left ((by unfold pairDefect; fun_prop :
     Continuous fun u => archLevyDensity x * pairDefect f u (u + x)).measurable.ennreal_ofReal)]
-  exact lintegral_mono fun u => pairDefect_kernel_le hct h0 hl hx u
+  exact lintegral_mono fun u => pairDefect_kernel_le hfr h0 hx u
 
-/-- **The defect inequality**: for `f` vanishing off `[−c, 0]`, `c ≤ t_*`,
+/-- **The defect inequality**: for frustration-free `f` vanishing off `[−c, 0]`,
 `(∫|f|h)² − (∫ f h)² ≤ (𝒥(f) − 𝒥(|f|)) + Σ_j (ν_j(|f|)² − ν_j(f)²)`. -/
-theorem pole_defect_le {c : ℝ} (hc0 : 0 ≤ c) (hct : c ≤ screwSignThreshold) {f : ℝ → ℝ}
+theorem pole_defect_le {c : ℝ} (hc0 : 0 ≤ c) {f : ℝ → ℝ} (hfr : EvenFrustrationFree f)
     (hf : Continuous f) (h0 : ∀ u, 0 < u → f u = 0) (hl : ∀ u, u < -c → f u = 0)
     (hJf : IntegrableOn (fun x => (autocorr f 0 - autocorr f x) * archLevySinhWeight x) (Ioi 0)) :
     (∫ u, |f u| * coshWeight u) ^ 2 - (∫ u, f u * coshWeight u) ^ 2 ≤
@@ -595,14 +626,14 @@ theorem pole_defect_le {c : ℝ} (hc0 : 0 ≤ c) (hct : c ≤ screwSignThreshold
     (measurable_archLevyDensity.mul hcont1.measurable).ennreal_ofReal
   rw [← lintegral_tsum fun j => ((hcont _ (hew j)).measurable.ennreal_ofReal.aemeasurable),
     ← lintegral_add_left hmeasJ]
-  exact setLIntegral_mono' measurableSet_Ioi fun x hx => perLag_le hct hf hfc h0 hl hx
+  exact setLIntegral_mono' measurableSet_Ioi fun x hx => perLag_le hfr hf hfc h0 hx
 
 /-! ### 7. The even sector under the contraction -/
 
 /-- The even sector of a half-window test in kernel form:
 `W(F) + 𝓗₀(F) = Γ‖F‖² + 𝒥(F) + (∫ F h)² − Σ_j ν_j(F)²`. -/
 lemma evenSector_eq {F : ℝ → ℝ} (hF : Continuous F) {c : ℝ} (hc0 : 0 ≤ c)
-    (hct : c ≤ screwSignThreshold) (h0 : ∀ u, 0 < u → F u = 0) (hl : ∀ u, u < -c → F u = 0)
+    (hc : c < Real.log 2) (h0 : ∀ u, 0 < u → F u = 0) (hl : ∀ u, u < -c → F u = 0)
     (hJ : IntegrableOn (fun x => (autocorr F 0 - autocorr F x) * archLevySinhWeight x) (Ioi 0)) :
     weilQuad F + collarHankel 0 F = EF.gammaBracket 0 * autocorr F 0 + biScaleLevyEnergy F +
       (∫ u, F u * coshWeight u) ^ 2 - ∑' j, expMoment F j ^ 2 := by
@@ -613,10 +644,7 @@ lemma evenSector_eq {F : ℝ → ℝ} (hF : Continuous F) {c : ℝ} (hc0 : 0 ≤
   have hFc : HasCompactSupport F :=
     HasCompactSupport.intro (isCompact_Icc (a := -c) (b := c)) fun x hx =>
       hFs x (lt_of_not_ge fun h => hx (abs_le.mp h))
-  have hlog : 2 * c < Real.log 2 := by
-    have := screwSignThreshold_lt
-    linarith [Real.log_two_gt_d9]
-  rw [weilQuad_eq_of_short hF hFc hlog hFs hJ]
+  rw [weilQuad_eq_of_halfWindow hF hc h0 hl hJ]
   obtain ⟨B, hB⟩ : ∃ B, ∀ u, |F u| ≤ B := by
     obtain ⟨B, hB⟩ := hFc.exists_bound_of_continuous hF
     exact ⟨B, fun u => by simpa [Real.norm_eq_abs] using hB u⟩
@@ -648,10 +676,12 @@ lemma evenSector_eq {F : ℝ → ℝ} (hF : Continuous F) {c : ℝ} (hc0 : 0 ≤
   rw [hS.tsum_eq_zero_add, hQ, hP]
   ring
 
-/-- **The even sector is Markov below the plastic threshold.** For `0 ≤ c ≤ t_*` and every `C²`
-test `f` vanishing off `[−c, 0]`, `W(|f|) + 𝓗₀(|f|) ≤ W(f) + 𝓗₀(f)`. -/
-theorem evenSector_abs_le {c : ℝ} (hc0 : 0 ≤ c) (hct : c ≤ screwSignThreshold) {f : ℝ → ℝ}
-    (hf : ContDiff ℝ 2 f) (h0 : ∀ u, 0 < u → f u = 0) (hl : ∀ u, u < -c → f u = 0) :
+/-- **Frustration localization in the even sector.** For `c < log 2` and a `C²` test `f`
+vanishing off `[−c, 0]` whose sign changes avoid the frustrated pairs (`EvenFrustrationFree f`),
+`W(|f|) + 𝓗₀(|f|) ≤ W(f) + 𝓗₀(f)`. -/
+theorem evenSector_abs_le_of_frustrationFree {c : ℝ} (hc0 : 0 ≤ c) (hc : c < Real.log 2)
+    {f : ℝ → ℝ} (hf : ContDiff ℝ 2 f) (h0 : ∀ u, 0 < u → f u = 0) (hl : ∀ u, u < -c → f u = 0)
+    (hfr : EvenFrustrationFree f) :
     weilQuad (fun u => |f u|) + collarHankel 0 (fun u => |f u|) ≤
       weilQuad f + collarHankel 0 f := by
   have hfs : ∀ x, c < |x| → f x = 0 := fun x hx => by
@@ -667,19 +697,79 @@ theorem evenSector_abs_le {c : ℝ} (hc0 : 0 ≤ c) (hct : c ≤ screwSignThresh
   obtain ⟨B, hB⟩ : ∃ B, ∀ u, |f u| ≤ B := by
     obtain ⟨B, hB⟩ := hfc.exists_bound_of_continuous hf.continuous
     exact ⟨B, fun u => by simpa [Real.norm_eq_abs] using hB u⟩
-  have hSg := summable_expMoment_sq (F := fun u => |f u|) hc0 (B := B) (fun u => by rw [abs_abs]; exact hB u)
+  have hSg := summable_expMoment_sq (F := fun u => |f u|) hc0 (B := B)
+    (fun u => by rw [abs_abs]; exact hB u)
     (fun u hu => by rw [h0 u hu, abs_zero]) (fun u hu => by rw [hl u hu, abs_zero])
   have hSf := summable_expMoment_sq (F := f) hc0 hB h0 hl
-  rw [evenSector_eq hf.continuous hc0 hct h0 hl hJf,
-    evenSector_eq hg hc0 hct (fun u hu => by rw [h0 u hu, abs_zero])
+  rw [evenSector_eq hf.continuous hc0 hc h0 hl hJf,
+    evenSector_eq hg hc0 hc (fun u hu => by rw [h0 u hu, abs_zero])
       (fun u hu => by rw [hl u hu, abs_zero]) hJg]
-  have hdef := pole_defect_le hc0 hct hf.continuous h0 hl hJf
+  have hdef := pole_defect_le hc0 hfr hf.continuous h0 hl hJf
   have h00 : autocorr (fun u => |f u|) 0 = autocorr f 0 := by
     unfold autocorr; simp only [add_zero, abs_mul_abs_self]
   rw [hSg.tsum_sub hSf] at hdef
   rw [h00]
   linarith
 
+/-- **The even band under the contraction.** For `c < log 2`, nonnegative weights and a
+frustration-free `C²` test `f` vanishing off `[−c, 0]`, the even band form
+`W + 𝓗₀ − w₂(f⋆f)(−log 2) − w₃(f⋆f)(−log 3)` does not increase under `f ↦ |f|`: the primes only
+help, and the pole frustrates only the pairs excluded by `EvenFrustrationFree`. -/
+theorem evenBand_abs_le_of_frustrationFree {c : ℝ} (hc0 : 0 ≤ c) (hc : c < Real.log 2)
+    {f : ℝ → ℝ} (hf : ContDiff ℝ 2 f) (h0 : ∀ u, 0 < u → f u = 0) (hl : ∀ u, u < -c → f u = 0)
+    (hfr : EvenFrustrationFree f) {w₂ w₃ : ℝ} (hw₂ : 0 ≤ w₂) (hw₃ : 0 ≤ w₃) :
+    weilQuad (fun u => |f u|) + collarHankel 0 (fun u => |f u|) -
+        w₂ * selfConv (fun u => |f u|) (-Real.log 2) -
+        w₃ * selfConv (fun u => |f u|) (-Real.log 3) ≤
+      weilQuad f + collarHankel 0 f - w₂ * selfConv f (-Real.log 2) -
+        w₃ * selfConv f (-Real.log 3) := by
+  have hfc : HasCompactSupport f :=
+    HasCompactSupport.intro (isCompact_Icc (a := -c) (b := 0)) fun x hx => by
+      simp only [mem_Icc, not_and_or, not_le] at hx
+      rcases hx with h | h
+      · exact hl x h
+      · exact h0 x h
+  have hE := evenSector_abs_le_of_frustrationFree hc0 hc hf h0 hl hfr
+  have h2 := mul_le_mul_of_nonneg_left (selfConv_le_selfConv_abs hf.continuous hfc (-Real.log 2)) hw₂
+  have h3 := mul_le_mul_of_nonneg_left (selfConv_le_selfConv_abs hf.continuous hfc (-Real.log 3)) hw₃
+  linarith
+
+/-- Below the plastic threshold every sign change is frustration-free. -/
+theorem evenFrustrationFree_of_le_threshold {c : ℝ} (hct : c ≤ screwSignThreshold) {f : ℝ → ℝ}
+    (h0 : ∀ u, 0 < u → f u = 0) (hl : ∀ u, u < -c → f u = 0) : EvenFrustrationFree f := by
+  intro u v huv
+  have hfu : f u ≠ 0 := fun h => by rw [h, zero_mul] at huv; exact lt_irrefl _ huv
+  have hfv : f v ≠ 0 := fun h => by rw [h, mul_zero] at huv; exact lt_irrefl _ huv
+  have hu0 : u ≤ 0 := not_lt.mp fun h => hfu (h0 u h)
+  have huc : -c ≤ u := not_lt.mp fun h => hfu (hl u h)
+  have hv0 : v ≤ 0 := not_lt.mp fun h => hfv (h0 v h)
+  have hvc : -c ≤ v := not_lt.mp fun h => hfv (hl v h)
+  have hne : -u ≠ -v := by
+    intro h
+    have : u = v := by linarith
+    rw [this] at huv
+    exact absurd huv (not_lt.mpr (mul_self_nonneg (f v)))
+  have hk := four_mul_cosh_mul_cosh_le (p := -u) (q := -v) (by linarith) (by linarith)
+    (by linarith) (by linarith) hne
+  rw [neg_div, Real.cosh_neg, neg_div, Real.cosh_neg,
+    show -u - -v = -(u - v) by ring, abs_neg, show -u + -v = -u - v by ring] at hk
+  exact hk
+
+/-- **The even sector is Markov below the plastic threshold.** For `0 ≤ c ≤ t_*` and every `C²`
+test `f` vanishing off `[−c, 0]`, `W(|f|) + 𝓗₀(|f|) ≤ W(f) + 𝓗₀(f)`. -/
+theorem evenSector_abs_le {c : ℝ} (hc0 : 0 ≤ c) (hct : c ≤ screwSignThreshold) {f : ℝ → ℝ}
+    (hf : ContDiff ℝ 2 f) (h0 : ∀ u, 0 < u → f u = 0) (hl : ∀ u, u < -c → f u = 0) :
+    weilQuad (fun u => |f u|) + collarHankel 0 (fun u => |f u|) ≤
+      weilQuad f + collarHankel 0 f := by
+  have hc : c < Real.log 2 := by
+    have := screwSignThreshold_lt
+    linarith [Real.log_two_gt_d9]
+  exact evenSector_abs_le_of_frustrationFree hc0 hc hf h0 hl
+    (evenFrustrationFree_of_le_threshold hct h0 hl)
+
 end GaloisForLFunctions.SignedWindowCriticality.PerronSignLaw
 
 end
+
+#print axioms GaloisForLFunctions.SignedWindowCriticality.PerronSignLaw.evenBand_abs_le_of_frustrationFree
+#print axioms GaloisForLFunctions.SignedWindowCriticality.PerronSignLaw.evenSector_abs_le

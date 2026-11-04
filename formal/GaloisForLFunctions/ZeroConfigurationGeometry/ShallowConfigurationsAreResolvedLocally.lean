@@ -1,4 +1,5 @@
 import GaloisForLFunctions.ZeroConfigurationGeometry.ShallowConfigurationsAreResolvedAtTheInghamScale
+import GaloisForLFunctions.ZeroConfigurationGeometry.FarZerosAreFaintInTheLocalCamera
 
 /-!
 # Shallow configurations are resolved locally
@@ -236,7 +237,7 @@ theorem norm_multDiff_mul_shallowFloor_sq_le (Z Z' : ZeroConfig) {w s : ℝ} (hw
     (hk : |k.re - 1 / 2| ≤ s) :
     ‖multDiff Z Z' k‖ * shallowFloor w s ^ 2 ≤ ‖siteP Z Z' w k.im k + siteQ Z Z' w k.im k‖ := by
   set κ₀ := paperFT (_root_.RHTower.scaledBump w) (-(I * ((k.re - 1 / 2 : ℝ) : ℂ))) with hκ₀
-  have hpw : _root_.RHTower.pairWeight (_root_.RHTower.modScaledBump w k.im) (k.re - 1 / 2) k.im =
+  have hpw : pairWeight (_root_.RHTower.modScaledBump w k.im) (k.re - 1 / 2) k.im =
       κ₀ ^ 2 := by
     rw [pairWeight_modScaledBump_eq_sq, sub_self, Complex.ofReal_zero, zero_sub]
   have hconj : conj κ₀ = κ₀ := by
@@ -432,16 +433,20 @@ theorem norm_multDiff_sq_le_of_locally_shallow (Z Z' : ZeroConfig) (hZ : Tempere
       ((hωs.comp_injective hinj).mul_left (5 / 4 * (1 + |X|) ^ 2 * (1 + R) ^ 2))
     show ψ k ≤ 5 / 4 * (1 + |X|) ^ 2 * (1 + R) ^ 2 * ω ((k : K) : ℂ)
     have hk := one_add_normSq_gammaOf_le (hdepthK k) X
+    have hkN : |((k : K) : ℂ).im - X| ≤ R := k.2
     have hkR : (1 + |((k : K) : ℂ).im - X|) ^ 2 ≤ (1 + R) ^ 2 :=
-      pow_le_pow_left₀ (by positivity) (by linarith [k.2]) 2
+      pow_le_pow_left₀ (by positivity) (by linarith) 2
     have hn : 1 + Complex.normSq (gammaOf ((k : K) : ℂ)) ≤ 5 / 4 * (1 + |X|) ^ 2 * (1 + R) ^ 2 :=
       hk.trans (mul_le_mul_of_nonneg_left hkR (by positivity))
     have hψc : ψ k ≤ ‖c ((k : K) : ℂ)‖ :=
       div_le_self (norm_nonneg _) (one_le_pow₀ (by linarith [abs_nonneg (((k : K) : ℂ).im - X)]))
     refine hψc.trans ?_
-    simp only [hω]
-    rw [mul_div_assoc', le_div_iff₀ (hN1 _)]
-    exact mul_le_mul_of_nonneg_left hn (norm_nonneg _) |>.trans_eq' (by ring)
+    have hωk : ‖c ((k : K) : ℂ)‖ =
+        ω ((k : K) : ℂ) * (1 + Complex.normSq (gammaOf ((k : K) : ℂ))) :=
+      (div_mul_cancel₀ _ (hN1 _).ne').symm
+    have hω0 : 0 ≤ ω ((k : K) : ℂ) := div_nonneg (norm_nonneg _) (hN1 _).le
+    rw [hωk]
+    exact (mul_le_mul_of_nonneg_left hn hω0).trans_eq (mul_comm _ _)
   set t₁N : N := ⟨⟨t₁, mem_carrier_of_multDiff_ne_zero hct₁, ht₁re⟩, by
     show |t₁.im - X| ≤ R; rw [ht₁im]; exact hz⟩ with ht₁N
   have hψt : 0 < ψ t₁N := div_pos (norm_pos_iff.mpr hct₁) (by positivity)
@@ -585,8 +590,8 @@ theorem norm_multDiff_sq_le_of_locally_shallow (Z Z' : ZeroConfig) (hZ : Tempere
         linarith
       have hx1 : (0 : ℝ) < 1 + |ρ.im - γ₀| := by positivity
       have hR1 : (0 : ℝ) < 1 + (R - d₀) := by linarith
-      have hcρ : ‖c ρ‖ = ω ρ * (1 + Complex.normSq (gammaOf ρ)) := by
-        simp only [hω]; field_simp [(hN1 ρ).ne']
+      have hcρ : ‖c ρ‖ = ω ρ * (1 + Complex.normSq (gammaOf ρ)) :=
+        (div_mul_cancel₀ _ (hN1 ρ).ne').symm
       have hc_le : ‖c ρ‖ ≤ 5 / 4 * (1 + |X|) ^ 2 * (1 + d₀) ^ 2 * (1 + |ρ.im - γ₀|) ^ 2 * ω ρ := by
         have hω0 : 0 ≤ ω ρ := div_nonneg (norm_nonneg _) (hN1 ρ).le
         have h2 : (1 + |ρ.im - X|) ^ 2 ≤ ((1 + d₀) * (1 + |ρ.im - γ₀|)) ^ 2 :=
