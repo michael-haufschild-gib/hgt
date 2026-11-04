@@ -82,7 +82,7 @@ theorem vanishesOff_Ioo_iff_supportedIn {c : ℝ} (hc : 0 ≤ c) {u : ℝ → �
         rw [abs_of_neg (by linarith)]
         linarith
       have hulim := (hu.continuousAt.tendsto).comp ht
-      exact (tendsto_nhds_unique (hulim.congr hz) tendsto_const_nhds).symm
+      exact tendsto_nhds_unique (hulim.congr hz) tendsto_const_nhds
     · have ht : Tendsto (fun k : ℕ => x + 1 / ((k : ℝ) + 1)) atTop (𝓝 x) := by
         simpa using (tendsto_const_nhds (x := x)).add
           (tendsto_one_div_add_atTop_nhds_zero_nat (𝕜 := ℝ))
@@ -92,7 +92,7 @@ theorem vanishesOff_Ioo_iff_supportedIn {c : ℝ} (hc : 0 ≤ c) {u : ℝ → �
         rw [abs_of_pos (by linarith)]
         linarith
       have hulim := (hu.continuousAt.tendsto).comp ht
-      exact (tendsto_nhds_unique (hulim.congr hz) tendsto_const_nhds).symm
+      exact tendsto_nhds_unique (hulim.congr hz) tendsto_const_nhds
 
 theorem hasCompactSupport_of_supportedIn {c : ℝ} {F : ℝ → ℝ} (hFc : SupportedIn c F) :
     HasCompactSupport F :=
@@ -176,11 +176,15 @@ theorem zetaWindowPositive_iff_even_and_odd_sectors (c : ℝ) :
       (∀ F : ℝ → ℝ, ContDiff ℝ 2 F → (∀ x, F (-x) = -F x) → SupportedIn c F → 0 ≤ weilQuad F) := by
   constructor
   · intro hW
-    exact ⟨fun F hF _ hFc => hW F hF (hasCompactSupport_of_supportedIn hFc) hFc,
-      fun F hF _ hFc => hW F hF (hasCompactSupport_of_supportedIn hFc) hFc⟩
+    refine ⟨fun F hF _ hFc => ?_, fun F hF _ hFc => ?_⟩
+    · have hcs := hasCompactSupport_of_supportedIn hFc
+      rw [← fullZeroForm_eq_weilQuad' hF.continuous hcs]
+      exact hW F hF hcs hFc
+    · have hcs := hasCompactSupport_of_supportedIn hFc
+      rw [← fullZeroForm_eq_weilQuad' hF.continuous hcs]
+      exact hW F hF hcs hFc
   · rintro ⟨heven, hodd⟩ F hF hFc hsupp
-    change 0 ≤ weilQuad F
-    rw [weilQuad_eq_even_add_odd hF hFc]
+    rw [fullZeroForm_eq_weilQuad' hF.continuous hFc, weilQuad_eq_even_add_odd hF hFc]
     exact add_nonneg
       (heven (evenPartReal F) (contDiff_evenPartReal hF) (evenPartReal_neg F)
         (supportedIn_evenPartReal hsupp))
@@ -203,7 +207,7 @@ lemma halfWindow_eq_zero_of_nonpos_or_le {c : ℝ} (_hc : 0 ≤ c) {f : ℝ → 
       have hz : ∀ k : ℕ, f ((0 : ℝ) + 1 / ((k : ℝ) + 1)) = 0 := fun k =>
         h0 _ (by positivity)
       have hlim := (hf.continuousAt.tendsto).comp ht
-      exact (tendsto_nhds_unique (hlim.congr hz) tendsto_const_nhds).symm
+      exact tendsto_nhds_unique (hlim.congr hz) tendsto_const_nhds
   · rcases lt_or_eq_of_le hu with hlt | rfl
     · exact hfc u hlt
     · have ht : Tendsto (fun k : ℕ => -c - 1 / ((k : ℝ) + 1)) atTop (𝓝 (-c)) := by
@@ -213,7 +217,7 @@ lemma halfWindow_eq_zero_of_nonpos_or_le {c : ℝ} (_hc : 0 ≤ c) {f : ℝ → 
         have hk : 0 < 1 / ((k : ℝ) + 1) := by positivity
         exact hfc _ (by linarith)
       have hlim := (hf.continuousAt.tendsto).comp ht
-      exact (tendsto_nhds_unique (hlim.congr hz) tendsto_const_nhds).symm
+      exact tendsto_nhds_unique (hlim.congr hz) tendsto_const_nhds
 
 /-- **Prime-free half-window law up to `c = log 2` (`2c ≤ log 4`).** For `0 ≤ c ≤ log 2`, every
 continuous function `f` supported in `[−c, 0]` has `primeSum f = 0`. -/
@@ -274,11 +278,11 @@ theorem exists_halfWindow_primeSum_pos_of_log_two_lt {c : ℝ} (hc : Real.log 2 
   have hfc : ∀ u, u < -c → f u = 0 := fun u hu => by
     have b1 : centreBump ((u + δ) / δ) = 0 := by
       apply centreBump_eq_zero
-      rw [abs_of_neg (div_neg_of_neg_of_pos (by linarith) hδ), neg_div, le_div_iff₀ hδ]
+      rw [abs_of_neg (div_neg_of_neg_of_pos (by linarith) hδ), ← neg_div, one_le_div hδ]
       linarith
     have b2 : centreBump ((u + Real.log 2 + δ) / δ) = 0 := by
       apply centreBump_eq_zero
-      rw [abs_of_neg (div_neg_of_neg_of_pos (by linarith) hδ), neg_div, le_div_iff₀ hδ]
+      rw [abs_of_neg (div_neg_of_neg_of_pos (by linarith) hδ), ← neg_div, one_le_div hδ]
       linarith
     dsimp only [f]; rw [b1, b2, add_zero]
   have hf_supp : SupportedIn c f := fun u hu => by
@@ -297,13 +301,17 @@ theorem exists_halfWindow_primeSum_pos_of_log_two_lt {c : ℝ} (hc : Real.log 2 
       have h2 := Real.exp_lt_exp.mpr h1
       rw [Real.exp_log (by norm_num : (0 : ℝ) < 2)] at h2
       exact h2.le
-    have hceil : 2 ≤ ⌈Real.exp (2 * c)⌉₊ := Nat.le_ceil_iff.mpr (by norm_num; linarith)
+    have hceil_r : ((2 : ℕ) : ℝ) ≤ (⌈Real.exp (2 * c)⌉₊ : ℝ) := by
+      norm_num only [Nat.cast_ofNat]
+      exact hexp.trans (Nat.le_ceil _)
+    have hceil : 2 ≤ ⌈Real.exp (2 * c)⌉₊ := Nat.cast_le.mp hceil_r
     omega
   refine Finset.sum_pos' (fun k _ => ?_) ⟨2, hmem2, ?_⟩
   · exact mul_nonneg (_root_.RHTower.vonMangoldtAtom_nonneg' k)
       (add_nonneg (integral_nonneg fun t => mul_nonneg (hf_nn t) (hf_nn _))
         (integral_nonneg fun t => mul_nonneg (hf_nn t) (hf_nn _)))
-  · have hw2 : 0 < vonMangoldtAtom 2 := by
+  · norm_num only [Nat.cast_ofNat]
+    have hw2 : 0 < vonMangoldtAtom 2 := by
       unfold vonMangoldtAtom
       rw [if_pos (by decide), ArithmeticFunction.vonMangoldt_apply_prime Nat.prime_two]
       exact div_pos hlog2 (Real.sqrt_pos.mpr (by norm_num))
@@ -333,12 +341,13 @@ theorem exists_halfWindow_primeSum_pos_of_log_two_lt {c : ℝ} (hc : Real.log 2 
         have hftr : 1 ≤ f (t + Real.log 2) := by
           dsimp only [f]; rw [hb_right]
           linarith [centreBump_nonneg ((t + Real.log 2 + Real.log 2 + δ) / δ)]
-        exact lt_of_lt_of_le zero_lt_one (mul_le_mul hft hftr zero_le_one (by linarith))
+        nlinarith
+      have hsub : Icc a b ⊆ (univ : Set ℝ) := subset_univ _
       have hmono : (∫ t in Icc a b, f t * f (t + Real.log 2)) ≤
           ∫ t in univ, f t * f (t + Real.log 2) :=
         setIntegral_mono_set hi.integrableOn
           (Eventually.of_forall fun t => mul_nonneg (hf_nn t) (hf_nn _))
-          (Eventually.of_forall fun _ _ => mem_univ _)
+          (Eventually.of_forall hsub)
       rw [Measure.restrict_univ] at hmono
       linarith
     exact mul_pos hw2 (by linarith)
@@ -514,7 +523,7 @@ theorem even_nonneg_iff_retainedVariance_evenThetaGauge {c : ℝ} (hc : 0 ≤ c)
 On every symmetric window `[−c, c]` (`c > 0`) and for every shift `a > 0`, nonnegativity of the odd
 sector is equivalent to nonnegativity of the retained-variance Doob–theta functional of `ω_a` across
 all even `u ∈ C²_c` supported in `[−c, c]`. -/
-theorem odd_nonneg_iff_retainedVariance_shiftedGroundState {a c : ℝ} (ha : 0 < a) (hc : 0 < c) :
+theorem odd_nonneg_iff_retainedVariance_shiftedGroundState {a c : ℝ} (ha : 0 < a) (_hc : 0 < c) :
     (∀ F : ℝ → ℝ, ContDiff ℝ 2 F → (∀ x, F (-x) = -F x) → SupportedIn c F → 0 ≤ weilQuad F) ↔
       ∀ u : ℝ → ℝ, ContDiff ℝ 2 u → (∀ x, u (-x) = u x) → SupportedIn c u →
         0 ≤ 2 * sameSideEnergy (shiftedGroundState a) u -
@@ -737,10 +746,9 @@ private lemma primeSum_eq_even_add_odd {R : ℝ} {F : ℝ → ℝ} (hF : Continu
   linear_combination vonMangoldtAtom k * hcross
 
 /-- On `[−21/40, 21/40]` (`21/20 < log 3`), only `k = 2` contributes to `primeSum`. -/
-private lemma primeSum_eq_two_of_supportedIn_21_40 {G : ℝ → ℝ} (hG : Continuous G)
+private lemma primeSum_eq_two_of_supportedIn_21_40 {G : ℝ → ℝ} (_hG : Continuous G)
     (hGR : SupportedIn (21 / 40) G) :
     primeSum G = 2 * vonMangoldtAtom 2 * ∫ t, G t * G (t + Real.log 2) := by
-  have hGc := hasCompactSupport_of_supportedIn hGR
   have hlog3 : (21 / 20 : ℝ) < Real.log 3 := by linarith [Real.log_three_gt_d9]
   unfold primeSum
   rw [tsum_eq_single 2 fun n hn => ?_]
@@ -1191,16 +1199,6 @@ theorem question_two_eight_complete_resolution :
       zetaWindowPositive_iff_mem_belowLogFourBandWeights hc0 hc,
       zetaWindowPositive_iff_scalingSubsurface_hodgeIndex c,
       fun hc21 _ _ hw₂ hmem => not_mem_belowLogFourBandWeights_of_nonpos hc21 hw₂ hmem⟩⟩
-
-#print axioms not_exists_odd_sinhCharged_gauge_below_log_four
-#print axioms not_exists_odd_thetaGauge_certificate_below_log_four
-#print axioms exists_shiftedGroundState_windowLower_neg_below_log_four
-#print axioms outsideCosh_pos_of_nonneg_weights
-#print axioms evenThetaGauge_coshChargedDefect_neg
-#print axioms primeFree_halfWindow_iff_le_log_two
-#print axioms zetaWindowPositive_below_log_four_equivalences
-#print axioms not_mem_belowLogFourBandWeights_of_nonpos
-#print axioms question_two_eight_complete_resolution
 
 end GaloisForLFunctions.SignedWindowCriticality.BelowLogFour
 

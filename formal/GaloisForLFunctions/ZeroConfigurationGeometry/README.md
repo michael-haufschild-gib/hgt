@@ -280,7 +280,7 @@ programme locates exactly where it leaves the sign-free world.
 | Purity leaves only through a Frobenius collision (function-field deformation) | `IsPure`, `IsFrobeniusCollision`, `isPure_iff_circle`, `eventually_pure_of_simple`, `isClosed_pure`, `exists_first_frobenius_collision`, `exists_first_circle_collision`, `isPure_of_forall_not_frobeniusCollision` | unconditional |
 | The curve camera sees exactly the top coefficients; it identifies at the genus | `curveImage`, `traceConfig`, `curveImage_eq_iff_coeff_eq`, `eq_of_curveImage_eq`, `isPure_of_curveImage_eq`, `exists_pure_mimics`, `exists_tilted_mimic` | unconditional |
 | Bounded images certify purity; image growth reads the deepest eigenvalue | `exists_simultaneous_return`, `exists_large_powerSum`, `curveImage_growth`, `norm_curveImage_le_of_isPure`, `isPure_iff_bounded_curveImage` | unconditional |
-| Sparse clusters never cancel, at any depth: density `< 2a/π`, sharp | `exists_window_blind_of_injOn_near_complex_lattice`, `gammaOf_re`, `gammaOf_im`, `eq_of_mimic_of_count_le` | unconditional |
+| Sparse clusters never cancel, at any depth: density `< 2a/π`, sharp; resolution at `π/a` at every depth | `exists_window_blind_of_injOn_near_complex_lattice`, `gammaOf_re`, `gammaOf_im`, `eq_of_mimic_of_count_le`, `siteOf`, `eq_of_weil_eq_of_heightSeparated_of_lt`, `exists_near_pair_of_mimic_of_lt` | unconditional |
 | Blind windows for complex perturbations of a lattice | `pertFactor`, `norm_I_sub_re_le`, `norm_sin_mul_prod_pertFactor_le`, `exists_blind_limit_window`, `exists_window_blind_to_complex_perturbed_lattice` | unconditional |
 | Sparse on-line clusters never cancel: density `< 2a/π`, sharp | `multDiff_eq_zero_of_pointImage_isolated`, `exists_window_blind_of_injOn_near_lattice`, `eq_of_mimic_of_onLine_count_le`, `eq_of_mimic_of_onLine_separated`, `exists_onLine_mimic_at_density` | unconditional |
 | Euler stages repel above the horizon (phase lattice of `Λ_X` on the line) | `stageLine_eq_mul_exp`, `eulerStage_ne_zero_of_phase_lt`, `exists_eulerStage_zero_of_phase_ge`, `eulerStage_deriv_ne_zero`, `re_stageSpeed_ge`, `re_stageSpeed_le`, `eulerStage_deriv_ne_zero_above_horizon`, `eulerStage_ne_zero_of_lt_gap`, `exists_eulerStage_zero_within` | unconditional |
@@ -300,10 +300,11 @@ programme locates exactly where it leaves the sign-free world.
   above lag `g log q`. A single pair carries a depth signal of exactly `4 sinh²(δr/2)` per unit
   mass. Against column mimics of Riemann–von Mangoldt density the least identifying exponent of the
   matrix camera is `λ = ½`, uniformly in depth and height (`rvmLattice_mimic_iff`). Against all
-  other mimics the depth-uniform resolution gives an exponent of order one: if the union is
-  separated, apart from FE partners, at a fraction `c` of the mean spacing `2π/L` and the depths are
-  at most `2πc/(90L)`, the image at every aperture above `V/2`, `V = 90L/(2πc)`, identifies the configuration
-  (`exists_near_pair_of_mimic_of_le`). *Open:* mimics whose unions have near-collisions below a
+  other mimics the density criterion gives an exponent of order one: if the union is separated,
+  apart from FE partners, at a fraction `c` of the mean spacing `2π/L`, the image at every
+  aperture above `L/(2c)` identifies the configuration, at every depth
+  (`eq_of_weil_eq_of_heightSeparated_of_lt`). For shallow configurations the aperture drops to
+  `L/(4c)` (`exists_depth_resolving_at_ingham_scale`). *Open:* mimics whose unions have near-collisions below a
   fixed fraction of the mean spacing; the exponent for those is the coalescent question Q3.
   In the function-field model, for monic trace polynomials of degree `g` and `k ≤ g`, the images
   `S_1, …, S_k` agree if and only if the coefficients agree in degrees `≥ g − k`
@@ -344,9 +345,13 @@ programme locates exactly where it leaves the sign-free world.
   through `f̂(γ_w) conj ĝ(conj γ_w)` with `|Im γ_w| ≤ ½`, and complex perturbations of a lattice of
   depth `≤ ½` are blinded at the same density aperture. So mimics at aperture `a` whose cluster,
   counted point by point (an FE pair twice), has upper uniform density `< 2a/π` are equal
-  (`eq_of_mimic_of_count_le`). A cancelling cluster has density at least `2a/π`. *Open:* the depth range of
-  the Ingham scale, i.e. whether a fixed depth budget is resolved at every `g > π/(2a)` or only
-  depths below `s₀(a, g)`.
+  (`eq_of_mimic_of_count_le`). A cancelling cluster has density at least `2a/π`. A union with
+  `g`-separated heights apart from FE partners has at most two cluster points per height. So at
+  every depth, mimics at aperture `a` contain two points of different FE orbits closer than any
+  `g > π/a` (`exists_near_pair_of_mimic_of_lt`). This replaces the scale `90/V` of the
+  depth-uniform block inequality by `2π/V`, without a depth budget. *Open:* the depth range of the
+  Ingham scale, i.e. whether deep configurations can hide at union separations between `π/(2a)`
+  and `π/a`.
 - **Q3 Sub-spacing geometry.** Near a collision the camera reads the squared gap linearly, as the
   coefficient of the height curvature `f̂''` of the image; real against tilted is the sign of that
   coefficient, to relative precision `(Δr)²`. Through the explicit formula the height curvature of
@@ -479,7 +484,8 @@ programme locates exactly where it leaves the sign-free world.
   of vanishing pair sums, and localization at the site of maximal weighted multiplicity.
 
 **To build.**
-- The depth range of the Ingham scale: resolution at `g > π/(2a)` for every fixed depth budget.
+- The depth range of the Ingham scale: resolution of deep configurations between `π/(2a)` and
+  `π/a`.
 - Kernel design below the upper uniform density: the Beurling–Malliavin radius of a real
   configuration, through the equivalence with entire functions of exponential type.
 

@@ -23,6 +23,13 @@ depth `≤ ½`, which windows of every aperture `> πD/2` blind
 
 So a cancelling cluster has upper uniform density at least `2a/π`. This is the density of the
 union of two lattices of spacing `π/a`, which is how the lattice pair cancels.
+
+* **Resolution at every depth** (`eq_of_weil_eq_of_heightSeparated_of_lt`,
+  `exists_near_pair_of_mimic_of_lt`). A union with `g`-separated heights apart from FE partners
+  has at most two cluster points per height, hence density `≤ 2/g`. So mimics at aperture `a`
+  contain two points of different FE orbits closer than any `g > π/a`, whatever the depths. Shallow
+  configurations are resolved down to the Ingham scale `π/(2a)`
+  (`ShallowConfigurationsAreResolvedAtTheInghamScale`).
 -/
 
 open MeasureTheory Complex Set Filter

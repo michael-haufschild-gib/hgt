@@ -4,714 +4,290 @@
 - **Stage:** 1-in-progress
 - **Type:** CONJECTURE
 - **Parent:** [critical-ratio continuation](critical-ratio-continuation.md)
+- **Verdict:** `BRIDGE`. No external novelty claim; no all-R positivity conclusion.
 
-## Exact conjecture
+## Exact target and established scope
 
-Let L=log N, c_N≥1, c_N⁸/L→R>0, B_N the complete tilted-spline
-matrix, v_m its normalized Ramanujan horizon vector and
-x_N(n)=h(log n−log N)/sqrt(n). Assume h is C² and supported in [-A,0].
-Set a=(∫φ)²/∫φ² and, for y<0,
+Let `L=log N`, `c_N≥1`, `c_N⁸/L→R>0`, `B_N` be the complete
+tilted-spline matrix, `v_m` its normalized Ramanujan horizon vector,
+`E_m(c)` the completed reference conductor energy, and
+`x_N(n)=F(n/N)/sqrt(n)`, where `F=logProfile h` and h is C²,
+supported in `[-A,0]`, `A≥0`. Write
 
-    D(y)=exp(-y)−ψ(exp(-y))−log(2π)−½log(1−exp(2y)),
-    ℓ(h)=∫_(-∞,0) exp(y) h(y) D(y) dy.
+    a=(∫φ)²/∫φ²,  g=2+γ−log(4π)>0,
+    M₈(H)=∫ exp(-8y)H(y)²dy,  H(y)=exp(y/2)h(y),
+    S_A(h)=a[∫₀¹ F(x)(1/x−½log(1−x²))dx
+              −log(2π)∫₀¹F(x)dx−Σ_(k≤K)Λ(k)∫₀^(1/k)F(x)dx],
+    δ=exp(-A−1),  K=ceil(1/δ).
 
-The boundary logarithm is locally integrable; compact support and
-continuity of h make this integral well-defined. The proposed exact
-mixed limit is
+The general target is the literal complete-matrix limit
 
-    (sqrt(L)/c_N) ⟨B_N v_m,x_N⟩ → a ℓ(h) [m=1].
+    (sqrt(L)/c_N)⟨B_Nv_m,x_N⟩ → S_A(h)[m=1].
 
-The limit is conjectured to be independent of R. In particular, it
-contains no surviving aliasing term. **[OPEN CORE]** Prove or refute
-that assertion for the literal discrete pole–window pairing. A continuum
-calculation does not justify it.
+Its dependency-closed paper proof and Lean source are complete; the
+actual-row, exterior and final assembly audits remain pending. The
+finite-prime formulation avoids interchanging infinite prime sums.
+Identifying its finite sum with `∫F(x)ψ(1/x)dx` is not needed by that source.
 
-## Source, not an analogy
+For support `(δ,η)⊂(1/2,1)`, both prime boundary channels vanish exactly,
+and the complete polar/nonpolar limits are checked. These windows lie
+in `[-log 2,0]`, inside the existing positive range `A≤181/250`.
+They identify interactions, not a new unweighted sign range.
 
-`ccmRestrictedWeilOperator_polarPlus_coeFn` in
-`RHTower/CCM/CCMRestrictedWeilPolarSourceCancellation.lean` identifies
-the actual finite-aperture pole image. After translation x=y+a₀ and
-normalization by exp(-a₀/2), its interior coefficient is
+“Checked” here means successful individual actual-path Lean audit with
+exactly `[propext, Classical.choice, Quot.sound]`. Written source alone
+is not counted as checked.
 
-    exp(y/2)[κ+B(-y,2a₀+y)
-               −(ψ(exp(-y))−exp(-y))−E_M(2a₀+y)]
-      −exp(-2a₀)exp(-y/2),
+## Source and competing mechanism
 
-where κ=−γ−log(2π),
-B(r,l)=−½log(1−exp(-2r))−½log(tanh(l/2)), and
-E_M(t)=Σ_(n≤exp t)Λ(n)/n−t. The existing Mertens limit is E_M→−γ.
-At every fixed y<0 this expression tends to exp(y/2)D(y).
-Pairing with H(y)=exp(y/2)h(y) gives exactly ℓ(h).
+The existing `ccmRestrictedWeilOperator_polarPlus_coeFn` identifies the
+finite-aperture continuous pole image. Translation to the terminal edge
+and the Mertens limit give the candidate density
 
-This continuous source identity and the critical fixed-conductor
-residue have both been inspected in Lean. No theorem transferring this
-half-line source to the discrete critical mixed form has been found
-in the targeted corpus searches. That is a search result, not an
-exhaustive absence claim.
+    D(y)=exp(-y)−ψ(exp(-y))−log(2π)−½log(1−exp(2y)),  y<0.
 
-## Consistency check and competing failure
+Thus `S_A(h)=a∫exp(y)h(y)D(y)dy` is the proposed continuum identification.
+Its polar mass is consistent with the checked genus: partial summation
+and Mertens give `∫₁ˣ(t−ψ(t))/t²dt→γ+1`, while the boundary logarithm
+contributes `1−log 2`; the total is g. This consistency calculation is
+paper only, not the discrete transfer proof.
 
-The proposed source has the correct polar mass:
+The potential failure was an additional R-dependent aliasing cross term.
+The discrete near row instead cancels log N before any estimate. For
+conductor one, the full Mangoldt divisor convolution equals log j:
 
-    ∫_(-∞,0) exp(y) D(y) dy = 2+γ−log(4π)=g.
+    near coefficient = [archPair−log(N/c)q]−[log c+log(j/N)]q.
 
-Indeed, partial summation gives
-∫₁ˣ(t−ψ(t))/t² dt=log X−Σ_(n≤X)Λ(n)/n+ψ(X)/X→γ+1.
-The boundary integral is 1−log 2, and the remaining constant contributes
-−log(2π). This is a paper consistency calculation, not a new checked
-Lean endpoint. It matches the already checked positive polar genus.
+For general m the exact decomposition retains the extra divisor jet:
 
-The principal competing possibility is an additional R-dependent
-functional from the discrete high-frequency tail. The mixed aliasing
-integral with a compact h would be finite even though the pole's self
-aliasing integral diverges. Neither fact justifies applying the compact
-window theorem to the full pole.
+    near coefficient_m(n,j)
+      =c_m(j)[nearGammaRemainder−log(c)q−log(j/N)q]+jet_m(j)q.
 
-The actual discrete source gives a stronger reason to test cancellation.
-`nearGammaDownwardCoefficient` subtracts the full Mangoldt divisor
-convolution. At conductor one this is exactly log j, so, writing q for
-the shell autocorrelation divided by atom mass, its coefficient is
+Truncating the pole first would destroy that divisor identity. The proof
+therefore retains the literal full pole, both prime directions, Gamma,
+center and replacement channels. Fixed-conductor convergence alone is
+not used to infer a growing-packet statement.
 
-    [archPair−log(N/c)q]−[log c+log(j/N)]q.
+## Checked consequences on interior support
 
-Thus the large log N cancels before any terminal pairing or estimate.
-This identity uses all quotient indices j/d of the pole; truncating that
-pole to a compact window destroys the divisor identity. The same
-decomposition retains the divisor jet for general conductor m, as shown
-by `nearGammaDownward_add_nearCenter_row_eq` in
-`LogarithmFreeCriticalConductorResiduals.lean`. This is source support
-for the conjecture, not the missing complete weighted limit: all
-replacement and boundary terms still require their stated estimates.
+- `TerminalPolarSourceAboveHalf` and `TerminalNonpolarSourceAboveHalf`
+  give exactly polar complete response, independent of R.
+- `ThePoleCorrectorRetainsItsSignedWindowBenefit` gives, for every real t,
 
-Test m=2 separately. Cancellation against every fixed conductor does not
-by itself exclude a nonpolar boundary source detected by a terminal
-window. If such a source survives, retain its exact profile and replace
-the proposed rank-one conclusion by the resulting charge space.
+      c_N⁻¹⟨B_N(x_N+t sqrt(L)v₁),x_N+t sqrt(L)v₁⟩
+        → a Q(H)+(7J(1)/R)M₈(H)+2tS(h)+t²D_R,
+      D_R=J(1)/R+a g>0.
 
-## Mathematical payoff
+  On the established whole-space positive band, optimization gives
+  `aQ(H)+(7J(1)/R)M₈(H)≥S(h)²/D_R`. Compensation remains.
+- `TerminalPolarSourceIsNonzero` supplies
+  `F₀(x)=tiltedUnitSpline(256x−254)`, supported in `[127/128,255/256]`,
+  with `S(h₀)>0`. The exact inequality `(2π)²(1−x²)<1` on its support
+  proves this without numerical evidence.
+- `TheCriticalPoleHasAnIntrinsicCollarCost` gives a fixed κ>0, independent
+  of R and its clock, such that at the actual small-band cutoff
+  `M_N=N/linearDefectCutoff(c_N)`,
 
-The checked pole energy gives
+      (c_N⁷/L) DualCollar₇(M_N,N,B_Nv₁−E₁v₁)/E₁(c_N) ≥ κR²
 
-    (L/c_N)⟨B_Nv₁,v₁⟩ → J(1)/R+a g.
+  eventually. Weighted Cauchy–Schwarz, the nonzero source and
+  `E₁≤C_E/c⁷` prove the bound first at `floor(N/2)`; monotonicity transfers
+  it to the literal cutoff. Every fixed absolute budget fails for some R.
+  The positive survivor is the signed response, not an all-R sign theorem.
+  See [retired absolute-budget mechanism](../5-failed/critical-absolute-collar-budget-continuation.md).
+- `LowConductorCorrectorsCannotImproveZeroSourceWindows` bounds every
+  correction through `Q_N=floor(L^(13/32))` by total inverse-energy source
+  mass. The limiting gain is at most `2S(h)²R/J(1)`, uniformly even over
+  unbounded coefficients. On `ker S` it is zero.
+- `TerminalPolarSourceHasANontrivialKernel` supplies a nonzero kernel test:
+  put `F₁(x)=F₀(x+1/128)`, `hᵢ(y)=Fᵢ(exp y)`, and
+  `h=S(h₁)h₀−S(h₀)h₁`. Disjoint support proves nonvanishing; linearity of
+  literal pairings and uniqueness of limits prove `S(h)=0`. No negative
+  Weil energy is asserted for this test.
 
-If the mixed conjecture holds, the exact two-dimensional limit for
-x_N+t sqrt(L)v₁ is
+## Complete general-window proof
 
-    a Q(H)+(7J(1)/R)M₈(H)+2t a ℓ(h)+t²[J(1)/R+a g].
+### Literal normalization and checked channels
 
-Thus the WIP's all-vector positivity on its established small band
-would imply the stronger window bound
+`sqrt(L)⟨A v_m,x_N⟩` is the literal double kernel sum with denominator
+`sqrt(nj φ(m))`. The complete finite identities retain the scalar
+`selfFinitePart(c)+adjunctionEnergy(m)−γ`; its terminal contribution
+vanishes. These identities are checked in
+`TerminalPolePairingsHaveTheirLiteralChannels` and
+`TerminalConductorPairingsRetainTheDivisorJet`.
 
-    a Q(H)+(7J(1)/R)M₈(H)
-      ≥ a²ℓ(h)²/[J(1)/R+a g].
+For m=1, the remaining normalized limits are:
 
-This does not extend the known band or remove compensation. It computes
-the actual energy benefit of the growing pole corrector, which
-orthogonal projection does not measure. The next stronger question is
-whether all energy-optimal correctors in the growing conductor packet
-reduce to this one source functional, or retain further arithmetic
-charges. Pointwise mixed convergence alone cannot settle that question;
-an inverse-energy summable envelope is required.
+| Channel | Limit |
+|---|---|
+| Full center | `a∫F(x)[1/x−½log(1−x²)]dx` |
+| Near Gamma remainder minus separated cross | `−a(log(4π)+γ)∫F` |
+| Near logarithmic row | `−a∫F(x)log x dx` |
+| Near center minus log c times actual near Gram | `a∫F(x)[log(2x)+γ]dx` |
+| Upward prime row, entering negatively | `aΣ_(k≤K)Λ(k)∫₀^(1/k)F` |
+| Exterior, diagonal and replacement errors | `0` |
 
-For interior support `(δ,η)⊂(1/2,1)`, the source limit is now checked.
-These profiles lie in `[-log 2,0]`, already inside the unconditional
-positive range `A≤181/250` of `weilQuad_nonneg_of_short`. Their transport
-laws constrain correctors; they do not enlarge the unweighted sign
-frontier. General support requires the retained upward-prime channel.
-The all-R two-dimensional limit and the optimized small-band inequality
-are proved in `ThePoleCorrectorRetainsItsSignedWindowBenefit.lean`.
-Both endpoints pass their actual-path audits with exactly
-`[propext, Classical.choice, Quot.sound]`. The proof expands the Hermitian quadratic
-form, uses the checked window, pole and mixed limits, then chooses
-`t=−aℓ(h)/[J(1)/R+a g]` under the established whole-space positivity.
+The middle three rows sum to `−a log(2π)∫F`. Their checked proofs retain
+log c times the actual near Gram; ordinary near-Gram convergence would
+not suffice. Principal sources are `TerminalNearPairsRetainLogarithmicAccuracy`,
+`TerminalWindowsRetainTheJointNearCenter`, `TerminalWindowsReadTheNearLogarithm`,
+`TerminalPoleGammaAndCenterHaveOneConstant` and `TerminalWindowsReadThePolarCenter`.
 
-There is a sharp limit to this mechanism. If the uniform optimized
-correction is exhausted by ℓ, it changes the window form by one rank-one
-term. On ker ℓ the full aliasing mass remains. Thus even that stronger
-rank-one theorem would not remove compensation on all windows; a proof
-would still need further growing arithmetic charges or direct control
-of the complementary window form.
+For fixed m≥2, the full-center charge is `−aΛ(m)∫F`; the periodic divisor
+jet has mean Λ(m) and gives the opposite charge. This cancellation,
+including prime powers, is checked in `TerminalDivisorJetsCancelTheNonpolarCenter`.
+The remaining Gamma-center mean is zero.
 
-The general conjecture also predicts a sharp constant for the R² collar loss.
-Put `r₁=B_Nv₁−E₁(c_N)v₁` and let Ψ₇ include its dual-seventh
-mass divided by E₁. For a terminal test with ℓ(h)≠0, its support lies
-entirely in the top collar eventually. Weighted Cauchy–Schwarz and
-`c_N⁷E₁(c_N)→J(1)` would then force
+`TerminalWindowErrorChannelsDisappear` checks ratio, self, pole and
+reference-diagonal errors. After squaring the normalization, the first
+three are respectively `O_m(c⁻²)`, `O_m(L/N²)` and
+`O_m((c⁴L²/N)²)`. The diagonal uses the stronger coordinate estimate
+`|⟨v_m,x_N⟩|=O_h(L⁻¹/²)` and costs `O_m((1+log c)/c)`.
 
-    liminf (c_N⁷/L) Ψ₇
-      ≥ R² a²ℓ(h)² / [J(1) M₈(H)],   H(y)=exp(y/2)h(y).
+### Exterior boundary, paper proof; audit pending
 
-Indeed the mixed square is asymptotic to `c_N²a²ℓ(h)²/L`, while the
-test's seventh-power collar mass tends to M₈(H). Thus that R² dependence
-cannot vanish merely by sharpening the present absolute residual norm,
-if the general mixed conjecture holds. Paying with the full positive polar
-energy changes its denominator to `J(1)+Rag`; the resulting bound still
-grows with R. The positive survivor would be the exact joint signed
-source–complement problem. This is a conditional consequence to test,
-not the exact sharp bound yet. The interior witness already proves the
-uniform κR² obstruction below without the general source conjecture.
+Actual exterior rows are supported on `n≥N−linearPrimeStrip(c)`, where
+`linearPrimeStrip(c)≤(e+1)c`. There are O(c) rows, each O_m(c).
+Since n≥N/2 eventually and F is bounded, their normalized pairing is
+`O_(F,m)(c/sqrt(N))→0`. No gap below x=1 or prime-distribution estimate
+is needed. `TerminalExteriorDownwardSourcesDisappear` implements the
+finite bound and critical limit; neither is yet counted as checked.
 
-### Uniformity exposed by the existing conductor bounds
+### Upward finite-prime transport
 
-For a fixed bounded terminal window, set
-`q_N(m)=|⟨r_m,x_N⟩|²/(c_N E_m(c_N))`, and
-`Q_N=floor((log N)^(13/32))`. The following tightness reduction and its
-square-sum passage are checked in Lean for interior support above half
-the horizon.
+Put `M=∫φ²`, let ℓ be a global autocorrelation Lipschitz constant, and
+choose `H=ceil(2c)≤3c`. A nonzero receiver has n>δN. Boundary multiples
+kn∈[N−H,N+H] therefore satisfy `k≤K_b=ceil(2/δ)` when H≤N.
+For each k≥1, injectivity of n↦kn bounds their number by 2H+1. Thus
 
-Choose a collar cutoff below the fixed support of x_N and above
-`2 linearPrimeStrip(c_N)`. The window's prefix mass is zero and its
-seventh collar mass is bounded. Weighted Cauchy–Schwarz and
-`exists_completeWeil_dualSeventh_conductor_residual_log_free` give
+    Σ_(n≤N)|F(n/N)| upwardBoundaryMass(N,n,H)/n
+      ≤ B(2H+1)/(δN) Σ_(k≤K_b)Λ(k)/k.
 
-    |⟨r_m,x_N⟩|² ≤ C_h m²[c_N²/L+c_N³L/N+c_N¹⁰(L/N)²].
+This bound and its integrated actual-row comparison are checked in
+`TerminalPrimeBoundaryMassHasFiniteSupport`.
 
-The actual conductor-scale floor, stronger than the common `κ/c_N⁷`
-floor, is `c_N⁷ E_m(c_N)≥κm⁷` for `m≤c_N`. Consequently
+Set `Cφ=12M+72ℓ`, `C₀=log 4+1+|mertensWindowConstant|`,
+`P_b=Σ_(k≤K_b)Λ(k)/k`. The row-comparison error satisfies
+`upwardLinearError≤Cφc³` and `|log(4c)+mertensWindowConstant|≤C₀c`.
+Consequently
 
-    q_N(m) ≤ (C_h/κ)[c_N⁸/L+c_N⁹L/N+c_N¹⁶L²/N²]/m⁵.
+    |c⁻¹Σ_(n≤N)F(n/N)(upwardModeRow−upwardModel)/n|
+      ≤ [6Bφ(m)CφC₀/(δM)+63Bφ(m)P_b/δ] c⁴/N.
 
-The bracket tends to R. This supplies one summable envelope for all
-conductors below overlap at one eventual horizon. Above overlap,
-`E_m(c_N)≥κ`. The public quadratic residual bound has conductor factor
-`m(1+log m)²`, so ordinary Cauchy–Schwarz gives
+The clock condition `c≥1`, `c⁴/N→0` also eventually ensures the finite
+comparison conditions `4cH≤N`, `2H≤N`. This paper proof is implemented
+in `TerminalUpwardRowReplacementDisappears`; audit pending.
 
-    Σ_(c_N<m≤Q_N) q_N(m)
-      ≤ C_h Q_N²(1+log Q_N)²
-        [c_N(1+log c_N)³ L^(1/k)/L+c_N⁹(L/N)²] → 0
+For the polar shell, the checked Riemann estimate gives
+`upwardShellModel(φ,c,N,1,H,p)=acp/N+O_(φ,δ)(1)` uniformly for δN≤p≤N.
+Only finitely many multipliers remain. Swapping their sums before taking
+limits gives `aΣ_(k≤K)Λ(k)∫₀^(1/k)F`, `K≥1/δ`.
+With `P_K=ΣΛ(k)/k`, `T_K=ΣΛ(k)` and `Lip(F)≤L_F`, the normalized error is
 
-for any fixed integer k>16. The first power of L is
-`−1/16+1/k<0`; powers of log L do not change the limit. The second
-term vanishes by the critical-clock polynomial/logarithmic estimates.
-Both estimates hold for every fixed R>0. Thus, once the fixed-m mixed
-limits are proved, passage through the growing packet needs no new
-conductor-uniform prime-distribution conjecture: split at c_N, use
-the summable envelope below, and the vanishing total above.
+    6BℓP_K/(Mδ²c)+a(L_F+B)T_K/N.
 
-The source floors are
-`seventh_mul_completedConductorEnergy_ge_below_overlap` and
-`tiltedUnitSpline_completedConductorEnergy_ge_above_overlap`;
-the high-conductor norm bound is
-`exists_completeWeil_quadratic_conductor_residual_variable_rate`.
-Their statements and proofs have been read. The reference diagonal
-also has a closed paper bound: the uniform window coordinate is
-`|⟨v_m,x_N⟩|≤C_h/sqrt(L)`, while
-`completedConductorEnergy_le_logarithmic_uniform` gives
-`E_m≤C_φ+2log m+3`, uniformly in c≥1. Hence
+For m≥2, `p+(m−1)j` and `(m−1)p+j` sum to `m(p+j)`, so their Ramanujan
+coefficients agree. The shell consists of two shifted mean-zero
+m-periodic sequences. The checked weighted periodic bound gives
 
-    Σ_(m≤Q_N) E_m |⟨v_m,x_N⟩|²/c_N
-      ≤ C_h Q_N(C_φ+2log Q_N+3)/(c_N L) → 0.
+    |normalized nonpolar model|
+      ≤4Bmφ(m)(1+3ℓ/(Mδ))P_K/(δc).
 
-The Euclidean triangle inequality for these weighted coefficient
-vectors transfers tightness from r_m to B_Nv_m. There is also a direct
-below-overlap envelope for the complete pairing. The uniform energy
-upper bound gives E_m≤C_φm, hence E_m/c_N≤C_φ for m≤c_N. Its reference
-coordinate therefore contributes at most C_h/L to the normalized mixed
-square. Since m⁵≤c_N⁸ and c_N⁸/L is eventually bounded, this is also
-O_(h,R)(m⁻⁵). The squared triangle inequality restores B_N without
-changing summability. The residual and complete envelopes are proved in
-`TerminalConductorSourcesAreSummableBelowOverlap.lean`; both pass their
-actual-path audits with exactly `[propext, Classical.choice, Quot.sound]`.
-The high-conductor norm sum is proved in
-`TheUpperCriticalPacketHasVanishingMixedMass.lean`; all five endpoints
-pass their actual-path audit with exactly `[propext, Classical.choice, Quot.sound]`.
-It proves the stronger receiver-independent estimate
-`Σ_(c_N<m≤Q_N) ‖r_m‖²/(c_N E_m)≤L^(-1/64)` eventually.
-The proof uses `c_N≤L^(2/15)`, exponent `1/128` in the residual estimate
-and `L⁸≤N`; the two powers before absorbing logarithms are
-`−89/1920` and `−67/16`. The reference diagonal also vanishes under the
-weaker upper bound `E_m≤C_φ m`, since `Q_N²/L≤L^(-3/16)`.
-`TerminalConductorSourcesConcentrateAtThePole.lean` proves the
-square-sum passage, including the exact total polar mass
-`S(h)²R/J(1)` through Q_N and zero total nonpolar mass. All five
-endpoints pass their actual-path audit with exactly
-`[propext, Classical.choice, Quot.sound]`. Uniform optimization remains pending.
+Shell estimates, truncated Riemann error `(L_F+B)/N`, finite hyperbola
+exchange, both summed model bounds and both model limits are checked in
+`TerminalUpwardShellsHaveTheirPolarMean`, `TerminalPrimeMeansAreFiniteRiemannSums`
+and `TerminalUpwardModelsHaveFinitePrimeSources`.
+`TerminalUpwardSourcesHaveFinitePrimeMeans` adds the actual-row error;
+its audit is pending. Thus the proposed actual upward limits need only
+`c→∞` and `c⁴/N→0`, not a new prime estimate.
 
-A closed paper consequence already needs only the checked half-energy
-packet floor. Completing a scalar square for each conductor gives,
-uniformly over every coefficient family b,
+### Assembly
+
+For compact C² h, take δ and K from the target. F is bounded, globally
+Lipschitz and zero below δ. Continuity of the zero extension gives
+`h(0)=F(1)=0`, as required by the full-center theorem. The critical clock
+implies `c log c/N→0`, `c⁴/N→0` and `c→∞`. Adding the literal channel
+limits yields S_A(h); for m≥2 all remaining sources cancel or vanish.
+`TheCompleteTerminalSourceIsPolar` implements this paper assembly;
+its general polar and nonpolar endpoints remain unaudited.
+
+## Uniformity exposed by the existing conductor bounds
+
+Put `r_m=B_Nv_m−E_m v_m`, `q_N(m)=|⟨r_m,x_N⟩|²/(c_NE_m)`.
+For arbitrary δ>0 below the support, choose
+`M_N=2 linearPrimeStrip(c_N)`. Eventually `M_N≤δN≤N` if δ≤1;
+more generally both required inequalities follow from c_N/N→0.
+The receiver prefix is exactly zero and its seventh collar mass is
+at most `δ⁻⁷‖x_N‖²`. The dual collar estimate therefore gives
+
+    |⟨r_m,x_N⟩|²≤C_h m²[c_N²/L+c_N³L/N+c_N¹⁰(L/N)²].
+
+The actual conductor floor `c_N⁷E_m≥κm⁷` for m≤c_N yields
+
+    q_N(m)≤(C_h/κ)[c_N⁸/L+c_N⁹L/N+c_N¹⁶L²/N²]/m⁵.
+
+The bracket tends to R. The uniform coordinate bound and
+`E_m≤C_φ+2log m+3` restore the reference diagonal without losing
+summability. This fifth-power envelope is checked for interior support;
+the support-adapted transfer is written in
+`TerminalWindowsHaveMovingCollarCutoffs` and
+`EveryTerminalWindowHasSummableConductorSources`, pending audits.
+
+Above overlap, the checked receiver-independent estimate is
+
+    Σ_(c_N<m≤Q_N)‖r_m‖²/(c_NE_m)≤L^(-1/64) eventually.
+
+The reference contribution through Q_N also vanishes. Thus fixed-m
+limits, dominated convergence below overlap and this upper-packet bound
+give
+
+    Σ_(2≤m≤Q_N)|⟨B_Nv_m,x_N⟩|²/(c_NE_m)→0,
+    Σ_(1≤m≤Q_N)|⟨B_Nv_m,x_N⟩|²/(c_NE_m)→S_A(h)²R/J(1).
+
+`TerminalConductorSourcesConcentrateAtThePole` checks this for interior
+support. `EveryTerminalWindowHasAPolarConductorSource` implements the
+same conclusion for every compact window; its audit is pending.
+Constants may depend on the fixed aperture; no growing-aperture theorem
+is claimed.
+
+## Sharp correction capacity: paper reduction, not yet formalized
+
+The checked `eventually_completeWeil_low_packet_signed_approx` gives,
+uniformly over all coefficients b,
+
+    |⟨B_Ny_b,y_b⟩−ΣE_m b_m²−ag(c_N/L)b₁²|≤ηΣE_m b_m²
+
+for every η>0 eventually. Let `p_m=⟨B_Nv_m,x_N⟩`, `0<η<1`, and
+`d_m=(1−η)E_m+ag(c_N/L)[m=1]>0`. Completing each scalar square gives
 
     c_N⁻¹⟨B_N(x_N+y_b),x_N+y_b⟩
-      ≥ c_N⁻¹⟨B_Nx_N,x_N⟩−2Σ_(m≤Q_N)|⟨B_Nv_m,x_N⟩|²/(c_NE_m).
-
-Thus the limiting gain is at most `2S(h)²R/J(1)`. On `ker S`, it is zero,
-uniformly even for unbounded corrector coefficients. The zero corrector
-attains zero gain. This gives a precise obstruction to removing aliasing
-on that kernel with this packet; it does not assert a negative window
-exists. `LowConductorCorrectorsCannotImproveZeroSourceWindows.lean`
-proves this consequence; all three endpoints pass their actual-path
-audit with exactly `[propext, Classical.choice, Quot.sound]`. Off the kernel, the
-checked two-dimensional pole correction above remains a nontrivial
-positive survivor. The sharper proposed optimum retains its full genus
-denominator rather than this coarse half-energy bound.
-
-The zero-source kernel has a closed nonvacuity proof. Let
-`F₀(x)=tiltedUnitSpline(256x−254)`, `F₁(x)=F₀(x+1/128)` and
-`hᵢ(y)=Fᵢ(exp y)`. Their supports are disjoint compact intervals above
-1/2. Put `Sᵢ=S(hᵢ)` and `h=S₁h₀−S₀h₁`. The checked witness gives
-`S₀>0`; at a point where F₁ is nonzero, F₀ is zero, so h is nonzero.
-Linearity of the literal horizon pairing on the canonical critical
-clock, followed by uniqueness of its checked limits, gives
-`S(h)=S₁S₀−S₀S₁=0`. This uses no positivity assumption on the window
-form. `TerminalPolarSourceHasANontrivialKernel.lean` proves nonvanishing
-and exact source cancellation; both endpoints pass their actual-path
-audit with exactly `[propext, Classical.choice, Quot.sound]`. The obstruction concerns a
-nonzero test, but does not assert that this test has negative Weil energy.
-
-The required uniform signed packet form is already checked in
-`eventually_completeWeil_low_packet_signed_approx`: its error is at
-most εΣE_m b_m², uniformly over all coefficients, after retaining the
-positive polar term. Thus no new Gram estimate is required for the
-optimization. Set `t_m=sqrt(E_m/c_N)b_m` and
-`g_N(m)=⟨B_Nv_m,x_N⟩/sqrt(c_N E_m)`. The proposed mixed limits and
-the tightness bounds imply `g_N→aℓ(h)sqrt(R/J(1))e₁` in square sum,
-while the packet form divided by c_N is uniformly
-`Σt_m²+[a g R/J(1)]t₁²+o(Σt_m²)`. Completing squares, with the
-ε-error on both sides, would give the exact optimal energy reduction
-`a²ℓ(h)²/[J(1)/R+a g]`. For the stated interior support the fixed-m limits
-and their square-sum convergence are checked. Finite quadratic
-optimization remains. None proves whole-space positivity or removes the
-window compensation.
-
-## Attack and proof obligations
-
-The exact center row already supplies the two terms
-`1/x−½log(1−x²)` in D(log x):
-`sum_pole_minus_center_div_sqrt` writes it as a rational pole row plus
-`H_N−(H_(N−n)+H_(N+n))/2+3/(4n)`. The upward row at n/N→x
-should supply `−ψ(1/x)` through finitely many prime powers. The remaining
-Gamma/downward cancellation must supply `−log(2π)`. These are discrete
-channels to prove separately, not a replacement of the discrete matrix
-by its continuous analogue.
-
-For nonpolar conductors, retain both the full-center coefficient
-`−aΛ(m)/sqrt(φ(m))` and the opposite near divisor-jet charge. Their
-weighted cancellation must be established before claiming a zero source.
-
-For conductor one, put F(x)=h(log x), extended by zero outside (0,1),
-and read raw pairings after division by c. The discrete channel limits
-needed for the conjecture are:
-
-| Channel | Proposed limit |
-|---|---|
-| Full center | a∫F(x)[1/x−½log(1−x²)]dx |
-| Near Gamma remainder minus separated cross | −a(log(4π)+γ)∫F |
-| Near logarithmic row | −a∫F(x)log x dx |
-| Near center minus log c times near Gram | a∫F(x)[log(2x)+γ]dx |
-| Upward prime row, entering negatively | a∫F(x)ψ(1/x)dx |
-| Remaining diagonal, ratio and replacement terms | 0 |
-
-The middle three rows sum to −a log(2π)∫F. Since F is supported
-away from zero, only finitely many prime powers occur in the proposed
-upward limit. This is a finite-prime transport problem at the terminal
-window, not a use of the large-horizon upward asymptotic there.
-The table separates checked constituents from pending transfers. The
-polar full center, signed Gamma remainder and joint near-center finite
-part and near logarithm are checked. Complete assembly and general
-upward-row transfer still require their Lean audits.
-
-### Checked terminal averaging and center laws
-
-For bounded periodic u,v and a bounded Lipschitz gap kernel K, terminal
-endpoint weights preserve the near-pair mean. The weighted near-Gram
-error is O((1+log c)/c+c/N); multiplying by log c still gives zero when
-c→∞ and c log c/N→0. The shifted periodic harmonic-row bound is uniform
-in the gap and subinterval, including empty intervals.
-
-The actual near-center finite part is
-`a[m=l][(log 2+γ)∫F+∫F log x]` for m=1 and
-`−a[m=l]Λ(m)∫F` for m>1. The joint statement subtracts log c times the
-actual weighted near Gram; ordinary convergence does not suffice.
-The full polar center retains `∫F(x)[1/x−½log(1−x²)]dx`.
-
-These statements pass actual-path Lean checks with exactly
-`[propext, Classical.choice, Quot.sound]` in
-`TerminalWeightsReadEitherEndOfANearPair.lean`,
-`TerminalNearPairsRetainLogarithmicAccuracy.lean`,
-`TerminalWeightsPreserveHarmonicGapRows.lean`,
-`TerminalWindowsRetainTheNearCenterFinitePart.lean`,
-`TerminalWindowsRetainTheJointNearCenter.lean` and
-`TerminalWindowsReadThePolarCenter.lean`.
-
-### Nonpolar center: its receiving charge survives separately
-
-For fixed m≥2 and bounded globally Lipschitz F, the full center divided
-by N tends to `−Λ(m)∫F`. The harmonic difference and sum kernels cost
-O_(F,m)(H_N/N); the harmonic pole product supplies the surviving charge.
-`TerminalWindowsReadTheNonpolarCenter.lean` proves both the center-kernel
-mean and literal double-kernel pairing. Its actual-path check uses
-exactly `[propext, Classical.choice, Quot.sound]`. The opposite terminal
-near-jet charge must cancel before asserting a zero nonpolar source.
-
-### Terminal logarithm and divisor-jet cancellation
-
-On a near pair, the exact identity
-`log(j/N)−log(n/N)=log j−log n` bounds its absolute value by 2c_N/N.
-Thus moving the logarithm to the terminal endpoint costs at most
-`O_F(c_N/N)` times the normalized bounded-kernel pair mass, which has
-a finite limit. The endpoint mean for `logProfile(y↦yh(y))` then gives
-the near logarithmic row in the table, with its negative sign supplied
-by the downward-row identity. This argument needs only c_N→∞ and
-c_N/N→0 and has no singularity at zero because h has compact log support.
-
-The divisor jet is bounded and periodic, with mean Λ(m). The same
-endpoint theorem therefore gives its terminal near mean
-`a Λ(m)∫F`, exactly opposite to the nonpolar full-center charge.
-`TerminalWindowsReadTheNearLogarithm.lean` now proves the logarithmic
-transfer and actual terminal near-log limit, with an actual-path check
-using precisely `[propext, Classical.choice, Quot.sound]`. The terminal
-jet cancellation is checked in `TerminalDivisorJetsCancelTheNonpolarCenter.lean`:
-both the jet mean and its cancellation with the full center pass actual-path
-audits with exactly `[propext, Classical.choice, Quot.sound]`.
-
-The three signed polar limits combine algebraically to
-`−a log(2π)∫F`: the terminal `∫F log x` and Euler constants cancel,
-and `log(4π)=log 2+log(2π)`. Their literal sum is implemented in
-`TerminalPoleGammaAndCenterHaveOneConstant.lean`; its actual-path audit
-passes with exactly `[propext, Classical.choice, Quot.sound]`.
-
-The finite normalization has a closed algebraic reduction. Write
-`x_F(n)=F(n/N)/sqrt(n)` and `L=log N`. Then
-`sqrt(L)⟨A v_m,x_F⟩` is the literal double sum with denominator
-`sqrt(nj φ(m))`; a row normalized by `sqrt(L)` gives the corresponding
-single sum. For m=1, the exact Mangoldt divisor convolution is log j.
-The identity `log(N/c)+log c+log(j/N)=log j` therefore decomposes the
-near row into its Gamma remainder, negative logarithmic near Gram and
-negative terminal-log row. Near-center and separated-cross pairings
-are their existing literal sums with the same normalization. No
-limiting interchange or continuum identification enters this step.
-Restoring the completed conductor energy also cancels its shell and
-polar diagonals. The remaining scalar is exactly
-`selfFinitePart(c)+adjunctionEnergy(m)−γ`; the constant γ must be
-retained in the finite identity even though its normalized pairing
-vanishes. The finite identities in
-`TerminalPolePairingsHaveTheirLiteralChannels.lean` pass their actual-path
-audit with exactly `[propext, Classical.choice, Quot.sound]`.
-
-The remaining ratio, self and pole errors have closed paper bounds
-against every bounded terminal window. Its norm is bounded uniformly
-in N. After squaring the normalization `sqrt(L)/c`, the existing source
-bounds become respectively `O_m(c⁻²)`, `O_m(L/N²)` and
-`O_m((c⁴L²/N)²)`, all tending to zero at critical scale. For the
-reference diagonal, use the stronger window/conductor coordinate
-`O(1/sqrt(L))` and the exact scalar `C_m−log c`; its mixed cost is
-`O_m((1+log c)/c)`. A physical-norm estimate alone would not pay this
-diagonal. All four transfers in
-`TerminalWindowErrorChannelsDisappear.lean` pass their actual-path audit
-with exactly `[propext, Classical.choice, Quot.sound]`.
-
-### Polar upward-row reduction
-
-There is an exact shorter-window test of the conjecture. If F vanishes
-on `[0,δ]` for some δ>1/2, the entire actual upward row vanishes on
-F's support eventually, uniformly in conductor m. Indeed take
-H=ceil(2c_N). Since H/N→0, `N+H<2n` for every contributing n.
-Every prime-power multiple kn with k≥2 then lies above N+H, so both
-punctured windows in `upwardModeRow_eq_sum_inner` are empty. The k=0,1
-terms have zero Mangoldt weight.
-`TerminalWindowsAboveHalfHaveNoUpwardPrimes.lean` proves this exact
-annihilation; its actual-path audit passes with precisely
-`[propext, Classical.choice, Quot.sound]`. It isolates
-the prime-free terminal source without a boundary approximation.
-It suffices to test a nonzero ℓ and the proposed intrinsic R² collar
-cost before the full finite-prime transfer below is completed.
-
-If F also vanishes for x≥η with η<1, the actual exterior downward
-row vanishes on its support eventually, uniformly in m. The existing
-linear strip satisfies `linearPrimeStrip(c)≤(e+1)c`; since c_N/N→0,
-every contributing n satisfies `n+linearPrimeStrip(c_N)<N`. The exact
-regrouping and strip-support theorem then give zero. Thus a profile
-supported in a fixed interval `(δ,η)⊂(1/2,1)` removes both prime
-boundary channels exactly. This closed paper reduction is implemented
-in `TerminalWindowsAwayFromTheHorizonHaveNoExteriorPrimes.lean`;
-its actual-path audit passes with exactly
-`[propext, Classical.choice, Quot.sound]`. It isolates the local source without
-assuming a prime-distribution estimate or a continuum replacement.
-
-For this interior support the polar assembly is now dependency-closed
-on paper. The checked finite identity above, the four vanishing error
-channels and both exact prime annihilations leave
-
-    (sqrt(L)/c_N)⟨B_Nv₁,x_N⟩
-      → a[∫₀¹ F(x)(1/x−½log(1−x²))dx−log(2π)∫₀¹F].
-
-The critical clock implies c_N log(c_N)/N→0, so the checked joint
-near-center rate applies. The signed Gamma constant and near-log mean
-cancel exactly as stated above. This restriction therefore has no
-remaining analytic input in its paper proof. Its finite channel
-identity and supporting limits have passed their Lean audits.
-`TerminalPolarSourceAboveHalf.lean` proves the exact assembly and
-limiting statement; both endpoints pass their actual-path audit with
-exactly `[propext, Classical.choice, Quot.sound]`. This does not settle
-general terminal support. The nonpolar interior source is settled by
-the complete assembly below.
-
-The restricted source has an explicit nonzero paper witness. Take
-`δ=127/128`, `η=255/256`,
-`F(x)=tiltedUnitSpline((x−δ)/(η−δ))` and `h(y)=F(exp y)`.
-This is a nonnegative compact C² window with positive integral.
-On its support below one,
-`(2π)²(1−x²)<64(1−δ²)<1`, using π<4. Hence
-
-    1/x−log(2π)−½log(1−x²)
-      =1/x−½log((2π)²(1−x²)) > 1/x ≥ 1.
-
-Its proposed source mean is therefore strictly positive. This uses
-an exact rational inequality, not numerical evidence.
-`TerminalPolarSourceIsNonzero.lean` implements this witness as
-`F(x)=tiltedUnitSpline(256x−254)`, with the wider guards
-`253/256` and `511/512` for the exact prime annihilations. Both strict
-source positivity and its complete-matrix limit pass their actual-path
-Lean audits with exactly `[propext, Classical.choice, Quot.sound]`.
-The resulting collar lower bound also passes its actual-path audit.
-
-For the first lower-bound theorem it suffices to take the collar cutoff
-`M_N=floor(N/2)`. The witness has zero prefix there, while
-`topCollarSeventhMass(M_N,N,x_N)≤128‖x_N‖²`, uniformly in N.
-The checked weighted Cauchy–Schwarz inequality, the positive proposed
-source S and the explicit bound `E₁(c)≤C_E/c⁷` then give an absolute
-κ>0, independent of R and the clock, such that eventually
-
-    (c_N⁷/L) topCollarDualSeventhMass(M_N,N,r₁)/E₁(c_N) ≥ κR².
-
-Indeed the normalized residual pairing eventually exceeds S/2;
-its reference-diagonal correction tends to zero by the uniform window
-coordinate bound. If T bounds the seventh collar mass, the same
-Cauchy–Schwarz inequality gives the left side at least
-`[S²/(8C_E T)](c_N⁸/L)²`, hence κ may be `S²/(32C_E T)`.
-This paper reduction uses the explicit conductor-energy upper bound,
-so it needs neither a new Jordan asymptotic nor an exact collar-mass
-limit. `TheCriticalPoleHasAnIntrinsicCollarCost.lean` implements this
-reduction. Its source, witness and all four principal endpoints pass
-actual-path audits with exactly `[propext, Classical.choice, Quot.sound]`.
-
-The actual cutoff in the small-band proof is also covered: for c≥1,
-`linearDefectCutoff(c)≥3`, hence `N/linearDefectCutoff(c)≤N/2`.
-The dual collar mass increases when its lower endpoint decreases.
-Thus the same lower bound transfers to that literal cutoff, and choosing
-R with κR²>B exceeds any prescribed budget B on its canonical clock.
-Both corollaries pass the same audit. This retires fixed absolute-budget
-continuation in this collar norm, not signed continuation or all-R
-whole-space positivity. The checked positive survivor is the nonzero
-literal terminal source; see the
-[failed-mechanism card](../5-failed/critical-absolute-collar-budget-continuation.md).
-
-The nonpolar interior source has a closed paper assembly as well.
-The exact coefficient identity is
-
-    nearCoefficient_m(n,j)
-      =c_m(j)[nearGammaRemainder−log(c)q−log(j/N)q]
-        +jet_m(j)q.
-
-The Gamma remainder minus separated cross has zero mean for m>1;
-the joint near center and near logarithm also have zero mean against
-the untwisted terminal receiver. The only surviving full-center and
-jet means are opposite charges `−aΛ(m)∫F` and `+aΛ(m)∫F`.
-Both exact prime annihilations and all four error transfers apply to
-every fixed m. Therefore the complete mixed limit is zero on interior
-support for m≥2. The finite identities and zero Gamma-center limit in
-`TerminalConductorPairingsRetainTheDivisorJet.lean` pass actual-path
-audits with exactly `[propext, Classical.choice, Quot.sound]`.
-The complete assembly in `TerminalNonpolarSourceAboveHalf.lean` also
-passes its actual-path audit with exactly those three axioms. Hence
-the fixed-conductor response on `(δ,η)⊂(1/2,1)` is exactly polar at
-every positive critical ratio. This does not interchange the conductor
-and horizon limits.
-
-The exterior channel also has a paper bound without separation from one.
-Its actual rows are supported on `n≥N−linearPrimeStrip(c_N)`, with
-O(c_N) indices and row size O_m(c_N), by the public small-width source
-bounds. On this strip n≥N/2 eventually, so a bounded F contributes
-O_(F,m)(c_N²/sqrt(N)) before division by c_N. Thus its normalized pairing
-is O_(F,m)(c_N/sqrt(N))→0 at every critical ratio. This needs no endpoint
-vanishing of F and no prime-distribution estimate; its Lean transfer is
-pending. The exact annihilation result above remains the checked input
-for the interior assembly.
-
-The conductor-one upward row has a closed paper reduction for the same
-F, under c_N≥1, c_N→∞ and c_N⁴(log N)²/N→0:
-
-    (1/c_N)Σ_(n≤N) [F(n/N)/n] upwardModeRow(φ,c_N,N,1,n)
-      → a∫₀¹ F(x)ψ(1/x)dx.
-
-Use the existing row comparison with H_N=ceil(2c_N) and its parameter
-1/(2c_N). Retain `upwardBoundaryMass` instead of its logarithmic
-majorant. On F's support n≥δN; every boundary prime power then satisfies
-k≤2/δ once H_N≤N. For each such k the boundary condition allows at most
-2H_N/k+1 values of n. Its weighted normalized contribution is therefore
-O_(F,δ)(c_N/N). The remaining row-comparison error is
-O_(F,φ,δ)(c_N³ log(4c_N)/N), which also vanishes.
-
-A sufficient finite bound retains every boundary prime. For `|F|≤B`,
-`F(x)=0` when `x≤δ`, `δ>0`, `1≤N`, `H≤N` and `K=ceil(2/δ)`,
-
-    Σ_(n≤N) |F(n/N)| upwardBoundaryMass(N,n,H)/n
-      ≤ B(2H+1)/(δN) · Σ_(1≤k≤K) Λ(k)/k.
-
-Exchange the two finite sums. A nonzero receiver has n>δN; the boundary
-condition kn≤N+H forces k<2/δ. For fixed k≥1, the injective map n↦kn
-puts all boundary indices in `[N−H,N+H]`, which has at most 2H+1
-integers. Finally 1/n≤1/(δN). This proves the displayed bound without
-an estimate for primes in short intervals.
-`TerminalPrimeBoundaryMassHasFiniteSupport.lean` implements this finite
-bound and its integration with the actual upward-row comparison. All
-three principal endpoints pass their actual-path audit with exactly
-`[propext, Classical.choice, Quot.sound]`.
-
-The actual-row replacement has a stronger sufficient clock condition:
-`c_N⁴/N→0`, with `c_N≥1`. Put `M=∫φ²`, choose a global autocorrelation
-Lipschitz constant ℓ, and set
-
-    Cφ=12M+72ℓ, C₀=log 4+1+|mertensWindowConstant|,
-    P_K=Σ_(1≤k≤K)Λ(k)/k, K=ceil(2/δ).
-
-For `H=ceil(2c)`, the inequalities `H≤3c`,
-`upwardLinearError≤Cφ c³` and `|log(4c)+mertensWindowConstant|≤C₀c`
-give, once the row-comparison horizon conditions hold,
-
-    |c⁻¹Σ_(n≤N) F(n/N)(upwardModeRow−upwardModel)/n|
-      ≤ [6Bφ(m)CφC₀/(δM)+63Bφ(m)P_K/δ] c⁴/N.
-
-Here `Σ|F(n/N)|/n≤B/δ`; the boundary part uses `2H+1≤7c`
-and `c≤c⁴`. The same clock condition eventually gives `4cH≤N`
-and `2H≤N`. This is a closed paper bound, not yet a checked Lean
-endpoint. It applies to every fixed conductor and every critical ratio.
-`TerminalUpwardRowReplacementDisappears.lean` implements the finite
-quartic bound and its vanishing consequence; its audit is pending.
-
-In the affine-shell model, the conductor-one coefficient is identically
-one. The Lipschitz Riemann estimate for the compact autocorrelation gives
-
-    upwardShellModel(φ,c_N,N,1,H_N,kn)
-      = a c_N kn/N + O_φ(1)
-
-uniformly for δN≤n and kn≤N. Hence only finitely many k≤1/δ remain,
-and the normalized model is `(a/N)Σ F(n/N)ψ(N/n)+o(1)`.
-Swap those finite prime-power sums before taking the Riemann limit:
-each k contributes `Λ(k)∫₀^(1/k)F`. This avoids any unjustified
-uniform estimate across the jumps of ψ. The argument uses only the
-actual row comparison and finite sums; the model limit is checked.
-`TerminalUpwardShellsHaveTheirPolarMean.lean` implements the dilated
-Riemann estimate, the uniform truncated Riemann estimate and the polar
-and nonpolar shell bounds. All four principal endpoints pass their
-actual-path audit with `[propext, Classical.choice, Quot.sound]`.
-
-The finite model rates can be retained explicitly. With `c≤H≤3c`, `N≥K`,
-`Lip(F)≤L_F`, `K≥2/δ`, `P_K=Σ_(k≤K)Λ(k)/k` and
-`T_K=Σ_(k≤K)Λ(k)`, the polar normalized model differs from
-`aΣ_(k≤K)Λ(k)∫₀^(1/k)F` by at most
-
-    6BℓP_K/(Mδ²c) + a(L_F+B)T_K/N.
-
-Indeed every contributing centre p=kn satisfies δN≤p≤N, so the shell
-Riemann error is at most `6ℓ/(Mδ)`. Each truncated long-index Riemann
-sum has error at most `(L_F+B)/N`, uniformly in k. Thus the general
-polar upward limit needs only `c→∞` and `c⁴/N→0`, once these finite
-transfers are checked. This rate statement remains a paper consequence.
-The finite hyperbola exchange and prime Riemann limit are implemented in
-`TerminalPrimeMeansAreFiniteRiemannSums.lean`; all three principal
-endpoints pass their actual-path audit with
-`[propext, Classical.choice, Quot.sound]`. The model error bounds and
-model limits in `TerminalUpwardModelsHaveFinitePrimeSources.lean`
-also pass their actual-path audit with exactly the standard three axioms.
-The fixed nonpolar upward source has a closed periodic reduction too.
-For each divisor d of m, the two integers
-`p+(m−1)j` and `(m−1)p+j` sum to `m(p+j)`. Hence their Ramanujan
-coefficients agree. The two shell sequences are therefore translates
-of the same mean-zero m-periodic sequence when m≥2. Apply the checked
-terminal weighted periodic bound to
-`F_H(x)=shellAutocorr(φ,HNx/(cp))/∫φ²`. On p≥δN and H≤3c,
-its bound is 1 and its Lipschitz constant is at most `3 Lip(K)/δ`.
-The actual affine-shell sum is consequently O_(φ,m,δ)(1), uniformly
-in the terminal index and c, and tends to zero after division by c.
-More precisely its normalized weighted model is bounded by
-`4Bmφ(m)(1+3ℓ/(Mδ))P_K/(δc)`.
-The same finite-prime boundary counting controls its actual-row error.
-This supplies the fixed-m nonpolar upward paper limit; the reflected
-shift identity, shell bound and model summation are checked. The
-actual-row transfer still awaits its Lean audit.
-
-### Complete assembly on every fixed window
-
-The preceding bounds close the general paper reduction. For a C² h
-supported in `[-A,0]`, choose `δ=exp(-A−1)` and `K=ceil(1/δ)`.
-Then `F=logProfile h` vanishes below δ, is bounded and globally
-Lipschitz, and has `F(1)=0`: continuity and the zero extension to
-positive logarithmic arguments force `h(0)=0`.
-
-The exact finite complete-pairing identity now gives
-
-    (sqrt(log N)/c_N)⟨B_Nv₁,x_N⟩
-      → a[∫₀¹ polarCenterProfile(F)(x) dx
-           −log(2π)∫₀¹F(x) dx−Σ_(k≤K)Λ(k)∫₀^(1/k)F(x) dx].
-
-The full polar center supplies the first integral; the combined Gamma
-and near-center channel supplies the second. The exterior strip and
-all four replacement errors vanish at every critical ratio. The actual
-upward limit supplies the finite prime sum with its negative sign.
-For fixed m≥2, full center and divisor jet cancel, the Gamma-center
-limit is zero, and both prime boundary limits vanish. Hence the complete
-nonpolar limit is zero. Every term uses the literal finite identities;
-there is no interchange of infinite prime sums or conductor limits.
-
-This is a dependency-closed paper assembly, pending the stated Lean
-audits. Its finite-prime formulation suffices without yet identifying
-the sum with the integral containing ψ. It proves no sign of the
-remaining window energy and no extension of the positive critical band.
-
-The same support also removes the half-horizon restriction from the
-inverse-energy envelope. Set `M_N=floor(δN)`, with `δ=exp(-A−1)∈(0,1)`.
-The receiver has zero prefix through M_N. On every nonzero coordinate,
-`n/N>δ`, so its seventh collar mass is at most `δ⁻⁷‖x_N‖²`.
-Since `linearPrimeStrip(c_N)=O(c_N)` and `c_N/N→0`, eventually
-`2 linearPrimeStrip(c_N)≤M_N`. The existing dual collar estimate applies
-at this cutoff without changing its residual constant. Its combination
-with `c_N⁷ E_m≥κm⁷` therefore gives the same summable `C_(h,R)/m⁵`
-envelope for every `m≤c_N`. The reference diagonal contribution has the
-already proved window-coordinate bound and is unchanged. With the
-general fixed-m limits above and the checked above-overlap estimate,
-dominated convergence gives polar concentration through
-`Q_N=floor((log N)^(13/32))` for every fixed compact window. This
-generalization is paper-only; it requires a new cutoff and envelope
-audit, not a stronger estimate on primes.
-
-An equivalent cutoff avoids floor errors entirely: take
-`M_N=2 linearPrimeStrip(c_N)`. It already satisfies the dual bound's
-lower cutoff requirement, lies below N, and eventually obeys
-`M_N≤δN` because `2(exp 1+1)c_N/N→0`. The same zero-prefix and
-`δ⁻⁷‖x_N‖²` collar estimates apply. Their finite statements and the
-critical cutoff geometry are implemented in
-`TerminalWindowsHaveMovingCollarCutoffs.lean`, pending audit.
-`EveryTerminalWindowHasSummableConductorSources.lean` implements the
-resulting residual and complete-source envelopes, also pending audit.
-The ensuing fixed-source and moving-packet concentration statements are
-implemented in `EveryTerminalWindowHasAPolarConductorSource.lean`;
-none of these general-window extensions is yet kernel checked.
-
-The exact affine selection rule already exists in
-`SuccessorShellArithmetic/Conductor/AffineShellConductorSelection.lean`:
-over a common period, the correlation of c_l(n) and c_m(kn+j)
-equals c_m(j) times the period length precisely when
-`l=m/gcd(m,k)`, and is zero otherwise. For the untwisted terminal
-receiver l=1, only m dividing k survive. Since the terminal support
-restricts k to a fixed finite set, its upward mean sees only finitely
-many conductors; for general fixed l, the selection forces m≤kl.
-These are consequences of the existing exact finite identity, not a
-new prime-distribution hypothesis. The remaining uniform problem is
-to control incomplete weighted periods and boundary errors before
-summing a growing packet. Averaging first in the long terminal index
-can do this without assuming m≪c_N. For the fixed-m limits alone,
-the shorter gap-periodic proof above suffices; the inverse-energy
-envelope can then handle the growing packet separately.
-
-- Verdict: `BRIDGE` candidate. The continuous pole action is existing
-  corpus mathematics; the proposed discrete mixed transport is the gap.
-- Check the scale sqrt(L)/c_N and every atomic normalization directly.
-- Retain both prime directions, the near/far Gamma cancellation, the
-  center term and both pole moments before estimating.
-- Isolate the discrete aliasing cross term and determine its limit.
-- Only after these steps, prove and formalize the exact mixed limit,
-  then its uniform inverse-energy version if it survives.
-- No external novelty claim. The interior complete mixed limit and its
-  strengthened small-band window inequality are checked; general terminal
-  support and growing-packet optimization remain open transfers.
+      ≥c_N⁻¹⟨B_Nx_N,x_N⟩−Σ p_m²/(c_N d_m).
+
+The nonpolar budget is `(1−η)⁻¹Σ_(m≥2)p_m²/(c_NE_m)→0`.
+The polar budget equals
+
+    [(sqrt(L)/c_N)p₁]² / [(1−η)LE₁/c_N+ag]
+      →S_A(h)²/[(1−η)J(1)/R+ag].
+
+Letting η decrease to zero bounds every limiting correction gain by
+`S_A(h)²/D_R`. The single pole coefficient
+`b₁=−S_A(h)sqrt(L)/D_R`, all others zero, attains that value by the
+complete mixed and pole-self limits. This is the exact proposed optimum;
+no further Gram estimate is missing. `EveryLowPacketCorrectionHasItsPolarCapacity`
+implements the finite budget, its limit, the sharp uniform bound and the
+attaining pole coefficient; none is yet kernel checked. Its arbitrary-window
+use also depends on the pending source audits.
+
+## Remaining frontier
+
+1. Complete actual-row, exterior, general assembly and envelope audits.
+2. Formalize the sharp correction capacity and its general-window consequence.
+3. Supply additional growing arithmetic receiving channels or control the
+   complementary window energy directly. A rank-one correction leaves the
+   full aliasing mass on its source kernel.
+
+The all-R positive low packet is not the whole horizon. Independently,
+the far-complement proof pays `C_S c S₇` with `g₀L S₇/(8c⁷)`, requiring
+`8C_S R≤g₀`. Neither the polar source nor its optimized correction removes
+this restriction. The parent target, unbounded R or compensation removal,
+remains open.

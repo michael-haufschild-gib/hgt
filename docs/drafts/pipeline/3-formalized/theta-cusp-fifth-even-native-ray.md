@@ -10,6 +10,8 @@ matrix `Hᵢⱼ(x)=(-1)^(i+j) J_(2(i+j))(x)`, `i,j<5`, is positive definite.
 Its normalized Gaussian form has quadratic floor `49/4000`.
 Retaining the leading mass strengthens this to the scale-dependent floor
 `(2q−3)²/1000−147/4000`.
+More precisely, the full leading-pair Gaussian form survives with quadratic
+loss at most `(147/4000)‖v‖²`.
 In particular, the unique positive zero of the compensation source has
 a strict native fifth even section. Every constant matrix correction
 `H+GV` equals `H` at this center.
@@ -32,6 +34,7 @@ satisfies `5<q<45/8`, placing it inside this ray.
 Public certificates:
 
 - `FifthRemainder.remainderGram_bound`
+- `FifthNativeRay.sourceGram_retained_lower`
 - `FifthNativeRay.sourceGram_coercive`
 - `FifthNativeRay.sourceGram_growing_coercive`
 - `FifthNativeRay.native_even_five_posDef`

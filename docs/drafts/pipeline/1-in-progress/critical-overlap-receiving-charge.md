@@ -361,3 +361,14 @@ harmonic width `O((log Q+log c)/log N)` and need a separate bound.
 - [x] Explicit families, critical overlap and literal receivers identified.
 - [ ] Dependency-closed full paper classification.
 - [ ] Full Lean classification and consequences; final plain checks and transitive axiom audit.
+
+## Literal upward-row inputs
+
+Exact literal offset reindexing retains both horizon cutoffs with strip
+width `ceil(e*c)` (`UpwardProfileOffsets`). Both actual logarithmic kernels
+have variation bounded independently of horizon and multiplier
+(`LiteralUpwardKernelVariation`). Fixing a coprime conductor residue
+preserves the prime covariance density; finite periodic factors multiply
+it by their exact period mean (`ResidueSlices`, `PeriodicCovariance`).
+These inputs are checked. Their weighted Gram assembly and uniform
+complete mixed-form comparison remain open.

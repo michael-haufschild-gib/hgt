@@ -148,7 +148,9 @@ theorem stPerm_cube : (stPerm (p := p)) ^ 3 = 1 := by
   rcases x with _ | t
   · rw [stPerm_none, stPerm_some_of_ne h01, zero_add, inv_one, stPerm_some_of_eq hm1]
   · by_cases ht : t + 1 = 0
-    · have hneg : -(0 + 1 : ZMod p)⁻¹ = t := by rw [zero_add, inv_one]; linear_combination ht
+    · have hneg : -(0 + 1 : ZMod p)⁻¹ = t := by
+        rw [zero_add, inv_one]
+        linear_combination -ht
       rw [stPerm_some_of_eq ht, stPerm_none, stPerm_some_of_ne h01, hneg]
     · by_cases ht0 : t = 0
       · subst ht0
@@ -159,13 +161,18 @@ theorem stPerm_cube : (stPerm (p := p)) ^ 3 = 1 := by
           have : (t + 1) * (-(t + 1)⁻¹ + 1) = 0 := by rw [h, mul_zero]
           rw [mul_add, mul_neg, mul_inv_cancel₀ ht] at this
           linear_combination this
+        have e1 : -(t + 1)⁻¹ + 1 = t / (t + 1) := by
+          field_simp
+          ring
+        have e : -(-(t + 1)⁻¹ + 1)⁻¹ + 1 = -t⁻¹ := by
+          rw [e1, inv_div]
+          field_simp
+          ring
         have hv : -(-(t + 1)⁻¹ + 1)⁻¹ + 1 ≠ 0 := by
-          have e : -(-(t + 1)⁻¹ + 1)⁻¹ + 1 = -t⁻¹ := by field_simp; ring
           rw [e]
           exact neg_ne_zero.mpr (inv_ne_zero ht0)
-        rw [stPerm_some_of_ne ht, stPerm_some_of_ne hu, stPerm_some_of_ne hv, Option.some.injEq]
-        field_simp
-        ring
+        rw [stPerm_some_of_ne ht, stPerm_some_of_ne hu, stPerm_some_of_ne hv, Option.some.injEq,
+          e, inv_neg, inv_inv, neg_neg]
 
 /-- **`ST` acts freely of order three** on `P¹(F_p)` for `p ≡ 2 (mod 3)`. -/
 theorem stPerm_isFreeOfOrder (hp3 : p % 3 = 2) : IsFreeOfOrder (stPerm (p := p)) 3 where

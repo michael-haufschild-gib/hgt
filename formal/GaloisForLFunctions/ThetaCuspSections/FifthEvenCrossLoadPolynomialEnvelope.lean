@@ -1,4 +1,5 @@
 import GaloisForLFunctions.ThetaCuspSections.FifthEvenNativeRay
+import GaloisForLFunctions.ThetaCuspSections.FifthEvenCrossLoadContinuation
 import GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspScaleSevenCompensationSource
 import GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspMiddleLikelihoodBounds
 
@@ -12,9 +13,9 @@ the squared mass, leaving a rational quartic in the scale.
 -/
 
 noncomputable section
-open RHTower
+open Matrix RHTower
 namespace GaloisForLFunctions.ThetaCuspSections.FifthCrossEnvelope
-open FifthNativeRay FifthRemainder
+open FifthNativeRay FifthRemainder FifthLeadingPair EvenFiveEndpoint
 
 /-- The normalized compensation envelope obtained from the scale-seven tangent. -/
 def compensationPolynomial (q : ℝ) : ℝ :=
@@ -159,5 +160,80 @@ theorem compensation_polynomial_lower {x : ℝ}
       rw [first_mass_square]
       ring
     _ ≤ _ := hraw
+
+/-- A rational inverse-power envelope for the unequal leading-pair weight. -/
+theorem cross_weight_upper {q : ℝ} (hq : 7 ≤ q) :
+    Real.exp (-3*q) ≤ ((19/25000000000 : ℝ)*7^15)/q^15 := by
+  have hq0 : 0 < q := by linarith only [hq]
+  have hp := pow_mul_exp_neg_le_stationary_radius 15
+    (a := 7) (t := q) (by norm_num) hq0.le
+  simp only [Nat.cast_ofNat] at hp
+  have he : Real.exp (-(6/7*q)) ≤ Real.exp (-6 : ℝ) :=
+    Real.exp_le_exp.mpr (by linarith only [hq])
+  have hm := mul_le_mul hp he (Real.exp_pos _).le
+    (show 0 ≤ (7 : ℝ)^15*Real.exp (-15) by positivity)
+  have hl : (q^15*Real.exp (-(15/7*q)))*Real.exp (-(6/7*q)) =
+      q^15*Real.exp (-3*q) := by
+    rw [mul_assoc,← Real.exp_add]
+    congr 2
+    ring
+  have hr : ((7 : ℝ)^15*Real.exp (-15))*Real.exp (-6) =
+      (7 : ℝ)^15*Real.exp (-21) := by
+    rw [mul_assoc,← Real.exp_add]
+    norm_num
+  rw [hl,hr] at hm
+  have h21 := pow_le_pow_left₀ (by norm_num : (0 : ℝ) ≤ 2.7182818283)
+    Real.exp_one_gt_d9.le 21
+  rw [← Real.exp_nat_mul] at h21
+  simp only [Nat.cast_ofNat,mul_one] at h21
+  have hb : (25000000000/19 : ℝ) ≤ Real.exp 21 :=
+    (by norm_num : (25000000000/19 : ℝ) ≤ (2.7182818283 : ℝ)^21).trans h21
+  have hd : Real.exp (-21 : ℝ) ≤ 19/25000000000 := by
+    rw [Real.exp_neg,inv_eq_one_div]
+    have h := one_div_le_one_div_of_le (by norm_num : (0 : ℝ) < 25000000000/19) hb
+    norm_num at h
+    exact h
+  have hs := mul_le_mul_of_nonneg_left hd (show (0 : ℝ) ≤ 7^15 by positivity)
+  apply (le_div_iff₀ (pow_pos hq0 15)).mpr
+  nlinarith only [hm,hs]
+
+/-- The fixed cross-load in normalized Gaussian coordinates. -/
+def crossLoadGram (q : ℝ) : Matrix (Fin 5) (Fin 5) ℝ :=
+  (loadMap*nativeBasis q)ᴴ*paidSevenSchur*(loadMap*nativeBasis q)
+
+/-- A rational matrix lower model, affine in the unequal-pair weight. -/
+def crossModel (q z : ℝ) : Matrix (Fin 5) (Fin 5) ℝ :=
+  gaussianGram (leadingMatrix q z)+compensationPolynomial q • crossLoadGram q-
+    (147/4000 : ℝ) • 1
+
+private theorem normalized_cross_decomposition (x : ℝ) :
+    normalizedGram x (crossRepair x) = sourceGram x+
+      (thetaCuspCenterCompensationSource x/sourceUnit x) •
+        crossLoadGram (thetaCuspSingleAtomReflectionScale 1 x) := by
+  simp only [sourceGram,crossRepair,normalizedGram_eq_congruence,
+    Matrix.mul_add,Matrix.add_mul,Matrix.mul_smul,Matrix.smul_mul,smul_add,smul_smul,
+    crossLoadGram,crossLoad,Matrix.conjTranspose_mul,Matrix.mul_assoc]
+  rw [show (1/sourceUnit x)*thetaCuspCenterCompensationSource x=
+    thetaCuspCenterCompensationSource x/sourceUnit x by ring]
+
+/-- The complete fixed cross-load dominates the rational leading-pair model on the scale-seven ray. -/
+theorem cross_model_lower {x : ℝ}
+    (hq : 7 ≤ thetaCuspSingleAtomReflectionScale 1 x) (v : Fin 5 → ℝ) :
+    v ⬝ᵥ (crossModel (thetaCuspSingleAtomReflectionScale 1 x)
+      (Real.exp (-3*thetaCuspSingleAtomReflectionScale 1 x)) *ᵥ v) ≤
+      v ⬝ᵥ (normalizedGram x (crossRepair x) *ᵥ v) := by
+  have hl := sourceGram_retained_lower
+    (show 5 ≤ thetaCuspSingleAtomReflectionScale 1 x by linarith only [hq]) v
+  have hV := (crossCoefficient_posDef.posSemidef.conjTranspose_mul_mul_same
+    (loadMap*nativeBasis (thetaCuspSingleAtomReflectionScale 1 x))).dotProduct_mulVec_nonneg v
+  simp only [star_trivial] at hV
+  change 0 ≤ v ⬝ᵥ (crossLoadGram (thetaCuspSingleAtomReflectionScale 1 x) *ᵥ v) at hV
+  have hc := mul_le_mul_of_nonneg_right (compensation_polynomial_lower hq) hV
+  rw [normalized_cross_decomposition]
+  simp only [crossModel,Matrix.add_mulVec,Matrix.sub_mulVec,Matrix.smul_mulVec,
+    Matrix.one_mulVec,dotProduct_add,dotProduct_sub,dotProduct_smul,smul_eq_mul]
+  have he : v ⬝ᵥ v=∑ i, v i^2 := by simp only [dotProduct,pow_two]
+  rw [he]
+  linarith only [hl,hc]
 
 end GaloisForLFunctions.ThetaCuspSections.FifthCrossEnvelope

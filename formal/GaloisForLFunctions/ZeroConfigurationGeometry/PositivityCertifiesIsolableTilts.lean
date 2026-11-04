@@ -45,7 +45,8 @@ open Zeta23 SquareRootThreshold
 
 /-- The partner `1 − ρ̄` of `ρ` has the conjugate ordinate. -/
 theorem gammaOf_reflect_eq_conj (ρ : ℂ) : gammaOf (reflect ρ) = conj (gammaOf ρ) := by
-  apply Complex.ext <;> simp [gammaOf, reflect, Complex.div_re, Complex.div_im]
+  apply Complex.ext <;> simp [gammaOf, reflect]
+  ring
 
 /-- An image whose transform vanishes off a finite set is a finite sum. -/
 theorem W_eq_sum_of_support (Z : ZeroConfig) {f g : ℝ → ℂ} (S : Finset ℂ)
@@ -128,7 +129,7 @@ theorem re_eq_half_of_re_W_nonneg_of_lattices_and_finset {ι : Type*} [Decidable
     (ha : Real.pi * ∑ j ∈ T, (h j)⁻¹ < a) (F : Finset ℂ)
     (hS : ∀ z ∈ Z.carrier, (∃ j ∈ T, ∃ k : ℤ, gammaOf z = (ν j k : ℂ)) ∨ z ∈ F)
     (hpos : ∀ f, ApertureWindow a f → 0 ≤ (Z.W f f).re) :
-    ∀ ρ ∈ Z.carrier, ρ.re = 1 / 2 := fun ρ hρ =>
+    ∀ ρ ∈ Z.carrier, ρ.re = 1 / 2 := fun _ hρ =>
   re_eq_half_of_re_W_nonneg hpos hρ fun z₀ _ =>
     exists_isolating_window_of_lattices_and_finset T h L hh ν hν ha F hS z₀
 
@@ -154,7 +155,7 @@ theorem re_W_nonneg_of_onLine (Z : ZeroConfig) (hZ : ∀ ρ ∈ Z.carrier, ρ.re
     by_cases hz : z ∈ Z.carrier
     · have hγ : conj (gammaOf z) = gammaOf z := by
         rw [Complex.conj_eq_iff_im]
-        simp [gammaOf, Complex.div_im, hZ z hz]
+        simp [gammaOf, hZ z hz]
       rw [Set.indicator_of_mem hz, Set.indicator_of_mem hz, pointImage, hγ, Complex.mul_conj]
       push_cast; ring
     · rw [Set.indicator_of_notMem hz, Set.indicator_of_notMem hz]; simp
@@ -173,8 +174,9 @@ window of aperture `a ≤ L/2`, and none of its points lies on the critical line
 aperture it has the image of the doubled on-line lattice (`offLineLattice_mimic_iff`). -/
 theorem offLineLattice_re_W_nonneg {L δ : ℝ} (hL : 0 < L) (hδ : 0 < δ) (hδ' : δ ≤ 1 / 2) {a : ℝ}
     (ha : a ≤ L / 2) :
-    (∀ f, ApertureWindow a f → 0 ≤ ((offLineLatticeConfig hL hδ hδ').W f f).re) ∧
-      ∀ ρ ∈ (offLineLatticeConfig hL hδ hδ').carrier, ρ.re ≠ 1 / 2 := by
+    (∀ f, ApertureWindow a f →
+        0 ≤ ((_root_.RHTower.offLineLatticeConfig hL hδ hδ').W f f).re) ∧
+      ∀ ρ ∈ (_root_.RHTower.offLineLatticeConfig hL hδ hδ').carrier, ρ.re ≠ 1 / 2 := by
   refine ⟨fun f hf => ?_, ?_⟩
   · rw [(offLineLattice_mimic_iff hL hδ hδ' a).mpr ha f hf]
     refine re_W_nonneg_of_onLine _ (fun ρ hρ => ?_) f

@@ -152,8 +152,6 @@ theorem ncard_eulerStage_zeros_bounds {X : ℕ} {t₀ T : ℝ} (ht₀ : 4 ≤ t�
   have hlow := intervalIntegral.integral_mono_on (μ := volume) hT intervalIntegrable_const hi hge
   have hup := intervalIntegral.integral_mono_on (μ := volume) hT hi intervalIntegrable_const hle
   rw [intervalIntegral.integral_const, smul_eq_mul] at hlow hup
-  have hm0 : 0 ≤ m := by rw [hm]; linarith
-  have hlow' : 0 ≤ m * (T - t₀) := mul_nonneg hm0 (by linarith)
   constructor
   · exact Nat.succ_le_succ (Nat.floor_le_floor (div_le_div_of_nonneg_right
       (by rw [mul_comm]; exact hlow) Real.pi_pos.le))

@@ -41,7 +41,7 @@ private theorem abs_upward_log_factor_le {c : ℝ} (hc : 1 ≤ c) :
   have hc0 : 0 < c := zero_lt_one.trans_le hc
   have hlogc : 0 ≤ Real.log c := Real.log_nonneg hc
   have hlog4 : 0 ≤ Real.log (4 : ℝ) := Real.log_nonneg (by norm_num)
-  have harg : 2 / (1 / (2 * c)) = 4 * c := by field_simp [hc0.ne'] <;> ring
+  have harg : 2 / (1 / (2 * c)) = 4 * c := by field_simp [hc0.ne']; ring
   rw [harg, Real.log_mul (by norm_num : (4 : ℝ) ≠ 0) hc0.ne']
   calc
     _ ≤ |Real.log 4| + |Real.log c| + |mertensWindowConstant| :=
@@ -91,7 +91,7 @@ theorem exists_terminal_upward_replacement_quartic_bound
     exact_mod_cast hh
   have ha : 0 < 1 / (2 * c) := by positivity
   have ha1 : 1 / (2 * c) ≤ 1 := (div_le_one (by positivity)).mpr (by linarith only [hc])
-  have hac : (1 / (2 * c)) * (2 * c) ≤ 1 := by field_simp [hc0.ne']
+  have hac : (1 / (2 * c)) * (2 * c) ≤ 1 := by field_simp [hc0.ne'] <;> norm_num
   have hb := abs_terminal_upward_row_sub_model_le (m := m) hφ hsupp hM hδ hF hzero hc0 hL hGL
     hN hH1 hHlo hNH hHN (show 2 / δ ≤ (K : ℝ) from Nat.le_ceil _) ha ha1 hac
   have hE : upwardLinearError φ c L H ≤ Cφ * c ^ 3 := upwardLinearError_le_cubic hM.le hc hL hHhi
