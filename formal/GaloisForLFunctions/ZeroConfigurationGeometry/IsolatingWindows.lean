@@ -53,6 +53,112 @@ theorem eq_zero_of_le_abs {f : ℝ → ℂ} {r : ℝ} (hc : Continuous f) (hf : 
       rw [closure_Iio] at this
       exact this (by rw [hu']; exact Set.self_mem_Iic)
 
+/-- The quotient window `g(u) = e^{−iκu} ∫_{−r}^{u} e^{iκs} f(s) ds`, solving `g' + iκg = f`. -/
+def divWindow (r : ℝ) (κ : ℂ) (f : ℝ → ℂ) (u : ℝ) : ℂ :=
+  cexp (-(I * κ * u)) * ∫ s in (-r)..u, cexp (I * κ * s) * f s
+
+theorem contDiff_cexp_mul (c : ℂ) : ContDiff ℝ (⊤ : ℕ∞) fun s : ℝ => cexp (c * s) :=
+  (contDiff_const.mul Complex.ofRealCLM.contDiff).cexp
+
+theorem hasDerivAt_divWindow {f : ℝ → ℂ} (hfc : Continuous f) (r : ℝ) (κ : ℂ) (u : ℝ) :
+    HasDerivAt (divWindow r κ f) (-(I * κ) * divWindow r κ f u + f u) u := by
+  have hhc : Continuous fun s : ℝ => cexp (I * κ * s) * f s :=
+    (contDiff_cexp_mul _).continuous.mul hfc
+  have hFd := intervalIntegral.integral_hasDerivAt_right (a := -r) (hhc.intervalIntegrable _ u)
+    (hhc.stronglyMeasurableAtFilter _ _) hhc.continuousAt
+  have h1 : HasDerivAt (fun u : ℝ => cexp (-(I * κ * u))) (cexp (-(I * κ * u)) * (-(I * κ))) u := by
+    have := (((hasDerivAt_id (u : ℂ)).const_mul (I * κ)).neg.cexp).comp_ofReal
+    refine this.congr_deriv ?_
+    simp
+  refine (h1.mul hFd).congr_deriv ?_
+  simp only [divWindow]
+  rw [show cexp (-(I * κ * u)) * (cexp (I * κ * u) * f u) =
+    (cexp (-(I * κ * u)) * cexp (I * κ * u)) * f u by ring, ← Complex.exp_add,
+    show -(I * κ * u) + I * κ * u = 0 by ring, Complex.exp_zero, one_mul]
+  ring
+
+theorem deriv_divWindow {f : ℝ → ℂ} (hfc : Continuous f) (r : ℝ) (κ : ℂ) :
+    deriv (divWindow r κ f) = fun u => -(I * κ) * divWindow r κ f u + f u :=
+  funext fun u => (hasDerivAt_divWindow hfc r κ u).deriv
+
+/-- The quotient window is as smooth as `f`. -/
+theorem contDiff_divWindow {f : ℝ → ℂ} (r : ℝ) (κ : ℂ) :
+    ∀ n : ℕ, ContDiff ℝ n f → ContDiff ℝ n (divWindow r κ f) := by
+  intro n
+  induction n with
+  | zero =>
+    intro hf
+    exact contDiff_zero.mpr (continuous_iff_continuousAt.mpr fun u =>
+      (hasDerivAt_divWindow (contDiff_zero.mp hf) r κ u).continuousAt)
+  | succ n ih =>
+    intro hf
+    have hfc : Continuous f := hf.continuous
+    have hfn : ContDiff ℝ n f := hf.of_le (by norm_cast; omega)
+    rw [show ((n + 1 : ℕ) : WithTop ℕ∞) = (n : WithTop ℕ∞) + 1 by norm_cast]
+    refine contDiff_succ_iff_deriv.mpr ⟨fun u => (hasDerivAt_divWindow hfc r κ u).differentiableAt,
+      by simp, ?_⟩
+    rw [deriv_divWindow hfc]
+    exact (contDiff_const.mul (ih hfn)).add hfn
+
+theorem contDiff_top_divWindow {f : ℝ → ℂ} (hf : ContDiff ℝ (⊤ : ℕ∞) f) (r : ℝ) (κ : ℂ) :
+    ContDiff ℝ (⊤ : ℕ∞) (divWindow r κ f) :=
+  contDiff_infty.mpr fun n => contDiff_divWindow r κ n (hf.of_le (by exact_mod_cast le_top))
+
+/-- Above and below the support the quotient window vanishes when `f̂(κ) = 0`. -/
+theorem divWindow_eq_zero {r : ℝ} {f : ℝ → ℂ} (hfc : Continuous f) (hfs : tsupport f ⊆ Icc (-r) r)
+    (hr : 0 ≤ r) {κ : ℂ} (hκ : paperFT f κ = 0) {u : ℝ} (hu : r < |u|) : divWindow r κ f u = 0 := by
+  have hhc : Continuous fun s : ℝ => cexp (I * κ * s) * f s :=
+    (contDiff_cexp_mul _).continuous.mul hfc
+  have hhz : ∀ s, r ≤ |s| → cexp (I * κ * s) * f s = 0 := fun s hs => by
+    rw [eq_zero_of_le_abs hfc hfs hs, mul_zero]
+  simp only [divWindow, mul_eq_zero]
+  right
+  rcases lt_abs.mp hu with hpos | hneg
+  · rw [← intervalIntegral.integral_add_adjacent_intervals (b := r) (hhc.intervalIntegrable _ _)
+      (hhc.intervalIntegrable _ _)]
+    rw [intervalIntegral.integral_congr (a := r) (b := u) (g := fun _ => (0 : ℂ))
+      fun s hs => hhz s ?_, intervalIntegral.integral_zero, add_zero]
+    · rw [intervalIntegral.integral_of_le (by linarith),
+        setIntegral_eq_integral_of_forall_compl_eq_zero fun s hs => hhz s ?_]
+      · rw [← hκ, paperFT_def]
+        exact integral_congr_ae (Eventually.of_forall fun s => by ring)
+      · rw [Set.mem_Ioc, not_and_or, not_lt, not_le] at hs
+        rcases hs with hs | hs
+        · exact le_trans (by linarith) (neg_le_abs s)
+        · exact le_trans hs.le (le_abs_self s)
+    · rw [Set.uIcc_of_le hpos.le] at hs
+      exact le_trans hs.1 (le_abs_self s)
+  · rw [intervalIntegral.integral_congr (g := fun _ => (0 : ℂ)) fun s hs => hhz s ?_,
+      intervalIntegral.integral_zero]
+    rw [Set.uIcc_of_ge (by linarith : u ≤ -r)] at hs
+    exact le_trans (by linarith [hs.2]) (neg_le_abs s)
+
+theorem tsupport_divWindow_subset {r : ℝ} {f : ℝ → ℂ} (hfc : Continuous f)
+    (hfs : tsupport f ⊆ Icc (-r) r) (hr : 0 ≤ r) {κ : ℂ} (hκ : paperFT f κ = 0) :
+    tsupport (divWindow r κ f) ⊆ Icc (-r) r := closure_minimal (fun u hu => by
+  by_contra hout
+  apply hu
+  refine divWindow_eq_zero hfc hfs hr hκ ?_
+  by_contra hle
+  push Not at hle
+  exact hout (abs_le.mp hle)) isClosed_Icc
+
+/-- The transform of the quotient window: `f̂(w) = −i(w − κ) ĝ(w)`. -/
+theorem paperFT_divWindow {r : ℝ} {f : ℝ → ℂ} (hf1 : ContDiff ℝ 1 f)
+    (hfs : tsupport f ⊆ Icc (-r) r) (hr : 0 ≤ r) {κ : ℂ} (hκ : paperFT f κ = 0) (w : ℂ) :
+    paperFT f w = -I * (w - κ) * paperFT (divWindow r κ f) w := by
+  have hfc := hf1.continuous
+  have hg1 : ContDiff ℝ 1 (divWindow r κ f) := by exact_mod_cast contDiff_divWindow r κ 1 hf1
+  have hgc : HasCompactSupport (divWindow r κ f) :=
+    isCompact_Icc.of_isClosed_subset (isClosed_tsupport _) (tsupport_divWindow_subset hfc hfs hr hκ)
+  have hfeq : f = fun u => deriv (divWindow r κ f) u + (I * κ) * divWindow r κ f u := by
+    funext u
+    rw [deriv_divWindow hfc]
+    ring
+  rw [hfeq, paperFT_add_smul (hg1.continuous_deriv le_rfl) hgc.deriv hg1.continuous hgc,
+    _root_.RHTower.EvenSector.paperFT_deriv_of_compact hg1 hgc]
+  ring
+
 /-- **Division at a zero of the transform.** -/
 theorem exists_window_div {r : ℝ} {f : ℝ → ℂ} (hf : ApertureWindow r f) {κ : ℂ}
     (hκ : paperFT f κ = 0) :
@@ -65,85 +171,17 @@ theorem exists_window_div {r : ℝ} {f : ℝ → ℂ} (hf : ApertureWindow r f) 
     refine ⟨0, ⟨contDiff_const, by simp⟩, fun w => ?_⟩
     rw [hf0, paperFT_def]
     simp
-  have hE : ∀ c : ℂ, ContDiff ℝ (⊤ : ℕ∞) fun s : ℝ => cexp (c * s) := fun c =>
-    (contDiff_const.mul Complex.ofRealCLM.contDiff).cexp
-  set h : ℝ → ℂ := fun s => cexp (I * κ * s) * f s with hh
-  have hhc : Continuous h := (hE _).continuous.mul hfc
-  have hh2 : ContDiff ℝ 2 h := ((hE _).of_le (by norm_cast)).mul hf.1
-  set F : ℝ → ℂ := fun u => ∫ s in (-r)..u, h s with hF
-  have hFd : ∀ u, HasDerivAt F (h u) u := fun u =>
-    intervalIntegral.integral_hasDerivAt_right (hhc.intervalIntegrable _ _)
-      (hhc.stronglyMeasurableAtFilter _ _) hhc.continuousAt
-  have hderivF : deriv F = h := funext fun u => (hFd u).deriv
-  have hF2 : ContDiff ℝ 2 F := by
-    rw [show (2 : WithTop ℕ∞) = 1 + 1 by norm_num]
-    exact contDiff_succ_iff_deriv.mpr
-      ⟨fun u => (hFd u).differentiableAt, by simp, by rw [hderivF]; exact hh2.of_le (by norm_num)⟩
-  set g : ℝ → ℂ := fun u => cexp (-(I * κ * u)) * F u with hg
-  have hgd : ∀ u, HasDerivAt g (-(I * κ) * g u + f u) u := by
-    intro u
-    have h1 : HasDerivAt (fun u : ℝ => cexp (-(I * κ * u))) (cexp (-(I * κ * u)) * (-(I * κ))) u := by
-      have := (((hasDerivAt_id (u : ℂ)).const_mul (I * κ)).neg.cexp).comp_ofReal
-      refine this.congr_deriv ?_
-      simp
-    refine (h1.mul (hFd u)).congr_deriv ?_
-    simp only [hg, hh]
-    rw [show cexp (-(I * κ * u)) * (cexp (I * κ * u) * f u) =
-      (cexp (-(I * κ * u)) * cexp (I * κ * u)) * f u by ring, ← Complex.exp_add,
-      show -(I * κ * u) + I * κ * u = 0 by ring, Complex.exp_zero, one_mul]
-    ring
-  have hgeq : g = fun u : ℝ => cexp (-(I * κ) * u) * F u := funext fun u => by
-    simp only [hg]; ring_nf
-  have hg2 : ContDiff ℝ 2 g := by
-    rw [hgeq]; exact ((hE _).of_le (by norm_cast)).mul hF2
-  -- `g` vanishes outside `[−r, r]`
-  have hhz : ∀ s, r ≤ |s| → h s = 0 := fun s hs => by
-    simp only [hh, eq_zero_of_le_abs hfc hf.2 hs, mul_zero]
-  have hgout : ∀ u, r < |u| → g u = 0 := by
-    intro u hu
-    simp only [hg, mul_eq_zero]
-    right
-    rcases lt_abs.mp hu with hpos | hneg
-    · -- above the aperture the integral is `f̂(κ) = 0`
-      simp only [hF]
-      rw [← intervalIntegral.integral_add_adjacent_intervals (b := r) (hhc.intervalIntegrable _ _)
-        (hhc.intervalIntegrable _ _)]
-      rw [intervalIntegral.integral_congr (a := r) (b := u) (g := fun _ => (0 : ℂ))
-        fun s hs => hhz s ?_, intervalIntegral.integral_zero, add_zero]
-      · rw [intervalIntegral.integral_of_le (by linarith),
-          setIntegral_eq_integral_of_forall_compl_eq_zero fun s hs => hhz s ?_]
-        · rw [← hκ, paperFT_def]
-          exact integral_congr_ae (Eventually.of_forall fun s => by simp only [hh]; ring)
-        · rw [Set.mem_Ioc, not_and_or, not_lt, not_le] at hs
-          rcases hs with hs | hs
-          · exact le_trans (by linarith) (neg_le_abs s)
-          · exact le_trans hs.le (le_abs_self s)
-      · rw [Set.uIcc_of_le hpos.le] at hs
-        exact le_trans hs.1 (le_abs_self s)
-    · -- below the aperture the integrand vanishes
-      simp only [hF]
-      rw [intervalIntegral.integral_congr (g := fun _ => (0 : ℂ)) fun s hs => hhz s ?_,
-        intervalIntegral.integral_zero]
-      rw [Set.uIcc_of_ge (by linarith : u ≤ -r)] at hs
-      exact le_trans (by linarith [hs.2]) (neg_le_abs s)
-  have hgs : tsupport g ⊆ Icc (-r) r := closure_minimal (fun u hu => by
-    by_contra hout
-    apply hu
-    refine hgout u ?_
-    by_contra hle
-    push Not at hle
-    exact hout (abs_le.mp hle)) isClosed_Icc
-  have hgc : HasCompactSupport g := isCompact_Icc.of_isClosed_subset (isClosed_tsupport g) hgs
-  refine ⟨g, ⟨hg2, hgs⟩, fun w => ?_⟩
-  -- `f = g' + iκg`
-  have hfeq : f = fun u => deriv g u + (I * κ) * g u := by
-    funext u
-    rw [(hgd u).deriv]
-    ring
-  have hg1 : ContDiff ℝ 1 g := hg2.of_le (by norm_num)
-  rw [hfeq, paperFT_add_smul (hg1.continuous_deriv le_rfl) hgc.deriv hg2.continuous hgc,
-    _root_.RHTower.EvenSector.paperFT_deriv_of_compact hg1 hgc]
-  ring
+  refine ⟨divWindow r κ f, ⟨by exact_mod_cast contDiff_divWindow r κ 2 hf.1,
+    tsupport_divWindow_subset hfc hf.2 hr hκ⟩, paperFT_divWindow (hf.1.of_le (by norm_num)) hf.2 hr hκ⟩
+
+/-- **Smooth division.** For a smooth window the quotient window is smooth. -/
+theorem exists_smooth_window_div {r : ℝ} (hr : 0 ≤ r) {f : ℝ → ℂ} (hf : ContDiff ℝ (⊤ : ℕ∞) f)
+    (hfs : tsupport f ⊆ Icc (-r) r) {κ : ℂ} (hκ : paperFT f κ = 0) :
+    ∃ g : ℝ → ℂ, ContDiff ℝ (⊤ : ℕ∞) g ∧ tsupport g ⊆ Icc (-r) r ∧
+      ∀ w, paperFT f w = -I * (w - κ) * paperFT g w :=
+  ⟨divWindow r κ f, contDiff_top_divWindow hf r κ,
+    tsupport_divWindow_subset hf.continuous hfs hr hκ,
+    paperFT_divWindow (hf.of_le (by exact_mod_cast le_top)) hfs hr hκ⟩
 
 /-- **Isolating windows.** A window blind to `Λ` with a simple transform zero at `κ ∈ Λ` divides
 into a window of the same aperture that is blind to `Λ \ {κ}` and sees `κ`. -/

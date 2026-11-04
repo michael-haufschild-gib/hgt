@@ -22,8 +22,7 @@ private theorem sum_Icc_split_one {Q : ℕ} (hQ : 1 ≤ Q) (f : ℕ → ℝ) :
     (∑ m ∈ Icc 1 Q, f m) = f 1 + ∑ m ∈ (Icc 1 Q).filter (fun m => m ≠ 1), f m := by
   have he (m : ℕ) : f m =
       (if m = 1 then f 1 else 0) + (if m ≠ 1 then f m else 0) := by
-    by_cases hm : m = 1 <;> simp only [hm, if_true, if_false, not_true_eq_false, Ne,
-      add_zero, zero_add]
+    by_cases hm : m = 1 <;> simp [hm]
   calc
     _ = (∑ m ∈ Icc 1 Q, if m = 1 then f 1 else 0) +
         ∑ m ∈ Icc 1 Q, if m ≠ 1 then f m else 0 := by

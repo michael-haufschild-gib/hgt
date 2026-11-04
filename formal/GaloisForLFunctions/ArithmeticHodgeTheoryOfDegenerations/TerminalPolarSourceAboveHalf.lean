@@ -64,8 +64,8 @@ theorem complete_terminal_pole_pair_eq_channels {φ h : ℝ → ℝ}
   have he := sqrt_log_mul_terminal_row_pair hL u
     (actualExteriorDownwardRow (atomDilate φ (c / N)) N 1)
   change Real.sqrt (Real.log N) * ⟪normalizedExteriorDownwardVector φ c N 1, x⟫ = _ at he
-  have hnear := sqrt_log_mul_terminal_nearCenter_pair (m := 1) one_pos hL u
-  have hfar := sqrt_log_mul_terminal_separatedCross_pair (m := 1) one_pos hL u
+  have hnear := sqrt_log_mul_terminal_nearCenter_pair (φ := φ) (c := c) (m := 1) one_pos hL u
+  have hfar := sqrt_log_mul_terminal_separatedCross_pair (φ := φ) (c := c) (m := 1) one_pos hL u
   have hfull := sqrt_log_mul_terminal_fullCenter_pair hL (completeWeilPoleShift φ c) u
   have hup := sqrt_log_mul_terminal_upward_pair hφ hsupp hM hc hN (m := 1) one_pos u
   have hone : ramanujanLagCoefficient 1 = fun _ => (1 : ℝ) :=
@@ -76,7 +76,7 @@ theorem complete_terminal_pole_pair_eq_channels {φ h : ℝ → ℝ}
     (completeWeilMatrix_ramanujan_eq_terminal_channels hφ hsupp hM hc hN1 (m := 1) one_pos)
   simp only [Nat.totient_one, Nat.cast_one, Real.sqrt_one, inv_one, one_smul] at hall
   rw [normalizedFullNearGammaDownwardVector_eq_sub hφ hsupp hc N 1] at hall
-  simp only [real_inner_add_left, real_inner_sub_left, real_inner_neg_left,
+  simp only [inner_add_left, inner_sub_left, inner_neg_left,
     mul_add, mul_sub, mul_neg] at hall
   rw [hn, he, hnear, hfar, hfull, hup] at hall
   simp only [hx]
@@ -86,7 +86,7 @@ theorem complete_terminal_pole_pair_eq_channels {φ h : ℝ → ℝ}
           x⟫) / c := by ring
     _ = _ := by
       rw [hall]
-      simp only [real_inner_sub_left]
+      simp only [inner_sub_left]
       unfold terminalPolarGammaCenterPair completeWeilPoleShift
       dsimp only [u]
       field_simp [hc.ne', hM.ne'] <;> ring

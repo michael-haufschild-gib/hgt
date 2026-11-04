@@ -27,6 +27,17 @@ def terminalPoleResidual (c : ℝ) (N : ℕ) : EuclideanSpace ℝ (PrimeHorizonI
       (normalizedRamanujanHorizonVector 1 N) -
     completedConductorEnergy tiltedUnitSpline c 1 • normalizedRamanujanHorizonVector 1 N
 
+/-- Moving the lower collar endpoint down can only increase its dual quadratic mass. -/
+theorem topCollarDualSeventhMass_antitone {M₁ M₂ N : ℕ} (hM : M₁ ≤ M₂)
+    (u : EuclideanSpace ℝ (PrimeHorizonIndex N)) :
+    topCollarDualSeventhMass M₂ N u ≤ topCollarDualSeventhMass M₁ N u := by
+  apply sum_le_sum_of_subset_of_nonneg
+  · intro n hn
+    obtain ⟨hlo, hhi⟩ := mem_Ioc.mp hn
+    exact mem_Ioc.mpr ⟨hM.trans_lt hlo, hhi⟩
+  · intro n _ _
+    exact mul_nonneg (by positivity) (sq_nonneg _)
+
 private theorem window_extension_eq_terminal (h : ℝ → ℝ) {N n : ℕ}
     (hN : 1 ≤ N) (hn : n ∈ Icc 1 N) :
     primeHorizonExtension (horizonProfileVector (horizonWeights h N) N) n =
@@ -129,7 +140,7 @@ theorem tendsto_terminalPoleResidual_witness
     (criticalCurve_facts hc hR hcrit).1
   have ht := (tendsto_complete_terminalPolarWitness hc hR hcrit).sub hd
   simp only [sub_zero] at ht
-  exact ht.congr fun N => by rw [terminalPoleResidual, real_inner_sub_left, mul_sub]
+  exact ht.congr fun N => by rw [terminalPoleResidual, inner_sub_left, mul_sub]
 
 /-- The actual dual collar loss has a quadratic lower bound in the critical ratio,
 with one positive constant independent of that ratio and of its critical clock. -/
@@ -205,7 +216,34 @@ theorem exists_intrinsic_critical_pole_collar_cost :
       mul_le_mul_of_nonneg_left hratioSq (by positivity)
     _ ≤ _ := hfinal
 
+/-- The same intrinsic cost occurs at the actual linear-defect collar cutoff. -/
+theorem exists_intrinsic_critical_pole_linear_collar_cost :
+    ∃ κ : ℝ, 0 < κ ∧ ∀ {c : ℕ → ℝ}, (∀ N, 1 ≤ c N) →
+      ∀ {R : ℝ}, 0 < R →
+        Tendsto (fun N : ℕ => c N ^ 8 / Real.log N) atTop (𝓝 R) →
+        ∀ᶠ N : ℕ in atTop,
+          κ * R ^ 2 ≤ c N ^ 7 / Real.log N *
+            (topCollarDualSeventhMass (N / linearDefectCutoff (c N)) N
+                (terminalPoleResidual (c N) N) /
+              completedConductorEnergy tiltedUnitSpline (c N) 1) := by
+  obtain ⟨κ, hκ, hcost⟩ := exists_intrinsic_critical_pole_collar_cost
+  refine ⟨κ, hκ, ?_⟩
+  intro c hc R hR hcrit
+  filter_upwards [hcost hc hR hcrit, eventually_ge_atTop 1] with N hN hN1
+  have hcut3 := (linearDefectCutoff_bounds (hc N)).1
+  have hcut : N / linearDefectCutoff (c N) ≤ N / 2 :=
+    Nat.div_le_div_left (by omega : 2 ≤ linearDefectCutoff (c N)) (by norm_num)
+  have hE0 : 0 ≤ completedConductorEnergy tiltedUnitSpline (c N) 1 :=
+    completedConductorEnergy_nonneg contDiff_tiltedUnitSpline tiltedUnitSpline_eq_zero
+      integral_tiltedUnitSpline_sq_pos (zero_lt_one.trans_le (hc N)) one_pos
+  have hL0 : 0 ≤ Real.log (N : ℝ) := Real.log_nonneg (by exact_mod_cast hN1)
+  exact hN.trans (mul_le_mul_of_nonneg_left
+    (div_le_div_of_nonneg_right
+      (topCollarDualSeventhMass_antitone hcut _) hE0)
+    (div_nonneg (pow_nonneg (zero_lt_one.trans_le (hc N)).le 7) hL0))
+
 end GaloisForLFunctions.CriticalArithmeticCorrelationTheory
 
 #print axioms GaloisForLFunctions.CriticalArithmeticCorrelationTheory.tendsto_terminalPoleResidual_witness
 #print axioms GaloisForLFunctions.CriticalArithmeticCorrelationTheory.exists_intrinsic_critical_pole_collar_cost
+#print axioms GaloisForLFunctions.CriticalArithmeticCorrelationTheory.exists_intrinsic_critical_pole_linear_collar_cost

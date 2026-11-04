@@ -189,6 +189,8 @@ has square at most
 `2 sourceBound(m)²+2 primeActivityMass(m)·m(log m+tameDifferent m)`.
 Harmonic centering leaves both sides unchanged. This separates the transported
 prime charge from a remainder paid by the small prime input.
+`CoprimePrimeChargeTail` proves this exact decomposition and bound;
+individual check and standard-only transitive axiom audit pass; integrated.
 
 `CommonPrimeFibrePackets` synthesizes a finite prescribed receiving vector
 using this common exclusion, followed by one global harmonic centering;
@@ -222,12 +224,15 @@ axioms and integrated.
 `CoprimePrimeChargeCompleteEnergy` transfers the raw limit to the literal
 complete form and proves vanishing physical energy, input and adjunction;
 checked with standard-only transitive axioms and integrated.
+`CoprimePrimeChargeMixedLimits` proves that the full mixed remainder tends
+to zero against every unit neutral receiver at each fixed polynomial ratio;
+individual check and standard-only transitive axiom audit pass; integrated.
 Written, checks pending:
 `CoprimePrimeChargeWindows`, `CoprimePrimeChargeLogWindows`,
-`CoprimePrimeChargeWindowScales`, `CoprimePrimeChargeTail`, `CoprimePrimeChargeTailMass`,
+`CoprimePrimeChargeWindowScales`, `CoprimePrimeChargeTailMass`,
 `CoprimePrimeChargeTailPairing`, `CoprimePrimeChargeTailLimits`, `CoprimePrimeChargeTailNorms`,
-`CoprimePrimeChargeTailVectors`, `CoprimePrimeChargeSignedReceiver`,
-`CoprimePrimeChargeMixedLimits`. These include the full raw limit
+`CoprimePrimeChargeTailVectors`, `CoprimePrimeChargeSignedReceiver`.
+These include the full raw limit
 `t²(d/a−1/2)`, vanishing physical complete energy and adjunction, and the
 fixed-mode terminal projection bound and the diagonal signed complement law
 `⟨Wv_m,r_l⟩→δ_ml t/80`. Finite-fibre polarization remains to be assembled;
@@ -424,13 +429,23 @@ near-row, center and separated-cross terms retain negative powers of `L`.
 with the exact moments `Σ|a_m|m²` and `Σ|a_m|m⁵`, then retains the polarized
 harmonic Gram error. It also bounds the coherent nonpolar completed
 diagonal by `(|selfφ(1)|+3)(t/B_Q)²(S_Q+B_Q)`, uniformly in overlap
-and horizon. Its source is pending verification.
+and horizon. Individual check and standard-only transitive axiom audit
+pass; integrated.
 The completed energies are nonnegative, including conductor one, and
 their logarithmic upper bound is uniform in `c≥1`. Consequently the
 remaining polar diagonal costs at most `(|selfφ(1)|+3)a_1²`; no growing
 overlap factor is needed in the small-cutoff diagonal.
 `PrimeChargeCompletedDiagonal` contains this full diagonal bound and the
 coefficient-square bound `Σa_m²≤a_pole_bound²+(t/B_Q)²S_Q`; check pending.
+The three proposed regime bounds admit one decaying envelope
+`C[f(Q)+g(N)]`, with
+`f(Q)=1/B_Q+S_Q/B_Q+(log Q)^(3/8)(1+log Q)(t/B_Q)²(4S_Q²+2S_Q)`
+and `g(N)=(1+log log N)²/(log N)^(1/8)+(log N)^4/N^(1/4)`.
+For sufficiently large `Q≤N`, `B_Q≥1`, `S_Q≤B_Q`, `log Q≤2B_Q`,
+and `|a_1|≤9|t|/log N`. Cauchy–Schwarz improves the small-packet
+coefficient moments to `(Σ|a_m|m^k)²≤Q^(2k+1)Σa_m²`.
+Both envelopes tend to zero by the checked prime-scale limits; the finite
+three-regime domination remains to be formalized.
 The relevant public center and cross bounds are
 `abs_fullWeilCenterMatrix_self_inner_le_of_mem_conductorSubspace` and
 `abs_separatedCrossErrorMatrix_inner_le_of_mem_conductorSubspace`.

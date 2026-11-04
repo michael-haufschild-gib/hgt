@@ -9,7 +9,32 @@ import Mathlib.Topology.Instances.Matrix
 /-!
 # The continuum canonical system of a bump is its jet Hankel system
 
-DRAFT
+For a smooth compactly supported bump `φ` and a step `h`, the lattice window of `n` sites is the
+Toeplitz matrix `T_n(h) = [κ_h(i − j)]`, `κ_h(d) = W(φ, φ(· + dh))`, with Levinson margins
+`E_n(φ, h)` (GWZ). As `h → 0` the lattice data coalesce; the continuum invariant is the rescaled
+system, and it is the Hankel system of the jets of `φ`, at every order, with no hypothesis on the
+zeros.
+
+* **Weil continuity** (`abs_weilPair_le`, `tendsto_weilPair_add`). On tests supported in `[−R, R]`,
+  `|W(a, b)| ≤ 2K_R‖a‖‖b‖` for the Weil norm `‖a‖² = ‖a‖₂² + levyEnergy a + ‖a‖₁²`, and the jet
+  errors `Δ_h^kφ/h^k − φ^{(k)}` vanish in it (`tendsto_weilNormSq_jetError`).
+* **The lattice determinant in jet coordinates** (`det_latticeToeplitz_eq`): the forward differences
+  are a unimodular change of basis, so `det T_n(h) = h^{n(n−1)} det[W(Δ_h^iφ/h^i, Δ_h^jφ/h^j)]`.
+* **Birth of the lattice determinant** (`tendsto_det_latticeToeplitz`):
+  `h^{−n(n−1)} det T_n(h) → det J_n`, `J_n = [W(φ^{(i)}, φ^{(j)})]_{i,j<n}`.
+* **The margins** (`tendsto_levinsonErr_div_pow`). One Levinson step is one bordered determinant,
+  `E_n det T_n = det T_{n+1}` (`det_latticeToeplitz_succ`, `levinsonErr_mul_det`); if
+  `det J_1, …, det J_{n+1} ≠ 0`, then `h^{−2n}E_n(φ, h) → det J_{n+1}/det J_n`, the residual of
+  `φ^{(n)}` against the lower jets.
+* **The jet Gram is Hankel** (`weilPair_deriv_left`, `weilPair_iteratedDeriv_eq`,
+  `weilPair_iteratedDeriv_eq_zero_of_odd`). Differentiation is skew for `W` (translation
+  invariance), so `W(φ^{(i)}, φ^{(j)}) = (−1)^i W(φ, φ^{(i+j)})`, zero for `i + j` odd: `J` is the
+  signed Hankel matrix of the jet energies `s_m = W(φ^{(m)})`.
+* **The first margin** (`tendsto_levinsonErr_one_div_sq'`): `h^{−2}E_1(φ, h) → W(φ')`.
+
+Under RH `s_m = Σ_ρ m_ργ_ρ^{2m}|φ̂(γ_ρ)|²` (GWZ), so the limit is the Hankel (Jacobi) system of the
+zero measure of `φ`; unconditionally it is the Hankel system of the jet energies. For an even bump
+the odd jets are odd tests: the margin of order `n` reads the parity sector of `n`.
 -/
 
 open MeasureTheory Set Filter Topology
@@ -1127,6 +1152,24 @@ theorem tendsto_levinsonErr_one_div_sq' (hφ : ContDiff ℝ ∞ φ) (hφc : HasC
   have := tendsto_levinsonErr_div_pow hφ hφc 1 hJ
   rw [hJ2, hJ1, mul_div_cancel_left₀ _ h0] at this
   simpa using this
+
+/-- **The continuum canonical system of a bump is its jet Hankel system.** For a smooth compactly
+supported `φ`: the lattice determinants are born at order `h^{n(n−1)}` with the jet Gram
+determinants; the lattice margins satisfy `h^{−2n}E_n → det J_{n+1}/det J_n` whenever the jet
+minors do not vanish; and the jet Gram is the signed Hankel matrix of the jet energies. -/
+theorem theContinuumCanonicalSystemIsTheJetHankelSystem (hφ : ContDiff ℝ ∞ φ)
+    (hφc : HasCompactSupport φ) :
+    (∀ n : ℕ, Tendsto (fun h => (latticeToeplitz (weilSeq φ h) n).det / h ^ (n * (n - 1)))
+      (𝓝[>] 0) (𝓝 (jetGram φ n).det)) ∧
+    (∀ n : ℕ, (∀ k ≤ n, (jetGram φ (k + 1)).det ≠ 0) →
+      Tendsto (fun h => levinsonErr (weilSeq φ h) n / h ^ (2 * n)) (𝓝[>] 0)
+        (𝓝 ((jetGram φ (n + 1)).det / (jetGram φ n).det))) ∧
+    (∀ i j : ℕ, weilPair (iteratedDeriv i φ) (iteratedDeriv j φ) =
+      (-1) ^ i * weilPair φ (iteratedDeriv (i + j) φ)) ∧
+    (∀ i j : ℕ, Odd (i + j) → weilPair (iteratedDeriv i φ) (iteratedDeriv j φ) = 0) :=
+  ⟨tendsto_det_latticeToeplitz hφ hφc, tendsto_levinsonErr_div_pow hφ hφc,
+    weilPair_iteratedDeriv_eq hφ hφc, fun _ _ h => weilPair_iteratedDeriv_eq_zero_of_odd hφ hφc h⟩
+
 
 end GaloisForLFunctions.SignedWindowCriticality
 

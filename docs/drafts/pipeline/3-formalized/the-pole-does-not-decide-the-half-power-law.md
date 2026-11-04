@@ -4,7 +4,9 @@
 - **Stage:** 3-formalized
 - **Type:** THEOREM (Lean)
 - **Source:** `docs/reports/review-0311/fable.md` §5.4; loop card `1-in-progress/fable-0311-q4-breakthrough-questions.md`
-- **Statement:** The pole-subtracted exponent of the prime source ranges over exactly `[Θ, 1]` on
+- **Statement:** The flip points `x_θ` carry the pole of the trivial point and have Möbius exponent
+  exactly `max(θ, Θ)`, unconditionally; for `θ > 1/2` they violate the Möbius half-power law. The
+  pole-subtracted exponent of the prime source ranges over exactly `[Θ, 1]` on
   the gauge torus, minimized at the trivial point; RH iff the range is `[1/2, 1]`. For `0 < θ < 1` let `x_θ` be the gauge point with `χ(p) = −1` on the first
   `⌊4^{θk}⌋` primes of each octave `(4^k, 2·4^k]` and `χ(p) = 1` elsewhere. Then `x_θ` carries the
   pole of the trivial point up to `(N+1)^b` for every `b > θ` (so `ψ_{x_θ}(N)/N → 1`); below `θ` the
@@ -17,7 +19,11 @@
 ## Answer to §5.4
 
 §5.4 asks to prove the half-power law at `x = 0` from a property of the pole alone. This is
-impossible: every property that holds at all gauge points carrying the pole of `0` up to precision
+impossible, in both forms of the law. **Möbius form** (`GaugeHalfPowerLaw moebiusSource`): for
+`1/2 < b < 1`, a property holding at every point that carries the pole of `0` up to `(N+1)^b` does not
+imply the Möbius half-power law (`moebius_halfPowerLaw_not_decided_by_pole`), because the flip point
+`x_θ`, `1/2 < θ < b`, carries that pole and has Möbius exponent `max(θ, Θ) ≥ θ > 1/2`
+(`gaugeExponent_moebius_flipPoint`), unconditionally. **Prime-source form:** every property that holds at all gauge points carrying the pole of `0` up to precision
 `N^b` (`b < 1`) fails to imply the pole-subtracted power law of any exponent `a < b`
 (`no_pole_property_implies_powerLaw`). The flip points `x_θ` have the pole of `0` (same residue,
 difference `O(N^θ log N)`) and, under RH, pole-subtracted exponent `θ` for every `θ ∈ (1/2, 1)`.
@@ -69,6 +75,19 @@ Write `ψ_y(N) = Σ_{n≤N} Λ(n)χ_y(n)`, `S_θ = ⋃_k F_k` the flip primes.
     `a < 1` would give `N ≤ K(N+1)^{max(a,3/4)}`, false. With step 8 the range of `E` is `[Θ, 1]`;
     RH iff `Θ = 1/2` iff the range is `[1/2, 1]`.
 
+11. **Möbius exponent of `x_θ`.** Let `f = μχ`, `b = f * 1`: multiplicative with `b(p^k) = 1 − χ(p)`
+    (`2` on flip primes, `0` elsewhere), so `b ≥ 0`. Euler product: `Σ_k b(p^k)p^{−kσ} =
+    1 + c_p r/(1−r) ≤ exp(c_p r/(1−r))`, `r = p^{−σ}`, and `Σ_{p flip} p^{−σ} ≤ (1 − 4^{θ−σ})^{−1}`
+    for `σ > θ`; hence `Σ b(n)n^{−σ} < ∞` for `σ > θ`, while full blocks give `Σ_{p ∈ F_k} p^{−θ} ≥
+    2^{−θ}/2`, so `Σ_{p flip} p^{−θ} = ∞`. If `|Σ_{n≤N} f(n)| ≤ C(N+1)^a`, `a < θ`, then
+    `D(s) = Σ f(n)n^{−s}` converges and is holomorphic on `Re s > c`, `a < c < θ` (Abel summation);
+    on `Re s > 1`, `D = L(f)` and `ζD = L(b)`. Both sides are holomorphic on the connected open set
+    `{θ < Re s < 1} ∪ {θ < Re s, Im s > 0} ∪ {Re s > 1}`, which avoids `s = 1`, so `ζ(σ)D(σ) = L(b)(σ)`
+    for real `σ ∈ (θ, 1)`. As `σ ↓ θ`, the left side stays near `ζ(θ)D(θ)`, the right side exceeds
+    `Σ_{p ∈ F} p^{−σ}` for any finite set `F` of flip primes: contradiction. So `θ_μ(x_θ) ≥ θ`. Sparse
+    invariance of the exponent (both directions, `x_θ` and `0` agree off the flip primes) gives
+    `θ_μ(x_θ) ≤ max(θ, Θ)` and `Θ ≤ max(θ, θ_μ(x_θ))`; with `θ_μ(0) = Θ`, `θ_μ(x_θ) = max(θ, Θ)`.
+
 ## Lean
 
 `formal/GaloisForLFunctions/ArithmeticGaugeTheory/ThePoleDoesNotDecideTheHalfPowerLaw.lean`:
@@ -92,12 +111,23 @@ Write `ψ_y(N) = Σ_{n≤N} Λ(n)χ_y(n)`, `S_θ = ⋃_k F_k` the flip primes.
 **`riemannHypothesis_iff_poleSubtractedExponent_zero`**,
 **`riemannHypothesis_iff_range_poleSubtractedExponent`**.
 
-Both modules checked with `lake --old env lean` (no errors, no warnings); transitive axioms of
+`formal/GaloisForLFunctions/ArithmeticGaugeTheory/TheFlipPointsBreakTheMoebiusHalfPowerLaw.lean`:
+`twist_flipPoint_eq_ofReal_re`, `flipTwist`, `flipMoebius`, `flipDivisorSum`,
+`flipDivisorSum_prime_pow`, `flipDivisorSum_eq_ofReal`, `sum_rpow_le_of_subset_flipPrimes`,
+`exists_sum_flipPrimes_rpow_gt`, `flipDivisorTerm`, `flipDivisorSeries_summable`,
+`LSeriesSummable_flipDivisorSum`, **`not_gaugePowerBound_moebius_flipPoint`**,
+**`gaugeExponent_moebius_flipPoint`**, **`gaugeExponent_moebius_flipPoint_of_le`**,
+**`not_gaugeHalfPowerLaw_moebius_flipPoint`**, `Ico_subset_range_gaugeExponent_moebius`,
+`riemannHypothesis_Ico_subset_range_gaugeExponent_moebius`,
+**`moebius_halfPowerLaw_not_decided_by_pole`**.
+
+All three modules checked with `lake --old env lean` (no errors, no warnings); transitive axioms of
 `pole_does_not_decide_powerLaw`, `no_pole_property_implies_powerLaw`,
 `riemannHypothesis_flipPoint_exponent`, `tendsto_twistedPsi_flipPoint_div`,
 `poleSubtractedExponent_flipPoint`, `riemannHypothesis_poleSubtractedExponent_spectrum`,
 `range_poleSubtractedExponent`, `riemannHypothesis_iff_range_poleSubtractedExponent`,
-`poleSubtractedExponent_zero_le`: `propext`,
+`poleSubtractedExponent_zero_le`, `gaugeExponent_moebius_flipPoint`,
+`gaugeExponent_moebius_flipPoint_of_le`, `moebius_halfPowerLaw_not_decided_by_pole`: `propext`,
 `Classical.choice`, `Quot.sound`. Wired into `ArithmeticGaugeTheory.lean`.
 
 ## Log

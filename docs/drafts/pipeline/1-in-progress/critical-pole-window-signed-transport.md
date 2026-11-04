@@ -372,11 +372,11 @@ The critical clock implies c_N log(c_N)/N→0, so the checked joint
 near-center rate applies. The signed Gamma constant and near-log mean
 cancel exactly as stated above. This restriction therefore has no
 remaining analytic input in its paper proof. Its finite channel
-identity and supporting limits have passed their Lean audits; the
-combined endpoint still needs verification.
-`TerminalPolarSourceAboveHalf.lean` contains the exact assembly and
-limiting statement. Neither endpoint has passed Lean yet. This does
-not settle general terminal support or the nonpolar complete source.
+identity and supporting limits have passed their Lean audits.
+`TerminalPolarSourceAboveHalf.lean` proves the exact assembly and
+limiting statement; both endpoints pass their actual-path audit with
+exactly `[propext, Classical.choice, Quot.sound]`. This does not settle
+general terminal support or the nonpolar complete source.
 
 The restricted source has an explicit nonzero paper witness. Take
 `δ=127/128`, `η=255/256`,

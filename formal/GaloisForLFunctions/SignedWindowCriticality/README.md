@@ -262,6 +262,14 @@ to be judged by the rate it controls.
     source, not yet dependency-closed (CACT). The sign therefore lives in the Schur form of the
     conductor block against the complement as the cutoff grows, and in the charges of mechanism 11.
 
+15. **The continuum canonical system is the jet Hankel system.** Forward differences are a
+    unimodular change of basis of a lattice window, so `det T_n(h) = h^{n(n−1)}` times the Gram
+    determinant of `Δ_h^iφ/h^i`, which converge to the jets in the Weil norm. Hence the lattice
+    data, which coalesce as `h → 0`, have rescaled limits: `h^{−2n}E_n(φ, h) → det J_{n+1}/det J_n`,
+    `J = [W(φ^{(i)}, φ^{(j)})]`. Translation invariance makes `d/dx` skew for `W`, so `J` is the signed
+    Hankel matrix of `s_m = W(φ^{(m)})`; for an even bump the odd jets are odd tests, and the order-`n`
+    margin reads the parity sector of `n` (the derivative ladder between the sectors).
+
 ## 5. Questions
 
 | Question (review-0311 §2.7, §2.8) | Status |
@@ -316,6 +324,11 @@ to be judged by the rate it controls.
   even profile, each shift splits as twice the same-side jumps minus the anti-diagonal jumps, and
   the archimedean part of `J_{Φω}` folds to `2∫∫(ω(s) − ω(s + 2x))J_s(x) ≥ 0`.
 
+- Weil-norm calculus: on tests supported in `[−R, R]`, `|W(a, b)| ≤ 2K_R‖a‖‖b‖` for
+  `‖a‖² = ‖a‖₂² + levyEnergy a + ‖a‖₁²`; difference quotients converge to jets in this norm;
+  differentiation is `W`-skew; the mean value theorem for iterated forward differences; the
+  Levinson step as a bordered determinant.
+
 **To be developed here.**
 - Mixed-pairing calculus: bounds on `W(τ_εu, v)` whose premises are positivity on the shorter
   window and arithmetic; the collar Hankel form on reflection-paired data.
@@ -366,8 +379,10 @@ and 10 are structural.
    charges survive vanishing energy; the term that pays.
 9. The Schur form of the conductor block against the complement at the critical curve as the
    cutoff grows; dependency closure of the critical-multiple capstone.
-10. The continuum canonical system of a bump: the Hankel system of the zero measure, of which the
-    lattice jet system gives the first terms.
+10. The jet Hankel system of a bump. The continuum limit of the lattice canonical system is the
+    Hankel system of the jet energies `s_m = W(φ^{(m)})` (proved, unconditional; under RH the moments
+    of the zero measure). Open: its positivity as a receiver (the Stieltjes property of `(s_m)` on a
+    window) and which bumps' jet systems see an off-line zero.
 11. Rate certificates: estimates landing on the spline-orbit or tensor-loss receivers, where
     constants are free.
 
@@ -396,6 +411,7 @@ and 10 are structural.
 | The odd light cone in the Doob gauge: per-shift split into same-side and anti-diagonal jumps; the archimedean part is a nonnegative folded form | `integral_signedShiftJump_eq_split_of_odd`, `integral_arch_mul_gaugeJumpProfile_eq_fold_of_odd`, `integral_arch_mul_gaugeJumpProfile_nonneg_of_odd` | unconditional |
 | The collar ratio is sharp: the Legendre gap is the infimum on admissible odd profiles; the collar of prime `3` does not pay its own frustration | `regionalLogEnergy_le_of_layer`, `abs_regionalLogPair_le`, `exists_odd_profile_ratio_lt`, `two_mul_collarLevyEnergy_le`, `exists_kick_add_collarLevyEnergy_neg`, `exists_prime_three_collar_unpaid` | unconditional |
 | Weil's form is ACT's full zero form; on a nonnegative symmetric window the band holds, and a tight band has a reflection-pair zero mode with pole-charged harmonic gauge | `fullZeroForm_eq_weilQuad`, `abs_coupling_le_weilQuad_of_window`, `zeroMode_of_tight_band_even`, `zeroMode_of_tight_band_odd`, `zeroMode_of_tight_band` | unconditional |
+| The continuum canonical system of a bump is its jet Hankel system: the lattice determinant is born at order `h^{n(n−1)}` with the jet Gram, the margins satisfy `h^{−2n}E_n → det J_{n+1}/det J_n`, and `J_{ij} = (−1)^iW(φ, φ^{(i+j)})`, zero for `i + j` odd | `det_latticeToeplitz_eq`, `tendsto_det_latticeToeplitz`, `det_latticeToeplitz_succ`, `levinsonErr_mul_det`, `tendsto_levinsonErr_div_pow`, `weilPair_deriv_left`, `weilPair_iteratedDeriv_eq`, `weilPair_iteratedDeriv_eq_zero_of_odd`, `tendsto_levinsonErr_one_div_sq'`, `theContinuumCanonicalSystemIsTheJetHankelSystem` | unconditional |
 
 ## 9. Traps
 

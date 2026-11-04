@@ -33,6 +33,7 @@ import GaloisForLFunctions.ArithmeticGaugeTheory.TheExponentIsInvariantOnSparseP
 import GaloisForLFunctions.ArithmeticGaugeTheory.AnExplicitPointHasExponentOneHalf
 import GaloisForLFunctions.ArithmeticGaugeTheory.ThePoleDoesNotDecideTheHalfPowerLaw
 import GaloisForLFunctions.ArithmeticGaugeTheory.ThePoleSubtractedSpectrumIsAnInterval
+import GaloisForLFunctions.ArithmeticGaugeTheory.TheFlipPointsBreakTheMoebiusHalfPowerLaw
 
 /-!
 # Arithmetic Gauge Theory of the ring ℤ
@@ -69,6 +70,7 @@ Krein–Langer index at most one; below overlap two the shells have no conductor
 of the trivial point keep its pole while moving its pole-subtracted prime exponent to any
 `θ ∈ (1/2, 1)`, so the pole does not decide the half-power law; the pole-subtracted exponent of the
 prime source ranges over exactly `[Θ, 1]`, minimized at the trivial point, and RH is the range
-`[1/2, 1]`. See
+`[1/2, 1]`; the flip points have Möbius exponent exactly `max(θ, Θ)`, so they carry the pole and
+violate the Möbius half-power law for `θ > 1/2`. See
 `ArithmeticGaugeTheory/README.md`.
 -/

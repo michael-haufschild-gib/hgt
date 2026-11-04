@@ -89,9 +89,10 @@ theorem normalizedMode_upward_head_sq_le {m : ℕ} (hm : 0 < m) (Y n : ℕ) :
       (normalizedRamanujanMode m (k * n) - normalizedRamanujanMode m n)) ^ 2 ≤
         primeActivityMass m * ((m : ℝ) * (Real.log m + tameDifferent m)) := by
   let a : ℕ → ℝ := fun d => if d = m then 1 else 0
+  have hmI : m ∈ Icc 1 m := mem_Icc.mpr ⟨hm, le_rfl⟩
   have hpacket (j : ℕ) : normalizedConductorPacket m a j = normalizedRamanujanMode m j := by
     simp only [normalizedConductorPacket, a, ite_mul, one_mul, zero_mul,
-      sum_ite_eq', if_pos (mem_Icc.mpr ⟨hm, le_rfl⟩)]
+      sum_ite_eq', if_pos hmI]
   have h := primeHead_value_sq_le m a (Icc 1 Y) n
   simp only [hpacket] at h
   exact h.trans (mul_le_mul_of_nonneg_left (normalizedMode_upward_square_le hm Y n)

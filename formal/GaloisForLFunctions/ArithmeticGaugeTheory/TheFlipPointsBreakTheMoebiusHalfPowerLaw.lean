@@ -273,8 +273,8 @@ theorem flipDivisorTerm_prime_pow {θ σ : ℝ} {p : ℕ} (hp : p.Prime) (k : �
       if k = 0 then 1 else (if p ∈ flipPrimes θ then 2 else 0) * ((p : ℝ) ^ (-σ)) ^ k := by
   rcases eq_or_ne k 0 with rfl | hk
   · simp [flipDivisorTerm_apply, (isMultiplicative_flipDivisorSum θ).map_one]
-  rw [if_neg hk, flipDivisorTerm_apply, flipDivisorSum_prime_pow hp hk, one_sub_twist_flipPoint hp, Complex.ofReal_re, Nat.cast_pow,
-    ← Real.rpow_pow_comm (Nat.cast_nonneg p)]
+  rw [if_neg hk, flipDivisorTerm_apply, flipDivisorSum_prime_pow hp hk, one_sub_twist_flipPoint hp,
+    Complex.ofReal_re, Nat.cast_pow, ← Real.rpow_pow_comm (Nat.cast_nonneg p)]
 
 /-- **`Σ b(n) n^{−σ}` converges for `σ > θ`.** -/
 theorem flipDivisorSeries_summable {θ σ : ℝ} (hθ : 0 ≤ θ) (hσ : θ < σ) :
@@ -561,6 +561,19 @@ theorem not_gaugeHalfPowerLaw_moebius_flipPoint {θ : ℝ} (hθ : 1 / 2 < θ) (h
     (by linarith) hθ1]
   intro h
   linarith [le_max_left θ RHTower.zetaZeroAbscissa]
+
+/-- **The Möbius spectrum contains `[Θ, 1)`**, each value attained by a flip point. -/
+theorem Ico_subset_range_gaugeExponent_moebius :
+    Set.Ico RHTower.zetaZeroAbscissa 1 ⊆ Set.range (gaugeExponent moebiusSource) :=
+  fun θ ⟨h0, h1⟩ => ⟨flipPoint θ, gaugeExponent_moebius_flipPoint_of_le h0 h1⟩
+
+/-- Under RH every value in `[1/2, 1)` is the Möbius exponent of a point carrying the pole of `0`. -/
+theorem riemannHypothesis_Ico_subset_range_gaugeExponent_moebius (hRH : RiemannHypothesis) :
+    Set.Ico (1 / 2) 1 ⊆ Set.range (gaugeExponent moebiusSource) := by
+  have hΘ : RHTower.zetaZeroAbscissa ≤ 1 / 2 := by
+    rw [← gaugeExponent_moebius_trivial]
+    exact riemannHypothesis_iff_gaugeExponent_moebius_trivial_le_half.mp hRH
+  exact fun θ hθ => Ico_subset_range_gaugeExponent_moebius ⟨hΘ.trans hθ.1, hθ.2⟩
 
 /-! ### The answer -/
 
