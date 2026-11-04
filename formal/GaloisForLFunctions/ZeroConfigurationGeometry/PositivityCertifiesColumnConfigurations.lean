@@ -179,9 +179,10 @@ theorem re_eq_half_of_re_W_nonneg_of_curve_columns {Z : ZeroConfig} {g : ℕ} {q
   set ν : Fin (2 * g) → ℤ → ℂ := fun j k =>
     (((θ j + 2 * π * k) / Real.log q : ℝ) : ℂ) - I * δ j with hνdef
   have hν : ∀ j ∈ (Finset.univ : Finset (Fin (2 * g))), ∀ k : ℤ,
-      ‖ν j k - k * (2 * π / Real.log q)‖ ≤ |θ j| / Real.log q + 1 / 2 := by
+      ‖ν j k - k * ((2 * π / Real.log q : ℝ) : ℂ)‖ ≤ |θ j| / Real.log q + 1 / 2 := by
     intro j _ k
-    have e : ν j k - k * (2 * π / Real.log q) = ((θ j / Real.log q : ℝ) : ℂ) - I * δ j := by
+    have e : ν j k - k * ((2 * π / Real.log q : ℝ) : ℂ) =
+        ((θ j / Real.log q : ℝ) : ℂ) - I * δ j := by
       simp only [hνdef]; push_cast; field_simp; ring
     rw [e]
     calc ‖((θ j / Real.log q : ℝ) : ℂ) - I * δ j‖
@@ -200,7 +201,6 @@ theorem re_eq_half_of_re_W_nonneg_of_curve_columns {Z : ZeroConfig} {g : ℕ} {q
     rw [Finset.sum_const, Finset.card_univ, Fintype.card_fin, nsmul_eq_mul]
     push_cast
     field_simp
-    ring
   refine re_eq_half_of_re_W_nonneg_of_columns Finset.univ (fun _ => 2 * π / Real.log q)
     (fun j => |θ j| / Real.log q + 1 / 2) (fun _ _ => by positivity) ν hν him
     (by rw [hsum]; exact ha) ∅ (fun z hz => ?_) hpos
