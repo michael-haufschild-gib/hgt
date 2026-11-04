@@ -20,7 +20,9 @@ and `x<δ`, `|x−x₈|<δ`, or `x≥R`. The literal weighted matrix
 `r sinh(ar)H(r/2)+J_P′(a,r)B` is positive on the corresponding radius regions
 for every `a>0` and `r>0`. For `0≤a<½`, its entries are integrable and their integrals
 are exactly `thetaCuspCenterMixedSignedJet a (2(i+j))`.
-Global positivity through the intervening compact interval remains open.
+Global positivity of this profile is
+[refuted at scale thirty-two](../../../../formal/GaloisForLFunctions/ThetaCuspSections/FifthEvenPolynomialCrossObstruction.lean).
+The positive regions above remain valid; global rank-nine positivity remains open.
 
 ## Proof
 

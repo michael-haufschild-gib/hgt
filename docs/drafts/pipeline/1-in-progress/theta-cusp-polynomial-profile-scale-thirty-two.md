@@ -1,17 +1,17 @@
 # Quartic profile at theta scale thirty-two
 
 - **Stage:** 1-in-progress
-- **Type:** CONJECTURE
+- **Type:** CANDIDATE
 - **Wall:** Σ6
-- **Target:** The quartic profiled source has a negative Gaussian-coordinate
-  direction at `x₃₂=log(32/π)/2`.
+- **Target:** Exact scalar-load capacities at `x₃₂=log(32/π)/2`, including every
+  critical aperture, as the positive survivor of the quartic obstruction.
 
 The last Gaussian coordinate satisfies
 `polyModel 32 0 (−216·61²) 1 4 4 < 0`, proved by
 `ThirtyTwoCrossData.upper_model_last_negative`.
-Transferring this exact comparison to the complete source requires the bounds below.
+The complete-source transfer is proved in `FifthEvenPolynomialCrossObstruction`.
 
-Analytic bounds to discharge:
+Complete-source estimates proved in `ThirtyTwoCrossSource`:
 
 - `9/8≤x₃₂≤6/5` and `F'≤−59F`.
 - With `t=2x₃₂²−1`, `49/32≤t≤47/25`, hence
@@ -22,14 +22,13 @@ Analytic bounds to discharge:
 
 The literal weighted source adds the exact remainder
 `P(r)r(ar cosh(ar)−sinh(ar))F(r/2)²`.
-For `0<a<1/2` at `r=2x₃₂`, the proposed bound is `12r sinh(ar)F(x₃₂)²`,
+For `0<a<1/2` at `r=2x₃₂`, its bound is `12r sinh(ar)F(x₃₂)²`,
 leaving the differentiated coefficient at most `−268F(x₃₂)²`.
-No global profile obstruction is established until these complete-source
-bounds and the exact negative direction are formalized.
+Thus both the aperture-independent and literal weighted complete sources fail PSD.
 
-Positive survivor to extract if the obstruction holds: the admissible scalar
-load interval at this center, including its positive region and singular
-boundary. For the literal weighted source, write
+The base capacity `0<τ<1`, its exact PD/PSD intervals, and its singular boundary
+are formalized by `ThirtyTwoCrossCapacity.exact_scaling_capacity`.
+For the literal weighted source, write
 `α(a)=[deriv(flux a)(2x₃₂)/(2x₃₂ sinh(2ax₃₂))]/G_P(x₃₂)`.
 The proposed aperture capacity is exactly `τ/α(a)`, with `0<α(a)≤1` and
 `0<τ≤τ/α(a)<1` throughout `0<a<1/2`.

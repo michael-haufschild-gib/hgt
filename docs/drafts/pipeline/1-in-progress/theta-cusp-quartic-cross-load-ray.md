@@ -18,6 +18,7 @@ by `q²³`, then certify both affine endpoint matrices through their coefficient
 matrices in `q−8`. Subtract the actual cross-load and the existing `147/4000`
 complete-source remainder allowance before testing coefficient signs.
 
-Application still required: prove the quartic profile's differentiated
-coefficient lies above this reserve on the remaining middle interval.
-Neither the ray nor that comparison is established yet.
+The unit quartic profile is
+[excluded at scale thirty-two](../../../../formal/GaloisForLFunctions/ThetaCuspSections/FifthEvenPolynomialCrossObstruction.lean).
+This reserve could apply to other flux profiles whose full differentiated
+coefficient lies above it. The ray itself remains unproved.

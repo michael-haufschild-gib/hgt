@@ -130,7 +130,8 @@ theorem four_mul_sq_integral_le_poleSquare {ψ : ℝ → ℝ} (hψ : Continuous 
     show 2 * ψ u ≤ ψ u * coshWeight u
     have : 2 ≤ coshWeight u := by unfold coshWeight; linarith [Real.one_le_cosh (u / 2)]
     nlinarith [hψ0 u]
-  have h0 : 0 ≤ 2 * ∫ u, ψ u := by linarith [integral_nonneg (f := ψ) hψ0]
+  have hI0 : 0 ≤ ∫ u, ψ u := integral_nonneg fun u => hψ0 u
+  have h0 : 0 ≤ 2 * ∫ u, ψ u := by linarith
   have hsq := pow_le_pow_left₀ h0 h2 2
   have e : (2 * ∫ u, ψ u) ^ 2 = 4 * (∫ u, ψ u) ^ 2 := by ring
   unfold poleSquare

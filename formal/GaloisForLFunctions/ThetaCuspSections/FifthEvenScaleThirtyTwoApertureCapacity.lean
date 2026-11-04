@@ -14,7 +14,7 @@ open Matrix RHTower RHTower.ThetaCuspGaussianLimit
 namespace GaloisForLFunctions.ThetaCuspSections.ThirtyTwoApertureCapacity
 open ThirtyTwoCrossSource ThirtyTwoCrossObstruction EvenFiveEndpoint
 
-/-- Positive physical weight at the fixed center. -/
+/-- Physical weight at the fixed center. -/
 def weight (a : ℝ) : ℝ := 2*center*Real.sinh (a*(2*center))
 
 /-- Literal differentiated coefficient relative to the aperture-independent coefficient. -/
@@ -53,7 +53,7 @@ theorem fraction_bounds {a : ℝ} (ha0 : 0 < a) (ha : a < 1/2) :
       deriv (FifthPolynomialCross.flux a) (2*center)/weight a := by
     apply (le_div_iff₀ hw).mpr
     have h := FifthPolynomialCross.deriv_flux_lower ha0.le
-      (show 0 ≤ 2*center by positivity)
+      (show 0 ≤ 2*center from mul_nonneg (by norm_num) center_pos.le)
     rw [show 2*center/2=center by ring] at h
     simpa only [weight,mul_comm] using h
   have he : fraction a*FifthPolynomialCross.compensation center=
@@ -62,7 +62,7 @@ theorem fraction_bounds {a : ℝ} (ha0 : 0 < a) (ha : a < 1/2) :
     field_simp [hG.ne]
   constructor
   · unfold fraction
-    positivity
+    exact div_pos_of_neg_of_neg hd hG
   · by_contra h
     have hn := mul_neg_of_pos_of_neg (sub_pos.mpr (lt_of_not_ge h)) hG
     nlinarith only [hn,he,hl]
@@ -75,7 +75,6 @@ private theorem source_eq {a : ℝ} (ha : 0 < a) (t : ℝ) :
   simp only [scaledSource,ThirtyTwoCrossCapacity.scaledSource,loadedSource,fraction,
     Matrix.add_apply,Matrix.smul_apply,smul_eq_mul]
   field_simp [hw.ne',hG.ne]
-  ring
 
 /-- The exact aperture capacity determines strict positivity at every scalar load. -/
 theorem posDef_iff {a t : ℝ} (ha0 : 0 < a) (ha : a < 1/2) :

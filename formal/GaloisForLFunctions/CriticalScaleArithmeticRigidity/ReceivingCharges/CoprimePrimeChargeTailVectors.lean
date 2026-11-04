@@ -38,7 +38,8 @@ def fibreChargeTailVector (m Q N : ℕ) (t : ℝ) : EuclideanSpace ℝ (PrimeHor
 theorem fibreChargeTailVector_eq {m Q : ℕ} (hm : 0 < m) (hQ : 1 ≤ Q) (N : ℕ) (t : ℝ) :
     fibreChargeTailVector m Q N t = fibrePrimeTailVector m Q N t + fibreBaseTailVector m Q N t := by
   simp only [fibreChargeTailVector, completedPrimeDilationTail_harmonicFibreCharge hm hQ,
-    packetVector_add, smul_add, fibrePrimeTailVector, fibreBaseTailVector, fibreBaseTailProfile]
+    packetVector_add, smul_add, fibrePrimeTailVector, fibreBaseTailVector]
+  rfl
 
 private theorem physical_packet_norm_le {N : ℕ} (hL : 1 ≤ Real.log N)
     (F : ℕ → ℝ) {D : ℝ} (hD : 0 ≤ D) (hF : ∀ n, |F n| ≤ D) :

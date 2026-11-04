@@ -96,6 +96,7 @@ theorem gaussDensity_mul_norm_xiLine_le_anchor_of_profile {E : ℝ → ℝ} {K �
     rw [← hαdef, ← hcdef] at hexp_le
     exact div_le_div_of_nonneg_right (by linarith) h4t.le
   rw [← hαdef, ← hN]
+  have hN0 : 0 ≤ N := by rw [hN]; exact norm_nonneg _
   calc gaussDensity t (w - v) * ‖xiLine X w‖
       ≤ ((4 * Real.pi * t) ^ (-(1 / 2 : ℝ)) * Real.exp (-((w - v) ^ 2 / (4 * t)))) *
           (K * ((2 * Real.pi) ^ ((1 / 2 + 2 * η) / 2) * Real.exp (α * (2 * E w))) *
@@ -109,7 +110,6 @@ theorem gaussDensity_mul_norm_xiLine_le_anchor_of_profile {E : ℝ → ℝ} {K �
             Real.exp (α * (w - u))) * N := by ring
     _ ≤ (4 * Real.pi * t) ^ (-(1 / 2 : ℝ)) * K * (2 * Real.pi) ^ ((1 / 2 + 2 * η) / 2) *
           (Real.exp (-(m / (4 * t))) * Real.exp (-(t * α ^ 2))) * N := by
-        have hN0 : 0 ≤ N := by rw [hN]; exact norm_nonneg _
         gcongr
     _ = _ := by ring
 
@@ -202,8 +202,9 @@ theorem strip_terms_le_anchor_of_profile {E : ℝ → ℝ} {K η m t X v u : ℝ
     have h2 : A * (Q * P) ≤ (1 + 2 * η) * (A * (Q * P)) :=
       le_mul_of_one_le_left (by linarith) (by linarith)
     calc gaussDensity t (1 / 2 + 2 * η - v) * ‖xiLine X (1 / 2 + 2 * η)‖ ≤ Q * P := h0
-      _ ≤ P * ((1 + 2 * η) * A * Q) := by linarith [show (1 + 2 * η) * (A * (Q * P)) =
-          P * ((1 + 2 * η) * A * Q) by ring]
+      _ ≤ A * (Q * P) := h1
+      _ ≤ (1 + 2 * η) * (A * (Q * P)) := h2
+      _ = P * ((1 + 2 * η) * A * Q) := by ring
 
 /-! ## 2. Regime I and Regime II for general source profiles -/
 
@@ -301,13 +302,13 @@ theorem re_slope_mul_conj_pos_of_profile {E : ℝ → ℝ} {K η δ₀ γ m t X 
     intro w hw
     rw [hadef]
     exact norm_xiLineDeriv_sub_le_near hX hη'pos hw.1 (hw.2.trans hWX')
+  have hη₁0 : 0 ≤ 1 / η' + 3 := by positivity
   have hQ := norm_halfGaussTransform_sub_main_le ht (continuous_xiLine X)
-    (integrable_exp_mul_norm_xiLine ht X) (y := v) (by positivity) (by linarith) hw1W
-    (by simpa [← hadef] using hmodel)
+    (integrable_exp_mul_norm_xiLine ht X) (y := v) hη₁0 (by linarith) hw1W hmodel
   have hD := norm_slope_sub_mul_le ht (hasDerivAt_xiLine X) (continuous_xiLineDeriv X)
-    (integrable_exp_mul_norm_xiLine ht X) (y := v) (by linarith) hw1W
-    (by simpa [← hadef] using hderiv)
-  have hT1 := chernoff_lowerTail_le ht hγ hu_sep hN0
+    (integrable_exp_mul_norm_xiLine ht X) (y := v) (by linarith) hw1W hderiv
+  have hT1 := chernoff_lowerTail_le ht hγ (show 1 / 2 + η' + γ ≤ v + 2 * t * α by
+    rw [← hudef]; exact hu_sep) hN0
   have hT2 := upperTail_le (W := W) ht hv hN0 (α := α)
   have hT3 := sharp_modelError_le (η := η') (α := α) (y := v) ht hη'pos hN0
   have hM := sharp_windowMass_le (η := η') (W := W) ht hη'pos hX hu hWX'
@@ -1087,6 +1088,7 @@ theorem exists_norm_xiLine_le_strip_subWeyl {η : ℝ} (hη : 0 < η) (hη40 : �
     congr 1
     field_simp
   have hPu0 : 0 ≤ Pu := by rw [hPu]; exact norm_nonneg _
+  have hGw0 : 0 ≤ Gw := by rw [hGw]; exact norm_nonneg _
   have hGu0 : 0 ≤ Gu := by rw [hGu]; exact norm_nonneg _
   have hZw0 : 0 ≤ Zw := by rw [hZw]; exact norm_nonneg _
   rw [← hsw, ← hsu, ← hPw, ← hPu, ← hGw, ← hGu, ← hZw, ← hZu, hpi]
@@ -1212,8 +1214,8 @@ theorem riemannHeat_no_collision_near_height_subWeyl_band {δ : ℝ} (hδ : 0 < 
   have hXm1_div : Real.exp 1 ≤ (X - 1) / (2 * Real.pi) :=
     (le_div_iff₀ h2π).mpr (by linarith)
   have hL1 : 1 ≤ Real.log ((X - 1) / (2 * Real.pi)) := by
-    rw [← Real.log_exp 1]
-    exact Real.log_le_log (Real.exp_pos 1) hXm1_div
+    have h := Real.log_le_log (Real.exp_pos 1) hXm1_div
+    rwa [Real.log_exp] at h
   have hL0 : 0 < Real.log ((X - 1) / (2 * Real.pi)) := by linarith
   have hs0 : 0 < (6600 / 9991 + δ) / Real.log ((X - 1) / (2 * Real.pi)) := by positivity
   have ht0 : 0 < t := hs0.trans_le ht_lo
@@ -1266,7 +1268,8 @@ theorem riemannHeat_no_collision_near_height_subWeyl_logX {δ ε : ℝ} (hδ : 0
   have ht8 : t ≤ 1 / 8 := by
     refine ht_hi.trans ?_
     rw [div_le_iff₀ hlogX_pos]
-    have : 8 * (2 / 3 + ε) ≤ A := by rw [hAdef]; positivity
+    have hterm0 : 0 ≤ (2 / δ) * (6600 / 9991 + δ) * Real.log (4 * Real.pi) := by positivity
+    have : 8 * (2 / 3 + ε) ≤ A := by rw [hAdef]; linarith
     linarith
   have hdiv_le : X / (4 * Real.pi) ≤ (X - 1) / (2 * Real.pi) := by
     have h2π : 0 < 2 * Real.pi := by positivity

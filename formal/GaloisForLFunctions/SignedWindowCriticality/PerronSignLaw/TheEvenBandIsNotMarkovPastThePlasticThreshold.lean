@@ -24,16 +24,21 @@ So Beurling–Deny comparison and kernel domination give Perron in the even sect
 `t_*`, at every pole strength `≥ 4` and for every choice of prime weights.
 -/
 
-open Real MeasureTheory Set Filter Topology
+open Real MeasureTheory Set Filter Topology Zeta23
 open scoped ContDiff
-open _root_.RHTower
+open _root_.RHTower _root_.RHTower.ArchimedeanAnomaly _root_.RHTower.ArchimedeanExactForm
+open _root_.RHTower.WeilLevyPoleGauss _root_.RHTower.WeilMarkovPole
+open _root_.RHTower.WeilLevyCoshCrossover
 
 noncomputable section
 
 namespace GaloisForLFunctions.SignedWindowCriticality.PerronSignLaw
 
+open GaloisForLFunctions.ArithmeticPositivityTheory
 open GaloisForLFunctions.SignedWindowCriticality
+open GaloisForLFunctions.CanonicalSystemOfTheWindowTower
 open GaloisForLFunctions.BiScaleUncertainty
+open GaloisForLFunctions.BiScaleUncertainty.SignedPrimePolar
 open GaloisForLFunctions.RHTower (screwSignThreshold)
 open SpacingScaleHarmonicAnalysis
 
@@ -83,7 +88,7 @@ lemma exists_bumpRadius {c : ℝ} (hc0 : 0 < c) (hc : c < Real.log 2)
 /-! ### 2. Bumps -/
 
 /-- A smooth bump `φ ≥ 0` with `∫ φ > 0` vanishing off `(x₀ − R, x₀ + R)`. -/
-lemma exists_bump (x₀ : ℝ) {R : ℝ} (hR : 0 < R) :
+lemma exists_halfWindowBump (x₀ : ℝ) {R : ℝ} (hR : 0 < R) :
     ∃ φ : ℝ → ℝ, ContDiff ℝ ∞ φ ∧ ContDiff ℝ 2 φ ∧ HasCompactSupport φ ∧ (∀ u, 0 ≤ φ u) ∧
       0 < ∫ u, φ u ∧ ∀ u, φ u ≠ 0 → x₀ - R < u ∧ u < x₀ + R := by
   let φ : ContDiffBump x₀ := ⟨R / 2, R, by positivity, by linarith⟩
@@ -176,8 +181,10 @@ theorem evenPoleBand_lt_of_bumps {c r : ℝ} (hc0 : 0 < c) (hc : c < Real.log 2)
     by_cases h : a u = 0
     · rw [h]; simp
     have hu := has u h
+    have hcr2 : 0 < (c - r) / 2 := by linarith
+    have hu2 : u / 2 < 0 := by linarith [hu.2]
     have hcosh : κ ≤ Real.cosh (u / 2) := by
-      rw [hκ, Real.cosh_le_cosh, abs_of_pos (by linarith), abs_of_neg (by linarith)]
+      rw [hκ, Real.cosh_le_cosh, abs_of_pos hcr2, abs_of_neg hu2]
       linarith [hu.2]
     unfold coshWeight
     nlinarith [ha0 u]
@@ -198,10 +205,11 @@ theorem evenPoleBand_lt_of_bumps {c r : ℝ} (hc0 : 0 < c) (hc : c < Real.log 2)
   have hpole : 16 * κ * (α * β) ≤ poleSquare G - poleSquare f := by
     unfold poleSquare
     rw [hPG, hPf]
-    have h1 : 0 ≤ 2 * κ * α := by positivity
-    have h2 := mul_le_mul hAh hBh (by positivity) (h1.trans hAh)
+    have h1 : 0 ≤ 2 * κ * α := (mul_pos (mul_pos two_pos hκ0) hapos).le
+    have h2 := mul_le_mul hAh hBh (by linarith) (h1.trans hAh)
     nlinarith [h2]
-  have hpole0 : 0 ≤ poleSquare G - poleSquare f := le_trans (by positivity) hpole
+  have hpole0 : 0 ≤ poleSquare G - poleSquare f :=
+    le_trans (mul_pos (mul_pos (by norm_num) hκ0) (mul_pos hapos hbpos)).le hpole
   /- The trivial-zero squares: `Σ_j (ν_j(a + b)² − ν_j(a − b)²) ≤ 4 ω(c − r) αβ`. -/
   have hew (j : ℕ) : Continuous (expWeight j) := by unfold expWeight; fun_prop
   have hIae (j : ℕ) : Integrable fun u => a u * expWeight j u :=
@@ -216,12 +224,15 @@ theorem evenPoleBand_lt_of_bumps {c r : ℝ} (hc0 : 0 < c) (hc : c < Real.log 2)
     unfold expMoment
     rw [← integral_sub (hIae j) (hIbe j)]
     exact integral_congr_ae (Eventually.of_forall fun u => by simp only [hf_def]; ring)
-  have hνa0 (j : ℕ) : 0 ≤ expMoment a j :=
-    integral_nonneg fun u => mul_nonneg (ha0 u) (by unfold expWeight; positivity)
-  have hνb0 (j : ℕ) : 0 ≤ expMoment b j :=
-    integral_nonneg fun u => mul_nonneg (hb0 u) (by unfold expWeight; positivity)
+  have hνa0 (j : ℕ) : 0 ≤ expMoment a j := by
+    unfold expMoment
+    exact integral_nonneg fun u => mul_nonneg (ha0 u) (by unfold expWeight; positivity)
+  have hνb0 (j : ℕ) : 0 ≤ expMoment b j := by
+    unfold expMoment
+    exact integral_nonneg fun u => mul_nonneg (hb0 u) (by unfold expWeight; positivity)
   have hνa (j : ℕ) : expMoment a j ≤
       α * Real.exp (-((2 * (j : ℝ) + 1 / 2) * (c - r))) := by
+    unfold expMoment
     rw [hα, ← integral_mul_const]
     refine integral_mono (hIae j) (hIa.mul_const _) fun u => ?_
     show a u * expWeight j u ≤ a u * Real.exp (-((2 * (j : ℝ) + 1 / 2) * (c - r)))
@@ -233,6 +244,7 @@ theorem evenPoleBand_lt_of_bumps {c r : ℝ} (hc0 : 0 < c) (hc : c < Real.log 2)
     unfold expWeight
     exact Real.exp_le_exp.mpr (by nlinarith [hu.2])
   have hνb (j : ℕ) : expMoment b j ≤ β := by
+    unfold expMoment
     rw [hβ]
     refine integral_mono (hIbe j) hIb fun u => ?_
     show b u * expWeight j u ≤ b u
@@ -255,11 +267,11 @@ theorem evenPoleBand_lt_of_bumps {c r : ℝ} (hc0 : 0 < c) (hc : c < Real.log 2)
   have hcr : 0 < c - r := by linarith
   have hmom : (∑' j, expMoment G j ^ 2) - (∑' j, expMoment f j ^ 2) ≤
       4 * (α * β) * archLevyDensity (c - r) := by
-    rw [← hSG.tsum_sub hSf, archLevyDensity_eq_tsum hcr, ← tsum_mul_left]
+    rw [← hSG.tsum_sub hSf, _root_.RHTower.archLevyDensity_eq_tsum hcr, ← tsum_mul_left]
     refine Summable.tsum_le_tsum (fun j => ?_) (hSG.sub hSf)
       ((summable_levyModes hcr).mul_left _)
     rw [hνG, hνf]
-    have h := mul_le_mul (hνa j) (hνb j) (hνb0 j) (by positivity)
+    have h := mul_le_mul (hνa j) (hνb j) (hνb0 j) (mul_pos hapos (Real.exp_pos _)).le
     nlinarith [h]
   /- The Lévy jumps: `𝒥(a − b) − 𝒥(a + b) ≤ 4 ω(c − 2r) αβ`. -/
   have hJf := integrableOn_biScaleLevyIntegrand hf2 hfc
@@ -278,7 +290,7 @@ theorem evenPoleBand_lt_of_bumps {c r : ℝ} (hc0 : 0 < c) (hc : c < Real.log 2)
     by_contra h
     rcases mul_neg_iff.mp (mul_neg_of_pairDefect_ne_zero h) with ⟨h1, h2⟩ | ⟨h1, h2⟩
     · linarith [hfpos u h1, hfneg (u + x) h2]
-    · linarith [hfneg u h2, hfpos (u + x) h1]
+    · linarith [hfneg u h1, hfpos (u + x) h2]
   have hDnn : ∀ x, 0 ≤ autocorr (fun u => |f u|) x - autocorr f x := fun x => by
     rw [← integral_pairDefect_shift' hf2.continuous hfc x]
     exact integral_nonneg fun u => pairDefect_nonneg f u (u + x)
@@ -303,9 +315,9 @@ theorem evenPoleBand_lt_of_bumps {c r : ℝ} (hc0 : 0 < c) (hc : c < Real.log 2)
     refine setIntegral_mono_on hI1 hI2 measurableSet_Ioi fun x hx => ?_
     have hx0 : 0 < x := hx
     rcases le_or_gt x (c - 2 * r) with hxr | hxr
-    · rw [hD0 x hx0 hxr, mul_zero, mul_zero]
+    · simp [hD0 x hx0 hxr]
     · exact mul_le_mul_of_nonneg_right
-        (strictAntiOn_archLevyDensity_Ioi.antitoneOn hc2r hx0 hxr.le) (hDnn x)
+        (CHMDPolar.strictAntiOn_archLevyDensity_Ioi.antitoneOn hc2r hx0 hxr.le) (hDnn x)
   have hmass : (∫ x in Ioi (0 : ℝ), (autocorr (fun u => |f u|) x - autocorr f x)) =
       2 * (α * β) := by
     rw [integral_sub hIAg.integrableOn hIAf.integrableOn]
@@ -313,9 +325,12 @@ theorem evenPoleBand_lt_of_bumps {c r : ℝ} (hc0 : 0 < c) (hc : c < Real.log 2)
       hf2.continuous.abs hfc.abs
     have e2 := sq_integral_eq_two_mul_integral_autocorr hf2.continuous hfc
     have i1 : (∫ u, |f u|) = α + β := by
-      rw [habs, hα, hβ, ← integral_add hIa hIb]
+      rw [habs]
+      show (∫ u, a u + b u) = α + β
+      rw [hα, hβ, integral_add hIa hIb]
     have i2 : (∫ u, f u) = α - β := by
-      rw [hα, hβ, ← integral_sub hIa hIb]
+      show (∫ u, a u - b u) = α - β
+      rw [hα, hβ, integral_sub hIa hIb]
     rw [i1] at e1
     rw [i2] at e2
     nlinarith [e1, e2]
@@ -345,6 +360,7 @@ theorem evenPoleBand_lt_of_bumps {c r : ℝ} (hc0 : 0 < c) (hc : c < Real.log 2)
   have hJG := integrableOn_biScaleLevyIntegrand hG2 hGc
   have eG := evenSector_eq hG2.continuous hc0.le hc hG0 hGl hJG
   have ef := evenSector_eq hf2.continuous hc0.le hc hf0 hfl hJf
+  rw [hA0] at eG
   have hαβ : 0 < α * β := mul_pos hapos hbpos
   have hker : 4 * (α * β) * (archLevyDensity (c - 2 * r) + archLevyDensity (c - r)) <
       16 * κ * (α * β) := by
@@ -354,7 +370,7 @@ theorem evenPoleBand_lt_of_bumps {c r : ℝ} (hc0 : 0 < c) (hc : c < Real.log 2)
   show evenPoleBand w₂ w₃ s f < evenPoleBand w₂ w₃ s G
   unfold evenPoleBand
   rw [hp2, hp3]
-  unfold poleSquare at hpole hspole
+  unfold poleSquare at hpole hspole ⊢
   linarith
 
 /-! ### 4. The even band is not Markov past `t_*` -/
@@ -373,8 +389,10 @@ theorem exists_evenPoleBand_lt_abs {c : ℝ} (hct : screwSignThreshold < c) (hc 
     have h := evenKernel_neg_of_threshold_lt hct
     rwa [sub_zero, add_zero, abs_of_pos hc0, zero_div, Real.cosh_zero, mul_one] at h
   obtain ⟨r, hr0, hr4, hrl, hkr⟩ := exists_bumpRadius hc0 hc hk
-  obtain ⟨a, ha, ha2, hac, ha0, hapos, has⟩ := exists_bump (-c + r / 2) (R := r / 2) (by positivity)
-  obtain ⟨b, hb, hb2, hbc, hb0, hbpos, hbs⟩ := exists_bump (-(r / 2)) (R := r / 2) (by positivity)
+  obtain ⟨a, ha, ha2, hac, ha0, hapos, has⟩ :=
+    exists_halfWindowBump (-c + r / 2) (R := r / 2) (half_pos hr0)
+  obtain ⟨b, hb, hb2, hbc, hb0, hbpos, hbs⟩ :=
+    exists_halfWindowBump (-(r / 2)) (R := r / 2) (half_pos hr0)
   have has' : ∀ u, a u ≠ 0 → -c < u ∧ u < -c + r := fun u h => by
     have := has u h; constructor <;> linarith [this.1, this.2]
   have hbs' : ∀ u, b u ≠ 0 → -r < u ∧ u < 0 := fun u h => by
@@ -385,25 +403,27 @@ theorem exists_evenPoleBand_lt_abs {c : ℝ} (hct : screwSignThreshold < c) (hc 
     · by_contra hb'
       push Not at hb'
       linarith [(has' u h).2, (hbs' u hb'.2).1]
-  have habs : (fun u => |a u - b u|) = fun u => a u + b u := by
+  have hlt := evenPoleBand_lt_of_bumps hc0 hc hr0 hr4 hrl hkr ha2 hb2 hac hbc ha0 hb0 hapos hbpos
+    has' hbs' w₂ w₃ hs
+  set f : ℝ → ℝ := fun u => a u - b u with hf_def
+  have habs : (fun u => |f u|) = fun u => a u + b u := by
     funext u
+    simp only [hf_def]
     rcases hdisj u with h | h
     · rw [h, zero_sub, zero_add, abs_neg, abs_of_nonneg (hb0 u)]
     · rw [h, sub_zero, add_zero, abs_of_nonneg (ha0 u)]
-  have hlt := evenPoleBand_lt_of_bumps hc0 hc hr0 hr4 hrl hkr ha2 hb2 hac hbc ha0 hb0 hapos hbpos
-    has' hbs' w₂ w₃ hs
-  refine ⟨fun u => a u - b u, ha.sub hb, ?_, ha2.sub hb2, fun u hu => ?_, fun u hu => ?_, ?_⟩
+  refine ⟨f, ha.sub hb, ?_, ha2.sub hb2, fun u hu => ?_, fun u hu => ?_, ?_⟩
   · rw [habs]; exact ha.add hb
   · have h1 : a u = 0 := by
       by_contra h; linarith [(has' u h).2]
     have h2 : b u = 0 := by
       by_contra h; linarith [(hbs' u h).2]
-    simp [h1, h2]
+    simp [hf_def, h1, h2]
   · have h1 : a u = 0 := by
       by_contra h; linarith [(has' u h).1]
     have h2 : b u = 0 := by
       by_contra h; linarith [(hbs' u h).1]
-    simp [h1, h2]
+    simp [hf_def, h1, h2]
   · rw [habs]; exact hlt
 
 /-- **Sharp Markov range of the even band.** For `0 ≤ c < log 2` and nonnegative weights the

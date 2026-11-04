@@ -150,15 +150,14 @@ at most `m|t/B_(m,Q)|`.
 `CoprimePrimeChargeWindows` checks endpoint cancellation, mode-square window
 comparison and projection bound
 `128m²Q³(1+|κ|)²/((A+1)²(log N)²)`.
-`CoprimePrimeChargeLogWindows` checks the logarithmic mode-product window
-bound. `CoprimePrimeChargeWindowScales` checks receiver square `1/20`,
-vanishing projection mass, and exact conductor-complement membership,
-with standard-only transitive axioms. The remaining terminal chain is
-source awaiting checks: `CoprimePrimeChargeTailMass`, `CoprimePrimeChargeTailNorms`,
-`CoprimePrimeChargeTailPairing`, `CoprimePrimeChargeTailLimits`,
-`CoprimePrimeChargeTailVectors`, `CoprimePrimeChargeSignedReceiver`.
-It targets `‖r_l‖²→1/20` and `⟨Wv_m,r_l⟩→δ_ml t/80`, with the receiver
-projected off any fixed common cutoff `R X²` containing the source fibre.
+The logarithmic mode-product window estimate, vanishing projection mass and
+complete signed limit are checked through `CoprimePrimeChargeSignedReceiver`:
+
+`‖r_l‖²→1/20`, `⟨Wv_m,r_l⟩→δ_ml t/80`.
+
+The receiver is projected off any fixed common cutoff `R X²` containing
+the source fibre. The base-mode tail vanishes in norm; fixed-prime deletion
+and the remaining prime-tail pairing retain the scalar coefficient `1/80`.
 
 For two coprime receiving modes, the mixed leading energy is
 `δ_ml J_N(F_b,F_d)`, with error at most

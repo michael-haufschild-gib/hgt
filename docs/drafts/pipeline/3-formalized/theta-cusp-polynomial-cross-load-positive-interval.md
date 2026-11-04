@@ -26,8 +26,9 @@ the cross-load is positive semidefinite. Their sum is therefore positive.
 The literal weighted source adds a nonnegative multiple of the same
 cross-load to a positive scalar multiple of `H_P`.
 
-This certifies an explicit compact interval. Global positivity of the
-profiled source, and global rank-nine positivity, remain open.
+This certifies an explicit compact interval. Global positivity of this profile is
+[refuted at scale thirty-two](../../../../formal/GaloisForLFunctions/ThetaCuspSections/FifthEvenPolynomialCrossObstruction.lean).
+Global rank-nine positivity remains open.
 
 Lean: `ThetaCuspSections/FifthEvenPolynomialCrossInterval.lean`, namespace
 `GaloisForLFunctions.ThetaCuspSections.FifthPolynomialCross`:

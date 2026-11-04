@@ -1,10 +1,10 @@
 # Polynomial cross-load through the compact interval
 
 - **Stage:** 1-in-progress
-- **Type:** CONJECTURE
+- **Type:** FALSIFIED
 - **Wall:** Σ6
-- **Target:** The complete profiled fifth even source is positive definite for
-  every `x≥0`.
+- **Refuted claim:** The complete profiled fifth even source is positive definite
+  for every `x≥0`.
 
 For `P(r)=(1−r²/2)²`, the exact differentiated correction is
 `G_P(x)=(1−2x²)²G(x)−8x²(1−2x²)F(x)²`.
@@ -20,6 +20,13 @@ flux preserves every fifth even mixed entry, with index `2(i+j)`.
 Here the complete slope bound `F'≥−24F` gives
 `G_P≥(3/8)(2x²−1)F²≥0`, so native positivity pays the whole source.
 
-Remaining: positivity on the compact complement of those regions and interval.
-Neither continuity nor polynomial tail decay proves that compact sign.
-Global rank-nine positivity remains open.
+At `x₃₂=log(32/π)/2`, both `H_P(x₃₂)` and the literal weighted source for every
+`0<a<1/2` fail positive semidefiniteness. Lean:
+`ThirtyTwoCrossObstruction.repair_not_posSemidef` and
+`weightedRepair_not_posSemidef` in `FifthEvenPolynomialCrossObstruction`.
+
+Positive survivor: the exact scalar-load capacity at this center satisfies
+`0<τ<1`, with PD precisely for `t<τ`, PSD precisely for `t≤τ`, and a singular
+boundary (`ThirtyTwoCrossCapacity.exact_scaling_capacity`).
+The aperture-dependent capacity classification and final audits remain pending;
+the route is not yet retired. Global rank-nine positivity remains open.
