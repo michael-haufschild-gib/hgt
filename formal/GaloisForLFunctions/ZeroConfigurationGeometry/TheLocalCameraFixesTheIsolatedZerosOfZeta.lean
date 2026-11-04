@@ -227,7 +227,7 @@ theorem camera_lower_bound {X L : ℝ} {k : ℕ} (hX : 0 < X) (hXL : X = Real.ex
   rw [e1, pow_mul, e2, Real.exp_nat_mul, ← hXL]
   exact pow_le_pow_left₀ hX.le (by nlinarith) _
 
-theorem camera_upper_bound {B Y S S'' Φ L : ℝ} (hB : B ≤ 5 / 4 * Real.exp Φ) (hB0 : 0 ≤ B)
+theorem camera_upper_bound {B Y S S'' Φ L : ℝ} (hB : B ≤ 5 / 4 * Real.exp Φ)
     (hY : Y ≤ 4 * Real.exp (2 * L)) (hY0 : 0 ≤ Y) (hS0 : 0 ≤ S) (hS : S ≤ S'')
     (hS'' : 1 ≤ S'') : B * Y * S ≤ Real.exp (Φ + 2 * L + Real.log S'' + 2) := by
   have h5 : (5 : ℝ) ≤ Real.exp 2 := by
@@ -332,7 +332,7 @@ theorem zeta_camera_budget {lam β L D η ε C₀ ℓ X S S'' e K c ρ q b₁ : 
     (hβlam : β ≤ lam) (hβ0 : 0 < β) (hℓ0 : 0 ≤ ℓ)
     (hc : c = 4 * growthRate ℓ * lam ^ 2 + 8 * floorRate ℓ * lam ^ 2) (hK : K = c + 1)
     (hkL : K * L ≤ k) (hk1 : 1 ≤ k) (hmle : (m : ℝ) ≤ (e * lam + K + 2) * L) (hmε : (m : ℝ) / ε ≤ ρ)
-    (hq : q = Real.log (4 * (1 + ρ))) (hq0 : 0 ≤ q) (hρ0 : 0 ≤ ρ)
+    (hq : q = Real.log (4 * (1 + ρ))) (hq0 : 0 ≤ q)
     (hb₁ : b₁ = 2 * q * (e * lam + K + 2) + 2 * lam + 3)
     (hLb : b₁ + Real.log S'' + 4 ≤ L) (hS0 : 0 ≤ S) (hS : S ≤ S'') (hS''1 : 1 ≤ S'')
     (hcam : (1 + X / 2) ^ (2 * k - 2) ≤
@@ -344,8 +344,6 @@ theorem zeta_camera_budget {lam β L D η ε C₀ ℓ X S S'' e K c ρ q b₁ : 
     exact mul_le_mul_of_nonneg_left (Real.log_le_log (by positivity) (by linarith))
       (Nat.cast_nonneg _)
   have hB := localCameraConst_le (a := lam * L) (ε := ε) hD1 hC₀ℓ hηD hCm0
-  have hB0 : 0 ≤ localCameraConst (lam * L) D C₀ η ε ((4 * (1 + m / ε)) ^ m) 1 := by
-    unfold localCameraConst; positivity
   have hXpos : 0 < X := by linarith
   have hΦle := camera_exponent_le (e := e) (K := K) hβlam hβ0.le (by linarith) hq0 hε rfl
     (growth_term_le (growthRate_nonneg hℓ0) hD1 hDup) (floor_term_le (floorRate_nonneg hℓ0) hD1 hDup)
@@ -353,7 +351,7 @@ theorem zeta_camera_budget {lam β L D η ε C₀ ℓ X S S'' e K c ρ q b₁ : 
   have hXim : (1 + |X|) ^ 2 ≤ 4 * Real.exp (2 * L) := by
     rw [abs_of_pos hXpos, show 2 * L = L + L by ring, Real.exp_add, ← hXL]
     nlinarith
-  have hupper := camera_upper_bound hB hB0 hXim (by positivity) hS0 hS hS''1
+  have hupper := camera_upper_bound hB hXim (by positivity) hS0 hS hS''1
   have hfinal := ((camera_lower_bound hXpos hXL hk1).trans hcam).trans hupper
   rw [Real.exp_le_exp] at hfinal
   refine camera_budget_false hL1 hK hkL (b₁ := b₁) ?_ hLb (Real.log_nonneg hS''1) hfinal
@@ -483,7 +481,7 @@ theorem multDiff_zeta_eq_zero_of_isolated {lam μ A' S' : ℝ} (hlam : 1 / 4 + �
     tsum_nonneg fun z => div_nonneg (norm_nonneg _)
       (by have := Complex.normSq_nonneg (gammaOf z); linarith)
   exact zeta_camera_budget (by linarith) hXL hL1 hD1 hDup hC₀ℓ hηD hε hε0 hβlam hβ0 hℓ0 hc hK hkL
-    hk1 hmle hmε hq hq0 hρ0 hb₁ hLb hS0 (hS.trans (by rw [hS'']; exact le_max_left _ _)) hS''1
+    hk1 hmle hmε hq hq0 hb₁ hLb hS0 (hS.trans (by rw [hS'']; exact le_max_left _ _)) hS''1
     hcam
 
 end GaloisForLFunctions.ZeroConfigurationGeometry

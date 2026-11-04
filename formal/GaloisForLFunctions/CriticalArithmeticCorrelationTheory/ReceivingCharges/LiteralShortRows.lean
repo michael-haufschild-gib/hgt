@@ -116,7 +116,8 @@ theorem exists_literal_prime_short_row_bound :
     (by
       intro p _ k _ h _
       by_cases hhk : h ≤ k * n
-      · simp only [dvd_negative_shift_iff hhk, Nat.mul_comm k n]
+      · simp only [dvd_negative_shift_iff hhk]
+        simp only [Nat.mul_comm k n]
       · have hz : negativeLiteralUpwardKernel φ c N k h n = 0 := by
           rw [negativeLiteralUpwardKernel, if_neg (by omega)]
         rw [hz, zero_mul, zero_mul])

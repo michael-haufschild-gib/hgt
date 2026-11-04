@@ -18,3 +18,7 @@ flux preserves every fifth even mixed entry, with index `2(i+j)`.
 Remaining: positivity on the compact complement of those regions.
 Neither continuity nor polynomial tail decay proves that compact sign.
 Global rank-nine positivity remains open.
+
+Explicit interval under formalization: `x≥0`, `1/2≤x²`, `x≤3/4`.
+Here the complete slope bound `F'≥−24F` gives
+`G_P≥(3/8)(2x²−1)F²≥0`, so native positivity pays the whole source.
