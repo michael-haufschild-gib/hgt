@@ -120,6 +120,24 @@ rank-one theorem would not remove compensation on all windows; a proof
 would still need further growing arithmetic charges or direct control
 of the complementary window form.
 
+The same conjecture tests whether the current R² collar loss is an
+artifact. Put `r₁=B_Nv₁−E₁(c_N)v₁` and let Ψ₇ include its dual-seventh
+mass divided by E₁. For a terminal test with ℓ(h)≠0, its support lies
+entirely in the top collar eventually. Weighted Cauchy–Schwarz and
+`c_N⁷E₁(c_N)→J(1)` would then force
+
+    liminf (c_N⁷/L) Ψ₇
+      ≥ R² a²ℓ(h)² / [J(1) M₈(H)],   H(y)=exp(y/2)h(y).
+
+Indeed the mixed square is asymptotic to `c_N²a²ℓ(h)²/L`, while the
+test's seventh-power collar mass tends to M₈(H). Thus that R² dependence
+cannot vanish merely by sharpening the present absolute residual norm,
+if the mixed conjecture holds. Paying with the full positive polar
+energy changes its denominator to `J(1)+Rag`; the resulting bound still
+grows with R. The positive survivor would be the exact joint signed
+source–complement problem. This is a conditional consequence to test,
+not a proved obstruction while the complete mixed limit remains open.
+
 ## Attack and proof obligations
 
 The exact center row already supplies the two terms

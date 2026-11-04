@@ -282,10 +282,10 @@ private theorem kernelBorder_12 (m : ℕ → ℝ) : kernelBorder m 1 2 =
 def originSchurNumerator (m : ℕ → ℝ) (i j : Fin 2) : ℝ :=
   kernelDet m*loadCorner m i j-kernelAdjPair m (kernelBorder m i) (kernelBorder m j)
 /-- The retained Schur form after paying the complete five-coordinate error. -/
-def paidSevenSchur (i j : Fin 2) : ℝ :=
+def paidSevenSchur : Matrix (Fin 2) (Fin 2) ℝ := fun i j =>
   schur2 mSeven i j/loss-(5/32)*gap i j
 /-- The exact origin gap multiplied by its positive normalization denominator. -/
-def paidGapNumerator (X : ℝ) (i j : Fin 2) : ℝ :=
+def paidGapNumerator (X : ℝ) : Matrix (Fin 2) (Fin 2) ℝ := fun i j =>
   originSchurNumerator (mOrigin X) i j+
     3*mOrigin X 0*kernelDet (mOrigin X)*paidSevenSchur i j
 
@@ -755,7 +755,7 @@ private theorem sevenSourceGram_entry (i j : Fin 5) :
     Matrix.conjTranspose_apply,sevenBasis,star_trivial,Finset.sum_mul,
     EvenFiveBoundary.scaleSevenEnergy,nativeShiftedMatrix,add_zero,Finset.sum_div]
   rw [Finset.sum_comm]
-  simp only [div_eq_mul_inv,_root_.mul_inv_rev,Finset.mul_sum,Finset.sum_mul]
+  simp only [div_eq_mul_inv,_root_.mul_inv_rev,Finset.mul_sum]
   apply Finset.sum_congr rfl
   intro u hu
   apply Finset.sum_congr rfl

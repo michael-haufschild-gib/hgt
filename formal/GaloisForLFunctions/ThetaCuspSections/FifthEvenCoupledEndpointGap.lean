@@ -9,7 +9,7 @@ strict retained-model error bounds preserve its complementary positive margin.
 -/
 
 noncomputable section
-open Matrix RHTower RHTower.ThetaCuspGaussianLimit
+open Matrix MeasureTheory Set RHTower RHTower.ThetaCuspGaussianLimit
 namespace GaloisForLFunctions.ThetaCuspSections.EvenFiveEndpoint
 
 private def kernelMatrix (m : ℕ → ℝ) : Matrix (Fin 3) (Fin 3) ℝ :=
@@ -113,11 +113,6 @@ private def coordinateMap : Matrix (Fin 5) (Fin 5) ℝ :=
   !![1,0,0,0,0; 0,1,0,0,0; 0,0,0,0,-1568; 0,0,1,420,0; 0,0,0,1,1568]
 
 private theorem coordinateMap_originBasis : coordinateMap*originBasis=1 := by
-  ext i j
-  fin_cases i <;> fin_cases j <;>
-    norm_num [coordinateMap,originBasis,Matrix.mul_apply,Fin.sum_univ_succ,Matrix.one_apply]
-
-private theorem originBasis_coordinateMap : originBasis*coordinateMap=1 := by
   ext i j
   fin_cases i <;> fin_cases j <;>
     norm_num [coordinateMap,originBasis,Matrix.mul_apply,Fin.sum_univ_succ,Matrix.one_apply]
@@ -327,7 +322,8 @@ theorem origin_cross_load_posDef :
 private def hankelBilinear (m : ℕ → ℝ) (v w : Fin 5 → ℝ) : ℝ :=
   ∑ i : Fin 5, ∑ j : Fin 5, v i*w j*m (i.val+j.val)
 
-theorem hankel_lift (m : ℕ → ℝ) (t u : Fin 3 → ℝ) (hd : headDet m ≠ 0) :
+/-- Head elimination identifies the lifted tail pairing with its Schur numerator. -/
+private theorem hankel_lift (m : ℕ → ℝ) (t u : Fin 3 → ℝ) (hd : headDet m ≠ 0) :
     hankelBilinear m (liftTail m t) (liftTail m u) =
       (∑ i : Fin 3, ∑ j : Fin 3, t i*u j*schur3 m i.val j.val)/headDet m := by
   norm_num [hankelBilinear,liftTail,Fin.sum_univ_succ]
@@ -362,6 +358,7 @@ private theorem kernelTail_zero : kernelTail 0 = -420 := rfl
 private theorem kernelTail_one : kernelTail 1 = 1 := rfl
 private theorem kernelTail_two : kernelTail 2 = -1/1568 := rfl
 
+/-- Projection off the common load kernel gives the two-coordinate Schur form. -/
 private theorem hankel_project (m : ℕ → ℝ) (b c : Fin 2 → ℝ)
     (hd : headDet m ≠ 0) (hk : kernelNum m ≠ 0) :
     hankelBilinear m (liftTail m (projectTail m b)) (liftTail m (projectTail m c)) =
@@ -787,5 +784,82 @@ theorem coupled_endpoints_posDef :
     (nativeShiftedMatrix 5 0 EvenFiveBoundary.witnessCenter+
       thetaCuspCenterCompensationSource EvenFiveBoundary.witnessCenter • crossLoad paidSevenSchur).PosDef :=
   ⟨crossCoefficient_posDef,origin_cross_load_posDef,scaleSeven_cross_load_posDef⟩
+
+/-- The weighted native source with the explicit cross-coupled zero-flux correction. -/
+def weightedCrossRepair (a r : ℝ) : Matrix (Fin 5) (Fin 5) ℝ :=
+  (r*Real.sinh (a*r)) • nativeShiftedMatrix 5 0 (r/2)+
+    deriv (thetaCuspCenterCompensationFlux a) r • crossLoad paidSevenSchur
+
+/-- Every corrected weighted entry remains integrable on the positive ray. -/
+theorem weightedCrossRepair_integrable {a : ℝ} (ha0 : 0 ≤ a) (ha : a < 1/2)
+    (i j : Fin 5) :
+    IntegrableOn (fun r => weightedCrossRepair a r i j) (Ioi 0) := by
+  have hi := (integrableOn_thetaCuspWeightedNativeReflectionJet ha0 ha
+    (2*(i.val+j.val))).const_mul ((-1:ℝ)^(i.val+j.val))
+  have habs : |a| < 1 := by rw [abs_of_nonneg ha0]; linarith only [ha]
+  have hf := (integrableOn_deriv_thetaCuspCenterCompensationFlux habs).const_mul
+    (crossLoad paidSevenSchur i j)
+  apply (hi.add hf).congr
+  filter_upwards with r
+  simp only [Pi.add_apply,weightedCrossRepair,nativeShiftedMatrix,Matrix.add_apply,
+    Matrix.smul_apply,smul_eq_mul,add_zero]
+  ring
+
+/-- The explicit cross-load preserves every actual even mixed integral. -/
+theorem weightedCrossRepair_integral {a : ℝ} (ha0 : 0 ≤ a) (ha : a < 1/2) (i j : Fin 5) :
+    (∫ r in Ioi 0, weightedCrossRepair a r i j) =
+      thetaCuspCenterMixedSignedJet a (2*(i.val+j.val)) := by
+  have hi := (integrableOn_thetaCuspWeightedNativeReflectionJet ha0 ha
+    (2*(i.val+j.val))).const_mul ((-1:ℝ)^(i.val+j.val))
+  have habs : |a| < 1 := by rw [abs_of_nonneg ha0]; linarith only [ha]
+  have hf := (integrableOn_deriv_thetaCuspCenterCompensationFlux habs).const_mul
+    (crossLoad paidSevenSchur i j)
+  have he : (fun r => weightedCrossRepair a r i j) =
+      fun r => (-1:ℝ)^(i.val+j.val)*(r*Real.sinh (a*r)*thetaCuspNativeReflectionJet
+        (2*(i.val+j.val)) (r/2))+
+          crossLoad paidSevenSchur i j*deriv (thetaCuspCenterCompensationFlux a) r := by
+    funext r
+    simp only [weightedCrossRepair,nativeShiftedMatrix,Matrix.add_apply,Matrix.smul_apply,
+      smul_eq_mul,add_zero]
+    ring
+  rw [he,integral_add hi hf,integral_const_mul,integral_const_mul,
+    integral_deriv_thetaCuspCenterCompensationFlux habs,mul_zero,add_zero,
+    thetaCuspCenterMixedSignedJet_even,iteratedDeriv_thetaCuspCenterMixedDensity_eq_integral_nativeJet ha0 ha]
+
+private theorem weightedCrossRepair_posDef_of_source {a r : ℝ} (ha : 0 < a) (hr : 0 < r)
+    (hs : (nativeShiftedMatrix 5 0 (r/2)+
+      thetaCuspCenterCompensationSource (r/2) • crossLoad paidSevenSchur).PosDef) :
+    (weightedCrossRepair a r).PosDef := by
+  let w := r*Real.sinh (a*r)
+  let d := deriv (thetaCuspCenterCompensationFlux a) r-w*thetaCuspCenterCompensationSource (r/2)
+  have hw : 0 < w := mul_pos hr (Real.sinh_pos_iff.mpr (mul_pos ha hr))
+  have hd : 0 ≤ d := by
+    apply sub_nonneg.mpr
+    convert deriv_thetaCuspCenterCompensationFlux_lower ha.le hr.le using 1
+    unfold w thetaCuspCenterCompensationSource
+    ring
+  have he : weightedCrossRepair a r =
+      w • (nativeShiftedMatrix 5 0 (r/2)+thetaCuspCenterCompensationSource (r/2) •
+        crossLoad paidSevenSchur)+d • crossLoad paidSevenSchur := by
+    ext i j
+    simp only [weightedCrossRepair,Matrix.add_apply,Matrix.smul_apply,smul_eq_mul]
+    dsimp only [d,w]
+    ring
+  rw [he]
+  exact (hs.smul hw).add_posSemidef
+    ((crossCoefficient_posDef.posSemidef.conjTranspose_mul_mul_same loadMap).smul hd)
+
+/-- At scale seven the same zero-flux cross-load works at every positive aperture. -/
+theorem weightedCrossRepair_scale_seven_posDef {a : ℝ} (ha : 0 < a) :
+    (weightedCrossRepair a (2*EvenFiveBoundary.witnessCenter)).PosDef := by
+  have hx : 0 < EvenFiveBoundary.witnessCenter := by
+    unfold EvenFiveBoundary.witnessCenter
+    apply div_pos
+    · apply Real.log_pos
+      exact (lt_div_iff₀ Real.pi_pos).mpr (by nlinarith only [Real.pi_lt_four])
+    · norm_num
+  apply weightedCrossRepair_posDef_of_source ha (mul_pos (by norm_num) hx)
+  rw [show 2*EvenFiveBoundary.witnessCenter/2=EvenFiveBoundary.witnessCenter by ring]
+  exact scaleSeven_cross_load_posDef
 
 end GaloisForLFunctions.ThetaCuspSections.EvenFiveEndpoint

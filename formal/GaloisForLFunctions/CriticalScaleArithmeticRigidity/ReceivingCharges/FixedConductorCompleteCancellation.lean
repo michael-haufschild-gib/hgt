@@ -1,5 +1,6 @@
 import GaloisForLFunctions.CriticalScaleArithmeticRigidity.ReceivingCharges.FixedPacketCriticalCancellation
 import GaloisForLFunctions.CriticalArithmeticCorrelationTheory.CompleteConductorResidualsAreUniformOnLogarithmicFamilies
+import GaloisForLFunctions.ArithmeticHodgeTheoryOfDegenerations.CompleteWeilCriticalMultipleAndWindowCorollaries
 
 /-!
 # Fixed-conductor cancellation for every smooth atom
@@ -173,9 +174,55 @@ theorem tendsto_harmonicCentered_fixedPacket_complete_norm_of_atom {φ : ℝ →
   filter_upwards [eventually_ge_atTop 1] with N hN m _
   exact harmonicCentered_fixedCoefficient_abs_le Q hN a m
 
+/-- The canonical clock agrees exactly with the clipped critical-overlap formula. -/
+theorem canonicalCriticalCurve_power_mul {K : ℝ} (hK : 0 < K) (N : ℕ) :
+    canonicalCriticalCurve ((2 * K) ^ 8) N =
+      max 1 (2 * K * Real.log N ^ (1 / 8 : ℝ)) := by
+  unfold canonicalCriticalCurve
+  rw [Real.mul_rpow (pow_nonneg (by positivity : 0 ≤ 2 * K) 8) (Real.log_natCast_nonneg N)]
+  have hp : ((2 * K) ^ 8) ^ (1 / 8 : ℝ) = 2 * K := by
+    rw [← Real.rpow_natCast, ← Real.rpow_mul (by positivity : 0 ≤ 2 * K)]
+    norm_num
+  rw [hp]
+
+/-- The literal critical-overlap family also annihilates every fixed conductor column. -/
+theorem tendsto_fixedConductor_complete_norm_at_critical_overlap {φ : ℝ → ℝ}
+    (hφ : ContDiff ℝ 2 φ) (hsupp : ∀ u, u ∉ Set.Icc 0 1 → φ u = 0)
+    (hM : 0 < ∫ u, φ u ^ 2) {K : ℝ} (hK : 0 < K) {m : ℕ} (hm : 0 < m) :
+    Tendsto (fun N : ℕ =>
+      ‖Matrix.toEuclideanLin (completeWeilMatrix φ (2 * K * Real.log N ^ (1 / 8 : ℝ)) N)
+        (normalizedRamanujanHorizonVector m N)‖) atTop (𝓝 0) := by
+  have hR : 0 < (2 * K) ^ 8 := by positivity
+  have h := tendsto_fixedConductor_critical_complete_norm_of_atom hφ hsupp hM
+    (one_le_canonicalCriticalCurve ((2 * K) ^ 8)) hR
+    (tendsto_canonicalCriticalCurve_pow_eight hR) hm
+  apply h.congr'
+  filter_upwards [eventually_primeCharge_criticalOverlap_facts hK] with N hN
+  rw [canonicalCriticalCurve_power_mul hK, max_eq_right hN.1]
+
+/-- Harmonic-centered fixed packets cancel on the literal critical-overlap family. -/
+theorem tendsto_harmonicCentered_fixedPacket_complete_norm_at_critical_overlap {φ : ℝ → ℝ}
+    (hφ : ContDiff ℝ 2 φ) (hsupp : ∀ u, u ∉ Set.Icc 0 1 → φ u = 0)
+    (hM : 0 < ∫ u, φ u ^ 2) {K : ℝ} (hK : 0 < K)
+    (Q : ℕ) (a : ℕ → ℝ) :
+    Tendsto (fun N : ℕ =>
+      ‖Matrix.toEuclideanLin (completeWeilMatrix φ (2 * K * Real.log N ^ (1 / 8 : ℝ)) N)
+        ((Real.sqrt (Real.log N))⁻¹ • packetVector
+          (normalizedConductorPacket Q (harmonicCenteredCoefficients Q N a)) N)‖)
+      atTop (𝓝 0) := by
+  have hR : 0 < (2 * K) ^ 8 := by positivity
+  have h := tendsto_harmonicCentered_fixedPacket_complete_norm_of_atom hφ hsupp hM
+    (one_le_canonicalCriticalCurve ((2 * K) ^ 8)) hR
+    (tendsto_canonicalCriticalCurve_pow_eight hR) Q a
+  apply h.congr'
+  filter_upwards [eventually_primeCharge_criticalOverlap_facts hK] with N hN
+  rw [canonicalCriticalCurve_power_mul hK, max_eq_right hN.1]
+
 #print axioms criticalCurve_pow_div_log
 #print axioms tendsto_fixedConductor_critical_residual_norm_of_atom
 #print axioms tendsto_fixedConductor_critical_complete_norm_of_atom
 #print axioms tendsto_harmonicCentered_fixedPacket_complete_norm_of_atom
+#print axioms tendsto_fixedConductor_complete_norm_at_critical_overlap
+#print axioms tendsto_harmonicCentered_fixedPacket_complete_norm_at_critical_overlap
 
 end GaloisForLFunctions.CriticalScaleArithmeticRigidity

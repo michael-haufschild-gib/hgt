@@ -277,7 +277,7 @@ theorem eq_of_weil_eq_of_pairSeparated (Z Z' : ZeroConfig) (hZ : TemperedConfig 
   by_contra hc
   obtain ⟨t₀, ht₀re, hct₀⟩ := exists_site_of_multDiff_ne_zero hc
   set γ₀ := t₀.im
-  have hzero := pairSum_vanishes_of_weil_eq Z Z' hZ hZ' hw0 (by rw [hw]; linarith) γ₀ hW
+  have hzero := pairSum_vanishes_of_weil_eq Z Z' hZ hZ' hw0 (le_of_eq (by rw [hw]; ring)) γ₀ hW
   have hsum := summable_site Z Z' hZ hZ' hw0 γ₀
   have hres := eq_zero_of_pairSum_eq_zero (fun k : pairSites Z Z' => (k : ℂ).im)
     (fun k => (k : ℂ).re - 1 / 2) (fun k => siteP Z Z' w γ₀ k) (fun k => siteQ Z Z' w γ₀ k)

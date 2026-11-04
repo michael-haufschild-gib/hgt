@@ -88,7 +88,7 @@ theorem tendsto_critical_overlap_mul_prime_charge_cost {c : ℕ → ℝ}
   have hmul := (div_lt_div_iff₀ hc0 hB).mp hsmall
   have hb : B < c N * (t ^ 2 /
       primeIncidenceReceivingCapacity ((Icc 1 N).filter Nat.Prime) N) := by
-    rw [mul_div_assoc, lt_div_iff₀ hC]
+    rw [← mul_div_assoc, lt_div_iff₀ hC]
     nlinarith only [hmul]
   exact hAB.trans hb.le
 
