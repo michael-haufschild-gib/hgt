@@ -79,7 +79,7 @@ private theorem exp_neg_six_bound : Real.exp (-6 : ℝ) ≤ 1/400 := by
   rw [← Real.exp_nat_mul] at hp
   norm_num only [Nat.cast_ofNat,show (2 : ℝ)*3=6 by norm_num] at hp
   rw [Real.exp_neg,inv_eq_one_div]
-  exact one_div_le_one_div_of_le (by norm_num : (0 : ℝ) < 400) (by norm_num at hp; exact hp)
+  exact one_div_le_one_div_of_le (by norm_num : (0 : ℝ) < 400) hp
 
 private theorem base_scale_bound :
     Real.exp (3*Real.pi)/399*Real.exp (-(3*(32 : ℝ))) ≤ 8/(10 : ℝ)^41 := by
@@ -121,7 +121,7 @@ theorem scaled_even_error {k : ℕ} (hk : k ≤ 8) {x : ℝ}
 
 private theorem likelihood_bound : regimeOneLikelihoodScale center ≤ 8/(10 : ℝ)^41 := by
   have h := pow_mul_regimeOneLikelihoodScale_le (k := 0) (A₁ := 32)
-    (by norm_num) (by norm_num) (by rw [center_scale]; norm_num)
+    (by norm_num) (by norm_num) (by rw [center_scale])
   simp only [pow_zero,one_mul] at h
   exact h.trans base_scale_bound
 
@@ -213,7 +213,7 @@ theorem source_last_error :
       (sourceUnit center*32^(i.val+j.val))-leadingMoment 32 0 (i.val+j.val)
   have hA (i j : Fin 5) : |A i j| ≤ (61^2/10000 : ℝ) := by
     have h := scaled_even_error (k := i.val+j.val) (by omega)
-      (x := center) (by rw [center_scale]; norm_num)
+      (x := center) (by rw [center_scale])
     have hp := mul_le_mul_of_nonneg_left h (by positivity : (0 : ℝ) ≤ 61^2)
     dsimp only [A]
     rw [normalized_entry_difference,abs_mul,abs_of_nonneg (by positivity : (0 : ℝ) ≤ 61^2)]
@@ -224,8 +224,59 @@ theorem source_last_error :
   rw [he]
   have h := gaussian_entry_majorant A (fun _ => (61^2/10000 : ℝ)) hA 4 4
   have hb : (∑ u : Fin 5, ∑ v : Fin 5,
-      |gaussianBasis 4 u|*|gaussianBasis 4 v|*(61^2/10000 : ℝ)) ≤ 1 := by
+      |gaussianBasis 4 u| * |gaussianBasis 4 v| * (61^2/10000 : ℝ)) ≤ 1 := by
     norm_num [gaussianBasis,Fin.sum_univ_succ]
   exact h.trans hb
+
+private theorem exp_six_fifths_le_four : Real.exp (6/5 : ℝ) ≤ 4 := by
+  have he : Real.exp 1 ≤ (11/4 : ℝ) := by linarith only [Real.exp_one_lt_d9]
+  have hp := pow_le_pow_left₀ (Real.exp_pos 1).le he 6
+  rw [← Real.exp_nat_mul] at hp
+  norm_num only [Nat.cast_ofNat,mul_one] at hp
+  have h5 : Real.exp (6/5 : ℝ)^5 ≤ (4 : ℝ)^5 := by
+    rw [← Real.exp_nat_mul]
+    norm_num only [Nat.cast_ofNat,show (5 : ℝ)*(6/5)=6 by norm_num]
+    exact hp.trans (by norm_num)
+  by_contra h
+  have hh := pow_lt_pow_left₀ (lt_of_not_ge h) (by norm_num : (0 : ℝ) ≤ 4)
+    (by norm_num : (5 : ℕ) ≠ 0)
+  exact (not_lt_of_ge h5) hh
+
+private theorem hyperbolic_remainder_upper {u : ℝ} (hu : 0 ≤ u) (hu1 : u ≤ 6/5) :
+    u*Real.cosh u-Real.sinh u ≤ 3*Real.sinh u := by
+  have hc := (HTGeometry.cosh_le_exp_of_nonneg hu).trans
+    ((Real.exp_le_exp.mpr hu1).trans exp_six_fifths_le_four)
+  have hp := mul_le_mul_of_nonneg_left hc hu
+  have hs := HTGeometry.self_le_sinh_of_nonneg hu
+  linarith only [hp,hs]
+
+/-- Every critical aperture retains the negative differentiated profile at this center. -/
+theorem weighted_derivative_upper {a : ℝ} (ha0 : 0 ≤ a) (ha : a < 1/2) :
+    deriv (FifthPolynomialCross.flux a) (2*center) ≤
+      (2*center*Real.sinh (a*(2*center)))*(-268*thetaCuspFullSource center^2) := by
+  have hx := center_pos.le
+  have hr : 0 ≤ 2*center := by positivity
+  have hu : 0 ≤ a*(2*center) := mul_nonneg ha0 hr
+  have hu1 : a*(2*center) ≤ 6/5 := by
+    have h := mul_le_mul_of_nonneg_right ha.le hr
+    linarith only [h,center_bounds.2]
+  have hs : 0 ≤ Real.sinh (a*(2*center)) := Real.sinh_nonneg_iff.mpr hu
+  have hx2 := mul_self_le_mul_self center_pos.le center_bounds.2
+  have htlo : 0 ≤ 2*center^2-1 := by
+    have h := mul_self_le_mul_self (by norm_num : (0 : ℝ) ≤ 9/8) center_bounds.1
+    nlinarith only [h]
+  have hthi : 2*center^2-1 ≤ (47/25 : ℝ) := by nlinarith only [hx2]
+  have hp : FifthPolynomialCross.profile (2*center) ≤ 4 := by
+    have h := mul_self_le_mul_self htlo hthi
+    unfold FifthPolynomialCross.profile
+    nlinarith only [h]
+  have hrem := mul_le_mul_of_nonneg_left (hyperbolic_remainder_upper hu hu1)
+    (show 0 ≤ FifthPolynomialCross.profile (2*center)*(2*center)*thetaCuspFullSource center^2 from
+      mul_nonneg (mul_nonneg (FifthPolynomialCross.profile_nonneg _) hr) (sq_nonneg _))
+  have hprof := mul_le_mul_of_nonneg_right hp
+    (show 0 ≤ (2*center)*Real.sinh (a*(2*center))*thetaCuspFullSource center^2 by positivity)
+  have hmain := mul_le_mul_of_nonneg_left profile_compensation_upper (mul_nonneg hr hs)
+  rw [FifthPolynomialCross.deriv_flux_remainder,show 2*center/2=center by ring]
+  nlinarith only [hrem,hprof,hmain]
 
 end GaloisForLFunctions.ThetaCuspSections.ThirtyTwoCrossSource

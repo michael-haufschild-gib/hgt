@@ -105,6 +105,8 @@ import GaloisForLFunctions.ArithmeticCouplingTheory.TheAffineIncidenceEnergy
 import GaloisForLFunctions.ArithmeticCouplingTheory.TheCouplingOfACurve
 import GaloisForLFunctions.ArithmeticCouplingTheory.TheCouplingInterfaces
 
+import GaloisForLFunctions.ArithmeticCouplingTheory.ReceivingCharges.WeightedIncidenceMoments
+import GaloisForLFunctions.ArithmeticCouplingTheory.ReceivingCharges.MixedChannelDecomposition
 /-!
 # Arithmetic Coupling Theory
 

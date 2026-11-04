@@ -132,8 +132,8 @@ private theorem deriv_deriv_comp_mul_left {f : ℝ → ℂ} (hf : ContDiff ℝ 2
       (hf.differentiable (by norm_num)).differentiableAt
     have hmul : HasDerivAt (fun y : ℝ => r * y) r x := by
       simpa using (hasDerivAt_id x).const_mul r
-    convert hfx.hasDerivAt.scomp x hmul using 1
-    simp [real_smul, mul_comm]
+    exact ((hfx.hasDerivAt.hasFDerivAt.comp x hmul.hasFDerivAt).hasDerivAt).congr_deriv
+      (by simp [Complex.real_smul])
   have heq1 : deriv (fun y => f (r * y)) = fun x => (r : ℂ) * deriv f (r * x) :=
     funext fun x => (hd1 x).deriv
   rw [heq1]
@@ -146,9 +146,9 @@ private theorem deriv_deriv_comp_mul_left {f : ℝ → ℂ} (hf : ContDiff ℝ 2
       (hdf.differentiable (by norm_num)).differentiableAt
     have hmul : HasDerivAt (fun y : ℝ => r * y) r u := by
       simpa using (hasDerivAt_id u).const_mul r
-    have hcomp : HasDerivAt (fun x => deriv f (r * x)) ((r : ℂ) * deriv (deriv f) (r * u)) u := by
-      convert hfx.hasDerivAt.scomp u hmul using 1
-      simp [real_smul, mul_comm]
+    have hcomp : HasDerivAt (fun x => deriv f (r * x)) ((r : ℂ) * deriv (deriv f) (r * u)) u :=
+      ((hfx.hasDerivAt.hasFDerivAt.comp u hmul.hasFDerivAt).hasDerivAt).congr_deriv
+        (by simp [Complex.real_smul])
     exact hcomp.const_mul (r : ℂ)
   rw [hd2.deriv]
   ring
@@ -247,6 +247,7 @@ private theorem tendsto_paperFT_dilate {f : ℝ → ℂ} (hf : Continuous f) {a 
         rcases lt_or_ge u 0 with hneg | hpos
         · exact ⟨by nlinarith, by linarith⟩
         · exact ⟨by linarith, by nlinarith⟩)
+      change ‖f (r n * u) * cexp (I * z * (u : ℂ))‖ ≤ 0
       simp [hfu]
   · refine Eventually.of_forall fun u => ?_
     have hrt : Tendsto (fun n : ℕ => r n * u) atTop (𝓝 u) := by
@@ -507,8 +508,8 @@ theorem windowForm_nonneg_iff_zetaWindowPositive_half (A : ℝ) :
         vanish := fun u hu => hv (u + A / 2) (by
           rw [mem_Icc, not_and_or, not_le, not_le] at hu
           rcases hu with hlt | hgt
-          · rw [abs_of_neg (by linarith)]; linarith
-          · rw [abs_of_pos (by linarith)]; linarith) }
+          · exact lt_of_lt_of_le (by linarith) (neg_le_abs _)
+          · exact lt_of_lt_of_le (by linarith) (le_abs_self _)) }
     rw [fullZeroForm_eq_weilQuad_local hF.continuous hFc, ← weilQuad_add_right_eq F (A / 2)]
     exact h H hH
   · intro h H hH

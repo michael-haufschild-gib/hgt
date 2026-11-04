@@ -86,17 +86,23 @@ Pillars (module — main theorems), all checked with `lake --old env lean`, umbr
 - IsolatedPointsAreSeenByTheLocalCamera — `exists_bump_one_le_norm_paperFT_I_mul`,
   `exists_uniform_isolating_window`, `one_add_pow_le_of_isolated_cancellation`
 - ZetaZerosHaveTheSharpLocalDensity — `ncount_le_of_goodHeight`, `exists_card_le_sharp_centred`
+- TheLocalCameraConstantIsQuasiPolynomial, TheLocalCameraFixesTheIsolatedZerosOfZeta —
+  `log_inv_windowFloor_le_of_le_one`, `multDiff_zeta_eq_zero_of_nearly_isolated`,
+  `exists_near_coincidence_of_zeta_mimic`
+- SplineBumpsDecayAtAnExplicitRate, ShallowConfigurationsAreResolvedLocally —
+  `exists_explicit_bump`, `eq_of_locally_shallow_at_ingham_scale`
+- DeepColumnsHideOnlyBelowTheInghamScale — `W_shiftedLatticeConfig_lagFormula`, `deepColumn_mimic_iff`
 - SymmetricHalvesArePhaseLattices, FiniteCarriersAreRealAboveTheirHorizon, TiltsCostPrimeWeight —
   `ncard_sym_zeros`, `carrier_ne_zero_near_line`, `eulerDepth_ne_zero_near_line`,
   `twin_tilt_costs_weight`, `exists_twin_tilt_beyond_every_weight`
 
 ## Open core
-The route to RH is on its own card (`zcg-rh-route.md`). It runs from archimedean domination of the
-heat flow above `2π e^{(2/3+ε)/t}`, through a collision-free descent, to `ζ`. Open: O1 domination
-below the mean spacing; O2 explicit constants of the local camera, whose qualitative form is proved
-(`one_add_pow_le_of_isolated_cancellation`; programme-internal, next target); O3 reality of the
-coalescent near-collisions in the last stretch. Internal open tools: the depth range
-of the Ingham scale between `π/(2a)` and `π/a`, and the Beurling–Malliavin radius.
+The route to RH is on its own card (`zcg-rh-route.md`). Steps 1–5 of the heat descent are proved
+([L], [P]); the camera fixes the configuration of `ζ` outside near-coincidence clusters and is
+killed as a producer. Open: (a) reality inside near-coincidence clusters below `X^{−M}` (B44),
+(b) a Hermite–Biehler half of the heat source below `½/log X` (B49), both cancellation statements for
+the Euler product inside the strip. Internal open question: deep configurations other than columns
+between `π/(2a)` and `π/a`.
 
 ## Log
 - 2026-11-04 — created; forty pillar modules checked; README written.

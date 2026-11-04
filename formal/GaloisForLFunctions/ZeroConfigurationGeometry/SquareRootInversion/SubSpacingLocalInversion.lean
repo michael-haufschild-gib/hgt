@@ -466,10 +466,10 @@ private theorem subspacing_ordinate_sq_le {T u : ℝ} {z₀ : ℂ} (hu1 : 1 ≤ 
 
 private theorem subspacing_camera_budget
     {lam β M ℓ c K MK ρ α q S'' T u a ε D C₀ η Sg E : ℝ} {z₀ : ℂ} {k m : ℕ}
-    (hu1 : 1 ≤ u) (hTu : T = 2 * π * Real.exp u) (hM : 0 ≤ M) (hlam0 : 0 < lam)
-    (hβlam : β ≤ lam) (hβ0 : 0 < β) (hℓ0 : 0 ≤ ℓ)
+    (hu1 : 1 ≤ u) (hTu : T = 2 * π * Real.exp u) (hM : 0 ≤ M) (_hlam0 : 0 < lam)
+    (hβlam : β ≤ lam) (hℓ0 : 0 ≤ ℓ)
     (hc : c = 2 * growthRate ℓ * lam ^ 2 + 2 * floorRate ℓ * lam ^ 2 * (lam + 8 * M))
-    (hK : K = c / 2 + 2) (hMK0 : 0 < MK) (hρ0 : 0 < ρ)
+    (hK : K = c / 2 + 2) (_hMK0 : 0 < MK) (hρ0 : 0 < ρ)
     (hα : α = 1 / (8 * MK * (1 + ρ))) (hα0 : 0 < α)
     (hq : q = max 0 (Real.log α⁻¹)) (hS''1 : 1 ≤ S'')
     (hu_bud : 2 * MK * q + (lam + 4) + (Real.log S'' + 605) + 1 ≤ u)
@@ -479,7 +479,6 @@ private theorem subspacing_camera_budget
     (hkK : K * u ^ 2 ≤ k) (hk1 : 1 ≤ k)
     (hmle : (m : ℝ) ≤ MK * u ^ 2) (hmε : (m : ℝ) / ε ≤ ρ * u)
     (hz₀ : |z₀.im - T| ≤ T / 4) (hSg0 : 0 ≤ Sg) (hSgS'' : Sg ≤ S'')
-    (hE0 : 0 ≤ E)
     (htail : E * (1 + T / 4) ^ (2 * k - 2) ≤
       localCameraConst a D C₀ η ε ((4 * (1 + (m : ℝ) / ε)) ^ m) 1 * (1 + |z₀.im|) ^ 2 * Sg) :
     E ≤ 1 / 4 := by
@@ -639,14 +638,14 @@ theorem exists_subspacing_isolating_windows {θ lam A S M : ℝ} (hθ : 0 ≤ θ
   have hβlam : β ≤ lam := by rw [hβ]; linarith
   obtain ⟨ℓ, hℓ⟩ : ∃ ℓ, ℓ = 2 * π * A / lam := ⟨_, rfl⟩
   have hℓ0 : 0 ≤ ℓ := by rw [hℓ]; positivity
-  have hg0 := growthRate_nonneg hℓ0
-  have hf0 := floorRate_nonneg hℓ0
   obtain ⟨e, he⟩ : ∃ e, e = 6 * slackBound ℓ * (1 + slackBound ℓ) := ⟨_, rfl⟩
-  have hσ0 : 0 ≤ slackBound ℓ := by unfold slackBound; linarith
+  have : 0 ≤ slackBound ℓ := by unfold slackBound; linarith
   have he0 : 0 ≤ e := by rw [he]; positivity
   obtain ⟨c, hc⟩ : ∃ c, c = 2 * growthRate ℓ * lam ^ 2 +
       2 * floorRate ℓ * lam ^ 2 * (lam + 8 * M) := ⟨_, rfl⟩
-  have hc0 : 0 ≤ c := by rw [hc]; positivity
+  have : 0 ≤ growthRate ℓ := growthRate_nonneg hℓ0
+  have : 0 ≤ floorRate ℓ := floorRate_nonneg hℓ0
+  have : 0 ≤ c := by rw [hc]; positivity
   obtain ⟨K, hK⟩ : ∃ K, K = c / 2 + 2 := ⟨_, rfl⟩
   have hK1 : 2 ≤ K := by rw [hK]; linarith
   obtain ⟨MK, hMK⟩ : ∃ MK, MK = e * lam + K + 2 := ⟨_, rfl⟩
@@ -697,7 +696,11 @@ theorem exists_subspacing_isolating_windows {θ lam A S M : ℝ} (hθ : 0 ≤ θ
     rw [hD, hβ]
     have h1 : (θ + (lam - θ / 2)) / (2 * π) ≤ lam := by
       rw [div_le_iff₀ h2π0]
-      nlinarith [Real.pi_gt_three]
+      have h2lam : 2 * lam ≤ lam * (2 * π) := by
+        have := mul_le_mul_of_nonneg_left (show (2 : ℝ) ≤ 2 * π by linarith [Real.pi_gt_three])
+          hlam0.le
+        linarith
+      linarith
     exact mul_le_mul_of_nonneg_right h1 hu0.le
   have hD1 : 1 ≤ D := by
     refine le_trans ?_ hDlow
@@ -721,7 +724,8 @@ theorem exists_subspacing_isolating_windows {θ lam A S M : ℝ} (hθ : 0 ≤ θ
   have hkle : (k : ℝ) ≤ K * u ^ 2 + 1 := by
     rw [hk]; exact (Nat.ceil_lt_add_one (by positivity)).le
   have hk1 : 1 ≤ k := by
-    have h1 : (1 : ℝ) ≤ K * u ^ 2 := one_le_mul_of_one_le_of_one_le (by linarith) (one_le_pow₀ hu1)
+    have h1 : (1 : ℝ) ≤ K * u ^ 2 :=
+      one_le_mul_of_one_le_of_one_le (by linarith [hK1]) (one_le_pow₀ hu1 : 1 ≤ u ^ 2)
     exact_mod_cast h1.trans hkK
   obtain ⟨W, hWdef⟩ : ∃ W, W = windowExponent (2 * D⁻¹) (localSlack D C₀) := ⟨_, rfl⟩
   have hW0 : 0 ≤ W := by
@@ -737,11 +741,12 @@ theorem exists_subspacing_isolating_windows {θ lam A S M : ℝ} (hθ : 0 ≤ θ
     have h1 : (⌈W⌉₊ : ℝ) ≤ W + 1 := (Nat.ceil_lt_add_one hW0).le
     have h2 : e * D ≤ e * (lam * u) := mul_le_mul_of_nonneg_left hDup he0
     have hu2 : u ≤ u ^ 2 := by simpa [sq] using mul_le_mul_of_nonneg_right hu1 hu0.le
-    have h1u2 : 1 ≤ u ^ 2 := one_le_pow₀ hu1
+    have : 1 ≤ u ^ 2 := one_le_pow₀ hu1
     have h3 : e * (lam * u) ≤ e * lam * u ^ 2 := by
       calc e * (lam * u) = e * lam * u := by ring
         _ ≤ e * lam * u ^ 2 := mul_le_mul_of_nonneg_left hu2 (by positivity)
-    linarith [show (e * lam + K + 2) * u ^ 2 = e * lam * u ^ 2 + K * u ^ 2 + 2 * u ^ 2 by ring]
+    linarith [hWle, hkle,
+      show (e * lam + K + 2) * u ^ 2 = e * lam * u ^ 2 + K * u ^ 2 + 2 * u ^ 2 by ring]
   have hmε : (m : ℝ) / ε ≤ ρ * u := by
     rw [div_le_iff₀ hε0, hρ, hε]
     have : 8 * MK / β * u * (β * u / 8) = MK * u ^ 2 := by field_simp
@@ -763,21 +768,21 @@ theorem exists_subspacing_isolating_windows {θ lam A S M : ℝ} (hθ : 0 ≤ θ
     have hDθ : θ / (2 * π) * u ≤ D := by
       rw [hD]
       exact mul_le_mul_of_nonneg_right
-        (div_le_div_of_nonneg_right (by linarith) h2π0.le) hu0.le
+        (div_le_div_of_nonneg_right (by linarith [hβ0]) h2π0.le) hu0.le
     have hmul : θ / (2 * π) * u * (y - x) ≤ D * (y - x) :=
       mul_le_mul_of_nonneg_right hDθ (sub_nonneg.mpr hxy)
     linarith
   obtain ⟨F, G, hFw, hGw, _, hP0_ne, hnear, htail⟩ :=
-    exists_isolating_window_pair_of_bump hD0 hη0 hε0 hDa hb hbs hb1 hk1 hm hbm
+    exists_isolating_window_pair_of_bump hD0 hη0 hε0 hDa hb hbs hb1 hk1 hm (C0 := 1) hbm
       (fun w => by rw [one_mul]; exact hb0 w) hZ hZ' (R := T / 4) (by positivity) hc_ne hiso'
       hcount'
   refine ⟨F, G, hFw, hGw, hP0_ne, hnear, ?_⟩
   have hSg0 : 0 ≤ ∑' z, ‖multDiff Z Z' z‖ / (1 + Complex.normSq (gammaOf z)) :=
     tsum_nonneg fun z => div_nonneg (norm_nonneg _)
       (by have := Complex.normSq_nonneg (gammaOf z); linarith)
-  exact subspacing_camera_budget hu1 hTu hM hlam0 hβlam hβ0 hℓ0 hc hK hMK0 hρ0 hα hα0 hq hS''1
+  exact subspacing_camera_budget hu1 hTu hM hlam0 hβlam hℓ0 hc hK hMK0 hρ0 hα hα0 hq hS''1
     hu_bud ha hε hε0 hD1 hDup hC₀ℓ hη hη0 hkK hk1 hmle hmε hz₀ hSg0
-    (hStail.trans (by rw [hS'']; exact le_max_left _ _)) (norm_nonneg _) htail
+    (hStail.trans (by rw [hS'']; exact le_max_left _ _)) htail
 
 /-! ### Exact polynomial and `o(1 / log T)` local inversion corollaries -/
 

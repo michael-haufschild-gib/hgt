@@ -25,7 +25,7 @@ private theorem indicator_product_le {p q n : ℕ} (hp : p.Prime) (hq : q.Prime)
       (if p * q ∣ n then 1 else 0) + if p = q then (if p ∣ n then 1 else 0) else 0 := by
   by_cases hpq : p = q
   · subst q
-    simp only [if_pos rfl]
+    rw [if_pos (rfl : p = p)]
     split_ifs <;> norm_num
   · simp only [if_neg hpq, add_zero]
     by_cases hpn : p ∣ n
@@ -56,9 +56,10 @@ theorem weighted_count_moment {P : Finset ℕ} (hP : ∀ p ∈ P, p.Prime)
         intro p hp
         apply sum_le_sum
         intro q hq
-        have h := mul_le_mul_of_nonneg_left (indicator_product_le (hP p hp) (hP q hq))
+        have h := mul_le_mul_of_nonneg_left (indicator_product_le (n := n) (hP p hp) (hP q hq))
           (mul_nonneg (ha p hp) (ha q hq))
-        convert h using 1 <;> ring
+        convert h using 1
+        ring
       _ = _ := by
         simp only [mul_add, sum_add_distrib, mul_ite, mul_zero, sum_ite_eq]
         congr 1
@@ -78,7 +79,6 @@ theorem weighted_count_moment {P : Finset ℕ} (hP : ∀ p ∈ P, p.Prime)
     rw [sum_comm]
     apply sum_congr rfl
     intro q _
-    rw [mul_sum]
     exact sum_congr rfl fun n _ => by split_ifs <;> ring
   have hdiagSum :
       (∑ n ∈ Icc 1 N, ν n * (∑ p ∈ P, a p ^ 2 * if p ∣ n then (1 : ℝ) else 0)) =
@@ -87,7 +87,6 @@ theorem weighted_count_moment {P : Finset ℕ} (hP : ∀ p ∈ P, p.Prime)
     rw [sum_comm]
     apply sum_congr rfl
     intro p _
-    rw [mul_sum]
     exact sum_congr rfl fun n _ => by split_ifs <;> ring
   calc
     _ ≤ ∑ n ∈ Icc 1 N, ν n *

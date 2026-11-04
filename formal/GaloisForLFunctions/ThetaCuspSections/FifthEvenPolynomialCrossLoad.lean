@@ -106,6 +106,15 @@ private theorem deriv_flux_product (a r : ℝ) : deriv (flux a) r =
   rw [(hasDerivAt_thetaCuspCenterCompensationFlux a r).deriv]
   exact h.deriv
 
+/-- The exact aperture remainder is the hyperbolic defect times the squared source. -/
+theorem deriv_flux_remainder (a r : ℝ) : deriv (flux a) r =
+    r*Real.sinh (a*r)*compensation (r/2)+
+      profile r*r*(a*r*Real.cosh (a*r)-Real.sinh (a*r))*thetaCuspFullSource (r/2)^2 := by
+  rw [deriv_flux_product,(hasDerivAt_thetaCuspCenterCompensationFlux a r).deriv]
+  simp only [profile,compensation,thetaCuspCenterCompensationSource,
+    thetaCuspCenterCompensationFlux]
+  ring
+
 /-- The nonnegative profile retains the aperture-independent lower source. -/
 theorem deriv_flux_lower {a r : ℝ} (ha : 0 ≤ a) (hr : 0 ≤ r) :
     r*Real.sinh (a*r)*compensation (r/2) ≤ deriv (flux a) r := by

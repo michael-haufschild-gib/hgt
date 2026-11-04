@@ -3,66 +3,55 @@
 - **ID:** zcg-rh-route
 - **Stage:** 1-in-progress
 - **Type:** CANDIDATE
-- **Source:** docs/reports/review-0311/fable-zero-configuration-geometry.md (Q0, Q3, Q4) · formal/GaloisForLFunctions/ZeroConfigurationGeometry/README.md §10
-- **Statement:** RH follows from either of two statements. (O1) The heat flow is dominated down
-  to `t = 0` at every height. (O3) No collision occurs in the last stretch
-  `t ∈ (0, (2/3+ε)/log X]` of the heat descent at any height. The local camera (O2) turns O3 into a
-  statement about the reality of coalescent near-collisions.
+- **Source:** docs/reports/review-0311/fable-zero-configuration-geometry.md (Q0, Q3, Q4) · docs/reports/review-0411/obstacles-summary_v2.md (1.9, 1.10, 2.5.5, 2.6.5, B44, B49, B51) · formal/GaloisForLFunctions/ZeroConfigurationGeometry/README.md §10
+- **Statement:** Steps 1–5 of the descent are proved ([L] and [P]); the remaining step 6 reduces to
+  (a) reality inside near-coincidence clusters of `ζ` smaller than `X^{−M}` (B44) and (b) no
+  collision of `H_t` near `X` for `t ∈ (0, ½/log X]` (B49). The camera fixes the configuration of
+  `ζ` at `t = 0` outside such clusters; it produces nothing alone.
 
 ## Goal
-A route to RH whose decisive mechanism is specific to `ζ` and sign-free. The ζ-specific mechanism
-is the archimedean contraction of the functional equation:
-`log|χ(σ+it)| ≤ −(σ − ½) log(t/2π) + O(1/t)`. It dominates Euler carriers above height
-`2π e^{2ψ(N)+1}`, and the heat flow `H_t` above height `2π e^{(2/3+ε)/t}`. The route carries this
-domination down to `t = 0` at every height. No positivity of a form, no spectrum, no count is used
-as the decisive step.
+A route to RH whose decisive mechanism is specific to `ζ` and sign-free: the archimedean contraction
+of the functional equation, carried down to `ζ` along the heat deformation. No positivity of a form,
+no spectrum, no count is used as the decisive step.
 
 ## The chain
 
-| # | Statement | Status | Lean |
+| # | Statement | Status | Lean / card |
 |---|---|---|---|
-| 1 | At height `X`, `H_t` is real and simple for `t ≥ t_X = (2/3+ε)/log X` | proved | `eventually_localNewmanConstant_le_twoThirds`, `riemannHeat_zeros_real_simple_twoThirds` |
-| 2 | RH ⇔ `Λ_X = 0` for every `X` | proved | `riemannHypothesis_iff_forall_localNewmanConstant_eq_zero` |
-| 3 | Along the descent, reality is lost only at a double zero | proved | `riemannHypothesis_iff_forall_zeros_simple`, `exists_first_collision` |
-| 4 | A zero of depth `d` at height `X` forces `Λ_X ≥ c d²/log X` | proved | `exists_le_localNewmanConstant_of_offLine_zero` |
-| 5 | At `t = 0`, the only time the image is arithmetic, the image at every aperture above `L = ½ log(X/2π)` determines the points near height `X` isolated at a fixed fraction of the mean spacing (so every cancelling cluster is a near-collision cluster), and reads near-collisions at second order | proved for `ζ` at isolated points (`π/(λ log X)`); near-collisions open (O2) | `multDiff_zeta_eq_zero_of_isolated`, `one_add_pow_le_of_isolated_cancellation`, `exists_card_le_sharp_centred`, `norm_pairSignal_sub_sq_mul_curvature_le`, `deriv_deriv_primeChannel_modulate` |
-| 6 | The configuration fixed in step 5 has no shallow tilt and no cluster that collides in the last stretch | open (O1, O3) | — |
+| 1 | Near `X`, `H_t` is real and simple for `t ≥ (6600/9991 + ε)/log X` | `(2/3 + ε)` [L]; `6600/9991` [P]; above `½/log X`, so carries no zero information | `eventually_localNewmanConstant_le_twoThirds`; `zcg-heat-scale-source-repulsion` |
+| 2 | RH ⇔ `Λ_X = 0` for every `X` | [L] | `riemannHypothesis_iff_forall_localNewmanConstant_eq_zero` |
+| 3 | Along the descent, reality is lost only at a double zero; simplicity = phase speed of the symmetric half `Q_t` | [L]; phase-speed law [P] | `riemannHypothesis_iff_forall_zeros_simple`, `exists_first_collision`; `zcg-heat-scale-source-repulsion` |
+| 4 | A zero of depth `d` at height `X` forces `Λ_X ≥ c d²/log X` | [L] | `exists_le_localNewmanConstant_of_offLine_zero` |
+| 5 | At `t = 0`, the image at every aperture above `L = ½ log(X/2π)` fixes the configuration of `ζ` outside near-coincidence clusters | [L] at `exp(−κ log X/(1 + log log X))`; [P] uniformly at `X^{−M}`, Lean assembly in progress | `multDiff_zeta_eq_zero_of_nearly_isolated`, `exists_near_coincidence_of_zeta_mimic`; `zcg-square-root-local-inversion` |
+| 6 | No collision near `X` for `t ∈ (0, ½/log X]`, and reality inside near-coincidence clusters | open: (a) B44, (b) B49 | — |
 
-## Obstacles
-- **O1 Domination below the mean spacing.** The horizon constant `2/3 = 4μ(½)` is the floor of the
-  Gaussian domination method (`KiKimLeeTwoThirdsHorizon`). Subconvexity lowers it (Bourgain:
-  `13/21`). Lindelöf gives only `Λ_X = o(1/log X)`. Closing needs domination that sees the
-  configuration at scale `1/log X`.
-- **O2 Local camera below the isolation scale (programme-internal, next target).** Proved: for
-  `λ > 1/4 + πμ/2` and large `X`, a tempered mimic of `ζ` at aperture `λ log X` with local density
-  `≤ μ log X` agrees with `ζ` at every `π/(λ log X)`-isolated point of height `X`
-  (`multDiff_zeta_eq_zero_of_isolated`, `exists_near_point_of_zeta_mimic`; `μ = 1/2π` gives aperture `> ½ log X ≈ L`, sharp for the density method by the lattice pair `exists_onLine_mimic_at_density`). The constant is `e^{O((log X)²)}`
-  and decay order `k ≍ log X` beats it. Open: cluster points closer than `π/(λ log X)`, i.e. the local
-  form of the Ingham-scale resolution (`exists_depth_resolving_at_ingham_scale`) for near-collisions.
-- **O3 Repulsion in the last stretch (arithmetic).** Every tilt at height `X` must collide before
-  heat `t_X`. An isolated pair of squared half-gap `−δ²` collides at heat `δ²/2` (single-pair law,
-  proved for polynomials), so isolated tilts would be shallow, `δ² ≲ 1/log X`. Deeper ones need a
-  cluster at the heat scale `√t_X`. O3 asks the arithmetic image at `t = 0` to exclude both. Shallow
-  tilts are read only at second order, through coalescent prime pairs below the mean spacing
-  (`primeCoalSum_eq_oddEvenShiftPrimeCoalSum`). It must use the Euler product with the strict Euler
-  bound: the twins are dominated above their horizon and still have tilted columns. The gap is
-  exact (`twin_tilt_costs_weight`, `exists_twin_tilt_beyond_every_weight`): a tilted carrier zero at
-  height `t` costs weight `≥ log(t/2π) − 6/t`, and the twins' tilts are reached once the weight grows
-  like `log` height, as `W_Λ` does. O3 must therefore use cancellation of the prime sum, not its size.
-- **Endpoint calibration.** `Λ ≥ 0` (Rodgers–Tao): the descent must use a property that holds
-  exactly at `t = 0`. The Euler product has this property; the heat flow destroys it for `t > 0`.
+## The residual
+- **(a) B44.** Reality at near-coincident clusters below the isolation scale. Second-order local
+  inversion (B51) would fix centre and squared gap `w²` of every near-coincident pair at aperture
+  `(1 + ε)L`, uniformly in height. The squared gap is read linearly through the `(log n)²`-weighted
+  coalescent channel (`norm_pairSignal_sub_sq_mul_curvature_le`, `deriv_deriv_primeChannel_modulate`).
+  Its sign is B44 in prime form.
+- **(b) B49.** A Hermite–Biehler half `Q` from Euler and Gamma data with `H_t = Q + Q^#` and
+  `|Q^#| < |Q|` off the line for `t ∈ (0, ½/log X]`. Below `½/log X` the Gaussian saddle
+  `σ* = ½ + t log(X/2π)` lies in the strip, so domination needs a lower bound for `ζ` on a horizontal
+  segment inside the strip: zero-free-region information. The twins (`twin_tilt_costs_weight`,
+  `exists_twin_tilt_beyond_every_weight`) force it to come from cancellation of the prime sum, not its
+  size.
+- **Killed: the camera as a producer.** Identification is complete and sign-free and decides nothing
+  alone. The residual is a precision problem (square-root-type cancellation at the saddle), not an
+  identification problem.
 
 ## Gates
-- [x] 0 → 1  in-progress: well-posed, ζ-specific mechanism identified, chain steps 1–4 proved in the
-  corpus
-- [ ] 1 → 2  fully-proven: O1 or (O2 and O3) on paper
+- [x] 0 → 1  in-progress: well-posed, ζ-specific mechanism identified, chain steps 1–5 proved
+- [ ] 1 → 2  fully-proven: (a) and (b) on paper
 - [ ] 2 → 3  formalized
 
 ## Approach
-Step 5 is a theorem about `ζ` for isolated points. Next: the local Ingham-scale resolution for
-near-collisions, the point where step 5 meets O3. Then formulate O3 as an exact
-statement about the heat-deformed coalescent channel at height `X`, and calibrate it against the
-twins, sparse flips and Davenport–Heilbronn data before attacking it.
+The camera–heat assembly is formalization: `X^{−M}` local inversion, the symmetric-half collision
+law and the four-piece horizon (cards `zcg-square-root-local-inversion`,
+`zcg-heat-scale-source-repulsion`). The research core is (b): a mollified Euler–Gamma half that is
+one-sided below `½/log X`. First test: one `τ < ½` on almost all unit windows near `X`.
 
 ## Log
 - 2026-11-04 — created; chain steps 1–4 anchored in the corpus, step 5 in ZCG
+- 2026-11-04 — step 5 for `ζ` in Lean; residual stated as B44 and B49

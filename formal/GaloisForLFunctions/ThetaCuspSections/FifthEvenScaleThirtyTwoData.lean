@@ -16,6 +16,8 @@ open scoped EightCrossData
 /-- The last Gaussian coordinate is negative despite a unit diagonal allowance. -/
 theorem upper_model_last_negative : polyModel 32 0 (-216*61^2) 1 4 4 < 0 := by
   norm_cross_model
-  norm_num [show (4 : Fin 5)=Fin.succ (3 : Fin 4) by rfl]
+  simp only [show (4 : Fin 5) = Fin.succ (Fin.succ (Fin.succ (Fin.succ 0))) by rfl,
+    Matrix.cons_val_succ, Matrix.cons_val_zero]
+  norm_num
 
 end GaloisForLFunctions.ThetaCuspSections.ThirtyTwoCrossData
