@@ -254,8 +254,8 @@ Choosing the bands first and the horizon second gives arbitrarily small raw
 input square, adjunction and absolute raw complete energy at any fixed charge,
 on arbitrarily large horizons. No fixed linear combination of those costs
 bounds charge (`PrimeChargeRawObstruction`, checked).
-`PrimeChargeConsequences` contains the concrete tilted-spline specialization
-and the physical-cost obstruction; check pending.
+`PrimeChargeConsequences` checks the concrete tilted-spline specialization
+and the physical-cost obstruction.
 
 The continuum form suggested by the finite grids is
 `∫₀¹(1−u)f(u)²du=∫₀¹uT′(u)²du`, `T(u)=∫_(1−u)^1 f(v)dv`.

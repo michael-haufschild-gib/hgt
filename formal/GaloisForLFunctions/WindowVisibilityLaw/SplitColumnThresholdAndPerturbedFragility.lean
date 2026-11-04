@@ -93,6 +93,7 @@ private theorem norm_cexp_mul_iterDivWindow_le {r M : ℝ} (hr : 0 ≤ r) (hM0 :
       have hd := (((hasDerivAt_id s).add_const r).pow (n + 1) |>.const_mul M).div_const
         ((n + 1).factorial : ℝ)
       refine hd.congr_deriv ?_
+      dsimp only [id]
       have hnf : (n.factorial : ℝ) ≠ 0 := Nat.cast_ne_zero.mpr (Nat.factorial_ne_zero n)
       have hn1 : ((n + 1 : ℕ) : ℝ) ≠ 0 := by positivity
       rw [Nat.factorial_succ, Nat.cast_mul]
@@ -110,7 +111,7 @@ private theorem norm_cexp_mul_iterDivWindow_le {r M : ℝ} (hr : 0 ≤ r) (hM0 :
       _ = M * (u + r) ^ (n + 1) / ((n + 1).factorial : ℝ) := by
           rw [intervalIntegral.integral_eq_sub_of_hasDerivAt (fun s _ => hantideriv s)
             (hmaj_cont.intervalIntegrable _ _)]
-          simp [add_neg_cancel, zero_pow (Nat.succ_ne_zero n)]
+          simp [zero_pow (Nat.succ_ne_zero n)]
 
 /-- **Finite-multiplicity division.** If a window `f` of aperture `r ≥ 0` satisfies
 `paperFT f w₁ ≠ 0`, iterated division at any frequency `w₂` terminates in finitely many steps at a
@@ -180,7 +181,7 @@ theorem exists_iter_divWindow_paperFT_ne_zero {r : ℝ} (hr : 0 ≤ r) {f : ℝ 
             dsimp [C, X]; rw [mul_pow]; ring
     have hlim : Tendsto (fun n : ℕ => C * (X ^ n / (n.factorial : ℝ))) atTop (𝓝 0) := by
       simpa using (Real.summable_pow_div_factorial X).tendsto_atTop_zero.const_mul C
-    have h0 : ‖paperFT f w₁‖ ≤ 0 := le_of_tendsto' hlim hbound
+    have h0 : ‖paperFT f w₁‖ ≤ 0 := ge_of_tendsto' hlim hbound
     exact hw₁ (norm_le_zero_iff.mp h0)
   set m := Nat.find hex
   have hm_ne : paperFT (iterDivWindow r w₂ m f) w₂ ≠ 0 := Nat.find_spec hex
@@ -286,8 +287,9 @@ theorem exists_window_re_W_neg_of_one_side_isolation {Z : ZeroConfig} {ρ₀ : �
     rw [pointImage, show gammaOf ρ₀ = w_pos from rfl, ← gammaOf_reflect_eq_conj,
       show gammaOf (reflect ρ₀) = w_neg from rfl, hf_pos, hf_neg, map_neg, mul_neg]
   have p1 : pointImage f f (reflect ρ₀) = -(U * conj U) := by
-    rw [pointImage, show gammaOf (reflect ρ₀) = w_neg from rfl, gammaOf_reflect_eq_conj,
-      Complex.conj_conj, show gammaOf ρ₀ = w_pos from rfl, hf_neg, hf_pos]
+    have hw_conj : conj w_neg = w_pos := by
+      dsimp [w_neg, w_pos]; rw [gammaOf_reflect_eq_conj, Complex.conj_conj]
+    rw [pointImage, show gammaOf (reflect ρ₀) = w_neg from rfl, hw_conj, hf_neg, hf_pos]
     ring
   refine ⟨f, hf, ?_⟩
   rw [W_eq_sum_of_support Z ({ρ₀, reflect ρ₀} : Finset ℂ) hS, Finset.sum_pair hrefl_ne.symm,
@@ -396,7 +398,7 @@ theorem re_eq_half_of_re_W_nonneg_of_split_columns {ι₁ ι₂ : Type*} [Decida
     rintro _ h1 h2
     obtain ⟨i, _, rfl⟩ := Finset.mem_image.mp h1
     obtain ⟨j, _, h⟩ := Finset.mem_image.mp h2
-    exact Sum.noConfusion h
+    nomatch h
   set h_sum : ι₁ ⊕ ι₂ → ℝ := Sum.elim h_on h_off
   set L_sum : ι₁ ⊕ ι₂ → ℝ := Sum.elim L_on L_off
   set ν_sum : ι₁ ⊕ ι₂ → ℤ → ℂ := Sum.elim (fun i k => (ν_on i k : ℂ)) ν_right
@@ -550,9 +552,8 @@ theorem re_eq_half_of_re_W_nonneg_of_curve_columns_improved {Z : ZeroConfig} {g 
       _ ≤ |θ j| / Real.log q + 1 / 2 := by linarith [hδ j]
   have him : ∀ j ∈ T_pos, ∀ k, |(ν j k).im| ≤ 1 / 2 := by
     intro j _ k
-    dsimp [ν]
-    simp only [Complex.sub_im, Complex.ofReal_im, Complex.mul_im, Complex.I_re, Complex.I_im,
-      Complex.ofReal_re, zero_mul, one_mul, zero_sub, zero_add, abs_neg]
+    have him_eq : (ν j k).im = -δ j := by simp [ν]
+    rw [him_eq, abs_neg]
     exact hδ j
   have hsum_le : π * ∑ _j ∈ T_pos, (2 * π / Real.log q)⁻¹ ≤ ((g : ℝ) - 1 / 2) * Real.log q := by
     rw [Finset.sum_const, nsmul_eq_mul]
@@ -730,7 +731,7 @@ theorem temperedConfig_mixedGenusColumnConfig {g : ℕ} (hg : 2 ≤ g) {ℓ δ :
   have h2 : Summable (Z_off.carrier.indicator fun ρ =>
       (Z_off.mult ρ : ℝ) / (1 + Complex.normSq (gammaOf ρ))) :=
     summable_subtype_iff_indicator.mp (temperedConfig_offLineLatticeConfig hℓ hδ hδ')
-  rw [TemperedConfig, ← summable_subtype_iff_indicator]
+  refine summable_subtype_iff_indicator.mpr ?_
   refine Summable.of_nonneg_of_le (fun z => Set.indicator_nonneg (fun ρ _ => ?_) z)
     (fun z => ?_) (h1.add h2)
   · have := Complex.normSq_nonneg (gammaOf ρ); positivity
@@ -799,7 +800,7 @@ theorem two_mul_W_mixedGenusColumnConfig_add {g : ℕ} (hg : 2 ≤ g) {ℓ δ : 
       have hN_ne : (N : ℝ) ≠ 0 := hN_real.ne'
       have hπ_ne : π ≠ 0 := Real.pi_ne_zero
       have hmr : (m : ℝ) = (N : ℝ) * (k : ℝ) := by
-        field_simp at him; linear_combination him / (2 * π)
+        field_simp at him; linarith
       exact ⟨k, by exact_mod_cast hmr⟩
     · rintro ⟨k, rfl⟩
       refine ⟨k, ?_⟩
@@ -809,6 +810,10 @@ theorem two_mul_W_mixedGenusColumnConfig_add {g : ℕ} (hg : 2 ≤ g) {ℓ δ : 
         have hℓ_ne : ℓ ≠ 0 := hℓ.ne'
         have hN_ne : (N : ℝ) ≠ 0 := hN_real.ne'
         push_cast; field_simp
+  have hm_Z : ∀ w, Z.mult w = 1 := fun _ => rfl
+  have hm_ℓ : ∀ w, Z_ℓ.mult w = 2 := fun _ => rfl
+  have hm_L : ∀ w, Z_L.mult w = 2 := fun _ => rfl
+  have hm_O : ∀ w, Z_off.mult w = 1 := fun _ => rfl
   have hdisj_re : ∀ z ∈ Z_off.carrier, z.re ≠ 1 / 2 := by
     rintro _ (⟨k, rfl⟩ | ⟨k, rfl⟩) h <;> simp only [verticalLatticePoint] at h <;> linarith
   have hpt_ind : ∀ z : ℂ,
@@ -823,8 +828,8 @@ theorem two_mul_W_mixedGenusColumnConfig_add {g : ℕ} (hg : 2 ≤ g) {ℓ δ : 
       have hzℓ : z ∉ Z_ℓ.carrier := by rintro ⟨k, rfl⟩; exact hz_re (by simp [verticalLatticePoint])
       have hzZ : z ∈ Z.carrier := Or.inr hzO
       rw [Set.indicator_of_mem hzZ, Set.indicator_of_notMem hzℓ,
-        Set.indicator_of_notMem hzL, Set.indicator_of_mem hzO]
-      change (2 : ℂ) * 1 + 0 = 0 + 2 * 1; ring
+        Set.indicator_of_notMem hzL, Set.indicator_of_mem hzO, hm_Z, hm_O]
+      push_cast; ring
     · by_cases hzL : z ∈ Z_L.carrier
       · obtain ⟨m, rfl⟩ := hzL
         have hmL : verticalLatticePoint ((N : ℝ) * ℓ) 0 m ∈ Z_L.carrier := ⟨m, rfl⟩
@@ -836,15 +841,15 @@ theorem two_mul_W_mixedGenusColumnConfig_add {g : ℕ} (hg : 2 ≤ g) {ℓ δ : 
             · exact hm' ((verticalLatticePoint_injective hL 0 heq) ▸ hdvd)
             · exact hzO hO
           rw [Set.indicator_of_notMem hmZ, Set.indicator_of_mem hmℓ,
-            Set.indicator_of_mem hmL, Set.indicator_of_notMem hzO]
-          change (2 : ℂ) * 0 + 2 = 2 + 2 * 0; ring
+            Set.indicator_of_mem hmL, Set.indicator_of_notMem hzO, hm_ℓ, hm_L]
+          push_cast; ring
         · have hmℓ : verticalLatticePoint ((N : ℝ) * ℓ) 0 m ∉ Z_ℓ.carrier :=
             fun h => hdvd ((hsublat m).mp h)
           have hmZ : verticalLatticePoint ((N : ℝ) * ℓ) 0 m ∈ Z.carrier :=
             Or.inl ⟨m, hdvd, rfl⟩
           rw [Set.indicator_of_mem hmZ, Set.indicator_of_notMem hmℓ,
-            Set.indicator_of_mem hmL, Set.indicator_of_notMem hzO]
-          change (2 : ℂ) * 1 + 0 = 2 + 2 * 0; ring
+            Set.indicator_of_mem hmL, Set.indicator_of_notMem hzO, hm_Z, hm_L]
+          push_cast; ring
       · have hzℓ : z ∉ Z_ℓ.carrier := by
           rintro ⟨k, rfl⟩
           apply hzL
@@ -868,9 +873,16 @@ theorem two_mul_W_mixedGenusColumnConfig_add {g : ℕ} (hg : 2 ≤ g) {ℓ δ : 
     W_eq_tsum_indicator Z_off, ← tsum_mul_left, ← tsum_mul_left,
     ← (hsZ.mul_left 2).tsum_add hsℓ, ← hsL.tsum_add (hsO.mul_left 2)]
   refine tsum_congr fun z => ?_
-  have h := congrArg (fun c : ℂ => c * pointImage f f z) (hpt_ind z)
-  dsimp only at h
-  linear_combination h
+  calc 2 * (Z.carrier.indicator (fun z => (Z.mult z : ℂ)) z * pointImage f f z) +
+        Z_ℓ.carrier.indicator (fun z => (Z_ℓ.mult z : ℂ)) z * pointImage f f z
+      = (2 * Z.carrier.indicator (fun z => (Z.mult z : ℂ)) z +
+          Z_ℓ.carrier.indicator (fun z => (Z_ℓ.mult z : ℂ)) z) * pointImage f f z := by ring
+    _ = (Z_L.carrier.indicator (fun z => (Z_L.mult z : ℂ)) z +
+          2 * Z_off.carrier.indicator (fun z => (Z_off.mult z : ℂ)) z) * pointImage f f z := by
+        rw [hpt_ind z]
+    _ = Z_L.carrier.indicator (fun z => (Z_L.mult z : ℂ)) z * pointImage f f z +
+          2 * (Z_off.carrier.indicator (fun z => (Z_off.mult z : ℂ)) z * pointImage f f z) := by
+        ring
 
 /-- **Positivity up to `(g − ½)ℓ` for shallow `mixedGenusColumnConfig`.** Whenever
 `4 * (2g − 2) * (cosh(δ (2g − 1) ℓ) − 1) ≤ 2g − 1`, the `2g`-column configuration
@@ -908,71 +920,39 @@ theorem windowPositiveAt_mixedGenusColumnConfig {g : ℕ} (hg : 2 ≤ g) {ℓ δ
   have hKc : Continuous (EF.weilTest f f) := (EF.weilTest_contDiff hf hf.continuous hfc).continuous
   have hKs : tsupport (EF.weilTest f f) ⊆ Icc (-L) L := EF.tsupport_weilTest_subset hfs hfs
   set S_lags : Finset ℤ := (Finset.Ioo (-(N : ℤ)) (N : ℤ)).erase 0
+  have htsum_lag : ∀ (φ : ℤ → ℂ), φ 0 = 1 →
+      ∑' m : ℤ, EF.weilTest f f (m * ℓ) * φ m =
+        EF.weilTest f f 0 + ∑ m ∈ S_lags, EF.weilTest f f (m * ℓ) * φ m := by
+    intro φ hφ0
+    have hv : ∀ m ∉ insert (0 : ℤ) S_lags, EF.weilTest f f (m * ℓ) * φ m = 0 := by
+      intro m hm
+      have hm0 : m ≠ 0 := fun h => hm (h ▸ Finset.mem_insert_self 0 S_lags)
+      have hmS : m ∉ S_lags := fun h => hm (Finset.mem_insert_of_mem h)
+      have hnotIoo : m ∉ Finset.Ioo (-(N : ℤ)) (N : ℤ) :=
+        fun hmem => hmS (Finset.mem_erase.mpr ⟨hm0, hmem⟩)
+      have habs_m : (N : ℝ) ≤ |(m : ℝ)| := by
+        rw [Finset.mem_Ioo, not_and_or, not_lt, not_lt] at hnotIoo
+        rcases hnotIoo with hle | hge
+        · exact le_abs.mpr (Or.inr (by have : (m : ℝ) ≤ -(N : ℝ) := by exact_mod_cast hle
+                                       linarith))
+        · exact le_abs.mpr (Or.inl (by exact_mod_cast hge))
+      rw [eq_zero_of_tsupport_subset_Icc hKc hKs
+        (by rw [abs_mul, abs_of_pos hℓ]; exact mul_le_mul_of_nonneg_right habs_m hℓ.le),
+        zero_mul]
+    rw [tsum_eq_sum hv, Finset.sum_insert (Finset.notMem_erase 0 S_lags),
+      Int.cast_zero, zero_mul, hφ0, mul_one]
   have hW_diff : Z_off.W f f - Z_ℓ.W f f =
       (ℓ : ℂ) * ∑ m ∈ S_lags, EF.weilTest f f (m * ℓ) *
         (((2 * (Real.cosh (δ * (m * ℓ)) - 1) : ℝ)) : ℂ) := by
     rw [W_offLineLatticeConfig hℓ hδ hδ' (A := L) hf hf.continuous hfs hfs,
       W_onLineLatticeConfig hℓ (A := L) hf hf.continuous hfs hfs]
-    have hs1 : ∑' m : ℤ, EF.weilTest f f (m * ℓ) * (Real.exp (δ * (m * ℓ)) : ℂ) =
-        EF.weilTest f f 0 + ∑ m ∈ S_lags,
-          EF.weilTest f f (m * ℓ) * (Real.exp (δ * (m * ℓ)) : ℂ) := by
-      have hv : ∀ m ∉ insert (0 : ℤ) S_lags,
-          EF.weilTest f f (m * ℓ) * (Real.exp (δ * (m * ℓ)) : ℂ) = 0 := by
-        intro m hm
-        have hm0 : m ≠ 0 := fun h => hm (h ▸ Finset.mem_insert_self 0 S_lags)
-        have hmS : m ∉ S_lags := fun h => hm (Finset.mem_insert_of_mem h)
-        have hnotIoo : m ∉ Finset.Ioo (-(N : ℤ)) (N : ℤ) :=
-          fun hmem => hmS (Finset.mem_erase.mpr ⟨hm0, hmem⟩)
-        have habs_m : (N : ℝ) ≤ |(m : ℝ)| := by
-          rw [Finset.mem_Ioo, not_and_or, not_lt, not_lt] at hnotIoo
-          rcases hnotIoo with hle | hge
-          · exact le_abs.mpr (Or.inr (by have : (m : ℝ) ≤ -(N : ℝ) := by exact_mod_cast hle
-                                         linarith))
-          · exact le_abs.mpr (Or.inl (by exact_mod_cast hge))
-        rw [eq_zero_of_tsupport_subset_Icc hKc hKs
-          (by rw [abs_mul, abs_of_pos hℓ]; exact mul_le_mul_of_nonneg_right habs_m hℓ.le),
-          zero_mul]
-      rw [tsum_eq_sum hv, Finset.sum_insert (Finset.notMem_erase 0 _)]
-      simp
-    have hs2 : ∑' m : ℤ, EF.weilTest f f (m * ℓ) * (Real.exp (-δ * (m * ℓ)) : ℂ) =
-        EF.weilTest f f 0 + ∑ m ∈ S_lags,
-          EF.weilTest f f (m * ℓ) * (Real.exp (-δ * (m * ℓ)) : ℂ) := by
-      have hv : ∀ m ∉ insert (0 : ℤ) S_lags,
-          EF.weilTest f f (m * ℓ) * (Real.exp (-δ * (m * ℓ)) : ℂ) = 0 := by
-        intro m hm
-        have hm0 : m ≠ 0 := fun h => hm (h ▸ Finset.mem_insert_self 0 S_lags)
-        have hmS : m ∉ S_lags := fun h => hm (Finset.mem_insert_of_mem h)
-        have hnotIoo : m ∉ Finset.Ioo (-(N : ℤ)) (N : ℤ) :=
-          fun hmem => hmS (Finset.mem_erase.mpr ⟨hm0, hmem⟩)
-        have habs_m : (N : ℝ) ≤ |(m : ℝ)| := by
-          rw [Finset.mem_Ioo, not_and_or, not_lt, not_lt] at hnotIoo
-          rcases hnotIoo with hle | hge
-          · exact le_abs.mpr (Or.inr (by have : (m : ℝ) ≤ -(N : ℝ) := by exact_mod_cast hle
-                                         linarith))
-          · exact le_abs.mpr (Or.inl (by exact_mod_cast hge))
-        rw [eq_zero_of_tsupport_subset_Icc hKc hKs
-          (by rw [abs_mul, abs_of_pos hℓ]; exact mul_le_mul_of_nonneg_right habs_m hℓ.le),
-          zero_mul]
-      rw [tsum_eq_sum hv, Finset.sum_insert (Finset.notMem_erase 0 _)]
-      simp
+    have hs1 := htsum_lag (fun m => (Real.exp (δ * (m * ℓ)) : ℂ))
+      (by simp only [Int.cast_zero, zero_mul, mul_zero, Real.exp_zero, Complex.ofReal_one])
+    have hs2 := htsum_lag (fun m => (Real.exp (-δ * (m * ℓ)) : ℂ))
+      (by simp only [Int.cast_zero, zero_mul, mul_zero, Real.exp_zero, Complex.ofReal_one])
     have hs0 : ∑' m : ℤ, EF.weilTest f f (m * ℓ) =
         EF.weilTest f f 0 + ∑ m ∈ S_lags, EF.weilTest f f (m * ℓ) := by
-      have hv : ∀ m ∉ insert (0 : ℤ) S_lags, EF.weilTest f f (m * ℓ) = 0 := by
-        intro m hm
-        have hm0 : m ≠ 0 := fun h => hm (h ▸ Finset.mem_insert_self 0 S_lags)
-        have hmS : m ∉ S_lags := fun h => hm (Finset.mem_insert_of_mem h)
-        have hnotIoo : m ∉ Finset.Ioo (-(N : ℤ)) (N : ℤ) :=
-          fun hmem => hmS (Finset.mem_erase.mpr ⟨hm0, hmem⟩)
-        have habs_m : (N : ℝ) ≤ |(m : ℝ)| := by
-          rw [Finset.mem_Ioo, not_and_or, not_lt, not_lt] at hnotIoo
-          rcases hnotIoo with hle | hge
-          · exact le_abs.mpr (Or.inr (by have : (m : ℝ) ≤ -(N : ℝ) := by exact_mod_cast hle
-                                         linarith))
-          · exact le_abs.mpr (Or.inl (by exact_mod_cast hge))
-        exact eq_zero_of_tsupport_subset_Icc hKc hKs
-          (by rw [abs_mul, abs_of_pos hℓ]; exact mul_le_mul_of_nonneg_right habs_m hℓ.le)
-      rw [tsum_eq_sum hv, Finset.sum_insert (Finset.notMem_erase 0 _)]
-      simp
+      simpa only [mul_one] using htsum_lag (fun _ => 1) rfl
     rw [hs1, hs2, hs0]
     have hsum_combine :
         (∑ m ∈ S_lags, EF.weilTest f f (m * ℓ) * (Real.exp (δ * (m * ℓ)) : ℂ)) +
@@ -1021,8 +1001,7 @@ theorem windowPositiveAt_mixedGenusColumnConfig {g : ℕ} (hg : 2 ≤ g) {ℓ δ
         rw [Real.cosh_le_cosh, abs_of_nonneg (by positivity : 0 ≤ δ * L),
           abs_mul, abs_mul, abs_of_pos hδ, abs_of_pos hℓ]
         dsimp [L]
-        calc δ * (|(m : ℝ)| * ℓ) ≤ δ * ((N : ℝ) * ℓ) :=
-          mul_le_mul_of_nonneg_left (mul_le_mul_of_nonneg_right habs_m hℓ.le) hδ.le
+        exact mul_le_mul_of_nonneg_left (mul_le_mul_of_nonneg_right habs_m hℓ.le) hδ.le
       have hch0 : 0 ≤ 2 * (Real.cosh (δ * ((m : ℝ) * ℓ)) - 1) := by
         linarith [Real.one_le_cosh (δ * ((m : ℝ) * ℓ))]
       rw [norm_mul, Complex.norm_real, Real.norm_eq_abs, abs_of_nonneg hch0, mul_comm]
@@ -1074,15 +1053,17 @@ theorem onsetAperture_mixedGenusColumnConfig_eq {g : ℕ} (hg : 2 ≤ g) {ℓ δ
     (hδ : 0 < δ) (hδ' : δ ≤ 1 / 2)
     (hsmall : 4 * (((2 * g - 1 : ℕ) : ℝ) - 1) *
       (Real.cosh (δ * (((2 * g - 1 : ℕ) : ℝ) * ℓ)) - 1) ≤ ((2 * g - 1 : ℕ) : ℝ)) :
-    onsetAperture (mixedGenusColumnConfig hg hℓ hδ hδ') = (((g : ℝ) - 1 / 2) * ℓ : EReal) ∧
-      (((g : ℝ) / 2) * ℓ : EReal) < onsetAperture (mixedGenusColumnConfig hg hℓ hδ hδ') := by
+    onsetAperture (mixedGenusColumnConfig hg hℓ hδ hδ') =
+        ((((g : ℝ) - 1 / 2) * ℓ : ℝ) : EReal) ∧
+      ((((g : ℝ) / 2) * ℓ : ℝ) : EReal) <
+        onsetAperture (mixedGenusColumnConfig hg hℓ hδ hδ') := by
   set Z := mixedGenusColumnConfig hg hℓ hδ hδ'
   have hg_real : (2 : ℝ) ≤ (g : ℝ) := by exact_mod_cast hg
   have ha0 : 0 ≤ ((g : ℝ) - 1 / 2) * ℓ := mul_nonneg (by linarith) hℓ.le
-  have hge : (((g : ℝ) - 1 / 2) * ℓ : EReal) ≤ onsetAperture Z :=
+  have hge : ((((g : ℝ) - 1 / 2) * ℓ : ℝ) : EReal) ≤ onsetAperture Z :=
     le_onsetAperture_of_windowPositiveAt ha0 (windowPositiveAt_mixedGenusColumnConfig hg hℓ hδ hδ'
       hsmall)
-  have hle : onsetAperture Z ≤ (((g : ℝ) - 1 / 2) * ℓ : EReal) := by
+  have hle : onsetAperture Z ≤ ((((g : ℝ) - 1 / 2) * ℓ : ℝ) : EReal) := by
     refine sSup_le ?_
     rintro _ ⟨a, _, rfl, hpos⟩
     rw [EReal.coe_le_coe_iff]
@@ -1100,7 +1081,7 @@ theorem onsetAperture_mixedGenusColumnConfig_eq {g : ℕ} (hg : 2 ≤ g) {ℓ δ
     have hre := hon _ hmem
     simp only [verticalLatticePoint] at hre
     linarith
-  have heq : onsetAperture Z = (((g : ℝ) - 1 / 2) * ℓ : EReal) := le_antisymm hle hge
+  have heq : onsetAperture Z = ((((g : ℝ) - 1 / 2) * ℓ : ℝ) : EReal) := le_antisymm hle hge
   refine ⟨heq, ?_⟩
   rw [heq, EReal.coe_lt_coe_iff]
   nlinarith

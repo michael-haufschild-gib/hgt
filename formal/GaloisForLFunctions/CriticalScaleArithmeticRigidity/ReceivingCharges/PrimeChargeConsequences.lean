@@ -63,8 +63,8 @@ theorem no_receiving_charge_bound_by_complete_physical_cost {φ : ℝ → ℝ}
   have hE := (tendsto_harmonicPrimeCharge_polynomial_physical_energy
     hφ hφ0 hsupp hM hK (a := 2) (d := 40) (by omega) (by omega) 1).abs
   have hlim := ((hA.add hV).add hE).const_mul C
-  simp only [abs_zero, zero_add, add_zero, mul_zero] at hlim
-  have hbad : (1 : ℝ) ≤ 0 := le_of_tendsto hlim (by
+  simp only [abs_zero, add_zero, mul_zero] at hlim
+  have hbad : (1 : ℝ) ≤ 0 := ge_of_tendsto hlim (by
     filter_upwards [eventually_ge_atTop 2] with X hX
     have hQ : 2 ≤ X ^ 2 := hX.trans (Nat.le_pow (by omega : 0 < 2))
     have hQN : X ^ 2 ≤ X ^ 40 := Nat.pow_le_pow_right (by omega) (by omega)

@@ -135,8 +135,9 @@ theorem exists_isolating_window_pair_of_bump {a D C₀ η ε : ℝ} (hD : 0 < D)
         ∀ w : ℂ, |w.im| ≤ 1 / 2 → ‖paperFT f w‖ * (1 + |w.re|) ^ k ≤ M := by
     intro ι lam τ P hτ hPL hPim w₀ h1 h2 h3
     rw [hcdef, hMdef]
-    exact isolating_window_of_bump (by positivity) hL0 hη hε hr hb hbs hb1 hm' hCm hC0 lam τ P
-      hτ hPL hPim h1 h2 h3
+    obtain ⟨f, -, hf⟩ := isolating_window_of_bump (by positivity) hL0 hη hε hr hb hbs hb1 hm' hCm
+      hC0 lam τ P hτ hPL hPim h1 h2 h3
+    exact ⟨f, hf⟩
   obtain ⟨X, hX⟩ : ∃ X, X = z₀.im := ⟨_, rfl⟩
   rw [← hX] at hiso hcount ⊢
   set S : Set ℂ := {z | multDiff Z Z' z ≠ 0 ∧ |z.im - X| ≤ R}
