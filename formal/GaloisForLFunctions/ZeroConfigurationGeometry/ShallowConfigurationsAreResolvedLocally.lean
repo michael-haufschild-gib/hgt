@@ -349,7 +349,7 @@ theorem tsum_le_of_decay_two {κ : Type*} (F : κ → ℝ) (hF0 : ∀ k, 0 ≤ F
         exact add_le_add le_rfl (mul_le_mul_of_nonneg_left hrow hc)
     _ = c * (1 + π ^ 2 / 3 / g ^ 2) := by ring
 
-/-! ### Local resolution -/
+/-! ### The local constants -/
 
 /-- The local tail constant `T_loc(w, g) = 4 C_w⁴ (1 + π²/(3g²))`. -/
 def localShallowTail (w g : ℝ) : ℝ := 4 * localBumpConst w ^ 4 * (1 + π ^ 2 / 3 / g ^ 2)
@@ -368,6 +368,312 @@ theorem localShallowTail_le_shallowTail {w : ℝ} (hw0 : 0 < w) (g s : ℝ) :
   rw [← localBumpConst]
   have h3 : 0 ≤ localBumpConst w ^ 4 * (1 + π ^ 2 / 3 / g ^ 2) := by positivity
   nlinarith
+
+/-! ### The pieces of the local argument -/
+
+/-- The sites within height distance `R` of `X`. -/
+def nearSites (Z Z' : ZeroConfig) (X R : ℝ) : Set (pairSites Z Z') := {k | |(k : ℂ).im - X| ≤ R}
+
+/-- The weight `|p| + |q|` with which the bump modulated to `γ₀` sees a site. -/
+def siteWeight (Z Z' : ZeroConfig) (w γ₀ : ℝ) (k : ℂ) : ℝ :=
+  ‖siteP Z Z' w γ₀ k‖ + ‖siteQ Z Z' w γ₀ k‖
+
+theorem summable_multDiff_div (Z Z' : ZeroConfig) (hZ : TemperedConfig Z)
+    (hZ' : TemperedConfig Z') :
+    Summable fun ρ => ‖multDiff Z Z' ρ‖ / (1 + Complex.normSq (gammaOf ρ)) := by
+  have hN1 : ∀ ρ : ℂ, 0 < 1 + Complex.normSq (gammaOf ρ) := fun ρ => by
+    linarith [Complex.normSq_nonneg (gammaOf ρ)]
+  refine Summable.of_nonneg_of_le (fun ρ => div_nonneg (norm_nonneg _) (hN1 ρ).le)
+    (fun ρ => ?_) ((summable_indicator_tempered Z hZ).add (summable_indicator_tempered Z' hZ'))
+  rw [← add_div]
+  exact div_le_div_of_nonneg_right (norm_multDiff_le_add Z Z' ρ) (hN1 ρ).le
+
+/-- Near sites are `g`-separated when the near cluster is separated apart from FE partners. -/
+theorem nearSites_sep {Z Z' : ZeroConfig} {g X R : ℝ}
+    (hsep : ∀ ρ ∈ Z.carrier ∪ Z'.carrier, ∀ ρ' ∈ Z.carrier ∪ Z'.carrier, |ρ.im - X| ≤ R →
+      |ρ'.im - X| ≤ R → ρ' ≠ ρ → ρ' ≠ reflect ρ → g ≤ |ρ.im - ρ'.im|) :
+    ∀ j l : nearSites Z Z' X R, j ≠ l →
+      g ≤ |((j : pairSites Z Z') : ℂ).im - ((l : pairSites Z Z') : ℂ).im| := by
+  intro j l hjl
+  have hjl' : (j : pairSites Z Z') ≠ l := fun h => hjl (Subtype.ext h)
+  refine hsep _ (j : pairSites Z Z').2.1 _ (l : pairSites Z Z').2.1 j.2 l.2
+    (fun h => hjl' (Subtype.ext h.symm)) fun h => hjl' ?_
+  apply Subtype.ext
+  have hre := congrArg Complex.re h
+  have him := congrArg Complex.im h
+  rw [reflect_re'] at hre
+  rw [reflect_im'] at him
+  have h1 := (j : pairSites Z Z').2.2
+  have h2 := (l : pairSites Z Z').2.2
+  apply Complex.ext <;> linarith
+
+/-- A site of maximal `|c_k|/(1 + |γ_k − X|)⁷` among the near sites, if one of them carries a
+nonzero multiplicity. -/
+theorem exists_maximal_nearSite (Z Z' : ZeroConfig) (hZ : TemperedConfig Z)
+    (hZ' : TemperedConfig Z') (hstrip : ∀ ρ ∈ Z.carrier ∪ Z'.carrier, |ρ.re - 1 / 2| ≤ 1 / 2)
+    {X R : ℝ} (t : nearSites Z Z' X R) (ht : multDiff Z Z' ((t : pairSites Z Z') : ℂ) ≠ 0) :
+    ∃ k₀ : nearSites Z Z' X R, ∀ k : nearSites Z Z' X R,
+      ‖multDiff Z Z' ((k : pairSites Z Z') : ℂ)‖ / (1 + |((k : pairSites Z Z') : ℂ).im - X|) ^ 7 ≤
+        ‖multDiff Z Z' ((k₀ : pairSites Z Z') : ℂ)‖ /
+          (1 + |((k₀ : pairSites Z Z') : ℂ).im - X|) ^ 7 := by
+  classical
+  set ψ : nearSites Z Z' X R → ℝ := fun k => ‖multDiff Z Z' ((k : pairSites Z Z') : ℂ)‖ /
+    (1 + |((k : pairSites Z Z') : ℂ).im - X|) ^ 7 with hψ
+  have hN1 : ∀ ρ : ℂ, 0 < 1 + Complex.normSq (gammaOf ρ) := fun ρ => by
+    linarith [Complex.normSq_nonneg (gammaOf ρ)]
+  have hψs : Summable ψ := by
+    have hinj : Function.Injective fun k : nearSites Z Z' X R => ((k : pairSites Z Z') : ℂ) :=
+      Subtype.val_injective.comp Subtype.val_injective
+    refine Summable.of_nonneg_of_le (fun k => by positivity) (fun k => ?_)
+      (((summable_multDiff_div Z Z' hZ hZ').comp_injective hinj).mul_left
+        (5 / 4 * (1 + |X|) ^ 2 * (1 + R) ^ 2))
+    set ρ : ℂ := ((k : pairSites Z Z') : ℂ) with hρ
+    show ψ k ≤ 5 / 4 * (1 + |X|) ^ 2 * (1 + R) ^ 2 *
+      (‖multDiff Z Z' ρ‖ / (1 + Complex.normSq (gammaOf ρ)))
+    have hk := one_add_normSq_gammaOf_le (hstrip ρ (k : pairSites Z Z').2.1) X
+    have hkN : |ρ.im - X| ≤ R := k.2
+    have hkR : (1 + |ρ.im - X|) ^ 2 ≤ (1 + R) ^ 2 :=
+      pow_le_pow_left₀ (by positivity) (by linarith) 2
+    have hn : 1 + Complex.normSq (gammaOf ρ) ≤ 5 / 4 * (1 + |X|) ^ 2 * (1 + R) ^ 2 :=
+      hk.trans (mul_le_mul_of_nonneg_left hkR (by positivity))
+    have hψc : ψ k ≤ ‖multDiff Z Z' ρ‖ :=
+      div_le_self (norm_nonneg _) (one_le_pow₀ (by linarith [abs_nonneg (ρ.im - X)]))
+    refine hψc.trans ?_
+    rw [mul_div_assoc', le_div_iff₀ (hN1 ρ)]
+    exact mul_le_mul_of_nonneg_left hn (norm_nonneg _) |>.trans_eq (mul_comm _ _)
+  have hψt : 0 < ψ t := div_pos (norm_pos_iff.mpr ht) (by positivity)
+  have hfin : (ψ ⁻¹' Iio (ψ t))ᶜ.Finite :=
+    Filter.mem_cofinite.mp (hψs.tendsto_cofinite_zero (Iio_mem_nhds hψt))
+  obtain ⟨k₀, -, hk₀max⟩ := hfin.toFinset.exists_max_image ψ ⟨t, by simp⟩
+  refine ⟨k₀, fun k => ?_⟩
+  by_cases hk : ψ k < ψ t
+  · exact hk.le.trans (hk₀max t (by simp))
+  · exact hk₀max k (by simpa using hk)
+
+/-- Maximality of `|c|/(1 + |γ − X|)⁷` at `y` dominates `x`: `a ≤ b (1 + |x − y|)⁷`. -/
+theorem le_mul_pow_of_div_le {a b x y X : ℝ} (hb : 0 ≤ b)
+    (h : a / (1 + |x - X|) ^ 7 ≤ b / (1 + |y - X|) ^ 7) : a ≤ b * (1 + |x - y|) ^ 7 := by
+  rw [div_le_div_iff₀ (by positivity) (by positivity)] at h
+  have htri := one_add_abs_sub_le_mul x y X
+  have hpow : (1 + |x - X|) ^ 7 ≤ (1 + |y - X|) ^ 7 * (1 + |x - y|) ^ 7 := by
+    rw [← mul_pow]; exact pow_le_pow_left₀ (by positivity) htri 7
+  refine le_of_mul_le_mul_right ?_ (by positivity : 0 < (1 + |y - X|) ^ 7)
+  calc a * (1 + |y - X|) ^ 7 ≤ b * (1 + |x - X|) ^ 7 := h
+    _ ≤ b * ((1 + |y - X|) ^ 7 * (1 + |x - y|) ^ 7) := mul_le_mul_of_nonneg_left hpow hb
+    _ = b * (1 + |x - y|) ^ 7 * (1 + |y - X|) ^ 7 := by ring
+
+/-- **Ingham at a near site.** For mimics in the strip whose near cluster is shallow and separated,
+the camera modulated to any height `γ₀` gives, at every near site `k₀`,
+`θ |p₀ + q₀|² ≤ 2K Σ_near (|p| + |q|)² + 4V e^V (Σ_far (|p| + |q|))²`. -/
+theorem inghamConst_mul_normSq_le_near (Z Z' : ZeroConfig) (hZ : TemperedConfig Z)
+    (hZ' : TemperedConfig Z') {g V w s a X R : ℝ} (hg : 0 < g) (hV : 0 < V) (hw0 : 0 < w)
+    (hVa : V / 2 + w ≤ a) (hs : 0 ≤ s)
+    (hstrip : ∀ ρ ∈ Z.carrier ∪ Z'.carrier, |ρ.re - 1 / 2| ≤ 1 / 2)
+    (hdepth : ∀ ρ ∈ Z.carrier ∪ Z'.carrier, |ρ.im - X| ≤ R → |ρ.re - 1 / 2| ≤ s)
+    (hsep : ∀ ρ ∈ Z.carrier ∪ Z'.carrier, ∀ ρ' ∈ Z.carrier ∪ Z'.carrier, |ρ.im - X| ≤ R →
+      |ρ'.im - X| ≤ R → ρ' ≠ ρ → ρ' ≠ reflect ρ → g ≤ |ρ.im - ρ'.im|)
+    (hgap : π / V < g)
+    (hW : ∀ f : ℝ → ℂ, ContDiff ℝ 2 f → tsupport f ⊆ Icc (-a) a → Z.W f f = Z'.W f f)
+    (γ₀ : ℝ) (k₀ : nearSites Z Z' X R) :
+    tiltedInghamConst V g 0 * ‖siteP Z Z' w γ₀ ((k₀ : pairSites Z Z') : ℂ) +
+        siteQ Z Z' w γ₀ ((k₀ : pairSites Z Z') : ℂ)‖ ^ 2 ≤
+      2 * remConst V g s * ∑' k : nearSites Z Z' X R,
+          siteWeight Z Z' w γ₀ ((k : pairSites Z Z') : ℂ) ^ 2 +
+        4 * V * Real.exp V * (∑' k : ↑(nearSites Z Z' X R)ᶜ,
+          siteWeight Z Z' w γ₀ ((k : pairSites Z Z') : ℂ)) ^ 2 := by
+  classical
+  have hdepthK : ∀ k : pairSites Z Z', |(k : ℂ).re - 1 / 2| ≤ 1 / 2 := fun k => hstrip k k.2.1
+  have hzero := pairSum_vanishes_of_weil_eq Z Z' hZ hZ' hw0 hVa γ₀ hW
+  have hsumK := summable_site Z Z' hZ hZ' hw0 γ₀
+  set TK : pairSites Z Z' → ℝ → ℂ := fun k v => cexp (I * (k : ℂ).im * v) *
+    (siteP Z Z' w γ₀ k * cexp ((((k : ℂ).re - 1 / 2 : ℝ) : ℂ) * v) +
+      siteQ Z Z' w γ₀ k * cexp (-(((k : ℂ).re - 1 / 2 : ℝ) : ℂ) * v)) with hTK
+  have hzero' : ∀ v ∈ Icc (-V) V, ∑' k : pairSites Z Z', TK k v = 0 := hzero
+  set E := Real.exp (1 / 2 * V) with hE
+  have hTb : ∀ k : pairSites Z Z', ∀ v ∈ Icc (-V) V, ‖TK k v‖ ≤ E * siteWeight Z Z' w γ₀ k := by
+    intro k v hv
+    have hvV : |v| ≤ V := abs_le.mpr hv
+    have hδv : ∀ σ : ℝ, |σ| ≤ 1 / 2 → ‖cexp ((σ : ℂ) * v)‖ ≤ E := fun σ hσ => by
+      rw [← Complex.ofReal_mul, Complex.norm_exp_ofReal]
+      exact Real.exp_le_exp.mpr ((le_abs_self _).trans (by
+        rw [abs_mul]; exact mul_le_mul hσ hvV (abs_nonneg _) (by norm_num)))
+    have h1 : ‖cexp (I * (k : ℂ).im * v)‖ = 1 := by
+      rw [show I * ((k : ℂ).im : ℂ) * v = (((k : ℂ).im * v : ℝ) : ℂ) * I by push_cast; ring,
+        Complex.norm_exp_ofReal_mul_I]
+    have hneg : -((((k : ℂ).re - 1 / 2 : ℝ)) : ℂ) * v =
+        ((-((k : ℂ).re - 1 / 2) : ℝ) : ℂ) * v := by push_cast; ring
+    simp only [hTK, siteWeight]
+    rw [norm_mul, h1, one_mul, hneg]
+    calc _ ≤ ‖siteP Z Z' w γ₀ k‖ * E + ‖siteQ Z Z' w γ₀ k‖ * E := by
+          refine (norm_add_le _ _).trans (add_le_add ?_ ?_) <;> rw [norm_mul]
+          · exact mul_le_mul_of_nonneg_left (hδv _ (hdepthK k)) (norm_nonneg _)
+          · exact mul_le_mul_of_nonneg_left (hδv _ (by rw [abs_neg]; exact hdepthK k))
+              (norm_nonneg _)
+      _ = E * (‖siteP Z Z' w γ₀ k‖ + ‖siteQ Z Z' w γ₀ k‖) := by ring
+  set WF := ∑' k : ↑(nearSites Z Z' X R)ᶜ, siteWeight Z Z' w γ₀ ((k : pairSites Z Z') : ℂ) with hWF
+  -- the near pair sum is minus the far one
+  have hsmallN : ∀ v ∈ Icc (-V) V, ‖∑' k : nearSites Z Z' X R, TK k v‖ ≤ E * WF := by
+    intro v hv
+    have hTs : Summable fun k : pairSites Z Z' => TK k v :=
+      Summable.of_norm_bounded (hsumK.mul_left E) fun k => hTb k v hv
+    have hsplit := hTs.tsum_subtype_add_tsum_subtype_compl (nearSites Z Z' X R)
+    rw [hzero' v hv] at hsplit
+    have heq : ∑' k : nearSites Z Z' X R, TK k v = -∑' k : ↑(nearSites Z Z' X R)ᶜ, TK k v := by linear_combination hsplit
+    rw [heq, norm_neg]
+    have hws : Summable fun k : ↑(nearSites Z Z' X R)ᶜ => siteWeight Z Z' w γ₀ ((k : pairSites Z Z') : ℂ) := hsumK.subtype _
+    refine (norm_tsum_le_tsum_norm ((hws.mul_left E).of_norm_bounded fun k => ?_)).trans ?_
+    · rw [Real.norm_eq_abs, abs_of_nonneg (by positivity)]
+      exact hTb k v hv
+    · rw [hWF, ← tsum_mul_left]
+      exact (Summable.of_norm_bounded (hws.mul_left E) fun k => hTb k v hv).norm.tsum_le_tsum
+        (fun k => hTb k v hv) (hws.mul_left E)
+  have hδN : ∀ k : nearSites Z Z' X R, |((k : pairSites Z Z') : ℂ).re - 1 / 2| ≤ s := fun k => hdepth _ (k : pairSites Z Z').2.1 k.2
+  have hsumN : Summable fun k : nearSites Z Z' X R =>
+      ‖siteP Z Z' w γ₀ ((k : pairSites Z Z') : ℂ)‖ + ‖siteQ Z Z' w γ₀ ((k : pairSites Z Z') : ℂ)‖ := hsumK.subtype _
+  have hcore := inghamConst_mul_normSq_le_of_small (κ := nearSites Z Z' X R) (fun k => ((k : pairSites Z Z') : ℂ).im)
+    (fun k => ((k : pairSites Z Z') : ℂ).re - 1 / 2) (fun k => siteP Z Z' w γ₀ ((k : pairSites Z Z') : ℂ))
+    (fun k => siteQ Z Z' w γ₀ ((k : pairSites Z Z') : ℂ)) hg hV hs hδN (nearSites_sep hsep) hgap hsumN
+    hsmallN k₀
+  have hE2 : (E * WF) ^ 2 = Real.exp V * WF ^ 2 := by
+    rw [mul_pow, hE, sq (Real.exp _), ← Real.exp_add]; ring_nf
+  refine hcore.trans_eq ?_
+  rw [hE2]
+  simp only [siteWeight]
+  ring
+
+/-- **The near sites sum to `T_loc |c₀|²`.** If the near multiplicities are dominated by the one at
+`k₀`, `|c_k| ≤ |c₀| (1 + |γ_k − γ₀|)⁷`, the squared weights seen by the camera at `γ₀` sum to at
+most `T_loc(w, g) |c₀|²` over the `g`-separated near heights. -/
+theorem tsum_near_siteWeight_sq_le (Z Z' : ZeroConfig) {g w X R : ℝ} (hg : 0 < g) (hw0 : 0 < w)
+    (hw4 : 4 * w ≤ 1) (hstrip : ∀ ρ ∈ Z.carrier ∪ Z'.carrier, |ρ.re - 1 / 2| ≤ 1 / 2)
+    (hsepN : ∀ j l : nearSites Z Z' X R, j ≠ l →
+      g ≤ |((j : pairSites Z Z') : ℂ).im - ((l : pairSites Z Z') : ℂ).im|)
+    (k₀ : nearSites Z Z' X R)
+    (hdom : ∀ k : nearSites Z Z' X R, ‖multDiff Z Z' ((k : pairSites Z Z') : ℂ)‖ ≤
+      ‖multDiff Z Z' ((k₀ : pairSites Z Z') : ℂ)‖ *
+        (1 + |((k : pairSites Z Z') : ℂ).im - ((k₀ : pairSites Z Z') : ℂ).im|) ^ 7) :
+    ∑' k : nearSites Z Z' X R,
+        siteWeight Z Z' w ((k₀ : pairSites Z Z') : ℂ).im ((k : pairSites Z Z') : ℂ) ^ 2 ≤
+      localShallowTail w g * ‖multDiff Z Z' ((k₀ : pairSites Z Z') : ℂ)‖ ^ 2 := by
+  set γ₀ := ((k₀ : pairSites Z Z') : ℂ).im with hγ₀
+  set m₀ := ‖multDiff Z Z' ((k₀ : pairSites Z Z') : ℂ)‖ with hm₀
+  set Cw := localBumpConst w with hCw
+  have hCw0 : 0 ≤ Cw := localBumpConst_nonneg hw0
+  refine (tsum_le_of_decay_two _ (fun k => sq_nonneg _)
+    (fun k : nearSites Z Z' X R => ((k : pairSites Z Z') : ℂ).im) hg
+    (c := 4 * Cw ^ 4 * m₀ ^ 2) (by positivity) hsepN k₀ (fun k => ?_)).trans (le_of_eq ?_)
+  · set ρ : ℂ := ((k : pairSites Z Z') : ℂ) with hρ
+    have hk1 := norm_siteP_add_norm_siteQ_le Z Z' hw0 hw4 γ₀ ρ
+      (hstrip ρ (k : pairSites Z Z').2.1)
+    have hx1 : (0 : ℝ) < 1 + |ρ.im - γ₀| := by positivity
+    have hwk : siteWeight Z Z' w γ₀ ρ ≤ 2 * Cw ^ 2 * m₀ / (1 + |ρ.im - γ₀|) := by
+      calc siteWeight Z Z' w γ₀ ρ ≤ 2 * ‖multDiff Z Z' ρ‖ * (Cw / (1 + |ρ.im - γ₀|) ^ 4) ^ 2 :=
+            hk1
+        _ ≤ 2 * (m₀ * (1 + |ρ.im - γ₀|) ^ 7) * (Cw / (1 + |ρ.im - γ₀|) ^ 4) ^ 2 := by
+            gcongr; exact hdom k
+        _ = 2 * Cw ^ 2 * m₀ / (1 + |ρ.im - γ₀|) := by
+            field_simp
+    have hw0' : 0 ≤ siteWeight Z Z' w γ₀ ρ := by unfold siteWeight; positivity
+    calc siteWeight Z Z' w γ₀ ρ ^ 2 ≤ (2 * Cw ^ 2 * m₀ / (1 + |ρ.im - γ₀|)) ^ 2 :=
+          pow_le_pow_left₀ hw0' hwk 2
+      _ = 4 * Cw ^ 4 * m₀ ^ 2 / (1 + |ρ.im - γ₀|) ^ 2 := by field_simp; ring
+  · rw [localShallowTail, ← hCw]; ring
+
+/-- **The far sites are faint.** Seen by the camera at the height `γ₀` of a near site, the sites
+farther than `R` from `X` weigh at most `(5/2) C_w² (1 + |X|)² (1 + d₀)² S/(1 + R − d₀)⁶`,
+`d₀ = |γ₀ − X|`, `S = Σ_ρ |c(ρ)|/(1 + |γ_ρ|²)`. -/
+theorem tsum_far_siteWeight_le (Z Z' : ZeroConfig) (hZ : TemperedConfig Z)
+    (hZ' : TemperedConfig Z') {w X R γ₀ : ℝ} (hw0 : 0 < w) (hw4 : 4 * w ≤ 1)
+    (hstrip : ∀ ρ ∈ Z.carrier ∪ Z'.carrier, |ρ.re - 1 / 2| ≤ 1 / 2) (hγ₀ : |γ₀ - X| ≤ R) :
+    ∑' k : ↑(nearSites Z Z' X R)ᶜ, siteWeight Z Z' w γ₀ ((k : pairSites Z Z') : ℂ) ≤
+      5 / 2 * localBumpConst w ^ 2 * (1 + |X|) ^ 2 * (1 + |γ₀ - X|) ^ 2 /
+        (1 + (R - |γ₀ - X|)) ^ 6 *
+          ∑' ρ, ‖multDiff Z Z' ρ‖ / (1 + Complex.normSq (gammaOf ρ)) := by
+  set Cw := localBumpConst w with hCw
+  have hCw0 : 0 ≤ Cw := localBumpConst_nonneg hw0
+  set d₀ := |γ₀ - X| with hd₀
+  set ω : ℂ → ℝ := fun ρ => ‖multDiff Z Z' ρ‖ / (1 + Complex.normSq (gammaOf ρ)) with hω
+  have hN1 : ∀ ρ : ℂ, 0 < 1 + Complex.normSq (gammaOf ρ) := fun ρ => by
+    linarith [Complex.normSq_nonneg (gammaOf ρ)]
+  have hR1 : (0 : ℝ) < 1 + (R - d₀) := by linarith
+  set G := 5 / 2 * Cw ^ 2 * (1 + |X|) ^ 2 * (1 + d₀) ^ 2 / (1 + (R - d₀)) ^ 6 with hG
+  have hG0 : 0 ≤ G := by rw [hG]; positivity
+  have hper : ∀ k : ↑(nearSites Z Z' X R)ᶜ,
+      siteWeight Z Z' w γ₀ ((k : pairSites Z Z') : ℂ) ≤ G * ω ((k : pairSites Z Z') : ℂ) := by
+    intro k
+    set ρ : ℂ := ((k : pairSites Z Z') : ℂ) with hρ
+    have hρs := hstrip ρ (k : pairSites Z Z').2.1
+    have hfarρ : R < |ρ.im - X| := not_le.mp k.2
+    have hk1 := norm_siteP_add_norm_siteQ_le Z Z' hw0 hw4 γ₀ ρ hρs
+    have hn := one_add_normSq_gammaOf_le hρs X
+    have htri := one_add_abs_sub_le_mul ρ.im γ₀ X
+    have hx : R - d₀ ≤ |ρ.im - γ₀| := by
+      have := abs_sub_abs_le_abs_sub (ρ.im - X) (γ₀ - X)
+      rw [show ρ.im - X - (γ₀ - X) = ρ.im - γ₀ by ring] at this
+      linarith
+    have hx1 : (0 : ℝ) < 1 + |ρ.im - γ₀| := by positivity
+    have hω0 : 0 ≤ ω ρ := div_nonneg (norm_nonneg _) (hN1 ρ).le
+    have hcρ : ‖multDiff Z Z' ρ‖ = ω ρ * (1 + Complex.normSq (gammaOf ρ)) :=
+      (div_mul_cancel₀ _ (hN1 ρ).ne').symm
+    have hc_le : ‖multDiff Z Z' ρ‖ ≤
+        5 / 4 * (1 + |X|) ^ 2 * (1 + d₀) ^ 2 * (1 + |ρ.im - γ₀|) ^ 2 * ω ρ := by
+      have h2 : (1 + |ρ.im - X|) ^ 2 ≤ ((1 + d₀) * (1 + |ρ.im - γ₀|)) ^ 2 :=
+        pow_le_pow_left₀ (by positivity) htri 2
+      rw [hcρ]
+      calc ω ρ * (1 + Complex.normSq (gammaOf ρ)) ≤
+          ω ρ * (5 / 4 * (1 + |X|) ^ 2 * (1 + |ρ.im - X|) ^ 2) :=
+            mul_le_mul_of_nonneg_left hn hω0
+        _ ≤ ω ρ * (5 / 4 * (1 + |X|) ^ 2 * ((1 + d₀) * (1 + |ρ.im - γ₀|)) ^ 2) := by gcongr
+        _ = _ := by ring
+    calc siteWeight Z Z' w γ₀ ρ ≤ 2 * ‖multDiff Z Z' ρ‖ * (Cw / (1 + |ρ.im - γ₀|) ^ 4) ^ 2 := hk1
+      _ ≤ 2 * (5 / 4 * (1 + |X|) ^ 2 * (1 + d₀) ^ 2 * (1 + |ρ.im - γ₀|) ^ 2 * ω ρ) *
+          (Cw / (1 + |ρ.im - γ₀|) ^ 4) ^ 2 := by gcongr
+      _ = 5 / 2 * Cw ^ 2 * (1 + |X|) ^ 2 * (1 + d₀) ^ 2 * ω ρ / (1 + |ρ.im - γ₀|) ^ 6 := by
+          field_simp; ring
+      _ ≤ 5 / 2 * Cw ^ 2 * (1 + |X|) ^ 2 * (1 + d₀) ^ 2 * ω ρ / (1 + (R - d₀)) ^ 6 :=
+          div_le_div_of_nonneg_left (by positivity) (pow_pos hR1 6)
+            (pow_le_pow_left₀ hR1.le (by linarith) 6)
+      _ = G * ω ρ := by rw [hG]; ring
+  have hinj : Function.Injective fun k : ↑(nearSites Z Z' X R)ᶜ => ((k : pairSites Z Z') : ℂ) :=
+    Subtype.val_injective.comp Subtype.val_injective
+  have hωs := summable_multDiff_div Z Z' hZ hZ'
+  have hωNc : Summable fun k : ↑(nearSites Z Z' X R)ᶜ => ω ((k : pairSites Z Z') : ℂ) :=
+    hωs.comp_injective hinj
+  have h1 := Summable.tsum_le_tsum hper ((summable_site Z Z' hZ hZ' hw0 γ₀).subtype _)
+    (hωNc.mul_left G)
+  rw [tsum_mul_left] at h1
+  have h2 : ∑' k : ↑(nearSites Z Z' X R)ᶜ, ω ((k : pairSites Z Z') : ℂ) ≤ ∑' ρ, ω ρ :=
+    Summable.tsum_le_tsum_of_inj (fun k : ↑(nearSites Z Z' X R)ᶜ => ((k : pairSites Z Z') : ℂ))
+      hinj (fun ρ _ => div_nonneg (norm_nonneg _) (hN1 ρ).le) (fun k => le_rfl) hωNc hωs
+  exact h1.trans (mul_le_mul_of_nonneg_left h2 hG0)
+
+/-- The arithmetic of the transfer: `Δ P ≤ 4V e^V W²`, `W ≤ (5/2) C_w² Y² A² S/B⁶`,
+`Q A^{14} ≤ P D^{14}` and `(1 + R/2)^{10} ≤ A^{10} B^{12}` give
+`Q ≤ 25 V e^V C_w⁴/Δ · D^{14} Y⁴ S²/(1 + R/2)^{10}`. -/
+theorem le_of_far_weight_le {P Q V Δ Cw Y S A B D W R : ℝ} (hΔ : 0 < Δ) (hV : 0 < V)
+    (hA : 0 < A) (hB : 0 < B) (hD : 0 < D) (hR : 0 ≤ R)
+    (hcore : Δ * P ≤ 4 * V * Real.exp V * W ^ 2) (hW0 : 0 ≤ W)
+    (hW : W ≤ 5 / 2 * Cw ^ 2 * Y ^ 2 * A ^ 2 / B ^ 6 * S)
+    (h14 : Q * A ^ 14 ≤ P * D ^ 14) (hAB : (1 + R / 2) ^ 10 ≤ A ^ 10 * B ^ 12) :
+    Q ≤ 25 * V * Real.exp V * Cw ^ 4 / Δ * D ^ 14 * Y ^ 4 * S ^ 2 / (1 + R / 2) ^ 10 := by
+  have hP : P ≤ 4 * V * Real.exp V * (5 / 2 * Cw ^ 2 * Y ^ 2 * A ^ 2 / B ^ 6 * S) ^ 2 / Δ := by
+    rw [le_div_iff₀ hΔ]
+    calc P * Δ = Δ * P := mul_comm _ _
+      _ ≤ 4 * V * Real.exp V * W ^ 2 := hcore
+      _ ≤ _ := by gcongr
+  have hQ : Q ≤ 4 * V * Real.exp V * (5 / 2 * Cw ^ 2 * Y ^ 2 * A ^ 2 / B ^ 6 * S) ^ 2 / Δ *
+      D ^ 14 / A ^ 14 := by
+    rw [le_div_iff₀ (by positivity)]
+    exact h14.trans (mul_le_mul_of_nonneg_right hP (by positivity))
+  have heq : 4 * V * Real.exp V * (5 / 2 * Cw ^ 2 * Y ^ 2 * A ^ 2 / B ^ 6 * S) ^ 2 / Δ *
+      D ^ 14 / A ^ 14 = 25 * V * Real.exp V * Cw ^ 4 / Δ * D ^ 14 * Y ^ 4 * S ^ 2 /
+        (A ^ 10 * B ^ 12) := by
+    field_simp
+    ring
+  rw [heq] at hQ
+  exact hQ.trans (div_le_div_of_nonneg_left (by positivity) (by positivity) hAB)
+
+/-! ### Local resolution -/
 
 /-- **Local resolution.** Let `Z, Z'` be tempered configurations in the strip with equal Weil forms
 on `C²` tests supported in `[−a, a]`, `a ≥ V/2 + w`. Suppose their points with height in
@@ -389,296 +695,71 @@ theorem norm_multDiff_sq_le_of_locally_shallow (Z Z' : ZeroConfig) (hZ : Tempere
     ‖multDiff Z Z' z‖ ^ 2 ≤ localShallowConst V w g s * (1 + |z.im - X|) ^ 14 * (1 + |X|) ^ 4 *
       (∑' ρ, ‖multDiff Z Z' ρ‖ / (1 + Complex.normSq (gammaOf ρ))) ^ 2 / (1 + R / 2) ^ 10 := by
   classical
-  set c := multDiff Z Z' with hcdef
-  set Cw := localBumpConst w with hCw
-  have hCw0 : 0 ≤ Cw := localBumpConst_nonneg hw0
+  have hR : 0 ≤ R := (abs_nonneg _).trans hz
   obtain ⟨Δ, hΔ⟩ : ∃ Δ : ℝ, Δ = tiltedInghamConst V g 0 * shallowFloor w s ^ 4 -
       2 * remConst V g s * localShallowTail w g := ⟨_, rfl⟩
   have hΔ0 : 0 < Δ := by rw [hΔ]; linarith
-  have hconst : localShallowConst V w g s = 25 * V * Real.exp V * Cw ^ 4 / Δ := by
+  have hconst : localShallowConst V w g s = 25 * V * Real.exp V * localBumpConst w ^ 4 / Δ := by
     rw [localShallowConst, hΔ]
-  have hconst0 : 0 ≤ localShallowConst V w g s := by
-    rw [hconst]; exact div_nonneg (by positivity) hΔ0.le
-  have hN1 : ∀ ρ : ℂ, 0 < 1 + Complex.normSq (gammaOf ρ) := fun ρ => by
-    linarith [Complex.normSq_nonneg (gammaOf ρ)]
-  -- the weighted multiplicities are summable
-  set ω : ℂ → ℝ := fun ρ => ‖c ρ‖ / (1 + Complex.normSq (gammaOf ρ)) with hω
-  have hωs : Summable ω := by
-    refine Summable.of_nonneg_of_le (fun ρ => div_nonneg (norm_nonneg _) (hN1 ρ).le)
-      (fun ρ => ?_) ((summable_indicator_tempered Z hZ).add (summable_indicator_tempered Z' hZ'))
-    rw [← add_div]
-    exact div_le_div_of_nonneg_right (norm_multDiff_le_add Z Z' ρ) (hN1 ρ).le
-  set S := ∑' ρ, ω ρ with hS
-  have hS0 : 0 ≤ S := tsum_nonneg fun ρ => div_nonneg (norm_nonneg _) (hN1 ρ).le
-  by_cases hcz : c z = 0
-  · rw [hcz, norm_zero]
-    have : (0 : ℝ) ^ 2 = 0 := by norm_num
-    rw [this]
-    exact div_nonneg (by positivity) (by positivity)
-  -- a site with the multiplicity of `z`
-  obtain ⟨t₁, ht₁re, ht₁im, ht₁c⟩ : ∃ t₁ : ℂ, 1 / 2 ≤ t₁.re ∧ t₁.im = z.im ∧ c t₁ = c z := by
+  by_cases hcz : multDiff Z Z' z = 0
+  · rw [hcz, norm_zero, sq, zero_mul, hconst]
+    have := localBumpConst_nonneg hw0
+    exact div_nonneg (mul_nonneg (mul_nonneg (mul_nonneg (div_nonneg (by positivity) hΔ0.le)
+      (by positivity)) (by positivity)) (sq_nonneg _)) (by positivity)
+  -- a near site with the multiplicity of `z`
+  obtain ⟨t₁, ht₁re, ht₁im, ht₁c⟩ : ∃ t₁ : ℂ, 1 / 2 ≤ t₁.re ∧ t₁.im = z.im ∧
+      multDiff Z Z' t₁ = multDiff Z Z' z := by
     by_cases h : 1 / 2 ≤ z.re
     · exact ⟨z, h, rfl, rfl⟩
     · exact ⟨reflect z, by rw [reflect_re']; linarith, reflect_im' z, multDiff_reflect Z Z' z⟩
-  have hct₁ : c t₁ ≠ 0 := by rw [ht₁c]; exact hcz
-  set K := pairSites Z Z' with hK
-  set N : Set K := {k | |(k : ℂ).im - X| ≤ R} with hN
-  have hdepthK : ∀ k : K, |(k : ℂ).re - 1 / 2| ≤ 1 / 2 := fun k => hstrip k k.2.1
-  -- maximize `|c_k|/(1 + |γ_k − X|)⁷` over the sites near `X`
-  set ψ : N → ℝ := fun k => ‖c ((k : K) : ℂ)‖ / (1 + |((k : K) : ℂ).im - X|) ^ 7 with hψ
-  have hψs : Summable ψ := by
-    have hinj : Function.Injective fun k : N => ((k : K) : ℂ) :=
-      Subtype.val_injective.comp Subtype.val_injective
-    refine Summable.of_nonneg_of_le (fun k => by positivity) (fun k => ?_)
-      ((hωs.comp_injective hinj).mul_left (5 / 4 * (1 + |X|) ^ 2 * (1 + R) ^ 2))
-    show ψ k ≤ 5 / 4 * (1 + |X|) ^ 2 * (1 + R) ^ 2 * ω ((k : K) : ℂ)
-    have hk := one_add_normSq_gammaOf_le (hdepthK k) X
-    have hkN : |((k : K) : ℂ).im - X| ≤ R := k.2
-    have hkR : (1 + |((k : K) : ℂ).im - X|) ^ 2 ≤ (1 + R) ^ 2 :=
-      pow_le_pow_left₀ (by positivity) (by linarith) 2
-    have hn : 1 + Complex.normSq (gammaOf ((k : K) : ℂ)) ≤ 5 / 4 * (1 + |X|) ^ 2 * (1 + R) ^ 2 :=
-      hk.trans (mul_le_mul_of_nonneg_left hkR (by positivity))
-    have hψc : ψ k ≤ ‖c ((k : K) : ℂ)‖ :=
-      div_le_self (norm_nonneg _) (one_le_pow₀ (by linarith [abs_nonneg (((k : K) : ℂ).im - X)]))
-    refine hψc.trans ?_
-    have hωk : ‖c ((k : K) : ℂ)‖ =
-        ω ((k : K) : ℂ) * (1 + Complex.normSq (gammaOf ((k : K) : ℂ))) :=
-      (div_mul_cancel₀ _ (hN1 _).ne').symm
-    have hω0 : 0 ≤ ω ((k : K) : ℂ) := div_nonneg (norm_nonneg _) (hN1 _).le
-    rw [hωk]
-    exact (mul_le_mul_of_nonneg_left hn hω0).trans_eq (mul_comm _ _)
-  set t₁N : N := ⟨⟨t₁, mem_carrier_of_multDiff_ne_zero hct₁, ht₁re⟩, by
-    show |t₁.im - X| ≤ R; rw [ht₁im]; exact hz⟩ with ht₁N
-  have hψt : 0 < ψ t₁N := div_pos (norm_pos_iff.mpr hct₁) (by positivity)
-  have hfin : (ψ ⁻¹' Iio (ψ t₁N))ᶜ.Finite :=
-    Filter.mem_cofinite.mp (hψs.tendsto_cofinite_zero (Iio_mem_nhds hψt))
-  obtain ⟨k₀, -, hk₀max⟩ := hfin.toFinset.exists_max_image ψ ⟨t₁N, by simp⟩
-  have hmax : ∀ k, ψ k ≤ ψ k₀ := by
-    intro k
-    by_cases hk : ψ k < ψ t₁N
-    · exact hk.le.trans (hk₀max t₁N (by simp))
-    · exact hk₀max k (by simpa using hk)
-  set z₀ : ℂ := ((k₀ : K) : ℂ) with hz₀
-  set γ₀ := z₀.im with hγ₀
-  set d₀ := |γ₀ - X| with hd₀
-  have hd₀R : d₀ ≤ R := k₀.2
-  have hd₀0 : 0 ≤ d₀ := abs_nonneg _
-  -- domination of the near sites
-  have hdom : ∀ k : N, ‖c ((k : K) : ℂ)‖ ≤ ‖c z₀‖ * (1 + |((k : K) : ℂ).im - γ₀|) ^ 7 := by
-    intro k
-    have h := hmax k
-    simp only [hψ] at h
-    rw [div_le_div_iff₀ (by positivity) (by positivity)] at h
-    have htri := one_add_abs_sub_le_mul (((k : K) : ℂ).im) γ₀ X
-    have hpow : (1 + |((k : K) : ℂ).im - X|) ^ 7 ≤
-        (1 + d₀) ^ 7 * (1 + |((k : K) : ℂ).im - γ₀|) ^ 7 := by
-      rw [← mul_pow]; exact pow_le_pow_left₀ (by positivity) htri 7
-    refine le_of_mul_le_mul_right ?_ (by positivity : 0 < (1 + d₀) ^ 7)
-    calc ‖c ((k : K) : ℂ)‖ * (1 + d₀) ^ 7 ≤ ‖c z₀‖ * (1 + |((k : K) : ℂ).im - X|) ^ 7 := h
-      _ ≤ ‖c z₀‖ * ((1 + d₀) ^ 7 * (1 + |((k : K) : ℂ).im - γ₀|) ^ 7) :=
-          mul_le_mul_of_nonneg_left hpow (norm_nonneg _)
-      _ = ‖c z₀‖ * (1 + |((k : K) : ℂ).im - γ₀|) ^ 7 * (1 + d₀) ^ 7 := by ring
-  -- the pair sum at the maximal site vanishes
-  have hzero := pairSum_vanishes_of_weil_eq Z Z' hZ hZ' hw0 hVa γ₀ hW
-  have hsumK := summable_site Z Z' hZ hZ' hw0 γ₀
-  set TK : K → ℝ → ℂ := fun k v => cexp (I * (k : ℂ).im * v) *
-    (siteP Z Z' w γ₀ k * cexp ((((k : ℂ).re - 1 / 2 : ℝ) : ℂ) * v) +
-      siteQ Z Z' w γ₀ k * cexp (-(((k : ℂ).re - 1 / 2 : ℝ) : ℂ) * v)) with hTK
-  have hzero' : ∀ v ∈ Icc (-V) V, ∑' k : K, TK k v = 0 := hzero
-  set E := Real.exp (1 / 2 * V) with hE
-  have hTb : ∀ k : K, ∀ v ∈ Icc (-V) V,
-      ‖TK k v‖ ≤ E * (‖siteP Z Z' w γ₀ k‖ + ‖siteQ Z Z' w γ₀ k‖) := by
-    intro k v hv
-    have hvV : |v| ≤ V := abs_le.mpr hv
-    have hδv : ∀ σ : ℝ, |σ| ≤ 1 / 2 → ‖cexp ((σ : ℂ) * v)‖ ≤ E := fun σ hσ => by
-      rw [← Complex.ofReal_mul, Complex.norm_exp_ofReal]
-      exact Real.exp_le_exp.mpr ((le_abs_self _).trans (by
-        rw [abs_mul]; exact mul_le_mul hσ hvV (abs_nonneg _) (by norm_num)))
-    have h1 : ‖cexp (I * (k : ℂ).im * v)‖ = 1 := by
-      rw [show I * ((k : ℂ).im : ℂ) * v = (((k : ℂ).im * v : ℝ) : ℂ) * I by push_cast; ring,
-        Complex.norm_exp_ofReal_mul_I]
-    have hneg : -((((k : ℂ).re - 1 / 2 : ℝ)) : ℂ) * v = ((-((k : ℂ).re - 1 / 2) : ℝ) : ℂ) * v := by
-      push_cast; ring
-    simp only [hTK]
-    rw [norm_mul, h1, one_mul, hneg]
-    calc _ ≤ ‖siteP Z Z' w γ₀ k‖ * E + ‖siteQ Z Z' w γ₀ k‖ * E := by
-          refine (norm_add_le _ _).trans (add_le_add ?_ ?_) <;> rw [norm_mul]
-          · exact mul_le_mul_of_nonneg_left (hδv _ (hdepthK k)) (norm_nonneg _)
-          · exact mul_le_mul_of_nonneg_left (hδv _ (by rw [abs_neg]; exact hdepthK k))
-              (norm_nonneg _)
-      _ = E * (‖siteP Z Z' w γ₀ k‖ + ‖siteQ Z Z' w γ₀ k‖) := by ring
-  -- the near pair sum is minus the far one
-  set WF := ∑' k : ↑Nᶜ, (‖siteP Z Z' w γ₀ ((k : K) : ℂ)‖ + ‖siteQ Z Z' w γ₀ ((k : K) : ℂ)‖)
-    with hWF
-  have hWF0 : 0 ≤ WF := tsum_nonneg fun k => by positivity
-  have hsmallN : ∀ v ∈ Icc (-V) V, ‖∑' k : N, TK k v‖ ≤ E * WF := by
-    intro v hv
-    have hTs : Summable fun k : K => TK k v :=
-      Summable.of_norm_bounded (hsumK.mul_left E) fun k => hTb k v hv
-    have hsplit := hTs.tsum_subtype_add_tsum_subtype_compl N
-    rw [hzero' v hv] at hsplit
-    have heq : ∑' k : N, TK k v = -∑' k : ↑Nᶜ, TK k v := by linear_combination hsplit
-    rw [heq, norm_neg]
-    have hws : Summable fun k : ↑Nᶜ =>
-        ‖siteP Z Z' w γ₀ ((k : K) : ℂ)‖ + ‖siteQ Z Z' w γ₀ ((k : K) : ℂ)‖ := hsumK.subtype _
-    refine (norm_tsum_le_tsum_norm ((hws.mul_left E).of_norm_bounded fun k => ?_)).trans ?_
-    · rw [Real.norm_eq_abs, abs_of_nonneg (by positivity)]
-      exact hTb k v hv
-    · rw [hWF, ← tsum_mul_left]
-      exact (Summable.of_norm_bounded (hws.mul_left E) fun k => hTb k v hv).norm.tsum_le_tsum
-        (fun k => hTb k v hv) (hws.mul_left E)
-  -- Ingham on the near sites
-  have hδN : ∀ k : N, |((k : K) : ℂ).re - 1 / 2| ≤ s := fun k => hdepth _ (k : K).2.1 k.2
-  have hsepN : ∀ j l : N, j ≠ l → g ≤ |((j : K) : ℂ).im - ((l : K) : ℂ).im| := by
-    intro j l hjl
-    have hjl' : (j : K) ≠ l := fun h => hjl (Subtype.ext h)
-    refine hsep _ (j : K).2.1 _ (l : K).2.1 j.2 l.2 (fun h => hjl' (Subtype.ext h.symm))
-      fun h => hjl' ?_
-    apply Subtype.ext
-    have hre := congrArg Complex.re h
-    have him := congrArg Complex.im h
-    rw [reflect_re'] at hre
-    rw [reflect_im'] at him
-    have h1 := (j : K).2.2
-    have h2 := (l : K).2.2
-    apply Complex.ext <;> linarith
-  have hsumN : Summable fun k : N =>
-      ‖siteP Z Z' w γ₀ ((k : K) : ℂ)‖ + ‖siteQ Z Z' w γ₀ ((k : K) : ℂ)‖ := hsumK.subtype _
-  have hcore := inghamConst_mul_normSq_le_of_small (κ := N) (fun k => ((k : K) : ℂ).im)
-    (fun k => ((k : K) : ℂ).re - 1 / 2) (fun k => siteP Z Z' w γ₀ ((k : K) : ℂ))
-    (fun k => siteQ Z Z' w γ₀ ((k : K) : ℂ)) hg hV hs hδN hsepN hgap hsumN hsmallN k₀
-  -- the near sites sum to `T_loc |c₀|²`
-  have hnear : ∑' k : N, (‖siteP Z Z' w γ₀ ((k : K) : ℂ)‖ + ‖siteQ Z Z' w γ₀ ((k : K) : ℂ)‖) ^ 2 ≤
-      localShallowTail w g * ‖c z₀‖ ^ 2 := by
-    refine (tsum_le_of_decay_two
-      (fun k : N => (‖siteP Z Z' w γ₀ ((k : K) : ℂ)‖ + ‖siteQ Z Z' w γ₀ ((k : K) : ℂ)‖) ^ 2)
-      (fun k => sq_nonneg _) (fun k : N => ((k : K) : ℂ).im) hg
-      (c := 4 * Cw ^ 4 * ‖c z₀‖ ^ 2) (by positivity) hsepN k₀ (fun k => ?_)).trans
-      (le_of_eq ?_)
-    · have hk1 := norm_siteP_add_norm_siteQ_le Z Z' hw0 hw4 γ₀ ((k : K) : ℂ) (hdepthK k)
-      have hx1 : (0 : ℝ) < 1 + |((k : K) : ℂ).im - γ₀| := by positivity
-      have hwk : ‖siteP Z Z' w γ₀ ((k : K) : ℂ)‖ + ‖siteQ Z Z' w γ₀ ((k : K) : ℂ)‖ ≤
-          2 * Cw ^ 2 * ‖c z₀‖ / (1 + |((k : K) : ℂ).im - γ₀|) := by
-        calc _ ≤ 2 * ‖c ((k : K) : ℂ)‖ * (Cw / (1 + |((k : K) : ℂ).im - γ₀|) ^ 4) ^ 2 := hk1
-          _ ≤ 2 * (‖c z₀‖ * (1 + |((k : K) : ℂ).im - γ₀|) ^ 7) *
-              (Cw / (1 + |((k : K) : ℂ).im - γ₀|) ^ 4) ^ 2 := by
-            gcongr; exact hdom k
-          _ = 2 * Cw ^ 2 * ‖c z₀‖ / (1 + |((k : K) : ℂ).im - γ₀|) := by
-            field_simp
-      calc (‖siteP Z Z' w γ₀ ((k : K) : ℂ)‖ + ‖siteQ Z Z' w γ₀ ((k : K) : ℂ)‖) ^ 2 ≤
-          (2 * Cw ^ 2 * ‖c z₀‖ / (1 + |((k : K) : ℂ).im - γ₀|)) ^ 2 :=
-            pow_le_pow_left₀ (by positivity) hwk 2
-        _ = 4 * Cw ^ 4 * ‖c z₀‖ ^ 2 / (1 + |((k : K) : ℂ).im - γ₀|) ^ 2 := by
-            field_simp; ring
-    · rw [localShallowTail, ← hCw]; ring
-  -- the far sites weigh at most `G S`
-  set G := 5 / 2 * Cw ^ 2 * (1 + |X|) ^ 2 * (1 + d₀) ^ 2 / (1 + (R - d₀)) ^ 6 with hG
-  have hG0 : 0 ≤ G := by
-    rw [hG]; exact div_nonneg (by positivity) (pow_nonneg (by linarith) 6)
-  have hfar : WF ≤ G * S := by
-    have hper : ∀ k : ↑Nᶜ, ‖siteP Z Z' w γ₀ ((k : K) : ℂ)‖ + ‖siteQ Z Z' w γ₀ ((k : K) : ℂ)‖ ≤
-        G * ω ((k : K) : ℂ) := by
-      intro k
-      set ρ : ℂ := ((k : K) : ℂ) with hρ
-      have hfarρ : R < |ρ.im - X| := not_le.mp k.2
-      have hk1 := norm_siteP_add_norm_siteQ_le Z Z' hw0 hw4 γ₀ ρ (hdepthK k)
-      have hn := one_add_normSq_gammaOf_le (hdepthK k) X
-      have htri := one_add_abs_sub_le_mul ρ.im γ₀ X
-      have hx : R - d₀ ≤ |ρ.im - γ₀| := by
-        have := abs_sub_abs_le_abs_sub (ρ.im - X) (γ₀ - X)
-        rw [show ρ.im - X - (γ₀ - X) = ρ.im - γ₀ by ring] at this
-        linarith
-      have hx1 : (0 : ℝ) < 1 + |ρ.im - γ₀| := by positivity
-      have hR1 : (0 : ℝ) < 1 + (R - d₀) := by linarith
-      have hcρ : ‖c ρ‖ = ω ρ * (1 + Complex.normSq (gammaOf ρ)) :=
-        (div_mul_cancel₀ _ (hN1 ρ).ne').symm
-      have hc_le : ‖c ρ‖ ≤ 5 / 4 * (1 + |X|) ^ 2 * (1 + d₀) ^ 2 * (1 + |ρ.im - γ₀|) ^ 2 * ω ρ := by
-        have hω0 : 0 ≤ ω ρ := div_nonneg (norm_nonneg _) (hN1 ρ).le
-        have h2 : (1 + |ρ.im - X|) ^ 2 ≤ ((1 + d₀) * (1 + |ρ.im - γ₀|)) ^ 2 :=
-          pow_le_pow_left₀ (by positivity) htri 2
-        rw [hcρ]
-        calc ω ρ * (1 + Complex.normSq (gammaOf ρ)) ≤
-            ω ρ * (5 / 4 * (1 + |X|) ^ 2 * (1 + |ρ.im - X|) ^ 2) :=
-              mul_le_mul_of_nonneg_left hn hω0
-          _ ≤ ω ρ * (5 / 4 * (1 + |X|) ^ 2 * ((1 + d₀) * (1 + |ρ.im - γ₀|)) ^ 2) := by gcongr
-          _ = _ := by ring
-      have hω0 : 0 ≤ ω ρ := div_nonneg (norm_nonneg _) (hN1 ρ).le
-      calc _ ≤ 2 * ‖c ρ‖ * (Cw / (1 + |ρ.im - γ₀|) ^ 4) ^ 2 := hk1
-        _ ≤ 2 * (5 / 4 * (1 + |X|) ^ 2 * (1 + d₀) ^ 2 * (1 + |ρ.im - γ₀|) ^ 2 * ω ρ) *
-            (Cw / (1 + |ρ.im - γ₀|) ^ 4) ^ 2 := by gcongr
-        _ = 5 / 2 * Cw ^ 2 * (1 + |X|) ^ 2 * (1 + d₀) ^ 2 * ω ρ / (1 + |ρ.im - γ₀|) ^ 6 := by
-            field_simp; ring
-        _ ≤ 5 / 2 * Cw ^ 2 * (1 + |X|) ^ 2 * (1 + d₀) ^ 2 * ω ρ / (1 + (R - d₀)) ^ 6 :=
-            div_le_div_of_nonneg_left (by positivity) (pow_pos hR1 6)
-              (pow_le_pow_left₀ hR1.le (by linarith) 6)
-        _ = G * ω ρ := by rw [hG]; ring
-    have hinj : Function.Injective fun k : ↑Nᶜ => ((k : K) : ℂ) :=
-      Subtype.val_injective.comp Subtype.val_injective
-    have hωNc : Summable fun k : ↑Nᶜ => ω ((k : K) : ℂ) := hωs.comp_injective hinj
-    have h1 : WF ≤ ∑' k : ↑Nᶜ, G * ω ((k : K) : ℂ) :=
-      Summable.tsum_le_tsum hper (hsumK.subtype _) (hωNc.mul_left G)
-    rw [tsum_mul_left] at h1
-    have h2 : ∑' k : ↑Nᶜ, ω ((k : K) : ℂ) ≤ S :=
-      Summable.tsum_le_tsum_of_inj (fun k : ↑Nᶜ => ((k : K) : ℂ)) hinj
-        (fun ρ _ => div_nonneg (norm_nonneg _) (hN1 ρ).le) (fun k => le_rfl) hωNc hωs
-    exact h1.trans (mul_le_mul_of_nonneg_left h2 hG0)
-  -- the maximal coefficient is bounded by the far weight
+  have hct₁ : multDiff Z Z' t₁ ≠ 0 := by rw [ht₁c]; exact hcz
+  set t : nearSites Z Z' X R := ⟨⟨t₁, mem_carrier_of_multDiff_ne_zero hct₁, ht₁re⟩, by
+    show |t₁.im - X| ≤ R; rw [ht₁im]; exact hz⟩ with ht
+  obtain ⟨k₀, hmax⟩ := exists_maximal_nearSite Z Z' hZ hZ' hstrip t hct₁
+  set z₀ : ℂ := ((k₀ : pairSites Z Z') : ℂ) with hz₀
+  have hd₀R : |z₀.im - X| ≤ R := k₀.2
+  have hdom : ∀ k : nearSites Z Z' X R, ‖multDiff Z Z' ((k : pairSites Z Z') : ℂ)‖ ≤
+      ‖multDiff Z Z' z₀‖ * (1 + |((k : pairSites Z Z') : ℂ).im - z₀.im|) ^ 7 := fun k =>
+    le_mul_pow_of_div_le (norm_nonneg _) (hmax k)
+  -- Ingham at `k₀`, the near tail and the far weight
+  have hcore := inghamConst_mul_normSq_le_near Z Z' hZ hZ' hg hV hw0 hVa hs hstrip hdepth hsep
+    hgap hW z₀.im k₀
+  have hnear := tsum_near_siteWeight_sq_le Z Z' hg hw0 hw4 hstrip (nearSites_sep hsep) k₀ hdom
+  have hfar := tsum_far_siteWeight_le Z Z' hZ hZ' hw0 hw4 hstrip hd₀R
   have hcentre := norm_multDiff_mul_shallowFloor_sq_le Z Z' (s := s) hw0 z₀
-    (hdepth z₀ (k₀ : K).2.1 k₀.2)
+    (hdepth z₀ (k₀ : pairSites Z Z').2.1 hd₀R)
   have hθ := inghamConst_pos hV hgap
   have hK0 := remConst_nonneg (g := g) hV hs
-  have hE2 : E ^ 2 = Real.exp V := by
-    rw [hE, sq, ← Real.exp_add]; ring_nf
-  have hP : ‖c z₀‖ ^ 2 ≤ 4 * V * Real.exp V * (G * S) ^ 2 / Δ := by
-    rw [le_div_iff₀ hΔ0]
-    have h1 : tiltedInghamConst V g 0 * (‖c z₀‖ * shallowFloor w s ^ 2) ^ 2 ≤
-        tiltedInghamConst V g 0 * ‖siteP Z Z' w γ₀ z₀ + siteQ Z Z' w γ₀ z₀‖ ^ 2 :=
+  set WF := ∑' k : ↑(nearSites Z Z' X R)ᶜ, siteWeight Z Z' w z₀.im ((k : pairSites Z Z') : ℂ)
+    with hWF
+  have hWF0 : 0 ≤ WF := tsum_nonneg fun k => by unfold siteWeight; positivity
+  have hP : Δ * ‖multDiff Z Z' z₀‖ ^ 2 ≤ 4 * V * Real.exp V * WF ^ 2 := by
+    have h1 : tiltedInghamConst V g 0 * (‖multDiff Z Z' z₀‖ * shallowFloor w s ^ 2) ^ 2 ≤
+        tiltedInghamConst V g 0 * ‖siteP Z Z' w z₀.im z₀ + siteQ Z Z' w z₀.im z₀‖ ^ 2 :=
       mul_le_mul_of_nonneg_left (pow_le_pow_left₀ (mul_nonneg (norm_nonneg _) (sq_nonneg _))
         hcentre 2) hθ.le
     have h2 := mul_le_mul_of_nonneg_left hnear (mul_nonneg zero_le_two hK0)
-    have h3 : (E * WF) ^ 2 ≤ Real.exp V * (G * S) ^ 2 := by
-      rw [mul_pow, hE2]
-      exact mul_le_mul_of_nonneg_left (pow_le_pow_left₀ hWF0 hfar 2) (Real.exp_pos V).le
-    have h3' := mul_le_mul_of_nonneg_left h3 (by positivity : (0 : ℝ) ≤ 4 * V)
-    have hcore' : tiltedInghamConst V g 0 * ‖siteP Z Z' w γ₀ z₀ + siteQ Z Z' w γ₀ z₀‖ ^ 2 ≤
-        2 * remConst V g s * ∑' k : N,
-          (‖siteP Z Z' w γ₀ ((k : K) : ℂ)‖ + ‖siteQ Z Z' w γ₀ ((k : K) : ℂ)‖) ^ 2 +
-        4 * V * (E * WF) ^ 2 := hcore
-    have e1 : tiltedInghamConst V g 0 * (‖c z₀‖ * shallowFloor w s ^ 2) ^ 2 =
-        tiltedInghamConst V g 0 * shallowFloor w s ^ 4 * ‖c z₀‖ ^ 2 := by ring
-    have e2 : 2 * remConst V g s * (localShallowTail w g * ‖c z₀‖ ^ 2) =
-        2 * remConst V g s * localShallowTail w g * ‖c z₀‖ ^ 2 := by ring
-    have e3 : ‖c z₀‖ ^ 2 * Δ = tiltedInghamConst V g 0 * shallowFloor w s ^ 4 * ‖c z₀‖ ^ 2 -
-        2 * remConst V g s * localShallowTail w g * ‖c z₀‖ ^ 2 := by rw [hΔ]; ring
+    have e1 : tiltedInghamConst V g 0 * (‖multDiff Z Z' z₀‖ * shallowFloor w s ^ 2) ^ 2 =
+        tiltedInghamConst V g 0 * shallowFloor w s ^ 4 * ‖multDiff Z Z' z₀‖ ^ 2 := by ring
+    have e2 : 2 * remConst V g s * (localShallowTail w g * ‖multDiff Z Z' z₀‖ ^ 2) =
+        2 * remConst V g s * localShallowTail w g * ‖multDiff Z Z' z₀‖ ^ 2 := by ring
+    have e3 : Δ * ‖multDiff Z Z' z₀‖ ^ 2 =
+        tiltedInghamConst V g 0 * shallowFloor w s ^ 4 * ‖multDiff Z Z' z₀‖ ^ 2 -
+          2 * remConst V g s * localShallowTail w g * ‖multDiff Z Z' z₀‖ ^ 2 := by rw [hΔ]; ring
     rw [e3]
-    linarith only [hcore', h1, h2, h3', e1, e2]
+    linarith only [hcore, h1, h2, e1, e2]
   -- transfer to `z` by maximality
-  set d₁ := |z.im - X| with hd₁
-  have h14 : ‖c t₁‖ ^ 2 * (1 + d₀) ^ 14 ≤ ‖c z₀‖ ^ 2 * (1 + d₁) ^ 14 := by
-    have h := hmax t₁N
-    simp only [hψ] at h
-    have ht : ((t₁N : K) : ℂ) = t₁ := rfl
-    rw [ht, ht₁im, div_le_div_iff₀ (by positivity) (by positivity)] at h
+  have h14 : ‖multDiff Z Z' z‖ ^ 2 * (1 + |z₀.im - X|) ^ 14 ≤
+      ‖multDiff Z Z' z₀‖ ^ 2 * (1 + |z.im - X|) ^ 14 := by
+    have h := hmax t
+    have htt : ((t : pairSites Z Z') : ℂ) = t₁ := rfl
+    rw [htt, ht₁im, ht₁c, div_le_div_iff₀ (by positivity) (by positivity)] at h
     have h2 := pow_le_pow_left₀ (by positivity) h 2
     rw [mul_pow, mul_pow, ← pow_mul, ← pow_mul] at h2
     exact h2
-  have hd1 : (0 : ℝ) < 1 + d₀ := by linarith
-  have hR1 : (0 : ℝ) < 1 + (R - d₀) := by linarith
-  have hfinal : ‖c t₁‖ ^ 2 ≤ 4 * V * Real.exp V * (G * S) ^ 2 / Δ * (1 + d₁) ^ 14 /
-      (1 + d₀) ^ 14 := by
-    rw [le_div_iff₀ (by positivity)]
-    exact h14.trans (mul_le_mul_of_nonneg_right hP (by positivity))
-  have heq : 4 * V * Real.exp V * (G * S) ^ 2 / Δ * (1 + d₁) ^ 14 / (1 + d₀) ^ 14 =
-      localShallowConst V w g s * (1 + d₁) ^ 14 * (1 + |X|) ^ 4 * S ^ 2 /
-        ((1 + d₀) ^ 10 * (1 + (R - d₀)) ^ 12) := by
-    rw [hconst, hG]
-    field_simp
-    ring
-  rw [heq] at hfinal
-  rw [← ht₁c]
-  refine hfinal.trans (div_le_div_of_nonneg_left ?_ (by positivity)
-    (one_add_half_pow_le hd₀0 hd₀R))
-  exact mul_nonneg (mul_nonneg (mul_nonneg hconst0 (by positivity)) (by positivity)) (sq_nonneg _)
+  rw [hconst]
+  exact le_of_far_weight_le hΔ0 hV (by positivity) (by linarith) (by positivity) hR hP hWF0 hfar
+    h14 (one_add_half_pow_le (abs_nonneg _) hd₀R)
 
 /-! ### The Ingham scale, locally -/
 
@@ -755,10 +836,8 @@ theorem eq_of_locally_shallow_at_ingham_scale {a g : ℝ} (ha : 0 < a) (hg : π 
     rw [Complex.norm_intCast]
     exact_mod_cast Int.one_le_abs hm0
   have h := hres Z Z' hZ hZ' hW hstrip X R hdepth hsep z hz
-  have hpos : (0 : ℝ) < (1 + R / 2) ^ 10 := lt_of_le_of_lt (by
-    have : 0 ≤ ∑' ρ, ‖multDiff Z Z' ρ‖ / (1 + Complex.normSq (gammaOf ρ)) :=
-      tsum_nonneg fun ρ => div_nonneg (norm_nonneg _) (by positivity)
-    positivity) hlt
+  have hR : 0 ≤ R := (abs_nonneg _).trans hz
+  have hpos : (0 : ℝ) < (1 + R / 2) ^ 10 := by positivity
   rw [le_div_iff₀ hpos] at h
   have h2 : 1 ≤ ‖multDiff Z Z' z‖ ^ 2 := one_le_pow₀ h1
   nlinarith

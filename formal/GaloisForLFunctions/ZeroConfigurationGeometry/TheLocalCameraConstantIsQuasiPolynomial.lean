@@ -13,7 +13,9 @@ and `σ = ℓ/2 + 6`. Then:
 * the near/far constant is `≤ nfRate σ · D (1 + log D)` (`nearFarConst_two_mul_inv_le`);
 * the growth exponent is `windowExponent ≤ 6σ(1 + σ) D` (`windowExponent_le`);
 * `log windowGrowth ≤ growthRate ℓ · D (1 + log D)` (`log_windowGrowth_le`);
-* `log (1/windowFloor) ≤ floorRate ℓ · D (1 + log D)²` (`log_inv_windowFloor_le`).
+* `log (1/windowFloor) ≤ floorRate ℓ · D (1 + log D)²` (`log_inv_windowFloor_le`), and for every
+  `0 < η ≤ 1`, `log (1/windowFloor) ≤ floorRate ℓ · D (1 + log D)(1 + log D + log(1/η))`
+  (`log_inv_windowFloor_le_of_le_one`).
 
 For `D ≍ log X` the windows grow like `X^{O(log log X)}` and their floor is `X^{−O((log log X)²)}`.
 The floor decides: it is the price of `log X` neighbours, each displaced by a bounded multiple of
@@ -236,5 +238,93 @@ theorem log_inv_windowFloor_le {D C₀ ℓ η : ℝ} (hD : 1 ≤ D) (hC : |C₀|
     nlinarith [mul_nonneg hD0.le hlD, mul_nonneg (mul_nonneg hD0.le hlD) hlD]
   rw [floorRate, ← hσ]
   nlinarith [mul_le_mul_of_nonneg_left hDl (sq_nonneg (1 + σ)), Real.log_nonneg (by norm_num : (1:ℝ) ≤ 2)]
+
+/-- **The floor at small isolation.** For `0 < η ≤ 1` the isolation radius enters only through
+`log(1/η)`: `log (1/windowFloor) ≤ floorRate ℓ · D (1 + log D)(1 + log D + log(1/η))`. -/
+theorem log_inv_windowFloor_le_of_le_one {D C₀ ℓ η : ℝ} (hD : 1 ≤ D) (hC : |C₀| ≤ ℓ * D)
+    (hη0 : 0 < η) (hη1 : η ≤ 1) :
+    Real.log (windowFloor (2 * D⁻¹) (localSlack D C₀) η)⁻¹ ≤
+      floorRate ℓ * D * (1 + Real.log D) * (1 + Real.log D + Real.log (1 / η)) := by
+  have hD0 : 0 < D := by linarith
+  have hlD : 0 ≤ Real.log D := Real.log_nonneg hD
+  have hinv : D⁻¹ ≤ 1 := inv_le_one_of_one_le₀ hD
+  have hinv0 : 0 < D⁻¹ := inv_pos.mpr hD0
+  have hlη : 0 ≤ Real.log (1 / η) := Real.log_nonneg (by rw [le_div_iff₀ hη0]; linarith)
+  have hS := windowSlack_localSlack_le hD hC
+  have hS0 := windowSlack_localSlack_nonneg (C₀ := C₀) hD0
+  obtain ⟨S, hSdef⟩ : ∃ S, S = windowSlack (2 * D⁻¹) (localSlack D C₀) := ⟨_, rfl⟩
+  rw [← hSdef] at hS hS0
+  obtain ⟨σ, hσ⟩ : ∃ σ, σ = slackBound ℓ := ⟨_, rfl⟩
+  rw [← hσ] at hS
+  have hσ0 : 0 ≤ σ := hS0.trans hS
+  obtain ⟨η', hη'⟩ : ∃ η', η' = min η (2 * D⁻¹ / 2) := ⟨_, rfl⟩
+  have hη'0 : 0 < η' := by rw [hη']; exact lt_min hη0 (by positivity)
+  have hη'1 : η' ≤ 1 := by rw [hη']; exact (min_le_left _ _).trans hη1
+  have hη'low : η * D⁻¹ ≤ η' := by
+    rw [hη', show 2 * D⁻¹ / 2 = D⁻¹ by ring]
+    exact le_min (by nlinarith) (by nlinarith)
+  obtain ⟨ℒ, hℒ⟩ : ∃ ℒ, ℒ = Real.log D + Real.log (1 / η) := ⟨_, rfl⟩
+  have hℒ0 : 0 ≤ ℒ := by rw [hℒ]; positivity
+  have hlη' : Real.log (1 / η') ≤ ℒ := by
+    rw [hℒ, ← Real.log_mul hD0.ne' (by positivity)]
+    refine Real.log_le_log (by positivity) ?_
+    rw [div_le_iff₀ hη'0]
+    calc (1 : ℝ) = D * (1 / η) * (η * D⁻¹) := by field_simp
+      _ ≤ D * (1 / η) * η' := mul_le_mul_of_nonneg_left hη'low (by positivity)
+  have hiso : Real.log (1 / isoConst S η') ≤ ℒ + (1 + σ) ^ 2 := by
+    have e : 1 / isoConst S η' = 1 / η' * ((η' + S) * (1 + S)) := by
+      rw [isoConst]; field_simp
+    rw [e, Real.log_mul (by positivity) (by positivity)]
+    have h1 := Real.log_le_sub_one_of_pos (by positivity : 0 < (η' + S) * (1 + S))
+    have h2 : (η' + S) * (1 + S) ≤ (1 + σ) ^ 2 := by nlinarith
+    linarith
+  have hrate : isoRate S η' ≤ 6 * σ * ((1 + (1 + σ) ^ 2) * (1 + ℒ)) := by
+    rw [isoRate]
+    have : 1 + Real.log (1 / isoConst S η') ≤ (1 + (1 + σ) ^ 2) * (1 + ℒ) := by
+      nlinarith [mul_nonneg (sq_nonneg (1 + σ)) hℒ0]
+    exact mul_le_mul (by linarith) this (by
+      have hc1 : isoConst S η' ≤ 1 := isoConst_le_one hS0 hη'0
+      have hc0 : 0 < isoConst S η' := isoConst_pos hS0 hη'0
+      have := Real.log_nonneg (show (1 : ℝ) ≤ 1 / isoConst S η' by
+        rw [le_div_iff₀ hc0]; linarith)
+      linarith) (by positivity)
+  have hrate0 : 0 ≤ isoRate S η' := by
+    rw [isoRate]
+    have hc1 : isoConst S η' ≤ 1 := isoConst_le_one hS0 hη'0
+    have hc0 : 0 < isoConst S η' := isoConst_pos hS0 hη'0
+    have := Real.log_nonneg (show (1 : ℝ) ≤ 1 / isoConst S η' by rw [le_div_iff₀ hc0]; linarith)
+    positivity
+  have hnf := nearFarConst_two_mul_inv_le hD hS0 hS
+  have hnf0 : 0 ≤ nearFarConst (2 * D⁻¹) S := by
+    rw [nearFarConst, latDelta_two_mul_inv hD]
+    have : 0 ≤ Real.log (4 * (S + 2) / (2 * D⁻¹) + 5) := Real.log_nonneg (by
+      have : 0 ≤ 4 * (S + 2) / (2 * D⁻¹) := by positivity
+      linarith)
+    positivity
+  have hnfr : 0 ≤ nfRate σ := by
+    unfold nfRate
+    have : 0 ≤ Real.log (2 * σ + 9) := Real.log_nonneg (by linarith)
+    positivity
+  have hprod : isoRate S η' * nearFarConst (2 * D⁻¹) S ≤
+      6 * σ * (1 + (1 + σ) ^ 2) * nfRate σ * (D * (1 + Real.log D) * (1 + ℒ)) := by
+    calc isoRate S η' * nearFarConst (2 * D⁻¹) S
+        ≤ 6 * σ * ((1 + (1 + σ) ^ 2) * (1 + ℒ)) * (nfRate σ * D * (1 + Real.log D)) :=
+          mul_le_mul hrate hnf hnf0 (by positivity)
+      _ = _ := by ring
+  have hc0 : 0 < isoConst S η' := isoConst_pos hS0 hη'0
+  rw [windowFloor, ← hSdef, ← hη']
+  have e : (1 / 2 * (isoConst S η' * Real.exp (-(isoRate S η' * nearFarConst (2 * D⁻¹) S))))⁻¹ =
+      2 * (1 / isoConst S η') * Real.exp (isoRate S η' * nearFarConst (2 * D⁻¹) S) := by
+    rw [Real.exp_neg]; field_simp
+  rw [e, Real.log_mul (by positivity) (Real.exp_pos _).ne', Real.log_exp,
+    Real.log_mul (by norm_num) (by positivity)]
+  have hl2 : Real.log 2 ≤ 1 := by
+    have := Real.log_le_sub_one_of_pos (by norm_num : (0 : ℝ) < 2); linarith
+  have hT : 1 ≤ D * (1 + Real.log D) := by nlinarith
+  have hT1 : 1 + ℒ ≤ D * (1 + Real.log D) * (1 + ℒ) := le_mul_of_one_le_left (by linarith) hT
+  rw [floorRate, ← hσ, ← hℒ]
+  have hA : (2 + (1 + σ) ^ 2) * (1 + ℒ) ≤ (2 + (1 + σ) ^ 2) * (D * (1 + Real.log D) * (1 + ℒ)) :=
+    mul_le_mul_of_nonneg_left hT1 (by positivity)
+  nlinarith [Real.log_nonneg (by norm_num : (1:ℝ) ≤ 2), mul_nonneg (sq_nonneg (1 + σ)) hℒ0]
 
 end GaloisForLFunctions.ZeroConfigurationGeometry

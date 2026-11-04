@@ -1,6 +1,6 @@
 # Positive interval across the quartic profile zero
 
-- **Stage:** 2-fully-proven; Lean verification pending
+- **Stage:** 3-formalized
 - **Wall:** Σ6
 - **Statement:** For `x≥0`, `1/2≤x²`, and `x≤3/4`,
   `G_P(x) ≥ (3/8)(2x²−1)F(x)² ≥ 0` and `H_P(x)` is positive definite.
@@ -28,3 +28,10 @@ cross-load to a positive scalar multiple of `H_P`.
 
 This certifies an explicit compact interval. Global positivity of the
 profiled source, and global rank-nine positivity, remain open.
+
+Lean: `ThetaCuspSections/FifthEvenPolynomialCrossInterval.lean`, namespace
+`GaloisForLFunctions.ThetaCuspSections.FifthPolynomialCross`:
+`compensation_interval_lower`, `repair_interval_posDef`,
+`weightedRepair_interval_posDef`.
+Canonical check passed without warnings. All three declarations depend only
+on `propext`, `Classical.choice`, and `Quot.sound`.

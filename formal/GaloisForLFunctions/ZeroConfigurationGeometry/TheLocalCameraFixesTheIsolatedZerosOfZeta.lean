@@ -12,10 +12,15 @@ configuration with the same image as the zeros of `ζ` at aperture `λ log X`, w
 `Σ |c|/(1 + |γ|²) ≤ S'`. Then `ζ` and `Z'` have the same multiplicity at every point `z₀` of height
 `X` that is `π/(λ log X)`-isolated from the rest of their cluster within height distance `X/2`.
 
-For a mimic with the density of `ζ`, `μ = 1/(2π)`, the bandwidth condition is `λ > ½`. This is
-the square-root threshold of `rvmLattice_mimic_iff`, now for the zeros of `ζ` themselves: at
-bandwidth `λ > ½` the arithmetic image fixes every zero of `ζ` that is isolated at a fixed fraction
-`1/(2λ)` of the mean spacing `2π/log X`.
+For a mimic with the density of `ζ`, `μ = 1/(2π)`, the condition is `λ > ½`: the aperture exceeds
+`½ log X ≈ L = ½ log(X/2π)`, so the image reads primes beyond the height `X`. In the normalization
+`a = λ' L` of `rvmLattice_mimic_iff` this is `λ' > 1`, the resolution range below the mean spacing.
+The density method stops there: at `a = L` two on-line lattices of the density of `ζ`, offset by half
+a spacing, are different mimics with every point isolated (`exists_onLine_mimic_at_density`). Euler
+columns of the density of `ζ` hide exactly up to `λ' = ½` (`rvmLattice_mimic_iff`).
+
+**Cancelling clusters are near-collisions** (`exists_near_point_of_zeta_mimic`). Under the same
+hypotheses every cancelling point at height `X` has another cluster point within `π/(λ log X)`.
 
 Proof. Apply the local camera with the bump `exists_explicit_bump`, at density
 `D = (2/π)(λ − β/2) log X`, where `β = λ − 1/4 − πμ/2`. The cluster has at most the count of `ζ`
@@ -483,5 +488,25 @@ theorem multDiff_zeta_eq_zero_of_isolated {lam μ A' S' : ℝ} (hlam : 1 / 4 + �
   exact zeta_camera_budget (by linarith) hXL hL1 hD1 hDup hC₀ℓ hηD hε hε0 hβlam hβ0 hℓ0 hc hK hkL
     hk1 hmle hmε hq hq0 hb₁ hLb hS0 (hS.trans (by rw [hS'']; exact le_max_left _ _)) hS''1
     hcam
+
+/-- **Cancelling clusters of `ζ` are near-collisions.** Under the hypotheses of
+`multDiff_zeta_eq_zero_of_isolated`, every point of the cluster at height `X` has another cluster
+point within distance `π/(λ log X)`. -/
+theorem exists_near_point_of_zeta_mimic {lam μ A' S' : ℝ} (hlam : 1 / 4 + π * μ / 2 < lam)
+    (hμ : 0 ≤ μ) (hA' : 0 ≤ A') :
+    ∃ X₀ : ℝ, ∀ X : ℝ, X₀ ≤ X → ∀ Z' : ZeroConfig, TemperedConfig Z' →
+      (∀ f, ApertureWindow (lam * Real.log X) f → zetaZeroConfig.W f f = Z'.W f f) →
+      ∑' z, ‖multDiff zetaZeroConfig Z' z‖ / (1 + Complex.normSq (gammaOf z)) ≤ S' →
+      (∀ (s : Finset ℂ) (x y : ℝ), x ≤ y →
+        (∀ z ∈ s, z ∈ Z'.carrier ∧ |z.im - X| ≤ X / 2 ∧ z.im ∈ Icc x y) →
+          (s.card : ℝ) ≤ μ * Real.log X * (y - x) + A' * Real.log X) →
+      ∀ z₀ : ℂ, z₀.im = X → multDiff zetaZeroConfig Z' z₀ ≠ 0 →
+      ∃ z, z ≠ z₀ ∧ multDiff zetaZeroConfig Z' z ≠ 0 ∧ |z.im - X| ≤ X / 2 ∧
+        ‖z - z₀‖ < π / (lam * Real.log X) := by
+  obtain ⟨X₀, hX₀⟩ := multDiff_zeta_eq_zero_of_isolated (S' := S') hlam hμ hA'
+  refine ⟨X₀, fun X hX Z' hZ' hW hS hcount z₀ hz₀ hc => ?_⟩
+  by_contra h
+  push Not at h
+  exact hc (hX₀ X hX Z' hZ' hW hS hcount z₀ hz₀ fun z hz hcz hzR => h z hz hcz hzR)
 
 end GaloisForLFunctions.ZeroConfigurationGeometry

@@ -770,6 +770,3 @@ theorem evenSector_abs_le {c : ℝ} (hc0 : 0 ≤ c) (hct : c ≤ screwSignThresh
 end GaloisForLFunctions.SignedWindowCriticality.PerronSignLaw
 
 end
-
-#print axioms GaloisForLFunctions.SignedWindowCriticality.PerronSignLaw.evenBand_abs_le_of_frustrationFree
-#print axioms GaloisForLFunctions.SignedWindowCriticality.PerronSignLaw.evenSector_abs_le

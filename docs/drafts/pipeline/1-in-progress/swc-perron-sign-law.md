@@ -73,13 +73,73 @@ toward both ends of `W`, singular kernels integrated in local offsets, exact ref
 - Beyond the Markov regimes (odd `c > ½ log 2`, even `c > t_*`) positivity of the ground states is an
   anti-maximum-principle statement: `ψ_E = a(λ − A_E)^{−1} ch`, `λ ∈ (λ₀(A_E), λ₁(A_E))`.
 
+## The anti-maximum regime [N]
+Pole-free even operator `A_E = E − 4|ch⟩⟨ch|`, kick-free odd operator `A_O = O − Σ w_n P_n`;
+`t(λ) = (λ − μ₀)/(μ₁ − μ₀)` locates the band ground energy in the first gap of the frustration-free
+operator.
+
+| `c` | `A_E`: `μ₀`, `μ₁` | even `t(λ)` | `A_O`: `μ₀`, `μ₁` | odd `t(λ)` |
+|---|---|---|---|---|
+| 0.3 | `−1.120`, `0.727` | 0.611 | `0.223`, `1.071` | 0 |
+| 0.4 | `−1.540`, `0.236` | 0.867 | `−0.078`, `0.782` | 0.108 |
+| 0.5 | `−1.988`, `0.0119` | 0.994 | `−0.322`, `0.557` | 0.367 |
+| 0.6 | `−2.417`, `1·10⁻⁴` | 1.000 | `−0.536`, `0.372` | 0.591 |
+| 0.69 | `−2.823`, `≈ 0` | 1.000 | `−0.715`, `0.228` | 0.758 |
+
+- **Two-level structure (even).** `A_E` has one negative eigenvalue (positive eigenfunction) and a
+  second eigenvalue `μ₁ → 0`; the pole lifts the Perron mode exactly to the sign-changing level
+  (avoided crossing), so `λ₀(E) ≈ μ₁(A_E) ≈ 0` from `c ≈ 0.5` on.
+- **Perron is critical.** In the frustration strength the Perron region is `κ ∈ [0, κ_c]` (pole) and
+  `t ∈ [0, t_c]` (kick); at the arithmetic point:
+
+  | `c` | even `λ₀` | `κ_c − 4` | odd `λ₀` | `t_c − 1` |
+  |---|---|---|---|---|
+  | 0.4 | `1.81·10⁻⁴` | `4.96·10⁻²` | `1.47·10⁻²` | `0.730` |
+  | 0.45 | `1.61·10⁻⁵` | `7.74·10⁻³` | `2.40·10⁻³` | `0.192` |
+  | 0.5 | `9.33·10⁻⁷` | `6.01·10⁻⁴` | `1.94·10⁻⁴` | `3.48·10⁻²` |
+  | 0.55 | `5.30·10⁻⁸` | `4.31·10⁻⁵` | `1.43·10⁻⁵` | `2.75·10⁻³` |
+  | 0.6 | `1.60·10⁻⁹` | `1.75·10⁻⁶` | `5.94·10⁻⁷` | `2.00·10⁻⁴` |
+  | 0.65 | `3.79·10⁻¹¹` | `5.28·10⁻⁸` | `1.83·10⁻⁸` | `6.95·10⁻⁶` |
+
+  The margins vanish with the ground energy (`(κ_c − 4)/λ₀ ≈ 3·10²–1.4·10³`, slope
+  `d log(κ_c − 4)/d log λ₀ → 0.93`; odd slope `≈ 0.8`). Positivity needs `κ ≥ κ_pos` with
+  `κ_pos ≥ 4 − λ₀/C(ψ)²`: the arithmetic pole sits in the shrinking interval `[κ_pos, κ_c]` where
+  positivity and Perron coexist.
+- **Perron is lost at the window edge.** Just above `κ_c` (resp. `t_c`) the negative part is a layer
+  `[−c, −c + 0.01]`: even against the maximum at the centre (the frustrated pair of
+  `evenKernel_neg_of_threshold_lt`), odd against the positive inner sliver ends `c − log n` (kick
+  partners).
+- **Hadamard edge law.** With `ψ(−c + t) ≈ β (½ log 1/t)^{−1/2}` (`‖ψ‖ = 1`),
+  `−dλ₀/dc = K β²`, `K = 1.77 ± 0.01` at `t = 10⁻⁹` in both sectors for `c = 0.45–0.6` (and `≈ 2.06`
+  after extrapolating `β` in `1/log(1/t)`; conjecture `K = 2`, i.e.
+  `−λ₀′(c) = lim_{t→0} ψ(−c+t)² log(1/t)`). The edge amplitude that carries Perron is the rate at
+  which the window approaches criticality.
+
+## No-go: robust Perron (route closed)
+- **Killing mechanism.** Perron margins vanish with the window ground energy. No argument that also
+  proves Perron for pole strengths in `[4, 4(1 + η)]` or kick strengths in `[1, 1 + η]` with a fixed
+  `η > 0` can work beyond `c ≈ 0.45` (even) or `c ≈ 0.55` (odd): pointwise or averaged
+  Beurling–Deny comparison with slack, kernel domination, gap-independent anti-maximum principles.
+  Any proof must use the arithmetic weights to precision `O(λ₀)`.
+- **Strongest positive survivor (Lean).** Frustration localization
+  `evenBand_abs_le_of_frustrationFree`: for every `c < log 2` and nonnegative prime weights, the even
+  band form does not increase under `f ↦ |f|` unless `f` changes sign across a frustrated pair
+  (`EvenFrustrationFree`); Markov regime `evenSector_abs_le` (`c ≤ t_*`); sharpness
+  `evenKernel_neg_of_threshold_lt`. Odd analogue: the frozen odd form is Markov and the kick is the
+  only frustration (`TheFrozenOddFormIsMarkovAndTheKickIsNot`).
+- **New insight.** Beyond the Markov regimes, positivity of the ground state is not a soft property:
+  it is controlled by the edge amplitude `β`, with `|β| = √(−λ₀′/K)` by the Hadamard law. The size of
+  the window ground state at its edge and the approach of the window to criticality are one quantity.
+- **Status.** Numerics [N] (converged hp-DG, `p = 5, 7`); Lean survivors clean, axioms standard.
+
 ## Status
 - C8 holds numerically on `0 < c ≤ 0.69` in both sectors (converged hp-DG).
 - Proved: Perron by Beurling–Deny in the Markov regimes (odd `c ≤ ½ log 2`, corpus; even
   `c ≤ t_*`, Lean, sharp at the level of the kernel).
-- Open: `t_* < c < log 2` (even) and `½ log 2 < c < log 2` (odd), where the pole (even) and the prime
-  kick (odd) frustrate the sign and positivity is an anti-maximum principle for the frustration-free
-  operator `A_E` (resp. `A_O`) at the band energy.
+- Open: `t_* < c < log 2` (even) and `½ log 2 < c < log 2` (odd). There Perron holds numerically
+  but critically (margins `∝ λ₀`); robust routes are closed (no-go above). The Hadamard law gives
+  only `|β| = √(−λ₀′/K)`: the edge amplitude vanishes exactly where `λ₀` stops decreasing in `c`; the
+  sign of `β` and the absence of interior zeros remain open.
 
 ## Log
 - 2026-11-04 — created in 1-in-progress

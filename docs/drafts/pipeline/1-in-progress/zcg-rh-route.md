@@ -25,7 +25,7 @@ as the decisive step.
 | 2 | RH ⇔ `Λ_X = 0` for every `X` | proved | `riemannHypothesis_iff_forall_localNewmanConstant_eq_zero` |
 | 3 | Along the descent, reality is lost only at a double zero | proved | `riemannHypothesis_iff_forall_zeros_simple`, `exists_first_collision` |
 | 4 | A zero of depth `d` at height `X` forces `Λ_X ≥ c d²/log X` | proved | `exists_le_localNewmanConstant_of_offLine_zero` |
-| 5 | At `t = 0`, the only time the image is arithmetic, the image at bandwidth `λ > ½` determines the isolated points near height `X`, and reads near-collisions at second order | proved for `ζ` at isolated points (`π/(λ log X)`); near-collisions open (O2) | `multDiff_zeta_eq_zero_of_isolated`, `one_add_pow_le_of_isolated_cancellation`, `exists_card_le_sharp_centred`, `norm_pairSignal_sub_sq_mul_curvature_le`, `deriv_deriv_primeChannel_modulate` |
+| 5 | At `t = 0`, the only time the image is arithmetic, the image at every aperture above `L = ½ log(X/2π)` determines the points near height `X` isolated at a fixed fraction of the mean spacing (so every cancelling cluster is a near-collision cluster), and reads near-collisions at second order | proved for `ζ` at isolated points (`π/(λ log X)`); near-collisions open (O2) | `multDiff_zeta_eq_zero_of_isolated`, `one_add_pow_le_of_isolated_cancellation`, `exists_card_le_sharp_centred`, `norm_pairSignal_sub_sq_mul_curvature_le`, `deriv_deriv_primeChannel_modulate` |
 | 6 | The configuration fixed in step 5 has no shallow tilt and no cluster that collides in the last stretch | open (O1, O3) | — |
 
 ## Obstacles
@@ -36,7 +36,7 @@ as the decisive step.
 - **O2 Local camera below the isolation scale (programme-internal, next target).** Proved: for
   `λ > 1/4 + πμ/2` and large `X`, a tempered mimic of `ζ` at aperture `λ log X` with local density
   `≤ μ log X` agrees with `ζ` at every `π/(λ log X)`-isolated point of height `X`
-  (`multDiff_zeta_eq_zero_of_isolated`; `μ = 1/2π` gives `λ > ½`). The constant is `e^{O((log X)²)}`
+  (`multDiff_zeta_eq_zero_of_isolated`, `exists_near_point_of_zeta_mimic`; `μ = 1/2π` gives aperture `> ½ log X ≈ L`, sharp for the density method by the lattice pair `exists_onLine_mimic_at_density`). The constant is `e^{O((log X)²)}`
   and decay order `k ≍ log X` beats it. Open: cluster points closer than `π/(λ log X)`, i.e. the local
   form of the Ingham-scale resolution (`exists_depth_resolving_at_ingham_scale`) for near-collisions.
 - **O3 Repulsion in the last stretch (arithmetic).** Every tilt at height `X` must collide before

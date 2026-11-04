@@ -148,7 +148,7 @@ theorem exists_literal_prime_long_bounds {φ : ℝ → ℝ}
   have hBP : ∀ p ∈ P, linearPrimeStrip c < p := fun p hp => hBR.trans_lt (hRP p hp)
   have hpp : ∀ p ∈ P, p₀ ≤ p := fun p hp => hpR.trans (hRP p hp).le
   have hg := hGram c hc N M A Z hA hAZ hZN hM hwidth hB hBA P hp hpp hMp hBP G V hV hGV
-  have hl := literal_prime_long_moment_le hφ hsupp hM hG hR hp hRP c N hBP hA hBA s hV hGV
+  have hl := literal_prime_long_moment_le (Z := Z) hφ hsupp hM hG hR hp hRP c N hBP hA hBA s hV hGV
   have hclose (C : ℝ)
       (hplus : (∑ n ∈ Icc A Z, literalUnitPrimeRow true φ c N P M G n ^ 2 / (n : ℝ)) ≤ C)
       (hminus : (∑ n ∈ Icc A Z, literalUnitPrimeRow false φ c N P M G n ^ 2 / (n : ℝ)) ≤ C) :
