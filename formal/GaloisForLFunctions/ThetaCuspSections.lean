@@ -34,3 +34,4 @@ mixed integral; its weighted scale-seven repair is strict at every positive aper
 The same cross-load is strict near both endpoints and on a cofinal source ray.
 Every individual theta atom has a strict fifth even section at reflection scale at least five.
 -/
+import GaloisForLFunctions.ThetaCuspSections.FifthEvenLeadingPairReserve

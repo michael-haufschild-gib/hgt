@@ -297,7 +297,8 @@ and polar coefficient in every quadratic channel, the physical prime bound
 transitive axioms.
 `PrimeChargeUniformGeometry` checks the uniform frame, radius and sampling
 conditions with standard-only transitive axioms. `PrimeChargeUniformScales`
-contains the independent cutoff/horizon decay laws; check pending.
+checks the independent cutoff/horizon decay laws, including the overlap-scaled
+polar coefficient, with standard-only transitive axioms.
 `PrimeChargeDenseCutoffEnergy`, `PrimeChargeSmallCutoffEnergy` and
 `PrimeChargeIntermediateEnergy` contain all three regime limits.
 `PrimeChargeIntermediateDomination` separates the middle-range costs;
@@ -311,15 +312,14 @@ The proposed uniform physical-energy proof splits at `Q⁶⁴=N` and
 - `Q≤L^(1/32)`: the complete conductor residual, nonnegative diagonal and Gram error give decay. Cauchy–Schwarz gives `(Σ|a_m|m^k)²≤Q^(2k+1)Σa_m²`.
 - Intermediate range: `log L≤32log Q`; both scalar diagonal and divisor-mean overlap cost `O_t(S/B)`. Other quadratic channels retain negative powers of `L` or `N`.
 
-For sufficiently large `Q≤N`, `B≥1`, `S≤B`, `log Q≤2B` and
-`|a_1|≤9|t|/L`. The proposed combined bound is `C[f(Q)+g(N)]`, with
+The middle-range assembly separates the error as
 
-`f(Q)=1/B+S/B+(log Q)^(3/8)(1+log Q)(t/B)²(4S²+2S)`,
-`g(N)=(1+log log N)²/(log N)^(1/8)+(log N)^4/N^(1/4)`.
+`|Ephysical−J/L|≤R_N W_Q+S_N V_Q+A(cP)²`,
 
-Both envelopes tend to zero by checked scale limits. The written assembly
-instead separates each quadratic cost into a cutoff mass and a horizon factor;
-its Lean verification remains pending.
+where `V_Q=(t/B_Q)²S_Q`, `W_Q=(1+log Q)V_Q`, `R_N` converges to a finite
+constant, and `S_N→0`. Both cutoff masses and `cP` tend to zero by checked
+scale limits. The finite domination and three-range limit assembly await
+Lean verification.
 Quadratic transposition does not apply to arbitrary complementary receivers.
 The reduced-jet, coherent pole-cancellation and sharp near-collar bounds in the
 corpus do not yet supply the required uniform upward nonratio remainder here.

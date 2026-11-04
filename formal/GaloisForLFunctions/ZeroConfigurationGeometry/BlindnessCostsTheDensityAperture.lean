@@ -23,8 +23,8 @@ structure assumed.
   transform does not vanish at `c`, has aperture `A ≥ πD`.
 * **Nonzero windows** (`pi_mul_le_aperture_of_blind`). A nonzero window has a real point with
   `f̂(c) ≠ 0`; if `Λ` has lower density `≥ D` about every real point, every nonzero window blind to
-  `Λ` has aperture `≥ πD`. For the lattice `hℤ` (`D = 1/h`) this is the threshold `π/h` of
-  `exists_window_blind_to_lattice_iff`.
+  `Λ` has aperture `≥ πD`. For the lattice `hℤ` (`D = 1/h`) the bound matches the sharp threshold
+  `π/h` that Poisson summation gives in `exists_window_blind_to_lattice_iff`.
 * **Unbounded density** (`eq_zero_of_blind_of_unbounded_density`). No nonzero window of any aperture
   is blind to a configuration of unbounded lower density. The zeros of `ζ` have density
   `(1/2π)log(T/2π)` at height `T`; for them the corpus proves the stronger statement that no
@@ -112,7 +112,7 @@ theorem log_norm_add_density_le {g : ℝ → ℂ} {A M : ℝ} (hA : 0 ≤ A) (hg
   have hR0 : 0 ≤ R := hρ₀.le.trans hR
   have hcont : Continuous fun z : ℂ => Real.log (windowGrowthConstant A M) + A * |z.im| := by
     fun_prop
-  have hmono := Real.circleAverage_mono
+  have hmono := Real.circleAverage_mono (c := (c : ℂ)) (R := R)
     (MeromorphicOn.circleIntegrable_log_norm (fun z _ => (hFd.analyticAt z).meromorphicAt))
     (hcont.continuousOn.circleIntegrable') fun z _ => log_norm_paperFT_le hA hgs hM z
   have hsplit : Real.circleAverage (fun z : ℂ => Real.log (windowGrowthConstant A M) + A * |z.im|)

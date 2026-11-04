@@ -56,7 +56,8 @@ theorem deriv_even_of_odd {f : ℝ → ℝ} (hf : ∀ x, f (-x) = -f x) (x : ℝ
     deriv f (-x) = deriv f x := by
   have hfun : f = fun y => -f (-y) := funext fun y => by rw [hf y, neg_neg]
   have h : deriv (fun y => -f (-y)) (-x) = deriv f x := by
-    rw [deriv.neg, deriv_comp_neg, neg_neg, neg_neg]
+    have hn : deriv (fun y => -f (-y)) (-x) = -deriv (fun y => f (-y)) (-x) := deriv.neg
+    rw [hn, deriv_comp_neg, neg_neg, neg_neg]
   rw [← hfun] at h
   exact h
 
@@ -158,19 +159,20 @@ def paritySplit (n : ℕ) : Fin ((n + 1) / 2) ⊕ Fin (n / 2) ≃ Fin n where
   toFun s := match s with
     | Sum.inl p => ⟨2 * p, by omega⟩
     | Sum.inr q => ⟨2 * q + 1, by omega⟩
-  invFun i := if (i : ℕ) % 2 = 0 then Sum.inl ⟨i / 2, by omega⟩ else Sum.inr ⟨i / 2, by omega⟩
+  invFun i := if h : (i : ℕ) % 2 = 0 then Sum.inl ⟨i / 2, by omega⟩
+    else Sum.inr ⟨i / 2, by omega⟩
   left_inv s := by
     rcases s with p | q
     · simp only
-      rw [if_pos (by omega)]
+      rw [dif_pos (by omega)]
       congr 1; ext; simp only; omega
     · simp only
-      rw [if_neg (by omega)]
+      rw [dif_neg (by omega)]
       congr 1; ext; simp only; omega
   right_inv i := by
     by_cases h : (i : ℕ) % 2 = 0
-    · simp only [h, if_true]; ext; simp only; omega
-    · simp only [h, if_false]; ext; simp only; omega
+    · simp only [h, dif_pos]; ext; simp only; omega
+    · simp only [h, dif_neg, not_false_eq_true]; ext; simp only; omega
 
 /-- **The jet Gram is block diagonal in the parities**: `det J_n = det E_{⌈n/2⌉} · det O_{⌊n/2⌋}`. -/
 theorem det_jetGram_eq_mul (hφ : ContDiff ℝ ∞ φ) (hφc : HasCompactSupport φ) (n : ℕ) :
@@ -205,21 +207,150 @@ theorem tendsto_levinsonErr_even_odd (hφ : ContDiff ℝ ∞ φ) (hφc : HasComp
   · have h := tendsto_levinsonErr_div_pow hφ hφc (2 * m) fun k hk => hJ (k + 1) (by omega)
     have e1 : (jetGram φ (2 * m + 1)).det / (jetGram φ (2 * m)).det =
         (evenJetGram φ (m + 1)).det / (evenJetGram φ m).det := by
-      rw [det_jetGram_eq_mul hφ hφc, det_jetGram_eq_mul hφ hφc,
-        show (2 * m + 1 + 1) / 2 = m + 1 by omega, show (2 * m + 1) / 2 = m by omega,
-        show (2 * m + 1) / 2 = m by omega, show 2 * m / 2 = m by omega]
+      have i1 : (2 * m + 1 + 1) / 2 = m + 1 := by omega
+      have i2 : (2 * m + 1) / 2 = m := by omega
+      have i3 : (2 * m + 1) / 2 = m := by omega
+      have i4 : 2 * m / 2 = m := by omega
+      rw [det_jetGram_eq_mul hφ hφc, det_jetGram_eq_mul hφ hφc, i1, i2, i4]
       have := hO m (by omega)
       field_simp
     rwa [e1] at h
   · have h := tendsto_levinsonErr_div_pow hφ hφc (2 * m + 1) fun k hk => hJ (k + 1) (by omega)
     have e1 : (jetGram φ (2 * m + 1 + 1)).det / (jetGram φ (2 * m + 1)).det =
         (oddJetGram φ (m + 1)).det / (oddJetGram φ m).det := by
-      rw [det_jetGram_eq_mul hφ hφc, det_jetGram_eq_mul hφ hφc,
-        show (2 * m + 1 + 1 + 1) / 2 = m + 1 by omega, show (2 * m + 1 + 1) / 2 = m + 1 by omega,
-        show (2 * m + 1 + 1) / 2 = m + 1 by omega, show (2 * m + 1) / 2 = m by omega]
+      have i1 : (2 * m + 1 + 1 + 1) / 2 = m + 1 := by omega
+      have i2 : (2 * m + 1 + 1) / 2 = m + 1 := by omega
+      have i3 : (2 * m + 1) / 2 = m := by omega
+      rw [det_jetGram_eq_mul hφ hφc, det_jetGram_eq_mul hφ hφc, i1, i2, i3]
       have := hE (m + 1) (by omega)
       field_simp
     rwa [e1] at h
+
+/-! ### Each parity sector carries its half of the continuum canonical system -/
+
+/-- A combination of the even-order (`ι = 0`) or odd-order (`ι = 1`) jets of a nonzero bump
+vanishes only trivially. -/
+theorem eq_zero_of_sum_smul_parityJets (hφ : ContDiff ℝ ∞ φ) (hφc : HasCompactSupport φ)
+    (hφ0 : φ ≠ 0) (n : ℕ) (x : Fin ((n + 1) / 2) → ℝ) (z : Fin (n / 2) → ℝ)
+    (h : (∑ p, x p • iteratedDeriv (2 * p) φ) + ∑ q, z q • iteratedDeriv (2 * q + 1) φ = 0) :
+    x = 0 ∧ z = 0 := by
+  set e := paritySplit n
+  set y : Fin n → ℝ := fun i => Sum.elim x z (e.symm i)
+  have hy : ∑ i : Fin n, y i • iteratedDeriv i φ = 0 := by
+    rw [← Equiv.sum_comp e, Fintype.sum_sum_type]
+    simp only [y, Equiv.symm_apply_apply, Sum.elim_inl, Sum.elim_inr]
+    exact h
+  have h0 := eq_zero_of_sum_smul_iteratedDeriv hφ hφc hφ0 n y hy
+  refine ⟨funext fun p => ?_, funext fun q => ?_⟩
+  · have := congrFun h0 (e (Sum.inl p))
+    simpa [y] using this
+  · have := congrFun h0 (e (Sum.inr q))
+    simpa [y] using this
+
+/-- **The even sector carries the even-order system**: for a nonzero even smooth bump on a window
+whose even sector is nonnegative, the even-order jet Gram is positive definite. -/
+theorem evenJetGram_posDef {a : ℝ}
+    (hnn : ∀ G : ℝ → ℝ, ContDiff ℝ ∞ G → SupportedIn a G → (∀ x, G (-x) = 1 * G x) →
+      0 ≤ weilQuad G)
+    (hφ : ContDiff ℝ ∞ φ) (hφa : SupportedIn a φ) (hφe : ∀ x, φ (-x) = φ x) (hφ0 : φ ≠ 0)
+    (n : ℕ) : (evenJetGram φ ((n + 1) / 2)).PosDef := by
+  have hφc := hasCompactSupport_of_supportedIn' hφa
+  rw [Matrix.posDef_iff_dotProduct_mulVec]
+  refine ⟨?_, fun x hx => ?_⟩
+  · ext i j; simp [evenJetGram, Matrix.conjTranspose_apply, weilPair_comm]
+  · set F := ∑ p, x p • iteratedDeriv (2 * p) φ
+    have hF : ContDiff ℝ ∞ F := by
+      have e : F = fun u => ∑ p, x p * iteratedDeriv (2 * p) φ u := by
+        funext u; simp [F, Finset.sum_apply]
+      rw [e]; exact ContDiff.sum fun p _ => contDiff_const.mul (contDiff_iteratedDeriv_of_smooth hφ _)
+    have hFa : SupportedIn a F := fun u hu => by
+      simp only [F, Finset.sum_apply, Pi.smul_apply, smul_eq_mul]
+      exact Finset.sum_eq_zero fun p _ => by rw [iteratedDeriv_supportedIn hφa _ u hu, mul_zero]
+    have hFe : ∀ u, F (-u) = 1 * F u := fun u => by
+      simp only [F, Finset.sum_apply, Pi.smul_apply, smul_eq_mul, one_mul]
+      refine Finset.sum_congr rfl fun p _ => ?_
+      rw [iteratedDeriv_parity hφe, pow_mul, neg_one_sq, one_pow, one_mul]
+    have hF0 : F ≠ 0 := fun hz => hx (eq_zero_of_sum_smul_parityJets hφ hφc hφ0 n x 0
+      (by rw [show (∑ p, x p • iteratedDeriv (2 * p) φ) = F from rfl, hz]; simp)).1
+    have hpos := weilQuad_pos_of_sector_nonneg 1 (Or.inl rfl) hnn hF hFa hFe hF0
+    have hexp := weilPair_sum_smul_sum_smul
+      (fun p : Fin ((n + 1) / 2) => iteratedDeriv_mem_realTests hφ hφc (2 * p)) x
+    simp only [star_trivial, dotProduct, Matrix.mulVec]
+    have : weilQuad F = ∑ p, x p * ∑ q, evenJetGram φ ((n + 1) / 2) p q * x q := hexp
+    rw [this] at hpos
+    simpa [dotProduct] using hpos
+
+/-- **The odd sector carries the odd-order system**: for a nonzero even smooth bump on a window
+whose odd sector is nonnegative, the odd-order jet Gram is positive definite. -/
+theorem oddJetGram_posDef {a : ℝ}
+    (hnn : ∀ G : ℝ → ℝ, ContDiff ℝ ∞ G → SupportedIn a G → (∀ x, G (-x) = -1 * G x) →
+      0 ≤ weilQuad G)
+    (hφ : ContDiff ℝ ∞ φ) (hφa : SupportedIn a φ) (hφe : ∀ x, φ (-x) = φ x) (hφ0 : φ ≠ 0)
+    (n : ℕ) : (oddJetGram φ (n / 2)).PosDef := by
+  have hφc := hasCompactSupport_of_supportedIn' hφa
+  rw [Matrix.posDef_iff_dotProduct_mulVec]
+  refine ⟨?_, fun x hx => ?_⟩
+  · ext i j; simp [oddJetGram, Matrix.conjTranspose_apply, weilPair_comm]
+  · set F := ∑ q, x q • iteratedDeriv (2 * q + 1) φ
+    have hF : ContDiff ℝ ∞ F := by
+      have e : F = fun u => ∑ q, x q * iteratedDeriv (2 * q + 1) φ u := by
+        funext u; simp [F, Finset.sum_apply]
+      rw [e]; exact ContDiff.sum fun p _ => contDiff_const.mul (contDiff_iteratedDeriv_of_smooth hφ _)
+    have hFa : SupportedIn a F := fun u hu => by
+      simp only [F, Finset.sum_apply, Pi.smul_apply, smul_eq_mul]
+      exact Finset.sum_eq_zero fun p _ => by rw [iteratedDeriv_supportedIn hφa _ u hu, mul_zero]
+    have hFo : ∀ u, F (-u) = -1 * F u := fun u => by
+      simp only [F, Finset.sum_apply, Pi.smul_apply, smul_eq_mul, Finset.mul_sum]
+      refine Finset.sum_congr rfl fun p _ => ?_
+      rw [iteratedDeriv_parity hφe, pow_succ, pow_mul, neg_one_sq, one_pow]; ring
+    have hF0 : F ≠ 0 := fun hz => hx (eq_zero_of_sum_smul_parityJets hφ hφc hφ0 n 0 x
+      (by rw [show (∑ q, x q • iteratedDeriv (2 * q + 1) φ) = F from rfl, hz]; simp)).2
+    have hpos := weilQuad_pos_of_sector_nonneg (-1) (Or.inr rfl) hnn hF hFa hFo hF0
+    have hexp := weilPair_sum_smul_sum_smul
+      (fun q : Fin (n / 2) => iteratedDeriv_mem_realTests hφ hφc (2 * q + 1)) x
+    simp only [star_trivial, dotProduct, Matrix.mulVec]
+    have : weilQuad F = ∑ p, x p * ∑ q, oddJetGram φ (n / 2) p q * x q := hexp
+    rw [this] at hpos
+    simpa [dotProduct] using hpos
+
+theorem det_evenJetGram_pos {a : ℝ}
+    (hnn : ∀ G : ℝ → ℝ, ContDiff ℝ ∞ G → SupportedIn a G → (∀ x, G (-x) = 1 * G x) →
+      0 ≤ weilQuad G)
+    (hφ : ContDiff ℝ ∞ φ) (hφa : SupportedIn a φ) (hφe : ∀ x, φ (-x) = φ x) (hφ0 : φ ≠ 0)
+    (k : ℕ) : 0 < (evenJetGram φ k).det := by
+  have := (evenJetGram_posDef hnn hφ hφa hφe hφ0 (2 * k)).det_pos
+  rwa [show (2 * k + 1) / 2 = k by omega] at this
+
+theorem det_oddJetGram_pos {a : ℝ}
+    (hnn : ∀ G : ℝ → ℝ, ContDiff ℝ ∞ G → SupportedIn a G → (∀ x, G (-x) = -1 * G x) →
+      0 ≤ weilQuad G)
+    (hφ : ContDiff ℝ ∞ φ) (hφa : SupportedIn a φ) (hφe : ∀ x, φ (-x) = φ x) (hφ0 : φ ≠ 0)
+    (k : ℕ) : 0 < (oddJetGram φ k).det := by
+  have := (oddJetGram_posDef hnn hφ hφa hφe hφ0 (2 * k)).det_pos
+  rwa [show 2 * k / 2 = k by omega] at this
+
+/-- **The lattice canonical system alternates between the two parity sectors.** For a nonzero even
+smooth bump on a window whose even and odd sectors are nonnegative, the even-order margins converge
+to the even-sector Stieltjes ratios and the odd-order margins to the odd-sector ones, all positive:
+`h^{−4m}E_{2m} → det E_{m+1}/det E_m > 0`, `h^{−4m−2}E_{2m+1} → det O_{m+1}/det O_m > 0`. -/
+theorem tendsto_levinsonErr_even_odd_of_sectors_nonneg {a : ℝ}
+    (hne : ∀ G : ℝ → ℝ, ContDiff ℝ ∞ G → SupportedIn a G → (∀ x, G (-x) = 1 * G x) →
+      0 ≤ weilQuad G)
+    (hno : ∀ G : ℝ → ℝ, ContDiff ℝ ∞ G → SupportedIn a G → (∀ x, G (-x) = -1 * G x) →
+      0 ≤ weilQuad G)
+    (hφ : ContDiff ℝ ∞ φ) (hφa : SupportedIn a φ) (hφe : ∀ x, φ (-x) = φ x) (hφ0 : φ ≠ 0)
+    (m : ℕ) :
+    0 < (evenJetGram φ (m + 1)).det / (evenJetGram φ m).det ∧
+      0 < (oddJetGram φ (m + 1)).det / (oddJetGram φ m).det ∧
+      Tendsto (fun h => levinsonErr (weilSeq φ h) (2 * m) / h ^ (2 * (2 * m))) (𝓝[>] 0)
+        (𝓝 ((evenJetGram φ (m + 1)).det / (evenJetGram φ m).det)) ∧
+      Tendsto (fun h => levinsonErr (weilSeq φ h) (2 * m + 1) / h ^ (2 * (2 * m + 1))) (𝓝[>] 0)
+        (𝓝 ((oddJetGram φ (m + 1)).det / (oddJetGram φ m).det)) := by
+  have hE := det_evenJetGram_pos hne hφ hφa hφe hφ0
+  have hO := det_oddJetGram_pos hno hφ hφa hφe hφ0
+  obtain ⟨h1, h2⟩ := tendsto_levinsonErr_even_odd hφ (hasCompactSupport_of_supportedIn' hφa) m
+    (fun k _ => (hE k).ne') (fun k _ => (hO k).ne')
+  exact ⟨div_pos (hE _) (hE _), div_pos (hO _) (hO _), h1, h2⟩
 
 end GaloisForLFunctions.SignedWindowCriticality
 

@@ -207,8 +207,9 @@ O_(h,R)(m⁻⁵). The squared triangle inequality restores B_N without
 changing summability. The residual and complete envelopes are proved in
 `TerminalConductorSourcesAreSummableBelowOverlap.lean`; both pass their
 actual-path audits with exactly `[propext, Classical.choice, Quot.sound]`.
-The high-conductor norm sum is implemented
-in `TheUpperCriticalPacketHasVanishingMixedMass.lean`, also awaiting audit.
+The high-conductor norm sum is proved in
+`TheUpperCriticalPacketHasVanishingMixedMass.lean`; all five endpoints
+pass their actual-path audit with exactly `[propext, Classical.choice, Quot.sound]`.
 It proves the stronger receiver-independent estimate
 `Σ_(c_N<m≤Q_N) ‖r_m‖²/(c_N E_m)≤L^(-1/64)` eventually.
 The proof uses `c_N≤L^(2/15)`, exponent `1/128` in the residual estimate

@@ -26,11 +26,16 @@ source still requires control of unequal atom pairs and the omitted tail.
 The three-atom Cauchy bound is
 `n!·8000 f₁(x)² exp(-(529/50)q)/(3/20)^n`, valid for `q≥3`.
 
-The retained affine target is `A(q)+8zB(q) ≻ 0` for `q≥5` and
-`0≤z≤5^15/(20^5 q^15)`, where `Aᵢⱼ=P_(i+j)(q²,2q)` and
-`Bᵢⱼ=P_(i+j)(4q²,5q)`. The actual weight `z=exp(-3q)` lies in this
-interval by the exponential tangent inequality. An explicit quadratic
-reserve is needed to absorb pairs `(1,3)`, `(2,3)` and the omitted tail.
+The leading pair now retains an explicit quadratic reserve on the full ray
+`q≥5`: its normalized Gaussian-coordinate matrix is at least `(49/1000)I`.
+See [the leading-pair theorem](../3-formalized/theta-cusp-fifth-even-leading-pair-reserve.md).
+The remaining terms are the unequal pairs `(1,3)`, `(2,3)` and the Cauchy tail;
+pure-atom matrices are positive.
+
+A stronger sufficient conjecture is positivity of the complete native fifth
+source whenever `q≥5`. Stationary exponential bounds reduce the remaining
+pair estimates to finite rational bounds on their shifted polynomial
+coefficients. These remainder bounds are not yet proved.
 
 **Unproved:** the transition-source sign. No positivity or obstruction
 is asserted at `τ`.

@@ -93,7 +93,11 @@ theorem tendsto_harmonicPrimeCharge_energy_dense_cutoff {ι : Type*} {l : Filter
     _ ≤ C * c ^ 3 * V + 2 * t ^ 2 / primePoleScale (Q i) := by
       rw [abs_of_nonneg hJ.1]
       exact add_le_add (he.trans_eq (by dsimp only [V]; ring)) hJ.2
-    _ ≤ _ := (add_le_add_right hmoment _).trans_eq (by dsimp only [V]; ring)
+    _ = 2 * t ^ 2 / primePoleScale (Q i) + C * c ^ 3 * V := by ring
+    _ ≤ 2 * t ^ 2 / primePoleScale (Q i) +
+        D * (Real.log (Q i) ^ (3 / 8 : ℝ) * (Real.log (Q i) + 1) * V) :=
+      add_le_add le_rfl hmoment
+    _ = _ := by dsimp only [V]; ring
 
 #print axioms tendsto_harmonicPrimeCharge_energy_dense_cutoff
 

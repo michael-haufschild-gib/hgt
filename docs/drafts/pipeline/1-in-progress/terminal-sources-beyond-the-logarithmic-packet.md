@@ -39,6 +39,16 @@ means are opposite von Mangoldt charges; their finite errors must be
 paired before summing inverse energies. A limit theorem with fixed m
 cannot perform this task.
 
+The corpus already supplies a quantitative harmonic charge law:
+`abs_normalizedRamanujan_harmonic_add_vonMangoldt_le` in
+`SuccessorShellArithmetic/TopBand/RamanujanDivisorMoments.lean` bounds
+the normalized error by `2m√φ(m)/(N+1)` for every m≥2 and N.
+`PeriodMassShellRows.lean` gives interval-sum costs m for the normalized
+mode and `2m log m` for the centered normalized divisor jet. These
+source proofs have been inspected. The open task is their application
+to the complete terminal kernel, not constructing those arithmetic
+means or uniform harmonic rates anew.
+
 ## Attack
 
 1. Derive a finite signed terminal bound from
@@ -124,42 +134,57 @@ error; a generic residual norm does not do that.
 
 ## Long-index estimate for the actual near kernel
 
-The following paper reduction isolates a concrete part of the open core;
-it has not passed a Lean transfer. Let p be q-periodic, mean zero, with
-`|p|≤B`. Let F vanish on `x≤δ`, `0<δ≤1`, be bounded by B_F and globally
-Lipschitz with constant L_F. Let K be bounded by B_K, Lipschitz with
-constant L_K, and zero on `[1,∞)`. For c≥1 and `c/N≤δ/(4e²)`, put
+A dependency-closed paper argument now gives the following finite
+estimate; its actual-kernel Lean transfer remains pending. Assume F
+vanishes on `x≤1/2`, `|F|≤B_F`, and `Lip(F)≤L_F`. Let K vanish on
+`[1,∞)`, satisfy `|K|≤B_K`, and have Lipschitz constant L_K. Let p
+be q-periodic with zero mean and `|p|≤B`. For c≥1 and `8c≤N`, put
 
-    C = 2B_FB_K/δ + 2L_FB_K/δ + 4B_FB_K/δ² + 16e²B_FL_K/δ³.
+    C_W = 20B_FB_K+64B_FL_K+4B_KL_F,
+    C_K = 64L_K+4B_K.
 
-The proposed finite bound for the existing punctured endpoint pairing is
+Then the proposed exact-kernel bound is
 
     |endpointNearPairSum(K,F,0,2,c/N,N,1,p)/c|
-      ≤ 8e² q B C/N.
+      ≤ [4qB C_W+8B_FB C_K c]/N.
 
-To derive it, reindex the two triangles by d=|j−n|. Only
-`d≤D=floor(2e²c)` contribute. Set s=d/N, w=c/N. The two weights are
-`F(x)A_s(x)K(G_s(x))` and `F(x+s)A_s(x)K(G_s(x))`, where
+**Proof.** For n<j≤N, `1−n/j≤log(j/n)`. If K at the actual gap is
+nonzero, `log(j/n)<c/N`, hence `d=j−n≤c`. Thus only integer gaps
+`1≤d≤floor(c)` contribute; no exponential strip loss is needed.
+Reindex the two triangles by j=n+d using `sum_sum_ite_lt`.
 
-    A_s(x)=[x(x+s)]^(-1/2),   G_s(x)=log(1+s/x)/w.
+Set `I(x)=1/max(1/4,x)` and `W_θ(x)=F(x)I(x)K(θI(x))`.
+The reciprocal difference identity and the one-Lipschitz clamp give
+`0≤I≤4`, `Lip(I)≤16`. The bounded-product rule gives
 
-Replace x inside A_s and G_s by its clamp to `[δ/2,1]` to obtain global
-bounded Lipschitz extensions. They agree with the required weights
-whenever F or its translate is nonzero: s≤δ/2. On this interval,
-`|A_s|≤2/δ`, `Lip(A_s)≤4/δ²`, and
-`Lip(G_s)≤4s/(wδ²)≤8e²/δ²`. Hence each extended weight has its supremum
-plus Lipschitz constant at most C, uniformly in d,c,N. Apply the checked
-`abs_terminal_shifted_periodic_zero_mean_le` to each triangle and gap.
-Each costs at most `2qBC/N`; summing both over D and dividing by c gives
-the bound. The N⁻¹ comes from the two square-root horizon weights.
+    ||W_θ||∞≤4B_FB_K,
+    Lip(W_θ)≤64B_FL_K+16B_FB_K+4B_KL_F       (|θ|≤1).
 
-The derivative of G_s retains s/w=d/c. Bounding its two logarithms
-separately would lose that factor. This finite averaging order is the
-essential mechanism: it needs no relation between q and c. For the jet,
-apply it to the mean-zero sequence `j_m−Λ(m)` and retain the sparse mean
-separately. The clamp estimates, exact reindexing and source specialization
-remain to formalize; the other complete channels still require their own
-uniform bounds.
+At θ=d/c, use the two profiles F(x) and F(x+d/N). Wherever either
+is nonzero, n/N≥1/4 because d/N≤1/8. The clamp therefore leaves the
+actual row unchanged. Applying the checked
+`abs_terminal_shifted_periodic_zero_mean_le` to each reciprocal row
+bounds its absolute sum by `2qB C_W/N`, independently of d and c.
+The reciprocal-row statement is implemented in
+`TerminalReciprocalRowsCancelAlongTheLongIndex.lean`; audit pending.
+
+For the actual kernel, apply the checked
+`abs_sqrt_log_kernel_sub_linear_le` with A=4, B=c, x=n, y=n+d.
+Its hypotheses follow from `8c≤N` and the support observation. The
+kernel difference is at most `C_K c/N`. The combined two-triangle
+coefficient divided by n is at most `8B_FB/N`; summing at most N
+indices costs `8B_FB C_K c/N` per gap. There are at most c gaps.
+After division by c, the two reciprocal estimates and this error give
+the displayed bound. Zero receiver coefficients contribute nothing.
+`TerminalNearRowsCancelAlongTheLongIndex.lean` implements the exact
+strip, triangle reindexing, kernel error and final bound; audits pending.
+
+This cancellation uses the long terminal index. It imposes no relation
+between q and c. Apply it to the centered divisor jet and retain its
+sparse Mangoldt mean separately. The exact prime-row completion removes
+the punctured diagonal before that split. The Gamma, center and remaining
+complete channels still need their own conductor-uniform estimates;
+this near-kernel result alone does not prove the large-packet conjecture.
 
 ## Decision criterion
 

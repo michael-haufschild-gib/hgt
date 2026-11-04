@@ -113,8 +113,7 @@ theorem tendsto_harmonicPrimeCharge_energy_small_cutoff {ι : Type*} {l : Filter
   have he := hb hQi hQ2 hframe hc hrad hc4 t
   rw [Real.norm_eq_abs]
   refine he.trans ?_
-  exact (add_le_add_left (mul_le_mul_of_nonneg_right hbracket hZ) _).trans_eq
-    (by dsimp only [P, V, T, D]; ring)
+  exact add_le_add le_rfl (mul_le_mul_of_nonneg_right hbracket hZ)
 
 #print axioms tendsto_harmonicPrimeCharge_energy_small_cutoff
 
