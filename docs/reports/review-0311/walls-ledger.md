@@ -53,7 +53,7 @@ numerical. Window lengths `A`; half-widths `a = A/2`; `c_ψ(t) = W(ψ(·−t), �
 | Σ3a Coprime stratum | Sharpened | RH | gcd stratification; graded/top Möbius pair; Redheffer `det = M(N)` [L]. |
 | Σ4 Finite index / heat count | Sharpened | ≥qRH (`K_ζ`); RH (`K_ζ⊠K_ζ`) | `κ < ∞` ⇒ Lindelöf; RH ⇔ index `0`; `{0, ∞}` laws [L]. |
 | Σ5 Collision quantum / window integer | Reduced (to Π17) | RH | Index `0` ⇔ Wiener–Hopf invertibility ⇔ outer Szegő factorization [L]. |
-| Σ6 Rank / degree uniformity | Partially solved | RH | Rank 8 strict; fixed Jensen degree eventually hyperbolic; PF₃₇ [L]. Every finite rank strict on a rank-dependent neighborhood of aperture `1/2`, extending into `a<1/2` [W]. |
+| Σ6 Rank / degree uniformity | Partially solved | RH | Rank 8 strict; fixed Jensen degree eventually hyperbolic; PF₃₇ [L]. All ranks `n≤N` strict for `|a−1/2| < c/[A^(N+1)((2N+1)!)^(N+2)]`, with fixed `A≥1`, `c>0` [W]. |
 | Σ7 Window Markov capacity | Sharpened | RH | Fold capacity criterion; exit charge to `1/7`; RH ⇔ `R ≤ ½` on the odd sector; Barta/Picone certificates sign-blind [L]. |
 | Σ8 Realization | Sharpened | RH | RH ⇔ every window has an `ℓ²(zeros)` realization; the realization is explicit: `Q = 2Re[𝓦H, 𝓦H]` with bounded `𝓦_A` [L]; none finite-dimensional; no finite-rank realization of `K_ζ` [L]. |
 | Σ9 Explicit image / resolvent | Partially solved | RH in strip | Depth identity for `σ > 1`; theta–prime expression at `s = 4` [L]. |

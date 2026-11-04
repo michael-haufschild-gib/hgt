@@ -9,10 +9,10 @@ The strict eighth section supplies the head. Parity reduces the new sign
 to the integrated even five-dimensional block. Its unconditional sign
 remains open.
 
-The [finite-rank critical collar](../3-formalized/theta-cusp-finite-rank-critical-collar.md)
-proves the ninth section, and every prescribed finite rank, strictly positive
-near `a=1/2`, including `a<1/2`. A common radius works for every smaller rank;
-its dependence on the prescribed rank is not controlled.
+The [quantitative critical collar](../3-formalized/theta-cusp-quantitative-critical-collar.md)
+proves strict positivity for every rank `n≤N` when
+`|a−1/2| < c/[A^(N+1)·((2N+1)!)^(N+2)]`, with fixed `A≥1`, `c>0`.
+This includes the ninth section near `a=1/2`; the full aperture interval remains open.
 
 ## Established source restrictions
 

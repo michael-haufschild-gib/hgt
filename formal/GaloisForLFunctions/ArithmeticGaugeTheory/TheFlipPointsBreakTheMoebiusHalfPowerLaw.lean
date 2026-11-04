@@ -122,7 +122,7 @@ theorem flipDivisorSum_eq_ofReal (θ : ℝ) (n : ℕ) :
     · exact ⟨0, le_rfl, by simp⟩
     rw [ArithmeticFunction.IsMultiplicative.multiplicative_factorization _
       (isMultiplicative_flipDivisorSum θ) hn, Finsupp.prod]
-    refine Finset.prod_induction _ (fun z => ∃ r : ℝ, 0 ≤ r ∧ z = r)
+    refine Finset.prod_induction _ (fun z : ℂ => ∃ r : ℝ, 0 ≤ r ∧ z = (r : ℂ))
       (fun z w ⟨r, hr, hz⟩ ⟨t, ht, hw⟩ => ⟨r * t, mul_nonneg hr ht, by rw [hz, hw, Complex.ofReal_mul]⟩)
       ⟨1, zero_le_one, by simp⟩ fun p hp => ?_
     have hpp : p.Prime := Nat.prime_of_mem_primeFactors (by rwa [Nat.support_factorization] at hp)
@@ -350,7 +350,7 @@ theorem flipDivisorSeries_summable {θ σ : ℝ} (hθ : 0 ≤ θ) (hσ : θ < σ
 theorem term_flipDivisorSum (θ σ : ℝ) (n : ℕ) :
     LSeries.term (fun n => flipDivisorSum θ n) (σ : ℂ) n = (flipDivisorTerm θ σ n : ℂ) := by
   rcases eq_or_ne n 0 with rfl | hn
-  · simp [LSeries.term_def, flipDivisorTerm_apply]
+  · simp [LSeries.term_def]
   rw [LSeries.term_def, if_neg hn, (flipDivisorSum_eq_ofReal θ n).1, flipDivisorTerm_apply,
     Real.rpow_neg (Nat.cast_nonneg n), ← div_eq_mul_inv, Complex.ofReal_div,
     Complex.ofReal_cpow (Nat.cast_nonneg n), Complex.ofReal_natCast]
@@ -389,7 +389,7 @@ theorem not_gaugePowerBound_moebius_flipPoint {θ a : ℝ} (hθ : 0 < θ) (hθ1 
       (Real.rpow_le_rpow_of_exponent_le (by linarith [N.cast_nonneg (α := ℝ)]) (le_max_left _ _)) hC)
   -- `D(s) = Σ f(n) n^{−s}` converges at `c` and is holomorphic on `Re s > c`.
   obtain ⟨L, hL⟩ := RHTower.tendsto_dirichlet_partialSum_of_poly_bounded hC (le_max_right a 0) hg
-    (s := (c : ℂ)) (by simpa using hc)
+    (s := (c : ℂ)) (by rw [Complex.ofReal_re]; exact hc)
   set D := GaloisForLFunctions.RHTower.dirichletSum g
   have hDd : DifferentiableOn ℂ D {s : ℂ | c < s.re} := by
     have := GaloisForLFunctions.RHTower.differentiableOn_dirichletSum (a := g) (s₀ := (c : ℂ))
@@ -430,8 +430,6 @@ theorem not_gaugePowerBound_moebius_flipPoint {θ a : ℝ} (hθ : 0 < θ) (hθ1 
     congr 1
     rw [← ArithmeticFunction.LSeries_zeta_eq_riemannZeta hs]
     congr 1
-    funext n
-    simp [ArithmeticFunction.natCoe_apply]
   -- The identity theorem on a connected open set around `(θ, 1)` avoiding `s = 1`.
   set A : Set ℂ := {s | θ < s.re ∧ s.re < 1}
   set B : Set ℂ := {s | θ < s.re ∧ 0 < s.im}
@@ -495,7 +493,7 @@ theorem not_gaugePowerBound_moebius_flipPoint {θ a : ℝ} (hθ : 0 < θ) (hθ1 
   have hev2 : ∀ᶠ σ : ℝ in 𝓝 θ, M < ∑ p ∈ F, (p : ℝ) ^ (-σ) := by
     have hc2 : Tendsto (fun σ : ℝ => ∑ p ∈ F, (p : ℝ) ^ (-σ)) (𝓝 θ)
         (𝓝 (∑ p ∈ F, (p : ℝ) ^ (-θ))) := by
-      refine tendsto_finset_sum F fun p hp => ?_
+      refine tendsto_finsetSum F fun p hp => ?_
       have hp0 : (p : ℝ) ≠ 0 := by
         obtain ⟨k, hk⟩ := hFS hp; exact_mod_cast (mem_flipBlock hk).1.ne_zero
       exact (Real.continuousAt_const_rpow hp0).comp continuous_neg.continuousAt
@@ -518,8 +516,8 @@ theorem not_gaugePowerBound_moebius_flipPoint {θ a : ℝ} (hθ : 0 < θ) (hθ1 
           rw [pow_one, if_neg one_ne_zero, if_pos ⟨k, hk⟩, pow_one] at this
           rw [this]
           linarith [Real.rpow_nonneg (Nat.cast_nonneg (α := ℝ) p) (-σ)]
-      _ ≤ _ := sum_le_tsum F (fun n _ => flipDivisorTerm_nonneg θ σ n)
-          (flipDivisorSeries_summable hθ.le hσθ')
+      _ ≤ _ := (flipDivisorSeries_summable hθ.le hσθ').sum_le_tsum F
+          (fun n _ => flipDivisorTerm_nonneg θ σ n)
   rw [hval, hLS, Complex.norm_real, Real.norm_of_nonneg
     (tsum_nonneg fun n => flipDivisorTerm_nonneg θ σ n)] at h1
   linarith

@@ -569,7 +569,9 @@ theorem signedHankel_posDef_factorial_collar : ∃ A c : ℝ, 1≤A ∧ 0 < c �
     have hentry := raw_entry_perturbation hM hK hmom (n+1) a hsmall
     have he := GaloisForLFunctions.HTGeometry.abs_dotProduct_mulVec_le E (by positivity) hentry v
     have he' : |v ⬝ᵥ E*ᵥv|≤(T*|a-1/2|)*(v ⬝ᵥ v) := by
-      convert he using 1 <;> dsimp [T] <;> ring
+      convert he using 1
+      dsimp only [T]
+      ring
     have hnorm : 0 < v ⬝ᵥ v :=
       lt_of_le_of_ne (by rw [dotProduct]; exact Finset.sum_nonneg fun i _ => mul_self_nonneg _)
         (Ne.symm (fun h => hv ((dotProduct_self_eq_zero).mp h)))

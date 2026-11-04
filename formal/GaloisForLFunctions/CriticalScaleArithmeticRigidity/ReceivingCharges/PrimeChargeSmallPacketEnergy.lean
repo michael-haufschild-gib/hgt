@@ -57,7 +57,8 @@ theorem exists_complete_packet_diagonal_error_bound {φ : ℝ → ℝ}
       Real.log_le_log hR0 (by exact_mod_cast hR)
     exact hb (mem_Icc.mp hm).1 (mem_Icc.mp hl).1
       ((Nat.mul_le_mul hR hR).trans hQN)
-      ((mul_le_mul_of_nonneg_left (add_le_add_left hlogR 1) (by norm_num)).trans hlog)
+      ((mul_le_mul_of_nonneg_left (add_le_add_left hlogR 1)
+        (by norm_num : (0 : ℝ) ≤ 18)).trans hlog)
       hc hrad hc4
   have herror : completeWeilEnergy φ c N u - ⟪d, u⟫ =
       ∑ m ∈ Icc 1 Q, ∑ l ∈ Icc 1 Q, a m * a l * r m l := by
