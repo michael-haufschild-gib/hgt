@@ -280,7 +280,7 @@ theorem one_add_abs_sub_le_mul (a b c : ℝ) : 1 + |a - c| ≤ (1 + |b - c|) * (
     mul_nonneg (abs_nonneg (b - c)) (abs_nonneg (a - b))]
 
 /-- In the strip, `1 + |γ_ρ|² ≤ (5/4)(1 + |X|)²(1 + |Im ρ − X|)²`. -/
-theorem one_add_normSq_gammaOf_le {ρ : ℂ} (hρ : |ρ.re - 1 / 2| ≤ 1 / 2) (X : ℝ) :
+theorem one_add_normSq_gammaOf_le_strip {ρ : ℂ} (hρ : |ρ.re - 1 / 2| ≤ 1 / 2) (X : ℝ) :
     1 + Complex.normSq (gammaOf ρ) ≤ 5 / 4 * (1 + |X|) ^ 2 * (1 + |ρ.im - X|) ^ 2 := by
   rw [normSq_gammaOf]
   have h1 : (ρ.re - 1 / 2) ^ 2 ≤ 1 / 4 := by
@@ -430,7 +430,7 @@ theorem exists_maximal_nearSite (Z Z' : ZeroConfig) (hZ : TemperedConfig Z)
     set ρ : ℂ := ((k : pairSites Z Z') : ℂ) with hρ
     show ψ k ≤ 5 / 4 * (1 + |X|) ^ 2 * (1 + R) ^ 2 *
       (‖multDiff Z Z' ρ‖ / (1 + Complex.normSq (gammaOf ρ)))
-    have hk := one_add_normSq_gammaOf_le (hstrip ρ (k : pairSites Z Z').2.1) X
+    have hk := one_add_normSq_gammaOf_le_strip (hstrip ρ (k : pairSites Z Z').2.1) X
     have hkN : |ρ.im - X| ≤ R := k.2
     have hkR : (1 + |ρ.im - X|) ^ 2 ≤ (1 + R) ^ 2 :=
       pow_le_pow_left₀ (by positivity) (by linarith) 2
@@ -605,7 +605,7 @@ theorem tsum_far_siteWeight_le (Z Z' : ZeroConfig) (hZ : TemperedConfig Z)
     have hρs := hstrip ρ (k : pairSites Z Z').2.1
     have hfarρ : R < |ρ.im - X| := not_le.mp k.2
     have hk1 := norm_siteP_add_norm_siteQ_le Z Z' hw0 hw4 γ₀ ρ hρs
-    have hn := one_add_normSq_gammaOf_le hρs X
+    have hn := one_add_normSq_gammaOf_le_strip hρs X
     have htri := one_add_abs_sub_le_mul ρ.im γ₀ X
     have hx : R - d₀ ≤ |ρ.im - γ₀| := by
       have := abs_sub_abs_le_abs_sub (ρ.im - X) (γ₀ - X)

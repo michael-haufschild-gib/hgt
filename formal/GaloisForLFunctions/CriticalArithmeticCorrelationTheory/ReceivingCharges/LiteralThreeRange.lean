@@ -2,6 +2,8 @@ import GaloisForLFunctions.CriticalArithmeticCorrelationTheory.ReceivingCharges.
 import GaloisForLFunctions.CriticalArithmeticCorrelationTheory.ReceivingCharges.LiteralShortRows
 import GaloisForLFunctions.CriticalArithmeticCorrelationTheory.ReceivingCharges.UpwardProfileNorms
 import GaloisForLFunctions.RHTower.Sieve.HarmonicLogBound
+import Mathlib.Algebra.Order.Interval.Finset.SuccPred
+import Mathlib.Data.Nat.SuccPred
 
 /-!
 # Three receiving ranges for the literal upward norm
@@ -110,10 +112,7 @@ theorem exists_literal_upward_three_range_bound {φ : ℝ → ℝ}
         (∑ n ∈ Icc 1 (A - 1), f n) + (∑ n ∈ Icc A J, f n) + (∑ n ∈ Icc (J + 1) N, f n) := by
     have h₁ := sum_Ioc_consecutive f (Nat.zero_le (A - 1)) ((Nat.sub_le A 1).trans hAJ)
     have h₂ := sum_Ioc_consecutive f (Nat.zero_le J) hJN.le
-    change (∑ n ∈ Icc 1 (A - 1), f n) + (∑ n ∈ Icc ((A - 1) + 1) J, f n) =
-      ∑ n ∈ Icc 1 J, f n at h₁
-    rw [Nat.sub_add_cancel hA1] at h₁
-    change (∑ n ∈ Icc 1 J, f n) + (∑ n ∈ Icc (J + 1) N, f n) = ∑ n ∈ Icc 1 N, f n at h₂
+    simp only [← Icc_add_one_left_eq_Ioc, Nat.zero_add, Nat.sub_add_cancel hA1] at h₁ h₂
     rw [← h₂, ← h₁]
   rw [upwardPrimeVector_physical_packet_norm_sq hsupp hc hwidth]
   unfold literalThreeRangeBound

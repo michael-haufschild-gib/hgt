@@ -22,6 +22,13 @@ columns of the density of `ζ` hide exactly up to `λ' = ½` (`rvmLattice_mimic_
 **Cancelling clusters are near-collisions** (`exists_near_point_of_zeta_mimic`). Under the same
 hypotheses every cancelling point at height `X` has another cluster point within `π/(λ log X)`.
 
+**Near-coincidence** (`multDiff_zeta_eq_zero_of_nearly_isolated`,
+`exists_near_coincidence_of_zeta_mimic`). The isolation radius may shrink to
+`exp(−κ log X/(1 + log log X))` for any fixed `κ > 0`: the floor of the windows costs only
+`D (1 + log D) log(1/η)` (`log_inv_windowFloor_le_of_le_one`), still `O((log X)²)`. So every cancelling
+cluster point has another cluster point within `exp(−κ log X/(1 + log log X))`, far below the mean
+spacing: the cancelling cluster consists of near-coincident points.
+
 Proof. Apply the local camera with the bump `exists_explicit_bump`, at density
 `D = (2/π)(λ − β/2) log X`, where `β = λ − 1/4 − πμ/2`. The cluster has at most the count of `ζ`
 (`exists_card_le_sharp_centred`) plus that of `Z'`, of density `≤ D` and error `O(log X)`.
@@ -504,6 +511,266 @@ theorem exists_near_point_of_zeta_mimic {lam μ A' S' : ℝ} (hlam : 1 / 4 + π 
       ∃ z, z ≠ z₀ ∧ multDiff zetaZeroConfig Z' z ≠ 0 ∧ |z.im - X| ≤ X / 2 ∧
         ‖z - z₀‖ < π / (lam * Real.log X) := by
   obtain ⟨X₀, hX₀⟩ := multDiff_zeta_eq_zero_of_isolated (S' := S') hlam hμ hA'
+  refine ⟨X₀, fun X hX Z' hZ' hW hS hcount z₀ hz₀ hc => ?_⟩
+  by_contra h
+  push Not at h
+  exact hc (hX₀ X hX Z' hZ' hW hS hcount z₀ hz₀ fun z hz hcz hzR => h z hz hcz hzR)
+
+/-! ### Isolation far below the mean spacing -/
+
+/-- The camera constant in exponential form, from any bounds on the window growth and floor. -/
+theorem localCameraConst_le_of {a D C₀ η ε Cm G' F' : ℝ} (hD : 1 ≤ D) (hη : 0 < η) (hCm : 0 < Cm)
+    (hG : Real.log (windowGrowth (2 * D⁻¹) (localSlack D C₀)) ≤ G')
+    (hF : Real.log (windowFloor (2 * D⁻¹) (localSlack D C₀) η)⁻¹ ≤ F') :
+    localCameraConst a D C₀ η ε Cm 1 ≤
+      5 / 4 * Real.exp (2 * G' + 2 * Real.log Cm + 2 * ε + a + 2 * F') := by
+  have hD0 : 0 < D := by linarith
+  have hL0 := localSlack_nonneg (C₀ := C₀) hD0
+  obtain ⟨G, hGd⟩ : ∃ G, G = windowGrowth (2 * D⁻¹) (localSlack D C₀) := ⟨_, rfl⟩
+  obtain ⟨F, hFd⟩ : ∃ F, F = windowFloor (2 * D⁻¹) (localSlack D C₀) η := ⟨_, rfl⟩
+  have hG0 : 0 < G := by rw [hGd]; exact windowGrowth_pos (by positivity) hL0
+  have hF0 : 0 < F := by rw [hFd]; exact windowFloor_pos (by positivity) hL0 hη
+  rw [← hGd] at hG
+  rw [← hFd] at hF
+  have hx : ∀ x : ℝ, Real.exp x ^ 2 = Real.exp (2 * x) := fun x => by
+    rw [sq, ← Real.exp_add, two_mul]
+  have e : localCameraConst a D C₀ η ε Cm 1 = 5 / 4 * Real.exp (2 * Real.log G +
+      2 * Real.log Cm + 2 * ε + a + 2 * Real.log F⁻¹) := by
+    rw [localCameraConst, ← hGd, ← hFd, Real.exp_add, Real.exp_add, Real.exp_add, Real.exp_add,
+      ← hx, ← hx, ← hx, ← hx, Real.exp_log hG0, Real.exp_log hCm,
+      Real.exp_log (inv_pos.mpr hF0)]
+    field_simp
+  rw [e]
+  exact mul_le_mul_of_nonneg_left (Real.exp_le_exp.mpr (by linarith)) (by norm_num)
+
+theorem one_add_log_le_of_le_mul {D lam L : ℝ} (hD1 : 1 ≤ D) (hlam : 0 < lam) (hL1 : 1 ≤ L)
+    (hDup : D ≤ lam * L) : 1 + Real.log D ≤ (1 + |Real.log lam|) * (1 + Real.log L) := by
+  have hlL : 0 ≤ Real.log L := Real.log_nonneg hL1
+  have h1 : Real.log D ≤ Real.log lam + Real.log L := by
+    rw [← Real.log_mul hlam.ne' (by linarith)]
+    exact Real.log_le_log (by linarith) hDup
+  have h2 : Real.log lam ≤ |Real.log lam| := le_abs_self _
+  nlinarith [mul_nonneg (abs_nonneg (Real.log lam)) hlL]
+
+theorem floor_term_le_of_small {f D lam L κ : ℝ} (hf : 0 ≤ f) (hD1 : 1 ≤ D) (hlam : 0 < lam)
+    (hL1 : 1 ≤ L) (hκ : 0 ≤ κ) (hDup : D ≤ lam * L) :
+    f * D * (1 + Real.log D) * (1 + Real.log D + κ * L / (1 + Real.log L)) ≤
+      f * (4 * lam ^ 2 + κ * lam * (1 + |Real.log lam|)) * L ^ 2 := by
+  have hD0 : 0 ≤ D := by linarith
+  have hlL : 0 ≤ Real.log L := Real.log_nonneg hL1
+  have hlD : 0 ≤ Real.log D := Real.log_nonneg hD1
+  have h1 : D * (1 + Real.log D) ^ 2 ≤ 4 * (lam * L) ^ 2 := by
+    have := mul_le_mul_of_nonneg_left (one_add_log_sq_le hD1) hD0
+    have h2 : D ^ 2 ≤ (lam * L) ^ 2 := pow_le_pow_left₀ hD0 hDup 2
+    nlinarith
+  have h2 : D * (1 + Real.log D) * (κ * L / (1 + Real.log L)) ≤
+      κ * lam * (1 + |Real.log lam|) * L ^ 2 := by
+    have h3 := one_add_log_le_of_le_mul hD1 hlam hL1 hDup
+    have h4 : D * (1 + Real.log D) ≤ lam * L * ((1 + |Real.log lam|) * (1 + Real.log L)) :=
+      mul_le_mul hDup h3 (by linarith) (by positivity)
+    have e : lam * L * ((1 + |Real.log lam|) * (1 + Real.log L)) * (κ * L / (1 + Real.log L)) =
+        κ * lam * (1 + |Real.log lam|) * L ^ 2 := by
+      field_simp
+    calc D * (1 + Real.log D) * (κ * L / (1 + Real.log L))
+        ≤ lam * L * ((1 + |Real.log lam|) * (1 + Real.log L)) * (κ * L / (1 + Real.log L)) :=
+          mul_le_mul_of_nonneg_right h4 (by positivity)
+      _ = _ := e
+  have e : f * D * (1 + Real.log D) * (1 + Real.log D + κ * L / (1 + Real.log L)) =
+      f * (D * (1 + Real.log D) ^ 2) + f * (D * (1 + Real.log D) * (κ * L / (1 + Real.log L))) := by
+    ring
+  rw [e]
+  have h5 := mul_le_mul_of_nonneg_left h1 hf
+  have h6 := mul_le_mul_of_nonneg_left h2 hf
+  nlinarith
+
+/-- **The budget at height `X`, for any quadratic window bounds.** -/
+theorem zeta_camera_budget_of {lam β L D η ε C₀ X S S'' e K c ρ q b₁ G₁ F₁ G₀ F₀ : ℝ} {k m : ℕ}
+    (hX1 : 1 ≤ X) (hXL : X = Real.exp L) (hL1 : 1 ≤ L) (hε : ε = β * L / 4)
+    (hβlam : β ≤ lam) (hβ0 : 0 < β) (hc : c = 2 * G₀ + 2 * F₀) (hK : K = c + 1)
+    (hkL : K * L ≤ k) (hk1 : 1 ≤ k) (hmle : (m : ℝ) ≤ (e * lam + K + 2) * L)
+    (hmε : (m : ℝ) / ε ≤ ρ) (hq : q = Real.log (4 * (1 + ρ))) (hq0 : 0 ≤ q)
+    (hb₁ : b₁ = 2 * q * (e * lam + K + 2) + 2 * lam + 3)
+    (hLb : b₁ + Real.log S'' + 4 ≤ L) (hS0 : 0 ≤ S) (hS : S ≤ S'') (hS''1 : 1 ≤ S'')
+    (hε0 : 0 < ε)
+    (hB : localCameraConst (lam * L) D C₀ η ε ((4 * (1 + m / ε)) ^ m) 1 ≤
+      5 / 4 * Real.exp (2 * G₁ + 2 * Real.log ((4 * (1 + m / ε)) ^ m) + 2 * ε + lam * L +
+        2 * F₁))
+    (hG₁ : G₁ ≤ G₀ * L ^ 2) (hF₁ : F₁ ≤ F₀ * L ^ 2)
+    (hcam : (1 + X / 2) ^ (2 * k - 2) ≤
+      localCameraConst (lam * L) D C₀ η ε ((4 * (1 + m / ε)) ^ m) 1 * (1 + |X|) ^ 2 * S) :
+    False := by
+  have hlogCm : Real.log ((4 * (1 + m / ε)) ^ m) ≤ m * q := by
+    rw [Real.log_pow, hq]
+    exact mul_le_mul_of_nonneg_left (Real.log_le_log (by positivity) (by linarith))
+      (Nat.cast_nonneg _)
+  have hXpos : 0 < X := by linarith
+  have h1 : (m : ℝ) * q ≤ (e * lam + K + 2) * L * q := mul_le_mul_of_nonneg_right hmle hq0
+  have h2 : β * L ≤ lam * L := mul_le_mul_of_nonneg_right hβlam (by linarith)
+  have h3 : 0 ≤ β * L := mul_nonneg hβ0.le (by linarith)
+  have hΦle : 2 * G₁ + 2 * Real.log ((4 * (1 + m / ε)) ^ m) + 2 * ε + lam * L + 2 * F₁ ≤
+      c * L ^ 2 + (b₁ - 3) * L := by
+    rw [hc, hb₁, hε]
+    linarith only [hG₁, hF₁, hlogCm, h1, h2, h3]
+  have hXim : (1 + |X|) ^ 2 ≤ 4 * Real.exp (2 * L) := by
+    rw [abs_of_pos hXpos, show 2 * L = L + L by ring, Real.exp_add, ← hXL]
+    nlinarith
+  have hupper := camera_upper_bound hB hXim (by positivity) hS0 hS hS''1
+  have hfinal := ((camera_lower_bound hXpos hXL hk1).trans hcam).trans hupper
+  rw [Real.exp_le_exp] at hfinal
+  exact camera_budget_false hL1 hK hkL hΦle hLb (Real.log_nonneg hS''1) hfinal
+
+/-- **The local camera fixes the zeros of `ζ` isolated far below the mean spacing.** For a
+bandwidth `λ > 1/4 + πμ/2`, any `κ > 0` and every large height `X`: a tempered mimic of `ζ` at
+aperture `λ log X`, of local density `≤ μ log X` near `X`, has the multiplicity of `ζ` at every point
+of height `X` that is `exp(−κ log X/(1 + log log X))`-isolated in the cluster within height
+distance `X/2`. -/
+theorem multDiff_zeta_eq_zero_of_nearly_isolated {lam μ A' S' κ : ℝ}
+    (hlam : 1 / 4 + π * μ / 2 < lam) (hμ : 0 ≤ μ) (hA' : 0 ≤ A') (hκ : 0 < κ) :
+    ∃ X₀ : ℝ, ∀ X : ℝ, X₀ ≤ X → ∀ Z' : ZeroConfig, TemperedConfig Z' →
+      (∀ f, ApertureWindow (lam * Real.log X) f → zetaZeroConfig.W f f = Z'.W f f) →
+      ∑' z, ‖multDiff zetaZeroConfig Z' z‖ / (1 + Complex.normSq (gammaOf z)) ≤ S' →
+      (∀ (s : Finset ℂ) (x y : ℝ), x ≤ y →
+        (∀ z ∈ s, z ∈ Z'.carrier ∧ |z.im - X| ≤ X / 2 ∧ z.im ∈ Icc x y) →
+          (s.card : ℝ) ≤ μ * Real.log X * (y - x) + A' * Real.log X) →
+      ∀ z₀ : ℂ, z₀.im = X →
+      (∀ z, z ≠ z₀ → multDiff zetaZeroConfig Z' z ≠ 0 → |z.im - X| ≤ X / 2 →
+        Real.exp (-(κ * Real.log X / (1 + Real.log (Real.log X)))) ≤ ‖z - z₀‖) →
+      multDiff zetaZeroConfig Z' z₀ = 0 := by
+  classical
+  obtain ⟨T₀, A, hT₀, hA, hζ⟩ := exists_card_le_sharp_centred
+  have hπ := Real.pi_gt_three
+  have hlam0 : 0 < lam := by nlinarith
+  obtain ⟨β, hβ⟩ : ∃ β, β = lam - 1 / 4 - π * μ / 2 := ⟨_, rfl⟩
+  have hβ0 : 0 < β := by rw [hβ]; linarith
+  have hβlam : β ≤ lam := by rw [hβ]; nlinarith
+  obtain ⟨ℓ, hℓ⟩ : ∃ ℓ, ℓ = 3 + (2 * A + A' + 1) * π / lam := ⟨_, rfl⟩
+  have hℓ0 : 0 ≤ ℓ := by rw [hℓ]; positivity
+  obtain ⟨e, he⟩ : ∃ e, e = 6 * slackBound ℓ * (1 + slackBound ℓ) := ⟨_, rfl⟩
+  have hσ0 : 0 ≤ slackBound ℓ := by unfold slackBound; linarith
+  have he0 : 0 ≤ e := by rw [he]; positivity
+  have hg0 := growthRate_nonneg hℓ0
+  have hf0 := floorRate_nonneg hℓ0
+  obtain ⟨G₀, hG₀⟩ : ∃ G₀, G₀ = 2 * growthRate ℓ * lam ^ 2 := ⟨_, rfl⟩
+  obtain ⟨F₀, hF₀⟩ : ∃ F₀, F₀ = floorRate ℓ * (4 * lam ^ 2 + κ * lam * (1 + |Real.log lam|)) :=
+    ⟨_, rfl⟩
+  obtain ⟨c, hc⟩ : ∃ c, c = 2 * G₀ + 2 * F₀ := ⟨_, rfl⟩
+  have hc0 : 0 ≤ c := by rw [hc, hG₀, hF₀]; positivity
+  obtain ⟨K, hK⟩ : ∃ K, K = c + 1 := ⟨_, rfl⟩
+  have hK1 : 1 ≤ K := by rw [hK]; linarith
+  obtain ⟨ρ, hρ⟩ : ∃ ρ, ρ = 4 * (e * lam + K + 2) / β := ⟨_, rfl⟩
+  have hρ0 : 0 ≤ ρ := by rw [hρ]; positivity
+  obtain ⟨q, hq⟩ : ∃ q, q = Real.log (4 * (1 + ρ)) := ⟨_, rfl⟩
+  have hq0 : 0 ≤ q := by rw [hq]; exact Real.log_nonneg (by linarith)
+  obtain ⟨S'', hS''⟩ : ∃ S'', S'' = max S' 1 := ⟨_, rfl⟩
+  have hS''1 : 1 ≤ S'' := by rw [hS'']; exact le_max_right _ _
+  obtain ⟨b₁, hb₁⟩ : ∃ b₁, b₁ = 2 * q * (e * lam + K + 2) + 2 * lam + 3 := ⟨_, rfl⟩
+  obtain ⟨L₀, hL₀⟩ : ∃ L₀, L₀ = max (max 1 (π / lam)) (max (1 / (2 * β))
+      (b₁ + Real.log S'' + 4)) := ⟨_, rfl⟩
+  refine ⟨max (2 * T₀ + 16) (Real.exp L₀), ?_⟩
+  intro X hX Z' hZ' hW hS hZ'count z₀ hz₀ hiso
+  by_contra hc₀
+  have hX1 : 2 * T₀ + 16 ≤ X := (le_max_left _ _).trans hX
+  have hX0 : 0 < X := by linarith
+  obtain ⟨L, hL⟩ : ∃ L, L = Real.log X := ⟨_, rfl⟩
+  rw [← hL] at hW hZ'count hiso
+  have hLL₀ : L₀ ≤ L := by
+    rw [hL, ← Real.log_exp L₀]
+    exact Real.log_le_log (Real.exp_pos _) ((le_max_right _ _).trans hX)
+  rw [hL₀] at hLL₀
+  have hL1 : 1 ≤ L := ((le_max_left _ _).trans (le_max_left _ _)).trans hLL₀
+  have hLπ : π / lam ≤ L := ((le_max_right _ _).trans (le_max_left _ _)).trans hLL₀
+  have hLβ : 1 / (2 * β) ≤ L := ((le_max_left _ _).trans (le_max_right _ _)).trans hLL₀
+  have hLb : b₁ + Real.log S'' + 4 ≤ L := ((le_max_right _ _).trans (le_max_right _ _)).trans hLL₀
+  have hXL : X = Real.exp L := by rw [hL, Real.exp_log hX0]
+  have hlL : 0 ≤ Real.log L := Real.log_nonneg hL1
+  -- the parameters of the camera
+  obtain ⟨ε, hε⟩ : ∃ ε, ε = β * L / 4 := ⟨_, rfl⟩
+  have hε0 : 0 < ε := by rw [hε]; positivity
+  obtain ⟨D, hD⟩ : ∃ D, D = (β / π + 1 / (2 * π) + μ) * L := ⟨_, rfl⟩
+  have hDa : π * D / 2 + 2 * ε ≤ lam * L := by rw [hε]; exact camera_aperture_eq hβ hD
+  have hDlow := camera_density_ge hμ hβ (by linarith) hD
+  have hDup := camera_density_le hμ hβ hβ0 (by linarith) hD
+  have hD1 : 1 ≤ D := by
+    refine le_trans ?_ hDlow
+    rw [le_div_iff₀ Real.pi_pos]
+    have := (div_le_iff₀ hlam0).mp hLπ
+    linarith only [this]
+  have hD0 : 0 < D := by linarith
+  obtain ⟨η, hη⟩ : ∃ η, η = Real.exp (-(κ * L / (1 + Real.log L))) := ⟨_, rfl⟩
+  have hη0 : 0 < η := by rw [hη]; exact Real.exp_pos _
+  have hη1 : η ≤ 1 := by
+    rw [hη]; exact Real.exp_le_one_iff.mpr (by have : 0 ≤ κ * L / (1 + Real.log L) := by
+      positivity
+      linarith)
+  have hlogη : Real.log (1 / η) = κ * L / (1 + Real.log L) := by
+    rw [hη, one_div, ← Real.exp_neg, neg_neg, Real.log_exp]
+  obtain ⟨C₀, hC₀ℓ, hcount⟩ := zeta_cluster_count hA hA' hμ hlam0 hζ hX1 hT₀ hL hL1
+    (camera_density_count hβ0 hLβ hD) hDlow hℓ hZ'count
+  -- the decay order and the bump
+  obtain ⟨k, hk⟩ : ∃ k : ℕ, k = ⌈K * L⌉₊ := ⟨_, rfl⟩
+  have hkL : K * L ≤ k := by rw [hk]; exact Nat.le_ceil _
+  have hkle : (k : ℝ) ≤ K * L + 1 := by
+    rw [hk]; exact (Nat.ceil_lt_add_one (by positivity)).le
+  have hk1 : 1 ≤ k := by
+    have h1 : (1 : ℝ) ≤ K * L := one_le_mul_of_one_le_of_one_le hK1 hL1
+    have : (1 : ℝ) ≤ k := h1.trans hkL
+    exact_mod_cast this
+  obtain ⟨W, hWdef⟩ : ∃ W, W = windowExponent (2 * D⁻¹) (localSlack D C₀) := ⟨_, rfl⟩
+  have hW0 : 0 ≤ W := by
+    rw [hWdef, windowExponent]
+    have := windowSlack_localSlack_nonneg (C₀ := C₀) hD0
+    positivity
+  have hWle : W ≤ e * D := by rw [hWdef, he]; exact windowExponent_le hD1 hC₀ℓ
+  obtain ⟨m, hmdef⟩ : ∃ m : ℕ, m = ⌈W⌉₊ + k := ⟨_, rfl⟩
+  have hm : windowExponent (2 * D⁻¹) (localSlack D C₀) + k ≤ m := by
+    rw [hmdef, ← hWdef]; push_cast; linarith [Nat.le_ceil W]
+  have hmle : (m : ℝ) ≤ (e * lam + K + 2) * L := by
+    rw [hmdef]; push_cast
+    have h1 : (⌈W⌉₊ : ℝ) ≤ W + 1 := (Nat.ceil_lt_add_one hW0).le
+    have h2 : e * D ≤ e * (lam * L) := mul_le_mul_of_nonneg_left hDup he0
+    have h3 : (e * lam + K + 2) * L = e * (lam * L) + K * L + 2 * L := by ring
+    rw [h3]
+    linarith only [h1, h2, hWle, hkle, hL1]
+  have hmε : (m : ℝ) / ε ≤ ρ := by
+    rw [div_le_iff₀ hε0, hρ, hε]
+    have : 4 * (e * lam + K + 2) / β * (β * L / 4) = (e * lam + K + 2) * L := by
+      field_simp
+    rw [this]; exact hmle
+  obtain ⟨b, hb, hbs, hb1, hb0, hbm⟩ := exists_explicit_bump hε0 m
+  have hcam := one_add_pow_le_of_isolated_cancellation_of_bump hD0 hη0 hε0 hDa hb hbs hb1 hk1 hm
+    (C0 := 1) hbm (fun w => by rw [one_mul]; exact hb0 w)
+    temperedConfig_zeta hZ' hW (R := X / 2) (by positivity) hc₀
+    (fun z hz hcz hzR => by rw [hη]; exact hiso z hz hcz (by rwa [hz₀] at hzR))
+    (fun s x y hxy hs => hcount s x y hxy (by rwa [hz₀] at hs))
+  rw [hz₀] at hcam
+  -- the budget
+  have hFl := log_inv_windowFloor_le_of_le_one hD1 hC₀ℓ hη0 hη1
+  rw [hlogη] at hFl
+  have hB := localCameraConst_le_of (a := lam * L) (ε := ε)
+    (Cm := (4 * (1 + m / ε)) ^ m) hD1 hη0 (by positivity) (log_windowGrowth_le hD1 hC₀ℓ) hFl
+  have hS0 : 0 ≤ ∑' z, ‖multDiff zetaZeroConfig Z' z‖ / (1 + Complex.normSq (gammaOf z)) :=
+    tsum_nonneg fun z => div_nonneg (norm_nonneg _)
+      (by have := Complex.normSq_nonneg (gammaOf z); linarith)
+  exact zeta_camera_budget_of (by linarith) hXL hL1 hε hβlam hβ0 hc hK hkL hk1 hmle hmε hq hq0
+    hb₁ hLb hS0 (hS.trans (by rw [hS'']; exact le_max_left _ _)) hS''1 hε0 hB
+    (by rw [hG₀]; exact growth_term_le hg0 hD1 hDup)
+    (by rw [hF₀]; exact floor_term_le_of_small hf0 hD1 hlam0 hL1 hκ.le hDup) hcam
+
+/-- **Cancelling clusters of `ζ` are near-coincidences.** Under the hypotheses of
+`multDiff_zeta_eq_zero_of_nearly_isolated`, every point of the cluster at height `X` has another
+cluster point within `exp(−κ log X/(1 + log log X))`. -/
+theorem exists_near_coincidence_of_zeta_mimic {lam μ A' S' κ : ℝ}
+    (hlam : 1 / 4 + π * μ / 2 < lam) (hμ : 0 ≤ μ) (hA' : 0 ≤ A') (hκ : 0 < κ) :
+    ∃ X₀ : ℝ, ∀ X : ℝ, X₀ ≤ X → ∀ Z' : ZeroConfig, TemperedConfig Z' →
+      (∀ f, ApertureWindow (lam * Real.log X) f → zetaZeroConfig.W f f = Z'.W f f) →
+      ∑' z, ‖multDiff zetaZeroConfig Z' z‖ / (1 + Complex.normSq (gammaOf z)) ≤ S' →
+      (∀ (s : Finset ℂ) (x y : ℝ), x ≤ y →
+        (∀ z ∈ s, z ∈ Z'.carrier ∧ |z.im - X| ≤ X / 2 ∧ z.im ∈ Icc x y) →
+          (s.card : ℝ) ≤ μ * Real.log X * (y - x) + A' * Real.log X) →
+      ∀ z₀ : ℂ, z₀.im = X → multDiff zetaZeroConfig Z' z₀ ≠ 0 →
+      ∃ z, z ≠ z₀ ∧ multDiff zetaZeroConfig Z' z ≠ 0 ∧ |z.im - X| ≤ X / 2 ∧
+        ‖z - z₀‖ < Real.exp (-(κ * Real.log X / (1 + Real.log (Real.log X)))) := by
+  obtain ⟨X₀, hX₀⟩ := multDiff_zeta_eq_zero_of_nearly_isolated (S' := S') hlam hμ hA' hκ
   refine ⟨X₀, fun X hX Z' hZ' hW hS hcount z₀ hz₀ hc => ?_⟩
   by_contra h
   push Not at h

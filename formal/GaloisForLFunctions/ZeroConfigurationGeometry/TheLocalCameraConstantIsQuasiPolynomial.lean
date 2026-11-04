@@ -322,7 +322,8 @@ theorem log_inv_windowFloor_le_of_le_one {D C₀ ℓ η : ℝ} (hD : 1 ≤ D) (h
     have := Real.log_le_sub_one_of_pos (by norm_num : (0 : ℝ) < 2); linarith
   have hT : 1 ≤ D * (1 + Real.log D) := by nlinarith
   have hT1 : 1 + ℒ ≤ D * (1 + Real.log D) * (1 + ℒ) := le_mul_of_one_le_left (by linarith) hT
-  rw [floorRate, ← hσ, ← hℒ]
+  have hℒ' : 1 + Real.log D + Real.log (1 / η) = 1 + ℒ := by rw [hℒ]; ring
+  rw [floorRate, ← hσ, hℒ']
   have hA : (2 + (1 + σ) ^ 2) * (1 + ℒ) ≤ (2 + (1 + σ) ^ 2) * (D * (1 + Real.log D) * (1 + ℒ)) :=
     mul_le_mul_of_nonneg_left hT1 (by positivity)
   nlinarith [Real.log_nonneg (by norm_num : (1:ℝ) ≤ 2), mul_nonneg (sq_nonneg (1 + σ)) hℒ0]

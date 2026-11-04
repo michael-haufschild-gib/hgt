@@ -63,6 +63,7 @@ theorem simpleHalfLatticePoint_eq_even {L : ℝ} (hL : 0 < L) (k : ℤ) :
   · simp only [_root_.RHTower.verticalLatticePoint]
     push_cast
     field_simp [hL.ne']
+    ring
 
 /-- The simple critical-line half-shifted lattice `{½ + i(k + ½)π/L : k ∈ ℤ}`, multiplicity `1`. -/
 def shiftedSimpleHalfLatticeConfig {L : ℝ} (hL : 0 < L) : ZeroConfig where
@@ -75,11 +76,8 @@ def shiftedSimpleHalfLatticeConfig {L : ℝ} (hL : 0 < L) : ZeroConfig where
     norm_num
   reflect_mem := by
     rintro _ ⟨k, rfl⟩
-    refine ⟨-(k + 1), ?_⟩
-    rw [shiftedHalfLatticePoint, _root_.RHTower.reflect_verticalLatticePoint, neg_zero,
-      shiftedHalfLatticePoint]
-    congr 1
-    omega
+    refine ⟨k, ?_⟩
+    simp [shiftedHalfLatticePoint, _root_.RHTower.reflect_verticalLatticePoint]
   mult_reflect := fun _ _ => rfl
   finite_window := by
     intro T₁ T₂
@@ -126,7 +124,7 @@ theorem carrier_double_eq_union {L : ℝ} (hL : 0 < L) :
     · right
       refine ⟨k, ?_⟩
       rw [shiftedHalfLatticePoint]
-      congr 1 <;> ring
+      congr 1; ring
   · rintro (⟨k, rfl⟩ | ⟨k, rfl⟩)
     · refine ⟨2 * k, ?_⟩
       rw [simpleHalfLatticePoint_eq_even hL k]
@@ -141,7 +139,8 @@ theorem temperedConfig_shiftedSimpleHalfLatticeConfig {L : ℝ} (hL : 0 < L) :
   have hsub := carrier_shifted_subset_double hL
   let ι : (shiftedSimpleHalfLatticeConfig hL).carrier → (simpleHalfLatticeConfig h2L).carrier :=
     fun ρ => ⟨ρ.1, hsub ρ.2⟩
-  have hinj : Function.Injective ι := fun a b h => Subtype.ext (congrArg Subtype.val h)
+  have hinj : Function.Injective ι := fun _ _ h =>
+    Subtype.ext (by simpa [ι] using congrArg Subtype.val h)
   have hsum := (temperedConfig_simpleHalfLatticeConfig h2L).comp_injective hinj
   exact hsum.congr fun _ => rfl
 
@@ -179,8 +178,10 @@ theorem W_shiftedSimpleHalfLatticeConfig {L : ℝ} (hL : 0 < L) {f g : ℝ → �
   have h2L : 0 < 2 * L := mul_pos two_pos hL
   have hsub : Icc (-L) L ⊆ Icc (-(2 * L)) (2 * L) :=
     Icc_subset_Icc (by linarith) (by linarith)
-  have hfc : HasCompactSupport f := CompactIccSpace.isCompact_Icc.of_isClosed_subset isClosed_tsupport hfs
-  have hgc : HasCompactSupport g := CompactIccSpace.isCompact_Icc.of_isClosed_subset isClosed_tsupport hgs
+  have hfc : HasCompactSupport f :=
+    CompactIccSpace.isCompact_Icc.of_isClosed_subset (isClosed_tsupport _) hfs
+  have hgc : HasCompactSupport g :=
+    CompactIccSpace.isCompact_Icc.of_isClosed_subset (isClosed_tsupport _) hgs
   have hdiff := W_sub_W_eq_tsum (temperedConfig_simpleHalfLatticeConfig h2L)
     (temperedConfig_simpleHalfLatticeConfig hL) hf hfc hg hgc
   have hind : (∑' z, multDiff (simpleHalfLatticeConfig h2L) (simpleHalfLatticeConfig hL) z *
@@ -188,9 +189,6 @@ theorem W_shiftedSimpleHalfLatticeConfig {L : ℝ} (hL : 0 < L) {f g : ℝ → �
     rw [W_eq_tsum_indicator]
     refine tsum_congr fun z => ?_
     rw [multDiff_double_sub_simpleHalfLattice hL z]
-    by_cases hz : z ∈ (shiftedSimpleHalfLatticeConfig hL).carrier
-    · simp [Set.indicator_of_mem hz]
-    · simp [Set.indicator_of_notMem hz]
   rw [← hind, ← hdiff, W_simpleHalfLatticeConfig h2L hf hg.continuous (hfs.trans hsub)
     (hgs.trans hsub), W_simpleHalfLatticeConfig hL hf hg.continuous hfs hgs]
   push_cast
@@ -273,14 +271,15 @@ private theorem N_eq_card_Icc_of_unit_lattice {Z : ZeroConfig} {ϕ : ℤ → ℂ
   have hfin : (Z.window x y).Finite := Z.finite_window x y
   have hto : hfin.toFinset = I.image ϕ := by
     ext z
-    simp [Set.Finite.mem_toFinset, hwin]
+    dsimp only [I]
+    simp [hwin]
   rw [ZeroConfig.N, finsum_mem_eq_finite_toFinset_sum _ hfin, hto]
   simp only [hmult, Finset.sum_const, smul_eq_mul, mul_one, Finset.card_image_of_injective I hinj]
 
 /-- Every interval count of `simpleHalfLatticeConfig hL` lies within `1` of `(L/π)(y − x)`. -/
 theorem abs_N_simpleHalfLatticeConfig_sub_le_one {L : ℝ} (hL : 0 < L) {x y : ℝ} (hxy : x ≤ y) :
     |((simpleHalfLatticeConfig hL).N x y : ℝ) - L / π * (y - x)| ≤ 1 := by
-  have hh : 0 < π / L := by positivity
+  have hh : 0 < π / L := div_pos Real.pi_pos hL
   have h2L : 0 < 2 * L := mul_pos two_pos hL
   have him : ∀ k : ℤ, (_root_.RHTower.verticalLatticePoint (2 * L) 0 k).im =
       ((k : ℝ) + 0) * (π / L) := fun k => by
@@ -290,19 +289,19 @@ theorem abs_N_simpleHalfLatticeConfig_sub_le_one {L : ℝ} (hL : 0 < L) {x y : �
   have hN := N_eq_card_Icc_of_unit_lattice (Z := simpleHalfLatticeConfig hL) hh
     (_root_.RHTower.verticalLatticePoint_injective h2L 0) rfl (fun _ => rfl) him (x := x) (y := y)
   have hcard := card_shifted_lattice_Ioc_sub (α := 0) hh hxy
-  have hdiv : (y - x) / (π / L) = L / π * (y - x) := by field_simp; ring
+  have hdiv : (y - x) / (π / L) = L / π * (y - x) := by field_simp
   rwa [hN, ← hdiv]
 
 /-- Every interval count of `shiftedSimpleHalfLatticeConfig hL` lies within `1` of `(L/π)(y − x)`. -/
 theorem abs_N_shiftedSimpleHalfLatticeConfig_sub_le_one {L : ℝ} (hL : 0 < L) {x y : ℝ}
     (hxy : x ≤ y) :
     |((shiftedSimpleHalfLatticeConfig hL).N x y : ℝ) - L / π * (y - x)| ≤ 1 := by
-  have hh : 0 < π / L := by positivity
+  have hh : 0 < π / L := div_pos Real.pi_pos hL
   have hN := N_eq_card_Icc_of_unit_lattice (Z := shiftedSimpleHalfLatticeConfig hL) hh
     (shiftedHalfLatticePoint_injective hL) rfl (fun _ => rfl)
     (shiftedHalfLatticePoint_im hL) (x := x) (y := y)
   have hcard := card_shifted_lattice_Ioc_sub (α := 1 / 2) hh hxy
-  have hdiv : (y - x) / (π / L) = L / π * (y - x) := by field_simp; ring
+  have hdiv : (y - x) / (π / L) = L / π * (y - x) := by field_simp
   rwa [hN, ← hdiv]
 
 /-- Distinct points in the combined carrier `Z₀ ∪ Z₁` are separated by at least `π / (2L)`. -/
@@ -314,6 +313,7 @@ theorem sep_simpleHalfLattice_union_shifted {L : ℝ} (hL : 0 < L) {z w : ℂ}
   obtain ⟨j, rfl⟩ := hz
   obtain ⟨k, rfl⟩ := hw
   have hjk : j ≠ k := fun e => hzw (by rw [e])
+  have hpos : 0 < π / (2 * L) := div_pos Real.pi_pos (by positivity)
   have h1 : (1 : ℝ) ≤ |(j : ℝ) - (k : ℝ)| := by
     have : 1 ≤ |j - k| := Int.one_le_abs (sub_ne_zero.mpr hjk)
     exact_mod_cast this
@@ -322,11 +322,11 @@ theorem sep_simpleHalfLattice_union_shifted {L : ℝ} (hL : 0 < L) {z w : ℂ}
       |(j : ℝ) - (k : ℝ)| * (π / (2 * L)) := by
     simp only [Complex.sub_im, _root_.RHTower.verticalLatticePoint]
     have e : (j : ℝ) * (2 * π / (2 * (2 * L))) - (k : ℝ) * (2 * π / (2 * (2 * L))) =
-        ((j : ℝ) - (k : ℝ)) * (π / (2 * L)) := by field_simp [hL.ne']; ring
-    rw [e, abs_mul, abs_of_pos (by positivity)]
+        ((j : ℝ) - (k : ℝ)) * (π / (2 * L)) := by field_simp [hL.ne']
+    rw [e, abs_mul, abs_of_pos hpos]
   calc π / (2 * L) = 1 * (π / (2 * L)) := (one_mul _).symm
     _ ≤ |(j : ℝ) - (k : ℝ)| * (π / (2 * L)) :=
-        mul_le_mul_of_nonneg_right h1 (by positivity)
+        mul_le_mul_of_nonneg_right h1 hpos.le
     _ = |(_root_.RHTower.verticalLatticePoint (2 * (2 * L)) 0 j -
           _root_.RHTower.verticalLatticePoint (2 * (2 * L)) 0 k).im| := him.symm
     _ ≤ ‖_root_.RHTower.verticalLatticePoint (2 * (2 * L)) 0 j -
@@ -343,7 +343,7 @@ configurations `Z₀, Z₁` with:
    uniform minimum distance `‖z − w‖ ≥ π / log(T/2π)` between all distinct points of
    `Z₀.carrier ∪ Z₁.carrier`. -/
 theorem exists_rvm_pair_mimic_disjoint_up_to_one {T lam : ℝ}
-    (hT : 2 * π * Real.exp π ≤ T) (hlam0 : 0 < lam) (hlam1 : lam ≤ 1) :
+    (hT : 2 * π * Real.exp π ≤ T) (_hlam0 : 0 < lam) (hlam1 : lam ≤ 1) :
     ∃ Z₀ Z₁ : ZeroConfig,
       TemperedConfig Z₀ ∧ TemperedConfig Z₁ ∧
       (∀ z ∈ Z₀.carrier, z.re = 1 / 2 ∧ Z₀.mult z = 1) ∧
@@ -392,7 +392,6 @@ theorem exists_rvm_pair_mimic_disjoint_up_to_one {T lam : ℝ}
     have him : (_root_.RHTower.verticalLatticePoint (2 * L) 0 k).im = (k : ℝ) * h := by
       simp only [_root_.RHTower.verticalLatticePoint, h]
       field_simp [hL.ne']
-      ring
     rw [him, abs_le]
     have hk1 : (k : ℝ) ≤ (T + 1) / h := Int.floor_le _
     have hk2 : (T + 1) / h - 1 < (k : ℝ) := by linarith [Int.lt_floor_add_one ((T + 1) / h)]

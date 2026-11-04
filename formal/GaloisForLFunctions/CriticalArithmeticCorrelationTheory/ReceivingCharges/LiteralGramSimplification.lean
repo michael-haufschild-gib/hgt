@@ -164,10 +164,7 @@ theorem literalThreeRangeBound_le {φ : ℝ → ℝ} (hmass : 0 < ∫ u, φ u ^ 
   have hHsum : H₁ + H₂ ≤ 2 * L := by
     have he := sum_Ioc_consecutive (fun n => 1 / (n : ℝ))
       ((Nat.sub_le A 1).trans hAJ) hJN
-    change (∑ n ∈ Icc ((A - 1) + 1) J, 1 / (n : ℝ)) +
-      (∑ n ∈ Icc (J + 1) N, 1 / (n : ℝ)) =
-        ∑ n ∈ Icc ((A - 1) + 1) N, 1 / (n : ℝ) at he
-    rw [Nat.sub_add_cancel hA] at he
+    simp only [← Icc_add_one_left_eq_Ioc, Nat.sub_add_cancel hA] at he
     exact he.trans_le (harmonic_subinterval_le_two_log hA le_rfl hlog)
   have hsplit : literalThreeRangeBound φ c N M R A J P s V K =
       X / L + (8 * (s / m) ^ 2 / L) *

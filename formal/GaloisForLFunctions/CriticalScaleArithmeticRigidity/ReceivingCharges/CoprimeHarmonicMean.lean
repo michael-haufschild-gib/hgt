@@ -2,6 +2,8 @@ import GaloisForLFunctions.CriticalScaleArithmeticRigidity.ReceivingCharges.Copr
 import GaloisForLFunctions.CriticalScaleArithmeticRigidity.ReceivingCharges.PrimeChargePoleCoefficient
 import GaloisForLFunctions.RenormalizedArithmeticPotentialTheory.TheFlipThresholdIsSetByTheConductorsOfThePrime
 import GaloisForLFunctions.RenormalizedArithmeticPotentialTheory.TheHorizonCountertermIsPolar
+import Mathlib.Algebra.Order.Interval.Finset.SuccPred
+import Mathlib.Data.Nat.SuccPred
 
 /-!
 # Exact harmonic means under coprime dilation
@@ -70,6 +72,7 @@ theorem unit_invariant_harmonic_incidence {p : ℕ} (hp : 0 < p)
   rw [hscaled, hconstant]
   have hsplit := sum_Ioc_consecutive (fun n : ℕ => G n / (n : ℝ))
     (Nat.zero_le (N / p)) (Nat.div_le_self N p)
+  rw [← Icc_add_one_left_eq_Ioc 0 (N / p), ← Icc_add_one_left_eq_Ioc 0 N] at hsplit
   change (∑ n ∈ Icc 1 (N / p), G n / (n : ℝ)) +
     (∑ n ∈ Ioc (N / p) N, G n / (n : ℝ)) =
       ∑ n ∈ Icc 1 N, G n / (n : ℝ) at hsplit
@@ -97,6 +100,7 @@ theorem abs_unit_invariant_harmonic_incidence_le {N p : ℕ}
       _ = _ := by
         have hsplit := sum_Ioc_consecutive (fun n : ℕ => 1 / (n : ℝ))
           (Nat.zero_le (N / p)) (Nat.div_le_self N p)
+        rw [← Icc_add_one_left_eq_Ioc 0 (N / p), ← Icc_add_one_left_eq_Ioc 0 N] at hsplit
         change harmonicMass (N / p) + (∑ n ∈ Ioc (N / p) N, 1 / (n : ℝ)) = harmonicMass N at hsplit
         have htailEq : (∑ n ∈ Ioc (N / p) N, 1 / (n : ℝ)) =
             harmonicMass N - harmonicMass (N / p) := by linarith only [hsplit]

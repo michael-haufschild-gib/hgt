@@ -192,6 +192,13 @@ def polyModel (q z c e : ℝ) : Matrix (Fin 5) (Fin 5) ℝ := fun i j =>
   c*(v00*u0 q i*u0 q j+v01*(u0 q i*u1 q j+u1 q i*u0 q j)+v11*u1 q i*u1 q j)+
   (if i=j then (rMoment q 0+8*z*bMoment q 0)/1000+e else 0)
 
+/-- Normalize exact rational entries and Schur signs of the radial cross-load model. -/
+scoped macro "norm_cross_model" : tactic =>
+  `(tactic| norm_num [delta,schur,minor,determinant,tailIndex,polyModel,
+    v00,v01,v11,u0,u1,rMoment,bMoment,
+    r0,r1,r2,r3,r4,r5,r6,r7,r8,b0,b1,b2,b3,b4,b5,b6,b7,b8,
+    entryPoly,e00,e01,e02,e03,e04,e11,e12,e13,e14,e22,e23,e24,e33,e34,e44])
+
 
 theorem center_tangent_eight {x : ℝ} (hx : 0 ≤ x) :
     2*x ≤ Real.pi*Real.exp (2*x)/8-13/200 := by
