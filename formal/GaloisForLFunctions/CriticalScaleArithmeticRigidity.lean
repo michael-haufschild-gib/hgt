@@ -89,6 +89,12 @@ import GaloisForLFunctions.CriticalScaleArithmeticRigidity.ReceivingCharges.Copr
 
 import GaloisForLFunctions.CriticalScaleArithmeticRigidity.ReceivingCharges.CoprimePrimeChargeWindows
 
+import GaloisForLFunctions.CriticalScaleArithmeticRigidity.ReceivingCharges.CoprimePrimeChargePairing
+
+import GaloisForLFunctions.CriticalScaleArithmeticRigidity.ReceivingCharges.CommonPrimeFibrePackets
+
+import GaloisForLFunctions.CriticalScaleArithmeticRigidity.ReceivingCharges.PrimeChargeCompletedDiagonal
+
 /-!
 # Arithmetic rigidity at critical scale
 

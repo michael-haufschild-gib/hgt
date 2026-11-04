@@ -40,6 +40,16 @@ construct a source-preserving replacement whose compensation vanishes.
 No unproved positivity, residual improvement, or continuation assumption
 may enter a theorem's premises.
 
+The absolute pole-collar loss is now proved intrinsic: at the actual
+linear-defect cutoff, one κ>0 gives a normalized dual residual cost
+at least κR² for every positive critical ratio. Thus a fixed absolute
+budget cannot extend this assembly to all R. Its positive survivor is
+an explicit nonzero signed terminal source, established directly for
+the complete matrix. Both results pass actual-path Lean audits with
+the standard three axioms. The remaining attack is signed payment or
+a different decomposition; see the
+[exact no-go and survivor](../5-failed/critical-absolute-collar-budget-continuation.md).
+
 ## Signed residual
 
 Let B(c,N) be `completeWeilMatrix tiltedUnitSpline c N`, v_m(N) the

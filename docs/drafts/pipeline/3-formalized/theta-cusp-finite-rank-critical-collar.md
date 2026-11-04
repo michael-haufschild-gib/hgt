@@ -32,6 +32,8 @@ namespace `GaloisForLFunctions.ThetaCuspSections.CriticalCollar`:
 Canonical source check and transitive axiom audit: only `propext`,
 `Classical.choice`, `Quot.sound`. Imported by `ThetaCuspSections.lean`.
 
+Stronger bound: [the logarithmic critical collar](theta-cusp-logarithmic-critical-collar.md).
+
 **Open:** a rank-independent critical neighborhood, or positivity for a
 fixed rank above eight throughout `0<a<1/2`. The neighborhood here may
 shrink with rank; Σ6 remains partially solved.

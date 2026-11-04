@@ -114,7 +114,8 @@ private theorem tendsto_terminal_pole_energy_coordinate
     completedConductorEnergy_nonneg contDiff_tiltedUnitSpline tiltedUnitSpline_eq_zero
       integral_tiltedUnitSpline_sq_pos hc0 one_pos
   have hE : completedConductorEnergy tiltedUnitSpline (c N) 1 ≤ C :=
-    (tiltedConductorEnergy_two_sided one_pos (hc N)).2.trans
+    (tiltedConductorEnergy_two_sided (m := 1) one_pos
+      (by simpa only [Nat.cast_one] using hc N)).2.trans
       (div_le_self hC.le (one_le_pow₀ (hc N)))
   have hi := abs_horizon_window_conductor_inner_le hsupp hB (m := 1) one_pos hN
   rw [real_inner_comm] at hi
@@ -184,8 +185,8 @@ theorem exists_intrinsic_critical_pole_collar_cost :
   have hpair : ⟪r, x⟫ ^ 2 ≤ 2 * D * T :=
     hcs.trans (mul_le_mul_of_nonneg_left htop (by positivity))
   have hsq := pow_le_pow_left₀ (half_pos hS).le hmix.le 2
-  rw [mul_pow, div_pow, Real.sq_sqrt hL.le] at hsq
-  change (S / 2) ^ 2 ≤ Real.log N / c N ^ 2 * ⟪r, x⟫ ^ 2 at hsq
+  simp only [mul_pow, div_pow, Real.sq_sqrt hL.le] at hsq
+  change S ^ 2 / (2 : ℝ) ^ 2 ≤ Real.log N / c N ^ 2 * ⟪r, x⟫ ^ 2 at hsq
   have hscaled := hsq.trans
     (mul_le_mul_of_nonneg_left hpair (by positivity : 0 ≤ Real.log N / c N ^ 2))
   have hmul := mul_le_mul_of_nonneg_right hscaled (sq_nonneg (c N))
@@ -195,7 +196,8 @@ theorem exists_intrinsic_critical_pole_collar_cost :
   have hD : S ^ 2 * c N ^ 2 / (8 * T * Real.log N) ≤ D := by
     apply (div_le_iff₀ (by positivity : 0 < 8 * T * Real.log N)).mpr
     nlinarith only [hmul]
-  have hE := tiltedConductorEnergy_two_sided (m := 1) one_pos (hc N)
+  have hE := tiltedConductorEnergy_two_sided (m := 1) one_pos
+    (by simpa only [Nat.cast_one] using hc N)
   have hE0 : 0 < completedConductorEnergy tiltedUnitSpline (c N) 1 :=
     (div_pos tiltedConductorFloorCoefficient_pos (pow_pos hc0 7)).trans_le hE.1
   have hquot : (S ^ 2 * c N ^ 2 / (8 * T * Real.log N)) / (C / c N ^ 7) ≤
@@ -256,7 +258,7 @@ theorem exists_critical_ratio_exceeding_every_pole_collar_budget (B : ℝ) :
   have hR : 0 < R := zero_lt_one.trans_le hR1
   have hκR : κ * R = |B| + 1 + κ := by
     dsimp only [R]
-    field_simp [hκ.ne']
+    field_simp [hκ.ne'] <;> ring
   have hlarge : B < κ * R ^ 2 := by
     have hRR : R ≤ R ^ 2 := by nlinarith only [hR1]
     have hm := mul_le_mul_of_nonneg_left hRR hκ.le

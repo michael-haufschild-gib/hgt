@@ -113,6 +113,13 @@ reduce to this one source functional, or retain further arithmetic
 charges. Pointwise mixed convergence alone cannot settle that question;
 an inverse-energy summable envelope is required.
 
+For interior support `(δ,η)⊂(1/2,1)`, the source limit is now checked.
+The all-R two-dimensional limit and the optimized small-band inequality
+are implemented in `ThePoleCorrectorRetainsItsSignedWindowBenefit.lean`.
+Its audit is pending. The paper proof expands the Hermitian quadratic
+form, uses the checked window, pole and mixed limits, then chooses
+`t=−aℓ(h)/[J(1)/R+a g]` under the established whole-space positivity.
+
 There is a sharp limit to this mechanism. If the uniform optimized
 correction is exhausted by ℓ, it changes the window form by one rank-one
 term. On ker ℓ the full aliasing mass remains. Thus even that stronger
@@ -392,9 +399,10 @@ Its proposed source mean is therefore strictly positive. This uses
 an exact rational inequality, not numerical evidence.
 `TerminalPolarSourceIsNonzero.lean` implements this witness as
 `F(x)=tiltedUnitSpline(256x−254)`, with the wider guards
-`253/256` and `511/512` for the exact prime annihilations. Its first
-Lean audit is pending; the resulting collar lower bound also remains
-unverified.
+`253/256` and `511/512` for the exact prime annihilations. Both strict
+source positivity and its complete-matrix limit pass their actual-path
+Lean audits with exactly `[propext, Classical.choice, Quot.sound]`.
+The resulting collar lower bound also passes its actual-path audit.
 
 For the first lower-bound theorem it suffices to take the collar cutoff
 `M_N=floor(N/2)`. The witness has zero prefix there, while
@@ -413,15 +421,19 @@ Cauchy–Schwarz inequality gives the left side at least
 This paper reduction uses the explicit conductor-energy upper bound,
 so it needs neither a new Jordan asymptotic nor an exact collar-mass
 limit. `TheCriticalPoleHasAnIntrinsicCollarCost.lean` implements this
-reduction; its first audit awaits the witness audit. The no-go conclusion
-remains unproved until that dependency chain passes.
+reduction. Its source, witness and all four principal endpoints pass
+actual-path audits with exactly `[propext, Classical.choice, Quot.sound]`.
 
 The actual cutoff in the small-band proof is also covered: for c≥1,
 `linearDefectCutoff(c)≥3`, hence `N/linearDefectCutoff(c)≤N/2`.
 The dual collar mass increases when its lower endpoint decreases.
 Thus the same lower bound transfers to that literal cutoff, and choosing
 R with κR²>B exceeds any prescribed budget B on its canonical clock.
-These two corollaries are implemented in the same pending module.
+Both corollaries pass the same audit. This retires fixed absolute-budget
+continuation in this collar norm, not signed continuation or all-R
+whole-space positivity. The checked positive survivor is the nonzero
+literal terminal source; see the
+[failed-mechanism card](../5-failed/critical-absolute-collar-budget-continuation.md).
 
 The nonpolar interior source has a closed paper assembly as well.
 The exact coefficient identity is

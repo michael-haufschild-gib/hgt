@@ -9,9 +9,9 @@ The strict eighth section supplies the head. Parity reduces the new sign
 to the integrated even five-dimensional block. Its unconditional sign
 remains open.
 
-The [quantitative critical collar](../3-formalized/theta-cusp-quantitative-critical-collar.md)
+The [logarithmic critical collar](../3-formalized/theta-cusp-logarithmic-critical-collar.md)
 proves strict positivity for every rank `n≤N` when
-`|a−1/2| < c/[A^(N+1)·((2N+1)!)^(N+2)]`, with fixed `A≥1`, `c>0`.
+`|a−1/2| < c/(1+log(N+1))`, with fixed `c>0`.
 This includes the ninth section near `a=1/2`; the full aperture interval remains open.
 
 ## Established source restrictions

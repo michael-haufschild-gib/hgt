@@ -294,6 +294,17 @@ For coupling, the corpus constructs a simple sign/conjugation-symmetric divisor 
 
    General terminal support and the nonpolar complete source remain open. The checked [nonpolar full-center mean](../../../formal/GaloisForLFunctions/ArithmeticHodgeTheoryOfDegenerations/TerminalWindowsReadTheNonpolarCenter.lean) retains `−Λ(m)∫F` for m≥2. Its opposite divisor-jet charge must cancel before asserting a zero mixed source. `[K/P]`
 
+   The local source is nonzero: `F(x)=tiltedUnitSpline(256x−254)` is nonnegative, supported in `[127/128,255/256]`, and has strictly positive source mean. The proof uses `(2π)²(1−x²)<1` on its support, with no numerical experiment. [Checked witness and complete mixed limit](../../../formal/GaloisForLFunctions/ArithmeticHodgeTheoryOfDegenerations/TerminalPolarSourceIsNonzero.lean), with the standard three axioms. `[K]`
+
+   **The existing absolute collar cost is intrinsically quadratic in R.** Put `r₁=B_Nv₁−E₁v₁` and `M_N=N/linearDefectCutoff(c_N)`. One fixed κ>0, independent of R and its critical clock, satisfies eventually
+
+   \[
+   \frac{c_N^7}{\log N}\frac{\operatorname{DualCollar}_7(M_N,N,r_1)}{E_1(c_N)}
+   \ge \kappa R^2.
+   \]
+
+   Thus every fixed absolute budget is exceeded at some positive critical ratio, already by the pole residual alone. The source witness, weighted Cauchy–Schwarz and `E₁≤C/c⁷` prove this at the literal cutoff used in the small-band assembly. Refining this same absolute norm cannot remove its R² growth. The survivor is the nonzero signed terminal response: continuation must retain its interaction, change the payment, or use another decomposition. This does not exclude signed continuation or establish failure of whole-space positivity. [Checked lower bound and arbitrary-budget counterfamily](../../../formal/GaloisForLFunctions/CriticalArithmeticCorrelationTheory/TheCriticalPoleHasAnIntrinsicCollarCost.lean), with the standard three axioms; [precise retired mechanism](../../drafts/pipeline/5-failed/critical-absolute-collar-budget-continuation.md). `[K]`
+
    The existing estimates also support a precise route to growing-packet uniformity. For residual `r_m=B_Nv_m−E_m v_m`, weighted collar Cauchy–Schwarz and the actual floor `E_m≥κm⁷/c⁷` give `|⟨r_m,x_N⟩|²/(c E_m)≤C_(h,R)/m⁵` below overlap. Above overlap, the common positive energy floor and quadratic residual estimate make the sum through `(log N)^(13/32)` tend to zero. The reference diagonal has vanishing total contribution by the uniform logarithmic energy upper bound. These are dependency-closed paper reductions, not yet checked transfers. The full signed packet form needed for optimization is already checked: its relative error is uniformly arbitrarily small after retaining the polar term. This directs the next proof effort toward the literal fixed-conductor mixed sources, square-sum convergence and finite quadratic optimization; no new uniform prime-distribution or packet-Gram input is exposed by these steps. [Precise reduction and source declarations](../../drafts/pipeline/1-in-progress/critical-pole-window-signed-transport.md#uniformity-exposed-by-the-existing-conductor-bounds). `[L/P]`
 
    If optimized corrections are exhausted by that one pole functional, their subtraction has rank one and leaves compensation intact on its kernel. Such a classification would sharpen the obstruction; it would still require further growing arithmetic charges or direct control of the complementary window form. `[D/P]`

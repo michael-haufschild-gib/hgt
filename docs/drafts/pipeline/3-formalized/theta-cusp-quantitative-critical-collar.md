@@ -53,6 +53,8 @@ namespace `GaloisForLFunctions.ThetaCuspSections.QuantitativeCollar`:
 Canonical source checks and transitive axiom audits: only `propext`,
 `Classical.choice`, `Quot.sound`. Imported by `ThetaCuspSections.lean`.
 
+Stronger bound: [the logarithmic critical collar](theta-cusp-logarithmic-critical-collar.md).
+
 **Open:** a rank-independent critical collar, or any fixed rank above eight
 throughout `0<a<1/2`. The factorial collar shrinks with rank; Σ6 remains
 partially solved.
