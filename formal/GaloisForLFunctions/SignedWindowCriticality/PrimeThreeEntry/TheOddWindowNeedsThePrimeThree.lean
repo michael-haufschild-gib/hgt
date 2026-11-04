@@ -751,3 +751,5 @@ theorem not_nonneg_without_prime_three {c : ℝ} (hc : 3 / 5 ≤ c) :
 end GaloisForLFunctions.SignedWindowCriticality.PrimeThreeEntry
 
 end
+
+#print axioms GaloisForLFunctions.SignedWindowCriticality.PrimeThreeEntry.not_nonneg_without_prime_three

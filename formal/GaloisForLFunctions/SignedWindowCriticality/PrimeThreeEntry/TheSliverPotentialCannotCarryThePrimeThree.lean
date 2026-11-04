@@ -1122,5 +1122,3 @@ theorem not_sliverPotentialCertificate {c : ℝ} (hc : 287 / 500 ≤ c) :
 end GaloisForLFunctions.SignedWindowCriticality.PrimeThreeEntry
 
 end
-
-#print axioms GaloisForLFunctions.SignedWindowCriticality.PrimeThreeEntry.not_sliverPotentialCertificate

@@ -35,8 +35,9 @@ open _root_.RHTower
 /-- The bump of radius `r` centred at `m`. -/
 def sliverBump (m r : ℝ) (u : ℝ) : ℝ := centreBump ((u - m) / r)
 
-theorem contDiff_sliverBump (m r : ℝ) : ContDiff ℝ 2 (sliverBump m r) :=
-  contDiff_centreBump.comp ((contDiff_id.sub contDiff_const).div_const r)
+theorem contDiff_sliverBump (m r : ℝ) : ContDiff ℝ 2 (sliverBump m r) := by
+  unfold sliverBump
+  exact contDiff_centreBump.comp (by fun_prop)
 
 theorem sliverBump_eq_zero {m r u : ℝ} (hr : 0 < r) (hu : r ≤ |u - m|) : sliverBump m r u = 0 := by
   apply centreBump_eq_zero
@@ -66,7 +67,7 @@ theorem selfConv_sliverBump_pos {m r : ℝ} (hr : 0 < r) :
         · rw [abs_of_pos (by linarith)]; linarith
       rw [sliverBump_eq_zero hr this]; norm_num
   have hpos : 0 < sliverBump m r m ^ 2 := by
-    unfold sliverBump; rw [sub_self, zero_div, centreBump_eq_one (by norm_num)]; norm_num
+    unfold sliverBump; rw [sub_self, zero_div, centreBump_eq_one (x := 0) (by norm_num)]; norm_num
   exact hc.integral_pos_of_hasCompactSupport_nonneg_nonzero hcs (fun u => sq_nonneg _) hpos.ne'
 
 /-- Two bumps whose supports are farther apart than `2r` do not meet:
@@ -75,13 +76,13 @@ theorem selfConv_sliverBump_eq_zero {m r s : ℝ} (hr : 0 < r) (hs : 2 * r ≤ |
     selfConv (sliverBump m r) s = 0 := by
   unfold selfConv
   refine integral_eq_zero_of_ae (Eventually.of_forall fun u => ?_)
-  simp only [Pi.zero_apply]
+  show sliverBump m r u * sliverBump m r (s - u) = 0
   by_cases hu : r ≤ |u - m|
   · rw [sliverBump_eq_zero hr hu, zero_mul]
   · have : r ≤ |s - u - m| := by
       have h1 : |s - 2 * m| ≤ |s - u - m| + |u - m| := by
         rw [show s - 2 * m = (s - u - m) + (u - m) by ring]
-        exact abs_add _ _
+        exact abs_add_le _ _
       linarith [not_le.mp hu]
     rw [sliverBump_eq_zero hr this, mul_zero]
 
@@ -121,6 +122,7 @@ private lemma sliverBump_supp {c m r : ℝ} (hr : 0 < r) (hl : -c ≤ m - r) (hr
 theorem exists_bounds_snd_of_lt {c : ℝ} (hc3 : Real.log 3 < 2 * c) (hc : c < Real.log 2) :
     ∃ L U : ℝ, ∀ w ∈ belowLogFourBandWeights c, L ≤ w.2 ∧ w.2 ≤ U := by
   have hl2 := Real.log_two_gt_d9
+  have hl2' := Real.log_two_lt_d9
   have hl3 := Real.log_three_lt_d9
   have hl3' := Real.log_three_gt_d9
   set m : ℝ := -(Real.log 3 / 2)
@@ -159,16 +161,17 @@ theorem exists_bounds_fst_of_lt {c : ℝ} (hc2 : Real.log 2 < 2 * c) (hc : c < R
       rw [abs_of_neg (by linarith)]; linarith)
   exact ⟨_, _, fun w hw => fst_bounds_of_test (contDiff_sliverBump m r) hsupp.1 hsupp.2 h3 h2 hw⟩
 
+/-- The admissible set is an intersection of closed slabs, one per test. -/
 theorem isClosed_belowLogFourBandWeights (c : ℝ) : IsClosed (belowLogFourBandWeights c) := by
-  have : belowLogFourBandWeights c = ⋂ f ∈ {f : ℝ → ℝ | ContDiff ℝ 2 f ∧ (∀ u, 0 < u → f u = 0) ∧
-      (∀ u, u < -c → f u = 0)}, {w : ℝ × ℝ | |collarHankel 0 f - w.1 * selfConv f (-Real.log 2) -
+  have : belowLogFourBandWeights c = ⋂ (f : ℝ → ℝ) (_ : ContDiff ℝ 2 f)
+      (_ : ∀ u, 0 < u → f u = 0) (_ : ∀ u, u < -c → f u = 0),
+      {w : ℝ × ℝ | |collarHankel 0 f - w.1 * selfConv f (-Real.log 2) -
         w.2 * selfConv f (-Real.log 3)| ≤ weilQuad f} := by
     ext w
     simp only [belowLogFourBandWeights, mem_setOf_eq, mem_iInter]
-    exact ⟨fun h f hf => h f hf.1 hf.2.1 hf.2.2, fun h f hf h0 hfc => h f ⟨hf, h0, hfc⟩⟩
   rw [this]
-  refine isClosed_biInter fun f _ => isClosed_le ?_ continuous_const
-  fun_prop
+  exact isClosed_iInter fun f => isClosed_iInter fun _ => isClosed_iInter fun _ =>
+    isClosed_iInter fun _ => isClosed_le (by fun_prop) continuous_const
 
 /-- **Once the prime `3` acts, the admissible set is compact.** For `½ log 3 < c < log 2`,
 `belowLogFourBandWeights c` is a compact convex subset of `ℝ²`. -/

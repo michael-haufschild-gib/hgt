@@ -59,13 +59,15 @@ corpus margins odd `1.50·10⁻⁵`, even `5.6·10⁻⁸` at `c = ½ log 3`)
   width shrinks with the sector margins.
 
 ## Conjectures
-- **C1 (signature, not potential).** On every window `c ∈ (½ log 3 + 0.006, log 2)` no certificate
-  that replaces `w₃ s₃` by `±w₃ ∫_I f²` exists; the prime 3 must enter through the sign of the sliver
-  reflection. [N] Explicit witness at `c₁ = 287/500 < ½ log 3 + 1/40`: `f(u) = (u − a)(b − u)(1 +
-  11.88 u/c₁ + 19.05 (u/c₁)²)` on `[a, b] = [−c₁ + 1/400, −1/400]` gives
-  `𝓗₀(f) − w₂s₂(f) + w₃∫_I f² − W(f) = 0.0301 ‖f‖²` (independent 30-digit quadrature): the prime-2
-  term is a cost there (`s₂ < 0`) and the prime-3 term helps (`s₃ > 0`). Lean certification is the
-  next step (scale of `TwoProfileRefutationBelowLogFour`).
+- **C1 (signature, not potential) — PROVED [L] for `c ≥ 287/500`.** The sliver-potential
+  certificate `2w₃ ∫_{[log 3 − c, c]} F² ≤ W(F) + 2w₃ A_F(log 3)` (odd `C²` tests on `[−c, c]`) is
+  false for every `c ≥ 287/500`: witness = mollification of `P(x/c₁)`, `c₁ = 573/1000`,
+  `P(u) = u(1 − u²)(1 − 5u²/2 − 29u⁴/4)`, certified gap `< −1/100` (exact polynomial
+  autocorrelation, quartic Lévy majorant + exponential tail, Taylor pole moment, `Γ ≤ −5.370`,
+  exact collar mass `≥ 0.0176`). `exists_odd_test_sliverPotential_fails`,
+  `not_sliverPotentialCertificate` in
+  `PrimeThreeEntry/TheSliverPotentialCannotCarryThePrimeThree.lean` (clean, axioms standard).
+  [N] the certificate already fails from `δ ≈ 0.012` (odd).
 - **C2 (Perron).** For `0 < c < log 2` both sector ground states of the band are nonnegative. [N]
 - **C3 (selection by stages).** The admissible `w_p` slice is `ℝ` at the entry of `p` and shrinks to
   a window of the order of the sector margins; the newest prime is the loosest. [N]
@@ -85,14 +87,33 @@ corpus margins odd `1.50·10⁻⁵`, even `5.6·10⁻⁸` at `c = ½ log 3`)
   compact and convex: one bump centred at `−½ log n` (symmetric under the sliver reflection, so
   `(f⋆f)(−log n) = ∫ f² > 0`, and missing the other prime's reflection) pins `w_n` from both sides.
   `PrimeThreeEntry/TheWindowConfinesThePrimeWeights.lean`.
+- **C7 (the odd window needs the prime 3) — Lean in check.** Deleting the prime 3 (passing to
+  `W(F) + 2w₃ A_F(log 3)`) breaks positivity on an odd `C²` test supported in `[−3/5, 3/5]`, hence
+  on every window `c ≥ 3/5`: witness = mollification of `P(x/c₂)`, `c₂ = 599/1000`,
+  `P(u) = u(1 − u²)(1 − 9u²/2)`, certified deleted form `< −1/200` (exact value `−0.0091`,
+  `A(log 3) = −0.0108`). `exists_odd_test_without_prime_three_neg`,
+  `not_nonneg_without_prime_three` in `PrimeThreeEntry/TheOddWindowNeedsThePrimeThree.lean`.
+  [N] necessity starts at `c ≈ 0.557`; deleted-form ratio `−0.042` at `c = 0.5743`, `−0.093` at
+  `0.599`, `−0.29` at `0.65`.
+- **C8 (Perron sign law).** [N] For `0 < c < log 2` the sector ground states of the band are
+  nonnegative on `[−c, 0]` (C2), hence `s₂, s₃ ≥ 0` at both: in the odd sector the primes are payers
+  (`+w_p s_p` on the large side) and the pole a debt; in the even sector the primes are costs and the
+  pole `4C²` the payer. Checked at `c ∈ {0.2, …, 0.6}` (K = 22: odd `s₃ = 6.0·10⁻⁵, 2.4·10⁻⁴` at
+  `c = 0.5743, 0.6`; even `s₃ = 4.2·10⁻⁷, 2.2·10⁻⁶`; relative negative parts `≤ 2·10⁻⁴`, at the
+  basis resolution). From `c ≈ 0.65` the K = 22 ground energies (`~10⁻⁹`) are below the
+  discretization error; undecided there.
 
 ## Answer
 - The pole does not pay the prime 3. At its entry the prime-3 coupling is carried locally by the
   window's outward edge jumps (C4, exact; ratio `w₃e^h/2`, against `2w₃e^h > 1` for the inside
   collar jumps of `TheCollarRatioIsSharp`), but no certificate can spend that edge energy: the
-  sliver-potential certificate is false on every window `c ≥ 287/500` (C1, Lean pending). The
-  prime 3 must enter through the sign of its reflection; in the odd sector it is a necessary payer
-  from `c ≈ 0.557` [N].
+  sliver-potential certificate is false on every window `c ≥ 287/500` (C1, Lean). In the odd sector
+  the prime 3 is not a cost at all: deleting it breaks the odd window from `c = 3/5` on (C7, Lean;
+  [N] from `c ≈ 0.557`). It pays through the sign of its reflection (`A_F(log 3) < 0` on the
+  breaking test), not through its size.
+- Sign law [N] (C8): at the Perron ground states the primes pay in the odd sector and cost in the
+  even sector; the pole is the reverse. The question "who pays the prime 3" is therefore an even-sector
+  question, and there the pole is the only payer.
 - Budgets [N]: even sector — the pole `4C²` is the only payer; odd sector — the pole is a 3 % debt,
   the archimedean cross-Hankel (Gamma-pole mode + trivial zeros) and the prime 2 pay.
 - The binding constraint below `log 4` is the even sector's cap on `w₂` (`2·10⁻⁷` above `Λ(2)/√2`
@@ -102,9 +123,10 @@ corpus margins odd `1.50·10⁻⁵`, even `5.6·10⁻⁸` at `c = ½ log 3`)
 - **Exact killing mechanism:** the sliver-potential certificate (prime-3 kick bounded by its
   collar mass) fails on an explicit odd test on every window `c ≥ 287/500` (C1).
 - **Strongest positive survivor:** the signature law and the edge carrying law (C4, Lean), soft
-  entry (C5, Lean), confinement (C6).
+  entry (C5, Lean), confinement (C6), and necessity of the prime 3 as an odd-sector payer (C7).
 - **New insight:** local resources for the newest prime exist (the window edge carries it at ratio
-  `< 1`), so the obstruction to collar-local payment is criticality (no slack), not locality.
+  `< 1`), so the obstruction to collar-local payment is criticality (no slack), not locality; and
+  in the odd sector the newest prime is a resource whose sign, not size, is what positivity uses.
 
 ## Log
 - 2026-11-04 — created in 1-in-progress

@@ -163,7 +163,7 @@ theorem norm_sin_mul_prod_pertFactor_le_strip {h θ L : ℝ} (hh : 0 < h) (hθ :
                 Finset.sum_le_sum fun k hk =>
                   norm_pertFactor_sub_one_le_strip hL him k hzim (fun e => by
                     have := hfar k hk
-                    rw [← hxdef, e, sub_self, abs_zero] at this
+                    rw [hxdef, e, sub_self, abs_zero] at this
                     linarith)
             _ = 3 * L * ∑ k ∈ S.erase k₀,
                   ‖(x : ℂ) - I‖ / (|x - latPt h θ k| * ‖I - (((ν k).re : ℝ) : ℂ)‖) := by

@@ -95,10 +95,12 @@ so this is exactly the missing diagonal of the punctured jet pair:
 Subtracting `(log N−adj_m)v_m` from the prime row changes only its
 Ramanujan diagonal to `(log(n/N)+adj_m)c_m(n)`; the jet cancellation is
 unchanged. Thus the apparent `−Λ(m)/c` puncture charge must not be treated
-as an independent surviving boundary source. The finite identities have
-a closed paper proof; their Lean transfer and the uniform long-index
-estimate are pending. This is a structural bridge, not a proof of the
-large-packet conjecture.
+as an independent surviving boundary source. Both endpoints in
+`TheRatioPrimeRowCompletesTheTerminalJet.lean` pass their actual-path
+audit with exactly `[propext, Classical.choice, Quot.sound]`; the module
+is wired into its umbrella. The uniform long-index estimate remains a
+separate obligation. This finite identity does not prove the large-packet
+conjecture.
 
 ## A quantitative statement to attack
 
@@ -214,14 +216,26 @@ source channel with its conductor dependence.
 Choosing T=N^(1/8) gives a weaker but sufficient candidate complete bound
 
     |(√L/c_N)⟨B_Nv_m,x_h⟩|
-      ≤ C/√φ(m) [Λ(m)/c_N + m⁴c_N⁸L²/N^(1/8)].
+      ≤ C/√φ(m) [Λ(m)(1+log c_N)/c_N + m⁴c_N⁸L²/N^(1/8)].
 
-Its polynomial-error contribution to the inverse-energy sum is at most
+The logarithm retains the rate already supplied by
+`abs_nearPairSum_div_overlap_sub_weighted_row_le`; removing it is not
+needed. The sparse mean contributes `O((1+log c_N)²/c_N)→0` above the
+quadratic conductor threshold, and the intermediate range gains the
+same squared logarithmic factor in its vanishing bound.
+The polynomial-error contribution to the inverse-energy sum is at most
 `C c_N¹⁷L³Q_N⁹/N^(1/4)`, hence tends to zero when Q_N=N^(1/64):
 the remaining horizon power is −7/64. This suffices for the same
 large-packet conjecture without proving the earlier, stronger N^(-1/2)
 remainder. The complete bound itself is still open; the finite tail
 theorem alone does not establish it.
+
+For these interior receivers the boundary-prime channels are already
+closed uniformly in every conductor: `eventually_terminal_upward_pairing_eq_zero`
+and `eventually_terminal_exteriorDownward_pairing_eq_zero` give one
+eventual horizon for all m. The remaining transfer concerns Gamma,
+center, the completed divisor jet and replacement errors, not a new
+boundary-prime distribution estimate.
 
 ## Decision criterion
 

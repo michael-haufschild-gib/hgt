@@ -16,7 +16,7 @@ open MeasureTheory Finset
 
 namespace GaloisForLFunctions.CriticalArithmeticCorrelationTheory
 
-open RenormalizedArithmeticPotentialTheory ArithmeticCouplingTheory
+open RenormalizedArithmeticPotentialTheory ArithmeticCouplingTheory SpacingScaleHarmonicAnalysis
 
 /-- The upward arithmetic operator preserves scalar multiplication exactly. -/
 theorem upwardPrimeVector_smul (φ : ℝ → ℝ) (c : ℝ) (N : ℕ) (r : ℝ)
