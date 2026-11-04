@@ -44,6 +44,10 @@ open GaloisForLFunctions.ArithmeticCastelnuovoSeveri
 open GaloisForLFunctions.ArithmeticHodgeTheoryOfDegenerations
 open GaloisForLFunctions.ArithmeticIncidencePositivity
 open GaloisForLFunctions.CohomologyOfWindowsOfSpecZ
+open GaloisForLFunctions.SpacingScaleHarmonicAnalysis
+open GaloisForLFunctions.SignedWindowCriticality
+open GaloisForLFunctions.ArithmeticCriticalityTheory
+open _root_.RHTower.CHMDPolar
 
 /-! ### 1. Window positivity and the canonical onset aperture -/
 
@@ -128,7 +132,8 @@ private theorem deriv_deriv_comp_mul_left {f : ℝ → ℂ} (hf : ContDiff ℝ 2
       (hf.differentiable (by norm_num)).differentiableAt
     have hmul : HasDerivAt (fun y : ℝ => r * y) r x := by
       simpa using (hasDerivAt_id x).const_mul r
-    simpa [real_smul, mul_comm] using hfx.hasDerivAt.scomp x hmul
+    convert hfx.hasDerivAt.scomp x hmul using 1
+    simp [real_smul, mul_comm]
   have heq1 : deriv (fun y => f (r * y)) = fun x => (r : ℂ) * deriv f (r * x) :=
     funext fun x => (hd1 x).deriv
   rw [heq1]
@@ -138,11 +143,12 @@ private theorem deriv_deriv_comp_mul_left {f : ℝ → ℂ} (hf : ContDiff ℝ 2
   have hd2 : HasDerivAt (fun x => (r : ℂ) * deriv f (r * x))
       ((r : ℂ) * ((r : ℂ) * deriv (deriv f) (r * u))) u := by
     have hfx : DifferentiableAt ℝ (deriv f) (r * u) :=
-      (hdf.differentiable le_rfl).differentiableAt
+      (hdf.differentiable (by norm_num)).differentiableAt
     have hmul : HasDerivAt (fun y : ℝ => r * y) r u := by
       simpa using (hasDerivAt_id u).const_mul r
     have hcomp : HasDerivAt (fun x => deriv f (r * x)) ((r : ℂ) * deriv (deriv f) (r * u)) u := by
-      simpa [real_smul, mul_comm] using hfx.hasDerivAt.scomp u hmul
+      convert hfx.hasDerivAt.scomp u hmul using 1
+      simp [real_smul, mul_comm]
     exact hcomp.const_mul (r : ℂ)
   rw [hd2.deriv]
   ring
@@ -204,11 +210,13 @@ private theorem tendsto_paperFT_dilate {f : ℝ → ℂ} (hf : Continuous f) {a 
       exact le_max_right _ _
   have hC0 : 0 ≤ C := (norm_nonneg (f 0)).trans (hC 0)
   set r : ℕ → ℝ := fun n => 1 + 1 / ((n : ℝ) + 1)
-  have hr1 : ∀ n, 1 ≤ r n := fun n => by dsimp [r]; positivity
+  have hr1 : ∀ n, 1 ≤ r n := fun n => by
+    dsimp [r]
+    linarith [show (0 : ℝ) ≤ 1 / ((n : ℝ) + 1) by positivity]
   set bound : ℝ → ℝ := (Icc (-a) a).indicator fun _ => C * Real.exp (|z.im| * a)
   have hbound_int : Integrable bound :=
-    (integrableOn_const (μ := volume) measure_Icc_lt_top.ne (by simp)).integrable_indicator
-      measurableSet_Icc
+    ((continuous_const : Continuous fun _ : ℝ => C * Real.exp (|z.im| * a)).integrableOn_Icc
+      ).integrable_indicator measurableSet_Icc
   simp only [paperFT_def]
   refine tendsto_integral_of_dominated_convergence bound ?_ hbound_int ?_ ?_
   · intro n
@@ -217,7 +225,8 @@ private theorem tendsto_paperFT_dilate {f : ℝ → ℂ} (hf : Continuous f) {a 
   · intro n
     refine Eventually.of_forall fun u => ?_
     by_cases hu : u ∈ Icc (-a) a
-    · rw [Set.indicator_of_mem hu, norm_mul]
+    · dsimp only [bound]
+      rw [Set.indicator_of_mem hu, norm_mul]
       have hua : |u| ≤ a := abs_le.mpr hu
       have hexp : ‖cexp (I * z * (u : ℂ))‖ ≤ Real.exp (|z.im| * a) := by
         rw [Complex.norm_exp]
@@ -229,7 +238,8 @@ private theorem tendsto_paperFT_dilate {f : ℝ → ℂ} (hf : Continuous f) {a 
           _ = |z.im| * |u| := by rw [abs_mul, abs_neg]
           _ ≤ |z.im| * a := mul_le_mul_of_nonneg_left hua (abs_nonneg _)
       exact mul_le_mul (hC _) hexp (norm_nonneg _) hC0
-    · rw [Set.indicator_of_notMem hu]
+    · dsimp only [bound]
+      rw [Set.indicator_of_notMem hu]
       have hfu : f (r n * u) = 0 := image_eq_zero_of_notMem_tsupport fun hm => hu (by
         have h := hfs hm
         rw [mem_Icc] at h ⊢
@@ -260,7 +270,7 @@ theorem windowPositiveAt_of_forall_lt {Z : ZeroConfig} (hZ : TemperedConfig Z) {
   have hr2 : ∀ n, r n ≤ 2 := fun n => by
     dsimp [r]
     have : (1 : ℝ) / ((n : ℝ) + 1) ≤ 1 :=
-      div_le_one_of_le₀ (by linarith [Nat.cast_nonneg n]) (by positivity)
+      div_le_one_of_le₀ (by linarith [Nat.cast_nonneg (α := ℝ) n]) (by positivity)
     linarith
   have hfn_cd : ∀ n, ContDiff ℝ 2 (fn n) := fun n =>
     hf.comp (contDiff_const.mul contDiff_id)
@@ -269,8 +279,9 @@ theorem windowPositiveAt_of_forall_lt {Z : ZeroConfig} (hZ : TemperedConfig Z) {
     have hr0 : 0 < r n := zero_lt_one.trans (hr1 n)
     have hm : r n * u ∈ Icc (-a) a := hfs (subset_tsupport f (Function.mem_support.mp hu))
     rw [mem_Icc] at hm ⊢
-    exact ⟨(neg_div a (r n)) ▸ (le_div_iff₀ hr0).mpr (by linarith [hm.1]),
-      (div_le_iff₀ hr0).mpr (by linarith [hm.2])⟩
+    constructor
+    · rw [← neg_div, div_le_iff₀ hr0]; linarith [hm.1]
+    · rw [le_div_iff₀ hr0]; linarith [hm.2]
   have hpos_n : ∀ n, 0 ≤ (Z.W (fn n) (fn n)).re := fun n => by
     have hr0 : 0 < r n := zero_lt_one.trans (hr1 n)
     have hlt : a / r n < a := div_lt_self ha (hr1 n)
@@ -314,8 +325,7 @@ theorem windowPositiveAt_of_forall_lt {Z : ZeroConfig} (hZ : TemperedConfig Z) {
       Tendsto (fun n => Z.Wsummand (fn n) (fn n) τ) atTop (𝓝 (Z.Wsummand f f τ)) := by
     intro τ
     unfold ZeroConfig.Wsummand
-    exact ((tendsto_paperFT_dilate hf.continuous ha.le hfs (gammaOf τ)).mul_const (Z.mult τ : ℂ) |>.congr
-      fun n => mul_comm _ _).mul
+    exact ((tendsto_paperFT_dilate hf.continuous ha.le hfs (gammaOf τ)).const_mul (Z.mult τ : ℂ)).mul
       (Complex.continuous_conj.continuousAt.tendsto.comp
         (tendsto_paperFT_dilate hf.continuous ha.le hfs (conj (gammaOf τ))))
   have hW_lim : Tendsto (fun n => Z.W (fn n) (fn n)) atTop (𝓝 (Z.W f f)) :=
@@ -345,7 +355,7 @@ theorem exists_re_W_neg_iff_onsetAperture_lt {Z : ZeroConfig} (hZ : TemperedConf
       onsetAperture Z < (a : EReal) := by
   rw [← not_le, ← windowPositiveAt_iff_le_onsetAperture hZ ha]
   unfold WindowPositiveAt
-  push_neg
+  push Not
   rfl
 
 /-- **Hodge-defect filtration dictionary.** On a tempered configuration `Z` at `a ≥ 0`,
@@ -366,29 +376,37 @@ theorem onsetAperture_eq_top_iff_onLine {Z : ZeroConfig} (hZ : TemperedConfig Z)
       rcases lt_or_ge a 0 with ha | ha
       · exact (hodgeDefectAt_eq_zero_iff Z hZ a).mpr (windowPositiveAt_of_neg Z ha)
       · exact (hodgeDefectAt_eq_zero_iff_le_onsetAperture hZ ha).mpr (htop ▸ le_top)
-    have hcard : (rightZeros Z).encard = 0 := by
+    have hcard : (ArithmeticCastelnuovoSeveri.rightZeros Z).encard = 0 := by
       rw [← iSup_hodgeDefectAt Z hZ]
       simp [hall]
-    have hempty : rightZeros Z = ∅ := Set.encard_eq_zero.mp hcard
+    have hempty : ArithmeticCastelnuovoSeveri.rightZeros Z = ∅ := Set.encard_eq_zero.mp hcard
     rcases lt_trichotomy ρ.re (1 / 2) with hlt | heq | hgt
     · exfalso
-      have hrefl : reflect ρ ∈ rightZeros Z :=
+      have hrefl : reflect ρ ∈ ArithmeticCastelnuovoSeveri.rightZeros Z :=
         ⟨Z.reflect_mem ρ hρ, by simp only [reflect, Complex.sub_re, Complex.one_re, Complex.conj_re]; linarith⟩
       rw [hempty] at hrefl
       exact hrefl
     · exact heq
     · exfalso
-      have hmem : ρ ∈ rightZeros Z := ⟨hρ, hgt⟩
+      have hmem : ρ ∈ ArithmeticCastelnuovoSeveri.rightZeros Z := ⟨hρ, hgt⟩
       rw [hempty] at hmem
       exact hmem
   · intro hon
-    rw [eq_top_iff_forall_lt]
-    intro b
-    have hb0 : (max b 0 + 1 : ℝ) > b := by linarith [le_max_left b 0]
-    have hpos : WindowPositiveAt Z (max b 0 + 1) :=
-      fun f _ _ => SquareRootThreshold.re_W_nonneg_of_onLine Z hon f
-    exact (EReal.coe_lt_coe_iff.mpr hb0).trans_le
-      (le_onsetAperture_of_windowPositiveAt (by linarith [le_max_right b 0]) hpos)
+    cases h : onsetAperture Z with
+    | bot =>
+      exfalso
+      have h0 := zero_le_onsetAperture Z
+      rw [h] at h0
+      exact absurd h0 (by decide)
+    | top => rfl
+    | coe b =>
+      exfalso
+      have hb0 : b < max b 0 + 1 := by linarith [le_max_left b 0]
+      have hpos : WindowPositiveAt Z (max b 0 + 1) :=
+        fun f _ _ => SquareRootThreshold.re_W_nonneg_of_onLine Z hon f
+      have hle := le_onsetAperture_of_windowPositiveAt (by linarith [le_max_right b 0]) hpos
+      rw [h, EReal.coe_le_coe_iff] at hle
+      linarith
 
 /-! ### 4. Exact `ζ`, `P1`, and `AHD` dictionaries -/
 
@@ -404,13 +422,21 @@ theorem riemannHypothesis_iff_onsetAperture_zeta_eq_top :
   rw [riemannHypothesis_iff_forall_zetaWindowPositive]
   constructor
   · intro hRH
-    rw [eq_top_iff_forall_lt]
-    intro b
-    have hbpos : 0 < max b 0 + 1 := by linarith [le_max_right b 0]
-    have hpos : WindowPositiveAt zetaZeroConfig (max b 0 + 1) :=
-      (windowPositiveAt_zeta_iff _).mpr (hRH _ hbpos)
-    exact (EReal.coe_lt_coe_iff.mpr (by linarith [le_max_left b 0])).trans_le
-      (le_onsetAperture_of_windowPositiveAt hbpos.le hpos)
+    cases h : onsetAperture zetaZeroConfig with
+    | bot =>
+      exfalso
+      have h0 := zero_le_onsetAperture zetaZeroConfig
+      rw [h] at h0
+      exact absurd h0 (by decide)
+    | top => rfl
+    | coe b =>
+      exfalso
+      have hbpos : 0 < max b 0 + 1 := by linarith [le_max_right b 0]
+      have hpos : WindowPositiveAt zetaZeroConfig (max b 0 + 1) :=
+        (windowPositiveAt_zeta_iff _).mpr (hRH _ hbpos)
+      have hle := le_onsetAperture_of_windowPositiveAt hbpos.le hpos
+      rw [h, EReal.coe_le_coe_iff] at hle
+      linarith [le_max_left b 0]
   · intro htop A hA
     exact (windowPositiveAt_zeta_iff A).mp
       ((windowPositiveAt_iff_le_onsetAperture temperedConfig_zetaZeroConfig hA.le).mpr
@@ -453,9 +479,25 @@ theorem enlargedWeilFloorAperture_le_onsetAperture_zeta :
     mul_nonneg (by norm_num) (integral_nonneg fun _ => sq_nonneg _)
   linarith
 
+private theorem fullZeroForm_eq_weilQuad_local {F : ℝ → ℝ} (hF : Continuous F)
+    (hFc : HasCompactSupport F) : fullZeroForm F = weilQuad F := by
+  have h1 : markovEnergy (fun u => (F u : ℂ)) = weilQuad F -
+      (weilPoleTerm (EF.weilTest (fun u => (F u : ℂ)) (fun u => (F u : ℂ)))).re := by
+    unfold markovEnergy weilQuad
+    rw [Complex.sub_re]
+  have h2 := re_weilPoleTerm_ofReal_eq_two_mul_cosh_sq_sub_sinh_sq hF hFc
+  unfold fullZeroForm
+  rw [h1, h2]
+  unfold oddPoleMoment evenPoleMoment coshHalfMoment sinhHalfMoment
+  ring
+
+private theorem weilQuad_add_right_eq (F : ℝ → ℝ) (c : ℝ) :
+    weilQuad (fun u => F (u + c)) = weilQuad F := by
+  simpa only [sub_neg_eq_add] using weilQuad_comp_sub F (-c)
+
 /-- **Midpoint translation dictionary between `[−A, 0]` (`IsWindowTest A`) and `[−A/2, A/2]`
 (`ZetaWindowPositive (A / 2)`).** -/
-theorem windowForm_nonneg_iff_zetaWindowPositive_half {A : ℝ} (hA : 0 ≤ A) :
+theorem windowForm_nonneg_iff_zetaWindowPositive_half (A : ℝ) :
     (∀ H : ℝ → ℝ, IsWindowTest A H → 0 ≤ weilQuad H) ↔ ZetaWindowPositive (A / 2) := by
   constructor
   · intro h F hF hFc hv
@@ -467,7 +509,7 @@ theorem windowForm_nonneg_iff_zetaWindowPositive_half {A : ℝ} (hA : 0 ≤ A) :
           rcases hu with hlt | hgt
           · rw [abs_of_neg (by linarith)]; linarith
           · rw [abs_of_pos (by linarith)]; linarith) }
-    rw [fullZeroForm_eq_weilQuad hF.continuous hFc, ← weilQuad_translate F (A / 2)]
+    rw [fullZeroForm_eq_weilQuad_local hF.continuous hFc, ← weilQuad_add_right_eq F (A / 2)]
     exact h H hH
   · intro h H hH
     set F : ℝ → ℝ := fun x => H (x - A / 2)
@@ -482,16 +524,17 @@ theorem windowForm_nonneg_iff_zetaWindowPositive_half {A : ℝ} (hA : 0 ≤ A) :
         fun x hx => abs_le.mp (le_of_not_gt fun hgt => hx (hv x hgt))
     have htr : H = fun u => F (u + A / 2) := by
       funext u; dsimp [F]; ring_nf
-    rw [htr, weilQuad_translate F (A / 2), ← fullZeroForm_eq_weilQuad hF.continuous hFc]
+    rw [htr, weilQuad_add_right_eq F (A / 2), ← fullZeroForm_eq_weilQuad_local hF.continuous hFc]
     exact h F hF hFc hv
 
 /-- **Exact zero meaning of `AHD.windowThreshold` (`R₁(A) = ⊤`).** For every `A ≥ 0`,
 `windowThreshold A = ⊤` iff `((A / 2 : ℝ) : EReal) ≤ onsetAperture zetaZeroConfig`. -/
 theorem windowThreshold_eq_top_iff_le_onsetAperture {A : ℝ} (hA : 0 ≤ A) :
     windowThreshold A = ⊤ ↔ ((A / 2 : ℝ) : EReal) ≤ onsetAperture zetaZeroConfig := by
-  rw [windowThreshold_eq_top_iff, windowForm_nonneg_iff_zetaWindowPositive_half hA,
+  have hA2 : 0 ≤ A / 2 := by linarith
+  rw [windowThreshold_eq_top_iff, windowForm_nonneg_iff_zetaWindowPositive_half A,
     ← windowPositiveAt_zeta_iff,
-    windowPositiveAt_iff_le_onsetAperture temperedConfig_zetaZeroConfig (by linarith)]
+    windowPositiveAt_iff_le_onsetAperture temperedConfig_zetaZeroConfig hA2]
 
 /-- **Failure aperture of `AHD.windowThreshold`.** Off RH, `windowThreshold A < ⊤` (`A ≥ 0`) iff
 `2 * zetaContactAperture < A`. -/

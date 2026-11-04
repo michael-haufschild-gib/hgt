@@ -288,7 +288,10 @@ theorem exists_isolating_window_pair_of_bump {a D C₀ η ε : ℝ} (hD : 0 < D)
   obtain ⟨hfs, hfle⟩ := tsum_far_multDiff_le hZ hZ' hk ha hFdec hGdec hR
   have hfnorm : ∀ z, ‖(if R < |z.im - X| then multDiff Z Z' z * pointImage F G z else 0)‖ =
       farTerm (multDiff Z Z') F G X R z := fun z => by
-    unfold farTerm; split_ifs; · rw [norm_mul]; · rw [norm_zero]
+    unfold farTerm
+    split_ifs
+    · rw [norm_mul]
+    · rw [norm_zero]
   have hfarle : ‖∑' z, (if R < |z.im - X| then multDiff Z Z' z * pointImage F G z else 0)‖ ≤
       M * M * Real.exp a * (5 / 4 * (1 + |X|) ^ 2 / (1 + R) ^ (2 * k - 2)) *
         ∑' z, ‖multDiff Z Z' z‖ / (1 + Complex.normSq (gammaOf z)) :=
@@ -492,7 +495,7 @@ private theorem subspacing_camera_budget
   have hlogCm : 2 * Real.log Cm ≤ u ^ 3 + 2 * MK * q * u ^ 2 := by
     rw [hCm, Real.log_pow]
     have h4u : 4 * (1 + (m : ℝ) / ε) ≤ 4 * (1 + ρ) * u := by
-      have : 1 + ρ * u ≤ (1 + ρ) * u := by nlinarith [mul_nonneg hρ0.le hu1]
+      have : 1 + ρ * u ≤ (1 + ρ) * u := by linarith [mul_le_mul_of_nonneg_left hu1 hρ0.le]
       linarith
     have hlog1 : Real.log (4 * (1 + (m : ℝ) / ε)) ≤ Real.log (4 * (1 + ρ) * u) :=
       Real.log_le_log (by positivity) h4u
@@ -502,11 +505,14 @@ private theorem subspacing_camera_budget
     have hlog3 : Real.log (4 * (1 + (m : ℝ) / ε)) ≤ u / (2 * MK) + q := by
       have hle_q : Real.log α⁻¹ ≤ q := by rw [hq]; exact le_max_right _ _
       linarith
+    have h1ge : 1 ≤ 4 * (1 + (m : ℝ) / ε) := by
+      have : 0 ≤ (m : ℝ) / ε := div_nonneg (Nat.cast_nonneg m) hε0.le
+      linarith
     calc 2 * ((m : ℝ) * Real.log (4 * (1 + (m : ℝ) / ε)))
         ≤ 2 * ((MK * u ^ 2) * (u / (2 * MK) + q)) := by
-          have := mul_le_mul hmle hlog3 (Real.log_nonneg (by positivity)) (by positivity)
+          have := mul_le_mul hmle hlog3 (Real.log_nonneg h1ge) (by positivity)
           linarith
-      _ = u ^ 3 + 2 * MK * q * u ^ 2 := by field_simp; ring
+      _ = u ^ 3 + 2 * MK * q * u ^ 2 := by field_simp
   have hGterm : 2 * (growthRate ℓ * D * (1 + Real.log D)) ≤ 2 * growthRate ℓ * lam ^ 2 * u ^ 3 := by
     have h1 : D * (1 + Real.log D) ≤ D ^ 2 := by
       rw [sq]; exact mul_le_mul_of_nonneg_left (one_add_log_le hD1) hD0.le
@@ -715,8 +721,7 @@ theorem exists_subspacing_isolating_windows {θ lam A S M : ℝ} (hθ : 0 ≤ θ
   have hkle : (k : ℝ) ≤ K * u ^ 2 + 1 := by
     rw [hk]; exact (Nat.ceil_lt_add_one (by positivity)).le
   have hk1 : 1 ≤ k := by
-    have h1 : (1 : ℝ) ≤ K * u ^ 2 := one_le_mul_of_one_le_of_one_le (by linarith)
-      (by simpa [sq] using mul_le_mul_of_nonneg_right hu1 hu0.le)
+    have h1 : (1 : ℝ) ≤ K * u ^ 2 := one_le_mul_of_one_le_of_one_le (by linarith) (one_le_pow₀ hu1)
     exact_mod_cast h1.trans hkK
   obtain ⟨W, hWdef⟩ : ∃ W, W = windowExponent (2 * D⁻¹) (localSlack D C₀) := ⟨_, rfl⟩
   have hW0 : 0 ≤ W := by
@@ -732,14 +737,14 @@ theorem exists_subspacing_isolating_windows {θ lam A S M : ℝ} (hθ : 0 ≤ θ
     have h1 : (⌈W⌉₊ : ℝ) ≤ W + 1 := (Nat.ceil_lt_add_one hW0).le
     have h2 : e * D ≤ e * (lam * u) := mul_le_mul_of_nonneg_left hDup he0
     have hu2 : u ≤ u ^ 2 := by simpa [sq] using mul_le_mul_of_nonneg_right hu1 hu0.le
-    have h1u2 : 1 ≤ u ^ 2 := hu1.trans hu2
+    have h1u2 : 1 ≤ u ^ 2 := one_le_pow₀ hu1
     have h3 : e * (lam * u) ≤ e * lam * u ^ 2 := by
       calc e * (lam * u) = e * lam * u := by ring
         _ ≤ e * lam * u ^ 2 := mul_le_mul_of_nonneg_left hu2 (by positivity)
     linarith [show (e * lam + K + 2) * u ^ 2 = e * lam * u ^ 2 + K * u ^ 2 + 2 * u ^ 2 by ring]
   have hmε : (m : ℝ) / ε ≤ ρ * u := by
     rw [div_le_iff₀ hε0, hρ, hε]
-    have : 8 * MK / β * u * (β * u / 8) = MK * u ^ 2 := by field_simp; ring
+    have : 8 * MK / β * u * (β * u / 8) = MK * u ^ 2 := by field_simp
     rw [this]; exact hmle
   obtain ⟨b, hb, hbs, hb1, hb0, hbm⟩ := exists_explicit_bump hε0 m
   have hsub_band : ∀ z : ℂ, |z.im - z₀.im| ≤ T / 4 → |z.im - T| ≤ T / 2 := fun z hz => by
@@ -831,8 +836,8 @@ private theorem rpow_neg_one_le_div_log {T δ : ℝ} (hδ : 0 < δ) (hT3 : 3 ≤
     rw [hinv] at h
     have h1 : Real.log (2 / δ) ≤ max 0 (Real.log (2 / δ)) := le_max_right _ _
     have h2 : max 0 (Real.log (2 / δ)) ≤ δ / 2 * T := by
-      have := (div_le_iff₀ hδ).mp (by rwa [div_mul_eq_mul_div] at hTδ)
-      linarith
+      calc max 0 (Real.log (2 / δ)) = δ / 2 * (2 / δ * max 0 (Real.log (2 / δ))) := by field_simp
+        _ ≤ δ / 2 * T := mul_le_mul_of_nonneg_left hTδ (by positivity)
     linarith
   rw [Real.rpow_neg_one, inv_eq_one_div, div_le_div_iff₀ hT0 hlog0]
   linarith
@@ -918,9 +923,11 @@ theorem exists_window_pair_reads_mult_subspacing {θ lam A S M : ℝ} (hθ : 0 �
   have hmd : ∀ z, multDiff Z emptyZeroConfig z ≠ 0 ↔ z ∈ Z.carrier := fun z => by
     rw [multDiff_emptyZeroConfig]
     by_cases hz : z ∈ Z.carrier
-    · simp only [Set.indicator_of_mem hz, iff_true, ne_eq, Nat.cast_eq_zero]
-      exact Nat.pos_iff_ne_zero.mp (Z.one_le_mult z hz)
-    · simp [Set.indicator_of_notMem hz, hz]
+    · rw [Set.indicator_of_mem hz]
+      exact ⟨fun _ => hz,
+        fun _ => Nat.cast_ne_zero.mpr (Nat.pos_iff_ne_zero.mp (Z.one_le_mult z hz))⟩
+    · rw [Set.indicator_of_notMem hz]
+      exact ⟨fun h => False.elim (h rfl), fun h => False.elim (hz h)⟩
   have hStail' : ∑' z, ‖multDiff Z emptyZeroConfig z‖ / (1 + Complex.normSq (gammaOf z)) ≤ S := by
     simpa only [multDiff_emptyZeroConfig] using hStail
   obtain ⟨F, G, hFw, hGw, hP0, hnear, hle⟩ := hwin T hT Z emptyZeroConfig hZ
