@@ -7,7 +7,7 @@
 - **Statement:** Evaluate complete Weil energy and its polarized conductor-complement pairing on harmonic-neutral coherent prime-charge families and their coprime conductor fibres at `c=2K(log N)^(1/8)`.
 
 “Checked” below means kernel-checked Lean proofs with standard transitive axioms
-and umbrella integration. “Source” means written Lean awaiting verification.
+and umbrella integration.
 The full classification remains open.
 
 ## Normalizations
@@ -164,8 +164,7 @@ For two coprime receiving modes, the mixed leading energy is
 
 `2mlΣ_P |b_p d_p|log p/p+(C_m H(F_b)+C_l H(F_d))/2`.
 
-`CoprimePrimeChargePairing` checks this bound with standard-only transitive axioms;
-integrated.
+`CoprimePrimeChargePairing` checks this bound.
 
 Common exclusion by a positive multiple `M` gives exact simultaneous coordinates:
 for `m,l|M`, `⟨G(e_mF_b),e_l⟩period=δ_mlΣ_p b_p log p/p`.
@@ -187,7 +186,7 @@ simultaneous signed law `⟨Wv,r_l⟩→t_l/80`, zero for absent modes.
 `CommonPrimeFibreSignedReceiver` formalize the exact finite-deletion identity
 and its complete-form limit. `SimultaneousCompleteReceivingLaw` specializes
 to the tilted spline and common exclusion `R!` for arbitrary charges in modes
-`1,…,R`; its exact-coordinate, energy and signed-limit assembly is unchecked.
+`1,…,R`; its exact-coordinate, energy and signed-limit assembly is checked.
 
 ## Cutoff dependence and complete cancellation
 
@@ -284,7 +283,7 @@ All completed energies are nonnegative and satisfy
 `E_m(c)≤|selfφ(1)|+2log m+3` for `c≥1`.
 Thus the remaining polar diagonal costs only `(|selfφ(1)|+3)a_1²`.
 `PrimeChargeCompletedDiagonal` checks the full diagonal bound and
-`Σa_m²≤a_pole_bound²+s²S_Q`, with standard-only transitive axioms.
+`Σa_m²≤a_pole_bound²+s²S_Q`.
 `PrimeChargeUniformFiniteBounds` checks exact physical pole orthogonality and
 the small-cutoff bound under the same frame and near-radius conditions,
 with `D=|selfφ(1)|+3`, `P=(|t|+8|t|/B)/log N`:
@@ -294,19 +293,17 @@ with `D=|selfφ(1)|+3`, `P=(|t|+8|t|/B)/log N`:
 
 `PrimeChargeIntermediateBounds` checks the coherent norm, divisor mean
 and polar coefficient in every quadratic channel, the physical prime bound
-`0≤J_N(F)/log N≤2t²/B_Q`, and the physical moment comparison, with standard-only
-transitive axioms.
+`0≤J_N(F)/log N≤2t²/B_Q`, and the physical moment comparison.
 `PrimeChargeUniformGeometry` checks the uniform frame, radius and sampling
-conditions with standard-only transitive axioms. `PrimeChargeUniformScales`
+conditions. `PrimeChargeUniformScales`
 checks the independent cutoff/horizon decay laws, including the overlap-scaled
-polar coefficient, with standard-only transitive axioms.
+polar coefficient.
 `PrimeChargeDenseCutoffEnergy` and `PrimeChargeSmallCutoffEnergy` check
-the dense and smallest-cutoff limits with standard-only transitive axioms.
-`PrimeChargeIntermediateEnergy` checks the remaining regime limit with
-standard-only transitive axioms.
+the dense and smallest-cutoff limits.
+`PrimeChargeIntermediateEnergy` checks the remaining regime limit.
 `PrimeChargeIntermediateDomination` checks the middle-range cost separation;
 `PrimeChargeUniformHorizonEnergy` checks the independent cutoff/horizon
-limit with standard-only transitive axioms: physical complete energy tends
+limit: physical complete energy tends
 to zero whenever both cutoff and horizon diverge.
 
 The uniform physical-energy proof splits at `Q⁶⁴=N` and

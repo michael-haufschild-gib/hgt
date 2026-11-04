@@ -99,7 +99,6 @@ private theorem norm_cexp_mul_iterDivWindow_le {r M : ℝ} (hr : 0 ≤ r) (hM0 :
       rw [Nat.factorial_succ, Nat.cast_mul]
       push_cast
       field_simp
-      ring
     rw [hstep, intervalIntegral.integral_of_le hu.1]
     refine (norm_integral_le_integral_norm _).trans ?_
     calc ∫ s in Ioc (-r) u, ‖cexp (I * κ * s) * iterDivWindow r κ n f s‖
@@ -674,7 +673,7 @@ theorem mixedGenusColumnConfig_mem_curve_columns {g : ℕ} (hg : 2 ≤ g) {ℓ �
     set k : ℤ := m / (N : ℤ)
     have hr0 : 0 ≤ r := Int.emod_nonneg m hN_int.ne'
     have hr_lt : r < (N : ℤ) := Int.emod_lt_of_pos m hN_int
-    have hdiv : (N : ℤ) * k + r = m := Int.ediv_add_emod m (N : ℤ)
+    have hdiv : (N : ℤ) * k + r = m := Int.mul_ediv_add_emod m (N : ℤ)
     have hr_ne : r ≠ 0 := fun hr_zero => hm_ndvd ⟨k, by linarith⟩
     have hr1 : 1 ≤ r := by omega
     set idx : ℕ := r.toNat + 1
@@ -690,7 +689,7 @@ theorem mixedGenusColumnConfig_mem_curve_columns {g : ℕ} (hg : 2 ≤ g) {ℓ �
       exact_mod_cast this
     have hm_real : (m : ℝ) = (N : ℝ) * (k : ℝ) + (r : ℝ) := by exact_mod_cast hdiv.symm
     rw [gammaOf_verticalLatticePoint]
-    dsimp [mixedGenusTheta, mixedGenusDelta]
+    dsimp only [mixedGenusTheta, mixedGenusDelta]
     rw [if_neg hj01, if_neg hj0, if_neg hj1, hsub1, hr_cast]
     have hℓ_ne : ℓ ≠ 0 := hℓ.ne'
     have hN_ne : (N : ℝ) ≠ 0 := hN_real.ne'
@@ -702,13 +701,13 @@ theorem mixedGenusColumnConfig_mem_curve_columns {g : ℕ} (hg : 2 ≤ g) {ℓ �
     rw [hord]
   · refine ⟨⟨0, by omega⟩, k, ?_⟩
     rw [gammaOf_verticalLatticePoint]
-    dsimp [mixedGenusTheta, mixedGenusDelta]
+    dsimp only [mixedGenusTheta, mixedGenusDelta]
     rw [if_pos (Or.inl rfl), if_pos rfl, zero_add]
     have hord : (k : ℝ) * (2 * π / ℓ) = 2 * π * (k : ℝ) / ℓ := by ring
     rw [hord]
   · refine ⟨⟨1, by omega⟩, k, ?_⟩
     rw [gammaOf_verticalLatticePoint]
-    dsimp [mixedGenusTheta, mixedGenusDelta]
+    dsimp only [mixedGenusTheta, mixedGenusDelta]
     rw [if_pos (Or.inr rfl), if_neg (by decide), if_pos rfl, zero_add]
     have hord : (k : ℝ) * (2 * π / ℓ) = 2 * π * (k : ℝ) / ℓ := by ring
     rw [hord]
@@ -731,36 +730,38 @@ theorem temperedConfig_mixedGenusColumnConfig {g : ℕ} (hg : 2 ≤ g) {ℓ δ :
   have h2 : Summable (Z_off.carrier.indicator fun ρ =>
       (Z_off.mult ρ : ℝ) / (1 + Complex.normSq (gammaOf ρ))) :=
     summable_subtype_iff_indicator.mp (temperedConfig_offLineLatticeConfig hℓ hδ hδ')
-  refine summable_subtype_iff_indicator.mpr ?_
-  refine Summable.of_nonneg_of_le (fun z => Set.indicator_nonneg (fun ρ _ => ?_) z)
-    (fun z => ?_) (h1.add h2)
-  · have := Complex.normSq_nonneg (gammaOf ρ); positivity
-  · have hden : 0 < 1 + Complex.normSq (gammaOf z) := by
-      linarith [Complex.normSq_nonneg (gammaOf z)]
-    have h1_nonneg : 0 ≤ Z_L.carrier.indicator
-        (fun ρ => (Z_L.mult ρ : ℝ) / (1 + Complex.normSq (gammaOf ρ))) z :=
-      Set.indicator_nonneg (fun _ _ => by positivity) z
-    have h2_nonneg : 0 ≤ Z_off.carrier.indicator
-        (fun ρ => (Z_off.mult ρ : ℝ) / (1 + Complex.normSq (gammaOf ρ))) z :=
-      Set.indicator_nonneg (fun _ _ => by positivity) z
-    by_cases hz : z ∈ Z.carrier
-    · rw [Set.indicator_of_mem hz]
-      rcases hz with ⟨m, _, rfl⟩ | hz_off
-      · have hzL : verticalLatticePoint ((N : ℝ) * ℓ) 0 m ∈ Z_L.carrier := ⟨m, rfl⟩
-        rw [Set.indicator_of_mem hzL]
-        have hmZ : (Z.mult (verticalLatticePoint ((N : ℝ) * ℓ) 0 m) : ℝ) = 1 := rfl
-        have hmL : (Z_L.mult (verticalLatticePoint ((N : ℝ) * ℓ) 0 m) : ℝ) = 2 := rfl
-        rw [hmZ, hmL]
-        have : 1 / (1 + Complex.normSq (gammaOf (verticalLatticePoint ((N : ℝ) * ℓ) 0 m))) ≤
-            2 / (1 + Complex.normSq (gammaOf (verticalLatticePoint ((N : ℝ) * ℓ) 0 m))) := by
-          gcongr; norm_num
-        linarith
-      · rw [Set.indicator_of_mem hz_off]
-        have hmZ : (Z.mult z : ℝ) = 1 := rfl
-        have hmO : (Z_off.mult z : ℝ) = 1 := rfl
-        rw [hmZ, hmO]
-        linarith
-    · rw [Set.indicator_of_notMem hz]; linarith
+  have hsum_Z : Summable (Z.carrier.indicator fun ρ =>
+      (Z.mult ρ : ℝ) / (1 + Complex.normSq (gammaOf ρ))) := by
+    refine Summable.of_nonneg_of_le (fun z => Set.indicator_nonneg (fun ρ _ => ?_) z)
+      (fun z => ?_) (h1.add h2)
+    · have := Complex.normSq_nonneg (gammaOf ρ); positivity
+    · have hden : 0 < 1 + Complex.normSq (gammaOf z) := by
+        linarith [Complex.normSq_nonneg (gammaOf z)]
+      have h1_nonneg : 0 ≤ Z_L.carrier.indicator
+          (fun ρ => (Z_L.mult ρ : ℝ) / (1 + Complex.normSq (gammaOf ρ))) z :=
+        Set.indicator_nonneg (fun ρ _ => by have := Complex.normSq_nonneg (gammaOf ρ); positivity) z
+      have h2_nonneg : 0 ≤ Z_off.carrier.indicator
+          (fun ρ => (Z_off.mult ρ : ℝ) / (1 + Complex.normSq (gammaOf ρ))) z :=
+        Set.indicator_nonneg (fun ρ _ => by have := Complex.normSq_nonneg (gammaOf ρ); positivity) z
+      by_cases hz : z ∈ Z.carrier
+      · rw [Set.indicator_of_mem hz]
+        rcases hz with ⟨m, _, rfl⟩ | hz_off
+        · have hzL : verticalLatticePoint ((N : ℝ) * ℓ) 0 m ∈ Z_L.carrier := ⟨m, rfl⟩
+          rw [Set.indicator_of_mem hzL]
+          have hmZ : (Z.mult (verticalLatticePoint ((N : ℝ) * ℓ) 0 m) : ℝ) = 1 := Nat.cast_one
+          have hmL : (Z_L.mult (verticalLatticePoint ((N : ℝ) * ℓ) 0 m) : ℝ) = 2 := Nat.cast_two
+          rw [hmZ, hmL]
+          have : 1 / (1 + Complex.normSq (gammaOf (verticalLatticePoint ((N : ℝ) * ℓ) 0 m))) ≤
+              2 / (1 + Complex.normSq (gammaOf (verticalLatticePoint ((N : ℝ) * ℓ) 0 m))) := by
+            gcongr; norm_num
+          linarith
+        · rw [Set.indicator_of_mem hz_off]
+          have hmZ : (Z.mult z : ℝ) = 1 := Nat.cast_one
+          have hmO : (Z_off.mult z : ℝ) = 1 := Nat.cast_one
+          rw [hmZ, hmO]
+          linarith
+      · rw [Set.indicator_of_notMem hz]; linarith
+  exact summable_subtype_iff_indicator.mpr hsum_Z
 
 /-- **Exact Weil-form decomposition of `mixedGenusColumnConfig`.** For every `C²` compactly
 supported window `f`,
@@ -939,7 +940,7 @@ theorem windowPositiveAt_mixedGenusColumnConfig {g : ℕ} (hg : 2 ≤ g) {ℓ δ
       rw [eq_zero_of_tsupport_subset_Icc hKc hKs
         (by rw [abs_mul, abs_of_pos hℓ]; exact mul_le_mul_of_nonneg_right habs_m hℓ.le),
         zero_mul]
-    rw [tsum_eq_sum hv, Finset.sum_insert (Finset.notMem_erase 0 S_lags),
+    rw [tsum_eq_sum hv, Finset.sum_insert (Finset.notMem_erase 0 (Finset.Ioo (-(N : ℤ)) (N : ℤ))),
       Int.cast_zero, zero_mul, hφ0, mul_one]
   have hW_diff : Z_off.W f f - Z_ℓ.W f f =
       (ℓ : ℂ) * ∑ m ∈ S_lags, EF.weilTest f f (m * ℓ) *
@@ -1137,47 +1138,47 @@ theorem temperedConfig_singleDefectOffLineLattice {L δ ε : ℝ} (hL : 0 < L) (
   have h2 : Summable (Z_iso.carrier.indicator fun ρ =>
       (Z_iso.mult ρ : ℝ) / (1 + Complex.normSq (gammaOf ρ))) :=
     summable_subtype_iff_indicator.mp (temperedConfig_isolatedPairConfig hL hδ hδ' ε)
-  rw [TemperedConfig, ← summable_subtype_iff_indicator]
-  refine Summable.of_nonneg_of_le (fun z => Set.indicator_nonneg (fun ρ _ => ?_) z)
-    (fun z => ?_) (h1.add h2)
-  · have := Complex.normSq_nonneg (gammaOf ρ); positivity
-  · have hden : 0 < 1 + Complex.normSq (gammaOf z) := by
-      linarith [Complex.normSq_nonneg (gammaOf z)]
-    have h1_nonneg : 0 ≤ Z_lat.carrier.indicator
-        (fun ρ => (Z_lat.mult ρ : ℝ) / (1 + Complex.normSq (gammaOf ρ))) z :=
-      Set.indicator_nonneg (fun _ _ => by positivity) z
-    have h2_nonneg : 0 ≤ Z_iso.carrier.indicator
-        (fun ρ => (Z_iso.mult ρ : ℝ) / (1 + Complex.normSq (gammaOf ρ))) z :=
-      Set.indicator_nonneg (fun _ _ => by positivity) z
-    by_cases hz : z ∈ Z.carrier
-    · rw [Set.indicator_of_mem hz]
-      rcases hz with ⟨k, _, rfl | rfl⟩ | (rfl | hneg)
-      · have hz1 : verticalLatticePoint L δ k ∈ Z_lat.carrier := Or.inl ⟨k, rfl⟩
-        rw [Set.indicator_of_mem hz1]
-        have hmZ : (Z.mult (verticalLatticePoint L δ k) : ℝ) = 1 := rfl
-        have hm1 : (Z_lat.mult (verticalLatticePoint L δ k) : ℝ) = 1 := rfl
-        rw [hmZ, hm1]; linarith
-      · have hz1 : verticalLatticePoint L (-δ) k ∈ Z_lat.carrier := Or.inr ⟨k, rfl⟩
-        rw [Set.indicator_of_mem hz1]
-        have hmZ : (Z.mult (verticalLatticePoint L (-δ) k) : ℝ) = 1 := rfl
-        have hm1 : (Z_lat.mult (verticalLatticePoint L (-δ) k) : ℝ) = 1 := rfl
-        rw [hmZ, hm1]; linarith
-      · have hz2 : offLinePoint δ ε ∈ Z_iso.carrier := Or.inl (Or.inr rfl)
-        rw [Set.indicator_of_mem hz2]
-        have hmZ : (Z.mult (offLinePoint δ ε) : ℝ) = 1 := rfl
-        have hm2 : (Z_iso.mult (offLinePoint δ ε) : ℝ) = 1 := by
-          change ((if (offLinePoint δ ε).re = 1 / 2 then (2 : ℕ) else 1) : ℝ) = 1
-          rw [if_neg (by simp only [offLinePoint]; linarith)]; norm_num
-        rw [hmZ, hm2]; linarith
-      · rw [Set.mem_singleton_iff] at hneg; subst hneg
-        have hz2 : offLinePoint (-δ) ε ∈ Z_iso.carrier := Or.inr rfl
-        rw [Set.indicator_of_mem hz2]
-        have hmZ : (Z.mult (offLinePoint (-δ) ε) : ℝ) = 1 := rfl
-        have hm2 : (Z_iso.mult (offLinePoint (-δ) ε) : ℝ) = 1 := by
-          change ((if (offLinePoint (-δ) ε).re = 1 / 2 then (2 : ℕ) else 1) : ℝ) = 1
-          rw [if_neg (by simp only [offLinePoint]; linarith)]; norm_num
-        rw [hmZ, hm2]; linarith
-    · rw [Set.indicator_of_notMem hz]; linarith
+  have hsum_Z : Summable (Z.carrier.indicator fun ρ =>
+      (Z.mult ρ : ℝ) / (1 + Complex.normSq (gammaOf ρ))) := by
+    refine Summable.of_nonneg_of_le (fun z => Set.indicator_nonneg (fun ρ _ => ?_) z)
+      (fun z => ?_) (h1.add h2)
+    · have := Complex.normSq_nonneg (gammaOf ρ); positivity
+    · have hden : 0 < 1 + Complex.normSq (gammaOf z) := by
+        linarith [Complex.normSq_nonneg (gammaOf z)]
+      have h1_nonneg : 0 ≤ Z_lat.carrier.indicator
+          (fun ρ => (Z_lat.mult ρ : ℝ) / (1 + Complex.normSq (gammaOf ρ))) z :=
+        Set.indicator_nonneg (fun ρ _ => by have := Complex.normSq_nonneg (gammaOf ρ); positivity) z
+      have h2_nonneg : 0 ≤ Z_iso.carrier.indicator
+          (fun ρ => (Z_iso.mult ρ : ℝ) / (1 + Complex.normSq (gammaOf ρ))) z :=
+        Set.indicator_nonneg (fun ρ _ => by have := Complex.normSq_nonneg (gammaOf ρ); positivity) z
+      by_cases hz : z ∈ Z.carrier
+      · rw [Set.indicator_of_mem hz]
+        rcases hz with ⟨k, _, rfl | rfl⟩ | (rfl | hneg)
+        · have hz1 : verticalLatticePoint L δ k ∈ Z_lat.carrier := Or.inl ⟨k, rfl⟩
+          rw [Set.indicator_of_mem hz1]
+          have hmZ : (Z.mult (verticalLatticePoint L δ k) : ℝ) = 1 := Nat.cast_one
+          have hm1 : (Z_lat.mult (verticalLatticePoint L δ k) : ℝ) = 1 := Nat.cast_one
+          rw [hmZ, hm1]; linarith
+        · have hz1 : verticalLatticePoint L (-δ) k ∈ Z_lat.carrier := Or.inr ⟨k, rfl⟩
+          rw [Set.indicator_of_mem hz1]
+          have hmZ : (Z.mult (verticalLatticePoint L (-δ) k) : ℝ) = 1 := Nat.cast_one
+          have hm1 : (Z_lat.mult (verticalLatticePoint L (-δ) k) : ℝ) = 1 := Nat.cast_one
+          rw [hmZ, hm1]; linarith
+        · have hz2 : offLinePoint δ ε ∈ Z_iso.carrier := Or.inl (Or.inr rfl)
+          rw [Set.indicator_of_mem hz2]
+          have hmZ : (Z.mult (offLinePoint δ ε) : ℝ) = 1 := Nat.cast_one
+          have hm2_nat : Z_iso.mult (offLinePoint δ ε) = 1 :=
+            if_neg (by simp only [offLinePoint]; linarith)
+          rw [hmZ, hm2_nat, Nat.cast_one]; linarith
+        · rw [Set.mem_singleton_iff] at hneg; subst hneg
+          have hz2 : offLinePoint (-δ) ε ∈ Z_iso.carrier := Or.inr rfl
+          rw [Set.indicator_of_mem hz2]
+          have hmZ : (Z.mult (offLinePoint (-δ) ε) : ℝ) = 1 := Nat.cast_one
+          have hm2_nat : Z_iso.mult (offLinePoint (-δ) ε) = 1 :=
+            if_neg (by simp only [offLinePoint]; linarith)
+          rw [hmZ, hm2_nat, Nat.cast_one]; linarith
+      · rw [Set.indicator_of_notMem hz]; linarith
+  exact summable_subtype_iff_indicator.mpr hsum_Z
 
 private theorem sq_div_eight_le_one_sub_cos {θ : ℝ} (h0 : 0 ≤ θ) (h2 : θ ≤ 2) :
     θ ^ 2 / 8 ≤ 1 - Real.cos θ := by
@@ -1202,6 +1203,7 @@ private theorem sq_div_eight_le_one_sub_cos {θ : ℝ} (h0 : 0 ≤ θ) (h2 : θ 
   have hφ1 : θ / 2 ≤ 1 := by linarith
   have hsin_lb : θ / 4 ≤ Real.sin (θ / 2) := by
     have h1 := hsin_cubic (θ / 2) hφ0
+    have hsq : (θ / 2) ^ 2 ≤ 1 := by nlinarith
     have h2' : (θ / 2) ^ 3 ≤ θ / 2 := by nlinarith
     linarith
   have hcos_id : 1 - Real.cos θ = 2 * Real.sin (θ / 2) ^ 2 := by
@@ -1271,6 +1273,8 @@ theorem onsetAperture_singleDefectOffLineLattice_lt {L δ ε a : ℝ} (hL : 0 < 
   have ha : 0 < a := by by_contra hle; push Not at hle; nlinarith
   set Z_def := singleDefectOffLineLattice hL hδ hδ' hε hεL
   set Z_lat := offLineLatticeConfig hL hδ hδ'
+  have hm_def : ∀ w, Z_def.mult w = 1 := fun _ => rfl
+  have hm_lat : ∀ w, Z_lat.mult w = 1 := fun _ => rfl
   have htemp_def := temperedConfig_singleDefectOffLineLattice hL hδ hδ' hε hεL
   have htemp_lat := temperedConfig_offLineLatticeConfig hL hδ hδ'
   rw [← exists_re_W_neg_iff_onsetAperture_lt htemp_def ha.le]
@@ -1300,7 +1304,7 @@ theorem onsetAperture_singleDefectOffLineLattice_lt {L δ ε a : ℝ} (hL : 0 < 
       rw [← Int.cast_abs]; exact_mod_cast Int.one_le_abs hk
     have him_ge : 2 * π / L ≤ |(k : ℝ) * (2 * π / L)| := by
       rw [abs_mul, abs_of_pos (by positivity : 0 < 2 * π / L)]
-      nlinarith [Real.pi_pos]
+      exact le_mul_of_one_le_left (by positivity) hk_abs
     have hlt_2pi : ε < 2 * π / L := by
       have : π / L < 2 * π / L := by
         rw [div_lt_div_iff_of_pos_right hL]; linarith [Real.pi_pos]
@@ -1359,9 +1363,11 @@ theorem onsetAperture_singleDefectOffLineLattice_lt {L δ ε a : ℝ} (hL : 0 < 
           · exact Or.inl ⟨k, hk0, Or.inr rfl⟩
     by_cases hmem : z ∈ Z_def.carrier
     · have hmem' : z ∈ Z_lat.carrier := hiff.mp hmem
-      simp [multDiff, Set.indicator_of_mem hmem, Set.indicator_of_mem hmem', Z_def, Z_lat]
+      rw [multDiff, Set.indicator_of_mem hmem, Set.indicator_of_mem hmem', hm_def, hm_lat]
+      ring
     · have hmem' : z ∉ Z_lat.carrier := fun h => hmem (hiff.mpr h)
-      simp [multDiff, Set.indicator_of_notMem hmem, Set.indicator_of_notMem hmem']
+      rw [multDiff, Set.indicator_of_notMem hmem, Set.indicator_of_notMem hmem']
+      ring
   have hW_sub := W_sub_W_eq_sum htemp_def htemp_lat hmultDiff_van hf_cd hfc hf_cd hfc
   have hp12 : p₁ ≠ p₂ := fun h => by
     have := congrArg Complex.re h; simp [p₁, p₂, offLinePoint] at this; linarith
@@ -1380,13 +1386,17 @@ theorem onsetAperture_singleDefectOffLineLattice_lt {L δ ε a : ℝ} (hL : 0 < 
   have hq₁_mem : q₁ ∈ Z_lat.carrier := Or.inl ⟨0, hq₁_lat⟩
   have hq₂_mem : q₂ ∈ Z_lat.carrier := Or.inr ⟨0, hq₂_lat⟩
   have md_p₁ : multDiff Z_def Z_lat p₁ = 1 := by
-    simp [multDiff, Set.indicator_of_mem hp₁_def, Set.indicator_of_notMem hp₁_not_lat, Z_def]
+    rw [multDiff, Set.indicator_of_mem hp₁_def, Set.indicator_of_notMem hp₁_not_lat, hm_def]
+    norm_num
   have md_p₂ : multDiff Z_def Z_lat p₂ = 1 := by
-    simp [multDiff, Set.indicator_of_mem hp₂_def, Set.indicator_of_notMem hp₂_not_lat, Z_def]
+    rw [multDiff, Set.indicator_of_mem hp₂_def, Set.indicator_of_notMem hp₂_not_lat, hm_def]
+    norm_num
   have md_q₁ : multDiff Z_def Z_lat q₁ = -1 := by
-    simp [multDiff, Set.indicator_of_notMem hq₁_not_def, Set.indicator_of_mem hq₁_mem, Z_lat]
+    rw [multDiff, Set.indicator_of_notMem hq₁_not_def, Set.indicator_of_mem hq₁_mem, hm_lat]
+    norm_num
   have md_q₂ : multDiff Z_def Z_lat q₂ = -1 := by
-    simp [multDiff, Set.indicator_of_notMem hq₂_not_def, Set.indicator_of_mem hq₂_mem, Z_lat]
+    rw [multDiff, Set.indicator_of_notMem hq₂_not_def, Set.indicator_of_mem hq₂_mem, hm_lat]
+    norm_num
   have hsum4 : ∑ z ∈ S₄, multDiff Z_def Z_lat z * pointImage f f z =
       pointImage f f p₁ + pointImage f f p₂ - pointImage f f q₁ - pointImage f f q₂ := by
     dsimp [S₄]
@@ -1407,28 +1417,25 @@ theorem onsetAperture_singleDefectOffLineLattice_lt {L δ ε a : ℝ} (hL : 0 < 
   rw [hrefl_p₁, hp_im] at hp_odd
   rw [hrefl_q₁, hq_im] at hq_odd
   have hp_pt1 : pointImage f f p₁ = Z_def.Wsummand f f p₁ := by
-    rw [Wsummand_eq_mul]; change _ = (1 : ℂ) * _; ring
+    rw [Wsummand_eq_mul, hm_def, Nat.cast_one, one_mul]
   have hp_pt2 : pointImage f f p₂ = Z_def.Wsummand f f p₂ := by
-    rw [Wsummand_eq_mul]; change _ = (1 : ℂ) * _; ring
+    rw [Wsummand_eq_mul, hm_def, Nat.cast_one, one_mul]
   have hq_pt1 : pointImage f f q₁ = Z_lat.Wsummand f f q₁ := by
-    rw [Wsummand_eq_mul]; change _ = (1 : ℂ) * _; ring
+    rw [Wsummand_eq_mul, hm_lat, Nat.cast_one, one_mul]
   have hq_pt2 : pointImage f f q₂ = Z_lat.Wsummand f f q₂ := by
-    rw [Wsummand_eq_mul]; change _ = (1 : ℂ) * _; ring
+    rw [Wsummand_eq_mul, hm_lat, Nat.cast_one, one_mul]
   set P := ∫ u, s u * Real.sinh (δ * u)
   set A := ∫ u, s u * Real.sinh (δ * u) * Real.cos (ε * u)
   set B := ∫ u, s u * Real.cosh (δ * u) * Real.sin (-ε * u)
   have hA_eq : (∫ u, s u * Real.sinh (δ * u) * Real.cos (-ε * u)) = A := by
     dsimp [A]; congr 1 with u; rw [neg_mul, Real.cos_neg]
   have hp_re : (pointImage f f p₁).re + (pointImage f f p₂).re = -2 * P ^ 2 := by
-    rw [hp_pt1, hp_pt2, hp_odd.1, hp_odd.2]
-    have hm1 : (Z_def.mult p₁ : ℝ) = 1 := rfl
+    rw [hp_pt1, hp_pt2, hp_odd.1, hp_odd.2, hm_def, Nat.cast_one]
     have hsin0 : (∫ u, s u * Real.cosh (δ * u) * Real.sin (0 * u)) = 0 := by simp
     have hcos0 : (∫ u, s u * Real.sinh (δ * u) * Real.cos (0 * u)) = P := by simp [P]
-    rw [hm1, hsin0, hcos0]; ring
+    rw [hsin0, hcos0]; ring
   have hq_re : (pointImage f f q₁).re + (pointImage f f q₂).re = 2 * (B ^ 2 - A ^ 2) := by
-    rw [hq_pt1, hq_pt2, hq_odd.1, hq_odd.2, hA_eq]
-    have hm1 : (Z_lat.mult q₁ : ℝ) = 1 := rfl
-    rw [hm1]; ring
+    rw [hq_pt1, hq_pt2, hq_odd.1, hq_odd.2, hA_eq, hm_lat, Nat.cast_one]; ring
   -- Lattice background bound at `a ≤ L/2`.
   have hf_supp_L : tsupport f ⊆ Icc (-(L / 2)) (L / 2) :=
     hf_supp.trans (Icc_subset_Icc (by linarith) haL)
@@ -1455,11 +1462,13 @@ theorem onsetAperture_singleDefectOffLineLattice_lt {L δ ε a : ℝ} (hL : 0 < 
       dsimp [s, sinhTest]; ring
     rw [this]; exact mul_nonneg (sq_nonneg _) (sinhTestWeight_nonneg a u)
   have hint_P : Integrable (fun u => s u * Real.sinh (δ * u)) :=
-    ((sinhTest_contDiff a δ).continuous.mul (by fun_prop)).integrable_of_hasCompactSupport
+    ((sinhTest_contDiff a δ).continuous.mul
+      (Real.continuous_sinh.comp (continuous_const.mul continuous_id))).integrable_of_hasCompactSupport
       (hasCompactSupport_of_support_subset_abs hs_supp).mul_right
   have hint_A : Integrable (fun u => s u * Real.sinh (δ * u) * Real.cos (ε * u)) :=
-    (((sinhTest_contDiff a δ).continuous.mul (by fun_prop)).mul (by fun_prop)
-      ).integrable_of_hasCompactSupport
+    (((sinhTest_contDiff a δ).continuous.mul
+      (Real.continuous_sinh.comp (continuous_const.mul continuous_id))).mul
+      (Real.continuous_cos.comp (continuous_const.mul continuous_id))).integrable_of_hasCompactSupport
       (hasCompactSupport_of_support_subset_abs hs_supp).mul_right.mul_right
   have hA_nonneg : 0 ≤ A := by
     refine integral_nonneg fun u => ?_
@@ -1479,8 +1488,8 @@ theorem onsetAperture_singleDefectOffLineLattice_lt {L δ ε a : ℝ} (hL : 0 < 
     rw [hdiff_eq]
     have hcont_d : Continuous (fun u => s u * Real.sinh (δ * u) * (1 - Real.cos (ε * u))) :=
       ((sinhTest_contDiff a δ).continuous.mul (by fun_prop)).mul (by fun_prop)
-    have hint_d : Integrable (fun u => s u * Real.sinh (δ * u) * (1 - Real.cos (ε * u))) := by
-      refine (hint_P.sub hint_A).congr (Eventually.of_forall fun u => by ring)
+    have hint_d : Integrable (fun u => s u * Real.sinh (δ * u) * (1 - Real.cos (ε * u))) :=
+      (hint_P.sub hint_A).congr (Eventually.of_forall fun u => by dsimp only [Pi.sub_apply]; ring)
     have hd_nonneg : ∀ u, 0 ≤ s u * Real.sinh (δ * u) * (1 - Real.cos (ε * u)) := fun u =>
       mul_nonneg (hsh_nonneg u) (by linarith [Real.cos_le_one (ε * u)])
     set c0 := (ε ^ 2 * a ^ 2 / 32) * ((w * a) ^ (5 / 2 : ℝ) * Real.sinh (δ * (a - 2 * w)) ^ 2)
@@ -1517,7 +1526,10 @@ theorem onsetAperture_singleDefectOffLineLattice_lt {L δ ε a : ℝ} (hL : 0 < 
       dsimp [c0]
       rw [mul_comm (ε ^ 2 * a ^ 2 / 32)]
       exact mul_le_mul h1 hcos_lb (by positivity) (hsh_nonneg u)
-    have hle_all := setIntegral_le_integral hint_d (Eventually.of_forall hd_nonneg)
+    have hle_all : ∫ u in Icc (a - 2 * w) (a - w),
+        s u * Real.sinh (δ * u) * (1 - Real.cos (ε * u)) ≤
+        ∫ u, s u * Real.sinh (δ * u) * (1 - Real.cos (ε * u)) :=
+      setIntegral_le_integral hint_d (Eventually.of_forall hd_nonneg)
     rw [setIntegral_const, Real.volume_real_Icc, smul_eq_mul, max_eq_left (by linarith),
       show a - w - (a - 2 * w) = w by ring] at hsub
     calc (ε ^ 2 * a ^ 2 / 32) * Q = w * c0 := by dsimp [Q, c0]; ring
@@ -1542,7 +1554,8 @@ theorem onsetAperture_singleDefectOffLineLattice_lt {L δ ε a : ℝ} (hL : 0 < 
   have hW_def_le : (Z_def.W f f).re ≤
       60 * L * a ^ 5 * Real.exp (2 * δ * a) / δ ^ 6 -
         (ε ^ 2 * a ^ 2 / 16) * (a ^ 5 * Real.exp (4 * δ * a) / (2 ^ 26 * δ ^ 7)) := by
-    nlinarith [sq_nonneg B]
+    have hB2 : 0 ≤ B ^ 2 := sq_nonneg B
+    linarith only [hW_re_eq, hW_lat_re, hP2_sub_A2, hB2]
   have hscale : 0 < a ^ 5 * Real.exp (2 * δ * a) / (16 * 2 ^ 26 * δ ^ 7) := by positivity
   have hdiff_neg :
       60 * L * a ^ 5 * Real.exp (2 * δ * a) / δ ^ 6 -
@@ -1552,7 +1565,8 @@ theorem onsetAperture_singleDefectOffLineLattice_lt {L δ ε a : ℝ} (hL : 0 < 
     have he4 : Real.exp (4 * δ * a) = Real.exp (2 * δ * a) * Real.exp (2 * δ * a) := by
       rw [← Real.exp_add]; congr 1; ring
     rw [he4]; field_simp [hδ.ne']; ring
-  nlinarith
+  rw [hdiff_neg] at hW_def_le
+  exact hW_def_le.trans_lt (mul_neg_of_neg_of_pos (by linarith only [hdet]) hscale)
 
 /-- **Perturbed off-line lattice configuration (`Π29` stability side).** Shifts each `k`-th pair
 of `offLineLatticeConfig` from `2πk/L` to `2πk/L + ε_k` with `|ε_k| ≤ π/(2L)`. -/
@@ -1577,10 +1591,10 @@ def perturbedOffLineLatticeConfig {L δ : ℝ} (hL : 0 < L) (hδ : 0 < δ) (hδ'
     set p_neg : ℤ → ℂ := fun k => offLinePoint (-δ) ((k : ℝ) * (2 * π / L) + ε k)
     refine ((hF.image p_pos).union (hF.image p_neg)).subset ?_
     rintro _ ⟨⟨k, rfl⟩ | ⟨k, rfl⟩, h1, h2⟩
-    · simp only [offLinePoint] at h1 h2
+    · simp only [p_pos, offLinePoint] at h1 h2
       have hb := abs_le.mp (hε k)
       exact Or.inl ⟨k, ⟨by linarith, by linarith⟩, rfl⟩
-    · simp only [offLinePoint] at h1 h2
+    · simp only [p_neg, offLinePoint] at h1 h2
       have hb := abs_le.mp (hε k)
       exact Or.inr ⟨k, ⟨by linarith, by linarith⟩, rfl⟩
 
@@ -1593,14 +1607,11 @@ private theorem perturbedOrdinate_injective {L : ℝ} (hL : 0 < L) {ε : ℤ →
   simp only [offLinePoint] at him
   have hdiff : ((k₁ : ℝ) - (k₂ : ℝ)) * (2 * π / L) = ε k₂ - ε k₁ := by linarith
   have hk_ge : (1 : ℝ) ≤ |(k₁ : ℝ) - (k₂ : ℝ)| := by
-    have hsub_ne : k₁ - k₂ ≠ 0 := sub_ne_zero.mpr hne
-    have := Int.one_le_abs hsub_ne
-    have hcast : (((|k₁ - k₂| : ℤ) : ℝ)) = |(k₁ : ℝ) - (k₂ : ℝ)| := by
-      rw [Int.cast_abs, Int.cast_sub]
-    linarith
+    rw [← Int.cast_sub, ← Int.cast_abs]
+    exact_mod_cast Int.one_le_abs (sub_ne_zero.mpr hne)
   have hlhs : 2 * π / L ≤ |((k₁ : ℝ) - (k₂ : ℝ)) * (2 * π / L)| := by
     rw [abs_mul, abs_of_pos (by positivity : 0 < 2 * π / L)]
-    nlinarith [Real.pi_pos]
+    exact le_mul_of_one_le_left (by positivity) hk_ge
   have hrhs : |ε k₂ - ε k₁| ≤ π / L := by
     calc |ε k₂ - ε k₁| ≤ |ε k₂| + |ε k₁| := abs_sub _ _
       _ ≤ π / (2 * L) + π / (2 * L) := add_le_add (hε k₂) (hε k₁)
@@ -1617,27 +1628,13 @@ private theorem norm_cexp_I_mul_sub_le (x₁ x₂ u : ℝ) :
       cexp (((x₂ * u : ℝ) : ℂ) * I) * (cexp ((φ : ℂ) * I) - 1) := by
     rw [mul_sub, mul_one, ← Complex.exp_add]
     congr 2; dsimp [φ]; push_cast; ring
-  rw [hfac, norm_mul, Complex.norm_exp_ofReal_mul_I, one_mul]
-  have hsq : ‖cexp ((φ : ℂ) * I) - 1‖ ^ 2 ≤ |φ| ^ 2 := by
-    rw [← Complex.normSq_eq_norm_sq, Complex.exp_mul_I, Complex.cos_ofReal_re,
-      Complex.sin_ofReal_re]
-    have hre_im : (((Real.cos φ : ℝ) : ℂ) + ((Real.sin φ : ℝ) : ℂ) * I - 1) =
-        ⟨Real.cos φ - 1, Real.sin φ⟩ := by
-      apply Complex.ext <;> simp
-    rw [hre_im, Complex.normSq_mk]
-    have hc := Real.cos_two_mul (φ / 2)
-    have hs := Real.sin_sq_add_cos_sq (φ / 2)
-    rw [show 2 * (φ / 2) = φ by ring] at hc
-    have hid : (Real.cos φ - 1) * (Real.cos φ - 1) + Real.sin φ * Real.sin φ =
-        4 * Real.sin (φ / 2) ^ 2 := by nlinarith
-    rw [hid]
-    have hsin : |Real.sin (φ / 2)| ≤ |φ / 2| := Real.abs_sin_le_abs
-    have hsin_sq : Real.sin (φ / 2) ^ 2 ≤ (φ / 2) ^ 2 := by
-      rw [← sq_abs (Real.sin (φ / 2)), ← sq_abs (φ / 2)]
-      exact pow_le_pow_left₀ (abs_nonneg _) hsin 2
-    rw [sq_abs]; linarith
-  have habs_nonneg : 0 ≤ |φ| := abs_nonneg φ
-  have hle : ‖cexp ((φ : ℂ) * I) - 1‖ ≤ |φ| := by nlinarith [norm_nonneg (cexp ((φ : ℂ) * I) - 1)]
+  rw [hfac, norm_mul, Complex.norm_exp_ofReal_mul_I, one_mul, mul_comm (φ : ℂ) I,
+    Complex.norm_exp_I_mul_ofReal_sub_one, Real.norm_eq_abs, abs_mul,
+    abs_of_pos (by norm_num : (0 : ℝ) < 2)]
+  have hsin : |Real.sin (φ / 2)| ≤ |φ / 2| := Real.abs_sin_le_abs
+  have hdiv : 2 * |φ / 2| = |φ| := by
+    rw [abs_div, abs_of_pos (by norm_num : (0 : ℝ) < 2)]; ring
+  have hle : 2 * |Real.sin (φ / 2)| ≤ |φ| := by linarith
   simpa [φ, abs_mul] using hle
 
 private theorem norm_paperFT_sub_I_mul_lip {K : ℝ → ℂ} {a M δ : ℝ} (hKc : Continuous K)
@@ -1673,7 +1670,7 @@ private theorem norm_paperFT_sub_I_mul_lip {K : ℝ → ℂ} {a M δ : ℝ} (hKc
           have hI : I * I = -1 := Complex.I_mul_I
           rw [Complex.ofReal_exp, ← Complex.exp_add]
           congr 1; push_cast; linear_combination (-(s : ℂ) * u) * hI
-        rw [hexp_fac x₁, hexp_fac x₂, ← mul_sub, norm_mul, norm_mul,
+        rw [hexp_fac x₁, hexp_fac x₂, ← mul_sub, ← mul_assoc, norm_mul, norm_mul,
           Complex.norm_real, Real.norm_eq_abs, abs_of_pos (Real.exp_pos _)]
         have hexp_le : Real.exp (s * u) ≤ Real.exp (2 * δ * a) := by
           refine Real.exp_le_exp.mpr ?_
@@ -1703,9 +1700,11 @@ theorem temperedConfig_perturbedOffLineLatticeConfig {L δ : ℝ} (hL : 0 < L) (
         G ρ) S := fun d => by
     have hsum_k : Summable (fun k : ℤ => G (offLinePoint d ((k : ℝ) * (2 * π / L) + ε k))) := by
       refine Summable.of_nonneg_of_le (fun k => ?_) (fun k => ?_) hmaj
-      · dsimp [G]; have := Complex.normSq_nonneg (gammaOf (offLinePoint d _)); positivity
       · dsimp [G]
-        have hm1 : (Z.mult (offLinePoint d ((k : ℝ) * (2 * π / L) + ε k)) : ℝ) = 1 := rfl
+        have := Complex.normSq_nonneg (gammaOf (offLinePoint d ((k : ℝ) * (2 * π / L) + ε k)))
+        positivity
+      · dsimp [G]
+        have hm1 : (Z.mult (offLinePoint d ((k : ℝ) * (2 * π / L) + ε k)) : ℝ) = 1 := Nat.cast_one
         rw [hm1, gammaOf_offLinePoint, normSq_gammaOf_verticalLatticePoint]
         by_cases hk0 : k = 0
         · subst hk0
@@ -1773,12 +1772,15 @@ theorem windowPositiveAt_perturbedOffLineLatticeConfig {L δ a : ℝ} (hL : 0 < 
   intro f hf hfs
   set Z_pert := perturbedOffLineLatticeConfig hL hδ hδ' ε hε
   set Z_lat := offLineLatticeConfig hL hδ hδ'
+  have hm_pert : ∀ w, Z_pert.mult w = 1 := fun _ => rfl
+  have hm_lat : ∀ w, Z_lat.mult w = 1 := fun _ => rfl
   have hfs_L : tsupport f ⊆ Icc (-(L / 2)) (L / 2) := hfs.trans (Icc_subset_Icc (by linarith) haL)
   have hfc : HasCompactSupport f := hasCompactSupport_of_tsupport_subset_Icc hfs
   set K := EF.weilTest f f
   have hK : ContDiff ℝ 2 K := EF.weilTest_contDiff hf hf.continuous hfc
-  have hKs : tsupport K ⊆ Icc (-(2 * a)) (2 * a) := by
-    simpa [two_mul] using EF.tsupport_weilTest_subset hfs hfs
+  have hKs : tsupport K ⊆ Icc (-(2 * a)) (2 * a) :=
+    EF.tsupport_weilTest_subset (L := 2 * a) (by rwa [show 2 * a / 2 = a by ring])
+      (by rwa [show 2 * a / 2 = a by ring])
   set M := ∫ t, ‖f t‖ ^ 2
   have hM0 : 0 ≤ M := integral_nonneg fun _ => sq_nonneg _
   have hKM : ∀ u, ‖K u‖ ≤ M := norm_weilTest_diag_le hf.continuous hfc
@@ -1812,13 +1814,14 @@ theorem windowPositiveAt_perturbedOffLineLatticeConfig {L δ a : ℝ} (hL : 0 < 
     refine ⟨S_pert, S_lat, ?_, ?_, ?_⟩
     · rw [(perturbedOrdinate_injective hL hε d).hasSum_range_iff]
       refine hsum_pert.hasSum.congr_fun fun k => ?_
-      rw [Function.comp_apply, ZeroConfig.Wsummand,
+      dsimp only [Function.comp_apply, g_pert, K]
+      rw [ZeroConfig.Wsummand, hm_pert, Nat.cast_one, one_mul,
         EF.paperFT_weilTest hf.continuous hf.continuous hfc hfc, gammaOf_offLinePoint]
-      change g_pert k = (1 : ℂ) * g_pert k; ring
     · rw [(verticalLatticePoint_injective hL d).hasSum_range_iff]
       refine hs_lat.summable.hasSum.congr_fun fun k => ?_
-      rw [Function.comp_apply, Wsummand_verticalLatticePoint _ hf.continuous hf.continuous hfc hfc]
-      change g_lat k = (1 : ℂ) * g_lat k; ring
+      dsimp only [Function.comp_apply, g_lat, K]
+      rw [Wsummand_verticalLatticePoint _ hf.continuous hf.continuous hfc hfc,
+        hm_lat, Nat.cast_one, one_mul]
     · dsimp [S_pert, S_lat]
       rw [← hsum_pert.tsum_sub hs_lat.summable]
       calc ‖∑' k : ℤ, (g_pert k - g_lat k)‖

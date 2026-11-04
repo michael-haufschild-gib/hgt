@@ -29,9 +29,9 @@ The conjectured quartic cross-load reserve from scale eight may control its
 upper part; that reserve is itself unproved. No finite sampling, endpoint
 interpolation, or assumed matrix sign supplies the missing estimate.
 
-## Scalar comparison to formalize
+## Scalar comparison
 
-For `q≥8`, `x²≤1/2`, the expected unconditional bound is
+For `q≥8`, `x²≤1/2`, the unconditional bound is
 `G_P(x)>−(3/20)K(x)q⁴`. Put `b=7/15`, `p=1−2x²`,
 `S=firstSlope(q)+10⁻⁵`, and
 `J_S(x)=2x(1−2x²)²S+(1−2x²)(14x²−3)`.
@@ -51,5 +51,7 @@ reduces the claim to the exact positive polynomial, with `u=q−8≥0`:
 `(3/20)q⁴−((61/100)q−13/10)(2q−3)²`
 `=469/50+(359/20)u+(289/25)u²+(59/25)u³+(3/20)u⁴`.
 
-This scalar derivation is not yet Lean-verified. The matrix reserve and the
+Lean: `FifthPolynomialCross.compensation_compact_quartic_lower` in
+`ThetaCuspSections/FifthEvenPolynomialCrossCompactEnvelope.lean`. Canonical
+check and transitive axiom audit passed; only standard Lean axioms occur. The matrix reserve and the
 remaining interval below scale eight are separate unproved requirements.

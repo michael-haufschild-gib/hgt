@@ -166,11 +166,9 @@ theorem onsetAperture_perturbedOffLineLatticeConfig_eq {L δ : ℝ} (hL : 0 < L)
               Complex.norm_real, Real.norm_eq_abs]
         _ ≤ π / (2 * L) + 1 / 2 := by rw [abs_of_pos hδ]; linarith [hε k]
     have him : ∀ j ∈ ({()} : Finset Unit), ∀ k : ℤ, |(ν j k).im| ≤ 1 / 2 := by
-      intro _ _ k
-      dsimp [ν]
-      simp only [Complex.sub_im, Complex.ofReal_im, Complex.mul_im, Complex.I_re, Complex.I_im,
-        Complex.ofReal_re, zero_mul, one_mul, zero_sub, zero_add, abs_neg]
-      rw [abs_of_pos hδ]
+      intro j _ k
+      have him_eq : (ν j k).im = -δ := by simp [ν]
+      rw [him_eq, abs_neg, abs_of_pos hδ]
       exact hδ'
     have hS : ∀ z ∈ Z.carrier,
         (∃ j ∈ ({()} : Finset Unit), ∃ k : ℤ, gammaOf z = ν j k ∨ gammaOf z = conj (ν j k)) ∨
@@ -269,8 +267,8 @@ theorem split_column_and_perturbed_lattice_dichotomy :
     (∀ {g : ℕ} (hg : 2 ≤ g) {ℓ δ : ℝ} (hℓ : 0 < ℓ) (hδ : 0 < δ) (hδ' : δ ≤ 1 / 2),
       4 * (((2 * g - 1 : ℕ) : ℝ) - 1) *
         (Real.cosh (δ * (((2 * g - 1 : ℕ) : ℝ) * ℓ)) - 1) ≤ ((2 * g - 1 : ℕ) : ℝ) →
-      onsetAperture (mixedGenusColumnConfig hg hℓ hδ hδ') = (((g : ℝ) - 1 / 2) * ℓ : EReal) ∧
-        (((g : ℝ) / 2) * ℓ : EReal) < onsetAperture (mixedGenusColumnConfig hg hℓ hδ hδ')) ∧
+      onsetAperture (mixedGenusColumnConfig hg hℓ hδ hδ') = ((((g : ℝ) - 1 / 2) * ℓ : ℝ) : EReal) ∧
+        ((((g : ℝ) / 2) * ℓ : ℝ) : EReal) < onsetAperture (mixedGenusColumnConfig hg hℓ hδ hδ')) ∧
     (∀ {L δ ε a : ℝ} (hL : 0 < L) (hδ : 0 < δ) (hδ' : δ ≤ 1 / 2) (hε : 0 < ε) (hεL : ε ≤ π / L),
       a ≤ L / 2 → 2 ≤ δ * a → 960 * 2 ^ 26 * δ * L < ε ^ 2 * a ^ 2 * Real.exp (2 * δ * a) →
       onsetAperture (singleDefectOffLineLattice hL hδ hδ' hε hεL) < (a : EReal)) ∧

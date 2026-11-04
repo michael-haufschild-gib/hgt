@@ -20,5 +20,8 @@ complete-source remainder allowance before testing coefficient signs.
 
 The unit quartic profile is
 [excluded at scale thirty-two](../../../../formal/GaloisForLFunctions/ThetaCuspSections/FifthEvenPolynomialCrossObstruction.lean).
-This reserve could apply to other flux profiles whose full differentiated
-coefficient lies above it. The ray itself remains unproved.
+The truncated quartic has a proved scalar comparison on `q≥8`, `x²≤1/2`:
+`G_P(x)>−(3/20)K(x)q⁴`
+(`FifthPolynomialCross.compensation_compact_quartic_lower`, Lean, standard
+axioms). Thus this matrix reserve would pay its entire retained branch from
+scale eight. The matrix ray itself remains unproved.

@@ -21,7 +21,7 @@ open scoped Classical RealInnerProductSpace
 namespace GaloisForLFunctions.CriticalScaleArithmeticRigidity
 
 open ArithmeticCouplingTheory RenormalizedArithmeticPotentialTheory
-  SelectiveMultiscaleArithmeticPositivity SpacingScaleHarmonicAnalysis
+  SelectiveMultiscaleArithmeticPositivity SpacingScaleHarmonicAnalysis CompletedArithmeticForms
 
 private theorem receiving_tilted_nonneg (u : ℝ) : 0 ≤ tiltedUnitSpline u := by
   unfold tiltedUnitSpline atomDilate
@@ -57,7 +57,8 @@ theorem eventually_simultaneousReceiving_coordinates (R : ℕ) (t : ℕ → ℝ)
   refine ⟨commonPrimeFibre_neutral (Nat.factorial_pos R) (Nat.one_le_pow 2 X hX)
     (Nat.one_le_pow 40 X hX) (Icc 1 R) t, ?_⟩
   intro m hm
-  simpa only [if_pos hm] using commonPrimeFibre_receiving_coordinates (Nat.factorial_pos R)
+  simpa only [simultaneousReceivingCoefficients, if_pos hm] using
+    commonPrimeFibre_receiving_coordinates (Nat.factorial_pos R)
     (receiving_factorial_modes R m hm).1 (receiving_factorial_modes R m hm).2
       (Icc 1 R) (receiving_factorial_modes R) (X ^ 40) t hb
 
@@ -75,6 +76,7 @@ theorem tendsto_simultaneousReceiving_input_sq (R : ℕ) (t : ℕ → ℝ) :
   have h := (tendsto_commonPrimeFibre_input_norm_sq (Nat.factorial_pos R)
     (Icc 1 R) (receiving_factorial_modes R) t (a := 2) (d := 40) (by omega) (by omega)).div_atTop
       ((Real.tendsto_log_atTop.comp tendsto_natCast_atTop_atTop).comp hX40)
+  simp only [Function.comp_apply] at h
   convert h using 1
   funext X
   rw [simultaneousReceivingPacket, commonPrimeFibreVector, norm_smul,
@@ -90,7 +92,8 @@ theorem tendsto_simultaneousReceiving_raw_energy {K : ℝ} (hK : 0 < K)
         (packetVector (normalizedConductorPacket (R.factorial * X ^ 2)
           (simultaneousReceivingCoefficients R X t)) (X ^ 40)))
       atTop (𝓝 ((∑ m ∈ Icc 1 R, t m ^ 2) * (39 / 2 : ℝ))) := by
-  simpa only [Nat.cast_ofNat, show (40 : ℝ) / 2 - 1 / 2 = 39 / 2 by norm_num] using
+  simpa only [simultaneousReceivingCoefficients, Nat.cast_ofNat,
+    show (40 : ℝ) / 2 - 1 / 2 = 39 / 2 by norm_num] using
     tendsto_commonPrimeFibre_complete_energy contDiff_tiltedUnitSpline
     receiving_tilted_nonneg tiltedUnitSpline_eq_zero integral_tiltedUnitSpline_sq_pos hK
       (Nat.factorial_pos R) (Icc 1 R) (receiving_factorial_modes R) t
@@ -118,8 +121,10 @@ theorem tendsto_simultaneousReceiving_signed_pairing {K : ℝ} (hK : 0 < K)
         fibreChargeTerminalReceiver l R.factorial X⟫)
       atTop (𝓝 (if (l : ℕ) ≤ R then t l / 80 else 0)) := by
   have hl1 : 1 ≤ (l : ℕ) := l.property
-  simpa only [mem_Icc, hl1, true_and] using
-    tendsto_commonPrimeFibre_complete_terminalReceiver contDiff_tiltedUnitSpline
+  have hmem : (l : ℕ) ∈ Icc 1 R ↔ (l : ℕ) ≤ R := by
+    simp only [mem_Icc, hl1, true_and]
+  simp only [simultaneousReceivingPacket, ← hmem]
+  exact tendsto_commonPrimeFibre_complete_terminalReceiver contDiff_tiltedUnitSpline
       receiving_tilted_nonneg tiltedUnitSpline_eq_zero integral_tiltedUnitSpline_sq_pos hK
         (Nat.factorial_pos R) l.property (Icc 1 R) (receiving_factorial_modes R) t
 
