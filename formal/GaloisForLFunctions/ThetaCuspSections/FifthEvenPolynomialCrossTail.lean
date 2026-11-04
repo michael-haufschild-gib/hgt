@@ -73,8 +73,7 @@ theorem compensation_four_limit :
     positivity
   have hf := (thetaCuspSourceTerm_pos_of_pos_of_nat_pos hx (by norm_num : 0 < (1 : ℕ))).ne'
   rw [compensation_expansion]
-  field_simp [hq,hf]
-  ring
+  field_simp [hq,hf] <;> ring
 
 private theorem compensation_limit (n : ℕ) (hn : 4 ≤ n) :
     Tendsto (fun x : ℝ => compensation x/
@@ -165,5 +164,26 @@ theorem repair_compact_gap : ∃ δ R : ℝ, 0 < δ ∧ δ ≤ R ∧ ∀ x : ℝ
   · exact hnear x (Or.inl (by simpa only [abs_of_nonneg hx] using h))
   · exact hnear x (Or.inr h)
   · exact hR x ((le_max_left _ _).trans h)
+
+/-- The exact flux representative is positive on common origin, scale-eight, and tail regions. -/
+theorem weightedRepair_compact_gap : ∃ δ R : ℝ, 0 < δ ∧ δ ≤ R ∧ ∀ a r : ℝ,
+    0 < a → 0 < r → (r < δ ∨ |r-2*EightCrossSource.center| < δ ∨ R ≤ r) →
+      (weightedRepair a r).PosDef := by
+  obtain ⟨δ,R,hδ,hδR,hs⟩ := repair_compact_gap
+  refine ⟨2*δ,2*R,by positivity,by linarith only [hδR],fun a r ha hr h => ?_⟩
+  have hp : (repair (r/2)).PosDef := by
+    apply hs (r/2) (by positivity)
+    rcases h with h | h | h
+    · exact Or.inl (by linarith only [h])
+    · refine Or.inr (Or.inl ?_)
+      rw [show r/2-EightCrossSource.center=(r-2*EightCrossSource.center)/2 by ring,
+        abs_div,abs_of_pos (by norm_num : (0 : ℝ)<2)]
+      linarith only [h]
+    · exact Or.inr (Or.inr (by linarith only [h]))
+  have hw := mul_pos hr (Real.sinh_pos_iff.mpr (mul_pos ha hr))
+  have hd := sub_nonneg.mpr (deriv_flux_lower ha.le hr.le)
+  have hB := crossCoefficient_posDef.posSemidef.conjTranspose_mul_mul_same loadMap
+  rw [weightedRepair_decomposition]
+  exact (hp.smul hw).add_posSemidef (hB.smul hd)
 
 end GaloisForLFunctions.ThetaCuspSections.FifthPolynomialCross

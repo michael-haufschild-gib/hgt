@@ -6,16 +6,18 @@ import GaloisForLFunctions.ArithmeticCastelnuovoSeveri.AnnihilatingTestsForSpars
 
 A smooth bump with an explicit decay constant. For `ε > 0` and `m ≥ 1`, convolve the normalized
 smooth bump of radius `ε/2` with `m` normalized boxes of half-width `δ = ε/(2m)`
-(`splineBump`). The result is smooth, nonnegative in spirit and even, supported in `[−ε, ε]`, and
-its transform is `φ̂(w) (sin δw/δw)^m` (`paperFT_splineStage`).
+(`splineBump`). The result is smooth and supported in `[−ε, ε]`, and its transform is
+`φ̂(w) (sin δw/δw)^m` (`splineStage_props`).
 
 * **Nonnegative probability transforms** (`norm_paperFT_le_of_prob`). A nonnegative density of mass
   one supported in `[−r, r]` has `|f̂(w)| ≤ e^{r|Im w|}`.
 * **The sinc factor** (`one_add_mul_norm_sincC_le`). `(1 + δ|w|) |sin(δw)/(δw)| ≤ 2 e^{δ|Im w|}`.
+* **The packaged bump** (`exists_explicit_bump`), with order-zero bound `|b̂(w)| ≤ e^{ε|Im w|}`
+  (`norm_paperFT_splineBump_le`).
 * **Explicit decay** (`one_add_norm_pow_mul_norm_paperFT_splineBump_le`).
   `(1 + |w|)^m |b̂(w)| ≤ (2 + 4m/ε)^m e^{ε|Im w|}` for every `w`.
 * **No loss on the imaginary axis** (`one_le_norm_paperFT_splineBump_I`). `|b̂(iy)| ≥ 1` for every
-  real `y`: the bump is even with mass one, so `φ̂(iy) = ∫ φ(u) cosh(yu) du ≥ 1`, and
+  real `y`: the smooth bump is even with mass one, so `φ̂(iy) = ∫ φ(u) cosh(yu) du ≥ 1`, and
   `sin(iδy)/(iδy) = sinh(δy)/(δy) ≥ 1`.
 
 These are the uniform window constants the local camera needs at bandwidth `a = λ log X`: the
@@ -70,25 +72,28 @@ theorem boxTest_eq_ofReal {δ : ℝ} (u : ℝ) :
   unfold boxTest Set.indicator
   split_ifs <;> simp
 
+/-- The sinc factor is a box transform: `|sin(δw)/(δw)| ≤ e^{δ|Im w|}`. -/
+theorem norm_sincC_le_exp {δ : ℝ} (hδ : 0 < δ) (w : ℂ) :
+    ‖sincC (δ * w)‖ ≤ Real.exp (δ * |w.im|) := by
+  rw [← paperFT_boxTest hδ w]
+  have hfun : boxTest δ = fun u => ((Set.indicator (Icc (-δ) δ) (fun _ => (2 * δ)⁻¹) u : ℝ) :
+      ℂ) := funext boxTest_eq_ofReal
+  rw [hfun]
+  refine norm_paperFT_le_of_prob ?_ (fun u => ?_) (fun u hu => ?_) ?_ w
+  · exact (continuous_const.integrableOn_Icc).integrable_indicator measurableSet_Icc
+  · unfold Set.indicator; split_ifs <;> positivity
+  · unfold Set.indicator at hu; split_ifs at hu with hmem
+    · exact abs_le.mpr hmem
+    · exact absurd rfl hu
+  · rw [integral_indicator measurableSet_Icc, setIntegral_const,
+      Real.volume_real_Icc_of_le (by linarith), smul_eq_mul]
+    field_simp
+    ring
+
 /-- **The sinc factor.** `(1 + δ|w|) |sin(δw)/(δw)| ≤ 2 e^{δ|Im w|}`. -/
 theorem one_add_mul_norm_sincC_le {δ : ℝ} (hδ : 0 < δ) (w : ℂ) :
     (1 + δ * ‖w‖) * ‖sincC (δ * w)‖ ≤ 2 * Real.exp (δ * |w.im|) := by
-  -- the trivial bound from the box density
-  have htriv : ‖sincC (δ * w)‖ ≤ Real.exp (δ * |w.im|) := by
-    rw [← paperFT_boxTest hδ w]
-    have hfun : boxTest δ = fun u => ((Set.indicator (Icc (-δ) δ) (fun _ => (2 * δ)⁻¹) u : ℝ) :
-        ℂ) := funext boxTest_eq_ofReal
-    rw [hfun]
-    refine norm_paperFT_le_of_prob ?_ (fun u => ?_) (fun u hu => ?_) ?_ w
-    · exact (continuous_const.integrableOn_Icc).integrable_indicator measurableSet_Icc
-    · unfold Set.indicator; split_ifs <;> positivity
-    · unfold Set.indicator at hu; split_ifs at hu with hmem
-      · exact abs_le.mpr hmem
-      · exact absurd rfl hu
-    · rw [integral_indicator measurableSet_Icc, setIntegral_const,
-        Real.volume_real_Icc_of_le (by linarith), smul_eq_mul]
-      field_simp
-      ring
+  have htriv := norm_sincC_le_exp hδ w
   by_cases hw : δ * ‖w‖ ≤ 1
   · have : 1 + δ * ‖w‖ ≤ 2 := by linarith
     calc (1 + δ * ‖w‖) * ‖sincC (δ * w)‖ ≤ 2 * ‖sincC (δ * w)‖ :=
@@ -254,6 +259,25 @@ theorem one_add_norm_pow_mul_norm_paperFT_splineBump_le {ε : ℝ} (hε : 0 < ε
     _ ≤ (2 + 4 * m / ε) ^ m * Real.exp (ε * |w.im|) :=
         mul_le_mul_of_nonneg_right (pow_le_pow_left₀ (by positivity) hc2 m) (by positivity)
 
+/-- **Order zero.** `|b̂(w)| ≤ e^{ε|Im w|}`. -/
+theorem norm_paperFT_splineBump_le {ε : ℝ} (hε : 0 < ε) {m : ℕ} (hm : 1 ≤ m) (w : ℂ) :
+    ‖paperFT (splineBump hε m) w‖ ≤ Real.exp (ε * |w.im|) := by
+  set δ := ε / (2 * m) with hδdef
+  have hm0 : (0 : ℝ) < m := by exact_mod_cast hm
+  have hδ : 0 < δ := by positivity
+  have hft := (splineStage_props hε hδ m).2.2 w
+  rw [splineStage_zero_eq hε δ 1] at hft
+  rw [splineBump, ← hδdef, hft, norm_mul, norm_pow]
+  have hφ := norm_paperFT_smoothBump_le hε w
+  have hs : ‖sincC (δ * w)‖ ^ m ≤ Real.exp (δ * |w.im|) ^ m :=
+    pow_le_pow_left₀ (norm_nonneg _) (norm_sincC_le_exp hδ w) m
+  have hexp : Real.exp (δ * |w.im|) ^ m = Real.exp (ε / 2 * |w.im|) := by
+    rw [← Real.exp_nat_mul]; congr 1; rw [hδdef]; field_simp
+  calc ‖paperFT (splineStage hε 1 0) w‖ * ‖sincC (δ * w)‖ ^ m
+      ≤ Real.exp (ε / 2 * |w.im|) * Real.exp (δ * |w.im|) ^ m :=
+        mul_le_mul hφ hs (by positivity) (by positivity)
+    _ = Real.exp (ε * |w.im|) := by rw [hexp, ← Real.exp_add]; congr 1; ring
+
 /-! ### No loss on the imaginary axis -/
 
 /-- On the imaginary axis the transform of the smooth bump is at least one. -/
@@ -333,5 +357,29 @@ theorem one_le_norm_paperFT_splineBump_I {ε : ℝ} (hε : 0 < ε) {m : ℕ} (hm
     (one_le_re_paperFT_smoothBump_I hε y).trans (Complex.re_le_norm _)
   have h2 : 1 ≤ ‖sincC (δ * ((y : ℂ) * I))‖ ^ m := one_le_pow₀ (one_le_norm_sincC_I y)
   nlinarith
+
+/-- **An explicit bump.** For `ε > 0` and every `m` there is a smooth window supported in
+`[−ε, ε]` whose transform is at least `1` on the imaginary axis, at most `e^{ε|Im w|}`, and decays
+like `(1 + |w|)^{−m}` with constant `(4(1 + m/ε))^m e^{ε|Im w|}`. -/
+theorem exists_explicit_bump {ε : ℝ} (hε : 0 < ε) (m : ℕ) :
+    ∃ b : ℝ → ℂ, ContDiff ℝ (⊤ : ℕ∞) b ∧ tsupport b ⊆ Icc (-ε) ε ∧
+      (∀ y : ℝ, 1 ≤ ‖paperFT b ((y : ℂ) * I)‖) ∧
+      (∀ w : ℂ, ‖paperFT b w‖ ≤ Real.exp (ε * |w.im|)) ∧
+      ∀ w : ℂ, (1 + ‖w‖) ^ m * ‖paperFT b w‖ ≤ (4 * (1 + m / ε)) ^ m * Real.exp (ε * |w.im|) := by
+  set m' := max m 1 with hm'
+  have hm1 : 1 ≤ m' := le_max_right _ _
+  refine ⟨splineBump hε m', contDiff_splineBump hε hm1, tsupport_splineBump hε hm1,
+    one_le_norm_paperFT_splineBump_I hε hm1, norm_paperFT_splineBump_le hε hm1, fun w => ?_⟩
+  rcases Nat.eq_zero_or_pos m with rfl | hm
+  · simp only [pow_zero, one_mul]
+    exact norm_paperFT_splineBump_le hε hm1 w
+  · have hmm : m' = m := by rw [hm']; exact max_eq_left hm
+    rw [hmm]
+    have h := one_add_norm_pow_mul_norm_paperFT_splineBump_le hε hm w
+    refine h.trans (mul_le_mul_of_nonneg_right (pow_le_pow_left₀ (by positivity) ?_ m)
+      (by positivity))
+    have : 0 ≤ (m : ℝ) / ε := by positivity
+    have e : 4 * (m : ℝ) / ε = 4 * (m / ε) := by ring
+    rw [e]; linarith
 
 end GaloisForLFunctions.ZeroConfigurationGeometry

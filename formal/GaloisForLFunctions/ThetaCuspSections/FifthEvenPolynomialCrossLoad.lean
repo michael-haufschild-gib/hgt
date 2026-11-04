@@ -30,6 +30,11 @@ def compensation (x : ℝ) : ℝ :=
 def repair (x : ℝ) : Matrix (Fin 5) (Fin 5) ℝ :=
   nativeShiftedMatrix 5 0 x+compensation x • crossLoad paidSevenSchur
 
+/-- The literal center-weighted fifth even source with its exact flux derivative. -/
+def weightedRepair (a r : ℝ) : Matrix (Fin 5) (Fin 5) ℝ :=
+  (r*Real.sinh (a*r)) • nativeShiftedMatrix 5 0 (r/2)+
+    deriv (flux a) r • crossLoad paidSevenSchur
+
 theorem profile_nonneg (r : ℝ) : 0 ≤ profile r := sq_nonneg _
 
 private theorem profile_hasDerivAt (r : ℝ) :
@@ -116,18 +121,38 @@ theorem deriv_flux_lower {a r : ℝ} (ha : 0 ≤ a) (hr : 0 ≤ r) :
   rw [he,deriv_flux_product]
   linarith only [h]
 
-/-- The actual profiled cross-load preserves every quadratic form of the fifth moment block. -/
-theorem integral_corrected_form {a : ℝ} (ha0 : 0 ≤ a) (ha : a < 1/2)
-    (v : Fin 5 → ℝ) :
-    (∫ r : ℝ in Ioi 0,
-      r*Real.sinh (a*r)*thetaCuspNativeSignedHankelForm (r/2) v+
-        (v ⬝ᵥ (crossLoad paidSevenSchur *ᵥ v))*deriv (flux a) r) =
-      ∑ i : Fin 5, ∑ j : Fin 5, v i*v j*thetaCuspCenterMixedSignedJet a (i.val+j.val) := by
+/-- Exact separation of the lower source and the aperture remainder. -/
+theorem weightedRepair_decomposition (a r : ℝ) : weightedRepair a r =
+    (r*Real.sinh (a*r)) • repair (r/2)+
+      (deriv (flux a) r-r*Real.sinh (a*r)*compensation (r/2)) • crossLoad paidSevenSchur := by
+  ext i j
+  simp only [weightedRepair,repair,Matrix.add_apply,Matrix.smul_apply,smul_eq_mul]
+  ring
+
+private theorem weighted_entry (a : ℝ) (i j : Fin 5) :
+    (fun r => weightedRepair a r i j) = fun r => EvenFiveCoherent.weightedRepair a 0 r i j+
+      crossLoad paidSevenSchur i j*deriv (flux a) r := by
+  funext r
+  simp only [weightedRepair,EvenFiveCoherent.weightedRepair,Matrix.add_apply,
+    Matrix.smul_apply,smul_eq_mul,zero_mul]
+  ring
+
+/-- Every entry of the literal profiled fifth even block is integrable. -/
+theorem weightedRepair_integrable {a : ℝ} (ha0 : 0 ≤ a) (ha : a < 1/2)
+    (i j : Fin 5) : IntegrableOn (fun r => weightedRepair a r i j) (Ioi 0) := by
   have habs : |a| < 1 := by rw [abs_of_nonneg ha0]; linarith only [ha]
-  rw [integral_add (integrableOn_thetaCuspWeightedNativeSignedHankelForm ha0 ha v)
-    ((integrable_deriv_flux habs).const_mul _),integral_const_mul,
-    integral_deriv_flux habs,mul_zero,add_zero,
-    thetaCuspCenterMixedSignedHankelForm_eq_integral_native ha0 ha]
+  rw [weighted_entry]
+  exact (EvenFiveCoherent.weightedRepair_integrable ha0 ha 0 i j).add
+    ((integrable_deriv_flux habs).const_mul _)
+
+/-- The profiled correction preserves the actual fifth even mixed matrix entry by entry. -/
+theorem weightedRepair_integral {a : ℝ} (ha0 : 0 ≤ a) (ha : a < 1/2)
+    (i j : Fin 5) : (∫ r in Ioi 0, weightedRepair a r i j) =
+      thetaCuspCenterMixedSignedJet a (2*(i.val+j.val)) := by
+  have habs : |a| < 1 := by rw [abs_of_nonneg ha0]; linarith only [ha]
+  rw [weighted_entry,integral_add (EvenFiveCoherent.weightedRepair_integrable ha0 ha 0 i j)
+    ((integrable_deriv_flux habs).const_mul _),integral_const_mul,integral_deriv_flux habs,
+    mul_zero,add_zero,EvenFiveCoherent.weightedRepair_integral ha0 ha]
 
 private theorem compensation_strong_negative :
     thetaCuspCenterCompensationSource center ≤ -6*thetaCuspFullSource center^2 := by
@@ -195,34 +220,15 @@ theorem repair_center_posDef : (repair center).PosDef := by
     dotProduct_add,dotProduct_smul,smul_eq_mul] at hp ⊢
   linarith only [hp,h]
 
-private theorem native_form_eq (x : ℝ) (v : Fin 5 → ℝ) :
-    thetaCuspNativeSignedHankelForm x v=v ⬝ᵥ (nativeShiftedMatrix 5 0 x *ᵥ v) := by
-  simp only [thetaCuspNativeSignedHankelForm,thetaCuspNativeSignedJet,nativeShiftedMatrix,
-    dotProduct,Matrix.mulVec,Finset.mul_sum,Nat.add_zero]
-  apply Finset.sum_congr rfl
-  intro i _
-  apply Finset.sum_congr rfl
-  intro j _
-  ring
-
-/-- The literal corrected integrand is strictly positive at scale eight at every positive aperture. -/
-theorem corrected_form_pos_center {a : ℝ} (ha : 0 < a)
-    (v : Fin 5 → ℝ) (hv : v ≠ 0) :
-    0 < (2*center)*Real.sinh (a*(2*center))*thetaCuspNativeSignedHankelForm center v+
-      (v ⬝ᵥ (crossLoad paidSevenSchur *ᵥ v))*deriv (flux a) (2*center) := by
+/-- The literal weighted fifth even block is positive at scale eight for every positive aperture. -/
+theorem weightedRepair_center_posDef {a : ℝ} (ha : 0 < a) :
+    (weightedRepair a (2*center)).PosDef := by
   have hr : 0 < 2*center := mul_pos (by norm_num) center_pos
   have hw := mul_pos hr (Real.sinh_pos_iff.mpr (mul_pos ha hr))
-  have hp := repair_center_posDef.dotProduct_mulVec_pos hv
-  have hB := load_nonneg.dotProduct_mulVec_nonneg v
-  simp only [star_trivial] at hp hB
   have hl := deriv_flux_lower ha.le hr.le
   rw [show 2*center/2=center by ring] at hl
-  have hm := mul_le_mul_of_nonneg_left hl hB
-  have hpos := mul_pos hw hp
-  simp only [repair,Matrix.add_mulVec,Matrix.smul_mulVec,dotProduct_add,
-    dotProduct_smul,smul_eq_mul] at hpos
-  rw [← native_form_eq] at hpos
-  nlinarith only [hpos,hm]
+  rw [weightedRepair_decomposition,show 2*center/2=center by ring]
+  exact (repair_center_posDef.smul hw).add_posSemidef (load_nonneg.smul (sub_nonneg.mpr hl))
 
 private theorem repair_continuous : Continuous repair := by
   have hF : Continuous thetaCuspFullSource := thetaCuspSchwartzReal.continuous

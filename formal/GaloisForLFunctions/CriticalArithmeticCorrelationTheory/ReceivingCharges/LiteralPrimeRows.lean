@@ -131,14 +131,14 @@ theorem abs_literalTowerRow_le {P : Finset ℕ} {R Y B : ℕ}
       refine (abs_sum_le_sum_abs _ _).trans (sum_le_sum ?_)
       intro i hi
       split_ifs
-      · have hλ : 0 ≤ vonMangoldt i.1 / (i.1 : ℝ) :=
+      · have hMangoldt : 0 ≤ vonMangoldt i.1 / (i.1 : ℝ) :=
           div_nonneg vonMangoldt_nonneg (Nat.cast_nonneg i.1)
-        rw [abs_div, abs_of_nonneg (Nat.cast_nonneg p), abs_mul, abs_mul, abs_of_nonneg hλ]
+        rw [abs_div, abs_of_nonneg (Nat.cast_nonneg p), abs_mul, abs_mul, abs_of_nonneg hMangoldt]
         exact div_le_div_of_nonneg_right
           (mul_le_mul
-            (mul_le_mul_of_nonneg_left (hf i.1 (mem_product.mp hi).1 i.2 (mem_product.mp hi).2) hλ)
-            (hG _) (abs_nonneg _) (mul_nonneg hλ hU)) (Nat.cast_nonneg p)
-      · exact le_rfl
+            (mul_le_mul_of_nonneg_left (hf i.1 (mem_product.mp hi).1 i.2 (mem_product.mp hi).2) hMangoldt)
+            (hG _) (abs_nonneg _) (mul_nonneg hMangoldt hU)) (Nat.cast_nonneg p)
+      · simp only [abs_zero, le_refl]
     _ = _ := he
     _ ≤ ((B : ℝ) * U * V) *
         ((2 / (R : ℝ)) * ∑ p ∈ P, Real.log p / (p : ℝ)) :=

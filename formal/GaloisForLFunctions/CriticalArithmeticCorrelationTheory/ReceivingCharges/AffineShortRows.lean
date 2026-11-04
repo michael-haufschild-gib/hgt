@@ -64,17 +64,17 @@ theorem abs_centered_affine_row_le (p a d Y : ℕ) (z f : ℕ → ℝ)
         ((if a * k ≡ d [MOD p] then (1 : ℝ) else 0) + 1 / p) := by
       apply sum_le_sum
       intro k hk
-      have hλ : 0 ≤ vonMangoldt k / (k : ℝ) :=
+      have hMangoldt : 0 ≤ vonMangoldt k / (k : ℝ) :=
         div_nonneg vonMangoldt_nonneg (Nat.cast_nonneg k)
       have hi : 0 ≤ (if a * k ≡ d [MOD p] then (1 : ℝ) else 0) := by split_ifs <;> norm_num
       have hind : |(if a * k ≡ d [MOD p] then (1 : ℝ) else 0) - 1 / p| ≤
           (if a * k ≡ d [MOD p] then (1 : ℝ) else 0) + 1 / p := by
         simpa only [abs_of_nonneg hi, abs_of_nonneg hmean] using
-          abs_sub_le (if a * k ≡ d [MOD p] then (1 : ℝ) else 0) (1 / p)
-      simp only [abs_mul, abs_of_nonneg hλ]
+          abs_sub (if a * k ≡ d [MOD p] then (1 : ℝ) else 0) (1 / p)
+      simp only [abs_mul, abs_of_nonneg hMangoldt]
       exact mul_le_mul
-        (mul_le_mul_of_nonneg_right (mul_le_mul_of_nonneg_left (hz k hk) hλ) (abs_nonneg _))
-        hind (abs_nonneg _) (mul_nonneg (mul_nonneg hλ hV) (abs_nonneg _))
+        (mul_le_mul_of_nonneg_right (mul_le_mul_of_nonneg_left (hz k hk) hMangoldt) (abs_nonneg _))
+        hind (abs_nonneg _) (mul_nonneg (mul_nonneg hMangoldt hV) (abs_nonneg _))
     _ = _ := by
       rw [sum_filter, sum_div, ← sum_add_distrib, mul_sum]
       apply sum_congr rfl

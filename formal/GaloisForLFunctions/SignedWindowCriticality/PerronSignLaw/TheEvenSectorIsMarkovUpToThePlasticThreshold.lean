@@ -315,7 +315,6 @@ lemma levy_sub_eq {f : ℝ → ℝ}
   unfold biScaleLevyEnergy
   rw [← integral_sub hJf hJg, ← integral_const_mul]
   refine setIntegral_congr_fun measurableSet_Ioi fun x hx => ?_
-  beta_reduce
   rw [h0, archLevySinhWeight, exp_half_div_sinh_eq hx]
   ring
 
@@ -324,7 +323,7 @@ lemma levy_sub_eq {f : ℝ → ℝ}
 /-- The trivial-zero moment `ν_j(F) = ∫ F(u) e^{(2j+1/2)u} du`. -/
 def expMoment (F : ℝ → ℝ) (j : ℕ) : ℝ := ∫ u, F u * expWeight j u
 
-lemma abs_expMoment_le {F : ℝ → ℝ} (hF : Continuous F) {c B : ℝ} (hc : 0 ≤ c)
+lemma abs_expMoment_le {F : ℝ → ℝ} {c B : ℝ} (hc : 0 ≤ c)
     (hB : ∀ u, |F u| ≤ B) (h0 : ∀ u, 0 < u → F u = 0) (hl : ∀ u, u < -c → F u = 0) (j : ℕ) :
     |expMoment F j| ≤ B / (2 * (j : ℝ) + 1 / 2) := by
   set α : ℝ := 2 * (j : ℝ) + 1 / 2 with hα
@@ -377,7 +376,7 @@ lemma summable_expMoment_sq {F : ℝ → ℝ} (hF : Continuous F) {c B : ℝ} (h
   have hS : Summable fun j : ℕ => 4 * B ^ 2 * (1 / ((j + 1 : ℕ) : ℝ) ^ 2) :=
     ((summable_nat_add_iff 1).mpr (Real.summable_one_div_nat_pow.mpr one_lt_two)).mul_left _
   refine Summable.of_nonneg_of_le (fun j => sq_nonneg _) (fun j => ?_) hS
-  have h := abs_expMoment_le hF hc hB h0 hl j
+  have h := abs_expMoment_le hc hB h0 hl j
   have hj : (0 : ℝ) < (j : ℝ) + 1 := by positivity
   have hα : ((j : ℝ) + 1) / 2 ≤ 2 * (j : ℝ) + 1 / 2 := by
     have : (0 : ℝ) ≤ j := j.cast_nonneg; linarith
@@ -591,7 +590,7 @@ theorem pole_defect_le {c : ℝ} (hc0 : 0 ≤ c) (hct : c ≤ screwSignThreshold
     ENNReal.ofReal_tsum_of_nonneg hmom0 (hSg.sub hSf), eL, eJ]
   simp only [eM]
   rw [ENNReal.tsum_mul_left, ← mul_add]
-  refine mul_le_mul_left' ?_ 2
+  gcongr
   have hmeasJ : Measurable fun x => ENNReal.ofReal (archLevyDensity x * ∫ u, pairDefect f u (u + x)) :=
     (measurable_archLevyDensity.mul hcont1.measurable).ennreal_ofReal
   rw [← lintegral_tsum fun j => ((hcont _ (hew j)).measurable.ennreal_ofReal.aemeasurable),

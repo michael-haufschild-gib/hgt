@@ -64,9 +64,22 @@ toward both ends of `W`, singular kernels integrated in local offsets, exact ref
   `ω(M − m) + ω(M + m) = 2Σ_k e^{−α_k M} cosh(α_k m) ≥ 2cosh(m/2) ω(M) ≥ 4cosh(M/2)cosh(m/2)`
   for `M ≤ t_* = log ρ` (plastic threshold, `ω(t_*) = 2cosh(t_*/2)`). So the even sector is Markov
   for `c ≤ t_* ≈ 0.2812`, sharp: for `c > t_*` the kernel is negative at `(−c, 0)` (edge against
-  centre). Lean: in progress.
+  centre). **PROVED [L]**: `four_mul_cosh_mul_cosh_le`, `evenSector_abs_le`
+  (`W(|f|) + 𝓗₀(|f|) ≤ W(f) + 𝓗₀(f)` for `C²` `f` on `[−c, 0]`, `0 ≤ c ≤ t_*`),
+  `evenKernel_neg_of_threshold_lt` in
+  `PerronSignLaw/TheEvenSectorIsMarkovUpToThePlasticThreshold.lean`.
+- In the full-window picture the pole kernel `2cosh((x − y)/2)` is dominated by `ω(|x − y|)` only
+  for `2c ≤ t_*`; the trivial-zero squares double the Markov range of the even sector.
 - Beyond the Markov regimes (odd `c > ½ log 2`, even `c > t_*`) positivity of the ground states is an
   anti-maximum-principle statement: `ψ_E = a(λ − A_E)^{−1} ch`, `λ ∈ (λ₀(A_E), λ₁(A_E))`.
+
+## Status
+- C8 holds numerically on `0 < c ≤ 0.69` in both sectors (converged hp-DG).
+- Proved: Perron by Beurling–Deny in the Markov regimes (odd `c ≤ ½ log 2`, corpus; even
+  `c ≤ t_*`, Lean, sharp at the level of the kernel).
+- Open: `t_* < c < log 2` (even) and `½ log 2 < c < log 2` (odd), where the pole (even) and the prime
+  kick (odd) frustrate the sign and positivity is an anti-maximum principle for the frustration-free
+  operator `A_E` (resp. `A_O`) at the band energy.
 
 ## Log
 - 2026-11-04 — created in 1-in-progress
