@@ -29,7 +29,8 @@ theorem abs_sum_terminal_shell_sub_integral_le
       L * H / r := by
   let L' : NNReal := ⟨L, hL⟩
   have hLip : LipschitzWith L' K := LipschitzWith.of_dist_le_mul fun x y => by
-    simpa only [Real.dist_eq] using hKL x y
+    change |K x - K y| ≤ L * |x - y|
+    exact hKL x y
   have htop : 1 ≤ (H : ℝ) * (1 / r) := by
     rw [mul_one_div, le_div_iff₀ hr, one_mul]
     exact hrH
@@ -57,7 +58,8 @@ theorem abs_sum_terminal_shell_sub_integral_le
         ∫ x in (0 : ℝ)..1, K x) := by field_simp [hr.ne'] <;> ring
   rw [he, abs_mul, abs_of_pos hr]
   exact (mul_le_mul_of_nonneg_left hb hr.le).trans_eq (by
-    dsimp only [L']; field_simp [hr.ne'] <;> ring)
+    change r * (L * (H : ℝ) * (1 / r) ^ 2) = L * H / r
+    field_simp [hr.ne'] <;> ring)
 
 /-- Truncation at a prime-multiple horizon costs at most one Riemann cell. -/
 theorem abs_terminal_truncated_riemannSum_sub_integral_le
@@ -88,7 +90,8 @@ theorem abs_terminal_truncated_riemannSum_sub_integral_le
     linarith only [hh]
   let L' : NNReal := ⟨L, hL⟩
   have hLip : LipschitzWith L' F := LipschitzWith.of_dist_le_mul fun x y => by
-    simpa only [Real.dist_eq] using hFL x y
+    change |F x - F y| ≤ L * |x - y|
+    exact hFL x y
   have hriemann := _root_.RHTower.abs_riemannSum_sub_integral_le
     hLip.lipschitzOnWith hLip.continuous.continuousOn J
     (one_div_nonneg.mpr hN0.le) (show (J : ℝ) * (1 / N) ≤ 1 / k by simpa only [mul_one_div] using ht)
@@ -120,7 +123,7 @@ theorem abs_terminal_truncated_riemannSum_sub_integral_le
     (hLip.continuous.intervalIntegrable t (1 / (k : ℝ)) : IntervalIntegrable F volume t (1 / (k : ℝ)))
   change |(∑ n ∈ Icc 1 J, F ((n : ℝ) / N)) / N - ∫ x in (0 : ℝ)..1 / k, F x| ≤ _
   rw [← hadd, sub_add_eq_sub_sub]
-  exact ((abs_sub_le _ _).trans (add_le_add hmean htail)).trans_eq (by ring)
+  exact ((abs_sub _ _).trans (add_le_add hmean htail)).trans_eq (by ring)
 
 /-- The polar affine shell has its integral mean, with the literal Riemann error. -/
 theorem abs_upwardShellModel_one_sub_mean_le
@@ -179,7 +182,7 @@ theorem ramanujanLagCoefficient_reflected_affine {m : ℕ} (hm : 1 ≤ m) (p j :
     exact (Nat.dvd_of_mem_divisors hd).mul_right _
   have he : d ∣ p + (m - 1) * j ↔ d ∣ (m - 1) * p + j :=
     ⟨fun h => (Nat.dvd_add_right h).mp hsum, fun h => (Nat.dvd_add_left h).mp hsum⟩
-  rw [he]
+  simp only [he]
 
 /-- A nonpolar affine shell has a bounded periodic error and no linear mean. -/
 theorem abs_upwardShellModel_nonpolar_le
@@ -241,7 +244,6 @@ theorem abs_upwardShellModel_nonpolar_le
       congr 1
       dsimp only [r]
       field_simp [hH0.ne', hc.ne', hp0.ne', hN0.ne']
-      <;> ring
     rw [hG, Nat.add_comm p j, Nat.add_comm ((m - 1) * p) j]
     ring
   rw [he]

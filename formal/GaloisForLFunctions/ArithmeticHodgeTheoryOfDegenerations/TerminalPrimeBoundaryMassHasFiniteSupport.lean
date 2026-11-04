@@ -189,7 +189,7 @@ theorem abs_terminal_upward_row_sub_model_le
       rw [abs_mul, abs_div, Nat.abs_cast]
       apply mul_le_mul_of_nonneg_left _ (div_nonneg (abs_nonneg _) (Nat.cast_nonneg n))
       exact (abs_upwardModeRow_sub_model_le hφ hsupp hM hc hL hGL hH1 hH hNH hHN hn
-        ha ha1 hac).trans (add_le_add_right (le_abs_self A) _)
+        ha ha1 hac).trans (add_le_add (le_abs_self A) (le_refl (D * upwardBoundaryMass N n H)))
     _ = |A| * (∑ n ∈ Icc 1 N, |F ((n : ℝ) / N)| / n) +
         D * (∑ n ∈ Icc 1 N, |F ((n : ℝ) / N)| / n * upwardBoundaryMass N n H) := by
       rw [mul_sum, mul_sum, ← sum_add_distrib]

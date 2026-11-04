@@ -206,6 +206,10 @@ to be judged by the rate it controls.
    to `0` doubly exponentially (ACT, GWZ) and margins have no slack (GWZ). No window eigenfunction is a
    smooth test: differentiation maps eigenfunctions to eigenfunctions, and the jets of a compactly
    supported function have unbounded Rayleigh quotients; critical states are singular at the edge.
+   The same holds for every window equation `(W − μ)F = κP` whose source solves a linear ODE with
+   constant coefficients (`L(D)` kills `P` and maps solutions to eigenfunctions): the extremals of
+   the capacities `ℓ_P²/(W + bℓ_P²)` and the ground states on the hyperplanes `ℓ_P = 0`, for `P` a
+   polynomial, `cosh(x/2)`, `sinh(x/2)` or a trivial-zero exponential, are never smooth.
    Numerically the critical ground state is positive and the low even and odd eigenvalues interlace;
    the node count of excited states is not structural (it fails at avoided crossings with prime
    collar modes).
@@ -377,7 +381,8 @@ and 10 are structural.
 
 1. Certify the odd unit window: the half-window Markov–Hankel inequality
    `4S² ≤ M + Σ_jm_j² + w₂(f⋆f)(−log 2)` on `[−½, 0]`, or the signed Dirichlet form
-   `2S_a − D_a + 8τ_{1/2}(a)∫u²m_a sinh` of one shifted gauge; margin `≈ 2·10⁻⁴`.
+   `2S_a − D_a + 8τ_{1/2}(a)∫u²m_a sinh` of one shifted gauge; margin `≈ 2·10⁻⁴`. The moment
+   capacity `b·sup L²/R` is not attained on smooth tests: its extremal is singular at the edge.
 2. The even sector of the first prime stage: `Σ_jm_j² + P ≤ M + 4C²` on the half-window, the
    Perron state of `M` and its cosh charge.
 3. Perron and oscillation properties of `W` on windows.
@@ -436,6 +441,7 @@ and 10 are structural.
 | The continuum canonical system splits into the parity sectors: `det J_n = det E · det O`, even-order margins → even-sector Stieltjes ratios, odd-order → odd-sector ones; each sector is positive definite on smooth tests once nonnegative and carries its block | `weilPair_odd_even`, `iteratedDeriv_parity`, `isWindowEigen_of_sector_isMin`, `weilQuad_pos_of_sector_nonneg`, `det_jetGram_eq_mul`, `tendsto_levinsonErr_even_odd`, `evenJetGram_posDef`, `oddJetGram_posDef`, `tendsto_levinsonErr_even_odd_of_sectors_nonneg` | unconditional |
 | The parity sectors are the moment conditions of the jets: `L(p²) = W(p(−D²)φ)`, `L(x·p²) = W((p(−D²)φ)')`; even sector ⇔ Hamburger, odd sector ⇔ shifted Hamburger, window ⇔ Stieltjes for the jet energies of every even bump; every odd test is the derivative of an even one | `momentInner_jetEnergy_eq`, `momentFunctional_X_mul_sq_jetEnergy_eq`, `positiveMomentForm_jetEnergy`, `positiveMomentForm_shiftedJetEnergy`, `exists_even_antideriv`, `even_nonneg_iff_hamburger`, `odd_nonneg_iff_shiftedHamburger`, `window_nonneg_iff_stieltjes` | unconditional |
 | The lattice reflection coefficients alternate in the continuum limit: `γ_n(φ, h) → (−1)^n`, `(1 − γ_n²)/h² → e_{n+1}/e_n > 0` on every nonnegative window and unconditionally on the base; Newton's formula on a lattice | `latticeTest_eq_sum_diffQuot`, `sum_neg_one_pow_mul_newtonCoeff`, `tendsto_reflCoeff_neg_one_pow`, `tendsto_one_sub_reflCoeff_sq_div_sq`, `reflCoeff_continuumLimit_of_window_nonneg`, `reflCoeff_continuumLimit_of_base` | unconditional |
+| Window equations with exponential-polynomial sources have no smooth solutions; capacities `ℓ_P²/(W + bℓ_P²)` are not attained and hyperplane-constrained ground states are not smooth (odd moment capacity, sinh capacity, cosh and mean-zero hyperplanes) | `eq_zero_of_isWindowSolution`, `isWindowSolution_of_sector`, `not_isCapacityMax`, `eq_zero_of_isMin_on_hyperplane`, `not_isMax_oddMomentCapacity`, `not_isMax_sinhCapacity`, `eq_zero_of_isMin_on_coshHyperplane`, `eq_zero_of_isMin_on_meanZero` | unconditional |
 
 ## 9. Traps
 

@@ -337,15 +337,23 @@ upper bound could replace that loss by `Σ_(p>R)1/p²`, permitting
 absolute truncated coefficient mass at most `Y⁶`, and prime-deleted
 reciprocal divisor mass at least `(log Y)/8−7/8` for deleted prime `p≥8`
 (`BezoutValuationIncidence/Sieve`). `PrimeProgressionFinite` checks
-`π(X;p,a)≤Y+16(X/p)/log Y+Y⁶` when `log Y≥14`. The sixteenth-root
-truncation comparison passed a scratch check; the assembled uniform bound
-and weighted kernel transfer remain unchecked. `KernelVariation` checks
+`π(X;p,a)≤Y+16(X/p)/log Y+Y⁶` when `log Y≥14`.
+`ProgressionTruncationScales` and `PrimeProgressionUpper` check
+`π(X;p,a)≤1026X/(p log X)` for all sufficiently large prime moduli and `X≥p²`.
+`WeightedPrimeProgressions` checks
+`Σ_(H≤k≤X, prime k, k≡a mod p)log k/k≤(1026/p)(1+log X−log H)` for `p²≤H≤X`,
+with standard-only transitive axioms. `KernelVariation` checks
 `|ρ(a/B)ρ(b/B)/B|+Var_[A,B](ρ(a/n)ρ(b/n)/n)≤(2M²+2MK)/A`
 for a compact kernel bounded by `M` with Lipschitz constant `K`.
 `ResidueCovariance` and `WeightedResidueCovariance` check the exact coprime
 and equal-prime period means and their weighted inverse-endpoint error,
-with standard-only transitive axioms. The literal logarithmic kernel,
-prime-progression averaging and complete-row assembly remain open. The rows with multiplier below `Q²` occupy a terminal
+with standard-only transitive axioms. `LogarithmicKernelVariation` checks
+scale-independent Jacobian/logarithm variation and initial-segment truncation.
+`LiteralUpwardKernelVariation` identifies both actual logarithmic kernels
+and checks variation at most `2K+4M`, retaining both horizon cutoffs,
+with standard-only transitive axioms.
+Exact normalization of the upward matrix, prime-progression averaging and
+complete-row assembly remain open. The rows with multiplier below `Q²` occupy a terminal
 harmonic width `O((log Q+log c)/log N)` and need a separate bound.
 
 ## Gates

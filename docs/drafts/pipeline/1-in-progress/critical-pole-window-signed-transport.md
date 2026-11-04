@@ -554,7 +554,9 @@ puts all boundary indices in `[N−H,N+H]`, which has at most 2H+1
 integers. Finally 1/n≤1/(δN). This proves the displayed bound without
 an estimate for primes in short intervals.
 `TerminalPrimeBoundaryMassHasFiniteSupport.lean` implements this finite
-bound; its actual-path audit is pending.
+bound and its integration with the actual upward-row comparison. All
+three principal endpoints pass their actual-path audit with exactly
+`[propext, Classical.choice, Quot.sound]`.
 
 The actual-row replacement has a stronger sufficient clock condition:
 `c_N⁴/N→0`, with `c_N≥1`. Put `M=∫φ²`, choose a global autocorrelation
@@ -588,12 +590,13 @@ and the normalized model is `(a/N)Σ F(n/N)ψ(N/n)+o(1)`.
 Swap those finite prime-power sums before taking the Riemann limit:
 each k contributes `Λ(k)∫₀^(1/k)F`. This avoids any unjustified
 uniform estimate across the jumps of ψ. The argument uses only the
-actual row comparison and finite sums; its Lean transfer is pending.
+actual row comparison and finite sums; the model limit is checked.
 `TerminalUpwardShellsHaveTheirPolarMean.lean` implements the dilated
-Riemann estimate and the polar and nonpolar shell bounds; its audit is
-pending.
+Riemann estimate, the uniform truncated Riemann estimate and the polar
+and nonpolar shell bounds. All four principal endpoints pass their
+actual-path audit with `[propext, Classical.choice, Quot.sound]`.
 
-The finite model rates can be retained explicitly. With `c≤H≤3c`,
+The finite model rates can be retained explicitly. With `c≤H≤3c`, `N≥K`,
 `Lip(F)≤L_F`, `K≥2/δ`, `P_K=Σ_(k≤K)Λ(k)/k` and
 `T_K=Σ_(k≤K)Λ(k)`, the polar normalized model differs from
 `aΣ_(k≤K)Λ(k)∫₀^(1/k)F` by at most
@@ -605,6 +608,12 @@ Riemann error is at most `6ℓ/(Mδ)`. Each truncated long-index Riemann
 sum has error at most `(L_F+B)/N`, uniformly in k. Thus the general
 polar upward limit needs only `c→∞` and `c⁴/N→0`, once these finite
 transfers are checked. This rate statement remains a paper consequence.
+The finite hyperbola exchange and prime Riemann limit are implemented in
+`TerminalPrimeMeansAreFiniteRiemannSums.lean`; all three principal
+endpoints pass their actual-path audit with
+`[propext, Classical.choice, Quot.sound]`. The model error bounds and
+model limits in `TerminalUpwardModelsHaveFinitePrimeSources.lean`
+also pass their actual-path audit with exactly the standard three axioms.
 The fixed nonpolar upward source has a closed periodic reduction too.
 For each divisor d of m, the two integers
 `p+(m−1)j` and `(m−1)p+j` sum to `m(p+j)`. Hence their Ramanujan
@@ -619,7 +628,65 @@ More precisely its normalized weighted model is bounded by
 `4Bmφ(m)(1+3ℓ/(Mδ))P_K/(δc)`.
 The same finite-prime boundary counting controls its actual-row error.
 This supplies the fixed-m nonpolar upward paper limit; the reflected
-shift identity, shell bound and actual-row transfer await Lean audits.
+shift identity, shell bound and model summation are checked. The
+actual-row transfer still awaits its Lean audit.
+
+### Complete assembly on every fixed window
+
+The preceding bounds close the general paper reduction. For a C² h
+supported in `[-A,0]`, choose `δ=exp(-A−1)` and `K=ceil(1/δ)`.
+Then `F=logProfile h` vanishes below δ, is bounded and globally
+Lipschitz, and has `F(1)=0`: continuity and the zero extension to
+positive logarithmic arguments force `h(0)=0`.
+
+The exact finite complete-pairing identity now gives
+
+    (sqrt(log N)/c_N)⟨B_Nv₁,x_N⟩
+      → a[∫₀¹ polarCenterProfile(F)(x) dx
+           −log(2π)∫₀¹F(x) dx−Σ_(k≤K)Λ(k)∫₀^(1/k)F(x) dx].
+
+The full polar center supplies the first integral; the combined Gamma
+and near-center channel supplies the second. The exterior strip and
+all four replacement errors vanish at every critical ratio. The actual
+upward limit supplies the finite prime sum with its negative sign.
+For fixed m≥2, full center and divisor jet cancel, the Gamma-center
+limit is zero, and both prime boundary limits vanish. Hence the complete
+nonpolar limit is zero. Every term uses the literal finite identities;
+there is no interchange of infinite prime sums or conductor limits.
+
+This is a dependency-closed paper assembly, pending the stated Lean
+audits. Its finite-prime formulation suffices without yet identifying
+the sum with the integral containing ψ. It proves no sign of the
+remaining window energy and no extension of the positive critical band.
+
+The same support also removes the half-horizon restriction from the
+inverse-energy envelope. Set `M_N=floor(δN)`, with `δ=exp(-A−1)∈(0,1)`.
+The receiver has zero prefix through M_N. On every nonzero coordinate,
+`n/N>δ`, so its seventh collar mass is at most `δ⁻⁷‖x_N‖²`.
+Since `linearPrimeStrip(c_N)=O(c_N)` and `c_N/N→0`, eventually
+`2 linearPrimeStrip(c_N)≤M_N`. The existing dual collar estimate applies
+at this cutoff without changing its residual constant. Its combination
+with `c_N⁷ E_m≥κm⁷` therefore gives the same summable `C_(h,R)/m⁵`
+envelope for every `m≤c_N`. The reference diagonal contribution has the
+already proved window-coordinate bound and is unchanged. With the
+general fixed-m limits above and the checked above-overlap estimate,
+dominated convergence gives polar concentration through
+`Q_N=floor((log N)^(13/32))` for every fixed compact window. This
+generalization is paper-only; it requires a new cutoff and envelope
+audit, not a stronger estimate on primes.
+
+An equivalent cutoff avoids floor errors entirely: take
+`M_N=2 linearPrimeStrip(c_N)`. It already satisfies the dual bound's
+lower cutoff requirement, lies below N, and eventually obeys
+`M_N≤δN` because `2(exp 1+1)c_N/N→0`. The same zero-prefix and
+`δ⁻⁷‖x_N‖²` collar estimates apply. Their finite statements and the
+critical cutoff geometry are implemented in
+`TerminalWindowsHaveMovingCollarCutoffs.lean`, pending audit.
+`EveryTerminalWindowHasSummableConductorSources.lean` implements the
+resulting residual and complete-source envelopes, also pending audit.
+The ensuing fixed-source and moving-packet concentration statements are
+implemented in `EveryTerminalWindowHasAPolarConductorSource.lean`;
+none of these general-window extensions is yet kernel checked.
 
 The exact affine selection rule already exists in
 `SuccessorShellArithmetic/Conductor/AffineShellConductorSelection.lean`:

@@ -6,14 +6,17 @@ import Mathlib.Analysis.SpecialFunctions.Log.Summable
 /-!
 # Products over a perturbed lattice
 
-Let `μ_k = (k + θ)h` be a shifted lattice and `λ_k` real points with `|λ_k − μ_k| ≤ L`. The factors
+Let `μ_k = (k + θ)h` be a shifted lattice and `λ_k` complex points with `|λ_k − μ_k| ≤ L` and
+`|Im λ_k| ≤ 1/2`. The factors
 
 `r_k(z) = ((z − λ_k)/(z − μ_k)) · ((i − μ_k)/(i − λ_k))`
 
 satisfy `r_k(z) − 1 = (z − i)(λ_k − μ_k)/((z − μ_k)(i − λ_k)) = O(1/k²)` (`pertFactor_sub_one`), so
 `Π_k r_k` converges absolutely off the lattice (`summable_norm_pertFactor_sub_one`). On the real
 line the partial products, multiplied by `sin((π/h)(x − θh))`, are bounded by `K(1 + |x|)^p`
-uniformly in the set of factors (`norm_sin_mul_prod_pertFactor_le`).
+uniformly in the set of factors (`norm_sin_mul_prod_pertFactor_le`). Since `|Im λ_k| ≤ 1/2`,
+`|i − λ_k| ≥ |i − Re λ_k|/2`, so the sums over the factors are those of the real perturbation
+`Re λ_k`, up to a factor `2`.
 
 Proof of the bound. The sine absorbs the factor of the lattice point nearest to `x`. For the
 other factors `|r_k − 1| ≤ L|x − i|/(|x − μ_k| |i − λ_k|)`; split at `|μ_k| = R ≍ |x|`. Beyond `R`
@@ -199,7 +202,7 @@ theorem sum_inv_sq_far_le {h θ R : ℝ} (hh : 0 < h) (hR : 0 < R) (S : Finset �
 
 /-- The factor `r_k(z) = ((z − ν_k)/(z − μ_k)) ((i − μ_k)/(i − ν_k))` moving the lattice point
 `μ_k` to `ν_k`, normalized at `i`. -/
-def pertFactor (h θ : ℝ) (ν : ℤ → ℝ) (k : ℤ) (z : ℂ) : ℂ :=
+def pertFactor (h θ : ℝ) (ν : ℤ → ℂ) (k : ℤ) (z : ℂ) : ℂ :=
   ((z - ν k) / (z - latPt h θ k)) * ((I - latPt h θ k) / (I - ν k))
 
 theorem I_sub_ofReal_ne_zero (t : ℝ) : (I - (t : ℂ)) ≠ 0 := fun h => by
@@ -214,24 +217,56 @@ theorem abs_le_norm_I_sub_ofReal (t : ℝ) : |t| ≤ ‖I - (t : ℂ)‖ := by
   have := Complex.abs_re_le_norm (I - (t : ℂ))
   simpa using this
 
-theorem pertFactor_sub_one {h θ : ℝ} (ν : ℤ → ℝ) (k : ℤ) {z : ℂ} (hz : z ≠ latPt h θ k) :
+/-- Points of depth `≤ 1/2` stay away from `i`. -/
+theorem I_sub_ne_zero {w : ℂ} (hw : |w.im| ≤ 1 / 2) : I - w ≠ 0 := fun h => by
+  have := congrArg Complex.im h
+  simp only [Complex.sub_im, Complex.I_im, Complex.zero_im] at this
+  rw [abs_le] at hw
+  linarith [hw.2]
+
+theorem half_le_norm_I_sub {w : ℂ} (hw : |w.im| ≤ 1 / 2) : 1 / 2 ≤ ‖I - w‖ := by
+  have h := Complex.abs_im_le_norm (I - w)
+  simp only [Complex.sub_im, Complex.I_im] at h
+  rw [abs_le] at hw
+  have : 1 / 2 ≤ |1 - w.im| := by rw [abs_of_pos (by linarith)]; linarith
+  linarith
+
+theorem abs_re_le_norm_I_sub (w : ℂ) : |w.re| ≤ ‖I - w‖ := by
+  have h := Complex.abs_re_le_norm (I - w)
+  simpa [abs_neg] using h
+
+theorem norm_I_sub_re_le {w : ℂ} (hw : |w.im| ≤ 1 / 2) : ‖I - (w.re : ℂ)‖ ≤ 2 * ‖I - w‖ := by
+  have h1 : ‖I - (w.re : ℂ)‖ ^ 2 = w.re ^ 2 + 1 := by
+    rw [← Complex.normSq_eq_norm_sq, Complex.normSq_apply]; simp; ring
+  have h2 : ‖I - w‖ ^ 2 = w.re ^ 2 + (1 - w.im) ^ 2 := by
+    rw [← Complex.normSq_eq_norm_sq, Complex.normSq_apply]; simp; ring
+  rw [abs_le] at hw
+  have h3 : ‖I - (w.re : ℂ)‖ ^ 2 ≤ (2 * ‖I - w‖) ^ 2 := by
+    rw [mul_pow, h1, h2]; nlinarith
+  exact (pow_le_pow_iff_left₀ (norm_nonneg _) (by positivity) two_ne_zero).mp h3
+
+theorem abs_re_sub_le_norm (w : ℂ) (t : ℝ) : |w.re - t| ≤ ‖w - t‖ := by
+  have h := Complex.abs_re_le_norm (w - t)
+  simpa using h
+
+theorem pertFactor_sub_one {h θ : ℝ} (ν : ℤ → ℂ) (k : ℤ) (hν : I - ν k ≠ 0) {z : ℂ}
+    (hz : z ≠ latPt h θ k) :
     pertFactor h θ ν k z - 1 =
-      (z - I) * ((ν k : ℂ) - latPt h θ k) / ((z - latPt h θ k) * (I - ν k)) := by
+      (z - I) * (ν k - latPt h θ k) / ((z - latPt h θ k) * (I - ν k)) := by
   have h1 : z - (latPt h θ k : ℂ) ≠ 0 := sub_ne_zero.mpr hz
-  have h2 := I_sub_ofReal_ne_zero (ν k)
   rw [pertFactor]
   field_simp
   ring
 
-theorem norm_pertFactor_sub_one_le {h θ L : ℝ} {ν : ℤ → ℝ} (hL : ∀ k, |ν k - latPt h θ k| ≤ L)
-    (k : ℤ) {z : ℂ} (hz : z ≠ latPt h θ k) :
+theorem norm_pertFactor_sub_one_le {h θ L : ℝ} {ν : ℤ → ℂ}
+    (hL : ∀ k, ‖ν k - latPt h θ k‖ ≤ L) (k : ℤ) (hν : I - ν k ≠ 0) {z : ℂ}
+    (hz : z ≠ latPt h θ k) :
     ‖pertFactor h θ ν k z - 1‖ ≤ L * ‖z - I‖ / (‖z - latPt h θ k‖ * ‖I - ν k‖) := by
-  rw [pertFactor_sub_one ν k hz, norm_div, norm_mul, norm_mul]
+  rw [pertFactor_sub_one ν k hν hz, norm_div, norm_mul, norm_mul]
   have h1 : 0 < ‖z - (latPt h θ k : ℂ)‖ := norm_pos_iff.mpr (sub_ne_zero.mpr hz)
-  have h2 : 0 < ‖I - (ν k : ℂ)‖ := norm_pos_iff.mpr (I_sub_ofReal_ne_zero _)
+  have h2 : 0 < ‖I - ν k‖ := norm_pos_iff.mpr hν
   apply div_le_div_of_nonneg_right _ (by positivity)
-  rw [show (ν k : ℂ) - latPt h θ k = ((ν k - latPt h θ k : ℝ) : ℂ) by push_cast; ring,
-    Complex.norm_real, Real.norm_eq_abs, mul_comm L]
+  rw [mul_comm L]
   exact mul_le_mul_of_nonneg_left (hL k) (norm_nonneg _)
 
 theorem abs_latPt_ge {h θ : ℝ} (hh : 0 < h) (hθ : |θ| ≤ 1) (k : ℤ) :
@@ -244,10 +279,11 @@ theorem abs_latPt_ge {h θ : ℝ} (hh : 0 < h) (hθ : |θ| ≤ 1) (k : ℤ) :
   nlinarith
 
 /-- **The factors converge.** Off the lattice, `Σ_k |r_k(z) − 1| < ∞`. -/
-theorem summable_norm_pertFactor_sub_one {h θ L : ℝ} (hh : 0 < h) (hθ : |θ| ≤ 1) {ν : ℤ → ℝ}
-    (hL : ∀ k, |ν k - latPt h θ k| ≤ L) {z : ℂ} (hz : ∀ k, z ≠ latPt h θ k) :
+theorem summable_norm_pertFactor_sub_one {h θ L : ℝ} (hh : 0 < h) (hθ : |θ| ≤ 1) {ν : ℤ → ℂ}
+    (hL : ∀ k, ‖ν k - latPt h θ k‖ ≤ L) (him : ∀ k, |(ν k).im| ≤ 1 / 2) {z : ℂ}
+    (hz : ∀ k, z ≠ latPt h θ k) :
     Summable fun k => ‖pertFactor h θ ν k z - 1‖ := by
-  have hL0 : 0 ≤ L := (abs_nonneg _).trans (hL 0)
+  have hL0 : 0 ≤ L := (norm_nonneg _).trans (hL 0)
   set K₀ : ℝ := 2 * (‖z‖ + L + 2 * h) / h with hK₀
   refine Summable.of_norm_bounded_eventually
     ((Real.summable_one_div_int_pow.mpr (by norm_num : 1 < 2)).mul_left
@@ -270,22 +306,21 @@ theorem summable_norm_pertFactor_sub_one {h θ L : ℝ} (hh : 0 < h) (hθ : |θ|
   have hkh : 2 * (‖z‖ + L + 2 * h) < |(k : ℝ)| * h := by
     rw [hK₀, div_lt_iff₀ hh] at hbig; linarith
   have hμ := abs_latPt_ge hh hθ k
-  have hzk : latPt h θ k ≠ 0 := by
-    intro h0; rw [h0, abs_zero] at hμ; nlinarith [norm_nonneg z]
   have ha : |(k : ℝ)| * h / 2 ≤ ‖z - latPt h θ k‖ := by
     have := norm_sub_norm_le (latPt h θ k : ℂ) z
     rw [Complex.norm_real, Real.norm_eq_abs, norm_sub_rev] at this
     nlinarith [norm_nonneg z]
   have hb : |(k : ℝ)| * h / 2 ≤ ‖I - ν k‖ := by
-    have h5 := abs_le_norm_I_sub_ofReal (ν k)
-    have h6 : |latPt h θ k| - L ≤ |ν k| := by
-      have := abs_sub_abs_le_abs_sub (latPt h θ k) (ν k)
+    have h5 := abs_re_le_norm_I_sub (ν k)
+    have h6 : |latPt h θ k| - L ≤ |(ν k).re| := by
+      have := abs_sub_abs_le_abs_sub (latPt h θ k) (ν k).re
       rw [abs_sub_comm] at this
-      linarith [hL k]
+      linarith [(abs_re_sub_le_norm (ν k) (latPt h θ k)).trans (hL k)]
     linarith [norm_nonneg z]
   have hk0 : 0 < |(k : ℝ)| * h / 2 := by nlinarith [norm_nonneg z]
   rw [Real.norm_eq_abs, abs_of_nonneg (norm_nonneg _)] at hk
-  refine absurd hk (not_lt.mpr ((norm_pertFactor_sub_one_le hL k (hz k)).trans ?_))
+  refine absurd hk (not_lt.mpr ((norm_pertFactor_sub_one_le hL k (I_sub_ne_zero (him k))
+    (hz k)).trans ?_))
   have hden : (|(k : ℝ)| * h / 2) * (|(k : ℝ)| * h / 2) ≤ ‖z - latPt h θ k‖ * ‖I - ν k‖ :=
     mul_le_mul ha hb hk0.le (by positivity)
   rw [show 4 * L * ‖z - I‖ / h ^ 2 * (1 / (k : ℝ) ^ 2) =
@@ -295,27 +330,27 @@ theorem summable_norm_pertFactor_sub_one {h θ L : ℝ} (hh : 0 < h) (hθ : |θ|
       field_simp]
   exact div_le_div_of_nonneg_left (by positivity) (by positivity) hden
 
-theorem multipliable_pertFactor {h θ L : ℝ} (hh : 0 < h) (hθ : |θ| ≤ 1) {ν : ℤ → ℝ}
-    (hL : ∀ k, |ν k - latPt h θ k| ≤ L) {z : ℂ} (hz : ∀ k, z ≠ latPt h θ k) :
+theorem multipliable_pertFactor {h θ L : ℝ} (hh : 0 < h) (hθ : |θ| ≤ 1) {ν : ℤ → ℂ}
+    (hL : ∀ k, ‖ν k - latPt h θ k‖ ≤ L) (him : ∀ k, |(ν k).im| ≤ 1 / 2) {z : ℂ}
+    (hz : ∀ k, z ≠ latPt h θ k) :
     Multipliable fun k => pertFactor h θ ν k z := by
-  have h := multipliable_one_add_of_summable (summable_norm_pertFactor_sub_one hh hθ hL hz)
+  have h := multipliable_one_add_of_summable (summable_norm_pertFactor_sub_one hh hθ hL him hz)
   simpa using h
 
-theorem pertFactor_ne_zero {h θ : ℝ} (ν : ℤ → ℝ) (k : ℤ) {z : ℂ} (hz : z ≠ latPt h θ k)
-    (hzν : z ≠ ν k) : pertFactor h θ ν k z ≠ 0 := by
+theorem pertFactor_ne_zero {h θ : ℝ} (ν : ℤ → ℂ) (k : ℤ) (hν : I - ν k ≠ 0) {z : ℂ}
+    (hz : z ≠ latPt h θ k) (hzν : z ≠ ν k) : pertFactor h θ ν k z ≠ 0 := by
   have h1 : z - (latPt h θ k : ℂ) ≠ 0 := sub_ne_zero.mpr hz
-  have h2 := I_sub_ofReal_ne_zero (ν k)
   have h3 : I - (latPt h θ k : ℂ) ≠ 0 := I_sub_ofReal_ne_zero _
   rw [pertFactor]
-  exact mul_ne_zero (div_ne_zero (sub_ne_zero.mpr hzν) h1) (div_ne_zero h3 h2)
+  exact mul_ne_zero (div_ne_zero (sub_ne_zero.mpr hzν) h1) (div_ne_zero h3 hν)
 
 /-- The infinite product does not vanish away from the `ν_k`. -/
-theorem tprod_pertFactor_ne_zero {h θ L : ℝ} (hh : 0 < h) (hθ : |θ| ≤ 1) {ν : ℤ → ℝ}
-    (hL : ∀ k, |ν k - latPt h θ k| ≤ L) {z : ℂ} (hz : ∀ k, z ≠ latPt h θ k)
-    (hzν : ∀ k, z ≠ ν k) : ∏' k, pertFactor h θ ν k z ≠ 0 := by
+theorem tprod_pertFactor_ne_zero {h θ L : ℝ} (hh : 0 < h) (hθ : |θ| ≤ 1) {ν : ℤ → ℂ}
+    (hL : ∀ k, ‖ν k - latPt h θ k‖ ≤ L) (him : ∀ k, |(ν k).im| ≤ 1 / 2) {z : ℂ}
+    (hz : ∀ k, z ≠ latPt h θ k) (hzν : ∀ k, z ≠ ν k) : ∏' k, pertFactor h θ ν k z ≠ 0 := by
   have h := tprod_one_add_ne_zero_of_summable (f := fun k => pertFactor h θ ν k z - 1)
-    (fun k => by simpa using pertFactor_ne_zero ν k (hz k) (hzν k))
-    (summable_norm_pertFactor_sub_one hh hθ hL hz)
+    (fun k => by simpa using pertFactor_ne_zero ν k (I_sub_ne_zero (him k)) (hz k) (hzν k))
+    (summable_norm_pertFactor_sub_one hh hθ hL him hz)
   simpa using h
 
 /-! ### The uniform bound on the real line -/
@@ -499,20 +534,22 @@ theorem sum_dist_near_far_le {h θ L : ℝ} (hh : 0 < h) (hθ : |θ| ≤ 1) {ν 
   rw [nearFarConst, ← hδ]
   linarith
 
-/-- `B₁ = π(1/2 + L/h)(1 + L) + 1` bounds the sine times the nearest factor. -/
-def nearestConst (h L : ℝ) : ℝ := π * (1 / 2 + L / h) * (1 + L) + 1
+/-- `B₁ = π(1/2 + L/h)(1 + 2L) + 1` bounds the sine times the nearest factor. -/
+def nearestConst (h L : ℝ) : ℝ := π * (1 / 2 + L / h) * (1 + 2 * L) + 1
 
 /-- **The uniform bound on the real line.** Off the lattice, uniformly in the finite set `S` of
-factors, `|sin((π/h)(x − θh)) Π_{k ∈ S} r_k(x)| ≤ K (1 + |x|)^p` with `K = B₁ e^{L C}` and
-`p = 4L(1 + L)/h`. -/
-theorem norm_sin_mul_prod_pertFactor_le {h θ L : ℝ} (hh : 0 < h) (hθ : |θ| ≤ 1) {ν : ℤ → ℝ}
-    (hL : ∀ k, |ν k - latPt h θ k| ≤ L) (S : Finset ℤ) (x : ℝ)
+factors, `|sin((π/h)(x − θh)) Π_{k ∈ S} r_k(x)| ≤ K (1 + |x|)^p` with `K = B₁ e^{2L C}` and
+`p = 8L(1 + L)/h`. -/
+theorem norm_sin_mul_prod_pertFactor_le {h θ L : ℝ} (hh : 0 < h) (hθ : |θ| ≤ 1) {ν : ℤ → ℂ}
+    (hL : ∀ k, ‖ν k - latPt h θ k‖ ≤ L) (him : ∀ k, |(ν k).im| ≤ 1 / 2) (S : Finset ℤ) (x : ℝ)
     (hx : ∀ k, x ≠ latPt h θ k) :
     ‖(Real.sin (π / h * (x - θ * h)) : ℂ) * ∏ k ∈ S, pertFactor h θ ν k x‖ ≤
-      nearestConst h L * Real.exp (L * nearFarConst h L) *
-        (1 + |x|) ^ (L * (4 * (1 + L) / h)) := by
+      nearestConst h L * Real.exp (2 * L * nearFarConst h L) *
+        (1 + |x|) ^ (2 * L * (4 * (1 + L) / h)) := by
   classical
-  have hL0 : 0 ≤ L := (abs_nonneg _).trans (hL 0)
+  have hL0 : 0 ≤ L := (norm_nonneg _).trans (hL 0)
+  have hLre : ∀ k, |(ν k).re - latPt h θ k| ≤ L := fun k =>
+    (abs_re_sub_le_norm (ν k) (latPt h θ k)).trans (hL k)
   set k₀ : ℤ := round (x / h - θ) with hk₀
   set μ₀ := latPt h θ k₀ with hμ₀
   have hnear : |x - μ₀| ≤ h / 2 := by
@@ -537,9 +574,31 @@ theorem norm_sin_mul_prod_pertFactor_le {h θ L : ℝ} (hh : 0 < h) (hθ : |θ| 
     have h2 := abs_sub_le (latPt h θ k) x μ₀
     rw [abs_sub_comm (latPt h θ k) x] at h2
     linarith
-  have hsum := sum_dist_near_far_le hh hθ hL x (S.erase k₀) hfar
+  have hsum := sum_dist_near_far_le hh hθ (ν := fun k => (ν k).re) hLre x (S.erase k₀) hfar
+  have hterm : ∀ k ∈ S.erase k₀, ‖pertFactor h θ ν k x - 1‖ ≤
+      2 * L * (‖(x : ℂ) - I‖ / (|x - latPt h θ k| * ‖I - (((ν k).re : ℝ) : ℂ)‖)) := by
+    intro k hk
+    have hd : 0 < |x - latPt h θ k| := lt_of_lt_of_le (by positivity) (hfar k hk)
+    have hb := half_le_norm_I_sub (him k)
+    have hb' : 0 < ‖I - (((ν k).re : ℝ) : ℂ)‖ := by
+      linarith [one_le_norm_I_sub_ofReal (ν k).re]
+    have h2 := norm_I_sub_re_le (him k)
+    have h1 := norm_pertFactor_sub_one_le hL k (I_sub_ne_zero (him k)) (z := (x : ℂ))
+      (by exact_mod_cast hx k)
+    rw [show (x : ℂ) - latPt h θ k = ((x - latPt h θ k : ℝ) : ℂ) by push_cast; ring,
+      Complex.norm_real, Real.norm_eq_abs] at h1
+    refine h1.trans ?_
+    have hA : 0 ≤ L * ‖(x : ℂ) - I‖ := by positivity
+    calc L * ‖(x : ℂ) - I‖ / (|x - latPt h θ k| * ‖I - ν k‖) =
+        2 * (L * ‖(x : ℂ) - I‖) / (|x - latPt h θ k| * (2 * ‖I - ν k‖)) := by
+          field_simp
+      _ ≤ 2 * (L * ‖(x : ℂ) - I‖) / (|x - latPt h θ k| * ‖I - (((ν k).re : ℝ) : ℂ)‖) :=
+          div_le_div_of_nonneg_left (by positivity) (by positivity)
+            (mul_le_mul_of_nonneg_left h2 hd.le)
+      _ = 2 * L * (‖(x : ℂ) - I‖ / (|x - latPt h θ k| * ‖I - (((ν k).re : ℝ) : ℂ)‖)) := by
+          ring
   have hrest : ‖∏ k ∈ S.erase k₀, pertFactor h θ ν k x‖ ≤
-      Real.exp (L * (nearFarConst h L + 4 * (1 + L) / h * Real.log (1 + |x|))) := by
+      Real.exp (2 * L * (nearFarConst h L + 4 * (1 + L) / h * Real.log (1 + |x|))) := by
     rw [norm_prod]
     calc ∏ k ∈ S.erase k₀, ‖pertFactor h θ ν k x‖
         ≤ ∏ k ∈ S.erase k₀, Real.exp ‖pertFactor h θ ν k x - 1‖ := by
@@ -551,49 +610,42 @@ theorem norm_sin_mul_prod_pertFactor_le {h θ L : ℝ} (hh : 0 < h) (hθ : |θ| 
       _ ≤ _ := by
           apply Real.exp_le_exp.mpr
           calc ∑ k ∈ S.erase k₀, ‖pertFactor h θ ν k x - 1‖
-              ≤ ∑ k ∈ S.erase k₀, L * (‖(x : ℂ) - I‖ / (|x - latPt h θ k| * ‖I - ν k‖)) := by
-                refine Finset.sum_le_sum fun k hk => ?_
-                have := norm_pertFactor_sub_one_le hL k (z := (x : ℂ))
-                  (by exact_mod_cast hx k)
-                rw [show (x : ℂ) - latPt h θ k = ((x - latPt h θ k : ℝ) : ℂ) by push_cast; ring,
-                  Complex.norm_real, Real.norm_eq_abs] at this
-                rw [mul_div_assoc] at this
-                exact this
-            _ = L * ∑ k ∈ S.erase k₀, ‖(x : ℂ) - I‖ / (|x - latPt h θ k| * ‖I - ν k‖) := by
+              ≤ ∑ k ∈ S.erase k₀,
+                  2 * L * (‖(x : ℂ) - I‖ / (|x - latPt h θ k| * ‖I - (((ν k).re : ℝ) : ℂ)‖)) :=
+                Finset.sum_le_sum hterm
+            _ = 2 * L * ∑ k ∈ S.erase k₀,
+                  ‖(x : ℂ) - I‖ / (|x - latPt h θ k| * ‖I - (((ν k).re : ℝ) : ℂ)‖) := by
                 rw [Finset.mul_sum]
-            _ ≤ _ := mul_le_mul_of_nonneg_left hsum hL0
+            _ ≤ _ := mul_le_mul_of_nonneg_left hsum (by positivity)
   -- the sine and the nearest factor
   have hfirst : ‖(Real.sin (π / h * (x - θ * h)) : ℂ) *
       (if k₀ ∈ S then pertFactor h θ ν k₀ x else 1)‖ ≤ nearestConst h L := by
     have hsin1 : |Real.sin (π / h * (x - θ * h))| ≤ 1 := Real.abs_sin_le_one _
     have hB1 : 1 ≤ nearestConst h L := by
-      unfold nearestConst; have : 0 ≤ π * (1 / 2 + L / h) * (1 + L) := by positivity
+      unfold nearestConst; have : 0 ≤ π * (1 / 2 + L / h) * (1 + 2 * L) := by positivity
       linarith
     rw [norm_mul, Complex.norm_real, Real.norm_eq_abs]
     split_ifs with hk
-    · -- `|sin| |r_{k₀}| ≤ (π/h)|x − ν₀| |i − μ₀|/|i − ν₀|`
-      rw [pertFactor, norm_mul, norm_div, norm_div,
+    · rw [pertFactor, norm_mul, norm_div, norm_div,
         show (x : ℂ) - latPt h θ k₀ = ((x - μ₀ : ℝ) : ℂ) by push_cast; ring,
-        show (x : ℂ) - ν k₀ = ((x - ν k₀ : ℝ) : ℂ) by push_cast; ring,
-        Complex.norm_real, Complex.norm_real, Real.norm_eq_abs, Real.norm_eq_abs]
-      have hxν : |x - ν k₀| ≤ h / 2 + L := by
-        have := abs_sub_le x μ₀ (ν k₀)
-        rw [abs_sub_comm μ₀ (ν k₀)] at this
+        Complex.norm_real, Real.norm_eq_abs]
+      have hxν : ‖(x : ℂ) - ν k₀‖ ≤ h / 2 + L := by
+        have := norm_sub_le_norm_sub_add_norm_sub (x : ℂ) (μ₀ : ℂ) (ν k₀)
+        rw [show (x : ℂ) - μ₀ = ((x - μ₀ : ℝ) : ℂ) by push_cast; ring, Complex.norm_real,
+          Real.norm_eq_abs, norm_sub_rev (μ₀ : ℂ)] at this
         linarith [hL k₀]
-      have hb1 := one_le_norm_I_sub_ofReal (ν k₀)
-      have hratio : ‖I - (latPt h θ k₀ : ℂ)‖ / ‖I - (ν k₀ : ℂ)‖ ≤ 1 + L := by
+      have hb1 := half_le_norm_I_sub (him k₀)
+      have hratio : ‖I - (latPt h θ k₀ : ℂ)‖ / ‖I - ν k₀‖ ≤ 1 + 2 * L := by
         rw [div_le_iff₀ (by linarith)]
-        have := norm_sub_le_norm_sub_add_norm_sub I (ν k₀ : ℂ) (latPt h θ k₀ : ℂ)
-        rw [show (ν k₀ : ℂ) - latPt h θ k₀ = ((ν k₀ - latPt h θ k₀ : ℝ) : ℂ) by push_cast; ring,
-          Complex.norm_real, Real.norm_eq_abs] at this
+        have := norm_sub_le_norm_sub_add_norm_sub I (ν k₀) (latPt h θ k₀ : ℂ)
         nlinarith [hL k₀]
       have hpos : 0 < |x - μ₀| := abs_pos.mpr hxμ₀
-      calc |Real.sin (π / h * (x - θ * h))| * (|x - ν k₀| / |x - μ₀| *
-            (‖I - (latPt h θ k₀ : ℂ)‖ / ‖I - (ν k₀ : ℂ)‖))
-          ≤ (π / h * |x - μ₀|) * (|x - ν k₀| / |x - μ₀| * (1 + L)) := by gcongr
-        _ = π / h * |x - ν k₀| * (1 + L) := by field_simp
-        _ ≤ π / h * (h / 2 + L) * (1 + L) := by gcongr
-        _ = π * (1 / 2 + L / h) * (1 + L) := by field_simp
+      calc |Real.sin (π / h * (x - θ * h))| * (‖(x : ℂ) - ν k₀‖ / |x - μ₀| *
+            (‖I - (latPt h θ k₀ : ℂ)‖ / ‖I - ν k₀‖))
+          ≤ (π / h * |x - μ₀|) * (‖(x : ℂ) - ν k₀‖ / |x - μ₀| * (1 + 2 * L)) := by gcongr
+        _ = π / h * ‖(x : ℂ) - ν k₀‖ * (1 + 2 * L) := by field_simp
+        _ ≤ π / h * (h / 2 + L) * (1 + 2 * L) := by gcongr
+        _ = π * (1 / 2 + L / h) * (1 + 2 * L) := by field_simp
         _ ≤ nearestConst h L := by unfold nearestConst; linarith
     · rw [norm_one, mul_one]; linarith
   have hsplit : ∏ k ∈ S, pertFactor h θ ν k x =
@@ -602,12 +654,12 @@ theorem norm_sin_mul_prod_pertFactor_le {h θ L : ℝ} (hh : 0 < h) (hθ : |θ| 
     · exact (Finset.mul_prod_erase S (fun k => pertFactor h θ ν k x) hk).symm
     · rw [Finset.erase_eq_of_notMem hk, one_mul]
   rw [hsplit, ← mul_assoc, norm_mul]
-  have hpow : Real.exp (L * (nearFarConst h L + 4 * (1 + L) / h * Real.log (1 + |x|))) =
-      Real.exp (L * nearFarConst h L) * (1 + |x|) ^ (L * (4 * (1 + L) / h)) := by
+  have hpow : Real.exp (2 * L * (nearFarConst h L + 4 * (1 + L) / h * Real.log (1 + |x|))) =
+      Real.exp (2 * L * nearFarConst h L) * (1 + |x|) ^ (2 * L * (4 * (1 + L) / h)) := by
     rw [Real.rpow_def_of_pos (by positivity), ← Real.exp_add]
     congr 1; ring
   have hB0 : 0 ≤ nearestConst h L := by unfold nearestConst; positivity
-  calc _ ≤ nearestConst h L * Real.exp (L * (nearFarConst h L + 4 * (1 + L) / h *
+  calc _ ≤ nearestConst h L * Real.exp (2 * L * (nearFarConst h L + 4 * (1 + L) / h *
         Real.log (1 + |x|))) := mul_le_mul hfirst hrest (norm_nonneg _) hB0
     _ = _ := by rw [hpow]; ring
 

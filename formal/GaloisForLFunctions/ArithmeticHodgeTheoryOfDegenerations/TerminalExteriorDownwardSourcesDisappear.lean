@@ -106,7 +106,7 @@ theorem abs_terminal_exteriorDownward_pairing_div_overlap_le
           (by positivity)
       _ = _ := by ring
   rw [abs_div, abs_of_pos hc0]
-  exact (div_le_div_of_nonneg_right hraw hc0.le).trans_eq (by field_simp [hc0.ne']; ring)
+  exact (div_le_div_of_nonneg_right hraw hc0.le).trans_eq (by field_simp [hc0.ne'] <;> ring)
 
 /-- Every bounded terminal receiver has zero exterior downward limit at critical scale. -/
 theorem tendsto_terminal_exteriorDownward_pairing

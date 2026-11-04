@@ -1,6 +1,7 @@
 import GaloisForLFunctions.ZeroConfigurationGeometry.FiniteModificationsAreSeenAtEveryAperture
 import GaloisForLFunctions.ZeroConfigurationGeometry.IsolatingWindows
 import GaloisForLFunctions.ZeroConfigurationGeometry.BlindWindowsForPerturbedLattices
+import GaloisForLFunctions.ZeroConfigurationGeometry.DifferentialWindowsInvertTheCamera
 
 /-!
 # Isolation identifies the cluster
@@ -21,15 +22,23 @@ point that some window of aperture `a` isolates from the rest of the cluster.
 * **Isolable clusters do not cancel** (`eq_of_mimic_of_isolable`). Mimics whose cluster admits an
   isolating window at each of its points are equal.
 * **Simple zero sets** (`eq_of_mimic_of_simple_zeros`). If the cluster lies in the simple zero
-  set of the transform of one window of aperture `a`, dividing at each point gives the isolating windows:
-  mimics at aperture `a` never differ only on the simple zeros of one aperture-`a` transform.
+  set of the transform of one window of aperture `a`, dividing at each point gives the isolating
+  windows: mimics at aperture `a` never differ only on the simple zeros of one aperture-`a`
+  transform.
 * **Lattices** (`eq_of_mimic_of_onLine_lattice`). Mimics at an aperture `a > π/h` whose cluster
   lies on the on-line lattice `{½ + ikh}` are equal, whatever the multiplicities.
 * **Perturbed lattices** (`eq_of_mimic_of_perturbed_lattice`, `eq_of_mimic_of_perturbed_lattices`).
   The same holds for clusters on the critical line inside a bounded perturbation `|ν_k − kh| ≤ L` of
   a lattice, with no separation, and inside finite unions of such perturbations of total density
-  `D` above the aperture `πD`. To isolate `ν_{k₀}` one moves every index that hits it off it and
-  takes the blind window of the moved perturbation (`exists_window_blind_to_perturbed_lattices`).
+  `D` above the aperture `πD`. To isolate a point one moves every index that hits it off it and
+  takes the blind window of the moved perturbation
+  (`exists_window_isolating_in_perturbed_lattices`).
+* **Thin real backgrounds hide no tilted point** (`eq_of_mimic_of_perturbed_lattices_and_finset`).
+  A finite set of arbitrary points may be added to the cluster: convolving with a window of small
+  aperture that vanishes on all but one of them (`exists_window_vanishing_on_finset`) isolates
+  each point at the same aperture. A tilted configuration therefore has no mimic at aperture `a`
+  that differs from it by finitely many points and a real cluster of density `< a/π` inside
+  perturbed lattices.
 
 Together with `BlindnessCostsTheDensityAperture` this is a density criterion for cancelling
 clusters: a window of aperture `a` can be blind only to configurations of lower density `≤ a/π`, and
@@ -63,14 +72,16 @@ theorem W_sub_W_eq_tsum {Z Z' : ZeroConfig} (hZ : TemperedConfig Z) (hZ' : Tempe
       (summable_indicator_pointImage Z' hZ' hf hfc hg hgc)]
   exact tsum_congr fun z => by rw [multDiff, sub_mul]
 
+/-- The image of the signed multiplicity of two configurations on the window pair `(f, g)`. -/
+def imageDiff (Z Z' : ZeroConfig) (f g : ℝ → ℂ) : ℂ := ∑' z, multDiff Z Z' z * pointImage f g z
+
 /-- The image difference is sesquilinear in the window. -/
-theorem tsum_multDiff_pointImage_add_smul {Z Z' : ZeroConfig} (hZ : TemperedConfig Z)
+theorem imageDiff_add_smul {Z Z' : ZeroConfig} (hZ : TemperedConfig Z)
     (hZ' : TemperedConfig Z') {f g : ℝ → ℂ} (hf : ContDiff ℝ 2 f) (hfc : HasCompactSupport f)
     (hg : ContDiff ℝ 2 g) (hgc : HasCompactSupport g) (c : ℂ) :
-    ∑' z, multDiff Z Z' z * pointImage (fun u => f u + c * g u) (fun u => f u + c * g u) z =
-      ∑' z, multDiff Z Z' z * pointImage f f z + c * ∑' z, multDiff Z Z' z * pointImage g f z +
-        conj c * ∑' z, multDiff Z Z' z * pointImage f g z +
-          c * conj c * ∑' z, multDiff Z Z' z * pointImage g g z := by
+    imageDiff Z Z' (fun u => f u + c * g u) (fun u => f u + c * g u) =
+      imageDiff Z Z' f f + c * imageDiff Z Z' g f + conj c * imageDiff Z Z' f g +
+        c * conj c * imageDiff Z Z' g g := by
   have hA := summable_multDiff_pointImage hZ hZ' hf hfc hf hfc
   have hB := summable_multDiff_pointImage hZ hZ' hg hgc hf hfc
   have hC := summable_multDiff_pointImage hZ hZ' hf hfc hg hgc
@@ -81,43 +92,33 @@ theorem tsum_multDiff_pointImage_add_smul {Z Z' : ZeroConfig} (hZ : TemperedConf
         conj c * (multDiff Z Z' z * pointImage f g z) +
           c * conj c * (multDiff Z Z' z * pointImage g g z) := fun z => by
     rw [pointImage_add_smul hf.continuous hfc hg.continuous hgc c z]; ring
-  rw [tsum_congr hsum]
-  rw [((hA.add (hB.mul_left c)).add (hC.mul_left (conj c))).tsum_add (hE.mul_left (c * conj c)),
+  rw [imageDiff, tsum_congr hsum,
+    ((hA.add (hB.mul_left c)).add (hC.mul_left (conj c))).tsum_add (hE.mul_left (c * conj c)),
     (hA.add (hB.mul_left c)).tsum_add (hC.mul_left (conj c)), hA.tsum_add (hB.mul_left c),
     tsum_mul_left, tsum_mul_left, tsum_mul_left]
+  rfl
 
 /-- **Infinite polarization.** Mimics at aperture `a` have equal images on every pair of windows
 of aperture `a`. -/
 theorem W_eq_of_mimic {Z Z' : ZeroConfig} (hZ : TemperedConfig Z) (hZ' : TemperedConfig Z')
     {a : ℝ} (hW : ∀ f, ApertureWindow a f → Z.W f f = Z'.W f f) {f g : ℝ → ℂ}
     (hf : ApertureWindow a f) (hg : ApertureWindow a g) : Z.W f g = Z'.W f g := by
-  set D : (ℝ → ℂ) → (ℝ → ℂ) → ℂ := fun f g => ∑' z, multDiff Z Z' z * pointImage f g z with hD
-  have hdiag : ∀ f, ApertureWindow a f → D f f = 0 := fun f hf => by
-    show (∑' z, multDiff Z Z' z * pointImage f f z) = 0
-    rw [← W_sub_W_eq_tsum hZ hZ' hf.1 hf.hasCompactSupport hf.1 hf.hasCompactSupport,
+  have hdiag : ∀ f, ApertureWindow a f → imageDiff Z Z' f f = 0 := fun f hf => by
+    rw [imageDiff, ← W_sub_W_eq_tsum hZ hZ' hf.1 hf.hasCompactSupport hf.1 hf.hasCompactSupport,
       hW f hf, sub_self]
   have hfc := hf.hasCompactSupport
   have hgc := hg.hasCompactSupport
-  have e1 := tsum_multDiff_pointImage_add_smul hZ hZ' hf.1 hfc hg.1 hgc 1
-  have eI := tsum_multDiff_pointImage_add_smul hZ hZ' hf.1 hfc hg.1 hgc I
-  rw [show (∑' z, multDiff Z Z' z * pointImage (fun u => f u + 1 * g u) (fun u => f u + 1 * g u) z)
-      = D (fun u => f u + 1 * g u) (fun u => f u + 1 * g u) from rfl,
-    hdiag _ (hf.add_smul hg 1)] at e1
-  rw [show (∑' z, multDiff Z Z' z * pointImage (fun u => f u + I * g u) (fun u => f u + I * g u) z)
-      = D (fun u => f u + I * g u) (fun u => f u + I * g u) from rfl,
-    hdiag _ (hf.add_smul hg I)] at eI
-  have hff : D f f = 0 := hdiag f hf
-  have hgg : D g g = 0 := hdiag g hg
-  change 0 = D f f + 1 * D g f + conj 1 * D f g + 1 * conj 1 * D g g at e1
-  change 0 = D f f + I * D g f + conj I * D f g + I * conj I * D g g at eI
-  rw [hff, hgg] at e1 eI
+  have e1 := imageDiff_add_smul hZ hZ' hf.1 hfc hg.1 hgc 1
+  have eI := imageDiff_add_smul hZ hZ' hf.1 hfc hg.1 hgc I
+  rw [hdiag _ (hf.add_smul hg 1), hdiag f hf, hdiag g hg] at e1
+  rw [hdiag _ (hf.add_smul hg I), hdiag f hf, hdiag g hg] at eI
   simp only [map_one, Complex.conj_I, zero_add, add_zero, one_mul, mul_zero] at e1 eI
-  have h2 : D g f - D f g = 0 := by
-    have : I * (D g f - D f g) = 0 := by linear_combination -eI
+  have h2 : imageDiff Z Z' g f - imageDiff Z Z' f g = 0 := by
+    have : I * (imageDiff Z Z' g f - imageDiff Z Z' f g) = 0 := by linear_combination -eI
     exact (mul_eq_zero.mp this).resolve_left Complex.I_ne_zero
-  have hfg : D f g = 0 := by linear_combination (-1 / 2 : ℂ) * e1 - (1 / 2 : ℂ) * h2
+  have hfg : imageDiff Z Z' f g = 0 := by linear_combination (-1 / 2 : ℂ) * e1 - (1 / 2 : ℂ) * h2
   have h := W_sub_W_eq_tsum hZ hZ' hf.1 hfc hg.1 hgc
-  rw [show (∑' z, multDiff Z Z' z * pointImage f g z) = D f g from rfl, hfg] at h
+  rw [← imageDiff, hfg] at h
   exact sub_eq_zero.mp h
 
 /-- **Isolation forces a zero coefficient.** If a window of aperture `a` sees `γ_{z₀}` and is blind
@@ -181,6 +182,101 @@ theorem eq_of_mimic_of_onLine_lattice {Z Z' : ZeroConfig} (hZ : TemperedConfig Z
   rw [hk]
   exact hgk k hkk
 
+/-- **Isolating a point from perturbed lattices.** For finitely many bounded perturbations `ν_j` of
+lattices of total density `D = Σ_j 1/h_j` and every aperture `r > πD`, each `z₀ ∈ ℂ` has a window
+of aperture `r` that sees `z₀` and is blind to every `ν_j k ≠ z₀`. Every index hitting `z₀` is moved
+off it by one unit, and the moved family is still a bounded perturbation. -/
+theorem exists_window_isolating_in_perturbed_lattices {ι : Type*} [DecidableEq ι] (T : Finset ι)
+    (h L : ι → ℝ) (hh : ∀ j ∈ T, 0 < h j) (ν : ι → ℤ → ℝ)
+    (hν : ∀ j ∈ T, ∀ k : ℤ, |ν j k - k * h j| ≤ L j) {r : ℝ}
+    (hr : Real.pi * ∑ j ∈ T, (h j)⁻¹ < r) (z₀ : ℂ) :
+    ∃ f : ℝ → ℂ, ApertureWindow r f ∧
+      (∀ j ∈ T, ∀ k, (ν j k : ℂ) ≠ z₀ → paperFT f (ν j k) = 0) ∧ paperFT f z₀ ≠ 0 := by
+  classical
+  set ν' : ι → ℤ → ℝ := fun j k => if (ν j k : ℂ) = z₀ then ν j k + 1 else ν j k with hν'
+  have hν'b : ∀ j ∈ T, ∀ k : ℤ, |ν' j k - k * h j| ≤ L j + 1 := by
+    intro j hj k
+    have h0 := hν j hj k
+    by_cases hk : (ν j k : ℂ) = z₀
+    · simp only [hν', if_pos hk]
+      calc |ν j k + 1 - k * h j| = |(ν j k - k * h j) + 1| := by congr 1; ring
+        _ ≤ |ν j k - k * h j| + |(1 : ℝ)| := abs_add_le _ _
+        _ ≤ L j + 1 := by rw [abs_one]; linarith
+    · simp only [hν', if_neg hk]; linarith
+  have hz₀' : ∀ j ∈ T, ∀ k, z₀ ≠ (ν' j k : ℂ) := by
+    intro j _ k hk
+    by_cases hkk : (ν j k : ℂ) = z₀
+    · simp only [hν', if_pos hkk] at hk
+      have := Complex.ofReal_injective (hkk.trans hk)
+      linarith
+    · simp only [hν', if_neg hkk] at hk
+      exact hkk hk.symm
+  obtain ⟨f, hf, hblind, hsee⟩ :=
+    exists_window_blind_to_perturbed_lattices T h (fun j => L j + 1) hh ν' hν'b hr hz₀'
+  refine ⟨f, hf, fun j hj k hk => ?_, hsee⟩
+  have : ν' j k = ν j k := by simp only [hν', if_neg hk]
+  rw [← this]
+  exact hblind j hj k
+
+/-- A window of any aperture `δ > 0` vanishing on a finite set `T` of frequencies and seeing a
+frequency `w₀ ∉ T`: the transform is `∏_{t ∈ T} (−i(w − t)) b̂(w)` with `b̂(w₀) = 1`. -/
+theorem exists_window_vanishing_on_finset {δ : ℝ} (hδ : 0 < δ) (T : Finset ℂ) {w₀ : ℂ}
+    (hw₀ : w₀ ∉ T) :
+    ∃ g : ℝ → ℂ, ApertureWindow δ g ∧ (∀ w ∈ T, paperFT g w = 0) ∧ paperFT g w₀ ≠ 0 := by
+  obtain ⟨b, hb, hbc, hbs, hb1⟩ := exists_smooth_window_paperFT_eq_one hδ w₀
+  obtain ⟨f, hf, hfs, hfw⟩ := exists_annihilating_window T hb hbc
+  refine ⟨f, ⟨hf.of_le (by norm_cast), hfs.trans hbs⟩, fun w hw => ?_, ?_⟩
+  · rw [hfw, Finset.prod_eq_zero hw (by ring), zero_mul]
+  · rw [hfw, hb1, mul_one]
+    exact Finset.prod_ne_zero_iff.mpr fun z hz =>
+      mul_ne_zero (neg_ne_zero.mpr I_ne_zero) (sub_ne_zero.mpr fun h => hw₀ (h ▸ hz))
+
+/-- **Isolation in thin sets.** Let `S` be a set of points whose ordinates lie on finitely many
+bounded perturbations `{ν_j k}` of lattices of total density `D`, apart from a finite set `F`. For
+every aperture `a > πD` each point `z₀` has a window of aperture `a` that sees `γ_{z₀}` and is
+blind to every other point of `S`: the window blind to the lattices away from `γ_{z₀}` is convolved
+with a window of small aperture vanishing on `γ(F) ∖ {γ_{z₀}}`. -/
+theorem exists_isolating_window_of_lattices_and_finset {ι : Type*} [DecidableEq ι]
+    (T : Finset ι) (h L : ι → ℝ) (hh : ∀ j ∈ T, 0 < h j) (ν : ι → ℤ → ℝ)
+    (hν : ∀ j ∈ T, ∀ k : ℤ, |ν j k - k * h j| ≤ L j) {a : ℝ}
+    (ha : Real.pi * ∑ j ∈ T, (h j)⁻¹ < a) (F : Finset ℂ) {S : Set ℂ}
+    (hS : ∀ z ∈ S, (∃ j ∈ T, ∃ k : ℤ, gammaOf z = (ν j k : ℂ)) ∨ z ∈ F) (z₀ : ℂ) :
+    ∃ f : ℝ → ℂ, ApertureWindow a f ∧ (∀ z ∈ S, z ≠ z₀ → paperFT f (gammaOf z) = 0) ∧
+      paperFT f (gammaOf z₀) ≠ 0 := by
+  classical
+  set δ := (a - Real.pi * ∑ j ∈ T, (h j)⁻¹) / 2 with hδ
+  have hδ0 : 0 < δ := by rw [hδ]; linarith
+  obtain ⟨f₁, hf₁, hf₁lat, hf₁0⟩ := exists_window_isolating_in_perturbed_lattices T h L hh ν hν
+    (r := a - δ) (by rw [hδ]; linarith) (gammaOf z₀)
+  obtain ⟨g, hg, hgF, hg0⟩ := exists_window_vanishing_on_finset hδ0
+    ((F.image gammaOf).erase (gammaOf z₀)) (Finset.notMem_erase _ _)
+  obtain ⟨hw, hwt⟩ := apertureWindow_convolution hf₁ hg
+  refine ⟨_, by rwa [sub_add_cancel] at hw, fun z hzS hz => ?_,
+    by rw [hwt]; exact mul_ne_zero hf₁0 hg0⟩
+  rw [hwt]
+  rcases hS z hzS with ⟨j, hj, k, hk⟩ | hF
+  · rw [hk, hf₁lat j hj k (by rw [← hk]; exact fun h' => hz (gammaOf_injective h')), zero_mul]
+  · rw [hgF _ (Finset.mem_erase.mpr ⟨fun h' => hz (gammaOf_injective h'),
+      Finset.mem_image_of_mem _ hF⟩), mul_zero]
+
+/-- **Thin real backgrounds hide no tilted point.** Mimics at an aperture `a > π Σ_j 1/h_j` whose
+cluster lies in the union of finitely many bounded perturbations `{ν_j k}` of lattices on the
+critical line and a finite set `F` of arbitrary points, tilted or not, are equal. -/
+theorem eq_of_mimic_of_perturbed_lattices_and_finset {ι : Type*} [DecidableEq ι]
+    {Z Z' : ZeroConfig} (hZ : TemperedConfig Z) (hZ' : TemperedConfig Z') (T : Finset ι)
+    (h L : ι → ℝ) (hh : ∀ j ∈ T, 0 < h j) (ν : ι → ℤ → ℝ)
+    (hν : ∀ j ∈ T, ∀ k : ℤ, |ν j k - k * h j| ≤ L j) {a : ℝ}
+    (ha : Real.pi * ∑ j ∈ T, (h j)⁻¹ < a) (hW : ∀ f, ApertureWindow a f → Z.W f f = Z'.W f f)
+    (F : Finset ℂ)
+    (hcl : ∀ z, multDiff Z Z' z ≠ 0 → (∃ j ∈ T, ∃ k : ℤ, gammaOf z = (ν j k : ℂ)) ∨ z ∈ F) :
+    Z.carrier = Z'.carrier ∧ ∀ ρ ∈ Z.carrier, Z.mult ρ = Z'.mult ρ := by
+  have hD0 : 0 ≤ Real.pi * ∑ j ∈ T, (h j)⁻¹ :=
+    mul_nonneg Real.pi_pos.le (Finset.sum_nonneg fun j hj => (inv_pos.mpr (hh j hj)).le)
+  refine eq_of_mimic_of_isolable hZ hZ' (lt_of_le_of_lt hD0 ha) hW fun z₀ _ => ?_
+  obtain ⟨f, hf, hblind, hsee⟩ := exists_isolating_window_of_lattices_and_finset T h L hh ν hν ha F
+    (S := {z | multDiff Z Z' z ≠ 0}) (fun z hz => hcl z hz) z₀
+  exact ⟨f, hf, fun z hz hc => hblind z hc hz, hsee⟩
+
 /-- **Clusters on finitely many perturbed lattices do not cancel above `πD`.** Mimics at an aperture
 `a > π Σ_j 1/h_j` whose cluster lies on the critical line inside `⋃_j {ν_j k}`,
 `|ν_j k − k h_j| ≤ L_j`, are equal. -/
@@ -190,38 +286,9 @@ theorem eq_of_mimic_of_perturbed_lattices {ι : Type*} [DecidableEq ι] {Z Z' : 
     {a : ℝ} (ha : Real.pi * ∑ j ∈ T, (h j)⁻¹ < a)
     (hW : ∀ f, ApertureWindow a f → Z.W f f = Z'.W f f)
     (hcl : ∀ z, multDiff Z Z' z ≠ 0 → ∃ j ∈ T, ∃ k : ℤ, gammaOf z = (ν j k : ℂ)) :
-    Z.carrier = Z'.carrier ∧ ∀ ρ ∈ Z.carrier, Z.mult ρ = Z'.mult ρ := by
-  classical
-  have ha0 : 0 < a := lt_of_le_of_lt (mul_nonneg Real.pi_pos.le
-    (Finset.sum_nonneg fun j hj => (inv_pos.mpr (hh j hj)).le)) ha
-  refine eq_of_mimic_of_isolable hZ hZ' ha0 hW fun z₀ hz₀ => ?_
-  obtain ⟨j₀, hj₀, k₀, hk₀⟩ := hcl z₀ hz₀
-  set κ : ℝ := ν j₀ k₀ with hκ
-  -- move every index that hits `κ` off it, by one unit
-  set ν' : ι → ℤ → ℝ := fun j k => if ν j k = κ then κ + 1 else ν j k with hν'
-  have hν'b : ∀ j ∈ T, ∀ k : ℤ, |ν' j k - k * h j| ≤ L j + 1 := by
-    intro j hj k
-    have h0 := hν j hj k
-    by_cases hk : ν j k = κ
-    · simp only [hν', if_pos hk]
-      calc |κ + 1 - k * h j| = |(ν j k - k * h j) + 1| := by rw [hk]; ring_nf
-        _ ≤ |ν j k - k * h j| + |(1 : ℝ)| := abs_add_le _ _
-        _ ≤ L j + 1 := by rw [abs_one]; linarith
-    · simp only [hν', if_neg hk]; linarith
-  have hκ' : ∀ j ∈ T, ∀ k, ((κ : ℝ) : ℂ) ≠ (ν' j k : ℂ) := by
-    intro j _ k hk
-    have hk' : κ = ν' j k := by exact_mod_cast hk
-    by_cases hkk : ν j k = κ
-    · simp only [hν', if_pos hkk] at hk'; linarith
-    · simp only [hν', if_neg hkk] at hk'; exact hkk hk'.symm
-  obtain ⟨f₀, hf₀, hblind, hsee⟩ :=
-    exists_window_blind_to_perturbed_lattices T h (fun j => L j + 1) hh ν' hν'b ha hκ'
-  refine ⟨f₀, hf₀, fun z hz hc => ?_, by rw [hk₀]; exact hsee⟩
-  obtain ⟨j, hj, k, hk⟩ := hcl z hc
-  have hne : ν j k ≠ κ := fun h' => hz (gammaOf_injective (by rw [hk, hk₀, h']))
-  have : ν' j k = ν j k := by simp only [hν', if_neg hne]
-  rw [hk, ← this]
-  exact hblind j hj k
+    Z.carrier = Z'.carrier ∧ ∀ ρ ∈ Z.carrier, Z.mult ρ = Z'.mult ρ :=
+  eq_of_mimic_of_perturbed_lattices_and_finset hZ hZ' T h L hh ν hν ha hW ∅
+    fun z hz => Or.inl (hcl z hz)
 
 /-- **Clusters on a perturbed lattice do not cancel above `π/h`.** Mimics at an aperture `a > π/h`
 whose cluster lies on the critical line inside `{ν_k}`, `|ν_k − kh| ≤ L`, are equal. -/

@@ -19,8 +19,9 @@ the camera of lag aperture `2a` is split between its two windows.
   aperture `a` whose cluster lies on the critical line with upper uniform density `< 2a/π` are
   equal. No separation of the cluster is needed.
 
-The criterion is sharp: the on-line lattice pair of `lattice_resolution_sharp` has the cluster
-`(π/(2a))ℤ`, of density exactly `2a/π`, and cancels at aperture `a`.
+The criterion is sharp (`exists_onLine_mimic_at_density`): the on-line lattice pair of
+`lattice_resolution_sharp` has the cluster `(π/(2a))ℤ`, of density exactly `2a/π`, and cancels at
+aperture `a`.
 -/
 
 open MeasureTheory Complex Set Filter
@@ -219,5 +220,44 @@ theorem eq_of_mimic_of_onLine_separated {Z Z' : ZeroConfig} (hZ : TemperedConfig
     rw [Finset.card_image_of_injOn hinj] at h
     calc (s.card : ℝ) ≤ (y - x) / δ + 1 := h
       _ = δ⁻¹ * (y - x) + 1 := by rw [div_eq_inv_mul]
+
+/-- **The density `2a/π` is sharp.** The on-line lattice pair at `L = 2a` is a pair of different
+mimics at aperture `a` whose cluster lies on the critical line with at most `(2a/π)(y − x) + 1`
+points at heights in every `[x, y]`. -/
+theorem exists_onLine_mimic_at_density {a : ℝ} (ha : 0 < a) :
+    ∃ Z Z' : ZeroConfig, TemperedConfig Z ∧ TemperedConfig Z' ∧
+      (∀ f, ApertureWindow a f → Z.W f f = Z'.W f f) ∧
+      (∀ z, multDiff Z Z' z ≠ 0 → z.re = 1 / 2) ∧
+      (∀ (s : Finset ℂ) (x y : ℝ), x ≤ y → (∀ z ∈ s, multDiff Z Z' z ≠ 0 ∧ z.im ∈ Icc x y) →
+        (s.card : ℝ) ≤ 2 * a / π * (y - x) + 1) ∧
+      Z.carrier ≠ Z'.carrier := by
+  have hL : 0 < 2 * a := by positivity
+  obtain ⟨hZ, hZ', hre, hre', hsep, hne, hW⟩ := lattice_resolution_sharp hL
+  have hline : ∀ z, multDiff (_root_.RHTower.onLineLatticeConfig hL)
+      (simpleHalfLatticeConfig hL) z ≠ 0 → z.re = 1 / 2 := fun z hz => by
+    rcases mem_carrier_of_multDiff_ne_zero hz with h | h
+    · exact hre z h
+    · exact hre' z h
+  refine ⟨_, _, hZ, hZ', fun f hf => hW f hf.1 (by rw [show 2 * a / 2 = a by ring]; exact hf.2),
+    hline, fun s x y hxy hs => ?_, hne⟩
+  have hπL : 0 < π / (2 * a) := by positivity
+  have hsep' : ∀ z ∈ s, ∀ z' ∈ s, z ≠ z' → π / (2 * a) ≤ |z.im - z'.im| := fun z hz z' hz' hzz =>
+    hsep z (mem_carrier_of_multDiff_ne_zero (hs z hz).1) z'
+      (mem_carrier_of_multDiff_ne_zero (hs z' hz').1) hzz
+  have hinj : Set.InjOn Complex.im (s : Set ℂ) := by
+    intro z hz z' hz' e
+    by_contra hzz
+    have := hsep' z hz z' hz' hzz
+    rw [e, sub_self, abs_zero] at this
+    linarith
+  have h := card_le_of_separated_of_subset_Icc hπL hxy (s.image Complex.im)
+    (fun u hu v hv huv => by
+      obtain ⟨z, hz, rfl⟩ := Finset.mem_image.mp hu
+      obtain ⟨z', hz', rfl⟩ := Finset.mem_image.mp hv
+      exact hsep' z hz z' hz' fun e => huv (by rw [e]))
+    (fun u hu => by obtain ⟨z, hz, rfl⟩ := Finset.mem_image.mp hu; exact (hs z hz).2)
+  rw [Finset.card_image_of_injOn hinj] at h
+  calc (s.card : ℝ) ≤ (y - x) / (π / (2 * a)) + 1 := h
+    _ = 2 * a / π * (y - x) + 1 := by field_simp
 
 end GaloisForLFunctions.ZeroConfigurationGeometry

@@ -38,3 +38,4 @@ Every individual theta atom has a strict fifth even section at reflection scale 
 import GaloisForLFunctions.ThetaCuspSections.FifthEvenLeadingPairReserve
 import GaloisForLFunctions.ThetaCuspSections.FifthEvenThreeAtomRemainder
 import GaloisForLFunctions.ThetaCuspSections.FifthEvenNativeRay
+import GaloisForLFunctions.ThetaCuspSections.FifthEvenEffectiveCrossRay

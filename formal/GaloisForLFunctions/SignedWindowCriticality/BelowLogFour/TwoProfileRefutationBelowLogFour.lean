@@ -117,9 +117,9 @@ theorem two_mul_archLevyDensity_le_quartic {y : ℝ} (hy : 0 < y) :
     have hqe : q * Real.exp z = 1 := by rw [hq_def, ← Real.exp_add, neg_add_cancel, Real.exp_zero]
     have hexp_z : Real.exp z = 1 / q := eq_one_div_of_mul_eq_one_right hqe
     have hsh_q : 2 * Real.sinh z = (1 - q ^ 2) / q := by
-      rw [Real.sinh_eq, hexp_z, ← hq_def]; field_simp [hq_pos.ne']; ring
+      rw [Real.sinh_eq, hexp_z, ← hq_def]; field_simp [hq_pos.ne']
     have hch_q : 2 * Real.cosh z = (1 + q ^ 2) / q := by
-      rw [Real.cosh_eq, hexp_z, ← hq_def]; field_simp [hq_pos.ne']; ring
+      rw [Real.cosh_eq, hexp_z, ← hq_def]; field_simp [hq_pos.ne']
     have hexp2y : Real.exp (-2 * y) = q ^ 4 := by
       rw [hq_def, ← Real.exp_nat_mul]; congr 1; rw [hz_def]; ring
     have hω : archLevyDensity y = q / (1 - q ^ 4) := by
@@ -143,7 +143,8 @@ theorem two_mul_archLevyDensity_le_quartic {y : ℝ} (hy : 0 < y) :
     have h1 : 1 ≤ (z + z ^ 3 / 6) * (1 / z - z / 6 + z ^ 3 / 36) := by
       have hid : (z + z ^ 3 / 6) * (1 / z - z / 6 + z ^ 3 / 36) = 1 + z ^ 6 / 216 := by
         field_simp [hz.ne']; ring
-      rw [hid]; positivity
+      have hnn : 0 ≤ z ^ 6 / 216 := by positivity
+      linarith
     exact h1.trans (mul_le_mul_of_nonneg_right (cubic_le_sinh_of_nonneg hz.le) hp_sh_pos.le)
   have hsh_ub : 1 / (2 * Real.sinh z) ≤ (1 / z - z / 6 + z ^ 3 / 36) / 2 := by
     rw [div_le_div_iff₀ (by positivity) (by norm_num : (0 : ℝ) < 2)]
@@ -155,7 +156,8 @@ theorem two_mul_archLevyDensity_le_quartic {y : ℝ} (hy : 0 < y) :
   have hch_prod : 1 ≤ Real.cosh z * (1 - z ^ 2 / 2 + z ^ 4 / 4) := by
     have h1 : 1 ≤ (1 + z ^ 2 / 2) * (1 - z ^ 2 / 2 + z ^ 4 / 4) := by
       have hid : (1 + z ^ 2 / 2) * (1 - z ^ 2 / 2 + z ^ 4 / 4) = 1 + z ^ 6 / 8 := by ring
-      rw [hid]; positivity
+      have hnn : 0 ≤ z ^ 6 / 8 := by positivity
+      linarith
     exact h1.trans (mul_le_mul_of_nonneg_right (one_add_sq_div_two_le_cosh z) hp_ch_pos.le)
   have hch_ub : 1 / (2 * Real.cosh z) ≤ (1 - z ^ 2 / 2 + z ^ 4 / 4) / 2 := by
     rw [div_le_div_iff₀ (by positivity) (by norm_num : (0 : ℝ) < 2)]
@@ -179,8 +181,9 @@ private lemma hasDerivAt_omegaInZ {t : ℝ} (ht : |t| < 1) :
   have hl1 : HasDerivAt (fun u : ℝ => Real.log (1 + u)) (1 / (1 + t)) t := by
     simpa using ((hasDerivAt_id t).const_add 1).log h1p.ne'
   have hl2 : HasDerivAt (fun u : ℝ => Real.log (1 - u)) (-1 / (1 - t)) t := by
-    have h := ((hasDerivAt_const t (1 : ℝ)).sub (hasDerivAt_id t)).log h1m.ne'
-    exact h.congr_deriv (by ring)
+    have hsub : HasDerivAt (fun u : ℝ => 1 - u) (-1) t := by
+      simpa using (hasDerivAt_id t).const_sub (1 : ℝ)
+    exact (hsub.log h1m.ne').congr_deriv (by ring)
   have hc := ((hl1.sub hl2).const_mul (1 / 2 : ℝ)).add (Real.hasDerivAt_arctan t)
   refine hc.congr_deriv ?_
   have hd3 : 1 + t ^ 2 ≠ 0 := by positivity
@@ -204,7 +207,7 @@ private lemma omegaInZ_mono {a b : ℝ} (ha : 0 ≤ a) (hab : a ≤ b) (hb : b <
   have hftc := intervalIntegral.integral_eq_sub_of_hasDerivAt
     (fun t ht => hasDerivAt_omegaInZ (by
       rw [uIcc_of_le hab] at ht
-      exact abs_lt.mpr ⟨by linarith, lt_of_le_of_lt ht.2 hb⟩))
+      exact abs_lt.mpr ⟨by linarith [ht.1], lt_of_le_of_lt ht.2 hb⟩))
     hc.intervalIntegrable
   have hnn : 0 ≤ ∫ t in a..b, 2 / (1 - t ^ 4) := by
     rw [intervalIntegral.integral_of_le hab]
@@ -266,27 +269,25 @@ private lemma exp_ge_quintic_of_nonneg {x : ℝ} (hx : 0 ≤ x) :
     rw [Real.exp_zero, hP0, sub_self, sub_zero] at hftc
     linarith
   have h1 : ∀ w, 0 ≤ w → 1 + w ≤ Real.exp w :=
-    step (by norm_num) continuous_const
+    step (P' := fun _ => 1) (by norm_num) (by fun_prop)
       (fun u => ((hasDerivAt_const u (1 : ℝ)).add (hasDerivAt_id u)).congr_deriv (by ring))
       (fun u hu => Real.one_le_exp hu)
   have h2 : ∀ w, 0 ≤ w → 1 + w + w ^ 2 / 2 ≤ Real.exp w :=
-    step (by norm_num) (continuous_const.add continuous_id)
+    step (P' := fun u => 1 + u) (by norm_num) (by fun_prop)
       (fun u => (((hasDerivAt_const u (1 : ℝ)).add (hasDerivAt_id u)).add
         ((hasDerivAt_pow 2 u).div_const 2)).congr_deriv (by ring)) h1
   have h3 : ∀ w, 0 ≤ w → 1 + w + w ^ 2 / 2 + w ^ 3 / 6 ≤ Real.exp w :=
-    step (by norm_num) ((continuous_const.add continuous_id).add ((continuous_pow 2).div_const 2))
+    step (P' := fun u => 1 + u + u ^ 2 / 2) (by norm_num) (by fun_prop)
       (fun u => ((((hasDerivAt_const u (1 : ℝ)).add (hasDerivAt_id u)).add
         ((hasDerivAt_pow 2 u).div_const 2)).add ((hasDerivAt_pow 3 u).div_const 6)).congr_deriv
         (by ring)) h2
   have h4 : ∀ w, 0 ≤ w → 1 + w + w ^ 2 / 2 + w ^ 3 / 6 + w ^ 4 / 24 ≤ Real.exp w :=
-    step (by norm_num) (((continuous_const.add continuous_id).add ((continuous_pow 2).div_const 2)).add
-        ((continuous_pow 3).div_const 6))
+    step (P' := fun u => 1 + u + u ^ 2 / 2 + u ^ 3 / 6) (by norm_num) (by fun_prop)
       (fun u => (((((hasDerivAt_const u (1 : ℝ)).add (hasDerivAt_id u)).add
         ((hasDerivAt_pow 2 u).div_const 2)).add ((hasDerivAt_pow 3 u).div_const 6)).add
         ((hasDerivAt_pow 4 u).div_const 24)).congr_deriv (by ring)) h3
-  exact step (by norm_num)
-    ((((continuous_const.add continuous_id).add ((continuous_pow 2).div_const 2)).add
-      ((continuous_pow 3).div_const 6)).add ((continuous_pow 4).div_const 24))
+  exact step (P' := fun u => 1 + u + u ^ 2 / 2 + u ^ 3 / 6 + u ^ 4 / 24)
+    (by norm_num) (by fun_prop)
     (fun u => ((((((hasDerivAt_const u (1 : ℝ)).add (hasDerivAt_id u)).add
       ((hasDerivAt_pow 2 u).div_const 2)).add ((hasDerivAt_pow 3 u).div_const 6)).add
       ((hasDerivAt_pow 4 u).div_const 24)).add ((hasDerivAt_pow 5 u).div_const 120)).congr_deriv
@@ -424,16 +425,18 @@ lemma refutationSource₂_odd (x : ℝ) : refutationSource₂ (-x) = -refutation
   ring
 
 lemma refutationSource₁_eq_zero_of_far {x : ℝ} (hx : c₀ ≤ |x|) : refutationSource₁ x = 0 := by
+  have hc0 : (0 : ℝ) < c₀ := by unfold c₀; norm_num
   unfold refutationSource₁
   apply unitSource₁_outside
-  rw [abs_div, abs_of_pos (by unfold c₀; norm_num), le_div_iff₀ (by unfold c₀; norm_num)]
-  linarith
+  rw [abs_div, abs_of_pos hc0, one_le_div hc0]
+  exact hx
 
 lemma refutationSource₂_eq_zero_of_far {x : ℝ} (hx : c₀ ≤ |x|) : refutationSource₂ x = 0 := by
+  have hc0 : (0 : ℝ) < c₀ := by unfold c₀; norm_num
   unfold refutationSource₂
   rw [unitSource₂_outside, mul_zero]
-  rw [abs_div, abs_of_pos (by unfold c₀; norm_num), le_div_iff₀ (by unfold c₀; norm_num)]
-  linarith
+  rw [abs_div, abs_of_pos hc0, one_le_div hc0]
+  exact hx
 
 lemma compact_refutationSource₁ : HasCompactSupport refutationSource₁ :=
   HasCompactSupport.intro (isCompact_Icc (a := -c₀) (b := c₀)) fun _ hx =>
@@ -460,9 +463,10 @@ private lemma abs_refutationSource₁_le (x : ℝ) : |refutationSource₁ x| ≤
   by_cases hx : c₀ ≤ |x|
   · rw [refutationSource₁_eq_zero_of_far hx, abs_zero]; norm_num
   · push Not at hx
+    have hc0 : (0 : ℝ) < c₀ := by unfold c₀; norm_num
     unfold refutationSource₁ unitSource₁
     have hu : |x / c₀| < 1 := by
-      rw [abs_div, abs_of_pos (by unfold c₀; norm_num), div_lt_one (by unfold c₀; norm_num)]
+      rw [abs_div, abs_of_pos hc0, div_lt_one hc0]
       exact hx
     have hu2 : 0 ≤ 1 - (x / c₀) ^ 2 ∧ 1 - (x / c₀) ^ 2 ≤ 1 := by
       have h := abs_lt.mp hu
@@ -475,9 +479,10 @@ private lemma abs_refutationSource₂_le (x : ℝ) : |refutationSource₂ x| ≤
   by_cases hx : c₀ ≤ |x|
   · rw [refutationSource₂_eq_zero_of_far hx, abs_zero]; norm_num
   · push Not at hx
+    have hc0 : (0 : ℝ) < c₀ := by unfold c₀; norm_num
     unfold refutationSource₂ unitSource₂
     have hu : |x / c₀| < 1 := by
-      rw [abs_div, abs_of_pos (by unfold c₀; norm_num), div_lt_one (by unfold c₀; norm_num)]
+      rw [abs_div, abs_of_pos hc0, div_lt_one hc0]
       exact hx
     have hu_bounds := abs_lt.mp hu
     have hu2 : 0 ≤ 1 - (x / c₀) ^ 2 ∧ 1 - (x / c₀) ^ 2 ≤ 1 :=
@@ -502,7 +507,7 @@ private lemma hasDerivAt_scaled {F F' : ℝ → ℝ} {x : ℝ}
     HasDerivAt (fun z : ℝ => c₀ * F (z / c₀)) (F' (x / c₀)) x := by
   have hc0 : (c₀ : ℝ) ≠ 0 := by unfold c₀; norm_num
   have h1 := (hF.comp x ((hasDerivAt_id x).div_const c₀)).const_mul c₀
-  exact h1.congr_deriv (by field_simp [hc0]; ring)
+  exact h1.congr_deriv (by field_simp [hc0])
 
 /-- Exact positive-lag unit correlation polynomial `C₁(s)` (`0 ≤ s ≤ 2`). -/
 def corrPoly₁ (s : ℝ) : ℝ :=
@@ -812,7 +817,8 @@ private lemma jump_inner_le_and_integrable₁ :
       (fun t => (autocorr refutationSource₁ 0 - autocorr refutationSource₁ t) * archLevySinhWeight t)
       (Ioi (34 / 25 : ℝ)) := by
     refine ((WeilLevyCoshCrossover.integrableOn_archLevyDensity_Ioi
-      (by norm_num : (0 : ℝ) < 34 / 25)).const_mul _).congr ?_
+      (by norm_num : (0 : ℝ) < 34 / 25)).const_mul
+      (autocorr refutationSource₁ 0 * 2)).congr ?_
     filter_upwards [ae_restrict_mem measurableSet_Ioi] with t ht
     exact (htail_eq t ht).symm
   have hint_all : IntegrableOn
@@ -838,7 +844,7 @@ private lemma jump_inner_le_and_integrable₁ :
   have htail_val : (∫ t in Ioi (34 / 25 : ℝ),
       (autocorr refutationSource₁ 0 - autocorr refutationSource₁ t) * archLevySinhWeight t) =
         2 * archLevyAntideriv (34 / 25) * autocorr refutationSource₁ 0 := by
-    rw [setIntegral_congr_fun measurableSet_Ioi htail_eq, integral_const_mul,
+    rw [setIntegral_congr_fun measurableSet_Ioi htail_eq, MeasureTheory.integral_const_mul,
       WeilLevyCoshCrossover.integral_archLevyDensity_Ioi (by norm_num : (0 : ℝ) < 34 / 25)]
     ring
   unfold biScaleLevyEnergy
@@ -900,7 +906,8 @@ private lemma jump_inner_le_and_integrable₂ :
       (fun t => (autocorr refutationSource₂ 0 - autocorr refutationSource₂ t) * archLevySinhWeight t)
       (Ioi (34 / 25 : ℝ)) := by
     refine ((WeilLevyCoshCrossover.integrableOn_archLevyDensity_Ioi
-      (by norm_num : (0 : ℝ) < 34 / 25)).const_mul _).congr ?_
+      (by norm_num : (0 : ℝ) < 34 / 25)).const_mul
+      (autocorr refutationSource₂ 0 * 2)).congr ?_
     filter_upwards [ae_restrict_mem measurableSet_Ioi] with t ht
     exact (htail_eq t ht).symm
   have hint_all : IntegrableOn
@@ -927,7 +934,7 @@ private lemma jump_inner_le_and_integrable₂ :
   have htail_val : (∫ t in Ioi (34 / 25 : ℝ),
       (autocorr refutationSource₂ 0 - autocorr refutationSource₂ t) * archLevySinhWeight t) =
         2 * archLevyAntideriv (34 / 25) * autocorr refutationSource₂ 0 := by
-    rw [setIntegral_congr_fun measurableSet_Ioi htail_eq, integral_const_mul,
+    rw [setIntegral_congr_fun measurableSet_Ioi htail_eq, MeasureTheory.integral_const_mul,
       WeilLevyCoshCrossover.integral_archLevyDensity_Ioi (by norm_num : (0 : ℝ) < 34 / 25)]
     ring
   unfold biScaleLevyEnergy
@@ -974,19 +981,27 @@ private def corrPoly₂Deriv (u : ℝ) : ℝ :=
 
 private lemma hasDerivAt_corrPoly₁ (u : ℝ) : HasDerivAt corrPoly₁ (corrPoly₁Deriv u) u := by
   unfold corrPoly₁
-  refine (((((((hasDerivAt_const u _).add (hasDerivAt_succ_pow (-128 / 315) 1 u)).add
-    (hasDerivAt_succ_pow (16 / 21) 3 u)).add (hasDerivAt_succ_pow (-8 / 15) 4 u)).add
-    (hasDerivAt_succ_pow (8 / 105) 6 u)).add (hasDerivAt_succ_pow (-1 / 126) 8 u)).add
+  refine (((((((hasDerivAt_const u (256 / 3465 : ℝ)).sub
+    (hasDerivAt_succ_pow (128 / 315) 1 u)).add
+    (hasDerivAt_succ_pow (16 / 21) 3 u)).sub
+    (hasDerivAt_succ_pow (8 / 15) 4 u)).add
+    (hasDerivAt_succ_pow (8 / 105) 6 u)).sub
+    (hasDerivAt_succ_pow (1 / 126) 8 u)).add
     (hasDerivAt_succ_pow (1 / 2772) 10 u)).congr_deriv ?_
   unfold corrPoly₁Deriv; ring
 
 private lemma hasDerivAt_corrPoly₂ (u : ℝ) : HasDerivAt corrPoly₂ (corrPoly₂Deriv u) u := by
   unfold corrPoly₂
-  refine ((((((((((hasDerivAt_const u _).add (hasDerivAt_succ_pow (-184 / 5005) 1 u)).add
-    (hasDerivAt_succ_pow (17 / 77) 3 u)).add (hasDerivAt_succ_pow (-3 / 10) 4 u)).add
-    (hasDerivAt_succ_pow (4 / 45) 5 u)).add (hasDerivAt_succ_pow (3 / 70) 6 u)).add
-    (hasDerivAt_succ_pow (-41 / 2016) 8 u)).add (hasDerivAt_succ_pow (101 / 24640) 10 u)).add
-    (hasDerivAt_succ_pow (-1 / 2288) 12 u)).add (hasDerivAt_succ_pow (1 / 51480) 14 u)).congr_deriv ?_
+  refine ((((((((((hasDerivAt_const u (16 / 9009 : ℝ)).sub
+    (hasDerivAt_succ_pow (184 / 5005) 1 u)).add
+    (hasDerivAt_succ_pow (17 / 77) 3 u)).sub
+    (hasDerivAt_succ_pow (3 / 10) 4 u)).add
+    (hasDerivAt_succ_pow (4 / 45) 5 u)).add
+    (hasDerivAt_succ_pow (3 / 70) 6 u)).sub
+    (hasDerivAt_succ_pow (41 / 2016) 8 u)).add
+    (hasDerivAt_succ_pow (101 / 24640) 10 u)).sub
+    (hasDerivAt_succ_pow (1 / 2288) 12 u)).add
+    (hasDerivAt_succ_pow (1 / 51480) 14 u)).congr_deriv ?_
   unfold corrPoly₂Deriv; ring
 
 private lemma prime_corr_bounds :
@@ -1179,13 +1194,15 @@ private lemma odd_source_weilQuad_add_two_oddPole_sq_eq (G : C_c(ℝ, ℝ))
     have he1 : (∫ u, Real.exp (u / 2) * G u) = ∫ u, G u * Real.exp (u / 2) :=
       integral_congr_ae (Eventually.of_forall fun _ => mul_comm _ _)
     have he2 : (∫ u, Real.exp (-(u / 2)) * G u) = ∫ u, G u * Real.exp (-u / 2) :=
-      integral_congr_ae (Eventually.of_forall fun u => by rw [neg_div]; ring)
+      integral_congr_ae (Eventually.of_forall fun u => by
+        dsimp only
+        rw [show -(u / 2) = -u / 2 by ring, mul_comm])
     rw [he1, he2] at hm
     change (∫ t in Ici (0 : ℝ), polarDensity t * autocorr G t) = _ at hm
     have hsp : sinhPairing G = 2 * oddPoleMoment G := by
       unfold sinhPairing oddPoleMoment
-      rw [← integral_const_mul]
-      exact integral_congr_ae (Eventually.of_forall fun _ => by ring)
+      rw [← MeasureTheory.integral_const_mul]
+      exact integral_congr_ae (Eventually.of_forall fun _ => by dsimp only; ring)
     rw [hm]
     rw [hc, hsp] at hp
     nlinarith [hp]
@@ -1220,8 +1237,10 @@ private lemma refutation_markovSum_le :
     (fun _ hx => refutationSource₁_eq_zero_of_far hx) jump_inner_le_and_integrable₁.1
   have heq2 := odd_source_weilQuad_add_two_oddPole_sq_eq ccSource₂ refutationSource₂_odd
     (fun _ hx => refutationSource₂_eq_zero_of_far hx) jump_inner_le_and_integrable₂.1
-  change weilQuad refutationSource₁ + 2 * oddPoleMoment refutationSource₁ ^ 2 = _ at heq1
-  change weilQuad refutationSource₂ + 2 * oddPoleMoment refutationSource₂ ^ 2 = _ at heq2
+  have hcc1 : (ccSource₁ : ℝ → ℝ) = refutationSource₁ := rfl
+  have hcc2 : (ccSource₂ : ℝ → ℝ) = refutationSource₂ := rfl
+  rw [hcc1] at heq1
+  rw [hcc2] at heq2
   have hj1 := jump_inner_le_and_integrable₁.2
   have hj2 := jump_inner_le_and_integrable₂.2
   have hconst := gammaBracket_add_two_archLevyAntideriv_34_25_le
@@ -1239,22 +1258,22 @@ private lemma refutation_markovSum_le :
   have hp12 : -2 * primeJumpWeight 2 * (c₀ * corrPoly₁ (Real.log 2 / c₀)) ≤
       2 * ((693148 / 1000000 : ℝ) / (141421 / 100000)) * (c₀ * (34565 / 1000000 : ℝ)) :=
     neg_two_mul_le_pos (le_trans (by norm_num) hw2_lo) hw2_hi (by unfold c₀; norm_num)
-      (by norm_num) hc12.le
+      (by norm_num) hc12
   have hp13 : -2 * primeJumpWeight 3 * (c₀ * corrPoly₁ (Real.log 3 / c₀)) ≤
       2 * ((1098613 / 1000000 : ℝ) / (173205 / 100000)) * (c₀ * (1936 / 1000000 : ℝ)) :=
     neg_two_mul_le_pos (le_trans (by norm_num) hw3_lo) hw3_hi (by unfold c₀; norm_num)
-      (by norm_num) hc13.le
+      (by norm_num) hc13
   have hp22 : -2 * primeJumpWeight 2 * ((9 / 2 : ℝ) ^ 2 * (c₀ * corrPoly₂ (Real.log 2 / c₀))) ≤
       -2 * ((693147 / 1000000 : ℝ) / (141422 / 100000)) *
         ((9 / 2 : ℝ) ^ 2 * (c₀ * (865 / 1000000 : ℝ))) := by
     have h := neg_two_mul_le_neg (c := (9 / 2 : ℝ) ^ 2 * c₀) (by norm_num) hw2_lo
-      (by unfold c₀; norm_num) (by norm_num) hc22.le
+      (by unfold c₀; norm_num) (by norm_num) hc22
     simpa only [mul_assoc] using h
   have hp23 : -2 * primeJumpWeight 3 * ((9 / 2 : ℝ) ^ 2 * (c₀ * corrPoly₂ (Real.log 3 / c₀))) ≤
       2 * ((1098613 / 1000000 : ℝ) / (173205 / 100000)) *
         ((9 / 2 : ℝ) ^ 2 * (c₀ * (303 / 1000000 : ℝ))) := by
     have h := neg_two_mul_le_pos (c := (9 / 2 : ℝ) ^ 2 * c₀) (le_trans (by norm_num) hw3_lo) hw3_hi
-      (by unfold c₀; norm_num) (by norm_num) hc23.le
+      (by unfold c₀; norm_num) (by norm_num) hc23
     simpa only [mul_assoc] using h
   have hm1 : weilQuad refutationSource₁ + 2 * oddPoleMoment refutationSource₁ ^ 2 ≤
       295 / 100000 := by
@@ -1342,13 +1361,13 @@ private lemma refutation_halfNorm_ge :
       2 * (∫ x in (0 : ℝ)..(7 / 20 * c₀), g x) +
         2 * (∫ x in (7 / 20 * c₀)..(1 / 2 * c₀), g x) +
         2 * (∫ x in (1 / 2 * c₀)..c₀, g x) := by
-    rw [← intervalIntegral.integral_add_adjacent_intervals
-          (hg_cont.intervalIntegrable 0 (7 / 20 * c₀))
-          (hg_cont.intervalIntegrable (7 / 20 * c₀) (1 / 2 * c₀)),
-      ← intervalIntegral.integral_add_adjacent_intervals
-          (hg_cont.intervalIntegrable 0 (1 / 2 * c₀))
-          (hg_cont.intervalIntegrable (1 / 2 * c₀) c₀)]
-    ring
+    have h1 := intervalIntegral.integral_add_adjacent_intervals
+      (hg_cont.intervalIntegrable (μ := volume) 0 (7 / 20 * c₀))
+      (hg_cont.intervalIntegrable (μ := volume) (7 / 20 * c₀) (1 / 2 * c₀))
+    have h2 := intervalIntegral.integral_add_adjacent_intervals
+      (hg_cont.intervalIntegrable (μ := volume) 0 (1 / 2 * c₀))
+      (hg_cont.intervalIntegrable (μ := volume) (1 / 2 * c₀) c₀)
+    linarith
   -- Pointwise lower bound helper for any Pythagorean unit chord `(α, β)` on `[0, c₀]`
   have hpt_chord : ∀ {α β x : ℝ}, α ^ 2 + β ^ 2 = 1 → 0 ≤ x → x ≤ c₀ →
       (α * poly₁ (x / c₀) + β * ((9 / 2 : ℝ) * poly₂ (x / c₀))) *
@@ -1375,7 +1394,8 @@ private lemma refutation_halfNorm_ge :
     have hcp : Continuous fun x : ℝ => (1 / (2 * c₀)) * chordPoly₁ (x / c₀) := by
       unfold chordPoly₁ c₀; fun_prop
     have hm := intervalIntegral.integral_mono_on (by unfold c₀; norm_num)
-      (hcp.intervalIntegrable _ _) (hg_cont.intervalIntegrable _ _)
+      (hcp.intervalIntegrable (μ := volume) 0 (7 / 20 * c₀))
+      (hg_cont.intervalIntegrable (μ := volume) 0 (7 / 20 * c₀))
       fun x hx => by
         have h := hpt_chord (α := 105 / 137) (β := -(88 / 137)) (by norm_num) hx.1
           (by unfold c₀ at hx ⊢; linarith [hx.2])
@@ -1383,18 +1403,14 @@ private lemma refutation_halfNorm_ge :
           unfold chordPoly₁ poly₁ poly₂ c₀; ring).trans_le h
     have hint : (∫ x in (0 : ℝ)..(7 / 20 * c₀), (1 / (2 * c₀)) * chordPoly₁ (x / c₀)) =
         (1 / 2 : ℝ) * (chordAnti₁ (7 / 20) - chordAnti₁ 0) := by
-      have hd_x : ∀ x : ℝ, HasDerivAt (fun z => (1 / 2 : ℝ) * chordAnti₁ (z / c₀))
-          ((1 / (2 * c₀)) * chordPoly₁ (x / c₀)) x := fun x => by
-        have h1 := ((hasDerivAt_scaled (F := chordAnti₁) (F' := chordPoly₁) (hd (x / c₀))).const_mul
-          (1 / (2 * c₀)))
-        exact h1.congr_deriv (by unfold c₀; ring)
-      have heq_f : (fun z : ℝ => (1 / (2 * c₀)) * (c₀ * chordAnti₁ (z / c₀))) =
-          fun z => (1 / 2 : ℝ) * chordAnti₁ (z / c₀) := by funext z; unfold c₀; ring
-      rw [intervalIntegral.integral_eq_sub_of_hasDerivAt
-        (fun x _ => by rw [← heq_f]; exact hd_x x) (hcp.intervalIntegrable _ _), heq_f]
+      have hd_x : ∀ x : ℝ, HasDerivAt (fun z => (1 / (2 * c₀)) * (c₀ * chordAnti₁ (z / c₀)))
+          ((1 / (2 * c₀)) * chordPoly₁ (x / c₀)) x := fun x =>
+        (hasDerivAt_scaled (F := chordAnti₁) (F' := chordPoly₁) (hd (x / c₀))).const_mul _
+      rw [intervalIntegral.integral_eq_sub_of_hasDerivAt (fun x _ => hd_x x)
+        (hcp.intervalIntegrable _ _)]
       have h7 : (7 / 20 * c₀) / c₀ = 7 / 20 := by unfold c₀; norm_num
       have h0 : (0 : ℝ) / c₀ = 0 := by norm_num
-      rw [h7, h0]; ring
+      rw [h7, h0]; unfold c₀; ring
     rw [hint] at hm
     have hnum : (7296 / 1000000 : ℝ) ≤ chordAnti₁ (7 / 20) - chordAnti₁ 0 := by
       unfold chordAnti₁; norm_num
@@ -1409,9 +1425,10 @@ private lemma refutation_halfNorm_ge :
     have hcp : Continuous fun x : ℝ => (1 / (2 * c₀)) * chordPoly₂ (x / c₀) := by
       unfold chordPoly₂ c₀; fun_prop
     have hm := intervalIntegral.integral_mono_on (by unfold c₀; norm_num)
-      (hcp.intervalIntegrable _ _) (hg_cont.intervalIntegrable _ _)
+      (hcp.intervalIntegrable (μ := volume) (7 / 20 * c₀) (1 / 2 * c₀))
+      (hg_cont.intervalIntegrable (μ := volume) (7 / 20 * c₀) (1 / 2 * c₀))
       fun x hx => by
-        have h := hpt_chord (α := 24 / 25) (β := -(7 / 25)) (by norm_num)
+        have h := hpt_chord (α := 24 / 25) (β := -(7 / 25)) (x := x) (by norm_num)
           (by unfold c₀ at hx; linarith [hx.1]) (by unfold c₀ at hx ⊢; linarith [hx.2])
         exact (show (1 / (2 * c₀)) * chordPoly₂ (x / c₀) = _ by
           unfold chordPoly₂ poly₁ poly₂ c₀; ring).trans_le h
@@ -1422,7 +1439,9 @@ private lemma refutation_halfNorm_ge :
         (hasDerivAt_scaled (F := chordAnti₂) (F' := chordPoly₂) (hd (x / c₀))).const_mul _
       rw [intervalIntegral.integral_eq_sub_of_hasDerivAt (fun x _ => hd_x x)
         (hcp.intervalIntegrable _ _)]
-      unfold c₀; norm_num; ring
+      have h12 : (1 / 2 * c₀) / c₀ = 1 / 2 := by unfold c₀; norm_num
+      have h7 : (7 / 20 * c₀) / c₀ = 7 / 20 := by unfold c₀; norm_num
+      rw [h12, h7]; unfold c₀; ring
     rw [hint] at hm
     have hnum : (8685 / 1000000 : ℝ) ≤ chordAnti₂ (1 / 2) - chordAnti₂ (7 / 20) := by
       unfold chordAnti₂; norm_num
@@ -1437,7 +1456,8 @@ private lemma refutation_halfNorm_ge :
     have hcp : Continuous fun x : ℝ => (1 / (2 * c₀)) * chordPoly₃ (x / c₀) := by
       unfold chordPoly₃ c₀; fun_prop
     have hm := intervalIntegral.integral_mono_on (by unfold c₀; norm_num)
-      (hcp.intervalIntegrable _ _) (hg_cont.intervalIntegrable _ _)
+      (hcp.intervalIntegrable (μ := volume) (1 / 2 * c₀) c₀)
+      (hg_cont.intervalIntegrable (μ := volume) (1 / 2 * c₀) c₀)
       fun x hx => by
         have h := hpt_chord (α := 21 / 29) (β := 20 / 29) (by norm_num)
           (by unfold c₀ at hx; linarith [hx.1]) hx.2
@@ -1450,7 +1470,9 @@ private lemma refutation_halfNorm_ge :
         (hasDerivAt_scaled (F := chordAnti₃) (F' := chordPoly₃) (hd (x / c₀))).const_mul _
       rw [intervalIntegral.integral_eq_sub_of_hasDerivAt (fun x _ => hd_x x)
         (hcp.intervalIntegrable _ _)]
-      unfold c₀; norm_num; ring
+      have h1 : c₀ / c₀ = 1 := by unfold c₀; norm_num
+      have h12 : (1 / 2 * c₀) / c₀ = 1 / 2 := by unfold c₀; norm_num
+      rw [h1, h12]; unfold c₀; ring
     rw [hint] at hm
     have hnum : (29559 / 1000000 : ℝ) ≤ chordAnti₃ 1 - chordAnti₃ (1 / 2) := by
       unfold chordAnti₃; norm_num
@@ -1470,9 +1492,9 @@ private lemma smooth_odd_of_odd {G : ℝ → ℝ} (hodd : ∀ x, G (-x) = -G x) 
   change (∫ t, CHMDDoobGraph.mollifier k t * G (-x - t)) =
     -(∫ t, CHMDDoobGraph.mollifier k t * G (x - t))
   rw [← integral_neg_eq_self (fun t => CHMDDoobGraph.mollifier k t * G (-x - t)) volume,
-    ← integral_neg]
+    ← MeasureTheory.integral_neg]
   refine integral_congr_ae (Eventually.of_forall fun t => ?_)
-  change CHMDDoobGraph.mollifier k (-t) * G (-x - -t) = -(CHMDDoobGraph.mollifier k t * G (x - t))
+  dsimp only
   rw [mollifier_even', show -x - -t = -(x - t) by ring, hodd, mul_neg]
 
 private lemma smooth_eq_zero_of_narrow {G : ℝ → ℝ} {R : ℝ} (hR : ∀ x, R ≤ |x| → G x = 0)
@@ -1483,6 +1505,7 @@ private lemma smooth_eq_zero_of_narrow {G : ℝ → ℝ} {R : ℝ} (hR : ∀ x, 
     one_div_le_one_div_of_le (by norm_num) (by linarith)
   change (∫ t, CHMDDoobGraph.mollifier k t * G (x - t)) = 0
   refine integral_eq_zero_of_ae (Eventually.of_forall fun t => ?_)
+  dsimp only [Pi.zero_apply]
   by_cases ht : 1 / (4 * ((k : ℝ) + 1)) ≤ |t|
   · have hm : CHMDDoobGraph.mollifier k t = 0 := by
       apply Function.notMem_support.mp
@@ -1491,7 +1514,8 @@ private lemma smooth_eq_zero_of_narrow {G : ℝ → ℝ} {R : ℝ} (hR : ∀ x, 
         dist_zero_right, Real.norm_eq_abs]
       exact not_lt.mpr ht
     rw [hm, zero_mul]
-  · rw [hR _ (by linarith [abs_sub_abs_le_abs_sub x t, not_le.mp ht]), mul_zero]
+  · have hsub : R ≤ |x - t| := by linarith [abs_sub_abs_le_abs_sub x t, not_le.mp ht]
+    rw [hR (x - t) hsub, mul_zero]
 
 private lemma oddPoleMoment_smooth_tendsto {G : ℝ → ℝ} (hG : Continuous G) (hGc : HasCompactSupport G)
     {M R : ℝ} (hM0 : 0 ≤ M) (hM : ∀ x, |G x| ≤ M) (hR : ∀ x, R < |x| → G x = 0) :

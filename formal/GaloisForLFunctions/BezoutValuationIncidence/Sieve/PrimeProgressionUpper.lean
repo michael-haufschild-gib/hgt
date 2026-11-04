@@ -58,7 +58,15 @@ theorem exists_prime_progression_upper :
     change _ ≤ (⌊u ^ (1 / 16 : ℝ)⌋₊ : ℝ) +
       16 * u / Real.log (⌊u ^ (1 / 16 : ℝ)⌋₊ : ℝ) +
         (⌊u ^ (1 / 16 : ℝ)⌋₊ : ℝ) ^ 6 at hcount
-    linarith only [hcount, hmain, herror]
+    calc
+      _ ≤ (⌊u ^ (1 / 16 : ℝ)⌋₊ : ℝ) +
+          16 * u / Real.log (⌊u ^ (1 / 16 : ℝ)⌋₊ : ℝ) +
+            (⌊u ^ (1 / 16 : ℝ)⌋₊ : ℝ) ^ 6 := hcount
+      _ = ((⌊u ^ (1 / 16 : ℝ)⌋₊ : ℝ) +
+          (⌊u ^ (1 / 16 : ℝ)⌋₊ : ℝ) ^ 6) +
+            16 * u / Real.log (⌊u ^ (1 / 16 : ℝ)⌋₊ : ℝ) := by ring
+      _ ≤ u / Real.log u + 512 * u / Real.log u := add_le_add herror hmain
+      _ = _ := by ring
   refine hbound.trans ?_
   have hratio : u / Real.log u ≤ 2 * u / Real.log (X : ℝ) := by
     rw [div_le_div_iff₀ hLu hLX]

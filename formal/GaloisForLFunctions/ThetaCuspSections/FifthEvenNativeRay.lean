@@ -147,6 +147,23 @@ private theorem leadingGram_coercive {q : ℝ} (hq : 5 ≤ q) (v : Fin 5 → ℝ
   rw [he] at h
   linarith only [h]
 
+/-- The complete source retains the full leading-pair form up to a uniform quadratic error. -/
+theorem sourceGram_retained_lower {x : ℝ}
+    (hq : 5 ≤ thetaCuspSingleAtomReflectionScale 1 x) (v : Fin 5 → ℝ) :
+    v ⬝ᵥ (gaussianGram (leadingMatrix (thetaCuspSingleAtomReflectionScale 1 x)
+      (Real.exp (-3*thetaCuspSingleAtomReflectionScale 1 x))) *ᵥ v)-
+      (147/4000 : ℝ)*(∑ i, v i^2) ≤ v ⬝ᵥ (sourceGram x *ᵥ v) := by
+  have hr := neg_le_of_abs_le (_root_.RHTower.abs_dotProduct_mulVec_le
+    (remainderGram x) (by norm_num : (0 : ℝ) ≤ 147/20000)
+    (remainderGram_bound hq) v)
+  have hp2 := (pureGram_posSemidef hq (by norm_num : 1 ≤ 2)).dotProduct_mulVec_nonneg v
+  have hp3 := (pureGram_posSemidef hq (by norm_num : 1 ≤ 3)).dotProduct_mulVec_nonneg v
+  simp only [star_trivial] at hp2 hp3
+  norm_num only [Fintype.card_fin,Nat.cast_ofNat] at hr
+  rw [sourceGram_decomposition hq]
+  simp only [Matrix.add_mulVec,dotProduct_add]
+  linarith only [hr,hp2,hp3]
+
 /-- The complete normalized fifth even source has a uniform positive quadratic floor. -/
 theorem sourceGram_coercive {x : ℝ}
     (hq : 5 ≤ thetaCuspSingleAtomReflectionScale 1 x) (v : Fin 5 → ℝ) :

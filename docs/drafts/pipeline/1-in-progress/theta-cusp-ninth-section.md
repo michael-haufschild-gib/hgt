@@ -76,7 +76,10 @@ now supplies one explicit positive cross coefficient matrix `V` with
 `H(0)+G(0)LᵀVL≻0` and `H(x₇)+G(x₇)LᵀVL≻0` for the complete source.
 Its weighted derivative flux preserves every mixed entry and gives positivity
 at `2x₇` for every positive aperture. The same `V` works near both endpoints
-and on a cofinal source ray. Positivity on the remaining compact set is open.
+and on a cofinal source ray. The [effective ray theorem](../3-formalized/theta-cusp-fifth-even-effective-cross-ray.md)
+now gives positivity for `π exp(2x)≥5000`, with normalized Gaussian floor
+`20000`, hence for every `x≥4`. Positivity on the remaining compact source
+set inside `[0,4]` is open.
 
 A global source certificate with a strict origin neighborhood would give
 the integrated fifth block's strict sign. Radius-dependent matrix fluxes

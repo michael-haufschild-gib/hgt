@@ -25,6 +25,10 @@ is proved, sharply and without a sign.
 * **Prime flips** (`flipData_mimic_iff`). Flipping the sign of `Λ` on the primes of a set `F` with
   least prime `p₀` gives data that the camera separates exactly above aperture `½ log p₀`, however
   sparse `F` is.
+* **Positive twins** (`twinData_mimic_iff`). The data of `ζ(s)(1 + A p^{−s} + p^{1−2s})`, `A ≠ 0`,
+  are separated exactly above `½ log p`. At the level of zeros the twin's extra column of spacing
+  `2π/log p` hides exactly up to the same aperture (`eulerColumn_mimic_iff`): data and
+  configuration give the same threshold.
 
 At the level of data the camera family is a complete and sharp separator: every fake with the
 archimedean place and pole of `ζ` — Euler twins, flips, Beurling data — is caught exactly at its
@@ -101,7 +105,8 @@ theorem exists_window_arithmeticImage_ne {lam lam' : ℕ → ℝ} {n₀ : ℕ}
   -- the kernel at `± log n₀` is `−K(0)`
   have hkv : EF.weilTest f f v = -K 0 := by
     rw [hfdef, weilTest_twoBump_neg_one hbcont hbc, ← hKdef,
-      hKz v (by rw [abs_of_pos (by linarith)]; exact hvw), hKz (v + v) (by rw [abs_of_pos (by linarith)]; linarith), sub_self]
+      hKz v (by rw [abs_of_pos (by linarith)]; exact hvw),
+      hKz (v + v) (by rw [abs_of_pos (by linarith)]; linarith), sub_self]
     ring
   have hkmv : EF.weilTest f f (-v) = -K 0 := by
     rw [hfdef, weilTest_twoBump_neg_one hbcont hbc, ← hKdef,
@@ -221,5 +226,52 @@ theorem flipData_mimic_iff {F : Set ℕ} {p₀ : ℕ} (hp₀ : p₀.Prime) (hmem
         arithmeticImage (fun n => (ArithmeticFunction.vonMangoldt n : ℝ)) f =
           arithmeticImage (flipData F) f) ↔ 2 * r ≤ Real.log p₀ :=
   arithmeticImage_eq_iff (flipData_firstDisagreement hp₀ hmem hmin) r
+
+/-! ### The positive twins -/
+
+/-- The power sums `s_k = r₁^k + r₂^k` of the roots of `x² + A x + p`:
+`s_0 = 2`, `s_1 = −A`, `s_{k+2} = −A s_{k+1} − p s_k`. -/
+def twinPowerSum (p : ℕ) (A : ℝ) : ℕ → ℝ
+  | 0 => 2
+  | 1 => -A
+  | k + 2 => -A * twinPowerSum p A (k + 1) - p * twinPowerSum p A k
+
+open Classical in
+/-- The data of the twin `ζ(s)(1 + A p^{−s} + p^{1−2s})`: since
+`1 + A p^{−s} + p^{1−2s} = (1 − r₁ p^{−s})(1 − r₂ p^{−s})`, the logarithmic derivative adds
+`−s_k log p` at `n = p^k` and leaves every other `Λ(n)`. -/
+def twinData (p : ℕ) (A : ℝ) (n : ℕ) : ℝ :=
+  (ArithmeticFunction.vonMangoldt n : ℝ) -
+    if 1 ≤ n.factorization p ∧ n = p ^ n.factorization p then
+      twinPowerSum p A (n.factorization p) * Real.log p
+    else 0
+
+/-- A twin with `A ≠ 0` first differs from `Λ` at its prime. -/
+theorem twinData_firstDisagreement {p : ℕ} (hp : p.Prime) {A : ℝ} (hA : A ≠ 0) :
+    FirstDisagreement (fun n => (ArithmeticFunction.vonMangoldt n : ℝ)) (twinData p A) p := by
+  refine ⟨hp.two_le, ?_, fun n hn hlt => ?_⟩
+  · have hlog : 0 < Real.log p := Real.log_pos (by exact_mod_cast hp.one_lt)
+    have hcond : 1 ≤ p.factorization p ∧ p = p ^ p.factorization p := by
+      rw [hp.factorization_self, pow_one]; exact ⟨le_rfl, rfl⟩
+    rw [twinData, if_pos hcond, hp.factorization_self]
+    intro h
+    have : twinPowerSum p A 1 * Real.log p = 0 := by linarith
+    rw [twinPowerSum] at this
+    rcases mul_eq_zero.mp this with h1 | h1
+    · exact hA (neg_eq_zero.mp h1)
+    · exact hlog.ne' h1
+  · have hndvd : ¬ p ∣ n := fun hd => absurd (Nat.le_of_dvd (by omega) hd) (not_le.mpr hlt)
+    have hcond : ¬ (1 ≤ n.factorization p ∧ n = p ^ n.factorization p) := by
+      rw [Nat.factorization_eq_zero_of_not_dvd hndvd]; omega
+    rw [twinData, if_neg hcond, sub_zero]
+
+/-- **The twins are seen exactly above their prime.** For `A ≠ 0` the camera of aperture `r`
+separates the data of `ζ(s)(1 + A p^{−s} + p^{1−2s})` from `Λ` exactly when `2r > log p`: the
+aperture `½ log p` at which the twin's Euler column stops hiding (`eulerColumn_mimic_iff`). -/
+theorem twinData_mimic_iff {p : ℕ} (hp : p.Prime) {A : ℝ} (hA : A ≠ 0) (r : ℝ) :
+    (∀ f, ApertureWindow r f →
+        arithmeticImage (fun n => (ArithmeticFunction.vonMangoldt n : ℝ)) f =
+          arithmeticImage (twinData p A) f) ↔ 2 * r ≤ Real.log p :=
+  arithmeticImage_eq_iff (twinData_firstDisagreement hp hA) r
 
 end GaloisForLFunctions.ZeroConfigurationGeometry

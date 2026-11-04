@@ -41,7 +41,8 @@ theorem sum_terminal_hyperbola_eq_finite
     have hN0 : (0 : ℝ) < N := by exact_mod_cast hN
     have hkδ : 1 / (k : ℝ) ≤ δ := by
       apply (div_le_iff₀ hk0).mpr
-      have hh := (div_le_iff₀ hδ).mp (hK.trans (by exact_mod_cast hklarge.le))
+      have hKk : (K : ℝ) ≤ k := by exact_mod_cast hklarge.le
+      have hh := (div_le_iff₀ hδ).mp (hK.trans hKk)
       simpa only [mul_comm δ (k : ℝ)] using hh
     apply sum_eq_zero
     intro n hn

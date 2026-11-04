@@ -103,7 +103,7 @@ theorem exists_pow_mul_norm_paperFT_le {b : ℝ → ℂ} (hb : ContDiff ℝ (⊤
 /-- **Stage windows.** For a smooth window `f₀` of aperture `A` whose transform vanishes on the
 lattice `μ_k`, and every finite `S ⊂ ℤ`, there is a smooth window of aperture `A` with
 `Π_{k ∈ S}(w − μ_k) · f̂(w) = Π_{k ∈ S} c_k(w − ν_k) · f̂₀(w)`, `c_k = (i − μ_k)/(i − ν_k)`. -/
-theorem exists_stage_window {h θ A : ℝ} (hh : 0 < h) (hA : 0 ≤ A) (ν : ℤ → ℝ) {f₀ : ℝ → ℂ}
+theorem exists_stage_window {h θ A : ℝ} (hh : 0 < h) (hA : 0 ≤ A) (ν : ℤ → ℂ) {f₀ : ℝ → ℂ}
     (hf₀ : ContDiff ℝ (⊤ : ℕ∞) f₀) (hf₀s : tsupport f₀ ⊆ Icc (-A) A)
     (hf₀z : ∀ k : ℤ, paperFT f₀ (latPt h θ k) = 0) (S : Finset ℤ) :
     ∃ f : ℝ → ℂ, ContDiff ℝ (⊤ : ℕ∞) f ∧ tsupport f ⊆ Icc (-A) A ∧
@@ -140,7 +140,7 @@ theorem exists_stage_window {h θ A : ℝ} (hh : 0 < h) (hA : 0 ≤ A) (ν : ℤ
     linear_combination (c * (w - ν j)) * this
 
 /-- Off the lattice the stage transform is `f̂₀ · Π_{k ∈ S} r_k`. -/
-theorem stage_eq_prod {h θ : ℝ} (ν : ℤ → ℝ) {f f₀ : ℝ → ℂ} {S : Finset ℤ}
+theorem stage_eq_prod {h θ : ℝ} (ν : ℤ → ℂ) {f f₀ : ℝ → ℂ} {S : Finset ℤ}
     (hfw : ∀ w : ℂ, (∏ k ∈ S, (w - latPt h θ k)) * paperFT f w =
       (∏ k ∈ S, (I - latPt h θ k) / (I - ν k) * (w - ν k)) * paperFT f₀ w)
     {w : ℂ} (hw : ∀ k, w ≠ latPt h θ k) :
@@ -151,9 +151,8 @@ theorem stage_eq_prod {h θ : ℝ} (ν : ℤ → ℝ) {f f₀ : ℝ → ℂ} {S 
       (∏ k ∈ S, (I - latPt h θ k) / (I - ν k) * (w - ν k)) / ∏ k ∈ S, (w - latPt h θ k) := by
     rw [← Finset.prod_div_distrib]
     refine Finset.prod_congr rfl fun k _ => ?_
-    have h1 : w - (latPt h θ k : ℂ) ≠ 0 := sub_ne_zero.mpr (hw k)
     rw [pertFactor]
-    field_simp
+    ring
   rw [e, mul_div_assoc', eq_div_iff hne]
   linear_combination hfw w
 
@@ -184,7 +183,8 @@ theorem norm_paperFT_le_of_tsupport {g : ℝ → ℂ} {A M : ℝ} (hA : 0 ≤ A)
 to a continuous window of the same aperture, blind to every `ν_j`, whose transform at `z₀` is
 `f̂₀(z₀) Π_k r_k(z₀)`. -/
 theorem exists_blind_limit_window {h θ L A : ℝ} (hh : 0 < h) (hθ : |θ| ≤ 1) (hA : 0 ≤ A)
-    {ν : ℤ → ℝ} (hL : ∀ k, |ν k - latPt h θ k| ≤ L) {b f₀ : ℝ → ℂ}
+    {ν : ℤ → ℂ} (hL : ∀ k, ‖ν k - latPt h θ k‖ ≤ L) (him : ∀ k, |(ν k).im| ≤ 1 / 2)
+    {b f₀ : ℝ → ℂ}
     (hb : ContDiff ℝ (⊤ : ℕ∞) b) (hbc : HasCompactSupport b)
     (hf₀ : ContDiff ℝ (⊤ : ℕ∞) f₀) (hf₀s : tsupport f₀ ⊆ Icc (-A) A)
     (hf₀t : ∀ w : ℂ, paperFT f₀ w =
@@ -193,7 +193,7 @@ theorem exists_blind_limit_window {h θ L A : ℝ} (hh : 0 < h) (hθ : |θ| ≤ 
     ∃ f : ℝ → ℂ, Continuous f ∧ tsupport f ⊆ Icc (-A) A ∧ (∀ j, paperFT f (ν j) = 0) ∧
       paperFT f z₀ = paperFT f₀ z₀ * ∏' k, pertFactor h θ ν k z₀ := by
   classical
-  have hL0 : 0 ≤ L := (abs_nonneg _).trans (hL 0)
+  have hL0 : 0 ≤ L := (norm_nonneg _).trans (hL 0)
   have hh' : (h : ℂ) ≠ 0 := Complex.ofReal_ne_zero.mpr hh.ne'
   have hf₀z : ∀ k : ℤ, paperFT f₀ (latPt h θ k) = 0 := fun k => by
     rw [hf₀t, show ((π / h : ℝ) : ℂ) * ((latPt h θ k : ℝ) - ((θ * h : ℝ) : ℂ)) = k * π by
@@ -208,13 +208,13 @@ theorem exists_blind_limit_window {h θ L A : ℝ} (hh : 0 < h) (hθ : |θ| ≤ 
     (fun k => ⟨k.natAbs, Finset.mem_Icc.mpr ⟨by omega, by omega⟩⟩)
   have hprod : ∀ w : ℂ, (∀ k, w ≠ latPt h θ k) → Tendsto (fun N => ∏ k ∈ S N, pertFactor h θ ν k w)
       atTop (𝓝 (∏' k, pertFactor h θ ν k w)) := fun w hw =>
-    (multipliable_pertFactor hh hθ hL hw).hasProd.comp hStend
+    (multipliable_pertFactor hh hθ hL him hw).hasProd.comp hStend
   have hFeq : ∀ N (w : ℂ), (∀ k, w ≠ latPt h θ k) →
       paperFT (F N) w = paperFT f₀ w * ∏ k ∈ S N, pertFactor h θ ν k w :=
     fun N w hw => stage_eq_prod ν (hFw N) hw
   -- domination on the real line
-  set K := nearestConst h L * Real.exp (L * nearFarConst h L) with hK
-  set p := L * (4 * (1 + L) / h) with hp
+  set K := nearestConst h L * Real.exp (2 * L * nearFarConst h L) with hK
+  set p := 2 * L * (4 * (1 + L) / h) with hp
   set n := ⌈p⌉₊ with hn
   obtain ⟨C, hC0, hC⟩ := exists_pow_mul_norm_paperFT_le hb hbc (n + 2)
   have hK0 : 0 ≤ K := by
@@ -227,7 +227,7 @@ theorem exists_blind_limit_window {h θ L A : ℝ} (hh : 0 < h) (hθ : |θ| ≤ 
     rw [hFeq N x hx, hf₀t,
       show Complex.sin (((π / h : ℝ) : ℂ) * ((x : ℂ) - ((θ * h : ℝ) : ℂ))) =
         ((Real.sin (π / h * (x - θ * h)) : ℝ) : ℂ) by push_cast; ring_nf]
-    have hbound := norm_sin_mul_prod_pertFactor_le hh hθ hL (S N) x hx'
+    have hbound := norm_sin_mul_prod_pertFactor_le hh hθ hL him (S N) x hx'
     have h1 : (1 : ℝ) ≤ 1 + |x| := by linarith [abs_nonneg x]
     have hpn : (1 + |x|) ^ p ≤ (1 + |x|) ^ n := by
       rw [← Real.rpow_natCast]
@@ -339,11 +339,11 @@ theorem exists_blind_limit_window {h θ L A : ℝ} (hh : 0 < h) (hθ : |θ| ≤ 
     filter_upwards [eventually_ge_atTop j.natAbs] with N hN
     have hj : j ∈ S N := Finset.mem_Icc.mpr ⟨by omega, by omega⟩
     have h1 := hFw N (ν j)
-    have hz : ∏ k ∈ S N, (I - latPt h θ k) / (I - ν k) * ((ν j : ℂ) - ν k) = 0 :=
+    have hz : ∏ k ∈ S N, (I - latPt h θ k) / (I - ν k) * (ν j - ν k) = 0 :=
       Finset.prod_eq_zero hj (by rw [sub_self, mul_zero])
     rw [hz, zero_mul] at h1
-    have hne : ∏ k ∈ S N, ((ν j : ℂ) - latPt h θ k) ≠ 0 :=
-      Finset.prod_ne_zero_iff.mpr fun k _ => sub_ne_zero.mpr (by exact_mod_cast hνlat j k)
+    have hne : ∏ k ∈ S N, (ν j - latPt h θ k) ≠ 0 :=
+      Finset.prod_ne_zero_iff.mpr fun k _ => sub_ne_zero.mpr (hνlat j k)
     exact ((mul_eq_zero.mp h1).resolve_left hne).symm
   · -- the value at `z₀`
     refine tendsto_nhds_unique (htrans z₀) ?_
@@ -368,15 +368,17 @@ theorem convolution_eq_zero_of_lt {f β : ℝ → ℂ} {A ε : ℝ} (hfs : tsupp
       obtain ⟨h3, h4⟩ := hβs (subset_tsupport _ hβt)
       rcases lt_abs.mp hu with h | h <;> linarith
 
-/-- **Blind windows for perturbed lattices.** Let `ν_k` be real with `|ν_k − kh| ≤ L` for all
-`k ∈ ℤ`. For every aperture `r > π/h` and every `z₀` off the `ν_k` there is a window of aperture
-`r` whose transform vanishes at every `ν_k` and not at `z₀`. -/
-theorem exists_window_blind_to_perturbed_lattice {h L r : ℝ} (hh : 0 < h) (hr : π / h < r)
-    (ν : ℤ → ℝ) (hν : ∀ k : ℤ, |ν k - k * h| ≤ L) {z₀ : ℂ} (hz₀ : ∀ k, z₀ ≠ ν k) :
+/-- **Blind windows for complex perturbations of a lattice.** Let `ν_k ∈ ℂ` with
+`|ν_k − kh| ≤ L` and `|Im ν_k| ≤ 1/2` for all `k ∈ ℤ`. For every aperture `r > π/h` and every `z₀`
+off the `ν_k` there is a window of aperture `r` whose transform vanishes at every `ν_k` and not at
+`z₀`. -/
+theorem exists_window_blind_to_complex_perturbed_lattice {h L r : ℝ} (hh : 0 < h)
+    (hr : π / h < r) (ν : ℤ → ℂ) (hν : ∀ k : ℤ, ‖ν k - k * h‖ ≤ L)
+    (him : ∀ k, |(ν k).im| ≤ 1 / 2) {z₀ : ℂ} (hz₀ : ∀ k, z₀ ≠ ν k) :
     ∃ f : ℝ → ℂ, ApertureWindow r f ∧ (∀ k, paperFT f (ν k) = 0) ∧ paperFT f z₀ ≠ 0 := by
   classical
   -- a lattice shift avoiding all coincidences
-  set E : Set ℝ := (Set.range fun q : ℤ × ℤ => ν q.1 / h - q.2) ∪
+  set E : Set ℝ := (Set.range fun q : ℤ × ℤ => (ν q.1).re / h - q.2) ∪
     Set.range fun k : ℤ => z₀.re / h - k with hE
   have hEc : E.Countable := (Set.countable_range _).union (Set.countable_range _)
   obtain ⟨θ, ⟨hθ0, hθ1⟩, hθE⟩ :=
@@ -386,7 +388,7 @@ theorem exists_window_blind_to_perturbed_lattice {h L r : ℝ} (hh : 0 < h) (hr 
     intro j k e
     apply hθE
     refine Or.inl ⟨(j, k), ?_⟩
-    simp only [e, latPt]
+    simp only [e, Complex.ofReal_re, latPt]
     field_simp
     ring
   have hz₀lat : ∀ k, z₀ ≠ latPt h θ k := by
@@ -396,12 +398,13 @@ theorem exists_window_blind_to_perturbed_lattice {h L r : ℝ} (hh : 0 < h) (hr 
     simp only [e, Complex.ofReal_re, latPt]
     field_simp
     ring
-  have hL' : ∀ k, |ν k - latPt h θ k| ≤ L + h := by
+  have hL' : ∀ k, ‖ν k - latPt h θ k‖ ≤ L + h := by
     intro k
     have := hν k
-    rw [latPt, show ν k - ((k : ℝ) + θ) * h = (ν k - k * h) - θ * h by ring]
-    refine (abs_sub _ _).trans ?_
-    rw [abs_of_pos (by positivity : 0 < θ * h)]
+    rw [latPt, show ν k - ((((k : ℝ) + θ) * h : ℝ) : ℂ) = (ν k - k * h) - ((θ * h : ℝ) : ℂ) by
+      push_cast; ring]
+    refine (norm_sub_le _ _).trans ?_
+    rw [Complex.norm_real, Real.norm_eq_abs, abs_of_pos (by positivity : 0 < θ * h)]
     nlinarith
   -- the sine window
   set ε := (r - π / h) / 3 with hε
@@ -411,7 +414,8 @@ theorem exists_window_blind_to_perturbed_lattice {h L r : ℝ} (hh : 0 < h) (hr 
   obtain ⟨hf₀w, hf₀t⟩ := sineShift_props (τ := θ * h) (by positivity : (0 : ℝ) ≤ π / h) hbw
   have hf₀ : ContDiff ℝ (⊤ : ℕ∞) (sineShift (π / h) (θ * h) b) := contDiff_sineShift _ _ hb
   -- the limit window
-  obtain ⟨f, hfc, hfs, hfν, hfz⟩ := exists_blind_limit_window hh hθ (by positivity) hL' hb hbc hf₀
+  obtain ⟨f, hfc, hfs, hfν, hfz⟩ := exists_blind_limit_window hh hθ (by positivity) hL' him hb hbc
+    hf₀
     hf₀w.2 hf₀t hνlat hz₀lat
   -- smoothing
   obtain ⟨β, hβ, hβc, hβs, hβ1⟩ := exists_smooth_window_paperFT_eq_one hε0 z₀
@@ -435,7 +439,7 @@ theorem exists_window_blind_to_perturbed_lattice {h L r : ℝ} (hh : 0 < h) (hr 
   refine ⟨F, ⟨hFsmooth.of_le (by norm_cast), hFs⟩, fun k => by
     rw [hFt, hfν k, zero_mul], ?_⟩
   rw [hFt, hβ1, mul_one, hfz, hf₀t, hb1, mul_one]
-  refine mul_ne_zero ?_ (tprod_pertFactor_ne_zero hh hθ hL' hz₀lat hz₀)
+  refine mul_ne_zero ?_ (tprod_pertFactor_ne_zero hh hθ hL' him hz₀lat hz₀)
   intro h0
   obtain ⟨n, hn⟩ := Complex.sin_eq_zero_iff.mp h0
   apply hz₀lat n
@@ -445,6 +449,19 @@ theorem exists_window_blind_to_perturbed_lattice {h L r : ℝ} (hh : 0 < h) (hr 
   push_cast at hn ⊢
   field_simp at hn
   linear_combination hn
+
+/-- **Blind windows for perturbed lattices.** Let `ν_k` be real with `|ν_k − kh| ≤ L` for all
+`k ∈ ℤ`. For every aperture `r > π/h` and every `z₀` off the `ν_k` there is a window of aperture
+`r` whose transform vanishes at every `ν_k` and not at `z₀`. -/
+theorem exists_window_blind_to_perturbed_lattice {h L r : ℝ} (hh : 0 < h) (hr : π / h < r)
+    (ν : ℤ → ℝ) (hν : ∀ k : ℤ, |ν k - k * h| ≤ L) {z₀ : ℂ} (hz₀ : ∀ k, z₀ ≠ ν k) :
+    ∃ f : ℝ → ℂ, ApertureWindow r f ∧ (∀ k, paperFT f (ν k) = 0) ∧ paperFT f z₀ ≠ 0 :=
+  exists_window_blind_to_complex_perturbed_lattice hh hr (fun k => (ν k : ℂ))
+    (fun k => by
+      rw [show (ν k : ℂ) - k * h = ((ν k - k * h : ℝ) : ℂ) by push_cast; ring, Complex.norm_real,
+        Real.norm_eq_abs]
+      exact hν k)
+    (fun k => by simp) hz₀
 
 /-- Convolution of two windows: apertures add and transforms multiply. -/
 theorem apertureWindow_convolution {f g : ℝ → ℂ} {A B : ℝ} (hf : ApertureWindow A f)

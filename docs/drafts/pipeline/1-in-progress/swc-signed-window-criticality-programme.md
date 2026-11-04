@@ -41,7 +41,8 @@ TheLightConeOfACollarCarriesItsReflection, TheParitySectorsAreTheBandAtTheCentre
 TheContinuumCanonicalSystemIsTheJetHankelSystem, WindowEigenfunctionsAreSingularAtTheEdge, TheJetMinorsArePositiveOnEveryNonnegativeWindow,
 TheContinuumCanonicalSystemSplitsIntoTheParitySectors,
 TheSectorsAreTheMomentConditionsOfTheJets,
-TheLatticeReflectionCoefficientsAlternateInTheContinuumLimit.
+TheLatticeReflectionCoefficientsAlternateInTheContinuumLimit,
+CapacitiesAndConstrainedGroundStatesAreSingularAtTheEdge.
 Each passes an individual
 `lake --old env lean` check; umbrella `SignedWindowCriticality.lean` wired into `MainTheorems.lean`.
 

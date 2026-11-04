@@ -78,8 +78,8 @@ theorem exists_weighted_prime_progression_upper :
   rw [sum_filter]
   apply sum_congr rfl
   intro n _
-  by_cases hn : n.Prime ∧ n ≡ a [MOD p] <;>
-    simp only [primeResidueLog, hn, if_true, if_false, zero_div]
+  dsimp only [primeResidueLog]
+  split_ifs <;> simp only [zero_div]
 
 #print axioms exists_weighted_prime_progression_upper
 

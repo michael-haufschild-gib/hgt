@@ -45,7 +45,7 @@ private theorem abs_upward_log_factor_le {c : ℝ} (hc : 1 ≤ c) :
   rw [harg, Real.log_mul (by norm_num : (4 : ℝ) ≠ 0) hc0.ne']
   calc
     _ ≤ |Real.log 4| + |Real.log c| + |mertensWindowConstant| :=
-      (abs_add_le _ _).trans (add_le_add_right (abs_add_le _ _) _)
+      (abs_add_le _ _).trans (add_le_add (abs_add_le _ _) le_rfl)
     _ = Real.log 4 + Real.log c + |mertensWindowConstant| := by
       rw [abs_of_nonneg hlog4, abs_of_nonneg hlogc]
     _ ≤ _ := by
@@ -126,7 +126,7 @@ theorem exists_terminal_upward_replacement_quartic_bound
   calc
     _ = (B / δ * C₁) * c ^ 4 / N + C₂ * c / N := by field_simp [hc0.ne', hN0.ne'] <;> ring
     _ ≤ (B / δ * C₁) * c ^ 4 / N + C₂ * c ^ 4 / N :=
-      add_le_add_left (div_le_div_of_nonneg_right (mul_le_mul_of_nonneg_left hc14 hC₂) hN0.le) _
+      add_le_add le_rfl (div_le_div_of_nonneg_right (mul_le_mul_of_nonneg_left hc14 hC₂) hN0.le)
     _ = _ := by ring
 
 /-- Every subquartic overlap clock makes the terminal actual-to-model replacement vanish. -/

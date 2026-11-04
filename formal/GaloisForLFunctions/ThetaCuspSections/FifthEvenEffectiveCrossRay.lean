@@ -102,8 +102,10 @@ private theorem loadGram_energy (q : ℝ) (v : Fin 5 → ℝ) :
     v ⬝ᵥ (loadGram q *ᵥ v) =
       ((loadMap*nativeBasis q)*ᵥv) ⬝ᵥ
         (paidSevenSchur*ᵥ((loadMap*nativeBasis q)*ᵥv)) := by
-  simp only [loadGram,Matrix.mulVec_mulVec,Matrix.dotProduct_mulVec,
-    Matrix.vecMul_conjTranspose,star_trivial]
+  unfold loadGram
+  rw [← Matrix.mulVec_mulVec,← Matrix.mulVec_mulVec,
+    Matrix.dotProduct_mulVec,Matrix.vecMul_conjTranspose]
+  simp only [star_trivial]
 
 private theorem scaledLoadRows_mulVec {q : ℝ} (hq : q ≠ 0)
     (v : Fin 5 → ℝ) (i : Fin 2) :
@@ -123,14 +125,13 @@ private theorem loadGram_energy_bound {q : ℝ} (hq : 5000 ≤ q) (v : Fin 5 →
   change ((scaledLoadRows q*ᵥv) 0)^2 ≤ _ at h0
   change ((scaledLoadRows q*ᵥv) 1)^2 ≤ _ at h1
   rw [scaledLoadRows_mulVec hq0.ne'] at h0 h1
-  norm_num only [Fin.val_zero,Fin.val_one,Nat.reduceAdd,mul_pow] at h0 h1
+  change (q^2*w 0)^2 ≤ (∑ j, (scaledLoadRows q 0 j)^2)*(∑ i, v i^2) at h0
+  change (q^3*w 1)^2 ≤ (∑ j, (scaledLoadRows q 1 j)^2)*(∑ i, v i^2) at h1
   have hr0 := mul_le_mul_of_nonneg_right hn.1 hS
   have hr1 := mul_le_mul_of_nonneg_right hn.2 hS
   have ha : q^4*(w 0)^2 ≤ (1/2000)*(∑ i, v i^2) := by
-    dsimp only [w]
     nlinarith only [h0,hr0]
   have hb : q^6*(w 1)^2 ≤ (1/10000000)*(∑ i, v i^2) := by
-    dsimp only [w]
     nlinarith only [h1,hr1]
   have hq2 : 1000000 ≤ q^2 := by nlinarith only [hq,sq_nonneg (q-5000)]
   have hm := mul_le_mul_of_nonneg_right hq2

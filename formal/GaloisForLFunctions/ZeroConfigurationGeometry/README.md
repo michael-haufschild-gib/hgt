@@ -1,7 +1,7 @@
 # Zero Configuration Geometry (ZCG)
 
 Namespace `GaloisForLFunctions.ZeroConfigurationGeometry`; umbrella `ZeroConfigurationGeometry.lean`;
-36 modules.
+40 modules.
 
 ## 1. Motivation
 
@@ -280,6 +280,11 @@ programme locates exactly where it leaves the sign-free world.
 | Purity leaves only through a Frobenius collision (function-field deformation) | `IsPure`, `IsFrobeniusCollision`, `isPure_iff_circle`, `eventually_pure_of_simple`, `isClosed_pure`, `exists_first_frobenius_collision`, `exists_first_circle_collision`, `isPure_of_forall_not_frobeniusCollision` | unconditional |
 | The curve camera sees exactly the top coefficients; it identifies at the genus | `curveImage`, `traceConfig`, `curveImage_eq_iff_coeff_eq`, `eq_of_curveImage_eq`, `isPure_of_curveImage_eq`, `exists_pure_mimics`, `exists_tilted_mimic` | unconditional |
 | Bounded images certify purity; image growth reads the deepest eigenvalue | `exists_simultaneous_return`, `exists_large_powerSum`, `curveImage_growth`, `norm_curveImage_le_of_isPure`, `isPure_iff_bounded_curveImage` | unconditional |
+| Sparse clusters never cancel, at any depth: density `< 2a/π`, sharp | `exists_window_blind_of_injOn_near_complex_lattice`, `gammaOf_re`, `gammaOf_im`, `eq_of_mimic_of_count_le` | unconditional |
+| Blind windows for complex perturbations of a lattice | `pertFactor`, `norm_I_sub_re_le`, `norm_sin_mul_prod_pertFactor_le`, `exists_blind_limit_window`, `exists_window_blind_to_complex_perturbed_lattice` | unconditional |
+| Sparse on-line clusters never cancel: density `< 2a/π`, sharp | `multDiff_eq_zero_of_pointImage_isolated`, `exists_window_blind_of_injOn_near_lattice`, `eq_of_mimic_of_onLine_count_le`, `eq_of_mimic_of_onLine_separated`, `exists_onLine_mimic_at_density` | unconditional |
+| Euler stages repel above the horizon (phase lattice of `Λ_X` on the line) | `stageLine_eq_mul_exp`, `eulerStage_ne_zero_of_phase_lt`, `exists_eulerStage_zero_of_phase_ge`, `eulerStage_deriv_ne_zero`, `re_stageSpeed_ge`, `re_stageSpeed_le`, `eulerStage_deriv_ne_zero_above_horizon`, `eulerStage_ne_zero_of_lt_gap`, `exists_eulerStage_zero_within` | unconditional |
+| Integral configurations collide or repel (function-field model) | `prod_derivative_roots_eq_resultant`, `one_le_norm_prod_derivative`, `one_le_norm_sub_mul_pow`, `collide_or_repel` | unconditional |
 | Division at transform zeros; isolating windows | `exists_window_div`, `exists_isolating_window`, `exists_window_isolating_lattice_point` | unconditional |
 | The lattice threshold `π/h` is sharp | `tsum_add_int_eq_zero_of_fourier_eq_zero`, `eq_zero_of_blind_to_lattice`, `exists_window_blind_to_lattice_iff` | unconditional |
 | Cosine camera: real zeros, complex additive rigidity | `im_eq_zero_of_cosineWindowTransform_eq_zero`, `no_complex_additive_zero_triple` | unconditional, `0 < θ < π/2` |
@@ -329,7 +334,17 @@ programme locates exactly where it leaves the sign-free world.
   inside the simple zero set of one transform of aperture `a`, on the lattice `{½ + ikh}` above
   `π/h`, or on finite unions of bounded perturbations of lattices on the line above `πD` are
   trivial (`eq_of_mimic_of_perturbed_lattices`). This is a density criterion for cancelling
-  clusters, sharp against Euler columns, which cancel up to `π/h`. *Open:* the depth range of
+  clusters, sharp against Euler columns, which cancel up to `π/h`. Splitting the camera between
+  its two windows doubles the reach. Match the heights of an on-line cluster into `D⁻¹ℤ` and split
+  by the parity of the lattice index; each window then has to be blind to one half only, of
+  density `D/2`. So mimics at aperture `a` whose cluster lies on the critical line with upper
+  uniform density `< 2a/π` are equal, with no separation (`eq_of_mimic_of_onLine_count_le`). The
+  on-line lattice pair, whose cluster `(π/(2a))ℤ` has density exactly `2a/π`, cancels
+  (`exists_onLine_mimic_at_density`). The depth does not matter. A cluster point `w` enters
+  through `f̂(γ_w) conj ĝ(conj γ_w)` with `|Im γ_w| ≤ ½`, and complex perturbations of a lattice of
+  depth `≤ ½` are blinded at the same density aperture. So mimics at aperture `a` whose cluster,
+  counted point by point (an FE pair twice), has upper uniform density `< 2a/π` are equal
+  (`eq_of_mimic_of_count_le`). A cancelling cluster has density at least `2a/π`. *Open:* the depth range of
   the Ingham scale, i.e. whether a fixed depth budget is resolved at every `g > π/(2a)` or only
   depths below `s₀(a, g)`.
 - **Q3 Sub-spacing geometry.** Near a collision the camera reads the squared gap linearly, as the
@@ -349,6 +364,22 @@ programme locates exactly where it leaves the sign-free world.
   average and pointwise, while backward time is bounded: the least time at which a finite real
   configuration of total squared gap `S` is real is at least `−S/(2n²(n−1))`. RH is the statement
   that the configuration of `ζ` is still real at time `0` of the backward flow. In the
+  Euler-stage deformation `Λ_X` the zeros repel above a horizon. On the critical line
+  `Λ_X = 2 Re A_X(½ + it)`, and `A_X` moves by the phase law
+  `A_X(½ + it) = A_X(½ + it₀) exp(i ∫_{t₀}^{t} L_X)` (`stageLine_eq_mul_exp`). The phase speed
+  `Re L_X` lies between `(log(t/2π) − 6/t − W)/2` and `(log((t + 1)/2π) + 6/t + W)/2`,
+  `W = 2 Σ_{n ≤ X} Λ(n)/√n`. Above the horizon `log(t₀/2π) > 6/t₀ + W` every zero on the line is
+  simple (`eulerStage_deriv_ne_zero_above_horizon`). After a zero `t₀` the next lies at distance
+  `≥ π/M` (`eulerStage_ne_zero_of_lt_gap`), and every window `[t₀, t₀ + π/m]` contains a zero
+  (`exists_eulerStage_zero_within`). Here `M` and `m` are the upper and lower phase speeds, up to
+  constants. So above the horizon the Euler-stage configuration is a phase lattice of spacing
+  `2π/log(t/2π)` on the line, up to the prime weight. The horizon `t ≈ 2π e^{W}` recedes as `X`
+  grows: the law stops where the prime weight reaches the archimedean speed. In the
+  function-field model integrality forces collide-or-repel. For monic `h ∈ ℤ[X]` of degree `g`
+  with roots in `|z| ≤ 2√q`, `∏_α h'(α) = Res(h, h') ∈ ℤ` (`prod_derivative_roots_eq_resultant`).
+  So either `h` has a multiple root, or any two distinct roots satisfy
+  `|α − β| ≥ (4√q)^{−((g − 1)² + g − 2)}` (`collide_or_repel`). The image of `ζ`, prime sums
+  weighted by `log p`, has no such discreteness; this is exactly the missing repulsion input. In the
   function-field model a trace polynomial of genus `g` is pure if and only if its circle polynomial
   `z^g Q(z + z⁻¹)` has every root on `|z| = 1` (`isPure_iff_circle`). Along any continuous family
   of fixed degree purity is closed, simple pure points are interior, and purity is lost only at a
@@ -374,7 +405,10 @@ programme locates exactly where it leaves the sign-free world.
   `k ∈ ℤ`, with any `L` and no separation, every aperture `> π/h` has a window blind to all `ν_k`
   that sees any given `z₀` off them (`exists_window_blind_to_perturbed_lattice`), and finite unions
   of such configurations with arbitrary spacings are blinded at every aperture `> π Σ_j 1/h_j`
-  (`exists_window_blind_to_perturbed_lattices`). Every real configuration, with repetitions
+  (`exists_window_blind_to_perturbed_lattices`). The same holds for complex perturbations of
+  depth `≤ ½`: if `|ν_k − kh| ≤ L` and `|Im ν_k| ≤ ½`, the factors satisfy
+  `|i − ν_k| ≥ |i − Re ν_k|/2`, so the product bound is that of `Re ν_k` up to a factor `2`
+  (`exists_window_blind_to_complex_perturbed_lattice`). Every real configuration, with repetitions
   allowed, whose finite subfamilies in `[a, b]` have at most `D(b − a) + C` members is a
   sub-configuration of a bounded perturbation of `D⁻¹ℤ`. So every configuration of upper uniform
   density `< D`, in particular every `δ`-separated one with `D = 1/δ`, is blinded at every aperture
@@ -459,9 +493,10 @@ programme locates exactly where it leaves the sign-free world.
 | Bounded bandwidth excludes arithmetic fakes | For every aperture some prime carries Euler columns of every depth that hide |
 | Depth is read at first order | The depth and gap signals are quadratic near a collision |
 | Certifying reality needs a sign | In the function field, identification at lag `g log q` certifies purity by the positions of the trace points; Weil positivity is proved to decide only with `2g` lags (`curveConfig_weil_nonneg_iff_unitary_of_card_le`) |
-| Cancelling clusters can be sparse or perturbed | A cluster inside an isolable set (lattice, bounded perturbation of a lattice, finite union of these, simple zero set of one transform) never cancels at the isolation aperture. Whether every cluster of lower density `< a/π` is isolable at aperture `a` is open |
+| Cancelling clusters can be sparse or perturbed | A cluster inside an isolable set (lattice, bounded perturbation of a lattice, finite union of these, simple zero set of one transform) never cancels at the isolation aperture. Every cluster of upper uniform density `< 2a/π`, counted point by point and at any depth, is trivial, and the lattice pair cancels at density `2a/π` |
 | The resolution scale of off-line pairs is worse than Ingham's | Shallow configurations are resolved at every `g > π/(2a)`; only deep points cost separation |
 | Collisions signal non-purity | In the function-field model purity is lost only at a collision, but pure configurations collide freely (a trace root at `±2` or a double trace root keeps purity); a collision criterion characterizes exits, not states |
+| Repulsion needs a positivity or a sign | In the function-field model repulsion of distinct trace points follows from integrality of the image: `Res(h, h')` is a nonzero integer. In the Euler-stage family it follows from the archimedean phase speed dominating the prime weight. Neither mechanism is available for `ζ` below the horizon |
 | Identification certifies reality for `ζ` too | No finite aperture identifies the zeros of `ζ`: lattice columns of RvM density hide up to `λ = ½`, and infinite mimics beyond columns are not classified |
 | Reality can leave the line smoothly | Only through a collision, a real double root |
 | Euler products separate `ζ` from twins at finite resolution | Only the Ramanujan bound at each prime does |
