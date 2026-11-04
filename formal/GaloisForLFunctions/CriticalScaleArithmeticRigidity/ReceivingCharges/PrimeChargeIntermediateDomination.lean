@@ -56,10 +56,13 @@ theorem receiving_overlap_sqrt_cost_le {c L : ℝ} (hc : 1 ≤ c) (hL : 0 < L) :
     rw [mul_pow, Real.sq_sqrt harg]
     have h := mul_le_mul_of_nonneg_left
       (show 1 + Real.log c ≤ c by linarith only [hlog]) (pow_nonneg hc0.le 4)
-    exact (div_le_div_of_nonneg_right h hL.le).trans_eq (by ring)
+    calc
+      _ = (c ^ 4 * (1 + Real.log c)) / L := by ring
+      _ ≤ c ^ 4 * c / L := div_le_div_of_nonneg_right h hL.le
+      _ = _ := by ring
   have hr := Real.sq_sqrt (show 0 ≤ c ^ 5 / L by positivity)
   have hp := Real.sqrt_nonneg (c ^ 5 / L)
-  nlinarith only [hs, hr, hp]
+  exact (sq_le_sq₀ (by positivity) hp).mp (hs.trans_eq hr.symm)
 
 /-- The quartic conductor boundary costs half a horizon power. -/
 theorem receiving_quartic_boundary_le {Q N : ℕ} {c : ℝ}
@@ -101,7 +104,7 @@ theorem receiving_downward_sqrt_cost_le {Q N : ℕ} {c L : ℝ}
       _ = _ := by field_simp [hr.ne']
   have hroot := Real.sq_sqrt (show 0 ≤ c ^ 4 * L / (N : ℝ) ^ (1 / 2 : ℝ) by positivity)
   have hp := Real.sqrt_nonneg (c ^ 4 * L / (N : ℝ) ^ (1 / 2 : ℝ))
-  nlinarith only [hs, hroot, hp]
+  exact (sq_le_sq₀ (by positivity) hp).mp (hs.trans_eq hroot.symm)
 
 /-- The polar near-Gram cost is bounded by the overlap-scaled polar square. -/
 theorem receiving_polar_overlap_cost_le {c : ℝ} (hc : 1 ≤ c) (P : ℝ) :

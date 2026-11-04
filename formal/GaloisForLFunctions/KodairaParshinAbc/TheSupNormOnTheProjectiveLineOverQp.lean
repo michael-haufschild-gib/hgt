@@ -45,7 +45,7 @@ theorem padic_norm_sum_le {ι : Type*} (s : Finset ι) (g : ι → ℚ_[p]) {M :
   | empty => simpa using hM
   | insert a s ha ih =>
     rw [Finset.sum_insert ha]
-    refine (padicNormE.nonarchimedean _ _).trans (max_le (h a (Finset.mem_insert_self a s))
+    refine (Padic.nonarchimedean _ _).trans (max_le (h a (Finset.mem_insert_self a s))
       (ih fun i hi => h i (Finset.mem_insert_of_mem hi)))
 
 /-- On the closed unit disc a polynomial is bounded by its Gauss norm. -/
@@ -109,7 +109,7 @@ theorem exists_attains_supNorm {f : ℚ_[p][X]} {n : ℕ} (hn : f.natDegree ≤ 
   set a := f.coeff i₀ with ha_def
   have ha : a ≠ 0 := by
     intro h
-    rw [hi₀, ← ha_def, h, norm_zero] at hM
+    rw [hi₀, h, norm_zero] at hM
     exact lt_irrefl _ hM
   set g := C a⁻¹ * f with hg_def
   have hgcoeff : ∀ i, g.coeff i = a⁻¹ * f.coeff i := fun i => coeff_C_mul _
@@ -149,8 +149,11 @@ theorem exists_attains_supNorm {f : ℚ_[p][X]} {n : ℕ} (hn : f.natDegree ≤ 
     · have hred : PadicInt.toZMod (G.eval (z.val : ℤ_[p])) ≠ 0 := by
         rw [map_eval_eq, map_natCast, ZMod.natCast_zmod_val]
         exact hz
-      rw [hfg, eval_mul, eval_C, norm_mul, ← hGeval, norm_coe_eq_one_of_toZMod_ne_zero hred,
-        mul_one, hi₀]
+      have hfx : ‖f.eval ((z.val : ℤ_[p]) : ℚ_[p])‖ =
+          ‖a‖ * ‖g.eval ((z.val : ℤ_[p]) : ℚ_[p])‖ := by
+        conv_lhs => rw [hfg]
+        rw [eval_mul, eval_C, norm_mul]
+      rw [hfx, ← hGeval, norm_coe_eq_one_of_toZMod_ne_zero hred, mul_one, hi₀]
   · push Not at hroot
     have hp_le : p ≤ Gbar.natDegree := by
       by_contra hlt
@@ -164,8 +167,11 @@ theorem exists_attains_supNorm {f : ℚ_[p][X]} {n : ℕ} (hn : f.natDegree ≤ 
         exact leadingCoeff_ne_zero.mpr hGbar0
       rwa [hGbar, coeff_map] at this
     refine ⟨0, by simp, Or.inr ?_⟩
-    rw [← coeff_zero_eq_eval_zero, coeff_reflect, revAt_le (Nat.zero_le n), Nat.sub_zero, hfg,
-      coeff_C_mul, norm_mul, ← hGcoeff, norm_coe_eq_one_of_toZMod_ne_zero hlead, mul_one, hi₀]
+    have hfn : f.coeff n = a * g.coeff n := by
+      conv_lhs => rw [hfg]
+      exact coeff_C_mul _
+    rw [← coeff_zero_eq_eval_zero, coeff_reflect, revAt_le (Nat.zero_le n), Nat.sub_zero, hfn,
+      norm_mul, ← hGcoeff, norm_coe_eq_one_of_toZMod_ne_zero hlead, mul_one, hi₀]
 
 /-! ## Sharpness at `n = p + 1` -/
 
@@ -190,9 +196,14 @@ theorem reflect_X_sub_X_pow : reflect (p + 1) (X - X ^ p : ℚ_[p][X]) = X ^ p -
   rw [coeff_reflect, coeff_X_sub_X_pow, coeff_sub, coeff_X_pow, coeff_X]
   by_cases hi : i ≤ p + 1
   · rw [revAt_le hi]
-    split_ifs <;> first | rfl | simp | omega
+    have e1 : (p + 1 - i = 1) ↔ i = p := by omega
+    have e2 : (p + 1 - i = p) ↔ 1 = i := by omega
+    simp only [e1, e2]
   · rw [revAt_eq_self_of_lt (by omega)]
-    split_ifs <;> first | rfl | simp | omega
+    have h1 : i ≠ 1 := by omega
+    have h2 : i ≠ p := by omega
+    have h3 : (1 : ℕ) ≠ i := by omega
+    simp only [h1, h2, h3, if_false]
 
 /-- Fermat's little theorem on the unit disc: `‖x - x^p‖ < 1` for `‖x‖ ≤ 1`. -/
 theorem norm_sub_pow_lt_one {x : ℚ_[p]} (hx : ‖x‖ ≤ 1) : ‖x - x ^ p‖ < 1 := by

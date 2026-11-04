@@ -73,7 +73,7 @@ theorem tendsto_harmonicPrimeCharge_energy_small_cutoff {ι : Type*} {l : Filter
   have hV := (tendsto_primeCharge_reciprocal_mass t).comp hQ
   have hT := (tendsto_primeCharge_completed_coefficient_mass t).comp hQ
   have hz := ((hP.add hT).const_mul D).add ((hG.comp hN).mul (hP.add hV))
-  simp only [zero_pow two_ne_zero, zero_add, mul_zero, add_zero] at hz
+  simp only [zero_pow two_ne_zero, zero_add, mul_zero, add_zero, Function.comp_def] at hz
   refine squeeze_zero_norm' ?_ hz
   filter_upwards [hQ.eventually (eventually_ge_atTop 2),
     hN.eventually (eventually_primeCharge_uniform_geometry hK), hfar, hsmall]

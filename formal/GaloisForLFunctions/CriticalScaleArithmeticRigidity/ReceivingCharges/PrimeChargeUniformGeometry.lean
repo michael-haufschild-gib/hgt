@@ -49,7 +49,7 @@ theorem primeCharge_near_size_of_radius {Q N : ℕ} {c : ℝ}
     unfold linearNearRowRadius
     positivity
   have hprod : 0 ≤ ((Q : ℝ) ^ 2 + 1) * (linearNearRowRadius c + 1) := by positivity
-  simp only [Nat.cast_add, Nat.cast_mul, Nat.cast_one]
+  simp only [Nat.cast_mul]
   nlinarith only [hsq, hN, hprod]
 
 /-- Every fixed power of critical overlap is negligible compared with the horizon. -/
@@ -81,7 +81,7 @@ theorem eventually_primeCharge_uniform_geometry {K : ℝ} (hK : 0 < K) :
       (4 * (2 * Real.exp 2) ^ 2)).add
         ((tendsto_primeCharge_critical_power_div_nat K 1).const_mul (8 * (2 * Real.exp 2)))).add
           (tendsto_natCast_atTop_atTop.const_div_atTop (4 : ℝ))
-    simp only [mul_zero, zero_add, add_zero] at h
+    simp only [mul_zero, add_zero] at h
     convert h using 1
     funext N
     unfold linearNearRowRadius
@@ -92,6 +92,7 @@ theorem eventually_primeCharge_uniform_geometry {K : ℝ} (hK : 0 < K) :
     hr.eventually (ge_mem_nhds zero_lt_one),
     (tendsto_primeCharge_critical_power_div_nat K 4).eventually (ge_mem_nhds zero_lt_one)]
       with N hN hlog hc hrad hc4
+  change 64 ≤ Real.log (N : ℝ) at hlog
   dsimp only
   have hNR : (0 : ℝ) < N := by exact_mod_cast hN
   have hrad' := (div_le_one hNR).mp hrad

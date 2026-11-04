@@ -57,7 +57,8 @@ theorem gramDet_eq_mul_norm_sq {b₀ : E} (h0 : b₀ ≠ 0) (b₁ : E) :
   have hA : ‖b₀‖ ^ 2 ≠ 0 := pow_ne_zero 2 (norm_ne_zero_iff.mpr h0)
   rw [gramDet, ← real_inner_self_eq_norm_sq (b₁ - (⟪b₀, b₁⟫ / ‖b₀‖ ^ 2) • b₀)]
   simp only [inner_sub_left, inner_sub_right, real_inner_smul_left, real_inner_smul_right,
-    real_inner_self_eq_norm_sq, real_inner_comm b₀ b₁]
+    real_inner_self_eq_norm_sq, real_inner_comm b₀ b₁, norm_smul, mul_pow, Real.norm_eq_abs,
+    sq_abs]
   field_simp
   ring
 
@@ -94,8 +95,8 @@ theorem exists_reduced_pair (b : Module.Basis (Fin 2) ℝ E) :
     intro m n
     have h0 : b 0 ∈ L := subset_span ⟨0, rfl⟩
     have h1 : b 1 ∈ L := subset_span ⟨1, rfl⟩
-    rw [← Int.cast_smul_eq_zsmul ℝ m (b 0), ← Int.cast_smul_eq_zsmul ℝ n (b 1)] at *
-    exact L.add_mem (L.zsmul_mem h0 m) (L.zsmul_mem h1 n)
+    rw [Int.cast_smul_eq_zsmul, Int.cast_smul_eq_zsmul]
+    exact L.add_mem (L.smul_mem m h0) (L.smul_mem n h1)
   have hcoord : ∀ v ∈ L, ∃ m n : ℤ, v = (m : ℝ) • b 0 + (n : ℝ) • b 1 := by
     intro v hv
     obtain ⟨c, hc⟩ := (mem_span_range_iff_exists_fun ℤ).mp hv
@@ -147,10 +148,8 @@ theorem exists_reduced_pair (b : Module.Basis (Fin 2) ℝ E) :
   set k : ℤ := round (⟪v₁, u⟫ / ‖v₁‖ ^ 2) with hk
   set v₂ := u - (k : ℝ) • v₁ with hv₂
   have hv₂L : v₂ ∈ L := by
-    rw [hv₂, ← Int.cast_smul_eq_zsmul ℝ k v₁ |>.symm.trans rfl]
-    refine L.sub_mem (hmem _ _) ?_
-    rw [Int.cast_smul_eq_zsmul]
-    exact L.zsmul_mem hv₁L k
+    rw [hv₂, Int.cast_smul_eq_zsmul]
+    exact L.sub_mem (hmem _ _) (L.smul_mem k hv₁L)
   have hGv : gramDet v₁ v₂ = gramDet (b 0) (b 1) := by rw [hv₂, gramDet_sub_smul, hGu]
   have hGpos : 0 < gramDet (b 0) (b 1) := gramDet_pos_of_linearIndependent b.linearIndependent
   have hv₂0 : v₂ ≠ 0 := by
@@ -163,7 +162,6 @@ theorem exists_reduced_pair (b : Module.Basis (Fin 2) ℝ E) :
     have he : ⟪v₁, v₂⟫ = ‖v₁‖ ^ 2 * (⟪v₁, u⟫ / ‖v₁‖ ^ 2 - k) := by
       rw [hv₂, inner_sub_right, real_inner_smul_right, real_inner_self_eq_norm_sq]
       field_simp
-      ring
     rw [he, abs_mul, abs_of_pos hv₁pos]
     nlinarith
   have hle : ‖v₁‖ ≤ ‖v₂‖ := hmin v₂ hv₂L hv₂0

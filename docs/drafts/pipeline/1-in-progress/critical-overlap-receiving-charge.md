@@ -295,10 +295,14 @@ with `D=|selfφ(1)|+3`, `P=(|t|+8|t|/B)/log N`:
 and polar coefficient in every quadratic channel, the physical prime bound
 `0≤J_N(F)/log N≤2t²/B_Q`, and the physical moment comparison, with standard-only
 transitive axioms.
-`PrimeChargeUniformGeometry` and `PrimeChargeUniformScales` contain the uniform
-frame geometry and independent cutoff/horizon decay laws; checks pending.
-`PrimeChargeDenseCutoffEnergy` and `PrimeChargeSmallCutoffEnergy` contain the
-first two regime limits for independently growing cutoff and horizon; checks pending.
+`PrimeChargeUniformGeometry` checks the uniform frame, radius and sampling
+conditions with standard-only transitive axioms. `PrimeChargeUniformScales`
+contains the independent cutoff/horizon decay laws; check pending.
+`PrimeChargeDenseCutoffEnergy`, `PrimeChargeSmallCutoffEnergy` and
+`PrimeChargeIntermediateEnergy` contain all three regime limits.
+`PrimeChargeIntermediateDomination` separates the middle-range costs;
+`PrimeChargeUniformHorizonEnergy` assembles the independent cutoff/horizon
+limit. These sources await checks.
 
 The proposed uniform physical-energy proof splits at `Q⁶⁴=N` and
 `Q=(log N)^(1/32)`, with `L=log N`, `B=B_Q`, `S=S_Q`:
@@ -313,8 +317,9 @@ For sufficiently large `Q≤N`, `B≥1`, `S≤B`, `log Q≤2B` and
 `f(Q)=1/B+S/B+(log Q)^(3/8)(1+log Q)(t/B)²(4S²+2S)`,
 `g(N)=(1+log log N)²/(log N)^(1/8)+(log N)^4/N^(1/4)`.
 
-Both envelopes tend to zero by checked scale limits. Their finite three-regime
-domination and the uniform energy theorem remain to be formalized.
+Both envelopes tend to zero by checked scale limits. The written assembly
+instead separates each quadratic cost into a cutoff mass and a horizon factor;
+its Lean verification remains pending.
 Quadratic transposition does not apply to arbitrary complementary receivers.
 The reduced-jet, coherent pole-cancellation and sharp near-collar bounds in the
 corpus do not yet supply the required uniform upward nonratio remainder here.
@@ -322,6 +327,11 @@ A proposed replacement splits rows at `exp(√log N)` and primes at a power of
 `log N`: short rows require a prime-progression upper bound; long rows require
 a weighted affine-incidence covariance bound, with exceptional primes dividing
 `kh′−k′h`. Neither required bound has yet been established for the literal kernel.
+Bounding those exceptional primes individually loses a factor `log N`.
+A proposed improvement averages the prime multiplier first: a progression
+upper bound could replace that loss by `Σ_(p>R)1/p²`, permitting
+`R=(log N)^(5/16)`. The rows with multiplier below `Q²` occupy a terminal
+harmonic width `O((log Q+log c)/log N)` and need a separate bound.
 
 ## Gates
 

@@ -25,7 +25,7 @@ theorem exists_above_overlap_normalized_residual_sum_bound :
     ∃ K : ℝ, 0 < K ∧ ∀ A : ℝ, 0 ≤ A → ∀ k : ℕ, 1 ≤ k → ∀ᶠ N : ℕ in atTop,
       ∀ c : ℝ, 1 ≤ c → 4 * (Real.exp 1 + 3) ^ 2 * c ^ 2 ≤ (N : ℝ) →
       ∀ Q : ℕ, (Q : ℝ) ≤ Real.log (N : ℝ) ^ A →
-        (∑ m ∈ (Icc 1 Q).filter (fun m => c < (m : ℝ)),
+        (∑ m ∈ (Icc 1 Q).filter (fun m : ℕ => c < (m : ℝ)),
           ‖Matrix.toEuclideanLin (completeWeilMatrix tiltedUnitSpline c N)
               (normalizedRamanujanHorizonVector m N) -
             completedConductorEnergy tiltedUnitSpline c m •
@@ -49,7 +49,7 @@ theorem exists_above_overlap_normalized_residual_sum_bound :
     have := Real.log_nonneg hc
     dsimp only [r]
     positivity
-  let S := (Icc 1 Q).filter (fun m => c < (m : ℝ))
+  let S := (Icc 1 Q).filter (fun m : ℕ => c < (m : ℝ))
   have hpoint : ∀ m ∈ S,
       ‖Matrix.toEuclideanLin (completeWeilMatrix tiltedUnitSpline c N)
           (normalizedRamanujanHorizonVector m N) -
@@ -108,13 +108,13 @@ theorem eventually_upper_critical_packet_residual_mass_le {c : ℕ → ℝ}
     (hc : ∀ N, 1 ≤ c N) {R : ℝ} (hR : 0 < R)
     (hcrit : Tendsto (fun N : ℕ => c N ^ 8 / Real.log N) atTop (𝓝 R)) :
     ∀ᶠ N : ℕ in atTop,
-      (∑ m ∈ (Icc 1 ⌊Real.log N ^ (13 / 32 : ℝ)⌋₊).filter (fun m => c N < (m : ℝ)),
+      (∑ m ∈ (Icc 1 ⌊Real.log N ^ (13 / 32 : ℝ)⌋₊).filter (fun m : ℕ => c N < (m : ℝ)),
         ‖Matrix.toEuclideanLin (completeWeilMatrix tiltedUnitSpline (c N) N)
             (normalizedRamanujanHorizonVector m N) -
           completedConductorEnergy tiltedUnitSpline (c N) m •
             normalizedRamanujanHorizonVector m N‖ ^ 2 /
           (c N * completedConductorEnergy tiltedUnitSpline (c N) m)) ≤
-        Real.log N ^ (-1 / 64 : ℝ) := by
+        Real.log N ^ (-(1 / 64) : ℝ) := by
   obtain ⟨K, hK, hbudget⟩ := exists_above_overlap_normalized_residual_sum_bound
   have hlog := Real.tendsto_log_atTop.comp tendsto_natCast_atTop_atTop
   have hwidth := (criticalCurve_pow_log_div_natCast hc hR hcrit 2 0).const_mul
@@ -128,17 +128,17 @@ theorem eventually_upper_critical_packet_residual_mass_le {c : ℕ → ℝ}
     hwidth.eventually (gt_mem_nhds (by norm_num : (0 : ℝ) < 1)),
     hLN.eventually (gt_mem_nhds (by norm_num : (0 : ℝ) < 1)),
     hlog.eventually (eventually_mul_rpow_polylog_le_rpow
-      (by norm_num : (-89 / 1920 : ℝ) < -1 / 64) 5 (2 * K)),
+      (by norm_num : (-89 / 1920 : ℝ) < -(1 / 64)) 5 (2 * K)),
     hlog.eventually (eventually_mul_rpow_polylog_le_rpow
-      (by norm_num : (-67 / 16 : ℝ) < -1 / 64) 2 (2 * K))]
+      (by norm_num : (-67 / 16 : ℝ) < -(1 / 64)) 2 (2 * K))]
     with N hbudgetN hL1 hN hcα hwidthN hL8N hpoly₁ hpoly₂
   let L : ℝ := Real.log N
   let Q : ℕ := ⌊L ^ (13 / 32 : ℝ)⌋₊
   let U : ℝ := 1 + Real.log L
   change 1 ≤ L at hL1
   change c N ≤ L ^ (2 / 15 : ℝ) at hcα
-  change 2 * K * L ^ (-89 / 1920 : ℝ) * U ^ 5 ≤ L ^ (-1 / 64 : ℝ) at hpoly₁
-  change 2 * K * L ^ (-67 / 16 : ℝ) * U ^ 2 ≤ L ^ (-1 / 64 : ℝ) at hpoly₂
+  change 2 * K * L ^ (-89 / 1920 : ℝ) * U ^ 5 ≤ L ^ (-(1 / 64) : ℝ) at hpoly₁
+  change 2 * K * L ^ (-67 / 16 : ℝ) * U ^ 2 ≤ L ^ (-(1 / 64) : ℝ) at hpoly₂
   have hL0 : 0 < L := zero_lt_one.trans_le hL1
   have hN0 : (0 : ℝ) < N := by exact_mod_cast hN
   have hc0 : 0 < c N := zero_lt_one.trans_le (hc N)
@@ -188,7 +188,7 @@ theorem eventually_upper_critical_packet_residual_mass_le {c : ℕ → ℝ}
         (Real.rpow_nonneg hL0.le _)) hL0.le
   have hfirst : K * (Q : ℝ) ^ 2 * (1 + Real.log Q) ^ 2 *
       (c N * (1 + Real.log (c N)) ^ 3 * L ^ (1 / 128 : ℝ) / L) ≤
-        (1 / 2 : ℝ) * L ^ (-1 / 64 : ℝ) := by
+        (1 / 2 : ℝ) * L ^ (-(1 / 64) : ℝ) := by
     calc
       _ = K * ((Q : ℝ) ^ 2 * (1 + Real.log Q) ^ 2) *
           (c N * (1 + Real.log (c N)) ^ 3 * L ^ (1 / 128 : ℝ) / L) := by ring
@@ -204,7 +204,7 @@ theorem eventually_upper_critical_packet_residual_mass_le {c : ℕ → ℝ}
         norm_num
       _ ≤ _ := by linarith only [hpoly₁]
   have hsecond : K * (Q : ℝ) ^ 2 * (1 + Real.log Q) ^ 2 *
-      (c N ^ 9 * (L / N) ^ 2) ≤ (1 / 2 : ℝ) * L ^ (-1 / 64 : ℝ) := by
+      (c N ^ 9 * (L / N) ^ 2) ≤ (1 / 2 : ℝ) * L ^ (-(1 / 64) : ℝ) := by
     calc
       _ = K * ((Q : ℝ) ^ 2 * (1 + Real.log Q) ^ 2) * (c N ^ 9 * (L / N) ^ 2) := by ring
       _ ≤ K * (L ^ (13 / 16 : ℝ) * U ^ 2) * (1 / L ^ 5) :=
@@ -216,12 +216,12 @@ theorem eventually_upper_critical_packet_residual_mass_le {c : ℕ → ℝ}
       _ = K * L ^ (-67 / 16 : ℝ) * U ^ 2 := by rw [← Real.rpow_sub hL0]; norm_num
       _ ≤ _ := by linarith only [hpoly₂]
   have hb := hbudgetN (c N) (hc N) hlarge Q hQpow
-  change (∑ m ∈ (Icc 1 Q).filter (fun m => c N < (m : ℝ)), _) ≤ L ^ (-1 / 64 : ℝ)
+  change (∑ m ∈ (Icc 1 Q).filter (fun m : ℕ => c N < (m : ℝ)), _) ≤ L ^ (-(1 / 64) : ℝ)
   calc
     _ ≤ K * (Q : ℝ) ^ 2 * (1 + Real.log Q) ^ 2 *
         (c N * (1 + Real.log (c N)) ^ 3 * L ^ (1 / 128 : ℝ) / L +
           c N ^ 9 * (L / N) ^ 2) := hb
-    _ ≤ (1 / 2 : ℝ) * L ^ (-1 / 64 : ℝ) + (1 / 2 : ℝ) * L ^ (-1 / 64 : ℝ) := by
+    _ ≤ (1 / 2 : ℝ) * L ^ (-(1 / 64) : ℝ) + (1 / 2 : ℝ) * L ^ (-(1 / 64) : ℝ) := by
       rw [mul_add]
       exact add_le_add hfirst hsecond
     _ = _ := by ring
@@ -241,7 +241,7 @@ theorem tendsto_upper_critical_packet_residual_mixed_mass
     {c : ℕ → ℝ} (hc : ∀ N, 1 ≤ c N) {R : ℝ} (hR : 0 < R)
     (hcrit : Tendsto (fun N : ℕ => c N ^ 8 / Real.log N) atTop (𝓝 R)) :
     Tendsto (fun N : ℕ =>
-      ∑ m ∈ (Icc 1 ⌊Real.log N ^ (13 / 32 : ℝ)⌋₊).filter (fun m => c N < (m : ℝ)),
+      ∑ m ∈ (Icc 1 ⌊Real.log N ^ (13 / 32 : ℝ)⌋₊).filter (fun m : ℕ => c N < (m : ℝ)),
         ⟪Matrix.toEuclideanLin (completeWeilMatrix tiltedUnitSpline (c N) N)
             (normalizedRamanujanHorizonVector m N) -
           completedConductorEnergy tiltedUnitSpline (c N) m • normalizedRamanujanHorizonVector m N,
@@ -261,7 +261,7 @@ theorem tendsto_upper_critical_packet_residual_mixed_mass
         integral_tiltedUnitSpline_sq_pos (zero_lt_one.trans_le (hc N)) hm0))
   · filter_upwards [eventually_upper_critical_packet_residual_mass_le hc hR hcrit,
       eventually_ge_atTop 1] with N hsum hN
-    let S := (Icc 1 ⌊Real.log N ^ (13 / 32 : ℝ)⌋₊).filter (fun m => c N < (m : ℝ))
+    let S := (Icc 1 ⌊Real.log N ^ (13 / 32 : ℝ)⌋₊).filter (fun m : ℕ => c N < (m : ℝ))
     let r := fun m => Matrix.toEuclideanLin (completeWeilMatrix tiltedUnitSpline (c N) N)
         (normalizedRamanujanHorizonVector m N) -
       completedConductorEnergy tiltedUnitSpline (c N) m • normalizedRamanujanHorizonVector m N
@@ -281,7 +281,7 @@ theorem tendsto_upper_critical_packet_residual_mixed_mass
           (mul_nonneg (zero_le_one.trans (hc N)) hE)).trans_eq (by ring)
       _ = T * ∑ m ∈ S, ‖r m‖ ^ 2 /
           (c N * completedConductorEnergy tiltedUnitSpline (c N) m) := (mul_sum _ _ _).symm
-      _ ≤ T * Real.log N ^ (-1 / 64 : ℝ) :=
+      _ ≤ T * Real.log N ^ (-(1 / 64) : ℝ) :=
         mul_le_mul_of_nonneg_left hsum (by dsimp only [T]; positivity)
 
 /-- Restoring the energy diagonal contributes vanishing mixed mass on the whole low packet. -/
@@ -353,7 +353,7 @@ theorem tendsto_critical_packet_reference_mixed_mass
       have hcoord := abs_horizon_window_conductor_inner_le hsupp hB hm0 (hmQ.trans hQN)
       rw [real_inner_comm] at hcoord
       have hcoordsq := pow_le_pow_left₀ (abs_nonneg _) hcoord 2
-      simp only [sq_abs, div_pow, Real.sq_sqrt hL0.le] at hcoordsq
+      simp only [sq_abs, div_pow, Real.sq_sqrt (Real.log_natCast_nonneg N)] at hcoordsq
       exact mul_le_mul hEdiv hcoordsq (sq_nonneg _) (by positivity)
     calc
       _ ≤ ∑ _m ∈ Icc 1 Q, β * (Q : ℝ) * (α ^ 2 / L) := sum_le_sum hpoint
@@ -363,7 +363,7 @@ theorem tendsto_critical_packet_reference_mixed_mass
       _ ≤ (β * α ^ 2) * (L ^ (13 / 16 : ℝ) / L) :=
         mul_le_mul_of_nonneg_left (div_le_div_of_nonneg_right hQ2 hL0.le) (by positivity)
       _ = (β * α ^ 2) * (L ^ (13 / 16 : ℝ) / L ^ (1 : ℝ)) := by rw [Real.rpow_one]
-      _ = (β * α ^ 2) * L ^ (-3 / 16 : ℝ) := by
+      _ = (β * α ^ 2) * L ^ (-(3 / 16) : ℝ) := by
         rw [← Real.rpow_sub hL0]
         norm_num
 
@@ -374,7 +374,7 @@ theorem tendsto_upper_critical_packet_complete_mixed_mass
     {c : ℕ → ℝ} (hc : ∀ N, 1 ≤ c N) {R : ℝ} (hR : 0 < R)
     (hcrit : Tendsto (fun N : ℕ => c N ^ 8 / Real.log N) atTop (𝓝 R)) :
     Tendsto (fun N : ℕ =>
-      ∑ m ∈ (Icc 1 ⌊Real.log N ^ (13 / 32 : ℝ)⌋₊).filter (fun m => c N < (m : ℝ)),
+      ∑ m ∈ (Icc 1 ⌊Real.log N ^ (13 / 32 : ℝ)⌋₊).filter (fun m : ℕ => c N < (m : ℝ)),
         ⟪Matrix.toEuclideanLin (completeWeilMatrix tiltedUnitSpline (c N) N)
             (normalizedRamanujanHorizonVector m N),
           horizonProfileVector (horizonWeights h N) N⟫ ^ 2 /
@@ -392,7 +392,7 @@ theorem tendsto_upper_critical_packet_complete_mixed_mass
         (mem_Icc.mp (mem_filter.mp hm).1).1))
   · intro N
     let Q := ⌊Real.log N ^ (13 / 32 : ℝ)⌋₊
-    let S := (Icc 1 Q).filter (fun m => c N < (m : ℝ))
+    let S := (Icc 1 Q).filter (fun m : ℕ => c N < (m : ℝ))
     let E := fun m => completedConductorEnergy tiltedUnitSpline (c N) m
     let v := fun m => normalizedRamanujanHorizonVector m N
     let x := horizonProfileVector (horizonWeights h N) N
@@ -424,14 +424,15 @@ theorem tendsto_upper_critical_packet_complete_mixed_mass
         (completedConductorEnergy_nonneg contDiff_tiltedUnitSpline tiltedUnitSpline_support
           integral_tiltedUnitSpline_sq_pos hc0 (mem_Icc.mp hm).1) hc0.le) (sq_nonneg _)
     calc
-      _ ≤ ∑ m ∈ S, 2 * ((p m - d m) ^ 2 / (c N * E m)) +
-          2 * (E m / c N * ⟪v m, x⟫ ^ 2) := sum_le_sum hpoint
+      _ ≤ ∑ m ∈ S, (2 * ((p m - d m) ^ 2 / (c N * E m)) +
+          2 * (E m / c N * ⟪v m, x⟫ ^ 2)) := sum_le_sum hpoint
       _ = 2 * (∑ m ∈ S, (p m - d m) ^ 2 / (c N * E m)) +
           2 * (∑ m ∈ S, E m / c N * ⟪v m, x⟫ ^ 2) := by
         rw [sum_add_distrib, ← mul_sum, ← mul_sum]
       _ ≤ 2 * (∑ m ∈ S, (p m - d m) ^ 2 / (c N * E m)) +
           2 * (∑ m ∈ Icc 1 Q, E m / c N * ⟪v m, x⟫ ^ 2) :=
-        add_le_add_left (mul_le_mul_of_nonneg_left href (by norm_num)) _
+        add_le_add (le_refl _)
+          (mul_le_mul_of_nonneg_left href (by norm_num : (0 : ℝ) ≤ 2))
       _ = _ := by simp only [inner_sub_left, real_inner_smul_left]; rfl
 
 end GaloisForLFunctions.CriticalArithmeticCorrelationTheory

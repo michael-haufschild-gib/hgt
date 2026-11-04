@@ -39,7 +39,7 @@ noncomputable section
 
 namespace GaloisForLFunctions.ZeroConfigurationGeometry
 
-open Zeta23 SquareRootThreshold
+open Zeta23 _root_.RHTower SquareRootThreshold
 
 /-- `λ` and `λ'` agree on `2 ≤ n < n₀` and differ at `n₀ ≥ 2`. -/
 def FirstDisagreement (lam lam' : ℕ → ℝ) (n₀ : ℕ) : Prop :=
@@ -60,7 +60,6 @@ theorem weilTest_self_zero_eq (b : ℝ → ℂ) :
   rw [_root_.RHTower.weilTest_apply, ← integral_complex_ofReal]
   refine integral_congr_ae (Filter.Eventually.of_forall fun t => ?_)
   simp only [sub_zero, Complex.mul_conj, Complex.normSq_eq_norm_sq]
-  push_cast; ring
 
 /-- **Separation just above the first disagreement.** -/
 theorem exists_window_arithmeticImage_ne {lam lam' : ℕ → ℝ} {n₀ : ℕ}
@@ -191,6 +190,7 @@ theorem exists_window_W_ne_zeta {Z : ZeroConfig} {lam : ℕ → ℝ} {n₀ : ℕ
 
 /-! ### Prime flips -/
 
+open Classical in
 /-- The data of `ζ` with the sign of `Λ` flipped on the prime powers of the primes in `F`. -/
 def flipData (F : Set ℕ) (n : ℕ) : ℝ :=
   if ∃ p ∈ F, p ∣ n then -(ArithmeticFunction.vonMangoldt n : ℝ)

@@ -385,8 +385,8 @@ and 10 are structural.
    cutoff grows; dependency closure of the critical-multiple capstone.
 10. The jet Hankel system of a bump. The continuum limit of the lattice canonical system is the
     Hankel system of the jet energies `s_m = W(φ^{(m)})` (proved, unconditional; under RH the moments
-    of the zero measure). Open: its positivity as a receiver (the Stieltjes property of `(s_m)` on a
-    window) and which bumps' jet systems see an off-line zero.
+    of the zero measure), and its minors are positive on every nonnegative window (proved). Open:
+    which bumps' jet systems see an off-line zero, and at which order.
 11. Rate certificates: estimates landing on the spline-orbit or tensor-loss receivers, where
     constants are free.
 
@@ -417,6 +417,7 @@ and 10 are structural.
 | Weil's form is ACT's full zero form; on a nonnegative symmetric window the band holds, and a tight band has a reflection-pair zero mode with pole-charged harmonic gauge | `fullZeroForm_eq_weilQuad`, `abs_coupling_le_weilQuad_of_window`, `zeroMode_of_tight_band_even`, `zeroMode_of_tight_band_odd`, `zeroMode_of_tight_band` | unconditional |
 | The continuum canonical system of a bump is its jet Hankel system: the lattice determinant is born at order `h^{n(n−1)}` with the jet Gram, the margins satisfy `h^{−2n}E_n → det J_{n+1}/det J_n`, and `J_{ij} = (−1)^iW(φ, φ^{(i+j)})`, zero for `i + j` odd | `det_latticeToeplitz_eq`, `tendsto_det_latticeToeplitz`, `det_latticeToeplitz_succ`, `levinsonErr_mul_det`, `tendsto_levinsonErr_div_pow`, `weilPair_deriv_left`, `weilPair_iteratedDeriv_eq`, `weilPair_iteratedDeriv_eq_zero_of_odd`, `tendsto_levinsonErr_one_div_sq'`, `theContinuumCanonicalSystemIsTheJetHankelSystem` | unconditional |
 | No window eigenfunction is smooth; window infima are not attained on smooth tests; nonnegative windows are positive definite on smooth tests; the band at the centre is strict on smooth tests | `isWindowEigen_deriv`, `jetNormSq_sq_le`, `eq_zero_of_sq_iteratedDeriv_le`, `archForm_deriv_ge`, `exists_weilQuad_iteratedDeriv_gt`, `eq_zero_of_isWindowEigen`, `eq_zero_of_isMin`, `weilQuad_pos_of_window_nonneg`, `abs_centreCoupling_lt_of_window_nonneg` | unconditional |
+| The jet minors are positive on every nonnegative window, unconditionally on the base window; the lattice margins of every nonzero smooth bump are born at exactly order `h^{2n}`; the jet energies are strictly log-convex | `exists_jet_coeffs`, `eq_zero_of_iteratedDeriv_eq_sum`, `eq_zero_of_sum_smul_iteratedDeriv`, `jetGram_posDef`, `det_jetGram_pos`, `tendsto_levinsonErr_div_pow_of_window_nonneg`, `tendsto_levinsonErr_div_pow_of_base`, `weilQuad_iteratedDeriv_sq_lt` | unconditional |
 
 ## 9. Traps
 

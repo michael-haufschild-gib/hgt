@@ -52,7 +52,7 @@ theorem tendsto_harmonicPrimeCharge_energy_dense_cutoff {ι : Type*} {l : Filter
   have hm := ((tendsto_primeChargeMoment_cost t (by norm_num : (3 / 8 : ℝ) < 1)).comp hQ).const_mul D
   simp only [mul_zero] at hm
   have hz := hj.add hm
-  simp only [add_zero] at hz
+  simp only [add_zero, Function.comp_def] at hz
   refine squeeze_zero_norm' ?_ hz
   filter_upwards [hQ.eventually (eventually_ge_atTop 2),
     hN.eventually (eventually_ge_atTop 1),

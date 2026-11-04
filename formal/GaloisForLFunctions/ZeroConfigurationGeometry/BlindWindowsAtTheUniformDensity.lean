@@ -160,10 +160,8 @@ theorem exists_window_blind_of_count_le {ι : Type*} (lam : ι → ℝ) {D C r :
   have hνb : ∀ k : ℤ, |ν k - k * h| ≤ (C + 1) / 2 * h + h := by
     intro k
     by_cases hk : ∃ i, σ i = k
-    · rw [hνin k hk]
-      obtain ⟨j, hj⟩ := hk
-      have hjj : hk.choose = j := hσ (hk.choose_spec.trans hj.symm)
-      rw [hjj, ← hj]
+    · obtain ⟨j, hjl, hj⟩ : ∃ j, lam hk.choose = lam j ∧ σ j = k := ⟨_, rfl, hk.choose_spec⟩
+      rw [hνin k hk, hjl, ← hj]
       have e : lam j - (σ j : ℝ) * h = h * (D * lam j - σ j) := by
         rw [hh_def]; field_simp
       rw [e, abs_mul, abs_of_pos hh]

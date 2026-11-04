@@ -4,7 +4,28 @@ import Mathlib.Analysis.Matrix.PosDef
 /-!
 # The jet minors are positive on every nonnegative window
 
-DRAFT
+The continuum canonical system of a bump `φ` (`TheContinuumCanonicalSystemIsTheJetHankelSystem`)
+has margins `det J_{n+1}/det J_n`, `J_n = [W(φ^{(i)}, φ^{(j)})]_{i,j<n}`, and its limit theorem
+needs the jet minors not to vanish. They are positive wherever Weil's form is positive definite on
+smooth tests.
+
+* **The jets of a bump are independent** (`eq_zero_of_sum_smul_iteratedDeriv`): a bump satisfying a
+  linear differential equation with constant coefficients vanishes
+  (`eq_zero_of_iteratedDeriv_eq_sum`), since its jets would grow geometrically
+  (`exists_jet_coeffs`), which compact support forbids.
+* **The jet Gram is positive definite** (`jetGram_posDef`, `det_jetGram_pos`) on every window on
+  which `W` is positive definite on smooth tests.
+* **The continuum limit without hypotheses.** On every nonnegative window, which is positive
+  definite on smooth tests (`weilQuad_pos_of_window_nonneg`), and unconditionally on the base window
+  `2a ≤ 181/250`, every nonzero smooth bump has `h^{−2n}E_n(φ, h) → det J_{n+1}/det J_n > 0`
+  (`tendsto_levinsonErr_div_pow_of_window_nonneg`, `tendsto_levinsonErr_div_pow_of_base`): the
+  `n`-th lattice margin is born at exactly the order `h^{2n}`.
+* **The jet energies are strictly log-convex** (`weilQuad_iteratedDeriv_sq_lt`):
+  `W(φ^{(m+1)})² < W(φ^{(m)}) W(φ^{(m+2)})`.
+
+Under RH every window is nonnegative, so the continuum canonical system of every bump is a
+nondegenerate positive system at every order; a nonpositive jet minor of any smooth bump refutes
+RH.
 -/
 
 open MeasureTheory Set Filter Topology
@@ -54,7 +75,7 @@ theorem exists_jet_coeffs (hφ : ContDiff ℝ ∞ φ) {m : ℕ} (a : Fin (m + 1)
     refine ⟨Pi.single 0 1, fun i => ?_, ?_⟩
     · by_cases hi : i = 0
       · subst hi; simp
-      · simp [Pi.single_apply, hi]
+      · simp [hi]
     · rw [Finset.sum_eq_single 0 (fun i _ hi => by simp [hi]) (by simp)]
       simp
   | succ k ih =>
@@ -322,3 +343,4 @@ theorem weilQuad_iteratedDeriv_sq_lt {a : ℝ}
 end GaloisForLFunctions.SignedWindowCriticality
 
 end
+

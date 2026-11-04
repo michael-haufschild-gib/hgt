@@ -25,6 +25,8 @@ import GaloisForLFunctions.ZeroConfigurationGeometry.ResolutionIsUniformInDepth
 import GaloisForLFunctions.ZeroConfigurationGeometry.IsolatingWindows
 import GaloisForLFunctions.ZeroConfigurationGeometry.PerturbedLatticeProducts
 import GaloisForLFunctions.ZeroConfigurationGeometry.BlindWindowsForPerturbedLattices
+import GaloisForLFunctions.ZeroConfigurationGeometry.PaleyWienerWindows
+import GaloisForLFunctions.ZeroConfigurationGeometry.BlindWindowsAtTheUniformDensity
 
 /-!
 # Zero Configuration Geometry
@@ -45,8 +47,10 @@ Umbrella for the explicit formula read as a camera.
   depth.
 * Window design: real kernel zeros of the cosine camera, windows blind to a real lattice, to
   finite unions of lattices at the density aperture, to zero sets of exponential polynomials and
-  of transforms of densities, and to every bounded perturbation of a lattice; isolating windows
-  reading one point of a lattice.
+  of transforms of densities, to every bounded perturbation of a lattice, and to every real
+  configuration of finite upper uniform density `D` at every aperture above `πD`; isolating windows
+  reading one point of a lattice; converse Paley–Wiener, so that blind windows are exactly entire
+  functions of exponential type vanishing on the configuration.
 
 See `ZeroConfigurationGeometry/README.md`.
 -/

@@ -62,7 +62,6 @@ theorem tendsto_primeCharge_completed_coefficient_mass (t : ℝ) :
   apply h.congr'
   filter_upwards [eventually_ge_atTop 2] with Q hQ
   field_simp [(primePoleScale_pos hQ).ne']
-  <;> ring
 
 /-- The exact polar coefficient bound vanishes for independently growing cutoff and horizon. -/
 theorem tendsto_primeCharge_polar_bound {ι : Type*} {l : Filter ι} {Q N : ι → ℕ}
@@ -123,7 +122,8 @@ theorem tendsto_primeCharge_critical_power_div_log (K : ℝ) {k : ℕ} (hk : k <
       Real.log N ^ ((1 / 8 : ℝ) * k) := by
     rw [← Real.rpow_natCast, ← Real.rpow_mul hL.le]
   simp only [Function.comp_def]
-  rw [Real.rpow_sub hL, Real.rpow_one, mul_pow, hp]
+  rw [Real.rpow_sub hL, Real.rpow_one]
+  simp only [mul_pow, hp]
   field_simp [hL.ne', (Real.rpow_pos_of_pos hL ((1 / 8 : ℝ) * k)).ne']
 
 /-- A sublinear power of the horizon logarithm vanishes after physical normalization. -/
@@ -153,7 +153,8 @@ theorem tendsto_receiving_log_mul_critical_power_div_log (K a : ℝ) (k : ℕ)
   have hp : (Real.log N ^ (1 / 8 : ℝ)) ^ k =
       Real.log N ^ ((1 / 8 : ℝ) * k) := by
     rw [← Real.rpow_natCast, ← Real.rpow_mul hL.le]
-  rw [mul_pow, hp, Real.rpow_add hL]
+  rw [Real.rpow_add hL]
+  simp only [mul_pow, hp]
   ring
 
 /-- Every fixed logarithmic-overlap product loses to a positive power of the horizon. -/
@@ -171,7 +172,8 @@ theorem tendsto_receiving_log_mul_critical_power_div_nat_rpow (K a : ℝ) (k : �
   have hp : (Real.log N ^ (1 / 8 : ℝ)) ^ k =
       Real.log N ^ ((1 / 8 : ℝ) * k) := by
     rw [← Real.rpow_natCast, ← Real.rpow_mul hL.le]
-  rw [mul_pow, hp, Real.rpow_add hL]
+  rw [Real.rpow_add hL]
+  simp only [mul_pow, hp]
   ring
 
 /-- One critical overlap factor still leaves the exact polar coefficient vanishing. -/
@@ -182,7 +184,7 @@ theorem tendsto_primeCharge_overlap_polar_bound {ι : Type*} {l : Filter ι} {Q 
   have hc := (tendsto_primeCharge_critical_power_div_log K (by omega : 1 < 8)).comp hN
   have hn := ((primePoleScale_tendsto_atTop.comp hQ).const_div_atTop (8 * |t|)).const_add |t|
   have h := hc.mul hn
-  simp only [pow_one, zero_mul] at h
+  simp only [pow_one, zero_mul, Function.comp_def] at h
   convert h using 1
   funext i
   ring

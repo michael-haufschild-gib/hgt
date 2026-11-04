@@ -228,7 +228,7 @@ uniformly over every coefficient family b,
 
 Thus the limiting gain is at most `2S(h)²R/J(1)`. On `ker S`, it is zero,
 uniformly even for unbounded corrector coefficients. The zero corrector
-attains zero gain. This proves a precise obstruction to removing aliasing
+attains zero gain. This would give a precise obstruction to removing aliasing
 on that kernel with this packet; it does not assert a negative window
 exists. `LowConductorCorrectorsCannotImproveZeroSourceWindows.lean`
 implements this consequence; its audit is pending. Off the kernel, the

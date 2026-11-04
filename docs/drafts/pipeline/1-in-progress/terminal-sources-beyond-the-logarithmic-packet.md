@@ -122,6 +122,45 @@ would prove the large-packet conjecture. Its crucial content is the
 separation of the sparse von Mangoldt mean from the polynomial periodic
 error; a generic residual norm does not do that.
 
+## Long-index estimate for the actual near kernel
+
+The following paper reduction isolates a concrete part of the open core;
+it has not passed a Lean transfer. Let p be q-periodic, mean zero, with
+`|p|≤B`. Let F vanish on `x≤δ`, `0<δ≤1`, be bounded by B_F and globally
+Lipschitz with constant L_F. Let K be bounded by B_K, Lipschitz with
+constant L_K, and zero on `[1,∞)`. For c≥1 and `c/N≤δ/(4e²)`, put
+
+    C = 2B_FB_K/δ + 2L_FB_K/δ + 4B_FB_K/δ² + 16e²B_FL_K/δ³.
+
+The proposed finite bound for the existing punctured endpoint pairing is
+
+    |endpointNearPairSum(K,F,0,2,c/N,N,1,p)/c|
+      ≤ 8e² q B C/N.
+
+To derive it, reindex the two triangles by d=|j−n|. Only
+`d≤D=floor(2e²c)` contribute. Set s=d/N, w=c/N. The two weights are
+`F(x)A_s(x)K(G_s(x))` and `F(x+s)A_s(x)K(G_s(x))`, where
+
+    A_s(x)=[x(x+s)]^(-1/2),   G_s(x)=log(1+s/x)/w.
+
+Replace x inside A_s and G_s by its clamp to `[δ/2,1]` to obtain global
+bounded Lipschitz extensions. They agree with the required weights
+whenever F or its translate is nonzero: s≤δ/2. On this interval,
+`|A_s|≤2/δ`, `Lip(A_s)≤4/δ²`, and
+`Lip(G_s)≤4s/(wδ²)≤8e²/δ²`. Hence each extended weight has its supremum
+plus Lipschitz constant at most C, uniformly in d,c,N. Apply the checked
+`abs_terminal_shifted_periodic_zero_mean_le` to each triangle and gap.
+Each costs at most `2qBC/N`; summing both over D and dividing by c gives
+the bound. The N⁻¹ comes from the two square-root horizon weights.
+
+The derivative of G_s retains s/w=d/c. Bounding its two logarithms
+separately would lose that factor. This finite averaging order is the
+essential mechanism: it needs no relation between q and c. For the jet,
+apply it to the mean-zero sequence `j_m−Λ(m)` and retain the sparse mean
+separately. The clamp estimates, exact reindexing and source specialization
+remain to formalize; the other complete channels still require their own
+uniform bounds.
+
 ## Decision criterion
 
 If the vanishing statement holds, this much larger conductor family

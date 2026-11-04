@@ -60,6 +60,9 @@ Pillars (module — main theorems), all checked with `lake --old env lean`, umbr
 - PerturbedLatticeProducts — `summable_norm_pertFactor_sub_one`, `norm_sin_mul_prod_pertFactor_le`
 - BlindWindowsForPerturbedLattices — `exists_blind_limit_window`, `exists_window_blind_to_perturbed_lattice`,
   `exists_window_blind_to_perturbed_lattices`
+- PaleyWienerWindows — `exists_smooth_source_of_entire`, `exists_window_of_entire`, `blind_windows_iff_entire`
+- BlindWindowsAtTheUniformDensity — `exists_injective_near_int`, `exists_window_blind_of_count_le`,
+  `exists_window_blind_of_density_le`, `exists_window_blind_of_separated`
 - IsolatingWindows — `exists_window_div`, `exists_isolating_window`,
   `exists_window_isolating_lattice_point`
 - ResolutionIsUniformInDepth — `uniform_block_inequality`, `eq_of_weil_eq_of_heightSeparated`,
@@ -79,4 +82,4 @@ unbounded aperture (growth) or deformation, both ending at signed prime geometry
 as an identity at λ > 1, repulsion law in a model family, kernel design against configurations.
 
 ## Log
-- 2026-11-04 — created; twenty-seven pillar modules checked; README written.
+- 2026-11-04 — created; twenty-nine pillar modules checked; README written.

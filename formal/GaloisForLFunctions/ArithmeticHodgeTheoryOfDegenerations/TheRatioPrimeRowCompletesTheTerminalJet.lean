@@ -52,7 +52,7 @@ theorem terminal_prime_row_eq_log_sub_jet (m : ℕ) {N n : ℕ}
       _ = _ := sum_vonMangoldt_mul_ramanujan_eq_log_sub_jet m hn
   have hp := sum_weilPrimeKernel_poleProfile (ramanujanLagCoefficient m) hn hnN
   rw [hup, zero_add, hdown] at hp
-  simpa only [poleVector, div_eq_mul_inv] using hp
+  simpa only [poleVector, div_eq_mul_inv, one_mul] using hp
 
 /-- A near pairing with its diagonal retained. -/
 def filledEndpointNearPairSum (K F : ℝ → ℝ) (w : ℝ) (N : ℕ)

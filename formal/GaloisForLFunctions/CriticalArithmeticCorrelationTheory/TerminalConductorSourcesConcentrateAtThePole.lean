@@ -70,10 +70,9 @@ theorem tendsto_terminalConductorSourceSquare_polar
   have hc0 : 0 < c N := zero_lt_one.trans_le (hc N)
   have hfloor := seventh_mul_completedConductorEnergy_ge_below_overlap hc0 one_pos
     (by simpa only [Nat.cast_one] using hc N)
+  simp only [Nat.cast_one, one_pow, mul_one] at hfloor
   have hE0 : 0 < completedConductorEnergy tiltedUnitSpline (c N) 1 := by
-    have hp : 0 < c N ^ 7 * completedConductorEnergy tiltedUnitSpline (c N) 1 := by
-      have ht := tiltedSplineSpectralFloorConstant_pos
-      simpa only [Nat.cast_one, one_pow, mul_one] using ht.trans_le hfloor
+    have hp := tiltedSplineSpectralFloorConstant_pos.trans_le hfloor
     rcases mul_pos_iff.mp hp with hp | hn
     · exact hp.2
     · exact False.elim ((pow_pos hc0 7).not_gt hn.1)
@@ -220,7 +219,7 @@ theorem tendsto_sum_nonpolar_terminal_source_critical_packet
   have hlo := tendsto_sum_nonpolar_source_below_overlap hh hA hsupp hδ hη hlow hhigh hc hR hcrit
   have hhi := tendsto_upper_critical_packet_complete_mixed_mass hsupp hB hc hR hcrit
   change Tendsto (fun N : ℕ =>
-    ∑ m ∈ (Icc 1 ⌊Real.log N ^ (13 / 32 : ℝ)⌋₊).filter (fun m => c N < (m : ℝ)),
+    ∑ m ∈ (Icc 1 ⌊Real.log N ^ (13 / 32 : ℝ)⌋₊).filter (fun m : ℕ => c N < (m : ℝ)),
       terminalConductorSourceSquare h (c N) N m) atTop (𝓝 0) at hhi
   have ht := hlo.add hhi
   simp only [zero_add] at ht
@@ -232,8 +231,8 @@ theorem tendsto_sum_nonpolar_terminal_source_critical_packet
     let Q : ℕ := ⌊Real.log N ^ (13 / 32 : ℝ)⌋₊
     let q := fun m => terminalConductorSourceSquare h (c N) N m
     have hsplit : (∑ m ∈ Icc 2 Q, q m) =
-        (∑ m ∈ (Icc 2 Q).filter (fun m => (m : ℝ) ≤ c N), q m) +
-        ∑ m ∈ (Icc 2 Q).filter (fun m => c N < (m : ℝ)), q m := by
+        (∑ m ∈ (Icc 2 Q).filter (fun m : ℕ => (m : ℝ) ≤ c N), q m) +
+        ∑ m ∈ (Icc 2 Q).filter (fun m : ℕ => c N < (m : ℝ)), q m := by
       simp only [sum_filter]
       rw [← sum_add_distrib]
       apply sum_congr rfl
