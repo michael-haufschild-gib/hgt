@@ -850,7 +850,8 @@ theorem det_latticeToeplitz_succ {κ : ℤ → ℝ} (hκ : IsEvenSeq κ) {n : �
     congr 1
     congr 1
     ext i j
-    simp only [Matrix.submatrix_apply, hcol, T, latticeToeplitz, Matrix.of_apply, Fin.val_succ]
+    rw [Matrix.submatrix_apply, hcol]
+    simp only [T, latticeToeplitz, Matrix.of_apply, Fin.val_succ]
     push_cast
     ring_nf
   rw [Matrix.det_mul, hP, mul_one] at hdet
@@ -924,30 +925,104 @@ theorem tendsto_levinsonErr_div_pow (hφ : ContDiff ℝ ∞ φ) (hφc : HasCompa
     | succ m => exact hne ⟨m, by omega⟩
   have hpow : h ^ (n * (n - 1)) ≠ 0 := pow_ne_zero _ hh0
   have hpow2 : h ^ (2 * n) ≠ 0 := pow_ne_zero _ hh0
-  simp only [Function.comp_apply]
-  field_simp
-  rw [mul_comm (h ^ (n * (n - 1))) _] at hE
-  have := hE
-  calc (diffGram φ h (n + 1)).det * h ^ (2 * n) = levinsonErr (weilSeq φ h) n *
-        (diffGram φ h n).det := by
-        apply mul_right_cancel₀ hpow
-        rw [← hE]; ring
-    _ = _ := by ring
+  show (diffGram φ h (n + 1)).det / (diffGram φ h n).det = levinsonErr (weilSeq φ h) n / h ^ (2 * n)
+  rw [div_eq_div_iff hdn hpow2]
+  apply mul_left_cancel₀ hpow
+  linear_combination (-1 : ℝ) * hE
 
 /-! ### Translation makes the jet Gram a Hankel matrix -/
 
-/-- **Differentiation is skew for Weil's pairing**: `W(f', g) = −W(f, g')`. -/
+theorem weilPair_sub_left {f₁ f₂ g : ℝ → ℝ} (h₁ : f₁ ∈ realTests) (h₂ : f₂ ∈ realTests)
+    (hg : g ∈ realTests) : weilPair (f₁ - f₂) g = weilPair f₁ g - weilPair f₂ g := by
+  rw [sub_eq_add_neg, weilPair_add_left h₁ (realTests.neg_mem h₂) hg, weilPair_neg_left,
+    ← sub_eq_add_neg]
+
+theorem weilPair_sub_right {f g₁ g₂ : ℝ → ℝ} (hf : f ∈ realTests) (h₁ : g₁ ∈ realTests)
+    (h₂ : g₂ ∈ realTests) : weilPair f (g₁ - g₂) = weilPair f g₁ - weilPair f g₂ := by
+  rw [weilPair_comm, weilPair_sub_left h₁ h₂ hf, weilPair_comm g₁, weilPair_comm g₂]
+
+theorem supportedIn_jetError {R h : ℝ} (hR : SupportedIn R φ) (hh : 0 < h) (hh1 : h ≤ 1) (k : ℕ) :
+    SupportedIn (R + k) (jetError φ h k) := by
+  intro u hu
+  have h1 : (fwdDiff h)^[k] φ u = 0 := supportedIn_fwdDiff_iter hh hh1 k hR u hu
+  have h2 : iteratedDeriv k φ u = 0 :=
+    supportedIn_mono' (iteratedDeriv_supportedIn hR k)
+      (by linarith [(Nat.cast_nonneg k : (0 : ℝ) ≤ k)]) u hu
+  simp [jetError, diffQuot, h1, h2]
+
+/-- One forward difference vanishes in the Weil norm as the step shrinks. -/
+theorem tendsto_weilNormSq_fwdDiff {g : ℝ → ℝ} (hg : ContDiff ℝ ∞ g) (hgc : HasCompactSupport g) :
+    Tendsto (fun h => weilNormSq (fwdDiff h g)) (𝓝[>] 0) (𝓝 0) := by
+  obtain ⟨R, hR0, hR⟩ := exists_supportedIn_of_hasCompactSupport hgc
+  have hg1 : ContDiff ℝ 1 g := by exact_mod_cast contDiff_infty.mp hg 1
+  have hD : Continuous (deriv g) := hg1.continuous_deriv le_rfl
+  obtain ⟨M, hM⟩ := hD.bounded_above_of_compact_support hgc.deriv
+  simp only [Real.norm_eq_abs] at hM
+  have hM0 : 0 ≤ M := (abs_nonneg _).trans (hM 0)
+  have hdg : Differentiable ℝ g := hg1.differentiable one_ne_zero
+  set B : ℝ → ℝ := fun h => (1 + levyLipConstant) * (2 * (R + 1) * (h * M) ^ 2) +
+    Real.exp (1 / 2) * (2 * M) * (2 * (R + 1) * (h * M)) + (2 * (R + 1) * (h * M)) ^ 2
+  have hB : Tendsto B (𝓝[>] 0) (𝓝 0) := by
+    have := tendsto_nhdsWithin_of_tendsto_nhds (s := Ioi (0 : ℝ))
+      ((show Continuous B by fun_prop).tendsto 0)
+    simpa [B] using this
+  refine tendsto_of_tendsto_of_tendsto_of_le_of_le' tendsto_const_nhds hB
+    (Eventually.of_forall fun h => weilNormSq_nonneg _) ?_
+  filter_upwards [Ioo_mem_nhdsGT (by norm_num : (0 : ℝ) < 1)] with h hh
+  have hm : fwdDiff h g ∈ realTests := by
+    simpa using fwdDiff_iter_mem_realTests hg hgc h 1
+  have hsupp : SupportedIn (R + 1) (fwdDiff h g) := by
+    simpa using supportedIn_fwdDiff_iter hh.1 hh.2.le 1 hR
+  have hε : ∀ u, |fwdDiff h g u| ≤ h * M := fun u => by
+    have := abs_fwdDiff_iter_le (k := 1) (by exact_mod_cast hg1) hh.1 (M := M)
+      (fun x => by simpa using hM x) u
+    simpa using this
+  have hLip : ∀ u v, |fwdDiff h g u - fwdDiff h g v| ≤ 2 * M * |u - v| := by
+    intro u v
+    have h1 := abs_sub_le_of_abs_deriv_le hdg hM (v + h) (u + h)
+    have h2 := abs_sub_le_of_abs_deriv_le hdg hM v u
+    rw [show u + h - (v + h) = u - v by ring] at h1
+    simp only [fwdDiff]
+    calc |g (u + h) - g u - (g (v + h) - g v)| = |(g (u + h) - g (v + h)) - (g u - g v)| := by
+          ring_nf
+      _ ≤ |g (u + h) - g (v + h)| + |g u - g v| := abs_sub _ _
+      _ ≤ M * |u - v| + M * |u - v| := add_le_add h1 h2
+      _ = 2 * M * |u - v| := by ring
+  exact weilNormSq_le_of_uniform hm.1 hm.2 hsupp (by linarith) hε hLip
+
+/-- **Differentiation is skew for Weil's pairing**: `W(f', g) = −W(f, g')`, the infinitesimal
+form of translation invariance. -/
 theorem weilPair_deriv_left {f g : ℝ → ℝ} (hf : ContDiff ℝ ∞ f) (hfc : HasCompactSupport f)
     (hg : ContDiff ℝ ∞ g) (hgc : HasCompactSupport g) :
     weilPair (deriv f) g = -weilPair f (deriv g) := by
   have hf2 : f ∈ realTests := by simpa using iteratedDeriv_mem_realTests hf hfc 0
   have hg2 : g ∈ realTests := by simpa using iteratedDeriv_mem_realTests hg hgc 0
+  have hdf : deriv f ∈ realTests := by simpa using iteratedDeriv_mem_realTests hf hfc 1
+  have hdg : deriv g ∈ realTests := by simpa using iteratedDeriv_mem_realTests hg hgc 1
   obtain ⟨R, hR0, hRf⟩ := exists_supportedIn_of_hasCompactSupport hfc
   obtain ⟨R₂, hR₂0, hRg⟩ := exists_supportedIn_of_hasCompactSupport hgc
   set S := R + R₂ + 1
-  have hSf : SupportedIn S f := supportedIn_mono' hRf (by simp only [S]; linarith)
-  have hSg : SupportedIn S g := supportedIn_mono' hRg (by simp only [S]; linarith)
-  -- the exact identity at every step
+  have hS1 : R + 1 ≤ S := by simp only [S]; linarith
+  have hS2 : R₂ + 1 ≤ S := by simp only [S]; linarith
+  have hSf : SupportedIn S f := supportedIn_mono' hRf (by linarith)
+  have hSg : SupportedIn S g := supportedIn_mono' hRg (by linarith)
+  have hSdf : SupportedIn S (deriv f) :=
+    supportedIn_mono' (by simpa using iteratedDeriv_supportedIn hRf 1) (by linarith)
+  have hSdg : SupportedIn S (deriv g) :=
+    supportedIn_mono' (by simpa using iteratedDeriv_supportedIn hRg 1) (by linarith)
+  have hev01 := Ioo_mem_nhdsGT (by norm_num : (0 : ℝ) < 1)
+  have hjf : ∀ᶠ h in 𝓝[>] (0 : ℝ), SupportedIn S (jetError f h 1) := by
+    filter_upwards [hev01] with h hh
+    exact supportedIn_mono' (supportedIn_jetError hRf hh.1 hh.2.le 1) (by push_cast; linarith)
+  have hjg : ∀ᶠ h in 𝓝[>] (0 : ℝ), SupportedIn S (jetError g h 1) := by
+    filter_upwards [hev01] with h hh
+    exact supportedIn_mono' (supportedIn_jetError hRg hh.1 hh.2.le 1) (by push_cast; linarith)
+  have hfg : ∀ᶠ h in 𝓝[>] (0 : ℝ), SupportedIn S (fwdDiff h g) := by
+    filter_upwards [hev01] with h hh
+    exact supportedIn_mono' (by simpa using supportedIn_fwdDiff_iter hh.1 hh.2.le 1 hRg) hS2
+  have hfgm : ∀ h, fwdDiff h g ∈ realTests := fun h => by
+    simpa using fwdDiff_iter_mem_realTests hg hgc h 1
+  -- the exact identity at every positive step
   have hexact : ∀ h : ℝ, h ≠ 0 →
       weilPair (diffQuot f h 1) (g + fwdDiff h g) = -weilPair f (diffQuot g h 1) := by
     intro h hh
@@ -955,20 +1030,103 @@ theorem weilPair_deriv_left {f g : ℝ → ℝ} (hf : ContDiff ℝ ∞ f) (hfc :
       funext u; simp [fwdDiff]
     have htrans := weilPair_comp_sub f g (-h)
     simp only [sub_neg_eq_add] at htrans
-    have hf1 : fwdDiff h f = (fun u => f (u + h)) - f := rfl
-    have hg1 : fwdDiff h g = (fun u => g (u + h)) - g := rfl
     have hfs : (fun u => f (u + h)) ∈ realTests :=
       ⟨hf2.1.comp (contDiff_id.add contDiff_const), hf2.2.comp_homeomorph (Homeomorph.addRight h)⟩
     have hgs : (fun u => g (u + h)) ∈ realTests :=
       ⟨hg2.1.comp (contDiff_id.add contDiff_const), hg2.2.comp_homeomorph (Homeomorph.addRight h)⟩
-    have hq : ∀ (k : ℝ → ℝ), diffQuot k h 1 = h⁻¹ • ((fun u => k (u + h)) - k) := fun k => by
+    have hq : ∀ k : ℝ → ℝ, diffQuot k h 1 = h⁻¹ • ((fun u => k (u + h)) - k) := fun k => by
       funext u; simp [diffQuot, fwdDiff, div_eq_inv_mul]
-    rw [hshift, hq f, hq g, weilPair_smul_left, weilPair_smul_right,
-      weilPair_add_left hfs (realTests.neg_mem hf2) hgs |>.symm.trans (by rw [sub_eq_add_neg]) |>.symm]
-    · rw [weilPair_neg_left, sub_eq_add_neg, weilPair_add_right hf2 hgs (realTests.neg_mem hg2),
-        weilPair_neg_right, htrans]
-      ring
-  sorry
+    rw [hshift, hq f, hq g, weilPair_smul_left, weilPair_smul_right, weilPair_sub_left hfs hf2 hgs,
+      weilPair_sub_right hf2 hgs hg2, htrans]
+    ring
+  have hL : Tendsto (fun h => weilPair (deriv f + jetError f h 1) (g + fwdDiff h g)) (𝓝[>] 0)
+      (𝓝 (weilPair (deriv f) g)) :=
+    tendsto_weilPair_add hdf hg2 (fun h => jetError_mem_realTests hf hfc h 1) hfgm hSdf hSg hjf hfg
+      (tendsto_weilNormSq_jetError hf hfc 1) (tendsto_weilNormSq_fwdDiff hg hgc)
+  have h0N : Tendsto (fun _ : ℝ => weilNormSq (fun _ : ℝ => (0 : ℝ))) (𝓝[>] 0) (𝓝 0) := by
+    have : weilNormSq (fun _ : ℝ => (0 : ℝ)) = 0 := by simp [weilNormSq, levyEnergy]
+    rw [this]; exact tendsto_const_nhds
+  have hR' : Tendsto (fun h => weilPair (f + fun _ => 0) (deriv g + jetError g h 1)) (𝓝[>] 0)
+      (𝓝 (weilPair f (deriv g))) :=
+    tendsto_weilPair_add hf2 hdg (fun _ => realTests.zero_mem)
+      (fun h => jetError_mem_realTests hg hgc h 1) hSf hSdg
+      (Eventually.of_forall fun _ _ _ => rfl) hjg h0N (tendsto_weilNormSq_jetError hg hgc 1)
+  have hR'' := hR'.neg
+  refine tendsto_nhds_unique hL (hR''.congr' ?_)
+  filter_upwards [self_mem_nhdsWithin] with h hh
+  have hq1 := diffQuot_eq_add f h 1
+  have hq2 := diffQuot_eq_add g h 1
+  rw [iteratedDeriv_one] at hq1 hq2
+  have := hexact h (show 0 < h from hh).ne'
+  rw [hq1, hq2] at this
+  rw [show (f + fun _ => (0 : ℝ)) = f by funext u; simp]
+  exact this.symm
+
+/-- `W(φ^{(i)}, φ^{(j+1)}) = −W(φ^{(i+1)}, φ^{(j)})`. -/
+theorem weilPair_iteratedDeriv_succ_right (hφ : ContDiff ℝ ∞ φ) (hφc : HasCompactSupport φ)
+    (i j : ℕ) :
+    weilPair (iteratedDeriv i φ) (iteratedDeriv (j + 1) φ) =
+      -weilPair (iteratedDeriv (i + 1) φ) (iteratedDeriv j φ) := by
+  have := weilPair_deriv_left (contDiff_iteratedDeriv_of_smooth hφ i)
+    (iteratedDeriv_mem_realTests hφ hφc i).2 (contDiff_iteratedDeriv_of_smooth hφ j)
+    (iteratedDeriv_mem_realTests hφ hφc j).2
+  rw [← iteratedDeriv_succ, ← iteratedDeriv_succ] at this
+  linarith
+
+/-- **The jet Gram is a Hankel matrix**: `W(φ^{(i)}, φ^{(j)}) = (−1)^i W(φ, φ^{(i+j)})`. -/
+theorem weilPair_iteratedDeriv_eq (hφ : ContDiff ℝ ∞ φ) (hφc : HasCompactSupport φ) (i : ℕ) :
+    ∀ j : ℕ, weilPair (iteratedDeriv i φ) (iteratedDeriv j φ) =
+      (-1) ^ i * weilPair φ (iteratedDeriv (i + j) φ) := by
+  induction i with
+  | zero => intro j; simp
+  | succ i ih =>
+    intro j
+    have h1 := weilPair_iteratedDeriv_succ_right hφ hφc i j
+    rw [ih (j + 1)] at h1
+    rw [pow_succ, show i + 1 + j = i + (j + 1) by ring]
+    linarith
+
+/-- **Odd jet pairings vanish**: `W(φ^{(i)}, φ^{(j)}) = 0` when `i + j` is odd. -/
+theorem weilPair_iteratedDeriv_eq_zero_of_odd (hφ : ContDiff ℝ ∞ φ) (hφc : HasCompactSupport φ)
+    {i j : ℕ} (hij : Odd (i + j)) : weilPair (iteratedDeriv i φ) (iteratedDeriv j φ) = 0 := by
+  obtain ⟨m, hm⟩ := hij
+  have hmm : weilPair (iteratedDeriv m φ) (iteratedDeriv (m + 1) φ) = 0 := by
+    have h := weilPair_iteratedDeriv_succ_right hφ hφc m m
+    rw [weilPair_comm (iteratedDeriv (m + 1) φ)] at h
+    linarith
+  have h1 := weilPair_iteratedDeriv_eq hφ hφc m (m + 1)
+  rw [hmm] at h1
+  have h0 : weilPair φ (iteratedDeriv (2 * m + 1) φ) = 0 := by
+    have hpow : ((-1 : ℝ) ^ m) ≠ 0 := pow_ne_zero _ (by norm_num)
+    rw [show m + (m + 1) = 2 * m + 1 by ring] at h1
+    exact (mul_eq_zero.mp h1.symm).resolve_left hpow
+  rw [weilPair_iteratedDeriv_eq hφ hφc i j, hm, h0, mul_zero]
+
+/-- **The first margin**: if `Q(φ) ≠ 0` and `Q(φ') ≠ 0`, then `h^{−2}E_1(φ, h) → Q(φ')`. -/
+theorem tendsto_levinsonErr_one_div_sq' (hφ : ContDiff ℝ ∞ φ) (hφc : HasCompactSupport φ)
+    (h0 : weilQuad φ ≠ 0) (h1 : weilQuad (deriv φ) ≠ 0) :
+    Tendsto (fun h => levinsonErr (weilSeq φ h) 1 / h ^ 2) (𝓝[>] 0)
+      (𝓝 (weilQuad (deriv φ))) := by
+  have hodd := weilPair_iteratedDeriv_eq_zero_of_odd hφ hφc (i := 0) (j := 1) (by decide)
+  have hJ1 : (jetGram φ 1).det = weilQuad φ := by
+    rw [Matrix.det_unique]; simp [jetGram]; rfl
+  have hJ2 : (jetGram φ 2).det = weilQuad φ * weilQuad (deriv φ) := by
+    rw [Matrix.det_fin_two]
+    simp only [jetGram, Matrix.of_apply]
+    have hodd' : weilPair (iteratedDeriv 1 φ) (iteratedDeriv 0 φ) = 0 := by
+      rw [weilPair_comm]; exact hodd
+    simp only [Fin.isValue, Fin.val_zero, Fin.val_one] at *
+    rw [hodd, hodd', iteratedDeriv_zero, iteratedDeriv_one]
+    simp only [mul_zero, sub_zero]
+    rfl
+  have hJ : ∀ k ≤ 1, (jetGram φ (k + 1)).det ≠ 0 := by
+    intro k hk
+    interval_cases k
+    · rw [hJ1]; exact h0
+    · rw [hJ2]; exact mul_ne_zero h0 h1
+  have := tendsto_levinsonErr_div_pow hφ hφc 1 hJ
+  rw [hJ2, hJ1, mul_div_cancel_left₀ _ h0] at this
+  simpa using this
 
 end GaloisForLFunctions.SignedWindowCriticality
 

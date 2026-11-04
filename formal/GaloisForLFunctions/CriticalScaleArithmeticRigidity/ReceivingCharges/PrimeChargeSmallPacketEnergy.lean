@@ -53,13 +53,15 @@ theorem exists_complete_packet_diagonal_error_bound {φ : ℝ → ℝ}
       max_le hQ (max_le (mem_Icc.mp hm).2 (mem_Icc.mp hl).2)
     have hR0 : (0 : ℝ) < (max 2 (max m l) : ℕ) := by
       exact_mod_cast (zero_lt_two.trans_le (le_max_left 2 (max m l)))
-    have hlogR := Real.log_le_log hR0 (by exact_mod_cast hR)
+    have hlogR : Real.log (max 2 (max m l) : ℕ) ≤ Real.log Q :=
+      Real.log_le_log hR0 (by exact_mod_cast hR)
     exact hb (mem_Icc.mp hm).1 (mem_Icc.mp hl).1
       ((Nat.mul_le_mul hR hR).trans hQN)
       ((mul_le_mul_of_nonneg_left (add_le_add_left hlogR 1) (by norm_num)).trans hlog)
       hc hrad hc4
   have herror : completeWeilEnergy φ c N u - ⟪d, u⟫ =
       ∑ m ∈ Icc 1 Q, ∑ l ∈ Icc 1 Q, a m * a l * r m l := by
+    conv_rhs => rw [sum_comm]
     simp only [completeWeilEnergy, u, d, r, map_sum, map_smul,
       sum_inner, inner_sum, real_inner_smul_left, real_inner_smul_right,
       inner_sub_left, ← sum_sub_distrib]

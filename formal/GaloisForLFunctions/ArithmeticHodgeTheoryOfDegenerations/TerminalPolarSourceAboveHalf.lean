@@ -60,7 +60,7 @@ theorem complete_terminal_pole_pair_eq_channels {φ h : ℝ → ℝ}
     horizonProfileVector_horizonWeights_eq_terminal h hN1
   have hn := sqrt_log_mul_terminal_row_pair hL u (nearGammaDownwardRow φ c N 1)
   change Real.sqrt (Real.log N) * ⟪normalizedNearGammaDownwardVector φ c N 1, x⟫ = _ at hn
-  rw [sum_terminal_nearGammaDownwardRow_one_eq hc hN1] at hn
+  rw [sum_terminal_nearGammaDownwardRow_one_eq (φ := φ) (F := logProfile h) hc hN1] at hn
   have he := sqrt_log_mul_terminal_row_pair hL u
     (actualExteriorDownwardRow (atomDilate φ (c / N)) N 1)
   change Real.sqrt (Real.log N) * ⟪normalizedExteriorDownwardVector φ c N 1, x⟫ = _ at he
@@ -89,7 +89,7 @@ theorem complete_terminal_pole_pair_eq_channels {φ h : ℝ → ℝ}
       simp only [real_inner_sub_left]
       unfold terminalPolarGammaCenterPair completeWeilPoleShift
       dsimp only [u]
-      field_simp [hc.ne'] <;> ring
+      field_simp [hc.ne', hM.ne'] <;> ring
 
 /-- The complete polar source on an interior terminal window has no critical-ratio-dependent
 aliasing cross term. Both prime boundary channels vanish exactly on this support. -/

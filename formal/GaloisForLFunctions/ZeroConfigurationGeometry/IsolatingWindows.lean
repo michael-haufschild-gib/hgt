@@ -48,10 +48,10 @@ theorem eq_zero_of_le_abs {f : ℝ → ℂ} {r : ℝ} (hc : Continuous f) (hf : 
     rcases abs_eq (h ▸ abs_nonneg u) |>.mp h.symm with hu' | hu'
     · have := hclosed.closure_subset_iff.mpr h1
       rw [closure_Ioi] at this
-      exact this (by rw [hu']; exact Set.left_mem_Ici)
+      exact this (by rw [hu']; exact Set.self_mem_Ici)
     · have := hclosed.closure_subset_iff.mpr h2
       rw [closure_Iio] at this
-      exact this (by rw [hu']; exact Set.right_mem_Iic)
+      exact this (by rw [hu']; exact Set.self_mem_Iic)
 
 /-- **Division at a zero of the transform.** -/
 theorem exists_window_div {r : ℝ} {f : ℝ → ℂ} (hf : ApertureWindow r f) {κ : ℂ}

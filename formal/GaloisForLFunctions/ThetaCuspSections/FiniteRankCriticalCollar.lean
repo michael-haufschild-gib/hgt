@@ -20,7 +20,7 @@ open GaloisForLFunctions.HTGeometry
 namespace GaloisForLFunctions.ThetaCuspSections.CriticalCollar
 
 /-- The Xi current without a proof-dependent aperture parameter. -/
-private def current (a b : ℝ) : ℝ :=
+def current (a b : ℝ) : ℝ :=
   2*((starRingEnd ℂ) (XiC ((b:ℂ)-(a:ℂ)*I)) *
     (-I*deriv XiC ((b:ℂ)-(a:ℂ)*I))).re
 
@@ -36,7 +36,8 @@ private theorem derivative_continuous : Continuous (deriv XiC) := by
   have h : AnalyticOnNhd ℂ XiC Set.univ := fun z _ => XiC_differentiable.analyticAt z
   exact (h.deriv.continuousOn).comp_continuous continuous_id (fun _ => Set.mem_univ _)
 
-private theorem current_continuous (a : ℝ) : Continuous (current a) := by
+/-- The Fourier current is continuous in frequency. -/
+theorem current_continuous (a : ℝ) : Continuous (current a) := by
   have hz : Continuous (fun b : ℝ => (b:ℂ)-(a:ℂ)*I) := by fun_prop
   have h₀ := XiC_differentiable.continuous.comp hz
   have h₁ := derivative_continuous.comp hz
@@ -51,7 +52,7 @@ private theorem current_aperture_continuous (b : ℝ) : Continuous (fun a => cur
     (h₀.star.mul (continuous_const.mul h₁)))
 
 /-- The strip-edge Xi logarithmic derivative gives a strictly positive boundary current. -/
-private theorem current_boundary_pos (b : ℝ) : 0<current (1/2) b := by
+theorem current_boundary_pos (b : ℝ) : 0<current (1/2) b := by
   let z : ℂ := (b:ℂ)-((1/2:ℝ):ℂ)*I
   have hline : 1 ≤ (1/2+z*I).re := by
     norm_num [z,Complex.mul_re,Complex.mul_im]
@@ -65,7 +66,8 @@ private theorem current_boundary_pos (b : ℝ) : 0<current (1/2) b := by
   rw [kreinCurrent_eq_normSq_mul_logDeriv_im _ _ hXi,← logDeriv_apply]
   exact mul_pos (mul_pos (by norm_num) (Complex.normSq_pos.mpr hXi)) hlog
 
-private def rawMoment (a : ℝ) (n : ℕ) : ℝ := ∫ b : ℝ, b^n*current a b
+/-- Raw Fourier moments of the Xi current. -/
+def rawMoment (a : ℝ) (n : ℕ) : ℝ := ∫ b : ℝ, b^n*current a b
 
 private theorem rawMoment_eq_signedJet (a : ℝ) (ha : |a|<1) (n : ℕ) :
     rawMoment a n=(2*Real.pi)*(1/2:ℝ)^n*thetaCuspCenterMixedSignedJet a n := by
@@ -74,7 +76,8 @@ private theorem rawMoment_eq_signedJet (a : ℝ) (ha : |a|<1) (n : ℕ) :
   rw [he]
   exact thetaCuspCenterMixed_rawMoment_eq_signedJet a ha n
 
-private theorem raw_integrable (a : ℝ) (ha : |a|<1) (n : ℕ) :
+/-- Exponential strip decay makes every raw moment absolutely integrable. -/
+theorem raw_integrable (a : ℝ) (ha : |a|<1) (n : ℕ) :
     Integrable (fun b : ℝ => b^n*current a b) := by
   have he : current a=thetaCuspCenterMixedFourierCurrent a ha := funext (current_eq a ha)
   rw [he]
@@ -104,13 +107,15 @@ private theorem raw_boundary_strict : _root_.HTGeometry.PositiveMomentForm (rawM
   exact hc.isOpen_support.measure_pos volume
     ⟨b,(mul_pos (sq_pos_of_ne_zero hb) (current_boundary_pos b)).ne'⟩
 
-private def rawHankel (a : ℝ) (N : ℕ) : Matrix (Fin N) (Fin N) ℝ :=
+/-- The Hankel matrix of raw Xi-current moments. -/
+def rawHankel (a : ℝ) (N : ℕ) : Matrix (Fin N) (Fin N) ℝ :=
   fun i j => rawMoment a (i.val+j.val)
 
 private theorem raw_boundary_posDef (N : ℕ) : (rawHankel (1/2) N).PosDef :=
   _root_.HTGeometry.positiveMomentForm_iff_momentHankelMatrix_posDef.mp raw_boundary_strict N
 
-private theorem raw_hermitian (a : ℝ) (N : ℕ) : (rawHankel a N).IsHermitian := by
+/-- The moment index depends only on the sum of row and column. -/
+theorem raw_hermitian (a : ℝ) (N : ℕ) : (rawHankel a N).IsHermitian := by
   rw [Matrix.IsHermitian]
   ext i j
   simp [rawHankel,add_comm]
@@ -157,7 +162,7 @@ private theorem raw_posDef_near_half (N : ℕ) :
   exact ⟨δ,hδ,fun a ha => hb (by simpa only [Real.dist_eq] using ha)⟩
 
 /-- The exact moment normalization is a positive scalar and a geometric diagonal congruence. -/
-private theorem signed_posDef_of_raw {a : ℝ} (ha : |a|<1) (N : ℕ)
+theorem signed_posDef_of_raw {a : ℝ} (ha : |a|<1) (N : ℕ)
     (hraw : (rawHankel a N).PosDef) : (thetaCuspCenterMixedSignedHankel a N).PosDef := by
   let E : Matrix (Fin N) (Fin N) ℝ := Matrix.diagonal (fun i => (2:ℝ)^i.val)
   have hE : Function.Injective E.mulVec := by

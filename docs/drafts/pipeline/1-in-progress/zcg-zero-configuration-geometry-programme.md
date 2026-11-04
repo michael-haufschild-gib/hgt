@@ -57,6 +57,8 @@ Pillars (module — main theorems), all checked with `lake --old env lean`, umbr
 - ShallowPairsAreNearCollisions — `eq_of_weil_eq_of_pairSeparated`, `pairGap_ge`, `tiltB_le`,
   `exists_near_pair_or_shallow_pair_of_mimic`, `pairWeight_modScaledBump_eq_sq`,
   `not_inDarkSector_of_bright`, `exists_near_pair_or_dim_shallow_pair_of_mimic`
+- IsolatingWindows — `exists_window_div`, `exists_isolating_window`,
+  `exists_window_isolating_lattice_point`
 - ResolutionIsUniformInDepth — `uniform_block_inequality`, `eq_of_weil_eq_of_heightSeparated`,
   `exists_near_pair_of_mimic`, `exists_near_pair_of_mimic_of_le`
 - HeatStepsNeverShrinkTheMesh — `meshGe_add_smul_derivative`, `nodup_roots_add_smul_derivative`,
@@ -74,4 +76,4 @@ unbounded aperture (growth) or deformation, both ending at signed prime geometry
 as an identity at λ > 1, repulsion law in a model family, kernel design against configurations.
 
 ## Log
-- 2026-11-04 — created; twenty-four pillar modules checked; README written.
+- 2026-11-04 — created; twenty-five pillar modules checked; README written.

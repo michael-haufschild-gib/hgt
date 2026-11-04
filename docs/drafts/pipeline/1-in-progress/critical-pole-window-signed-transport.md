@@ -190,9 +190,22 @@ also has a closed paper bound: the uniform window coordinate is
 
 The Euclidean triangle inequality for these weighted coefficient
 vectors transfers tightness from r_m to B_Nv_m. This transfer also
-awaits Lean verification. Optimizing against the full signed packet
-Gram remains separate; none of these bounds proves whole-space
-positivity or removes the window compensation.
+awaits Lean verification.
+
+The required uniform signed packet form is already checked in
+`eventually_completeWeil_low_packet_signed_approx`: its error is at
+most εΣE_m b_m², uniformly over all coefficients, after retaining the
+positive polar term. Thus no new Gram estimate is required for the
+optimization. Set `t_m=sqrt(E_m/c_N)b_m` and
+`g_N(m)=⟨B_Nv_m,x_N⟩/sqrt(c_N E_m)`. The proposed mixed limits and
+the tightness bounds imply `g_N→aℓ(h)sqrt(R/J(1))e₁` in square sum,
+while the packet form divided by c_N is uniformly
+`Σt_m²+[a g R/J(1)]t₁²+o(Σt_m²)`. Completing squares, with the
+ε-error on both sides, would give the exact optimal energy reduction
+`a²ℓ(h)²/[J(1)/R+a g]`. The remaining transfers are the fixed-m source
+limits, their square-sum convergence and this finite quadratic
+optimization. None proves whole-space positivity or removes the
+window compensation.
 
 ## Attack and proof obligations
 
@@ -358,8 +371,9 @@ channels and both exact prime annihilations leave
 The critical clock implies c_N log(c_N)/N→0, so the checked joint
 near-center rate applies. The signed Gamma constant and near-log mean
 cancel exactly as stated above. This restriction therefore has no
-remaining analytic input in its paper proof; the finite channel
-identity and pending supporting Lean proofs still need verification.
+remaining analytic input in its paper proof. Its finite channel
+identity and supporting limits have passed their Lean audits; the
+combined endpoint still needs verification.
 `TerminalPolarSourceAboveHalf.lean` contains the exact assembly and
 limiting statement. Neither endpoint has passed Lean yet. This does
 not settle general terminal support or the nonpolar complete source.
@@ -398,8 +412,10 @@ Cauchy–Schwarz inequality gives the left side at least
 `[S²/(8C_E T)](c_N⁸/L)²`, hence κ may be `S²/(32C_E T)`.
 This paper reduction uses the explicit conductor-energy upper bound,
 so it needs neither a new Jordan asymptotic nor an exact collar-mass
-limit. Its unconditional Lean realization still depends on the pending
-complete-source and witness audits.
+limit. `TheCriticalPoleHasAnIntrinsicCollarCost.lean` implements this
+reduction; its first audit still depends on the pending complete-source
+and witness audits. The no-go conclusion remains unproved until that
+dependency chain passes.
 
 The conductor-one upward row has a closed paper reduction for the same
 F, under c_N≥1, c_N→∞ and c_N⁴(log N)²/N→0:

@@ -91,19 +91,22 @@ theorem isMultiplicative_flipDivisorSum (θ : ℝ) : (flipDivisorSum θ).IsMulti
 /-- `b(p^k) = 1 − χ(p)` for `k ≥ 1`. -/
 theorem flipDivisorSum_prime_pow {θ : ℝ} {p : ℕ} (hp : p.Prime) {k : ℕ} (hk : k ≠ 0) :
     flipDivisorSum θ (p ^ k) = 1 - twist (flipPoint θ) p := by
-  have hvan : ∀ i : ℕ, flipMoebius θ (p ^ (i + 2)) = 0 := fun i => by
-    simp [flipMoebius, ArithmeticFunction.pmul_apply,
-      ArithmeticFunction.moebius_apply_prime_pow hp (by omega : i + 2 ≠ 0)]
+  have hvan : ∀ i : ℕ, flipMoebius θ (p ^ (i + 1 + 1)) = 0 := fun i => by
+    rw [flipMoebius_eq, moebiusSource, ArithmeticFunction.moebius_apply_prime_pow hp (by omega)]
+    simp
   obtain ⟨j, rfl⟩ := Nat.exists_eq_succ_of_ne_zero hk
   rw [flipDivisorSum, ArithmeticFunction.coe_mul_zeta_apply, Nat.divisors_prime_pow hp, sum_map,
     sum_range_succ', sum_range_succ']
-  simp only [Function.Embedding.coeFn_mk, zero_add, pow_one, pow_zero]
-  rw [sum_eq_zero fun i _ => by rw [show i + 1 + 1 = i + 2 by ring]; exact hvan i, zero_add,
-    flipMoebius_eq, flipMoebius_eq,
-    show moebiusSource p = -1 by simp [moebiusSource, ArithmeticFunction.moebius_apply_prime hp]]
-  simp [moebiusSource]
+  simp only [Function.Embedding.coeFn_mk]
+  rw [sum_eq_zero fun i _ => hvan i]
+  simp only [zero_add, pow_zero, pow_one]
+  rw [flipMoebius_eq, flipMoebius_eq, moebiusSource, moebiusSource,
+    ArithmeticFunction.moebius_apply_prime hp]
+  simp only [ArithmeticFunction.moebius_apply_one, Int.cast_neg, Int.cast_one, twist_one, mul_one,
+    neg_one_mul]
   ring
 
+open Classical in
 /-- `1 − χ(p)` is `2` on the flip primes and `0` elsewhere. -/
 theorem one_sub_twist_flipPoint {θ : ℝ} {p : ℕ} (hp : p.Prime) :
     1 - twist (flipPoint θ) p = ((if p ∈ flipPrimes θ then 2 else 0 : ℝ) : ℂ) := by
@@ -117,11 +120,12 @@ theorem flipDivisorSum_eq_ofReal (θ : ℝ) (n : ℕ) :
   have key : ∃ r : ℝ, 0 ≤ r ∧ flipDivisorSum θ n = r := by
     rcases eq_or_ne n 0 with rfl | hn
     · exact ⟨0, le_rfl, by simp⟩
-    rw [(isMultiplicative_flipDivisorSum θ).multiplicative_factorization hn, Finsupp.prod]
+    rw [ArithmeticFunction.IsMultiplicative.multiplicative_factorization _
+      (isMultiplicative_flipDivisorSum θ) hn, Finsupp.prod]
     refine Finset.prod_induction _ (fun z => ∃ r : ℝ, 0 ≤ r ∧ z = r)
-      (fun z w ⟨r, hr, hz⟩ ⟨t, ht, hw⟩ => ⟨r * t, mul_nonneg hr ht, by rw [hz, hw]; push_cast; rfl⟩)
+      (fun z w ⟨r, hr, hz⟩ ⟨t, ht, hw⟩ => ⟨r * t, mul_nonneg hr ht, by rw [hz, hw, Complex.ofReal_mul]⟩)
       ⟨1, zero_le_one, by simp⟩ fun p hp => ?_
-    have hpp : p.Prime := Nat.prime_of_mem_primeFactors (Nat.support_factorization n ▸ hp)
+    have hpp : p.Prime := Nat.prime_of_mem_primeFactors (by rwa [Nat.support_factorization] at hp)
     rw [flipDivisorSum_prime_pow hpp (Finsupp.mem_support_iff.mp hp), one_sub_twist_flipPoint hpp]
     exact ⟨_, by split_ifs <;> norm_num, rfl⟩
   obtain ⟨r, hr, he⟩ := key
@@ -176,7 +180,7 @@ theorem sum_rpow_le_of_subset_flipPrimes {θ σ : ℝ} (hθ : 0 ≤ θ) (hσ : �
           gcongr
           rw [card_flipBlock]
           exact (Nat.cast_le.mpr (min_le_left _ _)).trans (flipSize_le k)
-      _ = r ^ k := by rw [← mul_pow, ← Real.rpow_add (by norm_num), sub_eq_add_neg]
+      _ = r ^ k := by rw [hr, ← mul_pow, ← Real.rpow_add (by norm_num), sub_eq_add_neg]
   have hgeom : ∑ k ∈ range K, r ^ k ≤ (1 - r)⁻¹ := by
     rw [geom_sum_eq hr1.ne, div_le_iff_of_neg (by linarith : r - 1 < 0)]
     have hm : (1 - r)⁻¹ * (r - 1) = -1 := by
@@ -195,7 +199,7 @@ theorem exists_sum_flipPrimes_rpow_gt {θ : ℝ} (hθ : 0 < θ) (hθ1 : θ < 1) 
   have hgrow : Tendsto (fun k : ℕ => (4 : ℝ) ^ (θ * k)) atTop atTop := by
     have := tendsto_pow_atTop_atTop_of_one_lt (Real.one_lt_rpow (by norm_num : (1 : ℝ) < 4) hθ)
     refine this.congr fun k => ?_
-    rw [Real.rpow_mul (by norm_num), Real.rpow_natCast]
+    rw [Real.rpow_mul (by norm_num : (0 : ℝ) ≤ 4), Real.rpow_natCast]
   obtain ⟨K₀, hK₀⟩ := eventually_atTop.mp
     ((eventually_card_flipBlock hθ1).and (hgrow.eventually_ge_atTop 2))
   set c : ℝ := (2 : ℝ) ^ (-θ) / 2
@@ -211,16 +215,18 @@ theorem exists_sum_flipPrimes_rpow_gt {θ : ℝ} (hθ : 0 < θ) (hθ1 : θ < 1) 
       exact Real.rpow_le_rpow_of_nonpos hp0 hle (by linarith)
     have hfl : (4 : ℝ) ^ (θ * k) - 1 < (flipSize θ k : ℝ) := by
       have := Nat.lt_floor_add_one ((4 : ℝ) ^ (θ * k)); rw [flipSize]; linarith
+    have h4 : ((4 : ℝ) ^ k) ^ θ = (4 : ℝ) ^ (θ * k) := by
+      rw [← Real.rpow_natCast_mul (by norm_num), mul_comm]
     have hsplit : (2 * (4 : ℝ) ^ k) ^ (-θ) = (2 : ℝ) ^ (-θ) / (4 : ℝ) ^ (θ * k) := by
-      rw [Real.mul_rpow (by norm_num) (by positivity), ← Real.rpow_natCast,
-        ← Real.rpow_mul (by norm_num), Real.rpow_neg (by norm_num), div_eq_mul_inv,
-        show ((k : ℝ) * -θ) = -(θ * k) by ring, Real.rpow_neg (by norm_num)]
+      rw [Real.mul_rpow (by norm_num) (by positivity),
+        Real.rpow_neg (by positivity : (0 : ℝ) ≤ (4 : ℝ) ^ k) θ, h4, div_eq_mul_inv]
     have hpos4 : 0 < (4 : ℝ) ^ (θ * k) := by positivity
     calc c ≤ (flipSize θ k : ℝ) * ((2 : ℝ) ^ (-θ) / (4 : ℝ) ^ (θ * k)) := by
           rw [mul_div_assoc', le_div_iff₀ hpos4]
           simp only [c]
           have h2θ : 0 < (2 : ℝ) ^ (-θ) := by positivity
-          nlinarith
+          have hhalf : (4 : ℝ) ^ (θ * k) / 2 ≤ flipSize θ k := by linarith
+          nlinarith [mul_le_mul_of_nonneg_left hhalf h2θ.le]
       _ = ∑ _p ∈ flipBlock θ k, (2 * (4 : ℝ) ^ k) ^ (-θ) := by
           rw [sum_const, nsmul_eq_mul, hcard, hsplit]
       _ ≤ _ := sum_le_sum hterm
@@ -234,7 +240,8 @@ theorem exists_sum_flipPrimes_rpow_gt {θ : ℝ} (hθ : 0 < θ) (hθ1 : θ < 1) 
       exact Finset.disjoint_left.mpr fun p hpj hpk => hjk (eq_of_mem_flipBlock hpj hpk)
     rw [sum_biUnion hdisj]
     calc M < m * c := by rwa [div_lt_iff₀ hc] at hm
-      _ = ∑ _k ∈ Ico K₀ (K₀ + m), c := by rw [sum_const, Nat.card_Ico, nsmul_eq_mul]; congr 2; omega
+      _ = ∑ _k ∈ Ico K₀ (K₀ + m), c := by
+          rw [sum_const, Nat.card_Ico, Nat.add_sub_cancel_left, nsmul_eq_mul]
       _ ≤ _ := sum_le_sum fun k hk => hblock k (mem_Ico.mp hk).1
 
 /-! ### The Euler product of `b` -/
@@ -243,30 +250,31 @@ theorem exists_sum_flipPrimes_rpow_gt {θ : ℝ} (hθ : 0 < θ) (hθ1 : θ < 1) 
 def flipDivisorTerm (θ σ : ℝ) : ArithmeticFunction ℝ :=
   ⟨fun n => (flipDivisorSum θ n).re * (n : ℝ) ^ (-σ), by simp⟩
 
+theorem flipDivisorTerm_apply (θ σ : ℝ) (n : ℕ) :
+    flipDivisorTerm θ σ n = (flipDivisorSum θ n).re * (n : ℝ) ^ (-σ) := rfl
+
 theorem flipDivisorTerm_nonneg (θ σ : ℝ) (n : ℕ) : 0 ≤ flipDivisorTerm θ σ n :=
   mul_nonneg (flipDivisorSum_eq_ofReal θ n).2 (Real.rpow_nonneg (Nat.cast_nonneg n) _)
 
 theorem isMultiplicative_flipDivisorTerm (θ σ : ℝ) : (flipDivisorTerm θ σ).IsMultiplicative := by
   have hb := isMultiplicative_flipDivisorSum θ
-  refine ⟨by simp [flipDivisorTerm, hb.map_one], fun {m n} hmn => ?_⟩
-  simp only [flipDivisorTerm, ZeroHom.coe_mk]
+  refine ⟨by simp [flipDivisorTerm_apply, hb.map_one], fun {m n} hmn => ?_⟩
+  simp only [flipDivisorTerm_apply]
   have hre : (flipDivisorSum θ (m * n)).re = (flipDivisorSum θ m).re * (flipDivisorSum θ n).re := by
     rw [hb.map_mul_of_coprime hmn, (flipDivisorSum_eq_ofReal θ m).1, (flipDivisorSum_eq_ofReal θ n).1,
       ← Complex.ofReal_mul, Complex.ofReal_re, Complex.ofReal_re, Complex.ofReal_re]
   rw [hre, Nat.cast_mul, Real.mul_rpow (Nat.cast_nonneg m) (Nat.cast_nonneg n)]
   ring
 
-/-- **The local factor**: `Σ_k b(p^k) p^{−kσ} = 1 + c_p r/(1 − r)`, `r = p^{−σ}`, `c_p = 1 − χ(p)`. -/
+open Classical in
+/-- **The local factor**: `b(p^k) p^{−kσ} = c_p r^k` for `k ≥ 1`, `r = p^{−σ}`, `c_p = 1 − χ(p)`. -/
 theorem flipDivisorTerm_prime_pow {θ σ : ℝ} {p : ℕ} (hp : p.Prime) (k : ℕ) :
     flipDivisorTerm θ σ (p ^ k) =
       if k = 0 then 1 else (if p ∈ flipPrimes θ then 2 else 0) * ((p : ℝ) ^ (-σ)) ^ k := by
   rcases eq_or_ne k 0 with rfl | hk
-  · simp [flipDivisorTerm, (isMultiplicative_flipDivisorSum θ).map_one]
-  rw [if_neg hk]
-  simp only [flipDivisorTerm, ZeroHom.coe_mk]
-  rw [flipDivisorSum_prime_pow hp hk, one_sub_twist_flipPoint hp, Complex.ofReal_re, Nat.cast_pow,
-    ← Real.rpow_natCast, ← Real.rpow_mul (Nat.cast_nonneg p), mul_comm (k : ℝ),
-    Real.rpow_mul (Nat.cast_nonneg p), Real.rpow_natCast]
+  · simp [flipDivisorTerm_apply, (isMultiplicative_flipDivisorSum θ).map_one]
+  rw [if_neg hk, flipDivisorTerm_apply, flipDivisorSum_prime_pow hp hk, one_sub_twist_flipPoint hp, Complex.ofReal_re, Nat.cast_pow,
+    ← Real.rpow_pow_comm (Nat.cast_nonneg p)]
 
 /-- **`Σ b(n) n^{−σ}` converges for `σ > θ`.** -/
 theorem flipDivisorSeries_summable {θ σ : ℝ} (hθ : 0 ≤ θ) (hσ : θ < σ) :
@@ -281,72 +289,76 @@ theorem flipDivisorSeries_summable {θ σ : ℝ} (hθ : 0 ≤ θ) (hσ : θ < σ
     intro p hp
     exact ⟨Real.rpow_nonneg (Nat.cast_nonneg p) _, Real.rpow_le_rpow_of_nonpos (by norm_num)
       (by exact_mod_cast hp.two_le) (by linarith)⟩
-  set bnd : ℕ → ℝ := fun n => if n ∈ flipPrimes θ then K * (n : ℝ) ^ (-σ) else 0
+  set bnd : ℕ → ℝ := fun n => if n ∈ flipPrimes θ then K * (n : ℝ) ^ (-σ) else 0 with hbnd
+  have hbnd0 : ∀ n, 0 ≤ bnd n := fun n => by
+    rw [hbnd]
+    dsimp only
+    split_ifs
+    · exact mul_nonneg hK (Real.rpow_nonneg (Nat.cast_nonneg n) _)
+    · exact le_rfl
   refine RHTower.pm_summable_of_multiplicative_local_bound _ (isMultiplicative_flipDivisorTerm θ σ)
-    (flipDivisorTerm_nonneg θ σ) (fun {p} hp => ?_) bnd (fun n => ?_) ?_ (fun {p} hp => ?_)
+    (flipDivisorTerm_nonneg θ σ) (fun {p} hp => ?_) bnd hbnd0 ?_ (fun {p} hp => ?_)
   · -- Local summability: dominated by a geometric series.
     obtain ⟨hr0, hr1⟩ := hr hp
     refine Summable.of_nonneg_of_le (fun k => flipDivisorTerm_nonneg θ σ _) (fun k => ?_)
       ((summable_geometric_of_lt_one hr0 (hr1.trans_lt h2)).mul_left 3)
     rw [flipDivisorTerm_prime_pow hp]
-    split_ifs with hk <;> [rw [hk, pow_zero]; skip] <;> [norm_num; skip]
-    have := pow_nonneg hr0 k
-    split_ifs <;> nlinarith
-  · simp only [bnd]; split_ifs <;> [exact mul_nonneg hK (Real.rpow_nonneg (Nat.cast_nonneg n) _);
-      exact le_rfl]
+    have hk0 := pow_nonneg hr0 k
+    split_ifs with hk
+    · subst hk; norm_num
+    · linarith
+    · linarith
   · -- Sparse above `θ`.
-    refine summable_of_sum_le (c := K * (1 - (4 : ℝ) ^ (θ - σ))⁻¹)
-      (fun n => by simp only [bnd]; split_ifs <;> [exact mul_nonneg hK
-        (Real.rpow_nonneg (Nat.cast_nonneg n) _); exact le_rfl]) fun F => ?_
+    refine summable_of_sum_le (c := K * (1 - (4 : ℝ) ^ (θ - σ))⁻¹) hbnd0 fun F => ?_
     calc ∑ n ∈ F, bnd n = ∑ n ∈ F.filter (· ∈ flipPrimes θ), K * (n : ℝ) ^ (-σ) := by
-          rw [sum_filter]
+          rw [sum_filter, hbnd]
       _ = K * ∑ n ∈ F.filter (· ∈ flipPrimes θ), (n : ℝ) ^ (-σ) := by rw [mul_sum]
       _ ≤ _ := mul_le_mul_of_nonneg_left (sum_rpow_le_of_subset_flipPrimes hθ hσ _
           fun n hn => (mem_filter.mp hn).2) hK
   · -- `1 + c r/(1 − r) ≤ exp(c r/(1 − r)) ≤ exp(bnd p)`.
     obtain ⟨hr0, hr1⟩ := hr hp
-    set r := (p : ℝ) ^ (-σ)
+    set r := (p : ℝ) ^ (-σ) with hrdef
     have hr1' : r < 1 := hr1.trans_lt h2
-    set c : ℝ := if p ∈ flipPrimes θ then 2 else 0
+    set c : ℝ := if p ∈ flipPrimes θ then 2 else 0 with hc
+    have hgeo : HasSum (fun k : ℕ => c * r ^ (k + 1)) (c * (r / (1 - r))) := by
+      have := (hasSum_geometric_of_lt_one hr0 hr1').mul_left (c * r)
+      rw [show (fun k : ℕ => c * r ^ (k + 1)) = fun i => c * r * r ^ i from
+        funext fun k => by ring, show c * (r / (1 - r)) = c * r * (1 - r)⁻¹ by ring]
+      exact this
+    have hfun : (fun k => flipDivisorTerm θ σ (p ^ (k + 1))) = fun k => c * r ^ (k + 1) :=
+      funext fun k => by rw [flipDivisorTerm_prime_pow hp, if_neg (by omega)]
     have hsum : HasSum (fun k => flipDivisorTerm θ σ (p ^ k)) (1 + c * (r / (1 - r))) := by
-      have hgeo : HasSum (fun k : ℕ => c * r ^ (k + 1)) (c * (r / (1 - r))) := by
-        have := (hasSum_geometric_of_lt_one hr0 hr1').mul_left (c * r)
-        convert this using 1
-        · funext k; ring
-        · field_simp
-      have := hgeo.zero_add (f := fun k => flipDivisorTerm θ σ (p ^ k))
       refine (hasSum_nat_add_iff' 1).mp ?_
-      simp only [range_one, sum_singleton]
-      rw [flipDivisorTerm_prime_pow hp, if_pos rfl]
-      convert hgeo using 1
-      · funext k; rw [flipDivisorTerm_prime_pow hp, if_neg (by omega)]
-      · ring
+      have h0 : flipDivisorTerm θ σ (p ^ 0) = 1 := by rw [flipDivisorTerm_prime_pow hp, if_pos rfl]
+      rw [sum_range_one, h0, add_sub_cancel_left, hfun]
+      exact hgeo
     rw [hsum.tsum_eq]
-    refine (Real.add_one_le_exp _).trans' (le_of_eq (by ring)) |>.trans (Real.exp_le_exp.mpr ?_)
-    simp only [bnd, c]
+    calc 1 + c * (r / (1 - r)) ≤ Real.exp (c * (r / (1 - r))) := by
+          linarith [Real.add_one_le_exp (c * (r / (1 - r)))]
+      _ ≤ Real.exp (bnd p) := Real.exp_le_exp.mpr ?_
+    rw [hbnd, hc]
+    dsimp only
     split_ifs with hS
-    · have h1r : 0 < 1 - r := by linarith
-      have h12 : 1 - (2 : ℝ) ^ (-σ) ≤ 1 - r := by linarith
-      rw [show (2 : ℝ) * (r / (1 - r)) = r * (2 / (1 - r)) by ring, mul_comm K]
-      exact mul_le_mul_of_nonneg_left (div_le_div_of_nonneg_left (by norm_num) (by linarith) h12) hr0
+    · have h12 : 1 - (2 : ℝ) ^ (-σ) ≤ 1 - r := by linarith
+      have hq : r / (1 - r) ≤ r / (1 - (2 : ℝ) ^ (-σ)) :=
+        div_le_div_of_nonneg_left hr0 (by linarith) h12
+      calc 2 * (r / (1 - r)) ≤ 2 * (r / (1 - (2 : ℝ) ^ (-σ))) := by linarith
+        _ = K * r := by simp only [K]; ring
     · simp
 
 /-- The coefficient series of `b` as an `LSeries` at real `σ`. -/
 theorem term_flipDivisorSum (θ σ : ℝ) (n : ℕ) :
     LSeries.term (fun n => flipDivisorSum θ n) (σ : ℂ) n = (flipDivisorTerm θ σ n : ℂ) := by
   rcases eq_or_ne n 0 with rfl | hn
-  · simp [LSeries.term_def, flipDivisorTerm]
-  rw [LSeries.term_def, if_neg hn, (flipDivisorSum_eq_ofReal θ n).1]
-  simp only [flipDivisorTerm, ZeroHom.coe_mk]
-  rw [Real.rpow_neg (Nat.cast_nonneg n), ← div_eq_mul_inv, Complex.ofReal_div,
+  · simp [LSeries.term_def, flipDivisorTerm_apply]
+  rw [LSeries.term_def, if_neg hn, (flipDivisorSum_eq_ofReal θ n).1, flipDivisorTerm_apply,
+    Real.rpow_neg (Nat.cast_nonneg n), ← div_eq_mul_inv, Complex.ofReal_div,
     Complex.ofReal_cpow (Nat.cast_nonneg n), Complex.ofReal_natCast]
 
 theorem LSeriesSummable_flipDivisorSum {θ σ : ℝ} (hθ : 0 ≤ θ) (hσ : θ < σ) :
     LSeriesSummable (fun n => flipDivisorSum θ n) (σ : ℂ) := by
-  have h := (flipDivisorSeries_summable hθ hσ).map (Complex.ofRealCLM : ℝ →L[ℝ] ℂ)
-    Complex.ofRealCLM.continuous
-  refine h.congr fun n => ?_
-  simp [term_flipDivisorSum]
+  exact (Complex.summable_ofReal.mpr (flipDivisorSeries_summable hθ hσ)).congr fun n =>
+    (term_flipDivisorSum θ σ n).symm
 
 theorem abscissaOfAbsConv_flipDivisorSum_le {θ : ℝ} (hθ : 0 ≤ θ) :
     LSeries.abscissaOfAbsConv (fun n => flipDivisorSum θ n) ≤ θ :=
@@ -388,8 +400,8 @@ theorem not_gaugePowerBound_moebius_flipPoint {θ a : ℝ} (hθ : 0 < θ) (hθ1 
     LSeries.abscissaOfAbsConv_le_of_le_const ⟨1, fun n _ => norm_flipMoebius_le θ n⟩
   have hzabs : LSeries.abscissaOfAbsConv
       (fun n => (↑(ArithmeticFunction.zeta : ArithmeticFunction ℕ) : ArithmeticFunction ℂ) n) ≤ 1 :=
-    LSeries.abscissaOfAbsConv_le_of_le_const ⟨1, fun n _ => by
-      simp [ArithmeticFunction.natCoe_apply, ArithmeticFunction.zeta_apply]; split_ifs <;> simp⟩
+    LSeries.abscissaOfAbsConv_le_of_le_const ⟨1, fun n hn => by
+      simp [ArithmeticFunction.natCoe_apply, ArithmeticFunction.zeta_apply, hn]⟩
   have hDL : ∀ s : ℂ, 1 < s.re → D s = LSeries (fun n => flipMoebius θ n) s := by
     intro s hs
     have hsum : LSeriesSummable (fun n => flipMoebius θ n) s :=
@@ -398,13 +410,13 @@ theorem not_gaugePowerBound_moebius_flipPoint {θ a : ℝ} (hθ : 0 < θ) (hθ1 
         (𝓝 (LSeries (fun n => flipMoebius θ n) s)) := by
       have h1 := hsum.hasSum.tendsto_sum_nat.comp (tendsto_add_atTop_nat 1)
       refine h1.congr fun N => ?_
-      simp only [Function.comp_apply, GaloisForLFunctions.RHTower.dirichletPartialSum, g]
-      rw [sum_range_succ']
-      simp only [LSeries.term_def, Nat.succ_ne_zero, if_false, CharP.cast_eq_zero, if_true, add_zero]
+      rw [Function.comp_apply, sum_range_succ', GaloisForLFunctions.RHTower.dirichletPartialSum]
+      have h0 : LSeries.term (fun n => flipMoebius θ n) s 0 = 0 := by simp [LSeries.term_def]
+      rw [h0, add_zero]
       refine sum_congr rfl fun n _ => ?_
-      rw [div_eq_mul_inv, ← Complex.cpow_neg]
-      push_cast
-      ring_nf
+      rw [LSeries.term_def, if_neg (by omega), div_eq_mul_inv, ← Complex.cpow_neg]
+      have hcast : ((n + 1 : ℕ) : ℂ) = (((n : ℝ) + 1 : ℝ) : ℂ) := by simp
+      rw [hcast]
     have hDconv : GaloisForLFunctions.RHTower.DirichletConvergesAt g s :=
       ⟨_, hconv⟩
     exact tendsto_nhds_unique (GaloisForLFunctions.RHTower.tendsto_dirichletSum hDconv) hconv
@@ -439,9 +451,14 @@ theorem not_gaugePowerBound_moebius_flipPoint {θ a : ℝ} (hθ : 0 < θ) (hθ1 
       (IsPreconnected.union (((θ + 1) / 2 : ℝ) + Complex.I) ?_ ?_ hconvA.isPreconnected
         hconvB.isPreconnected) hconvE.isPreconnected
     · exact ⟨by simp; linarith, by simp⟩
-    · simp [E]
-    · simp only [A, Set.mem_setOf_eq]; simp; constructor <;> linarith
-    · simp only [B, Set.mem_setOf_eq]; simp; linarith
+    · show (1 : ℝ) < (2 + Complex.I).re; norm_num
+    · show θ < (((θ + 1) / 2 : ℝ) + Complex.I).re ∧ (((θ + 1) / 2 : ℝ) + Complex.I).re < 1
+      simp only [Complex.add_re, Complex.ofReal_re, Complex.I_re, add_zero]
+      constructor <;> linarith
+    · show θ < (((θ + 1) / 2 : ℝ) + Complex.I).re ∧ 0 < (((θ + 1) / 2 : ℝ) + Complex.I).im
+      simp only [Complex.add_re, Complex.ofReal_re, Complex.I_re, add_zero, Complex.add_im,
+        Complex.ofReal_im, Complex.I_im, zero_add]
+      constructor <;> linarith
   have hUre : ∀ s ∈ U, θ < s.re ∧ s ≠ 1 := by
     rintro s ((⟨h1, h2⟩ | ⟨h1, h2⟩) | h1)
     · exact ⟨h1, fun h => by rw [h] at h2; simp at h2⟩
@@ -458,10 +475,11 @@ theorem not_gaugePowerBound_moebius_flipPoint {θ a : ℝ} (hθ : 0 < θ) (hθ1 
   have hF₂ : AnalyticOnNhd ℂ (LSeries (fun n => flipDivisorSum θ n)) U := fun s hs =>
     LSeries_analyticOnNhd _ s (lt_of_le_of_lt (abscissaOfAbsConv_flipDivisorSum_le hθ.le)
       (by exact_mod_cast (hUre s hs).1))
-  have h2U : (2 : ℂ) ∈ U := Or.inr (by simp [E]; norm_num)
+  have h2E : (2 : ℂ) ∈ E := show (1 : ℝ) < (2 : ℂ).re by norm_num
+  have h2U : (2 : ℂ) ∈ U := Or.inr h2E
   have heq : Set.EqOn (fun s => riemannZeta s * D s) (LSeries (fun n => flipDivisorSum θ n)) U :=
     hF₁.eqOn_of_preconnected_of_eventuallyEq hF₂ hUc h2U
-      (Filter.eventually_of_mem (hEo.mem_nhds (by simp [E]; norm_num)) fun s hs => hmul s hs)
+      (Filter.eventually_of_mem (hEo.mem_nhds h2E) fun s hs => hmul s hs)
   -- Contradiction as `σ ↓ θ`.
   have hcont : ContinuousAt (fun σ : ℝ => riemannZeta σ * D σ) θ := by
     have hθ1' : (θ : ℂ) ≠ 1 := by exact_mod_cast hθ1.ne
@@ -473,21 +491,20 @@ theorem not_gaugePowerBound_moebius_flipPoint {θ a : ℝ} (hθ : 0 < θ) (hθ1 
   set M := ‖riemannZeta θ * D θ‖ + 1
   obtain ⟨F, hFS, hFM⟩ := exists_sum_flipPrimes_rpow_gt hθ hθ1 M
   have hev1 : ∀ᶠ σ : ℝ in 𝓝 θ, ‖riemannZeta σ * D σ‖ < M := by
-    have := (continuous_norm.continuousAt.comp hcont).eventually
-      (gt_mem_nhds (show ‖riemannZeta θ * D θ‖ < M by simp [M]))
-    exact this
+    exact (continuous_norm.continuousAt.comp hcont).eventually (gt_mem_nhds (lt_add_one _))
   have hev2 : ∀ᶠ σ : ℝ in 𝓝 θ, M < ∑ p ∈ F, (p : ℝ) ^ (-σ) := by
-    have hc2 : ContinuousAt (fun σ : ℝ => ∑ p ∈ F, (p : ℝ) ^ (-σ)) θ := by
-      refine continuousAt_finset_sum F fun p hp => ?_
+    have hc2 : Tendsto (fun σ : ℝ => ∑ p ∈ F, (p : ℝ) ^ (-σ)) (𝓝 θ)
+        (𝓝 (∑ p ∈ F, (p : ℝ) ^ (-θ))) := by
+      refine tendsto_finset_sum F fun p hp => ?_
       have hp0 : (p : ℝ) ≠ 0 := by
         obtain ⟨k, hk⟩ := hFS hp; exact_mod_cast (mem_flipBlock hk).1.ne_zero
       exact (Real.continuousAt_const_rpow hp0).comp continuous_neg.continuousAt
     exact hc2.eventually (lt_mem_nhds hFM)
-  obtain ⟨σ, ⟨h1, h2⟩, hσθ, hσ1⟩ := ((hev1.and hev2).filter_mono nhdsWithin_le_nhds |>.and
-    (Ioo_mem_nhdsGT_of_mem ⟨le_rfl, hθ1⟩)).exists (f := 𝓝[>] θ)
+  have hIoo : ∀ᶠ σ : ℝ in 𝓝[>] θ, σ ∈ Set.Ioo θ 1 := Ioo_mem_nhdsGT_of_mem ⟨le_rfl, hθ1⟩
+  obtain ⟨σ, ⟨h1, h2⟩, hσθ, hσ1⟩ :=
+    (((hev1.and hev2).filter_mono nhdsWithin_le_nhds).and hIoo).exists
   have hσU : (σ : ℂ) ∈ U := Or.inl (Or.inl ⟨by simpa using hσθ, by simpa using hσ1⟩)
-  have hval := heq hσU
-  simp only at hval
+  have hval : riemannZeta σ * D σ = LSeries (fun n => flipDivisorSum θ n) σ := heq hσU
   -- The `LSeries` at `σ` is the real tsum of the nonnegative terms.
   have hσθ' : θ < σ := hσθ
   have hLS : LSeries (fun n => flipDivisorSum θ n) σ = ((∑' n, flipDivisorTerm θ σ n : ℝ) : ℂ) := by

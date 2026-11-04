@@ -22,6 +22,7 @@ import GaloisForLFunctions.ZeroConfigurationGeometry.ShallowPairsAreNearCollisio
 import GaloisForLFunctions.ZeroConfigurationGeometry.BlindWindowsAtTheDensityAperture
 import GaloisForLFunctions.ZeroConfigurationGeometry.HeatStepsNeverShrinkTheMesh
 import GaloisForLFunctions.ZeroConfigurationGeometry.ResolutionIsUniformInDepth
+import GaloisForLFunctions.ZeroConfigurationGeometry.IsolatingWindows
 
 /-!
 # Zero Configuration Geometry
@@ -41,7 +42,8 @@ Umbrella for the explicit formula read as a camera.
   exit, Laguerre steps never deepen, heat steps never shrink the mesh, shift averages contract the
   depth.
 * Window design: real kernel zeros of the cosine camera, windows blind to a real lattice, to
-  finite unions of lattices at the density aperture and to zero sets of exponential polynomials.
+  finite unions of lattices at the density aperture, to zero sets of exponential polynomials and
+  of transforms of densities; isolating windows reading one point of a lattice.
 
 See `ZeroConfigurationGeometry/README.md`.
 -/

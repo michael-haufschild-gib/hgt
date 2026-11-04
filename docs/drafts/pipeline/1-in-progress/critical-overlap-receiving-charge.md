@@ -417,14 +417,20 @@ For `N≤Q⁶⁴`, the checked moment comparison gives a decaying cost
 `O_t(L^(3/8)S²/B²)`. For `Q≤L^(1/32)`, the logarithm-free conductor
 Gram bound gives errors `O_t(L^(−11/16)+L²/N+L^(−7/8)log L)`, while
 the completed diagonal costs `O_t(1/B)`.
-In the intervening range, `log L≤32log Q`; the divisor-mean overlap
-term costs `O_t(S/B)`, the scalar diagonal `O_t(S²/B)`, and the quadratic
+In the intervening range, `log L≤32log Q`; both the divisor-mean overlap
+and scalar diagonal cost `O_t(S/B)`, and the quadratic
 near-row, center and separated-cross terms retain negative powers of `L`.
 `PrimeChargeSmallPacketEnergy` sums the logarithm-free conductor residual
 with the exact moments `Σ|a_m|m²` and `Σ|a_m|m⁵`, then retains the polarized
 harmonic Gram error. It also bounds the coherent nonpolar completed
 diagonal by `(|selfφ(1)|+3)(t/B_Q)²(S_Q+B_Q)`, uniformly in overlap
 and horizon. Its source is pending verification.
+The completed energies are nonnegative, including conductor one, and
+their logarithmic upper bound is uniform in `c≥1`. Consequently the
+remaining polar diagonal costs at most `(|selfφ(1)|+3)a_1²`; no growing
+overlap factor is needed in the small-cutoff diagonal.
+`PrimeChargeCompletedDiagonal` contains this full diagonal bound and the
+coefficient-square bound `Σa_m²≤a_pole_bound²+(t/B_Q)²S_Q`; check pending.
 The relevant public center and cross bounds are
 `abs_fullWeilCenterMatrix_self_inner_le_of_mem_conductorSubspace` and
 `abs_separatedCrossErrorMatrix_inner_le_of_mem_conductorSubspace`.
@@ -436,9 +442,11 @@ critical overlap; it uses the public near-band square estimate directly.
 Individual check and standard-only transitive axiom audit pass; integrated.
 `PrimeChargeQuadraticChannels` combines this overlap bound with the exact
 quadratic transposition, the center bound and the separated-cross bound;
-its source is pending verification. The scalar diagonal remains literal.
+individual check and standard-only transitive axiom audit pass; integrated.
+The scalar diagonal remains literal.
 `PrimeChargePhysicalChannels` transfers the exact prime identity and scalar
-diagonal bound to physical coordinates; verification pending.
+diagonal bound to physical coordinates; individual plain check and
+standard-only transitive axiom audit pass; integrated.
 
 Swapping conductor and lag sums isolates the exact polar near-mean term
 `a_1² Σ_h nearWeightMass(h)`. Abel cancellation bounds the remainder by
