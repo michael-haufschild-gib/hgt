@@ -143,7 +143,7 @@ theorem weighted_incidence_moment {P : Finset ℕ} (hP : ∀ p ∈ P, p.Prime)
       refine (abs_sum_le_sum_abs _ _).trans ?_
       apply sum_le_sum
       intro p _
-      rw [abs_div, abs_of_nonneg (Nat.cast_nonneg p)]
+      rw [abs_div, show |(p : ℝ)| = (p : ℝ) from abs_of_nonneg (Nat.cast_nonneg p)]
     have habs : |incidencePacket P b n| ≤ C n + S := by
       simp only [incidencePacket, mul_sub, mul_one_div, sum_sub_distrib]
       exact (abs_sub _ _).trans (add_le_add hcount hmean)

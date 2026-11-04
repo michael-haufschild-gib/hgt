@@ -1,26 +1,26 @@
 # Signed critical limit of the upward-prime residual
 
 - **ID:** critical-upward-residual-signed-limit
-- **Stage:** 1-in-progress
-- **Type:** CONJECTURE
-- **Parent:** [critical-ratio continuation](critical-ratio-continuation.md)
+- **Stage:** 3-formalized
+- **Type:** THEOREM (Lean)
+- **Parent:** [critical-ratio continuation](../1-in-progress/critical-ratio-continuation.md)
 
 ## Exact statement
 
 Fix positive conductors m,l and R>0. Put c_N=max(1,(R log N)^(1/8)),
 φ=tiltedUnitSpline, aφ=(∫φ)²/∫φ², and let v_m(N) denote the normalized
-Ramanujan horizon vector. The target is
+Ramanujan horizon vector. The checked limit is
 
     (log N/c_N) ⟨upwardPrimeVector φ c_N N v_m
                    - shellCorrection φ c_N m · v_m, v_l⟩
       → -aφ(γ+1)[m=1][l=1],
 
-where γ is Euler's constant. The existing estimate is only O_m,l(c/log N).
-This target retains its sign and removes its leading term on every other
+where γ is Euler's constant. This sharpens the absolute O_m,l(c/log N)
+estimate: it retains the sign and removes the leading term on every other
 fixed conductor pair. It does not assert uniformity over growing conductors,
 or the sign of the complete form.
 
-The same derivation applies to any overlap schedule c_N≥1 with c_N→∞
+The proved limit also holds for any overlap schedule c_N≥1 with c_N→∞
 and c_N⁴(log N)²/N→0. The critical clock is a particular case.
 
 ## Source inputs
@@ -36,8 +36,7 @@ and c_N⁴(log N)²/N→0. The critical clock is a particular case.
   log N⟨v₁,v_l⟩→−Λ(l)/sqrt(φ(l)) for l>1.
 - The adjoint downward expansion and exterior bound inside
   `exists_upward_bilinear_log_free` in `LogarithmFreeCriticalConductorResiduals`.
-  The two shell-row definitions there are private; their exact finite sums
-  must be exposed or reconstructed before formalization.
+  The logarithmic and jet rows are represented by their exact finite sums.
 
 ## Proof
 
@@ -121,10 +120,11 @@ sharpens the previous absolute bound; its complete-form consequence uses
 the separate Gamma–center cancellation.
 
 `TheUpwardPrimeResidueHasASignedPolarLimit.tendsto_upwardPrime_residual_signed_limit`
-checks with exactly `[propext, Classical.choice, Quot.sound]`. Its inputs
-include the verified discrete horizon integral, uniform near-Gram error,
-polar shell limit, logarithmic mean, divisor-jet mean and public exterior
-estimate. `TheCriticalUpwardResidueIsSupportedAtThePole.tendsto_critical_upwardPrime_residual`
-passes its actual-path no-olean audit with the same three axioms, for
-every R>0. Final no-olean checks of the supporting modules remain
-pending. No novelty beyond the local corpus audit is claimed.
+formalizes the general clock limit. Its inputs include the discrete
+horizon integral, uniform near-Gram error, polar shell limit, logarithmic
+mean, divisor-jet mean and public exterior estimate.
+`TheCriticalUpwardResidueIsSupportedAtThePole.tendsto_critical_upwardPrime_residual`
+specializes it to every R>0. Both endpoints and their supporting modules
+pass their actual-path source audits; all printed capstones depend only
+on `[propext, Classical.choice, Quot.sound]`. No novelty beyond the local
+corpus audit is claimed.

@@ -104,7 +104,7 @@ theorem exists_literal_prime_short_row_bound :
     (by
       intro p hpP k _ h hh
       have hhp : h ≤ p := ((mem_Icc.mp hh).2.trans_lt (hBP p hpP)).le
-      rw [dvd_positive_shift_iff hhp, Nat.mul_comm k n])
+      simp only [dvd_positive_shift_iff hhp, Nat.mul_comm k n])
   have hminus := hsign (fun k h => k * n - h)
     (fun k h => negativeLiteralUpwardKernel φ c N k h n) (fun _ h => h)
     (fun p hpP h hh => prime_negative_offset_unit (hp p hpP) (mem_Icc.mp hh).1
@@ -116,7 +116,7 @@ theorem exists_literal_prime_short_row_bound :
     (by
       intro p _ k _ h _
       by_cases hhk : h ≤ k * n
-      · rw [dvd_negative_shift_iff hhk, Nat.mul_comm k n]
+      · simp only [dvd_negative_shift_iff hhk, Nat.mul_comm k n]
       · have hz : negativeLiteralUpwardKernel φ c N k h n = 0 := by
           rw [negativeLiteralUpwardKernel, if_neg (by omega)]
         rw [hz, zero_mul, zero_mul])

@@ -369,7 +369,7 @@ lemma abs_expMoment_le {F : ℝ → ℝ} {c B : ℝ} (hc : 0 ≤ c)
     _ ≤ B * (1 / α) := mul_le_mul_of_nonneg_left hle hB0
     _ = B / α := by ring
 
-lemma summable_expMoment_sq {F : ℝ → ℝ} (hF : Continuous F) {c B : ℝ} (hc : 0 ≤ c)
+lemma summable_expMoment_sq {F : ℝ → ℝ} {c B : ℝ} (hc : 0 ≤ c)
     (hB : ∀ u, |F u| ≤ B) (h0 : ∀ u, 0 < u → F u = 0) (hl : ∀ u, u < -c → F u = 0) :
     Summable fun j => expMoment F j ^ 2 := by
   have hB0 : 0 ≤ B := le_trans (abs_nonneg _) (hB 0)
@@ -550,9 +550,9 @@ theorem pole_defect_le {c : ℝ} (hc0 : 0 ≤ c) (hct : c ≤ screwSignThreshold
   obtain ⟨B, hB⟩ : ∃ B, ∀ u, |f u| ≤ B := by
     obtain ⟨B, hB⟩ := hfc.exists_bound_of_continuous hf  -- ‖f u‖ ≤ B
     exact ⟨B, fun u => by simpa [Real.norm_eq_abs] using hB u⟩
-  have hSg := summable_expMoment_sq hg hc0 (B := B) (fun u => by rw [abs_abs]; exact hB u)
+  have hSg := summable_expMoment_sq (F := fun u => |f u|) hc0 (B := B) (fun u => by rw [abs_abs]; exact hB u)
     (fun u hu => by rw [h0 u hu, abs_zero]) (fun u hu => by rw [hl u hu, abs_zero])
-  have hSf := summable_expMoment_sq hf hc0 hB h0 hl
+  have hSf := summable_expMoment_sq (F := f) hc0 hB h0 hl
   have hmom (j : ℕ) : expMoment (fun u => |f u|) j ^ 2 - expMoment f j ^ 2 =
       2 * ∫ x in Ioi (0 : ℝ), (∫ u, pairDefect f u (u + x) *
         (expWeight j u * expWeight j (u + x))) := hws (expWeight j) (hew j)
@@ -620,7 +620,7 @@ lemma evenSector_eq {F : ℝ → ℝ} (hF : Continuous F) {c : ℝ} (hc0 : 0 ≤
   obtain ⟨B, hB⟩ : ∃ B, ∀ u, |F u| ≤ B := by
     obtain ⟨B, hB⟩ := hFc.exists_bound_of_continuous hF
     exact ⟨B, fun u => by simpa [Real.norm_eq_abs] using hB u⟩
-  have hS := summable_expMoment_sq hF hc0 hB h0 hl
+  have hS := summable_expMoment_sq (F := F) hc0 hB h0 hl
   have hint (k : ℝ → ℝ) (hk : Continuous k) : Integrable fun u => F u * k u :=
     (hF.mul hk).integrable_of_hasCompactSupport (hFc.mono fun u hu h0 => hu (by simp [h0]))
   have hP : (∫ u, Real.exp (u / 2) * F u) = expMoment F 0 := by
@@ -667,9 +667,9 @@ theorem evenSector_abs_le {c : ℝ} (hc0 : 0 ≤ c) (hct : c ≤ screwSignThresh
   obtain ⟨B, hB⟩ : ∃ B, ∀ u, |f u| ≤ B := by
     obtain ⟨B, hB⟩ := hfc.exists_bound_of_continuous hf.continuous
     exact ⟨B, fun u => by simpa [Real.norm_eq_abs] using hB u⟩
-  have hSg := summable_expMoment_sq hg hc0 (B := B) (fun u => by rw [abs_abs]; exact hB u)
+  have hSg := summable_expMoment_sq (F := fun u => |f u|) hc0 (B := B) (fun u => by rw [abs_abs]; exact hB u)
     (fun u hu => by rw [h0 u hu, abs_zero]) (fun u hu => by rw [hl u hu, abs_zero])
-  have hSf := summable_expMoment_sq hf.continuous hc0 hB h0 hl
+  have hSf := summable_expMoment_sq (F := f) hc0 hB h0 hl
   rw [evenSector_eq hf.continuous hc0 hct h0 hl hJf,
     evenSector_eq hg hc0 hct (fun u hu => by rw [h0 u hu, abs_zero])
       (fun u hu => by rw [hl u hu, abs_zero]) hJg]

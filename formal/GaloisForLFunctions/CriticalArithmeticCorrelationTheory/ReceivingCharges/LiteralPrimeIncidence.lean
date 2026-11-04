@@ -37,7 +37,7 @@ theorem positive_literal_incidence_split {G : ℕ → ℝ} {M p k h n : ℕ}
       unit_positive_incidence hpk hhp.le n, periodic_positive_sample hG k h n]
     ring
   · have hd : p ∣ k := by simpa only [hp.coprime_iff_not_dvd, not_not] using hpk
-    have hnd := same_source_positive_nondivisibility hd hh hhp
+    have hnd := same_source_positive_nondivisibility (n := n) hd hh hhp
     rw [unitMangoldtWeight, if_neg hpk, if_pos hd, if_neg hnd]
     ring
 

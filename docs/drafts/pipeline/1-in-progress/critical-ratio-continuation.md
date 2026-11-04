@@ -107,14 +107,14 @@ rows, and the upward-prime residual supplies the stated genus. The
 separated-regime theorem `tendsto_completeWeilBulkEntry` assumes c<1;
 its filename does not authorize using it on a growing critical clock.
 
-The [upward-prime signed limit](critical-upward-residual-signed-limit.md)
+The [upward-prime signed limit](../3-formalized/critical-upward-residual-signed-limit.md)
 now checks in Lean: its leading term is −aφ(γ+1)e₁e₁ᵀ, with cancellation
 of all other fixed conductor pairs. The critical-curve corollary holds
 at every R>0 and passes its no-olean audit with the standard three axioms.
-The [joint Gamma–center limit](critical-gamma-center-signed-limit.md) now
-passes its final no-olean audit with the standard three axioms;
-its listed support-file audits remain pending. The complete signed residual passes its actual-path no-olean
-audit with the same axioms.
+The [joint Gamma–center limit](../3-formalized/critical-gamma-center-signed-limit.md)
+and all its supporting modules pass their actual-path source audits with
+the standard three axioms. The complete signed residual passes its
+actual-path source audit with the same axioms.
 
 **Attack:** the positive low-zero term alone did not identify this limit;
 the complete arithmetic calculation was needed. Growing-conductor receiving

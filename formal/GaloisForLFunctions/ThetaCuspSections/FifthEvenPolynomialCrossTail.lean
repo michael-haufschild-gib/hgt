@@ -73,7 +73,7 @@ theorem compensation_four_limit :
     positivity
   have hf := (thetaCuspSourceTerm_pos_of_pos_of_nat_pos hx (by norm_num : 0 < (1 : ℕ))).ne'
   rw [compensation_expansion]
-  field_simp [hq,hf] <;> ring
+  field_simp [hq,hf]
 
 private theorem compensation_limit (n : ℕ) (hn : 4 ≤ n) :
     Tendsto (fun x : ℝ => compensation x/

@@ -1,11 +1,11 @@
 # Signed critical Gamma–center remainder
 
 - **ID:** critical-gamma-center-signed-limit
-- **Stage:** 1-in-progress
-- **Type:** THEOREM (final source audits pending)
-- **Parent:** [critical-ratio continuation](critical-ratio-continuation.md)
+- **Stage:** 3-formalized
+- **Type:** THEOREM (Lean)
+- **Parent:** [critical-ratio continuation](../1-in-progress/critical-ratio-continuation.md)
 
-## Exact target
+## Exact statement
 
 Fix positive conductors m,l and an admissible compact C² profile φ. Write
 a=(∫φ)²/∫φ², L=log N, w=c/N, and v_m for the normalized horizon mode.
@@ -81,17 +81,12 @@ cancelled second difference at y=0.
 This integral cancellation and the uniform actual-entry estimate
 `|crossError−crossSingular(w/s)|≤(5∫|G|/(2M))w` for s>w are now
 kernel-verified in `TheNearAndFarGammaProfilesHaveOneFinitePart.lean`.
-Both principal declarations pass their actual-path no-olean audit with
-exactly `[propext, Classical.choice, Quot.sound]`. The finite-part integral
-has error at most 2/T before T→∞. Transfer to the actual growing arithmetic
-pairings is now verified in `TheGrowingGammaPairMeanIsPolar.lean`: the raw
+The finite-part integral has error at most 2/T before T→∞. Transfer to
+the actual growing arithmetic pairings is formalized in
+`TheGrowingGammaPairMeanIsPolar.lean`: the raw
 near remainder minus separated cross pairing, divided by c, tends to
-`−a(log(4π)+γ)δₘ₁δₗ₁` under only c>0, c→∞ and c/N→0. Its principal
-declarations pass the actual-path no-olean audit with the standard three
-axioms. The actual center transfer and the complete residual assembly
-also check with the same axioms. The joint Gamma–center endpoint and
-the complete residual assembly pass their final actual-path checks;
-the support-file audits listed below remain pending.
+`−a(log(4π)+γ)δₘ₁δₗ₁` under only c>0, c→∞ and c/N→0. The actual center
+transfer and complete residual assembly are also formalized.
 
 **Arithmetic pieces.** After scaling by L/c, the limits are:
 
@@ -122,9 +117,8 @@ Its main term is the product of the periodic Cesàro mean of
 u·mean(v)+v·mean(u) and ∫K(s)exp(w_N s/2)ds. The former tends to
 2 mean(u)mean(v); uniform convergence of the exponential on [α,β]
 gives the latter limit. This is a direct bridge from an existing estimate,
-not a new arithmetic cancellation law. `TheGrowingNearPairMeanIsPolar.lean`
-checks with exactly `[propext, Classical.choice, Quot.sound]`; its final
-no-olean audit remains pending.
+not a new arithmetic cancellation law. The limit is formalized in
+`TheGrowingNearPairMeanIsPolar.lean`.
 
 1. Apply the existing near-kernel approximation and periodic pair estimate
    on [0,2] and [2,T]. The far-tail paper bound is
@@ -136,9 +130,8 @@ no-olean audit remains pending.
    For j>2n, the same entry is at most 4Cφw²/sqrt(nj);
    Σ_(n≤N)1/sqrt(n)≤2sqrt(N). Doubling the upper triangle
    gives the stated bound, uniform before T→∞.
-   `TheSeparatedGammaTailIsUniformAtGrowingOverlap.lean` checks with
-   exactly `[propext, Classical.choice, Quot.sound]`; its final no-olean
-   audit remains pending.
+   `TheSeparatedGammaTailIsUniformAtGrowingOverlap.lean` formalizes this
+   finite bound uniformly in T, c and N.
 2. Retain the signed near-center harmonic sum. Its exact logarithmic
    cutoff is H=N(1−exp(−2c/N)), with H/(2c)→1. The ground sum is
    log H+γ−1+o(1); the nonpolar sums tend to −Λ(m).
@@ -165,10 +158,9 @@ cardinality bound. For m>1, the displayed sum tends to −Λ(m) by
 subtracting log c leaves log 2+γ−1. This identifies the center constant
 without discarding its signed conductor correlations. The exact interval-count estimate,
 signed triangular harmonic approximation, and growing-cutoff limit now
-check in `TheNearCenterRetainsItsHarmonicFinitePart.lean` with the standard
-three axioms. `TheActualNearCenterHasItsSignedFinitePart.lean` now verifies
-the exact logarithmic-pair reindexing and the actual center limit, also
-with the standard three axioms. Both final no-olean audits remain pending.
+are formalized in `TheNearCenterRetainsItsHarmonicFinitePart.lean`.
+`TheActualNearCenterHasItsSignedFinitePart.lean` verifies the exact
+logarithmic-pair reindexing and the actual center limit.
 
 The `log c` subtraction requires more than convergence of the relative
 near-Gram. Its existing shell error is O_m,l(c⁴ log N/N) after division
@@ -192,19 +184,18 @@ Replacing the Gamma finite part by its value at zero frequency would
 give the wrong constant. Estimates of the separate absolute values lose
 both the finite-part cancellation and the arithmetic receiving column.
 
-The exact vector assembly and the joint limit now check in
-`TheGrowingGammaCenterResidueIsSupportedAtThePole.lean`, with exactly
-`[propext, Classical.choice, Quot.sound]`. The limit is
-`a(1−log(4π))δₘ₁δₗ₁`; no new analytic premise is introduced.
-Its final actual-path no-olean audit passes with those same axioms;
-the listed support audits remain pending.
-The complete seven-channel residual now also checks in
-`TheCompleteCriticalResidueIsSupportedAtThePole.lean`, with the standard
-three axioms. Its coefficient is `a(2+γ−log(4π))δₘ₁δₗ₁` on every positive
-critical ratio. Its actual-path no-olean audit passes with the same axioms.
+`TheGrowingGammaCenterResidueIsSupportedAtThePole.lean` formalizes the
+exact vector assembly and the joint limit `a(1−log(4π))δₘ₁δₗ₁`, without
+an additional analytic premise.
+`TheCompleteCriticalResidueIsSupportedAtThePole.lean` formalizes the
+complete seven-channel residual with coefficient
+`a(2+γ−log(4π))δₘ₁δₗ₁` on every positive critical ratio. Both endpoints
+and all named supporting modules pass their actual-path source audits;
+their printed capstones depend only on
+`[propext, Classical.choice, Quot.sound]`.
 
 Verdict: `BRIDGE` within the local corpus. The joint limit resolves the
 fixed-pair Gamma–center cancellation. The [complete growing low-packet
-transfer](../3-formalized/critical-low-packet-signed-compactness.md) is
+transfer](critical-low-packet-signed-compactness.md) is
 also formalized; complement coupling remains open. No claim of novelty
 relative to external literature is made.

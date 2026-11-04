@@ -40,7 +40,7 @@ c¹⁸ log N/N→0. The polar subtraction is supported only at (1,1).
 The envelope is summable over positive conductor pairs.
 
 For the subarray m,l≤c_N, the checked signed fixed-pair limit from
-[the Gamma–center calculation](../1-in-progress/critical-gamma-center-signed-limit.md)
+[the Gamma–center calculation](critical-gamma-center-signed-limit.md)
 makes every entry of this normalized remainder tend to zero. Extending
 that subarray by zero outside m,l≤c_N, dominated convergence makes
 its total absolute entry sum tend to zero. This controls every

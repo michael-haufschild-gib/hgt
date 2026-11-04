@@ -36,6 +36,8 @@ The same cross-load is strict near both endpoints and on a cofinal source ray.
 At scale eight it is not positive semidefinite. Its scalar multiples have a
 sharp capacity strictly between one half and one: positivity holds below the
 capacity, and the boundary matrix is positive semidefinite and singular.
+A quartic center-flux profile preserves every fifth even mixed entry and gives
+positivity near the origin, near scale eight, and on a cofinal source ray.
 Every individual theta atom has a strict fifth even section at reflection scale at least five.
 -/
 import GaloisForLFunctions.ThetaCuspSections.FifthEvenLeadingPairReserve
@@ -46,3 +48,5 @@ import GaloisForLFunctions.ThetaCuspSections.FifthEvenCrossLoadPolynomialEnvelop
 import GaloisForLFunctions.ThetaCuspSections.FifthEvenScaleEightData
 import GaloisForLFunctions.ThetaCuspSections.FifthEvenScaleEightSourceBounds
 import GaloisForLFunctions.ThetaCuspSections.FifthEvenScaleEightCapacity
+import GaloisForLFunctions.ThetaCuspSections.FifthEvenPolynomialCrossLoad
+import GaloisForLFunctions.ThetaCuspSections.FifthEvenPolynomialCrossTail

@@ -92,7 +92,7 @@ theorem abs_unit_invariant_harmonic_incidence_le {N p : ℕ}
       _ ≤ ∑ n ∈ Ioc (N / p) N, V / (n : ℝ) := by
         apply sum_le_sum
         intro n _
-        rw [abs_div, abs_of_nonneg (Nat.cast_nonneg n)]
+        rw [abs_div, show |(n : ℝ)| = (n : ℝ) from abs_of_nonneg (Nat.cast_nonneg n)]
         exact div_le_div_of_nonneg_right (hbound n) (Nat.cast_nonneg n)
       _ = _ := by
         have hsplit := sum_Ioc_consecutive (fun n : ℕ => 1 / (n : ℝ))

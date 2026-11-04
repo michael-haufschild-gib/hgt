@@ -60,7 +60,7 @@ statement; `[N]` numerical; `[P]` paper. Window half-widths `a` or `c`; `c_ψ(t)
 | Σ3a Coprime stratum | Sharpened | RH | gcd stratification; Redheffer `det = M(N)` [L]. |
 | Σ4 Finite index / heat count | Sharpened | ≥qRH (`K_ζ`); RH (`K_ζ⊠K_ζ`) | `κ < ∞` ⇒ Lindelöf; RH ⇔ index `0`; `{0, ∞}` laws [L]. |
 | Σ5 Collision quantum / window integer | Reduced (to Π17) | RH | Index `0` ⇔ Wiener–Hopf invertibility [L]. |
-| Σ6 Rank / degree uniformity | Partially solved | RH | Rank 8 PD at every `0 < a < ½`; every finite rank on factorial and logarithmic collars; theta atoms and the native fifth even source PD for `q ≥ 5`; fixed cross-load PD near endpoints and for `q ≥ 5000`; at `q = 8`, load multiples are PD iff `t < τ`, PSD iff `t ≤ τ`, with `½ < τ < 1` and singular boundary [L]; fixed Jensen degree eventually hyperbolic; PF₃₇ [L]. |
+| Σ6 Rank / degree uniformity | Partially solved | RH | Rank 8 PD at every `0 < a < ½`; every finite rank on factorial and logarithmic collars; theta atoms and the native fifth even source PD for `q ≥ 5`; fixed cross-load PD near endpoints and for `q ≥ 5000`; at `q = 8`, load multiples are PD iff `t < τ`, PSD iff `t ≤ τ`, with `½ < τ < 1` and singular boundary [L]; `(1−r²/2)²` flux repair PD near the origin and `q = 8`, and cofinally [W]; fixed Jensen degree eventually hyperbolic; PF₃₇ [L]. |
 | Σ7 Window Markov capacity | Sharpened | RH | Fold capacity criterion; RH ⇔ `R ≤ ½` on the odd sector [L]. |
 | Σ8 Realization | Sharpened | RH | RH ⇔ every window has an `ℓ²(zeros)` realization `Q = 2Re[𝓦H, 𝓦H]`; no finite-rank realization [L]. |
 | Σ9 Explicit image / resolvent | Partially solved | RH in strip | Depth identity for `σ > 1`; theta–prime expression at `s = 4` [L]. |
