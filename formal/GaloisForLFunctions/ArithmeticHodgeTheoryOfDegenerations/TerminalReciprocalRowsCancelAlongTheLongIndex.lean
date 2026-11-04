@@ -43,7 +43,7 @@ theorem terminalReciprocalCoordinate_lipschitz (x y : ℝ) :
     exact hh
   have hclamp : |max (1 / 4 : ℝ) y - max (1 / 4 : ℝ) x| ≤ |x - y| := by
     have hh := (LipschitzWith.id.const_max (1 / 4 : ℝ)).dist_le_mul y x
-    simpa only [Real.dist_eq, NNReal.coe_one, one_mul, abs_sub_comm y x] using hh
+    simpa only [id_eq, Real.dist_eq, NNReal.coe_one, one_mul, abs_sub_comm y x] using hh
   have he : terminalReciprocalCoordinate x - terminalReciprocalCoordinate y =
       (max (1 / 4 : ℝ) y - max (1 / 4 : ℝ) x) /
         (max (1 / 4 : ℝ) x * max (1 / 4 : ℝ) y) := by

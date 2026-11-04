@@ -10,7 +10,7 @@ compensation use the full source and its first derivative.
 -/
 
 noncomputable section
-open Matrix RHTower
+open Matrix RHTower RHTower.ThetaCuspGaussianLimit
 namespace GaloisForLFunctions.ThetaCuspSections.EightCrossSource
 open FifthNativeRay FifthLeadingPair FifthRemainder EightCrossData FifthCrossEnvelope
 
@@ -29,11 +29,11 @@ theorem center_pos : 0 < center :=
 theorem center_bounds : (14/15 : ℝ) ≤ 2*center ∧ 2*center ≤ 187/200 := by
   constructor
   · apply Real.exp_le_exp.mp
-    apply (mul_le_mul_left Real.pi_pos).mp
     have hs : Real.pi*Real.exp (2*center)=8 := by
       simpa only [thetaCuspSingleAtomReflectionScale,Nat.cast_one,one_pow,mul_one] using center_scale
-    rw [hs]
-    exact center_lower_base
+    by_contra h
+    have hp := mul_pos Real.pi_pos (sub_pos.mpr (lt_of_not_ge h))
+    nlinarith only [hp,center_lower_base,hs]
   · have h := center_tangent_eight center_pos.le
     have hs : Real.pi*Real.exp (2*center)=8 := by
       simpa only [thetaCuspSingleAtomReflectionScale,Nat.cast_one,one_pow,mul_one] using center_scale
@@ -52,7 +52,8 @@ private theorem derivative_upper :
   simp only [pow_one,center_scale] at hε
   have h := abs_thetaCuspFullSource_derivative_sub_first_le_effective 1 center_pos
     (by norm_num; rw [center_scale]; norm_num)
-  simp only [iteratedDeriv_one,pow_one,first_derivative hq,slope_at_center,center_scale] at h
+  simp only [iteratedDeriv_one,pow_one,first_derivative hq,center_scale] at h
+  norm_num only [firstSlope] at h
   have he : 36*8*regimeOneLikelihoodScale center ≤ (1/100000 : ℝ) := by
     linarith only [hε]
   have hm := mul_le_mul_of_nonneg_right he hf.le
@@ -65,6 +66,7 @@ theorem compensation_bounds :
     thetaCuspCenterCompensationSource center/sourceUnit center ≤ upperCompensation := by
   let f := thetaCuspSourceTerm center 1
   let F := thetaCuspFullSource center
+  have hx := center_pos
   have hq : 7 ≤ thetaCuspSingleAtomReflectionScale 1 center := by rw [center_scale]; norm_num
   have hK := sourceUnit_pos (x := center) (by rw [center_scale]; norm_num)
   have hf : 0 < f := thetaCuspSourceTerm_pos_of_pos_of_nat_pos center_pos (by norm_num)
@@ -121,7 +123,9 @@ private theorem pure_source_eq (n : ℕ) :
   have hp :
       (thetaPairRadialEvenPolynomial ((n : ℝ)^2*(n : ℝ)^2*8^2) (i.val+j.val)).eval
         (((n : ℝ)^2+(n : ℝ)^2)*8) = rMoment (8*(n : ℝ)^2) (i.val+j.val) := by
-    convert radial_eq (8*(n : ℝ)^2) (i.val+j.val) (by omega) using 1 <;> ring
+    rw [show (n : ℝ)^2*(n : ℝ)^2*8^2=(8*(n : ℝ)^2)^2 by ring,
+      show ((n : ℝ)^2+(n : ℝ)^2)*8=2*(8*(n : ℝ)^2) by ring]
+    exact radial_eq (8*(n : ℝ)^2) (i.val+j.val) (by omega)
   rw [hp] at hj
   have he : Real.exp (center-((n : ℝ)^2+(n : ℝ)^2)*8) =
       Real.exp (center-2*8)*Real.exp (-(2*(n : ℝ)^2-2)*8) := by
@@ -134,8 +138,7 @@ private theorem pure_source_eq (n : ℕ) :
   have hk : sourceUnit center=4*8^2*Real.exp (center-2*8) := by
     simp only [sourceUnit,center_scale]
   rw [hk]
-  field_simp [Real.exp_ne_zero]
-  ring
+  field_simp [Real.exp_ne_zero] <;> ring
 
 private theorem pure_two_small (i j : Fin 5) :
     |FifthNativeRay.pureGram 2 center i j| ≤ (1/1000 : ℝ) := by
@@ -172,7 +175,7 @@ private theorem pure_three_small (i j : Fin 5) :
   calc
     _ ≤ (81*weight^3)*1000000000000000000000000 :=
       mul_le_mul (mul_le_mul_of_nonneg_left hz' (by norm_num)) (pure_three_bound i j)
-        (abs_nonneg _) (by positivity)
+        (abs_nonneg _) (by norm_num [weight])
     _ ≤ _ := by norm_num [weight]
 
 private theorem weight_error : |Real.exp (-24 : ℝ)-weight| ≤ (1/1000000000000000000 : ℝ) := by
@@ -208,8 +211,8 @@ private theorem source_error_entry (i j : Fin 5) :
     simp only [Matrix.add_apply,Matrix.sub_apply]
     ring
   rw [hid]
-  exact (abs_add _ _).trans ((add_le_add_right ((abs_add _ _).trans
-    (add_le_add_right ((abs_add _ _).trans (add_le_add he hr)) _)) _).trans
+  exact (abs_add_le _ _).trans ((add_le_add_right ((abs_add_le _ _).trans
+    (add_le_add_right ((abs_add_le _ _).trans (add_le_add he hr)) _)) _).trans
       (by linarith only [hp2,hp3]))
 
 /-- The complete native source lies within one tenth of the retained Gaussian form. -/

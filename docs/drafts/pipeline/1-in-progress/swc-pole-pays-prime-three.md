@@ -83,16 +83,18 @@ corpus margins odd `1.50·10⁻⁵`, even `5.6·10⁻⁸` at `c = ½ log 3`)
   `|w₃' − w₃| ≤ η Ω(2c − log 3)`, in particular `≤ η (e^{−1/2}/2) log(1/(2c − log 3))`.
   `PrimeThreeEntry/TheNewestPrimeEntersSoftly.lean` (clean, axioms standard).
 
-- **C6 (confinement) — Lean pending.** For `½ log 3 < c < log 2`, `belowLogFourBandWeights c` is
+- **C6 (confinement) — PROVED [L].** For `½ log 3 < c < log 2`, `belowLogFourBandWeights c` is
   compact and convex: one bump centred at `−½ log n` (symmetric under the sliver reflection, so
   `(f⋆f)(−log n) = ∫ f² > 0`, and missing the other prime's reflection) pins `w_n` from both sides.
-  `PrimeThreeEntry/TheWindowConfinesThePrimeWeights.lean`.
-- **C7 (the odd window needs the prime 3) — Lean in check.** Deleting the prime 3 (passing to
+  `exists_bounds_snd_of_lt`, `exists_bounds_fst_of_lt`, `isCompact_belowLogFourBandWeights` in
+  `PrimeThreeEntry/TheWindowConfinesThePrimeWeights.lean` (clean, axioms standard).
+- **C7 (the odd window needs the prime 3) — PROVED [L] for `c ≥ 3/5`.** Deleting the prime 3 (passing to
   `W(F) + 2w₃ A_F(log 3)`) breaks positivity on an odd `C²` test supported in `[−3/5, 3/5]`, hence
   on every window `c ≥ 3/5`: witness = mollification of `P(x/c₂)`, `c₂ = 599/1000`,
   `P(u) = u(1 − u²)(1 − 9u²/2)`, certified deleted form `< −1/200` (exact value `−0.0091`,
   `A(log 3) = −0.0108`). `exists_odd_test_without_prime_three_neg`,
-  `not_nonneg_without_prime_three` in `PrimeThreeEntry/TheOddWindowNeedsThePrimeThree.lean`.
+  `not_nonneg_without_prime_three` in `PrimeThreeEntry/TheOddWindowNeedsThePrimeThree.lean`
+  (clean, axioms standard).
   [N] necessity starts at `c ≈ 0.557`; deleted-form ratio `−0.042` at `c = 0.5743`, `−0.093` at
   `0.599`, `−0.29` at `0.65`.
 - **C8 (Perron sign law).** [N] For `0 < c < log 2` the sector ground states of the band are
