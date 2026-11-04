@@ -609,8 +609,8 @@ theorem zeta_camera_budget_of {lam β L D η ε C₀ X S S'' e K c ρ q b₁ G�
   have h3 : 0 ≤ β * L := mul_nonneg hβ0.le (by linarith)
   have hΦle : 2 * G₁ + 2 * Real.log ((4 * (1 + m / ε)) ^ m) + 2 * ε + lam * L + 2 * F₁ ≤
       c * L ^ 2 + (b₁ - 3) * L := by
-    rw [hc, hb₁, hε]
-    linarith only [hG₁, hF₁, hlogCm, h1, h2, h3]
+    rw [hc, hb₁]
+    linarith only [hG₁, hF₁, hlogCm, h1, h2, h3, hε]
   have hXim : (1 + |X|) ^ 2 ≤ 4 * Real.exp (2 * L) := by
     rw [abs_of_pos hXpos, show 2 * L = L + L by ring, Real.exp_add, ← hXL]
     nlinarith
@@ -699,9 +699,8 @@ theorem multDiff_zeta_eq_zero_of_nearly_isolated {lam μ A' S' κ : ℝ}
   obtain ⟨η, hη⟩ : ∃ η, η = Real.exp (-(κ * L / (1 + Real.log L))) := ⟨_, rfl⟩
   have hη0 : 0 < η := by rw [hη]; exact Real.exp_pos _
   have hη1 : η ≤ 1 := by
-    rw [hη]; exact Real.exp_le_one_iff.mpr (by have : 0 ≤ κ * L / (1 + Real.log L) := by
-      positivity
-      linarith)
+    have h0 : 0 ≤ κ * L / (1 + Real.log L) := by positivity
+    rw [hη]; exact Real.exp_le_one_iff.mpr (by linarith)
   have hlogη : Real.log (1 / η) = κ * L / (1 + Real.log L) := by
     rw [hη, one_div, ← Real.exp_neg, neg_neg, Real.log_exp]
   obtain ⟨C₀, hC₀ℓ, hcount⟩ := zeta_cluster_count hA hA' hμ hlam0 hζ hX1 hT₀ hL hL1

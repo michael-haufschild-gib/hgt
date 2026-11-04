@@ -40,8 +40,8 @@ theorem upward_physical_packet_sub {φ : ℝ → ℝ}
     change (U n - V n) / Real.sqrt (n : ℕ) =
       U n / Real.sqrt (n : ℕ) - V n / Real.sqrt (n : ℕ)
     exact sub_div _ _ _
-  simp only [upwardPrimeVector_smul, upwardPrimeVector_packet_eq hsupp hc hwidth,
-    hcoeff, hpacket, smul_sub]
+  simp only [upwardPrimeVector_smul, upwardPrimeVector_packet_eq hsupp hc hwidth]
+  rw [hcoeff, hpacket, smul_sub]
 
 /-- Exact harmonic centering changes the upward vector by at most its bounded constant-profile cost. -/
 theorem upward_physical_centering_error_le {φ : ℝ → ℝ}

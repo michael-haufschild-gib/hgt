@@ -235,7 +235,8 @@ private theorem normalized_tail_moment_bound {x : ℝ}
       rw [div_eq_mul_inv,← inv_pow]
       norm_num
       ring
-private theorem gaussian_entry_majorant (A : Matrix (Fin 5) (Fin 5) ℝ)
+/-- Entrywise moment bounds pass through the absolute Gaussian coordinate weights. -/
+theorem gaussian_entry_majorant (A : Matrix (Fin 5) (Fin 5) ℝ)
     (m : ℕ → ℝ) (hA : ∀ u v, |A u v| ≤ m (u.val+v.val)) (i j : Fin 5) :
     |gaussianGram A i j| ≤ ∑ u : Fin 5, ∑ v : Fin 5,
       |gaussianBasis i u| * |gaussianBasis j v| * m (u.val+v.val) := by

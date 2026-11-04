@@ -1,7 +1,7 @@
 # Zero Configuration Geometry (ZCG)
 
 Namespace `GaloisForLFunctions.ZeroConfigurationGeometry`; umbrella `ZeroConfigurationGeometry.lean`;
-53 modules.
+54 modules.
 
 ## 1. Motivation
 
@@ -236,7 +236,8 @@ primes below the mean spacing.
 | The zeros of `ζ` have the sharp local density | `mu_le`, `card_le_ncount`, `ncount_le_of_goodHeight`, `exists_card_le_sharp`, `exists_card_le_sharp_centred`, `exists_card_le_sharp_centred_abs` | unconditional |
 | Spline bumps decay at an explicit rate | `norm_paperFT_le_of_prob`, `one_add_mul_norm_sincC_le`, `splineBump`, `splineStage_props`, `one_add_norm_pow_mul_norm_paperFT_splineBump_le`, `one_le_norm_paperFT_splineBump_I`, `exists_explicit_bump` | unconditional |
 | The local camera constant is quasi-polynomial in the density | `windowSlack_localSlack_le`, `nearFarConst_two_mul_inv_le`, `windowExponent_le`, `log_windowGrowth_le`, `log_inv_windowFloor_le` | unconditional |
-| **The local camera fixes the isolated zeros of `ζ` at every aperture `> L`; their cancelling clusters are near-collisions** | `localCameraConst_le`, `zeta_cluster_count`, `zeta_camera_budget`, `multDiff_zeta_eq_zero_of_isolated`, `exists_near_point_of_zeta_mimic` | unconditional |
+| **The local camera fixes the isolated zeros of `ζ` at every aperture `> L`; cancelling clusters are near-coincidences at scale `exp(−κ log X/(1 + log log X))`** | `localCameraConst_le`, `localCameraConst_le_of`, `zeta_cluster_count`, `zeta_camera_budget_of`, `log_inv_windowFloor_le_of_le_one`, `multDiff_zeta_eq_zero_of_isolated`, `exists_near_point_of_zeta_mimic`, `multDiff_zeta_eq_zero_of_nearly_isolated`, `exists_near_coincidence_of_zeta_mimic` | unconditional |
+| Shallow configurations are resolved locally at the Ingham scale, with explicit far error | `inghamConst_mul_normSq_le_of_small`, `exists_maximal_nearSite`, `tsum_near_siteWeight_sq_le`, `tsum_far_siteWeight_le`, `norm_multDiff_sq_le_of_locally_shallow`, `exists_local_resolution_at_ingham_scale`, `eq_of_locally_shallow_at_ingham_scale` | unconditional |
 | Cosine camera: real zeros, complex additive rigidity | `im_eq_zero_of_cosineWindowTransform_eq_zero`, `no_complex_additive_zero_triple` | unconditional, `0 < θ < π/2` |
 | **Arithmetic fakes** | | |
 | Ramanujan is reality | `localFactor_zero_depth`, `localFactor_zero_re_eq_half_iff`, `curveDatum_pure_iff_tracePoints` | unconditional |
@@ -303,7 +304,13 @@ arithmetic images, forces every point onto the real curve?*
   columns cancel against on-line lattices exactly below their dual frequency
   (`eulerColumn_mimic_iff`).
 - For `ζ`: at every aperture above `L`, every cancelling cluster against a mimic of the density of
-  `ζ` is a near-collision cluster at scale `π/(λ log X)` (`exists_near_point_of_zeta_mimic`).
+  `ζ` consists of near-coincidences. Each of its points at height `X` has another within
+  `exp(−κ log X/(1 + log log X))`, for every `κ > 0` (`exists_near_coincidence_of_zeta_mimic`). The
+  floor of the isolating windows costs only `D (1 + log D) log(1/η)`
+  (`log_inv_windowFloor_le_of_le_one`), so isolation far below the mean spacing still has a camera
+  constant `e^{O((log X)²)}`.
+- Shallow configurations are resolved at the Ingham scale locally at height `X`, with explicit far
+  error (`norm_multDiff_sq_le_of_locally_shallow`, `eq_of_locally_shallow_at_ingham_scale`).
 - Locally: let `z₀` be a cluster point at height `X`, `η`-isolated within `R`, with the cluster
   near `X` of count `(D, C₀)` and `πD < 2a`. Then `(1 + R)^{2k−2} ≤ B (1 + |X|)² Σ |c|/(1 + |γ|²)`,
   with `B = B(a, D, C₀, η, k)` (`one_add_pow_le_of_isolated_cancellation`). An isolated cancelling
@@ -473,7 +480,7 @@ Euler logarithm to exponentiate. The route carries the domination down to `ζ` i
 | 2. RH is the descent | RH holds iff the local de Bruijn–Newman constant `Λ_X` vanishes at every height (`riemannHypothesis_iff_forall_localNewmanConstant_eq_zero`) | Lean |
 | 3. Exit only through collision | Along the descent `t ↓ 0`, a zero leaves the line only at a double zero (`riemannHypothesis_iff_forall_zeros_simple`, `exists_first_collision`) | Lean |
 | 4. The pincer | A zero of depth `d` at height `X` forces `Λ_X ≥ c d²/log X` (`exists_le_localNewmanConstant_of_offLine_zero`), so any tilt is created by a collision at heat `t ∈ [c d²/log X, t_X]` | Lean |
-| 5. The camera fixes the start | The descent is determined by the configuration of `ζ` at `t = 0`, and only there is the image arithmetic: the heat flow destroys the Euler product for `t > 0`. For every `λ > 1/4 + πμ/2` and every large height `X`, a tempered mimic of `ζ` at aperture `λ log X` with local density `≤ μ log X` has the multiplicity of `ζ` at every point of height `X` that is `π/(λ log X)`-isolated in the cluster (`multDiff_zeta_eq_zero_of_isolated`). For mimics with the density of `ζ`, `μ = 1/2π`, this is every aperture `> L(1 + o(1))`: the camera reads primes beyond the height `X`, the range below the mean spacing. The density method is sharp there, since at aperture `L` two on-line lattices of the density of `ζ` mimic each other with every point isolated (`exists_onLine_mimic_at_density`). Every cancelling cluster is therefore a near-collision cluster (`exists_near_point_of_zeta_mimic`). Near-collisions below `π/(λ log X)` are read only at second order, through the `(log n)²`-weighted prime sum (`norm_pairSignal_sub_sq_mul_curvature_le`, `deriv_deriv_primeChannel_modulate`) | Lean for isolated points; near-collisions open |
+| 5. The camera fixes the start | The descent is determined by the configuration of `ζ` at `t = 0`, and only there is the image arithmetic: the heat flow destroys the Euler product for `t > 0`. For every `λ > 1/4 + πμ/2` and every large height `X`, a tempered mimic of `ζ` at aperture `λ log X` with local density `≤ μ log X` has the multiplicity of `ζ` at every point of height `X` that is `π/(λ log X)`-isolated in the cluster (`multDiff_zeta_eq_zero_of_isolated`). For mimics with the density of `ζ`, `μ = 1/2π`, this is every aperture `> L(1 + o(1))`: the camera reads primes beyond the height `X`, the range below the mean spacing. The density method is sharp there, since at aperture `L` two on-line lattices of the density of `ζ` mimic each other with every point isolated (`exists_onLine_mimic_at_density`). Every cancelling cluster is therefore a near-collision cluster (`exists_near_point_of_zeta_mimic`), and in fact a cluster of near-coincidences: each of its points has another within `exp(−κ log X/(1 + log log X))`, for every `κ > 0` (`exists_near_coincidence_of_zeta_mimic`). Near-coincidences are read only at second order, through the `(log n)²`-weighted prime sum (`norm_pairSignal_sub_sq_mul_curvature_le`, `deriv_deriv_primeChannel_modulate`) | Lean for isolated points; near-collisions open |
 | 6. Close the descent | The configuration fixed in step 5 evolves without collision on `(0, t_X]`: it has no tilted pair, and no cluster that collides in the last stretch | open (O1, O3) |
 
 **Obstacles.**
@@ -482,13 +489,11 @@ Euler logarithm to exponentiate. The route carries the domination down to `ζ` i
   (Bourgain's `μ(½) ≤ 13/84` gives `13/21`). Lindelöf would give `Λ_X = o(1/log X)`, still not `0`.
   Closing the route needs domination that knows the configuration at the scale `1/log X`, not only
   the size of `ζ`.
-- **O2 The local camera below the isolation scale.** The isolated points are fixed
-  (`multDiff_zeta_eq_zero_of_isolated`): with `L = log X`, the camera constant is `e^{O(L²)}`
-  (`TheLocalCameraConstantIsQuasiPolynomial`, `exists_explicit_bump`), and decay order `k ≍ L`
-  beats it. What remains open is the cluster below the isolation scale `π/(λ log X)`: points of the
-  cluster closer than that to another one. They are pairs or clusters near collision, which the
-  camera reads only at second order. The local form of the Ingham-scale resolution
-  (`exists_depth_resolving_at_ingham_scale`) is the next tool, and the rest is O3.
+- **O2 Near-coincidences.** The camera fixes every zero of `ζ` that is isolated at radius
+  `exp(−κ log X/(1 + log log X))` (`multDiff_zeta_eq_zero_of_nearly_isolated`). A mimic can differ
+  from `ζ` near height `X` only by clusters of points that nearly coincide, at a scale far below the
+  mean spacing. The camera reads such a cluster only through its moments, at second order in the
+  gaps (`norm_pairSignal_sub_sq_mul_curvature_le`). Excluding them is O3 at `t = 0`.
 - **O3 Repulsion in the last stretch.** Every tilted pair of `ζ` at height `X` must disappear by a
   collision before heat time `t_X`, since `H_{t_X}` is real there. An isolated pair of squared
   half-gap `−δ²` collides at heat `δ²/2` (the single-pair law `w² + 2t`, proved for polynomials),
@@ -507,7 +512,7 @@ Euler logarithm to exponentiate. The route carries the domination down to `ζ` i
   property: the heat flow destroys it for `t > 0`.
 
 **Status.** Steps 1–4 are proved in the corpus. Step 5 is proved for the zeros of `ζ` at every
-aperture above `L = ½ log(X/2π)`, for points isolated at a fixed fraction of the mean spacing. Near-collisions
+aperture above `L = ½ log(X/2π)`, up to near-coincidences at scale `exp(−κ log X/(1 + log log X))`. Near-collisions
 below that scale (O2) are where step 5 meets O3. O1 and O3 are where RH lies. The route is not
 closed. What it contributes is the split. ζ-specific domination gives reality down to heat time
 `t_X`, and the pincer confines every tilt to the last stretch. The camera fixes the configuration

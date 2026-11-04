@@ -3,8 +3,6 @@ import GaloisForLFunctions.SquareRootThreshold.TheContactApertureOfTheGroundEner
 import GaloisForLFunctions.SquareRootThreshold.PositivityCertifiesIsolableTilts
 import GaloisForLFunctions.ArithmeticHodgeTheoryOfDegenerations.TheCriticalThresholdOfAWindow
 import GaloisForLFunctions.ArithmeticIncidencePositivity.AnExplicitLargerApertureRetainsAWeilFloor
-import GaloisForLFunctions.SignedWindowCriticality.TheZeroModeOfATightBandIsAReflectionPair
-import GaloisForLFunctions.CanonicalSystemOfTheWindowTower.WindowGrowthIsATranslationContraction
 
 /-!
 # The Onset Aperture of Window Negativity and Its Route Dictionary
@@ -45,10 +43,7 @@ open GaloisForLFunctions.SquareRootThreshold
 open GaloisForLFunctions.ArithmeticCastelnuovoSeveri
 open GaloisForLFunctions.ArithmeticHodgeTheoryOfDegenerations
 open GaloisForLFunctions.ArithmeticIncidencePositivity
-open GaloisForLFunctions.SignedWindowCriticality
-open GaloisForLFunctions.CanonicalSystemOfTheWindowTower
 open GaloisForLFunctions.CohomologyOfWindowsOfSpecZ
-open GaloisForLFunctions.SpacingScaleHarmonicAnalysis
 
 /-! ### 1. Window positivity and the canonical onset aperture -/
 
