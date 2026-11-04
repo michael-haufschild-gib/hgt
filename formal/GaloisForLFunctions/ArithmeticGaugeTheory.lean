@@ -31,6 +31,8 @@ import GaloisForLFunctions.ArithmeticGaugeTheory.AffinePositivityIsThePoleAndHaa
 import GaloisForLFunctions.ArithmeticGaugeTheory.TheShortShellsHaveNoConductor
 import GaloisForLFunctions.ArithmeticGaugeTheory.TheExponentIsInvariantOnSparsePrimeSets
 import GaloisForLFunctions.ArithmeticGaugeTheory.AnExplicitPointHasExponentOneHalf
+import GaloisForLFunctions.ArithmeticGaugeTheory.ThePoleDoesNotDecideTheHalfPowerLaw
+import GaloisForLFunctions.ArithmeticGaugeTheory.ThePoleSubtractedSpectrumIsAnInterval
 
 /-!
 # Arithmetic Gauge Theory of the ring ℤ
@@ -63,6 +65,10 @@ factorial-ratio producers have precision at least `2 log 2` times the mass, atta
 degree sums of `μ` over `𝔽_q[T]` are derived from unique factorization, its trivial point lying below the
 floor and its Liouville twin carrying the pole; the shells have level of distribution `1/2` in
 large-sieve form; positive affine-invariant forms are the mixtures of the pole and Haar, with
-Krein–Langer index at most one; and below overlap two the shells have no conductor. See
+Krein–Langer index at most one; below overlap two the shells have no conductor; and sparse flips
+of the trivial point keep its pole while moving its pole-subtracted prime exponent to any
+`θ ∈ (1/2, 1)`, so the pole does not decide the half-power law; the pole-subtracted exponent of the
+prime source ranges over exactly `[Θ, 1]`, minimized at the trivial point, and RH is the range
+`[1/2, 1]`. See
 `ArithmeticGaugeTheory/README.md`.
 -/

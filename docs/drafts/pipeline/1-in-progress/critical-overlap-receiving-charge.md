@@ -370,23 +370,38 @@ nonzero; finite fixed-cutoff packets inherit it by linearity.
 bounded horizon-dependent coefficients and exact harmonic centering; checked
 with standard-only transitive axioms and integrated.
 `PrimeChargeCompleteCancellation` contains the coherent charge specialization;
-check pending.
-`CoprimePrimeChargeCancellation` contains its fixed-mode analogue, also pending.
+individual plain check and standard-only transitive axiom audit pass; integrated.
+`CoprimePrimeChargeCancellation` proves the fixed-mode analogue; individual
+plain check and standard-only transitive axiom audit pass; integrated.
 The last theorem chooses a large cutoff first, then a larger horizon threshold:
 exact charge `t` coexists with adjunction, physical input square, complete
 output norm and absolute complete physical energy all below any prescribed
 positive tolerance on every subsequent horizon.
+For a base mode `m|M`, common prime exclusion differs from its own fibre
+only by the fixed prime set `{p|M : p∤m}` once `Q≥M`.
+The common profile equals `(B_m/B_M)` times the original coherent fibre,
+minus `(t/B_M)` times this fixed finite incidence packet.
+`CommonPrimeFibreRestriction` contains the exact identities; check pending.
+Harmonic centering is linear, so the same finite correction holds for the
+physical vectors (`CommonPrimeFibreCentering`). Its full critical output
+tends to zero. Thus a simultaneous prescribed receiving vector has complete
+pairing `t_l/80` with its mode-`l` terminal receiver in the common conductor
+complement, and zero in every absent mode. The dependency-closed paper
+argument and Lean source are in `CommonPrimeFibreSignedReceiver`; checks pending.
 For fixed coefficients `a` and fixed cutoff, the sharper energy law is
 `c_N⁷ Ecomplete(v_centered)→Σ_(m≠1) J(m)a_m²`, where `J(m)>0` is the
 tilted-spline Jordan coefficient. Harmonic centering tends coefficientwise
 to deletion of conductor one, removing the critical polar genus term.
 `FixedChargeJordanLimit` contains this consequence of the corpus's exact
 critical conductor Gram limit, the raw law `Ecomplete(x)/c_N→(Σ J(m)a_m²)/R`,
-and eventual positivity for every nonzero nonpolar packet; checks pending.
+and eventual positivity and raw-energy divergence for every nonzero nonpolar
+packet; individual plain check and standard-only transitive axiom audit pass;
+integrated.
 For a general admissible smooth atom, the corpus residual bound
 `O_m(c⁵/log N+c¹⁰(log N/N)²+c³/√log N)` also tends to zero at critical overlap.
 `FixedConductorCompleteCancellation` contains this atom-independent
-fixed-conductor cancellation; check pending.
+fixed-conductor cancellation; individual check and standard-only transitive
+axiom audit pass; integrated.
 
 For quadratic energy the exact identity `overlap−nonratio =
 −overlap+2(overlap−downward)` eliminates the upward channel
@@ -396,14 +411,55 @@ range. Their coherent-packet specialization, including the small polar
 centering coefficient, is not yet assembled. This quadratic reduction
 does not apply to arbitrary complementary mixed pairings.
 
+The proposed uniform physical-energy proof splits at `Q⁶⁴=N` and
+`Q=(log N)^(1/32)`. Write `L=log N`, `B=B_Q`, `S=S_Q`.
+For `N≤Q⁶⁴`, the checked moment comparison gives a decaying cost
+`O_t(L^(3/8)S²/B²)`. For `Q≤L^(1/32)`, the logarithm-free conductor
+Gram bound gives errors `O_t(L^(−11/16)+L²/N+L^(−7/8)log L)`, while
+the completed diagonal costs `O_t(1/B)`.
+In the intervening range, `log L≤32log Q`; the divisor-mean overlap
+term costs `O_t(S/B)`, the scalar diagonal `O_t(S²/B)`, and the quadratic
+near-row, center and separated-cross terms retain negative powers of `L`.
+`PrimeChargeSmallPacketEnergy` sums the logarithm-free conductor residual
+with the exact moments `Σ|a_m|m²` and `Σ|a_m|m⁵`, then retains the polarized
+harmonic Gram error. It also bounds the coherent nonpolar completed
+diagonal by `(|selfφ(1)|+3)(t/B_Q)²(S_Q+B_Q)`, uniformly in overlap
+and horizon. Its source is pending verification.
+The relevant public center and cross bounds are
+`abs_fullWeilCenterMatrix_self_inner_le_of_mem_conductorSubspace` and
+`abs_separatedCrossErrorMatrix_inner_le_of_mem_conductorSubspace`.
+The near-Gram and subkernel bounds pass; uniform assembly remains open.
+`PrimeChargeOverlap` separates the overlap exactly into its logarithmic
+near Gram and a remainder bounded by
+`C c²√((1+log c)/L)‖u‖²`. This weaker remainder bound already decays at
+critical overlap; it uses the public near-band square estimate directly.
+Individual check and standard-only transitive axiom audit pass; integrated.
+`PrimeChargeQuadraticChannels` combines this overlap bound with the exact
+quadratic transposition, the center bound and the separated-cross bound;
+its source is pending verification. The scalar diagonal remains literal.
+`PrimeChargePhysicalChannels` transfers the exact prime identity and scalar
+diagonal bound to physical coordinates; verification pending.
+
 Swapping conductor and lag sums isolates the exact polar near-mean term
 `a_1² Σ_h nearWeightMass(h)`. Abel cancellation bounds the remainder by
 `C(1+log c)Σ_(m≠1) a_m² σ_1(m)/φ(m)`, preserving each coefficient's
-divisor mean. `PrimeChargeNearMean` contains this refinement; check pending.
+divisor mean. `PrimeChargeNearMean` proves this refinement; individual check
+and standard-only transitive axiom audit pass; integrated.
 `PrimeChargeNearGram` propagates it through linearization and the periodic
 oscillation error: the near-Gram form costs
 `C[(c⁵/N+c³Q⁴/(N log N))‖u‖² + (1+log c)(Σ_(m≠1)a_m²σ₁(m)/φ(m)+c a₁²)/log N]`.
-Its check is pending; the polar coefficient remains explicit.
+Individual check and standard-only transitive axiom audit pass; integrated.
+The polar coefficient remains explicit.
+For the coherent coefficients the nonpolar divisor mean is exactly
+`(t/B_Q)² Σ_(p≤Q)(p+1)/p²≤(3/2)(t/B_Q)² S_Q`.
+`PrimeChargeDivisorMean` proves this identity and bound; individual check
+and standard-only transitive axiom audit pass; integrated.
+`PrimeChargeUniformCoefficients` bounds the exact polar coefficient by
+`(|t|+8|t|/B_Q)/log N` and the nonpolar logarithmic coefficient square by
+`(t/B_Q)²(S_Q+B_Q)`. The physical square has the uniform bound
+`52(t/B_Q)²S_Q` for all `N≥Q≥2`; harmonic projection and the conductor
+sampling bound preserve the reciprocal-prime gain. Individual check and
+standard-only transitive axiom audit pass; integrated.
 
 The centering coefficient itself satisfies
 `|H_N a_1−t|≤8|t|Q/(N B_Q)≤8|t|/B_Q` for all `N≥Q≥2`.

@@ -1,4 +1,5 @@
 import GaloisForLFunctions.CriticalScaleArithmeticRigidity.ReceivingCharges.FixedPacketCriticalCancellation
+import GaloisForLFunctions.CriticalScaleArithmeticRigidity.HarmonicPoleAdjunctionGap
 import GaloisForLFunctions.ArithmeticDegenerationTheory.TheCriticalConductorFormRetainsThePolarGenus
 import GaloisForLFunctions.ArithmeticCountingPositivity.HarmonicParitySpectralCoordinates
 
@@ -45,6 +46,7 @@ theorem tendsto_harmonicMean_fixedPacket {Q : ℕ} (hQ : 1 ≤ Q) (a : ℕ → �
   filter_upwards [eventually_ge_atTop 2] with N hN
   have hL : Real.log (N : ℝ) ≠ 0 :=
     (Real.log_pos (by exact_mod_cast (show 1 < N by omega))).ne'
+  simp only [Pi.div_apply]
   field_simp [hL, (harmonicMass_pos (by omega : 1 ≤ N)).ne']
 
 /-- Literal harmonic centering converges to deletion of the constant conductor. -/
@@ -57,7 +59,7 @@ theorem tendsto_harmonicCentered_fixedCoefficient {Q : ℕ} (hQ : 1 ≤ Q)
     have h := (tendsto_const_nhds (x := a 1) (f := atTop)).sub
       (tendsto_harmonicMean_fixedPacket hQ a)
     simpa only [harmonicCenteredCoefficients, addConstantConductor, if_pos rfl,
-      removeConstantConductor, sub_eq_add_neg, add_neg_cancel] using h
+      removeConstantConductor, sub_eq_add_neg, add_neg_cancel, ite_true] using h
   · simpa only [harmonicCenteredCoefficients, addConstantConductor, if_neg hm,
       add_zero, removeConstantConductor] using (tendsto_const_nhds (x := a m) (f := atTop))
 
@@ -85,6 +87,7 @@ theorem tendsto_variable_fixedPacket_rescaled_energy {c : ℕ → ℝ}
     real_inner_smul_left, real_inner_smul_right, mul_sum,
     rescaledConductorGram, conductorEntry]
   rw [show (7 : ℝ) = ((7 : ℕ) : ℝ) from rfl, Real.rpow_natCast]
+  rw [sum_comm]
   exact sum_congr rfl fun m _ => sum_congr rfl fun l _ => by ring
 
 /-- Exact harmonic pole removal leaves the nonpolar Jordan form at every positive critical ratio. -/
@@ -137,6 +140,7 @@ theorem tendsto_harmonicCentered_fixedPacket_raw_energy_div_overlap {c : ℕ →
   have hc0 : c N ≠ 0 := (zero_lt_one.trans_le (hc N)).ne'
   have hL : Real.log (N : ℝ) ≠ 0 :=
     (Real.log_pos (by exact_mod_cast (show 1 < N by omega))).ne'
+  simp only [Pi.div_apply]
   field_simp [hc0, hL]
 
 /-- Every nonzero nonpolar coefficient gives strictly positive limiting Jordan energy. -/
@@ -158,15 +162,32 @@ theorem eventually_harmonicCentered_fixedPacket_energy_pos {c : ℕ → ℝ}
     {Q : ℕ} (hQ : 1 ≤ Q) (a : ℕ → ℝ) (ha : ∃ m ∈ Icc 2 Q, a m ≠ 0) :
     ∀ᶠ N : ℕ in atTop, 0 < completeWeilEnergy tiltedUnitSpline (c N) N
       (packetVector (normalizedConductorPacket Q (harmonicCenteredCoefficients Q N a)) N) := by
-  filter_upwards [(tendsto_harmonicCentered_fixedPacket_raw_energy_div_overlap hc hR hcrit hQ a).
-    eventually (lt_mem_nhds (div_pos (fixedPacket_Jordan_energy_pos a ha) hR))] with N hN
+  have hlim := tendsto_harmonicCentered_fixedPacket_raw_energy_div_overlap hc hR hcrit hQ a
+  filter_upwards [hlim.eventually
+    (lt_mem_nhds (div_pos (fixedPacket_Jordan_energy_pos a ha) hR))] with N hN
   have h := (lt_div_iff₀ (zero_lt_one.trans_le (hc N))).mp hN
   simpa only [zero_mul] using h
+
+/-- Every fixed nonpolar packet has diverging raw energy despite vanishing physical output. -/
+theorem tendsto_harmonicCentered_fixedPacket_raw_energy_atTop {c : ℕ → ℝ}
+    (hc : ∀ N, 1 ≤ c N) {R : ℝ} (hR : 0 < R)
+    (hcrit : Tendsto (fun N : ℕ => c N ^ 8 / Real.log N) atTop (𝓝 R))
+    {Q : ℕ} (hQ : 1 ≤ Q) (a : ℕ → ℝ) (ha : ∃ m ∈ Icc 2 Q, a m ≠ 0) :
+    Tendsto (fun N : ℕ => completeWeilEnergy tiltedUnitSpline (c N) N
+      (packetVector (normalizedConductorPacket Q (harmonicCenteredCoefficients Q N a)) N))
+      atTop atTop := by
+  have hlim := tendsto_harmonicCentered_fixedPacket_raw_energy_div_overlap hc hR hcrit hQ a
+  have h := hlim.pos_mul_atTop (div_pos (fixedPacket_Jordan_energy_pos a ha) hR)
+      (criticalCurve_facts hc hR hcrit).1
+  apply h.congr
+  intro N
+  exact div_mul_cancel₀ _ (zero_lt_one.trans_le (hc N)).ne'
 
 #print axioms tendsto_harmonicCentered_fixedCoefficient
 #print axioms tendsto_variable_fixedPacket_rescaled_energy
 #print axioms tendsto_harmonicCentered_fixedPacket_Jordan_energy
 #print axioms tendsto_harmonicCentered_fixedPacket_raw_energy_div_overlap
 #print axioms eventually_harmonicCentered_fixedPacket_energy_pos
+#print axioms tendsto_harmonicCentered_fixedPacket_raw_energy_atTop
 
 end GaloisForLFunctions.CriticalScaleArithmeticRigidity

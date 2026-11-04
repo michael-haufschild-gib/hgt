@@ -20,7 +20,7 @@ open scoped Classical RealInnerProductSpace
 namespace GaloisForLFunctions.CriticalScaleArithmeticRigidity
 
 open ArithmeticCouplingTheory RenormalizedArithmeticPotentialTheory
-  CompletedArithmeticForms
+  CompletedArithmeticForms SelectiveMultiscaleArithmeticPositivity
 
 /-- Physical coordinates of the prime tail transported by a fixed receiving mode. -/
 def fibrePrimeTailVector (m Q N : ℕ) (t : ℝ) : EuclideanSpace ℝ (PrimeHorizonIndex N) :=

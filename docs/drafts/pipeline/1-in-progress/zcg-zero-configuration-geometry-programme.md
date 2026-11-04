@@ -57,18 +57,21 @@ Pillars (module — main theorems), all checked with `lake --old env lean`, umbr
 - ShallowPairsAreNearCollisions — `eq_of_weil_eq_of_pairSeparated`, `pairGap_ge`, `tiltB_le`,
   `exists_near_pair_or_shallow_pair_of_mimic`, `pairWeight_modScaledBump_eq_sq`,
   `not_inDarkSector_of_bright`, `exists_near_pair_or_dim_shallow_pair_of_mimic`
+- ResolutionIsUniformInDepth — `uniform_block_inequality`, `eq_of_weil_eq_of_heightSeparated`,
+  `exists_near_pair_of_mimic`, `exists_near_pair_of_mimic_of_le`
 - HeatStepsNeverShrinkTheMesh — `meshGe_add_smul_derivative`, `nodup_roots_add_smul_derivative`,
   `meshGe_heatStep`, `iterate_heatStep`
 - BlindWindowsAtTheDensityAperture — `apertureWindow_expPoly`, `exists_window_blind_to_expPoly_zeros`,
-  `exists_window_blind_to_lattices`, `exists_window_blind_to_lattice_iff`
+  `exists_window_blind_to_lattices`, `exists_window_blind_to_lattice_iff`,
+  `exists_window_blind_to_densityTransform_zeros`
 - TheCosineCameraHasOnlyRealKernelZeros — `cosineWindowTransform_closed_form`,
   `im_eq_zero_of_cosineWindowTransform_eq_zero`, `no_complex_additive_zero_triple`
 
 ## Open core
 Certification (Q0): from finitely many images reality is a signature condition; sign-free routes need
 unbounded aperture (growth) or deformation, both ending at signed prime geometry below the mean spacing
-(the second-moment image of near-collisions, Q3). Open tools: sharpness of the `1/ε` scale and removal of the dim alternative by varying the camera width; Euler-depth repulsion, density criterion for infinite cancelling clusters, coalescent channel
+(the second-moment image of near-collisions, Q3). Open tools: optimal constant of the depth-uniform scale (90/V proved, π/V attained by columns); Euler-depth repulsion, density criterion for infinite cancelling clusters, coalescent channel
 as an identity at λ > 1, repulsion law in a model family, kernel design against configurations.
 
 ## Log
-- 2026-11-04 — created; twenty-three pillar modules checked; README written.
+- 2026-11-04 — created; twenty-four pillar modules checked; README written.

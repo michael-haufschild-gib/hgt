@@ -1,5 +1,6 @@
 import GaloisForLFunctions.ArithmeticHodgeTheoryOfDegenerations.TerminalNearPairsRetainLogarithmicAccuracy
 import GaloisForLFunctions.ArithmeticHodgeTheoryOfDegenerations.TerminalWindowsRetainTheNearCenterFinitePart
+import GaloisForLFunctions.ArithmeticHodgeTheoryOfDegenerations.TheNearBlockAlongAGrowingOverlap
 
 /-!
 # The joint near-center finite part against a terminal window
@@ -15,6 +16,7 @@ open MeasureTheory Filter Topology
 
 namespace GaloisForLFunctions.ArithmeticHodgeTheoryOfDegenerations
 open RenormalizedArithmeticPotentialTheory BezoutValuationIncidence
+open RenormalizedArithmeticPotentialTheory.CompletedShell
 open ArithmeticFunction (vonMangoldt)
 
 /-- The shell near Gram against a compact terminal window has a logarithmically small error. -/

@@ -85,7 +85,7 @@ theorem exists_nearGram_packet_form_polar_bound {φ : ℝ → ℝ}
       (midBandMeanSum φ Q N c a -
         a 1 ^ 2 * ∑ h ∈ Icc 1 ⌊linearNearRowRadius c⌋₊, nearWeightMass φ c N h)
       (a 1 ^ 2 * ∑ h ∈ Icc 1 ⌊linearNearRowRadius c⌋₊, nearWeightMass φ c N h)
-    rw [sub_add_cancel, abs_mul, abs_of_nonneg (sq_nonneg _)] at h
+    rw [sub_add_cancel, abs_mul, abs_of_nonneg (sq_nonneg (a 1))] at h
     exact h.trans ((add_le_add (hmean (by omega) hN hc hHN a) hp).trans_eq (by dsimp only [P, V]; ring))
   have hlag : |midBandLagSum φ Q N c a| ≤
       K * ((c ^ 5 * Real.log N / N + c ^ 3 * (Q : ℝ) ^ 4 / N) * ‖u‖ ^ 2 +

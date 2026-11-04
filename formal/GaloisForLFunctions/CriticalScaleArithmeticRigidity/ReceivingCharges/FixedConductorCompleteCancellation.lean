@@ -1,4 +1,5 @@
 import GaloisForLFunctions.CriticalScaleArithmeticRigidity.ReceivingCharges.FixedPacketCriticalCancellation
+import GaloisForLFunctions.CriticalScaleArithmeticRigidity.ReceivingCharges.PrimeChargeScaleLimits
 import GaloisForLFunctions.CriticalArithmeticCorrelationTheory.CompleteConductorResidualsAreUniformOnLogarithmicFamilies
 import GaloisForLFunctions.ArithmeticHodgeTheoryOfDegenerations.CompleteWeilCriticalMultipleAndWindowCorollaries
 
@@ -87,8 +88,10 @@ theorem tendsto_fixedConductor_critical_residual_norm_of_atom {φ : ℝ → ℝ}
       have h := (div_lt_iff₀ hN0).mp (show
         (4 * (Real.exp 1 + 3) ^ 2 * c N ^ 2) / N < 1 by simpa only [mul_div_assoc] using hw)
       simpa only [one_mul] using h.le
-    have h := hb m hm (by simpa only [Real.rpow_one] using hmN) (c N) (hc N) hw'
-    convert h using 1 <;> ring
+    have h := hb m hm (by simpa only [Real.rpow_one, Function.comp_apply] using hmN)
+      (c N) (hc N) hw'
+    convert h using 1
+    ring
   simpa only [Real.sqrt_sq_eq_abs, abs_norm, Real.sqrt_zero] using hsq.sqrt
 
 /-- Each fixed normalized conductor has vanishing complete output for every admissible atom. -/

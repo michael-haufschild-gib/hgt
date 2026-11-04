@@ -1,6 +1,7 @@
 import GaloisForLFunctions.ArithmeticHodgeTheoryOfDegenerations.TerminalWindowsReadTheNonpolarCenter
 import GaloisForLFunctions.ArithmeticHodgeTheoryOfDegenerations.TerminalWeightsReadEitherEndOfANearPair
 import GaloisForLFunctions.CriticalArithmeticCorrelationTheory.TheNearGammaAndDownwardPrimeRowsCancel
+import GaloisForLFunctions.ArithmeticHodgeTheoryOfDegenerations.TheNearBlockAlongAGrowingOverlap
 
 /-!
 # The terminal divisor jet cancels the nonpolar center charge
@@ -16,6 +17,7 @@ open MeasureTheory Filter Topology
 
 namespace GaloisForLFunctions.ArithmeticHodgeTheoryOfDegenerations
 open RenormalizedArithmeticPotentialTheory CriticalArithmeticCorrelationTheory
+open RenormalizedArithmeticPotentialTheory.CompletedShell
 open ArithmeticFunction (vonMangoldt)
 
 /-- The terminal near-jet mean retains its exact von Mangoldt charge. -/
@@ -56,7 +58,8 @@ theorem tendsto_terminal_nearDivisorJet_mean
   rw [hmu, hmv, integral_shellKernel hφ hφsupp hM] at hmain
   have heq : 2 * 1 * vonMangoldt m * ((∫ u, φ u) ^ 2 / (2 * ∫ u, φ u ^ 2)) *
       (∫ x in (0 : ℝ)..1, F x) = ((∫ u, φ u) ^ 2 / ∫ u, φ u ^ 2) *
-        vonMangoldt m * ∫ x in (0 : ℝ)..1, F x := by ring
+        vonMangoldt m * ∫ x in (0 : ℝ)..1, F x := by
+    field_simp [hM.ne'] <;> ring
   rwa [heq] at hmain
 
 /-- The signed sum of the full nonpolar center and its terminal divisor jet has zero limit. -/

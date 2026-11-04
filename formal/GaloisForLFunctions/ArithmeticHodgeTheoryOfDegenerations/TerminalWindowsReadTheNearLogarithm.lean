@@ -1,4 +1,5 @@
 import GaloisForLFunctions.ArithmeticHodgeTheoryOfDegenerations.TerminalWeightsReadEitherEndOfANearPair
+import GaloisForLFunctions.ArithmeticHodgeTheoryOfDegenerations.TheNearBlockAlongAGrowingOverlap
 
 /-!
 # The near logarithm reads the terminal coordinate
@@ -14,6 +15,7 @@ open MeasureTheory Filter Topology Set
 
 namespace GaloisForLFunctions.ArithmeticHodgeTheoryOfDegenerations
 open RenormalizedArithmeticPotentialTheory BezoutValuationIncidence
+open RenormalizedArithmeticPotentialTheory.CompletedShell
 
 /-- Moving an incoming logarithm to the terminal endpoint costs the near-pair gap. -/
 theorem abs_endpointNearPairSum_log_transfer_le

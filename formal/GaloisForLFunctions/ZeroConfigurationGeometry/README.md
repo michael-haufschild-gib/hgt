@@ -1,7 +1,7 @@
 # Zero Configuration Geometry (ZCG)
 
 Namespace `GaloisForLFunctions.ZeroConfigurationGeometry`; umbrella `ZeroConfigurationGeometry.lean`;
-23 modules.
+24 modules.
 
 ## 1. Motivation
 
@@ -104,8 +104,14 @@ programme locates exactly where it leaves the sign-free world.
    real even window the two coefficients of a pair are `cQ` and `cQ̄` with `Q = κ̂(γ − γ₀ − iδ)²`.
    The block degenerates only in the antialigned direction, which these coefficients reach only in
    the dark sector `Re κ̂⁴ < 0`. Since a tilt by `δ` moves `κ̂_w` by at most
-   `(e^{|δ|w} − 1)‖κ_w‖₁`, the dark sector lies where the camera is dim. So a hiding shallow pair
-   sits near a real zero of the camera transform or in its tail.
+   `(e^{|δ|w} − 1)‖κ_w‖₁`, the dark sector lies where the camera is dim.
+   The degeneration itself is an artifact of the basis. Writing a pair as
+   `P cosh(δv) + R sinh(δv)/(δV)`, `P = p + q`, `R = Vδ(p − q)`, the two profiles are orthogonal
+   for the weight `cos(av)`, with `∫ cos(av) cosh² ≥ 2/a` and `∫ cos(av)(sinh(δv)/δ)² ≥
+   ∫ cos(av) v² = 2V²/a − 4/a³ > 0` (again `π² > 8`), uniformly in `δ`. Two integrations by parts
+   make every off-diagonal entry `O(B/x²)` with `B = O(1/V)`. So resolution is uniform in depth:
+   mimics at aperture `a > V/2` with depths `≤ 1/V` contain two points of different FE orbits
+   closer than `90/V`, or a deeper point. Shallow pairs hide nothing.
 6. *Differential windows invert the camera.* `(g' + izg)^(w) = −i(w − z)ĝ(w)`. Composing these
    operators over the other points of a finite modification gives a window, of any aperture, that
    reads one coefficient exactly: `W_Z(f, g) − W_{Z'}(f, g) = c(z₀) ∏_{z ≠ z₀} (−i(γ_{z₀} − γ_z))`.
@@ -189,7 +195,9 @@ programme locates exactly where it leaves the sign-free world.
     `(Σ_k c_k e^{−iwν_k}) b̂(w)` and costs `max|ν_k|` in aperture. So every real zero set of an
     exponential polynomial of width `W` is blinded at every aperture `> W`. Products of the factors
     `sin(π(w − τ_j)/h_j)` blind finite unions of lattices of total density `D` at every aperture
-    `> πD`, the Jensen bound. Blindness is bought by width, not by separation. For one lattice
+    `> πD`, the Jensen bound. Convolving the bump with a density `φ` on `[−W, W]` multiplies its
+    transform by `∫ φ(t) e^{−iwt} dt`, which blinds zero sets such as those of `J₀`. Blindness is
+    bought by width, not by separation. For one lattice
     nothing cheaper exists: below `π/h` the periodization of a blind window has vanishing Fourier
     coefficients and non-overlapping translates, so the window is zero.
 
@@ -206,6 +214,7 @@ programme locates exactly where it leaves the sign-free world.
 | Ingham's inequality with tilts; block inequality for pairs | `tiltedKernel_eq`, `tilted_ingham_inequality`, `pairGap_pos`, `block_ingham_inequality`, `eq_zero_of_pairSum_eq_zero` | unconditional |
 | Tilted resolution; shallow pairs are near-collisions | `eq_of_weil_eq_of_pairSeparated`, `pairGap_ge`, `tiltB_le`, `exists_near_pair_or_shallow_pair_of_mimic` | unconditional |
 | Aligned pairs; the dark sector lies where the camera is dim | `pairWeight_modScaledBump_eq_sq`, `not_inDarkSector_of_bright`, `exists_near_pair_or_dim_shallow_pair_of_mimic` | unconditional |
+| Resolution is uniform in depth, at the Nyquist scale | `uniform_block_inequality`, `norm_integral_cos_mul_mul_cexp_le`, `eq_of_weil_eq_of_heightSeparated`, `exists_near_pair_of_mimic`, `exists_near_pair_of_mimic_of_le` | unconditional |
 | Explicit inverse by differential windows | `paperFT_annihilate`, `exists_window_sum_eq_coeff_mul_gaps`, `exists_windows_W_sub_W_eq` | unconditional |
 | Quantitative identification, uniform in height | `exists_annihilating_window_bound`, `norm_multDiff_mul_gaps_le`, `multDiff_eq_zero_of_precision`, `norm_multDiff_mul_gaps_le_at_height` | unconditional |
 | Primes pin finite pieces of `ζ` | `arithmeticImage_congr_of_eq_below`, `eq_zeta_of_arithmeticImage_of_finite` | unconditional |
@@ -226,6 +235,7 @@ programme locates exactly where it leaves the sign-free world.
 | Heat-time spread law; bounded backward exit | `coeff_heatFlow_sub_two`, `sum_sq_roots_heatFlow`, `spread_roots_heatFlow`, `exists_nonreal_root_heatFlow` | unconditional |
 | Windows blind to a lattice | `paperFT_shift`, `exists_window_blind_to_lattice` | unconditional |
 | Blind windows at the density aperture; exponential-polynomial zero sets | `apertureWindow_expPoly`, `exists_window_blind_to_expPoly_zeros`, `exists_window_prod_sine`, `exists_window_blind_to_lattices` | unconditional |
+| Windows blind to zero sets of transforms of densities | `densityTransform`, `integrable_mul_cexp_of_support`, `exists_window_blind_to_densityTransform_zeros` | unconditional |
 | The lattice threshold `π/h` is sharp | `tsum_add_int_eq_zero_of_fourier_eq_zero`, `eq_zero_of_blind_to_lattice`, `exists_window_blind_to_lattice_iff` | unconditional |
 | Cosine camera: real zeros, complex additive rigidity | `im_eq_zero_of_cosineWindowTransform_eq_zero`, `no_complex_additive_zero_triple` | unconditional, `0 < θ < π/2` |
 
@@ -239,22 +249,24 @@ programme locates exactly where it leaves the sign-free world.
   near-collisions can absorb prime-side error. Frobenius configurations are identified exactly
   above lag `g log q`. A single pair carries a depth signal of exactly `4 sinh²(δr/2)` per unit
   mass. Against column mimics of Riemann–von Mangoldt density the least identifying exponent of the
-  matrix camera is `λ = ½`, uniformly in depth and height (`rvmLattice_mimic_iff`). *Open:* the
-  identifying exponent against infinite mimics of that density which are not columns.
+  matrix camera is `λ = ½`, uniformly in depth and height (`rvmLattice_mimic_iff`). Against all
+  other mimics the depth-uniform resolution gives an exponent of order one: if the union is
+  separated, apart from FE partners, at a fraction `c` of the mean spacing `2π/L` and the depths are
+  at most `2πc/(90L)`, the image at every aperture above `V/2`, `V = 90L/(2πc)`, identifies the configuration
+  (`exists_near_pair_of_mimic_of_le`). *Open:* mimics whose unions have near-collisions below a
+  fixed fraction of the mean spacing; the exponent for those is the coalescent question Q3.
 - **Q2 Cancelling clusters.** Finite clusters never cancel. On-line cancelling clusters at aperture
   `a` contain near-collisions at every scale above `π/(2a)`, and the lattice pair attains it.
   Column clusters of a common spacing cancel at aperture `a` exactly when their traces agree below
   lag `2a`. Euler columns and lattices cancel against on-line lattices exactly below their dual
   frequency. Off the line, a cancelling cluster at aperture `a` contains two points of different
-  FE orbits closer than `g`, or a point deeper than `s`, or an off-line point shallower than `ε`,
-  as soon as `g ≳ a a' √cosh(2sV)/ε` (`exists_near_pair_or_shallow_pair_of_mimic`). The shallow
-  point must moreover sit where the camera is dim, `|κ̂_w(γ − γ₀)| < 8(e^{εw} − 1)‖κ_w‖₁`
-  (`exists_near_pair_or_dim_shallow_pair_of_mimic`). So hiding needs a near-collision in height,
-  or one in depth placed near a real zero of the camera transform. *Open:* whether the scale `1/ε`
-  is sharp, i.e. mimics built from dim pairs of depth `ε` at spacing `≍ 1/ε`. The tail of the camera
-  is always dim, so in an infinite configuration the dim alternative can only be confined to a
-  finite height window around `γ₀`, by weighing the decay of `κ̂_w` against the growth of the
-  configuration; inside the window, varying `w` moves the real zeros of `κ̂_w`.
+  FE orbits closer than `g`, or a point deeper than `s`, as soon as `D(V) > 2π²B(V, s)/(3g²)`
+  (`exists_near_pair_of_mimic`). The scale depends on the aperture and the depth budget only:
+  for depths `≤ 1/V` it is `90/V` (`exists_near_pair_of_mimic_of_le`). Resolution is uniform in
+  depth, and shallow pairs hide nothing. In the basis `e^{±δv}` the same argument only gave the
+  scale `g ≳ 1/ε` for pairs of depth `≥ ε`, with a dim-camera refinement; that loss was the
+  basis. So hiding needs a near-collision in height. *Open:* the optimal constant, between the
+  `90/V` proved here and the column mimics, which hide at separation `π/V`.
 - **Q3 Sub-spacing geometry.** Near a collision the camera reads the squared gap linearly, as the
   coefficient of the height curvature `f̂''` of the image; real against tilted is the sign of that
   coefficient, to relative precision `(Δr)²`. Through the explicit formula the height curvature of
@@ -283,9 +295,12 @@ programme locates exactly where it leaves the sign-free world.
   (`exists_window_blind_to_lattice_iff`, by Poisson summation). More
   generally every configuration inside the real zero set of an exponential polynomial of width `W`
   has, at every aperture `> W`, a window blind to it that sees any given non-zero of the polynomial
-  (`exists_window_blind_to_expPoly_zeros`). *Open:* configurations of positive density inside no
-  such zero set, for instance perturbed lattices; sufficiency there needs sine-type functions and
-  interpolation in Paley–Wiener spaces.
+  (`exists_window_blind_to_expPoly_zeros`), and so has every configuration inside the zero set of
+  `Φ(w) = ∫ φ(t) e^{−iwt} dt` for an integrable density `φ` on `[−W, W]`
+  (`exists_window_blind_to_densityTransform_zeros`). The latter class contains perturbed lattices
+  such as the zeros of `J₀`, of density `1/π`, blinded at every aperture `> 1 = πD`. *Open:*
+  configurations of positive density inside no such zero set; there, sufficiency needs sine-type
+  functions and a converse Paley–Wiener theorem.
 - **Q6 Selectivity.** Euler columns at `p` are mimics of on-line lattices at aperture `a` exactly
   when `a ≤ log p/2`, and are excluded only by the Ramanujan bound at `p`. Bounded apertures exclude
   no infinite family of twins, while the family of all apertures excludes each twin at the first
@@ -307,6 +322,8 @@ programme locates exactly where it leaves the sign-free world.
   quadratic lower bound, the block inequality for FE pairs with the aligned-coefficient gap, a
   Schur bound for symmetric off-diagonal kernels, the resolution of vanishing pair sums by
   truncation, and the tilt-perturbation bound `‖f̂(x − iδ) − f̂(x)‖ ≤ (e^{|δ|r} − 1)‖f‖₁`.
+- The profile basis `cosh(δv)`, `sinh(δv)/δ` of an FE pair, uniform Gram bounds for it, and the
+  double integration by parts `‖∫ g e^{ixv}‖ ≤ (|g'(V)| + |g'(−V)| + ∫|g''|)/x²` for `g(±V) = 0`.
 - Newton and inversion reciprocity for Frobenius spectra, root-of-unity configurations with
   vanishing low traces, and the reciprocal-quadratic root lemma.
 - Sign-change persistence and closedness of real-rootedness along families; the heat operator on
@@ -320,10 +337,9 @@ programme locates exactly where it leaves the sign-free world.
   windows.
 
 **To build.**
-- Mimics built from shallow pairs at spacing `≍ 1/ε`, to test sharpness of the tilted
-  near-collision constraint.
-- Kernel design against real configurations of positive density inside no exponential-polynomial
-  zero set (sine-type functions vanishing on the configuration).
+- The optimal resolution scale `g(V, s)` of the depth-uniform constraint.
+- Kernel design against real configurations of positive density inside no zero set of the
+  transform of a compactly supported density (sine-type functions, converse Paley–Wiener).
 
 ## 8. Traps
 
@@ -384,9 +400,8 @@ same arithmetic input: control of that coalescent channel, uniformly in height.
 
 Hiding itself is now located. Two configurations with one image at aperture `a` differ only
 through a near-collision in height between different FE orbits, a point deeper than the depth
-budget, or a shallow pair placed where the camera transform is dim
-(`exists_near_pair_or_dim_shallow_pair_of_mimic`). Every such obstruction is a near-collision, in
-height or in depth.
+budget (`exists_near_pair_of_mimic`). Shallow pairs are no obstruction: resolution is uniform in
+depth. Every obstruction is a near-collision in height.
 
 For RH the programme reduces the missing step to one statement about configurations: *the
 arithmetic image excludes tilted near-collisions at every height*. The estimate routes need this

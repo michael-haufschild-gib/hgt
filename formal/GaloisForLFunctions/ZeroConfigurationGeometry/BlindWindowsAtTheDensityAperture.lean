@@ -24,6 +24,13 @@ exponential polynomial, at the width of that polynomial.
   aperture `r` whose transform vanishes on every `Λ_j` and not at `z`: the transform is
   `Π_j sin(π(w − τ_j)/h_j) b̂(w)` with `b̂(z) = 1`.
 
+* **Zero sets of transforms of densities** (`densityTransform`,
+  `exists_window_blind_to_densityTransform_zeros`). For an integrable density `φ` supported in
+  `[−W, W]` and `Φ(w) = ∫ φ(t) e^{−iwt} dt`, every aperture `r > W` has a window blind to the zero
+  set of `Φ` that sees any given `z` with `Φ(z) ≠ 0`: the convolution of a bump with `φ(−·)`, by
+  Fubini. This reaches configurations in no exponential-polynomial zero set, for instance the
+  zeros of `J₀(w) = (1/π) ∫_{−1}^{1} e^{−iwt} (1 − t²)^{−1/2} dt`, a perturbed lattice of spacing
+  asymptotically `π`, blinded at every aperture `> 1 = πD`.
 * **Sharpness for one lattice** (`tsum_add_int_eq_zero_of_fourier_eq_zero`,
   `eq_zero_of_blind_to_lattice`, `exists_window_blind_to_lattice_iff`). A window of aperture
   `r ≤ π/h` blind to `hℤ` vanishes: its periodization with period `2π/h` has Fourier coefficients
@@ -38,7 +45,7 @@ enters.
 -/
 
 open MeasureTheory Complex Set Filter Topology
-open scoped Real FourierTransform
+open scoped Real FourierTransform Convolution
 
 noncomputable section
 
@@ -311,5 +318,107 @@ theorem exists_window_blind_to_lattice_iff {h r : ℝ} (hh : 0 < h) :
       have := congrArg Complex.im h0
       simp at this
     exact ⟨f, hf, hblind, I, hz⟩
+
+/-! ### Zero sets of Fourier transforms of densities -/
+
+/-- The transform `Φ(w) = ∫ φ(t) e^{−iwt} dt` of a density. -/
+def densityTransform (φ : ℝ → ℂ) (w : ℂ) : ℂ := ∫ t, φ t * cexp (-(I * w * t))
+
+/-- A density supported in `[−W, W]` times `e^{±iwt}` stays integrable. -/
+theorem integrable_mul_cexp_of_support {φ : ℝ → ℂ} (hφ : Integrable φ) {W : ℝ}
+    (hφs : ∀ t, φ t ≠ 0 → |t| ≤ W) (c : ℂ) :
+    Integrable fun t : ℝ => φ t * cexp (c * t) := by
+  refine Integrable.mono' (hφ.norm.const_mul (Real.exp (‖c‖ * W)))
+    (hφ.aestronglyMeasurable.mul (by fun_prop : Continuous fun t : ℝ => cexp (c * t)).aestronglyMeasurable)
+    (Eventually.of_forall fun t => ?_)
+  by_cases ht : φ t = 0
+  · simp [ht]
+  · rw [norm_mul, mul_comm (Real.exp _)]
+    refine mul_le_mul_of_nonneg_left ?_ (norm_nonneg _)
+    rw [Complex.norm_exp]
+    refine Real.exp_le_exp.mpr ((Complex.re_le_norm _).trans ?_)
+    rw [norm_mul, Complex.norm_real, Real.norm_eq_abs]
+    exact mul_le_mul_of_nonneg_left (hφs t ht) (norm_nonneg _)
+
+/-- **Windows blind to the zero set of the transform of a density.** Let `φ` be integrable and
+supported in `[−W, W]`, and `Φ(w) = ∫ φ(t) e^{−iwt} dt`. For every aperture `r > W` and every `z`
+with `Φ(z) ≠ 0` there is a window of aperture `r` whose transform vanishes at every zero of `Φ`
+and not at `z`. The window is the convolution of a bump with `φ(−·)`, with transform `Φ b̂`. -/
+theorem exists_window_blind_to_densityTransform_zeros {φ : ℝ → ℂ} (hφ : Integrable φ) {W r : ℝ}
+    (hφs : ∀ t, φ t ≠ 0 → |t| ≤ W) (hr : W < r) {z : ℂ} (hz : densityTransform φ z ≠ 0) :
+    ∃ f : ℝ → ℂ, ApertureWindow r f ∧ (∀ w : ℂ, densityTransform φ w = 0 → paperFT f w = 0) ∧
+      paperFT f z ≠ 0 := by
+  obtain ⟨b, hb, hb1⟩ := exists_window_paperFT_eq_one (by linarith : 0 < r - W) z
+  have hbc := hb.hasCompactSupport
+  set ψ : ℝ → ℂ := fun s => φ (-s) with hψ
+  have hψi : Integrable ψ := hφ.comp_neg
+  set L := ContinuousLinearMap.mul ℝ ℂ with hL
+  set f : ℝ → ℂ := b ⋆[L, volume] ψ with hf
+  have hfapp : ∀ u, f u = ∫ t, b t * φ (t - u) := fun u => by
+    rw [hf, convolution_def]
+    refine integral_congr_ae (Eventually.of_forall fun t => ?_)
+    simp [hL, hψ, neg_sub]
+  -- smoothness and support
+  have hfc : ContDiff ℝ 2 f := by
+    have h := hbc.contDiff_convolution_left L (n := 2) hb.1 hψi.locallyIntegrable
+    exact_mod_cast h
+  have hsupp : ∀ u, f u ≠ 0 → u ∈ Icc (-r) r := by
+    intro u hu
+    by_contra hout
+    apply hu
+    rw [hfapp]
+    refine integral_eq_zero_of_ae (Eventually.of_forall fun t => ?_)
+    simp only [Pi.zero_apply]
+    by_cases hbt : b t = 0
+    · rw [hbt, zero_mul]
+    · by_cases hφt : φ (t - u) = 0
+      · rw [hφt, mul_zero]
+      · exfalso
+        obtain ⟨h1, h2⟩ := hb.2 (subset_tsupport _ hbt)
+        have h3 := abs_le.mp (hφs _ hφt)
+        exact hout ⟨by linarith [h3.2], by linarith [h3.1]⟩
+  have hfw : ApertureWindow r f := ⟨hfc, closure_minimal (fun u hu => hsupp u hu) isClosed_Icc⟩
+  -- the transform is `Φ b̂`
+  have hft : ∀ w : ℂ, paperFT f w = densityTransform φ w * paperFT b w := by
+    intro w
+    set B : ℝ → ℂ := fun t => b t * cexp (I * w * t) with hB
+    set Ψ : ℝ → ℂ := fun s => φ (-s) * cexp (I * w * s) with hΨ
+    have hBi : Integrable B := integrable_mul_cexp hb.1.continuous hbc w
+    have hΨi : Integrable Ψ := by
+      have h := integrable_mul_cexp_of_support hφ hφs (-(I * w))
+      have := h.comp_neg
+      refine this.congr (Eventually.of_forall fun s => ?_)
+      simp only [hΨ]
+      congr 1
+      congr 1
+      push_cast
+      ring
+    have hprod := hBi.convolution_integrand L hΨi (μ := volume) (ν := volume)
+    have hpt : ∀ u : ℝ, f u * cexp (I * w * u) = ∫ t, L (B t) (Ψ (u - t)) := by
+      intro u
+      rw [hfapp, ← integral_mul_const]
+      refine integral_congr_ae (Eventually.of_forall fun t => ?_)
+      simp only [hL, hB, hΨ, ContinuousLinearMap.mul_apply', neg_sub]
+      rw [show cexp (I * w * u) = cexp (I * w * t) * cexp (I * w * ((u - t : ℝ) : ℂ)) by
+        rw [← Complex.exp_add]; congr 1; push_cast; ring]
+      ring
+    rw [paperFT_def, integral_congr_ae (Eventually.of_forall hpt)]
+    rw [integral_integral_swap (f := fun u t => L (B t) (Ψ (u - t))) hprod]
+    have hinner : ∀ t : ℝ, ∫ u, L (B t) (Ψ (u - t)) = B t * ∫ s, Ψ s := by
+      intro t
+      simp only [hL, ContinuousLinearMap.mul_apply']
+      rw [integral_const_mul, integral_sub_right_eq_self (fun s => Ψ s) t]
+    rw [integral_congr_ae (Eventually.of_forall hinner), integral_mul_const, paperFT_def,
+      mul_comm]
+    congr 1
+    rw [densityTransform, ← integral_neg_eq_self]
+    refine integral_congr_ae (Eventually.of_forall fun s => ?_)
+    simp only [hΨ, neg_neg]
+    congr 2
+    push_cast
+    ring
+  refine ⟨f, hfw, fun w hw => by rw [hft, hw, zero_mul], ?_⟩
+  rw [hft, hb1, mul_one]
+  exact hz
 
 end GaloisForLFunctions.ZeroConfigurationGeometry

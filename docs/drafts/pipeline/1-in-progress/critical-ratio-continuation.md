@@ -119,13 +119,14 @@ No whole-space all-R theorem follows. See the
 The [signed pole–window transport conjecture](critical-pole-window-signed-transport.md)
 targets the inverse-energy mixed pairing needed for optimized arithmetic
 correctors, which ordinary orthogonal removal does not control.
-The [receiving-capacity growth question](critical-receiving-capacity-growth.md)
+The [receiving-capacity growth theorem](../3-formalized/critical-receiving-capacity-growth.md)
 separately tests whether the new arbitrarily small raw prime-charge costs
 occur fast enough on the critical clock. Its dilation capacity is now
 proved to be `log log N+O(1)`, with a final actual-path audit using the
-standard three axioms. The critical-scale corollary and complete-energy
-transfer remain separate obligations. The existing raw-cost obstruction
-supplies no prescribed rate.
+standard three axioms. Its checked critical-scale corollary gives
+`c_N t²/C_N→∞` for every nonzero fixed charge. A complete-energy
+comparison and mixed-response rate remain open. The existing raw-cost
+obstruction supplies no prescribed rate.
 
 ## Surviving bounded-range improvement
 

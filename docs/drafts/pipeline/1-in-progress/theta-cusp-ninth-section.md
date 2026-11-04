@@ -9,6 +9,11 @@ The strict eighth section supplies the head. Parity reduces the new sign
 to the integrated even five-dimensional block. Its unconditional sign
 remains open.
 
+The [finite-rank critical collar](../3-formalized/theta-cusp-finite-rank-critical-collar.md)
+proves the ninth section, and every prescribed finite rank, strictly positive
+near `a=1/2`, including `a<1/2`. A common radius works for every smaller rank;
+its dependence on the prescribed rank is not controlled.
+
 ## Established source restrictions
 
 Every real constant pair of fourth/fifth diagonal flux loads is
@@ -64,11 +69,12 @@ is positive definite, with an explicit quadratic floor in adapted coordinates.
 The [complete native fifth block at scale seven](../3-formalized/theta-cusp-scale-seven-native-fifth.md)
 is also positive definite, with normalized quadratic floor `23f₁²/100`.
 
-The [remaining endpoint conjecture](theta-cusp-coupled-endpoint-gap.md) is `U₇+S₀/G(0) ≻ 0`, where
-`U₇=S₇/(−G(x₇))` and `S₀,S₇` are the actual complementary Schur forms
-in the same load coordinates. This would give a positive coefficient matrix
-satisfying both endpoint constraints. The inequality is unproved;
-endpoint compatibility alone would still leave the intervening interval.
+The [endpoint compatibility theorem](../3-formalized/theta-cusp-coupled-endpoint-gap.md)
+now supplies one explicit positive cross coefficient matrix `V` with
+`H(0)+G(0)LᵀVL≻0` and `H(x₇)+G(x₇)LᵀVL≻0` for the complete source.
+Its weighted derivative flux preserves every mixed entry and gives positivity
+at `2x₇` for every positive aperture. The same `V` works near both endpoints
+and on a cofinal source ray. Positivity on the remaining compact set is open.
 
 A global source certificate with a strict origin neighborhood would give
 the integrated fifth block's strict sign. Radius-dependent matrix fluxes

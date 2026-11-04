@@ -45,7 +45,8 @@ theorem abs_terminal_shifted_periodic_zero_mean_le
     intro x _ y _
     simpa only [add_sub_add_right_eq_sub] using hFL (x + s / N) (y + s / N)
   have hb := abs_sum_range_terminal_weight_sub_mean_le
-    (F := fun x => F (x + s / N)) (fun x => hF _) hLF hshift hq hpt (fun n => hB _)
+    (F := fun x => F (x + s / N)) (p := fun n => p (n + t))
+    (fun x => hF _) hLF hshift hq hpt (fun n => hB _)
     (a := 1) (M := J - 1) hN (by omega)
   rw [hzt, zero_mul, sub_zero, Nat.sub_add_cancel hJ] at hb
   have heq : (∑ i ∈ range J, F (((1 + i : ℕ) : ℝ) / N + s / N) * p (1 + i + t)) =
@@ -154,9 +155,8 @@ theorem tendsto_terminal_nonpolar_centerKernel_mean
       exact (div_le_div_of_nonneg_right (hF _) (Nat.cast_nonneg n)).trans_eq (by ring)
     rw [Real.norm_eq_abs, abs_div, abs_mul, Nat.abs_cast]
     exact (div_le_div_of_nonneg_right
-      (mul_le_mul hs (abs_lagSum_le hm N) (abs_nonneg _) (by
-        have hBF := (abs_nonneg _).trans (hF 0)
-        positivity)) (Nat.cast_nonneg N)).trans_eq (by dsimp only [B]; ring)
+      (mul_le_mul hs (abs_lagSum_le hm N) (abs_nonneg _) ((abs_nonneg _).trans hs))
+      (Nat.cast_nonneg N)).trans_eq (by dsimp only [B]; ring)
   have hmean := tendsto_weighted_riemannSum (w := fun _ : ℕ => (1 : ℝ))
     (M := 1) (W := 1) (by norm_num) (by intros; rfl) (by intros; norm_num)
     (fun x _ y _ => hFL x y) (fun x _ => hF x) 0

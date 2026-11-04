@@ -19,7 +19,7 @@ open scoped Classical
 namespace GaloisForLFunctions.CriticalScaleArithmeticRigidity
 
 open ArithmeticCouplingTheory RenormalizedArithmeticPotentialTheory
-open ArithmeticIntersectionTheory
+  ArithmeticIntersectionTheory SelectiveMultiscaleArithmeticPositivity
 
 /-- A fixed conductor's horizon-independent square bound for its own tail. -/
 def fibreModeTailCost (m : ℕ) : ℝ :=

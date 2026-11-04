@@ -79,14 +79,8 @@ private theorem posDef_of_gram {M B : Matrix (Fin 5) (Fin 5) ℝ}
 private def paidDiagonal : Matrix (Fin 5) (Fin 5) ℝ :=
   Matrix.diagonal (fun i => if i.val<3 then 1 else 5/32)
 
-private theorem paidDiagonal_hermitian : paidDiagonal.IsHermitian := by
-  rw [Matrix.IsHermitian]
-  ext i j
-  by_cases hij : i=j
-  · subst j
-    simp [paidDiagonal]
-  · simp [paidDiagonal,Matrix.conjTranspose_apply,Matrix.diagonal_apply_ne _ hij,
-      Matrix.diagonal_apply_ne _ hij.symm]
+private theorem paidDiagonal_hermitian : paidDiagonal.IsHermitian :=
+  Matrix.isHermitian_diagonal _
 
 private theorem paidDiagonal_floor (v : Fin 5 → ℝ) :
     (5/32:ℝ)*∑ i, v i^2 ≤ v ⬝ᵥ (paidDiagonal*ᵥv) := by
@@ -385,9 +379,10 @@ private theorem hankel_kernel_project (m : ℕ → ℝ) (b : Fin 2 → ℝ)
     (hd : headDet m ≠ 0) (hk : kernelNum m ≠ 0) :
     hankelBilinear m (liftTail m kernelTail) (liftTail m (projectTail m b)) = 0 := by
   rw [hankel_lift m _ _ hd]
-  simp only [Fin.sum_univ_three,Fin.sum_univ_two,projectTail_zero,projectTail_one,
+  simp only [Fin.sum_univ_three,projectTail_zero,projectTail_one,
     projectTail_two,kernelTail_zero,kernelTail_one,kernelTail_two]
-  norm_num only [Fin.val_zero,Fin.val_one,Fin.val_ofNat]
+  norm_num only [Fin.val_zero,Fin.val_one,Fin.val_ofNat,
+    show (2 : Fin 3).val = (2 : ℕ) from rfl]
   apply (div_eq_zero_iff).mpr
   left
   field_simp [hk]
@@ -458,7 +453,7 @@ private theorem sevenRetainedRaw_eq_hankel (i j : Fin 5) :
     ring
   simp only [sevenRetainedRaw,sevenPolynomial,hankelBilinear,mSeven]
   simp_rw [hterm]
-  simp only [Finset.sum_div,Finset.sum_add_distrib,Finset.mul_sum]
+  simp only [← Finset.sum_div,Finset.sum_add_distrib,← Finset.mul_sum]
 
 private theorem mSeven_zero_pos : 0 < mSeven 0 := by
   have h := (lt_div_iff₀ loss_pos).mp (diag_pos 0)
@@ -497,73 +492,63 @@ private theorem retained_paid_0_0 :
     sevenRetainedRaw 0 0/loss-sevenLoadRaw 0 0 = diag 0 := by
   rw [sevenRetainedRaw_eq_hankel,sevenVector_0,hankel_first_first]
   norm_num [sevenLoadRaw,sevenLoad,diag]
-  <;> ring
 
 private theorem retained_paid_0_1 :
     sevenRetainedRaw 0 1/loss-sevenLoadRaw 0 1 = 0 := by
   rw [sevenRetainedRaw_eq_hankel,sevenVector_0,sevenVector_1,hankel_first_second _ mSeven_zero_pos.ne']
   norm_num [sevenLoadRaw,sevenLoad,diag]
-  <;> ring
 
 private theorem retained_paid_0_2 :
     sevenRetainedRaw 0 2/loss-sevenLoadRaw 0 2 = 0 := by
   rw [sevenRetainedRaw_eq_hankel,sevenVector_0,sevenVector_2,hankel_first_lift _ _ mSeven_head_pos.ne']
   norm_num [sevenLoadRaw,sevenLoad,diag]
-  <;> ring
 
 private theorem retained_paid_0_3 :
     sevenRetainedRaw 0 3/loss-sevenLoadRaw 0 3 = 0 := by
   rw [sevenRetainedRaw_eq_hankel,sevenVector_0,sevenVector_3,hankel_first_lift _ _ mSeven_head_pos.ne']
   norm_num [sevenLoadRaw,sevenLoad,diag]
-  <;> ring
 
 private theorem retained_paid_0_4 :
     sevenRetainedRaw 0 4/loss-sevenLoadRaw 0 4 = 0 := by
   rw [sevenRetainedRaw_eq_hankel,sevenVector_0,sevenVector_4,hankel_first_lift _ _ mSeven_head_pos.ne']
   norm_num [sevenLoadRaw,sevenLoad,diag]
-  <;> ring
 
 private theorem retained_paid_1_1 :
     sevenRetainedRaw 1 1/loss-sevenLoadRaw 1 1 = diag 1 := by
   rw [sevenRetainedRaw_eq_hankel,sevenVector_1,hankel_second_second _ mSeven_zero_pos.ne']
   norm_num [sevenLoadRaw,sevenLoad,diag]
-  <;> ring
+  ring
 
 private theorem retained_paid_1_2 :
     sevenRetainedRaw 1 2/loss-sevenLoadRaw 1 2 = 0 := by
   rw [sevenRetainedRaw_eq_hankel,sevenVector_1,sevenVector_2,hankel_second_lift _ _ mSeven_zero_pos.ne' mSeven_head_pos.ne']
   norm_num [sevenLoadRaw,sevenLoad,diag]
-  <;> ring
 
 private theorem retained_paid_1_3 :
     sevenRetainedRaw 1 3/loss-sevenLoadRaw 1 3 = 0 := by
   rw [sevenRetainedRaw_eq_hankel,sevenVector_1,sevenVector_3,hankel_second_lift _ _ mSeven_zero_pos.ne' mSeven_head_pos.ne']
   norm_num [sevenLoadRaw,sevenLoad,diag]
-  <;> ring
 
 private theorem retained_paid_1_4 :
     sevenRetainedRaw 1 4/loss-sevenLoadRaw 1 4 = 0 := by
   rw [sevenRetainedRaw_eq_hankel,sevenVector_1,sevenVector_4,hankel_second_lift _ _ mSeven_zero_pos.ne' mSeven_head_pos.ne']
   norm_num [sevenLoadRaw,sevenLoad,diag]
-  <;> ring
 
 private theorem retained_paid_2_2 :
     sevenRetainedRaw 2 2/loss-sevenLoadRaw 2 2 = diag 2 := by
   rw [sevenRetainedRaw_eq_hankel,sevenVector_2,hankel_kernel _ mSeven_head_pos.ne']
   norm_num [sevenLoadRaw,sevenLoad,diag]
-  <;> ring
+  ring
 
 private theorem retained_paid_2_3 :
     sevenRetainedRaw 2 3/loss-sevenLoadRaw 2 3 = 0 := by
   rw [sevenRetainedRaw_eq_hankel,sevenVector_2,sevenVector_3,hankel_kernel_project _ _ mSeven_head_pos.ne' mSeven_kernel_pos.ne']
   norm_num [sevenLoadRaw,sevenLoad,diag]
-  <;> ring
 
 private theorem retained_paid_2_4 :
     sevenRetainedRaw 2 4/loss-sevenLoadRaw 2 4 = 0 := by
   rw [sevenRetainedRaw_eq_hankel,sevenVector_2,sevenVector_4,hankel_kernel_project _ _ mSeven_head_pos.ne' mSeven_kernel_pos.ne']
   norm_num [sevenLoadRaw,sevenLoad,diag]
-  <;> ring
 
 private theorem gap_reverse : gap 1 0=gap 0 1 := by
   norm_num [gap,schur2]
@@ -675,8 +660,9 @@ private theorem sevenLoadGram_entry (i j : Fin 5) :
   have he : sevenLoadGram=(loadMap*sevenBasis)ᴴ*paidSevenSchur*(loadMap*sevenBasis) := by
     simp only [sevenLoadGram,crossLoad,Matrix.conjTranspose_mul,Matrix.mul_assoc]
   rw [he]
-  simp only [Matrix.mul_apply,Matrix.conjTranspose_apply,star_trivial,sevenBasis_load_entry,
-    sevenLoadRaw,Finset.sum_mul,Finset.sum_div]
+  change (∑ b : Fin 2, (∑ a : Fin 2,
+      (loadMap*sevenBasis) a i*paidSevenSchur a b)*(loadMap*sevenBasis) b j) = _
+  simp only [sevenBasis_load_entry,sevenLoadRaw,Finset.sum_mul,Finset.sum_div]
   rw [Finset.sum_comm]
   apply Finset.sum_congr rfl
   intro a ha

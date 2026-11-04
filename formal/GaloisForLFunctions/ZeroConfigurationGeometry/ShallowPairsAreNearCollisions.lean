@@ -48,9 +48,11 @@ the signed lag structure vanishes on `[−V, V]`. Grouped by height it is
 `eq_zero_of_pairSum_eq_zero` makes every coefficient vanish, and the pair weight of the bump
 modulated to `γ₀` is nonzero at height `γ₀` (`pairWeight_modScaledBump_ne_zero`).
 
-The scale condition reads `g ≳ a a' √cosh(2sV) / ε`: a pair of depth `ε` in the dark sector is
-resolved only against sites at distance of order `1/ε`. Shallow pairs are near-collisions of the
-pair with itself, and they are dangerous only where the camera is dim.
+The scale condition reads `g ≳ a a' √cosh(2sV) / ε`. The `1/ε` comes from the basis `e^{±δv}`,
+in which a shallow pair is nearly degenerate; in the basis `cosh(δv)`, `sinh(δv)/δ` the block is
+uniform in depth and the shallow alternative disappears (`ResolutionIsUniformInDepth`). The site
+data of this module (`pairSites`, `siteP`, `siteQ`, `pairSum_vanishes_of_weil_eq`,
+`summable_site`) are shared with it.
 -/
 
 open Complex MeasureTheory Set
@@ -277,7 +279,8 @@ theorem eq_of_weil_eq_of_pairSeparated (Z Z' : ZeroConfig) (hZ : TemperedConfig 
   by_contra hc
   obtain ⟨t₀, ht₀re, hct₀⟩ := exists_site_of_multDiff_ne_zero hc
   set γ₀ := t₀.im
-  have hzero := pairSum_vanishes_of_weil_eq Z Z' hZ hZ' hw0 (le_of_eq (by rw [hw]; ring)) γ₀ hW
+  have hzero := pairSum_vanishes_of_weil_eq Z Z' hZ hZ' (V := V) hw0
+    (le_of_eq (by rw [hw]; ring)) γ₀ hW
   have hsum := summable_site Z Z' hZ hZ' hw0 γ₀
   have hres := eq_zero_of_pairSum_eq_zero (fun k : pairSites Z Z' => (k : ℂ).im)
     (fun k => (k : ℂ).re - 1 / 2) (fun k => siteP Z Z' w γ₀ k) (fun k => siteQ Z Z' w γ₀ k)

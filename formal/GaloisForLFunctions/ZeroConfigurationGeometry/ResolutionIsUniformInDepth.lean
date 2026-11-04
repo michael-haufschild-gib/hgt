@@ -4,22 +4,27 @@ import GaloisForLFunctions.ZeroConfigurationGeometry.ShallowPairsAreNearCollisio
 # Resolution is uniform in depth
 
 `ShallowPairsAreNearCollisions` resolves FE pairs through the pair gap `A(2δ) − A(0) ≍ δ²`, which
-degenerates for shallow pairs. The degeneration is an artifact of the basis `e^{±δv}`. Writing a
-pair as `p e^{δv} + q e^{−δv} = P cosh(δv) + R sinh(δv)/δ`, `P = p + q`, `R = δ(p − q)`, the Gram
-block becomes uniform in `δ`.
+degenerates for shallow pairs. The degeneration is an artifact of the basis `e^{±δv}`. On `[−V, V]`
+write a pair as `p e^{δv} + q e^{−δv} = P cosh(δv) + R sinh(δv)/(δV)`, with `P = p + q` and
+`R = Vδ(p − q)`. In this basis the Gram block is uniform in `δ`.
 
-* **The diagonal is uniform** (`diag_cosh_ge`, `diag_depthSine_ge`, `diag_cross_eq_zero`). With the
-  weight `cos(av)`, `a = π/(2V)`, the two profiles are orthogonal (one is even, one odd), and
-  `∫ cos(av) cosh² ≥ 2/a`, `∫ cos(av) (sinh(δv)/δ)² ≥ ∫ cos(av) v² = 2V²/a − 4/a³ > 0`.
+* **The diagonal is uniform** (`diag_cosh_ge`, `diag_depthSine_ge`, `diag_cross_eq_zero`). For the
+  weight `cos(av)`, `a = π/(2V)`, the two profiles are orthogonal (one even, one odd), and
+  `∫ cos(av) cosh² ≥ 2/a` and `∫ cos(av) (sinh(δv)/δ)² ≥ ∫ cos(av) v² = 2V²/a − 4/a³`. So the
+  diagonal is at least `D(V) = (4V/π)(1 − 8/π²) > 0`.
 * **Off-diagonal entries decay like `1/x²`** (`norm_integral_ofReal_mul_cexp_le`,
-  `norm_integral_cos_mul_mul_cexp_le`). Two integrations by parts against `e^{ixv}` give the bound
-  `B/x²`, the boundary terms of the first vanishing since `cos(aV) = 0`.
+  `norm_integral_cos_mul_mul_cexp_le`). Two integrations by parts against `e^{ixv}` give `B/x²`.
+  The first boundary term vanishes since `cos(aV) = 0`. With the normalized profiles,
+  `B(V, s) = O(1/V)` for `s ≤ 1/V`.
+* **The block inequality** (`uniform_block_inequality`). For `g`-separated heights,
+  `(D − 2π²B/(3g²)) Σ (|P_k|² + |R_k|²) ≤ ∫_{−V}^{V} |Σ_k e^{iγ_k v}(P_k cosh + R_k sinh/(δV))|²`.
 
 The shallow-pair alternative therefore disappears from the near-collision constraint
-(`eq_of_weil_eq_of_heightSeparated`, `exists_near_pair_of_mimic`): two different tempered
+(`eq_of_weil_eq_of_heightSeparated`, `exists_near_pair_of_mimic`). Two different tempered
 configurations with one image at aperture `a > V/2` contain two points of different FE orbits at
-height distance `< g`, or a point deeper than `s`, as soon as `2π² B(V, s) < 3 D(V) g²`. The scale
-`g` depends on the aperture and the depth budget, not on how shallow the pairs are.
+height distance `< g`, or a point deeper than `s`, as soon as `D(V) > 2π²B(V, s)/(3g²)`. For
+`s ≤ 1/V` this holds at every `g ≥ 90/V` (`exists_near_pair_of_mimic_of_le`): the resolution scale
+has the Nyquist order of the aperture and does not depend on how shallow the pairs are.
 -/
 
 open Complex MeasureTheory Set Filter Topology
@@ -88,60 +93,63 @@ theorem abs_sinh_le_cosh (y : ℝ) : |Real.sinh y| ≤ Real.cosh y := by
     have := Real.exp_pos (-y)
     linarith
 
-/-- The profile `b` of a pair of depth `δ`: `cosh(δv)` for `b = true`, `sinh(δv)/δ` otherwise. -/
-def pairProfile (δ : ℝ) (b : Bool) (v : ℝ) : ℝ := if b then Real.cosh (δ * v) else depthSine δ v
+/-- The profile `b` of a pair of depth `δ` on `[−V, V]`: `cosh(δv)` for `b = true`, and the
+normalized antialigned profile `sinh(δv)/(δV)` otherwise. -/
+def pairProfile (V δ : ℝ) (b : Bool) (v : ℝ) : ℝ :=
+  if b then Real.cosh (δ * v) else depthSine δ v / V
 
 /-- Its derivative. -/
-def pairProfile1 (δ : ℝ) (b : Bool) (v : ℝ) : ℝ :=
-  if b then δ * Real.sinh (δ * v) else Real.cosh (δ * v)
+def pairProfile1 (V δ : ℝ) (b : Bool) (v : ℝ) : ℝ :=
+  if b then δ * Real.sinh (δ * v) else Real.cosh (δ * v) / V
 
 /-- Its second derivative. -/
-def pairProfile2 (δ : ℝ) (b : Bool) (v : ℝ) : ℝ :=
-  if b then δ ^ 2 * Real.cosh (δ * v) else δ * Real.sinh (δ * v)
+def pairProfile2 (V δ : ℝ) (b : Bool) (v : ℝ) : ℝ :=
+  if b then δ ^ 2 * Real.cosh (δ * v) else δ * Real.sinh (δ * v) / V
 
-theorem hasDerivAt_pairProfile (δ : ℝ) (b : Bool) (v : ℝ) :
-    HasDerivAt (pairProfile δ b) (pairProfile1 δ b v) v := by
+theorem hasDerivAt_pairProfile (V δ : ℝ) (b : Bool) (v : ℝ) :
+    HasDerivAt (pairProfile V δ b) (pairProfile1 V δ b v) v := by
   cases b
-  · have e : pairProfile δ false = depthSine δ := funext fun v => by simp [pairProfile]
+  · have e : pairProfile V δ false = fun v => depthSine δ v / V :=
+      funext fun v => by simp [pairProfile]
     rw [e]
-    simpa [pairProfile1] using hasDerivAt_depthSine δ v
-  · have e : pairProfile δ true = fun v => Real.cosh (δ * v) :=
+    simpa [pairProfile1] using (hasDerivAt_depthSine δ v).div_const V
+  · have e : pairProfile V δ true = fun v => Real.cosh (δ * v) :=
       funext fun v => by simp [pairProfile]
     rw [e]
     simpa [pairProfile1] using hasDerivAt_cosh_mul δ v
 
-theorem hasDerivAt_pairProfile1 (δ : ℝ) (b : Bool) (v : ℝ) :
-    HasDerivAt (pairProfile1 δ b) (pairProfile2 δ b v) v := by
+theorem hasDerivAt_pairProfile1 (V δ : ℝ) (b : Bool) (v : ℝ) :
+    HasDerivAt (pairProfile1 V δ b) (pairProfile2 V δ b v) v := by
   cases b
-  · have e : pairProfile1 δ false = fun v => Real.cosh (δ * v) :=
+  · have e : pairProfile1 V δ false = fun v => Real.cosh (δ * v) / V :=
       funext fun v => by simp [pairProfile1]
     rw [e]
-    simpa [pairProfile2] using hasDerivAt_cosh_mul δ v
-  · have e : pairProfile1 δ true = fun v => δ * Real.sinh (δ * v) :=
+    simpa [pairProfile2] using (hasDerivAt_cosh_mul δ v).div_const V
+  · have e : pairProfile1 V δ true = fun v => δ * Real.sinh (δ * v) :=
       funext fun v => by simp [pairProfile1]
     rw [e]
     simpa [pairProfile2] using hasDerivAt_mul_sinh_mul δ v
 
-theorem continuous_pairProfile2 (δ : ℝ) (b : Bool) : Continuous (pairProfile2 δ b) := by
+theorem continuous_pairProfile2 (V δ : ℝ) (b : Bool) : Continuous (pairProfile2 V δ b) := by
   cases b
-  · have e : pairProfile2 δ false = fun v => δ * Real.sinh (δ * v) :=
+  · have e : pairProfile2 V δ false = fun v => δ * Real.sinh (δ * v) / V :=
       funext fun v => by simp [pairProfile2]
     rw [e]; fun_prop
-  · have e : pairProfile2 δ true = fun v => δ ^ 2 * Real.cosh (δ * v) :=
+  · have e : pairProfile2 V δ true = fun v => δ ^ 2 * Real.cosh (δ * v) :=
       funext fun v => by simp [pairProfile2]
     rw [e]; fun_prop
 
-theorem continuous_pairProfile (δ : ℝ) (b : Bool) : Continuous (pairProfile δ b) :=
-  continuous_iff_continuousAt.mpr fun v => (hasDerivAt_pairProfile δ b v).continuousAt
+theorem continuous_pairProfile (V δ : ℝ) (b : Bool) : Continuous (pairProfile V δ b) :=
+  continuous_iff_continuousAt.mpr fun v => (hasDerivAt_pairProfile V δ b v).continuousAt
 
-/-- `E₀ = (1 + V) cosh(sV)` bounds both profiles on `[−V, V]`. -/
-def profileBound0 (V s : ℝ) : ℝ := (1 + V) * Real.cosh (s * V)
+/-- `E₀ = cosh(sV)` bounds both profiles on `[−V, V]`. -/
+def profileBound0 (V s : ℝ) : ℝ := Real.cosh (s * V)
 
-/-- `E₁ = (1 + s) cosh(sV)` bounds their derivatives. -/
-def profileBound1 (V s : ℝ) : ℝ := (1 + s) * Real.cosh (s * V)
+/-- `E₁ = (s + 1/V) cosh(sV)` bounds their derivatives. -/
+def profileBound1 (V s : ℝ) : ℝ := (s + 1 / V) * Real.cosh (s * V)
 
-/-- `E₂ = (s + s²) cosh(sV)` bounds their second derivatives. -/
-def profileBound2 (V s : ℝ) : ℝ := (s + s ^ 2) * Real.cosh (s * V)
+/-- `E₂ = (s² + s/V) cosh(sV)` bounds their second derivatives. -/
+def profileBound2 (V s : ℝ) : ℝ := (s ^ 2 + s / V) * Real.cosh (s * V)
 
 theorem cosh_mul_le {δ s v V : ℝ} (hδ : |δ| ≤ s) (hv : v ∈ Icc (-V) V) :
     Real.cosh (δ * v) ≤ Real.cosh (s * V) := by
@@ -150,10 +158,27 @@ theorem cosh_mul_le {δ s v V : ℝ} (hδ : |δ| ≤ s) (hv : v ∈ Icc (-V) V) 
   rw [Real.cosh_le_cosh, abs_mul, abs_mul, abs_of_nonneg hs, abs_of_nonneg hV]
   exact mul_le_mul hδ (abs_le.mpr hv) (abs_nonneg v) hs
 
-theorem pairProfile_bounds {δ s V v : ℝ} (hδ : |δ| ≤ s) (hv : v ∈ Icc (-V) V) (b : Bool) :
-    |pairProfile δ b v| ≤ profileBound0 V s ∧ |pairProfile1 δ b v| ≤ profileBound1 V s ∧
-      |pairProfile2 δ b v| ≤ profileBound2 V s := by
+/-- `|sinh(δv)/δ| ≤ V cosh(sV)` on `[−V, V]`, by the mean value theorem. -/
+theorem abs_depthSine_le {δ s V v : ℝ} (hδ : |δ| ≤ s) (hv : v ∈ Icc (-V) V) :
+    |depthSine δ v| ≤ V * Real.cosh (s * V) := by
   have hV : 0 ≤ V := by linarith [hv.1, hv.2]
+  have hc0 : 0 < Real.cosh (s * V) := Real.cosh_pos _
+  have hmvt := (convex_Icc (-V) V).norm_image_sub_le_of_norm_hasDerivWithin_le
+    (f := depthSine δ) (f' := fun v => Real.cosh (δ * v)) (C := Real.cosh (s * V))
+    (fun x _ => (hasDerivAt_depthSine δ x).hasDerivWithinAt)
+    (fun x (hx : x ∈ Icc (-V) V) => show ‖Real.cosh (δ * x)‖ ≤ Real.cosh (s * V) by
+      rw [Real.norm_eq_abs, abs_of_pos (Real.cosh_pos _)]; exact cosh_mul_le hδ hx)
+    (show (0 : ℝ) ∈ Icc (-V) V from ⟨by linarith, hV⟩) hv
+  have h0 : depthSine δ 0 = 0 := by simp [depthSine]
+  rw [h0, sub_zero, sub_zero, Real.norm_eq_abs, Real.norm_eq_abs] at hmvt
+  calc |depthSine δ v| ≤ Real.cosh (s * V) * |v| := hmvt
+    _ ≤ Real.cosh (s * V) * V := mul_le_mul_of_nonneg_left (abs_le.mpr hv) hc0.le
+    _ = V * Real.cosh (s * V) := by ring
+
+theorem pairProfile_bounds {δ s V v : ℝ} (hV : 0 < V) (hδ : |δ| ≤ s) (hv : v ∈ Icc (-V) V)
+    (b : Bool) :
+    |pairProfile V δ b v| ≤ profileBound0 V s ∧ |pairProfile1 V δ b v| ≤ profileBound1 V s ∧
+      |pairProfile2 V δ b v| ≤ profileBound2 V s := by
   have hs : 0 ≤ s := (abs_nonneg δ).trans hδ
   have hc := cosh_mul_le hδ hv
   have hc0 : 0 < Real.cosh (s * V) := Real.cosh_pos _
@@ -162,28 +187,27 @@ theorem pairProfile_bounds {δ s V v : ℝ} (hδ : |δ| ≤ s) (hv : v ∈ Icc (
     rw [abs_of_pos (Real.cosh_pos _)]; exact hc
   have hδsh : |δ * Real.sinh (δ * v)| ≤ s * Real.cosh (s * V) := by
     rw [abs_mul]; exact mul_le_mul hδ hsh (abs_nonneg _) hs
+  have hV1 : 0 < 1 / V := by positivity
   unfold profileBound0 profileBound1 profileBound2
   cases b
-  · -- the antialigned profile `sinh(δv)/δ`
-    have hS : |depthSine δ v| ≤ V * Real.cosh (s * V) := by
-      have hmvt := (convex_Icc (-V) V).norm_image_sub_le_of_norm_hasDerivWithin_le
-        (f := depthSine δ) (f' := fun v => Real.cosh (δ * v)) (C := Real.cosh (s * V))
-        (fun x _ => (hasDerivAt_depthSine δ x).hasDerivWithinAt)
-        (fun x (hx : x ∈ Icc (-V) V) => show ‖Real.cosh (δ * x)‖ ≤ Real.cosh (s * V) by
-          rw [Real.norm_eq_abs, abs_of_pos (Real.cosh_pos _)]; exact cosh_mul_le hδ hx)
-        (show (0 : ℝ) ∈ Icc (-V) V from ⟨by linarith, hV⟩) hv
-      have h0 : depthSine δ 0 = 0 := by simp [depthSine]
-      rw [h0, sub_zero, sub_zero, Real.norm_eq_abs, Real.norm_eq_abs] at hmvt
-      calc |depthSine δ v| ≤ Real.cosh (s * V) * |v| := hmvt
-        _ ≤ Real.cosh (s * V) * V := mul_le_mul_of_nonneg_left (abs_le.mpr hv) hc0.le
-        _ = V * Real.cosh (s * V) := by ring
-    simp only [pairProfile, pairProfile1, pairProfile2, Bool.false_eq_true, if_false]
-    refine ⟨by nlinarith, by nlinarith, by nlinarith [sq_nonneg s]⟩
+  · simp only [pairProfile, pairProfile1, pairProfile2, Bool.false_eq_true, if_false]
+    have hS := abs_depthSine_le hδ hv
+    refine ⟨?_, ?_, ?_⟩
+    · rw [abs_div, abs_of_pos hV, div_le_iff₀ hV]; linarith
+    · rw [abs_div, abs_of_pos hV, div_le_iff₀ hV]
+      rw [show (s + 1 / V) * Real.cosh (s * V) * V = s * V * Real.cosh (s * V) +
+        Real.cosh (s * V) by field_simp]
+      nlinarith [mul_nonneg (mul_nonneg hs hV.le) hc0.le]
+    · rw [abs_div, abs_of_pos hV, div_le_iff₀ hV]
+      rw [show (s ^ 2 + s / V) * Real.cosh (s * V) * V = s ^ 2 * V * Real.cosh (s * V) +
+        s * Real.cosh (s * V) by field_simp]
+      nlinarith [mul_nonneg (mul_nonneg (sq_nonneg s) hV.le) hc0.le]
   · simp only [pairProfile, pairProfile1, pairProfile2, if_true]
-    refine ⟨by nlinarith, by nlinarith, ?_⟩
+    refine ⟨hcabs, by nlinarith, ?_⟩
     rw [abs_mul, abs_of_nonneg (sq_nonneg δ)]
     have hδ2 : δ ^ 2 ≤ s ^ 2 := by rw [← sq_abs]; exact pow_le_pow_left₀ (abs_nonneg δ) hδ 2
-    nlinarith [mul_le_mul hδ2 hcabs (abs_nonneg _) (sq_nonneg s)]
+    have hsV : 0 ≤ s / V := by positivity
+    nlinarith [mul_le_mul hδ2 hcabs (abs_nonneg _) (sq_nonneg s), mul_nonneg hsV hc0.le]
 
 /-! ### Off-diagonal decay -/
 
@@ -491,8 +515,8 @@ theorem integral_cos_mul_normSq_profileSum {J : Type*} [Fintype J] (γ : J → �
   refine Finset.sum_congr rfl fun l _ => ?_
   rw [intervalIntegral.integral_const_mul]
 
-/-- The diagonal constant `D(V) = min(2/a, 2V²/a − 4/a³)`, `a = π/(2V)`. -/
-def uniformDiag (V : ℝ) : ℝ := min (2 / inghamA V) (2 * V ^ 2 / inghamA V - 4 / inghamA V ^ 3)
+/-- The diagonal constant `D(V) = 2/a − 4/(a³V²) = (4V/π)(1 − 8/π²)`, `a = π/(2V)`. -/
+def uniformDiag (V : ℝ) : ℝ := 2 / inghamA V - 4 / (inghamA V ^ 3 * V ^ 2)
 
 /-- The off-diagonal constant `B(V, s)` of the profiles of depth `≤ s`. -/
 def uniformB (V s : ℝ) : ℝ :=
@@ -504,18 +528,15 @@ theorem inghamA_mul {V : ℝ} (hV : 0 < V) : inghamA V * V = π / 2 := by
 theorem uniformDiag_pos {V : ℝ} (hV : 0 < V) : 0 < uniformDiag V := by
   have ha : 0 < inghamA V := by unfold inghamA; positivity
   have haV := inghamA_mul hV
-  refine lt_min (by positivity) ?_
-  -- `2V²/a − 4/a³ = (4V³/π)(1 − 8/π²)`
   have hpi : (8 : ℝ) < π ^ 2 := by nlinarith [Real.pi_gt_three]
-  have hV' : V = π / 2 / inghamA V := by field_simp; linarith
-  rw [sub_pos, div_lt_div_iff₀ (by positivity) (by positivity)]
-  have : (4 : ℝ) * inghamA V < 2 * V ^ 2 * inghamA V ^ 3 := by
-    have e : 2 * V ^ 2 * inghamA V ^ 3 = (π ^ 2 / 2) * inghamA V := by
-      rw [show 2 * V ^ 2 * inghamA V ^ 3 = 2 * (inghamA V * V) ^ 2 * inghamA V by ring, haV]
-      ring
-    rw [e]
-    nlinarith
-  linarith
+  unfold uniformDiag
+  rw [sub_pos, div_lt_div_iff₀ (by positivity) ha]
+  -- `4a < 2a³V² = (π²/2) a`
+  have e : 2 * (inghamA V ^ 3 * V ^ 2) = (π ^ 2 / 2) * inghamA V := by
+    rw [show 2 * (inghamA V ^ 3 * V ^ 2) = 2 * (inghamA V * V) ^ 2 * inghamA V by ring, haV]
+    ring
+  rw [e]
+  nlinarith
 
 theorem uniformB_nonneg {V s : ℝ} (hV : 0 < V) (hs : 0 ≤ s) : 0 ≤ uniformB V s := by
   have ha : 0 < inghamA V := by unfold inghamA; positivity
@@ -532,7 +553,7 @@ theorem uniform_block_inequality {ι : Type*} [Fintype ι] [DecidableEq ι] (γ 
     (hsep : ∀ j l, j ≠ l → g ≤ |γ j - γ l|) :
     (uniformDiag V - 2 * (π ^ 2 / 3 * uniformB V s / g ^ 2)) * ∑ k, (‖P k‖ ^ 2 + ‖R k‖ ^ 2) ≤
       ∫ v in -V..V, ‖∑ k, cexp (I * γ k * v) *
-        (P k * Real.cosh (δ k * v) + R k * depthSine (δ k) v)‖ ^ 2 := by
+        (P k * Real.cosh (δ k * v) + R k * ((depthSine (δ k) v / V : ℝ) : ℂ))‖ ^ 2 := by
   classical
   set a := inghamA V with ha_def
   have ha : 0 < a := by rw [ha_def]; unfold inghamA; positivity
@@ -545,10 +566,10 @@ theorem uniform_block_inequality {ι : Type*} [Fintype ι] [DecidableEq ι] (γ 
   -- the sum over profiles
   set c' : ι × Bool → ℂ := fun x => if x.2 then P x.1 else R x.1 with hc'
   set γ' : ι × Bool → ℝ := fun x => γ x.1 with hγ'
-  set u : ι × Bool → ℝ → ℝ := fun x => pairProfile (δ x.1) x.2 with hu
-  have huc : ∀ x, Continuous (u x) := fun x => continuous_pairProfile _ _
+  set u : ι × Bool → ℝ → ℝ := fun x => pairProfile V (δ x.1) x.2 with hu
+  have huc : ∀ x, Continuous (u x) := fun x => continuous_pairProfile _ _ _
   have hF : ∀ v : ℝ, (∑ k, cexp (I * γ k * v) *
-      (P k * Real.cosh (δ k * v) + R k * depthSine (δ k) v)) =
+      (P k * Real.cosh (δ k * v) + R k * ((depthSine (δ k) v / V : ℝ) : ℂ))) =
         ∑ x, c' x * (cexp (I * γ' x * v) * (u x v : ℂ)) := by
     intro v
     rw [Fintype.sum_prod_type]
@@ -569,7 +590,7 @@ theorem uniform_block_inequality {ι : Type*} [Fintype ι] [DecidableEq ι] (γ 
         mul_le_of_le_one_left (by positivity) (Real.cos_le_one _)
   have hQ := integral_cos_mul_normSq_profileSum γ' u huc c' a V
   have hint : (∫ v in -V..V, ‖∑ k, cexp (I * γ k * v) *
-      (P k * Real.cosh (δ k * v) + R k * depthSine (δ k) v)‖ ^ 2) = ∫ v in -V..V, ‖f v‖ ^ 2 := by
+      (P k * Real.cosh (δ k * v) + R k * ((depthSine (δ k) v / V : ℝ) : ℂ))‖ ^ 2) = ∫ v in -V..V, ‖f v‖ ^ 2 := by
     congr 1 with v
     rw [hF v]
   rw [hint]
@@ -595,19 +616,35 @@ theorem uniform_block_inequality {ι : Type*} [Fintype ι] [DecidableEq ι] (γ 
   have hdiag : ∀ k, D * S k ≤ (blk k k).re := by
     intro k
     have hJd : ∀ b b' : Bool, J (k, b) (k, b') =
-        ((∫ v in -V..V, Real.cos (a * v) * (pairProfile (δ k) b v * pairProfile (δ k) b' v) : ℝ) : ℂ) := by
+        ((∫ v in -V..V, Real.cos (a * v) * (pairProfile V (δ k) b v * pairProfile V (δ k) b' v) : ℝ) :
+          ℂ) := by
       intro b b'
       simp only [hJ, hγ', hu, sub_self, Complex.ofReal_zero, mul_zero, zero_mul, Complex.exp_zero,
         mul_one]
       exact intervalIntegral.integral_ofReal
     have hTT := diag_cosh_ge (δ := δ k) ha haV
-    have hFF := diag_depthSine_ge (δ := δ k) ha haV
-    have hTF := diag_cross_eq_zero a V (δ k)
-    have hFT : ∫ v in -V..V, Real.cos (a * v) * (depthSine (δ k) v * Real.cosh (δ k * v)) = 0 := by
+    have hV0 : V ≠ 0 := hV.ne'
+    have hFF : 2 / a - 4 / (a ^ 3 * V ^ 2) ≤ ∫ v in -V..V, Real.cos (a * v) *
+        (depthSine (δ k) v / V * (depthSine (δ k) v / V)) := by
+      have h := diag_depthSine_ge (δ := δ k) ha haV
+      rw [show (fun v => Real.cos (a * v) * (depthSine (δ k) v / V * (depthSine (δ k) v / V))) =
+        fun v => Real.cos (a * v) * (depthSine (δ k) v * depthSine (δ k) v) / V ^ 2 from
+          funext fun v => by field_simp, intervalIntegral.integral_div, le_div_iff₀ (by positivity)]
+      have e : (2 / a - 4 / (a ^ 3 * V ^ 2)) * V ^ 2 = 2 * V ^ 2 / a - 4 / a ^ 3 := by
+        field_simp
+      linarith
+    have hTF : ∫ v in -V..V, Real.cos (a * v) * (Real.cosh (δ k * v) * (depthSine (δ k) v / V)) =
+        0 := by
+      rw [show (fun v => Real.cos (a * v) * (Real.cosh (δ k * v) * (depthSine (δ k) v / V))) =
+        fun v => Real.cos (a * v) * (Real.cosh (δ k * v) * depthSine (δ k) v) / V from
+          funext fun v => by ring, intervalIntegral.integral_div, diag_cross_eq_zero, zero_div]
+    have hFT : ∫ v in -V..V, Real.cos (a * v) * (depthSine (δ k) v / V * Real.cosh (δ k * v)) =
+        0 := by
       rw [← hTF]; congr 1 with v; ring
     have hblkk : blk k k = ((‖P k‖ ^ 2 * ∫ v in -V..V, Real.cos (a * v) *
         (Real.cosh (δ k * v) * Real.cosh (δ k * v)) : ℝ) : ℂ) +
-        ((‖R k‖ ^ 2 * ∫ v in -V..V, Real.cos (a * v) * (depthSine (δ k) v * depthSine (δ k) v) : ℝ) : ℂ) := by
+        ((‖R k‖ ^ 2 * ∫ v in -V..V, Real.cos (a * v) *
+          (depthSine (δ k) v / V * (depthSine (δ k) v / V)) : ℝ) : ℂ) := by
       simp only [hblk, Fintype.sum_bool, hJd]
       simp only [hc', pairProfile, if_true, Bool.false_eq_true, if_false, hTF, hFT,
         Complex.ofReal_zero, mul_zero, add_zero, zero_add]
@@ -615,8 +652,11 @@ theorem uniform_block_inequality {ι : Type*} [Fintype ι] [DecidableEq ι] (γ 
       push_cast
       ring
     rw [hblkk, Complex.add_re, Complex.ofReal_re, Complex.ofReal_re]
-    have hD1 : D ≤ 2 / a := min_le_left _ _
-    have hD2 : D ≤ 2 * V ^ 2 / a - 4 / a ^ 3 := min_le_right _ _
+    have hD1 : D ≤ 2 / a := by
+      rw [hD, uniformDiag, ← ha_def]
+      have : 0 ≤ 4 / (a ^ 3 * V ^ 2) := by positivity
+      linarith
+    have hD2 : D ≤ 2 / a - 4 / (a ^ 3 * V ^ 2) := by rw [hD, uniformDiag, ← ha_def]
     have hP2 := sq_nonneg ‖P k‖
     have hR2 := sq_nonneg ‖R k‖
     simp only [hS]
@@ -634,9 +674,10 @@ theorem uniform_block_inequality {ι : Type*} [Fintype ι] [DecidableEq ι] (γ 
       intro b b'
       rw [sq_abs]
       exact norm_integral_cos_mul_mul_cexp_le hV.le ha.le haV hx
-        (hasDerivAt_pairProfile _ _) (hasDerivAt_pairProfile1 _ _) (continuous_pairProfile2 _ _)
-        (hasDerivAt_pairProfile _ _) (hasDerivAt_pairProfile1 _ _) (continuous_pairProfile2 _ _)
-        (fun v hv => pairProfile_bounds (hδ k) hv b) (fun v hv => pairProfile_bounds (hδ l) hv b')
+        (hasDerivAt_pairProfile _ _ _) (hasDerivAt_pairProfile1 _ _ _) (continuous_pairProfile2 _ _ _)
+        (hasDerivAt_pairProfile _ _ _) (hasDerivAt_pairProfile1 _ _ _) (continuous_pairProfile2 _ _ _)
+        (fun v hv => pairProfile_bounds hV (hδ k) hv b)
+        (fun v hv => pairProfile_bounds hV (hδ l) hv b')
     have hψ0 : 0 ≤ B / |γ k - γ l| ^ 2 := by positivity
     calc ‖blk k l‖ ≤ ∑ b : Bool, ∑ b' : Bool, ‖c' (k, b)‖ * ‖c' (l, b')‖ * (B / |γ k - γ l| ^ 2) := by
           simp only [hblk]
@@ -690,5 +731,321 @@ theorem uniform_block_inequality {ι : Type*} [Fintype ι] [DecidableEq ι] (γ 
   rw [Finset.sum_sub_distrib, ← Finset.mul_sum] at hsumk
   have := mul_le_mul_of_nonneg_left hw2 hRr0
   nlinarith
+
+/-! ### Resolution uniform in depth -/
+
+/-- A pair in the profile basis: `p e^{δv} + q e^{−δv} = (p + q) cosh(δv) + δ(p − q) sinh(δv)/δ`. -/
+theorem pair_eq_profiles (p q : ℂ) (δ v : ℝ) :
+    p * cexp ((δ : ℂ) * v) + q * cexp (-(δ : ℂ) * v) =
+      (p + q) * (Real.cosh (δ * v) : ℂ) + ((δ : ℂ) * (p - q)) * (depthSine δ v : ℂ) := by
+  by_cases h : δ = 0
+  · subst h
+    simp [depthSine]
+  · have hδ : (δ : ℂ) ≠ 0 := Complex.ofReal_ne_zero.mpr h
+    have hc : ((Real.cosh (δ * v) : ℝ) : ℂ) = (cexp ((δ : ℂ) * v) + cexp (-(δ : ℂ) * v)) / 2 := by
+      rw [Complex.ofReal_cosh, Complex.cosh]
+      push_cast
+      ring_nf
+    have hs : ((depthSine δ v : ℝ) : ℂ) = (cexp ((δ : ℂ) * v) - cexp (-(δ : ℂ) * v)) / 2 / δ := by
+      simp only [depthSine, h, if_false]
+      rw [Complex.ofReal_div, Complex.ofReal_sinh, Complex.sinh]
+      push_cast
+      ring_nf
+    rw [hc, hs]
+    field_simp
+    ring
+
+theorem profile_rescale (c : ℂ) (δ V v : ℝ) (hV : V ≠ 0) :
+    ((V * δ : ℝ) : ℂ) * c * ((depthSine δ v / V : ℝ) : ℂ) = (δ : ℂ) * c * (depthSine δ v : ℂ) := by
+  have hV' : (V : ℂ) ≠ 0 := Complex.ofReal_ne_zero.mpr hV
+  push_cast
+  field_simp
+
+/-- **Vanishing profile sums.** A summable sum of profiled exponentials at `g`-separated heights,
+vanishing on `[−V, V]`, has all coefficients zero once `D(V) > 2π²B(V, s)/(3g²)`. -/
+theorem eq_zero_of_profileSum_eq_zero {κ : Type*} (γ δ : κ → ℝ) (P R : κ → ℂ) {g V s : ℝ}
+    (hg : 0 < g) (hV : 0 < V) (hs : 0 ≤ s) (hδ : ∀ k, |δ k| ≤ s)
+    (hsep : ∀ j l, j ≠ l → g ≤ |γ j - γ l|)
+    (hpos : 0 < uniformDiag V - 2 * (π ^ 2 / 3 * uniformB V s / g ^ 2))
+    (hsum : Summable fun k => ‖P k‖ + ‖R k‖)
+    (hzero : ∀ v ∈ Set.Icc (-V) V, ∑' k, cexp (I * γ k * v) *
+      (P k * Real.cosh (δ k * v) + R k * ((depthSine (δ k) v / V : ℝ) : ℂ)) = 0) :
+    ∀ k, P k = 0 ∧ R k = 0 := by
+  classical
+  by_contra hne
+  push Not at hne
+  obtain ⟨k₀, hk₀⟩ := hne
+  set C := uniformDiag V - 2 * (π ^ 2 / 3 * uniformB V s / g ^ 2) with hC
+  set M := ‖P k₀‖ ^ 2 + ‖R k₀‖ ^ 2 with hM
+  have hM0 : 0 < M := by
+    by_cases hp : P k₀ = 0
+    · have := norm_pos_iff.mpr (hk₀ hp)
+      rw [hM]; positivity
+    · have := norm_pos_iff.mpr hp
+      rw [hM]; positivity
+  set E := profileBound0 V s with hE
+  have hE0 : 0 < E := by
+    rw [hE, profileBound0]; have := Real.cosh_pos (s * V); positivity
+  have hterm : ∀ k, ∀ v ∈ Set.Icc (-V) V, ‖cexp (I * γ k * v) *
+      (P k * Real.cosh (δ k * v) + R k * ((depthSine (δ k) v / V : ℝ) : ℂ))‖ ≤ E * (‖P k‖ + ‖R k‖) := by
+    intro k v hv
+    have hb1 := (pairProfile_bounds hV (hδ k) hv true).1
+    have hb2 := (pairProfile_bounds hV (hδ k) hv false).1
+    simp only [pairProfile, if_true, Bool.false_eq_true, if_false] at hb1 hb2
+    have h0 : ‖cexp (I * γ k * v)‖ = 1 := by
+      rw [show I * (γ k : ℂ) * (v : ℂ) = ((γ k * v : ℝ) : ℂ) * I by push_cast; ring]
+      exact Complex.norm_exp_ofReal_mul_I _
+    rw [norm_mul, h0, one_mul]
+    calc ‖P k * (Real.cosh (δ k * v) : ℂ) + R k * ((depthSine (δ k) v / V : ℝ) : ℂ)‖
+        ≤ ‖P k‖ * |Real.cosh (δ k * v)| + ‖R k‖ * |depthSine (δ k) v / V| := by
+          refine (norm_add_le _ _).trans ?_
+          rw [norm_mul, norm_mul, Complex.norm_real, Complex.norm_real, Real.norm_eq_abs,
+            Real.norm_eq_abs]
+      _ ≤ ‖P k‖ * E + ‖R k‖ * E := by gcongr
+      _ = E * (‖P k‖ + ‖R k‖) := by ring
+  set ε := Real.sqrt (C * M / (2 * V * E ^ 2 + 1)) with hε
+  have hε0 : 0 < ε := Real.sqrt_pos.mpr (by have := mul_pos hpos hM0; positivity)
+  have hε2 : 2 * V * (E * ε) ^ 2 < C * M := by
+    have hCM : 0 < C * M := mul_pos hpos hM0
+    rw [mul_pow, hε, Real.sq_sqrt (by positivity)]
+    rw [show 2 * V * (E ^ 2 * (C * M / (2 * V * E ^ 2 + 1))) =
+      (2 * V * E ^ 2) / (2 * V * E ^ 2 + 1) * (C * M) by ring]
+    have : (2 * V * E ^ 2) / (2 * V * E ^ 2 + 1) < 1 := by
+      rw [div_lt_one (by positivity)]; linarith
+    nlinarith
+  obtain ⟨F, hF₀, hFtail⟩ : ∃ F : Finset κ, k₀ ∈ F ∧
+      ∑' x : {x // x ∉ F}, (‖P x‖ + ‖R x‖) < ε := by
+    have h := (tendsto_tsum_compl_atTop_zero (fun k => ‖P k‖ + ‖R k‖)).eventually
+      (gt_mem_nhds hε0)
+    obtain ⟨F, hF⟩ := (h.and (Filter.eventually_ge_atTop {k₀})).exists
+    exact ⟨F, hF.2 (Finset.mem_singleton_self _), hF.1⟩
+  have hsmall : ∀ v ∈ Set.Icc (-V) V, ‖∑ k ∈ F, cexp (I * γ k * v) *
+      (P k * Real.cosh (δ k * v) + R k * ((depthSine (δ k) v / V : ℝ) : ℂ))‖ ≤ E * ε := by
+    intro v hv
+    set u : κ → ℂ := fun k => cexp (I * γ k * v) *
+      (P k * Real.cosh (δ k * v) + R k * ((depthSine (δ k) v / V : ℝ) : ℂ)) with hu
+    have husum : Summable u :=
+      Summable.of_norm_bounded (hsum.mul_left E) fun k => hterm k v hv
+    have hsplit := husum.sum_add_tsum_subtype_compl F
+    rw [hzero v hv] at hsplit
+    have htn : Summable fun x : {x // x ∉ F} => ‖P x‖ + ‖R x‖ :=
+      hsum.comp_injective Subtype.val_injective
+    rw [show ∑ k ∈ F, u k = -∑' x : {x // x ∉ F}, u x by linear_combination hsplit, norm_neg]
+    calc ‖∑' x : {x // x ∉ F}, u x‖ ≤ ∑' x : {x // x ∉ F}, E * (‖P x‖ + ‖R x‖) :=
+          tsum_of_norm_bounded (htn.mul_left E).hasSum fun x => hterm x v hv
+      _ = E * ∑' x : {x // x ∉ F}, (‖P x‖ + ‖R x‖) := tsum_mul_left
+      _ ≤ E * ε := mul_le_mul_of_nonneg_left hFtail.le hE0.le
+  have hblock := uniform_block_inequality (ι := F) (fun k => γ k) (fun k => δ k)
+    (fun k => P k) (fun k => R k) hg hV hs (fun k => hδ k)
+    (fun j l hjl => hsep j l fun h => hjl (Subtype.ext h))
+  rw [← hC] at hblock
+  have hrw : ∀ v : ℝ, ∑ k : F, cexp (I * ((γ k : ℝ) : ℂ) * v) *
+      (P k * ((Real.cosh (δ k * v) : ℝ) : ℂ) + R k * ((depthSine (δ k) v / V : ℝ) : ℂ)) =
+        ∑ k ∈ F, cexp (I * γ k * v) *
+          (P k * Real.cosh (δ k * v) + R k * ((depthSine (δ k) v / V : ℝ) : ℂ)) := fun v =>
+    Finset.sum_coe_sort F (fun k => cexp (I * γ k * v) *
+      (P k * Real.cosh (δ k * v) + R k * ((depthSine (δ k) v / V : ℝ) : ℂ)))
+  simp_rw [hrw] at hblock
+  have hint : ∫ v in -V..V, ‖∑ k ∈ F, cexp (I * γ k * v) *
+      (P k * Real.cosh (δ k * v) + R k * ((depthSine (δ k) v / V : ℝ) : ℂ))‖ ^ 2 ≤ 2 * V * (E * ε) ^ 2 := by
+    have hcont : Continuous fun v : ℝ => ‖∑ k ∈ F, cexp (I * γ k * v) *
+        (P k * Real.cosh (δ k * v) + R k * ((depthSine (δ k) v / V : ℝ) : ℂ))‖ ^ 2 := by
+      refine (continuous_norm.comp (continuous_finsetSum _ fun k _ => ?_)).pow 2
+      have hd : Continuous (depthSine (δ k)) :=
+        continuous_iff_continuousAt.mpr fun v => (hasDerivAt_depthSine _ v).continuousAt
+      fun_prop
+    calc _ ≤ ∫ _v in -V..V, (E * ε) ^ 2 := intervalIntegral.integral_mono_on (by linarith)
+          (hcont.intervalIntegrable _ _) intervalIntegrable_const fun v hv =>
+            pow_le_pow_left₀ (norm_nonneg _) (hsmall v hv) 2
+      _ = 2 * V * (E * ε) ^ 2 := by rw [intervalIntegral.integral_const, smul_eq_mul]; ring
+  have hsq : M ≤ ∑ k : F, (‖P k‖ ^ 2 + ‖R k‖ ^ 2) := by
+    rw [Finset.sum_coe_sort F (fun k => ‖P k‖ ^ 2 + ‖R k‖ ^ 2)]
+    exact Finset.single_le_sum (f := fun k => ‖P k‖ ^ 2 + ‖R k‖ ^ 2)
+      (fun _ _ => by positivity) hF₀
+  have : C * M ≤ 2 * V * (E * ε) ^ 2 :=
+    (mul_le_mul_of_nonneg_left hsq hpos.le).trans (hblock.trans hint)
+  linarith
+
+/-- **Resolution is uniform in depth.** Tempered configurations with depths `≤ s`, whose union has
+`g`-separated heights apart from FE partners, are determined by their Weil forms on `C²` tests
+supported in `[−a, a]`, `a > V/2`, as soon as `D(V) > 2π²B(V, s)/(3g²)`. No lower bound on the
+depths of the off-line points is needed. -/
+theorem eq_of_weil_eq_of_heightSeparated (Z Z' : ZeroConfig) (hZ : TemperedConfig Z)
+    (hZ' : TemperedConfig Z') {g V s a : ℝ} (hg : 0 < g) (hV : 0 < V) (hs : 0 ≤ s)
+    (hdepth : ∀ ρ ∈ Z.carrier ∪ Z'.carrier, |ρ.re - 1 / 2| ≤ s)
+    (hsep : ∀ ρ ∈ Z.carrier ∪ Z'.carrier, ∀ ρ' ∈ Z.carrier ∪ Z'.carrier, ρ' ≠ ρ →
+      ρ' ≠ reflect ρ → g ≤ |ρ.im - ρ'.im|)
+    (hpos : 0 < uniformDiag V - 2 * (π ^ 2 / 3 * uniformB V s / g ^ 2)) (ha : V / 2 < a)
+    (hW : ∀ f : ℝ → ℂ, ContDiff ℝ 2 f → tsupport f ⊆ Icc (-a) a → Z.W f f = Z'.W f f) :
+    Z.carrier = Z'.carrier ∧ ∀ ρ ∈ Z.carrier, Z.mult ρ = Z'.mult ρ := by
+  classical
+  set w := a - V / 2 with hw
+  have hw0 : 0 < w := by rw [hw]; linarith
+  refine eq_of_multDiff_eq_zero fun ρ₀ => ?_
+  by_contra hc
+  obtain ⟨t₀, ht₀re, hct₀⟩ := exists_site_of_multDiff_ne_zero hc
+  set γ₀ := t₀.im
+  have hzero := pairSum_vanishes_of_weil_eq Z Z' hZ hZ' (V := V) hw0
+    (le_of_eq (by rw [hw]; ring)) γ₀ hW
+  have hsum := summable_site Z Z' hZ hZ' hw0 γ₀
+  set K := pairSites Z Z'
+  set δ : K → ℝ := fun k => (k : ℂ).re - 1 / 2 with hδ
+  set p : K → ℂ := fun k => siteP Z Z' w γ₀ k with hp
+  set q : K → ℂ := fun k => siteQ Z Z' w γ₀ k with hq
+  have hδs : ∀ k : K, |δ k| ≤ s := fun k => hdepth k k.2.1
+  have hV0 : (V : ℂ) ≠ 0 := Complex.ofReal_ne_zero.mpr hV.ne'
+  have hzero' : ∀ v ∈ Icc (-V) V, ∑' k : K, cexp (I * (k : ℂ).im * v) *
+      ((p k + q k) * Real.cosh (δ k * v) +
+        (((V * δ k : ℝ) : ℂ) * (p k - q k)) * ((depthSine (δ k) v / V : ℝ) : ℂ)) = 0 := by
+    intro v hv
+    rw [← hzero v hv]
+    refine tsum_congr fun k => ?_
+    rw [pair_eq_profiles, profile_rescale _ _ _ _ hV.ne']
+  have hsum' : Summable fun k : K => ‖p k + q k‖ + ‖((V * δ k : ℝ) : ℂ) * (p k - q k)‖ := by
+    refine Summable.of_nonneg_of_le (fun k => by positivity) (fun k => ?_)
+      (hsum.mul_left (1 + V * s))
+    have h1 := norm_add_le (p k) (q k)
+    have h2 : ‖((V * δ k : ℝ) : ℂ) * (p k - q k)‖ ≤ V * s * (‖p k‖ + ‖q k‖) := by
+      rw [norm_mul, Complex.norm_real, Real.norm_eq_abs, abs_mul, abs_of_pos hV]
+      have h := mul_le_mul (hδs k) (norm_sub_le (p k) (q k)) (norm_nonneg _) hs
+      nlinarith [mul_le_mul_of_nonneg_left h hV.le]
+    simp only [hp, hq] at h1 h2 ⊢
+    nlinarith
+  have hres := eq_zero_of_profileSum_eq_zero (fun k : K => (k : ℂ).im) δ
+    (fun k => p k + q k) (fun k => ((V * δ k : ℝ) : ℂ) * (p k - q k)) hg hV hs hδs
+    (sites_sep hsep) hpos hsum' hzero'
+  obtain ⟨hP, hR⟩ := hres ⟨t₀, mem_carrier_of_multDiff_ne_zero hct₀, ht₀re⟩
+  -- the coefficient of `e^{δv}` at `t₀` vanishes
+  have hp0 : siteP Z Z' w γ₀ t₀ = 0 := by
+    by_cases hk : t₀.re = 1 / 2
+    · have hq0 : siteQ Z Z' w γ₀ t₀ = 0 := by simp [siteQ, hk]
+      simp only [hp, hq, hq0, add_zero] at hP
+      exact hP
+    · have hδ0 : ((V * δ ⟨t₀, mem_carrier_of_multDiff_ne_zero hct₀, ht₀re⟩ : ℝ) : ℂ) ≠ 0 :=
+        Complex.ofReal_ne_zero.mpr (mul_ne_zero hV.ne' (sub_ne_zero.mpr hk))
+      have hpq := sub_eq_zero.mp ((mul_eq_zero.mp hR).resolve_left hδ0)
+      simp only [hp, hq] at hP hpq
+      rw [hpq] at hP
+      have : (2 : ℂ) * siteQ Z Z' w γ₀ t₀ = 0 := by rw [two_mul]; exact hP
+      rw [hpq]
+      exact (mul_eq_zero.mp this).resolve_left two_ne_zero
+  simp only [siteP] at hp0
+  exact hct₀ ((mul_eq_zero.mp hp0).resolve_right (pairWeight_modScaledBump_ne_zero hw0 γ₀ _))
+
+/-- **Hiding needs a near-collision in height or a deep point.** Two tempered configurations with
+different carriers and one image at aperture `a > V/2` contain two points of different FE orbits
+at height distance `< g`, or a point of depth `> s`, whenever `D(V) > 2π²B(V, s)/(3g²)`. Shallow
+pairs are no obstruction. -/
+theorem exists_near_pair_of_mimic {Z Z' : ZeroConfig} (hZ : TemperedConfig Z)
+    (hZ' : TemperedConfig Z') (hne : Z.carrier ≠ Z'.carrier) {g V s a : ℝ} (hg : 0 < g)
+    (hV : 0 < V) (hs : 0 ≤ s)
+    (hpos : 0 < uniformDiag V - 2 * (π ^ 2 / 3 * uniformB V s / g ^ 2)) (ha : V / 2 < a)
+    (hW : ∀ f : ℝ → ℂ, ContDiff ℝ 2 f → tsupport f ⊆ Icc (-a) a → Z.W f f = Z'.W f f) :
+    (∃ ρ ∈ Z.carrier ∪ Z'.carrier, ∃ ρ' ∈ Z.carrier ∪ Z'.carrier, ρ' ≠ ρ ∧ ρ' ≠ reflect ρ ∧
+        |ρ.im - ρ'.im| < g) ∨
+      ∃ ρ ∈ Z.carrier ∪ Z'.carrier, s < |ρ.re - 1 / 2| := by
+  by_contra h
+  simp only [not_or, not_exists, not_and, not_lt] at h
+  obtain ⟨hnear, hdeep⟩ := h
+  exact hne (eq_of_weil_eq_of_heightSeparated Z Z' hZ hZ' hg hV hs hdeep
+    (fun ρ hρ ρ' hρ' h1 h2 => hnear ρ hρ ρ' hρ' h1 h2) hpos ha hW).1
+
+/-! ### The explicit scale -/
+
+theorem uniformDiag_eq {V : ℝ} (hV : 0 < V) : uniformDiag V = (4 / π - 32 / π ^ 3) * V := by
+  unfold uniformDiag inghamA
+  field_simp
+  ring
+
+/-- `D(V) ≥ V/5`. -/
+theorem uniformDiag_ge {V : ℝ} (hV : 0 < V) : V / 5 ≤ uniformDiag V := by
+  rw [uniformDiag_eq hV]
+  have h1 := Real.pi_gt_d2
+  have h2 := Real.pi_lt_d2
+  have hpi : 0 < π := Real.pi_pos
+  have key : 1 / 5 ≤ 4 / π - 32 / π ^ 3 := by
+    rw [div_sub_div _ _ hpi.ne' (by positivity), le_div_iff₀ (by positivity)]
+    nlinarith [mul_pos hpi hpi, mul_pos (mul_pos hpi hpi) hpi]
+  nlinarith
+
+theorem cosh_le_two {x : ℝ} (hx : |x| ≤ 1) : Real.cosh x ≤ 2 := by
+  have h1 : Real.cosh x ≤ Real.cosh 1 := by
+    rw [Real.cosh_le_cosh, abs_one]; exact hx
+  have h2 : Real.cosh 1 ≤ 2 := by
+    rw [Real.cosh_eq]
+    have := Real.exp_one_lt_d9
+    have : Real.exp (-1) ≤ 1 := Real.exp_le_one_iff.mpr (by norm_num)
+    linarith
+  linarith
+
+/-- `B(V, s) ≤ 230/V` for depths `s ≤ 1/V`. -/
+theorem uniformB_le {V s : ℝ} (hV : 0 < V) (hs : 0 ≤ s) (hsV : s * V ≤ 1) :
+    uniformB V s ≤ 230 / V := by
+  have ha : 0 < inghamA V := by unfold inghamA; positivity
+  have hc0 := Real.cosh_pos (s * V)
+  have hc2 : Real.cosh (s * V) ≤ 2 :=
+    cosh_le_two (by rw [abs_of_nonneg (by positivity)]; exact hsV)
+  have hsV' : s ≤ 1 / V := by rw [le_div_iff₀ hV]; exact hsV
+  have hE0 : profileBound0 V s ≤ 2 := hc2
+  have hE1 : profileBound1 V s ≤ 4 / V := by
+    unfold profileBound1
+    calc (s + 1 / V) * Real.cosh (s * V) ≤ (2 / V) * 2 := by
+          apply mul_le_mul _ hc2 hc0.le (by positivity)
+          rw [show 2 / V = 1 / V + 1 / V by ring]; linarith
+      _ = 4 / V := by ring
+  have hE2 : profileBound2 V s ≤ 4 / V ^ 2 := by
+    unfold profileBound2
+    have hs2 : s ^ 2 ≤ 1 / V ^ 2 := by
+      rw [show 1 / V ^ 2 = (1 / V) ^ 2 by ring]; exact pow_le_pow_left₀ hs hsV' 2
+    have hsv : s / V ≤ 1 / V ^ 2 := by
+      rw [show 1 / V ^ 2 = (1 / V) / V by ring]
+      exact div_le_div_of_nonneg_right hsV' hV.le
+    calc (s ^ 2 + s / V) * Real.cosh (s * V) ≤ (2 / V ^ 2) * 2 := by
+          apply mul_le_mul _ hc2 hc0.le (by positivity)
+          rw [show 2 / V ^ 2 = 1 / V ^ 2 + 1 / V ^ 2 by ring]; linarith
+      _ = 4 / V ^ 2 := by ring
+  have hE0n : 0 ≤ profileBound0 V s := hc0.le
+  have hE1n : 0 ≤ profileBound1 V s := by unfold profileBound1; positivity
+  have hE2n : 0 ≤ profileBound2 V s := by unfold profileBound2; positivity
+  have hmono : uniformB V s ≤ offDiagConst (inghamA V) V 2 (4 / V) (4 / V ^ 2) := by
+    unfold uniformB offDiagConst
+    gcongr
+  have hval : offDiagConst (inghamA V) V 2 (4 / V) (4 / V ^ 2) = (36 * π + 2 * π ^ 2 + 96) / V := by
+    unfold offDiagConst inghamA
+    field_simp
+    ring
+  have h2 := Real.pi_lt_d2
+  have hnum : 36 * π + 2 * π ^ 2 + 96 ≤ 230 := by nlinarith [Real.pi_pos]
+  calc uniformB V s ≤ (36 * π + 2 * π ^ 2 + 96) / V := hmono.trans_eq hval
+    _ ≤ 230 / V := div_le_div_of_nonneg_right hnum hV.le
+
+/-- **The explicit scale.** For depths `s ≤ 1/V` the depth-uniform constraint holds at every
+separation `g ≥ 90/V`: two tempered configurations with different carriers and one image at
+aperture `a > V/2` contain two points of different FE orbits at height distance `< g`, or a point of
+depth `> s`. The scale is of the Nyquist order `1/V` of the aperture. -/
+theorem exists_near_pair_of_mimic_of_le {Z Z' : ZeroConfig} (hZ : TemperedConfig Z)
+    (hZ' : TemperedConfig Z') (hne : Z.carrier ≠ Z'.carrier) {g V s a : ℝ} (hV : 0 < V)
+    (hs : 0 ≤ s) (hsV : s * V ≤ 1) (hgV : 90 ≤ g * V) (ha : V / 2 < a)
+    (hW : ∀ f : ℝ → ℂ, ContDiff ℝ 2 f → tsupport f ⊆ Icc (-a) a → Z.W f f = Z'.W f f) :
+    (∃ ρ ∈ Z.carrier ∪ Z'.carrier, ∃ ρ' ∈ Z.carrier ∪ Z'.carrier, ρ' ≠ ρ ∧ ρ' ≠ reflect ρ ∧
+        |ρ.im - ρ'.im| < g) ∨
+      ∃ ρ ∈ Z.carrier ∪ Z'.carrier, s < |ρ.re - 1 / 2| := by
+  have hg : 0 < g := by
+    by_contra h; push Not at h; nlinarith
+  refine exists_near_pair_of_mimic hZ hZ' hne hg hV hs ?_ ha hW
+  have hD := uniformDiag_ge hV
+  have hB := uniformB_le hV hs hsV
+  have h2 := Real.pi_lt_d2
+  have hpi2 : π ^ 2 < 10 := by nlinarith [Real.pi_pos]
+  have hg2 : 8100 ≤ (g * V) ^ 2 := by nlinarith
+  -- `2(π²/3) B/g² ≤ (460π²/3)/(V g²) < V/5`
+  have hB' : 2 * (π ^ 2 / 3 * uniformB V s / g ^ 2) ≤ 2 * (π ^ 2 / 3 * (230 / V) / g ^ 2) := by
+    gcongr
+  have hlt : 2 * (π ^ 2 / 3 * (230 / V) / g ^ 2) < V / 5 := by
+    rw [show 2 * (π ^ 2 / 3 * (230 / V) / g ^ 2) = 460 * π ^ 2 * V / (3 * (g * V) ^ 2) by
+      field_simp; ring]
+    rw [div_lt_div_iff₀ (by positivity) (by norm_num)]
+    nlinarith [mul_pos hV (by positivity : (0 : ℝ) < π ^ 2)]
+  linarith
 
 end GaloisForLFunctions.ZeroConfigurationGeometry

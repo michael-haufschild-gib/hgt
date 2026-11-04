@@ -138,6 +138,62 @@ grows with R. The positive survivor would be the exact joint signed
 source–complement problem. This is a conditional consequence to test,
 not a proved obstruction while the complete mixed limit remains open.
 
+### Uniformity exposed by the existing conductor bounds
+
+For a fixed bounded terminal window, set
+`q_N(m)=|⟨r_m,x_N⟩|²/(c_N E_m(c_N))`, and
+`Q_N=floor((log N)^(13/32))`. The following tightness reduction has a
+closed paper proof; its Lean transfer is pending.
+
+Choose a collar cutoff below the fixed support of x_N and above
+`2 linearPrimeStrip(c_N)`. The window's prefix mass is zero and its
+seventh collar mass is bounded. Weighted Cauchy–Schwarz and
+`exists_completeWeil_dualSeventh_conductor_residual_log_free` give
+
+    |⟨r_m,x_N⟩|² ≤ C_h m²[c_N²/L+c_N³L/N+c_N¹⁰(L/N)²].
+
+The actual conductor-scale floor, stronger than the common `κ/c_N⁷`
+floor, is `c_N⁷ E_m(c_N)≥κm⁷` for `m≤c_N`. Consequently
+
+    q_N(m) ≤ (C_h/κ)[c_N⁸/L+c_N⁹L/N+c_N¹⁶L²/N²]/m⁵.
+
+The bracket tends to R. This supplies one summable envelope for all
+conductors below overlap at one eventual horizon. Above overlap,
+`E_m(c_N)≥κ`. The public quadratic residual bound has conductor factor
+`m(1+log m)²`, so ordinary Cauchy–Schwarz gives
+
+    Σ_(c_N<m≤Q_N) q_N(m)
+      ≤ C_h Q_N²(1+log Q_N)²
+        [c_N(1+log c_N)³ L^(1/k)/L+c_N⁹(L/N)²] → 0
+
+for any fixed integer k>16. The first power of L is
+`−1/16+1/k<0`; powers of log L do not change the limit. The second
+term vanishes by the critical-clock polynomial/logarithmic estimates.
+Both estimates hold for every fixed R>0. Thus, once the fixed-m mixed
+limits are proved, passage through the growing packet needs no new
+conductor-uniform prime-distribution conjecture: split at c_N, use
+the summable envelope below, and the vanishing total above.
+
+The source floors are
+`seventh_mul_completedConductorEnergy_ge_below_overlap` and
+`tiltedUnitSpline_completedConductorEnergy_ge_above_overlap`;
+the high-conductor norm bound is
+`exists_completeWeil_quadratic_conductor_residual_variable_rate`.
+Their statements and proofs have been read. The reference diagonal
+also has a closed paper bound: the uniform window coordinate is
+`|⟨v_m,x_N⟩|≤C_h/sqrt(L)`, while
+`completedConductorEnergy_le_logarithmic_uniform` gives
+`E_m≤C_φ+2log m+3`, uniformly in c≥1. Hence
+
+    Σ_(m≤Q_N) E_m |⟨v_m,x_N⟩|²/c_N
+      ≤ C_h Q_N(C_φ+2log Q_N+3)/(c_N L) → 0.
+
+The Euclidean triangle inequality for these weighted coefficient
+vectors transfers tightness from r_m to B_Nv_m. This transfer also
+awaits Lean verification. Optimizing against the full signed packet
+Gram remains separate; none of these bounds proves whole-space
+positivity or removes the window compensation.
+
 ## Attack and proof obligations
 
 The exact center row already supplies the two terms
@@ -149,8 +205,8 @@ Gamma/downward cancellation must supply `−log(2π)`. These are discrete
 channels to prove separately, not a replacement of the discrete matrix
 by its continuous analogue.
 
-For nonpolar conductors, retain both the harmonic receiving charge
-`−Λ(m)/sqrt(φ(m))` and the opposite near divisor-jet charge. Their
+For nonpolar conductors, retain both the full-center coefficient
+`−aΛ(m)/sqrt(φ(m))` and the opposite near divisor-jet charge. Their
 weighted cancellation must be established before claiming a zero source.
 
 For conductor one, put F(x)=h(log x), extended by zero outside (0,1),
@@ -170,180 +226,43 @@ The middle three rows sum to −a log(2π)∫F. Since F is supported
 away from zero, only finitely many prime powers occur in the proposed
 upward limit. This is a finite-prime transport problem at the terminal
 window, not a use of the large-horizon upward asymptotic there.
-The table is a proof decomposition, **not** an established collection
-of limits. In particular, weighted harmonic-center cancellation and
-transfer of the actual upward rows remain open.
+The table separates checked constituents from pending transfers. The
+polar full center, signed Gamma remainder and joint near-center finite
+part and near logarithm are checked. Complete assembly and general
+upward-row transfer still require their Lean audits.
 
-### Closed auxiliary argument: terminal weights in a near-pair mean
+### Checked terminal averaging and center laws
 
-For bounded periodic u,v, a bounded Lipschitz gap kernel K on [α,β],
-and a globally bounded F Lipschitz on [0,1], the proposed auxiliary
-theorem is
+For bounded periodic u,v and a bounded Lipschitz gap kernel K, terminal
+endpoint weights preserve the near-pair mean. The weighted near-Gram
+error is O((1+log c)/c+c/N); multiplying by log c still gives zero when
+c→∞ and c log c/N→0. The shifted periodic harmonic-row bound is uniform
+in the gap and subinterval, including empty intervals.
 
-    nearPairSum(K,α,β,c_N/N,N,u,v,F(·/N))/c_N
-      → 2 mean(u)mean(v) (∫_α^β K) (∫₀¹ F),
+The actual near-center finite part is
+`a[m=l][(log 2+γ)∫F+∫F log x]` for m=1 and
+`−a[m=l]Λ(m)∫F` for m>1. The joint statement subtracts log c times the
+actual weighted near Gram; ordinary convergence does not suffice.
+The full polar center retains `∫F(x)[1/x−½log(1−x²)]dx`.
 
-under c_N>0, c_N→∞ and c_N/N→0. Here F weights the smaller
-index. The existing arbitrary-weight row estimate has error
-`O_F(1+log c_N+c_N²/N)`. Dividing by c_N makes it vanish.
-Its main term is
+These statements pass actual-path Lean checks with exactly
+`[propext, Classical.choice, Quot.sound]` in
+`TerminalWeightsReadEitherEndOfANearPair.lean`,
+`TerminalNearPairsRetainLogarithmicAccuracy.lean`,
+`TerminalWeightsPreserveHarmonicGapRows.lean`,
+`TerminalWindowsRetainTheNearCenterFinitePart.lean`,
+`TerminalWindowsRetainTheJointNearCenter.lean` and
+`TerminalWindowsReadThePolarCenter.lean`.
 
-    (∫_α^β K(s)exp(c_N s/(2N))ds)
-      · (1/N)Σ F(n/N)[u(n)mean(v)+v(n)mean(u)].
+### Nonpolar center: its receiving charge survives separately
 
-The first factor tends to ∫K uniformly on the fixed gap interval;
-the proved periodic weighted Riemann theorem gives the second limit.
-This closes the auxiliary paper argument without a new arithmetic input.
-It extends one existing channel to terminal tests; it neither settles
-the aliasing cross term nor the complete mixed conjecture. Lean
-formalization now checks in `TerminalWeightsPreserveThePolarNearMean.lean`
-with `[propext, Classical.choice, Quot.sound]`, including its final
-actual-path no-olean audit.
-
-The same limit holds with F(n/N) on either endpoint. On a contributing
-pair, `|n−j|/N≤|log n−log j|≤βc_N/N`, so replacing the smaller-index
-weight by an endpoint weight changes it by at most `Lip(F)βc_N/N`.
-The bounded-kernel pair mass is O(c_N). After division by c_N the
-error tends to zero. This supplies the orientation needed for the
-literal mixed form; it does not use positivity of that form.
-`TerminalWeightsReadEitherEndOfANearPair.lean` passes its final actual-path
-no-olean audit with the standard three axioms.
-
-The next closed auxiliary argument retains F in the actual Gamma pair:
-
-    [nearRemainder(Fu,v)−farCross(Fu,v)]/c_N
-      → −a(log(4π)+γ) mean(u)mean(v) ∫₀¹F.
-
-On each fixed scaled-gap interval, the proved entry replacement has
-O(c_N/N) error, the pair mass is O(c_N), and the endpoint-weighted
-mean applies. Beyond a scaled gap T, the existing tail estimate is
-`O_F(c_N/T+c_N²/N)`, uniformly in N. Divide by c_N, first take
-N→∞, then T→∞. The existing exact near/far profile integral supplies
-the displayed constant. The tail estimate accepts bounded arbitrary
-weights, so inserting F(n/N) requires no periodicity of the product.
-The weighted transfer now passes its actual-path no-olean check in
-`TerminalWindowsRetainTheSignedGammaMean.lean`, with exactly
-`[propext, Classical.choice, Quot.sound]`. It holds for bounded periodic
-u,v and bounded Lipschitz F under only c_N>0, c_N→∞ and c_N/N→0.
-It establishes the Gamma row of the channel table, not the complete
-mixed limit.
-
-### Near-center reduction
-
-For bounded Lipschitz F vanishing on [0,δ], δ>0, put d_N=exp(2c_N/N)−1.
-The weighted near center has the following reduction:
-
-    nearCenterPair(c_N,N,F(·/N)c_l,c_m)/N
-      − [m=l](1/N)Σ_(n≤N) F(n/N) lagHarmonic(m,floor(d_N n)) → 0.
-
-Order the pairs by their positive integer gap j. Moving F from the
-larger endpoint to the smaller costs O_F(c_N/N). On each gap row,
-bounded periodic primitives and Abel summation replace the Ramanujan
-product by its exact mean `2[m=l]c_m(j)` with error O_(F,m,l)(1).
-Summing against 1/j and dividing by N costs O_(F,m,l)(log(1+c_N)/N).
-Removing the top restriction n+j≤N deletes at most j terms for each
-gap; its total normalized cost is O_(F,m,l)(c_N/N). Interchanging the
-remaining finite sums gives the displayed harmonic sum. The near sum
-kernel is also O_(F,m,l)(c_N/N).
-
-On F's support, d_N n→∞ uniformly and d_N N/c_N→2. Thus the existing
-harmonic finite parts give, after subtracting `[m=l=1] log(c_N)∫F`,
-
-    [m=l=1] ∫₀¹F(x)[log(2x)+γ]dx
-      − [m=l>1] Λ(m)∫₀¹F(x)dx.
-
-The Riemann-sum error multiplied by log(c_N) vanishes since it is
-O_F(log(c_N)/N). This derives the required local logarithm before
-cancellation with the logarithmic row; substituting the unweighted
-constant log 2+γ−1 would lose F's profile.
-
-This finite-part statement now passes its final actual-path check in
-`TerminalWindowsRetainTheNearCenterFinitePart.lean`, with exactly
-`[propext, Classical.choice, Quot.sound]`, under only c_N>0,
-c_N→∞ and c_N/N→0. Combining it with the actual near-Gram subtraction
-still requires a terminally weighted near-Gram error small after
-multiplication by log(c_N).
-
-Its paper reduction follows directly from the existing weighted near-pair
-row estimate. For a fixed bounded Lipschitz kernel K and periodic u,v,
-the normalized error is O((1+log c_N)/c_N+c_N/N). The row integral differs
-from ∫K by O(c_N/N), and the weighted periodic Riemann mean differs from
-its limit by O(1/N). Moving the weight to either endpoint costs O(c_N/N).
-Hence multiplication by log(c_N) still gives zero when c_N→∞ and
-c_N log(c_N)/N→0. The required fourth-order logarithmic clock implies
-this condition. `TerminalNearPairsRetainLogarithmicAccuracy.lean` now
-passes its final actual-path no-olean audit with the standard three
-axioms. The literal joint subtraction is
-implemented in `TerminalWindowsRetainTheJointNearCenter.lean` and awaits
-its own audit. Plain convergence of the weighted near mean would not
-supply this rate.
-
-The uniform weighted gap-row estimate now passes its actual-path check
-in `TerminalWeightsPreserveHarmonicGapRows.lean`, with the standard
-three axioms. It includes every integer interval, including empty ones;
-the error is independent of the gap and interval length.
-`TerminalNearCenterHasAHarmonicModel.lean` now checks the complete weighted
-near-center reduction above with those same axioms. The quantitative
-error is O_(F,m,l)(harmonic(N)/N+exp(2c_N/N)−1), so the approximation
-needs only c_N>0 and c_N/N→0. Its final actual-path no-olean audit also
-passes with the standard three axioms.
-
-`TerminalHarmonicMeansRetainTheirFiniteParts.lean` also passes its final
-actual-path check with the standard three axioms. For any scale a_N→∞,
-it proves the terminal average of
-`lagHarmonic(m,floor(a_N n/N))−[m=1]log a_N` tends to
-`[m=1]∫F(x)(γ+log x)dx−[m>1]Λ(m)∫F`.
-The subtraction occurs inside the finite sum, so this auxiliary theorem
-needs no growth-rate relation between a_N and N.
-
-### Full polar-center reduction
-
-The exact row `sum_pole_minus_center_div_sqrt` reduces this channel to
-
-    (a/N)Σ F(n/N)[N/n+H_N−(H_(N−n)+H_(N+n))/2+3/(4n)].
-
-The source theorem `HTGeometry.abs_harmonic_sub_log_sub_eulerMascheroni_le`
-gives `|H_k−log k−γ|≤1/k` for k≥1. For n<N, replacing the three
-harmonic numbers by their logarithms leaves a weighted error O_F(1/N)
-per summand: `|F(n/N)|≤Lip(F)(N−n)/N` pays the apparent singularity
-`1/(N−n)`, while F vanishes for n≤δN. The n=N term is zero because
-F(1)=h(0)=0. The normalized total error is O_F(1/N).
-
-The resulting function
-`F(x)[1/x−½log(1−x²)]`, defined as zero at both endpoints,
-is continuous on [0,1]. At x=1, this follows from
-`(1−x)log(1−x²)→0`; at x=0, F vanishes on a neighbourhood.
-Its Riemann sums therefore converge to the full-center integral in the
-channel table. `TerminalWindowsReadThePolarCenter.lean` proves both the
-weighted row limit and its literal double-kernel version. Its final
-actual-path no-olean audit passes with exactly
-`[propext, Classical.choice, Quot.sound]`.
-
-### Nonpolar center: the receiving charge survives separately
-
-For m≥2 and bounded Lipschitz F on [0,1], the proposed full-center limit is
-
-    (1/N)Σ_(n,j≤N) F(n/N)c_m(j)
-      [poleKernel(n,j)−centerKernel(n,j)]/sqrt(nj)
-        → −Λ(m)∫₀¹F.
-
-The paper reduction is closed. The exact pole-gauged center kernel is
-½[1/|n−j|+1/(n+j)] off the diagonal. On each difference-gap row, periodic
-mean zero and weighted Abel summation bound both orientations uniformly
-in the gap, including the shifted terminal weight. Summation against
-1/gap and division by N costs O_(F,m)(H_N/N). For the sum kernel, the
-shifted harmonic Abel bound gives O_m(1/(n+1)) per row; deleting its
-diagonal has the same total O_(F,m)(H_N/N) cost. Both center terms vanish.
-
-The two pole products are exactly
-`lagHarmonic(m,N)·(ΣF(n/N)/N)` and
-`lagSum(m,N)·(ΣF(n/N)/n)/N`. The second vanishes by the bounded partial
-sum estimate; the first tends to the displayed charge by the checked
-`tendsto_lagHarmonic` and Lipschitz Riemann estimate. Thus the full center
-alone is not zero at m=2. Its charge must cancel the opposite near
-divisor-jet mean, whose exact finite conductor lowering is already
-proved in `TheDivisorJetHasAPolarNearMean.lean`. The terminal transfer
-of this nonpolar full-center argument remains to be formalized.
+For fixed m≥2 and bounded globally Lipschitz F, the full center divided
+by N tends to `−Λ(m)∫F`. The harmonic difference and sum kernels cost
+O_(F,m)(H_N/N); the harmonic pole product supplies the surviving charge.
+`TerminalWindowsReadTheNonpolarCenter.lean` proves both the center-kernel
+mean and literal double-kernel pairing. Its actual-path check uses
+exactly `[propext, Classical.choice, Quot.sound]`. The opposite terminal
+near-jet charge must cancel before asserting a zero nonpolar source.
 
 ### Terminal logarithm and divisor-jet cancellation
 
@@ -359,12 +278,128 @@ c_N/N→0 and has no singularity at zero because h has compact log support.
 The divisor jet is bounded and periodic, with mean Λ(m). The same
 endpoint theorem therefore gives its terminal near mean
 `a Λ(m)∫F`, exactly opposite to the nonpolar full-center charge.
-These are closed paper reductions using the actual divisor-jet mean;
-the logarithmic transfer and terminal jet cancellation still need Lean
-audits. `TerminalWindowsReadTheNonpolarCenter.lean` contains the
-full-center reduction and awaits its first check.
+`TerminalWindowsReadTheNearLogarithm.lean` now proves the logarithmic
+transfer and actual terminal near-log limit, with an actual-path check
+using precisely `[propext, Classical.choice, Quot.sound]`. The terminal
+jet cancellation still needs its Lean audit. The full-center reduction
+has passed its actual-path check.
+
+The three signed polar limits combine algebraically to
+`−a log(2π)∫F`: the terminal `∫F log x` and Euler constants cancel,
+and `log(4π)=log 2+log(2π)`. Their literal sum is implemented in
+`TerminalPoleGammaAndCenterHaveOneConstant.lean`; its actual-path audit
+passes with exactly `[propext, Classical.choice, Quot.sound]`.
+
+The finite normalization has a closed algebraic reduction. Write
+`x_F(n)=F(n/N)/sqrt(n)` and `L=log N`. Then
+`sqrt(L)⟨A v_m,x_F⟩` is the literal double sum with denominator
+`sqrt(nj φ(m))`; a row normalized by `sqrt(L)` gives the corresponding
+single sum. For m=1, the exact Mangoldt divisor convolution is log j.
+The identity `log(N/c)+log c+log(j/N)=log j` therefore decomposes the
+near row into its Gamma remainder, negative logarithmic near Gram and
+negative terminal-log row. Near-center and separated-cross pairings
+are their existing literal sums with the same normalization. No
+limiting interchange or continuum identification enters this step.
+Restoring the completed conductor energy also cancels its shell and
+polar diagonals. The remaining scalar is exactly
+`selfFinitePart(c)+adjunctionEnergy(m)−γ`; the constant γ must be
+retained in the finite identity even though its normalized pairing
+vanishes. The finite identities in
+`TerminalPolePairingsHaveTheirLiteralChannels.lean` pass their actual-path
+audit with exactly `[propext, Classical.choice, Quot.sound]`.
+
+The remaining ratio, self and pole errors have closed paper bounds
+against every bounded terminal window. Its norm is bounded uniformly
+in N. After squaring the normalization `sqrt(L)/c`, the existing source
+bounds become respectively `O_m(c⁻²)`, `O_m(L/N²)` and
+`O_m((c⁴L²/N)²)`, all tending to zero at critical scale. For the
+reference diagonal, use the stronger window/conductor coordinate
+`O(1/sqrt(L))` and the exact scalar `C_m−log c`; its mixed cost is
+`O_m((1+log c)/c)`. A physical-norm estimate alone would not pay this
+diagonal. All four transfers in
+`TerminalWindowErrorChannelsDisappear.lean` pass their actual-path audit
+with exactly `[propext, Classical.choice, Quot.sound]`.
 
 ### Polar upward-row reduction
+
+There is an exact shorter-window test of the conjecture. If F vanishes
+on `[0,δ]` for some δ>1/2, the entire actual upward row vanishes on
+F's support eventually, uniformly in conductor m. Indeed take
+H=ceil(2c_N). Since H/N→0, `N+H<2n` for every contributing n.
+Every prime-power multiple kn with k≥2 then lies above N+H, so both
+punctured windows in `upwardModeRow_eq_sum_inner` are empty. The k=0,1
+terms have zero Mangoldt weight.
+`TerminalWindowsAboveHalfHaveNoUpwardPrimes.lean` proves this exact
+annihilation; its actual-path audit passes with precisely
+`[propext, Classical.choice, Quot.sound]`. It isolates
+the prime-free terminal source without a boundary approximation.
+It suffices to test a nonzero ℓ and the proposed intrinsic R² collar
+cost before the full finite-prime transfer below is completed.
+
+If F also vanishes for x≥η with η<1, the actual exterior downward
+row vanishes on its support eventually, uniformly in m. The existing
+linear strip satisfies `linearPrimeStrip(c)≤(e+1)c`; since c_N/N→0,
+every contributing n satisfies `n+linearPrimeStrip(c_N)<N`. The exact
+regrouping and strip-support theorem then give zero. Thus a profile
+supported in a fixed interval `(δ,η)⊂(1/2,1)` removes both prime
+boundary channels exactly. This closed paper reduction is implemented
+in `TerminalWindowsAwayFromTheHorizonHaveNoExteriorPrimes.lean`;
+its actual-path audit passes with exactly
+`[propext, Classical.choice, Quot.sound]`. It isolates the local source without
+assuming a prime-distribution estimate or a continuum replacement.
+
+For this interior support the polar assembly is now dependency-closed
+on paper. The checked finite identity above, the four vanishing error
+channels and both exact prime annihilations leave
+
+    (sqrt(L)/c_N)⟨B_Nv₁,x_N⟩
+      → a[∫₀¹ F(x)(1/x−½log(1−x²))dx−log(2π)∫₀¹F].
+
+The critical clock implies c_N log(c_N)/N→0, so the checked joint
+near-center rate applies. The signed Gamma constant and near-log mean
+cancel exactly as stated above. This restriction therefore has no
+remaining analytic input in its paper proof; the finite channel
+identity and pending supporting Lean proofs still need verification.
+`TerminalPolarSourceAboveHalf.lean` contains the exact assembly and
+limiting statement. Neither endpoint has passed Lean yet. This does
+not settle general terminal support or the nonpolar complete source.
+
+The restricted source has an explicit nonzero paper witness. Take
+`δ=127/128`, `η=255/256`,
+`F(x)=tiltedUnitSpline((x−δ)/(η−δ))` and `h(y)=F(exp y)`.
+This is a nonnegative compact C² window with positive integral.
+On its support below one,
+`(2π)²(1−x²)<64(1−δ²)<1`, using π<4. Hence
+
+    1/x−log(2π)−½log(1−x²)
+      =1/x−½log((2π)²(1−x²)) > 1/x ≥ 1.
+
+Its proposed source mean is therefore strictly positive. This uses
+an exact rational inequality, not numerical evidence.
+`TerminalPolarSourceIsNonzero.lean` implements this witness as
+`F(x)=tiltedUnitSpline(256x−254)`, with the wider guards
+`253/256` and `511/512` for the exact prime annihilations. Its first
+Lean audit is pending; the resulting collar lower bound also remains
+unverified.
+
+For the first lower-bound theorem it suffices to take the collar cutoff
+`M_N=floor(N/2)`. The witness has zero prefix there, while
+`topCollarSeventhMass(M_N,N,x_N)≤128‖x_N‖²`, uniformly in N.
+The checked weighted Cauchy–Schwarz inequality, the positive proposed
+source S and the explicit bound `E₁(c)≤C_E/c⁷` then give an absolute
+κ>0, independent of R and the clock, such that eventually
+
+    (c_N⁷/L) topCollarDualSeventhMass(M_N,N,r₁)/E₁(c_N) ≥ κR².
+
+Indeed the normalized residual pairing eventually exceeds S/2;
+its reference-diagonal correction tends to zero by the uniform window
+coordinate bound. If T bounds the seventh collar mass, the same
+Cauchy–Schwarz inequality gives the left side at least
+`[S²/(8C_E T)](c_N⁸/L)²`, hence κ may be `S²/(32C_E T)`.
+This paper reduction uses the explicit conductor-energy upper bound,
+so it needs neither a new Jordan asymptotic nor an exact collar-mass
+limit. Its unconditional Lean realization still depends on the pending
+complete-source and witness audits.
 
 The conductor-one upward row has a closed paper reduction for the same
 F, under c_N≥1, c_N→∞ and c_N⁴(log N)²/N→0:

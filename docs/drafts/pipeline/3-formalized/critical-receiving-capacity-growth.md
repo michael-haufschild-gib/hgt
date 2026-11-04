@@ -1,9 +1,9 @@
 # Receiving capacity versus the critical overlap
 
 - **ID:** critical-receiving-capacity-growth
-- **Stage:** 1-in-progress
+- **Stage:** 3-formalized
 - **Type:** THEOREM
-- **Parent:** [critical-ratio continuation](critical-ratio-continuation.md)
+- **Parent:** [critical-ratio continuation](../1-in-progress/critical-ratio-continuation.md)
 
 ## Exact question
 
@@ -17,7 +17,7 @@ The kernel-checked quantitative law gives a constant C such that
     |C_N−log log N|≤C  for every integer N≥3.
 
 Consequently C_N/c_N→0 at every positive critical ratio
-c_N⁸/log N→R. Nonzero fixed charge would then have dilation cost much
+c_N⁸/log N→R. Nonzero fixed charge therefore has dilation cost much
 larger than 1/c_N, even though its minimum cost tends to zero.
 The exact finite capacity and its unique minimizer are already proved in
 `ArithmeticCouplingTheory/ReceivingCharges/PrimeIncidenceReceivingCapacity.lean`.
@@ -26,7 +26,10 @@ The new bounded-error law is
 `ArithmeticCouplingTheory/ReceivingCharges/PrimeIncidenceCapacityGrowth.lean`.
 Its final actual-path check uses exactly
 `[propext, Classical.choice, Quot.sound]`. The critical-scale consequence
-stated above still needs its own Lean corollary.
+and the divergence `c_N t²/C_N→∞` for t≠0 also pass their final
+actual-path check in
+`CriticalScaleArithmeticRigidity/ReceivingCharges/PrimeCapacityAtCriticalScale.lean`
+with exactly those axioms. Both modules are wired into their umbrellas.
 
 This is a dilation statement. A comparable lower bound for the **complete**
 energy is a separate open problem; no such comparison is assumed here.
@@ -81,13 +84,14 @@ For the critical corollary, write
 log(1/R), while log(c_N)/c_N→0. The bounded capacity error divided
 by c_N also vanishes. Since C_N>0 for N≥2, this implies
 `c_N t²/C_N→∞` for every fixed nonzero t. The corresponding source is
-`ReceivingCharges/PrimeCapacityAtCriticalScale.lean`; its audit is pending.
+`ReceivingCharges/PrimeCapacityAtCriticalScale.lean`.
 
-All three steps now pass their final actual-path Lean audits:
+The three finite-sum steps pass their final actual-path Lean audits:
 `PrimeIncidenceCapacityCofactors.lean`, `InverseHarmonicLogSum.lean` and
 `PrimeIncidenceCapacityGrowth.lean`. Each endpoint uses only the standard
-three axioms. This closes the bounded-error law; the complete-energy
-comparison and critical-rate application below remain separate obligations.
+three axioms. Together with the checked critical-scale corollary, this
+closes the stated dilation theorem. The complete-energy comparison
+remains a separate research question.
 
 ## Attack and positive survivor
 

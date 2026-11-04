@@ -21,6 +21,7 @@ import GaloisForLFunctions.ZeroConfigurationGeometry.WindowsBlindToALattice
 import GaloisForLFunctions.ZeroConfigurationGeometry.ShallowPairsAreNearCollisions
 import GaloisForLFunctions.ZeroConfigurationGeometry.BlindWindowsAtTheDensityAperture
 import GaloisForLFunctions.ZeroConfigurationGeometry.HeatStepsNeverShrinkTheMesh
+import GaloisForLFunctions.ZeroConfigurationGeometry.ResolutionIsUniformInDepth
 
 /-!
 # Zero Configuration Geometry
@@ -31,7 +32,8 @@ Umbrella for the explicit formula read as a camera.
 * Identification: finite modifications are seen at every aperture, with an explicit and stable
   inverse by differential windows; the primes pin every finite piece of the zeros of `ζ`.
 * Hiding: on-line mimics need near-collisions; Ingham's inequality with tilts and its block form
-  for FE pairs; shallow pairs are near-collisions (the tilted near-collision constraint).
+  for FE pairs; resolution uniform in depth, so that every mimic needs a near-collision in height
+  or a deep point.
 * The function-field camera: identification at lag `g log q`, mimic classification, sharpness.
 * Euler columns: the Ramanujan bound as reality, separation of columns just above their prime,
   the square-root threshold for columns of Riemann–von Mangoldt density.
