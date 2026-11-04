@@ -1,7 +1,7 @@
 # Zero Configuration Geometry (ZCG)
 
 Namespace `GaloisForLFunctions.ZeroConfigurationGeometry`; umbrella `ZeroConfigurationGeometry.lean`;
-29 modules.
+36 modules.
 
 ## 1. Motivation
 
@@ -112,6 +112,16 @@ programme locates exactly where it leaves the sign-free world.
    make every off-diagonal entry `O(B/x²)` with `B = O(1/V)`. So resolution is uniform in depth:
    mimics at aperture `a > V/2` with depths `≤ 1/V` contain two points of different FE orbits
    closer than `90/V`, or a deeper point. Shallow pairs hide nothing.
+   For shallow configurations the scale drops to the Ingham scale. A pair is its centre plus a
+   remainder, `p e^{δv} + q e^{−δv} = (p + q) + p(e^{δv} − 1) + q(e^{−δv} − 1)`. The centres
+   form a scalar exponential sum, bounded below by Ingham's inequality at the sharp threshold
+   `g > π/V`. The remainders have size `e^{2sV} − 1` and derivatives `O(s)`, so their mean square is
+   `K(V, g, s) Σ(|p| + |q|)²` with `K → 0`. The camera is localized at the site where the
+   multiplicity weighted by `1 + |ρ − ½|²` is largest. There both coefficients equal `m κ̂_w(−iδ)²`,
+   which is real, so no phase cancels. Elsewhere the weights decay like `(1 + |x|)^{−8}` and beat
+   the growth of the multiplicities. So for every `g > π/(2a)` some depth `s₀ > 0` resolves:
+   mimics at aperture `a` contain two points of different FE orbits closer than `g`, or a point
+   deeper than `s₀`. The lattice pair shows that the constant `π` is optimal.
 6. *Differential windows invert the camera.* `(g' + izg)^(w) = −i(w − z)ĝ(w)`. Composing these
    operators over the other points of a finite modification gives a window, of any aperture, that
    reads one coefficient exactly: `W_Z(f, g) − W_{Z'}(f, g) = c(z₀) ∏_{z ≠ z₀} (−i(γ_{z₀} − γ_z))`.
@@ -263,6 +273,13 @@ programme locates exactly where it leaves the sign-free world.
 | Every bounded perturbation of a lattice is blinded at the density aperture; finite unions | `exists_stage_window`, `exists_blind_limit_window`, `exists_window_blind_to_perturbed_lattice`, `exists_window_blind_to_perturbed_lattices` | unconditional |
 | Converse Paley–Wiener; blind windows are entire functions of exponential type | `exists_smooth_source_of_entire`, `exists_pow_mul_norm_paperFT_le_exp`, `exists_window_of_entire`, `blind_windows_iff_entire` | unconditional |
 | Every real configuration of finite upper uniform density `D` is blinded above `πD` | `card_le_card_biUnion_intNbhd`, `exists_injective_near_int`, `exists_window_blind_of_count_le`, `exists_window_blind_of_density_le`, `exists_window_blind_of_separated` | unconditional |
+| Shallow configurations are resolved at the Ingham scale; the constant `π` is optimal | `pair_eq_centre_add_rem`, `remainder_upper`, `ingham_lower`, `inghamConst_mul_normSq_le`, `tsum_le_of_decay`, `eq_of_weil_eq_of_shallow`, `exists_depth_resolving_at_ingham_scale`, `exists_near_pair_or_deep_of_mimic_at_ingham_scale`, `not_exists_depth_resolving_at_ingham_threshold` | unconditional |
+| Every fake is separated exactly at its first prime | `FirstDisagreement`, `exists_window_arithmeticImage_ne`, `arithmeticImage_eq_iff`, `eq_of_arithmeticImage_eq`, `exists_window_W_ne_zeta`, `flipData_mimic_iff` | unconditional |
+| Blindness costs the density aperture (Jensen) | `log_norm_add_density_le`, `pi_mul_le_of_blind`, `pi_mul_le_aperture_of_blind`, `eq_zero_of_blind_of_unbounded_density`, `eq_zero_of_blind_to_real_zeros_of_xi` | unconditional |
+| Isolation identifies the cluster; perturbed-lattice clusters never cancel above `πD` | `W_sub_W_eq_tsum`, `W_eq_of_mimic`, `multDiff_eq_zero_of_isolated`, `eq_of_mimic_of_isolable`, `eq_of_mimic_of_simple_zeros`, `eq_of_mimic_of_onLine_lattice`, `eq_of_mimic_of_perturbed_lattice`, `eq_of_mimic_of_perturbed_lattices` | unconditional |
+| Purity leaves only through a Frobenius collision (function-field deformation) | `IsPure`, `IsFrobeniusCollision`, `isPure_iff_circle`, `eventually_pure_of_simple`, `isClosed_pure`, `exists_first_frobenius_collision`, `exists_first_circle_collision`, `isPure_of_forall_not_frobeniusCollision` | unconditional |
+| The curve camera sees exactly the top coefficients; it identifies at the genus | `curveImage`, `traceConfig`, `curveImage_eq_iff_coeff_eq`, `eq_of_curveImage_eq`, `isPure_of_curveImage_eq`, `exists_pure_mimics`, `exists_tilted_mimic` | unconditional |
+| Bounded images certify purity; image growth reads the deepest eigenvalue | `exists_simultaneous_return`, `exists_large_powerSum`, `curveImage_growth`, `norm_curveImage_le_of_isPure`, `isPure_iff_bounded_curveImage` | unconditional |
 | Division at transform zeros; isolating windows | `exists_window_div`, `exists_isolating_window`, `exists_window_isolating_lattice_point` | unconditional |
 | The lattice threshold `π/h` is sharp | `tsum_add_int_eq_zero_of_fourier_eq_zero`, `eq_zero_of_blind_to_lattice`, `exists_window_blind_to_lattice_iff` | unconditional |
 | Cosine camera: real zeros, complex additive rigidity | `im_eq_zero_of_cosineWindowTransform_eq_zero`, `no_complex_additive_zero_triple` | unconditional, `0 < θ < π/2` |
@@ -283,6 +300,14 @@ programme locates exactly where it leaves the sign-free world.
   at most `2πc/(90L)`, the image at every aperture above `V/2`, `V = 90L/(2πc)`, identifies the configuration
   (`exists_near_pair_of_mimic_of_le`). *Open:* mimics whose unions have near-collisions below a
   fixed fraction of the mean spacing; the exponent for those is the coalescent question Q3.
+  In the function-field model, for monic trace polynomials of degree `g` and `k ≤ g`, the images
+  `S_1, …, S_k` agree if and only if the coefficients agree in degrees `≥ g − k`
+  (`curveImage_eq_iff_coeff_eq`). Dickson sums against power sums and Newton's identities are the
+  two unitriangular changes behind it. So aperture `g` identifies (`eq_of_curveImage_eq`): the
+  point counts up to `𝔽_{q^g}` fix the zeta function. Below the genus two distinct pure
+  configurations are mimics (`exists_pure_mimics`), and every configuration has a tilted mimic with
+  a trace root at `3`, i.e. eigenvalues off the circle (`exists_tilted_mimic`). The threshold is
+  exact and dimensional: order `m` of the camera fixes the coefficient of degree `g − m`.
 - **Q2 Cancelling clusters.** Finite clusters never cancel. On-line cancelling clusters at aperture
   `a` contain near-collisions at every scale above `π/(2a)`, and the lattice pair attains it.
   Column clusters of a common spacing cancel at aperture `a` exactly when their traces agree below
@@ -293,8 +318,20 @@ programme locates exactly where it leaves the sign-free world.
   for depths `≤ 1/V` it is `90/V` (`exists_near_pair_of_mimic_of_le`). Resolution is uniform in
   depth, and shallow pairs hide nothing. In the basis `e^{±δv}` the same argument only gave the
   scale `g ≳ 1/ε` for pairs of depth `≥ ε`, with a dim-camera refinement; that loss was the
-  basis. So hiding needs a near-collision in height. *Open:* the optimal constant, between the
-  `90/V` proved here and the column mimics, which hide at separation `π/V`.
+  basis. So hiding needs a near-collision in height. For shallow configurations the optimal
+  constant is `π`. For every aperture `a` and every `g > π/(2a)` there is a depth `s₀ > 0` such
+  that two different tempered configurations of depth `≤ s₀` with one image at aperture `a`
+  contain two points of different FE orbits closer than `g`
+  (`exists_near_pair_or_deep_of_mimic_at_ingham_scale`). At `g = π/(2a)` the on-line lattice pair
+  hides (`not_exists_depth_resolving_at_ingham_threshold`). Infinite polarization makes mimicry a
+  statement about every window pair (`W_eq_of_mimic`). A cancelling cluster has no point that a
+  window of the aperture isolates from the rest (`multDiff_eq_zero_of_isolated`). So clusters
+  inside the simple zero set of one transform of aperture `a`, on the lattice `{½ + ikh}` above
+  `π/h`, or on finite unions of bounded perturbations of lattices on the line above `πD` are
+  trivial (`eq_of_mimic_of_perturbed_lattices`). This is a density criterion for cancelling
+  clusters, sharp against Euler columns, which cancel up to `π/h`. *Open:* the depth range of
+  the Ingham scale, i.e. whether a fixed depth budget is resolved at every `g > π/(2a)` or only
+  depths below `s₀(a, g)`.
 - **Q3 Sub-spacing geometry.** Near a collision the camera reads the squared gap linearly, as the
   coefficient of the height curvature `f̂''` of the image; real against tilted is the sign of that
   coefficient, to relative precision `(Δr)²`. Through the explicit formula the height curvature of
@@ -311,7 +348,13 @@ programme locates exactly where it leaves the sign-free world.
   (`cosTransform_heat_zeros_im_sq_le` in RHTower). Forward heat time is thus repulsive both on
   average and pointwise, while backward time is bounded: the least time at which a finite real
   configuration of total squared gap `S` is real is at least `−S/(2n²(n−1))`. RH is the statement
-  that the configuration of `ζ` is still real at time `0` of the backward flow. *Open:* a repulsion
+  that the configuration of `ζ` is still real at time `0` of the backward flow. In the
+  function-field model a trace polynomial of genus `g` is pure if and only if its circle polynomial
+  `z^g Q(z + z⁻¹)` has every root on `|z| = 1` (`isPure_iff_circle`). Along any continuous family
+  of fixed degree purity is closed, simple pure points are interior, and purity is lost only at a
+  Frobenius collision: a double trace root, or a trace root at `±2`, i.e. an eigenvalue meeting
+  its inverse at `±1` (`exists_first_frobenius_collision`). Collisions are necessary for exit,
+  not sufficient. *Open:* a repulsion
   law that reaches tilt `0`, i.e. reality of `ζ` itself, along backward heat time or Euler depth.
 - **Q5 Window design.** The cosine camera of the proportion engine has only real kernel zeros for
   `0 < θ < π/2`, so additive rigidity holds over `ℂ`. Against the real lattice `hℤ` every aperture
@@ -341,15 +384,32 @@ programme locates exactly where it leaves the sign-free world.
   lines vanish on the configuration (`blind_windows_iff_entire`). *Open:* the exact threshold for
   configurations whose uniform density overstates their size, such as sparse sets with dense
   clumps; it is the Beurling–Malliavin completeness radius, between the Jensen bound and `πD⁺`.
+  The density aperture is necessary for every configuration. A nonzero window of aperture `A`
+  blind to a configuration with at least `2Dρ − K` points in large balls about every real point
+  has `A ≥ πD` (`pi_mul_le_aperture_of_blind`, Jensen with the angular mean `(2/π)R` of
+  `|Im z|`). So `πD` is the exact price of blindness, and no window is blind to a configuration
+  of unbounded density, such as the zeros of `ξ` (`eq_zero_of_blind_to_real_zeros_of_xi`).
   Isolation also costs no aperture: for every
   `r > π/h` one window sees exactly one point of `hℤ` (`exists_window_isolating_lattice_point`).
 - **Q6 Selectivity.** Euler columns at `p` are mimics of on-line lattices at aperture `a` exactly
   when `a ≤ log p/2`, and are excluded only by the Ramanujan bound at `p`. Bounded apertures exclude
   no infinite family of twins, while the family of all apertures excludes each twin at the first
   aperture beyond its prime. The golden root datum, with no point on the circle, mimics the pure
-  datum exactly up to lag `g log q`.
+  datum exactly up to lag `g log q`. At the level of arithmetic data the camera family separates
+  every fake with the archimedean place and pole of `ζ` exactly at its first prime. Data agreeing
+  with `Λ` below `n₀` and differing at `n₀` have equal images on every window of aperture `r`
+  if and only if `2r ≤ log n₀` (`arithmeticImage_eq_iff`). Prime flips with least prime `p₀`,
+  however sparse, are seen exactly above `½ log p₀` (`flipData_mimic_iff`). Mimicry lives only at
+  the level of configurations.
 - **Q0 Certification.** In the function field, purity is certified at the identification threshold
-  by the positions of the trace points. For `ζ`, see §10.
+  by the positions of the trace points. The model has two certificates. One is the exact image up
+  to the genus (`isPure_of_curveImage_eq`). The other is a size bound at all orders: purity holds
+  if and only if the image is bounded (`isPure_iff_bounded_curveImage`), and the Weil bound is
+  `|S_m| ≤ 2g` (`norm_curveImage_le_of_isPure`). The image grows like the deepest eigenvalue:
+  `|S_n| ≤ 2g Rⁿ` always and `|S_n| ≥ Rⁿ/4` infinitely often (`curveImage_growth`), by simultaneous
+  return of unimodular numbers. This is the function-field Landau principle: the growth exponent of
+  the image is the deepest tilt. A size bound at finitely many orders certifies nothing, because
+  tilted mimics agree below the genus. For `ζ`, see §10.
 
 ## 7. Tools
 
@@ -381,9 +441,11 @@ programme locates exactly where it leaves the sign-free world.
   perturbed lattice; uniform limits of windows with converging transforms; the converse
   Paley–Wiener theorem for entire functions decaying on horizontal lines; Hall matching of a real
   configuration of bounded local count into a lattice.
+- The centre–remainder split of a pair, the remainder bound on the doubled interval, truncation
+  of vanishing pair sums, and localization at the site of maximal weighted multiplicity.
 
 **To build.**
-- The optimal resolution scale `g(V, s)` of the depth-uniform constraint.
+- The depth range of the Ingham scale: resolution at `g > π/(2a)` for every fixed depth budget.
 - Kernel design below the upper uniform density: the Beurling–Malliavin radius of a real
   configuration, through the equivalence with entire functions of exponential type.
 
@@ -397,6 +459,9 @@ programme locates exactly where it leaves the sign-free world.
 | Bounded bandwidth excludes arithmetic fakes | For every aperture some prime carries Euler columns of every depth that hide |
 | Depth is read at first order | The depth and gap signals are quadratic near a collision |
 | Certifying reality needs a sign | In the function field, identification at lag `g log q` certifies purity by the positions of the trace points; Weil positivity is proved to decide only with `2g` lags (`curveConfig_weil_nonneg_iff_unitary_of_card_le`) |
+| Cancelling clusters can be sparse or perturbed | A cluster inside an isolable set (lattice, bounded perturbation of a lattice, finite union of these, simple zero set of one transform) never cancels at the isolation aperture. Whether every cluster of lower density `< a/π` is isolable at aperture `a` is open |
+| The resolution scale of off-line pairs is worse than Ingham's | Shallow configurations are resolved at every `g > π/(2a)`; only deep points cost separation |
+| Collisions signal non-purity | In the function-field model purity is lost only at a collision, but pure configurations collide freely (a trace root at `±2` or a double trace root keeps purity); a collision criterion characterizes exits, not states |
 | Identification certifies reality for `ζ` too | No finite aperture identifies the zeros of `ζ`: lattice columns of RvM density hide up to `λ = ½`, and infinite mimics beyond columns are not classified |
 | Reality can leave the line smoothly | Only through a collision, a real double root |
 | Euler products separate `ζ` from twins at finite resolution | Only the Ramanujan bound at each prime does |
@@ -406,7 +471,7 @@ programme locates exactly where it leaves the sign-free world.
 
 | Direction | Programmes (module imports) |
 |---|---|
-| Uses | RHTower 9, SquareRootThreshold 9, HTGeometry 5, ArithmeticCastelnuovoSeveri 4, SelbergClass 1, IncommensurableGaborPinching 1, Zeta23 |
+| Uses | RHTower 11, SquareRootThreshold 9, HTGeometry 7, ArithmeticCastelnuovoSeveri 4, SelbergClass 1, IncommensurableGaborPinching 1, Zeta23 |
 
 | Neighbour | Interface |
 |---|---|

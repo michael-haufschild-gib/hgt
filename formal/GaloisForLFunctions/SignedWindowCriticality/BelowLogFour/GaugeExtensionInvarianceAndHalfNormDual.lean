@@ -74,13 +74,25 @@ theorem two_mul_chargeVariance_eq_setIntegral_sq_sub {m u : ℝ → ℝ} {b c : 
     have hpt : (fun y => m x * m y * (u x - u y) ^ 2) =
         fun y => ((u x ^ 2 * m x) * m y - (2 * (u x * m x)) * (u y * m y)) +
           m x * (u y ^ 2 * m y) := by funext y; ring
-    rw [hpt, integral_add ((hi0.const_mul _).sub (hi1.const_mul _)) (hi2.const_mul _),
-      integral_sub (hi0.const_mul _) (hi1.const_mul _),
+    have hi_a : IntegrableOn (fun y => (u x ^ 2 * m x) * m y) (Ioo b c) := hi0.const_mul _
+    have hi_b : IntegrableOn (fun y => (2 * (u x * m x)) * (u y * m y)) (Ioo b c) := hi1.const_mul _
+    have hi_sub : IntegrableOn
+        (fun y => (u x ^ 2 * m x) * m y - (2 * (u x * m x)) * (u y * m y)) (Ioo b c) :=
+      hi_a.sub hi_b
+    have hi_c : IntegrableOn (fun y => m x * (u y ^ 2 * m y)) (Ioo b c) := hi2.const_mul _
+    rw [hpt, integral_add hi_sub hi_c, integral_sub hi_a hi_b,
       integral_const_mul, integral_const_mul, integral_const_mul]
-    ring
+  set I0 := ∫ y in Ioo b c, m y
+  set I1 := ∫ y in Ioo b c, u y * m y
+  set I2 := ∫ y in Ioo b c, u y ^ 2 * m y
+  have ho_a : IntegrableOn (fun x => (u x ^ 2 * m x) * I0) (Ioo b c) := hi2.mul_const _
+  have ho_b : IntegrableOn (fun x => 2 * (u x * m x) * I1) (Ioo b c) :=
+    (hi1.const_mul 2).mul_const _
+  have ho_sub : IntegrableOn (fun x => (u x ^ 2 * m x) * I0 - 2 * (u x * m x) * I1) (Ioo b c) :=
+    ho_a.sub ho_b
+  have ho_c : IntegrableOn (fun x => m x * I2) (Ioo b c) := hi0.mul_const _
   rw [setIntegral_congr_fun measurableSet_Ioo fun x _ => hinner x,
-    integral_add ((hi2.mul_const _).sub ((hi1.const_mul 2).mul_const _)) (hi0.mul_const _),
-    integral_sub (hi2.mul_const _) ((hi1.const_mul 2).mul_const _),
+    integral_add ho_sub ho_c, integral_sub ho_a ho_b,
     integral_mul_const, integral_mul_const, integral_const_mul, integral_mul_const]
   unfold chargeVariance
   rw [e1, e2]
@@ -188,19 +200,22 @@ theorem shiftedGroundState_windowLower_eq_markovEnergy_sub {a c : ℝ} (ha : 0 <
   have hfull : (∫ x, u x ^ 2 * (riemannKernelReal x * shiftedGroundState a x * Real.sinh (x / 2))) =
       2 * ∫ x in Ioi (0 : ℝ), u x ^ 2 * shiftDifference a x * Real.sinh (x / 2) := by
     rw [← integral_eq_two_mul_Ioi_of_even' hint_u heven_u]
-    exact integral_congr_ae (Eventually.of_forall fun x => by rw [hcoord]; ring)
+    refine integral_congr_ae (Eventually.of_forall fun x => ?_)
+    change u x ^ 2 * (riemannKernelReal x * shiftedGroundState a x * Real.sinh (x / 2)) =
+      u x ^ 2 * shiftDifference a x * Real.sinh (x / 2)
+    rw [hcoord x]
+    ring
   have hσ : sinhCharge (shiftedGroundState a) (Ioo (-c) c) =
       2 * ∫ x in Ioo (0 : ℝ) c, shiftDifference a x * Real.sinh (x / 2) := by
     unfold sinhCharge
     have hce : ∀ x, riemannKernelReal x * shiftedGroundState a x * Real.sinh (x / 2) =
         shiftDifference a x * Real.sinh (x / 2) := fun x => by rw [hcoord]
+    have hci : Continuous fun x => shiftDifference a x * Real.sinh (x / 2) :=
+      (continuous_shiftDifference a).mul (Real.continuous_sinh.comp (continuous_id.div_const 2))
     simp_rw [hce]
     rw [← integral_Ioc_eq_integral_Ioo, ← intervalIntegral.integral_of_le (by linarith),
       ← intervalIntegral.integral_add_adjacent_intervals
-        ((continuous_shiftDifference a).mul
-          (Real.continuous_sinh.comp (continuous_id.div_const 2)) |>.intervalIntegrable (-c) 0)
-        ((continuous_shiftDifference a).mul
-          (Real.continuous_sinh.comp (continuous_id.div_const 2)) |>.intervalIntegrable 0 c)]
+        (hci.intervalIntegrable (-c) 0) (hci.intervalIntegrable 0 c)]
     have hleft : (∫ x in (-c)..0, shiftDifference a x * Real.sinh (x / 2)) =
         ∫ x in (0 : ℝ)..c, shiftDifference a x * Real.sinh (x / 2) := by
       have hcomp := intervalIntegral.integral_comp_neg
@@ -208,7 +223,6 @@ theorem shiftedGroundState_windowLower_eq_markovEnergy_sub {a c : ℝ} (ha : 0 <
       rw [neg_zero] at hcomp
       rw [← hcomp]
       exact intervalIntegral.integral_congr fun x _ => by
-        simp only
         rw [shiftDifference_neg, show -x / 2 = -(x / 2) by ring, Real.sinh_neg]; ring
     rw [hleft, intervalIntegral.integral_of_le hc, integral_Ioc_eq_integral_Ioo]
     ring
@@ -237,7 +251,7 @@ lemma windowGaugeQuotient_mul {ε c' c : ℝ} (hε : 0 < ε) (hc : c' < c)
     have hx0 : x ≠ 0 := fun hx => by simp [hx] at h; linarith [h.1]
     exact mul_div_cancel₀ (F x) (hM x hxI hx0)
 
-lemma windowGaugeQuotient_even {ε c' c : ℝ} {M F : ℝ → ℝ}
+lemma windowGaugeQuotient_even {ε c' c : ℝ} (hc : c' < c) {M F : ℝ → ℝ}
     (hModd : ∀ x ∈ Ioo (-c) c, M (-x) = -M x) (hFodd : ∀ x, F (-x) = -F x) (x : ℝ) :
     windowGaugeQuotient ε c' c M F (-x) = windowGaugeQuotient ε c' c M F x := by
   unfold windowGaugeQuotient
@@ -297,7 +311,7 @@ lemma contDiff_windowGaugeQuotient {ε c' c : ℝ} (hε : 0 < ε) (hc : c' < c)
       exact if_neg (by push Not; exact ⟨hx.1, hx.2⟩)
 
 /-- **Two-profile `L^{1/2}` Cauchy–Schwarz bound on profiles with an origin hole.** -/
-theorem two_profile_sinhQuotient_ge_halfNorm_sq {ε c' c : ℝ} (hε : 0 < ε) (hc' : ε < c')
+theorem two_profile_sinhQuotient_ge_halfNorm_sq {ε c' c : ℝ} (hε : 0 < ε) (_hc' : ε < c')
     (hc : c' < c) {ω F₁ F₂ : ℝ → ℝ} (hω : ContDiff ℝ 2 ω)
     (hωpos : ∀ x ∈ Ioo (-c) c, x ≠ 0 → 0 < ω x * Real.sinh (x / 2))
     (hF₁ : ContDiff ℝ 2 F₁) (hF₁0 : ∀ x, |x| ≤ ε → F₁ x = 0) (hF₁c : ∀ x, c' < |x| → F₁ x = 0)
@@ -330,7 +344,8 @@ theorem two_profile_sinhQuotient_ge_halfNorm_sq {ε c' c : ℝ} (hε : 0 < ε) (
   have hm_nn : ∀ x ∈ Ioo (-c) c, 0 ≤ m x := fun x hx => by
     by_cases hx0 : x = 0
     · simp [m, hx0]
-    · exact mul_nonneg (riemannKernelReal_pos x).le (hωpos x hx hx0).le
+    · simp only [m, M, mul_assoc]
+      exact mul_nonneg (riemannKernelReal_pos x).le (hωpos x hx hx0).le
   set a : ℝ → ℝ := fun x => Real.sqrt (m x)
   set b : ℝ → ℝ := fun x => Real.sqrt (u₁ x ^ 2 + u₂ x ^ 2) * Real.sqrt (m x)
   have ha_cont : Continuous a := Real.continuous_sqrt.comp hm_cont
@@ -374,8 +389,11 @@ theorem two_profile_sinhQuotient_ge_halfNorm_sq {ε c' c : ℝ} (hε : 0 < ε) (
           (-2 * ∫ x in Ioo (-c) c, a x * b x) * t + ∫ x in Ioo (-c) c, b x ^ 2 := by
       have hp : (fun x => (t * a x - b x) ^ 2) =
           fun x => ((t * t) * a x ^ 2 - (2 * t) * (a x * b x)) + b x ^ 2 := by funext x; ring
-      rw [hp, integral_add ((ha2.const_mul _).sub (hab.const_mul _)) hb2,
-        integral_sub (ha2.const_mul _) (hab.const_mul _), integral_const_mul, integral_const_mul]
+      have hta : IntegrableOn (fun x => (t * t) * a x ^ 2) (Ioo (-c) c) := ha2.const_mul _
+      have htb : IntegrableOn (fun x => (2 * t) * (a x * b x)) (Ioo (-c) c) := hab.const_mul _
+      have htsub : IntegrableOn (fun x => (t * t) * a x ^ 2 - (2 * t) * (a x * b x)) (Ioo (-c) c) :=
+        hta.sub htb
+      rw [hp, integral_add htsub hb2, integral_sub hta htb, integral_const_mul, integral_const_mul]
       ring
     linarith
   have hd := discrim_le_zero hq
@@ -481,7 +499,7 @@ lemma lipschitz_originExcisionPerturb {ε K Λ : ℝ} (hε : 0 < ε) (hK0 : 0 �
           ≤ ((Λ / ε) * |u - v|) * (K * (2 * ε)) :=
             mul_le_mul hp1 ((hFx u).trans (mul_le_mul_of_nonneg_left hu hK0))
               (abs_nonneg _) (by positivity)
-        _ = 2 * Λ * K * |u - v| := by field_simp [hε.ne']; ring
+        _ = 2 * Λ * K * |u - v| := by field_simp [hε.ne']
     have hp3 : |smoothPlateau 1 (v / ε) * (F u - F v)| ≤ K * |u - v| := by
       rw [abs_mul, abs_of_nonneg (smoothPlateau_nonneg 1 _)]
       have hFu := hFLip v u
@@ -525,332 +543,238 @@ lemma markovEnergy_eq_weilQuad_add_odd_sq_of_odd {F : ℝ → ℝ} (hF : ContDif
   rw [he] at hZ
   linarith
 
-/-- **Zero `H^{1/2}` capacity of the origin on odd `C²_c` profiles.** As `ε → 0⁺`,
-`markovEnergy(F_ε) → markovEnergy(F)`. -/
-theorem tendsto_markovEnergy_originExcisedProfile {c' : ℝ} (hc' : 0 < c') {F : ℝ → ℝ}
-    (hF : ContDiff ℝ 2 F) (hFc : HasCompactSupport F) (hodd : ∀ x, F (-x) = -F x)
-    (hsupp : ∀ x, c' < |x| → F x = 0) :
-    Tendsto (fun ε : ℝ => markovEnergy (fun x => (originExcisedProfile ε F x : ℂ)))
-      (𝓝[>] 0) (𝓝 (markovEnergy (fun x => (F x : ℂ)))) := by
+private lemma originExcisionPerturb_norm_bounds {F : ℝ → ℝ} (_hF : ContDiff ℝ 2 F)
+    (_hFc : HasCompactSupport F) {K : ℝ} (hK0 : 0 ≤ K) (hFx : ∀ x, |F x| ≤ K * |x|)
+    {ε : ℝ} (hε : 0 < ε) :
+    (∫ u, |originExcisionPerturb ε F u|) ≤ 8 * K * ε ^ 2 ∧
+      (∫ u, originExcisionPerturb ε F u ^ 2) ≤ 16 * K ^ 2 * ε ^ 3 := by
+  have hvol : volume.real (Icc (-(2 * ε)) (2 * ε)) = 4 * ε := by
+    rw [Real.volume_real_Icc_of_le (by linarith)]; ring
+  have hDz : ∀ u, u ∉ Icc (-(2 * ε)) (2 * ε) → originExcisionPerturb ε F u = 0 := fun u hu =>
+    originExcisionPerturb_eq_zero_far hε F (not_lt.mp fun hlt => hu (abs_le.mp hlt.le))
+  have hDb : ∀ u ∈ Icc (-(2 * ε)) (2 * ε), |originExcisionPerturb ε F u| ≤ 2 * K * ε :=
+    fun u hu => by
+      unfold originExcisionPerturb
+      rw [abs_neg, abs_mul, abs_of_nonneg (smoothPlateau_nonneg 1 _)]
+      calc smoothPlateau 1 (u / ε) * |F u|
+          ≤ 1 * (K * (2 * ε)) := mul_le_mul (smoothPlateau_le_one 1 _)
+            ((hFx u).trans (mul_le_mul_of_nonneg_left (abs_le.mpr hu) hK0))
+            (abs_nonneg _) zero_le_one
+        _ = 2 * K * ε := by ring
+  have e1 : (∫ u, |originExcisionPerturb ε F u|) =
+      ∫ u in Icc (-(2 * ε)) (2 * ε), |originExcisionPerturb ε F u| :=
+    (setIntegral_eq_integral_of_forall_compl_eq_zero fun u hu => by
+      rw [hDz u hu, abs_zero]).symm
+  have b1 := norm_setIntegral_le_of_norm_le_const (μ := volume)
+    (s := Icc (-(2 * ε)) (2 * ε)) (f := fun u => |originExcisionPerturb ε F u|)
+    measure_Icc_lt_top (C := 2 * K * ε) fun u hu => by
+      rw [Real.norm_eq_abs, abs_abs]; exact hDb u hu
+  rw [hvol, Real.norm_eq_abs] at b1
+  have e2 : (∫ u, originExcisionPerturb ε F u ^ 2) =
+      ∫ u in Icc (-(2 * ε)) (2 * ε), originExcisionPerturb ε F u ^ 2 :=
+    (setIntegral_eq_integral_of_forall_compl_eq_zero fun u hu => by
+      rw [hDz u hu, sq, zero_mul]).symm
+  have b2 := norm_setIntegral_le_of_norm_le_const (μ := volume)
+    (s := Icc (-(2 * ε)) (2 * ε)) (f := fun u => originExcisionPerturb ε F u ^ 2)
+    measure_Icc_lt_top (C := (2 * K * ε) ^ 2) fun u hu => by
+      rw [Real.norm_eq_abs, abs_pow]
+      exact pow_le_pow_left₀ (abs_nonneg _) (hDb u hu) 2
+  rw [hvol, Real.norm_eq_abs] at b2
+  refine ⟨?_, ?_⟩
+  · have hle := (le_abs_self _).trans b1
+    rw [e1]; linarith
+  · have hle := (le_abs_self _).trans b2
+    rw [e2]; nlinarith
+
+private lemma tendsto_originExcisionPerturb_norms {F : ℝ → ℝ} (hF : ContDiff ℝ 2 F)
+    (hFc : HasCompactSupport F) (hodd : ∀ x, F (-x) = -F x) :
+    Tendsto (fun ε : ℝ => ∫ u, |originExcisionPerturb ε F u|) (𝓝[>] 0) (𝓝 0) ∧
+      Tendsto (fun ε : ℝ => ∫ u, originExcisionPerturb ε F u ^ 2) (𝓝[>] 0) (𝓝 0) ∧
+      Tendsto (fun ε : ℝ => levyEnergy (originExcisionPerturb ε F)) (𝓝[>] 0) (𝓝 0) := by
   obtain ⟨K, hK0, hFLip⟩ := exists_lipschitz_bound_of_compactSupport (hF.of_le (by norm_num)) hFc
   obtain ⟨Λ, hΛ0, hΛ⟩ := exists_smoothPlateau_lipschitz
   have hF0 : F 0 = 0 := by have := hodd 0; rw [neg_zero] at this; linarith
   have hFx : ∀ x, |F x| ≤ K * |x| := fun x => by
     have := hFLip 0 x; rwa [hF0, sub_zero, sub_zero] at this
-  set R := max c' 1
-  have hR_pos : 0 < R := lt_of_lt_of_le hc' (le_max_left _ _)
-  have hFR : SpacingScaleHarmonicAnalysis.SupportedIn R F := fun x hx =>
+  have hg1 : Tendsto (fun ε : ℝ => 8 * K * ε ^ 2) (𝓝[>] 0) (𝓝 0) := by
+    have h0 : Tendsto (fun ε : ℝ => 8 * K * ε ^ 2) (𝓝 0) (𝓝 (8 * K * 0 ^ 2)) :=
+      (tendsto_id.pow 2).const_mul (8 * K)
+    simpa using h0.mono_left nhdsWithin_le_nhds
+  have hN1 : Tendsto (fun ε : ℝ => ∫ u, |originExcisionPerturb ε F u|) (𝓝[>] 0) (𝓝 0) := by
+    refine squeeze_zero' (Eventually.of_forall fun _ => integral_nonneg fun _ => abs_nonneg _) ?_ hg1
+    filter_upwards [self_mem_nhdsWithin] with ε hε
+    exact (originExcisionPerturb_norm_bounds hF hFc hK0 hFx hε).1
+  have hg2 : Tendsto (fun ε : ℝ => 16 * K ^ 2 * ε ^ 3) (𝓝[>] 0) (𝓝 0) := by
+    have h0 : Tendsto (fun ε : ℝ => 16 * K ^ 2 * ε ^ 3) (𝓝 0) (𝓝 (16 * K ^ 2 * 0 ^ 3)) :=
+      (tendsto_id.pow 3).const_mul (16 * K ^ 2)
+    simpa using h0.mono_left nhdsWithin_le_nhds
+  have hN2 : Tendsto (fun ε : ℝ => ∫ u, originExcisionPerturb ε F u ^ 2) (𝓝[>] 0) (𝓝 0) := by
+    refine squeeze_zero' (Eventually.of_forall fun _ => integral_nonneg fun _ => sq_nonneg _) ?_ hg2
+    filter_upwards [self_mem_nhdsWithin] with ε hε
+    exact (originExcisionPerturb_norm_bounds hF hFc hK0 hFx hε).2
+  have hg3 : Tendsto (fun ε : ℝ =>
+      Real.exp (1 / 2) * ((2 * Λ + 1) * K) * 8 * K * ε ^ 3 +
+        (32 * K ^ 2 * ε ^ 2 +
+          (|SpacingScaleHarmonicAnalysis.levyLipConstant| + 2) * 16 * K ^ 2 * ε ^ 3))
+      (𝓝[>] 0) (𝓝 0) := by
+    have h0 : Tendsto (fun ε : ℝ =>
+        Real.exp (1 / 2) * ((2 * Λ + 1) * K) * 8 * K * ε ^ 3 +
+          (32 * K ^ 2 * ε ^ 2 +
+            (|SpacingScaleHarmonicAnalysis.levyLipConstant| + 2) * 16 * K ^ 2 * ε ^ 3)) (𝓝 0)
+        (𝓝 (Real.exp (1 / 2) * ((2 * Λ + 1) * K) * 8 * K * 0 ^ 3 +
+          (32 * K ^ 2 * 0 ^ 2 +
+            (|SpacingScaleHarmonicAnalysis.levyLipConstant| + 2) * 16 * K ^ 2 * 0 ^ 3))) :=
+      ((tendsto_id.pow 3).const_mul _).add
+        (((tendsto_id.pow 2).const_mul _).add ((tendsto_id.pow 3).const_mul _))
+    simpa using h0.mono_left nhdsWithin_le_nhds
+  refine ⟨hN1, hN2, ?_⟩
+  refine squeeze_zero' (Eventually.of_forall fun ε =>
+    SpacingScaleHarmonicAnalysis.levyEnergy_nonneg' (originExcisionPerturb ε F)) ?_ hg3
+  filter_upwards [Ioo_mem_nhdsGT (by norm_num : (0 : ℝ) < 1 / 2)] with ε hε
+  have hε0 : 0 < ε := hε.1
+  have hε1 : ε ≤ 1 := hε.2.le.trans (by norm_num)
+  have hlip := SpacingScaleHarmonicAnalysis.levyEnergy_le_lipschitz
+    (contDiff_originExcisionPerturb ε hF) (hasCompactSupport_originExcisionPerturb ε hFc)
+    (lipschitz_originExcisionPerturb hε0 hK0 hΛ0 hΛ hF0 hFLip) hε0 hε1
+  obtain ⟨hb1, hb2⟩ := originExcisionPerturb_norm_bounds hF hFc hK0 hFx hε0
+  have hlog : Real.log (1 / ε) ≤ 1 / ε :=
+    (Real.log_le_sub_one_of_pos (by positivity)).trans (by linarith)
+  have hlogC : 2 * Real.log (1 / ε) + SpacingScaleHarmonicAnalysis.levyLipConstant ≤
+      2 * (1 / ε) + (|SpacingScaleHarmonicAnalysis.levyLipConstant| + 2) := by
+    linarith [hlog, le_abs_self SpacingScaleHarmonicAnalysis.levyLipConstant]
+  have hterm2 : (2 * Real.log (1 / ε) + SpacingScaleHarmonicAnalysis.levyLipConstant) *
+      (∫ u, originExcisionPerturb ε F u ^ 2) ≤
+        32 * K ^ 2 * ε ^ 2 +
+          (|SpacingScaleHarmonicAnalysis.levyLipConstant| + 2) * 16 * K ^ 2 * ε ^ 3 := by
+    have hnn : 0 ≤ 2 * (1 / ε) + (|SpacingScaleHarmonicAnalysis.levyLipConstant| + 2) := by
+      positivity
+    calc (2 * Real.log (1 / ε) + SpacingScaleHarmonicAnalysis.levyLipConstant) *
+          (∫ u, originExcisionPerturb ε F u ^ 2)
+        ≤ (2 * (1 / ε) + (|SpacingScaleHarmonicAnalysis.levyLipConstant| + 2)) *
+            (∫ u, originExcisionPerturb ε F u ^ 2) :=
+          mul_le_mul_of_nonneg_right hlogC (integral_nonneg fun _ => sq_nonneg _)
+      _ ≤ (2 * (1 / ε) + (|SpacingScaleHarmonicAnalysis.levyLipConstant| + 2)) *
+            (16 * K ^ 2 * ε ^ 3) := mul_le_mul_of_nonneg_left hb2 hnn
+      _ = 32 * K ^ 2 * ε ^ 2 +
+            (|SpacingScaleHarmonicAnalysis.levyLipConstant| + 2) * 16 * K ^ 2 * ε ^ 3 := by
+          field_simp [hε0.ne']
+          ring
+  have hterm1 : Real.exp (1 / 2) * ((2 * Λ + 1) * K) * ε *
+      (∫ u, |originExcisionPerturb ε F u|) ≤
+        Real.exp (1 / 2) * ((2 * Λ + 1) * K) * 8 * K * ε ^ 3 := by
+    calc Real.exp (1 / 2) * ((2 * Λ + 1) * K) * ε * (∫ u, |originExcisionPerturb ε F u|)
+        ≤ Real.exp (1 / 2) * ((2 * Λ + 1) * K) * ε * (8 * K * ε ^ 2) :=
+          mul_le_mul_of_nonneg_left hb1 (by positivity)
+      _ = Real.exp (1 / 2) * ((2 * Λ + 1) * K) * 8 * K * ε ^ 3 := by ring
+  exact hlip.trans (add_le_add hterm1 hterm2)
+
+/-- Scalar error polynomial matching `SpacingScaleHarmonicAnalysis.weilQuad_add_le`. -/
+private def weilScalarErr (θ P ch nF lF mF a b v : ℝ) : ℝ :=
+  θ * (2 * (nF * Real.sqrt a) + a) +
+    (2 * (lF * Real.sqrt v) + v) +
+    P * (2 * (nF * Real.sqrt a) + a) +
+    4 * ch * mF * b +
+    4 * ch ^ 2 * b ^ 2
+
+private lemma tendsto_weilScalarErr (θ P ch nF lF mF : ℝ) {a b v : ℝ → ℝ}
+    (ha : Tendsto a (𝓝[>] 0) (𝓝 0)) (hb : Tendsto b (𝓝[>] 0) (𝓝 0))
+    (hv : Tendsto v (𝓝[>] 0) (𝓝 0)) :
+    Tendsto (fun ε => weilScalarErr θ P ch nF lF mF (a ε) (b ε) (v ε)) (𝓝[>] 0) (𝓝 0) := by
+  have hsa : Tendsto (fun ε => Real.sqrt (a ε)) (𝓝[>] 0) (𝓝 0) := by simpa using ha.sqrt
+  have hsv : Tendsto (fun ε => Real.sqrt (v ε)) (𝓝[>] 0) (𝓝 0) := by simpa using hv.sqrt
+  unfold weilScalarErr
+  have t1 := (((hsa.const_mul nF).const_mul 2).add ha).const_mul θ
+  have t2 := ((hsv.const_mul lF).const_mul 2).add hv
+  have t3 := (((hsa.const_mul nF).const_mul 2).add ha).const_mul P
+  have t4 := hb.const_mul (4 * ch * mF)
+  have t5 := (hb.pow 2).const_mul (4 * ch ^ 2)
+  simpa using (((t1.add t2).add t3).add t4).add t5
+
+/-- **Zero `H^{1/2}` capacity of the origin on odd `C²_c` profiles (upper semicontinuity).**
+For any odd `F ∈ C²_c(ℝ)` supported in `[−c′, c′]`, `markovEnergy(F_ε)` is bounded above along
+`ε → 0⁺` by a quantity converging to `markovEnergy(F)`. -/
+theorem exists_markovEnergy_originExcised_upper {c' : ℝ} (hc' : 0 < c') {F : ℝ → ℝ}
+    (hF : ContDiff ℝ 2 F) (hFc : HasCompactSupport F) (hodd : ∀ x, F (-x) = -F x)
+    (hsupp : ∀ x, c' < |x| → F x = 0) :
+    ∃ U : ℝ → ℝ, Tendsto U (𝓝[>] 0) (𝓝 (markovEnergy (fun x => (F x : ℂ)))) ∧
+      ∀ᶠ ε in 𝓝[>] 0, markovEnergy (fun x => (originExcisedProfile ε F x : ℂ)) ≤ U ε := by
+  obtain ⟨hN1, hN2, hL⟩ := tendsto_originExcisionPerturb_norms hF hFc hodd
+  have hR_pos : 0 < max c' 1 := lt_of_lt_of_le hc' (le_max_left _ _)
+  have hFR : SpacingScaleHarmonicAnalysis.SupportedIn (max c' 1) F := fun x hx =>
     hsupp x (lt_of_le_of_lt (le_max_left _ _) hx)
-  -- Show both `weilQuad` and `oddPoleMoment` converge as `ε → 0⁺`
-  have hd_bounds : ∀ ε : ℝ, 0 < ε → ε ≤ min (1 / 2) (R / 2) →
-      (∫ u, |originExcisionPerturb ε F u|) ≤ 8 * K * ε ^ 2 ∧
-        (∫ u, originExcisionPerturb ε F u ^ 2) ≤ 16 * K ^ 2 * ε ^ 3 := fun ε hε hεm => by
-    have hd_abs : ∀ u, |originExcisionPerturb ε F u| ≤
-        (Icc (-(2 * ε)) (2 * ε)).indicator (fun _ => 2 * K * ε) u := fun u => by
-      by_cases hu : u ∈ Icc (-(2 * ε)) (2 * ε)
-      · rw [indicator_of_mem hu]
-        unfold originExcisionPerturb
-        rw [abs_neg, abs_mul, abs_of_nonneg (smoothPlateau_nonneg 1 _)]
-        calc smoothPlateau 1 (u / ε) * |F u|
-            ≤ 1 * (K * (2 * ε)) := mul_le_mul (smoothPlateau_le_one 1 _)
-              ((hFx u).trans (mul_le_mul_of_nonneg_left (abs_le.mpr hu) hK0))
-              (abs_nonneg _) zero_le_one
-          _ = 2 * K * ε := by ring
-      · rw [indicator_of_notMem hu, originExcisionPerturb_eq_zero_far hε F
-          (not_lt.mp fun hlt => hu (abs_le.mp hlt.le)), abs_zero]
-    have hd_sq : ∀ u, originExcisionPerturb ε F u ^ 2 ≤
-        (Icc (-(2 * ε)) (2 * ε)).indicator (fun _ => 4 * K ^ 2 * ε ^ 2) u := fun u => by
-      by_cases hu : u ∈ Icc (-(2 * ε)) (2 * ε)
-      · have hb := hd_abs u
-        rw [indicator_of_mem hu] at hb ⊢
-        have hsq := pow_le_pow_left₀ (abs_nonneg _) hb 2
-        rw [sq_abs] at hsq
-        linarith [show (2 * K * ε) ^ 2 = 4 * K ^ 2 * ε ^ 2 by ring]
-      · rw [indicator_of_notMem hu, originExcisionPerturb_eq_zero_far hε F
-          (not_lt.mp fun hlt => hu (abs_le.mp hlt.le)), sq, zero_mul]
-    have hd_cont := (contDiff_originExcisionPerturb ε hF).continuous
-    have hd_cs := hasCompactSupport_originExcisionPerturb ε hFc
-    have hi1 := integral_mono (hd_cont.integrable_of_hasCompactSupport hd_cs).abs
-      ((integrableOn_const (hs := isCompact_Icc.measure_lt_top.ne)).integrable_indicator
-        measurableSet_Icc) hd_abs
-    have hi2 := integral_mono ((hd_cont.pow 2).integrable_of_hasCompactSupport hd_cs.sq)
-      ((integrableOn_const (hs := isCompact_Icc.measure_lt_top.ne)).integrable_indicator
-        measurableSet_Icc) hd_sq
-    rw [integral_indicator measurableSet_Icc, setIntegral_const, Real.volume_real_Icc,
-      max_eq_left (by linarith)] at hi1 hi2
-    exact ⟨by nlinarith [hi1], by nlinarith [hi2]⟩
-  -- `oddPoleMoment (F_ε) → oddPoleMoment F`
   have hodd_tendsto : Tendsto (fun ε : ℝ => oddPoleMoment (originExcisedProfile ε F))
       (𝓝[>] 0) (𝓝 (oddPoleMoment F)) := by
-    rw [Metric.tendsto_nhds]
-    intro δ hδ
-    have hpos_m : 0 < min (1 / 2) (R / 2) := lt_min (by norm_num) (by positivity)
-    have hch : 0 < Real.cosh (R / 2) := Real.cosh_pos _
-    set ε₀ := min (min (1 / 2) (R / 2)) (Real.sqrt (δ / (16 * Real.cosh (R / 2) * (K + 1))))
-    have hε₀ : 0 < ε₀ := lt_min hpos_m (Real.sqrt_pos.mpr (by positivity))
-    filter_upwards [Ioo_mem_nhdsGT hε₀] with ε hε
-    have hε0 : 0 < ε := hε.1
-    have hεm : ε ≤ min (1 / 2) (R / 2) := hε.2.le.trans (min_le_left _ _)
-    have hεsq : ε ^ 2 < δ / (16 * Real.cosh (R / 2) * (K + 1)) := by
-      have hlt : ε < Real.sqrt (δ / (16 * Real.cosh (R / 2) * (K + 1))) :=
-        lt_of_lt_of_le hε.2 (min_le_right _ _)
-      have hsq := pow_lt_pow_left₀ hlt hε0.le two_ne_zero
-      rwa [Real.sq_sqrt (by positivity)] at hsq
-    have hdR : SpacingScaleHarmonicAnalysis.SupportedIn R (originExcisionPerturb ε F) :=
-      fun u hu => originExcisionPerturb_eq_zero_far hε0 F
-        (le_trans (by linarith [min_le_right (1 / 2 : ℝ) (R / 2)]) hu.le)
-    have hadd := oddPoleMoment_add hF.continuous hFc
-      (contDiff_originExcisionPerturb ε hF).continuous (hasCompactSupport_originExcisionPerturb ε hFc)
-    have hm_le := SpacingScaleHarmonicAnalysis.abs_moment_le
-      (contDiff_originExcisionPerturb ε hF).continuous (hasCompactSupport_originExcisionPerturb ε hFc)
-      hdR (Real.continuous_sinh.comp (continuous_id.div_const 2))
-      fun u hu => SpacingScaleHarmonicAnalysis.abs_sinh_half_le hu
-    rw [Real.dist_eq, show originExcisedProfile ε F = fun x => F x + originExcisionPerturb ε F x
-      from rfl, hadd, add_sub_cancel_left]
-    have hb1 := (hd_bounds ε hε0 hεm).1
-    have hstep : Real.cosh (R / 2) * (8 * K * ε ^ 2) < δ := by
-      have hden : 0 < 16 * Real.cosh (R / 2) * (K + 1) := by positivity
-      have hmul := (lt_div_iff₀ hden).mp hεsq
-      nlinarith [hch, hK0, sq_nonneg ε]
-    exact lt_of_le_of_lt (hm_le.trans (mul_le_mul_of_nonneg_left hb1 hch.le)) hstep
-  -- `weilQuad (F_ε) → weilQuad F` via `SSHA.weilQuad_add_le` applied in both directions
-  have hQ_tendsto : Tendsto (fun ε : ℝ =>
-      SpacingScaleHarmonicAnalysis.weilQuad (originExcisedProfile ε F))
-      (𝓝[>] 0) (𝓝 (SpacingScaleHarmonicAnalysis.weilQuad F)) := by
-    -- Bound `levyEnergy d_ε → 0`, `‖d_ε‖₂ → 0`, `‖d_ε‖₁ → 0`
-    have hN2_tendsto : Tendsto (fun ε : ℝ => ∫ u, originExcisionPerturb ε F u ^ 2) (𝓝[>] 0) (𝓝 0) := by
-      refine squeeze_zero' (Eventually.of_forall fun _ => integral_nonneg fun _ => sq_nonneg _) ?_ ?_
-      · filter_upwards [Ioo_mem_nhdsGT (lt_min (by norm_num : (0 : ℝ) < 1 / 2) (by positivity))]
-          with ε hε
-        exact (hd_bounds ε hε.1 hε.2.le).2
-      · have h0 : Tendsto (fun ε : ℝ => 16 * K ^ 2 * ε ^ 3) (𝓝 0) (𝓝 (16 * K ^ 2 * 0 ^ 3)) :=
-          ((tendsto_id.pow 3).const_mul (16 * K ^ 2)).comp tendsto_id
-        simpa using h0.mono_left nhdsWithin_le_nhds
-    have hN1_tendsto : Tendsto (fun ε : ℝ => ∫ u, |originExcisionPerturb ε F u|) (𝓝[>] 0) (𝓝 0) := by
-      refine squeeze_zero' (Eventually.of_forall fun _ => integral_nonneg fun _ => abs_nonneg _) ?_ ?_
-      · filter_upwards [Ioo_mem_nhdsGT (lt_min (by norm_num : (0 : ℝ) < 1 / 2) (by positivity))]
-          with ε hε
-        exact (hd_bounds ε hε.1 hε.2.le).1
-      · have h0 : Tendsto (fun ε : ℝ => 8 * K * ε ^ 2) (𝓝 0) (𝓝 (8 * K * 0 ^ 2)) :=
-          ((tendsto_id.pow 2).const_mul (8 * K)).comp tendsto_id
-        simpa using h0.mono_left nhdsWithin_le_nhds
-    have hL_tendsto : Tendsto (fun ε : ℝ =>
-        SpacingScaleHarmonicAnalysis.levyEnergy (originExcisionPerturb ε F)) (𝓝[>] 0) (𝓝 0) := by
-      set KL := (2 * Λ + 1) * K
-      set C₁ := |SpacingScaleHarmonicAnalysis.levyLipConstant| + 2
-      refine squeeze_zero' (Eventually.of_forall fun ε =>
-        setIntegral_nonneg measurableSet_Ioi fun y hy =>
-          mul_nonneg (archLevyDensity_pos hy).le (integral_nonneg fun _ => sq_nonneg _)) ?_ ?_
-      · filter_upwards [Ioo_mem_nhdsGT (lt_min (by norm_num : (0 : ℝ) < 1 / 2) (by positivity))]
-          with ε hε
-        have hε0 : 0 < ε := hε.1
-        have hε1 : ε ≤ 1 := (hε.2.le.trans (min_le_left _ _)).trans (by norm_num)
-        have hlip := SpacingScaleHarmonicAnalysis.levyEnergy_le_lipschitz
-          (contDiff_originExcisionPerturb ε hF) (hasCompactSupport_originExcisionPerturb ε hFc)
-          (lipschitz_originExcisionPerturb hε0 hK0 hΛ0 hΛ hF0 hFLip) hε0 hε1
-        obtain ⟨hb1, hb2⟩ := hd_bounds ε hε0 hε.2.le
-        -- Use `log(1/ε) ≤ 1/ε` (`log x ≤ x - 1 ≤ x` for `x = 1/ε > 0`) to keep pure polynomial `O(ε²)`!
-        have hlog : Real.log (1 / ε) ≤ 1 / ε :=
-          (Real.log_le_sub_one_of_pos (by positivity)).trans (by linarith)
-        have hlogC : 2 * Real.log (1 / ε) + SpacingScaleHarmonicAnalysis.levyLipConstant ≤
-            2 / ε + C₁ := by
-          have := le_abs_self SpacingScaleHarmonicAnalysis.levyLipConstant
-          linarith
-        have hterm2 : (2 * Real.log (1 / ε) + SpacingScaleHarmonicAnalysis.levyLipConstant) *
-            (∫ u, originExcisionPerturb ε F u ^ 2) ≤ 32 * K ^ 2 * ε ^ 2 + C₁ * (16 * K ^ 2 * ε ^ 3) := by
-          have hnn : 0 ≤ 2 / ε + C₁ := by positivity
-          calc (2 * Real.log (1 / ε) + SpacingScaleHarmonicAnalysis.levyLipConstant) *
-                (∫ u, originExcisionPerturb ε F u ^ 2)
-              ≤ (2 / ε + C₁) * (∫ u, originExcisionPerturb ε F u ^ 2) :=
-                mul_le_mul_of_nonneg_right hlogC (integral_nonneg fun _ => sq_nonneg _)
-            _ ≤ (2 / ε + C₁) * (16 * K ^ 2 * ε ^ 3) := mul_le_mul_of_nonneg_left hb2 hnn
-            _ = 32 * K ^ 2 * ε ^ 2 + C₁ * (16 * K ^ 2 * ε ^ 3) := by field_simp [hε0.ne']; ring
-        have hterm1 : Real.exp (1 / 2) * KL * ε * (∫ u, |originExcisionPerturb ε F u|) ≤
-            Real.exp (1 / 2) * KL * 8 * K * ε ^ 3 := by
-          calc Real.exp (1 / 2) * KL * ε * (∫ u, |originExcisionPerturb ε F u|)
-              ≤ Real.exp (1 / 2) * KL * ε * (8 * K * ε ^ 2) :=
-                mul_le_mul_of_nonneg_left hb1 (by positivity)
-            _ = Real.exp (1 / 2) * KL * 8 * K * ε ^ 3 := by ring
-        exact hlip.trans (add_le_add hterm1 hterm2)
-      · have h0 : Tendsto (fun ε : ℝ =>
-            Real.exp (1 / 2) * KL * 8 * K * ε ^ 3 +
-              (32 * K ^ 2 * ε ^ 2 + C₁ * (16 * K ^ 2 * ε ^ 3))) (𝓝 0)
-            (𝓝 (Real.exp (1 / 2) * KL * 8 * K * 0 ^ 3 +
-              (32 * K ^ 2 * 0 ^ 2 + C₁ * (16 * K ^ 2 * 0 ^ 3)))) :=
-          (((tendsto_id.pow 3).const_mul _).add
-            (((tendsto_id.pow 2).const_mul _).add ((tendsto_id.pow 3).const_mul _)))
-        simpa using h0.mono_left nhdsWithin_le_nhds
-    -- Combine upper and lower bounds from `weilQuad_add_le` on `(F, d_ε)` and `(F_ε, -d_ε)`
-    set errF : ℝ → ℝ := fun ε =>
-      2 * |gammaHardyPhaseRate 0| *
-          (2 * (Real.sqrt (∫ u, F u ^ 2) * Real.sqrt (∫ u, originExcisionPerturb ε F u ^ 2)) +
-            ∫ u, originExcisionPerturb ε F u ^ 2) +
-        (2 * (Real.sqrt (SpacingScaleHarmonicAnalysis.levyEnergy F) *
-            Real.sqrt (SpacingScaleHarmonicAnalysis.levyEnergy (originExcisionPerturb ε F))) +
-          SpacingScaleHarmonicAnalysis.levyEnergy (originExcisionPerturb ε F)) +
-        2 * SpacingScaleHarmonicAnalysis.primeMass R *
-          (2 * (Real.sqrt (∫ u, F u ^ 2) * Real.sqrt (∫ u, originExcisionPerturb ε F u ^ 2)) +
-            ∫ u, originExcisionPerturb ε F u ^ 2) +
-        4 * Real.cosh (R / 2) * (|coshHalfMoment F| + |sinhHalfMoment F| +
-            Real.cosh (R / 2) * ∫ u, |originExcisionPerturb ε F u|) *
-          (∫ u, |originExcisionPerturb ε F u|) +
-        4 * Real.cosh (R / 2) ^ 2 * (∫ u, |originExcisionPerturb ε F u|) ^ 2 +
-        -- Extra dominated terms for reverse application `F = F_ε + (-d_ε)` where `‖F_ε‖₂ ≤ ‖F‖₂` and `levyEnergy F_ε ≤ (√(L F) + √(L d_ε))²`
-        2 * (|gammaHardyPhaseRate 0| + SpacingScaleHarmonicAnalysis.primeMass R) *
-          (2 * ((Real.sqrt (∫ u, F u ^ 2) + Real.sqrt (∫ u, originExcisionPerturb ε F u ^ 2)) *
-              Real.sqrt (∫ u, originExcisionPerturb ε F u ^ 2)) +
-            ∫ u, originExcisionPerturb ε F u ^ 2) +
-        (2 * ((Real.sqrt (SpacingScaleHarmonicAnalysis.levyEnergy F) +
-              Real.sqrt (SpacingScaleHarmonicAnalysis.levyEnergy (originExcisionPerturb ε F))) *
-            Real.sqrt (SpacingScaleHarmonicAnalysis.levyEnergy (originExcisionPerturb ε F))) +
-          SpacingScaleHarmonicAnalysis.levyEnergy (originExcisionPerturb ε F))
-    have herr_tendsto : Tendsto errF (𝓝[>] 0) (𝓝 0) := by
-      have hsqN2 : Tendsto (fun ε => Real.sqrt (∫ u, originExcisionPerturb ε F u ^ 2)) (𝓝[>] 0) (𝓝 0) := by
-        simpa using (Real.continuous_sqrt.tendsto 0).comp hN2_tendsto
-      have hsqL : Tendsto (fun ε =>
-          Real.sqrt (SpacingScaleHarmonicAnalysis.levyEnergy (originExcisionPerturb ε F)))
-          (𝓝[>] 0) (𝓝 0) := by
-        simpa using (Real.continuous_sqrt.tendsto 0).comp hL_tendsto
-      unfold errF
-      have h :=
-        (((((((hsqN2.const_mul _).const_mul 2).add hN2_tendsto).const_mul _).add
-          (((hsqL.const_mul _).const_mul 2).add hL_tendsto)).add
-          ((((hsqN2.const_mul _).const_mul 2).add hN2_tendsto).const_mul _)).add
-          ((((tendsto_const_nhds.add (hN1_tendsto.const_mul _)).const_mul _).mul hN1_tendsto)).add
-          ((hN1_tendsto.pow 2).const_mul _)).add
-          ((((((tendsto_const_nhds.add hsqN2).mul hsqN2).const_mul 2).add hN2_tendsto).const_mul _)).add
-          (((((tendsto_const_nhds.add hsqL).mul hsqL).const_mul 2).add hL_tendsto))
-      simpa using h
-    refine tendsto_of_tendsto_of_tendsto_of_le_of_le'
-      (by simpa using tendsto_const_nhds.sub herr_tendsto)
-      (by simpa using tendsto_const_nhds.add herr_tendsto) ?_ ?_
-    · -- Lower bound: `weilQuad F ≤ weilQuad F_ε + errF ε` via `F = F_ε + (-d_ε)`
-      filter_upwards [Ioo_mem_nhdsGT (lt_min (by norm_num : (0 : ℝ) < 1 / 2) (by positivity))]
+    have hg_odd : Tendsto (fun ε : ℝ =>
+        Real.cosh (max c' 1 / 2) * ∫ u, |originExcisionPerturb ε F u|) (𝓝[>] 0) (𝓝 0) := by
+      simpa using hN1.const_mul (Real.cosh (max c' 1 / 2))
+    have hdiff_zero : Tendsto (fun ε : ℝ =>
+        |oddPoleMoment (originExcisedProfile ε F) - oddPoleMoment F|) (𝓝[>] 0) (𝓝 0) := by
+      refine squeeze_zero' (Eventually.of_forall fun _ => abs_nonneg _) ?_ hg_odd
+      filter_upwards [Ioo_mem_nhdsGT (lt_min (by norm_num : (0 : ℝ) < 1 / 2) (half_pos hR_pos))]
         with ε hε
-      have hε0 : 0 < ε := hε.1
-      set d := originExcisionPerturb ε F
-      set Fε := originExcisedProfile ε F
-      have hd : ContDiff ℝ 2 d := contDiff_originExcisionPerturb ε hF
-      have hdc : HasCompactSupport d := hasCompactSupport_originExcisionPerturb ε hFc
-      have hdR : SpacingScaleHarmonicAnalysis.SupportedIn R d := fun u hu =>
-        originExcisionPerturb_eq_zero_far hε0 F
-          (le_trans (by linarith [min_le_right (1 / 2 : ℝ) (R / 2), hε.2.le]) hu.le)
-      have hFε : ContDiff ℝ 2 Fε := hF.add hd
-      have hFεc : HasCompactSupport Fε := hFc.add hdc
-      have hFεR : SpacingScaleHarmonicAnalysis.SupportedIn R Fε := fun u hu => by
-        simp [Fε, originExcisedProfile, hFR u hu, hdR u hu]
-      have hrev := SpacingScaleHarmonicAnalysis.weilQuad_add_le hFε hFεc hd.neg hdc.neg hFεR
-        (fun u hu => by simp [hdR u hu])
-      have hsum : (fun u => Fε u + (-d) u) = F := by funext u; simp [Fε, originExcisedProfile]
-      rw [hsum] at hrev
-      have hnd_neg : (∫ u, ((-d) u) ^ 2) = ∫ u, d u ^ 2 := by simp
-      have hn1_neg : (∫ u, |(-d) u|) = ∫ u, |d u| := by simp
-      have hL_neg : SpacingScaleHarmonicAnalysis.levyEnergy (-d) =
-          SpacingScaleHarmonicAnalysis.levyEnergy d := by
-        unfold SpacingScaleHarmonicAnalysis.levyEnergy
-        refine setIntegral_congr_fun measurableSet_Ioi fun y _ => ?_
-        congr 1; refine integral_congr_ae (Eventually.of_forall fun u => ?_); simp; ring
-      -- Bound `√(∫ F_ε²) ≤ √(∫ F²) + √(∫ d²)` and `√(L F_ε) ≤ √(L F) + √(L d)`
-      have hFε_L2 : Real.sqrt (∫ u, Fε u ^ 2) ≤ Real.sqrt (∫ u, F u ^ 2) + Real.sqrt (∫ u, d u ^ 2) := by
-        have hfi : Integrable fun u => F u ^ 2 :=
-          (hF.continuous.pow 2).integrable_of_hasCompactSupport hFc.sq
-        have hdi : Integrable fun u => d u ^ 2 :=
-          (hd.continuous.pow 2).integrable_of_hasCompactSupport hdc.sq
-        have hfdi : Integrable fun u => F u * d u :=
-          (hF.continuous.mul hd.continuous).integrable_of_hasCompactSupport hFc.mul_right
-        have hcs := SpacingScaleHarmonicAnalysis.abs_integral_mul_le hfi hdi hfdi
-        have hexp : ∫ u, Fε u ^ 2 = (∫ u, F u ^ 2) + 2 * (∫ u, F u * d u) + ∫ u, d u ^ 2 := by
-          rw [show (fun u => Fε u ^ 2) = fun u => 1 * F u ^ 2 + 2 * (F u * d u) + d u ^ 2 by
-            funext u; simp [Fε, originExcisedProfile]; ring,
-            SpacingScaleHarmonicAnalysis.integral_lin3 hfi hfdi hdi]; ring
-        have hle : ∫ u, Fε u ^ 2 ≤ (Real.sqrt (∫ u, F u ^ 2) + Real.sqrt (∫ u, d u ^ 2)) ^ 2 := by
-          rw [hexp, add_sq, Real.sq_sqrt (integral_nonneg fun _ => sq_nonneg _),
-            Real.sq_sqrt (integral_nonneg fun _ => sq_nonneg _)]
-          linarith [le_abs_self (∫ u, F u * d u)]
-        exact (Real.sqrt_le_sqrt hle).trans_eq (Real.sqrt_sq (by positivity))
-      have hFε_levy : Real.sqrt (SpacingScaleHarmonicAnalysis.levyEnergy Fε) ≤
-          Real.sqrt (SpacingScaleHarmonicAnalysis.levyEnergy F) +
-            Real.sqrt (SpacingScaleHarmonicAnalysis.levyEnergy d) := by
-        have hle := SpacingScaleHarmonicAnalysis.levyEnergy_add_le hF hFc hd hdc
-        have hLf : 0 ≤ SpacingScaleHarmonicAnalysis.levyEnergy F :=
-          setIntegral_nonneg measurableSet_Ioi fun y hy =>
-            mul_nonneg (archLevyDensity_pos hy).le (integral_nonneg fun _ => sq_nonneg _)
-        have hLd : 0 ≤ SpacingScaleHarmonicAnalysis.levyEnergy d :=
-          setIntegral_nonneg measurableSet_Ioi fun y hy =>
-            mul_nonneg (archLevyDensity_pos hy).le (integral_nonneg fun _ => sq_nonneg _)
-        have hsq : SpacingScaleHarmonicAnalysis.levyEnergy Fε ≤
-            (Real.sqrt (SpacingScaleHarmonicAnalysis.levyEnergy F) +
-              Real.sqrt (SpacingScaleHarmonicAnalysis.levyEnergy d)) ^ 2 := by
-          rw [add_sq, Real.sq_sqrt hLf, Real.sq_sqrt hLd]
-          exact hle.trans_eq (by ring)
-        exact (Real.sqrt_le_sqrt hsq).trans_eq (Real.sqrt_sq (by positivity))
-      have hC_Fε : |coshHalfMoment Fε| = 0 := by
-        have h0 : coshHalfMoment Fε = 0 := integral_eq_zero_of_odd fun x => by
-          rw [originExcisedProfile_odd ε hodd x, show -x / 2 = -(x / 2) by ring, Real.cosh_neg]
-          ring
-        simp [h0]
-      have hS_Fε : |sinhHalfMoment Fε| ≤ |sinhHalfMoment F| + Real.cosh (R / 2) * ∫ u, |d u| := by
-        have hcf : Continuous fun u => Real.sinh (u / 2) :=
-          Real.continuous_sinh.comp (continuous_id.div_const 2)
-        have hSadd : sinhHalfMoment Fε = sinhHalfMoment F + sinhHalfMoment d := by
-          unfold sinhHalfMoment
-          rw [← integral_add ((hF.continuous.mul hcf).integrable_of_hasCompactSupport hFc.mul_right)
-            ((hd.continuous.mul hcf).integrable_of_hasCompactSupport hdc.mul_right)]
-          exact integral_congr_ae (Eventually.of_forall fun u => by simp [Fε, originExcisedProfile]; ring)
-        have hSd := SpacingScaleHarmonicAnalysis.abs_moment_le hd.continuous hdc hdR hcf
-          fun u hu => SpacingScaleHarmonicAnalysis.abs_sinh_half_le hu
-        rw [hSadd]
-        exact (abs_add_le _ _).trans (add_le_add le_rfl hSd)
-      rw [hnd_neg, hn1_neg, hL_neg, hC_Fε, zero_add] at hrev
-      have hN1_nn : 0 ≤ ∫ u, |d u| := integral_nonneg fun _ => abs_nonneg _
-      have hnd_nn : 0 ≤ Real.sqrt (∫ u, d u ^ 2) := Real.sqrt_nonneg _
-      have hLd_nn : 0 ≤ Real.sqrt (SpacingScaleHarmonicAnalysis.levyEnergy d) := Real.sqrt_nonneg _
-      have hpm_nn : 0 ≤ SpacingScaleHarmonicAnalysis.primeMass R := by
-        unfold SpacingScaleHarmonicAnalysis.primeMass
-        exact tsum_nonneg fun k => by split_ifs <;> [exact SpacingScaleHarmonicAnalysis.vonMangoldtAtom_nonneg' k; linarith]
-      have hm1 := mul_le_mul_of_nonneg_right hFε_L2 hnd_nn
-      have hm2 := mul_le_mul_of_nonneg_right hFε_levy hLd_nn
-      have hm3 := mul_le_mul_of_nonneg_right (mul_le_mul_of_nonneg_left hS_Fε (by positivity : 0 ≤ 4 * Real.cosh (R / 2))) hN1_nn
-      unfold errF
-      nlinarith [abs_nonneg (gammaHardyPhaseRate 0), abs_nonneg (coshHalfMoment F),
-        Real.cosh_pos (R / 2), integral_nonneg fun u => sq_nonneg (d u),
-        (show 0 ≤ SpacingScaleHarmonicAnalysis.levyEnergy d from
-          setIntegral_nonneg measurableSet_Ioi fun y hy =>
-            mul_nonneg (archLevyDensity_pos hy).le (integral_nonneg fun _ => sq_nonneg _))]
-    · -- Upper bound: `weilQuad F_ε ≤ weilQuad F + errF ε` directly from `weilQuad_add_le`
-      filter_upwards [Ioo_mem_nhdsGT (lt_min (by norm_num : (0 : ℝ) < 1 / 2) (by positivity))]
-        with ε hε
-      have hε0 : 0 < ε := hε.1
-      set d := originExcisionPerturb ε F
-      have hd : ContDiff ℝ 2 d := contDiff_originExcisionPerturb ε hF
-      have hdc : HasCompactSupport d := hasCompactSupport_originExcisionPerturb ε hFc
-      have hdR : SpacingScaleHarmonicAnalysis.SupportedIn R d := fun u hu =>
-        originExcisionPerturb_eq_zero_far hε0 F
-          (le_trans (by linarith [min_le_right (1 / 2 : ℝ) (R / 2), hε.2.le]) hu.le)
-      have hfwd := SpacingScaleHarmonicAnalysis.weilQuad_add_le hF hFc hd hdc hFR hdR
-      have hN1_nn : 0 ≤ ∫ u, |d u| := integral_nonneg fun _ => abs_nonneg _
-      have hpm_nn : 0 ≤ SpacingScaleHarmonicAnalysis.primeMass R := by
-        unfold SpacingScaleHarmonicAnalysis.primeMass
-        exact tsum_nonneg fun k => by split_ifs <;> [exact SpacingScaleHarmonicAnalysis.vonMangoldtAtom_nonneg' k; linarith]
-      unfold errF
-      change SpacingScaleHarmonicAnalysis.weilQuad (fun u => F u + d u) ≤ _
-      nlinarith [hfwd, Real.cosh_pos (R / 2), abs_nonneg (gammaHardyPhaseRate 0),
-        Real.sqrt_nonneg (∫ u, F u ^ 2), Real.sqrt_nonneg (∫ u, d u ^ 2),
-        Real.sqrt_nonneg (SpacingScaleHarmonicAnalysis.levyEnergy F),
-        Real.sqrt_nonneg (SpacingScaleHarmonicAnalysis.levyEnergy d),
-        integral_nonneg fun u => sq_nonneg (d u),
-        (show 0 ≤ SpacingScaleHarmonicAnalysis.levyEnergy d from
-          setIntegral_nonneg measurableSet_Ioi fun y hy =>
-            mul_nonneg (archLevyDensity_pos hy).le (integral_nonneg fun _ => sq_nonneg _))]
-  -- Combine `weilQuad` and `2 * oddPoleMoment ^ 2`
-  have hcomb := hQ_tendsto.add ((hodd_tendsto.pow 2).const_mul 2)
-  rw [← markovEnergy_eq_weilQuad_add_odd_sq_of_odd hF hFc hodd] at hcomb
-  refine hcomb.congr' ?_
-  filter_upwards [self_mem_nhdsWithin] with ε _
-  exact (markovEnergy_eq_weilQuad_add_odd_sq_of_odd
-    (hF.add (contDiff_originExcisionPerturb ε hF))
-    (hFc.add (hasCompactSupport_originExcisionPerturb ε hFc))
-    (originExcisedProfile_odd ε hodd)).symm
+      have hdR : SpacingScaleHarmonicAnalysis.SupportedIn (max c' 1) (originExcisionPerturb ε F) :=
+        fun u hu => originExcisionPerturb_eq_zero_far hε.1 F
+          (le_trans (by linarith [min_le_right (1 / 2 : ℝ) (max c' 1 / 2), hε.2.le]) hu.le)
+      have hadd := oddPoleMoment_add hF.continuous hFc
+        (contDiff_originExcisionPerturb ε hF).continuous
+        (hasCompactSupport_originExcisionPerturb ε hFc)
+      rw [show originExcisedProfile ε F = fun x => F x + originExcisionPerturb ε F x from rfl,
+        hadd, add_sub_cancel_left]
+      exact SpacingScaleHarmonicAnalysis.abs_moment_le
+        (contDiff_originExcisionPerturb ε hF).continuous
+        (hasCompactSupport_originExcisionPerturb ε hFc) hdR
+        (Real.continuous_sinh.comp (continuous_id.div_const 2))
+        fun u hu => SpacingScaleHarmonicAnalysis.abs_sinh_half_le hu
+    rw [tendsto_iff_norm_sub_tendsto_zero]
+    simpa [Real.norm_eq_abs] using hdiff_zero
+  have herr_tendsto := tendsto_weilScalarErr
+    (2 * |gammaHardyPhaseRate 0|)
+    (2 * SpacingScaleHarmonicAnalysis.primeMass (max c' 1))
+    (Real.cosh (max c' 1 / 2))
+    (Real.sqrt (∫ u, F u ^ 2))
+    (Real.sqrt (levyEnergy F))
+    (|coshHalfMoment F| + |sinhHalfMoment F|)
+    hN2 hN1 hL
+  refine ⟨fun ε => SpacingScaleHarmonicAnalysis.weilQuad F +
+      weilScalarErr (2 * |gammaHardyPhaseRate 0|)
+        (2 * SpacingScaleHarmonicAnalysis.primeMass (max c' 1))
+        (Real.cosh (max c' 1 / 2))
+        (Real.sqrt (∫ u, F u ^ 2))
+        (Real.sqrt (levyEnergy F))
+        (|coshHalfMoment F| + |sinhHalfMoment F|)
+        (∫ u, originExcisionPerturb ε F u ^ 2)
+        (∫ u, |originExcisionPerturb ε F u|)
+        (levyEnergy (originExcisionPerturb ε F)) +
+      2 * oddPoleMoment (originExcisedProfile ε F) ^ 2, ?_, ?_⟩
+  · have ht := ((tendsto_const_nhds (x := SpacingScaleHarmonicAnalysis.weilQuad F)).add
+      herr_tendsto).add ((hodd_tendsto.pow 2).const_mul 2)
+    rw [add_zero, ← markovEnergy_eq_weilQuad_add_odd_sq_of_odd hF hFc hodd] at ht
+    exact ht
+  · filter_upwards [Ioo_mem_nhdsGT (lt_min (by norm_num : (0 : ℝ) < 1 / 2) (half_pos hR_pos))]
+      with ε hε
+    have hd : ContDiff ℝ 2 (originExcisionPerturb ε F) := contDiff_originExcisionPerturb ε hF
+    have hdc : HasCompactSupport (originExcisionPerturb ε F) :=
+      hasCompactSupport_originExcisionPerturb ε hFc
+    have hdR : SpacingScaleHarmonicAnalysis.SupportedIn (max c' 1) (originExcisionPerturb ε F) :=
+      fun u hu => originExcisionPerturb_eq_zero_far hε.1 F
+        (le_trans (by linarith [min_le_right (1 / 2 : ℝ) (max c' 1 / 2), hε.2.le]) hu.le)
+    have hpert : SpacingScaleHarmonicAnalysis.weilQuad (originExcisedProfile ε F) ≤
+        SpacingScaleHarmonicAnalysis.weilQuad F +
+          weilScalarErr (2 * |gammaHardyPhaseRate 0|)
+            (2 * SpacingScaleHarmonicAnalysis.primeMass (max c' 1))
+            (Real.cosh (max c' 1 / 2))
+            (Real.sqrt (∫ u, F u ^ 2))
+            (Real.sqrt (levyEnergy F))
+            (|coshHalfMoment F| + |sinhHalfMoment F|)
+            (∫ u, originExcisionPerturb ε F u ^ 2)
+            (∫ u, |originExcisionPerturb ε F u|)
+            (levyEnergy (originExcisionPerturb ε F)) :=
+      SpacingScaleHarmonicAnalysis.weilQuad_add_le hF hFc hd hdc hFR hdR
+    have hm := markovEnergy_eq_weilQuad_add_odd_sq_of_odd (F := originExcisedProfile ε F)
+      (hF.add hd) (hFc.add hdc) (originExcisedProfile_odd ε hodd)
+    rw [hm]
+    exact add_le_add hpert le_rfl
+
 
 /-- Convergence of the two-profile `L^{1/2}` half-norm integral under origin excision. -/
 theorem tendsto_halfNorm_originExcisedProfile {c : ℝ} (hc : 0 < c) {F₁ F₂ : ℝ → ℝ}
@@ -860,41 +784,78 @@ theorem tendsto_halfNorm_originExcisedProfile {c : ℝ} (hc : 0 < c) {F₁ F₂ 
           |Real.sinh (x / 2)|)
       (𝓝[>] 0)
       (𝓝 (∫ x in Ioo (-c) c, Real.sqrt (F₁ x ^ 2 + F₂ x ^ 2) * |Real.sinh (x / 2)|)) := by
-  refine tendsto_integral_of_dominated_convergence
-    (fun x => Real.sqrt (F₁ x ^ 2 + F₂ x ^ 2) * |Real.sinh (x / 2)|) ?_ ?_ ?_ ?_
-  · refine Eventually.of_forall fun ε => ?_
-    have hc1 : Continuous (originExcisedProfile ε F₁) :=
-      hF₁.add ((((contDiff_smoothPlateau 1).continuous.comp (continuous_id.div_const ε)).mul hF₁).neg)
-    have hc2 : Continuous (originExcisedProfile ε F₂) :=
-      hF₂.add ((((contDiff_smoothPlateau 1).continuous.comp (continuous_id.div_const ε)).mul hF₂).neg)
-    exact ((Real.continuous_sqrt.comp ((hc1.pow 2).add (hc2.pow 2))).mul
-      (continuous_abs.comp (Real.continuous_sinh.comp (continuous_id.div_const 2)))).continuousOn.aestronglyMeasurable
-      measurableSet_Ioo
-  · exact integrableOn_Ioo_of_continuous
-      ((Real.continuous_sqrt.comp ((hF₁.pow 2).add (hF₂.pow 2))).mul
-        (continuous_abs.comp (Real.continuous_sinh.comp (continuous_id.div_const 2))))
-  · refine Eventually.of_forall fun ε => ae_restrict_of_forall_mem measurableSet_Ioo fun x _ => ?_
+  set g : ℝ → ℝ := fun x => Real.sqrt (F₁ x ^ 2 + F₂ x ^ 2) * |Real.sinh (x / 2)|
+  set gε : ℝ → ℝ → ℝ := fun ε x =>
+    Real.sqrt (originExcisedProfile ε F₁ x ^ 2 + originExcisedProfile ε F₂ x ^ 2) *
+      |Real.sinh (x / 2)|
+  have hg_cont : Continuous g :=
+    (Real.continuous_sqrt.comp ((hF₁.pow 2).add (hF₂.pow 2))).mul
+      (continuous_abs.comp (Real.continuous_sinh.comp (continuous_id.div_const 2)))
+  have hg_int : IntegrableOn g (Ioo (-c) c) := integrableOn_Ioo_of_continuous hg_cont
+  obtain ⟨M, hM⟩ := (isCompact_Icc : IsCompact (Icc (-c) c)).exists_bound_of_continuousOn
+    hg_cont.continuousOn
+  have hM0 : 0 ≤ M := le_trans (norm_nonneg _) (hM 0 ⟨by linarith, by linarith⟩)
+  rw [Metric.tendsto_nhds]
+  intro δ hδ
+  have hε₀ : 0 < min (c / 2) (δ / (4 * (M + 1))) :=
+    lt_min (half_pos hc) (div_pos hδ (by positivity))
+  filter_upwards [Ioo_mem_nhdsGT hε₀] with ε hε
+  have hε_pos : 0 < ε := hε.1
+  have hε_c : ε < c / 2 := lt_of_lt_of_le hε.2 (min_le_left _ _)
+  have hε_δ : ε < δ / (4 * (M + 1)) := lt_of_lt_of_le hε.2 (min_le_right _ _)
+  have hc1 : Continuous (originExcisedProfile ε F₁) :=
+    hF₁.add ((((contDiff_smoothPlateau 1).continuous.comp (continuous_id.div_const ε)).mul hF₁).neg)
+  have hc2 : Continuous (originExcisedProfile ε F₂) :=
+    hF₂.add ((((contDiff_smoothPlateau 1).continuous.comp (continuous_id.div_const ε)).mul hF₂).neg)
+  have hgε_cont : Continuous (gε ε) :=
+    (Real.continuous_sqrt.comp ((hc1.pow 2).add (hc2.pow 2))).mul
+      (continuous_abs.comp (Real.continuous_sinh.comp (continuous_id.div_const 2)))
+  have hgε_int : IntegrableOn (gε ε) (Ioo (-c) c) := integrableOn_Ioo_of_continuous hgε_cont
+  have hgε_le : ∀ x, gε ε x ≤ g x := fun x => by
     have hp0 : 0 ≤ 1 - smoothPlateau 1 (x / ε) := sub_nonneg.mpr (smoothPlateau_le_one 1 _)
     have hp1 : 1 - smoothPlateau 1 (x / ε) ≤ 1 := by linarith [smoothPlateau_nonneg 1 (x / ε)]
     have he1 : originExcisedProfile ε F₁ x = (1 - smoothPlateau 1 (x / ε)) * F₁ x := by
       unfold originExcisedProfile originExcisionPerturb; ring
     have he2 : originExcisedProfile ε F₂ x = (1 - smoothPlateau 1 (x / ε)) * F₂ x := by
       unfold originExcisedProfile originExcisionPerturb; ring
-    rw [Real.norm_of_nonneg (mul_nonneg (Real.sqrt_nonneg _) (abs_nonneg _)), he1, he2]
+    dsimp only [gε, g]
+    rw [he1, he2]
     refine mul_le_mul_of_nonneg_right (Real.sqrt_le_sqrt ?_) (abs_nonneg _)
     have hsq1 : (1 - smoothPlateau 1 (x / ε)) ^ 2 ≤ 1 := by nlinarith
     nlinarith [sq_nonneg (F₁ x), sq_nonneg (F₂ x)]
-  ·-- For every `x ≠ 0` (which holds a.e. on `Ioo (-c) c`), `originExcisedProfile ε F_i x = F_i x` once `2ε ≤ |x|`
-    have h0_ae : ∀ᵐ x ∂volume.restrict (Ioo (-c) c), x ≠ 0 :=
-      ae_restrict_of_ae (by simp [compl_singleton_mem_ae_iff])
-    filter_upwards [h0_ae] with x hx0
-    refine tendsto_const_nhds.congr' ?_
-    filter_upwards [Ioo_mem_nhdsGT (show 0 < |x| / 2 from half_pos (abs_pos.mpr hx0))] with ε hε
-    have hf1 : originExcisionPerturb ε F₁ x = 0 :=
-      originExcisionPerturb_eq_zero_far hε.1 F₁ (by linarith [hε.2])
-    have hf2 : originExcisionPerturb ε F₂ x = 0 :=
-      originExcisionPerturb_eq_zero_far hε.1 F₂ (by linarith [hε.2])
-    simp [originExcisedProfile, hf1, hf2]
+  have hlo : (∫ x in Ioo (-c) c, gε ε x) ≤ ∫ x in Ioo (-c) c, g x :=
+    setIntegral_mono_on hgε_int hg_int measurableSet_Ioo fun x _ => hgε_le x
+  have hdiff_le : ∀ x, (Ioo (-c) c).indicator (fun x => g x - gε ε x) x ≤
+      (Icc (-(2 * ε)) (2 * ε)).indicator (fun _ => M) x := fun x => by
+    by_cases hx : x ∈ Ioo (-c) c
+    · rw [indicator_of_mem hx]
+      by_cases hnear : x ∈ Icc (-(2 * ε)) (2 * ε)
+      · rw [indicator_of_mem hnear]
+        have hgε_nn : 0 ≤ gε ε x := mul_nonneg (Real.sqrt_nonneg _) (abs_nonneg _)
+        have hg_bd : g x ≤ M := (le_abs_self _).trans
+          (by simpa [Real.norm_eq_abs] using hM x (Ioo_subset_Icc_self hx))
+        linarith
+      · rw [indicator_of_notMem hnear]
+        have hfar : 2 * ε ≤ |x| := le_of_lt (not_le.mp fun hle => hnear (abs_le.mp hle))
+        have hf1 : originExcisionPerturb ε F₁ x = 0 := originExcisionPerturb_eq_zero_far hε_pos F₁ hfar
+        have hf2 : originExcisionPerturb ε F₂ x = 0 := originExcisionPerturb_eq_zero_far hε_pos F₂ hfar
+        have heq : gε ε x = g x := by simp [gε, g, originExcisedProfile, hf1, hf2]
+        linarith
+    · rw [indicator_of_notMem hx]
+      exact indicator_nonneg (fun _ _ => hM0) x
+  have hsub_int : IntegrableOn (fun x => g x - gε ε x) (Ioo (-c) c) := hg_int.sub hgε_int
+  have hup := integral_mono
+    (hsub_int.integrable_indicator measurableSet_Ioo)
+    (((continuous_const : Continuous fun _ : ℝ => M).integrableOn_Icc
+      (μ := volume)).integrable_indicator measurableSet_Icc)
+    hdiff_le
+  rw [integral_indicator measurableSet_Ioo, integral_sub hg_int hgε_int,
+    integral_indicator measurableSet_Icc, setIntegral_const, Real.volume_real_Icc,
+    max_eq_left (by linarith), smul_eq_mul] at hup
+  have hδ_mul : ε * (4 * (M + 1)) < δ := (lt_div_iff₀ (by positivity)).mp hε_δ
+  change dist (∫ x in Ioo (-c) c, gε ε x) (∫ x in Ioo (-c) c, g x) < δ
+  rw [Real.dist_eq, abs_sub_comm, abs_of_nonneg (sub_nonneg.mpr hlo)]
+  nlinarith [hup]
 
 /-! ### 5. Master universal refutation theorems from a negative two-profile dual -/
 
@@ -914,16 +875,17 @@ theorem exists_originExcised_pair_of_halfNormDual_neg {c' c : ℝ} (hc' : 0 < c'
           Real.sqrt (originExcisedProfile ε F₁ x ^ 2 + originExcisedProfile ε F₂ x ^ 2) *
             |Real.sinh (x / 2)|) ^ 2 := by
   have hc0 : 0 < c := lt_trans hc' hc
-  have ht1 := tendsto_markovEnergy_originExcisedProfile hc' hF₁ hF₁c hF₁odd hF₁supp
-  have ht2 := tendsto_markovEnergy_originExcisedProfile hc' hF₂ hF₂c hF₂odd hF₂supp
+  obtain ⟨U₁, ht1, hle1⟩ := exists_markovEnergy_originExcised_upper hc' hF₁ hF₁c hF₁odd hF₁supp
+  obtain ⟨U₂, ht2, hle2⟩ := exists_markovEnergy_originExcised_upper hc' hF₂ hF₂c hF₂odd hF₂supp
   have htI := tendsto_halfNorm_originExcisedProfile hc0 hF₁.continuous hF₂.continuous
   have htdiff := (ht1.add ht2).sub ((htI.pow 2).const_mul 2)
   have hlim_neg : markovEnergy (fun x => (F₁ x : ℂ)) + markovEnergy (fun x => (F₂ x : ℂ)) -
       2 * (∫ x in Ioo (-c) c, Real.sqrt (F₁ x ^ 2 + F₂ x ^ 2) * |Real.sinh (x / 2)|) ^ 2 < 0 := by
     linarith
-  have hev := (htdiff.eventually (Iio_mem_nhds hlim_neg)).and (Ioo_mem_nhdsGT hc')
-  obtain ⟨ε, hεneg, hεI⟩ := hev.exists
-  exact ⟨ε, hεI.1, hεI.2, by dsimp at hεneg; linarith⟩
+  have hev := ((htdiff.eventually (Iio_mem_nhds hlim_neg)).and (hle1.and hle2)).and
+    (Ioo_mem_nhdsGT hc')
+  obtain ⟨ε, ⟨hεneg, hb1, hb2⟩, hεI⟩ := hev.exists
+  exact ⟨ε, hεI.1, hεI.2, by linarith⟩
 
 /-- **No odd sinh-charged supersolution exists when the two-profile `L^{1/2}` dual is negative.**
 Any gauge `ω ∈ C²_c(ℝ)` (compactly supported on any interval around `(−c, c)`), odd on `(−c, c)` and
@@ -979,8 +941,8 @@ theorem not_exists_odd_sinhCharged_gauge_of_two_odd_tests {c' c : ℝ} (hc' : 0 
     (fun x hx => originExcisedProfile_eq_zero_far ε hF₂supp hx)
   have hu₁c := hasCompactSupport_windowGaugeQuotient (ε := ε) hc M G₁
   have hu₂c := hasCompactSupport_windowGaugeQuotient (ε := ε) hc M G₂
-  have hu₁e : ∀ x, u₁ (-x) = u₁ x := windowGaugeQuotient_even hModd (originExcisedProfile_odd ε hF₁odd)
-  have hu₂e : ∀ x, u₂ (-x) = u₂ x := windowGaugeQuotient_even hModd (originExcisedProfile_odd ε hF₂odd)
+  have hu₁e : ∀ x, u₁ (-x) = u₁ x := windowGaugeQuotient_even hc hModd (originExcisedProfile_odd ε hF₁odd)
+  have hu₂e : ∀ x, u₂ (-x) = u₂ x := windowGaugeQuotient_even hc hModd (originExcisedProfile_odd ε hF₂odd)
   have hu₁off : ∀ x, x ∉ Ioo (-c) c → u₁ x = 0 := fun x hx => windowGaugeQuotient_eq_zero_off hc M G₁ hx
   have hu₂off : ∀ x, x ∉ Ioo (-c) c → u₂ x = 0 := fun x hx => windowGaugeQuotient_eq_zero_off hc M G₂ hx
   have hJ₁ := hJ u₁ hu₁ hu₁c hu₁e hu₁off
@@ -1078,8 +1040,8 @@ theorem not_exists_odd_thetaGauge_certificate_of_two_odd_tests {c' c : ℝ} (hc'
     (fun x hx => originExcisedProfile_eq_zero_far ε hF₂supp hx)
   have hu₁c := hasCompactSupport_windowGaugeQuotient (ε := ε) hc M G₁
   have hu₂c := hasCompactSupport_windowGaugeQuotient (ε := ε) hc M G₂
-  have hu₁e : ∀ x, u₁ (-x) = u₁ x := windowGaugeQuotient_even (fun x _ => hModd x) (originExcisedProfile_odd ε hF₁odd)
-  have hu₂e : ∀ x, u₂ (-x) = u₂ x := windowGaugeQuotient_even (fun x _ => hModd x) (originExcisedProfile_odd ε hF₂odd)
+  have hu₁e : ∀ x, u₁ (-x) = u₁ x := windowGaugeQuotient_even hc (fun x _ => hModd x) (originExcisedProfile_odd ε hF₁odd)
+  have hu₂e : ∀ x, u₂ (-x) = u₂ x := windowGaugeQuotient_even hc (fun x _ => hModd x) (originExcisedProfile_odd ε hF₂odd)
   have hge₁ := hall u₁ hu₁ hu₁c hu₁e (fun x hx => windowGaugeQuotient_eq_zero_off hc M G₁ hx)
   have hge₂ := hall u₂ hu₂ hu₂c hu₂e (fun x hx => windowGaugeQuotient_eq_zero_off hc M G₂ hx)
   have eq₁ := signedJumpEnergy_add_outsideSinh_thetaGauge_eq s α b (Ioo (-c) c) hA hu₁ hu₁c
@@ -1165,8 +1127,8 @@ theorem exists_shiftedGroundState_windowLower_neg_of_two_odd_tests {c' c : ℝ} 
     (fun x hx => originExcisedProfile_eq_zero_far ε hF₂supp hx)
   have hu₁c := hasCompactSupport_windowGaugeQuotient (ε := ε) hc M G₁
   have hu₂c := hasCompactSupport_windowGaugeQuotient (ε := ε) hc M G₂
-  have hu₁e : ∀ x, u₁ (-x) = u₁ x := windowGaugeQuotient_even hModd (originExcisedProfile_odd ε hF₁odd)
-  have hu₂e : ∀ x, u₂ (-x) = u₂ x := windowGaugeQuotient_even hModd (originExcisedProfile_odd ε hF₂odd)
+  have hu₁e : ∀ x, u₁ (-x) = u₁ x := windowGaugeQuotient_even hc hModd (originExcisedProfile_odd ε hF₁odd)
+  have hu₂e : ∀ x, u₂ (-x) = u₂ x := windowGaugeQuotient_even hc hModd (originExcisedProfile_odd ε hF₂odd)
   have hge₁ := hall u₁ hu₁ hu₁c hu₁e (fun x hx => windowGaugeQuotient_eq_zero_off hc M G₁ hx)
   have hge₂ := hall u₂ hu₂ hu₂c hu₂e (fun x hx => windowGaugeQuotient_eq_zero_off hc M G₂ hx)
   have eq₁ := shiftedGroundState_windowLower_eq_markovEnergy_sub ha hc0 hu₁ hu₁c hu₁e
@@ -1196,7 +1158,7 @@ theorem exists_shiftedGroundState_windowLower_neg_of_two_odd_tests {c' c : ℝ} 
 /-- Any nonnegative theta gauge `M = Φω ≥ 0` that is strictly positive at a single point `x₀` outside
 `[−c, c]` has strictly positive outside cosh charge `A/2 − coshCharge ω (−c, c) > 0`. -/
 theorem outsideCosh_thetaGauge_pos_of_tail_pos {ι : Type*} (s : Finset ι) (α b : ι → ℝ)
-    {c x₀ : ℝ} (hc : 0 ≤ c)
+    {c x₀ : ℝ} (_hc : 0 ≤ c)
     (hM0 : ∀ x, 0 ≤ riemannKernelReal x * translateSpan s α b x)
     (hx₀ : c < |x₀|) (hMx₀ : 0 < riemannKernelReal x₀ * translateSpan s α b x₀) :
     0 < translateCoshCoefficient s α b / 2 - coshCharge (translateSpan s α b) (Ioo (-c) c) := by
@@ -1205,7 +1167,9 @@ theorem outsideCosh_thetaGauge_pos_of_tail_pos {ι : Type*} (s : Finset ι) (α 
   have hm_cont : Continuous m := continuous_mul_cosh (contDiff_translateSpan s α b).continuous
   have hm_int : Integrable m := by
     have h : m = fun x => ∑ j ∈ s, α j * (riemannKernelReal (x - b j) * Real.cosh (x / 2)) := by
-      funext x; simp only [m, thetaGauge_coordinate, Finset.sum_mul]
+      funext x
+      dsimp only [m, ω]
+      rw [thetaGauge_coordinate, Finset.sum_mul]
       exact Finset.sum_congr rfl fun j _ => by ring
     rw [h]
     exact integrable_finsetSum _ fun j _ =>
@@ -1263,7 +1227,20 @@ theorem evenThetaGauge_coshChargedDefect_neg {ι : Type*} (s : Finset ι) (α b 
   have hΦ := riemannKernelReal_pos x
   have hch := Real.cosh_pos (x / 2)
   have hMx : 0 < riemannKernelReal x * translateSpan s α b x := mul_pos hΦ hωx
-  nlinarith
+  have hpos : 0 < (riemannKernelReal x * translateSpan s α b x) *
+      (riemannKernelReal x * Real.cosh (x / 2)) *
+      (translateCoshCoefficient s α b / 2 - coshCharge (translateSpan s α b) (Ioo (-c) c)) :=
+    mul_pos (mul_pos hMx (mul_pos hΦ hch)) hτ
+  have hid : (riemannKernelReal x * translateSpan s α b x) *
+        (twoSidedGenerator (translateSpan s α b) x -
+          riemannKernelReal x * Real.cosh (x / 2) * translateSpan s α b x +
+          2 * coshCharge (translateSpan s α b) (Ioo (-c) c) *
+            (riemannKernelReal x * Real.cosh (x / 2))) =
+      -2 * ((riemannKernelReal x * translateSpan s α b x) *
+        (riemannKernelReal x * Real.cosh (x / 2)) *
+        (translateCoshCoefficient s α b / 2 - coshCharge (translateSpan s α b) (Ioo (-c) c))) := by
+    rw [hgen]; ring
+  linarith
 
 /-- Corollary for every nonzero nonnegative-weight even theta gauge (`∀ j ∈ s, 0 ≤ α j`,
 `∃ j₀ ∈ s, 0 < α j₀`): outside cosh charge is strictly positive on every bounded window. -/

@@ -66,8 +66,10 @@ zero-integral flux.
 The [complete common kernel at scale seven](../3-formalized/theta-cusp-scale-seven-common-kernel.md)
 is positive definite, with an explicit quadratic floor in adapted coordinates.
 
-The [complete native fifth block at scale seven](../3-formalized/theta-cusp-scale-seven-native-fifth.md)
-is also positive definite, with normalized quadratic floor `23f₁²/100`.
+The [complete native fifth block](../3-formalized/theta-cusp-fifth-even-native-ray.md)
+is positive definite whenever `π exp(2x)≥5`, with normalized Gaussian
+quadratic floor `49/4000`. This includes the unique positive compensation
+zero, where every constant load vanishes.
 
 The [endpoint compatibility theorem](../3-formalized/theta-cusp-coupled-endpoint-gap.md)
 now supplies one explicit positive cross coefficient matrix `V` with

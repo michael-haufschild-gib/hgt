@@ -274,7 +274,17 @@ to be judged by the rate it controls.
     For an even bump the even jets are even tests and the odd jets odd tests: the even-order margins
     converge to the even-sector Stieltjes ratios, the odd-order margins to the odd-sector ones, and
     each block is positive definite as soon as its sector is nonnegative — the lattice canonical
-    system reads the two parity sectors alternately.
+    system reads the two parity sectors alternately. In moment form, `L(p²) = W(p(−D²)φ)` and
+    `L(x·p²) = W((p(−D²)φ)')` for the moment functional `L` of `s_k = W(φ^{(k)})`, and every odd test
+    of a symmetric window is the derivative of an even one: the even sector is the Hamburger
+    condition on the jet energies of even bumps, the odd sector the shifted Hamburger condition, and
+    a window is nonnegative iff every even bump's jet energies are the moments of a positive measure
+    on `[0, ∞)` (in `x = ξ²`). The even sector allows atoms at `x < 0` (imaginary frequencies, where
+    real zeros and the pole `x = −¼` sit); the odd sector removes them. The Schur data converge
+    too: the reflection coefficients satisfy `γ_n(φ, h) → (−1)^n` and `(1 − γ_n²)/h² → e_{n+1}/e_n`,
+    `e_k = det J_{k+1}/det J_k`, so the lattice canonical system freezes onto the alternating boundary
+    of the Schur disk — its Levinson vectors become forward differences — and stays off it at
+    order `h²` with the jet ratios as normal velocities.
 
 ## 5. Questions
 
@@ -388,8 +398,10 @@ and 10 are structural.
    cutoff grows; dependency closure of the critical-multiple capstone.
 10. The jet Hankel system of a bump. The continuum limit of the lattice canonical system is the
     Hankel system of the jet energies `s_m = W(φ^{(m)})` (proved, unconditional; under RH the moments
-    of the zero measure), and its minors are positive on every nonnegative window (proved). Open:
-    which bumps' jet systems see an off-line zero, and at which order.
+    of the zero measure), and its minors are positive on every nonnegative window (proved); a window
+    is nonnegative iff the jet energies of every even bump on it are Stieltjes moments, the even
+    sector being the Hamburger and the odd sector the half-line condition (proved). Open: which
+    bumps' jet systems see an off-line zero, and at which order.
 11. Rate certificates: estimates landing on the spline-orbit or tensor-loss receivers, where
     constants are free.
 
@@ -422,6 +434,8 @@ and 10 are structural.
 | No window eigenfunction is smooth; window infima are not attained on smooth tests; nonnegative windows are positive definite on smooth tests; the band at the centre is strict on smooth tests | `isWindowEigen_deriv`, `jetNormSq_sq_le`, `eq_zero_of_sq_iteratedDeriv_le`, `archForm_deriv_ge`, `exists_weilQuad_iteratedDeriv_gt`, `eq_zero_of_isWindowEigen`, `eq_zero_of_isMin`, `weilQuad_pos_of_window_nonneg`, `abs_centreCoupling_lt_of_window_nonneg` | unconditional |
 | The jet minors are positive on every nonnegative window, unconditionally on the base window; the lattice margins of every nonzero smooth bump are born at exactly order `h^{2n}`; the jet energies are strictly log-convex | `exists_jet_coeffs`, `eq_zero_of_iteratedDeriv_eq_sum`, `eq_zero_of_sum_smul_iteratedDeriv`, `jetGram_posDef`, `det_jetGram_pos`, `tendsto_levinsonErr_div_pow_of_window_nonneg`, `tendsto_levinsonErr_div_pow_of_base`, `weilQuad_iteratedDeriv_sq_lt` | unconditional |
 | The continuum canonical system splits into the parity sectors: `det J_n = det E · det O`, even-order margins → even-sector Stieltjes ratios, odd-order → odd-sector ones; each sector is positive definite on smooth tests once nonnegative and carries its block | `weilPair_odd_even`, `iteratedDeriv_parity`, `isWindowEigen_of_sector_isMin`, `weilQuad_pos_of_sector_nonneg`, `det_jetGram_eq_mul`, `tendsto_levinsonErr_even_odd`, `evenJetGram_posDef`, `oddJetGram_posDef`, `tendsto_levinsonErr_even_odd_of_sectors_nonneg` | unconditional |
+| The parity sectors are the moment conditions of the jets: `L(p²) = W(p(−D²)φ)`, `L(x·p²) = W((p(−D²)φ)')`; even sector ⇔ Hamburger, odd sector ⇔ shifted Hamburger, window ⇔ Stieltjes for the jet energies of every even bump; every odd test is the derivative of an even one | `momentInner_jetEnergy_eq`, `momentFunctional_X_mul_sq_jetEnergy_eq`, `positiveMomentForm_jetEnergy`, `positiveMomentForm_shiftedJetEnergy`, `exists_even_antideriv`, `even_nonneg_iff_hamburger`, `odd_nonneg_iff_shiftedHamburger`, `window_nonneg_iff_stieltjes` | unconditional |
+| The lattice reflection coefficients alternate in the continuum limit: `γ_n(φ, h) → (−1)^n`, `(1 − γ_n²)/h² → e_{n+1}/e_n > 0` on every nonnegative window and unconditionally on the base; Newton's formula on a lattice | `latticeTest_eq_sum_diffQuot`, `sum_neg_one_pow_mul_newtonCoeff`, `tendsto_reflCoeff_neg_one_pow`, `tendsto_one_sub_reflCoeff_sq_div_sq`, `reflCoeff_continuumLimit_of_window_nonneg`, `reflCoeff_continuumLimit_of_base` | unconditional |
 
 ## 9. Traps
 

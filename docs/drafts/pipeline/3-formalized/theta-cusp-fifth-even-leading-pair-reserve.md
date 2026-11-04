@@ -29,5 +29,5 @@ Public certificates:
 - `FifthLeadingPair.source_floor_posSemidef`
 
 This signs the first atom and its two ordered cross pairs with atom two.
-The complete source still requires the unequal pairs involving atom three
-and the remaining Cauchy tail; pure-atom matrices are already positive.
+The [complete native source](theta-cusp-fifth-even-native-ray.md) is now
+strict on the same ray, including the compensation zero.

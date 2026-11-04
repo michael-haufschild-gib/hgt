@@ -22,7 +22,15 @@ open BezoutValuationIncidence RenormalizedArithmeticPotentialTheory
 def terminalDivisorCoordinate (f : ℕ → ℝ) (N m : ℕ) : ℝ :=
   ∑ d ∈ Icc 1 N, if m ∣ d then f d / (d : ℝ) else 0
 
-private theorem twice_le_of_proper_divisor {d n : ℕ} (hd : 0 < d)
+theorem terminalDivisorCoordinate_nonneg {f : ℕ → ℝ} (hf : ∀ n, 0 ≤ f n) (N m : ℕ) :
+    0 ≤ terminalDivisorCoordinate f N m := by
+  apply sum_nonneg
+  intro d _
+  split_ifs
+  · exact div_nonneg (hf d) (Nat.cast_nonneg d)
+  · exact le_rfl
+
+private theorem twice_le_of_proper_divisor {d n : ℕ}
     (hn : 0 < n) (hdn : d ∣ n) (hne : n ≠ d) : 2 * d ≤ n := by
   obtain ⟨k, rfl⟩ := hdn
   have hk : 2 ≤ k := by
@@ -78,7 +86,7 @@ theorem terminalDivisorCoordinate_reconstructs
   · intro d hd hdn
     by_cases hdiv : d ∣ n
     · rw [if_pos hdiv, hlow d
-        ((twice_le_of_proper_divisor (mem_Icc.mp hd).1 (mem_Icc.mp hn).1 hdiv hdn.symm).trans
+        ((twice_le_of_proper_divisor (mem_Icc.mp hn).1 hdiv hdn.symm).trans
           (mem_Icc.mp hn).2)]
     · exact if_neg hdiv
   · exact fun h => False.elim (h hn)
@@ -93,13 +101,19 @@ theorem terminalDivisorCoordinate_above_half (f : ℕ → ℝ) {N m : ℕ}
   · intro d hd hdm
     apply if_neg
     intro hmd
-    have htwice := twice_le_of_proper_divisor (mem_Icc.mp hm).1 (mem_Icc.mp hd).1 hmd hdm
+    have htwice := twice_le_of_proper_divisor (mem_Icc.mp hd).1 hmd hdm
     exact hhalf.not_ge (htwice.trans (mem_Icc.mp hd).2)
   · exact fun h => False.elim (h hm)
 
 /-- The same explicit coordinates in the logarithmically normalized horizon basis. -/
 def terminalNormalizedConductorCoordinate (f : ℕ → ℝ) (N m : ℕ) : ℝ :=
   Real.sqrt (Real.log N) * Real.sqrt (m.totient : ℝ) * terminalDivisorCoordinate f N m
+
+theorem terminalNormalizedConductorCoordinate_nonneg {f : ℕ → ℝ}
+    (hf : ∀ n, 0 ≤ f n) (N m : ℕ) :
+    0 ≤ terminalNormalizedConductorCoordinate f N m :=
+  mul_nonneg (mul_nonneg (Real.sqrt_nonneg _) (Real.sqrt_nonneg _))
+    (terminalDivisorCoordinate_nonneg hf N m)
 
 /-- The explicit coefficients reconstruct the actual Euclidean horizon vector. -/
 theorem sum_terminalNormalizedConductorCoordinate_smul

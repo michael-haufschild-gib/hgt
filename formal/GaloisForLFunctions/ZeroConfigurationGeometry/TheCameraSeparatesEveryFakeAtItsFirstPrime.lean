@@ -77,7 +77,8 @@ theorem exists_window_arithmeticImage_ne {lam lam' : ℕ → ℝ} {n₀ : ℕ}
     rw [hgdef]; linarith
   set w := min (r - v / 2) (min (g / 4) (Real.log 2 / 4)) with hwdef
   have hw0 : 0 < w := lt_min (by linarith) (lt_min (by positivity) (by positivity))
-  have hwa : v / 2 + w ≤ r := by have := min_le_left (r - v / 2) (min (g / 4) (Real.log 2 / 4)); linarith
+  have hwa : v / 2 + w ≤ r := by
+    have := min_le_left (r - v / 2) (min (g / 4) (Real.log 2 / 4)); linarith
   have hwg : 2 * w < g := by
     have := (min_le_right (r - v / 2) _).trans (min_le_left (g / 4) (Real.log 2 / 4)); linarith
   have hw2 : 2 * w < Real.log 2 := by
@@ -99,13 +100,14 @@ theorem exists_window_arithmeticImage_ne {lam lam' : ℕ → ℝ} {n₀ : ℕ}
   have hvw : 2 * w < v := by linarith
   -- the kernel at `± log n₀` is `−K(0)`
   have hkv : EF.weilTest f f v = -K 0 := by
-    rw [hfdef, weilTest_twoBump_neg_one hbcont hbc, ← hKdef, hKz v (by rw [abs_of_pos (by linarith)]; exact hvw),
-      hKz (v + v) (by rw [abs_of_pos (by linarith)]; linarith), sub_self]
+    rw [hfdef, weilTest_twoBump_neg_one hbcont hbc, ← hKdef,
+      hKz v (by rw [abs_of_pos (by linarith)]; exact hvw), hKz (v + v) (by rw [abs_of_pos (by linarith)]; linarith), sub_self]
     ring
   have hkmv : EF.weilTest f f (-v) = -K 0 := by
     rw [hfdef, weilTest_twoBump_neg_one hbcont hbc, ← hKdef,
       hKz (-v) (by rw [abs_neg, abs_of_pos (by linarith)]; exact hvw), neg_add_cancel,
-      hKz (-v - v) (by rw [show -v - v = -(v + v) by ring, abs_neg, abs_of_pos (by linarith)]; linarith)]
+      hKz (-v - v)
+        (by rw [show -v - v = -(v + v) by ring, abs_neg, abs_of_pos (by linarith)]; linarith)]
     ring
   -- every other integer of the range is invisible
   have hfar : ∀ n : ℕ, n₀ + 1 ≤ n →
@@ -120,7 +122,8 @@ theorem exists_window_arithmeticImage_ne {lam lam' : ℕ → ℝ} {n₀ : ℕ}
     refine ⟨weilTest_twoBump_eq_zero hbs v (-1) h0 h1 h2, weilTest_twoBump_eq_zero hbs v (-1)
       (by rwa [abs_neg]) (by rwa [show -Real.log n - v = -(Real.log n + v) by ring, abs_neg])
       (by rwa [show -Real.log n + v = -(Real.log n - v) by ring, abs_neg])⟩
-  have hk : ∀ s, 2 * r < |s| → EF.weilTest f f s = 0 := fun s hs => weilTest_eq_zero_of_lt hf.2 hf.2 hs
+  have hk : ∀ s, 2 * r < |s| → EF.weilTest f f s = 0 := fun s hs =>
+    weilTest_eq_zero_of_lt hf.2 hf.2 hs
   have hdiff := weilFullFunctional_sub lam lam' hk
   have hmem : n₀ ∈ primeRange r := by
     rw [primeRange, Finset.mem_range, Nat.lt_succ_iff]

@@ -63,6 +63,9 @@ Pillars (module — main theorems), all checked with `lake --old env lean`, umbr
 - PaleyWienerWindows — `exists_smooth_source_of_entire`, `exists_window_of_entire`, `blind_windows_iff_entire`
 - BlindWindowsAtTheUniformDensity — `exists_injective_near_int`, `exists_window_blind_of_count_le`,
   `exists_window_blind_of_density_le`, `exists_window_blind_of_separated`
+- ShallowConfigurationsAreResolvedAtTheInghamScale — `remainder_upper`, `inghamConst_mul_normSq_le`,
+  `eq_of_weil_eq_of_shallow`, `exists_depth_resolving_at_ingham_scale`,
+  `not_exists_depth_resolving_at_ingham_threshold`
 - IsolatingWindows — `exists_window_div`, `exists_isolating_window`,
   `exists_window_isolating_lattice_point`
 - ResolutionIsUniformInDepth — `uniform_block_inequality`, `eq_of_weil_eq_of_heightSeparated`,
@@ -78,8 +81,8 @@ Pillars (module — main theorems), all checked with `lake --old env lean`, umbr
 ## Open core
 Certification (Q0): from finitely many images reality is a signature condition; sign-free routes need
 unbounded aperture (growth) or deformation, both ending at signed prime geometry below the mean spacing
-(the second-moment image of near-collisions, Q3). Open tools: optimal constant of the depth-uniform scale (90/V proved, π/V attained by columns); Euler-depth repulsion, density criterion for infinite cancelling clusters, coalescent channel
-as an identity at λ > 1, repulsion law in a model family, kernel design against configurations.
+(the second-moment image of near-collisions, Q3). Open tools: depth range of the Ingham scale (shallow configurations resolved at every g > π/(2a), optimal); Euler-depth repulsion, isolability of clusters of lower density < a/π, coalescent channel
+as an identity at λ > 1, repulsion law in a model family, Beurling–Malliavin radius below the uniform density.
 
 ## Log
-- 2026-11-04 — created; twenty-nine pillar modules checked; README written.
+- 2026-11-04 — created; thirty-five pillar modules checked; README written.

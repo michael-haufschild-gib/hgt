@@ -20,11 +20,12 @@ eigenvalues are the roots of the **circle polynomial** `z^g Q(z + z⁻¹)` (`cir
 * **Purity is closed** (`isClosed_pure`). A pure `Q` obeys `|Q(y)| ≥ |lc Q| (|y| − 2)^{deg Q}` for
   `|y| ≥ 2` (`abs_leadingCoeff_mul_le_abs_eval`); the bound passes to coefficient limits and keeps
   every limit root in `[−2, 2]`.
-* **The exit theorem** (`exists_first_frobenius_collision`, `exists_first_circle_collision`). Along a
-  continuous family of trace polynomials of fixed degree, purity is lost only at a **Frobenius
+* **The exit theorem** (`exists_first_frobenius_collision`, `exists_first_circle_collision`).
+  Along a continuous family of trace polynomials of fixed degree, purity is lost only at a **Frobenius
   collision** (`IsFrobeniusCollision`): a double trace root — two eigenvalue pairs meeting on the
   circle — or a trace root at `±2` — an eigenvalue meeting its inverse at `±1`. A deformation
-  that meets no Frobenius collision while pure ends pure (`isPure_of_forall_not_frobeniusCollision`).
+  that meets no Frobenius collision while pure ends pure
+  (`isPure_of_forall_not_frobeniusCollision`).
 
 In this model the deformation question of the field has a complete answer without spectral input:
 purity is closed, and along every family it can only end on the collision locus.

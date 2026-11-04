@@ -29,7 +29,6 @@ matrix is its positive multiple `4q² exp(x−2q)`.
 Canonical source check and transitive axiom audits pass; only `propext`,
 `Classical.choice`, and `Quot.sound` occur.
 
-The complete source's fifth matrix at the compensation zero remains open:
-unequal atom pairs and the omitted tail must still be controlled. This
-result signs each individual atom, including the first throughout
-`5<π exp(2τ)<45/8`; it does not sign their reflected mixture.
+The [complete native source](theta-cusp-fifth-even-native-ray.md) is now
+strict whenever its first-atom scale is at least five, including the
+compensation zero. The individual-atom theorem supplies its positive pure terms.

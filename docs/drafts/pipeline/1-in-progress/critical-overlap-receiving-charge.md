@@ -151,9 +151,10 @@ at most `m|t/B_(m,Q)|`.
 comparison and projection bound
 `128m²Q³(1+|κ|)²/((A+1)²(log N)²)`.
 `CoprimePrimeChargeLogWindows` checks the logarithmic mode-product window
-bound with standard-only transitive axioms. The remaining terminal chain is
-source awaiting checks: `CoprimePrimeChargeWindowScales`,
-`CoprimePrimeChargeTailMass`, `CoprimePrimeChargeTailNorms`,
+bound. `CoprimePrimeChargeWindowScales` checks receiver square `1/20`,
+vanishing projection mass, and exact conductor-complement membership,
+with standard-only transitive axioms. The remaining terminal chain is
+source awaiting checks: `CoprimePrimeChargeTailMass`, `CoprimePrimeChargeTailNorms`,
 `CoprimePrimeChargeTailPairing`, `CoprimePrimeChargeTailLimits`,
 `CoprimePrimeChargeTailVectors`, `CoprimePrimeChargeSignedReceiver`.
 It targets `‖r_l‖²→1/20` and `⟨Wv_m,r_l⟩→δ_ml t/80`, with the receiver
@@ -304,10 +305,11 @@ the dense and smallest-cutoff limits with standard-only transitive axioms.
 `PrimeChargeIntermediateEnergy` checks the remaining regime limit with
 standard-only transitive axioms.
 `PrimeChargeIntermediateDomination` checks the middle-range cost separation;
-`PrimeChargeUniformHorizonEnergy` assembles the independent cutoff/horizon
-limit; only this assembly remains unchecked.
+`PrimeChargeUniformHorizonEnergy` checks the independent cutoff/horizon
+limit with standard-only transitive axioms: physical complete energy tends
+to zero whenever both cutoff and horizon diverge.
 
-The proposed uniform physical-energy proof splits at `Q⁶⁴=N` and
+The uniform physical-energy proof splits at `Q⁶⁴=N` and
 `Q=(log N)^(1/32)`, with `L=log N`, `B=B_Q`, `S=S_Q`:
 
 - `N≤Q⁶⁴`: checked moment comparison and prime-scale limits give decay.
@@ -320,8 +322,7 @@ The middle-range assembly separates the error as
 
 where `V_Q=(t/B_Q)²S_Q`, `W_Q=(1+log Q)V_Q`, `R_N` converges to a finite
 constant, and `S_N→0`. Both cutoff masses and `cP` tend to zero by checked
-scale limits. Finite domination and all three regime limits are checked;
-the three-range assembly awaits Lean verification.
+scale limits. Finite domination, all three regime limits and their assembly are checked.
 Quadratic transposition does not apply to arbitrary complementary receivers.
 The reduced-jet, coherent pole-cancellation and sharp near-collar bounds in the
 corpus do not yet supply the required uniform upward nonratio remainder here.
@@ -332,7 +333,19 @@ a weighted affine-incidence covariance bound, with exceptional primes dividing
 Bounding those exceptional primes individually loses a factor `log N`.
 A proposed improvement averages the prime multiplier first: a progression
 upper bound could replace that loss by `Σ_(p>R)1/p²`, permitting
-`R=(log N)^(5/16)`. The rows with multiplier below `Q²` occupy a terminal
+`R=(log N)^(5/16)`. Checked sieve ingredients give unit CRT remainders,
+absolute truncated coefficient mass at most `Y⁶`, and prime-deleted
+reciprocal divisor mass at least `(log Y)/8−7/8` for deleted prime `p≥8`
+(`BezoutValuationIncidence/Sieve`). `PrimeProgressionFinite` checks
+`π(X;p,a)≤Y+16(X/p)/log Y+Y⁶` when `log Y≥14`. The sixteenth-root
+truncation comparison passed a scratch check; the assembled uniform bound
+and weighted kernel transfer remain unchecked. `KernelVariation` checks
+`|ρ(a/B)ρ(b/B)/B|+Var_[A,B](ρ(a/n)ρ(b/n)/n)≤(2M²+2MK)/A`
+for a compact kernel bounded by `M` with Lipschitz constant `K`.
+`ResidueCovariance` and `WeightedResidueCovariance` check the exact coprime
+and equal-prime period means and their weighted inverse-endpoint error,
+with standard-only transitive axioms. The literal logarithmic kernel,
+prime-progression averaging and complete-row assembly remain open. The rows with multiplier below `Q²` occupy a terminal
 harmonic width `O((log Q+log c)/log N)` and need a separate bound.
 
 ## Gates

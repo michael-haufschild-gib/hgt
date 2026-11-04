@@ -78,8 +78,8 @@ theorem integral_linear_count_div {D K ρ₀ R : ℝ} (hρ₀ : 0 < ρ₀) (hR :
       field_simp
   rw [intervalIntegral.integral_congr hcongr, intervalIntegral.integral_sub intervalIntegrable_const
     ((intervalIntegral.intervalIntegrable_inv (fun x hx => fun h => h0 (h ▸ hx))
-      continuousOn_id).const_mul K), intervalIntegral.integral_const, intervalIntegral.integral_const_mul,
-    integral_inv h0, smul_eq_mul]
+      continuousOn_id).const_mul K), intervalIntegral.integral_const,
+    intervalIntegral.integral_const_mul, integral_inv h0, smul_eq_mul]
   ring
 
 /-- **Jensen's inequality for a window blind to a configuration.** -/
@@ -225,7 +225,8 @@ theorem eq_zero_of_blind_of_unbounded_density {f : ℝ → ℂ} {A : ℝ} (hA : 
   have : π * (A / π + 1) = A + π := by field_simp
   linarith
 
-/-- **No window is blind to the zeros of `ζ`** (corpus: `eq_zero_of_paperFT_eq_zero_of_XiC_eq_zero`).
+/-- **No window is blind to the zeros of `ζ`**, the aperture form of
+`eq_zero_of_paperFT_eq_zero_of_XiC_eq_zero`.
 A window whose transform vanishes at every real zero of `Ξ`, i.e. at every critical zero of `ζ` in
 the camera coordinate, is zero. -/
 theorem eq_zero_of_blind_to_real_zeros_of_xi {f : ℝ → ℂ} {A : ℝ} (hf : ApertureWindow A f)

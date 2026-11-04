@@ -20,11 +20,11 @@ point that some window of aperture `a` isolates from the rest of the cluster.
   `c(z₀) = 0`.
 * **Isolable clusters do not cancel** (`eq_of_mimic_of_isolable`). Mimics whose cluster admits an
   isolating window at each of its points are equal.
-* **Simple zero sets** (`eq_of_mimic_of_simple_zeros`). If the cluster lies in the simple zero set of
-  the transform of one window of aperture `a`, dividing at each point gives the isolating windows:
+* **Simple zero sets** (`eq_of_mimic_of_simple_zeros`). If the cluster lies in the simple zero
+  set of the transform of one window of aperture `a`, dividing at each point gives the isolating windows:
   mimics at aperture `a` never differ only on the simple zeros of one aperture-`a` transform.
-* **Lattices** (`eq_of_mimic_of_onLine_lattice`). Mimics at an aperture `a > π/h` whose cluster lies on
-  the on-line lattice `{½ + ikh}` are equal, whatever the multiplicities.
+* **Lattices** (`eq_of_mimic_of_onLine_lattice`). Mimics at an aperture `a > π/h` whose cluster
+  lies on the on-line lattice `{½ + ikh}` are equal, whatever the multiplicities.
 * **Perturbed lattices** (`eq_of_mimic_of_perturbed_lattice`, `eq_of_mimic_of_perturbed_lattices`).
   The same holds for clusters on the critical line inside a bounded perturbation `|ν_k − kh| ≤ L` of
   a lattice, with no separation, and inside finite unions of such perturbations of total density
@@ -182,8 +182,8 @@ theorem eq_of_mimic_of_onLine_lattice {Z Z' : ZeroConfig} (hZ : TemperedConfig Z
   exact hgk k hkk
 
 /-- **Clusters on finitely many perturbed lattices do not cancel above `πD`.** Mimics at an aperture
-`a > π Σ_j 1/h_j` whose cluster lies on the critical line inside `⋃_j {ν_j k}`, `|ν_j k − k h_j| ≤ L_j`,
-are equal. -/
+`a > π Σ_j 1/h_j` whose cluster lies on the critical line inside `⋃_j {ν_j k}`,
+`|ν_j k − k h_j| ≤ L_j`, are equal. -/
 theorem eq_of_mimic_of_perturbed_lattices {ι : Type*} [DecidableEq ι] {Z Z' : ZeroConfig}
     (hZ : TemperedConfig Z) (hZ' : TemperedConfig Z') (T : Finset ι) (h L : ι → ℝ)
     (hh : ∀ j ∈ T, 0 < h j) (ν : ι → ℤ → ℝ) (hν : ∀ j ∈ T, ∀ k : ℤ, |ν j k - k * h j| ≤ L j)

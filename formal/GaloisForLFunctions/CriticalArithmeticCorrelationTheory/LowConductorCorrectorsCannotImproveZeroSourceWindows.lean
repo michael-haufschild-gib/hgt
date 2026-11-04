@@ -77,8 +77,8 @@ theorem eventually_low_packet_correction_ge_source_budget
     (completeWeilMatrix_isHermitian tiltedUnitSpline (c N) N)
   have hquad := HTGeometry.tInner_self_add_smul hM x y 1
   rw [HTGeometry.tInner_comm hM x y] at hquad
-  simp only [HTGeometry.tInner_def, one_smul, one_mul, mul_one] at hquad
-  change ⟪M (x + y), x + y⟫ = ⟪M x, x⟫ + 2 * ⟪M y, x⟫ + ⟪M y, y⟫ at hquad
+  simp only [HTGeometry.tInner_def, one_smul, mul_one] at hquad
+  change ⟪M (x + y), x + y⟫ = ⟪M y, y⟫ + 2 * ⟪M y, x⟫ + ⟪M x, x⟫ at hquad
   rw [hmixed] at hquad
   have hraw : ⟪M x, x⟫ - 2 * c N * (∑ m ∈ Icc 1 Q, q m) ≤
       ⟪M (x + y), x + y⟫ := by linarith only [hsum, hf, hquad]
@@ -132,7 +132,8 @@ theorem eventually_low_packet_correction_ge_zero_source_window
       ⟪Matrix.toEuclideanLin (completeWeilMatrix tiltedUnitSpline (c N) N) x, x⟫ / c N - ε ≤
         ⟪Matrix.toEuclideanLin (completeWeilMatrix tiltedUnitSpline (c N) N) (x + y), x + y⟫ /
           c N := by
-  simpa only [hsource, zero_pow (by norm_num : (2 : ℕ) ≠ 0), zero_mul, zero_div, zero_add] using
+  simpa only [hsource, zero_pow (by norm_num : (2 : ℕ) ≠ 0), zero_mul, zero_div,
+    mul_zero, zero_add] using
     eventually_low_packet_correction_ge_polar_budget hh hA hsupp hδ hη hlow hhigh hc hR hcrit hε
 
 end GaloisForLFunctions.CriticalArithmeticCorrelationTheory

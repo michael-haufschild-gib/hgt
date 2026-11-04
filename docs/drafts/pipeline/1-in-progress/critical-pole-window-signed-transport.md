@@ -114,6 +114,10 @@ charges. Pointwise mixed convergence alone cannot settle that question;
 an inverse-energy summable envelope is required.
 
 For interior support `(δ,η)⊂(1/2,1)`, the source limit is now checked.
+These profiles lie in `[-log 2,0]`, already inside the unconditional
+positive range `A≤181/250` of `weilQuad_nonneg_of_short`. Their transport
+laws constrain correctors; they do not enlarge the unweighted sign
+frontier. General support requires the retained upward-prime channel.
 The all-R two-dimensional limit and the optimized small-band inequality
 are proved in `ThePoleCorrectorRetainsItsSignedWindowBenefit.lean`.
 Both endpoints pass their actual-path audits with exactly
@@ -232,13 +236,27 @@ uniformly over every coefficient family b,
 
 Thus the limiting gain is at most `2S(h)²R/J(1)`. On `ker S`, it is zero,
 uniformly even for unbounded corrector coefficients. The zero corrector
-attains zero gain. This would give a precise obstruction to removing aliasing
+attains zero gain. This gives a precise obstruction to removing aliasing
 on that kernel with this packet; it does not assert a negative window
 exists. `LowConductorCorrectorsCannotImproveZeroSourceWindows.lean`
-implements this consequence; its audit is pending. Off the kernel, the
+proves this consequence; all three endpoints pass their actual-path
+audit with exactly `[propext, Classical.choice, Quot.sound]`. Off the kernel, the
 checked two-dimensional pole correction above remains a nontrivial
 positive survivor. The sharper proposed optimum retains its full genus
 denominator rather than this coarse half-energy bound.
+
+The zero-source kernel has a closed nonvacuity proof. Let
+`F₀(x)=tiltedUnitSpline(256x−254)`, `F₁(x)=F₀(x+1/128)` and
+`hᵢ(y)=Fᵢ(exp y)`. Their supports are disjoint compact intervals above
+1/2. Put `Sᵢ=S(hᵢ)` and `h=S₁h₀−S₀h₁`. The checked witness gives
+`S₀>0`; at a point where F₁ is nonzero, F₀ is zero, so h is nonzero.
+Linearity of the literal horizon pairing on the canonical critical
+clock, followed by uniqueness of its checked limits, gives
+`S(h)=S₁S₀−S₀S₁=0`. This uses no positivity assumption on the window
+form. `TerminalPolarSourceHasANontrivialKernel.lean` proves nonvanishing
+and exact source cancellation; both endpoints pass their actual-path
+audit with exactly `[propext, Classical.choice, Quot.sound]`. The obstruction concerns a
+nonzero test, but does not assert that this test has negative Weil energy.
 
 The required uniform signed packet form is already checked in
 `eventually_completeWeil_low_packet_signed_approx`: its error is at
@@ -524,6 +542,41 @@ k≤2/δ once H_N≤N. For each such k the boundary condition allows at most
 O_(F,δ)(c_N/N). The remaining row-comparison error is
 O_(F,φ,δ)(c_N³ log(4c_N)/N), which also vanishes.
 
+A sufficient finite bound retains every boundary prime. For `|F|≤B`,
+`F(x)=0` when `x≤δ`, `δ>0`, `1≤N`, `H≤N` and `K=ceil(2/δ)`,
+
+    Σ_(n≤N) |F(n/N)| upwardBoundaryMass(N,n,H)/n
+      ≤ B(2H+1)/(δN) · Σ_(1≤k≤K) Λ(k)/k.
+
+Exchange the two finite sums. A nonzero receiver has n>δN; the boundary
+condition kn≤N+H forces k<2/δ. For fixed k≥1, the injective map n↦kn
+puts all boundary indices in `[N−H,N+H]`, which has at most 2H+1
+integers. Finally 1/n≤1/(δN). This proves the displayed bound without
+an estimate for primes in short intervals.
+`TerminalPrimeBoundaryMassHasFiniteSupport.lean` implements this finite
+bound; its actual-path audit is pending.
+
+The actual-row replacement has a stronger sufficient clock condition:
+`c_N⁴/N→0`, with `c_N≥1`. Put `M=∫φ²`, choose a global autocorrelation
+Lipschitz constant ℓ, and set
+
+    Cφ=12M+72ℓ, C₀=log 4+1+|mertensWindowConstant|,
+    P_K=Σ_(1≤k≤K)Λ(k)/k, K=ceil(2/δ).
+
+For `H=ceil(2c)`, the inequalities `H≤3c`,
+`upwardLinearError≤Cφ c³` and `|log(4c)+mertensWindowConstant|≤C₀c`
+give, once the row-comparison horizon conditions hold,
+
+    |c⁻¹Σ_(n≤N) F(n/N)(upwardModeRow−upwardModel)/n|
+      ≤ [6Bφ(m)CφC₀/(δM)+63Bφ(m)P_K/δ] c⁴/N.
+
+Here `Σ|F(n/N)|/n≤B/δ`; the boundary part uses `2H+1≤7c`
+and `c≤c⁴`. The same clock condition eventually gives `4cH≤N`
+and `2H≤N`. This is a closed paper bound, not yet a checked Lean
+endpoint. It applies to every fixed conductor and every critical ratio.
+`TerminalUpwardRowReplacementDisappears.lean` implements the finite
+quartic bound and its vanishing consequence; its audit is pending.
+
 In the affine-shell model, the conductor-one coefficient is identically
 one. The Lipschitz Riemann estimate for the compact autocorrelation gives
 
@@ -536,6 +589,22 @@ Swap those finite prime-power sums before taking the Riemann limit:
 each k contributes `Λ(k)∫₀^(1/k)F`. This avoids any unjustified
 uniform estimate across the jumps of ψ. The argument uses only the
 actual row comparison and finite sums; its Lean transfer is pending.
+`TerminalUpwardShellsHaveTheirPolarMean.lean` implements the dilated
+Riemann estimate and the polar and nonpolar shell bounds; its audit is
+pending.
+
+The finite model rates can be retained explicitly. With `c≤H≤3c`,
+`Lip(F)≤L_F`, `K≥2/δ`, `P_K=Σ_(k≤K)Λ(k)/k` and
+`T_K=Σ_(k≤K)Λ(k)`, the polar normalized model differs from
+`aΣ_(k≤K)Λ(k)∫₀^(1/k)F` by at most
+
+    6BℓP_K/(Mδ²c) + a(L_F+B)T_K/N.
+
+Indeed every contributing centre p=kn satisfies δN≤p≤N, so the shell
+Riemann error is at most `6ℓ/(Mδ)`. Each truncated long-index Riemann
+sum has error at most `(L_F+B)/N`, uniformly in k. Thus the general
+polar upward limit needs only `c→∞` and `c⁴/N→0`, once these finite
+transfers are checked. This rate statement remains a paper consequence.
 The fixed nonpolar upward source has a closed periodic reduction too.
 For each divisor d of m, the two integers
 `p+(m−1)j` and `(m−1)p+j` sum to `m(p+j)`. Hence their Ramanujan
@@ -546,6 +615,8 @@ terminal weighted periodic bound to
 its bound is 1 and its Lipschitz constant is at most `3 Lip(K)/δ`.
 The actual affine-shell sum is consequently O_(φ,m,δ)(1), uniformly
 in the terminal index and c, and tends to zero after division by c.
+More precisely its normalized weighted model is bounded by
+`4Bmφ(m)(1+3ℓ/(Mδ))P_K/(δc)`.
 The same finite-prime boundary counting controls its actual-row error.
 This supplies the fixed-m nonpolar upward paper limit; the reflected
 shift identity, shell bound and actual-row transfer await Lean audits.

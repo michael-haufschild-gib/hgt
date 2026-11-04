@@ -129,6 +129,21 @@ No whole-space all-R theorem follows. See the
 The [signed pole–window transport conjecture](critical-pole-window-signed-transport.md)
 targets the inverse-energy mixed pairing needed for optimized arithmetic
 correctors, which ordinary orthogonal removal does not control.
+For profiles supported inside `(1/2,1)` in the linear horizon coordinate,
+the complete source and its inverse-energy sum through
+`floor((log N)^(13/32))` are now checked and exactly polar. Every correction
+in that packet has zero limiting gain on the source kernel, uniformly
+even for unbounded coefficients; an explicit nonzero kernel test is checked.
+These windows already lie in the known positive range `A≤181/250`.
+This constrains the correction mechanism without extending unweighted
+positivity. General-window transport must retain the upward prime channel.
+At the other endpoint, the checked
+[full-horizon reference-metric obstruction](../3-formalized/full-horizon-conductor-metric-degeneration.md)
+gives an explicit terminal reconstruction whose complete energy divided
+by `ΣE_m b_m²` tends to zero at every R>0, even with nonnegative b_m.
+Thus the low-packet reference floor cannot extend unchanged to all
+conductors. Column normalization, actual individual energies and mixed
+interactions must be distinguished before choosing a replacement metric.
 The [receiving-capacity growth theorem](../3-formalized/critical-receiving-capacity-growth.md)
 separately tests whether the new arbitrarily small raw prime-charge costs
 occur fast enough on the critical clock. Its dilation capacity is now
@@ -196,7 +211,7 @@ does not control coefficients with unbounded square mass.
 ## Gates
 
 - [x] Exact target and existing small-band source identified.
-- [ ] Derive and attack an explicit signed interaction or compensation-removal mechanism.
+- [x] Derive and attack the actual interior polar interaction; prove its absolute-collar and zero-source limitations.
 - [x] Complete a dependency-closed proof of an unconditional bounded advance.
 - [x] Formalize that bounded advance and audit its transitive axioms.
 - [ ] Reach unbounded R or remove compensation; audit the original target.

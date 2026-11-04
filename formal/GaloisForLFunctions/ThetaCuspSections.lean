@@ -27,11 +27,14 @@ for every real constant diagonal pair, including every critical aperture.
 The full origin positivity region is classified by two sharp load thresholds.
 Two coupled loads instead annihilate this witness and repair the origin and
 a cofinal tail, preserving every mixed integral and the positive witness energy.
-The complete native fifth even block is strictly positive at scale seven,
-with an explicit quadratic floor in normalized Schur coordinates. One explicit
+The complete native fifth even block is strictly positive from first-atom
+scale five onward, with Gaussian quadratic floor `49/4000`, including the
+unique positive compensation zero. One explicit
 positive cross-load repairs both the origin and scale seven, preserving every
 mixed integral; its weighted scale-seven repair is strict at every positive aperture.
 The same cross-load is strict near both endpoints and on a cofinal source ray.
 Every individual theta atom has a strict fifth even section at reflection scale at least five.
 -/
 import GaloisForLFunctions.ThetaCuspSections.FifthEvenLeadingPairReserve
+import GaloisForLFunctions.ThetaCuspSections.FifthEvenThreeAtomRemainder
+import GaloisForLFunctions.ThetaCuspSections.FifthEvenNativeRay

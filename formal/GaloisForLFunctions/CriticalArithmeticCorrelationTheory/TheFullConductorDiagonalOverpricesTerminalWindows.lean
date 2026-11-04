@@ -1,5 +1,6 @@
 import GaloisForLFunctions.CriticalArithmeticCorrelationTheory.TerminalWindowsHaveExplicitFullConductorCoordinates
 import GaloisForLFunctions.ArithmeticHodgeTheoryOfDegenerations.ThePoleCorrectorRetainsItsSignedWindowBenefit
+import GaloisForLFunctions.ArithmeticHodgeTheoryOfDegenerations.TerminalPolarSourceIsNonzero
 import GaloisForLFunctions.ArithmeticHodgeTheoryOfDegenerations.TheCanonicalCriticalClockEntersFromTheNegativeSide
 import GaloisForLFunctions.RenormalizedArithmeticPotentialTheory.Conductor.CoprimeFourierOrder
 import GaloisForLFunctions.RHTower.NicolasTotientLandau
@@ -83,7 +84,8 @@ theorem eventually_terminal_totient_log_reserve :
   have hlogm : 0 < Real.log (m : ℝ) := Real.log_pos (by exact_mod_cast (show 1 < m by omega))
   have hll : Real.log (Real.log (m : ℝ)) ≤ Real.log (N : ℝ) := by
     have h₁ := Real.log_le_sub_one_of_pos hlogm
-    have h₂ := Real.log_le_log hm0 (by exact_mod_cast (mem_Icc.mp hm).2)
+    have hmN : (m : ℝ) ≤ N := by exact_mod_cast (mem_Icc.mp hm).2
+    have h₂ := Real.log_le_log hm0 hmN
     linarith only [h₁, h₂]
   have hC : 0 ≤ Real.exp Real.eulerMascheroniConstant + 1 := by positivity
   have hdiv := (hM m hmM).trans (mul_le_mul_of_nonneg_left hll hC)
@@ -133,7 +135,7 @@ theorem eventually_terminalFullConductorDiagonal_ge_log_mass
         (2 * C * (m : ℝ) ^ 2) :=
       div_le_div_of_nonneg_right (mul_le_mul_of_nonneg_left hcoeff
         (mul_nonneg (Real.log_natCast_nonneg N) (sq_nonneg _))) (by positivity)
-    _ = _ := by field_simp [hC.ne', hm0.ne']; ring
+    _ = _ := by field_simp [hC.ne', hm0.ne'] <;> ring
 
 /-- The diagonal cost of a fixed logarithmic terminal window. -/
 def terminalWindowFullConductorDiagonal (h : ℝ → ℝ) (c : ℝ) (N : ℕ) : ℝ :=
@@ -207,11 +209,12 @@ theorem terminalWindowFullConductorDiagonal_positive_and_reciprocal_vanishes
     (zero_le_one.trans (hc N)) (terminalFullConductorDiagonal_nonneg _
       (zero_lt_one.trans_le (hc N)) N)) _ hlim
   filter_upwards [hdiag] with N hN
-  have hden : 0 < Real.log N * M / (4 * C) := by positivity
+  have hden : 0 < Real.log N * M / (4 * C) :=
+    div_pos (mul_pos hN.1 hM) (mul_pos (by norm_num) hC)
   calc
     _ ≤ c N / (Real.log N * M / (4 * C)) :=
       div_le_div_of_nonneg_left (zero_le_one.trans (hc N)) hden hN.2
-    _ = _ := by field_simp [hN.1.ne', hM.ne', hC.ne']; ring
+    _ = _ := by field_simp [hN.1.ne', hM.ne', hC.ne'] <;> ring
 
 /-- The literal complete energy loses every positive fixed comparison with the full conductor
 diagonal, for any nonzero fixed interior terminal window and every critical ratio. -/
@@ -238,7 +241,6 @@ theorem tendsto_complete_terminal_energy_div_full_conductor_diagonal
   apply ht.congr
   intro N
   have hc0 : c N ≠ 0 := (zero_lt_one.trans_le (hc N)).ne'
-  dsimp only [Pi.mul_apply]
   simp only [div_eq_mul_inv]
   rw [show (c N)⁻¹ *
       ⟪Matrix.toEuclideanLin (completeWeilMatrix tiltedUnitSpline (c N) N)
@@ -252,6 +254,83 @@ theorem tendsto_complete_terminal_energy_div_full_conductor_diagonal
           (terminalWindowFullConductorDiagonal h (c N) N)⁻¹ by ring,
     inv_mul_cancel₀ hc0, one_mul]
 
+/-- The full conductor packet violates every fixed positive diagonal fraction, with an explicit
+terminal reconstruction as its counterfamily. -/
+theorem eventually_exists_full_packet_below_diagonal_fraction
+    {h : ℝ → ℝ} {A : ℝ} (hh : ContDiff ℝ 2 h) (hA : 0 ≤ A)
+    (hsupp : ∀ y, y ∉ Set.Icc (-A) 0 → h y = 0) (hne : ∃ y, h y ≠ 0)
+    {δ η : ℝ} (hδ : (1 / 2 : ℝ) < δ) (hη : η < 1)
+    (hlow : ∀ x, x ≤ δ → logProfile h x = 0)
+    (hhigh : ∀ x, η ≤ x → logProfile h x = 0)
+    {c : ℕ → ℝ} (hc : ∀ N, 1 ≤ c N) {R : ℝ} (hR : 0 < R)
+    (hcrit : Tendsto (fun N : ℕ => c N ^ 8 / Real.log N) atTop (𝓝 R))
+    {κ : ℝ} (hκ : 0 < κ) :
+    ∀ᶠ N : ℕ in atTop, ∃ b : ℕ → ℝ,
+      let D := ∑ m ∈ Icc 1 N, completedConductorEnergy tiltedUnitSpline (c N) m * b m ^ 2
+      let y := ∑ m ∈ Icc 1 N, b m • normalizedRamanujanHorizonVector m N
+      b = terminalNormalizedConductorCoordinate (fun n => logProfile h ((n : ℝ) / N)) N ∧
+        0 < D ∧ ⟪Matrix.toEuclideanLin (completeWeilMatrix tiltedUnitSpline (c N) N) y, y⟫ < κ * D := by
+  have hpos := (terminalWindowFullConductorDiagonal_positive_and_reciprocal_vanishes
+    hh hA hsupp hne (fun x hx => hlow x (hx.trans hδ.le)) hc hR hcrit).1
+  have hlim := tendsto_complete_terminal_energy_div_full_conductor_diagonal hh hA hsupp hne
+    hδ hη hlow hhigh hc hR hcrit
+  filter_upwards [hpos, hlim.eventually (gt_mem_nhds hκ), eventually_ge_atTop 2]
+    with N hD hbound hN
+  let f : ℕ → ℝ := fun n => logProfile h ((n : ℝ) / N)
+  have hf : ∀ n, 2 * n ≤ N → f n = 0 := by
+    intro n hn
+    apply hlow
+    apply le_trans _ hδ.le
+    have hN0 : (0 : ℝ) < N := by exact_mod_cast (show 0 < N by omega)
+    apply (div_le_iff₀ hN0).mpr
+    have hh : (2 : ℝ) * n ≤ N := by exact_mod_cast hn
+    linarith only [hh]
+  refine ⟨terminalNormalizedConductorCoordinate f N, rfl, hD, ?_⟩
+  have hy := sum_terminalNormalizedConductorCoordinate_smul hN hf
+  change (∑ m ∈ Icc 1 N, terminalNormalizedConductorCoordinate f N m •
+    normalizedRamanujanHorizonVector m N) =
+      horizonProfileVector (fun n => logProfile h ((n : ℝ) / N) / Real.sqrt n) N at hy
+  rw [← horizonProfileVector_horizonWeights_eq_terminal h (by omega : 1 ≤ N)] at hy
+  rw [hy]
+  exact (div_lt_iff₀ hD).mp hbound
+
+/-- At every positive critical ratio, even nonnegative conductor coefficients admit no fixed
+positive diagonal energy comparison. One compact terminal spline supplies the counterfamily. -/
+theorem full_horizon_has_no_fixed_conductor_diagonal_floor
+    {c : ℕ → ℝ} (hc : ∀ N, 1 ≤ c N) {R : ℝ} (hR : 0 < R)
+    (hcrit : Tendsto (fun N : ℕ => c N ^ 8 / Real.log N) atTop (𝓝 R))
+    {κ : ℝ} (hκ : 0 < κ) :
+    ∀ᶠ N : ℕ in atTop, ∃ b : ℕ → ℝ,
+      let D := ∑ m ∈ Icc 1 N, completedConductorEnergy tiltedUnitSpline (c N) m * b m ^ 2
+      let y := ∑ m ∈ Icc 1 N, b m • normalizedRamanujanHorizonVector m N
+      (∀ m, 0 ≤ b m) ∧ 0 < D ∧
+        ⟪Matrix.toEuclideanLin (completeWeilMatrix tiltedUnitSpline (c N) N) y, y⟫ < κ * D := by
+  have hne : ∃ y, terminalPolarWitness y ≠ 0 := by
+    obtain ⟨x, hx⟩ : ∃ x, terminalPolarWitnessLinear x ≠ 0 := by
+      by_contra hn
+      push Not at hn
+      have hh := integral_terminalPolarWitnessLinear_pos
+      simp only [hn, intervalIntegral.integral_zero, lt_self_iff_false] at hh
+    have hx0 : 0 < x := lt_of_lt_of_le (by norm_num)
+      (terminalPolarWitnessLinear_support hx).1
+    refine ⟨Real.log x, ?_⟩
+    simpa only [terminalPolarWitness, Real.exp_log hx0] using hx
+  have hev := eventually_exists_full_packet_below_diagonal_fraction contDiff_terminalPolarWitness
+    (Real.log_nonneg (by norm_num : (1 : ℝ) ≤ 2)) terminalPolarWitness_window_support hne
+    (by norm_num : (1 / 2 : ℝ) < 253 / 256) (by norm_num : (511 / 512 : ℝ) < 1)
+    (fun x hx => by rw [logProfile_terminalPolarWitness]; exact terminalPolarWitnessLinear_eq_zero_below x hx)
+    (fun x hx => by rw [logProfile_terminalPolarWitness]; exact terminalPolarWitnessLinear_eq_zero_above x hx)
+    hc hR hcrit hκ
+  filter_upwards [hev] with N hN
+  obtain ⟨b, hb, hD, hbound⟩ := hN
+  refine ⟨b, ?_, hD, hbound⟩
+  intro m
+  rw [hb]
+  apply terminalNormalizedConductorCoordinate_nonneg
+  intro n
+  rw [logProfile_terminalPolarWitness]
+  exact terminalPolarWitnessLinear_nonneg _
+
 end GaloisForLFunctions.CriticalArithmeticCorrelationTheory
 
 #print axioms GaloisForLFunctions.CriticalArithmeticCorrelationTheory.eventually_terminal_conductor_energy_ge_log
@@ -259,3 +338,4 @@ end GaloisForLFunctions.CriticalArithmeticCorrelationTheory
 #print axioms GaloisForLFunctions.CriticalArithmeticCorrelationTheory.eventually_terminalFullConductorDiagonal_ge_log_mass
 #print axioms GaloisForLFunctions.CriticalArithmeticCorrelationTheory.terminalWindowFullConductorDiagonal_positive_and_reciprocal_vanishes
 #print axioms GaloisForLFunctions.CriticalArithmeticCorrelationTheory.tendsto_complete_terminal_energy_div_full_conductor_diagonal
+#print axioms GaloisForLFunctions.CriticalArithmeticCorrelationTheory.full_horizon_has_no_fixed_conductor_diagonal_floor

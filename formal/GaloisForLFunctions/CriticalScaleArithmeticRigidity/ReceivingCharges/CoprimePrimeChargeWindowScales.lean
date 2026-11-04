@@ -33,7 +33,7 @@ theorem tendsto_fibreChargeTerminal_window_norm_sq {m : ℕ} (hm : 0 < m) :
     (tendsto_pow_atTop (by omega : (38 : ℕ) ≠ 0)).comp tendsto_natCast_atTop_atTop
   have hlim := ((tendsto_const_nhds (x := (1 : ℝ))).add (hk.pow 2)).mul
     (hp.const_div_atTop (8 * (m : ℝ) ^ 2))
-  simp only [Function.comp_apply, mul_zero] at hlim
+  simp only [mul_zero] at hlim
   have hlog := Real.tendsto_log_atTop.comp tendsto_natCast_atTop_atTop
   have hdiff : Tendsto (fun X : ℕ =>
       ‖fibreChargeWindowVector m (X ^ 38) (X ^ 39) (X ^ 40) (X ^ 40)‖ ^ 2 -
@@ -56,8 +56,17 @@ theorem tendsto_fibreChargeTerminal_window_norm_sq {m : ℕ} (hm : 0 < m) :
       linarith only [h]
     rw [Real.norm_eq_abs]
     simp only [Nat.cast_pow] at hb
-    exact hb.trans ((div_le_div_of_nonneg_left (by positivity)
-      (pow_pos hXR 38) hden).trans_eq (by ring))
+    simp only [Nat.cast_pow] at hden
+    have hfrac :
+        8 * (m : ℝ) ^ 2 *
+            (1 + (primeChargeWindowMass (X ^ 39) (X ^ 40) /
+              primeChargeWindowMass (X ^ 38) (X ^ 39)) ^ 2) /
+            (((X : ℝ) ^ 38 + 1) * Real.log ((X : ℝ) ^ 40)) ≤
+          8 * (m : ℝ) ^ 2 *
+            (1 + (primeChargeWindowMass (X ^ 39) (X ^ 40) /
+              primeChargeWindowMass (X ^ 38) (X ^ 39)) ^ 2) / (X : ℝ) ^ 38 :=
+      div_le_div_of_nonneg_left (by positivity) (pow_pos hXR 38) hden
+    exact hb.trans (hfrac.trans_eq (by ring))
   have hz : Tendsto (fun X : ℕ =>
       ‖primeChargeWindowVector (X ^ 38) (X ^ 39) (X ^ 40) (X ^ 40)‖ ^ 2)
       atTop (𝓝 (1 / 20 : ℝ)) := by
@@ -77,7 +86,7 @@ theorem tendsto_fibreChargeTerminal_projection_norm_sq {m R : ℕ}
     (tendsto_pow_atTop (by omega : (70 : ℕ) ≠ 0)).comp tendsto_natCast_atTop_atTop
   have hlim := (((tendsto_const_nhds (x := (1 : ℝ))).add hk.abs).pow 2).mul
     (hp.const_div_atTop (128 * (m : ℝ) ^ 2 * (R : ℝ) ^ 3))
-  simp only [Function.comp_apply, mul_zero] at hlim
+  simp only [mul_zero] at hlim
   have hlog := Real.tendsto_log_atTop.comp tendsto_natCast_atTop_atTop
   refine squeeze_zero_norm' ?_ hlim
   filter_upwards [eventually_ge_atTop 2, eventually_ge_atTop R,
@@ -122,8 +131,18 @@ theorem tendsto_fibreChargeTerminal_projection_norm_sq {m R : ℕ}
       _ ≤ _ := mul_le_mul_of_nonneg_left
         (show 1 ≤ Real.log (X ^ 40 : ℕ) ^ 2 by nlinarith only [hL40]) (sq_nonneg _)
   simp only [Nat.cast_pow, Nat.cast_mul] at hb
+  simp only [Nat.cast_pow] at hden
   rw [Real.norm_eq_abs, abs_of_nonneg (sq_nonneg _)]
-  refine hb.trans ((div_le_div_of_nonneg_left (by positivity) (pow_pos hXR 76) hden).trans_eq ?_)
+  have hfrac :
+      128 * (m : ℝ) ^ 2 * ((R : ℝ) * (X : ℝ) ^ 2) ^ 3 *
+          (1 + |primeChargeWindowMass (X ^ 39) (X ^ 40) /
+            primeChargeWindowMass (X ^ 38) (X ^ 39)|) ^ 2 /
+          (((X : ℝ) ^ 38 + 1) ^ 2 * Real.log ((X : ℝ) ^ 40) ^ 2) ≤
+        128 * (m : ℝ) ^ 2 * ((R : ℝ) * (X : ℝ) ^ 2) ^ 3 *
+          (1 + |primeChargeWindowMass (X ^ 39) (X ^ 40) /
+            primeChargeWindowMass (X ^ 38) (X ^ 39)|) ^ 2 / (X : ℝ) ^ 76 :=
+    div_le_div_of_nonneg_left (by positivity) (pow_pos hXR 76) hden
+  refine hb.trans (hfrac.trans_eq ?_)
   change _ = (1 + |primeChargeWindowMass (X ^ 39) (X ^ 40) /
     primeChargeWindowMass (X ^ 38) (X ^ 39)|) ^ 2 *
       ((128 * (m : ℝ) ^ 2 * (R : ℝ) ^ 3) / (X : ℝ) ^ 70)

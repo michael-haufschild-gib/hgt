@@ -84,7 +84,9 @@ theorem tendsto_fibreBaseTailProfile_norm_sq {m : ℕ} (hm : 0 < m)
   have h := mul_le_mul_of_nonneg_left hH
     (show 0 ≤ fibreModeTailCost m * (t / fibreScale m (X ^ a)) ^ 2 by
       exact mul_nonneg (fibreModeTailCost_nonneg m) (sq_nonneg _))
-  exact (mul_le_mul_of_nonneg_right h (by positivity)).trans_eq (by ring)
+  exact (mul_le_mul_of_nonneg_right h
+    (show 0 ≤ 4 * (∑ p ∈ fibrePrimes m (X ^ a), 1 / (p : ℝ)) ^ 2 +
+      2 * ∑ p ∈ fibrePrimes m (X ^ a), 1 / (p : ℝ) by positivity)).trans_eq (by ring)
 
 /-- Physical coordinates of the vanishing fixed-mode tail term. -/
 def fibreBaseTailVector (m Q N : ℕ) (t : ℝ) : EuclideanSpace ℝ (PrimeHorizonIndex N) :=

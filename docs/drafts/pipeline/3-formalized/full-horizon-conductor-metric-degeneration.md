@@ -1,9 +1,9 @@
-# Full-horizon conductor energy loses its diagonal comparison
+# Full-horizon conductor energy loses its reference diagonal comparison
 
 - **ID:** full-horizon-conductor-metric-degeneration
-- **Stage:** 1-in-progress
-- **Type:** CONJECTURE
-- **Parent:** [critical-ratio continuation](critical-ratio-continuation.md)
+- **Stage:** 3-formalized
+- **Type:** THEOREM
+- **Parent:** [critical-ratio continuation](../1-in-progress/critical-ratio-continuation.md)
 
 ## Exact target
 
@@ -15,30 +15,33 @@ C² window with F(x)=h(log x) supported inside (1/2,1). Define
     b_m(N)=√L √φ(m) a_m(N),
     D_N=Σ_(1≤m≤N) E_m(c_N)b_m(N)².
 
-The proposed classification is
+The checked classification is
 
     Σ_(1≤m≤N)b_m(N)v_m(N)=x_h(N),
-    D_N/c_N→+∞,
+    D_N>0 eventually, c_N/D_N→0,
     ⟨B_N x_h(N),x_h(N)⟩/D_N→0.
 
-Consequently no fixed positive fraction of the diagonal conductor energy
+Consequently no fixed positive fraction of the reference diagonal conductor energy
 can lower-bound the complete form on the full conductor packet, even at
 a critical ratio within the established whole-space positive band.
-This predicts failure of that comparison, not negative complete energy.
+This proves failure of that comparison, not negative complete energy.
+The concrete nonnegative terminal spline gives `b_m(N)≥0` for every m,
+so restricting conductor coefficients to the nonnegative cone does not
+restore the proposed diagonal floor.
 
 ## Internal attack
 
 **Verdict: BRIDGE.** Full-horizon spanning already follows from
 `exists_horizon_normalizedRamanujan_expansion` and
 `mem_full_horizon_conductorSubspace`; it is not a new conjecture.
-The content to audit is the explicit terminal coefficient formula and
+The content is the explicit terminal coefficient formula and
 the quantitative degeneration of the particular diagonal energy used
 by the logarithmic-packet continuation. Targeted corpus searches found
 no exact producer of that degeneration; this is not an exhaustive
 absence or external novelty claim.
 
 The logarithmic packet has a checked half-energy floor at every fixed R.
-That does not contradict the proposed full-horizon counterfamily: its
+That does not contradict the full-horizon counterfamily: its
 essential coefficients reach conductors comparable to N. Nor would a
 vanishing sum of individual nonpolar source squares extend the floor.
 
@@ -48,7 +51,7 @@ vanishing sum of individual nonpolar source squares extend the floor.
 `Σ_(m|d)c_m(n)=d[ d|n ]`. For n≤N every proper divisor d of n satisfies
 2d≤n≤N, so F(d/N)=0. Only d=n remains. If N<2m≤2N, the only positive
 multiple of m through N is m itself, hence a_m=F(m/N)/m. These are
-dependency-closed finite arguments; their Lean transfer is pending.
+dependency-closed finite arguments, now checked in Lean.
 
 **Diagonal cost.** The existing conductor floor is
 
@@ -56,19 +59,19 @@ dependency-closed finite arguments; their Lean transfer is pending.
 
 The existing unconditional Landau bound
 `RHTower.eventually_div_totient_le_landau` gives
-m/φ(m)≤C log log m eventually, with C=exp(γ)+1. Thus, uniformly for
-N/2<m≤N and sufficiently large N,
+m/φ(m)≤C log log m eventually, with C=exp(γ)+1. Its weaker consequence
+m/φ(m)≤C log N suffices here. Uniformly for N/2<m≤N and large N,
 
-    E_m(c_N)≥L/2,     φ(m)/m≥1/(C log log N).
+    E_m(c_N)≥L/2,     φ(m)/m≥1/(C L).
 
 Nonnegativity of every remaining diagonal summand then gives
 
-    D_N ≥ L²/[2C log log N] · Σ_(1≤n≤N) F(n/N)²/n.
+    D_N ≥ L/[2C] · Σ_(1≤n≤N) F(n/N)²/n.
 
 The last sum tends to ∫h²>0 by `tendsto_sum_horizonWeights_sq`.
-The critical clock gives c_N log log N/L²→0. Hence D_N/c_N→∞.
+The critical clock gives c_N/L→0. Hence D_N>0 eventually and c_N/D_N→0.
 The checked critical-window limit bounds the complete energy by O(c_N),
-which proves the proposed ratio limit.
+which proves the ratio limit.
 
 `TerminalWindowsHaveExplicitFullConductorCoordinates.lean` implements
 the finite reconstruction, the top-half coefficient and its normalized
@@ -77,15 +80,24 @@ implements the uniform energy and totient reserves, the sufficient
 weaker bound `D_N≥L/[2C]·ΣF(n/N)²/n`, eventual positivity of D_N,
 `c_N/D_N→0`, and the complete-energy/diagonal ratio limit. The weaker
 reserve already settles the proposed degeneration because c_N/L→0.
-Both modules await their actual-path Lean audits; no new endpoint in
-this card is kernel-credited yet.
+Both modules pass their actual-path Lean audits. All four reconstruction
+endpoints and all six audited degeneration endpoints use exactly
+`[propext, Classical.choice, Quot.sound]`. Both modules are wired into the
+programme umbrella. The last endpoint supplies the nonnegative coefficient
+counterfamily without an assumed nonzero test.
 
 ## Positive survivor and next question
 
 The survivor is an explicit exact arithmetic reconstruction and a
-quantified change of energy metric. Larger packets must retain their
-collective off-diagonal cancellation. A continuation based only on
-extending the current diagonal floor cannot reach the full horizon.
-Locate the conductor range where this comparison first degenerates,
-and determine the complete signed form there. Neither the precise
-transition scale nor an all-R positivity conclusion follows here.
+quantified failure of the reference energy metric. Here E_m is the
+completed reference energy, not the literal finite-horizon diagonal
+`⟨B_Nv_m,v_m⟩`. Moreover the vectors v_m need not have norm near one
+when m is comparable to N. This result alone does not identify
+off-diagonal cancellation as the cause of the failure.
+
+A continuation based only on extending this reference diagonal floor
+cannot reach the full horizon. Locate where the comparison first
+degenerates, and separate three effects: changing column norms,
+changes in individual complete energies, and collective mixed terms.
+Neither the transition scale nor an all-R positivity conclusion
+follows here.
