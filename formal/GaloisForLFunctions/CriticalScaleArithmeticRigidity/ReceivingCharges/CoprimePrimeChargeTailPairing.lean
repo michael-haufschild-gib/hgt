@@ -75,9 +75,12 @@ theorem abs_fibreTail_mode_window_sub_ramp_le {m l Q N : ℕ}
       |F n| ≤ (|t / fibreScale m Q| * modeBound m * modeBound l) *
         (primeChargeRampErrorConstant + m + primeDivisorCount ((Icc 1 Q).filter Nat.Prime) n) := by
     have htail := abs_fibreTail_sub_ramp_le hm hQ (mem_Icc.mp hn).1 (mem_Icc.mp hn).2 t
-    have hmabs := abs_le_periodSum hm (normalizedRamanujanMode_periodic hm) n
-    have hlabs := abs_le_periodSum hl (normalizedRamanujanMode_periodic hl) n
-    rw [F, abs_mul, abs_mul]
+    have hmabs : |normalizedRamanujanMode m n| ≤ modeBound m :=
+      abs_le_periodSum hm (normalizedRamanujanMode_periodic hm) n
+    have hlabs : |normalizedRamanujanMode l n| ≤ modeBound l :=
+      abs_le_periodSum hl (normalizedRamanujanMode_periodic hl) n
+    dsimp only [F]
+    rw [abs_mul, abs_mul]
     exact (mul_le_mul
       (mul_le_mul htail hmabs (abs_nonneg _) ((abs_nonneg _).trans htail)) hlabs
       (abs_nonneg _) (mul_nonneg ((abs_nonneg _).trans htail) (modeBound_pos hm).le)).trans_eq
@@ -108,8 +111,6 @@ theorem tendsto_fibreReciprocal_add_div_scale {m : ℕ} (hm : 0 < m) (C : ℝ) :
   simp only [zero_mul] at h
   apply h.congr'
   filter_upwards [eventually_ge_atTop 2] with Q hQ
-  change ((C + ∑ p ∈ (Icc 1 Q).filter Nat.Prime, 1 / (p : ℝ)) / primePoleScale Q) *
-    (primePoleScale Q / fibreScale m Q) = _
   field_simp [(primePoleScale_pos hQ).ne']
 
 #print axioms abs_fibreTail_mode_window_sub_ramp_le

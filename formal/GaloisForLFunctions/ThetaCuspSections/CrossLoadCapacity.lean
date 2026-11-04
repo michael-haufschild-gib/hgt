@@ -24,19 +24,24 @@ def capacity (A B : Matrix (Fin n) (Fin n) ℝ) : ℝ := sSup {t : ℝ | (pencil
 variable {A B : Matrix (Fin n) (Fin n) ℝ} (hA : A.PosDef) (hB : B.PosSemidef)
   (h1 : ¬ (pencil A B 1).PosSemidef)
 
+include hA hB
+
 private theorem hermitian (t : ℝ) : (pencil A B t).IsHermitian :=
   hA.isHermitian.sub (hB.isHermitian.smul (by rfl))
 
+omit hA hB in
 private theorem entry_continuous (i j : Fin n) : Continuous (fun t => pencil A B t i j) := by
   simp only [pencil,Matrix.sub_apply,Matrix.smul_apply,smul_eq_mul]
   fun_prop
 
+omit hA hB in
 private theorem energy_continuous (v : Fin n → ℝ) :
     Continuous (fun t => v ⬝ᵥ (pencil A B t *ᵥ v)) := by
   simp only [pencil,Matrix.sub_mulVec,Matrix.smul_mulVec,dotProduct_sub,
     dotProduct_smul,smul_eq_mul]
   fun_prop
 
+omit hA in
 private theorem energy_antitone {s t : ℝ} (hst : s ≤ t) (v : Fin n → ℝ) :
     v ⬝ᵥ (pencil A B t *ᵥ v) ≤ v ⬝ᵥ (pencil A B s *ᵥ v) := by
   have hb := hB.dotProduct_mulVec_nonneg v
@@ -64,11 +69,15 @@ private theorem posDef_right {t : ℝ} (ht : (pencil A B t).PosDef) :
   rw [Real.dist_eq,show t+δ/2-t=δ/2 by ring,abs_of_pos (half_pos hδ)]
   linarith only [hδ]
 
+omit hB in
 private theorem zero_posDef : (pencil A B 0).PosDef := by
   simpa only [pencil,zero_smul,sub_zero] using hA
 
+omit hB in
 private theorem positive_nonempty : {t : ℝ | (pencil A B t).PosDef}.Nonempty :=
   ⟨0,zero_posDef hA⟩
+
+include h1
 
 private theorem positive_lt_one {t : ℝ} (ht : (pencil A B t).PosDef) : t < 1 := by
   by_contra h

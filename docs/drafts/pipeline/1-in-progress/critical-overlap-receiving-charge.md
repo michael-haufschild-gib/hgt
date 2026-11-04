@@ -6,9 +6,9 @@
 - **Source:** `docs/reports/review-0311/fable.md`, §7
 - **Statement:** Evaluate complete Weil energy and its polarized conductor-complement pairing on harmonic-neutral coherent prime-charge families and their coprime conductor fibres at `c=2K(log N)^(1/8)`.
 
-“Checked” below means an individual Lean check, standard-only transitive axioms,
-and umbrella integration. Final plain audits remain pending for modules built
-as dependencies. “Source” means written Lean awaiting verification.
+“Checked” below means kernel-checked Lean proofs with standard transitive axioms
+and umbrella integration. “Source” means written Lean awaiting verification.
+The full classification remains open.
 
 ## Normalizations
 
