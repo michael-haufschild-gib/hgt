@@ -773,27 +773,15 @@ step (B2, B3) with the variance, sliver and edge structure that every later stag
 mode at `log 5` names precisely what the collective payment must supply. A proof that no mechanism of this
 class exists identifies the term the next certificate must retain.
 
-*Precise boundary.* Excluded: Markov supersolutions, folded supersolutions, variance-free gauges, collar-local
-payment, size-only payment of the prime `3`, soft entry alone, lossless lower forms, finite-square identities,
-cost-only payments, smooth extremals. Not excluded: retained-variance theta gauges and shifted ground states
-(exact below `log 4`), pole-charged supersolutions with non-compact gauges, variable-hub Schur elimination,
-packed nonlocal paths, and any exact identity that uses the trivial-zero Hankel squares and the sliver
-signatures.
+*Precise boundary.* Excluded: Markov supersolutions, folded supersolutions, variance-free gauges, collar-local payment, size-only payment of the prime `3`, soft entry alone, lossless lower forms, finite-square identities, cost-only payments, smooth extremals. Not excluded: retained-variance theta gauges and shifted ground states (exact below `log 4`), pole-charged supersolutions with non-compact gauges, variable-hub Schur elimination, packed nonlocal paths, and any exact identity that uses the trivial-zero Hankel squares and the sliver signatures.
 
 ## 2.9 The big impact question
 
-**Which off-line zeros of `ζ` can hide from the windows?** Prove local half-carrier visibility (B48): if `ζ`
-has an off-line zero `ρ₀` at height `T₀` that is `T₀^{−M}`-isolated from the other zeros, some window of
-half-width `(1 + ε)L_{T₀}` is negative, `a*(ζ) ≤ (1 + ε)L_{T₀}`.
+**Which off-line zeros of `ζ` can hide from the windows?** Prove local half-carrier visibility (B48): if `ζ` has an off-line zero `ρ₀` at height `T₀` that is `T₀^{−M}`-isolated from the other zeros, some window of half-width `(1 + ε)L_{T₀}` is negative, `a*(ζ) ≤ (1 + ε)L_{T₀}`.
 
-Expected shape [D]: the half-carrier law (1.11) needs a window of aperture `a − ε` vanishing on the right half
-of the carrier except at `ρ₀`. For `ζ` the right half has density `(1/2π)log(T/2π)`, so the aperture is
-`πD = L_T`; the local camera supplies the vanishing near `T₀` with an explicit far tail at `T₀^{−M}` precision
-(1.9). Deep zeros are seen much earlier, at `(1/2δ)log(Cδ log T₀)`.
+Expected shape [D]: the half-carrier law (1.11) needs a window of aperture `a − ε` vanishing on the right half of the carrier except at `ρ₀`. For `ζ` the right half has density `(1/2π)log(T/2π)`, so the aperture is `πD = L_T`; the local camera supplies the vanishing near `T₀` with an explicit far tail at `T₀^{−M}` precision (1.9). Deep zeros are seen much earlier, at `(1/2δ)log(Cδ log T₀)`.
 
-*Why it is less hard than RH.* It is a zero-side statement, conditional on an off-line zero, and assumes no
-sign of `ζ`'s Weil form; it combines two proved mechanisms — the half-carrier law and the local camera with
-its far tail — at the density aperture.
+*Why it is less hard than RH.* It is a zero-side statement, conditional on an off-line zero, and assumes no sign of `ζ`'s Weil form; it combines two proved mechanisms — the half-carrier law and the local camera with its far tail — at the density aperture.
 
 *What it decides across the programme.*
 
@@ -805,17 +793,9 @@ its far tail — at the density aperture.
 | Names the hiding structures | all window routes, P5 | off RH, the lowest invisible off-line structure is a near-coincident cluster or a sheet |
 
 *How each answer moves the map.*
-- **B48 holds:** the zero-side theory of windows is complete for `ζ`; the open core of every window route is
-  B1 at lengths `≍ log T` plus B44 and B50.
-- **B48 fails** (an isolated off-line zero of `ζ` hides beyond `L_T`): the far tail of `ζ`'s camera cancels
-  coherently at the density aperture — a structural statement about `ζ`'s zeros at scale `1/log T` and a hiding
-  mode outside the model classes of 1.11.
+- **B48 holds:** the zero-side theory of windows is complete for `ζ`; the open core of every window route is B1 at lengths `≍ log T` plus B44 and B50.
+- **B48 fails** (an isolated off-line zero of `ζ` hides beyond `L_T`): the far tail of `ζ`'s camera cancels coherently at the density aperture — a structural statement about `ζ`'s zeros at scale `1/log T` and a hiding mode outside the model classes of 1.11.
 
-*First tests.* (1) An on-line lattice of `ζ`'s density with one off-line pair of any depth `δ`:
-`a* ≤ L/2 + ε` uniformly in `δ` (half-carrier law with a window blind to the lattice). (2) Perturbed RvM
-backgrounds with the far tail of `FarZerosAreFaintInTheLocalCamera`. (3) `ζ` itself.
+*First tests.* (1) An on-line lattice of `ζ`'s density with one off-line pair of any depth `δ`:`a* ≤ L/2 + ε` uniformly in `δ` (half-carrier law with a window blind to the lattice). (2) Perturbed RvM backgrounds with the far tail of `FarZerosAreFaintInTheLocalCamera`. (3) `ζ` itself.
 
-*Why this question and not another.* The one question (2.8) decides whether P1 has a sign mechanism, but only
-for P1. B51 is sign-free and serves ZCG; B49 and B53 are RH-strength; B52 opens one new route. B48 is sub-RH,
-uses the corpus's own harmonic analysis, and fixes the zero-side meaning of every window route (C1, C4, C15,
-C19), of the camera (C21, C23) and of near-line density (C11) at once.
+*Why this question and not another.* The one question (2.8) decides whether P1 has a sign mechanism, but only for P1. B51 is sign-free and serves ZCG; B49 and B53 are RH-strength; B52 opens one new route. B48 is sub-RH, uses the corpus's own harmonic analysis, and fixes the zero-side meaning of every window route (C1, C4, C15, C19), of the camera (C21, C23) and of near-line density (C11) at once.

@@ -729,7 +729,7 @@ theorem sinhTest_energy_sq_ge {a δ : ℝ} (hδ : 0 < δ) (hδa : 2 ≤ δ * a) 
         field_simp [hδ.ne']
         ring
     _ = (w * (w * a) ^ (5 / 2 : ℝ) * (Real.exp (δ * a) / 8) ^ 2) ^ 2 := by
-        rw [mul_pow, mul_pow, hwa_sq]; ring
+        symm; rw [mul_pow, mul_pow, hwa_sq]; ring
     _ ≤ (w * (w * a) ^ (5 / 2 : ℝ) * Real.sinh x ^ 2) ^ 2 := by
         gcongr
 
@@ -774,7 +774,6 @@ theorem paperFT_odd_add_I_mul {s : ℝ → ℝ} {a : ℝ} (hs : Continuous s)
     have he1 : I * ((Δ : ℂ) + I * y) * u = (-(y * u) : ℝ) + ((Δ * u : ℝ) : ℂ) * I := by
       push_cast; linear_combination ((y : ℂ) * u) * hI
     rw [he1, Complex.exp_add, Complex.exp_mul_I, ← Complex.ofReal_exp, ← Real.cosh_sub_sinh]
-    simp only [Complex.cos_ofReal_re, Complex.sin_ofReal_re]
     push_cast
     ring
   rw [paperFT_def]
@@ -835,7 +834,7 @@ theorem re_Wsummand_modulatedTest_odd (Z : ZeroConfig) (γ₀ : ℝ) {ρ : ℂ} 
     ring
   · rw [Wsummand_modulatedTest, hr1, hr2, hft_pos, hft_neg, Z.mult_reflect ρ hρ,
       ← Complex.ofReal_natCast]
-    simp only [map_add, map_neg, map_mul, Complex.conj_ofReal, Complex.conj_I,
+    simp only [map_add, map_mul, Complex.conj_ofReal, Complex.conj_I,
       Complex.mul_re, Complex.add_re, Complex.neg_re, Complex.ofReal_re, Complex.ofReal_im,
       Complex.I_re, Complex.I_im, Complex.mul_im, Complex.add_im, Complex.neg_im]
     ring
@@ -969,7 +968,7 @@ theorem re_Wsummand_pair_modulatedTest_le (Z : ZeroConfig) (γ₀ : ℝ) {ρ : �
     by_cases h0 : s u = 0
     · simp [h0]
     · obtain ⟨_, hcos⟩ := abs_sin_mul_cosh_le_half_sinh (hsupp u h0) hε hcone
-      exact (mul_le_mul_of_nonneg_left hcos (hprod_nonneg u)).trans_eq (by ring)
+      linarith [mul_le_mul_of_nonneg_left hcos (hprod_nonneg u)]
   have hB_le : |∫ u, s u * Real.cosh (ε * u) * Real.sin (Δ * u)| ≤ (1 / 2) * P := by
     refine (abs_integral_le_integral_abs).trans ?_
     dsimp only [P]
@@ -1061,7 +1060,7 @@ theorem sum_mult_unit_ball_le (Z : ZeroConfig) {A₀ : ℝ} (hA₀ : 1 ≤ A₀)
       · rw [if_pos ha1]; split_ifs <;> linarith
       · by_cases ha2 : ρ.im ≤ T + 1 / 2
         · rw [if_neg ha1, if_pos ⟨lt_of_not_ge ha1, ha2⟩]; split_ifs <;> linarith
-        · rw [if_neg ha1, if_neg (fun h => ha2 h.2), if_pos (lt_of_not_ge ha2)]; split_ifs <;> linarith
+        · rw [if_neg ha1, if_neg (fun h => ha2 h.2), if_pos (lt_of_not_ge ha2)]; linarith
     have hreal : ((∑ ρ ∈ P, Z.mult ρ : ℕ) : ℝ) ≤ 3 * A₀ * Real.log (|γ₀| + R + 6) := by
       rw [Nat.cast_sum]
       linarith
@@ -1294,22 +1293,25 @@ theorem re_W_modulatedTest_coherent_cluster_le (Z : ZeroConfig) {A₀ : ℝ} (hA
       · exact mul_nonneg (hs_nn u hu) (Real.sinh_nonneg_iff.mpr (by positivity))
       · have hsu : s u = -s (-u) := by linarith [hs_odd u]
         rw [hsu, show δ * u = -(δ * -u) by ring, Real.sinh_neg, neg_mul_neg]
-        exact mul_nonneg (hs_nn (-u) (by linarith)) (Real.sinh_nonneg_iff.mpr (by positivity))
+        exact mul_nonneg (hs_nn (-u) (by linarith))
+          (Real.sinh_nonneg_iff.mpr (mul_nonneg hδ.le (by linarith)))
     have hP2 := pow_le_pow_left₀ hP0 hP_mono 2
     have hm0 : (0 : ℝ) ≤ Z.mult ρ := Nat.cast_nonneg _
     nlinarith
   -- Split `∑' τ : Z.carrier, Re (Wsummand τ)` into `W_all` and its complement
   set Wall_sub : Finset Z.carrier := W_all.subtype (· ∈ Z.carrier)
+  let Wall_compl : Set Z.carrier := ((Wall_sub : Set Z.carrier))ᶜ
   have hre_sum : Summable (fun τ : Z.carrier => (Z.Wsummand f f τ).re) :=
     (Complex.hasSum_re hsumm.hasSum).summable
   have hsplit_tsum : (Z.W f f).re =
       (∑ τ ∈ Wall_sub, (Z.Wsummand f f τ).re) +
-        ∑' τ : {τ : Z.carrier // τ ∉ Wall_sub}, (Z.Wsummand f f τ).re := by
-    rw [ZeroConfig.W, Complex.re_tsum hsumm, ← hre_sum.sum_add_tsum_compl Wall_sub]
-    rfl
+        ∑' τ : Wall_compl, (Z.Wsummand f f τ).re := by
+    rw [ZeroConfig.W, Complex.re_tsum hsumm, ← hre_sum.sum_add_tsum_compl (s := Wall_sub)]
   have hWall_sum : (∑ τ ∈ Wall_sub, (Z.Wsummand f f τ).re) =
       ∑ ρ ∈ W_all, (Z.Wsummand f f ρ).re := by
-    rw [Finset.sum_subtype_of_mem _ fun ρ hρ => ((hmem_Wall ρ).mp hρ).1]
+    dsimp only [Wall_sub]
+    exact Finset.sum_subtype_of_mem (fun ρ => (Z.Wsummand f f ρ).re)
+      fun ρ hρ => ((hmem_Wall ρ).mp hρ).1
   have hWall_part : W_all = (S ∪ S') ∪ F_near := by
     ext ρ
     simp only [F_near, Finset.mem_union, Finset.mem_sdiff]
@@ -1341,35 +1343,41 @@ theorem re_W_modulatedTest_coherent_cluster_le (Z : ZeroConfig) {A₀ : ℝ} (hA
         obtain ⟨hc, hr⟩ := (hmem_Wall ρ).mp hw
         exact hnear ρ hc hn.1 hn.2 hr)
     have h3 := integral_norm_sq_modulatedTest_sinhTest_le γ₀ ha.le hδ
+    have hlog0 : 0 ≤ Real.log (|γ₀| + R + 6) :=
+      (zero_le_one.trans (one_le_log_abs_add_three γ₀)).trans
+        (Real.log_le_log (by positivity) (by linarith))
     refine h1.trans (h2.trans ?_)
     exact mul_le_mul_of_nonneg_left h3 (by positivity)
   -- Bound on far tail `τ ∉ Wall_sub`
-  have hfar_bound : (∑' τ : {τ : Z.carrier // τ ∉ Wall_sub}, (Z.Wsummand f f τ).re) ≤
+  have hfar_bound : (∑' τ : Wall_compl, (Z.Wsummand f f τ).re) ≤
       384 * A₀ * Real.log (|γ₀| + 3) * testNorm s ^ 2 * (Real.exp a / (1 + R)) := by
     set c_far : Z.carrier → ℝ := fun τ =>
       16 * testNorm s ^ 2 * (Real.exp a / (1 + R)) *
         ((Z.mult τ : ℝ) / (1 + |(τ : ℂ).im - γ₀|) ^ 3)
     have hc_sum : Summable c_far := hwsum.mul_left _
-    have hpt_far : ∀ τ : {τ : Z.carrier // τ ∉ Wall_sub},
+    have hc_nn : ∀ τ : Z.carrier, 0 ≤ c_far τ := fun τ => by
+      dsimp only [c_far]; have := testNorm_nonneg s; positivity
+    have hpt_far : ∀ τ : Wall_compl,
         (Z.Wsummand f f τ).re ≤ c_far τ.1 := fun τ => by
       have hfar : R < |(τ.1 : ℂ).im - γ₀| := by
         by_contra hle; push Not at hle
-        exact τ.2 (Finset.mem_subtype.mpr ((hmem_Wall τ.1).mpr ⟨τ.1.2, hle⟩))
+        exact τ.2 (Finset.mem_coe.mpr (Finset.mem_subtype.mpr ((hmem_Wall τ.1).mpr ⟨τ.1.2, hle⟩)))
       exact (Complex.re_le_norm _).trans
         (norm_Wsummand_modulatedTest_le_far Z γ₀ ha.le hR0 hs_cd hs_supp τ.1.2 hfar)
-    have hle1 : (∑' τ : {τ : Z.carrier // τ ∉ Wall_sub}, (Z.Wsummand f f τ).re) ≤
-        ∑' τ : {τ : Z.carrier // τ ∉ Wall_sub}, c_far τ.1 :=
+    have hle1 : (∑' τ : Wall_compl, (Z.Wsummand f f τ).re) ≤
+        ∑' τ : Wall_compl, c_far τ.1 :=
       Summable.tsum_le_tsum hpt_far (hre_sum.subtype _) (hc_sum.subtype _)
-    have hle2 : (∑' τ : {τ : Z.carrier // τ ∉ Wall_sub}, c_far τ.1) ≤ ∑' τ : Z.carrier, c_far τ :=
-      Summable.tsum_subtype_le hc_sum _ fun τ => by
-        dsimp [c_far]; have := testNorm_nonneg s; positivity
+    have hle2 : (∑' τ : Wall_compl, c_far τ.1) ≤ ∑' τ : Z.carrier, c_far τ := by
+      have hdecomp := hc_sum.sum_add_tsum_compl (s := Wall_sub)
+      have hfin0 : 0 ≤ ∑ τ ∈ Wall_sub, c_far τ := Finset.sum_nonneg fun τ _ => hc_nn τ
+      linarith
     have hle3 : ∑' τ : Z.carrier, c_far τ ≤
         16 * testNorm s ^ 2 * (Real.exp a / (1 + R)) * (24 * A₀ * Real.log (|γ₀| + 3)) := by
-      dsimp [c_far]
+      dsimp only [c_far]
       rw [tsum_mul_left]
       have := testNorm_nonneg s
       exact mul_le_mul_of_nonneg_left hwle (by positivity)
-    calc (∑' τ : {τ : Z.carrier // τ ∉ Wall_sub}, (Z.Wsummand f f τ).re)
+    calc (∑' τ : Wall_compl, (Z.Wsummand f f τ).re)
         ≤ 16 * testNorm s ^ 2 * (Real.exp a / (1 + R)) * (24 * A₀ * Real.log (|γ₀| + 3)) :=
           hle1.trans (hle2.trans hle3)
       _ = 384 * A₀ * Real.log (|γ₀| + 3) * testNorm s ^ 2 * (Real.exp a / (1 + R)) := by ring
@@ -1434,12 +1442,28 @@ theorem windowPositiveAt_global_sea_cluster_bound (Z : ZeroConfig) {A₀ : ℝ} 
     have h1 := testNorm_sinhTest_le ha.le hδ.le
     have hcosh : Real.cosh (δ * a) ≤ Real.exp (δ * a) := by
       rw [Real.cosh_eq]
+      have hpos_prod : 0 ≤ δ * a := mul_nonneg hδ.le ha.le
       have : Real.exp (-(δ * a)) ≤ Real.exp (δ * a) :=
-        Real.exp_le_exp.mpr (by positivity)
+        Real.exp_le_exp.mpr (by linarith)
       linarith
     have hpoly : a ^ 5 + δ ^ 2 * a ^ 5 + 10 * δ * a ^ 4 + 20 * a ^ 3 ≤ 25 * a ^ 5 := by
-      have hd2 : δ ^ 2 ≤ 1 / 4 := by nlinarith
-      nlinarith [pow_nonneg ha.le 3, pow_nonneg ha.le 4]
+      have hd2 : δ ^ 2 * a ^ 5 ≤ (1 / 4) * a ^ 5 :=
+        mul_le_mul_of_nonneg_right (by nlinarith) (by positivity)
+      have ha4_5 : 10 * δ * a ^ 4 ≤ 5 * a ^ 5 := by
+        have h1 : 10 * δ ≤ 5 := by linarith
+        have h2 : a ^ 4 ≤ a ^ 5 := by
+          have : a ^ 4 * 1 ≤ a ^ 4 * a := mul_le_mul_of_nonneg_left (by linarith) (by positivity)
+          linarith [show a ^ 4 * a = a ^ 5 by ring]
+        calc 10 * δ * a ^ 4 ≤ 5 * a ^ 4 := mul_le_mul_of_nonneg_right h1 (by positivity)
+          _ ≤ 5 * a ^ 5 := mul_le_mul_of_nonneg_left h2 (by norm_num)
+      have ha3_5 : 20 * a ^ 3 ≤ 5 * a ^ 5 := by
+        have h2 : 4 * a ^ 3 ≤ a ^ 5 := by
+          have : a ^ 3 * 4 ≤ a ^ 3 * a ^ 2 :=
+            mul_le_mul_of_nonneg_left (by nlinarith) (by positivity)
+          linarith [show a ^ 3 * a ^ 2 = a ^ 5 by ring]
+        linarith
+      have ha5 : 0 ≤ a ^ 5 := by positivity
+      linarith
     calc testNorm (sinhTest a δ)
         ≤ 2 * a * Real.cosh (δ * a) * (a ^ 5 + δ ^ 2 * a ^ 5 + 10 * δ * a ^ 4 + 20 * a ^ 3) := h1
       _ ≤ 2 * a * Real.exp (δ * a) * (25 * a ^ 5) := by
@@ -1467,24 +1491,26 @@ theorem windowPositiveAt_global_sea_cluster_bound (Z : ZeroConfig) {A₀ : ℝ} 
         _ = 2500 * a ^ 12 * Real.exp (2 * δ * a) := by
             rw [← Real.exp_add, show δ * a + δ * a = 2 * δ * a by ring]
     have hd7 : δ ^ 7 ≤ 1 := pow_le_one₀ hδ.le (by linarith)
-    have hexp24 : Real.exp (2 * δ * a) ≤ Real.exp (4 * δ * a) :=
-      Real.exp_le_exp.mpr (by positivity)
+    have hexp24 : Real.exp (2 * δ * a) ≤ Real.exp (4 * δ * a) := by
+      have : 0 ≤ δ * a := mul_nonneg hδ.le ha.le
+      exact Real.exp_le_exp.mpr (by linarith)
     have h1R_pos : 0 < 1 + R := by linarith [show 0 ≤ 1 / (4 * a) by positivity]
     have hR_big : 3072 * 2 ^ 26 * A₀ * Real.log (|γ₀| + 3) * (2500 * a ^ 7 * δ ^ 7) * Real.exp a ≤
         1 + R := by
       have ha7 : 2500 * a ^ 7 * δ ^ 7 ≤ (50 * a) ^ 7 := by
         calc 2500 * a ^ 7 * δ ^ 7 ≤ 2500 * a ^ 7 * 1 := by gcongr
-          _ ≤ 50 ^ 7 * a ^ 7 := by gcongr; norm_num
+          _ = 2500 * a ^ 7 := by ring
+          _ ≤ (50 : ℝ) ^ 7 * a ^ 7 := mul_le_mul_of_nonneg_right (by norm_num) (by positivity)
           _ = (50 * a) ^ 7 := by ring
       dsimp [R]
       have : 3072 * 2 ^ 26 * A₀ * Real.log (|γ₀| + 3) * (2500 * a ^ 7 * δ ^ 7) * Real.exp a ≤
           3072 * 2 ^ 26 * A₀ * Real.log (|γ₀| + 3) * (50 * a) ^ 7 * Real.exp a := by gcongr
       linarith [show 0 ≤ 1 + 1 / (4 * a) by positivity]
-    rw [div_eq_mul_inv (Real.exp a) (1 + R), ← mul_assoc, ← mul_assoc]
-    rw [show 384 * A₀ * Real.log (|γ₀| + 3) * testNorm (sinhTest a δ) ^ 2 * Real.exp a * (1 + R)⁻¹ =
-        (384 * A₀ * Real.log (|γ₀| + 3) * testNorm (sinhTest a δ) ^ 2 * Real.exp a) / (1 + R) by
-      ring]
-    rw [div_le_iff₀ h1R_pos]
+    have heq_div :
+        384 * A₀ * Real.log (|γ₀| + 3) * testNorm (sinhTest a δ) ^ 2 * (Real.exp a / (1 + R)) =
+          (384 * A₀ * Real.log (|γ₀| + 3) * testNorm (sinhTest a δ) ^ 2 * Real.exp a) / (1 + R) := by
+      ring
+    rw [heq_div, div_le_iff₀ h1R_pos]
     calc 384 * A₀ * Real.log (|γ₀| + 3) * testNorm (sinhTest a δ) ^ 2 * Real.exp a
         ≤ 384 * A₀ * Real.log (|γ₀| + 3) * (2500 * a ^ 12 * Real.exp (2 * δ * a)) * Real.exp a := by
           gcongr
@@ -1512,8 +1538,8 @@ theorem windowPositiveAt_global_sea_cluster_bound (Z : ZeroConfig) {A₀ : ℝ} 
     have hexp_eq : Real.exp (2 * (δ - σ) * a) * Real.exp (2 * (δ + σ) * a) =
         Real.exp (4 * δ * a) := by
       rw [← Real.exp_add]; congr 1; ring
+    rw [← hexp_eq]
     field_simp [hδ.ne']
-    linear_combination (∑ ρ ∈ S, (Z.mult ρ : ℝ)) * a ^ 5 * hexp_eq
   have hrhs : 4 * A₀ * Real.log (|γ₀| + R + 6) *
       ((2 * a + 2 * π) * Real.exp (2 * π) * Real.exp (2 * σ * a)) *
       (30 * a ^ 5 * Real.exp (2 * δ * a) / δ ^ 6) =
@@ -1522,10 +1548,11 @@ theorem windowPositiveAt_global_sea_cluster_bound (Z : ZeroConfig) {A₀ : ℝ} 
         (a ^ 5 * Real.exp (2 * (δ + σ) * a) / (2 ^ 26 * δ ^ 7)) := by
     have hexp_eq : Real.exp (2 * σ * a) * Real.exp (2 * δ * a) = Real.exp (2 * (δ + σ) * a) := by
       rw [← Real.exp_add]; congr 1; ring
+    rw [← hexp_eq]
     field_simp [hδ.ne']
-    linear_combination 120 * 2 ^ 26 * A₀ * δ * (2 * a + 2 * π) * Real.exp (2 * π) *
-      Real.log (|γ₀| + R + 6) * a ^ 5 * hexp_eq
   rw [← hlhs, hrhs] at hmain
+  dsimp only [R] at hmain
+  rw [← add_assoc |γ₀|] at hmain
   exact le_of_mul_le_mul_right hmain hscale
 
 /-- **Unconditional `ζ` instantiation of coherent-cluster exclusion.** Every positive aperture `a`
@@ -1551,5 +1578,31 @@ theorem zeta_windowPositiveAt_coherent_cluster_bound :
   exact ⟨A₀, hA₀, fun hδ hδa hR hσ hpos S hSc hSδ hSγ hnear =>
     windowPositiveAt_coherent_cluster_bound zetaZeroConfig hA₀ hloc hδ hδa hR hσ
       ((windowPositiveAt_zeta_iff _).mpr hpos) S hSc hSδ hSγ hnear⟩
+
+/-- **Unconditional `ζ` coherent-cluster exclusion at `enlargedWeilFloorAperture` (P1 zero-location
+output).** Since `WindowPositiveAt zetaZeroConfig enlargedWeilFloorAperture` holds unconditionally,
+`zetaZeroConfig` unconditionally obeys the `L²` tilt-amplification bound at
+`a = enlargedWeilFloorAperture` (and at every `0 < a ≤ enlargedWeilFloorAperture`). -/
+theorem enlargedWeilFloor_excludes_zeta_coherent_cluster :
+    ∃ A₀ : ℝ, 1 ≤ A₀ ∧
+      ∀ {γ₀ a δ R σ : ℝ}, 0 < a → a ≤ enlargedWeilFloorAperture →
+        0 < δ → 2 ≤ δ * a → 1 / (4 * a) ≤ R → 0 ≤ σ →
+        ∀ S : Finset ℂ, (∀ ρ ∈ S, ρ ∈ zetaZeroConfig.carrier) →
+          (∀ ρ ∈ S, 1 / 2 + δ ≤ ρ.re) → (∀ ρ ∈ S, |ρ.im - γ₀| ≤ 1 / (4 * a)) →
+          (∀ ρ ∈ zetaZeroConfig.carrier, ρ ∉ S → ρ ∉ S.image reflect → |ρ.im - γ₀| ≤ R →
+            |ρ.re - 1 / 2| ≤ σ) →
+          (5 / 8) * (∑ ρ ∈ S, (zetaZeroConfig.mult ρ : ℝ)) *
+              (a ^ 5 * Real.exp (4 * δ * a) / (2 ^ 26 * δ ^ 7)) ≤
+            4 * A₀ * Real.log (|γ₀| + R + 6) *
+              ((2 * a + 2 * π) * Real.exp (2 * π) * Real.exp (2 * σ * a)) *
+              (30 * a ^ 5 * Real.exp (2 * δ * a) / δ ^ 6) +
+            384 * A₀ * Real.log (|γ₀| + 3) * testNorm (sinhTest a δ) ^ 2 *
+              (Real.exp a / (1 + R)) := by
+  obtain ⟨A₀, hA₀, hloc⟩ := Zeta23.RvM.zetaZeroConfig_local_count
+  refine ⟨A₀, hA₀, fun {γ₀ a δ R σ} ha ha_le hδ hδa hR hσ S hSc hSδ hSγ hnear => ?_⟩
+  have hpos : WindowPositiveAt zetaZeroConfig a :=
+    windowPositiveAt_antitone ha_le windowPositiveAt_zeta_enlargedWeilFloorAperture
+  exact windowPositiveAt_coherent_cluster_bound zetaZeroConfig hA₀ hloc hδ hδa hR hσ hpos
+    S hSc hSδ hSγ hnear
 
 end GaloisForLFunctions.WindowVisibilityLaw

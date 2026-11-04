@@ -32,7 +32,7 @@ theorem loaded_last_negative {c : ℝ} (hc : c/sourceUnit center ≤ -216*61^2) 
   have hm := ThirtyTwoCrossData.upper_model_last_negative
   rw [polyModel_eq (by norm_num : (32 : ℝ) ≠ 0)] at hm
   simp only [Matrix.add_apply,Matrix.smul_apply,smul_eq_mul,Matrix.one_apply,
-    if_pos rfl,mul_one] at hm
+    ite_true,mul_one] at hm
   have he := (abs_le.mp source_last_error).2
   have hb : 0 ≤ loadGram 32 4 4 := (loadGram_posSemidef 32).diag_nonneg
   have hl := mul_le_mul_of_nonneg_right hc hb

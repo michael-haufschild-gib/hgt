@@ -324,60 +324,60 @@ where `V_Q=(t/B_Q)²S_Q`, `W_Q=(1+log Q)V_Q`, `R_N` converges to a finite
 constant, and `S_N→0`. Both cutoff masses and `cP` tend to zero by checked
 scale limits. Finite domination, all three regime limits and their assembly are checked.
 Quadratic transposition does not apply to arbitrary complementary receivers.
-The reduced-jet, coherent pole-cancellation and sharp near-collar bounds in the
-corpus do not yet supply the required uniform upward nonratio remainder here.
-A proposed replacement splits rows at `exp(√log N)` and primes at a power of
-`log N`: short rows require a prime-progression upper bound; long rows require
-a weighted affine-incidence covariance bound, with exceptional primes dividing
-`kh′−k′h`. Neither required bound has yet been established for the literal kernel.
-Bounding those exceptional primes individually loses a factor `log N`.
-A proposed improvement averages the prime multiplier first: a progression
-upper bound could replace that loss by `Σ_(p>R)1/p²`, permitting
-`R=(log N)^(5/16)`. Checked sieve ingredients give unit CRT remainders,
-absolute truncated coefficient mass at most `Y⁶`, and prime-deleted
-reciprocal divisor mass at least `(log Y)/8−7/8` for deleted prime `p≥8`
-(`BezoutValuationIncidence/Sieve`). `PrimeProgressionFinite` checks
-`π(X;p,a)≤Y+16(X/p)/log Y+Y⁶` when `log Y≥14`.
-`ProgressionTruncationScales` and `PrimeProgressionUpper` check
-`π(X;p,a)≤1026X/(p log X)` for all sufficiently large prime moduli and `X≥p²`.
-`WeightedPrimeProgressions` checks
-`Σ_(H≤k≤X, prime k, k≡a mod p)log k/k≤(1026/p)(1+log X−log H)` for `p²≤H≤X`,
-with standard-only transitive axioms. `KernelVariation` checks
-`|ρ(a/B)ρ(b/B)/B|+Var_[A,B](ρ(a/n)ρ(b/n)/n)≤(2M²+2MK)/A`
-for a compact kernel bounded by `M` with Lipschitz constant `K`.
-`ResidueCovariance` and `WeightedResidueCovariance` check the exact coprime
-and equal-prime period means and their weighted inverse-endpoint error,
-with standard-only transitive axioms. `LogarithmicKernelVariation` checks
-scale-independent Jacobian/logarithm variation and initial-segment truncation.
-`LiteralUpwardKernelVariation` identifies both actual logarithmic kernels
-and checks variation at most `2K+4M`, retaining both horizon cutoffs,
-with standard-only transitive axioms.
-Exact normalization, literal support and uniform kernel variation are checked.
-Prime-progression averaging for the literal source and complete-row assembly remain open. The rows with multiplier below `Q²` occupy a terminal
-harmonic width `O((log Q+log c)/log N)` and need a separate bound.
+
+## Checked finite upward-row bounds
+
+The literal source retains both horizon cutoffs and offsets `kn±h`,
+`1≤h≤B=ceil(ec)`. Its logarithmic kernels have uniform amplitude and
+variation bounds. Exact periodic covariance separates equal-prime blocks;
+prime-progression averaging controls their collision rows. The proper-power
+remainder is retained, including nonunit multipliers and same-source towers.
+These finite estimates are checked through `LiteralThreeRange` and
+`LiteralGramSimplification`.
+
+Write `L=log N`, `W=|log(2ec)|+C_Mertens+1`, `μ=∫φ²`, `U=2μ`,
+`S=Σ_P1/p`, `B_P=Σ_Plog p/p`, and `H_A=ceil(N/(ecA))`. Let `M` be the
+fixed profile period, `V` its absolute bound, and `Kρ` the kernel-variation
+bound. Under the finite hypotheses of `LiteralThreeRange` and
+`literalThreeRangeBound_explicit_le`, the physical upward square is bounded
+by the sum of five scalar costs:
+
+- Short rows: `32B²s²V²[1027²W²S²+576²|P|²H_A^(−7/8)](1+log A)/L`.
+- Middle rows: `64B²s²V²[1027W²/R+576WSQ^(−7/8)]`.
+- Terminal rows: `64B²s²V²W²S log D/L`, where `N≤DJ`.
+- Same-source towers: `256B²V²(sB_P)²/R²`.
+- Covariance: `[64MV²(2U²+2UKρ)/μ²]s²|P|²B²(log(N+B)+C_Mertens+1)²/(AL)`.
+
+The row intervals are `[1,A−1]`, `[A,J]`, `[J+1,N]`, with `R<p` for
+source primes and `Q²≤ceil(N/(ecJ))`. Their support and progression
+conditions remain explicit in the literal-row theorems. The terminal
+harmonic width and reciprocal-square prime tail are proved bounds, not
+additional distribution assumptions.
+
+For a unit-invariant profile `G` with `|G|≤V`, the exact prime centering
+numerator is `−(s/p)Σ_(N/p<k≤N)G(k)/k`. Hence the band centering coefficient
+satisfies
+
+`|η|≤V|s|(1+8/log 2)(Σ_Plog p/p)/log N`.
+
+`CoprimeHarmonicMean` checks this identity and bound. `UpwardCentering`
+checks exact subtraction before or after the literal operator and upward
+norm cost at most `8B|η|W`.
+
+`WeightedIncidenceMoments` also checks, for arbitrary signed prime
+coefficients `b_p`, ordinary and harmonic incidence square bounds with
+coefficient factor
+
+`4(Σ_P|b_p|/p)²+2Σ_Pb_p²/p`.
+
+The corresponding prefactors are `N` and `H_N`.
+
+Uniform scale domination of these finite bounds, the low-band residual
+application, the all-horizon mixed assembly and uniform fibre physical
+energy remain open. No exact whole-ramp projection variance is established.
 
 ## Gates
 
 - [x] Explicit families, critical overlap and literal receivers identified.
 - [ ] Dependency-closed full paper classification.
-- [ ] Full Lean classification and consequences; final plain checks and transitive axiom audit.
-
-## Literal upward-row inputs
-
-Exact literal offset reindexing retains both horizon cutoffs with strip
-width `ceil(e*c)` (`UpwardProfileOffsets`). Both actual logarithmic kernels
-have variation bounded independently of horizon and multiplier
-(`LiteralUpwardKernelVariation`). Fixing a coprime conductor residue
-preserves the prime covariance density; finite periodic factors multiply
-it by their exact period mean (`ResidueSlices`, `PeriodicCovariance`).
-The weighted periodic Gram bound and exact equal-prime block decomposition
-are checked (`PeriodicWeightedCovariance`, `PeriodicGram`, `PrimeBlockGram`).
-Affine prime-progressions and the full proper-power remainder are checked
-(`AffinePrimeProgressions`, `PrimePowerTails`, `AffineMangoldtProgressions`).
-The latter also handles a nonunit multiplier with unit target: its progression
-is empty. `AffineCollisionMass` excludes collisions with a nonunit comparison
-multiplier when offset targets are units. `UpwardProfileNormalization`,
-`LiteralUpwardKernelBounds`, `LiteralUpwardKernelSupport` and `LiteralUpwardRows`
-check the exact finite coefficient, both signed cutoffs, amplitude, support
-and variation. Literal prime-band averaging and the uniform complete mixed-form
-comparison remain open.
+- [ ] Full Lean classification and consequences.

@@ -27,7 +27,7 @@ theorem fibreRestrict_fibreCharge_eq_incidence (m Q : ℕ) (t : ℝ) :
   by_cases hp : p.Prime <;> by_cases hd : p ∣ m <;>
     simp only [fibreRestrict, fibreCharge, primeIncidenceCoefficients, primeOnly,
       hp, hd, not_true_eq_false, not_false_eq_true, and_true, and_false,
-      if_true, if_false, mul_zero, mul_comm]
+      if_true, if_false, zero_mul, mul_comm]
 
 /-- The removed towers have at most one unit of mass per divisor of the base conductor. -/
 theorem abs_fibreTail_sub_coherent_le {m : ℕ} (hm : 0 < m)
@@ -65,7 +65,8 @@ theorem abs_fibreTail_sub_coherent_le {m : ℕ} (hm : 0 < m)
     rw [fibreRestrict_fibreCharge_eq_incidence,
       completedPrimeDilationTail_primeIncidence_eq, completedPrimeDilationTail_primeIncidence_eq]
     dsimp only [D, bad]
-    rw [sum_filter, mul_sum, ← sum_sub_distrib]
+    conv_rhs => rw [sum_filter]
+    rw [mul_sum, ← sum_sub_distrib]
     apply sum_congr rfl
     intro p _
     by_cases hd : p ∣ m <;> by_cases hn : p ∣ n <;>
