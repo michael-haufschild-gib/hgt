@@ -383,7 +383,7 @@ theorem exists_evenPoleBand_lt_abs {c : ℝ} (hct : screwSignThreshold < c) (hc 
     by_cases h : a u = 0
     · exact Or.inl h
     · by_contra hb'
-      push_neg at hb'
+      push Not at hb'
       linarith [(has' u h).2, (hbs' u hb'.2).1]
   have habs : (fun u => |a u - b u|) = fun u => a u + b u := by
     funext u
@@ -417,7 +417,7 @@ theorem evenBand_markov_iff {c : ℝ} (hc0 : 0 ≤ c) (hc : c < Real.log 2) {w�
   constructor
   · intro h
     by_contra hct
-    push_neg at hct
+    push Not at hct
     obtain ⟨f, -, -, hf2, hf0, hfl, hlt⟩ := exists_evenPoleBand_lt_abs hct hc w₂ w₃ le_rfl
     exact absurd (h f hf2 hf0 hfl) (not_le.mpr hlt)
   · intro hct f hf h0 hl

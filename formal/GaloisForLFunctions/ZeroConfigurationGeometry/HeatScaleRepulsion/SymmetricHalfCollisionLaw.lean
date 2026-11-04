@@ -125,6 +125,36 @@ theorem re_deriv_mul_conj_halfGauss_eq_zero_of_collision {t X : ℝ} (ht : 0 < t
   obtain ⟨hre, him⟩ := (riemannHeat_ofReal_collision_iff_halfGauss ht X).mp ⟨hz, hdz⟩
   simp [Complex.mul_re, hre, him]
 
+/-- **Exact quantitative real-zero slope formula via the symmetric-half pairing.**
+At every real zero `H_t(X) = 0` (`t > 0`) with `Q_{t,X}(0) ≠ 0`,
+`‖H_t'(X)‖ = 2 * |Re(Q'_{t,X}(0) conj Q_{t,X}(0))| / ‖Q_{t,X}(0)‖`. -/
+theorem norm_deriv_riemannHeat_ofReal_eq_of_eq_zero {t X : ℝ} (ht : 0 < t)
+    (hz : riemannHeat t (X : ℂ) = 0)
+    (hQ : halfGaussTransform t (xiLine X) 0 ≠ 0) :
+    ‖deriv (riemannHeat t) (X : ℂ)‖ =
+      2 * |(deriv (halfGaussTransform t (xiLine X)) 0 *
+        starRingEnd ℂ (halfGaussTransform t (xiLine X) 0)).re| /
+        ‖halfGaussTransform t (xiLine X) 0‖ := by
+  obtain ⟨Q₀, hQ₀⟩ : ∃ Q₀, Q₀ = halfGaussTransform t (xiLine X) 0 := ⟨_, rfl⟩
+  obtain ⟨D₀, hD₀⟩ : ∃ D₀, D₀ = deriv (halfGaussTransform t (xiLine X)) 0 := ⟨_, rfl⟩
+  have hz' := hz
+  rw [riemannHeat_ofReal_eq_two_re_halfGauss ht X, ← hQ₀, Complex.ofReal_eq_zero] at hz'
+  have hre0 : Q₀.re = 0 := by linarith
+  have hQ_im : Q₀ = (Q₀.im : ℂ) * I := by
+    apply Complex.ext <;> simp [hre0]
+  have hQ_norm : ‖Q₀‖ = |Q₀.im| := by
+    conv_lhs => rw [hQ_im]
+    rw [norm_mul, Complex.norm_real, Real.norm_eq_abs, Complex.norm_I, mul_one]
+  have hQ_pos : 0 < ‖Q₀‖ := norm_pos_iff.mpr (by rwa [hQ₀])
+  have hpair : |(D₀ * starRingEnd ℂ Q₀).re| = |D₀.im| * ‖Q₀‖ := by
+    have hp : (D₀ * starRingEnd ℂ Q₀).re = D₀.im * Q₀.im := by
+      simp [Complex.mul_re, hre0]
+    rw [hp, abs_mul, hQ_norm]
+  rw [deriv_riemannHeat_ofReal_eq_neg_two_im_deriv_halfGauss ht X, ← hQ₀, ← hD₀,
+    Complex.norm_real, Real.norm_eq_abs, hpair, show |-2 * D₀.im| = 2 * |D₀.im| by
+      rw [abs_mul]; norm_num]
+  field_simp [hQ_pos.ne']
+
 /-! ## 2. Sharpness of `6600 / 9991` and the `1/2` Gaussian saddle barrier -/
 
 /-- **Exact algebraic sharpness of `6600 / 9991` for the four-piece sub-Weyl strip profile.**

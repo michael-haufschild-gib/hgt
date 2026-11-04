@@ -106,7 +106,7 @@ pole hyperplane is negative somewhere. -/
 theorem exists_neg_of_poleHyperplane {g : ℝ → ℝ} (hg : Continuous g) (hgc : HasCompactSupport g)
     {u₀ : ℝ} (hu₀ : g u₀ ≠ 0) (h : ∫ u, g u * coshWeight u = 0) : ∃ u, g u < 0 := by
   by_contra hneg
-  push_neg at hneg
+  push Not at hneg
   have hcw0 : ∀ u, 0 < coshWeight u := fun u => by unfold coshWeight; positivity
   have hpos : 0 < ∫ u, g u * coshWeight u :=
     (hg.mul (by unfold coshWeight; fun_prop)).integral_pos_of_hasCompactSupport_nonneg_nonzero
@@ -130,7 +130,7 @@ theorem four_mul_sq_integral_le_poleSquare {ψ : ℝ → ℝ} (hψ : Continuous 
     show 2 * ψ u ≤ ψ u * coshWeight u
     have : 2 ≤ coshWeight u := by unfold coshWeight; linarith [Real.one_le_cosh (u / 2)]
     nlinarith [hψ0 u]
-  have h0 : 0 ≤ 2 * ∫ u, ψ u := by linarith [integral_nonneg hψ0]
+  have h0 : 0 ≤ 2 * ∫ u, ψ u := by linarith [integral_nonneg (f := ψ) hψ0]
   have hsq := pow_le_pow_left₀ h0 h2 2
   have e : (2 * ∫ u, ψ u) ^ 2 = 4 * (∫ u, ψ u) ^ 2 := by ring
   unfold poleSquare
@@ -202,7 +202,7 @@ theorem exists_neg_of_evenMargin_gt {w₂ w₃ s₀ s₁ lam ε M : ℝ} {ψ g :
     (hgap : M ^ 2 * (evenPoleBand w₂ w₃ 1 g - lam + ε) < 4 * (s₁ - s₀)) :
     ∃ u, ψ u < 0 := by
   by_contra h
-  push_neg at h
+  push Not at h
   exact absurd (evenPerronMargin_le_sup hψc hψs h hψM hs hlow hψ hg hmin) (not_le.mpr hgap)
 
 /-- **The even positivity margin.** If the band at the weaker pole `s_w ≤ s₀` is nonnegative at a
