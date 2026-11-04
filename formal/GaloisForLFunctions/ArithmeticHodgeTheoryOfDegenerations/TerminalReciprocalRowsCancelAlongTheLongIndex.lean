@@ -127,7 +127,7 @@ theorem abs_terminal_reciprocal_gap_row_le
     |∑ n ∈ Icc 1 J, F (((n + s : ℕ) : ℝ) / N) * p (n + t) *
         K (θ * N / n) / n| ≤
       2 * q * B * (20 * BF * BK + 64 * BF * LK * T + 4 * BK * LF) / N := by
-  have hN0 : (0 : ℝ) < N := by exact_mod_cast hN
+  have hN0 : (0 : ℝ) < N := by exact_mod_cast (show 0 < N by omega)
   have hBF : 0 ≤ BF := (abs_nonneg _).trans (hF 0)
   have hBK : 0 ≤ BK := (abs_nonneg _).trans (hK 0)
   have hT : 0 ≤ T := (abs_nonneg _).trans hθ
@@ -148,7 +148,8 @@ theorem abs_terminal_reciprocal_gap_row_le
     rw [sum_div]
     apply sum_congr rfl
     intro n hn
-    have hn0 : (0 : ℝ) < n := by exact_mod_cast (mem_Icc.mp hn).1
+    have hn0 : (0 : ℝ) < n := by
+      exact_mod_cast (show 0 < n from (mem_Icc.mp hn).1)
     have harg : ((n + s : ℕ) : ℝ) / N = (n : ℝ) / N + s / N := by
       rw [Nat.cast_add, add_div]
     by_cases hzero : F (((n + s : ℕ) : ℝ) / N) = 0
@@ -171,7 +172,55 @@ theorem abs_terminal_reciprocal_gap_row_le
   rw [← heq, abs_div, abs_of_pos hN0]
   exact (div_le_div_of_nonneg_right hrow hN0.le).trans_eq (by dsimp only [C]; ring)
 
+/-- Moving interval endpoints cost two periodic prefix estimates. -/
+theorem abs_terminal_reciprocal_gap_interval_le
+    {F K : ℝ → ℝ} {BF BK LF LK T θ : ℝ}
+    (hF : ∀ x, |F x| ≤ BF) (hK : ∀ x, |K x| ≤ BK)
+    (hLF : 0 ≤ LF) (hLK : 0 ≤ LK)
+    (hFL : ∀ x y, |F x - F y| ≤ LF * |x - y|)
+    (hKL : ∀ x y, |K x - K y| ≤ LK * |x - y|) (hθ : |θ| ≤ T)
+    (hlow : ∀ x, x ≤ (1 / 2 : ℝ) → F x = 0)
+    {p : ℕ → ℝ} {q : ℕ} (hq : 0 < q) (hp : ∀ n, p (n + q) = p n)
+    (hz : periodicMean p q = 0) {B : ℝ} (hB : ∀ n, |p n| ≤ B)
+    {a b N s : ℕ} (ha : 1 ≤ a) (hN : 1 ≤ N) (hbN : b ≤ N)
+    (hs : 4 * s ≤ N) (t : ℕ) :
+    |∑ n ∈ Icc a b, F (((n + s : ℕ) : ℝ) / N) * p (n + t) *
+        K (θ * N / n) / n| ≤
+      4 * q * B * (20 * BF * BK + 64 * BF * LK * T + 4 * BK * LF) / N := by
+  have hBF : 0 ≤ BF := (abs_nonneg _).trans (hF 0)
+  have hBK : 0 ≤ BK := (abs_nonneg _).trans (hK 0)
+  have hB0 : 0 ≤ B := (abs_nonneg _).trans (hB 0)
+  have hT : 0 ≤ T := (abs_nonneg _).trans hθ
+  by_cases hab : a ≤ b
+  · let row := fun n : ℕ => F (((n + s : ℕ) : ℝ) / N) * p (n + t) * K (θ * N / n) / n
+    have hdis : Disjoint (Icc 1 (a - 1)) (Icc a b) := by
+      apply disjoint_left.mpr
+      intro n hn hm
+      obtain ⟨_, hn⟩ := mem_Icc.mp hn
+      obtain ⟨hm, _⟩ := mem_Icc.mp hm
+      omega
+    have hunion : Icc 1 (a - 1) ∪ Icc a b = Icc 1 b := by
+      ext n
+      simp only [mem_union, mem_Icc]
+      omega
+    have heq : (∑ n ∈ Icc a b, row n) =
+        (∑ n ∈ Icc 1 b, row n) - ∑ n ∈ Icc 1 (a - 1), row n := by
+      have hh : (∑ n ∈ Icc 1 b, row n) =
+          (∑ n ∈ Icc 1 (a - 1), row n) + ∑ n ∈ Icc a b, row n := by
+        rw [← hunion, sum_union hdis]
+      linarith only [hh]
+    have h₁ := abs_terminal_reciprocal_gap_row_le hF hK hLF hLK hFL hKL hθ hlow
+      hq hp hz hB hN hbN hs t
+    have h₂ := abs_terminal_reciprocal_gap_row_le hF hK hLF hLK hFL hKL hθ hlow
+      hq hp hz hB hN (show a - 1 ≤ N by omega) hs t
+    change |∑ n ∈ Icc a b, row n| ≤ _
+    rw [heq]
+    exact ((abs_sub_le _ _).trans (add_le_add h₁ h₂)).trans_eq (by ring)
+  · rw [Icc_eq_empty_of_lt (lt_of_not_ge hab), sum_empty, abs_zero]
+    positivity
+
 end GaloisForLFunctions.ArithmeticHodgeTheoryOfDegenerations
 
 #print axioms GaloisForLFunctions.ArithmeticHodgeTheoryOfDegenerations.terminalReciprocalWeight_lipschitz
 #print axioms GaloisForLFunctions.ArithmeticHodgeTheoryOfDegenerations.abs_terminal_reciprocal_gap_row_le
+#print axioms GaloisForLFunctions.ArithmeticHodgeTheoryOfDegenerations.abs_terminal_reciprocal_gap_interval_le

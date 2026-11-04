@@ -296,7 +296,7 @@ For coupling, the corpus constructs a simple sign/conjugation-symmetric divisor 
 
    This is the literal complete-matrix pairing, independent of R, with no surviving aliasing cross term on this support. Both prime boundary channels vanish exactly. The signed Gamma and near-center terms cancel Euler's constant and `∫F log x`; the four remaining errors vanish. The proof retains log c times the **actual** near Gram before taking limits. [Exact assembly and limit](../../../formal/GaloisForLFunctions/ArithmeticHodgeTheoryOfDegenerations/TerminalPolarSourceAboveHalf.lean), actual-path audit with `[propext, Classical.choice, Quot.sound]`. `[K]`
 
-   **Every fixed nonpolar conductor has zero complete source on this same support.** The full-center charge `−Λ(m)∫F` cancels the opposite divisor-jet charge, including prime-power conductors; the remaining channels vanish. Thus the fixed-conductor response is exactly polar for every R>0. [Complete nonpolar assembly](../../../formal/GaloisForLFunctions/ArithmeticHodgeTheoryOfDegenerations/TerminalNonpolarSourceAboveHalf.lean) passes its actual-path audit with the standard three axioms. General terminal support and uniformity through a growing packet remain separate obligations. `[K/P]`
+   **Every fixed nonpolar conductor has zero complete source on this same support.** The full-center charge `−Λ(m)∫F` cancels the opposite divisor-jet charge, including prime-power conductors; the remaining channels vanish. Thus the fixed-conductor response is exactly polar for every R>0. [Complete nonpolar assembly](../../../formal/GaloisForLFunctions/ArithmeticHodgeTheoryOfDegenerations/TerminalNonpolarSourceAboveHalf.lean) passes its actual-path audit with the standard three axioms. General terminal support remains open; growing-packet uniformity on this interior support is now checked below. `[K/P]`
 
    The local source is nonzero: `F(x)=tiltedUnitSpline(256x−254)` is nonnegative, supported in `[127/128,255/256]`, and has strictly positive source mean. The proof uses `(2π)²(1−x²)<1` on its support, with no numerical experiment. [Checked witness and complete mixed limit](../../../formal/GaloisForLFunctions/ArithmeticHodgeTheoryOfDegenerations/TerminalPolarSourceIsNonzero.lean), with the standard three axioms. `[K]`
 
@@ -319,7 +319,18 @@ For coupling, the corpus constructs a simple sign/conjugation-symmetric divisor 
 
    **The below-overlap source envelope is now checked.** For residual `r_m=B_Nv_m−E_m v_m`, weighted collar Cauchy–Schwarz and the actual floor `E_m≥κm⁷/c⁷` give `|⟨r_m,x_N⟩|²/(c E_m)≤C_(h,R)/m⁵` for every `m≤c` at one eventual horizon. Restoring `E_m v_m` preserves this summable envelope for the complete pairing. [Both envelope theorems](../../../formal/GaloisForLFunctions/CriticalArithmeticCorrelationTheory/TerminalConductorSourcesAreSummableBelowOverlap.lean) pass their actual-path audits with the standard three axioms. `[K]`
 
-   **The above-overlap mass also vanishes in a checked theorem.** The receiver-independent residual sum satisfies `Σ_(c<m≤Q_N)‖r_m‖²/(c E_m)≤(log N)^(-1/64)` eventually, where `Q_N=floor((log N)^(13/32))`. The whole-packet reference contribution vanishes too, hence so does the complete mixed mass above overlap against every fixed bounded terminal profile. [All five endpoints](../../../formal/GaloisForLFunctions/CriticalArithmeticCorrelationTheory/TheUpperCriticalPacketHasVanishingMixedMass.lean) pass their actual-path audit with the standard three axioms. The square-sum assembly and finite quadratic optimization remain pending. The required signed packet form is already checked; this reduction exposes no new uniform prime-distribution or packet-Gram premise. [Exact remaining assembly](../../drafts/pipeline/1-in-progress/critical-pole-window-signed-transport.md#uniformity-exposed-by-the-existing-conductor-bounds). `[K/P]`
+   **The above-overlap mass also vanishes in a checked theorem.** The receiver-independent residual sum satisfies `Σ_(c<m≤Q_N)‖r_m‖²/(c E_m)≤(log N)^(-1/64)` eventually, where `Q_N=floor((log N)^(13/32))`. The whole-packet reference contribution vanishes too, hence so does the complete mixed mass above overlap against every fixed bounded terminal profile. [All five endpoints](../../../formal/GaloisForLFunctions/CriticalArithmeticCorrelationTheory/TheUpperCriticalPacketHasVanishingMixedMass.lean) pass their actual-path audit with the standard three axioms. `[K]`
+
+   **The whole moving packet has exactly polar source mass.** For every fixed interior terminal window as above and every R>0,
+
+   \[
+   \sum_{2\le m\le Q_N}\frac{|\langle B_Nv_m,x_N\rangle|^2}{c_NE_m(c_N)}\to0,
+   \qquad
+   \sum_{1\le m\le Q_N}\frac{|\langle B_Nv_m,x_N\rangle|^2}{c_NE_m(c_N)}
+      \to\frac{S(h)^2R}{J(1)}.
+   \]
+
+   [The square-sum assembly](../../../formal/GaloisForLFunctions/CriticalArithmeticCorrelationTheory/TerminalConductorSourcesConcentrateAtThePole.lean) passes its actual-path audit with the standard three axioms. This closes the mixed-source uniformity gap for this packet and support. Finite quadratic optimization remains; the required signed packet form is already checked. It does not pay the complementary window energy or extend the whole-space positive band. [Remaining optimization](../../drafts/pipeline/1-in-progress/critical-pole-window-signed-transport.md#uniformity-exposed-by-the-existing-conductor-bounds). `[K/P]`
 
    If optimized corrections are exhausted by that one pole functional, their subtraction has rank one and leaves compensation intact on its kernel. Such a classification would sharpen the obstruction; it would still require further growing arithmetic charges or direct control of the complementary window form. `[D/P]`
 

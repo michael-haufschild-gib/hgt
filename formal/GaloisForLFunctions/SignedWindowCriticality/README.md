@@ -270,8 +270,11 @@ to be judged by the rate it controls.
     determinant of `Δ_h^iφ/h^i`, which converge to the jets in the Weil norm. Hence the lattice
     data, which coalesce as `h → 0`, have rescaled limits: `h^{−2n}E_n(φ, h) → det J_{n+1}/det J_n`,
     `J = [W(φ^{(i)}, φ^{(j)})]`. Translation invariance makes `d/dx` skew for `W`, so `J` is the signed
-    Hankel matrix of `s_m = W(φ^{(m)})`; for an even bump the odd jets are odd tests, and the order-`n`
-    margin reads the parity sector of `n` (the derivative ladder between the sectors).
+    Hankel matrix of `s_m = W(φ^{(m)})`, block diagonal in the parities, `det J_n = det E · det O`.
+    For an even bump the even jets are even tests and the odd jets odd tests: the even-order margins
+    converge to the even-sector Stieltjes ratios, the odd-order margins to the odd-sector ones, and
+    each block is positive definite as soon as its sector is nonnegative — the lattice canonical
+    system reads the two parity sectors alternately.
 
 ## 5. Questions
 
@@ -418,6 +421,7 @@ and 10 are structural.
 | The continuum canonical system of a bump is its jet Hankel system: the lattice determinant is born at order `h^{n(n−1)}` with the jet Gram, the margins satisfy `h^{−2n}E_n → det J_{n+1}/det J_n`, and `J_{ij} = (−1)^iW(φ, φ^{(i+j)})`, zero for `i + j` odd | `det_latticeToeplitz_eq`, `tendsto_det_latticeToeplitz`, `det_latticeToeplitz_succ`, `levinsonErr_mul_det`, `tendsto_levinsonErr_div_pow`, `weilPair_deriv_left`, `weilPair_iteratedDeriv_eq`, `weilPair_iteratedDeriv_eq_zero_of_odd`, `tendsto_levinsonErr_one_div_sq'`, `theContinuumCanonicalSystemIsTheJetHankelSystem` | unconditional |
 | No window eigenfunction is smooth; window infima are not attained on smooth tests; nonnegative windows are positive definite on smooth tests; the band at the centre is strict on smooth tests | `isWindowEigen_deriv`, `jetNormSq_sq_le`, `eq_zero_of_sq_iteratedDeriv_le`, `archForm_deriv_ge`, `exists_weilQuad_iteratedDeriv_gt`, `eq_zero_of_isWindowEigen`, `eq_zero_of_isMin`, `weilQuad_pos_of_window_nonneg`, `abs_centreCoupling_lt_of_window_nonneg` | unconditional |
 | The jet minors are positive on every nonnegative window, unconditionally on the base window; the lattice margins of every nonzero smooth bump are born at exactly order `h^{2n}`; the jet energies are strictly log-convex | `exists_jet_coeffs`, `eq_zero_of_iteratedDeriv_eq_sum`, `eq_zero_of_sum_smul_iteratedDeriv`, `jetGram_posDef`, `det_jetGram_pos`, `tendsto_levinsonErr_div_pow_of_window_nonneg`, `tendsto_levinsonErr_div_pow_of_base`, `weilQuad_iteratedDeriv_sq_lt` | unconditional |
+| The continuum canonical system splits into the parity sectors: `det J_n = det E · det O`, even-order margins → even-sector Stieltjes ratios, odd-order → odd-sector ones; each sector is positive definite on smooth tests once nonnegative and carries its block | `weilPair_odd_even`, `iteratedDeriv_parity`, `isWindowEigen_of_sector_isMin`, `weilQuad_pos_of_sector_nonneg`, `det_jetGram_eq_mul`, `tendsto_levinsonErr_even_odd`, `evenJetGram_posDef`, `oddJetGram_posDef`, `tendsto_levinsonErr_even_odd_of_sectors_nonneg` | unconditional |
 
 ## 9. Traps
 

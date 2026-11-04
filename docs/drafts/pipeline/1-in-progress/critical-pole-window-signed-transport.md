@@ -151,8 +151,9 @@ uniform κR² obstruction below without the general source conjecture.
 
 For a fixed bounded terminal window, set
 `q_N(m)=|⟨r_m,x_N⟩|²/(c_N E_m(c_N))`, and
-`Q_N=floor((log N)^(13/32))`. The following tightness reduction has a
-closed paper proof; its Lean transfer is pending.
+`Q_N=floor((log N)^(13/32))`. The following tightness reduction and its
+square-sum passage are checked in Lean for interior support above half
+the horizon.
 
 Choose a collar cutoff below the fixed support of x_N and above
 `2 linearPrimeStrip(c_N)`. The window's prefix mass is zero and its
@@ -216,9 +217,11 @@ The proof uses `c_N≤L^(2/15)`, exponent `1/128` in the residual estimate
 and `L⁸≤N`; the two powers before absorbing logarithms are
 `−89/1920` and `−67/16`. The reference diagonal also vanishes under the
 weaker upper bound `E_m≤C_φ m`, since `Q_N²/L≤L^(-3/16)`.
-`TerminalConductorSourcesConcentrateAtThePole.lean` implements the
+`TerminalConductorSourcesConcentrateAtThePole.lean` proves the
 square-sum passage, including the exact total polar mass
-`S(h)²R/J(1)` through Q_N. Its audit and uniform optimization remain pending.
+`S(h)²R/J(1)` through Q_N and zero total nonpolar mass. All five
+endpoints pass their actual-path audit with exactly
+`[propext, Classical.choice, Quot.sound]`. Uniform optimization remains pending.
 
 A closed paper consequence already needs only the checked half-energy
 packet floor. Completing a scalar square for each conductor gives,
@@ -247,9 +250,9 @@ the tightness bounds imply `g_N→aℓ(h)sqrt(R/J(1))e₁` in square sum,
 while the packet form divided by c_N is uniformly
 `Σt_m²+[a g R/J(1)]t₁²+o(Σt_m²)`. Completing squares, with the
 ε-error on both sides, would give the exact optimal energy reduction
-`a²ℓ(h)²/[J(1)/R+a g]`. The remaining transfers are the fixed-m source
-limits, their square-sum convergence and this finite quadratic
-optimization. None proves whole-space positivity or removes the
+`a²ℓ(h)²/[J(1)/R+a g]`. For the stated interior support the fixed-m limits
+and their square-sum convergence are checked. Finite quadratic
+optimization remains. None proves whole-space positivity or removes the
 window compensation.
 
 ## Attack and proof obligations

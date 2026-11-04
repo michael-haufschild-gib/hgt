@@ -105,6 +105,14 @@ import GaloisForLFunctions.CriticalScaleArithmeticRigidity.ReceivingCharges.Prim
 
 import GaloisForLFunctions.CriticalScaleArithmeticRigidity.ReceivingCharges.PrimeChargeUniformScales
 
+import GaloisForLFunctions.CriticalScaleArithmeticRigidity.ReceivingCharges.PrimeChargeDenseCutoffEnergy
+
+import GaloisForLFunctions.CriticalScaleArithmeticRigidity.ReceivingCharges.PrimeChargeSmallCutoffEnergy
+
+import GaloisForLFunctions.CriticalScaleArithmeticRigidity.ReceivingCharges.PrimeChargeIntermediateDomination
+
+import GaloisForLFunctions.CriticalScaleArithmeticRigidity.ReceivingCharges.PrimeChargeIntermediateEnergy
+
 /-!
 # Arithmetic rigidity at critical scale
 

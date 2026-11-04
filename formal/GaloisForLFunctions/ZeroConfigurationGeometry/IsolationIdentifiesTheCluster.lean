@@ -1,5 +1,6 @@
 import GaloisForLFunctions.ZeroConfigurationGeometry.FiniteModificationsAreSeenAtEveryAperture
 import GaloisForLFunctions.ZeroConfigurationGeometry.IsolatingWindows
+import GaloisForLFunctions.ZeroConfigurationGeometry.BlindWindowsForPerturbedLattices
 
 /-!
 # Isolation identifies the cluster
@@ -24,6 +25,11 @@ point that some window of aperture `a` isolates from the rest of the cluster.
   mimics at aperture `a` never differ only on the simple zeros of one aperture-`a` transform.
 * **Lattices** (`eq_of_mimic_of_onLine_lattice`). Mimics at an aperture `a > π/h` whose cluster lies on
   the on-line lattice `{½ + ikh}` are equal, whatever the multiplicities.
+* **Perturbed lattices** (`eq_of_mimic_of_perturbed_lattice`, `eq_of_mimic_of_perturbed_lattices`).
+  The same holds for clusters on the critical line inside a bounded perturbation `|ν_k − kh| ≤ L` of
+  a lattice, with no separation, and inside finite unions of such perturbations of total density
+  `D` above the aperture `πD`. To isolate `ν_{k₀}` one moves every index that hits it off it and
+  takes the blind window of the moved perturbation (`exists_window_blind_to_perturbed_lattices`).
 
 Together with `BlindnessCostsTheDensityAperture` this is a density criterion for cancelling
 clusters: a window of aperture `a` can be blind only to configurations of lower density `≤ a/π`, and
@@ -174,5 +180,61 @@ theorem eq_of_mimic_of_onLine_lattice {Z Z' : ZeroConfig} (hZ : TemperedConfig Z
   have hkk : k ≠ k₀ := fun hkk => hz (gammaOf_injective (by rw [hk, hk₀, hkk]))
   rw [hk]
   exact hgk k hkk
+
+/-- **Clusters on finitely many perturbed lattices do not cancel above `πD`.** Mimics at an aperture
+`a > π Σ_j 1/h_j` whose cluster lies on the critical line inside `⋃_j {ν_j k}`, `|ν_j k − k h_j| ≤ L_j`,
+are equal. -/
+theorem eq_of_mimic_of_perturbed_lattices {ι : Type*} [DecidableEq ι] {Z Z' : ZeroConfig}
+    (hZ : TemperedConfig Z) (hZ' : TemperedConfig Z') (T : Finset ι) (h L : ι → ℝ)
+    (hh : ∀ j ∈ T, 0 < h j) (ν : ι → ℤ → ℝ) (hν : ∀ j ∈ T, ∀ k : ℤ, |ν j k - k * h j| ≤ L j)
+    {a : ℝ} (ha : Real.pi * ∑ j ∈ T, (h j)⁻¹ < a)
+    (hW : ∀ f, ApertureWindow a f → Z.W f f = Z'.W f f)
+    (hcl : ∀ z, multDiff Z Z' z ≠ 0 → ∃ j ∈ T, ∃ k : ℤ, gammaOf z = (ν j k : ℂ)) :
+    Z.carrier = Z'.carrier ∧ ∀ ρ ∈ Z.carrier, Z.mult ρ = Z'.mult ρ := by
+  classical
+  have ha0 : 0 < a := lt_of_le_of_lt (mul_nonneg Real.pi_pos.le
+    (Finset.sum_nonneg fun j hj => (inv_pos.mpr (hh j hj)).le)) ha
+  refine eq_of_mimic_of_isolable hZ hZ' ha0 hW fun z₀ hz₀ => ?_
+  obtain ⟨j₀, hj₀, k₀, hk₀⟩ := hcl z₀ hz₀
+  set κ : ℝ := ν j₀ k₀ with hκ
+  -- move every index that hits `κ` off it, by one unit
+  set ν' : ι → ℤ → ℝ := fun j k => if ν j k = κ then κ + 1 else ν j k with hν'
+  have hν'b : ∀ j ∈ T, ∀ k : ℤ, |ν' j k - k * h j| ≤ L j + 1 := by
+    intro j hj k
+    have h0 := hν j hj k
+    by_cases hk : ν j k = κ
+    · simp only [hν', if_pos hk]
+      calc |κ + 1 - k * h j| = |(ν j k - k * h j) + 1| := by rw [hk]; ring_nf
+        _ ≤ |ν j k - k * h j| + |(1 : ℝ)| := abs_add_le _ _
+        _ ≤ L j + 1 := by rw [abs_one]; linarith
+    · simp only [hν', if_neg hk]; linarith
+  have hκ' : ∀ j ∈ T, ∀ k, ((κ : ℝ) : ℂ) ≠ (ν' j k : ℂ) := by
+    intro j _ k hk
+    have hk' : κ = ν' j k := by exact_mod_cast hk
+    by_cases hkk : ν j k = κ
+    · simp only [hν', if_pos hkk] at hk'; linarith
+    · simp only [hν', if_neg hkk] at hk'; exact hkk hk'.symm
+  obtain ⟨f₀, hf₀, hblind, hsee⟩ :=
+    exists_window_blind_to_perturbed_lattices T h (fun j => L j + 1) hh ν' hν'b ha hκ'
+  refine ⟨f₀, hf₀, fun z hz hc => ?_, by rw [hk₀]; exact hsee⟩
+  obtain ⟨j, hj, k, hk⟩ := hcl z hc
+  have hne : ν j k ≠ κ := fun h' => hz (gammaOf_injective (by rw [hk, hk₀, h']))
+  have : ν' j k = ν j k := by simp only [hν', if_neg hne]
+  rw [hk, ← this]
+  exact hblind j hj k
+
+/-- **Clusters on a perturbed lattice do not cancel above `π/h`.** Mimics at an aperture `a > π/h`
+whose cluster lies on the critical line inside `{ν_k}`, `|ν_k − kh| ≤ L`, are equal. -/
+theorem eq_of_mimic_of_perturbed_lattice {Z Z' : ZeroConfig} (hZ : TemperedConfig Z)
+    (hZ' : TemperedConfig Z') {h L a : ℝ} (hh : 0 < h) (ν : ℤ → ℝ)
+    (hν : ∀ k : ℤ, |ν k - k * h| ≤ L) (ha : Real.pi / h < a)
+    (hW : ∀ f, ApertureWindow a f → Z.W f f = Z'.W f f)
+    (hcl : ∀ z, multDiff Z Z' z ≠ 0 → ∃ k : ℤ, gammaOf z = (ν k : ℂ)) :
+    Z.carrier = Z'.carrier ∧ ∀ ρ ∈ Z.carrier, Z.mult ρ = Z'.mult ρ :=
+  eq_of_mimic_of_perturbed_lattices hZ hZ' ({()} : Finset Unit) (fun _ => h) (fun _ => L)
+    (fun _ _ => hh) (fun _ => ν) (fun _ _ => hν) (by simpa [div_eq_mul_inv] using ha) hW
+    fun z hz => by
+      obtain ⟨k, hk⟩ := hcl z hz
+      exact ⟨(), Finset.mem_singleton_self _, k, hk⟩
 
 end GaloisForLFunctions.ZeroConfigurationGeometry

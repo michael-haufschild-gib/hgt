@@ -166,7 +166,8 @@ actual row unchanged. Applying the checked
 `abs_terminal_shifted_periodic_zero_mean_le` to each reciprocal row
 bounds its absolute sum by `2qB C_W/N`, independently of d and c.
 The reciprocal-row statement is implemented in
-`TerminalReciprocalRowsCancelAlongTheLongIndex.lean`; audit pending.
+`TerminalReciprocalRowsCancelAlongTheLongIndex.lean`, together with its
+moving-interval version at twice the prefix constant; audit pending.
 
 For the actual kernel, apply the checked
 `abs_sqrt_log_kernel_sub_linear_le` with A=4, B=c, x=n, y=n+d.
@@ -185,6 +186,39 @@ sparse Mangoldt mean separately. The exact prime-row completion removes
 the punctured diagonal before that split. The Gamma, center and remaining
 complete channels still need their own conductor-uniform estimates;
 this near-kernel result alone does not prove the large-packet conjecture.
+
+## A sufficient weaker rate for the Gamma channels
+
+The existing finite theorem `abs_farCross_pair_tail_le` bounds the actual
+tail beyond scaled gap T≥2, divided by c, by
+
+    C_φ B²(16/T+32c/N),
+
+for bounded arithmetic weights. Its statement is uniform in T, c and N;
+T need not be fixed before the horizon limit. This avoids requiring a
+new globally differentiable full Gamma profile.
+
+For the remaining annulus, the source already supplies bounded
+Lipschitz near and cross-singular profiles and an entry error O_φ(c/N).
+The long-index argument would suffice with polynomial losses
+`qB(1+T)²/N + B(1+T)³c/N`. Its missing finite step is cancellation on
+the moving integer interval selected by the logarithmic gap cutoffs.
+At a fixed integer gap d, `log(1+d/n)` decreases with n, so that selector
+is an interval; an interval version of the periodic prefix estimate
+pays both endpoints. **[OPEN CORE]** Formalize this annular bound and
+retain its T-dependence through the actual-kernel replacement.
+
+Choosing T=N^(1/8) gives a weaker but sufficient candidate complete bound
+
+    |(√L/c_N)⟨B_Nv_m,x_h⟩|
+      ≤ C/√φ(m) [Λ(m)/c_N + m⁴c_N⁸L²/N^(1/8)].
+
+Its polynomial-error contribution to the inverse-energy sum is at most
+`C c_N¹⁷L³Q_N⁹/N^(1/4)`, hence tends to zero when Q_N=N^(1/64):
+the remaining horizon power is −7/64. This suffices for the same
+large-packet conjecture without proving the earlier, stronger N^(-1/2)
+remainder. The complete bound itself is still open; the finite tail
+theorem alone does not establish it.
 
 ## Decision criterion
 

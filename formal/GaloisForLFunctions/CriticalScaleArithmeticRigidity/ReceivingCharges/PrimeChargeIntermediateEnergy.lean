@@ -68,7 +68,7 @@ theorem tendsto_harmonicPrimeCharge_energy_intermediate {ι : Type*} {l : Filter
   have hJ := (primePoleScale_tendsto_atTop.comp hQ).const_div_atTop (2 * t ^ 2)
   have hz := hJ.add (((hR.comp hN).mul hW).add
     (((hS.comp hN).mul hV).add (hP.const_mul A)))
-  simp only [zero_pow two_ne_zero, mul_zero, zero_add, add_zero, Function.comp_def] at hz
+  simp only [zero_pow two_ne_zero, mul_zero, add_zero, Function.comp_def] at hz
   refine squeeze_zero_norm' ?_ hz
   filter_upwards [hQ.eventually (eventually_ge_atTop 2), hN.eventually (eventually_ge_atTop 1),
     hN.eventually (eventually_primeCharge_uniform_geometry hK), hfar, hlarge]

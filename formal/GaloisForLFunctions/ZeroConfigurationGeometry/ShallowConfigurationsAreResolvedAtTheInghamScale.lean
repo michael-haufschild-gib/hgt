@@ -183,7 +183,8 @@ theorem remainder_upper {ι : Type*} [Fintype ι] [DecidableEq ι] (γ δ : ι �
   have hF : ∀ v : ℝ, (∑ k, cexp (I * γ k * v) *
       (p k * (remProfile (δ k) true v : ℂ) + q k * (remProfile (δ k) false v : ℂ))) = f v := by
     intro v
-    rw [hf, Fintype.sum_prod_type]
+    simp only [hf]
+    rw [Fintype.sum_prod_type]
     refine Finset.sum_congr rfl fun k _ => ?_
     rw [Fintype.sum_bool]
     simp only [hc', hγ', hu, if_true, Bool.false_eq_true, if_false]
@@ -217,9 +218,7 @@ theorem remainder_upper {ι : Type*} [Fintype ι] [DecidableEq ι] (γ δ : ι �
       ∫ v in -(2 * V)..(2 * V), Real.cos (a * v) * ‖f v‖ ^ 2 := by
     refine intervalIntegral.integral_mono_interval (by linarith) (by linarith) (by linarith) ?_
       (hcosc.intervalIntegrable _ _)
-    rw [Filter.EventuallyLE, ae_restrict_iff' measurableSet_uIoc]
-    refine Eventually.of_forall fun v hv => ?_
-    rw [Set.uIoc_of_le (by linarith)] at hv
+    refine (ae_restrict_iff' measurableSet_Ioc).mpr (Eventually.of_forall fun v hv => ?_)
     exact mul_nonneg (cos_mul_nonneg ha.le haV ⟨hv.1.le, hv.2⟩) (by positivity)
   have hQ : ∫ v in -(2 * V)..(2 * V), Real.cos (a * v) * ‖f v‖ ^ 2 =
       (∑ x, ∑ y, c' x * conj (c' y) *
@@ -257,8 +256,8 @@ theorem remainder_upper {ι : Type*} [Fintype ι] [DecidableEq ι] (γ δ : ι �
     refine hblk_le k k _ fun b b' => ?_
     simp only [hJ, hγ', sub_self, Complex.ofReal_zero, mul_zero, zero_mul, Complex.exp_zero,
       mul_one]
-    refine (intervalIntegral.norm_integral_le_of_norm_le_const fun v hv => ?_).trans
-      (le_of_eq ?_)
+    refine (intervalIntegral.norm_integral_le_of_norm_le_const (C := remBound0 V s ^ 2)
+      fun v hv => ?_).trans (le_of_eq ?_)
     · rw [Set.uIoc_of_le (by linarith)] at hv
       have hv' : v ∈ Icc (-(2 * V)) (2 * V) := ⟨hv.1.le, hv.2⟩
       have h1 := (remProfile_bounds (hδ k) hv' b).1
@@ -267,9 +266,8 @@ theorem remainder_upper {ι : Type*} [Fintype ι] [DecidableEq ι] (γ δ : ι �
       have hc := Real.abs_cos_le_one (a * v)
       calc |Real.cos (a * v)| * (|u (k, b) v| * |u (k, b') v|) ≤
           1 * (remBound0 V s * remBound0 V s) := by
-            gcongr
-            · exact h1
-            · exact h2
+            have hb0 := remBound0_nonneg hV.le hs
+            exact mul_le_mul hc (mul_le_mul h1 h2 (abs_nonneg _) hb0) (by positivity) zero_le_one
         _ = remBound0 V s ^ 2 := by ring
     · rw [show 2 * V - -(2 * V) = 4 * V by ring, abs_of_pos (by linarith)]
       ring
@@ -301,7 +299,7 @@ theorem remainder_upper {ι : Type*} [Fintype ι] [DecidableEq ι] (γ δ : ι �
       ∑ l ∈ Finset.univ.filter (· ≠ k), w k * w l * (B / |γ k - γ l| ^ 2) := by
     intro k
     rw [Finset.filter_ne', ← Finset.add_sum_erase _ _ (Finset.mem_univ k), Complex.add_re,
-      Complex.re_sum]
+      Complex.re_sum (Finset.univ.erase k) (blk k)]
     refine add_le_add ((le_abs_self _).trans ((Complex.abs_re_le_norm _).trans (hdiag k)))
       (Finset.sum_le_sum fun l hl => (le_abs_self _).trans ((Complex.abs_re_le_norm _).trans
         (hoff k l (Finset.ne_of_mem_erase hl).symm)))
@@ -446,7 +444,8 @@ theorem inghamConst_mul_normSq_le {κ : Type*} (γ δ : κ → ℝ) (p q : κ �
       have hsplit := hTs.sum_add_tsum_subtype_compl S
       rw [hzero v hv] at hsplit
       have hFeq : F v = -∑' k : {k // k ∉ S}, T k v := by
-        rw [hF, Finset.sum_coe_sort S (fun k => T k v)]
+        simp only [hF]
+        rw [Finset.sum_coe_sort S (fun k => T k v)]
         linear_combination hsplit
       rw [hFeq, norm_neg]
       have hws : Summable fun k : {k // k ∉ S} => w k := hsum.subtype _
@@ -471,14 +470,18 @@ theorem inghamConst_mul_normSq_le {κ : Type*} (γ δ : κ → ℝ) (p q : κ �
       nlinarith [norm_nonneg (F v - R v), norm_nonneg (F v), norm_nonneg (R v),
         sq_nonneg (‖F v‖ - ‖R v‖)]
     have hMint : ∫ v in -V..V, ‖M v‖ ^ 2 ≤
-        2 * ∫ v in -V..V, ‖R v‖ ^ 2 + 2 * ∫ v in -V..V, ‖F v‖ ^ 2 := by
-      rw [← intervalIntegral.integral_const_mul, ← intervalIntegral.integral_const_mul,
-        ← intervalIntegral.integral_add (((hRc.norm.pow 2).const_mul 2).intervalIntegrable _ _)
-          (((hFc.norm.pow 2).const_mul 2).intervalIntegrable _ _)]
-      exact intervalIntegral.integral_mono_on (by linarith)
-        ((hMc.norm.pow 2).intervalIntegrable _ _)
-        ((((hRc.norm.pow 2).const_mul 2).add ((hFc.norm.pow 2).const_mul 2)).intervalIntegrable
-          _ _) fun v _ => hpt v
+        2 * (∫ v in -V..V, ‖R v‖ ^ 2) + 2 * ∫ v in -V..V, ‖F v‖ ^ 2 := by
+      calc ∫ v in -V..V, ‖M v‖ ^ 2 ≤ ∫ v in -V..V, (2 * ‖R v‖ ^ 2 + 2 * ‖F v‖ ^ 2) :=
+            intervalIntegral.integral_mono_on (by linarith)
+              ((hMc.norm.pow 2).intervalIntegrable _ _)
+              ((((hRc.norm.pow 2).const_mul 2).add
+                ((hFc.norm.pow 2).const_mul 2)).intervalIntegrable _ _) fun v _ => hpt v
+        _ = 2 * (∫ v in -V..V, ‖R v‖ ^ 2) + 2 * ∫ v in -V..V, ‖F v‖ ^ 2 := by
+            have hR2 : Continuous fun v => 2 * ‖R v‖ ^ 2 := continuous_const.mul (hRc.norm.pow 2)
+            have hF2 : Continuous fun v => 2 * ‖F v‖ ^ 2 := continuous_const.mul (hFc.norm.pow 2)
+            rw [intervalIntegral.integral_add (hR2.intervalIntegrable _ _)
+              (hF2.intervalIntegrable _ _),
+              intervalIntegral.integral_const_mul, intervalIntegral.integral_const_mul]
     have hsumS : ∑ k : S, (‖p k‖ + ‖q k‖) ^ 2 ≤ ∑' k, w k ^ 2 := by
       rw [Finset.sum_coe_sort S (fun k => (‖p k‖ + ‖q k‖) ^ 2)]
       exact hw2.sum_le_tsum S fun k _ => sq_nonneg _
@@ -488,10 +491,11 @@ theorem inghamConst_mul_normSq_le {κ : Type*} (γ δ : κ → ℝ) (p q : κ �
     calc tiltedInghamConst V g 0 * ‖p k₀ + q k₀‖ ^ 2 ≤
         tiltedInghamConst V g 0 * ∑ k : S, ‖p k + q k‖ ^ 2 := mul_le_mul_of_nonneg_left hk hθ0
       _ ≤ ∫ v in -V..V, ‖M v‖ ^ 2 := hlow
-      _ ≤ 2 * ∫ v in -V..V, ‖R v‖ ^ 2 + 2 * ∫ v in -V..V, ‖F v‖ ^ 2 := hMint
+      _ ≤ 2 * (∫ v in -V..V, ‖R v‖ ^ 2) + 2 * ∫ v in -V..V, ‖F v‖ ^ 2 := hMint
       _ ≤ 2 * (remConst V g s * ∑' k, w k ^ 2) + 2 * (2 * V * (E * τ S) ^ 2) := by
-          gcongr
-          exact hup.trans (mul_le_mul_of_nonneg_left hsumS hK0)
+          have hup' : ∫ v in -V..V, ‖R v‖ ^ 2 ≤ remConst V g s * ∑' k, w k ^ 2 :=
+            (hup : ∫ v in -V..V, ‖R v‖ ^ 2 ≤ _).trans (mul_le_mul_of_nonneg_left hsumS hK0)
+          linarith
       _ = 2 * remConst V g s * ∑' k, w k ^ 2 + 2 * (2 * V * (E * τ S) ^ 2) := by ring
   have hlim : Tendsto (fun S => 2 * remConst V g s * ∑' k, w k ^ 2 +
       2 * (2 * V * (E * τ S) ^ 2)) atTop (𝓝 (2 * remConst V g s * ∑' k, w k ^ 2)) := by
@@ -500,5 +504,296 @@ theorem inghamConst_mul_normSq_le {κ : Type*} (γ δ : κ → ℝ) (p q : κ �
     simpa using h
   exact ge_of_tendsto hlim (eventually_atTop.mpr ⟨{k₀}, fun S hS =>
     hfin S (hS (Finset.mem_singleton_self k₀))⟩)
+
+/-! ### The maximal site -/
+
+theorem sum_inv_sq_sep_le_erase {ι : Type*} [Fintype ι] [DecidableEq ι] (γ : ι → ℝ) {g : ℝ}
+    (hg : 0 < g) (hsep : ∀ j l, j ≠ l → g ≤ |γ j - γ l|) (j : ι) :
+    ∑ l ∈ Finset.univ.erase j, 1 / |γ j - γ l| ^ 2 ≤ π ^ 2 / 3 / g ^ 2 := by
+  rw [← Finset.filter_ne']
+  exact sum_inv_sq_sep_le γ hg hsep j
+
+theorem normSq_gammaOf (ρ : ℂ) :
+    Complex.normSq (gammaOf ρ) = (ρ.re - 1 / 2) ^ 2 + ρ.im ^ 2 := by
+  rw [gammaOf, Complex.normSq_div, Complex.normSq_I, div_one, Complex.normSq_apply]
+  simp only [Complex.sub_re, Complex.sub_im, Complex.div_ofNat_re, Complex.div_ofNat_im,
+    Complex.one_re, Complex.one_im]
+  ring
+
+/-- The floor `r(w, s) = 4w e^{−ws} ∫κ` of the bump transform on `[−is, is]`. -/
+def shallowFloor (w s : ℝ) : ℝ := 4 * w * (Real.exp (-(w * s)) * ∫ u, _root_.RHTower.weilBump u)
+
+/-- The tail constant `T(w, g, s) = 16(1 + s²)² C_w⁴ (1 + π²/(3g²))`, `C_w = C_κ/(4w)³`. -/
+def shallowTail (w g s : ℝ) : ℝ :=
+  16 * (1 + s ^ 2) ^ 2 * (_root_.RHTower.bumpDecayConst / (4 * w) ^ 3) ^ 4 *
+    (1 + π ^ 2 / 3 / g ^ 2)
+
+theorem shallowFloor_pos {w : ℝ} (hw : 0 < w) (s : ℝ) : 0 < shallowFloor w s := by
+  have h := _root_.RHTower.weilBump.integral_pos (μ := volume)
+  unfold shallowFloor
+  positivity
+
+theorem norm_multDiff_le (Z Z' : ZeroConfig) (z : ℂ) :
+    ‖multDiff Z Z' z‖ ≤ Z.carrier.indicator (fun z => (Z.mult z : ℝ)) z +
+      Z'.carrier.indicator (fun z => (Z'.mult z : ℝ)) z := by
+  have e : ∀ W : ZeroConfig, ‖W.carrier.indicator (fun z => (W.mult z : ℂ)) z‖ =
+      W.carrier.indicator (fun z => (W.mult z : ℝ)) z := by
+    intro W
+    by_cases h : z ∈ W.carrier
+    · simp [Set.indicator_of_mem h]
+    · simp [Set.indicator_of_notMem h]
+  unfold multDiff
+  exact (norm_sub_le _ _).trans (by rw [e Z, e Z'])
+
+theorem indicator_div_normSq (W : ZeroConfig) (z : ℂ) :
+    W.carrier.indicator (fun ρ : ℂ => (W.mult ρ : ℝ) / (1 + Complex.normSq (gammaOf ρ))) z =
+      W.carrier.indicator (fun z => (W.mult z : ℝ)) z / (1 + Complex.normSq (gammaOf z)) := by
+  by_cases h : z ∈ W.carrier
+  · simp [Set.indicator_of_mem h]
+  · simp [Set.indicator_of_notMem h]
+
+/-- **Shallow configurations are resolved at the Ingham scale.** Tempered configurations of depth
+`≤ s ≤ 1/2`, whose union has `g`-separated heights apart from FE partners, with `g > π/V`, are
+determined by their Weil forms on `C²` tests supported in `[−a, a]`, `a ≥ V/2 + w`, as soon as
+`2 K(V, g, s) T(w, g, s) < θ r(w, s)⁴`. -/
+theorem eq_of_weil_eq_of_shallow (Z Z' : ZeroConfig) (hZ : TemperedConfig Z)
+    (hZ' : TemperedConfig Z') {g V w s a : ℝ} (hg : 0 < g) (hV : 0 < V) (hw0 : 0 < w)
+    (hw4 : 4 * w ≤ 1) (hVa : V / 2 + w ≤ a) (hs : 0 ≤ s) (hs2 : s ≤ 1 / 2)
+    (hdepth : ∀ ρ ∈ Z.carrier ∪ Z'.carrier, |ρ.re - 1 / 2| ≤ s)
+    (hsep : ∀ ρ ∈ Z.carrier ∪ Z'.carrier, ∀ ρ' ∈ Z.carrier ∪ Z'.carrier, ρ' ≠ ρ →
+      ρ' ≠ reflect ρ → g ≤ |ρ.im - ρ'.im|)
+    (hgap : π / V < g)
+    (hcond : 2 * remConst V g s * shallowTail w g s <
+      tiltedInghamConst V g 0 * shallowFloor w s ^ 4)
+    (hW : ∀ f : ℝ → ℂ, ContDiff ℝ 2 f → tsupport f ⊆ Icc (-a) a → Z.W f f = Z'.W f f) :
+    Z.carrier = Z'.carrier ∧ ∀ ρ ∈ Z.carrier, Z.mult ρ = Z'.mult ρ := by
+  classical
+  refine eq_of_multDiff_eq_zero fun ρ₀ => ?_
+  by_contra hc
+  obtain ⟨t₀, ht₀re, hct₀⟩ := exists_site_of_multDiff_ne_zero hc
+  set K := pairSites Z Z' with hK
+  have hN1 : ∀ z : ℂ, 1 ≤ 1 + Complex.normSq (gammaOf z) := fun z => by
+    linarith [Complex.normSq_nonneg (gammaOf z)]
+  -- the multiplicities weighted by `1 + |ρ − ½|²` are summable
+  set ω : K → ℝ := fun k => ‖multDiff Z Z' k‖ / (1 + Complex.normSq (gammaOf k)) with hω
+  have hωs : Summable ω := by
+    have h1 := (summable_subtype_iff_indicator
+      (f := fun ρ : ℂ => (Z.mult ρ : ℝ) / (1 + Complex.normSq (gammaOf ρ)))
+      (s := Z.carrier)).mp hZ
+    have h2 := (summable_subtype_iff_indicator
+      (f := fun ρ : ℂ => (Z'.mult ρ : ℝ) / (1 + Complex.normSq (gammaOf ρ)))
+      (s := Z'.carrier)).mp hZ'
+    refine Summable.of_nonneg_of_le
+      (fun k => div_nonneg (norm_nonneg _) (by linarith [hN1 (k : ℂ)])) (fun k => ?_)
+      ((h1.add h2).subtype K)
+    rw [Function.comp_apply, Pi.add_apply, indicator_div_normSq, indicator_div_normSq, ← add_div]
+    exact div_le_div_of_nonneg_right (norm_multDiff_le Z Z' k) (by linarith [hN1 (k : ℂ)])
+  -- a site of maximal weighted multiplicity
+  set t : K := ⟨t₀, mem_carrier_of_multDiff_ne_zero hct₀, ht₀re⟩
+  have hωt : 0 < ω t := div_pos (norm_pos_iff.mpr hct₀) (by linarith [hN1 t₀])
+  have hfin : (ω ⁻¹' Iio (ω t))ᶜ.Finite :=
+    Filter.mem_cofinite.mp (hωs.tendsto_cofinite_zero (Iio_mem_nhds hωt))
+  obtain ⟨k₀, -, hk₀max⟩ := hfin.toFinset.exists_max_image ω
+    ⟨t, by simp⟩
+  have hmax : ∀ k, ω k ≤ ω k₀ := by
+    intro k
+    by_cases hk : ω k < ω t
+    · exact hk.le.trans (hk₀max t (by simp))
+    · exact hk₀max k (by simpa using hk)
+  have hm₀ : 0 < ‖multDiff Z Z' k₀‖ := by
+    have h := (hωt.trans_le (hmax t))
+    simp only [hω] at h
+    exact (div_pos_iff_of_pos_right (by linarith [hN1 (k₀ : ℂ)])).mp h
+  -- the camera localized at the maximal site
+  set γ₀ := (k₀ : ℂ).im with hγ₀
+  have hzero := pairSum_vanishes_of_weil_eq Z Z' hZ hZ' (V := V) hw0 hVa γ₀ hW
+  have hsum := summable_site Z Z' hZ hZ' hw0 γ₀
+  have hδs : ∀ k : K, |(k : ℂ).re - 1 / 2| ≤ s := fun k => hdepth k k.2.1
+  have hineq := inghamConst_mul_normSq_le (fun k : K => (k : ℂ).im) (fun k : K => (k : ℂ).re - 1 / 2)
+    (fun k => siteP Z Z' w γ₀ k) (fun k => siteQ Z Z' w γ₀ k) hg hV hs hδs (sites_sep hsep)
+    hgap hsum hzero k₀
+  -- the bump transform at the sites
+  set κh : K → ℂ := fun k => paperFT (_root_.RHTower.scaledBump w)
+    ((((k : ℂ).im - γ₀ : ℝ) : ℂ) - I * (((k : ℂ).re - 1 / 2 : ℝ) : ℂ)) with hκh
+  have hp : ∀ k : K, siteP Z Z' w γ₀ k = multDiff Z Z' k * κh k ^ 2 := fun k => by
+    rw [siteP, pairWeight_modScaledBump_eq_sq]
+  have hq : ∀ k : K, ‖siteQ Z Z' w γ₀ k‖ ≤ ‖multDiff Z Z' k‖ * ‖κh k‖ ^ 2 := fun k => by
+    unfold siteQ
+    split_ifs
+    · rw [norm_zero]; positivity
+    · rw [norm_mul, Complex.norm_conj, multDiff_reflect, pairWeight_modScaledBump_eq_sq,
+        norm_pow]
+  -- the centre at the maximal site
+  have hκ₀ : κh k₀ = paperFT (_root_.RHTower.scaledBump w) (-(I * (((k₀ : ℂ).re - 1 / 2 : ℝ) : ℂ))) := by
+    simp only [hκh, hγ₀, sub_self, Complex.ofReal_zero, zero_sub]
+  have hconj : conj (κh k₀) = κh k₀ := by
+    rw [hκ₀, conj_paperFT_scaledBump]
+    rw [show conj (-(I * (((k₀ : ℂ).re - 1 / 2 : ℝ) : ℂ))) = I * (((k₀ : ℂ).re - 1 / 2 : ℝ) : ℂ) by
+      rw [map_neg, map_mul, Complex.conj_I, Complex.conj_ofReal]; ring]
+    rw [← paperFT_scaledBump_neg w (I * (((k₀ : ℂ).re - 1 / 2 : ℝ) : ℂ))]
+  have hfloor : shallowFloor w s ≤ ‖κh k₀‖ := by
+    have h := _root_.RHTower.norm_paperFT_scaledBump_I_mul_ge hw0 (-((k₀ : ℂ).re - 1 / 2))
+    rw [show ((-((k₀ : ℂ).re - 1 / 2) : ℝ) : ℂ) * I = -(I * (((k₀ : ℂ).re - 1 / 2 : ℝ) : ℂ)) by
+      push_cast; ring, ← hκ₀, abs_neg] at h
+    refine le_trans ?_ h
+    have hint := _root_.RHTower.weilBump.integral_pos (μ := volume)
+    unfold shallowFloor
+    have : Real.exp (-(w * s)) ≤ Real.exp (-(w * |(k₀ : ℂ).re - 1 / 2|)) :=
+      Real.exp_le_exp.mpr (by nlinarith [hδs k₀])
+    gcongr
+  have hcentre : ‖multDiff Z Z' k₀‖ * shallowFloor w s ^ 2 ≤
+      ‖siteP Z Z' w γ₀ k₀ + siteQ Z Z' w γ₀ k₀‖ := by
+    have hfl0 := (shallowFloor_pos hw0 s).le
+    have hκn : ‖multDiff Z Z' k₀‖ * shallowFloor w s ^ 2 ≤ ‖multDiff Z Z' k₀‖ * ‖κh k₀‖ ^ 2 :=
+      mul_le_mul_of_nonneg_left (pow_le_pow_left₀ hfl0 hfloor 2) (norm_nonneg _)
+    refine hκn.trans ?_
+    have hpw : pairWeight (_root_.RHTower.modScaledBump w γ₀) ((k₀ : ℂ).re - 1 / 2) (k₀ : ℂ).im = κh k₀ ^ 2 :=
+      pairWeight_modScaledBump_eq_sq _ _ _ _
+    rw [hp]
+    unfold siteQ
+    split_ifs
+    · rw [add_zero, norm_mul, norm_pow]
+    · rw [multDiff_reflect, hpw, map_pow, hconj, ← two_mul, norm_mul, norm_mul, norm_pow,
+        Complex.norm_two]
+      have := mul_nonneg (norm_nonneg (multDiff Z Z' k₀)) (sq_nonneg ‖κh k₀‖)
+      nlinarith
+  -- multiplicities are dominated by the maximal one
+  have hmk : ∀ k : K, ‖multDiff Z Z' k‖ ≤
+      2 * (1 + s ^ 2) * (1 + ((k : ℂ).im - γ₀) ^ 2) * ‖multDiff Z Z' k₀‖ := by
+    intro k
+    have h := hmax k
+    simp only [hω] at h
+    have hNk0 := hN1 (k₀ : ℂ)
+    have hNk := hN1 (k : ℂ)
+    rw [div_le_div_iff₀ (by linarith) (by linarith)] at h
+    have hd2 : ((k : ℂ).re - 1 / 2) ^ 2 ≤ s ^ 2 := by
+      rw [← sq_abs]; exact pow_le_pow_left₀ (abs_nonneg _) (hδs k) 2
+    have hγ : (k : ℂ).im ^ 2 ≤ 2 * γ₀ ^ 2 + 2 * ((k : ℂ).im - γ₀) ^ 2 := by
+      nlinarith [sq_nonneg ((k : ℂ).im - 2 * γ₀)]
+    have hN : 1 + Complex.normSq (gammaOf k) ≤
+        2 * (1 + s ^ 2) * (1 + ((k : ℂ).im - γ₀) ^ 2) * (1 + Complex.normSq (gammaOf k₀)) := by
+      rw [normSq_gammaOf, normSq_gammaOf, ← hγ₀]
+      have h0 := sq_nonneg ((k₀ : ℂ).re - 1 / 2)
+      have hx := sq_nonneg ((k : ℂ).im - γ₀)
+      have hs2' := sq_nonneg s
+      have hb := sq_nonneg γ₀
+      have h1 : 1 + ((k : ℂ).im - γ₀) ^ 2 + γ₀ ^ 2 ≤
+          (1 + ((k : ℂ).im - γ₀) ^ 2) * (1 + (((k₀ : ℂ).re - 1 / 2) ^ 2 + γ₀ ^ 2)) := by
+        nlinarith [mul_nonneg hx (add_nonneg h0 hb)]
+      have h1' := mul_le_mul_of_nonneg_left h1 (by positivity : (0 : ℝ) ≤ 2 * (1 + s ^ 2))
+      have h3 : 2 * (((k : ℂ).im - γ₀) ^ 2 + γ₀ ^ 2) ≤
+          2 * (1 + s ^ 2) * (((k : ℂ).im - γ₀) ^ 2 + γ₀ ^ 2) := by
+        nlinarith [mul_nonneg hs2' (add_nonneg hx hb)]
+      linarith
+    have hm0 := norm_nonneg (multDiff Z Z' k₀)
+    have h4 := mul_le_mul_of_nonneg_left hN hm0
+    have hpos : 0 < 1 + Complex.normSq (gammaOf k₀) := by linarith
+    refine le_of_mul_le_mul_right ?_ hpos
+    calc ‖multDiff Z Z' k‖ * (1 + Complex.normSq (gammaOf k₀)) ≤
+        ‖multDiff Z Z' k₀‖ * (1 + Complex.normSq (gammaOf k)) := h
+      _ ≤ _ := h4
+      _ = 2 * (1 + s ^ 2) * (1 + ((k : ℂ).im - γ₀) ^ 2) * ‖multDiff Z Z' k₀‖ *
+          (1 + Complex.normSq (gammaOf k₀)) := by ring
+  -- decay of the bump transform away from the maximal site
+  set Cw := _root_.RHTower.bumpDecayConst / (4 * w) ^ 3 with hCw
+  have hCw0 : 0 ≤ Cw := div_nonneg _root_.RHTower.bumpDecayConst_nonneg (by positivity)
+  have hκ : ∀ k : K, ‖κh k‖ ≤ Cw / (1 + |(k : ℂ).im - γ₀|) ^ 4 := by
+    intro k
+    have hz : |((((k : ℂ).im - γ₀ : ℝ) : ℂ) - I * (((k : ℂ).re - 1 / 2 : ℝ) : ℂ)).im| ≤ 1 / 2 := by
+      have e : ((((k : ℂ).im - γ₀ : ℝ) : ℂ) - I * (((k : ℂ).re - 1 / 2 : ℝ) : ℂ)).im =
+          -((k : ℂ).re - 1 / 2) := by simp
+      rw [e, abs_neg]
+      exact (hδs k).trans hs2
+    have h := _root_.RHTower.norm_paperFT_scaledBump_le hw0 hw4 hz
+    have hre : ((((k : ℂ).im - γ₀ : ℝ) : ℂ) - I * (((k : ℂ).re - 1 / 2 : ℝ) : ℂ)).re =
+        (k : ℂ).im - γ₀ := by simp
+    rw [hre] at h
+    refine h.trans (le_of_eq ?_)
+    rw [hCw]
+    field_simp
+  set c := 16 * (1 + s ^ 2) ^ 2 * Cw ^ 4 * ‖multDiff Z Z' k₀‖ ^ 2 with hc
+  have hc0 : 0 ≤ c := by rw [hc]; positivity
+  have hsite : ∀ k : K, (‖siteP Z Z' w γ₀ k‖ + ‖siteQ Z Z' w γ₀ k‖) ^ 2 ≤
+      c / (1 + |(k : ℂ).im - γ₀|) ^ 12 := by
+    intro k
+    set X := 1 + |(k : ℂ).im - γ₀| with hX
+    have hX1 : 1 ≤ X := by rw [hX]; linarith [abs_nonneg ((k : ℂ).im - γ₀)]
+    have hx2 : 1 + ((k : ℂ).im - γ₀) ^ 2 ≤ X ^ 2 := by
+      rw [hX]; nlinarith [sq_abs ((k : ℂ).im - γ₀), abs_nonneg ((k : ℂ).im - γ₀)]
+    have hpq : ‖siteP Z Z' w γ₀ k‖ + ‖siteQ Z Z' w γ₀ k‖ ≤
+        2 * ‖multDiff Z Z' k‖ * ‖κh k‖ ^ 2 := by
+      have h1 : ‖siteP Z Z' w γ₀ k‖ = ‖multDiff Z Z' k‖ * ‖κh k‖ ^ 2 := by
+        rw [hp, norm_mul, norm_pow]
+      linarith [hq k]
+    have hmX : ‖multDiff Z Z' k‖ ≤ 2 * (1 + s ^ 2) * X ^ 2 * ‖multDiff Z Z' k₀‖ :=
+      (hmk k).trans (by gcongr)
+    have hκX := hκ k
+    have hb : ‖siteP Z Z' w γ₀ k‖ + ‖siteQ Z Z' w γ₀ k‖ ≤
+        4 * (1 + s ^ 2) * Cw ^ 2 * ‖multDiff Z Z' k₀‖ / X ^ 6 := by
+      calc ‖siteP Z Z' w γ₀ k‖ + ‖siteQ Z Z' w γ₀ k‖ ≤ 2 * ‖multDiff Z Z' k‖ * ‖κh k‖ ^ 2 := hpq
+        _ ≤ 2 * (2 * (1 + s ^ 2) * X ^ 2 * ‖multDiff Z Z' k₀‖) * (Cw / X ^ 4) ^ 2 := by
+            gcongr
+        _ = 4 * (1 + s ^ 2) * Cw ^ 2 * ‖multDiff Z Z' k₀‖ / X ^ 6 := by
+            field_simp
+            ring
+    calc (‖siteP Z Z' w γ₀ k‖ + ‖siteQ Z Z' w γ₀ k‖) ^ 2 ≤
+        (4 * (1 + s ^ 2) * Cw ^ 2 * ‖multDiff Z Z' k₀‖ / X ^ 6) ^ 2 :=
+          pow_le_pow_left₀ (by positivity) hb 2
+      _ = c / X ^ 12 := by rw [hc]; field_simp; ring
+  -- the tail
+  have htail : ∑' k, (‖siteP Z Z' w γ₀ k‖ + ‖siteQ Z Z' w γ₀ k‖) ^ 2 ≤
+      shallowTail w g s * ‖multDiff Z Z' k₀‖ ^ 2 := by
+    refine Real.tsum_le_of_sum_le (fun k => sq_nonneg _) fun S => ?_
+    set F : K → ℝ := fun k => (‖siteP Z Z' w γ₀ k‖ + ‖siteQ Z Z' w γ₀ k‖) ^ 2 with hF
+    set S' := insert k₀ S with hS'
+    have hk₀S' : k₀ ∈ S' := Finset.mem_insert_self k₀ S
+    set j₀ : S' := ⟨k₀, hk₀S'⟩
+    set γS : S' → ℝ := fun x => ((x : K) : ℂ).im with hγS
+    have hsepS : ∀ x y : S', x ≠ y → g ≤ |γS x - γS y| := fun x y hxy =>
+      sites_sep hsep x y fun h => hxy (Subtype.ext h)
+    have hF0 : F k₀ ≤ c := by
+      have h := hsite k₀
+      rw [← hγ₀, sub_self, abs_zero, add_zero, one_pow, div_one] at h
+      exact h
+    have hFx : ∀ x ∈ Finset.univ.erase j₀, F x ≤ c * (1 / |γS j₀ - γS x| ^ 2) := by
+      intro x hx
+      have hne : x ≠ j₀ := Finset.ne_of_mem_erase hx
+      have hg' : g ≤ |γS j₀ - γS x| := hsepS j₀ x (Ne.symm hne)
+      have hpos : 0 < |γS j₀ - γS x| := lt_of_lt_of_le hg hg'
+      have h := hsite x
+      have habs : |γS j₀ - γS x| = |((x : K) : ℂ).im - γ₀| := by
+        rw [abs_sub_comm]
+      rw [habs] at hpos ⊢
+      refine h.trans ?_
+      rw [mul_one_div]
+      refine div_le_div_of_nonneg_left hc0 (by positivity) ?_
+      calc |((x : K) : ℂ).im - γ₀| ^ 2 ≤ (1 + |((x : K) : ℂ).im - γ₀|) ^ 2 :=
+            pow_le_pow_left₀ (abs_nonneg _) (by linarith) 2
+        _ ≤ (1 + |((x : K) : ℂ).im - γ₀|) ^ 12 :=
+            pow_le_pow_right₀ (by linarith [abs_nonneg (((x : K) : ℂ).im - γ₀)]) (by norm_num)
+    have hrow := sum_inv_sq_sep_le_erase γS hg hsepS j₀
+    calc ∑ k ∈ S, F k ≤ ∑ k ∈ S', F k :=
+          Finset.sum_le_sum_of_subset_of_nonneg (Finset.subset_insert _ _)
+            (fun _ _ _ => sq_nonneg _)
+      _ = ∑ x : S', F x := (Finset.sum_coe_sort S' F).symm
+      _ = F j₀ + ∑ x ∈ Finset.univ.erase j₀, F x :=
+          (Finset.add_sum_erase _ (fun x : S' => F x) (Finset.mem_univ j₀)).symm
+      _ ≤ c + ∑ x ∈ Finset.univ.erase j₀, c * (1 / |γS j₀ - γS x| ^ 2) :=
+          add_le_add hF0 (Finset.sum_le_sum hFx)
+      _ ≤ c + c * (π ^ 2 / 3 / g ^ 2) := by
+          rw [← Finset.mul_sum]
+          exact add_le_add le_rfl (mul_le_mul_of_nonneg_left hrow hc0)
+      _ = shallowTail w g s * ‖multDiff Z Z' k₀‖ ^ 2 := by
+          rw [hc, hCw]; unfold shallowTail; ring
+  -- conclusion
+  have hθ := inghamConst_pos hV hgap
+  have hK0 := remConst_nonneg (g := g) hV hs
+  have hm2 : 0 < ‖multDiff Z Z' k₀‖ ^ 2 := by positivity
+  have h1 : tiltedInghamConst V g 0 * (‖multDiff Z Z' k₀‖ * shallowFloor w s ^ 2) ^ 2 ≤
+      tiltedInghamConst V g 0 * ‖siteP Z Z' w γ₀ k₀ + siteQ Z Z' w γ₀ k₀‖ ^ 2 :=
+    mul_le_mul_of_nonneg_left (pow_le_pow_left₀ (by positivity) hcentre 2) hθ.le
+  have h2 := mul_le_mul_of_nonneg_left htail (by positivity : (0 : ℝ) ≤ 2 * remConst V g s)
+  have h3 := mul_lt_mul_of_pos_right hcond hm2
+  nlinarith [hineq, h1, h2, h3]
 
 end GaloisForLFunctions.ZeroConfigurationGeometry

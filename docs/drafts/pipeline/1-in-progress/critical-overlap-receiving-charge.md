@@ -299,11 +299,13 @@ transitive axioms.
 conditions with standard-only transitive axioms. `PrimeChargeUniformScales`
 checks the independent cutoff/horizon decay laws, including the overlap-scaled
 polar coefficient, with standard-only transitive axioms.
-`PrimeChargeDenseCutoffEnergy`, `PrimeChargeSmallCutoffEnergy` and
-`PrimeChargeIntermediateEnergy` contain all three regime limits.
-`PrimeChargeIntermediateDomination` separates the middle-range costs;
+`PrimeChargeDenseCutoffEnergy` and `PrimeChargeSmallCutoffEnergy` check
+the dense and smallest-cutoff limits with standard-only transitive axioms.
+`PrimeChargeIntermediateEnergy` checks the remaining regime limit with
+standard-only transitive axioms.
+`PrimeChargeIntermediateDomination` checks the middle-range cost separation;
 `PrimeChargeUniformHorizonEnergy` assembles the independent cutoff/horizon
-limit. These sources await checks.
+limit; only this assembly remains unchecked.
 
 The proposed uniform physical-energy proof splits at `Q⁶⁴=N` and
 `Q=(log N)^(1/32)`, with `L=log N`, `B=B_Q`, `S=S_Q`:
@@ -318,8 +320,8 @@ The middle-range assembly separates the error as
 
 where `V_Q=(t/B_Q)²S_Q`, `W_Q=(1+log Q)V_Q`, `R_N` converges to a finite
 constant, and `S_N→0`. Both cutoff masses and `cP` tend to zero by checked
-scale limits. The finite domination and three-range limit assembly await
-Lean verification.
+scale limits. Finite domination and all three regime limits are checked;
+the three-range assembly awaits Lean verification.
 Quadratic transposition does not apply to arbitrary complementary receivers.
 The reduced-jet, coherent pole-cancellation and sharp near-collar bounds in the
 corpus do not yet supply the required uniform upward nonratio remainder here.

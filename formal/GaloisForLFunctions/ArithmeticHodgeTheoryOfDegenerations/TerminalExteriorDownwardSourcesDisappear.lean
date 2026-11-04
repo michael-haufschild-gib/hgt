@@ -82,7 +82,7 @@ theorem abs_terminal_exteriorDownward_pairing_div_overlap_le
       rw [abs_div, abs_of_pos hsn]
       apply (div_le_div_of_nonneg_right (hF _) hsn.le).trans
       apply (div_le_div_iff₀ hsn hsN).mpr
-      nlinarith only [hsqrt, hB]
+      exact (mul_le_mul_of_nonneg_left hsqrt hB).trans_eq (by ring)
     have hr := abs_regroupedExteriorDownwardPrimeRow_le_small_width hg.continuous
       hc0 hN hgsupp hG hw m n
     rw [abs_mul, hrow n hnN]

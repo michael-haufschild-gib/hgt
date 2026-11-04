@@ -80,7 +80,6 @@ theorem tendsto_terminalConductorSourceSquare_polar
   unfold terminalConductorSourceSquare
   simp only [mul_pow, div_pow, Real.sq_sqrt hL.le]
   field_simp [hc0.ne', hL.ne', hE0.ne']
-  <;> ring
 
 /-- Each fixed nonpolar source vanishes also after inverse-energy normalization. -/
 theorem tendsto_terminalConductorSourceSquare_nonpolar
@@ -121,7 +120,6 @@ theorem tendsto_terminalConductorSourceSquare_nonpolar
   unfold terminalConductorSourceSquare
   simp only [mul_pow, div_pow, Real.sq_sqrt hL.le]
   field_simp [hc0.ne', hL.ne', hE0.ne']
-  <;> ring
 
 /-- Zero extension of the nonpolar sources below overlap. -/
 def belowOverlapNonpolarSourceSquare (h : ℝ → ℝ) (c : ℝ) (N m : ℕ) : ℝ :=
@@ -156,7 +154,8 @@ theorem tendsto_tsum_belowOverlapNonpolarSourceSquare
     · apply (tendsto_terminalConductorSourceSquare_nonpolar hh hA hsupp hδ hη hlow hhigh
         hm hc hR hcrit).congr'
       filter_upwards [hcinf.eventually_ge_atTop (m : ℝ)] with N hmc
-      simp only [belowOverlapNonpolarSourceSquare, if_pos ⟨hm, hmc⟩]
+      simp only [belowOverlapNonpolarSourceSquare,
+        if_pos (show 2 ≤ m ∧ (m : ℝ) ≤ c N from ⟨hm, hmc⟩)]
     · simpa only [belowOverlapNonpolarSourceSquare, hm, false_and, if_false] using
         (tendsto_const_nhds : Tendsto (fun _ : ℕ => (0 : ℝ)) atTop (𝓝 0))
   have hnorm : ∀ᶠ N : ℕ in atTop, ∀ m : ℕ,

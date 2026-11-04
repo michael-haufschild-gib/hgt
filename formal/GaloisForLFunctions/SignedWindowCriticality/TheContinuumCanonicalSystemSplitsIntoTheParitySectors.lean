@@ -379,5 +379,3 @@ end GaloisForLFunctions.SignedWindowCriticality
 
 end
 
-#print axioms GaloisForLFunctions.SignedWindowCriticality.tendsto_levinsonErr_even_odd_of_sectors_nonneg
-#print axioms GaloisForLFunctions.SignedWindowCriticality.weilQuad_pos_of_sector_nonneg
