@@ -15,8 +15,8 @@ The existing actual-source limits give
 Hence the right upper derivative of the diagonal kernel is at most
 `|τ_L(a,z)|²+|τ_R(a,z)|²` at every precontact aperture.
 
-Remaining proof obligations: matching lower derivative by collar trial vectors;
-continuity and integral reconstruction; polarization to finite evaluation Grams.
+Remaining formal obligations: finite evaluation Gram absolute continuity
+and its combined trace-density identity.
 None of these estimates is asserted uniformly at contact.
 
 For the lower bound, take
@@ -30,10 +30,14 @@ and `denseRange_smoothCore` provide approximation from smaller windows.
 
 The same estimates give `‖ΔE_z−u_{h,z}‖²/h → 0`, uniformly over the
 admitted constant collars at the enlarged aperture. Finite linear
-combinations then have density
-`|Σ_i α_i τ_L(a,z_i)|²+|Σ_i α_i τ_R(a,z_i)|²`: their trial collars combine
-linearly, their error norms tend to zero, and the variational lower bound
-matches the trial-energy upper bound.
+combinations have combined traces `A=Σ_i α_i τ_L(a,z_i)` and
+`B=Σ_i α_i τ_R(a,z_i)`. The two-collar floor and upper estimate bound their
+trial energy by `h(log(1/h)−E)(|A|²+|B|²)` and
+`h(log(1/h)+D)(|A|²+|B|²)` before logarithmic normalization.
+Cauchy–Schwarz bounds the combined squared error by
+`(Σ_i|α_i|²) Σ_i‖ΔE_i−u_i‖²=o(h)`.
+The squared-norm perturbation bound then gives the exact Gram right
+derivative `|A|²+|B|²`.
 
 Once the right derivative equals the trace energy everywhere, monotonicity
 identifies it almost everywhere with the integrable ordinary derivative.
@@ -58,8 +62,17 @@ limits, the sharp joint collar-energy upper bound, and the variational
 lower bound with its squared trial-error estimate. Its transitive axiom
 audit has the same three axioms.
 
+`TheWeilKernelHasItsEndpointSlope.lean` proves the exact right diagonal
+slope and `‖ΔE_z−u_{h,z}‖²/h → 0` for every admitted collar pair. Its
+transitive axiom audit has the same three axioms.
+
+`TheWeilDiagonalKernelsAreAbsolutelyContinuous.lean` proves continuity,
+the exact right derivative, absolute continuity, and exact integration of
+the diagonal endpoint energy on every compact precontact interval. Its
+transitive axiom audit has the same three axioms.
+
 ## Gates
 
 - [x] Source and conjecture fixed before formalization.
-- [ ] Dependency-closed paper proof of absolute continuity and trace density.
+- [x] Dependency-closed paper proof of absolute continuity and trace density.
 - [ ] Lean formalization and transitive axiom audit.

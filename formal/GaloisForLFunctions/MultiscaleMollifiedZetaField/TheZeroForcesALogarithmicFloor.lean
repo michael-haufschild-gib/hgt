@@ -608,7 +608,7 @@ theorem integral_poisson_shift {δ : ℝ} (hδ : 0 < δ) (γ : ℝ) :
 
 /-- **The floor at every exponent.** If `|E|^p` is integrable against `P_ρ`, then its `P_ρ`-mean is at least the exponential of `p` times
 the logarithmic mean of `|E|`. -/
-theorem exp_mul_le_integral_poisson_norm_rpow {δ γ p : ℝ} (hδ : 0 < δ) (hp : 0 < p) {E : ℝ → ℂ}
+theorem exp_mul_le_integral_poisson_norm_rpow {δ γ p : ℝ} (hδ : 0 < δ) {E : ℝ → ℂ}
     (hlog : Integrable fun u : ℝ => halfPlanePoisson δ (u - γ) * Real.log ‖E u‖)
     (hne : ∀ᵐ u : ℝ, E u ≠ 0)
     (hint : Integrable fun u : ℝ => halfPlanePoisson δ (u - γ) * ‖E u‖ ^ p) :

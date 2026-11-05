@@ -14,10 +14,10 @@ increment (`evalGram_sub_eq`), so it is monotone. Hence `G′` exists almost eve
 
   `0 ≤ ∫_a^b G′ ≤ G(b) − G(a)`   (`integral_evalDensity_mem`).
 
-So `G′` is the quadratic form `⟨H Y, Y⟩` of the Hamiltonian along the evaluation orbit, and the gap in the
-inequality is the singular part of the chain. Whether that gap vanishes is the regularity question, which is of RH
-strength, and the first singular length is contact: when RH fails, some diagonal kernel tends to infinity there
-(`riemannHypothesis_or_evalGram_tends_to_top`).
+The gap measures growth not recovered by the ordinary derivative. Monotonicity alone does not remove it or
+identify a Hamiltonian; the exact endpoint estimates supply that additional information. Finite-contact
+divergence is a separate issue: when RH fails, some diagonal kernel tends to infinity there
+(`riemannHypothesis_or_evalGram_tends_to_top`). Local absolute continuity does not rule out that divergence.
 -/
 
 open MeasureTheory Set Filter Topology
@@ -128,8 +128,7 @@ theorem integral_evalDensity_mem (α z : ι → ℂ) {a b : ℝ} (hab : a ≤ b)
   rw [uIcc_of_le (sub_nonneg.mpr hge)] at hmem
   exact ⟨hmono.intervalIntegrable_deriv, hmem.1, hmem.2⟩
 
-/-- **Contact is the first singular length.** Either RH holds, or at the contact aperture some diagonal kernel
-diverges. -/
+/-- Either RH holds, or some diagonal kernel diverges at finite contact. -/
 theorem riemannHypothesis_or_evalGram_tends_to_top :
     RiemannHypothesis ∨ ∃ z : ℂ, ∀ C : ℝ, ∃ b₀ : PrecontactAperture, ∀ b : PrecontactAperture,
       b₀.1.1 ≤ b.1.1 → C < ‖evalCombination (fun _ : Unit => (1 : ℂ)) (fun _ => z) b‖ ^ 2 := by

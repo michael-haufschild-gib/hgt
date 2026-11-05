@@ -1,7 +1,7 @@
 # Full-theta aperture-weighted pair remainder
 
-- **Stage:** 2-fully-proven
-- **Type:** THEOREM; Lean pending
+- **Stage:** 3-formalized
+- **Type:** THEOREM; Lean formalized
 - **Wall:** Σ6
 
 Let `T_nm(r,b)` be the literal ordinary-pair Fourier tail and `T(r,b)` the
@@ -49,3 +49,18 @@ Thus a positive (respectively negative) cosine gives a strictly positive
 In particular every diagonal pair is positive, and every unequal pair
 is negative at `b=π/(log n−log m)`. The aperture weight does not justify
 termwise positivity; any full-source sign proof must retain cancellation.
+
+## Lean
+
+[ThetaPairApertureRemainder.lean](../../../../formal/GaloisForLFunctions/CompletedArithmeticForms/ThetaPairApertureRemainder.lean):
+
+- `integral_thetaCenterWeight_exp_three`: exact weighted exponential moment.
+- `thetaFullApertureTail_remainder_le`: literal full-source truncation bound.
+- `thetaPairApertureSpectrum_nonneg_iff`, `thetaPairApertureSpectrum_pos_iff`:
+  exact cosine sign after aperture integration.
+- `thetaPairApertureSpectrum_diagonal_pos`, `thetaPairApertureSpectrum_unequal_neg`:
+  positive diagonals and explicit negative unequal pairs.
+
+Direct Lean check passes. Capstone axiom audits contain only
+`propext`, `Classical.choice`, and `Quot.sound`.
+The signed full-source lower bound remains open.

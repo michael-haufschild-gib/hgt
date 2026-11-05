@@ -125,7 +125,7 @@ theorem gaussian_saddle_lower_tail_le {t α y N b : ℝ} (ht : 0 < t)
     _ ≤ N * Real.exp (-((y + 2 * t * α) * α)) *
         Real.exp (lam * b + y * (α - lam) + t * (α - lam) ^ 2) := by gcongr
     _ = _ := by
-      rw [mul_assoc, ← Real.exp_add, mul_assoc, ← Real.exp_add]
+      rw [mul_assoc N, ← Real.exp_add, mul_assoc N, ← Real.exp_add]
       congr 2
       dsimp only [lam]
       field_simp
@@ -198,7 +198,7 @@ theorem gaussian_lower_interval_slope_mass_le {F : ℝ → ℂ} (hF : Continuous
       rw [abs_div, abs_of_pos (show 0 < 2 * t by positivity)]
       gcongr
     have hm := mul_le_mul_of_nonneg_right hweight
-      (mul_nonneg (gaussDensity_pos ht _).le (norm_nonneg (F w)))
+      (mul_nonneg (gaussDensity_pos ht (w - y)).le (norm_nonneg (F w)))
     simpa only [mul_assoc] using hm
 
 /-- Reflection changes the Gaussian by the exact factor `exp(-wy/t)`. -/

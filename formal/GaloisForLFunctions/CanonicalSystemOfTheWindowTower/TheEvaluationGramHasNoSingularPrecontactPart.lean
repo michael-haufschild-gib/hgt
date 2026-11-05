@@ -25,9 +25,9 @@ theorem evalGram_sub_le_diagonal_sum (α z : ι → ℂ) {a b : PrecontactApertu
   have he (c : PrecontactAperture) : evalGram α z c.1.1 = ‖evalCombination α z c‖^2 := by
     rw [evalGram, dif_pos (show c.1.1 ∈ precontactSet from ⟨c.1.2, c.2⟩)]
     rfl
-  rw [he b, he a, norm_evalCombination_sq α z hab, add_sub_cancel_left]
+  rw [he b, he a, norm_evalCombination_sq α z (a := a) (b := b) hab, add_sub_cancel_left]
   change ‖∑ i, α i • evalVectorIncrement hab (z i)‖^2 ≤ _
-  simpa only [diagonalEvalGram_sub_eq hab] using
+  simpa only [diagonalEvalGram_sub_eq (a := a) (b := b) hab] using
     HTGeometry.norm_sum_smul_sq_le α (fun i => evalVectorIncrement hab (z i))
 
 private def evalGramDiagonalMajorant (α z : ι → ℂ) (x : ℝ) : ℝ :=
@@ -46,7 +46,7 @@ private theorem evalGram_sub_le_majorant (α z : ι → ℂ) {x y : ℝ}
     evalGram α z y-evalGram α z x ≤
       evalGramDiagonalMajorant α z y-evalGramDiagonalMajorant α z x := by
   have h := evalGram_sub_le_diagonal_sum α z (a := toPrecontact hx) (b := toPrecontact hy) hxy
-  simpa only [evalGramDiagonalMajorant, Finset.sum_sub_distrib, mul_sub] using h
+  simpa only [evalGramDiagonalMajorant, toPrecontact, Finset.sum_sub_distrib, mul_sub] using h
 
 private theorem ac_of_dist_le {f g : ℝ → ℝ} {a b : ℝ}
     (hg : AbsolutelyContinuousOnInterval g a b)

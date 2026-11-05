@@ -47,7 +47,7 @@ Gaussian-weighted strip value `g_t(w − v) ‖xiLine X w‖` is bounded by `e^{
 theorem gaussDensity_mul_norm_xiLine_le_anchor_of_profile {E : ℝ → ℝ} {K η m t X v u w : ℝ}
     (ht : 0 < t)
     (_hE0 : 0 ≤ E w) (hE2 : E w ≤ (1 / 2 + 2 * η) / 2)
-    (hK : ∀ X w u : ℝ, 16 ≤ X → 0 ≤ w → w ≤ 1 / 2 + 2 * η → 1 / 2 + 2 * η ≤ u → u ≤ X →
+    (hK : ∀ w u : ℝ, 0 ≤ w → w ≤ 1 / 2 + 2 * η → 1 / 2 + 2 * η ≤ u → u ≤ X →
       ‖xiLine X w‖ ≤ K * X ^ (E w) * (X / (2 * Real.pi)) ^ ((w - u) / 2) * ‖xiLine X u‖)
     (hK0 : 0 ≤ K) (hX : 16 ≤ X) (_ : 0 ≤ (horizontalSlope X).re)
     (hu1 : 1 / 2 + 2 * η ≤ u) (huX : u ≤ X)
@@ -64,7 +64,7 @@ theorem gaussDensity_mul_norm_xiLine_le_anchor_of_profile {E : ℝ → ℝ} {K �
   obtain ⟨c, hcdef⟩ : ∃ c, c = 2 * t * α := ⟨_, rfl⟩
   obtain ⟨N, hN⟩ : ∃ N, N = ‖xiLine X u‖ := ⟨_, rfl⟩
   have hX0 : 0 < X := by linarith
-  have hF := hK X w u hX hw0 hw1 hu1 huX
+  have hF := hK w u hw0 hw1 hu1 huX
   rw [← hN] at hF
   have hXe : X / (2 * Real.pi) = Real.exp (2 * α) := by
     have h := height_eq hX0
@@ -117,7 +117,7 @@ theorem gaussDensity_mul_norm_xiLine_le_anchor_of_profile {E : ℝ → ℝ} {K �
 theorem strip_terms_le_anchor_of_profile {E : ℝ → ℝ} {K η m t X v u : ℝ} (ht : 0 < t) (hη : 0 < η)
     (hE0 : ∀ w ∈ Icc (0 : ℝ) (1 / 2 + 2 * η), 0 ≤ E w)
     (hE2 : ∀ w ∈ Icc (0 : ℝ) (1 / 2 + 2 * η), E w ≤ (1 / 2 + 2 * η) / 2)
-    (hK : ∀ X w u : ℝ, 16 ≤ X → 0 ≤ w → w ≤ 1 / 2 + 2 * η → 1 / 2 + 2 * η ≤ u → u ≤ X →
+    (hK : ∀ w u : ℝ, 0 ≤ w → w ≤ 1 / 2 + 2 * η → 1 / 2 + 2 * η ≤ u → u ≤ X →
       ‖xiLine X w‖ ≤ K * X ^ (E w) * (X / (2 * Real.pi)) ^ ((w - u) / 2) * ‖xiLine X u‖)
     (hK0 : 0 ≤ K) (hX : 16 ≤ X) (hv : |v| ≤ 1 / 2) (hα : 0 ≤ (horizontalSlope X).re)
     (hu1 : 1 / 2 + 2 * η ≤ u) (huX : u ≤ X)
@@ -242,7 +242,7 @@ theorem re_slope_mul_conj_pos_of_profile {E : ℝ → ℝ} {K η δ₀ γ m t X 
     (ht : 0 < t) (ht8 : t ≤ 1 / 8) (hη : 0 < η) (hγ : 0 ≤ γ)
     (hE0 : ∀ w ∈ Icc (0 : ℝ) (1 / 2 + 2 * η), 0 ≤ E w)
     (hE2 : ∀ w ∈ Icc (0 : ℝ) (1 / 2 + 2 * η), E w ≤ (1 / 2 + 2 * η) / 2)
-    (hK : ∀ X w u : ℝ, 16 ≤ X → 0 ≤ w → w ≤ 1 / 2 + 2 * η → 1 / 2 + 2 * η ≤ u → u ≤ X →
+    (hK : ∀ w u : ℝ, 0 ≤ w → w ≤ 1 / 2 + 2 * η → 1 / 2 + 2 * η ≤ u → u ≤ X →
       ‖xiLine X w‖ ≤ K * X ^ (E w) * (X / (2 * Real.pi)) ^ ((w - u) / 2) * ‖xiLine X u‖)
     (hK0 : 0 ≤ K) (hX : 200 ≤ X) (hvδ : |v| ≤ δ₀) (hδ₀2 : δ₀ ≤ 1 / 2)
     (hα1 : 1 ≤ (horizontalSlope X).re)
@@ -558,7 +558,7 @@ theorem norm_neg_lt_norm_pos_of_profile {E : ℝ → ℝ} {K η δ₀ γ m t X y
     (hη : 0 < η) (hδ₀ : 0 < δ₀) (hγ : 0 ≤ γ) (hδγ : δ₀ ≤ γ)
     (hE0 : ∀ w ∈ Icc (0 : ℝ) (1 / 2 + 2 * η), 0 ≤ E w)
     (hE2 : ∀ w ∈ Icc (0 : ℝ) (1 / 2 + 2 * η), E w ≤ (1 / 2 + 2 * η) / 2)
-    (hK : ∀ X w u : ℝ, 16 ≤ X → 0 ≤ w → w ≤ 1 / 2 + 2 * η → 1 / 2 + 2 * η ≤ u → u ≤ X →
+    (hK : ∀ w u : ℝ, 0 ≤ w → w ≤ 1 / 2 + 2 * η → 1 / 2 + 2 * η ≤ u → u ≤ X →
       ‖xiLine X w‖ ≤ K * X ^ (E w) * (X / (2 * Real.pi)) ^ ((w - u) / 2) * ‖xiLine X u‖)
     (hK0 : 0 ≤ K) (hX : 200 ≤ X) (hyδ : δ₀ ≤ y) (hy2 : y ≤ 1 / 2)
     (hα1 : 1 ≤ (horizontalSlope X).re)
@@ -708,7 +708,7 @@ theorem re_slope_zero_and_ne_zero_of_profile {E : ℝ → ℝ} {c₀ η δ₀ γ
     (hE2 : ∀ w ∈ Icc (0 : ℝ) (1 / 2 + 2 * η), E w ≤ (1 / 2 + 2 * η) / 2)
     (hmc : ∀ c : ℝ, c₀ ≤ c → ∀ w ∈ Icc (0 : ℝ) (1 / 2 + 2 * η),
       m ≤ (c - w) ^ 2 - 4 * c * E w - 2 * δ₀ * c)
-    (hK : ∀ X w u : ℝ, 16 ≤ X → 0 ≤ w → w ≤ 1 / 2 + 2 * η → 1 / 2 + 2 * η ≤ u → u ≤ X →
+    (hK : ∀ w u : ℝ, 0 ≤ w → w ≤ 1 / 2 + 2 * η → 1 / 2 + 2 * η ≤ u → u ≤ X →
       ‖xiLine X w‖ ≤ K * X ^ (E w) * (X / (2 * Real.pi)) ^ ((w - u) / 2) * ‖xiLine X u‖)
     (hK0 : 0 ≤ K)
     (hα₀ : ∀ α ≥ α₀, 160 ≤ α ∧ 20 * (1 / (2 * η) + 3) ^ 2 ≤ α ∧
@@ -868,8 +868,15 @@ theorem riemannHeat_zeros_real_simple_of_stripProfile {E : ℝ → ℝ} {c₀ η
       0 < ((∫ w in Ioi (0 : ℝ), (((w - 0) / (2 * t) * gaussDensity t (w - 0) : ℝ) : ℂ) *
         xiLine X w) * starRingEnd ℂ (halfGaussTransform t (xiLine X) 0)).re ∧
       ∀ y : ℝ, y ≠ 0 → |y| ≤ 1 / 2 → riemannHeat t ((X : ℂ) + I * y) ≠ 0 :=
-    fun X hX1 hX2 => re_slope_zero_and_ne_zero_of_profile hη hη8 hδ₀ hδ₀2 hγ hδγ hm hc₀ hsep
-      hE0 hE2 hmc hK hK0 hα₀ ht ht8 (by rwa [← hX₀def]) hX2
+    fun X hX1 hX2 =>
+      have hX16 : 16 ≤ X := by
+        have h321 : (321 : ℝ) ≤ Real.exp (2 * max α₀ 160) := by
+          have h1 := Real.add_one_le_exp (2 * max α₀ 160)
+          linarith only [h1, le_max_right α₀ 160]
+        rw [hX₀def] at hX1
+        nlinarith only [hX1, h321, Real.pi_gt_three]
+      re_slope_zero_and_ne_zero_of_profile hη hη8 hδ₀ hδ₀2 hγ hδγ hm hc₀ hsep
+        hE0 hE2 hmc (fun w u => hK X w u hX16) hK0 hα₀ ht ht8 (by rwa [← hX₀def]) hX2
   have him := riemannHeat_zeros_im_sq_le ht hz
   have him2 : z.im ^ 2 ≤ 1 / 4 := him.trans (max_le (by linarith) (by norm_num))
   have him' : |z.im| ≤ 1 / 2 := by

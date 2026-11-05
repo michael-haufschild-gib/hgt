@@ -31,7 +31,9 @@ theorem diagonalEvalGram_eq_norm (z : ℂ) (a : PrecontactAperture) :
     diagonalEvalGram z a.1.1 = ‖evalVector a z‖^2 := by
   have ha : a.1.1 ∈ precontactSet := ⟨a.1.2, a.2⟩
   simp only [diagonalEvalGram, evalGram, dif_pos ha]
-  simp [evalCombination, toPrecontact]
+  change ‖∑ _ : Unit, (1 : ℂ) • evalVector a z‖^2 = ‖evalVector a z‖^2
+  have hu : (Finset.univ : Finset Unit) = {()} := rfl
+  rw [hu, Finset.sum_singleton, one_smul]
 
 theorem diagonalEvalGram_eq_kernel (z : ℂ) (a : PrecontactAperture) :
     diagonalEvalGram z a.1.1 = (kernel a z z).re := by
@@ -61,7 +63,8 @@ theorem hasDerivWithinAt_diagonalEvalGram_right (z : ℂ) {a : ℝ}
     · have ht : Tendsto (fun x : ℝ => x-a) (𝓝 a) (𝓝 (a-a)) := tendsto_id.sub_const a
       simpa only [sub_self] using ht.mono_left nhdsWithin_le_nhds
     · filter_upwards [self_mem_nhdsWithin] with x hx
-      exact sub_pos.mpr hx
+      change 0 < x-a
+      exact sub_pos.mpr (show a < x from hx)
   rw [diagonalEndpointEnergy, dif_pos ha,
     hasDerivWithinAt_iff_tendsto_slope' self_notMem_Ioi]
   apply Metric.tendsto_nhds.mpr

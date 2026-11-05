@@ -13,3 +13,4 @@
 | A43 | done | `ArithmeticIncidencePositivity/TheWeilFloorTowerIsFrozen.lean`: `a_k < 0.3621`, `a_∞ − a₀ < 10^(−7800000)` |
 | A28 | done | `WindowTowerOfSpecZ/TheAtomicLatticeHasTheSharpSchurBound.lean`: `Σ_{d≤N}Λ(d)/d ≤ log N`, atomic form `≤ ½ log N` |
 | A52 | statement done, numeric `c` open | `RHTower/Heat/AHeatCoefficientGivesAZeroFreeStrip.lean`: ceiling `Λ_X log X ≤ κ` ⇒ depth `≤ √(κ/c)`; `κ < c/4` ⇒ `Re s ≤ σ < 1` |
+| A7 | done as Schur complement; Gram expansion of the dual norm not done | `GrowingWindowsOfSpecZ/TheFirstStageComplementIsASchurComplement.lean`: `twoCollarForm_firstStage_eq` |

@@ -106,7 +106,34 @@ model. Its direct check passed with standard axioms, and its umbrella
 imports it.
 `GaussianSaddleWindow.lean` contains the optimized lower Gaussian tail,
 scaled model error, reflection factor, and opposite lower-interval bound.
-The Gaussian checks and the complete heat-reality argument remain open.
+`TypicalHeightHalfGaussBounds.lean` assembles the main-term, slope and
+opposite-half errors for `16η≤2tα≤2` and `−4η≤y≤1/2`.
+Its Lean check passed; the three capstones use only standard axioms.
+`TypicalHeightHalfGaussReality.lean` derives nonvanishing from their
+explicit smallness conditions; its direct check passed with standard
+axioms. Both modules are imported by the umbrella.
+The Gaussian module passed Lean with standard axioms. The complete
+heat-reality argument remains open.
+
+For uniform smallness, set `L=1+log(4T)` and use `L/8≤α≤L`.
+The heat interval gives `8η/α≤t≤1/α`. Thus inverse heat prefactors are
+`O_η(α)`, the distant errors are `O_η(α exp(−α²))`, and the local
+model error is exactly `2q exp((1+q)²)`, where `q=B√t→0`.
+The source ratio satisfies `C≤exp(η²α)` eventually, so every lower
+tail decays exponentially despite its source and derivative factors.
+`SmallHeatErrorBounds.lean`, `TypicalHeightSourceEnvelopes.lean`, and
+`TypicalHeightErrorDecay.lean` contain these comparisons and the proposed
+uniform smallness theorem. They have not yet passed Lean.
+
+Unit-window uniformity uses a finite `η`-net of `[-1,1]`; its exceptional
+set is a finite union of translated typical-height exceptions plus two
+bounded endpoint strips. The resulting dyadic density bound extends to
+`[0,H]` by `RHTower.eventually_volume_inter_Icc_le_of_window`.
+For density-one convergence, truncate the bad set at level `1/(n+1)`
+beyond a height where every prefix has relative measure at most `2⁻ⁿ`.
+The union of these truncated sets has density zero: finite initial
+unions have density zero, and the remaining union is bounded by a
+geometric tail. This extraction remains to be formalized.
 
 ## Proof status
 

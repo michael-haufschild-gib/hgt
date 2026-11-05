@@ -21,7 +21,7 @@ decay, including `H_{−τ}`.
 -/
 
 open Complex MeasureTheory Filter Topology Set
-open RHTower.DeBruijn
+open RHTower RHTower.DeBruijn
 
 namespace GaloisForLFunctions.NodalGeometryOfTheDeBruijnFlow
 
