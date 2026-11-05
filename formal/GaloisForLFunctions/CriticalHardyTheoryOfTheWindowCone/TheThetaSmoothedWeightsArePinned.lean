@@ -52,7 +52,7 @@ theorem coneForm_add_smul (lam : ℕ → ℝ) {f g : ℝ → ℂ} (hf : ContDiff
     coneForm lam (f + (t : ℂ) • g) =
       t ^ 2 * coneForm lam g + t * polarForm lam f g + coneForm lam f := by
   have h₁ := admissible_weilTest hf hfc
-  have h₂ := admissible_weilTest (hf.add hg) (hfc.add hgc)
+  have h₂ : Admissible (EF.weilTest (f + g) (f + g)) := admissible_weilTest (hf.add hg) (hfc.add hgc)
   have h₃ := admissible_weilTest hg hgc
   have hk : EF.weilTest (f + (t : ℂ) • g) (f + (t : ℂ) • g) =
       (((1 - t : ℝ) : ℂ) • EF.weilTest f f + ((t : ℝ) : ℂ) • EF.weilTest (f + g) (f + g)) +
@@ -90,7 +90,7 @@ theorem sq_polar_coneForm_le {lam : ℕ → ℝ} {c : ℝ} (h : WeilPositiveFull
     polarForm lam f g ^ 2 ≤ 4 * coneForm lam g * coneForm lam f := by
   have hfc : HasCompactSupport f := IsCompact.of_isClosed_subset isCompact_Icc (isClosed_tsupport f) hfs
   have hgc : HasCompactSupport g := IsCompact.of_isClosed_subset isCompact_Icc (isClosed_tsupport g) hgs
-  have hq : ∀ t : ℝ, 0 ≤ coneForm lam g * t * t + polarForm lam f g * t + coneForm lam f := by
+  have hq : ∀ t : ℝ, 0 ≤ coneForm lam g * (t * t) + polarForm lam f g * t + coneForm lam f := by
     intro t
     have h1 := h (f + (t : ℂ) • g) (hf.add (contDiff_const.smul hg))
       (tsupport_add_smul_subset hfs hgs)
@@ -125,7 +125,9 @@ theorem crossCorr_add_add {X Y : ℝ → ℝ} (hX : Continuous X) (hXc : HasComp
   have i₂ := integrable_translate_prod hX hXc hY y
   have i₃ := integrable_translate_prod hY hYc hX y
   have i₄ := integrable_translate_prod hY hYc hY y
-  rw [← integral_add i₁ i₂, ← integral_add (i₁.add i₂) i₃, ← integral_add ((i₁.add i₂).add i₃) i₄]
+  have i₅ : Integrable fun t => X t * X (t - y) + X t * Y (t - y) := i₁.add i₂
+  have i₆ : Integrable fun t => X t * X (t - y) + X t * Y (t - y) + Y t * X (t - y) := i₅.add i₃
+  rw [← integral_add i₁ i₂, ← integral_add i₅ i₃, ← integral_add i₆ i₄]
   refine integral_congr_ae (Eventually.of_forall fun t => ?_)
   simp only
   ring
@@ -278,8 +280,7 @@ theorem exists_zero_bound_real_test {Y : ℝ → ℝ} (hY : ContDiff ℝ 2 Y) (h
 
 /-- The polarization of the zero side of `Φ_L` against a fixed test is bounded by its tail. -/
 theorem abs_polar_W_le {Λc : ℝ} (hΛ0 : 0 ≤ Λc)
-    (hΛ : ∀ x : ℝ, |deriv Real.smoothTransition x| ≤ Λc) {Y : ℝ → ℝ} (hY : ContDiff ℝ 2 Y)
-    (hYc : HasCompactSupport Y) {E : ℝ} (hE0 : 0 ≤ E)
+    (hΛ : ∀ x : ℝ, |deriv Real.smoothTransition x| ≤ Λc) {Y : ℝ → ℝ} {E : ℝ} (hE0 : 0 ≤ E)
     (hE : ∀ ρ : zetaZeroConfig.carrier,
       (1 + |(ρ : ℂ).im|) * ‖paperFT (fun u => (Y u : ℂ)) (gammaOf ρ)‖ ≤ E ∧
         (1 + |(ρ : ℂ).im|) * ‖paperFT (fun u => (Y u : ℂ)) ((starRingEnd ℂ) (gammaOf ρ))‖ ≤ E)
@@ -291,5 +292,254 @@ theorem abs_polar_W_le {Λc : ℝ} (hΛ0 : 0 ≤ Λc)
   have ht := tailBound_nonneg (𝔽 j) hΛ0 L
   refine ⟨norm_W_le_of_zero_bounds ht hE0 fun ρ => ⟨(zero_bound_truncTest hΛ0 hΛ j L ρ).1, (hE ρ).2⟩,
     norm_W_le_of_zero_bounds hE0 ht fun ρ => ⟨(hE ρ).1, (zero_bound_truncTest hΛ0 hΛ j L ρ).2⟩⟩
+
+/-! ### The polarization of real tests -/
+
+/-- The polarization of real tests: the zero side minus the mixed reading of the weights. -/
+theorem polarForm_ofReal (lam : ℕ → ℝ) {X Y : ℝ → ℝ} (hX : ContDiff ℝ 2 X)
+    (hXc : HasCompactSupport X) (hY : ContDiff ℝ 2 Y) (hYc : HasCompactSupport Y) {R : ℝ}
+    (hXs : ∀ t, R < |t| → X t = 0) (hYs : ∀ t, R < |t| → Y t = 0) :
+    polarForm lam (fun u => (X u : ℂ)) (fun u => (Y u : ℂ)) =
+      (zetaZeroConfig.W (fun u => (X u : ℂ)) (fun u => (Y u : ℂ)) +
+        zetaZeroConfig.W (fun u => (Y u : ℂ)) (fun u => (X u : ℂ))).re -
+      2 * atomPairing (fun n => lam n - (ArithmeticFunction.vonMangoldt n : ℝ)) (crossCorr X Y) := by
+  have hf : ContDiff ℝ 2 (fun u => (X u : ℂ)) := Complex.ofRealCLM.contDiff.comp hX
+  have hg : ContDiff ℝ 2 (fun u => (Y u : ℂ)) := Complex.ofRealCLM.contDiff.comp hY
+  have hfc : HasCompactSupport (fun u => (X u : ℂ)) := hXc.comp_left Complex.ofReal_zero
+  have hgc : HasCompactSupport (fun u => (Y u : ℂ)) := hYc.comp_left Complex.ofReal_zero
+  have hZ : ContDiff ℝ 2 (fun t => X t + Y t) := hX.add hY
+  have hZc : HasCompactSupport (fun t => X t + Y t) := hXc.add hYc
+  have hsum : (fun u => (X u : ℂ)) + (fun u => (Y u : ℂ)) = fun u => ((X u + Y u : ℝ) : ℂ) := by
+    funext u
+    simp
+  have hZ0 := SquareRootThreshold.temperedConfig_zetaZeroConfig
+  have hW : zetaZeroConfig.W (fun u => ((X u + Y u : ℝ) : ℂ)) (fun u => ((X u + Y u : ℝ) : ℂ)) =
+      zetaZeroConfig.W (fun u => (X u : ℂ)) (fun u => (X u : ℂ)) +
+        zetaZeroConfig.W (fun u => (X u : ℂ)) (fun u => (Y u : ℂ)) +
+        (zetaZeroConfig.W (fun u => (Y u : ℂ)) (fun u => (X u : ℂ)) +
+          zetaZeroConfig.W (fun u => (Y u : ℂ)) (fun u => (Y u : ℂ))) := by
+    have hfg : ContDiff ℝ 2 ((fun u => (X u : ℂ)) + fun u => (Y u : ℂ)) := hf.add hg
+    have hfgc : HasCompactSupport ((fun u => (X u : ℂ)) + fun u => (Y u : ℂ)) := hfc.add hgc
+    rw [← hsum, ArithmeticCastelnuovoSeveri.W_add_left _ hZ0 hf hfc hg hgc hfg hfgc,
+      ArithmeticCastelnuovoSeveri.W_add_right _ hZ0 hf hfc hf hfc hg hgc,
+      ArithmeticCastelnuovoSeveri.W_add_right _ hZ0 hg hgc hf hfc hg hgc]
+  have hp := atomPairing_polar_eq (fun n => lam n - (ArithmeticFunction.vonMangoldt n : ℝ))
+    hX.continuous hXc hY.continuous hYc hXs hYs
+  unfold polarForm
+  rw [hsum, coneForm_ofReal lam hZ hZc, coneForm_ofReal lam hX hXc, coneForm_ofReal lam hY hYc, hW]
+  simp only [Complex.add_re]
+  linarith
+
+/-- **A fixed test has bounded energy on the cone.** Its correlations see only the integers `n ≤ e^{2R}`,
+which lie in the box. -/
+theorem exists_coneForm_le {Y : ℝ → ℝ} (hY : ContDiff ℝ 2 Y) (hYc : HasCompactSupport Y) {R : ℝ}
+    (hR : 0 ≤ R) (hYs : ∀ t, R < |t| → Y t = 0) :
+    ∃ C : ℝ, 0 ≤ C ∧ ∀ (c : ℝ) (lam : ℕ → ℝ), R + 1 / 12 ≤ c → WeilPositiveFullUpTo lam c →
+      coneForm lam (fun u => (Y u : ℂ)) ≤ C := by
+  obtain ⟨B, hB⟩ := hYc.exists_bound_of_continuous hY.continuous
+  have hB0 : 0 ≤ B := (norm_nonneg _).trans (hB 0)
+  have hYi : Integrable Y := hY.continuous.integrable_of_hasCompactSupport hYc
+  obtain ⟨I, hI⟩ : ∃ I, I = ∫ t, |Y t| := ⟨_, rfl⟩
+  have hI0 : 0 ≤ I := by
+    rw [hI]
+    exact integral_nonneg fun _ => abs_nonneg _
+  have hcorr : ∀ y, |crossCorr Y Y y| ≤ B * I := fun y => by
+    unfold crossCorr
+    refine (abs_integral_le_integral_abs).trans ?_
+    rw [hI, ← integral_const_mul]
+    refine integral_mono_of_nonneg (Eventually.of_forall fun _ => abs_nonneg _)
+      (hYi.abs.const_mul B) (Eventually.of_forall fun t => ?_)
+    simp only
+    rw [abs_mul, mul_comm]
+    have h1 : |Y (t - y)| ≤ B := by simpa using hB (t - y)
+    exact mul_le_mul_of_nonneg_right h1 (abs_nonneg _)
+  obtain ⟨N, hN⟩ := exists_nat_ge (Real.exp (R + R + 1))
+  have hlog : ∀ n : ℕ, N ≤ n → R + R < |Real.log n| ∧ R + R < |-Real.log n| := by
+    intro n hn
+    have hnr : Real.exp (R + R + 1) ≤ n := hN.trans (by exact_mod_cast hn)
+    have hn0 : (0 : ℝ) < n := (Real.exp_pos _).trans_le hnr
+    have h1 : R + R + 1 ≤ Real.log n := (Real.le_log_iff_exp_le hn0).mpr hnr
+    have h2 : R + R < |Real.log n| := by
+      calc R + R < R + R + 1 := by linarith
+        _ ≤ Real.log n := h1
+        _ ≤ |Real.log n| := le_abs_self _
+    exact ⟨h2, by rwa [abs_neg]⟩
+  have hC := boxConst_nonneg
+  obtain ⟨V, hV⟩ : ∃ V, V = 4 * R + boxConst := ⟨_, rfl⟩
+  have hV0 : 0 ≤ V := by rw [hV]; linarith
+  refine ⟨|(zetaZeroConfig.W (fun u => (Y u : ℂ)) (fun u => (Y u : ℂ))).re| +
+    (N : ℝ) * (V * (2 * (B * I))), by positivity, fun c lam hc hlam => ?_⟩
+  rw [coneForm_ofReal lam hY hYc, atomPairing_eq_sum _ (N := N) fun n hn =>
+    ⟨crossCorr_eq_zero hYs hYs (hlog n hn).1, crossCorr_eq_zero hYs hYs (hlog n hn).2⟩]
+  have hterm : ∀ n ∈ Finset.range N,
+      -((if 2 ≤ n then (lam n - (ArithmeticFunction.vonMangoldt n : ℝ)) / Real.sqrt n else 0) *
+        (crossCorr Y Y (Real.log n) + crossCorr Y Y (-Real.log n))) ≤ V * (2 * (B * I)) := by
+    intro n _
+    have hnon : 0 ≤ V * (2 * (B * I)) := by positivity
+    by_cases h2 : 2 ≤ n
+    · rw [if_pos h2]
+      have hn0 : (0 : ℝ) < n := by exact_mod_cast (by omega : 0 < n)
+      by_cases hle : (n : ℝ) ≤ Real.exp (2 * R)
+      · have h1 := abs_sub_vonMangoldt_div_sqrt_le hlam hc h2 hle
+        rw [← hV] at h1
+        have h3 : |(lam n - (ArithmeticFunction.vonMangoldt n : ℝ)) / Real.sqrt n| ≤ V := by
+          rw [abs_div, abs_of_nonneg (Real.sqrt_nonneg _)]
+          exact h1
+        have h4 : |crossCorr Y Y (Real.log n) + crossCorr Y Y (-Real.log n)| ≤ 2 * (B * I) := by
+          have := abs_add_le (crossCorr Y Y (Real.log n)) (crossCorr Y Y (-Real.log n))
+          linarith [hcorr (Real.log n), hcorr (-Real.log n)]
+        have h5 := mul_le_mul h3 h4 (abs_nonneg _) hV0
+        rw [← abs_mul] at h5
+        exact (neg_le_abs _).trans h5
+      · have hlt : 2 * R < Real.log n := (Real.lt_log_iff_exp_lt hn0).mpr (not_le.mp hle)
+        have hRR : R + R < |Real.log n| := by
+          have := le_abs_self (Real.log n)
+          linarith
+        rw [crossCorr_eq_zero hYs hYs hRR,
+          crossCorr_eq_zero hYs hYs (by rwa [abs_neg] : R + R < |-Real.log n|)]
+        simpa using hnon
+    · rw [if_neg h2]
+      simpa using hnon
+  have hsum := Finset.sum_le_card_nsmul _ _ _ hterm
+  rw [Finset.sum_neg_distrib, Finset.card_range, nsmul_eq_mul] at hsum
+  have := le_abs_self (zetaZeroConfig.W (fun u => (Y u : ℂ)) (fun u => (Y u : ℂ))).re
+  linarith
+
+/-! ### The pinning -/
+
+theorem doubleExpTail_le_sqrt_ceiling {c : ℝ} (hc : 0 ≤ c) :
+    doubleExpTail (c - 1 / 12 - 1) ≤ Real.sqrt (marginCeiling c) := by
+  have hτ0 := (doubleExpTail_pos (c - 1 / 12 - 1)).le
+  have hτ1 := doubleExpTail_le_one (c - 1 / 12 - 1)
+  refine Real.le_sqrt_of_sq_le ?_
+  have h1 : doubleExpTail (c - 1 / 12 - 1) ≤ doubleExpTail (c - 2) :=
+    doubleExpTail_anti (by linarith)
+  have h2 : (1 : ℝ) ≤ Real.exp (3 * c) := Real.one_le_exp (by linarith)
+  have h3 : doubleExpTail (c - 2) ≤ marginCeiling c := by
+    rw [← exp_mul_doubleExpTail]
+    exact le_mul_of_one_le_left (doubleExpTail_pos _).le h2
+  nlinarith
+
+/-- **The theta-smoothed weights are pinned.** For every fixed test `Y` there is `C` such that every
+`λ ∈ 𝒜(c)` satisfies
+`|Σ_n (λ(n) − Λ(n)) n^{−1/2} ((Φ_L ⋆ Y)(log n) + (Φ_L ⋆ Y)(−log n))| ≤ C exp(½(3c − (π/16) e^{2(c−2)}))`,
+with `L = c − 1/12`. -/
+theorem exists_abs_atomPairing_crossCorr_le {Y : ℝ → ℝ} (hY : ContDiff ℝ 2 Y)
+    (hYc : HasCompactSupport Y) {R : ℝ} (hR : 0 ≤ R) (hYs : ∀ t, R < |t| → Y t = 0) :
+    ∃ C : ℝ, 0 ≤ C ∧ ∀ (c : ℝ) (lam : ℕ → ℝ), 1 ≤ c → R + 1 / 12 ≤ c →
+      WeilPositiveFullUpTo lam c →
+      |atomPairing (fun n => lam n - (ArithmeticFunction.vonMangoldt n : ℝ))
+        (crossCorr (truncTest (𝔽 0) (c - 1 / 12)) Y)| ≤ C * Real.sqrt (marginCeiling c) := by
+  obtain ⟨w, hw, K, hK, hmain⟩ := exists_nullWeights_tsum_nullEnergy_le
+  obtain ⟨Λc, hΛ0, hΛ⟩ := GaloisForLFunctions.HTGeometry.exists_bound_deriv_smoothTransition
+  obtain ⟨CY, hCY0, hCY⟩ := exists_coneForm_le hY hYc hR hYs
+  obtain ⟨E, hE0, hE⟩ := exists_zero_bound_real_test hY hYc
+  have hw0 := hw.pos_zero
+  have hI := absMass_nonneg
+  have hD := decayConst_nonneg
+  have hZs : 0 ≤ zetaInvSqSum := zetaInvSqSum_nonneg
+  have hg0 := gammaScale_nonneg 0
+  obtain ⟨T, hT⟩ : ∃ T, T = (3 + 4 * Λc) * (decayConst * gammaScale 0) * absMass := ⟨_, rfl⟩
+  have hT0 : 0 ≤ T := by rw [hT]; positivity
+  obtain ⟨Q, hQ⟩ : ∃ Q, Q = Real.sqrt (4 * CY * (K / w 0)) := ⟨_, rfl⟩
+  have hQ0 : 0 ≤ Q := by rw [hQ]; exact Real.sqrt_nonneg _
+  obtain ⟨P, hP⟩ : ∃ P, P = (5 / 2) * zetaInvSqSum * (T * E) := ⟨_, rfl⟩
+  have hP0 : 0 ≤ P := by rw [hP]; positivity
+  refine ⟨(P + Q) / 2, by positivity, fun c lam hc hRc hlam => ?_⟩
+  obtain ⟨L, hL⟩ : ∃ L, L = c - 1 / 12 := ⟨_, rfl⟩
+  rw [← hL]
+  have hLc : L ≤ c := by rw [hL]; linarith
+  obtain ⟨Cd, -, hFd⟩ := exists_decayBound_xiShiftedGammaTest
+  have hX : ContDiff ℝ 2 (truncTest (𝔽 0) L) := contDiff_truncTest (hFd 0).1 L
+  have hXc : HasCompactSupport (truncTest (𝔽 0) L) := hasCompactSupport_truncTest _ L
+  have hc0 : 0 ≤ c := by linarith
+  have hXs : ∀ t, c < |t| → truncTest (𝔽 0) L t = 0 := fun t ht =>
+    truncTest_eq_zero (hLc.trans ht.le)
+  have hRc' : R ≤ c := by linarith
+  have hYs' : ∀ t, c < |t| → Y t = 0 := fun t ht => hYs t (lt_of_le_of_lt hRc' ht)
+  have hf : ContDiff ℝ 2 (fun u => (truncTest (𝔽 0) L u : ℂ)) := Complex.ofRealCLM.contDiff.comp hX
+  have hg : ContDiff ℝ 2 (fun u => (Y u : ℂ)) := Complex.ofRealCLM.contDiff.comp hY
+  have hfs : tsupport (fun u => (truncTest (𝔽 0) L u : ℂ)) ⊆ Icc (-c) c :=
+    tsupport_nullTest_subset 0 hLc
+  have hgs : tsupport (fun u => (Y u : ℂ)) ⊆ Icc (-c) c := by
+    refine closure_minimal (fun u hu => ?_) isClosed_Icc
+    by_contra hm
+    apply hu
+    have h1 : c < |u| := by
+      by_contra h2
+      exact hm (abs_le.mp (not_lt.mp h2))
+    simp [hYs' u h1]
+  -- the near-nullity of the kernel
+  have hEj : ∀ j, 0 ≤ nullEnergy lam j L := fun j =>
+    hlam (nullTest j L) (contDiff_nullTest j L) (tsupport_nullTest_subset j hLc)
+  obtain ⟨hs, hle⟩ := hmain c lam hc hlam
+  rw [← hL] at hs hle
+  have h0 : w 0 * nullEnergy lam 0 L ≤ ∑' j, w j * nullEnergy lam j L :=
+    hs.le_tsum 0 fun j _ => mul_nonneg (hw.nonneg j) (hEj j)
+  have hnull : coneForm lam (fun u => (truncTest (𝔽 0) L u : ℂ)) ≤ K / w 0 * marginCeiling c := by
+    have h1 : w 0 * nullEnergy lam 0 L ≤ K * marginCeiling c := h0.trans hle
+    have h2 : nullEnergy lam 0 L ≤ K * marginCeiling c / w 0 := by
+      rw [le_div_iff₀ hw0]
+      linarith
+    calc coneForm lam (fun u => (truncTest (𝔽 0) L u : ℂ)) = nullEnergy lam 0 L := rfl
+      _ ≤ K * marginCeiling c / w 0 := h2
+      _ = _ := by ring
+  -- Cauchy–Schwarz
+  have hCS := sq_polar_coneForm_le hlam hf hfs hg hgs
+  have hYle := hCY c lam hRc hlam
+  have hM := (marginCeiling_pos c).le
+  have hXnon : 0 ≤ coneForm lam (fun u => (truncTest (𝔽 0) L u : ℂ)) := hEj 0
+  have hprod : polarForm lam (fun u => (truncTest (𝔽 0) L u : ℂ)) (fun u => (Y u : ℂ)) ^ 2 ≤
+      4 * CY * (K / w 0) * marginCeiling c := by
+    refine hCS.trans ?_
+    have hnn : 0 ≤ K / w 0 * marginCeiling c := by positivity
+    calc 4 * coneForm lam (fun u => (Y u : ℂ)) * coneForm lam (fun u => (truncTest (𝔽 0) L u : ℂ))
+        ≤ 4 * CY * (K / w 0 * marginCeiling c) := by
+          have := mul_le_mul hYle hnull hXnon hCY0
+          nlinarith
+      _ = _ := by ring
+  have hpolar : |polarForm lam (fun u => (truncTest (𝔽 0) L u : ℂ)) (fun u => (Y u : ℂ))| ≤
+      Q * Real.sqrt (marginCeiling c) := by
+    have h1 := Real.abs_le_sqrt hprod
+    rwa [Real.sqrt_mul (by positivity), ← hQ] at h1
+  -- the zero side
+  obtain ⟨hz₁, hz₂⟩ := abs_polar_W_le hΛ0 hΛ hE0 hE 0 L
+  have htail := tailBound_xiShiftedGammaTest_le hΛ0 0 L
+  have hτ := doubleExpTail_le_sqrt_ceiling hc0
+  rw [← hL] at hτ
+  have htail2 : tailBound (𝔽 0) Λc L ≤ T * Real.sqrt (marginCeiling c) := by
+    refine htail.trans ?_
+    rw [hT]
+    exact mul_le_mul_of_nonneg_left hτ (by positivity)
+  have hzero : ‖zetaZeroConfig.W (fun u => (truncTest (𝔽 0) L u : ℂ)) (fun u => (Y u : ℂ))‖ +
+      ‖zetaZeroConfig.W (fun u => (Y u : ℂ)) (fun u => (truncTest (𝔽 0) L u : ℂ))‖ ≤
+      P * Real.sqrt (marginCeiling c) := by
+    have h3 : (5 / 4) * zetaInvSqSum * (tailBound (𝔽 0) Λc L * E) ≤
+        (5 / 4) * zetaInvSqSum * ((T * Real.sqrt (marginCeiling c)) * E) :=
+      mul_le_mul_of_nonneg_left (mul_le_mul_of_nonneg_right htail2 hE0) (by positivity)
+    have e : (5 / 4) * zetaInvSqSum * (E * tailBound (𝔽 0) Λc L) =
+        (5 / 4) * zetaInvSqSum * (tailBound (𝔽 0) Λc L * E) := by ring
+    rw [e] at hz₂
+    rw [hP]
+    nlinarith
+  -- the reading
+  have hread := polarForm_ofReal lam hX hXc hY hYc hXs hYs'
+  obtain ⟨A, hA⟩ : ∃ A, A = atomPairing (fun n => lam n - (ArithmeticFunction.vonMangoldt n : ℝ))
+    (crossCorr (truncTest (𝔽 0) L) Y) := ⟨_, rfl⟩
+  rw [← hA] at hread ⊢
+  have hzre : |(zetaZeroConfig.W (fun u => (truncTest (𝔽 0) L u : ℂ)) (fun u => (Y u : ℂ)) +
+      zetaZeroConfig.W (fun u => (Y u : ℂ)) (fun u => (truncTest (𝔽 0) L u : ℂ))).re| ≤
+      P * Real.sqrt (marginCeiling c) :=
+    (Complex.abs_re_le_norm _).trans ((norm_add_le _ _).trans hzero)
+  have hA2 : 2 * A = (zetaZeroConfig.W (fun u => (truncTest (𝔽 0) L u : ℂ)) (fun u => (Y u : ℂ)) +
+      zetaZeroConfig.W (fun u => (Y u : ℂ)) (fun u => (truncTest (𝔽 0) L u : ℂ))).re -
+      polarForm lam (fun u => (truncTest (𝔽 0) L u : ℂ)) (fun u => (Y u : ℂ)) := by
+    rw [hread]
+    ring
+  have hfin : |2 * A| ≤ (P + Q) * Real.sqrt (marginCeiling c) := by
+    rw [hA2, add_mul]
+    exact (abs_sub _ _).trans (add_le_add hzre hpolar)
+  rw [abs_mul, abs_of_pos (by norm_num : (0 : ℝ) < 2)] at hfin
+  linarith
 
 end GaloisForLFunctions.CriticalHardyTheoryOfTheWindowCone

@@ -33,14 +33,18 @@ The current comparison replaces the leading first-atom gamma mass by `1/2`,
 releasing `3A/(8q)` as well as the cubic reserve. The reduced leading
 comparison is formalized for `q≥3`; extraction from the literal tail is in
 progress. Both `(1,3)` gamma endpoints become positive after adding `A/8`
-at `q=3`; their uniform ray certificate remains unfinished.
+at `q=3`; their full gamma and exponential-weight comparison is now formalized
+for every `q≥3`.
 
 For `(1,3)`, use `exp(−8q) ≤ 3²⁴/(20⁸q²⁴)` and write `q=3(1+y)`.
 After clearing `q²⁷` and dividing by `3²⁷`, the reserve contributes
 `binom(26,d)A/8` to coefficient `y^d`. The two gamma endpoints differ only
 in the constant coefficient. The proposed certificate is positivity of the
 constant matrices and the common coefficients through degree 21; higher
-coefficients are positive multiples of `A`. These matrix signs remain open.
+coefficients are positive multiples of `A`. All 23 required fixed matrices
+are positive definite in Lean. The exact expansion and convex interpolation
+prove `FifthThirdTail.reserveModel_posDef` on the entire ray, with standard
+axioms. Identification with the literal tail remains to complete.
 
 The other four unequal pairs have relative rates `15,11,18,23`; the `(1,3)`
 rate is `8`. Their radial polynomials have degree at most eighteen. A

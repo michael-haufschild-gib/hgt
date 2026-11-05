@@ -65,6 +65,8 @@ sign, a square-root count or a collision exclusion.
 | R36 | **The Cauchy limit law of the Jensen roots**: with `G_d(z) = (1/d)Σ_x 1/(z − x/ℓ_d)`, unconditionally for `σ ≥ 1/2`, `θ > 0`: `G_d(iθ) → 1/(iθ+i)`. If all roots lie in `Im x ≤ 0` (always for `σ ≥ 1`, RH at `σ = 1/2`), `G_d(z) → 1/(z+i)` on the upper half-plane: the Cauchy transform of the standard Cauchy law. The bulk at scale `½ log d` is universal, comes from the Gamma factor alone, does not depend on `σ`, and cannot see the zeros | `CauchyLimitLaw.tendsto_jensenCauchy_imag`, `tendsto_jensenCauchy_of_one_le`, `tendsto_jensenCauchy_of_zeroFree` |
 | R37 | **Bulk hyperbolicity, unconditional**: for every `ε > 0` the proportion of roots of `R_d(Ξ)` with `|Im x| ≥ ε ½ log d` tends to `0`; for `σ ≥ 1/2` the proportion of roots of `R_d(ξ(σ+i·))` with `Im x ≥ ε ½ log d` tends to `0`. Mechanism: the complex moment formula `R_d(w) = E(w+iV)^d` gives `|R_d(ℓz)| ≤ ℓ^d|z+i|^d e^{o(d)}` uniformly on circles in `Im z > 0` (`|ℓz+iv| ≤ ℓ(|z+i|−1) + max(|v|,ℓ)`), sharp at `z = iθ` by R35; `log|z+i|` is harmonic, so a Blaschke–maximum-principle Jensen inequality on discs around `iθ` gives `o(d)` roots in them. The discs exhaust `Im z > 0`; the same inequality bounds the far roots; `R_d(−x) = (−1)^d R_d(x)` gives the lower half-plane | `MultisetJensenInequality.multiset_prod_max_le`, `BulkHyperbolicity.tendsto_card_im_ge_div`, `tendsto_card_abs_im_ge_div_xiSeries` |
 | R38 | **Almost all Jensen roots of `Ξ` are real and simple, unconditionally**: for every `η > 0` and large `d`, `R_d(Ξ)` has at least `(1−η)d` distinct real roots; the proportion of non-real roots with multiplicity tends to `0`. Mechanism: on the real axis `R_d = 2 Re E_d` with `E_d(w) = ∫₀^∞Φ(v)(w+iv)^d dv`. For the one-sided transform the bound `|E_d(ℓζ)| ≤ ℓ^d|ζ+i|^d e^{o(d)}` persists on `Im ζ ≥ −1/2`, so the Jensen discs of R37 may cross the real axis, and `E_d` has only `o(d)` roots in `Im ≥ 0`. The winding count `Z₋ − Z₊ ≤ #{real zeros of Re E}` (counting form of Hermite–Biehler) gives the real roots | `HermiteBiehlerCounting.exists_finset_re_eval_eq_zero`, `AlmostAllJensenRootsAreReal.eventually_card_im_nonneg_halfJensen_le`, `eventually_exists_real_roots_xiSeries`, `tendsto_card_nonreal_roots_div` |
+| R39 | **The non-real count is monotone**: `N_d = #{non-real roots of R_d(Ξ)}` is nondecreasing in `d` (Rolle on `R_{d+1}' = (d+1)R_d`). With R38, `N_d` is nondecreasing and `o(d)` | `NonRealRootCount.card_nonreal_roots_le_succ` |
+| R40 | **The real roots of `R_d(Ξ)` follow the Cauchy law, unconditionally**: for `Im w > 0`, `(1/d)Σ_{y real} 1/(w − y) → 1/(w + i)`, over the real rescaled roots `y = x/ℓ_d`. For `σ ≥ 1/2` the same limit holds for the rescaled roots outside a disc around `iθ` containing `w`. Mechanism: reflect the roots inside the disc and divide by `(z+i)^d`; the quotient has no zero, `|Q_d| ≤ e^{o(d)}` by the maximum principle and `|Q_d(iθ)| ≥ e^{−o(d)}` by R35, so Borel–Carathéodory and Cauchy's estimate make `(1/d)Q_d'/Q_d → 0` | `RealRootsCauchyLaw.tendsto_exterior_transform`, `tendsto_real_jensenCauchy` |
 | R13 | **The degree-three test is vacuous**: on centered cubics `⊞₃` adds `(s,t)`, and every real-rooted centered cubic (`|t| ≤ s^{3/2}`) is a `⊞₃`-product of two double-root (capacity-zero, semicircle-free) cubics | `CubicFirstTest.exists_doubleRoot_factorization` |
 
 ## No-go closure for the naive route (source-faithful real-rooted pieces)
@@ -122,9 +124,6 @@ sign, a square-root count or a collision exclusion.
 - [ ] 2 → 3  formalized (route as a whole: open)
 
 ## Open conjectures (next)
-- **Cauchy law of the real roots at `σ = 1/2`, unconditional (working).** With R38, the Stieltjes transform
-  of the real roots at scale `ℓ_d` should tend to `1/(z + i)` on `Im z > 0`: Jensen on discs in `Im z > 0` gives
-  a harmonic `V_d ≤ o(1)` with `V_d(iθ) ≥ −o(1)`, and Borel–Carathéodory controls its conjugate derivative.
 - **Size of the non-real count.** `N_d = #{non-real roots of R_d(Ξ)}` is `o(d)` (R38). The winding count should
   stop near `|x| ≈ √d log d`: there the endpoint `v = 0` of `E_d` overtakes the saddle, because `|Ξ(u)|` is
   far smaller than `Φ(0)/|u|` at `|u| ≫ 1`, and the half transform `K(w) = ∫₀^∞ k e^{wv}` has zeros near
@@ -140,4 +139,4 @@ sign, a square-root count or a collision exclusion.
 
 ## Log
 - 2026-11-04 — created
-- 2026-11-05 — D1–D5, R1–R38 formalized
+- 2026-11-05 — D1–D5, R1–R40 formalized

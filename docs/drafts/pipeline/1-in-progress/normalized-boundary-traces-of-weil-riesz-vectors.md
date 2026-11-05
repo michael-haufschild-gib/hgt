@@ -40,14 +40,14 @@ The following inputs are formalized:
 - [Mixed jump pairing and translation invariance](../3-formalized/the-logarithmic-form-has-its-mixed-jump-pairing.md).
 - [Literal cutoff kernel bound](../3-formalized/the-logarithmic-cutoff-kernel-is-bounded.md).
 - [Complete-domain cutoff identity](../3-formalized/the-complete-logarithmic-form-has-its-cutoff-identity.md).
+- [Exact complete-domain identification](../3-formalized/the-logarithmic-and-weil-form-domains-agree.md).
 
-The remaining application identifies the logarithmic domain with the actual
-complete aperture domain, then converts the actual interior equation to the
+The remaining application converts the actual interior equation to the
 half-line equation with bounded L² forcing `P_+(χg+Kχu)`. Green uniqueness
 and the normalized readout apply to each endpoint localization. Continuous
 Green representatives can be joined using the positive denominator
 `χ_a(x+a)+χ_a(a-x)≥1`, giving one continuous actual Riesz representative.
-These domain, application, and gluing steps have unchecked Lean drafts.
+The application and gluing steps have unchecked Lean drafts.
 
 ## Subsequent variation obligations
 

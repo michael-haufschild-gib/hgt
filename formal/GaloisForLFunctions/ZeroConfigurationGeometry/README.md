@@ -1,7 +1,7 @@
 # Zero Configuration Geometry (ZCG)
 
 Namespace `GaloisForLFunctions.ZeroConfigurationGeometry`; umbrella `ZeroConfigurationGeometry.lean`;
-69 modules.
+78 modules.
 
 ## 1. Motivation
 
@@ -240,6 +240,7 @@ same input as every route: cancellation of the prime sum below the mean spacing.
 | Blindness costs the density aperture; `πD` is exact | `pi_mul_le_aperture_of_blind`, `eq_zero_of_blind_of_unbounded_density`, `eq_zero_of_blind_to_real_zeros_of_xi`, `blind_aperture_threshold` | unconditional |
 | Uniform isolating windows: blind to a matched cluster, explicit floor at the target, strip decay independent of the cluster | `exists_bump_one_le_norm_paperFT_I_mul`, `windowFloor`, `windowGrowth`, `isolating_window_of_bump`, `exists_uniform_isolating_window` | unconditional |
 | **Local camera** | | |
+| Finite point and moment heights, with numerical ζ count and tail inputs | `cameraPointHeight`, `cameraMomentHeight`, `card_zeta_camera_band_le`, `zeta_lorentzian_mass_lt`, `zeta_reads_mult_at_explicit_height`, `zeta_discMoment_readout_explicit` | unconditional; [height formulas](EffectiveHeights/README.md) |
 | Far zeros are faint in the local camera | `localWindow`, `paperFT_localWindow`, `norm_paperFT_localWindow_mul_le`, `norm_pointImage_mul_le`, `decay_le_tempered`, `tsum_far_le`, `norm_tsum_far_le`, `tsum_far_multDiff_le`, `tsum_far_zeta_le` | unconditional |
 | Isolated points are seen by the local camera, with explicit constant | `apertureWindow_localWindow`, `localCameraConst`, `one_add_pow_le_of_isolated_cancellation_of_bump`, `one_add_pow_le_of_isolated_cancellation` | unconditional |
 | The zeros of `ζ` have the sharp local density | `mu_le`, `card_le_ncount`, `ncount_le_of_goodHeight`, `exists_card_le_sharp`, `exists_card_le_sharp_centred`, `exists_card_le_sharp_centred_abs` | unconditional |
@@ -319,6 +320,10 @@ unbounded density (`eq_zero_of_blind_to_real_zeros_of_xi`).
   - the discriminant of a `k`-point cluster, as the Hankel determinant of `2k − 1` images
     (`cluster_discriminant_rvm`);
   - the positions of its points, through Heine's bordered Hankel (`cluster_location_rvm`).
+- *Explicit starting heights.* `cameraPointHeight` and `cameraMomentHeight` are finite
+  expressions for these readouts and their cluster consequences. For actual ζ,
+  `zetaPointCameraHeight` and `zetaMomentCameraHeight` insert an explicit sharp local
+  count and Lorentzian mass `<33/100`; only geometric isolation remains.
 - *Open:* exact resolution below `e^{−K log³ T}`. The density heuristic predicts it above `λ > ½`.
   The isolation constant of the local camera blocks the proof.
 

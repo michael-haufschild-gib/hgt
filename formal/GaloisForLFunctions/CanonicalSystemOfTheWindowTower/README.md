@@ -143,6 +143,8 @@ and dominated convergence treat the remote part.
 The actual Green solution has the measurable representative
 `u(x)=∫₀ˣv(t)(W*f)(x-t)dt`. For L² forcing essentially bounded near zero,
 `u(x)√log(1/x)→∫₀∞v(y)f(y)dy`; the coefficient is absolutely convergent.
+For globally bounded forcing this representative is continuous on the whole
+line and vanishes for `x≤0`, including the boundary point.
 For every whole-line L² source, the extended literal jump energy
 `∫₀∞exp(-t)/(2t) ‖τ_tu-u‖²dt` equals
 `∫(Ψ(2πξ)-1)|û(ξ)|²dξ`. Its finiteness, or absolute integrability of
@@ -160,3 +162,8 @@ and preserves essential boundedness with the same bound.
 The full-domain identity is exactly `q(v,χu)-q(χv,u)=⟨v,Kχu⟩`.
 Schur triple-integrability and a measure-preserving shear identify the literal
 kernel with the mixed translation-loss commutator.
+
+The positive logarithmic Fourier energy and complete archimedean weighted-L²
+domain agree exactly, since their weights differ by a bounded Fourier correction.
+Every supported finite-energy source is an admissible actual Riesz test:
+`q(f,u_z)=⟨f,logarithmicForcing_z⟩`. Reflection preserves the full domain and form.

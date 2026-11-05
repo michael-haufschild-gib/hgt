@@ -33,6 +33,7 @@ forcing collide-or-repel. Card: `docs/drafts/pipeline/1-in-progress/ado-arithmet
 | Any finite-prime carrier `D(s) = G((p_i^{−s}))` with zeros in a strip and no tangency `G = H = 0` of its Bohr lift on `K[a,b] = {|x_i| = p_i^{−σ}, σ ∈ [a,b]}` repels uniformly | `ConsistentTangenciesAreTheOnlySourceOfNearCoincidences` | `exists_tangency_gap`, `uniform_repulsion_of_no_consistent_tangency` |
 | Converse: an isolated consistent tangency of order `m ≥ 2` gives, at arbitrarily large height and in every disc radius `δ`, zeros of total multiplicity `m` — a multiple zero or two distinct zeros within `2δ` (Kronecker + local Rouché) | `ConsistentTangenciesForceNearCoincidences` | `exists_zeros_near_tangency`, `exists_collision_or_close_pair` |
 | Integral pure Euler carriers `∏ F_i(p_i^{−s})` of every degree (`F_i ∈ ℤ[X]` monic, roots of modulus one): roots are torsion (Kronecker), zeros on refined columns, polynomial collide-or-repel | `IntegralPureEulerCarriersOfEveryDegreeRepel` | `exists_pow_eq_one_of_pure`, `pureCarrier_collide_or_repel` |
+| For almost every Satake angle `θ = 2πx` the real pure carrier collides or repels at scale `C/T²` (Borel–Cantelli for `kξ − j ∓ x`, `ξ = log 3/log 2`); the Liouville failure is a null set | `GenericSatakeAnglesRepelAtPolynomialScale` | `ae_inhomogeneous_gap`, `ae_realPureCarrier_repulsion` |
 | The non-product carrier `(1 − 2^{−s})² − (1 − 3^{−s})³` (cusp of the Bohr lift at `(1,1)`) has near-coincidences at every scale | `ACuspOfTheBohrLiftForcesNearCoincidences` | `cuspCarrier_collision_or_close_pair`, `zeroMult_cuspCarrier` |
 | The non-Euler two-prime carrier `1 + 2^{−s} + 3^{−s}` repels uniformly (`≥ min(1/4, (log 3 − log 2)/224)`): its Bohr tangency is inconsistent with the moduli | `EulerProductsCreateTheNearCoincidences` | `trinomial_uniform_repulsion`, `trinomial_tangency_gap` |
 
@@ -42,6 +43,9 @@ forcing collide-or-repel. Card: `docs/drafts/pipeline/1-in-progress/ado-arithmet
 |---|---|---|
 | Two zeros of a holomorphic `f` within `R/4` flatten `f'`: `‖f'(a)‖‖b−a‖ ≤ (8M/R²)‖b−a‖²` | `ANearCoincidenceFlattensZeta` | `norm_deriv_mul_le_of_two_zeros` |
 | For `ζ`: a second zero within `1/8` forces `‖ζ'(ρ)‖ ≤ 160e²(|γ|+2)(|γ|+5)‖ρ'−ρ‖`; a lower bound `‖ζ'(ρ)‖ ≥ c` separates `ρ` from every other zero by `min(1/8, c/(160e²(|γ|+2)(|γ|+5)))` | `ANearCoincidenceFlattensZeta` | `norm_deriv_riemannZeta_mul_le_of_near_zero`, `separation_of_norm_deriv_riemannZeta_ge` |
+
+| An off-line zero `½ + δ + iγ` and its partner flatten `ζ` at the centre: `|ζ(½+iγ)| ≤ 480e²(|γ|+2)(|γ|+5)δ²` for `|δ| ≤ 1/16`; a lower bound for `|ζ(½+iγ)|` is a depth gap | `TheDepthOfAnFEPairIsReadOnTheLine` | `norm_le_of_two_symmetric_zeros`, `norm_zeta_center_le_of_offline_zero`, `depth_ge_of_norm_zeta_center_ge` |
+| The pair makes `|ζ(½+it)| ≤ 1280e²(|γ|+2)(|γ|+5)η²` on all of `|t−γ| ≤ η` (`0 < |β−½| ≤ η ≤ 1/16`); a sublevel set of measure `< 2η` there is a depth gap; and `|β−½| ≥ min(1/16, |ζ'(ρ)|/(320e²(|γ|+2)(|γ|+5)))` | `TheDepthOfAnFEPairIsReadOnTheLine` | `norm_zeta_line_le_of_offline_zero`, `depth_gt_of_small_value_measure`, `depth_ge_of_norm_deriv` |
 
 ## Reading
 

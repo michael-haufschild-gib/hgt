@@ -35,8 +35,11 @@ Folder `formal/GaloisForLFunctions/ArithmeticDiscreteness/` (README there), umbr
 | Ω9′ | Generic three-prime integral carriers have consistent tangencies, hence near-coincidences at every scale | open (paper sketch: six real equations in six unknowns); for two primes and integer `G` a consistent tangency at a torsion point needs `∇G = 0` there (`log 2/log 3 ∉ ℚ`), e.g. `(1−2^{−s})² − (1−3^{−s})³` |
 | Ω12 | Integral pure degree-two Euler carriers collide or repel at polynomial scale | Lean: `pow_twelve_eq_one_of_satake` (Kronecker in degree two), `degTwoCarrier_collide_or_repel` |
 | Ω12′ | The same for real pure local data `a = 2cos θ` | FALSE: `real_pure_carrier_not_polynomial_repulsion` (Liouville angle, zeros `e^{−|k|}`-close at height `≍ |k|`) |
+| Ω17 | Polynomial repulsion of real pure carriers holds for almost every Satake angle | Lean: `ae_inhomogeneous_gap` (Borel–Cantelli), `ae_realPureCarrier_repulsion` (scale `C/T²`); with Ω12′ the failure set is a nonempty null set, so integrality is a certificate against Liouville-type local data, not a generic necessity |
 | Ω13 | Integral pure Euler carriers of every degree collide or repel at polynomial scale | Lean: `exists_pow_eq_one_of_pure` (Kronecker), `pureCarrier_collide_or_repel` |
 | Ω14 | Near-coincidences at every scale need an Euler product | FALSE: the cusp carrier `(1−2^{−s})² − (1−3^{−s})³` has them (`cuspCarrier_collision_or_close_pair`) |
+| Ω15 | The depth of an FE pair is read on the line: `|ζ(½+iγ)| ≤ 480e²(|γ|+2)(|γ|+5)δ²`; a lower bound for `|ζ(½+iγ)|` at the ordinate gives a depth gap | Lean: `norm_zeta_center_le_of_offline_zero`, `depth_ge_of_norm_zeta_center_ge` |
+| Ω16 | An FE pair of depth `≤ η` makes `|ζ(½+it)| ≲ γ²η²` on a whole interval `|t−γ| ≤ η`, so a small-value measure bound on the line is a depth gap; and depth `≥ |ζ'(ρ)|/(Cγ²)` | Lean: `norm_zeta_line_le_of_offline_zero`, `depth_gt_of_small_value_measure`, `depth_ge_of_norm_deriv`; for an on-line simple zero the flatness is only linear (the statement is false there) |
 | Ω10 | Collide or repel at polynomial scale for integral Dirichlet polynomials over a fixed finite prime set | open: needs Baker for inhomogeneous forms with transcendental tangency points |
 | Ω11 | B54 for `ζ` | open (RH-independent, sub) |
 
@@ -54,9 +57,9 @@ Folder `formal/GaloisForLFunctions/ArithmeticDiscreteness/` (README there), umbr
   uniform repulsion from integrality; at rank `≥ 2` near-coincidences occur at every scale exactly
   when the Bohr lift has a tangency consistent with the moduli — the Euler product over `{2, 3}`
   has one, the trinomial `1 + 2^{−s} + 3^{−s}` does not — and then only a transcendence bound in the
-  height (Baker) separates them. Integrality of the local Hecke data is what makes that bound
-  polynomial: integral pure Satake parameters are roots of unity (Ω12), real ones can be Liouville
-  (Ω12′). Discreteness amplifies; it never produces purity (fake integral configurations exist in
+  height (Baker) separates them. Integrality of the local Hecke data certifies that the bound
+  is polynomial: integral pure Satake parameters are roots of unity (Ω12, Ω13); real ones give
+  polynomial repulsion for almost every angle (Ω17) but fail on a Liouville null set (Ω12′). Discreteness amplifies; it never produces purity (fake integral configurations exist in
   every degree).
 - **Status:** all survivors formalized (modules above).
 
@@ -70,6 +73,12 @@ Folder `formal/GaloisForLFunctions/ArithmeticDiscreteness/` (README there), umbr
   at the zeros (Ω8); for Euler carriers the corresponding statement holds by effective Baker (Ω6).
 - A lattice that moves with the parameter does not help: if the cluster symmetric functions lie in
   `λ(t)ℤ` with `λ` continuous, `e_k(t)/λ(t)` is a continuous integer, so the cluster only rescales.
+- A Kronecker–Baker mechanism for `ζ`'s own zeros is excluded: integral Arakelov coordinates that
+  are Galois-faithful cannot be unitary (`RHTower.not_xiArakelovIntegral_faithful_unitary`), so the
+  torsion structure that makes integral pure Euler carriers Baker-accessible (Ω12, Ω13) cannot
+  exist on the zeros themselves.
+- B54 for FE pairs is a lower-bound problem for `|ζ(½ + it)|` at the positive local minima of `|Z|`
+  (Ω15), and B54 in general follows from a lower bound for `|ζ'|` at the zeros (Ω8).
 - For `ζ` at height `T` the relevant carrier (approximate functional equation) has rank
   `≍ π(√T)`; the effective Baker exponent grows with the rank, so Diophantine discreteness of the
   Euler-carrier kind cannot give B54 at polynomial scale for `ζ` directly.
@@ -78,5 +87,5 @@ Folder `formal/GaloisForLFunctions/ArithmeticDiscreteness/` (README there), umbr
   `e^{−c log² T}` (Ω1′).
 
 ## Log
-- 2026-11-05 — created; Ω1–Ω9″, Ω12, Ω13 formalized; Ω3, Ω5, Ω6′, Ω12′, Ω14 falsified with
+- 2026-11-05 — created; Ω1–Ω9″, Ω12, Ω13, Ω15, Ω16, Ω17 formalized; Ω3, Ω5, Ω6′, Ω12′, Ω14 falsified with
   survivors; Ω9′, Ω10, Ω11 open.

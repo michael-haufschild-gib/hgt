@@ -19,8 +19,17 @@ line, so a depth gap for `ζ` (B54 restricted to FE pairs) is a statement about 
 * **A depth gap from the line** (`depth_ge_of_norm_zeta_center_ge`). If `|ζ(½ + iγ)| ≥ c` then
   `|β − ½| ≥ min(1/16, √(c / (480 e² (|γ| + 2)(|γ| + 5))))`.
 
-So off-line zeros of small depth sit exactly where `|ζ(½ + it)|` has a small positive local
-minimum, and a lower bound for `|ζ|` on the line at those ordinates is a depth gap.
+* **An interval of flatness** (`norm_zeta_line_le_of_offline_zero`). If `0 < |β − ½| ≤ η ≤ 1/16`,
+  then `|ζ(½ + it)| ≤ 1280 e² (|γ| + 2)(|γ| + 5) η²` for all `|t − γ| ≤ η`.
+* **A depth gap from a small-value measure** (`depth_gt_of_small_value_measure`). If that sublevel
+  set has measure `< 2η` in `[γ − η, γ + η]`, the zero is on the line or deeper than `η`.
+
+* **The depth is at least the derivative** (`depth_ge_of_norm_deriv`).
+  `|β − ½| ≥ min(1/16, |ζ'(ρ)| / (320 e² (|γ| + 2)(|γ| + 5)))` for an off-line zero.
+
+So off-line zeros of small depth sit exactly where `|ζ(½ + it)|` is quadratically small on a whole
+interval, and a lower bound for `|ζ|` on the line, or a measure bound for its small values, is a
+depth gap.
 -/
 
 open Complex Metric
@@ -150,6 +159,145 @@ theorem depth_ge_of_norm_zeta_center_ge {ρ : ℂ} (hρ : riemannZeta ρ = 0) (h
   rw [← Real.sqrt_sq (abs_nonneg (ρ.re - 1 / 2)), sq_abs]
   refine Real.sqrt_le_sqrt ?_
   rw [div_le_iff₀ hK]
+  linarith
+
+/-! ### The depth from a small-value measure -/
+
+/-- **An FE pair flattens zeta on a whole interval of the line.** For an off-line zero `ρ` of the
+strip with `|γ| ≥ 3` and `0 < |β − ½| ≤ η ≤ 1/16`, every `|u| ≤ η` has
+`|ζ(½ + i(γ + u))| ≤ 1280 e² (|γ| + 2)(|γ| + 5) η²`. (For an on-line simple zero the flatness is
+only linear in `u`.) -/
+theorem norm_zeta_line_le_of_offline_zero {ρ : ℂ} (hρ : riemannZeta ρ = 0) (h0 : 0 < ρ.re)
+    (h1 : ρ.re < 1) (hoff : ρ.re ≠ 1 / 2) (hγ : 3 ≤ |ρ.im|) {η : ℝ}
+    (hδη : |ρ.re - 1 / 2| ≤ η) (hη : η ≤ 1 / 16) {u : ℝ} (hu : |u| ≤ η) :
+    ‖riemannZeta ((1 / 2 : ℂ) + (ρ.im + u) * I)‖ ≤
+      1280 * Real.exp 2 * (|ρ.im| + 2) * (|ρ.im| + 5) * η ^ 2 := by
+  set c : ℂ := (1 / 2 : ℂ) + ρ.im * I with hc
+  set h : ℂ := ((ρ.re - 1 / 2 : ℝ) : ℂ) with hh
+  set M : ℝ := 5 * Real.exp 2 * (|ρ.im| + 2) * (|ρ.im| + 5) with hM
+  have hpartner : riemannZeta (c - h) = 0 := by
+    have hminus : c - h = 1 - (starRingEnd ℂ) ρ := by
+      apply Complex.ext <;> simp [hc, hh]; ring
+    rw [hminus, show (1 : ℂ) - (starRingEnd ℂ) ρ = (starRingEnd ℂ) (1 - ρ) by simp,
+      riemannZeta_conj, RHTower.riemannZeta_one_sub_eq_zero_of_mem_openStrip hρ h0 h1, map_zero]
+  have hplus : c + h = ρ := by apply Complex.ext <;> simp [hc, hh]
+  set U : Set ℂ := {s | s ≠ 1} with hU
+  have hfU : DifferentiableOn ℂ riemannZeta U := fun s hs =>
+    (differentiableAt_riemannZeta hs).differentiableWithinAt
+  have hbound := norm_riemannZeta_le_on_line_disc (γ := ρ.im) hγ
+  have hhn : ‖h‖ = |ρ.re - 1 / 2| := by rw [hh, norm_real, Real.norm_eq_abs]
+  have hball : closedBall (c - h) (1 / 2) ⊆ closedBall c 1 := by
+    intro w hw
+    rw [mem_closedBall, dist_eq_norm] at hw ⊢
+    calc ‖w - c‖ = ‖(w - (c - h)) - h‖ := by ring_nf
+      _ ≤ ‖w - (c - h)‖ + ‖h‖ := norm_sub_le _ _
+      _ ≤ 1 := by rw [hhn]; linarith
+  have hsub : closedBall (c - h) (1 / 2) ⊆ U := by
+    intro z hz h1'
+    have hz' := hball hz
+    rw [mem_closedBall, dist_eq_norm] at hz'
+    have him := (abs_im_le_norm (z - c)).trans hz'
+    rw [sub_im, h1', one_im, hc] at him
+    simp at him
+    linarith
+  have hM' : ∀ z ∈ closedBall (c - h) (1 / 2), ‖riemannZeta z‖ ≤ M := fun z hz =>
+    hbound z (by rw [← hc]; exact hball hz)
+  have hM0 : 0 ≤ M := by rw [hM]; positivity
+  -- the derivative at the partner: `≤ 64 M |β − ½|`
+  have hpair : ‖(c + h) - (c - h)‖ = 2 * |ρ.re - 1 / 2| := by
+    rw [show (c + h) - (c - h) = 2 * h by ring, norm_mul, hhn]; norm_num
+  have hpos : 0 < 2 * |ρ.re - 1 / 2| := by
+    have : 0 < |ρ.re - 1 / 2| := abs_pos.mpr (sub_ne_zero.mpr hoff)
+    linarith
+  have hder' : ‖deriv riemannZeta (c - h)‖ ≤ 32 * M * (2 * η) := by
+    have hd := norm_deriv_mul_le_of_two_zeros isOpen_ne hfU (by norm_num : (0 : ℝ) < 1 / 2)
+      hsub hM' (by rw [hpair]; linarith) hpartner (by rw [hplus]; exact hρ)
+    rw [hpair] at hd
+    have h3 : ‖deriv riemannZeta (c - h)‖ * (2 * |ρ.re - 1 / 2|) ≤
+        (32 * M * (2 * |ρ.re - 1 / 2|)) * (2 * |ρ.re - 1 / 2|) := by
+      calc _ ≤ 8 * M / (1 / 2) ^ 2 * (2 * |ρ.re - 1 / 2|) ^ 2 := hd
+        _ = _ := by ring
+    have := le_of_mul_le_mul_right h3 hpos
+    exact this.trans (by nlinarith)
+  -- Taylor from `c − h` to `c + iu`
+  set b : ℂ := c + (u : ℂ) * I with hbdef
+  have hbeq : (1 / 2 : ℂ) + (ρ.im + u) * I = b := by rw [hbdef, hc]; ring
+  have hba : ‖b - (c - h)‖ ≤ 2 * η := by
+    rw [show b - (c - h) = h + (u : ℂ) * I by rw [hbdef]; ring]
+    calc ‖h + (u : ℂ) * I‖ ≤ ‖h‖ + ‖(u : ℂ) * I‖ := norm_add_le _ _
+      _ = |ρ.re - 1 / 2| + |u| := by rw [hhn, norm_mul, norm_I, mul_one, norm_real, Real.norm_eq_abs]
+      _ ≤ 2 * η := by linarith
+  have htay := norm_sub_taylor_le isOpen_ne hfU (by norm_num : (0 : ℝ) < 1 / 2) hsub hM'
+    (b := b) (by linarith)
+  rw [hpartner, sub_zero] at htay
+  rw [hbeq]
+  have hη0 : 0 ≤ η := (abs_nonneg _).trans hδη
+  calc ‖riemannZeta b‖ = ‖(riemannZeta b - deriv riemannZeta (c - h) * (b - (c - h))) +
+        deriv riemannZeta (c - h) * (b - (c - h))‖ := by ring_nf
+    _ ≤ ‖riemannZeta b - deriv riemannZeta (c - h) * (b - (c - h))‖ +
+        ‖deriv riemannZeta (c - h)‖ * ‖b - (c - h)‖ := by rw [← norm_mul]; exact norm_add_le _ _
+    _ ≤ 8 * M / (1 / 2) ^ 2 * (2 * η) ^ 2 + 32 * M * (2 * η) * (2 * η) := by
+        refine add_le_add (htay.trans ?_) (mul_le_mul hder' hba (norm_nonneg _) (by positivity))
+        exact mul_le_mul_of_nonneg_left (pow_le_pow_left₀ (norm_nonneg _) hba 2) (by positivity)
+    _ = 1280 * Real.exp 2 * (|ρ.im| + 2) * (|ρ.im| + 5) * η ^ 2 := by rw [hM]; ring
+
+/-- **A depth gap from a small-value measure.** For a zero `ρ` of the strip with `|γ| ≥ 3` and
+`η ≤ 1/16`: if the set of `t ∈ [γ − η, γ + η]` with
+`|ζ(½ + it)| ≤ 1280 e² (|γ| + 2)(|γ| + 5) η²` has measure `< 2η`, then `ρ` is on the line or
+`|β − ½| > η`. -/
+theorem depth_gt_of_small_value_measure {ρ : ℂ} (hρ : riemannZeta ρ = 0) (h0 : 0 < ρ.re)
+    (h1 : ρ.re < 1) (hγ : 3 ≤ |ρ.im|) {η : ℝ} (hη : η ≤ 1 / 16)
+    (hmeas : MeasureTheory.volume {t : ℝ | t ∈ Set.Icc (ρ.im - η) (ρ.im + η) ∧
+        ‖riemannZeta ((1 / 2 : ℂ) + t * I)‖ ≤
+          1280 * Real.exp 2 * (|ρ.im| + 2) * (|ρ.im| + 5) * η ^ 2} < ENNReal.ofReal (2 * η)) :
+    ρ.re = 1 / 2 ∨ η < |ρ.re - 1 / 2| := by
+  by_contra hcon
+  push Not at hcon
+  obtain ⟨hoff, hδ⟩ := hcon
+  have hset : Set.Icc (ρ.im - η) (ρ.im + η) ⊆ {t : ℝ | t ∈ Set.Icc (ρ.im - η) (ρ.im + η) ∧
+      ‖riemannZeta ((1 / 2 : ℂ) + t * I)‖ ≤
+        1280 * Real.exp 2 * (|ρ.im| + 2) * (|ρ.im| + 5) * η ^ 2} := by
+    intro t ht
+    refine ⟨ht, ?_⟩
+    have hu : |t - ρ.im| ≤ η := abs_le.mpr ⟨by linarith [ht.1], by linarith [ht.2]⟩
+    have := norm_zeta_line_le_of_offline_zero hρ h0 h1 hoff hγ hδ hη hu
+    rwa [show (ρ.im : ℂ) + ((t - ρ.im : ℝ) : ℂ) = t by push_cast; ring] at this
+  have hvol := MeasureTheory.measure_mono (μ := MeasureTheory.volume) hset
+  rw [Real.volume_Icc, show ρ.im + η - (ρ.im - η) = 2 * η by ring] at hvol
+  exact absurd hmeas (not_lt.mpr hvol)
+
+/-- **The depth is at least the derivative.** An off-line zero `ρ` of the strip with `|γ| ≥ 3` has
+`|β − ½| ≥ min(1/16, |ζ'(ρ)| / (320 e² (|γ| + 2)(|γ| + 5)))`: its partner `1 − ρ̄` is a second zero
+at distance `2|β − ½|` (`separation_of_norm_deriv_riemannZeta_ge`). -/
+theorem depth_ge_of_norm_deriv {ρ : ℂ} (hρ : riemannZeta ρ = 0) (h0 : 0 < ρ.re) (h1 : ρ.re < 1)
+    (hoff : ρ.re ≠ 1 / 2) (hγ : 3 ≤ |ρ.im|) :
+    min (1 / 16) (‖deriv riemannZeta ρ‖ / (320 * Real.exp 2 * (|ρ.im| + 2) * (|ρ.im| + 5))) ≤
+      |ρ.re - 1 / 2| := by
+  set ρ' : ℂ := 1 - (starRingEnd ℂ) ρ with hρ'
+  have hz' : riemannZeta ρ' = 0 := by
+    rw [hρ', show (1 : ℂ) - (starRingEnd ℂ) ρ = (starRingEnd ℂ) (1 - ρ) by simp,
+      riemannZeta_conj, RHTower.riemannZeta_one_sub_eq_zero_of_mem_openStrip hρ h0 h1, map_zero]
+  have hdist : ‖ρ' - ρ‖ = 2 * |ρ.re - 1 / 2| := by
+    have : ρ' - ρ = ((1 - 2 * ρ.re : ℝ) : ℂ) := by
+      apply Complex.ext <;> simp [hρ']; ring
+    rw [this, norm_real, Real.norm_eq_abs, show 1 - 2 * ρ.re = -(2 * (ρ.re - 1 / 2)) by ring,
+      abs_neg, abs_mul, abs_two]
+  have hne : ρ' ≠ ρ := by
+    intro h
+    have : ‖ρ' - ρ‖ = 0 := by rw [h, sub_self, norm_zero]
+    rw [hdist] at this
+    exact hoff (by have := abs_eq_zero.mp (by linarith : |ρ.re - 1 / 2| = 0); linarith)
+  have h := separation_of_norm_deriv_riemannZeta_ge hρ hz' hne h0.le h1.le hγ le_rfl
+  rw [hdist] at h
+  have hK : 0 < 160 * Real.exp 2 * (|ρ.im| + 2) * (|ρ.im| + 5) := by positivity
+  have hsplit : min (1 / 16) (‖deriv riemannZeta ρ‖ /
+      (320 * Real.exp 2 * (|ρ.im| + 2) * (|ρ.im| + 5))) =
+      min (1 / 8) (‖deriv riemannZeta ρ‖ / (160 * Real.exp 2 * (|ρ.im| + 2) * (|ρ.im| + 5))) / 2 := by
+    rw [← min_div_div_right (by norm_num : (0 : ℝ) ≤ 2)]
+    congr 1
+    · norm_num
+    · rw [div_div]; ring_nf
+  rw [hsplit]
   linarith
 
 end GaloisForLFunctions.ArithmeticDiscreteness

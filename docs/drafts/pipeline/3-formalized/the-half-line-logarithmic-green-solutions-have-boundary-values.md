@@ -4,6 +4,7 @@
 - **Type:** THEOREM (Lean)
 - **Statement:** For half-line L² forcing essentially bounded near zero, the actual logarithmic Green solution has a measurable representative satisfying
   `u(x)√log(1/x)→∫₀∞v(y)f(y)dy`. The coefficient is absolutely convergent.
+  Globally bounded forcing gives a continuous representative, zero for `x≤0`.
 
 ## Proof
 
@@ -15,6 +16,10 @@ representative `u(x)=∫₀ˣv(t)h(x-t)dt`. Positivity and the exact renewal mas
 Schur adjoint and convolution formulas identify this representative with the
 actual L² inverse almost everywhere.
 
+For globally bounded forcing, unit renewal mass bounds backward convolution
+at every point. Convolving its half-line restriction with the L¹ density is
+continuous by translation continuity. The renewal interval is empty for `x≤0`.
+
 ## Lean
 
 Module `CanonicalSystemOfTheWindowTower/TheHalfLineLogarithmicGreenSolutionsHaveBoundaryValues.lean`.
@@ -25,6 +30,9 @@ Namespace `GaloisForLFunctions.CanonicalSystemOfTheWindowTower`.
 - `logarithmicHalfLineGreenOperator_eq_representative`
 - `integrable_logarithmicGreen_boundary_readout`
 - `logarithmicHalfLineGreenOperator_normalized_boundary_limit`
+- `norm_logarithmicBackwardConvolution_le`
+- `continuous_logarithmicGreenRepresentative`
+- `logarithmicGreenRepresentative_of_nonpos`
 
 Production plain audit passed; transitive axioms are exactly
 `[propext, Classical.choice, Quot.sound]`. Umbrella imports the module.

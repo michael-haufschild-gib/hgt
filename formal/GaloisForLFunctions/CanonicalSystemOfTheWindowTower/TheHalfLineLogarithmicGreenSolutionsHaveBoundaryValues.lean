@@ -8,6 +8,7 @@ import GaloisForLFunctions.CanonicalSystemOfTheWindowTower.TheLogarithmicBackwar
 The variational inverse has a literal renewal representative. Its normalized
 boundary trace is the absolutely convergent backward-convolution readout for
 forcing that is square-integrable and essentially bounded near the boundary.
+Globally bounded forcing gives a continuous physical representative.
 -/
 
 open MeasureTheory Set Filter Topology Complex
@@ -40,6 +41,13 @@ theorem logarithmicCausalOperator_adjoint_coeFn (f : LogarithmicHalfLineL2) :
 def logarithmicGreenRepresentative (f : LogarithmicHalfLineL2) (x : ℝ) : ℂ :=
   ∫ t in Ioc (0 : ℝ) x, (logarithmicCausalKernel t : ℂ) *
     logarithmicBackwardConvolution (f : RealLineL2) (x - t)
+
+/-- The literal renewal representative vanishes on the nonpositive half-line. -/
+theorem logarithmicGreenRepresentative_of_nonpos (f : LogarithmicHalfLineL2) {x : ℝ}
+    (hx : x ≤ 0) : logarithmicGreenRepresentative f x = 0 := by
+  unfold logarithmicGreenRepresentative
+  rw [Ioc_eq_empty_of_le hx]
+  simp
 
 /-- Translation and causality identify the renewal formula with full causal convolution. -/
 theorem logarithmicGreenRepresentative_eq_convolution (f : LogarithmicHalfLineL2) (x : ℝ) :
@@ -113,8 +121,61 @@ theorem logarithmicHalfLineGreenOperator_normalized_boundary_limit (f : Logarith
     (measurable_logarithmicBackwardConvolution hm) hc.continuousWithinAt
   simpa only [logarithmicGreenRepresentative, logarithmicBackwardConvolution, sub_zero] using hl
 
+/-- The unit mass bounds the backward readout at every physical point. -/
+theorem norm_logarithmicBackwardConvolution_le {f : ℝ → ℂ} {C : ℝ}
+    (hb : ∀ᵐ x ∂volume, ‖f x‖ ≤ C) (x : ℝ) :
+    ‖logarithmicBackwardConvolution f x‖ ≤ C := by
+  have hi : Integrable (fun y : ℝ => logarithmicCausalKernel (y - x) * C) := by
+    have ht : Integrable (fun y : ℝ => logarithmicCausalKernel (y - x)) := by
+      simpa only [Function.comp_def, sub_eq_add_neg] using
+        (measurePreserving_add_right (volume : Measure ℝ) (-x)).integrable_comp_of_integrable
+          logarithmicCausalKernel_mass_one.1
+    exact ht.mul_const C
+  calc
+    _ ≤ ∫ y : ℝ, logarithmicCausalKernel (y - x) * C := by
+      apply norm_integral_le_of_norm_le hi
+      filter_upwards [hb] with y hy
+      rw [norm_mul, Complex.norm_real, Real.norm_of_nonneg (logarithmicCausalKernel_nonneg _)]
+      exact mul_le_mul_of_nonneg_left hy (logarithmicCausalKernel_nonneg _)
+    _ = C := by
+      rw [integral_mul_const, integral_sub_right_eq_self, logarithmicCausalKernel_mass_one.2, one_mul]
+
+private theorem continuous_logarithmicForwardConvolution {h : ℝ → ℂ}
+    (hm : Measurable h) {C : ℝ} (hC : 0 ≤ C) (hb : ∀ x, ‖h x‖ ≤ C) :
+    Continuous (fun x : ℝ => ∫ y : ℝ, (logarithmicCausalKernel (x - y) : ℂ) * h y) := by
+  have hc := (continuous_logarithmicBackwardConvolution_of_bounded (hm.comp measurable_neg)
+    hC (fun y => hb (-y))).comp continuous_neg
+  apply hc.congr
+  intro x
+  change (∫ y : ℝ, (logarithmicCausalKernel (y - -x) : ℂ) * h (-y)) = _
+  rw [← integral_neg_eq_self (fun y : ℝ => (logarithmicCausalKernel (y - -x) : ℂ) * h (-y))]
+  apply integral_congr_ae
+  filter_upwards with y
+  rw [neg_neg, show -y - -x = x - y by ring]
+
+/-- Bounded forcing gives a continuous physical representative of the actual Green solution. -/
+theorem continuous_logarithmicGreenRepresentative (f : LogarithmicHalfLineL2)
+    {C : ℝ} (hC : 0 ≤ C) (hb : ∀ᵐ x ∂volume, ‖(f : RealLineL2) x‖ ≤ C) :
+    Continuous (logarithmicGreenRepresentative f) := by
+  let h : ℝ → ℂ := (Ici (0 : ℝ)).indicator (logarithmicBackwardConvolution (f : RealLineL2))
+  have hm : Measurable h := (measurable_logarithmicBackwardConvolution
+    (Lp.stronglyMeasurable (f : RealLineL2)).measurable).indicator measurableSet_Ici
+  have hh : ∀ x, ‖h x‖ ≤ C := by
+    intro x
+    by_cases hx : 0 ≤ x
+    · rw [show h x = logarithmicBackwardConvolution (f : RealLineL2) x from
+        indicator_of_mem (s := Ici (0 : ℝ)) hx _]
+      exact norm_logarithmicBackwardConvolution_le hb x
+    · rw [show h x = 0 from indicator_of_notMem (s := Ici (0 : ℝ)) hx _, norm_zero]
+      exact hC
+  have hc := continuous_logarithmicForwardConvolution hm hC hh
+  apply hc.congr
+  intro x
+  exact (logarithmicGreenRepresentative_eq_convolution f x).symm
+
 #print axioms logarithmicHalfLineGreenOperator_eq_representative
 #print axioms integrable_logarithmicGreen_boundary_readout
 #print axioms logarithmicHalfLineGreenOperator_normalized_boundary_limit
-
+#print axioms logarithmicGreenRepresentative_of_nonpos
+#print axioms continuous_logarithmicGreenRepresentative
 end GaloisForLFunctions.CanonicalSystemOfTheWindowTower

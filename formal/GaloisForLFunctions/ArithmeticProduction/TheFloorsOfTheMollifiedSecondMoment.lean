@@ -117,7 +117,8 @@ theorem norm_windowBody_sub_one_le {K : ℝ} (hK : 5 ≤ K) {b : ℕ → ℂ} {N
     have h1 : x₂ ≤ Real.exp (-(Real.log 2 * 5)) :=
       Real.exp_le_exp.mpr (by nlinarith)
     have h2 : Real.exp (-(Real.log 2 * 5)) = 1 / 32 := by
-      rw [Real.exp_neg, mul_comm, Real.exp_mul, Real.exp_log two_pos]
+      rw [Real.exp_neg, Real.exp_mul, Real.exp_log two_pos,
+        show (5 : ℝ) = ((5 : ℕ) : ℝ) by norm_num, Real.rpow_natCast]
       norm_num
     linarith
   have hζ : ‖riemannZeta s - 1‖ ≤ 4 * x₂ := by
@@ -217,7 +218,7 @@ theorem integral_gaussWindow_sq_eq (t₀ : ℝ) {w : ℝ} (hw : 0 < w) {K : ℝ}
     field_simp
     ring
   simp_rw [hpt]
-  rw [integral_ofReal, integral_gauss t₀ hw']
+  rw [integral_complex_ofReal, integral_gauss t₀ hw']
   have hsqrt : (w / √2) * √(2 * Real.pi) = w * √Real.pi := by
     rw [Real.sqrt_mul (by norm_num : (0 : ℝ) ≤ 2)]
     have h2 : √(2 : ℝ) ≠ 0 := by positivity
@@ -315,7 +316,7 @@ theorem right_floor {t₀ w a K : ℝ} (ht₀ : 0 < t₀) (hw : 0 < w) (ha0 : 0 
       simpa using h
   have hdiff : J - (D : ℂ) = ∫ t : ℝ, (windowBody b N ((K : ℂ) + (t : ℂ) * I) - 1) *
       (E ((K : ℂ) + (t : ℂ) * I) * E ((K : ℂ) + (t : ℂ) * I)) := by
-    rw [hJ, hshift, hD, ← hmass, ← integral_sub hint1 hint2]
+    rw [hshift, hD, ← hmass, ← integral_sub hint1 hint2]
     refine integral_congr_ae (Filter.Eventually.of_forall fun t => ?_)
     simp only
     ring
@@ -333,9 +334,9 @@ theorem right_floor {t₀ w a K : ℝ} (ht₀ : 0 < t₀) (hw : 0 < w) (ha0 : 0 
     ring
   have hEnorm : ∀ t : ℝ, ‖E ((K : ℂ) + (t : ℂ) * I) * E ((K : ℂ) + (t : ℂ) * I)‖ = G * g₁ t := by
     intro t
-    rw [norm_mul, hE, norm_gaussWindow, re_line', im_line', ← Real.exp_add, hG, hg₁, ← Real.exp_add]
-    simp only
-    rw [hdenom]
+    rw [norm_mul, hE, norm_gaussWindow, re_line', im_line', ← Real.exp_add, hG]
+    show _ = Real.exp ((K - 1 / 2) ^ 2 / w ^ 2) * Real.exp (-((t - t₀) ^ 2 / (2 * (w / √2) ^ 2)))
+    rw [hdenom, ← Real.exp_add]
     congr 1
     field_simp
     ring
@@ -373,15 +374,24 @@ theorem right_floor {t₀ w a K : ℝ} (ht₀ : 0 < t₀) (hw : 0 < w) (ha0 : 0 
         have h4 : 4 / ‖s + 1‖ ≤ 4 := by
           rw [div_le_iff₀ (by linarith)]
           linarith
-        have hτ : t₀ ^ 2 / 4 ≤ (t - t₀) ^ 2 := by nlinarith
+        have hτ : t₀ ^ 2 / 4 ≤ (t - t₀) ^ 2 := by
+          have h5 : (t₀ / 2) ^ 2 ≤ (t₀ - t) ^ 2 :=
+            pow_le_pow_left₀ (by positivity) (by linarith) 2
+          have h6 : (t - t₀) ^ 2 = (t₀ - t) ^ 2 := by ring
+          rw [h6]
+          calc t₀ ^ 2 / 4 = (t₀ / 2) ^ 2 := by ring
+            _ ≤ _ := h5
         have hg : g₁ t ≤ κ * g₂ t := by
           simp only [hg₁, hg₂, hκ]
           rw [← Real.exp_add, hdenom]
           refine Real.exp_le_exp.mpr ?_
           have hw3 : 0 < w ^ 2 := by positivity
           have h6 : t₀ ^ 2 / (8 * w ^ 2) ≤ (t - t₀) ^ 2 / (2 * w ^ 2) := by
-            rw [div_le_div_iff₀ (by positivity) (by positivity)]
-            nlinarith
+            have h61 : t₀ ^ 2 / (8 * w ^ 2) = (t₀ ^ 2 / 4) / (2 * w ^ 2) := by
+              field_simp
+              ring
+            rw [h61]
+            exact div_le_div_of_nonneg_right hτ (by positivity)
           have h7 : (t - t₀) ^ 2 / w ^ 2 = (t - t₀) ^ 2 / (2 * w ^ 2) + (t - t₀) ^ 2 / (2 * w ^ 2) := by
             field_simp
             ring
@@ -396,9 +406,8 @@ theorem right_floor {t₀ w a K : ℝ} (ht₀ : 0 < t₀) (hw : 0 < w) (ha0 : 0 
         ≤ (η + 4 / ‖s + 1‖) * (G * g₁ t) :=
           mul_le_mul_of_nonneg_right hbound (by positivity)
       _ = G * (η * g₁ t + 4 / ‖s + 1‖ * g₁ t) := by ring
-      _ ≤ G * (η * g₁ t + ((8 / t₀) * g₁ t + 4 * κ * g₂ t)) := by
-          have := mul_le_mul_of_nonneg_left hsplit hG0.le
-          nlinarith
+      _ ≤ G * (η * g₁ t + ((8 / t₀) * g₁ t + 4 * κ * g₂ t)) :=
+          mul_le_mul_of_nonneg_left (add_le_add le_rfl hsplit) hG0.le
       _ = _ := by ring
   have hg₁int : Integrable g₁ := integrable_gauss t₀ hw2
   have hg₂int : Integrable g₂ := integrable_gauss t₀ hw
@@ -411,7 +420,7 @@ theorem right_floor {t₀ w a K : ℝ} (ht₀ : 0 < t₀) (hw : 0 < w) (ha0 : 0 
         G * ((η + 8 / t₀) * (∫ t, g₁ t) + 4 * κ * ∫ t, g₂ t) := by
       rw [integral_const_mul, integral_add (hg₁int.const_mul _) (hg₂int.const_mul _),
         integral_const_mul, integral_const_mul]
-    rw [h1, he', ← hG, ← hκ, ← hη]
+    rw [h1, he']
     have hI1 : ∫ t, g₁ t = D := by
       simp only [hg₁]
       rw [integral_gauss t₀ hw2, hD]
@@ -421,18 +430,17 @@ theorem right_floor {t₀ w a K : ℝ} (ht₀ : 0 < t₀) (hw : 0 < w) (ha0 : 0 
     have hI2 : ∫ t, g₂ t ≤ (3 / 2) * D := by
       simp only [hg₂]
       rw [integral_gauss t₀ hw, hD, Real.sqrt_mul (by norm_num : (0 : ℝ) ≤ 2)]
-      have hs2 : √(2 : ℝ) ≤ 3 / 2 := by
-        rw [Real.sqrt_le_left (by norm_num)]
-        norm_num
+      have hs2 : √(2 : ℝ) ≤ 3 / 2 := Real.sqrt_le_iff.mpr ⟨by norm_num, by norm_num⟩
       have hs0 : 0 ≤ w * √Real.pi := by positivity
-      nlinarith
+      have h5 : w * (√2 * √Real.pi) = √2 * (w * √Real.pi) := by ring
+      rw [h5]
+      exact mul_le_mul_of_nonneg_right hs2 hs0
     rw [hI1]
     have h3 : 4 * κ * ∫ t, g₂ t ≤ 4 * κ * ((3 / 2) * D) :=
       mul_le_mul_of_nonneg_left hI2 (by positivity)
     calc G * ((η + 8 / t₀) * D + 4 * κ * ∫ t, g₂ t)
-        ≤ G * ((η + 8 / t₀) * D + 4 * κ * ((3 / 2) * D)) := by
-          have := mul_le_mul_of_nonneg_left h3 hG0.le
-          nlinarith
+        ≤ G * ((η + 8 / t₀) * D + 4 * κ * ((3 / 2) * D)) :=
+          mul_le_mul_of_nonneg_left (add_le_add le_rfl h3) hG0.le
       _ = G * (η + 8 / t₀ + 6 * κ) * D := by ring
   -- the first moment is large
   have hJlow : (1 - e) * D ≤ ‖J‖ := by
@@ -441,7 +449,9 @@ theorem right_floor {t₀ w a K : ℝ} (ht₀ : 0 < t₀) (hw : 0 < w) (ha0 : 0 
       calc ‖(D : ℂ)‖ = ‖J - (J - (D : ℂ))‖ := by rw [← h2]
         _ ≤ _ := norm_sub_le _ _
     rw [Complex.norm_real, Real.norm_of_nonneg hD0.le] at h1
-    nlinarith
+    have h3 : (1 - e) * D = D - e * D := by ring
+    rw [h3]
+    linarith
   -- Cauchy-Schwarz on the line
   obtain ⟨Cs, hCs⟩ := exists_stripDecay_mollifiedWindow t₀ hw hb
   have hamem : a ∈ Icc (-1 : ℝ) (3 / 2) := ⟨by linarith, by linarith⟩
@@ -551,7 +561,11 @@ theorem exists_left_floor :
   have hchain : 2 * Real.pi * (a * Δ) ≤
       (T₂ - T₁) / 2 * Real.log (I₀ / (T₂ - T₁)) + C + K₁ * (Real.log T₂ + Real.log Mb) := by
     have h1 := mul_le_mul_of_nonneg_left hbridge (by positivity : 0 ≤ 2 * Real.pi)
-    nlinarith
+    have h2 : 0 ≤ 2 * Real.pi * (offLineTail a T₂ - offLineTail a T₁) :=
+      mul_nonneg (by positivity) htail
+    have h3 : 2 * Real.pi * (a * Δ + (offLineTail a T₂ - offLineTail a T₁)) =
+        2 * Real.pi * (a * Δ) + 2 * Real.pi * (offLineTail a T₂ - offLineTail a T₁) := by ring
+    linarith
   set E₀ := 2 * Real.pi * (a * Δ) - C - K₁ * (Real.log T₂ + Real.log Mb) with hE₀
   have hlog : E₀ ≤ (T₂ - T₁) / 2 * Real.log (I₀ / (T₂ - T₁)) := by
     rw [hE₀]
