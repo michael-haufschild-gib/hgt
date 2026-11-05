@@ -121,7 +121,8 @@ private theorem firstAtomRadialKernel_jet_im {u : ℝ} (hu : 0 < u) (n : ℕ) :
     (iteratedDeriv n (firstAtomRadialKernel u) 0).im = 0 := by
   let s := Real.log (u / Real.pi)
   have hs : Real.pi * Real.exp s = u := by
-    rw [s, Real.exp_log (div_pos hu Real.pi_pos)]
+    dsimp only [s]
+    rw [Real.exp_log (div_pos hu Real.pi_pos)]
     field_simp [Real.pi_ne_zero]
   have he := congrArg (fun f : ℂ → ℂ => iteratedDeriv n f 0)
     (funext (firstAtomComplexPair_eq_radialKernel s))
