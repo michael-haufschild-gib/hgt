@@ -63,6 +63,7 @@ sign, a square-root count or a collision exclusion.
 | R34 | **`ξ` sits on the boundary of finite free stability**: the functional equation gives drift exactly `0` on every line (`Re ξ'/ξ(σ) = Σ_ρ Re 1/(σ−ρ)`). **No margin**: for every `σ`, `μ > 0` and large `d`, `R_d(ξ(σ+i·))` has a root with `Im x > −μ`. At `σ ≥ 1` (unconditional) the roots lie in `Im x < 0` and the proportion with `Im x ≤ −μ` tends to `0`. **Critical phase**: `e^{c(s−σ)}ξ(s)` is stable on `Re s = σ` iff `ξ ≠ 0` on `Re s > σ` and `c ≥ 0` | `StabilityBoundaryOfXi.eventually_exists_root_im_gt_xi`, `tendsto_card_filter_div_xi_of_one_le`, `jensenRev_phase_xi_stable_iff` |
 | R35 | **First-order law of the moments**: for `σ ≥ 1/2`, `c_k = ξ^{(k)}(σ) = ∫Φ(x)x^k e^{(σ−1/2)x}dx ≥ 0`, and `m_d(t) = Σ C(d,k)t^{d−k}c_k = E(t+V)^d` satisfies `(1/d) log m_d(θℓ_d) − log ℓ_d → log(1+θ)`, `ℓ_d = ½ log d` (Cauchy estimate at the saddle `r = d/((1+θ)ℓ_d)` with the Gamma cap, restriction of the integral to `[ℓ−log ℓ, ℓ−log ℓ+1]` with the first cusp term of `Φ`). Log-convexity of `m_d` in `log t` upgrades this to `ℓ_{d+1} m_d(θℓ_{d+1})/m_{d+1}(θℓ_{d+1}) → 1/(1+θ)` | `JensenMassConvexity.tendsto_ratio_of_tendsto_log`, `XiMomentsOnALine.tendsto_log_jensenMass`, `tendsto_cauchy_ratio` |
 | R36 | **The Cauchy limit law of the Jensen roots**: with `G_d(z) = (1/d)Σ_x 1/(z − x/ℓ_d)`, unconditionally for `σ ≥ 1/2`, `θ > 0`: `G_d(iθ) → 1/(iθ+i)`. If all roots lie in `Im x ≤ 0` (always for `σ ≥ 1`, RH at `σ = 1/2`), `G_d(z) → 1/(z+i)` on the upper half-plane: the Cauchy transform of the standard Cauchy law. The bulk at scale `½ log d` is universal, comes from the Gamma factor alone, does not depend on `σ`, and cannot see the zeros | `CauchyLimitLaw.tendsto_jensenCauchy_imag`, `tendsto_jensenCauchy_of_one_le`, `tendsto_jensenCauchy_of_zeroFree` |
+| R37 | **Bulk hyperbolicity, unconditional**: for every `ε > 0` the proportion of roots of `R_d(Ξ)` with `|Im x| ≥ ε ½ log d` tends to `0`; for `σ ≥ 1/2` the proportion of roots of `R_d(ξ(σ+i·))` with `Im x ≥ ε ½ log d` tends to `0`. Mechanism: the complex moment formula `R_d(w) = E(w+iV)^d` gives `|R_d(ℓz)| ≤ ℓ^d|z+i|^d e^{o(d)}` uniformly on circles in `Im z > 0` (`|ℓz+iv| ≤ ℓ(|z+i|−1) + max(|v|,ℓ)`), sharp at `z = iθ` by R35; `log|z+i|` is harmonic, so a Blaschke–maximum-principle Jensen inequality on discs around `iθ` gives `o(d)` roots in them. The discs exhaust `Im z > 0`; the same inequality bounds the far roots; `R_d(−x) = (−1)^d R_d(x)` gives the lower half-plane | `MultisetJensenInequality.multiset_prod_max_le`, `BulkHyperbolicity.tendsto_card_im_ge_div`, `tendsto_card_abs_im_ge_div_xiSeries` |
 | R13 | **The degree-three test is vacuous**: on centered cubics `⊞₃` adds `(s,t)`, and every real-rooted centered cubic (`|t| ≤ s^{3/2}`) is a `⊞₃`-product of two double-root (capacity-zero, semicircle-free) cubics | `CubicFirstTest.exists_doubleRoot_factorization` |
 
 ## No-go closure for the naive route (source-faithful real-rooted pieces)
@@ -99,6 +100,11 @@ sign, a square-root count or a collision exclusion.
   `σ ≥ 1`, RH at `σ = 1/2`. Equivalently: the real Jensen polynomials `Σ C(d,k)ξ^{(k)}(σ)t^k` are
   Hurwitz stable exactly right of all zeros (R29).
 
+- Stability is critical and the bulk is blind: on every line the drift of `ξ` is exactly `0`, so there
+  is no margin (R34); the roots at scale `½ log d` follow a universal Cauchy law from Stirling alone (R36)
+  and almost all of them are nearly real unconditionally (R37). RH is decided by the `o(d)` outliers
+  `x ≈ d/a_q`, not by any bulk statistic of the Jensen polynomials.
+
 ## Where the route meets the walls
 - (i) Criticality is a theorem (R1): any finite free factorization of `J_d` has Hermite capacity
   `o(d^{-2})`.
@@ -115,10 +121,13 @@ sign, a square-root count or a collision exclusion.
 - [ ] 2 → 3  formalized (route as a whole: open)
 
 ## Open conjectures (next)
-- **Bulk hyperbolicity (working).** At `σ = 1/2`, unconditionally: for every `ε > 0` the proportion of
-  roots of `R_d(Ξ)` with `|Im x| ≥ ε ½ log d` should tend to `0`. Mechanism: `R_d(x) = E(x+iV)^d` gives
-  `(1/d) log|R_d(ℓz)/ℓ^d| ≤ log|z+i| + o(1)` on `Im z > 0`, with equality at `z = iθ` (R35); `log|z+i|` is
-  harmonic there, so Jensen's formula on a disc around `iθ` bounds the number of roots in it by `o(d)`.
+- **Real-part law at `σ = 1/2`, unconditional (working).** With R37, the empirical law of `Re x/ℓ_d` on
+  the critical line should converge to the standard Cauchy law without RH: the regularized transform
+  `(1/d) Σ_{|y−w|>ρ} 1/(w − y)` should tend to `1/(w + i)` for every `w` in the upper half-plane.
+- **Fine scale.** R37 works at scale `ε log d`. Saddle heuristics give `Im x ≈ −τ(x² + ℓ²)/d` on
+  `Re s = 1/2 + τ`, so the bulk should be real at `τ = 0`: are `(1 − o(1))d` roots of `R_d(Ξ)` real? A proof
+  needs the sign changes of `Re ∫₀^∞ Φ(v)(x+iv)^d dv` on the real axis (steepest descent in the strip of
+  analyticity of `Φ`), which positivity alone does not give.
 - Other completed L-functions: R30 gives the forward direction for any genus-one entire function;
   the converse (Hurwitz, R25) is general too — instantiate for completed Dirichlet L-functions once
   their order-one bounds are in the corpus.
@@ -128,4 +137,4 @@ sign, a square-root count or a collision exclusion.
 
 ## Log
 - 2026-11-04 — created
-- 2026-11-05 — D1–D5, R1–R36 formalized
+- 2026-11-05 — D1–D5, R1–R37 formalized

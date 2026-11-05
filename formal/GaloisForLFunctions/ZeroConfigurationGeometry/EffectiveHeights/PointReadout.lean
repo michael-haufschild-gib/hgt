@@ -15,6 +15,20 @@ noncomputable section
 namespace GaloisForLFunctions.ZeroConfigurationGeometry
 open Zeta23 SquareRootThreshold
 
+private theorem cameraPointHeight_eq_of_parameters
+    {θ lam A S M β ℓ e c K MK ρ α q S'' U₀ : ℝ}
+    (hβ : β = lam - θ / 2) (hℓ : ℓ = 2 * π * A / lam)
+    (he : e = 6 * slackBound ℓ * (1 + slackBound ℓ))
+    (hc : c = 2 * growthRate ℓ * lam ^ 2 + 2 * floorRate ℓ * lam ^ 2 * (lam + 8 * M))
+    (hK : K = c / 2 + 2) (hMK : MK = e * lam + K + 2)
+    (hρ : ρ = 8 * MK / β) (hα : α = 1 / (8 * MK * (1 + ρ)))
+    (hq : q = max 0 (Real.log α⁻¹)) (hS'' : S'' = max S 1)
+    (hU₀ : U₀ = max (max 1 (2 * π / lam))
+      (2 * MK * q + (lam + 4) + (Real.log S'' + 605) + 1)) :
+    cameraPointHeight θ lam A S M = 2 * π * Real.exp U₀ := by
+  rw [hU₀, hS'', hq, hα, hρ, hMK, hK, hc, he, hℓ, hβ]
+  simp only [cameraPointHeight, cameraBaseLogHeight, Nat.cast_zero, add_zero]
+
 /-- Polynomially isolated points have a quantitative camera above the stated finite height. -/
 theorem exists_subspacing_isolating_windows_explicit {θ lam A S M : ℝ} (hθ : 0 ≤ θ)
     (hlam : θ / 2 < lam) (hA : 0 ≤ A) (_hS : 0 ≤ S) (hM : 0 ≤ M) :
@@ -62,9 +76,8 @@ theorem exists_subspacing_isolating_windows_explicit {θ lam A S M : ℝ} (hθ :
   have hS''1 : 1 ≤ S'' := by rw [hS'']; exact le_max_right _ _
   obtain ⟨U₀, hU₀⟩ : ∃ U₀, U₀ = max (max 1 (2 * π / lam))
       (2 * MK * q + (lam + 4) + (Real.log S'' + 605) + 1) := ⟨_, rfl⟩
-  have hheight : cameraPointHeight θ lam A S M = 2 * π * Real.exp U₀ := by
-    rw [hU₀, hS'', hq, hα, hρ, hMK, hK, hc, he, hℓ, hβ]
-    simp only [cameraPointHeight, cameraBaseLogHeight, Nat.cast_zero, add_zero]
+  have hheight := cameraPointHeight_eq_of_parameters
+    hβ hℓ he hc hK hMK hρ hα hq hS'' hU₀
   intro T hT Z Z' hZ hZ' hStail hcount z₀ hz₀ hc_ne hiso
   rw [hheight] at hT
   -- height scale `u = log(T / 2π)`

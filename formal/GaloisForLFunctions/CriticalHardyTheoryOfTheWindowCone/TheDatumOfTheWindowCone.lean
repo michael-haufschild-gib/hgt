@@ -210,7 +210,7 @@ theorem tsupport_wideBump_subset {S : ℝ} (hS : 0 < S) :
 
 theorem integral_wideBump_sq {S : ℝ} (hS : 0 < S) :
     ∫ u, wideBump S u ^ 2 = S * ∫ u, wideBump 1 u ^ 2 := by
-  have h := integral_comp_div (fun x : ℝ => wideBump 1 x ^ 2) S
+  have h := Measure.integral_comp_div (fun x : ℝ => wideBump 1 x ^ 2) S
   simp only [abs_of_pos hS, smul_eq_mul] at h
   have e : ∀ u, wideBump S u = wideBump 1 (u / S) := fun u => by simp [wideBump]
   simp_rw [e]

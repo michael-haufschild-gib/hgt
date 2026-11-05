@@ -129,8 +129,8 @@ theorem exists_forall_abs_sub_vonMangoldt_lt {n : ℕ} (hn : 2 ≤ n) {ε : ℝ}
     obtain ⟨c, hc, lam, hlam, hle⟩ := hcon k
     exact ⟨c, hc, lam, hlam, hle⟩
   choose c hc lam hlam hle using hex
-  have hctop : Tendsto c atTop atTop :=
-    tendsto_atTop_mono hc tendsto_natCast_atTop_atTop
+  have hnat : Tendsto (fun k : ℕ => (k : ℝ)) atTop atTop := tendsto_natCast_atTop_atTop
+  have hctop : Tendsto c atTop atTop := tendsto_atTop_mono hc hnat
   obtain ⟨lam₀, φ, hφ, hlim, hW⟩ := exists_subseq_tendsto_of_mem_windowCone hctop hlam
   have heq := WeilSpectral.eq_vonMangoldt_of_weilPositiveFull hW n hn
   have ht : Tendsto (fun j => |lam (φ j) n - (ArithmeticFunction.vonMangoldt n : ℝ)|) atTop
@@ -148,7 +148,9 @@ theorem exists_extinction_of_ne_vonMangoldt {n : ℕ} (hn : 2 ≤ n) {t : ℝ}
   obtain ⟨c₀, h⟩ := exists_forall_abs_sub_vonMangoldt_lt hn
     (abs_pos.mpr (sub_ne_zero.mpr ht))
   refine ⟨c₀, fun c hc lam hlam hne => ?_⟩
-  exact lt_irrefl _ (by simpa [hne] using h c hc lam hlam)
+  have h1 := h c hc lam hlam
+  rw [hne] at h1
+  exact lt_irrefl _ h1
 
 /-- **Dichotomy.** RH holds iff every cone is nonempty; otherwise all cones past a finite aperture are
 empty. -/

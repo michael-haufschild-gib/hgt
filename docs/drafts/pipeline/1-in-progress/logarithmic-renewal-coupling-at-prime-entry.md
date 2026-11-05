@@ -22,6 +22,6 @@ the scalar renewal asymptotic alone is not a prime-entry law.
 
 ## Lean status
 
-The density, monotonicity of its cumulative integral, and exact renewal
-normalization are available. The convolution comparison and limit are not
-yet formalized.
+The density and exact renewal normalization are formalized. A complete Lean
+draft of cumulative monotonicity, convolution comparison, and the exact limit
+awaits checking.

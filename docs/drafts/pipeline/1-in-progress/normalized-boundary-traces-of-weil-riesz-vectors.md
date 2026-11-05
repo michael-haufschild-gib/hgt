@@ -40,7 +40,8 @@ and preserves essential boundedness. The full-domain identity needed is
 is formalized. The commutator identity would convert the actual
 interior equation into the half-line equation with bounded L² forcing
 `χg+Kχu`. Since `χu=u` near the selected endpoint, the formalized Green
-boundary theorem would give the actual Weil trace. Translation, identification with the actual aperture domain, the commutator
+boundary theorem would give the actual Weil trace. [The mixed jump pairing and translation invariance](../3-formalized/the-logarithmic-form-has-its-mixed-jump-pairing.md)
+are formalized. Identification with the actual aperture domain, the commutator
 identity, and this application remain unproved.
 
 An independent sharp-extension route uses `CHMDSharpSpatialCut` and

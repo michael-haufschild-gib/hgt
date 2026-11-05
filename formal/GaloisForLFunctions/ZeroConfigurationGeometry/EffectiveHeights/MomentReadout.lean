@@ -15,6 +15,21 @@ noncomputable section
 namespace GaloisForLFunctions.ZeroConfigurationGeometry
 open Zeta23 SquareRootThreshold
 
+private theorem cameraMomentHeight_eq_of_parameters (J : ℕ)
+    {θ lam A S M' K' β ℓ e c K MK ρ α q S'' V U₀ : ℝ}
+    (hβ : β = lam - θ / 2) (hℓ : ℓ = 2 * π * A / lam)
+    (he : e = 6 * slackBound ℓ * (1 + slackBound ℓ))
+    (hc : c = 2 * growthRate ℓ * lam ^ 2 + 2 * floorRate ℓ * lam ^ 2 * (lam + 8 * M'))
+    (hK : K = c / 2 + 2) (hMK : MK = e * lam + K + K' + 2 + J)
+    (hρ : ρ = 8 * MK / β) (hα : α = 1 / (8 * MK * (1 + ρ)))
+    (hq : q = max 0 (Real.log α⁻¹)) (hS'' : S'' = max S 1)
+    (hV : V = max (6 * cameraSlowConstant lam ℓ M') (4 * lam) + 1)
+    (hU₀ : U₀ = max (max (max 1 (2 * π / lam))
+      (2 * MK * q + (lam + 4) + (Real.log S'' + 605) + 1)) (Real.log V)) :
+    cameraMomentHeight J θ lam A S M' K' = 2 * π * Real.exp U₀ := by
+  rw [hU₀, hV, hS'', hq, hα, hρ, hMK, hK, hc, he, hℓ, hβ]
+  rfl
+
 /-- The disc moments are read at every height above the finite camera expression. -/
 theorem discMoment_readout_rvm_explicit (J : ℕ) {θ lam A S M' K' : ℝ} (hθ : 0 ≤ θ) (hlam : θ / 2 < lam)
     (hA : 0 ≤ A) (_hS : 0 ≤ S) (hM' : 0 ≤ M') (hK' : 0 ≤ K') :
@@ -72,9 +87,8 @@ theorem discMoment_readout_rvm_explicit (J : ℕ) {θ lam A S M' K' : ℝ} (hθ 
   have hV0 : 0 < V := by rw [hV]; linarith [le_max_right (6 * cameraSlowConstant lam ℓ M') (4 * lam)]
   obtain ⟨U₀, hU₀⟩ : ∃ U₀, U₀ = max (max (max 1 (2 * π / lam))
       (2 * MK * q + (lam + 4) + (Real.log S'' + 605) + 1)) (Real.log V) := ⟨_, rfl⟩
-  have hheight : cameraMomentHeight J θ lam A S M' K' = 2 * π * Real.exp U₀ := by
-    rw [hU₀, hV, hS'', hq, hα, hρ, hMK, hK, hc, he, hℓ, hβ]
-    rfl
+  have hheight := cameraMomentHeight_eq_of_parameters J
+    hβ hℓ he hc hK hMK hρ hα hq hS'' hV hU₀
   intro T hT Z Z' hZ hZ' hStail hcount z₀ hz₀ hz₀re r hr0 hr hiso s hsd hds
   rw [hheight] at hT
   -- height scale `u = log(T / 2π)`
@@ -154,9 +168,14 @@ theorem discMoment_readout_rvm_explicit (J : ℕ) {θ lam A S M' K' : ℝ} (hθ 
     have hmul : θ / (2 * π) * u * (y - x) ≤ D * (y - x) :=
       mul_le_mul_of_nonneg_right hDθ (sub_nonneg.mpr hxy)
     linarith
-  exact rvm_readout_core hu1 hTu hM' hlam0 hβ0 hβlam hℓ0 hc hK hK' hMK0 hρ0 hα hα0 hq hS''1
+  have hSbound : S ≤ S'' := by rw [hS'']; exact le_max_left _ _
+  exact rvm_readout_core (lam := lam) (β := β) (M' := M') (K' := K') (ℓ := ℓ)
+    (c := c) (K := K) (MK := MK) (ρ := ρ) (α := α) (q := q) (S'' := S'')
+    (T := T) (u := u) (a := a) (ε := ε) (D := D) (C₀ := C₀) (η := η) (r := r)
+    (k := k) (m := m) (J := J) (Z := Z) (Z' := Z') (z₀ := z₀) (s := s)
+    hu1 hTu hM' hlam0 hβ0 hβlam hℓ0 hc hK hK' hMK0 hρ0 hα hα0 hq hS''1
     hu_bud ha hε hD1 hDup hC₀ℓ hDa hη hkK hk1 hm hmle hmε hbig h4lam hZ hZ'
-    (hStail.trans (by rw [hS'']; exact le_max_left _ _)) hz₀ hz₀re hr0 hr hiso' hcount' hsd hds
+    (hStail.trans hSbound) hz₀ hz₀re hr0 hr hiso' hcount' hsd hds
 
 
 end GaloisForLFunctions.ZeroConfigurationGeometry

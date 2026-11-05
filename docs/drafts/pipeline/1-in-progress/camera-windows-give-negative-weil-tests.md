@@ -19,18 +19,34 @@ transform, doubling aperture. Thus the condition for this construction is
 exactly `λ>1` when the actual ζ density factor tends to one.
 
 For a separately isolated off-line point, normalize this transform to one
-there and zero at its reflected partner. Subtract its reflected conjugate;
-the resulting values are `1` and `−1`, giving a strictly negative pair
-contribution. For a tiny isolated FE pair, instead multiply the nearly
-constant camera transform by the displacement from its real spectral centre.
-Its two values have opposite signs, and the negative contribution has size
-proportional to the squared depth.
+there and zero at its reflected partner. Subtract a normalized camera for that partner;
+the resulting values are `1` and `−1`, giving pair contribution `−2m`.
+If the normalized absolute tail is at most `E`, the new test's quadratic
+tail is at most `4E²`.
+
+For an isolated FE pair at spectral coordinates `T±iδ`, use the order-one camera centred at `T`.
+Its normalized convolution transform has values within `δ²P` of `±δ`,
+where `P=T^(M_c+κ)` for camera isolation exponent `M_c`. If `δP≤1/4`, each point-image differs from `−δ²`
+by at most `9δ²/16`; the pair contributes at most `−7mδ²/8`.
+The quadratic tail is at most `E²`, so `δ≥2E` gives a negative test.
+Multiplicity is arbitrary and equal on the two reflected points.
+
+These two cases cover a pair whose other zeros lie at distance at least
+`T^(−M)` from each endpoint. Use the order-one camera with isolation exponent
+`M+1` when `δ≤T^(−(M+κ+2))`: the centre's external separation is at least
+`T^(−M)/2≥T^(−(M+1))`. Otherwise use point isolation with exponent
+`M+κ+3`; this scale is smaller than both the partner gap and the external
+separation. The resulting positivity receiver should say that every
+off-line zero has depth `<2E` or another non-reflected zero within the
+polynomial isolation scale. It has no count, mass or mimic premise for ζ.
 
 ## Required closure
 
-The camera's complex readout error alone does not bound the diagonal tail.
-Prove the corresponding absolute weighted tail bound from its floor and
-decay estimates, including the displacement multiplier. Then bound the
-convolution test's quadratic tail and compare it with the negative pair
-contribution. The quantitative isolation and depth ranges must remain
-explicit in the final statement.
+`tsum_far_multDiff_le` already bounds the absolute weighted camera tail;
+`camera_tail_budget` bounds it after division by the target floor.
+Expose these estimates together with the local variation and exact blindness
+from `exists_local_slow_pair`, including the order-one displacement multiplier.
+For the convolution transform `q`, reflection preserves tail membership and
+multiplicity. Each reflected value is bounded by `Σ_far m|q|`, hence
+`Σ_far m|q(γ)q(conj γ)|≤(Σ_far m|q|)²`. Formalize this comparison and
+the two-case geometric reduction before claiming the stated receiver.

@@ -55,7 +55,9 @@ theorem norm_sq_integral_mul_le {μ : Measure ℝ} {f g : ℝ → ℂ} (hfm : AE
       have h1 : ∀ u, (x * ‖f u‖ - ‖g u‖) ^ 2 =
           x ^ 2 * ‖f u‖ ^ 2 - 2 * x * (‖f u‖ * ‖g u‖) + ‖g u‖ ^ 2 := fun u => by ring
       simp_rw [h1]
-      rw [integral_add ((hf.const_mul _).sub (hmul.const_mul _)) hg,
+      have h2 : Integrable (fun u => x ^ 2 * ‖f u‖ ^ 2 - 2 * x * (‖f u‖ * ‖g u‖)) μ :=
+        (hf.const_mul _).sub (hmul.const_mul _)
+      rw [integral_add h2 hg,
         integral_sub (hf.const_mul _) (hmul.const_mul _), integral_const_mul, integral_const_mul]
       ring
     rw [hexp] at h0
@@ -75,23 +77,22 @@ theorem integral_fract_mul_cexp {n : ℕ} (hn : 1 ≤ n) {s : ℂ} (h0 : 0 < s.r
   rw [mellin_eq_fourier, Real.fourier_real_eq] at hm
   rw [← hm]
   refine integral_congr_ae (Filter.Eventually.of_forall fun v => ?_)
-  simp only
+  try dsimp only
   have hinv : ((n : ℝ) * Real.exp (-v))⁻¹ = Real.exp v / n := by
     rw [mul_inv, ← Real.exp_neg, neg_neg]
     field_simp
-  rw [hinv, Circle.smul_def, Complex.real_smul, smul_eq_mul, Real.fourierChar_apply]
-  have hexp : Complex.exp (-s * v) =
-      Complex.exp (((2 * Real.pi * (-(v * (s.im / (2 * Real.pi)))) : ℝ) : ℂ) * I) *
-        ((Real.exp (-s.re * v) : ℝ) : ℂ) := by
-    push_cast
-    rw [← Complex.exp_add]
-    congr 1
-    conv_lhs => rw [← Complex.re_add_im s]
+  have htheta : (2 * Real.pi * (-(v * (s.im / (2 * Real.pi)))) : ℝ) = -(v * s.im) := by
     field_simp
-    push_cast
-    ring_nf
-    rw [I_sq]
-    ring
+  have hs : s = (s.re : ℂ) + (s.im : ℂ) * I := (Complex.re_add_im s).symm
+  have hexp : Complex.exp (-s * v) =
+      Complex.exp (((-(v * s.im) : ℝ) : ℂ) * I) * ((Real.exp (-s.re * v) : ℝ) : ℂ) := by
+    rw [Complex.ofReal_exp, ← Complex.exp_add]
+    congr 1
+    calc -s * (v : ℂ) = -((s.re : ℂ) + (s.im : ℂ) * I) * v := by rw [← hs]
+      _ = _ := by
+        push_cast
+        ring
+  simp only [hinv, Circle.smul_def, smul_eq_mul, Complex.real_smul, Real.fourierChar_apply, htheta]
   rw [hexp]
   ring
 
@@ -105,10 +106,11 @@ theorem integrable_fractLogPullDilate_mul_cexp {n : ℕ} (hn : 1 ≤ n) {s : ℂ
   set c : ℝ := min s.re (1 - s.re) with hc
   have hc0 : 0 < c := lt_min h0 (by linarith)
   have hb : Integrable fun u : ℝ => Real.exp (-c * |u|) := by
-    refine (GaloisForLFunctions.HTGeometry.integrable_abs_pow_mul_exp_neg_abs 0 hc0).congr
+    refine (_root_.HTGeometry.integrable_abs_pow_mul_exp_neg_abs 0 hc0).congr
       (Filter.Eventually.of_forall fun u => by simp)
   refine Integrable.mono' hb
-    (((_root_.RHTower.measurable_fractLogPullDilate n).mul (by fun_prop)).aestronglyMeasurable)
+    (((_root_.RHTower.measurable_fractLogPullDilate n).mul
+      (Continuous.measurable (by fun_prop))).aestronglyMeasurable)
     (Filter.Eventually.of_forall fun u => ?_)
   have hnorm : ‖_root_.RHTower.fractLogPullDilate n u * Complex.exp (-(s - 1 / 2) * u)‖ =
       Real.exp (-s.re * u) * Int.fract (Real.exp u / n) := by
@@ -177,7 +179,7 @@ theorem integral_defectPull_mul_cexp {S : Finset ℕ} (hS : ∀ n ∈ S, 1 ≤ n
   have hsum : ∫ u : ℝ, _root_.RHTower.fractGramPull S a u * Complex.exp (-(ρ - 1 / 2) * u) = 0 := by
     unfold _root_.RHTower.fractGramPull
     simp_rw [Finset.sum_mul]
-    rw [integral_finset_sum]
+    rw [integral_finsetSum]
     · refine Finset.sum_eq_zero fun n hn => ?_
       have hpt : ∀ u : ℝ, (a n : ℂ) * _root_.RHTower.fractLogPullDilate n u *
           Complex.exp (-(ρ - 1 / 2) * u) =
@@ -218,7 +220,7 @@ theorem integral_defectPull_mul_cexp {S : Finset ℕ} (hS : ∀ n ∈ S, 1 ≤ n
       _root_.RHTower.fractGramPull S a u * Complex.exp (-(ρ - 1 / 2) * u) := by
     unfold _root_.RHTower.fractGramPull
     simp_rw [Finset.sum_mul]
-    refine integrable_finset_sum _ fun n hn => ?_
+    refine integrable_finsetSum _ fun n hn => ?_
     have h := (integrable_fractLogPullDilate_mul_cexp (hS n hn) hρpos hρ1).const_mul (a n : ℂ)
     refine h.congr (Filter.Eventually.of_forall fun u => ?_)
     simp only
@@ -233,11 +235,12 @@ theorem defectPull_of_neg {S : Finset ℕ} (hS : ∀ n ∈ S, 1 ≤ n) (a : ℕ 
   have hlt : Real.exp u < 1 := by
     rw [← Real.exp_zero]
     exact Real.exp_lt_exp.mpr hu
-  rw [defectPull_eq_ofReal, sawtoothDefect_of_lt_one hS a (Real.exp_pos u).le hlt, ← mul_assoc]
-  congr 3
-  rw [← Real.exp_add]
-  congr 1
-  ring
+  have hval : Real.exp (-(u / 2)) * (Real.exp u * valueAtOne S a) =
+      Real.exp (u / 2) * valueAtOne S a := by
+    rw [← mul_assoc, ← Real.exp_add]
+    congr 2
+    ring
+  rw [defectPull_eq_ofReal, sawtoothDefect_of_lt_one hS a (Real.exp_pos u).le hlt, hval]
 
 /-- **The Laplace transform on the positive half-line.** -/
 theorem integral_Ioi_defectPull_mul_cexp {S : Finset ℕ} (hS : ∀ n ∈ S, 1 ≤ n) (a : ℕ → ℝ) {ρ : ℂ}
@@ -268,7 +271,7 @@ theorem integral_Ioi_defectPull_mul_cexp {S : Finset ℕ} (hS : ∀ n ∈ S, 1 �
       exact integrableOn_exp_mul_complex_Ioi (by simpa using (by linarith : 0 < ρ.re)) 0
     · unfold _root_.RHTower.fractGramPull
       simp_rw [Finset.sum_mul]
-      refine integrable_finset_sum _ fun n hn => ?_
+      refine integrable_finsetSum _ fun n hn => ?_
       have h := (integrable_fractLogPullDilate_mul_cexp (hS n hn) (by linarith) hρ1).const_mul
         (a n : ℂ)
       refine h.congr (Filter.Eventually.of_forall fun u => ?_)
@@ -288,10 +291,11 @@ theorem integral_Ioi_defectPull_mul_cexp {S : Finset ℕ} (hS : ∀ n ∈ S, 1 �
         ring
       rw [hsplit]
       ring
-    rw [setIntegral_congr_fun measurableSet_Iio hpt, integral_const_mul]
-    have hI := _root_.integral_exp_mul_complex_Iic (a := 1 - ρ) (by simp; linarith) 0
-    rw [integral_Iio_eq_integral_Iic ] at *
-    rw [hI]
+    have hre : 0 < (1 - ρ).re := by
+      simp only [Complex.sub_re, Complex.one_re]
+      linarith
+    rw [setIntegral_congr_fun measurableSet_Iio hpt, integral_const_mul,
+      ← integral_Iic_eq_integral_Iio, integral_exp_mul_complex_Iic hre 0]
     simp [div_eq_mul_inv]
   have hsplit := intervalIntegral.integral_Iic_add_Ioi
     (f := fun u : ℝ => defectPull S a u * Complex.exp (-(ρ - 1 / 2) * u)) (b := 0)
@@ -312,27 +316,31 @@ theorem mollifierDefect_ge_laplace {S : Finset ℕ} (hS : ∀ n ∈ S, 1 ≤ n) 
   -- Cauchy-Schwarz on the half-line
   have hnormexp : ∀ u : ℝ, ‖Complex.exp (-(ρ - 1 / 2) * u)‖ ^ 2 = Real.exp (-A * u) := by
     intro u
-    rw [Complex.norm_exp, ← Real.exp_nat_mul]
+    have hre : (-(ρ - 1 / 2) * (u : ℂ)).re = -(ρ.re - 1 / 2) * u := by
+      simp [Complex.mul_re]
+    rw [Complex.norm_exp, ← Real.exp_nat_mul, hre]
     congr 1
-    simp [Complex.mul_re, hAdef]
+    rw [hAdef]
+    push_cast
     ring
   have hhint : Integrable (fun u : ℝ => ‖Complex.exp (-(ρ - 1 / 2) * u)‖ ^ 2)
       (volume.restrict (Ioi 0)) := by
     simp_rw [hnormexp]
     exact exp_neg_integrableOn_Ioi 0 hA
-  have hCS := norm_sq_integral_mul_le (μ := volume.restrict (Ioi (0 : ℝ))) hGm.restrict
+  have hCS := norm_sq_integral_mul_le (μ := volume.restrict (Ioi (0 : ℝ)))
+    (g := fun u : ℝ => Complex.exp (-(ρ - 1 / 2) * u)) hGm.restrict
     (Continuous.aestronglyMeasurable (by fun_prop)) hG.integrableOn hhint
   rw [integral_Ioi_defectPull_mul_cexp hS a hρ0 hρ1 hz] at hCS
   have hhval : ∫ u in Ioi (0 : ℝ), ‖Complex.exp (-(ρ - 1 / 2) * u)‖ ^ 2 = A⁻¹ := by
     simp_rw [hnormexp]
-    rw [integral_exp_neg_mul_Ioi hA]
-    simp
+    rw [integral_exp_mul_Ioi (by linarith : -A < 0) 0, mul_zero, Real.exp_zero, neg_div_neg_eq,
+      one_div]
   rw [hhval] at hCS
   -- the two half-lines
   have hdisj : Disjoint (Iio (0 : ℝ)) (Ioi 0) := by
     rw [Set.disjoint_left]
     intro u hu hu'
-    exact lt_asymm hu hu'
+    exact lt_asymm (show u < 0 from hu) (show 0 < u from hu')
   have hsub : ∫ u in Iio (0 : ℝ) ∪ Ioi 0, ‖defectPull S a u‖ ^ 2 ≤ mollifierDefect S a :=
     setIntegral_le_integral hG (Filter.Eventually.of_forall fun u => by positivity)
   rw [setIntegral_union hdisj measurableSet_Ioi hG.integrableOn hG.integrableOn] at hsub
@@ -378,8 +386,9 @@ theorem mollifierDefect_floor {S : Finset ℕ} (hS : ∀ n ∈ S, 1 ≤ n) (a : 
   have h1pos : 0 < ‖1 - ρ‖ := norm_pos_iff.mpr hne
   -- `|ρ|² = |1 − ρ|² + A`
   have hnorms : ‖ρ‖ ^ 2 = ‖1 - ρ‖ ^ 2 + A := by
-    rw [Complex.sq_norm, Complex.sq_norm, Complex.normSq_apply, Complex.normSq_apply, hAdef]
-    simp
+    have h1 : (1 - ρ).re = 1 - ρ.re := by simp
+    have h2 : (1 - ρ).im = -ρ.im := by simp
+    rw [Complex.sq_norm, Complex.sq_norm, Complex.normSq_apply, Complex.normSq_apply, h1, h2, hAdef]
     ring
   set a₁ := ‖1 / ρ - (w : ℂ) / (1 - ρ)‖ with ha₁
   set ε := ‖1 - ρ‖⁻¹ with hε
@@ -387,10 +396,11 @@ theorem mollifierDefect_floor {S : Finset ℕ} (hS : ∀ n ∈ S, 1 ≤ n) (a : 
   have htri : ‖ρ‖⁻¹ ≤ a₁ + |w| * ε := by
     have h1 : (1 : ℂ) / ρ = (1 / ρ - (w : ℂ) / (1 - ρ)) + (w : ℂ) / (1 - ρ) := by ring
     have h2 := norm_add_le (1 / ρ - (w : ℂ) / (1 - ρ)) ((w : ℂ) / (1 - ρ))
-    rw [← h1, norm_div, norm_one, one_div, norm_div, Complex.norm_real, Real.norm_eq_abs] at h2
-    rw [ha₁, hε]
-    calc ‖ρ‖⁻¹ ≤ _ := h2
-      _ = _ := by rw [div_eq_mul_inv]
+    have h3 : ‖(1 : ℂ) / ρ‖ = ‖ρ‖⁻¹ := by rw [norm_div, norm_one, one_div]
+    have h4 : ‖(w : ℂ) / (1 - ρ)‖ = |w| * ε := by
+      rw [norm_div, Complex.norm_real, Real.norm_eq_abs, div_eq_mul_inv]
+    rw [← h1, h3, h4] at h2
+    exact h2
   have hsq : ‖ρ‖⁻¹ ^ 2 ≤ (a₁ + |w| * ε) ^ 2 := pow_le_pow_left₀ (by positivity) htri 2
   -- Cauchy-Schwarz in the plane
   have hplane : (a₁ + |w| * ε) ^ 2 * A ≤ (w ^ 2 + A * a₁ ^ 2) * (1 + A * ε ^ 2) := by
@@ -399,12 +409,11 @@ theorem mollifierDefect_floor {S : Finset ℕ} (hS : ∀ n ∈ S, 1 ≤ n) (a : 
       have hw : w ^ 2 = |w| ^ 2 := (sq_abs w).symm
       rw [hw]
       ring
-    nlinarith [sq_nonneg (|w| - A * a₁ * ε)]
+    linarith [sq_nonneg (|w| - A * a₁ * ε)]
   have h1Aε : 1 + A * ε ^ 2 = ‖ρ‖ ^ 2 * ε ^ 2 := by
     have hε1 : ‖1 - ρ‖ ^ 2 * ε ^ 2 = 1 := by
       rw [hε, ← mul_pow, mul_inv_cancel₀ h1pos.ne', one_pow]
-    rw [hnorms]
-    nlinarith
+    rw [hnorms, add_mul, hε1]
   have hkey : A * ‖ρ‖⁻¹ ^ 2 ≤ (w ^ 2 + A * a₁ ^ 2) * (‖ρ‖ ^ 2 * ε ^ 2) := by
     rw [← h1Aε]
     calc A * ‖ρ‖⁻¹ ^ 2 ≤ A * (a₁ + |w| * ε) ^ 2 := mul_le_mul_of_nonneg_left hsq hA.le
@@ -414,9 +423,6 @@ theorem mollifierDefect_floor {S : Finset ℕ} (hS : ∀ n ∈ S, 1 ≤ n) (a : 
     rw [← hAdef, hε]
     field_simp
   rw [hval, div_le_iff₀ (by positivity)]
-  refine hkey.trans (mul_le_mul_of_nonneg_right ?_ (by positivity))
-  have : w ^ 2 + A * a₁ ^ 2 = w ^ 2 + (2 * ρ.re - 1) * ‖1 / ρ - (w : ℂ) / (1 - ρ)‖ ^ 2 := rfl
-  rw [this]
-  exact hbase
+  exact hkey.trans (mul_le_mul_of_nonneg_right hbase (by positivity))
 
 end GaloisForLFunctions.ArithmeticProduction

@@ -417,7 +417,7 @@ theorem tendsto_log_cauchyScale_div :
 
 /-- **The saddle value.** At `r = d/((1 + θ)ℓ)`, `ℓ = ½ log d`, the Cauchy bound
 `S = d!/r^d · e^{θℓr} ξ(σ + r)` has `log S ≤ d log((1 + θ)ℓ) + O(ℓ + r)`. -/
-theorem log_saddle_le {σ : ℝ} (hτ : 0 ≤ σ - 1 / 2) {θ : ℝ} (hθ : 0 ≤ θ) {d : ℕ} (hd1 : 1 ≤ d)
+theorem log_saddle_le {σ : ℝ} (hτ : 0 ≤ σ - 1 / 2) {θ : ℝ} (hθ : -1 < θ) {d : ℕ} (hd1 : 1 ≤ d)
     (hℓ1 : 1 ≤ cauchyScale d) (hr1 : 1 ≤ (d : ℝ) / ((1 + θ) * cauchyScale d))
     (hwd : σ - 1 / 2 + (d : ℝ) / ((1 + θ) * cauchyScale d) ≤ d) :
     Real.log ((d.factorial : ℝ) / ((d : ℝ) / ((1 + θ) * cauchyScale d)) ^ d *
@@ -491,7 +491,7 @@ theorem log_jensenMass_div_le {σ : ℝ} (hσ : 1 / 2 ≤ σ) {θ : ℝ} (hθ : 
     tendsto_cauchyScale_div.eventually (gt_mem_nhds (by positivity : (0 : ℝ) < 1 / (1 + θ))),
     (tendsto_natCast_atTop_atTop (R := ℝ)).eventually_ge_atTop (τ * (1 + θ) / θ),
     eventually_ge_atTop 1] with d hℓ1 hℓθ hℓd hdτ hd1
-  have hsaddle := fun hr hw => log_saddle_le hτ hθ.le hd1 hℓ1 hr hw
+  have hsaddle := fun hr hw => log_saddle_le hτ (by linarith : -1 < θ) hd1 hℓ1 hr hw
   set ℓ := cauchyScale d
   have hℓ : 0 < ℓ := by linarith
   have hdR : (0 : ℝ) < d := by exact_mod_cast hd1

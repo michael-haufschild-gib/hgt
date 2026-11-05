@@ -154,3 +154,6 @@ with Lipschitz constant `2/a`, so the two endpoint cutoffs overlap.
 The complete complex logarithmic form equals mass plus the absolutely integrable
 mixed jump pairing. Whole-line finite-energy sources are exactly the range of
 causal convolution. Physical translation preserves both the domain and form.
+The literal cutoff kernel `(χ(x)-χ(y))exp(-|x-y|)/(2|x-y|)` is bounded by
+`(Lip(χ)/2)exp(-|x-y|)`. Its Schur operator has norm at most `Lip(χ)`
+and preserves essential boundedness with the same bound.

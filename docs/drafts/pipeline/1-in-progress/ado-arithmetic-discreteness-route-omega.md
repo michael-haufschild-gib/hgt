@@ -30,8 +30,9 @@ Folder `formal/GaloisForLFunctions/ArithmeticDiscreteness/` (README there), umbr
 | Ω6′ | Uniform repulsion for Euler carriers | FALSE: `eulerColumns_near_coincidence` (distance `≤ 2π/((n+1)log p')` at height `≤ 2πn/log p`) |
 | Ω7 | Rank one (`P(p^{−s})`, `P ∈ ℤ[X]` monic): uniform repulsion; rank two: none | Lean: `onePrime_uniform_repulsion`, `twoPrime_no_uniform_repulsion` |
 | Ω8 | A near-coincidence of `ζ` flattens `ζ'`; a lower bound for `|ζ'(ρ)|` gives collide-or-repel at `ρ` | Lean: `norm_deriv_riemannZeta_mul_le_of_near_zero`, `separation_of_norm_deriv_riemannZeta_ge` |
-| Ω9 | A two-prime integral carrier repels uniformly when its Bohr tangency is inconsistent with the moduli `|p^{−s}| = p^{−σ}` | Lean for `1 + 2^{−s} + 3^{−s}`: `trinomial_uniform_repulsion` (`≥ min(1/4, (log 3 − log 2)/224)`); general criterion open |
-| Ω9′ | Generic three-prime integral carriers have consistent tangencies, hence near-coincidences at every scale | open (paper sketch: six real equations in six unknowns) |
+| Ω9 | A finite-prime carrier repels uniformly when its Bohr lift has no tangency consistent with the moduli `|p^{−s}| = p^{−σ}` | Lean: `uniform_repulsion_of_no_consistent_tangency` (compactness of `K[a,b]`); explicit instance `trinomial_uniform_repulsion` (`≥ min(1/4, (log 3 − log 2)/224)`) |
+| Ω9″ | Converse: a consistent tangency forces near-coincidences at every scale | Lean for isolated tangencies of finite order `≥ 2`: `exists_zeros_near_tangency`, `exists_collision_or_close_pair` (corpus Kronecker + `HTGeometry.exists_local_zeroSet`); explicit Euler instance `twoPrime_no_uniform_repulsion` |
+| Ω9′ | Generic three-prime integral carriers have consistent tangencies, hence near-coincidences at every scale | open (paper sketch: six real equations in six unknowns); for two primes and integer `G` a consistent tangency at a torsion point needs `∇G = 0` there (`log 2/log 3 ∉ ℚ`), e.g. `(1−2^{−s})² − (1−3^{−s})³` |
 | Ω12 | Integral pure degree-two Euler carriers collide or repel at polynomial scale | Lean: `pow_twelve_eq_one_of_satake` (Kronecker in degree two), `degTwoCarrier_collide_or_repel` |
 | Ω12′ | The same for real pure local data `a = 2cos θ` | FALSE: `real_pure_carrier_not_polynomial_repulsion` (Liouville angle, zeros `e^{−|k|}`-close at height `≍ |k|`) |
 | Ω10 | Collide or repel at polynomial scale for integral Dirichlet polynomials over a fixed finite prime set | open: needs Baker for inhomogeneous forms with transcendental tangency points |
@@ -75,5 +76,5 @@ Folder `formal/GaloisForLFunctions/ArithmeticDiscreteness/` (README there), umbr
   `e^{−c log² T}` (Ω1′).
 
 ## Log
-- 2026-11-05 — created; Ω1–Ω9 (trinomial), Ω12 formalized; Ω3, Ω5, Ω6′, Ω12′ falsified with
-  survivors; general Ω9, Ω9′, Ω10 open.
+- 2026-11-05 — created; Ω1–Ω9″, Ω12 formalized; Ω3, Ω5, Ω6′, Ω12′ falsified with survivors;
+  Ω9′, Ω10, Ω11 open.

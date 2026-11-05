@@ -352,7 +352,7 @@ theorem eventually_sphere_bound {σ : ℝ} (hσ : 1 / 2 ≤ σ) {θ₀ R : ℝ} 
   have hS : Real.log ((d.factorial : ℝ) / r ^ d * (Real.exp (θ * ℓ * r) * xiMoment (σ + r) 0)) ≤
       Real.log (xiMoment (1 / 2 + 1) 0) + τ * 3 + τ * ℓ + 3 * r + 1 + ℓ +
         d * Real.log (1 + θ) + d * Real.log ℓ :=
-    log_saddle_le hτ hθ0 hd1 hℓ1 hr1 hwd
+    log_saddle_le hτ (by linarith) hd1 hℓ1 hr1 hwd
   have hc0 : 0 < xiMoment (σ + r) 0 := xiMoment_zero_pos _
   have hfact : (0 : ℝ) < (d.factorial : ℝ) := by positivity
   set S : ℝ := (d.factorial : ℝ) / r ^ d * (Real.exp (θ * ℓ * r) * xiMoment (σ + r) 0)
