@@ -157,3 +157,6 @@ causal convolution. Physical translation preserves both the domain and form.
 The literal cutoff kernel `(χ(x)-χ(y))exp(-|x-y|)/(2|x-y|)` is bounded by
 `(Lip(χ)/2)exp(-|x-y|)`. Its Schur operator has norm at most `Lip(χ)`
 and preserves essential boundedness with the same bound.
+The full-domain identity is exactly `q(v,χu)-q(χv,u)=⟨v,Kχu⟩`.
+Schur triple-integrability and a measure-preserving shear identify the literal
+kernel with the mixed translation-loss commutator.

@@ -151,6 +151,7 @@ theorem eval_halfJensen_I_mul (d : ℕ) (t : ℝ) :
     (halfJensen d).eval (I * t) = I ^ d * (halfMass d t : ℂ) := by
   rw [eval_halfJensen, halfMass, ← integral_complex_ofReal, ← integral_const_mul]
   refine integral_congr_ae (Eventually.of_forall fun v => ?_)
+  beta_reduce
   rw [show I * (t : ℂ) + I * v = I * ((t + v : ℝ) : ℂ) by push_cast; ring, mul_pow]
   push_cast
   ring
@@ -375,7 +376,7 @@ theorem eventually_half_sphere_bound {θ₀ R : ℝ} (hθ₀ : 0 < θ₀) (hR : 
     have hr2 : r ≤ 2 * ((d : ℝ) / ℓ) := by
       simp only [r]
       rw [mul_div_assoc', div_le_div_iff₀ hdenom hℓ]
-      nlinarith
+      nlinarith [mul_nonneg (mul_nonneg hdR.le hℓ.le) (by linarith : 0 ≤ 2 * (1 + θ) - 1)]
     linarith
   set E := halfError d
   have hE : Real.log S ≤ E + d * Real.log (1 + θ) + d * Real.log ℓ := by
@@ -453,7 +454,7 @@ theorem prod_max_le_half_center {θ₀ R : ℝ} (hθ₀ : 0 < θ₀) (hR : 0 < R
   rwa [card_halfRoots, hnorm] at h
 
 /-- At the centre, `c⁺₀ ℓ^d Π_y |iθ₀ − y| = M_d(θ₀ℓ)`. -/
-theorem prod_norm_half_center {θ₀ : ℝ} (hθ₀ : 0 < θ₀) {d : ℕ} (hℓ : 0 < cauchyScale d)
+theorem prod_norm_half_center {θ₀ : ℝ} {d : ℕ} (hℓ : 0 < cauchyScale d)
     (hm : 0 ≤ halfMass d (θ₀ * cauchyScale d)) :
     halfMoment 0 * cauchyScale d ^ d * ((halfRoots d).map fun y => ‖I * (θ₀ : ℂ) - y‖).prod =
       halfMass d (θ₀ * cauchyScale d) := by
@@ -513,7 +514,7 @@ theorem tendsto_card_half_near_div {θ₀ r R : ℝ} (hθ₀ : 0 < θ₀) (hr : 
     refine lt_of_lt_of_le ?_ hge
     have : 0 < θ₀ * cauchyScale d + v := by positivity
     positivity
-  have hcenter := prod_norm_half_center hθ₀ hℓ hmpos.le
+  have hcenter := prod_norm_half_center (θ₀ := θ₀) hℓ hmpos.le
   have hA1 := prod_max_le_half_center hθ₀ hR (by linarith) hB
   have hA2 := pow_mul_prod_norm_le (halfRoots d) (I * (θ₀ : ℂ)) hr hrR.le
   set N := Multiset.card ((halfRoots d).filter fun y => ‖I * (θ₀ : ℂ) - y‖ ≤ r)
@@ -745,7 +746,7 @@ theorem tendsto_card_nonreal_roots_div :
     have hinj : Function.Injective (fun x : ℝ => (x : ℂ)) := ofReal_injective
     have hsub : (S.map ⟨_, hinj⟩).val ≤ q.roots.filter fun x => ¬ x.im ≠ 0 := by
       refine (Multiset.le_iff_subset (Finset.nodup _)).2 fun z hz => ?_
-      obtain ⟨x, hx, rfl⟩ := Finset.mem_map.1 (Finset.mem_val.1 hz)
+      obtain ⟨x, hx, rfl⟩ := Finset.mem_map.1 hz
       refine Multiset.mem_filter.2 ⟨(mem_roots hq).2 (hroots x hx), ?_⟩
       simp
     have := Multiset.card_le_card hsub

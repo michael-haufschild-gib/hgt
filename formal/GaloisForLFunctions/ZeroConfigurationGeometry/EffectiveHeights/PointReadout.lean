@@ -122,7 +122,6 @@ theorem exists_subspacing_isolating_windows_explicit {θ lam A S M : ℝ} (hθ :
     rvm_order_facts (J := 0) (K' := 0) hK1 (le_refl 0) he0 hlam0 hβ0
       (by simpa only [add_zero, Nat.cast_zero] using hMK) hρ hu1 hε hDup hW0 hWle
       (by simpa only [add_zero] using hk) (by simpa only [Nat.add_zero] using hmdef)
-  have hkK : K * u ^ 2 ≤ k := by simpa only [add_zero] using hkK'
   have hm : windowExponent (2 * D⁻¹) (localSlack D C₀) + k ≤ m := by
     simpa only [Nat.add_zero, hWdef] using hm'
   obtain ⟨b, hb, hbs, hb1, hb0, hbm⟩ := exists_explicit_bump hε0 m
@@ -156,9 +155,14 @@ theorem exists_subspacing_isolating_windows_explicit {θ lam A S M : ℝ} (hθ :
     tsum_nonneg fun z => div_nonneg (norm_nonneg _)
       (by linarith only [Complex.normSq_nonneg (gammaOf z)])
   have hSbound : S ≤ S'' := by rw [hS'']; exact le_max_left _ _
-  exact subspacing_camera_budget hu1 hTu hM hlam0 hβlam hℓ0 hc hK hMK0 hρ0 hα hα0 hq hS''1
-    hu_bud ha hε hε0 hD1 hDup hC₀ℓ hη hη0 hkK hk1 hmle hmε hz₀ hSg0
+  have hbudget := camera_tail_budget (lam := lam) (β := β) (M := M) (ℓ := ℓ)
+    (c := c) (K := K) (K' := 0) (MK := MK) (ρ := ρ) (α := α) (q := q) (S'' := S'')
+    (T := T) (u := u) (a := a) (ε := ε) (D := D) (C₀ := C₀) (η := η)
+    (k := k) (m := m) (z₀ := z₀)
+    hu1 hTu hM hlam0 hβlam hℓ0 hc hK hMK0 hρ0 hα hα0 hq hS''1
+    hu_bud ha hε hε0 hD1 hDup hC₀ℓ hη hη0 hkK' hk1 hmle hmε hz₀ hSg0
     (hStail.trans hSbound) htail
+  simpa only [mul_zero, zero_mul, neg_zero, Real.exp_zero] using hbudget
 
 
 

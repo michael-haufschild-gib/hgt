@@ -1,7 +1,7 @@
 # RH proof-route frontier
 
 **RH open · 32 live routes · 17 candidates.**
-**Corpus checkpoint:** `65c644d4fce21024f91ff2bacf2dee413af99639`.
+**Corpus checkpoint:** `d1cb69f61e17c463e001d7dfb12937ed27002c62`.
 
 Live = source observable + proved RH-sufficient receiver + explicit open estimate. Candidate = missing independent source mechanism/landing.
 Evidence: [L] integrated, source-reviewed; [S] unfinished/unintegrated, unverified; [K] individual Lean + standard-only transitive-axiom audit. Untagged established facts: [L].
@@ -100,7 +100,7 @@ Evidence: [L] integrated, source-reviewed; [S] unfinished/unintegrated, unverifi
 ### LA — Line anchor
 
 - **Path:** Theta source → collision-free heat descent / Jensen-root imaginary-part control → RH.
-- **Established:** RH⇔infinitely many unshifted Ξ Jensen degrees real-rooted⇔every positive-time H_t zero simple. For 0<t≤1/8, abs(Re z)≥2πexp((6600/9991+ε)/t) gives real/simple heat zeros. Sublinear upper imaginary-root growth along infinitely many reversed Jensen degrees⇔RH; ¬RH forces Im≥κd eventually. Fixed-degree shift horizons and bulk near-reality [L]. For every η>0, eventually R_d(Ξ) has ≥(1−η)d distinct real roots; nonreal fraction→0 [S].
+- **Established:** RH⇔infinitely many unshifted Ξ Jensen degrees real-rooted⇔every positive-time H_t zero simple. For 0<t≤1/8, abs(Re z)≥2πexp((6600/9991+ε)/t) gives real/simple heat zeros. For each fixed finite Möbius mollifier, σ>0 and phase, sublinear upper imaginary-root growth along infinitely many reversed Jensen degrees⇔RH; ¬RH forces Im≥κd eventually. Fixed-degree shift horizons and bulk near-reality [L]. For every η>0, eventually R_d(Ξ) has ≥(1−η)d distinct real roots; nonreal fraction→0 [S].
 - **Open:** Control exceptional Jensen roots, or exclude collisions below the sub-Weyl horizon and at bounded heights. Density-one polynomial reality is not all-root control or a ζ-zero proportion. [Uniform strict margin fails](rh-killed-routes.md#xi-stability-margin); [size-only models still collide](rh-killed-routes.md#heat-method-floor). [ZCG](#zcg): local arithmetic input.
 - **Sources:** R:Jensen/ExplicitRealRootednessHorizon; R:XiSliceHeatOrderUniformPositivity; R:Heat/TheLocalDeBruijnNewmanConstant; R:DeBruijnNewmanCollisionCriterion; ZCG:HeatScaleRepulsion/{SubWeylCollisionFreeHorizon,SymmetricHalfCollisionLaw}; FFP:{MollifiedJensenCriterion,BoundedImaginaryPartsCriterion,ImaginaryPartDichotomy,BulkHyperbolicity} [L]; FFP:AlmostAllJensenRootsAreReal [S].
 
@@ -132,9 +132,9 @@ Evidence: [L] integrated, source-reviewed; [S] unfinished/unintegrated, unverifi
 ### TH — Theta moment positivity
 
 - **Path:** Signed center-mixed theta jets → all-rank Hankel positivity → RH.
-- **Established:** Rank8 positive for 0<a<1/2; ranks≤N strict on |a−1/2|<c/(1+log(N+1)) [K]. Truncated quartic positive for q≥7, false at q=6; scale-six capacity τ(a)<350/417. Literal first atom plus both (1,2) cross tails positive definite for every r≥0 [L]. Half-mass leading model frees the first gamma correction as matrix reserve; fixed-coordinate diagonal floor [S].
-- **Open:** Pay remaining unequal pairs and infinite remainder in a fixed tail quadratic form, including compact scales. Then rank9 I₈(a)>0 and all ranks. [Full quartic repair fails](rh-killed-routes.md#theta-fixed-cross-load).
-- **Sources:** R:ThetaCusp/ThetaCuspCenterMixedSignedJetCompleteness; TCS:{StrictEighthSection,LogarithmicCriticalCollar} [K]; TCS:{FifthEvenTruncatedQuarticUpperRay,FifthEvenScaleSixApertureCapacity,FifthEvenFourAtomRemainder,FifthEvenLeadingTail} [L]; TCS:{FifthEvenLeadingTailReserve,FifthEvenTailMassFloor} [S].
+- **Established:** Rank8 positive for 0<a<1/2; ranks≤N strict on |a−1/2|<c/(1+log(N+1)) [K]. Truncated quartic positive for q≥7, false at q=6; scale-six capacity τ(a)<350/417. First atom plus both (1,2) cross tails positive definite for every r≥0. For q≥3, half the cubic gamma reserve controls the complete integrated four-atom remainder in a fixed mass form [L]. Half-mass leading-model reserve [S].
+- **Open:** Prove positivity of the retained four-atom matrix after reserve payment; cover compact scales. Then rank9 I₈(a)>0 and all ranks. [Full quartic repair fails](rh-killed-routes.md#theta-fixed-cross-load).
+- **Sources:** R:ThetaCusp/ThetaCuspCenterMixedSignedJetCompleteness; TCS:{StrictEighthSection,LogarithmicCriticalCollar} [K]; TCS:{FifthEvenTruncatedQuarticUpperRay,FifthEvenScaleSixApertureCapacity,FifthEvenLeadingTail,FifthEvenIntegratedRemainder} [L]; TCS:FifthEvenLeadingTailReserve [S].
 
 <a id="rn"></a>
 ### RN — Theta renewal and singular comparison
@@ -363,7 +363,7 @@ Sources:
 - Finite off-line support is conditional, not established for ζ; it would not imply RH.
 - Critical-line census: simple-critical proportion≥0.67250071−ε uses imported Zeta23 plus local IGP. Higher proportions need actual signed prime surplus/moments; model16/21 is not a ζ proportion. [Sub-threshold data, form-factor/pair-density positivity and F≥1 beyond threshold do not force the 75% certificate](rh-killed-routes.md#positivity-three-quarters) [L].
 - Fixed aperture/rank/scale and density-one control leave finite or shallow exceptions. No uniform positive ground-energy gap at unbounded aperture.
-- WD mollifier trap: smooth/rough arithmetic preliminaries only [S]; two-sided mean-square bounds, credited-Jensen divergence and long-mollifier zero exclusion are not established by CDG:NearLineLogMean/TwoSidedThetaMollifierTrap.
+- WD mollifier trap [S]: short normalized bounded-coefficient mollifiers have prime-log and rough 1/θ floor proof bodies; credited-Jensen divergence unfinished (`sorry`), long-mollifier zero-exclusion receivers absent. Source: CDG:NearLineLogMean/TwoSidedThetaMollifierTrap.
 
 <a id="pw-b"></a><a id="hb--theta-cusp-hawking-causal-scattering"></a><a id="isc-polar"></a><a id="art"></a><a id="dr"></a>
 ### Non-route labels
@@ -384,7 +384,7 @@ ADO: [ZCG](#zcg)/[LA](#la) support. Fixed finite monic integral pure Euler facto
 
 CHT: RW/ACT support. Coordinate bands collapse to Λ(n), or cones empty. Best margin m* attained, antitone, doubly-exponentially bounded above; m*→0⇔RH. At pole weight1, critical log-conductor=−m*(c). Conductor1 positivity pins pole weight β≥1−Kexp(3c−(π/16)e^(2(c−2))) eventually [S]. Actual nonnegativity, coordinate-collapse rates and edge control open. Sources: CHT:{TheWindowConeCollapses,TheMarginLawOfTheWindowCone,TheDatumOfTheWindowCone,TheWindowReadsTheResidue} [S].
 
-APR: WL/MC/CTF support. [Type-II norms are sign-twist invariant](rh-killed-routes.md#type-ii-parity); [sublinear-level Type-I sums](rh-killed-routes.md#type-i-parity) with O(logN) coefficients stay at L¹-distance≥(1−ε)N from Λ [L]. Strip second moments have Laplace/cosh interpolation with explicit tails; Gaussian-window ζ-mollifier admission and outer-line estimates [S]. Spectral-tail payment yielding an actual defect upper bound remains open; no exact compact spectral support. Sources: APR:{BilinearFormsAreParityBlind,TypeIInformationIsParityBlind} [L]; APR:{TheSecondMomentIsALaplaceTransform,TheMollifiedZetaFunctionIsBandLimited} [S].
+APR: WL/MC/CTF support. [Type-II norms are sign-twist invariant](rh-killed-routes.md#type-ii-parity); [sublinear-level Type-I sums](rh-killed-routes.md#type-i-parity) with O(logN) coefficients stay at L¹-distance≥(1−ε)N from Λ [L]. Holomorphic quadratic-decay strip moments have Laplace/cosh interpolation with explicit tails; Gaussian-window ζ-mollifier admission and outer-line estimates [S]. Spectral-tail payment yielding an actual defect upper bound remains open; no exact compact spectral support. Sources: APR:{BilinearFormsAreParityBlind,TypeIInformationIsParityBlind} [L]; APR:{TheSecondMomentIsALaplaceTransform,TheMollifiedZetaFunctionIsBandLimited} [S].
 
 HWV: squarefree prime complex≃wedge of S^(ω(m)−1), odd squarefree N/2<m≤N; topology supplies no signed cancellation. Source: HWV:SquarefreePrimeComplexIsASphereBouquet [L].
 

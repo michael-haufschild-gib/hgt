@@ -396,6 +396,149 @@ theorem datumEnergy_nullTest (β s : ℝ) (lam : ℕ → ℝ) (j : ℕ) (L : ℝ
   rw [hp]
   rfl
 
+/-! ### The sums over the family -/
+
+theorem summable_nullPole {w : ℕ → ℝ} (hw : NullWeights w) (L : ℝ) :
+    Summable fun j => w j * nullPole j L := by
+  refine Summable.of_norm_bounded
+    (g := fun j => (2 * (decayConst * absMass) ^ 2) * (w j * gammaScale j ^ 2))
+    (hw.summable.mul_left _) fun j => ?_
+  rw [Real.norm_eq_abs, abs_mul, abs_of_nonneg (hw.nonneg j)]
+  calc w j * |nullPole j L| ≤ w j * (2 * (decayConst * gammaScale j * absMass) ^ 2) :=
+        mul_le_mul_of_nonneg_left (abs_nullPole_le j L) (hw.nonneg j)
+    _ = _ := by ring
+
+theorem summable_nullMass {w : ℕ → ℝ} (hw : NullWeights w) (L : ℝ) :
+    Summable fun j => w j * nullMass j L := by
+  refine Summable.of_nonneg_of_le (fun j => mul_nonneg (hw.nonneg j) (nullMass_nonneg j L))
+    (fun j => ?_) (hw.summable.mul_left (decayConst ^ 2 * absMass))
+  calc w j * nullMass j L ≤ w j * ((decayConst * gammaScale j) ^ 2 * absMass) :=
+        mul_le_mul_of_nonneg_left (nullMass_le j L) (hw.nonneg j)
+    _ = _ := by ring
+
+/-- The total pole of the truncated family is `w₀/2` up to the tail. -/
+theorem tsum_nullPole_ge {w : ℕ → ℝ} (hw : NullWeights w) (L : ℝ) :
+    w 0 / 2 - (4 * (decayConst * absMass) ^ 2 * ∑' j, w j * gammaScale j ^ 2) *
+        doubleExpTail (L - 1) ≤ ∑' j, w j * nullPole j L := by
+  have hs0 : Summable fun j => w j * (if j = 0 then (1 / 2 : ℝ) else 0) :=
+    summable_of_ne_finset_zero (s := {0}) fun j hj => by
+      simp only [Finset.mem_singleton] at hj
+      simp [hj]
+  have hs0v : ∑' j, w j * (if j = 0 then (1 / 2 : ℝ) else 0) = w 0 / 2 := by
+    rw [tsum_eq_single 0 fun j hj => by simp [hj]]
+    simp
+    ring
+  obtain ⟨τ, hτ⟩ : ∃ τ, τ = doubleExpTail (L - 1) := ⟨_, rfl⟩
+  rw [← hτ]
+  have hsumr : Summable fun j => w j * (if j = 0 then (1 / 2 : ℝ) else 0) -
+      (4 * (decayConst * absMass) ^ 2 * τ) * (w j * gammaScale j ^ 2) :=
+    hs0.sub (hw.summable.mul_left _)
+  have hvr : ∑' j, (w j * (if j = 0 then (1 / 2 : ℝ) else 0) -
+      (4 * (decayConst * absMass) ^ 2 * τ) * (w j * gammaScale j ^ 2)) =
+      w 0 / 2 - (4 * (decayConst * absMass) ^ 2 * ∑' j, w j * gammaScale j ^ 2) * τ := by
+    rw [hs0.tsum_sub (hw.summable.mul_left _), hs0v, tsum_mul_left]
+    ring
+  rw [← hvr]
+  refine hsumr.tsum_le_tsum (fun j => ?_) (summable_nullPole hw L)
+  have h := abs_nullPole_sub_le j L
+  rw [← hτ] at h
+  have h2 := (abs_le.mp h).1
+  have e : (4 * (decayConst * absMass) ^ 2 * τ) * (w j * gammaScale j ^ 2) =
+      w j * (4 * (decayConst * gammaScale j * absMass) ^ 2 * τ) := by ring
+  rw [e, ← mul_sub]
+  refine mul_le_mul_of_nonneg_left ?_ (hw.nonneg j)
+  linarith
+
+/-- The total mass of the truncated family is bounded uniformly in the radius. -/
+theorem tsum_nullMass_le {w : ℕ → ℝ} (hw : NullWeights w) (L : ℝ) :
+    ∑' j, w j * nullMass j L ≤ decayConst ^ 2 * absMass * ∑' j, w j * gammaScale j ^ 2 := by
+  have hbd : Summable fun j => (decayConst ^ 2 * absMass) * (w j * gammaScale j ^ 2) :=
+    hw.summable.mul_left _
+  refine ((summable_nullMass hw L).tsum_le_tsum (fun j => ?_) hbd).trans (le_of_eq ?_)
+  · calc w j * nullMass j L ≤ w j * ((decayConst * gammaScale j) ^ 2 * absMass) :=
+          mul_le_mul_of_nonneg_left (nullMass_le j L) (hw.nonneg j)
+      _ = _ := by ring
+  · rw [tsum_mul_left]
+
+/-- A point of the cone of a datum has nonnegative total energy on the family. -/
+theorem tsum_datum_nonneg {w : ℕ → ℝ} (hw : NullWeights w) {β s c L : ℝ} {lam : ℕ → ℝ}
+    (hlam : lam ∈ datumCone β s c) (hL : L ≤ c)
+    (hsE : Summable fun j => w j * nullEnergy lam j L) :
+    0 ≤ ∑' j, w j * nullEnergy lam j L + (β - 1) * ∑' j, w j * nullPole j L +
+      s * ∑' j, w j * nullMass j L := by
+  have hsP := summable_nullPole hw L
+  have hsM := summable_nullMass hw L
+  have hterm : ∀ j, 0 ≤ (w j * nullEnergy lam j L + (β - 1) * (w j * nullPole j L)) +
+      s * (w j * nullMass j L) := by
+    intro j
+    have h := hlam (nullTest j L) (contDiff_nullTest j L) (tsupport_nullTest_subset j hL)
+    rw [datumEnergy_nullTest] at h
+    have := mul_nonneg (hw.nonneg j) h
+    linarith
+  have hsum : 0 ≤ ∑' j, ((w j * nullEnergy lam j L + (β - 1) * (w j * nullPole j L)) +
+      s * (w j * nullMass j L)) := tsum_nonneg hterm
+  rwa [(hsE.add (hsP.mul_left _)).tsum_add (hsM.mul_left _), hsE.tsum_add (hsP.mul_left _),
+    tsum_mul_left, tsum_mul_left] at hsum
+
+/-- The polynomial factor of the family bound on the window `c`, conductor `s`. -/
+theorem polynomial_factor_le {c s : ℝ} (hc : 1 ≤ c) (hs : 0 ≤ s) :
+    (1 + (4 * (c - 1 / 12) + boxConst + s)) * (Real.exp (2 * (c - 1 / 12)) + 1) ≤
+      (1 + s) * (2 * (5 + boxConst)) * Real.exp (3 * c) := by
+  have hC := boxConst_nonneg
+  have hec : 1 + c ≤ Real.exp c := by linarith [Real.add_one_le_exp c]
+  have hfac1 : 1 + (4 * (c - 1 / 12) + boxConst + s) ≤ (1 + s) * ((5 + boxConst) * Real.exp c) := by
+    have h1 : (5 + boxConst) * (1 + c) ≤ (5 + boxConst) * Real.exp c :=
+      mul_le_mul_of_nonneg_left hec (by linarith)
+    have h5 : (1 : ℝ) ≤ (5 + boxConst) * Real.exp c := by nlinarith
+    have h6 : s ≤ s * ((5 + boxConst) * Real.exp c) := le_mul_of_one_le_right hs h5
+    nlinarith
+  have hfac2 : Real.exp (2 * (c - 1 / 12)) + 1 ≤ 2 * Real.exp (2 * c) := by
+    have h1 : Real.exp (2 * (c - 1 / 12)) ≤ Real.exp (2 * c) :=
+      Real.exp_le_exp.mpr (by linarith)
+    have h2 : (1 : ℝ) ≤ Real.exp (2 * c) := Real.one_le_exp (by linarith)
+    linarith
+  have h3 : Real.exp (3 * c) = Real.exp c * Real.exp (2 * c) := by
+    rw [← Real.exp_add]
+    congr 1
+    ring
+  rw [h3]
+  calc _ ≤ ((1 + s) * ((5 + boxConst) * Real.exp c)) * (2 * Real.exp (2 * c)) :=
+        mul_le_mul hfac1 hfac2 (by positivity) (by positivity)
+    _ = _ := by ring
+
+theorem tail_le_ceiling {c : ℝ} (hc : 1 ≤ c) :
+    Real.exp (3 * c) * doubleExpTail (c - 1 / 12 - 1) ≤ marginCeiling c ∧
+      doubleExpTail (c - 1 / 12 - 1) ≤ marginCeiling c := by
+  have hτ0 := (doubleExpTail_pos (c - 1 / 12 - 1)).le
+  have hτ₁ : doubleExpTail (c - 1 / 12 - 1) ≤ doubleExpTail (c - 2) :=
+    doubleExpTail_anti (by linarith)
+  have hτ2 : Real.exp (3 * c) * doubleExpTail (c - 1 / 12 - 1) ≤ marginCeiling c := by
+    rw [← exp_mul_doubleExpTail]
+    exact mul_le_mul_of_nonneg_left hτ₁ (Real.exp_pos _).le
+  refine ⟨hτ2, ?_⟩
+  have h1 : (1 : ℝ) ≤ Real.exp (3 * c) := Real.one_le_exp (by linarith)
+  calc doubleExpTail (c - 1 / 12 - 1) = 1 * doubleExpTail (c - 1 / 12 - 1) := (one_mul _).symm
+    _ ≤ Real.exp (3 * c) * doubleExpTail (c - 1 / 12 - 1) := mul_le_mul_of_nonneg_right h1 hτ0
+    _ ≤ _ := hτ2
+
+/-- The arithmetic of the trade-off. -/
+theorem trade_off_arith {β s E P M w₂ K₁ K₂ T₀ τ C₀ : ℝ} (hs : 0 ≤ s) (hβ : β ≤ 1) (hK₁ : 0 ≤ K₁)
+    (hK₂ : 0 ≤ K₂) (hC₀ : 0 ≤ C₀) (h0 : 0 ≤ E + (β - 1) * P + s * M)
+    (hE : E ≤ (1 + s) * K₁ * C₀) (hP : w₂ - K₂ * τ ≤ P) (hM : M ≤ T₀) (hτ : τ ≤ C₀) :
+    (1 - β) * w₂ ≤ (1 + s + (1 - β)) * (K₁ + K₂) * C₀ + s * T₀ := by
+  have ha : 0 ≤ 1 - β := by linarith
+  have h4 : (β - 1) * P ≤ (β - 1) * (w₂ - K₂ * τ) := mul_le_mul_of_nonpos_left hP (by linarith)
+  have h5 : s * M ≤ s * T₀ := mul_le_mul_of_nonneg_left hM hs
+  have h3 : (1 - β) * (K₂ * τ) ≤ (1 - β) * (K₂ * C₀) :=
+    mul_le_mul_of_nonneg_left (mul_le_mul_of_nonneg_left hτ hK₂) ha
+  have p1 : 0 ≤ (1 + s) * K₂ * C₀ := by positivity
+  have p2 : 0 ≤ (1 - β) * K₁ * C₀ := by positivity
+  have e1 : (1 + s + (1 - β)) * (K₁ + K₂) * C₀ =
+      (1 + s) * K₁ * C₀ + (1 + s) * K₂ * C₀ + (1 - β) * K₁ * C₀ + (1 - β) * (K₂ * C₀) := by ring
+  have e2 : (β - 1) * (w₂ - K₂ * τ) = -((1 - β) * w₂) + (1 - β) * (K₂ * τ) := by ring
+  rw [e1]
+  linarith
+
 /-! ### The trade-off -/
 
 /-- **Pole and conductor trade off.** There are constants `w₀ > 0`, `T₀, K ≥ 0` such that a nonempty cone
@@ -411,146 +554,40 @@ theorem exists_datum_constants :
   have hB0 : 0 ≤ B := by
     rw [hB]
     exact tsum_nonneg fun j => mul_nonneg (hw.nonneg j) (sq_nonneg _)
-  have hI := absMass_nonneg
   have hC := boxConst_nonneg
+  have hI := absMass_nonneg
   have hD := decayConst_nonneg
-  obtain ⟨K₂, hK₂⟩ : ∃ K₂, K₂ = 4 * (decayConst * absMass) ^ 2 * B := ⟨_, rfl⟩
-  have hK₂0 : 0 ≤ K₂ := by rw [hK₂]; positivity
-  obtain ⟨T₀, hT₀⟩ : ∃ T₀, T₀ = decayConst ^ 2 * absMass * B := ⟨_, rfl⟩
-  have hT₀0 : 0 ≤ T₀ := by rw [hT₀]; positivity
-  obtain ⟨K₁, hK₁⟩ : ∃ K₁, K₁ = K₀ * (2 * (5 + boxConst)) := ⟨_, rfl⟩
-  have hK₁0 : 0 ≤ K₁ := by rw [hK₁]; positivity
   have hw0 := hw.pos_zero
-  refine ⟨w 0 / 2, T₀, K₁ + K₂, by positivity, hT₀0, by positivity, fun β s c hβ hs hc hne => ?_⟩
+  have hK₂0 : 0 ≤ 4 * (decayConst * absMass) ^ 2 * B := by positivity
+  have hK₁0 : 0 ≤ K₀ * (2 * (5 + boxConst)) := by positivity
+  refine ⟨w 0 / 2, decayConst ^ 2 * absMass * B,
+    K₀ * (2 * (5 + boxConst)) + 4 * (decayConst * absMass) ^ 2 * B, by positivity, by positivity,
+    add_nonneg hK₁0 hK₂0, fun β s c hβ hs hc hne => ?_⟩
   obtain ⟨lam, hlam⟩ := hne
-  obtain ⟨L, hL⟩ : ∃ L, L = c - 1 / 12 := ⟨_, rfl⟩
-  have hL0 : 0 ≤ L := by rw [hL]; linarith
-  have hV : 0 ≤ 4 * L + boxConst + s := by linarith
-  obtain ⟨hsE, hleE⟩ := hmain L (4 * L + boxConst + s) lam hV
-    (fun n hn hnL => abs_sub_vonMangoldt_div_sqrt_le_of_mem_datumCone hlam (by rw [hL]; linarith) hn hnL)
-  obtain ⟨τ, hτ⟩ : ∃ τ, τ = doubleExpTail (L - 1) := ⟨_, rfl⟩
-  rw [← hτ] at hleE
-  have hτ0 : 0 ≤ τ := by rw [hτ]; exact (doubleExpTail_pos _).le
-  have hM := marginCeiling_pos c
-  have hτ₁ : τ ≤ doubleExpTail (c - 2) := by
-    rw [hτ]
-    exact doubleExpTail_anti (by rw [hL]; linarith)
-  have hτ2 : Real.exp (3 * c) * τ ≤ marginCeiling c := by
-    rw [← exp_mul_doubleExpTail]
-    exact mul_le_mul_of_nonneg_left hτ₁ (Real.exp_pos _).le
-  have hτ3 : τ ≤ marginCeiling c := by
-    have : (1 : ℝ) ≤ Real.exp (3 * c) := Real.one_le_exp (by linarith)
-    calc τ = 1 * τ := (one_mul _).symm
-      _ ≤ Real.exp (3 * c) * τ := mul_le_mul_of_nonneg_right this hτ0
-      _ ≤ _ := hτ2
-  -- the polynomial factor
-  have hec : 1 + c ≤ Real.exp c := by linarith [Real.add_one_le_exp c]
-  have hfac1 : 1 + (4 * L + boxConst + s) ≤ (1 + s) * ((5 + boxConst) * Real.exp c) := by
-    have h1 : (5 + boxConst) * (1 + c) ≤ (5 + boxConst) * Real.exp c :=
-      mul_le_mul_of_nonneg_left hec (by linarith)
-    have hLc : L ≤ c := by rw [hL]; linarith
-    have h0 : 0 ≤ (5 + boxConst) * Real.exp c := by positivity
-    have h5 : (1 : ℝ) ≤ (5 + boxConst) * Real.exp c := by nlinarith
-    nlinarith
-  have hfac2 : Real.exp (2 * L) + 1 ≤ 2 * Real.exp (2 * c) := by
-    have h1 : Real.exp (2 * L) ≤ Real.exp (2 * c) :=
-      Real.exp_le_exp.mpr (by rw [hL]; linarith)
-    have h2 : (1 : ℝ) ≤ Real.exp (2 * c) := Real.one_le_exp (by linarith)
-    linarith
-  have hprod : (1 + (4 * L + boxConst + s)) * (Real.exp (2 * L) + 1) ≤
-      (1 + s) * (2 * (5 + boxConst)) * Real.exp (3 * c) := by
-    have h3 : Real.exp (3 * c) = Real.exp c * Real.exp (2 * c) := by
-      rw [← Real.exp_add]
-      congr 1
-      ring
-    rw [h3]
-    calc _ ≤ ((1 + s) * ((5 + boxConst) * Real.exp c)) * (2 * Real.exp (2 * c)) :=
-          mul_le_mul hfac1 hfac2 (by positivity) (by positivity)
-      _ = _ := by ring
-  have hEner : ∑' j, w j * nullEnergy lam j L ≤ (1 + s) * K₁ * marginCeiling c := by
+  have hV : 0 ≤ 4 * (c - 1 / 12) + boxConst + s := by linarith
+  obtain ⟨hsE, hleE⟩ := hmain (c - 1 / 12) (4 * (c - 1 / 12) + boxConst + s) lam hV
+    (fun n hn hnL => abs_sub_vonMangoldt_div_sqrt_le_of_mem_datumCone hlam (by linarith) hn hnL)
+  obtain ⟨hτ2, hτ3⟩ := tail_le_ceiling hc
+  have hM := (marginCeiling_pos c).le
+  have hτ0 := (doubleExpTail_pos (c - 1 / 12 - 1)).le
+  have hEner : ∑' j, w j * nullEnergy lam j (c - 1 / 12) ≤
+      (1 + s) * (K₀ * (2 * (5 + boxConst))) * marginCeiling c := by
     refine hleE.trans ?_
-    calc K₀ * ((1 + (4 * L + boxConst + s)) * (Real.exp (2 * L) + 1)) * τ
-        ≤ K₀ * ((1 + s) * (2 * (5 + boxConst)) * Real.exp (3 * c)) * τ :=
-          mul_le_mul_of_nonneg_right (mul_le_mul_of_nonneg_left hprod hK₀) hτ0
-      _ = (1 + s) * K₁ * (Real.exp (3 * c) * τ) := by rw [hK₁]; ring
+    calc K₀ * ((1 + (4 * (c - 1 / 12) + boxConst + s)) * (Real.exp (2 * (c - 1 / 12)) + 1)) *
+          doubleExpTail (c - 1 / 12 - 1)
+        ≤ K₀ * ((1 + s) * (2 * (5 + boxConst)) * Real.exp (3 * c)) *
+            doubleExpTail (c - 1 / 12 - 1) :=
+          mul_le_mul_of_nonneg_right
+            (mul_le_mul_of_nonneg_left (polynomial_factor_le hc hs) hK₀) hτ0
+      _ = (1 + s) * (K₀ * (2 * (5 + boxConst))) *
+            (Real.exp (3 * c) * doubleExpTail (c - 1 / 12 - 1)) := by ring
       _ ≤ _ := mul_le_mul_of_nonneg_left hτ2 (by positivity)
-  -- summability
-  have hsP : Summable fun j => w j * nullPole j L := by
-    refine Summable.of_norm_bounded
-      (g := fun j => (2 * (decayConst * absMass) ^ 2) * (w j * gammaScale j ^ 2))
-      (hw.summable.mul_left _) fun j => ?_
-    rw [Real.norm_eq_abs, abs_mul, abs_of_nonneg (hw.nonneg j)]
-    calc w j * |nullPole j L| ≤ w j * (2 * (decayConst * gammaScale j * absMass) ^ 2) :=
-          mul_le_mul_of_nonneg_left (abs_nullPole_le j L) (hw.nonneg j)
-      _ = _ := by ring
-  have hsM : Summable fun j => w j * nullMass j L := by
-    refine Summable.of_nonneg_of_le (fun j => mul_nonneg (hw.nonneg j) (nullMass_nonneg j L))
-      (fun j => ?_) (hw.summable.mul_left (decayConst ^ 2 * absMass))
-    calc w j * nullMass j L ≤ w j * ((decayConst * gammaScale j) ^ 2 * absMass) :=
-          mul_le_mul_of_nonneg_left (nullMass_le j L) (hw.nonneg j)
-      _ = _ := by ring
-  -- the sum of the energies
-  have hterm : ∀ j, 0 ≤ (w j * nullEnergy lam j L + (β - 1) * (w j * nullPole j L)) +
-      s * (w j * nullMass j L) := by
-    intro j
-    have h := hlam (nullTest j L) (contDiff_nullTest j L)
-      (tsupport_nullTest_subset j (by rw [hL]; linarith))
-    rw [datumEnergy_nullTest] at h
-    have := mul_nonneg (hw.nonneg j) h
-    nlinarith
-  have hsum : 0 ≤ ∑' j, ((w j * nullEnergy lam j L + (β - 1) * (w j * nullPole j L)) +
-      s * (w j * nullMass j L)) := tsum_nonneg hterm
-  rw [(hsE.add (hsP.mul_left _)).tsum_add (hsM.mul_left _), hsE.tsum_add (hsP.mul_left _),
-    tsum_mul_left, tsum_mul_left] at hsum
-  -- the pole sum
-  have hs0 : Summable fun j => w j * (if j = 0 then (1 / 2 : ℝ) else 0) :=
-    summable_of_ne_finset_zero (s := {0}) fun j hj => by
-      simp only [Finset.mem_singleton] at hj
-      simp [hj]
-  have hs0v : ∑' j, w j * (if j = 0 then (1 / 2 : ℝ) else 0) = w 0 / 2 := by
-    rw [tsum_eq_single 0 fun j hj => by simp [hj]]
-    simp
-    ring
-  have hPlow : w 0 / 2 - K₂ * τ ≤ ∑' j, w j * nullPole j L := by
-    have hsumr : Summable fun j => w j * (if j = 0 then (1 / 2 : ℝ) else 0) -
-        (4 * (decayConst * absMass) ^ 2 * τ) * (w j * gammaScale j ^ 2) :=
-      hs0.sub (hw.summable.mul_left _)
-    have hvr : ∑' j, (w j * (if j = 0 then (1 / 2 : ℝ) else 0) -
-        (4 * (decayConst * absMass) ^ 2 * τ) * (w j * gammaScale j ^ 2)) = w 0 / 2 - K₂ * τ := by
-      rw [hs0.tsum_sub (hw.summable.mul_left _), hs0v, tsum_mul_left, ← hB, hK₂]
-      ring
-    rw [← hvr]
-    refine hsumr.tsum_le_tsum (fun j => ?_) hsP
-    have h := abs_nullPole_sub_le j L
-    rw [← hτ] at h
-    have h2 := (abs_le.mp h).1
-    have hwj := hw.nonneg j
-    have e : (4 * (decayConst * absMass) ^ 2 * τ) * (w j * gammaScale j ^ 2) =
-        w j * (4 * (decayConst * gammaScale j * absMass) ^ 2 * τ) := by ring
-    rw [e, ← mul_sub]
-    refine mul_le_mul_of_nonneg_left ?_ hwj
-    linarith
-  have hMup : ∑' j, w j * nullMass j L ≤ T₀ := by
-    have hbd : Summable fun j => (decayConst ^ 2 * absMass) * (w j * gammaScale j ^ 2) :=
-      hw.summable.mul_left _
-    refine (hsM.tsum_le_tsum (fun j => ?_) hbd).trans (le_of_eq ?_)
-    · calc w j * nullMass j L ≤ w j * ((decayConst * gammaScale j) ^ 2 * absMass) :=
-            mul_le_mul_of_nonneg_left (nullMass_le j L) (hw.nonneg j)
-        _ = _ := by ring
-    · rw [tsum_mul_left, ← hB, hT₀]
-  -- assembly
-  have h1β : 0 ≤ 1 - β := by linarith
-  have hPole : (β - 1) * ∑' j, w j * nullPole j L ≤ (β - 1) * (w 0 / 2 - K₂ * τ) :=
-    mul_le_mul_of_nonpos_left hPlow (by linarith)
-  have hMass : s * ∑' j, w j * nullMass j L ≤ s * T₀ := mul_le_mul_of_nonneg_left hMup hs
-  have hτK : (1 - β) * (K₂ * τ) ≤ (1 - β) * (K₂ * marginCeiling c) :=
-    mul_le_mul_of_nonneg_left (mul_le_mul_of_nonneg_left hτ3 hK₂0) h1β
-  have hfinal : (1 + s) * K₁ * marginCeiling c + (1 - β) * (K₂ * marginCeiling c) ≤
-      (1 + s + (1 - β)) * (K₁ + K₂) * marginCeiling c := by
-    have hp1 : 0 ≤ (1 + s) * K₂ * marginCeiling c := by positivity
-    have hp2 : 0 ≤ (1 - β) * K₁ * marginCeiling c := by positivity
-    nlinarith
-  nlinarith
+  have hP := tsum_nullPole_ge hw (c - 1 / 12)
+  rw [← hB] at hP
+  have hMs := tsum_nullMass_le hw (c - 1 / 12)
+  rw [← hB] at hMs
+  exact trade_off_arith hs hβ hK₁0 hK₂0 hM
+    (tsum_datum_nonneg hw hlam (by linarith) hsE) hEner hP hMs hτ3
 
 /-- **The window reads the residue.** A nonempty cone at conductor one has
 `β ≥ 1 − K′ exp(3c − (π/16) e^{2(c−2)})`, from a finite window on, whatever the weights. -/

@@ -80,13 +80,12 @@ theorem differentiableAt_mollifiedWindow (t₀ w : ℝ) (b : ℕ → ℂ) (N : �
 
 /-! ### Polynomial times Gaussian -/
 
-/-- `(1 + |t|)^j e^{−(t−t₀)²/(2w²)}` is bounded. -/
-theorem exists_one_add_abs_pow_mul_gauss_le (j : ℕ) (t₀ : ℝ) {w : ℝ} (hw : 0 < w) :
-    ∃ C : ℝ, 0 ≤ C ∧ ∀ t : ℝ,
-      (1 + |t|) ^ j * Real.exp (-((t - t₀) ^ 2 / (2 * w ^ 2))) ≤ C := by
+/-- `(1 + |t|)^{2j} e^{−(t−t₀)²/(2w²)}` is bounded, with an explicit constant. -/
+theorem one_add_abs_pow_mul_gauss_le (j : ℕ) (t₀ t : ℝ) {w : ℝ} (hw : 0 < w) :
+    (1 + |t|) ^ (2 * j) * Real.exp (-((t - t₀) ^ 2 / (2 * w ^ 2))) ≤
+      (2 * (1 + |t₀|) ^ 2 * (1 + 2 * w ^ 2)) ^ j * (j.factorial : ℝ) * Real.exp 1 := by
   set A : ℝ := 2 * (1 + |t₀|) ^ 2 * (1 + 2 * w ^ 2) with hA
   have hA0 : 0 ≤ A := by positivity
-  refine ⟨A ^ j * (j.factorial : ℝ) * Real.exp 1, by positivity, fun t => ?_⟩
   set y : ℝ := (t - t₀) ^ 2 / (2 * w ^ 2) with hy
   have hy0 : 0 ≤ y := by positivity
   have hτ : (t - t₀) ^ 2 = 2 * w ^ 2 * y := by
@@ -112,12 +111,9 @@ theorem exists_one_add_abs_pow_mul_gauss_le (j : ℕ) (t₀ : ℝ) {w : ℝ} (hw
       _ ≤ (1 + |t₀|) ^ 2 * (2 * ((1 + 2 * w ^ 2) * (1 + y))) :=
         mul_le_mul_of_nonneg_left (h2.trans h3) (by positivity)
       _ = A * (1 + y) := by rw [hA]; ring
-  have hbase : (1 : ℝ) ≤ 1 + |t| := by linarith [abs_nonneg t]
-  have hpow : (1 + |t|) ^ j ≤ (A * (1 + y)) ^ j := by
-    calc (1 + |t|) ^ j ≤ ((1 + |t|) ^ 2) ^ j := by
-          rw [← pow_mul]
-          exact pow_le_pow_right₀ hbase (by omega)
-      _ ≤ (A * (1 + y)) ^ j := pow_le_pow_left₀ (by positivity) hsq j
+  have hpow : (1 + |t|) ^ (2 * j) ≤ (A * (1 + y)) ^ j := by
+    rw [pow_mul]
+    exact pow_le_pow_left₀ (by positivity) hsq j
   have hfact := Real.pow_div_factorial_le_exp (1 + y) (by positivity) j
   have hfpos : (0 : ℝ) < j.factorial := by exact_mod_cast Nat.factorial_pos j
   rw [div_le_iff₀ hfpos] at hfact
@@ -126,23 +122,35 @@ theorem exists_one_add_abs_pow_mul_gauss_le (j : ℕ) (t₀ : ℝ) {w : ℝ} (hw
     congr 1
     ring
   have hE := Real.exp_pos (-y)
-  calc (1 + |t|) ^ j * Real.exp (-y) ≤ (A * (1 + y)) ^ j * Real.exp (-y) :=
+  calc (1 + |t|) ^ (2 * j) * Real.exp (-y) ≤ (A * (1 + y)) ^ j * Real.exp (-y) :=
         mul_le_mul_of_nonneg_right hpow hE.le
     _ = A ^ j * (1 + y) ^ j * Real.exp (-y) := by rw [mul_pow]
     _ ≤ A ^ j * (Real.exp (1 + y) * j.factorial) * Real.exp (-y) := by gcongr
     _ = A ^ j * j.factorial * (Real.exp (1 + y) * Real.exp (-y)) := by ring
     _ = _ := by rw [hEsplit]
 
+/-- `(1 + |t|)^j e^{−(t−t₀)²/(2w²)}` is bounded. -/
+theorem exists_one_add_abs_pow_mul_gauss_le (j : ℕ) (t₀ : ℝ) {w : ℝ} (hw : 0 < w) :
+    ∃ C : ℝ, 0 ≤ C ∧ ∀ t : ℝ,
+      (1 + |t|) ^ j * Real.exp (-((t - t₀) ^ 2 / (2 * w ^ 2))) ≤ C := by
+  refine ⟨(2 * (1 + |t₀|) ^ 2 * (1 + 2 * w ^ 2)) ^ j * (j.factorial : ℝ) * Real.exp 1,
+    by positivity, fun t => ?_⟩
+  have hbase : (1 : ℝ) ≤ 1 + |t| := by linarith [abs_nonneg t]
+  refine le_trans (mul_le_mul_of_nonneg_right ?_ (Real.exp_pos _).le)
+    (one_add_abs_pow_mul_gauss_le j t₀ t hw)
+  exact pow_le_pow_right₀ hbase (by omega)
+
 /-! ### Growth of the body -/
 
 /-- Polynomial growth of `(s − 1)ζ(s)` on a vertical strip. -/
-theorem exists_norm_zetaEntire_le :
-    ∃ (C : ℝ) (k : ℕ), 0 ≤ C ∧ ∀ s : ℂ, -1 ≤ s.re → s.re ≤ 4 →
+theorem exists_norm_zetaEntire_le {M : ℝ} (hM : 1 ≤ M) :
+    ∃ (C : ℝ) (k : ℕ), 0 ≤ C ∧ ∀ s : ℂ, -1 ≤ s.re → s.re ≤ M →
       ‖zetaEntire s‖ ≤ C * (1 + |s.im|) ^ k := by
-  obtain ⟨C₁, N, hC₁, hstrip⟩ := exists_bound_norm_riemannZeta_strip 4
-  have hK : IsCompact (Icc (-1 : ℝ) 4 ×ℂ Icc (-1 : ℝ) 1) := isCompact_Icc.reProdIm isCompact_Icc
+  obtain ⟨C₁, N, hC₁, hstrip⟩ := exists_bound_norm_riemannZeta_strip M
+  have hK : IsCompact (Icc (-1 : ℝ) M ×ℂ Icc (-1 : ℝ) 1) := isCompact_Icc.reProdIm isCompact_Icc
   obtain ⟨C₂, hC₂⟩ := hK.exists_bound_of_continuousOn differentiable_zetaEntire.continuous.continuousOn
-  refine ⟨5 * C₁ + max C₂ 0, N + 1, by positivity, fun s h1 h2 => ?_⟩
+  have hM5 : 0 ≤ M + 1 := by linarith
+  refine ⟨(M + 1) * C₁ + max C₂ 0, N + 1, by positivity, fun s h1 h2 => ?_⟩
   have hbase : (1 : ℝ) ≤ 1 + |s.im| := by linarith [abs_nonneg s.im]
   have hpow1 : (1 : ℝ) ≤ (1 + |s.im|) ^ (N + 1) := one_le_pow₀ hbase
   rcases le_total 1 |s.im| with hbig | hsmall
@@ -152,36 +160,36 @@ theorem exists_norm_zetaEntire_le :
       simp at hbig
       linarith
     rw [zetaEntire_eq hne]
-    have hσ : |s.re| ≤ 4 := abs_le.mpr ⟨by linarith, h2⟩
+    have hσ : |s.re| ≤ M := abs_le.mpr ⟨by linarith, h2⟩
     have hz := hstrip s.re s.im hσ hbig
     rw [Complex.re_add_im] at hz
-    have hs1 : ‖s - 1‖ ≤ 5 * (1 + |s.im|) := by
+    have hs1 : ‖s - 1‖ ≤ (M + 1) * (1 + |s.im|) := by
       have h3 : ‖s - 1‖ ≤ |(s - 1).re| + |(s - 1).im| := Complex.norm_le_abs_re_add_abs_im _
-      have h4 : |(s - 1).re| ≤ 5 := by
+      have h4 : |(s - 1).re| ≤ M + 1 := by
         rw [abs_le]
         simp only [Complex.sub_re, Complex.one_re]
         constructor <;> linarith
       have h5 : (s - 1).im = s.im := by simp
       rw [h5] at h3
-      linarith [abs_nonneg s.im]
+      nlinarith [abs_nonneg s.im]
     have hmono : |s.im| ^ N ≤ (1 + |s.im|) ^ N :=
       pow_le_pow_left₀ (abs_nonneg _) (by linarith) N
     calc ‖(s - 1) * riemannZeta s‖ = ‖s - 1‖ * ‖riemannZeta s‖ := norm_mul _ _
-      _ ≤ (5 * (1 + |s.im|)) * (C₁ * (1 + |s.im|) ^ N) :=
+      _ ≤ ((M + 1) * (1 + |s.im|)) * (C₁ * (1 + |s.im|) ^ N) :=
         mul_le_mul hs1 (hz.trans (mul_le_mul_of_nonneg_left hmono hC₁)) (norm_nonneg _)
           (by positivity)
-      _ = 5 * C₁ * (1 + |s.im|) ^ (N + 1) := by ring
-      _ ≤ (5 * C₁ + max C₂ 0) * (1 + |s.im|) ^ (N + 1) := by
+      _ = (M + 1) * C₁ * (1 + |s.im|) ^ (N + 1) := by ring
+      _ ≤ ((M + 1) * C₁ + max C₂ 0) * (1 + |s.im|) ^ (N + 1) := by
         have : 0 ≤ max C₂ 0 * (1 + |s.im|) ^ (N + 1) := by positivity
         nlinarith
-  · have hmem : s ∈ Icc (-1 : ℝ) 4 ×ℂ Icc (-1 : ℝ) 1 :=
+  · have hmem : s ∈ Icc (-1 : ℝ) M ×ℂ Icc (-1 : ℝ) 1 :=
       Complex.mem_reProdIm.mpr ⟨⟨h1, h2⟩, abs_le.mp hsmall⟩
     have h3 := (hC₂ s hmem).trans (le_max_left C₂ 0)
     have hmax0 : (0 : ℝ) ≤ max C₂ 0 := le_max_right _ _
     calc ‖zetaEntire s‖ ≤ max C₂ 0 := h3
       _ ≤ max C₂ 0 * (1 + |s.im|) ^ (N + 1) := le_mul_of_one_le_right hmax0 hpow1
-      _ ≤ (5 * C₁ + max C₂ 0) * (1 + |s.im|) ^ (N + 1) := by
-        have : 0 ≤ 5 * C₁ * (1 + |s.im|) ^ (N + 1) := by positivity
+      _ ≤ ((M + 1) * C₁ + max C₂ 0) * (1 + |s.im|) ^ (N + 1) := by
+        have : 0 ≤ (M + 1) * C₁ * (1 + |s.im|) ^ (N + 1) := by positivity
         nlinarith
 
 /-- `|M(s)| ≤ N^{3/2}` on `Re s ≥ −½`. -/
@@ -232,7 +240,7 @@ private theorem im_line (x t : ℝ) : (((1 / 2 + x : ℝ) : ℂ) + (t : ℂ) * I
 theorem exists_stripDecay_mollifiedWindow (t₀ : ℝ) {w : ℝ} (hw : 0 < w) {b : ℕ → ℂ} {N : ℕ}
     (hb : ∀ n ∈ Finset.Icc 1 N, ‖b n‖ ≤ 1) :
     ∃ C : ℝ, StripDecay (mollifiedWindow t₀ w b N) (-1) (3 / 2) C := by
-  obtain ⟨C₁, k, hC₁, hZ⟩ := exists_norm_zetaEntire_le
+  obtain ⟨C₁, k, hC₁, hZ⟩ := exists_norm_zetaEntire_le (M := 2) (by norm_num)
   obtain ⟨C₂, hC₂0, hC₂⟩ := exists_one_add_abs_pow_mul_gauss_le (k + 2) t₀ hw
   refine ⟨C₁ * (N : ℝ) ^ ((3 : ℝ) / 2) * 2 * Real.exp (9 / 4 / (2 * w ^ 2)) * C₂, ?_, ?_⟩
   · intro s hs
@@ -435,9 +443,7 @@ theorem integral_one_add_abs_sq_mul_gauss_le (t₀ : ℝ) {w : ℝ} (hw : 0 < w)
       field_simp
     have hy2 : (t - t₀) ^ 2 / (2 * (√2 * w) ^ 2) = y / 2 := by
       rw [mul_pow, Real.sq_sqrt (by norm_num : (0 : ℝ) ≤ 2), hy]
-      first
-        | (field_simp; ring)
-        | field_simp
+      field_simp
     rw [hy2]
     have htri : 1 + |t| ≤ (1 + |t₀|) * (1 + |t - t₀|) := by
       have h1 : |t| ≤ |t - t₀| + |t₀| := by
@@ -563,9 +569,8 @@ theorem exists_integral_norm_mollifiedWindow_left_le :
           Real.exp (-((t - t₀) ^ 2 / (2 * (√2 * w) ^ 2))) := by
       rw [← Real.exp_add, mul_pow, Real.sq_sqrt (by norm_num : (0 : ℝ) ≤ 2)]
       congr 1
-      first
-        | (field_simp; ring)
-        | field_simp
+      field_simp
+      ring
     rw [hsplit, ← mul_assoc]
     exact mul_le_mul_of_nonneg_right (hC₂ t) (Real.exp_pos _).le
   have hmono := integral_mono_of_nonneg (Filter.Eventually.of_forall fun t => norm_nonneg _)

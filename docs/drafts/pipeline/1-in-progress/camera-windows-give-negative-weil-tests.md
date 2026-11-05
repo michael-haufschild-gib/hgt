@@ -40,6 +40,31 @@ separation. The resulting positivity receiver should say that every
 off-line zero has depth `<2E` or another non-reflected zero within the
 polynomial isolation scale. It has no count, mass or mimic premise for ζ.
 
+## Full scope and cluster reduction
+
+The report's F6 output bounds **every** zero, with no separation or third-zero
+alternative. The pair construction above is insufficient for that target.
+
+A possible extension chooses an empty geometric annulus about an off-line zero
+of depth `δ`. A unit-height band contains at most `C log T` distinct zeros.
+Using radius ratio `T^B`, one of the first `C log T+1` annuli is empty, with
+outer radius `η≥δ exp(−C′log²T)` and inner radius `r=η/T^B`.
+The inner cluster and its reflected cluster stay off the critical line.
+The formula `slowRate_le` is linear in `η⁻¹`, so choosing `B` large enough
+makes both order-zero camera transforms uniformly close to one on their
+cluster and exactly zero on the reflected cluster. Subtracting the cameras
+then makes every cluster contribution negative, regardless of multiplicity
+or internal spacing.
+
+For `δ≥exp(−c log³T)`, the annulus radius satisfies
+`log(1/η)≤C″log³T`. Decay order `k≈K log⁴T` gives logarithmic tail gain
+of order `log⁵T`; the isolation floor costs at most a constant times
+`log⁵T`, and the spline factor costs `O(log⁴T log log T)`.
+A sufficiently large fixed `K` should therefore pay the floor and leave an
+absolute Fourier tail smaller than one quarter. This needs a new tail bound
+for cubic-logarithmic isolation; the current polynomial-isolation horizon
+cannot be substituted with a height-dependent exponent.
+
 ## Required closure
 
 `tsum_far_multDiff_le` already bounds the absolute weighted camera tail;
@@ -49,4 +74,5 @@ from `exists_local_slow_pair`, including the order-one displacement multiplier.
 For the convolution transform `q`, reflection preserves tail membership and
 multiplicity. Each reflected value is bounded by `Σ_far m|q|`, hence
 `Σ_far m|q(γ)q(conj γ)|≤(Σ_far m|q|)²`. Formalize this comparison and
-the two-case geometric reduction before claiming the stated receiver.
+the arbitrary-cluster annulus and cubic-logarithmic isolation estimates before
+claiming the report’s full receiver.

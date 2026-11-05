@@ -8,11 +8,10 @@ The test of the discreteness route below RH is collide-or-repel for `ζ` (B54): 
 height `T` at distance `≥ T^{−C}`. This module proves the unconditional half of its dictionary with
 derivative bounds.
 
-* **Two zeros flatten the derivative** (`norm_deriv_mul_le_of_two_zeros`). If `f` is holomorphic on
-  a neighbourhood of `‖z − a‖ ≤ R`, bounded there by `M`, and vanishes at `a` and at `b` with
-  `‖b − a‖ ≤ R/4`, then `‖f'(a)‖ ‖b − a‖ ≤ (8M/R²) ‖b − a‖²`. Two Cauchy estimates bound `f''` by
-  `8M/R²` on `‖z − a‖ ≤ R/4`; the mean value inequality for `f(z) − f'(a)(z − a)` along `[a, b]`
-  gives the bound since the endpoint values are `0` and `−f'(a)(b − a)`.
+* **Two zeros flatten the derivative** (`norm_sub_taylor_le`, `norm_deriv_mul_le_of_two_zeros`).
+  If `f` is holomorphic on a neighbourhood of `‖z − a‖ ≤ R`, bounded there by `M`, the Taylor
+  remainder obeys `|f(b) − f(a) − f'(a)(b − a)| ≤ (8M/R²)|b − a|²` for `‖b − a‖ ≤ R/4`; if `f`
+  vanishes at `a` and `b` this is `‖f'(a)‖ ‖b − a‖ ≤ (8M/R²) ‖b − a‖²`.
 * **For zeta** (`norm_deriv_riemannZeta_mul_le_of_near_zero`). For a zero `ρ` in the strip with
   `|Im ρ| ≥ 3` and another zero `ρ'` within `1/8`,
   `‖ζ'(ρ)‖ ‖ρ' − ρ‖ ≤ 160 e² (|γ| + 2)(|γ| + 5) ‖ρ' − ρ‖²`, from the polynomial strip bound
@@ -29,12 +28,14 @@ noncomputable section
 
 namespace GaloisForLFunctions.ArithmeticDiscreteness
 
-/-- **Two zeros flatten the derivative.** -/
-theorem norm_deriv_mul_le_of_two_zeros {f : ℂ → ℂ} {U : Set ℂ} (hU : IsOpen U)
+/-- **Second-order Taylor bound.** If `f` is holomorphic on an open `U ⊇ closedBall a R` and
+`|f| ≤ M` there, then `|f(b) − f(a) − f'(a)(b − a)| ≤ (8M/R²)|b − a|²` for `‖b − a‖ ≤ R/4`. Two
+Cauchy estimates bound `f''` by `8M/R²` on `‖z − a‖ ≤ R/4`; the mean value inequality for
+`f(z) − f'(a)(z − a)` along `[a, b]` gives the bound. -/
+theorem norm_sub_taylor_le {f : ℂ → ℂ} {U : Set ℂ} (hU : IsOpen U)
     (hf : DifferentiableOn ℂ f U) {a b : ℂ} {R M : ℝ} (hR : 0 < R) (hsub : closedBall a R ⊆ U)
-    (hM : ∀ z ∈ closedBall a R, ‖f z‖ ≤ M) (hb : ‖b - a‖ ≤ R / 4) (ha0 : f a = 0)
-    (hb0 : f b = 0) :
-    ‖deriv f a‖ * ‖b - a‖ ≤ 8 * M / R ^ 2 * ‖b - a‖ ^ 2 := by
+    (hM : ∀ z ∈ closedBall a R, ‖f z‖ ≤ M) (hb : ‖b - a‖ ≤ R / 4) :
+    ‖f b - f a - deriv f a * (b - a)‖ ≤ 8 * M / R ^ 2 * ‖b - a‖ ^ 2 := by
   have hdf : DifferentiableOn ℂ (deriv f) U := hf.deriv hU
   -- `|f'| ≤ 2M/R` on `‖z − a‖ ≤ R/2`
   have h1 : ∀ z ∈ closedBall a (R / 2), ‖deriv f z‖ ≤ M / (R / 2) := by
@@ -90,10 +91,20 @@ theorem norm_deriv_mul_le_of_two_zeros {f : ℂ → ℂ} {U : Set ℂ} (hU : IsO
   have hgmv := (convex_segment a b).norm_image_sub_le_of_norm_deriv_le
     (fun z hz => (hgderiv z (hseg hz)).differentiableAt) hgbound (left_mem_segment ℝ a b)
     (right_mem_segment ℝ a b)
-  have hgab : g b - g a = -(deriv f a * (b - a)) := by simp [hg, ha0, hb0]
-  rw [hgab, norm_neg, norm_mul] at hgmv
-  calc ‖deriv f a‖ * ‖b - a‖ ≤ 8 * M / R ^ 2 * ‖b - a‖ * ‖b - a‖ := hgmv
+  have hgab : g b - g a = f b - f a - deriv f a * (b - a) := by simp only [hg, sub_self, mul_zero, sub_zero]; ring
+  rw [hgab] at hgmv
+  calc ‖f b - f a - deriv f a * (b - a)‖ ≤ 8 * M / R ^ 2 * ‖b - a‖ * ‖b - a‖ := hgmv
     _ = 8 * M / R ^ 2 * ‖b - a‖ ^ 2 := by ring
+
+/-- **Two zeros flatten the derivative.** -/
+theorem norm_deriv_mul_le_of_two_zeros {f : ℂ → ℂ} {U : Set ℂ} (hU : IsOpen U)
+    (hf : DifferentiableOn ℂ f U) {a b : ℂ} {R M : ℝ} (hR : 0 < R) (hsub : closedBall a R ⊆ U)
+    (hM : ∀ z ∈ closedBall a R, ‖f z‖ ≤ M) (hb : ‖b - a‖ ≤ R / 4) (ha0 : f a = 0)
+    (hb0 : f b = 0) :
+    ‖deriv f a‖ * ‖b - a‖ ≤ 8 * M / R ^ 2 * ‖b - a‖ ^ 2 := by
+  have h := norm_sub_taylor_le hU hf hR hsub hM hb
+  simp only [ha0, hb0, sub_zero, zero_sub, norm_neg, norm_mul] at h
+  exact h
 
 /-- The zeta bound on a disc of radius `1/2` around a point of the strip at height `≥ 3`. -/
 theorem norm_riemannZeta_le_on_disc {ρ : ℂ} (hre0 : 0 ≤ ρ.re) (hre1 : ρ.re ≤ 1) (hγ : 3 ≤ |ρ.im|) :
