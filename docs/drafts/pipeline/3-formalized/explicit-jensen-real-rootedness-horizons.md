@@ -1,8 +1,8 @@
 # Explicit Jensen real-rootedness horizons
 
 - **ID:** explicit-jensen-real-rootedness-horizons
-- **Stage:** 2-fully-proven
-- **Type:** THEOREM (paper)
+- **Stage:** 3-formalized
+- **Type:** THEOREM (Lean 4)
 - **Source:** review-0511, A18.
 
 ## Target
@@ -74,6 +74,13 @@ Only finite sums, recurrences, algebraic roots, exponentials and a ceiling enter
 
 ## Lean status
 
-Formalization in progress in `RHTower/Jensen/`: explicit concentration,
-mixed-recurrence errors, finite Hermite sign margins and the actual horizon.
-No qualitative convergence threshold is used in the proposed expression.
+`RHTower/Jensen/ExplicitConcentration.lean`, `HermiteErrorBounds.lean`,
+`HermiteSignMargins.lean` and `ExplicitRealRootednessHorizon.lean` passed their
+direct source checks. All twelve transitive axiom audits contain only
+`propext`, `Classical.choice` and `Quot.sound`; umbrella imports are complete.
+
+The exact horizon is `RHTower.xiJensenRealRootednessHorizon`. The final
+theorem `RHTower.xiJensenPoly_splits_of_horizon_le` applies to the actual
+`jensenPoly xiJensenCoeff d n`. Its normalized form is
+`RHTower.xiJensenHermitePolynomial_splits_of_horizon_le`.
+No qualitative convergence threshold enters either statement.

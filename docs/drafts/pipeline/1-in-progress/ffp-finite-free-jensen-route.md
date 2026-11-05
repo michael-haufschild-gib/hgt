@@ -61,6 +61,8 @@ sign, a square-root count or a collision exclusion.
 | R32 | **Hurwitz with multiplicity by deflation; concentration**: writing `Φ_d(u) = Π_x(1 − (x/d)u)` over the roots of `R_d`, a factorization `g = Π_T(1 − u/z_i)·G` splits the rescaled roots as `A_d + B_d` with `Σ_{A_d} v → Σ_T 1/z_i` (uniform convergence on a large circle, then the maximum principle). The first moment `Σ_x x/d = −f_1` then gives: if all roots have `Im ≤ 0`, at most `|T| + (Im f_1 + Σ_T Im(1/z_i) + ε)d/μ` roots have `Im x ≤ −μ` | `HurwitzDeflation.exists_multiset_deflation`, `eventually_card_filter_le`, `tendsto_card_filter_div` |
 | R33 | **Classification of the finite free class of genus one**: all `R_d(e^{aw}Π E₁(w/z_i))` have roots in `Im ≤ 0` **iff** all `Im z_i ≥ 0` and the drift `D = Im a + Σ Im(1/z_i) ≥ 0` (converse of R30). For zeros in `Im ≥ 0`: every root has `Im x ≤ −D`, sharply (a root with `Im x > −D − μ` for all large `d`); at `D = 0` almost all roots converge to the real axis | `GenusOneStabilityClassification.jensenRev_polya_stable_iff`, `im_le_neg_drift`, `eventually_exists_root_im_gt_neg_drift`, `tendsto_card_filter_div_polya` |
 | R34 | **`ξ` sits on the boundary of finite free stability**: the functional equation gives drift exactly `0` on every line (`Re ξ'/ξ(σ) = Σ_ρ Re 1/(σ−ρ)`). **No margin**: for every `σ`, `μ > 0` and large `d`, `R_d(ξ(σ+i·))` has a root with `Im x > −μ`. At `σ ≥ 1` (unconditional) the roots lie in `Im x < 0` and the proportion with `Im x ≤ −μ` tends to `0`. **Critical phase**: `e^{c(s−σ)}ξ(s)` is stable on `Re s = σ` iff `ξ ≠ 0` on `Re s > σ` and `c ≥ 0` | `StabilityBoundaryOfXi.eventually_exists_root_im_gt_xi`, `tendsto_card_filter_div_xi_of_one_le`, `jensenRev_phase_xi_stable_iff` |
+| R35 | **First-order law of the moments**: for `σ ≥ 1/2`, `c_k = ξ^{(k)}(σ) = ∫Φ(x)x^k e^{(σ−1/2)x}dx ≥ 0`, and `m_d(t) = Σ C(d,k)t^{d−k}c_k = E(t+V)^d` satisfies `(1/d) log m_d(θℓ_d) − log ℓ_d → log(1+θ)`, `ℓ_d = ½ log d` (Cauchy estimate at the saddle `r = d/((1+θ)ℓ_d)` with the Gamma cap, restriction of the integral to `[ℓ−log ℓ, ℓ−log ℓ+1]` with the first cusp term of `Φ`). Log-convexity of `m_d` in `log t` upgrades this to `ℓ_{d+1} m_d(θℓ_{d+1})/m_{d+1}(θℓ_{d+1}) → 1/(1+θ)` | `JensenMassConvexity.tendsto_ratio_of_tendsto_log`, `XiMomentsOnALine.tendsto_log_jensenMass`, `tendsto_cauchy_ratio` |
+| R36 | **The Cauchy limit law of the Jensen roots**: with `G_d(z) = (1/d)Σ_x 1/(z − x/ℓ_d)`, unconditionally for `σ ≥ 1/2`, `θ > 0`: `G_d(iθ) → 1/(iθ+i)`. If all roots lie in `Im x ≤ 0` (always for `σ ≥ 1`, RH at `σ = 1/2`), `G_d(z) → 1/(z+i)` on the upper half-plane: the Cauchy transform of the standard Cauchy law. The bulk at scale `½ log d` is universal, comes from the Gamma factor alone, does not depend on `σ`, and cannot see the zeros | `CauchyLimitLaw.tendsto_jensenCauchy_imag`, `tendsto_jensenCauchy_of_one_le`, `tendsto_jensenCauchy_of_zeroFree` |
 | R13 | **The degree-three test is vacuous**: on centered cubics `⊞₃` adds `(s,t)`, and every real-rooted centered cubic (`|t| ≤ s^{3/2}`) is a `⊞₃`-product of two double-root (capacity-zero, semicircle-free) cubics | `CubicFirstTest.exists_doubleRoot_factorization` |
 
 ## No-go closure for the naive route (source-faithful real-rooted pieces)
@@ -113,12 +115,10 @@ sign, a square-root count or a collision exclusion.
 - [ ] 2 → 3  formalized (route as a whole: open)
 
 ## Open conjectures (next)
-- **Cauchy limit law (working).** With `ℓ_d = ½ log d`, the Cauchy transform of the empirical law of
-  `x/ℓ_d` should tend to `1/(z + i)` on the positive imaginary axis for every `σ ≥ 1/2`
-  (unconditional, `R_d(it) = i^d Σ C(d,k) t^{d−k} ξ^{(k)}(σ)/ξ(σ)` has positive coefficients), and on
-  the whole upper half-plane on stable lines. Heuristic: the `R`-transform of the rank-one pieces sums
-  to `−ξ'/ξ(dz)`, and Stirling makes it `∓iℓ_d`, the `R`-transform of a Cauchy law of scale `ℓ_d`. The
-  bulk would then be universal and blind to RH: all arithmetic sits in the outliers `x ≈ d/z_q`.
+- **Bulk hyperbolicity (working).** At `σ = 1/2`, unconditionally: for every `ε > 0` the proportion of
+  roots of `R_d(Ξ)` with `|Im x| ≥ ε ½ log d` should tend to `0`. Mechanism: `R_d(x) = E(x+iV)^d` gives
+  `(1/d) log|R_d(ℓz)/ℓ^d| ≤ log|z+i| + o(1)` on `Im z > 0`, with equality at `z = iθ` (R35); `log|z+i|` is
+  harmonic there, so Jensen's formula on a disc around `iθ` bounds the number of roots in it by `o(d)`.
 - Other completed L-functions: R30 gives the forward direction for any genus-one entire function;
   the converse (Hurwitz, R25) is general too — instantiate for completed Dirichlet L-functions once
   their order-one bounds are in the corpus.
@@ -128,4 +128,4 @@ sign, a square-root count or a collision exclusion.
 
 ## Log
 - 2026-11-04 — created
-- 2026-11-05 — D1–D5, R1–R34 formalized
+- 2026-11-05 — D1–D5, R1–R36 formalized

@@ -31,12 +31,22 @@ and the infinite remainder. Its existing `1/20000` quadratic bound uses
 scale-dependent Gaussian coordinates; transferring it to a fixed tail
 quadratic form remains necessary.
 
-Next comparison candidate on `π≤q≤5`: the omitted contribution is at least
-`−E(q)(3/(32q²)−3/(128q³))A`. This is unproved; it would close the compact
-fifth-tail gap. Existing square-plus-flux identities alone do not prove it.
+The current comparison replaces the leading first-atom gamma mass by `1/2`,
+releasing `3A/(8q)` as well as the cubic reserve. At `q=3`, both reduced
+leading-pair gamma endpoints are positive, and both `(1,3)` gamma endpoints
+become positive after adding `A/8`. Extending these certificates to `q≥3`
+remains in progress.
 
-For the `(1,3)` pair, test half the reserve against both rate-ten gamma
-endpoints with relative weight `3^20/(20^8 q^20)`. The other unequal pairs
-have relative rates `15,11,18,23`. Their radial polynomials have degree at
-most eighteen, so this twenty-power envelope matches the reserve decay.
-The proposed reserve allocations remain unproved.
+The other four unequal pairs have relative rates `15,11,18,23`; the `(1,3)`
+rate is `8`. Their radial polynomials have degree at most eighteen. A
+candidate allocation gives `3A/(8q)` to `(1,3)`, one eighth of the cubic
+reserve to each other pair, and half to the infinite remainder.
+
+For the infinite remainder, retain the stronger Cauchy bound
+`n!·20000 f₁² exp(−431q/25)/(3/20)^n` through integration. The fixed diagonal
+comparison `A > 10^(−11) diag(1000^(2i))` has an exact matrix certificate.
+The scalar integral bound and transfer to the literal tail remain to prove.
+
+A smaller allocation is excluded: at `q=3`, the lower-gamma `(1,3)` model
+paid by half the cubic reserve has negative fourth principal minor. This
+auxiliary obstruction does not decide the complete-tail sign.

@@ -152,7 +152,7 @@ theorem xiThetaHermiteMixed_error_bound (n D d k : ℕ) {R η x : ℝ}
         2 * ((j : ℝ) + 1) * xiJensenDelta n * (if k = 0 then (hermiteReal (j + 1)).eval x else 0) -
         ((j : ℝ) + 1) * xiJensenDelta n ^ 2 * (if k = 0 then (hermiteReal (j + 2)).eval x else 0) := by
       rw [xiThetaHermiteMixed_add_two, mul_sub, ← mul_assoc, mul_inv_cancel₀ hden.ne', one_mul]
-      cases k <;> simp only [Nat.succ_ne_zero, if_false, if_pos rfl, ite_true,
+      cases k <;> simp only [Nat.succ_ne_zero, if_false, ite_true,
         eval_hermiteReal_add_two] <;> ring
     have hscale : |xiThetaHermiteMixed n (j + 2) k x -
         (if k = 0 then (hermiteReal (j + 2)).eval x else 0)| ≤

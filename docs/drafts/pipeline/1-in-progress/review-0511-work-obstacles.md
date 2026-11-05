@@ -8,7 +8,7 @@
 
 ## Scope
 
-Open: A1–A2, A4–A7, A9, A11, A13–A15, A17–A21, A23–A25, A28, A31, A33, A35–A36, A38–A42. A row with several obligations remains
+Open (28): A1–A2, A4–A7, A9, A11, A13–A15, A17, A19–A21, A23–A25, A28, A31, A33, A35–A36, A38–A42. A row with several obligations remains
 open until every obligation is discharged. Existing results are prerequisites, not new solutions.
 No numerical experiments or trusted computation; certificates require kernel proofs.
 
@@ -47,17 +47,21 @@ No numerical experiments or trusted computation; certificates require kernel pro
   grid-scale transfer. Three source checks and nine transitive axiom audits passed.
   This is existing mathematics, not a new result.
 
+## Completed current rows
+
+**A18.** [Effective finite sign horizons](../3-formalized/effective-finite-sign-horizons.md):
+explicit fixed-degree Jensen horizons, Hausdorff shifts, and two-grid detector
+degrees are formalized and audited; the existing unconditional `PF_45` theorem
+is also audited. The two-grid degrees retain finite spectral separation products.
+Jensen horizons use finite algebraic Hermite data and explicit moment errors,
+not qualitative convergence thresholds. All source checks and umbrella imports
+passed; transitive axiom audits contain only the three standard Lean axioms.
+
 ## Partial results and current target
 
-**A18.** [Effective finite sign horizons](effective-finite-sign-horizons.md):
-the existing unconditional `PF_45` theorem passed its direct source check and
-axiom audit. [Explicit Hausdorff shifts](../3-formalized/explicit-symmetric-zero-mass-and-hausdorff-shifts.md)
-are now formalized via an explicit zero-mass threshold at every height; three
-direct source checks, six transitive axiom audits and umbrella wiring passed.
-[Two-grid degrees](../3-formalized/explicit-two-grid-detection-degrees.md) are
-formalized in terms of finite sampled spectral data, including pole cancellation
-and arbitrary odd offsets. Both source checks and eight axiom audits passed.
-Jensen horizons remain open.
+**A42.** [Explicit camera heights](explicit-camera-height.md): numerical ζ
+count and tail inputs, then finite height expressions for the point and moment
+readouts and their cluster consequences.
 
 **Former A10, absent from the current list.** For the window index `ι(A)`, define
 `Lₙ = sup {A : ι(A) ≤ n}` in `EReal`. Prove

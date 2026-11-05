@@ -35,10 +35,12 @@ theorem finiteRootSignRadius_separated (Z : Finset ℝ) {z w : ℝ}
   classical
   have hd : 0 < |z - w| := abs_pos.mpr (sub_ne_zero.mpr hzw)
   have h₁ : 4 / |z - w| ≤ ∑ v ∈ Z.erase z, 4 / |z - v| :=
-    Finset.single_le_sum (fun v _ => by positivity) (Finset.mem_erase.mpr ⟨hzw.symm, hw⟩)
+    Finset.single_le_sum (f := fun v : ℝ => 4 / |z - v|)
+      (fun v _ => by positivity) (Finset.mem_erase.mpr ⟨hzw.symm, hw⟩)
   have h₂ : (∑ v ∈ Z.erase z, 4 / |z - v|) ≤
       ∑ u ∈ Z, ∑ v ∈ Z.erase u, 4 / |u - v| :=
-    Finset.single_le_sum (fun u _ => Finset.sum_nonneg (fun v _ => by positivity)) hz
+    Finset.single_le_sum (f := fun u : ℝ => ∑ v ∈ Z.erase u, 4 / |u - v|)
+      (fun u _ => Finset.sum_nonneg (fun v _ => by positivity)) hz
   have hsum : 0 ≤ ∑ u ∈ Z, ∑ v ∈ Z.erase u, 4 / |u - v| :=
     (by positivity : 0 ≤ 4 / |z - w|).trans (h₁.trans h₂)
   have hmul := (div_le_iff₀ hd).mp (h₁.trans h₂)
@@ -103,7 +105,8 @@ def hermiteSignSampleBound (d : ℕ) : ℝ :=
 
 theorem one_le_hermiteSignSampleBound (d : ℕ) : 1 ≤ hermiteSignSampleBound d := by
   have h := Finset.sum_nonneg (fun z (_ : z ∈ hermiteSignRoots d) =>
-    add_nonneg (abs_nonneg _) (abs_nonneg _))
+    add_nonneg (abs_nonneg (z - finiteRootSignRadius (hermiteSignRoots d)))
+      (abs_nonneg (z + finiteRootSignRadius (hermiteSignRoots d))))
   unfold hermiteSignSampleBound
   linarith only [h]
 
@@ -111,7 +114,8 @@ theorem abs_hermiteSignSamples_le (d : ℕ) {z : ℝ} (hz : z ∈ hermiteSignRoo
     |z - finiteRootSignRadius (hermiteSignRoots d)| ≤ hermiteSignSampleBound d ∧
       |z + finiteRootSignRadius (hermiteSignRoots d)| ≤ hermiteSignSampleBound d := by
   have h := Finset.single_le_sum (fun w (_ : w ∈ hermiteSignRoots d) =>
-    add_nonneg (abs_nonneg (w - finiteRootSignRadius (hermiteSignRoots d))) (abs_nonneg _)) hz
+    add_nonneg (abs_nonneg (w - finiteRootSignRadius (hermiteSignRoots d)))
+      (abs_nonneg (w + finiteRootSignRadius (hermiteSignRoots d)))) hz
   unfold hermiteSignSampleBound
   constructor <;> linarith only [h, abs_nonneg (z - finiteRootSignRadius (hermiteSignRoots d)),
     abs_nonneg (z + finiteRootSignRadius (hermiteSignRoots d))]
@@ -151,7 +155,8 @@ theorem hermiteSignMargin_le_values (d : ℕ) {z : ℝ} (hz : z ∈ hermiteSignR
   have hterm := Finset.single_le_sum (fun w (_ : w ∈ hermiteSignRoots d) =>
     add_nonneg (inv_nonneg.mpr (abs_nonneg
       ((hermiteReal d).eval (w - finiteRootSignRadius (hermiteSignRoots d)))))
-      (inv_nonneg.mpr (abs_nonneg _))) hz
+      (inv_nonneg.mpr (abs_nonneg
+        ((hermiteReal d).eval (w + finiteRootSignRadius (hermiteSignRoots d)))))) hz
   have hL := inv_nonneg.mpr hleft.le
   have hR := inv_nonneg.mpr hright.le
   unfold hermiteSignMargin

@@ -27,11 +27,21 @@ forcing collide-or-repel. Card: `docs/drafts/pipeline/1-in-progress/ado-arithmet
 |---|---|---|
 | Zeros of `∏_{p∈S}(1 − p^{−s})` (Euler columns) of height `≤ T` collide or repel at scale `c T^{−C}` (effective Baker bound) | `EulerColumnsCollideOrRepelAtPolynomialScale` | `eulerCarrier_collide_or_repel` |
 | Two columns have distinct zeros `≤ 2π/((n+1) log p')` apart at height `≤ 2πn/log p` | `EulerColumnsCollideOrRepelAtPolynomialScale` | `eulerColumns_near_coincidence` |
-| One prime (`P(p^{−s})`, `P ∈ ℤ[X]` monic): uniform repulsion; two primes: none | `TheRankOfTheFrequencyModuleDecidesRepulsion` | `onePrime_uniform_repulsion`, `twoPrime_no_uniform_repulsion` |
+| One prime (`P(p^{−s})`, `P ∈ ℤ[X]` monic): uniform repulsion; the two-prime Euler product: none | `TheRankOfTheFrequencyModuleDecidesRepulsion` | `onePrime_uniform_repulsion`, `twoPrime_no_uniform_repulsion` |
+| The non-Euler two-prime carrier `1 + 2^{−s} + 3^{−s}` repels uniformly (`≥ min(1/4, (log 3 − log 2)/224)`): its Bohr tangency is inconsistent with the moduli | `EulerProductsCreateTheNearCoincidences` | `trinomial_uniform_repulsion`, `trinomial_tangency_gap` |
+
+## Zeta: the dictionary of B54
+
+| Statement | Module | Theorem |
+|---|---|---|
+| Two zeros of a holomorphic `f` within `R/4` flatten `f'`: `‖f'(a)‖‖b−a‖ ≤ (8M/R²)‖b−a‖²` | `ANearCoincidenceFlattensZeta` | `norm_deriv_mul_le_of_two_zeros` |
+| For `ζ`: a second zero within `1/8` forces `‖ζ'(ρ)‖ ≤ 160e²(|γ|+2)(|γ|+5)‖ρ'−ρ‖`; a lower bound `‖ζ'(ρ)‖ ≥ c` separates `ρ` from every other zero by `min(1/8, c/(160e²(|γ|+2)(|γ|+5)))` | `ANearCoincidenceFlattensZeta` | `norm_deriv_riemannZeta_mul_le_of_near_zero`, `separation_of_norm_deriv_riemannZeta_ge` |
 
 ## Reading
 
 Integrality quantizes impurity and amplifies approximate purity; it never produces purity, and it
 cannot act along a continuous path. Over `ℤ` the frequency module `⊕ ℤ log p` has infinite rank, so
-near-coincidences occur at every scale; their separation is a height-dependent transcendence
-statement (effective Baker for Euler carriers).
+near-coincidences can occur at every scale; they do so exactly when the Bohr lift has a tangency
+consistent with the moduli `|p^{−s}| = p^{−σ}` (the Euler product over `{2, 3}`: yes; the trinomial
+`1 + 2^{−s} + 3^{−s}`: no). Their separation is then a height-dependent transcendence statement
+(effective Baker for Euler carriers).

@@ -36,11 +36,12 @@ and preserves essential boundedness. The full-domain identity needed is
 
 `q(v,χu)-q(χv,u)=⟨v,Kχu⟩`.
 
-Cutoff-domain preservation and this identity would convert the actual
+[Cutoff-domain preservation](../3-formalized/bounded-lipschitz-cutoffs-preserve-logarithmic-energy.md)
+is formalized. The commutator identity would convert the actual
 interior equation into the half-line equation with bounded L² forcing
 `χg+Kχu`. Since `χu=u` near the selected endpoint, the formalized Green
-boundary theorem would give the actual Weil trace. Translation, cutoff
-admission, the commutator identity, and this application remain unproved.
+boundary theorem would give the actual Weil trace. Translation, identification with the actual aperture domain, the commutator
+identity, and this application remain unproved.
 
 An independent sharp-extension route uses `CHMDSharpSpatialCut` and
 `CCMRestrictedWeilGammaBoundaryPairing`.

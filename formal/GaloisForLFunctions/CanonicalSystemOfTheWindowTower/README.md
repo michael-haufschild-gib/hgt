@@ -143,3 +143,11 @@ and dominated convergence treat the remote part.
 The actual Green solution has the measurable representative
 `u(x)=∫₀ˣv(t)(W*f)(x-t)dt`. For L² forcing essentially bounded near zero,
 `u(x)√log(1/x)→∫₀∞v(y)f(y)dy`; the coefficient is absolutely convergent.
+For every whole-line L² source, the extended literal jump energy
+`∫₀∞exp(-t)/(2t) ‖τ_tu-u‖²dt` equals
+`∫(Ψ(2πξ)-1)|û(ξ)|²dξ`. Its finiteness, or absolute integrability of
+the translation losses, is exactly the logarithmic multiplier graph condition.
+Every bounded real Lipschitz cutoff preserves this complete energy domain.
+Its translation loss is at most `‖χ‖∞‖τ_tu-u‖+Lip(χ)|t|‖u‖`.
+The explicit endpoint cutoff is one up to `a` and zero from `3a/2`,
+with Lipschitz constant `2/a`, so the two endpoint cutoffs overlap.

@@ -415,61 +415,34 @@ theorem tendsto_log_cauchyScale_div :
   refine h.congr fun d => ?_
   simp [Function.comp_apply]
 
-/-- `log m_d(θℓ_d)/d − log ℓ_d − log(1 + θ)` is bounded above by a null sequence. -/
-theorem log_jensenMass_div_le {σ : ℝ} (hσ : 1 / 2 ≤ σ) {θ : ℝ} (hθ : 0 < θ) :
-    ∀ᶠ d : ℕ in atTop,
-      Real.log (jensenMass (xiMoment σ) d (θ * cauchyScale d)) / d - Real.log (cauchyScale d) -
-          Real.log (1 + θ) ≤
-        (σ - 1 / 2) * 3 / d + (σ - 1 / 2) * (cauchyScale d / d) + 3 / (1 + θ) * (1 / cauchyScale d) +
-          (1 + Real.log (xiMoment (1 / 2 + 1) 0)) / d + cauchyScale d / d := by
+/-- **The saddle value.** At `r = d/((1 + θ)ℓ)`, `ℓ = ½ log d`, the Cauchy bound
+`S = d!/r^d · e^{θℓr} ξ(σ + r)` has `log S ≤ d log((1 + θ)ℓ) + O(ℓ + r)`. -/
+theorem log_saddle_le {σ : ℝ} (hτ : 0 ≤ σ - 1 / 2) {θ : ℝ} (hθ : 0 ≤ θ) {d : ℕ} (hd1 : 1 ≤ d)
+    (hℓ1 : 1 ≤ cauchyScale d) (hr1 : 1 ≤ (d : ℝ) / ((1 + θ) * cauchyScale d))
+    (hwd : σ - 1 / 2 + (d : ℝ) / ((1 + θ) * cauchyScale d) ≤ d) :
+    Real.log ((d.factorial : ℝ) / ((d : ℝ) / ((1 + θ) * cauchyScale d)) ^ d *
+        (Real.exp (θ * cauchyScale d * ((d : ℝ) / ((1 + θ) * cauchyScale d))) *
+          xiMoment (σ + (d : ℝ) / ((1 + θ) * cauchyScale d)) 0)) ≤
+      Real.log (xiMoment (1 / 2 + 1) 0) + (σ - 1 / 2) * 3 + (σ - 1 / 2) * cauchyScale d +
+        3 * ((d : ℝ) / ((1 + θ) * cauchyScale d)) + 1 + cauchyScale d +
+        d * Real.log (1 + θ) + d * Real.log (cauchyScale d) := by
   set τ : ℝ := σ - 1 / 2
-  have hτ : 0 ≤ τ := by simp only [τ]; linarith
   set K := Real.log (xiMoment (1 / 2 + 1) 0)
   have h1θ : 0 < 1 + θ := by linarith
-  filter_upwards [tendsto_cauchyScale.eventually_ge_atTop 1,
-    tendsto_cauchyScale.eventually_ge_atTop (1 / θ),
-    tendsto_cauchyScale_div.eventually (gt_mem_nhds (by positivity : (0 : ℝ) < 1 / (1 + θ))),
-    (tendsto_natCast_atTop_atTop (R := ℝ)).eventually_ge_atTop (τ * (1 + θ) / θ),
-    eventually_ge_atTop 1] with d hℓ1 hℓθ hℓd hdτ hd1
   set ℓ := cauchyScale d
   have hℓ : 0 < ℓ := by linarith
   have hdR : (0 : ℝ) < d := by exact_mod_cast hd1
-  have ht1 : 1 ≤ θ * ℓ := by
-    rw [div_le_iff₀ hθ] at hℓθ
-    linarith
-  set r : ℝ := d / ((1 + θ) * ℓ)
   have hdenom : 0 < (1 + θ) * ℓ := by positivity
-  have hr1 : 1 ≤ r := by
-    rw [le_div_iff₀ hdenom]
-    rw [div_lt_div_iff₀ hdR h1θ] at hℓd
-    linarith
+  set r : ℝ := d / ((1 + θ) * ℓ)
+  have hrpos : 0 < r := by linarith
   set w : ℝ := τ + r
   have hw1 : 1 ≤ w := by simp only [w]; linarith
-  have hwd : w ≤ d := by
-    have hrle : r ≤ d / (1 + θ) := by
-      simp only [r]
-      refine div_le_div_of_nonneg_left hdR.le h1θ ?_
-      nlinarith
-    have hτle : τ ≤ d * (θ / (1 + θ)) := by
-      rw [div_le_iff₀ hθ] at hdτ
-      rw [mul_div_assoc', le_div_iff₀ h1θ]
-      linarith
-    have hsplit : d * (θ / (1 + θ)) + d / (1 + θ) = (d : ℝ) := by
-      field_simp
-      ring
-    simp only [w]
-    linarith
   have hσw : σ + r = 1 / 2 + w := by simp only [w, τ]; ring
-  have hm := jensenMass_pos hσ d ht1
-  set A := jensenMass (xiMoment σ) d (θ * ℓ)
-  have hC := jensenMass_mul_pow_le hσ d (t := θ * ℓ) (r := r) (by positivity) (by linarith)
-  rw [hσw] at hC
+  rw [hσw]
   have hξ := xiMoment_zero_pos (1 / 2 + w)
   have hfact : (0 : ℝ) < (d.factorial : ℝ) := by positivity
-  have hrpos : 0 < r := by linarith
-  have hlog := Real.log_le_log (by positivity) hC
-  rw [Real.log_div (by positivity) hfact.ne', Real.log_mul hm.ne' (by positivity), Real.log_pow,
-    Real.log_mul (Real.exp_pos _).ne' hξ.ne', Real.log_exp] at hlog
+  rw [Real.log_mul (by positivity) (by positivity), Real.log_div hfact.ne' (by positivity),
+    Real.log_pow, Real.log_mul (Real.exp_pos _).ne' hξ.ne', Real.log_exp]
   have hcap : Real.log (xiMoment (1 / 2 + w) 0) ≤ K + w * (3 + Real.log w / 2) :=
     log_xiMoment_le hw1
   have hlogw : Real.log w ≤ Real.log d := Real.log_le_log (by linarith) hwd
@@ -493,17 +466,70 @@ theorem log_jensenMass_div_le {σ : ℝ} (hσ : 1 / 2 ≤ σ) {θ : ℝ} (hθ : 
     simp only [w]
     ring
   have hlogd : Real.log d / 2 = ℓ := rfl
-  rw [hlogr] at hlog
-  have hmain : Real.log A ≤ K + τ * 3 + τ * ℓ + 3 * r + 1 + ℓ +
-      d * Real.log (1 + θ) + d * Real.log ℓ := by
-    have e5 : (d : ℝ) * (Real.log d - Real.log (1 + θ) - Real.log ℓ) =
-        d * Real.log d - d * Real.log (1 + θ) - d * Real.log ℓ := by ring
-    rw [e5, e1] at hlog
-    rw [e4, e2] at hcap2
-    have hfac' : Real.log (d.factorial : ℝ) ≤ d * Real.log d - d + (1 + Real.log d / 2) := by
-      linarith
-    rw [hlogd] at hfac'
+  have e5 : (d : ℝ) * (Real.log d - Real.log (1 + θ) - Real.log ℓ) =
+      d * Real.log d - d * Real.log (1 + θ) - d * Real.log ℓ := by ring
+  rw [hlogr, e5, e1]
+  rw [e4, e2] at hcap2
+  have hfac' : Real.log (d.factorial : ℝ) ≤ d * Real.log d - d + (1 + Real.log d / 2) := by
     linarith
+  rw [hlogd] at hfac'
+  linarith
+
+/-- `log m_d(θℓ_d)/d − log ℓ_d − log(1 + θ)` is bounded above by a null sequence. -/
+theorem log_jensenMass_div_le {σ : ℝ} (hσ : 1 / 2 ≤ σ) {θ : ℝ} (hθ : 0 < θ) :
+    ∀ᶠ d : ℕ in atTop,
+      Real.log (jensenMass (xiMoment σ) d (θ * cauchyScale d)) / d - Real.log (cauchyScale d) -
+          Real.log (1 + θ) ≤
+        (σ - 1 / 2) * 3 / d + (σ - 1 / 2) * (cauchyScale d / d) + 3 / (1 + θ) * (1 / cauchyScale d) +
+          (1 + Real.log (xiMoment (1 / 2 + 1) 0)) / d + cauchyScale d / d := by
+  set τ : ℝ := σ - 1 / 2
+  have hτ : 0 ≤ τ := by simp only [τ]; linarith
+  set K := Real.log (xiMoment (1 / 2 + 1) 0)
+  have h1θ : 0 < 1 + θ := by linarith
+  filter_upwards [tendsto_cauchyScale.eventually_ge_atTop 1,
+    tendsto_cauchyScale.eventually_ge_atTop (1 / θ),
+    tendsto_cauchyScale_div.eventually (gt_mem_nhds (by positivity : (0 : ℝ) < 1 / (1 + θ))),
+    (tendsto_natCast_atTop_atTop (R := ℝ)).eventually_ge_atTop (τ * (1 + θ) / θ),
+    eventually_ge_atTop 1] with d hℓ1 hℓθ hℓd hdτ hd1
+  have hsaddle := fun hr hw => log_saddle_le hτ hθ.le hd1 hℓ1 hr hw
+  set ℓ := cauchyScale d
+  have hℓ : 0 < ℓ := by linarith
+  have hdR : (0 : ℝ) < d := by exact_mod_cast hd1
+  have ht1 : 1 ≤ θ * ℓ := by
+    rw [div_le_iff₀ hθ] at hℓθ
+    linarith
+  set r : ℝ := d / ((1 + θ) * ℓ)
+  have hdenom : 0 < (1 + θ) * ℓ := by positivity
+  have hr1 : 1 ≤ r := by
+    rw [le_div_iff₀ hdenom]
+    rw [div_lt_div_iff₀ hdR h1θ] at hℓd
+    linarith
+  have hwd : τ + r ≤ d := by
+    have hrle : r ≤ d / (1 + θ) := by
+      simp only [r]
+      refine div_le_div_of_nonneg_left hdR.le h1θ ?_
+      nlinarith
+    have hτle : τ ≤ d * (θ / (1 + θ)) := by
+      rw [div_le_iff₀ hθ] at hdτ
+      rw [mul_div_assoc', le_div_iff₀ h1θ]
+      linarith
+    have hsplit : d * (θ / (1 + θ)) + d / (1 + θ) = (d : ℝ) := by
+      field_simp
+      ring
+    linarith
+  have hS := hsaddle hr1 hwd
+  have hm := jensenMass_pos hσ d ht1
+  set A := jensenMass (xiMoment σ) d (θ * ℓ)
+  have hC := jensenMass_mul_pow_le hσ d (t := θ * ℓ) (r := r) (by positivity) (by linarith)
+  have hrpos : 0 < r := by linarith
+  have hfact : (0 : ℝ) < (d.factorial : ℝ) := by positivity
+  have hAS : A ≤ (d.factorial : ℝ) / r ^ d *
+      (Real.exp (θ * ℓ * r) * xiMoment (σ + r) 0) := by
+    rw [div_le_iff₀ hfact] at hC
+    rw [div_mul_eq_mul_div, le_div_iff₀ (by positivity)]
+    linarith
+  have hmain : Real.log A ≤ K + τ * 3 + τ * ℓ + 3 * r + 1 + ℓ + d * Real.log (1 + θ) +
+      d * Real.log ℓ := (Real.log_le_log hm hAS).trans hS
   have hr3 : 3 * r / d = 3 / (1 + θ) * (1 / ℓ) := by
     simp only [r]
     field_simp

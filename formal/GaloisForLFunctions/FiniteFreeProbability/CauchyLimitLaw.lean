@@ -90,7 +90,9 @@ theorem jensenCauchy_imag {σ : ℝ} (d : ℕ) (θ : ℝ)
     rw [hval]
     exact mul_ne_zero (pow_ne_zero _ I_ne_zero) hmC
   have hdR : ((d + 1 : ℕ) : ℂ) ≠ 0 := Nat.cast_ne_zero.2 (Nat.succ_ne_zero d)
-  rw [jensenCauchy, harg, multiset_sum_one_div_eq hne, xiJensen, derivative_jensenRev, eval_mul,
+  have hdef : jensenCauchy σ (d + 1) (I * θ) = ((ℓ / ((d + 1 : ℕ) : ℝ) : ℝ) : ℂ) *
+      ((xiJensen σ (d + 1)).roots.map fun x => 1 / ((ℓ : ℂ) * (I * θ) - x)).sum := rfl
+  rw [hdef, harg, multiset_sum_one_div_eq hne, xiJensen, derivative_jensenRev, eval_mul,
     eval_C, ← xiJensen, ← xiJensen, hval, hval', pow_succ]
   push_cast at hdR ⊢
   have hI2 : I * -I = 1 := by rw [mul_neg, I_mul_I, neg_neg]
@@ -114,7 +116,7 @@ theorem tendsto_jensenCauchy_imag {σ : ℝ} (hσ : 1 / 2 ≤ σ) {θ : ℝ} (h�
     rw [hfac]
     push_cast
     field_simp
-    rw [mul_comm, I_mul_I]
+    rw [I_sq]
     ring
   rw [hlim] at hc
   refine hc.congr' ?_
@@ -183,7 +185,7 @@ theorem differentiableOn_multiset_sum {ℓ : ℝ} (hℓ : 0 < ℓ) (M : Multiset
     (hM : ∀ x ∈ M, x.im ≤ 0) :
     DifferentiableOn ℂ (fun z : ℂ => (M.map fun x => 1 / ((ℓ : ℂ) * z - x)).sum) {z | 0 < z.im} := by
   induction M using Multiset.induction_on with
-  | empty => simpa using differentiableOn_const 0
+  | empty => simp
   | cons a M ih =>
     simp only [Multiset.map_cons, Multiset.sum_cons]
     refine DifferentiableOn.add ?_ (ih fun x hx => hM x (Multiset.mem_cons_of_mem hx))

@@ -63,7 +63,7 @@ theorem xiJensenHermitePolynomial_error_lt_margin (n d : ℕ)
     apply Real.sqrt_le_iff.mpr
     refine ⟨by positivity, ?_⟩
     rw [div_pow, mul_pow]
-    norm_num only [sq]
+    norm_num only
     apply (div_le_div_iff₀ hs0 (by positivity)).mpr
     have h := (div_le_iff₀ (sq_pos_of_pos hm)).mp hcap
     nlinarith only [h]

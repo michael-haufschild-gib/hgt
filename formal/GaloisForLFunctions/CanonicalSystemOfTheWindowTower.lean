@@ -58,3 +58,5 @@ although the contact window itself remains positive. Positive-level truncations 
 cutoff archimedean kernel give bounded physical representatives of every precontact Riesz vector.
 -/
 import GaloisForLFunctions.CanonicalSystemOfTheWindowTower.TheHalfLineLogarithmicGreenSolutionsHaveBoundaryValues
+import GaloisForLFunctions.CanonicalSystemOfTheWindowTower.TheLogarithmicEnergyHasItsLiteralJumpForm
+import GaloisForLFunctions.CanonicalSystemOfTheWindowTower.BoundedLipschitzCutoffsPreserveLogarithmicEnergy
