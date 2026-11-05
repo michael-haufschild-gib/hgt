@@ -167,7 +167,6 @@ theorem eval_jensenRev_xiSeries_eq_saddle {d : ℕ} (hd : 0 < d) {x : ℝ} {a₀
           (-(π / 2) - θ) (π / 2 - θ) := (hW.mul (hQ.sub continuous_const)).intervalIntegrable _ _
       rw [← intervalIntegral.integral_add hI1 hI2]
       refine intervalIntegral.integral_congr fun φ _ => ?_
-      simp only
       ring
     have h2 : (∫ φ in (-(π / 2) - θ)..(π / 2 - θ), saddleWeight d φ) +
         ∫ φ in (π / 2 - θ)..(-(π / 2) - θ + 2 * π), saddleWeight d φ =
@@ -200,21 +199,19 @@ theorem eval_jensenRev_xiSeries_eq_saddle {d : ℕ} (hd : 0 < d) {x : ℝ} {a₀
   rw [hmain, Complex.re_ofReal_mul]
   have hf : (0 : ℝ) < d.factorial := by exact_mod_cast d.factorial_pos
   have hπ' : (π : ℝ) ≠ 0 := Real.pi_ne_zero
-  push_cast
   field_simp
 
 /-! ## The ratio near the saddle -/
 
 theorem re_mul_exp {τ₁ : ℂ} (ψ : ℝ) :
     (τ₁ * Complex.exp (ψ * I)).re = ‖τ₁‖ * Real.cos (Complex.arg τ₁ + ψ) := by
-  rw [← circleMap_arg_add]
-  simp [circleMap, Complex.exp_ofReal_mul_I_re]
+  rw [← circleMap_arg_add, circleMap, zero_add, Complex.re_ofReal_mul, Complex.exp_ofReal_mul_I_re]
 
 theorem norm_mul_exp {τ₁ : ℂ} (ψ : ℝ) : ‖τ₁ * Complex.exp (ψ * I)‖ = ‖τ₁‖ := by
   rw [norm_mul, Complex.norm_exp_ofReal_mul_I, mul_one]
 
 /-- Along the circle the slope of `G` moves at unit speed up to the factor `6`. -/
-theorem norm_gammaSlope_mul_exp_sub_le {τ₁ : ℂ} (hρ : 4 ≤ ‖τ₁‖) {σ T : ℝ} (hσ : |σ| = 1) (hT : 0 ≤ T)
+theorem norm_gammaSlope_mul_exp_sub_le {τ₁ : ℂ} (hρ : 4 ≤ ‖τ₁‖) {σ T : ℝ} (hσ : |σ| = 1)
     (hre : ∀ t ∈ Icc (0 : ℝ) T, 0 ≤ (τ₁ * Complex.exp (((σ * t : ℝ) : ℂ) * I)).re) {t : ℝ}
     (ht : t ∈ Icc (0 : ℝ) T) :
     ‖gammaSlope (τ₁ * Complex.exp (((σ * t : ℝ) : ℂ) * I)) - gammaSlope τ₁‖ ≤ 6 * t := by
@@ -234,13 +231,10 @@ theorem norm_gammaSlope_mul_exp_sub_le {τ₁ : ℂ} (hρ : 4 ≤ ‖τ₁‖) {
     refine h2.congr_deriv ?_
     simp only [hc]
     ring
-  have hder : ∀ u ∈ Ico (0 : ℝ) t, HasDerivWithinAt (fun u => gammaSlope (c u))
-      (gammaSlopeDeriv (c u) * (I * σ * c u)) (Ici u) u := fun u hu => by
-    have hu' : u ∈ Icc (0 : ℝ) T := ⟨hu.1, hu.2.le.trans ht.2⟩
-    exact ((hasDerivAt_gammaSlope (hre u hu') (hne u)).comp u (hcd u)).hasDerivWithinAt
-  have hcont : ContinuousOn (fun u => gammaSlope (c u)) (Icc 0 t) := fun u hu => by
+  have hder : ∀ u ∈ Icc (0 : ℝ) t, HasDerivWithinAt (fun u => gammaSlope (c u))
+      (gammaSlopeDeriv (c u) * (I * σ * c u)) (Icc 0 t) u := fun u hu => by
     have hu' : u ∈ Icc (0 : ℝ) T := ⟨hu.1, hu.2.trans ht.2⟩
-    exact ((hasDerivAt_gammaSlope (hre u hu') (hne u)).comp u (hcd u)).continuousAt.continuousWithinAt
+    exact ((hasDerivAt_gammaSlope (hre u hu') (hne u)).comp u (hcd u)).hasDerivWithinAt
   have hbound : ∀ u ∈ Ico (0 : ℝ) t, ‖gammaSlopeDeriv (c u) * (I * σ * c u)‖ ≤ 6 := fun u hu => by
     have hu' : u ∈ Icc (0 : ℝ) T := ⟨hu.1, hu.2.le.trans ht.2⟩
     have h := norm_gammaSlopeDeriv_le (hre u hu') (by rw [hnorm]; exact hρ)
@@ -249,7 +243,7 @@ theorem norm_gammaSlope_mul_exp_sub_le {τ₁ : ℂ} (hρ : 4 ≤ ‖τ₁‖) {
     rw [hnorm] at h
     calc _ ≤ 6 / ‖τ₁‖ * ‖τ₁‖ := by gcongr
       _ = 6 := by field_simp
-  have h := norm_image_sub_le_of_norm_deriv_le_segment' hcont hder hbound t (right_mem_Icc.2 ht.1)
+  have h := norm_image_sub_le_of_norm_deriv_le_segment' hder hbound t (right_mem_Icc.2 ht.1)
   have h0 : c 0 = τ₁ := by simp [hc]
   simpa [h0, hc] using h
 
@@ -303,7 +297,7 @@ theorem norm_gammaRatio_sub_one_le {τ₁ : ℂ} (hρ : 4 ≤ ‖τ₁‖) {σ T
   have hb : ∀ u ∈ Ico (0 : ℝ) T,
       ‖(I * σ * c u) * (gammaSlope (c u) - a₀) * (f u + 1)‖ ≤ K * ‖f u‖ + K := fun u hu => by
     have hu' : u ∈ Icc (0 : ℝ) T := ⟨hu.1, hu.2.le⟩
-    have h1 := norm_gammaSlope_mul_exp_sub_le hρ hσ hT.le hre hu'
+    have h1 := norm_gammaSlope_mul_exp_sub_le hρ hσ hre hu'
     have h2 : ‖I * σ * c u‖ = ‖τ₁‖ := by
       rw [norm_mul, norm_mul, norm_I, one_mul, Complex.norm_real, Real.norm_eq_abs, hσ, one_mul, hnorm]
     have h3 : ‖(I * σ * c u) * (gammaSlope (c u) - a₀)‖ ≤ K := by
@@ -324,10 +318,15 @@ theorem norm_gammaRatio_sub_one_le {τ₁ : ℂ} (hρ : 4 ≤ ‖τ₁‖) {σ T
   simp only [sub_zero, zero_mul, zero_add, div_self hKpos.ne', one_mul] at hgr
   have he : K * T = 6 * ‖τ₁‖ * T ^ 2 := by rw [hK]; ring
   rw [he] at hgr
-  convert hgr using 2
-  simp only [hf, hc]
-  congr 3
-  ring
+  have hfT : f T = gammaFactor (τ₁ * Complex.exp (((σ * T : ℝ) : ℂ) * I)) *
+      Complex.exp (-(a₀ * τ₁ * (Complex.exp (((σ * T : ℝ) : ℂ) * I) - 1))) / gammaFactor τ₁ - 1 := by
+    have e : a₀ * (c T - τ₁) = a₀ * τ₁ * (Complex.exp (((σ * T : ℝ) : ℂ) * I) - 1) := by
+      simp only [hc]
+      ring
+    simp only [hf]
+    rw [e]
+  rw [← hfT]
+  exact hgr
 
 /-- The two-sided form of the Grönwall bound on the part of the circle in `Re τ ≥ 0`. -/
 theorem norm_gammaRatio_sub_one_le_of_mem {τ₁ : ℂ} (hρ : 4 ≤ ‖τ₁‖) (hre1 : 0 < τ₁.re) {φ : ℝ}

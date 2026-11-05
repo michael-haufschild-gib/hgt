@@ -203,3 +203,8 @@ by `√log(1/d)`, it tends to minus the corresponding endpoint readout. Its
 principal-kernel error is uniformly bounded. Both literal responses coincide
 almost everywhere with the negatives of the actual bounded Gamma boundary
 transfer operators.
+
+Dilation of either exterior response has the same limit in the unit-interval
+L² norm. The proof uses the exact logarithmic ratio and the integrable
+majorant `1+log(1/s)`; it applies to every measurable response with a finite
+normalized logarithmic boundary limit.

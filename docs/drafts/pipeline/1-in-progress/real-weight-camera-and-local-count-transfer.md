@@ -38,7 +38,7 @@ Its Fourier support stays within twice the aperture of `b`, so equality of
 window images transfers its integral to the source configuration. The strip
 envelope must retain a leading coefficient arbitrarily close to one.
 
-Write `F=b̂`, with `b` supported in `[-ε,ε]`. A candidate envelope is
+Write `F=b̂`, with `b` supported in `[-ε,ε]`. The common strip envelope is
 
 `E(x)=(1+ε)|F(x)|²+(1+1/ε)∫_{-1/2}^{1/2}|F′(x+iy)|²dy`.
 
@@ -50,7 +50,10 @@ inequality give `|F(x+iv)|²≤E(x)` for `|v|≤1/2`. Plancherel gives
 Indeed, the differentiated transform has source `itb(t)e^{-yt}`, whose
 squared norm is at most `ε²e^ε` times that of `b`. The coefficient tends to
 one as `ε→0`; enlarging `R` makes the central integral approach the full
-energy. This derivation still requires Lean verification.
+energy. Also `2uv≤u²+v²` gives
+`|F(x+iv)·conj(F(x−iv))|≤E(x)`, so the envelope bounds the actual
+off-line point-image. `cameraStripEnvelope_integrable_and_mass_le` and
+`norm_local_pointImage_le_cameraStripEnvelope` verify both bounds in Lean.
 
 For a source with interval mass at most `D·length+C`, Fubini then bounds
 the integrated envelope by `(D·length+C)∫E`. For ζ, use the multiplicity
@@ -70,6 +73,7 @@ for all complex coefficients with summable absolute Lorentzian mass.
 `cameraMomentHeight` and the same standard axioms. The sharp multiplicity
 count on `|γ−T|≤3T/4`, the vertical energy estimate, absolute convergence
 of weighted images, and their positive on-line Fourier-energy identity also
-pass with standard axioms. Fourier normalization, interval majorants,
-weighted count transfer and the lattice example remain under verification.
+pass with standard axioms. The Fourier envelope and the exact convolution
+count bound also pass. Kernel normalization, interval majorants, weighted
+count transfer and the lattice example remain under verification.
 Final direct source audits and umbrella wiring remain.

@@ -321,7 +321,7 @@ theorem ae_collide_or_repel {F : ℂ → ℂ} {U : Set ℂ} (hU : IsOpen U) (hF 
       by_contra hcon
       push Not at hcon
       exact hk₀ k hcon hmem
-    have : 1 / 2 ^ k₀ ≤ 1 / 2 ^ (k + 1) :=
+    have : (1 : ℝ) / 2 ^ k₀ ≤ 1 / 2 ^ (k + 1) :=
       one_div_le_one_div_of_le (by positivity)
         (pow_le_pow_right₀ (by norm_num : (1 : ℝ) ≤ 2) (by omega : k + 1 ≤ k₀))
     exact hκX.trans ((min_le_right _ _).trans ((min_le_left _ _).trans (this.trans hdk0.le)))

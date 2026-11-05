@@ -1,8 +1,8 @@
-# Exterior response of the normalized Weil trace
+# Full collar response of the normalized Weil trace
 
 - **Stage:** 1-in-progress
 - **Type:** CONJECTURE
-- **Statement:** At either endpoint of an actual precontact Weil Riesz source, the exterior logarithmic operator response divided by `sqrt(log(1/d))` tends to minus its normalized trace. After dilation of a closing collar, the normalized response converges in L² to that constant.
+- **Statement:** The actual Riesz increment satisfies the literal full collar equation, retaining evaluation, Gamma, prime and polar terms. Its forcing divided by `sqrt(log(1/d))` tends to the normalized endpoint trace, also in L² after collar dilation.
 
 ## Proposed proof
 
@@ -34,5 +34,6 @@ limit alone.
 and their [truncated exterior integrals](../3-formalized/truncated-exterior-integrals-read-the-weil-traces.md)
 are formalized. The [exact exterior Gamma response](../3-formalized/exterior-gamma-response-reads-the-weil-trace.md),
 including its uniform principal-kernel comparison and actual boundary-operator
-identification, is also formalized. Scaled L² convergence and the full collar
-profile have Lean drafts awaiting audit.
+identification, is also formalized. [Scaled L² convergence](../3-formalized/scaled-exterior-weil-responses-converge-in-mean-square.md)
+is formalized. The full prime-polar collar profile and its exact Riesz
+residual equation have Lean drafts awaiting audit.

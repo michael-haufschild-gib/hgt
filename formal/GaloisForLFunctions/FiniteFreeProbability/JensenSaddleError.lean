@@ -35,7 +35,7 @@ theorem one_sub_cos_ge {φ : ℝ} (h : |φ| ≤ π) : 2 / π ^ 2 * φ ^ 2 ≤ 1 
   rw [hc, hφ]
   have : (2 / π * u) ^ 2 = 4 / π ^ 2 * u ^ 2 := by
     field_simp
-    norm_num
+    ring
   rw [this] at hs2
   have e : 2 / π ^ 2 * (4 * u ^ 2) = 2 * (4 / π ^ 2 * u ^ 2) := by ring
   rw [e]
@@ -63,9 +63,8 @@ theorem re_saddle_identity {d : ℕ} {x : ℝ} {a₀ τ₁ : ℂ} (hs : (a₀ - 
     rw [← mul_assoc, hs]
   rw [Complex.mul_conj, Complex.normSq_eq_norm_sq] at h1
   have h2 := congrArg Complex.re h1
-  simp only [mul_re, sub_re, I_re, ofReal_re, zero_mul, I_im, one_mul, ofReal_im, mul_zero, sub_zero,
-    natCast_re, natCast_im, conj_re, conj_im, add_zero, zero_sub, neg_neg] at h2
-  push_cast at h2
+  simp only [mul_re, sub_re, I_re, ofReal_re, zero_mul, I_im, ofReal_im, mul_zero, sub_zero,
+    natCast_re, natCast_im, conj_re, conj_im] at h2
   simpa using h2
 
 theorem norm_saddle_identity {d : ℕ} {x : ℝ} {a₀ τ₁ : ℂ} (hs : (a₀ - I * x) * τ₁ = d) :

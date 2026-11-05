@@ -9,10 +9,11 @@ import GaloisForLFunctions.RHTower.DirichletPolynomialLineSmallValues
 The analytic inputs of the necessary-length law, at heights `t₀ ∈ [T, 2T]` with window width `w = log²T`:
 
 * the body `ζ(s)M(s)(s−1)/(s+1)` compared with `ζM` on the two relevant lines (`linePower_zero_le`, `le_linePower_left`);
-* the tail of the window outside `[T, 2T]` (`exists_center_tail`, `eventually_center_remainder_le`);
-* the spectrum outside the band, uniformly in the mollifier (`eventually_remainder_le`);
-* the error of the right floor (`exists_right_floor_error_le`);
-* horizontal slices free of zeros and the left floor at the height `T` (`exists_admissible_slices`, `eventually_left_floor`);
+* the tail of the window outside `[T, 2T]` (`exists_center_tail`, `center_remainder_le_of_small`);
+* the spectrum outside the band, uniformly in the mollifier (`remainder_le_of_small`);
+* the error of the right floor (`right_floor_error_le_of_small`);
+* horizontal slices free of zeros and the left floor at the height `T` (`exists_admissible_slices`, `exists_left_floor_of_small`);
+* every estimate is stated with explicit smallness conditions, so that the exponent `θ` may grow with `T`;
 * the arithmetic of the interpolation at `aΛ = log 2` (`final_numeric`).
 -/
 
@@ -515,28 +516,27 @@ private theorem remainder_left_le {A θ T ℓ w c L a t₀ B₁ : ℝ} {N : ℕ}
     _ ≤ B₁ * w ^ 6 * Real.exp (-(1 / 25 * ℓ)) * (2 * Real.pi * (1 - a)) :=
         le_mul_of_one_le_right hnn hd
 
-/-- **The spectrum outside the band is negligible**, uniformly in the mollifier. -/
-theorem eventually_remainder_le {θ A ε : ℝ} (hθ : 0 < θ) (hε : 0 < ε) :
-    ∀ᶠ T : ℝ in atTop, ∀ (N : ℕ) (t₀ a : ℝ), (N : ℝ) ≤ T ^ θ → T ≤ t₀ → t₀ ≤ 2 * T → 0 < a → a ≤ 1 / 4 →
-      a * ((2 + 3 / 2 * θ + 3 / 100) * Real.log T) = Real.log 2 →
-      (4 * Real.exp (9 / 4 / (2 * (Real.log T ^ 2) ^ 2)) * (Real.log T ^ 2 * √(2 * Real.pi))) ^ 2 *
-            Real.exp ((2 + 3 / 2 * θ + 1 / 100) * Real.log T * a) *
-            Real.exp (-(2 * (Real.log T / 100) * (3 / 2 - a))) / (2 * Real.pi * (3 / 2 - a)) +
-          (A * (N : ℝ) ^ ((3 : ℝ) / 2) * Real.exp (1 / (2 * (Real.log T ^ 2) ^ 2)) *
-              (4 * (1 + |t₀|) ^ 2 * (1 + 2 * (Real.log T ^ 2) ^ 2) *
-                (√2 * Real.log T ^ 2 * √(2 * Real.pi)))) ^ 2 *
-            Real.exp (-((2 + 3 / 2 * θ + 1 / 100) * Real.log T * a)) *
-            Real.exp (-(2 * ((2 + 3 / 2 * θ + 1 / 100) * Real.log T + Real.log T / 100) * (1 - a))) /
-              (2 * Real.pi * (1 - a)) ≤
-        ε * (Real.log T ^ 2 * √Real.pi) := by
+/-- **The spectrum outside the band is negligible**, uniformly in the mollifier and in the exponent. -/
+theorem remainder_le_of_small {θ A ε T : ℝ} (hθ : 0 < θ) (hε : 0 < ε)
+    (h1 : Real.log T ^ 2 * Real.exp (-(1 / 50 * Real.log T)) ≤ ε / (2 * 288))
+    (h2 : Real.log T ^ 10 * Real.exp (-(1 / 25 * Real.log T)) ≤
+      ε / (2 * (4 * (A ^ 2 * 9 * 432 ^ 2) + 1)))
+    (hℓ : 2 ≤ Real.log T) (hT1 : 1 < T) (N : ℕ) (t₀ a : ℝ) (hN : (N : ℝ) ≤ T ^ θ) (ht1 : T ≤ t₀)
+    (ht2 : t₀ ≤ 2 * T) (ha0 : 0 < a) (ha1 : a ≤ 1 / 4)
+    (haq : a * ((2 + 3 / 2 * θ + 3 / 100) * Real.log T) = Real.log 2) :
+    (4 * Real.exp (9 / 4 / (2 * (Real.log T ^ 2) ^ 2)) * (Real.log T ^ 2 * √(2 * Real.pi))) ^ 2 *
+          Real.exp ((2 + 3 / 2 * θ + 1 / 100) * Real.log T * a) *
+          Real.exp (-(2 * (Real.log T / 100) * (3 / 2 - a))) / (2 * Real.pi * (3 / 2 - a)) +
+        (A * (N : ℝ) ^ ((3 : ℝ) / 2) * Real.exp (1 / (2 * (Real.log T ^ 2) ^ 2)) *
+            (4 * (1 + |t₀|) ^ 2 * (1 + 2 * (Real.log T ^ 2) ^ 2) *
+              (√2 * Real.log T ^ 2 * √(2 * Real.pi)))) ^ 2 *
+          Real.exp (-((2 + 3 / 2 * θ + 1 / 100) * Real.log T * a)) *
+          Real.exp (-(2 * ((2 + 3 / 2 * θ + 1 / 100) * Real.log T + Real.log T / 100) * (1 - a))) /
+            (2 * Real.pi * (1 - a)) ≤
+      ε * (Real.log T ^ 2 * √Real.pi) := by
   obtain ⟨B₁, hB₁⟩ : ∃ B₁ : ℝ, B₁ = 4 * (A ^ 2 * 9 * 432 ^ 2) := ⟨_, rfl⟩
   have hB₁0 : 0 ≤ B₁ := by rw [hB₁]; positivity
-  have hP1 := eventually_log_pow_mul_exp_le 2 (c := 1 / 50) (ε := ε / (2 * 288)) (by norm_num)
-    (by positivity)
-  have hP2 := eventually_log_pow_mul_exp_le 10 (c := 1 / 25) (ε := ε / (2 * (B₁ + 1))) (by norm_num)
-    (by positivity)
-  filter_upwards [hP1, hP2, Real.tendsto_log_atTop.eventually_ge_atTop 2,
-    eventually_gt_atTop (1 : ℝ)] with T h1 h2 hℓ hT1 N t₀ a hN ht1 ht2 ha0 ha1 haq
+  rw [← hB₁] at h2
   set ℓ := Real.log T with hℓdef
   have hT0 : 0 < T := by linarith
   have hℓ0 : 0 < ℓ := by linarith
@@ -605,19 +605,28 @@ theorem eventually_remainder_le {θ A ε : ℝ} (hθ : 0 < θ) (hε : 0 < ε) :
 
 /-! ### The right floor at a large height -/
 
-/-- For every `ε`, there is a far line such that the right-floor error is at most `ε` at all large heights. -/
-theorem exists_right_floor_error_le {ε : ℝ} (hε : 0 < ε) :
-    ∃ K : ℝ, 5 ≤ K ∧ ∀ᶠ T : ℝ in atTop, ∀ t₀, T ≤ t₀ →
-      Real.exp ((K - 1 / 2) ^ 2 / (Real.log T ^ 2) ^ 2) *
-        (19 * Real.exp (-(Real.log 2 * K)) + 8 / t₀ +
-          6 * Real.exp (-(t₀ ^ 2 / (8 * (Real.log T ^ 2) ^ 2)))) ≤ ε := by
+/-- The far line of the right floor at precision `ε`. -/
+def rightFloorParam (ε : ℝ) : ℝ := max 5 (Real.log (152 / ε) / Real.log 2)
+
+theorem five_le_rightFloorParam (ε : ℝ) : 5 ≤ rightFloorParam ε := le_max_left _ _
+
+/-- At the far line `rightFloorParam ε` the right-floor error is at most `ε`, under explicit smallness. -/
+theorem right_floor_error_le_of_small {ε T t₀ : ℝ} (hε : 0 < ε)
+    (h1 : Real.log T ^ 4 * Real.exp (-(1 * Real.log T)) ≤ 1 / 16) (hT8 : 128 / ε ≤ T) (hT96 : 96 / ε ≤ T)
+    (hT1 : 1 < T) (hw : 2 * (rightFloorParam ε - 1 / 2) ^ 2 + 1 ≤ (Real.log T ^ 2) ^ 2)
+    (hℓ : 1 ≤ Real.log T) (ht : T ≤ t₀) :
+    Real.exp ((rightFloorParam ε - 1 / 2) ^ 2 / (Real.log T ^ 2) ^ 2) *
+      (19 * Real.exp (-(Real.log 2 * rightFloorParam ε)) + 8 / t₀ +
+        6 * Real.exp (-(t₀ ^ 2 / (8 * (Real.log T ^ 2) ^ 2)))) ≤ ε := by
   have hlog2 : 0 < Real.log 2 := Real.log_pos one_lt_two
-  set K : ℝ := max 5 (Real.log (152 / ε) / Real.log 2) with hK
-  have hK5 : 5 ≤ K := le_max_left _ _
-  refine ⟨K, hK5, ?_⟩
+  obtain ⟨K, hK⟩ : ∃ K : ℝ, K = rightFloorParam ε := ⟨_, rfl⟩
+  rw [← hK] at hw ⊢
+  have hK5 : 5 ≤ K := by rw [hK]; exact five_le_rightFloorParam ε
   have hη : 19 * Real.exp (-(Real.log 2 * K)) ≤ ε / 8 := by
     have h1 : Real.log (152 / ε) ≤ Real.log 2 * K := by
-      have h2 : Real.log (152 / ε) / Real.log 2 ≤ K := le_max_right _ _
+      have h2 : Real.log (152 / ε) / Real.log 2 ≤ K := by
+        rw [hK]
+        exact le_max_right _ _
       rw [div_le_iff₀ hlog2] at h2
       linarith
     have h3 : Real.exp (-(Real.log 2 * K)) ≤ Real.exp (-Real.log (152 / ε)) :=
@@ -627,12 +636,6 @@ theorem exists_right_floor_error_le {ε : ℝ} (hε : 0 < ε) :
       rw [inv_div]
     rw [h4] at h3
     linarith
-  have hsmall := eventually_log_pow_mul_exp_le 4 (c := 1) (ε := 1 / 16) one_pos (by norm_num)
-  have hlogbig : Tendsto (fun T : ℝ => (Real.log T ^ 2) ^ 2) atTop atTop :=
-    (tendsto_pow_atTop (by norm_num)).comp ((tendsto_pow_atTop (by norm_num)).comp Real.tendsto_log_atTop)
-  filter_upwards [hsmall, eventually_ge_atTop (128 / ε), eventually_ge_atTop (96 / ε),
-    eventually_gt_atTop (1 : ℝ), hlogbig.eventually_ge_atTop (2 * (K - 1 / 2) ^ 2 + 1),
-    Real.tendsto_log_atTop.eventually_ge_atTop 1] with T h1 hT8 hT96 hT1 hw hℓ t₀ ht
   set ℓ := Real.log T with hℓdef
   have hT0 : 0 < T := by linarith
   set w := ℓ ^ 2 with hwdef
@@ -881,9 +884,15 @@ private theorem left_floor_exponent {q v T X δ : ℝ} (hv : v = Real.log 2 / q)
   linarith
 
 /-- **The left floor at a large height.**  Between heights near `T` and `2T`, the mollified second moment left of the line is at least
-`(T₂ − T₁) 2^{0.99 p}`, `p = 2/q`, `a q log T = log 2`, uniformly in real mollifiers of length `T^θ`. -/
-theorem eventually_left_floor {θ : ℝ} (hθ : 0 < θ) :
-    ∀ᶠ T : ℝ in atTop, ∀ (b : ℕ → ℂ) (N : ℕ) (a T₁ T₂ : ℝ), 1 ≤ N → (N : ℝ) ≤ T ^ θ → b 1 = 1 →
+`(T₂ − T₁) 2^{0.99 p}`, `p = 2/q`, `a q log T = log 2`, uniformly in real mollifiers of length `T^θ`, under explicit smallness. -/
+theorem exists_left_floor_of_small :
+    ∃ C K₁ : ℝ, 0 < C ∧ 0 < K₁ ∧ ∀ θ T : ℝ, 0 < θ →
+      Real.log T ^ 1 * Real.exp (-(1 * Real.log T)) ≤
+        6 / 1000 * (Real.log 2 / (2 + 3 / 2 * θ + 3 / 100)) / (2 * (K₁ * (1 + 5 * θ) + C + K₁ + 1)) →
+      (∀ T₁ T₂ : ℝ, T ≤ T₁ → T₁ ≤ 1001 / 1000 * T → 1999 / 1000 * T ≤ T₂ → T₂ ≤ 2 * T →
+        996 / 1000 * (T * Real.log T) ≤ 2 * Real.pi * ((xiPosZeroCount T₂ : ℝ) - xiPosZeroCount T₁)) →
+      20 ≤ T → 1 ≤ Real.log T →
+      ∀ (b : ℕ → ℂ) (N : ℕ) (a T₁ T₂ : ℝ), 1 ≤ N → (N : ℝ) ≤ T ^ θ → b 1 = 1 →
       (∀ n ∈ Finset.Icc 1 N, ‖b n‖ ≤ 1) →
       (∀ n ∈ Finset.Icc 1 N, (starRingEnd ℂ) (b n) = b n) →
       0 < a → a ≤ 1 / 4 → a * ((2 + 3 / 2 * θ + 3 / 100) * Real.log T) = Real.log 2 →
@@ -896,16 +905,14 @@ theorem eventually_left_floor {θ : ℝ} (hθ : 0 < θ) :
         ∫ t in T₁..T₂, ‖riemannZeta (((1 / 2 - a : ℝ) : ℂ) + (t : ℂ) * I) *
           edPoly b (Finset.Icc 1 N) (((1 / 2 - a : ℝ) : ℂ) + (t : ℂ) * I)‖ ^ 2 := by
   obtain ⟨C, K₁, hC, hK₁, hfloor⟩ := exists_left_floor
+  refine ⟨C, K₁, hC, hK₁, ?_⟩
+  intro θ T hθ hs hcount0 hT20 hℓ1 b N a T₁ T₂ hN hNT hb1 hb hbr ha0 ha1 haq h1a h1b h2a h2b hs1 hs2
   obtain ⟨q, hq⟩ : ∃ q : ℝ, q = 2 + 3 / 2 * θ + 3 / 100 := ⟨_, rfl⟩
   have hq0 : 0 < q := by rw [hq]; positivity
   have hlog2 : 0 < Real.log 2 := Real.log_pos one_lt_two
   obtain ⟨v, hv⟩ : ∃ v : ℝ, v = Real.log 2 / q := ⟨_, rfl⟩
   have hv0 : 0 < v := by rw [hv]; positivity
-  have hsmall := eventually_log_pow_mul_exp_le 1 (c := 1)
-    (ε := 6 / 1000 * v / (2 * (K₁ * (1 + 5 * θ) + C + K₁ + 1))) one_pos (by positivity)
-  filter_upwards [hsmall, eventually_zero_count_increment, eventually_ge_atTop (20 : ℝ),
-    Real.tendsto_log_atTop.eventually_ge_atTop 1] with T hs hcount0 hT20 hℓ1 b N a T₁ T₂ hN hNT hb1 hb hbr
-    ha0 ha1 haq h1a h1b h2a h2b hs1 hs2
+  rw [← hq, ← hv] at hs
   rw [← hq] at haq ⊢
   have hT0 : 0 < T := by linarith
   have haℓ : a * Real.log T = v := by
@@ -941,21 +948,19 @@ theorem eventually_left_floor {θ : ℝ} (hθ : 0 < θ) :
 
 /-! ### The tail of the window on the critical line -/
 
-/-- The tail of the window outside `[T, 2T]` at distance `log³T` is negligible: the Gaussian `exp(−log²T/4)` beats every power of `T`. -/
-theorem eventually_center_remainder_le {θ Cc ε : ℝ} (hθ : 0 < θ) (hCc : 0 ≤ Cc) (hε : 0 < ε) :
-    ∀ᶠ T : ℝ in atTop, ∀ (N : ℕ) (t₀ : ℝ), (N : ℝ) ≤ T ^ θ → T ≤ t₀ → t₀ ≤ 2 * T →
-      Cc * (N : ℝ) ^ (3 : ℝ) *
-          ((2 * (1 + |t₀|) ^ 2 * (1 + 4 * (Real.log T ^ 2) ^ 2)) ^ 2 * 2 * Real.exp 1) *
-          Real.exp (-((Real.log T ^ 3) ^ 2 / (4 * (Real.log T ^ 2) ^ 2))) *
-          (Real.log T ^ 2 * √(2 * Real.pi)) ≤
-        ε * (Real.log T ^ 2 * √Real.pi) := by
+/-- The tail of the window outside `[T, 2T]` at distance `log³T` is negligible: the Gaussian `exp(−log²T/4)` beats `T^{4+3θ}` as soon as `log T ≥ 4(3θ+5)`. -/
+theorem center_remainder_le_of_small {θ Cc ε T : ℝ} (hCc : 0 ≤ Cc) (hε : 0 < ε)
+    (hT1 : Real.log T ^ 8 * Real.exp (-(1 * Real.log T)) ≤
+      ε / (Cc * 8100 * (2 * Real.exp 1) * 2 + 1))
+    (hℓ : 4 * (3 * θ + 5) ≤ Real.log T) (hℓ1 : 1 ≤ Real.log T) (hT : 1 ≤ T) (N : ℕ) (t₀ : ℝ)
+    (hN : (N : ℝ) ≤ T ^ θ) (ht₁ : T ≤ t₀) (ht₂ : t₀ ≤ 2 * T) :
+    Cc * (N : ℝ) ^ (3 : ℝ) *
+        ((2 * (1 + |t₀|) ^ 2 * (1 + 4 * (Real.log T ^ 2) ^ 2)) ^ 2 * 2 * Real.exp 1) *
+        Real.exp (-((Real.log T ^ 3) ^ 2 / (4 * (Real.log T ^ 2) ^ 2))) *
+        (Real.log T ^ 2 * √(2 * Real.pi)) ≤
+      ε * (Real.log T ^ 2 * √Real.pi) := by
   set C' : ℝ := Cc * 8100 * (2 * Real.exp 1) * 2 with hC'
   have hC'0 : 0 ≤ C' := by rw [hC']; positivity
-  have hsmall := eventually_log_pow_mul_exp_le 8 (c := 1) (ε := ε / (C' + 1)) one_pos (by positivity)
-  have hlog := Real.tendsto_log_atTop
-  filter_upwards [hsmall, hlog.eventually_ge_atTop (4 * (3 * θ + 5)),
-    hlog.eventually_ge_atTop 1, eventually_ge_atTop (1 : ℝ)] with T hT1 hℓ hℓ1 hT
-  intro N t₀ hN ht₁ ht₂
   set ℓ := Real.log T with hℓdef
   have hT0 : 0 < T := by linarith
   have hℓ0 : 0 < ℓ := by linarith
