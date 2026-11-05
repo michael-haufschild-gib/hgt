@@ -123,8 +123,6 @@ theorem count_poleCorrectedTwin_iff : Count poleCorrectedTwin ↔ RiemannHypothe
 /-- The twin has residue `−1`. -/
 theorem tendsto_partialSum_liouvilleWeight_div :
     Tendsto (fun x => partialSum liouvilleWeight x / x) atTop (𝓝 (-1)) := by
-  have hδ : (fun x => partialSum (liouvilleWeight + vonMangoldtWeight) x / x) =ᶠ[atTop]
-      fun x => partialSum (liouvilleWeight + vonMangoldtWeight) x / x := EventuallyEq.rfl
   have h0 := (IsBigO.trans_isLittleO liouvilleWeight_add_mem_sqrtClass
     sqrtScale_isLittleO_id).tendsto_div_nhds_zero
   have h1 := h0.sub primeNumberLaw_vonMangoldt

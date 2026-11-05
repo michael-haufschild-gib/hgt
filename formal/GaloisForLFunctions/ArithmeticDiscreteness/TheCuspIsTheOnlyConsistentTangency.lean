@@ -42,6 +42,24 @@ theorem neg_log_one_sub_cube_le {u : ℝ} (hu0 : 0 ≤ u) (hu1 : u < 1) :
   rw [← pow_mul, ← pow_mul, ← pow_succ']
   exact pow_le_pow_of_le_one hu0 hu1.le (by omega)
 
+/-- The root `τ_− ∈ (−2, −1)` is inconsistent: `|1 − τ³| > 2` forces `σ < −1`, but `|1 − τ²| < 3`. -/
+theorem minus_root_inconsistent {u σ : ℝ} (hum1 : u < -1) (hum2 : -2 < u)
+    (hx : |1 - u ^ 3| = (2 : ℝ) ^ (-σ)) (hy : |1 - u ^ 2| = (3 : ℝ) ^ (-σ)) : False := by
+  have hx2 : 2 < 1 - u ^ 3 := by nlinarith
+  have hy3 : |1 - u ^ 2| < 3 := by
+    rw [abs_lt]; constructor <;> nlinarith
+  rw [abs_of_pos (by linarith)] at hx
+  have hσ : 1 < -σ := by
+    by_contra hle
+    rw [not_lt] at hle
+    have : (2 : ℝ) ^ (-σ) ≤ (2 : ℝ) ^ (1 : ℝ) :=
+      Real.rpow_le_rpow_of_exponent_le (by norm_num) hle
+    rw [Real.rpow_one] at this
+    linarith
+  have : (3 : ℝ) ^ (1 : ℝ) < (3 : ℝ) ^ (-σ) := Real.rpow_lt_rpow_of_exponent_lt (by norm_num) hσ
+  rw [Real.rpow_one] at this
+  linarith
+
 /-- **The cusp is the only consistent tangency.** -/
 theorem cusp_consistent_tangency_eq {x y : ℂ} {σ : ℝ}
     (hx : ‖x‖ = (2 : ℝ) ^ (-σ)) (hy : ‖y‖ = (3 : ℝ) ^ (-σ))
@@ -79,7 +97,7 @@ theorem cusp_consistent_tangency_eq {x y : ℂ} {σ : ℝ}
   have hcubic : (τ - 1) * ((P : ℂ) * τ ^ 2 + (P : ℂ) * τ - 2 * (L₂ : ℂ)) = 0 := by
     have h1 : τ ^ 3 * ((τ - 1) * ((P : ℂ) * τ ^ 2 + (P : ℂ) * τ - 2 * (L₂ : ℂ))) = 0 := by
       rw [hP]; push_cast
-      linear_combination -hHτ
+      linear_combination hHτ
     exact (mul_eq_zero.mp h1).resolve_left (pow_ne_zero 3 hτ0)
   have hσx : 0 < (2 : ℝ) ^ (-σ) := Real.rpow_pos_of_pos (by norm_num) _
   rcases mul_eq_zero.mp hcubic with h1 | hq
@@ -100,8 +118,10 @@ theorem cusp_consistent_tangency_eq {x y : ℂ} {σ : ℝ}
     rw [hv, Real.sqrt_lt' (by norm_num)]; linarith
   have hsq : (τ + 1 / 2) ^ 2 = ((v : ℝ) : ℂ) ^ 2 := by
     have hPc : (P : ℂ) ≠ 0 := by exact_mod_cast hP0.ne'
+    have hτsum : τ ^ 2 + τ = (2 * (L₂ : ℂ)) / (P : ℂ) := by
+      rw [eq_div_iff hPc]; linear_combination hq
     have : (τ + 1 / 2) ^ 2 = ((κ + 1 / 4 : ℝ) : ℂ) := by
-      rw [hκ]; push_cast; field_simp; linear_combination hq
+      rw [hκ]; push_cast; linear_combination hτsum
     rw [this, ← Complex.ofReal_pow, hv2]
   rcases sq_eq_sq_iff_eq_or_eq_neg.mp hsq with hpl | hmi
   · -- `τ = −½ + v ∈ (0, log 2/log 3)`
@@ -154,21 +174,8 @@ theorem cusp_consistent_tangency_eq {x y : ℂ} {σ : ℝ}
     have hum2 : -2 < u := by rw [hu]; linarith
     have hxr : x = ((1 - u ^ 3 : ℝ) : ℂ) := by rw [hxτ, hτu]; push_cast; ring
     have hyr : y = ((1 - u ^ 2 : ℝ) : ℂ) := by rw [hyτ, hτu]; push_cast; ring
-    have hx2 : 2 < 1 - u ^ 3 := by nlinarith
-    have hy3 : |1 - u ^ 2| < 3 := by
-      rw [abs_lt]; constructor <;> nlinarith
-    rw [hxr, Complex.norm_real, Real.norm_eq_abs, abs_of_pos (by linarith)] at hx
+    rw [hxr, Complex.norm_real, Real.norm_eq_abs] at hx
     rw [hyr, Complex.norm_real, Real.norm_eq_abs] at hy
-    -- `2^{−σ} > 2` forces `σ < −1`, then `3^{−σ} > 3`
-    have hσ : 1 < -σ := by
-      by_contra hle
-      push Not at hle
-      have : (2 : ℝ) ^ (-σ) ≤ (2 : ℝ) ^ (1 : ℝ) :=
-        Real.rpow_le_rpow_of_exponent_le (by norm_num) hle
-      rw [Real.rpow_one] at this
-      linarith
-    have : (3 : ℝ) ^ (1 : ℝ) < (3 : ℝ) ^ (-σ) := Real.rpow_lt_rpow_of_exponent_lt (by norm_num) hσ
-    rw [Real.rpow_one] at this
-    linarith
+    exact minus_root_inconsistent hum1 hum2 hx hy
 
 end GaloisForLFunctions.ArithmeticDiscreteness

@@ -13,7 +13,7 @@ vanishes: `Σ_j w_j W_λ(F_j) = 0` for *every* weight `λ`.
 On a window both statements fail only by the tail of the family, and the tail is doubly exponentially
 small (`abs_xiShiftedGammaTest_le`). Truncating at radius `L`:
 
-  `Σ_j w_j W_λ(F_{j,L}) ≤ K (1 + V)(e^{2L} + 1) exp(−(π/16) e^{2(L−1)})`,
+  `Σ_j w_j W_λ(F_{j,L}) ≤ K (1 + V)(e^{2L} + 1) exp(−(π/6) e^{2(L−1)})`,
 
 where `V` bounds `|λ(n) − Λ(n)|/√n` on the integers the window sees (`exists_tsum_nullEnergy_le`).
 Positivity on a window supplies such a `V` through the box of two-point resonators
@@ -22,7 +22,7 @@ Positivity on a window supplies such a `V` through the box of two-point resonato
 * **Near-nullity** (`exists_nullWeights_tsum_nullEnergy_le`): every point of the cone `𝒜(c)` has
   doubly exponentially small energy on the whole family, with one constant for all weights.
 * **The margin law** (`exists_margin_ceiling`): no weight has a margin above
-  `K exp(3c − (π/16) e^{2(c−2)})` on `[−c, c]`. Slack from other weights is excluded at a doubly
+  `K exp(3c − (π/6) e^{2(c−13/12)})` on `[−c, c]`. Slack from other weights is excluded at a doubly
   exponential rate; the Gaussian ceiling known for `Λ` holds for the best margin over all weights,
   with a smaller rate.
 -/
@@ -84,8 +84,8 @@ theorem exists_nullWeights : ∃ w : ℕ → ℝ, NullWeights w := by
 
 /-! ### Pointwise bounds -/
 
-/-- The doubly exponential tail `exp(−(π/16) e^{2X})`. -/
-def doubleExpTail (X : ℝ) : ℝ := Real.exp (-(Real.pi / 16) * Real.exp (2 * X))
+/-- The doubly exponential tail `exp(−(π/6) e^{2X})`. -/
+def doubleExpTail (X : ℝ) : ℝ := Real.exp (-(Real.pi / 6) * Real.exp (2 * X))
 
 theorem doubleExpTail_pos (X : ℝ) : 0 < doubleExpTail X := Real.exp_pos _
 
@@ -94,37 +94,37 @@ theorem doubleExpTail_le_one (X : ℝ) : doubleExpTail X ≤ 1 := by
   refine Real.exp_le_one_iff.mpr ?_
   have := Real.exp_pos (2 * X)
   have := Real.pi_pos
-  nlinarith [mul_pos (by positivity : (0 : ℝ) < Real.pi / 16) (Real.exp_pos (2 * X))]
+  nlinarith [mul_pos (by positivity : (0 : ℝ) < Real.pi / 6) (Real.exp_pos (2 * X))]
 
 theorem doubleExpTail_anti {X Y : ℝ} (h : X ≤ Y) : doubleExpTail Y ≤ doubleExpTail X := by
   unfold doubleExpTail
   refine Real.exp_le_exp.mpr ?_
   have hm : Real.exp (2 * X) ≤ Real.exp (2 * Y) := Real.exp_le_exp.mpr (by linarith)
-  have hπ : (0 : ℝ) ≤ Real.pi / 16 := by positivity
+  have hπ : (0 : ℝ) ≤ Real.pi / 6 := by positivity
   nlinarith [mul_le_mul_of_nonneg_left hm hπ]
 
-/-- `y³ ≤ 6 (16/π)³ e^{(π/16) y}` for `y ≥ 0`. -/
-def envelopeConst : ℝ := 6 * (16 / Real.pi) ^ 3
+/-- `y³ ≤ 6 (30/π)³ e^{(π/30) y}` for `y ≥ 0`. -/
+def envelopeConst : ℝ := 6 * (30 / Real.pi) ^ 3
 
 theorem envelopeConst_pos : 0 < envelopeConst := by
   unfold envelopeConst
   positivity
 
 theorem pow_three_le_envelopeConst {y : ℝ} (hy : 0 ≤ y) :
-    y ^ 3 ≤ envelopeConst * Real.exp (Real.pi / 16 * y) := by
+    y ^ 3 ≤ envelopeConst * Real.exp (Real.pi / 30 * y) := by
   have hπ := Real.pi_pos
-  have hz : 0 ≤ Real.pi / 16 * y := by positivity
-  have h1 := Real.pow_div_factorial_le_exp (Real.pi / 16 * y) hz 3
+  have hz : 0 ≤ Real.pi / 30 * y := by positivity
+  have h1 := Real.pow_div_factorial_le_exp (Real.pi / 30 * y) hz 3
   have hf : ((Nat.factorial 3 : ℕ) : ℝ) = 6 := by norm_num [Nat.factorial]
   rw [hf, div_le_iff₀ (by norm_num)] at h1
-  have e : y ^ 3 = (16 / Real.pi) ^ 3 * (Real.pi / 16 * y) ^ 3 := by
+  have e : y ^ 3 = (30 / Real.pi) ^ 3 * (Real.pi / 30 * y) ^ 3 := by
     field_simp
   rw [e]
   unfold envelopeConst
-  have hq : 0 ≤ (16 / Real.pi) ^ 3 := by positivity
+  have hq : 0 ≤ (30 / Real.pi) ^ 3 := by positivity
   nlinarith [mul_le_mul_of_nonneg_left h1 hq]
 
-/-- For `|x| ≥ X` the profile with the Weil weight `e^{|x|/2}` is below `K e^{−|x|} exp(−(π/16) e^{2X})`. -/
+/-- For `|x| ≥ X` the profile with the Weil weight `e^{|x|/2}` is below `K e^{−|x|} exp(−(π/6) e^{2X})`. -/
 theorem shiftedGammaEnvelope_mul_exp_le {x X : ℝ} (h : X ≤ |x|) :
     shiftedGammaEnvelope x * Real.exp (1 / 2 * |x|) ≤
       envelopeConst * (Real.exp (-|x|) * doubleExpTail X) := by
@@ -137,14 +137,15 @@ theorem shiftedGammaEnvelope_mul_exp_le {x X : ℝ} (h : X ≤ |x|) :
     ring
   rw [e6] at hy3
   have hmono : Real.exp (2 * X) ≤ Real.exp (2 * |x|) := Real.exp_le_exp.mpr (by linarith)
-  have hτ : Real.exp (-(Real.pi / 16 * Real.exp (2 * |x|))) ≤ doubleExpTail X := by
+  have hτ : Real.exp (-(Real.pi / 6 * Real.exp (2 * |x|))) ≤ doubleExpTail X := by
     unfold doubleExpTail
     refine Real.exp_le_exp.mpr ?_
-    nlinarith [mul_le_mul_of_nonneg_left hmono (by positivity : (0 : ℝ) ≤ Real.pi / 16)]
-  obtain ⟨z, hz⟩ : ∃ z, z = Real.pi / 16 * Real.exp (2 * |x|) := ⟨_, rfl⟩
-  rw [← hz] at hy3 hτ
+    nlinarith [mul_le_mul_of_nonneg_left hmono (by positivity : (0 : ℝ) ≤ Real.pi / 6)]
+  obtain ⟨z, hz⟩ : ∃ z, z = Real.pi / 30 * Real.exp (2 * |x|) := ⟨_, rfl⟩
+  rw [← hz] at hy3
   have hsplit : shiftedGammaEnvelope x * Real.exp (1 / 2 * |x|) =
-      Real.exp (-|x|) * (Real.exp (6 * |x|) * Real.exp (-z)) * Real.exp (-z) := by
+      Real.exp (-|x|) * (Real.exp (6 * |x|) * Real.exp (-z)) *
+        Real.exp (-(Real.pi / 6 * Real.exp (2 * |x|))) := by
     unfold shiftedGammaEnvelope
     simp only [← Real.exp_add]
     congr 1
@@ -156,16 +157,17 @@ theorem shiftedGammaEnvelope_mul_exp_le {x X : ℝ} (h : X ≤ |x|) :
     rw [mul_assoc, hone, mul_one] at this
     exact this
   rw [hsplit]
-  calc Real.exp (-|x|) * (Real.exp (6 * |x|) * Real.exp (-z)) * Real.exp (-z)
+  calc Real.exp (-|x|) * (Real.exp (6 * |x|) * Real.exp (-z)) *
+        Real.exp (-(Real.pi / 6 * Real.exp (2 * |x|)))
       ≤ Real.exp (-|x|) * envelopeConst * doubleExpTail X := by
         have hp := Real.exp_pos (-|x|)
-        have hq := Real.exp_pos (-z)
+        have hq := Real.exp_pos (-(Real.pi / 6 * Real.exp (2 * |x|)))
         exact mul_le_mul (mul_le_mul_of_nonneg_left hle hp.le) hτ hq.le
           (mul_nonneg hp.le envelopeConst_pos.le)
     _ = _ := by ring
 
 /-- The constant of the uniform pointwise bound on `F_j` and `F_j′`. -/
-def nullConst : ℝ := 40 * shiftedGammaConstant
+def nullConst : ℝ := 100 * shiftedGammaConstant
 
 theorem nullConst_nonneg : 0 ≤ nullConst := by
   have := shiftedGammaConstant_nonneg
@@ -173,27 +175,27 @@ theorem nullConst_nonneg : 0 ≤ nullConst := by
   positivity
 
 theorem succ_factorial_mul_le (j : ℕ) :
-    (((j + 1)! : ℝ)) * (4 / 3 : ℝ) ^ j ≤ 8 * gammaScale j := by
-  have hb := one_add_mul_le_pow (a := (1 / 8 : ℝ)) (by norm_num) j
+    (((j + 1)! : ℝ)) * (10 / 7 : ℝ) ^ j ≤ 20 * gammaScale j := by
+  have hb := one_add_mul_le_pow (a := (1 / 20 : ℝ)) (by norm_num) j
   have hfac : (((j + 1)! : ℝ)) = ((j : ℝ) + 1) * (j ! : ℝ) := by
     rw [Nat.factorial_succ]
     push_cast
     ring
-  have hj : (j : ℝ) + 1 ≤ 8 * (9 / 8 : ℝ) ^ j := by
-    have e : (1 + 1 / 8 : ℝ) = 9 / 8 := by norm_num
+  have hj : (j : ℝ) + 1 ≤ 20 * (21 / 20 : ℝ) ^ j := by
+    have e : (1 + 1 / 20 : ℝ) = 21 / 20 := by norm_num
     rw [e] at hb
     nlinarith
-  have hp : (9 / 8 : ℝ) ^ j * (4 / 3 : ℝ) ^ j = (3 / 2 : ℝ) ^ j := by
+  have hp : (21 / 20 : ℝ) ^ j * (10 / 7 : ℝ) ^ j = (3 / 2 : ℝ) ^ j := by
     rw [← mul_pow]
     norm_num
   unfold gammaScale
   rw [hfac]
-  have hf : (0 : ℝ) ≤ (j ! : ℝ) * (4 / 3 : ℝ) ^ j := by positivity
-  calc ((j : ℝ) + 1) * (j ! : ℝ) * (4 / 3 : ℝ) ^ j
-      = ((j : ℝ) + 1) * ((j ! : ℝ) * (4 / 3 : ℝ) ^ j) := by ring
-    _ ≤ (8 * (9 / 8 : ℝ) ^ j) * ((j ! : ℝ) * (4 / 3 : ℝ) ^ j) :=
+  have hf : (0 : ℝ) ≤ (j ! : ℝ) * (10 / 7 : ℝ) ^ j := by positivity
+  calc ((j : ℝ) + 1) * (j ! : ℝ) * (10 / 7 : ℝ) ^ j
+      = ((j : ℝ) + 1) * ((j ! : ℝ) * (10 / 7 : ℝ) ^ j) := by ring
+    _ ≤ (20 * (21 / 20 : ℝ) ^ j) * ((j ! : ℝ) * (10 / 7 : ℝ) ^ j) :=
         mul_le_mul_of_nonneg_right hj hf
-    _ = 8 * ((j ! : ℝ) * ((9 / 8 : ℝ) ^ j * (4 / 3 : ℝ) ^ j)) := by ring
+    _ = 20 * ((j ! : ℝ) * ((21 / 20 : ℝ) ^ j * (10 / 7 : ℝ) ^ j)) := by ring
     _ = _ := by rw [hp]
 
 theorem abs_xiShiftedGammaTest_le_scale (j : ℕ) (x : ℝ) :
@@ -201,8 +203,8 @@ theorem abs_xiShiftedGammaTest_le_scale (j : ℕ) (x : ℝ) :
   have hK := shiftedGammaConstant_nonneg
   have hG := (shiftedGammaEnvelope_pos x).le
   refine (abs_xiShiftedGammaTest_le j x).trans (mul_le_mul_of_nonneg_right ?_ hG)
-  have hp : (4 / 3 : ℝ) ^ j ≤ (3 / 2 : ℝ) ^ j := pow_le_pow_left₀ (by norm_num) (by norm_num) j
-  have hs : (j ! : ℝ) * (4 / 3 : ℝ) ^ j ≤ gammaScale j :=
+  have hp : (10 / 7 : ℝ) ^ j ≤ (3 / 2 : ℝ) ^ j := pow_le_pow_left₀ (by norm_num) (by norm_num) j
+  have hs : (j ! : ℝ) * (10 / 7 : ℝ) ^ j ≤ gammaScale j :=
     mul_le_mul_of_nonneg_left hp (by positivity)
   have hg := gammaScale_nonneg j
   unfold nullConst
@@ -270,7 +272,7 @@ theorem abs_xiShiftedGammaTest_le_const (j : ℕ) (x : ℝ) :
   have : Real.exp (-|x|) ≤ 1 := Real.exp_le_one_iff.mpr (by simp)
   exact mul_le_of_le_one_right hA this
 
-/-- The truncation error is below `A_j e^{−|t|} exp(−(π/16) e^{2(L−1)})`. -/
+/-- The truncation error is below `A_j e^{−|t|} exp(−(π/6) e^{2(L−1)})`. -/
 theorem abs_truncTest_sub_le (j : ℕ) (L t : ℝ) :
     |truncTest (𝔽 j) L t - 𝔽 j t| ≤
       decayConst * gammaScale j * (Real.exp (-|t|) * doubleExpTail (L - 1)) := by
@@ -566,7 +568,7 @@ theorem atomPairing_null_eq (v : ℕ → ℝ) (j : ℕ) (L : ℝ) :
     simp
 
 /-- **The family bound.** On the truncated family, Weil's functional of *any* weights is at most
-`K (1 + V)(e^{2L} + 1) exp(−(π/16) e^{2(L−1)})`, where `V` bounds `|λ(n) − Λ(n)|/√n` on the integers
+`K (1 + V)(e^{2L} + 1) exp(−(π/6) e^{2(L−1)})`, where `V` bounds `|λ(n) − Λ(n)|/√n` on the integers
 the window sees. -/
 theorem exists_tsum_nullEnergy_le {w : ℕ → ℝ} (hw : NullWeights w) :
     ∃ K : ℝ, 0 ≤ K ∧ ∀ (L V : ℝ) (lam : ℕ → ℝ), 0 ≤ V →
@@ -755,20 +757,20 @@ theorem abs_sub_vonMangoldt_div_sqrt_le {lam : ℕ → ℝ} {c L : ℝ}
     mul_le_mul_of_nonneg_left (by linarith) (by linarith)
   nlinarith
 
-/-- The ceiling `exp(3c − (π/16) e^{2(c−2)})`. -/
-def marginCeiling (c : ℝ) : ℝ := Real.exp (3 * c - Real.pi / 16 * Real.exp (2 * (c - 2)))
+/-- The ceiling `exp(3c − (π/6) e^{2(c−13/12)})`. -/
+def marginCeiling (c : ℝ) : ℝ := Real.exp (3 * c - Real.pi / 6 * Real.exp (2 * (c - 13 / 12)))
 
 theorem marginCeiling_pos (c : ℝ) : 0 < marginCeiling c := Real.exp_pos _
 
 theorem exp_mul_doubleExpTail (c : ℝ) :
-    Real.exp (3 * c) * doubleExpTail (c - 2) = marginCeiling c := by
+    Real.exp (3 * c) * doubleExpTail (c - 13 / 12) = marginCeiling c := by
   unfold doubleExpTail marginCeiling
   rw [← Real.exp_add]
   congr 1
   ring
 
 /-- **Near-nullity.** One family and one constant serve the whole cone: every `λ ∈ 𝒜(c)` has family
-energy at most `K exp(3c − (π/16) e^{2(c−2)})`. -/
+energy at most `K exp(3c − (π/6) e^{2(c−13/12)})`. -/
 theorem exists_nullWeights_tsum_nullEnergy_le :
     ∃ w : ℕ → ℝ, NullWeights w ∧ ∃ K : ℝ, 0 < K ∧ ∀ (c : ℝ) (lam : ℕ → ℝ), 1 ≤ c →
       WeilPositiveFullUpTo lam c →
@@ -802,15 +804,15 @@ theorem exists_nullWeights_tsum_nullEnergy_le :
     calc _ ≤ ((5 + boxConst) * Real.exp c) * (2 * Real.exp (2 * c)) :=
           mul_le_mul hfac1 hfac2 (by positivity) (by positivity)
       _ = _ := by ring
-  have hτ : doubleExpTail (c - 1 / 12 - 1) ≤ doubleExpTail (c - 2) :=
+  have hτ : doubleExpTail (c - 1 / 12 - 1) ≤ doubleExpTail (c - 13 / 12) :=
     doubleExpTail_anti (by linarith)
   have hτ0 := (doubleExpTail_pos (c - 1 / 12 - 1)).le
   have hM := marginCeiling_pos c
   calc K * ((1 + (4 * (c - 1 / 12) + boxConst)) * (Real.exp (2 * (c - 1 / 12)) + 1)) *
         doubleExpTail (c - 1 / 12 - 1)
-      ≤ K * (2 * (5 + boxConst) * Real.exp (3 * c)) * doubleExpTail (c - 2) :=
+      ≤ K * (2 * (5 + boxConst) * Real.exp (3 * c)) * doubleExpTail (c - 13 / 12) :=
         mul_le_mul (mul_le_mul_of_nonneg_left hprod hK) hτ hτ0 (by positivity)
-    _ = K * (2 * (5 + boxConst)) * (Real.exp (3 * c) * doubleExpTail (c - 2)) := by ring
+    _ = K * (2 * (5 + boxConst)) * (Real.exp (3 * c) * doubleExpTail (c - 13 / 12)) := by ring
     _ = K * (2 * (5 + boxConst)) * marginCeiling c := by rw [exp_mul_doubleExpTail]
     _ ≤ _ := by nlinarith
 

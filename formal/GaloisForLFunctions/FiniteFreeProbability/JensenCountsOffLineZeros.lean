@@ -1,4 +1,5 @@
 import GaloisForLFunctions.FiniteFreeProbability.NonRealRootCount
+import GaloisForLFunctions.FiniteFreeProbability.FiniteFreeHardyTheorem
 import GaloisForLFunctions.RHTower.XiWindowNonrealBudget
 
 /-!
@@ -148,7 +149,7 @@ theorem tendstoLocallyUniformly_eval_of_coeff {P : ℕ → ℂ[X]} {L : ℂ[X]} 
   intro ε hε
   have hsum : Tendsto (fun n => ∑ j ∈ Finset.range (D + 1), ‖(P n).coeff j - L.coeff j‖ * R ^ j) atTop
       (𝓝 (∑ j ∈ Finset.range (D + 1), ‖L.coeff j - L.coeff j‖ * R ^ j)) :=
-    tendsto_finset_sum _ fun j _ => (((hc j).sub tendsto_const_nhds).norm).mul_const _
+    tendsto_finsetSum _ fun j _ => (((hc j).sub tendsto_const_nhds).norm).mul_const _
   simp only [sub_self, norm_zero, zero_mul, Finset.sum_const_zero] at hsum
   filter_upwards [hsum.eventually (gt_mem_nhds hε)] with n hn z hz
   rw [dist_comm, dist_eq_norm, eval_eq_sum_range' (Nat.lt_succ_of_le (hP n)),
@@ -226,14 +227,14 @@ theorem eval_zero_xiRealApprox (n : ℕ) : (xiRealApprox n).eval 0 ≠ 0 := by
   have h4 := congrArg (eval 0) h3
   rw [h2, eval_mul, eval_C, eval_xiZeroPoly] at h4
   simp only [zero_div, sub_zero, Finset.prod_const_one, mul_one] at h4
-  exact XiC_zero_ne_zero h4.symm
+  exact DeBruijn.XiC_zero_ne_zero h4.symm
 
 /-- The coefficients of the real approximants converge to the Taylor coefficients of `Ξ`. -/
 theorem tendsto_coeff_xiRealApprox (k : ℕ) :
     Tendsto (fun n => (((xiRealApprox n).coeff k : ℝ) : ℂ)) atTop
       (𝓝 ((realTaylorCoeff XiC k : ℝ) : ℂ)) := by
   have hloc := tendstoLocallyUniformly_xiRealApprox
-  rw [riemannHeat_zero_eq_XiC] at hloc
+  rw [DeBruijn.riemannHeat_zero_eq_XiC] at hloc
   have h := GaloisForLFunctions.iteratedDeriv_tendsto_of_locallyUniform isOpen_univ
     (tendstoLocallyUniformlyOn_univ.2 hloc)
     (Eventually.of_forall fun n => (Polynomial.differentiable _).differentiableOn) k (Set.mem_univ 0)
@@ -301,7 +302,7 @@ def xiScaledReal (d : ℕ) : ℝ[X] :=
 theorem eval_map_xiScaledReal (d : ℕ) (u : ℂ) :
     ((xiScaledReal d).map Complex.ofRealHom).eval u = scaledJensen xiCoeff d u := by
   simp only [xiScaledReal, Polynomial.map_sum, Polynomial.map_mul, map_C, Polynomial.map_pow, map_X,
-    eval_finset_sum, eval_mul, eval_C, eval_pow, eval_X, scaledJensen, xiCoeff, Complex.ofRealHom_eq_coe]
+    eval_finsetSum, eval_mul, eval_C, eval_pow, eval_X, scaledJensen, xiCoeff, Complex.ofRealHom_eq_coe]
   refine Finset.sum_congr rfl fun k _ => ?_
   push_cast
   ring
@@ -345,9 +346,8 @@ theorem card_filter_roots_linearProd (V : Multiset ℂ) :
         · exact fun h => ⟨h, hns.ne'⟩
       rw [hroots, Multiset.filter_singleton]
       by_cases h : a.im ≠ 0
-      · simp [him.2 h, h]
-      · have h' : ¬ (a⁻¹).im ≠ 0 := fun h'' => h (him.1 h'')
-        simp [h', h]
+      · simp [ha, h]
+      · simp [h]
 
 /-- `Φ_d` has the non-real roots of `R_d`, with multiplicity. -/
 theorem nonrealRootCount_xiScaledReal_le {d : ℕ} (hd : 0 < d) :

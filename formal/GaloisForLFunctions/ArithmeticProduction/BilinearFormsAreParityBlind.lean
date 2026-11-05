@@ -121,6 +121,28 @@ theorem not_bilinearStatement_vonMangoldt {S : (ℕ → ℝ) → Prop} (hS : IsB
 
 /-! ### Relabeling -/
 
+/-- The admissible constants of a Type II estimate restricted to a class of test vectors. -/
+def classConstants (𝒞 : Set ((ℕ → ℝ) × (ℕ → ℝ))) (U V : Finset ℕ) (a : ℕ → ℝ) : Set ℝ :=
+  {C | ∀ p ∈ 𝒞, |bilinearForm U V a p.1 p.2| ≤ C * ellTwo U p.1 * ellTwo V p.2}
+
+/-- **A test class stable under the sign is still blind to it.**  So a parity-breaking bilinear statement must use test vectors whose class is not stable under multiplicative signs: it has to name them. -/
+theorem classConstants_twist {𝒞 : Set ((ℕ → ℝ) × (ℕ → ℝ))} {U V : Finset ℕ} {g : ℕ → ℝ}
+    (hg : IsMultiplicativeSign g) (hU : ∀ m ∈ U, m ≠ 0) (hV : ∀ n ∈ V, n ≠ 0)
+    (h𝒞 : ∀ p ∈ 𝒞, ((fun m => g m * p.1 m), (fun n => g n * p.2 n)) ∈ 𝒞)
+    (h𝒞' : ∀ p ∈ 𝒞, ∃ q ∈ 𝒞, ((fun m => g m * q.1 m), (fun n => g n * q.2 n)) = p) (a : ℕ → ℝ) :
+    classConstants 𝒞 U V (fun n => g n * a n) = classConstants 𝒞 U V a := by
+  ext C
+  constructor
+  · intro h p hp
+    obtain ⟨q, hq, rfl⟩ := h𝒞' p hp
+    have h1 := h q hq
+    rw [bilinearForm_sign_mul hg hU hV] at h1
+    simpa [ellTwo_sign_mul hg hU, ellTwo_sign_mul hg hV] using h1
+  · intro h p hp
+    have h1 := h _ (h𝒞 p hp)
+    rw [bilinearForm_sign_mul hg hU hV]
+    simpa [ellTwo_sign_mul hg hU, ellTwo_sign_mul hg hV] using h1
+
 /-- Admissible constants on all boxes of positive integers. -/
 def allBilinearConstants (a : ℕ → ℝ) : Set ℝ :=
   {C | ∀ U V : Finset ℕ, (∀ m ∈ U, m ≠ 0) → (∀ n ∈ V, n ≠ 0) → C ∈ bilinearConstants U V a}

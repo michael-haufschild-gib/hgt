@@ -60,6 +60,9 @@ count, strip-envelope proof and sum/integral exchanges remain open.
 
 ## Lean obligations
 
-Weighted local moment readout; band-limited interval bounds; weighted count
-transfer; exact lattice example separating mass from support cardinality.
-No new theorem is yet verified.
+`weighted_discMoment_readout_slow` passes Lean and its transitive axiom audit
+uses only the three standard axioms. It chooses one pair of windows uniformly
+for all complex coefficients with summable absolute Lorentzian mass.
+The finite-height specialization, multiplicity count, strip envelope, interval
+majorant, weighted count transfer and lattice example remain under verification.
+Final direct source audits and umbrella wiring remain.

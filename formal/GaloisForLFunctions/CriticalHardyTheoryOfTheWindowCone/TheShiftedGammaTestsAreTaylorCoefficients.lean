@@ -14,9 +14,9 @@ of the complex translates of Riemann's kernel:
   `F_j(x) = ∂_t^j [ (1 − t)^{−¼} Φ(x + ½ log(1 − t)) ]_{t=0}`.
 
 The translate stays in the strip `|Im w| < π/4` of the theta source for every `|t| < 1`. Cauchy's estimate
-on the circle `|t| = ¾` therefore gives one doubly exponential bound for all `j` at once:
+on the circle `|t| = 7/10` therefore gives one doubly exponential bound for all `j` at once:
 
-  `|F_j(x)| ≤ K · j! (4/3)^j · e^{9|x|/2} exp(−(π/8) e^{2|x|})`
+  `|F_j(x)| ≤ K · j! (10/7)^j · e^{9|x|/2} exp(−(π/5) e^{2|x|})`
   (`abs_xiShiftedGammaTest_le`),
 
 with the factorial growth exactly what the twisted-arc weights `w_j ≈ 1/(2j)!` absorb. The recursion
@@ -263,11 +263,11 @@ theorem iteratedDeriv_thetaGen (j : ℕ) (x : ℝ) {t : ℂ} (ht : ‖t‖ < 1) 
 theorem thetaGen_at_zero (j : ℕ) (x : ℝ) : thetaGen j x 0 = (xiShiftedGammaTest j x : ℂ) := by
   simp [thetaGen, thetaJet_ofReal]
 
-/-! ### The bound on the circle `|t| = ¾` -/
+/-! ### The bound on the circle `|t| = 7/10` -/
 
-/-- The doubly exponential profile `e^{9|x|/2} exp(−(π/8) e^{2|x|})`. -/
+/-- The doubly exponential profile `e^{9|x|/2} exp(−(π/5) e^{2|x|})`. -/
 def shiftedGammaEnvelope (x : ℝ) : ℝ :=
-  Real.exp (9 * |x| / 2) * Real.exp (-(Real.pi / 8) * Real.exp (2 * |x|))
+  Real.exp (9 * |x| / 2) * Real.exp (-(Real.pi / 5) * Real.exp (2 * |x|))
 
 theorem shiftedGammaEnvelope_pos (x : ℝ) : 0 < shiftedGammaEnvelope x := by
   unfold shiftedGammaEnvelope
@@ -275,20 +275,20 @@ theorem shiftedGammaEnvelope_pos (x : ℝ) : 0 < shiftedGammaEnvelope x := by
 
 /-- The constant of the Cauchy estimate. -/
 def shiftedGammaConstant : ℝ :=
-  2 * thetaStripGaussianConstant (Real.pi / 6) * Real.exp (9 / 2 * Real.log 2)
+  2 * thetaStripGaussianConstant (Real.pi / 8) * Real.exp (9 / 4 * Real.log (10 / 3))
 
 theorem shiftedGammaConstant_nonneg : 0 ≤ shiftedGammaConstant := by
-  have := thetaStripGaussianConstant_nonneg (Real.pi / 6)
+  have := thetaStripGaussianConstant_nonneg (Real.pi / 8)
   unfold shiftedGammaConstant
   positivity
 
-/-- On `|t| = ¾` the argument of `1 − t` is at most `π/3`. -/
-theorem abs_arg_one_sub_le {t : ℂ} (ht : ‖t‖ = 3 / 4) : |(1 - t).arg| ≤ Real.pi / 3 := by
+/-- On `|t| = 7/10` the argument of `1 − t` is at most `π/4`. -/
+theorem abs_arg_one_sub_le {t : ℂ} (ht : ‖t‖ = 7 / 10) : |(1 - t).arg| ≤ Real.pi / 4 := by
   have hlt : ‖t‖ < 1 := by rw [ht]; norm_num
   have hre := one_sub_re_pos hlt
   have hne : 1 - t ≠ 0 := Complex.slitPlane_ne_zero (one_sub_mem_slitPlane hlt)
   have hn : 0 < ‖1 - t‖ := norm_pos_iff.mpr hne
-  have hsq : t.re ^ 2 + t.im ^ 2 = 9 / 16 := by
+  have hsq : t.re ^ 2 + t.im ^ 2 = 49 / 100 := by
     have := Complex.sq_norm t
     rw [ht, Complex.normSq_apply] at this
     nlinarith
@@ -297,53 +297,65 @@ theorem abs_arg_one_sub_le {t : ℂ} (ht : ‖t‖ = 3 / 4) : |(1 - t).arg| ≤ 
     simp only [Complex.sub_re, Complex.one_re, Complex.sub_im, Complex.one_im]
     ring
   have hre' : 0 < 1 - t.re := by simpa using hre
-  have hhalf : ‖1 - t‖ ≤ 2 * (1 - t.re) := by
-    refine abs_le_of_sq_le_sq' ?_ (by linarith) |>.2
-    nlinarith [sq_nonneg (2 * t.re - 3 / 2)]
-  have hcos : 1 / 2 ≤ Real.cos (1 - t).arg := by
+  have hs2 : Real.sqrt 2 * Real.sqrt 2 = 2 := Real.mul_self_sqrt (by norm_num)
+  have hs0 : 0 < Real.sqrt 2 := Real.sqrt_pos.mpr (by norm_num)
+  have hhalf : ‖1 - t‖ ≤ Real.sqrt 2 * (1 - t.re) := by
+    refine abs_le_of_sq_le_sq' ?_ (by positivity) |>.2
+    have e : (Real.sqrt 2 * (1 - t.re)) ^ 2 = 2 * (1 - t.re) ^ 2 := by
+      rw [mul_pow, sq (Real.sqrt 2), hs2]
+    rw [e, hnsq]
+    nlinarith [sq_nonneg (2 * t.re - 1)]
+  have hcos : Real.sqrt 2 / 2 ≤ Real.cos (1 - t).arg := by
     rw [Complex.cos_arg hne, le_div_iff₀ hn]
     simp only [Complex.sub_re, Complex.one_re]
+    have h := mul_le_mul_of_nonneg_left hhalf (by positivity : (0 : ℝ) ≤ Real.sqrt 2 / 2)
+    have e : Real.sqrt 2 / 2 * (Real.sqrt 2 * (1 - t.re)) = 1 - t.re := by
+      calc _ = (Real.sqrt 2 * Real.sqrt 2) / 2 * (1 - t.re) := by ring
+        _ = _ := by rw [hs2]; ring
     linarith
   by_contra hcon
   rw [not_le] at hcon
   have hpi := Complex.abs_arg_le_pi (1 - t)
-  have hlt2 := Real.cos_lt_cos_of_nonneg_of_le_pi (x := Real.pi / 3) (y := |(1 - t).arg|)
+  have hlt2 := Real.cos_lt_cos_of_nonneg_of_le_pi (x := Real.pi / 4) (y := |(1 - t).arg|)
     (by positivity) hpi hcon
-  rw [Real.cos_abs, Real.cos_pi_div_three] at hlt2
+  rw [Real.cos_abs, Real.cos_pi_div_four] at hlt2
   linarith
 
-theorem norm_thetaGen_zero_le (x : ℝ) {t : ℂ} (ht : ‖t‖ = 3 / 4) :
+theorem norm_thetaGen_zero_le (x : ℝ) {t : ℂ} (ht : ‖t‖ = 7 / 10) :
     ‖thetaGen 0 x t‖ ≤ shiftedGammaConstant * shiftedGammaEnvelope x := by
   have hlt : ‖t‖ < 1 := by rw [ht]; norm_num
   have hne : 1 - t ≠ 0 := Complex.slitPlane_ne_zero (one_sub_mem_slitPlane hlt)
   have hn : 0 < ‖1 - t‖ := norm_pos_iff.mpr hne
-  have hl2 : 0 < Real.log 2 := Real.log_pos (by norm_num)
-  have hlow : (1 / 4 : ℝ) ≤ ‖1 - t‖ := by
+  obtain ⟨ℓ, hℓ⟩ : ∃ ℓ, ℓ = Real.log (10 / 3) := ⟨_, rfl⟩
+  have hℓ0 : 0 < ℓ := by rw [hℓ]; exact Real.log_pos (by norm_num)
+  have hlow : (3 / 10 : ℝ) ≤ ‖1 - t‖ := by
     have := norm_sub_norm_le (1 : ℂ) t
     rw [norm_one, ht] at this
     linarith
-  have hhigh : ‖1 - t‖ ≤ 4 := by
+  have hhigh : ‖1 - t‖ ≤ 10 / 3 := by
     have := norm_sub_le (1 : ℂ) t
     rw [norm_one, ht] at this
     linarith
   set E := Complex.log (1 - t) with hE
   have hEre : E.re = Real.log ‖1 - t‖ := Complex.log_re _
   have hEim : E.im = (1 - t).arg := Complex.log_im _
-  have hElow : -(2 * Real.log 2) ≤ E.re := by
-    rw [hEre]
+  have hElow : -ℓ ≤ E.re := by
+    rw [hEre, hℓ]
     have h := Real.log_le_log (by norm_num) hlow
-    have e : Real.log (1 / 4) = -(2 * Real.log 2) := by
-      rw [show (1 / 4 : ℝ) = 2⁻¹ ^ 2 by norm_num, Real.log_pow, Real.log_inv]
-      push_cast
-      ring
+    have e : Real.log (3 / 10) = -Real.log (10 / 3) := by
+      rw [← Real.log_inv]
+      norm_num
     linarith
-  have hEhigh : E.re ≤ 2 * Real.log 2 := by
-    rw [hEre]
-    have h := Real.log_le_log hn hhigh
-    have e : Real.log 4 = 2 * Real.log 2 := by
-      rw [show (4 : ℝ) = 2 ^ 2 by norm_num, Real.log_pow]
+  have hEhigh : E.re ≤ ℓ := by
+    rw [hEre, hℓ]
+    exact Real.log_le_log hn hhigh
+  have hℓ2 : ℓ ≤ 4 * Real.log 2 := by
+    have h := Real.log_le_log (by norm_num : (0 : ℝ) < 10 / 3) (by norm_num : (10 / 3 : ℝ) ≤ 16)
+    have e : Real.log 16 = 4 * Real.log 2 := by
+      rw [show (16 : ℝ) = 2 ^ 4 by norm_num, Real.log_pow]
       push_cast
       ring
+    rw [hℓ]
     linarith
   -- the prefactor
   have hpre : ‖cexp (-(((( (0 : ℕ) : ℝ)) + 1 / 4 : ℝ) : ℂ) * E)‖ ≤ 2 := by
@@ -358,77 +370,88 @@ theorem norm_thetaGen_zero_le (x : ℝ) {t : ℂ} (ht : ‖t‖ = 3 / 4) :
   set w : ℂ := (x : ℂ) + 1 / 2 * E with hw
   have hwre : w.re = x + 1 / 2 * E.re := by simp [hw]
   have hwim : w.im = 1 / 2 * E.im := by simp [hw]
-  have him : |w.im| ≤ Real.pi / 6 := by
+  have him : |w.im| ≤ Real.pi / 8 := by
     rw [hwim, hEim, abs_mul, abs_of_pos (by norm_num : (0 : ℝ) < 1 / 2)]
     linarith [abs_arg_one_sub_le ht]
-  have hδ : 2 * (Real.pi / 6) < Real.pi / 2 := by linarith [Real.pi_pos]
-  have hS := norm_thetaCuspStripSource_le_gaussian_envelope (Real.pi / 6) (by positivity) hδ w him
-  have hre1 : |w.re| ≤ |x| + Real.log 2 := by
+  have hδ : 2 * (Real.pi / 8) < Real.pi / 2 := by linarith [Real.pi_pos]
+  have hS := norm_thetaCuspStripSource_le_gaussian_envelope (Real.pi / 8) (by positivity) hδ w him
+  have hEabs : |E.re| ≤ ℓ := abs_le.mpr ⟨hElow, hEhigh⟩
+  have hre1 : |w.re| ≤ |x| + ℓ / 2 := by
     rw [hwre]
     refine (abs_add_le _ _).trans ?_
     rw [abs_mul, abs_of_pos (by norm_num : (0 : ℝ) < 1 / 2)]
-    have : |E.re| ≤ 2 * Real.log 2 := abs_le.mpr ⟨hElow, hEhigh⟩
     linarith
-  have hre2 : |x| - Real.log 2 ≤ |w.re| := by
+  have hre2 : |x| - ℓ / 2 ≤ |w.re| := by
     have h := abs_sub_abs_le_abs_sub x (-(1 / 2 * E.re))
     rw [sub_neg_eq_add, ← hwre, abs_neg, abs_mul, abs_of_pos (by norm_num : (0 : ℝ) < 1 / 2)] at h
-    have : |E.re| ≤ 2 * Real.log 2 := abs_le.mpr ⟨hElow, hEhigh⟩
     linarith
-  have hcosδ : Real.cos (2 * (Real.pi / 6)) = 1 / 2 := by
-    rw [show 2 * (Real.pi / 6) = Real.pi / 3 by ring, Real.cos_pi_div_three]
-  have henv : thetaStripGaussianEnvelope (Real.pi / 6) w.re ≤
-      Real.exp (9 / 2 * Real.log 2) * shiftedGammaEnvelope x := by
+  have hcosδ : Real.cos (2 * (Real.pi / 8)) = Real.sqrt 2 / 2 := by
+    rw [show 2 * (Real.pi / 8) = Real.pi / 4 by ring, Real.cos_pi_div_four]
+  have henv : thetaStripGaussianEnvelope (Real.pi / 8) w.re ≤
+      Real.exp (9 / 4 * ℓ) * shiftedGammaEnvelope x := by
     unfold thetaStripGaussianEnvelope shiftedGammaEnvelope
     rw [hcosδ, ← mul_assoc]
     refine mul_le_mul ?_ ?_ (Real.exp_pos _).le (by positivity)
     · rw [← Real.exp_add]
       exact Real.exp_le_exp.mpr (by linarith)
     · refine Real.exp_le_exp.mpr ?_
-      have h4 : Real.exp (2 * |x|) / 4 ≤ Real.exp (2 * |w.re|) := by
-        have e4 : Real.exp (2 * |x|) / 4 = Real.exp (2 * (|x| - Real.log 2)) := by
-          rw [mul_sub, Real.exp_sub, show 2 * Real.log 2 = Real.log 4 by
-            rw [show (4 : ℝ) = 2 ^ 2 by norm_num, Real.log_pow]; push_cast; ring,
+      have h4 : Real.exp (2 * |x|) * (3 / 10) ≤ Real.exp (2 * |w.re|) := by
+        have e4 : Real.exp (2 * |x|) * (3 / 10) = Real.exp (2 * (|x| - ℓ / 2)) := by
+          rw [show 2 * (|x| - ℓ / 2) = 2 * |x| - ℓ by ring, Real.exp_sub, hℓ,
             Real.exp_log (by norm_num)]
+          ring
         rw [e4]
         exact Real.exp_le_exp.mpr (by linarith)
       have hπ := Real.pi_pos
-      nlinarith
-  have hC := thetaStripGaussianConstant_nonneg (Real.pi / 6)
+      have hs2 : (4 : ℝ) / 3 ≤ Real.sqrt 2 := by
+        refine Real.le_sqrt_of_sq_le ?_
+        norm_num
+      have hE0 := Real.exp_pos (2 * |x|)
+      have hstep : Real.pi / 5 * Real.exp (2 * |x|) ≤
+          Real.pi * (Real.sqrt 2 / 2) * (Real.exp (2 * |x|) * (3 / 10)) := by
+        have : (1 : ℝ) / 5 ≤ Real.sqrt 2 / 2 * (3 / 10) := by linarith
+        have h5 := mul_le_mul_of_nonneg_right this (mul_pos hπ hE0).le
+        nlinarith
+      have hstep2 : Real.pi * (Real.sqrt 2 / 2) * (Real.exp (2 * |x|) * (3 / 10)) ≤
+          Real.pi * (Real.sqrt 2 / 2) * Real.exp (2 * |w.re|) :=
+        mul_le_mul_of_nonneg_left h4 (by positivity)
+      linarith
+  have hC := thetaStripGaussianConstant_nonneg (Real.pi / 8)
   unfold thetaGen
   change ‖cexp (-(((( (0 : ℕ) : ℝ)) + 1 / 4 : ℝ) : ℂ) * E) * thetaCuspStripSource w‖ ≤ _
   rw [norm_mul]
-  calc _ ≤ 2 * (thetaStripGaussianConstant (Real.pi / 6) *
-        (Real.exp (9 / 2 * Real.log 2) * shiftedGammaEnvelope x)) :=
+  calc _ ≤ 2 * (thetaStripGaussianConstant (Real.pi / 8) *
+        (Real.exp (9 / 4 * ℓ) * shiftedGammaEnvelope x)) :=
         mul_le_mul hpre (hS.trans (mul_le_mul_of_nonneg_left henv hC)) (norm_nonneg _)
           (by norm_num)
-    _ = _ := by unfold shiftedGammaConstant; ring
+    _ = _ := by unfold shiftedGammaConstant; rw [← hℓ]; ring
 
 /-! ### The doubly exponential bound -/
 
 /-- **One doubly exponential bound for every shifted-Gamma test.**
-`|F_j(x)| ≤ K j! (4/3)^j e^{9|x|/2} exp(−(π/8) e^{2|x|})`. -/
+`|F_j(x)| ≤ K j! (10/7)^j e^{9|x|/2} exp(−(π/5) e^{2|x|})`. -/
 theorem abs_xiShiftedGammaTest_le (j : ℕ) (x : ℝ) :
     |xiShiftedGammaTest j x| ≤
-      shiftedGammaConstant * ((j ! : ℝ) * (4 / 3 : ℝ) ^ j) * shiftedGammaEnvelope x := by
+      shiftedGammaConstant * ((j ! : ℝ) * (10 / 7 : ℝ) ^ j) * shiftedGammaEnvelope x := by
   have hdiff : DifferentiableOn ℂ (thetaGen 0 x) (Metric.ball (0 : ℂ) 1) := fun t ht =>
     (hasDerivAt_thetaGen 0 x (mem_ball_zero_iff.mp ht)).differentiableAt.differentiableWithinAt
-  have hcl : Metric.closedBall (0 : ℂ) (3 / 4) ⊆ Metric.ball (0 : ℂ) 1 :=
+  have hcl : Metric.closedBall (0 : ℂ) (7 / 10) ⊆ Metric.ball (0 : ℂ) 1 :=
     Metric.closedBall_subset_ball (by norm_num)
-  have hC := Complex.norm_iteratedDeriv_le_of_forall_mem_sphere_norm_le j (by norm_num : (0 : ℝ) < 3 / 4)
+  have hC := Complex.norm_iteratedDeriv_le_of_forall_mem_sphere_norm_le j (by norm_num : (0 : ℝ) < 7 / 10)
     (hdiff.diffContOnCl_ball hcl) (fun t ht => norm_thetaGen_zero_le x (by simpa using ht))
   rw [iteratedDeriv_thetaGen j x (by simp), thetaGen_at_zero, Complex.norm_real,
     Real.norm_eq_abs] at hC
   refine hC.trans (le_of_eq ?_)
-  have e : ((4 / 3 : ℝ)) ^ j = ((3 / 4 : ℝ) ^ j)⁻¹ := by
+  have e : ((10 / 7 : ℝ)) ^ j = ((7 / 10 : ℝ) ^ j)⁻¹ := by
     rw [← inv_pow]; norm_num
   rw [e]
   field_simp
 
 /-- The derivative bound, from the recursion:
-`|F_j′(x)| ≤ 5K (j+1)! (4/3)^j e^{9|x|/2} exp(−(π/8) e^{2|x|})`. -/
+`|F_j′(x)| ≤ 5K (j+1)! (10/7)^j e^{9|x|/2} exp(−(π/5) e^{2|x|})`. -/
 theorem abs_deriv_xiShiftedGammaTest_le (j : ℕ) (x : ℝ) :
     |deriv (xiShiftedGammaTest j) x| ≤
-      5 * shiftedGammaConstant * (((j + 1)! : ℝ) * (4 / 3 : ℝ) ^ j) * shiftedGammaEnvelope x := by
+      5 * shiftedGammaConstant * (((j + 1)! : ℝ) * (10 / 7 : ℝ) ^ j) * shiftedGammaEnvelope x := by
   have hr := xiShiftedGammaTest_succ j x
   have he : deriv (xiShiftedGammaTest j) x =
       2 * (((j : ℝ) + 1 / 4) * xiShiftedGammaTest j x) - 2 * xiShiftedGammaTest (j + 1) x := by
@@ -438,15 +461,15 @@ theorem abs_deriv_xiShiftedGammaTest_le (j : ℕ) (x : ℝ) :
   have hK := shiftedGammaConstant_nonneg
   have hG := (shiftedGammaEnvelope_pos x).le
   have hj : (0 : ℝ) ≤ j := Nat.cast_nonneg j
-  set P : ℝ := shiftedGammaConstant * ((j ! : ℝ) * (4 / 3 : ℝ) ^ j) * shiftedGammaEnvelope x with hP
+  set P : ℝ := shiftedGammaConstant * ((j ! : ℝ) * (10 / 7 : ℝ) ^ j) * shiftedGammaEnvelope x with hP
   have hP0 : 0 ≤ P := by positivity
   have hfac : (((j + 1)! : ℝ)) = ((j : ℝ) + 1) * (j ! : ℝ) := by
     rw [Nat.factorial_succ]; push_cast; ring
-  have h1' : |xiShiftedGammaTest (j + 1) x| ≤ ((j : ℝ) + 1) * (4 / 3) * P := by
+  have h1' : |xiShiftedGammaTest (j + 1) x| ≤ ((j : ℝ) + 1) * (10 / 7) * P := by
     refine h1.trans (le_of_eq ?_)
     rw [hfac, hP, pow_succ]
     ring
-  have hgoal : 5 * shiftedGammaConstant * (((j + 1)! : ℝ) * (4 / 3 : ℝ) ^ j) *
+  have hgoal : 5 * shiftedGammaConstant * (((j + 1)! : ℝ) * (10 / 7 : ℝ) ^ j) *
       shiftedGammaEnvelope x = 5 * (((j : ℝ) + 1) * P) := by
     rw [hfac, hP]; ring
   rw [he, hgoal]

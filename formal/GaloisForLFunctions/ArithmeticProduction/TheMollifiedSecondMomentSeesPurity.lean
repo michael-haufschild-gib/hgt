@@ -97,7 +97,7 @@ private theorem log_tangent_integrated {p : ℕ} (hp : 1 < p) {c : ℝ} (hc : �
     rw [norm_mul, Complex.norm_real, Real.norm_of_nonneg hc0.le,
       Complex.norm_natCast_cpow_of_pos (by omega)] at h9
     simp only [neg_add_rev, Complex.add_re, Complex.neg_re, Complex.mul_re, Complex.ofReal_re,
-      Complex.I_re, mul_zero, Complex.ofReal_im, Complex.I_im, mul_one, sub_self, add_zero,
+      Complex.I_re, mul_zero, Complex.ofReal_im, Complex.I_im, mul_one, sub_self,
       neg_zero, zero_add] at h9
     have h10 : (p : ℝ) ^ (-(1 / 2 : ℝ)) = (√(p : ℝ))⁻¹ := by
       rw [Real.rpow_neg hp0.le, Real.sqrt_eq_rpow]

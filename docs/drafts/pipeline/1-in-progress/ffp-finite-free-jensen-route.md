@@ -133,13 +133,22 @@ sign, a square-root count or a collision exclusion.
 - [ ] 2 → 3  formalized (route as a whole: open)
 
 ## Open conjectures (next)
-- **Size of the non-real count.** `N_d = #{non-real roots of R_d(Ξ)}` is nondecreasing and `o(d)` (R38, R39).
-  Heuristics. The winding of `E_d` cannot do better than `d/log d`: on the real axis the endpoint `v = 0` of
-  `E_d` overtakes the saddle at `|x| ≈ ℓ_d²`, and the bulk zeros of `E_d` cross into `Im > 0` there. The
-  full-line contour `R_d(x) = i^d d!/(2πi) ∮ e^{−ixw} ξ(1/2 + w) w^{−d−1} dw` has no endpoint and should give
-  two conjugate saddles for `|x| ≪ √d log d`, with phase rate `Re w*(x) ≈ dℓ/(x² + ℓ²)`, hence
-  `N_d ≲ d^{1/2+ε}`, sharp for `H_{−τ}`. Past that height the roots are the zeros of `Ξ` up to `√d/log d`, so
-  real-rootedness of `R_d(Ξ)` should be RH up to about that height.
+- **Size of the non-real count: finite Ki–Kim–Lee (`N_d ≤ C√(d log d)`, in progress).** Dictionary: `Φ_d(u)` is the
+  Cauchy circle mean of `Ξ` at radius `|u|` with weight `e^{d(e^{iφ}−1−iφ)}`, i.e. the heat flow `H_{t(u)}` at height `u`
+  with height-dependent time `t(u) = u²/(2d)`. So the zones `t(u) log u ≳ 1` of real zeros of Ki–Kim–Lee give
+  real roots of `R_d(Ξ)` for `|x| ≲ √(d log d)`.
+  Proof plan, with `s = 1/2 + τ`, `G(τ) = s(s−1)/2·Γ_ℝ(s)`, `a = G'/G`, `ξ(s) = G(τ)ζ(s)`:
+  1. circle formula: `R_d(x) = (d!/π) Re[i^d ∫_{|θ|≤π/2} e^{−ixτ} ξ(1/2+τ) τ^{−d} dθ]`, `τ = ρe^{iθ}` (functional equation);
+  2. saddle: fixed point `a₀ = a(d/(a₀ − ix))` in a rectangle of the `a`-plane (`|a'(τ)| ≤ 6/|τ|` makes it a contraction with
+     constant `≲ 1/Re a₀`), continuous in `x`, real at `x = 0`; `τ₁ = d/(a₀ − ix)`;
+  3. exact model: `e^{(a₀−ix)τ₁e^{iφ}} = e^{de^{iφ}}` and `∫_{−π}^{π} e^{d(e^{iφ}−iφ)}dφ = 2πd^d/d!` give
+     `R_d(x) = 2 Re[(x + ia₀)^d G(τ₁)e^{−a₀τ₁}(1 + ε)]`, where `|ε|` is the mean of `|YZ − 1|` against
+     `√d e^{−d(1−cos φ)}`, `Y = G(τ)/(G(τ₁)e^{a₀(τ−τ₁)})`, `Z = ζ(1/2+τ)`;
+  4. bounds with `A = Re a₀`, `r = Re τ₁ = Aρ²/d`: `|Y − 1| ≤ e^{3ρφ²} − 1`; `|Z − 1| ≲ 2^{−r/π}` near the saddle; polynomial `|Z|` elsewhere,
+     beaten by `e^{−Ar/(8π²)}`. So `|ε| ≲ 1/A + 2^{−r/π} + e^{−A}`: small once `r ≥ K`, i.e. `|x| ≤ X = c√(d log d)`;
+  5. phase: `Θ(x) = d arg(x + ia₀) + Im log G(τ₁) − Im(a₀τ₁)` is continuous, `Θ(0) = dπ/2`, `|Θ(X)| ≲ T log T`, `T = d/X`; IVT gives
+     `d/2 − O(T log T)` sign changes on `(0, X]`; parity doubles them. Hence `N_d ≲ T log T ≍ √(d log d)`.
+  The bound does not use RH and should be sharp in the power of `d` for `H_{−τ}`.
 - Other completed L-functions: R30 gives the forward direction for any genus-one entire function;
   the converse (Hurwitz, R25) is general too — instantiate for completed Dirichlet L-functions once
   their order-one bounds are in the corpus.
