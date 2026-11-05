@@ -57,6 +57,15 @@ Weil form. These drafts still require verification. Constant collar trials
 and the mixed derivative remain to be formalized. Translation retains the
 pole pairing because its two exponential characters are reciprocal.
 
+For one-sided growth, translate the old interval by `−t` inside the centered
+interval of radius `a+t`. Its only new collar has width `2t`. The exact
+translated Gram increment is
+`K_(a+t)(w,z)−exp(−i(z−conj(w))t)K_a(w,z)`.
+The same variational proof with the left collar absent should give its
+derivative `2T₊(z)conj(T₊(w))`. Subtracting the two-sided derivative yields
+the stated flux identity. This needs the actual translated Riesz projection,
+not only translation invariance of the quadratic form.
+
 Uniform boundedness of Riesz sources on compact precontact aperture ranges
 would bound their localized forcings and renewal traces. Together with
 kernel continuity, the resulting bounded right derivatives give local

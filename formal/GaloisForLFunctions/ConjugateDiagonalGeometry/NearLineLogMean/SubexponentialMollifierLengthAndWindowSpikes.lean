@@ -1729,7 +1729,7 @@ theorem eventually_uniform_complex_necessary_length :
         rw [hR_def]
         have hsq : (4 * w * Real.sqrt (Θ + 2 * ℓ)) ^ 2 = 16 * w ^ 2 * (Θ + 2 * ℓ) := by
           rw [mul_pow, mul_pow, Real.sq_sqrt (by positivity)]; ring
-        rw [hsq, mul_div_Right_comm]
+        rw [hsq, mul_div_right_comm]
         have hdiv : 16 * w ^ 2 / (4 * w ^ 2) = 4 := by field_simp; ring
         rw [hdiv]; ring
       have hN3_eq : (N : ℝ) ^ (3 : ℝ) = Real.exp (3 * Θ) := by
@@ -1827,7 +1827,7 @@ theorem eventually_uniform_complex_necessary_length :
       rw [hR_def]
       have hsq : (4 * w * Real.sqrt (Θ + 2 * ℓ)) ^ 2 = 16 * w ^ 2 * (Θ + 2 * ℓ) := by
         rw [mul_pow, mul_pow, Real.sq_sqrt (by positivity)]; ring
-      rw [hsq, mul_div_Right_comm]
+      rw [hsq, mul_div_right_comm]
       have hdiv : 16 * w ^ 2 / (2 * w ^ 2) = 8 := by field_simp; ring
       rw [hdiv]; linarith
     have hexp_le : Real.exp (-(R ^ 2 / (2 * w ^ 2))) ≤ ε / 2 := by
@@ -2136,3 +2136,468 @@ theorem tendsto_log_length_div_log_atTop_of_complex_second_moment_tendsto_one
       le_min (by nlinarith) (by nlinarith)
     exact hsub.trans hmin
   exact (le_max_left M 1).trans ((le_div_iff₀ hℓ0).mpr hlow)
+
+
+/-! ## §3. Superposed multi-window critical-line zero spikes (`D_win`) -/
+
+/-- Pigeonhole principle modulo `k > 0` on a finite set of natural numbers. -/
+theorem finset_exists_mod_class_card_ge {k : ℕ} (hk : 0 < k) (B : Finset ℕ) :
+    ∃ j : Fin k, B.card ≤ k * (B.filter (fun m => m % k = j.val)).card := by
+  letI : Nonempty (Fin k) := ⟨⟨0, hk⟩⟩
+  have hpart : B.card = ∑ j : Fin k, (B.filter (fun m => m % k = j.val)).card := by
+    have h1 : ∀ m ∈ B, (1 : ℕ) = ∑ j : Fin k, if m % k = j.val then 1 else 0 := by
+      intro m _
+      let j₀ : Fin k := ⟨m % k, Nat.mod_lt m hk⟩
+      rw [Finset.sum_eq_single j₀]
+      · simp [j₀]
+      · intro j _ hj; rw [if_neg]; intro heq; apply hj; ext; exact heq.symm
+      · intro h; exact absurd (Finset.mem_univ j₀) h
+    calc B.card = ∑ m ∈ B, 1 := Finset.card_eq_sum_ones B
+      _ = ∑ m ∈ B, ∑ j : Fin k, if m % k = j.val then 1 else 0 :=
+          Finset.sum_congr rfl fun m hm => h1 m hm
+      _ = ∑ j : Fin k, ∑ m ∈ B, if m % k = j.val then 1 else 0 := Finset.sum_comm
+      _ = ∑ j : Fin k, (B.filter (fun m => m % k = j.val)).card := by
+          refine Finset.sum_congr rfl fun j _ => ?_
+          rw [Finset.card_filter]
+  obtain ⟨j₀, _, hj₀⟩ := Finset.exists_max_image Finset.univ
+    (fun j : Fin k => (B.filter (fun m => m % k = j.val)).card) Finset.univ_nonempty
+  refine ⟨j₀, ?_⟩
+  calc B.card = ∑ j : Fin k, (B.filter (fun m => m % k = j.val)).card := hpart
+    _ ≤ ∑ _j : Fin k, (B.filter (fun m => m % k = j₀.val)).card :=
+        Finset.sum_le_sum fun j hj => hj₀ j hj
+    _ = k * (B.filter (fun m => m % k = j₀.val)).card := by
+        rw [Finset.sum_const, Finset.card_fin, smul_eq_mul]
+
+/-- Superadditivity of a nonnegative continuous integrand over pairwise disjoint `Ioc` subintervals
+contained in `Ioc a b`. -/
+theorem sum_Ioc_integral_le_intervalIntegral {S : Finset ℕ} {L U : ℕ → ℝ} {a b : ℝ} {g : ℝ → ℝ}
+    (hab : a ≤ b) (hg_cont : Continuous g) (hg_nn : ∀ t, 0 ≤ g t)
+    (hLU : ∀ m ∈ S, L m ≤ U m)
+    (hsub : ∀ m ∈ S, Ioc (L m) (U m) ⊆ Ioc a b)
+    (hdisj : (S : Set ℕ).PairwiseDisjoint (fun m => Ioc (L m) (U m))) :
+    (∑ m ∈ S, ∫ t in (L m)..(U m), g t) ≤ ∫ t in a..b, g t := by
+  rw [intervalIntegral.integral_of_le hab]
+  have hint_ab : IntegrableOn g (Ioc a b) volume :=
+    hg_cont.continuousOn.integrableOn_compact isCompact_Icc |>.mono_set Ioc_subset_Icc_self
+  have hint_ind_ab : Integrable ((Ioc a b).indicator g) volume :=
+    hint_ab.integrable_indicator measurableSet_Ioc
+  have hint_m : ∀ m ∈ S, Integrable ((Ioc (L m) (U m)).indicator g) volume := fun m hm =>
+    (hint_ab.mono_set (hsub m hm)).integrable_indicator measurableSet_Ioc
+  have hrew : (∑ m ∈ S, ∫ t in (L m)..(U m), g t) =
+      ∫ t, ∑ m ∈ S, (Ioc (L m) (U m)).indicator g t := by
+    calc (∑ m ∈ S, ∫ t in (L m)..(U m), g t)
+        = ∑ m ∈ S, ∫ t in Ioc (L m) (U m), g t :=
+          Finset.sum_congr rfl fun m hm => intervalIntegral.integral_of_le (hLU m hm)
+      _ = ∑ m ∈ S, ∫ t, (Ioc (L m) (U m)).indicator g t :=
+          Finset.sum_congr rfl fun m _ => (integral_indicator measurableSet_Ioc).symm
+      _ = ∫ t, ∑ m ∈ S, (Ioc (L m) (U m)).indicator g t :=
+          (integral_finsetSum S fun m hm => hint_m m hm).symm
+  rw [hrew, ← integral_indicator measurableSet_Ioc]
+  refine integral_mono (integrable_finsetSum S fun m hm => hint_m m hm) hint_ind_ab fun t => ?_
+  by_cases hex : ∃ m ∈ S, t ∈ Ioc (L m) (U m)
+  · obtain ⟨m₀, hm₀S, htm₀⟩ := hex
+    have hab_mem : t ∈ Ioc a b := hsub m₀ hm₀S htm₀
+    rw [Finset.sum_eq_single m₀]
+    · rw [Set.indicator_of_mem htm₀, Set.indicator_of_mem hab_mem]
+    · intro n hnS hnm₀
+      have hnot : t ∉ Ioc (L n) (U n) :=
+        Set.disjoint_left.mp (hdisj hm₀S hnS hnm₀.symm) htm₀
+      exact Set.indicator_of_notMem hnot g
+    · intro hm₀_not; exact absurd hm₀S hm₀_not
+  · push Not at hex
+    have hzero : (∑ m ∈ S, (Ioc (L m) (U m)).indicator g t) = 0 :=
+      Finset.sum_eq_zero fun m hm => Set.indicator_of_notMem (hex m hm) g
+    rw [hzero]
+    exact Set.indicator_nonneg (fun x _ => hg_nn x) t
+
+private theorem nat_add_le_of_lt_of_mod_eq {k m₁ m₂ : ℕ} (hlt : m₁ < m₂)
+    (hmod : m₁ % k = m₂ % k) : m₁ + k ≤ m₂ := by
+  have hd₁ := (Nat.div_add_mod m₁ k).symm
+  have hd₂ := (Nat.div_add_mod m₂ k).symm
+  have hdiv_lt : m₁ / k < m₂ / k := by
+    by_contra hge
+    have hle : k * (m₂ / k) ≤ k * (m₁ / k) := Nat.mul_le_mul_left k (Nat.not_lt.mp hge)
+    omega
+  have hdiv_succ : k * (m₁ / k + 1) ≤ k * (m₂ / k) := Nat.mul_le_mul_left k hdiv_lt
+  have hmul_add : k * (m₁ / k + 1) = k * (m₁ / k) + k := Nat.mul_add k (m₁ / k) 1
+  omega
+
+/-- **Superposed multi-window critical-line zero spikes (`D_win`, general `α > 0`).**
+Let `S ⊆ [⌈V⌉, ⌊2V⌋]` be any collection of Burnol unit windows each containing a `ξ`-zero with
+`|Re ρ - 1/2| ≥ δ` (`δ > 0`). Coloring `S` modulo `⌈2R + 7⌉₊` extracts pairwise disjoint ordinate
+intervals `[Im ρ_m - R, Im ρ_m + R] ⊆ [V - R - 3, 2V + R + 3]` on which every prefix-cancelling
+Dirichlet polynomial `M(s) = ∑_{d=1}^X b_d d^{-s}` exhibits a critical-line spike of size at least
+`(3 / 4) δ e^{-α / 2} Y^{2δ}`, forcing their sum onto the critical-line second moment. -/
+theorem occupiedBurnolWindows_criticalLine_spike_ge
+    {V δ R α Y B : ℝ} (hR1 : 1 ≤ R) (hRV : R + 4 ≤ V) (hδ0 : 0 < δ)
+    (hα : 0 < α) (hY : 1 ≤ Y) (hYα : 2 * Real.sqrt α ≤ Real.log Y) (hB : 1 ≤ B)
+    {X X₁ : ℕ} (hX : 1 ≤ X) (hX₁ : 1 ≤ X₁) (hYX₁ : Y < (X₁ : ℝ))
+    (hslope : 5 * α ≤ Real.log (X₁ : ℝ) - Real.log Y)
+    {b : ℕ → ℂ} (hb1 : b 1 = 1) (hb : ∀ d ∈ Finset.Icc 1 X, ‖b d‖ ≤ B)
+    (hshort : ∑ n ∈ Finset.Icc 2 X₁,
+      ‖_root_.RHTower.mollifiedZetaCoeff b X n‖ * (n : ℝ) ^ (-(1 / 2 + δ)) ≤ 1 / 8)
+    (htail : 2 * B * (Real.sqrt α / (Real.log (X₁ : ℝ) - Real.log Y)) *
+      (X₁ : ℝ) ^ (3 / 2 : ℝ) *
+      Real.exp (-(Real.log (X₁ : ℝ) - Real.log Y) ^ 2 / (4 * α)) ≤ 1 / 12)
+    (hvtail : 4 * B * (1 / Real.sqrt α) *
+      Real.exp ((25 / 4) * α + (5 / 2) * Real.log Y - α * R ^ 2 / 2) ≤ 1 / 12)
+    (hhoriz : 5 * B * (X : ℝ) * Real.sqrt (2 * V + R + 9) *
+      Real.exp ((25 / 4) * α + (5 / 2) * Real.log Y - α * R ^ 2) ≤ 1 / 12)
+    {S : Finset ℕ} (hS_sub : S ⊆ Finset.Icc (Nat.ceil V) (Nat.floor (2 * V)))
+    (hS_occ : ∀ m ∈ S, ∃ ρ ∈ burnolUnitXiZeros m, δ ≤ |ρ.re - 1 / 2|) :
+    ((S.card : ℝ) / (Nat.ceil (2 * R + 7) : ℝ)) *
+        ((3 / 4 : ℝ) * δ * Real.exp (-(α / 2)) * Y ^ (2 * δ)) ≤
+      ∫ t in (V - R - 3)..(2 * V + R + 3),
+        ‖riemannZeta (((1 / 2 : ℝ) : ℂ) + (t : ℂ) * I) *
+          _root_.RHTower.edPoly b (Finset.Icc 1 X) (((1 / 2 : ℝ) : ℂ) + (t : ℂ) * I)‖ ^ 2 := by
+  classical
+  have hV_pos : 0 < V := by linarith
+  have hR_pos : 0 < R := by linarith
+  set P_R : ℕ := Nat.ceil (2 * R + 7) with hP_R_def
+  have hP_R_pos : 0 < P_R := Nat.ceil_pos.mpr (by positivity)
+  have hP_R_ge : 2 * R + 7 ≤ (P_R : ℝ) := Nat.le_ceil (2 * R + 7)
+  have hP_R_cast_pos : (0 : ℝ) < (P_R : ℝ) := by exact_mod_cast hP_R_pos
+  have hex_right : ∀ m ∈ S, ∃ ρ ∈ burnolUnitXiZeros m, 1 / 2 + δ ≤ ρ.re := by
+    intro m hm
+    obtain ⟨ρ, hρ_mem, hρ_abs⟩ := hS_occ m hm
+    rcases le_or_gt (1 / 2 : ℝ) ρ.re with hre | hre
+    · refine ⟨ρ, hρ_mem, ?_⟩
+      rw [abs_of_nonneg (by linarith)] at hρ_abs; linarith
+    · refine ⟨1 - star ρ, one_sub_star_mem_burnolUnitXiZeros m ρ hρ_mem, ?_⟩
+      rw [abs_of_neg (by linarith)] at hρ_abs
+      have hre_star : (1 - star ρ).re = 1 - ρ.re := by simp
+      linarith
+  let ρ_sel : ℕ → ℂ := fun m =>
+    if hm : m ∈ S then Classical.choose (hex_right m hm) else 0
+  have hρ_prop : ∀ m (hm : m ∈ S),
+      ρ_sel m ∈ burnolUnitXiZeros m ∧ 1 / 2 + δ ≤ (ρ_sel m).re := by
+    intro m hm; dsimp [ρ_sel]; rw [dif_pos hm]; exact Classical.choose_spec (hex_right m hm)
+  obtain ⟨j₀, hj₀_card⟩ := finset_exists_mod_class_card_ge hP_R_pos S
+  set B₀ : Finset ℕ := S.filter (fun m => m % P_R = j₀.val) with hB₀_def
+  have hcard_div : (S.card : ℝ) / (P_R : ℝ) ≤ (B₀.card : ℝ) := by
+    rw [div_le_iff₀ hP_R_cast_pos, mul_comm]
+    exact_mod_cast hj₀_card
+  have hm_info : ∀ m ∈ B₀,
+      riemannZeta (ρ_sel m) = 0 ∧ 1 / 2 + δ ≤ (ρ_sel m).re ∧ (ρ_sel m).re < 1 ∧
+      (m : ℝ) - 3 < (ρ_sel m).im ∧ (ρ_sel m).im < (m : ℝ) + 3 ∧
+      V - 3 < (ρ_sel m).im ∧ (ρ_sel m).im < 2 * V + 3 := by
+    intro m hm₀
+    have hmS : m ∈ S := (Finset.mem_filter.mp hm₀).1
+    have hmIcc : m ∈ Finset.Icc (Nat.ceil V) (Nat.floor (2 * V)) := hS_sub hmS
+    obtain ⟨hρ_mem, hρ_re_lo⟩ := hρ_prop m hmS
+    have hρ_iff := (mem_burnolUnitXiZeros_iff m (ρ_sel m)).mp hρ_mem
+    have hcoords := burnolUnit_coords m
+    have hm_lo : V ≤ (m : ℝ) := (Nat.le_ceil V).trans (by exact_mod_cast (Finset.mem_Icc.mp hmIcc).1)
+    have hm_hi : (m : ℝ) ≤ 2 * V :=
+      (by exact_mod_cast (Finset.mem_Icc.mp hmIcc).2 : (m : ℝ) ≤ (Nat.floor (2 * V) : ℝ)).trans
+        (Nat.floor_le (by positivity))
+    have hre_pos : 0 < (ρ_sel m).re := by linarith
+    have hne1 : ρ_sel m ≠ 1 := by
+      intro h1; rw [h1, Complex.one_re] at hρ_iff; exact lt_irrefl 1 hρ_iff.1.2.1
+    have hζ0 : riemannZeta (ρ_sel m) = 0 :=
+      (_root_.RHTower.xi_eq_zero_iff_riemannZeta_of_re_pos hre_pos hne1).mp hρ_iff.2
+    refine ⟨hζ0, hρ_re_lo, hρ_iff.1.2.1, ?_, ?_, ?_, ?_⟩
+    · linarith [hcoords.2.2.1, hcoords.2.2.2.2, hρ_iff.1.2.2.1]
+    · linarith [hcoords.2.2.2.1, hρ_iff.1.2.2.2]
+    · linarith [hcoords.2.2.1, hcoords.2.2.2.2, hρ_iff.1.2.2.1]
+    · linarith [hcoords.2.2.2.1, hρ_iff.1.2.2.2]
+  have hsub_Ioc : ∀ m ∈ B₀,
+      Ioc ((ρ_sel m).im - R) ((ρ_sel m).im + R) ⊆ Ioc (V - R - 3) (2 * V + R + 3) := by
+    intro m hm₀ t ht
+    obtain ⟨_, _, _, _, _, him_lo, him_hi⟩ := hm_info m hm₀
+    exact ⟨by linarith [ht.1], by linarith [ht.2]⟩
+  have hdisj : (B₀ : Set ℕ).PairwiseDisjoint
+      (fun m => Ioc ((ρ_sel m).im - R) ((ρ_sel m).im + R)) := by
+    intro m₁ hm₁ m₂ hm₂ hne
+    rw [Function.onFun, Set.disjoint_left]
+    intro t ht₁ ht₂
+    rw [Finset.mem_coe, hB₀_def, Finset.mem_filter] at hm₁ hm₂
+    have hmod : m₁ % P_R = m₂ % P_R := hm₁.2.trans hm₂.2.symm
+    obtain ⟨_, _, _, hm₁_lo, hm₁_hi, _, _⟩ := hm_info m₁ (Finset.mem_filter.mpr hm₁)
+    obtain ⟨_, _, _, hm₂_lo, hm₂_hi, _, _⟩ := hm_info m₂ (Finset.mem_filter.mpr hm₂)
+    rcases lt_or_gt_of_ne hne with hlt | hgt
+    · have hstep : m₁ + P_R ≤ m₂ := nat_add_le_of_lt_of_mod_eq hlt hmod
+      have hstep_r : (m₁ : ℝ) + (P_R : ℝ) ≤ (m₂ : ℝ) := by exact_mod_cast hstep
+      linarith [ht₁.2, ht₂.1]
+    · have hstep : m₂ + P_R ≤ m₁ := nat_add_le_of_lt_of_mod_eq hgt hmod.symm
+      have hstep_r : (m₂ : ℝ) + (P_R : ℝ) ≤ (m₁ : ℝ) := by exact_mod_cast hstep
+      linarith [ht₂.2, ht₁.1]
+  have hspike_m : ∀ m ∈ B₀,
+      (3 / 4 : ℝ) * δ * Real.exp (-(α / 2)) * Y ^ (2 * δ) ≤
+        ∫ t in ((ρ_sel m).im - R)..((ρ_sel m).im + R),
+          ‖riemannZeta (((1 / 2 : ℝ) : ℂ) + (t : ℂ) * I) *
+            _root_.RHTower.edPoly b (Finset.Icc 1 X) (((1 / 2 : ℝ) : ℂ) + (t : ℂ) * I)‖ ^ 2 := by
+    intro m hm₀
+    obtain ⟨hζ0, hre_lo, hre_lt1, _, _, him_lo, him_hi⟩ := hm_info m hm₀
+    have hre_gt : 1 / 2 < (ρ_sel m).re := by linarith
+    have hRγ : R + 1 ≤ (ρ_sel m).im := by linarith
+    have hshort_m : ∑ n ∈ Finset.Icc 2 X₁,
+        ‖_root_.RHTower.mollifiedZetaCoeff b X n‖ * (n : ℝ) ^ (-(ρ_sel m).re) ≤ 1 / 8 := by
+      refine (Finset.sum_le_sum fun n hn => ?_).trans hshort
+      have hn1 : (1 : ℝ) ≤ (n : ℝ) := by exact_mod_cast (Finset.mem_Icc.mp hn).1
+      exact mul_le_mul_of_nonneg_left
+        (Real.rpow_le_rpow_of_exponent_le hn1 (by linarith)) (norm_nonneg _)
+    have hhoriz_m : 5 * B * (X : ℝ) * Real.sqrt ((ρ_sel m).im + R + 6) *
+        Real.exp ((25 / 4) * α + (5 / 2) * Real.log Y - α * R ^ 2) ≤ 1 / 12 := by
+      refine le_trans ?_ hhoriz
+      refine mul_le_mul_of_nonneg_right
+        (mul_le_mul_of_nonneg_left (Real.sqrt_le_sqrt (by linarith)) (by positivity))
+        (Real.exp_pos _).le
+    have hsp := integral_normSq_zetaMollified_criticalLine_spike_of_zero hζ0 hre_gt hR1 hRγ
+      hα hY hYα hB hX hX₁ hYX₁ hslope hb1 hb hshort_m htail hvtail hhoriz_m
+    refine le_trans ?_ hsp
+    have hd_sq : ((ρ_sel m).re - 1 / 2) ^ 2 ≤ 1 / 4 := by
+      have hd1 : (ρ_sel m).re - 1 / 2 ≤ 1 / 2 := by linarith
+      calc ((ρ_sel m).re - 1 / 2) ^ 2 ≤ (1 / 2 : ℝ) ^ 2 :=
+            pow_le_pow_left₀ (by linarith) hd1 2
+        _ = 1 / 4 := by norm_num
+    have hexp_ge : Real.exp (-(α / 2)) ≤ Real.exp (-2 * α * ((ρ_sel m).re - 1 / 2) ^ 2) :=
+      Real.exp_le_exp.mpr (by nlinarith)
+    have hY_ge : Y ^ (2 * δ) ≤ Y ^ (2 * ((ρ_sel m).re - 1 / 2)) :=
+      Real.rpow_le_rpow_of_exponent_le hY (by linarith)
+    have hd_ge : (3 / 4 : ℝ) * δ ≤ (3 / 4 : ℝ) * ((ρ_sel m).re - 1 / 2) := by linarith
+    exact mul_le_mul (mul_le_mul hd_ge hexp_ge (Real.exp_pos _).le (by positivity))
+      hY_ge (by positivity) (by positivity)
+  have hsum_le := sum_Ioc_integral_le_intervalIntegral
+    (a := V - R - 3) (b := 2 * V + R + 3) (by linarith)
+    (continuous_norm_sq_zeta_mul_edPoly b X (by norm_num))
+    (fun _ => by positivity)
+    (fun m _ => by linarith) hsub_Ioc hdisj
+  calc ((S.card : ℝ) / (P_R : ℝ)) * ((3 / 4 : ℝ) * δ * Real.exp (-(α / 2)) * Y ^ (2 * δ))
+      ≤ (B₀.card : ℝ) * ((3 / 4 : ℝ) * δ * Real.exp (-(α / 2)) * Y ^ (2 * δ)) :=
+        mul_le_mul_of_nonneg_right hcard_div (by positivity)
+    _ = ∑ _m ∈ B₀, (3 / 4 : ℝ) * δ * Real.exp (-(α / 2)) * Y ^ (2 * δ) := by
+        rw [Finset.sum_const, nsmul_eq_mul]
+    _ ≤ ∑ m ∈ B₀, ∫ t in ((ρ_sel m).im - R)..((ρ_sel m).im + R),
+          ‖riemannZeta (((1 / 2 : ℝ) : ℂ) + (t : ℂ) * I) *
+            _root_.RHTower.edPoly b (Finset.Icc 1 X) (((1 / 2 : ℝ) : ℂ) + (t : ℂ) * I)‖ ^ 2 :=
+        Finset.sum_le_sum hspike_m
+    _ ≤ _ := hsum_le
+
+/-- **Sharp `e^{-2 α δ²}` multi-window critical-line zero spikes (`α ≤ log Y`).**
+Whenever `α ≤ Real.log Y`, the function `u ↦ -2 α u² + 2 u log Y` is nondecreasing on `[δ, 1/2]`,
+sharpening `occupiedBurnolWindows_criticalLine_spike_ge` from `e^{-α / 2}` to `e^{-2 α δ²}`. -/
+theorem occupiedBurnolWindows_criticalLine_sharp_spike_ge
+    {V δ R α Y B : ℝ} (hR1 : 1 ≤ R) (hRV : R + 4 ≤ V) (hδ0 : 0 < δ)
+    (hα : 0 < α) (hY : 1 ≤ Y) (hYα : 2 * Real.sqrt α ≤ Real.log Y)
+    (hα_le_logY : α ≤ Real.log Y) (hB : 1 ≤ B)
+    {X X₁ : ℕ} (hX : 1 ≤ X) (hX₁ : 1 ≤ X₁) (hYX₁ : Y < (X₁ : ℝ))
+    (hslope : 5 * α ≤ Real.log (X₁ : ℝ) - Real.log Y)
+    {b : ℕ → ℂ} (hb1 : b 1 = 1) (hb : ∀ d ∈ Finset.Icc 1 X, ‖b d‖ ≤ B)
+    (hshort : ∑ n ∈ Finset.Icc 2 X₁,
+      ‖_root_.RHTower.mollifiedZetaCoeff b X n‖ * (n : ℝ) ^ (-(1 / 2 + δ)) ≤ 1 / 8)
+    (htail : 2 * B * (Real.sqrt α / (Real.log (X₁ : ℝ) - Real.log Y)) *
+      (X₁ : ℝ) ^ (3 / 2 : ℝ) *
+      Real.exp (-(Real.log (X₁ : ℝ) - Real.log Y) ^ 2 / (4 * α)) ≤ 1 / 12)
+    (hvtail : 4 * B * (1 / Real.sqrt α) *
+      Real.exp ((25 / 4) * α + (5 / 2) * Real.log Y - α * R ^ 2 / 2) ≤ 1 / 12)
+    (hhoriz : 5 * B * (X : ℝ) * Real.sqrt (2 * V + R + 9) *
+      Real.exp ((25 / 4) * α + (5 / 2) * Real.log Y - α * R ^ 2) ≤ 1 / 12)
+    {S : Finset ℕ} (hS_sub : S ⊆ Finset.Icc (Nat.ceil V) (Nat.floor (2 * V)))
+    (hS_occ : ∀ m ∈ S, ∃ ρ ∈ burnolUnitXiZeros m, δ ≤ |ρ.re - 1 / 2|) :
+    ((S.card : ℝ) / (Nat.ceil (2 * R + 7) : ℝ)) *
+        ((3 / 4 : ℝ) * δ * Real.exp (-2 * α * δ ^ 2) * Y ^ (2 * δ)) ≤
+      ∫ t in (V - R - 3)..(2 * V + R + 3),
+        ‖riemannZeta (((1 / 2 : ℝ) : ℂ) + (t : ℂ) * I) *
+          _root_.RHTower.edPoly b (Finset.Icc 1 X) (((1 / 2 : ℝ) : ℂ) + (t : ℂ) * I)‖ ^ 2 := by
+  classical
+  have hV_pos : 0 < V := by linarith
+  have hY0 : 0 < Y := lt_of_lt_of_le zero_lt_one hY
+  set P_R : ℕ := Nat.ceil (2 * R + 7) with hP_R_def
+  have hP_R_pos : 0 < P_R := Nat.ceil_pos.mpr (by positivity)
+  have hP_R_ge : 2 * R + 7 ≤ (P_R : ℝ) := Nat.le_ceil (2 * R + 7)
+  have hP_R_cast_pos : (0 : ℝ) < (P_R : ℝ) := by exact_mod_cast hP_R_pos
+  have hex_right : ∀ m ∈ S, ∃ ρ ∈ burnolUnitXiZeros m, 1 / 2 + δ ≤ ρ.re := by
+    intro m hm
+    obtain ⟨ρ, hρ_mem, hρ_abs⟩ := hS_occ m hm
+    rcases le_or_gt (1 / 2 : ℝ) ρ.re with hre | hre
+    · refine ⟨ρ, hρ_mem, ?_⟩
+      rw [abs_of_nonneg (by linarith)] at hρ_abs; linarith
+    · refine ⟨1 - star ρ, one_sub_star_mem_burnolUnitXiZeros m ρ hρ_mem, ?_⟩
+      rw [abs_of_neg (by linarith)] at hρ_abs
+      have hre_star : (1 - star ρ).re = 1 - ρ.re := by simp
+      linarith
+  let ρ_sel : ℕ → ℂ := fun m =>
+    if hm : m ∈ S then Classical.choose (hex_right m hm) else 0
+  have hρ_prop : ∀ m (hm : m ∈ S),
+      ρ_sel m ∈ burnolUnitXiZeros m ∧ 1 / 2 + δ ≤ (ρ_sel m).re := by
+    intro m hm; dsimp [ρ_sel]; rw [dif_pos hm]; exact Classical.choose_spec (hex_right m hm)
+  obtain ⟨j₀, hj₀_card⟩ := finset_exists_mod_class_card_ge hP_R_pos S
+  set B₀ : Finset ℕ := S.filter (fun m => m % P_R = j₀.val) with hB₀_def
+  have hcard_div : (S.card : ℝ) / (P_R : ℝ) ≤ (B₀.card : ℝ) := by
+    rw [div_le_iff₀ hP_R_cast_pos, mul_comm]
+    exact_mod_cast hj₀_card
+  have hm_info : ∀ m ∈ B₀,
+      riemannZeta (ρ_sel m) = 0 ∧ 1 / 2 + δ ≤ (ρ_sel m).re ∧ (ρ_sel m).re < 1 ∧
+      (m : ℝ) - 3 < (ρ_sel m).im ∧ (ρ_sel m).im < (m : ℝ) + 3 ∧
+      V - 3 < (ρ_sel m).im ∧ (ρ_sel m).im < 2 * V + 3 := by
+    intro m hm₀
+    have hmS : m ∈ S := (Finset.mem_filter.mp hm₀).1
+    have hmIcc : m ∈ Finset.Icc (Nat.ceil V) (Nat.floor (2 * V)) := hS_sub hmS
+    obtain ⟨hρ_mem, hρ_re_lo⟩ := hρ_prop m hmS
+    have hρ_iff := (mem_burnolUnitXiZeros_iff m (ρ_sel m)).mp hρ_mem
+    have hcoords := burnolUnit_coords m
+    have hm_lo : V ≤ (m : ℝ) := (Nat.le_ceil V).trans (by exact_mod_cast (Finset.mem_Icc.mp hmIcc).1)
+    have hm_hi : (m : ℝ) ≤ 2 * V :=
+      (by exact_mod_cast (Finset.mem_Icc.mp hmIcc).2 : (m : ℝ) ≤ (Nat.floor (2 * V) : ℝ)).trans
+        (Nat.floor_le (by positivity))
+    have hre_pos : 0 < (ρ_sel m).re := by linarith
+    have hne1 : ρ_sel m ≠ 1 := by
+      intro h1; rw [h1, Complex.one_re] at hρ_iff; exact lt_irrefl 1 hρ_iff.1.2.1
+    have hζ0 : riemannZeta (ρ_sel m) = 0 :=
+      (_root_.RHTower.xi_eq_zero_iff_riemannZeta_of_re_pos hre_pos hne1).mp hρ_iff.2
+    refine ⟨hζ0, hρ_re_lo, hρ_iff.1.2.1, ?_, ?_, ?_, ?_⟩
+    · linarith [hcoords.2.2.1, hcoords.2.2.2.2, hρ_iff.1.2.2.1]
+    · linarith [hcoords.2.2.2.1, hρ_iff.1.2.2.2]
+    · linarith [hcoords.2.2.1, hcoords.2.2.2.2, hρ_iff.1.2.2.1]
+    · linarith [hcoords.2.2.2.1, hρ_iff.1.2.2.2]
+  have hsub_Ioc : ∀ m ∈ B₀,
+      Ioc ((ρ_sel m).im - R) ((ρ_sel m).im + R) ⊆ Ioc (V - R - 3) (2 * V + R + 3) := by
+    intro m hm₀ t ht
+    obtain ⟨_, _, _, _, _, him_lo, him_hi⟩ := hm_info m hm₀
+    exact ⟨by linarith [ht.1], by linarith [ht.2]⟩
+  have hdisj : (B₀ : Set ℕ).PairwiseDisjoint
+      (fun m => Ioc ((ρ_sel m).im - R) ((ρ_sel m).im + R)) := by
+    intro m₁ hm₁ m₂ hm₂ hne
+    rw [Function.onFun, Set.disjoint_left]
+    intro t ht₁ ht₂
+    rw [Finset.mem_coe, hB₀_def, Finset.mem_filter] at hm₁ hm₂
+    have hmod : m₁ % P_R = m₂ % P_R := hm₁.2.trans hm₂.2.symm
+    obtain ⟨_, _, _, hm₁_lo, hm₁_hi, _, _⟩ := hm_info m₁ (Finset.mem_filter.mpr hm₁)
+    obtain ⟨_, _, _, hm₂_lo, hm₂_hi, _, _⟩ := hm_info m₂ (Finset.mem_filter.mpr hm₂)
+    rcases lt_or_gt_of_ne hne with hlt | hgt
+    · have hstep : m₁ + P_R ≤ m₂ := nat_add_le_of_lt_of_mod_eq hlt hmod
+      have hstep_r : (m₁ : ℝ) + (P_R : ℝ) ≤ (m₂ : ℝ) := by exact_mod_cast hstep
+      linarith [ht₁.2, ht₂.1]
+    · have hstep : m₂ + P_R ≤ m₁ := nat_add_le_of_lt_of_mod_eq hgt hmod.symm
+      have hstep_r : (m₂ : ℝ) + (P_R : ℝ) ≤ (m₁ : ℝ) := by exact_mod_cast hstep
+      linarith [ht₂.2, ht₁.1]
+  have hspike_m : ∀ m ∈ B₀,
+      (3 / 4 : ℝ) * δ * Real.exp (-2 * α * δ ^ 2) * Y ^ (2 * δ) ≤
+        ∫ t in ((ρ_sel m).im - R)..((ρ_sel m).im + R),
+          ‖riemannZeta (((1 / 2 : ℝ) : ℂ) + (t : ℂ) * I) *
+            _root_.RHTower.edPoly b (Finset.Icc 1 X) (((1 / 2 : ℝ) : ℂ) + (t : ℂ) * I)‖ ^ 2 := by
+    intro m hm₀
+    obtain ⟨hζ0, hre_lo, hre_lt1, _, _, him_lo, him_hi⟩ := hm_info m hm₀
+    have hre_gt : 1 / 2 < (ρ_sel m).re := by linarith
+    have hRγ : R + 1 ≤ (ρ_sel m).im := by linarith
+    have hshort_m : ∑ n ∈ Finset.Icc 2 X₁,
+        ‖_root_.RHTower.mollifiedZetaCoeff b X n‖ * (n : ℝ) ^ (-(ρ_sel m).re) ≤ 1 / 8 := by
+      refine (Finset.sum_le_sum fun n hn => ?_).trans hshort
+      have hn1 : (1 : ℝ) ≤ (n : ℝ) := by exact_mod_cast (Finset.mem_Icc.mp hn).1
+      exact mul_le_mul_of_nonneg_left
+        (Real.rpow_le_rpow_of_exponent_le hn1 (by linarith)) (norm_nonneg _)
+    have hhoriz_m : 5 * B * (X : ℝ) * Real.sqrt ((ρ_sel m).im + R + 6) *
+        Real.exp ((25 / 4) * α + (5 / 2) * Real.log Y - α * R ^ 2) ≤ 1 / 12 := by
+      refine le_trans ?_ hhoriz
+      refine mul_le_mul_of_nonneg_right
+        (mul_le_mul_of_nonneg_left (Real.sqrt_le_sqrt (by linarith)) (by positivity))
+        (Real.exp_pos _).le
+    have hsp := integral_normSq_zetaMollified_criticalLine_spike_of_zero hζ0 hre_gt hR1 hRγ
+      hα hY hYα hB hX hX₁ hYX₁ hslope hb1 hb hshort_m htail hvtail hhoriz_m
+    refine le_trans ?_ hsp
+    set u : ℝ := (ρ_sel m).re - 1 / 2
+    have hu_ge : δ ≤ u := by linarith
+    have hu_lt : u < 1 / 2 := by linarith
+    have hδ_lt : δ < 1 / 2 := lt_of_le_of_lt hu_ge hu_lt
+    have hexp_mono : Real.exp (-2 * α * δ ^ 2) * Y ^ (2 * δ) ≤
+        Real.exp (-2 * α * u ^ 2) * Y ^ (2 * u) := by
+      rw [Real.rpow_def_of_pos hY0, Real.rpow_def_of_pos hY0, ← Real.exp_add, ← Real.exp_add]
+      refine Real.exp_le_exp.mpr ?_
+      have hdiff : (-2 * α * u ^ 2 + Real.log Y * (2 * u)) -
+          (-2 * α * δ ^ 2 + Real.log Y * (2 * δ)) =
+          2 * (u - δ) * (Real.log Y - α * (u + δ)) := by ring
+      have hsum_le1 : u + δ ≤ 1 := by linarith
+      have hfac : 0 ≤ Real.log Y - α * (u + δ) := by nlinarith
+      nlinarith
+    have hd_ge : (3 / 4 : ℝ) * δ ≤ (3 / 4 : ℝ) * u := by linarith
+    calc (3 / 4 : ℝ) * δ * Real.exp (-2 * α * δ ^ 2) * Y ^ (2 * δ)
+        = ((3 / 4 : ℝ) * δ) * (Real.exp (-2 * α * δ ^ 2) * Y ^ (2 * δ)) := by ring
+      _ ≤ ((3 / 4 : ℝ) * u) * (Real.exp (-2 * α * u ^ 2) * Y ^ (2 * u)) :=
+          mul_le_mul hd_ge hexp_mono (by positivity) (by positivity)
+      _ = (3 / 4 : ℝ) * u * Real.exp (-2 * α * u ^ 2) * Y ^ (2 * u) := by ring
+  have hsum_le := sum_Ioc_integral_le_intervalIntegral
+    (a := V - R - 3) (b := 2 * V + R + 3) (by linarith)
+    (continuous_norm_sq_zeta_mul_edPoly b X (by norm_num))
+    (fun _ => by positivity)
+    (fun m _ => by linarith) hsub_Ioc hdisj
+  calc ((S.card : ℝ) / (P_R : ℝ)) * ((3 / 4 : ℝ) * δ * Real.exp (-2 * α * δ ^ 2) * Y ^ (2 * δ))
+      ≤ (B₀.card : ℝ) * ((3 / 4 : ℝ) * δ * Real.exp (-2 * α * δ ^ 2) * Y ^ (2 * δ)) :=
+        mul_le_mul_of_nonneg_right hcard_div (by positivity)
+    _ = ∑ _m ∈ B₀, (3 / 4 : ℝ) * δ * Real.exp (-2 * α * δ ^ 2) * Y ^ (2 * δ) := by
+        rw [Finset.sum_const, nsmul_eq_mul]
+    _ ≤ ∑ m ∈ B₀, ∫ t in ((ρ_sel m).im - R)..((ρ_sel m).im + R),
+          ‖riemannZeta (((1 / 2 : ℝ) : ℂ) + (t : ℂ) * I) *
+            _root_.RHTower.edPoly b (Finset.Icc 1 X) (((1 / 2 : ℝ) : ℂ) + (t : ℂ) * I)‖ ^ 2 :=
+        Finset.sum_le_sum hspike_m
+    _ ≤ _ := hsum_le
+
+/-- **Window-occupancy upper bound from a prefix-cancelling critical-line second moment (`D_win`).**
+Rearranging `occupiedBurnolWindows_criticalLine_sharp_spike_ge` on the full set of `δ`-occupied
+Burnol windows in `[⌈V⌉, ⌊2V⌋]` bounds the occupied window count directly by
+`(4 / 3) ⌈2R + 7⌉₊ · e^{2 α δ²} · δ⁻¹ · Y^{-2δ} · Msq`. At depth `δ = A / log V` and cancellation
+scale `Y = V^θ` (`θ > 0`), the critical-line spike factor `δ⁻¹ Y^{-2δ} = (log V / A) V^{-2θA / log V}
+= (log V / A) e^{-2θA}` still carries an explicit `log V` factor unless `Y` is super-polynomial
+(`log Y / log V → ∞`) or `Msq` already beats `V` by `(log V)⁻¹`. -/
+theorem occupiedBurnolWindows_le_of_prefixCancelling_secondMoment
+    {V δ R α Y B Msq : ℝ} (hR1 : 1 ≤ R) (hRV : R + 4 ≤ V) (hδ0 : 0 < δ)
+    (hα : 0 < α) (hY : 1 ≤ Y) (hYα : 2 * Real.sqrt α ≤ Real.log Y)
+    (hα_le_logY : α ≤ Real.log Y) (hB : 1 ≤ B)
+    {X X₁ : ℕ} (hX : 1 ≤ X) (hX₁ : 1 ≤ X₁) (hYX₁ : Y < (X₁ : ℝ))
+    (hslope : 5 * α ≤ Real.log (X₁ : ℝ) - Real.log Y)
+    {b : ℕ → ℂ} (hb1 : b 1 = 1) (hb : ∀ d ∈ Finset.Icc 1 X, ‖b d‖ ≤ B)
+    (hshort : ∑ n ∈ Finset.Icc 2 X₁,
+      ‖_root_.RHTower.mollifiedZetaCoeff b X n‖ * (n : ℝ) ^ (-(1 / 2 + δ)) ≤ 1 / 8)
+    (htail : 2 * B * (Real.sqrt α / (Real.log (X₁ : ℝ) - Real.log Y)) *
+      (X₁ : ℝ) ^ (3 / 2 : ℝ) *
+      Real.exp (-(Real.log (X₁ : ℝ) - Real.log Y) ^ 2 / (4 * α)) ≤ 1 / 12)
+    (hvtail : 4 * B * (1 / Real.sqrt α) *
+      Real.exp ((25 / 4) * α + (5 / 2) * Real.log Y - α * R ^ 2 / 2) ≤ 1 / 12)
+    (hhoriz : 5 * B * (X : ℝ) * Real.sqrt (2 * V + R + 9) *
+      Real.exp ((25 / 4) * α + (5 / 2) * Real.log Y - α * R ^ 2) ≤ 1 / 12)
+    (hMsq : (∫ t in (V - R - 3)..(2 * V + R + 3),
+      ‖riemannZeta (((1 / 2 : ℝ) : ℂ) + (t : ℂ) * I) *
+        _root_.RHTower.edPoly b (Finset.Icc 1 X) (((1 / 2 : ℝ) : ℂ) + (t : ℂ) * I)‖ ^ 2) ≤ Msq) :
+    (((Finset.Icc (Nat.ceil V) (Nat.floor (2 * V))).filter
+      (fun m => ∃ ρ ∈ burnolUnitXiZeros m, δ ≤ |ρ.re - 1 / 2|)).card : ℝ) ≤
+      (4 / 3 : ℝ) * (Nat.ceil (2 * R + 7) : ℝ) * Real.exp (2 * α * δ ^ 2) *
+        δ⁻¹ * Y ^ (-(2 * δ)) * Msq := by
+  set S := (Finset.Icc (Nat.ceil V) (Nat.floor (2 * V))).filter
+    (fun m => ∃ ρ ∈ burnolUnitXiZeros m, δ ≤ |ρ.re - 1 / 2|)
+  have hsp := (occupiedBurnolWindows_criticalLine_sharp_spike_ge hR1 hRV hδ0 hα hY hYα hα_le_logY
+    hB hX hX₁ hYX₁ hslope hb1 hb hshort htail hvtail hhoriz
+    (Finset.filter_subset _ _) (fun m hm => (Finset.mem_filter.mp hm).2)).trans hMsq
+  have hY0 : 0 < Y := lt_of_lt_of_le zero_lt_one hY
+  have hP_pos : (0 : ℝ) < (Nat.ceil (2 * R + 7) : ℝ) := by
+    exact_mod_cast Nat.ceil_pos.mpr (by positivity : 0 < 2 * R + 7)
+  have hfac_pos : 0 < (3 / 4 : ℝ) * δ * Real.exp (-2 * α * δ ^ 2) * Y ^ (2 * δ) := by positivity
+  have hcard_div : (S.card : ℝ) / (Nat.ceil (2 * R + 7) : ℝ) ≤
+      Msq / ((3 / 4 : ℝ) * δ * Real.exp (-2 * α * δ ^ 2) * Y ^ (2 * δ)) :=
+    (le_div_iff₀ hfac_pos).mpr hsp
+  have hcard_le := (div_le_iff₀ hP_pos).mp hcard_div
+  refine hcard_le.trans_eq ?_
+  have hexp_inv : (Real.exp (-2 * α * δ ^ 2))⁻¹ = Real.exp (2 * α * δ ^ 2) := by
+    rw [← Real.exp_neg]; congr 1; ring
+  have hY_inv : (Y ^ (2 * δ))⁻¹ = Y ^ (-(2 * δ)) := (Real.rpow_neg hY0.le (2 * δ)).symm
+  rw [div_eq_mul_inv, mul_inv, mul_inv, mul_inv, hexp_inv, hY_inv]
+  ring
+
+end GaloisForLFunctions.ConjugateDiagonalGeometry.NearLineLogMean
+
+end
+
+#print axioms GaloisForLFunctions.ConjugateDiagonalGeometry.NearLineLogMean.edPolyHermitianTrace_count_le
+#print axioms GaloisForLFunctions.ConjugateDiagonalGeometry.NearLineLogMean.exists_edPoly_line_logMean_floor_complex
+#print axioms GaloisForLFunctions.ConjugateDiagonalGeometry.NearLineLogMean.exists_left_floor_complex
+#print axioms GaloisForLFunctions.ConjugateDiagonalGeometry.NearLineLogMean.exists_logIntegral_le_of_complex_secondMoment
+#print axioms GaloisForLFunctions.ConjugateDiagonalGeometry.NearLineLogMean.criticalClustering_of_complexMollifiedSecondMomentLaw
+#print axioms GaloisForLFunctions.ConjugateDiagonalGeometry.NearLineLogMean.logFreeNearLineZeroDensity_of_complexSecondMomentRate
+#print axioms GaloisForLFunctions.ConjugateDiagonalGeometry.NearLineLogMean.logFreeNearLineWindowOccupancy_of_complexSecondMomentRate
+#print axioms GaloisForLFunctions.ConjugateDiagonalGeometry.NearLineLogMean.eventually_uniform_complex_necessary_length
+#print axioms GaloisForLFunctions.ConjugateDiagonalGeometry.NearLineLogMean.eventually_log_mollifier_length_ge_of_excess
+#print axioms GaloisForLFunctions.ConjugateDiagonalGeometry.NearLineLogMean.complexSecondMomentRate_forces_exp_logSq_length
+#print axioms GaloisForLFunctions.ConjugateDiagonalGeometry.NearLineLogMean.not_complexSecondMomentRate_below_exp_logSq
+#print axioms GaloisForLFunctions.ConjugateDiagonalGeometry.NearLineLogMean.tendsto_log_length_div_log_atTop_of_complex_second_moment_tendsto_one
+#print axioms GaloisForLFunctions.ConjugateDiagonalGeometry.NearLineLogMean.occupiedBurnolWindows_criticalLine_spike_ge
+#print axioms GaloisForLFunctions.ConjugateDiagonalGeometry.NearLineLogMean.occupiedBurnolWindows_criticalLine_sharp_spike_ge
+#print axioms GaloisForLFunctions.ConjugateDiagonalGeometry.NearLineLogMean.occupiedBurnolWindows_le_of_prefixCancelling_secondMoment

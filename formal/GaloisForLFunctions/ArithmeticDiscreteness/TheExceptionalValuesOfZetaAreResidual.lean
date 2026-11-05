@@ -228,9 +228,8 @@ theorem exists_mem_exceptionalSet_near (n : ℕ) {a₀ : ℂ} (ha₀ : a₀ ≠ 
     have key := ((hlin.mul hlin).const_mul (m : ℂ)).const_add a₀
     have e : g = fun x => a₀ + (m : ℂ) * ((x - z₀) * (x - z₀)) := by
       funext x; simp only [hg]; ring
-    rw [e, key.deriv]
-    simp only [hG1]
-    ring
+    rw [e]
+    exact key.deriv.trans (by simp only [hG1]; ring)
   -- the simple zero of `g'` at `z₀` and its Rouché radius
   have hG1z₀ : G1 z₀ = 0 := by simp [hG1]
   have hG1only : ∀ w ∈ closedBall z₀ (2 * (1 / 128)), G1 w = 0 → w = z₀ := by
@@ -285,7 +284,7 @@ theorem exists_mem_exceptionalSet_near (n : ℕ) {a₀ : ℂ} (ha₀ : a₀ ≠ 
     have hne : z + τ * I ≠ 1 := by
       intro h1
       have := congrArg Complex.im h1
-      simp only [add_im, mul_im, ofReal_re, ofReal_im, I_re, I_im, mul_zero, mul_one, zero_add,
+      simp only [add_im, mul_im, ofReal_re, ofReal_im, I_re, I_im, mul_zero, mul_one,
         one_im] at this
       have := hUim z hz
       rw [abs_lt] at this
