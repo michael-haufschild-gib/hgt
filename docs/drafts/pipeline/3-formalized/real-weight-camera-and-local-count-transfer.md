@@ -1,8 +1,8 @@
 # Real-weight camera and local count transfer
 
 - **ID:** real-weight-camera-and-local-count-transfer
-- **Stage:** 1-in-progress
-- **Type:** THEOREM (paper); final Lean verification pending.
+- **Stage:** 3-formalized
+- **Type:** THEOREM (Lean 4)
 - **Source:** review-0511, A40.
 
 ## Statements
@@ -89,4 +89,7 @@ Owner: `GaloisForLFunctions/ZeroConfigurationGeometry/RealWeights/`.
   `CountTransfer`, `ImageEnvelope`, `ZetaMass`: convergence, majorization,
   convolution, localization, and the actual ζ multiplicity count.
 
-Final source checks, transitive axiom audits, and umbrella wiring pending.
+All 15 final direct `lake --old env lean` source checks passed. The 32
+transitive axiom audits contain only `propext`, `Classical.choice`, and
+`Quot.sound`. The owning umbrella is wired; its project import closure
+has no missing modules or cycles.

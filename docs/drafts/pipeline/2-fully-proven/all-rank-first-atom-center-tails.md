@@ -77,9 +77,28 @@ hyperbolic factors against `exp(−2q cosh(2t))`, so `H_r` is Schwartz;
 its Fourier transform has every polynomial moment. The same majorants
 justify differentiation of the literal center integral.
 
-**Lean remaining:** square derivative; product and radial identities;
-weighted-tail comparison; literal Fourier/moment bridge and strict matrix
-positivity. No all-rank Lean theorem is claimed yet.
+**Lean:** `CompletedArithmeticForms.BesselHalfOrderSquare` proves the
+nonvanishing square, exact derivative, exponential reserve, Schläfli product,
+and radial line identity (`besselHalfOrderSquare_exp_lower`,
+`besselHalfOrderSquare_eq_radial_integral`).
+
+`CompletedArithmeticForms.BesselRadialSlice` proves the first weighted-tail
+square integral, strict positivity and exponential reserve for every real
+frequency and `q≥1` (`besselFirstWeightedTail_pos`,
+`besselFirstWeightedTail_exp_lower`).
+
+`CompletedArithmeticForms.BesselWeightedTail` proves positivity and exponential
+reserve of every higher weighted tail, the quadratic weight-raising reserve,
+and `besselFirstAtomTailDensity_pos` for every real frequency and
+`q>1+√2`. All audited dependencies use only standard Lean axioms.
+
+`CompletedArithmeticForms.FirstAtomFourierTail` proves the exact integrated
+radial Fourier identity, including the signed endpoint, and its strict
+positivity at every real frequency above `q>1+√2`.
+
+**Remaining:** source regularity, literal center-integral/moment bridge,
+and strict matrix positivity.
+No all-rank Lean theorem is claimed yet.
 
 The complete theta sum additionally needs unequal atom pairs and its
 infinite remainder controlled uniformly in rank. This first-atom theorem

@@ -8,7 +8,7 @@
 
 ## Scope
 
-Open (26): A1–A2, A4–A7, A9, A11, A13–A15, A17, A19–A21, A23–A25, A28, A31, A33, A35–A36, A38, A40–A41. A row with several obligations remains
+Open (25): A1–A2, A4–A7, A9, A11, A13–A15, A17, A19–A21, A23–A25, A28, A31, A33, A35–A36, A38, A41. A row with several obligations remains
 open until every obligation is discharged. Existing results are prerequisites, not new solutions.
 No numerical experiments or trusted computation; certificates require kernel proofs.
 
@@ -69,13 +69,14 @@ below the fixed aperture's exponential horizon, including arbitrary clusters
 and both signs of the ordinate. Eight final source checks, 23 standard-axiom
 audits and umbrella wiring passed.
 
-## Partial results and current target
+**A40.** [Real-weight camera and count transfer](../3-formalized/real-weight-camera-and-local-count-transfer.md):
+uniform complex-weight moment readout with bounded absolute Lorentzian mass
+and explicit ζ heights; sharp local weighted counts for positive on-line ζ
+mimics; arbitrarily many small positive atoms with one fixed flat image.
+All 15 direct source checks, 32 audits using only standard axioms, and
+umbrella import checks passed.
 
-**A40.** [Real-weight camera and count transfer](real-weight-camera-and-local-count-transfer.md):
-the moment camera must allow arbitrary coefficients with absolute weighted mass.
-The remaining count transfer concerns positive weighted mass; support cardinality
-requires a separate atom-weight lower bound. The readout and strip-envelope
-arguments remain under Lean verification.
+## Partial results and unresolved obligations
 
 **Former A10, absent from the current list.** For the window index `ι(A)`, define
 `Lₙ = sup {A : ι(A) ≤ n}` in `EReal`. Prove

@@ -106,6 +106,9 @@ import GaloisForLFunctions.CompletedArithmeticForms.WeightedConductorCrossBounds
 import GaloisForLFunctions.CompletedArithmeticForms.SplitPrimeCrossBounds
 import GaloisForLFunctions.CompletedArithmeticForms.TheNearCollarCostsTheMeanLogarithmicMultiplier
 
+import GaloisForLFunctions.CompletedArithmeticForms.BesselHalfOrderSquare
+import GaloisForLFunctions.CompletedArithmeticForms.BesselRadialSlice
+import GaloisForLFunctions.CompletedArithmeticForms.BesselWeightedTail
 /-!
 # Quantitative theory of completed arithmetic forms
 
@@ -203,3 +206,4 @@ overlap below one quarter, making the exceptional conductor set above polylogari
 The foundational source questions are developed in
 `CompletedArithmeticForms/README.md`.
 -/
+import GaloisForLFunctions.CompletedArithmeticForms.FirstAtomFourierTail

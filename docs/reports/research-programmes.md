@@ -77,3 +77,5 @@
 - formal/GaloisForLFunctions/FrustratedArithmeticDirichletForms/README.md
 - formal/GaloisForLFunctions/ThetaCuspSections
 - formal/GaloisForLFunctions/WindowVisibilityLaw/README.md
+- formal/GaloisForLFunctions/CriticalHardyTheoryOfTheWindowCone/README.md
+- formal/GaloisForLFunctions/ArithmeticProduction/README.md
