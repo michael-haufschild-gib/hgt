@@ -1,7 +1,7 @@
 # RH proof-route frontier
 
 **RH open · 32 live routes · 17 candidates.**
-**Corpus checkpoint:** `c2ab4ce53ba1a0cbe7b3ec9104d254f1c46d81af`.
+**Corpus checkpoint:** `6385a11a16a299d5371cfa9f9cd77fdeb8a81567`.
 
 Live = source observable + proved RH-sufficient receiver + explicit open estimate. Candidate = missing independent source mechanism/landing.
 Evidence: [L] integrated, source-reviewed; [S] unfinished/unintegrated, unverified; [K] individual Lean + standard-only transitive-axiom audit. Untagged established facts: [L].

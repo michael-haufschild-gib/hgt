@@ -71,6 +71,9 @@ sign, a square-root count or a collision exclusion.
 | R42 | **The half transform is not a Hermite–Biehler half**: `K(w) = ∫₀^∞Φ e^{wu}du`, with `Ξ(u) = K(iu) + K(−iu)`, has infinitely many zeros, all in `Re w > 0`. So for every `M` and large `d`, `E_d` has at least `M` roots in `Im > 0`: the splitting `R_d(Ξ) = 2 Re E_d` is not Hermite–Biehler. Mechanism: finitely many zeros would make `K` of exponential type on the real axis by the order-one Hadamard factorization, while `K(σ) + K(−σ) = ξ(1/2 + σ)` is superexponential | `HalfTransformInstability.thetaHalfLaplace_zeros_infinite`, `re_pos_of_thetaHalfLaplace_eq_zero`, `eventually_le_card_upper_roots_halfJensen` |
 | R43 | **The Cauchy law for every hyperbolic kernel**: for `Im w > 0`, `(1/d)Σ_{y real} 1/(w − y) → 1/(w + i)` over the real rescaled roots of `R_d(x) = ∫g(v)(x+iv)^d dv`. In particular `R_d(H_{−τ})`, `τ > 0`, has exactly the bulk of `R_d(Ξ)`, although `H_{−τ}` has non-real zeros: the limit law is blind too. Abstract core: a bound on circles around `iθ₀` and at the centre, with error `o(d)`, determine both the number of roots in the disc and the Cauchy transform outside it | `KernelCauchyLaw.tendsto_card_near_of_data`, `tendsto_exterior_of_data`, `HyperbolicKernel.tendsto_real_cauchy`, `tendsto_real_cauchy_riemannHeat_neg` |
 | R44 | **`N_d` increases to the number of off-line zeros of `Ξ`**, with multiplicity, in `ℕ ∪ {∞}`. Equivalently `Ξ` has at most `m` off-line zeros iff `N_d ≤ m` for every `d`, iff for infinitely many `d`; if they are finitely many `N_d` equals their number for large `d`; if infinitely many `N_d → ∞`; `sup_d N_d = Z_c(Ξ)`. `N_d` is bounded iff the off-line zeros are finitely many, iff the counts `N(t)` of the de Bruijn–Newman flow are bounded as `t → 0⁺`. Upper bound: Hermite–Poulain, `Z_c(P(D)X^d) ≤ Z_c(P)` for real `P`, `P(0) ≠ 0`: `q(D)X^d` is divisible by `X^{d − deg q}`, and each real factor `D − ρ` creates no non-real root. So on-line zeros never create a non-real Jensen root. Lower bound: `Φ_d → Ξ` and the corpus window budget | `JensenCountsOffLineZeros.encard_offLine_le_iff_forall`, `encard_offLine_le_iff_frequently`, `eventually_jensenNonrealCount_eq_of_finite`, `tendsto_jensenNonrealCount_of_infinite`, `iSup_jensenNonrealCount`, `bddAbove_jensenNonrealCount_iff`, `nonrealRootCount_diffOp_X_pow_le_self` |
+| R45 | **Exact saddle identity for `R_d(Ξ)`**. Half-circle formula: for real `x`, `R_d(x) = (d!/π) Re[i^d ∫_{|θ|≤π/2} e^{−ixτ} ξ(1/2+τ) τ^{−d} dθ]`, `τ = ρe^{iθ}` (Cauchy plus the functional equation). With `s = 1/2+τ`, `G(τ) = (s(s−1)/2)Γ_ℝ(s)`, `a = G'/G`: if `(a₀ − ix)τ₁ = d` then `e^{(a₀−ix)τ₁e^{iφ}} = e^{de^{iφ}}` and `∫_{−π}^{π} e^{d(e^{iφ}−iφ)}dφ = 2πd^d/d!` give exactly `R_d(x) = 2 Re[(x+ia₀)^d G(τ₁)e^{−a₀τ₁}(1+ε)]`. For `a₀ = a(τ₁)`, `Re a₀ ≥ 8000`, `Re τ₁ ≥ 400`: `‖ε‖ ≤ 1/2`, from `‖a'(τ)‖ ≤ 6/‖τ‖` (partial fractions of `ψ'`), Grönwall on the circle, `ζ → 1`, and the polynomial bound of `ζ` on `Re s ≥ 1/2`. The saddle `a₀ = a(d/(a₀−ix))` is a fixed point of a `1/2`-contraction of the rectangle `{L/5 ≤ Re a ≤ L/2, |Im a| ≤ 5}`, `L = log d`, for `|x| ≤ X ≍ √(d log d)`; it is continuous in `x` and real at `x = 0` | `XiJensenCircleFormula.eval_jensenRev_xiSeries_eq_half_circle`, `GammaFactorSlope.norm_gammaSlopeDeriv_le`, `JensenSaddleModel.eval_jensenRev_xiSeries_eq_saddle`, `JensenSaddleError.norm_saddleError_le_half`, `JensenSaddlePoint.SaddleRange.exists_saddle` |
+| R46 | **Finite degree Ki–Kim–Lee: `N_d ≤ 300 √(d log d)`, unconditionally.** For all large `d`, `R_d(Ξ)` has at least `d − 300 √(d log d)` distinct real roots. Mechanism: the phase `θ(x)` of the main term in R45 is continuous on `[0, X]`, `X = √(d log d)/100`, with `θ(0) = dπ/2 + arg G(1)` and `θ(X) − arg G(1) ≤ 2 T log d`, `T = d/(X−5)`; where `θ = kπ` the sign of `R_d` is `(−1)^k`, so the intermediate value theorem gives `d/2 − O(T log d)` sign changes on `(0, X]`, and parity doubles them. The bound locates real roots; it does not say where the non-real ones lie | `NonRealJensenCountBound.eventually_exists_real_roots_sqrt`, `eventually_jensenNonrealCount_le_sqrt`, `SaddleRange.exists_real_roots` |
+| R47 | **The Jensen approximant is a circle mean**: for entire `f`, `u ≠ 0`, `Φ_d(u) = (d!/(2πd^d)) ∫_0^{2π} e^{d(e^{iφ}−iφ)} f(ue^{iφ}) dφ`, a complex weight of total mass `1` | `JensenIsACircleMean.scaledJensen_eq_circle_mean` |
 | R13 | **The degree-three test is vacuous**: on centered cubics `⊞₃` adds `(s,t)`, and every real-rooted centered cubic (`|t| ≤ s^{3/2}`) is a `⊞₃`-product of two double-root (capacity-zero, semicircle-free) cubics | `CubicFirstTest.exists_doubleRoot_factorization` |
 
 ## No-go closure for the naive route (source-faithful real-rooted pieces)
@@ -98,8 +101,9 @@ sign, a square-root count or a collision exclusion.
   (`ξ` has drift exactly `0`: critical phase `c = 0`, no margin), R36 and R40 (Cauchy law at scale `½ log d`),
   R37 and R38 (almost all roots real and simple, unconditionally), R39 (monotone `N_d`).
 - **Insight (the bulk is blind):** R41. The bulk theorems use only the evenness, positivity and size of the
-  kernel, and hold for `H_{−τ}`, which has non-real zeros (R41, R43). RH is `N_d = 0`, a statement about the `o(d)` outliers
-  `x ≈ d/a_q`, which are the zeros themselves: real-rootedness of `J_d` cannot be read off any bulk statistic.
+  kernel, and hold for `H_{−τ}`, which has non-real zeros (R41, R43). RH is `N_d = 0`; `N_d` increases to the number of
+  off-line zeros (R44) and is at most `300 √(d log d)` (R46), so real-rootedness of `J_d` cannot be read off any bulk statistic.
+- **Insight (where the Euler product enters):** R46, unlike R38, uses `ζ → 1` and is not a theorem about kernels of the size of `Φ`.
 
 ## Capacity landscape
 - Degree regime (`d → ∞`, `n = 0`): Gaussian capacity `o(d^{-2})` in the native scale (R1), with
@@ -115,8 +119,8 @@ sign, a square-root count or a collision exclusion.
 
 - Stability is critical and the bulk is blind: on every line the drift of `ξ` is exactly `0`, so there
   is no margin (R34); the roots at scale `½ log d` follow a universal Cauchy law from Stirling alone (R36),
-  and almost all of them are real and simple, unconditionally (R37, R38). RH is decided by the `o(d)`
-  outliers `x ≈ d/a_q`, not by any bulk statistic of the Jensen polynomials.
+  and all but `300 √(d log d)` of them are distinct and real, unconditionally (R46). RH is `N_d = 0`, and `N_d` increases to
+  the number of off-line zeros (R44).
 
 ## Where the route meets the walls
 - (i) Criticality is a theorem (R1): any finite free factorization of `J_d` has Hermite capacity
@@ -134,22 +138,7 @@ sign, a square-root count or a collision exclusion.
 - [ ] 2 → 3  formalized (route as a whole: open)
 
 ## Open conjectures (next)
-- **Size of the non-real count: finite Ki–Kim–Lee (`N_d ≤ C√(d log d)`, in progress).** Dictionary: `Φ_d(u)` is the
-  Cauchy circle mean of `Ξ` at radius `|u|` with weight `e^{d(e^{iφ}−1−iφ)}`, i.e. the heat flow `H_{t(u)}` at height `u`
-  with height-dependent time `t(u) = u²/(2d)`. So the zones `t(u) log u ≳ 1` of real zeros of Ki–Kim–Lee give
-  real roots of `R_d(Ξ)` for `|x| ≲ √(d log d)`.
-  Proof plan, with `s = 1/2 + τ`, `G(τ) = s(s−1)/2·Γ_ℝ(s)`, `a = G'/G`, `ξ(s) = G(τ)ζ(s)`:
-  1. circle formula: `R_d(x) = (d!/π) Re[i^d ∫_{|θ|≤π/2} e^{−ixτ} ξ(1/2+τ) τ^{−d} dθ]`, `τ = ρe^{iθ}` (functional equation);
-  2. saddle: fixed point `a₀ = a(d/(a₀ − ix))` in a rectangle of the `a`-plane (`|a'(τ)| ≤ 6/|τ|` makes it a contraction with
-     constant `≲ 1/Re a₀`), continuous in `x`, real at `x = 0`; `τ₁ = d/(a₀ − ix)`;
-  3. exact model: `e^{(a₀−ix)τ₁e^{iφ}} = e^{de^{iφ}}` and `∫_{−π}^{π} e^{d(e^{iφ}−iφ)}dφ = 2πd^d/d!` give
-     `R_d(x) = 2 Re[(x + ia₀)^d G(τ₁)e^{−a₀τ₁}(1 + ε)]`, where `|ε|` is the mean of `|YZ − 1|` against
-     `√d e^{−d(1−cos φ)}`, `Y = G(τ)/(G(τ₁)e^{a₀(τ−τ₁)})`, `Z = ζ(1/2+τ)`;
-  4. bounds with `A = Re a₀`, `r = Re τ₁ = Aρ²/d`: `|Y − 1| ≤ e^{3ρφ²} − 1`; `|Z − 1| ≲ 2^{−r/π}` near the saddle; polynomial `|Z|` elsewhere,
-     beaten by `e^{−Ar/(8π²)}`. So `|ε| ≲ 1/A + 2^{−r/π} + e^{−A}`: small once `r ≥ K`, i.e. `|x| ≤ X = c√(d log d)`;
-  5. phase: `Θ(x) = d arg(x + ia₀) + Im log G(τ₁) − Im(a₀τ₁)` is continuous, `Θ(0) = dπ/2`, `|Θ(X)| ≲ T log T`, `T = d/X`; IVT gives
-     `d/2 − O(T log T)` sign changes on `(0, X]`; parity doubles them. Hence `N_d ≲ T log T ≍ √(d log d)`.
-  The bound does not use RH and should be sharp in the power of `d` for `H_{−τ}`.
+- **Location and sharpness of the non-real count (not proved).** R46 bounds the count only. Expected: every root with `|Re x| ≲ √(d log d)` is real, and the power `d^{1/2}` is sharp for `H_{−τ}`. Comparison with the flow: near `φ = 0`, R47 is the vertical Gaussian average of `H_t` at height-dependent time `t = u²/(2d)`, which is how the range of R46 matches the Ki–Kim–Lee range `t log u ≳ 1`; this comparison is a reading of the formula, not a theorem.
 - Other completed L-functions: R30 gives the forward direction for any genus-one entire function;
   the converse (Hurwitz, R25) is general too — instantiate for completed Dirichlet L-functions once
   their order-one bounds are in the corpus.
@@ -159,4 +148,4 @@ sign, a square-root count or a collision exclusion.
 
 ## Log
 - 2026-11-04 — created
-- 2026-11-05 — D1–D5, R1–R44 formalized
+- 2026-11-05 — D1–D5, R1–R47 formalized
