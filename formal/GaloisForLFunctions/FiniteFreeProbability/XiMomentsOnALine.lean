@@ -470,7 +470,8 @@ theorem log_jensenMass_div_le {σ : ℝ} (hσ : 1 / 2 ≤ σ) {θ : ℝ} (hθ : 
   have hlog := Real.log_le_log (by positivity) hC
   rw [Real.log_div (by positivity) hfact.ne', Real.log_mul hm.ne' (by positivity), Real.log_pow,
     Real.log_mul (Real.exp_pos _).ne' hξ.ne', Real.log_exp] at hlog
-  have hcap := log_xiMoment_le hw1
+  have hcap : Real.log (xiMoment (1 / 2 + w) 0) ≤ K + w * (3 + Real.log w / 2) :=
+    log_xiMoment_le hw1
   have hlogw : Real.log w ≤ Real.log d := Real.log_le_log (by linarith) hwd
   have hcap2 : w * (3 + Real.log w / 2) ≤ w * (3 + ℓ) :=
     mul_le_mul_of_nonneg_left (by simp only [ℓ, cauchyScale]; linarith) (by linarith)

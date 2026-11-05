@@ -1,7 +1,7 @@
 # RH proof-route frontier
 
 **RH open · 32 live routes · 17 candidates.**
-**Corpus checkpoint:** `95145d4992fcc874816c4784dceb5326624fa8f6`.
+**Corpus checkpoint:** `47405b3bb6cd039c1cefefcd7d44b69d987a505b`.
 
 Live = source observable + proved RH-sufficient receiver + explicit open estimate. Candidate = missing independent source mechanism/landing.
 Evidence: [L] integrated, source-reviewed; [S] unfinished/unintegrated, unverified; [K] individual Lean + standard-only transitive-axiom audit. Untagged established facts: [L].
@@ -44,9 +44,9 @@ Evidence: [L] integrated, source-reviewed; [S] unfinished/unintegrated, unverifi
 ### RW — Restricted Weil ground energy
 
 - **Path:** Complete Weil form → μ(a)≥0 at every radius → RH.
-- **Established:** Attained strictly decreasing minima; positive apertures=[0,a*]. Strictly increasing a_k carries floor1/(20000·2^k), a₀>181/500, retaining entering prime powers. Precontact Hermite–Biehler kernels and bounded Riesz vectors; finite contact forces diagonal-kernel blowup. Reference logarithmic form: domain=range W, q(Wf,Wg)=⟨f,g⟩, unique L²-forced inverse WW* with explicit overlap kernel [L]. All-lattice/two-site receivers [L]; exact {2,3} band below log2 [K].
-- **Open:** Actual Weil-Riesz boundary traces and global multiplier-domain admission; arithmetic kernel bound uniform up to contact, or all-aperture signed payment. Increasing a_k need not exhaust apertures. [Prime-entry margins](#prime-entry), [EWU](#ewu), [OWU](#owu), [ACT](#act).
-- **Sources:** C:TheApertureFlowNeverStalls; I:MultiPrimeDilationModulusAndIteratedWeilFloors; CSTW:{TheWeilFormIsCompleteBeforeContact,TheLocalWeilKernelIsHermiteBiehler,TheWeilKernelDivergesAtContact,TheWeilRieszEquationIsALogarithmicDirichletEquation,TheHalfLineLogarithmicFormHasItsActualInverse,TheHalfLineLogarithmicGreenKernelIsExplicit}; GWZ:RHIsDecidedOnTwoSites [L]; SWC:BelowLogFour/RetainedVarianceAndHalfWindowBandBelowLogFour [K].
+- **Established:** Attained strictly decreasing minima; positive apertures=[0,a*]. Strictly increasing a_k carries floor1/(20000·2^k), a₀>181/500, retaining entering prime powers. Precontact Hermite–Biehler kernels and bounded Riesz vectors; finite contact forces diagonal-kernel blowup. Reference logarithmic inverse WW* has an exact normalized boundary trace for locally bounded L² forcing [L]. All-lattice/two-site receivers [L]; exact {2,3} band below log2 [K].
+- **Open:** Put actual Weil-Riesz forcing in that trace class and global multiplier domain; bound arithmetic kernels uniformly up to contact, or pay the full signed form at every aperture. Increasing a_k need not exhaust apertures. [Prime-entry margins](#prime-entry), [EWU](#ewu), [OWU](#owu), [ACT](#act).
+- **Sources:** C:TheApertureFlowNeverStalls; I:MultiPrimeDilationModulusAndIteratedWeilFloors; CSTW:{TheWeilFormIsCompleteBeforeContact,TheLocalWeilKernelIsHermiteBiehler,TheWeilKernelDivergesAtContact,TheWeilRieszEquationIsALogarithmicDirichletEquation,TheHalfLineLogarithmicGreenSolutionsHaveBoundaryValues}; GWZ:RHIsDecidedOnTwoSites [L]; SWC:BelowLogFour/RetainedVarianceAndHalfWindowBandBelowLogFour [K].
 
 <a id="fu"></a>
 ### FU — CCM-FU signed prime scheduling
@@ -100,9 +100,9 @@ Evidence: [L] integrated, source-reviewed; [S] unfinished/unintegrated, unverifi
 ### LA — Line anchor
 
 - **Path:** Theta source → collision-free heat descent / Jensen-root imaginary-part control → RH.
-- **Established:** RH⇔infinitely many unshifted Ξ Jensen degrees real-rooted⇔every positive-time H_t zero simple. For 0<t≤1/8, zeros with abs(Re z)≥2πexp((6600/9991+ε)/t) are real/simple. For every fixed finite Möbius mollifier, σ>0 and phase: RH⇔uniform upper imaginary-root bound along infinitely many reversed Jensen degrees⇔sublinear bounds; ¬RH forces a root with Im≥κd eventually. Arbitrarily many real Jensen roots occur eventually, unconditionally [L].
+- **Established:** RH⇔infinitely many unshifted Ξ Jensen degrees real-rooted⇔every positive-time H_t zero simple. For 0<t≤1/8, zeros with abs(Re z)≥2πexp((6600/9991+ε)/t) are real/simple. For each fixed finite Möbius mollifier, σ>0 and phase: bounded/sublinear upper imaginary-root growth along infinitely many reversed Jensen degrees⇔RH; ¬RH forces Im≥κd eventually. Arbitrarily many real roots occur eventually [L]. Explicit fixed-degree shift horizon N(d), from saddle errors and finite Hermite sign margins [S].
 - **Open:** Actual sublinear Jensen-root bound, or collision exclusion below the sub-Weyl horizon and at bounded heights. Fixed-degree reality and growing real-root counts give no all-root control; [uniform strict stability margin fails](rh-killed-routes.md#xi-stability-margin) [L]. Positive-time bounds do not reach t=0; [size-only models still collide](rh-killed-routes.md#heat-method-floor). [ZCG](#zcg): local arithmetic input.
-- **Sources:** R:Jensen/EveryFixedDegreeIsEventuallyRealRooted; R:XiSliceHeatOrderUniformPositivity; R:Heat/TheLocalDeBruijnNewmanConstant; R:DeBruijnNewmanCollisionCriterion; ZCG:HeatScaleRepulsion/{SubWeylCollisionFreeHorizon,SymmetricHalfCollisionLaw}; FFP:{MollifiedJensenCriterion,BoundedImaginaryPartsCriterion,ImaginaryPartDichotomy,FiniteFreeHardyTheorem} [L].
+- **Sources:** R:Jensen/EveryFixedDegreeIsEventuallyRealRooted; R:XiSliceHeatOrderUniformPositivity; R:Heat/TheLocalDeBruijnNewmanConstant; R:DeBruijnNewmanCollisionCriterion; ZCG:HeatScaleRepulsion/{SubWeylCollisionFreeHorizon,SymmetricHalfCollisionLaw}; FFP:{MollifiedJensenCriterion,BoundedImaginaryPartsCriterion,ImaginaryPartDichotomy,FiniteFreeHardyTheorem} [L]; R:Jensen/ExplicitRealRootednessHorizon [S].
 
 <a id="tg"></a>
 ### TG — Topological sub-unit gate
@@ -132,7 +132,7 @@ Evidence: [L] integrated, source-reviewed; [S] unfinished/unintegrated, unverifi
 ### TH — Theta moment positivity
 
 - **Path:** Signed center-mixed theta jets → all-rank Hankel positivity → RH.
-- **Established:** Rank8 positive for 0<a<1/2; ranks≤N strict on |a−1/2|<c/(1+log(N+1)) [K]. Truncated quartic positive for q≥7, false at q=6; exact scale-six capacity τ(a)<350/417. Literal first atom plus both ordered (1,2) cross terms has positive-definite fifth-even tail matrix for every cutoff r≥0, retaining gamma reserve [L].
+- **Established:** Rank8 positive for 0<a<1/2; ranks≤N strict on |a−1/2|<c/(1+log(N+1)) [K]. Truncated quartic positive for q≥7, false at q=6; exact scale-six capacity τ(a)<350/417. Literal first atom plus both ordered (1,2) cross terms has positive-definite fifth-even tail matrix for every cutoff r≥0, with explicit retained gamma matrix reserve [L].
 - **Open:** Pay remaining unequal pairs and infinite remainder in a fixed tail quadratic form, including compact scales. Then rank9 I₈(a)>0 and all ranks. [Full quartic repair fails](rh-killed-routes.md#theta-fixed-cross-load).
 - **Sources:** R:ThetaCusp/ThetaCuspCenterMixedSignedJetCompleteness; TCS:{StrictEighthSection,LogarithmicCriticalCollar} [K]; TCS:{FifthEvenTruncatedQuarticUpperRay,FifthEvenScaleSixApertureCapacity,FifthEvenFourAtomRemainder,FifthEvenLeadingTail} [L].
 
@@ -196,9 +196,9 @@ Evidence: [L] integrated, source-reviewed; [S] unfinished/unintegrated, unverifi
 ### HCF — Gaussian heat trace / critical feature variance
 
 - **Path:** Exact arch−prime heat trace → both prime-log grids positive at every degree → RH.
-- **Established:** Heat explicit formula and two-grid RH criterion [L]. Absolute heat mass≤6/h; pole-annihilating detector has explicit degree from the finite outer sampled spectrum, at every odd offset [S].
+- **Established:** Heat explicit formula and two-grid RH criterion. Absolute heat mass≤6/h; every off-line zero gives a pole-annihilating negative test on log2 or log3, at independently prescribed odd offsets. Detector degree explicit from the finite outer sampled spectrum [L].
 - **Open:** Actual signs at every degree/height, or one-sided vertical bound. Detector degree depends on spectral separation; two-grid non-aliasing supplies no uniform finite sign certificate.
-- **Sources:** R:XiGaussianHeatTwoPrimeSourceSampling; R:HeatGridAliasingBoundary [L]; S:EffectiveHorizons/{TraceHankelDegrees,HeatGridDegrees} [S].
+- **Sources:** R:XiGaussianHeatTwoPrimeSourceSampling; R:HeatGridAliasingBoundary; S:EffectiveHorizons/{TraceHankelDegrees,HeatGridDegrees} [L].
 
 <a id="xn"></a>
 ### XN — Xi Newton invariant discs
@@ -310,7 +310,7 @@ Promotion requires the missing independent source mechanism/landing below; an un
 | <a id="sec"></a>**SEC — Adjacent prime seam:** exact compactness/Fock boundedness → seam jump zero. | Essential norm=seam jump; exact vanishing and time-one factorial-Fock criteria. | Pre-divisor proof of exact eventual compactness or Fock boundedness at actual zeros. Asymptotic seam smallness is nonselective. | R:XiPrimeSeamAdjacentEssentialNormNoGo; R:TimeOneGammaJetFockRHCriterion |
 | <a id="w1c"></a>**W1C — Clifford–Dirac / centred Lee–Yang:** arithmetic operator or ferromagnetic limit → real-rooted Ξ. | Lee–Yang/Ising receiver; faithful Haar realization, closed reflection, all-determinant Lewis invariance and corrected all-prime transport; actual-core Haar admission⇔resonance [K]; physical Krein/Gaussian residues and height-uniform cusp remainder; retained Hecke channel detects the resonance side of Re s=1/4 [K]: [PM](#pm). | Source-defined Ising couplings with centred slow-field convergence, or positive arithmetic reflection form with self-adjoint generator. Admission/transport do not give [Krein positivity](rh-killed-routes.md#mayer-krein-sign). | R:LeeYangIsingGraphDatum; R:IsingLawConvergenceRH; RIT:MayerScattering/ClosedCauchyReflection; RIT:MayerScattering/AllPrimeBoundaryTransport; RIT:MayerScattering/CoreHaarResonanceAdmission [K] |
 | <a id="wbf"></a>**WBF — Source certificates:** arithmetic stream → depth-uniform positive completion → Ξ. | Abstract genealogy Gram/Fredholm recovery and relative determinants; no arithmetic coupling. | Arithmetic certificate stream and source-faithful uniform-depth completion landing on Ξ/Weil positivity. | H:PaperGenealogyFredholmRecovery; H:PaperCriticalGenealogyCompletion |
-| <a id="zcg"></a>**ZCG — Zero-configuration geometry:** prime image → local rigidity → collision exclusion → RH. | Isolated small RvM clusters admit polynomial-loss discriminant readout with exp(−Klog³T) tail; exact prime curvature. Period-N one-orbit/residue threshold (N−1)π/(Ng), sharp at period6 [L]. Integral finite configurations: explicit impurity gaps; N consecutive late power-sum bounds certify purity. Uniform distinct-root separation transports reality along fixed-degree paths [S]. | Independent ζ arithmetic gap and exhaustive cluster coverage. Integral realization and certificate-scale power-sum bounds are unproved; [continuous integral paths are constant](rh-killed-routes.md#integral-deformation). [General mixed-depth resolution: lower5π/(6g), upperπ/g](rh-killed-routes.md#two-carrier-inversion). | ZCG:{IsolatingWindowsVarySlowlyAtTheirTarget,TheImageReadsTheDiscriminantOfACluster,NearCoincidencePrimeCurvatureAndStripCollisionLaw,MixedDepthsHideBeyondTheInghamScale,PeriodicMimicsAreResolvedAboveTheirLastLag} [L]; ADO:{FinitelyManyOrdersCertifyIntegralPurity,UniformRepulsionCarriesReality} [S] |
+| <a id="zcg"></a>**ZCG — Zero-configuration geometry:** prime image → local rigidity → collision exclusion → RH. | Small isolated RvM clusters: discriminant readout with exp(−Klog³T) tail; exact prime curvature. Period-N threshold (N−1)π/(Ng), sharp at period6. Integral finite configurations: explicit impurity/depth gaps; N late power sums certify purity. Uniform distinct-root separation transports reality. Fixed finite Euler carriers have polynomial-in-height separation [L]. | ζ-specific arithmetic gap and exhaustive cluster coverage; integral realization and certificate-scale power-sum bounds unproved. [Integral paths are constant](rh-killed-routes.md#integral-deformation); [degree/height-independent repulsion fails](rh-killed-routes.md#arithmetic-repulsion). [Mixed-depth resolution: lower5π/(6g), upperπ/g](rh-killed-routes.md#two-carrier-inversion). | ZCG:{IsolatingWindowsVarySlowlyAtTheirTarget,TheImageReadsTheDiscriminantOfACluster,NearCoincidencePrimeCurvatureAndStripCollisionLaw,MixedDepthsHideBeyondTheInghamScale,PeriodicMimicsAreResolvedAboveTheirLastLag}; ADO:{FinitelyManyOrdersCertifyIntegralPurity,UniformRepulsionCarriesReality,EulerColumnsCollideOrRepelAtPolynomialScale} [L] |
 
 ## Shared frontier
 
@@ -375,11 +375,17 @@ ADT: conductor degeneration supporting HF/ACS/SC; gluing determinant reformulate
 
 WTZ/DZG/ATD: RW/HF/ACS/PM support. Tate-positive dimensions=[0,κ(A)], κ(A)>0 and κ(A)→0; strict interior floor and exact rational-Hecke graph criterion [L]. Finite matrix reduction through A≤log(81/16); actual dimension1 sign through log(9/2). First-jet domination⇔Weil sign; no all-aperture domination. Sources: WTZ:{PositiveTateDimensionsFormAClosedInitialInterval,PositivePrimeMultipliersLowerTateDimension,TheTateHorizonBeforeEightyOneSixteenths,TheThirdTateStageDistinguishesEdgeSigns}.
 
-GWZ/CSTW: RW/AIP precontact/lattice support. Causal density v: mass1, multiplier1/κ, V(x)√log(1/x)→1; inverse WW* has overlap kernel ∫₀^min(x,y)v(x−s)v(y−s)ds, integrable off diagonal. Normalized convolution reads right-continuous boundary data [L]. Backward readout is continuous at0 for L² forcing essentially bounded on y≤δ, δ>0 [S]. Actual Weil-Riesz regularity/domain admission and finite-contact exclusion remain. Sources: CSTW:{TheHalfLineLogarithmicFormHasItsActualInverse,TheHalfLineLogarithmicGreenKernelIsExplicit,TheLogarithmicRenewalAverageReadsTheBoundary} [L]; CSTW:TheLogarithmicBackwardConvolutionHasBoundaryValues [S]. SWC/FADF: signed charge/edge support; all-aperture payment open.
+GWZ/CSTW: RW/AIP precontact/lattice support. Reference inverse WW*f has a representative u with trace u(x)√log(1/x)→∫v(y)f(y)dy at0+ for half-line L² forcing locally essentially bounded at0; readout absolutely convergent [L]. Literal logarithmic jump energy finite⇔Fourier energy finite [S]. Actual Weil-Riesz admission and uniform contact control remain. Sources: CSTW:TheHalfLineLogarithmicGreenSolutionsHaveBoundaryValues [L]; CSTW:TheLogarithmicEnergyHasItsLiteralJumpForm [S]. SWC/FADF: signed charge/edge support; all-aperture payment open.
 
-FFP: LA/TH support. Canonical zero-piece realization is exact; piece reality⇔RH. Genus-one stability⇔upper-half-plane zeros and drift D≥0; sharp margin −D. ξ has drift0: reversed Jensen roots concentrate near Im0 for σ≥1; e^{c(s−σ)}ξ is stable iff ξ is zero-free right ofσ and c≥0 [L]. Critical-line stability/all-root control remain open; [strict-margin obstruction](rh-killed-routes.md#xi-stability-margin). Sources: FFP:{ZeroPieceRealization,GenusOneStabilityClassification,StabilityBoundaryOfXi} [L].
+FFP: LA/TH support. Exact zero-piece reality⇔RH. Genus-one stability⇔upper-half-plane zeros and drift D≥0; sharp margin −D. ξ drift0; reversed Jensen roots approach Im0 for σ≥1 [L]. At scale½log d, mass-ratio law gives G_d(iθ)→1/(iθ+i), σ≥1/2, θ>0. Full upper-half-plane transform convergence holds for σ≥1, or given zero-freeness right ofσ [S]; critical-line stability/all-root control remains open. [Strict-margin obstruction](rh-killed-routes.md#xi-stability-margin). Sources: FFP:{ZeroPieceRealization,GenusOneStabilityClassification,StabilityBoundaryOfXi} [L]; FFP:{XiMomentsOnALine,CauchyLimitLaw} [S].
 
-ADO: [ZCG](#zcg)/[LA](#la) support. Integral trace polynomial with N eigenvalues paired by α↦q/α: sufficiently late N-order square-root power-sum bounds force purity [S]. Missing ζ realization and those bounds. HWV: squarefree prime complex≃wedge of S^(ω(m)−1), odd squarefree N/2<m≤N; topology supplies no signed cancellation. Source: HWV:SquarefreePrimeComplexIsASphereBouquet [L].
+ADO: [ZCG](#zcg)/[LA](#la) arithmetic separation support. One-prime polynomial carrier has uniform vertical separation; two-prime columns have arbitrarily close zeros, but fixed finite Euler carriers retain cT^(−C) separation [L]. No ζ gap or growing-prime-set uniformity. Sources: ADO:{TheRankOfTheFrequencyModuleDecidesRepulsion,EulerColumnsCollideOrRepelAtPolynomialScale} [L].
+
+CHT: RW/ACT window-cone support. Shifted-Gamma tests are Taylor coefficients of translated Φ; uniform doubly exponential bounds for tests and first derivatives [S]. Effective cone uniqueness/margins and actual window-edge control remain open. Source: CHT:TheShiftedGammaTestsAreTaylorCoefficients [S].
+
+APR: WL/MC arithmetic-production support. All-coefficient Type-II norms are multiplicative-sign invariant; [norm-only square-root count implication fails](rh-killed-routes.md#type-ii-parity) [S]. Missing parity-sensitive arithmetic estimate. Source: APR:BilinearFormsAreParityBlind [S].
+
+HWV: squarefree prime complex≃wedge of S^(ω(m)−1), odd squarefree N/2<m≤N; topology supplies no signed cancellation. Source: HWV:SquarefreePrimeComplexIsASphereBouquet [L].
 
 ## Source locator
 
@@ -428,4 +434,5 @@ ADO: [ZCG](#zcg)/[LA](#la) support. Integral trace polynomial with N eigenvalues
 | TCS | ThetaCuspSections | SWC | SignedWindowCriticality |
 | ZCG | ZeroConfigurationGeometry | KPA | KodairaParshinAbc |
 | FFP | FiniteFreeProbability | FADF | FrustratedArithmeticDirichletForms |
-| ADO | ArithmeticDiscreteness | — | — |
+| ADO | ArithmeticDiscreteness | CHT | CriticalHardyTheoryOfTheWindowCone |
+| APR | ArithmeticProduction | — | — |

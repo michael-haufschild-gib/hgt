@@ -34,3 +34,9 @@ quadratic form remains necessary.
 Next comparison candidate on `π≤q≤5`: the omitted contribution is at least
 `−E(q)(3/(32q²)−3/(128q³))A`. This is unproved; it would close the compact
 fifth-tail gap. Existing square-plus-flux identities alone do not prove it.
+
+For the `(1,3)` pair, test half the reserve against both rate-ten gamma
+endpoints with relative weight `3^20/(20^8 q^20)`. The other unequal pairs
+have relative rates `15,11,18,23`. Their radial polynomials have degree at
+most eighteen, so this twenty-power envelope matches the reserve decay.
+The proposed reserve allocations remain unproved.

@@ -36,7 +36,7 @@ theorem abs_hermiteReal_eval_le {R x : ℝ} (hR : 0 ≤ R) (hx : |x| ≤ R) (j :
     rw [eval_hermiteReal_add_two, hermiteValueBound]
     calc
       _ ≤ |x * (hermiteReal (j + 1)).eval x| +
-          |((j : ℝ) + 1) * (hermiteReal j).eval x| := abs_sub_le _ _
+          |((j : ℝ) + 1) * (hermiteReal j).eval x| := abs_sub _ _
       _ = |x| * |(hermiteReal (j + 1)).eval x| +
           ((j : ℝ) + 1) * |(hermiteReal j).eval x| := by
         rw [abs_mul, abs_mul, abs_of_nonneg (by positivity : 0 ≤ (j : ℝ) + 1)]
@@ -67,15 +67,15 @@ theorem xiJensenHermiteErrorConstant_nonneg {R : ℝ} (hR : 0 ≤ R) (j : ℕ) :
 private theorem abs_delta_mul_sub_one_le {δ R x : ℝ}
     (hδ : 0 ≤ δ) (hδ1 : δ ≤ 1) (hx : |x| ≤ R) : |δ * x - 1| ≤ R + 1 := by
   calc
-    _ ≤ |δ * x| + |(1 : ℝ)| := abs_sub_le _ _
+    _ ≤ |δ * x| + |(1 : ℝ)| := abs_sub _ _
     _ = δ * |x| + 1 := by rw [abs_mul, abs_of_nonneg hδ, abs_one]
-    _ ≤ 1 * R + 1 := add_le_add_right (mul_le_mul hδ1 hx (abs_nonneg _) zero_le_one) _
+    _ ≤ 1 * R + 1 := add_le_add (mul_le_mul hδ1 hx (abs_nonneg _) zero_le_one) (le_refl 1)
     _ = _ := by ring
 
 private theorem abs_add_sub_add_sub_le (a b c d e : ℝ) :
     |a + b - c + d - e| ≤ |a| + |b| + |c| + |d| + |e| := by
-  linarith only [abs_sub_le (a + b - c + d) e, abs_add_le (a + b - c) d,
-    abs_sub_le (a + b) c, abs_add_le a b]
+  linarith only [abs_sub (a + b - c + d) e, abs_add_le (a + b - c) d,
+    abs_sub (a + b) c, abs_add_le a b]
 
 /-- Every mixed expectation error is controlled by the same finite moment accuracy. -/
 theorem xiThetaHermiteMixed_error_bound (n D d k : ℕ) {R η x : ℝ}
@@ -151,7 +151,7 @@ theorem xiThetaHermiteMixed_error_bound (n D d k : ℕ) {R η x : ℝ}
         ((j : ℝ) + 1) * (xiThetaHermiteMixed n j k x - (if k = 0 then (hermiteReal j).eval x else 0)) +
         2 * ((j : ℝ) + 1) * xiJensenDelta n * (if k = 0 then (hermiteReal (j + 1)).eval x else 0) -
         ((j : ℝ) + 1) * xiJensenDelta n ^ 2 * (if k = 0 then (hermiteReal (j + 2)).eval x else 0) := by
-      rw [xiThetaHermiteMixed_add_two, mul_sub, mul_assoc, mul_inv_cancel₀ hden.ne', one_mul]
+      rw [xiThetaHermiteMixed_add_two, mul_sub, ← mul_assoc, mul_inv_cancel₀ hden.ne', one_mul]
       cases k <;> simp only [Nat.succ_ne_zero, if_false, if_pos rfl, ite_true,
         eval_hermiteReal_add_two] <;> ring
     have hscale : |xiThetaHermiteMixed n (j + 2) k x -
@@ -208,3 +208,6 @@ theorem xiJensenHermitePolynomial_eval_error_le (n d : ℕ) {R x : ℝ}
     eval_xiJensenHermitePolynomial] using h
 
 end RHTower
+
+#print axioms RHTower.xiThetaHermiteMixed_error_bound
+#print axioms RHTower.xiJensenHermitePolynomial_eval_error_le
