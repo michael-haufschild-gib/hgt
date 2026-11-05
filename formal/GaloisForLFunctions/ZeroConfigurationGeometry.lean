@@ -69,6 +69,21 @@ import GaloisForLFunctions.ZeroConfigurationGeometry.EffectiveHeights.MomentRead
 import GaloisForLFunctions.ZeroConfigurationGeometry.EffectiveHeights.ClusterConsequences
 import GaloisForLFunctions.ZeroConfigurationGeometry.EffectiveHeights.ImageConsequences
 import GaloisForLFunctions.ZeroConfigurationGeometry.EffectiveHeights.ZetaReadout
+import GaloisForLFunctions.ZeroConfigurationGeometry.RealWeights.Readout
+import GaloisForLFunctions.ZeroConfigurationGeometry.RealWeights.EffectiveReadout
+import GaloisForLFunctions.ZeroConfigurationGeometry.RealWeights.ZetaReadout
+import GaloisForLFunctions.ZeroConfigurationGeometry.RealWeights.StripEnvelope
+import GaloisForLFunctions.ZeroConfigurationGeometry.RealWeights.StripFourier
+import GaloisForLFunctions.ZeroConfigurationGeometry.RealWeights.PositiveImages
+import GaloisForLFunctions.ZeroConfigurationGeometry.RealWeights.IntervalCount
+import GaloisForLFunctions.ZeroConfigurationGeometry.RealWeights.IntervalMajorant
+import GaloisForLFunctions.ZeroConfigurationGeometry.RealWeights.CountMajorant
+import GaloisForLFunctions.ZeroConfigurationGeometry.RealWeights.CountTransfer
+import GaloisForLFunctions.ZeroConfigurationGeometry.RealWeights.KernelChoice
+import GaloisForLFunctions.ZeroConfigurationGeometry.RealWeights.ImageEnvelope
+import GaloisForLFunctions.ZeroConfigurationGeometry.RealWeights.ZetaMass
+import GaloisForLFunctions.ZeroConfigurationGeometry.RealWeights.ZetaTransfer
+import GaloisForLFunctions.ZeroConfigurationGeometry.RealWeights.FlatLattice
 import GaloisForLFunctions.ZeroConfigurationGeometry.NegativeTests.FourierTail
 import GaloisForLFunctions.ZeroConfigurationGeometry.NegativeTests.ClusterRate
 import GaloisForLFunctions.ZeroConfigurationGeometry.NegativeTests.CubicTail
@@ -91,6 +106,8 @@ Umbrella for the explicit formula read as a camera.
   inverse by differential windows; the primes pin every finite piece of the zeros of `ζ`; local
   inversion at and above the square-root threshold down to polynomial separation `T^{−M}`, with the
   sharp Nyquist half-shift counterexample across `(0, 1]`.
+* Real weights: one geometric camera reads arbitrary complex coefficients; positive on-line ζ
+  mimics inherit sharp local weighted counts, while fixed flat images allow unbounded atom counts.
 * Hiding: on-line mimics need near-collisions; Ingham's inequality with tilts and its block form
   for FE pairs; resolution uniform in depth, so that every mimic needs a near-collision in height
   or a deep point; shallow configurations are resolved at the optimal Ingham scale `π/(2a)`.

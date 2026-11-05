@@ -1506,7 +1506,7 @@ private theorem uniform_right_err_le {T ℓ w K t₀ ε : ℝ}
     _ ≤ ε / 8 := div_le_div_of_nonneg_right hε_ge (by norm_num)
 
 private theorem uniform_center_err_le {Cc C_cen T ℓ Θ w R t₀ ε : ℝ} {N : ℕ}
-    (hCc : 0 < Cc) (hC_cen_def : C_cen = Cc * 8100 * (2 * Real.exp 1) * 2 + 1)
+    (hCc : 0 ≤ Cc) (hC_cen_def : C_cen = Cc * 8100 * (2 * Real.exp 1) * 2 + 1)
     (hT0 : 0 < T) (hT1 : 1 ≤ T) (hℓ10 : 10 ≤ ℓ) (hT_exp : Real.exp ℓ = T)
     (hN_pos : (0 : ℝ) < (N : ℝ)) (hΘ_def : Θ = Real.log (N : ℝ)) (hΘ0 : 0 ≤ Θ)
     (hw_def : w = ℓ ^ 2) (hR_def : R = 4 * w * Real.sqrt (Θ + 2 * ℓ))
@@ -1751,6 +1751,7 @@ private theorem uniform_spectral_rem_tot_le {A B₁ T ℓ θ w L B a t₀ ε : �
       ε / 8 * (w * √Real.pi) := by
   have hℓ0 : 0 < ℓ := by linarith only [hℓ10]
   have hw0 : 0 < w := by rw [hw_def]; positivity
+  have hε0 : 0 < ε := lt_of_lt_of_le (by positivity) hε_ge
   have hB₁_pos : 0 < B₁ := by rw [hB₁_def]; positivity
   have hsqrtπ_ge1 : 1 ≤ √Real.pi :=
     Real.le_sqrt_of_sq_le (by linarith only [Real.pi_gt_three])
@@ -1817,6 +1818,7 @@ private theorem uniform_gauss_mass_ge {T T₁ T₂ ℓ Θ w R ε t : ℝ}
     (1 - ε) * (w * √Real.pi) ≤ ∫ t₀ in (T + R)..(2 * T - R), gaussKernel w t t₀ := by
   have ht_lo : (T + R) + R ≤ t := by linarith only [hT₁a, ht.1]
   have ht_hi : t ≤ (2 * T - R) - R := by linarith only [hT₂b, ht.2]
+  have hε0 : 0 < ε := lt_of_lt_of_le (by positivity) hε_ge
   refine le_trans ?_ (gaussKernel_mass_ge hw0 hAB hR0 ht_lo ht_hi)
   have hR2 : 16 * ℓ ≤ R ^ 2 / (2 * w ^ 2) := by
     rw [hR_def]
@@ -2045,7 +2047,7 @@ theorem eventually_uniform_complex_necessary_length :
       uniform_spectral_rem_tot_le hB₁_def hT0 hT1 hℓ10 hℓ_def hw_def hw4 hB_def ha4
         ht₁ ht₂ hNT hL_def hLa0 hLBa_le hexpLa_le2 hε_ge hr₁ hr₂
     have hcosh : 2 * Real.cosh (a * (L + 2 * B)) = 5 / 2 := by
-      have h3 : a * (L + 2 * B) = Real.log 2 := by rw [← haq, hL_def, hB_def]; ring
+      have h3 : a * (L + 2 * B) = Real.log 2 := by rw [← haq, hL_def, hB_def, hq_def]; ring
       rw [h3]; exact two_mul_cosh_log_two'
     have hmain := hwin t₀ hw0 ha0 ha4 hL0 hB0 hb
     rw [hcosh] at hmain
@@ -2053,8 +2055,8 @@ theorem eventually_uniform_complex_necessary_length :
     have hA₀ := le_integral_window_right_of_sq_le ht₀0 hw0 ha0 ha4 hK5 hN hb1 hb hε0 hε1
       hright_err ha_sq
     have hX := integral_gauss_linePower_left_le t₀ hw0 ha0 ha4 hT12 hb
-    have hF₀ := (hcenter t₀ hw0 hR0 (T₃ := T) (T₄ := 2 * T) ht₀.1 ht₀.2 hb).trans
-      (add_le_add le_rfl hcen_err)
+    have hF₀ := (hcenter t₀ hw0 hR0 (T₃ := T) (T₄ := 2 * T) ht₀.1
+      (by linarith only [ht₀.2]) hb).trans (add_le_add le_rfl hcen_err)
     have h3 := mul_le_mul_of_nonneg_left hA₀ (Real.exp_pos (L * a)).le
     have h4 := mul_le_mul_of_nonneg_left hX (Real.exp_pos (-(L * a))).le
     have h5 := mul_le_mul_of_nonneg_left hF₀ (by norm_num : (0 : ℝ) ≤ 5 / 2)
@@ -2089,8 +2091,8 @@ theorem eventually_uniform_complex_necessary_length :
       rw [ha_def, hv_def, div_mul_eq_mul_div, mul_div_mul_right _ _ hℓ0.ne']
     have hcount := hcnt T₁ T₂
       (by linarith only [hT₁a, hR0])
-      (by linarith only [hT₁b, hsmallR, hεT2])
-      (by linarith only [hT₂a, hsmallR, hεT2])
+      (by linarith only [hT₁b, hsmallR, hεT2, hT0])
+      (by linarith only [hT₂a, hsmallR, hεT2, hT0])
       (by linarith only [hT₂b, hR0])
     obtain ⟨Δ, hΔ_def⟩ : ∃ x : ℝ, x = (xiPosZeroCount T₂ : ℝ) - xiPosZeroCount T₁ := ⟨_, rfl⟩
     rw [← hΔ_def, ← hℓ_def] at hcount
@@ -2101,7 +2103,7 @@ theorem eventually_uniform_complex_necessary_length :
       rw [h2, haℓ, h3] at h1
       exact h1
     have hMb1 : (1 : ℝ) ≤ (N : ℝ) ^ 5 := one_le_pow₀ hN_ge1
-    have hlog_err := uniform_log_err_le hCl hKl hC_lf_def hT0
+    have hlog_err := uniform_log_err_le (T₂ := T₂) hCl hKl hC_lf_def hT0
       (by linarith only [hT12_lt, hT₁a, hR0, hT0])
       (by linarith only [hT₂b, hR0])
       hℓ10 hℓ_def hT_exp hΘ_def hΘ_le hv_ge hlf_sm
@@ -2135,10 +2137,11 @@ theorem eventually_uniform_complex_necessary_length :
     calc (4 : ℝ) ≤ 32000 := by norm_num
       _ ≤ ε * T := hεT_ge32000
       _ ≤ ε * T₁ := mul_le_mul_of_nonneg_left hTT₁ hε0.le
+      _ = T₁ * ε := mul_comm _ _
   have hIlow := le_integral_linePower_left b N hε0 ha0 ha4 hT12
     (by linarith only [hT1000, hT₁a, hR0]) hTε
   have hε' : 0 ≤ 1 - ε := by linarith only [hε1]
-  have hsub_εT : (1 - ε) * T = T - ε * T := sub_mul 1 ε T
+  have hsub_εT : (1 - ε) * T = T - ε * T := by ring
   have hlen12 : (1 - ε) * T ≤ T₂ - T₁ := by
     linarith only [hsub_εT, hT₁b, hT₂a, hsmallR, hεT_ge32000]
   have hIz : (1 - ε) ^ 2 * z * T ≤ ∫ t in T₁..T₂, linePower b N (-a) t := by
@@ -2721,19 +2724,3 @@ theorem occupiedBurnolWindows_le_of_prefixCancelling_secondMoment
 end GaloisForLFunctions.ConjugateDiagonalGeometry.NearLineLogMean
 
 end
-
-#print axioms GaloisForLFunctions.ConjugateDiagonalGeometry.NearLineLogMean.edPolyHermitianTrace_count_le
-#print axioms GaloisForLFunctions.ConjugateDiagonalGeometry.NearLineLogMean.exists_edPoly_line_logMean_floor_complex
-#print axioms GaloisForLFunctions.ConjugateDiagonalGeometry.NearLineLogMean.exists_left_floor_complex
-#print axioms GaloisForLFunctions.ConjugateDiagonalGeometry.NearLineLogMean.exists_logIntegral_le_of_complex_secondMoment
-#print axioms GaloisForLFunctions.ConjugateDiagonalGeometry.NearLineLogMean.criticalClustering_of_complexMollifiedSecondMomentLaw
-#print axioms GaloisForLFunctions.ConjugateDiagonalGeometry.NearLineLogMean.logFreeNearLineZeroDensity_of_complexSecondMomentRate
-#print axioms GaloisForLFunctions.ConjugateDiagonalGeometry.NearLineLogMean.logFreeNearLineWindowOccupancy_of_complexSecondMomentRate
-#print axioms GaloisForLFunctions.ConjugateDiagonalGeometry.NearLineLogMean.eventually_uniform_complex_necessary_length
-#print axioms GaloisForLFunctions.ConjugateDiagonalGeometry.NearLineLogMean.eventually_log_mollifier_length_ge_of_excess
-#print axioms GaloisForLFunctions.ConjugateDiagonalGeometry.NearLineLogMean.complexSecondMomentRate_forces_exp_logSq_length
-#print axioms GaloisForLFunctions.ConjugateDiagonalGeometry.NearLineLogMean.not_complexSecondMomentRate_below_exp_logSq
-#print axioms GaloisForLFunctions.ConjugateDiagonalGeometry.NearLineLogMean.tendsto_log_length_div_log_atTop_of_complex_second_moment_tendsto_one
-#print axioms GaloisForLFunctions.ConjugateDiagonalGeometry.NearLineLogMean.occupiedBurnolWindows_criticalLine_spike_ge
-#print axioms GaloisForLFunctions.ConjugateDiagonalGeometry.NearLineLogMean.occupiedBurnolWindows_criticalLine_sharp_spike_ge
-#print axioms GaloisForLFunctions.ConjugateDiagonalGeometry.NearLineLogMean.occupiedBurnolWindows_le_of_prefixCancelling_secondMoment

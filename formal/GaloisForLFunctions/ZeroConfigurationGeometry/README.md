@@ -1,7 +1,7 @@
 # Zero Configuration Geometry (ZCG)
 
 Namespace `GaloisForLFunctions.ZeroConfigurationGeometry`; umbrella `ZeroConfigurationGeometry.lean`;
-86 modules.
+101 modules.
 
 ## 1. Motivation
 
@@ -240,6 +240,9 @@ same input as every route: cancellation of the prime sum below the mean spacing.
 | Blindness costs the density aperture; `πD` is exact | `pi_mul_le_aperture_of_blind`, `eq_zero_of_blind_of_unbounded_density`, `eq_zero_of_blind_to_real_zeros_of_xi`, `blind_aperture_threshold` | unconditional |
 | Uniform isolating windows: blind to a matched cluster, explicit floor at the target, strip decay independent of the cluster | `exists_bump_one_le_norm_paperFT_I_mul`, `windowFloor`, `windowGrowth`, `isolating_window_of_bump`, `exists_uniform_isolating_window` | unconditional |
 | **Local camera** | | |
+| One carrier-dependent camera reads all complex weights of bounded absolute mass, with explicit ζ heights | `weighted_discMoment_readout_rvm_explicit`, `zeta_weighted_discMoment_readout_explicit` | unconditional; [real weights](RealWeights/README.md) |
+| Positive on-line ζ mimics inherit sharp local weighted counts, uniformly in the mimic | `zeta_positive_mimic_weighted_count` | unconditional implication; [count transfer](RealWeights/README.md) |
+| A fixed flat image permits arbitrarily many positive atoms in a unit interval | `exists_real_weighted_flat_image_with_many_atoms` | unconditional; weighted mass does not bound cardinality |
 | Finite point and moment heights, with numerical ζ count and tail inputs | `cameraPointHeight`, `cameraMomentHeight`, `card_zeta_camera_band_le`, `zeta_lorentzian_mass_lt`, `zeta_reads_mult_at_explicit_height`, `zeta_discMoment_readout_explicit` | unconditional; [height formulas](EffectiveHeights/README.md) |
 | Every cubic-logarithmically deep ζ zero gives a negative test at `λL_T`, `λ>1`; positivity gives the corresponding location bound | `zetaNegativeCameraHeight`, `zeta_negative_test_of_cubic_depth`, `zeta_depth_lt_exp_log_cube_of_positive_aperture_abs` | unconditional implication; [cluster construction](NegativeTests/README.md) |
 | Far zeros are faint in the local camera | `localWindow`, `paperFT_localWindow`, `norm_paperFT_localWindow_mul_le`, `norm_pointImage_mul_le`, `decay_le_tempered`, `tsum_far_le`, `norm_tsum_far_le`, `tsum_far_multDiff_le`, `tsum_far_zeta_le` | unconditional |

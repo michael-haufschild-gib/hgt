@@ -33,8 +33,11 @@ Integrating at `x=√(q²+v²)` and using plane polar coordinates yields
 
 `J_1(q)=(1/π)∫_0^∞ L(√(q²+v²))dv > 0`.
 
-Since `q/√(q²+v²)≤1`, differentiating this formula proves
-`J_1'+2J_1≥0`. For `p≥1`, integration by parts gives
+For `u≥q>0`, the radius increase
+`√(u²+v²)−√(q²+v²)` lies in `[0,u−q]`. The square reserve therefore
+gives `J_1(u)≥exp(−2(u−q))J_1(q)` directly under the integral.
+Differentiating this inequality at `u=q` gives `J_1'+2J_1≥0`.
+For `p≥1`, integration by parts gives
 
 `J_p(q)=q^(p−1)J_1(q)+(p−1)∫_q^∞u^(p−2)J_1(u)du >0`,
 
@@ -67,8 +70,9 @@ strictly positive at every finite rank.
 All exchanges in the paper argument have absolute majorants: for fixed
 order, `|K_ν(x)|≤C_ν exp(−x)` on `x≥1`; the determinant-two product
 inherits integrability from the two Schläfli factors. The polar integrand
-is bounded by a radial exponential. The derivative of the square integral
-is dominated locally in `q>0` by `2L`. Derivatives of `H_r` have polynomial
+is bounded by a radial exponential. The square-tail comparison uses
+pointwise order and needs no differentiation under that integral.
+Derivatives of `H_r` have polynomial
 hyperbolic factors against `exp(−2q cosh(2t))`, so `H_r` is Schwartz;
 its Fourier transform has every polynomial moment. The same majorants
 justify differentiation of the literal center integral.
