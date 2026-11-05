@@ -24,7 +24,9 @@ open Filter Topology
 
 namespace GaloisForLFunctions.ArithmeticIncidencePositivity
 
-open ArithmeticCriticalityTheory
+open _root_.RHTower _root_.RHTower.ArchimedeanAnomaly _root_.RHTower.ArchimedeanExactForm
+open ArithmeticCriticalityTheory RenormalizedArithmeticPotentialTheory BiScaleUncertainty
+open SelectivePositivityAndThresholdLaws
 
 /-- The base aperture is `(181/500)(1 + s)²` for the single step `s ≤ 1/(40000 (11 + 4e²))`. -/
 theorem successorWeilFloorAperture_lt : successorWeilFloorAperture < 181 / 500 + 5 / 10 ^ 7 := by
@@ -47,7 +49,16 @@ theorem successorWeilFloorAperture_lt : successorWeilFloorAperture < 181 / 500 +
 theorem le_multiPrimeDilationCoeff {R : ℝ} (hR : 3982 / 10000 ≤ R) :
     226 ≤ multiPrimeDilationCoeff R := by
   have hR0 : 0 ≤ R := by linarith only [hR]
-  obtain ⟨hatom, -⟩ := vonMangoldtAtom_two_bounds
+  have hatom : (4901 / 10000 : ℝ) ≤ vonMangoldtAtom 2 := by
+    unfold vonMangoldtAtom
+    rw [if_pos le_rfl, ArithmeticFunction.vonMangoldt_apply_prime Nat.prime_two]
+    have hs : Real.sqrt ((2 : ℕ) : ℝ) ≤ 14142136 / 10000000 :=
+      Real.sqrt_le_iff.mpr ⟨by norm_num, by norm_num⟩
+    have hs0 : 0 < Real.sqrt ((2 : ℕ) : ℝ) := Real.sqrt_pos.mpr (by norm_num)
+    rw [le_div_iff₀ hs0]
+    have h2 := Real.log_two_gt_d9
+    push_cast at hs ⊢
+    nlinarith only [hs, h2]
   have hexpR : 14774 / 10000 ≤ Real.exp R := by
     have h := Real.quadratic_le_exp_of_nonneg hR0
     nlinarith only [h, hR]
@@ -68,20 +79,20 @@ theorem le_multiPrimeDilationCoeff {R : ℝ} (hR : 3982 / 10000 ≤ R) :
     have hpos := Real.exp_pos (1 / 2 : ℝ)
     nlinarith only [hsq, h, hpos]
   have hw' : (9802 / 10000 : ℝ) ≤ multiPrimeWeightSum R := by linarith only [hw, hatom]
-  have hL : (4332 / 1000 : ℝ) ≤ multiPrimeLowEnergyConstant R := by
+  have hL : (4333 / 1000 : ℝ) ≤ multiPrimeLowEnergyConstant R := by
     unfold multiPrimeLowEnergyConstant
     have hprod : (3982 / 10000 : ℝ) * (14774 / 10000) ≤ R * Real.exp R :=
       mul_le_mul hR hexpR (by norm_num) hR0
     have habs := abs_nonneg (gammaHardyPhaseRate 0)
     nlinarith only [hprod, habs, hw']
   unfold multiPrimeDilationCoeff
-  have hprod : (16487 / 10000 : ℝ) * (4332 / 1000) ≤
+  have hprod : (16487 / 10000 : ℝ) * (4333 / 1000) ≤
       Real.exp (1 / 2) * multiPrimeLowEnergyConstant R :=
     mul_le_mul hsqrt hL (by norm_num) (Real.exp_pos _).le
-  have hinner : (228 + 55 / 100 : ℝ) + 2 ≤
+  have hinner : (228 + 6 / 10 : ℝ) + 2 ≤
       32 * Real.exp (1 / 2) * multiPrimeLowEnergyConstant R + 2 := by
     nlinarith only [hprod]
-  calc (226 : ℝ) ≤ (9802 / 10000) * ((228 + 55 / 100) + 2) := by norm_num
+  calc (226 : ℝ) ≤ (9802 / 10000) * ((228 + 6 / 10) + 2) := by norm_num
     _ ≤ _ := mul_le_mul hw' hinner (by norm_num) (multiPrimeWeightSum_nonneg R)
 
 /-- At stage `k` and any radius in `[181/500, 1/2]` the step is at most `q^(k+1)`, for
@@ -111,7 +122,7 @@ theorem multiPrimeApertureStep_le_pow (k : ℕ) {R : ℝ} (hR : 181 / 500 ≤ R)
   have hk : (0 : ℝ) ≤ k := Nat.cast_nonneg k
   nlinarith only [mul_le_mul hC hpow (by positivity) (by linarith only [hC]), hk]
 
-private theorem exp_neg_large_le_half : Real.exp (-18080000) ≤ 1 / 2 := by
+private theorem exp_neg_large_le : Real.exp (-18080000) ≤ 1 / 18080001 := by
   have h := Real.add_one_le_exp (18080000 : ℝ)
   rw [Real.exp_neg, inv_eq_one_div]
   exact one_div_le_one_div_of_le (by norm_num) (by linarith only [h])
@@ -122,7 +133,7 @@ theorem weilFloorApertureTower_le (k : ℕ) :
       Real.exp (-18080000) * (1 - (1 / 2) ^ k) := by
   set q := Real.exp (-18080000) with hq
   have hq0 : 0 < q := Real.exp_pos _
-  have hq2 : q ≤ 1 / 2 := exp_neg_large_le_half
+  have hq2 : q ≤ 1 / 18080001 := exp_neg_large_le
   have hbase := successorWeilFloorAperture_lt
   induction k with
   | zero => simp [weilFloorApertureTower_zero]
@@ -136,11 +147,13 @@ theorem weilFloorApertureTower_le (k : ℕ) :
       (weilFloorTowerConst_pos k)
     have hpow : q ^ (k + 1) ≤ q * (1 / 2) ^ k := by
       rw [pow_succ']
-      exact mul_le_mul_of_nonneg_left (pow_le_pow_left₀ hq0.le hq2 k) hq0.le
+      exact mul_le_mul_of_nonneg_left
+        (pow_le_pow_left₀ hq0.le (hq2.trans (by norm_num)) k) hq0.le
     have hhalf0 : (0 : ℝ) < (1 / 2) ^ k := by positivity
     have hhalf1 : (1 / 2 : ℝ) ^ k ≤ 1 := pow_le_one₀ (by norm_num) (by norm_num)
     have hRle : weilFloorApertureTower k ≤ 1 / 2 := by
-      nlinarith only [ih, hbase, hq2, hq0, hhalf0, mul_pos hq0 hhalf0]
+      have hbase' : successorWeilFloorAperture < 2 / 5 := hbase.trans (by norm_num)
+      nlinarith only [ih, hbase', hq2, mul_pos hq0 hhalf0]
     have hmul : weilFloorApertureTower k * multiPrimeApertureStep (weilFloorApertureTower k)
         (weilFloorTowerConst k) ≤ (1 / 2) * (q * (1 / 2) ^ k) :=
       mul_le_mul hRle (hd.trans hpow) hd0.le (by norm_num)
@@ -170,11 +183,7 @@ theorem exp_lt_ten_rpow : Real.exp (-18080000) < (10 : ℝ) ^ (-7800000 : ℝ) :
 theorem weilFloorApertureTower_lt (k : ℕ) : weilFloorApertureTower k < 3621 / 10000 := by
   have h := weilFloorApertureTower_sub_lt k
   have hbase := successorWeilFloorAperture_lt
-  have hq2 := exp_neg_large_le_half
-  have hsmall : Real.exp (-18080000) ≤ 1 / 18080001 := by
-    have h1 := Real.add_one_le_exp (18080000 : ℝ)
-    rw [Real.exp_neg, inv_eq_one_div]
-    exact one_div_le_one_div_of_le (by norm_num) (by linarith only [h1])
+  have hsmall := exp_neg_large_le
   norm_num at hbase hsmall ⊢
   linarith only [h, hbase, hsmall]
 
@@ -182,9 +191,9 @@ theorem weilFloorApertureTower_lt (k : ℕ) : weilFloorApertureTower k < 3621 / 
 theorem weilFloorApertureTower_lt_half_log_three (k : ℕ) :
     weilFloorApertureTower k < Real.log 3 / 2 := by
   have h := weilFloorApertureTower_lt k
-  have hlog : Real.log 2 < Real.log 3 := Real.log_lt_log (by norm_num) (by norm_num)
-  have h2 := Real.log_two_gt_d9
-  linarith only [h, hlog, h2]
+  have hlog : 1 < Real.log 3 :=
+    (Real.lt_log_iff_exp_lt (by norm_num)).mpr (Real.exp_one_lt_d9.trans (by norm_num))
+  linarith only [h, hlog]
 
 /-- The tower is bounded above by `0.3621`. -/
 theorem bddAbove_range_weilFloorApertureTower : BddAbove (Set.range weilFloorApertureTower) :=
@@ -209,14 +218,10 @@ theorem weilFloorApertureLimit_bounds :
   have hsup : weilFloorApertureLimit ≤ successorWeilFloorAperture + Real.exp (-18080000) :=
     ciSup_le fun k => by linarith only [weilFloorApertureTower_sub_lt k]
   have hgap := exp_lt_ten_rpow
-  have hq := exp_neg_large_le_half
   refine ⟨?_, by linarith only [hsup, hgap], ?_⟩
   · exact (weilFloorApertureTower_lt_succ 0).trans_le (hle 1)
   · have hbase := successorWeilFloorAperture_lt
-    have hsmall : Real.exp (-18080000) ≤ 1 / 18080001 := by
-      have h1 := Real.add_one_le_exp (18080000 : ℝ)
-      rw [Real.exp_neg, inv_eq_one_div]
-      exact one_div_le_one_div_of_le (by norm_num) (by linarith only [h1])
+    have hsmall := exp_neg_large_le
     norm_num at hbase hsmall ⊢
     linarith only [hsup, hbase, hsmall]
 

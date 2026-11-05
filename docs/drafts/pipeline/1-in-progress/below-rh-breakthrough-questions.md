@@ -26,6 +26,9 @@ finite-rank cases, estimates and equivalences do not settle these targets.
 
 - B20 has an eight-way equivalence and long-mollifier receivers. Their
   moment-law premises are not supplied by those theorems.
+- B46 is not settled by `GaussMayerBoundaryZeroFree`: its boundary
+  positivity uses the von Mangoldt three-four-one inequality, and
+  `boundarySlope_zero_le` imports `xiZeroCopy_re_lt_one`.
 - B7 has full-space positivity for some small critical multiple. Joint
   pole payment enlarges a window-pencil range; its theorem explicitly
   does not compare that range with the full-space threshold.
@@ -58,9 +61,34 @@ proof gives, for `0<R≤1/16` and `R log T≥30000`,
 For fixed `R`, levels tending to infinity slower than `√log T` would
 make both the exceptional density and the local Gaussian variation
 small. This is an auxiliary source bound, not a solution to B73.
+It is formalized as
+`ArithmeticHarmonicAnalysis.exists_volume_not_zetaLogDerivScaleData_le_uniform_level`
+in `ArithmeticHarmonicAnalysis/TypicalZetaLogDerivative.lean`, imported by
+its umbrella. Direct Lean check passed; axioms are only `propext`,
+`Classical.choice`, `Quot.sound`.
+
+For the wider saddle box, `volume_zetaLargeNear_le` allows the radius
+`r=(1+log(4T))⁻¹`. With `M=(1+log(4T))⁴`, its bound becomes
+`CT/(1+log(4T))³`. Combined with fixed-width zero shadows and the
+existing Borel–Carathéodory bounds, this gives the proposed
+`O_η(log log T)` logarithmic derivative and polynomial-in-`log T`
+reciprocal bound on compact boxes right of `1/2`.
 The actual half-Gauss dominance and its uniformity in heat remain to be
 proved; the Euler-anchored sub-Weyl theorem assumes its saddle to the
 right of `Re s=1` and cannot be instantiated below that boundary.
+
+The proposed comparison uses `α=log(X/(2π))/2`, `c=2tα`,
+`F(w)=ξ(1/2+w+iX)` and `u=y+c`, uniformly for `ε≤c≤2`.
+On `w≥ε/4`, a bound `|F′−(α+iπ/4)F|≤B|F|` with
+`B=O_ε(log log T)` gives Gaussian relative error
+`O(B√t exp(t(B+1/√t)²))=o(1)`. For `|y|≤ε/2`, the omitted lower
+interval has a fixed gap from the saddle and the slope error is `o(α)`.
+For `ε/2≤y≤1/2`, the opposite half has the factor
+`exp(−2αy+2By)`, while the lower interval is bounded by the
+polylogarithmic source ratio. The far tail can use
+`far_terms_le_of_bound` after joining the typical model to the Euler
+model at `w=9/2`. These comparisons, their unit-window uniformity, and
+the density-one limiting set are not yet formalized.
 
 ## Proof status
 

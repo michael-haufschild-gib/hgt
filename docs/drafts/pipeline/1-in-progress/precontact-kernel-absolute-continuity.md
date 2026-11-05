@@ -15,9 +15,8 @@ The existing actual-source limits give
 Hence the right upper derivative of the diagonal kernel is at most
 `|τ_L(a,z)|²+|τ_R(a,z)|²` at every precontact aperture.
 
-Remaining proof obligations: left continuity from density of smaller windows;
-exclude singular growth using finite upper derivatives; obtain the matching
-lower derivative by collar trial vectors; polarize to finite evaluation Grams.
+Remaining proof obligations: matching lower derivative by collar trial vectors;
+continuity and integral reconstruction; polarization to finite evaluation Grams.
 None of these estimates is asserted uniformly at contact.
 
 For the lower bound, take
@@ -29,14 +28,11 @@ Then `0≤‖ΔE−u_h‖²` gives the matching lower derivative.
 For left continuity, `exists_strict_smaller_aperture_of_compact_tsupport`
 and `denseRange_smoothCore` provide approximation from smaller windows.
 
-An alternative to a general singular-measure argument is a uniform trace
-bound on `a∈[a₀,c]`, `a₀>0`, with `c` precontact. Fix the cutoff row-mass
-estimate on the enclosing aperture; the truncation argument in
-`TheCompletedWeilRieszVectorsAreBounded` then bounds the physical source
-using its L² norm and the exponential forcing. The positive ground energy
-at `c` controls those L² norms. Uniform endpoint forcing would bound the
-trace energy and yield local Lipschitz continuity by the one-sided mean
-value inequality. This uniform assembly remains to be proved.
+Once the right derivative equals the trace energy everywhere, monotonicity
+identifies it almost everywhere with the integrable ordinary derivative.
+`intervalIntegral.integral_eq_sub_of_hasDeriv_right_of_le` then gives exact
+integral reconstruction, hence absolute continuity. This route needs no
+uniform trace bound.
 
 ## Gates
 

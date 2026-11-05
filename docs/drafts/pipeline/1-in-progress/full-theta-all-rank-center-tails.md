@@ -16,9 +16,8 @@ numerically contradicted at small positive cutoffs; see
 certificate remains pending. The aperture weight must be retained.
 
 The [pair-spectrum theorem](../3-formalized/integrated-theta-pair-spectrum.md)
-gives exact cosine signs and a frequency-uniform exponential truncation
-bound for the absolutely convergent ordinary-pair tail series. This is an
-absolute scalar bound, not a relative bound for all polynomial tests.
-Identification with the full-source Fourier integral still needs the
-ordinary-pair sum/integral exchange. The signed weighted lower bound and
-full-theta all-rank theorem remain unproved.
+gives exact cosine signs, ordinary-pair reassembly of the literal full-source
+Fourier tail, and a frequency-uniform exponential truncation bound. This
+controls absolute scalar error; a relative bound for all polynomial tests
+is still missing. The signed aperture-weighted lower bound and full-theta
+all-rank theorem remain unproved.

@@ -49,10 +49,13 @@ theorem eventually_kernel_increment_le_endpoint_energy
         (evalVectorRightCollarResidual_mass_limit hac z)
   have hE : Tendsto (fun h => 1-E/L h) (𝓝[>] (0 : ℝ)) (𝓝 1) := by
     have hi := (tendsto_inv_atTop_zero.comp hL).const_mul E
-    simpa only [div_eq_mul_inv, mul_zero, sub_zero] using tendsto_const_nhds.sub hi
+    simpa only [div_eq_mul_inv, mul_zero, sub_zero, Function.comp_def] using
+      tendsto_const_nhds.sub hi
   have hquot : Tendsto (fun h => (M h/(h*L h))/(1-E/L h))
       (𝓝[>] (0 : ℝ)) (𝓝 (evalEndpointEnergy a z)) := by
-    simpa only [div_one] using hM.div hE (by norm_num : (1 : ℝ) ≠ 0)
+    have ht := hM.div hE (by norm_num : (1 : ℝ) ≠ 0)
+    rw [div_one] at ht
+    exact ht.congr' (Eventually.of_forall fun _ => rfl)
   have hsmall := hquot.eventually (Iio_mem_nhds (lt_add_of_pos_right _ hε))
   filter_upwards [hsmall, self_mem_nhdsWithin,
     hL.eventually (eventually_gt_atTop (max E 0)),
@@ -69,7 +72,7 @@ theorem eventually_kernel_increment_le_endpoint_energy
   rw [kernel_diagonal_sub_eq_norm_increment_sq hab]
   have hbound : ‖evalVectorIncrement hab z‖^2/h ≤ M h/(h*(L h-E)) := by
     apply (div_le_div_iff₀ hh (mul_pos hh hLE)).mpr
-    nlinarith only [mul_le_mul_of_nonneg_left hfloor hh.le]
+    convert mul_le_mul_of_nonneg_left hfloor hh.le using 1 <;> ring
   have heq : M h/(h*(L h-E)) = (M h/(h*L h))/(1-E/L h) := by
     field_simp [hh.ne', hLpos.ne', hLE.ne']
     <;> ring
@@ -97,7 +100,7 @@ compact smooth sources already belong to strictly smaller windows. -/
 theorem exists_left_aperture_small_evalVectorIncrement (a : PrecontactAperture)
     (z : ℂ) {ε : ℝ} (hε : 0 < ε) :
     ∃ a₀ : PrecontactAperture, a₀.1.1 < a.1.1 ∧
-      ∀ (b : PrecontactAperture) (h₀b : a₀.1.1 ≤ b.1.1)
+      ∀ (b : PrecontactAperture) (_ : a₀.1.1 ≤ b.1.1)
         (hba : b.1.1 ≤ a.1.1), ‖evalVectorIncrement hba z‖ < ε := by
   obtain ⟨u, hu⟩ := (denseRange_smoothCore a).exists_dist_lt (evalVector a z) hε
   obtain ⟨a₀, h₀a, hs⟩ := exists_strict_smaller_aperture_of_compact_tsupport a.1 u

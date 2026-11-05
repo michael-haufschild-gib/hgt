@@ -1,7 +1,7 @@
-# Exact integrated theta-pair spectrum
+# Exact theta-pair signs and full-source remainder
 
-- **Stage:** 2-fully-proven
-- **Type:** THEOREM (paper); Lean pending
+- **Stage:** 3-formalized
+- **Type:** THEOREM (unconditional, Lean)
 - **Wall:** Σ6
 
 For positive integers `n,m`, `r≥0`, and real `b`, put `q=πnm exp r`.
@@ -45,10 +45,8 @@ at most
 This follows by covering the omitted set by two geometric half-strips.
 For imaginary order, the Schläfli integrand contains `cos(2τt)`, whose
 absolute value is at most one. Hence `Cost(p,τ)≤Cost(p,0)` and `C(τ)≤C(0)`.
-This gives uniform absolute error, not a positive lower bound for the
-signed complete sum. Identification with
-the full-source Fourier integral additionally requires the appropriate
-sum/integral exchange.
+This gives uniform absolute error. A positive lower bound for the signed
+aperture-weighted complete sum remains unproved.
 
 ## Ordinary-source reassembly
 
@@ -63,4 +61,16 @@ On `s>r`, the sum of absolute ordinary-pair Fourier integrands equals
 `exp(-3r/2)`. Dominated summation and Fubini therefore identify the literal
 complete-source tail integral with the ordinary-pair tail series. The
 uniform rectangular error above then applies to that complete-source tail.
-Lean formalization of this exchange is pending.
+
+## Formalization
+
+- [ThetaPairCenterTailSpectrum.lean](../../../../formal/GaloisForLFunctions/CompletedArithmeticForms/ThetaPairCenterTailSpectrum.lean):
+  `thetaPairCenterTailSpectrum_eq`, `thetaPairCenterTailSpectrum_diagonal_pos`,
+  `thetaPairCenterTailSpectrum_unequal_neg`, `abs_thetaPairCenterTailSpectrum_uniform_le`.
+- [ThetaPairCenterTailSeries.lean](../../../../formal/GaloisForLFunctions/CompletedArithmeticForms/ThetaPairCenterTailSeries.lean):
+  `summable_abs_thetaPairCenterTailSpectrum`, `thetaPairCenterTailSum_remainder_le`.
+- [ThetaPairCenterTailReassembly.lean](../../../../formal/GaloisForLFunctions/CompletedArithmeticForms/ThetaPairCenterTailReassembly.lean):
+  `thetaPairCenterTailSum_eq_fullSource`, `thetaFullCenterTail_remainder_le`.
+
+All three modules pass direct Lean checks. Transitive capstone axiom audits
+contain only `propext`, `Classical.choice`, and `Quot.sound`.
