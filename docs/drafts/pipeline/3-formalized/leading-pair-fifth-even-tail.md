@@ -35,7 +35,7 @@ The lower pointwise bound reduces to `(u−v)²(u+2v)≥0`, with
 `8exp(−3q)`. The stationary exponential bound and `exp(3)≥20` imply
 `exp(−3q)≤19683/(8000q⁹)`.
 
-Retain first-atom mass `1/2+3/(8q)`. At the upper exponential weight,
+Retain first-atom mass `1/2`. At the upper exponential weight,
 clear `q¹²` from each gamma endpoint matrix. Its entries are
 
 `q¹¹ L₁(F_n)+19683 L₁₂(C_n)/1000`,
@@ -51,8 +51,9 @@ matrix. Multiplication by `E(q)>0` and the exponential coordinate change
 preserve strict positivity.
 
 The comparison leaves the explicit matrix reserve
-`E(q)(3/(32q²)−3/(128q³))A`, where `A=M(0,1)>0`.
-This follows from the cubic lower bound for the first-atom gamma mass.
+`E(q)(3/(8q)+3/(32q²)−3/(128q³))A`, where `A=M(0,1)>0`.
+The literal leading tail remains positive definite after subtracting this
+reserve, by the cubic lower bound for the first-atom gamma mass.
 
 ## Formalization
 
@@ -63,9 +64,13 @@ Namespace `GaloisForLFunctions.ThetaCuspSections.FifthMixedTail`:
 `FifthEvenLeadingTailModel.lean` proves the interval comparison;
 `FifthEvenTailGammaBounds.lean` proves the gamma enclosure in namespace
 `FifthAtomTail`; `FifthEvenLeadingTail.lean` identifies the literal integrals.
-All 22 audited capstones use only `propext`, `Classical.choice`, `Quot.sound`.
-Direct `lake --old env lean` checks pass for all four changed modules.
-All three new modules are wired into `ThetaCuspSections.lean`.
+`FifthEvenLeadingTailReserve.lean` proves the stronger half-mass comparison
+and literal reserve in namespace `FifthMixedTailReserve`, with capstones
+`leadingModel_posDef`, `leadingRadialTailMatrix_eq`, and
+`leadingRadialTailMatrix_reserve_posDef`.
 
-The other five unequal pairs among four retained atoms and the infinite
-remainder remain unpaid in the complete integrated matrix.
+All audited capstones use only `propext`, `Classical.choice`, `Quot.sound`.
+Direct `lake --old env lean` checks pass; the modules are wired into
+`ThetaCuspSections.lean`.
+
+The complete integrated matrix remains open.

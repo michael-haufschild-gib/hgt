@@ -162,7 +162,9 @@ theorem eventually_le_card_nonreal_roots_riemannHeat_neg {τ : ℝ} (hτ : 0 < �
     refine Finset.card_le_card_of_injOn (fun z => (d : ℂ) / u z) (fun z hz => ?_)
       (fun z hz z' hz' h => ?_)
     · have hroot : P.IsRoot ((d : ℂ) / u z) := by
-        rw [IsRoot, ← hmk, eval_jensenRev_div f hdpos (hne0 z hz), hu0 z hz, mul_zero]
+        have h := eval_jensenRev_div f hdpos (hne0 z hz)
+        rw [hmk, hu0 z hz, mul_zero] at h
+        exact h
       simp only [Finset.coe_filter, Set.mem_setOf_eq, Multiset.mem_toFinset]
       refine ⟨(mem_roots hP).2 hroot, ?_⟩
       rw [Complex.div_im]

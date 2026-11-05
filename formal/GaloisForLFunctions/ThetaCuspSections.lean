@@ -54,8 +54,12 @@ Both endpoints are singular positive semidefinite matrices.
 Every individual theta atom has a strict fifth even section at reflection scale at least five.
 The literal first-atom fifth even tail is positive definite from scale three;
 its incomplete-gamma remainder adds a strict reserve at every positive scale.
+Every pure-atom tail is a positive radial rescaling of this first-atom tail.
 From scale three, that first-atom reserve also pays both ordered cross tails
 between atoms one and two; every nonnegative cutoff has a strict leading-pair tail.
+The leading tail stays strict after subtracting both first and cubic gamma reserves.
+The first gamma correction pays both ordered cross tails between atoms one and three
+throughout the same ray.
 From scale three, four retained atoms leave normalized Gaussian entry error at most
 `1/100000`, hence quadratic error at most `1/20000`.
 After radial integration, their complete omitted tail is paid by half the cubic
@@ -66,9 +70,15 @@ import GaloisForLFunctions.ThetaCuspSections.FifthEvenFirstAtomTailModel
 import GaloisForLFunctions.ThetaCuspSections.FifthEvenFirstAtomTail
 import GaloisForLFunctions.ThetaCuspSections.FifthEvenTailGammaBounds
 import GaloisForLFunctions.ThetaCuspSections.FifthEvenTailRateMoments
+import GaloisForLFunctions.ThetaCuspSections.FifthEvenPureTail
 import GaloisForLFunctions.ThetaCuspSections.FifthEvenTailMassFloor
 import GaloisForLFunctions.ThetaCuspSections.FifthEvenLeadingTailModel
 import GaloisForLFunctions.ThetaCuspSections.FifthEvenLeadingTail
+import GaloisForLFunctions.ThetaCuspSections.FifthEvenLeadingTailReserve
+import GaloisForLFunctions.ThetaCuspSections.FifthEvenThirdTailData
+import GaloisForLFunctions.ThetaCuspSections.FifthEvenThirdTailCoefficients
+import GaloisForLFunctions.ThetaCuspSections.FifthEvenThirdTailModel
+import GaloisForLFunctions.ThetaCuspSections.FifthEvenThirdTail
 import GaloisForLFunctions.ThetaCuspSections.FifthEvenThreeAtomRemainder
 import GaloisForLFunctions.ThetaCuspSections.FifthEvenFourAtomRemainder
 import GaloisForLFunctions.ThetaCuspSections.FifthEvenIntegratedRemainder

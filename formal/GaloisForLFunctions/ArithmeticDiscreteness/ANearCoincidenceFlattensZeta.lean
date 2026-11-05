@@ -28,16 +28,14 @@ noncomputable section
 
 namespace GaloisForLFunctions.ArithmeticDiscreteness
 
-/-- **Second-order Taylor bound.** If `f` is holomorphic on an open `U ⊇ closedBall a R` and
-`|f| ≤ M` there, then `|f(b) − f(a) − f'(a)(b − a)| ≤ (8M/R²)|b − a|²` for `‖b − a‖ ≤ R/4`. Two
-Cauchy estimates bound `f''` by `8M/R²` on `‖z − a‖ ≤ R/4`; the mean value inequality for
-`f(z) − f'(a)(z − a)` along `[a, b]` gives the bound. -/
-theorem norm_sub_taylor_le {f : ℂ → ℂ} {U : Set ℂ} (hU : IsOpen U)
-    (hf : DifferentiableOn ℂ f U) {a b : ℂ} {R M : ℝ} (hR : 0 < R) (hsub : closedBall a R ⊆ U)
-    (hM : ∀ z ∈ closedBall a R, ‖f z‖ ≤ M) (hb : ‖b - a‖ ≤ R / 4) :
-    ‖f b - f a - deriv f a * (b - a)‖ ≤ 8 * M / R ^ 2 * ‖b - a‖ ^ 2 := by
+/-- **Cauchy bound for the second derivative.** If `f` is holomorphic on an open
+`U ⊇ closedBall a R` and `|f| ≤ M` there, then `|f''| ≤ 8M/R²` on `closedBall a (R/4)`: two
+Cauchy estimates, `|f'| ≤ 2M/R` on `closedBall a (R/2)`. -/
+theorem norm_deriv_deriv_le {f : ℂ → ℂ} {U : Set ℂ} (hU : IsOpen U)
+    (hf : DifferentiableOn ℂ f U) {a : ℂ} {R M : ℝ} (hR : 0 < R) (hsub : closedBall a R ⊆ U)
+    (hM : ∀ z ∈ closedBall a R, ‖f z‖ ≤ M) :
+    ∀ w ∈ closedBall a (R / 4), ‖deriv (deriv f) w‖ ≤ 8 * M / R ^ 2 := by
   have hdf : DifferentiableOn ℂ (deriv f) U := hf.deriv hU
-  -- `|f'| ≤ 2M/R` on `‖z − a‖ ≤ R/2`
   have h1 : ∀ z ∈ closedBall a (R / 2), ‖deriv f z‖ ≤ M / (R / 2) := by
     intro z hz
     have hzsub : closedBall z (R / 2) ⊆ closedBall a R := by
@@ -46,18 +44,26 @@ theorem norm_sub_taylor_le {f : ℂ → ℂ} {U : Set ℂ} (hU : IsOpen U)
       linarith [dist_triangle w z a]
     refine Complex.norm_deriv_le_of_forall_mem_sphere_norm_le (by positivity)
       (hf.diffContOnCl_ball (hzsub.trans hsub)) fun w hw => hM w (hzsub (sphere_subset_closedBall hw))
-  -- `|f''| ≤ 8M/R²` on `‖z − a‖ ≤ R/4`
-  have h2 : ∀ w ∈ closedBall a (R / 4), ‖deriv (deriv f) w‖ ≤ 8 * M / R ^ 2 := by
-    intro w hw
-    have hwsub : closedBall w (R / 4) ⊆ closedBall a (R / 2) := by
-      intro u hu
-      rw [mem_closedBall] at hu hw ⊢
-      linarith [dist_triangle u w a]
-    have := Complex.norm_deriv_le_of_forall_mem_sphere_norm_le (by positivity)
-      (hdf.diffContOnCl_ball ((hwsub.trans (closedBall_subset_closedBall (by linarith))).trans hsub))
-      fun u hu => h1 u (hwsub (sphere_subset_closedBall hu))
-    calc ‖deriv (deriv f) w‖ ≤ M / (R / 2) / (R / 4) := this
-      _ = 8 * M / R ^ 2 := by field_simp; ring
+  intro w hw
+  have hwsub : closedBall w (R / 4) ⊆ closedBall a (R / 2) := by
+    intro u hu
+    rw [mem_closedBall] at hu hw ⊢
+    linarith [dist_triangle u w a]
+  have := Complex.norm_deriv_le_of_forall_mem_sphere_norm_le (by positivity)
+    (hdf.diffContOnCl_ball ((hwsub.trans (closedBall_subset_closedBall (by linarith))).trans hsub))
+    fun u hu => h1 u (hwsub (sphere_subset_closedBall hu))
+  calc ‖deriv (deriv f) w‖ ≤ M / (R / 2) / (R / 4) := this
+    _ = 8 * M / R ^ 2 := by field_simp; ring
+
+/-- **Second-order Taylor bound.** If `f` is holomorphic on an open `U ⊇ closedBall a R` and
+`|f| ≤ M` there, then `|f(b) − f(a) − f'(a)(b − a)| ≤ (8M/R²)|b − a|²` for `‖b − a‖ ≤ R/4`: the
+mean value inequality for `f(z) − f'(a)(z − a)` along `[a, b]`, with `norm_deriv_deriv_le`. -/
+theorem norm_sub_taylor_le {f : ℂ → ℂ} {U : Set ℂ} (hU : IsOpen U)
+    (hf : DifferentiableOn ℂ f U) {a b : ℂ} {R M : ℝ} (hR : 0 < R) (hsub : closedBall a R ⊆ U)
+    (hM : ∀ z ∈ closedBall a R, ‖f z‖ ≤ M) (hb : ‖b - a‖ ≤ R / 4) :
+    ‖f b - f a - deriv f a * (b - a)‖ ≤ 8 * M / R ^ 2 * ‖b - a‖ ^ 2 := by
+  have hdf : DifferentiableOn ℂ (deriv f) U := hf.deriv hU
+  have h2 := norm_deriv_deriv_le hU hf hR hsub hM
   have hball : closedBall a (R / 4) ⊆ U := (closedBall_subset_closedBall (by linarith)).trans hsub
   have hdiff : ∀ z ∈ closedBall a (R / 4), DifferentiableAt ℂ f z := fun z hz =>
     hf.differentiableAt (hU.mem_nhds (hball hz))

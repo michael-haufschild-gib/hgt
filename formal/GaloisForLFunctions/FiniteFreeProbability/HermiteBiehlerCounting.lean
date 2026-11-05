@@ -163,7 +163,7 @@ theorem tendsto_totalPhase_atBot (M : Multiset ℂ) :
         push_cast
         ring
 
-theorem multiset_prod_sub_eq (M : Multiset ℂ) (x : ℝ) :
+theorem multiset_prod_ofReal_sub_eq (M : Multiset ℂ) (x : ℝ) :
     (M.map fun e => (x : ℂ) - e).prod = (((M.map fun e => rootAmplitude e x).prod : ℝ) : ℂ) *
       Complex.exp ((totalPhase M x : ℂ) * I) := by
   induction M using Multiset.induction_on with
@@ -230,7 +230,7 @@ theorem exists_finset_re_eval_eq_zero (E : ℂ[X]) {a : ℝ} (ha : E.leadingCoef
       conv_lhs => rw [(IsAlgClosed.splits E).eq_prod_roots]
       rw [eval_mul, eval_C, ha, eval_multiset_prod, Multiset.map_map]
       simp only [Function.comp_def, eval_sub, eval_X, eval_C]
-      rw [multiset_prod_sub_eq, mul_assoc]
+      rw [multiset_prod_ofReal_sub_eq, mul_assoc]
     have hcos : Real.cos (L k) = 0 := by
       rw [Real.cos_eq_zero_iff]
       refine ⟨k, ?_⟩

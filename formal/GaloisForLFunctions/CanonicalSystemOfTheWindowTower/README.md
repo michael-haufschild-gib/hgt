@@ -132,7 +132,7 @@ domain. Its form pulls back to the ordinary L² inner product. Thus `WW*`
 is the unique finite-energy solution operator for every half-line L² forcing.
 Its literal kernel is `G₊(x,y)=∫₀^{min(x,y)}v(x-s)v(y-s)ds`, integrable off
 the potentially singular diagonal. Schur composition proves its actual L²
-operator representation. Application to Weil Riesz boundary traces remains open.
+operator representation.
 For measurable input continuous from the right at zero, the causal convolution
 has exact normalized limit `u(x)√log(1/x)→h(0)`. Positivity of the density
 and its exact renewal mass prove this without an assumed trace theorem.
@@ -167,3 +167,10 @@ The positive logarithmic Fourier energy and complete archimedean weighted-L²
 domain agree exactly, since their weights differ by a bounded Fourier correction.
 Every supported finite-energy source is an admissible actual Riesz test:
 `q(f,u_z)=⟨f,logarithmicForcing_z⟩`. Reflection preserves the full domain and form.
+
+Each actual Weil Riesz vector now localizes at both aperture endpoints to the
+unique half-line Green solution. The full localized forcing is
+`P₊(χ_a τ_-a g + Kχ_a τ_-a u)` on the left, and the same expression for the
+reflected source and forcing on the right. It is L² and essentially bounded;
+each Green representative has its exact normalized renewal readout. Joining
+the two representatives into one continuous actual source remains separate.

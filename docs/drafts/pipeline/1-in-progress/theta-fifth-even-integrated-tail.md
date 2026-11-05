@@ -7,60 +7,52 @@
   `T₅(r) = [∫_(s>r) thetaCuspNativeSignedJet (s/2) (2(i+j)) ds]`
   is positive definite for every `r ≥ 0`.
 
-The seam is a strict derivative Gram at every finite rank. The native fifth
-section is positive from `q=πexp(r)≥5`. Global fifth-tail positivity would
-pay the fifth even aperture integral and, with the proved odd fourth
-section, give rank-nine positivity.
+The native fifth section is positive from `q=πexp(r)≥5`. Global fifth-tail
+positivity would pay the fifth even aperture integral and, with the proved
+odd fourth section, give rank-nine positivity.
 
-The [first-atom tail](../3-formalized/first-atom-fifth-even-tail.md) and the
+Write `E(q)=q^(3/2)exp(−2q)`, `A=M(0,1)>0`, and
+`c(q)=3/(32q²)−3/(128q³)`.
+
+The [first-atom tail](../3-formalized/first-atom-fifth-even-tail.md) and
 [leading-pair tail](../3-formalized/leading-pair-fifth-even-tail.md) are
-positive definite from `q≥3`. The latter retains ordered pairs `(1,1)`,
-`(1,2)`, `(2,1)` with their exact source weights.
+positive definite for `q≥3`. The leading tail retains ordered pairs
+`(1,1)`, `(1,2)`, `(2,1)` and stays positive definite after subtracting
+`E(q)(3/(8q)+c(q))A`. The half-mass model, cubic gamma bound, and literal
+reserve identity are formalized in `FifthMixedTailReserve`.
 
-Write `E(q)=q^(3/2)exp(−2q)` and `A=M(0,1)>0`. The leading tail retains
+The [pair `(1,3)` payment](../3-formalized/third-pair-fifth-even-tail.md)
+is formalized for every `q≥3`:
 
-`R_lead(q) ≥ E(q)L(q) + E(q)(3/(32q²)−3/(128q³))A`,
+`R₁₃(q)+E(q)·3/(8q)·A > 0`.
 
-where `L(q)>0` for `q≥3`. The rate-five mass lies between
-`1/5+3/(50q)+3/(500q²)−3/(5000q³)` and
-`1/5+3/(50q)+3/(500q²)`; both endpoint matrices and the literal integral
-identification are formalized.
+The exact rate-ten gamma enclosure and
+`exp(−8q)≤3²⁴/(20⁸q²⁴)` reduce both endpoint matrices to positive
+coefficient matrices in `q/3−1`. All 23 required fixed matrices, the exact
+expansion, convex interpolation, and literal integral identification are
+formalized with standard axioms.
 
-Remaining: pay the other five unequal pairs among the first four atoms
-and assemble the complete tail.
-
-The current comparison replaces the leading first-atom gamma mass by `1/2`,
-releasing `3A/(8q)` as well as the cubic reserve. The reduced leading
-comparison is formalized for `q≥3`; extraction from the literal tail is in
-progress. Both `(1,3)` gamma endpoints become positive after adding `A/8`
-at `q=3`; their full gamma and exponential-weight comparison is now formalized
-for every `q≥3`.
-
-For `(1,3)`, use `exp(−8q) ≤ 3²⁴/(20⁸q²⁴)` and write `q=3(1+y)`.
-After clearing `q²⁷` and dividing by `3²⁷`, the reserve contributes
-`binom(26,d)A/8` to coefficient `y^d`. The two gamma endpoints differ only
-in the constant coefficient. The proposed certificate is positivity of the
-constant matrices and the common coefficients through degree 21; higher
-coefficients are positive multiples of `A`. All 23 required fixed matrices
-are positive definite in Lean. The exact expansion and convex interpolation
-prove `FifthThirdTail.reserveModel_posDef` on the entire ray, with standard
-axioms. Identification with the literal tail remains to complete.
-
-The other four unequal pairs have relative rates `15,11,18,23`; the `(1,3)`
-rate is `8`. Their radial polynomials have degree at most eighteen. A
-candidate allocation gives `3A/(8q)` to `(1,3)`, one eighth of the cubic
-reserve to each other pair, and half to the infinite remainder.
-
-For the infinite remainder, retain the stronger Cauchy bound
-`n!·20000 f₁² exp(−431q/25)/(3/20)^n` through integration. The fixed diagonal
-comparison `A > 10^(−11) diag(1000^(2i))` has an exact matrix certificate.
-Writing `c(q)=3/(32q²)−3/(128q³)`, the literal radial remainder beyond four
-atoms satisfies
+The complete radial remainder beyond four atoms also satisfies
 
 `|vᵀR_{>4}(q)v| ≤ E(q)c(q)vᵀAv/2`, for every `q≥3`.
 
+The Cauchy estimate retains the rate `431/25` through radial integration;
+`A > 10^(−11) diag(1000^(2i))` supplies the fixed-coordinate comparison.
 `FifthTailRemainder.errorForm_bound` and
 `errorMatrix_add_reserve_posSemidef` are formalized with standard axioms.
+
+Every pure-atom tail has the exact scaling
+`R_pure(c,q)=(c/c^(3/2))R₁₁(cq)` for `c,q>0`, and is positive definite
+for `c≥1`, `q≥3`. `FifthPureTail.pureRadialTailMatrix_eq` and
+`pureRadialTailMatrix_posDef` are formalized; the remaining pure atoms
+correspond to `c=4,9,16`.
+
+Remaining finite pairs are `(1,4)`, `(2,3)`, `(2,4)`, `(3,4)`, with
+relative rates `15,11,18,23`. Their radial polynomials have degree at most
+18. The proposed allocation gives each pair `E(q)c(q)A/8`; together with
+the proved remainder bound this consumes exactly the cubic reserve.
+Their uniform matrix certificates and the complete-source assembly remain
+unproved.
 
 A smaller allocation is excluded: at `q=3`, the lower-gamma `(1,3)` model
 paid by half the cubic reserve has negative fourth principal minor. This

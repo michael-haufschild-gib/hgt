@@ -8,7 +8,7 @@
 
 ## Scope
 
-Open (28): A1–A2, A4–A7, A9, A11, A13–A15, A17, A19–A21, A23–A25, A28, A31, A33, A35–A36, A38–A42. A row with several obligations remains
+Open (27): A1–A2, A4–A7, A9, A11, A13–A15, A17, A19–A21, A23–A25, A28, A31, A33, A35–A36, A38–A41. A row with several obligations remains
 open until every obligation is discharged. Existing results are prerequisites, not new solutions.
 No numerical experiments or trusted computation; certificates require kernel proofs.
 
@@ -57,11 +57,17 @@ Jensen horizons use finite algebraic Hermite data and explicit moment errors,
 not qualitative convergence thresholds. All source checks and umbrella imports
 passed; transitive axiom audits contain only the three standard Lean axioms.
 
+**A42.** [Explicit camera heights](../3-formalized/explicit-camera-height.md): numerical ζ
+count and tail inputs, finite point and moment heights, and the corresponding
+centre, gap, discriminant and location bounds. All nine direct source checks,
+25 transitive axiom audits and umbrella imports passed.
+
 ## Partial results and current target
 
-**A42.** [Explicit camera heights](../2-fully-proven/explicit-camera-height.md): numerical ζ
-count and tail inputs, then finite height expressions for the point and moment
-readouts and their cluster consequences.
+**A39.** [Negative cluster cameras](camera-windows-give-negative-weil-tests.md):
+positivity at `λL_T`, `λ>1`, must control every zero at depth
+`exp(−c log³ T)`, including clusters without internal separation. The proposed
+annulus and convolution construction has explicit heights; Lean verification is open.
 
 **Former A10, absent from the current list.** For the window index `ι(A)`, define
 `Lₙ = sup {A : ι(A) ≤ n}` in `EReal`. Prove

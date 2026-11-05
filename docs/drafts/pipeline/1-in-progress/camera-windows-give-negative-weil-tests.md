@@ -10,6 +10,9 @@
 For every `λ>1` and `c>0`, give a finite `T₀` such that positivity at aperture
 `λL_T`, `T≥T₀`, implies `|Re ρ−1/2|<exp(−c log³(T/2π))` for each zero at height `T`.
 No mimic, zero-separation assumption or restriction on multiplicity is permitted.
+In fixed-aperture form, this controls both signs of the ordinate throughout
+`T₀≤|Im ρ|≤2π exp(2a/λ)`. Replacing `c` by `8c` and requiring `T≥(2π)²`
+gives the unshifted depth bound `exp(−c log³ T)`.
 
 ## Cluster construction
 
@@ -46,11 +49,28 @@ of the absolute Fourier tail, hence by `(1/4+1/4)²=1/4`.
 One zero of multiplicity at least one already gives total real part at most
 `−7/16+1/4<0`.
 
+## Finite height
+
+Set `Lη=c+2+8BC`, `β=μ−θ/2`, `ℓ=2πA/μ`,
+`e=6·slackBound(ℓ)(1+slackBound(ℓ))`, and
+
+`K=growthRate(ℓ)μ²+floorRate(ℓ)μ²(μ+Lη)+2`,
+`M=eμ+K+2`, `ρ=8M/β`, `α=(24M(1+ρ))⁻¹`, `q=max(0,log α⁻¹)`.
+
+Take `U=max(1,2π/μ,6Mq+μ+610)` and
+`V=max(6·cameraSlowConstant(μ,ℓ,0),4μ)+1`.
+The proposed starting height is
+
+`T₀=max(zetaCameraCountHeight(θ),2π exp(max(U,log V)))`.
+
+These finite expressions use the proved ζ tail mass `<33/100`; its
+maximum with one is one. They select no threshold from an eventual theorem.
+
 ## Lean obligations
 
 Expose the absolute Fourier tail from `exists_local_slow_pair` and
 `tsum_far_multDiff_le`; prove its quadratic comparison, the normalized
 variation inequality, quartic-order tail estimate, and the ζ annulus reduction.
 Then assemble the negative test and positivity receiver with explicit heights.
-All new proofs are still being checked. The earlier isolated-pair construction
-is insufficient for the full target and does not close A39.
+The new proofs remain unverified. An isolated-pair theorem alone does not
+discharge the full target.

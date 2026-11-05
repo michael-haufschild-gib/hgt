@@ -1,8 +1,8 @@
 # Explicit camera heights
 
 - **ID:** explicit-camera-height
-- **Stage:** 2-fully-proven
-- **Type:** THEOREM (paper)
+- **Stage:** 3-formalized
+- **Type:** THEOREM (Lean 4)
 - **Source:** review-0511, A42.
 
 ## Target
@@ -21,7 +21,7 @@ its Backlund constant and starting height existentially.
 
 `SquareRootThreshold/EffectiveHorizons/XiContourBounds.lean` now proves
 `|∫ Im(ζ'/ζ)|≤29π log T≤100 log T` for admissible `T≥4`.
-With the existing good-height contour count, this should give the sharp
+With the existing good-height contour count, this gives the sharp
 local-density formula with `T₀=10` and additive constant `A=200`.
 Its slope remains the exact Riemann–von Mangoldt density.
 
@@ -104,5 +104,13 @@ selected from an eventual statement.
 
 Sources are in `ZeroConfigurationGeometry/EffectiveHeights/`: `LocalZetaCount`,
 `SpectralMass`, `LatticeRate`, `Heights`, `PointReadout`, `MomentReadout`,
-`ClusterConsequences`, `ImageConsequences` and `ZetaReadout`. Formalization and final audits remain
-in progress; this card does not yet count as a valid proof.
+`ClusterConsequences`, `ImageConsequences` and `ZetaReadout`.
+
+All nine direct `lake --old env lean` source checks passed. The 25 transitive
+axiom audits contain only `propext`, `Classical.choice` and `Quot.sound`.
+All nine umbrella imports are present; the import graph is acyclic.
+
+The actual ζ endpoints are `zeta_reads_mult_at_explicit_height` and
+`zeta_discMoment_readout_explicit`. The general formulas are
+`cameraPointHeight` and `cameraMomentHeight`; their pair, discriminant and
+location consequences retain exactly these explicit height thresholds.

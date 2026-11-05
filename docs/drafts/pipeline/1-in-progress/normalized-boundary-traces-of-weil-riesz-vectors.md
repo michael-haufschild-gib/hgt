@@ -25,7 +25,10 @@ Green kernel is `∫₀^{min(x,y)}v(x-s)v(y-s)ds`, finite off the diagonal.
 - [Half-line inverse and kernel](../3-formalized/the-half-line-logarithmic-green-kernel.md).
 - [Actual inverse boundary limit](../3-formalized/the-half-line-logarithmic-green-solutions-have-boundary-values.md): for half-line L² forcing essentially bounded near zero, the measurable representative `u(x)=∫₀ˣv(t)(W*f)(x-t)dt` satisfies `u(x)√log(1/x)→∫₀∞v(y)f(y)dy`. The coefficient is absolutely convergent.
 
-## Actual localization still to formalize
+For globally bounded forcing this same representative is continuous on the
+whole line and vanishes for `x≤0`, including the boundary point.
+
+## Actual localization and remaining gluing
 
 Translate the selected endpoint to zero and choose the overlapping cutoff
 `χ_a(x)=min(max(3-2x/a,0),1)`. For `j(r)=exp(-|r|)/(2|r|)`, the literal
@@ -42,12 +45,12 @@ The following inputs are formalized:
 - [Complete-domain cutoff identity](../3-formalized/the-complete-logarithmic-form-has-its-cutoff-identity.md).
 - [Exact complete-domain identification](../3-formalized/the-logarithmic-and-weil-form-domains-agree.md).
 
-The remaining application converts the actual interior equation to the
-half-line equation with bounded L² forcing `P_+(χg+Kχu)`. Green uniqueness
-and the normalized readout apply to each endpoint localization. Continuous
-Green representatives can be joined using the positive denominator
-`χ_a(x+a)+χ_a(a-x)≥1`, giving one continuous actual Riesz representative.
-The application and gluing steps have unchecked Lean drafts.
+The [actual localization](../3-formalized/the-weil-riesz-vectors-localize-to-the-logarithmic-half-line.md)
+is formalized: the full half-line forcing is `P_+(χg+Kχu)`, bounded and L²,
+and Green uniqueness gives both localized normalized limits. Joining the
+continuous Green representatives using `χ_a(x+a)+χ_a(a-x)≥1` should give
+one continuous actual Riesz representative. This gluing application remains
+under Lean checking.
 
 ## Subsequent variation obligations
 

@@ -10,7 +10,7 @@ import GaloisForLFunctions.FiniteFreeProbability.KernelJensenRoots
 This is the instance `g = Φ` of the theorem on hyperbolic kernels (`KernelJensenRoots`).
 -/
 
-open Polynomial Filter Topology Complex
+open Polynomial Filter Topology Complex MeasureTheory
 open GaloisForLFunctions.HTGeometry RHTower RHTower.DeBruijn
 
 namespace FiniteFreeProbability
