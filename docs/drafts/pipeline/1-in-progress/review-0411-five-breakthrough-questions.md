@@ -48,6 +48,10 @@ with bounded forcing retaining every prime and polar term; see
 The actual source has a unique continuous compactly supported representative,
 zero at both endpoints, with both exact normalized renewal readouts; see
 [normalized endpoint traces](../3-formalized/normalized-boundary-traces-of-weil-riesz-vectors.md).
+[Sharp restriction](../3-formalized/sharp-restriction-preserves-the-complete-complex-weil-domain.md)
+preserves the exact complex domain, and
+[reflection](../3-formalized/reflection-exchanges-the-weil-endpoint-traces.md) exchanges
+the actual endpoint traces and makes their common zero-frequency value real.
 
 **Remaining:** [boundary flux and aperture variation](boundary-flux-generates-the-weil-canonical-system.md),
 original-length canonical normalization, and prime-entry law.
@@ -75,7 +79,9 @@ the proof and Lean declarations. It does not derive the sign from growing receiv
 
 - **2.5.2:** `MayerBoundaryZeroFree.xiZero_re_le` proves `β≤1−1/(1000 log γ)` for `γ≥4`
   from boundary-slope coefficients `(1−1/n)Λ(n)n^(−s)`. It supplies no bound for
-  `lewisCoIsometryDefect` relative to the specified cross mass.
+  `lewisCoIsometryDefect` relative to the specified cross mass. The exact
+  prime-Hecke weighted-norm expression in `ArithmeticDefectObstructionAndReflectedCuspLaw`
+  restates the negative defect and supplies no quantitative gain.
 - **2.5.3:** `logFreeNearLineZeroDensity_iff_windowOccupancy_and_clusterTail` separates occupancy
   from multiplicity tails. Existing Selberg counts retain `log V` at fixed depth `A/log V`;
   the squared-depth moment does not remove it.

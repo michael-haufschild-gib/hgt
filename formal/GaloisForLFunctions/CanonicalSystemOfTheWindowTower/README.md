@@ -182,3 +182,9 @@ Literal sharp restriction to any centered interval preserves the complete
 complex Weil form domain, by restricting its two real arithmetic graph
 coordinates. Both the retained interval and complementary collar have finite
 logarithmic energy, without a positivity or smoothing assumption.
+
+Physical reflection is an exact Weil isometry and sends the Riesz vector at
+`z` to that at `−z`. The completed sharp operation is literal conjugate
+reflection. Both symmetries hold pointwise for the unique continuous sources.
+Their normalized traces satisfy `τ₊(z)=τ₋(−z)` and
+`τ₋(conj z)=conj(τ₊(z))`; the common trace at zero frequency is real.

@@ -1,6 +1,6 @@
 import GaloisForLFunctions.ArithmeticProduction.TheInterpolationAtALargeHeight
 import GaloisForLFunctions.RHTower.ZetaFiniteMeanSquare
-import GaloisForLFunctions.ArithmeticOfSquareRootPrecision.OneSignedPerturbations
+import GaloisForLFunctions.ArithmeticOfSquareRootPrecision.TheDecidingInputTheorem
 
 /-!
 # The length–precision law
@@ -27,7 +27,8 @@ open Complex MeasureTheory Set Filter Topology
 namespace GaloisForLFunctions.ArithmeticProduction
 
 open _root_.RHTower
-open ArithmeticOfSquareRootPrecision
+open GaloisForLFunctions.HTGeometry
+open ArithmeticOfSquareRootPrecision hiding powerWeight
 
 /-- `P_a(t) = Σ_{n ≤ N} a(n) n^{−½−it}`. -/
 def linePoly (a : ℕ → ℂ) (N : ℕ) (t : ℝ) : ℂ :=
@@ -119,7 +120,7 @@ theorem sum_inv_Icc_le {N : ℕ} (hN : 1 ≤ N) : ∑ n ∈ Finset.Icc 1 N, ((n 
   refine le_trans (le_of_eq ?_) h
   rw [show Finset.Icc 1 N = Finset.Ioc 0 N by ext; simp [Nat.succ_le_iff]]
   refine Finset.sum_congr rfl fun n _ => ?_
-  unfold powerWeight
+  unfold ArithmeticOfSquareRootPrecision.powerWeight
   rw [Real.rpow_neg_one]
 
 /-- **The bound on a power-bounded class.** -/
@@ -129,12 +130,12 @@ theorem integral_linePoly_le_of_power_bound {a : ℕ → ℂ} {ε η T₁ T₂ :
     (∫ t in T₁..T₂, ‖linePoly a N t‖ ^ 2) ≤
       ε ^ 2 * ((T₂ - T₁) * (1 + Real.log N) + 208 * (1 + (N : ℝ) ^ (1 - 2 * η) / (1 - 2 * η))) := by
   have h := (abs_le.mp (abs_integral_norm_sq_linePoly_sub_le a N T₁ T₂)).2
-  have hsq : ∀ n ∈ Finset.Icc 1 N, ‖a n‖ ^ 2 ≤ ε ^ 2 * powerWeight (2 * η) n := by
+  have hsq : ∀ n ∈ Finset.Icc 1 N, ‖a n‖ ^ 2 ≤ ε ^ 2 * ArithmeticOfSquareRootPrecision.powerWeight (2 * η) n := by
     intro n hn
     have hn0 : (0 : ℝ) < n := by exact_mod_cast (Finset.mem_Icc.mp hn).1
     have h1 := pow_le_pow_left₀ (norm_nonneg _) (ha n hn) 2
     refine h1.trans (le_of_eq ?_)
-    unfold powerWeight
+    unfold ArithmeticOfSquareRootPrecision.powerWeight
     rw [mul_pow, ← Real.rpow_natCast ((n : ℝ) ^ (-η)), ← Real.rpow_mul hn0.le]
     congr 2
     push_cast
@@ -145,20 +146,20 @@ theorem integral_linePoly_le_of_power_bound {a : ℕ → ℂ} {ε η T₁ T₂ :
   have hS₂ : ∑ n ∈ Finset.Icc 1 N, ‖a n‖ ^ 2 ≤ ε ^ 2 * (1 + (N : ℝ) ^ (1 - 2 * η) / (1 - 2 * η)) := by
     have h1 := partialSum_powerWeight_le_rpow (η := 2 * η) (x := N) (by positivity) (by linarith)
       (by exact_mod_cast hN)
-    have h2 : partialSum (powerWeight (2 * η)) (N : ℝ) = ∑ n ∈ Finset.Icc 1 N, powerWeight (2 * η) n := by
+    have h2 : partialSum (ArithmeticOfSquareRootPrecision.powerWeight (2 * η)) (N : ℝ) = ∑ n ∈ Finset.Icc 1 N, ArithmeticOfSquareRootPrecision.powerWeight (2 * η) n := by
       unfold partialSum
       rw [Nat.floor_natCast, hIcc]
     rw [h2] at h1
-    calc ∑ n ∈ Finset.Icc 1 N, ‖a n‖ ^ 2 ≤ ∑ n ∈ Finset.Icc 1 N, ε ^ 2 * powerWeight (2 * η) n :=
+    calc ∑ n ∈ Finset.Icc 1 N, ‖a n‖ ^ 2 ≤ ∑ n ∈ Finset.Icc 1 N, ε ^ 2 * ArithmeticOfSquareRootPrecision.powerWeight (2 * η) n :=
           Finset.sum_le_sum hsq
-      _ = ε ^ 2 * ∑ n ∈ Finset.Icc 1 N, powerWeight (2 * η) n := by rw [Finset.mul_sum]
+      _ = ε ^ 2 * ∑ n ∈ Finset.Icc 1 N, ArithmeticOfSquareRootPrecision.powerWeight (2 * η) n := by rw [Finset.mul_sum]
       _ ≤ _ := mul_le_mul_of_nonneg_left h1 (by positivity)
   have hS₁ : ∑ n ∈ Finset.Icc 1 N, ‖a n‖ ^ 2 / n ≤ ε ^ 2 * (1 + Real.log N) := by
     calc ∑ n ∈ Finset.Icc 1 N, ‖a n‖ ^ 2 / n ≤ ∑ n ∈ Finset.Icc 1 N, ε ^ 2 * ((n : ℝ))⁻¹ := by
           refine Finset.sum_le_sum fun n hn => ?_
           have hn1 : (1 : ℝ) ≤ n := by exact_mod_cast (Finset.mem_Icc.mp hn).1
-          have h1 : powerWeight (2 * η) n ≤ 1 := by
-            unfold powerWeight
+          have h1 : ArithmeticOfSquareRootPrecision.powerWeight (2 * η) n ≤ 1 := by
+            unfold ArithmeticOfSquareRootPrecision.powerWeight
             exact Real.rpow_le_one_of_one_le_of_nonpos hn1 (by linarith)
           have h2 : ‖a n‖ ^ 2 ≤ ε ^ 2 :=
             (hsq n hn).trans (mul_le_of_le_one_right (by positivity) h1)
@@ -197,7 +198,9 @@ theorem power_bounded_second_moment_le {θ η : ℝ} (hθ : 0 < θ) (hη0 : 0 �
       _ ≤ T ^ (1 : ℝ) := Real.rpow_le_rpow_of_exponent_le hT hexp
       _ = T := Real.rpow_one T
   refine hb.trans ?_
-  rw [mul_right_comm, mul_comm (1 + θ + 208 * (1 + 1 / (1 - 2 * η))) (ε ^ 2), mul_assoc (ε ^ 2)]
+  have hreorder : (1 + θ + 208 * (1 + 1 / (1 - 2 * η))) * ε ^ 2 * (T * Real.log T) =
+      ε ^ 2 * ((1 + θ + 208 * (1 + 1 / (1 - 2 * η))) * (T * Real.log T)) := by ring
+  rw [hreorder]
   refine mul_le_mul_of_nonneg_left ?_ (by positivity)
   set ℓ := Real.log T with hℓdef
   have hTℓ : T ≤ T * ℓ := le_mul_of_one_le_right hT0.le hℓ
@@ -339,7 +342,7 @@ theorem resonance_beats_every_constant {θ η ε : ℝ} (hθ : 0 < θ) (hη0 : 0
     linarith
   obtain ⟨κ, hκ⟩ : ∃ κ : ℝ, κ = θ * (1 - 2 * η) - 1 := ⟨_, rfl⟩
   have hκ0 : 0 < κ := by rw [hκ]; linarith
-  obtain ⟨ε', hε'⟩ : ∃ ε' : ℝ, ε' = ε ^ 2 / (16 * θ * (|A| + 1)) := ⟨_, rfl⟩
+  obtain ⟨ε', hε'⟩ : ∃ ε' : ℝ, ε' = ε ^ 2 / (8 * θ * (|A| + 1)) := ⟨_, rfl⟩
   have hε'0 : 0 < ε' := by rw [hε']; positivity
   have hpow : Tendsto (fun T : ℝ => T ^ θ) atTop atTop := tendsto_rpow_atTop hθ
   filter_upwards [eventually_log_pow_mul_exp_le 2 (c := κ) (ε := ε') hκ0 hε'0,
@@ -414,8 +417,7 @@ theorem resonance_beats_every_constant {θ η ε : ℝ} (hθ : 0 < θ) (hη0 : 0
   have h6 := mul_le_mul_of_nonneg_left hℓ2 (by positivity : 0 ≤ T * ((|A| + 1) * 4 * θ))
   refine h6.trans (le_of_eq ?_)
   rw [hε']
-  field_simp
-  ring
+  field_simp <;> ring
 
 /-- **The length–precision law.**  The threshold of the second moment at length `T^θ` is `θ(1−2η) = 1`, that is, `η = ½ − 1/(2θ)`. -/
 theorem length_precision_law {θ η ε : ℝ} (hθ : 0 < θ) (hη0 : 0 ≤ η) (hη : η < 1 / 2) (hε : 0 < ε) :

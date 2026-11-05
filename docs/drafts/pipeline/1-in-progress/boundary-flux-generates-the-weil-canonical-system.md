@@ -59,8 +59,8 @@ requirement for the reflection function.
 
 ## Algebraic consequences to formalize
 
-Reflection and real-conjugation symmetry give `T₊=T₋#` and real
-`s(a)=T₋(0)`. Flux at zero and `Kₐ(0,0)>0` force `s(a)≠0`.
+[Formalized reflection and conjugation](../3-formalized/reflection-exchanges-the-weil-endpoint-traces.md)
+give `T₊=T₋#` and real `s(a)=T₋(0)`. Flux at zero and `Kₐ(0,0)>0` force `s(a)≠0`.
 For the normalized even/odd pair, flux gives
 
 `Bₐ(z)=z Kₐ(0,z)/2`,
