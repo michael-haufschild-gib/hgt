@@ -221,3 +221,39 @@ The full exterior Weil pairings have physical L² bound
 half-lines. Exact Gamma transfer identities retain the complete bounded
 prime and polar remainder. Support alone gives the required half-line
 coordinates by translation, reflection, restriction and zero extension.
+
+The exact bounded correction `B_c-A_c` identifies the complete Weil form
+with logarithmic energy plus a bounded physical pairing. Hence a collar of
+width `0<h≤1` pays at least `(log(1/h)-‖B_c-A_c‖)` times its mass; literal
+constant collars are admissible and have upper energy
+`h(log(1/h)+3+‖B_c-A_c‖)`.
+
+For an old precontact aperture `a` and fixed enclosure `c`, set
+`C=2π+‖B_c‖`, `D=‖B_c-A_c‖`, and `E=D+C+2C²/λ_a`, where `λ_a>0` is
+the actual old ground energy. Completing the square in the exact three-piece
+decomposition gives the full two-collar floor
+`(log(1/h)-E)(mass_left+mass_right)≤‖u‖²_Weil`.
+
+The full scalar, finite-prime and polar response of each continuous Riesz
+source is continuous and represents the actual bounded remainder almost
+everywhere. Evaluation minus this remainder plus the exact exterior Gamma
+transfer gives an actual positive-half-line L² residual on each side.
+The kernel increment pairs with collar tests by these complete residuals;
+the equation is compatible with every fixed enclosing aperture.
+
+Each full residual divided by `√log(1/h)`, rescaled and restricted to the
+unit interval, converges strongly in L² to its constant actual endpoint trace.
+Its shrinking-collar mass divided by `h log(1/h)` therefore tends to the
+squared modulus of that trace. The exact kernel increment satisfies
+`(log(1/h)-E)‖δ_ab(z)‖²_Weil≤mass(F⁻_ac|(0,h])+mass(F⁺_ac|(0,h])`
+when `b=a+h≤c`. Orthogonality removes the old-space pairing; the full collar
+equations and two-channel Cauchy–Schwarz supply the bound.
+
+Physical translation preserves the complete Weil source quadratic. The
+reciprocal exponential factors of the polar coordinates cancel exactly.
+It induces a Hilbert isometry whenever translated support fits; its entire
+Fourier coordinate acquires the character `exp(-iz h)`.
+
+For the actual renewal density and cumulative mass, the coupled mass
+`J(x)=∫₀ˣv(y)V(x-y)dy` lies between `V(x/2)²` and `V(x)²`.
+Thus `J(x)log(1/x)→1` as `x↓0`, with exact coefficient one.

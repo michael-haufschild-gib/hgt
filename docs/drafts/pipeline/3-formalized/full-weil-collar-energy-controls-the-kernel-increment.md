@@ -28,13 +28,13 @@ physical operator `B_c-A_c`. Thus each collar costs at least
 `(log(1/h)-D)` times its mass; constant interval tests have the matching
 upper bound `h(log(1/h)+3+D)` and belong to the complete domain.
 
-All three crossings have physical bound `C`. If `x,y,z` are the old, left,
+[All three crossings](complete-weil-exterior-crossings-are-bounded.md) have physical bound `C`. If `x,y,z` are the old, left,
 and right physical norms, subtracting the proposed floor from the full
 lower bound gives
 
 `((λx-C(y+z))²+(λC+C²)(y-z)²)/λ ≥ 0`.
 
-Sharp interval restriction supplies the decomposition for every supported
+[Sharp interval restriction](sharp-restriction-preserves-the-complete-complex-weil-domain.md) supplies the decomposition for every supported
 source. Apply it to the actual increment included into `c`. Orthogonality
 eliminates its old-space pairing. The exact collar equations and Cauchy–Schwarz
 give `e²≤mf`, where `e` is its squared Weil norm, `m` is total collar mass,

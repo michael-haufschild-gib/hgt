@@ -50,12 +50,16 @@ The energy of the difference from that trial profile tends to zero after
 division by `h`, giving the mixed kernel derivative as well. This avoids
 constructing a strong inverse limit for the whole collar operator.
 
-The full fixed-enclosure variational bound now has a Lean draft:
+The [full fixed-enclosure energy bound](../3-formalized/full-weil-collar-energy-controls-the-kernel-increment.md)
+is formalized:
 `(log(1/h)−C)‖v_{a+h,z}−ιv_{a,z}‖²≤‖1_(0,h]F₋‖²+‖1_(0,h]F₊‖²`.
-It uses the actual residuals, exact three-interval decomposition and complete
-Weil form. These drafts still require verification. Constant collar trials
-and the mixed derivative remain to be formalized. Translation retains the
-pole pairing because its two exponential characters are reciprocal.
+It uses the [actual residual equations and L² limits](../3-formalized/exterior-response-of-the-normalized-weil-trace.md),
+exact sharp decomposition and complete Weil form. Constant interval tests
+and their matching leading energy bound are formalized.
+[Complete translation invariance](../3-formalized/translation-preserves-the-complete-weil-form.md)
+retains the polar pairing through reciprocal exponential characters.
+The matching kernel-growth lower bound, mixed derivative, and translated
+Riesz projection remain open.
 
 For one-sided growth, translate the old interval by `−t` inside the centered
 interval of radius `a+t`. Its only new collar has width `2t`. The exact

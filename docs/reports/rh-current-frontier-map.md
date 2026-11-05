@@ -1,7 +1,7 @@
 # RH proof-route frontier
 
 **RH open · 38 live route formulations · 9 candidates.**
-**Corpus checkpoint:** `d85f85838be50029b777117eefe942a3b72ce31f`.
+**Corpus checkpoint:** `3cf4249fe7ab4546d5ca06cd7bd2ee88767a20c9`.
 
 Live = source observable + proved RH-sufficient receiver + explicit open estimate. Candidate = missing independent source mechanism/landing.
 Formulations need not be independent: HJ→PA, BSH→CDC; FEL's BSY criterion→CTF. Source construction does not discharge zero-selective sign/vanishing.
@@ -45,9 +45,9 @@ Evidence: [L] integrated, source-reviewed; [S] unfinished/unintegrated, unverifi
 ### RW — Restricted Weil ground energy
 
 - **Path:** Complete Weil form → μ(a)≥0 at every radius → RH.
-- **Established:** Attained strictly decreasing minima; nonnegative apertures extend through finite contact. Increasing a_k carries floor1/(20000·2^k), a₀>181/500. Precontact HB kernels; finite contact forces blowup. Full collar equations and sharp two-collar coercivity; rescaled actual residuals converge strongly in L², mass/(h log(1/h))→|endpoint trace|². Actual increment in a fixed precontact enclosure obeys (log(1/h)−E(a,c))‖ΔE_z‖²≤left+right collar residual mass [L]. All-lattice/two-site receivers [L]; exact {2,3} band below log2 [K].
+- **Established:** Attained strictly decreasing minima; nonnegative apertures extend through finite contact. Increasing a_k carries floor1/(20000·2^k), a₀>181/500. Precontact HB kernels; finite contact forces blowup. Full collar equations and sharp two-collar coercivity; rescaled actual residuals converge strongly in L², mass/(h log(1/h))→|endpoint trace|². Fixed-enclosure increment: (log(1/h)−E(a,c))‖ΔE_z‖²≤two-collar residual mass. Support-fitting translation preserves the complete Weil form, including polar terms; precontact Hilbert isometry has Fourier multiplier e^(−izh). All-lattice/two-site receivers [L]; exact {2,3} band below log2 [K].
 - **Open:** All-aperture sign or contact-excluding arithmetic kernel bound. Kernel absolute continuity, moving-boundary flux identity and contact-uniform control remain. E(a,c) contains 2C_c²/μ(a), C_c=2π+‖bounded remainder at c‖: the increment bound degenerates as μ(a)↓0. Increasing a_k need not exhaust apertures. [Prime-entry margins](#prime-entry), [EWU](#ewu), [OWU](#owu), [ACT](#act).
-- **Sources:** C:TheApertureFlowNeverStalls; I:MultiPrimeDilationModulusAndIteratedWeilFloors; CSTW:{TheWeilFormIsCompleteBeforeContact,TheLocalWeilKernelIsHermiteBiehler,TheWeilKernelDivergesAtContact,TheWeilKernelIncrementSolvesTheFullCollarEquation,TheFullWeilFormControlsBothCollars,TheWeilCollarResidualsHaveTheirActualL2Limit,TheWeilKernelIncrementHasItsCollarEnergyBound} [L]; GWZ:RHIsDecidedOnTwoSites [L]; SWC:BelowLogFour/RetainedVarianceAndHalfWindowBandBelowLogFour [K].
+- **Sources:** C:TheApertureFlowNeverStalls; I:MultiPrimeDilationModulusAndIteratedWeilFloors; CSTW:{TheWeilFormIsCompleteBeforeContact,TheLocalWeilKernelIsHermiteBiehler,TheWeilKernelDivergesAtContact,TheWeilKernelIncrementSolvesTheFullCollarEquation,TheFullWeilFormControlsBothCollars,TheWeilCollarResidualsHaveTheirActualL2Limit,TheWeilKernelIncrementHasItsCollarEnergyBound,TranslationPreservesTheCompleteWeilForm} [L]; GWZ:RHIsDecidedOnTwoSites [L]; SWC:BelowLogFour/RetainedVarianceAndHalfWindowBandBelowLogFour [K].
 
 <a id="fu"></a>
 ### FU — CCM-FU signed prime scheduling

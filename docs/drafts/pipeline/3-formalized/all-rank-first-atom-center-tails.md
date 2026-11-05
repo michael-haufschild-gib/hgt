@@ -97,8 +97,9 @@ Schwartz regularity and actual Fourier positivity.
 `FourierPositiveHankel` supplies `signedSchwartzJet_hankel_posDef`, strictness
 at every finite rank.
 
-The literal theorem, determinant theorem and exact normalization pass Lean
-and transitive `#print axioms`: only `propext`, `Classical.choice`, `Quot.sound`.
+All eight source modules pass individual `lake --old env lean` checks.
+The literal theorem, determinant theorem and exact normalization pass
+transitive `#print axioms`: only `propext`, `Classical.choice`, `Quot.sound`.
 
 The complete theta sum additionally needs unequal atom pairs and its
 infinite remainder controlled uniformly in rank. This first-atom theorem
