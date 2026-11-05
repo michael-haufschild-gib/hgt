@@ -957,3 +957,8 @@ theorem exists_lacunary_gridTentPattern_suzukiDeficit :
 
 end
 end RHTower
+
+#print axioms RHTower.tendsto_suzukiCriticalSourcePairing_firstVariation_of_lipschitz
+#print axioms RHTower.riemannHypothesis_iff_factorialTentPattern_suzukiFirstVariation_nonneg
+#print axioms RHTower.riemannHypothesis_iff_eventually_gridTentPattern_suzukiFirstVariation_nonneg
+#print axioms RHTower.exists_gridTentPattern_uniform_suzukiDeficit_explicit_scale

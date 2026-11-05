@@ -8,6 +8,7 @@ The complete correction is positive before theta scale five and exceeds a
 negative quartic scale bound afterward, up to the profile's double zero.
 Likelihood moments control the full source and its derivative. Affine center
 bounds give sharper polynomial reserves on the initial and middle intervals.
+At scale six the normalized correction lies between `−126` and `−1251/10`.
 -/
 
 noncomputable section
@@ -933,5 +934,244 @@ theorem compensation_lower_polynomial_lower {x : ℝ}
   rw [compactLowerReserve_eq hq]
   change -compactLoss S (1/4)*(sourceUnit x*(2*q-3)^2) ≤ _ at hmass
   nlinarith only [hbase,hpay,hmass]
+
+
+/-- The scale-six tangent controls the center on the positive half-line. -/
+private theorem compact_center_tangent_six {x : ℝ} (hx : 0 ≤ x) :
+    2*x ≤ thetaCuspSingleAtomReflectionScale 1 x/6-44/125 := by
+  have h := Real.sum_le_exp_of_nonneg (x := (81/125 : ℝ)) (by norm_num) 6
+  norm_num [Finset.sum_range_succ,Nat.factorial] at h
+  have he : (1911/1000 : ℝ) ≤ Real.exp (81/125) := by linarith only [h]
+  have hpi : (31415/10000 : ℝ) ≤ Real.pi := by linarith only [Real.pi_gt_d4]
+  have hp := mul_le_mul hpi he (by norm_num : (0 : ℝ) ≤ 1911/1000) Real.pi_pos.le
+  have hbase : (6 : ℝ) ≤ Real.pi*Real.exp (81/125) := by nlinarith only [hp]
+  have ht := mul_le_mul_of_nonneg_left (Real.add_one_le_exp (2*x-81/125))
+    (show 0 ≤ Real.pi*Real.exp (81/125) by positivity)
+  have hs := mul_le_mul_of_nonneg_right hbase
+    (show 0 ≤ 1+(2*x-81/125) by linarith only [hx])
+  simp only [mul_assoc] at ht
+  rw [← Real.exp_add,show (81/125 : ℝ)+(2*x-81/125)=2*x by ring] at ht
+  simp only [thetaCuspSingleAtomReflectionScale,Nat.cast_one,one_pow,mul_one]
+  nlinarith only [ht,hs]
+
+private theorem compactLoss_lower_three {S t : ℝ} (hS : 0 ≤ S)
+    (ht : 0 ≤ t) (htu : t ≤ 41/100) : -3 ≤ compactLoss S t := by
+  have ht2 : t^2 ≤ (1681/10000 : ℝ) := by
+    have h := mul_self_le_mul_self ht htu
+    nlinarith only [h]
+  have hp : 0 ≤ 2*t*(1-2*t^2)^2*S := by positivity
+  have hq : 0 ≤ 4*t^2*(5-7*t^2) :=
+    mul_nonneg (by positivity) (by linarith only [ht2])
+  unfold compactLoss
+  nlinarith only [hp,hq]
+
+/-- The scale-six tangent includes the full mass error on either side of zero loss. -/
+def compactSixAllowance (q : ℝ) : ℝ :=
+  let t := q/12-22/125
+  let p := 1-2*t^2
+  (501/500)^2*(t*p^2*(8*q^2-30*q+15)*(2*q-3)+
+    ((q/125)*t*p^2+p*(14*t^2-3))*(2*q-3)^2)+
+    3*((501/500)^2-1)*(2*q-3)^2
+
+private theorem compactSixAllowance_eq {q : ℝ} (hq : 5 ≤ q) :
+    compactSixAllowance q = ((501/500)^2*
+      compactLoss (firstSlope q+q/250) (q/12-22/125)+
+      3*((501/500)^2-1))*(2*q-3)^2 := by
+  have hd : 2*q-3 ≠ 0 := by linarith only [hq]
+  unfold compactSixAllowance compactLoss firstSlope
+  generalize q/12-22/125 = t
+  field_simp [hd]
+  ring
+
+/-- Complete-source compensation retains the sharper scale-six center bound. -/
+theorem compensation_compact_six_lower {x : ℝ}
+    (hq : 5 ≤ thetaCuspSingleAtomReflectionScale 1 x)
+    (hu : thetaCuspSingleAtomReflectionScale 1 x ≤ 7) :
+    -compactSixAllowance (thetaCuspSingleAtomReflectionScale 1 x)*sourceUnit x ≤
+      compensation x := by
+  let q := thetaCuspSingleAtomReflectionScale 1 x
+  let S := firstSlope q+q/250
+  let T := q/12-22/125
+  have hx := thetaCusp_pos_of_thirtySevenTenths_le
+    (show 37/10 ≤ thetaCuspSingleAtomReflectionScale 1 x by linarith only [hq])
+  have hS : 7/2 ≤ S ∧ S ≤ 9 := compact_five_slope_bounds hq hu
+  have hxT : x ≤ T := by
+    have ht := compact_center_tangent_six hx.le
+    dsimp only [T,q]
+    linarith only [ht]
+  have hTu : T ≤ (41/100 : ℝ) := by dsimp only [T,q]; linarith only [hu]
+  have hTn : 0 ≤ T := hx.le.trans hxT
+  have hJ := compactLoss_monotone_middle (by linarith only [hS.1]) hS.2
+    ⟨hx.le,hxT.trans hTu⟩ ⟨hTn,hTu⟩ hxT
+  have hL : 0 ≤ compactLoss S T+3 := by
+    linarith only [compactLoss_lower_three (S := S) (t := T) (by linarith only [hS.1]) hTn hTu]
+  have hm := compact_middle_mass_slope (x := x) (by linarith only [hq])
+  have hsq := mul_self_le_mul_self (thetaCuspFullSource_pos_all x).le hm.1
+  have hmass := mul_le_mul_of_nonneg_left hsq hL
+  have hfirst := compact_first_square_le_full hx.le
+  have hpay := mul_le_mul_of_nonneg_right hJ (sq_nonneg (thetaCuspFullSource x))
+  have hcomp : -compactLoss S x*thetaCuspFullSource x^2 ≤ compensation x := by
+    have hd := mul_le_mul_of_nonneg_left hm.2
+      (show 0 ≤ 2*x*(1-2*x^2)^2*thetaCuspFullSource x by
+        exact mul_nonneg (by positivity) (thetaCuspFullSource_pos_all x).le)
+    dsimp only [compactLoss,compensation,thetaCuspCenterCompensationSource,S,q]
+    nlinarith only [hd]
+  have hlower : -((501/500)^2*compactLoss S T+3*((501/500)^2-1))*
+      thetaCuspSourceTerm x 1^2 ≤ compensation x := by
+    nlinarith only [hcomp,hpay,hmass,hfirst]
+  rw [first_mass_square] at hlower
+  change -compactSixAllowance q*sourceUnit x ≤ _
+  rw [compactSixAllowance_eq hq]
+  change -((501/500)^2*compactLoss S T+3*((501/500)^2-1))*
+    (sourceUnit x*(2*q-3)^2) ≤ _ at hlower
+  nlinarith only [hlower]
+
+
+
+private theorem six_center_lower_base : Real.pi*Real.exp (323/500) ≤ (6 : ℝ) := by
+  have h1 : Real.exp 1 ≤ (2718282/1000000 : ℝ) := by
+    linarith only [Real.exp_one_lt_d9]
+  have hp := pow_le_pow_left₀ (Real.exp_pos 1).le h1 2
+  rw [← Real.exp_nat_mul] at hp
+  simp only [Nat.cast_ofNat,mul_one] at hp
+  have he : Real.exp (2/3 : ℝ) ≤ 19478/10000 := by
+    have hpow : Real.exp (2/3 : ℝ)^3 ≤ (19478/10000 : ℝ)^3 := by
+      rw [← Real.exp_nat_mul]
+      norm_num only [Nat.cast_ofNat,show (3 : ℝ)*(2/3)=2 by ring]
+      exact hp.trans (by norm_num)
+    by_contra h
+    have hh := pow_lt_pow_left₀ (lt_of_not_ge h)
+      (by norm_num : (0 : ℝ) ≤ 19478/10000) (by norm_num : (3 : ℕ) ≠ 0)
+    linarith only [hh,hpow]
+  have ht := mul_le_mul_of_nonneg_left (Real.add_one_le_exp (31/1500))
+    (Real.exp_pos (323/500)).le
+  rw [← Real.exp_add,show (323/500 : ℝ)+31/1500=2/3 by ring] at ht
+  have hu : Real.exp (323/500 : ℝ) ≤ 1909/1000 := by linarith only [ht,he]
+  have hpi : Real.pi ≤ (31416/10000 : ℝ) := by linarith only [Real.pi_lt_d4]
+  have hh := mul_le_mul hpi hu (Real.exp_pos _).le (by norm_num : (0 : ℝ) ≤ 31416/10000)
+  norm_num at hh
+  linarith only [hh]
+
+/-- At scale six the complete quartic correction has a fixed negative load. -/
+theorem compensation_six_upper {x : ℝ}
+    (hq : thetaCuspSingleAtomReflectionScale 1 x=6) :
+    compensation x ≤ -(1251/10)*sourceUnit x := by
+  have hqm : 37/10 ≤ thetaCuspSingleAtomReflectionScale 1 x := by rw [hq]; norm_num
+  have hx := thetaCusp_pos_of_thirtySevenTenths_le hqm
+  have hxl : (323/1000 : ℝ) ≤ x := by
+    have hs : Real.pi*Real.exp (2*x)=6 := by
+      simpa only [thetaCuspSingleAtomReflectionScale,Nat.cast_one,one_pow,mul_one] using hq
+    have he : Real.exp (323/500 : ℝ) ≤ Real.exp (2*x) := by
+      by_contra h
+      have hp := mul_pos Real.pi_pos (sub_pos.mpr (lt_of_not_ge h))
+      nlinarith only [hp,six_center_lower_base,hs]
+    have hh := Real.exp_le_exp.mp he
+    linarith only [hh]
+  have hxu : x ≤ (41/100 : ℝ) := by
+    have ht := compact_center_tangent_six hx.le
+    rw [hq] at ht
+    linarith only [ht]
+  have hB := thetaCuspLikelihoodCoordinate_pos hx.le
+  have hF : thetaCuspFullSource x=thetaCuspSourceTerm x 1*
+      (1+thetaCuspHigherLikelihoodSpectralMoment (thetaCuspLikelihoodCoordinate x) 0) := by
+    rw [thetaCuspFullSource_eq_first_mul_likelihoodPartition hB,
+      thetaCuspLikelihoodPartition_eq_one_add_moment_zero hB]
+  have hd : deriv thetaCuspFullSource x ≤ -(41/6)*thetaCuspFullSource x := by
+    have he := deriv_thetaCuspFullSource_eq_likelihood_moment hx
+    rw [compact_middle_first_derivative hqm,hq] at he
+    norm_num only [firstSlope] at he
+    have hn := mul_nonneg
+      (show 0 ≤ 2*(6 : ℝ)*thetaCuspSourceTerm x 1 by
+        exact mul_nonneg (by norm_num) (thetaCuspSourceTerm_pos_of_pos_of_nat_pos hx (by norm_num)).le)
+      (thetaCuspHigherLikelihoodSpectralMoment_nonneg (B := thetaCuspLikelihoodCoordinate x) 1)
+    rw [hF]
+    nlinarith only [he,hn]
+  have hJ : (1251/810 : ℝ) ≤ compactLoss (41/6) x := by
+    have hm := compactLoss_monotone_middle (by norm_num : (0 : ℝ) ≤ 41/6)
+      (by norm_num : (41/6 : ℝ) ≤ 9)
+      (show (323/1000 : ℝ) ∈ Icc 0 (41/100) by constructor <;> norm_num)
+      ⟨hx.le,hxu⟩ hxl
+    have hl : (1251/810 : ℝ) ≤ compactLoss (41/6) (323/1000) := by
+      norm_num [compactLoss]
+    exact hl.trans hm
+  have hcomp : compensation x ≤ -compactLoss (41/6) x*thetaCuspFullSource x^2 := by
+    have hh := mul_le_mul_of_nonneg_left hd
+      (show 0 ≤ 2*x*(1-2*x^2)^2*thetaCuspFullSource x by
+        exact mul_nonneg (by positivity) (thetaCuspFullSource_pos_all x).le)
+    dsimp only [compactLoss,compensation,thetaCuspCenterCompensationSource]
+    nlinarith only [hh]
+  have hpay := mul_le_mul_of_nonneg_right hJ (sq_nonneg (thetaCuspFullSource x))
+  have hf := compact_first_square_le_full hx.le
+  rw [first_mass_square,hq] at hf
+  norm_num only [show (2*(6 : ℝ)-3)^2=81 by norm_num] at hf
+  nlinarith only [hcomp,hpay,hf]
+
+
+/-- The small likelihood tail sharpens the scale-six quartic load. -/
+theorem compensation_six_lower {x : ℝ}
+    (hq : thetaCuspSingleAtomReflectionScale 1 x=6) :
+    -126*sourceUnit x ≤ compensation x := by
+  have hqm : 37/10 ≤ thetaCuspSingleAtomReflectionScale 1 x := by rw [hq]; norm_num
+  have hx := thetaCusp_pos_of_thirtySevenTenths_le hqm
+  have hf := thetaCuspSourceTerm_pos_of_pos_of_nat_pos hx (by norm_num : 0 < 1)
+  have hF := thetaCuspFullSource_pos_all x
+  have hm := (thetaCuspFullSource_mass_bounds_middle hqm).1
+  have hε := regimeOneLikelihoodScale_le_of_six_le (show 6 ≤ thetaCuspSingleAtomReflectionScale 1 x by rw [hq])
+  have hB := thetaCuspLikelihoodCoordinate_pos hx.le
+  have hR := thetaCuspHigherLikelihoodSpectralMoment_le_explicitScale 0 (x := x)
+    (by rw [hq]; norm_num; linarith only [Real.pi_lt_four])
+  have hM := thetaCuspHigherLikelihoodSpectralMoment_le_explicitScale 1 (x := x)
+    (by rw [hq]; norm_num; linarith only [Real.pi_lt_four])
+  norm_num only [pow_zero,one_mul,pow_one] at hR hM
+  have heF : thetaCuspFullSource x=thetaCuspSourceTerm x 1*
+      (1+thetaCuspHigherLikelihoodSpectralMoment (thetaCuspLikelihoodCoordinate x) 0) := by
+    rw [thetaCuspFullSource_eq_first_mul_likelihoodPartition hB,
+      thetaCuspLikelihoodPartition_eq_one_add_moment_zero hB]
+  have he0 := mul_le_mul_of_nonneg_right hε hf.le
+  have hmass : thetaCuspFullSource x ≤ (500001/500000)*thetaCuspSourceTerm x 1 := by
+    have hh := mul_le_mul_of_nonneg_left hR hf.le
+    rw [heF]
+    nlinarith only [hh,he0,hf.le]
+  have hderiv : -(3417/500)*thetaCuspFullSource x ≤ deriv thetaCuspFullSource x := by
+    have hd : deriv thetaCuspFullSource x=-(41/6)*thetaCuspFullSource x-
+        12*thetaCuspSourceTerm x 1*
+          thetaCuspHigherLikelihoodSpectralMoment (thetaCuspLikelihoodCoordinate x) 1 := by
+      have he := deriv_thetaCuspFullSource_eq_likelihood_moment hx
+      rw [compact_middle_first_derivative hqm,hq] at he
+      norm_num only [firstSlope] at he
+      rw [he,heF]
+      ring
+    have hh := mul_le_mul_of_nonneg_left hM hf.le
+    nlinarith only [hd,hh,he0,hm,hf.le]
+  have hxu : x ≤ (81/250 : ℝ) := by
+    have ht := compact_center_tangent_six hx.le
+    rw [hq] at ht
+    linarith only [ht]
+  have hJ := compactLoss_monotone_middle (by norm_num : (0 : ℝ) ≤ 3417/500)
+    (by norm_num : (3417/500 : ℝ) ≤ 9)
+    (show x ∈ Icc 0 (41/100) by exact ⟨hx.le,by linarith only [hxu]⟩)
+    (show (81/250 : ℝ) ∈ Icc 0 (41/100) by constructor <;> norm_num) hxu
+  have hJn : 0 ≤ compactLoss (3417/500) (81/250) := by norm_num [compactLoss]
+  have hmasssq := mul_self_le_mul_self hF.le hmass
+  have hpay := mul_le_mul_of_nonneg_left hmasssq hJn
+  have hpayJ := mul_le_mul_of_nonneg_right hJ (sq_nonneg (thetaCuspFullSource x))
+  have hcomp : -compactLoss (3417/500) x*thetaCuspFullSource x^2 ≤ compensation x := by
+    have hh := mul_le_mul_of_nonneg_left hderiv
+      (show 0 ≤ 2*x*(1-2*x^2)^2*thetaCuspFullSource x by positivity)
+    dsimp only [compactLoss,compensation,thetaCuspCenterCompensationSource]
+    nlinarith only [hh]
+  have hs := first_mass_square x
+  rw [hq] at hs
+  norm_num only [show (2*(6 : ℝ)-3)^2=81 by norm_num] at hs
+  have hK := (FifthNativeRay.sourceUnit_pos (show 5 ≤ thetaCuspSingleAtomReflectionScale 1 x by rw [hq]; norm_num)).le
+  simp only [← pow_two] at hpay
+  change compactLoss (3417/500) (81/250)*thetaCuspFullSource x^2 ≤
+    compactLoss (3417/500) (81/250)*((500001/500000)*thetaCuspSourceTerm x 1)^2 at hpay
+  rw [mul_pow,hs] at hpay
+  have hc : compactLoss (3417/500) (81/250)*(500001/500000)^2*81 ≤ (126 : ℝ) := by
+    norm_num [compactLoss]
+  have hcoef := mul_le_mul_of_nonneg_right hc hK
+  nlinarith only [hcomp,hpayJ,hpay,hcoef]
+
 
 end GaloisForLFunctions.ThetaCuspSections.FifthPolynomialCross

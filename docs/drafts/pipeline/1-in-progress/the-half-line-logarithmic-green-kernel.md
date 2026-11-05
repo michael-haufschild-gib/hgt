@@ -22,7 +22,7 @@ Put `Ψ(t)=1+(1/2)log(1+t²)` and
 
 Let `b=√(1-exp(-2))`, `R=κ(b)(1-b²)/b`, and
 `ρ(t)=2κ(t)/((2+log(t²-1))²+π²)` for `t>1`.
-The proposed Stieltjes representation is
+The formalized Stieltjes representation is
 
 `1/κ(s)=R/(s+b)+∫₁∞ρ(t)/(s+t)dt`.
 
@@ -31,15 +31,20 @@ continuous, decreasing, and integrable, with total mass `1/κ(0)=1`.
 The unshifted analogue appears in
 [Grzywny–Ryznar, Proposition 3.2](https://arxiv.org/abs/1107.0745v1).
 Here the boundary jump gives `ρ`, while the simple zero at `-b` gives the
-positive residue `R`. These formulas still require proof.
+positive residue `R`. The continuation, unique simple zero, and residue are
+[formalized](../3-formalized/the-logarithmic-factor-has-one-negative-zero.md).
+The exact Stieltjes formula and integrability are
+[formalized](../3-formalized/the-reciprocal-logarithmic-factor-has-its-positive-measure.md).
+The causal mixture, its exact Laplace transform, unit mass, continuity and
+monotonicity are [formalized](../3-formalized/the-logarithmic-causal-kernel-is-a-positive-probability-density.md).
 
 For the complementary causal kernel, the proposed formula is
 
 `k(x)=1+∫₁∞ exp(-tx)/(2tκ(t))dt`,
 
 with Laplace transform `κ(s)/s`; consequently `k*v=1` on the positive half-line.
-A Cauchy representation on the slit plane should prove both formulas from the
-factor identity. The corpus has Szegő outer-function analyticity, Poisson boundary
+A Cauchy representation on the slit plane must still prove the complementary
+formula. The corpus has Szegő outer-function analyticity, Poisson boundary
 modulus, and causal Fourier/convolution infrastructure; no matching complete
 factorization has been located.
 
@@ -47,39 +52,53 @@ For the complex extension use
 `κ(z)=exp((1/π)∫₀∞√z log(1+(1/2)log(1+zt²))/(z+t²)dt)`.
 This is the slit-plane formula in
 [Kwaśnicki, Lemma 3.8 and (3.5)](https://arxiv.org/abs/1006.0524).
-Analyticity and agreement on positive real parameters identify it with the
-right-half-plane Poisson factor. Poisson boundary reproduction then gives
-`κ(iy)κ(-iy)=Ψ(y)`; the identity theorem extends this to
-`κ(z)κ(-z)=1+(1/2)log(1-z²)` off the real axis.
-Thus explicit Cauchy inversion can establish both positive densities above,
-without assuming a complete Bernstein representation theorem.
+Slit-plane analyticity, agreement on positive real parameters, and conjugation
+symmetry are formalized in `TheLogarithmicFactorExtendsToTheSlitPlane`.
+The right-half-plane identification, pointwise Poisson boundary reproduction,
+and exact identity `κ(z)κ(-z)=1+(1/2)Log(1-z²)` off the real axis are
+[formalized](../3-formalized/the-logarithmic-factor-has-its-reflection-identity.md).
+Explicit Cauchy inversion proves the reciprocal representation; the complementary
+representation remains open.
+For the reciprocal factor, analytic pole subtraction, the exact upper cut jump
+`-2πiρ(t)`, continuity at the branch endpoint, and boundedness of the positive
+density are [formalized](../3-formalized/the-reciprocal-logarithmic-factor-has-its-cut-density.md).
+Bounded density makes each subtracted Stieltjes integral absolutely integrable.
+The positive differences
+`ρ(t)(1/(t+s)-1/(t+S))`, `S>s>0`, increase to `ρ(t)/(t+s)`.
+Reciprocal decay sends the remainder at `S` to zero; monotone convergence
+supplies integrability and the unsubtracted identity together.
 
-The proposed contour bound follows from concavity of
-`x↦1+(1/2)log(1+x)`:
-`Ψ(R)t²/(R²+t²)≤Ψ(t)≤Ψ(R)(1+t²/R²)`.
-The corresponding rational Poisson factors should give
-`√Ψ(|z|)/2≤|κ(z)|≤2√Ψ(|z|)` for `Re z>0`.
-Reflection then controls the left half-plane. All complex extension,
-boundary reproduction, contour estimates, and inversion steps remain unproved.
+Uniform contour control follows from the proved modulus identity.
+The elementary bound `Ψ(t)≤Ψ(R)(1+t²/R²)` and
+`(Im z+Re z·u)²≤|z|²(1+u²)` give `|κ(z)|²≤CΨ(|z|)` for a finite
+universal constant. When `Im z≥0`, the interval `1≤u≤2` gives
+`|κ(z)|²≥exp(log Ψ(|z|)/(5π))`; conjugation treats the other sign.
+Hence the reciprocal tends uniformly to zero at infinity on the right.
+Reflection controls the left. These bounds and uniform reciprocal decay are
+formalized in `TheReciprocalLogarithmicFactorVanishesAtInfinity`.
+Complementary Stieltjes inversion remains unproved.
 
 ## Operator identification
 
-The causal convolution `W` by `v` is bounded on half-line L².
-Its inverse is the weak derivative of convolution with `k`.
-Prove the exact zero-extension form identity `H₊=B*B`, where `B=W⁻¹`;
-then `H₊⁻¹=WW*`, and Fubini gives the kernel formula.
-For the actual source equation `Gu=f`, use `Hu=f+u`: the established
-boundedness of `u` preserves bounded interior forcing. Thus the fixed shift
-avoids an unbounded inverse and any vanishing-regularization limit.
-Support preservation of the inverse and form-domain equality must be proved.
+The causal convolution `W` by `v` is bounded on half-line L². Its inverse
+has Fourier multiplier `κ(iξ)`. The proved boundary modulus gives the exact
+zero-extension form identity `H₊=B*B`, once support preservation of `B` is
+established; then `H₊⁻¹=WW*` and Fubini give the Green kernel.
 
-The complementary kernel has `k=1+k₀`, with `k₀` supported on the positive
-half-line and `∫k₀=∫₁∞1/(2t²κ(t))dt<∞`. Thus the inverse can be written
-`Bu=u+(k₀*u)′`. The identity `κ(iξ)=1+iξ k̂₀(ξ)` places `k₀*u` in H¹
-whenever the logarithmic form is finite. Causal convolution and locality of
-the weak derivative then preserve support. The corpus already identifies
-Fourier H¹ with existence of an L² distributional derivative in
-`mem_fourierL2H1_iff_exists_weakDerivative`.
+For `ε>0`, `κ(z)/(1+εz)` is bounded and holomorphic through the closed right
+half-plane. Indeed `|κ(z)|²≤(C+1)(1+|z|²)` and
+`|1+εz|²≥1+ε²|z|²`. Rotate to the upper half-plane and apply the corpus theorem
+`ClosedUpperHalfPlaneMultiplier.boundaryMul_mem_hardy`. On the actual form
+domain, dominated L² convergence as `ε↓0` identifies the limit with `B`;
+closedness of half-line support proves causality. This route does not require
+the complementary Stieltjes representation.
+
+For the actual source equation `Gu=f`, use `Hu=f+u`: established boundedness
+of `u` preserves bounded interior forcing. The fixed shift avoids an unbounded
+inverse and a vanishing-regularization limit for the source equation.
+Support preservation on the full actual multiplier graph domain is
+[formalized](../3-formalized/the-logarithmic-factor-preserves-half-line-support.md).
+Actual convolution-multiplier identification and form-domain equality remain open.
 
 ## Normalization and remaining obligations
 
@@ -95,10 +114,13 @@ and `κ(s)/√log(s)→1` are
 The normalization of `V` follows from two direct Laplace bounds:
 `V(x)≤exp(sx)/κ(s)` and
 `V(x)≥1/κ(s)-exp(-sx/2)/κ(s/2)`.
-Choose `s=x^{-p}` with `p<1` for the upper bound and `p>1` for the lower
-bound; then let `p→1`. This gives `V(x)√log(1/x)→1`.
-Missing proofs: slit-plane factorization, Stieltjes inversion, causal inverse,
-exact form identification, and normalized renewal asymptotic.
+Set `x=exp(-u)` and choose `s=exp(u-√u)` for the upper bound,
+`exp(u+√u)` for the lower. The normalized factor ratios tend to one;
+the upper exponential tends to one and the discarded tail to zero.
+Squeezing gives `V(x)√log(1/x)→1`. Both bounds and the exact normalization
+are [formalized](../3-formalized/the-logarithmic-renewal-mass-has-its-exact-normalization.md).
+Missing proofs for the Green kernel: causal inverse and exact form identification. Complementary Stieltjes inversion is an
+independent stronger formula.
 
 For exterior forcing, `lintegral_carleman_sq_le` proves the sharp half-line
 Carleman bound. `CCMRestrictedWeilGammaBoundaryPairing` already constructs

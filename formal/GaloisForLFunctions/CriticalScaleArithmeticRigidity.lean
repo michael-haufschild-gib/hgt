@@ -150,6 +150,7 @@ import GaloisForLFunctions.CriticalScaleArithmeticRigidity.ReceivingCharges.Prim
 import GaloisForLFunctions.CriticalScaleArithmeticRigidity.ReceivingCharges.PrimeChargeConsequences
 
 import GaloisForLFunctions.CriticalScaleArithmeticRigidity.ReceivingCharges.SimultaneousCompleteReceivingLaw
+import GaloisForLFunctions.CriticalScaleArithmeticRigidity.ReceivingCharges.GrowingSimultaneousReceivingModes
 
 /-!
 # Arithmetic rigidity at critical scale

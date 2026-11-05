@@ -104,4 +104,26 @@ The full finite prime sum and both polar terms remain present.
 For `Ψ(t)=1+(1/2)log(1+t²)`, the positive Poisson factor
 `κ(s)=exp((1/π)∫₀∞s log(Ψ(t))/(s²+t²)dt)` satisfies
 `κ(s)/√log(s)→1`. It is increasing for `s>0`, at least one, and tends to
-one as `s↓0`. The half-line Green factorization remains to be proved.
+one as `s↓0`. Its literal slit-plane extension is holomorphic, nonzero,
+and respects conjugation; `complexLogReferenceFactor_ofReal` identifies
+its positive real values exactly. The actual Poisson integral gives the
+pointwise boundary modulus `|κ(iy)|²=Ψ(y)` for `y≠0`, and analytic uniqueness
+gives `κ(z)κ(-z)=1+(1/2)Log(1-z²)` for every nonreal `z`.
+Its reciprocal tends uniformly to zero at infinity over all nonreal directions.
+Reflection continues the factor across zero and `(-1,0)`, with unit value at zero.
+Its unique zero is `-b`, where `b=√(1-exp(-2))`; the zero is simple and the
+reciprocal has positive residue `κ(b)(1-b²)/b`.
+Removing this pole gives a bounded analytic remainder with continuous upper
+boundary values. Its jump on `-t`, `t>1`, is `-2πiρ(t)`, where
+`ρ(t)=2κ(t)/((2+log(t²-1))²+π²)` is positive and bounded.
+The exact positive representation is
+`κ(s)⁻¹=R/(s+b)+∫₁∞ρ(t)/(s+t)dt`, including integrability.
+The causal mixture `v(x)=R exp(-bx)+∫₁∞ρ(t)exp(-tx)dt`, zero for `x≤0`,
+is positive, continuous and decreasing on the positive half-line. Its Laplace
+transform is exactly `κ(s)⁻¹`, and its full integral is one. Its cumulative
+mass has the exact normalization `V(x)√log(1/x)→1` as `x↓0`.
+Multiplication by the actual factor `κ(2πiξ)` preserves positive-half-line
+support whenever its result is in L². Bounded holomorphic regularizers
+`κ(z)/(1+εz)` and strong L² convergence prove this on the full graph domain.
+The half-line Green form identity remains to be proved; complementary
+Stieltjes inversion is not needed for this support argument.

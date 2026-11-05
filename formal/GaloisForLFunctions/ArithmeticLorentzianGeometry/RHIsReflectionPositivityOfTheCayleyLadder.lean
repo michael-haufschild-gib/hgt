@@ -447,3 +447,7 @@ theorem golden_not_cayleyLadder_nonpos :
 end FiniteField
 
 end GaloisForLFunctions.ArithmeticLorentzianGeometry
+
+#print axioms GaloisForLFunctions.ArithmeticLorentzianGeometry.qf_cayleyLadder_eq
+#print axioms GaloisForLFunctions.ArithmeticLorentzianGeometry.riemannHypothesis_iff_cayleyLadder_nonpos
+#print axioms GaloisForLFunctions.ArithmeticLorentzianGeometry.hasSum_xi_evaluation_of_rh

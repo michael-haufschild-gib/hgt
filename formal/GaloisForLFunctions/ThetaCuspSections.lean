@@ -47,6 +47,10 @@ at most `70τ/67 < 54/67`. Both capacities have singular semidefinite endpoints.
 Truncating the quartic flux at its double zero preserves every mixed entry.
 The complete native source pays the quartic cross-load `(3/20)Kq⁴` from scale
 seven onward, making the truncated weighted source positive at every positive aperture.
+At scale six the truncated quartic source fails semidefiniteness at every critical aperture.
+Its base scaling capacity lies strictly between zero and `1000/1251`; the literal aperture
+capacity is `τ/α`, with `20/21 ≤ α ≤ 1`, hence is below `350/417`.
+Both endpoints are singular positive semidefinite matrices.
 Every individual theta atom has a strict fifth even section at reflection scale at least five.
 From scale three, four retained atoms leave normalized Gaussian entry error at most
 `1/100000`, hence quadratic error at most `1/20000`.
@@ -69,6 +73,10 @@ import GaloisForLFunctions.ThetaCuspSections.FifthEvenTruncatedQuarticFlux
 import GaloisForLFunctions.ThetaCuspSections.FifthEvenQuarticRayModel
 import GaloisForLFunctions.ThetaCuspSections.FifthEvenQuarticRay
 import GaloisForLFunctions.ThetaCuspSections.FifthEvenTruncatedQuarticUpperRay
+import GaloisForLFunctions.ThetaCuspSections.FifthEvenScaleSixData
+import GaloisForLFunctions.ThetaCuspSections.FifthEvenScaleSixSourceBounds
+import GaloisForLFunctions.ThetaCuspSections.FifthEvenScaleSixCapacity
+import GaloisForLFunctions.ThetaCuspSections.FifthEvenScaleSixApertureCapacity
 import GaloisForLFunctions.ThetaCuspSections.FifthEvenScaleThirtyTwoData
 import GaloisForLFunctions.ThetaCuspSections.FifthEvenScaleThirtyTwoSourceBounds
 import GaloisForLFunctions.ThetaCuspSections.FifthEvenPolynomialCrossObstruction

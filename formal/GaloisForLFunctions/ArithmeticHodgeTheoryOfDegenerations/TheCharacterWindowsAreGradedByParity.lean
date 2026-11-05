@@ -271,4 +271,8 @@ theorem crossSpectralSum_charTwist (c₁ c₂ : ℂ) {ψ₁ ψ₂ : DirichletCha
   field_simp
   ring
 
+#print axioms crossPower_charTwist
+#print axioms crossPower_charTwist_eq_zero
+#print axioms crossSpectralSum_charTwist
+
 end GaloisForLFunctions.ArithmeticHodgeTheoryOfDegenerations

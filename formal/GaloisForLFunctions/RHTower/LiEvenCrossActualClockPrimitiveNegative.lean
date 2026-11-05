@@ -269,3 +269,6 @@ theorem liEvenCrossActualClockPrimitive_rh_criteria :
 
 end
 end RHTower
+
+#print axioms RHTower.exists_liEvenCrossActualClockPrimitive_negative_escape_of_not_rh
+#print axioms RHTower.liEvenCrossActualClockPrimitive_rh_criteria

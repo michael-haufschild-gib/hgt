@@ -5,7 +5,7 @@ positivity — and which unconditional mechanism reaches that information?
 
 Primary namespace `GaloisForLFunctions.SquareRootThreshold`; cluster-product bounds use
 `SquareRootThreshold`, and `SmoothWeilDetectorPolynomialAperture` uses `RHTower`.
-Umbrella `SquareRootThreshold.lean`. 161 files. Base objects come from `Zeta23`
+Umbrella `SquareRootThreshold.lean`. 164 files. Base objects come from `Zeta23`
 and `RHTower` (`ZeroConfig`, `paperFT`, `gammaOf`, `zetaZeroConfig`, explicit formula); do not redefine.
 
 ---
@@ -233,7 +233,7 @@ and `RHTower` (`ZeroConfig`, `paperFT`, `gammaOf`, `zetaZeroConfig`, explicit fo
 | 18 | Unconditional floors in energy and archimedean normalisation | `exists_fullZeroForm_ge_neg_of_zetaZeroWidth_lt`, `exists_re_W_ge_logWeighted_rate_sharp` |
 | 19 | Every off-line zero has a smooth witness at aperture $\le C(4+|\Im\rho|)^2/\text{depth}^2$ | `RHTower.exists_smooth_weil_negative_quadratic_aperture` |
 | 20 | Function-field calibration | `curveConfig_weil_nonneg_iff_unitary_of_card_le`, `goldenDatum_twoBump_comb_at_threshold` |
-| 21 | Arbitrary clusters: `4((n+1)log(10⁶/δ)+log(A₀(|γ|+3)))≤a`; for ζ, `a≥2000A₀log(|γ|+3)log(10⁶/δ)`, `|γ|≥102`. Linear local-count dependence is sharp for fixed depth. A weaker smooth-detector bound also covers `2≤|γ|<102`. | `RHTower.not_hodgeIndex_below_nyquist_horizon`, `RHTower.zeta_hodge_index_nyquist_horizon`, `SquareRootThreshold.zeta_smooth_detector_below_product_horizon` |
+| 21 | Arbitrary clusters: `4((n+1)log(10⁶/δ)+log(A₀(|γ|+3)))≤a`. For ζ, the global count constant is `240`, giving `a≥480000 log(|γ|+3)log(10⁶/δ)` at `|γ|≥102`. Every off-line zero has a smooth detector supported in `[-(a+1),a+1]` with `a=max(exp 6,max(1/δ,48000000 log(|γ|+306))²)`. | `RHTower.not_hodgeIndex_below_nyquist_horizon`, `zeta_unit_count_le_240`, `exists_smooth_detector_at_explicit_product_aperture` |
 
 ---
 

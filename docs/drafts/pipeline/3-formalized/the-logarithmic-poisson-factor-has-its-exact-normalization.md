@@ -29,6 +29,15 @@ the majorant `φ(u)/cosh u`, integrable by the same Lipschitz bound.
 Dominated convergence proves the unit limit. Positivity and monotonicity
 also pass directly through the sech integral and exponential.
 
+The complex extension is
+`κ(z)=exp((1/π)∫₀∞√z Log(1+(1/2)Log(1+zt²))/(z+t²)dt)`.
+For compact sets of slit-plane parameters, the segment
+`(1-u)+zu`, `0≤u≤1`, stays uniformly away from zero and the cut.
+This bounds the resolvent below by `c(1+t²)` and the nested logarithm
+above by `C+log(1+t²)`. The resulting integrable majorant proves
+holomorphy. Two positive dilations identify the real values with `κ(s)`;
+conjugating the integral proves reflection across the real axis.
+
 ## Lean
 
 Module `CanonicalSystemOfTheWindowTower/TheLogarithmicPoissonFactorHasItsExactNormalization.lean`.
@@ -42,6 +51,11 @@ Namespace `GaloisForLFunctions.CanonicalSystemOfTheWindowTower`.
 `one_le_logReferenceFactor`, `monotoneOn_logReferenceFactor`, and
 `tendsto_logReferenceFactor_at_zero`; its production audit and transitive
 axiom check pass with the same standard axioms.
+
+`TheLogarithmicFactorExtendsToTheSlitPlane.lean` proves
+`differentiableOn_complexLogReferenceFactor`,
+`complexLogReferenceFactor_ofReal`, and `complexLogReferenceFactor_conj`.
+Its production plain audit and transitive axiom checks pass.
 
 Production plain audit passed. Transitive axioms are exactly
 `[propext, Classical.choice, Quot.sound]`; the umbrella imports the module.

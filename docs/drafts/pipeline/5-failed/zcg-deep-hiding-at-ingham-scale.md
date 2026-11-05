@@ -49,25 +49,61 @@ For configurations of period `Ng` with depths `δ_r`, Poisson summation reduces 
 - `N = 6`, symmetric residue classes `0, ±1, ±2, 3`: the cosines `cos(πrm/3)` are rational, and the
   `4 × 4` determinant vanishes at many rational points `P`, giving integer weights. One of them is
   `P = (367/6, 8, 5/3, 3/2)` with weights `(29, 6016, −50995, 89929)`, which hides up to
-  `2π/(3g)`. With rows `m ≤ 4`, real solutions exist (`σ_min ≈ 10⁻⁴⁵` at 50 digits, e.g.
-  `P = (1, 2.302, 59.93, 32.47)`), so real weights hide up to `5π/(6g)`. A search on `[1, 60]⁴`
-  found no solution for rows `m ≤ 5`.
+  `2π/(3g)`. With rows `m ≤ 4`, the slice `P₀ = 1` reduces to a genus-one quartic with the rational
+  point `P = (1, 11381/3358, 2131/73, 30292/1679)`, which hides up to `5π/(6g)` (card
+  `zcg-mixed-depths-hide-beyond-ingham`). Searches on `[1, 60]⁴` (symmetric) and `[1, 60]⁶` found
+  no solution for rows `m ≤ 5`.
+- Larger periods, real weights (minimum singular value of the column-normalized system on
+  `[1, 60]^N`, solutions at `σ ≈ 10⁻¹⁸`, none where the minimum sits on the box boundary): the
+  largest order found is `K = 2, 4, 4, 5, 6, 7` for `N = 5, 6, 7, 8, 9, 10`, i.e. hiding ratios
+  `(K + 1)/N = 0.6, 0.83, 0.71, 0.75, 0.78, 0.8` of `π/g`. The ratio grows with `N`, consistent
+  with `π/g` being sharp for real weights. Integer weights need rational rows, which period `6`
+  provides.
+- Period `6` with rows `m ≤ 5` (aperture up to `π/g`): with all six depths free in `x_r ∈ [0, 20]`,
+  every small singular value found sits at the boundary `x = 20`, a degenerate limit in which one
+  column tends to the top row. No interior solution. For `N = 2, 3, 4` the order `K = N − 1` is
+  excluded by the sign arguments above. A period-`N` pattern hides only below
+  `(N − 1)π/(Ng)`, i.e. `K ≤ N − 2` (card `zcg-periodic-patterns-last-lag`, Lean
+  `eq_zero_of_lagSymbol_eq_zero`); so `5π/(6g)` is exact for period `6`.
+- **Integer weights (count).** Fix the integer weights `C` and solve for the depths. A pattern
+  with residue classes of equal depth and weight has `c` free depth cosines and, at lag order `K`,
+  `K` real conditions beyond `Σ C = 0` (symmetric patterns have real rows), so generically
+  `K ≤ c`. Symmetric period `N` has `c = ⌊N/2⌋ + 1`, and with `K ≤ N − 2` the hiding ratio
+  `(K + 1)/N` is at most `4/5, 5/6, 5/7, 3/4` for `N = 5, 6, 7, 8` and tends to `1/2`.
+  Non-symmetric patterns have `2K` conditions on `N` depths, ratio at most `1/2 + 1/N`. Conjecture:
+  separated configurations with integer weights are resolved above `5π/(6g)`, so that
+  `mixedDepth_five_sixths_sharp` is the sharp mixed-depth threshold. Real weights, which escape the
+  count, reach `(N − 1)/N`.
+- **Reduction of the extreme order (paper).** Take `K = N − 1` with all `x_r > 0`. Then the
+  `2N` nodes `ζ = e^{±x_r} ω^r` carry a unique linear relation on Laurent polynomials of degree
+  `≤ N − 1`, the space of the `2N − 1` conditions, with weights `ζ^{N−1}/P'(ζ)`,
+  `P = Π_r (z − e^{x_r}ω^r)(z − e^{−x_r}ω^r)`. A period pattern realizes it exactly when the two
+  weights of every residue agree. With `q_s(e^y ω^r) = 2ω^{r+s}e^y (cosh(y + iθ_{r−s}) − cosh x_s)`
+  this becomes: every `A_r = Π_{s≠r}(cosh(x_r + iθ_{r−s}) − cosh x_s)` is purely imaginary. The
+  weights are then `C_r ∝ 1/(sinh(x_r) A_r)`, automatically real. So hiding at the extreme order is
+  the real `N × N` system `Re A_r = 0`.
+- Numerically, `min_x Σ_r cos²(arg A_r)` equals `4 sin²(π/N)` for `N = 4, 6, 7, 8` (`2, 1, 0.753,
+  0.586`; depths up to `300`, least squares from 250–400 starts). For `N = 5` the best value found
+  is `1.69`. Unsolvability is now a theorem (next card); the defect values tend to `0`,
+  consistent with `π/g` being approached only as the period grows. At one depth every `A_r` is
+  real, since the factors for `s` and `2r − s` are conjugate.
 
 ## No-go closure
-- **Exact killing theorem:** `not_eq_of_mimic_at_ingham_scale` (Lean,
-  `MixedDepthsHideBeyondTheInghamScale.lean`). The pair `mixedZ`, `mixedZ'` at `L = 734`,
+- **Exact killing theorem:** `not_eq_of_mimic_at_ingham_scale` and
+  `not_eq_of_mimic_below_five_sixths` (Lean, `MixedDepthsHideBeyondTheInghamScale.lean`). The pair `mixedZ`, `mixedZ'` at `L = 734`,
   `g = 2π/L`, consists of tempered, disjoint, nonempty configurations. Their union is separated at
   `g` apart from FE partners, and they are mimics at every aperture `a < 2π/(3g)`
-  (`mixedDepth_mimics_beyond_ingham`).
+  (`mixedDepth_mimics_beyond_ingham`). The pair `mixedZ4`, `mixedZ4'` hides up to `5π/(6g)`
+  (`mixedDepth_mimics_to_five_sixths`).
 - **Strongest positive survivor:** configurations of one depth are resolved at the Ingham scale
   (`eq_of_mimic_of_oneDepth`; card `zcg-one-depth-resolved-at-ingham-scale`, formalized). So are
   shallow configurations (`eq_of_weil_eq_of_shallow`) and deep columns (`deepColumn_mimic_iff`).
 - **New insight:** the threshold depends on the depth structure. One depth: `π/(2g)`, sharp. Mixed
-  depths: in `[2π/(3g), π/g]`, with `π/g` proved sufficient. The factor `cosh(δ_r v)` is common to
+  depths: in `[5π/(6g), π/g]`, with `π/g` proved sufficient. The factor `cosh(δ_r v)` is common to
   all sites at one depth and divides out of the test function. With different depths the weights
   give each residue an independent profile, and these profiles pay for the extra lag conditions.
 - **Status:** killing theorem and survivor formalized, unconditional (`#print axioms`: `propext`,
-  `Classical.choice`, `Quot.sound`). Open: the sharp mixed-depth threshold in `[2π/(3g), π/g]`.
+  `Classical.choice`, `Quot.sound`). Open: the sharp mixed-depth threshold in `[5π/(6g), π/g]`.
 
 ## Positive survivor: configurations of one depth (Lean)
 Tempered mimics at `a > π/(2g)` whose union lies at one depth `|Re ρ − ½| = δ` coincide

@@ -8,12 +8,17 @@
 
 ## Scope
 
-Open: A1–A11, A13–A15, A17–A18, A20–A21, A23–A25, A27–A28, A31–A33, A35–A38. A row with several obligations remains
+Open: A1–A7, A9–A11, A13–A15, A17–A18, A20–A21, A23–A25, A28, A31, A33, A35–A36, A38. A row with several obligations remains
 open until every obligation is discharged. Existing results are prerequisites, not new solutions.
 No numerical experiments or trusted computation; certificates require kernel proofs.
 
 **Closed:**
 
+- A8, [even cosh-credit gauges](../3-formalized/even-cosh-credit-gauges.md):
+  existing window-adapted signed theta gauges, positive on the window, with
+  positive or zero cosh-charge coefficient and the exact retained-variance identity.
+  Direct source check, eight transitive axiom audits, and import checks passed.
+  This is existing mathematics; the remaining signed-energy inequality is unchanged.
 - A12, [arithmetic heat identity](../3-formalized/gaussian-cone-coupling-arithmetic-heat-identity.md):
   the Gaussian kernel and coupling equal heat averages of the actual arithmetic Weil functional.
 - A19, existing `ArithmeticIncidencePositivity.totalAntiDiagonalKernel_pos_forall_iff`:
@@ -26,14 +31,25 @@ No numerical experiments or trusted computation; certificates require kernel pro
 - A26, [VK caps and WD receivers](../3-formalized/vinogradov-korobov-window-caps.md):
   zero-free outer rectangles at square-root prefixes, exact cap/source identities,
   and both fixed-degree and all-stage receivers after prefix enlargement.
+- A27, [explicit cluster detectors](../3-formalized/explicit-cluster-detector-constant.md):
+  global local-count constant `240`, numerical cluster and product apertures,
+  smooth negative tests at a closed-form aperture, and an inverse depth bound.
 - A29, [reflection-pair receiver bridge](../3-formalized/reflection-prime-count-receiver-bridge.md):
   all five requested receivers are equivalent to the exact smoothed-count band.
+- A32, [Cayley–Li and Suzuki receivers](../3-formalized/cayley-li-and-suzuki-receivers.md):
+  existing primitive-sign and complete first-variation receivers, including uniform
+  grid-scale transfer. Three source checks and nine transitive axiom audits passed.
+  This is existing mathematics, not a new result.
+- A37, [growing simultaneous receiving](../3-formalized/growing-simultaneous-receiving-modes.md):
+  monotone unbounded mode and conductor cutoffs, uniform receiving on bounded charge
+  cubes, and profile-dependent cutoffs for arbitrary infinite real charge profiles.
+  Direct source check, six transitive axiom audits, and umbrella wiring passed.
 
 ## Partial results and current target
 
-**A27.** [Explicit cluster-detector constant](explicit-cluster-detector-constant.md):
-derive the numerical local count `N(t,t+1]≤240 log(|t|+3)` from xi copies,
-then discharge the detector's local-count input at every height.
+**A3.** [Joint periodic windows](joint-periodic-window-coercivity.md):
+the residue-averaged mass matrix and one high-frequency mean-value bound give
+a candidate uniform coercivity proof for mixed twists and spatial profiles.
 
 **A10.** For the window index `ι(A)`, define
 `Lₙ = sup {A : ι(A) ≤ n}` in `EReal`. Prove
@@ -87,4 +103,4 @@ counting alone does not discharge that requirement.
 ## Verification
 
 Each completed theorem requires direct `lake --old env lean` checking, transitive
-`#print axioms` inspection, and its owning umbrella import. A12, A19, A22, A26 and A29 satisfy all three.
+`#print axioms` inspection, and its owning umbrella import. A8, A12, A19, A22, A26, A27, A29, A32 and A37 satisfy all three.

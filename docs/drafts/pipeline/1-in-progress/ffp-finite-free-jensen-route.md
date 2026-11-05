@@ -47,6 +47,15 @@ sign, a square-root count or a collision exclusion.
 | R18 | **The Gamma piece admits no stabilizing phase**: `e^{icw}Γ(1/4 + iw/2)` (certified: Taylor coefficients `i^k∫e^{u/4−e^u}(c + u/2)^k du/k!`, via `Γ^{(k)}(1/4) = ∫ e^{u/4−e^u}u^k du`) has reversed Jensen roots in the open upper half-plane at all large odd degrees, for every `c`. Mechanism: fold the log-variable weight about `u = −2c`; the bracket `e^{v/2−Ae^{2v}} − e^{−v/2−Ae^{−2v}}` is negative beyond `1/(2A)`, and a window at twice that distance beats the bounded positive part (the pole of `Γ` at `0` is the heavy tail) | `GammaSideInstability.eventually_exists_upper_root_gammaMixture`, `gammaMixture_eq` |
 | R19 | **The Gamma piece is a Laguerre polynomial with negative real roots**: `Γ_{n,d}(X) = P_{d,c}(−X/4)`, `c = n + 1/2`, `P_{d,c} = Σ(−1)^jC(d,j)x^j/(c)_j`; against the Gamma moments `(c)_m` one has `⟪P_{d,c}, X^k⟫ = Σ_j(−1)^jC(d,j)(c+j)_k = 0` (`k < d`), so `P_{d,c}` is a multiple of the monic orthogonal polynomial of a positive definite form and is real-rooted; positive coefficients put all roots of `Γ_{n,d}` in `(−∞, 0)`. So `Γ_{n,d}` is Szegő-admissible and the ⊠ obstruction of R9 is entirely the theta piece | `GammaPieceIsLaguerre.splits_gammaPiece`, `eval_gammaPiece_pos` |
 | R20 | **Degree horizon of a curved phase**: with `σ = √a(1 − i)`, `R_d(e^{iaw²})(y) = σ^d He_d(y/σ)`, so the roots of `R_d(e^{iδw + iaw²})` are `σh − iδ` (`He_d(h) = 0`), imaginary parts `−√a h − δ`. Exactly: stable at degree `n+1` **iff** `√a·h_max(n+1) < δ`; stable whenever `2√(a(n+1)) ≤ δ`; unstable for all large `n` (`h_max²/(n+1) → 4`). With an Euler product (strict Walsh): `√a·h_max ≤ c − θ_S/2` ⇒ `R_{n+1}(e^{icw+iaw²}Π_S(1 − p^{−σ−iw}))` stable. Local Gamma-phase reading: drift `θ'(t)`, curvature `θ''(t)/2`, stable range `≈ (θ'(t) − θ_S/2)²/(2θ''(t))` | `QuadraticPhaseHorizon.quadraticPhase_stable_iff`, `eventually_not_stable_quadraticPhase`, `im_neg_of_isRoot_jensenRev_gaussC_mul_translatedMobiusProduct` |
+| R21 | **Möbius-mollified finite free RH criterion**: for nonempty finite `S`, `σ > 0`, `c ≥ θ_S/2`: RH ⇔ the reversed Jensen polynomials of `Ξ(w)·e^{icw}Π_{p∈S}(1 − p^{−σ−iw})` have all roots in `Im < 0` for infinitely many `d` (and then for every `d`). Forward: `R_d(Ξ)` real-rooted (LP) ⊞ stable Möbius piece, strict Walsh. Converse: `R_d(F)(d/u) = (d/u)^dΦ_d(u)`, `Φ_d → F` locally uniformly (Tannery), stability puts zeros of `Φ_d` in `Im > 0`, Hurwitz + conjugation symmetry of `Ξ`'s zeros. Generalizes R2; the Möbius side can be attached to `Ξ`, the pole side cannot (R16–R18) | `MollifiedJensenCriterion.riemannHypothesis_iff_frequently_stable_mollified` |
+| R22 | **Finite free Hardy theorem** (unconditional): for every `M`, `R_d(Ξ)` has at least `M` distinct real roots for all large `d`. Hardy's tail argument excludes a nonnegative or nonpositive tail of `Ξ`, giving `p_0 < p_1 < ⋯` with `(−1)^jΞ(p_j) > 0`; `Φ_d → Ξ` carries the signs, and each zero `u_j ∈ (p_j, p_{j+1})` of `Φ_d` gives the real root `d/u_j`. Complements R6 (unboundedly many non-real roots after backward heat) | `FiniteFreeHardyTheorem.eventually_le_card_roots_jensenReverse_XiC` |
+| R23 | **Bounded imaginary parts decide RH**: for every finite `S` (possibly empty), `σ > 0` and **every** phase `c`: RH ⇔ ∃`K`, for infinitely many `d` all roots of `R_d(Ξ·e^{icw}Π_{p∈S}(1 − p^{−σ−iw}))` have `Im ≤ K`; under RH `K = θ_S/2 − c` works at every degree (Walsh). Converse: Hurwitz with the degree-dependent region `Im u ≥ −K|u|²/d`, via the closed sets `{Im ≥ −ε} ∪ {|u| ≥ R}`. Robust form of R2/R21: real-rootedness and normalization are not needed | `BoundedImaginaryPartsCriterion.riemannHypothesis_iff_frequently_im_le_mollified`, `riemannHypothesis_iff_frequently_im_le` |
+| R24 | **Bounded-or-linear dichotomy**: for `F = Ξ·e^{icw}Π_{p∈S}(1 − p^{−σ−iw})` (any finite `S`, any `c`), either RH and every root of `R_d(F)` has `Im ≤ θ_S/2 − c`, or ¬RH and there is `κ > 0` with a root of `Im ≥ κd` for all large `d` (Hurwitz existence: a zero `ρ` of `F` in `Im < 0` attracts zeros `u_d` of `Φ_d`, `Im(d/u_d) ≥ κd`). Hence RH ⇔ for every `ε > 0` the imaginary parts are `≤ εd` along infinitely many `d`: no intermediate growth | `ImaginaryPartDichotomy.exists_linear_im_of_not_riemannHypothesis`, `riemannHypothesis_iff_forall_frequently_im_le_mul` |
+| R25 | **Finite free detection of zero-free half-planes**: with `G_σ(w) = ξ(σ + iw)` (zeros `w_ρ = (ρ − σ)/i`, `Im w_ρ = σ − Re ρ`), bounded-above (or `≤ εd` for every `ε`) root imaginary parts of `R_d(G_σ)` along infinitely many `d` imply `ξ ≠ 0` on `Re s > σ`; a zero with `Re ρ > σ` forces roots with `Im ≥ κd` for all large `d`. At `σ = 1/2` this is R23/R24; for `σ ∈ (1/2, 1)` it reads quasi-RH | `ZeroFreeHalfPlaneCriterion.re_le_of_frequently_im_le`, `exists_linear_im_of_xi_zero`, `zeroFree_of_forall_frequently_im_le_mul` |
+| R26 | **Finite free zero-free half-plane theorem**: for every `σ`, `ξ ≠ 0` on `Re s > σ` ⇔ every root of every reversed Jensen polynomial of `ξ(σ + i·)` has `Im ≤ 0` ⇔ for some `K` and infinitely many `d` the roots have `Im ≤ K`. **Unconditional at `σ ≥ 1`.** Proof of ⇒: genus-one Hadamard product `Ξ = Ξ(0)ΠE₁(z/a_q)` (corpus), partial products `Π_F E₁((w − iδ)/a_q) = c_F Π_F(1 − w/(a_q+iδ))·e^{wΣ_F 1/a_q}`; Walsh puts the linear part in `Im ≤ 0` (`Im a_q ≥ −δ`), the exponential drifts by `τ_F = −Im Σ_F 1/a_q → 0` (conjugation involution of the zeros); Taylor coefficients converge (iterated derivatives of locally uniform limits) and a closed-set Hurwitz for polynomials of bounded degree gives the limit. ⇐ is R25 | `ZeroFreeHalfPlaneStability.zeroFree_iff_forall_im_le_zero`, `zeroFree_iff_exists_frequently_im_le`, `im_le_zero_of_one_le` |
+| R27 | **Strict stability from closed zero-free half-planes; finite free non-vanishing on `Re s = 1`**: if `ξ ≠ 0` on `Re s ≥ σ`, every root of every `R_d(ξ(σ + i·))`, `d ≥ 1`, has `Im < 0`; **unconditional for `σ ≥ 1`**. Mechanism: multiplication by `1 − βw` acts as `q ↦ q − βq'`; with `Im β < 0` and roots of `q` in `Im ≤ 0`, a new root in `Im ≥ 0` must be a multiple root of `q` (Gauss–Lucas via `q'/q = Σ 1/(x − r)`), so `d` reserved zeros strip the root `0` of `X^d` one multiplicity at a time; the resulting strictly stable factor keeps a fixed margin through Walsh, the Hadamard partial products and the polynomial Hurwitz limit | `ZeroFreeStrictStability.im_neg_of_one_le`, `im_neg_of_closed_zeroFree` |
+| R28 | **Strict half-plane theorem right of the critical line**: for `σ > 1/2`, `ξ ≠ 0` on the **open** half-plane `Re s > σ` ⇔ every root of every `R_d(ξ(σ + i·))`, `d ≥ 1`, has `Im < 0`. A zero on the line `Re s = σ` does not break strictness: its reflection `1 − ρ̄` lies strictly left, so (line conjugation is injective) infinitely many zeros are strictly placed and serve as the reserved factors of R27. At `σ = 1/2` strictness fails under RH (roots real) | `ZeroFreeStrictStability.zeroFree_iff_forall_im_neg`, `im_neg_of_zeroFree`, `infinite_strict_of_weak` |
+| R29 | **Hurwitz stability of the real Jensen polynomials of `ξ`**: `J_d(ξ; σ)(t) = Σ_{k≤d} C(d,k) ξ^{(k)}(σ) t^k` satisfies `R_d(ξ(σ + i·))(i/t) = i^d t^{−d} J_d(ξ; σ)(t)` with `Im(i/t) = Re t/|t|²`. Hence: **for every `σ ≥ 1` and `d ≥ 1` all roots of `J_d(ξ; σ)` have `Re t < 0` (unconditional)**; for `σ > 1/2`, `ξ ≠ 0` on `Re s > σ` ⇔ every `J_d(ξ; σ)` is Hurwitz stable; for every `σ`, weak Hurwitz stability (`Re t ≤ 0`) of all `J_d(ξ; σ)` forces the zero-free half-plane | `RealJensenHurwitzStability.re_neg_of_isRoot_xiRealJensen_of_one_le`, `zeroFree_iff_xiRealJensen_hurwitz`, `zeroFree_of_forall_re_nonpos` |
 | R13 | **The degree-three test is vacuous**: on centered cubics `⊞₃` adds `(s,t)`, and every real-rooted centered cubic (`|t| ≤ s^{3/2}`) is a `⊞₃`-product of two double-root (capacity-zero, semicircle-free) cubics | `CubicFirstTest.exists_doubleRoot_factorization` |
 
 ## No-go closure for the naive route (source-faithful real-rooted pieces)
@@ -58,17 +67,30 @@ sign, a square-root count or a collision exclusion.
 - **Positive survivors:** R4/R5 (normalized Euler factors are Hermite–Biehler stable at every
   degree; their symmetrizations are real-rooted), R7 (the shifted Jensen polynomials are
   asymptotically purely semicircular), R8 (Szegő), R15 (exact real-zero horizon `θ_S/2` of
-  symmetrized Euler products), R19 (the Gamma piece of the ⊠ split has negative real roots).
+  symmetrized Euler products), R19 (the Gamma piece of the ⊠ split has negative real roots),
+  R20 (exact degree window of a curved phase), R21 (Möbius mollification preserves the finite free
+  RH criterion), R22 (unboundedly many real roots of `R_d(Ξ)`, unconditionally).
 - **Insight:** real-rootedness of `J^{d,n}` cannot be inherited from Euler/theta pieces; it must come
   from the Gamma weights overpowering a strictly positive theta dispersion (⊠ picture) or from a
   functional-equation phase pairing (critical-direction ⊞ picture). Both are the sign wall in
   finite free form.
+- **Insight (completion stabilizes):** `ζ(σ + iw)` (`σ > 1`) and `Γ(1/4 + iw/2)` are each
+  Hermite–Biehler unstable for every phase (R17, R18), yet the completed `ξ(σ + iw)` is strictly
+  stable for every `σ ≥ 1` at every degree (R27). Stability is a property of the completed function
+  (its Hadamard product), not of the Euler/Gamma factorization; on `Re s = σ` it is exactly the
+  zero-free half-plane (R25–R27), and at `σ = 1/2` exactly RH.
 
 ## Capacity landscape
 - Degree regime (`d → ∞`, `n = 0`): Gaussian capacity `o(d^{-2})` in the native scale (R1), with
   unboundedly many non-real roots after any backward heat at that scale (R6).
 - Shift regime (`n → ∞`, `d` fixed): capacity tends to the full Hermite capacity (R7).
-- RH ⇔ capacity `≥ 0` at every `(d, n)` ⇔ infinitely many real-rooted `J_d` (R2).
+- RH ⇔ capacity `≥ 0` at every `(d, n)` ⇔ infinitely many real-rooted `J_d` (R2) ⇔ bounded
+  imaginary parts of the roots of `R_d(Ξ·M)` along infinitely many `d`, any Möbius mollifier `M`
+  (R21, R23); imaginary parts are either `O(1)` or `≍ d`, never in between (R24).
+- Vertical lines `Re s = σ`: `R_d(ξ(σ + i·))` weakly Hermite–Biehler stable at every degree ⇔ no
+  zero right of the line (R25, R26); for `σ > 1/2` weak ⇔ strict (R27, R28); unconditional for
+  `σ ≥ 1`, RH at `σ = 1/2`. Equivalently: the real Jensen polynomials `Σ C(d,k)ξ^{(k)}(σ)t^k` are
+  Hurwitz stable exactly right of all zeros (R29).
 
 ## Where the route meets the walls
 - (i) Criticality is a theorem (R1): any finite free factorization of `J_d` has Hermite capacity
@@ -86,9 +108,14 @@ sign, a square-root count or a collision exclusion.
 - [ ] 2 → 3  formalized (route as a whole: open)
 
 ## Open conjectures (next)
-- Local Gamma phase beyond the quadratic model (R20): the full Taylor phase `θ(t + w) − θ(t)`
-  (Stirling) and the matching instability of `e^{icw+iaw²}·E_S` beyond the Walsh range.
+- Margin of R27 at `σ ≥ 1`: does `max Im` of the roots of `R_d(ξ(σ + i·))` stay below a fixed
+  `−μ < 0`, or tend to `0` (spurious roots of `Φ_d` at scale `d`)?
+- Other completed L-functions: an abstract genus-one Hadamard version of R26–R28 (GRH ⇔ weak
+  stability on the critical line; zero-free half-planes ⇔ stability on vertical lines).
+- (Superseded) local Gamma-phase models (R20): stability is a property of the completed function
+  (R27); the instabilities of the factors (R16–R18) are exactly their poles.
+
 
 ## Log
 - 2026-11-04 — created
-- 2026-11-05 — D1–D5, R1–R20 formalized
+- 2026-11-05 — D1–D5, R1–R29 formalized

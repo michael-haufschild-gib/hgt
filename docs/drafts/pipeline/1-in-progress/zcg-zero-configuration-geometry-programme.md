@@ -99,7 +99,10 @@ Pillars (module — main theorems), all checked with `lake --old env lean`, umbr
 - TheImageReadsTheDiscriminantOfACluster, TheImageLocatesTheClusterPoints — `cluster_discriminant_rvm`,
   `cluster_location_rvm`
 - ConfigurationsOfOneDepthAreResolvedAtTheInghamScale — `tsum_averaged_lag_eq_zero`, `eq_of_mimic_of_oneDepth`
-- MixedDepthsHideBeyondTheInghamScale — `mixedDepth_mimics_beyond_ingham`, `not_eq_of_mimic_at_ingham_scale`
+- MixedDepthsHideBeyondTheInghamScale — `mixedDepth_mimics_beyond_ingham`,
+  `mixedDepth_mimics_to_five_sixths`, `not_eq_of_mimic_below_five_sixths`
+- PeriodicPatternsCannotSatisfyTheirLastLag — `eq_zero_of_lagSymbol_eq_zero` (period `N` hides only
+  below `(N − 1)π/(Ng)`)
 - SymmetricHalvesArePhaseLattices, FiniteCarriersAreRealAboveTheirHorizon, TiltsCostPrimeWeight —
   `ncard_sym_zeros`, `carrier_ne_zero_near_line`, `eulerDepth_ne_zero_near_line`,
   `twin_tilt_costs_weight`, `exists_twin_tilt_beyond_every_weight`
@@ -110,9 +113,9 @@ The route to RH is on its own card (`zcg-rh-route.md`). Steps 1–5 of the heat 
 killed as a producer. Open: (a) reality inside near-coincidence clusters below `X^{−M}` (B44),
 (b) a Hermite–Biehler half of the heat source below `½/log X` (B49), both cancellation statements for
 the Euler product inside the strip. B51 is proved uniformly in height. Depth thresholds: one depth
-is resolved at the Ingham scale (`eq_of_mimic_of_oneDepth`), and mixed depths hide up to `2π/(3g)`
-(`not_eq_of_mimic_at_ingham_scale`). Internal open question: the sharp mixed-depth threshold in
-`[2π/(3g), π/g]`.
+is resolved at the Ingham scale (`eq_of_mimic_of_oneDepth`), and mixed depths hide up to `5π/(6g)`
+(`not_eq_of_mimic_below_five_sixths`), exactly the period-6 limit (`eq_zero_of_lagSymbol_eq_zero`).
+Internal open question: the sharp mixed-depth threshold in `[5π/(6g), π/g]`.
 
 ## Log
 - 2026-11-04 — created; forty pillar modules checked; README written.

@@ -198,6 +198,7 @@ settle it locally, measure exactly how far local payment globalizes, and identif
     `chebyshev_pairing_ge_of_symbol_ge`, `eulerPayment_eq_integral_multiplier`, `eulerPayment_lt_mass`.
 11. Bump bridge — `tendsto_calibratedSignedJumpEnergy_latticeBumpProfile_netAtom`.
 12. Selectivity — `markovWindow_selective`, `smooth_odd_selectivity_of_ge_twentyThreeFortieths`.
+13. Arbitrary-radius multi-prime dilation modulus, openness across prime-power entries, and infinite strictly increasing Weil-floor aperture tower — `fullZeroForm_dilation_bound_of_radius`, `fullZeroForm_ge_of_dilated_radius`, `weilFloorApertureTower_strictMono`, `fullZeroForm_ge_of_support_le_weilFloorApertureTower`, `zetaZeroConfig_re_W_ge_of_aperture_le_weilFloorApertureTower`.
 
 ---
 
