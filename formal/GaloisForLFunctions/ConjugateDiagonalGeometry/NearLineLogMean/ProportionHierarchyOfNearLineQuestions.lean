@@ -596,6 +596,3 @@ theorem exists_proportionOne_allRates_model_not_windowOccupancy :
     fun h => rootModel_not_windowOccupancy (rootModel.windowOccupancy_of_logFreeZeroDensity h)⟩
 
 end GaloisForLFunctions.ConjugateDiagonalGeometry.NearLineLogMean
-
-#print axioms GaloisForLFunctions.ConjugateDiagonalGeometry.NearLineLogMean.logMean_tendsto_zero_of_tendsto_xiCriticalRatio_one
-#print axioms GaloisForLFunctions.ConjugateDiagonalGeometry.NearLineLogMean.exists_proportionOne_allRates_model_not_windowOccupancy

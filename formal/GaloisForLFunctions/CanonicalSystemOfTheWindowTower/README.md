@@ -151,3 +151,6 @@ Every bounded real Lipschitz cutoff preserves this complete energy domain.
 Its translation loss is at most `‖χ‖∞‖τ_tu-u‖+Lip(χ)|t|‖u‖`.
 The explicit endpoint cutoff is one up to `a` and zero from `3a/2`,
 with Lipschitz constant `2/a`, so the two endpoint cutoffs overlap.
+The complete complex logarithmic form equals mass plus the absolutely integrable
+mixed jump pairing. Whole-line finite-energy sources are exactly the range of
+causal convolution. Physical translation preserves both the domain and form.

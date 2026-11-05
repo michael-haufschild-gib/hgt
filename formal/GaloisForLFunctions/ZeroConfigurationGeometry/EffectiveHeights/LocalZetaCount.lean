@@ -1,0 +1,249 @@
+import GaloisForLFunctions.ZeroConfigurationGeometry.ZetaZerosHaveTheSharpLocalDensity
+import GaloisForLFunctions.SquareRootThreshold.EffectiveHorizons.XiContourBounds
+
+/-!
+# Numerical local counts for the zero camera
+
+Backlund's horizontal bound has coefficient `100` from height `4`.
+The sharp local zero count consequently has additive coefficient `200`
+from height `10`, with its exact Riemann–von Mangoldt slope.
+-/
+
+open Complex MeasureTheory Set
+open RHTower Zeta23 Zeta23.RvM
+
+noncomputable section
+namespace GaloisForLFunctions.ZeroConfigurationGeometry
+
+/-- The horizontal argument increment at every good height at least four. -/
+theorem backlund_horizontal_explicit {T : ℝ} (hT : 4 ≤ T) (hg : GoodHeight T) :
+    |(∫ σ in (1 / 2 : ℝ)..2, logDeriv riemannZeta (σ + T * I)).im|
+      ≤ 100 * Real.log T := by
+  have hTne : T ≠ 0 := by linarith only [hT]
+  have hxi : ∀ x : ℝ, xi ((x : ℂ) + (T : ℂ) * I) ≠ 0 := by
+    intro x hx
+    have hstrip := xi_zero_re_mem_open_unit hx
+    have hne1 : (x : ℂ) + (T : ℂ) * I ≠ 1 := by
+      intro he
+      have hi := congrArg Complex.im he
+      simp only [Complex.add_im, Complex.ofReal_im, Complex.mul_I_im,
+        Complex.ofReal_re, Complex.one_im, zero_add] at hi
+      exact hTne hi
+    have hz : IsNontrivialZero ((x : ℂ) + (T : ℂ) * I) :=
+      ⟨(xi_eq_zero_iff hstrip.1 hne1).mp hx, hstrip⟩
+    exact hg _ hz (by simp)
+  have hi : IntervalIntegrable
+      (fun σ : ℝ => logDeriv riemannZeta ((σ : ℂ) + (T : ℂ) * I)) volume (1 / 2) 2 :=
+    (continuous_logDeriv_zeta_horizontal hTne
+      (zeta_horizontal_ne_zero hTne hxi)).intervalIntegrable _ _
+  have he : (∫ σ in (1 / 2 : ℝ)..2, logDeriv riemannZeta ((σ : ℂ) + (T : ℂ) * I)).im =
+      ∫ σ in (1 / 2 : ℝ)..2, (logDeriv riemannZeta ((σ : ℂ) + (T : ℂ) * I)).im := by
+    simpa using (Complex.imCLM.intervalIntegral_comp_comm hi).symm
+  rw [he]
+  refine (abs_horizontal_zeta_le hT hxi).trans ?_
+  exact mul_le_mul_of_nonneg_right (by linarith only [Real.pi_lt_d2])
+    (Real.log_nonneg (by linarith only [hT]))
+
+/-- The sharp local count with numerical constants at all heights at least ten. -/
+theorem card_le_sharp_explicit (x y : ℝ) (hx : 10 ≤ x) (hxy : x ≤ y) :
+    ∀ s : Finset ℂ, (∀ z ∈ s, IsNontrivialZero z ∧ z.im ∈ Icc x y) →
+      (s.card : ℝ) ≤ (y - x + 3) * ((Real.log ((y + 2) / (2 * Real.pi)) + 6 / (x - 2)) /
+        (2 * Real.pi)) + 200 * Real.log (y + 2) + 1 := by
+  intro s hs
+  obtain ⟨T₁, hT₁mem, hg1⟩ := exists_goodHeight (x - 2)
+  obtain ⟨T₂, hT₂mem, hg2⟩ := exists_goodHeight y
+  have hT₁a : x - 2 ≤ T₁ := hT₁mem.1
+  have hT₁b : T₁ ≤ x - 1 := by have := hT₁mem.2; linarith
+  have hT₂a : y ≤ T₂ := hT₂mem.1
+  have hT₂b : T₂ ≤ y + 1 := hT₂mem.2
+  have h8 : 8 ≤ T₁ := by linarith only [hx, hT₁a]
+  have h12 : T₁ < T₂ := by linarith
+  have hcount := ncount_le_of_goodHeight (TB := 4) (CB := 100)
+    (fun T hT hg => backlund_horizontal_explicit hT hg)
+    (by norm_num only [max_eq_right (by norm_num : (4 : ℝ) ≤ 8)]; exact h8) h12 hg1 hg2
+  norm_num at hcount
+  have hcard : (s.card : ℝ) ≤ Ncount T₁ T₂ := by
+    exact_mod_cast card_le_ncount s fun z hz =>
+      ⟨(hs z hz).1, by linarith [(hs z hz).2.1], by linarith [(hs z hz).2.2]⟩
+  -- compare the constants
+  have hpos : 0 < 2 * Real.pi := by positivity
+  have hlogpos : 0 ≤ Real.log ((T₂ + 1) / (2 * Real.pi)) :=
+    Real.log_nonneg ((one_le_div hpos).mpr (by linarith [Real.pi_lt_four]))
+  have hD1 : (Real.log ((T₂ + 1) / (2 * Real.pi)) + 6 / T₁) / (2 * Real.pi) ≤
+      (Real.log ((y + 2) / (2 * Real.pi)) + 6 / (x - 2)) / (2 * Real.pi) := by
+    apply div_le_div_of_nonneg_right _ hpos.le
+    have h1' : Real.log ((T₂ + 1) / (2 * Real.pi)) ≤ Real.log ((y + 2) / (2 * Real.pi)) :=
+      Real.log_le_log (div_pos (by linarith) hpos)
+        (div_le_div_of_nonneg_right (by linarith) hpos.le)
+    have h2' : 6 / T₁ ≤ 6 / (x - 2) := div_le_div_of_nonneg_left (by norm_num) (by linarith) hT₁a
+    linarith
+  have hD0 : 0 ≤ (Real.log ((T₂ + 1) / (2 * Real.pi)) + 6 / T₁) / (2 * Real.pi) := by
+    have : 0 < 6 / T₁ := div_pos (by norm_num) (by linarith)
+    exact div_nonneg (by linarith) hpos.le
+  have hlen : T₂ - T₁ ≤ y - x + 3 := by linarith
+  have hprod : (T₂ - T₁) * ((Real.log ((T₂ + 1) / (2 * Real.pi)) + 6 / T₁) / (2 * Real.pi)) ≤
+      (y - x + 3) * ((Real.log ((y + 2) / (2 * Real.pi)) + 6 / (x - 2)) / (2 * Real.pi)) :=
+    mul_le_mul hlen hD1 hD0 (by linarith)
+  have hl1 : Real.log T₁ ≤ Real.log (y + 2) := Real.log_le_log (by linarith) (by linarith)
+  have hl2 : Real.log T₂ ≤ Real.log (y + 2) := Real.log_le_log (by linarith) (by linarith)
+  have hlogs : (100 : ℝ) * (Real.log T₁ + Real.log T₂) ≤ 2 * (100 : ℝ) * Real.log (y + 2) := by
+    nlinarith
+  linarith
+
+
+/-- The numerical sharp count, centred at an arbitrary positive height. -/
+theorem card_le_sharp_centred_explicit (X R : ℝ) (hR : 0 ≤ R) (hX : 10 ≤ X - R) :
+    ∀ x y : ℝ, x ≤ y → ∀ s : Finset ℂ,
+      (∀ z ∈ s, IsNontrivialZero z ∧ |z.im - X| ≤ R ∧ z.im ∈ Icc x y) →
+        (s.card : ℝ) ≤ (Real.log ((X + R + 2) / (2 * Real.pi)) + 6 / (X - R - 2)) /
+            (2 * Real.pi) * (y - x) +
+          (3 * ((Real.log ((X + R + 2) / (2 * Real.pi)) + 6 / (X - R - 2)) / (2 * Real.pi)) +
+            200 * Real.log (X + R + 2) + 1) := by
+  intro x y hxy s hs
+  set D := (Real.log ((X + R + 2) / (2 * Real.pi)) + 6 / (X - R - 2)) / (2 * Real.pi) with hD
+  have hpos : 0 < 2 * Real.pi := by positivity
+  have hD0 : 0 ≤ D := by
+    have hl : 0 ≤ Real.log ((X + R + 2) / (2 * Real.pi)) :=
+      Real.log_nonneg ((one_le_div hpos).mpr (by linarith [Real.pi_lt_four]))
+    have : 0 < 6 / (X - R - 2) := div_pos (by norm_num) (by linarith)
+    rw [hD]; exact div_nonneg (by linarith) hpos.le
+  -- the effective interval `[x', y'] = [x, y] ∩ [X − R, X + R]`
+  set x' := max x (X - R) with hx'
+  set y' := min y (X + R) with hy'
+  by_cases hne : x' ≤ y'
+  · have hsub : ∀ z ∈ s, IsNontrivialZero z ∧ z.im ∈ Icc x' y' := fun z hz => by
+      obtain ⟨h1, h2, h3, h4⟩ := hs z hz
+      rw [abs_le] at h2
+      exact ⟨h1, max_le h3 (by linarith [h2.1]), le_min h4 (by linarith [h2.2])⟩
+    have hx'T : 10 ≤ x' := le_trans hX (le_max_right _ _)
+    have hc := card_le_sharp_explicit x' y' hx'T hne s hsub
+    have hDle : (Real.log ((y' + 2) / (2 * Real.pi)) + 6 / (x' - 2)) / (2 * Real.pi) ≤ D := by
+      rw [hD]
+      apply div_le_div_of_nonneg_right _ hpos.le
+      have h1 : Real.log ((y' + 2) / (2 * Real.pi)) ≤ Real.log ((X + R + 2) / (2 * Real.pi)) :=
+        Real.log_le_log (div_pos (by linarith) hpos)
+          (div_le_div_of_nonneg_right (by linarith [min_le_right y (X + R)]) hpos.le)
+      have h2 : 6 / (x' - 2) ≤ 6 / (X - R - 2) :=
+        div_le_div_of_nonneg_left (by norm_num) (by linarith) (by linarith [le_max_right x (X - R)])
+      linarith
+    have hlen : y' - x' ≤ y - x := by
+      linarith [min_le_left y (X + R), le_max_left x (X - R)]
+    have hlog : Real.log (y' + 2) ≤ Real.log (X + R + 2) :=
+      Real.log_le_log (by linarith) (by linarith [min_le_right y (X + R)])
+    have hDy : 0 ≤ (Real.log ((y' + 2) / (2 * Real.pi)) + 6 / (x' - 2)) / (2 * Real.pi) := by
+      have hl : 0 ≤ Real.log ((y' + 2) / (2 * Real.pi)) :=
+        Real.log_nonneg ((one_le_div hpos).mpr (by linarith [Real.pi_lt_four]))
+      have : 0 < 6 / (x' - 2) := div_pos (by norm_num) (by linarith)
+      exact div_nonneg (by linarith) hpos.le
+    have hprod : (y' - x' + 3) * ((Real.log ((y' + 2) / (2 * Real.pi)) + 6 / (x' - 2)) /
+        (2 * Real.pi)) ≤ D * (y - x) + 3 * D := by
+      have := mul_le_mul (show y' - x' + 3 ≤ y - x + 3 by linarith) hDle hDy (by linarith)
+      linarith
+    have hAlog : 200 * Real.log (y' + 2) ≤ 200 * Real.log (X + R + 2) :=
+      mul_le_mul_of_nonneg_left hlog (by norm_num)
+    linarith
+  · -- the effective interval is empty, so is `s`
+    have hempty : s = ∅ := by
+      refine Finset.eq_empty_of_forall_notMem fun z hz => hne ?_
+      obtain ⟨_, h2, h3, h4⟩ := hs z hz
+      rw [abs_le] at h2
+      exact (max_le h3 (by linarith [h2.1])).trans (le_min h4 (by linarith [h2.2]))
+    rw [hempty, Finset.card_empty, Nat.cast_zero]
+    have hlogp : 0 ≤ Real.log (X + R + 2) := Real.log_nonneg (by linarith)
+    have : 0 ≤ D * (y - x) := mul_nonneg hD0 (by linarith)
+    have : 0 ≤ 200 * Real.log (X + R + 2) := mul_nonneg (by norm_num) hlogp
+    linarith
+
+/-- A finite starting height for any density factor strictly greater than one. -/
+def zetaCameraCountHeight (θ : ℝ) : ℝ :=
+  max 20 (2 * Real.pi * Real.exp (max 1 (2 / (θ - 1))))
+
+/-- The additive local-count constant, with the logarithmic height factored out. -/
+def zetaCameraCountConstant (θ : ℝ) : ℝ :=
+  3 * θ / (2 * Real.pi) + 200 * (1 + Real.log (4 * Real.pi)) + 1
+
+theorem zetaCameraCountConstant_nonneg {θ : ℝ} (hθ : 1 < θ) :
+    0 ≤ zetaCameraCountConstant θ := by
+  have hlog : 0 ≤ Real.log (4 * Real.pi) :=
+    Real.log_nonneg (by linarith only [Real.pi_gt_three])
+  have hθ0 : 0 < θ := by linarith only [hθ]
+  unfold zetaCameraCountConstant
+  positivity
+
+/-- At every explicit admissible height, the actual ζ zeros satisfy the camera count. -/
+theorem card_zeta_camera_band_le {θ T : ℝ} (hθ : 1 < θ)
+    (hT : zetaCameraCountHeight θ ≤ T) (s : Finset ℂ) (x y : ℝ) (hxy : x ≤ y)
+    (hs : ∀ z ∈ s, IsNontrivialZero z ∧ |z.im - T| ≤ T / 2 ∧ z.im ∈ Icc x y) :
+    (s.card : ℝ) ≤ θ / (2 * Real.pi) * Real.log (T / (2 * Real.pi)) * (y - x) +
+      zetaCameraCountConstant θ * Real.log (T / (2 * Real.pi)) := by
+  have h20 : 20 ≤ T := (le_max_left _ _).trans hT
+  have hT0 : 0 < T := by linarith only [h20]
+  have hπ : 0 < 2 * Real.pi := by positivity
+  set u := Real.log (T / (2 * Real.pi)) with hu
+  have hupper : Real.exp (max 1 (2 / (θ - 1))) ≤ T / (2 * Real.pi) := by
+    apply (le_div_iff₀ hπ).mpr
+    have h := (le_max_right _ _).trans hT
+    change 2 * Real.pi * Real.exp (max 1 (2 / (θ - 1))) ≤ T at h
+    linarith only [h]
+  have huMax : max 1 (2 / (θ - 1)) ≤ u := by
+    rw [hu, ← Real.log_exp (max 1 (2 / (θ - 1)))]
+    exact Real.log_le_log (Real.exp_pos _) hupper
+  have hu1 : 1 ≤ u := (le_max_left _ _).trans huMax
+  have hgap : 2 ≤ u * (θ - 1) :=
+    (div_le_iff₀ (by linarith only [hθ] : 0 < θ - 1)).mp ((le_max_right _ _).trans huMax)
+  have hcount := card_le_sharp_centred_explicit T (T / 2)
+    (by linarith only [h20]) (by linarith only [h20]) x y hxy s hs
+  set D := (Real.log ((T + T / 2 + 2) / (2 * Real.pi)) + 6 / (T - T / 2 - 2)) /
+    (2 * Real.pi) with hD
+  change (s.card : ℝ) ≤ D * (y - x) +
+    (3 * D + 200 * Real.log (T + T / 2 + 2) + 1) at hcount
+  have hfrac : 6 / (T - T / 2 - 2) ≤ 1 :=
+    (div_le_one (by linarith only [h20])).mpr (by linarith only [h20])
+  have hlog2 : Real.log 2 ≤ 1 := by
+    have h := Real.log_le_sub_one_of_pos (by norm_num : (0 : ℝ) < 2)
+    linarith only [h]
+  have hlogshift : Real.log ((T + T / 2 + 2) / (2 * Real.pi)) ≤ u + 1 := by
+    have h := Real.log_le_log (div_pos (by linarith only [h20]) hπ)
+      (show (T + T / 2 + 2) / (2 * Real.pi) ≤ 2 * (T / (2 * Real.pi)) by
+        calc
+          _ ≤ (2 * T) / (2 * Real.pi) :=
+            div_le_div_of_nonneg_right (by linarith only [h20]) hπ.le
+          _ = _ := by ring)
+    rw [Real.log_mul (by norm_num : (2 : ℝ) ≠ 0) (div_pos hT0 hπ).ne', ← hu] at h
+    linarith only [h, hlog2]
+  have hDθ : D ≤ θ / (2 * Real.pi) * u := by
+    rw [hD]
+    calc
+      _ ≤ (u + 2) / (2 * Real.pi) :=
+        div_le_div_of_nonneg_right (by linarith only [hlogshift, hfrac]) hπ.le
+      _ ≤ θ * u / (2 * Real.pi) :=
+        div_le_div_of_nonneg_right (by nlinarith only [hgap]) hπ.le
+      _ = _ := by ring
+  have hlog4π : 0 ≤ Real.log (4 * Real.pi) :=
+    Real.log_nonneg (by linarith only [Real.pi_gt_three])
+  have hlogbase : Real.log (T + T / 2 + 2) ≤ u + Real.log (4 * Real.pi) := by
+    have he : 2 * T = (4 * Real.pi) * (T / (2 * Real.pi)) := by field_simp; ring
+    have h := Real.log_le_log (by linarith only [h20] : 0 < T + T / 2 + 2)
+      (show T + T / 2 + 2 ≤ 2 * T by linarith only [h20])
+    rw [he, Real.log_mul (by positivity : (4 * Real.pi) ≠ 0) (div_pos hT0 hπ).ne', ← hu] at h
+    linarith only [h]
+  have hlogbound : Real.log (T + T / 2 + 2) ≤ (1 + Real.log (4 * Real.pi)) * u := by
+    have hmul := mul_le_mul_of_nonneg_left hu1 hlog4π
+    nlinarith only [hlogbase, hmul]
+  have hmain := mul_le_mul_of_nonneg_right hDθ (sub_nonneg.mpr hxy)
+  have herror : 3 * D + 200 * Real.log (T + T / 2 + 2) + 1 ≤
+      zetaCameraCountConstant θ * u := by
+    calc
+      _ ≤ 3 * (θ / (2 * Real.pi) * u) +
+          200 * ((1 + Real.log (4 * Real.pi)) * u) + u := by
+        linarith only [hDθ, hlogbound, hu1]
+      _ = _ := by unfold zetaCameraCountConstant; ring
+  linarith only [hcount, hmain, herror]
+
+end GaloisForLFunctions.ZeroConfigurationGeometry
+
+#print axioms GaloisForLFunctions.ZeroConfigurationGeometry.backlund_horizontal_explicit
+#print axioms GaloisForLFunctions.ZeroConfigurationGeometry.card_le_sharp_explicit
+#print axioms GaloisForLFunctions.ZeroConfigurationGeometry.card_le_sharp_centred_explicit
+
+#print axioms GaloisForLFunctions.ZeroConfigurationGeometry.card_zeta_camera_band_le

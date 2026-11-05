@@ -43,6 +43,10 @@ theorem HasMargin.weilPositiveFullUpTo {lam : ℕ → ℝ} {c m : ℝ} (h : HasM
     (hm : 0 ≤ m) : WeilPositiveFullUpTo lam c := fun f hf hfs =>
   (mul_nonneg hm (integral_nonneg fun _ => by positivity)).trans (h f hf hfs)
 
+theorem HasMargin.mono {lam : ℕ → ℝ} {c m m' : ℝ} (h : HasMargin lam c m) (hm : m' ≤ m) :
+    HasMargin lam c m' := fun f hf hfs =>
+  (mul_le_mul_of_nonneg_right hm (integral_nonneg fun _ => by positivity)).trans (h f hf hfs)
+
 theorem HasMargin.anti {lam : ℕ → ℝ} {c c' m : ℝ} (h : HasMargin lam c m) (hc : c' ≤ c) :
     HasMargin lam c' m := fun f hf hfs =>
   h f hf (hfs.trans (Icc_subset_Icc (by linarith) hc))
@@ -55,7 +59,7 @@ theorem hasCompactSupport_of_tsupport_subset {f : ℝ → ℂ} {c : ℝ}
 theorem levelTest_of_tsupport {f : ℝ → ℂ} {c : ℝ} (hf : ContDiff ℝ 2 f)
     (hfs : tsupport f ⊆ Icc (-c) c) :
     LevelTest c (⟨f, hf, hasCompactSupport_of_tsupport_subset hfs⟩ : WeilTestFn) :=
-  fun u hu => abs_le.mpr (hfs (subset_tsupport _ hu))
+  fun _ hu => abs_le.mpr (hfs (subset_tsupport _ hu))
 
 theorem poleWeightFunctional_one (f : WeilTestFn) :
     poleWeightFunctional 1 f = weilArchRe (EF.weilTest f.1 f.1) := by
@@ -158,7 +162,7 @@ theorem riemannHypothesis_iff_tendsto_bestMargin :
   · intro hlim
     rw [riemannHypothesis_iff_forall_nonneg_levelValueAt]
     intro L hL
-    refine ge_of_tendsto hlim ?_
+    refine le_of_tendsto hlim ?_
     filter_upwards [eventually_ge_atTop L] with c hc
     exact bestMargin_antitone hL hc
 
@@ -195,14 +199,12 @@ theorem abs_re_log_atom_le (g : WeilTestFn) (n : ℕ) :
         Complex.abs_re_le_norm _
     _ ≤ _ := (norm_add_le _ _).trans (by linarith)
 
-/-- **A perturbation of the weights costs its operator size in margin.** -/
-theorem hasMargin_add {lam v : ℕ → ℝ} {s : Finset ℕ} {c m : ℝ} (hv : ∀ n, n ∉ s → v n = 0)
-    (h : HasMargin lam c m) :
-    HasMargin (fun n => lam n + v n) c (m - perturbationSize s v) := by
-  intro f hf hfs
-  have hfc := hasCompactSupport_of_tsupport_subset hfs
+/-- A finitely supported perturbation moves Weil's functional by at most its operator size. -/
+theorem re_weilFullFunctional_add_ge {lam v : ℕ → ℝ} {s : Finset ℕ} (hv : ∀ n, n ∉ s → v n = 0)
+    {f : ℝ → ℂ} (hf : ContDiff ℝ 2 f) (hfc : HasCompactSupport f) :
+    (weilFullFunctional lam (EF.weilTest f f)).re - perturbationSize s v * ∫ u, ‖f u‖ ^ 2 ≤
+      (weilFullFunctional (fun n => lam n + v n) (EF.weilTest f f)).re := by
   set g : WeilTestFn := ⟨f, hf, hfc⟩ with hg
-  have hm0 := h f hf hfs
   obtain ⟨N₀, hN₀⟩ := exists_forall_log_eq_zero (EF.weilTest_hasCompactSupport hfc hfc)
   obtain ⟨N, hN⟩ : ∃ N, N = max N₀ (s.sup id + 1) := ⟨_, rfl⟩
   have hNk : ∀ n : ℕ, N ≤ n → EF.weilTest f f (Real.log n) = 0 ∧
@@ -210,7 +212,7 @@ theorem hasMargin_add {lam v : ℕ → ℝ} {s : Finset ℕ} {c m : ℝ} (hv : �
     fun n hn => hN₀ n ((le_max_left _ _).trans (hN ▸ hn))
   have e₁ := re_weilFullFunctional_eq_affine (fun n => lam n + v n) hNk
   have e₂ := re_weilFullFunctional_eq_affine lam hNk
-  obtain ⟨R, hR⟩ : ∃ R : ℕ → ℝ, R = fun n =>
+  obtain ⟨R, hR⟩ : ∃ R : ℕ → ℝ, R = fun n : ℕ =>
     (EF.weilTest f f (Real.log n) + EF.weilTest f f (-Real.log n)).re := ⟨_, rfl⟩
   have hdiff : (weilFullFunctional (fun n => lam n + v n) (EF.weilTest f f)).re =
       (weilFullFunctional lam (EF.weilTest f f)).re -
@@ -246,13 +248,22 @@ theorem hasMargin_add {lam v : ℕ → ℝ} {s : Finset ℕ} {c m : ℝ} (hv : �
   rw [hdiff, hsub]
   linarith
 
+/-- **A perturbation of the weights costs its operator size in margin.** -/
+theorem hasMargin_add {lam v : ℕ → ℝ} {s : Finset ℕ} {c m : ℝ} (hv : ∀ n, n ∉ s → v n = 0)
+    (h : HasMargin lam c m) :
+    HasMargin (fun n => lam n + v n) c (m - perturbationSize s v) := by
+  intro f hf hfs
+  have h1 := re_weilFullFunctional_add_ge (lam := lam) hv hf (hasCompactSupport_of_tsupport_subset hfs)
+  have h2 := h f hf hfs
+  rw [sub_mul]
+  linarith
+
 /-- The values of the weight at `n` over the cone `𝒜(c)`. -/
 def bandSet (c : ℝ) (n : ℕ) : Set ℝ := {t | ∃ lam : ℕ → ℝ, WeilPositiveFullUpTo lam c ∧ lam n = t}
 
-/-- **A margin forces a band.** If `lam` has margin `m ≥ 0` on the window, the band of `λ(n)` contains the
+/-- **A margin forces a band.** If `lam` has margin `m` on the window, the band of `λ(n)` contains the
 interval of radius `m√n/2` around `lam n`. -/
-theorem Icc_subset_bandSet {lam : ℕ → ℝ} {c m : ℝ} (h : HasMargin lam c m) (hm : 0 ≤ m) {n : ℕ}
-    (hn : 2 ≤ n) :
+theorem Icc_subset_bandSet {lam : ℕ → ℝ} {c m : ℝ} (h : HasMargin lam c m) {n : ℕ} (hn : 2 ≤ n) :
     Icc (lam n - m * Real.sqrt n / 2) (lam n + m * Real.sqrt n / 2) ⊆ bandSet c n := by
   intro t ht
   set v : ℕ → ℝ := fun k => if k = n then t - lam n else 0 with hv
@@ -276,7 +287,7 @@ theorem exists_band_width_ge {lam : ℕ → ℝ} {c m : ℝ} (h : HasMargin lam 
     (hn : 2 ≤ n) : ∃ t₁ ∈ bandSet c n, ∃ t₂ ∈ bandSet c n, t₂ - t₁ = m * Real.sqrt n := by
   have hq := Real.sqrt_nonneg (n : ℝ)
   have hr : 0 ≤ m * Real.sqrt n / 2 := by positivity
-  refine ⟨lam n - m * Real.sqrt n / 2, Icc_subset_bandSet h hm hn ⟨le_rfl, by linarith⟩,
-    lam n + m * Real.sqrt n / 2, Icc_subset_bandSet h hm hn ⟨by linarith, le_rfl⟩, by ring⟩
+  refine ⟨lam n - m * Real.sqrt n / 2, Icc_subset_bandSet h hn ⟨le_rfl, by linarith⟩,
+    lam n + m * Real.sqrt n / 2, Icc_subset_bandSet h hn ⟨by linarith, le_rfl⟩, by ring⟩
 
 end GaloisForLFunctions.CriticalHardyTheoryOfTheWindowCone

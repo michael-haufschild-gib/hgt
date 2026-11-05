@@ -28,6 +28,8 @@ forcing collide-or-repel. Card: `docs/drafts/pipeline/1-in-progress/ado-arithmet
 | Zeros of `∏_{p∈S}(1 − p^{−s})` (Euler columns) of height `≤ T` collide or repel at scale `c T^{−C}` (effective Baker bound) | `EulerColumnsCollideOrRepelAtPolynomialScale` | `eulerCarrier_collide_or_repel` |
 | Two columns have distinct zeros `≤ 2π/((n+1) log p')` apart at height `≤ 2πn/log p` | `EulerColumnsCollideOrRepelAtPolynomialScale` | `eulerColumns_near_coincidence` |
 | One prime (`P(p^{−s})`, `P ∈ ℤ[X]` monic): uniform repulsion; the two-prime Euler product: none | `TheRankOfTheFrequencyModuleDecidesRepulsion` | `onePrime_uniform_repulsion`, `twoPrime_no_uniform_repulsion` |
+| Integral pure degree-two factors `1 − a_p p^{−s} + p^{−2s}` (`a_p ∈ ℤ`, `|a_p| ≤ 2`): Satake parameters are 12th roots of unity, zeros lie on refined columns, collide or repel at polynomial scale | `IntegralPureEulerFactorsRepelAtPolynomialScale` | `pow_twelve_eq_one_of_satake`, `degTwoCarrier_collide_or_repel` |
+| With real pure data `a = 2cos θ` the polynomial law fails: a Liouville angle gives zeros `≤ e^{−|k|}`-close at height `≍ |k|` | `RealSatakeAnglesDefeatPolynomialRepulsion` | `exists_liouville_angle`, `real_pure_carrier_not_polynomial_repulsion` |
 | The non-Euler two-prime carrier `1 + 2^{−s} + 3^{−s}` repels uniformly (`≥ min(1/4, (log 3 − log 2)/224)`): its Bohr tangency is inconsistent with the moduli | `EulerProductsCreateTheNearCoincidences` | `trinomial_uniform_repulsion`, `trinomial_tangency_gap` |
 
 ## Zeta: the dictionary of B54

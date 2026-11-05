@@ -379,11 +379,11 @@ goal is met when 250 discharges could be made.
 
 
 ## update obstacles
-earlier we created these documents:
-- docs/reports/review-0311/walls-ledger.md
-- docs/reports/review-0311/route-obstacles.md
-- docs/reports/review-0311/route-unification-ledger.md
-- docs/reports/review-0311/obstacles-summary.md
+earlier today we created these documents:
+- docs/reports/review-0411/walls-ledger.md
+- docs/reports/review-0411/route-obstacles.md
+- docs/reports/review-0411/route-unification-ledger.md
+- docs/reports/review-0411/obstacles-summary.md
   
 read:
 - docs/reports/rh-current-frontier-map.md
@@ -420,7 +420,7 @@ first collect information in a working log in logs/ - facts, not process or stat
 
 the reports are not diaries or history log, but status quo reports.
 
-place the reports in folder docs/reports/review-0411/ without history language or "this changed since last review".
+place the reports in folder docs/reports/review-0511/ without history language or "this changed since last review".
 do not run builds. this is not a task to verify the work of other agents but to create consolidated reports and "big picture" interpretations on their research results.
 
 
@@ -457,9 +457,9 @@ Read the following documents:
 1. Route ledger: docs/reports/rh-current-frontier-map.md
 2. Failed/Killed approaches: docs/reports/rh-killed-routes.md
 3. Unification of the routes: docs/reports/review-0311/route-unification-ledger.md
-4. Hard obstacles: docs/reports/review-0311/route-obstacles.md
-5. A summary by another ai model: docs/reports/review-0311/obstacles-summary.md
-6. The hard obstacles (Walls) we have identified and not overcome: docs/reports/review-0311/walls-ledger.md
+4. Hard obstacles: docs/reports/review-0511/route-obstacles.md
+5. A summary by another ai model: docs/reports/review-0511/obstacles-summary.md
+6. The hard obstacles (Walls) we have identified and not overcome: docs/reports/review-0511/walls-ledger.md
    
 and read the current research programmes from oldest to newest: docs/reports/research-programmes.md
     
@@ -488,7 +488,7 @@ The questions for you to answer:
 6. What is the one question the is less hard than proving RH or quasiRH outright and would, when answered, bring a real breakthrough and push the door wide open for us for finding the RH proof?
 7. You can interpret the walls as questions we need to answer and for which we and mathematics as a whole do not have the tools to create these answer - if we would create a new field of mathematics that can supply these tools, what would this field be? What would the questions be, what would be its approach/point of view, what its objects, language, foundational principals, criteria it must fulfill, its research topics?
 
-Write a report in docs docs/reports/review-0311/fable.md
+Write a report in docs docs/reports/review-0511/fable.md
 
 do not run any builds. do not search the web. do not grep for sorry or other shit. your job is not to verify of other agents but to write a consolidated report and big picture interpretation of their research. focus on the mathematics.
 
@@ -496,11 +496,11 @@ do not run any builds. do not search the web. do not grep for sorry or other shi
 
 Do not use the hgtl7 skill.
 
-read and understand docs/reports/review-0311/fable-zero-configuration-geometry.md
+read and understand docs/reports/review-0511/obstacles-summary.md
 
-it describes a new rh proof route/research programme 
+under "### 2.7.2 Programme B — Arithmetic production at square-root precision" it describes a new field/research programme.
 
-Your task: develop this route/research programme and do the actual research and formalization.
+Your task: develop this field/research programme and do the actual research and formalization.
 
 Follow the example of other research programmes: formal/GaloisForLFunctions/ArithmeticCastelnuovoSeveri or formal/GaloisForLFunctions/ArithmeticOrientationGeometry
 
@@ -583,14 +583,11 @@ Goal is met when a proof route is fully closed and formalized in lean and RH is 
 
 do not use the hgtl7 skill.
 
-read: docs/reports/review-0311/fable.md
+read: docs/reports/review-0511/obstacles-summary.md
 
-the document asks in "## 7. Q6 — The one question" one question:
-"Does the complete form at the critical overlap pay the receiving charge that energy limits erase?"
+the document suggests under "## 2.4 A wildly different route" a new route approach. 
 
-your task: answer the question, find a complete solution for it and unconditionally formalize it and its implications and collaries in lean.
-
-We are not interested in estimates, criterias what the answer could be like, what is not the answer, busywork - we accept only a full and final answer/solution to the posed question.
+your task: develop and formalize this new route fully.
 
 **Tools to use:**
 1. Search: use the search tool for our lean corpus, not just rg or grep. make good use of the search tool to find existing work, building blocks, and new ideas. Try to apply existing lean research, try to identify problems and questions the field with your contribution could explain or solve.
@@ -613,18 +610,18 @@ always look at the big picture, try to understand what all our research is tryin
 
 Put all lean code for the answer into relevant subfolders to not bloat RHTower and HTGeometry folders further.
 
-## argon single task open question
+## just work
 
 Do not use the hgtl7 skill.
 
-read and understand docs/reports/review-0311/obstacles-summary.md and docs/reports/rh-current-frontier-map.md
+read and understand docs/reports/review-0411/obstacles-summary.md
 
-obstacles-summary.md suggest in "### F2. The complete-family assembly (blind)" to assemble a new route from building blocks of multiple routes and building bridges between the,
+in "## 2.1 Obstacles that are just work" it lists all mathematical obstacles that have no solution in lean yet but should be formalizable.
 
-your task: assemble this route, build the bridges, formalize this route.
+your task: work through the list, from simplests to hardest, and find a solution for every open obstacle and formalize the solution.
 
-we are not interested in busywork, redressing of existing knowledge, building unnecessary lean infrastructure. stay focused on the task and tackle the actual problems. do not just write lean code for the sake of doing something. solve the actual problems.
-  
+we are not interested in busy-work, redressing of existing knowledge, improving number just for the sake of it - anything that is not directly contribution to solve an open problem from the list is a waste of time and token.
+
 **Tools to use:**
 1. Search: use the search tool for our lean corpus, not just rg or grep. make good use of the search tool to find existing work, building blocks, and new ideas. Try to apply existing lean research, try to identify problems and questions the field with your contribution could explain or solve.
 
@@ -647,13 +644,13 @@ always look at the big picture, try to understand what all our research is tryin
 Put lean code into the correct subfolder(s), do not bloat RHTower or HTGeometry folders more.
 
 
-## Walls
+## question
 
 Do not use the hgtl7 skill.
 
-read and understand docs/reports/review-0311/fable.md
+read and understand docs/reports/review-0511/obstacles-summary.md
 
-under "## 5. Q4 — Breakthrough questions that open the path to RH" it asks questions.
+under "### 2.5.1 Whole programme — `100%` critical-scale clustering" and "### 2.5.3 Route WD — log-free window occupancy" it asks 2 questions.
 
 your task: answer the questions, find a complete solution for each and unconditionally formalize it and its implications and collaries in lean.
 
@@ -684,7 +681,7 @@ Do not use the wall ledger as diary. Only update status, do not add more.
 
 Goal is met when there are no more open or partially solved or sharpened walls.
 
-## Obstacles
+## Walls
 
 Do not use the hgtl7 skill.
 

@@ -32,10 +32,10 @@ scale-dependent Gaussian coordinates; transferring it to a fixed tail
 quadratic form remains necessary.
 
 The current comparison replaces the leading first-atom gamma mass by `1/2`,
-releasing `3A/(8q)` as well as the cubic reserve. At `q=3`, both reduced
-leading-pair gamma endpoints are positive, and both `(1,3)` gamma endpoints
-become positive after adding `A/8`. Extending these certificates to `q≥3`
-remains in progress.
+releasing `3A/(8q)` as well as the cubic reserve. The reduced leading
+comparison is formalized for `q≥3`; extraction from the literal tail is in
+progress. Both `(1,3)` gamma endpoints become positive after adding `A/8`
+at `q=3`; their ray determinant certificates remain unfinished.
 
 The other four unequal pairs have relative rates `15,11,18,23`; the `(1,3)`
 rate is `8`. Their radial polynomials have degree at most eighteen. A

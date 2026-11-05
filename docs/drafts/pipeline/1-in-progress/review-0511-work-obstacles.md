@@ -59,7 +59,7 @@ passed; transitive axiom audits contain only the three standard Lean axioms.
 
 ## Partial results and current target
 
-**A42.** [Explicit camera heights](explicit-camera-height.md): numerical ζ
+**A42.** [Explicit camera heights](../2-fully-proven/explicit-camera-height.md): numerical ζ
 count and tail inputs, then finite height expressions for the point and moment
 readouts and their cluster consequences.
 

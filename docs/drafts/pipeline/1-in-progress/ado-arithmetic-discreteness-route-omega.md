@@ -30,7 +30,10 @@ Folder `formal/GaloisForLFunctions/ArithmeticDiscreteness/` (README there), umbr
 | Ω6′ | Uniform repulsion for Euler carriers | FALSE: `eulerColumns_near_coincidence` (distance `≤ 2π/((n+1)log p')` at height `≤ 2πn/log p`) |
 | Ω7 | Rank one (`P(p^{−s})`, `P ∈ ℤ[X]` monic): uniform repulsion; rank two: none | Lean: `onePrime_uniform_repulsion`, `twoPrime_no_uniform_repulsion` |
 | Ω8 | A near-coincidence of `ζ` flattens `ζ'`; a lower bound for `|ζ'(ρ)|` gives collide-or-repel at `ρ` | Lean: `norm_deriv_riemannZeta_mul_le_of_near_zero`, `separation_of_norm_deriv_riemannZeta_ge` |
-| Ω9 | Generic two-prime integral Dirichlet polynomials repel uniformly (no tangency in the Bohr closure: four real tangency equations, three parameters); generic three-prime ones do not | open (paper sketch only) |
+| Ω9 | A two-prime integral carrier repels uniformly when its Bohr tangency is inconsistent with the moduli `|p^{−s}| = p^{−σ}` | Lean for `1 + 2^{−s} + 3^{−s}`: `trinomial_uniform_repulsion` (`≥ min(1/4, (log 3 − log 2)/224)`); general criterion open |
+| Ω9′ | Generic three-prime integral carriers have consistent tangencies, hence near-coincidences at every scale | open (paper sketch: six real equations in six unknowns) |
+| Ω12 | Integral pure degree-two Euler carriers collide or repel at polynomial scale | Lean: `pow_twelve_eq_one_of_satake` (Kronecker in degree two), `degTwoCarrier_collide_or_repel` |
+| Ω12′ | The same for real pure local data `a = 2cos θ` | FALSE: `real_pure_carrier_not_polynomial_repulsion` (Liouville angle, zeros `e^{−|k|}`-close at height `≍ |k|`) |
 | Ω10 | Collide or repel at polynomial scale for integral Dirichlet polynomials over a fixed finite prime set | open: needs Baker for inhomogeneous forms with transcendental tangency points |
 | Ω11 | B54 for `ζ` | open (RH-independent, sub) |
 
@@ -44,10 +47,14 @@ Folder `formal/GaloisForLFunctions/ArithmeticDiscreteness/` (README there), umbr
   approximate purity or a finite-order size bound into exact purity (Ω4); for Euler products the
   discreteness is Diophantine and gives collide-or-repel at polynomial scale, not uniformly (Ω6, Ω7).
 - **New insight:** the obstruction to transferring the `𝔽_q` mechanism is the rank of the frequency
-  module: rank one (all frequencies multiples of `log q`) gives uniform repulsion from integrality;
-  rank `≥ 2` forces near-coincidences at every scale by Kronecker density, and only a transcendence
-  bound in the height (Baker) separates them. Discreteness amplifies; it never produces purity
-  (fake integral configurations exist in every degree).
+  module together with the Euler product: rank one (all frequencies multiples of `log q`) gives
+  uniform repulsion from integrality; at rank `≥ 2` near-coincidences occur at every scale exactly
+  when the Bohr lift has a tangency consistent with the moduli — the Euler product over `{2, 3}`
+  has one, the trinomial `1 + 2^{−s} + 3^{−s}` does not — and then only a transcendence bound in the
+  height (Baker) separates them. Integrality of the local Hecke data is what makes that bound
+  polynomial: integral pure Satake parameters are roots of unity (Ω12), real ones can be Liouville
+  (Ω12′). Discreteness amplifies; it never produces purity (fake integral configurations exist in
+  every degree).
 - **Status:** all survivors formalized (modules above).
 
 ## Route analysis
@@ -58,9 +65,15 @@ Folder `formal/GaloisForLFunctions/ArithmeticDiscreteness/` (README there), umbr
   window positivity (F6), i.e. Σ. Route Ω therefore reduces to Σ plus B54.
 - The form of B54 that the corpus can attack: B54 follows from a polynomial lower bound for `|ζ'|`
   at the zeros (Ω8); for Euler carriers the corresponding statement holds by effective Baker (Ω6).
+- A lattice that moves with the parameter does not help: if the cluster symmetric functions lie in
+  `λ(t)ℤ` with `λ` continuous, `e_k(t)/λ(t)` is a continuous integer, so the cluster only rescales.
+- For `ζ` at height `T` the relevant carrier (approximate functional equation) has rank
+  `≍ π(√T)`; the effective Baker exponent grows with the rank, so Diophantine discreteness of the
+  Euler-carrier kind cannot give B54 at polynomial scale for `ζ` directly.
 - At the local complexity of `ζ` at height `T` (degree `≍ log T`, height `T^{O(1)}`), the separation
   integrality could guarantee lies between `e^{−C log³ T}` (Ω1, the camera's unresolved scale) and
   `e^{−c log² T}` (Ω1′).
 
 ## Log
-- 2026-11-05 — created; Ω1–Ω8 formalized; Ω3, Ω5, Ω6′ falsified with survivors; Ω9, Ω10 open.
+- 2026-11-05 — created; Ω1–Ω9 (trinomial), Ω12 formalized; Ω3, Ω5, Ω6′, Ω12′ falsified with
+  survivors; general Ω9, Ω9′, Ω10 open.

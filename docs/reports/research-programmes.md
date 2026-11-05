@@ -71,3 +71,9 @@
 - formal/GaloisForLFunctions/GrowingWindowsOfSpecZ/README.md
 - formal/GaloisForLFunctions/SignedWindowCriticality/README.md
 - formal/GaloisForLFunctions/ZeroConfigurationGeometry/README.md
+- formal/GaloisForLFunctions/ArithmeticProduction/README.md
+- formal/GaloisForLFunctions/CriticalHardyTheoryOfTheWindowCone/README.md
+- formal/GaloisForLFunctions/FiniteFreeProbability
+- formal/GaloisForLFunctions/FrustratedArithmeticDirichletForms/README.md
+- formal/GaloisForLFunctions/ThetaCuspSections
+- formal/GaloisForLFunctions/WindowVisibilityLaw/README.md

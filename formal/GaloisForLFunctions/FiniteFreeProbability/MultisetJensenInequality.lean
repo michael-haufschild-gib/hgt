@@ -40,10 +40,14 @@ theorem norm_blaschkeFactor_sphere {c : ℂ} {R : ℝ} (hR : 0 < R) (y : ℂ) {z
       push_cast
       rfl
     have hfac : (R : ℂ) ^ 2 - conj (y - c) * (z - c) = (z - c) * conj (z - y) := by
-      rw [hsq, show z - y = (z - c) - (y - c) by ring, map_sub]
+      have hc : conj (z - y) = conj (z - c) - conj (y - c) := by
+        rw [← map_sub]
+        congr 1
+        ring
+      rw [hsq, hc]
       ring
     rw [hfac, norm_div, norm_mul, Complex.norm_conj, hw, Complex.norm_real, Real.norm_of_nonneg hR.le,
-      mul_div_assoc, mul_comm, div_mul_cancel₀ _ hR.ne', mul_comm, one_mul]
+      mul_div_assoc, mul_comm, div_mul_cancel₀ _ hR.ne']
   · rfl
 
 theorem norm_blaschkeFactor_center {c : ℂ} {R : ℝ} (hR : 0 < R) (y : ℂ) :
