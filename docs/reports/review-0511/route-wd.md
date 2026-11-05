@@ -1,36 +1,70 @@
-Route WD (Ward / collision / window energy) has three branches that reach RH, and in each the remaining step is one unproved estimate. Everything below is the status quo of the Lean corpus at b9ea120c82.
+# WD — what remains for an unconditional RH proof
 
-## Branch 1: long mollifiers (the only branch with a proved RH landing).
-Prove, for arbitrarily large exponents θ, a bound ∫_1^T |ζ(½+it) M(½+it)|² dt ≤ C_θ T^K along an unbounded sequence of heights T, with a fixed K, where M has length X ≤ T^θ, bounded coefficients |b_d| ≤ B, and prefix cancellation: the Dirichlet coefficients of ζM vanish for 2 ≤ n ≤ X₁ with X₁ ≥ T^{3θ/4}. The truncated Möbius mollifier M_X = Σ_{d≤X} μ(d) d^{−s} qualifies, so the Möbius form of the estimate suffices.
+**RH open.** The corpus proves the receivers below, not their decisive arithmetic estimates.
+Proving **one** complete alternative suffices; the branches need not all be closed.
 
-The bound must be uniform in the sense that K does not grow with θ. The trivial bound grows like T^{θ+1}, so genuine cancellation at length far beyond T is required. No upper bound for any mollified second moment at length T^θ with θ > 1 exists in the corpus.
+## 1. Cofinal long-Möbius second moments
 
-The integral must start at height 1, not at T. Dyadic bounds ∫_T^{2T} ≤ CT with prefix cancellation to T^{θ₁}, θ₁ > ½, only give eventual quasi-RH: all but finitely many zeros have depth < 1/(2θ₁) + ε, and the finite exceptional set is not controlled as θ₁ grows.
+For `M_X(s) = Σ_{1≤n≤X} μ(n)n^(−s)`, prove:
 
-Or: A bounded or subpolynomial dyadic defect for the linear Möbius taper μ(d)(1 − log d/log y) - but not the sharp Möbius truncation.
+> There exists a fixed `K ≥ 0` such that, for arbitrarily large `θ > 0`, some `C_θ ≥ 0` satisfies
+>
+> `∫_1^T |ζ(½+it) M_floor(T^θ)(½+it)|² dt ≤ C_θ T^K`
+>
+> for unboundedly many heights `T`.
 
+- **Done:** this estimate implies RH, including exclusion of finite and arbitrarily shallow off-line exceptions.
+- **Open:** the actual upper bound, with `K` independent of `θ`. Constants and height subsequences may depend on `θ`.
+- **General version:** fixed `B≥1`, `K≥0`; normalized `b₁=1`, `|b_d|≤B`, length `X≤T^θ`, and coefficients of `ζM` vanish for `2≤n≤X₁`, where `X₁≥T^(3θ/4)`. The Möbius specialization already supplies normalization, boundedness and cancellation.
+- **Boundary:** dyadic `O(T)` bounds with the stated prefix cancellation give only finitely many zeros of depth `≥1/(2θ)+ε`. This does not control every finite/shallow exception as `θ` varies. The prefix integral `[1,T]` is essential to this receiver.
 
-## Branch 2: inner caps and the window integer.    
+Source: [TwoSidedThetaMollifierTrap.lean](../../../formal/GaloisForLFunctions/ConjugateDiagonalGeometry/NearLineLogMean/TwoSidedThetaMollifierTrap.lean), `riemannHypothesis_of_cofinal_long_mollifier`, `riemannHypothesis_of_cofinal_moebius_mollifier`.
 
-Prove Laplace integrability of the inner-cap flux at every exponent on every Burnol window and every polynomial stage. The flux equals the off-line generating function Σ m_ρ e^{(ρ−½)t} plus bounded plus L² terms, so this statement is "no off-line zero in the window" verbatim. The missing input is a source-side bound on the caps from the Euler or theta source, not an estimate of the caps themselves.
+## 2. Uniform dyadic unit-window bound
 
-Prove the collision charge is below 2, or the window index is 0, at every resolution for the full source. 
+Fix `c₀>0` (`c₀=1` suffices). Set `L=2^k c₀ log T`, `n=apertureStage L T` and
+`R(γ)=finiteThetaSourceMomentReading (baseTwistTest γ) L 1 n`. Prove:
 
-Equivalent forms: a matrix-complete positive residual with sub-unit integer trace on every disc, or bounded unweighted right-port L² norm on every window. Each is RH restated; no arithmetic ceiling for the index exists.
+> `∃ C, ∀ k∈ℕ, ∀ T≥2, min_{γ∈[T,T+1]} R(γ) ≤ C`.
 
-## Branch 3: Hecke defect and sectoriality.
+- **Done:** this bound is equivalent to RH. Unit-window mean, supremum or C²-jet bounds are interchangeable alternatives; proving all four is unnecessary.
+- **Open:** one constant uniform in both height `T` and dyadic scale `k`.
+- **Boundary:** a separate constant at each fixed scale is insufficient.
 
-Prove that one constant bounds the dyadic unit-window readings (min, mean, sup, C²) of the log-scale Hecke defect at every height and scale. One dyadic constant is RH; fixed-scale bounds give only an inverse-log corridor.
+Source: [UnitWindowMinimumAndOscillation.lean](../../../formal/GaloisForLFunctions/ConjugateDiagonalGeometry/LogScaleHeckeDefect/UnitWindowMinimumAndOscillation.lean), `riemannHypothesis_unitWindow_min_mean_max_finiteTheta_tfae`.
 
-Prove growing-prefix sectoriality of the theta prefixes with index below 2 at all heights; fixed prefixes have critical-line zeros above their cusp horizon.
+## 3. All-window, all-stage collision sectoriality
 
-## What the density branch cannot do.
+Prove positivity of the actual Bessel–Szegő certificate times the centered collision loop on the unit circle:
+every Burnol window `m`, every stage selector `S`, every `N≥besselUnitPrefix m S`, and every certificate order satisfying the theorem's explicit remainder bound.
 
-100% clustering and D_win are sub-RH landings. Moment → 1 at length exp(o(T)) gives clustering; excess K₀/log T at length exp(c log²T) gives D_win. Neither reaches RH, because sparse off-line zeros survive both.
+- **Done:** this exact source-sectoriality condition is equivalent to RH.
+- **Open:** the source-side sign uniformly through the prescribed growing prefixes and stages.
+- **Boundary:** fixed-prefix behavior above its cusp horizon does not supply that uniform sign. Finite-theta purity alone requires the prescribed passage to the ζ source.
 
-## Constraints every WD proof must respect (proved impossibilities).
-- No polynomial-length mollifier: the second moment is at least (1 + 1/(8+6θ))T at length T^θ.
-- No mollifier below length exp(log²T/(6K₀)) for the excess K₀/log T; moment → 1 forces log N/log T → ∞.
-- No argument using only upper bounds for ζ on lines: it proves itself for ζ(s)(1 − cp^{−s}), which has a zero lattice at any width.
-- No L^p or log⁺ detector at scale V/log V, and no critical-line proportion or exponential depth-tail rate, reaches D_win.
-- No size-only heat or coefficient repair below the saddle ½/log X.
+Source: [LogStageBesselCertificate.lean](../../../formal/GaloisForLFunctions/ConjugateDiagonalGeometry/SzegoCollision/LogStageBesselCertificate.lean), `riemannHypothesis_iff_unitStage_besselSzego`.
+
+### Port / energy distinction
+
+On a boundary-regular finite-theta window:
+
+- **Uniformly bounded right port** ⇔ all window zeros lie on the critical line.
+- **Unweighted right-port L² integrability** ⇔ the window has **no zeros at all**, including on-line zeros. This is not the RH target.
+- Weighted window energy `e^(−xt)|𝒵(t)|²` is integrable precisely when `x` exceeds twice the maximal depth. Every positive exponent, not exponent zero, detects purity.
+
+Sources: [RightHalfPortCriticalLineControl.lean](../../../formal/GaloisForLFunctions/ConjugateDiagonalGeometry/WindowPortFlux/RightHalfPortCriticalLineControl.lean), [WindowEnergyLaplace.lean](../../../formal/GaloisForLFunctions/ConjugateDiagonalGeometry/SzegoCollision/WindowEnergyLaplace.lean).
+
+## Density estimates are weaker targets
+
+- Moment `→1` with `log N=o(T)` ⇒ critical-scale clustering.
+- Excess `O(1/log T)` with `log N≤T/log T` ⇒ log-free density/occupancy. Length `exp(c log²T)` is a possible sufficient regime, not a constructed mollifier.
+- Neither clustering nor `D_win` excludes sparse off-line zeros or proves a critical-line zero proportion.
+
+## Restrictions, with scope retained
+
+- Fixed polynomial length and normalized unit-bounded coefficients cannot give moment `→1`: the proved floor is `1+1/(8+6θ)` in its stated regime. This does **not** refute branch 1's weaker `C_θT^K` bound with unbounded `θ`.
+- Excess `K₀/log T` forces `log N≥log²T/(6K₀)−(4/3)log T` eventually. This necessary lower bound proves no attainable optimum.
+- Impure-factor-stable upper bounds and generic detector norms do not force the needed arithmetic conclusion. These are scoped obstructions, not bans on every upper-bound or detector method.
+- Linear Möbius-taper defect is a CTF receiver; sub-unit cubic trace norm is a TG receiver. Neither is an additional independent WD branch.
+
+Source for moment/occupancy restrictions: [SubexponentialMollifierLengthAndWindowSpikes.lean](../../../formal/GaloisForLFunctions/ConjugateDiagonalGeometry/NearLineLogMean/SubexponentialMollifierLengthAndWindowSpikes.lean).

@@ -17637,3 +17637,4 @@ import GaloisForLFunctions.HTGeometry.PolynomialTwistedDifferences
 import GaloisForLFunctions.HTGeometry.FiniteWeightedHilbertSpace
 import GaloisForLFunctions.HTGeometry.AffineExpanders.Contraction
 import GaloisForLFunctions.HTGeometry.SquarefreePrimeComplex
+import GaloisForLFunctions.HTGeometry.CauchyDominatedIntegralJets

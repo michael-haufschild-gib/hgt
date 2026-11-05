@@ -650,6 +650,7 @@ Each entry: path; established; open; class; A; B.
   `log N ≥ log²T/(6K₀) − (4/3)log T`.
 - Integrated real/complex prefix-spike bounds control off-line occupied windows by critical-line second moments,
   not critical-line proportion; polynomial prefix cancellation leaves a `log V` loss [L].
+- Port distinction: bounded finite-theta right port ⇔ window line purity; unweighted `L²(0,∞)` ⇔ no window zeros at all. Neither removes the required passage to the actual ζ source.
 - Open: an actual upper bound for a long mollified second moment (B64, B65); zero-rate right-port control; density
   branch needs vanishing cluster tail and depth decay at rate `log log V`. Necessary length is not attainability;
   finite/shallow exceptions still need exclusion.
