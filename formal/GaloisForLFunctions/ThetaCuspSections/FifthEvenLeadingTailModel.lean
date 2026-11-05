@@ -539,7 +539,7 @@ theorem mixedLinear_smul (c : ℝ) (m : ℕ → ℝ) (k : ℕ) (hk : k≤8) :
 private theorem firstScaled_eq (n : ℕ) {q : ℝ} (hq : q≠0) :
  firstScaled n q=q*g n q (1/2+3/(8*q)) := by
  induction n with
- | zero => simp only [firstScaled,g]; field_simp [hq] <;> ring
+ | zero => simp only [firstScaled,g]; field_simp [hq]
  | succ n ih =>
    simp only [firstScaled,g,ih]
    rw [show n+2=n+1+1 by omega,pow_succ]
@@ -567,7 +567,8 @@ theorem clearedMatrix_eq (upper : Bool) {q : ℝ} (hq : q≠0) :
  rw [show (fun n => crossScaled upper n q)=
    (fun n => q^3*g5 n q (if upper then zU q else zL q)) from
    funext (fun n => crossScaled_eq upper n hq),mixedLinear_smul _ _ _ (by omega)]
- field_simp [hq] <;> ring
+ field_simp [hq]
+ ring
 
 /-- Both extreme gamma masses retain a strict leading tail comparison. -/
 theorem endpoint_posDef (upper : Bool) {q : ℝ} (hq : 3≤q) :
@@ -632,7 +633,8 @@ theorem gamma_interval_posDef {q z : ℝ} (hq : 3≤q) (hzL : zL q≤z) (hzU : z
   linarith only [hzU]
  have he : z=(1-(z-zL q)/(zU q-zL q))*zL q+
    ((z-zL q)/(zU q-zL q))*zU q := by
-  field_simp [hd.ne'] <;> ring
+  field_simp [hd.ne']
+  ring
  rw [he,leadingModel_affine_gamma]
  exact convex_posDef (endpoint_posDef false hq) (endpoint_posDef true hq) ht ht1
 
@@ -645,8 +647,8 @@ theorem leadingModel_posDef {q z w : ℝ} (hq : 3≤q)
  have ht : 0≤w/(19683/(8000*q^9)) := div_nonneg hw hW.le
  have ht1 : w/(19683/(8000*q^9))≤1 := (div_le_one hW).mpr hwU
  have h0 : (leadingModel q z 0).PosDef := by
-  have hp := model_posDef hq
-   (show 1/2≤1/2+3/(8*q) by have h : 0≤3/(8*q) := by positivity; linarith only [h])
+  have hz0 : 1/2≤1/2+3/(8*q) := le_add_of_nonneg_right (by positivity)
+  have hp := model_posDef hq hz0
   convert hp using 1
   ext i j
   dsimp only [leadingModel,totalMoment,FifthAtomTail.model]
@@ -654,8 +656,34 @@ theorem leadingModel_posDef {q z w : ℝ} (hq : 3≤q)
   ring
  have he : w=(1-w/(19683/(8000*q^9)))*0+
    (w/(19683/(8000*q^9)))*(19683/(8000*q^9)) := by
-  field_simp [hW.ne'] <;> ring
+  field_simp [hW.ne']
+  ring
  rw [he,leadingModel_affine_weight]
  exact convex_posDef h0 (gamma_interval_posDef hq hzL hzU) ht ht1
+
+private theorem exp_three_lower : (20 : ℝ)≤Real.exp 3 := by
+ have h1 : (2718/1000:ℝ)≤Real.exp 1 := by linarith only [Real.exp_one_gt_d9]
+ have hp := pow_le_pow_left₀ (by norm_num : (0:ℝ)≤2718/1000) h1 3
+ rw [← Real.exp_nat_mul] at hp
+ norm_num at hp
+ linarith only [hp]
+
+/-- The leading relative exponential weight lies inside the polynomial envelope. -/
+theorem exponential_envelope {q : ℝ} (hq : 3≤q) :
+ Real.exp (-3*q)≤19683/(8000*q^9) := by
+ have hq0 : 0<q := by linarith only [hq]
+ have hp := _root_.RHTower.pow_mul_exp_neg_le_stationary_radius 9
+  (a := 3) (t := q) (by norm_num) hq0.le
+ have h9 := pow_le_pow_left₀ (by norm_num : (0:ℝ)≤20) exp_three_lower 3
+ rw [← Real.exp_nat_mul] at h9
+ norm_num at h9
+ have he : Real.exp (-9:ℝ)≤1/8000 := by
+  rw [Real.exp_neg,inv_eq_one_div]
+  exact one_div_le_one_div_of_le (by norm_num) h9
+ have hp' : q^9*Real.exp (-3*q)≤(3:ℝ)^9*Real.exp (-9) := by
+  convert hp using 1 <;> norm_num
+ have hh := mul_le_mul_of_nonneg_left he (show (0:ℝ)≤3^9 by positivity)
+ apply (le_div_iff₀ (show 0<(8000:ℝ)*q^9 by positivity)).mpr
+ nlinarith only [hp',hh]
 
 end GaloisForLFunctions.ThetaCuspSections.FifthMixedTail

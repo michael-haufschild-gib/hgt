@@ -37,5 +37,5 @@ Namespace `GaloisForLFunctions.CanonicalSystemOfTheWindowTower`.
 
 Production plain audit passed. Transitive axioms are exactly
 `[propext, Classical.choice, Quot.sound]`; the umbrella imports the module.
-The [Green operator identity](../1-in-progress/the-half-line-logarithmic-green-kernel.md)
-and its application to actual Weil boundary traces remain open.
+The [Green operator identity](the-half-line-logarithmic-green-kernel.md)
+is formalized; its application to actual Weil boundary traces remains open.

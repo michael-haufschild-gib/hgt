@@ -1,10 +1,10 @@
 # Explicit zero-mass and Hausdorff thresholds
 
 - **ID:** explicit-symmetric-zero-mass-and-hausdorff-shifts
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
 - **Type:** THEOREM
 - **Source:** review-0511, A18.
-- **Lean status:** formalization in progress.
+- **Lean status:** three direct source checks and six transitive axiom audits passed.
 
 ## Statement
 
@@ -52,4 +52,22 @@ threshold is selected from a convergence theorem.
    radius satisfies `0<R<1`, so `ceil(KH²)` dominates the required
    `ceil(KRH²)`. The original atom and band-count inequalities then apply.
 
-Jensen horizons and two-grid degrees are separate unresolved A18 obligations.
+## Lean declarations
+
+Owner: `SquareRootThreshold/EffectiveHorizons/`, namespace `RHTower`.
+
+- `XiContourBounds.lean`: `abs_vertical_xi_sub_half_mul_log_le`,
+  `abs_horizontal_xi_le_hundred_log`.
+- `XiZeroMass.lean`: `xiSymmetricMass_admissible_close_explicit`,
+  `xiSymmetricMass_close_explicit`; explicit functions `xiAdmissibleMassHeight`,
+  `xiMassHeight`.
+- `HausdorffShifts.lean`: `explicitPrimeArchHausdorffShift`,
+  `scaledHausdorffMomentDifference_nonneg_of_explicit_shift_le`,
+  `riemannHypothesis_iff_forall_lt_explicit_HausdorffShift_nonneg`.
+
+All three leaves are imported by `SquareRootThreshold.lean`. Their dependency
+closure is acyclic and excludes that umbrella. The six audits report only
+`propext`, `Classical.choice`, and `Quot.sound`. No limit increase or proof
+placeholder occurs in the new leaves.
+
+Jensen horizons and two-grid degrees remain separate unresolved A18 obligations.

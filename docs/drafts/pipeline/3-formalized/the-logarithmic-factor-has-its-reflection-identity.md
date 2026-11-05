@@ -54,4 +54,4 @@ and `tendsto_inv_complexLogReferenceFactor_nonreal`.
 Production plain audit passed. Transitive axioms are exactly
 `[propext, Classical.choice, Quot.sound]`; the umbrella imports the module.
 Stieltjes inversion, the causal inverse, and the Green identity remain open
-on the [half-line kernel card](../1-in-progress/the-half-line-logarithmic-green-kernel.md).
+on the [half-line kernel card](the-half-line-logarithmic-green-kernel.md).

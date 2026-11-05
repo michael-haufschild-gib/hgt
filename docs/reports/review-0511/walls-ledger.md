@@ -89,7 +89,7 @@ zero statements, the depth `Re ρ − ½`); `ρ³ = ρ + 1`; `a₁ = successorWe
 | Σ29 Low-frequency localization | Solved | — | Negativity only at the poles and below `τ₀(a)` [L]. |
 | Σ30 The stage step | Reduced | RH (as induction); each stage sub | Composite stages carry no fold; prime-power stages ⇔ stage form + signed fold energy pays the entering end mass; single-prime transport for all `A` ⇔ RH; unconditional transport across `p = 2` at `A₀ = 2·enlarged − log 2` [L]. |
 | Σ31 Positivity across dimension zero | Classified | equivalent to Σ1 | Bare domination ⇔ `Q ≥ 0` [L/D]. |
-| Σ32 Prime-blind positivity / calibration | Sharpened | RH | Weil cone `{Λ}`; calibration spaces `𝒜(c)` convex, cylinders beyond `e^{2c}`, every entering coordinate bounded, stage fibre a compact interval; real tests decide [L]. |
+| Σ32 Prime-blind positivity / calibration | Sharpened | RH | Weil cone `{Λ}`; calibration spaces `𝒜(c)` convex, cylinders beyond `e^{2c}`, every entering coordinate bounded, stage fibre a compact interval; real tests decide; RH ⇔ every `𝒜(c)` nonempty [L]; bands and best margins in summary 1.15 [N]. |
 | Σ33 Tate positivity horizon | Classified | — | Positive Tate dimensions `[0, κ(A)]`, `κ(A) ≤ log(1+2√2)/log 2` once ratio 2 fits, `κ(A) → 0`; exact horizons through `log(81/16)` [L]. |
 | Σ34 Canonical-degree horizon | Classified | — | Soft deformations paid by counts have horizon `≍ e^{−A/2}` [L/D]. |
 | Σ35 Canonical system of the tower | Partially solved | identity | Lattice Levinson recursion; continuum margins; parity split [L]; **de Branges chain before contact**: complete Weil spaces, explicit Hermite–Biehler function with Christoffel–Darboux identity, unitary zero-moving, antiunitary conjugation, isometric inclusions; kernel blow-up at finite contact [L]. Hamiltonian not constructed. |
@@ -126,13 +126,15 @@ zero statements, the depth `Re ρ − ½`); `ρ³ = ρ + 1`; `a₁ = successorWe
 | Σ67 Non-orthogonal untwisted–twisted coupling | Reduced (to head thresholds) | RH (all `d`) | Dirichlet-shift companions `1_{d|n}g₀(log(n/N) + log d)/√n` couple at `O(1)` (orthogonal twists at `O(1/K)`), annihilate tail modes; stabilization of every direction forces `R₁(log d) = ⊤` and follows from `R₁(log d + ε) = ⊤`; unconditional for `d = 2`; for every `d` ⇔ RH [L]. |
 | Σ68 Gauge freedom | Classified | — | The neutral gauge family acts only in the pole direction: on the pole-neutral hyperplane the representation is `archForm − primeSum` for every pocket position; receding pockets conserve the outside deficit; odd variance retention necessary above `273/400` for every shift [L]. |
 | Σ66 Contact of the de Branges chain | Sharpened | RH | RH ⇔ no finite contact ⇔ every evaluation kernel bounded as the aperture grows; at contact the window stays positive and a fixed kernel diverges [L]. |
+| Σ69 Width at bounded aperture | No-go | — | For every `a` and `δ ∈ (0, ½]` an off-line lattice of width `δ` has a nonnegative form at aperture `a`; a finite-aperture certificate is consistent with every width; the negativity rate along the lag family is the width [L]. |
+| Σ70 Free-weight margin | Classified | — | `max_λ λ_min(W_λ|[−c,c])` collapses with `λ_min(W_Λ)`: gain below `500` for `c ≤ 0.66`; bands of `λ(2)`, `λ(3)` of width `5×10⁻⁷`, `2×10⁻⁴` at `c = 0.66` [N]. |
 
 ## Π — precision and production
 
 | Wall | Status | Strength | Content |
 |---|---|---|---|
 | Π1 Global law | Solved (equivalence) | RH | `ψ(x) − x ≤ C√x log²x` ⇔ RH; Redheffer `det R_N = M(N)` [L]. |
-| Π2 Deciding input | Open | RH | No unconditional source input at square-root precision. |
+| Π2 Deciding input | Open | RH | No unconditional source input at square-root precision. Any input implying the count is parity-breaking, precision-faithful against `εn^{−η}`, `η < ½`, of unbounded aperture, with stabilizer in the square-root class; PNT, Guth–Maynard and weaker error laws are precision-blind [L]. |
 | Π3 Producer cost | Partially solved | sub / RH | Multivariate parity producers reach `(1+ε)x + C_εlog²x` [L]. |
 | Π4 Window precision (kernel = coupling) | Sharpened | RH | The reflection-pair prime-count band ⇔ RH ⇔ Weil lag ⇔ JAS ⇔ CTF ⇔ PBM ⇔ eventual Robin [L]. |
 | Π5 Conjugate diagonal | Sharpened | sub → ≥qRH → RH | Means `O_c(log U)`; one dyadic constant ⇔ RH [L]. |
@@ -173,6 +175,7 @@ zero statements, the depth `Re ρ − ½`); `ρ³ = ρ + 1`; `a₁ = successorWe
 | Π38 Finite free Hardy theorem | Solved | — | `R_d(Ξ)` has at least `M` distinct real roots for all large `d`, every `M` [L]. |
 | Π39 Wiener–Hopf factorization of the archimedean symbol | Solved (identity) | — | Logarithmic Poisson factor of `1 + ½log(1 + ξ²)`: slit-plane holomorphic, one simple negative zero, half-line support preserved, reciprocal a Stieltjes transform of a positive measure, positive causal kernel, renewal mass normalized [L]. |
 | Π36 Mollified Jensen stability | Sharpened | RH | RH ⇔ `R_d(Ξ·M_S)` stable at infinitely many degrees ⇔ bounded imaginary parts along infinitely many degrees (any finite S, any phase) [L]; the converse direction does not use the mollifier [L/D]. |
+| Π40 Self-improvement of a strip | Open | sub | `Θ < 1 ⇒ Θ = ½`; RH ⇔ `Θ < 1` plus this [D]; false for off-line lattices and, in analogue, for `ζ(s)ζ(s−ε)`; Hadamard and tensor powers carry RH at every degree, so the `𝔽_q` step has no analogue [L]; no mechanism. |
 
 ## Γ — selection and reflection
 
@@ -220,11 +223,11 @@ zero statements, the depth `Re ρ − ½`); `ρ³ = ρ + 1`; `a₁ = successorWe
 | Γ40 Positivity certifies thin configurations | Solved | — | Split columns; mixed `(g − ½)ℓ` [L]. |
 | Γ41 Fakes at their first prime | Solved | — | `½log n₀` [L]. |
 | Γ42 Legendre-invariant reality | Solved (identity) | identity | RH ⇔ `J(ρ) ∈ ℝ` [L]. |
-| Γ43 Collide or repel over `𝔽_q` | Solved (calibration) | — | [L]. |
+| Γ43 Collide or repel over `𝔽_q` | Solved (calibration) | — | A monic integer polynomial with all roots in `|z| ≤ 2√q` has a multiple root or separation `≥ (4√q)^{−poly(g)}` [L]. The disc bound is a hypothesis: a consequence of purity, not a route to it. |
 | Γ44 Second-order coalescent precision | Solved | sub | Moments of isolated clusters of radius `r ≤ T^{−(M'+κ_λ+1)}` read to `N r^{j+1}T^{M'+κ_λ} + e^{−K'log³T}`; centres `O(r²)`, squared gaps `O(r³)`, discriminants from `2k − 1` images, points by bordered Hankel determinants; dipoles collapse to `2e^{−K'log³T}` [L]. |
 | Γ45 Domination as a selector | No-go | — | [L]. |
 | Γ46 Reality at near-coincidences | Sharpened | RH | Reality of an isolated near-coincident pair is the sign of `𝓗 = 4(W₁² − W₀W₂)/W₀²` (on-line `≥ Δ² − B`, FE pair `≤ −4δ² + B`); FE-pair squared gaps `≥ 0` at every zero ⇔ RH; prime curvature `(log n)²`-weighted with opposite signs for real and FE pairs [L]. |
-| Γ47 Square-root camera vs Krein mimics | Open (assembly) | sub | Window positivity at `a` ⇔ a positive measure on ℝ with the same image (Krein; not in corpus); with the camera this would place every non-super-shallow off-line zero above height `≈ 2πe^{2a}` [D]. |
+| Γ47 Sharp location from positivity | Open (assembly) | sub | Positivity at `a = λL_T`, `λ > 1` ⇒ off-line zeros near `T` have depth `≤ e^{−c log³T}`, by the negative test on the form with the camera's isolating windows; no on-line mimic needed [D]. A receiver, vacuous at known apertures. |
 
 ## Bridges
 
@@ -254,8 +257,8 @@ zero statements, the depth `Re ρ − ½`); `ρ³ = ρ + 1`; `a₁ = successorWe
 
 | Family | Solved | Partially solved | Sharpened | Open | No-go | Classified | Reduced |
 |---|---|---|---|---|---|---|---|
-| Σ (89) | 21 (Σ1a, Σ1b, Σ1c, Σ1h, Σ1k, Σ1o, Σ10, Σ12, Σ16, Σ24, Σ29, Σ36, Σ37, Σ39, Σ43, Σ45, Σ51, Σ52, Σ55, Σ63, Σ64) | 10 (Σ1d, Σ1e, Σ1g, Σ1j, Σ1m, Σ3, Σ6, Σ9, Σ27, Σ35) | 15 (Σ1, Σ2, Σ3a, Σ4, Σ7, Σ8, Σ17, Σ19, Σ28, Σ32, Σ49, Σ50, Σ56, Σ61, Σ66) | 3 (Σ18, Σ20, Σ47) | 10 (Σ1f, Σ2a, Σ13, Σ14, Σ23, Σ25, Σ42, Σ59, Σ60, Σ65) | 26 (Σ1i, Σ1n, Σ1p, Σ1q, Σ1r, Σ2b, Σ11, Σ15, Σ21, Σ22, Σ26, Σ31, Σ33, Σ34, Σ38, Σ40, Σ41, Σ44, Σ46, Σ48, Σ53, Σ54, Σ57, Σ58, Σ62, Σ68) | 4 (Σ1l → Σ56, Σ5 → Π17, Σ30 → single-prime transport, Σ67 → head thresholds) |
-| Π (46) | 9 (Π1, Π10, Π11g, Π13, Π26, Π31, Π32, Π38, Π39) | 5 (Π3, Π7, Π9, Π11f, Π12) | 9 (Π4, Π5, Π6, Π11h, Π16, Π17, Π22, Π30, Π36) | 1 (Π2) | 11 (Π11a–e, Π14, Π18, Π19, Π20, Π27, Π35) | 10 (Π8, Π15, Π21, Π24, Π25, Π28, Π29, Π33, Π34, Π37) | 1 (Π23 → off-line generating function) |
+| Σ (91) | 21 (Σ1a, Σ1b, Σ1c, Σ1h, Σ1k, Σ1o, Σ10, Σ12, Σ16, Σ24, Σ29, Σ36, Σ37, Σ39, Σ43, Σ45, Σ51, Σ52, Σ55, Σ63, Σ64) | 10 (Σ1d, Σ1e, Σ1g, Σ1j, Σ1m, Σ3, Σ6, Σ9, Σ27, Σ35) | 15 (Σ1, Σ2, Σ3a, Σ4, Σ7, Σ8, Σ17, Σ19, Σ28, Σ32, Σ49, Σ50, Σ56, Σ61, Σ66) | 3 (Σ18, Σ20, Σ47) | 11 (Σ1f, Σ2a, Σ13, Σ14, Σ23, Σ25, Σ42, Σ59, Σ60, Σ65, Σ69) | 27 (Σ1i, Σ1n, Σ1p, Σ1q, Σ1r, Σ2b, Σ11, Σ15, Σ21, Σ22, Σ26, Σ31, Σ33, Σ34, Σ38, Σ40, Σ41, Σ44, Σ46, Σ48, Σ53, Σ54, Σ57, Σ58, Σ62, Σ68, Σ70) | 4 (Σ1l → Σ56, Σ5 → Π17, Σ30 → single-prime transport, Σ67 → head thresholds) |
+| Π (47) | 9 (Π1, Π10, Π11g, Π13, Π26, Π31, Π32, Π38, Π39) | 5 (Π3, Π7, Π9, Π11f, Π12) | 9 (Π4, Π5, Π6, Π11h, Π16, Π17, Π22, Π30, Π36) | 2 (Π2, Π40) | 11 (Π11a–e, Π14, Π18, Π19, Π20, Π27, Π35) | 10 (Π8, Π15, Π21, Π24, Π25, Π28, Π29, Π33, Π34, Π37) | 1 (Π23 → off-line generating function) |
 | Γ (47) | 17 (Γ2, Γ6, Γ7, Γ12, Γ18, Γ23, Γ31, Γ32, Γ33, Γ34, Γ36, Γ39, Γ40, Γ41, Γ42, Γ43, Γ44) | 2 (Γ5, Γ15) | 7 (Γ4, Γ8, Γ10, Γ16, Γ19, Γ24, Γ46) | 2 (Γ1, Γ47) | 13 (Γ3, Γ9, Γ11, Γ13, Γ14, Γ21, Γ22, Γ25, Γ26, Γ27, Γ28, Γ29, Γ45) | 6 (Γ17, Γ20, Γ30, Γ35, Γ37, Γ38) | — |
 
 Strength of the open walls:
@@ -265,5 +268,5 @@ Strength of the open walls:
 - **identity:** Σ35 (Hamiltonian of the de Branges chain).
 - **≥qRH:** Σ4 (`K_ζ`), Σ28 (exponent `< ½`), Π5 (fixed scale), Π17 (log stage), Π23 (fixed degree).
 - **sub:** Σ1d, Σ1e, Σ1g, Σ1j, Σ1m, Σ4 (zero–one law), Σ27 (each stage), Σ30 (each stage), Σ47, Σ50, Π3, Π5
-  (mean `o(log U)`), Π7, Π9, Π11f, Π12, Π22, Γ15, Γ47.
+  (mean `o(log U)`), Π7, Π9, Π11f, Π12, Π22, Π40, Γ15, Γ47.
 - **indep.:** Π16.

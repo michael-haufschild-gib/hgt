@@ -321,7 +321,7 @@ theorem sum_jensenScaledRoots {f : ℕ → ℂ} (hf0 : f 0 = 1) {d : ℕ} (hd : 
   rw [jensenScaledRoots, multiset_sum_map_div, div_eq_iff hd']
   linear_combination hnext
 
-theorem card_filter_mul_le (B : Multiset ℂ) (hB : ∀ v ∈ B, v.im ≤ 0) {c : ℝ} (hc : 0 ≤ c) :
+theorem card_filter_mul_le (B : Multiset ℂ) (hB : ∀ v ∈ B, v.im ≤ 0) (c : ℝ) :
     (Multiset.card (B.filter fun v => v.im ≤ -c) : ℝ) * c ≤ -B.sum.im := by
   induction B using Multiset.induction_on with
   | empty => simp
@@ -388,7 +388,7 @@ theorem eventually_card_filter_le {f : ℕ → ℂ} (hf0 : f 0 = 1)
     rw [Complex.div_natCast_im]
     refine div_nonpos_of_nonpos_of_nonneg (hstab d x ?_) hdR.le
     exact isRoot_of_mem_roots hx
-  have h1 := card_filter_mul_le (B d) hBim (c := μ / d) (by positivity)
+  have h1 := card_filter_mul_le (B d) hBim (μ / d)
   have h2 : -(B d).sum.im = (f 1).im + (A d).sum.im := by
     have hs1 := sum_jensenScaledRoots hf0 hd0
     rw [hVAB, Multiset.sum_add] at hs1
@@ -403,7 +403,7 @@ theorem eventually_card_filter_le {f : ℕ → ℂ} (hf0 : f 0 = 1)
     have h4 := mul_le_mul_of_nonneg_right h3 hdR.le
     have h5 : (Multiset.card ((B d).filter fun v => v.im ≤ -(μ / d)) : ℝ) * (μ / d) * d =
         (Multiset.card ((B d).filter fun v => v.im ≤ -(μ / d)) : ℝ) * μ := by
-      field_simp
+      rw [mul_assoc, div_mul_cancel₀ _ hdR.ne']
     linarith
   have hAcount : (Multiset.card ((A d).filter fun v => v.im ≤ -(μ / d)) : ℝ) ≤ T.card := by
     rw [← hcard]

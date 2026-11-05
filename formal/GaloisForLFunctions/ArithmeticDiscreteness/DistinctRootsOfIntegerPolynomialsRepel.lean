@@ -74,7 +74,7 @@ theorem eq_minpoly_of_irreducible {A : ℤ[X]} (hA : Irreducible A) (hAm : A.Mon
   rcases hA.isUnit_or_isUnit hu with h | h
   · exact absurd h hnu
   · exact (eq_of_monic_of_associated (minpoly.monic hint) hAm
-      (associated_mul_unit_right _ _ h).symm.symm |>.trans hu.symm).symm
+      ⟨h.unit, by rw [IsUnit.unit_spec]; exact hu.symm⟩).symm
 
 /-- Roots of a divisor are roots of the polynomial. -/
 theorem roots_toC_le_of_dvd {g f : ℤ[X]} (hf : f.Monic) (hgf : g ∣ f) :
@@ -125,7 +125,7 @@ theorem exists_separable_integral_factor {f : ℤ[X]} (hf : f.Monic) {α β : �
 
 /-- The degree of a polynomial is the number of its complex roots. -/
 theorem card_roots_toC {f : ℤ[X]} : Multiset.card (toC f).roots = f.natDegree := by
-  rw [← splits_iff_card_roots.mp (IsAlgClosed.splits (toC f)), natDegree_toC]
+  rw [splits_iff_card_roots.mp (IsAlgClosed.splits (toC f)), natDegree_toC]
 
 /-- **Distinct roots of integer polynomials repel.** Two distinct complex roots of a monic
 `f ∈ ℤ[X]` of degree `n` with all roots in `|z| ≤ R`, `2R ≥ 1`, satisfy
@@ -156,7 +156,7 @@ theorem collide_or_repel_of_monic {f : ℤ[X]} (hf : f.Monic) {R : ℝ} (hR1 : 1
   · refine Or.inr ?_
     have hpos : 0 < (2 * R) ^ ((f.natDegree - 1) ^ 2 + (f.natDegree - 2)) :=
       pow_pos (by linarith) _
-    rw [inv_le_iff_one_le_mul₀ hpos, mul_comm]
+    rw [inv_le_iff_one_le_mul₀ hpos]
     exact one_le_norm_sub_mul_pow_of_ne hf hR1 hR hα hβ hne
 
 end GaloisForLFunctions.ArithmeticDiscreteness

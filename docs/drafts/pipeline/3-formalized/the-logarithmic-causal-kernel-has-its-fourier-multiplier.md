@@ -33,5 +33,5 @@ Namespace `GaloisForLFunctions.CanonicalSystemOfTheWindowTower`.
 
 Production plain audit passed. Transitive axioms are exactly
 `[propext, Classical.choice, Quot.sound]`; the umbrella imports the module.
-The [half-line form and Green identity](../1-in-progress/the-half-line-logarithmic-green-kernel.md)
-remain to be identified.
+The [half-line form and Green identity](the-half-line-logarithmic-green-kernel.md)
+are formalized.

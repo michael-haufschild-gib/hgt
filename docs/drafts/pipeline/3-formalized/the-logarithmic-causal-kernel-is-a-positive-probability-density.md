@@ -29,4 +29,4 @@ Namespace `GaloisForLFunctions.CanonicalSystemOfTheWindowTower`.
 Production plain audit passed. Transitive axioms are exactly
 `[propext, Classical.choice, Quot.sound]`; the umbrella imports the module.
 The normalized renewal mass and Green operator identity remain on the
-[half-line kernel card](../1-in-progress/the-half-line-logarithmic-green-kernel.md).
+[half-line kernel card](the-half-line-logarithmic-green-kernel.md).

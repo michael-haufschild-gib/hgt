@@ -4,8 +4,8 @@
 positivity — and which unconditional mechanism reaches that information?
 
 Primary namespace `GaloisForLFunctions.SquareRootThreshold`; cluster-product bounds use
-`SquareRootThreshold`, and `SmoothWeilDetectorPolynomialAperture` uses `RHTower`.
-Umbrella `SquareRootThreshold.lean`. 164 files. Base objects come from `Zeta23`
+`SquareRootThreshold`; `SmoothWeilDetectorPolynomialAperture` and `EffectiveHorizons/` use `RHTower`.
+Umbrella `SquareRootThreshold.lean`. 167 files. Base objects come from `Zeta23`
 and `RHTower` (`ZeroConfig`, `paperFT`, `gammaOf`, `zetaZeroConfig`, explicit formula); do not redefine.
 
 ---
@@ -149,6 +149,12 @@ and `RHTower` (`ZeroConfig`, `paperFT`, `gammaOf`, `zetaZeroConfig`, explicit fo
 24. **Explicit lags invert to excluded depths**: $V=\text{Numerator}/\delta_0+\text{Drift}$; all lags antitone
     in depth.
 
+`EffectiveHorizons/` also quantifies the symmetric ξ-zero mass: with
+`A(ε)=max(4,exp(20/ε),200/ε)` and `Z(ε)=max(A(ε/2)+1,6/(πε)+3,8)`,
+`|M(T)−T log(T)/π|≤εT log(T)` for `T≥Z(ε)`. For Hausdorff order `k`, set
+`K=10(k+1)+20` and `H=max(Z(1/500),500,42(k+1)+44K)`. Every calibrated
+Hausdorff difference with shift `r≥ceil(20K)+ceil(KH²)+1` is nonnegative.
+
 ### D. Prime side
 25. **Localized explicit formula** $W_\zeta(S_\xi f)=A_f(\xi)-\Pi_f(\xi)$; $\Pi_f$ is real; windowed mean of
     $\Pi_f$ is exactly 0 for window $2r\le\log2$ at any aperture; excursions balance exactly.
@@ -250,6 +256,9 @@ and `RHTower` (`ZeroConfig`, `paperFT`, `gammaOf`, `zetaZeroConfig`, explicit fo
   mirror-avoiding depth choice.
 - $\zeta$ inputs packaged: local zero count, Lorentzian zero mass, explicit dlVP/VK zero-free profiles on
   the lag carrier, `exists_good_width`.
+- Explicit symmetric zero-mass and Hausdorff thresholds:
+  `RHTower.xiSymmetricMass_close_explicit`,
+  `RHTower.scaledHausdorffMomentDifference_nonneg_of_explicit_shift_le`.
 - Prime side: localized explicit formula, windowed Gram identity and diag/off-diag split, parity
   variance laws, Kronecker realisation, peak persistence, excursion balance, Stieltjes identity for
   $\Pi_\ell$ vs $S(T)$.

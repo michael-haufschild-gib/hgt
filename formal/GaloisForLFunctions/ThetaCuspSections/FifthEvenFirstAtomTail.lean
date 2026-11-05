@@ -207,7 +207,8 @@ private theorem image_scale (r : ℝ) :
      rw [Real.exp_log (div_pos ht0 Real.pi_pos)]
      field_simp
 
-private theorem integral_scale (r : ℝ) (f : ℝ → ℝ) :
+/-- Exponential radial substitution for an arbitrary scalar tail integrand. -/
+theorem integral_scale (r : ℝ) (f : ℝ → ℝ) :
  (∫ t in Ioi (Real.pi*Real.exp r), f t)=
   ∫ s in Ioi r, (Real.pi*Real.exp s)*f (Real.pi*Real.exp s) := by
  have h := integral_image_eq_integral_abs_deriv_smul measurableSet_Ioi

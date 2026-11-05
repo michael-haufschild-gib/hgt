@@ -130,4 +130,9 @@ support whenever its result is in L². Bounded holomorphic regularizers
 The range of causal convolution `W` is exactly the finite logarithmic energy
 domain. Its form pulls back to the ordinary L² inner product. Thus `WW*`
 is the unique finite-energy solution operator for every half-line L² forcing.
-The explicit overlap kernel and actual Weil boundary traces remain to be proved.
+Its literal kernel is `G₊(x,y)=∫₀^{min(x,y)}v(x-s)v(y-s)ds`, integrable off
+the potentially singular diagonal. Schur composition proves its actual L²
+operator representation. Application to Weil Riesz boundary traces remains open.
+For measurable input continuous from the right at zero, the causal convolution
+has exact normalized limit `u(x)√log(1/x)→h(0)`. Positivity of the density
+and its exact renewal mass prove this without an assumed trace theorem.

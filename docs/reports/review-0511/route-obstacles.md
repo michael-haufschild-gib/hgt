@@ -147,7 +147,7 @@ directions cannot pay untwisted negativity. The far-complement estimate loses `O
 | B9 | Exact SOS on one two-prime lattice | RH |
 | B16 | Window negativity exponent `< ½` (≡ zero width `< ½`) | ≥qRH |
 | B55 | Head-window thresholds `R₁(log d) = ⊤` for every `d` (the residue of Dirichlet-shift stabilization) | RH |
-| B33 | HF-native arithmetic sign: a window beyond the base certified by the complete family itself (the literal statement `R₁(A) = ⊤` for some `A > 2·enlarged` is supplied by the AIP dilation at `A = 2a₁`, a margin of `≈ 10⁻⁶`) | sub |
+| B33 | HF-native arithmetic sign: a window beyond the base certified by the complete family itself (the literal statement `R₁(A) = ⊤` for some `A > 2·enlarged` is supplied by the AIP dilation at `A = 2a₁`, a margin of `≈ 10⁻⁶`; since `R₁(A) = ⊤ ⇔ A/2 ≤ a*`, the qualifier has no content) | sub; finite window |
 
 ### S2. The window tower, its canonical system and signed criticality
 Routes: RW, EWU, OWU, ACT, AIP, CHMD, TT, HF, ACS, SRT, SZ, MSC. Programmes: CWS, WTZ, DZG, GWZ, CSTW, SWC, FADF.
@@ -192,7 +192,7 @@ format states. No certificate exists for any `c ∈ (a_∞, log 2)`. These windo
 | B2 | Kick admission at every stage | RH as induction; each stage sub |
 | B3 | Frustration domination: the neutral signed theta-gauge inequality `2V ≤ J_{M⁺}` (even) and the shifted-ground-state inequality (odd) on every window | RH; fixed length sub |
 | B4 | Structural certificate of the odd unit window (`w₂ ∈ unitBandWeights`) | sub |
-| B5 | Structural certificate below `log 4` (`a*(ζ) ≥ log 2`), the prime `3` paid by sign | sub |
+| B5 | Structural certificate below `log 4` (`a*(ζ) ≥ log 2`), the prime `3` paid by sign | sub; finite window, no door |
 | B56 | The `{2,3,4}` sliver band below `log 5` (`a*(ζ) ≥ ½log 5`) | sub |
 | B49 | Signed ground-state structure past `log ρ` compatible with unswitchable frustration (nodes cost negative light-cone conductance) | method |
 | B51 | Regularity of the Weil Hamiltonian at every finite length (no contact) | RH (identity form of B1) |
@@ -270,6 +270,7 @@ PBM ⇔ eventual Robin; multivariate parity producers reach `(1+ε)x + C_ε log�
 | A21 | Logarithmic two-point Chowla | — |
 | A24 | Census items; Voronoi; Zwegers | — |
 | B26 | `ε`-uniform producer; square-root source input | sub; RH |
+| B57 | Self-improvement of a strip: `Θ < 1 ⇒ Θ = ½` (no mechanism) | sub |
 | B27 | First cyclotomic mode at square-root precision | RH |
 | B28 | Signed pair information beyond bandwidth one | sub |
 | B29 | First Epstein real zero on the boost line | sub |
@@ -287,7 +288,7 @@ entering coordinates; total anti-diagonal kernel positive everywhere exactly for
 | | Obstacle | Strength |
 |---|---|---|
 | A11 | Function-field calibration of the remaining receivers | — |
-| A13 | Widths of the finite-level cones `𝒜(c)` [N] | — |
+| A13 | Widths of the finite-level cones `𝒜(c)`; computed to `c = 0.66` (summary 1.15) [N] | — |
 | A31 | Selberg-class degree-one classification | — |
 | B30 | Bounded damped cone coupling; unattained width | RH |
 | B31 | Finite-sieve Hodge positivity → global | RH |
@@ -295,6 +296,8 @@ entering coordinates; total anti-diagonal kernel positive everywhere exactly for
 | B36 | Selection at the trivial gauge point | RH |
 | B37 | FE twins inside the full class with off-line zeros | sub |
 | B42 | Prime-blind positivity on signed blind combinations | RH |
+| B58 | Effective uniqueness of the Weil cone: explicit `ε(n, c) → 0` with `|λ(n) − Λ(n)| ≤ ε(n, c)` on `𝒜(c)` | sub |
+| B59 | Margin law: decay of `max_λ λ_min(W_λ|[−c,c])` and of the band widths | sub |
 
 ### S9. Realization and scattering
 Routes: PM, RN, PTR, W1C.
@@ -314,7 +317,7 @@ Status: P3's sign is `σ = ¼` in two coordinate systems; no positive multiple o
 | B38 | An expression of `D_s(ψ_s)` at resonances with sign `≥ 0` that does not carry the factor `(b^{2σ−½} − b^{−(2σ−½)})²` | RH |
 | B39 | Statistic of resonant states selecting the decay rate | method |
 | B40 | Source-faithful realization of unbounded rank | RH |
-| B46 | PM-native zero-free region for `ζ(2s)` from an arithmetic size bound on the defect | sub |
+| B46 | PM-native zero-free region for `ζ(2s)`, `β < 1 − c/log|γ|`, from the carrier alone (route test; reproves a classical region) | sub |
 
 ### S10. Zero-configuration geometry, camera and continuation
 Routes: ZCG (candidate), LA, TH, HCF, XN, SRT; programmes ZCG, RHTower DeBruijn, SquareRootThreshold.
@@ -340,16 +343,16 @@ Established [L]:
   above `(N − 1)π/(Ng)`; the period-6 mixed-depth mimics hide exactly to `5π/(6g)`.
 
 Status: identification is complete at its scale; the RH content is the sign of the squared gap at
-near-coincidences, i.e. the sign of an explicit prime-side Hankel ratio (B44) [D].
+near-coincidences (B44): the squared gap, read at windows built from the cluster [L/D].
 
 | | Obstacle | Strength |
 |---|---|---|
 | A38 | Sub-Weyl strip profile from the best known exponent pairs (horizon toward `½`; decides nothing about zeros) | — |
-| A40 | Camera with real (non-integer) weights and Beurling–Selberg transfer of local counts to mimics | — |
+| A40 | Camera with real (non-integer) weights and Beurling–Selberg transfer of local counts to mimics (not needed for A39) | — |
 | A42 | Effective `T₀` in the camera theorems | — |
 | B14 | Collision exclusion along a source-faithful path below `½/log X` (≡ `Λ_X = 0` ∀X) | RH |
-| B44 | Reality at near-coincidences: `𝓗 ≥ 0` (up to readout error) on every isolated cluster of ζ, `𝓗 = 4(W₁² − W₀W₂)/W₀²` from prime-side images | RH |
-| B54 | Collide or repel for ζ: distinct zeros at height `T` separated by `≥ T^{−C}` (the camera then resolves every cluster) | sub |
+| B44 | Reality at near-coincidences: `𝓗 ≥ 0` (up to readout error) on every isolated cluster of ζ, `𝓗 = 4(W₁² − W₀W₂)/W₀²` from images at windows built from the cluster | RH |
+| B54 | Distinct zeros of ζ at height `T` separated by `≥ T^{−C}`: open under RH, no implication for real parts, no route depends on it | indep. |
 
 ### S11. Window visibility
 Routes: every window route; WD, LA, ZCG through depth and density. Programme: WVL, SquareRootThreshold, DCI.
@@ -368,7 +371,7 @@ where they are vacuous.
 |---|---|---|
 | A35 | Sharpen the explicit constants (`2²⁶·960`; detector `480000`, `10⁶`) toward the model constant `4δL/k` | — |
 | A36 | Remaining onset-law items (general RvM shallow depth-mass bound under positivity; tapered crystal to `a ≍ log T`; two-bump interferometer) | — |
-| A39 | Krein extension for Weil's distribution on intervals: window positivity at `a` ⇔ a positive measure on ℝ (an on-line mimic) with the same image on the window; discrete mimics from de Branges sampling in the CSTW chain | — |
+| A39 | Sharp zero location: compose the negative test on the form (`exists_window_re_W_neg`, `not_hodgeIndex_below_nyquist_horizon`) with the camera's isolating windows at `a = λL_T`, `λ > 1`; no on-line mimic needed; a receiver | — |
 
 ### S12. Finite free stability
 Routes: LA, TH; candidate FFP.
@@ -605,7 +608,7 @@ Each entry: path; established; open; class; A; B.
 | SEC | essential norm = seam jump | pre-divisor compactness at zeros | B41 |
 | W1C | Lee–Yang receiver; PM's Krein space and generator; side law | positive arithmetic Hilbert realization | B38, B40 |
 | WBF | genealogy Gram | any arithmetic coupling | B41 |
-| ZCG | S10 in full | a source-side reality law at near-coincidences (`𝓗 ≥ 0`) with a proved global RH implication | B14, B44, B54 |
+| ZCG | S10 in full | a source-side reality law at near-coincidences (`𝓗 ≥ 0`) with a proved global RH implication | B14, B44 |
 
 ### ZCG — zero-configuration geometry (candidate)
 - Path: prime explicit-formula image → configuration identification → reality at near-coincidences or
@@ -615,9 +618,9 @@ Each entry: path; established; open; class; A; B.
   discriminants and point locations from finitely many prime-side images; FE-pair squared gaps `≥ 0` at every
   zero ⇔ RH.
 - Why a candidate: identification decides nothing alone; no source-side condition with a proved RH implication
-  fixes the sign of `𝓗`. The proved repulsion mechanisms (integrality over `𝔽_q`, phase speed above the carrier
+  fixes the sign of `𝓗`. The proved repulsion mechanisms (integrality over `𝔽_q` given the disc bound, phase speed above the carrier
   horizon, size-only heat bounds above `½/log X`) do not reach ζ's scale.
-- Obstacles. A: A38, A40, A42. B: B14, B44, B54.
+- Obstacles. A: A38, A39, A42. B: B14, B44.
 
 ### FFP — finite free stability (candidate)
 - Path: Ξ (or `Ξ·M_S`) → real-rooted / Hermite–Biehler-stable Jensen polynomials at infinitely many degrees,

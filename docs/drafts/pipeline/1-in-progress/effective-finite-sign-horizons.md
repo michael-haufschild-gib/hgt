@@ -7,8 +7,10 @@
 
 ## Obligations
 
-Give explicit Hausdorff shifts, Jensen horizons, and two-grid detection degrees.
+Give explicit Jensen horizons and two-grid detection degrees.
 An existential threshold renamed by `Classical.choose` is not an effective bound.
+
+Explicit Hausdorff shifts are [formalized](../3-formalized/explicit-symmetric-zero-mass-and-hausdorff-shifts.md).
 
 The fourth obligation, Pólya frequency order beyond 37, is already supplied by
 `RHTower.xi_centre_pfSeq_fortyFive` in `XiSliceCoeffOrderTwentyThreeBand.lean`.
@@ -16,16 +18,17 @@ Its direct source check and transitive axiom audit passed; the owning umbrella
 imports it. Only `propext`, `Classical.choice`, and `Quot.sound` occur. This is
 existing mathematics, not a new theorem.
 
-## Hausdorff reduction
+## Explicit Hausdorff shifts
 
-The existing proof uses `K=10(k+1)+20`, endpoint radius `R`, and
+With `K=10(k+1)+20`, the explicit bound is
 
-`r₀=⌈20K⌉+⌈KR·max(T₀,500,42(k+1)+44K)²⌉+1`.
+`r₀=⌈20K⌉+⌈K·max(Z(1/500),500,42(k+1)+44K)²⌉+1`.
 
-Here `T₀` is the unspecified threshold in `exists_xiSymmetricMass_close(1/500)`.
-An explicit symmetric zero-mass estimate at relative error `1/500` would make
-this shift bound effective. The current mass proof uses an unspecified
-horizontal argument bound and convergence of the vertical ratio. These inputs
-must be quantified, not assumed.
+Here `A(ε)=max(4,exp(20/ε),200/ε)` and
+`Z(ε)=max(A(ε/2)+1,6/(πε)+3,8)`. The explicit symmetric zero-mass theorem
+holds at every height `T≥Z(ε)`. Three direct source checks, six transitive axiom
+audits and umbrella wiring are complete.
 
-Jensen and two-grid horizons remain open.
+The [two-grid degree candidate](explicit-two-grid-detection-degrees.md) uses a
+finite outer-spectrum separator and a uniform geometric tail. Jensen horizons
+remain open.

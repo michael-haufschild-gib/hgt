@@ -60,12 +60,15 @@ Its renewal input is
 [Hernández-Santamaría–López Ríos–Saldaña](https://arxiv.org/abs/2401.18033v2).
 These are proof leads, not imported Lean assumptions.
 
-Required formalization: half-line renewal
-factorization and normalization; domain extension with its exterior forcing;
-Green representation; continuity and the normalized convolution limit.
-The reference factorization is isolated in
-[the half-line logarithmic Green kernel](the-half-line-logarithmic-green-kernel.md). Riesz forcing must be derived from
-the completed Weil equation. No numerical evidence enters these claims.
+The half-line factorization, exact renewal normalization, actual form inverse,
+and literal Green representation are
+[formalized](../3-formalized/the-half-line-logarithmic-green-kernel.md).
+The [normalized convolution limit](../3-formalized/the-logarithmic-renewal-average-reads-the-boundary.md)
+is formalized for right-continuous input. Required formalization: domain
+extension with its exterior forcing and actual backward-convolution continuity. The interior Riesz forcing
+already follows from the completed Weil equation. Sharp cutoff preservation
+of the stationary jump domain is available in `CHMDSharpSpatialCut`; both
+exterior Gamma actions are available in `CCMRestrictedWeilGammaBoundaryPairing`.
 
 ## Consequence sought
 

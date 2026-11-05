@@ -27,8 +27,8 @@ piece of the window tower, the reflection pair.
 - **Sign = precision.** `W(f ± f∘R) = 2W(f) ± 2𝒞_m(f)`; the band in prime form is identified with the Weil-lag,
   JAS, CTF, PBM and Robin criteria [L]; Suzuki's first variation is Weil's energy [L]; the Cayley ladder is the
   Toeplitz ladder of Li coefficients [W]; WD's inner caps are the off-line generating function [L].
-- **Sign → location.** The visibility law turns window theorems into zero location [L]; the Krein–camera
-  assembly would turn positivity at aperture `a` into location of every non-super-shallow off-line zero below
+- **Sign → location.** The visibility law turns window theorems into zero location [L]; the negative test on the
+  form at the camera's isolating windows would turn positivity at aperture `a` into location of every non-super-shallow off-line zero below
   height `≈ 2πe^{2a}` [D].
 - **Reflection = zero side.** Krein form of zero coordinates; Mayer defect `−D_s = ∫K_σ|·|²` with
   `K_σ ∝ (b^{2σ−½} − b^{−(2σ−½)})²` in two coordinate systems [L]: U-Γ's positivity is U-Σ at a resonance, the
@@ -39,12 +39,12 @@ piece of the window tower, the reflection pair.
 - **One continuation, one floor, one finite free law.** Reality lost only through collision; size reaches the
   saddle `½/log X` and no further [L]; Gaussian finite free capacity `o(d⁻²)`, Euler side stable with forced drift
   `θ_S/2`, ζ/Gamma/pole sides unstable [L]. P5's residual is U-Γ's sign.
-- **One missing mechanism.** Over `𝔽_q`: Hodge index on primitive classes, or integrality forcing
-  collide-or-repel along a deformation from a pure member [L]. Over ℤ: the same Gram is RH; counts are closed;
-  the image is a `log p`-weighted sum without discreteness; domination is shared by every finite carrier [L/D].
-  Missing: a signed payment of the collective kicks against the pole square on every reflection pair, in a frame
-  where frustration persists (P1 = P4); or a sign-free nonnegative expression of the Mayer defect (P3); or a
-  discreteness law at near-coincidences driving collide-or-repel for ζ (P5 = the U-Γ sign).
+- **One missing mechanism.** Over `𝔽_q`: Hodge index on primitive classes [L]; integrality gives collide-or-repel once
+  the disc bound is known [L]. Over ℤ: the same Gram is RH; counts are closed; the image is a `log p`-weighted sum;
+  domination is shared by every finite carrier [L/D]. Missing: an unconditional input at square-root precision,
+  parity-breaking and of unbounded aperture [L]. Its reading would be a signed payment of the collective kicks
+  against the pole square on every reflection pair (P1 = P4), the identity `D_s = 0` (P3), or reality at
+  near-coincidences (P5 = the U-Γ sign).
 
 Evidence: `[L]` committed Lean; `[W]` working-tree Lean; `[P]` pipeline-card paper proof; `[D]` derived here.
 
@@ -107,7 +107,7 @@ Evidence: `[L]` committed Lean; `[W]` working-tree Lean; `[P]` pipeline-card pap
 | End of finite templates | spread 6 (`2c = log 6`) | WTZ [L] |
 | Zero information | from `c ≥ 4`; `≈ 20` with present constants | WVL [L]; [D] |
 | Ground energy | `μ(a) ≤ K exp((11/2)a − πe^{2(a−2)})` | M [L] |
-| Camera aperture | `λ·½log(T/2π)`: isolated zeros at `λ > ½`; configurations at `λ > 1`; Krein–camera height `≈ 2πe^{2a}` | ZCG [L]; [D] |
+| Camera aperture | `λ·½log(T/2π)`: isolated zeros at `λ > ½`; configurations at `λ > 1`; sharp location height `≈ 2πe^{2a}` | ZCG [L]; [D] |
 | Height non-locality | zeros below `exp((e^{2δa}−2)/(4δ) − a)` do not decide the window | WVL [L] |
 | Contact | kernel blow-up at `a*` off RH | CSTW [L] |
 
@@ -125,9 +125,9 @@ is RH.
 | First failure | two-site; extremals edge-singular | at index `2g` | C15, C19 |
 | Camera threshold | `λ = ½` isolated zeros; `λ > 1` configurations; clusters to `e^{−c log³T}` | order `g` | C21, C23 |
 | Certification by sign | split columns; mixed `(g − ½)ℓ` | positivity at `a > (g − ½)log q` | C21, C25 |
-| Repulsion | phase speed above the carrier horizon; size to `½/log X`; Euler drift `θ_S/2` | integrality: collide or repel | C5, C24, C28 |
+| Repulsion | phase speed above the carrier horizon; size to `½/log X`; Euler drift `θ_S/2` | integrality: collide or repel, given the disc bound | C5, C24, C28 |
 | Reality | sign of `𝓗` at a near-coincidence | trace points `β + β⁻¹ ∈ [−2, 2]` | C5, C21 |
-| Purity by deformation | heat path pure at `t ≥ 1/8`, collision exit; no discreteness | pure member + integrality + continuity | C5 |
+| Purity | heat path pure at `t ≥ 1/8`, collision exit; no source of reality | Hodge index, Stepanov–Bombieri count, Deligne's tensor powers | C5 |
 
 ## 1. Equivalence classes of routes
 
@@ -257,7 +257,7 @@ systems; at a near-coincidence its sign is the sign of `𝓗`. Positivity of the
 | Selberg class | SEL | rigidity |
 | Camera identification | ZCG, SRT | complete to `e^{−c log³T}` (Γ36, Γ44) |
 | Reality at near-coincidences | ZCG, LA | sign of `𝓗` ⇔ no heat collision (Γ46) |
-| Krein–camera | CSTW, ZCG | positivity ⇒ on-line mimic ⇒ location (Γ47, assembly) |
+| Sharp location | SRT, ZCG | positivity + isolating windows ⇒ location (Γ47, assembly) |
 | Euler columns and carriers | ZCG, FFP | domination non-selective; Euler drift `θ_S/2` |
 | Mayer reflection | PM, W1C | defect `−∫K_σ|·|²`; nonnegative representation ⇔ RH (Γ24) |
 | Frobenius at infinity / Rosati | CWS, WTZ, GWZ, AOG | Γ4, Γ19 |
@@ -281,7 +281,7 @@ systems; at a near-coincidence its sign is the sign of `𝓗`. Positivity of the
 | Σ: one chain | de Branges chain before contact; contact blow-up | CSTW [L] |
 | Σ ∩ C29: finite reduction | rational Hecke graphs; templates end at spread 6 | WTZ [L] |
 | Σ ∩ Γ: exact completion | Weil energy = Krein form; Mayer defect in two coordinates | RIT [L] |
-| Σ ∩ Γ: visibility and camera | window sign reads depth and coherence; camera reads configurations; Krein–camera links them | WVL, ZCG [L]; [D] |
+| Σ ∩ Γ: visibility and camera | window sign reads depth and coherence; camera reads configurations; the negative test at isolating windows links them | WVL, ZCG [L]; [D] |
 | Σ ∩ Π: one canonical system | Levinson; continuum margins; reflection coefficients at `(−1)^n` | GWZ, SWC [L] |
 | Σ ∩ C5: one moment problem | sectors ⇔ Hamburger/Stieltjes; theta Hankel; Jensen | SWC, TH, LA [L] |
 | C5 ∩ C28: finite free | heat = `⊞_d` with Hermite; Gaussian capacity `o(d⁻²)` ⇔ de Bruijn–Newman criticality | FFP [L] |
@@ -348,4 +348,4 @@ systems; at a near-coincidence its sign is the sign of `𝓗`. Positivity of the
 | Canonical selector | Weil cone `{Λ}`; unique admissible multiple; identification to `e^{−c log³T}` | — (automatic after positivity) |
 | Reflection | Krein space of zero coordinates; defect `−∫K_σ|·|²` in two coordinates; `𝓗` reads `w²` | a sign-free nonnegative defect identity (B38); `𝓗 ≥ 0` on every near-coincidence (B44) |
 | Reality by continuation | heat path real for `t ≥ 1/8`; collision exit; size to `½/log X`; finite free criticality | collision exclusion below `½/log X` (B14); mollified stability (B52) |
-| Discreteness | camera at polynomial scale | collide or repel for ζ (B54); an integral structure along a deformation (2.4) |
+| Production | deciding-input theorem; every known producer precision-blind | an unconditional input at square-root precision (Π2); below it, `100%` critical-scale clustering (B20) |

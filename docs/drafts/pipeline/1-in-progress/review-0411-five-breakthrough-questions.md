@@ -47,8 +47,8 @@ with bounded forcing retaining every prime and polar term; see
 
 **Remaining:** [normalized endpoint traces](normalized-boundary-traces-of-weil-riesz-vectors.md),
 their aperture variation, original-length canonical normalization, and prime-entry law.
-The reference trace input is
-[the half-line logarithmic Green kernel](the-half-line-logarithmic-green-kernel.md).
+The reference inverse, its literal kernel, and exact renewal normalization are formalized in
+[the half-line logarithmic Green kernel](../3-formalized/the-half-line-logarithmic-green-kernel.md).
 The ordinary integrable-accelerant theorem does not apply to the unbounded literal Weil form
 (`WeilPaperUnboundedSpectralEnergy`). The RH-dependent `suzuki_deBranges_subspace` cannot supply
 this unconditional construction.

@@ -53,8 +53,10 @@ No numerical experiments or trusted computation; certificates require kernel pro
 
 **A18.** [Effective finite sign horizons](effective-finite-sign-horizons.md):
 the existing unconditional `PF_45` theorem passed its direct source check and
-axiom audit. Explicit Hausdorff shifts, Jensen horizons and two-grid degrees
-remain open. The Hausdorff proof reduces to quantifying a zero-mass threshold.
+axiom audit. [Explicit Hausdorff shifts](../3-formalized/explicit-symmetric-zero-mass-and-hausdorff-shifts.md)
+are now formalized via an explicit zero-mass threshold at every height; three
+direct source checks, six transitive axiom audits and umbrella wiring passed.
+Jensen horizons and two-grid degrees remain open.
 
 **Former A10, absent from the current list.** For the window index `ι(A)`, define
 `Lₙ = sup {A : ι(A) ≤ n}` in `EReal`. Prove
