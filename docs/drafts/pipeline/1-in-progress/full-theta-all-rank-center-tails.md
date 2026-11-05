@@ -1,20 +1,24 @@
-# Full-theta all-rank center tails
+# Full-theta all-rank weighted center tails
 
 - **Stage:** 1-in-progress
 - **Type:** CONJECTURE
 - **Wall:** Σ6
-- **Statement:** For every `N : ℕ` and `r≥0`, the matrix
-  `∫_(s>r) Re((-i)^(j+k)) ∂ₜ^(j+k)[Φ(s/2+t)Φ(s/2−t)]|ₜ₌₀ ds`
-  is positive definite, where `Φ` is the complete theta-cusp source.
+- **Statement:** For every finite rank and `0<a<1/2`, the complete-source
+  signed mixed-jet Hankel matrix is positive definite. Its entries are
+  `∫_(r>0) (sinh(ar)+ar cosh(ar)) U_(j+k)(r) dr`, with
+  `U_k(r)=∫_(s>r) Re((-i)^k) ∂ₜ^k[Φ(s/2+t)Φ(s/2−t)]|ₜ₌₀ ds`.
 
 The [first-atom theorem](../3-formalized/all-rank-first-atom-center-tails.md)
-proves the corresponding assertion for `thetaCuspSourceTerm · 1`.
-The complete source requires the signed unequal-pair contribution and the
-infinite remainder. Existing fixed-rank remainder estimates do not supply
-a bound uniform in rank.
+proves positive definiteness of each tail matrix for `thetaCuspSourceTerm · 1`.
+For the complete source, this stronger cutoff-by-cutoff assertion is
+numerically contradicted at small positive cutoffs; see
+[Σ81](../../../reports/review-0511/walls-ledger.md). A rigorous counterexample
+certificate remains pending. The aperture weight must be retained.
 
-The ordered-pair Fourier normal form retains
-`exp(-ib(log n−log m))`; its radial factor alone is positive after center
-integration. A full-source proof must control these phases jointly and
-justify the infinite sum. No such estimate or all-rank full-source proof
-is established here.
+The [pair-spectrum theorem](../3-formalized/integrated-theta-pair-spectrum.md)
+gives exact cosine signs and a frequency-uniform exponential truncation
+bound for the absolutely convergent ordinary-pair tail series. This is an
+absolute scalar bound, not a relative bound for all polynomial tests.
+Identification with the full-source Fourier integral still needs the
+ordinary-pair sum/integral exchange. The signed weighted lower bound and
+full-theta all-rank theorem remain unproved.

@@ -1,7 +1,7 @@
 # RH proof-route frontier
 
 **RH open · 38 live route formulations · 9 candidates.**
-**Corpus checkpoint:** `3cf4249fe7ab4546d5ca06cd7bd2ee88767a20c9`.
+**Corpus checkpoint:** `9ebb2bd3879f2b62dd6a23ea7fb2657ab5b27dab`.
 
 Live = source observable + proved RH-sufficient receiver + explicit open estimate. Candidate = missing independent source mechanism/landing.
 Formulations need not be independent: HJ→PA, BSH→CDC; FEL's BSY criterion→CTF. Source construction does not discharge zero-selective sign/vanishing.
@@ -45,9 +45,9 @@ Evidence: [L] integrated, source-reviewed; [S] unfinished/unintegrated, unverifi
 ### RW — Restricted Weil ground energy
 
 - **Path:** Complete Weil form → μ(a)≥0 at every radius → RH.
-- **Established:** Attained strictly decreasing minima; nonnegative apertures extend through finite contact. Increasing a_k carries floor1/(20000·2^k), a₀>181/500. Precontact HB kernels; finite contact forces blowup. Full collar equations and sharp two-collar coercivity; rescaled actual residuals converge strongly in L², mass/(h log(1/h))→|endpoint trace|². Fixed-enclosure increment: (log(1/h)−E(a,c))‖ΔE_z‖²≤two-collar residual mass. Support-fitting translation preserves the complete Weil form, including polar terms; precontact Hilbert isometry has Fourier multiplier e^(−izh). All-lattice/two-site receivers [L]; exact {2,3} band below log2 [K].
+- **Established:** Attained strictly decreasing minima; nonnegative apertures extend through finite contact. Increasing a_k carries floor1/(20000·2^k), a₀>181/500. Precontact HB kernels; finite contact forces blowup. Full collar equations/coercivity; residual mass/(h log(1/h))→|endpoint trace|² with strong rescaled L² convergence. Fixed-enclosure increment: (log(1/h)−E(a,c))‖ΔE_z‖²≤two-collar residual mass. Support-fitting precontact translation is a full-Weil isometry with Fourier multiplier e^(−izh). Two-increment renewal mass J(x)log(1/x)→1 as x↓0. All-lattice/two-site receivers [L]; exact {2,3} band below log2 [K].
 - **Open:** All-aperture sign or contact-excluding arithmetic kernel bound. Kernel absolute continuity, moving-boundary flux identity and contact-uniform control remain. E(a,c) contains 2C_c²/μ(a), C_c=2π+‖bounded remainder at c‖: the increment bound degenerates as μ(a)↓0. Increasing a_k need not exhaust apertures. [Prime-entry margins](#prime-entry), [EWU](#ewu), [OWU](#owu), [ACT](#act).
-- **Sources:** C:TheApertureFlowNeverStalls; I:MultiPrimeDilationModulusAndIteratedWeilFloors; CSTW:{TheWeilFormIsCompleteBeforeContact,TheLocalWeilKernelIsHermiteBiehler,TheWeilKernelDivergesAtContact,TheWeilKernelIncrementSolvesTheFullCollarEquation,TheFullWeilFormControlsBothCollars,TheWeilCollarResidualsHaveTheirActualL2Limit,TheWeilKernelIncrementHasItsCollarEnergyBound,TranslationPreservesTheCompleteWeilForm} [L]; GWZ:RHIsDecidedOnTwoSites [L]; SWC:BelowLogFour/RetainedVarianceAndHalfWindowBandBelowLogFour [K].
+- **Sources:** C:TheApertureFlowNeverStalls; I:MultiPrimeDilationModulusAndIteratedWeilFloors; CSTW:{TheWeilFormIsCompleteBeforeContact,TheLocalWeilKernelIsHermiteBiehler,TheWeilKernelDivergesAtContact,TheWeilKernelIncrementSolvesTheFullCollarEquation,TheFullWeilFormControlsBothCollars,TheWeilCollarResidualsHaveTheirActualL2Limit,TheWeilKernelIncrementHasItsCollarEnergyBound,TranslationPreservesTheCompleteWeilForm,TheLogarithmicRenewalCouplingHasItsExactNormalization} [L]; GWZ:RHIsDecidedOnTwoSites [L]; SWC:BelowLogFour/RetainedVarianceAndHalfWindowBandBelowLogFour [K].
 
 <a id="fu"></a>
 ### FU — CCM-FU signed prime scheduling
@@ -141,9 +141,9 @@ Evidence: [L] integrated, source-reviewed; [S] unfinished/unintegrated, unverifi
 ### TH — Theta moment positivity
 
 - **Path:** Signed center-mixed theta jets → all-rank Hankel positivity → RH.
-- **Established:** Rank8 positive for 0<a<1/2; ranks≤N strict on |a−1/2|<c/(1+log(N+1)) [K]. Complete fifth-even native tails PD for r≥0, including all ordered pairs/infinite remainder; rank9 positive and I₈(a)>0 throughout 0<a<1/2 [L]. Actual first-atom radial tail is Schwartz with strictly positive Fourier density for q>1+√2; literal integrated signed-jet identification gives first-atom center-tail matrices PD at every finite rank, r≥0 [L].
-- **Open:** Full theta: rank10+ signed-tail positivity throughout 0<a<1/2, or rank-uniform allocation retaining all cross-pairs/remainders. First-atom positivity does not control mixed atoms. [Fixed quartic repairs fail](rh-killed-routes.md#theta-fixed-cross-load).
-- **Sources:** R:ThetaCusp/ThetaCuspCenterMixedSignedJetCompleteness; TCS:{StrictEighthSection,LogarithmicCriticalCollar} [K]; TCS:{FifthEvenCompleteTail,StrictNinthSection}; CAF:{FirstAtomRadialProfile,FourierPositiveHankel,FirstAtomAllRankCenterTail} [L].
+- **Established:** Rank8 positive for 0<a<1/2; ranks≤N strict on |a−1/2|<c/(1+log(N+1)) [K]. Complete fifth-even tails PD for r≥0, retaining every ordered pair/remainder; rank9 positive and I₈(a)>0 throughout 0<a<1/2. First-atom center-tail matrices PD at every finite rank, r≥0, via positive Schwartz Fourier density [L]. Integrated pair spectrum S_nm=A_nm cos(b log(n/m)), A_nm>0 for n,m≥1,r≥0; every diagonal pair and every pair at b=0 is positive [S].
+- **Open:** Rank10+ aperture-weighted signed-jet positivity throughout 0<a<1/2. Pair-spectrum branch needs full ordered-pair summation/interchange and control of the signed aggregate; series convergence is not formalized. [Unequal-pair spectra change sign](rh-killed-routes.md#theta-pairwise-positive); diagonal positivity cannot replace their joint payment. [Fixed quartic repairs fail](rh-killed-routes.md#theta-fixed-cross-load).
+- **Sources:** R:ThetaCusp/ThetaCuspCenterMixedSignedJetCompleteness; TCS:{StrictEighthSection,LogarithmicCriticalCollar} [K]; TCS:{FifthEvenCompleteTail,StrictNinthSection}; CAF:{FirstAtomRadialProfile,FourierPositiveHankel,FirstAtomAllRankCenterTail} [L]; CAF:ThetaPairCenterTailSpectrum [S].
 
 <a id="rn"></a>
 ### RN — Theta renewal and singular comparison

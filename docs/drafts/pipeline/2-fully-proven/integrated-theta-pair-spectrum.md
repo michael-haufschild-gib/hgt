@@ -40,10 +40,27 @@ For `n,m≥1`, `nm≥n+m−1`. Hence the pair-tail series is absolutely
 convergent. Omitting all pairs with `n>M` or `m>M` leaves absolute error
 at most
 
-`8C(b/2) exp(-q(M+1))/(1-exp(-q))²`.
+`8C(0) exp(-q(M+1))/(1-exp(-q))²`, uniformly in real `b`.
 
 This follows by covering the omitted set by two geometric half-strips.
-The constant depends on frequency; this is an absolute error bound, not
-a positive lower bound for the signed complete sum. Identification with
+For imaginary order, the Schläfli integrand contains `cos(2τt)`, whose
+absolute value is at most one. Hence `Cost(p,τ)≤Cost(p,0)` and `C(τ)≤C(0)`.
+This gives uniform absolute error, not a positive lower bound for the
+signed complete sum. Identification with
 the full-source Fourier integral additionally requires the appropriate
 sum/integral exchange.
+
+## Ordinary-source reassembly
+
+For `A_n(x)=exp(3x/2)|φ_(n+1)(x)|`, atom translation gives
+`∫A_n=(n+1)^(-2)∫A_0`. Each `A_n` is integrable, so `H=∑A_n` is integrable
+by the summable `n^(-2)` majorant. The map
+`(s,t)↦(s/2+t,s/2−t)` preserves planar Lebesgue measure. Consequently
+`H(s/2+t)H(s/2−t)` is integrable on the plane.
+
+On `s>r`, the sum of absolute ordinary-pair Fourier integrands equals
+`exp(-3s/2)H(s/2+t)H(s/2−t)`, bounded by the same integrable product times
+`exp(-3r/2)`. Dominated summation and Fubini therefore identify the literal
+complete-source tail integral with the ordinary-pair tail series. The
+uniform rectangular error above then applies to that complete-source tail.
+Lean formalization of this exchange is pending.

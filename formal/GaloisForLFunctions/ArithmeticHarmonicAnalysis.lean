@@ -39,6 +39,7 @@ import GaloisForLFunctions.ArithmeticHarmonicAnalysis.SubWeylGaussianAFEBlocks
 import GaloisForLFunctions.ArithmeticHarmonicAnalysis.GaussianAFESquareHeightTails
 import GaloisForLFunctions.ArithmeticHarmonicAnalysis.ZetaCriticalLineSubWeylBound
 import GaloisForLFunctions.ArithmeticHarmonicAnalysis.SubWeylZetaProfiles
+import GaloisForLFunctions.ArithmeticHarmonicAnalysis.TypicalZetaLogDerivative
 
 /-!
 # Arithmetic harmonic analysis at critical resolution

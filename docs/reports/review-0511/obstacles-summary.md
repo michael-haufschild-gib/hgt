@@ -1,17 +1,28 @@
 # Obstacles summary — status quo
 
 Companion to `route-obstacles.md` (per route; labels `A*`, `B*`, `S*`, mechanism classes P1–P5),
-`walls-ledger.md` (Σ/Π/Γ) and `route-unification-ledger.md` (mechanism classes). Corpus checkpoint: `9c877bf0377b015a3d009764764926a61c7b657e`.
-Evidence: `[L]` integrated, source-reviewed Lean; `[S]` unfinished/unintegrated; `[D]` inference, not a Lean theorem; `[N]` unverified numerical observation. Windows `[−c, c]` or
+`walls-ledger.md` (Σ/Π/Γ) and `route-unification-ledger.md` (mechanism classes). Corpus checkpoint: `9ebb2bd387`.
+Evidence: `[L]` integrated, source-reviewed Lean; `[S]` unfinished/unintegrated; `[D]` inference, not a Lean theorem; `[N]` unverified numerical observation; `[C]` classical literature, not formalized. Windows `[−c, c]` or
 half-windows `[−c, 0]`; `w_n = Λ(n)n^{−1/2}`; `H` the archimedean–polar form (prime weights `0`), `P` the arithmetic
 part, `W = H − P`; `𝒥` the Lévy energy; `𝒞_m(f) = 𝓗_m(f) − Σ_n w_n(f⋆f)(2m − log n)`; `a*(ζ)` the onset aperture;
 `ℋ(c) = {t : H − tP ≥ 0 on [−c, c]}` the arithmetic Hardy interval; `𝒜(c)` the window cone of weights `λ` with
 `W_λ ≥ 0` on `[−c, c]`; `λ*(c)` its best margin; `L_T = ½log(T/2π)`; `a_k = weilFloorApertureTower k`,
-`a₀ ∈ (181/500, 181/500 + 5×10⁻⁷)`, `a_∞ = lim a_k` (not identified); `log ρ ≈ 0.2812` (plastic number);
+`a₀ ∈ (181/500, 181/500 + 5×10⁻⁷)`, `a_∞ = lim a_k`, `a_∞−a₀<10^(−7,800,000)` [D]; `log ρ ≈ 0.2812` (plastic number);
 `Θ = sup Re ρ`; `N_d` the number of non-real roots of the degree-`d` reversed Jensen polynomial of `Ξ`; `E` the
 exceptional values of ζ (a dense `G_δ` null set).
 
 **38 live formulations; 9 candidates.** Live means a concrete source, RH-sufficient receiver and explicit open estimate—not a discharged RH proof or an independent mechanism. ZCG, PTR, SEC, ACS, CDC and PCS satisfy this definition. HJ→PA; BSH→CDC; FEL's BSY criterion→CTF. Candidates: APF, EGC, EWJ, FEL, IRK, MSC, RFHM, W1C, WBF. Authoritative classifications: [frontier](../rh-current-frontier-map.md), [killed/retired mechanisms](../rh-killed-routes.md).
+
+## 1.0 Main facts
+
+1. **Finite rungs are verification tasks [D].** Each window or rank follows from RH verified to a finite height. Window `a` needs `log(T₀/2π)≳2Σ_{n≤e^{2a+s}}Λ(n)/√n`, matching the proved non-locality lower bound. No finite rung decides RH.
+2. **Budget suffices [L].** A floor `−C_σe^{2σr}∫F²` for every `σ>0`, or one constant at all apertures, implies RH.
+3. **A width axis runs through the routes [L/D].** Interior values are zero-free strips. All routes stop at the Euler edge.
+4. **The problem has a prime-free form [L].** RH ⇔ blind positivity; blind energy is `(1/π)∫|𝓜f|²(θ′+1−Re ζ(½+it))`.
+5. **Kernel regularity is closed in substance [L/D].** The increment bound and residual limits give absolute continuity. Every bound carries `2C²/μ(a)`, which is the whole remaining gap in the chain.
+6. **TH splits [L/N].** First atoms are PD at every rank, every cutoff. Integrated pair spectra have a positive radial factor times the log-ratio cosine: diagonal pairs positive, each unequal pair negative at some frequency [L]. Full tails fail at `b=2γ₄` for small `r`, so fibrewise allocation is dead and the aperture weight must stay.
+7. **The heat horizon is strip-strength near its floor [L/D].** `c d²/log X≤Λ_X≤(6600/9991+ε)/log X`.
+8. **Positive mimic = window sign [D].**
 
 ## 1. The big picture
 
@@ -20,8 +31,8 @@ RH ⇔ `a*(ζ) = ⊤` ⇔ `1 ∈ ℋ(c)` for every `c` ⇔ `λ*(c) → 0` [L: WV
 inequality**: the arithmetic part `P` must be a Hardy term for the archimedean logarithmic jump operator with the pole
 kept, `H ≥ P` on every window. Two necessary properties hold unconditionally: the multiple `1` is the only
 multiple admissible on every window, and no Hardy weight survives on odd tests [L]. Admissibility on
-every window is RH. Known: `a*(ζ) ≥ a_∞`: `windowThreshold A = ⊤` for `A ≤ 2a_k` on an infinite strictly increasing
-tower from `a₀` with floors `(1/20000)/2^k`; the tower has no proved upper bound and its limit is not identified [L/D].
+every window is RH. Known in Lean: `a*(ζ) ≥ a_∞`: `windowThreshold A = ⊤` for `A ≤ 2a_k` on a strictly increasing tower from `a₀` with
+floors `(1/20000)/2^k` [L]. The tower is frozen: `a_∞−a₀<10^(−7,800,000)` [D]. RH verified to `3×10¹²` gives `a*(ζ)≥≈1.9` [D].
 
 ### 1.2 The cone is pinned and its margin collapses
 On `𝒜(c)` every weight is pinned: `|λ(n) − Λ(n)| ≤ C exp(Kn − c/1104)` for `c ≥ 2`, `2 ≤ n ≤ e^{2c−1/6}`, so every
@@ -129,8 +140,7 @@ defect at upper resonances (or full Krein positivity). An unweighted norm is not
 `k·pairEnergy(δ,a) ≤ L` in lattice backgrounds; unshielded clusters excluded to doubly-exponential height; tapered
 crystals hide depth `1/a` above `e^{ca}`; doubly-exponential non-locality [L: WVL]. Effective forms: positivity at level
 `a` confines every zero with `|γ| ≥ 102` to `|β − ½| < 10⁶exp(−a/(480000 log(|γ|+3)))`, and positivity at `λL_T` to
-depth `< e^{−c log³T}` [L]. These are conditional location receivers. The tower starts at `a₀ ≈ 0.362`; its limit
-`a_∞` is unknown. No proved cofinal aperture coverage supplies the required height-dependent positivity.
+depth `< e^{−c log³T}` [L]. These are conditional location receivers. The tower stays at `a₀ ≈ 0.362`. No proved aperture coverage supplies the required height-dependent positivity.
 
 ### 1.13 Arithmetic production and necessary mollifier length
 A property of weights implying the count `ψ(x) − x = O(√x log²x)` must be parity-breaking, locally pure,
@@ -193,6 +203,8 @@ numerical margins `10⁻⁴`–`10⁻¹²` [L/N]. None of these statements prove
 | Other globally admissible weights | global intersection `{Λ}` or empty; finite-window coordinates pinned within `Ce^{Kn−c/1104}` | CHT [L] |
 | Other data (pole weight, conductor) | cones empty below the critical log-conductor; the datum of ζ is the critical point | CHT [L] |
 | Finite-template reduction at spread 6 | infinite Hecke orbit | WTZ [L] |
+| Fibrewise full-theta tail allocation at all ranks | negative density at `b=2γ₄`, small `r` | [N/D] |
+| Floor tower as an aperture producer | frozen at `a₀` | [D] |
 | Source-faithful finite free split; Dirichlet, ζ-side, Gamma, pole pieces | never real-rooted / unstable | FFP [L] |
 | Bulk statistics of Jensen roots (density-one reality, Cauchy law) | shared with every backward heat flow; carry no arithmetic | FFP [L] |
 | Degree-3 semicircle-free test | every real-rooted cubic passes | FFP [L] |
@@ -215,8 +227,8 @@ numerical margins `10⁻⁴`–`10⁻¹²` [L/N]. None of these statements prove
 ### 1.18 The live mechanism classes
 | Class | Statement | First open test | Status |
 |---|---|---|---|
-| P1 signed criticality | `H ≥ P` on every window in the exact two-sector format, frustration unswitchable | `a*(ζ) ≥ ½` (odd unit window, margin `≈ 2×10⁻⁴`); `a*(ζ) ≥ log 2` (two weights); `a*(ζ) ≥ ½log 3 + ε` (prime-3 head window) | live |
-| P2 calibration | `λ*(c) ≥ 0` for every `c`; arithmetic point in every `𝒜(c)` | positivity beyond proved tower stages; cofinality or contact-excluding bound | live; tower limit unknown |
+| P1 signed criticality | `H ≥ P` on every window in the exact two-sector format, frustration unswitchable | sign at unbounded aperture (B7); first windows are verification (A46) | live |
+| P2 calibration / blind | `λ*(c) ≥ 0` for every `c`; blind positivity | a floor or sign at unbounded aperture; exact extremal test | live; tower frozen at `a₀` |
 | P3 PM reflection | weighted defect nonnegative at upper resonances, or full Krein positivity | physical mixed-parameter descent and arithmetic sign | live criterion; coefficient completion closed |
 | P4 square-root cancellation | prime-count bands, Li positivity, inner caps, long-mollifier moments | actual moment estimates; B64 is a sufficient target, not an attained length optimum | live |
 | P5 continuation / stability | ZCG collision exclusion; LA cofinal Jensen hyperbolicity/root-height bound; PTR strict Laguerre sign | small-time collisions, actual Jensen outliers, `0<h<½` cosine-shift sign | live criteria; independent producers open |
@@ -276,7 +288,7 @@ numerical margins `10⁻⁴`–`10⁻¹²` [L/N]. None of these statements prove
 | A1 | Explicit constants and horizons (`K₀`, eighth-root theorem, `1/9`, logarithmic profile, Beurling schedule, `M(N) = o(c_N)`) | HF, SRT, AIP, ACS, SC | effectivization of proved limits |
 | A2 | General profiles past `θ = 1/1080` | HF, SRT, SC | tilted-spline template |
 | A4 | Certified ratio interval at its size-only optimum; receiving complement inside it | HF, AIP, SRT, CSAR | assembly of proved estimates (difficulty unverified) |
-| A5 | Rigorous two-weight membership beyond proved tower stages, odd unit window first | RW, OWU, EWU, ACT, SWC, HF | explicit operator inequality; numerical margins are not certificates; finite-window gain supplies no automatic all-aperture propagation |
+| A5 | Two-weight membership past `a₀`, odd unit window first | RW, OWU, EWU, ACT, SWC, HF | by A46–A47 or Galerkin; no all-aperture propagation |
 | A6 | Exact Tate horizons of the remaining stages below spread `6` | WTZ, CWS | finite templates exist there |
 | A7 | Closed form of the first-stage complement `Φ_ε` | GWZ, CSTW, WTZ, RW | explicit Schur complement |
 | A9 | Literal channel norms critically small with growing periods, offsets, prime bands | AIP | proved sieve inputs (difficulty unverified) |
@@ -284,7 +296,16 @@ numerical margins `10⁻⁴`–`10⁻¹²` [L/N]. None of these statements prove
 | A13 | Widths of the finite-level cones `𝒜(c)` beyond `c = 0.66` | PBAP, ACS, RW, FADF, CHT | convex finite programs; entry bounds and the pinning rate proved |
 | A14 | PM physical mixed-parameter realization/descent; Mayer compatibility and boundary carrier | PM, W1C | coefficient-space Krein completion closed; physical identification is not routine by theorem |
 | A15 | Operator-native nonvanishing on `Re w = 1` | PM | Eisenstein template (risk: reduces to the Euler product) |
-| A17 | Tenth signed centre-mixed full-theta Hankel section at every `0 < a < ½` | TH | rank 9 closed; first-atom/all-rank paper or partial Bessel modules do not prove the full-theta tail allocation |
+| A17 | Tenth signed centre-mixed full-theta section at every `0<a<½` | TH | gamma reserve or A48 |
+| A46 | Verified-height window theorem | RW, OWU, EWU, ACT, HF | paper proof [D]; Lean as an implication |
+| A47 | Lean-certified `RHVerifiedThrough T`, `T≈10²–10³` | window routes, TH | `hardySEM` brackets exist [L]; Turing count missing; computation heavy |
+| A48 | TH finite ranks from verified zeros; Vinogradov–Korobov collar | TH | `current_nonneg_on_frequency_window` and `VinogradovKorobovZeroFree` [L] |
+| A49 | De Branges sampling; mimic hypothesis discharged | RW, ZCG | standard theory on the chain [L] |
+| A50 | Kernel absolute continuity, density identity, Krein-type system | RW, SZ | increment bound and residual limits [L]; left continuity needed |
+| A51 | Heat horizon `(½+ε)/log X` on almost all heights | ZCG | mean values + strip-profile law [L] |
+| A52 | Explicit strip from a heat coefficient | ZCG | `exists_le_localNewmanConstant_of_offLine_zero` [L] |
+| A53 | Lean certificate of the center-tail failure | TH | [N] |
+| A54 | Verified-height bounds for PA, HCF, Jensen, Li rungs | PA, HCF, LA, LI | needs A44 for Jensen |
 | A18 | Jensen horizons, two-grid degrees, PF beyond 45 at the centre, the slice band beyond `\|t\| ≤ 709/50` | PA, LA, HCF | effectivization and finite computation |
 | A19 | Certificates on the nine anti-diagonals `{2,3,4,5,7,8,9,11,13}` where the pole pays nowhere | ACT | finite case analysis |
 | A20 | Mixed Schur debit; first-prime/coarse/polar costs | AIP, CHMD | fixed-dimensional estimates |
@@ -298,7 +319,7 @@ numerical margins `10⁻⁴`–`10⁻¹²` [L/N]. None of these statements prove
 | A35 | Sharpen the explicit constants (`2²⁶·960`; detector `480000`, `10⁶`, count `240`) toward `4δL/k` | WVL, every P1 route | explicit test functions and counts in place |
 | A36 | Remaining onset-law items (general shallow depth-mass bound under positivity; tapered crystal to `a ≍ log T`; interferometer) | WVL | paper items |
 | A38 | Sub-Weyl strip profile from the best exponent pairs (horizon toward `½`) | LA, ZCG | known subconvexity; decides nothing about zeros |
-| A43 | Identify the tower limit `a_∞` (closed form or bounds for the series of dilation steps); decide whether a finite stage passes `½log 3` | RW, AIP, HF | explicit recursion in place |
+| A43 | Lean bound `weilFloorApertureTower k<0.3621` | RW, AIP, HF | direct from the step formula [D]; no stage passes `½log 3` |
 | A44 | Height law of `N_d`: which off-line zeros are counted at degree `d` (outlier positions `x ≈ d/γ` in the saddle identity); explicit constants in `N_d ≤ 300√(d log d)` and in the Cauchy limit | LA, FFP | reading of a proved saddle identity |
 | A45 | Constants of the sharp-location theorem (`zetaNegativeCameraHeight`, the exponent in `e^{−c log³T}`) | ZCG, SRT | explicit cameras in place |
 
@@ -310,9 +331,9 @@ numerical margins `10⁻⁴`–`10⁻¹²` [L/N]. None of these statements prove
 | B1 | Weil's sign on every window (≡ `1 ∈ ℋ(c)` ∀c ≡ `λ*(c) → 0` ≡ band on reflection pairs ≡ growth steps contractions ≡ Li positivity ≡ Suzuki first variation ≡ two-parameter two-bump family) | RH; fixed length sub | all sign routes |
 | B2 | Kick admission at every stage (≡ single-prime stage transport) | RH as induction; each stage sub | RW, GWZ, CSTW, WTZ, HF |
 | B3 | The two-sector signed certificate inequalities on every window (`2V ≤ J_{M⁺}`; odd shifted-ground-state form) | RH; fixed length sub | P1 routes |
-| B4 | Odd unit window (`w₂ ∈ unitBandWeights`) by a structural certificate | sub; finite window | OWU, RW, TT, SWC |
-| B5 | Below `log 4` (`a*(ζ) ≥ log 2`), the prime `3` paid by sign | sub; finite window, no door (2.8) | RW, OWU, EWU, ACT, TT, SWC, HF, ACS |
-| B56 | Below `log 5` (`a*(ζ) ≥ ½log 5`): the `{2,3,4}` sliver band | sub; finite window | same as B5 |
+| B4 | Structural certificate of the odd unit window (the numerical statement is A46–A47) | method | OWU, RW, TT, SWC |
+| B5 | Structural certificate below `log 4`, prime `3` paid by sign (numerical statement A46–A47) | method | RW, OWU, EWU, ACT, TT, SWC, HF, ACS |
+| B56 | Structural certificate of the `{2,3,4}` sliver band (numerical statement A46–A47) | method | same as B5 |
 | B6 | Twisted-sector positivity through all conductors and frequencies | sub | HF, SRT, AIP, AHD |
 | B7 | Full-space sign at critical ratios beyond the size-only threshold | sub per ratio; RH all | HF, SRT, AIP, CSAR |
 | B8 | General profiles past `log log N` on the full space | sub | HF, SRT, AIP, SC |
@@ -327,9 +348,14 @@ numerical margins `10⁻⁴`–`10⁻¹²` [L/N]. None of these statements prove
 | B33 | HF-native sign: a window beyond the base certified by the complete family itself | sub; finite window | HF |
 | B55 | Head-window thresholds `windowThreshold(log d) = ⊤` for every `d` (`d = 3` needs `a*(ζ) ≥ ½log 3 + ε`) | RH | HF, AHD |
 | B49 | Signed ground-state structure past `log ρ` compatible with unswitchable frustration | method | EWU, OWU, RW, ACT, SWC, FADF |
-| B51 | Contact-excluding arithmetic kernel bound; kernel absolute continuity and boundary-flux/support variation are intermediate problems | no contact ⇔ RH; density inequality alone insufficient | RW, CSTW, CHT, SZ |
+| B51 | Contact-excluding arithmetic kernel bound, free of `1/μ(a)` | RH | RW, CSTW, CHT, SZ |
 | B59 | Decay law of `λ*(c)` between the pinning rate `e^{−c/1104}` and the doubly exponential ceiling | sub | PBAP, FADF, CHT, RW |
-| B66 | All ranks `≥ 10` of the signed centre-mixed theta Hankel sections at every `0 < a < ½` | sub per rank; RH all | TH |
+| B66 | All ranks of the signed centre-mixed sections at every `0<a<½` | RH | TH |
+| B69 | Unequal-atom payment with aperture weight retained | RH | TH |
+| B70 | Any interior width value: a fixed zero-free strip by any route | ≥qRH | every route on the width axis |
+| B71 | Exact extremal blind test `Φ=Ξ·g` | indep. | PBAP |
+| B72 | Floor `−Cexp(r−cr^α)`, `α>3/5` (beyond Vinogradov–Korobov) | sub | window routes |
+| B73 | `Λ_X log X→0` on density-one heights | sub | ZCG |
 | B67 | Hausdorff rows nonnegative on `r < H(k)` for every `k` | RH (all rows) | PA |
 | B68 | Every finite-degree pole-annihilating two-grid heat functional nonnegative for fixed admissible offsets | RH (all degrees) | HCF |
 
@@ -385,7 +411,7 @@ numerical margins `10⁻⁴`–`10⁻¹²` [L/N]. None of these statements prove
 | Where does size payment end? | before half-width `21/40`; edge law at `c* ∈ (½log5, ½log6]` | FADF, SWC [L] |
 | Is the certificate format exact on every window? | yes: neutral signed theta gauge (even), shifted ground state (odd) | SWC [L] |
 | What do the trivial zeros cost? | nothing: centre killing pays them | FADF [L] |
-| Is the window tower a canonical system? | a de Branges chain before contact with a Hamiltonian density; contact is the first singular length | CSTW, CHT [L] |
+| Is the window tower a canonical system? | a de Branges chain before contact with exact collar equation; absolutely continuous [D]; contact is the first singular length | CSTW, CHT [L] |
 | Does window positivity reduce to finite matrices? | for correlation forms yes, via rational Hecke graphs; finite templates end at spread 6 | WTZ [L] |
 | Can the camera read squared gaps at polynomial scale? | yes, from three prime-side images | ZCG [L] |
 | Does positivity at the camera aperture locate the zeros? | yes: depth `< e^{−c log³T}` at aperture `λL_T`, `λ > 1` (a receiver) | ZCG [L] |
@@ -410,333 +436,249 @@ numerical margins `10⁻⁴`–`10⁻¹²` [L/N]. None of these statements prove
 | Is purity over `𝔽_q` a deformation argument? | no: `collide_or_repel` assumes the disc bound; integer families are constant; impurity is quantized and certified by finitely many power sums | ZCG, ADO [L] |
 | Do ζ's zeros repel? | a.e. value of ζ repels polynomially; `0 ∈ E` undecided; finite Euler and integral pure carriers repel by Baker | ADO [L] |
 | Is the theta cusp positive at rank 9? | yes, at every `0 < a < ½`; the complete fifth even tail is PD at every cutoff | TCS [L] |
+| Are first-atom tails positive at all ranks? | yes, every rank, every `r≥0` | CAF [L] |
+| Are full-theta tails positive at all ranks and cutoffs? | no, numerically: negative density at `b=2γ₄` for small `r` | [N/D] |
+| Is the floor tower cofinal? | no: `a_∞−a₀<10^(−7,800,000)` | [D] |
+| Do first windows need new mathematics? | no for the numerical statement: verified zeros decide them | [D] |
+| Is an exact sign necessary? | no: a bounded or subexponential floor implies RH | SquareRootThreshold [L] |
 | Is every fixed Jensen degree eventually real-rooted? | yes, beyond an explicit shift horizon | RHTower [L] |
 | Are the centre jets positive? | PF₄₅ at the centre; all slice coefficients nonnegative for `\|t\| ≤ 709/50` | RHTower [L] |
 
 ## 2.3 Frankenstein routes
 
-**No assembled RH proof.** F6 is a proved conditional receiver. F7 has a Hamiltonian density and fixed-aperture
-boundary limits, but still needs variation estimates and contact-excluding arithmetic control. F11–F13 retain their
-stated source estimates. Global RH equivalence does not establish a constructive identification between mechanisms.
+**No assembly closes RH.** Each row names what the parts jointly prove and the single estimate still missing. A shared RH endpoint does not transfer an estimate between routes.
 
-### F1. The gauge–tower assembly (P1)
-| Segment | Supplied by | Status |
-|---|---|---|
-| RH ⇔ `1 ∈ ℋ(c)` ∀c ⇔ reflection pairs ⇔ two sectors ⇔ `λ*(c) → 0` | WVL, FADF, SWC, CHT | [L] |
-| Exact two-sector format on every window; gauge freedom only in the pole direction | SWC | [L] |
-| Floors to `a_∞` on windows and reflection pairs; exact `{2,3,4}` problem below `log 5` | AIP, SWC | [L] |
-| Perron to `log ρ`; trivial zeros at the centre; entry law; cone pinned | SWC, FADF, CHT | [L] |
-| Core: `2V ≤ J_{M⁺}` and the odd ground-state inequality on every window | — | B3; first instances B4, B5 |
+| # | Parts | What the assembly gives | Status | What is still missing |
+|---|---|---|---|---|
+| F1 | WVL, FADF, SWC, CHT | exact two-sector format on every window; cone pinned | [L] | the format inequalities (B3) |
+| F2 | FADF, AHD, CSTW | Hardy induction by prime entries; single-prime transport ⇔ RH | [L] | a margin at every entry (B2) |
+| F3 | CACT, AHD | complete family reduces long windows to heads | [L] | heads for all `d` (B55) |
+| F4 | RIT | coefficient completion and weighted defect | [L] | `D_s≥0` (B38) |
+| F5 | RHTower, ZCG, ADO | heat path, horizon, near-coincidence dictionary | [L] | collisions at small time (B14) |
+| F6 | SRT, RHTower, ZCG | positivity at `λL_T` ⇒ depth `<e^{−c log³T}` | closed receiver [L] | the positivity |
+| F7 | CSTW, CHT, GWZ, SWC | canonical system with explicit collar equation | [L]; AC [D] | contact-uniform bound (B51) |
+| F8 | FFP, ZCG, ADO | Euler carriers stable and repelling | [L] | no finite carrier converges to Ξ |
+| F9 | WTZ, A5 | finite Hecke matrices below spread 6 | [L] | Weil's form is not a correlation form |
+| F10 | WVL, WD, DCI | visibility plus shallow mass bounds | [L] | B1, B21 |
+| F11 | FFP, ZCG | `N_d` and camera depth | [L] | B52 |
+| F12 | AHD, SWC, A46 | Dirichlet-shift heads for small `d` | [L]/[D] | large `d` (B55) |
+| F13 | APR, CDG, WD | moment and detector receivers | [L] | actual moments (B64) |
+| F14 | Verified zeros, SWC, AHD, TCS | windows to `a≈1.9`, heads to `d≈50`, TH ranks far past 9 | [D], external numerics | nothing finite; decides no all-aperture statement |
+| F15 | CSTW, ZCG RealWeights | sampling atoms are positive mimics; weighted count applies | [D] | sign past `a*` (same as B1) |
+| F16 | Floor receivers, CSTW, CHT | RH from any subexponential floor; kernel flow gives the budget's natural form | [L]/[D] | a floor independent of `μ(a)` |
+| F17 | Heat depth, horizon, floor | three-way width dictionary | [L]/[D] | any interior width value |
+| F18 | TH current, first atoms, verified zeros | current positive on a frequency window; first atoms positive everywhere | [L] | unequal atoms at high frequency (B69) |
 
-### F2. Hardy induction (FADF ⊕ AHD ⊕ CSTW)
-`1 ∈ ℋ(c)` is antitone; composite stages carry no fold; each prime-power entry is a compact interval in the newest
-weight with sharp logarithmic softness; single-prime transport for all `A` ⇔ RH [L]. Residual: a margin at every
-entry. Criticality forbids uniform margins (no Hardy weight; `λ*` doubly exponentially small), and the first-fold stage
-loan fails at `21/20` [L]. This excludes that loan mechanism, not every aperture-dependent signed estimate. B2.
-
-### F3. The complete-family assembly = the onset aperture
-Subcritical PD + one critical multiple across all entries + threshold law + terminal polar source + receiving charges
-[L]; orthogonal twists cannot repair untwisted modes [L]; Dirichlet-shift companions cancel every tail and reduce each
-long window to its head `windowThreshold(log d)`, unconditional for `d = 2` [L]; joint periodic windows PD iff
-independent [L]. Certifies exactly what the base certifies. Residual: B55 (the head for `d = 3` is the window
-`a*(ζ) ≥ ½log 3 + ε`; `a₀ ≈ 0.362`, tower limit unknown), B33, B1.
-
-### F4. The reflection assembly (P3)
-Coefficient-space Krein completion + window lift + weighted defect formula in two coordinate systems [L]. Residual:
-physical mixed-parameter realization/descent and B38; both defect expressions retain the nonnegative squared factor.
-
-### F5. The camera–continuation assembly (ZCG ⊕ heat ⊕ ADO)
-| Segment | Supplied by | Status |
-|---|---|---|
-| Heat path real for `t ≥ 1/8`; RH ⇔ no collision at any positive time (`t=0` simplicity not asserted) | RHTower, ZCG | [L] |
-| No collision above `(6600/9991 + ε)/log X`; saddle `½/log X` | ZCG | [L] |
-| Collisions are near-coincidences; identification to `e^{−c log³T}`; `𝓗` reads `w²` at polynomial scale | ZCG | [L] |
-| Near-coincidence ⇒ joint small values under local bounds; uniform separation transports reality with its real-path hypotheses | ADO | [L] |
-| Core: exclude `Re Q(0)=Im Q′(0)=0` at all remaining positive times and heights. Uniform heat-path repulsion is a possible sufficient input; repulsion of ζ's zeros alone is not | — | B14; B44 requires its cluster hypotheses; B54 is not the missing collision estimate |
-
-### F6. The sharp location assembly (SRT ⊕ RHTower ⊕ ZCG) — a theorem
-Positivity at aperture `λ·log(T/2π)/2`, `λ > 1`, at heights `T ≥ zetaNegativeCameraHeight` ⇒ every zero of ζ at height
-`T` has depth `< exp(−c log³(T/2π))` [L: ZCG SharpLocation]. The assembly is closed: two normalized convolution cameras
-at the cluster and its reflection make `Re W(f−g, f−g) < 0` without any on-line mimic or separation premise. Output: a
-receiver that produces no sign and is vacuous at known apertures. The converse (RH below `T` ⇒ positivity at `½log T`)
-is blocked by doubly-exponential non-locality, so height induction stays closed.
-
-### F7. The canonical-system assembly (CSTW ⊕ CHT ⊕ GWZ ⊕ SWC)
-De Branges chain before contact + lattice Levinson recursion + continuum jet limits + parity split + Hamiltonian density
-`0 ≤ ∫G′ ≤ ΔG` of the evaluation Gram [L]. Actual fixed-aperture endpoint traces and complete collar limits are
-closed; finite contact forces diagonal kernel blow-up. Residual: B51—contact-excluding arithmetic kernel bounds,
-absolute continuity and support variation. No identification `ΔG=∫G′` follows from the density inequality alone.
-
-### F8. Finite free ⊕ Euler carriers ⊕ Baker (FFP ⊕ ZCG ⊕ ADO)
-Normalized Euler products HB-stable with drift `θ_S/2` ≡ the carrier horizon `2πe^{θ_S}`; finite Euler carriers and
-integral pure carriers repel polynomially by Baker; the Euler product's only consistent Bohr tangency is `(1,1)` at
-`σ = 0` [L]. Residual: the same domination is shared by every finite real carrier and twins are tilted at every height
-[L]; the Euler product diverges in the strip, so no finite carrier converges to `Ξ`; the mollified criterion is a
-receiver (B52).
-
-### F9. Finite Hecke graphs ⊕ numerics (WTZ ⊕ A5)
-Correlation-form windows are finite matrices below spread 6 [L]; certify `a*` numerically there. Residual: Weil's form
-carries the archimedean Lévy part, not a correlation form; margins `10⁻⁵`–`10⁻⁸`; windows below half-width 4 carry no
-zero information.
-
-### F10. Visibility–density (WVL ⊕ WD ⊕ DCI)
-Unshielded clusters excluded to doubly-exponential height; shallow depth mass bounded; inner caps = off-line generating
-function [L]. Residual: B1 at growing aperture and B21 (log-free occupancy).
-
-### F11. Count ⊕ camera (FFP ⊕ ZCG)
-`sup_d N_d` equals total off-line multiplicity, with eventual `N_d ≤ 300√(d log d)`; the camera bounds depth by
-`e^{−c log³T}` under positivity at `λL_T` [L]. Arbitrarily shallow off-line zeros are not thereby excluded, and a
-height-local depth bound is not a zero value of `N_d`. Residual: B52; B62 yields only finite off-line support.
-
-### F12. Heads ⊕ tower (AHD ⊕ AIP ⊕ SWC)
-Dirichlet-shift stabilization for `d = 2` is unconditional because `log 2 < 2a₀` [L]; for `d = 3` it needs
-`windowThreshold(log 3 + ε) = ⊤`, i.e. half-width `(log 3 + ε)/2`, above the tower start `a₀ ≈ 0.362`;
-below `log 5` that window is the `{2,3,4}` sliver band [L]. Residual: a finite window (A5 numerics or B5/B56
-structure), which decides the prime-3 head and nothing beyond it.
-
-### F13. Mollifier ⊕ detector (APR ⊕ CDG ⊕ WD)
-Any complex normalized mollifier family with excess `≤ K₀/log T` at length `exp(c log²T)` gives `D_zero` and `D_win`;
-any holomorphic actual-zero detector with shifted defect `≤ Ce^{−r(σ−½)log V}V/log V` gives `D_win`; the length and
-detector-scale obstruction and necessary length law are proved [L]. Residual: B64—the actual moment bound;
-fixed polynomial length cannot yield moment `→1` in the stated coefficient class. The lower length bound does not
-prove an attainable optimum.
+**Closest to the open core: F16.** It replaces exact sign with a budget, and the chain supplies an evolution equation. Every proved bound divides by `μ(a)`. A bound without that factor closes RH; none is known.
 
 ## 2.4 A wildly different route
 
-Σ/Π/Γ organize current obstacles; they are not a theorem classifying every possible RH proof. The corpus has live
-analytic routes outside the window-sign presentation, including ZCG, PTR, SEC, CDC and PCS. Their concrete receivers
-are established; none has its decisive arithmetic input discharged. A distinct producer must be assessed on its
-actual source and landing, not rejected merely because its conclusion is equivalent to RH.
+Three mechanisms lie outside the current routes. Only the N1 receiver is in Lean. All three are speculative: none has a theorem behind it beyond the classical or Lean statements cited. They share the endpoint RH and differ in mechanism.
 
-**Integrality alone does not force purity.** Over `𝔽_q` purity mechanisms include Weil's Hodge index,
-Stepanov–Bombieri's point count, Deligne's positivity on tensor powers. `collide_or_repel` [L] takes the disc bound as a
-hypothesis; integer polynomials do not deform continuously (a continuous integer family is constant [L]); integrality
-quantizes impurity and does not exclude it (`X^{g−1}(X − m)` is monic, integral, impure [L]); given integrality,
-finitely many power sums certify purity, at orders growing like `(q/9)^{1/4}` [L]. These examples exclude integrality
-alone, not an additional arithmetic sign or count law.
+### W1. Exact extremal function (sphere-packing method)
+- **Idea.** Prove the blind inequality by constructing its exact extremal object, as Viazovska's functions do for a zero-slack linear program. Criticality kills margin arguments; it does not kill exact identities.
+- **Precise target.** `Φ=Ξ·g` with `|Φ|²` blind at every `log n` (N1) [L receiver]. It would be an exact null ray of the blind program.
+- **Why the walls differ.** No primes appear (Π filters do not apply), no gauge or margin is used (Σ no-gos do not apply).
+- **First test.** Carlson forces `|g|` to grow near `e^{π|t|/4}`; compact solutions do not exist [L]. Decide existence in the Carlson-admissible class.
+- **Risk.** Modular forms have finitely many zeros in a fundamental domain, so zeros at all `i·n` do not come directly from a modular form [D].
 
-**Tensor amplification is closed.** Every Hadamard power `K_ζ^n` is positive definite iff RH [L].
+### W2. Representation-theoretic construction (Thoma, Schur–Weyl)
+- **Idea.** With `α_ρ=1/(ρ(1−ρ))`, RH is Schur positivity of the `α_ρ`, which is PF_∞ at the centre [L] and, by Thoma's theorem, says `σ↦∏_{cycles}p_k(α)/p_1^k` is a character of `S_∞` [D]. Build the representation instead of checking inequalities.
+- **Why the walls differ.** A representation has positivity built in. Over `𝔽_q` the same function is the trace of `σ·F^{⊗k}` on `H^{⊗k}`, which links it to Deligne's tensor powers [D].
+- **First test.** Compute the Kingman/Thoma data for curves and for known fakes, and look for a natural exchangeable partition with frequencies `α_ρ/p₁`.
+- **Risk.** Building it is a Hilbert–Pólya realization in other language. Direct tensor amplification is closed (Σ13).
 
-**Possible input to ZCG: a small-value inequality along the heat path.** The small-value dictionary
-turns reality into a small-value statement: an FE pair at depth `δ` forces `|ζ(½+iγ)| ≤ 480e²(|γ|+2)(|γ|+5)δ²` and a
-near-coincidence forces joint small values of ζ and ζ′ under local bounds [L: ADO]. An independent lower bound
-could therefore help exclude such pairs; an exact converse or a sufficient bound is not supplied here. In the same
-spirit, polynomial repulsion of ζ's zeros is `0 ∉ E` [L/D]. The corpus's Baker–Matveev inputs concern algebraic data
-and finite-rank frequency modules; they do not supply the required actual heat-path estimate. Two further
-facts bound this direction: `0 ∉ E` has no implication for real parts (FE pairs are separated by `2δ`), so a
-small-value route must address the heat path (`H_t`, `t ∈ (0, ½/log X]`), where uniform polynomial repulsion would
-transport reality [L: ADO `splits_of_uniform_repulsion`] and give RH; and the only proved repulsion for ζ is in the
-value `a`, not along the flow. This is an unconstructed producer for live ZCG, not grounds to demote its collision criterion.
+### W3. Homogeneous dynamics
+- **Idea.** Zagier's classical criterion says RH is the rate `y^{3/4−ε}` for equidistribution of long closed horocycles on the modular surface [C]. A dynamical proof of that rate would bypass Euler-product positivity.
+- **Why the walls differ.** The input would be rigidity, not an inequality on primes.
+- **First test.** Formalize the criterion, then ask whether Hecke recurrence plus entropy (Lindenstrauss type) constrains limit measures.
+- **Risk.** The rate is read from the same scattering poles as PM, and horocycle flow has zero entropy.
 
 ## 2.5 Breakthrough questions below RH and quasi-RH
 
-### Validity tests
+Tests as listed below. T1 is read as: implied by RH and not implying quasi-RH. T4 applies only to claims of reaching RH.
 
-A question stands in 2.5, 2.6 or 2.8 only if it passes these tests.
+| Test | Requirement |
+|---|---|
+| T1 | Not equivalent to RH; below quasi-RH |
+| T2 | Answered by proving or refuting a stated inequality |
+| T3 | A named consequence can be written down |
+| T4 | Not decided by a finite window (nor a finite rung) |
+| T5 | False on a corpus fake |
+| T6 | Names an input not refuted in Lean |
+| T7 | Not a shape already answered without moving a wall |
 
-| Test | Requirement | Anchor |
-|---|---|---|
-| T1 Not RH | Not equivalent to RH. In 2.5 also: implied by RH, and not implying quasi-RH | equivalence web |
-| T2 Decision | Answered only by a proof or a refutation of the stated inequality. Identity + obstruction + equivalence with RH is no answer | — |
-| T3 Written consequence | YES ⇒ a named statement, by an argument that can be written down | — |
-| T4 Aperture | Anything claimed to lead to RH is not determined by a finite window | `not_of_finite_window`, `exists_configWidth_eq_and_weil_nonneg_on_aperture` [L] |
-| T5 Mimics | False on at least one corpus fake: off-line lattices, Liouville twin, `Λ + εn^{−η}`, Davenport–Heilbronn, `ζ(s)ζ(s−ε)`, `ξ(s+a)ξ(s−a)`, `ζ(s)(1 − cp^{−s})` | `deciding_input_necessary_properties`, APR filters [L] |
-| T6 Mechanism | Names an input not refuted by a Lean no-go | — |
-| T7 Shape | Not a shape answered in Lean without moving a wall (table below) | — |
+### 2.5.1 Whole programme — `100%` critical-scale clustering (B20)
+**Question.** Does `T⁻¹∫_T^{2T}log|ζ(½+it)|dt → 0`? Equivalently, do all but `o(T log T)` zeros lie within `κ/log T` of the line for each `κ`?
+- **Tests.** T1–T5, T7 pass. False for Davenport–Heilbronn, `ζ(s)ζ(s−ε)` and impure factors [L]. T6 weak: long moments are the only named input.
+- **Gives.** RH on average at the spacing scale.
+- **Limit.** Sparse off-line zeros survive; no path from it to RH is known.
 
-| Shape | Lean output | Walls moved |
-|---|---|---|
-| Construct the object whose regularity is RH | de Branges chain, Hamiltonian density, contact blow-up (CSTW, CHT) | none: B51 is RH |
-| Express the sign in another coordinate | two weighted defect expressions (RIT); gauges (SWC); inner cap (CDG); pair discriminant (ZCG); `λ*(c) → 0` (CHT); cofinal `N_d = 0` (FFP) | source criterion closed; independent estimate still needed |
-| Read a quantity at a finer scale | polynomial-scale readout; sharp location at `λL_T` (ZCG) | none: B44 is RH; location needs positivity |
-| Pin the weights or the datum | pinning rate `e^{−c/1104}`; margin ceiling; datum critical (CHT) | none: the sign of `λ*` is B1 |
-| Count the failures | `sup_d N_d` = off-line count; `N_d ≤ 300√(d log d)` (FFP) | none: `N_d = 0` is RH |
-| Transport across one step | single-prime transport ⇔ RH; heads for every `d` ⇔ RH (AHD) | none |
-| First window beyond a base | increasing floor tower (AIP) | no automatic all-aperture propagation; limit unknown |
-| Second expression + "any nonnegative one is RH" | `mayerDefect_nonneg_representation_iff` (RIT) | none |
-| Necessary conditions on a producer | entry filters; necessary-length laws (ASRP, APR, CDG) | none: they exclude, they do not construct |
+### 2.5.2 Route PM — a PM-native zero-free line (B46)
+**Question.** Can the Mayer/Lewis–Hecke carrier alone prove `ζ(2s)≠0` on `Re 2s=1`, without the Euler-product inequality?
+- **Tests.** All pass. Blaschke insertion (Γ22) is the fake it must exclude.
+- **Gives.** The first zero information PM produces by itself. It currently produces none.
+- **Limit.** The proof may reduce to the Euler product, in which case PM adds no independent zero information.
 
-The proved receivers do not discharge `D_win`, all-aperture positivity or the proposed long-mollifier moment bound.
-Sub-RH research targets below use separate selection tests; failing those tests does not invalidate a live RH route.
+### 2.5.3 Route WD — log-free window occupancy (B21)
+**Question.** For every `A`, do at most `ε(A)V` unit windows of `[V,2V]` hold a zero of depth `≥A/log V`, with `ε(A)→0`?
+- **Tests.** T1–T5, T7 pass. T6: the sufficient detector shape is known and sharp, no producer is.
+- **Gives.** `D_win`; with cluster tails, `D_zero`.
+- **Limit.** Requires depth decay at rate `≍ log log V`, so proportion results do not reach it.
+- **Programme.** 2.7.2.
 
-**Audit of the question forms that fail.**
+### 2.5.4 Route HF — one critical multiple past the size optimum (B7)
+**Question.** For one `K` above the size-only optimum, is the full tilted-spline matrix eventually PD at `c=2K(log N)^{1/8}`?
+- **Tests.** All pass. Unbounded aperture, and the Liouville twin fails at fixed overlap [K].
+- **Gives.** The first full-space sign payment beyond size; requires beating `O(c)` against `O(log N/c⁷)`.
+- **Limit.** Each `K` is separate; all `K` is the RH receiver.
 
-| Question form | Fails | Reason |
-|---|---|---|
-| Sign ⇒ location at `a = λL_T` | T3 as a breakthrough | A theorem (F6) and a receiver; no sign is produced; vacuous at known apertures |
-| Mayer defect size law with corridor `\|σ − ¼\| < c/log\|Im s\|` | T1, T6 | Above quasi-RH; the relations are `K_σ`-weighted equalities |
-| `windowThreshold = ⊤` through stage 2 and `log 3` "from the complete family" | T4, T6 | `windowThreshold A = ⊤ ⇔ A/2 ≤ a*`; a finite window seeing one or two numbers |
-| Collide or repel for ζ (`0 ∉ E`) as a step to RH | T1, T3 | Not implied by RH; FE pairs may be well separated; its model theorems assume the disc bound or a finite frequency module |
-| Contact-excluding kernel bound | T1 | RH-strength target; absolute continuity alone is not identified with contact exclusion |
-| Nonnegative expression of `D_s(ψ_s)` | T1, T2, T7 | `D_s ≤ 0` always, so such an expression is `D_s = 0` |
-| Off-line generating function in `L²(e^{−xt})` | T1, T2 | Integrability at every `x` says the off-line set is empty |
-| Single-prime transport; head thresholds for every `d`; head recursion over divisors | T1, T7 | Induction on an antitone threshold; base case RH |
-| `𝓗 ≥ −B` on isolated clusters | T1, T6 | `𝓗` is the squared gap by theorem |
-| `a*(ζ) ≥ log 2` or `≥ ½log 3 + ε` as a door | T4, T5, T6 | 2.8 |
-| Effective uniqueness of the cone; margin law | T7 | Answered in Lean (CHT); the sign of `λ*` is untouched |
-| `N_d` bounded as a 2.5 question | T1 | Finite off-line support implies Lindelöf and a zero-free half-plane (above quasi-RH) |
-| A sublinear bound on `N_d` alone | T3 for zero extinction | Existing `O(√(d log d))` allows infinitely many off-line zeros; uniform boundedness gives finite support, eventual zero gives RH |
-| Replacement for Allegretto–Piepenbrink; SOS on the pole-neutral hyperplane; balanced signed ground state | T2, T6 | A positive form has an exact certificate by definition |
-| Stability preserver containing Euler factors and the Gamma phase | T3, T6 | No finite carrier converges to `Ξ`; ζ, Gamma and pole pieces are unstable |
-| Deformation from a pure object with integral structure | T3, T6 | 2.4 |
-| Polynomial-length mollifier with moment `→ 1` or excess `o(1/log T)` | T6 | Excluded by the necessary-length laws |
-| Proportion one or a depth-tail rate as a route to `D_win` | T6 | The root model satisfies both and fails `D_win` |
+### 2.5.5 Route TH — the first unequal atom pair
+**Question.** Does the two-atom source `Θ₁+Θ₂`, with aperture weight retained, have positive signed sections at every rank and every `a`?
+- **Tests.** T2, T3, T4 pass. T1 and T5 do not apply as stated: this is a statement about a model source, and only prime 2 enters.
+- **Gives.** The first rank-uniform statement with a cross pair, and the correct form of allocation after fibrewise tails fail [N/D].
+- **Limit.** Decides nothing about ζ alone. A refutation would also be informative: it would locate where cross pairs break the weighted form.
 
-The sections below keep only what passes.
+### 2.5.6 Route ZCG — the saddle on almost all heights (B73)
+**Question.** Does `Λ_X log X → 0` on a density-one set of heights?
+- **Tests.** T1–T5, T7 pass. Density-one `(½+ε)/log X` is reachable from mean values (A51); crossing `½` is the content.
+- **Gives.** The heat-flow form of clustering.
+- **Limit.** Exceptional heights remain. The relation to B20 is expected, not proved.
+- **Programme.** 2.7.1.
 
-### 2.5.1 Whole programme — `100%` critical-scale clustering
-**Question.** Prove `T⁻¹∫_T^{2T} log|ζ(½ + it)| dt → 0`; equivalently, for every `κ > 0`, all but `o(T log T)` zeros in
-`(T, 2T]` lie within `κ/log T` of the line. Eight forms are equivalent, among them the truncated Euler-mollified log
-mean, the linear-mollifier law and the dyadic horizontal moment `o(T)` [L: `criticalClustering_logMean_mollifier_hecke_tfae`]
-(B20).
-- **T1.** Implied by RH; implied by the critical-line proportion `N₀(T)/N(T) → 1` [L]; allows sparse off-line zeros at
-  every depth, so it implies neither RH nor quasi-RH.
-- **T2.** Selberg's tail moment gives `Σ(β − ½) ≪ T` [L]; the question is `o(T)`, and no identity delivers it.
-- **T3.** `Σ_{T<γ≤2T}(β − ½) = o(T)`: RH on average at the mean-spacing scale.
-- **T5.** False for Davenport–Heilbronn, off-line lattices of bounded spacing, `ζ(s)ζ(s−ε)` and `ζ(s)(1 − cp^{−s})`
-  (log-mean `→ log(c/√p) > 0` [L]): a proof must use the Euler product inside the strip and local purity.
-- **T6.** By Jensen and Littlewood it follows from a mollifier with second moment `→ 1`, which forces
-  `log N/log T → ∞` [L]; the required actual long-moment bounds are not supplied.
-- **Limit.** No door to RH: the sparse exceptions survive it. The stronger classical target, proportion `→ 1`, is also
-  valid (T1–T5, T7) and has the same mechanism and the same limit.
+## 2.6 Questions that would open the path to RH
 
-### 2.5.2 Route PM — none
-No breakthrough question passes. The defect relations are equalities with the same `K_σ`; a corridor at scale
-`1/log|Im s|` is above quasi-RH. The valid item is a route test, not a breakthrough: B46, a zero-free region
-`β < 1 − c/log|γ|` from the Lewis–Hecke carrier alone. Risk: its positivity is the Euler product (A15).
+Every statement below is RH-strength or stronger. **None passes the door test of a reachable factor.** Each entry gives the weakest door-shaped form known.
 
-### 2.5.3 Route WD — log-free window occupancy
-**Question.** `D_win`: for every `A`, at most `ε(A)V` unit windows of `[V, 2V]` contain a zero of depth `≥ A/log V`,
-`ε(A) → 0` [L: CDG] (B21).
-- **T1.** Implied by RH; sparse windows stay free, so no quasi-RH.
-- **T2, T5.** A decision, false for Davenport–Heilbronn, `ζ(s)ζ(s−ε)` and impure factors (window occupancy fails on
-  their zero lattices [L]).
-- **T3.** `D_zero ⇔ D_win` + vanishing giant-cluster tails; `D_zero ⇒ D_win ∧` (2.5.1); `D_win ⇔` thin Planck shadows
-  are rare [L].
-- **Known obstructions.** The root model shows that critical-line proportion and fixed exponential
-  depth-tail rate suffices; depth must decay at rate `≍ log log V` [L]. The sufficient detector shape is known and sharp
-  (shifted `L²` defect `≤ Ce^{−r(σ−½)log V}V/log V`); the specified polynomial mollifier class cannot supply the required excess, Barban–Vehov reaches scale
-  `V` and not `V/log V` [L]. The complex-coefficient rate `K₀/log T` at length `exp(c log²T)` would suffice (B64). No
-  input is named.
-- **Limit.** Valid open estimate; no off-line extinction follows from occupancy alone.
-
-### 2.5.4 Route HF — none
-`windowThreshold A = ⊤ ⇔ A/2 ≤ a*`, so an HF statement about a window is a window statement (B33). The prime-3 head
-window is a finite window (A5). Joint periodic positivity is settled (PD ⇔ independence [L]).
-
-### 2.5.5 Route TH — finite-rank frontier
-Rank 9 is a theorem; rank 10 needs a uniform full-theta proof, not only a finite computation (A17); all ranks is RH (B66). No
-statement strictly between a finite rank and RH is formulated by the corpus.
-
-### 2.5.6 Route ZCG — the repulsion decision, not a step to RH
-**Question.** `0 ∉ E`: distinct zeros of ζ at height `T` are `≥ T^{−C}` apart (B54).
-- **T2, T3, T4, T5, T7 pass:** a decision; consequence: the value `0` is not exceptional, the zeros of ζ obey the law
-  obeyed by a.e. value and by every integral pure carrier [L]; an unbounded-aperture statement; false for carriers with
-  Liouville Satake angles and for `(1−2^{−s})(1−3^{−s})` [L].
-- **T1 fails in one clause:** it is not implied by RH (open under RH), and it does not imply quasi-RH.
-- **T6:** the only mechanism reaching ζ is the Diophantine one for finite frequency modules (Baker), which does not
-  reach the infinite rank of `⊕ℤ log p`.
-- **Bearing.** None on real parts; the repulsion needed by P5 is along the heat path, not at `t = 0` (F5). A real advance
-  for the repulsion programme and for the understanding of `E`, not a step toward RH.
-ZCG also has its live actual-source collision criterion (1.9); the remaining small-time and low-height estimates are
-RH-level obstacles, distinct from this sub-RH repulsion question.
-
-## 2.6 Breakthrough questions that open the path to RH
-
-No verified factorization with a supplied new producer is recorded here. This section asks for `RH ⇔ Q ∧ R` with `Q`, `R` both strictly weaker
-than RH and at least one of them reachable. Splitting counterexamples by depth or density always gives such a
-factorization, so the content lies in a mechanism for one factor. The joint input must be parity-breaking, locally pure,
-precision-faithful and of unbounded aperture and length [L]; PNT, Guth–Maynard, every error law weaker than square
-root, Type I/II information, finite linear laws and every impure-stable upper bound are inherited by weights failing the
-count [L]. So a door has to name an unconditional input at square-root precision or a long mollified second moment. The
-corpus has none, and no question below names one.
-
-### 2.6.1 Whole programme — none; the door-shaped statements have no mechanism
-**B57, self-improvement.** `Θ < 1 ⇒ Θ = ½`; then `RH ⇔ (Θ < 1) ∧` B57 [D]. Passes T1–T5 (false for off-line lattices
-and for `ξ(s+a)ξ(s−a)`, where `Θ_a = Θ + a` [L], so a proof must use degree one or the Ramanujan bound). Fails T6: the only
-known self-improvement is Deligne's tensor-power step, closed on Weil's kernel [L].
-**B62, finite off-line support (`N_d` bounded).** Then `RH ⇔ (N_d bounded) ∧ (no off-line zero given finitely many)`;
-the second factor is RH-strength in every known form (one positive non-blind prime tower ⇔ RH [L]) and the first is
-above quasi-RH. Not a door.
-**B65, cofinal long-mollifier boundedness.** Implies RH outright [L]; it is RH-hard, not a door.
-
-### 2.6.2 Route PM — none
-`D_s ≤ 0` always, so a nonnegative expression is `D_s = 0`, which is RH [L].
-
-### 2.6.3 Route WD — none
-The RH-level statements (inner caps at every stage; cofinal long-mollifier bound) are emptiness of the off-line set or
-RH in another form [L]. WD's valid content is below RH (2.5.1, 2.5.3) and its door-shaped item B64 lands on `D_win`, not
-on RH.
-
-### 2.6.4 Route HF — none
-Transport across one prime is induction on an antitone threshold [L]. Dirichlet-shift companions reduce long windows to
-head windows, and a head window is again a window (B55).
-
-### 2.6.5 Route TH — none
-All ranks is RH; no finite rank moves the wall.
-
-### 2.6.6 Route ZCG — none
-The actual positive-time half-Gauss collision criterion is live. Large-height times above the sub-Weyl horizon are
-closed; smaller times and the compact low-height region remain. Camera discriminants and conditional sharp location
-are supporting receivers, not the missing collision estimate.
+| Route | Question | Why it would open the path | Verdict |
+|---|---|---|---|
+| 2.6.1 Whole | Self-improvement of a floor: does rate `2σ` imply rate `σ`? (B57) | With `Θ<1` it gives RH; floors need no exact sign [L] | No mechanism; false for shifted products, so degree one or Ramanujan must enter |
+| 2.6.2 PM | An independent expression forcing `D_s≥0` | Equivalent to RH since `D_s≤0` always | RH itself; it needs a positive physical carrier (B40) |
+| 2.6.3 WD | Cofinal `∫_1^T|ζM|²≤C_θT^K` with prefix cancellation (B65) | Implies RH [L] | Possibly stronger than RH; length far beyond present mollifiers |
+| 2.6.4 HF | Cofinal `xiDampedSourceWork≤2` | Coarse bound; the threshold is quantized, so `≤2` forces `0` [L] | RH; attractive because it is an upper bound, not a sign |
+| 2.6.5 TH | Unequal-atom allocation with aperture weight (B69) | Closes all ranks | RH; fibrewise form is false [N/D] |
+| 2.6.6 ZCG | Exclude collisions below the saddle by a route not using size | Size stops at `½/log X` | Fixed coefficient below a constant is already strip strength [D] |
 
 ## 2.7 Does closing RH need a new field?
 
-No theorem here establishes that a new field is necessary. Two useful groupings organize part of the research;
-they do not exhaust the live route mechanisms or prove one grouping cannot supply the decisive estimate.
+No theorem says so. The evidence is structural: every known tool fails for a proved reason.
 
-### 2.7.1 Programme A — Critical Hardy theory of the window cone
-
-| Established [L] | Open |
+| Known tool | Why it stops |
 |---|---|
-| Signed forms `W_λ=H−P_λ`; nested cones; global intersection `{Λ}` under RH, empty otherwise | Actual all-aperture sign |
-| Coordinate pinning, doubly-exponential margin ceiling, critical datum | Margin law and certified aperture extension: B59, B3–B5, B56 |
-| Precontact Hilbert/de Branges spaces, orthogonal increments, density inequality | Absolute continuity, boundary-flux/support variation, contact-excluding arithmetic bounds: B51 |
-| Actual endpoint traces and fixed-aperture full-collar limits; logarithmic collar energy | Quantitative moving-endpoint/increment control and contact-uniform constants |
-| Increasing floor tower from `a₀≈0.362` | Identify `a_∞` or prove aperture exhaustion: A43 |
+| Size estimates | die before half-width `21/40` |
+| Positivity-preserving (Markov, Perron) | frustration past `log ρ` |
+| Type I/II sieve data | parity blind |
+| Finite computation | finite rungs decide nothing |
+| Tensor amplification | carries RH unchanged |
+| Integrality | amplifies, produces nothing |
 
-Finite-aperture positivity alone does not select width in the general configuration class. This does not rule out
-a new arithmetic argument proving all-aperture positivity. Numerical bands in 1.19 remain observations, not certificates.
+**What the field would be about.** Critical signed forms whose off-diagonal data live on a sparse arithmetic set of positions: how such a form can be nonnegative with zero slack and no sign gauge.
 
-### 2.7.2 Programme B — Arithmetic production at square-root precision
-
-| Proven restriction / receiver [L] | Remaining input |
+| Aspect | Requirement |
 |---|---|
-| Specified precision-blind, parity-blind and impure-factor-stable classes fail to force the count | Arithmetic estimate outside those classes |
-| Fixed polynomial mollifier length has moment floor `1+1/(8+6θ)` in the stated coefficient regime | A moment tending to one requires superpolynomial length |
-| Excess `K₀/log T` requires `log N≥log²T/(6K₀)−(4/3)log T` | Attainability is not proved |
-| Actual moment `→1`, `log N=o(T)` ⇒ critical-scale clustering | B20: construct such bounds, or prove clustering by another mechanism |
-| Actual excess `O(1/log T)`, `log N≤T/log T` ⇒ log-free occupancy/density | B64: construct the moment bound; B21 is the output target |
-| Cofinal prefix `O_θ(T^K)`, fixed K and unbounded θ ⇒ RH | B65: actual prefix-controlled bounds |
-| Finite-carrier and almost-every-value repulsion | Does not supply ZCG's actual heat-path collision exclusion |
+| Objects | window cones over `log ℕ`; blind states; canonical systems with atomic kicks; datum plane (pole, conductor) |
+| Language | budget (floor rate) in place of exact sign; width axis; duality between weights and blind states |
+| Criteria it must meet | false on every corpus fake; parity-breaking; locally pure; unbounded aperture; recovers Weil's proof over `𝔽_q` |
+| Questions | When is a frustrated form nonnegative? What replaces Allegretto–Piepenbrink? What makes `{log n}` special among node sets? Why is `(β,s)=(1,0)` critical? |
+| Tools to build | exact certificates for frustrated forms; a priori estimates for Krein systems with atomic forcing, free of `1/μ(a)`; a self-improvement step for floors |
+| Test case | a proof of `H≥P` on one unbounded test family (B7), then its `𝔽_q` analogue |
 
-These are scoped restrictions and conditional receivers, not a no-go for all classical methods.
+The closest existing programme is critical Hardy theory of the window cone. The arithmetic-production side (square-root precision) is not obviously part of the same field, and the corpus proves no bridge between them beyond shared RH endpoints.
 
-### 2.7.3 How the programmes fit
+### 2.7.1 A programme for route ZCG: nodal geometry of the de Bruijn flow
 
-- A and B have proved global RH equivalences; shared truth values do not construct source-level transport.
-- ZCG, PTR and LA have distinct actual heat/cosine/Jensen criteria. Their missing estimates are not replaced by a
-  generic requirement to first build another source.
-- PM's coefficient completion, ACS's source cone/RR, SEC's seam admission and CDC/PCS's source criteria are done.
-  Their sign, zero-selected bound or equality remains open.
-- Candidate status requires a missing source mechanism/landing; an unproved final RH-level estimate alone does not
-  demote a live route.
-- KR-TOR/UCF/R1 are retired labels, not proved kills. BAG's actual flow transfer, PA's contour-sign receiver and TG's
-  bounded-Gaussian-passage receiver survive. Other no-gos retain the scope in the killed-routes ledger.
+**A research programme, not a new field.** It supplies ZCG's first tool below the saddle that does not rest on size. It does not exclude a collision by itself. The PDE inputs are [C]; none is in Lean.
 
-## 2.8 Which sub-RH target advances the search?
+**Why ZCG needs it.** Every present bound on the half-Gaussian source is a size bound, and size stops at the saddle `½/log X` [L]. Lowering the coefficient by size needs Lindelöf-strength input, and a small enough coefficient forces a zero-free strip [D]. A different kind of input is needed.
 
-No ranking of intrinsic difficulty is proved. Distinguish useful partial targets from a complete RH receiver.
+**The change of viewpoint.** `u(X,t)=H_t(X)` solves `∂_t u=−∂_X²u`, so decreasing `t` is forward parabolic flow. RH says the nodal curves of `u` in the half-plane `t>0` have no turning points. A collision is a point where `u` vanishes to parabolic order two, with local model `x²−2(t−t₀)`.
 
-| Target | Consequence | Limit |
+| Tool | What it gives ZCG | Status |
 |---|---|---|
-| Extend a certified finite aperture, including the prime-3 head | A larger positivity interval and the corresponding head theorem | No automatic propagation to all apertures |
-| `100%` critical-scale clustering (B20) | Horizontal first moment `o(T)`; almost all zeros within each fixed `κ/log T` corridor | Sparse off-line zeros remain; not a critical-line proportion theorem |
-| Log-free window occupancy `D_win` (B21) | Few occupied depth windows; connection to `D_zero` retains giant-cluster-tail conditions | No off-line extinction |
-| Uniform bound on Jensen counts `N_d` (B62) | Finite off-line support | Excluding the finite remainder remains necessary |
-| Actual heat-path small-time exclusion (B14) | Removes the principal unresolved ZCG collision region | Low-height compact region must also be controlled |
-| Actual long-mollifier excess `O(1/log T)` (B64) | Sufficient for clustering and occupancy under the stated length hypotheses | Necessary length law is not a construction or an RH proof |
+| Zero number (Sturm, Angenent) | real-zero count falls only at collisions as `t` decreases, by the collision's order | needs buffered windows: the unbuffered law fails [L] |
+| Parabolic frequency (Almgren, Poon) | monotone quantity: vanishing order at a point is bounded by Gaussian-weighted frequency at any larger scale | exact for every caloric function, no size input |
+| Blow-up classification | each collision is a Hermite profile of its order | model case proved (`pairModelHeat_orderTwo_collision`) [L] |
+| Zero dynamics (Dyson flow, Rodgers–Tao) | `d(g²)/dt=8−g²S`, where `S≥0` sums neighbour forces [D] | averaged law `spread_roots_heatFlow` proved for polynomials [L]; localization open |
+| Relaxation at normalized time `τ=tlog²X` | connects GUE-type gaps at `τ≲1` to crystal gaps at `τ≫1` | `τ` runs up to `≈0.66 log X` in the open region [D] |
 
-Clustering follows from a suitable second-moment bound; the reports do not establish the converse existence of
-such a mollifier. Finite-window mimic theorems exclude positivity-only selectors, not every arithmetic use of a
-finite-window theorem. New estimates must be evaluated with their precise quantifiers and source hypotheses.
+**The central question.** Is there `c>0` with `g_t²≥c·min(t, log⁻²X)` for every adjacent pair of real zeros near height `X` and every `t>0`?
+- It implies no positive-time collision, hence RH.
+- The converse is expected away from clusters but unproved.
+- The density-one version is sub-RH and gives a mechanism for B73.
+
+**(a) Just work**
+1. Sturm drop law for `H_t` in buffered windows.
+2. Local zero ODE for the actual source, with a regularized sum.
+3. Hermite blow-up at actual collisions.
+4. Frequency monotonicity for `u`, and an explicit collision-order bound, about `0.33 log X` from the horizon scale [D].
+
+**(b) Open mathematics**
+1. The local repulsion law above.
+2. A depth law linear in `d`: the model gives `t*≈d/log X` when `d log X≫1`, while Lean has `c d²/log X`.
+3. Control of neighbour compression `S` on clusters.
+
+**What limits it.**
+- Every monotone identity here also holds for `H_{−τ}`, which does collide at positive time. The arithmetic must enter through data: the proved region above the horizon, RvM counts, pair correlation and the Euler product in `Q`.
+- Collisions do occur below `t=0` [L: `newmanConstant_nonneg` with `Λ=0` under RH], so any inequality must degenerate exactly at `t=0`.
+- A dimension count makes collisions in the `(X,t)` plane generic, so Diophantine repulsion alone cannot exclude them [D].
+
+### 2.7.2 A programme for route WD: multiscale analysis of the mollified zeta field
+
+**Serves WD's density branch (B20, B21), not its RH branch (B19, B64, B65).** It is an existing area of probabilistic number theory. Its inputs are [C]; a Selberg central limit theorem, branching barriers and multiplicative chaos at this scale are not in Lean.
+
+**Why WD needs it.** WD's obstacles come from one method, second moment plus Jensen:
+- polynomial length has moment floor `1+1/(8+6θ)` [L];
+- moments alone do not determine the log-mean (Π19) [L];
+- occupied-window bounds lose a factor `log V` [L].
+
+B23 already asks for a distributional input beyond counts and moments. This programme is a candidate for it.
+
+**The change of viewpoint.** `log|ζ(½+it)|` behaves as a log-correlated field, with primes in dyadic scales as branching steps. A unit window contains about `log V` zeros, so the `log V` loss is a union bound over them [D]. Barrier arguments are the known way to beat such a union bound (Fyodorov–Hiary–Keating maxima, Arguin–Bourgade–Radziwiłł; Harper for random multiplicative functions).
+
+| Target | Fit | Why |
+|---|---|---|
+| `D_win` (B21) | best first target | only `A→∞` is needed, where second-moment excess is small; the obstruction is the log loss [D] |
+| Clustering (B20) | harder | small `κ` needs primes near `T^{Θ(1)}`, where products exceed `T`; this is signed pair data past bandwidth one (B28) |
+| Long-moment bounds (B64, B65) | no help | a long mollifier is truncated `1/ζ`, so residues `N^{ρ−s}/(ρζ′(ρ))` bring in negative moments of `ζ′` and every off-line zero [D] |
+
+**The central question.** Does a barrier on partial prime sums give `P(unit window of [V,2V] holds a zero of depth ≥A/log V)≤ε(A)`, with `ε(A)→0` independent of `V`?
+
+**(a) Just work**
+1. Selberg's central limit theorem for `ζ` and the dyadic prime decomposition, in Lean.
+2. Twisted second moments against products of short Euler pieces, within known length.
+3. Barrier probability estimates for the prime-sum random walk.
+
+**(b) Open mathematics**
+1. Turning a barrier event into the detector shape: `D_win` needs shifted defect `≤Ce^{−r(σ−½)log V}V/log V` [L], and size-only detectors at that scale fail (Fejér–Dirichlet) [L].
+2. The last scale, where mean-value theorems stop (B28).
+3. Negative moments `Σ|ζ′(ρ)|^{−2}`, which link WD to the small-value questions of ADO.
+
+**What limits it.**
+- Sparse off-line zeros survive, so this reaches no RH statement.
+- The barrier method's success on maxima is an analogy here, not a theorem about zeros.
+
+**Why it could work where the fakes fail.** It uses independence of primes, which the root model, Davenport–Heilbronn and impure factors lack.
+
+## 2.8 The one question
+
+**B7, the HF question of 2.5.4.** For one `K` above the size-only optimum, is the full tilted-spline matrix eventually positive definite at `c=2K(log N)^{1/8}`?
+
+**Why this question.** It alone has all four properties:
+1. **Not a finite rung.** The aperture is unbounded, so verified zeros cannot decide it.
+2. **Selective.** The Liouville twin fails at fixed overlap [K], so a proof must use prime signs.
+3. **Past size.** It forces the first payment of the far complement by sign, which is the step every sign route lacks.
+4. **Below RH.** Each single `K` is a sub-RH target.
+
+**Consequence.** The first mechanism paying primes by sign on unbounded windows. Every sign route needs one, and none has one.
+
+**Limits.**
+- It does not pass the strict door test: no theorem propagates one `K` to all `K`.
+- The size-only optimum must be certified first (A4). Otherwise a positive answer could be size in disguise.
+- Its difficulty relative to RH is unproved.
+
+**Next strongest:** B20 clustering. It is the stronger classical result, but it has no route to RH and its only named input is long mollifiers, far beyond present lengths.
+
+**Not doors:**
+- first windows (`½`, `log 2`, `½log 5`), which are finite verification;
+- the tower limit, which is frozen at `a₀`;
+- fibrewise TH tails, which fail numerically.
