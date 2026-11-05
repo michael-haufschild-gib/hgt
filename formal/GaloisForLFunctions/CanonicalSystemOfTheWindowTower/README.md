@@ -136,3 +136,10 @@ operator representation. Application to Weil Riesz boundary traces remains open.
 For measurable input continuous from the right at zero, the causal convolution
 has exact normalized limit `u(x)√log(1/x)→h(0)`. Positivity of the density
 and its exact renewal mass prove this without an assumed trace theorem.
+Backward convolution is continuous at zero for L² forcing essentially bounded
+near the endpoint. Its readout integral is absolutely convergent. L¹ translation
+continuity treats bounded forcing; square-integrability of `v` away from zero
+and dominated convergence treat the remote part.
+The actual Green solution has the measurable representative
+`u(x)=∫₀ˣv(t)(W*f)(x-t)dt`. For L² forcing essentially bounded near zero,
+`u(x)√log(1/x)→∫₀∞v(y)f(y)dy`; the coefficient is absolutely convergent.

@@ -33,10 +33,12 @@ theorem fiveGammaMass_bounds {q : ℝ} (hq : 0<q) :
  have eL : (2/5:ℝ)*(1/2+3/(8*((5/2)*q))+3/(32*((5/2)*q)^2)-
    3/(128*((5/2)*q)^3))=zL q := by
   unfold zL
-  field_simp [hq.ne'] <;> ring
+  field_simp [hq.ne']
+  ring
  have eU : (2/5:ℝ)*(1/2+3/(8*((5/2)*q))+3/(32*((5/2)*q)^2))=zU q := by
   unfold zU
-  field_simp [hq.ne'] <;> ring
+  field_simp [hq.ne']
+  ring
  rw [eL] at hL
  rw [eU] at hU
  exact ⟨hL,hU⟩
@@ -228,6 +230,25 @@ theorem leadingRadialTailMatrix_posDef {q : ℝ} (hq : 3≤q) :
  rw [leadingRadialTailMatrix_eq hq0]
  exact (hM.add_posSemidef hR).smul (boundary_pos hq0)
 
+/-- The exact leading tail retains an explicit matrix reserve for further atom pairs. -/
+theorem leadingRadialTailMatrix_gamma_reserve {q : ℝ} (hq : 0<q) :
+ (leadingRadialTailMatrix q-boundary q •
+   (leadingModel q (fiveGammaMass q) (Real.exp (-3*q))+
+    (3/(32*q^2)-3/(128*q^3)) • model 0 1)).PosSemidef := by
+ have he : leadingRadialTailMatrix q-boundary q •
+   (leadingModel q (fiveGammaMass q) (Real.exp (-3*q))+
+    (3/(32*q^2)-3/(128*q^3)) • model 0 1)=
+   (boundary q*(gammaMass q-(1/2+3/(8*q))-(3/(32*q^2)-3/(128*q^3)))) • model 0 1 := by
+  rw [leadingRadialTailMatrix_eq hq]
+  ext i j
+  simp only [Matrix.add_apply,Matrix.sub_apply,Matrix.smul_apply,smul_eq_mul]
+  ring
+ rw [he]
+ apply mass_model_posDef.posSemidef.smul
+ apply mul_nonneg (boundary_pos hq).le
+ have h := gammaMass_cubic_lower hq
+ linarith only [h]
+
 open _root_.RHTower _root_.RHTower.ThetaCuspOddFourThreeAtom _root_.HTGeometry.SignedPoisson
 
 /-- The literal tails of the two ordered unequal pairs between atoms one and two. -/
@@ -266,8 +287,6 @@ private theorem mixed_source_scaled (s : ℝ) (k : ℕ) :
   rw [← Real.exp_add]
   congr 1
   ring
- norm_num only [show (2:ℝ)^2=4 by norm_num,show (1:ℝ)+4=5 by norm_num,
-   show (4:ℝ)+1=5 by norm_num]
  rw [fiveBoundary,hp,he]
  ring
 

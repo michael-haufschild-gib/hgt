@@ -1,6 +1,6 @@
 # The first atom pays the leading unequal-pair fifth tail
 
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
 - **Wall:** Σ6
 - **Scope:** Ordered pairs `(1,1)`, `(1,2)`, `(2,1)`; complete theta tail remains open.
 
@@ -50,12 +50,22 @@ interval. The unused first-atom gamma mass adds a positive semidefinite
 matrix. Multiplication by `E(q)>0` and the exponential coordinate change
 preserve strict positivity.
 
+The comparison leaves the explicit matrix reserve
+`E(q)(3/(32q²)−3/(128q³))A`, where `A=M(0,1)>0`.
+This follows from the cubic lower bound for the first-atom gamma mass.
+
 ## Formalization
 
-`FifthEvenLeadingTailModel.lean` assembles the interval comparison;
-`FifthEvenTailGammaBounds.lean` proves the gamma enclosure;
-`FifthEvenLeadingTail.lean` identifies the literal integrals. Final source
-checks and axiom audits remain pending.
+Namespace `GaloisForLFunctions.ThetaCuspSections.FifthMixedTail`:
+`leadingModel_posDef`, `leadingTailMatrix_posDef_of_scale`,
+`leadingTailMatrix_posDef`, `leadingRadialTailMatrix_gamma_reserve`.
+
+`FifthEvenLeadingTailModel.lean` proves the interval comparison;
+`FifthEvenTailGammaBounds.lean` proves the gamma enclosure in namespace
+`FifthAtomTail`; `FifthEvenLeadingTail.lean` identifies the literal integrals.
+All 22 audited capstones use only `propext`, `Classical.choice`, `Quot.sound`.
+Direct `lake --old env lean` checks pass for all four changed modules.
+All three new modules are wired into `ThetaCuspSections.lean`.
 
 The other five unequal pairs among four retained atoms and the infinite
 remainder remain unpaid in the complete integrated matrix.

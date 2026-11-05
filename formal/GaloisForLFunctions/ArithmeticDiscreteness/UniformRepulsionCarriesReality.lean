@@ -65,9 +65,16 @@ theorem eq_of_continuousOn_intCoeff {X : Type*} [TopologicalSpace X] {S : Set X}
 
 /-! ### Roots near a real-rooted member -/
 
+theorem norm_prod_map {α : Type*} (s : Multiset α) (g : α → ℂ) :
+    ‖(s.map g).prod‖ = (s.map fun x => ‖g x‖).prod := by
+  induction s using Multiset.induction_on with
+  | empty => simp
+  | cons a s ih => rw [Multiset.map_cons, Multiset.prod_cons, norm_mul, ih, Multiset.map_cons,
+      Multiset.prod_cons]
+
 theorem pow_card_le_prod_norm (s : Multiset ℝ) (z : ℂ) {m : ℝ} (hm : 0 ≤ m)
     (h : ∀ r ∈ s, m ≤ ‖z - (r : ℂ)‖) :
-    m ^ Multiset.card s ≤ (s.map fun r => ‖z - (r : ℂ)‖).prod := by
+    m ^ Multiset.card s ≤ (s.map fun r : ℝ => ‖z - (r : ℂ)‖).prod := by
   induction s using Multiset.induction_on with
   | empty => simp
   | cons a s ih =>
@@ -128,11 +135,11 @@ theorem eventually_abs_im_lt {P : ℝ → ℝ[X]} {n : ℕ} (hdeg : ∀ t, (P t)
     rw [ContinuousAt, hδ0] at this
     exact this.eventually (gt_mem_nhds hθ0)
   filter_upwards [hev] with t ht z hz
-  have hval : ‖(p.leadingCoeff : ℂ)‖ * (p.roots.map fun r => ‖z - (r : ℂ)‖).prod ≤
+  have hval : ‖(p.leadingCoeff : ℂ)‖ * (p.roots.map fun r : ℝ => ‖z - (r : ℂ)‖).prod ≤
       δ t * max 1 ‖z‖ ^ n := by
     have h := norm_aeval_sub_le (hdeg t₀) (hdeg t) z
     rw [hz, zero_sub, norm_neg, aeval_eq_leadingCoeff_mul_prod hsplit, norm_mul,
-      ZeroConfigurationGeometry.norm_multiset_prod_map, Multiset.map_map] at h
+      norm_prod_map] at h
     exact h
   rw [Complex.norm_real, Real.norm_eq_abs] at hval
   have hδt0 : 0 ≤ δ t := Finset.sum_nonneg fun j _ => abs_nonneg _
@@ -140,7 +147,7 @@ theorem eventually_abs_im_lt {P : ℝ → ℝ[X]} {n : ℕ} (hdeg : ∀ t, (P t)
   · exfalso
     have hz2 : 2 ≤ ‖z‖ := by linarith
     have hzpos : 0 < ‖z‖ := by linarith
-    have hlow : (‖z‖ / 2) ^ n ≤ (p.roots.map fun r => ‖z - (r : ℂ)‖).prod := by
+    have hlow : (‖z‖ / 2) ^ n ≤ (p.roots.map fun r : ℝ => ‖z - (r : ℂ)‖).prod := by
       rw [← hcard]
       refine pow_card_le_prod_norm _ z (by positivity) fun r hr => ?_
       have h1 := norm_sub_norm_le z (r : ℂ)
@@ -163,7 +170,7 @@ theorem eventually_abs_im_lt {P : ℝ → ℝ[X]} {n : ℕ} (hdeg : ∀ t, (P t)
     have := min_le_left (|p.leadingCoeff| / 2 ^ n) (|p.leadingCoeff| * ε ^ n / (2 * ρ) ^ n)
     linarith
   · push Not at hbig
-    have hlow : |z.im| ^ n ≤ (p.roots.map fun r => ‖z - (r : ℂ)‖).prod := by
+    have hlow : |z.im| ^ n ≤ (p.roots.map fun r : ℝ => ‖z - (r : ℂ)‖).prod := by
       rw [← hcard]
       refine pow_card_le_prod_norm _ z (abs_nonneg _) fun r _ => ?_
       have := abs_im_le_norm (z - (r : ℂ))

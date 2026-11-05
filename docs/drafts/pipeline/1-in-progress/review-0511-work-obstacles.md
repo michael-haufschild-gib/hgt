@@ -4,7 +4,7 @@
 - **Stage:** 1-in-progress
 - **Type:** CANDIDATE
 - **Source:** `docs/reports/review-0511/obstacles-summary.md`, §2.1.
-- **Goal:** Resolve all 32 current tasks with exact Lean statements and audited dependencies.
+- **Goal:** Resolve all 29 current tasks with exact Lean statements and audited dependencies.
 
 ## Scope
 
@@ -12,7 +12,7 @@ Open: A1–A2, A4–A7, A9, A11, A13–A15, A17–A21, A23–A25, A28, A31, A33,
 open until every obligation is discharged. Existing results are prerequisites, not new solutions.
 No numerical experiments or trusted computation; certificates require kernel proofs.
 
-**Closed current rows:**
+**Completed results removed from the current list:**
 
 - A3, [joint periodic windows](../3-formalized/joint-periodic-window-coercivity.md):
   joint independence is equivalent to eventual positive definiteness at every
@@ -26,8 +26,6 @@ No numerical experiments or trusted computation; certificates require kernel pro
   monotone unbounded mode and conductor cutoffs, uniform receiving on bounded charge
   cubes, and profile-dependent cutoffs for arbitrary infinite real charge profiles.
   Direct source check, six transitive axiom audits, and umbrella wiring passed.
-
-**Completed results removed from the current list:**
 
 - A8, [even cosh-credit gauges](../3-formalized/even-cosh-credit-gauges.md):
   existing window-adapted signed theta gauges, positive on the window, with
@@ -56,7 +54,10 @@ the existing unconditional `PF_45` theorem passed its direct source check and
 axiom audit. [Explicit Hausdorff shifts](../3-formalized/explicit-symmetric-zero-mass-and-hausdorff-shifts.md)
 are now formalized via an explicit zero-mass threshold at every height; three
 direct source checks, six transitive axiom audits and umbrella wiring passed.
-Jensen horizons and two-grid degrees remain open.
+[Two-grid degrees](../3-formalized/explicit-two-grid-detection-degrees.md) are
+formalized in terms of finite sampled spectral data, including pole cancellation
+and arbitrary odd offsets. Both source checks and eight axiom audits passed.
+Jensen horizons remain open.
 
 **Former A10, absent from the current list.** For the window index `ι(A)`, define
 `Lₙ = sup {A : ι(A) ≤ n}` in `EReal`. Prove
@@ -108,8 +109,12 @@ counting alone does not discharge that requirement.
 - A11 concerns the remaining function-field receivers: ladders, Hardy intervals,
   and de Branges chains. A13 concerns widths of `𝒜(c)`. A17 starts with the fifth
   even theta section on `π≤q<7`, then rank 9. A5 starts above `0.3621`.
-- New A39–A42: Krein extension and discrete mimics; real-weight camera and local
-  count transfer; the precontact Hamiltonian; effective camera height `T₀`.
+- A39 now asks for direct negative-test/camera composition, with tails to
+  `exp(−c log³ T)`; no Krein mimic is required. A40–A42 concern the real-weight
+  camera and local count transfer, the precontact Hamiltonian, and effective
+  camera height `T₀`.
+- A35 now explicitly includes improving the detector constants `480000`, `10⁶`
+  and local-count constant `240` toward `4δL/k`.
 - A36's original claims exceed the current formalized card. See
   [remaining obligations](onset-law-remaining-obligations.md), including the
   uniform RvM requirements. The [distinct-ordinate law](../3-formalized/distinct-coherent-clusters-have-the-multiplicity-threshold.md)
@@ -119,5 +124,5 @@ counting alone does not discharge that requirement.
 ## Verification
 
 Each completed theorem requires direct `lake --old env lean` checking, transitive
-`#print axioms` inspection, and its owning umbrella import. Current closed rows
+`#print axioms` inspection, and its owning umbrella import. Completed former rows
 A3, A27 and A37 satisfy all three. Earlier audits remain recorded on their theorem cards.

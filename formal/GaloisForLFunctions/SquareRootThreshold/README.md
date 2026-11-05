@@ -5,7 +5,7 @@ positivity — and which unconditional mechanism reaches that information?
 
 Primary namespace `GaloisForLFunctions.SquareRootThreshold`; cluster-product bounds use
 `SquareRootThreshold`; `SmoothWeilDetectorPolynomialAperture` and `EffectiveHorizons/` use `RHTower`.
-Umbrella `SquareRootThreshold.lean`. 167 files. Base objects come from `Zeta23`
+Umbrella `SquareRootThreshold.lean`. 169 files. Base objects come from `Zeta23`
 and `RHTower` (`ZeroConfig`, `paperFT`, `gammaOf`, `zetaZeroConfig`, explicit formula); do not redefine.
 
 ---
@@ -259,6 +259,10 @@ Hausdorff difference with shift `r≥ceil(20K)+ceil(KH²)+1` is nonnegative.
 - Explicit symmetric zero-mass and Hausdorff thresholds:
   `RHTower.xiSymmetricMass_close_explicit`,
   `RHTower.scaledHausdorffMomentDifference_nonneg_of_explicit_shift_le`.
+- Explicit two-grid detection: `RHTower.two_three_heatGrids_explicitDetector_negative_of_offLine`
+  gives a negative arithmetic-source square on `log 2` or `log 3`, after any odd offsets.
+  `natDegree_xiHeatGridExplicitDetector_le` bounds its degree using finite sampled
+  spectral data; separation products remain, so this is not a height/depth-only bound.
 - Prime side: localized explicit formula, windowed Gram identity and diag/off-diag split, parity
   variance laws, Kronecker realisation, peak persistence, excursion balance, Stieltjes identity for
   $\Pi_\ell$ vs $S(T)$.

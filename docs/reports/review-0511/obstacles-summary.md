@@ -1,7 +1,7 @@
 # Obstacles summary — status quo
 
 Companion to `route-obstacles.md` (per route; labels `A*`, `B*`, `S*`, mechanism classes P1–P5),
-`walls-ledger.md` (Σ/Π/Γ) and `route-unification-ledger.md` (classes C1–C30). Corpus state: `1e8010c5b4`
+`walls-ledger.md` (Σ/Π/Γ) and `route-unification-ledger.md` (classes C1–C30). Corpus state: `6b6bb73e6b`
 plus working tree. Evidence: `[L]` committed Lean; `[W]` working-tree Lean; `[P]` pipeline-card paper proof;
 `[D]` derived here from Lean statements; `[N]` numerical. Windows `[−c, c]` or half-windows `[−c, 0]`;
 `w_n = Λ(n)n^{−1/2}`; `H` the archimedean–polar form (prime weights `0`), `P` the arithmetic part, `W = H − P`;
@@ -68,7 +68,9 @@ holomorphic on the slit plane, one simple negative zero, half-line support prese
 transform of a positive measure, its causal kernel a positive probability density with normalized renewal mass
 [L] — a Wiener–Hopf factorization of the archimedean part [D]. Either RH, or at `a*` a fixed evaluation kernel
 diverges monotonically while the contact window stays positive [L]. RH ⇔ the chain never reaches contact [D].
-The Hamiltonian of the chain is not constructed.
+On the half-line the kernel's causal convolution has range exactly the finite logarithmic energy domain, the form has an
+explicit positive symmetric Green kernel, and the normalized convolution reads boundary values with factor `√log(1/x)`,
+constant one [L/W]. The Hamiltonian of the chain is not constructed.
 
 ### 1.7 Identification is complete; reality is the squared gap the camera reads
 At aperture `λL_T`: `λ > 1` fixes RvM configurations up to near-collisions, `λ > ½` reads every isolated zero of
@@ -90,7 +92,9 @@ source-faithful Γ ⊠ Θ split never certifies (Θ never real-rooted) [L]. RH �
 stable at infinitely many degrees ⇔ their roots have bounded imaginary parts along infinitely many degrees;
 off RH the imaginary parts grow linearly (`κd`) [L]. Every zero-free half-plane `Re s > σ` is equivalent to
 stability of the Jensen polynomials of `ξ(σ + i·)` (strict and unconditional for `σ ≥ 1`), and `R_d(Ξ)` has
-unboundedly many real roots (finite free Hardy theorem) [L]. These are receivers.
+unboundedly many real roots (finite free Hardy theorem) [L]. `R_d(Ξ)` is a coefficientwise limit of finite free products
+of rank-one pieces, one per zero, all real-rooted iff RH [L]. `ξ` has no stability margin on any line, the phase `c = 0` is
+exactly critical, and the genus-one class is classified by its drift [W]. These are receivers.
 
 ### 1.9 Every route is a face of the same sign
 Exact identifications [L]: the reflection-pair prime-count band ⇔ Weil-lag ⇔ JAS ⇔ CTF ⇔ PBM ⇔ eventual Robin
@@ -192,7 +196,6 @@ computed windows (1.15) [L/N]. A proof must be an identity at the boundary
 |---|---|---|---|
 | A1 | Explicit constants and horizons (`K₀`, eighth-root theorem, `1/9`, logarithmic profile, Beurling schedule, `M(N) = o(c_N)`) | HF, SRT, AIP, ACS, SC | effectivization of proved limits |
 | A2 | General profiles past `θ = 1/1080` | HF, SRT, SC | tilted-spline template |
-| A3 | Joint twist families across different moduli | HF, SRT, AHD | parity grading and `L`-value coupling within one modulus proved |
 | A4 | Certified ratio interval at its size-only optimum; receiving complement inside it | HF, AIP, SRT, CSAR | assembly of proved estimates (difficulty unverified) |
 | A5 | Rigorous computer-assisted certificate of the two-weight membership on `(0.3621, log 2)`, odd unit window first | RW, OWU, EWU, ACT, SWC, HF | operator inequality with explicit kernels; margins `2×10⁻⁴` (odd unit), `1.5×10⁻⁵`, `5.6×10⁻⁸`, `≈ 10⁻¹²` at `log 2` [N]; decides cases, not the mechanism; no zero information; opens nothing (2.8) |
 | A6 | Exact Tate horizons of the remaining stages below spread `6` | WTZ, CWS | finite templates exist there |
@@ -202,8 +205,8 @@ computed windows (1.15) [L/N]. A proof must be an identity at the boundary
 | A13 | Widths of the finite-level cones `𝒜(c)` | PBAP, ACS, RW, FADF | convex finite programs; entry bounds proved; computed to `c = 0.66` (1.15) [N] |
 | A14 | PM classical identifications; mixed-parameter completion; Mayer transfer compatibility; boundary carrier; rational Weyl identification | PM, W1C | known theories |
 | A15 | Operator-native nonvanishing on `Re w = 1` | PM | Eisenstein template (risk: reduces to the Euler product) |
-| A17 | Theta fifth even section on `π ≤ q < 7` with an entry-preserving compensation other than the quartic (which fails at scale 6); then rank 9 | TH | compact finite-dimensional sign with exact capacities (difficulty unverified) |
-| A18 | Hausdorff shifts, Jensen horizons, two-grid degrees, PF beyond 37 | PA, LA, HCF | effectivization |
+| A17 | Theta fifth even section on `π ≤ q < 7` with an entry-preserving compensation other than the quartic (which fails at scale 6), first-atom tail and leading atom pairs positive for `r ≥ 0` [L/W]; then rank 9 | TH | compact finite-dimensional sign with exact capacities (difficulty unverified) |
+| A18 | Jensen horizons, two-grid degrees, PF beyond 37 | PA, LA, HCF | effectivization |
 | A19 | Certificates on the nine anti-diagonals `{2,3,4,5,7,8,9,11,13}` where the pole pays nowhere | ACT | finite case analysis |
 | A20 | Mixed Schur debit; first-prime/coarse/polar costs | AIP, CHMD | fixed-dimensional estimates |
 | A21 | Logarithmic two-point Chowla | MC | Tao's theorem |
@@ -313,6 +316,7 @@ computed windows (1.15) [L/N]. A proof must be an identity at the boundary
 | Does a finite window decide anything about the width? | no: every bounded aperture is blind to every width | SRT [L] |
 | Do other weights give slack? | no: the cone is `{Λ}` or empty; the gain is below `500` for `c ≤ 0.66` | RHTower [L]; 1.15 [N] |
 | Is purity over `𝔽_q` a deformation argument? | no: `collide_or_repel` assumes the disc bound; the proofs use a sign or a count | ZCG [L] |
+| Do joint twist families across moduli inherit positivity? | eventually positive at every critical multiple iff jointly independent; arbitrary moduli, no parity restriction | AHD [L] |
 
 ## 2.3 Frankenstein routes
 
@@ -403,7 +407,10 @@ trace formulas and Selberg/Maass traces.
 Stepanov–Bombieri's point count, Deligne's positivity on tensor powers. `collide_or_repel` [L: ZCG] takes the bound
 `|z| ≤ 2√q` on all roots as a hypothesis, which is purity, and then bounds separations by a resultant. Integer
 polynomials do not deform continuously, so "pure member + continuity + integrality" is no proof of purity and
-there is nothing to transfer to ζ.
+there is nothing to transfer to ζ. Integrality quantizes impurity and does not exclude it: `X^{g−1}(X − m)`,
+`m = ⌊2√q⌋ + 1`, is monic, integral and impure (`exists_impure_integral`); given integrality, finitely many power sums
+certify purity through Turán's theorem (`isPureTrace_of_bounded_powerSums`) [W: ArithmeticDiscreteness]. Discreteness
+amplifies a certificate and produces none, and ζ's image has no such structure.
 
 **Tensor amplification is closed.** Deligne's step from a fixed loss to purity has no analogue on Weil's kernel:
 every Hadamard power `K_ζ^n` is positive definite iff RH, and a finite index at degree two already gives finitely
@@ -599,8 +606,9 @@ statements in `c` are RH (`1 ∈ ℋ(c)` ∀c, transport, contact) or the width 
 2. **Margin law (B59).** Determine the decay of `λ*(c) = max_λ λ_min(W_λ|[−c,c])` and of the band widths. Does
    `μ(a) ≤ K exp((11/2)a − πe^{2(a−2)})` [L] hold for `λ*`? Consequence: slack from free weights is excluded at a stated
    rate. Data: 1.15.
-3. **Edge profile.** The exact boundary behaviour of window extremals and Riesz vectors, conjecturally
-   `(log(1/dist))^{−1/2}` from `κ` [D]. Consequence: convergence rates for A5 and A13. Independent of arithmetic.
+3. **Edge profile on a window.** On the half-line the boundary readout has factor `√log(1/x)`, constant one [W]. The
+   question is the window: the exact boundary behaviour of extremals and Riesz vectors. Consequence: convergence rates
+   for A5 and A13. Independent of arithmetic.
 4. **A5, A13, A41.** Work items: numerical membership, cone maps, the Hamiltonian. A41's regularity is B51, RH.
 
 *Tools.* Criticality theory and optimal Hardy weights for nonlocal operators; semidefinite duality
@@ -637,9 +645,9 @@ and give no inequality; asymptotic laws give inequalities and are precision-blin
 | Finite-window positivity | fails aperture | `not_of_finite_window` [L] |
 | Square-root integrality (Siegel, Liouville halves) | RH in each half; integrality exponent `= Θ` | `TheIntegralityExponentIsTheZeroWidth` [L] |
 | Camera | precision-faithful and sign-free: reads, does not produce | ZCG [L] |
-| Heat flow, finite free stability | criteria restate RH; size stops at `½/log X`; Gaussian capacity `o(d⁻²)` | ZCG, FFP [L] |
+| Heat flow, finite free stability | criteria restate RH; size stops at `½/log X`; Gaussian capacity `o(d⁻²)`; `ξ` has no stability margin | ZCG, FFP [L/W] |
 | Hadamard and tensor powers | every degree carries RH | RIT [L] |
-| Integrality of Frobenius traces | assumes purity | `collide_or_repel` [L] |
+| Integrality of Frobenius traces | quantizes impurity, does not exclude it; amplifies a certificate | `impurity_is_quantized`, `exists_impure_integral` [W] |
 
 *Questions.*
 1. **`100%` critical-scale clustering (B20, 2.5.1).** Valid; mechanism: long mollifiers; blocked at the Π wall.

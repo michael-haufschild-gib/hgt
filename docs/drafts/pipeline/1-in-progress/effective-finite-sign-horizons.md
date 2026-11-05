@@ -7,7 +7,7 @@
 
 ## Obligations
 
-Give explicit Jensen horizons and two-grid detection degrees.
+Give explicit Jensen horizons.
 An existential threshold renamed by `Classical.choose` is not an effective bound.
 
 Explicit Hausdorff shifts are [formalized](../3-formalized/explicit-symmetric-zero-mass-and-hausdorff-shifts.md).
@@ -29,6 +29,10 @@ Here `A(ε)=max(4,exp(20/ε),200/ε)` and
 holds at every height `T≥Z(ε)`. Three direct source checks, six transitive axiom
 audits and umbrella wiring are complete.
 
-The [two-grid degree candidate](explicit-two-grid-detection-degrees.md) uses a
-finite outer-spectrum separator and a uniform geometric tail. Jensen horizons
-remain open.
+The [two-grid degree bound](../3-formalized/explicit-two-grid-detection-degrees.md)
+is formalized, with explicit source polynomials, arbitrary odd offsets and pole
+cancellation. Its bound retains finite spectral separation products. Both direct
+source checks, eight axiom audits and umbrella wiring passed.
+
+[Jensen horizons](../2-fully-proven/explicit-jensen-real-rootedness-horizons.md)
+have a dependency-closed paper proof; Lean formalization remains open.

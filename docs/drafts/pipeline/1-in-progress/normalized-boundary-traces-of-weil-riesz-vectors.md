@@ -64,11 +64,35 @@ The half-line factorization, exact renewal normalization, actual form inverse,
 and literal Green representation are
 [formalized](../3-formalized/the-half-line-logarithmic-green-kernel.md).
 The [normalized convolution limit](../3-formalized/the-logarithmic-renewal-average-reads-the-boundary.md)
-is formalized for right-continuous input. Required formalization: domain
-extension with its exterior forcing and actual backward-convolution continuity. The interior Riesz forcing
-already follows from the completed Weil equation. Sharp cutoff preservation
-of the stationary jump domain is available in `CHMDSharpSpatialCut`; both
-exterior Gamma actions are available in `CCMRestrictedWeilGammaBoundaryPairing`.
+is formalized for right-continuous input. The interior Riesz forcing already
+follows from the completed Weil equation.
+[Backward-convolution continuity](../3-formalized/the-logarithmic-backward-convolution-has-boundary-values.md)
+and absolute convergence hold for L² forcing essentially bounded near the endpoint.
+
+## Localized half-line equation
+
+Translate the selected endpoint to zero. Choose a real bounded Lipschitz
+cutoff `χ`, equal to one near zero and zero before the opposite endpoint.
+For `j(r)=exp(-|r|)/(2|r|)`, define
+
+`Kχ(x,y)=(χ(x)-χ(y))j(x-y)`.
+
+If `χ` has Lipschitz constant `Lχ`, then
+`|Kχ(x,y)|≤(Lχ/2)exp(-|x-y|)`. Thus its literal Schur operator is bounded
+on L² and preserves essential boundedness. The required full-domain identity is
+
+`q(v,χu)-q(χv,u)=⟨v,Kχu⟩`.
+
+Once cutoff-domain preservation and this identity are proved, the actual
+interior equation gives the half-line forcing `χg+Kχu`. It is bounded and in
+L². The exact Green inverse then applies to `χu`, which agrees with `u`
+near the selected endpoint. This avoids extending across the opposite sharp
+boundary. Formalization of the localization identity and its application to
+the actual Riesz source remains open.
+
+An independent extension route has sharp cutoff preservation in
+`CHMDSharpSpatialCut` and both exterior Gamma actions in
+`CCMRestrictedWeilGammaBoundaryPairing`.
 
 ## Consequence sought
 
@@ -85,3 +109,10 @@ continuous real normalization at zero, these identities suggest
 For `L=2a`, the corresponding Krein coefficient is `A(L)=-q(L/2)/2`.
 All variation identities, differentiability, the initial normalization at zero,
 and the prime-entry law remain unproved. Trace existence alone supplies none of them.
+
+The actual half-line inverse now has its normalized boundary limit:
+`logarithmicHalfLineGreenOperator_normalized_boundary_limit` identifies the
+coefficient with `∫v(y)f(y)dy` under essential local boundedness and L² control.
+`logarithmicHalfLineGreenOperator_eq_representative` identifies its measurable
+renewal representative with the variational solution. Actual Weil localization
+remains required.

@@ -1,7 +1,7 @@
 # RH proof-route frontier
 
 **RH open · 32 live routes · 17 candidates.**
-**Corpus checkpoint:** `6b6bb73e6bb135e0a592bd51614ed2330b4f4155`.
+**Corpus checkpoint:** `95145d4992fcc874816c4784dceb5326624fa8f6`.
 
 Live = source observable + proved RH-sufficient receiver + explicit open estimate. Candidate = missing independent source mechanism/landing.
 Evidence: [L] integrated, source-reviewed; [S] unfinished/unintegrated, unverified; [K] individual Lean + standard-only transitive-axiom audit. Untagged established facts: [L].
@@ -101,7 +101,7 @@ Evidence: [L] integrated, source-reviewed; [S] unfinished/unintegrated, unverifi
 
 - **Path:** Theta source → collision-free heat descent / Jensen-root imaginary-part control → RH.
 - **Established:** RH⇔infinitely many unshifted Ξ Jensen degrees real-rooted⇔every positive-time H_t zero simple. For 0<t≤1/8, zeros with abs(Re z)≥2πexp((6600/9991+ε)/t) are real/simple. For every fixed finite Möbius mollifier, σ>0 and phase: RH⇔uniform upper imaginary-root bound along infinitely many reversed Jensen degrees⇔sublinear bounds; ¬RH forces a root with Im≥κd eventually. Arbitrarily many real Jensen roots occur eventually, unconditionally [L].
-- **Open:** Actual sublinear Jensen-root bound, or collision exclusion below the sub-Weyl horizon and at bounded heights. Fixed-degree large-shift reality and arbitrarily many real roots give no all-root control. Positive-time bounds do not reach t=0; [size-only models still collide](rh-killed-routes.md#heat-method-floor). [ZCG](#zcg): local arithmetic input.
+- **Open:** Actual sublinear Jensen-root bound, or collision exclusion below the sub-Weyl horizon and at bounded heights. Fixed-degree reality and growing real-root counts give no all-root control; [uniform strict stability margin fails](rh-killed-routes.md#xi-stability-margin) [L]. Positive-time bounds do not reach t=0; [size-only models still collide](rh-killed-routes.md#heat-method-floor). [ZCG](#zcg): local arithmetic input.
 - **Sources:** R:Jensen/EveryFixedDegreeIsEventuallyRealRooted; R:XiSliceHeatOrderUniformPositivity; R:Heat/TheLocalDeBruijnNewmanConstant; R:DeBruijnNewmanCollisionCriterion; ZCG:HeatScaleRepulsion/{SubWeylCollisionFreeHorizon,SymmetricHalfCollisionLaw}; FFP:{MollifiedJensenCriterion,BoundedImaginaryPartsCriterion,ImaginaryPartDichotomy,FiniteFreeHardyTheorem} [L].
 
 <a id="tg"></a>
@@ -132,9 +132,9 @@ Evidence: [L] integrated, source-reviewed; [S] unfinished/unintegrated, unverifi
 ### TH — Theta moment positivity
 
 - **Path:** Signed center-mixed theta jets → all-rank Hankel positivity → RH.
-- **Established:** Rank8 positive for 0<a<1/2; ranks≤N strict on |a−1/2|<c/(1+log(N+1)) [K]. Literal first-atom fifth-even tails positive at every nonnegative cutoff, with strict gamma reserve. Truncated quartic positive for q≥7, false at q=6; exact scale-six capacity τ(a)<350/417 [L]. Literal first atom plus both ordered (1,2) cross terms has positive-definite tail matrix for every cutoff r≥0 [S].
-- **Open:** Verify/integrate leading-pair source; pay remaining unequal pairs and infinite remainder in a fixed tail quadratic form, including compact scales. Then rank9 I₈(a)>0 and all ranks. [Full quartic repair fails](rh-killed-routes.md#theta-fixed-cross-load).
-- **Sources:** R:ThetaCusp/ThetaCuspCenterMixedSignedJetCompleteness; TCS:{StrictEighthSection,LogarithmicCriticalCollar} [K]; TCS:{FifthEvenTruncatedQuarticUpperRay,FifthEvenScaleSixApertureCapacity,FifthEvenFourAtomRemainder,FifthEvenFirstAtomTail} [L]; TCS:{FifthEvenLeadingTailModel,FifthEvenLeadingTail} [S].
+- **Established:** Rank8 positive for 0<a<1/2; ranks≤N strict on |a−1/2|<c/(1+log(N+1)) [K]. Truncated quartic positive for q≥7, false at q=6; exact scale-six capacity τ(a)<350/417. Literal first atom plus both ordered (1,2) cross terms has positive-definite fifth-even tail matrix for every cutoff r≥0, retaining gamma reserve [L].
+- **Open:** Pay remaining unequal pairs and infinite remainder in a fixed tail quadratic form, including compact scales. Then rank9 I₈(a)>0 and all ranks. [Full quartic repair fails](rh-killed-routes.md#theta-fixed-cross-load).
+- **Sources:** R:ThetaCusp/ThetaCuspCenterMixedSignedJetCompleteness; TCS:{StrictEighthSection,LogarithmicCriticalCollar} [K]; TCS:{FifthEvenTruncatedQuarticUpperRay,FifthEvenScaleSixApertureCapacity,FifthEvenFourAtomRemainder,FifthEvenLeadingTail} [L].
 
 <a id="rn"></a>
 ### RN — Theta renewal and singular comparison
@@ -196,9 +196,9 @@ Evidence: [L] integrated, source-reviewed; [S] unfinished/unintegrated, unverifi
 ### HCF — Gaussian heat trace / critical feature variance
 
 - **Path:** Exact arch−prime heat trace → both prime-log grids positive at every degree → RH.
-- **Established:** Heat explicit formula, two-grid RH criterion and arbitrary-zero detector.
-- **Open:** Actual signs at every degree/height, or one-sided vertical bound. Two-grid non-aliasing does not control coalescence/many-node Gram eigenvalues.
-- **Sources:** R:XiGaussianHeatTwoPrimeSourceSampling; R:HeatGridAliasingBoundary.
+- **Established:** Heat explicit formula and two-grid RH criterion [L]. Absolute heat mass≤6/h; pole-annihilating detector has explicit degree from the finite outer sampled spectrum, at every odd offset [S].
+- **Open:** Actual signs at every degree/height, or one-sided vertical bound. Detector degree depends on spectral separation; two-grid non-aliasing supplies no uniform finite sign certificate.
+- **Sources:** R:XiGaussianHeatTwoPrimeSourceSampling; R:HeatGridAliasingBoundary [L]; S:EffectiveHorizons/{TraceHankelDegrees,HeatGridDegrees} [S].
 
 <a id="xn"></a>
 ### XN — Xi Newton invariant discs
@@ -310,7 +310,7 @@ Promotion requires the missing independent source mechanism/landing below; an un
 | <a id="sec"></a>**SEC — Adjacent prime seam:** exact compactness/Fock boundedness → seam jump zero. | Essential norm=seam jump; exact vanishing and time-one factorial-Fock criteria. | Pre-divisor proof of exact eventual compactness or Fock boundedness at actual zeros. Asymptotic seam smallness is nonselective. | R:XiPrimeSeamAdjacentEssentialNormNoGo; R:TimeOneGammaJetFockRHCriterion |
 | <a id="w1c"></a>**W1C — Clifford–Dirac / centred Lee–Yang:** arithmetic operator or ferromagnetic limit → real-rooted Ξ. | Lee–Yang/Ising receiver; faithful Haar realization, closed reflection, all-determinant Lewis invariance and corrected all-prime transport; actual-core Haar admission⇔resonance [K]; physical Krein/Gaussian residues and height-uniform cusp remainder; retained Hecke channel detects the resonance side of Re s=1/4 [K]: [PM](#pm). | Source-defined Ising couplings with centred slow-field convergence, or positive arithmetic reflection form with self-adjoint generator. Admission/transport do not give [Krein positivity](rh-killed-routes.md#mayer-krein-sign). | R:LeeYangIsingGraphDatum; R:IsingLawConvergenceRH; RIT:MayerScattering/ClosedCauchyReflection; RIT:MayerScattering/AllPrimeBoundaryTransport; RIT:MayerScattering/CoreHaarResonanceAdmission [K] |
 | <a id="wbf"></a>**WBF — Source certificates:** arithmetic stream → depth-uniform positive completion → Ξ. | Abstract genealogy Gram/Fredholm recovery and relative determinants; no arithmetic coupling. | Arithmetic certificate stream and source-faithful uniform-depth completion landing on Ξ/Weil positivity. | H:PaperGenealogyFredholmRecovery; H:PaperCriticalGenealogyCompletion |
-| <a id="zcg"></a>**ZCG — Zero-configuration geometry:** prime image → local rigidity → collision exclusion → RH. | Isolated small RvM clusters admit polynomial-loss moment/discriminant readout with exp(−Klog³T) tail; exact prime curvature. Period-N one-orbit/residue patterns resolve above (N−1)π/(Ng); period6 threshold5π/(6g) is sharp [L]. Monic-integer roots repel without separability; explicit impurity gaps convert near-purity to purity [S]. | Independent arithmetic gap/discriminant sign and exhaustive ζ-cluster coverage, including shallow/degenerate clusters. ζ integrality, sufficiently strong near-purity, isolation and periodic structure are unproved. [General mixed-depth resolution: lower5π/(6g), upperπ/g](rh-killed-routes.md#two-carrier-inversion). | ZCG:{IsolatingWindowsVarySlowlyAtTheirTarget,TheImageReadsTheDiscriminantOfACluster,NearCoincidencePrimeCurvatureAndStripCollisionLaw,MixedDepthsHideBeyondTheInghamScale,PeriodicMimicsAreResolvedAboveTheirLastLag} [L]; [integer-root repulsion](../../formal/GaloisForLFunctions/ArithmeticDiscreteness/DistinctRootsOfIntegerPolynomialsRepel.lean), [quantized impurity](../../formal/GaloisForLFunctions/ArithmeticDiscreteness/ImpurityIsQuantized.lean) [S] |
+| <a id="zcg"></a>**ZCG — Zero-configuration geometry:** prime image → local rigidity → collision exclusion → RH. | Isolated small RvM clusters admit polynomial-loss discriminant readout with exp(−Klog³T) tail; exact prime curvature. Period-N one-orbit/residue threshold (N−1)π/(Ng), sharp at period6 [L]. Integral finite configurations: explicit impurity gaps; N consecutive late power-sum bounds certify purity. Uniform distinct-root separation transports reality along fixed-degree paths [S]. | Independent ζ arithmetic gap and exhaustive cluster coverage. Integral realization and certificate-scale power-sum bounds are unproved; [continuous integral paths are constant](rh-killed-routes.md#integral-deformation). [General mixed-depth resolution: lower5π/(6g), upperπ/g](rh-killed-routes.md#two-carrier-inversion). | ZCG:{IsolatingWindowsVarySlowlyAtTheirTarget,TheImageReadsTheDiscriminantOfACluster,NearCoincidencePrimeCurvatureAndStripCollisionLaw,MixedDepthsHideBeyondTheInghamScale,PeriodicMimicsAreResolvedAboveTheirLastLag} [L]; ADO:{FinitelyManyOrdersCertifyIntegralPurity,UniformRepulsionCarriesReality} [S] |
 
 ## Shared frontier
 
@@ -375,11 +375,11 @@ ADT: conductor degeneration supporting HF/ACS/SC; gluing determinant reformulate
 
 WTZ/DZG/ATD: RW/HF/ACS/PM support. Tate-positive dimensions=[0,κ(A)], κ(A)>0 and κ(A)→0; strict interior floor and exact rational-Hecke graph criterion [L]. Finite matrix reduction through A≤log(81/16); actual dimension1 sign through log(9/2). First-jet domination⇔Weil sign; no all-aperture domination. Sources: WTZ:{PositiveTateDimensionsFormAClosedInitialInterval,PositivePrimeMultipliersLowerTateDimension,TheTateHorizonBeforeEightyOneSixteenths,TheThirdTateStageDistinguishesEdgeSigns}.
 
-GWZ/CSTW: RW/AIP lattice/collar and precontact Hermite–Biehler machinery. Positive causal density v: mass1, multiplier1/κ, V(x)√log(1/x)→1. Literal logarithmic inverse WW* has overlap kernel ∫₀^min(x,y)v(x−s)v(y−s)ds, integrable off diagonal [L]. Normalized causal convolution reads each measurable right-continuous input's boundary value [S]; actual Weil-Riesz traces/domain admission and finite-contact exclusion remain. Sources: CSTW:{TheHalfLineLogarithmicFormHasItsActualInverse,TheHalfLineLogarithmicGreenKernelIsExplicit} [L]; CSTW:TheLogarithmicRenewalAverageReadsTheBoundary [S]. SWC/FADF: signed charge/edge laws; all-aperture payment open.
+GWZ/CSTW: RW/AIP precontact/lattice support. Causal density v: mass1, multiplier1/κ, V(x)√log(1/x)→1; inverse WW* has overlap kernel ∫₀^min(x,y)v(x−s)v(y−s)ds, integrable off diagonal. Normalized convolution reads right-continuous boundary data [L]. Backward readout is continuous at0 for L² forcing essentially bounded on y≤δ, δ>0 [S]. Actual Weil-Riesz regularity/domain admission and finite-contact exclusion remain. Sources: CSTW:{TheHalfLineLogarithmicFormHasItsActualInverse,TheHalfLineLogarithmicGreenKernelIsExplicit,TheLogarithmicRenewalAverageReadsTheBoundary} [L]; CSTW:TheLogarithmicBackwardConvolutionHasBoundaryValues [S]. SWC/FADF: signed charge/edge support; all-aperture payment open.
 
-FFP: LA/TH support. For σ>1/2, ξ zero-free on Re s>σ⇔all real-center Jensen polynomials Hurwitz stable; unconditional for σ≥1. Canonical zero-piece realization is exact; piece reality⇔RH [L]. Multiplicity-aware deflation/concentration assumes stability and vanishing residual drift [S], not a source of either. Reachingσ=1/2 remains open; [factorwise/phase obstructions](rh-killed-routes.md#finite-free-factorization). Sources: FFP:{RealJensenHurwitzStability,FiniteFreePolyaClass,ZeroPieceRealization} [L]; FFP:HurwitzDeflation [S].
+FFP: LA/TH support. Canonical zero-piece realization is exact; piece reality⇔RH. Genus-one stability⇔upper-half-plane zeros and drift D≥0; sharp margin −D. ξ has drift0: reversed Jensen roots concentrate near Im0 for σ≥1; e^{c(s−σ)}ξ is stable iff ξ is zero-free right ofσ and c≥0 [L]. Critical-line stability/all-root control remain open; [strict-margin obstruction](rh-killed-routes.md#xi-stability-margin). Sources: FFP:{ZeroPieceRealization,GenusOneStabilityClassification,StabilityBoundaryOfXi} [L].
 
-ADO: arithmetic-discreteness support under [ZCG](#zcg)/[LA](#la); missing ζ depth-gap realization and independent approximate purity. HWV: squarefree prime complex≃wedge of S^(ω(m)−1), odd squarefree N/2<m≤N; topology supplies no signed cancellation. Source: HWV:SquarefreePrimeComplexIsASphereBouquet [L].
+ADO: [ZCG](#zcg)/[LA](#la) support. Integral trace polynomial with N eigenvalues paired by α↦q/α: sufficiently late N-order square-root power-sum bounds force purity [S]. Missing ζ realization and those bounds. HWV: squarefree prime complex≃wedge of S^(ω(m)−1), odd squarefree N/2<m≤N; topology supplies no signed cancellation. Source: HWV:SquarefreePrimeComplexIsASphereBouquet [L].
 
 ## Source locator
 
@@ -428,3 +428,4 @@ ADO: arithmetic-discreteness support under [ZCG](#zcg)/[LA](#la); missing ζ dep
 | TCS | ThetaCuspSections | SWC | SignedWindowCriticality |
 | ZCG | ZeroConfigurationGeometry | KPA | KodairaParshinAbc |
 | FFP | FiniteFreeProbability | FADF | FrustratedArithmeticDirichletForms |
+| ADO | ArithmeticDiscreteness | — | — |

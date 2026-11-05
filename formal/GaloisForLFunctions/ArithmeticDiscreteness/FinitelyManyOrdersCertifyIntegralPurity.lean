@@ -19,6 +19,8 @@ close to `1`, is impure while `r^ν + r^{−ν} ≤ 3` for all `ν ≤ M`. Integ
   `N` consecutive orders `M+1, …, M+N` (`N` the number of eigenvalues) and
   `B · L_N(M) < (1+κ)^{M+1}`, `L_N(M)` the constant of Turán's second main theorem
   (`HTGeometry.exists_norm_powerSum_ge_scaled`), then every trace point is pure.
+* **Depth gap** (`exists_deep_eigenvalue_of_not_pure`). An impure integral configuration has a
+  zero of its zeta function at depth `Re s − ½ > log(1+κ)/log q`.
 * **Eventually certified** (`eventually_isPureTrace_of_bounded_powerSums`). For fixed degree, disc
   and `B`, the bound at `N` consecutive orders past some `M₀` certifies purity.
 
@@ -301,5 +303,32 @@ theorem not_certified_at_finitely_many_orders (M : ℕ) :
       have : r + r⁻¹ - 2 = (r - 1) ^ 2 / r := by field_simp; ring
       rw [this]; positivity
     linarith
+
+/-- **Integral zeta functions have a depth gap.** If a trace point of a monic integer polynomial is
+impure, some eigenvalue `α` has `|α| > √q(1+κ)`; for the zero `s` of the zeta function with
+`q^s = α` this is `Re s − ½ = log(|α|/√q)/log q > log(1+κ)/log q`. -/
+theorem exists_deep_eigenvalue_of_not_pure {ι : Type*} {h : ℤ[X]} (hh : h.Monic) {q : ℕ}
+    (hq : 2 ≤ q) {R : ℝ} (hR1 : 1 ≤ 2 * R) (hR : ∀ z ∈ (toC h).roots, ‖z‖ ≤ R) {s : Finset ι}
+    {z : ι → ℂ} (hE : IsEigenConfig q h s z) {κ : ℝ} (hκ0 : 0 ≤ κ) (hκ1 : κ ≤ 1)
+    (hκim : 4 * Real.sqrt q * κ < gapIm R h.natDegree)
+    (hκedge : Real.sqrt q * κ < gapEdge q R h.natDegree)
+    (himp : ∃ τ ∈ (toC h).roots, ¬ IsPureTrace q τ) :
+    ∃ i ∈ s, Real.log (1 + κ) / Real.log q < Real.log ‖z i‖ / Real.log q - 1 / 2 := by
+  have hq1 : 1 ≤ q := by omega
+  obtain ⟨i, hi, hbig⟩ : ∃ i ∈ s, Real.sqrt q * (1 + κ) < ‖z i‖ := by
+    by_contra hsmall
+    push Not at hsmall
+    obtain ⟨τ, hτ, hnp⟩ := himp
+    exact hnp (isPureTrace_of_eigen_bound hh hq1 hR1 hR hE hκ0 hκ1 hκim hκedge hsmall τ hτ)
+  refine ⟨i, hi, ?_⟩
+  have hq0 : (0 : ℝ) < q := by exact_mod_cast (by omega : 0 < q)
+  have hlogq : 0 < Real.log q := Real.log_pos (by exact_mod_cast (by omega : 1 < q))
+  have hs0 : 0 < Real.sqrt q := Real.sqrt_pos.mpr hq0
+  have hc : 0 < 1 + κ := by linarith
+  have hlog : Real.log (Real.sqrt q * (1 + κ)) < Real.log ‖z i‖ :=
+    Real.log_lt_log (mul_pos hs0 hc) hbig
+  rw [Real.log_mul hs0.ne' hc.ne', Real.log_sqrt hq0.le] at hlog
+  rw [div_lt_iff₀ hlogq, sub_mul, div_mul_cancel₀ _ hlogq.ne']
+  linarith
 
 end GaloisForLFunctions.ArithmeticDiscreteness

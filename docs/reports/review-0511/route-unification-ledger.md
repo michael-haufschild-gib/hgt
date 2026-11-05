@@ -1,6 +1,6 @@
 # Route unification ledger — status quo
 
-The 32 live routes and 18 candidates are faces of three core problems — **U-Σ** (sign), **U-Π** (precision and
+The 32 live routes and 19 candidates are faces of three core problems — **U-Σ** (sign), **U-Π** (precision and
 production), **U-Γ** (selection and reflection) — and the three are one statement read in three coordinate
 systems: the **arithmetic Hardy inequality** `P ≤ H` on every window, equivalently the **band**
 `|𝒞_m(f)| ≤ W(f)` of a test `f` and its mirror `f∘R`, `R(v) = 2m − v`,
@@ -328,6 +328,7 @@ systems; at a near-coincidence its sign is the sign of `𝓗`. Positivity of the
 | PTR, W1C | Σ (Γ) | C9, C5, C14 | realization |
 | ZCG | Γ (Σ) | C21, C23, C24, C5 | camera (complete to `e^{−c log³T}`); sign of `𝓗` |
 | FFP | Σ (Π) | C28, C22, C24, C5 | finite free stability; Euler drift |
+| ADO | Γ | C5 | function-field discreteness: an amplifier, not a producer |
 | FADF (programme) | Σ | C26, C4, C16 | Hardy interval; frustration; entry |
 | CSTW (programme) | Σ | C27, C15 | de Branges chain; contact |
 | WVL (programme) | Σ (Γ) | C25, C11, C23 | onset aperture; visibility |

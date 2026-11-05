@@ -39,6 +39,7 @@ import GaloisForLFunctions.CanonicalSystemOfTheWindowTower.TheLogarithmicCausalK
 import GaloisForLFunctions.CanonicalSystemOfTheWindowTower.TheHalfLineLogarithmicFormHasItsActualInverse
 import GaloisForLFunctions.CanonicalSystemOfTheWindowTower.TheHalfLineLogarithmicGreenKernelIsExplicit
 import GaloisForLFunctions.CanonicalSystemOfTheWindowTower.TheLogarithmicRenewalAverageReadsTheBoundary
+import GaloisForLFunctions.CanonicalSystemOfTheWindowTower.TheLogarithmicBackwardConvolutionHasBoundaryValues
 
 /-!
 # The Canonical System of the Window Tower
@@ -56,3 +57,4 @@ the full reproducing kernel. At finite contact some diagonal kernel diverges mon
 although the contact window itself remains positive. Positive-level truncations and the literal
 cutoff archimedean kernel give bounded physical representatives of every precontact Riesz vector.
 -/
+import GaloisForLFunctions.CanonicalSystemOfTheWindowTower.TheHalfLineLogarithmicGreenSolutionsHaveBoundaryValues

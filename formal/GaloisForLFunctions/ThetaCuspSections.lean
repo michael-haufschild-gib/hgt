@@ -54,12 +54,17 @@ Both endpoints are singular positive semidefinite matrices.
 Every individual theta atom has a strict fifth even section at reflection scale at least five.
 The literal first-atom fifth even tail is positive definite from scale three;
 its incomplete-gamma remainder adds a strict reserve at every positive scale.
+From scale three, that first-atom reserve also pays both ordered cross tails
+between atoms one and two; every nonnegative cutoff has a strict leading-pair tail.
 From scale three, four retained atoms leave normalized Gaussian entry error at most
 `1/100000`, hence quadratic error at most `1/20000`.
 -/
 import GaloisForLFunctions.ThetaCuspSections.FifthEvenLeadingPairReserve
 import GaloisForLFunctions.ThetaCuspSections.FifthEvenFirstAtomTailModel
 import GaloisForLFunctions.ThetaCuspSections.FifthEvenFirstAtomTail
+import GaloisForLFunctions.ThetaCuspSections.FifthEvenTailGammaBounds
+import GaloisForLFunctions.ThetaCuspSections.FifthEvenLeadingTailModel
+import GaloisForLFunctions.ThetaCuspSections.FifthEvenLeadingTail
 import GaloisForLFunctions.ThetaCuspSections.FifthEvenThreeAtomRemainder
 import GaloisForLFunctions.ThetaCuspSections.FifthEvenFourAtomRemainder
 import GaloisForLFunctions.ThetaCuspSections.FifthEvenNativeRay

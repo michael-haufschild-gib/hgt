@@ -1,6 +1,6 @@
 # Route obstacles — status quo
 
-Scope: the 32 live routes and 18 candidates of the programme and the programmes that feed them, read
+Scope: the 32 live routes and 19 candidates of the programme and the programmes that feed them, read
 against the Lean corpus at `1e8010c5b4` plus the working tree. For every route: path, what is established,
 the open estimate, the mechanism class, the obstacles that are **(A) just work** and the obstacles that are
 **(B) open mathematics** (no known solution).
@@ -138,7 +138,6 @@ directions cannot pay untwisted negativity. The far-complement estimate loses `O
 |---|---|---|
 | A1 | Explicit constants and horizons (`K₀`, eighth-root theorem, `1/9`, logarithmic profile, Beurling schedule, conductor range `M(N) = o(c_N)`) | — |
 | A2 | General profiles past `θ = 1/1080` | — |
-| A3 | Joint twist families across different moduli | — |
 | A4 | Certified ratio interval at its size-only optimum; receiving complement inside it (difficulty unverified) | — |
 | A9 | Literal channel norms critically small with growing periods, offsets and prime bands (difficulty unverified) | — |
 | B6 | Twisted-sector positivity through all conductors and frequencies at every multiple | sub |
@@ -387,7 +386,8 @@ degree horizon `≈ δ²/(4a)`; ζ-side, Gamma-side and pole pieces unstable for
 Jensen roots bounded along infinitely many degrees (else linear growth); zero-free `Re s > σ` ⇔ stable Jensen
 polynomials of `ξ(σ + i·)` (unconditional, strict, for `σ ≥ 1`); `R_d(Ξ)` has unboundedly many real roots
 (finite free Hardy theorem); genus-one products with nonnegative drift have stable Jensen polynomials (finite free
-Pólya–Levin class).
+Pólya–Levin class); `R_d(Ξ)` is a limit of finite free products of rank-one zero pieces, all real-rooted iff RH; `ξ` has no
+stability margin on any line, phase `c = 0` exactly critical, genus-one class classified by its drift [W].
 
 | | Obstacle | Strength |
 |---|---|---|
@@ -398,7 +398,7 @@ Pólya–Levin class).
 | | Obstacle | Routes | Strength |
 |---|---|---|---|
 | A17 | Theta fifth even section on the compact interval `π ≤ q < 7` with an entry-preserving compensation other than the quartic (truncated quartic positive from `q ≥ 7` and failing at scale 6; fixed load failing at scales 6 and 8; untruncated quartic at 32; first-atom tails PD from scale 3), then rank 9 (difficulty unverified) | TH | — |
-| A18 | Hausdorff shifts, Jensen horizons, two-grid degrees, PF beyond 37 | PA, LA, HCF | — |
+| A18 | Jensen horizons, two-grid degrees, PF beyond 37 | PA, LA, HCF | — |
 | A19 | Certificates on the nine anti-diagonals `n ∈ {2,3,4,5,7,8,9,11,13}` where the pole pays nowhere | ACT | — |
 | A20 | Mixed Schur debit; first-prime/coarse/polar costs | AIP, CHMD | — |
 | B15 | Scheduled prime energies bounded below (FU, CFC, RP, EGC, FEL); for SZ and LI identified with B1 | FU, CFC, RP, EGC, FEL | RH |
@@ -573,7 +573,7 @@ Each entry: path; established; open; class; A; B.
 ### SRT, ACT, AIP — complete atomic matrix
 - SRT: full-family/index receivers; two real parameters decide the line (`κ_γ(t+v/2) ± κ_γ(t−v/2)`);
   split-column receiver; closed-contact receiver; distinct-cluster threshold [L]. Open: complementary-window
-  sign, high-zero tail and source-kernel payment at every ratio. A: A1, A3, A35, A40. B: B6, B7, B12.
+  sign, high-zero tail and source-kernel payment at every ratio. A: A1, A35, A40. B: B6, B7, B12.
 - ACT: single-shift receiver `Ẑ(m_au) = 2S_a − D_a + 8V_c + 8τ_cA₂`; shifted ground states exact on every
   window; anti-diagonal classification (nine moduli where the pole pays nowhere) [L]. Open: one shift, uniform
   in profile, paying `D_a` with retained variance. Class P1. A: A19. B: B1, B3, B5.
@@ -592,6 +592,7 @@ Each entry: path; established; open; class; A; B.
 | Candidate | Established | Promotion gap | Strength |
 |---|---|---|---|
 | ACS | RH ⇔ effectivity ⇔ Hodge index ⇔ section count; primitive `h¹ = Q/2`; Cayley ladder over `𝔽_q` = sharp Weil bound; Legendre `J(ρ)` real ⇔ RH [L] | a non-count source of all-aperture primitive effectivity | B34; count face closed |
+| ADO | collide or repel for every monic integer polynomial; impurity quantized; finitely many power sums certify integral purity; integral impure polynomials exist in every degree [L/W] | an integral structure on ζ's zeros (absent); discreteness amplifies a certificate and produces none | closed as a producer |
 | APF | Fredholm index; cycle-trace reconstruction | zero-independent divisor exhaustion | B41 |
 | BSH | framed curvature | pre-divisor section and mate identity | B41 |
 | CDC | calibrated confluence iff `Re s = ½` | source-defined potential forcing confluence | B41 |

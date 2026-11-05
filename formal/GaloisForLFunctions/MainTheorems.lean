@@ -73,3 +73,4 @@ import GaloisForLFunctions.ZeroConfigurationGeometry
 import GaloisForLFunctions.KodairaParshinAbc
 import GaloisForLFunctions.WindowVisibilityLaw
 import GaloisForLFunctions.FiniteFreeProbability
+import GaloisForLFunctions.ArithmeticDiscreteness
