@@ -224,10 +224,12 @@ theorem exists_mem_exceptionalSet_near (n : ℕ) {a₀ : ℂ} (ha₀ : a₀ ≠ 
   have hG1diff : Differentiable ℂ G1 := by rw [hG1]; fun_prop
   have hderiv_g : ∀ z, deriv g z = G1 z := by
     intro z
-    have h := ((((hasDerivAt_id z).sub_const z₀).pow 2).const_mul (m : ℂ)).const_add a₀
-    rw [h.deriv, hG1]
-    simp only [id, Nat.cast_ofNat]
-    ring
+    have key : HasDerivAt g (G1 z) z := by
+      have h := ((((hasDerivAt_id z).sub_const z₀).pow 2).const_mul (m : ℂ)).const_add a₀
+      convert h using 1
+      · funext x; simp [hg]
+      · simp only [hG1, id]; norm_num; try ring
+    exact key.deriv
   -- the simple zero of `g'` at `z₀` and its Rouché radius
   have hG1z₀ : G1 z₀ = 0 := by simp [hG1]
   have hG1only : ∀ w ∈ closedBall z₀ (2 * (1 / 128)), G1 w = 0 → w = z₀ := by
@@ -240,9 +242,13 @@ theorem exists_mem_exceptionalSet_near (n : ℕ) {a₀ : ℂ} (ha₀ : a₀ ≠ 
     (by norm_num : (0 : ℝ) < 1 / 128) hsubU hG1z₀ hG1only
   have hG1mult : zeroMult G1 z₀ = 1 := by
     refine zeroMult_eq_one_of_analyticAt (hG1diff.analyticAt z₀) hG1z₀ ?_
-    have h := (((hasDerivAt_id z₀).sub_const z₀).const_mul (2 * (m : ℂ)))
-    rw [show G1 = fun z => 2 * (m : ℂ) * (id z - z₀) from rfl, h.deriv]
-    simpa using hm0'
+    have key : HasDerivAt G1 (2 * (m : ℂ)) z₀ := by
+      have h := (((hasDerivAt_id z₀).sub_const z₀).const_mul (2 * (m : ℂ)))
+      convert h using 1
+      · funext x; simp [hG1]
+      · simp
+    rw [key.deriv]
+    exact mul_ne_zero two_ne_zero hm0'
   -- the universality target
   set η : ℝ := min (ε₁ / 64) (r₀ / 4) with hη
   have hη0 : 0 < η := lt_min (by positivity) (by positivity)
@@ -346,8 +352,8 @@ theorem exists_mem_exceptionalSet_near (n : ℕ) {a₀ : ℂ} (ha₀ : a₀ ≠ 
   set h : ℂ → ℂ := fun z => F₀ z - w₀ with hh
   obtain ⟨Za', hZa'_ball, hZa'_iff, hZa'_sum⟩ := hrouche₂ h ((hfU.sub_const v).sub_const _) (by
     intro z _
-    rw [hh, sub_sub_cancel_left, norm_neg, Complex.norm_real, Real.norm_eq_abs,
-      abs_of_pos hw₀0]
+    simp only [hh]
+    rw [sub_sub_cancel_left, norm_neg, Complex.norm_real, Real.norm_eq_abs, abs_of_pos hw₀0]
     exact min_le_left _ _)
   -- the `w₀`-points near `c` are simple, hence at least two
   have hF₀2 : 2 ≤ zeroMult F₀ c := by
@@ -361,7 +367,7 @@ theorem exists_mem_exceptionalSet_near (n : ℕ) {a₀ : ℂ} (ha₀ : a₀ ≠ 
     have hρ0 : h ρ = 0 := (hZa'_iff ρ hρb).mpr hρ
     have hρc : ρ ≠ c := by
       rintro rfl
-      rw [hh, hF₀c, zero_sub, neg_eq_zero] at hρ0
+      simp only [hh, hF₀c, zero_sub, neg_eq_zero] at hρ0
       exact hw₀0.ne' (by exact_mod_cast hρ0)
     have hρU : U ∈ 𝓝 ρ := hUo.mem_nhds (hsub' (ball_subset_closedBall
       (ball_subset_ball (by linarith) hρb)))
@@ -377,7 +383,7 @@ theorem exists_mem_exceptionalSet_near (n : ℕ) {a₀ : ℂ} (ha₀ : a₀ ≠ 
   have hfa : ∀ z ∈ Za', f z = a := by
     intro z hz
     have := (hZa'_iff z (hZa'_ball z hz)).mpr hz
-    rw [hh, hF₀] at this
+    simp only [hh, hF₀] at this
     rw [ha]; linear_combination this
   have hub := hZa'_ball u hu
   have hub' := hZa'_ball u' hu'

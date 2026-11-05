@@ -29,11 +29,31 @@ noncomputable section
 namespace GaloisForLFunctions.CriticalHardyTheoryOfTheWindowCone
 
 open _root_.RHTower _root_.RHTower.WeilSpectral FrustratedArithmeticDirichletForms
+open GaloisForLFunctions.RHTower (screwSignThreshold)
 
 /-- The band of a coordinate is an interval: the cone is convex. -/
 theorem ordConnected_bandSet {c : ℝ} (n : ℕ) : (bandSet c n).OrdConnected := by
   refine ordConnected_iff.mpr ?_
-  sorry
+  intro t₁ h₁ t₂ h₂ hle x hx
+  obtain ⟨l₁, hl₁, rfl⟩ := h₁
+  obtain ⟨l₂, hl₂, rfl⟩ := h₂
+  rcases hle.eq_or_lt with e | hlt
+  · have hxe : x = l₁ n := le_antisymm (by rw [e]; exact hx.2) hx.1
+    exact ⟨l₁, hl₁, hxe.symm⟩
+  · have hd : 0 < l₂ n - l₁ n := by linarith
+    obtain ⟨s, hs⟩ : ∃ s, s = (x - l₁ n) / (l₂ n - l₁ n) := ⟨_, rfl⟩
+    have hs0 : 0 ≤ s := by
+      rw [hs]
+      exact div_nonneg (by linarith [hx.1]) hd.le
+    have hs1 : s ≤ 1 := by
+      rw [hs, div_le_one hd]
+      linarith [hx.2]
+    have hmem := convex_windowCone c hl₁ hl₂ (sub_nonneg.mpr hs1) hs0 (by ring)
+    refine ⟨_, hmem, ?_⟩
+    simp only [Pi.add_apply, Pi.smul_apply, smul_eq_mul]
+    rw [hs]
+    field_simp
+    ring
 
 /-- **The bands close at a rate.** -/
 theorem exists_abs_sub_le_of_mem_bandSet :

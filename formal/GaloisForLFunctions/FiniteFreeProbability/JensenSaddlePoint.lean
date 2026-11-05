@@ -211,7 +211,7 @@ theorem SaddleRange.contraction (hx : |x| ≤ X) {a b : ℂ} (ha : a ∈ saddleR
     ‖gammaSlope (saddleTau d a x) - gammaSlope (saddleTau d b x)‖ ≤ 1 / 2 * ‖a - b‖ :=
   (convex_saddleRect _).norm_image_sub_le_of_norm_hasDerivWithin_le
     (f := fun c => gammaSlope (saddleTau d c x)) (C := 1 / 2)
-    (fun c hc => (h.hasDerivAt_psi hc hx).hasDerivWithinAt) (fun c hc => h.norm_deriv_psi_le hc hx) hb ha
+    (fun _ hc => (h.hasDerivAt_psi hc hx).hasDerivWithinAt) (fun _ hc => h.norm_deriv_psi_le hc hx) hb ha
 
 theorem SaddleRange.exists_fixedPoint (hx : |x| ≤ X) :
     ∃ a ∈ saddleRect (Real.log d), gammaSlope (saddleTau d a x) = a := by
