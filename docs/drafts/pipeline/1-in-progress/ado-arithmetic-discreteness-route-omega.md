@@ -51,6 +51,8 @@ Folder `formal/GaloisForLFunctions/ArithmeticDiscreteness/` (README there), umbr
 | Ω24 | A non-product carrier with a torsion cusp collides or repels at polynomial scale near the cusp | Lean: `cusp_local_repulsion` (joint small values + cusp algebra `|b|³ ≲ h²`, `|a|³ ≲ h²` + Ω23) |
 | Ω25 | The cusp `(1,1)` is the only consistent tangency of `(1 − x)² − (1 − y)³` with `|x| = 2^{−σ}`, `|y| = 3^{−σ}` | Lean: `cusp_consistent_tangency_eq` — tangencies are `x = 1 − τ³`, `y = 1 − τ²` with `τ = 1` or `Pτ² + Pτ = 2 log 2` (`P = 3 log 3 − 2 log 2`); the positive root has `τ < log 2/log 3`, incompatible with the moduli by `−log(1−τ³) ≤ τ·(−log(1−τ²))`; the negative root fails by `|1−τ³| > |1−τ²|` |
 | Ω26 | The cusp carrier collides or repels at polynomial scale globally: distinct zeros with `|Im s| ≥ 2` satisfy `|s′ − s| ≥ c(2+|Im s|)^{−C}` | Lean: `cuspCarrier_collide_or_repel` (zero strip `−2 < Re s < 3`; `repulsion_off_tangency_set` + Ω25 away from the cusp; midpoint transfer + Ω24 near it) — the first non-product instance of Ω10 |
+| Ω27 | Polynomial collide-or-repel holds for almost every value: for `F` of polynomial growth near a strip, a.e. `a` has `|s′−s| ≥ κ(2+|Im s|)^{−(2B+1)}` for distinct `a`-points; for `ζ` on `0 ≤ Re s ≤ 1` with one exponent | Lean: `ae_collide_or_repel`, `ae_riemannZeta_values_collide_or_repel` (joint small values at the midpoint put `a` within `K/4^k` of `F` on a mesh-`2^{−k}` grid; height cap `2^{⌊k/(2B+1)⌋}` makes the bad areas `≲ 2^{−k}`; Borel–Cantelli) — no arithmetic enters |
+| Ω28 | The values where polynomial collide-or-repel fails for `ζ` form a dense `G_δ` null set | Lean: `exceptional_values_of_riemannZeta` (open mapping for openness; Voronin universality `RHTower.exists_pos_density_zetaTargetReturnSet_of_isCompact` + Rouché for `ζ′` give a critical point at a chosen height, whose nearby values have two simple `a`-points as close as desired; Baire; null by Ω27) — B54 is the statement that the single value `0` is not exceptional |
 
 ## No-go closure (deformation half)
 - **Exact killing theorem/mechanism:** a continuous family of polynomials with integer coefficients
@@ -101,5 +103,5 @@ Folder `formal/GaloisForLFunctions/ArithmeticDiscreteness/` (README there), umbr
   `e^{−c log² T}` (Ω1′).
 
 ## Log
-- 2026-11-05 — created; Ω1–Ω9″, Ω12, Ω13, Ω15–Ω26 formalized; Ω3, Ω5, Ω6′, Ω12′, Ω14 falsified with
+- 2026-11-05 — created; Ω1–Ω9″, Ω12, Ω13, Ω15–Ω28 formalized; Ω3, Ω5, Ω6′, Ω12′, Ω14 falsified with
   survivors; Ω9′, Ω10 (general), Ω11 open.

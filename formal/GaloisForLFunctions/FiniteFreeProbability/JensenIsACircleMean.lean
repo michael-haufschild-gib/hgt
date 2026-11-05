@@ -8,8 +8,7 @@ For an entire `f`, the rescaled Jensen polynomial `Φ_d(u) = Σ_{k≤d} f_k (d!/
 `Φ_d(u) = (d!/(2π d^d)) ∫_0^{2π} e^{d(e^{iφ} − iφ)} f(u e^{iφ}) dφ`,
 
 against a complex weight of total mass `1` and size `≍ √d e^{−d(1 − cos φ)}`. Near `φ = 0`, `u e^{iφ} ≈ u + i u φ` with `φ` of variance `1/d`: this is the vertical Gaussian
-average of the de Bruijn–Newman flow, `H_t(z) = ∫ g_t(v) H_0(z − iv) dv`, at the height-dependent time `t = u²/(2d)`. So at height `u` the Jensen polynomials of degree `d` behave like the flow at
-time `u²/(2d)`.
+average of the de Bruijn–Newman flow, `H_t(z) = ∫ g_t(v) H_0(z − iv) dv`, at the height-dependent time `t = u²/(2d)`. This comparison with the flow is a reading of the formula, not a theorem proved here.
 -/
 
 open Polynomial Complex Set

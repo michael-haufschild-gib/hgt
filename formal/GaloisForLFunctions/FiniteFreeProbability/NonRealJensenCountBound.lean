@@ -12,7 +12,7 @@ import GaloisForLFunctions.FiniteFreeProbability.JensenCountsOffLineZeros
 `θ(0) = dπ/2 + arg G(1)`. At `x = X`, `T = d/(X − 5)`: `d arg(X + ia) ≤ T L/2` and `|Im P(τ)|, |Im(aτ)| ≲ T L`. Where `θ(x) = kπ`, the sign of `R_d(x)` is `(−1)^k`. So the
 intermediate value theorem gives `d/2 − O(T L)` sign changes on `(0, X]`, and parity doubles them. With `X = √(dL)/100`, `T L ≍ √(dL)`.
 
-The theorem says that real-rootedness of `R_d(Ξ)` is decided by the `≲ √(d log d)` outermost roots.
+So real-rootedness of `R_d(Ξ)` is a statement about at most `300 √(d log d)` of its roots. The proof locates real roots in `|x| ≤ X`; it does not say where the non-real ones lie.
 -/
 
 open Polynomial Filter Topology Complex Set
@@ -420,7 +420,7 @@ theorem SaddleRange.saddlePhase_end_le (h : SaddleRange d X) (hX6 : 6 ≤ X) {a 
     have h2 : 17 * T ≤ T * L / 2000 := by nlinarith
     have h3 : 12 ≤ T * L / 2000 := by nlinarith
     nlinarith
-  simp only [saddlePhase, ← hτ, ← hLdef]
+  simp only [saddlePhase, ← hτ]
   linarith
 
 /-- The phase is continuous along a continuous saddle. -/
@@ -442,7 +442,8 @@ theorem SaddleRange.continuousOn_saddlePhase (h : SaddleRange d X) {a : ℝ → 
       have him : ((x : ℂ) + I * a x).im = (a x).re := by simp
       rw [him]
       exact (lt_of_lt_of_le (by linarith) (ha x hx).1).ne')
-    exact (Complex.continuousAt_arg hne).comp_continuousWithinAt (hwc x hx)
+    exact ContinuousAt.comp_continuousWithinAt (g := Complex.arg) (f := fun y : ℝ => (y : ℂ) + I * a y)
+      (Complex.continuousAt_arg hne) (hwc x hx)
   have h2 : ContinuousOn (fun x : ℝ => P (saddleTau d (a x) x)) (Icc 0 X) := fun x hx =>
     ((hP _ (by linarith [h.re_tau_ge (ha x hx) (habs x hx)])).continuousAt).comp_continuousWithinAt (hτc x hx)
   have h3 : ContinuousOn (fun x : ℝ => a x * saddleTau d (a x) x) (Icc 0 X) := hac.mul hτc
@@ -474,8 +475,8 @@ theorem SaddleRange.exists_real_roots (h : SaddleRange d X) (hX6 : 6 ≤ X) :
   obtain ⟨S, hS, hroots⟩ := exists_real_zeros_of_phase_drop (f := fun x => (xiJensenReal d).eval x)
     (g := fun x => saddlePhase d P (a x) x) h.hX (xiJensenReal d).continuous
     (fun x hx => by
-      simp only at hx ⊢
-      rw [eval_xiJensenReal_neg, hx, mul_zero])
+      have hx' : (xiJensenReal d).eval x = 0 := hx
+      rw [eval_xiJensenReal_neg, hx', mul_zero])
     (h.continuousOn_saddlePhase (fun x hx => (ha x hx).1) hac hP) hsign hdrop
   refine ⟨S, ?_, hroots⟩
   have e : 2 / π * ((d : ℝ) * (π / 2) - B) = d - 2 / π * B := by

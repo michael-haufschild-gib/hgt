@@ -47,7 +47,7 @@ zero statements, the depth `Re ρ − ½`); `ρ³ = ρ + 1`; `a₁ = successorWe
 | Σ1g Haar / Gamma graph | Partially solved | sub | All-detail prime–pole cancellation; index `≤ R + A`; growing Euler heads unbounded [L]. |
 | Σ1h Smooth logarithmic profile | Solved (to `ε₀c*`) | sub | Positive to `ε₀L(log L)²` [L]. |
 | Σ1i Second order on horizon blocks | Classified | — | `κQ(H) + (βJ/K)∫e^{−(β+1)y}H²` [L]. |
-| Σ1j Critical-curve decomposition | Partially solved | sub | Ramanujan, periodic, trigonometric, primitive characters; characters graded by parity, equal parities coupled through `L(s, ψ̄₁ψ₂)`; joint periodic windows keep the mass Gram; frequency pole of order `β+1` with untwisted finite part [L]. Open: different moduli, moving frequencies. |
+| Σ1j Critical-curve decomposition | Partially solved | sub | Ramanujan, periodic, trigonometric, primitive characters; characters graded by conductor and parity [L/W], with `L(s, ψ̄₁ψ₂)` coupling within grades; joint periodic windows keep the mass Gram; frequency pole of order `β+1` with untwisted finite part [L]. Open: moving frequencies. |
 | Σ1k Whole space at one critical multiple | Solved | sub | PD at `c ≤ 2K₀(log N)^{1/8}`; one aperture-independent multiple across every prime entry [L]. |
 | Σ1l Window threshold | Reduced (to Σ56) | RH | `R₁(A) = ⊤ ⇔ A/2 ≤ a*(ζ)`; `R₁ = ⊤` for `A ≤ 2·weilFloorApertureTower k` (every `k`), every critical pencil positive there [L]. |
 | Σ1m Polarization inheritance | Partially solved | sub | Twisted sectors with positive scalar second order; short windows; cosh hyperplane [L]. |

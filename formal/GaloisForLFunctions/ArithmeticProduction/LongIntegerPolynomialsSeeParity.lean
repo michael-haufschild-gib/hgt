@@ -658,7 +658,7 @@ theorem norm_le_of_uniform_second_moment {A : ℂ → ℂ} {a' : ℕ → ℂ} (h
 /-- **A zero of `ζ` in the window obstructs every uniform bound**, when the numerator `A` does not vanish there. -/
 theorem not_uniform_second_moment_of_zero {A : ℂ → ℂ} {a' : ℕ → ℂ} (ha : ∀ n, ‖a' n‖ ≤ 1)
     (hA : ∀ s : ℂ, 1 / 2 ≤ s.re → 0 < s.im → DifferentiableAt ℂ A s ∧ A s ≠ 0)
-    (hEA : ∀ s : ℂ, 1 < s.re → zetaEntire s * LSeries a' s = A s) {T γ β : ℝ} (hT : 0 < T)
+    (hEA : ∀ s : ℂ, 1 < s.re → zetaEntire s * LSeries a' s = A s) {T γ β : ℝ}
     (hβ : 1 / 2 ≤ β) (hβ1 : β < 1) (hz : riemannZeta ((β : ℂ) + (γ : ℂ) * I) = 0)
     (hγ1 : T + 3 ≤ γ) (hγ2 : γ ≤ 2 * T - 4) :
     ¬ ∃ B : ℝ, ∀ m, 1 ≤ m → (∫ t in T..(2 * T), ‖linePoly a' m t‖ ^ 2) ≤ B := by
@@ -829,11 +829,11 @@ private theorem liouville_numerator {s : ℂ} (h1 : 1 / 2 ≤ s.re) (h2 : 0 < s.
 theorem eventually_not_uniform_liouville :
     ∀ᶠ T : ℝ in atTop, ¬ ∃ B : ℝ, ∀ m, 1 ≤ m →
       (∫ t in T..(2 * T), ‖linePoly (fun n => liouvilleC n) m t‖ ^ 2) ≤ B := by
-  filter_upwards [eventually_exists_zero_in_window, eventually_gt_atTop (0 : ℝ)] with T hzero hT
+  filter_upwards [eventually_exists_zero_in_window] with T hzero
   obtain ⟨β, γ, hβ, hβ1, hγ1, hγ2, hz⟩ := hzero
   refine not_uniform_second_moment_of_zero (A := fun z => (z - 1) * riemannZeta (2 * z))
     (a' := fun n => liouvilleC n) norm_liouvilleC_le_one (fun s h1 h2 => liouville_numerator h1 h2)
-    ?_ hT hβ hβ1 hz hγ1 hγ2
+    ?_ hβ hβ1 hz hγ1 hγ2
   intro s hs
   have hne : s ≠ 1 := by
     intro h
@@ -849,11 +849,11 @@ theorem eventually_not_uniform_liouville :
 theorem eventually_not_uniform_moebius :
     ∀ᶠ T : ℝ in atTop, ¬ ∃ B : ℝ, ∀ m, 1 ≤ m →
       (∫ t in T..(2 * T), ‖linePoly (fun n => ((ArithmeticFunction.moebius n : ℤ) : ℂ)) m t‖ ^ 2) ≤ B := by
-  filter_upwards [eventually_exists_zero_in_window, eventually_gt_atTop (0 : ℝ)] with T hzero hT
+  filter_upwards [eventually_exists_zero_in_window] with T hzero
   obtain ⟨β, γ, hβ, hβ1, hγ1, hγ2, hz⟩ := hzero
   refine not_uniform_second_moment_of_zero (A := fun z => z - 1)
     (a' := fun n => ((ArithmeticFunction.moebius n : ℤ) : ℂ)) ?_ (fun s _ h2 => ⟨by fun_prop, ?_⟩)
-    ?_ hT hβ hβ1 hz hγ1 hγ2
+    ?_ hβ hβ1 hz hγ1 hγ2
   · intro n
     rw [Complex.norm_intCast]
     exact_mod_cast ArithmeticFunction.abs_moebius_le_one

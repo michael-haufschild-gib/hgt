@@ -86,7 +86,7 @@ The endpoints are `evalVector_bounded_real_graph_coordinates`,
 `evalVector_operator_domain_and_apply` places each physical source in the literal
 restricted Weil operator domain. Its image is
 `1_{[-a,a]}(x) exp(-i conj(z)x)`, bounded by `exp(a|Im z|)`.
-Boundary traces and aperture variation remain separate obligations.
+Aperture variation remains a separate obligation.
 
 ## 7. The logarithmic reference
 
@@ -178,10 +178,12 @@ actual physical source, compactly supported and zero at both endpoints.
 Its two normalized limits are the absolutely convergent renewal integrals
 of the full localized forcings.
 
-Literal sharp restriction to any centered interval preserves the complete
+Literal sharp restriction to every enclosed interval preserves the complete
 complex Weil form domain, by restricting its two real arithmetic graph
-coordinates. Both the retained interval and complementary collar have finite
-logarithmic energy, without a positivity or smoothing assumption.
+coordinates. The old interval and its two sharp collars give an exact
+three-piece decomposition, with each piece identified by its indicator cut.
+Every piece has finite logarithmic energy without a positivity or smoothing
+assumption.
 
 Physical reflection is an exact Weil isometry and sends the Riesz vector at
 `z` to that at `−z`. The completed sharp operation is literal conjugate
