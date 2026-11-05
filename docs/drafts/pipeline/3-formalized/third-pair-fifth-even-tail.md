@@ -2,7 +2,8 @@
 
 - **Stage:** 3-formalized
 - **Wall:** Σ6
-- **Scope:** Ordered pairs `(1,3)` and `(3,1)`; complete fifth tail remains open.
+- **Scope:** Ordered pairs `(1,3)` and `(3,1)`, contributing to the
+  [complete fifth even tail](theta-fifth-even-integrated-tail.md).
 
 Let `E(q)=q^(3/2)exp(−2q)` and `A=M(0,1)>0`. The exact radial matrix
 

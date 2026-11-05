@@ -949,7 +949,7 @@ theorem exists_left_floor_of_small :
 /-! ### The tail of the window on the critical line -/
 
 /-- The tail of the window outside `[T, 2T]` at distance `log³T` is negligible: the Gaussian `exp(−log²T/4)` beats `T^{4+3θ}` as soon as `log T ≥ 4(3θ+5)`. -/
-theorem center_remainder_le_of_small {θ Cc ε T : ℝ} (hCc : 0 ≤ Cc) (hε : 0 < ε)
+theorem center_remainder_le_of_small {θ Cc ε T : ℝ} (hCc : 0 ≤ Cc)
     (hT1 : Real.log T ^ 8 * Real.exp (-(1 * Real.log T)) ≤
       ε / (Cc * 8100 * (2 * Real.exp 1) * 2 + 1))
     (hℓ : 4 * (3 * θ + 5) ≤ Real.log T) (hℓ1 : 1 ≤ Real.log T) (hT : 1 ≤ T) (N : ℕ) (t₀ : ℝ)

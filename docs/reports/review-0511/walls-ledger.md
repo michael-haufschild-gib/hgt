@@ -63,7 +63,7 @@ zero statements, the depth `Re ρ − ½`); `ρ³ = ρ + 1`; `a₁ = successorWe
 | Σ3a Coprime stratum | Sharpened | RH | gcd stratification; Redheffer `det = M(N)` = reduced Euler characteristic up to sign [L]. |
 | Σ4 Finite index / heat count | Sharpened | ≥qRH (`K_ζ`); RH (`K_ζ⊠K_ζ`) | `κ < ∞` ⇒ Lindelöf; RH ⇔ index `0`; window index counts critical lengths, locally finite [L]. |
 | Σ5 Collision quantum / window integer | Reduced (to Π17) | RH | Index `0` ⇔ Wiener–Hopf invertibility [L]. |
-| Σ6 Rank / degree uniformity | Partially solved | RH | Rank 8 PD; fifth even section strict from `q ≥ 5`; truncated quartic flux preserves every mixed entry, positive from `q ≥ 7` at every aperture, fails at scale 6; fixed load fails at scales 6 and 8, untruncated quartic at 32 (capacities exact); first-atom tails PD from scale 3; every finite native shifted Hankel matrix PD on a cofinal ray [L]. Open: `π ≤ q < 7` with another compensation, rank 9, all ranks. |
+| Σ6 Rank / degree uniformity | Partially solved | RH | Rank 9 PD for `0 < a < ½`; complete fifth even tails PD from scale 3; fifth even section strict from `q ≥ 5`; truncated quartic flux preserves every mixed entry, positive from `q ≥ 7` at every aperture, fails at scale 6; fixed load fails at scales 6 and 8, untruncated quartic at 32 (capacities exact); every finite native shifted Hankel matrix PD on a cofinal ray [L]. Open: all ranks. |
 | Σ7 Window Markov capacity | Sharpened | RH | RH ⇔ `R ≤ ½` on the odd sector [L]. |
 | Σ8 Realization | Sharpened | RH | `ℓ²(zeros)` realization ⇔ RH; no finite-rank realization [L]. |
 | Σ9 Explicit image / resolvent | Partially solved | RH in strip | Depth identity for `σ > 1` [L]. |

@@ -70,6 +70,12 @@ theorem SaddleRange.L_ge (h : SaddleRange d X) : 40000 ≤ Real.log d := by
 
 theorem SaddleRange.d_pos (h : SaddleRange d X) : (0 : ℝ) < d := by exact_mod_cast h.hd
 
+theorem le_norm_denom {a : ℂ} {x : ℝ} (ha : a ∈ saddleRect (Real.log d)) :
+    Real.log d / 5 ≤ ‖a - I * x‖ := by
+  refine ha.1.trans ?_
+  have := Complex.re_le_norm (a - I * x)
+  simpa using this
+
 section Geometry
 
 variable (h : SaddleRange d X) {a : ℂ} {x : ℝ}
@@ -83,17 +89,11 @@ theorem SaddleRange.denom_ne (ha : a ∈ saddleRect (Real.log d)) : a - I * x �
   have h2 := ha.1
   linarith
 
-theorem SaddleRange.re_denom_ge (ha : a ∈ saddleRect (Real.log d)) :
-    Real.log d / 5 ≤ ‖a - I * x‖ := by
-  refine ha.1.trans ?_
-  have := Complex.re_le_norm (a - I * x)
-  simpa using this
-
 theorem SaddleRange.normSq_denom_le (ha : a ∈ saddleRect (Real.log d)) (hx : |x| ≤ X) :
     ‖a - I * x‖ ^ 2 ≤ (Real.log d / 2) ^ 2 + (X + 5) ^ 2 := by
   rw [← Complex.normSq_eq_norm_sq, Complex.normSq_apply]
   simp only [sub_re, mul_re, I_re, ofReal_re, zero_mul, I_im, one_mul, ofReal_im, mul_zero, sub_zero,
-    sub_im, mul_im, add_zero, zero_add]
+    sub_im, mul_im, zero_add]
   have hre1 := ha.1
   have hre2 := ha.2.1
   have him := abs_le.1 ha.2.2
@@ -109,7 +109,7 @@ theorem SaddleRange.re_tau_ge (ha : a ∈ saddleRect (Real.log d)) (hx : |x| ≤
   have hre : (saddleTau d a x).re = d * a.re / ‖a - I * x‖ ^ 2 := by
     rw [saddleTau, ← Complex.normSq_eq_norm_sq, Complex.div_re]
     simp only [natCast_re, natCast_im, zero_mul, zero_div, add_zero, sub_re, mul_re, I_re, ofReal_re,
-      I_im, one_mul, ofReal_im, mul_zero, sub_zero]
+      I_im, ofReal_im, mul_zero, sub_zero]
   rw [hre]
   have hsq := h.normSq_denom_le ha hx
   have hpos : 0 < ‖a - I * x‖ ^ 2 := by
@@ -143,7 +143,7 @@ theorem SaddleRange.mapsTo (ha : a ∈ saddleRect (Real.log d)) (hx : |x| ≤ X)
   have hst := abs_le.1 (abs_re_gammaSlope_sub_le hre1)
   have him := abs_im_gammaSlope_le hre1
   have hnid := h.norm_tau (x := x) ha
-  have hd5 := h.re_denom_ge (x := x) ha
+  have hd5 := le_norm_denom (x := x) ha
   have hL := h.L_pos
   have hdR := h.d_pos
   have hτpos : 0 < ‖τ‖ := lt_of_lt_of_le (by linarith) (Complex.re_le_norm τ)
@@ -154,8 +154,11 @@ theorem SaddleRange.mapsTo (ha : a ∈ saddleRect (Real.log d)) (hx : |x| ≤ X)
   · -- lower bound: `‖a − ix‖² ≤ L²/4 + (X + 5)²`
     have hsq := h.normSq_denom_le ha hx
     have hlogsq : 2 * Real.log ‖a - I * x‖ ≤ Real.log ((Real.log d / 2) ^ 2 + (X + 5) ^ 2) := by
-      rw [← Real.log_pow]
-      · exact_mod_cast Real.log_le_log (by positivity) hsq
+      have h0 : Real.log (‖a - I * x‖ ^ 2) = 2 * Real.log ‖a - I * x‖ := by
+        rw [Real.log_pow]
+        norm_num
+      rw [← h0]
+      exact Real.log_le_log (by positivity) hsq
     have h2 := h.h2
     linarith [hst.1]
   · -- upper bound: `‖a − ix‖ ≥ L/5 ≥ e^{14}`
@@ -191,7 +194,7 @@ theorem SaddleRange.norm_deriv_psi_le (ha : a ∈ saddleRect (Real.log d)) (hx :
     linarith
   have hb := norm_gammaSlopeDeriv_le (τ := saddleTau d a x) (by linarith) hρ
   have hnid := h.norm_tau (x := x) ha
-  have hd5 := h.re_denom_ge (x := x) ha
+  have hd5 := le_norm_denom (x := x) ha
   have hL := h.L_ge
   have hdenpos : 0 < ‖a - I * x‖ := lt_of_lt_of_le (by positivity) hd5
   have hτpos : 0 < ‖saddleTau d a x‖ := by linarith
@@ -214,7 +217,12 @@ theorem SaddleRange.exists_fixedPoint (hx : |x| ≤ X) :
     ∃ a ∈ saddleRect (Real.log d), gammaSlope (saddleTau d a x) = a := by
   have hmem : ((Real.log d / 2 : ℝ) : ℂ) ∈ saddleRect (Real.log d) := by
     have hL := h.L_pos
-    refine ⟨?_, ?_, ?_⟩ <;> simp <;> linarith
+    refine ⟨?_, ?_, ?_⟩
+    · rw [Complex.ofReal_re]
+      linarith
+    · rw [Complex.ofReal_re]
+    · rw [Complex.ofReal_im]
+      norm_num
   have hmaps : MapsTo (fun c => gammaSlope (saddleTau d c x)) (saddleRect (Real.log d))
       (saddleRect (Real.log d)) := fun c hc => h.mapsTo hc hx
   have hcontr : ContractingWith (1 / 2) (hmaps.restrict _ _ _) := by

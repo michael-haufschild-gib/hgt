@@ -2,7 +2,7 @@
 
 - **Stage:** 3-formalized
 - **Wall:** Σ6
-- **Scope:** Ordered pairs `(1,1)`, `(1,2)`, `(2,1)`; complete theta tail remains open.
+- **Scope:** Ordered pairs `(1,1)`, `(1,2)`, `(2,1)`.
 
 For `0≤i,j<5`, integrate the signed order-`2(i+j)` reflection jets of
 these three ordered pairs over `s>r`, with reflection centre `s/2`.
@@ -73,4 +73,5 @@ All audited capstones use only `propext`, `Classical.choice`, `Quot.sound`.
 Direct `lake --old env lean` checks pass; the modules are wired into
 `ThetaCuspSections.lean`.
 
-The complete integrated matrix remains open.
+The retained reserve pays the other pairs and infinite remainder in the
+[complete fifth even tail](theta-fifth-even-integrated-tail.md).

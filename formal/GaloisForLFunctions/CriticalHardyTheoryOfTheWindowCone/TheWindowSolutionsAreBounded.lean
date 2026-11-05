@@ -205,7 +205,7 @@ theorem exists_ae_le_of_absorption {ι : Type*} {w : ℝ → ℝ≥0∞} (hw : M
       have hmt : t ∈ Ioi (0 : ℝ) := mem_Ioi.mpr (hε.trans ht')
       exact ENNReal.ofReal_le_ofReal (antitoneOn_logarithmicCausalKernel hmε hmt ht'.le)
     · rw [indicator_of_notMem ht]
-      exact zero_le _
+      exact bot_le
   have hsm := measurable_transSum J c ℓ hw
   obtain ⟨F, hF⟩ : ∃ F, F = fwdAvg causalDensity (transSum J c ℓ w) := ⟨_, rfl⟩
   have hFm : Measurable F := by rw [hF]; exact measurable_fwdAvg hK hsm
@@ -470,9 +470,11 @@ theorem ae_left_bound (a : SuzukiPositiveAperture) (u g : suzukiApertureHilbert 
       (fun z => ‖(logarithmicApertureLeftForcing a u g : RealLineL2) z‖ₑ) y ≤
       Cu + fwdAvg causalDensity (fun z => ‖(g : RealLineL2) z‖ₑ) (y - a.1) := by
     intro y
-    have h1 := fwdAvg_mono_ae (k := causalDensity) (hf.mono fun z hz => by
-      rw [add_comm] at hz
-      exact hz) y
+    have hf' : ∀ᵐ z ∂(volume : Measure ℝ),
+        ‖(logarithmicApertureLeftForcing a u g : RealLineL2) z‖ₑ ≤
+          Cu + ‖(g : RealLineL2) (z - a.1)‖ₑ :=
+      hf.mono fun z hz => hz.trans (le_of_eq (add_comm _ _))
+    have h1 := fwdAvg_mono_ae (k := causalDensity) hf' y
     refine h1.trans (le_of_eq ?_)
     rw [fwdAvg_add_const hK, hK1, one_mul]
     congr 1
@@ -621,5 +623,129 @@ theorem exists_ae_norm_le_of_window_equation {ι : Type*} (a : SuzukiPositiveApe
   rw [hw] at hx
   have := ENNReal.toReal_mono hC'f hx
   rwa [toReal_enorm] at this
+
+/-! ### The edge -/
+
+/-- The solution on the left half of the window is the Green representative of the localized forcing. -/
+theorem ae_left_eq_rep (a : SuzukiPositiveAperture) (u g : suzukiApertureHilbert a)
+    (hu : HasLogarithmicEnergy (u : RealLineL2))
+    (hsolve : ∀ f : suzukiApertureHilbert a, HasLogarithmicEnergy (f : RealLineL2) →
+      logarithmicFullForm (f : RealLineL2) (u : RealLineL2) =
+        inner ℂ (f : RealLineL2) (g : RealLineL2)) :
+    ∀ᵐ x ∂volume, x ≤ 0 → (u : RealLineL2) x =
+      logarithmicGreenRepresentative (logarithmicApertureLeftForcing a u g) (x + a.1) := by
+  obtain ⟨hen, hsol⟩ := logarithmicApertureLeftLocalized_solves a u g hu hsolve
+  have hgreen := logarithmicHalfLineGreenOperator_unique _ _ hen hsol
+  have hrep := logarithmicHalfLineGreenOperator_eq_representative
+    (logarithmicApertureLeftForcing a u g)
+  rw [← hgreen] at hrep
+  have hcoe := logarithmicApertureLeftLocalized_coeFn a u
+  have hboth : ∀ᵐ t ∂volume, logarithmicGreenRepresentative (logarithmicApertureLeftForcing a u g) t =
+      (logarithmicEndpointCutoff a.1 t : ℂ) * (u : RealLineL2) (t - a.1) := by
+    filter_upwards [hrep, hcoe] with t h1 h2
+    rw [← h1, h2]
+  have hshift := (measurePreserving_add_right (volume : Measure ℝ) a.1).quasiMeasurePreserving.ae hboth
+  filter_upwards [hshift] with x hx hx0
+  have hχ : logarithmicEndpointCutoff a.1 (x + a.1) = 1 :=
+    logarithmicEndpointCutoff_eq_one a.2 (by linarith)
+  rw [hχ, add_sub_cancel_right] at hx
+  rw [hx]
+  simp
+
+/-- The left edge of a solution with bounded data. -/
+theorem left_edge_of_bounded (a : SuzukiPositiveAperture) (u g : suzukiApertureHilbert a)
+    (hu : HasLogarithmicEnergy (u : RealLineL2))
+    (hsolve : ∀ f : suzukiApertureHilbert a, HasLogarithmicEnergy (f : RealLineL2) →
+      logarithmicFullForm (f : RealLineL2) (u : RealLineL2) =
+        inner ℂ (f : RealLineL2) (g : RealLineL2))
+    {Cu Cg : ℝ} (hCu : 0 ≤ Cu) (hub : ∀ᵐ x ∂volume, ‖(u : RealLineL2) x‖ ≤ Cu) (hCg : 0 ≤ Cg)
+    (hgb : ∀ᵐ x ∂volume, ‖(g : RealLineL2) x‖ ≤ Cg) :
+    Continuous (logarithmicGreenRepresentative (logarithmicApertureLeftForcing a u g)) ∧
+      (∀ᵐ x ∂volume, x ≤ 0 → (u : RealLineL2) x =
+        logarithmicGreenRepresentative (logarithmicApertureLeftForcing a u g) (x + a.1)) ∧
+      Tendsto (fun t : ℝ => logarithmicGreenRepresentative (logarithmicApertureLeftForcing a u g) t *
+          (Real.sqrt (Real.log (1 / t)) : ℂ)) (𝓝[>] (0 : ℝ))
+        (nhds (∫ y : ℝ, (logarithmicCausalKernel y : ℂ) *
+          (logarithmicApertureLeftForcing a u g : RealLineL2) y)) := by
+  have hb := logarithmicApertureLeftForcing_bounded a u g hCu hub hCg hgb
+  have hC : 0 ≤ Cg + 2 / a.1 * Cu := add_nonneg hCg (mul_nonneg (div_nonneg (by norm_num) a.2.le) hCu)
+  refine ⟨continuous_logarithmicGreenRepresentative _ hC hb, ae_left_eq_rep a u g hu hsolve, ?_⟩
+  exact logarithmicHalfLineGreenOperator_normalized_boundary_limit _ (δ := 1) (by norm_num) hC
+    (hb.mono fun y hy _ => hy)
+
+/-- **The exact edge law on a window.** An energy solution whose forcing is dominated by a constant and translates
+of the solution agrees on each half of the window with a continuous function, and at both ends
+
+  `u(−a + t) √log(1/t) → ∫ K f_L`,   `u(a − t) √log(1/t) → ∫ K f_R`,
+
+where `f_L` is the left localized forcing of `(u, g)` and `f_R` that of the reflected pair. -/
+theorem window_edge_law {ι : Type*} (a : SuzukiPositiveAperture)
+    (u g : suzukiApertureHilbert a) (hu : HasLogarithmicEnergy (u : RealLineL2))
+    (hsolve : ∀ f : suzukiApertureHilbert a, HasLogarithmicEnergy (f : RealLineL2) →
+      logarithmicFullForm (f : RealLineL2) (u : RealLineL2) =
+        inner ℂ (f : RealLineL2) (g : RealLineL2))
+    (J : Finset ι) {c : ι → ℝ} (ℓ : ι → ℝ) (hc : ∀ j, 0 ≤ c j) {C₀ : ℝ} (hC₀ : 0 ≤ C₀)
+    (hg : ∀ᵐ x ∂volume, ‖(g : RealLineL2) x‖ ≤
+      C₀ + ∑ j ∈ J, c j * ‖(u : RealLineL2) (x - ℓ j)‖) :
+    (∀ᵐ x ∂volume, x ≤ 0 → (u : RealLineL2) x =
+        logarithmicGreenRepresentative (logarithmicApertureLeftForcing a u g) (x + a.1)) ∧
+      Tendsto (fun t : ℝ => logarithmicGreenRepresentative (logarithmicApertureLeftForcing a u g) t *
+          (Real.sqrt (Real.log (1 / t)) : ℂ)) (𝓝[>] (0 : ℝ))
+        (nhds (∫ y : ℝ, (logarithmicCausalKernel y : ℂ) *
+          (logarithmicApertureLeftForcing a u g : RealLineL2) y)) ∧
+      (∀ᵐ x ∂volume, 0 ≤ x → (u : RealLineL2) x = logarithmicGreenRepresentative
+        (logarithmicApertureLeftForcing a (logarithmicApertureReflection a u)
+          (logarithmicApertureReflection a g)) (a.1 - x)) ∧
+      Tendsto (fun t : ℝ => logarithmicGreenRepresentative
+          (logarithmicApertureLeftForcing a (logarithmicApertureReflection a u)
+            (logarithmicApertureReflection a g)) t *
+          (Real.sqrt (Real.log (1 / t)) : ℂ)) (𝓝[>] (0 : ℝ))
+        (nhds (∫ y : ℝ, (logarithmicCausalKernel y : ℂ) *
+          (logarithmicApertureLeftForcing a (logarithmicApertureReflection a u)
+            (logarithmicApertureReflection a g) : RealLineL2) y)) := by
+  obtain ⟨Cu, hCu, hub⟩ := exists_ae_norm_le_of_window_equation a u g hu hsolve J ℓ hc hC₀ hg
+  -- the forcing is bounded
+  have htr : ∀ j ∈ J, ∀ᵐ x ∂(volume : Measure ℝ), ‖(u : RealLineL2) (x - ℓ j)‖ ≤ Cu := fun j _ =>
+    (measurePreserving_sub_right (volume : Measure ℝ) (ℓ j)).quasiMeasurePreserving.ae hub
+  obtain ⟨Cg, hCg⟩ : ∃ Cg, Cg = C₀ + ∑ j ∈ J, c j * Cu := ⟨_, rfl⟩
+  have hCg0 : 0 ≤ Cg := by
+    rw [hCg]
+    exact add_nonneg hC₀ (Finset.sum_nonneg fun j _ => mul_nonneg (hc j) hCu)
+  have hgb : ∀ᵐ x ∂volume, ‖(g : RealLineL2) x‖ ≤ Cg := by
+    filter_upwards [hg, (Filter.eventually_all_finset J).mpr htr] with x h1 h2
+    refine h1.trans ?_
+    rw [hCg]
+    gcongr with j hj
+    · exact hc j
+    · exact h2 j hj
+  have hL := left_edge_of_bounded a u g hu hsolve hCu hub hCg0 hgb
+  -- the reflected pair
+  have huu : HasLogarithmicEnergy (logarithmicApertureReflection a u : RealLineL2) :=
+    hasLogarithmicEnergy_reflection hu
+  have hse := logarithmic_interval_equation_reflection a u g hsolve
+  have hnegb : ∀ {f : RealLineL2} {C : ℝ}, (∀ᵐ x ∂volume, ‖f x‖ ≤ C) →
+      ∀ᵐ x ∂volume, ‖l2Reflection f x‖ ≤ C := by
+    intro f C hf
+    have hs := (Measure.measurePreserving_neg (volume : Measure ℝ)).quasiMeasurePreserving.ae hf
+    filter_upwards [l2Reflection_ae f, hs] with x hx hfx
+    rw [hx]
+    exact hfx
+  have hR := left_edge_of_bounded a _ _ huu hse hCu (hnegb hub) hCg0 (hnegb hgb)
+  have hrepr := hR.2.1
+  have hneg := (Measure.measurePreserving_neg (volume : Measure ℝ)).quasiMeasurePreserving.ae hrepr
+  have hur : ∀ᵐ x ∂(volume : Measure ℝ),
+      (logarithmicApertureReflection a u : RealLineL2) (-x) = (u : RealLineL2) x := by
+    have h1 := (Measure.measurePreserving_neg (volume : Measure ℝ)).quasiMeasurePreserving.ae
+      (l2Reflection_ae (u : RealLineL2))
+    filter_upwards [h1] with x hx
+    change l2Reflection (u : RealLineL2) (-x) = _
+    rw [hx, neg_neg]
+  refine ⟨hL.2.1, hL.2.2, ?_, hR.2.2⟩
+  filter_upwards [hneg, hur] with x h1 h2 hx0
+  have h3 := h1 (by linarith)
+  rw [h2] at h3
+  rw [h3]
+  congr 1
+  ring
 
 end GaloisForLFunctions.CriticalHardyTheoryOfTheWindowCone

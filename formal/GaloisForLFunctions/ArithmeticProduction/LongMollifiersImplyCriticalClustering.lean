@@ -11,8 +11,9 @@ The second-moment route to the near-line questions, in one exact form.
 * **Clustering** (`logMean_tendsto_zero_of_mollifiedSecondMomentLaw`, `criticalClustering_of_mollifiedSecondMomentLaw`).  A second moment tending to `1`, at any length `exp(o(T))`, implies `100%` critical-scale clustering.
 * **Occupancy at a rate** (`logFreeNearLineZeroDensity_of_secondMomentRate`).  The excess `K/log T`, one logarithm below the clustering statement, gives the log-free density `D_zero`, hence `D_win`.
 * **Both fail at every fixed exponent** (`not_secondMomentLaw_of_bounded_exponent`, `not_secondMomentRate_of_bounded_exponent`).  By the necessary-length law, neither can be realized with `N ≤ T^θ`.
+* **The rate needs length `exp(c log²T)`** (`log_length_ge_of_secondMomentRate`).  An excess `K/log T` forces `log N ≥ min(1/24, 1/(14K)) log²T`.
 
-So a second-moment proof of clustering needs length beyond every power of `T`, and no statement at a fixed exponent carries it.
+So a second-moment proof of clustering needs length beyond every power of `T`, and a second-moment proof of `D_zero` needs length at least `exp(c log²T)`.
 -/
 
 noncomputable section
@@ -437,5 +438,33 @@ theorem not_secondMomentRate_of_bounded_exponent {θ K₀ : ℝ} (hθ : 0 < θ) 
   have h1 := (hT₀ T hT b N hN hNT hb1 hb hbr).trans hmom
   have h2 := le_of_mul_le_mul_right h1 hT0
   linarith
+
+/-- **The rate needs length `exp(c log²T)`.**  A mollifier with excess `K₀/log T` has `log N ≥ min(1/24, 1/(14K₀)) log²T`. -/
+theorem log_length_ge_of_secondMomentRate {K₀ : ℝ} (hK₀ : 0 < K₀) :
+    ∀ᶠ T : ℝ in atTop, ∀ (b : ℕ → ℂ) (N : ℕ), 1 ≤ N → b 1 = 1 →
+      (∀ n ∈ Finset.Icc 1 N, ‖b n‖ ≤ 1) →
+      (∀ n ∈ Finset.Icc 1 N, (starRingEnd ℂ) (b n) = b n) →
+      (∫ t in T..(2 * T), ‖riemannZeta (((1 / 2 : ℝ) : ℂ) + (t : ℂ) * I) *
+        edPoly b (Finset.Icc 1 N) (((1 / 2 : ℝ) : ℂ) + (t : ℂ) * I)‖ ^ 2) ≤
+          (1 + K₀ / Real.log T) * T →
+      min (1 / 24) (1 / (14 * K₀)) * Real.log T ^ 2 ≤ Real.log N := by
+  obtain ⟨T₀, hT₀⟩ := log_length_ge_of_excess
+  filter_upwards [eventually_ge_atTop T₀, Real.tendsto_log_atTop.eventually_gt_atTop (14 * K₀)] with
+    T hT hℓ b N hN hb1 hb hbr hmom
+  have hℓ0 : 0 < Real.log T := by linarith
+  have hκ0 : 0 < K₀ / Real.log T := by positivity
+  have hκ : K₀ / Real.log T < 1 / 14 := by
+    rw [div_lt_iff₀ hℓ0]
+    linarith
+  have h := hT₀ T hT b N hN hb1 hb hbr _ hκ0 hκ hmom
+  refine le_trans ?_ h
+  have hval : Real.log T / (14 * (K₀ / Real.log T)) = 1 / (14 * K₀) * Real.log T ^ 2 := by
+    field_simp
+  rw [hval]
+  refine le_min ?_ ?_
+  · calc min (1 / 24) (1 / (14 * K₀)) * Real.log T ^ 2 ≤ 1 / 24 * Real.log T ^ 2 :=
+          mul_le_mul_of_nonneg_right (min_le_left _ _) (by positivity)
+      _ = _ := by ring
+  · exact mul_le_mul_of_nonneg_right (min_le_right _ _) (by positivity)
 
 end GaloisForLFunctions.ArithmeticProduction

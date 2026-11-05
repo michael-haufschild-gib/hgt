@@ -2,7 +2,7 @@
 
 - **Stage:** 3-formalized
 - **Wall:** Σ6
-- **Scope:** The literal first atom; the complete theta sum remains open.
+- **Scope:** The literal first atom.
 
 Let `f₁(x)=thetaCuspSourceTerm x 1`. For every `r≥0`, the matrix
 
@@ -53,5 +53,6 @@ All 20 audited declarations use only `propext`, `Classical.choice`,
 `Quot.sound`. Both modules pass direct `lake --old env lean` checks and
 are wired into `ThetaCuspSections.lean`.
 
-Unequal atom pairs and the infinite remainder must still be paid to obtain
-the complete fifth even tail and rank-nine integrated positivity.
+The reserve pays the remaining source in the
+[complete fifth even tail](theta-fifth-even-integrated-tail.md), yielding
+[rank-nine positivity](strict-ninth-theta-section.md).

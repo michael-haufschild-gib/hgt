@@ -3,13 +3,13 @@ import GaloisForLFunctions.ArithmeticProduction.TheInterpolationAtALargeHeight
 /-!
 # The necessary length of a mollifier
 
-**Theorem** (`necessary_length`).  For every `θ > 0` and all large `T`, every real Dirichlet polynomial `M` of length `N ≤ T^θ` with `b₁ = 1`,
+**Theorem** (`necessary_length_uniform`).  For all large `T` and every `0 < θ ≤ (log T)/24`, every real Dirichlet polynomial `M` of length `N ≤ T^θ` with `b₁ = 1`,
 `|b_n| ≤ 1` satisfies
 
   `∫_T^{2T} |ζ(½+it) M(½+it)|² dt ≥ (1 + 1/(8 + 6θ)) T`.
 
-A mollified second moment tending to `1` therefore forces the length exponent to infinity
-(`length_exponent_tendsto_of_second_moment_tendsto_one`).  Three ingredients enter:
+The exponent may grow with `T`.  So an excess `κ` forces `log N ≥ min(log²T/24, log T/(14κ))` (`log_length_ge_of_excess`), and a mollified second moment tending to `1` forces the length
+exponent to infinity (`length_exponent_tendsto_of_second_moment_tendsto_one`).  Three ingredients enter:
 
 * the floors `∫|ζM(½+a+it)|² ≳ T` (first moment) and `∫|ζM(½−a+it)|² ≳ e^{2a log T} T` (Littlewood and the count of zeros);
 * the profile `x ↦ ∫|F(½+x+it)|²` is a Laplace transform of a measure on `u ∈ [0, log(T²N^{3/2})]`;
@@ -191,28 +191,93 @@ theorem gaussKernel_mass_far {w ε t A B R : ℝ} (hw : 0 < w) (hε0 : 0 < ε) (
   rw [h6]
   linarith
 
+/-- The band parameter `q`. -/
+def lengthQ (θ : ℝ) : ℝ := 2 + 3 / 2 * θ + 3 / 100
+
+/-- The precision `ε = (2/q)/2000`. -/
+def lengthEps (θ : ℝ) : ℝ := 2 / lengthQ θ / 2000
+
+theorem lengthQ_pos {θ : ℝ} (hθ : 0 < θ) : 0 < lengthQ θ := by
+  unfold lengthQ
+  positivity
+
+theorem lengthEps_pos {θ : ℝ} (hθ : 0 < θ) : 0 < lengthEps θ := by
+  have := lengthQ_pos hθ
+  unfold lengthEps
+  positivity
+
+theorem lengthEps_le {θ : ℝ} (hθ : 0 < θ) : lengthEps θ ≤ 1 / 2000 := by
+  have hq := lengthQ_pos hθ
+  have h2 : 2 ≤ lengthQ θ := by
+    unfold lengthQ
+    linarith
+  have h1 : 2 / lengthQ θ ≤ 1 := by
+    rw [div_le_one hq]
+    exact h2
+  unfold lengthEps
+  linarith
+
+/-- The smallness conditions under which the interpolation closes at height `T` and exponent `θ`. -/
+structure LengthSmall (A Cc C K₁ θ T : ℝ) : Prop where
+  r₁ : Real.log T ^ 2 * Real.exp (-(1 / 50 * Real.log T)) ≤ lengthEps θ / 8 / (2 * 288)
+  r₂ : Real.log T ^ 10 * Real.exp (-(1 / 25 * Real.log T)) ≤
+    lengthEps θ / 8 / (2 * (4 * (A ^ 2 * 9 * 432 ^ 2) + 1))
+  f₁ : Real.log T ^ 4 * Real.exp (-(1 * Real.log T)) ≤ 1 / 16
+  f₂ : 128 / (lengthEps θ / 8) ≤ T
+  f₃ : 96 / (lengthEps θ / 8) ≤ T
+  f₄ : 2 * (rightFloorParam (lengthEps θ / 8) - 1 / 2) ^ 2 + 1 ≤ (Real.log T ^ 2) ^ 2
+  c₁ : Real.log T ^ 8 * Real.exp (-(1 * Real.log T)) ≤
+    lengthEps θ / 8 / (Cc * 8100 * (2 * Real.exp 1) * 2 + 1)
+  c₂ : 4 * (3 * θ + 5) ≤ Real.log T
+  w₄ : 1 / (4 * lengthEps θ) ≤ (Real.log T ^ 2) ^ 2
+  m₁ : Real.log T ^ 3 * Real.exp (-(1 * Real.log T)) ≤ lengthEps θ / 16000
+  m₂ : 32000 / lengthEps θ ≤ T
+  m₃ : 100 ≤ T
+  m₄ : 2 ≤ Real.log T
+  m₅ : 8 / lengthEps θ ≤ Real.log T ^ 2
+  m₆ : 4 / lengthEps θ ≤ T
+  l₁ : Real.log T ^ 1 * Real.exp (-(1 * Real.log T)) ≤
+    6 / 1000 * (Real.log 2 / lengthQ θ) / (2 * (K₁ * (1 + 5 * θ) + C + K₁ + 1))
+  l₂ : ∀ T₁ T₂ : ℝ, T ≤ T₁ → T₁ ≤ 1001 / 1000 * T → 1999 / 1000 * T ≤ T₂ → T₂ ≤ 2 * T →
+    996 / 1000 * (T * Real.log T) ≤ 2 * Real.pi * ((xiPosZeroCount T₂ : ℝ) - xiPosZeroCount T₁)
+
 /-- **The inequality at one height.**  For a window centred inside `[T, 2T]`: the interpolation, with the floor on the right, and all errors absorbed. -/
-theorem eventually_height_inequality {θ ε : ℝ} (hθ : 0 < θ) (hε0 : 0 < ε) (hε1 : ε ≤ 1 / 2000) :
-    ∀ᶠ T : ℝ in atTop, ∀ (b : ℕ → ℂ) (N : ℕ) (a T₁ T₂ t₀ : ℝ), 1 ≤ N → (N : ℝ) ≤ T ^ θ → b 1 = 1 →
+theorem exists_height_inequality :
+    ∃ A Cc : ℝ, 0 ≤ Cc ∧ ∀ C K₁ θ T : ℝ, 0 < θ → LengthSmall A Cc C K₁ θ T →
+      ∀ (b : ℕ → ℂ) (N : ℕ) (a T₁ T₂ t₀ : ℝ), 1 ≤ N → (N : ℝ) ≤ T ^ θ → b 1 = 1 →
       (∀ n ∈ Finset.Icc 1 N, ‖b n‖ ≤ 1) → 0 < a → a ≤ 1 / 4 →
       a * ((2 + 3 / 2 * θ + 3 / 100) * Real.log T) = Real.log 2 → T₁ ≤ T₂ →
       T + Real.log T ^ 3 ≤ t₀ → t₀ ≤ 2 * T - Real.log T ^ 3 →
-      Real.exp ((2 + 3 / 2 * θ + 1 / 100) * Real.log T * a) * ((1 - ε) * (Real.log T ^ 2 * √Real.pi)) +
+      Real.exp ((2 + 3 / 2 * θ + 1 / 100) * Real.log T * a) *
+          ((1 - lengthEps θ) * (Real.log T ^ 2 * √Real.pi)) +
         Real.exp (-((2 + 3 / 2 * θ + 1 / 100) * Real.log T * a)) *
           (∫ t in T₁..T₂, linePower b N (-a) t * gaussKernel (Real.log T ^ 2) t t₀) ≤
       5 / 2 * (∫ t in T..(2 * T), linePower b N 0 t * gaussKernel (Real.log T ^ 2) t t₀) +
-        ε / 2 * (Real.log T ^ 2 * √Real.pi) := by
+        lengthEps θ / 2 * (Real.log T ^ 2 * √Real.pi) := by
   obtain ⟨A, -, hwin⟩ := exists_window_inequality
   obtain ⟨Cc, hCc, hcenter⟩ := exists_center_tail
-  obtain ⟨K, hK, hKev⟩ := exists_right_floor_error_le (ε := ε / 8) (by positivity)
-  have hpow4 : Tendsto (fun T : ℝ => (Real.log T ^ 2) ^ 2) atTop atTop :=
-    (tendsto_pow_atTop (by norm_num)).comp
-      ((tendsto_pow_atTop (by norm_num)).comp Real.tendsto_log_atTop)
-  filter_upwards [eventually_remainder_le (A := A) hθ (ε := ε / 8) (by positivity), hKev,
-    eventually_center_remainder_le hθ hCc (ε := ε / 8) (by positivity),
-    hpow4.eventually_ge_atTop (1 / (4 * ε)), eventually_ge_atTop (100 : ℝ),
-    Real.tendsto_log_atTop.eventually_ge_atTop 2] with T hrem hright hcen hw4 hT100 hℓ2
-    b N a T₁ T₂ t₀ hN hNT hb1 hb ha0 ha1 haq hT12 hA1 hB1
+  refine ⟨A, Cc, hCc, ?_⟩
+  intro C K₁ θ T hθ hs b N a T₁ T₂ t₀ hN hNT hb1 hb ha0 ha1 haq hT12 hA1 hB1
+  have hε0 := lengthEps_pos hθ
+  have hε1 := lengthEps_le hθ
+  have hT100 := hs.m₃
+  have hℓ2 := hs.m₄
+  have hT1 : 1 < T := by linarith
+  have hcube : 0 ≤ Real.log T ^ 3 := by positivity
+  have ht₁ : T ≤ t₀ := by linarith
+  have ht₂ : t₀ ≤ 2 * T := by linarith
+  have hrem := remainder_le_of_small (A := A) (ε := lengthEps θ / 8) hθ (by positivity) hs.r₁ hs.r₂ hℓ2
+    hT1 N t₀ a hNT ht₁ ht₂ ha0 ha1 haq
+  have hright := right_floor_error_le_of_small (ε := lengthEps θ / 8) (t₀ := t₀) (by positivity) hs.f₁
+    hs.f₂ hs.f₃ hT1 hs.f₄ (by linarith) ht₁
+  have hcen := center_remainder_le_of_small (ε := lengthEps θ / 8) hCc hs.c₁ hs.c₂ (by linarith) hT1.le
+    N t₀ hNT ht₁ ht₂
+  have hw4 := hs.w₄
+  have hK := five_le_rightFloorParam (lengthEps θ / 8)
+  obtain ⟨K, hKdef⟩ : ∃ K : ℝ, K = rightFloorParam (lengthEps θ / 8) := ⟨_, rfl⟩
+  rw [← hKdef] at hright hK
+  obtain ⟨ε, hεdef⟩ : ∃ ε : ℝ, ε = lengthEps θ := ⟨_, rfl⟩
+  rw [← hεdef] at hrem hright hcen hw4 hε0 hε1 ⊢
   set ℓ := Real.log T with hℓdef
   have hℓ0 : 0 < ℓ := by linarith
   set w := ℓ ^ 2 with hw
@@ -223,8 +288,6 @@ theorem eventually_height_inequality {θ ε : ℝ} (hθ : 0 < θ) (hε0 : 0 < ε
   set B := ℓ / 100 with hB
   have hL0 : 0 ≤ L := by rw [hL]; positivity
   have hB0 : 0 ≤ B := by rw [hB]; positivity
-  have ht₁ : T ≤ t₀ := by linarith
-  have ht₂ : t₀ ≤ 2 * T := by linarith
   have ht₀0 : 0 < t₀ := by linarith
   have hcosh : 2 * Real.cosh (a * (L + 2 * B)) = 5 / 2 := by
     have h3 : a * (L + 2 * B) = Real.log 2 := by
@@ -234,11 +297,11 @@ theorem eventually_height_inequality {θ ε : ℝ} (hθ : 0 < θ) (hε0 : 0 < ε
     exact two_mul_cosh_log_two
   have hmain := hwin t₀ hw0 ha0 ha1 hL0 hB0 hb
   rw [hcosh] at hmain
-  have hmain2 := hmain.trans (add_le_add le_rfl (hrem N t₀ a hNT ht₁ ht₂ ha0 ha1 haq))
-  have hA₀ := le_integral_window_right ht₀0 hw0 ha0 ha1 hK hN hb1 hb hε0 hε1 (hright t₀ ht₁) hw4
+  have hmain2 := hmain.trans (add_le_add le_rfl hrem)
+  have hA₀ := le_integral_window_right ht₀0 hw0 ha0 ha1 hK hN hb1 hb hε0 hε1 hright hw4
   have hX := integral_gauss_linePower_left_le t₀ hw0 ha0 ha1 hT12 hb
   have hF₀ := (hcenter t₀ hw0 hR0 (T₃ := T) (T₄ := 2 * T) hA1 (by linarith) hb).trans
-    (add_le_add le_rfl (hcen N t₀ hNT ht₁ ht₂))
+    (add_le_add le_rfl hcen)
   have h3 := mul_le_mul_of_nonneg_left hA₀ (Real.exp_pos (L * a)).le
   have h4 := mul_le_mul_of_nonneg_left hX (Real.exp_pos (-(L * a))).le
   have h5 := mul_le_mul_of_nonneg_left hF₀ (by norm_num : (0 : ℝ) ≤ 5 / 2)
@@ -283,14 +346,19 @@ private theorem length_constant {θ q p : ℝ} (hθ : 0 < θ) (hq : q = 2 + 3 / 
   rw [hpq] at h2
   linarith
 
-/-- **The necessary length of a mollifier.** -/
-theorem necessary_length {θ : ℝ} (hθ : 0 < θ) :
-    ∃ T₀ : ℝ, ∀ T : ℝ, T₀ ≤ T → ∀ (b : ℕ → ℂ) (N : ℕ), 1 ≤ N → (N : ℝ) ≤ T ^ θ → b 1 = 1 →
+/-- **The core of the necessary length.**  Under the smallness conditions at `(θ, T)`, the excess of every mollifier of length `T^θ` is at least `1/(8+6θ)`. -/
+theorem exists_necessary_length_core :
+    ∃ A Cc C K₁ : ℝ, 0 ≤ Cc ∧ 0 < C ∧ 0 < K₁ ∧ ∀ θ T : ℝ, 0 < θ → LengthSmall A Cc C K₁ θ T →
+      ∀ (b : ℕ → ℂ) (N : ℕ), 1 ≤ N → (N : ℝ) ≤ T ^ θ → b 1 = 1 →
       (∀ n ∈ Finset.Icc 1 N, ‖b n‖ ≤ 1) →
       (∀ n ∈ Finset.Icc 1 N, (starRingEnd ℂ) (b n) = b n) →
       (1 + 1 / (8 + 6 * θ)) * T ≤
         ∫ t in T..(2 * T), ‖riemannZeta (((1 / 2 : ℝ) : ℂ) + (t : ℂ) * I) *
           edPoly b (Finset.Icc 1 N) (((1 / 2 : ℝ) : ℂ) + (t : ℂ) * I)‖ ^ 2 := by
+  obtain ⟨A, Cc, hCc, hheight0⟩ := exists_height_inequality
+  obtain ⟨C, K₁, hC, hK₁, hleft0⟩ := exists_left_floor_of_small
+  refine ⟨A, Cc, C, K₁, hCc, hC, hK₁, ?_⟩
+  intro θ T hθ hsm b N hN hNT hb1 hb hbr
   obtain ⟨q, hq⟩ : ∃ q : ℝ, q = 2 + 3 / 2 * θ + 3 / 100 := ⟨_, rfl⟩
   have hq0 : 0 < q := by rw [hq]; positivity
   have hq2 : 2 ≤ q := by rw [hq]; linarith
@@ -305,16 +373,26 @@ theorem necessary_length {θ : ℝ} (hθ : 0 < θ) :
   obtain ⟨ε, hε⟩ : ∃ ε : ℝ, ε = p / 2000 := ⟨_, rfl⟩
   have hε0 : 0 < ε := by rw [hε]; positivity
   have hε1 : ε ≤ 1 / 2000 := by rw [hε]; linarith
-  have hpow2 : Tendsto (fun T : ℝ => Real.log T ^ 2) atTop atTop :=
-    (tendsto_pow_atTop (by norm_num)).comp Real.tendsto_log_atTop
-  obtain ⟨T₀, hT₀⟩ := eventually_atTop.mp
-    ((eventually_height_inequality hθ hε0 hε1).and ((eventually_left_floor hθ).and
-      ((eventually_log_pow_mul_exp_le 3 (c := 1) (ε := ε / 16000) one_pos (by positivity)).and
-        ((eventually_ge_atTop (32000 / ε)).and ((eventually_ge_atTop (100 : ℝ)).and
-          ((Real.tendsto_log_atTop.eventually_ge_atTop 2).and
-            ((hpow2.eventually_ge_atTop (8 / ε)).and (eventually_ge_atTop (4 / ε)))))))))
-  refine ⟨T₀, fun T hT b N hN hNT hb1 hb hbr => ?_⟩
-  obtain ⟨hheight, hleft, hR1, hT32, hT100, hℓ2, hw2, hTε⟩ := hT₀ T hT
+  have hεdef : lengthEps θ = ε := by
+    rw [hε, hp, hq]
+    rfl
+  have hheight := hheight0 C K₁ θ T hθ hsm
+  rw [hεdef] at hheight
+  have hleft := hleft0 θ T hθ hsm.l₁ hsm.l₂ (by linarith [hsm.m₃]) (by linarith [hsm.m₄])
+  have hR1 : Real.log T ^ 3 * Real.exp (-(1 * Real.log T)) ≤ ε / 16000 := by
+    rw [← hεdef]
+    exact hsm.m₁
+  have hT32 : 32000 / ε ≤ T := by
+    rw [← hεdef]
+    exact hsm.m₂
+  have hT100 := hsm.m₃
+  have hℓ2 := hsm.m₄
+  have hw2 : 8 / ε ≤ Real.log T ^ 2 := by
+    rw [← hεdef]
+    exact hsm.m₅
+  have hTε : 4 / ε ≤ T := by
+    rw [← hεdef]
+    exact hsm.m₆
   rw [← hq, ← hp] at hleft
   rw [← hq] at hheight
   have hT0 : 0 < T := by linarith
@@ -409,6 +487,301 @@ theorem necessary_length {θ : ℝ} (hθ : 0 < θ) :
   have hnum := final_numeric hp0 hp1 hε (congrArg Real.exp hLa) (by rw [hLa]) hz hT0 hfinal
   refine le_trans (mul_le_mul_of_nonneg_right ?_ hT0.le) hnum
   have hcomp := length_constant hθ hq hp0 hpq
+  linarith
+
+/-! ### The smallness conditions, uniformly in the exponent -/
+
+private theorem lengthQ_le {θ ℓ : ℝ} (hθ : θ ≤ ℓ / 24) (hℓ : 3 ≤ ℓ) : lengthQ θ ≤ ℓ := by
+  unfold lengthQ
+  linarith
+
+private theorem le_lengthEps {θ ℓ : ℝ} (hθ0 : 0 < θ) (hθ : θ ≤ ℓ / 24) (hℓ : 3 ≤ ℓ) :
+    1 / (1000 * ℓ) ≤ lengthEps θ := by
+  have hq := lengthQ_pos hθ0
+  have hqℓ := lengthQ_le hθ hℓ
+  have hval : lengthEps θ = 1 / (1000 * lengthQ θ) := by
+    unfold lengthEps
+    field_simp
+    norm_num
+  rw [hval]
+  exact one_div_le_one_div_of_le (by positivity) (by linarith)
+
+private theorem pow_mul_le_of_succ {k : ℕ} {ℓ E D ε : ℝ} (hℓ : 0 < ℓ) (hD : 0 < D)
+    (h : ℓ ^ (k + 1) * E ≤ 1 / (1000 * D)) (hε : 1 / (1000 * ℓ) ≤ ε) : ℓ ^ k * E ≤ ε / D := by
+  have h1 : ℓ ^ k * E = ℓ ^ (k + 1) * E / ℓ := by
+    field_simp
+    ring
+  rw [h1, div_le_iff₀ hℓ]
+  refine h.trans ?_
+  have h2 := div_le_div_of_nonneg_right hε hD.le
+  have h3 := mul_le_mul_of_nonneg_right h2 hℓ.le
+  refine le_trans (le_of_eq ?_) h3
+  field_simp
+
+private theorem div_le_of_eps {a ε X ℓ : ℝ} (ha : 0 ≤ a) (hℓ : 0 < ℓ) (hε : 1 / (1000 * ℓ) ≤ ε)
+    (h : a * (1000 * ℓ) ≤ X) : a / ε ≤ X := by
+  have hε0 : 0 < ε := lt_of_lt_of_le (by positivity) hε
+  rw [div_le_iff₀ hε0]
+  have h1 : X * (1 / (1000 * ℓ)) ≤ X * ε :=
+    mul_le_mul_of_nonneg_left hε (le_trans (by positivity) h)
+  refine le_trans ?_ h1
+  rw [mul_one_div, le_div_iff₀ (by positivity)]
+  exact h
+
+private theorem rightFloorParam_le {ε ℓ : ℝ} (hε : 1 / (8000 * ℓ) ≤ ε) (hℓ : 25 ≤ ℓ)
+    (hlog : Real.log ℓ ≤ ℓ / 10) : rightFloorParam ε ≤ ℓ := by
+  have hℓ0 : 0 < ℓ := by linarith
+  have hε0 : 0 < ε := lt_of_lt_of_le (by positivity) hε
+  have hlog2 : 0 < Real.log 2 := Real.log_pos one_lt_two
+  have h69 : 69 / 100 ≤ Real.log 2 := by
+    have := Real.log_two_gt_d9
+    linarith
+  refine max_le (by linarith) ?_
+  rw [div_le_iff₀ hlog2]
+  have h1 : 152 / ε ≤ 2 ^ 21 * ℓ := by
+    rw [div_le_iff₀ hε0]
+    have h2 := mul_le_mul_of_nonneg_left hε (by positivity : 0 ≤ (2 : ℝ) ^ 21 * ℓ)
+    refine le_trans ?_ h2
+    have h3 : (2 : ℝ) ^ 21 * ℓ * (1 / (8000 * ℓ)) = 2 ^ 21 / 8000 := by
+      field_simp
+    rw [h3]
+    norm_num
+  have h4 := Real.log_le_log (by positivity) h1
+  rw [Real.log_mul (by positivity) hℓ0.ne', Real.log_pow] at h4
+  push_cast at h4
+  have h5 : (ℓ - 21) * (69 / 100) ≤ (ℓ - 21) * Real.log 2 :=
+    mul_le_mul_of_nonneg_left h69 (by linarith)
+  linarith
+
+private theorem lengthFloor_param_bound {ε ℓ : ℝ} (hε : 1 / (8000 * ℓ) ≤ ε) (hℓ : 25 ≤ ℓ)
+    (hlog : Real.log ℓ ≤ ℓ / 10) : 2 * (rightFloorParam ε - 1 / 2) ^ 2 + 1 ≤ (ℓ ^ 2) ^ 2 := by
+  have h1 := rightFloorParam_le hε hℓ hlog
+  have h2 := five_le_rightFloorParam ε
+  have h3 : (rightFloorParam ε - 1 / 2) ^ 2 ≤ ℓ ^ 2 :=
+    pow_le_pow_left₀ (by linarith) (by linarith) 2
+  have h4 : (4 : ℝ) ≤ ℓ ^ 2 := by
+    calc (4 : ℝ) = 2 ^ 2 := by norm_num
+      _ ≤ ℓ ^ 2 := pow_le_pow_left₀ (by norm_num) (by linarith) 2
+  have h5 := mul_le_mul_of_nonneg_right h4 (by positivity : 0 ≤ ℓ ^ 2)
+  have h6 : (ℓ ^ 2) ^ 2 = ℓ ^ 2 * ℓ ^ 2 := by ring
+  rw [h6]
+  linarith
+
+private theorem left_floor_small_uniform {θ ℓ E C K₁ : ℝ} (hθ0 : 0 < θ) (hθ : θ ≤ ℓ / 24) (hℓ : 3 ≤ ℓ)
+    (hC : 0 < C) (hK₁ : 0 < K₁)
+    (h : ℓ ^ 3 * E ≤ 6 / 1000 * (69 / 100) / (2 * (K₁ * 2 + C + K₁ + 1))) :
+    ℓ ^ 1 * E ≤ 6 / 1000 * (Real.log 2 / lengthQ θ) / (2 * (K₁ * (1 + 5 * θ) + C + K₁ + 1)) := by
+  have hℓ0 : 0 < ℓ := by linarith
+  have hq := lengthQ_pos hθ0
+  have hqℓ := lengthQ_le hθ hℓ
+  obtain ⟨D₁, hD₁⟩ : ∃ D₁ : ℝ, D₁ = K₁ * 2 + C + K₁ + 1 := ⟨_, rfl⟩
+  have hD₁0 : 0 < D₁ := by rw [hD₁]; positivity
+  rw [← hD₁] at h
+  have h69 : 69 / 100 ≤ Real.log 2 := by
+    have := Real.log_two_gt_d9
+    linarith
+  have hlog2 : 0 < Real.log 2 := Real.log_pos one_lt_two
+  have hDθ : K₁ * (1 + 5 * θ) + C + K₁ + 1 ≤ D₁ * ℓ := by
+    have h1 : 1 + 5 * θ ≤ 2 * ℓ := by linarith
+    have h2 := mul_le_mul_of_nonneg_left h1 hK₁.le
+    rw [hD₁]
+    have h3 : 0 ≤ (C + K₁ + 1) * (ℓ - 1) := mul_nonneg (by positivity) (by linarith)
+    have h4 : (K₁ * 2 + C + K₁ + 1) * ℓ = K₁ * (2 * ℓ) + (C + K₁ + 1) * ℓ := by ring
+    rw [h4]
+    have h5 : (C + K₁ + 1) * (ℓ - 1) = (C + K₁ + 1) * ℓ - (C + K₁ + 1) := by ring
+    linarith
+  have hDθ0 : 0 < K₁ * (1 + 5 * θ) + C + K₁ + 1 := by positivity
+  have h1 : 69 / 100 / ℓ ≤ Real.log 2 / lengthQ θ := div_le_div₀ hlog2.le h69 hq hqℓ
+  have h2 : 6 / 1000 * (69 / 100 / ℓ) / (2 * (D₁ * ℓ)) ≤
+      6 / 1000 * (Real.log 2 / lengthQ θ) / (2 * (K₁ * (1 + 5 * θ) + C + K₁ + 1)) :=
+    div_le_div₀ (by positivity) (mul_le_mul_of_nonneg_left h1 (by norm_num)) (by positivity)
+      (by linarith)
+  refine le_trans ?_ h2
+  have h3 : 6 / 1000 * (69 / 100 / ℓ) / (2 * (D₁ * ℓ)) =
+      6 / 1000 * (69 / 100) / (2 * D₁) / ℓ ^ 2 := by
+    field_simp
+  rw [h3, le_div_iff₀ (by positivity)]
+  refine le_trans (le_of_eq ?_) h
+  ring
+
+/-- **The conditions hold at all large heights, for all exponents up to `(log T)/24`.** -/
+theorem eventually_lengthSmall {A Cc C K₁ : ℝ} (hCc : 0 ≤ Cc) (hC : 0 < C) (hK₁ : 0 < K₁) :
+    ∀ᶠ T : ℝ in atTop, ∀ θ : ℝ, 0 < θ → θ ≤ Real.log T / 24 → LengthSmall A Cc C K₁ θ T := by
+  obtain ⟨B, hB⟩ : ∃ B : ℝ, B = 4 * (A ^ 2 * 9 * 432 ^ 2) + 1 := ⟨_, rfl⟩
+  have hB0 : 0 < B := by rw [hB]; positivity
+  obtain ⟨C', hC'⟩ : ∃ C' : ℝ, C' = Cc * 8100 * (2 * Real.exp 1) * 2 + 1 := ⟨_, rfl⟩
+  have hC'0 : 0 < C' := by rw [hC']; positivity
+  have hloglog : ∀ᶠ T : ℝ in atTop, Real.log (Real.log T) ≤ Real.log T / 10 := by
+    have h1 := Real.isLittleO_log_id_atTop.def (c := 1 / 10) (by norm_num)
+    filter_upwards [Real.tendsto_log_atTop.eventually h1, Real.tendsto_log_atTop.eventually_gt_atTop 0]
+      with T hT hT0
+    simp only [id_eq] at hT
+    rw [Real.norm_eq_abs, Real.norm_of_nonneg hT0.le] at hT
+    linarith [le_abs_self (Real.log (Real.log T))]
+  filter_upwards [eventually_log_pow_mul_exp_le 3 (c := 1 / 50) (ε := 1 / (1000 * (8 * (2 * 288))))
+      (by norm_num) (by norm_num),
+    eventually_log_pow_mul_exp_le 11 (c := 1 / 25) (ε := 1 / (1000 * (8 * (2 * B)))) (by norm_num)
+      (by positivity),
+    eventually_log_pow_mul_exp_le 4 (c := 1) (ε := 1 / (1000 * 16000)) one_pos (by norm_num),
+    eventually_log_pow_mul_exp_le 9 (c := 1) (ε := 1 / (1000 * (8 * C'))) one_pos (by positivity),
+    eventually_log_pow_mul_exp_le 1 (c := 1) (ε := 1 / 32000000) one_pos (by norm_num),
+    eventually_log_pow_mul_exp_le 3 (c := 1)
+      (ε := 6 / 1000 * (69 / 100) / (2 * (K₁ * 2 + C + K₁ + 1))) one_pos (by positivity),
+    Real.tendsto_log_atTop.eventually_ge_atTop (8000 : ℝ), eventually_ge_atTop (100 : ℝ), hloglog,
+    eventually_zero_count_increment] with T e1 e2 e3 e4 e5 e6 hℓ hT100 hll hcount θ hθ0 hθ
+  set ℓ := Real.log T with hℓdef
+  have hℓ0 : 0 < ℓ := by linarith
+  have hT0 : 0 < T := by linarith
+  have hε := le_lengthEps hθ0 hθ (by linarith)
+  have hε8 : 1 / (8000 * ℓ) ≤ lengthEps θ / 8 := by
+    have h1 : 1 / (8000 * ℓ) = 1 / (1000 * ℓ) / 8 := by
+      field_simp
+      norm_num
+    rw [h1]
+    exact div_le_div_of_nonneg_right hε (by norm_num)
+  have hε8' : 1 / (1000 * ℓ) ≤ lengthEps θ / 8 * 8 := by linarith
+  have hTe : Real.exp (-(1 * ℓ)) = T⁻¹ := by
+    rw [one_mul, Real.exp_neg, hℓdef, Real.exp_log hT0]
+  have hℓT : 32000000 * ℓ ≤ T := by
+    have h1 := e5
+    rw [hTe, pow_one, ← div_eq_mul_inv, div_le_iff₀ hT0] at h1
+    linarith
+  have hexp1 : 0 ≤ Real.exp (-(1 * ℓ)) := (Real.exp_pos _).le
+  have heps8 : ∀ a : ℝ, 0 ≤ a → a * 8 * (1000 * ℓ) ≤ T → a / (lengthEps θ / 8) ≤ T := by
+    intro a ha h
+    have h1 : a / (lengthEps θ / 8) = a * 8 / lengthEps θ := by
+      have := lengthEps_pos hθ0
+      field_simp
+    rw [h1]
+    exact div_le_of_eps (by positivity) hℓ0 hε h
+  exact
+    { r₁ := by
+        rw [div_div]
+        exact pow_mul_le_of_succ hℓ0 (by norm_num) e1 hε
+      r₂ := by
+        rw [div_div, ← hB]
+        exact pow_mul_le_of_succ hℓ0 (by positivity) e2 hε
+      f₁ := by
+        have h1 : ℓ ^ 4 * Real.exp (-(1 * ℓ)) ≤ 1 / (1000 * 16000) := e3
+        linarith
+      f₂ := heps8 128 (by norm_num) (by linarith)
+      f₃ := heps8 96 (by norm_num) (by linarith)
+      f₄ := lengthFloor_param_bound hε8 (by linarith) hll
+      c₁ := by
+        rw [div_div, ← hC']
+        exact pow_mul_le_of_succ hℓ0 (by positivity) e4 hε
+      c₂ := by linarith
+      w₄ := by
+        have h1 : 1 / (4 * lengthEps θ) = (1 / 4) / lengthEps θ := by
+          have := lengthEps_pos hθ0
+          field_simp
+        rw [h1]
+        refine div_le_of_eps (by norm_num) hℓ0 hε ?_
+        have h2 : (ℓ ^ 2) ^ 2 = ℓ ^ 3 * ℓ := by ring
+        rw [h2]
+        have h3 : (250 : ℝ) ≤ ℓ ^ 3 := by
+          calc (250 : ℝ) ≤ 8 ^ 3 := by norm_num
+            _ ≤ ℓ ^ 3 := pow_le_pow_left₀ (by norm_num) (by linarith) 3
+        have h4 := mul_le_mul_of_nonneg_right h3 hℓ0.le
+        linarith
+      m₁ := pow_mul_le_of_succ hℓ0 (by norm_num) e3 hε
+      m₂ := div_le_of_eps (by norm_num) hℓ0 hε (by linarith)
+      m₃ := hT100
+      m₄ := by linarith
+      m₅ := by
+        refine div_le_of_eps (by norm_num) hℓ0 hε ?_
+        have h2 : ℓ ^ 2 = ℓ * ℓ := by ring
+        rw [h2]
+        have h3 := mul_le_mul_of_nonneg_right hℓ hℓ0.le
+        linarith
+      m₆ := div_le_of_eps (by norm_num) hℓ0 hε (by linarith)
+      l₁ := left_floor_small_uniform hθ0 hθ (by linarith) hC hK₁ e6
+      l₂ := hcount }
+
+/-- **The necessary length of a mollifier, uniformly in the exponent.** -/
+theorem necessary_length_uniform :
+    ∃ T₀ : ℝ, ∀ T : ℝ, T₀ ≤ T → ∀ θ : ℝ, 0 < θ → θ ≤ Real.log T / 24 →
+      ∀ (b : ℕ → ℂ) (N : ℕ), 1 ≤ N → (N : ℝ) ≤ T ^ θ → b 1 = 1 →
+      (∀ n ∈ Finset.Icc 1 N, ‖b n‖ ≤ 1) →
+      (∀ n ∈ Finset.Icc 1 N, (starRingEnd ℂ) (b n) = b n) →
+      (1 + 1 / (8 + 6 * θ)) * T ≤
+        ∫ t in T..(2 * T), ‖riemannZeta (((1 / 2 : ℝ) : ℂ) + (t : ℂ) * I) *
+          edPoly b (Finset.Icc 1 N) (((1 / 2 : ℝ) : ℂ) + (t : ℂ) * I)‖ ^ 2 := by
+  obtain ⟨A, Cc, C, K₁, hCc, hC, hK₁, hcore⟩ := exists_necessary_length_core
+  obtain ⟨T₀, hT₀⟩ := eventually_atTop.mp (eventually_lengthSmall (A := A) hCc hC hK₁)
+  exact ⟨T₀, fun T hT θ hθ0 hθ b N hN hNT hb1 hb hbr =>
+    hcore θ T hθ0 (hT₀ T hT θ hθ0 hθ) b N hN hNT hb1 hb hbr⟩
+
+/-- **The necessary length of a mollifier.** -/
+theorem necessary_length {θ : ℝ} (hθ : 0 < θ) :
+    ∃ T₀ : ℝ, ∀ T : ℝ, T₀ ≤ T → ∀ (b : ℕ → ℂ) (N : ℕ), 1 ≤ N → (N : ℝ) ≤ T ^ θ → b 1 = 1 →
+      (∀ n ∈ Finset.Icc 1 N, ‖b n‖ ≤ 1) →
+      (∀ n ∈ Finset.Icc 1 N, (starRingEnd ℂ) (b n) = b n) →
+      (1 + 1 / (8 + 6 * θ)) * T ≤
+        ∫ t in T..(2 * T), ‖riemannZeta (((1 / 2 : ℝ) : ℂ) + (t : ℂ) * I) *
+          edPoly b (Finset.Icc 1 N) (((1 / 2 : ℝ) : ℂ) + (t : ℂ) * I)‖ ^ 2 := by
+  obtain ⟨T₀, hT₀⟩ := necessary_length_uniform
+  obtain ⟨T₁, hT₁⟩ := eventually_atTop.mp
+    (Real.tendsto_log_atTop.eventually_ge_atTop (24 * θ))
+  refine ⟨max T₀ T₁, fun T hT b N hN hNT hb1 hb hbr => ?_⟩
+  have h1 := hT₁ T ((le_max_right _ _).trans hT)
+  exact hT₀ T ((le_max_left _ _).trans hT) θ hθ (by linarith) b N hN hNT hb1 hb hbr
+
+/-- **An excess forces length.**  A mollifier with excess `κ < 1/14` has `log N ≥ min(log²T/24, log T/(14κ))`. -/
+theorem log_length_ge_of_excess :
+    ∃ T₀ : ℝ, ∀ T : ℝ, T₀ ≤ T → ∀ (b : ℕ → ℂ) (N : ℕ), 1 ≤ N → b 1 = 1 →
+      (∀ n ∈ Finset.Icc 1 N, ‖b n‖ ≤ 1) →
+      (∀ n ∈ Finset.Icc 1 N, (starRingEnd ℂ) (b n) = b n) → ∀ κ : ℝ, 0 < κ → κ < 1 / 14 →
+      (∫ t in T..(2 * T), ‖riemannZeta (((1 / 2 : ℝ) : ℂ) + (t : ℂ) * I) *
+        edPoly b (Finset.Icc 1 N) (((1 / 2 : ℝ) : ℂ) + (t : ℂ) * I)‖ ^ 2) ≤ (1 + κ) * T →
+      min (Real.log T ^ 2 / 24) (Real.log T / (14 * κ)) ≤ Real.log N := by
+  obtain ⟨T₀, hT₀⟩ := necessary_length_uniform
+  obtain ⟨T₁, hT₁⟩ := eventually_atTop.mp (Real.tendsto_log_atTop.eventually_ge_atTop (24 : ℝ))
+  refine ⟨max (max T₀ T₁) 1, fun T hT b N hN hb1 hb hbr κ hκ0 hκ hmom => ?_⟩
+  have hTT₀ : T₀ ≤ T := (le_max_left _ _).trans ((le_max_left _ _).trans hT)
+  have hℓ : 24 ≤ Real.log T := hT₁ T ((le_max_right _ _).trans ((le_max_left _ _).trans hT))
+  have hT1 : 1 ≤ T := (le_max_right _ _).trans hT
+  have hT0 : 0 < T := by linarith
+  have hℓ0 : 0 < Real.log T := by linarith
+  by_contra hcon
+  obtain ⟨h1, h2⟩ := lt_min_iff.mp (not_le.mp hcon)
+  obtain ⟨θ, hθdef⟩ : ∃ θ : ℝ, θ = max 1 (Real.log N / Real.log T) := ⟨_, rfl⟩
+  have hθ1 : 1 ≤ θ := by rw [hθdef]; exact le_max_left _ _
+  have hθN : Real.log N / Real.log T ≤ θ := by rw [hθdef]; exact le_max_right _ _
+  have hθℓ : θ ≤ Real.log T / 24 := by
+    rw [hθdef]
+    refine max_le (by linarith) ?_
+    rw [div_le_iff₀ hℓ0]
+    have h3 : Real.log T / 24 * Real.log T = Real.log T ^ 2 / 24 := by ring
+    rw [h3]
+    exact h1.le
+  have hN0 : (0 : ℝ) < N := by exact_mod_cast hN
+  have hNT : (N : ℝ) ≤ T ^ θ := by
+    rw [Real.rpow_def_of_pos hT0, ← Real.log_le_iff_le_exp hN0]
+    rw [div_le_iff₀ hℓ0] at hθN
+    linarith [mul_comm θ (Real.log T)]
+  have hfl := hT₀ T hTT₀ θ (by linarith) hθℓ b N hN hNT hb1 hb hbr
+  have hex := le_of_mul_le_mul_right (hfl.trans hmom) hT0
+  have h14 : 1 / (14 * θ) ≤ κ := by
+    have h3 : 1 / (14 * θ) ≤ 1 / (8 + 6 * θ) :=
+      one_div_le_one_div_of_le (by positivity) (by linarith)
+    linarith
+  have hθκ : 1 / (14 * κ) ≤ θ := by
+    rw [div_le_iff₀ (by positivity)]
+    rw [div_le_iff₀ (by positivity)] at h14
+    linarith
+  have hgt : 1 < 1 / (14 * κ) := by
+    rw [one_lt_div (by positivity)]
+    linarith
+  have hθne : θ = Real.log N / Real.log T := by
+    rw [hθdef] at hθκ ⊢
+    rcases le_total 1 (Real.log N / Real.log T) with h3 | h3
+    · exact max_eq_right h3
+    · rw [max_eq_left h3] at hθκ
+      linarith
+  rw [hθne, le_div_iff₀ hℓ0] at hθκ
+  have h3 : Real.log T / (14 * κ) = 1 / (14 * κ) * Real.log T := by ring
+  rw [h3] at h2
   linarith
 
 /-- **A second moment tending to one forces the length exponent to infinity.**  If real mollifiers `M_T` with bounded coefficients have `(1/T)∫_T^{2T}|ζM_T|² → 1`, then

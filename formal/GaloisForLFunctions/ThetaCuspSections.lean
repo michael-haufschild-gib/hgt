@@ -1,4 +1,5 @@
 import GaloisForLFunctions.ThetaCuspSections.StrictEighthSection
+import GaloisForLFunctions.ThetaCuspSections.StrictNinthSection
 import GaloisForLFunctions.ThetaCuspSections.FiniteRankCriticalCollar
 import GaloisForLFunctions.ThetaCuspSections.QuantitativeCriticalCollar
 import GaloisForLFunctions.ThetaCuspSections.LogarithmicCriticalCollar
@@ -16,7 +17,7 @@ import GaloisForLFunctions.ThetaCuspSections.FifthEvenCrossLoadContinuation
 /-!
 # Finite signed sections of the theta cusp
 
-Strict positivity of the eighth signed center-mixed Hankel section and its
+Strict positivity of the ninth signed center-mixed Hankel section and its
 native successor integral, obtained by retaining the positive aperture tail.
 Every finite rank is also strict on a rank-dependent neighborhood of aperture
 one half, including apertures inside the critical interval.
@@ -64,6 +65,10 @@ From scale three, four retained atoms leave normalized Gaussian entry error at m
 `1/100000`, hence quadratic error at most `1/20000`.
 After radial integration, their complete omitted tail is paid by half the cubic
 gamma reserve in the fixed first-atom mass matrix.
+The four remaining unequal pairs use the other half of that reserve.
+Their exact sum gives positive definite complete fifth even tails at every
+nonnegative cutoff. Positive aperture weighting and the fourth odd block
+then give the strict ninth section throughout the critical aperture interval.
 -/
 import GaloisForLFunctions.ThetaCuspSections.FifthEvenLeadingPairReserve
 import GaloisForLFunctions.ThetaCuspSections.FifthEvenFirstAtomTailModel
@@ -79,9 +84,14 @@ import GaloisForLFunctions.ThetaCuspSections.FifthEvenThirdTailData
 import GaloisForLFunctions.ThetaCuspSections.FifthEvenThirdTailCoefficients
 import GaloisForLFunctions.ThetaCuspSections.FifthEvenThirdTailModel
 import GaloisForLFunctions.ThetaCuspSections.FifthEvenThirdTail
+import GaloisForLFunctions.ThetaCuspSections.FifthEvenOtherTailData
+import GaloisForLFunctions.ThetaCuspSections.FifthEvenOtherTailCoefficients
+import GaloisForLFunctions.ThetaCuspSections.FifthEvenOtherTailModel
+import GaloisForLFunctions.ThetaCuspSections.FifthEvenOtherTail
 import GaloisForLFunctions.ThetaCuspSections.FifthEvenThreeAtomRemainder
 import GaloisForLFunctions.ThetaCuspSections.FifthEvenFourAtomRemainder
 import GaloisForLFunctions.ThetaCuspSections.FifthEvenIntegratedRemainder
+import GaloisForLFunctions.ThetaCuspSections.FifthEvenCompleteTail
 import GaloisForLFunctions.ThetaCuspSections.FifthEvenNativeRay
 import GaloisForLFunctions.ThetaCuspSections.FifthEvenEffectiveCrossRay
 import GaloisForLFunctions.ThetaCuspSections.FifthEvenCrossLoadPolynomialEnvelope
