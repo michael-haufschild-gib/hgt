@@ -318,7 +318,9 @@ theorem hasDerivAt_oneSidedFactor (q v : ℝ) :
       (-(2 * q) * (Real.exp (2 * v) * Real.exp (-(q * Real.exp (2 * v))))) v := by
   have e2 : HasDerivAt (fun v : ℝ => Real.exp (2 * v)) (Real.exp (2 * v) * 2) v := by
     simpa using ((hasDerivAt_id v).const_mul (2 : ℝ)).exp
-  refine ((e2.const_mul q).neg.exp).congr_deriv ?_
+  have e3 : HasDerivAt (fun v : ℝ => -(q * Real.exp (2 * v))) (-(q * (Real.exp (2 * v) * 2))) v :=
+    (e2.const_mul q).neg
+  refine e3.exp.congr_deriv ?_
   ring
 
 /-- `M_2(q) = 1/(2q)`. -/
@@ -327,10 +329,10 @@ theorem oneSidedInt_two {q : ℝ} (hq : 0 < q) : oneSidedInt 2 q = 1 / (2 * q) :
     have h1 : Tendsto (fun v : ℝ => 2 * v) atBot atBot :=
       tendsto_id.const_mul_atBot (by norm_num : (0 : ℝ) < 2)
     have h2 := Real.tendsto_exp_atBot.comp h1
-    have h3 := (h2.const_mul q).neg
-    have := Real.continuous_exp.continuousAt.tendsto.comp (x := (0 : ℝ))
-      (by simpa using h3)
-    simpa using this
+    have h3 : Tendsto (fun v : ℝ => -(q * Real.exp (2 * v))) atBot (𝓝 (-(q * 0))) :=
+      (h2.const_mul q).neg
+    have := (Real.continuous_exp.tendsto _).comp h3
+    simpa [Function.comp_def] using this
   have htop : Tendsto (fun v : ℝ => Real.exp (-(q * Real.exp (2 * v)))) atTop (𝓝 0) := by
     have h1 : Tendsto (fun v : ℝ => 2 * v) atTop atTop :=
       tendsto_id.const_mul_atTop (by norm_num : (0 : ℝ) < 2)
@@ -390,5 +392,353 @@ theorem oneSidedInt_six {q : ℝ} (hq : 0 < q) : oneSidedInt 6 q = 1 / q ^ 3 := 
   rw [oneSidedInt_four hq, show (4 : ℝ) + 2 = 6 by norm_num] at h
   field_simp at h ⊢
   linarith
+
+/-! ### The profile of `Φ`, the Gaussian test, and the kernels -/
+
+/-- One dilate of the profile of `Φ`: `e^{v/2} P(x²e^{2v}) e^{−πx²e^{2v}}`, `P(y) = 4π²y² − 6πy`. -/
+def cuspAtom (x v : ℝ) : ℝ :=
+  Real.exp (v / 2) * (4 * π ^ 2 * (x ^ 2 * Real.exp (2 * v)) ^ 2 - 6 * π * (x ^ 2 * Real.exp (2 * v))) *
+    Real.exp (-(π * (x ^ 2 * Real.exp (2 * v))))
+
+/-- The Gaussian test `Y_t(v) = 2 e^{−3v/2} exp(−π t² e^{−2v})`. -/
+def gaussTest (t v : ℝ) : ℝ :=
+  2 * Real.exp (-(3 / 2 * v)) * Real.exp (-(π * t ^ 2 * Real.exp (-(2 * v))))
+
+/-- The rational kernel: `8x⁴/(πS³) − 6x²/(πS²)`, `S = x² + t²`. -/
+def ratKer (x t : ℝ) : ℝ :=
+  8 * x ^ 4 / (π * (x ^ 2 + t ^ 2) ^ 3) - 6 * x ^ 2 / (π * (x ^ 2 + t ^ 2) ^ 2)
+
+/-- The exponential kernel: `x (4π²xt − 4π) e^{−2πxt}`. -/
+def expKer (x t : ℝ) : ℝ := x * (4 * π ^ 2 * x * t - 4 * π) * Real.exp (-(2 * π * x * t))
+
+theorem cuspAtom_mul_gaussTest (x t v : ℝ) :
+    cuspAtom x v * gaussTest t v =
+      8 * π ^ 2 * x ^ 4 * (Real.exp (3 * v) * twoSided (π * x ^ 2) (π * t ^ 2) v) -
+        12 * π * x ^ 2 * (Real.exp (1 * v) * twoSided (π * x ^ 2) (π * t ^ 2) v) := by
+  have hT : twoSided (π * x ^ 2) (π * t ^ 2) v =
+      Real.exp (-(π * (x ^ 2 * Real.exp (2 * v)))) * Real.exp (-(π * t ^ 2 * Real.exp (-(2 * v)))) := by
+    unfold twoSided
+    rw [← Real.exp_add]
+    congr 1
+    ring
+  have a1 : Real.exp (-v) = Real.exp (v / 2) * Real.exp (-(3 / 2 * v)) := by
+    rw [← Real.exp_add]; ring_nf
+  have a3 : Real.exp (3 * v) = Real.exp (-v) * Real.exp (2 * v) ^ 2 := by
+    rw [← Real.exp_nat_mul, ← Real.exp_add]; push_cast; ring_nf
+  have a4 : Real.exp (1 * v) = Real.exp (-v) * Real.exp (2 * v) := by
+    rw [← Real.exp_add]; ring_nf
+  rw [hT, a3, a4, a1]
+  unfold cuspAtom gaussTest
+  ring
+
+theorem cuspAtom_mul_gaussTest_neg (x t v : ℝ) :
+    cuspAtom x v * gaussTest t (-v) =
+      8 * π ^ 2 * x ^ 4 * (Real.exp (6 * v) * Real.exp (-(π * (x ^ 2 + t ^ 2) * Real.exp (2 * v)))) -
+        12 * π * x ^ 2 * (Real.exp (4 * v) * Real.exp (-(π * (x ^ 2 + t ^ 2) * Real.exp (2 * v)))) := by
+  have hT : Real.exp (-(π * (x ^ 2 + t ^ 2) * Real.exp (2 * v))) =
+      Real.exp (-(π * (x ^ 2 * Real.exp (2 * v)))) * Real.exp (-(π * t ^ 2 * Real.exp (2 * v))) := by
+    rw [← Real.exp_add]
+    congr 1
+    ring
+  have a1 : Real.exp (2 * v) = Real.exp (v / 2) * Real.exp (3 / 2 * v) := by
+    rw [← Real.exp_add]; ring_nf
+  have a6 : Real.exp (6 * v) = Real.exp (2 * v) ^ 3 := by
+    rw [← Real.exp_nat_mul]; push_cast; ring_nf
+  have a4 : Real.exp (4 * v) = Real.exp (2 * v) ^ 2 := by
+    rw [← Real.exp_nat_mul]; push_cast; ring_nf
+  have e : gaussTest t (-v) = 2 * Real.exp (3 / 2 * v) * Real.exp (-(π * t ^ 2 * Real.exp (2 * v))) := by
+    unfold gaussTest
+    rw [show -(3 / 2 * -v) = 3 / 2 * v by ring, show -(2 * -v) = 2 * v by ring]
+  rw [e, hT, a6, a4]
+  unfold cuspAtom
+  generalize Real.exp (-(π * (x ^ 2 * Real.exp (2 * v)))) = A
+  generalize Real.exp (-(π * t ^ 2 * Real.exp (2 * v))) = B
+  have a1' := a1
+  generalize Real.exp (2 * v) = E2 at a1' ⊢
+  rw [a1']
+  ring
+
+theorem integrable_cuspAtom_mul_gaussTest {x t : ℝ} (hx : 0 < x) (ht : 0 < t) :
+    Integrable fun v => cuspAtom x v * gaussTest t v := by
+  have ha : 0 < π * x ^ 2 := by positivity
+  have hb : 0 < π * t ^ 2 := by positivity
+  simp_rw [cuspAtom_mul_gaussTest]
+  exact ((integrable_exp_mul_twoSided 3 ha hb).const_mul _).sub
+    ((integrable_exp_mul_twoSided 1 ha hb).const_mul _)
+
+theorem integrable_cuspAtom_neg_mul_gaussTest {x t : ℝ} (hx : 0 < x) (ht : 0 < t) :
+    Integrable fun v => cuspAtom x (-v) * gaussTest t v := by
+  have hq : 0 < π * (x ^ 2 + t ^ 2) := by positivity
+  have h : Integrable fun v => cuspAtom x v * gaussTest t (-v) := by
+    simp_rw [cuspAtom_mul_gaussTest_neg]
+    exact ((integrable_exp_mul_oneSided (p := 6) (by norm_num) hq).const_mul _).sub
+      ((integrable_exp_mul_oneSided (p := 4) (by norm_num) hq).const_mul _)
+  simpa using h.comp_neg
+
+/-- The mirror orientation gives the exponential kernel. -/
+theorem integral_cuspAtom_mul_gaussTest {x t : ℝ} (hx : 0 < x) (ht : 0 < t) :
+    ∫ v, cuspAtom x v * gaussTest t v = expKer x t := by
+  have ha : 0 < π * x ^ 2 := by positivity
+  have hb : 0 < π * t ^ 2 := by positivity
+  simp_rw [cuspAtom_mul_gaussTest]
+  rw [integral_sub ((integrable_exp_mul_twoSided 3 ha hb).const_mul _)
+    ((integrable_exp_mul_twoSided 1 ha hb).const_mul _), integral_const_mul, integral_const_mul]
+  change 8 * π ^ 2 * x ^ 4 * twoSidedInt 3 (π * x ^ 2) (π * t ^ 2) -
+    12 * π * x ^ 2 * twoSidedInt 1 (π * x ^ 2) (π * t ^ 2) = _
+  rw [twoSidedInt_three hx ht, twoSidedInt_one hx ht]
+  unfold expKer
+  field_simp
+  ring
+
+/-- The direct orientation gives the rational kernel. -/
+theorem integral_cuspAtom_neg_mul_gaussTest {x t : ℝ} (hx : 0 < x) (ht : 0 < t) :
+    ∫ v, cuspAtom x (-v) * gaussTest t v = ratKer x t := by
+  have hS : 0 < x ^ 2 + t ^ 2 := by positivity
+  have hq : 0 < π * (x ^ 2 + t ^ 2) := by positivity
+  have e : ∫ v, cuspAtom x (-v) * gaussTest t v = ∫ v, cuspAtom x v * gaussTest t (-v) := by
+    rw [← integral_neg_eq_self (fun v => cuspAtom x v * gaussTest t (-v))]
+    simp only [neg_neg]
+  rw [e]
+  simp_rw [cuspAtom_mul_gaussTest_neg]
+  rw [integral_sub ((integrable_exp_mul_oneSided (p := 6) (by norm_num) hq).const_mul _)
+    ((integrable_exp_mul_oneSided (p := 4) (by norm_num) hq).const_mul _), integral_const_mul,
+    integral_const_mul]
+  change 8 * π ^ 2 * x ^ 4 * oneSidedInt 6 (π * (x ^ 2 + t ^ 2)) -
+    12 * π * x ^ 2 * oneSidedInt 4 (π * (x ^ 2 + t ^ 2)) = _
+  rw [oneSidedInt_six hq, oneSidedInt_four hq]
+  unfold ratKer
+  field_simp
+  ring
+
+/-- The total mass of one dilate against the Gaussian test, in the mirror orientation. -/
+theorem integral_norm_cuspAtom_mul_gaussTest_le {x t : ℝ} (hx : 1 ≤ x) (ht : 1 ≤ t) :
+    ∫ v, ‖cuspAtom x v * gaussTest t v‖ ≤ 2 / x ^ 2 := by
+  have hx0 : 0 < x := by linarith
+  have ht0 : 0 < t := by linarith
+  have ha : 0 < π * x ^ 2 := by positivity
+  have hb : 0 < π * t ^ 2 := by positivity
+  have h3 := (integrable_exp_mul_twoSided 3 ha hb).const_mul (8 * π ^ 2 * x ^ 4)
+  have h1 := (integrable_exp_mul_twoSided 1 ha hb).const_mul (12 * π * x ^ 2)
+  have hle : ∫ v, ‖cuspAtom x v * gaussTest t v‖ ≤
+      8 * π ^ 2 * x ^ 4 * twoSidedInt 3 (π * x ^ 2) (π * t ^ 2) +
+        12 * π * x ^ 2 * twoSidedInt 1 (π * x ^ 2) (π * t ^ 2) := by
+    unfold twoSidedInt
+    rw [← integral_const_mul, ← integral_const_mul, ← integral_add h3 h1]
+    refine integral_mono (integrable_cuspAtom_mul_gaussTest hx0 ht0).norm (h3.add h1) fun v => ?_
+    simp only
+    rw [cuspAtom_mul_gaussTest]
+    have p3 : 0 ≤ 8 * π ^ 2 * x ^ 4 * (Real.exp (3 * v) * twoSided (π * x ^ 2) (π * t ^ 2) v) :=
+      mul_nonneg (by positivity) (mul_pos (Real.exp_pos _) (twoSided_pos _ _ _)).le
+    have p1 : 0 ≤ 12 * π * x ^ 2 * (Real.exp (1 * v) * twoSided (π * x ^ 2) (π * t ^ 2) v) :=
+      mul_nonneg (by positivity) (mul_pos (Real.exp_pos _) (twoSided_pos _ _ _)).le
+    rw [Real.norm_eq_abs, abs_le]
+    constructor <;> linarith
+  rw [twoSidedInt_three hx0 ht0, twoSidedInt_one hx0 ht0] at hle
+  refine hle.trans ?_
+  have hy : 0 < 2 * π * x * t := by positivity
+  have he := exp_neg_le_factorial_div hy 4
+  have hpi := Real.pi_gt_three
+  have e : 8 * π ^ 2 * x ^ 4 * ((1 / (2 * x) + π * t) / (2 * π * x ^ 2) * Real.exp (-(2 * π * x * t))) +
+      12 * π * x ^ 2 * (1 / (2 * x) * Real.exp (-(2 * π * x * t))) =
+      (8 * π * x + 4 * π ^ 2 * x ^ 2 * t) * Real.exp (-(2 * π * x * t)) := by
+    field_simp
+    ring
+  rw [e]
+  have hA : 0 ≤ 8 * π * x + 4 * π ^ 2 * x ^ 2 * t := by positivity
+  refine (mul_le_mul_of_nonneg_left he hA).trans ?_
+  rw [mul_div_assoc', div_le_div_iff₀ (by positivity) (by positivity)]
+  have hf : ((4 : ℕ).factorial : ℝ) = 24 := by norm_num [Nat.factorial]
+  rw [hf]
+  have hx1 : 1 ≤ x ^ 2 := one_le_pow₀ hx
+  have ht3 : 1 ≤ t ^ 3 := one_le_pow₀ ht
+  have ht4 : 1 ≤ t ^ 4 := one_le_pow₀ ht
+  have hxx : x ≤ x ^ 2 := by nlinarith
+  have hkey : (8 * π * x + 4 * π ^ 2 * x ^ 2 * t) * 24 ≤ 2 * (16 * π ^ 4 * x ^ 2 * t ^ 4) := by
+    have s1 : 8 * π * x * 24 ≤ 192 * π * (x ^ 2 * t ^ 4) := by
+      have : x ≤ x ^ 2 * t ^ 4 := by nlinarith
+      nlinarith [Real.pi_pos]
+    have s2 : 4 * π ^ 2 * x ^ 2 * t * 24 ≤ 96 * π ^ 2 * (x ^ 2 * t ^ 4) := by
+      have : t ≤ t ^ 4 := by nlinarith
+      have hx2 : 0 ≤ π ^ 2 * x ^ 2 := by positivity
+      nlinarith
+    have s3 : 192 * π + 96 * π ^ 2 ≤ 32 * π ^ 4 := by
+      have hp2 : 9 ≤ π ^ 2 := by nlinarith
+      have hp4 : π ^ 4 = π ^ 2 * π ^ 2 := by ring
+      rw [hp4]
+      nlinarith
+    have hxt : 0 ≤ x ^ 2 * t ^ 4 := by positivity
+    have := mul_le_mul_of_nonneg_right s3 hxt
+    nlinarith
+  have hfin : (8 * π * x + 4 * π ^ 2 * x ^ 2 * t) * 24 * x ^ 2 ≤ 2 * (2 * π * x * t) ^ 4 := by
+    have e4 : (2 * π * x * t) ^ 4 = (16 * π ^ 4 * x ^ 2 * t ^ 4) * x ^ 2 := by ring
+    rw [e4]
+    have := mul_le_mul_of_nonneg_right hkey (by positivity : (0 : ℝ) ≤ x ^ 2)
+    linarith
+  linarith
+
+/-- The total mass of one dilate against the Gaussian test, in the direct orientation. -/
+theorem integral_norm_cuspAtom_neg_mul_gaussTest_le {x t : ℝ} (hx : 1 ≤ x) (ht : 1 ≤ t) :
+    ∫ v, ‖cuspAtom x (-v) * gaussTest t v‖ ≤ 5 / x ^ 2 := by
+  have hx0 : 0 < x := by linarith
+  have ht0 : 0 < t := by linarith
+  have hS : 0 < x ^ 2 + t ^ 2 := by positivity
+  have hq : 0 < π * (x ^ 2 + t ^ 2) := by positivity
+  have e : ∫ v, ‖cuspAtom x (-v) * gaussTest t v‖ = ∫ v, ‖cuspAtom x v * gaussTest t (-v)‖ := by
+    rw [← integral_neg_eq_self (fun v => ‖cuspAtom x v * gaussTest t (-v)‖)]
+    simp only [neg_neg]
+  have hint : Integrable fun v => cuspAtom x v * gaussTest t (-v) := by
+    simpa using (integrable_cuspAtom_neg_mul_gaussTest hx0 ht0).comp_neg
+  have h6 := (integrable_exp_mul_oneSided (p := 6) (by norm_num) hq).const_mul (8 * π ^ 2 * x ^ 4)
+  have h4 := (integrable_exp_mul_oneSided (p := 4) (by norm_num) hq).const_mul (12 * π * x ^ 2)
+  rw [e]
+  have hle : ∫ v, ‖cuspAtom x v * gaussTest t (-v)‖ ≤
+      8 * π ^ 2 * x ^ 4 * oneSidedInt 6 (π * (x ^ 2 + t ^ 2)) +
+        12 * π * x ^ 2 * oneSidedInt 4 (π * (x ^ 2 + t ^ 2)) := by
+    unfold oneSidedInt
+    rw [← integral_const_mul, ← integral_const_mul, ← integral_add h6 h4]
+    refine integral_mono hint.norm (h6.add h4) fun v => ?_
+    simp only
+    rw [cuspAtom_mul_gaussTest_neg]
+    have p6 : 0 ≤ 8 * π ^ 2 * x ^ 4 *
+        (Real.exp (6 * v) * Real.exp (-(π * (x ^ 2 + t ^ 2) * Real.exp (2 * v)))) :=
+      mul_nonneg (by positivity) (mul_pos (Real.exp_pos _) (Real.exp_pos _)).le
+    have p4 : 0 ≤ 12 * π * x ^ 2 *
+        (Real.exp (4 * v) * Real.exp (-(π * (x ^ 2 + t ^ 2) * Real.exp (2 * v)))) :=
+      mul_nonneg (by positivity) (mul_pos (Real.exp_pos _) (Real.exp_pos _)).le
+    rw [Real.norm_eq_abs, abs_le]
+    constructor <;> linarith
+  rw [oneSidedInt_six hq, oneSidedInt_four hq] at hle
+  refine hle.trans ?_
+  have hpi := Real.pi_gt_three
+  have e2 : 8 * π ^ 2 * x ^ 4 * (1 / (π * (x ^ 2 + t ^ 2)) ^ 3) +
+      12 * π * x ^ 2 * (1 / (2 * (π * (x ^ 2 + t ^ 2)) ^ 2)) =
+      (8 * x ^ 4 + 6 * x ^ 2 * (x ^ 2 + t ^ 2)) / (π * (x ^ 2 + t ^ 2) ^ 3) := by
+    field_simp
+    ring
+  rw [e2, div_le_div_iff₀ (by positivity) (by positivity)]
+  have hSx : x ^ 2 ≤ x ^ 2 + t ^ 2 := by nlinarith [sq_nonneg t]
+  have h31 : (x ^ 2) ^ 3 ≤ (x ^ 2 + t ^ 2) ^ 3 := pow_le_pow_left₀ (by positivity) hSx 3
+  have h32 : (x ^ 2) ^ 2 * (x ^ 2 + t ^ 2) ≤ (x ^ 2 + t ^ 2) ^ 3 := by
+    have : (x ^ 2) ^ 2 ≤ (x ^ 2 + t ^ 2) ^ 2 := pow_le_pow_left₀ (by positivity) hSx 2
+    calc (x ^ 2) ^ 2 * (x ^ 2 + t ^ 2) ≤ (x ^ 2 + t ^ 2) ^ 2 * (x ^ 2 + t ^ 2) :=
+          mul_le_mul_of_nonneg_right this hS.le
+      _ = _ := by ring
+  have hS3 : 0 ≤ (x ^ 2 + t ^ 2) ^ 3 := by positivity
+  have e3 : (8 * x ^ 4 + 6 * x ^ 2 * (x ^ 2 + t ^ 2)) * x ^ 2 =
+      8 * (x ^ 2) ^ 3 + 6 * ((x ^ 2) ^ 2 * (x ^ 2 + t ^ 2)) := by ring
+  rw [e3]
+  nlinarith
+
+/-! ### The reading of one atom -/
+
+theorem eval_riemannCuspPoly (y : ℝ) :
+    Polynomial.eval y riemannCuspPoly = 4 * π ^ 2 * y ^ 2 - 6 * π * y := by
+  simp [riemannCuspPoly, cuspDeriv]
+  ring
+
+theorem cuspTerm_log_add {n : ℕ} (hn : 1 ≤ n) (k : ℕ) (v : ℝ) :
+    cuspTerm riemannCuspPoly (k + 1) (Real.log n + v) =
+      Real.sqrt n * cuspAtom (((k + 1 : ℕ) : ℝ) * n) v := by
+  have hn0 : (0 : ℝ) < n := by exact_mod_cast hn
+  have e1 : Real.exp ((Real.log n + v) / 2) = Real.sqrt n * Real.exp (v / 2) := by
+    rw [Real.sqrt_eq_rpow, Real.rpow_def_of_pos hn0, ← Real.exp_add]
+    congr 1
+    ring
+  have e2 : ((k + 1 : ℕ) : ℝ) ^ 2 * Real.exp (2 * (Real.log n + v)) =
+      (((k + 1 : ℕ) : ℝ) * n) ^ 2 * Real.exp (2 * v) := by
+    have : Real.exp (2 * (Real.log n + v)) = (n : ℝ) ^ 2 * Real.exp (2 * v) := by
+      rw [show 2 * (Real.log n + v) = (2 : ℕ) * Real.log n + 2 * v by push_cast; ring,
+        Real.exp_add, Real.exp_nat_mul, Real.exp_log hn0]
+    rw [this]
+    ring
+  unfold cuspTerm cuspAtom
+  rw [eval_riemannCuspPoly, e1, e2]
+  ring_nf
+
+theorem xiShiftedGammaTest_zero_eq_cuspSeries (u : ℝ) : 𝔽 0 u = cuspSeries riemannCuspPoly u := by
+  apply Complex.ofReal_injective
+  rw [xiShiftedGammaTest_zero_eq, riemannPhiKernel_eq_cuspSeries]
+
+theorem xiShiftedGammaTest_zero_neg (u : ℝ) : 𝔽 0 (-u) = 𝔽 0 u := by
+  apply Complex.ofReal_injective
+  rw [xiShiftedGammaTest_zero_eq, xiShiftedGammaTest_zero_eq, riemannPhiKernel_neg]
+
+/-- `Σ_k cuspAtom(kn, v) = n^{−1/2} Φ(log n + v)`. -/
+theorem tsum_cuspAtom {n : ℕ} (hn : 1 ≤ n) (v : ℝ) :
+    ∑' k : ℕ, cuspAtom (((k + 1 : ℕ) : ℝ) * n) v = 𝔽 0 (Real.log n + v) / Real.sqrt n := by
+  have hs : Real.sqrt n ≠ 0 := by
+    have hn0 : (0 : ℝ) < n := by exact_mod_cast hn
+    exact (Real.sqrt_pos.mpr hn0).ne'
+  rw [xiShiftedGammaTest_zero_eq_cuspSeries, cuspSeries, eq_div_iff hs, mul_comm, ← tsum_mul_left]
+  exact tsum_congr fun k => (cuspTerm_log_add hn k v).symm
+
+theorem crossCorr_log (t c : ℝ) :
+    crossCorr (𝔽 0) (gaussTest t) c = ∫ v, 𝔽 0 (c + v) * gaussTest t v := by
+  unfold crossCorr
+  rw [← integral_add_right_eq_self (fun s => 𝔽 0 s * gaussTest t (s - c)) c]
+  refine integral_congr_ae (Eventually.of_forall fun v => ?_)
+  simp only [add_comm v c]
+  rw [show c + v - c = v by ring]
+
+theorem crossCorr_neg_log (t c : ℝ) :
+    crossCorr (𝔽 0) (gaussTest t) (-c) = ∫ v, 𝔽 0 (c + -v) * gaussTest t v := by
+  unfold crossCorr
+  rw [← integral_sub_right_eq_self (fun s => 𝔽 0 s * gaussTest t (s - -c)) c]
+  refine integral_congr_ae (Eventually.of_forall fun v => ?_)
+  simp only [sub_neg_eq_add, sub_add_cancel]
+  rw [← xiShiftedGammaTest_zero_neg]
+  congr 2
+  ring
+
+/-- **The atom reading of a Gaussian test.** For `n ≥ 1`, `t ≥ 1`,
+`n^{−1/2} ((Φ ⋆ Y_t)(log n) + (Φ ⋆ Y_t)(−log n)) = Σ_{k≥1} (ratKer (kn) t + expKer (kn) t)`. -/
+theorem hasSum_atomReading {n : ℕ} (hn : 1 ≤ n) {t : ℝ} (ht : 1 ≤ t) :
+    HasSum (fun k : ℕ => ratKer (((k + 1 : ℕ) : ℝ) * n) t + expKer (((k + 1 : ℕ) : ℝ) * n) t)
+      ((crossCorr (𝔽 0) (gaussTest t) (Real.log n) +
+        crossCorr (𝔽 0) (gaussTest t) (-Real.log n)) / Real.sqrt n) := by
+  have ht0 : 0 < t := by linarith
+  have hn1 : (1 : ℝ) ≤ n := by exact_mod_cast hn
+  have hxk : ∀ k : ℕ, (k : ℝ) + 1 ≤ ((k + 1 : ℕ) : ℝ) * n := fun k => by
+    push_cast
+    nlinarith [(Nat.cast_nonneg k : (0 : ℝ) ≤ k)]
+  have hx1 : ∀ k : ℕ, 1 ≤ ((k + 1 : ℕ) : ℝ) * n := fun k => by
+    have := hxk k
+    have := (Nat.cast_nonneg k : (0 : ℝ) ≤ k)
+    linarith
+  have hx0 : ∀ k : ℕ, 0 < ((k + 1 : ℕ) : ℝ) * n := fun k => by linarith [hx1 k]
+  have hsq : ∀ C : ℝ, 0 ≤ C → Summable fun k : ℕ => C / (((k + 1 : ℕ) : ℝ) * n) ^ 2 := by
+    intro C hC
+    have hb : Summable fun k : ℕ => C * (1 / ((k : ℝ) + 1) ^ 2) := by
+      have := (summable_nat_add_iff 1).mpr (Real.summable_one_div_nat_pow.mpr
+        (by norm_num : 1 < 2))
+      simpa using this.mul_left C
+    refine Summable.of_nonneg_of_le (fun k => by positivity) (fun k => ?_) hb
+    rw [mul_one_div]
+    refine div_le_div_of_nonneg_left hC (by positivity) ?_
+    exact pow_le_pow_left₀ (by positivity) (hxk k) 2
+  have hB := hasSum_integral_of_summable_integral_norm
+    (F := fun k (v : ℝ) => cuspAtom (((k + 1 : ℕ) : ℝ) * n) v * gaussTest t v)
+    (fun k => integrable_cuspAtom_mul_gaussTest (hx0 k) ht0)
+    (Summable.of_nonneg_of_le (fun k => integral_nonneg fun _ => norm_nonneg _)
+      (fun k => integral_norm_cuspAtom_mul_gaussTest_le (hx1 k) ht) (hsq 2 (by norm_num)))
+  have hA := hasSum_integral_of_summable_integral_norm
+    (F := fun k (v : ℝ) => cuspAtom (((k + 1 : ℕ) : ℝ) * n) (-v) * gaussTest t v)
+    (fun k => integrable_cuspAtom_neg_mul_gaussTest (hx0 k) ht0)
+    (Summable.of_nonneg_of_le (fun k => integral_nonneg fun _ => norm_nonneg _)
+      (fun k => integral_norm_cuspAtom_neg_mul_gaussTest_le (hx1 k) ht) (hsq 5 (by norm_num)))
+  simp_rw [integral_cuspAtom_mul_gaussTest (hx0 _) ht0, tsum_mul_right, tsum_cuspAtom hn] at hB
+  simp_rw [integral_cuspAtom_neg_mul_gaussTest (hx0 _) ht0, tsum_mul_right, tsum_cuspAtom hn] at hA
+  have h := hA.add hB
+  have e : (crossCorr (𝔽 0) (gaussTest t) (Real.log n) +
+      crossCorr (𝔽 0) (gaussTest t) (-Real.log n)) / Real.sqrt n =
+      (∫ v, 𝔽 0 (Real.log n + -v) / Real.sqrt n * gaussTest t v) +
+        ∫ v, 𝔽 0 (Real.log n + v) / Real.sqrt n * gaussTest t v := by
+    rw [crossCorr_log, crossCorr_neg_log, add_div, add_comm, ← integral_div, ← integral_div]
+    congr 1 <;>
+    · refine integral_congr_ae (Eventually.of_forall fun v => ?_)
+      simp only
+      ring
+  rw [e]
+  exact h
 
 end GaloisForLFunctions.CriticalHardyTheoryOfTheWindowCone

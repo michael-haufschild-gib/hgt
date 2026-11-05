@@ -64,9 +64,10 @@ sign, a square-root count or a collision exclusion.
 | R35 | **First-order law of the moments**: for `σ ≥ 1/2`, `c_k = ξ^{(k)}(σ) = ∫Φ(x)x^k e^{(σ−1/2)x}dx ≥ 0`, and `m_d(t) = Σ C(d,k)t^{d−k}c_k = E(t+V)^d` satisfies `(1/d) log m_d(θℓ_d) − log ℓ_d → log(1+θ)`, `ℓ_d = ½ log d` (Cauchy estimate at the saddle `r = d/((1+θ)ℓ_d)` with the Gamma cap, restriction of the integral to `[ℓ−log ℓ, ℓ−log ℓ+1]` with the first cusp term of `Φ`). Log-convexity of `m_d` in `log t` upgrades this to `ℓ_{d+1} m_d(θℓ_{d+1})/m_{d+1}(θℓ_{d+1}) → 1/(1+θ)` | `JensenMassConvexity.tendsto_ratio_of_tendsto_log`, `XiMomentsOnALine.tendsto_log_jensenMass`, `tendsto_cauchy_ratio` |
 | R36 | **The Cauchy limit law of the Jensen roots**: with `G_d(z) = (1/d)Σ_x 1/(z − x/ℓ_d)`, unconditionally for `σ ≥ 1/2`, `θ > 0`: `G_d(iθ) → 1/(iθ+i)`. If all roots lie in `Im x ≤ 0` (always for `σ ≥ 1`, RH at `σ = 1/2`), `G_d(z) → 1/(z+i)` on the upper half-plane: the Cauchy transform of the standard Cauchy law. The bulk at scale `½ log d` is universal, comes from the Gamma factor alone, does not depend on `σ`, and cannot see the zeros | `CauchyLimitLaw.tendsto_jensenCauchy_imag`, `tendsto_jensenCauchy_of_one_le`, `tendsto_jensenCauchy_of_zeroFree` |
 | R37 | **Bulk hyperbolicity, unconditional**: for every `ε > 0` the proportion of roots of `R_d(Ξ)` with `|Im x| ≥ ε ½ log d` tends to `0`; for `σ ≥ 1/2` the proportion of roots of `R_d(ξ(σ+i·))` with `Im x ≥ ε ½ log d` tends to `0`. Mechanism: the complex moment formula `R_d(w) = E(w+iV)^d` gives `|R_d(ℓz)| ≤ ℓ^d|z+i|^d e^{o(d)}` uniformly on circles in `Im z > 0` (`|ℓz+iv| ≤ ℓ(|z+i|−1) + max(|v|,ℓ)`), sharp at `z = iθ` by R35; `log|z+i|` is harmonic, so a Blaschke–maximum-principle Jensen inequality on discs around `iθ` gives `o(d)` roots in them. The discs exhaust `Im z > 0`; the same inequality bounds the far roots; `R_d(−x) = (−1)^d R_d(x)` gives the lower half-plane | `MultisetJensenInequality.multiset_prod_max_le`, `BulkHyperbolicity.tendsto_card_im_ge_div`, `tendsto_card_abs_im_ge_div_xiSeries` |
-| R38 | **Almost all Jensen roots of `Ξ` are real and simple, unconditionally**: for every `η > 0` and large `d`, `R_d(Ξ)` has at least `(1−η)d` distinct real roots; the proportion of non-real roots with multiplicity tends to `0`. Mechanism: on the real axis `R_d = 2 Re E_d` with `E_d(w) = ∫₀^∞Φ(v)(w+iv)^d dv`. For the one-sided transform the bound `|E_d(ℓζ)| ≤ ℓ^d|ζ+i|^d e^{o(d)}` persists on `Im ζ ≥ −1/2`, so the Jensen discs of R37 may cross the real axis, and `E_d` has only `o(d)` roots in `Im ≥ 0`. The winding count `Z₋ − Z₊ ≤ #{real zeros of Re E}` (counting form of Hermite–Biehler) gives the real roots | `HermiteBiehlerCounting.exists_finset_re_eval_eq_zero`, `AlmostAllJensenRootsAreReal.eventually_card_im_nonneg_halfJensen_le`, `eventually_exists_real_roots_xiSeries`, `tendsto_card_nonreal_roots_div` |
+| R38 | **Almost all Jensen roots of `Ξ` are real and simple, unconditionally**: for every `η > 0` and large `d`, `R_d(Ξ)` has at least `(1−η)d` distinct real roots; the proportion of non-real roots with multiplicity tends to `0`. Mechanism: on the real axis `R_d = 2 Re E_d` with `E_d(w) = ∫₀^∞Φ(v)(w+iv)^d dv`. For the one-sided transform the bound `|E_d(ℓζ)| ≤ ℓ^d|ζ+i|^d e^{o(d)}` persists on `Im ζ ≥ −1/2`, so the Jensen discs of R37 may cross the real axis, and `E_d` has only `o(d)` roots in `Im ≥ 0`. The winding count `Z₋ − Z₊ ≤ #{real zeros of Re E}` (counting form of Hermite–Biehler) gives the real roots | `HermiteBiehlerCounting.exists_finset_re_eval_eq_zero`, `KernelJensenRoots.HyperbolicKernel.eventually_card_im_nonneg_halfJensen_le`, `AlmostAllJensenRootsAreReal.eventually_exists_real_roots_xiSeries`, `tendsto_card_nonreal_roots_div` |
 | R39 | **The non-real count is monotone**: `N_d = #{non-real roots of R_d(Ξ)}` is nondecreasing in `d` (Rolle on `R_{d+1}' = (d+1)R_d`). With R38, `N_d` is nondecreasing and `o(d)` | `NonRealRootCount.card_nonreal_roots_le_succ` |
 | R40 | **The real roots of `R_d(Ξ)` follow the Cauchy law, unconditionally**: for `Im w > 0`, `(1/d)Σ_{y real} 1/(w − y) → 1/(w + i)`, over the real rescaled roots `y = x/ℓ_d`. For `σ ≥ 1/2` the same limit holds for the rescaled roots outside a disc around `iθ` containing `w`. Mechanism: reflect the roots inside the disc and divide by `(z+i)^d`; the quotient has no zero, `|Q_d| ≤ e^{o(d)}` by the maximum principle and `|Q_d(iθ)| ≥ e^{−o(d)}` by R35, so Borel–Carathéodory and Cauchy's estimate make `(1/d)Q_d'/Q_d → 0` | `RealRootsCauchyLaw.tendsto_exterior_transform`, `tendsto_real_jensenCauchy` |
+| R41 | **R38 for every hyperbolic kernel, and the bulk is blind**: R38 holds for every continuous even `g` with `0 ≤ g ≤ Φ` and `g(v) ≥ exp(−Ae^{2v})` for large `v`, in particular for `g = Φe^{−τv²}`. So for every `τ > 0`, `H_{−τ}` has non-real zeros (Newman), yet the number `N_d` of non-real roots of `R_d(H_{−τ})` satisfies `N_d/d → 0` and `N_d → ∞`. Hence "almost all Jensen roots are real" cannot imply RH, and no argument using only the size and positivity of the kernel can | `KernelJensenRoots.HyperbolicKernel.eventually_exists_real_roots`, `tendsto_card_nonreal_roots_div`, `BulkBlindness.bulk_blind_riemannHeat_neg` |
 | R13 | **The degree-three test is vacuous**: on centered cubics `⊞₃` adds `(s,t)`, and every real-rooted centered cubic (`|t| ≤ s^{3/2}`) is a `⊞₃`-product of two double-root (capacity-zero, semicircle-free) cubics | `CubicFirstTest.exists_doubleRoot_factorization` |
 
 ## No-go closure for the naive route (source-faithful real-rooted pieces)
@@ -90,6 +91,12 @@ sign, a square-root count or a collision exclusion.
   stable for every `σ ≥ 1` at every degree (R27). Stability is a property of the completed function
   (its Hadamard product), not of the Euler/Gamma factorization; on `Re s = σ` it is exactly the
   zero-free half-plane (R25–R27), and at `σ = 1/2` exactly RH.
+- **Positive survivors of the bulk analysis:** R33 (classification of the genus-one class by the drift), R34
+  (`ξ` has drift exactly `0`: critical phase `c = 0`, no margin), R36 and R40 (Cauchy law at scale `½ log d`),
+  R37 and R38 (almost all roots real and simple, unconditionally), R39 (monotone `N_d`).
+- **Insight (the bulk is blind):** R41. The bulk theorems use only the evenness, positivity and size of the
+  kernel, and hold for `H_{−τ}`, which has non-real zeros. RH is `N_d = 0`, a statement about the `o(d)` outliers
+  `x ≈ d/a_q`, which are the zeros themselves: real-rootedness of `J_d` cannot be read off any bulk statistic.
 
 ## Capacity landscape
 - Degree regime (`d → ∞`, `n = 0`): Gaussian capacity `o(d^{-2})` in the native scale (R1), with
@@ -124,12 +131,15 @@ sign, a square-root count or a collision exclusion.
 - [ ] 2 → 3  formalized (route as a whole: open)
 
 ## Open conjectures (next)
-- **Size of the non-real count.** `N_d = #{non-real roots of R_d(Ξ)}` is `o(d)` (R38). The winding count should
-  stop near `|x| ≈ √d log d`: there the endpoint `v = 0` of `E_d` overtakes the saddle, because `|Ξ(u)|` is
-  far smaller than `Φ(0)/|u|` at `|u| ≫ 1`, and the half transform `K(w) = ∫₀^∞ k e^{wv}` has zeros near
-  `Re w ≈ πt/(2 log t)`. So the expected truth is `N_d ≲ √d polylog d`, and real-rootedness of `R_d(Ξ)` should
-  be equivalent to RH up to height about `√d/log d`. Power saving needs a lower bound for `|E_d|` off the
-  imaginary axis, which positivity does not give.
+- **Size of the non-real count.** `N_d = #{non-real roots of R_d(Ξ)}` is nondecreasing and `o(d)` (R38, R39).
+  Heuristics. The winding of `E_d` cannot do better than `d/log d`: on the real axis the endpoint `v = 0` of
+  `E_d` overtakes the saddle at `|x| ≈ ℓ_d²`, and the bulk zeros of `E_d` cross into `Im > 0` there. The
+  full-line contour `R_d(x) = i^d d!/(2πi) ∮ e^{−ixw} ξ(1/2 + w) w^{−d−1} dw` has no endpoint and should give
+  two conjugate saddles for `|x| ≪ √d log d`, with phase rate `Re w*(x) ≈ dℓ/(x² + ℓ²)`, hence
+  `N_d ≲ d^{1/2+ε}`, sharp for `H_{−τ}`. Past that height the roots are the zeros of `Ξ` up to `√d/log d`, so
+  real-rootedness of `R_d(Ξ)` should be RH up to about that height.
+- **The half transform.** `K(w) = ∫₀^∞ Φ e^{wu}` has no zero in `Re w ≤ 0` (corpus), and growth forces infinitely
+  many zeros in `Re w > 0`; so `Ξ = K(iu) + K(−iu)` is not a Hermite–Biehler splitting, and `E_d` is unstable.
 - Other completed L-functions: R30 gives the forward direction for any genus-one entire function;
   the converse (Hurwitz, R25) is general too — instantiate for completed Dirichlet L-functions once
   their order-one bounds are in the corpus.
@@ -139,4 +149,4 @@ sign, a square-root count or a collision exclusion.
 
 ## Log
 - 2026-11-04 — created
-- 2026-11-05 — D1–D5, R1–R40 formalized
+- 2026-11-05 — D1–D5, R1–R41 formalized

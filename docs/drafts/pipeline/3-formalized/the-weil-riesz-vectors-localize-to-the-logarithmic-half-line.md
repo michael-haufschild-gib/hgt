@@ -35,5 +35,5 @@ Namespace `GaloisForLFunctions.CanonicalSystemOfTheWindowTower.WeilHilbertBefore
 
 Transitive axioms are exactly `[propext, Classical.choice, Quot.sound]`.
 Production plain audit passed. Umbrella imports the module.
-Gluing the two continuous Green representatives into one actual physical
-representative remains separate; aperture variation is not asserted.
+The [continuous gluing and actual traces](normalized-boundary-traces-of-weil-riesz-vectors.md)
+are also formalized. Aperture variation is not asserted.

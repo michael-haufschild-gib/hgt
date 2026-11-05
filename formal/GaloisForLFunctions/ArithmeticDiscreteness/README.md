@@ -48,6 +48,10 @@ forcing collide-or-repel. Card: `docs/drafts/pipeline/1-in-progress/ado-arithmet
 | An off-line zero `½ + δ + iγ` and its partner flatten `ζ` at the centre: `|ζ(½+iγ)| ≤ 480e²(|γ|+2)(|γ|+5)δ²` for `|δ| ≤ 1/16`; a lower bound for `|ζ(½+iγ)|` is a depth gap | `TheDepthOfAnFEPairIsReadOnTheLine` | `norm_le_of_two_symmetric_zeros`, `norm_zeta_center_le_of_offline_zero`, `depth_ge_of_norm_zeta_center_ge` |
 | The pair makes `|ζ(½+it)| ≤ 1280e²(|γ|+2)(|γ|+5)η²` on all of `|t−γ| ≤ η` (`0 < |β−½| ≤ η ≤ 1/16`); a sublevel set of measure `< 2η` there is a depth gap; and `|β−½| ≥ min(1/16, |ζ'(ρ)|/(320e²(|γ|+2)(|γ|+5)))` | `TheDepthOfAnFEPairIsReadOnTheLine` | `norm_zeta_line_le_of_offline_zero`, `depth_gt_of_small_value_measure`, `depth_ge_of_norm_deriv` |
 
+| Two zeros within `1/16` make `ζ` and `ζ'` jointly small at their midpoint (`|ζ(c)| ≤ K‖h‖²`, `|ζ'(c)| ≤ K‖h‖`): B54 is the emptiness of a joint small-value set of `(ζ, ζ')` | `NearCoincidencesAreJointSmallValues` | `norm_deriv_le_of_two_symmetric_zeros`, `joint_small_values_of_close_zeros` |
+
+| Converse: if `|F(c)| + |F'(c)|r + (64M/R³)r³ < ½|F''(c)|r²` then `F` has zeros of total multiplicity exactly two in `‖z−c‖ < r` (third-order Taylor + Rouché) | `JointSmallValuesAreNearCoincidences` | `norm_taylor_two_remainder_le`, `two_zeros_of_joint_small_values` |
+
 ## Reading
 
 Integrality quantizes impurity and amplifies approximate purity; it never produces purity, and it

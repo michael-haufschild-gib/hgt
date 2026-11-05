@@ -45,8 +45,12 @@ The same source solves the literal positive logarithmic Dirichlet equation
 with bounded forcing retaining every prime and polar term; see
 [the exact reference equation](../3-formalized/the-weil-riesz-equation-is-a-logarithmic-dirichlet-equation.md).
 
-**Remaining:** [normalized endpoint traces](normalized-boundary-traces-of-weil-riesz-vectors.md),
-their aperture variation, original-length canonical normalization, and prime-entry law.
+The actual source has a unique continuous compactly supported representative,
+zero at both endpoints, with both exact normalized renewal readouts; see
+[normalized endpoint traces](../3-formalized/normalized-boundary-traces-of-weil-riesz-vectors.md).
+
+**Remaining:** [boundary flux and aperture variation](boundary-flux-generates-the-weil-canonical-system.md),
+original-length canonical normalization, and prime-entry law.
 The reference inverse, its literal kernel, and exact renewal normalization are formalized in
 [the half-line logarithmic Green kernel](../3-formalized/the-half-line-logarithmic-green-kernel.md).
 The ordinary integrable-accelerant theorem does not apply to the unbounded literal Weil form

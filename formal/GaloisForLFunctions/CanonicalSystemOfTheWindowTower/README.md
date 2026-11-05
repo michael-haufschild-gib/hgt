@@ -172,5 +172,8 @@ Each actual Weil Riesz vector now localizes at both aperture endpoints to the
 unique half-line Green solution. The full localized forcing is
 `P₊(χ_a τ_-a g + Kχ_a τ_-a u)` on the left, and the same expression for the
 reflected source and forcing on the right. It is L² and essentially bounded;
-each Green representative has its exact normalized renewal readout. Joining
-the two representatives into one continuous actual source remains separate.
+each Green representative has its exact normalized renewal readout.
+Their overlapping cutoffs give one unique continuous representative of the
+actual physical source, compactly supported and zero at both endpoints.
+Its two normalized limits are the absolutely convergent renewal integrals
+of the full localized forcings.

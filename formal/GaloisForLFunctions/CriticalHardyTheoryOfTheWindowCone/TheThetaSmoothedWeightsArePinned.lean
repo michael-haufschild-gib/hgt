@@ -250,20 +250,20 @@ theorem zero_bound_truncTest {Λc : ℝ} (hΛ0 : 0 ≤ Λc)
     rw [← hg, hzero ρ', sub_zero, hg, Complex.conj_re, hre] at h
     exact h
 
-/-- The height-weighted size of the transform of a fixed real test, at every point of a zero. -/
-theorem exists_zero_bound_real_test {Y : ℝ → ℝ} (hY : ContDiff ℝ 2 Y) (hYc : HasCompactSupport Y) :
-    ∃ E : ℝ, 0 ≤ E ∧ ∀ ρ : zetaZeroConfig.carrier,
-      (1 + |(ρ : ℂ).im|) * ‖paperFT (fun u => (Y u : ℂ)) (gammaOf ρ)‖ ≤ E ∧
-        (1 + |(ρ : ℂ).im|) * ‖paperFT (fun u => (Y u : ℂ)) ((starRingEnd ℂ) (gammaOf ρ))‖ ≤ E := by
+/-- The height-weighted size of the transform of a real test, at every point of a zero, is bounded by
+its weighted `L¹` norm and that of its derivative. -/
+theorem zero_bound_real_test {Y : ℝ → ℝ} (hY : ContDiff ℝ 2 Y) (hYc : HasCompactSupport Y)
+    (ρ : zetaZeroConfig.carrier) :
+    (1 + |(ρ : ℂ).im|) * ‖paperFT (fun u => (Y u : ℂ)) (gammaOf ρ)‖ ≤
+        (∫ u : ℝ, ‖(Y u : ℂ)‖ * Real.exp (1 / 2 * |u|)) +
+          ∫ u : ℝ, ‖((deriv Y u : ℝ) : ℂ)‖ * Real.exp (1 / 2 * |u|) ∧
+      (1 + |(ρ : ℂ).im|) * ‖paperFT (fun u => (Y u : ℂ)) ((starRingEnd ℂ) (gammaOf ρ))‖ ≤
+        (∫ u : ℝ, ‖(Y u : ℂ)‖ * Real.exp (1 / 2 * |u|)) +
+          ∫ u : ℝ, ‖((deriv Y u : ℝ) : ℂ)‖ * Real.exp (1 / 2 * |u|) := by
   have hYc' : Continuous (deriv Y) := hY.continuous_deriv (by norm_num)
   have hYs' : HasCompactSupport (deriv Y) := hYc.deriv
   have hd : ∀ x, HasDerivAt (fun u => (Y u : ℂ)) ((deriv Y x : ℝ) : ℂ) x := fun x =>
     ((hY.differentiable (by norm_num) x).hasDerivAt).ofReal_comp
-  set E : ℝ := (∫ u : ℝ, ‖(Y u : ℂ)‖ * Real.exp (1 / 2 * |u|)) +
-    ∫ u : ℝ, ‖((deriv Y u : ℝ) : ℂ)‖ * Real.exp (1 / 2 * |u|) with hE
-  have hE0 : 0 ≤ E := add_nonneg (integral_nonneg fun _ => by positivity)
-    (integral_nonneg fun _ => by positivity)
-  refine ⟨E, hE0, fun ρ => ?_⟩
   have hmem : IsNontrivialZero (ρ : ℂ) := ρ.2
   have hstrip : 0 < (ρ : ℂ).re ∧ (ρ : ℂ).re < 1 := ⟨hmem.2.1, hmem.2.2⟩
   have hIm : |(gammaOf (ρ : ℂ)).im| ≤ 1 / 2 := (WeilEF.abs_gammaOf_im_lt hstrip).le
@@ -277,6 +277,14 @@ theorem exists_zero_bound_real_test {Y : ℝ → ℝ} (hY : ContDiff ℝ 2 Y) (h
       rw [Complex.conj_im, abs_neg]; exact hIm
     have h := key hIm'
     rwa [Complex.conj_re, hre] at h
+
+/-- The height-weighted size of the transform of a fixed real test, at every point of a zero. -/
+theorem exists_zero_bound_real_test {Y : ℝ → ℝ} (hY : ContDiff ℝ 2 Y) (hYc : HasCompactSupport Y) :
+    ∃ E : ℝ, 0 ≤ E ∧ ∀ ρ : zetaZeroConfig.carrier,
+      (1 + |(ρ : ℂ).im|) * ‖paperFT (fun u => (Y u : ℂ)) (gammaOf ρ)‖ ≤ E ∧
+        (1 + |(ρ : ℂ).im|) * ‖paperFT (fun u => (Y u : ℂ)) ((starRingEnd ℂ) (gammaOf ρ))‖ ≤ E :=
+  ⟨_, add_nonneg (integral_nonneg fun _ => by positivity) (integral_nonneg fun _ => by positivity),
+    zero_bound_real_test hY hYc⟩
 
 /-- The polarization of the zero side of `Φ_L` against a fixed test is bounded by its tail. -/
 theorem abs_polar_W_le {Λc : ℝ} (hΛ0 : 0 ≤ Λc)
@@ -332,31 +340,34 @@ theorem polarForm_ofReal (lam : ℕ → ℝ) {X Y : ℝ → ℝ} (hX : ContDiff 
 
 /-- **A fixed test has bounded energy on the cone.** Its correlations see only the integers `n ≤ e^{2R}`,
 which lie in the box. -/
-theorem exists_coneForm_le {Y : ℝ → ℝ} (hY : ContDiff ℝ 2 Y) (hYc : HasCompactSupport Y) {R : ℝ}
-    (hR : 0 ≤ R) (hYs : ∀ t, R < |t| → Y t = 0) :
-    ∃ C : ℝ, 0 ≤ C ∧ ∀ (c : ℝ) (lam : ℕ → ℝ), R + 1 / 12 ≤ c → WeilPositiveFullUpTo lam c →
-      coneForm lam (fun u => (Y u : ℂ)) ≤ C := by
-  obtain ⟨B, hB⟩ := hYc.exists_bound_of_continuous hY.continuous
-  have hB0 : 0 ≤ B := (norm_nonneg _).trans (hB 0)
+/-- The form of a real test on a window is bounded by its zero side, the size of the box, and the number
+of atoms its autocorrelation sees. -/
+theorem coneForm_le_of_bounds {Y : ℝ → ℝ} (hY : ContDiff ℝ 2 Y) (hYc : HasCompactSupport Y) {R B I : ℝ}
+    (hR : 0 ≤ R) (hYs : ∀ t, R < |t| → Y t = 0) (hB : ∀ t, |Y t| ≤ B) (hI : ∫ t, |Y t| ≤ I)
+    {c : ℝ} {lam : ℕ → ℝ} (hc : R + 1 / 12 ≤ c) (hlam : WeilPositiveFullUpTo lam c) :
+    coneForm lam (fun u => (Y u : ℂ)) ≤
+      |(zetaZeroConfig.W (fun u => (Y u : ℂ)) (fun u => (Y u : ℂ))).re| +
+        (Real.exp (R + R + 1) + 1) * ((4 * R + boxConst) * (2 * (B * I))) := by
+  have hB0 : 0 ≤ B := (abs_nonneg _).trans (hB 0)
   have hYi : Integrable Y := hY.continuous.integrable_of_hasCompactSupport hYc
-  obtain ⟨I, hI⟩ : ∃ I, I = ∫ t, |Y t| := ⟨_, rfl⟩
-  have hI0 : 0 ≤ I := by
-    rw [hI]
-    exact integral_nonneg fun _ => abs_nonneg _
+  have hI0 : 0 ≤ I := (integral_nonneg fun _ => abs_nonneg _).trans hI
   have hcorr : ∀ y, |crossCorr Y Y y| ≤ B * I := fun y => by
     unfold crossCorr
     refine (abs_integral_le_integral_abs).trans ?_
-    rw [hI, ← integral_const_mul]
+    refine le_trans ?_ (mul_le_mul_of_nonneg_left hI hB0)
+    rw [← integral_const_mul]
     refine integral_mono_of_nonneg (Eventually.of_forall fun _ => abs_nonneg _)
       (hYi.abs.const_mul B) (Eventually.of_forall fun t => ?_)
     simp only
     rw [abs_mul, mul_comm]
-    have h1 : |Y (t - y)| ≤ B := by simpa using hB (t - y)
-    exact mul_le_mul_of_nonneg_right h1 (abs_nonneg _)
-  obtain ⟨N, hN⟩ := exists_nat_ge (Real.exp (R + R + 1))
+    exact mul_le_mul_of_nonneg_right (hB (t - y)) (abs_nonneg _)
+  obtain ⟨N, hN⟩ : ∃ N : ℕ, N = ⌈Real.exp (R + R + 1)⌉₊ := ⟨_, rfl⟩
+  have hNge : Real.exp (R + R + 1) ≤ N := by rw [hN]; exact Nat.le_ceil _
+  have hNle : (N : ℝ) ≤ Real.exp (R + R + 1) + 1 := by
+    rw [hN]; exact (Nat.ceil_lt_add_one (Real.exp_pos _).le).le
   have hlog : ∀ n : ℕ, N ≤ n → R + R < |Real.log n| ∧ R + R < |-Real.log n| := by
     intro n hn
-    have hnr : Real.exp (R + R + 1) ≤ n := hN.trans (by exact_mod_cast hn)
+    have hnr : Real.exp (R + R + 1) ≤ n := hNge.trans (by exact_mod_cast hn)
     have hn0 : (0 : ℝ) < n := (Real.exp_pos _).trans_le hnr
     have h1 : R + R + 1 ≤ Real.log n := (Real.le_log_iff_exp_le hn0).mpr hnr
     have h2 : R + R < |Real.log n| := by
@@ -367,8 +378,7 @@ theorem exists_coneForm_le {Y : ℝ → ℝ} (hY : ContDiff ℝ 2 Y) (hYc : HasC
   have hC := boxConst_nonneg
   obtain ⟨V, hV⟩ : ∃ V, V = 4 * R + boxConst := ⟨_, rfl⟩
   have hV0 : 0 ≤ V := by rw [hV]; linarith
-  refine ⟨|(zetaZeroConfig.W (fun u => (Y u : ℂ)) (fun u => (Y u : ℂ))).re| +
-    (N : ℝ) * (V * (2 * (B * I))), by positivity, fun c lam hc hlam => ?_⟩
+  rw [← hV]
   rw [coneForm_ofReal lam hY hYc, atomPairing_eq_sum _ (N := N) fun n hn =>
     ⟨crossCorr_eq_zero hYs hYs (hlog n hn).1, crossCorr_eq_zero hYs hYs (hlog n hn).2⟩]
   have hterm : ∀ n ∈ Finset.range N,
@@ -402,8 +412,21 @@ theorem exists_coneForm_le {Y : ℝ → ℝ} (hY : ContDiff ℝ 2 Y) (hYc : HasC
       simpa using hnon
   have hsum := Finset.sum_le_card_nsmul _ _ _ hterm
   rw [Finset.sum_neg_distrib, Finset.card_range, nsmul_eq_mul] at hsum
-  have := le_abs_self (zetaZeroConfig.W (fun u => (Y u : ℂ)) (fun u => (Y u : ℂ))).re
+  have h6 := le_abs_self (zetaZeroConfig.W (fun u => (Y u : ℂ)) (fun u => (Y u : ℂ))).re
+  have h7 : (N : ℝ) * (V * (2 * (B * I))) ≤ (Real.exp (R + R + 1) + 1) * (V * (2 * (B * I))) :=
+    mul_le_mul_of_nonneg_right hNle (by positivity)
   linarith
+
+theorem exists_coneForm_le {Y : ℝ → ℝ} (hY : ContDiff ℝ 2 Y) (hYc : HasCompactSupport Y) {R : ℝ}
+    (hR : 0 ≤ R) (hYs : ∀ t, R < |t| → Y t = 0) :
+    ∃ C : ℝ, 0 ≤ C ∧ ∀ (c : ℝ) (lam : ℕ → ℝ), R + 1 / 12 ≤ c → WeilPositiveFullUpTo lam c →
+      coneForm lam (fun u => (Y u : ℂ)) ≤ C := by
+  obtain ⟨B, hB⟩ := hYc.exists_bound_of_continuous hY.continuous
+  have hB0 : 0 ≤ B := (norm_nonneg _).trans (hB 0)
+  have hI0 : 0 ≤ ∫ t, |Y t| := integral_nonneg fun _ => abs_nonneg _
+  have hC := boxConst_nonneg
+  exact ⟨_, by positivity, fun c lam hc hlam =>
+    coneForm_le_of_bounds hY hYc hR hYs (fun t => hB t) le_rfl hc hlam⟩
 
 /-! ### The pinning -/
 
@@ -420,20 +443,22 @@ theorem doubleExpTail_le_sqrt_ceiling {c : ℝ} (hc : 0 ≤ c) :
     exact le_mul_of_one_le_left (doubleExpTail_pos _).le h2
   nlinarith
 
-/-- **The theta-smoothed weights are pinned.** For every fixed test `Y` there is `C` such that every
-`λ ∈ 𝒜(c)` satisfies
-`|Σ_n (λ(n) − Λ(n)) n^{−1/2} ((Φ_L ⋆ Y)(log n) + (Φ_L ⋆ Y)(−log n))| ≤ C exp(½(3c − (π/16) e^{2(c−2)}))`,
-with `L = c − 1/12`. -/
-theorem exists_abs_atomPairing_crossCorr_le {Y : ℝ → ℝ} (hY : ContDiff ℝ 2 Y)
-    (hYc : HasCompactSupport Y) {R : ℝ} (hR : 0 ≤ R) (hYs : ∀ t, R < |t| → Y t = 0) :
-    ∃ C : ℝ, 0 ≤ C ∧ ∀ (c : ℝ) (lam : ℕ → ℝ), 1 ≤ c → R + 1 / 12 ≤ c →
-      WeilPositiveFullUpTo lam c →
+/-- **Pinning with explicit dependence on the second test.** Every real test `Y` on the window, with
+form at most `CY` and zero size at most `E`, satisfies
+`|Σ_n (λ(n) − Λ(n)) n^{−1/2} ((Φ_L ⋆ Y)(log n) + (Φ_L ⋆ Y)(−log n))| ≤ C₀ (E + √CY) exp(½(3c − (π/16) e^{2(c−2)}))`,
+with `L = c − 1/12`, for every `λ ∈ 𝒜(c)`, and `C₀` depends on nothing. -/
+theorem exists_uniform_pinning :
+    ∃ C₀ : ℝ, 0 ≤ C₀ ∧ ∀ (c : ℝ) (lam : ℕ → ℝ) (Y : ℝ → ℝ) (CY E : ℝ), 1 ≤ c →
+      WeilPositiveFullUpTo lam c → ContDiff ℝ 2 Y → HasCompactSupport Y →
+      (∀ t, c < |t| → Y t = 0) → 0 ≤ CY → coneForm lam (fun u => (Y u : ℂ)) ≤ CY → 0 ≤ E →
+      (∀ ρ : zetaZeroConfig.carrier,
+        (1 + |(ρ : ℂ).im|) * ‖paperFT (fun u => (Y u : ℂ)) (gammaOf ρ)‖ ≤ E ∧
+          (1 + |(ρ : ℂ).im|) * ‖paperFT (fun u => (Y u : ℂ)) ((starRingEnd ℂ) (gammaOf ρ))‖ ≤ E) →
       |atomPairing (fun n => lam n - (ArithmeticFunction.vonMangoldt n : ℝ))
-        (crossCorr (truncTest (𝔽 0) (c - 1 / 12)) Y)| ≤ C * Real.sqrt (marginCeiling c) := by
+        (crossCorr (truncTest (𝔽 0) (c - 1 / 12)) Y)| ≤
+        C₀ * (E + Real.sqrt CY) * Real.sqrt (marginCeiling c) := by
   obtain ⟨w, hw, K, hK, hmain⟩ := exists_nullWeights_tsum_nullEnergy_le
   obtain ⟨Λc, hΛ0, hΛ⟩ := GaloisForLFunctions.HTGeometry.exists_bound_deriv_smoothTransition
-  obtain ⟨CY, hCY0, hCY⟩ := exists_coneForm_le hY hYc hR hYs
-  obtain ⟨E, hE0, hE⟩ := exists_zero_bound_real_test hY hYc
   have hw0 := hw.pos_zero
   have hI := absMass_nonneg
   have hD := decayConst_nonneg
@@ -441,11 +466,11 @@ theorem exists_abs_atomPairing_crossCorr_le {Y : ℝ → ℝ} (hY : ContDiff ℝ
   have hg0 := gammaScale_nonneg 0
   obtain ⟨T, hT⟩ : ∃ T, T = (3 + 4 * Λc) * (decayConst * gammaScale 0) * absMass := ⟨_, rfl⟩
   have hT0 : 0 ≤ T := by rw [hT]; positivity
-  obtain ⟨Q, hQ⟩ : ∃ Q, Q = Real.sqrt (4 * CY * (K / w 0)) := ⟨_, rfl⟩
+  obtain ⟨Q, hQ⟩ : ∃ Q, Q = Real.sqrt (4 * (K / w 0)) := ⟨_, rfl⟩
   have hQ0 : 0 ≤ Q := by rw [hQ]; exact Real.sqrt_nonneg _
-  obtain ⟨P, hP⟩ : ∃ P, P = (5 / 2) * zetaInvSqSum * (T * E) := ⟨_, rfl⟩
+  obtain ⟨P, hP⟩ : ∃ P, P = (5 / 2) * zetaInvSqSum * T := ⟨_, rfl⟩
   have hP0 : 0 ≤ P := by rw [hP]; positivity
-  refine ⟨(P + Q) / 2, by positivity, fun c lam hc hRc hlam => ?_⟩
+  refine ⟨(P + Q) / 2, by positivity, fun c lam Y CY E hc hlam hY hYc hYs' hCY0 hCY hE0 hE => ?_⟩
   obtain ⟨L, hL⟩ : ∃ L, L = c - 1 / 12 := ⟨_, rfl⟩
   rw [← hL]
   have hLc : L ≤ c := by rw [hL]; linarith
@@ -455,8 +480,6 @@ theorem exists_abs_atomPairing_crossCorr_le {Y : ℝ → ℝ} (hY : ContDiff ℝ
   have hc0 : 0 ≤ c := by linarith
   have hXs : ∀ t, c < |t| → truncTest (𝔽 0) L t = 0 := fun t ht =>
     truncTest_eq_zero (hLc.trans ht.le)
-  have hRc' : R ≤ c := by linarith
-  have hYs' : ∀ t, c < |t| → Y t = 0 := fun t ht => hYs t (lt_of_le_of_lt hRc' ht)
   have hf : ContDiff ℝ 2 (fun u => (truncTest (𝔽 0) L u : ℂ)) := Complex.ofRealCLM.contDiff.comp hX
   have hg : ContDiff ℝ 2 (fun u => (Y u : ℂ)) := Complex.ofRealCLM.contDiff.comp hY
   have hfs : tsupport (fun u => (truncTest (𝔽 0) L u : ℂ)) ⊆ Icc (-c) c :=
@@ -486,22 +509,21 @@ theorem exists_abs_atomPairing_crossCorr_le {Y : ℝ → ℝ} (hY : ContDiff ℝ
       _ = _ := by ring
   -- Cauchy–Schwarz
   have hCS := sq_polar_coneForm_le hlam hf hfs hg hgs
-  have hYle := hCY c lam hRc hlam
   have hM := (marginCeiling_pos c).le
   have hXnon : 0 ≤ coneForm lam (fun u => (truncTest (𝔽 0) L u : ℂ)) := hEj 0
   have hprod : polarForm lam (fun u => (truncTest (𝔽 0) L u : ℂ)) (fun u => (Y u : ℂ)) ^ 2 ≤
-      4 * CY * (K / w 0) * marginCeiling c := by
+      CY * (4 * (K / w 0)) * marginCeiling c := by
     refine hCS.trans ?_
     have hnn : 0 ≤ K / w 0 * marginCeiling c := by positivity
     calc 4 * coneForm lam (fun u => (Y u : ℂ)) * coneForm lam (fun u => (truncTest (𝔽 0) L u : ℂ))
         ≤ 4 * CY * (K / w 0 * marginCeiling c) := by
-          have := mul_le_mul hYle hnull hXnon hCY0
+          have := mul_le_mul hCY hnull hXnon hCY0
           nlinarith
       _ = _ := by ring
   have hpolar : |polarForm lam (fun u => (truncTest (𝔽 0) L u : ℂ)) (fun u => (Y u : ℂ))| ≤
-      Q * Real.sqrt (marginCeiling c) := by
+      Real.sqrt CY * Q * Real.sqrt (marginCeiling c) := by
     have h1 := Real.abs_le_sqrt hprod
-    rwa [Real.sqrt_mul (by positivity), ← hQ] at h1
+    rwa [Real.sqrt_mul (by positivity), Real.sqrt_mul hCY0, ← hQ] at h1
   -- the zero side
   obtain ⟨hz₁, hz₂⟩ := abs_polar_W_le hΛ0 hΛ hE0 hE 0 L
   have htail := tailBound_xiShiftedGammaTest_le hΛ0 0 L
@@ -513,7 +535,7 @@ theorem exists_abs_atomPairing_crossCorr_le {Y : ℝ → ℝ} (hY : ContDiff ℝ
     exact mul_le_mul_of_nonneg_left hτ (by positivity)
   have hzero : ‖zetaZeroConfig.W (fun u => (truncTest (𝔽 0) L u : ℂ)) (fun u => (Y u : ℂ))‖ +
       ‖zetaZeroConfig.W (fun u => (Y u : ℂ)) (fun u => (truncTest (𝔽 0) L u : ℂ))‖ ≤
-      P * Real.sqrt (marginCeiling c) := by
+      P * E * Real.sqrt (marginCeiling c) := by
     have h3 : (5 / 4) * zetaInvSqSum * (tailBound (𝔽 0) Λc L * E) ≤
         (5 / 4) * zetaInvSqSum * ((T * Real.sqrt (marginCeiling c)) * E) :=
       mul_le_mul_of_nonneg_left (mul_le_mul_of_nonneg_right htail2 hE0) (by positivity)
@@ -529,17 +551,43 @@ theorem exists_abs_atomPairing_crossCorr_le {Y : ℝ → ℝ} (hY : ContDiff ℝ
   rw [← hA] at hread ⊢
   have hzre : |(zetaZeroConfig.W (fun u => (truncTest (𝔽 0) L u : ℂ)) (fun u => (Y u : ℂ)) +
       zetaZeroConfig.W (fun u => (Y u : ℂ)) (fun u => (truncTest (𝔽 0) L u : ℂ))).re| ≤
-      P * Real.sqrt (marginCeiling c) :=
+      P * E * Real.sqrt (marginCeiling c) :=
     (Complex.abs_re_le_norm _).trans ((norm_add_le _ _).trans hzero)
   have hA2 : 2 * A = (zetaZeroConfig.W (fun u => (truncTest (𝔽 0) L u : ℂ)) (fun u => (Y u : ℂ)) +
       zetaZeroConfig.W (fun u => (Y u : ℂ)) (fun u => (truncTest (𝔽 0) L u : ℂ))).re -
       polarForm lam (fun u => (truncTest (𝔽 0) L u : ℂ)) (fun u => (Y u : ℂ)) := by
     rw [hread]
     ring
-  have hfin : |2 * A| ≤ (P + Q) * Real.sqrt (marginCeiling c) := by
+  have hfin : |2 * A| ≤ (P * E + Real.sqrt CY * Q) * Real.sqrt (marginCeiling c) := by
     rw [hA2, add_mul]
     exact (abs_sub _ _).trans (add_le_add hzre hpolar)
   rw [abs_mul, abs_of_pos (by norm_num : (0 : ℝ) < 2)] at hfin
+  have hs0 := Real.sqrt_nonneg CY
+  have hsM := Real.sqrt_nonneg (marginCeiling c)
+  have hcomp : (P * E + Real.sqrt CY * Q) * Real.sqrt (marginCeiling c) ≤
+      (P + Q) * (E + Real.sqrt CY) * Real.sqrt (marginCeiling c) := by
+    refine mul_le_mul_of_nonneg_right ?_ hsM
+    nlinarith [mul_nonneg hP0 hs0, mul_nonneg hQ0 hE0]
+  have e2 : (P + Q) / 2 * (E + Real.sqrt CY) * Real.sqrt (marginCeiling c) =
+      (P + Q) * (E + Real.sqrt CY) * Real.sqrt (marginCeiling c) / 2 := by ring
+  rw [e2]
   linarith
+
+/-- **The theta-smoothed weights are pinned.** For every fixed test `Y` there is `C` such that every
+`λ ∈ 𝒜(c)` satisfies
+`|Σ_n (λ(n) − Λ(n)) n^{−1/2} ((Φ_L ⋆ Y)(log n) + (Φ_L ⋆ Y)(−log n))| ≤ C exp(½(3c − (π/16) e^{2(c−2)}))`,
+with `L = c − 1/12`. -/
+theorem exists_abs_atomPairing_crossCorr_le {Y : ℝ → ℝ} (hY : ContDiff ℝ 2 Y)
+    (hYc : HasCompactSupport Y) {R : ℝ} (hR : 0 ≤ R) (hYs : ∀ t, R < |t| → Y t = 0) :
+    ∃ C : ℝ, 0 ≤ C ∧ ∀ (c : ℝ) (lam : ℕ → ℝ), 1 ≤ c → R + 1 / 12 ≤ c →
+      WeilPositiveFullUpTo lam c →
+      |atomPairing (fun n => lam n - (ArithmeticFunction.vonMangoldt n : ℝ))
+        (crossCorr (truncTest (𝔽 0) (c - 1 / 12)) Y)| ≤ C * Real.sqrt (marginCeiling c) := by
+  obtain ⟨C₀, hC₀, hpin⟩ := exists_uniform_pinning
+  obtain ⟨CY, hCY0, hCY⟩ := exists_coneForm_le hY hYc hR hYs
+  obtain ⟨E, hE0, hE⟩ := exists_zero_bound_real_test hY hYc
+  refine ⟨C₀ * (E + Real.sqrt CY), by positivity, fun c lam hc hRc hlam => ?_⟩
+  exact hpin c lam Y CY E hc hlam hY hYc
+    (fun t ht => hYs t (lt_of_le_of_lt (by linarith) ht)) hCY0 (hCY c lam hRc hlam) hE0 hE
 
 end GaloisForLFunctions.CriticalHardyTheoryOfTheWindowCone

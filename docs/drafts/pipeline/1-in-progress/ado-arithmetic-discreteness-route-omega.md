@@ -37,6 +37,8 @@ Folder `formal/GaloisForLFunctions/ArithmeticDiscreteness/` (README there), umbr
 | Ω12′ | The same for real pure local data `a = 2cos θ` | FALSE: `real_pure_carrier_not_polynomial_repulsion` (Liouville angle, zeros `e^{−|k|}`-close at height `≍ |k|`) |
 | Ω17 | Polynomial repulsion of real pure carriers holds for almost every Satake angle | Lean: `ae_inhomogeneous_gap` (Borel–Cantelli), `ae_realPureCarrier_repulsion` (scale `C/T²`); with Ω12′ the failure set is a nonempty null set, so integrality is a certificate against Liouville-type local data, not a generic necessity |
 | Ω18 | Two-prime near-coincidences need a singular lift or non-integral coefficients | Lean: the affine carrier `−(log 3 − log 2) + log 3·2^{−s} − log 2·3^{−s}` (smooth tangency at `(1,1)`) has them (`logTrinomial_collision_or_close_pair`); the integer trinomial `1 + 2^{−s} + 3^{−s}` repels uniformly; for integer `G` a torsion tangency is singular since `log 3/log 2 ∉ ℚ` (`lam23_ne_zero`) |
+| Ω19 | Every near-coincidence of `ζ` is a joint small value of `(ζ, ζ')` at its midpoint | Lean: `joint_small_values_of_close_zeros` (`|ζ(c)| ≤ K‖h‖²`, `|ζ'(c)| ≤ K‖h‖`); B54 ⇐ emptiness of the joint small-value set — the `ℤ` analogue of the discriminant bound for `(P, P')` |
+| Ω20 | Converse of Ω19: joint small values of `(F, F')` with `F''(c)` bounded below force exactly two zeros (with multiplicity) within `r` | Lean: `two_zeros_of_joint_small_values` (third-order Taylor `norm_taylor_two_remainder_le` + corpus Rouché); with Ω19, B54 ⇔ emptiness of the nondegenerate joint small-value set of `(ζ, ζ')` up to constants |
 | Ω13 | Integral pure Euler carriers of every degree collide or repel at polynomial scale | Lean: `exists_pow_eq_one_of_pure` (Kronecker), `pureCarrier_collide_or_repel` |
 | Ω14 | Near-coincidences at every scale need an Euler product | FALSE: the cusp carrier `(1−2^{−s})² − (1−3^{−s})³` has them (`cuspCarrier_collision_or_close_pair`) |
 | Ω15 | The depth of an FE pair is read on the line: `|ζ(½+iγ)| ≤ 480e²(|γ|+2)(|γ|+5)δ²`; a lower bound for `|ζ(½+iγ)|` at the ordinate gives a depth gap | Lean: `norm_zeta_center_le_of_offline_zero`, `depth_ge_of_norm_zeta_center_ge` |
@@ -88,5 +90,5 @@ Folder `formal/GaloisForLFunctions/ArithmeticDiscreteness/` (README there), umbr
   `e^{−c log² T}` (Ω1′).
 
 ## Log
-- 2026-11-05 — created; Ω1–Ω9″, Ω12, Ω13, Ω15–Ω18 formalized; Ω3, Ω5, Ω6′, Ω12′, Ω14 falsified with
+- 2026-11-05 — created; Ω1–Ω9″, Ω12, Ω13, Ω15–Ω20 formalized; Ω3, Ω5, Ω6′, Ω12′, Ω14 falsified with
   survivors; Ω9′, Ω10, Ω11 open.

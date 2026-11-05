@@ -56,6 +56,6 @@ Namespace `GaloisForLFunctions.CanonicalSystemOfTheWindowTower`.
 Production plain audits passed. Transitive axioms are exactly
 `[propext, Classical.choice, Quot.sound]`; the umbrella imports these modules.
 
-Application to [actual Weil Riesz boundary traces](../1-in-progress/normalized-boundary-traces-of-weil-riesz-vectors.md)
-still requires global forcing assembly and endpoint continuity. No boundary
-trace or aperture-variation conclusion is asserted here.
+The application to [actual Weil Riesz boundary traces](normalized-boundary-traces-of-weil-riesz-vectors.md)
+is formalized, including full forcing assembly and continuous representatives.
+Aperture variation remains separate.

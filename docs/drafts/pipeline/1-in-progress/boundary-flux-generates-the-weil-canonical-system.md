@@ -14,9 +14,9 @@ Let `K_a(w,z)` be the actual reproducing kernel and
 `i(z-conj(w))Kₐ(w,z)=T₊(z)conj(T₊(w))-T₋(z)conj(T₋(w))`.
 
 The kernel, positivity before contact, entire Fourier coordinates and bounded
-actual Riesz sources are formalized. The [normalized trace construction](normalized-boundary-traces-of-weil-riesz-vectors.md)
-has formalized logarithmic-domain, Green-continuity and actual-localization
-inputs; its final gluing remains under formalization.
+actual Riesz sources are formalized. The [normalized trace construction](../3-formalized/normalized-boundary-traces-of-weil-riesz-vectors.md)
+is formalized for the unique continuous representative of every actual
+precontact Riesz source, with both absolutely convergent renewal readouts.
 
 [Sharp restriction](sharp-restriction-preserves-the-complete-complex-weil-domain.md)
 should admit an exact interval/collar decomposition. Required analytic inputs

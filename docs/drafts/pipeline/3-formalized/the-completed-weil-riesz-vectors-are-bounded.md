@@ -64,6 +64,6 @@ axiom checks also pass with exactly the standard three axioms above.
 
 ## Remaining boundary problem
 
-This theorem supplies bounded actual Riesz sources. Normalized boundary traces,
-aperture differentiation, and the Krein reflection function remain unproved; see
-[normalized boundary traces](../1-in-progress/normalized-boundary-traces-of-weil-riesz-vectors.md).
+The [normalized boundary traces](normalized-boundary-traces-of-weil-riesz-vectors.md)
+of these actual sources are formalized. Aperture differentiation and the
+Krein reflection function remain open.

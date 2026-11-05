@@ -72,5 +72,8 @@ Expose the absolute Fourier tail from `exists_local_slow_pair` and
 `tsum_far_multDiff_le`; prove its quadratic comparison, the normalized
 variation inequality, quartic-order tail estimate, and the ζ annulus reduction.
 Then assemble the negative test and positivity receiver with explicit heights.
-The new proofs remain unverified. An isolated-pair theorem alone does not
-discharge the full target.
+Seven foundational tail and variation lemmas pass scratch kernel checks.
+Their sources are `NegativeTests/FourierTail`, `ClusterRate` and `CubicTail`
+under `ZeroConfigurationGeometry`; final source checks remain. The convolution,
+annulus and negative-test assembly is unverified. An isolated-pair theorem alone
+does not discharge the full target.

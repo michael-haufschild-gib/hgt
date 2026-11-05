@@ -1,8 +1,7 @@
 import GaloisForLFunctions.RHTower.SymmetricShiftFunctionalEquation
 import GaloisForLFunctions.RHTower.ChebyshevErrorExponentLaw
-import GaloisForLFunctions.RHTower.XiZeroCopyPremiseDischarges
 import GaloisForLFunctions.RHTower.WeilLagFunctionCriterion
-import GaloisForLFunctions.RHTower.HardyTheorem
+import GaloisForLFunctions.RHTower.XiWallLogDerivativeCones
 import GaloisForLFunctions.RHTower.XiExplicitFormulaLogDeriv
 import GaloisForLFunctions.RHTower.XiEntireReal
 
@@ -41,7 +40,8 @@ theorem re_le_zeroReSup_of_xi_eq_zero {ρ : ℂ} (hρ : xi ρ = 0) : ρ.re ≤ z
 
 /-- Below `Θ` there is a zero of `ξ` with larger real part. -/
 theorem exists_xi_zero_re_gt {b : ℝ} (hb : b < zeroReSup) : ∃ ρ : ℂ, xi ρ = 0 ∧ b < ρ.re := by
-  obtain ⟨q, hq⟩ := exists_re_gt_of_lt_zeroReSup_unconditional hb
+  haveI := exists_xiZeroCopy
+  obtain ⟨q, hq⟩ := exists_re_gt_of_lt_zeroReSup hb
   exact ⟨(q.1 : ℂ), xi_xiZeroCopy_eq_zero q, hq⟩
 
 /-- There is a zero of `ξ` on the critical line (Hardy), so `Θ ≥ ½`. -/

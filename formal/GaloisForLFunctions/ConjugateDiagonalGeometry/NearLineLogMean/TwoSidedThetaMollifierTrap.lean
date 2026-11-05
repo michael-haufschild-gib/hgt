@@ -577,16 +577,18 @@ theorem eventually_integral_normSq_zetaMollified_ge_one_add_log_inv_theta
     le_trans (le_trans (le_max_left _ _) (le_trans (le_max_right _ _) (le_max_right _ _))) hL₁_val
   have hLCm : 32 * (Cm + 1) / (δ * θ') ≤ L :=
     le_trans (le_trans (le_max_right _ _) (le_trans (le_max_right _ _) (le_max_right _ _))) hL₁_val
-  have hL0 : 0 < L := by linarith
-  have hδ₁0 : 0 < 1 - θ₁ := by linarith
+  have hL0 : 0 < L := by linarith only [ha, hLa]
+  have hδ₁0 : 0 < 1 - θ₁ := by linarith only [hθ₁1]
   have hδL8 : 8 ≤ (1 - θ₁) / 4 * L := by
-    have := (div_le_iff₀ hδ₁0).mp hL32; linarith
+    have h1 := (div_le_iff₀ hδ₁0).mp hL32
+    linarith only [h1]
   have hδLc : 32 / (δ / D₀) ≤ (1 - θ₁) / 4 * L := by
-    have hcpos : 0 < δ / D₀ := by positivity
+    have hcpos : 0 < δ / D₀ := div_pos hδ (by linarith only [hD₀1])
     have h1 := (div_le_iff₀ (mul_pos hcpos hδ₁0)).mp hLc
-    rw [div_le_iff₀ hcpos]; nlinarith
+    rw [div_le_iff₀ hcpos]
+    nlinarith only [h1]
   have hsup' : 99 * (Real.exp (5 * L) * Real.exp (-(1 / 128 * Real.exp ((1 - θ₁) / 2 * L)))) ≤
-      δ / 6 := by linarith
+      δ / 6 := by linarith only [hsupL]
   intro y hy hyle b hb1 hb
   have hyle_θ : (y : ℝ) ≤ Real.exp (θ * L) := by
     rw [mul_comm, Real.exp_mul, hL_def, Real.exp_log hT0]; exact hyle
@@ -594,13 +596,17 @@ theorem eventually_integral_normSq_zetaMollified_ge_one_add_log_inv_theta
     hyle_θ.trans (Real.exp_le_exp.mpr (mul_le_mul_of_nonneg_right hθθ₁.le hL0.le))
   have ⟨M, hM_def⟩ : ∃ n : ℕ, n = ⌊Real.exp ((θ₁ + (1 - θ₁) / 4) * L)⌋₊ := ⟨_, rfl⟩
   have hM_def' : M = ⌊Real.exp (θ' * L)⌋₊ := by rw [hM_def, hθ'_def]
-  have hMle : (M : ℝ) ≤ Real.exp (θ' * L) := by rw [hM_def']; exact Nat.floor_le (by positivity)
+  have hMle : (M : ℝ) ≤ Real.exp (θ' * L) := by
+    rw [hM_def']; exact Nat.floor_le (Real.exp_pos _).le
   have hMgt : Real.exp (θ' * L) - 1 < M := by
-    rw [hM_def']; have := Nat.lt_floor_add_one (Real.exp (θ' * L)); linarith
+    rw [hM_def']
+    have h1 := Nat.lt_floor_add_one (Real.exp (θ' * L))
+    linarith only [h1]
   have hMle1 : (M : ℝ) ≤ Real.exp ((θ₁ + (1 - θ₁) / 4) * L) := by rwa [← hθ'_def]
   have hMgt1 : Real.exp ((θ₁ + (1 - θ₁) / 4) * L) - 1 < M := by rwa [← hθ'_def]
   obtain ⟨hM2, hyM, hMge, _, _⟩ :=
-    RHTower.gaussFloor_scale hθ₁0 (by positivity : 0 < δ / D₀) hL0 hδL8 hδLc hyle_θ₁ hMle1 hMgt1
+    RHTower.gaussFloor_scale hθ₁0 (div_pos hδ (by linarith only [hD₀1])) hL0 hδL8 hδLc hyle_θ₁
+      hMle1 hMgt1
   have hMge' : Real.exp (θ' * L) / 2 ≤ (M : ℝ) := by rwa [hθ'_def]
   have hD_ge : D₀ ≤ ∑ n ∈ Finset.Icc 1 M,
       ‖RHTower.mollifiedZetaCoeff b y n‖ ^ 2 * (n : ℝ) ^ (-2 * (1 / 2 + a / L)) := by
@@ -611,7 +617,8 @@ theorem eventually_integral_normSq_zetaMollified_ge_one_add_log_inv_theta
       intro n; rw [hfterm_def]
     simp_rw [← hfterm_app]
     have hfterm0 : ∀ n ∈ Finset.Icc 1 M, 0 ≤ fterm n := fun n _ => by
-      rw [hfterm_app]; positivity
+      rw [hfterm_app]
+      exact mul_nonneg (sq_nonneg _) (Real.rpow_nonneg (Nat.cast_nonneg n) _)
     have h1val : fterm 1 = 1 := by
       rw [hfterm_app, RHTower.mollifiedZetaCoeff_one hy, hb1, norm_one]; simp
     by_cases hpos_target : Real.log (1 / θ) - δ / 2 ≤ 0
@@ -644,7 +651,7 @@ theorem eventually_integral_normSq_zetaMollified_ge_one_add_log_inv_theta
           have hp0 : (0 : ℝ) < p := by exact_mod_cast hpp.pos
           have hp_le_expL : (p : ℝ) ≤ Real.exp L :=
             (by exact_mod_cast hpM : (p : ℝ) ≤ M).trans
-              (hMle.trans (Real.exp_le_exp.mpr (by nlinarith)))
+              (hMle.trans (Real.exp_le_exp.mpr (mul_le_of_le_one_left hL0.le hθ'1.le)))
           have hlogp : Real.log (p : ℝ) ≤ L := by
             have := Real.log_le_log hp0 hp_le_expL; rwa [Real.log_exp] at this
           rw [Real.rpow_def_of_pos hp0, one_div, ← Real.rpow_neg_one,
@@ -653,8 +660,9 @@ theorem eventually_integral_normSq_zetaMollified_ge_one_add_log_inv_theta
           have hq : Real.log (p : ℝ) / L ≤ 1 := (div_le_one hL0).mpr hlogp
           have hexp_eq : Real.log (p : ℝ) * (-2 * (1 / 2 + a / L)) =
               -(2 * a * (Real.log (p : ℝ) / L)) + Real.log (p : ℝ) * (-1) := by
-            field_simp; ring
-          nlinarith
+            have hLne : L ≠ 0 := hL0.ne'
+            field_simp [hLne]; ring
+          nlinarith only [ha, hq, hexp_eq]
         have hsum_le := Finset.sum_le_sum hp_le
         calc 1 + Real.exp (-(2 * a)) * (∑ p ∈ Pset, (1 / (p : ℝ)))
             = fterm 1 + ∑ p ∈ Pset, (Real.exp (-(2 * a)) * (1 / (p : ℝ))) := by
@@ -664,24 +672,26 @@ theorem eventually_integral_normSq_zetaMollified_ge_one_add_log_inv_theta
           _ ≤ ∑ n ∈ Finset.Icc 1 M, fterm n :=
               Finset.sum_le_sum_of_subset_of_nonneg hsub_union fun n hn _ => hfterm0 n hn
       have hlogM_ge : θ' * L - Real.log 2 ≤ Real.log (M : ℝ) := by
-        have := Real.log_le_log (by positivity) hMge'
+        have := Real.log_le_log (div_pos (Real.exp_pos _) zero_lt_two) hMge'
         rwa [Real.log_div (Real.exp_pos _).ne' (by norm_num), Real.log_exp] at this
       have hθ'L_ge : 2 * Real.log 2 + Real.exp S_yStar ≤ θ' * L := by
-        have := (div_le_iff₀ hθ'pos).mp hLyS; linarith
+        have h1 := (div_le_iff₀ hθ'pos).mp hLyS
+        linarith only [h1]
       have hlogM_half : θ' * L / 2 ≤ Real.log (M : ℝ) := by
         have hS0 : 1 ≤ Real.exp S_yStar := by
-          have : 0 ≤ RHTower.Sieve.mertensS yStar :=
-            Finset.sum_nonneg fun _ _ => by positivity
-          have : 0 ≤ |RHTower.Sieve.meisselMertensConst| := abs_nonneg _
-          have : 0 ≤ Cm / Real.log 2 := by
-            have := Real.log_pos (by norm_num : (1 : ℝ) < 2); positivity
+          have hs1 : 0 ≤ RHTower.Sieve.mertensS yStar :=
+            Finset.sum_nonneg fun _ _ => div_nonneg zero_le_one (Nat.cast_nonneg _)
+          have hs2 : 0 ≤ |RHTower.Sieve.meisselMertensConst| := abs_nonneg _
+          have hs3 : 0 ≤ Cm / Real.log 2 :=
+            div_nonneg hCm0 (Real.log_pos (by norm_num : (1 : ℝ) < 2)).le
           have hlogθ : 0 < Real.log (1 / θ) := by
             rw [one_div, Real.log_inv]; exact neg_pos.mpr (Real.log_neg hθ0 hθ1)
-          exact Real.one_le_exp (by linarith [hSy_def])
-        linarith
+          exact Real.one_le_exp (by linarith only [hs1, hs2, hs3, hlogθ, hSy_def])
+        linarith only [hlogM_ge, hθ'L_ge, hS0]
       have hlogM_pos : 0 < Real.log (M : ℝ) := Real.log_pos (by exact_mod_cast (by omega : 1 < M))
       have hLCm_mul : 32 * (Cm + 1) ≤ δ * θ' * L := by
-        have := (div_le_iff₀ (mul_pos hδ hθ'pos)).mp hLCm; linarith
+        have h1 := (div_le_iff₀ (mul_pos hδ hθ'pos)).mp hLCm
+        linarith only [h1]
       have hP_ge : Real.log (1 / θ) - δ / 2 ≤ ∑ p ∈ Pset, (1 / (p : ℝ)) := by
         rw [hPset_def, sum_Ioc_prime_inv_eq_mertensS_sub' hyM]
         have hM_mert := (abs_le.mp (RHTower.Sieve.abs_mertensS_sub_logLog_sub_const_le hM2)).1
@@ -1852,9 +1862,9 @@ theorem norm_cahenMellinGauss_neg_le {α u x : ℝ} (hα : 0 < α) (hu : 0 < u) 
     have hsqa : Real.sqrt α ^ 2 = α := Real.sq_sqrt hα.le
     have hsqa_ne : Real.sqrt α ≠ 0 := (Real.sqrt_pos.mpr hα).ne'
     field_simp
-    rw [hsqa]; ring
+    rw [hsqa]
   rw [h1, hden]
-  field_simp; ring
+  field_simp
 
 /-- Saddle-point lower bound `(cahenMellinGauss α u x).re ≥ 3/4` whenever `x ≥ 2 √α`. -/
 theorem re_cahenMellinGauss_ge_of_two_mul_sqrt_le {α u x : ℝ} (hα : 0 < α) (hu : 0 < u)
@@ -1877,7 +1887,7 @@ theorem re_cahenMellinGauss_ge_of_two_mul_sqrt_le {α u x : ℝ} (hα : 0 < α) 
       have hsqa : Real.sqrt α ^ 2 = α := Real.sq_sqrt hα.le
       have hsqa_ne : Real.sqrt α ≠ 0 := (Real.sqrt_pos.mpr hα).ne'
       field_simp
-      rw [hsqa]; ring
+      rw [hsqa]
     rw [hden_eq] at hle
     have hx_div : 2 ≤ x / Real.sqrt α := (le_div_iff₀ (Real.sqrt_pos.mpr hα)).mpr hx
     have hspi_ge1 : 1 ≤ Real.sqrt Real.pi := by
@@ -2041,10 +2051,10 @@ theorem sum_Ioo_inv_sq_le_div {X₁ : ℕ} (hX₁ : 1 ≤ X₁) (M : ℕ) :
     rw [hemp, Finset.sum_empty]; positivity
   · have hbij : (∑ n ∈ Finset.Ioo X₁ M, ((n : ℝ) ^ 2)⁻¹) =
         ∑ j ∈ Finset.range (M - (X₁ + 1)), ((((X₁ + 1 + j : ℕ) : ℝ)) ^ 2)⁻¹ := by
-      have hIoo : Finset.Ioo X₁ M = Finset.Ico (X₁ + 1) (X₁ + 1 + (M - (X₁ + 1))) := by
+      have hIoo : Finset.Ioo X₁ M = Finset.Ico (X₁ + 1) M := by
         ext n; simp only [Finset.mem_Ioo, Finset.mem_Ico]; omega
       rw [hIoo]
-      exact Finset.sum_Ico_eq_sum_range (fun n : ℕ => ((n : ℝ) ^ 2)⁻¹) (X₁ + 1) (M - (X₁ + 1))
+      exact Finset.sum_Ico_eq_sum_range (fun n : ℕ => ((n : ℝ) ^ 2)⁻¹) (X₁ + 1) M
     rw [hbij]
     have htele := sum_range_inv_sq_shift_le hX₁ (M - (X₁ + 1))
     have hnonneg : (0 : ℝ) ≤ 1 / ((X₁ + (M - (X₁ + 1)) : ℕ) : ℝ) := by positivity
@@ -2066,7 +2076,7 @@ theorem sum_Icc_inv_sq_le_two_nat (X : ℕ) :
     _ ≤ 1 + 1 / (1 : ℝ) := by
         have htail := sum_Ioo_inv_sq_le_div (le_refl 1) (X + 1)
         norm_num at htail ⊢
-        exact htail
+        linarith only [htail]
     _ = 2 := by norm_num
 
 theorem norm_zeta_mul_edPoly_three_le {b : ℕ → ℂ} {X : ℕ} {B : ℝ} (hB : 0 ≤ B)
@@ -2275,48 +2285,32 @@ theorem continuous_riemannZeta_comp {φ : ℝ → ℂ} (hφ : Continuous φ)
     ContinuousAt.comp (g := riemannZeta) (f := φ)
       (differentiableAt_riemannZeta (hne1 t)).continuousAt hφ.continuousAt
 
-/-- **Localized critical-line spike from a single off-line zero (`Re ρ₀ > 1/2`).**
-Every off-line zero `ρ₀` of `ζ` in the upper half-plane (`ρ₀.im ≥ R + 1`) forces the localized
-critical-line second moment of `ζ Ψ` on `[ρ₀.im - R, ρ₀.im + R]` to be at least
-`(3/4) (ρ₀.re - 1/2) exp(-2 α (ρ₀.re - 1/2)²) Y^{2(ρ₀.re - 1/2)}` whenever the `2 ≤ n ≤ X₁`
-coefficients, the `n > X₁` Gaussian tail, and the rectangle truncation tails are bounded. -/
-theorem integral_normSq_zetaMollified_criticalLine_spike_of_zero
-    {ρ₀ : ℂ} (hζ0 : riemannZeta ρ₀ = 0) (hre : 1 / 2 < ρ₀.re)
+theorem horiz_edges_dslope_mollifiedZetaGauss_le
+    {ρ₀ : ℂ} (hζ0 : riemannZeta ρ₀ = 0) (hre : 1 / 2 < ρ₀.re) (hre_lt1 : ρ₀.re < 1)
     {R α Y B : ℝ} (hR1 : 1 ≤ R) (hRγ : R + 1 ≤ ρ₀.im)
-    (hα : 0 < α) (hY : 1 ≤ Y) (hYα : 2 * Real.sqrt α ≤ Real.log Y) (hB : 1 ≤ B)
-    {X X₁ : ℕ} (hX : 1 ≤ X) (hX₁ : 1 ≤ X₁) (hYX₁ : Y < (X₁ : ℝ))
-    (hslope : 5 * α ≤ Real.log (X₁ : ℝ) - Real.log Y)
-    {b : ℕ → ℂ} (hb1 : b 1 = 1) (hb : ∀ d ∈ Finset.Icc 1 X, ‖b d‖ ≤ B)
-    (hshort : ∑ n ∈ Finset.Icc 2 X₁,
-      ‖RHTower.mollifiedZetaCoeff b X n‖ * (n : ℝ) ^ (-ρ₀.re) ≤ 1 / 8)
-    (htail : 2 * B * (Real.sqrt α / (Real.log (X₁ : ℝ) - Real.log Y)) *
-      (X₁ : ℝ) ^ (3 / 2 : ℝ) *
-      Real.exp (-(Real.log (X₁ : ℝ) - Real.log Y) ^ 2 / (4 * α)) ≤ 1 / 12)
-    (hvtail : 4 * B * (1 / Real.sqrt α) *
-      Real.exp ((25 / 4) * α + (5 / 2) * Real.log Y - α * R ^ 2 / 2) ≤ 1 / 12)
+    (hα : 0 < α) (hlogY0 : 0 ≤ Real.log Y) (hB0 : 0 ≤ B)
+    {X : ℕ} {b : ℕ → ℂ} (hb : ∀ d ∈ Finset.Icc 1 X, ‖b d‖ ≤ B)
     (hhoriz : 5 * B * (X : ℝ) * Real.sqrt (ρ₀.im + R + 6) *
       Real.exp ((25 / 4) * α + (5 / 2) * Real.log Y - α * R ^ 2) ≤ 1 / 12) :
-    (3 / 4 : ℝ) * (ρ₀.re - 1 / 2) * Real.exp (-2 * α * (ρ₀.re - 1 / 2) ^ 2) *
-        Y ^ (2 * (ρ₀.re - 1 / 2)) ≤
-      ∫ t in (ρ₀.im - R)..(ρ₀.im + R),
-        ‖riemannZeta (((1 / 2 : ℝ) : ℂ) + (t : ℂ) * I) *
-          RHTower.edPoly b (Finset.Icc 1 X) (((1 / 2 : ℝ) : ℂ) + (t : ℂ) * I)‖ ^ 2 := by
-  have hre_lt1 : ρ₀.re < 1 := RHTower.riemannZeta_zero_re_lt_one hζ0
+    (1 / (2 * Real.pi)) *
+      ‖(∫ τ : ℝ in (-R)..R,
+          riemannZeta (ρ₀ + (((3 - ρ₀.re : ℝ) : ℂ) + (τ : ℂ) * I)) *
+            RHTower.edPoly b (Finset.Icc 1 X) (ρ₀ + (((3 - ρ₀.re : ℝ) : ℂ) + (τ : ℂ) * I)) *
+            cahenMellinGaussIntegrand α (3 - ρ₀.re) (Real.log Y) τ) -
+        (∫ τ : ℝ in (-R)..R,
+          riemannZeta (((1 / 2 : ℝ) : ℂ) + ((ρ₀.im + τ : ℝ) : ℂ) * I) *
+            RHTower.edPoly b (Finset.Icc 1 X) (((1 / 2 : ℝ) : ℂ) + ((ρ₀.im + τ : ℝ) : ℂ) * I) *
+            cahenMellinGaussIntegrand α (-(ρ₀.re - 1 / 2)) (Real.log Y) τ)‖ ≤ 1 / 12 := by
   have ⟨δ₀, hδ₀_def⟩ : ∃ d : ℝ, d = ρ₀.re - 1 / 2 := ⟨_, rfl⟩
-  have hδ₀_pos : 0 < δ₀ := by linarith
-  have hδ₀_lt : δ₀ < 1 / 2 := by linarith
+  have hδ₀_pos : 0 < δ₀ := by linarith only [hδ₀_def, hre]
   have ⟨u_R, hu_R_def⟩ : ∃ u : ℝ, u = 3 - ρ₀.re := ⟨_, rfl⟩
-  have hu_R_gt2 : 2 < u_R := by linarith
-  have hu_R_lt : u_R < 5 / 2 := by linarith
-  have hu_R_pos : 0 < u_R := by linarith
+  have hu_R_lt : u_R < 5 / 2 := by linarith only [hu_R_def, hre]
+  have hu_R_pos : 0 < u_R := by linarith only [hu_R_def, hre_lt1]
   have hR0 : 0 < R := lt_of_lt_of_le zero_lt_one hR1
-  have hY0 : 0 < Y := lt_of_lt_of_le zero_lt_one hY
-  have hlogY0 : 0 ≤ Real.log Y := Real.log_nonneg hY
-  have hB0 : 0 ≤ B := by linarith
-  -- Step 1: Divided-difference contour shift on `[-δ₀, u_R] × [-R, R]`.
+  rw [← hδ₀_def, ← hu_R_def]
   have hrect := RHTower.Sieve.integral_vertical_sub_eq_horizontal_rect R
     (differentiableOn_dslope_mollifiedZetaGauss_rect hζ0 b X α Y
-      (by linarith : -δ₀ < 0) hu_R_pos hR0 hRγ)
+      (by linarith only [hδ₀_pos] : -δ₀ < 0) hu_R_pos hR0 hRγ)
   have hv_right_eq : (∫ τ : ℝ in (-R)..R,
       dslope (mollifiedZetaGauss ρ₀ b X α Y) 0 ((u_R : ℂ) + (τ : ℂ) * I)) =
       ∫ τ : ℝ in (-R)..R,
@@ -2325,7 +2319,7 @@ theorem integral_normSq_zetaMollified_criticalLine_spike_of_zero
           cahenMellinGaussIntegrand α u_R (Real.log Y) τ := by
     refine intervalIntegral.integral_congr fun τ _ => ?_
     have hw0 : ((u_R : ℂ) + (τ : ℂ) * I) ≠ 0 := by
-      intro h; have := congrArg Complex.re h; simp at this; linarith
+      intro h; have := congrArg Complex.re h; simp at this; linarith only [this, hu_R_pos]
     rw [dslope_mollifiedZetaGauss_eq_div hζ0 b X α Y hw0]
     simp only [mollifiedZetaGauss, cahenMellinGaussIntegrand, mul_div_assoc]
   have hv_left_eq : (∫ τ : ℝ in (-R)..R,
@@ -2336,24 +2330,23 @@ theorem integral_normSq_zetaMollified_criticalLine_spike_of_zero
           cahenMellinGaussIntegrand α (-δ₀) (Real.log Y) τ := by
     refine intervalIntegral.integral_congr fun τ _ => ?_
     have hw0 : (((-δ₀ : ℝ) : ℂ) + (τ : ℂ) * I) ≠ 0 := by
-      intro h; have := congrArg Complex.re h; simp at this; linarith
+      intro h; have := congrArg Complex.re h; simp at this; linarith only [this, hδ₀_pos]
     rw [dslope_mollifiedZetaGauss_eq_div hζ0 b X α Y hw0]
     have hpt_s : ρ₀ + (((-δ₀ : ℝ) : ℂ) + (τ : ℂ) * I) =
         ((1 / 2 : ℝ) : ℂ) + ((ρ₀.im + τ : ℝ) : ℂ) * I := by
       apply Complex.ext
-      · simp [hδ₀_def]; ring
+      · simp [hδ₀_def]
       · simp
     simp only [mollifiedZetaGauss, cahenMellinGaussIntegrand, hpt_s, mul_div_assoc]
-  -- Step 2: Bound the top and bottom horizontal edges at `±R`.
   have hhoriz_edge : ∀ sgn : ℝ, |sgn| = R →
       ‖∫ σ : ℝ in (-δ₀)..u_R,
         dslope (mollifiedZetaGauss ρ₀ b X α Y) 0 ((σ : ℂ) + (sgn : ℂ) * I)‖ ≤
         (5 / 2) * (5 * B * (X : ℝ) * Real.sqrt (ρ₀.im + R + 6) *
           Real.exp ((25 / 4) * α + (5 / 2) * Real.log Y - α * R ^ 2)) := by
     intro sgn hsgn
-    have hcd : -δ₀ ≤ u_R := by linarith
+    have hcd : -δ₀ ≤ u_R := by linarith only [hδ₀_pos, hu_R_pos]
     have hwidth : |u_R - (-δ₀)| = 5 / 2 := by
-      rw [abs_of_pos (by linarith), hu_R_def, hδ₀_def]; ring
+      rw [abs_of_pos (by linarith only [hδ₀_pos, hu_R_pos]), hu_R_def, hδ₀_def]; ring
     have hpt_bound : ∀ σ ∈ Set.uIoc (-δ₀) u_R,
         ‖dslope (mollifiedZetaGauss ρ₀ b X α Y) 0 ((σ : ℂ) + (sgn : ℂ) * I)‖ ≤
           5 * B * (X : ℝ) * Real.sqrt (ρ₀.im + R + 6) *
@@ -2365,21 +2358,21 @@ theorem integral_normSq_zetaMollified_criticalLine_spike_of_zero
       have hw0 : ((σ : ℂ) + (sgn : ℂ) * I) ≠ 0 := by
         intro h
         have := congrArg Complex.im h; simp at this
-        rw [this, abs_zero] at hsgn; linarith
+        rw [this, abs_zero] at hsgn; linarith only [hsgn, hR0]
       rw [dslope_mollifiedZetaGauss_eq_div hζ0 b X α Y hw0]
       unfold mollifiedZetaGauss
       rw [norm_div, norm_mul, norm_mul, norm_exp_quad_add_lin]
       have hw_norm_ge1 : 1 ≤ ‖(σ : ℂ) + (sgn : ℂ) * I‖ := by
         have := norm_add_mul_I_ge_abs_right σ sgn
-        rw [hsgn] at this; linarith
+        rw [hsgn] at this; linarith only [this, hR1]
       have hs_re : 1 / 2 ≤ (ρ₀ + ((σ : ℂ) + (sgn : ℂ) * I)).re := by
-        simp; linarith [hδ₀_def]
+        simp; linarith only [hδ₀_def, hσ_lo]
       have hs_re3 : (ρ₀ + ((σ : ℂ) + (sgn : ℂ) * I)).re ≤ 3 := by
-        simp; linarith [hu_R_def]
+        simp; linarith only [hu_R_def, hσ_hi]
       have hs_im_ge1 : 1 ≤ (ρ₀ + ((σ : ℂ) + (sgn : ℂ) * I)).im := by
         simp only [Complex.add_im, Complex.ofReal_im, Complex.mul_im, Complex.I_re, Complex.I_im,
           Complex.ofReal_re, mul_one, mul_zero, add_zero, zero_add]
-        have := neg_abs_le sgn; rw [hsgn] at this; linarith
+        have h1 := neg_abs_le sgn; rw [hsgn] at h1; linarith only [h1, hRγ]
       have hs_sep1 : 1 ≤ ‖(ρ₀ + ((σ : ℂ) + (sgn : ℂ) * I)) - 1‖ := by
         have h1 := Complex.abs_im_le_norm ((ρ₀ + ((σ : ℂ) + (sgn : ℂ) * I)) - 1)
         simp only [Complex.sub_im, Complex.one_im, sub_zero] at h1
@@ -2391,13 +2384,13 @@ theorem integral_normSq_zetaMollified_criticalLine_spike_of_zero
         refine h1.trans (mul_le_mul_of_nonneg_left (Real.sqrt_le_sqrt ?_) (by norm_num))
         have h2 := Complex.norm_le_abs_re_add_abs_im (ρ₀ + ((σ : ℂ) + (sgn : ℂ) * I))
         have hre_abs : |(ρ₀ + ((σ : ℂ) + (sgn : ℂ) * I)).re| ≤ 3 :=
-          abs_le.mpr ⟨by linarith, hs_re3⟩
+          abs_le.mpr ⟨by linarith only [hs_re], hs_re3⟩
         have him_abs : |(ρ₀ + ((σ : ℂ) + (sgn : ℂ) * I)).im| ≤ ρ₀.im + R := by
           simp only [Complex.add_im, Complex.ofReal_im, Complex.mul_im, Complex.I_re, Complex.I_im,
             Complex.ofReal_re, mul_one, mul_zero, add_zero, zero_add]
-          have := le_abs_self sgn; have := neg_abs_le sgn; rw [hsgn] at *
-          exact abs_le.mpr ⟨by linarith, by linarith⟩
-        linarith
+          have hle1 := le_abs_self sgn; have hle2 := neg_abs_le sgn; rw [hsgn] at hle1 hle2
+          exact abs_le.mpr ⟨by linarith only [hle2, hRγ, hR0], by linarith only [hle1]⟩
+        linarith only [h2, hre_abs, him_abs]
       have hed_le : ‖RHTower.edPoly b (Finset.Icc 1 X) (ρ₀ + ((σ : ℂ) + (sgn : ℂ) * I))‖ ≤
           B * (X : ℝ) := by
         unfold RHTower.edPoly
@@ -2409,7 +2402,7 @@ theorem integral_normSq_zetaMollified_criticalLine_spike_of_zero
               have hd1 : 1 ≤ d := (Finset.mem_Icc.mp hd).1
               rw [norm_mul, RHTower.norm_ofReal_natCast_cpow hd1, Complex.neg_re]
               have hrp : (d : ℝ) ^ (-(ρ₀ + ((σ : ℂ) + (sgn : ℂ) * I)).re) ≤ 1 :=
-                Real.rpow_le_one_of_one_le_of_nonpos (by exact_mod_cast hd1) (by linarith)
+                Real.rpow_le_one_of_one_le_of_nonpos (by exact_mod_cast hd1) (by linarith only [hs_re])
               calc ‖b d‖ * (d : ℝ) ^ (-(ρ₀ + ((σ : ℂ) + (sgn : ℂ) * I)).re)
                   ≤ B * 1 := mul_le_mul (hb d hd) hrp (by positivity) hB0
                 _ = B := mul_one B
@@ -2418,10 +2411,12 @@ theorem integral_normSq_zetaMollified_criticalLine_spike_of_zero
           Real.exp ((25 / 4) * α + (5 / 2) * Real.log Y - α * R ^ 2) := by
         apply Real.exp_le_exp.mpr
         have hsgn_sq : sgn ^ 2 = R ^ 2 := by rw [← sq_abs sgn, hsgn]
-        have hσ_abs : |σ| ≤ 5 / 2 := abs_le.mpr ⟨by linarith, by linarith⟩
+        have hδ₀_lt : δ₀ < 1 / 2 := by linarith only [hδ₀_def, hre_lt1]
+        have hσ_abs : |σ| ≤ 5 / 2 := abs_le.mpr
+          ⟨by linarith only [hσ_lo, hδ₀_lt], by linarith only [hσ_hi, hu_R_lt]⟩
         have hσ_sq : σ ^ 2 ≤ 25 / 4 := by
-          have := pow_le_pow_left₀ (abs_nonneg σ) hσ_abs 2
-          rw [sq_abs] at this; linarith
+          have h1 := pow_le_pow_left₀ (abs_nonneg σ) hσ_abs 2
+          rw [sq_abs] at h1; linarith only [h1]
         have hlogY_σ : Real.log Y * σ ≤ (5 / 2) * Real.log Y := by
           nlinarith only [hlogY0, hσ_hi, hu_R_lt]
         rw [hsgn_sq]
@@ -2443,54 +2438,62 @@ theorem integral_normSq_zetaMollified_criticalLine_spike_of_zero
               Real.exp ((25 / 4) * α + (5 / 2) * Real.log Y - α * R ^ 2) := by ring
     have hint_le := intervalIntegral.norm_integral_le_of_norm_le_const hpt_bound
     rw [hwidth] at hint_le
-    linarith
-  have hhoriz_sum : (1 / (2 * Real.pi)) *
-      ‖(∫ τ : ℝ in (-R)..R,
-          riemannZeta (ρ₀ + ((u_R : ℂ) + (τ : ℂ) * I)) *
-            RHTower.edPoly b (Finset.Icc 1 X) (ρ₀ + ((u_R : ℂ) + (τ : ℂ) * I)) *
-            cahenMellinGaussIntegrand α u_R (Real.log Y) τ) -
-        (∫ τ : ℝ in (-R)..R,
-          riemannZeta (((1 / 2 : ℝ) : ℂ) + ((ρ₀.im + τ : ℝ) : ℂ) * I) *
-            RHTower.edPoly b (Finset.Icc 1 X) (((1 / 2 : ℝ) : ℂ) + ((ρ₀.im + τ : ℝ) : ℂ) * I) *
-            cahenMellinGaussIntegrand α (-δ₀) (Real.log Y) τ)‖ ≤ 1 / 12 := by
-    rw [← hv_right_eq, ← hv_left_eq]
-    have hI_eq : ‖(∫ τ : ℝ in (-R)..R,
-          dslope (mollifiedZetaGauss ρ₀ b X α Y) 0 ((u_R : ℂ) + (τ : ℂ) * I)) -
-        (∫ τ : ℝ in (-R)..R,
-          dslope (mollifiedZetaGauss ρ₀ b X α Y) 0 (((-δ₀ : ℝ) : ℂ) + (τ : ℂ) * I))‖ =
-      ‖(∫ σ : ℝ in (-δ₀)..u_R,
-          dslope (mollifiedZetaGauss ρ₀ b X α Y) 0 ((σ : ℂ) + ((R : ℝ) : ℂ) * I)) -
-        (∫ σ : ℝ in (-δ₀)..u_R,
-          dslope (mollifiedZetaGauss ρ₀ b X α Y) 0 ((σ : ℂ) + ((-R : ℝ) : ℂ) * I))‖ := by
-      rw [← hrect, ← smul_sub, norm_smul, Complex.norm_I, one_mul]
-    rw [hI_eq]
-    have htop := hhoriz_edge R (abs_of_pos hR0)
-    have hbot := hhoriz_edge (-R) (by rw [abs_neg, abs_of_pos hR0])
-    have h5_2pi : (1 / (2 * Real.pi)) * (5 : ℝ) ≤ 1 := by
-      rw [one_div, inv_mul_le_iff₀ (by positivity), mul_one]
-      linarith [Real.pi_gt_three]
-    calc (1 / (2 * Real.pi)) *
-          ‖(∫ σ : ℝ in (-δ₀)..u_R,
-              dslope (mollifiedZetaGauss ρ₀ b X α Y) 0 ((σ : ℂ) + ((R : ℝ) : ℂ) * I)) -
-            (∫ σ : ℝ in (-δ₀)..u_R,
-              dslope (mollifiedZetaGauss ρ₀ b X α Y) 0 ((σ : ℂ) + ((-R : ℝ) : ℂ) * I))‖
-        ≤ (1 / (2 * Real.pi)) *
-            ((5 / 2 + 5 / 2) * (5 * B * (X : ℝ) * Real.sqrt (ρ₀.im + R + 6) *
-              Real.exp ((25 / 4) * α + (5 / 2) * Real.log Y - α * R ^ 2))) := by
-          refine mul_le_mul_of_nonneg_left ((norm_sub_le _ _).trans ?_) (by positivity)
-          linarith
-      _ = ((1 / (2 * Real.pi)) * 5) *
-            (5 * B * (X : ℝ) * Real.sqrt (ρ₀.im + R + 6) *
-              Real.exp ((25 / 4) * α + (5 / 2) * Real.log Y - α * R ^ 2)) := by ring
-      _ ≤ 1 * (1 / 12) := mul_le_mul h5_2pi hhoriz (by positivity) zero_le_one
-      _ = 1 / 12 := one_mul _
-  -- Step 3: Extend the right-edge integral at `Re(ρ₀ + w) = 3` from `[-R, R]` to `ℝ`.
+    linarith only [hint_le]
+  rw [← hv_right_eq, ← hv_left_eq]
+  have hI_eq : ‖(∫ τ : ℝ in (-R)..R,
+        dslope (mollifiedZetaGauss ρ₀ b X α Y) 0 ((u_R : ℂ) + (τ : ℂ) * I)) -
+      (∫ τ : ℝ in (-R)..R,
+        dslope (mollifiedZetaGauss ρ₀ b X α Y) 0 (((-δ₀ : ℝ) : ℂ) + (τ : ℂ) * I))‖ =
+    ‖(∫ σ : ℝ in (-δ₀)..u_R,
+        dslope (mollifiedZetaGauss ρ₀ b X α Y) 0 ((σ : ℂ) + ((R : ℝ) : ℂ) * I)) -
+      (∫ σ : ℝ in (-δ₀)..u_R,
+        dslope (mollifiedZetaGauss ρ₀ b X α Y) 0 ((σ : ℂ) + ((-R : ℝ) : ℂ) * I))‖ := by
+    rw [← hrect, ← smul_sub, norm_smul, Complex.norm_I, one_mul]
+  rw [hI_eq]
+  have htop := hhoriz_edge R (abs_of_pos hR0)
+  have hbot := hhoriz_edge (-R) (by rw [abs_neg, abs_of_pos hR0])
+  have h5_2pi : (1 / (2 * Real.pi)) * (5 : ℝ) ≤ 1 := by
+    rw [one_div, inv_mul_le_iff₀ (by positivity), mul_one]
+    linarith [Real.pi_gt_three]
+  calc (1 / (2 * Real.pi)) *
+        ‖(∫ σ : ℝ in (-δ₀)..u_R,
+            dslope (mollifiedZetaGauss ρ₀ b X α Y) 0 ((σ : ℂ) + ((R : ℝ) : ℂ) * I)) -
+          (∫ σ : ℝ in (-δ₀)..u_R,
+            dslope (mollifiedZetaGauss ρ₀ b X α Y) 0 ((σ : ℂ) + ((-R : ℝ) : ℂ) * I))‖
+      ≤ (1 / (2 * Real.pi)) *
+          ((5 / 2 + 5 / 2) * (5 * B * (X : ℝ) * Real.sqrt (ρ₀.im + R + 6) *
+            Real.exp ((25 / 4) * α + (5 / 2) * Real.log Y - α * R ^ 2))) := by
+        refine mul_le_mul_of_nonneg_left ((norm_sub_le _ _).trans ?_) (by positivity)
+        linarith only [htop, hbot]
+    _ = ((1 / (2 * Real.pi)) * 5) *
+          (5 * B * (X : ℝ) * Real.sqrt (ρ₀.im + R + 6) *
+            Real.exp ((25 / 4) * α + (5 / 2) * Real.log Y - α * R ^ 2)) := by ring
+    _ ≤ 1 * (1 / 12) := mul_le_mul h5_2pi hhoriz (by positivity) zero_le_one
+    _ = 1 / 12 := one_mul _
+
+theorem vertical_tail_mollifiedZeta_cahenMellin_le
+    {ρ₀ : ℂ} {u_R R α Y B : ℝ} (hu_R_gt2 : 2 < u_R) (hu_R_lt : u_R < 5 / 2)
+    (hR0 : 0 < R) (hα : 0 < α) (hlogY0 : 0 ≤ Real.log Y) (hB0 : 0 ≤ B)
+    {X : ℕ} {b : ℕ → ℂ} (hb : ∀ d ∈ Finset.Icc 1 X, ‖b d‖ ≤ B)
+    (hg_right_re : ∀ τ : ℝ, (ρ₀ + ((u_R : ℂ) + (τ : ℂ) * I)).re = 3)
+    (hvtail : 4 * B * (1 / Real.sqrt α) *
+      Real.exp ((25 / 4) * α + (5 / 2) * Real.log Y - α * R ^ 2 / 2) ≤ 1 / 12) :
+    (1 / (2 * Real.pi)) *
+      ‖(∫ τ : ℝ, riemannZeta (ρ₀ + ((u_R : ℂ) + (τ : ℂ) * I)) *
+          RHTower.edPoly b (Finset.Icc 1 X) (ρ₀ + ((u_R : ℂ) + (τ : ℂ) * I)) *
+          cahenMellinGaussIntegrand α u_R (Real.log Y) τ) -
+        (∫ τ : ℝ in (-R)..R, riemannZeta (ρ₀ + ((u_R : ℂ) + (τ : ℂ) * I)) *
+          RHTower.edPoly b (Finset.Icc 1 X) (ρ₀ + ((u_R : ℂ) + (τ : ℂ) * I)) *
+          cahenMellinGaussIntegrand α u_R (Real.log Y) τ)‖ ≤ 1 / 12 := by
+  have hu_R_pos : 0 < u_R := lt_trans zero_lt_two hu_R_gt2
   have ⟨g_right, hg_right_def⟩ : ∃ f : ℝ → ℂ, f = fun (τ : ℝ) =>
       riemannZeta (ρ₀ + ((u_R : ℂ) + (τ : ℂ) * I)) *
         RHTower.edPoly b (Finset.Icc 1 X) (ρ₀ + ((u_R : ℂ) + (τ : ℂ) * I)) *
         cahenMellinGaussIntegrand α u_R (Real.log Y) τ := ⟨_, rfl⟩
-  have hg_right_re : ∀ τ : ℝ, (ρ₀ + ((u_R : ℂ) + (τ : ℂ) * I)).re = 3 := by
-    intro τ; simp [hu_R_def]
+  have hg_right_app : ∀ τ : ℝ, riemannZeta (ρ₀ + ((u_R : ℂ) + (τ : ℂ) * I)) *
+      RHTower.edPoly b (Finset.Icc 1 X) (ρ₀ + ((u_R : ℂ) + (τ : ℂ) * I)) *
+      cahenMellinGaussIntegrand α u_R (Real.log Y) τ = g_right τ := fun τ => by rw [hg_right_def]
+  simp_rw [hg_right_app]
   have hg_right_norm : ∀ τ : ℝ, ‖g_right τ‖ ≤
       4 * B * (Real.exp (α * u_R ^ 2 + Real.log Y * u_R) / u_R) * Real.exp (-α * τ ^ 2) := by
     intro τ
@@ -2519,86 +2522,98 @@ theorem integral_normSq_zetaMollified_criticalLine_spike_of_zero
   have hg_right_int : Integrable g_right :=
     ((integrable_exp_neg_mul_sq hα).const_mul _).mono' hg_right_cont.aestronglyMeasurable
       (Eventually.of_forall hg_right_norm)
-  have hvtail_bound : (1 / (2 * Real.pi)) *
-      ‖(∫ τ : ℝ, g_right τ) - (∫ τ : ℝ in (-R)..R, g_right τ)‖ ≤ 1 / 12 := by
-    rw [intervalIntegral.integral_of_le (by linarith),
-      ← integral_add_compl (measurableSet_Ioc (a := -R) (b := R)) hg_right_int,
-      add_sub_cancel_left]
-    have ⟨B_vt, hB_vt_def⟩ : ∃ f : ℝ → ℝ, f = fun (τ : ℝ) =>
-        2 * B * Real.exp ((25 / 4) * α + (5 / 2) * Real.log Y - α * R ^ 2 / 2) *
-          Real.exp (-(α / 2) * τ ^ 2) := ⟨_, rfl⟩
-    have hB_vt_int : Integrable B_vt := by
-      rw [hB_vt_def]; exact (integrable_exp_neg_mul_sq (by positivity)).const_mul _
-    have hpt_vt : ∀ τ ∈ (Set.Ioc (-R) R)ᶜ, ‖g_right τ‖ ≤ B_vt τ := by
-      intro τ hτ
-      have hR2 : R ^ 2 ≤ τ ^ 2 := by
-        simp only [Set.mem_compl_iff, Set.mem_Ioc, not_and_or, not_lt, not_le] at hτ
-        rcases hτ with h | h <;> nlinarith
-      have hbase := hg_right_norm τ
-      have hu_inv : 1 / u_R ≤ 1 / 2 := one_div_le_one_div_of_le zero_lt_two hu_R_gt2.le
-      have hexp_vt : Real.exp (α * u_R ^ 2 + Real.log Y * u_R) * Real.exp (-α * τ ^ 2) ≤
-          Real.exp ((25 / 4) * α + (5 / 2) * Real.log Y - α * R ^ 2 / 2) *
-            Real.exp (-(α / 2) * τ ^ 2) := by
-        rw [← Real.exp_add, ← Real.exp_add]
-        apply Real.exp_le_exp.mpr
-        have hu2 : u_R ^ 2 ≤ 25 / 4 := by nlinarith only [hu_R_pos, hu_R_lt]
-        have hyu : Real.log Y * u_R ≤ (5 / 2) * Real.log Y := by
-          nlinarith only [hlogY0, hu_R_lt]
-        nlinarith only [hα, hu2, hyu, hR2]
-      rw [hB_vt_def]
-      calc ‖g_right τ‖
-          ≤ 4 * B * (1 / u_R) *
-              (Real.exp (α * u_R ^ 2 + Real.log Y * u_R) * Real.exp (-α * τ ^ 2)) := by
-            linarith [show 4 * B * (Real.exp (α * u_R ^ 2 + Real.log Y * u_R) / u_R) *
-                Real.exp (-α * τ ^ 2) =
-              4 * B * (1 / u_R) *
-                (Real.exp (α * u_R ^ 2 + Real.log Y * u_R) * Real.exp (-α * τ ^ 2)) by ring]
-        _ ≤ 4 * B * (1 / 2) *
-              (Real.exp ((25 / 4) * α + (5 / 2) * Real.log Y - α * R ^ 2 / 2) *
-                Real.exp (-(α / 2) * τ ^ 2)) :=
-            mul_le_mul (mul_le_mul_of_nonneg_left hu_inv (by positivity)) hexp_vt
-              (by positivity) (by positivity)
-        _ = _ := by ring
-    have hint_compl : ‖∫ τ in (Set.Ioc (-R) R)ᶜ, g_right τ‖ ≤ ∫ τ : ℝ, B_vt τ := by
-      calc ‖∫ τ in (Set.Ioc (-R) R)ᶜ, g_right τ‖
-          ≤ ∫ τ in (Set.Ioc (-R) R)ᶜ, ‖g_right τ‖ := norm_integral_le_integral_norm _
-        _ ≤ ∫ τ in (Set.Ioc (-R) R)ᶜ, B_vt τ :=
-            setIntegral_mono_on hg_right_int.norm.integrableOn hB_vt_int.integrableOn
-              measurableSet_Ioc.compl hpt_vt
-        _ ≤ ∫ τ : ℝ, B_vt τ :=
-            setIntegral_le_integral hB_vt_int
-              (Eventually.of_forall fun τ => by rw [hB_vt_def]; positivity)
-    have hint_eval : ∫ τ : ℝ, B_vt τ =
-        2 * B * Real.exp ((25 / 4) * α + (5 / 2) * Real.log Y - α * R ^ 2 / 2) *
-          Real.sqrt (2 * Real.pi / α) := by
-      rw [hB_vt_def, integral_const_mul, integral_gaussian]
-      congr 2; field_simp [hα.ne']; ring
-    rw [hint_eval] at hint_compl
-    have hcoeff : (1 / (2 * Real.pi)) * Real.sqrt (2 * Real.pi / α) ≤ 2 * (1 / Real.sqrt α) := by
-      rw [Real.sqrt_div (by positivity)]
-      have hsp : Real.sqrt (2 * Real.pi) ≤ 4 * Real.pi := by
-        have h1 : 2 * Real.pi ≤ (4 * Real.pi) ^ 2 := by
-          have := Real.pi_gt_three; nlinarith
-        exact (Real.sqrt_le_iff.mpr ⟨by positivity, h1⟩)
-      have hdiv : Real.sqrt (2 * Real.pi) / (2 * Real.pi) ≤ 2 := by
-        rw [div_le_iff₀ (by positivity)]; linarith
-      calc (1 / (2 * Real.pi)) * (Real.sqrt (2 * Real.pi) / Real.sqrt α)
-          = (Real.sqrt (2 * Real.pi) / (2 * Real.pi)) * (1 / Real.sqrt α) := by ring
-        _ ≤ 2 * (1 / Real.sqrt α) := mul_le_mul_of_nonneg_right hdiv (by positivity)
-    calc (1 / (2 * Real.pi)) * ‖∫ τ in (Set.Ioc (-R) R)ᶜ, g_right τ‖
-        ≤ (1 / (2 * Real.pi)) *
-            (2 * B * Real.exp ((25 / 4) * α + (5 / 2) * Real.log Y - α * R ^ 2 / 2) *
-              Real.sqrt (2 * Real.pi / α)) :=
-          mul_le_mul_of_nonneg_left hint_compl (by positivity)
-      _ = 2 * B * Real.exp ((25 / 4) * α + (5 / 2) * Real.log Y - α * R ^ 2 / 2) *
-            ((1 / (2 * Real.pi)) * Real.sqrt (2 * Real.pi / α)) := by ring
-      _ ≤ 2 * B * Real.exp ((25 / 4) * α + (5 / 2) * Real.log Y - α * R ^ 2 / 2) *
-            (2 * (1 / Real.sqrt α)) :=
-          mul_le_mul_of_nonneg_left hcoeff (by positivity)
-      _ = 4 * B * (1 / Real.sqrt α) *
-            Real.exp ((25 / 4) * α + (5 / 2) * Real.log Y - α * R ^ 2 / 2) := by ring
-      _ ≤ 1 / 12 := hvtail
-  -- Step 4: Termwise Dirichlet-series expansion of `(2π)⁻¹ ∫_ℝ g_right τ dτ` on `Re(ρ₀ + w) = 3`.
+  rw [intervalIntegral.integral_of_le (by linarith only [hR0]),
+    ← integral_add_compl (measurableSet_Ioc (a := -R) (b := R)) hg_right_int,
+    add_sub_cancel_left]
+  have ⟨B_vt, hB_vt_def⟩ : ∃ f : ℝ → ℝ, f = fun (τ : ℝ) =>
+      2 * B * Real.exp ((25 / 4) * α + (5 / 2) * Real.log Y - α * R ^ 2 / 2) *
+        Real.exp (-(α / 2) * τ ^ 2) := ⟨_, rfl⟩
+  have hB_vt_int : Integrable B_vt := by
+    rw [hB_vt_def]; exact (integrable_exp_neg_mul_sq (by positivity)).const_mul _
+  have hpt_vt : ∀ τ ∈ (Set.Ioc (-R) R)ᶜ, ‖g_right τ‖ ≤ B_vt τ := by
+    intro τ hτ
+    have hR2 : R ^ 2 ≤ τ ^ 2 := by
+      simp only [Set.mem_compl_iff, Set.mem_Ioc, not_and_or, not_lt, not_le] at hτ
+      rcases hτ with h | h <;> nlinarith only [h, hR0]
+    have hbase := hg_right_norm τ
+    have hu_inv : 1 / u_R ≤ 1 / 2 := one_div_le_one_div_of_le zero_lt_two hu_R_gt2.le
+    have hexp_vt : Real.exp (α * u_R ^ 2 + Real.log Y * u_R) * Real.exp (-α * τ ^ 2) ≤
+        Real.exp ((25 / 4) * α + (5 / 2) * Real.log Y - α * R ^ 2 / 2) *
+          Real.exp (-(α / 2) * τ ^ 2) := by
+      rw [← Real.exp_add, ← Real.exp_add]
+      apply Real.exp_le_exp.mpr
+      have hu2 : u_R ^ 2 ≤ 25 / 4 := by nlinarith only [hu_R_pos, hu_R_lt]
+      have hyu : Real.log Y * u_R ≤ (5 / 2) * Real.log Y := by
+        nlinarith only [hlogY0, hu_R_lt]
+      nlinarith only [hα, hu2, hyu, hR2]
+    rw [hB_vt_def]
+    have hbase_rw : 4 * B * (Real.exp (α * u_R ^ 2 + Real.log Y * u_R) / u_R) *
+        Real.exp (-α * τ ^ 2) =
+      4 * B * (1 / u_R) *
+        (Real.exp (α * u_R ^ 2 + Real.log Y * u_R) * Real.exp (-α * τ ^ 2)) := by ring
+    calc ‖g_right τ‖
+        ≤ 4 * B * (1 / u_R) *
+            (Real.exp (α * u_R ^ 2 + Real.log Y * u_R) * Real.exp (-α * τ ^ 2)) := by
+          linarith only [hbase, hbase_rw]
+      _ ≤ 4 * B * (1 / 2) *
+            (Real.exp ((25 / 4) * α + (5 / 2) * Real.log Y - α * R ^ 2 / 2) *
+              Real.exp (-(α / 2) * τ ^ 2)) :=
+          mul_le_mul (mul_le_mul_of_nonneg_left hu_inv (by positivity)) hexp_vt
+            (by positivity) (by positivity)
+      _ = _ := by ring
+  have hint_compl : ‖∫ τ in (Set.Ioc (-R) R)ᶜ, g_right τ‖ ≤ ∫ τ : ℝ, B_vt τ := by
+    calc ‖∫ τ in (Set.Ioc (-R) R)ᶜ, g_right τ‖
+        ≤ ∫ τ in (Set.Ioc (-R) R)ᶜ, ‖g_right τ‖ := norm_integral_le_integral_norm _
+      _ ≤ ∫ τ in (Set.Ioc (-R) R)ᶜ, B_vt τ :=
+          setIntegral_mono_on hg_right_int.norm.integrableOn hB_vt_int.integrableOn
+            measurableSet_Ioc.compl hpt_vt
+      _ ≤ ∫ τ : ℝ, B_vt τ :=
+          setIntegral_le_integral hB_vt_int
+            (Eventually.of_forall fun τ => by rw [hB_vt_def]; positivity)
+  have hint_eval : ∫ τ : ℝ, B_vt τ =
+      2 * B * Real.exp ((25 / 4) * α + (5 / 2) * Real.log Y - α * R ^ 2 / 2) *
+        Real.sqrt (2 * Real.pi / α) := by
+    rw [hB_vt_def, integral_const_mul, integral_gaussian]
+    congr 2
+    rw [div_div_eq_mul_div, mul_comm Real.pi 2]
+  rw [hint_eval] at hint_compl
+  have hcoeff : (1 / (2 * Real.pi)) * Real.sqrt (2 * Real.pi / α) ≤ 2 * (1 / Real.sqrt α) := by
+    rw [Real.sqrt_div (by positivity)]
+    have hsp : Real.sqrt (2 * Real.pi) ≤ 4 * Real.pi := by
+      have h1 : 2 * Real.pi ≤ (4 * Real.pi) ^ 2 := by
+        have hp := Real.pi_gt_three; nlinarith only [hp]
+      exact Real.sqrt_le_iff.mpr ⟨by positivity, h1⟩
+    have hdiv : Real.sqrt (2 * Real.pi) / (2 * Real.pi) ≤ 2 := by
+      rw [div_le_iff₀ (by positivity)]; linarith only [hsp]
+    calc (1 / (2 * Real.pi)) * (Real.sqrt (2 * Real.pi) / Real.sqrt α)
+        = (Real.sqrt (2 * Real.pi) / (2 * Real.pi)) * (1 / Real.sqrt α) := by ring
+      _ ≤ 2 * (1 / Real.sqrt α) := mul_le_mul_of_nonneg_right hdiv (by positivity)
+  calc (1 / (2 * Real.pi)) * ‖∫ τ in (Set.Ioc (-R) R)ᶜ, g_right τ‖
+      ≤ (1 / (2 * Real.pi)) *
+          (2 * B * Real.exp ((25 / 4) * α + (5 / 2) * Real.log Y - α * R ^ 2 / 2) *
+            Real.sqrt (2 * Real.pi / α)) :=
+        mul_le_mul_of_nonneg_left hint_compl (by positivity)
+    _ = 2 * B * Real.exp ((25 / 4) * α + (5 / 2) * Real.log Y - α * R ^ 2 / 2) *
+          ((1 / (2 * Real.pi)) * Real.sqrt (2 * Real.pi / α)) := by ring
+    _ ≤ 2 * B * Real.exp ((25 / 4) * α + (5 / 2) * Real.log Y - α * R ^ 2 / 2) *
+          (2 * (1 / Real.sqrt α)) :=
+        mul_le_mul_of_nonneg_left hcoeff (by positivity)
+    _ = 4 * B * (1 / Real.sqrt α) *
+          Real.exp ((25 / 4) * α + (5 / 2) * Real.log Y - α * R ^ 2 / 2) := by ring
+    _ ≤ 1 / 12 := hvtail
+
+theorem hasSum_mollifiedZeta_cahenMellin_right_line
+    {ρ₀ : ℂ} {u_R α Y B : ℝ} (hu_R_pos : 0 < u_R) (hα : 0 < α) (hB0 : 0 ≤ B)
+    {X : ℕ} {b : ℕ → ℂ} (hb : ∀ d ∈ Finset.Icc 1 X, ‖b d‖ ≤ B)
+    (hg_right_re : ∀ τ : ℝ, (ρ₀ + ((u_R : ℂ) + (τ : ℂ) * I)).re = 3) :
+    HasSum
+      (fun n : ℕ => if n = 0 then 0 else
+        RHTower.mollifiedZetaCoeff b X n * ((n : ℝ) : ℂ) ^ (-ρ₀) *
+          cahenMellinGauss α u_R (Real.log Y - Real.log (n : ℝ)))
+      (((1 / (2 * Real.pi) : ℝ) : ℂ) *
+        ∫ τ : ℝ, riemannZeta (ρ₀ + ((u_R : ℂ) + (τ : ℂ) * I)) *
+          RHTower.edPoly b (Finset.Icc 1 X) (ρ₀ + ((u_R : ℂ) + (τ : ℂ) * I)) *
+          cahenMellinGaussIntegrand α u_R (Real.log Y) τ) := by
   have hterm_id : ∀ (n : ℕ) (τ : ℝ), 1 ≤ n →
       LSeries.term (RHTower.mollifiedZetaCoeff b X) (ρ₀ + ((u_R : ℂ) + (τ : ℂ) * I)) n *
         cahenMellinGaussIntegrand α u_R (Real.log Y) τ =
@@ -2617,85 +2632,155 @@ theorem integral_normSq_zetaMollified_criticalLine_spike_of_zero
     rw [mul_assoc, ← Complex.exp_add]
     congr 2
     push_cast; ring
+  have ⟨F_term, hF_term_def⟩ : ∃ F : ℕ → ℝ → ℂ, F = fun (n : ℕ) (τ : ℝ) =>
+      LSeries.term (RHTower.mollifiedZetaCoeff b X) (ρ₀ + ((u_R : ℂ) + (τ : ℂ) * I)) n *
+        cahenMellinGaussIntegrand α u_R (Real.log Y) τ := ⟨_, rfl⟩
+  have hF_int : ∀ n : ℕ, Integrable (F_term n) := by
+    intro n
+    rcases Nat.eq_zero_or_pos n with rfl | hn
+    · have h0 : F_term 0 = fun _ => 0 := by ext τ; simp [hF_term_def]
+      rw [h0]; exact integrable_zero _ _ _
+    · have heq_n : F_term n = fun τ =>
+          (RHTower.mollifiedZetaCoeff b X n * ((n : ℝ) : ℂ) ^ (-ρ₀)) *
+            cahenMellinGaussIntegrand α u_R (Real.log Y - Real.log (n : ℝ)) τ := by
+        ext τ; rw [hF_term_def, hterm_id n τ hn]
+      rw [heq_n]
+      exact (integrable_cahenMellinGaussIntegrand hα hu_R_pos.ne').const_mul _
+  have hF_sum_norm : Summable (fun n : ℕ => ∫ τ : ℝ, ‖F_term n τ‖) := by
+    have ⟨C_int, hC_int_def⟩ : ∃ c : ℝ, c =
+        (Real.exp (α * u_R ^ 2 + Real.log Y * u_R) / u_R) * Real.sqrt (Real.pi / α) := ⟨_, rfl⟩
+    refine Summable.of_nonneg_of_le
+      (fun n => integral_nonneg fun _ => norm_nonneg _) (fun n => ?_)
+      ((Real.summable_one_div_nat_pow.mpr one_lt_two).mul_left (B * C_int))
+    rcases Nat.eq_zero_or_pos n with rfl | hn
+    · have h0 : (fun τ => ‖F_term 0 τ‖) = fun _ => 0 := by ext τ; simp [hF_term_def]
+      have hC_int0 : 0 ≤ C_int := by rw [hC_int_def]; positivity
+      simp [h0]; positivity
+    · have hn1 : 1 ≤ n := hn
+      have hpt_n : ∀ τ : ℝ, ‖F_term n τ‖ ≤
+          (B * (1 / (n : ℝ) ^ 2)) *
+            ((Real.exp (α * u_R ^ 2 + Real.log Y * u_R) / u_R) * Real.exp (-α * τ ^ 2)) := by
+        intro τ
+        rw [hF_term_def, norm_mul, LSeries.norm_term_eq, if_neg hn.ne', hg_right_re τ]
+        have hc := norm_mollifiedZetaCoeff_le_mul_nat hB0 hb hn1
+        have hn0 : (0 : ℝ) < n := by exact_mod_cast hn1
+        have hdiv_n : ‖RHTower.mollifiedZetaCoeff b X n‖ / (n : ℝ) ^ (3 : ℝ) ≤
+            B * (1 / (n : ℝ) ^ 2) := by
+          have hr3 : (n : ℝ) ^ (3 : ℝ) = (n : ℝ) * (n : ℝ) ^ 2 := by
+            rw [show (3 : ℝ) = (3 : ℕ) by norm_num, Real.rpow_natCast]; ring
+          rw [hr3, div_le_iff₀ (by positivity)]
+          calc ‖RHTower.mollifiedZetaCoeff b X n‖ ≤ B * (n : ℝ) := hc
+            _ = B * (1 / (n : ℝ) ^ 2) * ((n : ℝ) * (n : ℝ) ^ 2) := by field_simp; ring
+        have hcm_n := norm_cahenMellinGaussIntegrand_le (α := α) (x := Real.log Y) (τ := τ)
+          hu_R_pos.ne'
+        rw [abs_of_pos hu_R_pos] at hcm_n
+        exact mul_le_mul hdiv_n hcm_n (norm_nonneg _) (by positivity)
+      calc ∫ τ : ℝ, ‖F_term n τ‖
+          ≤ ∫ τ : ℝ, (B * (1 / (n : ℝ) ^ 2)) *
+              ((Real.exp (α * u_R ^ 2 + Real.log Y * u_R) / u_R) * Real.exp (-α * τ ^ 2)) :=
+            integral_mono_of_nonneg (Eventually.of_forall fun _ => norm_nonneg _)
+              (((integrable_exp_neg_mul_sq hα).const_mul _).const_mul _)
+              (Eventually.of_forall hpt_n)
+        _ = B * C_int * (1 / (n : ℝ) ^ 2) := by
+            rw [integral_const_mul, integral_const_mul, integral_gaussian, hC_int_def]; ring
+  have hHS := MeasureTheory.hasSum_integral_of_summable_integral_norm hF_int hF_sum_norm
+  have hg_tsum : ∀ τ : ℝ,
+      riemannZeta (ρ₀ + ((u_R : ℂ) + (τ : ℂ) * I)) *
+        RHTower.edPoly b (Finset.Icc 1 X) (ρ₀ + ((u_R : ℂ) + (τ : ℂ) * I)) *
+        cahenMellinGaussIntegrand α u_R (Real.log Y) τ = ∑' n : ℕ, F_term n τ := by
+    intro τ
+    have h1 := (hasSum_mollifiedZeta_of_one_lt_re b X
+      (by rw [hg_right_re τ]; norm_num)).mul_right
+      (cahenMellinGaussIntegrand α u_R (Real.log Y) τ)
+    rw [← h1.tsum_eq]
+    congr 1; ext n; rw [hF_term_def]
+  rw [integral_congr_ae (Eventually.of_forall hg_tsum)]
+  have hHS' := hHS.mul_left ((1 / (2 * Real.pi) : ℝ) : ℂ)
+  refine hHS'.congr_fun fun n => ?_
+  rcases Nat.eq_zero_or_pos n with rfl | hn
+  · simp [hF_term_def]
+  · rw [if_neg hn.ne']
+    have heq_n : (∫ τ : ℝ, F_term n τ) =
+        (RHTower.mollifiedZetaCoeff b X n * ((n : ℝ) : ℂ) ^ (-ρ₀)) *
+          ∫ τ : ℝ, cahenMellinGaussIntegrand α u_R (Real.log Y - Real.log (n : ℝ)) τ := by
+      rw [← integral_const_mul]
+      refine integral_congr_ae (Eventually.of_forall fun τ => ?_)
+      rw [hF_term_def, hterm_id n τ hn]
+    rw [heq_n]
+    unfold cahenMellinGauss
+    ring
+
+/-- **Localized critical-line spike from a single off-line zero (`Re ρ₀ > 1/2`).**
+Every off-line zero `ρ₀` of `ζ` in the upper half-plane (`ρ₀.im ≥ R + 1`) forces the localized
+critical-line second moment of `ζ Ψ` on `[ρ₀.im - R, ρ₀.im + R]` to be at least
+`(3/4) (ρ₀.re - 1/2) exp(-2 α (ρ₀.re - 1/2)²) Y^{2(ρ₀.re - 1/2)}` whenever the `2 ≤ n ≤ X₁`
+coefficients, the `n > X₁` Gaussian tail, and the rectangle truncation tails are bounded. -/
+theorem integral_normSq_zetaMollified_criticalLine_spike_of_zero
+    {ρ₀ : ℂ} (hζ0 : riemannZeta ρ₀ = 0) (hre : 1 / 2 < ρ₀.re)
+    {R α Y B : ℝ} (hR1 : 1 ≤ R) (hRγ : R + 1 ≤ ρ₀.im)
+    (hα : 0 < α) (hY : 1 ≤ Y) (hYα : 2 * Real.sqrt α ≤ Real.log Y) (hB : 1 ≤ B)
+    {X X₁ : ℕ} (hX : 1 ≤ X) (hX₁ : 1 ≤ X₁) (hYX₁ : Y < (X₁ : ℝ))
+    (hslope : 5 * α ≤ Real.log (X₁ : ℝ) - Real.log Y)
+    {b : ℕ → ℂ} (hb1 : b 1 = 1) (hb : ∀ d ∈ Finset.Icc 1 X, ‖b d‖ ≤ B)
+    (hshort : ∑ n ∈ Finset.Icc 2 X₁,
+      ‖RHTower.mollifiedZetaCoeff b X n‖ * (n : ℝ) ^ (-ρ₀.re) ≤ 1 / 8)
+    (htail : 2 * B * (Real.sqrt α / (Real.log (X₁ : ℝ) - Real.log Y)) *
+      (X₁ : ℝ) ^ (3 / 2 : ℝ) *
+      Real.exp (-(Real.log (X₁ : ℝ) - Real.log Y) ^ 2 / (4 * α)) ≤ 1 / 12)
+    (hvtail : 4 * B * (1 / Real.sqrt α) *
+      Real.exp ((25 / 4) * α + (5 / 2) * Real.log Y - α * R ^ 2 / 2) ≤ 1 / 12)
+    (hhoriz : 5 * B * (X : ℝ) * Real.sqrt (ρ₀.im + R + 6) *
+      Real.exp ((25 / 4) * α + (5 / 2) * Real.log Y - α * R ^ 2) ≤ 1 / 12) :
+    (3 / 4 : ℝ) * (ρ₀.re - 1 / 2) * Real.exp (-2 * α * (ρ₀.re - 1 / 2) ^ 2) *
+        Y ^ (2 * (ρ₀.re - 1 / 2)) ≤
+      ∫ t in (ρ₀.im - R)..(ρ₀.im + R),
+        ‖riemannZeta (((1 / 2 : ℝ) : ℂ) + (t : ℂ) * I) *
+          RHTower.edPoly b (Finset.Icc 1 X) (((1 / 2 : ℝ) : ℂ) + (t : ℂ) * I)‖ ^ 2 := by
+  have hre_lt1 : ρ₀.re < 1 := RHTower.riemannZeta_zero_re_lt_one hζ0
+  have ⟨δ₀, hδ₀_def⟩ : ∃ d : ℝ, d = ρ₀.re - 1 / 2 := ⟨_, rfl⟩
+  have hδ₀_pos : 0 < δ₀ := by linarith only [hδ₀_def, hre]
+  have ⟨u_R, hu_R_def⟩ : ∃ u : ℝ, u = 3 - ρ₀.re := ⟨_, rfl⟩
+  have hu_R_gt2 : 2 < u_R := by linarith only [hu_R_def, hre_lt1]
+  have hu_R_lt : u_R < 5 / 2 := by linarith only [hu_R_def, hre]
+  have hu_R_pos : 0 < u_R := by linarith only [hu_R_gt2]
+  have hR0 : 0 < R := lt_of_lt_of_le zero_lt_one hR1
+  have hY0 : 0 < Y := lt_of_lt_of_le zero_lt_one hY
+  have hlogY0 : 0 ≤ Real.log Y := Real.log_nonneg hY
+  have hB0 : 0 ≤ B := by linarith only [hB]
+  have ⟨g_right, hg_right_def⟩ : ∃ f : ℝ → ℂ, f = fun (τ : ℝ) =>
+      riemannZeta (ρ₀ + ((u_R : ℂ) + (τ : ℂ) * I)) *
+        RHTower.edPoly b (Finset.Icc 1 X) (ρ₀ + ((u_R : ℂ) + (τ : ℂ) * I)) *
+        cahenMellinGaussIntegrand α u_R (Real.log Y) τ := ⟨_, rfl⟩
+  have hg_right_app : ∀ τ : ℝ, riemannZeta (ρ₀ + ((u_R : ℂ) + (τ : ℂ) * I)) *
+      RHTower.edPoly b (Finset.Icc 1 X) (ρ₀ + ((u_R : ℂ) + (τ : ℂ) * I)) *
+      cahenMellinGaussIntegrand α u_R (Real.log Y) τ = g_right τ := fun τ => by rw [hg_right_def]
+  have hg_right_re : ∀ τ : ℝ, (ρ₀ + ((u_R : ℂ) + (τ : ℂ) * I)).re = 3 := by
+    intro τ; simp [hu_R_def]
+  have hhoriz_sum : (1 / (2 * Real.pi)) *
+      ‖(∫ τ : ℝ in (-R)..R, g_right τ) -
+        (∫ τ : ℝ in (-R)..R,
+          riemannZeta (((1 / 2 : ℝ) : ℂ) + ((ρ₀.im + τ : ℝ) : ℂ) * I) *
+            RHTower.edPoly b (Finset.Icc 1 X) (((1 / 2 : ℝ) : ℂ) + ((ρ₀.im + τ : ℝ) : ℂ) * I) *
+            cahenMellinGaussIntegrand α (-δ₀) (Real.log Y) τ)‖ ≤ 1 / 12 := by
+    have hh := horiz_edges_dslope_mollifiedZetaGauss_le hζ0 hre hre_lt1 hR1 hRγ hα hlogY0 hB0
+      hb hhoriz
+    rw [← hu_R_def, ← hδ₀_def] at hh
+    simp_rw [hg_right_app] at hh
+    exact hh
+  have hvtail_bound : (1 / (2 * Real.pi)) *
+      ‖(∫ τ : ℝ, g_right τ) - (∫ τ : ℝ in (-R)..R, g_right τ)‖ ≤ 1 / 12 := by
+    have hv := vertical_tail_mollifiedZeta_cahenMellin_le hu_R_gt2 hu_R_lt hR0 hα hlogY0 hB0
+      hb hg_right_re hvtail
+    simp_rw [hg_right_app] at hv
+    exact hv
   have hhasSum_line : HasSum
       (fun n : ℕ => if n = 0 then 0 else
         RHTower.mollifiedZetaCoeff b X n * ((n : ℝ) : ℂ) ^ (-ρ₀) *
           cahenMellinGauss α u_R (Real.log Y - Real.log (n : ℝ)))
       (((1 / (2 * Real.pi) : ℝ) : ℂ) * ∫ τ : ℝ, g_right τ) := by
-    have ⟨F_term, hF_term_def⟩ : ∃ F : ℕ → ℝ → ℂ, F = fun (n : ℕ) (τ : ℝ) =>
-        LSeries.term (RHTower.mollifiedZetaCoeff b X) (ρ₀ + ((u_R : ℂ) + (τ : ℂ) * I)) n *
-          cahenMellinGaussIntegrand α u_R (Real.log Y) τ := ⟨_, rfl⟩
-    have hF_int : ∀ n : ℕ, Integrable (F_term n) := by
-      intro n
-      rcases Nat.eq_zero_or_pos n with rfl | hn
-      · have h0 : F_term 0 = fun _ => 0 := by ext τ; simp [hF_term_def]
-        rw [h0]; exact integrable_zero _ _ _
-      · have heq_n : F_term n = fun τ =>
-            (RHTower.mollifiedZetaCoeff b X n * ((n : ℝ) : ℂ) ^ (-ρ₀)) *
-              cahenMellinGaussIntegrand α u_R (Real.log Y - Real.log (n : ℝ)) τ := by
-          ext τ; rw [hF_term_def, hterm_id n τ hn]
-        rw [heq_n]
-        exact (integrable_cahenMellinGaussIntegrand hα hu_R_pos.ne').const_mul _
-    have hF_sum_norm : Summable (fun n : ℕ => ∫ τ : ℝ, ‖F_term n τ‖) := by
-      have ⟨C_int, hC_int_def⟩ : ∃ c : ℝ, c =
-          (Real.exp (α * u_R ^ 2 + Real.log Y * u_R) / u_R) * Real.sqrt (Real.pi / α) := ⟨_, rfl⟩
-      have hC_int0 : 0 ≤ C_int := by rw [hC_int_def]; positivity
-      refine Summable.of_nonneg_of_le
-        (fun n => integral_nonneg fun _ => norm_nonneg _) (fun n => ?_)
-        ((Real.summable_one_div_nat_pow.mpr one_lt_two).mul_left (B * C_int))
-      rcases Nat.eq_zero_or_pos n with rfl | hn
-      · have h0 : (fun τ => ‖F_term 0 τ‖) = fun _ => 0 := by ext τ; simp [hF_term_def]
-        simp [h0]; positivity
-      · have hn1 : 1 ≤ n := hn
-        have hpt_n : ∀ τ : ℝ, ‖F_term n τ‖ ≤
-            (B * (1 / (n : ℝ) ^ 2)) *
-              ((Real.exp (α * u_R ^ 2 + Real.log Y * u_R) / u_R) * Real.exp (-α * τ ^ 2)) := by
-          intro τ
-          rw [hF_term_def, norm_mul, LSeries.norm_term_eq, if_neg hn.ne', hg_right_re τ]
-          have hc := norm_mollifiedZetaCoeff_le_mul_nat hB0 hb hn1
-          have hn0 : (0 : ℝ) < n := by exact_mod_cast hn1
-          have hdiv_n : ‖RHTower.mollifiedZetaCoeff b X n‖ / (n : ℝ) ^ (3 : ℝ) ≤
-              B * (1 / (n : ℝ) ^ 2) := by
-            have hr3 : (n : ℝ) ^ (3 : ℝ) = (n : ℝ) * (n : ℝ) ^ 2 := by
-              rw [show (3 : ℝ) = (3 : ℕ) by norm_num, Real.rpow_natCast]; ring
-            rw [hr3, div_le_iff₀ (by positivity)]
-            calc ‖RHTower.mollifiedZetaCoeff b X n‖ ≤ B * (n : ℝ) := hc
-              _ = B * (1 / (n : ℝ) ^ 2) * ((n : ℝ) * (n : ℝ) ^ 2) := by field_simp; ring
-          have hcm_n := norm_cahenMellinGaussIntegrand_le (α := α) (x := Real.log Y) (τ := τ)
-            hu_R_pos.ne'
-          rw [abs_of_pos hu_R_pos] at hcm_n
-          exact mul_le_mul hdiv_n hcm_n (norm_nonneg _) (by positivity)
-        calc ∫ τ : ℝ, ‖F_term n τ‖
-            ≤ ∫ τ : ℝ, (B * (1 / (n : ℝ) ^ 2)) *
-                ((Real.exp (α * u_R ^ 2 + Real.log Y * u_R) / u_R) * Real.exp (-α * τ ^ 2)) :=
-              integral_mono_of_nonneg (Eventually.of_forall fun _ => norm_nonneg _)
-                (((integrable_exp_neg_mul_sq hα).const_mul _).const_mul _)
-                (Eventually.of_forall hpt_n)
-          _ = B * C_int * (1 / (n : ℝ) ^ 2) := by
-              rw [integral_const_mul, integral_const_mul, integral_gaussian, hC_int_def]; ring
-    have hHS := MeasureTheory.hasSum_integral_of_summable_integral_norm hF_int hF_sum_norm
-    have hg_tsum : ∀ τ : ℝ, g_right τ = ∑' n : ℕ, F_term n τ := by
-      intro τ
-      have h1 := (hasSum_mollifiedZeta_of_one_lt_re b X
-        (by rw [hg_right_re τ]; norm_num)).mul_right
-        (cahenMellinGaussIntegrand α u_R (Real.log Y) τ)
-      rw [hg_right_def, ← h1.tsum_eq]
-      congr 1; ext n; rw [hF_term_def]
-    rw [integral_congr_ae (Eventually.of_forall hg_tsum)]
-    have hHS' := hHS.mul_left ((1 / (2 * Real.pi) : ℝ) : ℂ)
-    refine hHS'.congr_fun fun n => ?_
-    rcases Nat.eq_zero_or_pos n with rfl | hn
-    · simp [hF_term_def]
-    · rw [if_neg hn.ne']
-      have heq_n : (∫ τ : ℝ, F_term n τ) =
-          (RHTower.mollifiedZetaCoeff b X n * ((n : ℝ) : ℂ) ^ (-ρ₀)) *
-            ∫ τ : ℝ, cahenMellinGaussIntegrand α u_R (Real.log Y - Real.log (n : ℝ)) τ := by
-        rw [← integral_const_mul]
-        refine integral_congr_ae (Eventually.of_forall fun τ => ?_)
-        rw [hF_term_def, hterm_id n τ hn]
-      rw [heq_n]
-      unfold cahenMellinGauss
-      ring
+    have hs := hasSum_mollifiedZeta_cahenMellin_right_line (Y := Y) hu_R_pos hα hB0 hb hg_right_re
+    simp_rw [hg_right_app] at hs
+    exact hs
   -- Step 5: Isolate `n = 1` (`≥ 3/4`) and bound `2 ≤ n ≤ X₁` (`≤ 1/4`) + `n > X₁` (`≤ 1/12`).
   have hline_re_ge : 5 / 12 ≤ (((1 / (2 * Real.pi) : ℝ) : ℂ) * ∫ τ : ℝ, g_right τ).re := by
     have ⟨a_seq, ha_def⟩ : ∃ f : ℕ → ℂ, f = fun (n : ℕ) => if n = 0 then 0 else
@@ -3019,6 +3104,14 @@ theorem exp_neg_le_inv_of_pos {z : ℝ} (hz : 0 < z) : Real.exp (-z) ≤ 1 / z :
   rw [Real.exp_neg, one_div]
   exact inv_anti₀ hz (by linarith [Real.add_one_le_exp z])
 
+theorem mul_exp_neg_le_one_div_twelve {A z : ℝ} (hA : 0 ≤ A) (hz : 12 * A < z) :
+    A * Real.exp (-z) ≤ 1 / 12 := by
+  have hz0 : 0 < z := by linarith only [hA, hz]
+  calc A * Real.exp (-z)
+      ≤ A * (1 / z) := mul_le_mul_of_nonneg_left (exp_neg_le_inv_of_pos hz0) hA
+    _ = A / z := mul_one_div A z
+    _ ≤ 1 / 12 := by rw [div_le_iff₀ hz0]; linarith only [hz]
+
 theorem continuous_normSq_zetaMollified_criticalLine (b : ℕ → ℂ) (X : ℕ) :
     Continuous (fun t : ℝ =>
       ‖riemannZeta (((1 / 2 : ℝ) : ℂ) + (t : ℂ) * I) *
@@ -3034,12 +3127,12 @@ theorem integral_subinterval_le_of_cont_nonneg {f : ℝ → ℝ} (hf : Continuou
     (h0 : ∀ t, 0 ≤ f t) {a c d b : ℝ} (hac : a ≤ c) (hcd : c ≤ d) (hdb : d ≤ b) :
     (∫ t in c..d, f t) ≤ ∫ t in a..b, f t := by
   have h1 := intervalIntegral.integral_add_adjacent_intervals
-    (hf.intervalIntegrable (μ := volume) a c) (hf.intervalIntegrable (μ := volume) c b)
+    (hf.intervalIntegrable volume a c) (hf.intervalIntegrable volume c b)
   have h2 := intervalIntegral.integral_add_adjacent_intervals
-    (hf.intervalIntegrable (μ := volume) c d) (hf.intervalIntegrable (μ := volume) d b)
+    (hf.intervalIntegrable volume c d) (hf.intervalIntegrable volume d b)
   have h_ac : 0 ≤ ∫ t in a..c, f t := intervalIntegral.integral_nonneg hac fun t _ => h0 t
   have h_db : 0 ≤ ∫ t in d..b, f t := intervalIntegral.integral_nonneg hdb fun t _ => h0 t
-  linarith
+  linarith only [h1, h2, h_ac, h_db]
 
 /-- Complex-valued Möbius mollifier coefficients `b_d = μ(d)`. -/
 def moebiusMollifierCoeff (d : ℕ) : ℂ := ((ArithmeticFunction.moebius d : ℤ) : ℂ)
@@ -3122,28 +3215,26 @@ theorem finite_offLineZeros_beyond_of_dyadic_long_mollifier
     refine ⟨?_, hζ⟩
     have him := abs_le.mp (hbounded ρ hζ h0 h1 (by rwa [hδs_def]))
     rw [Complex.Rectangle, Complex.mem_reProdIm]
-    simp only [Complex.add_re, Complex.zero_re, Complex.ofReal_re, Complex.mul_re, Complex.I_re,
+    simp only [Complex.add_re, Complex.ofReal_re, Complex.mul_re, Complex.I_re,
       Complex.I_im, Complex.ofReal_im, mul_zero, sub_zero, add_zero, zero_add, Complex.one_re,
-      Complex.add_im, Complex.zero_im, Complex.mul_im, mul_one, Complex.one_im]
-    rw [Set.uIcc_of_le zero_le_one, Set.uIcc_of_le (by linarith : -T₀ ≤ T₀)]
+      Complex.add_im, Complex.mul_im, mul_one, Complex.one_im]
+    rw [Set.uIcc_of_le zero_le_one, Set.uIcc_of_le (by linarith only [hT₀_pos] : -T₀ ≤ T₀)]
     exact ⟨⟨h0.le, h1.le⟩, him⟩
   have hupper_right : ∀ ρ₀ : ℂ, riemannZeta ρ₀ = 0 → 1 / 2 + δs ≤ ρ₀.re → ρ₀.im ≤ T₀ := by
     intro ρ₀ hζ0 hre_ge
     by_contra hgt_T₀
     push Not at hgt_T₀
-    have hre_half : 1 / 2 < ρ₀.re := by linarith
+    have hre_half : 1 / 2 < ρ₀.re := by linarith only [hre_ge, hδs_pos]
     have hre_lt1 : ρ₀.re < 1 := RHTower.riemannZeta_zero_re_lt_one hζ0
     have ⟨T, hT_def⟩ : ∃ t : ℝ, t = (2 / 3) * ρ₀.im := ⟨_, rfl⟩
-    have hT_gt_exp : Real.exp L_min < T := by linarith [hT₀_def, hT_def]
+    have hT_gt_exp : Real.exp L_min < T := by linarith only [hgt_T₀, hT₀_def, hT_def]
     have hT0 : 0 < T := lt_trans (Real.exp_pos _) hT_gt_exp
     have ⟨L, hL_def⟩ : ∃ l : ℝ, l = Real.log T := ⟨_, rfl⟩
     have hL_gt : L_min < L := by
       have := Real.log_lt_log (Real.exp_pos _) hT_gt_exp
       rwa [Real.log_exp, ← hL_def] at this
-    have hL_max1 : max 100 (Real.log (max 2 T_ev) + 1) ≤ L := by
-      have h1 : max 100 (Real.log (max 2 T_ev) + 1) ≤ L_min := by
-        rw [hL_min_def]; exact le_max_left _ _
-      linarith
+    have hL_max1 : max 100 (Real.log (max 2 T_ev) + 1) ≤ L :=
+      le_trans (by rw [hL_min_def]; exact le_max_left _ _) hL_gt.le
     have hL100 : 100 ≤ L := le_trans (le_max_left _ _) hL_max1
     have hT_ge_ev : T_ev ≤ T := by
       have hlog_ev : Real.log (max 2 T_ev) < L :=
@@ -3154,9 +3245,8 @@ theorem finite_offLineZeros_beyond_of_dyadic_long_mollifier
       exact (le_max_right 2 T_ev).trans hexp_ev.le
     have hL_max2 : max (max (12 / θ_Y) ((32 + 32 * θ₁) / (θ₁ - θ_Y) ^ 2))
         (max (48 * B + 240 * B + 1)
-          (max (4 * c_R) ((4 * (C + 1) / (δs * Real.exp (-1 / 2)) + 1) / η_gap))) ≤ L := by
-      have h1 : _ ≤ L_min := by rw [hL_min_def]; exact le_max_right _ _
-      linarith
+          (max (4 * c_R) ((4 * (C + 1) / (δs * Real.exp (-1 / 2)) + 1) / η_gap))) ≤ L :=
+      le_trans (by rw [hL_min_def]; exact le_max_right _ _) hL_gt.le
     have hL_θY : 12 / θ_Y ≤ L :=
       le_trans (le_trans (le_max_left _ _) (le_max_left _ _)) hL_max2
     have hL_gap : (32 + 32 * θ₁) / (θ₁ - θ_Y) ^ 2 ≤ L :=
@@ -3180,31 +3270,31 @@ theorem finite_offLineZeros_beyond_of_dyadic_long_mollifier
       rw [hL_def, Real.rpow_def_of_pos hT0, mul_comm]
     have hθ₁L_ge : 50 ≤ θ₁ * L := by nlinarith only [hθ₁, hL100]
     have hTθ₁_ge : 50 ≤ T ^ θ₁ := by
-      rw [hTθ₁_eq]; linarith [Real.add_one_le_exp (θ₁ * L)]
+      rw [hTθ₁_eq]; linarith [Real.add_one_le_exp (θ₁ * L), hθ₁L_ge]
     have hX₁'_gt : T ^ θ₁ - 1 < (X₁' : ℝ) := by
-      rw [hX₁'_def]; have := Nat.lt_floor_add_one (T ^ θ₁); linarith
+      rw [hX₁'_def]; have h1 := Nat.lt_floor_add_one (T ^ θ₁); linarith only [h1]
     have hX₁'_ge1 : 1 ≤ X₁' := by
-      have : (2 : ℝ) < X₁' := by linarith
-      exact_mod_cast (by linarith : (1 : ℝ) ≤ X₁')
+      exact_mod_cast (by linarith only [hTθ₁_ge, hX₁'_gt] : (1 : ℝ) ≤ X₁')
     have hX₁'_half : (1 / 2) * Real.exp (θ₁ * L) ≤ (X₁' : ℝ) := by
-      have he50 : 2 ≤ Real.exp (θ₁ * L) := by linarith [Real.add_one_le_exp (θ₁ * L)]
-      rw [hTθ₁_eq] at hX₁'_gt; linarith
+      have he50 : 2 ≤ Real.exp (θ₁ * L) := by
+        linarith [Real.add_one_le_exp (θ₁ * L), hθ₁L_ge]
+      rw [hTθ₁_eq] at hX₁'_gt; linarith only [he50, hX₁'_gt]
     have ⟨Y, hY_def⟩ : ∃ y : ℝ, y = Real.exp (θ_Y * L) := ⟨_, rfl⟩
     have hθYL_ge12 : 12 ≤ θ_Y * L := by
-      have := (div_le_iff₀ hθ_Y_pos).mp hL_θY; linarith
-    have hY_ge1 : 1 ≤ Y := by rw [hY_def]; exact Real.one_le_exp (by linarith)
+      have h1 := (div_le_iff₀ hθ_Y_pos).mp hL_θY; linarith only [h1]
+    have hY_ge1 : 1 ≤ Y := by rw [hY_def]; exact Real.one_le_exp (by linarith only [hθYL_ge12])
     have hlogY : Real.log Y = θ_Y * L := by rw [hY_def, Real.log_exp]
-    have hYα : 2 * Real.sqrt 1 ≤ Real.log Y := by rw [Real.sqrt_one, hlogY]; linarith
+    have hYα : 2 * Real.sqrt 1 ≤ Real.log Y := by rw [Real.sqrt_one, hlogY]; linarith only [hθYL_ge12]
     have hlog2_le : Real.log 2 ≤ 1 := by linarith [Real.log_two_lt_d9]
     have hgap_L : 32 + 32 * θ₁ ≤ (θ₁ - θ_Y) ^ 2 * L := by
-      have hpos : 0 < (θ₁ - θ_Y) ^ 2 := sq_pos_of_pos (by linarith)
-      have := (div_le_iff₀ hpos).mp hL_gap
-      linarith
+      have hpos : 0 < (θ₁ - θ_Y) ^ 2 := sq_pos_of_pos (by linarith only [hθ_Y_lt])
+      have h1 := (div_le_iff₀ hpos).mp hL_gap
+      linarith only [h1]
     have hgap_lin : 10 ≤ (θ₁ - θ_Y) * L := by
       by_contra hlt
       push Not at hlt
-      have hpos : 0 < θ₁ - θ_Y := by linarith
-      have hmul_pos : 0 < (θ₁ - θ_Y) * L := mul_pos hpos (by linarith)
+      have hpos : 0 < θ₁ - θ_Y := by linarith only [hθ_Y_lt]
+      have hmul_pos : 0 < (θ₁ - θ_Y) * L := mul_pos hpos (by linarith only [hL100])
       have hsq : ((θ₁ - θ_Y) * L) ^ 2 < 100 := by
         nlinarith only [hlt, hmul_pos]
       have h1 : (θ₁ - θ_Y) ^ 2 * L * L = ((θ₁ - θ_Y) * L) ^ 2 := by ring
@@ -3216,32 +3306,34 @@ theorem finite_offLineZeros_beyond_of_dyadic_long_mollifier
       rw [Real.log_mul (by norm_num : (1 / 2 : ℝ) ≠ 0) (Real.exp_pos _).ne',
         Real.log_exp, hlog12] at hlog_ge
       rw [hlogY]
-      linarith
-    have hslope : 5 * (1 : ℝ) ≤ Real.log (X₁' : ℝ) - Real.log Y := by linarith
+      linarith only [hlog_ge, hlog2_le, hgap_lin]
+    have hslope : 5 * (1 : ℝ) ≤ Real.log (X₁' : ℝ) - Real.log Y := by
+      linarith only [hlogX₁'_sub, hgap_lin]
     have hYX₁' : Y < (X₁' : ℝ) := by
       have hX₁'0 : (0 : ℝ) < X₁' := by exact_mod_cast hX₁'_ge1
-      have hlt : Real.log Y < Real.log (X₁' : ℝ) := by linarith
-      exact (Real.log_lt_log_iff (by positivity) hX₁'0).mp hlt
+      have hlt : Real.log Y < Real.log (X₁' : ℝ) := by linarith only [hslope]
+      exact (Real.log_lt_log_iff (by linarith only [hY_ge1]) hX₁'0).mp hlt
     have ⟨R, hR_def⟩ : ∃ r : ℝ, r = Real.sqrt (c_R * L) := ⟨_, rfl⟩
     have hcRL_ge : 400 ≤ c_R * L := by
-      have hcR4 : 4 ≤ c_R := by rw [hc_R_def]; linarith
+      have hcR4 : 4 ≤ c_R := by rw [hc_R_def]; linarith only [hθ_pos, hθ_Y_pos]
       nlinarith only [hcR4, hL100]
     have hR1 : 1 ≤ R := by
-      rw [hR_def, Real.le_sqrt zero_le_one (by positivity)]; linarith
-    have hR2_eq : R ^ 2 = c_R * L := by rw [hR_def, Real.sq_sqrt (by positivity)]
+      rw [hR_def, Real.le_sqrt zero_le_one (by linarith only [hcRL_ge])]; linarith only [hcRL_ge]
+    have hR2_eq : R ^ 2 = c_R * L := by rw [hR_def, Real.sq_sqrt (by linarith only [hcRL_ge])]
     have hR_le_T2 : R ≤ T / 2 := by
       have hR_le_L2 : R ≤ L / 2 := by
         rw [hR_def]
         have hsq : c_R * L ≤ (L / 2) ^ 2 := by nlinarith only [hL_cR, hL100]
-        exact (Real.sqrt_le_iff.mpr ⟨by linarith, hsq⟩)
+        exact Real.sqrt_le_iff.mpr ⟨by linarith only [hL100], hsq⟩
       have hL_le_T : L ≤ T := by
-        rw [hL_def]; have := Real.log_le_sub_one_of_pos hT0; linarith
-      linarith
-    have hγ_eq : ρ₀.im = (3 / 2) * T := by linarith [hT_def]
+        rw [hL_def]; have h1 := Real.log_le_sub_one_of_pos hT0; linarith only [h1]
+      linarith only [hR_le_L2, hL_le_T]
+    have hγ_eq : ρ₀.im = (3 / 2) * T := by linarith only [hT_def]
     have hTL_ge100 : 100 ≤ T := by
-      have := Real.add_one_le_exp L
-      rw [hL_def, Real.exp_log hT0] at this; linarith
-    have hRγ : R + 1 ≤ ρ₀.im := by linarith
+      have h1 := Real.add_one_le_exp L
+      rw [hL_def, Real.exp_log hT0] at h1; linarith only [h1, hL100]
+    have hRγ : R + 1 ≤ ρ₀.im := by linarith only [hR_le_T2, hγ_eq, hTL_ge100]
+    have hB0 : 0 ≤ B := by linarith only [hB]
     have hshort' : ∑ n ∈ Finset.Icc 2 X₁',
         ‖RHTower.mollifiedZetaCoeff b X n‖ * (n : ℝ) ^ (-ρ₀.re) ≤ 1 / 8 := by
       have h0 : ∑ n ∈ Finset.Icc 2 X₁',
@@ -3249,13 +3341,13 @@ theorem finite_offLineZeros_beyond_of_dyadic_long_mollifier
         refine Finset.sum_eq_zero fun n hn => ?_
         obtain ⟨hn2, hnX⟩ := Finset.mem_Icc.mp hn
         rw [hshort_zero n (Finset.mem_Icc.mpr ⟨hn2, hnX.trans hX₁'_le_X₁⟩), norm_zero, zero_mul]
-      linarith
+      linarith only [h0]
     have htail' : 2 * B * (Real.sqrt 1 / (Real.log (X₁' : ℝ) - Real.log Y)) *
         (X₁' : ℝ) ^ (3 / 2 : ℝ) *
         Real.exp (-(Real.log (X₁' : ℝ) - Real.log Y) ^ 2 / (4 * 1)) ≤ 1 / 12 := by
       rw [Real.sqrt_one]
       have hdiv_le : 1 / (Real.log (X₁' : ℝ) - Real.log Y) ≤ 1 :=
-        div_le_one_of_le₀ (by linarith) (by linarith)
+        div_le_one_of_le₀ (by linarith only [hslope]) (by linarith only [hslope])
       have hX₁'_rpow : (X₁' : ℝ) ^ (3 / 2 : ℝ) ≤ Real.exp ((3 / 2) * θ₁ * L) := by
         calc (X₁' : ℝ) ^ (3 / 2 : ℝ)
             ≤ (Real.exp (θ₁ * L)) ^ (3 / 2 : ℝ) := by
@@ -3264,16 +3356,15 @@ theorem finite_offLineZeros_beyond_of_dyadic_long_mollifier
               rw [← Real.exp_mul]; congr 1; ring
       have hsq_ge : (1 / 4) * ((θ₁ - θ_Y) ^ 2 * L ^ 2) ≤
           (Real.log (X₁' : ℝ) - Real.log Y) ^ 2 := by
-        have h1 := pow_le_pow_left₀ (by positivity) hlogX₁'_sub 2
-        linarith [show ((1 / 2) * ((θ₁ - θ_Y) * L)) ^ 2 =
-          (1 / 4) * ((θ₁ - θ_Y) ^ 2 * L ^ 2) by ring]
+        have h1 := pow_le_pow_left₀ (by linarith only [hgap_lin]) hlogX₁'_sub 2
+        have eq1 : ((1 / 2) * ((θ₁ - θ_Y) * L)) ^ 2 = (1 / 4) * ((θ₁ - θ_Y) ^ 2 * L ^ 2) := by ring
+        linarith only [h1, eq1]
       have hexp_arg : (3 / 2) * θ₁ * L - (Real.log (X₁' : ℝ) - Real.log Y) ^ 2 / 4 ≤ -L := by
-        have hmulL := mul_le_mul_of_nonneg_right hgap_L (by linarith : 0 ≤ L)
+        have hmulL := mul_le_mul_of_nonneg_right hgap_L (by linarith only [hL100] : 0 ≤ L)
         have h1 : (32 + 32 * θ₁) * L = (16 : ℝ) * ((2 + 2 * θ₁) * L) := by ring
         have h2 : (θ₁ - θ_Y) ^ 2 * L * L = (θ₁ - θ_Y) ^ 2 * L ^ 2 := by ring
         rw [h1, h2] at hmulL
-        have hθ₁L_pos : 0 < θ₁ * L := by positivity
-        linarith
+        linarith only [hmulL, hsq_ge, hθ₁L_ge]
       calc 2 * B * (1 / (Real.log (X₁' : ℝ) - Real.log Y)) *
             (X₁' : ℝ) ^ (3 / 2 : ℝ) *
             Real.exp (-(Real.log (X₁' : ℝ) - Real.log Y) ^ 2 / (4 * 1))
@@ -3281,34 +3372,27 @@ theorem finite_offLineZeros_beyond_of_dyadic_long_mollifier
               Real.exp (-(Real.log (X₁' : ℝ) - Real.log Y) ^ 2 / 4) := by
             rw [mul_one]
             refine mul_le_mul_of_nonneg_right ?_ (Real.exp_pos _).le
-            refine mul_le_mul ?_ hX₁'_rpow (by positivity) (by positivity)
-            exact mul_le_mul_of_nonneg_left hdiv_le (by positivity)
+            refine mul_le_mul (mul_le_mul_of_nonneg_left hdiv_le (by linarith only [hB0]))
+              hX₁'_rpow (Real.rpow_nonneg (Nat.cast_nonneg _) _) (by linarith only [hB0])
         _ = 2 * B * Real.exp ((3 / 2) * θ₁ * L -
               (Real.log (X₁' : ℝ) - Real.log Y) ^ 2 / 4) := by
             rw [mul_one, mul_assoc, ← Real.exp_add]; congr 2; ring
         _ ≤ 2 * B * Real.exp (-L) :=
-            mul_le_mul_of_nonneg_left (Real.exp_le_exp.mpr hexp_arg) (by positivity)
-        _ ≤ 2 * B * (1 / L) :=
-            mul_le_mul_of_nonneg_left (exp_neg_le_inv_of_pos (by linarith)) (by positivity)
-        _ ≤ 1 / 12 := by
-            rw [mul_one_div, div_le_iff₀ (by linarith)]
-            linarith
+            mul_le_mul_of_nonneg_left (Real.exp_le_exp.mpr hexp_arg) (by linarith only [hB0])
+        _ ≤ 1 / 12 :=
+            mul_exp_neg_le_one_div_twelve (by linarith only [hB0]) (by linarith only [hB0, hL_B])
     have hvtail' : 4 * B * (1 / Real.sqrt 1) *
         Real.exp ((25 / 4) * 1 + (5 / 2) * Real.log Y - 1 * R ^ 2 / 2) ≤ 1 / 12 := by
       rw [Real.sqrt_one, div_one, mul_one]
       have hexp_arg : (25 / 4) * 1 + (5 / 2) * Real.log Y - 1 * R ^ 2 / 2 ≤ -L := by
         rw [hlogY, hR2_eq, hc_R_def]
-        have h1 : 0 < θ * L := by positivity
-        have h2 : 0 < θ_Y * L := by positivity
-        linarith
+        have h1 : 0 ≤ θ * L := mul_nonneg hθ_pos.le (by linarith only [hL100])
+        linarith only [h1, hθYL_ge12, hL100]
       calc 4 * B * Real.exp ((25 / 4) * 1 + (5 / 2) * Real.log Y - 1 * R ^ 2 / 2)
           ≤ 4 * B * Real.exp (-L) :=
-            mul_le_mul_of_nonneg_left (Real.exp_le_exp.mpr hexp_arg) (by positivity)
-        _ ≤ 4 * B * (1 / L) :=
-            mul_le_mul_of_nonneg_left (exp_neg_le_inv_of_pos (by linarith)) (by positivity)
-        _ ≤ 1 / 12 := by
-            rw [mul_one_div, div_le_iff₀ (by linarith)]
-            linarith
+            mul_le_mul_of_nonneg_left (Real.exp_le_exp.mpr hexp_arg) (by linarith only [hB0])
+        _ ≤ 1 / 12 :=
+            mul_exp_neg_le_one_div_twelve (by linarith only [hB0]) (by linarith only [hB0, hL_B])
     have hhoriz' : 5 * B * (X : ℝ) * Real.sqrt (ρ₀.im + R + 6) *
         Real.exp ((25 / 4) * 1 + (5 / 2) * Real.log Y - 1 * R ^ 2) ≤ 1 / 12 := by
       have hX_exp : (X : ℝ) ≤ Real.exp (θ * L) := by
@@ -3320,27 +3404,24 @@ theorem finite_offLineZeros_beyond_of_dyadic_long_mollifier
         nlinarith only [hγ_eq, hR_le_T2, hTL_ge100]
       have hexp_arg : θ * L + L + ((25 / 4) * 1 + (5 / 2) * Real.log Y - 1 * R ^ 2) ≤ -L := by
         rw [hlogY, hR2_eq, hc_R_def]
-        have h1 : 0 < θ * L := by positivity
-        have h2 : 0 < θ_Y * L := by positivity
-        linarith
+        have h1 : 0 ≤ θ * L := mul_nonneg hθ_pos.le (by linarith only [hL100])
+        linarith only [h1, hθYL_ge12, hL100]
       calc 5 * B * (X : ℝ) * Real.sqrt (ρ₀.im + R + 6) *
             Real.exp ((25 / 4) * 1 + (5 / 2) * Real.log Y - 1 * R ^ 2)
           ≤ 5 * B * Real.exp (θ * L) * Real.exp L *
               Real.exp ((25 / 4) * 1 + (5 / 2) * Real.log Y - 1 * R ^ 2) := by
             refine mul_le_mul_of_nonneg_right ?_ (Real.exp_pos _).le
-            exact mul_le_mul (mul_le_mul_of_nonneg_left hX_exp (by positivity))
-              hsqrt_le (Real.sqrt_nonneg _) (by positivity)
+            exact mul_le_mul (mul_le_mul_of_nonneg_left hX_exp (by linarith only [hB0]))
+              hsqrt_le (Real.sqrt_nonneg _)
+              (mul_nonneg (by linarith only [hB0]) (Real.exp_pos _).le)
         _ = 5 * B * Real.exp (θ * L + L +
               ((25 / 4) * 1 + (5 / 2) * Real.log Y - 1 * R ^ 2)) := by
             rw [mul_assoc (5 * B), mul_assoc (5 * B), ← Real.exp_add, ← Real.exp_add]
             congr 2; ring
         _ ≤ 5 * B * Real.exp (-L) :=
-            mul_le_mul_of_nonneg_left (Real.exp_le_exp.mpr hexp_arg) (by positivity)
-        _ ≤ 5 * B * (1 / L) :=
-            mul_le_mul_of_nonneg_left (exp_neg_le_inv_of_pos (by linarith)) (by positivity)
-        _ ≤ 1 / 12 := by
-            rw [mul_one_div, div_le_iff₀ (by linarith)]
-            linarith
+            mul_le_mul_of_nonneg_left (Real.exp_le_exp.mpr hexp_arg) (by linarith only [hB0])
+        _ ≤ 1 / 12 :=
+            mul_exp_neg_le_one_div_twelve (by linarith only [hB0]) (by linarith only [hB0, hL_B])
     have hspike := integral_normSq_zetaMollified_criticalLine_spike_of_zero hζ0 hre_half
       hR1 hRγ zero_lt_one hY_ge1 hYα hB hX1 hX₁'_ge1 hYX₁' hslope hb1 hb_le
       hshort' htail' hvtail' hhoriz'
@@ -3608,6 +3689,7 @@ theorem riemannHypothesis_of_cofinal_long_mollifier
   have hYX₁' : Y < (X₁' : ℝ) := by
     have hX₁'0 : (0 : ℝ) < X₁' := by exact_mod_cast hX₁'_ge1
     exact (Real.log_lt_log_iff (by positivity) hX₁'0).mp (by linarith)
+  have hB0 : 0 ≤ B := by linarith only [hB]
   have hshort' : ∑ n ∈ Finset.Icc 2 X₁',
       ‖RHTower.mollifiedZetaCoeff b X n‖ * (n : ℝ) ^ (-ρ₀.re) ≤ 1 / 8 := by
     have h0 : ∑ n ∈ Finset.Icc 2 X₁',
@@ -3615,7 +3697,7 @@ theorem riemannHypothesis_of_cofinal_long_mollifier
       refine Finset.sum_eq_zero fun n hn => ?_
       obtain ⟨hn2, hnX⟩ := Finset.mem_Icc.mp hn
       rw [hshort_zero n (Finset.mem_Icc.mpr ⟨hn2, hnX.trans hX₁'_le_X₁⟩), norm_zero, zero_mul]
-    linarith
+    linarith only [h0]
   have htail' : 2 * B * (Real.sqrt α / (Real.log (X₁' : ℝ) - Real.log Y)) *
       (X₁' : ℝ) ^ (3 / 2 : ℝ) *
       Real.exp (-(Real.log (X₁' : ℝ) - Real.log Y) ^ 2 / (4 * α)) ≤ 1 / 12 := by
@@ -3623,66 +3705,60 @@ theorem riemannHypothesis_of_cofinal_long_mollifier
       refine Real.sqrt_le_iff.mpr ⟨hα_pos.le, ?_⟩
       nlinarith only [hα_ge1]
     have hdiv_le : Real.sqrt α / (Real.log (X₁' : ℝ) - Real.log Y) ≤ 1 :=
-      div_le_one_of_le₀ (hsqrt_le.trans (by linarith)) (by linarith)
+      div_le_one_of_le₀ (hsqrt_le.trans (by linarith only [hslope, hα_pos]))
+        (by linarith only [hslope, hα_pos])
     have hX₁'_rpow : (X₁' : ℝ) ^ (3 / 2 : ℝ) ≤ Real.exp ((9 / 8) * L₀) := by
       calc (X₁' : ℝ) ^ (3 / 2 : ℝ)
           ≤ (Real.exp ((3 / 4) * L₀)) ^ (3 / 2 : ℝ) := by
             rw [← hT34_eq]; exact Real.rpow_le_rpow (Nat.cast_nonneg _) hX₁'_le_r (by norm_num)
         _ = Real.exp ((9 / 8) * L₀) := by rw [← Real.exp_mul]; congr 1; ring
     have hsq_ge : ((7 / 10) * L₀) ^ 2 ≤ (Real.log (X₁' : ℝ) - Real.log Y) ^ 2 :=
-      pow_le_pow_left₀ (by linarith) hlogX₁'_sub 2
+      pow_le_pow_left₀ (by linarith only [hL₀_20000]) hlogX₁'_sub 2
     have hexp_arg : (9 / 8) * L₀ - (Real.log (X₁' : ℝ) - Real.log Y) ^ 2 / (4 * α) ≤
-        -(1 / 4) * L₀ := by
+        -((1 / 4) * L₀) := by
       have hdiv_ge : (49 / 34) * L₀ ≤ (Real.log (X₁' : ℝ) - Real.log Y) ^ 2 / (4 * α) := by
-        rw [le_div_iff₀ (by positivity), hα_def]
+        rw [le_div_iff₀ (mul_pos (by norm_num) hα_pos), hα_def]
         nlinarith only [hsq_ge]
-      linarith
+      linarith only [hdiv_ge, hL₀_20000]
     calc 2 * B * (Real.sqrt α / (Real.log (X₁' : ℝ) - Real.log Y)) *
           (X₁' : ℝ) ^ (3 / 2 : ℝ) *
           Real.exp (-(Real.log (X₁' : ℝ) - Real.log Y) ^ 2 / (4 * α))
         ≤ 2 * B * 1 * Real.exp ((9 / 8) * L₀) *
             Real.exp (-(Real.log (X₁' : ℝ) - Real.log Y) ^ 2 / (4 * α)) := by
           refine mul_le_mul_of_nonneg_right ?_ (Real.exp_pos _).le
-          refine mul_le_mul (mul_le_mul_of_nonneg_left hdiv_le (by positivity))
-            hX₁'_rpow (by positivity) (by positivity)
+          refine mul_le_mul (mul_le_mul_of_nonneg_left hdiv_le (by linarith only [hB0]))
+            hX₁'_rpow (Real.rpow_nonneg (Nat.cast_nonneg _) _) (by linarith only [hB0])
       _ = 2 * B * Real.exp ((9 / 8) * L₀ -
             (Real.log (X₁' : ℝ) - Real.log Y) ^ 2 / (4 * α)) := by
           rw [mul_one, mul_assoc, ← Real.exp_add]; congr 2; ring
-      _ ≤ 2 * B * Real.exp (-((1 / 4) * L₀)) := by
-          refine mul_le_mul_of_nonneg_left (Real.exp_le_exp.mpr ?_) (by positivity)
-          linarith
-      _ ≤ 2 * B * (1 / ((1 / 4) * L₀)) :=
-          mul_le_mul_of_nonneg_left (exp_neg_le_inv_of_pos (by linarith)) (by positivity)
-      _ ≤ 1 / 12 := by
-          have eq1 : 2 * B * (1 / ((1 / 4) * L₀)) = 8 * B / L₀ := by ring
-          rw [eq1, div_le_iff₀ (by linarith)]
-          linarith
+      _ ≤ 2 * B * Real.exp (-((1 / 4) * L₀)) :=
+          mul_le_mul_of_nonneg_left (Real.exp_le_exp.mpr hexp_arg) (by linarith only [hB0])
+      _ ≤ 1 / 12 :=
+          mul_exp_neg_le_one_div_twelve (by linarith only [hB0])
+            (by linarith only [hB0, hM_γ_pos, hL₀_BM])
   have hvtail' : 4 * B * (1 / Real.sqrt α) *
       Real.exp ((25 / 4) * α + (5 / 2) * Real.log Y - α * (9 / 2 : ℝ) ^ 2 / 2) ≤ 1 / 12 := by
     have hinv_le : 1 / Real.sqrt α ≤ 1 :=
-      div_le_one_of_le₀ (Real.le_sqrt_of_sq_le (by linarith)) (Real.sqrt_nonneg _)
+      div_le_one_of_le₀ (Real.le_sqrt_of_sq_le (by linarith only [hα_ge1])) (Real.sqrt_nonneg _)
     have hexp_arg : (25 / 4) * α + (5 / 2) * Real.log Y - α * (9 / 2 : ℝ) ^ 2 / 2 ≤
         -((1 / 5) * L₀) := by
-      rw [hα_def, hlogY]; linarith
+      rw [hα_def, hlogY]; linarith only [hL₀_20000]
     calc 4 * B * (1 / Real.sqrt α) *
           Real.exp ((25 / 4) * α + (5 / 2) * Real.log Y - α * (9 / 2 : ℝ) ^ 2 / 2)
-        ≤ 4 * B * 1 * Real.exp (-((1 / 5) * L₀)) := by
-          exact mul_le_mul (mul_le_mul_of_nonneg_left hinv_le (by positivity))
-            (Real.exp_le_exp.mpr hexp_arg) (Real.exp_pos _).le (by positivity)
-      _ ≤ 4 * B * (1 / ((1 / 5) * L₀)) := by
-          rw [mul_one]
-          exact mul_le_mul_of_nonneg_left (exp_neg_le_inv_of_pos (by linarith)) (by positivity)
-      _ ≤ 1 / 12 := by
-          have eq1 : 4 * B * (1 / ((1 / 5) * L₀)) = 20 * B / L₀ := by ring
-          rw [eq1, div_le_iff₀ (by linarith)]
-          linarith
+        ≤ 4 * B * 1 * Real.exp (-((1 / 5) * L₀)) :=
+          mul_le_mul (mul_le_mul_of_nonneg_left hinv_le (by linarith only [hB0]))
+            (Real.exp_le_exp.mpr hexp_arg) (Real.exp_pos _).le (by linarith only [hB0])
+      _ = 4 * B * Real.exp (-((1 / 5) * L₀)) := by rw [mul_one]
+      _ ≤ 1 / 12 :=
+          mul_exp_neg_le_one_div_twelve (by linarith only [hB0])
+            (by linarith only [hB0, hM_γ_pos, hL₀_BM])
   have hhoriz' : 5 * B * (X : ℝ) * Real.sqrt (ρ₀.im + 9 / 2 + 6) *
       Real.exp ((25 / 4) * α + (5 / 2) * Real.log Y - α * (9 / 2 : ℝ) ^ 2) ≤ 1 / 12 := by
     have hX_exp : (X : ℝ) ≤ Real.exp L₀ := by
       rw [hL₀_def, ← Real.rpow_def_of_pos hT0, mul_comm]; exact hX_le
     have hexp_arg : L₀ + ((25 / 4) * α + (5 / 2) * Real.log Y - α * (9 / 2 : ℝ) ^ 2) ≤
         -((1 / 20) * L₀) := by
-      rw [hα_def, hlogY]; linarith
+      rw [hα_def, hlogY]; linarith only [hL₀_20000]
     calc 5 * B * (X : ℝ) * Real.sqrt (ρ₀.im + 9 / 2 + 6) *
           Real.exp ((25 / 4) * α + (5 / 2) * Real.log Y - α * (9 / 2 : ℝ) ^ 2)
         = M_γ * ((X : ℝ) *
@@ -3696,12 +3772,8 @@ theorem riemannHypothesis_of_cofinal_long_mollifier
           rw [← Real.exp_add]
       _ ≤ M_γ * Real.exp (-((1 / 20) * L₀)) :=
           mul_le_mul_of_nonneg_left (Real.exp_le_exp.mpr hexp_arg) hM_γ_pos.le
-      _ ≤ M_γ * (1 / ((1 / 20) * L₀)) :=
-          mul_le_mul_of_nonneg_left (exp_neg_le_inv_of_pos (by linarith)) hM_γ_pos.le
-      _ ≤ 1 / 12 := by
-          have eq1 : M_γ * (1 / ((1 / 20) * L₀)) = 20 * M_γ / L₀ := by ring
-          rw [eq1, div_le_iff₀ (by linarith)]
-          linarith
+      _ ≤ 1 / 12 :=
+          mul_exp_neg_le_one_div_twelve hM_γ_pos.le (by linarith only [hB0, hM_γ_pos, hL₀_BM])
   have hspike := integral_normSq_zetaMollified_criticalLine_spike_of_zero hζ0 hre_half
     (R := 9 / 2) (by norm_num) (by linarith) hα_pos hY_ge1 hYα hB hX1 hX₁'_ge1 hYX₁' hslope
     hb1 hb_le hshort' htail' hvtail' hhoriz'
