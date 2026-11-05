@@ -35,21 +35,14 @@ the number of prime factors of its squarefree product. These combinatorial proof
 are formalized. Transitive axiom checks contain only
 `propext`, `Classical.choice`, and `Quot.sound`.
 
-## Remaining topological sketch
+## Homotopy equivalence and remaining homology calculation
 
-The required topological step is the homotopy equivalence obtained by collapsing the
-contractible star, identifying the quotient with the wedge of those simplex-boundary
-quotients. This step and the resulting integral homology calculation remain unformalized;
-an alternating face count alone does not establish either claim.
+The [wedge decomposition](../3-formalized/bjorner-wedge-realization.md) is formalized in
+`HodgeTheoryWithoutVarieties/SquarefreePrimeComplexIsASphereBouquet.lean`:
+`primeComplexSphereBouquetHomotopyEquiv` constructs the equivalence to literal Euclidean
+spheres, with the exact arithmetic indices and dimensions. Compatible boundary contractions
+and finite closed-face gluing supply both inverse homotopies. The empty realization for
+`N<2` is also proved.
 
-An explicit extension of the star contraction is a possible route to the topological step.
-On a complementary simplex with `k` vertices, write `x = r b + (1-r)y`, where `b` is
-its barycenter, `r = k minᵢ xᵢ`, and `y` lies on its boundary. Put `rₜ = (1+t)r-t`.
-For `rₜ ≥ 0`, use `rₜ b + (1-rₜ)y`; for `rₜ ≤ 0`, use
-`(-rₜ)e₂ + (1+rₜ)y`. The formulas agree at `rₜ = 0` and restrict on the boundary
-to `(1-t)y + t e₂`. The barycenter stays fixed; the formula involving `y` is only
-needed away from it. At `t=1` the entire star would be collapsed.
-
-This is a sketch, not a complete paper proof: continuity at the seam and barycenter,
-finite-face gluing, quotient descent, wedge identification, and integral homology
-still require proofs.
+The separate identification of the integral reduced homology groups with free abelian
+groups of the stated ranks remains unformalized.

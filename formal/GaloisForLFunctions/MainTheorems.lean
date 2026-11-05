@@ -71,3 +71,5 @@ import GaloisForLFunctions.SignedWindowCriticality
 import GaloisForLFunctions.ThetaCuspSections
 import GaloisForLFunctions.ZeroConfigurationGeometry
 import GaloisForLFunctions.KodairaParshinAbc
+import GaloisForLFunctions.WindowVisibilityLaw
+import GaloisForLFunctions.FiniteFreeProbability

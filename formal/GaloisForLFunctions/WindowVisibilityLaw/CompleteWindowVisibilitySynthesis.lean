@@ -154,10 +154,10 @@ theorem onsetAperture_perturbedOffLineLatticeConfig_eq {L δ : ℝ} (hL : 0 < L)
     have hZ : TemperedConfig Z := temperedConfig_perturbedOffLineLatticeConfig hL hδ hδ' ε hε
     set ν : Unit → ℤ → ℂ := fun _ k => (((k : ℝ) * (2 * π / L) + ε k : ℝ) : ℂ) - I * δ
     have hν : ∀ j ∈ ({()} : Finset Unit), ∀ k : ℤ,
-        ‖ν j k - k * (2 * π / L)‖ ≤ π / (2 * L) + 1 / 2 := by
-      intro _ _ k
-      have heq : ν () k - (k : ℂ) * ((2 * π / L : ℝ) : ℂ) = (ε k : ℂ) - I * (δ : ℂ) := by
-        dsimp [ν]; push_cast; ring
+        ‖ν j k - k * ((2 * π / L : ℝ) : ℂ)‖ ≤ π / (2 * L) + 1 / 2 := by
+      intro j _ k
+      have heq : ν j k - (k : ℂ) * ((2 * π / L : ℝ) : ℂ) = (ε k : ℂ) - I * (δ : ℂ) := by
+        dsimp only [ν]; push_cast; ring
       rw [heq]
       calc ‖(ε k : ℂ) - I * (δ : ℂ)‖
           ≤ ‖(ε k : ℂ)‖ + ‖I * (δ : ℂ)‖ := norm_sub_le _ _
@@ -181,8 +181,9 @@ theorem onsetAperture_perturbedOffLineLatticeConfig_eq {L δ : ℝ} (hL : 0 < L)
         dsimp [ν]
         simp only [map_sub, Complex.conj_ofReal, map_mul, Complex.conj_I]
         push_cast; ring
-    have hρ₀ : offLinePoint δ ((0 : ℝ) * (2 * π / L) + ε 0) ∈ Z.carrier := Or.inl ⟨0, rfl⟩
-    have hoff : (offLinePoint δ ((0 : ℝ) * (2 * π / L) + ε 0)).re ≠ 1 / 2 := by
+    have hρ₀ : offLinePoint δ (((0 : ℤ) : ℝ) * (2 * π / L) + ε 0) ∈ Z.carrier :=
+      Or.inl ⟨0, rfl⟩
+    have hoff : (offLinePoint δ (((0 : ℤ) : ℝ) * (2 * π / L) + ε 0)).re ≠ 1 / 2 := by
       simp only [offLinePoint]; linarith
     have hbound := onsetAperture_le_half_pi_density_of_all_offLine_columns hZ ({()} : Finset Unit)
       (fun _ => 2 * π / L) (fun _ => π / (2 * L) + 1 / 2) (fun _ _ => by positivity)
@@ -221,7 +222,7 @@ theorem shallow_coherence_vs_nonlattice_hiding_dichotomy :
         WindowPositiveAt Z a ∧ (a : EReal) ≤ onsetAperture Z) :=
   ⟨fun k hk {_ _} hL hδ hδ' γ₀ hk1 hk2 {_} ha haL hsub =>
       dci_admissible_coherent_cluster_visible_at_sub_depth k hk hL hδ hδ' γ₀ hk1 hk2 ha haL hsub,
-    fun hZ hL ha haL hσ m₀ hsub hmult hdepth hW hhide =>
+    fun {_} hZ {_ _ _ _} hL ha haL hσ m₀ hsub hmult hdepth hW hhide =>
       windowPositiveAt_of_onLineLattice_and_offLineDepthMass hZ hL ha haL hσ m₀ hsub hmult hdepth
         hW hhide⟩
 
@@ -250,7 +251,7 @@ theorem aperture_height_duality_shielded_vs_unshielded :
         (verticalLatticePoint L (1 / a) k₀).re - 1 / 2 = 1 / a ∧
         {ρ ∈ Z.carrier | ρ.re ≠ 1 / 2}.Finite ∧
         WindowPositiveAt Z a ∧ (a : EReal) ≤ onsetAperture Z) :=
-  ⟨fun Z hA₀ hloc hδ hδ' hδa hσ hpos S hSne hSc hSδ hSγ hsea =>
+  ⟨fun Z {_} hA₀ hloc {_ _ _ _} hδ hδ' hδa hσ hpos S hSne hSc hSδ hSγ hsea =>
       windowPositiveAt_global_sea_cluster_bound Z hA₀ hloc hδ hδ' hδa hσ hpos S hSne hSc hSδ hSγ
         hsea,
     fun ha2 haL k₀ => exists_hidden_inv_aperture_zero_above_single_exp ha2 haL k₀⟩
@@ -276,10 +277,11 @@ theorem split_column_and_perturbed_lattice_dichotomy :
       (hε : ∀ k : ℤ, |ε k| ≤ π / (2 * L)), Summable (fun k : ℤ => |ε k|) →
       2 * L * Real.exp (δ * L) * (∑' k : ℤ, |ε k|) ≤ 1 →
       onsetAperture (perturbedOffLineLatticeConfig hL hδ hδ' ε hε) = ((L / 2 : ℝ) : EReal)) :=
-  ⟨fun hg hℓ hδ hδ' hsmall => onsetAperture_mixedGenusColumnConfig_eq hg hℓ hδ hδ' hsmall,
+  ⟨fun {_} hg {_ _} hℓ hδ hδ' hsmall =>
+      onsetAperture_mixedGenusColumnConfig_eq hg hℓ hδ hδ' hsmall,
     fun hL hδ hδ' hε hεL haL hδa hdet =>
       onsetAperture_singleDefectOffLineLattice_lt hL hδ hδ' hε hεL haL hδa hdet,
-    fun hL hδ hδ' hε hsum hridge =>
+    fun {_ _} hL hδ hδ' {_} hε hsum hridge =>
       onsetAperture_perturbedOffLineLatticeConfig_eq hL hδ hδ' hε hsum hridge⟩
 
 /-- **Unconditional `ζ` package of programme consequences (`P1`, `AHD`, `B18`, `B21`, `Σ28`).**

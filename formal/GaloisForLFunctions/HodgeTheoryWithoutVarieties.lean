@@ -17,6 +17,9 @@ import GaloisForLFunctions.HodgeTheoryWithoutVarieties.TheSignGaugeOnDeepStars
 import GaloisForLFunctions.HodgeTheoryWithoutVarieties.TheConductorsAreMoebiusGluedStars
 import GaloisForLFunctions.HodgeTheoryWithoutVarieties.TheConductorGramIsGradedByTheLcm
 import GaloisForLFunctions.HodgeTheoryWithoutVarieties.TheCrossConductorPairings
+import GaloisForLFunctions.HodgeTheoryWithoutVarieties.CompatibleSimplexContractions
+import GaloisForLFunctions.HodgeTheoryWithoutVarieties.FiniteConeComplexesHaveSphereBouquets
+import GaloisForLFunctions.HodgeTheoryWithoutVarieties.SquarefreePrimeComplexIsASphereBouquet
 
 /-!
 # Hodge Theory without Varieties over ℤ
@@ -30,6 +33,7 @@ candidates; the Möbius gluing of the stars, the recursion of the renormalized p
 the nerve, the gcd stratification of the complete Weil family, the shell balance law on the
 coherent sector, the layers of a prime (the Künneth step at the horizon), the sign gauge on
 deep stars, the Möbius duality between conductors and stars, its lcm grading, and the
-cross-conductor pairings.
+cross-conductor pairings; and the homotopy equivalence between the squarefree prime complex
+and its wedge of spheres indexed by odd squarefree integers in the upper half-window.
 See `HodgeTheoryWithoutVarieties/README.md`.
 -/

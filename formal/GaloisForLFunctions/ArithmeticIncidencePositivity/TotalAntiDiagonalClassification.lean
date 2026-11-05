@@ -336,4 +336,8 @@ theorem totalAntiDiagonalKernel_midpoint_nonpos {n : ℕ} (hn : 2 ≤ n)
     (h : n ∉ totalDominatedModuli) : totalAntiDiagonalKernel n (Real.log n / 2) ≤ 0 := by
   rw [← not_lt, totalAntiDiagonalKernel_midpoint_pos_iff_mem hn]; exact h
 
+#print axioms total_midpoint_inequality_iff
+#print axioms totalAntiDiagonalKernel_pos_forall_iff
+#print axioms totalAntiDiagonalKernel_midpoint_nonpos
+
 end GaloisForLFunctions.ArithmeticIncidencePositivity

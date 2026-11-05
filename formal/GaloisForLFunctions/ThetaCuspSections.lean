@@ -44,10 +44,16 @@ At scale thirty-two the quartic repair fails semidefiniteness at every
 critical aperture. Its base scalar capacity satisfies `0 < τ < 27/35`;
 the literal aperture capacity is `τ/α`, with `67/70 ≤ α ≤ 1`, hence is
 at most `70τ/67 < 54/67`. Both capacities have singular semidefinite endpoints.
+Truncating the quartic flux at its double zero preserves every mixed entry.
+The complete native source pays the quartic cross-load `(3/20)Kq⁴` from scale
+seven onward, making the truncated weighted source positive at every positive aperture.
 Every individual theta atom has a strict fifth even section at reflection scale at least five.
+From scale three, four retained atoms leave normalized Gaussian entry error at most
+`1/100000`, hence quadratic error at most `1/20000`.
 -/
 import GaloisForLFunctions.ThetaCuspSections.FifthEvenLeadingPairReserve
 import GaloisForLFunctions.ThetaCuspSections.FifthEvenThreeAtomRemainder
+import GaloisForLFunctions.ThetaCuspSections.FifthEvenFourAtomRemainder
 import GaloisForLFunctions.ThetaCuspSections.FifthEvenNativeRay
 import GaloisForLFunctions.ThetaCuspSections.FifthEvenEffectiveCrossRay
 import GaloisForLFunctions.ThetaCuspSections.FifthEvenCrossLoadPolynomialEnvelope
@@ -59,6 +65,10 @@ import GaloisForLFunctions.ThetaCuspSections.FifthEvenPolynomialCrossLoad
 import GaloisForLFunctions.ThetaCuspSections.FifthEvenPolynomialCrossTail
 import GaloisForLFunctions.ThetaCuspSections.FifthEvenPolynomialCrossInterval
 import GaloisForLFunctions.ThetaCuspSections.FifthEvenPolynomialCrossCompactEnvelope
+import GaloisForLFunctions.ThetaCuspSections.FifthEvenTruncatedQuarticFlux
+import GaloisForLFunctions.ThetaCuspSections.FifthEvenQuarticRayModel
+import GaloisForLFunctions.ThetaCuspSections.FifthEvenQuarticRay
+import GaloisForLFunctions.ThetaCuspSections.FifthEvenTruncatedQuarticUpperRay
 import GaloisForLFunctions.ThetaCuspSections.FifthEvenScaleThirtyTwoData
 import GaloisForLFunctions.ThetaCuspSections.FifthEvenScaleThirtyTwoSourceBounds
 import GaloisForLFunctions.ThetaCuspSections.FifthEvenPolynomialCrossObstruction

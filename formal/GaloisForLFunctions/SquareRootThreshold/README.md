@@ -101,6 +101,10 @@ and `RHTower` (`ZeroConfig`, `paperFT`, `gammaOf`, `zetaZeroConfig`, explicit fo
 ### B. Tempered configurations (two-bump minors, Laplace, Landau, Cesàro)
 10. **Two-bump minor**: $W(\text{twoBump})=(1+|\tau|^2)S(0)+\tau S(v)+\bar\tau S(-v)$; minor failure ⇒
     visible at $v/2+w$. Depth $\delta$ enters as $e^{\pm\delta v}$.
+    Window positivity gives `‖S(v)‖≤Re S(0)`
+    (`norm_lagStructure_le_re_zero_of_weil_nonneg`). A reflected pair with complex
+    amplitude `c` equals `2 exp(iγv)(Re(c) cosh(δv)+i Im(c) sinh(δv))`
+    (`lagCoeff_reflected_pair_eq`); both parts of the amplitude remain visible.
 11. **Logarithmic visibility.** Isolated pair in any on-line background of local mass $M$: seen at
     $\approx(1/2\delta)\log(M/|Q|)$; equal-depth clusters and finite sets: same, plus $O(n\ell)$; on $\zeta$
     background $\asymp(1/2\delta)\log\log T$.

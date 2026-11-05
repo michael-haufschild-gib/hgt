@@ -184,12 +184,22 @@ rational lattice with amplitudes `1, −J_k(p)/(2√p)` gives `τ_H(k) = (1 − 
 is negative for long windows because `Σ 1/p` diverges. The horizon shrinks to dimension zero
 (numerically at the canonical rate, `k*(A) ≈ 1.66e^{−A/2}`): only the tangent at `k = 0` is uniform along
 the tower.
+For every aperture, positive dimensions are downward closed
+(`tateFunction_nonneg_of_dimension_le`). Their set is `[0,∞)` for `A≤log 2`,
+and exactly `[0,κ(A)]` with `0<κ(A)≤log₂(1+2√2)` above the first prime
+(`exists_exact_tateHorizon`). These sets decrease in aperture and shrink to zero
+(`tatePositiveDimensions_antitone`, `tatePositiveDimensions_shrink_to_zero`).
+For `0≤k<K` with positivity at `K`, prime-valuation Poisson kernels give
+`τ_H(k)≥ε∫H²`, where
+`ε=∏_{p≤⌊e^A⌋}(1−(1−p^(−k))/(1−p^(−K)))>0`
+(`tateFunction_ge_dimensionMargin`). Thus every dimension below the endpoint
+has a uniform positive floor, even when rational orbit components are infinite.
 At the first stage the horizon is exact: for `log 2 < A < log 3`, `ρ_A(J_k)` is positive iff
 `2^k ≤ 1 + 2√2`, `k* = log₂(1 + 2√2) = 1.9368`; the fold by `log 2 > A/2` couples two disjoint collars,
 and a bump minus its translate is extremal. At the second stage the horizon is exactly the threshold
 `1.19967` of the weighted path `x + log(3/2) — x + log 3 — x — x + log 2` of
-folds `2, 3, 2`: arithmetic window forms decompose over finite orbit graphs of the folds, and atoms
-realize only the star graphs (atomic horizon `1.2639` at `N = 3`, `≈ 1.56/log N` in general). The
+folds `2, 3, 2`: at this level, window forms decompose over finite orbit graphs, while the three
+integer vertices give a star (atomic horizon `1.2639` at `N = 3`). The
 lower bound is proved by a **path Picone inequality**: weighting the window by the Perron vector of the
 path (`1/α` on `[−A, −log 3] ∪ [log 3 − A, 0]`, `1` elsewhere), every point is balanced as soon as
 `α² + β ≤ 1`, so `2α|c₂| + 2β|c₃| ≤ ‖H‖²`. The same weight gives the sharp arithmetic bound of the
@@ -197,24 +207,53 @@ second stage, `|⟨ρ_A(Λ)H, H⟩| ≤ 0.4505‖H‖²`, against `1.124‖H‖�
 graph payments are nonlocal and beat pointwise ones already at the second prime. Four bumps on the path
 with amplitudes `(α, −1, 1, −α)` give the value `2(1 − α² − β)‖φ‖²`, so the bound is sharp: on the
 second stage `‖H‖² + 2αc₂ + 2βc₃ ≥ 0` for all tests iff `α² + β ≤ 1`, and `ρ_A(J_k) ≥ 0` iff
-`((2^k − 1)/(2√2))² + (3^k − 1)/(2√3) ≤ 1`. Inside later stages the horizon keeps stepping down as longer
-orbit graphs fit (numerically `1.050 → 1.016` across the third stage): the critical lengths of the tower
-are combinations of logarithms, not only the `log n`. The orbit graphs are the finite configurations of
-positive rationals: a window point `x` sees `x + log r` for the rationals `r` reached from `1` by
+`((2^k − 1)/(2√2))² + (3^k − 1)/(2√3) ≤ 1`. On `log 4 < A ≤ log(9/2)`, put
+`χ=(4^k−2^k)/4`, with the same `α,β`. The exact criterion for `k≥0` is
+`χ≤1` and `β²≤(1−χ)(1−α²)` (`tateFunction_nonneg_iff_thirdStage_beforeNineHalves`).
+A seven-vertex rational graph controls the window; reflection `r↦4/r` makes its odd sector decisive.
+For `log(9/2)<A≤log 5`, the canonical graph has twelve vertices. Set
+`d=1−α²`, `z=χ−α²`, `u=d−β²/(1−α)` and `v=d−β²/d`.
+The exact criterion is `χ≤1`, `u≥0`, `z²≤uv`
+(`tateFunction_nonneg_iff_thirdStage_afterNineHalves`). Reflection `r↦(9/2)/r`
+reduces the graph to six variables; four completed squares leave this binary form.
+At `A=log 5`, the new correlation still vanishes by support.
+For `log 5<A≤log(81/16)`, two reflected copies of the twelve-vertex graph
+join through the ratio-five edge. Put `δ=(5^k−1)/(2√5)`,
+`w=d−z²/v`, `p=1−β²/w`, `q=1−α²/p`.
+The exact criterion is `d,v,w,p,q>0` and `w−δ−β²/q≥0`
+(`tateFunction_nonneg_iff_fourthStage_beforeEightyOneSixteenths`).
+Reflection leaves a twelve-dimensional odd block; eight squares reduce it
+to a four-vertex path. Nonzero couplings force the strict intermediate pivots.
+Finite configurations enter at logarithms of rational spans, including between integer levels.
+A window point `x` sees `x + log r` for the rationals `r` reached from `1` by
 multiplying and dividing by `n ≤ e^A` inside `[1, e^A)`, and the folds act as the Hecke operator of
-`ℤ[ℚ_{>0}^×]` truncated to the window. Numerically the horizon is the threshold of this rational Hecke
-graph to three to five digits on every stage computed (`1.0457` at `A = 1.5`, `1.0157` at `1.6`,
-`0.5829` at `2.3`); the third-stage steps sit at the logarithms of the rationals that enter
-(`log(9/2)`, …). One half of this is a theorem for every window: any finite configuration of spread
+`ℤ[ℚ_{>0}^×]` truncated to the window. Any finite configuration of spread
 `< A` is realized by disjoint bumps whose translates by `log n` meet exactly along `s = nr`, so every
 arithmetic window form takes the value of the Hecke graph form of the configuration (the rational lattice;
-a negative graph form is a negative window form). The atomic lattice is the configuration of the
-integers; its graphs are stars, and they do not see the horizon beyond the first stage.
-The other half is the **Barta criterion of a window**: a measurable weight `1 ≤ h ≤ C` that balances the
+a negative graph form is a negative window form). Conversely, positivity on every finite rational
+configuration implies positivity on every window test (`windowForm_nonneg_iff_rationalHeckePositive`):
+finite Følner averaging in the logarithms of positive rationals recovers each correlation with
+arbitrarily small relative boundary error. Coefficients may have either sign. A finite template
+closed under the allowed neighbours controls every graph of smaller spread by least-vertex block
+removal (`rationalHeckeForm_nonneg_of_closed_template`). The atomic lattice uses integer vertices;
+at level three these give a star and omit the full four-vertex rational path.
+Whole rational components need not be finite: doubling below three and dividing by three
+otherwise gives an infinite orbit from every rational starting point in `[1,6)`
+(`heckeSixOrbit_infinite`). Maximizing the two-adic valuation and then minimizing the vertex
+rules out every finite invariant set. Hence no finite closed template containing one can
+cover ratio six (`no_finite_hecke_template_at_six`); the equivalence using all finite
+configurations remains valid.
+Absolute correlation costs admit the **Barta criterion of a window**: a measurable weight `1 ≤ h ≤ C` that balances the
 folds at every point of the window, `Σ_n a_n(h(u + log n) + h(u − log n)) ≤ h(u)` (with `h = 0` off the
 window), bounds `Σ_n 2a_n|∫H(u)H(u + log n)|` by `‖H‖²`. The constant weight gives the pointwise canonical
 density, the path weight gives the second stage; whether a balanced weight exists exactly when every
 rational Hecke graph of the window has spectral radius `≤ 1` is open.
+The ratio-four triangle separates signed Tate positivity from absolute-cost certificates.
+At dimension one, every test is Tate-positive for `log 4<A≤log(9/2)`
+(`tateFunction_one_nonneg_beforeNineHalves`), but reversing all edge signs gives
+the seven-vertex value `−77` (`thirdStage_all_negative_edges_witness`). Its smooth
+realization violates the absolute correlation bound and rules out every bounded
+positive balancing weight for those costs (`no_thirdStage_absolute_cost_balancing_weight`).
 
 **D. The atomic lattice.** Atoms of width `< log((N+1)/N)` at the points `log(m/N)`, `m ≤ N`, are
 moved by the window shifts as the integers are multiplied: `T_{log n}b_m = b_{nm}` (`0` past the
@@ -311,7 +350,7 @@ sign of the logarithm separates neither the fakes from `ζ` nor `ζ` from other 
 | What are the restriction maps `W_A → W_{A'}` and their control theorem? | Algebraically and analytically controlled. Analytic control: crossing a stage adds one fold paid by its end mass (`weilQuad_eq_stageForm_add_fold`, `weilQuad_nonneg_of_endCoercive`), composite stages are free (`weilQuad_eq_stageForm_of_not_primePow`), and the collar exit charge pays every new fold uniformly (`levyJump_ge_collar`, `primeJumpWeight_le_archLevyAntideriv`, `weilQuad_ge_reducedStageForm`). Algebraic control: equivalently, equivariant inclusions of window modules over the truncations `D_{⌊e^{A'}⌋} → D_{⌊e^A⌋}` (`windowRepFun_of_le`, `ker_windowRep`). Each stage is a small extension with kernel the new fold (`sub_single_mem_truncIdeal_succ`, `mul_mem_truncIdeal`); the new fold is a socle element until stage `2n` (`windowRep_single_mul_eq_zero`); Loewy length `⌊log₂ N⌋ + 1` (`windowRep_kills_pow_iff`); cotangent space = primes (`mem_sq_sup_truncIdeal_iff`, `single_prime_not_mem`); Hilbert function = almost-prime counts (`mem_pow_sup_truncIdeal_iff`, `sub_restrictTo_almostPrime_mem`, `restrictTo_almostPrime_mem_iff`); socle `(N/2, N]`, Gorenstein iff `N ≤ 2` (`mul_mem_truncIdeal_forall_iff`, `socle_principal_iff`); local with one-point spectra (`isUnit_windowRep_iff`, `isUnit_windowRep_sub_iff`); inverse limit = Dirichlet ring (`existsUnique_limit`, `iInf_truncIdeal`). |
 | What is the count attached to a fold `T_n`; what does `sym₂` count? | `T_n` is `δ_n`; in the Tate function its coefficient is `J_k(n)n^{−1/2}`, a count of primitive vectors of `(ℤ/n)^k` (`tateFunction_eq`, `jordanTotient_eq_card_primVec`). At the first prime the signed fold count `anti₂ − sym₂` is the coefficient of `#ℙ^{k−1}(𝔽₂) = 2^k − 1` (`tateFunction_firstPrime`). It enters Weil's form only through the derivative at `k = 0` (`weilQuad_eq_tateJet`): no integer dimension makes it a count. Equivalently, Weil's window form is a signed combination of the counts `φ(m)#ℙ^{j−1}(ℤ/m)`, `j < e^A`, with the coefficients of the polynomial interpolating `log` at `1, …, ⌊e^A⌋` (`sum_coeff_mul_jordanTotient`, `weilQuad_eq_signedCount`): the window `h¹` is a signed count, and its sign is the sign of that interpolation against the archimedean data. Geometrically the folds act on orbit graphs of window points: at the first stage `T₂` is a perfect matching of the two disjoint collars (`|c₂| ≤ ‖H‖²/2`, sharp: `abs_autocorr_le_half`, `tateFunction_nonneg_iff_firstStage`), at the second stage `T₂, T₃` form the weighted path `P₄` (`secondStage_nonneg_iff`). On the indicator of a finite configuration `S ⊂ ℚ_{>0}` the folds are literally counts: `∫H(u)H(u + log n) = ‖φ‖²·#{r ∈ S : nr ∈ S}`, the number of multiplicative `n`-pairs inside `S` (this is what `sym_n` counts), and the fold energy is `‖φ‖²` times the number of `n`-edges cut by `S` (`integral_ratLattice_one_eq_card`, `foldEnergy_ratLattice_eq_card`); Weil's arithmetic term is the `Λ(n)n^{−1/2}`-weighted count of multiplicative pairs. |
 | Is there a scheme over `ℤ` whose `ℤ/m`-points give the twisted counts and whose "conductor-one" part is the window form? | The punctured affine spaces `𝔸^k∖0` (primitive vectors), with the dimension as parameter; the Tate operator is the exponential of their Frobenius point counts, the window form of their Hasse–Weil zeta function (`expTrunc_sub_jordan_mem`, `tateExponent_prime_pow`): `J_k(m) = φ(m)#ℙ^{k−1}(ℤ/m)` are the Tate pieces (`jordanTotient_eq_card_projPoints`); `∂_kJ_k(m)|₀ = Λ(m)` (`hasDerivAt_jordanTotient_zero`) makes Weil's arithmetic window term the derivative at dimension zero (`hasDerivAt_tateFunction`). |
-| What lattice of rank `≈ 2e^A` carries the sections; with what metric? | For the arithmetic of the window, the rational lattice: finite configurations of `ℚ_{>0}^×` inside the window, on which the folds are the Hecke operators of `ℤ[ℚ_{>0}^×]` (`exists_rationalLattice`, `exists_windowTest_eq_heckeForm`; numerically it carries the exact Tate horizons). The atomic lattice (on it the arithmetic term is bounded by the Mertens sum, `abs_sum_vonMangoldt_mul_le`, `abs_integral_windowRep_vonMangoldt_atomic_le`): the integers `m ≤ e^A`, a free rank-one module over the window algebra (`windowRepFun_atomicEmbedding`), of rank `⌊e^A⌋`; the window genus `≥ (2 − η)e^A` (CWS) is twice this rank to main order. Metric `‖φ‖²Σ g(k)h(k)/k` (`integral_atomicEmbedding_mul`); arithmetic term = multiplication by `Λ` (`integral_windowRep_atomicEmbedding`); pole = values at `s = 0, 1` (`poleA_atomicEmbedding`, `poleB_atomicEmbedding`); the Gamma factor enters as the Gaussian (theta) metric on each atom and as the Lévy kernel between atoms. As an Arakelov bundle it is `⊕_{m≤e^A} 𝒪(½ log m)` with `h⁰ − h⁰∨ = Nd + ½ log N!` and slope `≤ A/2` (`integral_atomicEmbedding_single`, `windowBundleH0_riemannRoch`, `windowBundle_slope_le`). |
+| What lattice of rank `≈ 2e^A` carries the sections; with what metric? | For the arithmetic of the window, the rational lattice: finite configurations of `ℚ_{>0}^×` inside the window, on which the folds are the Hecke operators of `ℤ[ℚ_{>0}^×]` (`exists_rationalLattice`, `exists_windowTest_eq_heckeForm`; positivity on all such graphs is equivalent to window positivity, `windowForm_nonneg_iff_rationalHeckePositive`). The atomic lattice (on it the arithmetic term is bounded by the Mertens sum, `abs_sum_vonMangoldt_mul_le`, `abs_integral_windowRep_vonMangoldt_atomic_le`): the integers `m ≤ e^A`, a free rank-one module over the window algebra (`windowRepFun_atomicEmbedding`), of rank `⌊e^A⌋`; the window genus `≥ (2 − η)e^A` (CWS) is twice this rank to main order. Metric `‖φ‖²Σ g(k)h(k)/k` (`integral_atomicEmbedding_mul`); arithmetic term = multiplication by `Λ` (`integral_windowRep_atomicEmbedding`); pole = values at `s = 0, 1` (`poleA_atomicEmbedding`, `poleB_atomicEmbedding`); the Gamma factor enters as the Gaussian (theta) metric on each atom and as the Lévy kernel between atoms. As an Arakelov bundle it is `⊕_{m≤e^A} 𝒪(½ log m)` with `h⁰ − h⁰∨ = Nd + ½ log N!` and slope `≤ A/2` (`integral_atomicEmbedding_single`, `windowBundleH0_riemannRoch`, `windowBundle_slope_le`). |
 | What growth law does the tower obey? | Negativity `≤ (deg K_A + 2 sinh(A/2) − A)‖H‖² ≤ (−Ω(0) + (4A+1)e^{A/2})‖H‖²` (`weilQuad_ge_neg_sharpWindowFloor`, `sharpWindowFloor_le`). Its exponent lies between the zero width and `½`, with RH iff it is `0` (ACCE `UnconditionalEqualityOfPolarAndFullGroundEnergyRates`, SRT `NegativityRateEqualsMaximalDepth`). The arithmetic part of the floor is sharp at the graph canonical degree: balanced weights bound it (`sum_two_mul_abs_autocorr_le`, exact at the second stage, `abs_arith_secondStage_le`), configurations attain it (`exists_windowTest_eq_heckeForm`); numerically it is `≈ 0.3–0.4 ψ_{1/2}(e^A)`: the constant of the floor improves, its exponent does not. The Tate horizon shrinks along the tower (`exists_tateFunction_neg`, numerically `≈ 1.66e^{−A/2}`). |
 | Do the Tate pieces reproduce the degeneration on twisted windows (criterion 6)? | Yes for character twists: twists commute with the Tate flow and carry Tate families (`twist_tateTwist_comm`, `tateFamily_twist`); the Tate pieces of `L(s, χ)` are `χ(m)φ(m)#ℙ^β(ℤ/m)` (`tateFamily_charTwist_succ`) and its non-Tate piece is `χΛ` (`hasDerivAt_tateFamily_charTwist`), the dimension `β` entering as the dimension of projective space. |
 | Is there a Frobenius / base change for the tower; what is Serre duality on it? | Adams lifts are dilations `A ↦ eA` up to a Tate twist (`windowRepFun_mPart_dilate`, `windowShift_dilate`); Serre duality `σ_A` is the Rosati involution (`windowInvolution_windowShift`, `integral_windowRepFun_mul_eq`). |
@@ -378,8 +417,8 @@ and the pole; the rigidity of the fold weights through the explicit formula with
    the primes is exactly the sign of the weight (`tateFamily_prime_nonneg_iff`) — the Markov
    property, soft. In every fixed positive dimension the Tate operators eventually fail
    (`exists_tateFunction_neg`), while they are positive below a horizon that shrinks to `0`; at the
-   first two stages the horizon is exact (`tateFunction_nonneg_iff_firstStage`,
-   `tateFunction_nonneg_iff_secondStage`) and is the threshold of a rational Hecke graph. Open: a
+   first three stages the horizon is exact, with the third splitting at `A=log(9/2)`;
+   each regime is controlled by a finite rational Hecke graph. Open: a
    positivity of the whole family, coupled to the archimedean data, that survives the derivative.
 2. **Positivity across a small extension.** The exact transfer is
    `Q=Q_N+w(fold energy−collar mass)`. The sufficient nonnegative collar loan fails already at
@@ -492,6 +531,10 @@ and the pole; the rigidity of the fold weights through the explicit formula with
 | The second stage is a weighted path: path Picone inequality, Tate positivity and the sharp arithmetic bound | `two_abs_mul_le_ratio`, `two_abs_autocorr_le`, `path_balance`, `two_mul_abs_autocorr_add_le`, `tateFunction_nonneg_secondStage`, `abs_arith_secondStage_le` |
 | No uniform Tate positivity: the star of the primes breaks every positive dimension | `primesTo`, `starConfig`, `star_coincidence`, `exists_tateFunction_neg_of_primeSum`, `exists_tateFunction_neg` |
 | The second-stage path is attained: exact form and exact Tate horizon | `bump_mul_eq_zero`, `exists_neg_secondStage`, `secondStage_nonneg_iff`, `tateFunction_secondStage`, `tateFunction_nonneg_iff_secondStage` |
+| Exact third-stage horizons, split at ratio `9/2` | `tateFunction_nonneg_iff_thirdStage_beforeNineHalves`, `tateFunction_nonneg_iff_thirdStage_afterNineHalves` |
+| Exact fourth-stage horizon up to ratio `81/16` | `tateFunction_nonneg_iff_fourthStage_beforeEightyOneSixteenths` |
+| Global Tate horizon: closed initial interval, strict interior floor, shrinking to zero | `tateFunction_nonneg_of_dimension_le`, `tateFunction_ge_dimensionMargin`, `exists_exact_tateHorizon`, `tatePositiveDimensions_shrink_to_zero` |
+| All finite rational graphs decide window positivity; bounded components can be infinite | `windowForm_nonneg_iff_rationalHeckePositive`, `rationalHeckeForm_nonneg_of_closed_template`, `heckeSixOrbit_infinite`, `no_finite_hecke_template_at_six` |
 | The ground-state transform: Picone for the Lévy jumps; ground-state criterion for Weil's form | `piconeWeight`, `measurable_piconeWeight`, `integral_piconeWeight_mul_le`, `integral_mul_le_levyJump_of_picone`, `weilQuad_ge_groundState` |
 | The Barta criterion of a window: balanced weights bound all folds | `sum_two_mul_abs_autocorr_le`, `arith_form_nonneg_of_balanced` |
 | The folds count multiplicative pairs on configurations | `sum_sum_ite_eq_card`, `integral_ratLattice_one_eq_card`, `foldEnergy_ratLattice_eq_card` |
@@ -508,7 +551,7 @@ and the pole; the rigidity of the fold weights through the explicit formula with
 | The atomic lattice sees the canonical class | On atoms the arithmetic term is bounded by the Mertens sum `≈ A`, not by `ψ_{1/2}(e^A) ≈ 2e^{A/2}` |
 | Tate operators are positive in small positive dimension | In every fixed `k > 0` they fail on long windows (`exists_tateFunction_neg`); `ρ_A(J_k)` is positive below a horizon `≍ e^{−A/2}` (proved lower bound `log 2/(N^kψ_{1/2}(N))`, numerics `1.66e^{−A/2}`), which shrinks to `0` along the tower; only the tangent at `0` is uniform |
 | Weil's window form is reflection positive along `σ_A` | Numerically not in either sign: the Lévy cross kernel `ω(x + y)` is completely monotone, so the archimedean cross form is reflection negative, and the folds make it indefinite; Mechanism D needs another reflection |
-| Configurations of integers (atoms) see the arithmetic of a window | They see only stars; the extremal configurations are rational (`{1, 3/2, 2, 3}` at the second stage), and the window arithmetic is the Hecke operator of `ℤ[ℚ_{>0}^×]` |
+| Configurations of integers (atoms) determine the arithmetic of a window | At level three they give a star and miss the extremal rational path `{1, 3/2, 2, 3}`; all finite rational configurations together determine window positivity |
 | The Tate function is log-convex at dimension zero | On wide tests `T₁² ≈ 4N ≫ T₀T₂ ≈ 4√N log N`: Weil's term is not controlled by Selberg's jet through Cauchy–Schwarz |
 | The window algebra is the semilocal algebra of the Euler factors at `p ≤ e^A` | It is the Dirichlet ring truncated at `n ≤ e^A`; composites are products, truncation is by size |
 | The tower is a direct limit of finite objects carrying `h¹` | The algebras are finite-dimensional; the modules are not, and no window has a finite-dimensional realization (CWS) |

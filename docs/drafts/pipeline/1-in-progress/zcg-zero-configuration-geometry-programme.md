@@ -92,6 +92,14 @@ Pillars (module — main theorems), all checked with `lake --old env lean`, umbr
 - SplineBumpsDecayAtAnExplicitRate, ShallowConfigurationsAreResolvedLocally —
   `exists_explicit_bump`, `eq_of_locally_shallow_at_ingham_scale`
 - DeepColumnsHideOnlyBelowTheInghamScale — `W_shiftedLatticeConfig_lagFormula`, `deepColumn_mimic_iff`
+- NearCoincidencesAreReadThroughTheirMoments, IsolatingWindowsVarySlowlyAtTheirTarget —
+  `norm_discMoment_le`, `core_window_slow`, `norm_discMoment_rvm_le`, `pair_centre_and_gap_rvm`,
+  `dipole_collapse_rvm` (B51 uniformly in height)
+- TheImageHankelReadsTheSquaredGap — `pair_hankel_rvm`, `pair_type_of_hankel` (B44 in image form)
+- TheImageReadsTheDiscriminantOfACluster, TheImageLocatesTheClusterPoints — `cluster_discriminant_rvm`,
+  `cluster_location_rvm`
+- ConfigurationsOfOneDepthAreResolvedAtTheInghamScale — `tsum_averaged_lag_eq_zero`, `eq_of_mimic_of_oneDepth`
+- MixedDepthsHideBeyondTheInghamScale — `mixedDepth_mimics_beyond_ingham`, `not_eq_of_mimic_at_ingham_scale`
 - SymmetricHalvesArePhaseLattices, FiniteCarriersAreRealAboveTheirHorizon, TiltsCostPrimeWeight —
   `ncard_sym_zeros`, `carrier_ne_zero_near_line`, `eulerDepth_ne_zero_near_line`,
   `twin_tilt_costs_weight`, `exists_twin_tilt_beyond_every_weight`
@@ -101,8 +109,10 @@ The route to RH is on its own card (`zcg-rh-route.md`). Steps 1–5 of the heat 
 ([L], [P]); the camera fixes the configuration of `ζ` outside near-coincidence clusters and is
 killed as a producer. Open: (a) reality inside near-coincidence clusters below `X^{−M}` (B44),
 (b) a Hermite–Biehler half of the heat source below `½/log X` (B49), both cancellation statements for
-the Euler product inside the strip. Internal open question: deep configurations other than columns
-between `π/(2a)` and `π/a`.
+the Euler product inside the strip. B51 is proved uniformly in height. Depth thresholds: one depth
+is resolved at the Ingham scale (`eq_of_mimic_of_oneDepth`), and mixed depths hide up to `2π/(3g)`
+(`not_eq_of_mimic_at_ingham_scale`). Internal open question: the sharp mixed-depth threshold in
+`[2π/(3g), π/g]`.
 
 ## Log
 - 2026-11-04 — created; forty pillar modules checked; README written.

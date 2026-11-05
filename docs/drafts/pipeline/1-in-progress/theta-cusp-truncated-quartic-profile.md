@@ -11,47 +11,51 @@ The untruncated quartic fails at theta scale thirty-two, beyond its double
 zero. Truncation removes that branch. The profile is continuously
 differentiable: both its value and derivative vanish at `r²=2`.
 On `r≥0` its flux is compactly supported, vanishes at both endpoints, and
-has zero integrated derivative. Thus it should preserve every mixed entry.
-These identities have not yet been formalized for the truncated profile.
+has zero integrated derivative. Every mixed entry is preserved. These
+identities, continuous differentiability, and strict positivity for
+`r≥√2` are formalized in `FifthEvenTruncatedQuarticFlux.lean`; see
+[the formalized result](../3-formalized/truncated-quartic-flux-preserves-fifth-even-matrix.md).
+
+At `R=√2`, the polynomial tail identity gives
+`∫_(R,∞) (P·flux)' = −P(R)flux(R)=0`. Deleting this tail derivative
+therefore preserves every mixed entry directly. Below `R` the source is
+the original quartic repair; above `R` it is native. The derivative also
+vanishes at `R`, so both descriptions agree there.
 
 For `x²<1/2`, its aperture-independent correction equals the original
 `G_P=(1−2x²)²G−8x²(1−2x²)F²`. For `x²≥1/2`, it vanishes, leaving the
 native matrix, already proved PD once `π exp(2x)≥5`.
-Hence the missing sign is confined to `0≤x≤1/√2`.
 
-Known input: the original quartic repair is PD near the origin, near theta
-scale eight, and at the truncation point. These neighborhoods do not cover
-the compact interval by any proved estimate.
+The complete native reserve `H−(3/20)Kq⁴B ≻ 0` is now formalized for
+`q≥7`. Combined with the scalar correction bound, it proves the literal
+truncated weighted source positive for every `a>0`, `π exp(r)≥7`; see
+[the formalized upper ray](../3-formalized/theta-cusp-quartic-cross-load-ray.md).
+The original quartic repair is also positive on an origin neighborhood.
 
 **Unproved input:** an unconditional lower bound for the complete profiled
-matrix on the intervening compact interval, retaining all theta atoms.
-The conjectured quartic cross-load reserve from scale eight may control its
-upper part; that reserve is itself unproved. No finite sampling, endpoint
-interpolation, or assumed matrix sign supplies the missing estimate.
+matrix on the remaining interval `π≤q<7`, retaining all theta atoms.
+The proved origin neighborhood has no bound covering this interval.
+Rank-nine integrated sign remains open.
 
 ## Scalar comparison
 
-For `q≥8`, `x²≤1/2`, the unconditional bound is
-`G_P(x)>−(3/20)K(x)q⁴`. Put `b=7/15`, `p=1−2x²`,
-`S=firstSlope(q)+10⁻⁵`, and
-`J_S(x)=2x(1−2x²)²S+(1−2x²)(14x²−3)`.
-The scale-eight center bound gives `x≥b`; the slope formula gives `S≥11`.
+For `q≥5`, `x²≤1/2`, the complete-source bound is
+`G_P(x)>−(3/20)K(x)q⁴`. Before scale five, `G_P≥F²/16`; before
+scale `37/10`, the stronger `G_P≥2F²` holds. Affine center bounds also
+give explicit polynomial reserves below five and a sharper negative
+allowance on `[5,7]`, retaining the complete source and derivative errors.
 
-The complete-source bounds imply `G_P≥−J_S(x)F²`.
-On `[b,1/√2]`,
-`J'_S=−2(1−2x²)(10x²−1)S+8x(5−14x²)≤0`:
-for `x²≥5/14` both terms are nonpositive; otherwise the negative magnitude
-is at least `2332/315`, while the positive term is at most `24584/3375`.
-The latter bound follows by factoring
-`b(5−14b²)−x(5−14x²)=(x−b)[14(x²+bx+b²)−5]`.
-Thus `J_S(x)≤J_S(b)≤(3/10)S+7/250`.
-Using `S≤2q−9/2+10⁻⁵` and `F²≤(1000001/1000000)²K(2q−3)²`
-reduces the claim to the exact positive polynomial, with `u=q−8≥0`:
+All seven scalar statements are formalized in
+`FifthEvenPolynomialCrossCompactEnvelope.lean`; see
+[the interval reserves](../3-formalized/quartic-theta-compensation-interval-reserves.md).
+The matrix comparison below scale seven remains unproved.
 
-`(3/20)q⁴−((61/100)q−13/10)(2q−3)²`
-`=469/50+(359/20)u+(289/25)u²+(59/25)u³+(3/20)u⁴`.
+## Lower-interval remainder
 
-Lean: `FifthPolynomialCross.compensation_compact_quartic_lower` in
-`ThetaCuspSections/FifthEvenPolynomialCrossCompactEnvelope.lean`. Canonical
-check and transitive axiom audit passed; only standard Lean axioms occur. The matrix reserve and the
-remaining interval below scale eight are separate unproved requirements.
+The existing Gaussian remainder allowance requires `q≥5`. Retaining the
+fourth atom suggests the all-order Cauchy bound
+`|J_n−J_n^(4)|≤n!·20000 f₁² exp(−431q/25)/(3/20)^n` for `q≥3`.
+On the complex disk, the tail starts at atom five: its Gaussian majorant is
+`626 exp(−25a)`, `a=37q/50`; pairing with the full source gives
+`20000 exp(−26a)` before restoring the first-atom normalization.
+This bound and the resulting compact matrix sign remain unformalized.

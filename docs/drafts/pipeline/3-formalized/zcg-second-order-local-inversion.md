@@ -33,16 +33,29 @@ from `|e^{iwu} − e^{iw'u}| ≤ |w − w'| |u| e^{a/2}` and `sup |F| ≤ (2π)^
 ## Scale for `ζ`
 With `η = exp(−κ log X/(1 + log log X))` the floor is `e^{−O((log X)²)}`, `Lip = e^{O((log X)²)}`,
 and decay order `k ≍ log X` makes the tail negligible. So the moments are fixed for clusters of
-radius `r ≤ exp(−C (log X)²)`. The worst-case floor of a window blind to a configuration of
-Riemann–von Mangoldt type is not polynomial in the isolation radius. Polynomial pair scales
-(`T^{−M}` inside `T^{−M'}`, `M' < M`) are beyond this method.
+radius `r ≤ exp(−C (log X)²)`.
+
+## Uniformly in height at polynomial scales
+The isolating window `F̂ = sin · b̂² · Π r_k` varies slowly relative to its value at the target:
+`|F̂(w) − F̂(w₀)| ≤ (e^{|w − w₀|Λ} − 1)|F̂(w₀)|`, with `Λ` the sum of the log-derivative bounds of
+the sine (`|S(w₀)| ≥ ½`), the bump (Cauchy, `|b̂(w₀)| ≥ 1`) and the product
+(`|Π q_k − 1| ≤ e^{|w − w₀|Λ_P} − 1`, `Λ_P = 64L(1 + L/η)S₀/H²`). In the moment identity the disc
+error is then `6rΛ|Φ(ω)|` per point, so `‖μ_j‖ ≤ N r^{j+1} 6Λ + Tail_j/Floor`. For RvM clusters at
+height `T`, aperture `λ · ½ log(T/2π)` and isolation `T^{−M'}`: `6Λ ≤ T^{M' + κ_λ}`,
+`κ_λ = πλ/2 + λ + 3`. Decay order `k = ⌈(K + K') log²(T/2π)⌉` makes `Tail/Floor ≤ e^{−K' log³(T/2π)}`.
+For a pair `P₁, P₂` against `Q₁, Q₂` this gives centre `4r²T^{M' + κ_λ} + E` and squared gap
+`24r³T^{M' + κ_λ} + 4E` for `r ≤ T^{−(M' + κ_λ + 1)}`. For an isolated dipole, `ρ ≤ 2ρ²T^{M' + κ_λ} + E`
+forces `ρ ≤ 2E`.
 
 ## Lean
 `formal/GaloisForLFunctions/ZeroConfigurationGeometry/NearCoincidencesAreReadThroughTheirMoments.lean`:
 `norm_discMoment_le` (the statement), `sum_multDiff_eq_zero_of_disc` (`μ₀ = 0`), `pair_moments`
 (centre and squared gap from `μ₁, μ₂`), `norm_discMoment_zeta_le` (for `ζ`: for every `K` there are
 `C, X₀` with `‖μ_j‖ ≤ N r^{j+1} e^{C (log X)²} + e^{−K (log X)²}` at isolation
-`exp(−κ log X/(1 + log log X))`). Supporting: `exists_local_isolating_pair` (in
+`exp(−κ log X/(1 + log log X))`).
+`formal/GaloisForLFunctions/ZeroConfigurationGeometry/IsolatingWindowsVarySlowlyAtTheirTarget.lean`:
+`core_window_slow`, `isolating_window_slow`, `norm_discMoment_le_slow`, `six_slowRate_le_rpow`,
+`camera_tail_budget`, `norm_discMoment_rvm_le`, `pair_centre_and_gap_rvm`, `dipole_collapse_rvm`. Supporting: `exists_local_isolating_pair` (in
 `IsolatedPointsAreSeenByTheLocalCamera`), `annihilatePow_props`, `norm_paperFT_sub_le_of_bounded`,
 `norm_le_of_paperFT_decay`, `norm_pairImage_sub_le`. Unconditional; axioms `propext`,
 `Classical.choice`, `Quot.sound`.

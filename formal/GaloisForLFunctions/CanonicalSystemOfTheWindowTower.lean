@@ -1,7 +1,27 @@
+import GaloisForLFunctions.CanonicalSystemOfTheWindowTower.TheLogarithmicFactorStartsAtOne
+import GaloisForLFunctions.CanonicalSystemOfTheWindowTower.TheWeilRieszEquationIsALogarithmicDirichletEquation
+import GaloisForLFunctions.CanonicalSystemOfTheWindowTower.TheLogarithmicPoissonFactorHasItsExactNormalization
+import GaloisForLFunctions.CanonicalSystemOfTheWindowTower.TheWeilSymbolIsALogarithmicMultiplierPlusABoundedKernel
+import GaloisForLFunctions.CanonicalSystemOfTheWindowTower.TheWeilRieszVectorsSolveTheLiteralOperatorEquation
 import GaloisForLFunctions.CanonicalSystemOfTheWindowTower.TheTrivialDivisorCouplesOrderedTests
 import GaloisForLFunctions.CanonicalSystemOfTheWindowTower.TheFrozenFormGluesTwoWindows
 import GaloisForLFunctions.CanonicalSystemOfTheWindowTower.TheFrozenFormInClosedForm
 import GaloisForLFunctions.CanonicalSystemOfTheWindowTower.WindowGrowthIsATranslationContraction
+import GaloisForLFunctions.CanonicalSystemOfTheWindowTower.MovingATransformZeroPreservesTheWeilForm
+import GaloisForLFunctions.CanonicalSystemOfTheWindowTower.TheWeilFormIsCompleteBeforeContact
+import GaloisForLFunctions.CanonicalSystemOfTheWindowTower.ThePrecontactWeilSpacesHaveEntireFourierCoordinates
+import GaloisForLFunctions.CanonicalSystemOfTheWindowTower.ZeroMovingIsUnitaryBeforeContact
+import GaloisForLFunctions.CanonicalSystemOfTheWindowTower.ConjugationPreservesThePrecontactWeilSpace
+import GaloisForLFunctions.CanonicalSystemOfTheWindowTower.TheLocalWeilKernelIsHermiteBiehler
+import GaloisForLFunctions.CanonicalSystemOfTheWindowTower.TheWeilKernelDivergesAtContact
+import GaloisForLFunctions.CanonicalSystemOfTheWindowTower.PositiveLevelTruncationsStayInTheWeilDomain
+import GaloisForLFunctions.CanonicalSystemOfTheWindowTower.ArchimedeanTailsHaveBoundedOffDiagonalAction
+import GaloisForLFunctions.CanonicalSystemOfTheWindowTower.ArchimedeanTailMassDiverges
+import GaloisForLFunctions.CanonicalSystemOfTheWindowTower.CutoffArchimedeanEdgesRetainTruncationCoercivity
+
+import GaloisForLFunctions.CanonicalSystemOfTheWindowTower.TheCutoffArchimedeanEnergyHasItsLiteralKernel
+import GaloisForLFunctions.CanonicalSystemOfTheWindowTower.TheWeilRieszEquationHasBoundedForcing
+import GaloisForLFunctions.CanonicalSystemOfTheWindowTower.TheCompletedWeilRieszVectorsAreBounded
 
 /-!
 # The Canonical System of the Window Tower
@@ -11,5 +31,11 @@ trivial divisor of `ζ` and the folds; the archimedean place transmits only triv
 a stage window is two previous windows glued along the interior, minus the new fold; the frozen
 two-collar form in closed form at every stage (moments and earlier-fold transports; stages one and
 two explicit); window growth as a translation contraction, the stage as a Carathéodory disk, and RH
-as the contraction of every growth step.
+as the contraction of every growth step. Compact transform-zero moving preserves both aperture
+and the literal Weil form. Before contact, the unshifted Weil form defines a complete Hilbert
+space, and increasing apertures give isometric inclusions. Its entire Fourier realization has
+unitary zero-moving, an isometric conjugation, and an explicit Hermite–Biehler function recovering
+the full reproducing kernel. At finite contact some diagonal kernel diverges monotonically,
+although the contact window itself remains positive. Positive-level truncations and the literal
+cutoff archimedean kernel give bounded physical representatives of every precontact Riesz vector.
 -/

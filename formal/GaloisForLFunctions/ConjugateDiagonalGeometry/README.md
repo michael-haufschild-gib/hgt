@@ -1,6 +1,6 @@
 # Conjugate-Diagonal Geometry (CDG)
 
-Namespace `GaloisForLFunctions.ConjugateDiagonalGeometry`; umbrella `ConjugateDiagonalGeometry.lean`; 85 modules. All results
+Namespace `GaloisForLFunctions.ConjugateDiagonalGeometry`; umbrella `ConjugateDiagonalGeometry.lean`; 97 modules. All results
 unconditional; every reading is evaluated on the actual zeta divisor with multiplicities, without simplicity, separation or
 zero-free hypotheses.
 
@@ -109,6 +109,8 @@ amplitudes and their first moments — with explicit error certificates. The com
 | Sharp $\Theta(N^2\log N)$ strip zero-multiplicity law and unconditional $\Omega(\sqrt T)$ stopping-prefix lower bound | `prefixGlobalStripZeroBound_theta_growth`, `firstArtifactFreePrefix_sqrt_lower_bound` | proved |
 | Zero-separation-free discrete-convexity stage avoidance, $O(m\log^2(m+S))$ cumulative stabilization, and optimal $\Theta(\sqrt m)$ Burnol unit-window stabilization | `exists_natStage_avoiding_zhukovsky_ellipses`, `integerThetaCollisionOperator_polynomial_stabilization`, `centeredTheta_sqrtPrefix_stabilization` | proved |
 | Deterministic 6-way $\Theta(\sqrt m)$-prefix Szegő $\Leftrightarrow A/\log|\gamma|$ corridor TFAE, $E_\gamma(c_0\log T)=O(1)$ door-opener implication, and master 9-way $\mathrm{RH}$ door-opener TFAE | `exists_prefix_zero_in_ball_of_xi_zero`, `logStage_sqrtPrefix_szego_iff_invLog_corridor`, `heckeDefect_log_O1_implies_szego_corridor_and_lindelof`, `riemannHypothesis_door_opener_tfae`, `burnolUnit_subexp_sqrtPrefix_szego_of_rh` | proved |
+| Burnol inner-cap $[1/2,\sigma_m]$ source identity, Laplace off-line residue equivalence at every $x>0$, polynomial-corridor equivalence at fixed degree $d$, and all-stage $\mathrm{RH}$ equivalence | `burnol_rightHalfPort_eq_vertFlux_add_innerCapFlux`, `burnol_innerCap_source_identity`, `integrableOn_innerCapFlux_iff_offLineSource`, `innerCap_allExponents_iff_offLineZeros_empty`, `innerCap_fixedDegree_polynomialStage_iff_invPoly_corridor`, `innerCap_allPolynomialStages_iff_riemannHypothesis` | proved |
+| VK cap `1−vkZeroFreeWidth(m+5)/2` at square-root prefixes; exact inner-cap source and unchanged fixed-degree/all-stage receivers | `exists_vkWindowCap_cancellation`, `vk_innerCap_source_identity`, `vkPolynomialPrefix_eq`, `vk_innerCap_fixedDegree_iff_invPoly_corridor`, `vk_innerCap_allPolynomialStages_iff_riemannHypothesis` | proved |
 
 ## 6. Tools
 

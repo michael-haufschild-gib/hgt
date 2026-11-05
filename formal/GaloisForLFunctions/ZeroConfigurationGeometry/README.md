@@ -240,6 +240,12 @@ same input as every route: cancellation of the prime sum below the mean spacing.
 | **The local camera fixes the isolated zeros of `ζ` at every aperture `> L`; cancelling clusters are near-coincidences at scale `exp(−κ log X/(1 + log log X))`** | `localCameraConst_le`, `localCameraConst_le_of`, `zeta_cluster_count`, `zeta_camera_budget_of`, `log_inv_windowFloor_le_of_le_one`, `multDiff_zeta_eq_zero_of_isolated`, `exists_near_point_of_zeta_mimic`, `multDiff_zeta_eq_zero_of_nearly_isolated`, `exists_near_coincidence_of_zeta_mimic` | unconditional |
 | **Sub-spacing local inversion down to `T^{−M}` and `o(1/log T)`; sharp Nyquist threshold (`λ = 1` for RvM pairs, `λ = ½` for subset carriers and `ζ` multiplicity readout)** | `exists_rvm_pair_mimic_disjoint_up_to_one`, `log_inv_windowFloor_subspacing_le`, `exists_subspacing_isolating_windows`, `multDiff_eq_zero_of_subspacing_isolated`, `exists_nearCollision_littleO_inv_log`, `rvm_coincide_of_extra_density_littleO`, `rvm_local_inversion_dichotomy`, `zeta_coincide_of_extra_density_littleO`, `zeta_isolated_zero_multiplicity_readout_at_squareRoot_rpow`, `zeta_isolated_zero_multiplicity_readout_at_squareRoot_littleO` | unconditional |
 | Near-coincident clusters are read through their first three moments; for `ζ` at quasi-polynomial scale | `annihilatePow_props`, `norm_paperFT_sub_le_of_bounded`, `norm_le_of_paperFT_decay`, `norm_pairImage_sub_le`, `exists_local_isolating_pair`, `norm_discMoment_le`, `sum_multDiff_eq_zero_of_disc`, `pair_moments`, `norm_discMoment_zeta_le` | unconditional |
+| **The image locates the points of every isolated cluster, uniformly in height (Heine–Prony)** | `borderedHankel`, `det_bordered_hankel`, `borderError`, `bordered_of_moments`, `exists_near_point_of_bordered_zero`, `cluster_location_rvm` | unconditional |
+| **The image reads the discriminant of every isolated cluster, uniformly in height** | `norm_det_sub_le`, `norm_det_le`, `det_hankel_scale`, `imageDiscriminant`, `imageDiscriminant_eq`, `cluster_disc_of_moments`, `cluster_discriminant_rvm` | unconditional |
+| **The image Hankel determinant reads the squared gap of a pair, uniformly in height (B44 in image form)** | `pairReadError`, `norm_hankel_sub_le`, `hankel_ratio_eq`, `sq_gammaOf_sub_reflect`, `sq_gammaOf_sub_of_onLine`, `pair_hankel_rvm`, `pair_type_of_hankel` | unconditional |
+| **Isolating windows vary slowly at their target; second-order inversion uniform in height at polynomial scales (B51)** | `isolating_window_core`, `core_window_floor_decay`, `exists_local_pair_of_windows`, `core_window_slow`, `isolating_window_slow`, `exists_local_slow_pair`, `discMoment_readout_slow`, `norm_discMoment_le_slow`, `discMoment_readout_rvm`, `six_slowRate_le_rpow`, `camera_tail_budget`, `norm_discMoment_rvm_le`, `pair_centre_and_gap_rvm`, `dipole_collapse_rvm` | unconditional |
+| Mixed depths hide beyond the Ingham scale, up to `2π/(3g)` | `column`, `hasSum_Wsummand_column`, `hasSum_Wsummand_superpose`, `lagSum_pair_eq`, `mixed_symbol_eq`, `mixedDepth_mimics_beyond_ingham`, `not_eq_of_mimic_at_ingham_scale` | unconditional |
+| Configurations of one depth are resolved at the Ingham scale, at every depth | `tsum_modLag_eq_zero`, `integral_mul_bumpWeight`, `tsum_averaged_lag_eq_zero`, `paperFT_invWeight`, `pair_term_eq`, `tsum_sites_oneDepth_eq_zero`, `coeff_eq_zero_of_tsum_exp_eq_zero`, `eq_of_mimic_of_oneDepth` | unconditional |
 | Shallow configurations are resolved locally at the Ingham scale, with explicit far error | `inghamConst_mul_normSq_le_of_small`, `exists_maximal_nearSite`, `tsum_near_siteWeight_sq_le`, `tsum_far_siteWeight_le`, `norm_multDiff_sq_le_of_locally_shallow`, `exists_local_resolution_at_ingham_scale`, `eq_of_locally_shallow_at_ingham_scale` | unconditional |
 | Cosine camera: real zeros, complex additive rigidity | `im_eq_zero_of_cosineWindowTransform_eq_zero`, `no_complex_additive_zero_triple` | unconditional, `0 < θ < π/2` |
 | **Arithmetic fakes** | | |
@@ -257,6 +263,7 @@ same input as every route: cancellation of the prime sum below the mean spacing.
 | Finite carriers are real above their horizon; the Euler-depth descent | `carrierHalf`, `carrierWeight`, `re_carrierLogDeriv_ge`, `carrier_ne_zero_near_line`, `carrier_deriv_ne_zero`, `carrier_eq_zero_iff_phase`, `ncard_carrier_zeros`, `eulerDepthCoeff`, `carrierWeight_eulerDepth`, `eulerDepth_ne_zero_near_line`, `eulerDepth_deriv_ne_zero` | unconditional |
 | Tilts cost prime weight: the twin calibration of the descent | `log_le_carrierWeight_of_tilted_zero`, `log_le_eulerDepth_weight_of_tilted_zero`, `localFactor_twin_tilted_zero`, `twin_tilt_costs_weight`, `exists_twin_tilt_beyond_every_weight` | unconditional |
 | **Symmetric-half collision law of `H_t`, sub-Weyl collision-free horizon at `6600/9991`, and order-2 real collision of `pairModelHeat` below `½/log X`** | `riemannHeat_ofReal_collision_iff_halfGauss`, `norm_deriv_riemannHeat_ofReal_eq_of_eq_zero`, `riemannHeat_zeros_real_simple_subWeyl`, `riemannHeat_no_collision_near_height_subWeyl_logX`, `subWeyl_margin_pos_iff`, `eventually_localNewmanConstant_le_subWeyl_logX`, `pairModelHeat_orderTwo_collision`, `no_collision_upto_twoThirds_iff_upto_subWeyl`, `question_2_6_5_global_equivalence` | unconditional |
+| **Second-moment explicit formula via `(log n)²`-weighted primes, height-`T` pair sign dichotomy, bounded-aperture Euler-column obstruction, Gaussian saddle barrier on `(0, ½/log X]`, and sub-Weyl pincer equivalence** | `secondMomentKernel`, `neg_primeChannel_secondMomentKernel`, `zeta_secondMoment_explicit_primeCurvature`, `pair_secondOrder_sign_dichotomy`, `bounded_aperture_primeCurvature_obstruction`, `strip_saddle_and_pairModel_collision_obstruction`, `offLine_squaredGap_and_subWeyl_pincer`, `riemannHypothesis_iff_xi_fePair_squaredGap_nonneg`, `nearCoincidence_and_stripCollision_global_equivalence` | unconditional; equivalence |
 | **Certification** | | |
 | Function-field certification at the identification threshold | `pure_iff_of_powerSum_eq`, `pure_iff_of_weil_eq_on_aperture`, `isPure_of_curveImage_eq` | unconditional |
 | Bounded images certify purity; growth reads the deepest eigenvalue | `exists_simultaneous_return`, `curveImage_growth`, `isPure_iff_bounded_curveImage` | unconditional |
@@ -300,12 +307,30 @@ arithmetic images, forces every point onto the real curve?*
   `w² − w'² = 2μ₂ − 2μ₁(p + p' − 2ω)` (`pair_moments`): the image fixes the centre to `O(r²)` and the
   squared gap to `O(r³)`. For `ζ`, at isolation `exp(−κ log X/(1 + log log X))`,
   `|μ_j| ≤ N r^{j+1} e^{C (log X)²} + e^{−K (log X)²}` for every `K` (`norm_discMoment_zeta_le`).
-- *Open:* near-coincidences below polynomial scale. For `ζ` the image fixes everything except
-  clusters of points closer than `T^{−M}` for every `M ≥ 0` (`rvm_coincide_of_extra_density_rpow`,
-  `zeta_coincide_of_extra_density_littleO`). Their first three moments are fixed once the cluster
-  is tight against its isolation, `r ≤ exp(−C (log X)²)`. Second-order reading at polynomial
-  scales needs a window floor polynomial in the isolation radius. The sign of the squared gap read
-  from primes is the coalescent question Q3.
+- Second-order inversion is uniform in the height at polynomial scales (B51). The isolating
+  windows vary slowly relative to their value at the target,
+  `|F̂(w) − F̂(w₀)| ≤ (e^{|w − w₀|Λ} − 1)|F̂(w₀)|` (`core_window_slow`), so the disc error is
+  measured against the image, not the floor (`norm_discMoment_le_slow`). For clusters of
+  Riemann–von Mangoldt type at isolation `T^{−M'}` the rate is polynomial, `6Λ ≤ T^{M' + κ_λ}`,
+  `κ_λ = πλ/2 + λ + 3` (`six_slowRate_le_rpow`). Hence for `r ≤ T^{−(M' + κ_λ + 1)}`,
+  `|μ_j| ≤ N r^{j+1} T^{M' + κ_λ} + E`, `E = e^{−K' log³(T/2π)}`, for every `K'`
+  (`norm_discMoment_rvm_le`). A near-coincident pair of `Z` against one of `Z'` has the same centre
+  to `4r² T^{M' + κ_λ} + E` and the same squared gap to `24 r³ T^{M' + κ_λ} + 4E`
+  (`pair_centre_and_gap_rvm`). An isolated dipole closer than `T^{−(M' + κ_λ + 1)}` is closer than
+  `2E` (`dipole_collapse_rvm`).
+- The readout holds at every order `j ≤ J`, with spline order growing by `J`
+  (`discMoment_readout_rvm`, `norm_discMoment_rvm_le`). The moment Hankel matrix `(μ_{i+j})_{i,j<k}`
+  of a `k`-point cluster is `VᵀV`, so its determinant is the discriminant `Π_{i<j}(γ_{p_j} − γ_{p_i})²`.
+  The normalization cancels from `(k/W₀)^k (Π_i (−i)^{−i})² det(W_{i+j})`, so `2k − 1` window
+  images read the discriminant of every isolated cluster, uniformly in height, at the scale
+  `r^{k(k−1)}` of the cluster (`cluster_discriminant_rvm`). For `k = 2` this is the pair readout.
+- The image locates the points of every isolated cluster. Heine's formula
+  `det[x^j; μ_{i+j}] = Disc · Π_l(a_l − x)` (`det_bordered_hankel`) turns the read moments up to
+  order `2k − 1` into a polynomial uniformly close to `Disc · Π_l(γ_{p_l} − γ_{z₀} − x)` on the disc,
+  with error of the scale `r^{k²}` (`cluster_location_rvm`). Each of its zeros lies within
+  `(R/|Disc|)^{1/k}` of a cluster point (`exists_near_point_of_bordered_zero`).
+- *Open:* exact resolution below `E`. The sign of the squared gap read from primes is the
+  coalescent question Q3.
 
 **Q2 Cancelling clusters.** *Which clusters cancel, and why can arithmetic not produce them?*
 - Finite clusters never cancel (`infinite_modification_of_mimic`).
@@ -337,15 +362,40 @@ arithmetic images, forces every point onto the real curve?*
   on-line column offset by half a spacing, so the union is separated at `g`. They are mimics exactly
   up to the Ingham scale `a ≤ π/(2g)` (`deepColumn_mimic_iff`). Their images are
   `L Σ k(mL)·2cosh(δmL)` and `L Σ k(mL)·2(−1)^m`, and the lag `L` separates them as soon as it is seen.
-- *Open:* whether some deep configuration other than such columns hides at union separations between
-  `π/(2a)` and `π/a`.
+- For FE-symmetric configurations, mimicry at aperture `a` is the vanishing on `(−2a, 2a)` of the
+  weighted sum `Σ_k c_k cosh(δ_k v) e^{i t_k v}`: one real condition per orbit. Zero-killing windows
+  pay two zeros per deep orbit, with or without parity splitting, and the tilted block Ingham
+  inequality covers only depth `< g/4`. Neither closes the factor 2 (card
+  `zcg-deep-hiding-at-ingham-scale`).
+- Configurations of one depth are resolved at the Ingham scale: tempered mimics at `a > π/(2g)`
+  whose union lies at one depth `|Re ρ − ½| = δ` coincide (`eq_of_mimic_of_oneDepth`). Averaging the
+  modulated lag identity over the modulation recovers the depth profile `cosh(δv)` exactly
+  (`tsum_averaged_lag_eq_zero`, `pair_term_eq`). At one depth the profile divides out, and Ingham
+  applies to real frequencies.
+- Mixed depths hide beyond the Ingham scale. A periodic pattern of period `6g` with FE pairs of
+  four depths at the six residues splits into tempered mimics `Z, Z'`, whose union is separated
+  at `g`. They agree at every aperture `a < 2π/(3g)` (`mixedDepth_mimics_beyond_ingham`,
+  `not_eq_of_mimic_at_ingham_scale`). The images are `ℓ Σ_{|m|≤3} k(mℓ) D(m)`, and the two
+  symbols agree through four rational identities in Chebyshev values of the depth cosines
+  `367/6, 8, 5/3, 3/2`.
+- So the threshold for separated configurations is the Ingham scale `π/(2g)` at one depth, and
+  lies in `[2π/(3g), π/g]` for mixed depths. *Open:* the sharp mixed-depth threshold. With real
+  weights, the weighted Ingham problem `Σ_k c_k cosh(δ_k v) e^{i t_k v} = 0` has periodic solutions
+  on `|v| < 5π/(3g)`, so aperture `5π/(6g)` (numerical, card `zcg-deep-hiding-at-ingham-scale`).
 
 **Q3 Sub-spacing geometry.** *What does the image say below the mean spacing?*
 - Near a collision the camera reads the squared gap linearly, as the coefficient of the height
   curvature of the image (`norm_pairSignal_sub_sq_mul_curvature_le`). The height curvature of the
   prime channel is exactly the `(log n)²`-weighted prime sum (`deriv_deriv_primeChannel_modulate`).
-- *Open:* the sign of this weighted prime sum at every near-coincident pair, uniformly in height
-  (B44 in prime form; B51 for the inversion).
+- A single image reads the squared gap of every isolated near-coincident pair, uniformly in height.
+  The image differences read the moments (`discMoment_readout_rvm`), and the Hankel determinant
+  `μ₀μ₂ − μ₁²` of a pair is its squared gap. The normalization cancels from
+  `𝓗 = 4(W₁² − W₀W₂)/W₀²`, so `|𝓗 − (γ_{p₁} − γ_{p₂})²| = O(r³ T^{M' + κ_λ}) + O(e^{−K' log³ T})` for
+  three window images `W_j` of aperture `λL` (`pair_hankel_rvm`). The sign of `Re 𝓗` separates
+  on-line pairs, `w² = (Im p₁ − Im p₂)² > 0`, from FE pairs, `w² = −4(Re p₁ − ½)² < 0`
+  (`pair_type_of_hankel`). For `ζ` the image values are the arithmetic side of the explicit formula.
+- *Open:* the sign of the image Hankel determinant at every near-coincident pair of `ζ`, uniformly
+  in height (B44 in image form). The windows depend on the configuration outside the pair.
 
 **Q4 Deformation.** *How can reality be lost along a family, and what repels?*
 - Reality is lost only at a real double root (`exists_first_collision`). In the function field it
@@ -437,11 +487,8 @@ arithmetic images, forces every point onto the real curve?*
   and the phase law of Euler stages.
 
 **To build.**
-- Resolution of deep configurations between `π/(2a)` and `π/a`.
-- Second-order local inversion at polynomial scales (B51). The quasi-polynomial form is proved
-  (`norm_discMoment_zeta_le`). The polynomial form needs isolating windows whose floor is
-  polynomial in the isolation radius; the worst-case floor of a window blind to a configuration of
-  Riemann–von Mangoldt type is not.
+- The sharp resolution threshold of mixed depths, between `2π/(3g)` and `π/g`.
+- Exact resolution of near-coincident clusters below `e^{−K log³ T}`.
 - A Hermite–Biehler half of the heat source below `½/log X` from Euler and Gamma data (B49).
 
 ## 8. Traps
@@ -452,11 +499,14 @@ arithmetic images, forces every point onto the real curve?*
 | A cluster can hide in a bounded region | Finite modifications never hide; hiding needs infinitely many points |
 | Cancelling clusters can be sparse or perturbed | Every cluster of upper uniform density `< 2a/π`, counted point by point and at any depth, is trivial; the lattice pair cancels at density `2a/π` |
 | Depth lets a column hide between the Ingham scale and `π/a` | A deep FE-pair column against a half-shifted on-line column cancels exactly up to `π/(2g)`, as on-line lattices do (`deepColumn_mimic_iff`) |
+| The Ingham scale resolves every depth, since single depths and columns obey it | Four depths on a period of six heights hide up to `2π/(3g)` (`not_eq_of_mimic_at_ingham_scale`); the differing weights `cosh(δ_r v)` buy the extra conditions |
 | The density criterion needs a global count, so it says nothing for `ζ` | Only the count near the height matters: an isolated cancelling point at height `X` forces density `2a/π` within `R` with `(1 + R)^{2k−2} ≤ B (1 + |X|)² S` |
 | The resolution scale of off-line pairs is worse than Ingham's | Shallow configurations are resolved at every `g > π/(2a)`, and every depth at `g > π/a` |
 | An image matching the on-line shadow certifies the line | Lattices, Euler columns and band-limited modulations hide below their dual frequency |
 | Bounded bandwidth excludes arithmetic fakes | For every aperture some prime carries Euler columns of every depth that hide |
 | Depth is read at first order | The depth and gap signals are quadratic near a collision |
+| Polynomial-scale inversion needs a floor polynomial in the isolation radius | The floor of a window blind to an RvM cluster is `e^{−O(log³ T)}`, but near its target the window varies slowly relative to its own value; only the tail is measured against the floor (`core_window_slow`, `norm_discMoment_rvm_le`) |
+| Parity windows close the gap between `π/(2a)` and `π/a` for deep pairs | Every zero-killing choice costs two zeros per deep FE orbit; parity helps only on the line |
 | Certifying reality needs a sign | In the function field, identification at lag `g log q` certifies purity by positions; Weil positivity is proved to decide only with `2g` lags (`curveConfig_weil_nonneg_iff_unitary_of_card_le`) |
 | Identification certifies reality for `ζ` too | No finite aperture identifies the zeros of `ζ`: lattice columns of RvM density hide up to `λ = ½` |
 | Reality can leave the line smoothly | Only through a collision, a real double root |
@@ -542,9 +592,13 @@ cancellation of the prime sum, not its size.
   (`norm_pairSignal_add_sq_mul_secondMoment_le`, `norm_pairSignal_sub_sq_mul_curvature_le`) through
   the `(log n)²`-weighted coalescent channel (`deriv_deriv_primeChannel_modulate`) [L]. For `ζ` the
   first three moments of every cluster of radius `r`, isolated at `exp(−κ log X/(1 + log log X))`,
-  are fixed to `N r^{j+1} e^{C (log X)²} + e^{−K (log X)²}` (`norm_discMoment_zeta_le`) [L]. This is
-  B51 at quasi-polynomial scale. Polynomial scales need a floor polynomial in the isolation
-  radius. The sign of the squared gap read from primes is B44 in prime form.
+  are fixed to `N r^{j+1} e^{C (log X)²} + e^{−K (log X)²}` (`norm_discMoment_zeta_le`) [L]. Uniformly
+  in `T` at polynomial scales, pairs closer than `T^{−(M' + κ_λ + 1)}` and `T^{−M'}`-isolated have the
+  same centre and squared gap up to `O(r² T^{M' + κ_λ})`, `O(r³ T^{M' + κ_λ})` and
+  `e^{−K' log³ T}` (`pair_centre_and_gap_rvm`) [L]: B51. A single image reads the squared gap of
+  each such pair through the Hankel ratio `4(W₁² − W₀W₂)/W₀²` of three window images
+  (`pair_hankel_rvm`) [L], so reality inside a two-point cluster is the sign of an image Hankel
+  determinant: B44 in image form. Its sign for `ζ` is open.
 - **(b) A Hermite–Biehler half below the size floor (B49).** Construct a half `Q` from Euler and
   Gamma data, with `H_t = Q + Q^#` near `X` and `|Q^#| < |Q|` off the line for every
   `t ∈ (0, ½/log X]`, uniformly in `X`. At every height and every `t > 0` this is RH (`Λ_X = 0`), and
@@ -577,8 +631,9 @@ near-coincidence clusters, with a constant `e^{O((log X)²)}` beaten by window d
 
 Hiding has a price. A cancelling cluster at aperture `a` has density at least `2a/π`. Inside a
 separated union it needs two points of different FE orbits closer than `π/a`, or closer than the
-Ingham scale `π/(2a)` if it is shallow or a deep column. Lattices, Euler columns and the lattice pair
-hide exactly at these thresholds. Against `ζ`, every cancelling cluster consists of near-coincident
+Ingham scale `π/(2a)` if it is shallow, of one depth, or a deep column. Lattices, Euler columns and the lattice pair
+hide exactly at these thresholds. Mixed depths do not obey the Ingham scale: four depths on a period
+of six heights hide at separations up to `2π/(3a)`. Against `ζ`, every cancelling cluster consists of near-coincident
 points.
 
 Certification is where identification stops. In the function field purity is the position of the

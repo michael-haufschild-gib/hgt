@@ -149,6 +149,55 @@ theorem abs_re_lagStructure_le (Z : ZeroConfig) (hZ : TemperedConfig Z) {b : ℝ
     Complex.im_ofNat, zero_mul, sub_zero] at hp hm
   exact abs_le.mpr ⟨by linarith, by linarith⟩
 
+/-- A reflected exponential pair retains both parts of its complex amplitude. -/
+theorem reflectedLagPair_eq_cosh_sinh (c z : ℂ) (v : ℝ) :
+    c * cexp (z * v) + conj c * cexp (-conj z * v) =
+      2 * cexp (I * (z.im * v : ℝ)) *
+        ((c.re : ℂ) * Real.cosh (z.re * v) + I * c.im * Real.sinh (z.re * v)) := by
+  have hz : z * (v : ℂ) = ((z.re * v : ℝ) : ℂ) + I * (z.im * v : ℝ) := by
+    apply Complex.ext <;> simp [Complex.mul_re, Complex.mul_im]
+  have hr : -conj z * (v : ℂ) = ((-(z.re * v) : ℝ) : ℂ) + I * (z.im * v : ℝ) := by
+    apply Complex.ext <;> simp [Complex.mul_re, Complex.mul_im]
+  have hc : c = (c.re : ℂ) + I * c.im := by
+    apply Complex.ext <;> simp
+  have hcc : conj c = (c.re : ℂ) - I * c.im := by
+    apply Complex.ext <;> simp
+  rw [hz, hr, Complex.exp_add, Complex.exp_add,
+    Real.cosh_eq, Real.sinh_eq]
+  push_cast
+  calc
+    c * (cexp (z.re * v) * cexp (I * (z.im * v))) +
+        conj c * (cexp (-(z.re * v)) * cexp (I * (z.im * v))) =
+        ((c.re : ℂ) + I * c.im) * (cexp (z.re * v) * cexp (I * (z.im * v))) +
+          ((c.re : ℂ) - I * c.im) * (cexp (-(z.re * v)) * cexp (I * (z.im * v))) := by
+      rw [← hc, ← hcc]
+    _ = _ := by ring
+
+/-- Reflection conjugates the lag coefficient; its imaginary part contributes
+the hyperbolic-sine term. -/
+theorem lagCoeff_reflected_pair_eq (Z : ZeroConfig) {b : ℝ → ℂ}
+    (hb : Continuous b) (hbc : HasCompactSupport b) (z : ℂ) (v : ℝ) :
+    lagCoeff Z b z * cexp (z * v) +
+        lagCoeff Z b (-conj z) * cexp (-conj z * v) =
+      2 * cexp (I * (z.im * v : ℝ)) *
+        (((lagCoeff Z b z).re : ℂ) * Real.cosh (z.re * v) +
+          I * (lagCoeff Z b z).im * Real.sinh (z.re * v)) := by
+  rw [lagCoeff_neg_conj Z hb hbc]
+  exact reflectedLagPair_eq_cosh_sinh _ z v
+
+/-- Window positivity bounds the full complex lag amplitude. -/
+theorem norm_lagStructure_le_re_zero_of_weil_nonneg (Z : ZeroConfig) (hZ : TemperedConfig Z)
+    {b : ℝ → ℂ} (hb : ContDiff ℝ 2 b) {w : ℝ}
+    (hbs : ∀ u, b u ≠ 0 → |u| ≤ w) {v a : ℝ}
+    (hv : 0 ≤ v) (hva : v / 2 + w ≤ a)
+    (h : ∀ f : ℝ → ℂ, ContDiff ℝ 2 f → tsupport f ⊆ Icc (-a) a →
+      0 ≤ (Z.W f f).re) : ‖lagStructure Z b v‖ ≤ (lagStructure Z b 0).re := by
+  have hh := norm_lagStructure_le_of_weil_nonneg Z hZ hb hbs hv hva h
+  rw [conj_lagStructure_neg Z hZ hb hbs v, ← two_mul, norm_mul] at hh
+  have htwo : ‖(2 : ℂ)‖ = (2 : ℝ) := by norm_num
+  rw [htwo] at hh
+  linarith only [hh]
+
 /-! ### No top pole -/
 
 theorem mem_of_evenCoeff_ne_zero {Z : ZeroConfig} {b : ℝ → ℂ} {z : ℂ}
@@ -431,5 +480,13 @@ theorem onLine_iff_primeSide_evenOdd_twoBump_nonneg :
     (contDiff_bumpTest (contDiff_modScaledBump_two 1 γ) v ![1, ε])
     (hasCompactSupport_twoBump (hasCompactSupport_of_support_subset_abs
       (modScaledBump_support one_pos γ)) v ε)]
+
+#print axioms reflectedLagPair_eq_cosh_sinh
+#print axioms lagCoeff_reflected_pair_eq
+#print axioms norm_lagStructure_le_re_zero_of_weil_nonneg
+
+#print axioms W_twoBump
+#print axioms norm_lagStructure_le_of_weil_nonneg
+#print axioms conj_lagStructure_neg
 
 end GaloisForLFunctions.SquareRootThreshold

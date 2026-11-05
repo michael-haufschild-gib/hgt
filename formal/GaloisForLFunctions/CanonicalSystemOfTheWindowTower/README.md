@@ -51,3 +51,57 @@ interior in the chain law.
 `S^N_ε = inf_y F(x_L, y, x_R)`; at stage 1 it is `Q(x_L) + Q(x_R) + 2⟨μ(x_L), ν(x_R)⟩ + Φ_ε(μ(x_L), ν(x_R))`,
 `Φ_ε(α, β) = inf_y [Q(y) + 2⟨α, ν(y)⟩ + 2⟨μ(y), β⟩]`, one function of the two moment sequences
 (`firstStage_frozen_congr`). The disk law states the stage without this infimum.
+
+## 5. The unshifted local Weil spaces
+
+For `0<a<a*(ζ)`, the exact Weil norm is complete and its literal Fourier transform is entire,
+injective, and bounded at each evaluation point. Aperture inclusions are isometries. Compact
+division extends to unitary zero-moving; source conjugation extends to an antiunitary involution.
+
+Write `v_z` for the evaluation vector, `K_a(w,z)=F(v_w)(z)`, and
+`E_a(z)=(z+i)K_a(i,z)`. Then
+
+`|E_a(z)|²-|E_a♯(z)|²=4 Im(z) ‖v_i‖² ‖v_z‖²`.
+
+`E_a` is Hermite–Biehler, has no real zeros, and reconstructs `K_a` through its full
+Christoffel–Darboux identity. These are properties of the literal unshifted form.
+
+At finite contact a nonzero null ground vector has a nonzero Fourier value. A bound on the earlier
+diagonal kernels would extend by smooth-core density and contradict that value. Thus some fixed
+`K_a(z,z)` tends monotonically to infinity at contact. Window positivity still holds at contact.
+The aperture differential equation and prime-entry regularity are not established here.
+
+## 6. Bounded completed Riesz sources
+
+Every Fourier-evaluation Riesz vector before contact has two bounded real inverse-Doob
+coordinates and a bounded measurable physical representative, zero outside the exact aperture.
+Positive-level truncation retains all prime-power jumps. The cutoff archimedean kernel has
+uniformly divergent row mass and bounded off-diagonal action; its exact mixed-energy identity
+forces high positive and negative truncations to vanish. Fourier forcing and both polar terms
+are derived from the actual completed Riesz equation.
+
+The endpoints are `evalVector_bounded_real_graph_coordinates`,
+`evalVector_physical_essentially_bounded`, and
+`evalVector_has_bounded_physical_representative`.
+`evalVector_operator_domain_and_apply` places each physical source in the literal
+restricted Weil operator domain. Its image is
+`1_{[-a,a]}(x) exp(-i conj(z)x)`, bounded by `exp(a|Im z|)`.
+Boundary traces and aperture variation remain separate obligations.
+
+## 7. The logarithmic reference
+
+The literal Gamma multiplier is `(1/2)log(1+ξ²)+c₀` minus the Fourier
+transform of `r(|t|)`, where `r(t)=ω(t)-exp(-t)/(2t)` is nonnegative,
+bounded by `3/4`, and integrable. Its convolution is bounded, self-adjoint,
+and preserves essential boundedness.
+
+`logarithmicDirichletForm_eq` identifies the literal positive logarithmic form
+on the complete archimedean domain. Every actual evaluation Riesz source lies
+in its restricted operator domain, with essentially bounded forcing
+`evaluationForcing+(logarithmicDirichletAdjustment-ccmRestrictedWeilBoundedRemainder)u`.
+The full finite prime sum and both polar terms remain present.
+
+For `Ψ(t)=1+(1/2)log(1+t²)`, the positive Poisson factor
+`κ(s)=exp((1/π)∫₀∞s log(Ψ(t))/(s²+t²)dt)` satisfies
+`κ(s)/√log(s)→1`. It is increasing for `s>0`, at least one, and tends to
+one as `s↓0`. The half-line Green factorization remains to be proved.

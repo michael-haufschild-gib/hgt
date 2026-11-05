@@ -1,7 +1,7 @@
 # Hodge Theory without Varieties over ℤ (HWV)
 
 Namespace `GaloisForLFunctions.HodgeTheoryWithoutVarieties`; umbrella `HodgeTheoryWithoutVarieties.lean`;
-19 modules. In the review this field was called *the arithmetic Kähler package*. Everything is
+22 modules. In the review this field was called *the arithmetic Kähler package*. Everything is
 unconditional. Theorems named `riemannHypothesis_iff_*` are equivalences and are not proofs of RH.
 
 ## 1. Motivation
@@ -185,6 +185,11 @@ Weil's sign convention, Hodge–Riemann = `W ≥ 0` on primitive vectors.
     (`nerveEulerChar_eq_mertens`). RH is the half-power growth bound on it
     (`riemannHypothesis_iff_nerveEulerChar`), and unconditionally it is `Ω±(√N)`
     (`nerveEulerChar_omega_pm_sqrt`).
+    Its prime-support realization is homotopy equivalent to the finite wedge of
+    `S^(ω(m)−1)` over odd squarefree `N/2<m≤N`
+    (`primeComplexSphereBouquetHomotopyEquiv`). The contraction of the star of two
+    extends compatibly over every complementary facet, giving both inverse
+    homotopies. The realization is empty for `N<2` (`primeComplexRealization_empty`).
 19. *Links split into towers.* Neighbours of `n` on two distinct prime towers are never adjacent
     (`not_dilationAdj_of_towerNeighbor`), while each tower is a clique
     (`dilationAdj_of_towerNeighbor_same`). Every link is disconnected
@@ -292,6 +297,7 @@ Weil's sign convention, Hodge–Riemann = `W ≥ 0` on primitive vectors.
 | Stars at matrix level; gcd stratification of the complete family | `completeWeilMatrix_submatrix_starMap`, `completeWeilEnergy_gcd_stratification` | proved |
 | The renormalized prime form is glued from its stars (root defect, Mertens remainder, floor) | `renormalizedPrimeForm_moebius_recursion`, `sum_star_counterterms` | proved |
 | Nerve: Euler characteristic = Mertens; RH ⇔ half-power growth; `Ω±(√N)` | `nerveEulerChar_eq_mertens`, `riemannHypothesis_iff_nerveEulerChar`, `nerveEulerChar_omega_pm_sqrt` | proved; equivalence |
+| Prime complex: wedge of spheres indexed by odd squarefree integers in the upper half-window | `primeComplexSphereBouquetHomotopyEquiv`, `primeSphereIndex_card`, `primeComplexRealization_empty` | proved |
 | Künneth step for gaps; sharp tower gap | `gap_prod_ge`, `towerEnergy_ge`, `towerEnergy_valuationStep` | proved |
 | Shell balance law on the coherent sector; exact balance in the mean | `shellBalance_eq`, `shellBalance_of_coprime`, `sum_shellBalance_eq_zero` | proved |
 | Künneth step at the horizon: layers of a prime | `dilationForm_layers` | proved |

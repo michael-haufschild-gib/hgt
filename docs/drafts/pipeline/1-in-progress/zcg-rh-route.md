@@ -27,11 +27,14 @@ no spectrum, no count is used as the decisive step.
 
 ## The residual
 - **(a) B44.** Reality at near-coincident clusters below the isolation scale. Second-order local
-  inversion (B51) fixes centre and squared gap `w²` of every near-coincident pair. In Lean for `ζ` at
-  quasi-polynomial scale: clusters of radius `r` isolated at `exp(−κ log X/(1 + log log X))` have
-  moments fixed to `N r^{j+1} e^{C (log X)²} + e^{−K (log X)²}` (`norm_discMoment_zeta_le`, card
-  `zcg-second-order-local-inversion`). Polynomial scales need a floor polynomial in the isolation
-  radius. The squared gap is read linearly through the `(log n)²`-weighted
+  inversion (B51) fixes centre and squared gap `w²` of every near-coincident pair, uniformly in
+  height [L]: pairs closer than `X^{−(M' + κ_λ + 1)}` and `X^{−M'}`-isolated agree in centre to
+  `O(r² X^{M' + κ_λ})` and in `w²` to `O(r³ X^{M' + κ_λ})`, up to `e^{−K' log³ X}`
+  (`pair_centre_and_gap_rvm`); isolated dipoles collapse below `2e^{−K' log³ X}`
+  (`dipole_collapse_rvm`); card `zcg-second-order-local-inversion`. A single image reads the
+  squared gap of every such pair through the Hankel ratio `4(W₁² − W₀W₂)/W₀²` of three window
+  images [L] (`pair_hankel_rvm`, card `zcg-image-hankel-reads-squared-gap`): B44 is the sign of an
+  image Hankel determinant at every near-coincident pair. The squared gap is read linearly through the `(log n)²`-weighted
   coalescent channel (`norm_pairSignal_sub_sq_mul_curvature_le`, `deriv_deriv_primeChannel_modulate`).
   Its sign is B44 in prime form.
 - **(b) B49.** A Hermite–Biehler half `Q` from Euler and Gamma data with `H_t = Q + Q^#` and
