@@ -58,22 +58,22 @@ theorem discMoment_readout_rvm_explicit (J : ℕ) {θ lam A S M' K' : ℝ} (hθ 
               (∑ z ∈ s, ‖multDiff Z Z' z‖) * r ^ (j + 1) * T ^ (M' + slowExponent lam) +
                 Real.exp (-(K' * Real.log (T / (2 * π)) ^ 3)) := by
   have h2π0 : 0 < 2 * π := by positivity
-  have hlam0 : 0 < lam := by linarith
+  have hlam0 : 0 < lam := by linarith only [hθ, hlam]
   obtain ⟨β, hβ⟩ : ∃ β, β = lam - θ / 2 := ⟨_, rfl⟩
-  have hβ0 : 0 < β := by rw [hβ]; linarith
-  have hβlam : β ≤ lam := by rw [hβ]; linarith
+  have hβ0 : 0 < β := by rw [hβ]; linarith only [hlam]
+  have hβlam : β ≤ lam := by rw [hβ]; linarith only [hθ]
   obtain ⟨ℓ, hℓ⟩ : ∃ ℓ, ℓ = 2 * π * A / lam := ⟨_, rfl⟩
   have hℓ0 : 0 ≤ ℓ := by rw [hℓ]; positivity
   obtain ⟨e, he⟩ : ∃ e, e = 6 * slackBound ℓ * (1 + slackBound ℓ) := ⟨_, rfl⟩
-  have : 0 ≤ slackBound ℓ := by unfold slackBound; linarith
+  have : 0 ≤ slackBound ℓ := by unfold slackBound; positivity
   have he0 : 0 ≤ e := by rw [he]; positivity
   obtain ⟨c, hc⟩ : ∃ c, c = 2 * growthRate ℓ * lam ^ 2 +
       2 * floorRate ℓ * lam ^ 2 * (lam + 8 * M') := ⟨_, rfl⟩
   have : 0 ≤ growthRate ℓ := growthRate_nonneg hℓ0
   have : 0 ≤ floorRate ℓ := floorRate_nonneg hℓ0
-  have : 0 ≤ c := by rw [hc]; positivity
+  have hc0 : 0 ≤ c := by rw [hc]; positivity
   obtain ⟨K, hK⟩ : ∃ K, K = c / 2 + 2 := ⟨_, rfl⟩
-  have hK1 : 2 ≤ K := by rw [hK]; linarith
+  have hK1 : 2 ≤ K := by rw [hK]; linarith only [hc0]
   obtain ⟨MK, hMK⟩ : ∃ MK, MK = e * lam + K + K' + 2 + J := ⟨_, rfl⟩
   have hMK0 : 0 < MK := by rw [hMK]; positivity
   obtain ⟨ρ, hρ⟩ : ∃ ρ, ρ = 8 * MK / β := ⟨_, rfl⟩
@@ -84,7 +84,9 @@ theorem discMoment_readout_rvm_explicit (J : ℕ) {θ lam A S M' K' : ℝ} (hθ 
   obtain ⟨S'', hS''⟩ : ∃ S'', S'' = max S 1 := ⟨_, rfl⟩
   have hS''1 : 1 ≤ S'' := by rw [hS'']; exact le_max_right _ _
   obtain ⟨V, hV⟩ : ∃ V, V = max (6 * cameraSlowConstant lam ℓ M') (4 * lam) + 1 := ⟨_, rfl⟩
-  have hV0 : 0 < V := by rw [hV]; linarith [le_max_right (6 * cameraSlowConstant lam ℓ M') (4 * lam)]
+  have hV0 : 0 < V := by
+    rw [hV]
+    linarith only [hlam0, le_max_right (6 * cameraSlowConstant lam ℓ M') (4 * lam)]
   obtain ⟨U₀, hU₀⟩ : ∃ U₀, U₀ = max (max (max 1 (2 * π / lam))
       (2 * MK * q + (lam + 4) + (Real.log S'' + 605) + 1)) (Real.log V) := ⟨_, rfl⟩
   have hheight := cameraMomentHeight_eq_of_parameters J
@@ -92,7 +94,9 @@ theorem discMoment_readout_rvm_explicit (J : ℕ) {θ lam A S M' K' : ℝ} (hθ 
   intro T hT Z Z' hZ hZ' hStail hcount z₀ hz₀ hz₀re r hr0 hr hiso s hsd hds
   rw [hheight] at hT
   -- height scale `u = log(T / 2π)`
-  have hTdiv : Real.exp U₀ ≤ T / (2 * π) := by rw [le_div_iff₀ h2π0]; linarith
+  have hTdiv : Real.exp U₀ ≤ T / (2 * π) := by
+    rw [le_div_iff₀ h2π0]
+    linarith only [hT]
   obtain ⟨u, hu⟩ : ∃ u, u = Real.log (T / (2 * π)) := ⟨_, rfl⟩
   rw [← hu] at hcount ⊢
   have huU₀ : U₀ ≤ u := by
@@ -101,7 +105,7 @@ theorem discMoment_readout_rvm_explicit (J : ℕ) {θ lam A S M' K' : ℝ} (hθ 
   rw [hU₀] at huU₀
   have hu1 : 1 ≤ u :=
     (((le_max_left _ _).trans (le_max_left _ _)).trans (le_max_left _ _)).trans huU₀
-  have hu0 : 0 < u := by linarith
+  have hu0 : 0 < u := by linarith only [hu1]
   have hu_lam : 2 * π / lam ≤ u :=
     (((le_max_right _ _).trans (le_max_left _ _)).trans (le_max_left _ _)).trans huU₀
   have hu_bud : 2 * MK * q + (lam + 4) + (Real.log S'' + 605) + 1 ≤ u :=
@@ -120,9 +124,10 @@ theorem discMoment_readout_rvm_explicit (J : ℕ) {θ lam A S M' K' : ℝ} (hθ 
     have hslow := slowConst_le_cameraSlowConstant (M' := M') hlam0 hℓ0
     linarith only [hEV, hmax, hslow]
   have h4lam : 4 * lam ≤ Real.exp u := by
-    rw [hV] at hEV; linarith [le_max_right (6 * cameraSlowConstant lam ℓ M') (4 * lam)]
+    rw [hV] at hEV
+    linarith only [hEV, le_max_right (6 * cameraSlowConstant lam ℓ M') (4 * lam)]
   have hET : Real.exp u ≤ T := by
-    rw [hTu]; nlinarith [Real.exp_pos u, Real.pi_gt_three]
+    rw [hTu]; nlinarith only [Real.exp_pos u, Real.pi_gt_three]
   have hT1 : 1 ≤ T := (Real.one_le_exp hu0.le).trans hET
   -- camera parameters
   obtain ⟨a, ha⟩ : ∃ a, a = lam * (u / 2) := ⟨_, rfl⟩
@@ -132,7 +137,7 @@ theorem discMoment_readout_rvm_explicit (J : ℕ) {θ lam A S M' K' : ℝ} (hθ 
   obtain ⟨C₀, hC₀⟩ : ∃ C₀, C₀ = A * u := ⟨_, rfl⟩
   obtain ⟨hDa, hD1, hDup, hC₀ℓ⟩ :=
     rvm_density_facts hθ hlam hA hβ hℓ hu0 hu_lam ha hε hD hC₀
-  have hD0 : 0 < D := by linarith
+  have hD0 : 0 < D := by linarith only [hD1]
   obtain ⟨η, hη⟩ : ∃ η, η = T ^ (-M') := ⟨_, rfl⟩
   -- decay order `k = ⌈(K + K') u²⌉₊` and spline order `m = ⌈W⌉₊ + k + J`
   obtain ⟨k, hk⟩ : ∃ k : ℕ, k = ⌈(K + K') * u ^ 2⌉₊ := ⟨_, rfl⟩
@@ -150,7 +155,8 @@ theorem discMoment_readout_rvm_explicit (J : ℕ) {θ lam A S M' K' : ℝ} (hθ 
   have hsub_band : ∀ z : ℂ, |z.im - z₀.im| ≤ T / 4 → |z.im - T| ≤ T / 2 := fun z hz => by
     have h1 := abs_le.mp hz
     have h2 := abs_le.mp hz₀
-    rw [abs_le]; constructor <;> linarith
+    rw [abs_le]
+    constructor <;> linarith only [h1.1, h1.2, h2.1, h2.2]
   have hiso' : ∀ z, multDiff Z Z' z ≠ 0 → |z.im - z₀.im| ≤ T / 4 →
       ‖z - z₀‖ ≤ r ∨ η ≤ ‖z - z₀‖ :=
     fun z hcz hzR => by rw [hη]; exact hiso z hcz (hsub_band z hzR)
@@ -164,10 +170,10 @@ theorem discMoment_readout_rvm_explicit (J : ℕ) {θ lam A S M' K' : ℝ} (hθ 
     have hDθ : θ / (2 * π) * u ≤ D := by
       rw [hD]
       exact mul_le_mul_of_nonneg_right
-        (div_le_div_of_nonneg_right (by linarith [hβ0]) h2π0.le) hu0.le
+        (div_le_div_of_nonneg_right (by linarith only [hβ0]) h2π0.le) hu0.le
     have hmul : θ / (2 * π) * u * (y - x) ≤ D * (y - x) :=
       mul_le_mul_of_nonneg_right hDθ (sub_nonneg.mpr hxy)
-    linarith
+    exact hc1.trans (add_le_add_right hmul C₀)
   have hSbound : S ≤ S'' := by rw [hS'']; exact le_max_left _ _
   exact rvm_readout_core (lam := lam) (β := β) (M' := M') (K' := K') (ℓ := ℓ)
     (c := c) (K := K) (MK := MK) (ρ := ρ) (α := α) (q := q) (S'' := S'')

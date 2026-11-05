@@ -49,22 +49,22 @@ theorem exists_subspacing_isolating_windows_explicit {θ lam A S M : ℝ} (hθ :
               pointImage F G z = 0) ∧
             ‖(Z.W F G - Z'.W F G) / pointImage F G z₀ - multDiff Z Z' z₀‖ ≤ 1 / 4 := by
   have h2π0 : 0 < 2 * π := by positivity
-  have hlam0 : 0 < lam := by linarith
+  have hlam0 : 0 < lam := by linarith only [hθ, hlam]
   obtain ⟨β, hβ⟩ : ∃ β, β = lam - θ / 2 := ⟨_, rfl⟩
-  have hβ0 : 0 < β := by rw [hβ]; linarith
-  have hβlam : β ≤ lam := by rw [hβ]; linarith
+  have hβ0 : 0 < β := by rw [hβ]; linarith only [hlam]
+  have hβlam : β ≤ lam := by rw [hβ]; linarith only [hθ]
   obtain ⟨ℓ, hℓ⟩ : ∃ ℓ, ℓ = 2 * π * A / lam := ⟨_, rfl⟩
   have hℓ0 : 0 ≤ ℓ := by rw [hℓ]; positivity
   obtain ⟨e, he⟩ : ∃ e, e = 6 * slackBound ℓ * (1 + slackBound ℓ) := ⟨_, rfl⟩
-  have : 0 ≤ slackBound ℓ := by unfold slackBound; linarith
+  have : 0 ≤ slackBound ℓ := by unfold slackBound; positivity
   have he0 : 0 ≤ e := by rw [he]; positivity
   obtain ⟨c, hc⟩ : ∃ c, c = 2 * growthRate ℓ * lam ^ 2 +
       2 * floorRate ℓ * lam ^ 2 * (lam + 8 * M) := ⟨_, rfl⟩
   have : 0 ≤ growthRate ℓ := growthRate_nonneg hℓ0
   have : 0 ≤ floorRate ℓ := floorRate_nonneg hℓ0
-  have : 0 ≤ c := by rw [hc]; positivity
+  have hc0 : 0 ≤ c := by rw [hc]; positivity
   obtain ⟨K, hK⟩ : ∃ K, K = c / 2 + 2 := ⟨_, rfl⟩
-  have hK1 : 2 ≤ K := by rw [hK]; linarith
+  have hK1 : 2 ≤ K := by rw [hK]; linarith only [hc0]
   obtain ⟨MK, hMK⟩ : ∃ MK, MK = e * lam + K + 2 := ⟨_, rfl⟩
   have hMK0 : 0 < MK := by rw [hMK]; positivity
   obtain ⟨ρ, hρ⟩ : ∃ ρ, ρ = 8 * MK / β := ⟨_, rfl⟩
@@ -81,7 +81,7 @@ theorem exists_subspacing_isolating_windows_explicit {θ lam A S M : ℝ} (hθ :
   intro T hT Z Z' hZ hZ' hStail hcount z₀ hz₀ hc_ne hiso
   rw [hheight] at hT
   -- height scale `u = log(T / 2π)`
-  have hTdiv : Real.exp U₀ ≤ T / (2 * π) := by rw [le_div_iff₀ h2π0]; linarith
+  have hTdiv : Real.exp U₀ ≤ T / (2 * π) := by rw [le_div_iff₀ h2π0]; linarith only [hT]
   obtain ⟨u, hu⟩ : ∃ u, u = Real.log (T / (2 * π)) := ⟨_, rfl⟩
   rw [← hu] at hcount ⊢
   have huU₀ : U₀ ≤ u := by
@@ -89,7 +89,7 @@ theorem exists_subspacing_isolating_windows_explicit {θ lam A S M : ℝ} (hθ :
     exact Real.log_le_log (Real.exp_pos _) hTdiv
   rw [hU₀] at huU₀
   have hu1 : 1 ≤ u := ((le_max_left _ _).trans (le_max_left _ _)).trans huU₀
-  have hu0 : 0 < u := by linarith
+  have hu0 : 0 < u := by linarith only [hu1]
   have hu_lam : 2 * π / lam ≤ u := ((le_max_right _ _).trans (le_max_left _ _)).trans huU₀
   have hu_bud : 2 * MK * q + (lam + 4) + (Real.log S'' + 605) + 1 ≤ u :=
     (le_max_right _ _).trans huU₀
@@ -103,48 +103,14 @@ theorem exists_subspacing_isolating_windows_explicit {θ lam A S M : ℝ} (hθ :
   obtain ⟨ε, hε⟩ : ∃ ε, ε = β * u / 8 := ⟨_, rfl⟩
   have hε0 : 0 < ε := by rw [hε]; positivity
   obtain ⟨D, hD⟩ : ∃ D, D = (θ + β) / (2 * π) * u := ⟨_, rfl⟩
-  have hDa : π * D / 2 + 2 * ε ≤ a := by
-    refine le_of_eq ?_
-    rw [hD, hε, ha, hβ]; field_simp; ring
-  have hDlow : lam / (2 * π) * u ≤ D := by
-    rw [hD, hβ]
-    have : lam ≤ θ + (lam - θ / 2) := by linarith
-    exact mul_le_mul_of_nonneg_right (div_le_div_of_nonneg_right this h2π0.le) hu0.le
-  have hDup : D ≤ lam * u := by
-    rw [hD, hβ]
-    have h1 : (θ + (lam - θ / 2)) / (2 * π) ≤ lam := by
-      rw [div_le_iff₀ h2π0]
-      have h2lam : 2 * lam ≤ lam * (2 * π) := by
-        have := mul_le_mul_of_nonneg_left (show (2 : ℝ) ≤ 2 * π by linarith [Real.pi_gt_three])
-          hlam0.le
-        linarith
-      linarith
-    exact mul_le_mul_of_nonneg_right h1 hu0.le
-  have hD1 : 1 ≤ D := by
-    refine le_trans ?_ hDlow
-    have h1 := (div_le_iff₀ hlam0).mp hu_lam
-    rw [div_mul_eq_mul_div, le_div_iff₀ h2π0]
-    linarith
-  have hD0 : 0 < D := by linarith
   obtain ⟨C₀, hC₀⟩ : ∃ C₀, C₀ = A * u := ⟨_, rfl⟩
-  have hC₀ℓ : |C₀| ≤ ℓ * D := by
-    rw [hC₀, abs_of_nonneg (by positivity), hℓ]
-    have huD : u ≤ 2 * π / lam * D := by
-      calc u = 2 * π / lam * (lam / (2 * π) * u) := by field_simp
-        _ ≤ 2 * π / lam * D := mul_le_mul_of_nonneg_left hDlow (by positivity)
-    calc A * u ≤ A * (2 * π / lam * D) := mul_le_mul_of_nonneg_left huD hA
-      _ = 2 * π * A / lam * D := by ring
+  obtain ⟨hDa, hD1, hDup, hC₀ℓ⟩ :=
+    rvm_density_facts hθ hlam hA hβ hℓ hu0 hu_lam ha hε hD hC₀
+  have hD0 : 0 < D := by linarith only [hD1]
   obtain ⟨η, hη⟩ : ∃ η, η = T ^ (-M) := ⟨_, rfl⟩
   have hη0 : 0 < η := by rw [hη]; exact Real.rpow_pos_of_pos hT0 _
   -- decay order `k = ⌈K u²⌉₊` and spline order `m = ⌈W⌉₊ + k`
   obtain ⟨k, hk⟩ : ∃ k : ℕ, k = ⌈K * u ^ 2⌉₊ := ⟨_, rfl⟩
-  have hkK : K * u ^ 2 ≤ k := by rw [hk]; exact Nat.le_ceil _
-  have hkle : (k : ℝ) ≤ K * u ^ 2 + 1 := by
-    rw [hk]; exact (Nat.ceil_lt_add_one (by positivity)).le
-  have hk1 : 1 ≤ k := by
-    have h1 : (1 : ℝ) ≤ K * u ^ 2 :=
-      one_le_mul_of_one_le_of_one_le (by linarith [hK1]) (one_le_pow₀ hu1 : 1 ≤ u ^ 2)
-    exact_mod_cast h1.trans hkK
   obtain ⟨W, hWdef⟩ : ∃ W, W = windowExponent (2 * D⁻¹) (localSlack D C₀) := ⟨_, rfl⟩
   have hW0 : 0 ≤ W := by
     rw [hWdef, windowExponent]
@@ -152,28 +118,19 @@ theorem exists_subspacing_isolating_windows_explicit {θ lam A S M : ℝ} (hθ :
     positivity
   have hWle : W ≤ e * D := by rw [hWdef, he]; exact windowExponent_le hD1 hC₀ℓ
   obtain ⟨m, hmdef⟩ : ∃ m : ℕ, m = ⌈W⌉₊ + k := ⟨_, rfl⟩
+  obtain ⟨hkK', hk1, hm', hmle, hmε⟩ :=
+    rvm_order_facts (J := 0) (K' := 0) hK1 (le_refl 0) he0 hlam0 hβ0
+      (by simpa only [add_zero, Nat.cast_zero] using hMK) hρ hu1 hε hDup hW0 hWle
+      (by simpa only [add_zero] using hk) (by simpa only [Nat.add_zero] using hmdef)
+  have hkK : K * u ^ 2 ≤ k := by simpa only [add_zero] using hkK'
   have hm : windowExponent (2 * D⁻¹) (localSlack D C₀) + k ≤ m := by
-    rw [hmdef, ← hWdef]; push_cast; linarith [Nat.le_ceil W]
-  have hmle : (m : ℝ) ≤ MK * u ^ 2 := by
-    rw [hmdef, hMK]; push_cast
-    have h1 : (⌈W⌉₊ : ℝ) ≤ W + 1 := (Nat.ceil_lt_add_one hW0).le
-    have h2 : e * D ≤ e * (lam * u) := mul_le_mul_of_nonneg_left hDup he0
-    have hu2 : u ≤ u ^ 2 := by simpa [sq] using mul_le_mul_of_nonneg_right hu1 hu0.le
-    have : 1 ≤ u ^ 2 := one_le_pow₀ hu1
-    have h3 : e * (lam * u) ≤ e * lam * u ^ 2 := by
-      calc e * (lam * u) = e * lam * u := by ring
-        _ ≤ e * lam * u ^ 2 := mul_le_mul_of_nonneg_left hu2 (by positivity)
-    linarith [hWle, hkle,
-      show (e * lam + K + 2) * u ^ 2 = e * lam * u ^ 2 + K * u ^ 2 + 2 * u ^ 2 by ring]
-  have hmε : (m : ℝ) / ε ≤ ρ * u := by
-    rw [div_le_iff₀ hε0, hρ, hε]
-    have : 8 * MK / β * u * (β * u / 8) = MK * u ^ 2 := by field_simp
-    rw [this]; exact hmle
+    simpa only [Nat.add_zero, hWdef] using hm'
   obtain ⟨b, hb, hbs, hb1, hb0, hbm⟩ := exists_explicit_bump hε0 m
   have hsub_band : ∀ z : ℂ, |z.im - z₀.im| ≤ T / 4 → |z.im - T| ≤ T / 2 := fun z hz => by
     have h1 := abs_le.mp hz
     have h2 := abs_le.mp hz₀
-    rw [abs_le]; constructor <;> linarith
+    rw [abs_le]
+    constructor <;> linarith only [h1.1, h1.2, h2.1, h2.2]
   have hiso' : ∀ z, z ≠ z₀ → multDiff Z Z' z ≠ 0 → |z.im - z₀.im| ≤ T / 4 → η ≤ ‖z - z₀‖ :=
     fun z hne hcz hzR => by rw [hη]; exact hiso z hne hcz (hsub_band z hzR)
   have hcount' : ∀ (s : Finset ℂ) (x y : ℝ), x ≤ y →
@@ -186,10 +143,10 @@ theorem exists_subspacing_isolating_windows_explicit {θ lam A S M : ℝ} (hθ :
     have hDθ : θ / (2 * π) * u ≤ D := by
       rw [hD]
       exact mul_le_mul_of_nonneg_right
-        (div_le_div_of_nonneg_right (by linarith [hβ0]) h2π0.le) hu0.le
+        (div_le_div_of_nonneg_right (by linarith only [hβ0]) h2π0.le) hu0.le
     have hmul : θ / (2 * π) * u * (y - x) ≤ D * (y - x) :=
       mul_le_mul_of_nonneg_right hDθ (sub_nonneg.mpr hxy)
-    linarith
+    exact hc1.trans (add_le_add_right hmul C₀)
   obtain ⟨F, G, hFw, hGw, _, hP0_ne, hnear, htail⟩ :=
     exists_isolating_window_pair_of_bump hD0 hη0 hε0 hDa hb hbs hb1 hk1 hm (C0 := 1) hbm
       (fun w => by rw [one_mul]; exact hb0 w) hZ hZ' (R := T / 4) (by positivity) hc_ne hiso'
@@ -197,10 +154,11 @@ theorem exists_subspacing_isolating_windows_explicit {θ lam A S M : ℝ} (hθ :
   refine ⟨F, G, hFw, hGw, hP0_ne, hnear, ?_⟩
   have hSg0 : 0 ≤ ∑' z, ‖multDiff Z Z' z‖ / (1 + Complex.normSq (gammaOf z)) :=
     tsum_nonneg fun z => div_nonneg (norm_nonneg _)
-      (by have := Complex.normSq_nonneg (gammaOf z); linarith)
+      (by linarith only [Complex.normSq_nonneg (gammaOf z)])
+  have hSbound : S ≤ S'' := by rw [hS'']; exact le_max_left _ _
   exact subspacing_camera_budget hu1 hTu hM hlam0 hβlam hℓ0 hc hK hMK0 hρ0 hα hα0 hq hS''1
     hu_bud ha hε hε0 hD1 hDup hC₀ℓ hη hη0 hkK hk1 hmle hmε hz₀ hSg0
-    (hStail.trans (by rw [hS'']; exact le_max_left _ _)) htail
+    (hStail.trans hSbound) htail
 
 
 
@@ -224,7 +182,7 @@ theorem multDiff_eq_zero_of_subspacing_isolated_explicit {θ lam A S M : ℝ} (h
   by_contra hc
   obtain ⟨F, G, hFw, hGw, _, _, hle⟩ := hwin T hT Z Z' hZ hZ' hStail hcount z₀ hz₀ hc hiso
   rw [W_eq_of_mimic hZ hZ' hW hFw hGw, sub_self, zero_div, zero_sub, norm_neg] at hle
-  linarith [one_le_norm_multDiff hc]
+  linarith only [hle, one_le_norm_multDiff hc]
 
 
 /-- Every remaining discrepancy has a polynomially close neighbour above the explicit height. -/
@@ -290,7 +248,7 @@ theorem exists_window_pair_reads_mult_subspacing_explicit {θ lam A S M : ℝ} (
     intro h0
     rw [h0, zero_div, zero_sub, norm_neg, Complex.norm_natCast] at hle
     have h1 : (1 : ℝ) ≤ (Z.mult z₀ : ℝ) := by exact_mod_cast Z.one_le_mult z₀ hz₀car
-    linarith
+    linarith only [hle, h1]
   exact ⟨F, G, hFw, hGw, hP0, hW_ne,
     fun z hzc hne hzR => hnear z hne ((hmd z).mpr hzc) hzR, hle⟩
 
@@ -335,10 +293,11 @@ theorem multDiff_eq_zero_of_littleO_inv_log_isolated_explicit {θ lam A S δ : �
     (show (0 : ℝ) ≤ 1 by norm_num)
   have hT₁ := cameraPointHeight_ge θ lam A S 1
   intro T hT Z Z' hZ hZ' hW hStail hcount z₀ hz₀ hiso
+  have hTp : cameraPointHeight θ lam A S 1 ≤ T := (le_max_left _ _).trans hT
   have hT3 : 3 ≤ T := by
     have : 2 * π * 1 ≤ 2 * π * Real.exp 1 :=
       mul_le_mul_of_nonneg_left (Real.one_le_exp zero_le_one) (by positivity)
-    linarith [Real.pi_gt_three, (le_max_left _ _).trans hT]
+    linarith only [this, Real.pi_gt_three, hT₁, hTp]
   have hle := camera_inverse_height_le_log_scale hδ hT3 ((le_max_right _ _).trans hT)
   exact hexact T ((le_max_left _ _).trans hT) Z Z' hZ hZ' hW hStail hcount z₀ hz₀
     fun z hne hcz hzR => hle.trans (hiso z hne hcz hzR)
