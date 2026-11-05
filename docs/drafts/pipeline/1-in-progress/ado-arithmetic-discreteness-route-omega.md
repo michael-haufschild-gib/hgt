@@ -40,6 +40,8 @@ Folder `formal/GaloisForLFunctions/ArithmeticDiscreteness/` (README there), umbr
 | Ω18 | Two-prime near-coincidences need a singular lift or non-integral coefficients | Lean: the affine carrier `−(log 3 − log 2) + log 3·2^{−s} − log 2·3^{−s}` (smooth tangency at `(1,1)`) has them (`logTrinomial_collision_or_close_pair`); the integer trinomial `1 + 2^{−s} + 3^{−s}` repels uniformly; for integer `G` a torsion tangency is singular since `log 3/log 2 ∉ ℚ` (`lam23_ne_zero`) |
 | Ω19 | Every near-coincidence of `ζ` is a joint small value of `(ζ, ζ')` at its midpoint | Lean: `joint_small_values_of_close_zeros` (`|ζ(c)| ≤ K‖h‖²`, `|ζ'(c)| ≤ K‖h‖`); B54 ⇐ emptiness of the joint small-value set — the `ℤ` analogue of the discriminant bound for `(P, P')` |
 | Ω20 | Converse of Ω19: joint small values of `(F, F')` with `F''(c)` bounded below force exactly two zeros (with multiplicity) within `r` | Lean: `two_zeros_of_joint_small_values` (third-order Taylor `norm_taylor_two_remainder_le` + corpus Rouché); with Ω19, B54 ⇔ emptiness of the nondegenerate joint small-value set of `(ζ, ζ')` up to constants |
+| Ω22 | For algebraic carriers, consistent tangencies at algebraic points are singular points of the Bohr lift (any number of primes) | Lean: `algebraic_tangency_is_singular`, `pderiv_eval_eq_zero_of_algebraic_tangency` (corpus Baker `primeLog_linearForm_transcendental`); generalizes Ω18 |
+| Ω23 | The prime Kronecker flow is Diophantine at torsion points: `max_i |p_i^{−it} − u_i| ≥ c(2+|t|)^{−C}` for `|t| ≥ 1` and any roots of unity `u_i` | Lean: `primeFlow_diophantine_at_torsion` — the standalone form of the discreteness the Euler product carries; with a local (Łojasiewicz-type) estimate at a singular torsion tangency it would give Ω10 for algebraic carriers whose tangencies are all torsion |
 | Ω13 | Integral pure Euler carriers of every degree collide or repel at polynomial scale | Lean: `exists_pow_eq_one_of_pure` (Kronecker), `pureCarrier_collide_or_repel` |
 | Ω14 | Near-coincidences at every scale need an Euler product | FALSE: the cusp carrier `(1−2^{−s})² − (1−3^{−s})³` has them (`cuspCarrier_collision_or_close_pair`) |
 | Ω15 | The depth of an FE pair is read on the line: `|ζ(½+iγ)| ≤ 480e²(|γ|+2)(|γ|+5)δ²`; a lower bound for `|ζ(½+iγ)|` at the ordinate gives a depth gap | Lean: `norm_zeta_center_le_of_offline_zero`, `depth_ge_of_norm_zeta_center_ge` |
@@ -96,5 +98,5 @@ Folder `formal/GaloisForLFunctions/ArithmeticDiscreteness/` (README there), umbr
   `e^{−c log² T}` (Ω1′).
 
 ## Log
-- 2026-11-05 — created; Ω1–Ω9″, Ω12, Ω13, Ω15–Ω21 formalized; Ω3, Ω5, Ω6′, Ω12′, Ω14 falsified with
+- 2026-11-05 — created; Ω1–Ω9″, Ω12, Ω13, Ω15–Ω23 formalized; Ω3, Ω5, Ω6′, Ω12′, Ω14 falsified with
   survivors; Ω9′, Ω10, Ω11 open.

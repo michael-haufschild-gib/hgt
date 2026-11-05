@@ -1,10 +1,10 @@
 # Sharp restriction preserves the complete complex Weil domain
 
-- **Stage:** 1-in-progress
-- **Type:** CONJECTURE
+- **Stage:** 3-formalized
+- **Type:** THEOREM (Lean)
 - **Statement:** Restricting any complete aperture form vector to any centered interval gives a vector in that exact interval's complete form domain, without a smoothing collar or positivity assumption.
 
-## Proof route
+## Proof
 
 Decompose the physical complex source into two real arithmetic graph sources.
 Apply `sharpIntervalGraph` to each. Its proved exact support admission gives
@@ -18,9 +18,14 @@ unproved boundary regularity is used. The logarithmic/Weil domain identity
 then transfers the conclusion to the literal logarithmic Fourier energy.
 The complementary collar is the difference from the original vector.
 
-## Lean status
+## Lean
 
-Real-graph inputs are formalized in `RHTower/CHMDSharpSpatialCut.lean` and
-`RHTower/CHMDRealApertureDomain.lean`. Complex reconstruction remains to be
-formalized. Exact support splitting is an input to the proposed Riesz-kernel
-variation law; no variation formula follows from admission alone.
+`CanonicalSystemOfTheWindowTower/SharpRestrictionPreservesTheCompleteComplexWeilDomain.lean`:
+
+- `exists_ccm_form_of_sharpInterval`: exact complex restriction in the target domain.
+- `hasLogarithmicEnergy_sharpInterval`: restricted source has finite logarithmic energy.
+- `hasLogarithmicEnergy_sharpComplement`: complementary collar has finite energy.
+
+Plain Lean audit passes. All three declarations use only `propext`,
+`Classical.choice`, and `Quot.sound`. The module is wired into its umbrella.
+Exact support splitting alone does not prove the Riesz-kernel variation law.

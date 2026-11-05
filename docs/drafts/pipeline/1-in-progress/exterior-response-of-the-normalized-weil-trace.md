@@ -18,9 +18,11 @@ remote pieces and the difference `d/(t(t+d))` controls the middle piece.
 The integrable Gamma remainder changes the response by a bounded quantity.
 Finite prime translations and polar terms also stay bounded.
 
-For `d=hs`, the trace bound should give the common L² majorant
-`C sqrt(1+log(1/s))` on `0<s<1`. Dominated convergence then gives the
-scaled exterior forcing needed by the collar Schur formula.
+For `d=hs`, write `log(1/(hs))=log(1/h)+log(1/s)`. A bounded normalized
+response gives the squared majorant `C(1+log(1/s))` on `0<s<1`, which is
+integrable. The logarithmic ratio tends pointwise to one. Dominated
+convergence therefore gives the scaled L² limit from the scalar boundary
+limit alone.
 
 ## Lean status
 

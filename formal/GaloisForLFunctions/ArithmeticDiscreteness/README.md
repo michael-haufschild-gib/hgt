@@ -27,6 +27,7 @@ forcing collide-or-repel. Card: `docs/drafts/pipeline/1-in-progress/ado-arithmet
 
 | Statement | Module | Theorem |
 |---|---|---|
+| The prime Kronecker flow `t ↦ (p^{−it}, p'^{−it})` approaches every torsion point at most polynomially: distance `≥ c(2+|t|)^{−C}` for `|t| ≥ 1` (chord bound + effective Baker) | `ThePrimeFlowIsDiophantineAtTorsionPoints` | `exists_chord_lower`, `primeFlow_diophantine_at_torsion` |
 | Zeros of `∏_{p∈S}(1 − p^{−s})` (Euler columns) of height `≤ T` collide or repel at scale `c T^{−C}` (effective Baker bound) | `EulerColumnsCollideOrRepelAtPolynomialScale` | `eulerCarrier_collide_or_repel` |
 | Two columns have distinct zeros `≤ 2π/((n+1) log p')` apart at height `≤ 2πn/log p` | `EulerColumnsCollideOrRepelAtPolynomialScale` | `eulerColumns_near_coincidence` |
 | One prime (`P(p^{−s})`, `P ∈ ℤ[X]` monic): uniform repulsion; the two-prime Euler product: none | `TheRankOfTheFrequencyModuleDecidesRepulsion` | `onePrime_uniform_repulsion`, `twoPrime_no_uniform_repulsion` |
@@ -38,6 +39,7 @@ forcing collide-or-repel. Card: `docs/drafts/pipeline/1-in-progress/ado-arithmet
 | For almost every Satake angle `θ = 2πx` the real pure carrier collides or repels at scale `C/T²` (Borel–Cantelli for `kξ − j ∓ x`, `ξ = log 3/log 2`); the Liouville failure is a null set | `GenericSatakeAnglesRepelAtPolynomialScale` | `ae_inhomogeneous_gap`, `ae_realPureCarrier_repulsion` |
 | The non-product carrier `(1 − 2^{−s})² − (1 − 3^{−s})³` (cusp of the Bohr lift at `(1,1)`) has near-coincidences at every scale | `ACuspOfTheBohrLiftForcesNearCoincidences` | `cuspCarrier_collision_or_close_pair`, `zeroMult_cuspCarrier` |
 | With log coefficients a two-prime affine carrier `−(log 3 − log 2) + log 3·2^{−s} − log 2·3^{−s}` has a smooth consistent tangency at `(1,1)` and near-coincidences at every scale; with integer coefficients a torsion tangency must be singular | `ASmoothTangencyNeedsTranscendentalCoefficients` | `logTrinomial_collision_or_close_pair`, `zeroMult_logTrinomial` |
+| For algebraic carriers every tangency at an algebraic point (torsion points, `σ ∈ ℚ` with root-of-unity phases) is a singular point of the lift: the tangency form `Σ log p_i·x_i∂_iG(x)` is transcendental otherwise (corpus Baker) | `AlgebraicTangenciesAreSingular` | `algebraic_tangency_is_singular`, `pderiv_eval_eq_zero_of_algebraic_tangency` |
 | The non-Euler two-prime carrier `1 + 2^{−s} + 3^{−s}` repels uniformly (`≥ min(1/4, (log 3 − log 2)/224)`): its Bohr tangency is inconsistent with the moduli | `EulerProductsCreateTheNearCoincidences` | `trinomial_uniform_repulsion`, `trinomial_tangency_gap` |
 
 ## Zeta: the dictionary of B54

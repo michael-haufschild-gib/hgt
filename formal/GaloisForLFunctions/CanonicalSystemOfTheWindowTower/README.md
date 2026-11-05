@@ -177,3 +177,8 @@ Their overlapping cutoffs give one unique continuous representative of the
 actual physical source, compactly supported and zero at both endpoints.
 Its two normalized limits are the absolutely convergent renewal integrals
 of the full localized forcings.
+
+Literal sharp restriction to any centered interval preserves the complete
+complex Weil form domain, by restricting its two real arithmetic graph
+coordinates. Both the retained interval and complementary collar have finite
+logarithmic energy, without a positivity or smoothing assumption.

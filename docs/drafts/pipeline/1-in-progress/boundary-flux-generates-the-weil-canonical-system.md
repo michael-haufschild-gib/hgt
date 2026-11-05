@@ -18,10 +18,44 @@ actual Riesz sources are formalized. The [normalized trace construction](../3-fo
 is formalized for the unique continuous representative of every actual
 precontact Riesz source, with both absolutely convergent renewal readouts.
 
-[Sharp restriction](sharp-restriction-preserves-the-complete-complex-weil-domain.md)
-should admit an exact interval/collar decomposition. Required analytic inputs
-are the exterior response asymptotic and either uniform moving-endpoint traces
-or the strong scaled collar-inverse limit. None of these is an assumed premise.
+[Sharp restriction](../3-formalized/sharp-restriction-preserves-the-complete-complex-weil-domain.md)
+admits an exact interval/collar decomposition. The exterior response and
+the following variational bounds would give the support derivative.
+
+## Collar variation by duality
+
+Let `h≤1` be collar width and `L=log(1/h)`. For a source supported in one
+interval of length `h`, translations by `t≥h` have disjoint supports.
+Consequently its logarithmic form is at least
+`(1+∫_h^∞exp(−t)/t dt)‖v‖²≥L‖v‖²`. The constant interval profile has exact
+translation loss `2 min(t,h)`, hence energy at most `h(L+3)`. These two
+bounds suffice; an operator dilation theorem is unnecessary.
+
+Gamma, polar and finitely many prime corrections are bounded. The
+old/collar crossing operator factors through the fixed bounded Gamma
+Hankel operator. Completing the square against the old positive form
+gives `Q(v)≥(L−C)‖v_collar‖²`. The two separated collars interact by another
+bounded operator.
+
+The Riesz increment is orthogonal to the old space and satisfies
+`Q(δ,u)=⟨Fₕ,u_collar⟩`. If its dilated forcing divided by `√(hL)` tends
+in L² to the two constant endpoint traces, Cauchy–Schwarz and the preceding
+bound give the upper limit of `Q(δ)/h`. Testing with the constant collar
+profile gives the matching lower limit, since its energy is `L‖v‖²+O(1)`.
+The energy of the difference from that trial profile tends to zero after
+division by `h`, giving the mixed kernel derivative as well. This avoids
+constructing a strong inverse limit for the whole collar operator.
+
+The exact tail and constant-profile bounds, uniform crossing estimates
+and variational application remain to be formalized; none is an assumed
+premise.
+
+Uniform boundedness of Riesz sources on compact precontact aperture ranges
+would bound their localized forcings and renewal traces. Together with
+kernel continuity, the resulting bounded right derivatives give local
+absolute continuity. The flux identity then prevents the zero-frequency
+trace from vanishing. Regularity of its logarithmic derivative is a further
+requirement for the reflection function.
 
 ## Algebraic consequences to formalize
 

@@ -47,12 +47,13 @@ for `c≥1`, `q≥3`. `FifthPureTail.pureRadialTailMatrix_eq` and
 `pureRadialTailMatrix_posDef` are formalized; the remaining pure atoms
 correspond to `c=4,9,16`.
 
-Remaining finite pairs are `(1,4)`, `(2,3)`, `(2,4)`, `(3,4)`, with
-relative rates `15,11,18,23`. Their radial polynomials have degree at most
-18. The proposed allocation gives each pair `E(q)c(q)A/8`; together with
-the proved remainder bound this consumes exactly the cubic reserve.
-All 92 fixed coefficient matrices have exact Lean positivity certificates.
-The uniform ray comparisons and complete-source assembly remain unproved.
+Each other doubled unequal pair `(1,4)`, `(2,3)`, `(2,4)`, `(3,4)`
+satisfies `R_mn(q)+E(q)c(q)A/8>0` for `q≥3`. Their relative rates are
+`15,11,18,23`, and their radial polynomials have degree at most 18.
+All 92 fixed coefficient matrices, four uniform model comparisons, and
+literal integral identities are formalized in `FifthOtherTail`.
+Together with the remainder bound these payments consume exactly the
+cubic reserve. The complete-source assembly remains unproved.
 
 A smaller allocation is excluded: at `q=3`, the lower-gamma `(1,3)` model
 paid by half the cubic reserve has negative fourth principal minor. This

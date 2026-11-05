@@ -3156,12 +3156,14 @@ theorem continuous_normSq_zetaMollified_criticalLine (b : ℕ → ℂ) (X : ℕ)
   · exact (RHTower.differentiable_edPoly b hsX).continuous.comp (by fun_prop)
 
 theorem integral_subinterval_le_of_cont_nonneg {f : ℝ → ℝ} (hf : Continuous f)
-    (h0 : ∀ t, 0 ≤ f t) {a c d b : ℝ} (hac : a ≤ c) (hcd : c ≤ d) (hdb : d ≤ b) :
+    (h0 : ∀ t, 0 ≤ f t) {a c d b : ℝ} (hac : a ≤ c) (_hcd : c ≤ d) (hdb : d ≤ b) :
     (∫ t in c..d, f t) ≤ ∫ t in a..b, f t := by
-  have h1 := intervalIntegral.integral_add_adjacent_intervals
-    (hf.intervalIntegrable (μ := volume) a c) (hf.intervalIntegrable (μ := volume) c b)
-  have h2 := intervalIntegral.integral_add_adjacent_intervals
-    (hf.intervalIntegrable (μ := volume) c d) (hf.intervalIntegrable (μ := volume) d b)
+  have hac_int : IntervalIntegrable f volume a c := hf.intervalIntegrable a c
+  have hcb_int : IntervalIntegrable f volume c b := hf.intervalIntegrable c b
+  have hcd_int : IntervalIntegrable f volume c d := hf.intervalIntegrable c d
+  have hdb_int : IntervalIntegrable f volume d b := hf.intervalIntegrable d b
+  have h1 := intervalIntegral.integral_add_adjacent_intervals hac_int hcb_int
+  have h2 := intervalIntegral.integral_add_adjacent_intervals hcd_int hdb_int
   have h_ac : 0 ≤ ∫ t in a..c, f t := intervalIntegral.integral_nonneg hac fun t _ => h0 t
   have h_db : 0 ≤ ∫ t in d..b, f t := intervalIntegral.integral_nonneg hdb fun t _ => h0 t
   linarith only [h1, h2, h_ac, h_db]
@@ -3417,7 +3419,7 @@ theorem dyadic_long_mollifier_contradiction_at_zero
       linarith only [Real.add_one_le_exp (η_gap * L)]
     exact (mul_le_mul_of_nonneg_left h3 hT0.le).trans (h2 ▸ h1)
   have hηL_ge : 4 * (C + 1) / (δs * Real.exp (-1 / 2)) + 1 ≤ η_gap * L := by
-    rw [mul_comm]; exact (div_le_iff₀ hη_pos).mp hL_C
+    rw [mul_comm η_gap L]; exact (div_le_iff₀ hη_pos).mp hL_C
   have hprod_gt : C + 1 < (3 / 4 : ℝ) * δs * Real.exp (-1 / 2) * (η_gap * L) := by
     have hden_pos : 0 < δs * Real.exp (-1 / 2) := mul_pos hδs_pos (Real.exp_pos _)
     have hmul := mul_le_mul_of_nonneg_left hηL_ge
@@ -3454,7 +3456,7 @@ cancels Dirichlet coefficients `2 ≤ n ≤ X₁` with `X₁ ≥ T^{θ₁}` (`θ
 `∫_T^{2T} ‖ζΨ(1/2 + it)‖² dt ≤ C T`, then for every `ε > 0` only finitely many nontrivial zeros of
 `ζ` satisfy `|Re ρ - 1/2| ≥ 1/(2θ₁) + ε`. -/
 theorem finite_offLineZeros_beyond_of_dyadic_long_mollifier
-    {θ₁ θ B C ε : ℝ} (hθ₁ : 1 / 2 < θ₁) (hθ : θ₁ ≤ θ) (hB : 1 ≤ B) (hC : 0 ≤ C) (hε : 0 < ε)
+    {θ₁ θ B C ε : ℝ} (hθ₁ : 1 / 2 < θ₁) (hθ : θ₁ ≤ θ) (hB : 1 ≤ B) (_hC : 0 ≤ C) (hε : 0 < ε)
     (hbound : ∀ᶠ T in atTop, ∃ X X₁ : ℕ, 1 ≤ X ∧ (X : ℝ) ≤ T ^ θ ∧ T ^ θ₁ ≤ (X₁ : ℝ) ∧
       ∃ b : ℕ → ℂ, b 1 = 1 ∧ (∀ d ∈ Finset.Icc 1 X, ‖b d‖ ≤ B) ∧
         (∀ n ∈ Finset.Icc 2 X₁, RHTower.mollifiedZetaCoeff b X n = 0) ∧
@@ -3942,14 +3944,5 @@ theorem riemannHypothesis_of_cofinal_moebius_mollifier
     moebiusMollifierCoeff, moebiusMollifierCoeff_one,
     fun d _ => norm_moebiusMollifierCoeff_le_one d,
     fun n hn => mollifiedZetaCoeff_moebius_eq_zero hn, hmsq⟩
-
-#print axioms eventually_integral_normSq_zetaMollified_ge_one_add_log_inv_theta
-#print axioms eventually_integral_normSq_zetaMollified_ge_roughConst_div_theta
-#print axioms tendsto_flowCreditedJensenBudget_atTop
-#print axioms integral_normSq_zetaMollified_criticalLine_spike_of_zero
-#print axioms finite_offLineZeros_beyond_of_dyadic_long_mollifier
-#print axioms finite_offLineZeros_beyond_of_dyadic_moebius_mollifier
-#print axioms riemannHypothesis_of_cofinal_long_mollifier
-#print axioms riemannHypothesis_of_cofinal_moebius_mollifier
 
 end GaloisForLFunctions.ConjugateDiagonalGeometry.NearLineLogMean

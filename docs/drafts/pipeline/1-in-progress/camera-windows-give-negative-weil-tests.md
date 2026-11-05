@@ -68,12 +68,11 @@ maximum with one is one. They select no threshold from an eventual theorem.
 
 ## Lean obligations
 
-Expose the absolute Fourier tail from `exists_local_slow_pair` and
-`tsum_far_multDiff_le`; prove its quadratic comparison, the normalized
-variation inequality, quartic-order tail estimate, and the ζ annulus reduction.
-Then assemble the negative test and positivity receiver with explicit heights.
-Seven foundational tail and variation lemmas pass scratch kernel checks.
-Their sources are `NegativeTests/FourierTail`, `ClusterRate` and `CubicTail`
-under `ZeroConfigurationGeometry`; final source checks remain. The convolution,
-annulus and negative-test assembly is unverified. An isolated-pair theorem alone
-does not discharge the full target.
+The six modules `FourierTail`, `ClusterRate`, `CubicTail`, `ConvolutionCamera`,
+`CubicCamera` and `NegativeCluster` under `ZeroConfigurationGeometry/NegativeTests`
+pass kernel checks; thirteen transitive axiom audits use only standard Lean axioms.
+They prove the absolute-tail comparison, radius-normalized variation, quartic
+spline estimate, explicit cluster camera and finite-band negative sign.
+The ζ annulus reduction and final positivity receiver remain unverified.
+Final direct source audits and umbrella wiring remain. An isolated-pair theorem
+alone does not discharge the full target.
