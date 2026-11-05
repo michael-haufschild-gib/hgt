@@ -50,11 +50,12 @@ The energy of the difference from that trial profile tends to zero after
 division by `h`, giving the mixed kernel derivative as well. This avoids
 constructing a strong inverse limit for the whole collar operator.
 
-The exact tail and constant-profile bounds, bounded Weil correction,
-exterior-response identification, and full translation invariance have Lean
-drafts. Their audits and the variational application remain incomplete; none
-is an assumed premise. Translation retains the pole pairing because its two
-exponential characters are reciprocal.
+The full fixed-enclosure variational bound now has a Lean draft:
+`(log(1/h)−C)‖v_{a+h,z}−ιv_{a,z}‖²≤‖1_(0,h]F₋‖²+‖1_(0,h]F₊‖²`.
+It uses the actual residuals, exact three-interval decomposition and complete
+Weil form. These drafts still require verification. Constant collar trials
+and the mixed derivative remain to be formalized. Translation retains the
+pole pairing because its two exponential characters are reciprocal.
 
 Uniform boundedness of Riesz sources on compact precontact aperture ranges
 would bound their localized forcings and renewal traces. Together with

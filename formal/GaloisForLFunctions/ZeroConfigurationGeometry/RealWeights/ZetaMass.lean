@@ -69,7 +69,7 @@ theorem zeta_mass_le_sharp_explicit (x y : ℝ) (hx : 10 ≤ x) (hxy : x ≤ y) 
   have hl1 : Real.log T₁ ≤ Real.log (y + 2) := Real.log_le_log (by linarith) (by linarith)
   have hl2 : Real.log T₂ ≤ Real.log (y + 2) := Real.log_le_log (by linarith) (by linarith)
   have hlogs : (100 : ℝ) * (Real.log T₁ + Real.log T₂) ≤ 2 * (100 : ℝ) * Real.log (y + 2) := by
-    nlinarith
+    linarith only [hl1, hl2]
   linarith
 
 

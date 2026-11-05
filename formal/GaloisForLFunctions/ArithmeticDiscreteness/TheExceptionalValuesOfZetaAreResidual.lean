@@ -224,12 +224,13 @@ theorem exists_mem_exceptionalSet_near (n : ℕ) {a₀ : ℂ} (ha₀ : a₀ ≠ 
   have hG1diff : Differentiable ℂ G1 := by rw [hG1]; fun_prop
   have hderiv_g : ∀ z, deriv g z = G1 z := by
     intro z
-    have key : HasDerivAt g (G1 z) z := by
-      have h := ((((hasDerivAt_id z).sub_const z₀).pow 2).const_mul (m : ℂ)).const_add a₀
-      convert h using 1
-      · funext x; simp [hg]
-      · simp only [hG1, id]; norm_num; try ring
-    exact key.deriv
+    have hlin : HasDerivAt (fun x : ℂ => x - z₀) 1 z := (hasDerivAt_id' z).sub_const z₀
+    have key := ((hlin.mul hlin).const_mul (m : ℂ)).const_add a₀
+    have e : g = fun x => a₀ + (m : ℂ) * ((x - z₀) * (x - z₀)) := by
+      funext x; simp only [hg]; ring
+    rw [e, key.deriv]
+    simp only [hG1]
+    ring
   -- the simple zero of `g'` at `z₀` and its Rouché radius
   have hG1z₀ : G1 z₀ = 0 := by simp [hG1]
   have hG1only : ∀ w ∈ closedBall z₀ (2 * (1 / 128)), G1 w = 0 → w = z₀ := by
@@ -242,12 +243,9 @@ theorem exists_mem_exceptionalSet_near (n : ℕ) {a₀ : ℂ} (ha₀ : a₀ ≠ 
     (by norm_num : (0 : ℝ) < 1 / 128) hsubU hG1z₀ hG1only
   have hG1mult : zeroMult G1 z₀ = 1 := by
     refine zeroMult_eq_one_of_analyticAt (hG1diff.analyticAt z₀) hG1z₀ ?_
-    have key : HasDerivAt G1 (2 * (m : ℂ)) z₀ := by
-      have h := (((hasDerivAt_id z₀).sub_const z₀).const_mul (2 * (m : ℂ)))
-      convert h using 1
-      · funext x; simp [hG1]
-      · simp
-    rw [key.deriv]
+    have key : HasDerivAt G1 (2 * (m : ℂ) * 1) z₀ :=
+      ((hasDerivAt_id' z₀).sub_const z₀).const_mul (2 * (m : ℂ))
+    rw [key.deriv, mul_one]
     exact mul_ne_zero two_ne_zero hm0'
   -- the universality target
   set η : ℝ := min (ε₁ / 64) (r₀ / 4) with hη
