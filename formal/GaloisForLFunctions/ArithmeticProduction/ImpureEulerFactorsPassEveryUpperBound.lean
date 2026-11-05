@@ -14,7 +14,8 @@ mean-value upper bound by more than a constant.  The mimic has the following pro
 * **All upper bounds survive** (`norm_impureFactor_le`, `integral_norm_sq_mimic_le`).
 * **A lattice of zeros at fixed depth** (`impureFactor_eq_zero`, `exists_lattice_zero_near`): every interval of length `2π/log p` contains the ordinate of a zero of depth
   `log c/log p − ½`, so window occupancy fails.
-* **Positive log-mean** (`tendsto_logMean_impureFactor`): the mean of `log|1 − c p^{−½−it}|` tends to `log(c/√p) > 0`.
+* **Positive log-mean** (`tendsto_logMean_impureFactor`, `abs_integral_log_norm_impureFactor_sub_le`): the mean of `log|1 − c p^{−½−it}|` tends to `log(c/√p) > 0`.
+* **Every width** (`impureFactor_rpow_eq_zero`): `c = p^η` puts the zeros on `Re s = η`, for any `η`.
 
 Consequently (`not_of_stable_under_impureWeight`) a statement stable under this deformation cannot imply the count.  So no statement that sees only upper bounds for `ζ` on lines
 `Re s ≥ ½` can decide RH, however sharp its constants: a deciding input must be **locally pure**, that is, it must see the size of the Euler factor at every single prime.
@@ -376,103 +377,145 @@ theorem abs_integral_log_norm_one_sub_le {q lam : ℝ} (hq0 : 0 ≤ q) (hq1 : q 
   rw [hmain.tsum_eq, intervalIntegral.integral_neg, norm_neg, Real.norm_eq_abs] at hbd
   exact hbd
 
+/-- On the critical line, the impure factor is its top coefficient times a pure unit factor. -/
+theorem log_norm_impureFactor_eq {p : ℕ} (hp : 1 < p) {c : ℝ} (hc : √(p : ℝ) < c) (t : ℝ) :
+    Real.log ‖impureFactor p c (((1 / 2 : ℝ) : ℂ) + (t : ℂ) * I)‖ =
+      Real.log (c / √(p : ℝ)) +
+        Real.log ‖1 - (((c / √(p : ℝ))⁻¹ : ℝ) : ℂ) * Complex.exp (((Real.log p * t : ℝ) : ℂ) * I)‖ := by
+  have hp1 : (1 : ℝ) < p := by exact_mod_cast hp
+  have hp0 : (0 : ℝ) < p := by linarith
+  have hs0 : 0 < √(p : ℝ) := Real.sqrt_pos.mpr hp0
+  have hc0 : 0 < c := by linarith
+  obtain ⟨r, hr⟩ : ∃ r : ℝ, r = c / √(p : ℝ) := ⟨_, rfl⟩
+  rw [← hr]
+  have hr1 : 1 < r := by rw [hr, one_lt_div hs0]; exact hc
+  have hr0 : 0 < r := by linarith
+  obtain ⟨q, hq⟩ : ∃ q : ℝ, q = r⁻¹ := ⟨_, rfl⟩
+  rw [← hq]
+  have hq0 : 0 < q := by rw [hq]; positivity
+  have hq1 : q < 1 := by rw [hq]; exact inv_lt_one_of_one_lt₀ hr1
+  have hsqrtexp : Real.exp (Real.log p / 2) = √(p : ℝ) := by
+    rw [Real.sqrt_eq_rpow, Real.rpow_def_of_pos hp0]
+    congr 1
+    ring
+  have hcpow : (p : ℂ) ^ (-(((1 / 2 : ℝ) : ℂ) + (t : ℂ) * I)) =
+      (((√(p : ℝ))⁻¹ : ℝ) : ℂ) * Complex.exp (-(((Real.log p * t : ℝ) : ℂ) * I)) := by
+    rw [Complex.cpow_def_of_ne_zero (by exact_mod_cast hp0.ne'), ← Complex.ofReal_natCast p,
+      ← Complex.ofReal_log hp0.le, ← hsqrtexp, ← Real.exp_neg, Complex.ofReal_exp, ← Complex.exp_add]
+    congr 1
+    push_cast
+    ring
+  obtain ⟨e, he⟩ : ∃ e : ℂ, e = Complex.exp (((Real.log p * t : ℝ) : ℂ) * I) := ⟨_, rfl⟩
+  rw [← he]
+  have hene : e ≠ 0 := by rw [he]; exact Complex.exp_ne_zero _
+  have heinv : Complex.exp (-(((Real.log p * t : ℝ) : ℂ) * I)) = e⁻¹ := by
+    rw [Complex.exp_neg, he]
+  have hrq : (r : ℂ) * (q : ℂ) = 1 := by
+    rw [← Complex.ofReal_mul, hq, mul_inv_cancel₀ hr0.ne', Complex.ofReal_one]
+  have hee : e⁻¹ * e = 1 := inv_mul_cancel₀ hene
+  have hrc : (c : ℂ) * (((√(p : ℝ))⁻¹ : ℝ) : ℂ) = (r : ℂ) := by
+    rw [← Complex.ofReal_mul, hr, div_eq_mul_inv]
+  have heq : impureFactor p c (((1 / 2 : ℝ) : ℂ) + (t : ℂ) * I) =
+      -((r : ℂ) * e⁻¹) * (1 - (q : ℂ) * e) := by
+    unfold impureFactor
+    rw [hcpow, heinv]
+    linear_combination (-e⁻¹) * hrc - (e⁻¹ * e) * hrq - hee
+  have hnorme : ‖e‖ = 1 := by rw [he, Complex.norm_exp_ofReal_mul_I]
+  have hne : (1 - (q : ℂ) * e) ≠ 0 := by
+    intro h
+    have h2 : (q : ℂ) * e = 1 := by
+      rw [sub_eq_zero] at h
+      exact h.symm
+    have h3 := congrArg norm h2
+    rw [norm_mul, Complex.norm_real, Real.norm_of_nonneg hq0.le, hnorme, mul_one, norm_one] at h3
+    linarith
+  rw [heq, norm_mul, norm_neg, norm_mul, Complex.norm_real, Real.norm_of_nonneg hr0.le, norm_inv,
+    hnorme, inv_one, mul_one, Real.log_mul hr0.ne' (norm_ne_zero_iff.mpr hne)]
+
+/-- The logarithm of a pure unit factor is continuous. -/
+theorem continuous_log_norm_one_sub {q lam : ℝ} (hq0 : 0 ≤ q) (hq1 : q < 1) :
+    Continuous fun t : ℝ => Real.log ‖1 - (q : ℂ) * Complex.exp (((lam * t : ℝ) : ℂ) * I)‖ := by
+  have hG : Continuous fun t : ℝ => ‖1 - (q : ℂ) * Complex.exp (((lam * t : ℝ) : ℂ) * I)‖ := by
+    fun_prop
+  refine hG.log fun t h => ?_
+  have h1 := norm_eq_zero.mp h
+  have h2 : (q : ℂ) * Complex.exp (((lam * t : ℝ) : ℂ) * I) = 1 := by
+    rw [sub_eq_zero] at h1
+    exact h1.symm
+  have h3 := congrArg norm h2
+  rw [norm_mul, Complex.norm_real, Real.norm_of_nonneg hq0, Complex.norm_exp_ofReal_mul_I,
+    mul_one, norm_one] at h3
+  linarith
+
+private theorem inv_coeff_bounds {p : ℕ} (hp : 1 < p) {c : ℝ} (hc : √(p : ℝ) < c) :
+    0 ≤ (c / √(p : ℝ))⁻¹ ∧ (c / √(p : ℝ))⁻¹ < 1 := by
+  have hp0 : (0 : ℝ) < p := by exact_mod_cast (by omega : 0 < p)
+  have hs0 : 0 < √(p : ℝ) := Real.sqrt_pos.mpr hp0
+  have hr1 : 1 < c / √(p : ℝ) := by rw [one_lt_div hs0]; exact hc
+  exact ⟨by positivity, inv_lt_one_of_one_lt₀ hr1⟩
+
+/-- `log |1 − c p^{−½−it}|` is integrable on every segment. -/
+theorem intervalIntegrable_log_norm_impureFactor {p : ℕ} (hp : 1 < p) {c : ℝ} (hc : √(p : ℝ) < c)
+    (T₁ T₂ : ℝ) :
+    IntervalIntegrable (fun t : ℝ => Real.log ‖impureFactor p c (((1 / 2 : ℝ) : ℂ) + (t : ℂ) * I)‖)
+      volume T₁ T₂ := by
+  obtain ⟨hq0, hq1⟩ := inv_coeff_bounds hp hc
+  have h := (continuous_const (y := Real.log (c / √(p : ℝ)))).add
+    (continuous_log_norm_one_sub (lam := Real.log p) hq0 hq1)
+  refine (h.intervalIntegrable T₁ T₂).congr ?_
+  exact fun t _ => (log_norm_impureFactor_eq hp hc t).symm
+
+/-- **On every segment the log-integral of the factor is its length times `log(c/√p)`, up to a constant.** -/
+theorem abs_integral_log_norm_impureFactor_sub_le {p : ℕ} (hp : 1 < p) {c : ℝ} (hc : √(p : ℝ) < c)
+    {T₁ T₂ : ℝ} (hT : T₁ ≤ T₂) :
+    |(∫ t in T₁..T₂, Real.log ‖impureFactor p c (((1 / 2 : ℝ) : ℂ) + (t : ℂ) * I)‖) -
+        (T₂ - T₁) * Real.log (c / √(p : ℝ))| ≤
+      2 / Real.log p * (1 - (c / √(p : ℝ))⁻¹)⁻¹ := by
+  have hp1 : (1 : ℝ) < p := by exact_mod_cast hp
+  have hlam : 0 < Real.log p := Real.log_pos hp1
+  obtain ⟨hq0, hq1⟩ := inv_coeff_bounds hp hc
+  have hcont := continuous_log_norm_one_sub (lam := Real.log p) hq0 hq1
+  have hval : (∫ t in T₁..T₂, Real.log ‖impureFactor p c (((1 / 2 : ℝ) : ℂ) + (t : ℂ) * I)‖) =
+      (T₂ - T₁) * Real.log (c / √(p : ℝ)) +
+        ∫ t in T₁..T₂, Real.log ‖1 - (((c / √(p : ℝ))⁻¹ : ℝ) : ℂ) *
+          Complex.exp (((Real.log p * t : ℝ) : ℂ) * I)‖ := by
+    simp_rw [log_norm_impureFactor_eq hp hc]
+    rw [intervalIntegral.integral_add (continuous_const.intervalIntegrable _ _)
+      (hcont.intervalIntegrable _ _), intervalIntegral.integral_const, smul_eq_mul]
+  rw [hval, add_sub_cancel_left]
+  exact abs_integral_log_norm_one_sub_le hq0 hq1 hlam hT
+
 /-- **The mean of `log|1 − c p^{−½−it}|` is `log(c/√p)`.** -/
 theorem tendsto_logMean_impureFactor {p : ℕ} (hp : 1 < p) {c : ℝ} (hc : √(p : ℝ) < c) :
     Tendsto (fun T : ℝ => T⁻¹ * ∫ t in T..(2 * T),
         Real.log ‖impureFactor p c (((1 / 2 : ℝ) : ℂ) + (t : ℂ) * I)‖) atTop
       (𝓝 (Real.log (c / √(p : ℝ)))) := by
-  have hp1 : (1 : ℝ) < p := by exact_mod_cast hp
-  have hp0 : (0 : ℝ) < p := by linarith
-  have hlam : 0 < Real.log p := Real.log_pos hp1
-  have hs0 : 0 < √(p : ℝ) := Real.sqrt_pos.mpr hp0
-  have hc0 : 0 < c := by linarith
-  set r : ℝ := c / √(p : ℝ) with hr
-  have hr1 : 1 < r := by rw [hr, one_lt_div hs0]; exact hc
-  have hr0 : 0 < r := by linarith
-  set q : ℝ := r⁻¹ with hq
-  have hq0 : 0 < q := by rw [hq]; positivity
-  have hq1 : q < 1 := by rw [hq]; exact inv_lt_one_of_one_lt₀ hr1
-  -- the factor in terms of the pure factor
-  have hsqrtexp : Real.exp (Real.log p / 2) = √(p : ℝ) := by
-    rw [Real.sqrt_eq_rpow, Real.rpow_def_of_pos hp0]
-    congr 1
-    ring
-  have hpt : ∀ t : ℝ, Real.log ‖impureFactor p c (((1 / 2 : ℝ) : ℂ) + (t : ℂ) * I)‖ =
-      Real.log r + Real.log ‖1 - (q : ℂ) * Complex.exp (((Real.log p * t : ℝ) : ℂ) * I)‖ := by
-    intro t
-    have hcpow : (p : ℂ) ^ (-(((1 / 2 : ℝ) : ℂ) + (t : ℂ) * I)) =
-        (((√(p : ℝ))⁻¹ : ℝ) : ℂ) * Complex.exp (-(((Real.log p * t : ℝ) : ℂ) * I)) := by
-      rw [Complex.cpow_def_of_ne_zero (by exact_mod_cast hp0.ne'), ← Complex.ofReal_natCast p,
-        ← Complex.ofReal_log hp0.le, ← hsqrtexp, ← Real.exp_neg, Complex.ofReal_exp, ← Complex.exp_add]
-      congr 1
-      push_cast
-      ring
-    set e := Complex.exp (((Real.log p * t : ℝ) : ℂ) * I) with he
-    have hene : e ≠ 0 := Complex.exp_ne_zero _
-    have heinv : Complex.exp (-(((Real.log p * t : ℝ) : ℂ) * I)) = e⁻¹ := by
-      rw [Complex.exp_neg]
-    have hrq : (r : ℂ) * (q : ℂ) = 1 := by
-      rw [← Complex.ofReal_mul, hq, mul_inv_cancel₀ hr0.ne', Complex.ofReal_one]
-    have hee : e⁻¹ * e = 1 := inv_mul_cancel₀ hene
-    have hrc : (c : ℂ) * (((√(p : ℝ))⁻¹ : ℝ) : ℂ) = (r : ℂ) := by
-      rw [← Complex.ofReal_mul, hr, div_eq_mul_inv]
-    have heq : impureFactor p c (((1 / 2 : ℝ) : ℂ) + (t : ℂ) * I) =
-        -((r : ℂ) * e⁻¹) * (1 - (q : ℂ) * e) := by
-      unfold impureFactor
-      rw [hcpow, heinv]
-      linear_combination (-e⁻¹) * hrc - (e⁻¹ * e) * hrq - hee
-    have hnorme : ‖e‖ = 1 := by rw [he, Complex.norm_exp_ofReal_mul_I]
-    have hne : (1 - (q : ℂ) * e) ≠ 0 := by
-      intro h
-      have h2 : (q : ℂ) * e = 1 := by
-        rw [sub_eq_zero] at h
-        exact h.symm
-      have h3 := congrArg norm h2
-      rw [norm_mul, Complex.norm_real, Real.norm_of_nonneg hq0.le, hnorme, mul_one, norm_one] at h3
-      linarith
-    rw [heq, norm_mul, norm_neg, norm_mul, Complex.norm_real, Real.norm_of_nonneg hr0.le, norm_inv,
-      hnorme, inv_one, mul_one, Real.log_mul hr0.ne' (norm_ne_zero_iff.mpr hne)]
-  -- the pure factor is continuous, so its logarithm integrates
-  have hcont : Continuous fun t : ℝ =>
-      Real.log ‖1 - (q : ℂ) * Complex.exp (((Real.log p * t : ℝ) : ℂ) * I)‖ := by
-    have hG : Continuous fun t : ℝ => ‖1 - (q : ℂ) * Complex.exp (((Real.log p * t : ℝ) : ℂ) * I)‖ := by
-      fun_prop
-    refine hG.log fun t h => ?_
-    have h1 := norm_eq_zero.mp h
-    have h2 : (q : ℂ) * Complex.exp (((Real.log p * t : ℝ) : ℂ) * I) = 1 := by
-      rw [sub_eq_zero] at h1
-      exact h1.symm
-    have h3 := congrArg norm h2
-    rw [norm_mul, Complex.norm_real, Real.norm_of_nonneg hq0.le, Complex.norm_exp_ofReal_mul_I,
-      mul_one, norm_one] at h3
-    linarith
-  have hbound : ∀ T : ℝ, 0 < T → |T⁻¹ * ∫ t in T..(2 * T),
-      Real.log ‖1 - (q : ℂ) * Complex.exp (((Real.log p * t : ℝ) : ℂ) * I)‖| ≤
-        T⁻¹ * (2 / Real.log p * (1 - q)⁻¹) := by
-    intro T hT
-    rw [abs_mul, abs_of_pos (inv_pos.mpr hT)]
-    exact mul_le_mul_of_nonneg_left
-      (abs_integral_log_norm_one_sub_le hq0.le hq1 hlam (by linarith)) (inv_pos.mpr hT).le
-  have hsplit : ∀ᶠ T : ℝ in atTop, T⁻¹ * ∫ t in T..(2 * T),
-      Real.log ‖impureFactor p c (((1 / 2 : ℝ) : ℂ) + (t : ℂ) * I)‖ =
-        Real.log r + T⁻¹ * ∫ t in T..(2 * T),
-          Real.log ‖1 - (q : ℂ) * Complex.exp (((Real.log p * t : ℝ) : ℂ) * I)‖ := by
-    filter_upwards [eventually_gt_atTop (0 : ℝ)] with T hT
-    simp_rw [hpt]
-    rw [intervalIntegral.integral_add (continuous_const.intervalIntegrable _ _)
-      (hcont.intervalIntegrable _ _), intervalIntegral.integral_const, smul_eq_mul, mul_add]
-    congr 1
+  rw [tendsto_iff_norm_sub_tendsto_zero]
+  refine squeeze_zero' (Filter.Eventually.of_forall fun _ => norm_nonneg _) ?_
+    ((tendsto_inv_atTop_zero.mul_const (2 / Real.log p * (1 - (c / √(p : ℝ))⁻¹)⁻¹)).trans (by simp))
+  filter_upwards [eventually_gt_atTop (0 : ℝ)] with T hT
+  have h1 := abs_integral_log_norm_impureFactor_sub_le hp hc (T₁ := T) (T₂ := 2 * T) (by linarith)
+  have h2 : ∀ J L : ℝ, T⁻¹ * J - L = T⁻¹ * (J - (2 * T - T) * L) := by
+    intro J L
     field_simp
     ring
-  have hzero : Tendsto (fun T : ℝ => T⁻¹ * ∫ t in T..(2 * T),
-      Real.log ‖1 - (q : ℂ) * Complex.exp (((Real.log p * t : ℝ) : ℂ) * I)‖) atTop (𝓝 0) := by
-    refine squeeze_zero_norm' ?_ ((tendsto_inv_atTop_zero.mul_const
-      (2 / Real.log p * (1 - q)⁻¹)).trans (by simp))
-    filter_upwards [eventually_gt_atTop (0 : ℝ)] with T hT
-    rw [Real.norm_eq_abs]
-    exact hbound T hT
-  have hlim := (tendsto_const_nhds (x := Real.log r)).add hzero
-  rw [add_zero] at hlim
-  exact hlim.congr' (hsplit.mono fun T hT => hT.symm)
+  rw [h2, Real.norm_eq_abs, abs_mul, abs_of_pos (inv_pos.mpr hT)]
+  exact mul_le_mul_of_nonneg_left h1 (inv_pos.mpr hT).le
+
+/-! ### Every width is attained -/
+
+/-- **A single factor realizes any width.**  The factor with `c = p^η` has its zeros on the line `Re s = η`, and `c > √p` for `η > ½`. -/
+theorem impureFactor_rpow_eq_zero {p : ℕ} (hp : 1 < p) (η : ℝ) (k : ℤ) :
+    impureFactor p ((p : ℝ) ^ η) ((η : ℂ) + ((2 * Real.pi * k / Real.log p : ℝ) : ℂ) * I) = 0 := by
+  have hp1 : (1 : ℝ) < p := by exact_mod_cast hp
+  have hp0 : (0 : ℝ) < p := by linarith
+  have hlog : 0 < Real.log p := Real.log_pos hp1
+  have h := impureFactor_eq_zero hp (c := (p : ℝ) ^ η) (Real.rpow_pos_of_pos hp0 η) k
+  rwa [Real.log_rpow hp0, mul_div_cancel_right₀ _ hlog.ne'] at h
+
+theorem sqrt_lt_rpow {p : ℕ} (hp : 1 < p) {η : ℝ} (hη : 1 / 2 < η) : √(p : ℝ) < (p : ℝ) ^ η := by
+  have hp1 : (1 : ℝ) < p := by exact_mod_cast hp
+  rw [Real.sqrt_eq_rpow]
+  exact Real.rpow_lt_rpow_of_exponent_lt hp1 hη
 
 end GaloisForLFunctions.ArithmeticProduction

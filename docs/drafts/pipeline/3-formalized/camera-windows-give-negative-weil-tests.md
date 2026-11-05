@@ -1,13 +1,13 @@
 # Camera windows give negative Weil tests
 
 - **ID:** camera-windows-give-negative-weil-tests
-- **Stage:** 1-in-progress
-- **Type:** CANDIDATE
+- **Stage:** 3-formalized
+- **Type:** THEOREM (Lean 4)
 - **Source:** review-0511, A39; F6 requires every zero, without a separation alternative.
 
 ## Target
 
-For every `λ>1` and `c>0`, give a finite `T₀` such that positivity at aperture
+For every `λ>1` and `c≥0`, give a finite `T₀` such that positivity at aperture
 `λL_T`, `T≥T₀`, implies `|Re ρ−1/2|<exp(−c log³(T/2π))` for each zero at height `T`.
 No mimic, zero-separation assumption or restriction on multiplicity is permitted.
 In fixed-aperture form, this controls both signs of the ordinate throughout
@@ -59,20 +59,26 @@ Set `Lη=c+2+8BC`, `β=μ−θ/2`, `ℓ=2πA/μ`,
 
 Take `U=max(1,2π/μ,6Mq+μ+610)` and
 `V=max(6·cameraSlowConstant(μ,ℓ,0),4μ)+1`.
-The proposed starting height is
+The starting height is
 
 `T₀=max(zetaCameraCountHeight(θ),2π exp(max(U,log V)))`.
 
 These finite expressions use the proved ζ tail mass `<33/100`; its
 maximum with one is one. They select no threshold from an eventual theorem.
 
-## Lean obligations
+## Lean realization
 
-The six modules `FourierTail`, `ClusterRate`, `CubicTail`, `ConvolutionCamera`,
-`CubicCamera` and `NegativeCluster` under `ZeroConfigurationGeometry/NegativeTests`
-pass kernel checks; thirteen transitive axiom audits use only standard Lean axioms.
-They prove the absolute-tail comparison, radius-normalized variation, quartic
-spline estimate, explicit cluster camera and finite-band negative sign.
-The ζ annulus reduction and final positivity receiver remain unverified.
-Final direct source audits and umbrella wiring remain. An isolated-pair theorem
-alone does not discharge the full target.
+Owner: `ZeroConfigurationGeometry/NegativeTests` (eight modules).
+
+- `zeta_negative_test_of_cubic_depth`: every deep ζ zero gives a negative test
+  at aperture `λL_T`, including arbitrary multiplicity and internal clustering.
+- `zetaNegativeCameraHeight`: the finite starting height above.
+- `zeta_depth_lt_exp_log_cube_of_positive_aperture_abs`: positivity at fixed
+  aperture gives the unshifted depth bound throughout the exponential height
+  horizon, at either sign of the ordinate.
+
+All eight final direct `lake --old env lean` source checks passed. The 23
+transitive axiom audits contain only `propext`, `Classical.choice`, `Quot.sound`.
+The owning umbrella is wired; its project import closure has no missing modules
+or cycles. No separation, mimic, analytic counting premise or zero-mass premise
+is added to the ζ receiver. Positivity is its stated input, not a new ζ sign theorem.

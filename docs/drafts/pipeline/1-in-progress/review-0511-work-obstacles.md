@@ -8,7 +8,7 @@
 
 ## Scope
 
-Open (27): A1–A2, A4–A7, A9, A11, A13–A15, A17, A19–A21, A23–A25, A28, A31, A33, A35–A36, A38–A41. A row with several obligations remains
+Open (26): A1–A2, A4–A7, A9, A11, A13–A15, A17, A19–A21, A23–A25, A28, A31, A33, A35–A36, A38, A40–A41. A row with several obligations remains
 open until every obligation is discharged. Existing results are prerequisites, not new solutions.
 No numerical experiments or trusted computation; certificates require kernel proofs.
 
@@ -62,12 +62,20 @@ count and tail inputs, finite point and moment heights, and the corresponding
 centre, gap, discriminant and location bounds. All nine direct source checks,
 25 transitive axiom audits and umbrella imports passed.
 
+**A39.** [Negative cluster cameras](../3-formalized/camera-windows-give-negative-weil-tests.md):
+every zero deeper than `exp(−c log³ T)` gives a negative Weil test at `λL_T`,
+`λ>1`, above an explicit height. Positivity therefore controls every zero
+below the fixed aperture's exponential horizon, including arbitrary clusters
+and both signs of the ordinate. Eight final source checks, 23 standard-axiom
+audits and umbrella wiring passed.
+
 ## Partial results and current target
 
-**A39.** [Negative cluster cameras](camera-windows-give-negative-weil-tests.md):
-positivity at `λL_T`, `λ>1`, must control every zero at depth
-`exp(−c log³ T)`, including clusters without internal separation. The proposed
-annulus and convolution construction has explicit heights; Lean verification is open.
+**A40.** [Real-weight camera and count transfer](real-weight-camera-and-local-count-transfer.md):
+the moment camera must allow arbitrary coefficients with absolute weighted mass.
+The remaining count transfer concerns positive weighted mass; support cardinality
+requires a separate atom-weight lower bound. The readout and strip-envelope
+arguments remain under Lean verification.
 
 **Former A10, absent from the current list.** For the window index `ι(A)`, define
 `Lₙ = sup {A : ι(A) ≤ n}` in `EReal`. Prove

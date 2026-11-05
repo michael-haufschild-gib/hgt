@@ -27,7 +27,7 @@ limit alone.
 ## Lean status
 
 [Normalized actual endpoint traces](../3-formalized/normalized-boundary-traces-of-weil-riesz-vectors.md)
-are formalized. The complex
-Cesàro theorem is formalized in `HTGeometry/QuasiPolynomialLaplaceCalculus`.
-The substitution, uniform kernel-comparison bound, actual exterior-operator
-identification and scaled L² limit remain unformalized.
+and their [truncated exterior integrals](../3-formalized/truncated-exterior-integrals-read-the-weil-traces.md)
+are formalized. The uniform Gamma comparison, exact bounded boundary-operator
+identification, and scaled L² convergence have complete Lean drafts awaiting
+audit. They are not yet proved results.

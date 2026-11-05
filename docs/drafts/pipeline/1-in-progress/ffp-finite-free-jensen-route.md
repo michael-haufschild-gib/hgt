@@ -69,6 +69,7 @@ sign, a square-root count or a collision exclusion.
 | R40 | **The real roots of `R_d(Ξ)` follow the Cauchy law, unconditionally**: for `Im w > 0`, `(1/d)Σ_{y real} 1/(w − y) → 1/(w + i)`, over the real rescaled roots `y = x/ℓ_d`. For `σ ≥ 1/2` the same limit holds for the rescaled roots outside a disc around `iθ` containing `w`. Mechanism: reflect the roots inside the disc and divide by `(z+i)^d`; the quotient has no zero, `|Q_d| ≤ e^{o(d)}` by the maximum principle and `|Q_d(iθ)| ≥ e^{−o(d)}` by R35, so Borel–Carathéodory and Cauchy's estimate make `(1/d)Q_d'/Q_d → 0` | `RealRootsCauchyLaw.tendsto_exterior_transform`, `tendsto_real_jensenCauchy` |
 | R41 | **R38 for every hyperbolic kernel, and the bulk is blind**: R38 holds for every continuous even `g` with `0 ≤ g ≤ Φ` and `g(v) ≥ exp(−Ae^{2v})` for large `v`, in particular for `g = Φe^{−τv²}`. So for every `τ > 0`, `H_{−τ}` has non-real zeros (Newman), yet the number `N_d` of non-real roots of `R_d(H_{−τ})` satisfies `N_d/d → 0` and `N_d → ∞`. Hence "almost all Jensen roots are real" cannot imply RH, and no argument using only the size and positivity of the kernel can | `KernelJensenRoots.HyperbolicKernel.eventually_exists_real_roots`, `tendsto_card_nonreal_roots_div`, `BulkBlindness.bulk_blind_riemannHeat_neg` |
 | R42 | **The half transform is not a Hermite–Biehler half**: `K(w) = ∫₀^∞Φ e^{wu}du`, with `Ξ(u) = K(iu) + K(−iu)`, has infinitely many zeros, all in `Re w > 0`. So for every `M` and large `d`, `E_d` has at least `M` roots in `Im > 0`: the splitting `R_d(Ξ) = 2 Re E_d` is not Hermite–Biehler. Mechanism: finitely many zeros would make `K` of exponential type on the real axis by the order-one Hadamard factorization, while `K(σ) + K(−σ) = ξ(1/2 + σ)` is superexponential | `HalfTransformInstability.thetaHalfLaplace_zeros_infinite`, `re_pos_of_thetaHalfLaplace_eq_zero`, `eventually_le_card_upper_roots_halfJensen` |
+| R43 | **The Cauchy law for every hyperbolic kernel**: for `Im w > 0`, `(1/d)Σ_{y real} 1/(w − y) → 1/(w + i)` over the real rescaled roots of `R_d(x) = ∫g(v)(x+iv)^d dv`. In particular `R_d(H_{−τ})`, `τ > 0`, has exactly the bulk of `R_d(Ξ)`, although `H_{−τ}` has non-real zeros: the limit law is blind too. Abstract core: a bound on circles around `iθ₀` and at the centre, with error `o(d)`, determine both the number of roots in the disc and the Cauchy transform outside it | `KernelCauchyLaw.tendsto_card_near_of_data`, `tendsto_exterior_of_data`, `HyperbolicKernel.tendsto_real_cauchy`, `tendsto_real_cauchy_riemannHeat_neg` |
 | R13 | **The degree-three test is vacuous**: on centered cubics `⊞₃` adds `(s,t)`, and every real-rooted centered cubic (`|t| ≤ s^{3/2}`) is a `⊞₃`-product of two double-root (capacity-zero, semicircle-free) cubics | `CubicFirstTest.exists_doubleRoot_factorization` |
 
 ## No-go closure for the naive route (source-faithful real-rooted pieces)
@@ -96,7 +97,7 @@ sign, a square-root count or a collision exclusion.
   (`ξ` has drift exactly `0`: critical phase `c = 0`, no margin), R36 and R40 (Cauchy law at scale `½ log d`),
   R37 and R38 (almost all roots real and simple, unconditionally), R39 (monotone `N_d`).
 - **Insight (the bulk is blind):** R41. The bulk theorems use only the evenness, positivity and size of the
-  kernel, and hold for `H_{−τ}`, which has non-real zeros. RH is `N_d = 0`, a statement about the `o(d)` outliers
+  kernel, and hold for `H_{−τ}`, which has non-real zeros (R41, R43). RH is `N_d = 0`, a statement about the `o(d)` outliers
   `x ≈ d/a_q`, which are the zeros themselves: real-rootedness of `J_d` cannot be read off any bulk statistic.
 
 ## Capacity landscape
@@ -148,4 +149,4 @@ sign, a square-root count or a collision exclusion.
 
 ## Log
 - 2026-11-04 — created
-- 2026-11-05 — D1–D5, R1–R42 formalized
+- 2026-11-05 — D1–D5, R1–R43 formalized

@@ -35,10 +35,28 @@ For a smooth compactly supported bump `b`, use `K(t)=|b̂(t)|²`.
 Convolve the indicator of `[x−R,y+R]` with `K`, then divide by
 `∫_[−R,R] K`: the result majorizes `[x,y]` and is nonnegative elsewhere.
 Its Fourier support stays within twice the aperture of `b`, so equality of
-window images transfers its integral to the source configuration. A uniform
-strip envelope for the source transforms must retain leading coefficient
-arbitrarily close to one; an arbitrary coarse envelope would lose the sharp
-density coefficient. This strip-envelope estimate remains unproved.
+window images transfers its integral to the source configuration. The strip
+envelope must retain a leading coefficient arbitrarily close to one.
+
+Write `F=b̂`, with `b` supported in `[-ε,ε]`. A candidate envelope is
+
+`E(x)=(1+ε)|F(x)|²+(1+1/ε)∫_{-1/2}^{1/2}|F′(x+iy)|²dy`.
+
+The vertical fundamental theorem of calculus, Cauchy–Schwarz and Young's
+inequality give `|F(x+iv)|²≤E(x)` for `|v|≤1/2`. Plancherel gives
+
+`∫E≤[1+ε+(ε+ε²)e^ε]∫|F|²`.
+
+Indeed, the differentiated transform has source `itb(t)e^{-yt}`, whose
+squared norm is at most `ε²e^ε` times that of `b`. The coefficient tends to
+one as `ε→0`; enlarging `R` makes the central integral approach the full
+energy. This derivation still requires Lean verification.
+
+For a source with interval mass at most `D·length+C`, Fubini then bounds
+the integrated envelope by `(D·length+C)∫E`. For ζ, apply its local
+count on the central height band and its absolute Lorentzian mass to
+the remaining tail, using sixth-order transform decay. The multiplicity
+count, strip-envelope proof and sum/integral exchanges remain open.
 
 ## Lean obligations
 

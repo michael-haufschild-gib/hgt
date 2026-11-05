@@ -52,6 +52,8 @@ zero at both endpoints, with both exact normalized renewal readouts; see
 preserves the exact complex domain, and
 [reflection](../3-formalized/reflection-exchanges-the-weil-endpoint-traces.md) exchanges
 the actual endpoint traces and makes their common zero-frequency value real.
+[Kernel growth](../3-formalized/growing-the-weil-window-adds-an-orthogonal-kernel.md)
+is exactly the Gram form of the new orthogonal Riesz components.
 
 **Remaining:** [boundary flux and aperture variation](boundary-flux-generates-the-weil-canonical-system.md),
 original-length canonical normalization, and prime-entry law.

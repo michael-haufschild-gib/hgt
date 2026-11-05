@@ -1378,12 +1378,13 @@ theorem norm_poleT_sector {C₀ : ℝ} (hC₀ : 0 ≤ C₀)
       congr 1
       unfold rayRate
       ring
-    rw [e, mul_assoc]
-    refine mul_le_mul_of_nonneg_left (mul_le_mul_of_nonneg_left (Real.exp_le_exp.mpr ?_)
-      (Real.exp_pos _).le) ?_
-    · exact mul_le_mul_of_nonneg_right (by linarith) hr.le
-    · have hW1 : 0 ≤ ∑' p, indexWeight p := tsum_nonneg indexWeight_nonneg
+    have hW1 : 0 ≤ ∑' p, indexWeight p := tsum_nonneg indexWeight_nonneg
+    have hQn : 0 ≤ 4 * (η ^ (1 / 3 : ℝ) * (189 * V * ∑' p, indexWeight p) ^ (2 / 3 : ℝ)) := by
       positivity
+    rw [e, ← mul_assoc]
+    refine mul_le_mul_of_nonneg_left (Real.exp_le_exp.mpr ?_)
+      (mul_nonneg hQn (Real.exp_pos _).le)
+    exact mul_le_mul_of_nonneg_right (by linarith) hr.le
   have hK : 0 ≤ 3 * π + 1 + rayRate := by positivity
   have hmain := norm_le_of_sector (F := poleT δ) (a := a) (K := 3 * π + 1 + rayRate)
     (M₀ := 4 * (η ^ (1 / 3 : ℝ) * (189 * V * ∑' p, indexWeight p) ^ (2 / 3 : ℝ)) *
@@ -1518,5 +1519,174 @@ theorem exists_poleT_I_le :
     field_simp
   rw [hexp]
   ring
+
+/-! ### From the poles to the atoms -/
+
+theorem norm_poleT_I_eq (δ : ℕ → ℝ) {L : ℕ} (hL : 1 ≤ L) :
+    ‖poleT δ (I * L)‖ = π ^ 2 * |((L + 1 : ℕ) : ℝ) * divSum δ (L + 1) - 2 * ((L : ℝ) * divSum δ L) +
+      ((L : ℝ) - 1) * divSum δ (L - 1)| := by
+  rw [poleT_I_mul δ hL, norm_mul, norm_mul, norm_mul, Complex.norm_I, one_mul, norm_zpow, norm_neg,
+    norm_one, one_zpow, mul_one, norm_pow, Complex.norm_real, Real.norm_of_nonneg Real.pi_pos.le,
+    Complex.norm_real, Real.norm_eq_abs]
+
+/-- A sequence vanishing at `0, 1` is controlled by its discrete Laplacian. -/
+theorem abs_le_of_laplacian_le {a : ℕ → ℝ} {ε K : ℝ} (hε : 0 ≤ ε) (hK : 0 ≤ K) (h0 : a 0 = 0)
+    (h1 : a 1 = 0)
+    (hb : ∀ L : ℕ, |a (L + 2) - 2 * a (L + 1) + a L| ≤ ε * Real.exp (K * ((L : ℝ) + 1))) :
+    ∀ N : ℕ, |a N| ≤ ε * Real.exp ((K + 2) * N) := by
+  have he2 : (4 : ℝ) ≤ Real.exp (K + 2) := by
+    have h1 := Real.add_one_le_exp (1 : ℝ)
+    have h2 : Real.exp 2 = Real.exp 1 * Real.exp 1 := by rw [← Real.exp_add]; norm_num
+    have h3 : Real.exp 2 ≤ Real.exp (K + 2) := Real.exp_le_exp.mpr (by linarith)
+    nlinarith
+  have hstep : ∀ N : ℕ, |a N| ≤ ε * Real.exp ((K + 2) * N) ∧
+      |a (N + 1)| ≤ ε * Real.exp ((K + 2) * ((N : ℝ) + 1)) := by
+    intro N
+    induction N with
+    | zero =>
+      simp only [zero_add, h0, h1, abs_zero, Nat.cast_zero]
+      exact ⟨by positivity, by positivity⟩
+    | succ N ih =>
+      refine ⟨by push_cast; exact ih.2, ?_⟩
+      obtain ⟨i0, i1⟩ := ih
+      have hE : Real.exp ((K + 2) * (((N + 1 : ℕ) : ℝ) + 1)) =
+          Real.exp ((K + 2) * ((N : ℝ) + 1)) * Real.exp (K + 2) := by
+        rw [← Real.exp_add]
+        congr 1
+        push_cast
+        ring
+      have hE0 : Real.exp ((K + 2) * (N : ℝ)) ≤ Real.exp ((K + 2) * ((N : ℝ) + 1)) :=
+        Real.exp_le_exp.mpr (by nlinarith)
+      have hE1 : Real.exp (K * ((N : ℝ) + 1)) ≤ Real.exp ((K + 2) * ((N : ℝ) + 1)) :=
+        Real.exp_le_exp.mpr (by
+          have : (0 : ℝ) ≤ (N : ℝ) + 1 := by positivity
+          nlinarith)
+      have hb' := hb N
+      have hexp : a (N + 1 + 1) = (a (N + 2) - 2 * a (N + 1) + a N) + 2 * a (N + 1) - a N := by
+        ring_nf
+      rw [hexp, hE]
+      have hP := Real.exp_pos ((K + 2) * ((N : ℝ) + 1))
+      have t1 := abs_sub ((a (N + 2) - 2 * a (N + 1) + a N) + 2 * a (N + 1)) (a N)
+      have t2 := abs_add_le (a (N + 2) - 2 * a (N + 1) + a N) (2 * a (N + 1))
+      have t3 : |2 * a (N + 1)| = 2 * |a (N + 1)| := by rw [abs_mul]; norm_num
+      have m0 := mul_le_mul_of_nonneg_left hE0 hε
+      have m1 := mul_le_mul_of_nonneg_left hE1 hε
+      have hX : 0 ≤ ε * Real.exp ((K + 2) * ((N : ℝ) + 1)) := by positivity
+      have hfin : 4 * (ε * Real.exp ((K + 2) * ((N : ℝ) + 1))) ≤
+          ε * (Real.exp ((K + 2) * ((N : ℝ) + 1)) * Real.exp (K + 2)) := by
+        have := mul_le_mul_of_nonneg_right he2 hX
+        linarith
+      linarith
+  exact fun N => (hstep N).1
+
+theorem sum_range_pow_le {r : ℝ} (hr : 3 ≤ r) (n : ℕ) : ∑ d ∈ Finset.range n, r ^ d ≤ r ^ n / 2 := by
+  have hr0 : 0 ≤ r := by linarith
+  induction n with
+  | zero => simp
+  | succ n ih =>
+    rw [Finset.sum_range_succ, pow_succ]
+    have hp : 0 ≤ r ^ n := by positivity
+    nlinarith
+
+/-- A sequence is controlled by its divisor sums. -/
+theorem abs_le_of_divSum_le {δ : ℕ → ℝ} {ε K : ℝ} (hε : 0 ≤ ε) (hK : 0 ≤ K)
+    (hD : ∀ N : ℕ, 1 ≤ N → |divSum δ N| ≤ ε * Real.exp (K * N)) :
+    ∀ n : ℕ, 1 ≤ n → |δ n| ≤ ε * Real.exp ((K + 2) * n) := by
+  obtain ⟨r, hr⟩ : ∃ r, r = Real.exp (K + 2) := ⟨_, rfl⟩
+  have hr3 : 3 ≤ r := by
+    have h1 := Real.add_one_le_exp (2 : ℝ)
+    have h3 : Real.exp 2 ≤ Real.exp (K + 2) := Real.exp_le_exp.mpr (by linarith)
+    rw [hr]
+    linarith
+  have hrp : ∀ n : ℕ, Real.exp ((K + 2) * n) = r ^ n := by
+    intro n
+    rw [hr, ← Real.exp_nat_mul]
+    congr 1
+    ring
+  intro n
+  induction n using Nat.strong_induction_on with
+  | _ n ih =>
+    intro hn
+    have hsplit : divSum δ n = (∑ d ∈ n.properDivisors, δ d) + δ n := by
+      unfold divSum
+      rw [← Nat.insert_self_properDivisors (by omega : n ≠ 0),
+        Finset.sum_insert Nat.self_notMem_properDivisors, add_comm]
+    have hdn : δ n = divSum δ n - ∑ d ∈ n.properDivisors, δ d := by linarith
+    have hprop : |∑ d ∈ n.properDivisors, δ d| ≤ ε * (r ^ n / 2) := by
+      refine (Finset.abs_sum_le_sum_abs _ _).trans ?_
+      have h1 : ∑ d ∈ n.properDivisors, |δ d| ≤ ∑ d ∈ n.properDivisors, ε * r ^ d := by
+        refine Finset.sum_le_sum fun d hd => ?_
+        have hlt := Nat.mem_properDivisors.mp hd
+        have hd1 : 1 ≤ d := Nat.pos_of_dvd_of_pos hlt.1 hn
+        rw [← hrp]
+        exact ih d hlt.2 hd1
+      refine h1.trans ?_
+      rw [← Finset.mul_sum]
+      refine mul_le_mul_of_nonneg_left ?_ hε
+      refine le_trans ?_ (sum_range_pow_le hr3 n)
+      refine Finset.sum_le_sum_of_subset_of_nonneg (fun d hd => ?_) fun d _ _ => by positivity
+      exact Finset.mem_range.mpr (Nat.mem_properDivisors.mp hd).2
+    have hDn := hD n hn
+    have hexp : Real.exp (K * n) ≤ r ^ n / 2 := by
+      have hn1 : (1 : ℝ) ≤ n := by exact_mod_cast hn
+      have e : r ^ n = Real.exp (K * n) * Real.exp (2 * n) := by
+        rw [← hrp, ← Real.exp_add]
+        congr 1
+        ring
+      rw [e]
+      have h2 : (2 : ℝ) ≤ Real.exp (2 * n) := by
+        have := Real.add_one_le_exp (2 * (n : ℝ))
+        linarith
+      have hp := Real.exp_pos (K * n)
+      nlinarith
+    rw [hdn, hrp]
+    have ht := abs_sub (divSum δ n) (∑ d ∈ n.properDivisors, δ d)
+    have hm := mul_le_mul_of_nonneg_left hexp hε
+    have e : ε * r ^ n = ε * (r ^ n / 2) + ε * (r ^ n / 2) := by ring
+    rw [e]
+    linarith
+
+/-- **Quantitative Hamburger uniqueness.** If `|δ(n)| ≤ V √n`, `δ(1) = 0`, and the Gaussian reading
+`S(t) = Σ_{n,k≥1} δ(n) ker(kn, t)` is at most `η ≤ 1` on the ray `t ≥ 2`, then every `δ(n)` is at most
+`C V η^{1/69} e^{K n}`, with absolute constants `C, K`. -/
+theorem exists_abs_le_of_readS_small :
+    ∃ C K : ℝ, 0 ≤ C ∧ 0 ≤ K ∧ ∀ (δ : ℕ → ℝ) (V η : ℝ), 1 ≤ V → 0 < η → η ≤ 1 → δ 1 = 0 →
+      (∀ n, 1 ≤ n → |δ n| ≤ V * Real.sqrt n) → (∀ t : ℝ, 2 ≤ t → ‖readS δ t‖ ≤ η) →
+      ∀ n : ℕ, 1 ≤ n → |δ n| ≤ C * V * η ^ (1 / 69 : ℝ) * Real.exp (K * n) := by
+  obtain ⟨C, K, hC, hK, hmain⟩ := exists_poleT_I_le
+  refine ⟨C, K + 2 + 2, hC, by positivity, ?_⟩
+  intro δ V η hV hη hη1 hδ1 hδ hS n hn
+  obtain ⟨ε, hε⟩ : ∃ ε, ε = C * V * η ^ (1 / 69 : ℝ) := ⟨_, rfl⟩
+  have hV0 : 0 ≤ V := by linarith
+  have hε0 : 0 ≤ ε := by rw [hε]; positivity
+  have hpi := Real.pi_gt_three
+  have hlap : ∀ L : ℕ, |((L + 2 : ℕ) : ℝ) * divSum δ (L + 2) -
+      2 * (((L + 1 : ℕ) : ℝ) * divSum δ (L + 1)) + ((L : ℕ) : ℝ) * divSum δ L| ≤
+      ε * Real.exp (K * ((L : ℝ) + 1)) := by
+    intro L
+    have h := hmain δ V η hV hη hη1 hδ hS (L + 1) (by omega)
+    rw [norm_poleT_I_eq δ (by omega), ← hε] at h
+    have e1 : ((L + 1 : ℕ) : ℝ) - 1 = (L : ℝ) := by push_cast; ring
+    rw [e1, show L + 1 - 1 = L by omega, show L + 1 + 1 = L + 2 by omega] at h
+    have hE : ((L + 1 : ℕ) : ℝ) = (L : ℝ) + 1 := by push_cast; ring
+    rw [hE] at h
+    have hq : (1 : ℝ) ≤ π ^ 2 := by nlinarith
+    have habs := abs_nonneg (((L + 2 : ℕ) : ℝ) * divSum δ (L + 2) -
+      2 * (((L + 1 : ℕ) : ℝ) * divSum δ (L + 1)) + ((L : ℕ) : ℝ) * divSum δ L)
+    rw [hE]
+    have h2 := le_mul_of_one_le_left habs hq
+    rw [hE] at h2
+    exact h2.trans h
+  have ha := abs_le_of_laplacian_le (a := fun N => (N : ℝ) * divSum δ N) hε0 hK
+    (by simp) (by simp [divSum, hδ1]) (fun L => by simpa using hlap L)
+  have hD : ∀ N : ℕ, 1 ≤ N → |divSum δ N| ≤ ε * Real.exp ((K + 2) * N) := by
+    intro N hN
+    have hN1 : (1 : ℝ) ≤ N := by exact_mod_cast hN
+    have h : |(N : ℝ) * divSum δ N| ≤ ε * Real.exp ((K + 2) * N) := ha N
+    rw [abs_mul, abs_of_pos (by linarith : (0 : ℝ) < N)] at h
+    exact (le_mul_of_one_le_left (abs_nonneg _) hN1).trans h
+  have hfin := abs_le_of_divSum_le hε0 (by positivity) hD n hn
+  rw [← hε]
+  exact hfin
 
 end GaloisForLFunctions.CriticalHardyTheoryOfTheWindowCone

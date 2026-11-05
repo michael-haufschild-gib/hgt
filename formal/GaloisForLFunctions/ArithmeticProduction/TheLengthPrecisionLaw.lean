@@ -124,7 +124,7 @@ theorem sum_inv_Icc_le {N : ℕ} (hN : 1 ≤ N) : ∑ n ∈ Finset.Icc 1 N, ((n 
   rw [Real.rpow_neg_one]
 
 /-- **The bound on a power-bounded class.** -/
-theorem integral_linePoly_le_of_power_bound {a : ℕ → ℂ} {ε η T₁ T₂ : ℝ} {N : ℕ} (hε : 0 ≤ ε) (hη0 : 0 ≤ η)
+theorem integral_linePoly_le_of_power_bound {a : ℕ → ℂ} {ε η T₁ T₂ : ℝ} {N : ℕ} (hη0 : 0 ≤ η)
     (hη : η < 1 / 2) (hN : 1 ≤ N) (hT : T₁ ≤ T₂)
     (ha : ∀ n ∈ Finset.Icc 1 N, ‖a n‖ ≤ ε * (n : ℝ) ^ (-η)) :
     (∫ t in T₁..T₂, ‖linePoly a N t‖ ^ 2) ≤
@@ -178,15 +178,15 @@ theorem integral_linePoly_le_of_power_bound {a : ℕ → ℂ} {ε η T₁ T₂ :
 /-- **The blind side of the law.**  If `θ(1−2η) ≤ 1`, the second moment of the whole class `|a_n| ≤ εn^{−η}` is `O(ε² T log T)`. -/
 theorem power_bounded_second_moment_le {θ η : ℝ} (hθ : 0 < θ) (hη0 : 0 ≤ η) (hη : η < 1 / 2)
     (hexp : θ * (1 - 2 * η) ≤ 1) :
-    ∃ C : ℝ, 0 < C ∧ ∀ᶠ T : ℝ in atTop, ∀ (a : ℕ → ℂ) (ε : ℝ) (N : ℕ), 0 ≤ ε → 1 ≤ N → (N : ℝ) ≤ T ^ θ →
+    ∃ C : ℝ, 0 < C ∧ ∀ᶠ T : ℝ in atTop, ∀ (a : ℕ → ℂ) (ε : ℝ) (N : ℕ), 1 ≤ N → (N : ℝ) ≤ T ^ θ →
       (∀ n ∈ Finset.Icc 1 N, ‖a n‖ ≤ ε * (n : ℝ) ^ (-η)) →
       (∫ t in T..(2 * T), ‖linePoly a N t‖ ^ 2) ≤ C * ε ^ 2 * (T * Real.log T) := by
   have hη' : 0 < 1 - 2 * η := by linarith
   refine ⟨1 + θ + 208 * (1 + 1 / (1 - 2 * η)), by positivity, ?_⟩
   filter_upwards [eventually_ge_atTop (1 : ℝ), Real.tendsto_log_atTop.eventually_ge_atTop 1] with
-    T hT hℓ a ε N hε hN hNT ha
+    T hT hℓ a ε N hN hNT ha
   have hT0 : 0 < T := by linarith
-  have hb := integral_linePoly_le_of_power_bound (T₁ := T) (T₂ := 2 * T) hε hη0 hη hN (by linarith) ha
+  have hb := integral_linePoly_le_of_power_bound (T₁ := T) (T₂ := 2 * T) hη0 hη hN (by linarith) ha
   have hN1 : (1 : ℝ) ≤ N := by exact_mod_cast hN
   have hlogN : Real.log N ≤ θ * Real.log T := by
     have h1 := Real.log_le_log (by linarith) hNT
@@ -417,7 +417,8 @@ theorem resonance_beats_every_constant {θ η ε : ℝ} (hθ : 0 < θ) (hη0 : 0
   have h6 := mul_le_mul_of_nonneg_left hℓ2 (by positivity : 0 ≤ T * ((|A| + 1) * 4 * θ))
   refine h6.trans (le_of_eq ?_)
   rw [hε']
-  field_simp <;> ring
+  field_simp
+  ring
 
 /-- **The length–precision law.**  The threshold of the second moment at length `T^θ` is `θ(1−2η) = 1`, that is, `η = ½ − 1/(2θ)`. -/
 theorem length_precision_law {θ η ε : ℝ} (hθ : 0 < θ) (hη0 : 0 ≤ η) (hη : η < 1 / 2) (hε : 0 < ε) :
@@ -440,12 +441,12 @@ theorem length_precision_law {θ η ε : ℝ} (hθ : 0 < θ) (hη0 : 0 ≤ η) (
     have h2 := mul_le_mul_of_nonneg_right h1 (by positivity : 0 ≤ 2 * θ)
     rw [hkey] at h2
     obtain ⟨C, hC, hev⟩ := power_bounded_second_moment_le hθ hη0 hη (by linarith)
-    exact ⟨C, hC, hev.mono fun T hT a N hN hNT ha => hT a ε N hε.le hN hNT ha⟩
+    exact ⟨C, hC, hev.mono fun T hT a N hN hNT ha => hT a ε N hN hNT ha⟩
 
 /-- **Below the window every power is blind.**  At `θ ≤ 1` no `η ≥ 0` is seen. -/
 theorem below_the_window_every_power_is_blind {θ η : ℝ} (hθ : 0 < θ) (hθ1 : θ ≤ 1) (hη0 : 0 ≤ η)
     (hη : η < 1 / 2) :
-    ∃ C : ℝ, 0 < C ∧ ∀ᶠ T : ℝ in atTop, ∀ (a : ℕ → ℂ) (ε : ℝ) (N : ℕ), 0 ≤ ε → 1 ≤ N → (N : ℝ) ≤ T ^ θ →
+    ∃ C : ℝ, 0 < C ∧ ∀ᶠ T : ℝ in atTop, ∀ (a : ℕ → ℂ) (ε : ℝ) (N : ℕ), 1 ≤ N → (N : ℝ) ≤ T ^ θ →
       (∀ n ∈ Finset.Icc 1 N, ‖a n‖ ≤ ε * (n : ℝ) ^ (-η)) →
       (∫ t in T..(2 * T), ‖linePoly a N t‖ ^ 2) ≤ C * ε ^ 2 * (T * Real.log T) := by
   refine power_bounded_second_moment_le hθ hη0 hη ?_

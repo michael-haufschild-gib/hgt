@@ -37,7 +37,9 @@ Hankel operator. Completing the square against the old positive form
 gives `Q(v)≥(L−C)‖v_collar‖²`. The two separated collars interact by another
 bounded operator.
 
-The Riesz increment is orthogonal to the old space and satisfies
+The [exact kernel increment](../3-formalized/growing-the-weil-window-adds-an-orthogonal-kernel.md)
+is the Gram form of the Riesz component orthogonal to the old space.
+Its intended collar equation is
 `Q(δ,u)=⟨Fₕ,u_collar⟩`. If its dilated forcing divided by `√(hL)` tends
 in L² to the two constant endpoint traces, Cauchy–Schwarz and the preceding
 bound give the upper limit of `Q(δ)/h`. Testing with the constant collar
@@ -46,9 +48,11 @@ The energy of the difference from that trial profile tends to zero after
 division by `h`, giving the mixed kernel derivative as well. This avoids
 constructing a strong inverse limit for the whole collar operator.
 
-The exact tail and constant-profile bounds, uniform crossing estimates
-and variational application remain to be formalized; none is an assumed
-premise.
+The exact tail and constant-profile bounds, bounded Weil correction,
+exterior-response identification, and full translation invariance have Lean
+drafts. Their audits and the variational application remain incomplete; none
+is an assumed premise. Translation retains the pole pairing because its two
+exponential characters are reciprocal.
 
 Uniform boundedness of Riesz sources on compact precontact aperture ranges
 would bound their localized forcings and renewal traces. Together with

@@ -1,7 +1,7 @@
 # Zero Configuration Geometry (ZCG)
 
 Namespace `GaloisForLFunctions.ZeroConfigurationGeometry`; umbrella `ZeroConfigurationGeometry.lean`;
-78 modules.
+86 modules.
 
 ## 1. Motivation
 
@@ -241,6 +241,7 @@ same input as every route: cancellation of the prime sum below the mean spacing.
 | Uniform isolating windows: blind to a matched cluster, explicit floor at the target, strip decay independent of the cluster | `exists_bump_one_le_norm_paperFT_I_mul`, `windowFloor`, `windowGrowth`, `isolating_window_of_bump`, `exists_uniform_isolating_window` | unconditional |
 | **Local camera** | | |
 | Finite point and moment heights, with numerical ζ count and tail inputs | `cameraPointHeight`, `cameraMomentHeight`, `card_zeta_camera_band_le`, `zeta_lorentzian_mass_lt`, `zeta_reads_mult_at_explicit_height`, `zeta_discMoment_readout_explicit` | unconditional; [height formulas](EffectiveHeights/README.md) |
+| Every cubic-logarithmically deep ζ zero gives a negative test at `λL_T`, `λ>1`; positivity gives the corresponding location bound | `zetaNegativeCameraHeight`, `zeta_negative_test_of_cubic_depth`, `zeta_depth_lt_exp_log_cube_of_positive_aperture_abs` | unconditional implication; [cluster construction](NegativeTests/README.md) |
 | Far zeros are faint in the local camera | `localWindow`, `paperFT_localWindow`, `norm_paperFT_localWindow_mul_le`, `norm_pointImage_mul_le`, `decay_le_tempered`, `tsum_far_le`, `norm_tsum_far_le`, `tsum_far_multDiff_le`, `tsum_far_zeta_le` | unconditional |
 | Isolated points are seen by the local camera, with explicit constant | `apertureWindow_localWindow`, `localCameraConst`, `one_add_pow_le_of_isolated_cancellation_of_bump`, `one_add_pow_le_of_isolated_cancellation` | unconditional |
 | The zeros of `ζ` have the sharp local density | `mu_le`, `card_le_ncount`, `ncount_le_of_goodHeight`, `exists_card_le_sharp`, `exists_card_le_sharp_centred`, `exists_card_le_sharp_centred_abs` | unconditional |

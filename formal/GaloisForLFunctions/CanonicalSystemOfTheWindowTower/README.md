@@ -188,3 +188,12 @@ Physical reflection is an exact Weil isometry and sends the Riesz vector at
 reflection. Both symmetries hold pointwise for the unique continuous sources.
 Their normalized traces satisfy `τ₊(z)=τ₋(−z)` and
 `τ₋(conj z)=conj(τ₊(z))`; the common trace at zero frequency is real.
+
+Aperture inclusion sends the larger evaluation vector back to the smaller one
+under its adjoint. The difference is orthogonal to the entire old space.
+The exact kernel increase is its Gram kernel; diagonal growth is the squared
+Weil norm of that new component.
+
+At either actual endpoint, the normalized trace is also the exact coefficient
+of the truncated integral `(1/2)∫_d¹u(t)/t dt`, divided by `√log(1/d)`.
+The substitution `t=exp(−s²)` identifies it with a complex Cesàro average.
