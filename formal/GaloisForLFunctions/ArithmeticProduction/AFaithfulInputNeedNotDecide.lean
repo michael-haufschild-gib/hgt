@@ -90,7 +90,6 @@ theorem not_mertensLaw_liouvilleWeight : ¬ MertensLaw liouvilleWeight := by
       rw [← sum_add_distrib]
       refine sum_congr rfl fun n _ => ?_
       rw [add_div]
-      rfl
     rw [h1, hB]
     calc ∑ n ∈ Icc 1 N, (liouvilleWeight n + vonMangoldt n) / n
         ≤ ∑ n ∈ Icc 1 N, 2 * (if n.Prime then (0 : ℝ) else (vonMangoldt n : ℝ) / n) := by
@@ -187,7 +186,8 @@ theorem summable_powerWeight_div : Summable fun n : ℕ => powerWeight (1 / 4) n
   have hpos : (0 : ℝ) < n := by exact_mod_cast hn
   unfold powerWeight
   rw [show (5 / 4 : ℝ) = 1 / 4 + 1 by norm_num, Real.rpow_add hpos, Real.rpow_one, mul_inv,
-    Real.rpow_neg hpos.le, div_eq_mul_inv]
+    Real.rpow_neg hpos.le]
+  exact (div_eq_mul_inv _ _).symm
 
 theorem tendsto_harmonicSum_powerWeight :
     Tendsto (fun N : ℕ => harmonicSum (powerWeight (1 / 4)) N) atTop (𝓝 mertensInvisibleConstant) := by
@@ -251,7 +251,8 @@ theorem exists_mertensLaw_not_count : ∃ a : ℕ → ℝ, MertensLaw a ∧ ¬ C
   have h1 : ∀ n, 1 < n → (vonMangoldtWeight + mertensInvisible) n =
       (vonMangoldtWeight + (1 : ℝ) • powerWeight (1 / 4)) n := by
     intro n hn
-    simp [mertensInvisible, (by omega : n ≠ 1)]
+    have hn1 : n ≠ 1 := by omega
+    simp [mertensInvisible, hn1]
   exact not_count_vonMangoldt_add_smul_powerWeight one_ne_zero (by norm_num) (by norm_num)
     ((count_congr_of_eventually_eq h1).mp h)
 
@@ -271,12 +272,13 @@ theorem not_proximity_liouvilleWeight : ¬ Proximity liouvilleWeight := by
   · have h1 := psi_sub_theta_isLittleO.def (c := 1 / 4) (by norm_num)
     filter_upwards [h1, eventually_abs_psi_sub_le (ε := 1 / 4) (by norm_num),
       eventually_gt_atTop (0 : ℝ)] with x hx1 hx2 hx0
-    rw [Real.norm_of_nonneg hx0.le, Real.norm_eq_abs, Real.norm_eq_abs, abs_of_pos hx0] at hx1
+    rw [Real.norm_of_nonneg hx0.le, Real.norm_eq_abs] at hx1
     rw [one_mul, Real.norm_of_nonneg hx0.le, Real.norm_eq_abs, partialSum_sub, partialSum_vonMangoldt]
     have h2 := (abs_le.mp hx1).2
     have h3 := (abs_le.mp hx2).1
     have h4 := (partialSum_liouvilleWeight_add_psi x).2
-    rw [abs_of_nonpos (by linarith)]
+    have h5 : partialSum liouvilleWeight x - Chebyshev.psi x ≤ 0 := by linarith
+    rw [abs_of_nonpos h5]
     linarith
   · exact (eventually_gt_atTop (0 : ℝ)).frequently.mono fun x hx => hx.ne'
 

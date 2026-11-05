@@ -138,10 +138,11 @@ theorem thetaHalfLaplace_zeros_infinite : {w : ℂ | thetaHalfLaplace w = 0}.Inf
   have hzero : ∀ p : ZeroCopy thetaHalfLaplace, zeroCopyPoint thetaHalfLaplace p ∈
       {w : ℂ | thetaHalfLaplace w = 0} := fun p => by
     by_contra hne
+    have hne' : thetaHalfLaplace (p.1 : ℂ) ≠ 0 := hne
     have h2 : (MeromorphicOn.divisor thetaHalfLaplace Set.univ) ((p.1 : ℂ)) ≠ 0 := p.1.2
     apply h2
     rw [divisor_univ_eq_analyticOrder hf,
-      (hf _ (Set.mem_univ _)).analyticOrderAt_eq_zero.mpr hne]
+      (hf (p.1 : ℂ) (Set.mem_univ _)).analyticOrderAt_eq_zero.mpr hne']
     simp
   have hfinite : Finite (ZeroCopy thetaHalfLaplace) := by
     rw [← Set.finite_univ_iff]
@@ -220,42 +221,64 @@ theorem HyperbolicKernel.integrable_mul_exp_abs (hg : HyperbolicKernel g) (y : �
 /-- The Taylor coefficients `i^k c⁺_k/k!` of `u ↦ ∫₀^∞ g(v) e^{iuv} dv`. -/
 def halfTaylorCoeff (g : ℝ → ℝ) (k : ℕ) : ℂ := I ^ k * (halfMoment g k : ℂ) / (k.factorial : ℂ)
 
+theorem tsum_pow_div_factorial_real (x : ℝ) :
+    ∑' k : ℕ, x ^ k / (k.factorial : ℝ) = Real.exp x := by
+  rw [Real.exp_eq_exp_ℝ]
+  exact (NormedSpace.expSeries_div_hasSum_exp x).tsum_eq
+
+theorem hasSum_pow_div_factorial_complex (z : ℂ) :
+    HasSum (fun k : ℕ => z ^ k / (k.factorial : ℂ)) (Complex.exp z) := by
+  rw [Complex.exp_eq_exp_ℂ]
+  exact NormedSpace.expSeries_div_hasSum_exp z
+
+/-- The `k`-th term of the exponential series under the half-line integral. -/
+def halfTerm (g : ℝ → ℝ) (u : ℂ) (k : ℕ) (v : ℝ) : ℂ :=
+  (g v : ℂ) * ((I * u * v) ^ k / (k.factorial : ℂ))
+
+theorem halfTerm_eq (g : ℝ → ℝ) (u : ℂ) (k : ℕ) (v : ℝ) :
+    halfTerm g u k v = (I ^ k * u ^ k / (k.factorial : ℂ)) * ((g v * v ^ k : ℝ) : ℂ) := by
+  rw [halfTerm, mul_pow, mul_pow]
+  push_cast
+  ring
+
+theorem HyperbolicKernel.integrable_halfTerm (hg : HyperbolicKernel g) (u : ℂ) (k : ℕ) :
+    Integrable (halfTerm g u k) := by
+  rw [show halfTerm g u k = fun v => (I ^ k * u ^ k / (k.factorial : ℂ)) * ((g v * v ^ k : ℝ) : ℂ) from
+    funext (halfTerm_eq g u k)]
+  exact (hg.integrable_ofReal_pow k).const_mul _
+
+theorem HyperbolicKernel.norm_halfTerm (hg : HyperbolicKernel g) (u : ℂ) (k : ℕ) (v : ℝ) :
+    ‖halfTerm g u k v‖ = g v * ((‖u‖ * |v|) ^ k / (k.factorial : ℝ)) := by
+  rw [halfTerm, norm_mul, Complex.norm_real, Real.norm_of_nonneg (hg.nonneg v), norm_div, norm_pow,
+    norm_mul, norm_mul, Complex.norm_I, one_mul, Complex.norm_real, Real.norm_eq_abs,
+    Complex.norm_natCast]
+
+theorem HyperbolicKernel.integrable_tsum_halfBound (hg : HyperbolicKernel g) (u : ℂ) :
+    Integrable fun v : ℝ => ∑' k : ℕ, g v * ((‖u‖ * |v|) ^ k / (k.factorial : ℝ)) := by
+  refine (hg.integrable_mul_exp_abs ‖u‖).congr (Eventually.of_forall fun v => ?_)
+  show g v * Real.exp (‖u‖ * |v|) = ∑' k : ℕ, g v * ((‖u‖ * |v|) ^ k / (k.factorial : ℝ))
+  rw [tsum_mul_left, tsum_pow_div_factorial_real]
+
+theorem setIntegral_halfTerm (u : ℂ) (k : ℕ) :
+    ∫ v in Set.Ioi (0 : ℝ), halfTerm g u k v = halfTaylorCoeff g k * u ^ k := by
+  have h : ∀ v, halfTerm g u k v = (I ^ k * u ^ k / (k.factorial : ℂ)) * ((g v * v ^ k : ℝ) : ℂ) :=
+    halfTerm_eq g u k
+  simp only [h]
+  rw [integral_const_mul, integral_complex_ofReal, halfTaylorCoeff, halfMoment]
+  ring
+
 theorem HyperbolicKernel.hasSum_halfTaylorCoeff (hg : HyperbolicKernel g) (u : ℂ) :
     HasSum (fun k => halfTaylorCoeff g k * u ^ k)
       (∫ v in Set.Ioi (0 : ℝ), (g v : ℂ) * Complex.exp (I * u * v)) := by
-  have hF : ∀ k : ℕ, (fun k v => (g v : ℂ) * ((I * u * v) ^ k / (k.factorial : ℂ))) k =
-      fun v : ℝ => (I ^ k * u ^ k / (k.factorial : ℂ)) * ((g v * v ^ k : ℝ) : ℂ) := fun k => by
-    funext v
-    rw [mul_pow, mul_pow]
-    push_cast
-    ring
   have h := hasSum_integral_of_dominated_convergence (μ := volume.restrict (Set.Ioi (0 : ℝ)))
-    (F := fun k (v : ℝ) => (g v : ℂ) * ((I * u * v) ^ k / (k.factorial : ℂ)))
-    (f := fun v : ℝ => (g v : ℂ) * Complex.exp (I * u * v))
+    (F := halfTerm g u) (f := fun v : ℝ => (g v : ℂ) * Complex.exp (I * u * v))
     (fun k (v : ℝ) => g v * ((‖u‖ * |v|) ^ k / (k.factorial : ℝ)))
-    (fun k => by
-      have := hF k
-      simp only at this
-      rw [this]
-      exact (((hg.integrable_ofReal_pow k).const_mul _).restrict).aestronglyMeasurable)
-    (fun k => Eventually.of_forall fun v => by
-      rw [norm_mul, Complex.norm_real, Real.norm_of_nonneg (hg.nonneg v), norm_div, norm_pow,
-        norm_mul, norm_mul, Complex.norm_I, one_mul, Complex.norm_real, Real.norm_eq_abs,
-        Complex.norm_natCast])
+    (fun k => (hg.integrable_halfTerm u k).restrict.aestronglyMeasurable)
+    (fun k => Eventually.of_forall fun v => (hg.norm_halfTerm u k v).le)
     (Eventually.of_forall fun v => (Real.summable_pow_div_factorial _).mul_left _)
-    (by
-      refine ((hg.integrable_mul_exp_abs ‖u‖).restrict).congr (Eventually.of_forall fun v => ?_)
-      simp only
-      rw [tsum_mul_left, ← (NormedSpace.expSeries_div_hasSum_exp (‖u‖ * |v|)).tsum_eq,
-        Real.exp_eq_exp_ℝ])
-    (Eventually.of_forall fun v => by
-      have := (NormedSpace.expSeries_div_hasSum_exp (I * u * v)).mul_left (g v : ℂ)
-      rwa [← Complex.exp_eq_exp_ℂ] at this)
-  refine h.congr_fun fun k => ?_
-  have := hF k
-  simp only at this
-  rw [this, integral_const_mul, integral_complex_ofReal, halfTaylorCoeff, halfMoment]
-  ring
+    (hg.integrable_tsum_halfBound u).restrict
+    (Eventually.of_forall fun v => (hasSum_pow_div_factorial_complex (I * u * v)).mul_left (g v : ℂ))
+  simpa only [setIntegral_halfTerm] using h
 
 theorem HyperbolicKernel.halfJensen_eq_jensenRev (d : ℕ) :
     halfJensen g d = jensenRev d (PowerSeries.mk (halfTaylorCoeff g)) := by
@@ -300,16 +323,17 @@ theorem eventually_le_card_upper_roots_halfJensen (M : ℕ) :
       rw [thetaHalfLaplace_eq_kernel] at hK
       rw [← hK]
       refine integral_congr_ae (Eventually.of_forall fun v => ?_)
-      simp only
-      congr 2
-      rw [← mul_assoc, ← mul_assoc, mul_neg, I_mul_I, neg_neg, one_mul])
+      have hI : I * (-I * w) = w := by rw [← mul_assoc, mul_neg, I_mul_I, neg_neg, one_mul]
+      simp only [hI])
     (fun z hz => (him z hz).ne) (p := fun e => 0 < e.im) (fun z hz x hx => by
       have := him z hz
       by_contra hneg
       push Not at hneg
       nlinarith)
   rw [hTcard] at h
-  simpa only [hg.halfJensen_eq_jensenRev] using h
+  filter_upwards [h] with d hd
+  rw [HyperbolicKernel.halfJensen_eq_jensenRev]
+  exact hd
 
 end
 

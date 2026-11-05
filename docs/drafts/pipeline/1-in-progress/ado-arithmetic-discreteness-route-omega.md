@@ -24,6 +24,7 @@ Folder `formal/GaloisForLFunctions/ArithmeticDiscreteness/` (README there), umbr
 | Ω2 | Impurity is quantized; near purity is purity | Lean: `impurity_is_quantized`, `isPureTrace_of_near`, `frobenius_collide_or_repel` |
 | Ω3 | Integrality forces purity | FALSE: `exists_impure_integral` |
 | Ω4 | Power sums bounded at `N` consecutive orders past an explicit `M₀` certify integral purity; real configurations are never certified at finitely many orders | Lean: `isPureTrace_of_bounded_powerSums`, `eventually_isPureTrace_of_bounded_powerSums`, `not_certified_at_finitely_many_orders`; depth gap `exists_deep_eigenvalue_of_not_pure` |
+| Ω21 | The finite certificate needs `≳ q^{1/4}` orders | Lean: `quarter_power_mimic` (impure `X − (⌊2√q⌋+1)` passes `|S_ν| ≤ 2e q^{ν/2}` for `9ν⁴ ≤ q`) |
 | Ω5 | An integral structure acts along a deformation path | FALSE: integral continuous families are constant (`eq_of_continuousOn_intCoeff`); survivor below |
 | Ω5′ | Uniform repulsion along a continuous real family carries reality, with no integrality | Lean: `splits_of_uniform_repulsion`, `exists_near_collision_of_not_splits` |
 | Ω6 | Euler carriers `∏_{p∈S}(1−p^{−s})` collide or repel at polynomial scale | Lean: `eulerCarrier_collide_or_repel` (effective Baker `RHTower.Matveev.effectiveBakerBound_holds`) |
@@ -85,10 +86,15 @@ Folder `formal/GaloisForLFunctions/ArithmeticDiscreteness/` (README there), umbr
 - For `ζ` at height `T` the relevant carrier (approximate functional equation) has rank
   `≍ π(√T)`; the effective Baker exponent grows with the rank, so Diophantine discreteness of the
   Euler-carrier kind cannot give B54 at polynomial scale for `ζ` directly.
+- Three scales coincide at height `T`: the camera's unresolved scale `e^{−c log³ T}`, the Liouville
+  scale of an integral configuration of degree `≍ log T` and height `T^{O(1)}` (Ω1), and the
+  two-logarithm Baker bound `|k log p − k' log p'| ≥ exp(−C log p log p' log H)` for primes up to
+  `√T` and heights `H ≤ T` (`exp(−C log³ T)`). The last is not in the corpus (only an existential
+  exponent for a fixed prime family); recorded as heuristic.
 - At the local complexity of `ζ` at height `T` (degree `≍ log T`, height `T^{O(1)}`), the separation
   integrality could guarantee lies between `e^{−C log³ T}` (Ω1, the camera's unresolved scale) and
   `e^{−c log² T}` (Ω1′).
 
 ## Log
-- 2026-11-05 — created; Ω1–Ω9″, Ω12, Ω13, Ω15–Ω20 formalized; Ω3, Ω5, Ω6′, Ω12′, Ω14 falsified with
+- 2026-11-05 — created; Ω1–Ω9″, Ω12, Ω13, Ω15–Ω21 formalized; Ω3, Ω5, Ω6′, Ω12′, Ω14 falsified with
   survivors; Ω9′, Ω10, Ω11 open.

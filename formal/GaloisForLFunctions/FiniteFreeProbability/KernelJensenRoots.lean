@@ -296,10 +296,17 @@ theorem norm_mul_add_I_mul_le_half {ℓ : ℝ} (hℓ : 0 ≤ ℓ) {z : ℂ} (hz 
       Real.norm_of_nonneg hℓ, Real.norm_of_nonneg (by linarith)]
   linarith
 
-/-- `|E_d(ℓζ)| ≤ d!/r^d e^{tr} ξ(1/2 + r) + (ℓ|ζ + i|)^d c⁺₀`, with `t = ℓ(|ζ + i| − 1)`, on `Im ζ ≥ −1/2`. -/
-theorem HyperbolicKernel.norm_eval_halfJensen_le (hg : HyperbolicKernel g) (d : ℕ) {ℓ : ℝ}
+theorem HyperbolicKernel.integrable_mul_norm_pow (hg : HyperbolicKernel g) (d : ℕ) (w : ℂ) :
+    Integrable fun v : ℝ => g v * ‖w + I * v‖ ^ d := by
+  refine (hg.integrable_mul_add_I_pow d w).norm.congr (Eventually.of_forall fun v => ?_)
+  simp only
+  rw [norm_mul, norm_pow, Complex.norm_real, Real.norm_of_nonneg (hg.nonneg v)]
+
+/-- `∫₀^∞ g(v)|ℓζ + iv|^d dv ≤ d!/r^d e^{tr} ξ(1/2 + r) + (ℓ|ζ + i|)^d c⁺₀`, with `t = ℓ(|ζ + i| − 1)`, on
+`Im ζ ≥ −1/2`. -/
+theorem HyperbolicKernel.setIntegral_mul_norm_pow_le (hg : HyperbolicKernel g) (d : ℕ) {ℓ : ℝ}
     (hℓ : 0 ≤ ℓ) {z : ℂ} (hz : -(1 / 2) ≤ z.im) {r : ℝ} (hr : 0 < r) :
-    ‖(halfJensen g d).eval ((ℓ : ℂ) * z)‖ ≤
+    ∫ v in Set.Ioi (0 : ℝ), g v * ‖(ℓ : ℂ) * z + I * v‖ ^ d ≤
       (d.factorial : ℝ) / r ^ d * (Real.exp (ℓ * (‖z + I‖ - 1) * r) * xiMoment (1 / 2 + r) 0) +
         (ℓ * ‖z + I‖) ^ d * halfMoment g 0 := by
   set t := ℓ * (‖z + I‖ - 1)
@@ -308,12 +315,12 @@ theorem HyperbolicKernel.norm_eval_halfJensen_le (hg : HyperbolicKernel g) (d : 
   have hK : 0 ≤ K := by positivity
   set B := ℓ * ‖z + I‖
   have hB : 0 ≤ B := by positivity
-  have hpt : ∀ v ∈ Set.Ioi (0 : ℝ), ‖(g v : ℂ) * ((ℓ : ℂ) * z + I * v) ^ d‖ ≤
+  have hpt : ∀ v ∈ Set.Ioi (0 : ℝ), g v * ‖(ℓ : ℂ) * z + I * v‖ ^ d ≤
       K * (g v * Real.exp (r * v)) + B ^ d * (g v * v ^ 0) := fun v hv => by
     have hv0 : (0 : ℝ) < v := hv
     have hΦ := hg.nonneg v
     have hn := norm_mul_add_I_mul_le_half hℓ hz hv0.le
-    rw [norm_mul, norm_pow, Complex.norm_real, Real.norm_of_nonneg hΦ, pow_zero, mul_one]
+    rw [pow_zero, mul_one]
     have hexp := Real.exp_pos (r * v)
     rcases le_total v ℓ with hvℓ | hvℓ
     · have hle : ‖(ℓ : ℂ) * z + I * v‖ ≤ B := by
@@ -342,11 +349,10 @@ theorem HyperbolicKernel.norm_eval_halfJensen_le (hg : HyperbolicKernel g) (d : 
       nlinarith
   have hE := hg.integrable_exp r
   have hM := hg.integrable_pow 0
-  have hbound := norm_integral_le_of_norm_le (μ := volume.restrict (Set.Ioi (0 : ℝ)))
-    (((hE.const_mul K).add (hM.const_mul (B ^ d))).restrict)
-    ((ae_restrict_iff' measurableSet_Ioi).2 (Eventually.of_forall hpt))
-  rw [integral_add' (hE.const_mul K).integrableOn (hM.const_mul (B ^ d)).integrableOn] at hbound
-  simp only [integral_const_mul] at hbound
+  have hmono := setIntegral_mono_on (hg.integrable_mul_norm_pow d _).integrableOn
+    ((hE.const_mul K).add (hM.const_mul (B ^ d))).integrableOn measurableSet_Ioi hpt
+  rw [integral_add' (hE.const_mul K).integrableOn (hM.const_mul (B ^ d)).integrableOn] at hmono
+  simp only [integral_const_mul] at hmono
   have hup : ∫ v in Set.Ioi (0 : ℝ), g v * Real.exp (r * v) ≤ xiMoment (1 / 2 + r) 0 := by
     have hmom : xiMoment (1 / 2 + r) 0 = ∫ v, riemannKernelReal v * Real.exp (r * v) := by
       rw [xiMoment]
@@ -360,8 +366,7 @@ theorem HyperbolicKernel.norm_eval_halfJensen_le (hg : HyperbolicKernel g) (d : 
       mul_nonneg (hg.nonneg v) (Real.exp_pos _).le)).trans ?_
     exact integral_mono hE hΦE fun v =>
       mul_le_mul_of_nonneg_right (hg.le_kernel v) (Real.exp_pos _).le
-  rw [hg.eval_halfJensen]
-  refine hbound.trans ?_
+  refine hmono.trans ?_
   have h1 := mul_le_mul_of_nonneg_left hup hK
   have hK' : K * xiMoment (1 / 2 + r) 0 =
       (d.factorial : ℝ) / r ^ d * (Real.exp (t * r) * xiMoment (1 / 2 + r) 0) := by
@@ -400,19 +405,17 @@ def halfError (d : ℕ) : ℝ :=
   Real.log (xiMoment (1 / 2 + 1) 0) + 6 * ((d : ℝ) / cauchyScale d) + 1 + cauchyScale d
 
 /-- On circles centred at `iθ₀` of radius `R < θ₀ + 1/2`, which may cross the real axis,
-`|Π_y (z − y)| ≤ (e^{E_d} + c⁺₀)/c⁺₀ · |z + i|^d`, uniformly, for large `d`. -/
-theorem HyperbolicKernel.eventually_half_sphere_bound (hg : HyperbolicKernel g) {θ₀ R : ℝ}
+`∫₀^∞ g(v)|ℓz + iv|^d dv ≤ ℓ^d |z + i|^d (e^{E_d} + c⁺₀)`, uniformly, for large `d`. -/
+theorem HyperbolicKernel.eventually_setIntegral_norm_le (hg : HyperbolicKernel g) {θ₀ R : ℝ}
     (hθ₀ : 0 < θ₀) (hR : 0 < R) (hRθ : R < θ₀ + 1 / 2) :
     ∀ᶠ d : ℕ in atTop, ∀ z ∈ sphere (I * (θ₀ : ℂ)) R,
-      ‖((halfRoots g d).map fun y => z - y).prod‖ ≤
-        (Real.exp (halfError d) + halfMoment g 0) / halfMoment g 0 * ‖z + I‖ ^ d := by
-  have hc₀ := hg.halfMoment_zero_pos
+      ∫ v in Set.Ioi (0 : ℝ), g v * ‖(cauchyScale d : ℂ) * z + I * v‖ ^ d ≤
+        cauchyScale d ^ d * (‖z + I‖ ^ d * (Real.exp (halfError d) + halfMoment g 0)) := by
   have hA : (0 : ℝ) < 1 / (1 + θ₀ + R) := by positivity
   filter_upwards [tendsto_cauchyScale.eventually_ge_atTop 2,
     tendsto_cauchyScale_div.eventually (gt_mem_nhds hA), eventually_ge_atTop 1] with
     d hℓ2 hℓd hd1 z hzs
   have hℓ1 : 1 ≤ cauchyScale d := by linarith
-  have hprod := hg.eval_halfJensen_eq_prod d (show cauchyScale d ≠ 0 by linarith) z
   have hdef : halfError d = Real.log (xiMoment (1 / 2 + 1) 0) + 6 * ((d : ℝ) / cauchyScale d) + 1 +
       cauchyScale d := rfl
   set ℓ := cauchyScale d
@@ -482,26 +485,49 @@ theorem HyperbolicKernel.eventually_half_sphere_bound (hg : HyperbolicKernel g) 
     calc S = Real.exp (Real.log S) := (Real.exp_log hSpos).symm
       _ ≤ Real.exp (E + d * Real.log (1 + θ) + d * Real.log ℓ) := Real.exp_le_exp.2 hE
       _ = _ := by rw [Real.exp_add, Real.exp_add, exp_nat_mul_log h1θ, exp_nat_mul_log hℓ]
-  have hN := hg.norm_eval_halfJensen_le d hℓ.le hz12 hrpos
+  have hN := hg.setIntegral_mul_norm_pow_le d hℓ.le hz12 hrpos
   have e1 : ℓ * (‖z + I‖ - 1) = θ * ℓ := mul_comm _ _
   have e2 : (ℓ * ‖z + I‖) ^ d = (1 + θ) ^ d * ℓ ^ d := by
     rw [← hnorm1, ← mul_pow]
     congr 1
     ring
   rw [e1, e2] at hN
-  have hnormeval : ‖(halfJensen g d).eval ((ℓ : ℂ) * z)‖ =
-      halfMoment g 0 * ℓ ^ d * ‖((halfRoots g d).map fun y => z - y).prod‖ := by
+  rw [← hnorm1]
+  refine hN.trans ?_
+  linarith [hSle, show ℓ ^ d * ((1 + θ) ^ d * (Real.exp E + halfMoment g 0)) =
+    Real.exp E * (1 + θ) ^ d * ℓ ^ d + (1 + θ) ^ d * ℓ ^ d * halfMoment g 0 by ring]
+
+/-- On circles centred at `iθ₀` of radius `R < θ₀ + 1/2`, which may cross the real axis,
+`|Π_y (z − y)| ≤ (e^{E_d} + c⁺₀)/c⁺₀ · |z + i|^d`, uniformly, for large `d`. -/
+theorem HyperbolicKernel.eventually_half_sphere_bound (hg : HyperbolicKernel g) {θ₀ R : ℝ}
+    (hθ₀ : 0 < θ₀) (hR : 0 < R) (hRθ : R < θ₀ + 1 / 2) :
+    ∀ᶠ d : ℕ in atTop, ∀ z ∈ sphere (I * (θ₀ : ℂ)) R,
+      ‖((halfRoots g d).map fun y => z - y).prod‖ ≤
+        (Real.exp (halfError d) + halfMoment g 0) / halfMoment g 0 * ‖z + I‖ ^ d := by
+  have hc₀ := hg.halfMoment_zero_pos
+  filter_upwards [hg.eventually_setIntegral_norm_le hθ₀ hR hRθ,
+    tendsto_cauchyScale.eventually_gt_atTop 0] with d hbound hℓ z hzs
+  have hN := hbound z hzs
+  have hprod := hg.eval_halfJensen_eq_prod d hℓ.ne' z
+  have hnormeval : ‖(halfJensen g d).eval ((cauchyScale d : ℂ) * z)‖ =
+      halfMoment g 0 * cauchyScale d ^ d * ‖((halfRoots g d).map fun y => z - y).prod‖ := by
     rw [hprod, norm_mul, norm_mul, norm_pow, Complex.norm_real, Complex.norm_real,
       Real.norm_of_nonneg hℓ.le, Real.norm_of_nonneg hc₀.le]
-  set P := ‖((halfRoots g d).map fun y => z - y).prod‖
-  have hℓd' : 0 < ℓ ^ d := pow_pos hℓ d
-  have hmain : ℓ ^ d * (halfMoment g 0 * P) ≤
-      ℓ ^ d * ((Real.exp E + halfMoment g 0) * ‖z + I‖ ^ d) := by
-    rw [← hnorm1]
-    have hbound : halfMoment g 0 * ℓ ^ d * P ≤ S + (1 + θ) ^ d * ℓ ^ d * halfMoment g 0 := by
-      rw [← hnormeval]
-      exact hN
-    nlinarith [hSle, hbound]
+  have hle : ‖(halfJensen g d).eval ((cauchyScale d : ℂ) * z)‖ ≤
+      ∫ v in Set.Ioi (0 : ℝ), g v * ‖(cauchyScale d : ℂ) * z + I * v‖ ^ d := by
+    rw [hg.eval_halfJensen]
+    refine (norm_integral_le_integral_norm _).trans_eq ?_
+    refine integral_congr_ae (Eventually.of_forall fun v => ?_)
+    simp only
+    rw [norm_mul, norm_pow, Complex.norm_real, Real.norm_of_nonneg (hg.nonneg v)]
+  rw [hnormeval] at hle
+  have hℓd' : 0 < cauchyScale d ^ d := pow_pos hℓ d
+  have hmain : cauchyScale d ^ d * (halfMoment g 0 * ‖((halfRoots g d).map fun y => z - y).prod‖) ≤
+      cauchyScale d ^ d * ((Real.exp (halfError d) + halfMoment g 0) * ‖z + I‖ ^ d) := by
+    calc _ = halfMoment g 0 * cauchyScale d ^ d * ‖((halfRoots g d).map fun y => z - y).prod‖ := by
+          ring
+      _ ≤ _ := hle.trans hN
+      _ = _ := by ring
   have hfin := le_of_mul_le_mul_left hmain hℓd'
   rw [div_mul_eq_mul_div, le_div_iff₀ hc₀]
   linarith

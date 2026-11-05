@@ -338,8 +338,6 @@ theorem polarForm_ofReal (lam : ℕ → ℝ) {X Y : ℝ → ℝ} (hX : ContDiff 
   simp only [Complex.add_re]
   linarith
 
-/-- **A fixed test has bounded energy on the cone.** Its correlations see only the integers `n ≤ e^{2R}`,
-which lie in the box. -/
 /-- The form of a real test on a window is bounded by its zero side, the size of the box, and the number
 of atoms its autocorrelation sees. -/
 theorem coneForm_le_of_bounds {Y : ℝ → ℝ} (hY : ContDiff ℝ 2 Y) (hYc : HasCompactSupport Y) {R B I : ℝ}
@@ -417,6 +415,7 @@ theorem coneForm_le_of_bounds {Y : ℝ → ℝ} (hY : ContDiff ℝ 2 Y) (hYc : H
     mul_le_mul_of_nonneg_right hNle (by positivity)
   linarith
 
+/-- **A fixed test has bounded energy on the cone.** -/
 theorem exists_coneForm_le {Y : ℝ → ℝ} (hY : ContDiff ℝ 2 Y) (hYc : HasCompactSupport Y) {R : ℝ}
     (hR : 0 ≤ R) (hYs : ∀ t, R < |t| → Y t = 0) :
     ∃ C : ℝ, 0 ≤ C ∧ ∀ (c : ℝ) (lam : ℕ → ℝ), R + 1 / 12 ≤ c → WeilPositiveFullUpTo lam c →

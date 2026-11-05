@@ -343,8 +343,7 @@ theorem abs_integral_log_norm_one_sub_le {q lam : ℝ} (hq0 : 0 ≤ q) (hq1 : q 
       rw [hrecomp, ← intervalIntegral.integral_const_mul]
       refine intervalIntegral.integral_congr fun t _ => ?_
       show ((z t) ^ n / n).re = _
-      rw [hzpow t, Complex.re_ofReal_mul]
-      simp
+      rw [hzpow t, Complex.re_ofReal_mul, Complex.ofReal_re]
     rw [hre, Complex.ofReal_re, integral_exp_mul_complex hμ0, Real.norm_eq_abs, abs_mul,
       abs_of_nonneg (by positivity)]
     have hnormμ : ‖μ‖ = n * lam := by

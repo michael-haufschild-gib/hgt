@@ -68,6 +68,7 @@ sign, a square-root count or a collision exclusion.
 | R39 | **The non-real count is monotone**: `N_d = #{non-real roots of R_d(Ξ)}` is nondecreasing in `d` (Rolle on `R_{d+1}' = (d+1)R_d`). With R38, `N_d` is nondecreasing and `o(d)` | `NonRealRootCount.card_nonreal_roots_le_succ` |
 | R40 | **The real roots of `R_d(Ξ)` follow the Cauchy law, unconditionally**: for `Im w > 0`, `(1/d)Σ_{y real} 1/(w − y) → 1/(w + i)`, over the real rescaled roots `y = x/ℓ_d`. For `σ ≥ 1/2` the same limit holds for the rescaled roots outside a disc around `iθ` containing `w`. Mechanism: reflect the roots inside the disc and divide by `(z+i)^d`; the quotient has no zero, `|Q_d| ≤ e^{o(d)}` by the maximum principle and `|Q_d(iθ)| ≥ e^{−o(d)}` by R35, so Borel–Carathéodory and Cauchy's estimate make `(1/d)Q_d'/Q_d → 0` | `RealRootsCauchyLaw.tendsto_exterior_transform`, `tendsto_real_jensenCauchy` |
 | R41 | **R38 for every hyperbolic kernel, and the bulk is blind**: R38 holds for every continuous even `g` with `0 ≤ g ≤ Φ` and `g(v) ≥ exp(−Ae^{2v})` for large `v`, in particular for `g = Φe^{−τv²}`. So for every `τ > 0`, `H_{−τ}` has non-real zeros (Newman), yet the number `N_d` of non-real roots of `R_d(H_{−τ})` satisfies `N_d/d → 0` and `N_d → ∞`. Hence "almost all Jensen roots are real" cannot imply RH, and no argument using only the size and positivity of the kernel can | `KernelJensenRoots.HyperbolicKernel.eventually_exists_real_roots`, `tendsto_card_nonreal_roots_div`, `BulkBlindness.bulk_blind_riemannHeat_neg` |
+| R42 | **The half transform is not a Hermite–Biehler half**: `K(w) = ∫₀^∞Φ e^{wu}du`, with `Ξ(u) = K(iu) + K(−iu)`, has infinitely many zeros, all in `Re w > 0`. So for every `M` and large `d`, `E_d` has at least `M` roots in `Im > 0`: the splitting `R_d(Ξ) = 2 Re E_d` is not Hermite–Biehler. Mechanism: finitely many zeros would make `K` of exponential type on the real axis by the order-one Hadamard factorization, while `K(σ) + K(−σ) = ξ(1/2 + σ)` is superexponential | `HalfTransformInstability.thetaHalfLaplace_zeros_infinite`, `re_pos_of_thetaHalfLaplace_eq_zero`, `eventually_le_card_upper_roots_halfJensen` |
 | R13 | **The degree-three test is vacuous**: on centered cubics `⊞₃` adds `(s,t)`, and every real-rooted centered cubic (`|t| ≤ s^{3/2}`) is a `⊞₃`-product of two double-root (capacity-zero, semicircle-free) cubics | `CubicFirstTest.exists_doubleRoot_factorization` |
 
 ## No-go closure for the naive route (source-faithful real-rooted pieces)
@@ -138,8 +139,6 @@ sign, a square-root count or a collision exclusion.
   two conjugate saddles for `|x| ≪ √d log d`, with phase rate `Re w*(x) ≈ dℓ/(x² + ℓ²)`, hence
   `N_d ≲ d^{1/2+ε}`, sharp for `H_{−τ}`. Past that height the roots are the zeros of `Ξ` up to `√d/log d`, so
   real-rootedness of `R_d(Ξ)` should be RH up to about that height.
-- **The half transform.** `K(w) = ∫₀^∞ Φ e^{wu}` has no zero in `Re w ≤ 0` (corpus), and growth forces infinitely
-  many zeros in `Re w > 0`; so `Ξ = K(iu) + K(−iu)` is not a Hermite–Biehler splitting, and `E_d` is unstable.
 - Other completed L-functions: R30 gives the forward direction for any genus-one entire function;
   the converse (Hurwitz, R25) is general too — instantiate for completed Dirichlet L-functions once
   their order-one bounds are in the corpus.
@@ -149,4 +148,4 @@ sign, a square-root count or a collision exclusion.
 
 ## Log
 - 2026-11-04 — created
-- 2026-11-05 — D1–D5, R1–R41 formalized
+- 2026-11-05 — D1–D5, R1–R42 formalized

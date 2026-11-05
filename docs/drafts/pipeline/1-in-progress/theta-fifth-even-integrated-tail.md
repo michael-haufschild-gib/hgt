@@ -51,8 +51,8 @@ Remaining finite pairs are `(1,4)`, `(2,3)`, `(2,4)`, `(3,4)`, with
 relative rates `15,11,18,23`. Their radial polynomials have degree at most
 18. The proposed allocation gives each pair `E(q)c(q)A/8`; together with
 the proved remainder bound this consumes exactly the cubic reserve.
-Their uniform matrix certificates and the complete-source assembly remain
-unproved.
+All 92 fixed coefficient matrices have exact Lean positivity certificates.
+The uniform ray comparisons and complete-source assembly remain unproved.
 
 A smaller allocation is excluded: at `q=3`, the lower-gamma `(1,3)` model
 paid by half the cubic reserve has negative fourth principal minor. This

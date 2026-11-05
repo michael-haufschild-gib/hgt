@@ -25,7 +25,13 @@ theorem norm_reflect_sub_reflect (p q : ℂ) : ‖reflect p - reflect q‖ = ‖
 /-- The FE partner lies at twice the depth. -/
 theorem norm_reflect_sub_eq_twice_depth (p : ℂ) : ‖reflect p - p‖ = 2 * |depth p| := by
   have he : reflect p - p = ((-2 * depth p : ℝ) : ℂ) := by
-    apply Complex.ext <;> (simp [reflect, depth]; ring)
+    apply Complex.ext
+    · simp only [reflect, depth, Complex.sub_re, Complex.one_re, Complex.conj_re,
+        Complex.ofReal_re]
+      ring
+    · simp only [reflect, Complex.sub_im, Complex.one_im, Complex.conj_im,
+        Complex.ofReal_im]
+      ring
   rw [he, Complex.norm_real, Real.norm_eq_abs, abs_mul]
   norm_num
 

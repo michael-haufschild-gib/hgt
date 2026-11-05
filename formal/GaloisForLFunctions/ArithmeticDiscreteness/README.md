@@ -14,6 +14,8 @@ forcing collide-or-repel. Card: `docs/drafts/pipeline/1-in-progress/ado-arithmet
 | Integrality does not produce purity: impure integral configurations exist in every degree | `ImpurityIsQuantized` | `exists_impure_integral` |
 | Power sums bounded at `N` consecutive orders past `M₀` certify integral purity; real configurations are never certified at finitely many orders; impure integral configurations have a zero at depth `> log(1+κ)/log q` | `FinitelyManyOrdersCertifyIntegralPurity` | `isPureTrace_of_bounded_powerSums`, `eventually_isPureTrace_of_bounded_powerSums`, `not_certified_at_finitely_many_orders`, `exists_deep_eigenvalue_of_not_pure` |
 
+| The certificate length must grow: `X − (⌊2√q⌋+1)` is impure but its power sums stay `≤ 2e·q^{ν/2}` for all `9ν⁴ ≤ q` | `TheCertificateLengthGrowsWithQ` | `quarter_power_mimic` |
+
 ## Paths
 
 | Statement | Module | Theorem |
