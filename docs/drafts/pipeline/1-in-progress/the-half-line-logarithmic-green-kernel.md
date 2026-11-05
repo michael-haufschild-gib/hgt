@@ -98,7 +98,19 @@ of `u` preserves bounded interior forcing. The fixed shift avoids an unbounded
 inverse and a vanishing-regularization limit for the source equation.
 Support preservation on the full actual multiplier graph domain is
 [formalized](../3-formalized/the-logarithmic-factor-preserves-half-line-support.md).
-Actual convolution-multiplier identification and form-domain equality remain open.
+The literal density has [Fourier transform](../3-formalized/the-logarithmic-causal-kernel-has-its-fourier-multiplier.md)
+`v̂(ξ)=κ(2πiξ)⁻¹` at every frequency, including zero.
+Identification of its half-line operator range with the form domain remains open.
+
+## Boundary readout
+
+For bounded forcing, `h=W*f` is continuous by L¹ translation continuity of `v`.
+The identity `u(x)=∫₀ˣv(x-s)h(s)ds` then gives `u(x)/V(x)→h(0)` directly.
+For forcing bounded only near the selected boundary, split off its remote L²
+part. Positivity, monotonicity and unit mass put `v` in L² away from zero;
+L² translation continuity handles that remote contribution. These trace
+statements remain to be formalized. The Green kernel is needed only off its
+potentially singular diagonal.
 
 ## Normalization and remaining obligations
 

@@ -1,13 +1,14 @@
 # Obstacles summary — status quo
 
 Companion to `route-obstacles.md` (per route; labels `A*`, `B*`, `S*`, mechanism classes P1–P5),
-`walls-ledger.md` (Σ/Π/Γ) and `route-unification-ledger.md` (classes C1–C30). Corpus state: `bdfa1ea5be`
+`walls-ledger.md` (Σ/Π/Γ) and `route-unification-ledger.md` (classes C1–C30). Corpus state: `1e8010c5b4`
 plus working tree. Evidence: `[L]` committed Lean; `[W]` working-tree Lean; `[P]` pipeline-card paper proof;
 `[D]` derived here from Lean statements; `[N]` numerical. Windows `[−c, c]` or half-windows `[−c, 0]`;
 `w_n = Λ(n)n^{−1/2}`; `H` the archimedean–polar form (prime weights `0`), `P` the arithmetic part, `W = H − P`;
 `𝒥` the Lévy energy; `𝒞_m(f) = 𝓗_m(f) − Σ_n w_n(f⋆f)(2m − log n)`; `a*(ζ)` the onset aperture;
 `ℋ(c) = {t : H − tP ≥ 0 on [−c, c]}` the arithmetic Hardy interval; `L_T = ½log(T/2π)`;
-`a₁ = successorWeilFloorAperture ∈ (0.362, 0.3621)`; `log ρ ≈ 0.2812` (plastic number).
+`a₁ = successorWeilFloorAperture ∈ (0.362, 0.3621)`; `a_∞` the limit of the strictly increasing tower of floor
+apertures starting at `a₁`; `log ρ ≈ 0.2812` (plastic number).
 
 ## 1. The big picture
 
@@ -18,14 +19,20 @@ the pole kept, `H ≥ P` on every window. Two halves of "optimal Hardy term" hol
 is the only multiple admissible on every window (scaling optimality, by uniqueness of the Weil cone), and no
 Hardy weight survives on odd tests (criticality) [L]. The third half — admissibility on every window — is RH.
 `ℋ(c)` is a closed interval, the whole line before the first prime, bounded after it [L]. Known:
-`a*(ζ) ≥ a₁`, with `a₁ − 181/500` positive and below `5×10⁻⁷` [L].
+`a*(ζ) ≥ a_∞`: floors `(1/20000)/2^k` hold on an infinite strictly increasing tower of apertures starting at `a₁`,
+`a₁ − 181/500` positive and below `5×10⁻⁷`; the tower steps shrink like `e^{−C·2^k}`, so `a_∞` is finite and its
+value is not identified [L/D].
 
 ### 1.2 The certificate format is exact on every window
 On every reflection pair `W(f) − |𝒞_m(f)| = ½min(W(G₊), W(G₋))`, the coupling truncating to `2 ≤ n ≤ e^{2c}`
 [L: SWC]. The even sector is represented exactly by a window-adapted, line-exact signed theta gauge with zero
 pole charge (`2V ≤ J_{M⁺}`), the odd sector by a shifted ground state; nonnegativity of both on every window ⇔ RH
-[L]. A window-independent nonsingular even gauge cannot carry nonnegative pole charge [L]. What is open is the
-inequality the format states, not the format.
+[L]. A window-independent nonsingular even gauge cannot carry nonnegative pole charge [L]. The gauge freedom acts
+only in the pole direction: on the pole-neutral hyperplane every neutral gauge represents the even sector by the
+raw form `archForm − primeSum`, whatever its pocket position, and receding pockets conserve the ground-state
+outside deficit through the exterior jumps [L]. Below `log 5` the window is an exact three-power problem: the
+`{2,3,4}` sliver band, with only `n = 2` acting in the half-window diagonal [L]. What is open is the inequality
+the format states, not the format.
 
 ### 1.3 Frustration cannot be switched away
 The even kernel `ω(|u−v|) + ω(−u−v) − 4cosh(u/2)cosh(v/2)` is Markov exactly for `c ≤ log ρ`; past it the even
@@ -39,9 +46,10 @@ pay: the constant potential, the pole square (odd), the prime reflections (both)
 
 ### 1.4 Size payment is finite; beyond it only sign
 The summed edge law `|P_μ(f)| ≤ E_c(μ)𝒥(f)` certifies by size until `E_c = 1`; for ζ the unique crossing is
-`c* ∈ (½log 5, ½log 6]` [L]. Size dies earlier: `H` itself is negative on a window of half-width `≤ 21/40` (the
+`c* ∈ (½log 5, ½log 6]` [L]. Size dies before that: `H` itself is negative on a window of half-width `≤ 21/40` (the
 weight `w₂ = 0` is inadmissible there), and beyond a finite window one real test makes the prime part strictly
-negative for the whole calibration space [L]. Each entering weight is confined two-sidedly with sharp logarithmic
+negative for the whole calibration space [L]. Below `log 5` the reflected kicks of `2, 3, 4` together use less
+than `0.991` of the Lévy energy [L]. Each entering weight is confined two-sidedly with sharp logarithmic
 constants (outer `1`, inner `η/2`), and beyond the sliver both bounds are bounded [L]. The primes pay by sign.
 
 ### 1.5 Finite matrices end before `log 6`
@@ -55,7 +63,10 @@ through `log(81/16)`; positive Tate dimensions form `[0, κ(A)]` with `κ(A) →
 Before contact every window carries a complete Weil Hilbert space realized by entire functions, a de Branges
 space with an explicit Hermite–Biehler function, unitary zero-moving, antiunitary conjugation and isometric
 inclusions; the Weil symbol is `1 + ½log(1 + ξ²)` minus a bounded convolution, and evaluation vectors are bounded
-solutions of a logarithmic Dirichlet equation [L: CSTW]. Either RH, or at `a*` a fixed evaluation kernel
+solutions of a logarithmic Dirichlet equation [L: CSTW]. The symbol factors through a logarithmic Poisson factor:
+holomorphic on the slit plane, one simple negative zero, half-line support preserved, its reciprocal the Stieltjes
+transform of a positive measure, its causal kernel a positive probability density with normalized renewal mass
+[L] — a Wiener–Hopf factorization of the archimedean part [D]. Either RH, or at `a*` a fixed evaluation kernel
 diverges monotonically while the contact window stays positive [L]. RH ⇔ the chain never reaches contact [D].
 The Hamiltonian of the chain is not constructed.
 
@@ -75,13 +86,16 @@ for any `t > 0` (unboundedly many non-real roots, robust to Bernoulli shifts), w
 Jensen polynomials are asymptotically semicircular [L: FFP]. Normalized Euler factors are Hermite–Biehler stable
 with forced drift `θ_S/2`; the ζ side, the Gamma side and pole pieces are unstable for every phase; the
 source-faithful Γ ⊠ Θ split never certifies (Θ never real-rooted) [L]. RH ⇔ Möbius-mollified Jensen polynomials
-stable at infinitely many degrees, a receiver whose converse does not use the mollifier [L/D].
+stable at infinitely many degrees ⇔ their roots have bounded imaginary parts along infinitely many degrees;
+off RH the imaginary parts grow linearly (`κd`) [L]. Every zero-free half-plane `Re s > σ` is equivalent to
+stability of the Jensen polynomials of `ξ(σ + i·)` (strict and unconditional for `σ ≥ 1`), and `R_d(Ξ)` has
+unboundedly many real roots (finite free Hardy theorem) [L]. These are receivers.
 
 ### 1.9 Every route is a face of the same sign
 Exact identifications [L]: the reflection-pair prime-count band ⇔ Weil-lag ⇔ JAS ⇔ CTF ⇔ PBM ⇔ eventual Robin
 (SWC); Suzuki first variation = complete Weil energy (SZ); the Cayley ladder = Toeplitz ladder of paired Li
 coefficients, RH ⇔ every ladder NSD on primitive vectors ⇔ entrywise `≥ 0`, Hodge index = Metzler sign (ALG
-[W]); inner-cap flux = off-line generating function (WD); single-prime stage transport ⇔ RH (HF); two real
+[W]); inner-cap flux = off-line generating function (WD); single-prime stage transport ⇔ RH and Dirichlet-shift head stabilization for every `d` ⇔ RH (HF); two real
 parameters `(γ, v)` decide the line (SRT); any nonnegative representation of the Mayer defect ⇔ RH (PM).
 
 ### 1.10 PM's second expression has the same sign
@@ -93,8 +107,10 @@ coordinate systems.
 ### 1.11 Visibility and the vacuity of short windows
 `k·pairEnergy(δ,a) ≤ L` in lattice backgrounds, also for distinct clusters near one ordinate; unshielded clusters
 excluded to doubly-exponential height; tapered crystals hide depth `1/a` above `e^{ca}`; doubly-exponential
-non-locality [L: WVL]. For ζ the laws require positivity, known only to `a₁ ≈ 0.362`, where they are vacuous;
-zero information starts at half-width `4` and, with present constants, `≈ 20` [D].
+non-locality [L: WVL]. For ζ the laws require positivity, known only to `a_∞` (≈ 0.362), where they are vacuous;
+zero information starts at half-width `4` and, with present constants, `≈ 20` [D]. The effective form: positivity
+at level `a` confines every zero with `|γ| ≥ 102` to `|β − ½| < 10⁶exp(−a/(480000 log(|γ|+3)))`, from the
+unconditional local count `N(t, t+1] ≤ 240 log(|t|+3)` [L].
 
 ### 1.12 Criticality everywhere
 Every exact reading sits on a zero-slack boundary: Weil cone a point; only the multiple `1` admissible; no Hardy
@@ -111,14 +127,16 @@ defect zero only at `σ = ¼`; numerical margins `10⁻⁴`–`10⁻⁸` [L/N]. 
 | Size-only payment of the primes | dies before `21/40` (`H < 0`); edge law at `c* ∈ (½log5, ½log6]` | FADF, SWC [L] |
 | Certificates without pole variance; window-independent even gauges | refuted | SWC [L] |
 | Point-value certificates | Weil's form reads no point values | FADF [L] |
-| Uncoupled stage loans; twisted repair of untwisted modes | refuted at `21/20`; refuted above an explicit critical multiple | AHD [L] |
+| Uncoupled stage loans; orthogonal twisted repair of untwisted modes | refuted at `21/20`; `O(1/K)`, refuted above an explicit critical multiple | AHD [L] |
+| Non-orthogonal (Dirichlet-shift) repair of long windows | cancels every tail; leaves the head window `R₁(log d)` | AHD [L] |
+| Gauge optimization off the pole direction | the representation is gauge-independent on the pole-neutral hyperplane | SWC [L] |
 | Finite-template reduction at spread 6 | infinite Hecke orbit | WTZ [L] |
 | Source-faithful finite free split; Dirichlet, ζ-side, Gamma, pole pieces | never real-rooted / unstable | FFP [L] |
 | Degree-3 semicircle-free test | every real-rooted cubic passes | FFP [L] |
 | Nonnegative multiple of PM norms as the defect | refuted on critical resonances | RIT [L] |
 | Counts / Tate / Hodge index from counts | closed [D] | S3 |
 | Height-local decision; universal density thresholds; domination as selector; size-only heat repair | refuted | WVL, ZCG [L] |
-| Fixed / untruncated quartic theta cross-loads | fail at scales 8, 32 | TCS [L] |
+| Fixed / untruncated / truncated quartic theta cross-loads | fail at scales 6 and 8 / 32 / 6 | TCS [L] |
 
 ### 1.14 The live mechanism classes
 | Class | Statement | First open test | Status |
@@ -135,7 +153,7 @@ defect zero only at `σ = ¼`; numerical margins `10⁻⁴`–`10⁻⁸` [L/N]. 
 |---|---|---|---|
 | A1 | Explicit constants and horizons (`K₀`, eighth-root theorem, `1/9`, logarithmic profile, Beurling schedule, `M(N) = o(c_N)`) | HF, SRT, AIP, ACS, SC | effectivization of proved limits |
 | A2 | General profiles past `θ = 1/1080` | HF, SRT, SC | tilted-spline template |
-| A3 | Joint twist families; equal-parity characters; different moduli | HF, SRT, AHD | single-family proofs are templates |
+| A3 | Joint twist families across different moduli | HF, SRT, AHD | parity grading and `L`-value coupling within one modulus proved |
 | A4 | Certified ratio interval at its size-only optimum; receiving complement inside it | HF, AIP, SRT, CSAR | assembly of proved estimates (difficulty unverified) |
 | A5 | Rigorous computer-assisted certificate of the two-weight membership on `(0.3621, log 2)`, odd unit window first | RW, OWU, EWU, ACT, SWC, HF | operator inequality with explicit kernels; margins `2×10⁻⁴` (odd unit), `1.5×10⁻⁵`, `5.6×10⁻⁸` [N]; decides cases, not the mechanism; no zero information |
 | A6 | Exact Tate horizons of the remaining stages below spread `6` | WTZ, CWS | finite templates exist there |
@@ -145,7 +163,7 @@ defect zero only at `σ = ¼`; numerical margins `10⁻⁴`–`10⁻⁸` [L/N]. 
 | A13 | Widths of the finite-level cones `𝒜(c)` | PBAP, ACS, RW, FADF | convex finite programs; entry bounds proved [N] |
 | A14 | PM classical identifications; mixed-parameter completion; Mayer transfer compatibility; boundary carrier; rational Weyl identification | PM, W1C | known theories |
 | A15 | Operator-native nonvanishing on `Re w = 1` | PM | Eisenstein template (risk: reduces to the Euler product) |
-| A17 | Theta fifth even section on `π ≤ q < 7` with an entry-preserving compensation; then rank 9 | TH | compact finite-dimensional sign with exact capacities (difficulty unverified) |
+| A17 | Theta fifth even section on `π ≤ q < 7` with an entry-preserving compensation other than the quartic (which fails at scale 6); then rank 9 | TH | compact finite-dimensional sign with exact capacities (difficulty unverified) |
 | A18 | Hausdorff shifts, Jensen horizons, two-grid degrees, PF beyond 37 | PA, LA, HCF | effectivization |
 | A19 | Certificates on the nine anti-diagonals `{2,3,4,5,7,8,9,11,13}` where the pole pays nowhere | ACT | finite case analysis |
 | A20 | Mixed Schur debit; first-prime/coarse/polar costs | AIP, CHMD | fixed-dimensional estimates |
@@ -153,13 +171,11 @@ defect zero only at `σ = ¼`; numerical margins `10⁻⁴`–`10⁻⁸` [L/N]. 
 | A23 | Depth law, star horizons, gcd strata | HF, ACS | effectivization |
 | A24 | Census items; Voronoi; Zwegers | census, ACS, HF | classical |
 | A25 | Künneth primitive `h¹` at small degree; mixed jets | ACS, WL | calibration |
-| A27 | Cluster-detector constant | SRT, WD | constants |
 | A28 | Atomic-lattice bound `λ_max ≤ ½log N` | WTZ, HF | classical |
 | A31 | Selberg-class degree-one classification | ACS, SEL | known theorem |
 | A33 | Lévy sector margins at `c = ½log 3` | RW, OWU, EWU, SWC | numerical |
-| A35 | Sharpen the general RvM coherent-cluster constants toward `4δL/k` | WVL, every P1 route | explicit test functions in place |
+| A35 | Sharpen the explicit constants (`2²⁶·960`; detector `480000`, `10⁶`, count `240`) toward `4δL/k` | WVL, every P1 route | explicit test functions and counts in place |
 | A36 | Remaining onset-law items (general shallow depth-mass bound under positivity; tapered crystal to `a ≍ log T`; interferometer) | WVL | paper items |
-| A37 | Simultaneous receiving with growing mode sets and growing `M` | AIP, HF, CSAR | fixed finite case proved (difficulty unverified) |
 | A38 | Sub-Weyl strip profile from the best exponent pairs (horizon toward `½`) | LA, ZCG | known subconvexity; decides nothing about zeros |
 | A39 | Krein extension for Weil's distribution on intervals (positivity at `a` ⇔ a positive measure on ℝ with the same image) and discrete mimics from de Branges sampling in the CSTW chain | RW, ZCG, WVL | classical Krein / de Branges theory on a corpus-built chain |
 | A40 | Camera with real weights and Beurling–Selberg transfer of local counts to mimics | ZCG, SRT | the moment readout is linear in the weights |
@@ -176,6 +192,7 @@ defect zero only at `σ = ¼`; numerical margins `10⁻⁴`–`10⁻⁸` [L/N]. 
 | B3 | The two-sector signed certificate inequalities on every window (`2V ≤ J_{M⁺}`; odd shifted-ground-state form) | RH; fixed length sub | P1 routes |
 | B4 | Odd unit window (`w₂ ∈ unitBandWeights`) by a structural certificate | sub | OWU, RW, TT, SWC |
 | B5 | Below `log 4` (`a*(ζ) ≥ log 2`), the prime `3` paid by sign | sub | RW, OWU, EWU, ACT, TT, SWC, HF, ACS |
+| B56 | Below `log 5` (`a*(ζ) ≥ ½log 5`): the `{2,3,4}` sliver band | sub | same as B5 |
 | B6 | Twisted-sector positivity through all conductors and frequencies | sub | HF, SRT, AIP, AHD |
 | B7 | Full-space sign at critical ratios beyond the size-only threshold | sub per ratio; RH all | HF, SRT, AIP, CSAR |
 | B8 | General profiles past `log log N` on the full space | sub | HF, SRT, AIP, SC |
@@ -188,6 +205,7 @@ defect zero only at `σ = ¼`; numerical margins `10⁻⁴`–`10⁻⁸` [L/N]. 
 | B15 | Scheduled prime energies bounded below (FU, CFC, RP, EGC, FEL) | RH | FU, CFC, RP, EGC, FEL |
 | B16 | Window negativity exponent `< ½` | ≥qRH | window routes, HF, WD |
 | B33 | HF-native sign: a window beyond the base certified by the complete family itself | sub | HF |
+| B55 | Head-window thresholds `R₁(log d) = ⊤` for every `d` (residue of Dirichlet-shift stabilization) | RH | HF, AHD |
 | B49 | Signed ground-state structure past `log ρ` compatible with unswitchable frustration | method | EWU, OWU, RW, ACT, SWC, FADF |
 | B51 | No finite contact of the Weil de Branges chain (≡ regular Hamiltonian at every length) | RH | RW, CSTW, SZ |
 
@@ -246,6 +264,10 @@ defect zero only at `σ = ¼`; numerical margins `10⁻⁴`–`10⁻⁸` [L/N]. 
 | What is WD's inner cap? | the generating function of the off-line zeros | CDG [L] |
 | Are SZ and LI independent of Weil positivity? | no: Suzuki first variation = Weil energy; Cayley ladder = Li coefficients | RHTower, ALG [L/W] |
 | Does HF transport one prime? | single-prime transport for all `A` ⇔ RH; unconditional across `p = 2` at `A₀` | AHD [L] |
+| Can non-orthogonal twists repair untwisted negativity? | Dirichlet shifts couple at `O(1)`, cancel tails, leave the head `R₁(log d)` | AHD [L] |
+| Does gauge optimization help? | only in the pole direction; the pole-neutral hyperplane is gauge-invariant | SWC [L] |
+| How far is the window problem exact and finite? | below `log 5`: the `{2,3,4}` sliver band | SWC [L] |
+| Is the excluded-depth law effective? | yes: `10⁶exp(−a/(480000 log(|γ|+3)))` | SquareRootThreshold [L] |
 
 ## 2.3 Frankenstein routes
 
@@ -258,8 +280,8 @@ global sign into a scalar monotone quantity.
 | Segment | Supplied by | Status |
 |---|---|---|
 | RH ⇔ `1 ∈ ℋ(c)` ∀c ⇔ reflection pairs ⇔ two sectors | WVL, FADF, SWC | [L] |
-| Exact two-sector format on every window | SWC | [L] |
-| Base to `a₁`; floor `1/8000` on reflection pairs to `enlarged` | AIP, SWC | [L] |
+| Exact two-sector format on every window; gauge freedom only in the pole direction | SWC | [L] |
+| Floors to `a_∞` on windows and reflection pairs; exact `{2,3,4}` problem below `log 5` | AIP, SWC | [L] |
 | Perron to `log ρ`; trivial zeros at the centre; entry law | SWC, FADF | [L] |
 | Core: `2V ≤ J_{M⁺}` and the odd ground-state inequality on every window | — | B3; first instances B4, B5 |
 
@@ -272,8 +294,9 @@ B2.
 
 ### F3. The complete-family assembly = the onset aperture
 Subcritical PD + one critical multiple across all entries + threshold law + terminal polar source + receiving
-charges [L]; twisted sectors cannot repair untwisted modes [L]. Certifies exactly what the base certifies.
-Residual: B33, B7, B1.
+charges [L]; orthogonal twists cannot repair untwisted modes [L]; Dirichlet-shift companions cancel every tail and
+reduce each long window to its head `R₁(log d)` (unconditional for `d = 2`) [L]. Certifies exactly what the base
+certifies. Residual: B55 (heads for every `d`), B33, B1.
 
 ### F4. The reflection assembly (P3)
 Krein–Lax–Phillips space + window lift + defect formula in two coordinate systems [L]. Residual: B38; both
@@ -438,7 +461,9 @@ from a source identity that does not reference the zeros.
 **Question.** Prove `R₁(A) = ⊤ ⇒ R₁(A + log 2) = ⊤` for every `A ≥ 0`: at each entry of a power of `2`, the stage
 form plus the signed fold energy pays the entering end mass.
 - **Why it opens the path.** Single-prime transport for all `A` ⇔ RH [L]; it is unconditional across the first
-  step [L]; the induction runs on one prime and one step length.
+  step [L]; the induction runs on one prime and one step length. Equivalently in head form: Dirichlet-shift
+  stabilization for every `d` ⇔ `R₁(log d) = ⊤` ∀d ⇔ RH, unconditional at `d = 2` [L]; a head recursion over
+  divisors would be the same induction in multiplicative form (Field III).
 
 ### 2.6.5 Route ZCG — positivity of the image Hankel ratio
 **Question.** Prove `𝓗 = 4(W₁² − W₀W₂)/W₀² ≥ −B` on every polynomially isolated two-point cluster of ζ, the
@@ -449,65 +474,206 @@ form plus the signed fold energy pays the entering end mass.
 
 ## 2.7 Does closing RH need a new field?
 
-**Assessment: yes, and its first chapter exists: frustrated arithmetic Dirichlet forms (FADF), the theory of
-signed, critical, nonlocal Hardy inequalities with arithmetic jumps on intervals.** The field's eight founding
-questions are answered in exact form in Lean [L: `TheQuestionsOfTheField`]; each answer is either an
-unconditional structure theorem or an exact equivalence with RH. The core is open.
+**Assessment: yes — four fields around one core.** The core is one sign (1.1). The obstacles that block it are of
+four mathematically different kinds, and the corpus shows by theorem that progress in one does not transfer to the
+others: the gauge freedom acts only in the pole direction, so the sign on a window (Field I) is not settled by the
+boundary and gauge structure of the archimedean operator (Field II), which is a separate analytic question; Dirichlet shifts move every long window to its head window, so transport across scales reduces
+to the sign on shorter windows but does not supply it (Field III is not Field I); identification on the zero side
+is complete and sign-free, so the zero side needs its own producer (Field IV). One field would mix four toolsets
+that share objects but not methods.
 
-*What it is about.* Translation-invariant quadratic forms on the line known through their dual side (the primes),
-restricted to every interval: a logarithmic-order archimedean jump form, arithmetic jumps of length `log n` with
-rates `w_n`, a rank-two pole, the trivial-zero Hankel correction. The central object is the Hardy interval `ℋ(c)`
-and the claim that the arithmetic part is an admissible Hardy term on every window.
+| Field | Core question | Open walls | First test | Corpus base |
+|---|---|---|---|---|
+| I. Frustrated critical Hardy theory | `H ≥ P` on a fixed window, in a frame where frustration persists | B3, B4, B5, B56, B49 | odd unit window; `{2,3}` below `log 4`; `{2,3,4}` below `log 5` | FADF, SWC, ACT |
+| II. Boundary theory of the logarithmic archimedean operator | where extremals, gauges and certificates live: edge behaviour, Wiener–Hopf factorization, traces, Hamiltonian | B51, A41; analytic half of B3 | edge asymptotics of the odd unit-window ground state; Hamiltonian of the chain | CSTW, FADF trace theory |
+| III. Arithmetic multiscale transport | how positivity moves across lengths, prime entries and resolution scales | B2, B33, B55, B7 | stage 2 and the prime-3 entry (2.5.4); a head recursion `R₁(log 4)` from `R₁(log 2)` | AHD, GWZ, CSTW, WTZ |
+| IV. Reality by deformation: arithmetic stability and discreteness | zero-side producers: stability preservers, collide-or-repel | B14, B44, B52, B53, B54 | collide-or-repel for ζ (B54) | ZCG, FFP, RHTower DeBruijn |
 
-*What it is like.* Critical (unique admissible multiple, no Hardy weight, doubly-exponentially small margins);
-frustrated (unbalanced in every sign gauge past `log ρ` and `½log 2`); trace-free (no point values, only
-`Ω`-weighted edge masses); canonical-system valued (a de Branges chain until contact); moment-theoretic (sectors
-are Hamburger/Stieltjes problems); Krein-flavoured (the pole one negative square); finitely reducible only below
-spread 6 (rational Hecke graphs); exact in output (every theorem a lower bound for `a*(ζ)`, converted into zero
-location by the visibility law and the camera).
+**The pasted assessment.** The statement that every route converges on nonlocal arithmetic criticality with
+boundary-singular, growing-aperture coupling agrees with 1.1–1.12. Its two deepening directions exist in Lean, and
+each reduces to the window sign on a smaller object:
+- *Collective sliver cancellation in window-adapted signed gauges with controlled boundary singularities* (2.6.1
+  direction): the window-adapted neutral gauge family is exact on every window, but its freedom acts only in the
+  pole direction — on the pole-neutral hyperplane every neutral gauge reads the raw form `archForm − primeSum`
+  whatever its pocket position — and pockets sent to infinity conserve the ground-state outside deficit through
+  the exterior jumps [L: SWC]. What survives is the raw form on a codimension-one hyperplane plus one pole
+  coordinate: Field I for the sign, Field II for the boundary singularities.
+- *Multiscale non-orthogonal coupling of untwisted and prime-twisted modes along critical schedules* (2.6.4
+  direction): Dirichlet-shift companions `1_{d|n}g₀(log(n/N) + log d)/√n` couple at `O(1)` where orthogonal twists
+  couple at `O(1/K)`, and annihilate every tail mode; the obstruction is the head window, `R₁(log d) = ⊤`;
+  stabilization for every `d` ⇔ RH; `d = 2` unconditional [L: AHD]. What survives is the sign on head windows:
+  Field III for the recursion between heads, Field I for each head.
+
+### 2.7.1 Field I — Frustrated critical Hardy theory
+
+*What it is about.* Signed nonlocal quadratic forms on intervals, `W = H − P`: a logarithmic-order archimedean jump
+form with the pole kept, arithmetic jumps of length `log n` and rate `w_n`, the trivial-zero Hankel correction; the
+claim `1 ∈ ℋ(c)` on every window. Its arithmetic instance is Weil's form; its first chapter is FADF.
+
+*What it is like.* Critical (one admissible multiple, no Hardy weight, margins doubly-exponentially small);
+frustrated in every sign gauge past `log ρ` (even) and `½log 2` (odd); exact in format (two-sector signed
+certificate on every window, gauge freedom only at the pole); finite below `log 5` (an exact `{2,3,4}` problem) and
+reducible to finite rational Hecke matrices below spread 6 for correlation forms; moment-theoretic (sectors are
+Hamburger/Stieltjes problems).
 
 *Criteria it must meet.*
-1. Reproduce `log ρ`, the base `a₁`, the stages below `log 4` and their margins `10⁻⁴`–`10⁻⁸`.
+1. Reproduce `log ρ`, `½log 2`, the floors to `a_∞`, the first stages and their margins `10⁻⁴`–`10⁻⁸`.
 2. Pay the pole square (odd) and the cosh deficit (even) with retained variance; the trivial zeros at the centre.
-3. Be critical: one admissible multiple, no Hardy weight, margins tending to zero.
-4. Deliver the band on every reflection pair (two sites decide; two real parameters decide).
-5. Work in a frame where frustration is not switched away: positivity of unbalanced signed forms.
-6. Pay the primes by sign beyond `21/40`, and collectively beyond `c* ∈ (½log5, ½log6]`.
-7. Survive the end of finite templates at spread 6 (infinite Hecke orbits).
-8. Distinguish ζ from every finite real carrier, from Lindelöf-bounded pair models, from Euler twins, flips,
-   Beurling systems and `ζ(s)ζ(s−ε)`; use the functional equation and the Euler product together, the Euler
-   product inside the strip.
-9. Explain the square-root aperture `λ = ½` as the reading aperture of the camera and the Krein–camera height law.
+3. Be critical; deliver the band on every reflection pair.
+4. Work on the pole-neutral hyperplane, where no gauge choice helps, and on the pole direction separately.
+5. Pay the primes by sign beyond `21/40`, collectively beyond `c* ∈ (½log5, ½log6]`.
+6. Distinguish ζ from finite carriers, twins, flips, Beurling systems and `ζ(s)ζ(s−ε)`.
 
 *Questions it must answer.*
-- What replaces the Allegretto–Piepenbrink theorem (positivity ⇔ a positive supersolution) for forms that are
-  frustrated in every sign gauge?
-- Is there a signed ground state whose nodal set is forced (pole: edge versus centre; primes: sliver
-  anti-diagonals), such that positivity reduces to a balanced (Kron-reduced) form on its nodal domains?
-- How does the Hamiltonian of the Weil canonical system jump at the lengths `log n`, and what keeps it regular?
-- What is the collective law of all acting sliver reflections against the pole square when finite templates no
-  longer exist?
-- Is there a discrete (integral) structure on near-coincidences of ζ, giving collide-or-repel?
-- Which optimal Hardy weights does the archimedean logarithmic operator with the pole admit, constructively?
+- What replaces the Allegretto–Piepenbrink theorem (positivity ⇔ positive supersolution) for forms frustrated in
+  every sign gauge?
+- Is there a signed ground state with a forced nodal set (pole: edge versus centre; primes: sliver
+  anti-diagonals) whose Kron reduction to its nodal domains is balanced?
+- On the pole-neutral hyperplane, which identity writes `archForm − primeSum` as a sum of nonnegative terms below
+  `log 5`, and what is the collective sliver law beyond it?
+- Is the arithmetic part an optimal Hardy weight in the constructive sense of criticality theory, with an explicit
+  ground state in the energy completion?
 
 *Tools.* Criticality theory and optimal Hardy weights for nonlocal operators; signed-graph theory (switching,
-frustration index, Kron reduction); Krein and Pontryagin spaces; Krein strings, de Branges chains, inverse spectral
-theory; Szegő–Levinson theory; Hamburger/Stieltjes moment theory; finite free convolution and stability
-preservers; Beurling–Malliavin completeness; rational Hecke graphs and Følner averaging; the corpus's pole-charged
-representation, Hardy intervals, calibration spaces, entry laws, onset-aperture calculus and camera.
+frustration index, Kron reduction); Hamburger/Stieltjes moment theory; rational Hecke graphs and Følner averaging;
+the corpus's pole-charged calculus, Hardy intervals, calibration spaces, entry laws.
 
-*Objects and language.* Hardy intervals, calibration spaces, stage fibres, signed theta gauges and their neutral
-parameter, shifted ground states, charge variances, mirror masses, edge killing, sliver signatures, outward-edge
-ratios, Lévy tails `Ω`, rational Hecke graphs and templates, de Branges chains, contact, evaluation kernels,
-squared-gap Hankel ratios, onset apertures, pair energies.
+*Objects and language.* Hardy intervals, calibration spaces, stage fibres, sector kernels, neutral signed gauges,
+shifted ground states, pole-neutral hyperplanes, charge variances, mirror masses, sliver signatures.
 
-*Mechanisms it aims to discover.* A ground-state theory for unbalanced critical forms; a margin transport across
-entries that is an identity at zero slack; a Hamiltonian regularity law across `log n`; a collective sliver law
-beyond finite templates; a discreteness law at near-coincidences.
+*Mechanisms it aims to discover.* A ground-state theory for unbalanced critical forms; a signed collective sliver
+identity on the pole-neutral hyperplane.
 
-*Outside the field.* Counts and Hodge index; Markov, Perron and switched-balance certificates past their
-thresholds; size-only payment; point-value certificates; finite templates past spread 6; source-faithful finite
-free splits; PM line selectors; identification without sign.
+### 2.7.2 Field II — Boundary theory of the logarithmic archimedean operator
+
+*What it is about.* The operator `1 + ½log(1 − D²)` — the archimedean part of Weil's form up to a bounded
+convolution — on intervals and half-lines, with arithmetic jumps acting as boundary data: its Wiener–Hopf
+factorization, the boundary behaviour of extremals and Riesz vectors, its trace spaces, the singular gauges that
+realize the pole charge, and the Hamiltonian of the de Branges chain it generates.
+
+*Why a separate field.* Every certificate lives at the edge: extremals are edge-singular, the form reads no point
+values, edge masses enter through `Ω(δ) ∼ ½log(1/δ)`, every prime reflection is an edge datum, and the entry law
+has sharp logarithmic constants `1` and `½` [L]. The causal factorization is in place: the logarithmic Poisson
+factor `κ(s) ∼ √log s` has one simple negative zero, preserves half-line support, its reciprocal is the Stieltjes
+transform of a positive measure, and its causal kernel is a positive probability density with normalized renewal
+mass [L: CSTW]. This is the half-line theory of a logarithmic-order nonlocal operator — a subject of its own,
+independent of the arithmetic sign.
+
+*What it would be like.* Wiener–Hopf and renewal-theoretic (the causal kernel is a probability density: a
+subordinator whose first passages encode the window); logarithmic (boundary scales `√log`, `log(1/δ)`); spectral
+(de Branges chains, Krein strings, contact as a singular endpoint); exact (identities, not estimates).
+
+*Criteria it must meet.*
+1. Explain the edge singularity of extremals and capacities in terms of `κ`.
+2. Express sliver reflections as boundary kicks of the renewal process with explicit sign.
+3. Reproduce the entry-law constants and the regional–edge decomposition `𝒥 = 𝒥_reg + 𝒦`.
+4. Produce the Hamiltonian of the precontact de Branges chain and characterize contact.
+
+*Questions it must answer.*
+- What is the exact boundary behaviour of window extremals and Riesz vectors (the factor `κ(s) ∼ √log s` points to
+  `(log(1/dist))^{−1/2}`-type edge profiles; conjecture [D])?
+- Which edge-singular gauge family carries the pole charge without exterior leakage, given that pocket gauges
+  conserve the outside deficit?
+- Is there a first-passage (renewal) representation of the window form in which prime jumps are boundary kicks and
+  the pole is a killing term?
+- What is the Hamiltonian of the Weil de Branges chain in terms of the Wiener–Hopf factor, and how does it jump at
+  `log n`?
+
+*Tools.* Wiener–Hopf and Krein factorization; renewal theory and subordinators; the logarithmic Laplacian and
+logarithmic Schrödinger operators on bounded domains; Hardy multipliers; de Branges spaces, Krein strings and
+inverse spectral theory; trace theory for nonlocal Dirichlet forms (regional and censored processes).
+
+*Objects and language.* Logarithmic Poisson factor, causal kernel, renewal mass, edge killing, Lévy tails `Ω`,
+regional energy, slivers as boundary data, Riesz vectors, evaluation kernels, contact.
+
+*Mechanisms it aims to discover.* An explicit edge calculus that turns sliver reflections into signed boundary
+terms; the Hamiltonian of the chain and a regularity criterion for it.
+
+### 2.7.3 Field III — Arithmetic multiscale transport
+
+*What it is about.* How positivity moves: across window lengths (stage steps), across prime-power entries (single-
+prime transport), across resolution scales (critical clocks `c⁸ ≍ K log N`), and from long windows to head
+windows (Dirichlet shifts).
+
+*Why a separate field.* The sign on one window does not give the next: transport is an induction at zero slack,
+and criticality forbids margins. The corpus gives the exact residue at each step: the uncoupled stage loan fails at
+`21/20`; orthogonal twists couple at `O(1/K)`; Dirichlet shifts cancel tails and leave the head `R₁(log d)`;
+single-prime transport for all lengths ⇔ RH [L]. A theory of these steps — what is transported and what must be
+paid anew — is a multiscale theory, not a positivity theory.
+
+*What it would be like.* Renormalization-theoretic (maps between scales that keep the cross-correlation);
+multiplicative (Dirichlet convolution of window tests; heads indexed by divisors); recursive (Schur/Levinson
+recursions; Hamiltonian jumps at `log n`); exact at zero slack.
+
+*Criteria it must meet.*
+1. Reproduce the unconditional transport across `p = 2` at `A₀ = 2·enlarged − log 2` and the `d = 2` head.
+2. Reproduce the stage-loan obstruction and the `O(1/K)` decoupling of orthogonal twists.
+3. Give a law relating `R₁(log d)` to `R₁` at proper divisors of `d`.
+4. Carry no margin: transport identities, not inequalities with slack.
+
+*Questions it must answer.*
+- Is there a head recursion: `R₁(log d) = ⊤` from `R₁(log d')`, `d' | d`, via Dirichlet convolution of
+  companions?
+- What is the renormalization map from half-width `a` to `2a` that keeps the reflection-pair cross-correlation?
+- How does positivity cross a prime-power entry when the fold must be paid by sign (stage 2 and the entry of `3`)?
+- Along super-critical schedules (`c⁸/log N → ∞`), which non-orthogonal couplings survive beyond the head?
+
+*Tools.* Renormalization group and multiscale analysis; the window algebra (truncated Dirichlet λ-ring) and
+Dirichlet convolution; canonical systems with jumps; Schur–Levinson recursions; critical-curve asymptotics.
+
+*Objects and language.* Stage forms, fold energies, entering end masses, Dirichlet-shift companions, head windows,
+critical clocks, transport identities.
+
+*Mechanisms it aims to discover.* A head recursion over divisors; a scale-doubling map at zero slack.
+
+### 2.7.4 Field IV — Reality by deformation: arithmetic stability and discreteness
+
+*What it is about.* Zero-side producers of reality that are not quadratic-form signs: stability preservers for
+products of arithmetic pieces (Euler factors, Gamma factors, theta pieces), collide-or-repel at near-coincidences,
+and deformations from pure objects.
+
+*Why a separate field.* Its objects are zeros, polynomials and deformation paths, and its producer — stability or
+discreteness — is not a positivity statement. The corpus completes the zero side as identification (camera to
+`e^{−c log³T}`, squared gaps from three prime-side images) and reproduces criticality in finite free form (Gaussian
+capacity `o(d⁻²)`, Euler drift `θ_S/2`, ζ/Gamma/pole pieces unstable, every zero-free half-plane ⇔ Jensen
+stability) [L]; the missing producer is discreteness (2.4).
+
+*What it would be like.* Algebraic-analytic (stability preservers, Hermite–Biehler theory); Diophantine
+(separation bounds for zero clusters); deformation-theoretic (pure member, continuity, collision exit); finite and
+exact (finite free convolutions, Jensen polynomials).
+
+*Criteria it must meet.*
+1. Explain the Euler drift `θ_S/2` and its sharpness, and the instability of the ζ side, the Gamma side and pole
+   pieces.
+2. Reproduce collide-or-repel over `𝔽_q` and purity by deformation there.
+3. Beat Lindelöf-bounded pair models (size-only repulsion fails below `½/log X`).
+4. Use the Euler product inside the strip.
+
+*Questions it must answer.*
+- Is there a class of operators preserving Hermite–Biehler stability that contains multiplication by normalized
+  Euler factors and the Gamma phase up to its degree horizon, and acts on `Ξ`?
+- Collide or repel for ζ: are distinct zeros at height `T` separated by `≥ T^{−C}` (B54)?
+- Is there a deformation from a pure object to ζ along which near-coincidences carry an integral structure?
+- Does the image Hankel ratio `𝓗` admit a positivity or integrality structure?
+
+*Tools.* Borcea–Brändén stability preservers; finite free probability; Pólya–Schur and Laguerre–Pólya theory;
+Liouville and Diophantine bounds, transcendence measures; heat flow and de Bruijn–Newman theory; the corpus's
+camera.
+
+*Objects and language.* Jensen polynomials, finite free convolutions, Euler drifts, degree horizons, near-coincident
+clusters, image Hankel ratios, heat paths, collisions.
+
+*Mechanisms it aims to discover.* An arithmetic stability preserver; a discreteness law at near-coincidences.
+
+### 2.7.5 How the fields fit
+
+- I and II together settle the first instances (2.8): the sign on the pole-neutral hyperplane (I) and the pole and
+  edge structure (II).
+- III turns exact first instances into uniformity: given an exact step on heads, it supplies all lengths.
+- IV is independent of I–III and is the only field whose producer can bypass the window sign.
+- Outside all four: counts and Hodge index; Markov, Perron and switched-balance certificates past their thresholds;
+  size-only payment; point-value certificates; gauge optimization off the pole; orthogonal twisted repair; finite
+  templates past spread 6; source-faithful finite free splits; PM line selectors; identification without sign.
 
 ## 2.8 The one question
 
@@ -522,7 +688,9 @@ Concretely: on every window `[−c, c]`, `c < log 2`, the neutral signed theta-g
 *What the window contains.* The primes `2` and `3` and nothing else; even frustration by the pole past `log ρ`
 in every sign gauge; odd frustration by the kick of `2` from `½log 2` in every sign gauge; size payment dead
 (`H < 0` by `21/40`); the prime `3` not payable by its collar (`287/500`) and indispensable (`3/5`); the entry of
-`3` at `½log 3` logarithmically soft from both sides with sharp constants; stage loans failing at `21/20`; finite
+`3` at `½log 3` logarithmically soft from both sides with sharp constants; stage loans failing at `21/20`; the gauge
+freedom confined to the pole direction (on the pole-neutral hyperplane the even sector is the raw form
+`archForm − primeSum`); an exact extension to `log 5` with the prime power `4` (the `{2,3,4}` band); finite
 rational Hecke templates available; numerical margins `2×10⁻⁴` (odd unit window), `1.5×10⁻⁵` and `5.6×10⁻⁸`
 (at `½log 3`) [L/N].
 

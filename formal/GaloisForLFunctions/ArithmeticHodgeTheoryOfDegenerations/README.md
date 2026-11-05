@@ -156,6 +156,15 @@ opposite parity are orthogonal and characters of equal parity couple through `L(
 limit of a curve over `𝔽_q`; distinct frequencies are orthogonal, so the horizon layer is graded by
 frequency as it is by conductor.
 
+Spatial windows and periodic twists may vary together. For any fixed finite family of
+mean-zero periodic twists, including nonprincipal characters of different moduli and either
+parity, the complete tilted-spline Gram matrix is eventually positive definite at every
+positive critical multiple **if and only if** the joint functions `gᵢ(y)χᵢ(n)` are linearly
+independent. The normalized form has a uniform positive floor on the full complex coefficient
+space. Periodic cancellation bounds the low-frequency and pole loss by `O(‖v‖²/N²)`;
+one high-frequency window pays the residue-averaged mass. This concerns each fixed finite
+family, without asserting uniformity over all conductors or frequencies.
+
 Where the sign of the second order is controlled, positivity passes to the nearby fibres
 (mechanism B): on every independent family twisted by a nonzero periodic or trigonometric twist
 (any twist with a positive scalar second order), on untwisted
@@ -615,6 +624,7 @@ Stepanov over `ℤ` (AET) and over curves (LST).
 | The window index is at most one below `log 2 + 1/50`: on every independent family of smooth windows of that length the pencil is positive definite on the cosh hyperplane, has at most one negative square, and the complete family eventually has at most one | `eventually_hermNegIndex_horizonGram_le_one`, `eventually_isPosDefOn_coshHyperplane`, `hermNegIndex_pencilGram_le_one`, `pencilGram_isPosDefOn_coshHyperplane`, `hermQuad_weilWindowGram_nonneg_of_cosh` | proved |
 | The scalar inheritance principle: a twist whose every window has the second order `Λ‖H‖²_{−(β+1)}`, `Λ > 0`, inherits the polarization on every independent family; hence every nonzero trigonometric twist with distinct frequency classes does | `twisted_sector_inherits_of_scalar`, `tendsto_twistGram_of_scalar`, `trig_twisted_sector_inherits` | proved |
 | Every periodic twisted sector inherits the polarization: for every nonzero mean-zero periodic twist the Gram limit of an independent twisted family is `Λ_χ A(G)`, `Λ_χ = (βA_φ/(K∫φ²)) S_{β+1}(χ) > 0`, and the complete family is eventually positive definite on it (characters and cosines included) | `periodic_twisted_sector_inherits`, `tendsto_twistGram_periodic` | proved |
+| Joint spatial-periodic families of arbitrary periods inherit a uniform complex coercivity floor at every positive tilted-spline critical multiple; eventual positive definiteness is equivalent to independence of `gᵢ(y)χᵢ(n)`; nonprincipal characters of different moduli and either parity are included | `jointPeriodic_Gram_coercive_at_criticalCurve`, `joint_periodic_windows_eventually_posDef_iff`, `joint_character_windows_inherit_at_every_multiple`, `eventually_jointPeriodic_mass_coercive` | proved |
 | Mechanism B on short windows: the complete family is eventually positive definite on every independent family of horizon windows of length `≤ 3/5`, untwisted or mixed with windows twisted by a nonzero Ramanujan expansion | `short_windows_inherit`, `short_windows_inherit_exact`, `mixed_short_windows_inherit`, `hermQuad_weilWindowGram_nonneg` | proved |
 | Mechanism B on the twisted sector: the complete family is eventually positive definite on every independent family twisted by a nonzero Ramanujan expansion (the count polarizes, nearby fibres inherit) | `twisted_sector_inherits`, `twisted_sector_inherits_exact`, `eventually_hermQuad_pos_of_tendsto`, `tendsto_twistGram` | proved |
 | Twisted windows add no negative squares: mixed Gram matrices → `fromBlocks P_K 0 0 (Λ A(G))`, index `ind₋(P_K)` | `mixed_windowIndex`, `tendsto_mixedGram`, `hermNegIndex_mixedLimitGram` | proved |

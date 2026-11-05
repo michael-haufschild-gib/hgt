@@ -52,10 +52,14 @@ Its base scaling capacity lies strictly between zero and `1000/1251`; the litera
 capacity is `τ/α`, with `20/21 ≤ α ≤ 1`, hence is below `350/417`.
 Both endpoints are singular positive semidefinite matrices.
 Every individual theta atom has a strict fifth even section at reflection scale at least five.
+The literal first-atom fifth even tail is positive definite from scale three;
+its incomplete-gamma remainder adds a strict reserve at every positive scale.
 From scale three, four retained atoms leave normalized Gaussian entry error at most
 `1/100000`, hence quadratic error at most `1/20000`.
 -/
 import GaloisForLFunctions.ThetaCuspSections.FifthEvenLeadingPairReserve
+import GaloisForLFunctions.ThetaCuspSections.FifthEvenFirstAtomTailModel
+import GaloisForLFunctions.ThetaCuspSections.FifthEvenFirstAtomTail
 import GaloisForLFunctions.ThetaCuspSections.FifthEvenThreeAtomRemainder
 import GaloisForLFunctions.ThetaCuspSections.FifthEvenFourAtomRemainder
 import GaloisForLFunctions.ThetaCuspSections.FifthEvenNativeRay

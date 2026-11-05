@@ -122,6 +122,8 @@ The causal mixture `v(x)=R exp(-bx)+∫₁∞ρ(t)exp(-tx)dt`, zero for `x≤0`,
 is positive, continuous and decreasing on the positive half-line. Its Laplace
 transform is exactly `κ(s)⁻¹`, and its full integral is one. Its cumulative
 mass has the exact normalization `V(x)√log(1/x)→1` as `x↓0`.
+Its literal Fourier transform is `v̂(ξ)=κ(2πiξ)⁻¹` at every frequency;
+the continued boundary modulus is `|κ(iy)|²=Ψ(y)`, including zero.
 Multiplication by the actual factor `κ(2πiξ)` preserves positive-half-line
 support whenever its result is in L². Bounded holomorphic regularizers
 `κ(z)/(1+εz)` and strong L² convergence prove this on the full graph domain.

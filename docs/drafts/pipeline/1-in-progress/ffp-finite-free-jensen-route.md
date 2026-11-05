@@ -56,6 +56,8 @@ sign, a square-root count or a collision exclusion.
 | R27 | **Strict stability from closed zero-free half-planes; finite free non-vanishing on `Re s = 1`**: if `ξ ≠ 0` on `Re s ≥ σ`, every root of every `R_d(ξ(σ + i·))`, `d ≥ 1`, has `Im < 0`; **unconditional for `σ ≥ 1`**. Mechanism: multiplication by `1 − βw` acts as `q ↦ q − βq'`; with `Im β < 0` and roots of `q` in `Im ≤ 0`, a new root in `Im ≥ 0` must be a multiple root of `q` (Gauss–Lucas via `q'/q = Σ 1/(x − r)`), so `d` reserved zeros strip the root `0` of `X^d` one multiplicity at a time; the resulting strictly stable factor keeps a fixed margin through Walsh, the Hadamard partial products and the polynomial Hurwitz limit | `ZeroFreeStrictStability.im_neg_of_one_le`, `im_neg_of_closed_zeroFree` |
 | R28 | **Strict half-plane theorem right of the critical line**: for `σ > 1/2`, `ξ ≠ 0` on the **open** half-plane `Re s > σ` ⇔ every root of every `R_d(ξ(σ + i·))`, `d ≥ 1`, has `Im < 0`. A zero on the line `Re s = σ` does not break strictness: its reflection `1 − ρ̄` lies strictly left, so (line conjugation is injective) infinitely many zeros are strictly placed and serve as the reserved factors of R27. At `σ = 1/2` strictness fails under RH (roots real) | `ZeroFreeStrictStability.zeroFree_iff_forall_im_neg`, `im_neg_of_zeroFree`, `infinite_strict_of_weak` |
 | R29 | **Hurwitz stability of the real Jensen polynomials of `ξ`**: `J_d(ξ; σ)(t) = Σ_{k≤d} C(d,k) ξ^{(k)}(σ) t^k` satisfies `R_d(ξ(σ + i·))(i/t) = i^d t^{−d} J_d(ξ; σ)(t)` with `Im(i/t) = Re t/|t|²`. Hence: **for every `σ ≥ 1` and `d ≥ 1` all roots of `J_d(ξ; σ)` have `Re t < 0` (unconditional)**; for `σ > 1/2`, `ξ ≠ 0` on `Re s > σ` ⇔ every `J_d(ξ; σ)` is Hurwitz stable; for every `σ`, weak Hurwitz stability (`Re t ≤ 0`) of all `J_d(ξ; σ)` forces the zero-free half-plane | `RealJensenHurwitzStability.re_neg_of_isRoot_xiRealJensen_of_one_le`, `zeroFree_iff_xiRealJensen_hurwitz`, `zeroFree_of_forall_re_nonpos` |
+| R30 | **Finite free Hermite–Biehler theorem for genus-one products**: for any family `z_i ≠ 0` with `Σ 1/|z_i|² < ∞`, `Im z_i ≥ 0`, summable `Im(1/z_i)` and drift `Im a + Σ Im(1/z_i) ≥ 0`, every reversed Jensen polynomial of `e^{aw}Π E₁(w/z_i)` has roots in `Im ≤ 0` (countability of the index follows from square-summability). Corollary for every entire `f` of order ≤ 1 via the corpus Hadamard factorization `f = e^{az+b}Π E₁(z/z_q)`. Finite free form of the Pólya–Levin class; R26 is the shifted case of `Ξ` | `FiniteFreePolyaClass.im_le_zero_of_isRoot_jensenRev_polya`, `im_le_zero_of_isRoot_jensenRev_genusOne` |
+| R31 | **Canonical zero-piece realization (the route in zero form)**: unconditionally, along an exhaustion `G_n` of the zeros closed under `a ↦ −a` (the reflection makes `Σ_G 1/a_q = 0`, so no translation survives), `R_d(Ξ)/Ξ(0) = lim_n ⊞_{q∈G_n} R_d(1 − w/a_q)` coefficientwise, with rank-one pieces `R_d(1 − w/a) = X^{d−1}(X − d/a)`. All these pieces are real-rooted **iff RH** | `ZeroPieceRealization.exists_zeroPiece_realization`, `riemannHypothesis_iff_zeroPieces_realRooted` |
 | R13 | **The degree-three test is vacuous**: on centered cubics `⊞₃` adds `(s,t)`, and every real-rooted centered cubic (`|t| ≤ s^{3/2}`) is a `⊞₃`-product of two double-root (capacity-zero, semicircle-free) cubics | `CubicFirstTest.exists_doubleRoot_factorization` |
 
 ## No-go closure for the naive route (source-faithful real-rooted pieces)
@@ -110,12 +112,13 @@ sign, a square-root count or a collision exclusion.
 ## Open conjectures (next)
 - Margin of R27 at `σ ≥ 1`: does `max Im` of the roots of `R_d(ξ(σ + i·))` stay below a fixed
   `−μ < 0`, or tend to `0` (spurious roots of `Φ_d` at scale `d`)?
-- Other completed L-functions: an abstract genus-one Hadamard version of R26–R28 (GRH ⇔ weak
-  stability on the critical line; zero-free half-planes ⇔ stability on vertical lines).
+- Other completed L-functions: R30 gives the forward direction for any genus-one entire function;
+  the converse (Hurwitz, R25) is general too — instantiate for completed Dirichlet L-functions once
+  their order-one bounds are in the corpus.
 - (Superseded) local Gamma-phase models (R20): stability is a property of the completed function
   (R27); the instabilities of the factors (R16–R18) are exactly their poles.
 
 
 ## Log
 - 2026-11-04 — created
-- 2026-11-05 — D1–D5, R1–R29 formalized
+- 2026-11-05 — D1–D5, R1–R31 formalized

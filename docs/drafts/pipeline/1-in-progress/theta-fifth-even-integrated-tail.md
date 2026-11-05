@@ -13,11 +13,16 @@ The missing region is the compact interval between these two reserves.
 Global tail positivity would pay the fifth even aperture integral; together
 with the proved odd fourth section, this would give rank-nine positivity.
 
-For one atom, substitute `q=πexp(2x)`. Its tail moments are integrals of
-`q^(3/2) exp(−2q)` times the known signed radial polynomials. Integration
-by parts expresses every moment as a boundary polynomial plus a common
-positive incomplete-gamma integral. Test the resulting fifth matrix before
-estimating the other atom pairs. The complete-source comparison and the
-compact tail sign remain unproved.
+The literal first-atom fifth tail is positive definite from `q≥3`, hence
+at every nonnegative cutoff. With `E(q)=q^(3/2)exp(−2q)`, its radial matrix
+has the exact decomposition `R(q)=E(q)B(q)+(3/4)I_(1/2)(q)A`:
+`B(q)>0` for `q≥3`, `A>0`, and the second term is strictly positive for
+every `q>0`. The normalized gamma mass satisfies `z≥1/2+3/(8q)`.
+See [first-atom theorem](../3-formalized/first-atom-fifth-even-tail.md).
+
+Remaining: pay the six unequal pairs among the first four atoms and the
+infinite remainder in the integrated matrix. The existing `1/20000`
+quadratic remainder bound uses scale-dependent Gaussian coordinates;
+its passage to a fixed tail quadratic form must also be proved.
 
 Existing exact square-plus-flux identities alone do not establish the sign.

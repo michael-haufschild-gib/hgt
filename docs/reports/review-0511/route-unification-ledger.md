@@ -14,7 +14,10 @@ piece of the window tower, the reflection pair.
   admissible on every window and no Hardy weight survives on odd tests [L]: Weil positivity is a critical Hardy
   inequality whose only open half is admissibility.
 - **One format.** On every window both sectors are represented exactly: a neutral line-exact signed theta gauge
-  (even), a shifted ground state (odd); nonnegativity of both on every window ⇔ RH [L].
+  (even), a shifted ground state (odd); nonnegativity of both on every window ⇔ RH [L]. The gauge freedom acts only
+  in the pole direction; on the pole-neutral hyperplane every gauge reads `archForm − primeSum` [L].
+- **One head.** Non-orthogonal Dirichlet-shift companions couple untwisted and twisted modes at `O(1)` and cancel
+  every tail; what remains of a long window is its head of length `log d`: stabilization for all `d` ⇔ RH [L].
 - **One frustration.** Even sector: the pole, past `log ρ`, in every sign gauge; odd sector: the acting prime
   powers' anti-diagonals, from `½log 2`, in every sign gauge; the trivial zeros are paid at the centre [L].
 - **One end of size.** `H < 0` by half-width `21/40`; the edge law crosses one at `c* ∈ (½log 5, ½log 6]`; finite
@@ -50,13 +53,17 @@ Evidence: `[L]` committed Lean; `[W]` working-tree Lean; `[P]` pipeline-card pap
 | Reading | Statement | Anchor |
 |---|---|---|
 | Index | `κ = #{ρ : Re ρ > ½}` (distinct), even; RH ⇔ `κ < 2`; number of finite critical lengths | HKT, AKLT, CWS [L] |
-| Onset aperture | `WindowPositiveAt Z a ⇔ a ≤ a*(Z)`; `a*(Z) = ⊤` ⇔ on-line; off RH `a*(ζ)` = contact; `a*(ζ) ≥ a₁` | WVL, AIP [L] |
+| Onset aperture | `WindowPositiveAt Z a ⇔ a ≤ a*(Z)`; `a*(Z) = ⊤` ⇔ on-line; off RH `a*(ζ)` = contact; `a*(ζ) ≥ a_∞` | WVL, AIP [L] |
 | Hardy interval | `ℋ(c)` closed, antitone, `= ℝ` before `½log 2`, bounded after; `⋂ℋ(c) = {1}` ⇔ RH | FADF [L] |
 | Calibration space | `𝒜(c)` convex cylinder; entering weights bounded; stage fibre compact; `⋂𝒜(c) = {Λ}` under RH | FADF, RHTower [L] |
 | Threshold | `R₁(A) = ⊤ ⇔ A/2 ≤ a*(ζ)`; single-prime transport ⇔ RH | AHD, WVL [L] |
 | Two sites | RH ⇔ `[[Q(ψ), c_ψ(t)],[c_ψ(t), Q(ψ)]] ≻ 0`; two real parameters `(γ, v)` decide | GWZ, SRT [L] |
 | Reflection pair | `W(f) − |𝒞_m(f)| = ½min(W(G₊), W(G₋))`; coupling truncates to `n ≤ e^{2c}`; `𝒞_m(φ) = c_φ(2m)` | SWC, FADF [L] |
-| Signed format | neutral signed even theta gauge `2V ≤ J_{M⁺}`; odd shifted ground state; both ⇔ window | SWC [L] |
+| Signed format | neutral signed even theta gauge `2V ≤ J_{M⁺}`; odd shifted ground state; both ⇔ window; gauge freedom only in the pole direction; below `log 5` ⇔ the `{2,3,4}` sliver band | SWC [L] |
+| Floor tower | floors `(1/20000)/2^k` on a strictly increasing aperture tower from `a₁`; `a*(ζ) ≥ a_∞` | AIP, SWC [L] |
+| Head windows | Dirichlet-shift stabilization ⇔ `R₁(log d) = ⊤`; `d = 2` unconditional; all `d` ⇔ RH | AHD [L] |
+| Explicit corridor | positivity at level `a` ⇒ `|β − ½| < 10⁶exp(−a/(480000 log(|γ|+3)))` | SquareRootThreshold [L] |
+| Archimedean factorization | logarithmic Poisson factor; reciprocal a positive Stieltjes transform; positive causal renewal kernel | CSTW [L] |
 | Frustration | even Markov iff `c ≤ log ρ`; unbalanced in every sign gauge past it; odd from `½log 2` | SWC, FADF [L] |
 | Trivial zeros | mirror mass − reflected / antireflected energy; paid by centre killing | FADF [L] |
 | Trace | `𝒥 = 𝒥_reg + 𝒦`; no point values | FADF [L] |
@@ -72,7 +79,7 @@ Evidence: `[L]` committed Lean; `[W]` working-tree Lean; `[P]` pipeline-card pap
 | Visibility | `k·pairEnergy(δ,a) ≤ L`; `e^{2(δ−σ)a}/δ`; shielding barrier; non-locality | WVL [L] |
 | Camera | inversion `λ > 1`; ζ readout `λ > ½`; moments of isolated polynomially small clusters; `𝓗` reads `w²` | ZCG [L] |
 | Heat path | real for `t ≥ 1/8`; `Λ_X ≤ (6600/9991+ε)/log X`; saddle `½/log X`; FE-pair `w² ≥ 0` ⇔ RH | RHTower, ZCG [L] |
-| Finite free | `R_d(fg) = R_d(f) ⊞_d R_d(g)`; Gaussian capacity `o(d⁻²)`; Euler drift `θ_S/2`; mollified stability ⇔ RH | FFP [L] |
+| Finite free | `R_d(fg) = R_d(f) ⊞_d R_d(g)`; Gaussian capacity `o(d⁻²)`; Euler drift `θ_S/2`; mollified stability ⇔ bounded imaginary parts ⇔ RH; zero-free half-planes ⇔ shifted Jensen stability; finite free Hardy theorem | FFP [L] |
 | Reflection | `Q = 2Re[𝓦H, 𝓦H]`; `−D_s = ∫K_σ|T_{p,s}ψ_s|² = ∫K_σ|three-term|²` | RIT [L] |
 | Li / Cayley | ladder entries `2λ_n`; RH ⇔ NSD on primitive ⇔ entrywise `≥ 0`; `𝔽_q`: sharp Weil bound | ALG [W] |
 | Inner caps | inner-cap flux = `Σ_{off-line}m_ρe^{(ρ−½)t}` + bounded + `L²` | CDG [L] |
@@ -87,7 +94,7 @@ Evidence: `[L]` committed Lean; `[W]` working-tree Lean; `[P]` pipeline-card pap
 | Markov death | support `e^{−3/4}` | SWC [L] |
 | Perron threshold | `c = log ρ ≈ 0.2812` (even band; switching fails beyond) | SWC, FADF [L] |
 | Odd frustration onset | `c = ½log 2 ≈ 0.3466` (every sign gauge) | FADF [L] |
-| Known sign | all tests to `a₁` (`181/500 < a₁ < 181/500 + 5×10⁻⁷`), floor `1/20000`; reflection pairs floor `1/8000` to `enlarged` | AIP, SWC [L] |
+| Known sign | all tests to `a_∞` (tower from `a₁`, `181/500 < a₁ < 181/500 + 5×10⁻⁷`), floors `(1/20000)/2^k`; reflection pairs likewise | AIP, SWC [L] |
 | Odd unit window | `c = ½`: one weight in an interval; margin `≈ 2×10⁻⁴` (open) | SWC [L/N] |
 | First prime stage | `2c = 21/20`: `w₂ ≤ 0` excluded (`H < 0`); stage loan fails | WTZ, SWC, AHD [L] |
 | Prime-three entry | `2c = log 3`: compact two-weight set; soft entry sharp | SWC, FADF [L] |
@@ -95,6 +102,7 @@ Evidence: `[L]` committed Lean; `[W]` working-tree Lean; `[P]` pipeline-card pap
 | Variance-free certificates | fail for `c > 273/400` | SWC [L] |
 | Prime-free half-window | sharp at `c = log 2` | SWC [L] |
 | Tate horizons exact | through `2c = log(81/16)` | WTZ [L] |
+| `{2,3,4}` frontier | `2c < log 5`: exact three-power sliver band; kicks `< 0.991` of the Lévy energy | SWC [L] |
 | Edge-law crossing | `c* ∈ (½log 5, ½log 6]` | FADF [L] |
 | End of finite templates | spread 6 (`2c = log 6`) | WTZ [L] |
 | Zero information | from `c ≥ 4`; `≈ 20` with present constants | WVL [L]; [D] |
@@ -127,7 +135,7 @@ Routes in one class compute the same quantity; a theorem in one class transfers 
 
 | Class | Common quantity | Routes | Identity joining them |
 |---|---|---|---|
-| C1 Weil's window form | `Q ≥ 0` on windows of every length | HF, SRT, AIP, ACT, ACS-atomic; RW, EWU, OWU, MSC, FEL; AHD, CACT, CSAR | window ⇔ `R₁ ≡ ⊤` ⇔ `ι = 0` ⇔ Hardy admissibility [L] — face of C25 |
+| C1 Weil's window form | `Q ≥ 0` on windows of every length | HF, SRT, AIP, ACT, ACS-atomic; RW, EWU, OWU, MSC, FEL; AHD, CACT, CSAR | window ⇔ `R₁ ≡ ⊤` ⇔ `ι = 0` ⇔ Hardy admissibility ⇔ head thresholds `R₁(log d)` ∀d [L] — face of C25 |
 | C2 Glued state | `κ(φ_c) − 1` | SC, AKG | Grams are compressions [L] — face of C1 |
 | C3 Window integer | collision charge, heat count, window index | WD-charge, SC-heat, LA-heat, TG, HEF | index = Wiener–Hopf index [L] — face of C11 |
 | C4 Sectors and ground states | odd/even sector sign; signed gauges | CHMD, TT, OWU, EWU, ACT, SWC | sectors = band at the centre; exact two-sector format; frustration unswitchable [L] — face of C1 |
@@ -154,7 +162,7 @@ Routes in one class compute the same quantity; a theorem in one class transfers 
 | C25 Onset aperture | `a*(ζ)` | WVL, SRT, HF, every window route | closed-interval law; visibility law [L] |
 | C26 Hardy interval | `1 ∈ ℋ(c)` ∀c | FADF; every route of C1 and C4 | optimal Hardy term ⇔ RH; uniqueness and criticality unconditional [L] — face of C25 |
 | C27 Weil kernel / contact | `K_a(z,z)` bounded up to every length | CSTW, RW, SZ | de Branges chain; contact blow-up [L] — face of C15 and C25 |
-| C28 Finite free stability | stability of `R_d(Ξ)`, `R_d(Ξ·M_S)` at infinitely many degrees | FFP, LA, TH | Jensen dictionary; de Bruijn–Newman in finite form [L] — face of C5 and C22 |
+| C28 Finite free stability | stability (or bounded imaginary parts) of `R_d(Ξ)`, `R_d(Ξ·M_S)`, `R_d(ξ(σ + i·))` at infinitely many degrees | FFP, LA, TH | Jensen dictionary; de Bruijn–Newman in finite form; zero-free half-planes ⇔ stability [L] — face of C5 and C22 |
 | C29 Rational Hecke graphs | positivity of finite rational graphs of bounded spread | WTZ, CWS | Følner averaging; templates below spread 6 [L] — face of C15 and C17 |
 | C30 Li / Cayley ladders | `λ_n ≥ 0` ∀n | LI, ACS, HF | Cayley ladder = Toeplitz ladder of `2λ_n`; Hodge index = Metzler sign [W] — face of C12 and C19 |
 
@@ -181,7 +189,7 @@ slack; in canonical-system form, a regular Hamiltonian at every length.
 | Entry | calibration space; sharp logarithmic entry law | FADF [L] |
 | Canonical system | lattice Levinson; continuum margins; de Branges chain to contact | GWZ, SWC, CSTW [L] |
 | Finite reduction | rational Hecke graphs; templates below spread 6 | WTZ [L] |
-| Complete family | size-only; twisted sectors cannot repair untwisted modes | CACT, AHD [L] |
+| Complete family | size-only; orthogonal twists decouple at `O(1/K)`; Dirichlet shifts reduce long windows to head windows | CACT, AHD [L] |
 | Visibility | sign → location; shielding; non-locality | WVL [L] |
 | No slack | unique admissible multiple; no Hardy weight; Szegő singular; contact blow-up | FADF, GWZ, CSTW [L] |
 | Dimension zero | classified | DZG, ATD [L] |
@@ -264,7 +272,9 @@ systems; at a near-coincidence its sign is the sign of `𝓗`. Positivity of the
 |---|---|---|
 | Σ ∩ Π: reflection pairs | `W(f ± f∘R) = 2W(f) ± 2𝒞_m(f)`; `W − |𝒞| = ½min(W(G₊), W(G₋))` | SWC, GWZ, CSTW, AOG, WL [L] |
 | Σ ∩ Π: Hardy form | `W = H − P`; `1 ∈ ℋ(c)`; unique admissible multiple | FADF [L] |
-| Σ ∩ Π: size versus sign | edge law to `c*`; `H < 0` by `21/40`; primes pay by sign beyond | FADF, SWC [L] |
+| Σ ∩ Π: size versus sign | edge law to `c*`; `H < 0` by `21/40`; `{2,3,4}` kicks `< 0.991` of the Lévy energy below `log 5`; primes pay by sign beyond | FADF, SWC [L] |
+| Σ ∩ Π: untwisted–twisted | orthogonal twists `O(1/K)`; Dirichlet shifts `O(1)`, tails cancelled, heads remain | AHD [L] |
+| Σ ∩ archimedean | Wiener–Hopf factorization of `1 + ½log(1 + ξ²)` with a positive renewal kernel | CSTW [L] |
 | Σ ∩ Π: classical receivers | reflection-pair band ⇔ Weil-lag, JAS, CTF, PBM, Robin | SWC [L] |
 | Σ: one format | neutral signed even gauge + shifted ground state on every window | SWC [L] |
 | Σ: frustration | unswitchable in both sectors | FADF [L] |
@@ -329,9 +339,9 @@ systems; at a near-coincidence its sign is the sign of `𝓗`. Positivity of the
 | Needed | Present over ℤ | Missing |
 |---|---|---|
 | Sign of the minimal object | RH ⇔ the band on reflection pairs ⇔ `1 ∈ ℋ(c)` ∀c; explicit coupling | the band at every step (B1) |
-| Mechanism for the sign | exact two-sector format on every window; centre pays trivial zeros; sharp entry law; base to `a₁`; Perron to `log ρ` | the format inequalities on every window (B3), first below `log 4` (B4, B5), in a frame where frustration persists (B49) |
+| Mechanism for the sign | exact two-sector format on every window (gauge freedom only at the pole); centre pays trivial zeros; sharp entry law; floors to `a_∞`; Perron to `log ρ`; exact `{2,3,4}` problem below `log 5` | the format inequalities on every window (B3), first below `log 4` (B4, B5), in a frame where frustration persists (B49) |
 | Full-space structure | subcritical PD; one multiple across all entries; threshold = onset aperture | an HF-native window beyond the base (B33), then every `A` |
-| Uniformity in length | each length finite; single-prime transport ⇔ RH; de Branges chain | transport across one prime at every length (B2); regularity of the chain (B51) |
+| Uniformity in length | each length finite; single-prime transport ⇔ RH; Dirichlet-shift head reduction; de Branges chain | transport across one prime at every length (B2); head thresholds `R₁(log d)` for every `d` (B55); regularity of the chain (B51) |
 | Nondegeneracy | zero modes radical, two-site, never smooth; contact blow-up | no degenerate two-site lattice (B10); no contact |
 | Precision | one-sided count ⇔ RH; inner caps = off-line generating function | square-root size of one smoothed count; inner caps at every stage (B19); `D_win` (B21) |
 | Count from geometry | Künneth `h¹ = ½Q`; finite-field Stepanov; ladders over `𝔽_q` | — (closed [D]) |

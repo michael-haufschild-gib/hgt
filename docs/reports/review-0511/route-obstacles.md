@@ -1,7 +1,7 @@
 # Route obstacles — status quo
 
 Scope: the 32 live routes and 18 candidates of the programme and the programmes that feed them, read
-against the Lean corpus at `bdfa1ea5be` plus the working tree. For every route: path, what is established,
+against the Lean corpus at `1e8010c5b4` plus the working tree. For every route: path, what is established,
 the open estimate, the mechanism class, the obstacles that are **(A) just work** and the obstacles that are
 **(B) open mathematics** (no known solution).
 
@@ -17,13 +17,15 @@ left of `m` and its mirror `f∘R`, `R(v) = 2m − v`, the **coupling** is
 `𝒞_m(f) = 𝓗_m(f) − Σ_n w_n(f⋆f)(2m − log n)` (collar Hankel form `𝓗_m`); the **band** is
 `|𝒞_m(f)| ≤ W(f)`. `a*(Z)` is the onset aperture (supremum of positive half-widths); `a*(ζ)` that of the
 zeros of ζ. `L_T = ½log(T/2π)`; camera aperture `λL_T`. `ρ³ = ρ + 1`, `log ρ ≈ 0.2812`.
-`a₁ = successorWeilFloorAperture`, `0.362 < enlargedWeilFloorAperture < a₁ < 0.3621`.
+`a₁ = successorWeilFloorAperture`, `0.362 < enlargedWeilFloorAperture < a₁ < 0.3621`; `a_∞ = lim_k
+weilFloorApertureTower k`, the limit of the strictly increasing tower of floor apertures starting at `a₁` (floors
+`(1/20000)/2^k`; steps shrinking like `e^{−C·2^k}`).
 
 ## 0. Mechanism classes
 
 | Class | Mechanism | Status | Anchor |
 |---|---|---|---|
-| P1 | **Signed criticality.** Weil's form on a window as a frustrated signed Dirichlet form with pole charges; primes pay the archimedean–polar deficit by the sign of their sliver reflections; pole variance retained | live; format exact in both sectors (neutral signed theta gauge, shifted ground state); RH ⇔ the two certificates on every window; frustration survives every sign gauge (even past `log ρ`, odd past `½log 2`); size-only payment dies before half-width `21/40` | SWC, FADF, ACT, WTZ, GWZ, CSTW, WVL [L] |
+| P1 | **Signed criticality.** Weil's form on a window as a frustrated signed Dirichlet form with pole charges; primes pay the archimedean–polar deficit by the sign of their sliver reflections; pole variance retained | live; format exact in both sectors (neutral signed theta gauge, shifted ground state); RH ⇔ the two certificates on every window; the gauge freedom acts only in the pole direction (on the pole-neutral hyperplane every neutral gauge reads `archForm − primeSum`); frustration survives every sign gauge (even past `log ρ`, odd past `½log 2`); size-only payment dies before half-width `21/40` | SWC, FADF, ACT, WTZ, GWZ, CSTW, WVL [L] |
 | P2 | **Prime-blind positivity / calibration.** Archimedean + pole part on signed blind combinations; equivalently the finite-level Weil cones `𝒜(c)` | live; `𝒜(c)` convex, a cylinder beyond `e^{2c}`, every entering weight bounded, stage fibre a compact interval; `⋂𝒜(c) = {Λ}` under RH | RHTower PBAP, FADF [L] |
 | P3 | **Reflection positivity of PM.** Krein positivity of the completed resonant space | reduced: both expressions of the defect carry `(b^{2σ−½} − b^{−(2σ−½)})²`; any nonnegative representation ⇔ RH | RIT [L] |
 | P4 | **Square-root cancellation** of one smoothed short-window prime count: the band in prime form | live; classical; parity barrier; every one-sided count receiver identified with the band | SWC, GWZ, CSTW, AOG [L] |
@@ -48,10 +50,17 @@ Closed mechanism families (anchors in `rh-killed-routes.md` where they exist):
 - **Ground states without the pole variance; window-independent theta gauges:** `#variance-dropped-theta-gauge`,
   `#theta-gauge-cosh-defect`; a single nonsingular even theta gauge has positive outside cosh deficit on every
   window [L: SWC].
+- **Gauge optimization off the pole direction:** on the pole-neutral hyperplane every neutral signed even
+  gauge represents the even sector by `archForm − primeSum`, independently of its pocket position; receding pockets
+  conserve the ground-state outside deficit `½ − ∫_{(−c,c)}Φcosh` through the exterior jumps [L: SWC].
 - **Point readings:** Weil's form reads no point values (spikes of arbitrarily small `L²`, `L¹` and Lévy
   energy); certificates see only `Ω`-weighted edge masses [L: FADF].
-- **Twisted repair of untwisted negativity:** for every entering conductor `p` and every Ramanujan corrector,
-  a negative untwisted mode stays negative above an explicit critical multiple [L: AHD].
+- **Twisted repair of untwisted negativity:** orthogonal conductor-`p` twists couple at `O(1/K)`; a negative
+  untwisted mode stays negative above an explicit critical multiple [L: AHD]. Non-orthogonal Dirichlet-shift
+  companions couple at `O(1)` and annihilate every tail mode, leaving the head window of length `log d`
+  [L: AHD].
+- **Fixed and quartic theta compensations:** fixed load fails at scales 6 and 8 (capacities exact); untruncated
+  quartic at 32; truncated quartic at scale 6 [L: TCS].
 - **Finite structures, slack, counts, height-local decisions, universal density thresholds, domination as a
   selector, size-only heat repair, PM line selectors:** as in `rh-killed-routes.md`.
 - **Finite free factorizations:** Szegő on the source-faithful split (theta piece never real-rooted),
@@ -62,11 +71,15 @@ Closed mechanism families (anchors in `rh-killed-routes.md` where they exist):
 
 | Fact | Anchor | Consequence |
 |---|---|---|
-| RH ⇔ `a*(ζ) = ⊤`; positive half-widths form `[0, a*(Z)]`; off RH `a*(ζ)` = contact, attained; `a*(ζ) ≥ a₁` | WVL, AIP [L] | every window route measures one number |
-| `R₁(A) = ⊤ ⇔ A/2 ≤ a*(ζ)`; single-prime stage transport for all `A` ⇔ RH | WVL, AHD [L] | HF's threshold is the onset aperture |
+| RH ⇔ `a*(ζ) = ⊤`; positive half-widths form `[0, a*(Z)]`; off RH `a*(ζ)` = contact, attained; `a*(ζ) ≥ a_∞` | WVL, AIP [L] | every window route measures one number |
+| `R₁(A) = ⊤ ⇔ A/2 ≤ a*(ζ)`; single-prime stage transport for all `A` ⇔ RH; Dirichlet-shift stabilization for every divisor `d` ⇔ `R₁(log d) = ⊤` ∀d ⇔ RH | WVL, AHD [L] | HF's threshold is the onset aperture; long windows reduce to head windows |
+| Floor apertures form an infinite strictly increasing tower from `a₁` with floors `(1/20000)/2^k`, on windows and on reflection pairs | AIP, SWC [L] | `a*(ζ) ≥ a_∞` |
+| Positivity at level `a` ⇒ `|β − ½| < 10⁶exp(−a/(480000 log(|γ|+3)))` for `|γ| ≥ 102`; `N(t, t+1] ≤ 240 log(|t|+3)` | SquareRootThreshold [L] | effective excluded-depth corridor |
+| Below `log 5`: window positivity ⇔ the `{2,3,4}` sliver band (only `n = 2` in the half-window diagonal; the three kicks use `< 0.991` of the Lévy energy) ⇔ the joint neutral-gauge/shifted-ground-state certificate | SWC [L] | the first stages are an exact three-power problem |
 | `W(f ± f∘R) = 2W(f) ± 2𝒞_m(f)`; `W(f) − |𝒞_m(f)| = ½min(W(G₊), W(G₋))`; the coupling truncates to `2 ≤ n ≤ e^{2c}`; floor `‖f‖²/8000` for `c ≤ enlarged` | SWC [L] | the minimal object is a reflection pair |
 | Arithmetic part is an optimal Hardy term for `H` iff RH; scaling optimality (only multiple `1`) and criticality (no Hardy weight on odd tests) unconditional; `⋂_cℋ(c) = {1}` ⇔ RH | FADF [L] | Weil positivity is a critical Hardy inequality with a unique admissible multiple |
 | Before contact each window carries a complete Weil Hilbert space, a de Branges space with explicit Hermite–Biehler function, unitary zero-moving and antiunitary conjugation; inclusions isometric; at finite contact a fixed evaluation kernel diverges monotonically | CSTW [L] | the window tower is a de Branges chain; RH ⇔ the chain has no finite contact |
+| The archimedean symbol `1 + ½log(1 + ξ²)` factors through a logarithmic Poisson factor: holomorphic on the slit plane, one simple negative zero, half-line support preserved, reciprocal = Stieltjes transform of a positive measure, causal kernel a positive probability density, renewal mass normalized | CSTW [L] | a Wiener–Hopf (renewal) factorization of the archimedean part [D] |
 | The Weil symbol is `1 + ½log(1 + ξ²)` minus a bounded convolution; evaluation vectors solve the literal operator equation with bounded forcing | CSTW [L] | Riesz vectors are physical (bounded) |
 | Correlation-form positivity on a window ⇔ positivity of every finite rational Hecke graph of smaller log-spread; finite templates control spreads with finite Hecke orbits; at spread 6 the ×2/÷3 orbit is infinite | WTZ [L] | finite-matrix reduction ends before `log 6` |
 | Even kernel `ω(|u−v|) + ω(−u−v) − 4cosh(u/2)cosh(v/2)`: Markov iff `c ≤ log ρ`; odd kernel positive light cone, each acting prime power a frustrated anti-diagonal | SWC, FADF [L] | certificates past `log ρ` are signed and unswitchable |
@@ -75,7 +88,7 @@ Closed mechanism families (anchors in `rh-killed-routes.md` where they exist):
 | Visibility: `k·pairEnergy(δ,a) ≤ L` in lattice backgrounds; unshielded clusters excluded to doubly-exponential height; tapered crystals hide depth `1/a` above `e^{ca}` | WVL [L] | windows read depth and coherence |
 | Camera: `λ > 1` fixes RvM configurations up to near-collisions; `λ > ½` reads isolated zeros of ζ with multiplicity; inside isolated clusters of radius `r ≤ T^{−(M'+κ_λ+1)}` the moments are read to `N r^{j+1}T^{M'+κ_λ} + e^{−K'log³T}`; squared gap from `𝓗 = 4(W₁² − W₀W₂)/W₀²`; FE pair `𝓗 ≈ −4δ²`, on-line pair `𝓗 ≈ Δ²` | ZCG [L] | identification is complete; reality is the sign of an explicit prime-side ratio |
 | FE-pair squared gaps `≥ 0` at every zero ⇔ Weil positivity ⇔ `Λ_X = 0` ∀X ⇔ no heat collision ⇔ RH; `Λ_X ≤ (6600/9991 + ε)/log X`; saddle at `½/log(X/2π)`; pair models collide below every scale | ZCG [L] | P5's residual is the sign of `w²` below the saddle |
-| Möbius-mollified Jensen stability at infinitely many degrees ⇔ RH; normalized Euler factors HB-stable with forced drift `θ_S/2`; ζ/Gamma/pole pieces unstable for every phase; `e^{(t/d²)D²}J_d` not real-rooted (∀t > 0) | FFP [L] | finite free probability reproduces de Bruijn–Newman criticality |
+| Möbius-mollified Jensen stability at infinitely many degrees ⇔ RH ⇔ bounded imaginary parts of Jensen roots along infinitely many degrees (otherwise linear growth `κd`); zero-free `Re s > σ` ⇔ Jensen polynomials of `ξ(σ + i·)` stable (unconditional for `σ ≥ 1`); `R_d(Ξ)` has unboundedly many real roots; normalized Euler factors HB-stable with forced drift `θ_S/2`; ζ/Gamma/pole pieces unstable; `e^{(t/d²)D²}J_d` not real-rooted | FFP [L] | finite free probability reproduces de Bruijn–Newman criticality and every zero-free half-plane |
 | PM defect `−D_s(ψ_s) = ∫_0^∞K_σ(x+1)|ψ_s(x) − (x+1)^{−2s}ψ_s(x/(x+1))|²dx`, `K_{1/4} ≡ 0`; infinitely many critical resonances | RIT [L] | the second expression has the same sign |
 | Inner-cap flux = `Σ_{off-line ρ}m_ρe^{(ρ−½)t}` + bounded − `L²` | CDG [L] | WD's estimate is a zero-free statement verbatim |
 | Cayley ladder of ζ = Toeplitz ladder of paired Li coefficients; RH ⇔ NSD on primitive vectors ⇔ entrywise `≥ 0`; over `𝔽_q` the ladder entries are the sharp Weil lower bound | ALG [W] | Hodge index = Metzler sign = Li positivity |
@@ -101,15 +114,20 @@ Routes: HF, SRT, AIP, ACT (index), ACS-atomic, SC, CHMD (index). Programmes: CAC
 Established [L]:
 - Subcritical PD for `1 ≤ c ≤ (log N)^α`, `α < 1/8`; whole-space PD at one critical multiple; a uniform
   aperture-independent critical multiple across all prime entries.
-- `R₁(A) = ⊤` for `A ≤ 2a₁`; every critical pencil positive on those windows; one window
+- `R₁(A) = ⊤` for `A ≤ 2·weilFloorApertureTower k`, every `k`; every critical pencil positive on those windows; one window
   `A ∈ (2·enlarged, 1)` with all critical pencils positive.
 - Stage transport: composite stages carry no fold; prime-power stages ⇔ `stageForm + w·foldEnergy ≥ w·end mass`;
   unconditional transport across `p = 2` at `A₀ = 2·enlarged − log 2`; first-fold stage-loan obstruction;
   conductor-grading obstruction; single-prime transport for all `A` ⇔ RH.
+- Non-orthogonal Dirichlet-shift companions `1_{d|n}g₀(log(n/N) + log d)/√n`: conductor-1 plus conductor-`d` parts,
+  `O(1)` cross term, tail modes annihilated at `O(1)`; stabilization of every direction on `[−(A + log d), 0]`
+  forces `R₁(log d) = ⊤` and follows from `R₁(log d + ε) = ⊤`; unconditional for `d = 2`; for every `d` ⇔ RH.
+- Character windows graded by parity; equal parities coupled through `L(s, ψ̄₁ψ₂)`; joint periodic windows keep the
+  residue-averaged mass Gram.
 - Critical-curve second order, twisted sectors, frequency pole, bulk, terminal windows (polar source,
   nontrivial kernel, long-index cancellation on near rows and annuli), conductor packets.
-- Receiving charges: capacity `log log N + O(1)`; simultaneous fixed finite receiving vectors with vanishing
-  physical energy read at `1/80`; literal three-range split, affine short rows, Mangoldt kernel Grams,
+- Receiving charges: capacity `log log N + O(1)`; simultaneous receiving vectors on fixed and growing mode sets
+  with vanishing physical energy read at `1/80`; literal three-range split, affine short rows, Mangoldt kernel Grams,
   same-source prime towers, harmonic tails, centering; complete physical energy does not control charge.
 
 Status: every layer below the sign is size-only and classified; HF's sign content is `a*(ζ) = ⊤`; twisted
@@ -120,15 +138,15 @@ directions cannot pay untwisted negativity. The far-complement estimate loses `O
 |---|---|---|
 | A1 | Explicit constants and horizons (`K₀`, eighth-root theorem, `1/9`, logarithmic profile, Beurling schedule, conductor range `M(N) = o(c_N)`) | — |
 | A2 | General profiles past `θ = 1/1080` | — |
-| A3 | Joint twist families; equal-parity characters through `L(s, ψ̄₁ψ₂)`; different moduli | — |
+| A3 | Joint twist families across different moduli | — |
 | A4 | Certified ratio interval at its size-only optimum; receiving complement inside it (difficulty unverified) | — |
 | A9 | Literal channel norms critically small with growing periods, offsets and prime bands (difficulty unverified) | — |
-| A37 | Simultaneous receiving with growing mode sets and growing `M` (difficulty unverified) | — |
 | B6 | Twisted-sector positivity through all conductors and frequencies at every multiple | sub |
 | B7 | Full-space sign at critical ratios beyond the size-only threshold | sub per ratio; RH all |
 | B8 | General profiles past `log log N` on the full space | sub |
 | B9 | Exact SOS on one two-prime lattice | RH |
 | B16 | Window negativity exponent `< ½` (≡ zero width `< ½`) | ≥qRH |
+| B55 | Head-window thresholds `R₁(log d) = ⊤` for every `d` (the residue of Dirichlet-shift stabilization) | RH |
 | B33 | HF-native arithmetic sign: a window beyond the base certified by the complete family itself (the literal statement `R₁(A) = ⊤` for some `A > 2·enlarged` is supplied by the AIP dilation at `A = 2a₁`, a margin of `≈ 10⁻⁶`) | sub |
 
 ### S2. The window tower, its canonical system and signed criticality
@@ -146,7 +164,13 @@ Established [L]:
   interval; sharp entry law; real tests decide.
 - Below `log 4`: two-weight convex membership ⇔ Markov–Hankel pair ⇔ retained-variance certificates ⇔ Hodge
   index ⇔ Künneth effectivity; neutral signed even theta gauge and shifted ground state represent both sectors
-  exactly on every window.
+  exactly on every window; below `log 5` the window is the `{2,3,4}` sliver band (three kicks `< 0.991` of the Lévy
+  energy) and the joint certificate. The gauge freedom acts only in the pole direction; receding pockets conserve
+  the outside deficit.
+- Floor tower: floors `(1/20000)/2^k` on a strictly increasing sequence of apertures from `a₁` (limit `a_∞`), on
+  windows and on reflection pairs; multi-prime dilation modulus on every `[−R, R]`.
+- Wiener–Hopf factorization of the archimedean symbol: logarithmic Poisson factor, positive Stieltjes measure of
+  its reciprocal, positive causal (renewal) kernel.
 - Perron sign law; frustration localization; robust Perron costs height; switching never balances.
 - Trivial zeros paid by centre killing; regional–edge decomposition `𝒥 = 𝒥_reg + 𝒦`; no point traces.
 - Finite rational Hecke graphs decide correlation-form windows; exact Tate horizons through `log(81/16)`;
@@ -154,7 +178,7 @@ Established [L]:
   ratio-four triangle.
 
 Status: the certificate format is exact on every window in both sectors; what is open is the inequality the
-format states. No certificate exists for any `c ∈ (0.3621, log 2)`. These windows carry no zero information
+format states. No certificate exists for any `c ∈ (a_∞, log 2)`. These windows carry no zero information
 (S11).
 
 | | Obstacle | Strength |
@@ -169,6 +193,7 @@ format states. No certificate exists for any `c ∈ (0.3621, log 2)`. These wind
 | B3 | Frustration domination: the neutral signed theta-gauge inequality `2V ≤ J_{M⁺}` (even) and the shifted-ground-state inequality (odd) on every window | RH; fixed length sub |
 | B4 | Structural certificate of the odd unit window (`w₂ ∈ unitBandWeights`) | sub |
 | B5 | Structural certificate below `log 4` (`a*(ζ) ≥ log 2`), the prime `3` paid by sign | sub |
+| B56 | The `{2,3,4}` sliver band below `log 5` (`a*(ζ) ≥ ½log 5`) | sub |
 | B49 | Signed ground-state structure past `log ρ` compatible with unswitchable frustration (nodes cost negative light-cone conductance) | method |
 | B51 | Regularity of the Weil Hamiltonian at every finite length (no contact) | RH (identity form of B1) |
 
@@ -227,7 +252,6 @@ Status: WD's open estimates are zero-free statements verbatim; WD supplies no pr
 
 | | Obstacle | Strength |
 |---|---|---|
-| A27 | Cluster-detector constant | — |
 | B19 | Inner caps at every polynomial stage (≡ off-line generating function `L²(e^{−xt})` at every stage) | RH; fixed degree ≥qRH |
 | B20 | `100%` critical-scale clustering | sub |
 | B21 | `D_win` (≡ thin Planck shadows); `D_zero` | sub |
@@ -312,6 +336,8 @@ Established [L]:
 - Heat: source-profile repulsion law; `6600/9991` horizon (sharp for its profile); saddle at `½/log(X/2π)`;
   `pairModel` order-2 collision below every scale; FE-pair squared gaps `≥ 0` ⇔ RH.
 - Euler stages and every finite real carrier real above `2πe^{W_a}`; twins tilted at every height.
+- Periodic patterns: a nonzero period-`N` lag symbol cannot vanish at all `|m| ≤ N − 1`; period-`N` mimics never hide
+  above `(N − 1)π/(Ng)`; the period-6 mixed-depth mimics hide exactly to `5π/(6g)`.
 
 Status: identification is complete at its scale; the RH content is the sign of the squared gap at
 near-coincidences, i.e. the sign of an explicit prime-side Hankel ratio (B44) [D].
@@ -331,14 +357,16 @@ Routes: every window route; WD, LA, ZCG through depth and density. Programme: WV
 Established [L]: closed-interval law; master law `k·pairEnergy(δ,a) ≤ L` (also for distinct clusters near one
 ordinate); deep and cubic brackets; `e^{2(δ−σ)a}/δ` unshielded-cluster law; tapered-crystal barrier;
 doubly-exponential non-locality; split-column certification `πD_on + (π/2)D_off`, mixed `(g − ½)ℓ` sharp;
-ridge `2Le^{δL}Σ|ε_k| ≤ 1`; contact law at `c log T`; synthesis module.
+ridge `2Le^{δL}Σ|ε_k| ≤ 1`; contact law at `c log T`; synthesis module; explicit detector: `N(t, t+1] ≤ 240
+log(|t|+3)`, every off-line zero of depth `≥ δ` detected at aperture `480000 log(|γ|+3) log(10⁶/δ)`, positivity
+at level `a` confines `|β − ½| < 10⁶exp(−a/(480000 log(|γ|+3)))`.
 
-Status: classified in models; for ζ the laws require window positivity, known only at `a ≤ a₁ ≈ 0.3621`,
+Status: classified in models; for ζ the laws require window positivity, known only at `a ≤ a_∞ ≈ 0.362`,
 where they are vacuous.
 
 | | Obstacle | Strength |
 |---|---|---|
-| A35 | Sharpen the general RvM coherent-cluster constants (`2²⁶·960`) toward the model constant `4δL/k` | — |
+| A35 | Sharpen the explicit constants (`2²⁶·960`; detector `480000`, `10⁶`) toward the model constant `4δL/k` | — |
 | A36 | Remaining onset-law items (general RvM shallow depth-mass bound under positivity; tapered crystal to `a ≍ log T`; two-bump interferometer) | — |
 | A39 | Krein extension for Weil's distribution on intervals: window positivity at `a` ⇔ a positive measure on ℝ (an on-line mimic) with the same image on the window; discrete mimics from de Branges sampling in the CSTW chain | — |
 
@@ -352,7 +380,11 @@ split `J^{d,n} = Γ_{n,d} ⊠_d Θ_{n,d}` with Γ Laguerre (negative roots) and 
 Dirichlet pieces never real-rooted; normalized Euler factors HB-stable at every degree, drift `θ_S/2` forced and
 sharp, no bounded translation stabilizes all products; symmetric Euler carrier real ⇔ `c ≥ θ_S/2`; curved phase
 degree horizon `≈ δ²/(4a)`; ζ-side, Gamma-side and pole pieces unstable for every phase; RH ⇔ infinitely many
-`J_d` real-rooted ⇔ Möbius-mollified Jensen polynomials stable at infinitely many degrees.
+`J_d` real-rooted ⇔ Möbius-mollified Jensen polynomials stable at infinitely many degrees ⇔ imaginary parts of
+Jensen roots bounded along infinitely many degrees (else linear growth); zero-free `Re s > σ` ⇔ stable Jensen
+polynomials of `ξ(σ + i·)` (unconditional, strict, for `σ ≥ 1`); `R_d(Ξ)` has unboundedly many real roots
+(finite free Hardy theorem); genus-one products with nonnegative drift have stable Jensen polynomials (finite free
+Pólya–Levin class).
 
 | | Obstacle | Strength |
 |---|---|---|
@@ -362,7 +394,7 @@ degree horizon `≈ δ²/(4a)`; ζ-side, Gamma-side and pole pieces unstable for
 ### Route-specific items
 | | Obstacle | Routes | Strength |
 |---|---|---|---|
-| A17 | Theta fifth even section on the compact interval `π ≤ q < 7` with an entry-preserving compensation (truncated quartic flux positive from `q ≥ 7`; fixed and untruncated quartic loads fail at scales 8 and 32), then rank 9 (difficulty unverified) | TH | — |
+| A17 | Theta fifth even section on the compact interval `π ≤ q < 7` with an entry-preserving compensation other than the quartic (truncated quartic positive from `q ≥ 7` and failing at scale 6; fixed load failing at scales 6 and 8; untruncated quartic at 32; first-atom tails PD from scale 3), then rank 9 (difficulty unverified) | TH | — |
 | A18 | Hausdorff shifts, Jensen horizons, two-grid degrees, PF beyond 37 | PA, LA, HCF | — |
 | A19 | Certificates on the nine anti-diagonals `n ∈ {2,3,4,5,7,8,9,11,13}` where the pole pays nowhere | ACT | — |
 | A20 | Mixed Schur debit; first-prime/coarse/polar costs | AIP, CHMD | — |
@@ -382,7 +414,7 @@ Each entry: path; established; open; class; A; B.
 
 ### RW — restricted Weil ground energy
 - Path: `μ(a) ≥ 0` at every radius (≡ `a*(ζ) = ⊤`) → RH.
-- Established: floor `‖f‖²/20000` through `a₁`; positive apertures `[0, a*]`; de Branges chain before contact
+- Established: floors through the tower up to `a_∞` (`‖f‖²/20000` at `a₁`); positive apertures `[0, a*]`; de Branges chain before contact
   with explicit HB function and kernel blow-up at contact; Riesz vectors bounded and solving the logarithmic
   Dirichlet equation; two-site decision; below `log 4` two-weight band; Hardy interval; calibration spaces [L].
 - Open: exclude finite contact (regularity of the chain at every length); all-aperture signed coupling payment;
@@ -449,10 +481,11 @@ Each entry: path; established; open; class; A; B.
 ### HF — Hodge / Hecke / complete cells
 - Path: complete arithmetic form `≥ 0` → Hodge index → RH.
 - Established: S1 in full; single-prime stage transport ⇔ RH; unconditional transport across `p = 2` at `A₀`;
-  stage-loan and conductor-grading obstructions; `R₁ = ⊤` through `2a₁` [L].
+  stage-loan and conductor-grading obstructions; Dirichlet-shift companions reduce every long window to its head
+  `R₁(log d)` (unconditional for `d = 2`); `R₁ = ⊤` through `2a_∞` [L].
 - Open: `a*(ζ) = ⊤`; signed complement at every ratio; the far-complement loss `O(c)` against `O(log N/c⁷)`.
 - Class: sign content P1; count face closed; floor layer size-only.
-  A: A1–A4, A9, A11, A23, A37. B: B1, B2, B6, B7, B8, B9, B10, B11, B12, B16, B33, B34, B35, B40.
+  A: A1–A4, A9, A11, A23. B: B1, B2, B6, B7, B8, B9, B10, B11, B12, B16, B33, B34, B35, B40, B55.
 
 ### CHMD — causal hyperbolic–modular duality
 - Path: one-sided bounded prime wave or odd Doob half-threshold bound → RH.
@@ -467,8 +500,8 @@ Each entry: path; established; open; class; A; B.
   four retained atoms with error `≤ 1/20000` from `q ≥ 3`; truncated quartic flux preserves every mixed entry and
   is positive at every aperture from `q ≥ 7` (exact rational Schur certificate); fixed load fails at scale 8,
   untruncated quartic at scale 32 (capacities exact); every finite native shifted Hankel matrix PD on a cofinal
-  ray [L].
-- Open: the compact interval `π ≤ q < 7`; then `I₈(a) > 0`; all ranks.
+  ray; truncated quartic fails at scale 6 (exact capacity); first-atom tails PD from scale 3 [L].
+- Open: the compact interval `π ≤ q < 7` with a compensation other than the quartic; then `I₈(a) > 0`; all ranks.
 - Class P5 (rank limit; one-centre moment problem). A: A17. B: B14.
 
 ### RN — renewal
@@ -484,7 +517,7 @@ Each entry: path; established; open; class; A; B.
 - Open: inner-cap cancellation through all polynomial stages; density branch `D_win` with vanishing cluster
   tail.
 - Class P4 (inner caps; the open estimate is a zero-free statement); density branch sub.
-  A: A27. B: B19, B20, B21, B22, B23.
+  B: B19, B20, B21, B22, B23.
 
 ### LI — paired Li and Cayley ladders
 - Path: prime − Gamma history floor / Cayley ladder positivity → RH.
@@ -537,12 +570,12 @@ Each entry: path; established; open; class; A; B.
 ### SRT, ACT, AIP — complete atomic matrix
 - SRT: full-family/index receivers; two real parameters decide the line (`κ_γ(t+v/2) ± κ_γ(t−v/2)`);
   split-column receiver; closed-contact receiver; distinct-cluster threshold [L]. Open: complementary-window
-  sign, high-zero tail and source-kernel payment at every ratio. A: A1, A3, A27, A35, A40. B: B6, B7, B12.
+  sign, high-zero tail and source-kernel payment at every ratio. A: A1, A3, A35, A40. B: B6, B7, B12.
 - ACT: single-shift receiver `Ẑ(m_au) = 2S_a − D_a + 8V_c + 8τ_cA₂`; shifted ground states exact on every
   window; anti-diagonal classification (nine moduli where the pole pays nowhere) [L]. Open: one shift, uniform
   in profile, paying `D_a` with retained variance. Class P1. A: A19. B: B1, B3, B5.
-- AIP: allocation receiver; floor `1/20000` through `a₁`; capacity `log log N + O(1)`; literal receiving-charge
-  bounds [L]. Open: full-space allocation at every `K`. A: A1, A4, A9, A20, A37. B: B6, B7, B8.
+- AIP: allocation receiver; floors `(1/20000)/2^k` along the tower to `a_∞`; capacity `log log N + O(1)`; literal receiving-charge
+  bounds [L]. Open: full-space allocation at every `K`. A: A1, A4, A9, A20. B: B6, B7, B8.
 
 ### SC — Stokes/Witt–Krein
 - Path: glued affine index `≤ 1` / bounded Gaussian-damped two-prime coupling → RH.

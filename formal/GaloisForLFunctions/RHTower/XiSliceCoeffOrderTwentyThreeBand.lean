@@ -144,6 +144,8 @@ theorem xiSliceCoeff_pfSeq_two_of_abs_le_orderTwentyThree {t : ℝ} (ht : |t| �
       rw [← sq_abs]; nlinarith
     nlinarith
 
+#print axioms xi_centre_pfSeq_fortyFive
+
 end
 
 end RHTower
