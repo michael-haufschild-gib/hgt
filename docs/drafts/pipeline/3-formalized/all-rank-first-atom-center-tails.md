@@ -1,7 +1,7 @@
 # All-rank first-atom center tails
 
-- **Stage:** 2-fully-proven
-- **Type:** THEOREM ON PAPER; Lean incomplete
+- **Stage:** 3-formalized
+- **Type:** THEOREM (Lean)
 - **Wall:** Σ6
 - **Statement:** For every finite `N` and `r≥0`, the matrix with entries
   `∫_(s>r) Re((-i)^(j+k)) ∂ₜ^(j+k)[φ(s/2+t)φ(s/2−t)]|ₜ₌₀ ds`,
@@ -77,32 +77,28 @@ hyperbolic factors against `exp(−2q cosh(2t))`, so `H_r` is Schwartz;
 its Fourier transform has every polynomial moment. The same majorants
 justify differentiation of the literal center integral.
 
-**Lean:** `CompletedArithmeticForms.BesselHalfOrderSquare` proves the
-nonvanishing square, exact derivative, exponential reserve, Schläfli product,
-and radial line identity (`besselHalfOrderSquare_exp_lower`,
-`besselHalfOrderSquare_eq_radial_integral`).
+## Lean theorem
 
-`CompletedArithmeticForms.BesselRadialSlice` proves the first weighted-tail
-square integral, strict positivity and exponential reserve for every real
-frequency and `q≥1` (`besselFirstWeightedTail_pos`,
-`besselFirstWeightedTail_exp_lower`).
+In [FirstAtomAllRankCenterTail.lean](../../../../formal/GaloisForLFunctions/CompletedArithmeticForms/FirstAtomAllRankCenterTail.lean),
+namespace `GaloisForLFunctions.CompletedArithmeticForms`:
 
-`CompletedArithmeticForms.BesselWeightedTail` proves positivity and exponential
-reserve of every higher weighted tail, the quadratic weight-raising reserve,
-and `besselFirstAtomTailDensity_pos` for every real frequency and
-`q>1+√2`. All audited dependencies use only standard Lean axioms.
+- `firstAtomLiteralCenterTailMatrix_posDef`: the displayed literal derivative-integral
+  matrix is positive definite for every `N : ℕ` and `r≥0`.
+- `firstAtomCenterTailMatrix_det_pos`: every corresponding determinant is positive.
+- `firstAtomCenterTailSignedJet_eq`: exact all-order normalization to the actual
+  Schwartz profile; no analytic premise is left to discharge.
 
-`CompletedArithmeticForms.FirstAtomFourierTail` proves the exact integrated
-radial Fourier identity, including the signed endpoint, and its strict
-positivity at every real frequency above `q>1+√2`.
+`BesselHalfOrderSquare` and `BesselRadialSlice` prove the square representation
+and exponential reserve. `BesselWeightedTail` proves
+`besselFirstAtomTailDensity_pos` above `q>1+√2`; `FirstAtomFourierTail` retains
+the signed endpoint in the exact Fourier identity. `CauchyDominatedIntegralJets`
+and `FirstAtomRadialProfile` justify all derivative/integral exchanges,
+Schwartz regularity and actual Fourier positivity.
+`FourierPositiveHankel` supplies `signedSchwartzJet_hankel_posDef`, strictness
+at every finite rank.
 
-`CompletedArithmeticForms.FirstAtomRadialProfile` proves an explicit strip
-envelope, Schwartz regularity of the actual radial tail, and the all-order
-source-jet integral identity.
-
-**Remaining:** finish Fourier/moment identification, literal center-coordinate
-normalization, and strict matrix positivity.
-No all-rank Lean theorem is claimed yet.
+The literal theorem, determinant theorem and exact normalization pass Lean
+and transitive `#print axioms`: only `propext`, `Classical.choice`, `Quot.sound`.
 
 The complete theta sum additionally needs unequal atom pairs and its
 infinite remainder controlled uniformly in rank. This first-atom theorem

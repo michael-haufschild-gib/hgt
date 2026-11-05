@@ -209,3 +209,4 @@ The foundational source questions are developed in
 import GaloisForLFunctions.CompletedArithmeticForms.FirstAtomFourierTail
 import GaloisForLFunctions.CompletedArithmeticForms.FourierPositiveHankel
 import GaloisForLFunctions.CompletedArithmeticForms.FirstAtomRadialProfile
+import GaloisForLFunctions.CompletedArithmeticForms.FirstAtomAllRankCenterTail

@@ -104,7 +104,7 @@ theorem integral_center_to_radial {E : Type*} [NormedAddCommGroup E] [NormedSpac
     (∫ s in Ioi r, (Real.pi * Real.exp s) • g (Real.pi * Real.exp s)) =
       ∫ u in Ioi (Real.pi * Real.exp r), g u := by
   rw [integral_Ioi_expScale (mul_pos Real.pi_pos (Real.exp_pos r))]
-  have ht := setIntegral_Ioi_comp_add_right
+  have ht := GaloisForLFunctions.RHTower.setIntegral_Ioi_comp_add_right
     (fun s : ℝ => (Real.pi * Real.exp s) • g (Real.pi * Real.exp s)) r r
   rw [sub_self] at ht
   rw [← ht]
@@ -179,7 +179,7 @@ theorem firstAtomCenterTailSignedJet_eq {r : ℝ}
   have ht := integral_center_to_radial g r
   simp only [smul_eq_mul] at ht
   rw [ht, hj, hsch]
-  simp only [Complex.mul_re, firstAtomRadialTail_jet_im hq, mul_zero, sub_zero]
+  rw [Complex.mul_re, firstAtomRadialTail_jet_im (q := q) hq n, mul_zero, sub_zero]
   ring
 
 /-- The matrix of all literal integrated Fourier-signed first-atom reflection jets. -/
@@ -220,10 +220,10 @@ theorem firstAtomCenterTailMatrix_det_pos {r : ℝ} (hr : 0 ≤ r) (N : ℕ) :
 
 /-- The literal derivative-integral matrix is positive definite for every finite size. -/
 theorem firstAtomLiteralCenterTailMatrix_posDef {r : ℝ} (hr : 0 ≤ r) (N : ℕ) :
-    (fun i j : Fin N => ∫ s in Ioi r, ((-I) ^ ((i : ℕ) + (j : ℕ))).re *
+    Matrix.PosDef (fun i j : Fin N => ∫ s in Ioi r, ((-I) ^ ((i : ℕ) + (j : ℕ))).re *
       iteratedDeriv ((i : ℕ) + (j : ℕ))
         (fun t : ℝ => thetaCuspSourceTerm (s / 2 + t) 1 *
-          thetaCuspSourceTerm (s / 2 - t) 1) 0).PosDef := by
+          thetaCuspSourceTerm (s / 2 - t) 1) 0) := by
   exact firstAtomCenterTailMatrix_posDef hr N
 
 end
