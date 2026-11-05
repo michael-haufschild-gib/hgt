@@ -1,6 +1,6 @@
 # All-rank first-atom center tails
 
-- **Stage:** 1-in-progress
+- **Stage:** 0-backlog
 - **Type:** CONJECTURE
 - **Wall:** Σ6
 - **Statement:** For every finite `N` and `r≥0`, the matrix with entries

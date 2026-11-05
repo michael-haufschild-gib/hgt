@@ -427,4 +427,71 @@ theorem exists_mem_exceptionalSet_near (n : ℕ) {a₀ : ℂ} (ha₀ : a₀ ≠ 
           linarith
       _ < r₀ := by linarith
 
+theorem dense_exceptionalSet (n : ℕ) : Dense (exceptionalSet n) := by
+  rw [Metric.dense_iff]
+  intro a₁ r hr
+  by_cases ha₁ : a₁ = 0
+  · have hne : ((r / 2 : ℝ) : ℂ) ≠ 0 := by exact_mod_cast (by positivity : r / 2 ≠ 0)
+    obtain ⟨a, ha, hd⟩ := exists_mem_exceptionalSet_near n hne (by positivity : 0 < r / 2)
+    refine ⟨a, ?_, ha⟩
+    rw [mem_ball, dist_eq_norm, ha₁, sub_zero]
+    have : ‖((r / 2 : ℝ) : ℂ)‖ = r / 2 := by
+      rw [Complex.norm_real, Real.norm_eq_abs, abs_of_pos (by positivity)]
+    have t := norm_sub_norm_le a ((r / 2 : ℝ) : ℂ)
+    linarith
+  · obtain ⟨a, ha, hd⟩ := exists_mem_exceptionalSet_near n ha₁ hr
+    exact ⟨a, by rw [mem_ball, dist_eq_norm]; exact hd, ha⟩
+
+/-- Exceptional values have distinct `a`-points closer than any polynomial in the height. -/
+theorem exists_superpolynomial_pair {a : ℂ} (ha : a ∈ ⋂ n, exceptionalSet n) {κ : ℝ}
+    (hκ : 0 < κ) (C : ℕ) :
+    ∃ s s' : ℂ, riemannZeta s = a ∧ riemannZeta s' = a ∧ s ≠ s' ∧ 0 ≤ s.re ∧ s.re ≤ 1 ∧
+      3 ≤ |s.im| ∧ ‖s' - s‖ < κ / (2 + |s.im|) ^ C := by
+  obtain ⟨N, hN⟩ := eventually_atTop.mp ((Real.tendsto_pow_mul_exp_neg_atTop_nhds_zero C).eventually
+    (gt_mem_nhds (by positivity : (0 : ℝ) < κ / 2 ^ C)))
+  obtain ⟨s, s', hs, hs', hne, hre0, hre1, him, hd⟩ :=
+    mem_iInter.mp ha ⌈max N 2⌉₊
+  have hceil : max N 2 ≤ (⌈max N 2⌉₊ : ℝ) := Nat.le_ceil _
+  set t := |s.im| with ht
+  have ht2 : 2 ≤ t := by linarith [le_max_right N 2]
+  have htN : N ≤ t := by linarith [le_max_left N 2]
+  have hpow : (2 + t) ^ C ≤ 2 ^ C * t ^ C := by
+    rw [← mul_pow]; exact pow_le_pow_left₀ (by linarith) (by linarith) C
+  have hsmall := hN t htN
+  have hX : 0 < (2 + t) ^ C := by positivity
+  have hexp : Real.exp (-t) * (2 + t) ^ C < κ := by
+    calc Real.exp (-t) * (2 + t) ^ C ≤ Real.exp (-t) * (2 ^ C * t ^ C) :=
+          mul_le_mul_of_nonneg_left hpow (Real.exp_pos _).le
+      _ = 2 ^ C * (t ^ C * Real.exp (-t)) := by ring
+      _ < 2 ^ C * (κ / 2 ^ C) := by gcongr
+      _ = κ := by field_simp
+  have h3 : (3 : ℝ) ≤ t := by
+    have : (2 : ℝ) ≤ ⌈max N 2⌉₊ := (le_max_right N 2).trans hceil
+    linarith
+  refine ⟨s, s', hs, hs', hne, by linarith, hre1.le, h3, ?_⟩
+  show ‖s' - s‖ < κ / (2 + t) ^ C
+  rw [lt_div_iff₀ hX]
+  calc ‖s' - s‖ * (2 + t) ^ C ≤ Real.exp (-t) * (2 + t) ^ C :=
+        mul_le_mul_of_nonneg_right hd.le hX.le
+    _ < κ := hexp
+
+/-- **The exceptional values of `ζ` are a dense `G_δ` null set.** `E = ⋂ₙ exceptionalSet n` is
+a dense `G_δ`; it has measure zero; and every `a ∈ E` has, for every `κ > 0` and `C`, distinct
+`a`-points `s ≠ s'` with `0 ≤ Re s ≤ 1`, `|Im s| ≥ 3` and `|s' − s| < κ (2 + |Im s|)^{−C}`. -/
+theorem exceptional_values_of_riemannZeta :
+    IsGδ (⋂ n, exceptionalSet n) ∧ Dense (⋂ n, exceptionalSet n) ∧
+      volume (⋂ n, exceptionalSet n) = 0 ∧
+      ∀ a ∈ ⋂ n, exceptionalSet n, ∀ κ > 0, ∀ C : ℕ, ∃ s s' : ℂ, riemannZeta s = a ∧
+        riemannZeta s' = a ∧ s ≠ s' ∧ 0 ≤ s.re ∧ s.re ≤ 1 ∧ 3 ≤ |s.im| ∧
+          ‖s' - s‖ < κ / (2 + |s.im|) ^ C := by
+  refine ⟨IsGδ.iInter_of_isOpen isOpen_exceptionalSet,
+    dense_iInter_of_isOpen isOpen_exceptionalSet dense_exceptionalSet, ?_,
+    fun a ha κ hκ C => exists_superpolynomial_pair ha hκ C⟩
+  obtain ⟨C, hC⟩ := ae_riemannZeta_values_collide_or_repel
+  refine measure_mono_null ?_ (ae_iff.mp hC)
+  intro a ha hP
+  obtain ⟨κ, hκ, hrep⟩ := hP
+  obtain ⟨s, s', hs, hs', hne, hre0, hre1, him, hd⟩ := exists_superpolynomial_pair ha hκ C
+  exact absurd (hrep s s' hs hs' hne hre0 hre1 him) (not_le.mpr hd)
+
 end GaloisForLFunctions.ArithmeticDiscreteness

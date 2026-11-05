@@ -208,3 +208,8 @@ Dilation of either exterior response has the same limit in the unit-interval
 L² norm. The proof uses the exact logarithmic ratio and the integrable
 majorant `1+log(1/s)`; it applies to every measurable response with a finite
 normalized logarithmic boundary limit.
+
+A source supported in an interval of width `h≤1` has logarithmic energy at
+least `log(1/h)` times its L² mass. Literal constant interval sources belong
+to the complete energy domain and have exact translation loss `2 min(t,h)`.
+Their energy is at most `h(log(1/h)+3)`, at every interval position.

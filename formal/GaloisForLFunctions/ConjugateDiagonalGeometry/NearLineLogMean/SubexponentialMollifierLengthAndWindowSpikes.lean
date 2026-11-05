@@ -462,9 +462,9 @@ theorem exists_levinson_mollified_budget_complex_le :
         AnalyticAt ℂ (edPoly b s) ((x : ℂ) + (T : ℂ) * I) := fun x _ =>
       (analyticOnNhd_edPoly b hs) _ (Set.mem_univ _)
     have hGi := (continuousOn_weighted_im_logDeriv_horizontal hGana
-      (fun x hx => hGne x (by rwa [huIccx] at hx))).intervalIntegrable
+      (fun x hx => hGne x (by rwa [huIccx] at hx))).intervalIntegrable (μ := volume)
     have hPi := (continuousOn_weighted_im_logDeriv_horizontal hPana
-      (fun x hx => hPne x (by rwa [huIccx] at hx))).intervalIntegrable
+      (fun x hx => hPne x (by rwa [huIccx] at hx))).intervalIntegrable (μ := volume)
     have hsplit : (∫ x in σ₀..(15 / 2 : ℝ), (x - σ₀) *
         (logDeriv (levinsonMollifiedDetector ((lam : ℝ) : ℂ) b s)
           ((x : ℂ) + (T : ℂ) * I)).im)
@@ -648,7 +648,8 @@ theorem exists_zetaWideMoment_le_of_complex_mollified_meanSquare :
       · exact absurd (pow_eq_zero_iff (n := 2) (by norm_num) |>.mp h) hgauge
       · exact h
   have hgfin : {t : ℝ | t ∈ uIcc T₁ T₂ ∧ g ((σ₀ : ℂ) + (t : ℂ) * I) = 0}.Finite := by
-    refine Set.Finite.of_finite_image (Set.Finite.subset hrectfin ?_)
+    refine Set.Finite.of_finite_image (f := fun t : ℝ => (σ₀ : ℂ) + (t : ℂ) * I)
+      (Set.Finite.subset hrectfin ?_)
       (fun _ _ _ _ hxy => by simpa using congrArg Complex.im hxy)
     rintro z ⟨t, ⟨ht, hz⟩, rfl⟩
     exact ⟨hmemleft t ht, (hgFzero t ht).mp hz⟩
@@ -660,7 +661,7 @@ theorem exists_zetaWideMoment_le_of_complex_mollified_meanSquare :
   have hMsq' : (∫ t in T₁..T₂,
       ‖levinsonMollifiedDetector ((0 : ℝ) : ℂ) b s ((σ₀ : ℂ) + (t : ℂ) * I)‖ ^ 2) ≤ Msq := by
     refine le_trans (le_of_eq (intervalIntegral.integral_congr fun t _ => ?_)) hMsq
-    simp only [levinsonMollifiedDetector, hG0]
+    simp only [levinsonMollifiedDetector, hG0, Ψ]
   have hbud := hbudget 0 (by simp) b N hN hb1 hbn Mb hMb1 hmass σ₀ T₁ T₂ Msq
     hσ₀ hσ₀' h20 hT hG1' hG2' hP1 hP2 hgfin hgex hMsq'
   have hUsub : (uIcc σ₀ (15 / 2 : ℝ) ×ℂ uIcc T₁ T₂) ⊆ {z : ℂ | z ≠ 1} := by
@@ -687,7 +688,8 @@ theorem exists_zetaWideMoment_le_of_complex_mollified_meanSquare :
     obtain ⟨hwmem, hwzero⟩ := (hZ w).mp hw
     refine (hZ' w).mpr ⟨hwmem, ?_⟩
     have hw1 : w ≠ 1 := fun h => riemannZeta_one_ne_zero (h ▸ hwzero)
-    dsimp [F]; rw [levinsonGEntire_eq _ hw1, hG0, hwzero]; ring
+    have hG0w : levinsonG 0 w = riemannZeta w := by simpa using hG0 w
+    dsimp [F]; rw [levinsonGEntire_eq _ hw1, hG0w, hwzero]; ring
   have horderG : ∀ w ∈ Z,
       analyticOrderAt (levinsonGEntire ((0 : ℝ) : ℂ)) w = analyticOrderAt riemannZeta w := by
     intro w hw
@@ -1034,7 +1036,7 @@ theorem exists_logIntegral_le_of_complex_secondMoment :
     have h1 := hCz (1 / 2) t (by norm_num) (by norm_num)
     rw [abs_of_nonneg (by linarith [ht.1] : 0 ≤ t)] at h1
     have h2 : ((1 + t) : ℝ) ^ 2 ≤ (3 * T) ^ 2 :=
-      pow_le_pow_left₀ (by linarith) (by linarith [ht.2]) 2
+      pow_le_pow_left₀ (by linarith [ht.1]) (by linarith [ht.2]) 2
     have h3 : ‖riemannZeta (((1 / 2 : ℝ) : ℂ) + (t : ℂ) * I)‖ ≤ (Cz + 1) * (3 * T) ^ 2 :=
       h1.trans (mul_le_mul (by linarith) h2 (by positivity) (by linarith))
     refine (Real.log_le_log hpos h3).trans (le_of_eq ?_)
@@ -1143,7 +1145,8 @@ theorem criticalClustering_of_complexMollifiedSecondMomentLaw
       (V * Real.log V)) atTop (𝓝 0) := by
   have hTFAE := criticalClustering_logMean_mollifier_hecke_tfae
     (c := 1 / 4) (by norm_num) (by norm_num)
-  exact (hTFAE.out 0 4).mp (logMean_tendsto_zero_of_complexMollifiedSecondMomentLaw h) κ hκ
+  have h04 := hTFAE.out 0 4
+  exact h04.mp (logMean_tendsto_zero_of_complexMollifiedSecondMomentLaw h) κ hκ
 
 /-- **`ComplexSecondMomentRate K₀` implies `LogFreeNearLineZeroDensity` (`D_zero`).** -/
 theorem logFreeNearLineZeroDensity_of_complexSecondMomentRate {K₀ : ℝ}
@@ -1165,7 +1168,6 @@ theorem logFreeNearLineZeroDensity_of_complexSecondMomentRate {K₀ : ℝ}
   have hbudget := (abs_le.mp (hbud V (by linarith))).1
   set M : ℝ := ∑ z ∈ (shellZeros V (2 * V)).filter (fun z => 1 / 2 < z.re),
       ((analyticOrderAt _root_.RHTower.xi z).toNat : ℝ) * (z.re - 1 / 2) with hM
-  rw [← hM] at hbudget
   have hsm2 : D * Real.log V ^ 2 ≤ V := by
     have hTe : Real.exp (-(1 * Real.log V)) = V⁻¹ := by
       rw [one_mul, Real.exp_neg, Real.exp_log hV0]
@@ -1305,6 +1307,7 @@ private theorem uniform_remainder_left_le {A θ T ℓ w c L a t₀ : ℝ} {N : �
         Real.exp (-(2 * (L + ℓ / 100) * (1 - a))) / (2 * Real.pi * (1 - a)) ≤
       (4 * (A ^ 2 * 9 * 432 ^ 2)) * w ^ 6 * Real.exp (-(1 / 25 * ℓ)) := by
   have hw0 : 0 < w := by linarith
+  have hc0 : 0 < c := by rw [hc]; positivity
   have hw16 : (16 : ℝ) ≤ w ^ 2 := by
     calc (16 : ℝ) = 4 ^ 2 := by norm_num
       _ ≤ w ^ 2 := pow_le_pow_left₀ (by norm_num) hw4 2
@@ -1441,11 +1444,11 @@ theorem eventually_uniform_complex_necessary_length :
   obtain ⟨A, -, hwin⟩ := exists_window_inequality
   obtain ⟨Cc, hCc, hcenter⟩ := exists_center_tail
   obtain ⟨Cl, Kl, hCl, hKl, hleft_floor⟩ := exists_left_floor_complex
-  set B₁ : ℝ := 4 * (A ^ 2 * 9 * 432 ^ 2) + 1 with hB₁_def
+  obtain ⟨B₁, hB₁_def⟩ : ∃ x : ℝ, x = 4 * (A ^ 2 * 9 * 432 ^ 2) + 1 := ⟨_, rfl⟩
   have hB₁_pos : 0 < B₁ := by rw [hB₁_def]; positivity
-  set C_cen : ℝ := Cc * 8100 * (2 * Real.exp 1) * 2 + 1 with hC_cen_def
+  obtain ⟨C_cen, hC_cen_def⟩ : ∃ x : ℝ, x = Cc * 8100 * (2 * Real.exp 1) * 2 + 1 := ⟨_, rfl⟩
   have hC_cen_pos : 0 < C_cen := by rw [hC_cen_def]; positivity
-  set C_lf : ℝ := Cl + 7 * Kl + 1 with hC_lf_def
+  obtain ⟨C_lf, hC_lf_def⟩ : ∃ x : ℝ, x = Cl + 7 * Kl + 1 := ⟨_, rfl⟩
   have hC_lf_pos : 0 < C_lf := by rw [hC_lf_def]; positivity
   filter_upwards [
     eventually_ge_atTop (1000 : ℝ),
@@ -1473,23 +1476,25 @@ theorem eventually_uniform_complex_necessary_length :
     b N hN hlogN hb1 hb
   have hT0 : 0 < T := by linarith
   have hT1 : 1 ≤ T := by linarith
-  set ℓ : ℝ := Real.log T with hℓ_def
+  obtain ⟨ℓ, hℓ_def⟩ : ∃ x : ℝ, x = Real.log T := ⟨_, rfl⟩
+  rw [← hℓ_def] at hℓ10 hr₁ hr₂ hcen_sm hf_gauss hf_err hR_sm hT_big hmass_sm hlf_sm ⊢
   have hℓ0 : 0 < ℓ := by linarith
-  have hT_exp : Real.exp ℓ = T := Real.exp_log hT0
+  have hT_exp : Real.exp ℓ = T := by rw [hℓ_def]; exact Real.exp_log hT0
   have hN_pos : (0 : ℝ) < (N : ℝ) := by exact_mod_cast hN
   have hN_ge1 : (1 : ℝ) ≤ (N : ℝ) := by exact_mod_cast hN
-  set Θ : ℝ := Real.log (N : ℝ) with hΘ_def
-  have hΘ0 : 0 ≤ Θ := Real.log_nonneg hN_ge1
+  obtain ⟨Θ, hΘ_def⟩ : ∃ x : ℝ, x = Real.log (N : ℝ) := ⟨_, rfl⟩
+  rw [← hΘ_def] at hlogN ⊢
+  have hΘ0 : 0 ≤ Θ := by rw [hΘ_def]; exact Real.log_nonneg hN_ge1
   have hT60_eq : T ^ (1 / 60 : ℝ) = Real.exp (1 / 60 * ℓ) := by
     rw [Real.rpow_def_of_pos hT0, ← hℓ_def]; ring_nf
   have hΘ_le : Θ ≤ Real.exp (1 / 60 * ℓ) := hlogN.trans_eq hT60_eq
-  set θ : ℝ := Θ / ℓ with hθ_def
-  have hθ0 : 0 ≤ θ := div_nonneg hΘ0 hℓ0.le
+  obtain ⟨θ, hθ_def⟩ : ∃ x : ℝ, x = Θ / ℓ := ⟨_, rfl⟩
+  have hθ0 : 0 ≤ θ := by rw [hθ_def]; exact div_nonneg hΘ0 hℓ0.le
   have hN_eq_Tθ : (N : ℝ) = T ^ θ := by
     rw [Real.rpow_def_of_pos hT0, ← hℓ_def, hθ_def, mul_div_cancel₀ _ hℓ0.ne', hΘ_def,
       Real.exp_log hN_pos]
   have hNT : (N : ℝ) ≤ T ^ θ := hN_eq_Tθ.le
-  set q : ℝ := 2 + 3 / 2 * θ + 3 / 100 with hq_def
+  obtain ⟨q, hq_def⟩ : ∃ x : ℝ, x = 2 + 3 / 2 * θ + 3 / 100 := ⟨_, rfl⟩
   have hq0 : 0 < q := by rw [hq_def]; positivity
   have hq2 : 2 ≤ q := by rw [hq_def]; linarith
   have hexp60_ge1 : 1 ≤ Real.exp (1 / 60 * ℓ) := Real.one_le_exp (by positivity)
@@ -1499,11 +1504,10 @@ theorem eventually_uniform_complex_necessary_length :
     calc Θ ≤ (1 / 10) * Real.exp (1 / 60 * ℓ) * 10 := h1
       _ ≤ (1 / 10) * Real.exp (1 / 60 * ℓ) * ℓ :=
           mul_le_mul_of_nonneg_left hℓ10 (by positivity)
-  have hq_le : q ≤ 4 * Real.exp (1 / 60 * ℓ) := by
-    rw [hq_def]; linarith
-  set p : ℝ := 2 / q with hp_def
+  have hq_le : q ≤ 4 * Real.exp (1 / 60 * ℓ) := by rw [hq_def]; linarith
+  obtain ⟨p, hp_def⟩ : ∃ x : ℝ, x = 2 / q := ⟨_, rfl⟩
   have hp0 : 0 < p := by rw [hp_def]; positivity
-  have hp1 : p ≤ 1 := (div_le_one hq0).mpr hq2
+  have hp1 : p ≤ 1 := by rw [hp_def]; exact (div_le_one hq0).mpr hq2
   have hpq : p * q = 2 := by rw [hp_def]; exact div_mul_cancel₀ _ hq0.ne'
   have hp_ge : (1 / 2) * Real.exp (-(1 / 60 * ℓ)) ≤ p := by
     rw [hp_def, le_div_iff₀ hq0]
@@ -1512,21 +1516,24 @@ theorem eventually_uniform_complex_necessary_length :
           mul_le_mul_of_nonneg_left hq_le (by positivity)
       _ = 2 * (Real.exp (-(1 / 60 * ℓ)) * Real.exp (1 / 60 * ℓ)) := by ring
       _ = 2 := by rw [← Real.exp_add]; simp
-  set ε : ℝ := p / 2000 with hε_def
+  obtain ⟨ε, hε_def⟩ : ∃ x : ℝ, x = p / 2000 := ⟨_, rfl⟩
   have hε0 : 0 < ε := by rw [hε_def]; positivity
   have hε1 : ε ≤ 1 / 2000 := by rw [hε_def]; linarith
   have hε_ge : (1 / 4000) * Real.exp (-(1 / 60 * ℓ)) ≤ ε := by rw [hε_def]; linarith
-  set w : ℝ := ℓ ^ 2 with hw_def
+  obtain ⟨w, hw_def⟩ : ∃ x : ℝ, x = ℓ ^ 2 := ⟨_, rfl⟩
   have hw0 : 0 < w := by rw [hw_def]; positivity
-  have hw4 : 4 ≤ w := by rw [hw_def]; nlinarith
-  have hw100 : 100 ≤ w := by rw [hw_def]; nlinarith
-  set R : ℝ := 4 * w * Real.sqrt (Θ + 2 * ℓ) with hR_def
+  have hw100 : 100 ≤ w := by
+    rw [hw_def]
+    calc (100 : ℝ) = 10 ^ 2 := by norm_num
+      _ ≤ ℓ ^ 2 := pow_le_pow_left₀ (by norm_num) hℓ10 2
+  have hw4 : 4 ≤ w := by linarith
+  obtain ⟨R, hR_def⟩ : ∃ x : ℝ, x = 4 * w * Real.sqrt (Θ + 2 * ℓ) := ⟨_, rfl⟩
   have hR0 : 0 ≤ R := by rw [hR_def]; positivity
-  set L : ℝ := (2 + 3 / 2 * θ + 1 / 100) * ℓ with hL_def
-  set B : ℝ := ℓ / 100 with hB_def
+  obtain ⟨L, hL_def⟩ : ∃ x : ℝ, x = (2 + 3 / 2 * θ + 1 / 100) * ℓ := ⟨_, rfl⟩
+  obtain ⟨B, hB_def⟩ : ∃ x : ℝ, x = ℓ / 100 := ⟨_, rfl⟩
   have hL0 : 0 ≤ L := by rw [hL_def]; positivity
   have hB0 : 0 ≤ B := by rw [hB_def]; positivity
-  set a : ℝ := Real.log 2 / (q * ℓ) with ha_def
+  obtain ⟨a, ha_def⟩ : ∃ x : ℝ, x = Real.log 2 / (q * ℓ) := ⟨_, rfl⟩
   have hlog2_pos : 0 < Real.log 2 := Real.log_pos one_lt_two
   have hlog2_lt1 : Real.log 2 < 1 := by linarith [Real.log_two_lt_d9]
   have hlog2_gt_half : 1 / 2 < Real.log 2 := by linarith [Real.log_two_gt_d9]
@@ -1565,14 +1572,16 @@ theorem eventually_uniform_complex_necessary_length :
       _ ≤ ε * T := by rw [← hT_exp]; exact mul_le_mul_of_nonneg_right hε_ge (Real.exp_pos ℓ).le
   have hRT : R ≤ ε / 16000 * T := by
     have hsqrt_le : Real.sqrt (Θ + 2 * ℓ) ≤ Θ + 2 * ℓ + 1 :=
-      Real.sqrt_le_iff.mpr ⟨by positivity, by nlinarith⟩
+      Real.sqrt_le_iff.mpr ⟨by positivity, by nlinarith [hΘ0, hℓ0]⟩
     have hsum_le : Θ + 2 * ℓ + 1 ≤ 4 * ℓ * Real.exp (1 / 60 * ℓ) := by
       have h2 : 2 * ℓ ≤ 2 * ℓ * Real.exp (1 / 60 * ℓ) :=
         le_mul_of_one_le_right (by positivity) hexp60_ge1
-      have h3 : 1 + Real.exp (1 / 60 * ℓ) ≤ 2 * ℓ * Real.exp (1 / 60 * ℓ) := by nlinarith
+      have h3 : 1 + Real.exp (1 / 60 * ℓ) ≤ 2 * ℓ * Real.exp (1 / 60 * ℓ) := by
+        nlinarith [hℓ10, hexp60_ge1]
       linarith
     have hR_up : R ≤ 16 * ℓ ^ 3 * Real.exp (1 / 60 * ℓ) := by
-      calc R ≤ 4 * w * (4 * ℓ * Real.exp (1 / 60 * ℓ)) :=
+      calc R = 4 * w * Real.sqrt (Θ + 2 * ℓ) := hR_def
+        _ ≤ 4 * w * (4 * ℓ * Real.exp (1 / 60 * ℓ)) :=
             mul_le_mul_of_nonneg_left (hsqrt_le.trans hsum_le) (by positivity)
         _ = 16 * ℓ ^ 3 * Real.exp (1 / 60 * ℓ) := by rw [hw_def]; ring
     have hsm' : 16 * ℓ ^ 3 * Real.exp (1 / 60 * ℓ) ≤
@@ -1621,7 +1630,7 @@ theorem eventually_uniform_complex_necessary_length :
     have hc_sq : (√(2 * Real.pi)) ^ 2 = 2 * Real.pi :=
       Real.sq_sqrt (by positivity)
     have hrem_r := uniform_remainder_right_le hw4 hc_sq ha4 hℓ0 hexpLa_le2
-    have hrem_l := uniform_remainder_left_le (A := A) (θ := θ) hT0 hT1 rfl hw4 rfl ha4
+    have hrem_l := uniform_remainder_left_le (A := A) (θ := θ) hT0 hT1 hℓ_def hw4 rfl ha4
       ht₁ ht₂ hNT hL_def hLa0 (by rw [← hB_def]; exact hLBa_le)
     have hr₁_bound : 288 * w ^ 2 * Real.exp (-(1 / 50 * ℓ)) ≤ ε / 16 * (w * √Real.pi) := by
       have hmul := mul_le_mul_of_nonneg_right hr₁ (Real.exp_pos (-(1 / 60 * ℓ))).le
@@ -1651,7 +1660,8 @@ theorem eventually_uniform_complex_necessary_length :
             = B₁ * (ℓ ^ 10 * Real.exp (-(1 / 25 * ℓ))) := by ring
           _ ≤ B₁ * (1 / (64000 * B₁) * Real.exp (-(1 / 60 * ℓ))) :=
               mul_le_mul_of_nonneg_left hmul hB₁_pos.le
-          _ = ((1 / 4000) * Real.exp (-(1 / 60 * ℓ))) / 16 := by field_simp; ring
+          _ = (B₁ / B₁) * (Real.exp (-(1 / 60 * ℓ)) / 64000) := by ring
+          _ = ((1 / 4000) * Real.exp (-(1 / 60 * ℓ))) / 16 := by rw [div_self hB₁_pos.ne']; ring
           _ ≤ ε / 16 := div_le_div_of_nonneg_right hε_ge (by norm_num)
       calc (4 * (A ^ 2 * 9 * 432 ^ 2)) * w ^ 6 * Real.exp (-(1 / 25 * ℓ))
           ≤ B₁ * w ^ 6 * Real.exp (-(1 / 25 * ℓ)) := by
@@ -1663,35 +1673,38 @@ theorem eventually_uniform_complex_necessary_length :
             mul_le_mul h1 (mul_le_mul_of_nonneg_left hsqrtπ_ge1 hw0.le)
               (by positivity) (by positivity)
     -- Right floor at `K := 5 + ℓ`
-    set K : ℝ := 5 + ℓ with hK_def
+    obtain ⟨K, hK_def⟩ : ∃ x : ℝ, x = 5 + ℓ := ⟨_, rfl⟩
     have hK5 : 5 ≤ K := by rw [hK_def]; linarith
     have ha_sq : a ^ 2 / w ^ 2 ≤ ε / 4 := by
       have ha_eq : a = (1000 * Real.log 2 / ℓ) * ε := by
-        rw [ha_def, hε_def, hp_def]; field_simp; ring
+        rw [ha_def, hε_def, hp_def, div_eq_mul_inv, mul_inv, div_eq_mul_inv, div_eq_mul_inv]
+        ring
       have ha_le : a ≤ 100 * ε := by
         rw [ha_eq]
         refine mul_le_mul_of_nonneg_right ?_ hε0.le
         rw [div_le_iff₀ hℓ0]; linarith
       have haw_le : a / w ≤ ε := by
-        rw [div_le_iff₀ hw0]; nlinarith
+        rw [div_le_iff₀ hw0]; nlinarith [ha_le, hw100, hε0]
       calc a ^ 2 / w ^ 2 = (a / w) ^ 2 := (div_pow a w 2).symm
         _ ≤ ε ^ 2 := pow_le_pow_left₀ (by positivity) haw_le 2
-        _ ≤ ε / 4 := by nlinarith
+        _ ≤ ε / 4 := by nlinarith [hε0, hε1]
     have hright_err : Real.exp ((K - 1 / 2) ^ 2 / w ^ 2) *
         (19 * Real.exp (-(Real.log 2 * K)) + 8 / t₀ + 6 * Real.exp (-(t₀ ^ 2 / (8 * w ^ 2)))) ≤
         ε / 8 := by
       have hexpK_le2 : Real.exp ((K - 1 / 2) ^ 2 / w ^ 2) ≤ 2 := by
         have h1 : (K - 1 / 2) ^ 2 / w ^ 2 ≤ Real.log 2 := by
           rw [div_le_iff₀ (by positivity), hK_def, hw_def]
-          have h2 : (5 + ℓ - 1 / 2) ^ 2 ≤ 4 * ℓ ^ 2 := by nlinarith
+          have h2 : (5 + ℓ - 1 / 2) ^ 2 ≤ 4 * ℓ ^ 2 := by nlinarith [hℓ10]
           have h3 : 4 * ℓ ^ 2 ≤ Real.log 2 * (ℓ ^ 2) ^ 2 := by
-            have h4 : (4 : ℝ) ≤ Real.log 2 * ℓ ^ 2 := by nlinarith
-            nlinarith
+            have h4 : (4 : ℝ) ≤ Real.log 2 * ℓ ^ 2 := by nlinarith [hlog2_gt_half, hℓ10]
+            have h5 : (ℓ ^ 2) ^ 2 = ℓ ^ 2 * ℓ ^ 2 := by ring
+            rw [h5]
+            nlinarith [h4, hℓ10]
           linarith
         exact (Real.exp_le_exp.mpr h1).trans_eq (Real.exp_log two_pos)
       have hterm1 : 19 * Real.exp (-(Real.log 2 * K)) ≤ 19 * Real.exp (-(1 / 2 * ℓ)) := by
         refine mul_le_mul_of_nonneg_left (Real.exp_le_exp.mpr ?_) (by norm_num)
-        rw [hK_def]; nlinarith
+        rw [hK_def]; nlinarith [hlog2_gt_half, hℓ0]
       have hterm2 : 8 / t₀ ≤ 8 * Real.exp (-(1 / 2 * ℓ)) := by
         calc 8 / t₀ ≤ 8 / T := div_le_div_of_nonneg_left (by norm_num) hT0 ht₁
           _ = 8 * Real.exp (-ℓ) := by rw [div_eq_mul_inv, ← hT_exp, Real.exp_neg]
@@ -1703,7 +1716,7 @@ theorem eventually_uniform_complex_necessary_length :
           rw [one_mul, Real.exp_neg, hT_exp, ← div_eq_mul_inv, div_le_iff₀ hT0] at h1
           have h2 : w ^ 2 * ℓ = ℓ ^ 5 := by rw [hw_def]; ring
           rw [h2]; linarith
-        have ht₀_sq : T ≤ t₀ ^ 2 := by nlinarith
+        have ht₀_sq : T ≤ t₀ ^ 2 := by nlinarith [hT1, ht₁]
         have hdiv : 1 / 2 * ℓ ≤ t₀ ^ 2 / (8 * w ^ 2) := by
           rw [le_div_iff₀ (by positivity)]; linarith
         exact mul_le_mul_of_nonneg_left (Real.exp_le_exp.mpr (neg_le_neg hdiv)) (by norm_num)
@@ -1730,7 +1743,9 @@ theorem eventually_uniform_complex_necessary_length :
         have hsq : (4 * w * Real.sqrt (Θ + 2 * ℓ)) ^ 2 = 16 * w ^ 2 * (Θ + 2 * ℓ) := by
           rw [mul_pow, mul_pow, Real.sq_sqrt (by positivity)]; ring
         rw [hsq, mul_div_right_comm]
-        have hdiv : 16 * w ^ 2 / (4 * w ^ 2) = 4 := by field_simp; ring
+        have hdiv : 16 * w ^ 2 / (4 * w ^ 2) = 4 := by
+          calc 16 * w ^ 2 / (4 * w ^ 2) = 4 * ((4 * w ^ 2) / (4 * w ^ 2)) := by ring
+            _ = 4 := by rw [div_self (by positivity)]; ring
         rw [hdiv]; ring
       have hN3_eq : (N : ℝ) ^ (3 : ℝ) = Real.exp (3 * Θ) := by
         rw [Real.rpow_def_of_pos hN_pos, ← hΘ_def]; congr 1; ring
@@ -1742,7 +1757,8 @@ theorem eventually_uniform_complex_necessary_length :
             _ = 9 * T ^ 2 := by ring
         have h2 : 1 + 4 * w ^ 2 ≤ 5 * ℓ ^ 4 := by
           have hℓ4 : 1 ≤ ℓ ^ 4 := one_le_pow₀ (by linarith)
-          rw [hw_def]; nlinarith
+          have hw_sq : w ^ 2 = ℓ ^ 4 := by rw [hw_def]; ring
+          linarith
         have h3 : 2 * (1 + |t₀|) ^ 2 * (1 + 4 * w ^ 2) ≤ 90 * T ^ 2 * ℓ ^ 4 := by
           calc 2 * (1 + |t₀|) ^ 2 * (1 + 4 * w ^ 2) ≤ 2 * (9 * T ^ 2) * (5 * ℓ ^ 4) :=
                 mul_le_mul (mul_le_mul_of_nonneg_left h1 (by norm_num)) h2
@@ -1768,7 +1784,8 @@ theorem eventually_uniform_complex_necessary_length :
         calc C_cen * (ℓ ^ 8 * Real.exp (-4 * ℓ))
             ≤ C_cen * (1 / (32000 * C_cen) * Real.exp (-(1 / 60 * ℓ))) :=
               mul_le_mul_of_nonneg_left hmul hC_cen_pos.le
-          _ = ((1 / 4000) * Real.exp (-(1 / 60 * ℓ))) / 8 := by field_simp; ring
+          _ = (C_cen / C_cen) * (Real.exp (-(1 / 60 * ℓ)) / 32000) := by ring
+          _ = ((1 / 4000) * Real.exp (-(1 / 60 * ℓ))) / 8 := by rw [div_self hC_cen_pos.ne']; ring
           _ ≤ ε / 8 := div_le_div_of_nonneg_right hε_ge (by norm_num)
       rw [hR_gauss, hN3_eq]
       calc Cc * Real.exp (3 * Θ) * ((2 * (1 + |t₀|) ^ 2 * (1 + 4 * w ^ 2)) ^ 2 * 2 * Real.exp 1) *
@@ -1858,27 +1875,26 @@ theorem eventually_uniform_complex_necessary_length :
     (linePower_nonneg b N _) (linePower_nonneg b N _) (Real.exp_pos _).le (by norm_num)
     hheight hψ
   -- Complex left floor on `[T₁, T₂]`
-  set z : ℝ := Real.exp (99 / 100 * p * Real.log 2) with hz_def
+  obtain ⟨z, hz_def⟩ : ∃ x : ℝ, x = Real.exp (99 / 100 * p * Real.log 2) := ⟨_, rfl⟩
   have hz0 : 0 < z := by rw [hz_def]; positivity
   have hzval : (T₂ - T₁) * z ≤
       ∫ t in T₁..T₂, ‖riemannZeta (((1 / 2 - a : ℝ) : ℂ) + (t : ℂ) * I) *
         edPoly b (Finset.Icc 1 N) (((1 / 2 - a : ℝ) : ℂ) + (t : ℂ) * I)‖ ^ 2 := by
-    set v : ℝ := Real.log 2 / q with hv_def
+    obtain ⟨v, hv_def⟩ : ∃ x : ℝ, x = Real.log 2 / q := ⟨_, rfl⟩
     have hv0 : 0 < v := by rw [hv_def]; positivity
     have hv_eq : 2 * v = p * Real.log 2 := by rw [hv_def, hp_def]; ring
     have hv_ge : (1 / 8) * Real.exp (-(1 / 60 * ℓ)) ≤ v := by
       have h1 : p * (1 / 2) ≤ p * Real.log 2 :=
         mul_le_mul_of_nonneg_left hlog2_gt_half.le hp0.le
       linarith
-    have haℓ : a * ℓ = v := by
-      rw [ha_def, hv_def]; field_simp
+    have haℓ : a * ℓ = v := by rw [ha_def, hv_def]; field_simp
     have hcount := hcnt T₁ T₂ (by linarith) (by linarith) (by linarith) (by linarith)
-    set Δ : ℝ := (xiPosZeroCount T₂ : ℝ) - xiPosZeroCount T₁
+    obtain ⟨Δ, hΔ_def⟩ : ∃ x : ℝ, x = (xiPosZeroCount T₂ : ℝ) - xiPosZeroCount T₁ := ⟨_, rfl⟩
+    rw [← hΔ_def, ← hℓ_def] at hcount
     have hmain_cnt : 996 / 1000 * (v * T) ≤ 2 * Real.pi * (a * Δ) := by
       have h1 := mul_le_mul_of_nonneg_left hcount ha0.le
       have h2 : a * (996 / 1000 * (T * ℓ)) = 996 / 1000 * ((a * ℓ) * T) := by ring
       have h3 : a * (2 * Real.pi * Δ) = 2 * Real.pi * (a * Δ) := by ring
-      rw [← hℓ_def] at h1
       rw [h2, haℓ, h3] at h1
       exact h1
     have hMb1 : (1 : ℝ) ≤ (N : ℝ) ^ 5 := one_le_pow₀ hN_ge1
@@ -1892,10 +1908,13 @@ theorem eventually_uniform_complex_necessary_length :
       have herr_up : Cl + Kl * (Real.log T₂ + Real.log ((N : ℝ) ^ 5)) ≤
           C_lf * ℓ * Real.exp (1 / 60 * ℓ) := by
         rw [hlogN5, hC_lf_def]
-        have h1 : Cl ≤ Cl * ℓ * Real.exp (1 / 60 * ℓ) := by nlinarith
-        have h2 : Kl * (ℓ + 1) ≤ 2 * Kl * ℓ * Real.exp (1 / 60 * ℓ) := by nlinarith
-        have h3 : Kl * (5 * Θ) ≤ 5 * Kl * ℓ * Real.exp (1 / 60 * ℓ) := by nlinarith
-        linarith
+        have h1ℓ : 1 ≤ ℓ * Real.exp (1 / 60 * ℓ) := by nlinarith [hℓ10, hexp60_ge1]
+        have h1 : Cl ≤ Cl * (ℓ * Real.exp (1 / 60 * ℓ)) := le_mul_of_one_le_right hCl.le h1ℓ
+        have h2 : Kl * (ℓ + 1) ≤ 2 * Kl * (ℓ * Real.exp (1 / 60 * ℓ)) := by
+          nlinarith [hKl, hℓ10, hexp60_ge1]
+        have h3 : Kl * (5 * Θ) ≤ 5 * Kl * (ℓ * Real.exp (1 / 60 * ℓ)) := by
+          nlinarith [hKl, hΘ0, hΘ_le, hℓ10]
+        linarith [mul_le_mul_of_nonneg_left hlogT2 hKl.le]
       have hmul := mul_le_mul_of_nonneg_right hlf_sm (Real.exp_pos (59 / 60 * ℓ)).le
       have hexp_eq : Real.exp (-(29 / 30 * ℓ)) * Real.exp (59 / 60 * ℓ) =
           Real.exp (1 / 60 * ℓ) := by rw [← Real.exp_add]; congr 1; ring
@@ -1913,13 +1932,16 @@ theorem eventually_uniform_complex_necessary_length :
             rw [← hT_exp]
             exact mul_le_mul_of_nonneg_left
               (mul_le_mul_of_nonneg_right hv_ge (Real.exp_pos ℓ).le) (by norm_num)
-    set E₀ : ℝ := 2 * Real.pi * (a * Δ) - Cl - Kl * (Real.log T₂ + Real.log ((N : ℝ) ^ 5))
-    have hE₀_ge : 99 / 100 * (v * T) ≤ E₀ := by linarith
+    obtain ⟨E₀, hE₀_def⟩ : ∃ x : ℝ,
+        x = 2 * Real.pi * (a * Δ) - Cl - Kl * (Real.log T₂ + Real.log ((N : ℝ) ^ 5)) := ⟨_, rfl⟩
+    have hE₀_ge : 99 / 100 * (v * T) ≤ E₀ := by rw [hE₀_def]; linarith
     have hE₀_pos : 0 < E₀ := lt_of_lt_of_le (by positivity) hE₀_ge
     have hfl := hleft_floor b N hN hb1 hb ((N : ℝ) ^ 5) hMb1 (sum_norm_mul_rpow_four_le hb)
       a T₁ T₂ ha0 ha4 (by linarith) hT12_lt
       (fun x hx => (hs1 x hx).1) (fun x hx => (hs2 x hx).1)
-      (fun x hx => (hs1 x hx).2) (fun x hx => (hs2 x hx).2) hE₀_pos
+      (fun x hx => (hs1 x hx).2) (fun x hx => (hs2 x hx).2)
+      (by rw [← hΔ_def, ← hE₀_def]; exact hE₀_pos)
+    rw [← hΔ_def, ← hE₀_def] at hfl
     have hexp_ge : z ≤ Real.exp (2 / (T₂ - T₁) * E₀) := by
       rw [hz_def]
       refine Real.exp_le_exp.mpr ?_
@@ -1973,7 +1995,7 @@ theorem eventually_uniform_complex_necessary_length_exp :
   have hN_pos : (0 : ℝ) < (N : ℝ) := by exact_mod_cast hN
   have hlogN_le_θ : Real.log (N : ℝ) ≤ θ * Real.log T := by
     calc Real.log (N : ℝ) ≤ Real.log (T ^ θ) := Real.log_le_log hN_pos hNT
-      _ = θ * Real.log T := Real.log_rpow hT0
+      _ = θ * Real.log T := Real.log_rpow hT0 θ
   have hlogN_up : Real.log (N : ℝ) ≤ T ^ (1 / 60 : ℝ) := hlogN_le_θ.trans hθ_up
   have h1 := hmain b N hN hlogN_up hb1 hb
   refine le_trans (mul_le_mul_of_nonneg_right ?_ hT0.le) h1
@@ -2037,7 +2059,7 @@ theorem complexSecondMomentRate_forces_exp_logSq_length {K₀ : ℝ} (hK₀ : 0 
   have hE0 : 0 < K₀ / Real.log T := div_pos hK₀ hℓ0
   have hmin := hex (b T) (N T) (K₀ / Real.log T) hNT hb1T hbT hE0 hmomT
   have hrew : Real.log T / (6 * (K₀ / Real.log T)) = (Real.log T) ^ 2 / (6 * K₀) := by
-    field_simp; ring
+    field_simp
   rw [hrew] at hmin
   have hdom : (Real.log T) ^ 2 / (6 * K₀) - 4 / 3 * Real.log T ≤ T ^ (1 / 60 : ℝ) := by
     have hT60 : T ^ (1 / 60 : ℝ) = Real.exp (1 / 60 * Real.log T) := by
@@ -2118,8 +2140,9 @@ theorem tendsto_log_length_div_log_atTop_of_complex_second_moment_tendsto_one
   have hmom_le : (∫ t in T..(2 * T), ‖riemannZeta (((1 / 2 : ℝ) : ℂ) + (t : ℂ) * I) *
       edPoly (b T) (Finset.Icc 1 (N T)) (((1 / 2 : ℝ) : ℂ) + (t : ℂ) * I)‖ ^ 2) ≤
       (1 + 1 / (6 * (M' + 2))) * T := by
-    have h1 := mul_le_mul_of_nonneg_right (mem_Iio.mp hmomT).le hT0.le
-    rwa [inv_mul_cancel_left₀ hT0.ne' _] at h1
+    have h1 := mul_le_mul_of_nonneg_left (mem_Iio.mp hmomT).le hT0.le
+    rw [mul_inv_cancel_left₀ hT0.ne' _, mul_comm T _] at h1
+    exact h1
   have hmin := hex (b T) (N T) (1 / (6 * (M' + 2))) hNT hb1T hbT hE hmom_le
   have hrew : Real.log T / (6 * (1 / (6 * (M' + 2)))) - 4 / 3 * Real.log T =
       (M' + 2 / 3) * Real.log T := by field_simp; ring
@@ -2130,7 +2153,10 @@ theorem tendsto_log_length_div_log_atTop_of_complex_second_moment_tendsto_one
     rw [hT60]
     have h1 := mul_le_mul_of_nonneg_right hcap (Real.exp_pos (1 / 60 * Real.log T)).le
     rw [pow_one, mul_assoc, ← Real.exp_add, neg_add_cancel, Real.exp_zero, mul_one] at h1
-    exact (div_le_iff₀ (by positivity : 0 < M' + 2)).mp (by field_simp; linarith)
+    have h2 := mul_le_mul_of_nonneg_left h1 (by positivity : 0 ≤ M' + 2)
+    have h3 : (M' + 2) * (1 / (M' + 2) * Real.exp (1 / 60 * Real.log T)) =
+        Real.exp (1 / 60 * Real.log T) := by field_simp
+    linarith
   have hlow : M' * Real.log T ≤ Real.log (N T : ℝ) := by
     have hsub : M' * Real.log T ≤ min (T ^ (1 / 60 : ℝ)) ((M' + 2 / 3) * Real.log T) :=
       le_min (by nlinarith) (by nlinarith)

@@ -1,11 +1,10 @@
-import GaloisForLFunctions.ArithmeticProduction.LongMollifiersImplyCriticalClustering
 import GaloisForLFunctions.ArithmeticProduction.TheLengthPrecisionLaw
 import GaloisForLFunctions.RHTower.LargeValues
 import GaloisForLFunctions.HTGeometry.ThreeCircles
 import GaloisForLFunctions.RHTower.LiouvilleDirichletSeries
-import GaloisForLFunctions.RHTower.LiouvilleTriangularHeadOscillation
 import GaloisForLFunctions.RHTower.ZetaPartialSumStrip
-import GaloisForLFunctions.RHTower.XiLogDerivZeroFreePositive
+import GaloisForLFunctions.RHTower.LevinsonDetectorRightCount
+import GaloisForLFunctions.RHTower.OffLineMomentCensusBridge
 
 /-!
 # Long integer polynomials see parity
@@ -102,12 +101,16 @@ private theorem integral_norm_sq_sum_le (s : Finset ℕ) (w : ℕ → ℝ) (f : 
     exact (pow_le_pow_left₀ (norm_nonneg _) h1 2).trans h2
   have hint : ∀ i ∈ s, IntervalIntegrable (fun t => |w i| * ‖f i t‖ ^ 2) volume T₁ T₂ := fun i hi =>
     (continuous_const.mul ((hf i hi).norm.pow 2)).intervalIntegrable _ _
-  have hmono := intervalIntegral.integral_mono_on hT (hcont.intervalIntegrable _ _)
-    (((continuous_finsetSum _ fun i hi =>
-      continuous_const.mul ((hf i hi).norm.pow 2)).const_mul' W).intervalIntegrable T₁ T₂)
-    (fun t _ => hpt t)
+  have hc2 : Continuous fun t : ℝ => W * ∑ i ∈ s, |w i| * ‖f i t‖ ^ 2 :=
+    continuous_const.mul (continuous_finsetSum _ fun i hi =>
+      continuous_const.mul ((hf i hi).norm.pow 2))
+  have hmono : (∫ t in T₁..T₂, ‖∑ i ∈ s, (w i : ℂ) * f i t‖ ^ 2) ≤
+      ∫ t in T₁..T₂, W * ∑ i ∈ s, |w i| * ‖f i t‖ ^ 2 :=
+    intervalIntegral.integral_mono_on hT (hcont.intervalIntegrable _ _) (hc2.intervalIntegrable _ _)
+      (fun t _ => hpt t)
+  rw [← hW]
   refine hmono.trans ?_
-  rw [intervalIntegral.integral_const_mul, intervalIntegral.integral_finset_sum hint]
+  rw [intervalIntegral.integral_const_mul, intervalIntegral.integral_finsetSum hint]
   have h6 : ∑ i ∈ s, (∫ t in T₁..T₂, |w i| * ‖f i t‖ ^ 2) ≤ ∑ i ∈ s, |w i| * B := by
     refine Finset.sum_le_sum fun i hi => ?_
     rw [intervalIntegral.integral_const_mul]
@@ -133,15 +136,17 @@ private theorem norm_sq_add_le (x y : ℂ) : ‖x + y‖ ^ 2 ≤ 2 * ‖x‖ ^ 2
 private theorem integral_add_norm_sq_le {f g : ℝ → ℂ} (hf : Continuous f) (hg : Continuous g) {T₁ T₂ B₁ B₂ : ℝ}
     (hT : T₁ ≤ T₂) (h1 : (∫ t in T₁..T₂, ‖f t‖ ^ 2) ≤ B₁) (h2 : (∫ t in T₁..T₂, ‖g t‖ ^ 2) ≤ B₂) :
     (∫ t in T₁..T₂, ‖f t + g t‖ ^ 2) ≤ 2 * B₁ + 2 * B₂ := by
-  have hmono := intervalIntegral.integral_mono_on hT
-    (((hf.add hg).norm.pow 2).intervalIntegrable T₁ T₂)
-    (((continuous_const.mul (hf.norm.pow 2)).add
-      (continuous_const.mul (hg.norm.pow 2))).intervalIntegrable T₁ T₂)
-    (fun t _ => norm_sq_add_le (f t) (g t))
+  have hc1 : Continuous fun t : ℝ => ‖f t + g t‖ ^ 2 := (hf.add hg).norm.pow 2
+  have hA : IntervalIntegrable (fun t : ℝ => 2 * ‖f t‖ ^ 2) volume T₁ T₂ :=
+    (continuous_const.mul (hf.norm.pow 2)).intervalIntegrable _ _
+  have hB : IntervalIntegrable (fun t : ℝ => 2 * ‖g t‖ ^ 2) volume T₁ T₂ :=
+    (continuous_const.mul (hg.norm.pow 2)).intervalIntegrable _ _
+  have hmono : (∫ t in T₁..T₂, ‖f t + g t‖ ^ 2) ≤ ∫ t in T₁..T₂, (2 * ‖f t‖ ^ 2 + 2 * ‖g t‖ ^ 2) :=
+    intervalIntegral.integral_mono_on hT (hc1.intervalIntegrable _ _) (hA.add hB)
+      (fun t _ => norm_sq_add_le (f t) (g t))
   refine hmono.trans ?_
-  rw [intervalIntegral.integral_add ((continuous_const.mul (hf.norm.pow 2)).intervalIntegrable _ _)
-    ((continuous_const.mul (hg.norm.pow 2)).intervalIntegrable _ _),
-    intervalIntegral.integral_const_mul, intervalIntegral.integral_const_mul]
+  rw [intervalIntegral.integral_add hA hB, intervalIntegral.integral_const_mul,
+    intervalIntegral.integral_const_mul]
   linarith
 
 /-- A monotone weight in `[0, 1]` costs a factor of `4`. -/
@@ -176,8 +181,9 @@ theorem integral_norm_sq_weightedPoly_le {a : ℕ → ℂ} {v : ℕ → ℝ} (hm
   have hsecond' := hsecond.trans (mul_le_of_le_one_left hB0 hsq)
   have hcont2 : Continuous fun t : ℝ => ∑ m ∈ Finset.Ico 1 N, ((v m - v (m + 1) : ℝ) : ℂ) * linePoly a m t :=
     continuous_finsetSum _ fun m _ => continuous_const.mul (continuous_linePoly a m)
-  have h := integral_add_norm_sq_le (continuous_const.mul (continuous_linePoly a N)) hcont2 hT hfirst hsecond'
-  linarith
+  have h := integral_add_norm_sq_le (f := fun t => (v N : ℂ) * linePoly a N t) (continuous_const.mul
+    (continuous_linePoly a N)) hcont2 hT hfirst hsecond'
+  exact h.trans (le_of_eq (by ring))
 
 /-! ### The shifted lines -/
 
@@ -212,24 +218,30 @@ theorem hasDerivAt_edPoly_shift (a : ℕ → ℂ) (N : ℕ) (x t : ℝ) :
   rw [Finset.mul_sum]
   refine HasDerivAt.fun_sum fun n hn => ?_
   have hn1 := (Finset.mem_Icc.mp hn).1
+  obtain ⟨L, hL⟩ : ∃ L : ℂ, L = ((Real.log n : ℝ) : ℂ) := ⟨_, rfl⟩
+  obtain ⟨σ, hσ⟩ : ∃ σ : ℂ, σ = ((1 / 2 + x : ℝ) : ℂ) := ⟨_, rfl⟩
   have hid : HasDerivAt (fun y : ℝ => (y : ℂ)) ((1 : ℝ) : ℂ) t := (hasDerivAt_id t).ofReal_comp
-  have hg := ((((hid.mul_const I).const_add ((1 / 2 + x : ℝ) : ℂ)).neg).const_mul
-    ((Real.log n : ℝ) : ℂ)).cexp
+  have hlin := (hid.const_mul (-L * I)).add_const (-L * σ)
+  have hexpd := hlin.cexp
   have hfun : (fun u : ℝ => a n * ((n : ℝ) : ℂ) ^ (-(((1 / 2 + x : ℝ) : ℂ) + (u : ℂ) * I))) =
-      fun u : ℝ => a n * Complex.exp (((Real.log n : ℝ) : ℂ) * -(((1 / 2 + x : ℝ) : ℂ) + (u : ℂ) * I)) := by
+      fun u : ℝ => a n * Complex.exp (-L * I * (u : ℂ) + -L * σ) := by
     funext u
-    rw [cpow_natReal hn1]
+    rw [cpow_natReal hn1, ← hL, ← hσ]
+    congr 2
+    ring
   rw [hfun]
-  refine (hg.const_mul (a n)).congr_deriv ?_
-  rw [cpow_natReal hn1]
-  have hexp : Complex.exp (((Real.log n : ℝ) : ℂ) * -(((1 / 2 + x : ℝ) : ℂ) + (t : ℂ) * I)) =
-      (((n : ℝ) ^ (-x) : ℝ) : ℂ) * Complex.exp (((Real.log n : ℝ) : ℂ) * -(((1 / 2 : ℝ) : ℂ) + (t : ℂ) * I)) := by
-    have hpos : (0 : ℝ) < n := by exact_mod_cast hn1
-    rw [Real.rpow_def_of_pos hpos, Complex.ofReal_exp, ← Complex.exp_add]
+  refine (hexpd.const_mul (a n)).congr_deriv ?_
+  have hpos : (0 : ℝ) < n := by exact_mod_cast hn1
+  have hexp : Complex.exp (-L * I * (t : ℂ) + -L * σ) =
+      (((n : ℝ) ^ (-x) : ℝ) : ℂ) * Complex.exp (L * -(((1 / 2 : ℝ) : ℂ) + (t : ℂ) * I)) := by
+    rw [Real.rpow_def_of_pos hpos, Complex.ofReal_exp, ← Complex.exp_add, hL, hσ]
     congr 1
     push_cast
     ring
-  rw [hexp]
+  rw [hexp, cpow_natReal hn1, ← hL]
+  beta_reduce
+  push_cast
+  rw [hL]
   push_cast
   ring
 
@@ -313,9 +325,9 @@ theorem integral_norm_sq_shift_le {a : ℕ → ℂ} {x : ℝ} (hx : 0 < x) {N : 
   simp_rw [hval]
   have h3 : (∫ t in T₁..T₂, ‖(-1 : ℂ) * weightedPoly a (fun n => 1 - (n : ℝ) ^ (-x)) N t‖ ^ 2) ≤ 4 * B := by
     simpa using h1
-  have h := integral_add_norm_sq_le (continuous_linePoly a N)
-    (continuous_const.mul (continuous_weightedPoly a _ N)) hT (hB N hN) h3
-  linarith
+  have h := integral_add_norm_sq_le (g := fun t => (-1 : ℂ) * weightedPoly a (fun n => 1 - (n : ℝ) ^ (-x)) N t)
+    (continuous_linePoly a N) (continuous_const.mul (continuous_weightedPoly a _ N)) hT (hB N hN) h3
+  exact h.trans (le_of_eq (by ring))
 
 /-- The derivative on the shifted line costs `1/x²`. -/
 theorem integral_norm_sq_shift_deriv_le {a : ℕ → ℂ} {x : ℝ} (hx : 0 < x) {N : ℕ} (hN : 1 ≤ N) {T₁ T₂ B : ℝ}
@@ -352,8 +364,8 @@ theorem integral_norm_sq_shift_deriv_le {a : ℕ → ℂ} {x : ℝ} (hx : 0 < x)
   rw [intervalIntegral.integral_const_mul]
   have h3 : (∫ t in T₁..T₂, ‖(-1 : ℂ) * weightedPoly a (secondWeight x) N t‖ ^ 2) ≤ 4 * B := by
     simpa using h2
-  have h4 := integral_add_norm_sq_le (continuous_weightedPoly a _ N)
-    (continuous_const.mul (continuous_weightedPoly a _ N)) hT h1 h3
+  have h4 := integral_add_norm_sq_le (g := fun t => (-1 : ℂ) * weightedPoly a (secondWeight x) N t)
+    (continuous_weightedPoly a _ N) (continuous_const.mul (continuous_weightedPoly a _ N)) hT h1 h3
   have h5 := mul_le_mul_of_nonneg_left h4 (by positivity : 0 ≤ 1 / x ^ 2)
   refine h5.trans (le_of_eq ?_)
   field_simp
@@ -396,14 +408,14 @@ theorem norm_sq_edPoly_shift_le {a : ℕ → ℂ} {x c B : ℝ} (hx : 0 < x) (hB
     exact integral_norm_sq_shift_deriv_le hx hN hc1 hB0 hB
   have hcross : (∫ u in c..(c + 1), 2 * (‖F u‖ * ‖-I * W u‖)) ≤
       1 / x * (∫ u in c..(c + 1), ‖F u‖ ^ 2) + x * ∫ u in c..(c + 1), ‖W u‖ ^ 2 := by
+    have hA1 : IntervalIntegrable (fun u : ℝ => 1 / x * ‖F u‖ ^ 2) volume c (c + 1) :=
+      (continuous_const.mul (hFc.norm.pow 2)).intervalIntegrable _ _
+    have hA2 : IntervalIntegrable (fun u : ℝ => x * ‖W u‖ ^ 2) volume c (c + 1) :=
+      (continuous_const.mul (hWc.norm.pow 2)).intervalIntegrable _ _
     rw [← intervalIntegral.integral_const_mul, ← intervalIntegral.integral_const_mul,
-      ← intervalIntegral.integral_add
-        ((continuous_const.mul (hFc.norm.pow 2)).intervalIntegrable _ _)
-        ((continuous_const.mul (hWc.norm.pow 2)).intervalIntegrable _ _)]
+      ← intervalIntegral.integral_add hA1 hA2]
     refine intervalIntegral.integral_mono_on hc1
-      ((continuous_const.mul (hFc.norm.mul hF'c.norm)).intervalIntegrable _ _)
-      (((continuous_const.mul (hFc.norm.pow 2)).add
-        (continuous_const.mul (hWc.norm.pow 2))).intervalIntegrable _ _) fun u _ => ?_
+      ((continuous_const.mul (hFc.norm.mul hF'c.norm)).intervalIntegrable _ _) (hA1.add hA2) fun u _ => ?_
     have hn : ‖-I * W u‖ = ‖W u‖ := by simp
     rw [hn]
     have h1 : (‖F u‖ - x * ‖W u‖) ^ 2 / x = 1 / x * ‖F u‖ ^ 2 + x * ‖W u‖ ^ 2 - 2 * (‖F u‖ * ‖W u‖) := by
@@ -473,7 +485,8 @@ private theorem norm_edPoly_sub_LSeries_le {a : ℕ → ℂ} (ha : ∀ n, ‖a n
     push_cast
     rfl
   filter_upwards [eventually_ge_atTop (N + 1)] with M hM
-  rw [hpart, ← Finset.sum_sdiff (Finset.range_subset_range.mpr hM), add_sub_cancel_right, norm_neg]
+  have hcancel : ∀ A B : ℂ, A - (B + A) = -B := fun A B => by ring
+  rw [hpart, ← Finset.sum_sdiff (Finset.range_subset_range.mpr hM), hcancel, norm_neg]
   have h1 : ‖∑ n ∈ Finset.range M \ Finset.range (N + 1), LSeries.term a s n‖ ≤
       ∑ n ∈ Finset.range M \ Finset.range (N + 1), 1 / (n : ℝ) ^ 2 :=
     (norm_sum_le _ _).trans (Finset.sum_le_sum fun n _ => hterm n)
@@ -487,9 +500,9 @@ private theorem norm_edPoly_sub_LSeries_le {a : ℕ → ℂ} (ha : ∀ n, ‖a n
 /-! ### The mechanism -/
 
 /-- **The mechanism.**  A uniform second-moment bound forces `|A| ≤ |E| √(10B + 26B/x)` on `Re s = ½ + x` at heights inside the window. -/
-theorem norm_le_of_uniform_second_moment {a A : ℂ → ℂ} {a' : ℕ → ℂ} (ha : ∀ n, ‖a' n‖ ≤ 1)
+theorem norm_le_of_uniform_second_moment {A : ℂ → ℂ} {a' : ℕ → ℂ} (ha : ∀ n, ‖a' n‖ ≤ 1)
     (hA : ∀ s : ℂ, 1 / 2 < s.re → 0 < s.im → DifferentiableAt ℂ A s)
-    (hEA : ∀ s : ℂ, 1 < s.re → zetaEntire s * LSeries a' s = A s) {T B γ x : ℝ} (hT : 0 < T)
+    (hEA : ∀ s : ℂ, 1 < s.re → zetaEntire s * LSeries a' s = A s) {T B γ x : ℝ}
     (hB : ∀ m, 1 ≤ m → (∫ t in T..(2 * T), ‖linePoly a' m t‖ ^ 2) ≤ B)
     (hγ1 : T + 3 ≤ γ) (hγ2 : γ ≤ 2 * T - 4) (hx0 : 0 < x) (hx1 : x ≤ 1) :
     ‖A (((1 / 2 + x : ℝ) : ℂ) + (γ : ℂ) * I)‖ ≤
@@ -639,5 +652,333 @@ theorem norm_le_of_uniform_second_moment {a A : ℂ → ℂ} {a' : ℕ → ℂ} 
     (hcell γ (by linarith) (by linarith)) hN ⟨le_rfl, by linarith⟩
   rw [← hs₀] at h2
   exact Real.le_sqrt_of_sq_le h2
+
+/-! ### A zero of `ζ` obstructs the bound -/
+
+/-- **A zero of `ζ` in the window obstructs every uniform bound**, when the numerator `A` does not vanish there. -/
+theorem not_uniform_second_moment_of_zero {A : ℂ → ℂ} {a' : ℕ → ℂ} (ha : ∀ n, ‖a' n‖ ≤ 1)
+    (hA : ∀ s : ℂ, 1 / 2 ≤ s.re → 0 < s.im → DifferentiableAt ℂ A s ∧ A s ≠ 0)
+    (hEA : ∀ s : ℂ, 1 < s.re → zetaEntire s * LSeries a' s = A s) {T γ β : ℝ} (hT : 0 < T)
+    (hβ : 1 / 2 ≤ β) (hβ1 : β < 1) (hz : riemannZeta ((β : ℂ) + (γ : ℂ) * I) = 0)
+    (hγ1 : T + 3 ≤ γ) (hγ2 : γ ≤ 2 * T - 4) :
+    ¬ ∃ B : ℝ, ∀ m, 1 ≤ m → (∫ t in T..(2 * T), ‖linePoly a' m t‖ ^ 2) ≤ B := by
+  rintro ⟨B, hB⟩
+  have hγ0 : 0 < γ := by linarith
+  have hT2 : T ≤ 2 * T := by linarith
+  have hB0 : 0 ≤ B := (intervalIntegral.integral_nonneg hT2 fun t _ => by positivity).trans (hB 1 le_rfl)
+  have hAd : ∀ s : ℂ, 1 / 2 < s.re → 0 < s.im → DifferentiableAt ℂ A s :=
+    fun s h1 h2 => (hA s h1.le h2).1
+  have hcore := fun x (hx0 : 0 < x) (hx1 : x ≤ 1) =>
+    norm_le_of_uniform_second_moment ha hAd hEA hB hγ1 hγ2 hx0 hx1
+  obtain ⟨φ, hφ⟩ : ∃ φ : ℝ → ℂ, φ = fun x => ((1 / 2 + x : ℝ) : ℂ) + (γ : ℂ) * I := ⟨_, rfl⟩
+  have hφre : ∀ x, (φ x).re = 1 / 2 + x := fun x => by simp [hφ]
+  have hφim : ∀ x, (φ x).im = γ := fun x => by simp [hφ]
+  have hφne : ∀ x, φ x ≠ 1 := by
+    intro x h
+    have h1 := hφim x
+    rw [h] at h1
+    simp at h1
+    linarith
+  rcases eq_or_lt_of_le hβ with heq | hlt
+  · -- a zero on the line: the numerator stays away from `0` and `E` vanishes to first order
+    obtain ⟨ρ, hρ⟩ : ∃ ρ : ℂ, ρ = φ 0 := ⟨_, rfl⟩
+    have hρz : zetaEntire ρ = 0 := by
+      have h1 : ρ = (β : ℂ) + (γ : ℂ) * I := by
+        rw [hρ, hφ, ← heq]
+        simp
+      rw [hρ, zetaEntire_eq (hφne 0), ← hρ, h1, hz, mul_zero]
+    have hρA := hA ρ (by rw [hρ, hφre]; norm_num) (by rw [hρ, hφim]; exact hγ0)
+    obtain ⟨C, hC0, hC⟩ := (differentiable_zetaEntire ρ).isBigO_sub.exists_pos
+    have hδ : 0 < ‖A ρ‖ / 2 := by
+      have := norm_pos_iff.mpr hρA.2
+      positivity
+    obtain ⟨δ, hδdef⟩ : ∃ δ : ℝ, δ = ‖A ρ‖ / 2 := ⟨_, rfl⟩
+    rw [← hδdef] at hδ
+    have hφc : Continuous φ := by
+      rw [hφ]
+      fun_prop
+    have hφt : Tendsto φ (𝓝 0) (𝓝 ρ) := by
+      rw [hρ]
+      exact hφc.tendsto 0
+    have h1 : ∀ᶠ x in 𝓝 (0 : ℝ), δ < ‖A (φ x)‖ := by
+      have h2 := (hρA.1.continuousAt.tendsto.comp hφt).norm
+      exact h2.eventually (lt_mem_nhds (by
+        rw [hδdef]
+        linarith [norm_pos_iff.mpr hρA.2]))
+    have h2 : ∀ᶠ x in 𝓝 (0 : ℝ), ‖zetaEntire (φ x) - zetaEntire ρ‖ ≤ C * ‖φ x - ρ‖ :=
+      hφt.eventually hC.bound
+    have h3 : ∀ᶠ x in 𝓝 (0 : ℝ), C ^ 2 * (10 * B * x ^ 2 + 26 * B * x) < δ ^ 2 := by
+      have hc : Continuous fun x : ℝ => C ^ 2 * (10 * B * x ^ 2 + 26 * B * x) := by fun_prop
+      have h4 := hc.tendsto 0
+      simp only [ne_eq, OfNat.ofNat_ne_zero, not_false_eq_true, zero_pow, mul_zero, add_zero] at h4
+      exact h4.eventually (gt_mem_nhds (by positivity))
+    obtain ⟨x, ⟨⟨hx1, hx2, hx3⟩, hx4, hx5⟩⟩ :=
+      (((h1.and (h2.and h3)).filter_mono nhdsWithin_le_nhds).and
+        (Ioc_mem_nhdsGT (zero_lt_one' ℝ))).exists
+    have hval := hcore x hx4 hx5
+    rw [← show φ x = ((1 / 2 + x : ℝ) : ℂ) + (γ : ℂ) * I by rw [hφ]] at hval
+    have hdist : ‖φ x - ρ‖ = x := by
+      have h4 : φ x - ρ = (x : ℂ) := by
+        rw [hρ, hφ]
+        push_cast
+        ring
+      rw [h4, Complex.norm_real, Real.norm_eq_abs, abs_of_pos hx4]
+    rw [hρz, sub_zero, hdist] at hx2
+    obtain ⟨Z, hZ⟩ : ∃ Z : ℝ, Z = 10 * B + 26 * B / x := ⟨_, rfl⟩
+    rw [← hZ] at hval
+    have hZ0 : 0 ≤ Z := by rw [hZ]; positivity
+    have hle : δ ≤ C * x * √Z :=
+      hx1.le.trans (hval.trans (mul_le_mul_of_nonneg_right hx2 (Real.sqrt_nonneg _)))
+    have hsq : δ ^ 2 ≤ (C * x * √Z) ^ 2 := pow_le_pow_left₀ hδ.le hle 2
+    have hexp : (C * x * √Z) ^ 2 = C ^ 2 * (10 * B * x ^ 2 + 26 * B * x) := by
+      rw [mul_pow, mul_pow, Real.sq_sqrt hZ0, hZ]
+      field_simp
+    rw [hexp] at hsq
+    exact absurd hx3 (not_lt.mpr hsq)
+  · -- a zero right of the line: the left side vanishes
+    have hx0 : 0 < β - 1 / 2 := by linarith
+    have hval := hcore (β - 1 / 2) hx0 (by linarith)
+    have hs : (((1 / 2 + (β - 1 / 2) : ℝ) : ℂ) + (γ : ℂ) * I) = (β : ℂ) + (γ : ℂ) * I := by
+      congr 2
+      ring
+    rw [hs] at hval
+    have hne1 : (β : ℂ) + (γ : ℂ) * I ≠ 1 := by
+      intro h
+      have h1 := congrArg Complex.im h
+      simp at h1
+      linarith
+    rw [zetaEntire_eq hne1, hz, mul_zero, norm_zero, zero_mul] at hval
+    have h2 := (hA ((β : ℂ) + (γ : ℂ) * I) (by simpa using hβ) (by simpa using hγ0)).2
+    exact h2 (norm_le_zero_iff.mp hval)
+
+/-- Every large window holds a zero of `ζ` with `β ≥ ½`. -/
+theorem eventually_exists_zero_in_window :
+    ∀ᶠ T : ℝ in atTop, ∃ β γ : ℝ, 1 / 2 ≤ β ∧ β < 1 ∧ T + 3 ≤ γ ∧ γ ≤ 2 * T - 4 ∧
+      riemannZeta ((β : ℂ) + (γ : ℂ) * I) = 0 := by
+  filter_upwards [eventually_zero_count_increment, eventually_ge_atTop (4000 : ℝ),
+    Real.tendsto_log_atTop.eventually_ge_atTop 1] with T hcount hT hℓ
+  have hT0 : 0 < T := by linarith
+  have hpos : 0 < T * Real.log T := by positivity
+  have hc := hcount (T + 3) (2 * T - 4) (by linarith) (by linarith) (by linarith) (by linarith)
+  have hπ := Real.pi_pos
+  have hlt : (xiPosZeroCount (T + 3) : ℝ) < xiPosZeroCount (2 * T - 4) := by
+    by_contra hcon
+    have h1 : (xiPosZeroCount (2 * T - 4) : ℝ) - xiPosZeroCount (T + 3) ≤ 0 := by linarith [not_lt.mp hcon]
+    have h2 := mul_nonpos_of_nonneg_of_nonpos (by positivity : 0 ≤ 2 * Real.pi) h1
+    linarith
+  have hexists : ∃ z ∈ stripFinsetPos (2 * T - 4), T + 3 < z.im := by
+    by_contra hcon
+    have hsub : stripFinsetPos (2 * T - 4) ⊆ stripFinsetPos (T + 3) := by
+      intro z hz
+      have hle : z.im ≤ T + 3 := not_lt.mp fun h => hcon ⟨z, hz, h⟩
+      obtain ⟨h1, h2, h3, -, h5⟩ := mem_stripFinsetPos.mp hz
+      exact mem_stripFinsetPos.mpr ⟨h1, h2, h3, hle, h5⟩
+    have hle : xiPosZeroCount (2 * T - 4) ≤ xiPosZeroCount (T + 3) :=
+      Finset.sum_le_sum_of_subset hsub
+    have hle' : (xiPosZeroCount (2 * T - 4) : ℝ) ≤ xiPosZeroCount (T + 3) := by exact_mod_cast hle
+    linarith
+  obtain ⟨z, hz, hzim⟩ := hexists
+  have hzeta : ∀ w ∈ stripFinsetPos (2 * T - 4), riemannZeta w = 0 := by
+    intro w hw
+    obtain ⟨h1, h2, -, -, h5⟩ := mem_stripFinsetPos.mp hw
+    have hne : w ≠ 1 := by
+      intro h
+      rw [h] at h2
+      simp at h2
+    exact (xi_eq_zero_iff_riemannZeta_of_re_pos h1 hne).mp h5
+  by_cases hre : 1 / 2 ≤ z.re
+  · obtain ⟨-, h2, -, h4, -⟩ := mem_stripFinsetPos.mp hz
+    refine ⟨z.re, z.im, hre, h2, hzim.le, h4, ?_⟩
+    rw [Complex.re_add_im]
+    exact hzeta z hz
+  · have hw := lineReflect_mem_stripFinsetPos hz
+    obtain ⟨-, h2, -, h4, -⟩ := mem_stripFinsetPos.mp hw
+    have him : (lineReflect z).im = z.im := by simp [lineReflect]
+    refine ⟨(lineReflect z).re, (lineReflect z).im, ?_, h2, by rw [him]; exact hzim.le, h4, ?_⟩
+    · rw [lineReflect_re]
+      linarith [not_le.mp hre]
+    · rw [Complex.re_add_im]
+      exact hzeta _ hw
+
+/-- The numerator of the Liouville series: `(s − 1) ζ(2s)`. -/
+private theorem liouville_numerator {s : ℂ} (h1 : 1 / 2 ≤ s.re) (h2 : 0 < s.im) :
+    DifferentiableAt ℂ (fun z : ℂ => (z - 1) * riemannZeta (2 * z)) s ∧
+      (s - 1) * riemannZeta (2 * s) ≠ 0 := by
+  have him : (2 * s).im = 2 * s.im := by simp [Complex.mul_im]
+  have hne : 2 * s ≠ 1 := by
+    intro h
+    have h3 := congrArg Complex.im h
+    rw [him] at h3
+    simp at h3
+    linarith
+  have hne1 : s - 1 ≠ 0 := by
+    intro h
+    have h3 := congrArg Complex.im h
+    simp at h3
+    linarith
+  have hre : 1 ≤ (2 * s).re := by
+    simp [Complex.mul_re]
+    linarith
+  refine ⟨?_, mul_ne_zero hne1 (riemannZeta_ne_zero_of_one_le_re hre)⟩
+  have h3 : DifferentiableAt ℂ (fun z : ℂ => riemannZeta (2 * z)) s :=
+    DifferentiableAt.comp (f := fun z : ℂ => 2 * z) (g := riemannZeta) s
+      (differentiableAt_riemannZeta hne) (by fun_prop)
+  exact (by fun_prop : DifferentiableAt ℂ (fun z : ℂ => z - 1) s).mul h3
+
+/-- **At every large height the second moment of the Liouville polynomial is unbounded in the length.** -/
+theorem eventually_not_uniform_liouville :
+    ∀ᶠ T : ℝ in atTop, ¬ ∃ B : ℝ, ∀ m, 1 ≤ m →
+      (∫ t in T..(2 * T), ‖linePoly (fun n => liouvilleC n) m t‖ ^ 2) ≤ B := by
+  filter_upwards [eventually_exists_zero_in_window, eventually_gt_atTop (0 : ℝ)] with T hzero hT
+  obtain ⟨β, γ, hβ, hβ1, hγ1, hγ2, hz⟩ := hzero
+  refine not_uniform_second_moment_of_zero (A := fun z => (z - 1) * riemannZeta (2 * z))
+    (a' := fun n => liouvilleC n) norm_liouvilleC_le_one (fun s h1 h2 => liouville_numerator h1 h2)
+    ?_ hT hβ hβ1 hz hγ1 hγ2
+  intro s hs
+  have hne : s ≠ 1 := by
+    intro h
+    rw [h] at hs
+    simp at hs
+  rw [zetaEntire_eq hne]
+  have h := LSeries_liouvilleC_mul_riemannZeta hs
+  calc (s - 1) * riemannZeta s * LSeries (fun n => liouvilleC n) s
+      = (s - 1) * (LSeries (fun n => liouvilleC n) s * riemannZeta s) := by ring
+    _ = _ := by rw [h]
+
+/-- **The same for the Möbius polynomial.** -/
+theorem eventually_not_uniform_moebius :
+    ∀ᶠ T : ℝ in atTop, ¬ ∃ B : ℝ, ∀ m, 1 ≤ m →
+      (∫ t in T..(2 * T), ‖linePoly (fun n => ((ArithmeticFunction.moebius n : ℤ) : ℂ)) m t‖ ^ 2) ≤ B := by
+  filter_upwards [eventually_exists_zero_in_window, eventually_gt_atTop (0 : ℝ)] with T hzero hT
+  obtain ⟨β, γ, hβ, hβ1, hγ1, hγ2, hz⟩ := hzero
+  refine not_uniform_second_moment_of_zero (A := fun z => z - 1)
+    (a' := fun n => ((ArithmeticFunction.moebius n : ℤ) : ℂ)) ?_ (fun s _ h2 => ⟨by fun_prop, ?_⟩)
+    ?_ hT hβ hβ1 hz hγ1 hγ2
+  · intro n
+    rw [Complex.norm_intCast]
+    exact_mod_cast ArithmeticFunction.abs_moebius_le_one
+  · intro h
+    have h3 := congrArg Complex.im h
+    simp at h3
+    linarith
+  · intro s hs
+    have hne : s ≠ 1 := by
+      intro h
+      rw [h] at hs
+      simp at hs
+    rw [zetaEntire_eq hne]
+    have h : LSeries (fun n => ((ArithmeticFunction.moebius n : ℤ) : ℂ)) s * riemannZeta s = 1 := by
+      rw [← ArithmeticFunction.LSeries_zeta_eq_riemannZeta hs, mul_comm]
+      exact ArithmeticFunction.LSeries_zeta_mul_Lseries_moebius hs
+    calc (s - 1) * riemannZeta s * LSeries (fun n => ((ArithmeticFunction.moebius n : ℤ) : ℂ)) s
+        = (s - 1) * (LSeries (fun n => ((ArithmeticFunction.moebius n : ℤ) : ℂ)) s * riemannZeta s) := by
+          ring
+      _ = _ := by rw [h, mul_one]
+
+/-! ### The integers -/
+
+/-- **The integer polynomial stays bounded.**  After removing the pole term, its second moment at the height `T` is at most `T(2+4T)²`, for every length. -/
+theorem integral_norm_sq_integer_polynomial_le {T : ℝ} (hT : 0 < T) {N : ℕ} (hN : 1 ≤ N) :
+    (∫ t in T..(2 * T), ‖linePoly (fun _ => 1) N t -
+        ((N : ℝ) : ℂ) ^ (1 - (((1 / 2 : ℝ) : ℂ) + (t : ℂ) * I)) /
+          (1 - (((1 / 2 : ℝ) : ℂ) + (t : ℂ) * I))‖ ^ 2) ≤ T * (2 + 4 * T) ^ 2 := by
+  have hN0 : (0 : ℝ) < N := by exact_mod_cast hN
+  have hN1 : (1 : ℝ) ≤ N := by exact_mod_cast hN
+  have hNne : ((N : ℝ) : ℂ) ≠ 0 := by exact_mod_cast hN0.ne'
+  obtain ⟨w, hw⟩ : ∃ w : ℝ → ℂ, w = fun t : ℝ => ((1 / 2 : ℝ) : ℂ) + (t : ℂ) * I := ⟨_, rfl⟩
+  have hwre : ∀ t, (w t).re = 1 / 2 := fun t => by simp [hw]
+  have hwim : ∀ t, (w t).im = t := fun t => by simp [hw]
+  have hne1 : ∀ t, 1 - w t ≠ 0 := by
+    intro t h
+    have h1 := congrArg Complex.re h
+    simp [hwre] at h1
+    norm_num at h1
+  have hnormeq : ∀ t, ‖1 - w t‖ = ‖w t‖ := by
+    intro t
+    rw [← sq_eq_sq₀ (norm_nonneg _) (norm_nonneg _), Complex.sq_norm, Complex.sq_norm,
+      Complex.normSq_apply, Complex.normSq_apply]
+    simp only [Complex.sub_re, Complex.one_re, Complex.sub_im, Complex.one_im, hwre, hwim]
+    ring
+  have hpoint : ∀ t ∈ Set.uIcc T (2 * T), ‖linePoly (fun _ => 1) N t -
+      ((N : ℝ) : ℂ) ^ (1 - w t) / (1 - w t)‖ ≤ 2 + 4 * T := by
+    intro t ht
+    rw [Set.uIcc_of_le (by linarith)] at ht
+    have hne : w t ≠ 1 := by
+      intro h
+      exact hne1 t (by rw [h]; ring)
+    have hline : linePoly (fun _ => 1) N t = ∑ k ∈ Finset.Icc 1 N, ((k : ℝ) : ℂ) ^ (-w t) := by
+      unfold linePoly edPoly
+      rw [hw]
+      simp
+    rw [hline, RHTower.sum_cpow_sub_pow_eq (by rw [hwre]; norm_num) hne hN]
+    have hw0 : 0 < (w t).re := by rw [hwre]; norm_num
+    have hint := integrableOn_Ioc_fract_cpow hw0 N
+    have hbound : ∀ᵐ u ∂(volume.restrict (Set.Ioc (1 : ℝ) N)),
+        ‖((Int.fract u : ℝ) : ℂ) * (u : ℂ) ^ (-w t - 1)‖ ≤ u ^ (-(3 / 2 : ℝ)) := by
+      refine (ae_restrict_iff' measurableSet_Ioc).mpr (Filter.Eventually.of_forall fun u hu => ?_)
+      have hu0 : 0 < u := by linarith [hu.1]
+      rw [norm_mul, Complex.norm_cpow_eq_rpow_re_of_pos hu0, Complex.norm_real, Real.norm_eq_abs,
+        abs_of_nonneg (Int.fract_nonneg u)]
+      have hre : (-w t - 1).re = -(3 / 2 : ℝ) := by
+        simp [hwre]
+        norm_num
+      rw [hre]
+      exact mul_le_of_le_one_left (Real.rpow_nonneg hu0.le _) (Int.fract_lt_one u).le
+    have hrpow : IntegrableOn (fun u : ℝ => u ^ (-(3 / 2 : ℝ))) (Set.Ioc (1 : ℝ) N) := by
+      have h1 : IntervalIntegrable (fun u : ℝ => u ^ (-(3 / 2 : ℝ))) volume 1 N :=
+        (ContinuousOn.intervalIntegrable fun u hu => by
+          rw [Set.uIcc_of_le hN1] at hu
+          exact (Real.continuousAt_rpow_const _ _ (Or.inl (by linarith [hu.1]))).continuousWithinAt)
+      exact (intervalIntegrable_iff_integrableOn_Ioc_of_le hN1).mp h1
+    have hI : ‖∫ u in Set.Ioc (1 : ℝ) N, ((Int.fract u : ℝ) : ℂ) * (u : ℂ) ^ (-w t - 1)‖ ≤ 2 := by
+      refine (norm_integral_le_of_norm_le hrpow hbound).trans ?_
+      rw [← intervalIntegral.integral_of_le hN1, integral_rpow (Or.inr ⟨by norm_num, by
+        rw [Set.uIcc_of_le hN1]
+        exact fun h => by linarith [h.1]⟩), Real.one_rpow]
+      have h2 : (0 : ℝ) ≤ (N : ℝ) ^ (-(3 / 2 : ℝ) + 1) := Real.rpow_nonneg hN0.le _
+      norm_num at h2 ⊢
+      linarith
+    have hnw : ‖w t‖ ≤ 1 / 2 + 2 * T := by
+      rw [hw]
+      refine (norm_add_le _ _).trans ?_
+      rw [norm_mul, Complex.norm_I, mul_one, Complex.norm_real, Complex.norm_real,
+        Real.norm_of_nonneg (by norm_num), Real.norm_of_nonneg (by linarith [ht.1])]
+      linarith [ht.2]
+    have hwne : w t ≠ 0 := by
+      intro h
+      have h1 := hwre t
+      rw [h] at h1
+      norm_num at h1
+    have hratio : ‖-w t / (1 - w t)‖ = 1 := by
+      rw [norm_div, norm_neg, hnormeq, div_self (norm_pos_iff.mpr hwne).ne']
+    refine (norm_sub_le _ _).trans ?_
+    rw [hratio, norm_mul]
+    have h3 := mul_le_mul hnw hI (norm_nonneg _) (by linarith)
+    linarith
+  have hcont : Continuous fun t : ℝ => ‖linePoly (fun _ => 1) N t -
+      ((N : ℝ) : ℂ) ^ (1 - w t) / (1 - w t)‖ ^ 2 := by
+    have h1 : Continuous fun t : ℝ => ((N : ℝ) : ℂ) ^ (1 - w t) := by
+      refine Continuous.const_cpow ?_ (Or.inl hNne)
+      rw [hw]
+      fun_prop
+    have h2 : Continuous fun t : ℝ => 1 - w t := by
+      rw [hw]
+      fun_prop
+    exact ((continuous_linePoly _ N).sub (h1.div h2 hne1)).norm.pow 2
+  have hmono := intervalIntegral.norm_integral_le_of_norm_le_const (a := T) (b := 2 * T)
+    (f := fun t : ℝ => ‖linePoly (fun _ => 1) N t - ((N : ℝ) : ℂ) ^ (1 - w t) / (1 - w t)‖ ^ 2)
+    (C := (2 + 4 * T) ^ 2) (fun t ht => by
+      rw [Set.uIoc_of_le (by linarith)] at ht
+      rw [Real.norm_of_nonneg (by positivity)]
+      exact pow_le_pow_left₀ (norm_nonneg _)
+        (hpoint t (by
+          rw [Set.uIcc_of_le (by linarith)]
+          exact ⟨ht.1.le, ht.2⟩)) 2)
+  subst hw
+  refine (le_abs_self _).trans ?_
+  rw [Real.norm_eq_abs] at hmono
+  refine hmono.trans (le_of_eq ?_)
+  rw [abs_of_pos (by linarith)]
+  ring
 
 end GaloisForLFunctions.ArithmeticProduction

@@ -94,11 +94,9 @@ theorem evalGram_eq_kernel (α z : ι → ℂ) (a : PrecontactAperture) :
   unfold evalCombination
   rw [sum_inner]
   refine Finset.sum_congr rfl fun i _ => ?_
-  rw [inner_sum, inner_smul_left]
-  simp_rw [inner_smul_right]
-  rw [Finset.mul_sum]
+  rw [inner_sum]
   refine Finset.sum_congr rfl fun j _ => ?_
-  rw [inner_evalVector]
+  rw [inner_smul_left, inner_smul_right, inner_evalVector]
   have : eval a (z i) (evalVector a (z j)) = kernel a (z j) (z i) := rfl
   rw [this]
   ring
