@@ -386,11 +386,12 @@ theorem occupiedBurnolWindows_le_of_shiftedDefect_div_log
     refine intervalIntegral.integral_congr fun t ht => ?_
     rw [Set.uIcc_of_le hcd] at ht
     refine heq _ ?_
-    rw [hK_def]
-    simp only [Set.mem_setOf_eq, Complex.add_re, Complex.ofReal_re, Complex.mul_re,
-      Complex.ofReal_im, Complex.I_re, mul_zero, Complex.I_im, mul_one, sub_zero, add_zero,
-      Complex.add_im, Complex.mul_im, zero_add]
-    exact ⟨⟨le_of_lt hσ.1, hσ.2⟩, ht⟩
+    rw [hK_def, Complex.mem_reProdIm]
+    refine ⟨?_, ?_⟩
+    · have : ((σ : ℂ) + (t : ℂ) * I).re = σ := by simp
+      rw [this]; exact ⟨le_of_lt hσ.1, hσ.2⟩
+    · have : ((σ : ℂ) + (t : ℂ) * I).im = t := by simp
+      rw [this]; exact ht
   have hexp_int : ∫ σ in (1 / 2 + R)..(1 + R),
       C * Real.exp (-(r * (σ - 1 / 2) * Real.log V)) * (V / Real.log V) ≤
       (C * Real.exp (-(r * A / 2)) / (r * (Real.log V) ^ 2)) * V := by
@@ -705,13 +706,14 @@ theorem fejerDirichletDetector_occupiedWindows_ge {θ A : ℝ} (hθ0 : 0 < θ) :
   have hzero_at : ∀ r : ℕ,
       fejerDirichletDetector θ A V (((1 / 2 + A / Real.log V : ℝ) : ℂ) + (t_pt r : ℂ) * I) = 0 := by
     intro r
-    have hfac := fejerDirichletDetector_sub_one_eq_neg_sq hθ0 hV1 hM1
+    have hfac := fejerDirichletDetector_sub_one_eq_neg_sq (A := A) hθ0 hV1 hM1
       (1 / 2 + A / Real.log V) (t_pt r)
     rw [sub_self, zero_mul] at hfac
     have hexp_1 : Complex.exp ((0 : ℂ) - ((Real.log 2 * t_pt r : ℝ) : ℂ) * I) = 1 := by
+      let m₁ : ℤ := -((k₀ + r : ℕ) : ℤ)
       have harg : (0 : ℂ) - ((Real.log 2 * t_pt r : ℝ) : ℂ) * I =
-          (-((k₀ + r : ℕ) : ℤ) : ℂ) * (2 * (Real.pi : ℂ) * I) := by
-        dsimp [t_pt]; rw [hP₀_def]
+          (m₁ : ℂ) * (2 * (Real.pi : ℂ) * I) := by
+        dsimp [m₁, t_pt]; rw [hP₀_def]
         have hne : (Real.log 2 : ℂ) ≠ 0 := Complex.ofReal_ne_zero.mpr hlog2.ne'
         push_cast; field_simp; ring
       rw [harg, Complex.exp_int_mul, Complex.exp_two_pi_mul_I, one_zpow]
@@ -721,11 +723,12 @@ theorem fejerDirichletDetector_occupiedWindows_ge {θ A : ℝ} (hθ0 : 0 < θ) :
       have hterm : ∀ j : ℕ,
           Complex.exp (-(((j : ℝ) * Real.log 2 * t_pt r : ℝ) : ℂ) * I) = 1 := by
         intro j
+        let m₂ : ℤ := -((j * (k₀ + r) : ℕ) : ℤ)
         have harg : -(((j : ℝ) * Real.log 2 * t_pt r : ℝ) : ℂ) * I =
-            (-((j * (k₀ + r) : ℕ) : ℤ) : ℂ) * (2 * (Real.pi : ℂ) * I) := by
-          dsimp [t_pt]; rw [hP₀_def]
+            (m₂ : ℂ) * (2 * (Real.pi : ℂ) * I) := by
+          dsimp [m₂, t_pt]; rw [hP₀_def]
           have hne : (Real.log 2 : ℂ) ≠ 0 := Complex.ofReal_ne_zero.mpr hlog2.ne'
-          push_cast; field_simp; ring
+          push_cast; field_simp
         rw [harg, Complex.exp_int_mul, Complex.exp_two_pi_mul_I, one_zpow]
       simp_rw [mul_zero, Real.exp_zero, mul_one, hterm, mul_one, Finset.sum_const,
         Finset.card_range, nsmul_eq_mul]
@@ -975,11 +978,12 @@ theorem fejerDirichletDetector_period_and_sup_le {θ A V : ℝ}
     have hS_int_re : (∫ t in t₀..(t₀ + P₀), ‖S_poly t‖ ^ 2) =
         P₀ * ∑ j ∈ Finset.range M, (w j) ^ 2 := by
       simp_rw [hnormSq_re]
-      have hcomm := (Complex.reCLM.intervalIntegral_comp_comm
-        (Continuous.intervalIntegrable (hS_cont.mul hS_cont.star) t₀ (t₀ + P₀))).symm
+      have hprod_cont : Continuous (fun x => S_poly x * star (S_poly x)) :=
+        hS_cont.mul hS_cont.star
+      have hcomm := Complex.reCLM.intervalIntegral_comp_comm
+        (Continuous.intervalIntegrable (μ := volume) hprod_cont t₀ (t₀ + P₀))
       change (∫ x in t₀..(t₀ + P₀), Complex.reCLM (S_poly x * star (S_poly x))) = _
-      rw [hcomm, hS_int_c]
-      simp
+      rw [hcomm, hS_int_c, Complex.reCLM_apply, Complex.ofReal_re]
     have hsum_w2 : ∑ j ∈ Finset.range M, (w j) ^ 2 ≤ (1 / (M : ℝ)) * Real.exp (θ * A) := by
       calc ∑ j ∈ Finset.range M, (w j) ^ 2
           ≤ ∑ _j ∈ Finset.range M, ((1 / (M : ℝ)) * Real.exp (θ * A / 2)) ^ 2 :=

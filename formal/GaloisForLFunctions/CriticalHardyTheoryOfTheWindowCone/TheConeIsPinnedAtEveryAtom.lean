@@ -949,4 +949,17 @@ theorem exists_abs_sub_vonMangoldt_le_of_le_aperture :
   refine (h c lam hc hlam n hn hin).trans (mul_le_mul_of_nonneg_left ?_ hC)
   exact Real.exp_le_exp.mpr (by linarith)
 
+/-- **The bands close at a rate.** Every two points of `𝒜(c)` agree at `n` up to `2 C exp(K n − c/1104)`. -/
+theorem exists_abs_sub_le_of_mem_cone :
+    ∃ C K : ℝ, 0 ≤ C ∧ 0 ≤ K ∧ ∀ (c : ℝ) (lam lam' : ℕ → ℝ), 2 ≤ c → WeilPositiveFullUpTo lam c →
+      WeilPositiveFullUpTo lam' c → ∀ n : ℕ, 2 ≤ n → (n : ℝ) ≤ Real.exp (2 * (c - 1 / 12)) →
+        |lam n - lam' n| ≤ C * Real.exp (K * n - c / 1104) := by
+  obtain ⟨C, K, hC, hK, h⟩ := exists_abs_sub_vonMangoldt_le_exp
+  refine ⟨2 * C, K, by positivity, hK, fun c lam lam' hc h₁ h₂ n hn hin => ?_⟩
+  have a := h c lam hc h₁ n hn hin
+  have b := h c lam' hc h₂ n hn hin
+  have t := abs_sub_le (lam n) (ArithmeticFunction.vonMangoldt n : ℝ) (lam' n)
+  rw [abs_sub_comm (ArithmeticFunction.vonMangoldt n : ℝ) (lam' n)] at t
+  linarith
+
 end GaloisForLFunctions.CriticalHardyTheoryOfTheWindowCone

@@ -482,8 +482,138 @@ theorem SaddleRange.exists_real_roots (h : SaddleRange d X) (hX6 : 6 ≤ X) :
     rw [hT] at hmono
     linarith
 
+/-! ## The range `X ≍ √(d log d)` -/
+
+/-- `X_d = √(d log d)/100`. -/
+def saddleX (d : ℕ) : ℝ := Real.sqrt (d * Real.log d) / 100
+
+theorem tendsto_log_natCast : Tendsto (fun d : ℕ => Real.log (d : ℝ)) atTop atTop :=
+  Real.tendsto_log_atTop.comp tendsto_natCast_atTop_atTop
+
+/-- Eventually `log d ≤ c d`. -/
+theorem eventually_log_le_mul {c : ℝ} (hc : 0 < c) : ∀ᶠ d : ℕ in atTop, Real.log (d : ℝ) ≤ c * d := by
+  have h := Real.isLittleO_log_id_atTop.def hc
+  have h2 := tendsto_natCast_atTop_atTop (R := ℝ) |>.eventually h
+  filter_upwards [h2, eventually_gt_atTop 0] with d hd hpos
+  have hdR : (0 : ℝ) < d := by exact_mod_cast hpos
+  simp only [id, Real.norm_eq_abs, abs_of_pos hdR] at hd
+  exact (le_abs_self _).trans hd
+
+/-- Eventually `log log d ≤ (1/10) log d`. -/
+theorem eventually_loglog_le : ∀ᶠ d : ℕ in atTop, Real.log (Real.log (d : ℝ)) ≤ 1 / 10 * Real.log d := by
+  have h := Real.isLittleO_log_id_atTop.def (show (0 : ℝ) < 1 / 10 by norm_num)
+  have h2 := tendsto_log_natCast.eventually h
+  filter_upwards [h2, tendsto_log_natCast.eventually_gt_atTop 0] with d hd hpos
+  simp only [id, Real.norm_eq_abs, abs_of_pos hpos] at hd
+  exact (le_abs_self _).trans hd
+
+/-- **For large `d`, `X_d` is a saddle range.** -/
+theorem eventually_saddleRange :
+    ∀ᶠ d : ℕ in atTop, SaddleRange d (saddleX d) ∧ 10 ≤ saddleX d := by
+  filter_upwards [eventually_gt_atTop 0, tendsto_log_natCast.eventually_ge_atTop (5 * Real.exp 14 + 1000),
+    eventually_log_le_mul (show (0 : ℝ) < 1 / 200000 by norm_num), eventually_loglog_le,
+    eventually_ge_atTop 1000000] with d hd hL hlog hll hd1
+  have hdR : (0 : ℝ) < d := by exact_mod_cast hd
+  have hexp : 0 < Real.exp 14 := Real.exp_pos _
+  set L := Real.log (d : ℝ) with hLdef
+  have hL1 : 1000 ≤ L := by linarith
+  have hdL : 0 ≤ (d : ℝ) * L := by positivity
+  set X := saddleX d with hX
+  have hX0 : 0 ≤ X := by
+    rw [hX, saddleX]
+    positivity
+  have hXsq : X ^ 2 = d * L / 10000 := by
+    rw [hX, saddleX, div_pow, Real.sq_sqrt hdL]
+    norm_num
+  have hd1R : (1000000 : ℝ) ≤ d := by exact_mod_cast hd1
+  have hX10 : 10 ≤ X := by
+    have : (10 : ℝ) ^ 2 ≤ X ^ 2 := by
+      rw [hXsq, le_div_iff₀ (by norm_num)]
+      nlinarith
+    exact (pow_le_pow_iff_left₀ (by norm_num) hX0 (by norm_num)).1 this
+  have hX5 : (X + 5) ^ 2 ≤ 2 * X ^ 2 + 50 := by nlinarith [sq_nonneg (X - 5)]
+  have hL2 : L ≤ (d : ℝ) / 200000 := by linarith
+  have hkey : 2000 * ((L / 2) ^ 2 + (X + 5) ^ 2) ≤ d * L := by
+    have h1 : 500 * L ^ 2 ≤ (d : ℝ) * L / 400 := by nlinarith
+    have h2 : (100000 : ℝ) ≤ (d : ℝ) * L / 400 := by nlinarith
+    rw [hXsq] at hX5
+    nlinarith
+  refine ⟨⟨hd, hX0, by linarith, hkey, ?_⟩, hX10⟩
+  have hN : (L / 2) ^ 2 + (X + 5) ^ 2 ≤ d * L := by nlinarith
+  have hNpos : 0 < (L / 2) ^ 2 + (X + 5) ^ 2 := by positivity
+  have hlogN := Real.log_le_log hNpos hN
+  rw [Real.log_mul hdR.ne' (by linarith)] at hlogN
+  linarith
+
+/-- **Finite degree Ki–Kim–Lee.** For large `d`, `R_d(Ξ)` has at least `d − 300 √(d log d)` distinct real roots. -/
+theorem eventually_exists_real_roots_sqrt :
+    ∀ᶠ d : ℕ in atTop, ∃ S : Finset ℝ, (d : ℝ) - 300 * Real.sqrt (d * Real.log d) ≤ S.card ∧
+      ∀ x ∈ S, (xiJensenReal d).IsRoot x := by
+  filter_upwards [eventually_saddleRange] with d hd
+  obtain ⟨hR, hX10⟩ := hd
+  have hX6 : 6 ≤ saddleX d := by linarith
+  obtain ⟨S, hS, hroots⟩ := hR.exists_real_roots hX6
+  refine ⟨S, ?_, hroots⟩
+  have hπ := Real.pi_gt_three
+  have hπ0 := Real.pi_pos
+  have hL := hR.L_ge
+  have hdR := hR.d_pos
+  set L := Real.log (d : ℝ) with hLdef
+  have hdL : 0 < (d : ℝ) * L := by positivity
+  set Y := Real.sqrt (d * L) with hY
+  have hYpos : 0 < Y := Real.sqrt_pos.2 hdL
+  have hYsq : Y ^ 2 = d * L := Real.sq_sqrt hdL.le
+  have hXeq : saddleX d = Y / 100 := rfl
+  have hX5 : saddleX d / 2 ≤ saddleX d - 5 := by linarith
+  have hXpos : 0 < saddleX d := by linarith
+  have hT : (d : ℝ) / (saddleX d - 5) * (2 * L) ≤ 400 * Y := by
+    have h1 : (d : ℝ) / (saddleX d - 5) ≤ d / (saddleX d / 2) :=
+      div_le_div_of_nonneg_left hdR.le (by positivity) hX5
+    have h2 : (d : ℝ) / (saddleX d / 2) * (2 * L) = 400 * Y := by
+      rw [hXeq]
+      field_simp
+      nlinarith
+    calc _ ≤ (d : ℝ) / (saddleX d / 2) * (2 * L) := by gcongr
+      _ = _ := h2
+  have hbound : 2 / π * ((d : ℝ) / (saddleX d - 5) * (2 * L)) + 4 ≤ 300 * Y := by
+    have h1 : 2 / π * ((d : ℝ) / (saddleX d - 5) * (2 * L)) ≤ 2 / 3 * (400 * Y) := by
+      have h2 : 2 / π ≤ 2 / 3 := by
+        apply div_le_div_of_nonneg_left (by norm_num) (by norm_num) hπ.le
+      have h3 : 0 ≤ (d : ℝ) / (saddleX d - 5) * (2 * L) := by
+        have : 0 < saddleX d - 5 := by linarith
+        positivity
+      exact mul_le_mul h2 hT h3 (by norm_num)
+    have hY4 : 1 ≤ Y := by
+      have : (10 : ℝ) ≤ Y / 100 := by rw [← hXeq]; exact hX10
+      linarith
+    linarith
+  linarith
+
+/-- **The non-real count of `R_d(Ξ)` is at most `300 √(d log d)` for all large `d`.** -/
+theorem eventually_jensenNonrealCount_le_sqrt :
+    ∀ᶠ d : ℕ in atTop, (jensenNonrealCount d : ℝ) ≤ 300 * Real.sqrt (d * Real.log d) := by
+  filter_upwards [eventually_exists_real_roots_sqrt] with d hd
+  obtain ⟨S, hS, hroots⟩ := hd
+  classical
+  have hP := xiJensenReal_ne_zero d
+  have hsub : S ⊆ (xiJensenReal d).roots.toFinset := fun x hx =>
+    Multiset.mem_toFinset.2 ((mem_roots hP).2 (hroots x hx))
+  have hcard : S.card ≤ Multiset.card (xiJensenReal d).roots :=
+    (Finset.card_le_card hsub).trans (Multiset.toFinset_card_le _)
+  have hN : jensenNonrealCount d + Multiset.card (xiJensenReal d).roots = d := by
+    rw [jensenNonrealCount_eq, nonrealRootCount, natDegree_xiJensenReal]
+    have : Multiset.card (xiJensenReal d).roots ≤ (xiJensenReal d).natDegree := card_roots' _
+    rw [natDegree_xiJensenReal] at this
+    omega
+  have hNR : (jensenNonrealCount d : ℝ) + (Multiset.card (xiJensenReal d).roots : ℝ) = d := by
+    exact_mod_cast hN
+  have hcardR : (S.card : ℝ) ≤ (Multiset.card (xiJensenReal d).roots : ℝ) := by exact_mod_cast hcard
+  linarith
+
 end
 
 end FiniteFreeProbability
 
 #print axioms FiniteFreeProbability.SaddleRange.exists_real_roots
+#print axioms FiniteFreeProbability.eventually_exists_real_roots_sqrt
+#print axioms FiniteFreeProbability.eventually_jensenNonrealCount_le_sqrt

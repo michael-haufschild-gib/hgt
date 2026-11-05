@@ -368,7 +368,7 @@ theorem nonrealRootCount_xiScaledReal_le {d : ℕ} (hd : 0 < d) :
       eval_multiset_prod, Multiset.map_map]
     congr 2
     refine Multiset.map_congr rfl fun v _ => ?_
-    simp [mul_comm]
+    simp only [Function.comp_apply, eval_sub, eval_one, eval_mul, eval_C, eval_X]
   have hmk : PowerSeries.mk g = PowerSeries.C (xiCoeff 0)⁻¹ * xiSeries := by
     rw [← mk_xiCoeff]
     ext k

@@ -32,6 +32,7 @@ limit alone.
 
 [Normalized actual endpoint traces](../3-formalized/normalized-boundary-traces-of-weil-riesz-vectors.md)
 and their [truncated exterior integrals](../3-formalized/truncated-exterior-integrals-read-the-weil-traces.md)
-are formalized. The uniform Gamma comparison, exact bounded boundary-operator
-identification, and scaled L² convergence have complete Lean drafts awaiting
-audit. They are not yet proved results.
+are formalized. The [exact exterior Gamma response](../3-formalized/exterior-gamma-response-reads-the-weil-trace.md),
+including its uniform principal-kernel comparison and actual boundary-operator
+identification, is also formalized. Scaled L² convergence and the full collar
+profile have Lean drafts awaiting audit.

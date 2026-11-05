@@ -216,7 +216,8 @@ theorem norm_cpow_neg_sub_le {P : ℝ} (hP : 1 < P) {z w : ℂ} (h : Real.log P 
     (Complex.ofReal_log (by linarith)).symm
   have hw : ‖((P : ℝ) : ℂ) ^ (-w)‖ = P ^ (-w.re) := by
     rw [Complex.norm_cpow_eq_rpow_re_of_pos (by linarith), neg_re]
-  rw [Complex.cpow_def_of_ne_zero hP0, Complex.cpow_def_of_ne_zero hP0, hlog] at hw ⊢
+  rw [Complex.cpow_def_of_ne_zero hP0, hlog] at hw
+  rw [Complex.cpow_def_of_ne_zero hP0, Complex.cpow_def_of_ne_zero hP0, hlog]
   have e : Complex.exp (((Real.log P : ℝ) : ℂ) * -z) - Complex.exp (((Real.log P : ℝ) : ℂ) * -w) =
       Complex.exp (((Real.log P : ℝ) : ℂ) * -w) *
         (Complex.exp (((Real.log P : ℝ) : ℂ) * (w - z)) - 1) := by
@@ -314,10 +315,9 @@ theorem cuspCarrier_collide_or_repel :
   obtain ⟨hm2, hm3⟩ := midpoint_near_cusp (cuspCarrier_zero_re hs).1 h16 h36
     ((le_max_left _ _).trans hρ.le) ((le_max_right _ _).trans hρ.le)
   have hmim : |((s + s') / 2).im - s.im| ≤ 1 / 32 := by
-    have := abs_im_le_norm ((s + s') / 2 - s)
-    rw [show (s + s') / 2 - s = (s' - s) / 2 by ring, norm_div,
-      show ‖(2 : ℂ)‖ = 2 by norm_num, sub_im] at this
-    rw [show (s + s') / 2 - s = (s' - s) / 2 by ring] at *
+    rw [← sub_im]
+    refine (abs_im_le_norm _).trans ?_
+    rw [show (s + s') / 2 - s = (s' - s) / 2 by ring, norm_div, show ‖(2 : ℂ)‖ = 2 by norm_num]
     linarith
   have hm1 : 1 ≤ |((s + s') / 2).im| := by
     have := abs_sub_abs_le_abs_sub ((s + s') / 2).im s.im

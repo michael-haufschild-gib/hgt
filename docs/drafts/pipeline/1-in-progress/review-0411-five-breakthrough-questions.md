@@ -54,6 +54,8 @@ preserves the exact complex domain, and
 the actual endpoint traces and makes their common zero-frequency value real.
 [Kernel growth](../3-formalized/growing-the-weil-window-adds-an-orthogonal-kernel.md)
 is exactly the Gram form of the new orthogonal Riesz components.
+The [exterior Gamma response](../3-formalized/exterior-gamma-response-reads-the-weil-trace.md)
+has leading coefficient minus the actual normalized endpoint trace.
 
 **Remaining:** [boundary flux and aperture variation](boundary-flux-generates-the-weil-canonical-system.md),
 original-length canonical normalization, and prime-entry law.

@@ -33,7 +33,7 @@ Folder `formal/GaloisForLFunctions/ArithmeticDiscreteness/` (README there), umbr
 | Ω9 | A finite-prime carrier repels uniformly when its Bohr lift has no tangency consistent with the moduli `|p^{−s}| = p^{−σ}` | Lean: `uniform_repulsion_of_no_consistent_tangency` (compactness of `K[a,b]`); explicit instance `trinomial_uniform_repulsion` (`≥ min(1/4, (log 3 − log 2)/224)`) |
 | Ω9″ | Converse: a consistent tangency forces near-coincidences at every scale | Lean for isolated tangencies of finite order `≥ 2`: `exists_zeros_near_tangency`, `exists_collision_or_close_pair` (corpus Kronecker + `HTGeometry.exists_local_zeroSet`); explicit Euler instance `twoPrime_no_uniform_repulsion` |
 | Ω9′ | Generic three-prime integral carriers have consistent tangencies, hence near-coincidences at every scale | open (paper sketch: six real equations in six unknowns); for two primes and integer `G` a consistent tangency at a torsion point needs `∇G = 0` there (`log 2/log 3 ∉ ℚ`), e.g. `(1−2^{−s})² − (1−3^{−s})³` |
-| Ω10 | Collide or repel at polynomial scale for integral Dirichlet polynomials over a fixed finite prime set | open: needs Baker for inhomogeneous forms with transcendental tangency points |
+| Ω10 | Collide or repel at polynomial scale for integral Dirichlet polynomials over a fixed finite prime set | open in general (needs Baker for inhomogeneous forms when a tangency point is not torsion); reduction: zeros off any neighbourhood of the consistent-tangency set are uniformly separated (`repulsion_off_tangency_set`), so only the local law at each tangency is needed; instances: Euler carriers (Ω6), the cusp carrier (Ω26) |
 | Ω11 | B54 for `ζ` | open (RH-independent, sub) |
 | Ω12 | Integral pure degree-two Euler carriers collide or repel at polynomial scale | Lean: `pow_twelve_eq_one_of_satake` (Kronecker in degree two), `degTwoCarrier_collide_or_repel` |
 | Ω12′ | The same for real pure local data `a = 2cos θ` | FALSE: `real_pure_carrier_not_polynomial_repulsion` (Liouville angle, zeros `e^{−|k|}`-close at height `≍ |k|`) |
@@ -48,7 +48,9 @@ Folder `formal/GaloisForLFunctions/ArithmeticDiscreteness/` (README there), umbr
 | Ω21 | The finite certificate needs `≳ q^{1/4}` orders | Lean: `quarter_power_mimic` (impure `X − (⌊2√q⌋+1)` passes `|S_ν| ≤ 2e q^{ν/2}` for `9ν⁴ ≤ q`) |
 | Ω22 | For algebraic carriers, consistent tangencies at algebraic points are singular points of the Bohr lift (any number of primes) | Lean: `algebraic_tangency_is_singular`, `pderiv_eval_eq_zero_of_algebraic_tangency` (corpus Baker `primeLog_linearForm_transcendental`); generalizes Ω18 |
 | Ω23 | The prime Kronecker flow is Diophantine at torsion points: `max_i |p_i^{−it} − u_i| ≥ c(2+|t|)^{−C}` for `|t| ≥ 1` and any roots of unity `u_i` | Lean: `primeFlow_diophantine_at_torsion` — the standalone form of the discreteness the Euler product carries; with a local (Łojasiewicz-type) estimate at a singular torsion tangency it would give Ω10 for algebraic carriers whose tangencies are all torsion |
-| Ω24 | A non-product carrier with a torsion cusp collides or repels at polynomial scale near the cusp | Lean: `cusp_local_repulsion` (joint small values + cusp algebra `|b|³ ≲ h²`, `|a|³ ≲ h²` + Ω23); global polynomial repulsion for the cusp carrier also needs its other tangency points `τ` (roots of `(2 log 2 − 3 log 3)τ² + (2 log 2 − 3 log 3)τ + 2 log 2`) to be inconsistent, which is a numerical check |
+| Ω24 | A non-product carrier with a torsion cusp collides or repels at polynomial scale near the cusp | Lean: `cusp_local_repulsion` (joint small values + cusp algebra `|b|³ ≲ h²`, `|a|³ ≲ h²` + Ω23) |
+| Ω25 | The cusp `(1,1)` is the only consistent tangency of `(1 − x)² − (1 − y)³` with `|x| = 2^{−σ}`, `|y| = 3^{−σ}` | Lean: `cusp_consistent_tangency_eq` — tangencies are `x = 1 − τ³`, `y = 1 − τ²` with `τ = 1` or `Pτ² + Pτ = 2 log 2` (`P = 3 log 3 − 2 log 2`); the positive root has `τ < log 2/log 3`, incompatible with the moduli by `−log(1−τ³) ≤ τ·(−log(1−τ²))`; the negative root fails by `|1−τ³| > |1−τ²|` |
+| Ω26 | The cusp carrier collides or repels at polynomial scale globally: distinct zeros with `|Im s| ≥ 2` satisfy `|s′ − s| ≥ c(2+|Im s|)^{−C}` | Lean: `cuspCarrier_collide_or_repel` (zero strip `−2 < Re s < 3`; `repulsion_off_tangency_set` + Ω25 away from the cusp; midpoint transfer + Ω24 near it) — the first non-product instance of Ω10 |
 
 ## No-go closure (deformation half)
 - **Exact killing theorem/mechanism:** a continuous family of polynomials with integer coefficients
@@ -99,5 +101,5 @@ Folder `formal/GaloisForLFunctions/ArithmeticDiscreteness/` (README there), umbr
   `e^{−c log² T}` (Ω1′).
 
 ## Log
-- 2026-11-05 — created; Ω1–Ω9″, Ω12, Ω13, Ω15–Ω24 formalized; Ω3, Ω5, Ω6′, Ω12′, Ω14 falsified with
-  survivors; Ω9′, Ω10, Ω11 open.
+- 2026-11-05 — created; Ω1–Ω9″, Ω12, Ω13, Ω15–Ω26 formalized; Ω3, Ω5, Ω6′, Ω12′, Ω14 falsified with
+  survivors; Ω9′, Ω10 (general), Ω11 open.

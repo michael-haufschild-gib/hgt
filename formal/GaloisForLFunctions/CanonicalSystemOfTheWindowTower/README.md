@@ -197,3 +197,9 @@ Weil norm of that new component.
 At either actual endpoint, the normalized trace is also the exact coefficient
 of the truncated integral `(1/2)∫_d¹u(t)/t dt`, divided by `√log(1/d)`.
 The substitution `t=exp(−s²)` identifies it with a complex Cesàro average.
+
+The exact exterior Gamma response has the same leading coefficient: divided
+by `√log(1/d)`, it tends to minus the corresponding endpoint readout. Its
+principal-kernel error is uniformly bounded. Both literal responses coincide
+almost everywhere with the negatives of the actual bounded Gamma boundary
+transfer operators.

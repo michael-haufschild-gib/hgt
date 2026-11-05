@@ -6,7 +6,7 @@ import GaloisForLFunctions.CriticalHardyTheoryOfTheWindowCone.TheDatumOfTheWindo
 The twisted-arc family has total pole term `w₀/2 > 0` and is blind. So on a window, for any weights in the
 cone of the datum `(β, s)`,
 
-  `(1 − β) w₀/2 ≤ (1 + s + 1 − β) K e^{3c − (π/16) e^{2(c−2)}} + s T₀`
+  `(1 − β) w₀/2 ≤ (1 + s + 1 − β) K e^{3c − (π/6) e^{2(c−13/12)}} + s T₀`
   (`exists_datum_constants`).
 
 A deficit of pole has to be paid by conductor, up to the doubly exponential ceiling. The weights do not
@@ -14,7 +14,7 @@ enter: the box of two-point resonators bounds them on any cone of any datum (`mu
 because resonators have no pole term and the conductor only adds to their energy.
 
 * **The window reads the residue** (`exists_one_sub_le_of_datumCone`). A nonempty cone at conductor one has
-  `β ≥ 1 − K′ exp(3c − (π/16) e^{2(c−2)})`: the residue of `ζ` is pinned from below with doubly
+  `β ≥ 1 − K′ exp(3c − (π/6) e^{2(c−13/12)})`: the residue of `ζ` is pinned from below with doubly
   exponential precision by positivity at a finite window, whatever the weights.
 * **No pole needs conductor** (`exists_pos_forall_lt_datumCone_zero_eq_empty`). There is `s₁ > 0` such that a
   pole-free datum with log-conductor below `s₁` has an empty cone from a finite window on.
@@ -510,7 +510,7 @@ theorem tail_le_ceiling {c : ℝ} (hc : 1 ≤ c) :
     Real.exp (3 * c) * doubleExpTail (c - 1 / 12 - 1) ≤ marginCeiling c ∧
       doubleExpTail (c - 1 / 12 - 1) ≤ marginCeiling c := by
   have hτ0 := (doubleExpTail_pos (c - 1 / 12 - 1)).le
-  have hτ₁ : doubleExpTail (c - 1 / 12 - 1) ≤ doubleExpTail (c - 2) :=
+  have hτ₁ : doubleExpTail (c - 1 / 12 - 1) ≤ doubleExpTail (c - 13 / 12) :=
     doubleExpTail_anti (by linarith)
   have hτ2 : Real.exp (3 * c) * doubleExpTail (c - 1 / 12 - 1) ≤ marginCeiling c := by
     rw [← exp_mul_doubleExpTail]
@@ -543,7 +543,7 @@ theorem trade_off_arith {β s E P M w₂ K₁ K₂ T₀ τ C₀ : ℝ} (hs : 0 �
 
 /-- **Pole and conductor trade off.** There are constants `w₀ > 0`, `T₀, K ≥ 0` such that a nonempty cone
 of a datum with `β ≤ 1`, `s ≥ 0` on a window `c ≥ 1` has
-`(1 − β) w₀ ≤ (1 + s + 1 − β) K exp(3c − (π/16) e^{2(c−2)}) + s T₀`. -/
+`(1 − β) w₀ ≤ (1 + s + 1 − β) K exp(3c − (π/6) e^{2(c−13/12)}) + s T₀`. -/
 theorem exists_datum_constants :
     ∃ w₀ T₀ K : ℝ, 0 < w₀ ∧ 0 ≤ T₀ ∧ 0 ≤ K ∧ ∀ β s c : ℝ, β ≤ 1 → 0 ≤ s → 1 ≤ c →
       (datumCone β s c).Nonempty →
@@ -590,7 +590,7 @@ theorem exists_datum_constants :
     (tsum_datum_nonneg hw hlam (by linarith) hsE) hEner hP hMs hτ3
 
 /-- **The window reads the residue.** A nonempty cone at conductor one has
-`β ≥ 1 − K′ exp(3c − (π/16) e^{2(c−2)})`, from a finite window on, whatever the weights. -/
+`β ≥ 1 − K′ exp(3c − (π/6) e^{2(c−13/12)})`, from a finite window on, whatever the weights. -/
 theorem exists_one_sub_le_of_datumCone :
     ∃ K' c₁ : ℝ, 0 < K' ∧ ∀ c β : ℝ, c₁ ≤ c → (datumCone β 0 c).Nonempty →
       1 - K' * marginCeiling c ≤ β := by

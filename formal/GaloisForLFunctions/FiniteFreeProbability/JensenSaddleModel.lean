@@ -52,7 +52,7 @@ theorem saddleWeight_periodic (d : ℕ) : Function.Periodic (saddleWeight d) (2 
     ring
   simp only [saddleWeight]
   rw [h1, h2]
-  exact Complex.exp_periodic.sub_nat_mul_eq d _
+  exact Complex.exp_periodic.sub_nat_mul_eq d
 
 /-- The total mass of the weight is Cauchy's formula for `e^{dζ}`. -/
 theorem integral_saddleWeight_zero (d : ℕ) :
@@ -60,7 +60,7 @@ theorem integral_saddleWeight_zero (d : ℕ) :
   have hdiff : Differentiable ℂ fun ζ : ℂ => Complex.exp ((d : ℂ) * ζ) := by fun_prop
   have hc := (hdiff.differentiableOn (s := Metric.closedBall 0 1)).circleIntegral_one_div_sub_center_pow_smul
     one_pos d
-  rw [iteratedDeriv_cexp_const_mul] at hc
+  rw [_root_.iteratedDeriv_cexp_const_mul] at hc
   have hint : (∮ z in C(0, 1), (1 / (z - 0) ^ (d + 1)) • Complex.exp ((d : ℂ) * z)) =
       I * ∫ φ in (0 : ℝ)..(2 * π), saddleWeight d φ := by
     rw [circleIntegral, ← intervalIntegral.integral_const_mul]
@@ -115,7 +115,7 @@ theorem jensenCircleTerm_arg_add {d : ℕ} {x : ℝ} {a₀ τ₁ : ℂ} (hτ₁ 
   have h1 : Complex.exp (-(I * x * (τ₁ * E))) = Complex.exp ((d : ℂ) * E) * Complex.exp (-(a₀ * (τ₁ * E))) := by
     rw [← Complex.exp_add]
     congr 1
-    linear_combination (-E) * hs
+    linear_combination E * hs
   have h2 : saddleWeight d φ = Complex.exp ((d : ℂ) * E) / E ^ d := by
     rw [saddleWeight, Complex.exp_sub, hE, ← Complex.exp_nat_mul]
     congr 2
@@ -161,8 +161,11 @@ theorem eval_jensenRev_xiSeries_eq_saddle {d : ℕ} (hd : 0 < d) {x : ℝ} {a₀
     have h1 : ∫ φ in (-(π / 2) - θ)..(π / 2 - θ), saddleWeight d φ * saddleRatio a₀ τ₁ φ =
         (∫ φ in (-(π / 2) - θ)..(π / 2 - θ), saddleWeight d φ) +
           ∫ φ in (-(π / 2) - θ)..(π / 2 - θ), saddleWeight d φ * (saddleRatio a₀ τ₁ φ - 1) := by
-      rw [← intervalIntegral.integral_add (hW.intervalIntegrable _ _)
-        ((hW.mul (hQ.sub continuous_const)).intervalIntegrable _ _)]
+      have hI1 : IntervalIntegrable (fun φ => saddleWeight d φ) volume (-(π / 2) - θ) (π / 2 - θ) :=
+        hW.intervalIntegrable _ _
+      have hI2 : IntervalIntegrable (fun φ => saddleWeight d φ * (saddleRatio a₀ τ₁ φ - 1)) volume
+          (-(π / 2) - θ) (π / 2 - θ) := (hW.mul (hQ.sub continuous_const)).intervalIntegrable _ _
+      rw [← intervalIntegral.integral_add hI1 hI2]
       refine intervalIntegral.integral_congr fun φ _ => ?_
       simp only
       ring
@@ -205,10 +208,7 @@ theorem eval_jensenRev_xiSeries_eq_saddle {d : ℕ} (hd : 0 < d) {x : ℝ} {a₀
 theorem re_mul_exp {τ₁ : ℂ} (ψ : ℝ) :
     (τ₁ * Complex.exp (ψ * I)).re = ‖τ₁‖ * Real.cos (Complex.arg τ₁ + ψ) := by
   rw [← circleMap_arg_add]
-  simp [circleMap, Complex.exp_ofReal_mul_I_re, ← Complex.ofReal_add]
-  left
-  rw [show ((Complex.arg τ₁ : ℂ) + ψ) * I = (((Complex.arg τ₁ + ψ : ℝ) : ℂ)) * I by push_cast; rfl,
-    Complex.exp_ofReal_mul_I_re]
+  simp [circleMap, Complex.exp_ofReal_mul_I_re]
 
 theorem norm_mul_exp {τ₁ : ℂ} (ψ : ℝ) : ‖τ₁ * Complex.exp (ψ * I)‖ = ‖τ₁‖ := by
   rw [norm_mul, Complex.norm_exp_ofReal_mul_I, mul_one]

@@ -12,7 +12,7 @@ On a positive form a near-null vector annihilates everything, up to Cauchy–Sch
 tail, so the same polarization also holds for `Λ` without any sign. Subtracting, for every `λ ∈ 𝒜(c)` and every
 test `Y` of fixed support (`exists_abs_atomPairing_crossCorr_le`):
 
-  `|Σ_n (λ(n) − Λ(n)) n^{−1/2} ((Φ_L ⋆ Y)(log n) + (Φ_L ⋆ Y)(−log n))| ≤ C_Y exp(½(3c − (π/16) e^{2(c−2)}))`,
+  `|Σ_n (λ(n) − Λ(n)) n^{−1/2} ((Φ_L ⋆ Y)(log n) + (Φ_L ⋆ Y)(−log n))| ≤ C_Y exp(½(3c − (π/6) e^{2(c−13/12)}))`,
 
 where `L = c − 1/12`. As `Y` shrinks to a point `x` the reading is the theta transform of the deviation,
 `Σ_n (λ(n) − Λ(n)) n^{−1/2} (Φ(x − log n) + Φ(x + log n))`.
@@ -444,7 +444,7 @@ theorem doubleExpTail_le_sqrt_ceiling {c : ℝ} (hc : 0 ≤ c) :
 
 /-- **Pinning with explicit dependence on the second test.** Every real test `Y` on the window, with
 form at most `CY` and zero size at most `E`, satisfies
-`|Σ_n (λ(n) − Λ(n)) n^{−1/2} ((Φ_L ⋆ Y)(log n) + (Φ_L ⋆ Y)(−log n))| ≤ C₀ (E + √CY) exp(½(3c − (π/16) e^{2(c−2)}))`,
+`|Σ_n (λ(n) − Λ(n)) n^{−1/2} ((Φ_L ⋆ Y)(log n) + (Φ_L ⋆ Y)(−log n))| ≤ C₀ (E + √CY) exp(½(3c − (π/6) e^{2(c−13/12)}))`,
 with `L = c − 1/12`, for every `λ ∈ 𝒜(c)`, and `C₀` depends on nothing. -/
 theorem exists_uniform_pinning :
     ∃ C₀ : ℝ, 0 ≤ C₀ ∧ ∀ (c : ℝ) (lam : ℕ → ℝ) (Y : ℝ → ℝ) (CY E : ℝ), 1 ≤ c →
@@ -574,7 +574,7 @@ theorem exists_uniform_pinning :
 
 /-- **The theta-smoothed weights are pinned.** For every fixed test `Y` there is `C` such that every
 `λ ∈ 𝒜(c)` satisfies
-`|Σ_n (λ(n) − Λ(n)) n^{−1/2} ((Φ_L ⋆ Y)(log n) + (Φ_L ⋆ Y)(−log n))| ≤ C exp(½(3c − (π/16) e^{2(c−2)}))`,
+`|Σ_n (λ(n) − Λ(n)) n^{−1/2} ((Φ_L ⋆ Y)(log n) + (Φ_L ⋆ Y)(−log n))| ≤ C exp(½(3c − (π/6) e^{2(c−13/12)}))`,
 with `L = c − 1/12`. -/
 theorem exists_abs_atomPairing_crossCorr_le {Y : ℝ → ℝ} (hY : ContDiff ℝ 2 Y)
     (hYc : HasCompactSupport Y) {R : ℝ} (hR : 0 ≤ R) (hYs : ∀ t, R < |t| → Y t = 0) :

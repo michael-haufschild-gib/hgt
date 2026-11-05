@@ -15,7 +15,7 @@ to positive on-line mimics by band-limited interval majorants.
 
 `exists_local_slow_pair` constructs windows from the carrier count, independently
 of coefficient values. `tsum_far_le` already handles arbitrary complex coefficients
-with summable absolute Lorentzian mass. The remaining moment argument must combine
+with summable absolute Lorentzian mass. `weighted_discMoment_readout_slow` combines
 these inputs without an integer lower bound on a nonzero coefficient.
 
 ## Count distinction
@@ -53,10 +53,13 @@ one as `ε→0`; enlarging `R` makes the central integral approach the full
 energy. This derivation still requires Lean verification.
 
 For a source with interval mass at most `D·length+C`, Fubini then bounds
-the integrated envelope by `(D·length+C)∫E`. For ζ, apply its local
-count on the central height band and its absolute Lorentzian mass to
-the remaining tail, using sixth-order transform decay. The multiplicity
-count, strip-envelope proof and sum/integral exchanges remain open.
+the integrated envelope by `(D·length+C)∫E`. For ζ, use the multiplicity
+count on `|γ−T|≤3T/4`. If the target interval lies in `[T/2,3T/2]` and `T≥8R`, every exterior zero is farther
+than `T/8` from each modulation point. Sixth-order transform decay and
+the Lorentzian mass bound give a uniform tail `B=320 C_b²e^ε`.
+Its integral is `B·length`; a sufficiently large `log(T/2π)` absorbs it
+in any reserved density slack. This leaves the sharp coefficient
+`θ/(2π)` for every `θ>1`, with an additive `A log(T/2π)` term.
 
 ## Lean obligations
 
@@ -64,7 +67,9 @@ count, strip-envelope proof and sum/integral exchanges remain open.
 uses only the three standard axioms. It chooses one pair of windows uniformly
 for all complex coefficients with summable absolute Lorentzian mass.
 `weighted_discMoment_readout_rvm_explicit` also passes with the same explicit
-`cameraMomentHeight` and the same standard axioms. The multiplicity count, strip
-envelope, interval majorant, weighted count transfer and lattice example remain
-under verification.
+`cameraMomentHeight` and the same standard axioms. The sharp multiplicity
+count on `|γ−T|≤3T/4`, the vertical energy estimate, absolute convergence
+of weighted images, and their positive on-line Fourier-energy identity also
+pass with standard axioms. Fourier normalization, interval majorants,
+weighted count transfer and the lattice example remain under verification.
 Final direct source audits and umbrella wiring remain.

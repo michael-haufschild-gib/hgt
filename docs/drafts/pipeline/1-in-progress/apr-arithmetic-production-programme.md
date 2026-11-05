@@ -4,28 +4,24 @@
 - **Stage:** 1-in-progress
 - **Type:** THEOREM (Lean) programme
 - **Source:** docs/reports/review-0511/obstacles-summary.md §2.7.2
-- **Statement:** what unconditional statements can produce parity and square-root precision; exact production limit of each classical tool.
+- **Statement:** what unconditional statements can produce square-root precision; exact production limit of each classical tool.
 
 ## Goal
 Build `formal/GaloisForLFunctions/ArithmeticProduction/` with umbrella and README. Answer the four questions of §2.7.2 and the mechanism question.
 
 ## Gates
 - [x] 0 → 1  README first draft
-- [ ] modules below proved, checked, wired
-- [ ] README rewritten on established results
+- [x] modules proved, checked, wired (21 modules, umbrella `ArithmeticProduction.lean`, `MainTheorems.lean`)
+- [x] README on established results
 
-## Module plan
-1. BilinearFormsAreParityBlind — twist invariance, block-diagonal on prime support.
-2. TypeIInformationIsParityBlind — `Σ λ W = Σ c_d λ(d) L(x/d)`, L¹ barrier.
-3. MeanValuesBelowTheWindowAreBlind — MVT twist invariance; prime polynomial of Λ and λΛ.
-4. TheLinearMollifierIsTheChebyshevError — coefficient identity, sawtooth identity, Cramér inside the defect, sharp mollifier.
-5. TheMollifierFloor — floor without pole cancellation, Blaschke form.
-6. TheSecondMomentIsALaplaceTransform; TheBandLimitOfTheMollifiedZetaFunction; TheFloorsOfTheMollifiedSecondMoment; TheNecessaryLengthOfAMollifier.
-7. LongMollifiersImplyCriticalClustering — named implication.
-8. ImpureEulerFactors — exact count, upper bounds, failed count, log-mean, D_win.
-9. SelfImprovementOnShiftedProducts — width formula, class law.
-10. TheFaithfulUnconditionalInputs — Mertens constant passes three criteria, fails the stabilizer.
-11. TheSelbergIntegralDictionary; length–precision law.
+## Results
+Foundational document: `formal/GaloisForLFunctions/ArithmeticProduction/README.md`, with the pillar table and Lean names.
 
-## Log
-- 2026-11-05 — created; README first draft.
+- Q1, Q2 reduced to the second-moment law and the rate `K/log T`; both false at every fixed exponent (`necessary_length`).
+- Q3: floor `1 + 1/(8+6θ)`, purity floor `c²/p`, linear defect bounded ⇒ RH. Upper side at growing `θ` open.
+- Q4: class-wide self-improvement is `Θ = 1` on shifted products; one impure factor realizes any width.
+- Q5: norm statements on sign-stable classes, Type I, prime polynomials are blind; twin test is pole parity (`poleCorrectedTwin`); entry tests are filters (`Proximity`); no finite convergent linear system decides.
+- Floors: Gram floor on finite sets of off-line zeros; floors add up to interference.
+
+## Open
+Upper side of Q3; constant `1/θ`; uniformity of `necessary_length` in `θ ≤ c log T`; exactness of the Gram floor; non-tautological statements with stabilizer in `𝒬` beyond finite linear systems; self-improvement inside the Ramanujan class; integer polynomials above the window.

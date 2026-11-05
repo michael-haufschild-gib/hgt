@@ -1,6 +1,6 @@
 # Arithmetic Production at Square-Root Precision (APR)
 
-Namespace `GaloisForLFunctions.ArithmeticProduction`; umbrella `ArithmeticProduction.lean`; 18 modules.
+Namespace `GaloisForLFunctions.ArithmeticProduction`; umbrella `ArithmeticProduction.lean`; 21 modules.
 
 ## 1. Motivation
 
@@ -38,6 +38,9 @@ the count.
 | Second-moment law, rate | `MollifiedSecondMomentLaw`, `SecondMomentRate` | excess `→ 0` at length `exp(o(T))`; excess `K/log T` |
 | Mertens law, proximity | `MertensLaw`, `mertensInvisible`, `Proximity` | `Σ a(n)/n = log N − γ + o(1)`; its invisible perturbation; `a − Λ ∈ 𝒬` |
 | Shifted width | `shiftedWidth` | width of `ξ(s+a)ξ(s−a)` |
+| Gram form | `gramForm`, `gramTest` | `Σ x(ρ) x̄(σ)/(ρ+σ̄−1)`: the Szegő kernel of `Re s > ½` at off-line zeros |
+| Selberg integral | `selbergIntegral` | `∫|Σ_{u<log n≤u+δ} a(n) n^{−½}|²du` |
+| Linear law | `LinearLaw`, `LinearLaw.Holds`, `LinearLaw.Convergent` | the limit of `Σ_{n≤N} a(n)w(n) − ℓ(N)`; `w` converges against every `n^{−t}`, `¼ ≤ t < ½` |
 
 ## 3. Language
 
@@ -77,15 +80,18 @@ Each theorem is unconditional unless the statement is an equivalence with RH or 
 | 3 | Mollifier defect = sawtooth form | `mollifierDefect_eq`, `mollifierDefect_ge_band` | `TheMollifierDefectIsASawtoothForm` |
 | 4 | Linear mollifier = Chebyshev error; bounded or subpolynomial defect ⇒ RH; sharp mollifier does not close | `sawtoothDefect_linear`, `riemannHypothesis_of_linearDefect_bounded`, `riemannHypothesis_of_linearDefect_subpolynomial`, `exists_frequently_le_sharpDefect` | `TheLinearMollifierIsTheChebyshevError` |
 | 5 | Every off-line zero pins a floor, at any length: `(2β−1)|1−ρ|²/|ρ|⁴` | `mollifierDefect_floor` | `EveryOffLineZeroPinsAFloor` |
+| 5′ | **Gram floor**: defect `≥ v*G⁻¹v`, `v(ρ) = (1−ρ)/ρ²`, `G` the Szegő kernel on any finite set of off-line zeros; floors add up to interference | `mollifierDefect_gram_floor`, `mollifierDefect_gram_floor_singleton`, `mollifierDefect_floor_sum` | `FiniteSetsOfZerosPinAGramFloor` |
 | 6 | Cosh interpolation of the profile | `cosh_interpolation` | `TheSecondMomentIsALaplaceTransform` |
 | 7 | **Necessary length**: `∫_T^{2T}|ζM|² ≥ (1 + 1/(8+6θ))T` at `N ≤ T^θ`; second moment `→ 1` forces every exponent | `necessary_length`, `length_exponent_tendsto_of_second_moment_tendsto_one` | `TheNecessaryLengthOfAMollifier` |
 | 8 | Second moment `→ 1` ⇒ `100%` clustering; excess `K/log T` ⇒ `D_zero`; both false at every fixed exponent | `logMean_tendsto_zero_of_mollifiedSecondMomentLaw`, `criticalClustering_of_mollifiedSecondMomentLaw`, `logFreeNearLineZeroDensity_of_secondMomentRate`, `not_secondMomentLaw_of_bounded_exponent`, `not_secondMomentRate_of_bounded_exponent` | `LongMollifiersImplyCriticalClustering` |
 | 9 | **Length–precision law**: the second moment at `T^θ` sees `εn^{−η}` iff `η < ½ − 1/(2θ)`; below the window only moduli are seen | `length_precision_law`, `below_the_window_every_power_is_blind`, `abs_integral_twist_sub_le` | `TheLengthPrecisionLaw` |
+| 9′ | Selberg integral dictionary: `∫_{−T}^{T}|P_a|² ≤ (5π/2)T² S_a(N, 1/T)`, and the resonance in short intervals | `integral_norm_sq_linePoly_le_selbergIntegral`, `le_selbergIntegral_resonant` | `TheSelbergIntegralDictionary` |
 | 10 | **Corrected twin**: `λΛ + 2` shares every error law, the count and PNT with `Λ`; prime polynomials of `λΛ`, `−Λ` agree in mean square through `T²` | `errorLaw_poleCorrectedTwin_iff`, `count_poleCorrectedTwin_iff`, `primeNumberLaw_poleCorrectedTwin`, `twist_polynomial_second_moment_le` | `TheLiouvilleTwinOnlySeesThePole` |
 | 11 | **Impure mimic**: exact integer count, all upper bounds, failed count, lattice of zeros at any width, log-mean `log(c/√p)` | `abs_sum_impureCoeff_sub_le`, `integral_norm_sq_mimic_le`, `not_count_impureWeight`, `impureFactor_rpow_eq_zero`, `exists_lattice_zero_near`, `tendsto_logMean_impureFactor` | `ImpureEulerFactorsPassEveryUpperBound` |
 | 12 | **Second moment sees purity**: floor `(1−ε)c²/p` at every length `exp(δT)` | `impure_second_moment_floor`, `not_secondMomentLaw_impure` | `TheMollifiedSecondMomentSeesPurity` |
 | 13 | **Self-improvement** on the shifted family is `Θ = 1`; corrected width invariant; shifted coefficients non-Ramanujan | `selfImprovement_on_shifts_iff`, `shiftedWidth_eq`, `shiftedWidth_sub_eq`, `coefficient_exponent_lower_bound` | `SelfImprovementFailsOnShiftedProducts` |
 | 14 | **Filters are not certificates**: the Mertens law passes three tests and fails the fourth; proximity passes all four and implies the count iff RH | `mertensLaw_vonMangoldt`, `not_mertensLaw_liouvilleWeight`, `not_mertensLaw_and_add_smul_powerWeight`, `exists_extension_not_mertensLaw`, `exists_mertensLaw_not_count`, `proximity_passes_entry_criteria`, `proximity_implies_count_iff` | `AFaithfulInputNeedNotDecide` |
+| 15 | **No finite system of convergent linear laws decides**: any such system has a stabilizer outside `𝒬` | `exists_stabilizer_outside_sqrtClass`, `finite_linear_system_cannot_decide`, `sum_powerWeight_not_mem_sqrtClass` | `NoFiniteSystemOfLinearLawsDecides` |
 
 Infrastructure modules: `TheMollifiedZetaFunctionIsBandLimited` (`exists_stripDecay_mollifiedWindow`), `TheFloorsOfTheMollifiedSecondMoment` (`right_floor`, `exists_left_floor`), `TheGaussianAveragingOfTheWindow` (`integrated_gauss_inequality`, `exists_window_inequality`), `TheInterpolationAtALargeHeight` (`eventually_remainder_le`, `eventually_left_floor`).
 
@@ -99,7 +105,7 @@ Infrastructure modules: `TheMollifiedZetaFunctionIsBandLimited` (`exists_stripDe
 | **Q4. Self-improvement (B57)** | False as a class theorem | On Euler products with functional equation (shifted family) the class law is `Θ = 1`. Without functional equation one factor realizes any width. A proof must use the Ramanujan bound and the functional equation together, on which no mechanism exists |
 | **Q5. Parity-breaking bilinear input at square-root precision** | None exists among norm statements on sign-stable test classes; the question is restated | Type II norms, Type I weights and prime-polynomial mean values are parity-blind. The parity seen by PNT, the Mertens law and every error law is pole parity. The real content is a provable statement with stabilizer inside `𝒬`, other than proximity |
 
-**The restated question.** Find an unconditional statement `S`, not defined through `Λ`, with `S(Λ)` provable and `S(a) ∧ S(a+δ) ⇒ δ ∈ 𝒬`, together with a proof of `S ⇒ Count`. None is known. The formal obstructions are pillars 1, 2, 9, 10 and 14; no theorem excludes its existence.
+**The restated question.** Find an unconditional statement `S`, not defined through `Λ`, with `S(Λ)` provable and `S(a) ∧ S(a+δ) ⇒ δ ∈ 𝒬`, together with a proof of `S ⇒ Count`. None is known. The formal obstructions are pillars 1, 2, 9, 10, 14 and 15; no theorem excludes its existence. By pillar 15 such a statement cannot be a finite system of convergent linear laws.
 
 ## 7. Tools
 
@@ -110,8 +116,10 @@ Infrastructure modules: `TheMollifiedZetaFunctionIsBandLimited` (`exists_stripDe
 - Log-integral ceiling from a second moment (`exists_logIntegral_le_of_secondMoment`) and folding of off-line multiplicity (`sum_order_filter_abs_le`).
 - Mimic battery: `liouvilleWeight`, `poleCorrectedTwin`, `impureWeight`, `mertensInvisible`, power perturbations, `shiftedWidth`.
 - Sawtooth dictionary and dyadic elimination of the offset (`sawtoothDefect`, `band_of_dyadic`).
+- Selberg integral of a weight and its bridge from the second moment (`selbergIntegral`, `linePoly_eq_logPoly`), resting on `Sieve.integral_Icc_normSq_logPoly_le_window`.
+- Gram interpolation at off-line zeros (`gramTest`, `gramForm`, `norm_sq_sum_le_defect_mul`).
 
-**Used from the corpus.** Littlewood budget and sandwich (`exists_zetaLine_logMean_sandwich`, `exists_zetaLine_littlewood_edge_budget_all_heights`), sharp mean value (`Sieve.dirichlet_meanValue_sharp_window`), mollifier floors (`exists_edPoly_line_logMean_floor`), zero count (`exists_xiZeroCount_close`), Gallagher's identity (`Sieve.gallagher_identity`), which is the bridge from long polynomials to short-interval variance.
+**Used from the corpus.** Littlewood budget and sandwich (`exists_zetaLine_logMean_sandwich`, `exists_zetaLine_littlewood_edge_budget_all_heights`), sharp mean value (`Sieve.dirichlet_meanValue_sharp_window`), mollifier floors (`exists_edPoly_line_logMean_floor`), zero count (`exists_xiZeroCount_close`), Gallagher's identity (`Sieve.gallagher_identity`).
 
 **To build.** Uniform version of `necessary_length` in `θ ≤ c log T`, which would turn the statement "the rate needs `N ≥ exp(c log²T)`" into a theorem. A mimic battery test harness stating any new input against all weights above.
 
@@ -132,8 +140,8 @@ Infrastructure modules: `TheMollifiedZetaFunctionIsBandLimited` (`exists_stripDe
 1. The upper side of Q3 at `θ > 21/50`, and any statement at growing `θ`.
 2. The constant of the floor: `1/(8+6θ)` proved, `1/θ` predicted. The left floor uses only the zero count; the two floors alone, optimized over `a`, stop near `1/(eθ)` by a paper estimate, so reaching `1/θ` needs pair correlation.
 3. Uniformity of the necessary-length law in `θ`, and the exact length required by the rate `K/log T`.
-4. A Blaschke form of the floor at several zeros (conjectured `1 − |I(0)|² − |I'(0)|²`).
-5. Which statements other than proximity have stabilizer inside `𝒬`. Classifying finite systems of linear laws would settle whether any such system can.
+4. Exactness of the Gram floor: whether the infimum of the defect over all mollifiers equals `sup v*G⁻¹v`, which would identify the closure of the mollified span as a Blaschke multiple.
+5. Which statements other than proximity have stabilizer inside `𝒬`. Finite convergent linear systems cannot (pillar 15); the next class is countable systems with a decay condition, or nonlinear laws.
 6. Self-improvement inside the Ramanujan class with functional equation: find any mechanism, or a mimic in that class.
 7. Second moments of integer polynomials above the window, which see the kernel `1` and do not reduce to prime polynomials. This is the one place in the mean-value world where parity is not yet shown to be blind away from the pole.
 

@@ -77,10 +77,13 @@ theorem hasDerivAt_gammaFactor {τ : ℂ} (hτ : 0 ≤ τ.re) (hτ' : τ ≠ 1 /
     refine h.congr_deriv ?_
     simp only [id]
     ring
+  have key : (1 / (1 / 2 + τ) + 1 / (τ - 1 / 2)) * ((1 / 2 + τ) * (τ - 1 / 2) / 2) = τ := by
+    have hs : 1 / (1 / 2 + τ) * (1 / 2 + τ) = 1 := one_div_mul_cancel h1
+    have ht : 1 / (τ - 1 / 2) * (τ - 1 / 2) = 1 := one_div_mul_cancel h2
+    linear_combination ((τ - 1 / 2) / 2) * hs + ((1 / 2 + τ) / 2) * ht
   refine (hp.mul hΓ).congr_deriv ?_
   simp only [gammaSlope, gammaFactor]
-  field_simp
-  ring
+  linear_combination (-Complex.Gammaℝ (1 / 2 + τ)) * key
 
 theorem hasDerivAt_gammaSlope {τ : ℂ} (hτ : 0 ≤ τ.re) (hτ' : τ ≠ 1 / 2) :
     HasDerivAt gammaSlope (gammaSlopeDeriv τ) τ := by
@@ -96,15 +99,15 @@ theorem hasDerivAt_gammaSlope {τ : ℂ} (hτ : 0 ≤ τ.re) (hτ' : τ ≠ 1 / 
   have hψ' : HasDerivAt (fun z : ℂ => Complex.digamma ((1 / 2 + z) / 2))
       (deriv Complex.digamma ((1 / 2 + τ) / 2) * (1 / 2)) τ := hψ.comp τ hinner
   have ha : HasDerivAt (fun z : ℂ => 1 / (1 / 2 + z)) (-(1 / (1 / 2 + τ) ^ 2)) τ := by
-    have h := ((hasDerivAt_id τ).const_add (1 / 2 : ℂ)).inv h1
-    simp only [one_div]
-    refine h.congr_deriv ?_
-    simp [id]
+    have h0 : HasDerivAt (fun z : ℂ => 1 / 2 + z) 1 τ := by
+      simpa using (hasDerivAt_id τ).const_add (1 / 2 : ℂ)
+    refine ((hasDerivAt_const τ (1 : ℂ)).fun_div h0 h1).congr_deriv ?_
+    ring
   have hb : HasDerivAt (fun z : ℂ => 1 / (z - 1 / 2)) (-(1 / (τ - 1 / 2) ^ 2)) τ := by
-    have h := ((hasDerivAt_id τ).sub_const (1 / 2 : ℂ)).inv h2
-    simp only [one_div]
-    refine h.congr_deriv ?_
-    simp [id]
+    have h0 : HasDerivAt (fun z : ℂ => z - 1 / 2) 1 τ := by
+      simpa using (hasDerivAt_id τ).sub_const (1 / 2 : ℂ)
+    refine ((hasDerivAt_const τ (1 : ℂ)).fun_div h0 h2).congr_deriv ?_
+    ring
   have h := ((ha.add hb).add ((hψ'.div_const 2).sub_const ((Real.log Real.pi : ℂ) / 2)))
   refine h.congr_deriv ?_
   simp only [gammaSlopeDeriv]
@@ -243,7 +246,7 @@ theorem norm_gammaSlopeDeriv_le {τ : ℂ} (hτ : 0 ≤ τ.re) (h4 : 4 ≤ ‖τ
   calc ‖gammaSlopeDeriv τ‖
       ≤ ‖-(1 / (1 / 2 + τ) ^ 2)‖ + ‖1 / (τ - 1 / 2) ^ 2‖ +
           ‖deriv Complex.digamma ((1 / 2 + τ) / 2) / 4‖ :=
-        (norm_add_le _ _).trans (add_le_add_right (norm_sub_le _ _) _)
+        (norm_add_le _ _).trans (add_le_add (norm_sub_le _ _) le_rfl)
     _ = 1 / ‖1 / 2 + τ‖ ^ 2 + 1 / ‖τ - 1 / 2‖ ^ 2 +
           ‖deriv Complex.digamma ((1 / 2 + τ) / 2)‖ / 4 := by
         simp only [norm_neg, norm_div, norm_one, norm_pow]
@@ -415,11 +418,12 @@ theorem digamma_conj (z : ℂ) :
 
 theorem gammaSlope_conj (τ : ℂ) :
     gammaSlope ((starRingEnd ℂ) τ) = (starRingEnd ℂ) (gammaSlope τ) := by
+  have hc2 : (starRingEnd ℂ) (2 : ℂ) = 2 := Complex.conj_eq_iff_real.2 ⟨2, by norm_num⟩
   have e : (1 / 2 + (starRingEnd ℂ) τ) / 2 = (starRingEnd ℂ) ((1 / 2 + τ) / 2) := by
-    simp [map_div₀, map_add]
+    simp [map_div₀, map_add, hc2]
   simp only [gammaSlope]
   rw [e, digamma_conj]
-  simp [map_div₀, map_add, map_sub, Complex.conj_ofReal]
+  simp [map_div₀, map_add, map_sub, Complex.conj_ofReal, hc2]
 
 /-- A logarithm of `G/G(1)` on `Re τ > 1/2` whose derivative is the slope. -/
 theorem exists_gammaFactor_log :

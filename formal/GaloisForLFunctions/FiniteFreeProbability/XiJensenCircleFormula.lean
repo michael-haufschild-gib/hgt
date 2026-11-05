@@ -19,6 +19,7 @@ and the integrand lives in the half-plane `Re s ≥ 1/2`.
 
 open Polynomial Filter Topology Complex MeasureTheory Set
 open GaloisForLFunctions.HTGeometry RHTower
+open scoped Real
 
 namespace FiniteFreeProbability
 
@@ -57,7 +58,10 @@ def xiCentered (τ : ℂ) : ℂ := xi (1 / 2 + τ)
 theorem differentiable_xiCentered : Differentiable ℂ xiCentered :=
   xi_differentiable.comp (by fun_prop)
 
-theorem XiC_eq_xiCentered (w : ℂ) : XiC w = xiCentered (I * w) := XiC_eq_xi w
+theorem XiC_eq_xiCentered (w : ℂ) : XiC w = xiCentered (I * w) := by
+  rw [XiC, xiCentered]
+  congr 1
+  ring
 
 theorem xiCentered_neg (τ : ℂ) : xiCentered (-τ) = xiCentered τ := by
   rw [xiCentered, xiCentered, ← xi_one_sub]
@@ -84,7 +88,8 @@ theorem continuous_jensenCircleTerm {d : ℕ} (x : ℝ) {ρ : ℝ} (hρ : 0 < ρ
 
 theorem jensenCircleTerm_periodic (d : ℕ) (x ρ : ℝ) : Function.Periodic (jensenCircleTerm d x ρ) (2 * π) := by
   intro θ
-  simp only [jensenCircleTerm, periodic_circleMap 0 ρ θ]
+  have h : circleMap 0 ρ (θ + 2 * π) = circleMap 0 ρ θ := periodic_circleMap 0 ρ θ
+  simp only [jensenCircleTerm, h]
 
 /-- Cauchy's formula: the full circle integral is the Jensen value. -/
 theorem integral_jensenCircleTerm (d : ℕ) (x : ℝ) {ρ : ℝ} (hρ : 0 < ρ) :
@@ -134,8 +139,10 @@ theorem integral_jensenCircleTerm (d : ℕ) (x : ℝ) {ρ : ℝ} (hρ : 0 < ρ) 
     ring
   rw [hcancel]
   push_cast
-  field_simp
-  linear_combination (2 * (π : ℂ) * (jensenRev d xiSeries).eval (x : ℂ)) * hIneg
+  have e : I ^ d * (d.factorial : ℂ) * (2 * π / (d.factorial : ℂ) * ((-I) ^ d * (jensenRev d xiSeries).eval (x : ℂ))) =
+      2 * π * (jensenRev d xiSeries).eval (x : ℂ) * (I ^ d * (-I) ^ d) := by
+    field_simp
+  rw [e, hIneg, mul_one]
 
 theorem jensenCircleTerm_add_pi (d : ℕ) (x ρ θ : ℝ) :
     jensenCircleTerm d x ρ (θ + π) =
@@ -144,21 +151,18 @@ theorem jensenCircleTerm_add_pi (d : ℕ) (x ρ θ : ℝ) :
     simp only [circleMap, zero_add, ofReal_add, add_mul, Complex.exp_add, Complex.exp_pi_mul_I]
     ring
   rw [jensenCircleTerm, hz, xiCentered_neg, neg_pow]
-  by_cases h0 : circleMap 0 ρ θ ^ d = 0
-  · simp [h0]
-  · have h1 : ((-1 : ℂ) ^ d) ≠ 0 := pow_ne_zero _ (by norm_num)
-    have h2 : ((-1 : ℂ) ^ d) * (-1) ^ d = 1 := by rw [← mul_pow]; simp
-    field_simp
-    have : -(I * (x : ℂ) * -circleMap 0 ρ θ) = I * x * circleMap 0 ρ θ := by ring
-    rw [this]
-    linear_combination (-(Complex.exp (I * x * circleMap 0 ρ θ) * xiCentered (circleMap 0 ρ θ))) * h2 * 0
+  have hexp : -(I * (x : ℂ) * -circleMap 0 ρ θ) = I * x * circleMap 0 ρ θ := by ring
+  have h2 : ((-1 : ℂ) ^ d) * (-1) ^ d = 1 := by rw [← mul_pow]; simp
+  have hp : ((-1 : ℂ) ^ d)⁻¹ = (-1) ^ d := inv_eq_of_mul_eq_one_right h2
+  rw [hexp, div_eq_mul_inv, mul_inv, hp, div_eq_mul_inv]
+  ring
 
 /-- Reflection in the real axis turns the left half of the circle into the conjugate of the right half. -/
 theorem jensenCircleTerm_conj (d : ℕ) (x ρ θ : ℝ) :
     Complex.exp (I * x * circleMap 0 ρ (-θ)) * xiCentered (circleMap 0 ρ (-θ)) / circleMap 0 ρ (-θ) ^ d =
       (starRingEnd ℂ) (jensenCircleTerm d x ρ θ) := by
   have hz : circleMap 0 ρ (-θ) = (starRingEnd ℂ) (circleMap 0 ρ θ) := by
-    simp only [circleMap, zero_add, map_mul, conj_ofReal, ← Complex.exp_conj, map_neg, conj_I, ofReal_neg]
+    simp only [circleMap, zero_add, map_mul, conj_ofReal, ← Complex.exp_conj, conj_I, ofReal_neg]
     congr 2
     ring
   rw [hz, jensenCircleTerm, xiCentered_conj, map_div₀, map_mul, map_pow, ← Complex.exp_conj]
@@ -194,9 +198,10 @@ theorem eval_jensenRev_xiSeries_eq_half_circle (d : ℕ) (x : ℝ) {ρ : ℝ} (h
     simp only [jensenCircleTerm_add_pi]
     rw [intervalIntegral.integral_const_mul]
     congr 1
-    rw [← intervalIntegral.integral_comp_neg
-      (fun θ => Complex.exp (I * x * circleMap 0 ρ θ) * xiCentered (circleMap 0 ρ θ) / circleMap 0 ρ θ ^ d)]
-    simp only [neg_neg]
+    have hneg := intervalIntegral.integral_comp_neg (a := -(π / 2)) (b := π / 2)
+      (fun θ => Complex.exp (I * x * circleMap 0 ρ θ) * xiCentered (circleMap 0 ρ θ) / circleMap 0 ρ θ ^ d)
+    rw [neg_neg] at hneg
+    rw [← hneg]
     exact intervalIntegral.integral_congr fun θ _ => jensenCircleTerm_conj d x ρ θ
   have hfull := integral_jensenCircleTerm d x hρ
   rw [hshift, hsplit, hsecond] at hfull

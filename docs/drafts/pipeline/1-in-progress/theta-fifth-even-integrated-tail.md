@@ -1,15 +1,15 @@
 # Fifth even integrated tail
 
 - **Stage:** 1-in-progress
-- **Type:** CONJECTURE
+- **Type:** THEOREM (Lean)
 - **Wall:** Σ6
 - **Statement:** The complete matrix
   `T₅(r) = [∫_(s>r) thetaCuspNativeSignedJet (s/2) (2(i+j)) ds]`
   is positive definite for every `r ≥ 0`.
 
-The native fifth section is positive from `q=πexp(r)≥5`. Global fifth-tail
-positivity would pay the fifth even aperture integral and, with the proved
-odd fourth section, give rank-nine positivity.
+The complete native fifth tail is now positive from `q=πexp(r)≥3`.
+`FifthCompleteTail.nativeTailMatrix_posDef` proves the stated theorem.
+The aperture transfer and rank-nine parity assembly remain unverified.
 
 Write `E(q)=q^(3/2)exp(−2q)`, `A=M(0,1)>0`, and
 `c(q)=3/(32q²)−3/(128q³)`.
@@ -53,7 +53,9 @@ satisfies `R_mn(q)+E(q)c(q)A/8>0` for `q≥3`. Their relative rates are
 All 92 fixed coefficient matrices, four uniform model comparisons, and
 literal integral identities are formalized in `FifthOtherTail`.
 Together with the remainder bound these payments consume exactly the
-cubic reserve. The complete-source assembly remains unproved.
+cubic reserve. The exact complete-source decomposition and reserve
+cancellation are formalized in `FifthCompleteTail`; all seven capstones
+use only `propext`, `Classical.choice`, and `Quot.sound`.
 
 A smaller allocation is excluded: at `q=3`, the lower-gamma `(1,3)` model
 paid by half the cubic reserve has negative fourth principal minor. This
