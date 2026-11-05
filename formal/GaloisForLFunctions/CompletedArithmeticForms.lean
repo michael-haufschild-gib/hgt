@@ -207,3 +207,5 @@ The foundational source questions are developed in
 `CompletedArithmeticForms/README.md`.
 -/
 import GaloisForLFunctions.CompletedArithmeticForms.FirstAtomFourierTail
+import GaloisForLFunctions.CompletedArithmeticForms.FourierPositiveHankel
+import GaloisForLFunctions.CompletedArithmeticForms.FirstAtomRadialProfile

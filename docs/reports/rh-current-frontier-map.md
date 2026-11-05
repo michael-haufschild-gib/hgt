@@ -1,7 +1,7 @@
 # RH proof-route frontier
 
 **RH open · 38 live route formulations · 9 candidates.**
-**Corpus checkpoint:** `9c877bf0377b015a3d009764764926a61c7b657e`.
+**Corpus checkpoint:** `5e3d3374afb0ea568b492875f3d1348c5dd2e767`.
 
 Live = source observable + proved RH-sufficient receiver + explicit open estimate. Candidate = missing independent source mechanism/landing.
 Formulations need not be independent: HJ→PA, BSH→CDC; FEL's BSY criterion→CTF. Source construction does not discharge zero-selective sign/vanishing.
@@ -45,9 +45,9 @@ Evidence: [L] integrated, source-reviewed; [S] unfinished/unintegrated, unverifi
 ### RW — Restricted Weil ground energy
 
 - **Path:** Complete Weil form → μ(a)≥0 at every radius → RH.
-- **Established:** Attained strictly decreasing minima; nonnegative apertures extend through the unique contact, if finite. Increasing a_k carries floor1/(20000·2^k), a₀>181/500. Precontact HB kernels; finite contact forces blowup. Sharp cuts, orthogonal increments, complete exterior-crossing bounds and actual Riesz normalized endpoint traces and full-collar pointwise/scaled-L² limits at fixed apertures [L]. Complete collar energy/mass≥log(1/h)−C_a; constant collars attain ≤log(1/h)+3+C_a, C_a=‖weilLogarithmicCorrection a‖. All-lattice/two-site receivers [L]; exact {2,3} band below log2 [K].
-- **Open:** All-aperture sign or contact-excluding arithmetic kernel bound. Kernel absolute continuity, boundary-flux/support variation and moving-endpoint/Riesz-increment control remain; fixed-aperture traces are established. Collar constants depend on outer aperture. Increasing a_k need not exhaust apertures. [Prime-entry margins](#prime-entry), [EWU](#ewu), [OWU](#owu), [ACT](#act).
-- **Sources:** C:TheApertureFlowNeverStalls; I:MultiPrimeDilationModulusAndIteratedWeilFloors; CSTW:{TheWeilFormIsCompleteBeforeContact,TheLocalWeilKernelIsHermiteBiehler,TheWeilKernelDivergesAtContact,SharpRestrictionPreservesTheCompleteComplexWeilDomain,GrowingTheWeilWindowAddsAnOrthogonalKernel,TheWeilFormHasBoundedExteriorCrossings,TheWeilRieszVectorsHaveNormalizedEndpointTraces,TheWeilFormRetainsLogarithmicCollarEnergy,TheWeilCollarProfilesHaveTheirExactBoundaryLimits} [L]; GWZ:RHIsDecidedOnTwoSites [L]; SWC:BelowLogFour/RetainedVarianceAndHalfWindowBandBelowLogFour [K].
+- **Established:** Attained strictly decreasing minima; nonnegative apertures extend through finite contact. Increasing a_k carries floor1/(20000·2^k), a₀>181/500. Precontact HB kernels; finite contact forces blowup. Actual Riesz endpoint traces and scaled-L² collar limits; exact full increment/collar equations compatible with fixed enclosures. Sharp old-window/two-collar decomposition retains logarithmic coercivity after complete prime/polar crossings [L]. Rescaled actual residuals converge strongly in L²; collar mass/(h log(1/h))→|endpoint trace|² [S]. All-lattice/two-site receivers [L]; exact {2,3} band below log2 [K].
+- **Open:** All-aperture sign or contact-excluding arithmetic kernel bound. Kernel absolute continuity, moving-boundary flux and quantitative Riesz-increment control remain. Two-collar error contains 2C_b²/μ(a), C_b=2π+‖bounded remainder at b‖: the proved floor degenerates as μ(a)↓0. Increasing a_k need not exhaust apertures. [Prime-entry margins](#prime-entry), [EWU](#ewu), [OWU](#owu), [ACT](#act).
+- **Sources:** C:TheApertureFlowNeverStalls; I:MultiPrimeDilationModulusAndIteratedWeilFloors; CSTW:{TheWeilFormIsCompleteBeforeContact,TheLocalWeilKernelIsHermiteBiehler,TheWeilKernelDivergesAtContact,TheWeilCollarProfilesHaveTheirExactBoundaryLimits,TheWeilKernelIncrementSolvesTheFullCollarEquation,TheFullWeilFormControlsBothCollars} [L]; CSTW:TheWeilCollarResidualsHaveTheirActualL2Limit [S]; GWZ:RHIsDecidedOnTwoSites [L]; SWC:BelowLogFour/RetainedVarianceAndHalfWindowBandBelowLogFour [K].
 
 <a id="fu"></a>
 ### FU — CCM-FU signed prime scheduling
@@ -141,9 +141,9 @@ Evidence: [L] integrated, source-reviewed; [S] unfinished/unintegrated, unverifi
 ### TH — Theta moment positivity
 
 - **Path:** Signed center-mixed theta jets → all-rank Hankel positivity → RH.
-- **Established:** Rank8 positive for 0<a<1/2; ranks≤N strict on |a−1/2|<c/(1+log(N+1)) [K]. Complete fifth-even native tail PD for every r≥0, retaining all ordered pairs and infinite remainder; aperture integration gives rank9 positivity and I₈(a)>0 for every 0<a<1/2 [L].
-- **Open:** Rank10 and higher: full signed-tail positivity at every 0<a<1/2, or a rank-uniform allocation law. [Fixed quartic repairs fail](rh-killed-routes.md#theta-fixed-cross-load).
-- **Sources:** R:ThetaCusp/ThetaCuspCenterMixedSignedJetCompleteness; TCS:{StrictEighthSection,LogarithmicCriticalCollar} [K]; TCS:{FifthEvenCompleteTail,StrictNinthSection} [L].
+- **Established:** Rank8 positive for 0<a<1/2; ranks≤N strict on |a−1/2|<c/(1+log(N+1)) [K]. Complete fifth-even native tails PD for r≥0, including all ordered pairs/infinite remainder; rank9 positive and I₈(a)>0 throughout 0<a<1/2 [L]. First-atom integrated radial Fourier tail>0 at every real frequency for q>1+√2, retaining the signed endpoint term [L]. Actual radial-tail Schwartz/all-order integral-jet construction for q≥2 [S].
+- **Open:** First-atom Fourier-to-native-jet/Gram identification. Full theta: rank10+ signed-tail positivity throughout 0<a<1/2, or rank-uniform allocation retaining all cross-pairs/remainders. [Fixed quartic repairs fail](rh-killed-routes.md#theta-fixed-cross-load).
+- **Sources:** R:ThetaCusp/ThetaCuspCenterMixedSignedJetCompleteness; TCS:{StrictEighthSection,LogarithmicCriticalCollar} [K]; TCS:{FifthEvenCompleteTail,StrictNinthSection}; CAF:FirstAtomFourierTail [L]; CAF:FirstAtomRadialProfile [S].
 
 <a id="rn"></a>
 ### RN — Theta renewal and singular comparison
@@ -394,7 +394,7 @@ ADT: conductor degeneration supporting HF/ACS/SC; gluing determinant reformulate
 
 WTZ/DZG/ATD: RW/HF/ACS/PM support. Tate-positive dimensions=[0,κ(A)], κ(A)>0 and κ(A)→0; strict interior floor and exact rational-Hecke graph criterion [L]. Finite matrix reduction through A≤log(81/16); actual dimension1 sign through log(9/2). First-jet domination⇔Weil sign; no all-aperture domination. Sources: WTZ:{PositiveTateDimensionsFormAClosedInitialInterval,PositivePrimeMultipliersLowerTateDimension,TheTateHorizonBeforeEightyOneSixteenths,TheThirdTateStageDistinguishesEdgeSigns}.
 
-GWZ/CSTW: [RW](#rw)/AIP support. Actual Riesz vectors have continuous representatives, normalized endpoint traces and full-collar pointwise/scaled-L² limits at fixed apertures; complete Weil collar energy/mass=log(1/h)+O_a(1). Prime/polar/scalar response is continuous on enclosing apertures. Precontact evaluation-Gram derivative gives only 0≤∫G′≤ΔG. Full increment/collar equation and fixed-enclosure compatibility have unintegrated source [S]. Open: absolute continuity, moving-window flux identities and contact-uniform arithmetic estimates. Sources: CSTW:{TheWeilRieszVectorsHaveNormalizedEndpointTraces,TheWeilFormRetainsLogarithmicCollarEnergy,ThePrimeAndPolarWeilResponsesAreContinuous,TheWeilCollarProfilesHaveTheirExactBoundaryLimits}; CHT:TheEvaluationKernelsHaveAHamiltonianDensity [L]; CSTW:TheWeilKernelIncrementSolvesTheFullCollarEquation [S].
+GWZ/CSTW: [RW](#rw)/AIP support. Complete collar energy/mass=log(1/h)+O_a(1); actual endpoint traces, full increment equations and two-collar coercivity [L]. Precontact evaluation-Gram derivative gives only 0≤∫G′≤ΔG; absolute continuity/contact-uniform bounds remain open. Sources: CSTW:{TheWeilFormRetainsLogarithmicCollarEnergy,TheWeilKernelIncrementSolvesTheFullCollarEquation,TheFullWeilFormControlsBothCollars}; CHT:TheEvaluationKernelsHaveAHamiltonianDensity [L].
 
 FFP: LA/TH support. Exact zero-piece reality⇔RH. Genus-one stability⇔upper-half-plane zeros and drift D≥0; sharp margin −D. ξ drift0; reversed Jensen roots approach Im0 for σ≥1. At scale½log d, G_d(iθ)→1/(iθ+i), σ≥1/2, θ>0. Full upper-half-plane transform convergence for σ≥1, or given zero-freeness right ofσ [L]; critical-line stability/all-root control open. [Strict-margin obstruction](rh-killed-routes.md#xi-stability-margin). Sources: FFP:{ZeroPieceRealization,GenusOneStabilityClassification,StabilityBoundaryOfXi,CauchyLimitLaw} [L].
 

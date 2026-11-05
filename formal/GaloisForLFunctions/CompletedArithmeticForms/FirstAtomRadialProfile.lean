@@ -315,5 +315,143 @@ theorem iteratedDeriv_firstAtomRadialTail {q : ℝ} (hq : 2 ≤ q) (n : ℕ) {z 
   simp only [integral_cutoffRadialKernel] at h
   simp only [h, iteratedDeriv_cutoffRadialKernel, integral_indicator measurableSet_Ioi]
 
+private theorem integrable_radial_exp_abs : Integrable (fun t : ℝ => Real.exp (-|t|)) := by
+  have hp : IntegrableOn (fun t : ℝ => Real.exp (-|t|)) (Ioi 0) :=
+    (integrableOn_exp_neg_Ioi 0).congr_fun
+      (fun t ht => by rw [abs_of_pos ht]) measurableSet_Ioi
+  have hn : IntegrableOn (fun t : ℝ => Real.exp (-|t|)) (Iic 0) := by
+    have h := integrableOn_exp_mul_Iic (a := (1 : ℝ)) (by norm_num) 0
+    refine h.congr_fun (fun t ht => ?_) measurableSet_Iic
+    rw [abs_of_nonpos ht]
+    simp
+  simpa only [Ioi_union_Iic, integrableOn_univ] using hp.union hn
+
+private theorem norm_thetaWignerDifferencePhase (b t : ℝ) :
+    ‖thetaWignerDifferencePhase b t‖ = 1 := by
+  simp [thetaWignerDifferencePhase, Complex.norm_exp]
+
+private def radialFourierKernel (q b : ℝ) (p : ℝ × ℝ) : ℂ :=
+  cutoffRadialKernel q p.1 (p.2 : ℂ) * thetaWignerDifferencePhase b p.2
+
+private theorem integrable_radialFourierKernel {q : ℝ} (hq : 2 ≤ q) (b : ℝ) :
+    Integrable (radialFourierKernel q b) ((volume : Measure ℝ).prod volume) := by
+  have he := (integrable_firstAtomRadialEnvelope q).mul_prod integrable_radial_exp_abs
+  have hm : AEStronglyMeasurable (radialFourierKernel q b)
+      ((volume : Measure ℝ).prod volume) := by
+    let S : Set (ℝ × ℝ) := Ioi q ×ˢ univ
+    have hs : MeasurableSet S := measurableSet_Ioi.prod MeasurableSet.univ
+    have hc : Continuous (fun p : ℝ × ℝ => firstAtomRadialKernel p.1 (p.2 : ℂ) *
+        thetaWignerDifferencePhase b p.2) := by
+      unfold firstAtomRadialKernel thetaWignerDifferencePhase
+      fun_prop (disch := norm_num)
+    have hid : radialFourierKernel q b = S.indicator
+        (fun p : ℝ × ℝ => firstAtomRadialKernel p.1 (p.2 : ℂ) *
+          thetaWignerDifferencePhase b p.2) := by
+      funext p
+      by_cases hp : p.1 ∈ Ioi q
+      · simp only [radialFourierKernel, cutoffRadialKernel, Set.indicator_of_mem hp,
+          Set.indicator_of_mem (show p ∈ S from ⟨hp, mem_univ _⟩)]
+      · have hn : p ∉ S := fun h => hp h.1
+        simp only [radialFourierKernel, cutoffRadialKernel, Set.indicator_of_notMem hp,
+          Set.indicator_of_notMem hn, zero_mul]
+    rw [hid]
+    exact hc.aestronglyMeasurable.indicator hs
+  refine he.mono' hm ?_
+  filter_upwards with p
+  simp only [radialFourierKernel, norm_mul, norm_thetaWignerDifferencePhase, mul_one]
+  exact cutoffRadialKernel_bound hq p.1 (by simp; positivity)
+
+private theorem integral_radialFourierKernel_left (q b t : ℝ) :
+    (∫ u : ℝ, radialFourierKernel q b (u, t)) =
+      firstAtomRadialTail q (t : ℂ) * thetaWignerDifferencePhase b t := by
+  simp only [radialFourierKernel]
+  rw [integral_mul_const, integral_cutoffRadialKernel]
+
+private theorem integral_radialFourierKernel_right (q b u : ℝ) :
+    (∫ t : ℝ, radialFourierKernel q b (u, t)) =
+      (Ioi q).indicator (fun v : ℝ => ∫ t : ℝ,
+        firstAtomRadialKernel v (t : ℂ) * thetaWignerDifferencePhase b t) u := by
+  by_cases hu : u ∈ Ioi q
+  · simp only [radialFourierKernel, cutoffRadialKernel, Set.indicator_of_mem hu]
+  · simp only [radialFourierKernel, cutoffRadialKernel, Set.indicator_of_notMem hu,
+      zero_mul, integral_zero]
+
+private theorem real_fourier_phase_eq (ξ t : ℝ) :
+    (Real.fourierChar (-(inner ℝ t ξ)) : ℂ) = thetaWignerDifferencePhase (-Real.pi * ξ) t := by
+  simp only [Real.fourierChar_apply, thetaWignerDifferencePhase, RCLike.inner_apply, conj_trivial]
+  congr 1
+  push_cast
+  ring
+
+/-- Fubini identifies the actual Fourier transform with the radial source transform. -/
+theorem fourier_firstAtomRadialTail_eq_integral {q : ℝ} (hq : 2 ≤ q) (ξ : ℝ) :
+    𝓕 (firstAtomRadialTailSchwartz q hq : ℝ → ℂ) ξ =
+      ∫ u in Ioi q, ∫ t : ℝ,
+        firstAtomRadialKernel u (t : ℂ) * thetaWignerDifferencePhase (-Real.pi * ξ) t := by
+  have hF := integrable_radialFourierKernel hq (-Real.pi * ξ)
+  rw [Real.fourier_eq]
+  simp only [firstAtomRadialTailSchwartz_apply]
+  have he := integral_integral_swap (f := fun u t : ℝ =>
+    radialFourierKernel q (-Real.pi * ξ) (u, t)) hF
+  simp only [integral_radialFourierKernel_left, integral_radialFourierKernel_right,
+    integral_indicator measurableSet_Ioi] at he
+  convert he.symm using 1
+  apply integral_congr_ae
+  filter_upwards with t
+  change (Real.fourierChar (-(inner ℝ t ξ)) : ℂ) * firstAtomRadialTail q (t : ℂ) = _
+  rw [real_fourier_phase_eq]
+  ring
+
+private theorem integral_firstAtomRadialKernel_phase {u : ℝ} (hu : 0 < u) (b : ℝ) :
+    (∫ t : ℝ, firstAtomRadialKernel u (t : ℂ) * thetaWignerDifferencePhase b t) =
+      (1 / 4 : ℂ) * (u ^ (-(1 / 2 : ℝ)) : ℝ) * thetaCuspWignerRadialTransform (2 * u) b := by
+  have he (t : ℝ) : firstAtomRadialKernel u (t : ℂ) * thetaWignerDifferencePhase b t =
+      ((1 / 4 : ℂ) * (u ^ (-(1 / 2 : ℝ)) : ℝ)) *
+        ((thetaCuspWignerRadialProfile (2 * u) t : ℂ) * thetaWignerDifferencePhase b t) := by
+    have h := firstAtomRadialKernel_ofReal hu t
+    push_cast at h
+    linear_combination (thetaWignerDifferencePhase b t / 4) * h
+  simp_rw [he]
+  rw [integral_const_mul]
+  rfl
+
+/-- The real Fourier transform is exactly the positive signed Bessel-tail density. -/
+theorem fourier_firstAtomRadialTail_re {q : ℝ} (hq : 2 ≤ q) (ξ : ℝ) :
+    (𝓕 (firstAtomRadialTailSchwartz q hq : ℝ → ℂ) ξ).re =
+      besselFirstAtomTailDensity (-Real.pi * ξ / 2) q := by
+  have hF := integrable_radialFourierKernel hq (-Real.pi * ξ)
+  have hi : IntegrableOn (fun u : ℝ => ∫ t : ℝ,
+      firstAtomRadialKernel u (t : ℂ) * thetaWignerDifferencePhase (-Real.pi * ξ) t) (Ioi q) := by
+    have h := hF.integral_prod_left
+    simp only [integral_radialFourierKernel_right] at h
+    exact (integrable_indicator_iff measurableSet_Ioi).mp h
+  rw [fourier_firstAtomRadialTail_eq_integral hq]
+  have hr := Complex.reCLM.integral_comp_comm hi
+  simp only [Complex.reCLM_apply] at hr
+  rw [← hr]
+  have he : (∫ u in Ioi q, (∫ t : ℝ,
+      firstAtomRadialKernel u (t : ℂ) * thetaWignerDifferencePhase (-Real.pi * ξ) t).re) =
+      (1 / 4 : ℝ) * ∫ u in Ioi q, u ^ (-(1 / 2 : ℝ)) *
+        (thetaCuspWignerRadialTransform (2 * u) (-Real.pi * ξ)).re := by
+    rw [← integral_const_mul]
+    apply integral_congr_ae
+    filter_upwards [ae_restrict_mem measurableSet_Ioi] with u hu
+    rw [integral_firstAtomRadialKernel_phase (lt_of_lt_of_le (by norm_num : (0 : ℝ) < 2)
+      (hq.trans hu.le))]
+    simp only [Complex.mul_re, Complex.mul_im, Complex.div_re, Complex.div_im,
+      Complex.one_re, Complex.one_im, Complex.re_ofNat, Complex.im_ofNat,
+      Complex.normSq_ofNat, Complex.ofReal_re, Complex.ofReal_im]
+    ring
+  rw [he, show -Real.pi * ξ = 2 * (-Real.pi * ξ / 2) by ring,
+    integral_rpow_mul_thetaCuspWignerRadialTransform_re (by linarith only [hq])]
+  ring
+
+/-- Every frequency of the actual integrated first-atom profile has positive density. -/
+theorem fourier_firstAtomRadialTail_re_pos {q : ℝ} (hq : 2 ≤ q)
+    (hbound : 1 + Real.sqrt 2 < q) (ξ : ℝ) :
+    0 < (𝓕 (firstAtomRadialTailSchwartz q hq : ℝ → ℂ) ξ).re := by
+  rw [fourier_firstAtomRadialTail_re hq]
+  exact besselFirstAtomTailDensity_pos hbound _
+
 end
 end GaloisForLFunctions.CompletedArithmeticForms

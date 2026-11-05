@@ -96,8 +96,12 @@ and `besselFirstAtomTailDensity_pos` for every real frequency and
 radial Fourier identity, including the signed endpoint, and its strict
 positivity at every real frequency above `q>1+√2`.
 
-**Remaining:** source regularity, literal center-integral/moment bridge,
-and strict matrix positivity.
+`CompletedArithmeticForms.FirstAtomRadialProfile` proves an explicit strip
+envelope, Schwartz regularity of the actual radial tail, and the all-order
+source-jet integral identity.
+
+**Remaining:** finish Fourier/moment identification, literal center-coordinate
+normalization, and strict matrix positivity.
 No all-rank Lean theorem is claimed yet.
 
 The complete theta sum additionally needs unequal atom pairs and its
