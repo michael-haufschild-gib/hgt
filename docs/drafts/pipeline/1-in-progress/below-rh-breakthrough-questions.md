@@ -87,12 +87,26 @@ On `w≥ε/4`, a bound `|F′−(α+iπ/4)F|≤B|F|` with
 `B=O_ε(log log T)` gives Gaussian relative error
 `O(B√t exp(t(B+1/√t)²))=o(1)`. For `|y|≤ε/2`, the omitted lower
 interval has a fixed gap from the saddle and the slope error is `o(α)`.
-For `ε/2≤y≤1/2`, the opposite half has the factor
-`exp(−2αy+2By)`, while the lower interval is bounded by the
-polylogarithmic source ratio. The far tail can use
+For `ε/2≤y≤1/2`, split the opposite half at `b=ε/4`.
+On `w≥b`, `g_t(w+y)/g_t(w−y)=exp(−wy/t)≤exp(−by/t)`.
+On `0≤w≤b`, the polylogarithmic source ratio and the full tilted
+Gaussian mass give the factor `C_T exp(−2αy)` relative to
+`|F(u)|exp(−tα²)`, with `C_T` a fixed power of `log T`.
+Both factors vanish uniformly when `ε≤c≤2`.
+The far tail can use
 `far_terms_le_of_bound` after joining the typical model to the Euler
 model at `w=9/2`. These comparisons, their unit-window uniformity, and
 the density-one limiting set are not yet formalized.
+
+`ZeroConfigurationGeometry/HeatScaleRepulsion/ArchimedeanHorizontalModel.lean`
+has passed Lean with standard axioms and is imported by its umbrella;
+the direct final audit remains. `TypicalHeightXiModel.lean` covers nearby
+heights, the lower source interval, and the join to the distant Euler
+model. Its direct check passed with standard axioms, and its umbrella
+imports it.
+`GaussianSaddleWindow.lean` contains the optimized lower Gaussian tail,
+scaled model error, reflection factor, and opposite lower-interval bound.
+The Gaussian checks and the complete heat-reality argument remain open.
 
 ## Proof status
 

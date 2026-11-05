@@ -129,6 +129,51 @@ theorem norm_xiLine_sub_model_le_of_typical {η T t X u w : ℝ}
     (fun x _ => hasDerivAt_xiLine X x)
     (fun x hx => norm_xiLineDeriv_sub_le_of_typical h hη hη1 hT hX hXt (hsub hx).1 (hsub hx).2)
 
+theorem norm_xiLine_le_model_of_typical {η T t X u w : ℝ}
+    (h : zetaTypicalHeight η (zetaPolylogLevel T) T t)
+    (hη : 0 < η) (hη1 : η ≤ 1) (hT : 8 ≤ T) (hX : 200 ≤ X) (hXt : |X - t| ≤ η)
+    (hu : u ∈ Icc (2 * η) (X / 32 - 1 / 2)) (hw : w ∈ Icc (2 * η) (X / 32 - 1 / 2)) :
+    ‖xiLine X w‖ ≤ ‖xiLine X u‖ * Real.exp ((w - u) * (horizontalSlope X).re) *
+      Real.exp (typicalXiSlopeError η T * |w - u|) := by
+  have hm := norm_xiLine_sub_model_le_of_typical h hη hη1 hT hX hXt hu hw
+  have hn := norm_sub_norm_le (xiLine X w)
+    (xiLine X u * Complex.exp (((w - u : ℝ) : ℂ) * horizontalSlope X))
+  rw [norm_mul, Complex.norm_exp, Complex.re_ofReal_mul] at hn
+  nlinarith only [hm, hn]
+
+/-- Joining to the Euler model bounds the distant endpoint without accumulating
+the typical-height slope error across the long interval. -/
+theorem norm_xiLine_far_end_le_of_typical {η T t X u W : ℝ}
+    (h : zetaTypicalHeight η (zetaPolylogLevel T) T t)
+    (hη : 0 < η) (hη1 : η ≤ 1) (hT : 8 ≤ T) (hX : 200 ≤ X) (hXt : |X - t| ≤ η)
+    (hu : u ∈ Icc (2 * η) (9 / 2)) (hW : W ∈ Icc (9 / 2 : ℝ) (X / 32 - 1 / 2)) :
+    ‖xiLine X W‖ ≤ (Real.exp (9 / 2 * typicalXiSlopeError η T) * ‖xiLine X u‖) *
+      Real.exp ((W - u) * ((horizontalSlope X).re + 1 / 8)) := by
+  have h9 : (9 / 2 : ℝ) ≤ X / 32 - 1 / 2 := hW.1.trans hW.2
+  have hB := (typicalXiSlopeError_pos (η := η) (show 1 < T by linarith only [hT])).le
+  have hnear := norm_xiLine_le_model_of_typical h hη hη1 hT hX hXt
+    ⟨hu.1, hu.2.trans h9⟩ (w := 9 / 2) ⟨by linarith only [hu.1, hu.2], h9⟩
+  have hfar := norm_xiLine_le_model hX ⟨le_rfl, h9⟩ hW
+  have habs : |9 / 2 - u| ≤ 9 / 2 := abs_le.mpr
+    ⟨by linarith only [hu.2], by linarith only [hu.1, hη]⟩
+  rw [abs_of_nonneg (show 0 ≤ W - 9 / 2 by linarith only [hW.1])] at hfar
+  calc
+    _ ≤ ‖xiLine X (9 / 2)‖ * Real.exp ((W - 9 / 2) * (horizontalSlope X).re) *
+        Real.exp (1 / 8 * (W - 9 / 2)) := hfar
+    _ ≤ (‖xiLine X u‖ * Real.exp ((9 / 2 - u) * (horizontalSlope X).re) *
+          Real.exp (typicalXiSlopeError η T * (9 / 2))) *
+        Real.exp ((W - 9 / 2) * (horizontalSlope X).re) * Real.exp (1 / 8 * (W - u)) := by
+      gcongr
+      · exact hnear.trans (by gcongr)
+      · linarith only [hu.2]
+    _ = (Real.exp (9 / 2 * typicalXiSlopeError η T) * ‖xiLine X u‖) *
+        (Real.exp ((9 / 2 - u) * (horizontalSlope X).re) *
+          Real.exp ((W - 9 / 2) * (horizontalSlope X).re) * Real.exp (1 / 8 * (W - u))) := by ring
+    _ = _ := by
+      rw [← Real.exp_add, ← Real.exp_add]
+      congr 2
+      ring
+
 /-- A uniform lower bound for `ζ` on the source segment and nearby heights. -/
 theorem norm_zeta_horizontal_ge_of_typical {η T t X σ : ℝ}
     (h : zetaTypicalHeight η (zetaPolylogLevel T) T t)
@@ -208,6 +253,7 @@ theorem norm_xiLine_lower_interval_le_of_typical {η T t X u w : ℝ}
     _ = _ := by rw [Real.exp_add]; ring
 
 #print axioms norm_xiLine_sub_model_le_of_typical
+#print axioms norm_xiLine_far_end_le_of_typical
 #print axioms norm_xiLine_lower_interval_le_of_typical
 
 end

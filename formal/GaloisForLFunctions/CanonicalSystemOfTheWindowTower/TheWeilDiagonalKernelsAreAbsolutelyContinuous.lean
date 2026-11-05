@@ -35,7 +35,7 @@ theorem diagonalEvalGram_eq_norm (z : ℂ) (a : PrecontactAperture) :
 
 theorem diagonalEvalGram_eq_kernel (z : ℂ) (a : PrecontactAperture) :
     diagonalEvalGram z a.1.1 = (kernel a z z).re := by
-  rw [diagonalEvalGram_eq_norm]
+  rw [diagonalEvalGram_eq_norm z a]
   change ‖evalVector a z‖^2 = (eval a z (evalVector a z)).re
   rw [evalVector_self, ← Complex.ofReal_pow, Complex.ofReal_re]
 
@@ -43,7 +43,7 @@ theorem diagonalEvalGram_sub_eq {a b : PrecontactAperture}
     (hab : a.1.1 ≤ b.1.1) (z : ℂ) :
     diagonalEvalGram z b.1.1-diagonalEvalGram z a.1.1 =
       ‖evalVectorIncrement hab z‖^2 := by
-  rw [diagonalEvalGram_eq_kernel, diagonalEvalGram_eq_kernel,
+  rw [diagonalEvalGram_eq_kernel z b, diagonalEvalGram_eq_kernel z a,
     ← Complex.sub_re, kernel_diagonal_sub_eq_norm_increment_sq hab]
 
 /-- At every strictly precontact aperture the right derivative is the actual
@@ -102,7 +102,7 @@ theorem continuousWithinAt_diagonalEvalGram_left (z : ℂ) {a : ℝ}
     monotoneOn_evalGram (fun _ : Unit => (1 : ℂ)) (fun _ => z) hx ha hxa.le
   rw [Real.dist_eq, abs_of_nonpos (sub_nonpos.mpr hmono), neg_sub]
   change diagonalEvalGram z A.1.1-diagonalEvalGram z B.1.1 < ε
-  rw [diagonalEvalGram_sub_eq hxa.le]
+  rw [diagonalEvalGram_sub_eq (a := B) (b := A) hxa.le]
   exact hnSq
 
 /-- The actual diagonal kernel is continuous throughout the precontact interval. -/

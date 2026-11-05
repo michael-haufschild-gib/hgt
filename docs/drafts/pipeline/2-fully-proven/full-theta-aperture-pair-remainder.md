@@ -38,3 +38,14 @@ inequality reduces the claimed bound to
 Expand `sinh` and `cosh` into exponentials and use
 `∫_0^∞exp(−cr)dr=1/c`, `∫_0^∞r exp(−cr)dr=1/c²`, for `c=3±a>0`.
 The four terms combine to the displayed rational expression.
+
+## Pair signs survive aperture integration
+
+For `0<a<1/2`, `P_nm(a,b)` has exactly the sign of
+`cos(b(log n−log m))`. The radial tail amplitude and `w_a(r)` are
+strictly positive for every `r>0`; integrability is established above.
+Thus a positive (respectively negative) cosine gives a strictly positive
+(respectively negative) integral, while zero cosine gives zero.
+In particular every diagonal pair is positive, and every unequal pair
+is negative at `b=π/(log n−log m)`. The aperture weight does not justify
+termwise positivity; any full-source sign proof must retain cancellation.

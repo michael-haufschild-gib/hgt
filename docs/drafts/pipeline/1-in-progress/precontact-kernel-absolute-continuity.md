@@ -41,12 +41,22 @@ identifies it almost everywhere with the integrable ordinary derivative.
 integral reconstruction, hence absolute continuity. This route needs no
 uniform trace bound.
 
+Finite Gram absolute continuity also follows directly from
+`ΔG ≤ (Σ_i |α_i|²) Σ_i ΔK(z_i,z_i)` by Cauchy–Schwarz. Thus scalar
+integral reconstruction already excludes every finite Gram's singular part;
+the collar approximation additionally identifies its trace density.
+
 ## Formal results
 
 `eventually_kernel_increment_le_endpoint_energy` and
 `exists_left_aperture_small_evalVectorIncrement` are kernel-checked in
 `TheWeilKernelHasFiniteRightGrowth.lean`; their transitive axioms are
 `propext`, `Classical.choice`, and `Quot.sound`.
+
+`TheConstantCollarsReadTheWeilTraces.lean` proves both actual residual mean
+limits, the sharp joint collar-energy upper bound, and the variational
+lower bound with its squared trial-error estimate. Its transitive axiom
+audit has the same three axioms.
 
 ## Gates
 

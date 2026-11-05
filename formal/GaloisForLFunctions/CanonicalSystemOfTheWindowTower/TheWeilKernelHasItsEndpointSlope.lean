@@ -16,18 +16,38 @@ open _root_.RHTower HTGeometry
 open ArithmeticContinuationAndCriticalEnergy
 namespace WeilHilbertBeforeContact
 
-/-- Constant trial collars attain the endpoint energy in the lower right
-derivative of the actual reproducing kernel. -/
-theorem eventually_endpoint_energy_le_kernel_increment
-    {a c : PrecontactAperture} (hac : a.1.1 < c.1.1) (z : ℂ)
-    {ε : ℝ} (hε : 0 < ε) :
-    ∀ᶠ h : ℝ in 𝓝[>] (0 : ℝ), ∀ (b : PrecontactAperture)
-      (hab : a.1.1 ≤ b.1.1), b.1.1 = a.1.1+h →
-      evalEndpointEnergy a z-ε < (kernel b z z-kernel a z z).re/h := by
-  let α := ∫ y : ℝ, (logarithmicCausalKernel y : ℂ) *
+/-- The actual normalized left endpoint trace of an evaluation vector. -/
+def evalLeftEndpointTrace (a : PrecontactAperture) (z : ℂ) : ℂ :=
+  ∫ y : ℝ, (logarithmicCausalKernel y : ℂ) *
     (evalVectorLeftEndpointForcing a z : RealLineL2) y
-  let β := ∫ y : ℝ, (logarithmicCausalKernel y : ℂ) *
+
+/-- The actual normalized right endpoint trace of an evaluation vector. -/
+def evalRightEndpointTrace (a : PrecontactAperture) (z : ℂ) : ℂ :=
+  ∫ y : ℝ, (logarithmicCausalKernel y : ℂ) *
     (evalVectorRightEndpointForcing a z : RealLineL2) y
+
+/-- The normalized variational value of constant collars with the actual
+endpoint trace coefficients. -/
+def evalCollarVariationalValue {a c : PrecontactAperture} (hac : a.1.1 < c.1.1)
+    (z : ℂ) (h : ℝ) : ℝ :=
+  2 * (starRingEnd ℂ (evalLeftEndpointTrace a z) *
+    (inner ℂ (logarithmicIntervalSource 0 h)
+      (suzukiPositiveZeroExtension (evalVectorLeftCollarResidual hac.le z)) /
+        ((h*Real.sqrt (Real.log (1/h)) : ℝ) : ℂ)) +
+    starRingEnd ℂ (evalRightEndpointTrace a z) *
+    (inner ℂ (logarithmicIntervalSource 0 h)
+      (suzukiPositiveZeroExtension (evalVectorRightCollarResidual hac.le z)) /
+        ((h*Real.sqrt (Real.log (1/h)) : ℝ) : ℂ))).re -
+    (1+(3+‖weilLogarithmicCorrection c.1‖+weilExteriorCrossingBound c.1) /
+      Real.log (1/h))*evalEndpointEnergy a z
+
+/-- The trace-weighted trial value converges to the actual endpoint energy. -/
+theorem evalCollarVariationalValue_tendsto {a c : PrecontactAperture}
+    (hac : a.1.1 < c.1.1) (z : ℂ) :
+    Tendsto (evalCollarVariationalValue hac z) (𝓝[>] (0 : ℝ))
+      (𝓝 (evalEndpointEnergy a z)) := by
+  let α := evalLeftEndpointTrace a z
+  let β := evalRightEndpointTrace a z
   let L : ℝ → ℝ := fun h => Real.log (1/h)
   let D := 3+‖weilLogarithmicCorrection c.1‖+weilExteriorCrossingBound c.1
   let S := ‖α‖^2+‖β‖^2
@@ -62,7 +82,18 @@ theorem eventually_endpoint_energy_le_kernel_increment
     have he : 2*S-1*S = S := by ring
     rw [he] at ht
     exact ht.congr' (Eventually.of_forall fun _ => rfl)
-  have hs := hF.eventually (Ioi_mem_nhds (sub_lt_self S hε))
+  exact hF
+
+/-- Constant trial collars attain the endpoint energy in the lower right
+derivative of the actual reproducing kernel. -/
+theorem eventually_endpoint_energy_le_kernel_increment
+    {a c : PrecontactAperture} (hac : a.1.1 < c.1.1) (z : ℂ)
+    {ε : ℝ} (hε : 0 < ε) :
+    ∀ᶠ h : ℝ in 𝓝[>] (0 : ℝ), ∀ (b : PrecontactAperture)
+      (_ : a.1.1 ≤ b.1.1), b.1.1 = a.1.1+h →
+      evalEndpointEnergy a z-ε < (kernel b z z-kernel a z z).re/h := by
+  have hs := (evalCollarVariationalValue_tendsto hac z).eventually
+    (Ioi_mem_nhds (sub_lt_self (evalEndpointEnergy a z) hε))
   filter_upwards [hs, self_mem_nhdsWithin,
     (eventually_lt_nhds (sub_pos.mpr hac)).filter_mono nhdsWithin_le_nhds,
     (eventually_lt_nhds (show (0 : ℝ) < 1 from zero_lt_one)).filter_mono nhdsWithin_le_nhds]
@@ -70,9 +101,41 @@ theorem eventually_endpoint_energy_le_kernel_increment
   change 0 < h at hh
   intro b hab hb
   have hbc : b.1.1 ≤ c.1.1 := by rw [hb]; linarith only [hhc]
-  have hlower := constantCollar_trial_lower hab hbc hh hh1 hb z α β
-  change F h ≤ (kernel b z z-kernel a z z).re/h at hlower
+  have hlower := constantCollar_trial_lower hab hbc hh hh1 hb z
+    (evalLeftEndpointTrace a z) (evalRightEndpointTrace a z)
+  change evalCollarVariationalValue hac z h ≤ (kernel b z z-kernel a z z).re/h at hlower
   exact hs.trans_le hlower
+
+/-- After division by the aperture length, the squared Weil distance to the
+two-trace constant collar tends to zero, for every admitted collar pair. -/
+theorem eventually_constantCollar_trial_error_lt
+    {a c : PrecontactAperture} (hac : a.1.1 < c.1.1) (z : ℂ)
+    {ε : ℝ} (hε : 0 < ε) :
+    ∀ᶠ h : ℝ in 𝓝[>] (0 : ℝ), ∀ (b : PrecontactAperture)
+      (hab : a.1.1 ≤ b.1.1), b.1.1 = a.1.1+h →
+      ∀ l r : WeilHilbertBeforeContact b,
+      ccmArchimedeanFormEmbedding b.1 (toForm b l) =
+        logarithmicIntervalSource (-a.1.1-h) (-a.1.1) →
+      ccmArchimedeanFormEmbedding b.1 (toForm b r) =
+        logarithmicIntervalSource a.1.1 (a.1.1+h) →
+      ‖(Real.sqrt (Real.log (1/h)) : ℂ)⁻¹ •
+        (evalLeftEndpointTrace a z • l+evalRightEndpointTrace a z • r)-
+          evalVectorIncrement hab z‖^2/h < ε := by
+  have hhalf : 0 < ε/2 := half_pos hε
+  have hs := (evalCollarVariationalValue_tendsto hac z).eventually
+    (Ioi_mem_nhds (sub_lt_self (evalEndpointEnergy a z) hhalf))
+  filter_upwards [hs, eventually_kernel_increment_le_endpoint_energy hac z hhalf,
+    self_mem_nhdsWithin,
+    (eventually_lt_nhds (sub_pos.mpr hac)).filter_mono nhdsWithin_le_nhds,
+    (eventually_lt_nhds (show (0 : ℝ) < 1 from zero_lt_one)).filter_mono nhdsWithin_le_nhds]
+    with h hs hu hh hhc hh1
+  change 0 < h at hh
+  intro b hab hb l r hl hr
+  have hbc : b.1.1 ≤ c.1.1 := by rw [hb]; linarith only [hhc]
+  have he := constantCollar_trial_error_le hab hbc hh hh1 z
+    (evalLeftEndpointTrace a z) (evalRightEndpointTrace a z) l r hl hr
+  change _ ≤ (kernel b z z-kernel a z z).re/h-evalCollarVariationalValue hac z h at he
+  exact he.trans_lt (by linarith only [hu b hab hb, hs])
 
 /-- The right kernel difference quotient converges to the sum of the squared
 actual endpoint traces at every strictly precontact aperture. -/
@@ -87,6 +150,7 @@ theorem eventually_abs_kernel_slope_sub_endpointEnergy_lt
   exact abs_lt.mpr ⟨by linarith only [hl b hab hb], by linarith only [hu b hab hb]⟩
 
 #print axioms eventually_endpoint_energy_le_kernel_increment
+#print axioms eventually_constantCollar_trial_error_lt
 #print axioms eventually_abs_kernel_slope_sub_endpointEnergy_lt
 end WeilHilbertBeforeContact
 end GaloisForLFunctions.CanonicalSystemOfTheWindowTower
