@@ -35,8 +35,11 @@ theorem rpow_zetaPolylogLevel {T : ℝ} (hT : 1 < T) :
     T ^ zetaPolylogLevel T = (1 + Real.log (4 * T)) ^ (4 : ℕ) := by
   have hL : 0 < 1 + Real.log (4 * T) := by
     linarith only [Real.log_nonneg (show 1 ≤ 4 * T by linarith)]
+  have hpowlog : Real.log ((1 + Real.log (4 * T)) ^ (4 : ℕ)) =
+      4 * Real.log (1 + Real.log (4 * T)) := by
+    simpa only [Nat.cast_ofNat] using Real.log_pow (1 + Real.log (4 * T)) 4
   rw [Real.rpow_def_of_pos (zero_lt_one.trans hT), mul_comm,
-    zetaPolylogLevel_mul_log hT, ← Real.log_pow _ 4]
+    zetaPolylogLevel_mul_log hT, ← hpowlog]
   exact Real.exp_log (pow_pos hL 4)
 
 /-- A shrinking mean-value disc gives a polylogarithmic local supremum. -/

@@ -43,10 +43,10 @@ private theorem unit_intervalSource_cut :
   apply Lp.ext
   filter_upwards [indicatorCutoff_ae (Ioc (0 : ℝ) 1) measurableSet_Ioc
     (logarithmicIntervalSource 0 1), logarithmicIntervalSource_coeFn 0 1] with s hc hu
-  rw [hc, hu]
+  rw [hc]
   by_cases hs : s ∈ Ioc (0 : ℝ) 1
   · rw [indicator_of_mem hs]
-  · rw [indicator_of_notMem hs, indicator_of_notMem hs]
+  · rw [indicator_of_notMem hs, hu, indicator_of_notMem hs]
 
 /-- The rescaled unit-interval pairing is the literal collar mean divided by
 `h sqrt(log(1/h))`. -/
@@ -62,8 +62,14 @@ theorem inner_intervalSource_logarithmicCollarRescaling {h : ℝ} (hh : 0 < h)
       inner ℂ (logarithmicIntervalSource 0 h) f / (Real.sqrt h : ℂ) := by
     apply (eq_div_iff hn).mpr
     simpa only [mul_comm] using hi
-  rw [logarithmicCollarRescaling, dif_pos hh, inner_smul_right,
-    ← indicatorCutoff_symmetric, unit_intervalSource_cut, he]
+  have hc : inner ℂ
+      (indicatorCutoff (Ioc (0 : ℝ) 1) measurableSet_Ioc (logarithmicIntervalSource 0 1))
+      (dilation h hh f) = inner ℂ (logarithmicIntervalSource 0 1)
+      (indicatorCutoff (Ioc (0 : ℝ) 1) measurableSet_Ioc (dilation h hh f)) :=
+    indicatorCutoff_symmetric (Ioc (0 : ℝ) 1) measurableSet_Ioc
+      (logarithmicIntervalSource 0 1) (dilation h hh f)
+  rw [unit_intervalSource_cut] at hc
+  rw [logarithmicCollarRescaling, dif_pos hh, inner_smul_right, ← hc, he]
   have hs : (Real.sqrt h : ℂ) * (Real.sqrt h : ℂ) = (h : ℂ) := by
     exact_mod_cast Real.mul_self_sqrt hh.le
   simp only [Complex.ofReal_mul, div_eq_mul_inv, mul_inv_rev]
@@ -121,7 +127,7 @@ theorem evalVectorRightCollarResidual_mean_limit {a c : PrecontactAperture}
           ((h*Real.sqrt (Real.log (1/h)) : ℝ) : ℂ)) (𝓝[>] (0 : ℝ))
       (𝓝 (∫ y : ℝ, (logarithmicCausalKernel y : ℂ) *
         (evalVectorRightEndpointForcing a z : RealLineL2) y)) := by
-  have he := (tendsto_const_nhds (x := logarithmicIntervalSource 0 1)).inner
+  have he := (tendsto_const_nhds (x := logarithmicIntervalSource 0 1)).inner (𝕜 := ℂ)
     (evalVectorRightCollarResidual_scaled_limit hac z)
   have hu : inner ℂ (logarithmicIntervalSource 0 1) (logarithmicIntervalSource 0 1) = 1 := by
     rw [inner_self_eq_norm_sq_to_K (𝕜 := ℂ)]
@@ -142,7 +148,7 @@ theorem evalVectorLeftCollarResidual_mean_limit {a c : PrecontactAperture}
           ((h*Real.sqrt (Real.log (1/h)) : ℝ) : ℂ)) (𝓝[>] (0 : ℝ))
       (𝓝 (∫ y : ℝ, (logarithmicCausalKernel y : ℂ) *
         (evalVectorLeftEndpointForcing a z : RealLineL2) y)) := by
-  have he := (tendsto_const_nhds (x := logarithmicIntervalSource 0 1)).inner
+  have he := (tendsto_const_nhds (x := logarithmicIntervalSource 0 1)).inner (𝕜 := ℂ)
     (evalVectorLeftCollarResidual_scaled_limit hac z)
   have hu : inner ℂ (logarithmicIntervalSource 0 1) (logarithmicIntervalSource 0 1) = 1 := by
     rw [inner_self_eq_norm_sq_to_K (𝕜 := ℂ)]
@@ -257,7 +263,8 @@ theorem constantCollar_pair_energy_upper (c : PrecontactAperture)
     rw [← norm_inner_symm (𝕜 := ℂ) r l, inner_eq_weil]
     have hb := norm_ccmWeilForm_oppositeHalfLines_of_supported c.1
       (toForm c r) (toForm c l) hrhalf hlhalf
-    exact hb.trans (by simpa only [mul_assoc] using mul_le_mul_of_nonneg_left hXY hC)
+    exact hb.trans (by simpa only [C, X, Y, weilExteriorCrossingBound, mul_assoc]
+      using mul_le_mul_of_nonneg_left hXY hC)
   have hpair : (inner ℂ (α • l) (β • r)).re ≤ ‖α‖*‖β‖*(C*h) := by
     apply (Complex.re_le_norm _).trans
     rw [inner_smul_left, inner_smul_right, norm_mul, norm_mul, Complex.norm_conj]
@@ -290,6 +297,85 @@ theorem constantCollar_pair_energy_upper_in_enclosure {b c : PrecontactAperture}
     ((he l).trans hl) ((he r).trans hr) α β
   simpa only [← map_smul, ← map_add, (inclusion hbc).norm_map] using hb
 
+/-- The squared error of a two-trace collar trial is bounded by the gap in
+its variational lower estimate. -/
+theorem constantCollar_trial_error_le {a b c : PrecontactAperture}
+    (hab : a.1.1 ≤ b.1.1) (hbc : b.1.1 ≤ c.1.1) {h : ℝ}
+    (hh : 0 < h) (hh1 : h < 1) (z α β : ℂ)
+    (l r : WeilHilbertBeforeContact b)
+    (hl : ccmArchimedeanFormEmbedding b.1 (toForm b l) =
+      logarithmicIntervalSource (-a.1.1-h) (-a.1.1))
+    (hr : ccmArchimedeanFormEmbedding b.1 (toForm b r) =
+      logarithmicIntervalSource a.1.1 (a.1.1+h)) :
+    ‖(Real.sqrt (Real.log (1/h)) : ℂ)⁻¹ • (α • l+β • r)-
+      evalVectorIncrement hab z‖^2/h ≤
+      (kernel b z z-kernel a z z).re/h-(
+    2 * (starRingEnd ℂ α *
+      (inner ℂ (logarithmicIntervalSource 0 h)
+        (suzukiPositiveZeroExtension (evalVectorLeftCollarResidual (hab.trans hbc) z)) /
+          ((h*Real.sqrt (Real.log (1/h)) : ℝ) : ℂ)) +
+      starRingEnd ℂ β *
+      (inner ℂ (logarithmicIntervalSource 0 h)
+        (suzukiPositiveZeroExtension (evalVectorRightCollarResidual (hab.trans hbc) z)) /
+          ((h*Real.sqrt (Real.log (1/h)) : ℝ) : ℂ))).re -
+      (1 + (3+‖weilLogarithmicCorrection c.1‖+weilExteriorCrossingBound c.1) /
+        Real.log (1/h)) * (‖α‖^2+‖β‖^2)
+      ) := by
+  let L := Real.log (1/h)
+  let D := 3+‖weilLogarithmicCorrection c.1‖+weilExteriorCrossingBound c.1
+  let S := ‖α‖^2+‖β‖^2
+  let mL := inner ℂ (logarithmicIntervalSource 0 h)
+    (suzukiPositiveZeroExtension (evalVectorLeftCollarResidual (hab.trans hbc) z)) /
+      ((h*Real.sqrt L : ℝ) : ℂ)
+  let mR := inner ℂ (logarithmicIntervalSource 0 h)
+    (suzukiPositiveZeroExtension (evalVectorRightCollarResidual (hab.trans hbc) z)) /
+      ((h*Real.sqrt L : ℝ) : ℂ)
+  let P := (starRingEnd ℂ α*mL+starRingEnd ℂ β*mR).re
+  have hL : 0 < L := Real.log_pos ((one_lt_div hh).mpr hh1)
+  have hs : 0 < Real.sqrt L := Real.sqrt_pos.mpr hL
+  have hsC : (Real.sqrt L : ℂ) ≠ 0 := Complex.ofReal_ne_zero.mpr hs.ne'
+  have hhC : (h : ℂ) ≠ 0 := Complex.ofReal_ne_zero.mpr hh.ne'
+  let v := α • l+β • r
+  let w := (Real.sqrt L : ℂ)⁻¹ • v
+  have he := constantCollar_pair_energy_upper_in_enclosure hbc a.1.2 hh hh1.le l r hl hr α β
+  have he' : ‖v‖^2 ≤ h*(L+D)*S := by
+    convert he using 1 <;> dsimp only [v, L, D, S] <;> ring
+  have hw : ‖w‖^2 ≤ h*(1+D/L)*S := by
+    have hn : ‖w‖^2 = ‖v‖^2/L := by
+      dsimp only [w]
+      rw [norm_smul, norm_inv, Complex.norm_real, Real.norm_eq_abs,
+        abs_of_pos hs, mul_pow, inv_pow, Real.sq_sqrt hL.le]
+      ring
+    rw [hn]
+    calc
+      _ ≤ (h*(L+D)*S)/L := div_le_div_of_nonneg_right he' hL.le
+      _ = _ := by field_simp
+  have hp : (inner ℂ w (evalVectorIncrement hab z)).re = h*P := by
+    have hc : inner ℂ w (evalVectorIncrement hab z) =
+        (h : ℂ)*(starRingEnd ℂ α*mL+starRingEnd ℂ β*mR) := by
+      dsimp only [w, v]
+      rw [inner_smul_left, map_inv₀, Complex.conj_ofReal, inner_add_left,
+        inner_smul_left, inner_smul_left,
+        inner_constantLeftCollar_increment hab hbc z h l hl,
+        inner_constantRightCollar_increment hab hbc z h r hr]
+      dsimp only [mL, mR]
+      push_cast
+      field_simp
+    rw [hc, Complex.mul_re, Complex.ofReal_re, Complex.ofReal_im, zero_mul, sub_zero]
+  rw [kernel_diagonal_sub_eq_norm_increment_sq hab]
+  change ‖w-evalVectorIncrement hab z‖^2/h ≤
+    ‖evalVectorIncrement hab z‖^2/h-(2*P-(1+D/L)*S)
+  have hv : ‖w-evalVectorIncrement hab z‖^2 =
+      ‖w‖^2-2*(h*P)+‖evalVectorIncrement hab z‖^2 := by
+    rw [norm_sub_sq (𝕜 := ℂ)]
+    change _-2*(inner ℂ w (evalVectorIncrement hab z)).re+_ = _
+    rw [hp]
+  rw [hv]
+  calc
+    _ ≤ (h*(1+D/L)*S-2*(h*P)+‖evalVectorIncrement hab z‖^2)/h :=
+      div_le_div_of_nonneg_right (by linarith only [hw]) hh.le
+    _ = _ := by field_simp; ring
+
 /-- Constant collars give a variational lower bound with the same logarithmic
 normalization as the exact residual means. -/
 theorem constantCollar_trial_lower {a b c : PrecontactAperture}
@@ -306,58 +392,11 @@ theorem constantCollar_trial_lower {a b c : PrecontactAperture}
       (1 + (3+‖weilLogarithmicCorrection c.1‖+weilExteriorCrossingBound c.1) /
         Real.log (1/h)) * (‖α‖^2+‖β‖^2) ≤
       (kernel b z z-kernel a z z).re/h := by
-  let L := Real.log (1/h)
-  let D := 3+‖weilLogarithmicCorrection c.1‖+weilExteriorCrossingBound c.1
-  let S := ‖α‖^2+‖β‖^2
-  let mL := inner ℂ (logarithmicIntervalSource 0 h)
-    (suzukiPositiveZeroExtension (evalVectorLeftCollarResidual (hab.trans hbc) z)) /
-      ((h*Real.sqrt L : ℝ) : ℂ)
-  let mR := inner ℂ (logarithmicIntervalSource 0 h)
-    (suzukiPositiveZeroExtension (evalVectorRightCollarResidual (hab.trans hbc) z)) /
-      ((h*Real.sqrt L : ℝ) : ℂ)
-  let P := (starRingEnd ℂ α*mL+starRingEnd ℂ β*mR).re
-  change 2*P-(1+D/L)*S ≤ _
-  have hL : 0 < L := Real.log_pos ((one_lt_div hh).mpr hh1)
-  have hs : 0 < Real.sqrt L := Real.sqrt_pos.mpr hL
-  have hsC : (Real.sqrt L : ℂ) ≠ 0 := Complex.ofReal_ne_zero.mpr hs.ne'
-  have hhC : (h : ℂ) ≠ 0 := Complex.ofReal_ne_zero.mpr hh.ne'
   obtain ⟨l, r, hl, hr⟩ := exists_constantCollar_pair b a.1.2.le hh hb
-  let v := α • l+β • r
-  let w := (Real.sqrt L : ℂ)⁻¹ • v
-  have he := constantCollar_pair_energy_upper_in_enclosure hbc a.1.2 hh hh1.le l r hl hr α β
-  have he' : ‖v‖^2 ≤ h*(L+D)*S := by
-    convert he using 1 <;> dsimp only [v, L, D, S] <;> ring
-  have hw : ‖w‖^2 ≤ h*(1+D/L)*S := by
-    have hn : ‖w‖^2 = ‖v‖^2/L := by
-      dsimp only [w]
-      rw [norm_smul, norm_inv, Complex.norm_real, Real.norm_eq_abs,
-        abs_of_pos hs, mul_pow, inv_pow, Real.sq_sqrt hL.le]
-      ring
-    rw [hn]
-    calc
-      _ ≤ (h*(L+D)*S)/L := div_le_div_of_nonneg_right he' hL.le
-      _ = _ := by field_simp; ring
-  have hp : (inner ℂ w (evalVectorIncrement hab z)).re = h*P := by
-    have hc : inner ℂ w (evalVectorIncrement hab z) =
-        (h : ℂ)*(starRingEnd ℂ α*mL+starRingEnd ℂ β*mR) := by
-      dsimp only [w, v]
-      rw [inner_smul_left, map_inv₀, Complex.conj_ofReal, inner_add_left,
-        inner_smul_left, inner_smul_left,
-        inner_constantLeftCollar_increment hab hbc z h l hl,
-        inner_constantRightCollar_increment hab hbc z h r hr]
-      dsimp only [mL, mR]
-      push_cast
-      field_simp
-      <;> ring
-    rw [hc, Complex.mul_re, Complex.ofReal_re, Complex.ofReal_im, zero_mul, sub_zero]
-  have hv := sq_nonneg ‖w-evalVectorIncrement hab z‖
-  rw [norm_sub_sq (𝕜 := ℂ)] at hv
-  change 0 ≤ ‖w‖^2-2*(inner ℂ w (evalVectorIncrement hab z)).re+
-    ‖evalVectorIncrement hab z‖^2 at hv
-  rw [hp] at hv
-  rw [kernel_diagonal_sub_eq_norm_increment_sq hab]
-  apply (le_div_iff₀ hh).mpr
-  nlinarith only [hv, hw]
+  have he := constantCollar_trial_error_le hab hbc hh hh1 z α β l r hl hr
+  have hn := div_nonneg (sq_nonneg
+    ‖(Real.sqrt (Real.log (1/h)) : ℂ)⁻¹ • (α • l+β • r)-evalVectorIncrement hab z‖) hh.le
+  linarith only [he, hn]
 
 #print axioms constantCollar_pair_energy_upper_in_enclosure
 #print axioms constantCollar_pair_energy_upper

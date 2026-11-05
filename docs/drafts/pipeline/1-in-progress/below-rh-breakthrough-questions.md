@@ -70,9 +70,13 @@ its umbrella. Direct Lean check passed; axioms are only `propext`,
 For the wider saddle box, `volume_zetaLargeNear_le` allows the radius
 `r=(1+log(4T))⁻¹`. With `M=(1+log(4T))⁴`, its bound becomes
 `CT/(1+log(4T))³`. Combined with fixed-width zero shadows and the
-existing Borel–Carathéodory bounds, this gives the proposed
+existing Borel–Carathéodory bounds, this gives the
 `O_η(log log T)` logarithmic derivative and polynomial-in-`log T`
 reciprocal bound on compact boxes right of `1/2`.
+These bounds are formalized in
+`ArithmeticHarmonicAnalysis/TypicalZetaBoxBounds.lean`, imported by its
+umbrella. Direct Lean check passed; transitive axioms are only
+`propext`, `Classical.choice`, `Quot.sound`.
 The actual half-Gauss dominance and its uniformity in heat remain to be
 proved; the Euler-anchored sub-Weyl theorem assumes its saddle to the
 right of `Re s=1` and cannot be instantiated below that boundary.

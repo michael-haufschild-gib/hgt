@@ -463,8 +463,7 @@ theorem integrable_defectLineWeight {S : Finset ℕ} (hS : ∀ n ∈ S, 1 ≤ n)
     exact Real.fourier_congr_ae hcoe ξ
   have hmemF : MemLp (𝓕 (defectPull S a)) 2 := (Lp.memLp (𝓕 u)).ae_eq hF
   have hFint : Integrable fun ξ : ℝ => ‖𝓕 (defectPull S a) ξ‖ ^ 2 :=
-    (memLp_two_iff_integrable_sq_norm
-      (Real.continuous_fourierIntegral hφ).aestronglyMeasurable).mp hmemF
+    (memLp_two_iff_integrable_sq_norm hmemF.1).mp hmemF
   have hπ : (2 * Real.pi : ℝ) ≠ 0 := by positivity
   have hcomp : Integrable fun t : ℝ => ‖𝓕 (defectPull S a) (t / (2 * Real.pi))‖ ^ 2 :=
     hFint.comp_div hπ
@@ -505,13 +504,13 @@ theorem integral_normSq_zeta_realDirichletPoly_le_of_mollifierDefect {S : Finset
         (differentiableAt_riemannZeta hne).continuousAt (by fun_prop)
     have hcD : Continuous fun t : ℝ => _root_.RHTower.realDirichletPoly S a (1 / 2 + (t : ℂ) * I) := by
       unfold _root_.RHTower.realDirichletPoly
-      refine continuous_finset_sum S fun n hn => ?_
+      refine continuous_finsetSum S fun n hn => ?_
       have hn0 : (n : ℂ) ≠ 0 := by exact_mod_cast (show 0 < n from hS n hn).ne'
       refine continuous_const.mul ?_
       exact Continuous.const_cpow (by fun_prop) (Or.inl hn0)
     exact ((hcζ.mul hcD.continuousAt).norm.pow 2).continuousWithinAt
   have hrhs_int : IntervalIntegrable (fun t : ℝ => 2 + 2 * (1 / 4 + T ^ 2) * g t) volume 1 T :=
-    intervalIntegrable_const.add ((hg_int.const_mul (2 * (1 / 4 + T ^ 2))).intervalIntegrable 1 T)
+    intervalIntegrable_const.add (hg_int.const_mul (2 * (1 / 4 + T ^ 2))).intervalIntegrable
   have hmono : ∫ t in (1 : ℝ)..T,
       ‖riemannZeta (1 / 2 + t * I) * _root_.RHTower.realDirichletPoly S a (1 / 2 + t * I)‖ ^ 2 ≤
       ∫ t in (1 : ℝ)..T, (2 + 2 * (1 / 4 + T ^ 2) * g t) := by
@@ -530,29 +529,30 @@ theorem integral_normSq_zeta_realDirichletPoly_le_of_mollifierDefect {S : Finset
       have : t ^ 2 ≤ T ^ 2 := pow_le_pow_left₀ (by linarith [ht.1]) ht.2 2
       linarith
     have hden_pos : 0 < 1 / 4 + t ^ 2 := by positivity
+    have hgt_nn : 0 ≤ g t := by simp only [hgdef]; positivity
     have h1z : ‖1 - z‖ ^ 2 ≤ (1 / 4 + T ^ 2) * g t := by
-      simp only [hgdef]
-      have heq : ‖1 - z‖ ^ 2 = (1 / 4 + t ^ 2) * (‖1 - z‖ ^ 2 / (1 / 4 + t ^ 2)) := by
-        field_simp
-      rw [heq]
-      exact mul_le_mul_of_nonneg_right ht_sq (div_nonneg (sq_nonneg _) hden_pos.le)
+      have hg_z : g t = ‖1 - z‖ ^ 2 / (1 / 4 + t ^ 2) := rfl
+      calc ‖1 - z‖ ^ 2 = (1 / 4 + t ^ 2) * g t := by
+            rw [hg_z, mul_div_cancel₀ _ hden_pos.ne']
+        _ ≤ (1 / 4 + T ^ 2) * g t := mul_le_mul_of_nonneg_right ht_sq hgt_nn
     linarith
   have heval : ∫ t in (1 : ℝ)..T, (2 + 2 * (1 / 4 + T ^ 2) * g t) =
       2 * (T - 1) + 2 * (1 / 4 + T ^ 2) * ∫ t in (1 : ℝ)..T, g t := by
     rw [intervalIntegral.integral_add intervalIntegrable_const
-        ((hg_int.const_mul _).intervalIntegrable 1 T),
+        (hg_int.const_mul _).intervalIntegrable,
       intervalIntegral.integral_const, smul_eq_mul, mul_comm (T - 1) 2,
       intervalIntegral.integral_const_mul]
   have hsub_int : ∫ t in (1 : ℝ)..T, g t ≤ ∫ t : ℝ, g t := by
     rw [intervalIntegral.integral_of_le hT]
     exact setIntegral_le_integral hg_int (Filter.Eventually.of_forall fun t => by
       simp only [hgdef]; positivity)
+  have hcoeff_nn : 0 ≤ 2 * (1 / 4 + T ^ 2) := by positivity
   calc ∫ t in (1 : ℝ)..T,
         ‖riemannZeta (1 / 2 + t * I) * _root_.RHTower.realDirichletPoly S a (1 / 2 + t * I)‖ ^ 2
       ≤ ∫ t in (1 : ℝ)..T, (2 + 2 * (1 / 4 + T ^ 2) * g t) := hmono
     _ = 2 * (T - 1) + 2 * (1 / 4 + T ^ 2) * ∫ t in (1 : ℝ)..T, g t := heval
     _ ≤ 2 * (T - 1) + 2 * (1 / 4 + T ^ 2) * ∫ t : ℝ, g t :=
-        add_le_add_left (mul_le_mul_of_nonneg_left hsub_int (by positivity)) _
+        add_le_add_right (mul_le_mul_of_nonneg_left hsub_int hcoeff_nn) (2 * (T - 1))
     _ = 2 * (T - 1) + 4 * Real.pi * (1 / 4 + T ^ 2) * mollifierDefect S a := by
         rw [hg_total]; ring
 
