@@ -34,8 +34,10 @@ bounds suffice; an operator dilation theorem is unnecessary.
 Gamma, polar and finitely many prime corrections are bounded. The
 old/collar crossing operator factors through the fixed bounded Gamma
 Hankel operator. Completing the square against the old positive form
-gives `Q(v)≥(L−C)‖v_collar‖²`. The two separated collars interact by another
-bounded operator.
+gives `Q(v)≥(L−C)‖v_collar‖²`. The two collars lie on opposite half-lines,
+so their Gamma crossing factors through the same Hankel operator of norm
+at most `2π`. Adding the bounded prime/polar remainder and using
+`2xy≤x²+y²` gives the two-collar floor from the individual interval floors.
 
 The [exact kernel increment](../3-formalized/growing-the-weil-window-adds-an-orthogonal-kernel.md)
 is the Gram form of the Riesz component orthogonal to the old space.

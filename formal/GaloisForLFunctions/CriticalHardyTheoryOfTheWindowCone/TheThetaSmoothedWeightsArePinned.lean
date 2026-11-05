@@ -431,15 +431,15 @@ theorem exists_coneForm_le {Y : ℝ → ℝ} (hY : ContDiff ℝ 2 Y) (hYc : HasC
 
 theorem doubleExpTail_le_sqrt_ceiling {c : ℝ} (hc : 0 ≤ c) :
     doubleExpTail (c - 1 / 12 - 1) ≤ Real.sqrt (marginCeiling c) := by
-  have hτ0 := (doubleExpTail_pos (c - 1 / 12 - 1)).le
-  have hτ1 := doubleExpTail_le_one (c - 1 / 12 - 1)
+  have e : c - 1 / 12 - 1 = c - 13 / 12 := by ring
+  rw [e]
+  have hτ0 := (doubleExpTail_pos (c - 13 / 12)).le
+  have hτ1 := doubleExpTail_le_one (c - 13 / 12)
   refine Real.le_sqrt_of_sq_le ?_
-  have h1 : doubleExpTail (c - 1 / 12 - 1) ≤ doubleExpTail (c - 2) :=
-    doubleExpTail_anti (by linarith)
   have h2 : (1 : ℝ) ≤ Real.exp (3 * c) := Real.one_le_exp (by linarith)
-  have h3 : doubleExpTail (c - 2) ≤ marginCeiling c := by
+  have h3 : doubleExpTail (c - 13 / 12) ≤ marginCeiling c := by
     rw [← exp_mul_doubleExpTail]
-    exact le_mul_of_one_le_left (doubleExpTail_pos _).le h2
+    exact le_mul_of_one_le_left hτ0 h2
   nlinarith
 
 /-- **Pinning with explicit dependence on the second test.** Every real test `Y` on the window, with

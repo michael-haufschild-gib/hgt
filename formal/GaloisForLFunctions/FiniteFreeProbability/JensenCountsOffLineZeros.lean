@@ -1,5 +1,6 @@
 import GaloisForLFunctions.FiniteFreeProbability.NonRealRootCount
 import GaloisForLFunctions.FiniteFreeProbability.FiniteFreeHardyTheorem
+import GaloisForLFunctions.FiniteFreeProbability.HurwitzDeflation
 import GaloisForLFunctions.RHTower.XiWindowNonrealBudget
 
 /-!
@@ -310,7 +311,7 @@ theorem eval_map_xiScaledReal (d : ℕ) (u : ℂ) :
 theorem xiCoeff_zero_ne : xiCoeff 0 ≠ 0 := by
   have h := constantCoeff_mk_realTaylorCoeff
   rw [← PowerSeries.coeff_zero_eq_constantCoeff_apply, PowerSeries.coeff_mk] at h
-  exact_mod_cast h
+  exact Complex.ofReal_ne_zero.2 h
 
 /-- The multiset of non-real roots of `Π_v (1 − v X)` corresponds to the non-real elements of the multiset. -/
 theorem card_filter_roots_linearProd (V : Multiset ℂ) :
@@ -369,8 +370,10 @@ theorem nonrealRootCount_xiScaledReal_le {d : ℕ} (hd : 0 < d) :
     refine Multiset.map_congr rfl fun v _ => ?_
     simp [mul_comm]
   have hmk : PowerSeries.mk g = PowerSeries.C (xiCoeff 0)⁻¹ * xiSeries := by
+    rw [← mk_xiCoeff]
     ext k
-    simp only [PowerSeries.coeff_C_mul, ← mk_xiCoeff, PowerSeries.coeff_mk, hg]
+    rw [PowerSeries.coeff_C_mul, PowerSeries.coeff_mk, PowerSeries.coeff_mk]
+    simp only [hg]
     field_simp
   have hroots : (jensenRev d (PowerSeries.mk g)).roots = (jensenRev d xiSeries).roots := by
     rw [hmk, jensenRev_C_mul, roots_C_mul _ (inv_ne_zero hc)]
@@ -436,7 +439,7 @@ theorem eventually_jensenNonrealCount_eq_of_finite
     jensenNonrealCount_le_of_encard (by rw [hfin.encard_eq_coe_toFinset_card])
   have hex : ∃ d, K ≤ jensenNonrealCount d := by
     by_contra hcon
-    push_neg at hcon
+    push Not at hcon
     rcases Nat.eq_zero_or_pos K with h0 | hpos
     · exact absurd (hcon 0) (by omega)
     · have h1 : {q : XiZeroCopy | (xiSpectralPoint q).im ≠ 0}.encard ≤ ((K - 1 : ℕ) : ℕ∞) :=
@@ -454,7 +457,7 @@ theorem tendsto_jensenNonrealCount_of_infinite
     Tendsto jensenNonrealCount atTop atTop := by
   refine tendsto_atTop_atTop_of_monotone jensenNonrealCount_mono fun M => ?_
   by_contra hcon
-  push_neg at hcon
+  push Not at hcon
   have h1 : {q : XiZeroCopy | (xiSpectralPoint q).im ≠ 0}.encard ≤ M :=
     encard_le_of_jensenNonrealCount_le fun d => (hcon d).le
   exact hinf (Set.encard_ne_top_iff.mp (ne_top_of_le_ne_top (ENat.coe_ne_top M) h1))
@@ -473,7 +476,7 @@ theorem iSup_jensenNonrealCount :
   · have htop : {q : XiZeroCopy | (xiSpectralPoint q).im ≠ 0}.encard = ⊤ :=
       Set.encard_eq_top_iff.2 hfin
     rw [htop, eq_top_iff]
-    refine ENat.forall_natCast_le_iff_le.1 fun M => ?_
+    refine ENat.forall_natCast_le_iff_le.1 fun M _ => ?_
     obtain ⟨d, hd⟩ := ((tendsto_jensenNonrealCount_of_infinite hfin).eventually_ge_atTop M).exists
     exact (by exact_mod_cast hd : (M : ℕ∞) ≤ jensenNonrealCount d).trans
       (le_iSup (fun d => (jensenNonrealCount d : ℕ∞)) d)

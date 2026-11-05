@@ -244,7 +244,7 @@ theorem norm_sq_lineFun_mollifiedWindow (t₀ : ℝ) {w : ℝ} (hw : 0 < w) (b :
   rw [norm_mul, mul_pow, norm_gaussWindow, ← Real.exp_nat_mul, mul_assoc, ← Real.exp_add]
   congr 2
   simp only [Complex.add_re, Complex.ofReal_re, Complex.mul_re, Complex.I_re, Complex.ofReal_im,
-    Complex.I_im, mul_zero, mul_one, sub_zero, zero_sub, Complex.add_im, Complex.mul_im,
+    Complex.I_im, mul_zero, mul_one, sub_zero, Complex.add_im, Complex.mul_im,
     zero_add, add_zero]
   push_cast
   field_simp

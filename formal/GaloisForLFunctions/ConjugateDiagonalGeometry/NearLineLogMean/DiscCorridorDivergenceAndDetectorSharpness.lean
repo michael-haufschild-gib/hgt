@@ -45,7 +45,7 @@ set_option autoImplicit false
 noncomputable section
 
 open Complex MeasureTheory Set Filter
-open scoped BigOperators Topology
+open scoped BigOperators Topology Classical
 
 namespace GaloisForLFunctions.ConjugateDiagonalGeometry.NearLineLogMean
 
@@ -96,7 +96,7 @@ theorem setIntegral_reProdIm_eq_iterated_of_continuousOn {f : ℂ → ℝ} {a b 
   let G : ℝ × ℝ → ℝ := fun p => F_ext ((p.1 : ℂ) + (p.2 : ℂ) * I)
   have hGc : Continuous G := F_ext.continuous.comp (by fun_prop)
   have hpre : (Icc a b ×ℂ Icc c d) = measurableEquivRealProd ⁻¹' (Icc a b ×ˢ Icc c d) := by
-    ext z; simp [Complex.mem_reProdIm, Complex.measurableEquivRealProd]
+    ext z; simp [Complex.mem_reProdIm, Complex.measurableEquivRealProd]; tauto
   have hG : ∀ z : ℂ, G (measurableEquivRealProd z) = F_ext z := fun z => by
     simp [G, Complex.measurableEquivRealProd, Complex.re_add_im]
   have hp := Complex.volume_preserving_equiv_real_prod.setIntegral_preimage_emb
@@ -142,9 +142,9 @@ theorem sum_ball_integral_le_setIntegral {ι : Type*} [DecidableEq ι] {S : Fins
         = ∑ i ∈ S, ∫ z, (Metric.ball (c i) R).indicator g z :=
           Finset.sum_congr rfl fun i _ => (integral_indicator measurableSet_ball).symm
       _ = ∫ z, ∑ i ∈ S, (Metric.ball (c i) R).indicator g z :=
-          (integral_finset_sum S fun i hi => hint_ball i hi).symm
+          (integral_finsetSum S fun i hi => hint_ball i hi).symm
   rw [hrew, ← integral_indicator hK_meas]
-  refine integral_mono (integrable_finset_sum S fun i hi => hint_ball i hi) hint_indK fun z => ?_
+  refine integral_mono (integrable_finsetSum S fun i hi => hint_ball i hi) hint_indK fun z => ?_
   by_cases hex : ∃ i ∈ S, z ∈ Metric.ball (c i) R
   · obtain ⟨i₀, hi₀S, hzi₀⟩ := hex
     have hK_mem : z ∈ K := hsub i₀ hi₀S hzi₀
@@ -173,7 +173,7 @@ theorem finset_exists_mod8_class_card_ge (B : Finset ℕ) :
       · simp [j₀]
       · intro j _ hj; rw [if_neg]; intro heq; apply hj; ext; exact heq.symm
       · intro h; exact absurd (Finset.mem_univ j₀) h
-    calc B.card = ∑ m ∈ B, 1 := (Finset.card_eq_sum_ones B).symm
+    calc B.card = ∑ m ∈ B, 1 := Finset.card_eq_sum_ones B
       _ = ∑ m ∈ B, ∑ j : Fin 8, if m % 8 = j.val then 1 else 0 :=
           Finset.sum_congr rfl fun m hm => h1 m hm
       _ = ∑ j : Fin 8, ∑ m ∈ B, if m % 8 = j.val then 1 else 0 := Finset.sum_comm
@@ -316,8 +316,10 @@ theorem occupiedBurnolWindows_le_of_shiftedDefect_div_log
         rw [abs_of_pos (by linarith [hc₂.2.2.2.1, hc₁.2.2.1, hc₁.2.2.2.2, him₂.2, him₁.1])]
         linarith [hc₂.2.2.2.1, hc₁.2.2.1, hc₁.2.2.2.2, him₂.2, him₁.1]
     rw [Metric.mem_ball, dist_eq_norm] at hz₁ hz₂
-    have hd₁ : |z.im - (ρ_sel m₁).im| < R := lt_of_le_of_lt (Complex.abs_im_le_norm _) hz₁
-    have hd₂ : |z.im - (ρ_sel m₂).im| < R := lt_of_le_of_lt (Complex.abs_im_le_norm _) hz₂
+    have hd₁ : |z.im - (ρ_sel m₁).im| < R := by
+      simpa [Complex.sub_im] using lt_of_le_of_lt (Complex.abs_im_le_norm (z - ρ_sel m₁)) hz₁
+    have hd₂ : |z.im - (ρ_sel m₂).im| < R := by
+      simpa [Complex.sub_im] using lt_of_le_of_lt (Complex.abs_im_le_norm (z - ρ_sel m₂)) hz₂
     have htri : |(ρ_sel m₁).im - (ρ_sel m₂).im| ≤
         |z.im - (ρ_sel m₂).im| + |z.im - (ρ_sel m₁).im| := by
       have : (ρ_sel m₁).im - (ρ_sel m₂).im = (z.im - (ρ_sel m₂).im) - (z.im - (ρ_sel m₁).im) := by ring
@@ -383,9 +385,12 @@ theorem occupiedBurnolWindows_le_of_shiftedDefect_div_log
     rw [Set.uIoc_of_le hab] at hσ
     refine intervalIntegral.integral_congr fun t ht => ?_
     rw [Set.uIcc_of_le hcd] at ht
-    apply heq
+    refine heq _ ?_
     rw [hK_def]
-    simp [Complex.mem_reProdIm, le_of_lt hσ.1, hσ.2, ht.1, ht.2]
+    simp only [Set.mem_setOf_eq, Complex.add_re, Complex.ofReal_re, Complex.mul_re,
+      Complex.ofReal_im, Complex.I_re, mul_zero, Complex.I_im, mul_one, sub_zero, add_zero,
+      Complex.add_im, Complex.mul_im, zero_add]
+    exact ⟨⟨le_of_lt hσ.1, hσ.2⟩, ht⟩
   have hexp_int : ∫ σ in (1 / 2 + R)..(1 + R),
       C * Real.exp (-(r * (σ - 1 / 2) * Real.log V)) * (V / Real.log V) ≤
       (C * Real.exp (-(r * A / 2)) / (r * (Real.log V) ^ 2)) * V := by
@@ -394,14 +399,17 @@ theorem occupiedBurnolWindows_le_of_shiftedDefect_div_log
         (fun x : ℝ => -(1 / (r * Real.log V)) * Real.exp (-(r * (x - 1 / 2) * Real.log V)))
         (Real.exp (-(r * (σ - 1 / 2) * Real.log V))) σ := by
       intro σ
+      have hfn_eq : (fun x : ℝ => -(r * (x - 1 / 2) * Real.log V)) =
+          (fun x : ℝ => -(r * Real.log V) * (x - 1 / 2)) := by
+        ext x; ring
       have hd1 : HasDerivAt (fun x : ℝ => -(r * (x - 1 / 2) * Real.log V))
           (-(r * Real.log V)) σ := by
-        have := ((hasDerivAt_id σ).sub_const (1 / 2 : ℝ)).const_mul r
-        have := this.mul_const (Real.log V)
-        convert this.neg using 1; ring
+        rw [hfn_eq]
+        exact (((hasDerivAt_id σ).sub_const (1 / 2 : ℝ)).const_mul
+          (-(r * Real.log V))).congr_deriv (mul_one _)
       have hd2 := (Real.hasDerivAt_exp _).comp σ hd1
-      have hd3 := hd2.const_mul (-(1 / (r * Real.log V)))
-      convert hd3 using 1
+      refine (hd2.const_mul (-(1 / (r * Real.log V)))).congr_deriv ?_
+      have hrL_ne : r * Real.log V ≠ 0 := hrL.ne'
       field_simp
     have hftc := intervalIntegral.integral_eq_sub_of_hasDerivAt (a := 1 / 2 + R) (b := 1 + R)
       (fun σ _ => hderiv σ) ((Continuous.intervalIntegrable (by fun_prop) _ _))
@@ -449,6 +457,7 @@ theorem occupiedBurnolWindows_le_of_shiftedDefect_div_log
     have hA_ne : A ≠ 0 := hA0.ne'
     have hL_ne : Real.log V ≠ 0 := hL_pos.ne'
     field_simp
+    ring
   have hB_le_8 : (B.card : ℝ) ≤ 8 * (B₀.card : ℝ) := by exact_mod_cast hj₀_card
   calc (B.card : ℝ) ≤ 8 * (B₀.card : ℝ) := hB_le_8
     _ ≤ 8 * ((4 * C / (Real.pi * r)) * (Real.exp (-(r * A / 2)) / A ^ 2) * V) :=
@@ -552,8 +561,7 @@ theorem two_pow_fejer_mem_Icc {θ V : ℝ} (hθ0 : 0 < θ) (hV1 : 1 ≤ V)
     calc ((2 ^ (2 * fejerHalfLen θ V) : ℕ) : ℝ)
         = (2 : ℝ) ^ (2 * fejerHalfLen θ V) := by push_cast; rfl
       _ = Real.exp (((2 * fejerHalfLen θ V : ℕ) : ℝ) * Real.log 2) := by
-          rw [Real.rpow_def_of_pos (by norm_num : (0 : ℝ) < 2) ((2 * fejerHalfLen θ V : ℕ) : ℝ)]
-          · rw [Real.rpow_natCast]; ring_nf
+          rw [← Real.rpow_natCast, Real.rpow_def_of_pos (by norm_num : (0 : ℝ) < 2), mul_comm]
       _ ≤ Real.exp (θ * Real.log V) := Real.exp_le_exp.mpr (by push_cast; linarith)
       _ = V ^ θ := by rw [Real.rpow_def_of_pos (lt_of_lt_of_le zero_lt_one hV1), mul_comm]
   refine Finset.mem_Icc.mpr ⟨Nat.one_le_two_pow, Nat.le_floor ?_⟩
@@ -618,12 +626,10 @@ theorem fejerDirichletDetector_sub_one_eq_neg_sq {θ A V : ℝ} (hθ0 : 0 < θ) 
       Real.rpow_def_of_pos hk_pos, Complex.ofReal_exp, ← Complex.exp_add,
       ← Complex.ofReal_log hk_pos.le, hlog_pow]
     congr 1; push_cast; ring
-  rw [Finset.sum_product, sq, Finset.sum_mul]
-  simp_rw [Finset.mul_sum, Finset.sum_mul]
-  rw [Finset.mul_sum]
-  refine Finset.sum_congr rfl fun j₁ _ => ?_
-  rw [Finset.mul_sum]
-  refine Finset.sum_congr rfl fun j₂ _ => ?_
+  rw [Finset.sum_product]
+  conv_rhs => rw [sq, Finset.sum_mul]
+  simp_rw [Finset.mul_sum]
+  refine Finset.sum_congr rfl fun j₁ _ => Finset.sum_congr rfl fun j₂ _ => ?_
   have h12 := hterm_pow (1 + j₁ + j₂)
   have hsplit_c : ((((1 / (M : ℝ) ^ 2) * ((2 ^ (1 + j₁ + j₂) : ℕ) : ℝ) ^ σs : ℝ) : ℂ) *
       (((2 ^ (1 + j₁ + j₂) : ℕ) : ℝ) : ℂ) ^ (-((σ : ℂ) + (t : ℂ) * I))) =
@@ -633,9 +639,10 @@ theorem fejerDirichletDetector_sub_one_eq_neg_sq {θ A V : ℝ} (hθ0 : 0 < θ) 
     push_cast; ring
   rw [hsplit_c, h12]
   simp_rw [Complex.ofReal_mul, Complex.ofReal_exp]
-  have hexp_sum : ∀ z₁ z₂ z₃ z₄ z₅ : ℂ,
-      z₁ * (z₂ * z₃ * (z₄ * z₅)) = (z₂ * z₄) * (z₁ * z₃ * z₅) := fun _ _ _ _ _ => by ring
-  rw [hexp_sum]
+  have hpull : ∀ u e₀ a₁ b₁ a₂ b₂ : ℂ,
+      e₀ * ((u * a₁ * b₁) * (u * a₂ * b₂)) = (u * u) * (e₀ * (a₁ * b₁ * (a₂ * b₂))) :=
+    fun _ _ _ _ _ _ => by ring
+  rw [hpull]
   have hcoeff_eq : (((1 / (M : ℝ) ^ 2 : ℝ) : ℂ)) =
       (((1 / (M : ℝ) : ℝ) : ℂ)) * (((1 / (M : ℝ) : ℝ) : ℂ)) := by
     push_cast; ring
@@ -663,7 +670,8 @@ theorem fejerDirichletDetector_occupiedWindows_ge {θ A : ℝ} (hθ0 : 0 < θ) :
   have hM1 : 1 ≤ fejerHalfLen θ V := by
     unfold fejerHalfLen
     refine Nat.le_floor ?_
-    rw [le_div_iff₀ (by positivity)]
+    push_cast
+    rw [le_div_iff₀ (by positivity), one_mul]
     have := mul_le_mul_of_nonneg_left hVM hθ0.le
     rwa [mul_div_cancel₀ _ hθ0.ne'] at this
   have ⟨P₀, hP₀_def⟩ : ∃ x : ℝ, x = 2 * Real.pi / Real.log 2 := ⟨_, rfl⟩
@@ -674,7 +682,7 @@ theorem fejerDirichletDetector_occupiedWindows_ge {θ A : ℝ} (hθ0 : 0 < θ) :
   let K_cnt : ℕ := ⌊(V - 2) / P₀⌋₊
   have hK_ge1 : 1 ≤ K_cnt := by
     dsimp [K_cnt]; refine Nat.le_floor ?_
-    rw [le_div_iff₀ hP₀_pos]; linarith
+    push_cast; rw [le_div_iff₀ hP₀_pos]; linarith
   let t_pt : ℕ → ℝ := fun r => ((k₀ + r : ℕ) : ℝ) * P₀
   let m_pt : ℕ → ℕ := fun r => ⌊t_pt r⌋₊
   have ht_bounds : ∀ r ∈ Finset.range K_cnt, V + 1 ≤ t_pt r ∧ t_pt r < 2 * V - 1 := by
@@ -684,7 +692,7 @@ theorem fejerDirichletDetector_occupiedWindows_ge {θ A : ℝ} (hθ0 : 0 < θ) :
     have hk₀_hi : (k₀ : ℝ) < (V + 1) / P₀ + 1 := Nat.ceil_lt_add_one (by positivity)
     have hr_hi : (r : ℝ) + 1 ≤ (V - 2) / P₀ := by
       have hrK : (r : ℝ) + 1 ≤ (K_cnt : ℝ) := by exact_mod_cast hr
-      exact hrK.trans (Nat.floor_le (by positivity))
+      exact hrK.trans (Nat.floor_le (div_nonneg (by linarith) hP₀_pos.le))
     constructor
     · calc V + 1 = ((V + 1) / P₀) * P₀ := (div_mul_cancel₀ _ hP₀_pos.ne').symm
         _ ≤ ((k₀ : ℝ) + (r : ℝ)) * P₀ :=
@@ -850,7 +858,7 @@ theorem fejerDirichletDetector_period_and_sup_le {θ A V : ℝ}
       ‖fejerDirichletDetector θ A V ((σ : ℂ) + (t : ℂ) * I) - 1‖ =
         Real.exp ((1 / 2 + A / Real.log V - σ) * Real.log 2) * ‖S_poly t‖ ^ 2 := by
     intro t
-    have hfac := fejerDirichletDetector_sub_one_eq_neg_sq hθ0 hV1 (by rwa [← hM_def]) σ t
+    have hfac := fejerDirichletDetector_sub_one_eq_neg_sq (A := A) hθ0 hV1 (by rwa [← hM_def]) σ t
     rw [← hM_def] at hfac
     rw [hfac, norm_neg, norm_mul, norm_pow]
     congr 1
@@ -887,20 +895,21 @@ theorem fejerDirichletDetector_period_and_sup_le {θ A V : ℝ}
     rw [← hP₀_def]
     have hP₀_pos : 0 < P₀ := by rw [hP₀_def]; positivity
     have hnormSq_re : ∀ t : ℝ, ‖S_poly t‖ ^ 2 = (S_poly t * star (S_poly t)).re := fun t => by
-      rw [mul_comm, ← Complex.normSq_eq_conj_mul_self, Complex.normSq_eq_norm_sq, Complex.ofReal_re]
+      simp [Complex.sq_norm, Complex.normSq_apply]
     have hexpand : ∀ t : ℝ, S_poly t * star (S_poly t) =
         ∑ j₁ ∈ Finset.range M, ∑ j₂ ∈ Finset.range M,
           ((w j₁ * w j₂ : ℝ) : ℂ) *
             Complex.exp (((t * (((j₂ : ℝ) - (j₁ : ℝ)) * Real.log 2) : ℝ) : ℂ) * I) := by
       intro t
       dsimp [S_poly]
-      rw [star_sum, Finset.sum_mul]
+      rw [map_sum, Finset.sum_mul]
       refine Finset.sum_congr rfl fun j₁ _ => ?_
       rw [Finset.mul_sum]
       refine Finset.sum_congr rfl fun j₂ _ => ?_
-      rw [star_mul', Complex.star_def, Complex.conj_ofReal, ← Complex.exp_conj]
+      rw [map_mul, Complex.conj_ofReal, ← Complex.exp_conj]
       have hconj_arg : (starRingEnd ℂ) (-(((j₂ : ℝ) * Real.log 2 * t : ℝ) : ℂ) * I) =
-          (((j₂ : ℝ) * Real.log 2 * t : ℝ) : ℂ) * I := by simp
+          (((j₂ : ℝ) * Real.log 2 * t : ℝ) : ℂ) * I := by
+        rw [map_mul, map_neg, Complex.conj_ofReal, Complex.conj_I, neg_mul_neg]
       rw [hconj_arg]
       have hmul : (w j₁ : ℂ) * Complex.exp (-(((j₁ : ℝ) * Real.log 2 * t : ℝ) : ℂ) * I) *
           ((w j₂ : ℂ) * Complex.exp ((((j₂ : ℝ) * Real.log 2 * t : ℝ) : ℂ) * I)) =
@@ -928,15 +937,15 @@ theorem fejerDirichletDetector_period_and_sup_le {θ A V : ℝ}
         simp
       · rw [if_neg h12]
         have hne_real : (j₂ : ℝ) - (j₁ : ℝ) ≠ 0 :=
-          sub_ne_zero.mpr (Nat.cast_ne_cast.mpr (Ne.symm h12))
+          sub_ne_zero.mpr (by exact_mod_cast Ne.symm h12)
         have hL_ne : L ≠ 0 := mul_ne_zero hne_real hlog2.ne'
         rw [RHTower.Sieve.integral_exp_phase L hL_ne P₀]
         have hexp_P : Complex.exp (((P₀ * L : ℝ) : ℂ) * I) = 1 := by
-          have harg : ((P₀ * L : ℝ) : ℂ) * I =
-              ((((j₂ : ℤ) - (j₁ : ℤ)) : ℂ)) * (2 * (Real.pi : ℂ) * I) := by
-            dsimp [L]; rw [hP₀_def]
+          let m_int : ℤ := (j₂ : ℤ) - (j₁ : ℤ)
+          have harg : ((P₀ * L : ℝ) : ℂ) * I = (m_int : ℂ) * (2 * (Real.pi : ℂ) * I) := by
+            dsimp [L, m_int]; rw [hP₀_def]
             have hne2 : (Real.log 2 : ℂ) ≠ 0 := Complex.ofReal_ne_zero.mpr hlog2.ne'
-            push_cast; field_simp; ring
+            push_cast; field_simp
           rw [harg, Complex.exp_int_mul, Complex.exp_two_pi_mul_I, one_zpow]
         rw [hexp_P, sub_self, zero_div, mul_zero]
     have hS_int_c : (∫ t in t₀..(t₀ + P₀), S_poly t * star (S_poly t)) =
@@ -946,27 +955,28 @@ theorem fejerDirichletDetector_period_and_sup_le {θ A V : ℝ}
       rw [zero_add, add_comm P₀ t₀] at hshift
       rw [← hshift]
       simp_rw [hexpand]
-      rw [intervalIntegral.integral_finset_sum]
+      rw [intervalIntegral.integral_finsetSum]
       · trans (∑ j₁ ∈ Finset.range M, ((w j₁ * w j₁ : ℝ) : ℂ) * (P₀ : ℂ))
         · refine Finset.sum_congr rfl fun j₁ hj₁ => ?_
-          rw [intervalIntegral.integral_finset_sum]
+          rw [intervalIntegral.integral_finsetSum]
           · simp_rw [intervalIntegral.integral_const_mul, hphase_int]
             rw [Finset.sum_eq_single j₁]
             · simp
             · intro j₂ _ hj₂₁; rw [if_neg hj₂₁.symm, mul_zero]
             · intro hnot; exact absurd hj₁ hnot
           · intro j₂ _; exact Continuous.intervalIntegrable (by fun_prop) _ _
-        · push_cast; rw [Finset.sum_mul]
-          refine (Finset.sum_congr rfl fun j _ => ?_).trans (by ring)
-          ring
+        · push_cast
+          rw [← Finset.sum_mul, mul_comm]
+          congr 1
+          refine Finset.sum_congr rfl fun j _ => (sq _).symm
       · intro j₁ _
-        exact Continuous.intervalIntegrable (continuous_finset_sum _ fun j₂ _ => by fun_prop) _ _
+        exact Continuous.intervalIntegrable (continuous_finsetSum _ fun j₂ _ => by fun_prop) _ _
+    have hS_cont : Continuous S_poly := continuous_finsetSum _ fun j _ => by fun_prop
     have hS_int_re : (∫ t in t₀..(t₀ + P₀), ‖S_poly t‖ ^ 2) =
         P₀ * ∑ j ∈ Finset.range M, (w j) ^ 2 := by
       simp_rw [hnormSq_re]
       have hcomm := (Complex.reCLM.intervalIntegral_comp_comm
-        (Continuous.intervalIntegrable
-          (by dsimp [S_poly]; fun_prop) t₀ (t₀ + P₀))).symm
+        (Continuous.intervalIntegrable (hS_cont.mul hS_cont.star) t₀ (t₀ + P₀))).symm
       change (∫ x in t₀..(t₀ + P₀), Complex.reCLM (S_poly x * star (S_poly x))) = _
       rw [hcomm, hS_int_c]
       simp
@@ -1013,6 +1023,8 @@ theorem fejerDirichletDetector_L1_defect_le_div_log {θ A : ℝ} (hθ0 : 0 < θ)
   have hM_half : θ * Real.log V / (4 * Real.log 2) ≤ (fejerHalfLen θ V : ℝ) := by
     unfold fejerHalfLen
     have hlt := Nat.lt_floor_add_one (θ * Real.log V / (2 * Real.log 2))
+    have hdiv2 : θ * Real.log V / (4 * Real.log 2) =
+        (θ * Real.log V / (2 * Real.log 2)) / 2 := by ring
     linarith
   have ⟨P₀, hP₀_def⟩ : ∃ x : ℝ, x = 2 * Real.pi / Real.log 2 := ⟨_, rfl⟩
   have hP₀_9 : 9 < P₀ := by rw [hP₀_def]; exact two_pi_div_log_two_bounds.1
@@ -1028,9 +1040,10 @@ theorem fejerDirichletDetector_L1_defect_le_div_log {θ A : ℝ} (hθ0 : 0 < θ)
   have hNP_le : (N_per : ℝ) * P₀ ≤ 2 * V := by
     dsimp [N_per]; push_cast
     have hfl : (⌊(V + 10) / P₀⌋₊ : ℝ) ≤ (V + 10) / P₀ := Nat.floor_le (by positivity)
-    have := mul_le_mul_of_nonneg_right (add_le_add_right hfl 1) hP₀_pos.le
-    rw [add_mul, div_mul_cancel₀ _ hP₀_pos.ne', one_mul] at this
-    linarith
+    calc ((⌊(V + 10) / P₀⌋₊ : ℝ) + 1) * P₀
+        ≤ ((V + 10) / P₀ + 1) * P₀ := mul_le_mul_of_nonneg_right (by linarith) hP₀_pos.le
+      _ = V + 10 + P₀ := by rw [add_mul, div_mul_cancel₀ _ hP₀_pos.ne', one_mul]
+      _ ≤ 2 * V := by linarith
   let g : ℝ → ℝ := fun t => ‖fejerDirichletDetector θ A V ((σ : ℂ) + (t : ℂ) * I) - 1‖
   have hg_cont : Continuous g := by
     have hdiff := RHTower.differentiable_edPoly (fejerDetectorCoeff θ A V)
@@ -1071,7 +1084,7 @@ theorem fejerDirichletDetector_L1_defect_le_div_log {θ A : ℝ} (hθ0 : 0 < θ)
     calc (N_per : ℝ) * P₀ / (fejerHalfLen θ V : ℝ)
         ≤ (2 * V) / (θ * Real.log V / (4 * Real.log 2)) :=
           div_le_div₀ (by positivity) hNP_le (by positivity) hM_half
-      _ = (8 * Real.log 2 / θ) * (V / Real.log V) := by field_simp
+      _ = (8 * Real.log 2 / θ) * (V / Real.log V) := by field_simp; ring
       _ ≤ (8 * 1 / θ) * (V / Real.log V) := by gcongr
       _ = (8 / θ) * (V / Real.log V) := by ring
   calc ∫ t in (V - 5)..(2 * V + 5), g t
@@ -1098,7 +1111,7 @@ theorem fejerDirichletDetector_Lp_defect_le_div_log
   have hVe : Real.exp 1 ≤ V := le_trans (le_max_right _ _) hVmax
   have hM1 : 1 ≤ fejerHalfLen θ V := by
     unfold fejerHalfLen; refine Nat.le_floor ?_
-    rw [le_div_iff₀ (by positivity)]
+    push_cast; rw [le_div_iff₀ (by positivity), one_mul]
     have := mul_le_mul_of_nonneg_left hVM1 hθ0.le
     rwa [mul_div_cancel₀ _ hθ0.ne'] at this
   have hsup := (fejerDirichletDetector_period_and_sup_le hθ0 hA0 hVe hM1 hσ 0).1
@@ -1110,24 +1123,25 @@ theorem fejerDirichletDetector_Lp_defect_le_div_log
   have hp_pos : 0 < p := lt_of_lt_of_le zero_lt_one hp1
   have hpt : ∀ t : ℝ, g t ^ p ≤ Real.exp ((p - 1) * (1 + θ) * A) * g t := by
     intro t
-    rcases eq_or_lt_of_le (norm_nonneg (fejerDirichletDetector θ A V ((σ : ℂ) + (t : ℂ) * I) - 1))
-      with h0 | hpos
-    · dsimp [g]; rw [← h0, Real.zero_rpow hp_pos.ne', mul_zero]
+    rcases eq_or_lt_of_le (show 0 ≤ g t from norm_nonneg _) with h0 | hpos
+    · rw [← h0, Real.zero_rpow hp_pos.ne', mul_zero]
     · have hp_split : g t ^ p = g t ^ (p - 1) * g t := by
-        rw [← Real.rpow_add_one (ne_of_gt hpos)]; ring_nf
+        rw [← Real.rpow_add_one (ne_of_gt hpos), sub_add_cancel]
       rw [hp_split]
       refine mul_le_mul_of_nonneg_right ?_ (le_of_lt hpos)
       calc g t ^ (p - 1)
           ≤ (Real.exp ((1 + θ) * A)) ^ (p - 1) :=
             Real.rpow_le_rpow (le_of_lt hpos) (hsup t) (by linarith)
         _ = Real.exp ((p - 1) * (1 + θ) * A) := by
-            rw [← Real.exp_mul]; ring_nf
+            rw [← Real.exp_mul]; congr 1; ring
   have hg_p_cont : Continuous (fun t => g t ^ p) :=
     hg_cont.rpow_const fun _ => Or.inr hp_pos.le
-  have hmono := intervalIntegral.integral_mono_on (by linarith : V - 5 ≤ 2 * V + 5)
-    (hg_p_cont.intervalIntegrable _ _)
-    ((hg_cont.const_mul _).intervalIntegrable _ _)
-    (fun t _ => hpt t)
+  have hmono : (∫ t in (V - 5)..(2 * V + 5), g t ^ p) ≤
+      ∫ t in (V - 5)..(2 * V + 5), Real.exp ((p - 1) * (1 + θ) * A) * g t :=
+    intervalIntegral.integral_mono_on (by linarith)
+      (hg_p_cont.intervalIntegrable _ _)
+      ((continuous_const.mul hg_cont).intervalIntegrable _ _)
+      (fun t _ => hpt t)
   rw [intervalIntegral.integral_const_mul] at hmono
   calc (∫ t in (V - 5)..(2 * V + 5), g t ^ p)
       ≤ Real.exp ((p - 1) * (1 + θ) * A) * (∫ t in (V - 5)..(2 * V + 5), g t) := hmono
@@ -1136,7 +1150,9 @@ theorem fejerDirichletDetector_Lp_defect_le_div_log
     _ = (8 * (Real.exp ((p - 1) * (1 + θ) * A) * Real.exp ((1 + θ) * A)) / θ) * (V / Real.log V) := by
         ring
     _ = (8 * Real.exp (p * (1 + θ) * A) / θ) * (V / Real.log V) := by
-        rw [← Real.exp_add]; ring_nf
+        rw [← Real.exp_add]
+        have hexp_eq : (p - 1) * (1 + θ) * A + (1 + θ) * A = p * (1 + θ) * A := by ring
+        rw [hexp_eq]
 
 /-- **Sharp `V / log V` impossibility for the positive logarithmic mean `log⁺‖F_V‖`:**
 Uniformly for all `σ ≥ 1/2`, `∫_{V-5}^{2V+5} max(0, log‖F_V(σ + it)‖) dt ≪_{θ,A} V / log V`. -/
@@ -1157,7 +1173,7 @@ theorem fejerDirichletDetector_posLogMean_le_div_log
     refine Continuous.congr (f := fun t => Real.log (max 1 ‖F_line t‖))
       (Real.continuous_log'.comp
         ((continuous_const.max (continuous_norm.comp hF_cont)).subtype_mk
-          fun t => (lt_of_lt_of_le zero_lt_one (le_max_left 1 _)).ne')) fun t => ?_
+          fun t => lt_of_lt_of_le zero_lt_one (le_max_left 1 _))) fun t => ?_
     rcases le_or_gt ‖F_line t‖ 1 with hle | hgt
     · rw [max_eq_left hle, Real.log_one]
       rcases eq_or_lt_of_le (norm_nonneg (F_line t)) with h0 | hpos
@@ -1210,8 +1226,8 @@ theorem integral_norm_zetaMollified_sub_one_sq_eq (c : ℕ → ℂ) (X : ℕ)
       have hne1 : ((σ : ℂ) + ((x : ℝ) : ℂ) * I) ≠ 1 := by
         intro h; have := congrArg Complex.im h; simp at this
         linarith [x.2.1]
-      exact (differentiableAt_riemannZeta hne1).continuousAt.comp
-        (Continuous.continuousAt (by fun_prop))
+      have hc_arg : Continuous (fun y : Icc T₁ T₂ => (σ : ℂ) + ((y : ℝ) : ℂ) * I) := by fun_prop
+      exact ContinuousAt.comp (x := x) (differentiableAt_riemannZeta hne1).continuousAt hc_arg.continuousAt
     · exact (RHTower.differentiable_edPoly c (s := Finset.Icc 1 X)
         (fun n hn => (Finset.mem_Icc.mp hn).1)).continuous.comp_continuousOn (by fun_prop)
   have hZ2_int : IntervalIntegrable (fun t => ‖Z t‖ ^ 2) volume T₁ T₂ :=
@@ -1230,7 +1246,7 @@ theorem integral_norm_zetaMollified_sub_one_sq_eq (c : ℕ → ℂ) (X : ℕ)
     intervalIntegral.integral_const, smul_eq_mul, mul_one,
     intervalIntegral.integral_const_mul]
   congr 2
-  exact (Complex.reCLM.intervalIntegral_comp_comm hZsub_int).symm
+  exact Complex.reCLM.intervalIntegral_comp_comm hZsub_int
 
 /-- **Unconditional log-free Barban–Vehov shifted `L²` defect at scale `S` (`0 < r < 2 θ_Y < 2 θ_X < 1`).** -/
 theorem exists_twoLength_defect_normSq_arbitrary_rate
@@ -1271,7 +1287,7 @@ theorem exists_twoLength_defect_normSq_arbitrary_rate
     (RHTower.twoLengthCoeff_one hY1 hYX)
     (fun n hn => RHTower.norm_twoLengthCoeff_le hY1 hYX hn)
     hσ₀.1 (hσ₀.2.trans (by norm_num)) hT_ge4
-    (le_of_lt hT₁.1) (le_of_lt hT₁.2) (le_of_lt hT₂.1) (le_of_lt hT₂.2) hT12
+    (le_of_lt hT₁.1) (le_of_lt hT₁.2) (by linarith [hT₂.1]) (by linarith [hT₂.2]) hT12
   have hre_ge : -(2 * (∫ t in T₁..T₂, (riemannZeta ((σ₀ : ℂ) + (t : ℂ) * I) *
         RHTower.edPoly (RHTower.twoLengthCoeff X Y) (Finset.Icc 1 X)
           ((σ₀ : ℂ) + (t : ℂ) * I) - 1)).re) ≤
@@ -1599,7 +1615,8 @@ theorem eventually_uniform_primeLog_normSq_ge {A θ ε : ℝ}
   have h2 : Real.exp (-(2 * A)) * (δ / 2) ≤ δ / 2 := by
     have := mul_le_mul_of_nonneg_right hexp_le1 (by positivity : 0 ≤ δ / 2)
     linarith only [this]
-  linarith only [hD₀_def, h1, h2, hδ_le_ε]
+  rw [mul_sub] at h1
+  linarith only [hD₀_def, h1, h2, hδ, hδ_le_ε]
 
 /-- Uniform `y`-rough `1/θ` second-moment floor across `a ∈ [0, A]`. -/
 theorem eventually_uniform_rough_normSq_ge {A θ ε : ℝ}
@@ -1837,9 +1854,7 @@ theorem eventually_uniform_integral_normSq_zetaMollified_sub_one_ge
     have hmul_V : 100 * V ^ (θ + 1 / 2) ≤ (ε / 2) * V := by
       have := mul_le_mul_of_nonneg_right hsmall hV_pos.le
       have hrew : V ^ (θ + 1 / 2 - 1) * V = V ^ (θ + 1 / 2) := by
-        conv_lhs => rw [← Real.rpow_one V]
-        rw [← Real.rpow_add hV_pos]
-        ring_nf; rw [Real.rpow_one]
+        rw [← Real.rpow_add_one hV_pos.ne', sub_add_cancel]
       linarith
     linarith
   have hre_le := le_abs_self (∫ t in V..(2 * V),
@@ -2012,14 +2027,14 @@ theorem exists_separated_dirPoly_sum_normSq_ge_mul_log
     have hterm : ∀ m : Fin N, ‖a m‖ ^ 2 = if m ∈ S_idx then (1 : ℝ) else 0 := by
       intro m; dsimp [a]; split_ifs <;> simp
     simp_rw [hterm]
-    rw [Finset.sum_ite_mem, Finset.univ_inter, Finset.card_image_of_injective _ hidx_inj,
-      Finset.card_fin]
+    rw [Finset.sum_ite_mem, Finset.univ_inter, Finset.sum_const, nsmul_eq_mul, mul_one,
+      Finset.card_image_of_injective _ hidx_inj, Finset.card_fin]
   have ha_pos : 0 < ∑ m : Fin N, ‖a m‖ ^ 2 := by
     rw [ha_l2]; exact_mod_cast hK_ge1
   let Q : ℕ := ⌊V / P₀⌋₊
   have hQ_ge4 : 4 ≤ Q := by
     dsimp [Q]; refine Nat.le_floor ?_
-    rw [le_div_iff₀ hP₀_pos]; linarith
+    push_cast; rw [le_div_iff₀ hP₀_pos]; linarith
   let R : ℕ := Q - 1
   have hR1_eq_Q : R + 1 = Q := by dsimp [R]; omega
   let k₀ : ℕ := ⌈V / P₀⌉₊
@@ -2074,7 +2089,7 @@ theorem exists_separated_dirPoly_sum_normSq_ge_mul_log
             (((k₀ + r.val) * j.val : ℕ) : ℂ) * (2 * (Real.pi : ℂ) * I) := by
           dsimp [lam]; rw [hP₀_def]
           have hne : (Real.log 2 : ℂ) ≠ 0 := Complex.ofReal_ne_zero.mpr hlog2_pos.ne'
-          push_cast; field_simp; ring
+          push_cast; field_simp
         rw [harg, Complex.exp_nat_mul, Complex.exp_two_pi_mul_I, one_pow]
       simp_rw [hterm1, Finset.sum_const, Finset.card_fin, nsmul_eq_mul, mul_one]
     have hsum_lam : (∑ r : Fin (R + 1), ‖RHTower.Sieve.dirPoly N a (lam r)‖ ^ 2) =

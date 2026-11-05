@@ -558,9 +558,8 @@ theorem band_of_dyadic {E : ℝ → ℝ} (hEm : Measurable E)
     have h2n : (0 : ℝ) < 2 ^ n := by positivity
     have hgoal : 4 * C * (q / 2) ^ k * 2 ^ n = 2 * (C * q ^ k) := by
       rw [div_pow, hk, pow_succ (2 : ℝ) n]
-      first
-        | (field_simp; ring)
-        | field_simp
+      field_simp
+      ring
     have h3 : κ k ^ 2 * (2 : ℝ) ^ n ≤ (4 * C * (q / 2) ^ k + 2 * ε ^ 2) * 2 ^ n := by
       rw [add_mul, hgoal]
       linarith
@@ -626,9 +625,7 @@ theorem band_of_dyadic {E : ℝ → ℝ} (hEm : Measurable E)
     linarith
   have hqn : (q / 2) ^ n * (2 * 2 ^ n) = 2 * q ^ n := by
     rw [div_pow]
-    first
-      | (field_simp; ring)
-      | field_simp
+    field_simp
   have hterm : 2 * κ (n + 1) ^ 2 * ((2 : ℝ) ^ (n + 1) - 1) ≤ 4 * K₂ * q ^ (n + 1) := by
     have hqmono : q ^ n ≤ q ^ (n + 1) := pow_le_pow_right₀ hq1 (Nat.le_succ n)
     have h2n1 : (0 : ℝ) ≤ (2 : ℝ) ^ (n + 1) - 1 := by

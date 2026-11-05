@@ -16,7 +16,11 @@ Replacing this kernel by `exp(-(t+d))/(2(t+d))` on the positive half-line
 has bounded error. Split at `d` and `1`; boundedness controls the short and
 remote pieces and the difference `d/(t(t+d))` controls the middle piece.
 The integrable Gamma remainder changes the response by a bounded quantity.
-Finite prime translations and polar terms also stay bounded.
+Finite prime translations of the continuous source and the two exact
+exponential polar profiles are continuous. Their scalar, prime, and polar
+combination represents the actual bounded remainder on every enclosing
+aperture. Subtracting it from the evaluation exponential and exterior Gamma
+response gives the full collar profile; its normalized coefficient is `τ`.
 
 For `d=hs`, write `log(1/(hs))=log(1/h)+log(1/s)`. A bounded normalized
 response gives the squared majorant `C(1+log(1/s))` on `0<s<1`, which is

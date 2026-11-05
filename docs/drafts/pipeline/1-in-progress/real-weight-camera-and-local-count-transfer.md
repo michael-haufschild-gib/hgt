@@ -63,6 +63,8 @@ count, strip-envelope proof and sum/integral exchanges remain open.
 `weighted_discMoment_readout_slow` passes Lean and its transitive axiom audit
 uses only the three standard axioms. It chooses one pair of windows uniformly
 for all complex coefficients with summable absolute Lorentzian mass.
-The finite-height specialization, multiplicity count, strip envelope, interval
-majorant, weighted count transfer and lattice example remain under verification.
+`weighted_discMoment_readout_rvm_explicit` also passes with the same explicit
+`cameraMomentHeight` and the same standard axioms. The multiplicity count, strip
+envelope, interval majorant, weighted count transfer and lattice example remain
+under verification.
 Final direct source audits and umbrella wiring remain.

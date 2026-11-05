@@ -10,7 +10,7 @@ The **best margin** `λ*(c) = sup_λ inf_f W_λ(f)/‖f‖²` of the window `[�
 blind functional at pole weight one (`bestMargin`, `exists_hasMargin_iff_le_bestMargin`), by the
 finite-level duality. Its behaviour:
 
-* **Ceiling** (`exists_bestMargin_le`): `λ*(c) ≤ K exp(3c − (π/16) e^{2(c−2)})` for `c ≥ 3`, over all
+* **Ceiling** (`exists_bestMargin_le`): `λ*(c) ≤ K exp(3c − (π/6) e^{2(c−13/12)})` for `c ≥ 3`, over all
   weights, unconditionally. This is the law known for `Λ` alone, carried to the supremum over the cone.
 * **RH is the limit** (`riemannHypothesis_iff_tendsto_bestMargin`): `λ*(c) → 0` iff RH. Under RH the
   best margin is nonnegative and below the ceiling; otherwise it is eventually negative and antitone.
@@ -121,7 +121,7 @@ theorem exists_weilPositiveFullUpTo_iff_nonneg_bestMargin {c : ℝ} (hc : 3 / 10
 
 /-! ### The ceiling -/
 
-/-- **The margin law.** `λ*(c) ≤ K exp(3c − (π/16) e^{2(c−2)})` for `c ≥ 3`, over all weights. -/
+/-- **The margin law.** `λ*(c) ≤ K exp(3c − (π/6) e^{2(c−13/12)})` for `c ≥ 3`, over all weights. -/
 theorem exists_bestMargin_le :
     ∃ K : ℝ, 0 < K ∧ ∀ c : ℝ, 3 ≤ c → bestMargin c ≤ K * marginCeiling c := by
   obtain ⟨K, hK, h⟩ := exists_margin_ceiling
@@ -132,19 +132,67 @@ theorem exists_bestMargin_le :
   · exact (not_le.mp hm).le.trans (mul_pos hK (marginCeiling_pos c)).le
 
 theorem tendsto_marginCeiling : Tendsto marginCeiling atTop (𝓝 0) := by
-  have hexp : Tendsto (fun c : ℝ => 3 * c - Real.pi / 16 * Real.exp (2 * (c - 2))) atTop atBot := by
+  have hexp : Tendsto (fun c : ℝ => 3 * c - Real.pi / 6 * Real.exp (2 * (c - 13 / 12))) atTop atBot := by
     refine tendsto_atBot.mpr fun b => ?_
     filter_upwards [eventually_ge_atTop (|b| + 40)] with c hc
     have hb := neg_abs_le b
     have hab := abs_nonneg b
-    have hy : 0 ≤ 2 * (c - 2) := by linarith
-    have hq := Real.quadratic_le_exp_of_nonneg hy
+    obtain ⟨y, hy⟩ : ∃ y, y = 2 * (c - 13 / 12) := ⟨_, rfl⟩
+    rw [← hy]
+    have hy0 : 76 + 2 * |b| ≤ y := by rw [hy]; linarith
+    have hq := Real.quadratic_le_exp_of_nonneg (by linarith : 0 ≤ y)
     have hπ := Real.pi_gt_three
-    have h1 : (3 : ℝ) / 16 * Real.exp (2 * (c - 2)) ≤ Real.pi / 16 * Real.exp (2 * (c - 2)) :=
+    have h1 : (1 : ℝ) / 2 * Real.exp y ≤ Real.pi / 6 * Real.exp y :=
       mul_le_mul_of_nonneg_right (by linarith) (Real.exp_pos _).le
-    have hyy : 38 * (c - 2) ≤ (c - 2) ^ 2 := by nlinarith
+    have hc' : c = y / 2 + 13 / 12 := by rw [hy]; ring
+    have hyy : (76 + 2 * |b|) * y ≤ y ^ 2 := by nlinarith
+    rw [hc']
     nlinarith
   exact Real.tendsto_exp_atBot.comp hexp
+
+/-- `e^{11/6} ≥ 6`: the window loses only `13/12` of aperture, against the `2` of the Gaussian ceiling. -/
+theorem six_le_exp_eleven_sixths : (6 : ℝ) ≤ Real.exp (11 / 6) := by
+  have h1 : (27 / 10 : ℝ) ≤ Real.exp 1 := by
+    have := Real.exp_one_gt_d9
+    linarith
+  have h2 : (27 / 10 : ℝ) ^ 11 ≤ Real.exp 1 ^ 11 := pow_le_pow_left₀ (by norm_num) h1 11
+  have h3 : Real.exp 1 ^ 11 = Real.exp (11 / 6) ^ 6 := by
+    rw [← Real.exp_nat_mul, ← Real.exp_nat_mul]
+    norm_num
+  by_contra hcon
+  rw [not_le] at hcon
+  have h4 := pow_lt_pow_left₀ hcon (Real.exp_pos _).le (by norm_num : (6 : ℕ) ≠ 0)
+  rw [← h3] at h4
+  norm_num at h2 h4
+  linarith
+
+/-- The ceiling is below the Gaussian ceiling of the Weil form. -/
+theorem marginCeiling_le_gaussian {c : ℝ} (hc : 0 ≤ c) :
+    marginCeiling c ≤ Real.exp (11 / 2 * c - Real.pi * Real.exp (2 * (c - 2))) := by
+  unfold marginCeiling
+  refine Real.exp_le_exp.mpr ?_
+  have e : Real.exp (2 * (c - 13 / 12)) = Real.exp (11 / 6) * Real.exp (2 * (c - 2)) := by
+    rw [← Real.exp_add]
+    congr 1
+    ring
+  have h6 := six_le_exp_eleven_sixths
+  have hE := Real.exp_pos (2 * (c - 2))
+  have hπ := Real.pi_pos
+  rw [e]
+  have h : Real.pi * Real.exp (2 * (c - 2)) ≤
+      Real.pi / 6 * (Real.exp (11 / 6) * Real.exp (2 * (c - 2))) := by
+    have := mul_le_mul_of_nonneg_right h6 (mul_pos hπ hE).le
+    nlinarith
+  linarith
+
+/-- **The Gaussian ceiling holds for every weight.** `λ*(c) ≤ K exp((11/2)c − π e^{2(c−2)})` for `c ≥ 3`:
+the bound known for `Λ` holds for the best margin over all weights. -/
+theorem exists_bestMargin_le_gaussian :
+    ∃ K : ℝ, 0 < K ∧ ∀ c : ℝ, 3 ≤ c →
+      bestMargin c ≤ K * Real.exp (11 / 2 * c - Real.pi * Real.exp (2 * (c - 2))) := by
+  obtain ⟨K, hK, h⟩ := exists_bestMargin_le
+  exact ⟨K, hK, fun c hc => (h c hc).trans
+    (mul_le_mul_of_nonneg_left (marginCeiling_le_gaussian (by linarith)) hK.le)⟩
 
 /-- **RH is the limit of the best margin.** `λ*(c) → 0` iff RH. -/
 theorem riemannHypothesis_iff_tendsto_bestMargin :

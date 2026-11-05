@@ -298,9 +298,9 @@ theorem doubleExpTail_le_exp {X : ℝ} (hX : 0 ≤ X) : doubleExpTail X ≤ Real
   refine Real.exp_le_exp.mpr ?_
   have h1 := Real.add_one_le_exp (2 * X)
   have hpi := Real.pi_gt_three
-  have h2 : 3 / 16 * Real.exp (2 * X) ≤ Real.pi / 16 * Real.exp (2 * X) :=
+  have h2 : 1 / 2 * Real.exp (2 * X) ≤ Real.pi / 6 * Real.exp (2 * X) :=
     mul_le_mul_of_nonneg_right (by linarith) (Real.exp_pos _).le
-  have e : -(Real.pi / 16) * Real.exp (2 * X) = -(Real.pi / 16 * Real.exp (2 * X)) := by ring
+  have e : -(Real.pi / 6) * Real.exp (2 * X) = -(Real.pi / 6 * Real.exp (2 * X)) := by ring
   rw [e]
   nlinarith
 
@@ -527,25 +527,26 @@ theorem atomMass_nonneg : 0 ≤ atomMass := tsum_nonneg fun n => by positivity
 
 /-- `e^{3c/2} √(ceiling(c)) ≤ K e^{−c}`: the near-null vector beats any fixed exponential. -/
 theorem exp_mul_sqrt_ceiling_le {c : ℝ} (hc : 2 ≤ c) :
-    Real.exp (3 / 2 * c) * Real.sqrt (marginCeiling c) ≤ Real.exp (8 + 64 / 3) * Real.exp (-c) := by
+    Real.exp (3 / 2 * c) * Real.sqrt (marginCeiling c) ≤
+      Real.exp (13 / 3 + 8) * Real.exp (-c) := by
   have hs : Real.sqrt (marginCeiling c) =
-      Real.exp ((3 * c - Real.pi / 16 * Real.exp (2 * (c - 2))) / 2) := by
+      Real.exp ((3 * c - Real.pi / 6 * Real.exp (2 * (c - 13 / 12))) / 2) := by
     unfold marginCeiling
     rw [Real.sqrt_eq_rpow, ← Real.exp_mul]
     congr 1
     ring
   rw [hs, ← Real.exp_add, ← Real.exp_add]
   refine Real.exp_le_exp.mpr ?_
-  obtain ⟨y, hy⟩ : ∃ y, y = 2 * (c - 2) := ⟨_, rfl⟩
+  obtain ⟨y, hy⟩ : ∃ y, y = 2 * (c - 13 / 12) := ⟨_, rfl⟩
   have hy0 : 0 ≤ y := by rw [hy]; linarith
   rw [← hy]
   have h1 := Real.quadratic_le_exp_of_nonneg hy0
   have hpi := Real.pi_gt_three
-  have h2 : 3 / 16 * Real.exp y ≤ Real.pi / 16 * Real.exp y :=
+  have h2 : 1 / 2 * Real.exp y ≤ Real.pi / 6 * Real.exp y :=
     mul_le_mul_of_nonneg_right (by linarith) (Real.exp_pos _).le
-  have hc' : c = y / 2 + 2 := by rw [hy]; ring
+  have hc' : c = y / 2 + 13 / 12 := by rw [hy]; ring
   rw [hc']
-  nlinarith [sq_nonneg (y - 64 / 3)]
+  nlinarith [sq_nonneg (y - 8)]
 
 /-- **The Gaussian reading is small on the cone.** Uniformly in `t ≥ 1`, with the window defect of any
 `λ ∈ 𝒜(c)`. -/
@@ -568,7 +569,7 @@ theorem exists_norm_readS_windowDefect_le :
   have hA₃0 : 0 ≤ A₃ := by rw [hA₃]; positivity
   obtain ⟨D, hD⟩ : ∃ D, D = 4 * phiConst * quarterMass := ⟨_, rfl⟩
   have hD0 : 0 ≤ D := by rw [hD]; positivity
-  refine ⟨C₀ * (E₀ + Real.sqrt A₃) * Real.exp (8 + 64 / 3) +
+  refine ⟨C₀ * (E₀ + Real.sqrt A₃) * Real.exp (13 / 3 + 8) +
     (5 + boxConst) * (2 * D * Real.exp (13 / 48) * atomMass), by positivity, ?_⟩
   intro c lam hc hlam t ht
   have hc0 : 0 ≤ c := by linarith
@@ -656,7 +657,7 @@ theorem exists_norm_readS_windowDefect_le :
     rw [show Real.exp (3 * c) = Real.exp (3 / 2 * c) * Real.exp (3 / 2 * c) by
       rw [← Real.exp_add]; ring_nf, Real.sqrt_mul_self (Real.exp_pos _).le]
   have hsz : C₀ * (E₀ + Real.sqrt CY) * Real.sqrt (marginCeiling c) ≤
-      C₀ * (E₀ + Real.sqrt A₃) * Real.exp (8 + 64 / 3) * Real.exp (-c) := by
+      C₀ * (E₀ + Real.sqrt A₃) * Real.exp (13 / 3 + 8) * Real.exp (-c) := by
     have h32 : 1 ≤ Real.exp (3 / 2 * c) := Real.one_le_exp (by positivity)
     have h1 : E₀ + Real.sqrt CY ≤ (E₀ + Real.sqrt A₃) * Real.exp (3 / 2 * c) := by
       rw [hsqrt, add_mul]
@@ -669,7 +670,7 @@ theorem exists_norm_readS_windowDefect_le :
         ≤ C₀ * ((E₀ + Real.sqrt A₃) * Real.exp (3 / 2 * c)) * Real.sqrt (marginCeiling c) := by
           gcongr
       _ = C₀ * (E₀ + Real.sqrt A₃) * (Real.exp (3 / 2 * c) * Real.sqrt (marginCeiling c)) := by ring
-      _ ≤ C₀ * (E₀ + Real.sqrt A₃) * (Real.exp (8 + 64 / 3) * Real.exp (-c)) := by gcongr
+      _ ≤ C₀ * (E₀ + Real.sqrt A₃) * (Real.exp (13 / 3 + 8) * Real.exp (-c)) := by gcongr
       _ = _ := by ring
   -- the two series
   obtain ⟨g, hg⟩ : ∃ g, g = crossCorr (𝔽 0) (gaussTest t) := ⟨_, rfl⟩
@@ -795,9 +796,9 @@ theorem exists_norm_readS_windowDefect_le :
     ring
   have hexp2 : Real.exp (-c) ≤ Real.exp (-(c / 4)) := Real.exp_le_exp.mpr (by linarith)
   have hEc := Real.exp_pos (-(c / 4))
-  have hK1 : 0 ≤ C₀ * (E₀ + Real.sqrt A₃) * Real.exp (8 + 64 / 3) := by positivity
-  have hb1 : C₀ * (E₀ + Real.sqrt A₃) * Real.exp (8 + 64 / 3) * Real.exp (-c) ≤
-      C₀ * (E₀ + Real.sqrt A₃) * Real.exp (8 + 64 / 3) * ((1 + c) * Real.exp (-(c / 4))) := by
+  have hK1 : 0 ≤ C₀ * (E₀ + Real.sqrt A₃) * Real.exp (13 / 3 + 8) := by positivity
+  have hb1 : C₀ * (E₀ + Real.sqrt A₃) * Real.exp (13 / 3 + 8) * Real.exp (-c) ≤
+      C₀ * (E₀ + Real.sqrt A₃) * Real.exp (13 / 3 + 8) * ((1 + c) * Real.exp (-(c / 4))) := by
     refine mul_le_mul_of_nonneg_left ?_ hK1
     have : Real.exp (-(c / 4)) ≤ (1 + c) * Real.exp (-(c / 4)) :=
       le_mul_of_one_le_left hEc.le (by linarith)
@@ -811,9 +812,9 @@ theorem exists_norm_readS_windowDefect_le :
       _ ≤ ((5 + boxConst) * (1 + c)) * (2 * D * Real.exp (13 / 48) * atomMass * Real.exp (-(c / 4))) :=
           mul_le_mul_of_nonneg_right hVc hq
       _ = _ := by ring
-  have e4 : (C₀ * (E₀ + Real.sqrt A₃) * Real.exp (8 + 64 / 3) +
+  have e4 : (C₀ * (E₀ + Real.sqrt A₃) * Real.exp (13 / 3 + 8) +
       (5 + boxConst) * (2 * D * Real.exp (13 / 48) * atomMass)) * (1 + c) * Real.exp (-(c / 4)) =
-      C₀ * (E₀ + Real.sqrt A₃) * Real.exp (8 + 64 / 3) * ((1 + c) * Real.exp (-(c / 4))) +
+      C₀ * (E₀ + Real.sqrt A₃) * Real.exp (13 / 3 + 8) * ((1 + c) * Real.exp (-(c / 4))) +
       (5 + boxConst) * (2 * D * Real.exp (13 / 48) * atomMass) * ((1 + c) * Real.exp (-(c / 4))) := by
     ring
   rw [e4]

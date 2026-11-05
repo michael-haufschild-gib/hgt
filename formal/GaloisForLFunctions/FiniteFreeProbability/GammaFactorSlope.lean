@@ -170,7 +170,7 @@ theorem norm_deriv_digamma_le {z : ℂ} (hz : 0 < z.re) (hz1 : 1 ≤ ‖z‖) :
       have h := hvert ((starRingEnd ℂ) z) (by simpa using hz) (by simpa using h0) (by simpa using ht)
       rwa [deriv_digamma_conj hz, RCLike.norm_conj] at h
   · -- the horizontal bound
-    push_neg at ht
+    push Not at ht
     have hσ : ‖z‖ / 2 ≤ z.re := by
       have h := Complex.norm_le_abs_re_add_abs_im z
       rw [abs_of_pos hz] at h
@@ -261,7 +261,7 @@ theorem norm_gammaSlope_sub_log_le {τ : ℂ} (hτ : 1 ≤ τ.re) :
     simp only [add_re, div_ofNat_re, one_re]
     linarith
   have hwnorm : 3 / 4 ≤ ‖w‖ := hwre.trans (Complex.re_le_norm w)
-  have hs := norm_digamma_sub_stirling_le (w := w) (by linarith)
+  have hs := DigammaBinet.norm_digamma_sub_stirling_le (w := w) (by linarith)
   have h1 : 1 / (120 * w.re ^ 4) ≤ 1 / 3 := by
     have : (3 / 4 : ℝ) ^ 4 ≤ w.re ^ 4 := pow_le_pow_left₀ (by norm_num) hwre 4
     rw [div_le_div_iff₀ (by positivity) (by norm_num)]
@@ -459,7 +459,7 @@ theorem norm_zeta_half_add_le {τ : ℂ} (hτ : 0 ≤ τ.re) (h4 : 4 ≤ ‖τ�
     calc _ ≤ 5 * Real.sqrt (1 / 2 + ‖τ‖ + 3) * |τ.im| := h
       _ ≤ 5 * ‖τ‖ * ‖τ‖ := by gcongr
       _ = 5 * ‖τ‖ ^ 2 := by ring
-  · push_neg at ht
+  · push Not at ht
     have hre : 3 ≤ τ.re := by
       have h := Complex.norm_le_abs_re_add_abs_im τ
       rw [abs_of_nonneg hτ] at h

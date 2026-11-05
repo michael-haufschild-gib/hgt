@@ -850,7 +850,7 @@ theorem kernelCoreMass_le_mass {L : ℝ} (hL : 2 ≤ L) :
   rw [heq]
   exact setIntegral_le_integral hi (Eventually.of_forall fun u => by positivity)
 
-/-- **The margin law.** No weight has a positive margin above `K exp(3c − (π/16) e^{2(c−2)})` on
+/-- **The margin law.** No weight has a positive margin above `K exp(3c − (π/6) e^{2(c−13/12)})` on
 `[−c, c]`, whatever the weights: slack from other weights is excluded at a doubly exponential rate. -/
 theorem exists_margin_ceiling :
     ∃ K : ℝ, 0 < K ∧ ∀ (c m : ℝ) (lam : ℕ → ℝ), 3 ≤ c → 0 ≤ m →

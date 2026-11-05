@@ -14,10 +14,10 @@ square-root precision, what each classical tool provably can and cannot produce,
 `ζ` and `Λ`. Its answers are mostly exact limits: for each classical tool, the theorem that says how far it reaches and
 the weight on which it stops.
 
-The central finding reorganizes the question. Parity is not the hard part: the only parity seen by any known input is
-the sign of one residue, and a corrected twin carries the same count as `Λ`. Precision-faithfulness is not the hard
-part either: pinning one linear functional achieves it. The hard part is the stabilizer, together with the proof that a
-statement implies the count.
+The central finding reorganizes the question. Parity is not the hard part: the twin test sees only the sign of one
+residue, and a corrected twin carries the same count as `Λ`. Precision-faithfulness is not the hard part either: pinning
+one linear functional achieves it. The hard part is the stabilizer, together with the proof that a statement implies
+the count.
 
 ## 2. Objects
 
@@ -52,7 +52,7 @@ statement implies the count.
 
 ## 4. Mechanisms
 
-**A. Conjugation.** A completely multiplicative sign conjugates a Type II form, `B_{ga}(α,β) = B_a(gα, gβ)`, and preserves `ℓ²`. A relabeling of the primes does the same. So norms know neither parity nor where the primes are.
+**A. Conjugation.** A completely multiplicative sign conjugates a Type II form, `B_{ga}(α,β) = B_a(gα, gβ)`, and preserves `ℓ²`. A relabeling of the primes does the same. So norms know neither parity nor where the primes are. The same holds on any test class stable under the sign, so a parity-breaking bilinear input has to name test vectors outside such a class. Classical parity breaks on thin sequences (Friedlander–Iwaniec, Heath-Brown) have this shape; none is known at square-root precision for `Λ` itself.
 
 **B. Cancellation of `λ` at Type I level.** `Σ λ(n)W(n) = Σ c_d λ(d) L(N/d)` is small for every Type I weight of level `N^{1−δ}`, while `Λ` has mass `N`. Type I weights cannot approximate `Λ` in `L¹`.
 
@@ -72,7 +72,7 @@ Each theorem is unconditional unless the statement is an equivalence with RH or 
 
 | # | Theorem | Lean | Module |
 |---|---|---|---|
-| 1 | Type II statements fail at `Λ` if they imply the count; constants invariant under twists and relabelings; prime-power locality | `not_bilinearStatement_vonMangoldt`, `bilinearConstants_twist`, `allBilinearConstants_comp`, `bilinearForm_eq_zero_of_coprime` | `BilinearFormsAreParityBlind` |
+| 1 | Type II statements fail at `Λ` if they imply the count; constants invariant under twists, stable test classes and relabelings; prime-power locality | `not_bilinearStatement_vonMangoldt`, `bilinearConstants_twist`, `classConstants_twist`, `allBilinearConstants_comp`, `bilinearForm_eq_zero_of_coprime` | `BilinearFormsAreParityBlind` |
 | 2 | Type I weights of level `N^{1−δ}` stay at `L¹` distance `(1−ε)N` from `Λ` | `typeI_parity_barrier`, `exists_abs_liouvilleCount_le` | `TypeIInformationIsParityBlind` |
 | 3 | Mollifier defect = sawtooth form | `mollifierDefect_eq`, `mollifierDefect_ge_band` | `TheMollifierDefectIsASawtoothForm` |
 | 4 | Linear mollifier = Chebyshev error; bounded or subpolynomial defect ⇒ RH; sharp mollifier does not close | `sawtoothDefect_linear`, `riemannHypothesis_of_linearDefect_bounded`, `riemannHypothesis_of_linearDefect_subpolynomial`, `exists_frequently_le_sharpDefect` | `TheLinearMollifierIsTheChebyshevError` |
@@ -97,9 +97,9 @@ Infrastructure modules: `TheMollifiedZetaFunctionIsBandLimited` (`exists_stripDe
 | **Q2. `D_win`, `D_zero` (B21)** | Open. Reduced to a rate | Excess `K/log T` at length `exp(T/log T)` implies `D_zero`, hence `D_win`. Excess is at least a constant at every polynomial length. `D_win` fails on the impure mimic, which keeps all upper bounds, so an input must be locally pure |
 | **Q3. Second moment at `T^θ`, `θ → ∞`** | Lower side settled in form, upper side open | Floor `1 + 1/(8+6θ)`; the law needs unbounded `θ` and local purity; for the linear mollifier a bounded defect is RH. The corpus has an upper bound at `θ = 21/50` (`eventually_offLineMoment_le_selberg_upper`). Classical prediction for the floor: `1 + 1/θ` |
 | **Q4. Self-improvement (B57)** | False as a class theorem | On Euler products with functional equation (shifted family) the class law is `Θ = 1`. Without functional equation one factor realizes any width. A proof must use the Ramanujan bound and the functional equation together, on which no mechanism exists |
-| **Q5. Parity-breaking bilinear input at square-root precision** | No such input exists among norm statements, and the question is restated | Type II norms, Type I weights and prime-polynomial mean values are parity-blind. Parity in every known input is pole parity. The real content is a provable statement with stabilizer inside `𝒬`, other than proximity |
+| **Q5. Parity-breaking bilinear input at square-root precision** | None exists among norm statements on sign-stable test classes; the question is restated | Type II norms, Type I weights and prime-polynomial mean values are parity-blind. The parity seen by PNT, the Mertens law and every error law is pole parity. The real content is a provable statement with stabilizer inside `𝒬`, other than proximity |
 
-**The restated question.** Find an unconditional statement `S`, not defined through `Λ`, with `S(Λ)` provable and `S(a) ∧ S(a+δ) ⇒ δ ∈ 𝒬`, together with a proof of `S ⇒ Count`. None is known. The formal obstruction list is sections 5.1, 5.2, 5.9, 5.10, 5.14; no theorem excludes its existence.
+**The restated question.** Find an unconditional statement `S`, not defined through `Λ`, with `S(Λ)` provable and `S(a) ∧ S(a+δ) ⇒ δ ∈ 𝒬`, together with a proof of `S ⇒ Count`. None is known. The formal obstructions are pillars 1, 2, 9, 10 and 14; no theorem excludes its existence.
 
 ## 7. Tools
 
@@ -123,14 +123,14 @@ Infrastructure modules: `TheMollifiedZetaFunctionIsBandLimited` (`exists_stripDe
 4. **Upper bounds cannot see purity.** Any argument with only upper bounds for `ζ` on lines also proves itself for the mimic. It cannot imply the count, `D_win` or Q3.
 5. **Length is not parity.** Lengthening raises precision by the law `η < ½ − 1/(2θ)` and leaves parity where it was: prime polynomials of `λΛ` and `−Λ` agree in mean square through `T²`.
 6. **A fixed exponent cannot close anything.** Q1 and Q2 by second moment need `θ → ∞`.
-7. **Bounded coefficients matter.** Floors use `|b_n| ≤ 1`. Finite windows with unbounded coefficients have no floor, so they answer a different question.
+7. **Bounded coefficients matter.** Floors use `|b_n| ≤ 1`. With unbounded coefficients finite windows have no floor (Müntz–Szász, classical), so they answer a different question.
 8. **Class theorems.** A self-improvement statement must exclude shifted products and impure factors explicitly. If its proof does not use the Ramanujan bound, it proves `Θ = 1`.
 9. **`∫` body in Lean.** `∫ t in a..b, f t - c` integrates `f − c`. Parenthesize integrals.
 
 ## 9. Open research topics
 
 1. The upper side of Q3 at `θ > 21/50`, and any statement at growing `θ`.
-2. The constant of the floor: `1/(8+6θ)` proved, `1/θ` predicted. The loss sits in the left floor, which uses only the zero count and not pair correlation.
+2. The constant of the floor: `1/(8+6θ)` proved, `1/θ` predicted. The left floor uses only the zero count; the two floors alone, optimized over `a`, stop near `1/(eθ)` by a paper estimate, so reaching `1/θ` needs pair correlation.
 3. Uniformity of the necessary-length law in `θ`, and the exact length required by the rate `K/log T`.
 4. A Blaschke form of the floor at several zeros (conjectured `1 − |I(0)|² − |I'(0)|²`).
 5. Which statements other than proximity have stabilizer inside `𝒬`. Classifying finite systems of linear laws would settle whether any such system can.

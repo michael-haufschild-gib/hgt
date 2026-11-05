@@ -13,6 +13,8 @@ For a weight `a` and finite boxes `U`, `V` of positive integers, the Type II for
 * **Exclusion** (`not_bilinearStatement_vonMangoldt`).  A property that sees a weight only through its admissible
   constants is parity-blind, so if it implies the count it fails at `Λ`: uniform Type II information
   cannot decide.
+* **Stable test classes** (`classConstants_twist`).  A restriction to test vectors stable under the sign is equally blind, so a parity-breaking
+  bilinear statement has to name a test class that is not stable under multiplicative signs.
 * **Relabeling invariance** (`allBilinearConstants_comp`).  On unrestricted boxes the constants are also invariant under
   every completely multiplicative bijection of the positive integers, that is, under every permutation of the primes.
   Type II norms do not know where the primes are.
@@ -119,8 +121,6 @@ theorem not_bilinearStatement_vonMangoldt {S : (ℕ → ℝ) → Prop} (hS : IsB
     (hcount : ∀ a, S a → Count a) : ¬ S vonMangoldtWeight :=
   not_of_twist_stable S hcount fun a h => (hS.iff_liouvilleTwist a).mpr h
 
-/-! ### Relabeling -/
-
 /-- The admissible constants of a Type II estimate restricted to a class of test vectors. -/
 def classConstants (𝒞 : Set ((ℕ → ℝ) × (ℕ → ℝ))) (U V : Finset ℕ) (a : ℕ → ℝ) : Set ℝ :=
   {C | ∀ p ∈ 𝒞, |bilinearForm U V a p.1 p.2| ≤ C * ellTwo U p.1 * ellTwo V p.2}
@@ -142,6 +142,8 @@ theorem classConstants_twist {𝒞 : Set ((ℕ → ℝ) × (ℕ → ℝ))} {U V 
     have h1 := h _ (h𝒞 p hp)
     rw [bilinearForm_sign_mul hg hU hV]
     simpa [ellTwo_sign_mul hg hU, ellTwo_sign_mul hg hV] using h1
+
+/-! ### Relabeling -/
 
 /-- Admissible constants on all boxes of positive integers. -/
 def allBilinearConstants (a : ℕ → ℝ) : Set ℝ :=
