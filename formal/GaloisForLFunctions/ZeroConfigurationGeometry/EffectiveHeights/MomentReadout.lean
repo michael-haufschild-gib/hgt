@@ -173,7 +173,7 @@ theorem discMoment_readout_rvm_explicit (J : ℕ) {θ lam A S M' K' : ℝ} (hθ 
         (div_le_div_of_nonneg_right (by linarith only [hβ0]) h2π0.le) hu0.le
     have hmul : θ / (2 * π) * u * (y - x) ≤ D * (y - x) :=
       mul_le_mul_of_nonneg_right hDθ (sub_nonneg.mpr hxy)
-    exact hc1.trans (add_le_add_right hmul C₀)
+    exact hc1.trans (add_le_add hmul (le_refl C₀))
   have hSbound : S ≤ S'' := by rw [hS'']; exact le_max_left _ _
   exact rvm_readout_core (lam := lam) (β := β) (M' := M') (K' := K') (ℓ := ℓ)
     (c := c) (K := K) (MK := MK) (ρ := ρ) (α := α) (q := q) (S'' := S'')

@@ -58,15 +58,20 @@ From scale three, that first-atom reserve also pays both ordered cross tails
 between atoms one and two; every nonnegative cutoff has a strict leading-pair tail.
 From scale three, four retained atoms leave normalized Gaussian entry error at most
 `1/100000`, hence quadratic error at most `1/20000`.
+After radial integration, their complete omitted tail is paid by half the cubic
+gamma reserve in the fixed first-atom mass matrix.
 -/
 import GaloisForLFunctions.ThetaCuspSections.FifthEvenLeadingPairReserve
 import GaloisForLFunctions.ThetaCuspSections.FifthEvenFirstAtomTailModel
 import GaloisForLFunctions.ThetaCuspSections.FifthEvenFirstAtomTail
 import GaloisForLFunctions.ThetaCuspSections.FifthEvenTailGammaBounds
+import GaloisForLFunctions.ThetaCuspSections.FifthEvenTailRateMoments
+import GaloisForLFunctions.ThetaCuspSections.FifthEvenTailMassFloor
 import GaloisForLFunctions.ThetaCuspSections.FifthEvenLeadingTailModel
 import GaloisForLFunctions.ThetaCuspSections.FifthEvenLeadingTail
 import GaloisForLFunctions.ThetaCuspSections.FifthEvenThreeAtomRemainder
 import GaloisForLFunctions.ThetaCuspSections.FifthEvenFourAtomRemainder
+import GaloisForLFunctions.ThetaCuspSections.FifthEvenIntegratedRemainder
 import GaloisForLFunctions.ThetaCuspSections.FifthEvenNativeRay
 import GaloisForLFunctions.ThetaCuspSections.FifthEvenEffectiveCrossRay
 import GaloisForLFunctions.ThetaCuspSections.FifthEvenCrossLoadPolynomialEnvelope

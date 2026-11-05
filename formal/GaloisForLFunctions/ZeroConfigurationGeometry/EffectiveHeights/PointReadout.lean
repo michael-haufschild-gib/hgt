@@ -146,7 +146,7 @@ theorem exists_subspacing_isolating_windows_explicit {θ lam A S M : ℝ} (hθ :
         (div_le_div_of_nonneg_right (by linarith only [hβ0]) h2π0.le) hu0.le
     have hmul : θ / (2 * π) * u * (y - x) ≤ D * (y - x) :=
       mul_le_mul_of_nonneg_right hDθ (sub_nonneg.mpr hxy)
-    exact hc1.trans (add_le_add_right hmul C₀)
+    exact hc1.trans (add_le_add hmul (le_refl C₀))
   obtain ⟨F, G, hFw, hGw, _, hP0_ne, hnear, htail⟩ :=
     exists_isolating_window_pair_of_bump hD0 hη0 hε0 hDa hb hbs hb1 hk1 hm (C0 := 1) hbm
       (fun w => by rw [one_mul]; exact hb0 w) hZ hZ' (R := T / 4) (by positivity) hc_ne hiso'

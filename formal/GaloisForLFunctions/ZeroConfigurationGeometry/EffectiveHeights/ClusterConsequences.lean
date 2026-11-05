@@ -100,9 +100,10 @@ theorem pair_centre_and_gap_rvm_explicit {θ lam A S M' K' : ℝ} (hθ : 0 ≤ �
     exact sum_norm_pair_cluster_le
   have h2πe : 2 ≤ 2 * π * Real.exp 1 := by
     have h1 := Real.one_le_exp (zero_le_one : (0 : ℝ) ≤ 1)
-    nlinarith [Real.pi_gt_three]
+    have hprod := mul_le_mul_of_nonneg_left h1 (by positivity : (0 : ℝ) ≤ 2 * π)
+    linarith only [hprod, Real.pi_gt_three]
   have hT2 : 2 ≤ T := h2πe.trans (hT₀.trans hT)
-  have hP0 : 0 ≤ P := by rw [hP]; exact Real.rpow_nonneg (by linarith) _
+  have hP0 : 0 ≤ P := by rw [hP]; exact Real.rpow_nonneg (by linarith only [hT2]) _
   have hE0 : 0 ≤ E := by rw [hE]; exact (Real.exp_pos _).le
   set ω := gammaOf z₀
   have hd : ∀ z, ‖z - z₀‖ ≤ r → ‖gammaOf z - ω‖ ≤ r := fun z hz => by
@@ -117,12 +118,12 @@ theorem pair_centre_and_gap_rvm_explicit {θ lam A S M' K' : ℝ} (hθ : 0 ≤ �
   have hr2 : (∑ z ∈ s, ‖multDiff Z Z' z‖) * r ^ (1 + 1) * P ≤ 4 * r ^ 2 * P :=
     mul_le_mul_of_nonneg_right (mul_le_mul_of_nonneg_right hN (by positivity)) hP0
   have hcentre : ‖(gammaOf p₁ + gammaOf p₂) - (gammaOf q₁ + gammaOf q₂)‖ ≤ 4 * r ^ 2 * P + E := by
-    linarith
+    linarith only [h1, hr2]
   refine ⟨hcentre, ?_⟩
   have hr3 : (∑ z ∈ s, ‖multDiff Z Z' z‖) * r ^ (2 + 1) * P ≤ 4 * r ^ 3 * P :=
     mul_le_mul_of_nonneg_right (mul_le_mul_of_nonneg_right hN (by positivity)) hP0
   have hμ₂ : ‖(gammaOf p₁ - ω) ^ 2 + (gammaOf p₂ - ω) ^ 2 - (gammaOf q₁ - ω) ^ 2 -
-      (gammaOf q₂ - ω) ^ 2‖ ≤ 4 * r ^ 3 * P + E := by linarith
+      (gammaOf q₂ - ω) ^ 2‖ ≤ 4 * r ^ 3 * P + E := by linarith only [h2, hr3]
   have hid : (gammaOf p₁ - gammaOf p₂) ^ 2 - (gammaOf q₁ - gammaOf q₂) ^ 2 =
       2 * ((gammaOf p₁ - ω) ^ 2 + (gammaOf p₂ - ω) ^ 2 - (gammaOf q₁ - ω) ^ 2 -
         (gammaOf q₂ - ω) ^ 2) - ((gammaOf p₁ + gammaOf p₂) - (gammaOf q₁ + gammaOf q₂)) *
@@ -134,25 +135,25 @@ theorem pair_centre_and_gap_rvm_explicit {θ lam A S M' K' : ℝ} (hθ : 0 ≤ �
       (gammaOf q₂ - ω)
     have e2 := norm_add_le ((gammaOf p₁ - ω) + (gammaOf p₂ - ω)) (gammaOf q₁ - ω)
     have e3 := norm_add_le (gammaOf p₁ - ω) (gammaOf p₂ - ω)
-    linarith [hd p₁ hp₁, hd p₂ hp₂, hd q₁ hq₁, hd q₂ hq₂]
+    linarith only [e1, e2, e3, hd p₁ hp₁, hd p₂ hp₂, hd q₁ hq₁, hd q₂ hq₂]
   have hr1 : r ≤ 1 / 2 := by
-    have hT1 : 1 ≤ T := by linarith
+    have hT1 : 1 ≤ T := by linarith only [hT2]
     have hexp : -(M' + slowExponent lam + 1) ≤ (-1 : ℝ) := by
-      have := mul_pos Real.pi_pos (show 0 < lam by linarith)
+      have := mul_pos Real.pi_pos (show 0 < lam by linarith only [hθ, hlam])
       unfold slowExponent
-      linarith
+      linarith only [hM', this, hθ, hlam]
     have h := hr.trans (Real.rpow_le_rpow_of_exponent_le hT1 hexp)
     rw [Real.rpow_neg_one] at h
     have h2 : T⁻¹ ≤ 1 / 2 := by
-      rw [inv_le_comm₀ (by linarith) (by norm_num), one_div, inv_inv]
+      rw [inv_le_comm₀ (by linarith only [hT2]) (by norm_num), one_div, inv_inv]
       exact hT2
-    linarith
+    exact h.trans h2
   rw [hid]
   refine (norm_sub_le _ _).trans ?_
   rw [norm_mul, norm_mul, Complex.norm_two]
   have hprod := mul_le_mul hcentre h4r (norm_nonneg _) (by positivity)
   have hrE : r * E ≤ 1 / 2 * E := mul_le_mul_of_nonneg_right hr1 hE0
-  linarith [hprod, hμ₂, hrE]
+  linarith only [hprod, hμ₂, hrE]
 
 
 /-- An isolated dipole collapses to twice the cubic-logarithmic tail at the explicit height. -/
@@ -178,10 +179,11 @@ theorem dipole_collapse_rvm_explicit {θ lam A S M' K' : ℝ} (hθ : 0 ≤ θ) (
   have hT₀ := cameraMomentHeight_ge 2 θ lam A S M' K'
   intro T hT Z Z' hZ hZ' hW hStail hcount p q hp hpre hr hc hiso
   have h2πe : 4 ≤ 2 * π * Real.exp 1 := by
-    have h1 : 2 ≤ Real.exp 1 := by linarith [Real.add_one_le_exp (1 : ℝ)]
-    nlinarith [Real.pi_gt_three]
+    have h1 : 2 ≤ Real.exp 1 := by linarith only [Real.add_one_le_exp (1 : ℝ)]
+    have hprod := mul_le_mul_of_nonneg_left h1 (by positivity : (0 : ℝ) ≤ 2 * π)
+    linarith only [hprod, Real.pi_gt_three]
   have hT4 : 4 ≤ T := h2πe.trans (hT₀.trans hT)
-  have hT0 : 0 < T := by linarith
+  have hT0 : 0 < T := by linarith only [hT4]
   set r := ‖q - p‖ with hrdef
   set s : Finset ℂ := {p, q} with hs
   have hsd : ∀ z ∈ s, ‖z - p‖ ≤ r := by
@@ -220,7 +222,7 @@ theorem dipole_collapse_rvm_explicit {θ lam A S M' K' : ℝ} (hθ : 0 ≤ θ) (
     have h1 : r * P ≤ T⁻¹ := hprod ▸ mul_le_mul_of_nonneg_right hr hP0
     have h2 : T⁻¹ ≤ 1 / 4 := by
       rw [inv_le_comm₀ hT0 (by norm_num), one_div, inv_inv]; exact hT4
-    linarith
+    exact h1.trans h2
   have hr0 : 0 ≤ r := norm_nonneg _
   have hNr : (∑ z ∈ s, ‖multDiff Z Z' z‖) * r ^ (1 + 1) * P ≤ 2 * r * (r * P) := by
     have h := mul_le_mul_of_nonneg_right hN (mul_nonneg (mul_nonneg hr0 hr0) hP0)
@@ -229,9 +231,9 @@ theorem dipole_collapse_rvm_explicit {θ lam A S M' K' : ℝ} (hθ : 0 ≤ θ) (
       _ ≤ 2 * (r * r * P) := h
       _ = 2 * r * (r * P) := by ring
   have h2 : 2 * r * (r * P) ≤ r / 2 := by
-    have := mul_le_mul_of_nonneg_left hrP (by linarith : (0 : ℝ) ≤ 2 * r)
-    linarith
-  linarith
+    have := mul_le_mul_of_nonneg_left hrP (by linarith only [hr0] : (0 : ℝ) ≤ 2 * r)
+    linarith only [this]
+  linarith only [hm, hNr, h2]
 
 
 end GaloisForLFunctions.ZeroConfigurationGeometry

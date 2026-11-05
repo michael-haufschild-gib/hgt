@@ -27,9 +27,7 @@ where `L(q)>0` for `q≥3`. The rate-five mass lies between
 identification are formalized.
 
 Remaining: pay the other five unequal pairs among the first four atoms
-and the infinite remainder. Its existing `1/20000` quadratic bound uses
-scale-dependent Gaussian coordinates; transferring it to a fixed tail
-quadratic form remains necessary.
+and assemble the complete tail.
 
 The current comparison replaces the leading first-atom gamma mass by `1/2`,
 releasing `3A/(8q)` as well as the cubic reserve. The reduced leading
@@ -52,8 +50,13 @@ reserve to each other pair, and half to the infinite remainder.
 For the infinite remainder, retain the stronger Cauchy bound
 `n!·20000 f₁² exp(−431q/25)/(3/20)^n` through integration. The fixed diagonal
 comparison `A > 10^(−11) diag(1000^(2i))` has an exact matrix certificate.
-The general rate-moment identities and scalar payment bound compile. Transfer
-to the literal integrated remainder remains under verification.
+Writing `c(q)=3/(32q²)−3/(128q³)`, the literal radial remainder beyond four
+atoms satisfies
+
+`|vᵀR_{>4}(q)v| ≤ E(q)c(q)vᵀAv/2`, for every `q≥3`.
+
+`FifthTailRemainder.errorForm_bound` and
+`errorMatrix_add_reserve_posSemidef` are formalized with standard axioms.
 
 A smaller allocation is excluded: at `q=3`, the lower-gamma `(1,3)` model
 paid by half the cubic reserve has negative fourth principal minor. This

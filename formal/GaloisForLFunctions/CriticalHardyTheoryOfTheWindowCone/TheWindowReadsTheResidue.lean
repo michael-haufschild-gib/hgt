@@ -73,15 +73,20 @@ theorem integral_norm_twoPointResonator_sq {n : ℕ} (hn : 2 ≤ n) {σ : ℝ} (
       if_pos (Finset.mem_Icc.mpr ⟨le_rfl, by omega⟩), if_pos (Finset.mem_Icc.mpr ⟨by omega, le_rfl⟩)]
     norm_num
   rw [hsum] at h1
-  have h2 := weilTest_zero_eq_integral_norm_sq (twoPointResonator n σ)
+  have h2 : EF.weilTest (twoPointResonator n σ) (twoPointResonator n σ) 0 =
+      ((∫ u, ‖twoPointResonator n σ u‖ ^ 2 : ℝ) : ℂ) := by
+    rw [_root_.RHTower.WeilSpectral.weilTest_apply, ← integral_complex_ofReal]
+    refine integral_congr_ae (Eventually.of_forall fun u => ?_)
+    simp only [sub_zero]
+    rw [Complex.mul_conj, Complex.normSq_eq_norm_sq]
   have h3 : EF.weilTest (twoPointResonator n σ) (twoPointResonator n σ) 0 =
       ((resonatorMass n : ℝ) : ℂ) * 2 := h1
   rw [h3] at h2
-  have h4 : (((∫ u, ‖twoPointResonator n σ u‖ ^ 2 : ℝ)) : ℂ) = ((2 * resonatorMass n : ℝ) : ℂ) := by
+  have h4 : ((∫ u, ‖twoPointResonator n σ u‖ ^ 2 : ℝ) : ℂ) = ((2 * resonatorMass n : ℝ) : ℂ) := by
     rw [← h2]
     push_cast
     ring
-  exact_mod_cast h4
+  exact Complex.ofReal_injective h4
 
 /-- **The box on the cone of any datum.** Resonators have no pole term, so the pole weight does not enter,
 and the conductor adds to the bound. -/
@@ -180,13 +185,13 @@ theorem abs_sub_vonMangoldt_div_sqrt_le_of_mem_datumCone {β s c L : ℝ} {lam :
     linarith
   have hs : 1 ≤ Real.sqrt n := Real.one_le_sqrt.mpr hn1
   have hs0 : 0 < Real.sqrt n := by linarith
-  have h₊ := mul_div_sqrt_le_of_mem_datumCone h hn hlev (σ := 1) (Or.inl rfl)
-  have h₋ := mul_div_sqrt_le_of_mem_datumCone h hn hlev (σ := -1) (Or.inr rfl)
+  have hplus := mul_div_sqrt_le_of_mem_datumCone h hn hlev (σ := 1) (Or.inl rfl)
+  have hminus := mul_div_sqrt_le_of_mem_datumCone h hn hlev (σ := -1) (Or.inr rfl)
   have hΛ0 : (0 : ℝ) ≤ ArithmeticFunction.vonMangoldt n := ArithmeticFunction.vonMangoldt_nonneg
   have hΛ1 : (ArithmeticFunction.vonMangoldt n : ℝ) ≤ Real.log n :=
     ArithmeticFunction.vonMangoldt_le_log
   have hΛ2 : (ArithmeticFunction.vonMangoldt n : ℝ) / Real.sqrt n ≤ Real.log n :=
-    div_le_of_le_mul₀ hs0.le hlog0 (hΛ1.trans (le_mul_of_one_le_left hlog0 hs))
+    div_le_of_le_mul₀ hs0.le hlog0 (hΛ1.trans (le_mul_of_one_le_right hlog0 hs))
   have hΛ3 : 0 ≤ (ArithmeticFunction.vonMangoldt n : ℝ) / Real.sqrt n := by positivity
   have e : |lam n - (ArithmeticFunction.vonMangoldt n : ℝ)| / Real.sqrt n =
       |lam n / Real.sqrt n - (ArithmeticFunction.vonMangoldt n : ℝ) / Real.sqrt n| := by
@@ -307,8 +312,8 @@ theorem two_mul_moments_eq (j : ℕ) :
 theorem abs_nullPole_sub_le (j : ℕ) (L : ℝ) :
     |nullPole j L - (if j = 0 then (1 / 2 : ℝ) else 0)| ≤
       4 * (decayConst * gammaScale j * absMass) ^ 2 * doubleExpTail (L - 1) := by
-  have hc₋ : Continuous fun u : ℝ => Real.exp (-u / 2) := by fun_prop
-  have hc₊ : Continuous fun u : ℝ => Real.exp (u / 2) := by fun_prop
+  have hcm : Continuous fun u : ℝ => Real.exp (-u / 2) := by fun_prop
+  have hcp : Continuous fun u : ℝ => Real.exp (u / 2) := by fun_prop
   rw [← two_mul_moments_eq j]
   unfold nullPole
   obtain ⟨a', ha'⟩ : ∃ a', a' = ∫ u, truncTest (𝔽 j) L u * Real.exp (-u / 2) := ⟨_, rfl⟩
@@ -323,16 +328,16 @@ theorem abs_nullPole_sub_le (j : ℕ) (L : ℝ) :
   have hτ0 : 0 ≤ τ := by rw [hτ]; exact (doubleExpTail_pos _).le
   have h1 : |a' - a| ≤ A * τ := by
     rw [ha', ha, hA, hτ]
-    exact abs_integral_truncTest_mul_sub_le hc₋ abs_exp_neg_half_le j L
+    exact abs_integral_truncTest_mul_sub_le hcm abs_exp_neg_half_le j L
   have h2 : |b' - b| ≤ A * τ := by
     rw [hb', hb, hA, hτ]
-    exact abs_integral_truncTest_mul_sub_le hc₊ abs_exp_half_le j L
+    exact abs_integral_truncTest_mul_sub_le hcp abs_exp_half_le j L
   have h3 : |a| ≤ A := by
     rw [ha, hA]
-    exact (abs_integral_test_mul_le hc₋ abs_exp_neg_half_le j).2
+    exact (abs_integral_test_mul_le hcm abs_exp_neg_half_le j).2
   have h4 : |b'| ≤ A := by
     rw [hb', hA]
-    exact (abs_integral_truncTest_mul_le hc₊ abs_exp_half_le j L).2
+    exact (abs_integral_truncTest_mul_le hcp abs_exp_half_le j L).2
   rw [← ha', ← hb', ← ha, ← hb, ← hA, ← hτ]
   have e : 2 * (a' * b') - 2 * (a * b) = 2 * ((a' - a) * b') + 2 * (a * (b' - b)) := by ring
   rw [e]
@@ -344,10 +349,10 @@ theorem abs_nullPole_sub_le (j : ℕ) (L : ℝ) :
 
 theorem abs_nullPole_le (j : ℕ) (L : ℝ) :
     |nullPole j L| ≤ 2 * (decayConst * gammaScale j * absMass) ^ 2 := by
-  have hc₋ : Continuous fun u : ℝ => Real.exp (-u / 2) := by fun_prop
-  have hc₊ : Continuous fun u : ℝ => Real.exp (u / 2) := by fun_prop
-  have h1 := (abs_integral_truncTest_mul_le hc₋ abs_exp_neg_half_le j L).2
-  have h2 := (abs_integral_truncTest_mul_le hc₊ abs_exp_half_le j L).2
+  have hcm : Continuous fun u : ℝ => Real.exp (-u / 2) := by fun_prop
+  have hcp : Continuous fun u : ℝ => Real.exp (u / 2) := by fun_prop
+  have h1 := (abs_integral_truncTest_mul_le hcm abs_exp_neg_half_le j L).2
+  have h2 := (abs_integral_truncTest_mul_le hcp abs_exp_half_le j L).2
   have hA : 0 ≤ decayConst * gammaScale j * absMass :=
     mul_nonneg (mul_nonneg decayConst_nonneg (gammaScale_nonneg j)) absMass_nonneg
   unfold nullPole
@@ -493,7 +498,8 @@ theorem exists_datum_constants :
     rw [datumEnergy_nullTest] at h
     have := mul_nonneg (hw.nonneg j) h
     nlinarith
-  have hsum := tsum_nonneg hterm
+  have hsum : 0 ≤ ∑' j, ((w j * nullEnergy lam j L + (β - 1) * (w j * nullPole j L)) +
+      s * (w j * nullMass j L)) := tsum_nonneg hterm
   rw [(hsE.add (hsP.mul_left _)).tsum_add (hsM.mul_left _), hsE.tsum_add (hsP.mul_left _),
     tsum_mul_left, tsum_mul_left] at hsum
   -- the pole sum

@@ -49,7 +49,7 @@ theorem pair_hankel_rvm_explicit {θ lam A S M' K' : ℝ} (hθ : 0 ≤ θ) (hlam
               (2 * r ^ 3 * T ^ (M' + slowExponent lam) +
                 Real.exp (-(K' * Real.log (T / (2 * π)) ^ 3))) := by
   classical
-  have hread := discMoment_readout_rvm_explicit 2 hθ hlam hA hS hM' (by linarith : 0 ≤ K')
+  have hread := discMoment_readout_rvm_explicit 2 hθ hlam hA hS hM' (by linarith only [hK'] : 0 ≤ K')
   have hT₀ := cameraMomentHeight_ge 2 θ lam A S M' K'
   intro T hT Z hZ hStail hcount z₀ hz₀ hz₀re r hr0 hr hiso p₁ p₂ hp₁ hp₂ hc
   set s : Finset ℂ := {p₁, p₂} with hs
@@ -77,10 +77,11 @@ theorem pair_hankel_rvm_explicit {θ lam A S M' K' : ℝ} (hθ : 0 ≤ θ) (hlam
     exact sum_norm_pair_points_le
   -- the scales
   have h2πe : 4 ≤ 2 * π * Real.exp 1 := by
-    have h1 : 2 ≤ Real.exp 1 := by linarith [Real.add_one_le_exp (1 : ℝ)]
-    nlinarith [Real.pi_gt_three]
+    have h1 : 2 ≤ Real.exp 1 := by linarith only [Real.add_one_le_exp (1 : ℝ)]
+    have hprod := mul_le_mul_of_nonneg_left h1 (by positivity : (0 : ℝ) ≤ 2 * π)
+    linarith only [hprod, Real.pi_gt_three]
   have hT4 : 4 ≤ T := h2πe.trans (hT₀.trans hT)
-  have hT0 : 0 < T := by linarith
+  have hT0 : 0 < T := by linarith only [hT4]
   have hP0 : 0 ≤ P := by rw [hP]; exact Real.rpow_nonneg hT0.le _
   have hrP : r * P ≤ 1 / 4 := by
     have hprod : T ^ (-(M' + slowExponent lam + 1)) * P = T⁻¹ := by
@@ -89,15 +90,15 @@ theorem pair_hankel_rvm_explicit {θ lam A S M' K' : ℝ} (hθ : 0 ≤ θ) (hlam
     have h1 : r * P ≤ T⁻¹ := hprod ▸ mul_le_mul_of_nonneg_right hr hP0
     have h2 : T⁻¹ ≤ 1 / 4 := by
       rw [inv_le_comm₀ hT0 (by norm_num), one_div, inv_inv]; exact hT4
-    linarith
+    exact h1.trans h2
   have hu1 : 1 ≤ Real.log (T / (2 * π)) := by
     rw [Real.le_log_iff_exp_le (by positivity), le_div_iff₀ (by positivity)]
-    linarith [hT₀, hT]
+    linarith only [hT₀, hT]
   have hE2 : E ≤ 1 / 2 := by
     rw [hE]
     refine exp_neg_le_half ?_
     have : 1 ≤ Real.log (T / (2 * π)) ^ 3 := one_le_pow₀ hu1
-    nlinarith
+    nlinarith only [this, hK']
   have hE0 : 0 ≤ E := by rw [hE]; exact (Real.exp_pos _).le
   -- the readout at orders `0, 1, 2`
   set ω := gammaOf z₀
@@ -106,7 +107,7 @@ theorem pair_hankel_rvm_explicit {θ lam A S M' K' : ℝ} (hθ : 0 ≤ θ) (hlam
   have hδ : ∀ j : ℕ, (∑ z ∈ s, ‖multDiff Z emptyZeroConfig z‖) * r ^ (j + 1) * P + E ≤
       2 * r ^ (j + 1) * P + E := fun j => by
     have := mul_le_mul_of_nonneg_right hN (mul_nonneg (pow_nonneg hr0 (j + 1)) hP0)
-    linarith
+    linarith only [this]
   obtain ⟨hF0, h0⟩ := hj 0 (by norm_num)
   obtain ⟨hF1, h1⟩ := hj 1 (by norm_num)
   obtain ⟨hF2, h2⟩ := hj 2 (by norm_num)
@@ -122,12 +123,12 @@ theorem pair_hankel_rvm_explicit {θ lam A S M' K' : ℝ} (hθ : 0 ≤ θ) (hlam
   rw [zero_add] at h0'
   rw [show (1 + 1 : ℕ) = 2 by rfl] at h1'
   rw [show (2 + 1 : ℕ) = 3 by rfl] at h2'
-  have hδ₀1 : 2 * r ^ 1 * P + E ≤ 1 := by rw [pow_one]; linarith
+  have hδ₀1 : 2 * r ^ 1 * P + E ≤ 1 := by rw [pow_one]; linarith only [hrP, hE2]
   have hH := norm_hankel_sub_le (a₁ := gammaOf p₁ - ω) (a₂ := gammaOf p₂ - ω)
     (ha p₁ hp₁) (ha p₂ hp₂) hδ₀1 h0' h1' h2'
   -- the normalization cancels
   have hm0 : ∀ x : ℂ, ‖x - 2‖ ≤ 1 → x ≠ 0 := fun x hx h => by
-    rw [h, zero_sub, norm_neg, Complex.norm_two] at hx; linarith
+    rw [h, zero_sub, norm_neg, Complex.norm_two] at hx; linarith only [hx]
   have hW0 : Z.W (localWindow z₀.im (annihilatePow (ω - z₀.im) 0 F₁))
       (localWindow z₀.im G₁) ≠ 0 := by
     intro h
@@ -164,7 +165,7 @@ theorem cluster_discriminant_rvm_explicit (k : ℕ) (hk : 1 ≤ k) {θ lam A S M
               (Real.exp (-(K' * Real.log (T / (2 * π)) ^ 3))) := by
   classical
   have hread := discMoment_readout_rvm_explicit (2 * k - 2) hθ hlam hA hS hM'
-    (by linarith : 0 ≤ K')
+    (by linarith only [hK'] : 0 ≤ K')
   have hT₀ := cameraMomentHeight_ge (2 * k - 2) θ lam A S M' K'
   intro T hT Z hZ hStail hcount z₀ hz₀ hz₀re r hr0 hr hiso p hp hc
   set s : Finset ℂ := Finset.univ.image p with hs
@@ -192,10 +193,11 @@ theorem cluster_discriminant_rvm_explicit (k : ℕ) (hk : 1 ≤ k) {θ lam A S M
   set a : Fin k → ℂ := fun i => gammaOf (p i) - ω with ha
   -- the scales
   have h2πe : 4 ≤ 2 * π * Real.exp 1 := by
-    have h1 : 2 ≤ Real.exp 1 := by linarith [Real.add_one_le_exp (1 : ℝ)]
-    nlinarith [Real.pi_gt_three]
+    have h1 : 2 ≤ Real.exp 1 := by linarith only [Real.add_one_le_exp (1 : ℝ)]
+    have hprod := mul_le_mul_of_nonneg_left h1 (by positivity : (0 : ℝ) ≤ 2 * π)
+    linarith only [hprod, Real.pi_gt_three]
   have hT4 : 4 ≤ T := h2πe.trans (hT₀.trans hT)
-  have hT0 : 0 < T := by linarith
+  have hT0 : 0 < T := by linarith only [hT4]
   have hP0 : 0 ≤ P := by rw [hP]; exact Real.rpow_nonneg hT0.le _
   have hrP : r * P ≤ 1 / 4 := by
     have hprod : T ^ (-(M' + slowExponent lam + 1)) * P = T⁻¹ := by
@@ -204,24 +206,24 @@ theorem cluster_discriminant_rvm_explicit (k : ℕ) (hk : 1 ≤ k) {θ lam A S M
     have h1 : r * P ≤ T⁻¹ := hprod ▸ mul_le_mul_of_nonneg_right hr hP0
     have h2 : T⁻¹ ≤ 1 / 4 := by
       rw [inv_le_comm₀ hT0 (by norm_num), one_div, inv_inv]; exact hT4
-    linarith
+    exact h1.trans h2
   have hr1 : r ≤ 1 := by
-    have hT1 : 1 ≤ T := by linarith
+    have hT1 : 1 ≤ T := by linarith only [hT4]
     have hx : 1 ≤ M' + slowExponent lam := by
-      unfold slowExponent; have := mul_pos Real.pi_pos (show 0 < lam by linarith); linarith
-    have h := hr.trans (Real.rpow_le_rpow_of_exponent_le hT1 (by linarith : -(M' + slowExponent lam
+      unfold slowExponent; have := mul_pos Real.pi_pos (show 0 < lam by linarith only [hθ, hlam]); linarith only [this, hM', hθ, hlam]
+    have h := hr.trans (Real.rpow_le_rpow_of_exponent_le hT1 (by linarith only [hx] : -(M' + slowExponent lam
       + 1) ≤ (-1 : ℝ)))
     rw [Real.rpow_neg_one] at h
     exact h.trans (inv_le_one_of_one_le₀ hT1)
   have hu1 : 1 ≤ Real.log (T / (2 * π)) := by
     rw [Real.le_log_iff_exp_le (by positivity), le_div_iff₀ (by positivity)]
-    linarith [hT₀, hT]
+    linarith only [hT₀, hT]
   have hE4 : E ≤ 1 / 4 := by
     rw [hE, Real.exp_neg, ← one_div, div_le_div_iff₀ (Real.exp_pos _) (by norm_num)]
     have h3 : 3 ≤ K' * Real.log (T / (2 * π)) ^ 3 := by
       have : 1 ≤ Real.log (T / (2 * π)) ^ 3 := one_le_pow₀ hu1
-      nlinarith
-    linarith [Real.add_one_le_exp (K' * Real.log (T / (2 * π)) ^ 3)]
+      nlinarith only [this, hK']
+    linarith only [h3, Real.add_one_le_exp (K' * Real.log (T / (2 * π)) ^ 3)]
   have hE0 : 0 ≤ E := by rw [hE]; exact (Real.exp_pos _).le
   have hk0 : (1 : ℝ) ≤ k := by exact_mod_cast hk
   -- the moments of the cluster
@@ -237,12 +239,12 @@ theorem cluster_discriminant_rvm_explicit (k : ℕ) (hk : 1 ≤ k) {θ lam A S M
     rw [W_emptyZeroConfig, sub_zero, hsum] at hb
     refine hb.trans ?_
     have := mul_le_mul_of_nonneg_right hN (mul_nonneg (pow_nonneg hr0.le (l + 1)) hP0)
-    linarith
+    linarith only [this]
   -- assembling
   have hδ₀k : k * r * P + E ≤ k / 2 := by
-    have := mul_le_mul_of_nonneg_left hrP (by linarith : (0 : ℝ) ≤ k)
+    have := mul_le_mul_of_nonneg_left hrP (by linarith only [hk0] : (0 : ℝ) ≤ k)
     have e : (k : ℝ) * r * P = k * (r * P) := by ring
-    linarith
+    linarith only [this, e, hE4, hk0]
   have hal : ∀ i, ‖a i‖ ≤ r := fun i => by
     rw [ha]; simp only; rw [norm_gammaOf_sub]; exact hp i
   have hmain := cluster_disc_of_moments hk hr0 hr1 hP0 hE0 hδ₀k hal hread'
@@ -308,16 +310,17 @@ theorem cluster_location_rvm_explicit (k : ℕ) (hk : 1 ≤ k) {θ lam A S M' K'
   set Φ := pointImage (localWindow z₀.im F₁) (localWindow z₀.im G₁) z₀ with hΦdef
   set a : Fin k → ℂ := fun i => gammaOf (p i) - ω with ha
   have h2πe : 4 ≤ 2 * π * Real.exp 1 := by
-    have h1 : 2 ≤ Real.exp 1 := by linarith [Real.add_one_le_exp (1 : ℝ)]
-    nlinarith [Real.pi_gt_three]
+    have h1 : 2 ≤ Real.exp 1 := by linarith only [Real.add_one_le_exp (1 : ℝ)]
+    have hprod := mul_le_mul_of_nonneg_left h1 (by positivity : (0 : ℝ) ≤ 2 * π)
+    linarith only [hprod, Real.pi_gt_three]
   have hT4 : 4 ≤ T := h2πe.trans (hT₀.trans hT)
-  have hT0 : 0 < T := by linarith
+  have hT0 : 0 < T := by linarith only [hT4]
   have hP0 : 0 ≤ P := by rw [hP]; exact Real.rpow_nonneg hT0.le _
   have hE0 : 0 ≤ E := by rw [hE]; exact (Real.exp_pos _).le
   have hr1 : r ≤ 1 := by
-    have hT1 : 1 ≤ T := by linarith
+    have hT1 : 1 ≤ T := by linarith only [hT4]
     have h := hr.trans (Real.rpow_le_rpow_of_exponent_le hT1 (by
-      unfold slowExponent; have := mul_pos Real.pi_pos (show 0 < lam by linarith); linarith :
+      unfold slowExponent; have := mul_pos Real.pi_pos (show 0 < lam by linarith only [hθ, hlam]); linarith only [this, hM', hθ, hlam] :
         -(M' + slowExponent lam + 1) ≤ (-1 : ℝ)))
     rw [Real.rpow_neg_one] at h
     exact h.trans (inv_le_one_of_one_le₀ hT1)
@@ -335,7 +338,7 @@ theorem cluster_location_rvm_explicit (k : ℕ) (hk : 1 ≤ k) {θ lam A S M' K'
     rw [W_emptyZeroConfig, sub_zero, hsum] at hb
     refine hb.trans ?_
     have := mul_le_mul_of_nonneg_right hN (mul_nonneg (pow_nonneg hr0.le (l + 1)) hP0)
-    linarith
+    linarith only [this]
   have hal : ∀ i, ‖a i‖ ≤ r := fun i => by
     rw [ha]; simp only; rw [norm_gammaOf_sub]; exact hp i
   have hdisc : (∏ i : Fin k, ∏ j ∈ Finset.Ioi i, (a j - a i)) =
