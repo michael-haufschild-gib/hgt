@@ -25,4 +25,11 @@ infinite remainder in the integrated matrix. The existing `1/20000`
 quadratic remainder bound uses scale-dependent Gaussian coordinates;
 its passage to a fixed tail quadratic form must also be proved.
 
+The leading unequal pair has rate-five moments. Its normalized moments obey
+`J₀=z₅`, `J_(n+1)=q^(n+1)/5+(2n+5)Jₙ/10`. A candidate comparison retains
+the first-atom lower mass `1/2+3/(8q)` and encloses the unequal-pair mass
+between `1/5+3/(50q)+3/(500q²)−3/(5000q³)` and
+`1/5+3/(50q)+3/(500q²)`. These bounds and positivity of the resulting
+comparison matrices remain to be proved.
+
 Existing exact square-plus-flux identities alone do not establish the sign.

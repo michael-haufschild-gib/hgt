@@ -127,5 +127,7 @@ the continued boundary modulus is `|κ(iy)|²=Ψ(y)`, including zero.
 Multiplication by the actual factor `κ(2πiξ)` preserves positive-half-line
 support whenever its result is in L². Bounded holomorphic regularizers
 `κ(z)/(1+εz)` and strong L² convergence prove this on the full graph domain.
-The half-line Green form identity remains to be proved; complementary
-Stieltjes inversion is not needed for this support argument.
+The range of causal convolution `W` is exactly the finite logarithmic energy
+domain. Its form pulls back to the ordinary L² inner product. Thus `WW*`
+is the unique finite-energy solution operator for every half-line L² forcing.
+The explicit overlap kernel and actual Weil boundary traces remain to be proved.

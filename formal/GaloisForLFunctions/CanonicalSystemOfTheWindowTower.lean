@@ -36,6 +36,7 @@ import GaloisForLFunctions.CanonicalSystemOfTheWindowTower.TheLogarithmicRenewal
 import GaloisForLFunctions.CanonicalSystemOfTheWindowTower.TheLogarithmicFactorPreservesHalfLineSupport
 
 import GaloisForLFunctions.CanonicalSystemOfTheWindowTower.TheLogarithmicCausalKernelHasItsFourierMultiplier
+import GaloisForLFunctions.CanonicalSystemOfTheWindowTower.TheHalfLineLogarithmicFormHasItsActualInverse
 
 /-!
 # The Canonical System of the Window Tower

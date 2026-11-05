@@ -100,7 +100,11 @@ Support preservation on the full actual multiplier graph domain is
 [formalized](../3-formalized/the-logarithmic-factor-preserves-half-line-support.md).
 The literal density has [Fourier transform](../3-formalized/the-logarithmic-causal-kernel-has-its-fourier-multiplier.md)
 `v̂(ξ)=κ(2πiξ)⁻¹` at every frequency, including zero.
-Identification of its half-line operator range with the form domain remains open.
+Its half-line range is exactly the finite logarithmic energy domain, with
+`q(Wu,Wv)=⟨u,v⟩`. Consequently `WW*` is the unique finite-energy solution
+operator for every half-line L² forcing; this is
+[formalized](../3-formalized/the-half-line-logarithmic-form-has-its-actual-inverse.md).
+The explicit overlap-kernel representation remains to be checked.
 
 ## Boundary readout
 
@@ -131,8 +135,9 @@ Set `x=exp(-u)` and choose `s=exp(u-√u)` for the upper bound,
 the upper exponential tends to one and the discarded tail to zero.
 Squeezing gives `V(x)√log(1/x)→1`. Both bounds and the exact normalization
 are [formalized](../3-formalized/the-logarithmic-renewal-mass-has-its-exact-normalization.md).
-Missing proofs for the Green kernel: causal inverse and exact form identification. Complementary Stieltjes inversion is an
-independent stronger formula.
+The causal inverse and exact form identification are formalized. The overlap
+kernel and actual boundary readout remain. Complementary Stieltjes inversion
+is an independent stronger formula.
 
 For exterior forcing, `lintegral_carleman_sq_le` proves the sharp half-line
 Carleman bound. `CCMRestrictedWeilGammaBoundaryPairing` already constructs
