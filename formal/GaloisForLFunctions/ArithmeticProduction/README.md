@@ -1,6 +1,6 @@
 # Arithmetic Production at Square-Root Precision (APR)
 
-Namespace `GaloisForLFunctions.ArithmeticProduction`; umbrella `ArithmeticProduction.lean`; 21 modules.
+Namespace `GaloisForLFunctions.ArithmeticProduction`; umbrella `ArithmeticProduction.lean`; 22 modules.
 
 ## 1. Motivation
 
@@ -15,9 +15,10 @@ square-root precision, what each classical tool provably can and cannot produce,
 the weight on which it stops.
 
 The central finding reorganizes the question. Parity is not the hard part: the twin test sees only the sign of one
-residue, and a corrected twin carries the same count as `Λ`. Precision-faithfulness is not the hard part either: pinning
-one linear functional achieves it. The hard part is the stabilizer, together with the proof that a statement implies
-the count.
+residue, and a corrected twin carries the same count as `Λ`. Away from the pole, parity is visible to long integer
+polynomials, as the difference between a zero of `ζ` and a pole of `1/ζ`. Precision-faithfulness is not the hard part
+either: pinning one linear functional achieves it. The hard part is the stabilizer, together with the proof that a
+statement implies the count.
 
 ## 2. Objects
 
@@ -69,6 +70,8 @@ the count.
 
 **G. Concavity against purity.** The log-mean of an impure factor is exactly `log(c/√p)` and the log-means of `ζ` and `M` are at least `−o(1)`. Concavity then gives a second-moment floor of `c²/p`, while upper bounds change only by a constant.
 
+**H. Holomorphy at a zero.** A bound for `∫_T^{2T}|P_{a,N}|²` uniform in `N` passes by partial summation to every line `Re s = ½ + x`, becomes pointwise of size `√(B/x)` by the Sobolev inequality, and travels from `Re s > 1` to `Re s > ½` by three circles. So `|A| ≤ |E| √(10B + 26B/x)` whenever `E Σ a(n) n^{−s} = A`. With `E = (s−1)ζ` this forbids a zero of `ζ` in the window unless `A` vanishes there. It holds for `a = 1` after the pole term is removed and fails for `a = λ`, `μ`.
+
 ## 5. Foundational pillars
 
 Each theorem is unconditional unless the statement is an equivalence with RH or an implication from a named law.
@@ -82,8 +85,8 @@ Each theorem is unconditional unless the statement is an equivalence with RH or 
 | 5 | Every off-line zero pins a floor, at any length: `(2β−1)|1−ρ|²/|ρ|⁴` | `mollifierDefect_floor` | `EveryOffLineZeroPinsAFloor` |
 | 5′ | **Gram floor**: defect `≥ v*G⁻¹v`, `v(ρ) = (1−ρ)/ρ²`, `G` the Szegő kernel on any finite set of off-line zeros; floors add up to interference | `mollifierDefect_gram_floor`, `mollifierDefect_gram_floor_singleton`, `mollifierDefect_floor_sum` | `FiniteSetsOfZerosPinAGramFloor` |
 | 6 | Cosh interpolation of the profile | `cosh_interpolation` | `TheSecondMomentIsALaplaceTransform` |
-| 7 | **Necessary length**: `∫_T^{2T}|ζM|² ≥ (1 + 1/(8+6θ))T` at `N ≤ T^θ`; second moment `→ 1` forces every exponent | `necessary_length`, `length_exponent_tendsto_of_second_moment_tendsto_one` | `TheNecessaryLengthOfAMollifier` |
-| 8 | Second moment `→ 1` ⇒ `100%` clustering; excess `K/log T` ⇒ `D_zero`; both false at every fixed exponent | `logMean_tendsto_zero_of_mollifiedSecondMomentLaw`, `criticalClustering_of_mollifiedSecondMomentLaw`, `logFreeNearLineZeroDensity_of_secondMomentRate`, `not_secondMomentLaw_of_bounded_exponent`, `not_secondMomentRate_of_bounded_exponent` | `LongMollifiersImplyCriticalClustering` |
+| 7 | **Necessary length**: `∫_T^{2T}|ζM|² ≥ (1 + 1/(8+6θ))T` at `N ≤ T^θ`, uniformly for `θ ≤ (log T)/24`; an excess `κ` forces `log N ≥ min(log²T/24, log T/(14κ))`; second moment `→ 1` forces every exponent | `necessary_length_uniform`, `necessary_length`, `log_length_ge_of_excess`, `length_exponent_tendsto_of_second_moment_tendsto_one` | `TheNecessaryLengthOfAMollifier` |
+| 8 | Second moment `→ 1` ⇒ `100%` clustering; excess `K/log T` ⇒ `D_zero`; both false at every fixed exponent; the excess `K/log T` needs `log N ≥ min(1/24, 1/(14K)) log²T` | `logMean_tendsto_zero_of_mollifiedSecondMomentLaw`, `criticalClustering_of_mollifiedSecondMomentLaw`, `logFreeNearLineZeroDensity_of_secondMomentRate`, `not_secondMomentLaw_of_bounded_exponent`, `not_secondMomentRate_of_bounded_exponent`, `log_length_ge_of_secondMomentRate` | `LongMollifiersImplyCriticalClustering` |
 | 9 | **Length–precision law**: the second moment at `T^θ` sees `εn^{−η}` iff `η < ½ − 1/(2θ)`; below the window only moduli are seen | `length_precision_law`, `below_the_window_every_power_is_blind`, `abs_integral_twist_sub_le` | `TheLengthPrecisionLaw` |
 | 9′ | Selberg integral dictionary: `∫_{−T}^{T}|P_a|² ≤ (5π/2)T² S_a(N, 1/T)`, and the resonance in short intervals | `integral_norm_sq_linePoly_le_selbergIntegral`, `le_selbergIntegral_resonant` | `TheSelbergIntegralDictionary` |
 | 10 | **Corrected twin**: `λΛ + 2` shares every error law, the count and PNT with `Λ`; prime polynomials of `λΛ`, `−Λ` agree in mean square through `T²` | `errorLaw_poleCorrectedTwin_iff`, `count_poleCorrectedTwin_iff`, `primeNumberLaw_poleCorrectedTwin`, `twist_polynomial_second_moment_le` | `TheLiouvilleTwinOnlySeesThePole` |
@@ -92,20 +95,21 @@ Each theorem is unconditional unless the statement is an equivalence with RH or 
 | 13 | **Self-improvement** on the shifted family is `Θ = 1`; corrected width invariant; shifted coefficients non-Ramanujan | `selfImprovement_on_shifts_iff`, `shiftedWidth_eq`, `shiftedWidth_sub_eq`, `coefficient_exponent_lower_bound` | `SelfImprovementFailsOnShiftedProducts` |
 | 14 | **Filters are not certificates**: the Mertens law passes three tests and fails the fourth; proximity passes all four and implies the count iff RH | `mertensLaw_vonMangoldt`, `not_mertensLaw_liouvilleWeight`, `not_mertensLaw_and_add_smul_powerWeight`, `exists_extension_not_mertensLaw`, `exists_mertensLaw_not_count`, `proximity_passes_entry_criteria`, `proximity_implies_count_iff` | `AFaithfulInputNeedNotDecide` |
 | 15 | **No finite system of convergent linear laws decides**: any such system has a stabilizer outside `𝒬` | `exists_stabilizer_outside_sqrtClass`, `finite_linear_system_cannot_decide`, `sum_powerWeight_not_mem_sqrtClass` | `NoFiniteSystemOfLinearLawsDecides` |
+| 16 | **Long integer polynomials see parity**: at each height the integer polynomial stays bounded in `N` after removing the pole term; at every large height those of `λ` and `μ` are unbounded in `N` | `integral_norm_sq_integer_polynomial_le`, `eventually_not_uniform_liouville`, `eventually_not_uniform_moebius`, `norm_le_of_uniform_second_moment`, `not_uniform_second_moment_of_zero` | `LongIntegerPolynomialsSeeParity` |
 
-Infrastructure modules: `TheMollifiedZetaFunctionIsBandLimited` (`exists_stripDecay_mollifiedWindow`), `TheFloorsOfTheMollifiedSecondMoment` (`right_floor`, `exists_left_floor`), `TheGaussianAveragingOfTheWindow` (`integrated_gauss_inequality`, `exists_window_inequality`), `TheInterpolationAtALargeHeight` (`eventually_remainder_le`, `eventually_left_floor`).
+Infrastructure modules: `TheMollifiedZetaFunctionIsBandLimited` (`exists_stripDecay_mollifiedWindow`), `TheFloorsOfTheMollifiedSecondMoment` (`right_floor`, `exists_left_floor`), `TheGaussianAveragingOfTheWindow` (`integrated_gauss_inequality`, `exists_window_inequality`), `TheInterpolationAtALargeHeight` (`remainder_le_of_small`, `center_remainder_le_of_small`, `right_floor_error_le_of_small`, `exists_left_floor_of_small`).
 
 ## 6. Questions and their status
 
 | Question | Status | Exact content |
 |---|---|---|
 | **Q1. `100%` critical-scale clustering (B20)** | Open. Reduced to Q3 | Q3 implies it at length `exp(o(T))`; no statement at a fixed exponent can carry the reduction |
-| **Q2. `D_win`, `D_zero` (B21)** | Open. Reduced to a rate | Excess `K/log T` at length `exp(T/log T)` implies `D_zero`, hence `D_win`. Excess is at least a constant at every polynomial length. `D_win` fails on the impure mimic, which keeps all upper bounds, so an input must be locally pure |
+| **Q2. `D_win`, `D_zero` (B21)** | Open. Reduced to a rate | Excess `K/log T` at length `exp(T/log T)` implies `D_zero`, hence `D_win`. Excess is at least a constant at every polynomial length, and that rate needs `log N ≥ c log²T`. `D_win` fails on the impure mimic, which keeps all upper bounds, so an input must be locally pure |
 | **Q3. Second moment at `T^θ`, `θ → ∞`** | Lower side settled in form, upper side open | Floor `1 + 1/(8+6θ)`; the law needs unbounded `θ` and local purity; for the linear mollifier a bounded defect is RH. The corpus has a bounded mollified second moment at `θ = 21/50` near the line (`zetaMollifiedMeanSquareGateFrom_selberg_upper`), which gives the off-line moment bound `eventually_offLineMoment_le_selberg_upper`. Classical prediction for the floor: `1 + 1/θ` |
 | **Q4. Self-improvement (B57)** | False as a class theorem | On Euler products with functional equation (shifted family) the class law is `Θ = 1`. Without functional equation one factor realizes any width. A proof must use the Ramanujan bound and the functional equation together, on which no mechanism exists |
-| **Q5. Parity-breaking bilinear input at square-root precision** | None exists among norm statements on sign-stable test classes; the question is restated | Type II norms, Type I weights and prime-polynomial mean values are parity-blind. The parity seen by PNT, the Mertens law and every error law is pole parity. The real content is a provable statement with stabilizer inside `𝒬`, other than proximity |
+| **Q5. Parity-breaking bilinear input at square-root precision** | None exists among norm statements on sign-stable test classes; the question is restated | Type II norms, Type I weights and prime-polynomial mean values are parity-blind. The parity seen by PNT, the Mertens law and every error law is pole parity. Away from the pole, parity is visible to long integer polynomials (pillar 16), which do not imply the count. The real content is a provable statement with stabilizer inside `𝒬`, other than proximity |
 
-**The restated question.** Find an unconditional statement `S`, not defined through `Λ`, with `S(Λ)` provable and `S(a) ∧ S(a+δ) ⇒ δ ∈ 𝒬`, together with a proof of `S ⇒ Count`. None is known. The formal obstructions are pillars 1, 2, 9, 10, 14 and 15; no theorem excludes its existence. By pillar 15 such a statement cannot be a finite system of convergent linear laws.
+**The restated question.** Find an unconditional statement `S`, not defined through `Λ`, with `S(Λ)` provable and `S(a) ∧ S(a+δ) ⇒ δ ∈ 𝒬`, together with a proof of `S ⇒ Count`. None is known. The formal obstructions are pillars 1, 2, 9, 10, 14 and 15, and pillar 16 shows that parity away from the pole does not supply it; no theorem excludes its existence. By pillar 15 such a statement cannot be a finite system of convergent linear laws.
 
 ## 7. Tools
 
@@ -116,12 +120,14 @@ Infrastructure modules: `TheMollifiedZetaFunctionIsBandLimited` (`exists_stripDe
 - Log-integral ceiling from a second moment (`exists_logIntegral_le_of_secondMoment`) and folding of off-line multiplicity (`sum_order_filter_abs_le`).
 - Mimic battery: `liouvilleWeight`, `poleCorrectedTwin`, `impureWeight`, `mertensInvisible`, power perturbations, `shiftedWidth`.
 - Sawtooth dictionary and dyadic elimination of the offset (`sawtoothDefect`, `band_of_dyadic`).
+- Explicit smallness conditions for the interpolation, so that the exponent may grow with `T` (`LengthSmall`, `eventually_lengthSmall`).
+- Partial summation with monotone weights on critical-line polynomials and pointwise bounds on shifted lines (`weightedPoly_eq_abel`, `integral_norm_sq_weightedPoly_le`, `norm_sq_edPoly_shift_le`).
 - Selberg integral of a weight and its bridge from the second moment (`selbergIntegral`, `linePoly_eq_logPoly`), resting on `Sieve.integral_Icc_normSq_logPoly_le_window`.
 - Gram interpolation at off-line zeros (`gramTest`, `gramForm`, `norm_sq_sum_le_defect_mul`).
 
-**Used from the corpus.** Littlewood budget and sandwich (`exists_zetaLine_logMean_sandwich`, `exists_zetaLine_littlewood_edge_budget_all_heights`), sharp mean value (`Sieve.dirichlet_meanValue_sharp_window`), mollifier floors (`exists_edPoly_line_logMean_floor`), zero count (`exists_xiZeroCount_close`), Gallagher's identity (`Sieve.gallagher_identity`). Nair integrals and the integrality halves stay in ASRP (`nairIntegral`, `TheIntegralityExponentIsTheZeroWidth`), where square-root integrality in each half is RH, so they are receivers in this language.
+**Used from the corpus.** Littlewood budget and sandwich (`exists_zetaLine_logMean_sandwich`, `exists_zetaLine_littlewood_edge_budget_all_heights`), sharp mean value (`Sieve.dirichlet_meanValue_sharp_window`), mollifier floors (`exists_edPoly_line_logMean_floor`), zero count (`exists_xiZeroCount_close`), Gallagher's identity (`Sieve.gallagher_identity`), the Sobolev bound (`sobolev_pointwise`) and three circles (`HTGeometry.norm_le_of_three_circles_center`). Nair integrals and the integrality halves stay in ASRP (`nairIntegral`, `TheIntegralityExponentIsTheZeroWidth`), where square-root integrality in each half is RH, so they are receivers in this language.
 
-**To build.** Uniform version of `necessary_length` in `θ ≤ c log T`, which would turn the statement "the rate needs `N ≥ exp(c log²T)`" into a theorem. A mimic battery test harness stating any new input against all weights above.
+**To build.** A mimic battery test harness stating any new input against all weights above.
 
 ## 8. Traps
 
@@ -129,7 +135,7 @@ Infrastructure modules: `TheMollifiedZetaFunctionIsBandLimited` (`exists_stripDe
 2. **Precision-faithfulness is cheap.** One pinned functional achieves it at every power (`not_mertensLaw_and_add_smul_powerWeight`). Test the stabilizer.
 3. **True + all necessary tests proves nothing.** `Proximity` is the counterexample.
 4. **Upper bounds cannot see purity.** Any argument with only upper bounds for `ζ` on lines also proves itself for the mimic. It cannot imply the count, `D_win` or Q3.
-5. **Length is not parity.** Lengthening raises precision by the law `η < ½ − 1/(2θ)` and leaves parity where it was: prime polynomials of `λΛ` and `−Λ` agree in mean square through `T²`.
+5. **Length alone is not parity.** Lengthening raises precision by the law `η < ½ − 1/(2θ)` and leaves prime polynomials parity-blind: those of `λΛ` and `−Λ` agree in mean square through `T²`. Parity away from the pole appears for integer polynomials, in a bound uniform in `N`.
 6. **A fixed exponent cannot close anything.** Q1 and Q2 by second moment need `θ → ∞`.
 7. **Bounded coefficients matter.** Floors use `|b_n| ≤ 1`. With unbounded coefficients finite windows have no floor (Müntz–Szász, classical), so they answer a different question.
 8. **Class theorems.** A self-improvement statement must exclude shifted products and impure factors explicitly. If its proof does not use the Ramanujan bound, it proves `Θ = 1`.
@@ -139,11 +145,11 @@ Infrastructure modules: `TheMollifiedZetaFunctionIsBandLimited` (`exists_stripDe
 
 1. The upper side of Q3 at `θ > 21/50`, and any statement at growing `θ`.
 2. The constant of the floor: `1/(8+6θ)` proved, `1/θ` predicted. The left floor uses only the zero count; the two floors alone, optimized over `a`, stop near `1/(eθ)` by a paper estimate, so reaching `1/θ` needs pair correlation.
-3. Uniformity of the necessary-length law in `θ`, and the exact length required by the rate `K/log T`.
+3. The exact constant in the length `exp(c log²T)` required by the rate `K/log T`, and the law for `θ` beyond `(log T)/24`.
 4. Exactness of the Gram floor: whether the infimum of the defect over all mollifiers equals `sup v*G⁻¹v`, which would identify the closure of the mollified span as a Blaschke multiple.
 5. Which statements other than proximity have stabilizer inside `𝒬`. Finite convergent linear systems cannot (pillar 15); the next class is countable systems with a decay condition, or nonlinear laws.
 6. Self-improvement inside the Ramanujan class with functional equation: find any mechanism, or a mimic in that class.
-7. Second moments of integer polynomials above the window, which see the kernel `1` and do not reduce to prime polynomials. This is the one place in the mean-value world where parity is not yet shown to be blind away from the pole.
+7. The rate of growth in `N` of the second moment of the Liouville polynomial at a fixed height, and whether any statement built on holomorphy at zeros can have stabilizer inside `𝒬`.
 
 ## 10. Context
 

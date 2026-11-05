@@ -215,3 +215,9 @@ A source supported in an interval of width `h≤1` has logarithmic energy at
 least `log(1/h)` times its L² mass. Literal constant interval sources belong
 to the complete energy domain and have exact translation loss `2 min(t,h)`.
 Their energy is at most `h(log(1/h)+3)`, at every interval position.
+
+The full exterior Weil pairings have physical L² bound
+`(2π+‖B_b‖)‖u‖₂‖v‖₂`, for either old-window crossing and for opposite
+half-lines. Exact Gamma transfer identities retain the complete bounded
+prime and polar remainder. Support alone gives the required half-line
+coordinates by translation, reflection, restriction and zero extension.

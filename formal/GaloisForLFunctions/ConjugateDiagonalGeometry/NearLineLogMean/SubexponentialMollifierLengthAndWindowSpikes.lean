@@ -1476,15 +1476,20 @@ private theorem uniform_right_err_le {T ℓ w K t₀ ε : ℝ}
     have hT_w : 8 * w ^ 2 * ℓ ≤ T := by
       have h1 := hf_gauss
       rw [one_mul, Real.exp_neg, hT_exp, ← div_eq_mul_inv, div_le_iff₀ hT0] at h1
-      have h2 : w ^ 2 * ℓ = ℓ ^ 5 := by rw [hw_def]; ring
-      rw [h2]; linarith
+      have h2 : 8 * w ^ 2 * ℓ = 8 * ℓ ^ 5 := by rw [hw_def]; ring
+      linarith only [h1, h2]
     have ht₀_sq : T ≤ t₀ ^ 2 := by
       calc T = T * 1 := (mul_one T).symm
         _ ≤ T * T := mul_le_mul_of_nonneg_left hT1 hT0.le
         _ ≤ t₀ * t₀ := mul_le_mul ht₁ ht₁ hT0.le ht₀0.le
         _ = t₀ ^ 2 := (sq t₀).symm
     have hdiv : 1 / 2 * ℓ ≤ t₀ ^ 2 / (8 * w ^ 2) := by
-      rw [le_div_iff₀ (by positivity)]; linarith
+      rw [le_div_iff₀ (by positivity)]
+      have hw2ℓ : 0 ≤ w ^ 2 * ℓ := by positivity
+      calc 1 / 2 * ℓ * (8 * w ^ 2) = 4 * (w ^ 2 * ℓ) := by ring
+        _ ≤ 8 * w ^ 2 * ℓ := by linarith only [hw2ℓ]
+        _ ≤ T := hT_w
+        _ ≤ t₀ ^ 2 := ht₀_sq
     exact mul_le_mul_of_nonneg_left (Real.exp_le_exp.mpr (neg_le_neg hdiv)) (by norm_num)
   have hmul := mul_le_mul_of_nonneg_right hf_err (Real.exp_pos (-(1 / 60 * ℓ))).le
   have hexp_eq : Real.exp (-(29 / 60 * ℓ)) * Real.exp (-(1 / 60 * ℓ)) =
@@ -1493,7 +1498,7 @@ private theorem uniform_right_err_le {T ℓ w K t₀ ε : ℝ}
   calc Real.exp ((K - 1 / 2) ^ 2 / w ^ 2) *
         (19 * Real.exp (-(Real.log 2 * K)) + 8 / t₀ + 6 * Real.exp (-(t₀ ^ 2 / (8 * w ^ 2))))
       ≤ 2 * (33 * Real.exp (-(1 / 2 * ℓ))) :=
-        mul_le_mul hexpK_le2 (by linarith) (by positivity) (by norm_num)
+        mul_le_mul hexpK_le2 (by linarith only [hterm1, hterm2, hterm3]) (by positivity) (by norm_num)
     _ = 66 * Real.exp (-(1 / 2 * ℓ)) := by ring
     _ ≤ 66 * (1 / (66 * 32000) * Real.exp (-(1 / 60 * ℓ))) :=
         mul_le_mul_of_nonneg_left hmul (by norm_num)
@@ -1502,7 +1507,7 @@ private theorem uniform_right_err_le {T ℓ w K t₀ ε : ℝ}
 
 private theorem uniform_center_err_le {Cc C_cen T ℓ Θ w R t₀ ε : ℝ} {N : ℕ}
     (hCc : 0 < Cc) (hC_cen_def : C_cen = Cc * 8100 * (2 * Real.exp 1) * 2 + 1)
-    (hT0 : 0 < T) (hℓ10 : 10 ≤ ℓ) (hT_exp : Real.exp ℓ = T)
+    (hT0 : 0 < T) (hT1 : 1 ≤ T) (hℓ10 : 10 ≤ ℓ) (hT_exp : Real.exp ℓ = T)
     (hN_pos : (0 : ℝ) < (N : ℝ)) (hΘ_def : Θ = Real.log (N : ℝ)) (hΘ0 : 0 ≤ Θ)
     (hw_def : w = ℓ ^ 2) (hR_def : R = 4 * w * Real.sqrt (Θ + 2 * ℓ))
     (ht₀0 : 0 < t₀) (ht₂ : t₀ ≤ 2 * T)
@@ -1512,7 +1517,7 @@ private theorem uniform_center_err_le {Cc C_cen T ℓ Θ w R t₀ ε : ℝ} {N :
         ((2 * (1 + |t₀|) ^ 2 * (1 + 4 * w ^ 2)) ^ 2 * 2 * Real.exp 1) *
           Real.exp (-(R ^ 2 / (4 * w ^ 2))) * (w * √(2 * Real.pi)) ≤
       ε / 8 * (w * √Real.pi) := by
-  have hℓ0 : 0 < ℓ := by linarith
+  have hℓ0 : 0 < ℓ := by linarith only [hℓ10]
   have hw0 : 0 < w := by rw [hw_def]; positivity
   have hC_cen_pos : 0 < C_cen := by rw [hC_cen_def]; positivity
   have hR_gauss : R ^ 2 / (4 * w ^ 2) = 4 * Θ + 8 * ℓ := by
@@ -1530,12 +1535,13 @@ private theorem uniform_center_err_le {Cc C_cen T ℓ Θ w R t₀ ε : ℝ} {N :
       8100 * Real.exp (4 * ℓ) * ℓ ^ 8 := by
     have ht_abs : |t₀| ≤ 2 * T := by rw [abs_of_nonneg ht₀0.le]; exact ht₂
     have h1 : (1 + |t₀|) ^ 2 ≤ 9 * T ^ 2 := by
-      calc (1 + |t₀|) ^ 2 ≤ (3 * T) ^ 2 := pow_le_pow_left₀ (by positivity) (by linarith) 2
+      calc (1 + |t₀|) ^ 2 ≤ (3 * T) ^ 2 :=
+            pow_le_pow_left₀ (by positivity) (by linarith only [hT1, ht_abs]) 2
         _ = 9 * T ^ 2 := by ring
     have h2 : 1 + 4 * w ^ 2 ≤ 5 * ℓ ^ 4 := by
-      have hℓ4 : 1 ≤ ℓ ^ 4 := one_le_pow₀ (by linarith)
+      have hℓ4 : 1 ≤ ℓ ^ 4 := one_le_pow₀ (by linarith only [hℓ10])
       have hw_sq : w ^ 2 = ℓ ^ 4 := by rw [hw_def]; ring
-      linarith
+      linarith only [hℓ4, hw_sq]
     have h3 : 2 * (1 + |t₀|) ^ 2 * (1 + 4 * w ^ 2) ≤ 90 * T ^ 2 * ℓ ^ 4 := by
       calc 2 * (1 + |t₀|) ^ 2 * (1 + 4 * w ^ 2) ≤ 2 * (9 * T ^ 2) * (5 * ℓ ^ 4) :=
             mul_le_mul (mul_le_mul_of_nonneg_left h1 (by norm_num)) h2
@@ -1548,7 +1554,7 @@ private theorem uniform_center_err_le {Cc C_cen T ℓ Θ w R t₀ ε : ℝ} {N :
   have hexp_prod : Real.exp (3 * Θ) * Real.exp (4 * ℓ) * Real.exp (-(4 * Θ + 8 * ℓ)) ≤
       Real.exp (-4 * ℓ) := by
     rw [← Real.exp_add, ← Real.exp_add]
-    exact Real.exp_le_exp.mpr (by linarith)
+    exact Real.exp_le_exp.mpr (by linarith only [hΘ0])
   have hsqrt2 : √(2 * Real.pi) ≤ 2 * √Real.pi := by
     rw [Real.sqrt_mul (by norm_num : (0 : ℝ) ≤ 2)]
     exact mul_le_mul_of_nonneg_right
@@ -1578,7 +1584,7 @@ private theorem uniform_center_err_le {Cc C_cen T ℓ Θ w R t₀ ε : ℝ} {N :
           (w * √Real.pi) := by ring
     _ ≤ C_cen * (ℓ ^ 8 * Real.exp (-4 * ℓ)) * (w * √Real.pi) := by
         refine mul_le_mul_of_nonneg_right ?_ (by positivity)
-        refine mul_le_mul (by rw [hC_cen_def]; linarith)
+        refine mul_le_mul (by rw [hC_cen_def]; linarith only [])
           (mul_le_mul_of_nonneg_left hexp_prod (by positivity))
           (by positivity) hC_cen_pos.le
     _ ≤ ε / 8 * (w * √Real.pi) :=
@@ -1588,38 +1594,43 @@ private theorem uniform_log_err_le {Cl Kl C_lf T T₂ ℓ Θ v : ℝ} {N : ℕ}
     (hCl : 0 < Cl) (hKl : 0 < Kl) (hC_lf_def : C_lf = Cl + 7 * Kl + 1)
     (hT0 : 0 < T) (hT₂_pos : 0 < T₂) (hT₂_le : T₂ ≤ 2 * T)
     (hℓ10 : 10 ≤ ℓ) (hℓ_def : ℓ = Real.log T) (hT_exp : Real.exp ℓ = T)
-    (hΘ_def : Θ = Real.log (N : ℝ)) (hΘ0 : 0 ≤ Θ) (hΘ_le : Θ ≤ Real.exp (1 / 60 * ℓ))
+    (hΘ_def : Θ = Real.log (N : ℝ)) (hΘ_le : Θ ≤ Real.exp (1 / 60 * ℓ))
     (hv_ge : (1 / 8) * Real.exp (-(1 / 60 * ℓ)) ≤ v)
     (hlf_sm : ℓ ^ 1 * Real.exp (-(29 / 30 * ℓ)) ≤ (6 / 8000) / C_lf) :
     Cl + Kl * (Real.log T₂ + Real.log ((N : ℝ) ^ 5)) ≤ 6 / 1000 * (v * T) := by
-  have hℓ0 : 0 < ℓ := by linarith
+  have hℓ0 : 0 < ℓ := by linarith only [hℓ10]
   have hC_lf_pos : 0 < C_lf := by rw [hC_lf_def]; positivity
   have hexp60_ge1 : 1 ≤ Real.exp (1 / 60 * ℓ) := Real.one_le_exp (by positivity)
   have hlogT2 : Real.log T₂ ≤ ℓ + 1 := by
     have h1 : Real.log T₂ ≤ Real.log (2 * T) := Real.log_le_log hT₂_pos hT₂_le
     rw [Real.log_mul two_ne_zero hT0.ne', ← hℓ_def] at h1
-    linarith [Real.log_two_lt_d9]
+    linarith only [h1, Real.log_two_lt_d9]
   have hlogN5 : Real.log ((N : ℝ) ^ 5) = 5 * Θ := by
     rw [Real.log_pow, ← hΘ_def]; push_cast; ring
   have herr_up : Cl + Kl * (Real.log T₂ + Real.log ((N : ℝ) ^ 5)) ≤
       C_lf * ℓ * Real.exp (1 / 60 * ℓ) := by
     rw [hlogN5, hC_lf_def]
     have h1ℓ : 1 ≤ ℓ * Real.exp (1 / 60 * ℓ) :=
-      one_le_mul_of_one_le_of_one_le (by linarith) hexp60_ge1
+      one_le_mul_of_one_le_of_one_le (by linarith only [hℓ10]) hexp60_ge1
     have h1 : Cl ≤ Cl * (ℓ * Real.exp (1 / 60 * ℓ)) := le_mul_of_one_le_right hCl.le h1ℓ
     have hℓ_exp : ℓ ≤ ℓ * Real.exp (1 / 60 * ℓ) := le_mul_of_one_le_right hℓ0.le hexp60_ge1
-    have h2_in : ℓ + 1 ≤ 2 * (ℓ * Real.exp (1 / 60 * ℓ)) := by linarith
+    have h2_in : ℓ + 1 ≤ 2 * (ℓ * Real.exp (1 / 60 * ℓ)) := by linarith only [h1ℓ, hℓ_exp]
     have h2 : Kl * (ℓ + 1) ≤ 2 * Kl * (ℓ * Real.exp (1 / 60 * ℓ)) := by
       calc Kl * (ℓ + 1) ≤ Kl * (2 * (ℓ * Real.exp (1 / 60 * ℓ))) :=
             mul_le_mul_of_nonneg_left h2_in hKl.le
         _ = 2 * Kl * (ℓ * Real.exp (1 / 60 * ℓ)) := by ring
     have hΘ_in : Θ ≤ ℓ * Real.exp (1 / 60 * ℓ) :=
-      hΘ_le.trans (le_mul_of_one_le_left (by positivity) (by linarith))
+      hΘ_le.trans (le_mul_of_one_le_left (by positivity) (by linarith only [hℓ10]))
     have h3 : Kl * (5 * Θ) ≤ 5 * Kl * (ℓ * Real.exp (1 / 60 * ℓ)) := by
       calc Kl * (5 * Θ) = (5 * Kl) * Θ := by ring
         _ ≤ (5 * Kl) * (ℓ * Real.exp (1 / 60 * ℓ)) :=
             mul_le_mul_of_nonneg_left hΘ_in (by positivity)
-    linarith [mul_le_mul_of_nonneg_left hlogT2 hKl.le]
+    have hlogT2_Kl := mul_le_mul_of_nonneg_left hlogT2 hKl.le
+    have hdist : Kl * (Real.log T₂ + 5 * Θ) = Kl * Real.log T₂ + Kl * (5 * Θ) := mul_add _ _ _
+    have hrhs_eq : (Cl + 7 * Kl + 1) * ℓ * Real.exp (1 / 60 * ℓ) =
+        Cl * (ℓ * Real.exp (1 / 60 * ℓ)) + 2 * Kl * (ℓ * Real.exp (1 / 60 * ℓ)) +
+          5 * Kl * (ℓ * Real.exp (1 / 60 * ℓ)) + ℓ * Real.exp (1 / 60 * ℓ) := by ring
+    linarith only [h1, h2, h3, h1ℓ, hlogT2_Kl, hdist, hrhs_eq]
   have hmul := mul_le_mul_of_nonneg_right hlf_sm (Real.exp_pos (59 / 60 * ℓ)).le
   have hexp_eq' : Real.exp (-(29 / 30 * ℓ)) * Real.exp (59 / 60 * ℓ) =
       Real.exp (1 / 60 * ℓ) := by rw [← Real.exp_add]; congr 1; ring
@@ -1642,6 +1653,202 @@ private theorem uniform_log_err_le {Cl Kl C_lf T T₂ ℓ Θ v : ℝ} {N : ℕ}
         exact mul_le_mul_of_nonneg_left
           (mul_le_mul_of_nonneg_right hv_ge (Real.exp_pos ℓ).le) (by norm_num)
 
+private theorem log_pow_mul_exp_mono {ℓ c δ₀ ε : ℝ} (k : ℕ) (hk : k ≤ 10)
+    (hℓ10 : 10 ≤ ℓ) (hc : 1 / 300 ≤ c) (hδε : δ₀ ≤ ε)
+    (h : ℓ ^ 10 * Real.exp (-(1 / 300 * ℓ)) ≤ δ₀) :
+    ℓ ^ k * Real.exp (-(c * ℓ)) ≤ ε := by
+  have hℓ1 : 1 ≤ ℓ := by linarith only [hℓ10]
+  have hℓ0 : 0 ≤ ℓ := by linarith only [hℓ10]
+  have hp : ℓ ^ k ≤ ℓ ^ 10 := pow_le_pow_right₀ hℓ1 hk
+  have he : Real.exp (-(c * ℓ)) ≤ Real.exp (-(1 / 300 * ℓ)) :=
+    Real.exp_le_exp.mpr (neg_le_neg (mul_le_mul_of_nonneg_right hc hℓ0))
+  exact (mul_le_mul hp he (Real.exp_pos _).le (pow_nonneg hℓ0 10)).trans (h.trans hδε)
+
+private theorem uniform_margin_bounds {T ℓ Θ w R ε : ℝ}
+    (hT0 : 0 < T) (hℓ10 : 10 ≤ ℓ) (hT_exp : Real.exp ℓ = T)
+    (hΘ0 : 0 ≤ Θ) (hΘ_le : Θ ≤ Real.exp (1 / 60 * ℓ))
+    (hw_def : w = ℓ ^ 2) (hR_def : R = 4 * w * Real.sqrt (Θ + 2 * ℓ))
+    (hε1 : ε ≤ 1 / 2000) (hε_ge : (1 / 4000) * Real.exp (-(1 / 60 * ℓ)) ≤ ε)
+    (hR_sm : ℓ ^ 3 * Real.exp (-(29 / 30 * ℓ)) ≤ 1 / 1024000000)
+    (hT_big : ℓ ^ 0 * Real.exp (-(59 / 60 * ℓ)) ≤ 1 / 128000000) :
+    32000 ≤ ε * T ∧ R ≤ ε * T / 16000 ∧ 4 * R + 2 ≤ ε * T / 1000 ∧ ε * T ≤ T / 2000 := by
+  have hℓ0 : 0 < ℓ := by linarith only [hℓ10]
+  have hw0 : 0 < w := by rw [hw_def]; positivity
+  have hexp60_ge1 : 1 ≤ Real.exp (1 / 60 * ℓ) := Real.one_le_exp (by positivity)
+  have hεT_ge32000 : 32000 ≤ ε * T := by
+    have h1 : 128000000 ≤ Real.exp (59 / 60 * ℓ) := by
+      rw [pow_zero, one_mul, Real.exp_neg, inv_le_comm₀ (Real.exp_pos _) (by norm_num)] at hT_big
+      simpa using hT_big
+    calc (32000 : ℝ) = (1 / 4000) * 128000000 := by norm_num
+      _ ≤ (1 / 4000) * Real.exp (59 / 60 * ℓ) := mul_le_mul_of_nonneg_left h1 (by norm_num)
+      _ = (1 / 4000) * Real.exp (-(1 / 60 * ℓ)) * Real.exp ℓ := by
+          rw [mul_assoc, ← Real.exp_add]; congr 2; ring
+      _ ≤ ε * T := by rw [← hT_exp]; exact mul_le_mul_of_nonneg_right hε_ge (Real.exp_pos ℓ).le
+  have hRT : R ≤ ε * T / 16000 := by
+    have hsqrt_le : Real.sqrt (Θ + 2 * ℓ) ≤ Θ + 2 * ℓ + 1 := by
+      refine Real.sqrt_le_iff.mpr ⟨by positivity, ?_⟩
+      have hsq : (Θ + 2 * ℓ + 1) ^ 2 = Θ + 2 * ℓ + ((Θ + 2 * ℓ) ^ 2 + (Θ + 2 * ℓ) + 1) := by ring
+      rw [hsq]
+      linarith only [hΘ0, hℓ0, sq_nonneg (Θ + 2 * ℓ)]
+    have hsum_le : Θ + 2 * ℓ + 1 ≤ 4 * ℓ * Real.exp (1 / 60 * ℓ) := by
+      have h2 : 2 * ℓ ≤ 2 * ℓ * Real.exp (1 / 60 * ℓ) :=
+        le_mul_of_one_le_right (by positivity) hexp60_ge1
+      have h3 : 1 + Real.exp (1 / 60 * ℓ) ≤ 2 * ℓ * Real.exp (1 / 60 * ℓ) := by
+        calc 1 + Real.exp (1 / 60 * ℓ) ≤ 2 * Real.exp (1 / 60 * ℓ) := by linarith only [hexp60_ge1]
+          _ = 2 * 1 * Real.exp (1 / 60 * ℓ) := by ring
+          _ ≤ 2 * ℓ * Real.exp (1 / 60 * ℓ) :=
+              mul_le_mul_of_nonneg_right (by linarith only [hℓ10]) (by positivity)
+      linarith only [hΘ_le, h2, h3]
+    have hR_up : R ≤ 16 * ℓ ^ 3 * Real.exp (1 / 60 * ℓ) := by
+      calc R = 4 * w * Real.sqrt (Θ + 2 * ℓ) := hR_def
+        _ ≤ 4 * w * (4 * ℓ * Real.exp (1 / 60 * ℓ)) :=
+            mul_le_mul_of_nonneg_left (hsqrt_le.trans hsum_le) (by positivity)
+        _ = 16 * ℓ ^ 3 * Real.exp (1 / 60 * ℓ) := by rw [hw_def]; ring
+    have hsm' : 16 * ℓ ^ 3 * Real.exp (1 / 60 * ℓ) ≤
+        (1 / 64000000) * Real.exp (59 / 60 * ℓ) := by
+      have hmul := mul_le_mul_of_nonneg_right hR_sm (Real.exp_pos (59 / 60 * ℓ)).le
+      have hexp_eq : Real.exp (-(29 / 30 * ℓ)) * Real.exp (59 / 60 * ℓ) =
+          Real.exp (1 / 60 * ℓ) := by rw [← Real.exp_add]; congr 1; ring
+      have hlhs : ℓ ^ 3 * Real.exp (-(29 / 30 * ℓ)) * Real.exp (59 / 60 * ℓ) =
+          ℓ ^ 3 * Real.exp (1 / 60 * ℓ) := by rw [mul_assoc, hexp_eq]
+      rw [hlhs] at hmul
+      have h16 := mul_le_mul_of_nonneg_left hmul (by norm_num : (0 : ℝ) ≤ 16)
+      calc 16 * ℓ ^ 3 * Real.exp (1 / 60 * ℓ)
+          = 16 * (ℓ ^ 3 * Real.exp (1 / 60 * ℓ)) := by ring
+        _ ≤ 16 * (1 / 1024000000 * Real.exp (59 / 60 * ℓ)) := h16
+        _ = (1 / 64000000) * Real.exp (59 / 60 * ℓ) := by ring
+    calc R ≤ 16 * ℓ ^ 3 * Real.exp (1 / 60 * ℓ) := hR_up
+      _ ≤ (1 / 64000000) * Real.exp (59 / 60 * ℓ) := hsm'
+      _ = ((1 / 4000) * Real.exp (-(1 / 60 * ℓ))) * Real.exp ℓ / 16000 := by
+          have hexp2 : Real.exp (59 / 60 * ℓ) = Real.exp (-(1 / 60 * ℓ)) * Real.exp ℓ := by
+            rw [← Real.exp_add]; congr 1; ring
+          rw [hexp2]; ring
+      _ ≤ ε * T / 16000 := by
+          rw [← hT_exp]
+          exact div_le_div_of_nonneg_right
+            (mul_le_mul_of_nonneg_right hε_ge (Real.exp_pos ℓ).le) (by norm_num)
+  have hsmallR : 4 * R + 2 ≤ ε * T / 1000 := by linarith only [hεT_ge32000, hRT]
+  have hεT2 : ε * T ≤ T / 2000 := by
+    have h := mul_le_mul_of_nonneg_right hε1 hT0.le
+    linarith only [h]
+  exact ⟨hεT_ge32000, hRT, hsmallR, hεT2⟩
+
+private theorem uniform_spectral_rem_tot_le {A B₁ T ℓ θ w L B a t₀ ε : ℝ} {N : ℕ}
+    (hB₁_def : B₁ = 4 * (A ^ 2 * 9 * 432 ^ 2) + 1)
+    (hT0 : 0 < T) (hT1 : 1 ≤ T) (hℓ10 : 10 ≤ ℓ) (hℓ_def : ℓ = Real.log T)
+    (hw_def : w = ℓ ^ 2) (hw4 : 4 ≤ w) (hB_def : B = ℓ / 100)
+    (ha4 : a ≤ 1 / 4) (ht₁ : T ≤ t₀) (ht₂ : t₀ ≤ 2 * T) (hNT : (N : ℝ) ≤ T ^ θ)
+    (hL_def : L = (2 + 3 / 2 * θ + 1 / 100) * ℓ) (hLa0 : 0 ≤ L * a)
+    (hLBa_le : (L + B) * a ≤ Real.log 2) (hexpLa_le2 : Real.exp (L * a) ≤ 2)
+    (hε_ge : (1 / 4000) * Real.exp (-(1 / 60 * ℓ)) ≤ ε)
+    (hr₁ : ℓ ^ 2 * Real.exp (-(1 / 300 * ℓ)) ≤ 1 / (64000 * 288))
+    (hr₂ : ℓ ^ 10 * Real.exp (-(7 / 300 * ℓ)) ≤ 1 / (64000 * B₁)) :
+    (4 * Real.exp (9 / 4 / (2 * w ^ 2)) * (w * √(2 * Real.pi))) ^ 2 *
+        Real.exp (L * a) * Real.exp (-(2 * B * (3 / 2 - a))) / (2 * Real.pi * (3 / 2 - a)) +
+      (A * (N : ℝ) ^ ((3 : ℝ) / 2) * Real.exp (1 / (2 * w ^ 2)) *
+        (4 * (1 + |t₀|) ^ 2 * (1 + 2 * w ^ 2) * (√2 * w * √(2 * Real.pi)))) ^ 2 *
+        Real.exp (-(L * a)) * Real.exp (-(2 * (L + B) * (1 - a))) / (2 * Real.pi * (1 - a)) ≤
+      ε / 8 * (w * √Real.pi) := by
+  have hℓ0 : 0 < ℓ := by linarith only [hℓ10]
+  have hw0 : 0 < w := by rw [hw_def]; positivity
+  have hB₁_pos : 0 < B₁ := by rw [hB₁_def]; positivity
+  have hsqrtπ_ge1 : 1 ≤ √Real.pi :=
+    Real.le_sqrt_of_sq_le (by linarith only [Real.pi_gt_three])
+  have hc_sq : (√(2 * Real.pi)) ^ 2 = 2 * Real.pi := Real.sq_sqrt (by positivity)
+  have hrem_r := uniform_remainder_right_le hw4 hc_sq ha4 hℓ0 hexpLa_le2
+  have hrem_l := uniform_remainder_left_le (A := A) (θ := θ) hT0 hT1 hℓ_def hw4 rfl ha4
+    ht₁ ht₂ hNT hL_def hLa0 (by rw [← hB_def]; exact hLBa_le)
+  have hr₁_bound : 288 * w ^ 2 * Real.exp (-(1 / 50 * ℓ)) ≤ ε / 16 * (w * √Real.pi) := by
+    have hmul := mul_le_mul_of_nonneg_right hr₁ (Real.exp_pos (-(1 / 60 * ℓ))).le
+    have hexp_eq : Real.exp (-(1 / 300 * ℓ)) * Real.exp (-(1 / 60 * ℓ)) =
+        Real.exp (-(1 / 50 * ℓ)) := by rw [← Real.exp_add]; congr 1; ring
+    rw [mul_assoc, hexp_eq] at hmul
+    have h1 : 288 * ℓ ^ 2 * Real.exp (-(1 / 50 * ℓ)) ≤ ε / 16 := by
+      calc 288 * ℓ ^ 2 * Real.exp (-(1 / 50 * ℓ))
+          = 288 * (ℓ ^ 2 * Real.exp (-(1 / 50 * ℓ))) := by ring
+        _ ≤ 288 * (1 / (64000 * 288) * Real.exp (-(1 / 60 * ℓ))) :=
+            mul_le_mul_of_nonneg_left hmul (by norm_num)
+        _ = ((1 / 4000) * Real.exp (-(1 / 60 * ℓ))) / 16 := by ring
+        _ ≤ ε / 16 := div_le_div_of_nonneg_right hε_ge (by norm_num)
+    calc 288 * w ^ 2 * Real.exp (-(1 / 50 * ℓ))
+        = (288 * ℓ ^ 2 * Real.exp (-(1 / 50 * ℓ))) * (w * 1) := by rw [hw_def]; ring
+      _ ≤ (ε / 16) * (w * √Real.pi) :=
+          mul_le_mul h1 (mul_le_mul_of_nonneg_left hsqrtπ_ge1 hw0.le)
+            (by positivity) (by positivity)
+  have hr₂_bound : (4 * (A ^ 2 * 9 * 432 ^ 2)) * w ^ 6 * Real.exp (-(1 / 25 * ℓ)) ≤
+      ε / 16 * (w * √Real.pi) := by
+    have hmul := mul_le_mul_of_nonneg_right hr₂ (Real.exp_pos (-(1 / 60 * ℓ))).le
+    have hexp_eq : Real.exp (-(7 / 300 * ℓ)) * Real.exp (-(1 / 60 * ℓ)) =
+        Real.exp (-(1 / 25 * ℓ)) := by rw [← Real.exp_add]; congr 1; ring
+    rw [mul_assoc, hexp_eq] at hmul
+    have h1 : B₁ * ℓ ^ 10 * Real.exp (-(1 / 25 * ℓ)) ≤ ε / 16 := by
+      calc B₁ * ℓ ^ 10 * Real.exp (-(1 / 25 * ℓ))
+          = B₁ * (ℓ ^ 10 * Real.exp (-(1 / 25 * ℓ))) := by ring
+        _ ≤ B₁ * (1 / (64000 * B₁) * Real.exp (-(1 / 60 * ℓ))) :=
+            mul_le_mul_of_nonneg_left hmul hB₁_pos.le
+        _ = (B₁ / B₁) * (Real.exp (-(1 / 60 * ℓ)) / 64000) := by ring
+        _ = ((1 / 4000) * Real.exp (-(1 / 60 * ℓ))) / 16 := by rw [div_self hB₁_pos.ne']; ring
+        _ ≤ ε / 16 := div_le_div_of_nonneg_right hε_ge (by norm_num)
+    calc (4 * (A ^ 2 * 9 * 432 ^ 2)) * w ^ 6 * Real.exp (-(1 / 25 * ℓ))
+        ≤ B₁ * w ^ 6 * Real.exp (-(1 / 25 * ℓ)) := by
+          refine mul_le_mul_of_nonneg_right
+            (mul_le_mul_of_nonneg_right (by rw [hB₁_def]; linarith only []) (by positivity))
+            (by positivity)
+      _ = (B₁ * ℓ ^ 10 * Real.exp (-(1 / 25 * ℓ))) * (w * 1) := by rw [hw_def]; ring
+      _ ≤ (ε / 16) * (w * √Real.pi) :=
+          mul_le_mul h1 (mul_le_mul_of_nonneg_left hsqrtπ_ge1 hw0.le)
+            (by positivity) (by positivity)
+  rw [hB_def]
+  calc _ ≤ 288 * w ^ 2 * Real.exp (-(1 / 50 * ℓ)) +
+          (4 * (A ^ 2 * 9 * 432 ^ 2)) * w ^ 6 * Real.exp (-(1 / 25 * ℓ)) :=
+        add_le_add hrem_r hrem_l
+    _ ≤ ε / 16 * (w * √Real.pi) + ε / 16 * (w * √Real.pi) :=
+        add_le_add hr₁_bound hr₂_bound
+    _ = ε / 8 * (w * √Real.pi) := by ring
+
+private theorem uniform_gauss_mass_ge {T T₁ T₂ ℓ Θ w R ε t : ℝ}
+    (hℓ0 : 0 < ℓ) (hΘ0 : 0 ≤ Θ) (hw0 : 0 < w)
+    (hR_def : R = 4 * w * Real.sqrt (Θ + 2 * ℓ)) (hR0 : 0 ≤ R)
+    (hAB : T + R ≤ 2 * T - R)
+    (hT₁a : T + 2 * R < T₁) (hT₂b : T₂ < 2 * T - 2 * R)
+    (ht : t ∈ Icc T₁ T₂)
+    (hε_ge : (1 / 4000) * Real.exp (-(1 / 60 * ℓ)) ≤ ε)
+    (hmass_sm : ℓ ^ 0 * Real.exp (-(959 / 60 * ℓ)) ≤ 1 / 8000) :
+    (1 - ε) * (w * √Real.pi) ≤ ∫ t₀ in (T + R)..(2 * T - R), gaussKernel w t t₀ := by
+  have ht_lo : (T + R) + R ≤ t := by linarith only [hT₁a, ht.1]
+  have ht_hi : t ≤ (2 * T - R) - R := by linarith only [hT₂b, ht.2]
+  refine le_trans ?_ (gaussKernel_mass_ge hw0 hAB hR0 ht_lo ht_hi)
+  have hR2 : 16 * ℓ ≤ R ^ 2 / (2 * w ^ 2) := by
+    rw [hR_def]
+    have hsq : (4 * w * Real.sqrt (Θ + 2 * ℓ)) ^ 2 = 16 * w ^ 2 * (Θ + 2 * ℓ) := by
+      rw [mul_pow, mul_pow, Real.sq_sqrt (by positivity)]; ring
+    rw [hsq, mul_div_right_comm]
+    have hdiv : 16 * w ^ 2 / (2 * w ^ 2) = 8 := by
+      calc 16 * w ^ 2 / (2 * w ^ 2) = 8 * ((2 * w ^ 2) / (2 * w ^ 2)) := by ring
+        _ = 8 := by rw [div_self (by positivity)]; ring
+    rw [hdiv]
+    linarith only [hΘ0]
+  have hexp_le : Real.exp (-(R ^ 2 / (2 * w ^ 2))) ≤ ε / 2 := by
+    have hmul := mul_le_mul_of_nonneg_right hmass_sm (Real.exp_pos (-(1 / 60 * ℓ))).le
+    have hexp_eq : Real.exp (-(959 / 60 * ℓ)) * Real.exp (-(1 / 60 * ℓ)) =
+        Real.exp (-16 * ℓ) := by rw [← Real.exp_add]; congr 1; ring
+    rw [pow_zero, one_mul, hexp_eq] at hmul
+    calc Real.exp (-(R ^ 2 / (2 * w ^ 2)))
+        ≤ Real.exp (-16 * ℓ) := Real.exp_le_exp.mpr (by linarith only [hR2])
+      _ ≤ 1 / 8000 * Real.exp (-(1 / 60 * ℓ)) := hmul
+      _ = ((1 / 4000) * Real.exp (-(1 / 60 * ℓ))) / 2 := by ring
+      _ ≤ ε / 2 := div_le_div_of_nonneg_right hε_ge (by norm_num)
+  have hsqrt2 : √(2 * Real.pi) ≤ 2 * √Real.pi := by
+    rw [Real.sqrt_mul (by norm_num : (0 : ℝ) ≤ 2)]
+    exact mul_le_mul_of_nonneg_right
+      (Real.sqrt_le_iff.mpr ⟨by norm_num, by norm_num⟩) (Real.sqrt_nonneg _)
+  have h4 : Real.exp (-(R ^ 2 / (2 * w ^ 2))) * (w * √(2 * Real.pi)) ≤
+      ε / 2 * (w * (2 * √Real.pi)) :=
+    mul_le_mul hexp_le (mul_le_mul_of_nonneg_left hsqrt2 hw0.le) (by positivity) (by positivity)
+  have h5 : ε / 2 * (w * (2 * √Real.pi)) = ε * (w * √Real.pi) := by ring
+  have h6 : (1 - ε) * (w * √Real.pi) = w * √Real.pi - ε * (w * √Real.pi) := by ring
+  linarith only [h4, h5, h6]
+
 /-- **Uniform stretched-exponential complex necessary-length law up to `exp(T^{1/60})`.**
 Eventually as `T → ∞`, simultaneously for every `1 ≤ N` with `Real.log (N : ℝ) ≤ T ^ (1 / 60 : ℝ)`
 and every complex Dirichlet polynomial `M(s) = ∑_{n=1}^N b_n n^{-s}` with `b 1 = 1` and `‖b n‖ ≤ 1`,
@@ -1662,36 +1869,48 @@ theorem eventually_uniform_complex_necessary_length :
   have hC_cen_pos : 0 < C_cen := by rw [hC_cen_def]; positivity
   obtain ⟨C_lf, hC_lf_def⟩ : ∃ x : ℝ, x = Cl + 7 * Kl + 1 := ⟨_, rfl⟩
   have hC_lf_pos : 0 < C_lf := by rw [hC_lf_def]; positivity
+  obtain ⟨δ₀, hδ₀_def⟩ : ∃ x : ℝ, x = min (1 / 1024000000)
+      (min (1 / (64000 * B₁)) (min (1 / (32000 * C_cen)) ((6 / 8000) / C_lf))) := ⟨_, rfl⟩
+  have hδ₀_pos : 0 < δ₀ := by
+    rw [hδ₀_def]
+    exact lt_min (by norm_num) (lt_min (by positivity) (lt_min (by positivity) (by positivity)))
+  have hδ₀_num : δ₀ ≤ 1 / 1024000000 := by rw [hδ₀_def]; exact min_le_left _ _
+  have hδ₀_B₁ : δ₀ ≤ 1 / (64000 * B₁) := by
+    rw [hδ₀_def]; exact (min_le_right _ _).trans (min_le_left _ _)
+  have hδ₀_cen : δ₀ ≤ 1 / (32000 * C_cen) := by
+    rw [hδ₀_def]; exact (min_le_right _ _).trans ((min_le_right _ _).trans (min_le_left _ _))
+  have hδ₀_lf : δ₀ ≤ (6 / 8000) / C_lf := by
+    rw [hδ₀_def]; exact (min_le_right _ _).trans ((min_le_right _ _).trans (min_le_right _ _))
   filter_upwards [
     eventually_ge_atTop (1000 : ℝ),
     Real.tendsto_log_atTop.eventually_ge_atTop 10,
     eventually_zero_count_increment,
-    eventually_log_pow_mul_exp_le 2 (c := 1 / 300) (ε := 1 / (64000 * 288))
-      (by norm_num) (by positivity),
-    eventually_log_pow_mul_exp_le 10 (c := 7 / 300) (ε := 1 / (64000 * B₁))
-      (by norm_num) (by positivity),
-    eventually_log_pow_mul_exp_le 8 (c := 239 / 60) (ε := 1 / (32000 * C_cen))
-      (by norm_num) (by positivity),
-    eventually_log_pow_mul_exp_le 5 (c := 1) (ε := 1 / 8)
-      (by norm_num) (by norm_num),
-    eventually_log_pow_mul_exp_le 0 (c := 29 / 60) (ε := 1 / (66 * 32000))
-      (by norm_num) (by norm_num),
-    eventually_log_pow_mul_exp_le 3 (c := 29 / 30) (ε := 1 / 1024000000)
-      (by norm_num) (by norm_num),
-    eventually_log_pow_mul_exp_le 0 (c := 59 / 60) (ε := 1 / 128000000)
-      (by norm_num) (by norm_num),
-    eventually_log_pow_mul_exp_le 0 (c := 959 / 60) (ε := 1 / 8000)
-      (by norm_num) (by norm_num),
-    eventually_log_pow_mul_exp_le 1 (c := 29 / 30) (ε := (6 / 8000) / C_lf)
-      (by norm_num) (by positivity)
-  ] with T hT1000 hℓ10 hcnt hr₁ hr₂ hcen_sm hf_gauss hf_err hR_sm hT_big hmass_sm hlf_sm
-    b N hN hlogN hb1 hb
-  have hT0 : 0 < T := by linarith
-  have hT1 : 1 ≤ T := by linarith
+    eventually_log_pow_mul_exp_le 10 (c := 1 / 300) (ε := δ₀) (by norm_num) hδ₀_pos
+  ] with T hT1000 hℓ10 hcnt hsm b N hN hlogN hb1 hb
+  have hT0 : 0 < T := by linarith only [hT1000]
+  have hT1 : 1 ≤ T := by linarith only [hT1000]
   obtain ⟨ℓ, hℓ_def⟩ : ∃ x : ℝ, x = Real.log T := ⟨_, rfl⟩
-  rw [← hℓ_def] at hℓ10 hr₁ hr₂ hcen_sm hf_gauss hf_err hR_sm hT_big hmass_sm hlf_sm ⊢
-  have hℓ0 : 0 < ℓ := by linarith
+  rw [← hℓ_def] at hℓ10 hsm ⊢
+  have hℓ0 : 0 < ℓ := by linarith only [hℓ10]
   have hT_exp : Real.exp ℓ = T := by rw [hℓ_def]; exact Real.exp_log hT0
+  have hr₁ : ℓ ^ 2 * Real.exp (-(1 / 300 * ℓ)) ≤ 1 / (64000 * 288) :=
+    log_pow_mul_exp_mono 2 (by norm_num) hℓ10 le_rfl (hδ₀_num.trans (by norm_num)) hsm
+  have hr₂ : ℓ ^ 10 * Real.exp (-(7 / 300 * ℓ)) ≤ 1 / (64000 * B₁) :=
+    log_pow_mul_exp_mono 10 le_rfl hℓ10 (by norm_num) hδ₀_B₁ hsm
+  have hcen_sm : ℓ ^ 8 * Real.exp (-(239 / 60 * ℓ)) ≤ 1 / (32000 * C_cen) :=
+    log_pow_mul_exp_mono 8 (by norm_num) hℓ10 (by norm_num) hδ₀_cen hsm
+  have hf_gauss : ℓ ^ 5 * Real.exp (-(1 * ℓ)) ≤ 1 / 8 :=
+    log_pow_mul_exp_mono 5 (by norm_num) hℓ10 (by norm_num) (hδ₀_num.trans (by norm_num)) hsm
+  have hf_err : ℓ ^ 0 * Real.exp (-(29 / 60 * ℓ)) ≤ 1 / (66 * 32000) :=
+    log_pow_mul_exp_mono 0 (by norm_num) hℓ10 (by norm_num) (hδ₀_num.trans (by norm_num)) hsm
+  have hR_sm : ℓ ^ 3 * Real.exp (-(29 / 30 * ℓ)) ≤ 1 / 1024000000 :=
+    log_pow_mul_exp_mono 3 (by norm_num) hℓ10 (by norm_num) hδ₀_num hsm
+  have hT_big : ℓ ^ 0 * Real.exp (-(59 / 60 * ℓ)) ≤ 1 / 128000000 :=
+    log_pow_mul_exp_mono 0 (by norm_num) hℓ10 (by norm_num) (hδ₀_num.trans (by norm_num)) hsm
+  have hmass_sm : ℓ ^ 0 * Real.exp (-(959 / 60 * ℓ)) ≤ 1 / 8000 :=
+    log_pow_mul_exp_mono 0 (by norm_num) hℓ10 (by norm_num) (hδ₀_num.trans (by norm_num)) hsm
+  have hlf_sm : ℓ ^ 1 * Real.exp (-(29 / 30 * ℓ)) ≤ (6 / 8000) / C_lf :=
+    log_pow_mul_exp_mono 1 (by norm_num) hℓ10 (by norm_num) hδ₀_lf hsm
   have hN_pos : (0 : ℝ) < (N : ℝ) := by exact_mod_cast hN
   have hN_ge1 : (1 : ℝ) ≤ (N : ℝ) := by exact_mod_cast hN
   obtain ⟨Θ, hΘ_def⟩ : ∃ x : ℝ, x = Real.log (N : ℝ) := ⟨_, rfl⟩
@@ -1708,15 +1927,16 @@ theorem eventually_uniform_complex_necessary_length :
   have hNT : (N : ℝ) ≤ T ^ θ := hN_eq_Tθ.le
   obtain ⟨q, hq_def⟩ : ∃ x : ℝ, x = 2 + 3 / 2 * θ + 3 / 100 := ⟨_, rfl⟩
   have hq0 : 0 < q := by rw [hq_def]; positivity
-  have hq2 : 2 ≤ q := by rw [hq_def]; linarith
+  have hq2 : 2 ≤ q := by rw [hq_def]; linarith only [hθ0]
   have hexp60_ge1 : 1 ≤ Real.exp (1 / 60 * ℓ) := Real.one_le_exp (by positivity)
   have hθ_le_exp : θ ≤ (1 / 10) * Real.exp (1 / 60 * ℓ) := by
     rw [hθ_def, div_le_iff₀ hℓ0]
-    have h1 : Θ ≤ (1 / 10) * Real.exp (1 / 60 * ℓ) * 10 := by linarith
+    have h1 : Θ ≤ (1 / 10) * Real.exp (1 / 60 * ℓ) * 10 := by linarith only [hΘ_le]
     calc Θ ≤ (1 / 10) * Real.exp (1 / 60 * ℓ) * 10 := h1
       _ ≤ (1 / 10) * Real.exp (1 / 60 * ℓ) * ℓ :=
           mul_le_mul_of_nonneg_left hℓ10 (by positivity)
-  have hq_le : q ≤ 4 * Real.exp (1 / 60 * ℓ) := by rw [hq_def]; linarith
+  have hq_le : q ≤ 4 * Real.exp (1 / 60 * ℓ) := by
+    rw [hq_def]; linarith only [hθ_le_exp, hexp60_ge1]
   obtain ⟨p, hp_def⟩ : ∃ x : ℝ, x = 2 / q := ⟨_, rfl⟩
   have hp0 : 0 < p := by rw [hp_def]; positivity
   have hp1 : p ≤ 1 := by rw [hp_def]; exact (div_le_one hq0).mpr hq2
@@ -1730,15 +1950,15 @@ theorem eventually_uniform_complex_necessary_length :
       _ = 2 := by rw [← Real.exp_add]; simp
   obtain ⟨ε, hε_def⟩ : ∃ x : ℝ, x = p / 2000 := ⟨_, rfl⟩
   have hε0 : 0 < ε := by rw [hε_def]; positivity
-  have hε1 : ε ≤ 1 / 2000 := by rw [hε_def]; linarith
-  have hε_ge : (1 / 4000) * Real.exp (-(1 / 60 * ℓ)) ≤ ε := by rw [hε_def]; linarith
+  have hε1 : ε ≤ 1 / 2000 := by rw [hε_def]; linarith only [hp1]
+  have hε_ge : (1 / 4000) * Real.exp (-(1 / 60 * ℓ)) ≤ ε := by rw [hε_def]; linarith only [hp_ge]
   obtain ⟨w, hw_def⟩ : ∃ x : ℝ, x = ℓ ^ 2 := ⟨_, rfl⟩
   have hw0 : 0 < w := by rw [hw_def]; positivity
   have hw100 : 100 ≤ w := by
     rw [hw_def]
     calc (100 : ℝ) = 10 ^ 2 := by norm_num
       _ ≤ ℓ ^ 2 := pow_le_pow_left₀ (by norm_num) hℓ10 2
-  have hw4 : 4 ≤ w := by linarith
+  have hw4 : 4 ≤ w := by linarith only [hw100]
   obtain ⟨R, hR_def⟩ : ∃ x : ℝ, x = 4 * w * Real.sqrt (Θ + 2 * ℓ) := ⟨_, rfl⟩
   have hR0 : 0 ≤ R := by rw [hR_def]; positivity
   obtain ⟨L, hL_def⟩ : ∃ x : ℝ, x = (2 + 3 / 2 * θ + 1 / 100) * ℓ := ⟨_, rfl⟩
@@ -1746,92 +1966,45 @@ theorem eventually_uniform_complex_necessary_length :
   have hL0 : 0 ≤ L := by rw [hL_def]; positivity
   have hB0 : 0 ≤ B := by rw [hB_def]; positivity
   obtain ⟨a, ha_def⟩ : ∃ x : ℝ, x = Real.log 2 / (q * ℓ) := ⟨_, rfl⟩
-  have hlog2_pos : 0 < Real.log 2 := Real.log_pos one_lt_two
-  have hlog2_lt1 : Real.log 2 < 1 := by linarith [Real.log_two_lt_d9]
-  have hlog2_gt_half : 1 / 2 < Real.log 2 := by linarith [Real.log_two_gt_d9]
+  have hlog2_lt1 : Real.log 2 < 1 := by linarith only [Real.log_two_lt_d9]
+  have hlog2_gt_half : 1 / 2 < Real.log 2 := by linarith only [Real.log_two_gt_d9]
   have ha0 : 0 < a := by rw [ha_def]; positivity
   have haq : a * (q * ℓ) = Real.log 2 := by
     rw [ha_def]; exact div_mul_cancel₀ _ (mul_pos hq0 hℓ0).ne'
   have ha4 : a ≤ 1 / 4 := by
     rw [ha_def, div_le_iff₀ (mul_pos hq0 hℓ0)]
     have h4 : (2 : ℝ) * 10 ≤ q * ℓ := mul_le_mul hq2 hℓ10 (by norm_num) hq0.le
-    linarith
+    linarith only [hlog2_lt1, h4]
   have hLa : L * a = (1 - p / 100) * Real.log 2 := by
     have h3 : L = (q - 2 / 100) * ℓ := by rw [hL_def, hq_def]; ring
     rw [h3, ← haq]
     linear_combination (a * ℓ / 100) * hpq
   have hLa0 : 0 ≤ L * a := mul_nonneg hL0 ha0.le
   have hLBa_le : (L + B) * a ≤ Real.log 2 := by
-    have h1 : (L + B) * a ≤ a * (q * ℓ) := by
-      have h2 : L + B ≤ q * ℓ := by rw [hL_def, hB_def, hq_def]; linarith
-      calc (L + B) * a = a * (L + B) := mul_comm _ _
-        _ ≤ a * (q * ℓ) := mul_le_mul_of_nonneg_left h2 ha0.le
-    exact h1.trans_eq haq
+    have h2 : L + B ≤ q * ℓ := by
+      have hLB : L + B = q * ℓ - 1 / 100 * ℓ := by rw [hL_def, hB_def, hq_def]; ring
+      linarith only [hLB, hℓ0]
+    calc (L + B) * a = a * (L + B) := mul_comm _ _
+      _ ≤ a * (q * ℓ) := mul_le_mul_of_nonneg_left h2 ha0.le
+      _ = Real.log 2 := haq
   have hexpLa_le2 : Real.exp (L * a) ≤ 2 := by
     have h1 : L * a ≤ Real.log 2 := by
       have h2 : 0 ≤ B * a := mul_nonneg hB0 ha0.le
-      linarith
+      have h3 : (L + B) * a = L * a + B * a := add_mul L B a
+      linarith only [hLBa_le, h2, h3]
     exact (Real.exp_le_exp.mpr h1).trans_eq (Real.exp_log two_pos)
   -- Margin `R` and `ε * T` bounds
-  have hεT_ge32000 : 32000 ≤ ε * T := by
-    have h1 : 128000000 ≤ Real.exp (59 / 60 * ℓ) := by
-      rw [pow_zero, one_mul, Real.exp_neg, inv_le_comm₀ (Real.exp_pos _) (by norm_num)] at hT_big
-      simpa using hT_big
-    calc (32000 : ℝ) = (1 / 4000) * 128000000 := by norm_num
-      _ ≤ (1 / 4000) * Real.exp (59 / 60 * ℓ) := mul_le_mul_of_nonneg_left h1 (by norm_num)
-      _ = (1 / 4000) * Real.exp (-(1 / 60 * ℓ)) * Real.exp ℓ := by
-          rw [mul_assoc, ← Real.exp_add]; congr 2; ring
-      _ ≤ ε * T := by rw [← hT_exp]; exact mul_le_mul_of_nonneg_right hε_ge (Real.exp_pos ℓ).le
-  have hRT : R ≤ ε / 16000 * T := by
-    have hsqrt_le : Real.sqrt (Θ + 2 * ℓ) ≤ Θ + 2 * ℓ + 1 := by
-      refine Real.sqrt_le_iff.mpr ⟨by positivity, ?_⟩
-      have hsq : (Θ + 2 * ℓ + 1) ^ 2 = Θ + 2 * ℓ + ((Θ + 2 * ℓ) ^ 2 + (Θ + 2 * ℓ) + 1) := by ring
-      rw [hsq]
-      linarith [sq_nonneg (Θ + 2 * ℓ)]
-    have hsum_le : Θ + 2 * ℓ + 1 ≤ 4 * ℓ * Real.exp (1 / 60 * ℓ) := by
-      have h2 : 2 * ℓ ≤ 2 * ℓ * Real.exp (1 / 60 * ℓ) :=
-        le_mul_of_one_le_right (by positivity) hexp60_ge1
-      have h3 : 1 + Real.exp (1 / 60 * ℓ) ≤ 2 * ℓ * Real.exp (1 / 60 * ℓ) := by
-        calc 1 + Real.exp (1 / 60 * ℓ) ≤ 2 * Real.exp (1 / 60 * ℓ) := by linarith
-          _ = 2 * 1 * Real.exp (1 / 60 * ℓ) := by ring
-          _ ≤ 2 * ℓ * Real.exp (1 / 60 * ℓ) :=
-              mul_le_mul_of_nonneg_right (by linarith) (by positivity)
-      linarith
-    have hR_up : R ≤ 16 * ℓ ^ 3 * Real.exp (1 / 60 * ℓ) := by
-      calc R = 4 * w * Real.sqrt (Θ + 2 * ℓ) := hR_def
-        _ ≤ 4 * w * (4 * ℓ * Real.exp (1 / 60 * ℓ)) :=
-            mul_le_mul_of_nonneg_left (hsqrt_le.trans hsum_le) (by positivity)
-        _ = 16 * ℓ ^ 3 * Real.exp (1 / 60 * ℓ) := by rw [hw_def]; ring
-    have hsm' : 16 * ℓ ^ 3 * Real.exp (1 / 60 * ℓ) ≤
-        (1 / 64000000) * Real.exp (59 / 60 * ℓ) := by
-      have hmul := mul_le_mul_of_nonneg_right hR_sm (Real.exp_pos (59 / 60 * ℓ)).le
-      have hexp_eq : Real.exp (-(29 / 30 * ℓ)) * Real.exp (59 / 60 * ℓ) =
-          Real.exp (1 / 60 * ℓ) := by rw [← Real.exp_add]; congr 1; ring
-      have hlhs : ℓ ^ 3 * Real.exp (-(29 / 30 * ℓ)) * Real.exp (59 / 60 * ℓ) =
-          ℓ ^ 3 * Real.exp (1 / 60 * ℓ) := by rw [mul_assoc, hexp_eq]
-      rw [hlhs] at hmul
-      linarith
-    calc R ≤ 16 * ℓ ^ 3 * Real.exp (1 / 60 * ℓ) := hR_up
-      _ ≤ (1 / 64000000) * Real.exp (59 / 60 * ℓ) := hsm'
-      _ = ((1 / 4000) * Real.exp (-(1 / 60 * ℓ))) / 16000 * Real.exp ℓ := by
-          have hexp2 : Real.exp (59 / 60 * ℓ) = Real.exp (-(1 / 60 * ℓ)) * Real.exp ℓ := by
-            rw [← Real.exp_add]; congr 1; ring
-          rw [hexp2]; ring
-      _ ≤ ε / 16000 * T := by
-          rw [← hT_exp]
-          exact mul_le_mul_of_nonneg_right (div_le_div_of_nonneg_right hε_ge (by norm_num))
-            (Real.exp_pos ℓ).le
-  have h2T : 2 ≤ ε / 16000 * T := by linarith
-  have hεT2 : ε * T ≤ T / 2000 := by
-    have := mul_le_mul_of_nonneg_right hε1 hT0.le; linarith
-  have hsmallR : 4 * R + 2 ≤ ε * T / 1000 := by linarith
-  have hAB : T + R ≤ 2 * T - R := by linarith
+  obtain ⟨hεT_ge32000, hRT, hsmallR, hεT2⟩ :=
+    uniform_margin_bounds hT0 hℓ10 hT_exp hΘ0 hΘ_le hw_def hR_def hε1 hε_ge hR_sm hT_big
+  have hR_le_T : R ≤ T / 10000 := by linarith only [hRT, hεT2, hT1000]
+  have hAB : T + R ≤ 2 * T - R := by linarith only [hT1000, hR_le_T]
   obtain ⟨T₁, ⟨hT₁a, hT₁b⟩, T₂, ⟨hT₂a, hT₂b⟩, hs1, hs2⟩ :=
     exists_admissible_slices (b := b) (N := N) hN hb1 hb
       (A₁ := T + 2 * R) (B₁ := T + 2 * R + 1) (A₂ := 2 * T - 2 * R - 1) (B₂ := 2 * T - 2 * R)
-      (by linarith) (by linarith) (by linarith) (by linarith)
-  have hT12 : T₁ ≤ T₂ := by linarith
-  have hT12_lt : T₁ < T₂ := by linarith
+      (by linarith only [hT1000, hR0]) (by linarith only [])
+      (by linarith only [hT1000, hR_le_T]) (by linarith only [])
+  have hT12_lt : T₁ < T₂ := by linarith only [hT₁b, hT₂a, hT1000, hR_le_T]
+  have hT12 : T₁ ≤ T₂ := hT12_lt.le
   -- Pointwise height inequality for every `t₀ ∈ [T + R, 2T - R]`
   have hheight : ∀ t₀ ∈ Icc (T + R) (2 * T - R),
       Real.exp (L * a) * ((1 - ε) * (w * √Real.pi)) +
@@ -1839,57 +2012,11 @@ theorem eventually_uniform_complex_necessary_length :
       5 / 2 * (∫ t in T..(2 * T), linePower b N 0 t * gaussKernel w t t₀) +
         ε / 2 * (w * √Real.pi) := by
     intro t₀ ht₀
-    have ht₁ : T ≤ t₀ := by linarith [ht₀.1]
-    have ht₂ : t₀ ≤ 2 * T := by linarith [ht₀.2]
-    have ht₀0 : 0 < t₀ := by linarith
-    have hsqrtπ_ge1 : 1 ≤ √Real.pi :=
-      Real.le_sqrt_of_sq_le (by linarith [Real.pi_gt_three])
-    have hc_sq : (√(2 * Real.pi)) ^ 2 = 2 * Real.pi := Real.sq_sqrt (by positivity)
-    have hrem_r := uniform_remainder_right_le hw4 hc_sq ha4 hℓ0 hexpLa_le2
-    have hrem_l := uniform_remainder_left_le (A := A) (θ := θ) hT0 hT1 hℓ_def hw4 rfl ha4
-      ht₁ ht₂ hNT hL_def hLa0 (by rw [← hB_def]; exact hLBa_le)
-    have hr₁_bound : 288 * w ^ 2 * Real.exp (-(1 / 50 * ℓ)) ≤ ε / 16 * (w * √Real.pi) := by
-      have hmul := mul_le_mul_of_nonneg_right hr₁ (Real.exp_pos (-(1 / 60 * ℓ))).le
-      have hexp_eq : Real.exp (-(1 / 300 * ℓ)) * Real.exp (-(1 / 60 * ℓ)) =
-          Real.exp (-(1 / 50 * ℓ)) := by rw [← Real.exp_add]; congr 1; ring
-      rw [mul_assoc, hexp_eq] at hmul
-      have h1 : 288 * ℓ ^ 2 * Real.exp (-(1 / 50 * ℓ)) ≤ ε / 16 := by
-        calc 288 * ℓ ^ 2 * Real.exp (-(1 / 50 * ℓ))
-            = 288 * (ℓ ^ 2 * Real.exp (-(1 / 50 * ℓ))) := by ring
-          _ ≤ 288 * (1 / (64000 * 288) * Real.exp (-(1 / 60 * ℓ))) :=
-              mul_le_mul_of_nonneg_left hmul (by norm_num)
-          _ = ((1 / 4000) * Real.exp (-(1 / 60 * ℓ))) / 16 := by ring
-          _ ≤ ε / 16 := div_le_div_of_nonneg_right hε_ge (by norm_num)
-      calc 288 * w ^ 2 * Real.exp (-(1 / 50 * ℓ))
-          = (288 * ℓ ^ 2 * Real.exp (-(1 / 50 * ℓ))) * (w * 1) := by rw [hw_def]; ring
-        _ ≤ (ε / 16) * (w * √Real.pi) :=
-            mul_le_mul h1 (mul_le_mul_of_nonneg_left hsqrtπ_ge1 hw0.le)
-              (by positivity) (by positivity)
-    have hr₂_bound : (4 * (A ^ 2 * 9 * 432 ^ 2)) * w ^ 6 * Real.exp (-(1 / 25 * ℓ)) ≤
-        ε / 16 * (w * √Real.pi) := by
-      have hmul := mul_le_mul_of_nonneg_right hr₂ (Real.exp_pos (-(1 / 60 * ℓ))).le
-      have hexp_eq : Real.exp (-(7 / 300 * ℓ)) * Real.exp (-(1 / 60 * ℓ)) =
-          Real.exp (-(1 / 25 * ℓ)) := by rw [← Real.exp_add]; congr 1; ring
-      rw [mul_assoc, hexp_eq] at hmul
-      have h1 : B₁ * ℓ ^ 10 * Real.exp (-(1 / 25 * ℓ)) ≤ ε / 16 := by
-        calc B₁ * ℓ ^ 10 * Real.exp (-(1 / 25 * ℓ))
-            = B₁ * (ℓ ^ 10 * Real.exp (-(1 / 25 * ℓ))) := by ring
-          _ ≤ B₁ * (1 / (64000 * B₁) * Real.exp (-(1 / 60 * ℓ))) :=
-              mul_le_mul_of_nonneg_left hmul hB₁_pos.le
-          _ = (B₁ / B₁) * (Real.exp (-(1 / 60 * ℓ)) / 64000) := by ring
-          _ = ((1 / 4000) * Real.exp (-(1 / 60 * ℓ))) / 16 := by rw [div_self hB₁_pos.ne']; ring
-          _ ≤ ε / 16 := div_le_div_of_nonneg_right hε_ge (by norm_num)
-      calc (4 * (A ^ 2 * 9 * 432 ^ 2)) * w ^ 6 * Real.exp (-(1 / 25 * ℓ))
-          ≤ B₁ * w ^ 6 * Real.exp (-(1 / 25 * ℓ)) := by
-            refine mul_le_mul_of_nonneg_right
-              (mul_le_mul_of_nonneg_right (by rw [hB₁_def]; linarith) (by positivity))
-              (by positivity)
-        _ = (B₁ * ℓ ^ 10 * Real.exp (-(1 / 25 * ℓ))) * (w * 1) := by rw [hw_def]; ring
-        _ ≤ (ε / 16) * (w * √Real.pi) :=
-            mul_le_mul h1 (mul_le_mul_of_nonneg_left hsqrtπ_ge1 hw0.le)
-              (by positivity) (by positivity)
+    have ht₁ : T ≤ t₀ := by linarith only [ht₀.1, hR0]
+    have ht₂ : t₀ ≤ 2 * T := by linarith only [ht₀.2, hR0]
+    have ht₀0 : 0 < t₀ := by linarith only [ht₁, hT0]
     obtain ⟨K, hK_def⟩ : ∃ x : ℝ, x = 5 + ℓ := ⟨_, rfl⟩
-    have hK5 : 5 ≤ K := by rw [hK_def]; linarith
+    have hK5 : 5 ≤ K := by rw [hK_def]; linarith only [hℓ0]
     have ha_sq : a ^ 2 / w ^ 2 ≤ ε / 4 := by
       have ha_eq : a = (1000 * Real.log 2 / ℓ) * ε := by
         rw [ha_def, hε_def, hp_def, div_eq_mul_inv, mul_inv, div_eq_mul_inv, div_eq_mul_inv]
@@ -1897,7 +2024,8 @@ theorem eventually_uniform_complex_necessary_length :
       have ha_le : a ≤ 100 * ε := by
         rw [ha_eq]
         refine mul_le_mul_of_nonneg_right ?_ hε0.le
-        rw [div_le_iff₀ hℓ0]; linarith
+        rw [div_le_iff₀ hℓ0]
+        linarith only [hlog2_lt1, hℓ10]
       have haw_le : a / w ≤ ε := by
         rw [div_le_iff₀ hw0]
         exact ha_le.trans (by
@@ -1907,77 +2035,40 @@ theorem eventually_uniform_complex_necessary_length :
         _ ≤ ε ^ 2 := pow_le_pow_left₀ (by positivity) haw_le 2
         _ = ε * ε := sq ε
         _ ≤ ε * (1 / 2000) := mul_le_mul_of_nonneg_left hε1 hε0.le
-        _ ≤ ε / 4 := by linarith
-    have hright_err := uniform_right_err_le hT0 hT1 hℓ10 hT_exp hw_def hK_def ht₁ hε_ge hf_gauss hf_err
-    have hcen_err := uniform_center_err_le hCc hC_cen_def hT0 hℓ10 hT_exp hN_pos hΘ_def hΘ0 hw_def
-      hR_def ht₀0 ht₂ hε_ge hcen_sm
+        _ ≤ ε / 4 := by linarith only [hε0]
+    have hright_err :=
+      uniform_right_err_le hT0 hT1 hℓ10 hT_exp hw_def hK_def ht₁ hε_ge hf_gauss hf_err
+    have hcen_err :=
+      uniform_center_err_le hCc hC_cen_def hT0 hT1 hℓ10 hT_exp hN_pos hΘ_def hΘ0 hw_def
+        hR_def ht₀0 ht₂ hε_ge hcen_sm
+    have hrem_tot :=
+      uniform_spectral_rem_tot_le hB₁_def hT0 hT1 hℓ10 hℓ_def hw_def hw4 hB_def ha4
+        ht₁ ht₂ hNT hL_def hLa0 hLBa_le hexpLa_le2 hε_ge hr₁ hr₂
     have hcosh : 2 * Real.cosh (a * (L + 2 * B)) = 5 / 2 := by
       have h3 : a * (L + 2 * B) = Real.log 2 := by rw [← haq, hL_def, hB_def]; ring
       rw [h3]; exact two_mul_cosh_log_two'
     have hmain := hwin t₀ hw0 ha0 ha4 hL0 hB0 hb
     rw [hcosh] at hmain
-    have hrem_tot : (4 * Real.exp (9 / 4 / (2 * w ^ 2)) * (w * √(2 * Real.pi))) ^ 2 *
-          Real.exp (L * a) * Real.exp (-(2 * B * (3 / 2 - a))) / (2 * Real.pi * (3 / 2 - a)) +
-        (A * (N : ℝ) ^ ((3 : ℝ) / 2) * Real.exp (1 / (2 * w ^ 2)) *
-          (4 * (1 + |t₀|) ^ 2 * (1 + 2 * w ^ 2) * (√2 * w * √(2 * Real.pi)))) ^ 2 *
-          Real.exp (-(L * a)) * Real.exp (-(2 * (L + B) * (1 - a))) / (2 * Real.pi * (1 - a)) ≤
-        ε / 8 * (w * √Real.pi) := by
-      rw [hB_def]
-      calc _ ≤ 288 * w ^ 2 * Real.exp (-(1 / 50 * ℓ)) +
-              (4 * (A ^ 2 * 9 * 432 ^ 2)) * w ^ 6 * Real.exp (-(1 / 25 * ℓ)) :=
-            add_le_add hrem_r hrem_l
-        _ ≤ ε / 16 * (w * √Real.pi) + ε / 16 * (w * √Real.pi) :=
-            add_le_add hr₁_bound hr₂_bound
-        _ = ε / 8 * (w * √Real.pi) := by ring
     have hmain2 := hmain.trans (add_le_add le_rfl hrem_tot)
     have hA₀ := le_integral_window_right_of_sq_le ht₀0 hw0 ha0 ha4 hK5 hN hb1 hb hε0 hε1
       hright_err ha_sq
     have hX := integral_gauss_linePower_left_le t₀ hw0 ha0 ha4 hT12 hb
-    have hF₀ := (hcenter t₀ hw0 hR0 (T₃ := T) (T₄ := 2 * T) ht₀.1 (by linarith [ht₀.2]) hb).trans
+    have hF₀ := (hcenter t₀ hw0 hR0 (T₃ := T) (T₄ := 2 * T) ht₀.1 ht₀.2 hb).trans
       (add_le_add le_rfl hcen_err)
     have h3 := mul_le_mul_of_nonneg_left hA₀ (Real.exp_pos (L * a)).le
     have h4 := mul_le_mul_of_nonneg_left hX (Real.exp_pos (-(L * a))).le
     have h5 := mul_le_mul_of_nonneg_left hF₀ (by norm_num : (0 : ℝ) ≤ 5 / 2)
     have hD : 0 ≤ ε * (w * √Real.pi) := by positivity
-    linarith
+    linarith only [hmain2, h3, h4, h5, hD]
   -- Gaussian kernel mass on `[T + R, 2T - R]` for `t ∈ [T₁, T₂]`
   have hψ : ∀ t ∈ Icc T₁ T₂, (1 - ε) * (w * √Real.pi) ≤
-      ∫ t₀ in (T + R)..(2 * T - R), gaussKernel w t t₀ := by
-    intro t ht
-    refine le_trans ?_ (gaussKernel_mass_ge hw0 hAB hR0 (by linarith [ht.1]) (by linarith [ht.2]))
-    have hR2 : 16 * ℓ ≤ R ^ 2 / (2 * w ^ 2) := by
-      rw [hR_def]
-      have hsq : (4 * w * Real.sqrt (Θ + 2 * ℓ)) ^ 2 = 16 * w ^ 2 * (Θ + 2 * ℓ) := by
-        rw [mul_pow, mul_pow, Real.sq_sqrt (by positivity)]; ring
-      rw [hsq, mul_div_right_comm]
-      have hdiv : 16 * w ^ 2 / (2 * w ^ 2) = 8 := by
-        calc 16 * w ^ 2 / (2 * w ^ 2) = 8 * ((2 * w ^ 2) / (2 * w ^ 2)) := by ring
-          _ = 8 := by rw [div_self (by positivity)]; ring
-      rw [hdiv]; linarith
-    have hexp_le : Real.exp (-(R ^ 2 / (2 * w ^ 2))) ≤ ε / 2 := by
-      have hmul := mul_le_mul_of_nonneg_right hmass_sm (Real.exp_pos (-(1 / 60 * ℓ))).le
-      have hexp_eq : Real.exp (-(959 / 60 * ℓ)) * Real.exp (-(1 / 60 * ℓ)) =
-          Real.exp (-16 * ℓ) := by rw [← Real.exp_add]; congr 1; ring
-      rw [pow_zero, one_mul, hexp_eq] at hmul
-      calc Real.exp (-(R ^ 2 / (2 * w ^ 2)))
-          ≤ Real.exp (-16 * ℓ) := Real.exp_le_exp.mpr (by linarith)
-        _ ≤ 1 / 8000 * Real.exp (-(1 / 60 * ℓ)) := hmul
-        _ = ((1 / 4000) * Real.exp (-(1 / 60 * ℓ))) / 2 := by ring
-        _ ≤ ε / 2 := div_le_div_of_nonneg_right hε_ge (by norm_num)
-    have hsqrt2 : √(2 * Real.pi) ≤ 2 * √Real.pi := by
-      rw [Real.sqrt_mul (by norm_num : (0 : ℝ) ≤ 2)]
-      exact mul_le_mul_of_nonneg_right
-        (Real.sqrt_le_iff.mpr ⟨by norm_num, by norm_num⟩) (Real.sqrt_nonneg _)
-    have h4 : Real.exp (-(R ^ 2 / (2 * w ^ 2))) * (w * √(2 * Real.pi)) ≤
-        ε / 2 * (w * (2 * √Real.pi)) :=
-      mul_le_mul hexp_le (mul_le_mul_of_nonneg_left hsqrt2 hw0.le) (by positivity) (by positivity)
-    linarith [show ε / 2 * (w * (2 * √Real.pi)) = ε * (w * √Real.pi) by ring,
-      show (1 - ε) * (w * √Real.pi) = w * √Real.pi - ε * (w * √Real.pi) by ring]
-  have hm1 : -3 / 2 < -a := by linarith
+      ∫ t₀ in (T + R)..(2 * T - R), gaussKernel w t t₀ := fun t ht =>
+    uniform_gauss_mass_ge hℓ0 hΘ0 hw0 hR_def hR0 hAB hT₁a hT₂b ht hε_ge hmass_sm
+  have hm1 : -3 / 2 < -a := by linarith only [ha4]
   have hm0 : -3 / 2 < (0 : ℝ) := by norm_num
   have hint := integrated_gauss_inequality (c₁ := Real.exp (L * a) * ((1 - ε) * (w * √Real.pi)))
     (c₂ := Real.exp (-(L * a))) (c₃ := 5 / 2) (τ := ε / 2 * (w * √Real.pi))
-    (T₃ := T) (T₄ := 2 * T) hw0 hAB hT12 (by linarith)
+    (T₃ := T) (T₄ := 2 * T) hw0 hAB hT12 (by linarith only [hT0])
     (continuous_linePower b N hm1) (continuous_linePower b N hm0)
     (linePower_nonneg b N _) (linePower_nonneg b N _) (Real.exp_pos _).le (by norm_num)
     hheight hψ
@@ -1993,10 +2084,14 @@ theorem eventually_uniform_complex_necessary_length :
     have hv_ge : (1 / 8) * Real.exp (-(1 / 60 * ℓ)) ≤ v := by
       have h1 : p * (1 / 2) ≤ p * Real.log 2 :=
         mul_le_mul_of_nonneg_left hlog2_gt_half.le hp0.le
-      linarith
+      linarith only [hp_ge, h1, hv_eq]
     have haℓ : a * ℓ = v := by
       rw [ha_def, hv_def, div_mul_eq_mul_div, mul_div_mul_right _ _ hℓ0.ne']
-    have hcount := hcnt T₁ T₂ (by linarith) (by linarith) (by linarith) (by linarith)
+    have hcount := hcnt T₁ T₂
+      (by linarith only [hT₁a, hR0])
+      (by linarith only [hT₁b, hsmallR, hεT2])
+      (by linarith only [hT₂a, hsmallR, hεT2])
+      (by linarith only [hT₂b, hR0])
     obtain ⟨Δ, hΔ_def⟩ : ∃ x : ℝ, x = (xiPosZeroCount T₂ : ℝ) - xiPosZeroCount T₁ := ⟨_, rfl⟩
     rw [← hΔ_def, ← hℓ_def] at hcount
     have hmain_cnt : 996 / 1000 * (v * T) ≤ 2 * Real.pi * (a * Δ) := by
@@ -2006,14 +2101,17 @@ theorem eventually_uniform_complex_necessary_length :
       rw [h2, haℓ, h3] at h1
       exact h1
     have hMb1 : (1 : ℝ) ≤ (N : ℝ) ^ 5 := one_le_pow₀ hN_ge1
-    have hlog_err := uniform_log_err_le hCl hKl hC_lf_def hT0 (by linarith) (by linarith)
-      hℓ10 hℓ_def hT_exp hΘ_def hΘ0 hΘ_le hv_ge hlf_sm
+    have hlog_err := uniform_log_err_le hCl hKl hC_lf_def hT0
+      (by linarith only [hT12_lt, hT₁a, hR0, hT0])
+      (by linarith only [hT₂b, hR0])
+      hℓ10 hℓ_def hT_exp hΘ_def hΘ_le hv_ge hlf_sm
     obtain ⟨E₀, hE₀_def⟩ : ∃ x : ℝ,
         x = 2 * Real.pi * (a * Δ) - Cl - Kl * (Real.log T₂ + Real.log ((N : ℝ) ^ 5)) := ⟨_, rfl⟩
-    have hE₀_ge : 99 / 100 * (v * T) ≤ E₀ := by rw [hE₀_def]; linarith
+    have hE₀_ge : 99 / 100 * (v * T) ≤ E₀ := by
+      rw [hE₀_def]; linarith only [hmain_cnt, hlog_err]
     have hE₀_pos : 0 < E₀ := lt_of_lt_of_le (by positivity) hE₀_ge
     have hfl := hleft_floor b N hN hb1 hb ((N : ℝ) ^ 5) hMb1 (sum_norm_mul_rpow_four_le hb)
-      a T₁ T₂ ha0 ha4 (by linarith) hT12_lt
+      a T₁ T₂ ha0 ha4 (by linarith only [hT1000, hT₁a, hR0]) hT12_lt
       (fun x hx => (hs1 x hx).1) (fun x hx => (hs2 x hx).1)
       (fun x hx => (hs1 x hx).2) (fun x hx => (hs2 x hx).2)
       (by rw [← hΔ_def, ← hE₀_def]; exact hE₀_pos)
@@ -2021,8 +2119,8 @@ theorem eventually_uniform_complex_necessary_length :
     have hexp_ge : z ≤ Real.exp (2 / (T₂ - T₁) * E₀) := by
       rw [hz_def]
       refine Real.exp_le_exp.mpr ?_
-      have hlen_pos : 0 < T₂ - T₁ := by linarith
-      have hlen_le : T₂ - T₁ ≤ T := by linarith
+      have hlen_pos : 0 < T₂ - T₁ := by linarith only [hT12_lt]
+      have hlen_le : T₂ - T₁ ≤ T := by linarith only [hT₁a, hT₂b, hR0]
       have hdiv_ge : 2 / T ≤ 2 / (T₂ - T₁) :=
         div_le_div_of_nonneg_left (by norm_num) hlen_pos hlen_le
       calc 99 / 100 * p * Real.log 2
@@ -2030,15 +2128,19 @@ theorem eventually_uniform_complex_necessary_length :
         _ = (2 / T) * (99 / 100 * (v * T)) := by rw [← hv_eq, div_eq_mul_inv]; ring
         _ ≤ (2 / (T₂ - T₁)) * E₀ :=
             mul_le_mul hdiv_ge hE₀_ge (by positivity) (by positivity)
-    exact (mul_le_mul_of_nonneg_left hexp_ge (by linarith)).trans hfl
+    exact (mul_le_mul_of_nonneg_left hexp_ge (by linarith only [hT12])).trans hfl
   have hTε : 4 / ε ≤ T₁ := by
     rw [div_le_iff₀ hε0]
+    have hTT₁ : T ≤ T₁ := by linarith only [hT₁a, hR0]
     calc (4 : ℝ) ≤ 32000 := by norm_num
       _ ≤ ε * T := hεT_ge32000
-      _ ≤ ε * T₁ := mul_le_mul_of_nonneg_left (by linarith) hε0.le
-  have hIlow := le_integral_linePower_left b N hε0 ha0 ha4 hT12 (by linarith) hTε
-  have hε' : 0 ≤ 1 - ε := by linarith
-  have hlen12 : (1 - ε) * T ≤ T₂ - T₁ := by linarith
+      _ ≤ ε * T₁ := mul_le_mul_of_nonneg_left hTT₁ hε0.le
+  have hIlow := le_integral_linePower_left b N hε0 ha0 ha4 hT12
+    (by linarith only [hT1000, hT₁a, hR0]) hTε
+  have hε' : 0 ≤ 1 - ε := by linarith only [hε1]
+  have hsub_εT : (1 - ε) * T = T - ε * T := sub_mul 1 ε T
+  have hlen12 : (1 - ε) * T ≤ T₂ - T₁ := by
+    linarith only [hsub_εT, hT₁b, hT₂a, hsmallR, hεT_ge32000]
   have hIz : (1 - ε) ^ 2 * z * T ≤ ∫ t in T₁..T₂, linePower b N (-a) t := by
     have h3 := (mul_le_mul_of_nonneg_left hzval hε').trans hIlow
     have h4 := mul_le_mul_of_nonneg_left (mul_le_mul_of_nonneg_right hlen12 hz0.le) hε'
@@ -2047,8 +2149,10 @@ theorem eventually_uniform_complex_necessary_length :
       _ ≤ _ := h3
   have hfinal := length_combine' (x := Real.exp (L * a)) (y := Real.exp (-(L * a))) (z := z)
     (Real.exp_pos _).le (Real.exp_pos _).le hε0 hε1 hT0 (by positivity : 0 < w * √Real.pi)
-    (δ := 2 * T - R - (T + R)) (by linarith) (by linarith)
-    (integral_linePower_zero_le b N (by linarith : T ≤ 2 * T)) hIz hint
+    (δ := 2 * T - R - (T + R))
+    (by linarith only [hsub_εT, hsmallR, hR0, hεT_ge32000])
+    (by linarith only [hR0])
+    (integral_linePower_zero_le b N (by linarith only [hT0] : T ≤ 2 * T)) hIz hint
   have hnum := final_numeric hp0 hp1 hε_def (congrArg Real.exp hLa) (by rw [hLa]) hz_def hT0 hfinal
   refine le_trans (mul_le_mul_of_nonneg_right ?_ hT0.le) hnum
   have hcomp := length_constant_nonneg hθ0 hq_def hp0 hpq
@@ -2058,7 +2162,7 @@ theorem eventually_uniform_complex_necessary_length :
     rw [div_eq_div_iff hden1.ne' hden2.ne', hθ_def]
     calc ℓ * (8 + 6 * (Θ / ℓ)) = 8 * ℓ + 6 * (Θ / ℓ * ℓ) := by ring
       _ = 1 * (8 * ℓ + 6 * Θ) := by rw [div_mul_cancel₀ _ hℓ0.ne']; ring
-  linarith
+  linarith only [hcomp, hfrac_eq]
 
 /-- Exponent-parametrized form of `eventually_uniform_complex_necessary_length`: uniformly in
 `0 ≤ θ ≤ T^{1/60} / log T` and all complex Dirichlet polynomials of length `N ≤ T^θ`. -/
