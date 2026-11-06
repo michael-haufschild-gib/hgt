@@ -28332,3 +28332,4 @@ import GaloisForLFunctions.RHTower.Representation.EndpointMixtureDefect
 import GaloisForLFunctions.RHTower.Representation.EndpointExteriorSeries
 import GaloisForLFunctions.RHTower.Representation.EndpointExteriorProduct
 import GaloisForLFunctions.RHTower.Representation.EndpointAlternatingPositivity
+import GaloisForLFunctions.RHTower.Representation.EndpointSectorPositivity

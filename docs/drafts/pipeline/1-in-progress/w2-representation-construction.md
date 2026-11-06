@@ -25,7 +25,7 @@ Three consistency laws must be distinguished: restriction of characters along `S
 11. Resolved: the complete phase alphabet `1/(1/4+(Im ρ_(i,k))²)` is positive and summable. Its normalized coloring character exists for every nonempty curve datum, including the golden fake. Coordinatewise identification with the actual endpoint alphabet holds exactly for unitary Frobenius data; phase positivity alone forgets radial eigenvalue information.
 12. Resolved: fixed-mean randomization adds exactly `Σ_q Var(w_q)` to the endpoint discrepancy `Σ(Im α_q)²/M²`. The deterministic real-part alphabet is the unique minimizer on positive mixture support. Exact source agreement holds iff RH and every supported alphabet equals that mean. [Proof and Lean declarations](../3-formalized/not_new_scientific_knowledge/w2-mean-preserving-endpoint-mixture-minimum.md).
 13. Resolved: [every alternating arithmetic projection is nonnegative](../3-formalized/not_new_scientific_knowledge/w2-endpoint-exterior-series.md). For `E(z)=G(1/4+z/M)²/G(1/4)²`, the exact identity is `E^(n)(0)=Σ_(σ∈S_n) sign(σ) χ_arith(σ)≥0`. The product retains actual complex endpoint weights; signed stabilizers cancel repeated letters and injective words give factorial subset masses. This proves column projections at every rank, leaving mixed Young shapes and full Gram positivity open.
-14. Test [endpoint sector transfer](w2-endpoint-sector-positivity.md). Adding `1/4` to the squared spectral coordinate preserves its right-half-plane cone; conjugate factors should therefore inherit the existing finite-order quadratic `PF` bounds. Passing those bounds through the endpoint product and identifying Young projections remain open.
+14. Resolved: [endpoint exterior coefficients are `PF₂₀₀`](../3-formalized/not_new_scientific_knowledge/w2-endpoint-sector-positivity.md). Positive translation preserves the divisor cone, conjugate factors satisfy the quadratic criterion, and conjugation-stable finite products pass to the exact locally uniform endpoint product. Identifying the resulting Toeplitz minors with mixed Young projections remains open.
 
 ## Current evidence
 
@@ -74,7 +74,7 @@ The existing `riemannHypothesis_iff_forall_xiResolventHankelMatrix_posSemidef` a
 
 - [x] Finite coloring representation, positivity, restriction, cycle formula.
 - [x] Mixture covariance and deterministic survivor.
-- [ ] Young-shape producer audited and corrected.
+- [x] Sorted-occupancy obstruction and fixed-word character replacement formalized.
 - [x] Curves and fake models tested symbolically.
 - [x] Countable coloring character and actual positive endpoint application.
 - [x] Canonical arithmetic cycle function: positivity is equivalent to the existing RH moment criterion.
