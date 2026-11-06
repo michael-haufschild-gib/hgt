@@ -36,7 +36,7 @@ Corpus anchors: `TheTopCollarHasADyadicSeventhPowerReserve`,
 
 ## Formalized aliasing floor
 
-Write `φ=tiltedUnitSpline`, `m=∫φ`, `Mφ=∫φ²`,
+Write `φ=tiltedUnitSpline`, `m=∫φ`, `Mφ=∫φ²`, `aφ=m²/Mφ`,
 `U_N=(√N/c) centredAtomicTest(φ,x_N,c,N)`, and `Cφ=7MφJ₁`.
 On every critical schedule `c⁸/log N→R>0`, with `c≥1`,
 `∫U_N²≤1`, integrable `F`, and strong physical `L¹` convergence `U_N→F`:
@@ -67,8 +67,11 @@ unless marked `CriticalArithmeticCorrelationTheory`.
 | `CriticalArithmeticCorrelationTheory/TheHighFourierMassHasADualLowerBound` | `2m B_high(f,g)−E_high(g)≤m²E_high(f)`; the squared mixed error is bounded by `‖f‖₂²/(2π)` times the below-grid recovery error. |
 | `CriticalArithmeticCorrelationTheory/SmoothTerminalTestsRecoverWeightedMass` | Smooth tests supported in `[-A,0]` recover every strict lower bound below `∫_{(-A,0)}F²e⁻⁸ʸ` through `2∫FHe⁻⁸ʸ−∫H²e⁻⁸ʸ`. |
 
-The cofinal-filter extension is drafted; verification is pending. Strong
-convergence for possible negative vectors remains open.
+The pairing limits also hold along cofinal filters. The weighted floor holds
+along every nontrivial countably generated cofinal filter, through
+`eventually_criticalCurve_highFourierMass_gt_weighted_floor_along_filter`.
+The full dependency chain passed actual-path audits with standard axioms.
+Strong convergence for possible negative vectors remains open.
 
 ## Confinement
 
@@ -103,7 +106,7 @@ unproved. It would absorb the free prefix tolerance `κ>0` and bound the
 archimedean energy when `S₇=1`; the logarithmic Gamma floor would then
 control Fourier tails. The signed limit still needs the sharp source.
 
-Two spatial estimates complete the proposed compactness mechanism:
+The spatial estimates are:
 
 1. For `1≤c` and `L≤N`,
    `∫e⁻⁸ʸU_tail²≤(256e²+4+2e)Mφ S₇`.
@@ -122,6 +125,12 @@ stronger truncated Laplace estimate are formalized in
 for `p+2q>0`,
 `(∫_{y≤b}|H|e^{qy})²≤W_p(H)e^{(p+2q)b}/(p+2q)`.
 Both actual-path endpoint audits passed with standard axioms.
+
+The prefix estimate is formalized in
+`CriticalArithmeticCorrelationTheory/ThePhysicalPrefixHasSmallL1Mass.lean`:
+`normalized_prefix_integral_abs_sq_le` gives
+`‖U_prefix‖₁²≤(M/N)‖φ‖₁²P`, and `linear_prefix_integral_abs_sq_le` sharpens
+this to `‖φ‖₁²P/(4c)`. Both actual-path audits passed with standard axioms.
 
 `CriticalArithmeticCorrelationTheory/PhysicalAndFourierTailsGiveCompactness.lean`
 formalizes total boundedness, and compactness of the closure, for bounded L²
@@ -154,8 +163,18 @@ with the first three integrals over `y<0`. Substitution `x=eʸ` gives
 Weighted Cauchy–Schwarz gives
 `|∫_{y≤−log k}Heʸᐟ²|≤k⁻⁹ᐟ²√W₈(H)/3`.
 The convergent series `ΣΛ(k)k⁻⁹ᐟ²` therefore bounds the prime functional.
+These moment estimates and the full prime functional's absolute summability
+and bound are formalized in `ExponentialMassControlsLaplaceTails.lean`, through
+`polar_laplace_moments_sq_le_eighth_exponential_mass`,
+`abs_prime_laplace_tail_le_eighth_exponential_mass`, and
+`prime_polar_functional_summable_and_bound`. Actual-path audits passed with
+standard axioms.
 The other three dual weights have weighted squared masses `1/7`, `1/9`,
 and at most `1`. The last uses `x=e²ʸ` and `∫₀¹log²(1−x)dx=2`.
+Its integrability and bound are formalized as
+`polar_logarithmic_dual_weight_integrable_and_le_one` in
+`CriticalArithmeticCorrelationTheory/ThePolarLogarithmHasFiniteExponentialDualMass.lean`.
+The actual-path audit passed with standard axioms.
 
 Strong local `L²` convergence with bounded `W₈` would preserve this source
 by tail truncation. Equivalently its kernel is

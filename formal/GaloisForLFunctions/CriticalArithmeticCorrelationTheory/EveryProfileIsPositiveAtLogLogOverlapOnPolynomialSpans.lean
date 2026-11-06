@@ -7,7 +7,7 @@ import GaloisForLFunctions.CriticalArithmeticCorrelationTheory.TerminalSupportLe
 A relative near-row count and the packet linear moment bound the overlap
 form linearly. Terminal cancellation pays its remainder with prime adjunction.
 A fixed profile-dependent log-log interval then retains the exponential low-block
-floor on every sufficiently small polynomial conductor span.
+floor on every polynomial conductor span of exponent below `1/4`.
 -/
 
 noncomputable section

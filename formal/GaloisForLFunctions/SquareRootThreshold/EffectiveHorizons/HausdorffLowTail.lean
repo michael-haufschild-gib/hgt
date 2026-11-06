@@ -1,5 +1,6 @@
 import GaloisForLFunctions.SquareRootThreshold.EffectiveHorizons.HausdorffRealProfile
 import GaloisForLFunctions.RHTower.PrimeArchHausdorffFixedOrderLargeShiftPositivity
+import Mathlib.Analysis.Complex.ExponentialBounds
 
 /-!
 # Low ordinates are exponentially below the Hausdorff saddle
@@ -43,7 +44,7 @@ theorem thermal_ratio_le {p r : ℕ} (hr : 0 < r) (hpr : 8 * (p : ℝ) ≤ r) :
     have h4 := pow_le_pow_left₀ (by norm_num : (0 : ℝ) ≤ 8 / 3) h 4
     rw [← Real.exp_nat_mul] at h4
     norm_num at h4
-    exact (by norm_num : (41 : ℝ) ≤ (8 / 3) ^ 4).trans h4
+    linarith only [h4]
   have hpow := pow_le_pow_left₀ (by norm_num : (0 : ℝ) ≤ 41) h41 p
   have hq : 0 ≤ 1 + (p : ℝ) / r := by positivity
   have hqexp : 1 + (p : ℝ) / r ≤ Real.exp ((p : ℝ) / r) := by
@@ -57,7 +58,6 @@ theorem thermal_ratio_le {p r : ℕ} (hr : 0 < r) (hpr : 8 * (p : ℝ) ≤ r) :
     push_cast
     have heq : ((p : ℝ) + r) * ((p : ℝ) / r) = (p : ℝ) * ((p : ℝ) / r) + p := by
       field_simp [hrR.ne']
-      ring
     rw [heq]
     linarith only [h]
   calc
@@ -68,7 +68,6 @@ theorem thermal_ratio_le {p r : ℕ} (hr : 0 < r) (hpr : 8 * (p : ℝ) ≤ r) :
     _ = Real.exp ((p : ℝ) * 4 + ((p + r : ℕ) : ℝ) * ((p : ℝ) / r) - 99 / 10 * (p : ℝ)) := by
       rw [← Real.exp_nat_mul, ← Real.exp_nat_mul, ← Real.exp_add, ← Real.exp_add]
       congr 1
-      ring
     _ ≤ Real.exp (-4 * (p : ℝ)) := Real.exp_le_exp.mpr
       (by linarith only [hlinear, hpR])
 
@@ -86,7 +85,7 @@ theorem norm_atom_le_saddle_low {R s T : ℝ} (k r : ℕ) (hR : 0 < R) (hs : 0 <
   have hT0 : 0 < T := by linarith only [hT]
   have hΛ : 10 * ((k + 1 : ℕ) : ℝ) * R / r = 1 / T ^ 2 := by
     rw [div_eq_div_iff hrR.ne' (sq_pos_of_pos hT0).ne']
-    exact hthermal
+    simpa only [one_mul] using hthermal
   have hsep : s / 4 < 97 / 100 * T := by
     have hsp : ((k + 1 : ℕ) : ℝ) * R * s ^ 2 = (r : ℝ) + (k + 1 : ℕ) := by
       nlinarith only [hbalance]
@@ -110,7 +109,7 @@ theorem norm_atom_le_saddle_low {R s T : ℝ} (k r : ℕ) (hR : 0 < R) (hs : 0 <
   rw [hbase, thermal_scale_eq_saddle hs hr hbalance] at hbound
   have hexp : -(99 / 100 * (10 * ((k + 1 : ℕ) : ℝ))) = -(99 / 10 * ((k + 1 : ℕ) : ℝ)) := by ring
   rw [hexp] at hbound
-  have hratio := thermal_ratio_le hr (by linarith only [hpr, hp])
+  have hratio := thermal_ratio_le (p := k + 1) hr (by linarith only [hpr, hp])
   have hM := realKernel_saddle_pos hs (Nat.succ_pos k) hr hbalance
   have h := mul_le_mul_of_nonneg_left hratio hM.le
   nlinarith only [hbound, h]

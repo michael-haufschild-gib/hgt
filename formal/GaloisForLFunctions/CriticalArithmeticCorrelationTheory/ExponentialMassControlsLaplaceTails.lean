@@ -116,7 +116,7 @@ theorem prime_laplace_tail_sq_le_eighth_exponential_mass {H : ℝ → ℝ}
       show (9 : ℝ) = ((9 : ℕ) : ℝ) from rfl, Real.exp_nat_mul, Real.exp_log hk]
   rw [he] at h
   simpa only [show ∀ y : ℝ, (1 / 2) * y = y / 2 by intro y; ring,
-    div_eq_mul_inv, mul_inv_rev, mul_assoc, mul_left_comm, mul_comm] using h
+    div_eq_mul_inv, mul_inv_rev, mul_assoc, mul_left_comm, mul_comm, one_mul] using h
 
 /-- The unsquared prime moment has the summable `k⁻⁹ᐟ²` envelope. -/
 theorem abs_prime_laplace_tail_le_eighth_exponential_mass {H : ℝ → ℝ}
@@ -129,11 +129,14 @@ theorem abs_prime_laplace_tail_le_eighth_exponential_mass {H : ℝ → ℝ}
     rw [Real.rpow_def_of_pos hk, div_pow, mul_pow, Real.sq_sqrt hW, ← Real.exp_nat_mul]
     rw [show ((2 : ℕ) : ℝ) * (Real.log k * -(9 / 2)) = -(((9 : ℕ) : ℝ) * Real.log k) by ring,
       Real.exp_neg, Real.exp_nat_mul, Real.exp_log hk]
+    field_simp [hk.ne']
     ring
   have hb := prime_laplace_tail_sq_le_eighth_exponential_mass hH hHc hk
   change _ ≤ W / (9 * k ^ 9) at hb
   rw [← he] at hb
-  have hb' := (sq_le_sq₀ (integral_nonneg fun y => mul_nonneg (abs_nonneg _) (Real.exp_pos _).le)
+  have hA0 : 0 ≤ ∫ y in Iic (-Real.log k), |H y| * Real.exp (y / 2) :=
+    integral_nonneg fun y => mul_nonneg (abs_nonneg _) (Real.exp_pos _).le
+  have hb' := (sq_le_sq₀ hA0
     (show 0 ≤ k ^ (-(9 / 2 : ℝ)) * Real.sqrt W / 3 by positivity)).mp hb
   refine le_trans ?_ hb'
   simpa only [Real.norm_eq_abs, abs_mul, abs_of_pos (Real.exp_pos _)] using
@@ -156,11 +159,13 @@ theorem prime_polar_functional_summable_and_bound {H : ℝ → ℝ}
   have hab (k : ℕ) : ‖a k‖ ≤ b k := by
     rcases eq_or_ne k 0 with rfl | hk
     · simp [a, b]
-    · rw [a, norm_mul, Real.norm_eq_abs (Λ k),
+    · dsimp only [a]
+      rw [norm_mul, Real.norm_eq_abs (Λ k),
         abs_of_nonneg ArithmeticFunction.vonMangoldt_nonneg, Real.norm_eq_abs]
       have h := mul_le_mul_of_nonneg_left
-        (abs_prime_laplace_tail_le_eighth_exponential_mass hH hHc
-          (by exact_mod_cast Nat.pos_of_ne_zero hk)) ArithmeticFunction.vonMangoldt_nonneg
+        (abs_prime_laplace_tail_le_eighth_exponential_mass hH hHc (k := (k : ℝ))
+          (by exact_mod_cast Nat.pos_of_ne_zero hk))
+        (show 0 ≤ Λ k from ArithmeticFunction.vonMangoldt_nonneg)
       exact h.trans_eq (by dsimp only [b, C]; ring)
   have ha : Summable (fun k => ‖a k‖) :=
     hb.of_nonneg_of_le (fun k => norm_nonneg _) hab

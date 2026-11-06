@@ -1,8 +1,8 @@
 # Quadratic Hausdorff shift region
 
 - **ID:** hausdorff-quadratic-saddle-region
-- **Stage:** 2-fully-proven
-- **Type:** THEOREM (paper; Lean incomplete)
+- **Stage:** 3-formalized
+- **Type:** THEOREM
 - **Source:** Σ73, `docs/reports/review-0511/walls-ledger.md`
 - **Statement:** There is a constant `C > 0` such that the actual calibrated Hausdorff entry `D(k,r)` is nonnegative whenever `r ≥ C(k+1)²`.
 
@@ -10,7 +10,7 @@
 
 Write `p=k+1`, `R=primeArchEndpointHausdorffRadius` and
 `f(z)=z^(−2p)(R−z^(−2))^r`. The existing explicit shift is cubic in `p`.
-A quadratic bound would certify a new infinite region of the actual array.
+A quadratic bound certifies a new infinite region of the actual array.
 Full row positivity remains stronger.
 
 The real saddle is `s²=(p+r)/(pR)`, with width `w=s/√p`.
@@ -21,7 +21,7 @@ The logarithmic derivative is
 Thus the two factor phases cancel at `s`. For a zero `s+t+iδ`, `|δ|<1/2`,
 the phase near the saddle is of order `|t|/w²`, while the real profile
 decays on scale `w`. When `r/p²` is sufficiently large, the phase-positive
-band should contain the mass-bearing band with exponentially small tails.
+band contains the mass-bearing band with exponentially small tails.
 
 ## Proof [PROVED HERE]
 
@@ -80,18 +80,20 @@ It suffices to prove positivity under those assumptions and `r≥200p`.
    there, and the two remainders total `O(log s)`.
    The total count below `s` is `O(s log s)`.
 
-   Partition `[s/4,4s]` by the integer part of `|γ−s|/w`.
-   Outside the positive band its index is at least
-   `min(√p/16,w/128)` once `p,w` are large. Summing the Gaussian bound gives
-   a possible negative contribution at most
-   `CMw log s · exp(−c min(p,w²))`.
-   This uses only `Σ_{n≥m} exp(−n²/16)≤C exp(−m²/32)` for `m≥1`.
-   Dyadic bands `[4·2^j s,4·2^(j+1)s]` contribute at most
-   `CMs log s · 4⁻p` in total, by the power bound and the global count.
+   Partition `[s/4,4s]` by `n=floor(|γ−s|/w)`. Each shell has at most
+   `C(n+1)w log s` copies. Outside the positive band,
+   `(|γ−s|/w)²≥min(p,w²)/4096`. Splitting the Gaussian exponent extracts
+   `exp(−min(p,w²)/131072)` and leaves at most `exp(−n²/32)≤exp(−n/32)`.
+   Since `(n+1)exp(−n/32)≤64exp(−n/64)`, summation gives a possible negative
+   contribution at most `CMw log s · exp(−min(p,w²)/131072)`.
+   For `γ≥4s`, group by `n=floor(γ/s)≥4`. The global count gives at most
+   `2(n+1)²s log s` copies per shell. For `p≥4`,
+   `n⁻p≤256·4⁻p n⁻4`; the inverse-square sum therefore bounds this tail by
+   `CMs log s · 4⁻p`.
    Low ordinates contribute at most `CMs log s · exp(−4p)`.
 
    Thus the real zero sum divided by `Mw log s` is bounded below by
-   `c−C exp(−c min(p,w²))−C√p(4⁻p+exp(−4p))`.
+   `c−C exp(−c min(p,w²))−Cp(4⁻p+exp(−4p))`, using `s/w=√p≤p`.
    Choose fixed lower bounds for `p` and `w` making this positive.
    Absolute convergence is supplied by `summable_xiCentralScaledHausdorffTerm`;
    `scaledHausdorffMomentDifference_eq_re_xiCentralSum` identifies the sum
@@ -104,8 +106,15 @@ It suffices to prove positivity under those assumptions and `r≥200p`.
    thresholds `explicitPrimeArchHausdorffShift(p−1)/p²`. Those rows are
    nonnegative by `scaledHausdorffMomentDifference_nonneg_of_explicit_shift_le`.
 
+## Lean theorem
+
+`GaloisForLFunctions.SquareRootThreshold.HausdorffSaddle.exists_quadratic_scaledHausdorffMomentDifference_nonneg`
+in `formal/GaloisForLFunctions/SquareRootThreshold/EffectiveHorizons/HausdorffQuadraticRegion.lean`.
+The complete complementary sum is bounded in `HausdorffZeroSum.lean`; the final theorem
+has no analytic premises. Transitive axioms: `propext`, `Classical.choice`, `Quot.sound`.
+
 ## Gates
 
 - [x] Corpus novelty and exact-source identification.
 - [x] Dependency-closed paper proof.
-- [ ] Lean proof and transitive axiom audit.
+- [x] Lean proof and transitive axiom audit.

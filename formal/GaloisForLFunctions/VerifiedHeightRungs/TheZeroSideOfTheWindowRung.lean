@@ -100,7 +100,7 @@ theorem re_W_smoothed_ge_of_verified {a b T : ℝ} (ha : 0 ≤ a) (hb : 0 < b) (
     hfs.trans (Set.Icc_subset_Icc (by linarith only) (by linarith only))
   have hW := (W_eq_pole_add_integral_bilinear hf (smoothedTest_contDiff hb.le hf hfc) hfA hAs).1
   have hre := (Complex.hasSum_re hW.hasSum).summable
-  have hsumu : Summable u := summable_of_finite_support (S.finite_toSet.subset fun ρ hρ => by
+  have hsumu : Summable u := summable_of_hasFiniteSupport (S.finite_toSet.subset fun ρ hρ => by
     by_contra hc
     exact hρ (if_neg hc))
   have hle := Summable.tsum_le_tsum hterm (hsumu.sub (hs4.mul_left K)) hre
@@ -182,7 +182,7 @@ theorem exists_window_nodes {T σ : ℝ} {n : ℕ} (hRH : RHVerifiedThrough T) (
 /-- The final balance, in real variables. -/
 theorem window_numeric {κi ϖ b D₀ T₁ K Sn F Tail Wg Wf M R D a q : ℝ} (hκ1 : 1 / 2 ≤ κi) (hκ2 : κi ≤ 1)
     (hϖ : b ^ 2 / 2560 ≤ ϖ) (hzero : 1 / 2 * Sn - Tail ≤ Wg)
-    (hself : κi * Wg + ϖ * (2 * π * F) - D * M * (2 * T₁) ≤ Wf) (hD0 : 0 ≤ D) (hD : D ≤ b ^ 2 * D₀) (hD₀ : 0 ≤ D₀)
+    (hself : κi * Wg + ϖ * (2 * π * F) - D * M * (2 * T₁) ≤ Wf) (hD : D ≤ b ^ 2 * D₀) (hD₀ : 0 ≤ D₀)
     (hM : M = K * Sn + R) (hR0 : 0 ≤ R) (hR : R ≤ 4 * a * F * q) (h1 : 8 * T₁ * D₀ * K * b ^ 2 ≤ 1)
     (h2 : 8 * a * T₁ * D₀ * q ≤ π / 2560) (hTail0 : 0 ≤ Tail) (hTail : Tail ≤ π * b ^ 2 / 2560 * F) (hSn : 0 ≤ Sn)
     (hF : 0 ≤ F) (hT₁ : 0 ≤ T₁) (hK : 0 ≤ K) : 0 ≤ Wf := by

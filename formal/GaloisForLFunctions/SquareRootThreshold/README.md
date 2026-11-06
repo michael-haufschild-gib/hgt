@@ -154,6 +154,9 @@ and `RHTower` (`ZeroConfig`, `paperFT`, `gammaOf`, `zetaZeroConfig`, explicit fo
 `|M(T)−T log(T)/π|≤εT log(T)` for `T≥Z(ε)`. For Hausdorff order `k`, set
 `K=10(k+1)+20` and `H=max(Z(1/500),500,42(k+1)+44K)`. Every calibrated
 Hausdorff difference with shift `r≥ceil(20K)+ceil(KH²)+1` is nonnegative.
+`EffectiveHorizons/HausdorffQuadraticRegion` improves the order dependence:
+one constant `C>0` gives nonnegativity for every `r≥C(k+1)²`. Phase cancellation
+at the real saddle supplies a positive core that dominates the complete zero-sum tails.
 
 The centre Taylor sequence of ξ is **PF54**, and its first 55 reciprocal even coefficients are
 nonnegative (`xi_centre_pfSeq_fiftyFour`, `evenRecipCoeff_XiC_nonneg_of_le_fiftyFour`). Retaining

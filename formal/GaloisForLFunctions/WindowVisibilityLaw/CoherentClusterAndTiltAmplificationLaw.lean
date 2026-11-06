@@ -1193,139 +1193,6 @@ theorem norm_Wsummand_modulatedTest_le_far (Z : ZeroConfig) (γ₀ : ℝ) {s : �
     _ = 16 * testNorm s ^ 2 * (Real.exp a / (1 + R)) * ((Z.mult ρ : ℝ) / D ^ 3) * D ^ 4 := by
         ring
 
-/-- **Splitting the Weil form of a modulated test.** For a finite set `S` of off-line zeros near
-`γ₀`, if every other zero of `Z` in `[γ₀ − R, γ₀ + R]` has depth `≤ σ`, then `Re W_Z(f, f)` is at most
-the pair sum over `S`, plus the near background in `L²`, plus the far tail. -/
-theorem re_W_modulatedTest_le_of_pairs (Z : ZeroConfig) {A₀ : ℝ} (hA₀ : 1 ≤ A₀)
-    (hloc : ∀ t : ℝ, (Z.N t (t + 1) : ℝ) ≤ A₀ * Real.log (|t| + 3))
-    {γ₀ a R σ : ℝ} (ha : 0 < a) (hR0 : 0 ≤ R) (hσ : 0 ≤ σ) {s : ℝ → ℝ} (hs_cd : ContDiff ℝ 2 s)
-    (hs_supp : ∀ u, s u ≠ 0 → |u| ≤ a)
-    (S : Finset ℂ) (hSc : ∀ ρ ∈ S, ρ ∈ Z.carrier)
-    (hSpos : ∀ ρ ∈ S, 1 / 2 < ρ.re) (hSγ : ∀ ρ ∈ S, |ρ.im - γ₀| ≤ R)
-    (hnear : ∀ ρ ∈ Z.carrier, ρ ∉ S → ρ ∉ S.image reflect → |ρ.im - γ₀| ≤ R →
-      |ρ.re - 1 / 2| ≤ σ) :
-    (Z.W (modulatedTest γ₀ s) (modulatedTest γ₀ s)).re ≤
-      (∑ ρ ∈ S, ((Z.Wsummand (modulatedTest γ₀ s) (modulatedTest γ₀ s) ρ).re +
-        (Z.Wsummand (modulatedTest γ₀ s) (modulatedTest γ₀ s) (reflect ρ)).re)) +
-        4 * A₀ * Real.log (|γ₀| + R + 6) *
-          ((2 * a + 2 * π) * Real.exp (2 * π) * Real.exp (2 * σ * a)) *
-          (∫ u, ‖modulatedTest γ₀ s u‖ ^ 2) +
-        384 * A₀ * Real.log (|γ₀| + 3) * testNorm s ^ 2 * (Real.exp a / (1 + R)) := by
-  classical
-  set f := modulatedTest γ₀ s
-  have hf_cd : ContDiff ℝ 2 f := modulatedTest_contDiff γ₀ hs_cd
-  have hf_supp : tsupport f ⊆ Icc (-a) a := tsupport_modulatedTest_subset γ₀ hs_supp
-  obtain ⟨hwsum, hwle⟩ := window_tsum_le Z hA₀ hloc γ₀
-  have hsumm : Summable (fun τ : Z.carrier => Z.Wsummand f f τ) :=
-    Summable.of_norm_bounded (hwsum.mul_left _) fun τ =>
-      norm_Wsummand_modulatedTest_le_weight Z γ₀ ha.le hs_cd hs_supp τ.2
-  -- Finite window `[γ₀ - R, γ₀ + R]`
-  have hfin_set : (Z.carrier ∩ {z : ℂ | γ₀ - R ≤ z.im ∧ z.im ≤ γ₀ + R}).Finite :=
-    (Z.finite_window (γ₀ - R - 1) (γ₀ + R)).subset fun z ⟨hz, h1, h2⟩ => ⟨hz, by linarith, h2⟩
-  set W_all : Finset ℂ := hfin_set.toFinset
-  have hmem_Wall : ∀ z : ℂ, z ∈ W_all ↔ z ∈ Z.carrier ∧ |z.im - γ₀| ≤ R := fun z => by
-    rw [Set.Finite.mem_toFinset, Set.mem_inter_iff, Set.mem_setOf_eq, abs_le]
-    exact ⟨fun ⟨hz, h1, h2⟩ => ⟨hz, by linarith, by linarith⟩,
-      fun ⟨hz, h1, h2⟩ => ⟨hz, by linarith, by linarith⟩⟩
-  set S' : Finset ℂ := S.image reflect
-  have hdisj_SS' : Disjoint S S' := by
-    rw [Finset.disjoint_left]
-    intro ρ hρ hρ'
-    obtain ⟨q, hq, rfl⟩ := Finset.mem_image.mp hρ'
-    have h1 := hSpos _ hρ
-    have h2 := hSpos q hq
-    simp only [reflect, Complex.sub_re, Complex.one_re, Complex.conj_re] at h1
-    linarith
-  have hrefl_inj : Function.Injective reflect := fun z w h => by
-    have h1 : reflect (reflect z) = z := by
-      apply Complex.ext <;> simp [reflect]
-    have h2 : reflect (reflect w) = w := by
-      apply Complex.ext <;> simp [reflect]
-    rw [← h1, ← h2, h]
-  have hsub_S : S ⊆ W_all := fun ρ hρ =>
-    (hmem_Wall ρ).mpr ⟨hSc ρ hρ, hSγ ρ hρ⟩
-  have hsub_S' : S' ⊆ W_all := by
-    intro ρ hρ
-    obtain ⟨q, hq, rfl⟩ := Finset.mem_image.mp hρ
-    refine (hmem_Wall _).mpr ⟨Z.reflect_mem q (hSc q hq), ?_⟩
-    have him : (reflect q).im = q.im := by simp [reflect]
-    rw [him]
-    exact hSγ q hq
-  set F_near : Finset ℂ := W_all \ (S ∪ S')
-  -- Split `∑' τ : Z.carrier, Re (Wsummand τ)` into `W_all` and its complement
-  set Wall_sub : Finset Z.carrier := W_all.subtype (· ∈ Z.carrier)
-  let Wall_compl : Set Z.carrier := ((Wall_sub : Set Z.carrier))ᶜ
-  have hre_sum : Summable (fun τ : Z.carrier => (Z.Wsummand f f τ).re) :=
-    (Complex.hasSum_re hsumm.hasSum).summable
-  have hsplit_tsum : (Z.W f f).re =
-      (∑ τ ∈ Wall_sub, (Z.Wsummand f f τ).re) +
-        ∑' τ : Wall_compl, (Z.Wsummand f f τ).re := by
-    rw [ZeroConfig.W, Complex.re_tsum hsumm, ← hre_sum.sum_add_tsum_compl (s := Wall_sub)]
-  have hWall_sum : (∑ τ ∈ Wall_sub, (Z.Wsummand f f τ).re) =
-      ∑ ρ ∈ W_all, (Z.Wsummand f f ρ).re := by
-    dsimp only [Wall_sub]
-    exact Finset.sum_subtype_of_mem (fun ρ => (Z.Wsummand f f ρ).re)
-      fun ρ hρ => ((hmem_Wall ρ).mp hρ).1
-  have hWall_part : W_all = (S ∪ S') ∪ F_near := by
-    ext ρ
-    simp only [F_near, Finset.mem_union, Finset.mem_sdiff]
-    exact ⟨fun h => by tauto, fun h => h.elim (fun h1 => h1.elim (hsub_S ·) (hsub_S' ·)) And.left⟩
-  have hdisj_F : Disjoint (S ∪ S') F_near := Finset.disjoint_sdiff
-  have hWall_decomp : (∑ ρ ∈ W_all, (Z.Wsummand f f ρ).re) =
-      (∑ ρ ∈ S, ((Z.Wsummand f f ρ).re + (Z.Wsummand f f (reflect ρ)).re)) +
-        ∑ ρ ∈ F_near, (Z.Wsummand f f ρ).re := by
-    rw [hWall_part, Finset.sum_union hdisj_F, Finset.sum_union hdisj_SS',
-      Finset.sum_image (fun x _ y _ h => hrefl_inj h), ← Finset.sum_add_distrib]
-  -- Bound on `F_near`
-  have hF_bound : ∑ ρ ∈ F_near, (Z.Wsummand f f ρ).re ≤
-      4 * A₀ * Real.log (|γ₀| + R + 6) *
-        ((2 * a + 2 * π) * Real.exp (2 * π) * Real.exp (2 * σ * a)) * ∫ u, ‖f u‖ ^ 2 := by
-    have h1 : ∑ ρ ∈ F_near, (Z.Wsummand f f ρ).re ≤ ∑ ρ ∈ F_near, ‖Z.Wsummand f f ρ‖ :=
-      Finset.sum_le_sum fun ρ _ => Complex.re_le_norm _
-    refine h1.trans (sum_norm_Wsummand_near_le_of_depth_le Z hA₀ hloc ha hR0 hσ hf_cd.continuous
-      hf_supp F_near (fun ρ hρ => ((hmem_Wall ρ).mp (Finset.sdiff_subset hρ)).1)
-      (fun ρ hρ => ((hmem_Wall ρ).mp (Finset.sdiff_subset hρ)).2)
-      (fun ρ hρ => by
-        obtain ⟨hw, hn⟩ := Finset.mem_sdiff.mp hρ
-        rw [Finset.mem_union, not_or] at hn
-        obtain ⟨hc, hr⟩ := (hmem_Wall ρ).mp hw
-        exact hnear ρ hc hn.1 hn.2 hr))
-  -- Bound on far tail `τ ∉ Wall_sub`
-  have hfar_bound : (∑' τ : Wall_compl, (Z.Wsummand f f τ).re) ≤
-      384 * A₀ * Real.log (|γ₀| + 3) * testNorm s ^ 2 * (Real.exp a / (1 + R)) := by
-    set c_far : Z.carrier → ℝ := fun τ =>
-      16 * testNorm s ^ 2 * (Real.exp a / (1 + R)) *
-        ((Z.mult τ : ℝ) / (1 + |(τ : ℂ).im - γ₀|) ^ 3)
-    have hc_sum : Summable c_far := hwsum.mul_left _
-    have hc_nn : ∀ τ : Z.carrier, 0 ≤ c_far τ := fun τ => by
-      dsimp only [c_far]; have := testNorm_nonneg s; positivity
-    have hpt_far : ∀ τ : Wall_compl,
-        (Z.Wsummand f f τ).re ≤ c_far τ.1 := fun τ => by
-      have hfar : R < |(τ.1 : ℂ).im - γ₀| := by
-        by_contra hle; push Not at hle
-        exact τ.2 (Finset.mem_coe.mpr (Finset.mem_subtype.mpr ((hmem_Wall τ.1).mpr ⟨τ.1.2, hle⟩)))
-      exact (Complex.re_le_norm _).trans
-        (norm_Wsummand_modulatedTest_le_far Z γ₀ ha.le hR0 hs_cd hs_supp τ.1.2 hfar)
-    have hle1 : (∑' τ : Wall_compl, (Z.Wsummand f f τ).re) ≤
-        ∑' τ : Wall_compl, c_far τ.1 :=
-      Summable.tsum_le_tsum hpt_far (hre_sum.subtype _) (hc_sum.subtype _)
-    have hle2 : (∑' τ : Wall_compl, c_far τ.1) ≤ ∑' τ : Z.carrier, c_far τ := by
-      have hdecomp := hc_sum.sum_add_tsum_compl (s := Wall_sub)
-      have hfin0 : 0 ≤ ∑ τ ∈ Wall_sub, c_far τ := Finset.sum_nonneg fun τ _ => hc_nn τ
-      linarith
-    have hle3 : ∑' τ : Z.carrier, c_far τ ≤
-        16 * testNorm s ^ 2 * (Real.exp a / (1 + R)) * (24 * A₀ * Real.log (|γ₀| + 3)) := by
-      dsimp only [c_far]
-      rw [tsum_mul_left]
-      have := testNorm_nonneg s
-      exact mul_le_mul_of_nonneg_left hwle (by positivity)
-    calc (∑' τ : Wall_compl, (Z.Wsummand f f τ).re)
-        ≤ 16 * testNorm s ^ 2 * (Real.exp a / (1 + R)) * (24 * A₀ * Real.log (|γ₀| + 3)) :=
-          hle1.trans (hle2.trans hle3)
-      _ = 384 * A₀ * Real.log (|γ₀| + 3) * testNorm s ^ 2 * (Real.exp a / (1 + R)) := by ring
-  rw [hsplit_tsum, hWall_sum, hWall_decomp]
-  linarith
-
 /-- **Master `L²` tilt-amplification inequality for coherent off-line clusters.**
 Let `Z` satisfy `N(t, t+1] ≤ A₀ log(|t| + 3)` (`A₀ ≥ 1`), and let `S` be a finite set of off-line
 zeros in the coherent cone `ρ.re ≥ ½ + δ`, `|ρ.im − γ₀| ≤ 1/(4a)` (`δ > 0`, `2 ≤ δa`). If every
@@ -1358,6 +1225,45 @@ theorem re_W_modulatedTest_coherent_cluster_le (Z : ZeroConfig) {A₀ : ℝ} (hA
   have hs_odd : ∀ u, s (-u) = -s u := sinhTest_odd a δ
   have hs_nn : ∀ u, 0 ≤ u → 0 ≤ s u := fun u hu =>
     mul_nonneg (Real.sinh_nonneg_iff.mpr (by positivity)) (sinhTestWeight_nonneg a u)
+  have hf_cd : ContDiff ℝ 2 f := modulatedTest_contDiff γ₀ hs_cd
+  have hf_supp : tsupport f ⊆ Icc (-a) a := tsupport_modulatedTest_subset γ₀ hs_supp
+  obtain ⟨hwsum, hwle⟩ := window_tsum_le Z hA₀ hloc γ₀
+  have hsumm : Summable (fun τ : Z.carrier => Z.Wsummand f f τ) :=
+    Summable.of_norm_bounded (hwsum.mul_left _) fun τ =>
+      norm_Wsummand_modulatedTest_le_weight Z γ₀ ha.le hs_cd hs_supp τ.2
+  -- Finite window `[γ₀ - R, γ₀ + R]`
+  have hfin_set : (Z.carrier ∩ {z : ℂ | γ₀ - R ≤ z.im ∧ z.im ≤ γ₀ + R}).Finite :=
+    (Z.finite_window (γ₀ - R - 1) (γ₀ + R)).subset fun z ⟨hz, h1, h2⟩ => ⟨hz, by linarith, h2⟩
+  set W_all : Finset ℂ := hfin_set.toFinset
+  have hmem_Wall : ∀ z : ℂ, z ∈ W_all ↔ z ∈ Z.carrier ∧ |z.im - γ₀| ≤ R := fun z => by
+    rw [Set.Finite.mem_toFinset, Set.mem_inter_iff, Set.mem_setOf_eq, abs_le]
+    exact ⟨fun ⟨hz, h1, h2⟩ => ⟨hz, by linarith, by linarith⟩,
+      fun ⟨hz, h1, h2⟩ => ⟨hz, by linarith, by linarith⟩⟩
+  set S' : Finset ℂ := S.image reflect
+  have hdisj_SS' : Disjoint S S' := by
+    rw [Finset.disjoint_left]
+    intro ρ hρ hρ'
+    obtain ⟨q, hq, rfl⟩ := Finset.mem_image.mp hρ'
+    have h1 := hSδ _ hρ
+    have h2 := hSδ q hq
+    simp only [reflect, Complex.sub_re, Complex.one_re, Complex.conj_re] at h1
+    linarith
+  have hrefl_inj : Function.Injective reflect := fun z w h => by
+    have h1 : reflect (reflect z) = z := by
+      apply Complex.ext <;> simp [reflect]
+    have h2 : reflect (reflect w) = w := by
+      apply Complex.ext <;> simp [reflect]
+    rw [← h1, ← h2, h]
+  have hsub_S : S ⊆ W_all := fun ρ hρ =>
+    (hmem_Wall ρ).mpr ⟨hSc ρ hρ, (hSγ ρ hρ).trans hR⟩
+  have hsub_S' : S' ⊆ W_all := by
+    intro ρ hρ
+    obtain ⟨q, hq, rfl⟩ := Finset.mem_image.mp hρ
+    refine (hmem_Wall _).mpr ⟨Z.reflect_mem q (hSc q hq), ?_⟩
+    have him : (reflect q).im = q.im := by simp [reflect]
+    rw [him]
+    exact (hSγ q hq).trans hR
+  set F_near : Finset ℂ := W_all \ (S ∪ S')
   set P := ∫ u, s u * Real.sinh (δ * u)
   -- Pair bound on each `ρ ∈ S`
   have hpair_le : ∀ ρ ∈ S,
@@ -1397,18 +1303,90 @@ theorem re_W_modulatedTest_coherent_cluster_le (Z : ZeroConfig) {A₀ : ℝ} (hA
     have hP2 := pow_le_pow_left₀ hP0 hP_mono 2
     have hm0 : (0 : ℝ) ≤ Z.mult ρ := Nat.cast_nonneg _
     nlinarith
-  have hmain := re_W_modulatedTest_le_of_pairs Z hA₀ hloc ha hR0 hσ hs_cd hs_supp S hSc
-    (fun ρ hρ => by linarith [hSδ ρ hρ]) (fun ρ hρ => (hSγ ρ hρ).trans hR) hnear
+  -- Split `∑' τ : Z.carrier, Re (Wsummand τ)` into `W_all` and its complement
+  set Wall_sub : Finset Z.carrier := W_all.subtype (· ∈ Z.carrier)
+  let Wall_compl : Set Z.carrier := ((Wall_sub : Set Z.carrier))ᶜ
+  have hre_sum : Summable (fun τ : Z.carrier => (Z.Wsummand f f τ).re) :=
+    (Complex.hasSum_re hsumm.hasSum).summable
+  have hsplit_tsum : (Z.W f f).re =
+      (∑ τ ∈ Wall_sub, (Z.Wsummand f f τ).re) +
+        ∑' τ : Wall_compl, (Z.Wsummand f f τ).re := by
+    rw [ZeroConfig.W, Complex.re_tsum hsumm, ← hre_sum.sum_add_tsum_compl (s := Wall_sub)]
+  have hWall_sum : (∑ τ ∈ Wall_sub, (Z.Wsummand f f τ).re) =
+      ∑ ρ ∈ W_all, (Z.Wsummand f f ρ).re := by
+    dsimp only [Wall_sub]
+    exact Finset.sum_subtype_of_mem (fun ρ => (Z.Wsummand f f ρ).re)
+      fun ρ hρ => ((hmem_Wall ρ).mp hρ).1
+  have hWall_part : W_all = (S ∪ S') ∪ F_near := by
+    ext ρ
+    simp only [F_near, Finset.mem_union, Finset.mem_sdiff]
+    exact ⟨fun h => by tauto, fun h => h.elim (fun h1 => h1.elim (hsub_S ·) (hsub_S' ·)) And.left⟩
+  have hdisj_F : Disjoint (S ∪ S') F_near := Finset.disjoint_sdiff
+  have hWall_decomp : (∑ ρ ∈ W_all, (Z.Wsummand f f ρ).re) =
+      (∑ ρ ∈ S, ((Z.Wsummand f f ρ).re + (Z.Wsummand f f (reflect ρ)).re)) +
+        ∑ ρ ∈ F_near, (Z.Wsummand f f ρ).re := by
+    rw [hWall_part, Finset.sum_union hdisj_F, Finset.sum_union hdisj_SS',
+      Finset.sum_image (fun x _ y _ h => hrefl_inj h), ← Finset.sum_add_distrib]
+  -- Bound on `S ∪ S'`
   have hS_bound : ∑ ρ ∈ S, ((Z.Wsummand f f ρ).re + (Z.Wsummand f f (reflect ρ)).re) ≤
       -(5 / 8) * (∑ ρ ∈ S, (Z.mult ρ : ℝ)) * P ^ 2 := by
     refine (Finset.sum_le_sum hpair_le).trans_eq ?_
     rw [Finset.mul_sum, Finset.sum_mul]
-  have h3 := integral_norm_sq_modulatedTest_sinhTest_le γ₀ ha.le hδ
-  have hlog0 : 0 ≤ Real.log (|γ₀| + R + 6) :=
-    (zero_le_one.trans (one_le_log_abs_add_three γ₀)).trans
-      (Real.log_le_log (by positivity) (by linarith))
-  have hnearLe := mul_le_mul_of_nonneg_left h3 (show 0 ≤ 4 * A₀ * Real.log (|γ₀| + R + 6) *
-    ((2 * a + 2 * π) * Real.exp (2 * π) * Real.exp (2 * σ * a)) by positivity)
+  -- Bound on `F_near`
+  have hF_bound : ∑ ρ ∈ F_near, (Z.Wsummand f f ρ).re ≤
+      4 * A₀ * Real.log (|γ₀| + R + 6) *
+        ((2 * a + 2 * π) * Real.exp (2 * π) * Real.exp (2 * σ * a)) *
+        (30 * a ^ 5 * Real.exp (2 * δ * a) / δ ^ 6) := by
+    have h1 : ∑ ρ ∈ F_near, (Z.Wsummand f f ρ).re ≤ ∑ ρ ∈ F_near, ‖Z.Wsummand f f ρ‖ :=
+      Finset.sum_le_sum fun ρ _ => Complex.re_le_norm _
+    have h2 := sum_norm_Wsummand_near_le_of_depth_le Z hA₀ hloc ha hR0 hσ hf_cd.continuous hf_supp
+      F_near (fun ρ hρ => ((hmem_Wall ρ).mp (Finset.sdiff_subset hρ)).1)
+      (fun ρ hρ => ((hmem_Wall ρ).mp (Finset.sdiff_subset hρ)).2)
+      (fun ρ hρ => by
+        obtain ⟨hw, hn⟩ := Finset.mem_sdiff.mp hρ
+        rw [Finset.mem_union, not_or] at hn
+        obtain ⟨hc, hr⟩ := (hmem_Wall ρ).mp hw
+        exact hnear ρ hc hn.1 hn.2 hr)
+    have h3 := integral_norm_sq_modulatedTest_sinhTest_le γ₀ ha.le hδ
+    have hlog0 : 0 ≤ Real.log (|γ₀| + R + 6) :=
+      (zero_le_one.trans (one_le_log_abs_add_three γ₀)).trans
+        (Real.log_le_log (by positivity) (by linarith))
+    refine h1.trans (h2.trans ?_)
+    exact mul_le_mul_of_nonneg_left h3 (by positivity)
+  -- Bound on far tail `τ ∉ Wall_sub`
+  have hfar_bound : (∑' τ : Wall_compl, (Z.Wsummand f f τ).re) ≤
+      384 * A₀ * Real.log (|γ₀| + 3) * testNorm s ^ 2 * (Real.exp a / (1 + R)) := by
+    set c_far : Z.carrier → ℝ := fun τ =>
+      16 * testNorm s ^ 2 * (Real.exp a / (1 + R)) *
+        ((Z.mult τ : ℝ) / (1 + |(τ : ℂ).im - γ₀|) ^ 3)
+    have hc_sum : Summable c_far := hwsum.mul_left _
+    have hc_nn : ∀ τ : Z.carrier, 0 ≤ c_far τ := fun τ => by
+      dsimp only [c_far]; have := testNorm_nonneg s; positivity
+    have hpt_far : ∀ τ : Wall_compl,
+        (Z.Wsummand f f τ).re ≤ c_far τ.1 := fun τ => by
+      have hfar : R < |(τ.1 : ℂ).im - γ₀| := by
+        by_contra hle; push Not at hle
+        exact τ.2 (Finset.mem_coe.mpr (Finset.mem_subtype.mpr ((hmem_Wall τ.1).mpr ⟨τ.1.2, hle⟩)))
+      exact (Complex.re_le_norm _).trans
+        (norm_Wsummand_modulatedTest_le_far Z γ₀ ha.le hR0 hs_cd hs_supp τ.1.2 hfar)
+    have hle1 : (∑' τ : Wall_compl, (Z.Wsummand f f τ).re) ≤
+        ∑' τ : Wall_compl, c_far τ.1 :=
+      Summable.tsum_le_tsum hpt_far (hre_sum.subtype _) (hc_sum.subtype _)
+    have hle2 : (∑' τ : Wall_compl, c_far τ.1) ≤ ∑' τ : Z.carrier, c_far τ := by
+      have hdecomp := hc_sum.sum_add_tsum_compl (s := Wall_sub)
+      have hfin0 : 0 ≤ ∑ τ ∈ Wall_sub, c_far τ := Finset.sum_nonneg fun τ _ => hc_nn τ
+      linarith
+    have hle3 : ∑' τ : Z.carrier, c_far τ ≤
+        16 * testNorm s ^ 2 * (Real.exp a / (1 + R)) * (24 * A₀ * Real.log (|γ₀| + 3)) := by
+      dsimp only [c_far]
+      rw [tsum_mul_left]
+      have := testNorm_nonneg s
+      exact mul_le_mul_of_nonneg_left hwle (by positivity)
+    calc (∑' τ : Wall_compl, (Z.Wsummand f f τ).re)
+        ≤ 16 * testNorm s ^ 2 * (Real.exp a / (1 + R)) * (24 * A₀ * Real.log (|γ₀| + 3)) :=
+          hle1.trans (hle2.trans hle3)
+      _ = 384 * A₀ * Real.log (|γ₀| + 3) * testNorm s ^ 2 * (Real.exp a / (1 + R)) := by ring
+  rw [hsplit_tsum, hWall_sum, hWall_decomp]
   linarith
 
 /-- **Window positivity excludes unshielded coherent clusters (`V1` seeing in general RvM).**

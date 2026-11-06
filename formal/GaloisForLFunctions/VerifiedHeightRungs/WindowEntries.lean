@@ -228,7 +228,6 @@ theorem re_W_nonneg_of_rhVerifiedThrough {a T : ℝ} (ha : 1 ≤ a) (hT : window
   have hE'0 : 0 ≤ E' := by rw [hE']; positivity
   rw [← hE'] at hself
   have hD₀eq : winD₀ a = 1 + (1 + winT₁ a ^ 2) * E' := by rw [winD₀, hE']
-  have hD0 : 0 ≤ ϖ + (ϖ + (b * winT₁ a) ^ 2) * E' := by positivity
   have hDle : ϖ + (ϖ + (b * winT₁ a) ^ 2) * E' ≤ b ^ 2 * winD₀ a := by
     rw [hD₀eq]
     have h1 : (ϖ + (b * winT₁ a) ^ 2) * E' ≤ (b ^ 2 + b ^ 2 * winT₁ a ^ 2) * E' :=
@@ -303,7 +302,7 @@ theorem re_W_nonneg_of_rhVerifiedThrough {a T : ℝ} (ha : 1 ≤ a) (hT : window
   exact window_numeric (κi := κ⁻¹) (ϖ := ϖ) (b := b) (D₀ := winD₀ a) (T₁ := winT₁ a) (K := K) (Sn := Sn) (F := F)
     (Tail := Tail) (Wg := (zetaZeroConfig.W f (smoothedTest b f)).re) (Wf := (zetaZeroConfig.W f f).re)
     (M := K * Sn + R) (R := R) (D := ϖ + (ϖ + (b * winT₁ a) ^ 2) * E') (a := a) (q := q)
-    hκi1 hκi2 hϖlow hzero hself hD0 hDle hD₀0.le rfl hR0 hRle h1 h2 hTail0 hTail hSn0 hF0 hT₁0.le hK0
+    hκi1 hκi2 hϖlow hzero hself hDle hD₀0.le rfl hR0 hRle h1 h2 hTail0 hTail hSn0 hF0 hT₁0.le hK0
 
 /-- **Window positivity from verified zeros.** RH through `windowHeight a` makes the Weil form of `ζ` nonnegative on
 `[−a, a]`. -/

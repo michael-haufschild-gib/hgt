@@ -130,6 +130,70 @@ theorem exists_saddle_window_card_upper :
   rw [card_band_eq_twice_count ha0.le hab]
   nlinarith only [hN, hm, hc, hwc]
 
+/-- Radial shells have at most a linear factor in their shell index. -/
+theorem exists_radial_shell_card_upper :
+    ∃ C : ℝ, 1 ≤ C ∧ ∃ S : ℝ, 16 ≤ S ∧ ∀ s w : ℝ,
+      S ≤ s → 1 ≤ w → w ≤ s → ∀ n : ℕ, ∀ F : Finset XiZeroCopy,
+      (∀ q ∈ F, s / 4 ≤ |(q.1 : ℂ).im| ∧ |(q.1 : ℂ).im| ≤ 4 * s ∧
+        ⌊|( |(q.1 : ℂ).im| - s)| / w⌋₊ = n) →
+      (F.card : ℝ) ≤ C * ((n : ℝ) + 1) * w * Real.log s := by
+  classical
+  obtain ⟨C, hC, S, hS, hupper⟩ := exists_saddle_window_card_upper
+  refine ⟨C, hC, S, hS, ?_⟩
+  intro s w hs hw hws n F hF
+  have hs0 : 0 < s := by linarith only [hS, hs]
+  have hw0 : 0 < w := by linarith only [hw]
+  have hn0 : (0 : ℝ) ≤ n := Nat.cast_nonneg n
+  have hW : 1 ≤ ((n : ℝ) + 1) * w := by
+    nlinarith only [mul_nonneg hn0 hw0.le, hw]
+  by_cases hF0 : F = ∅
+  · rw [hF0]
+    simp only [Finset.card_empty, Nat.cast_zero]
+    exact mul_nonneg (by positivity) (Real.log_nonneg (by linarith only [hS, hs]))
+  obtain ⟨q₀, hq₀⟩ := Finset.nonempty_iff_ne_empty.mpr hF0
+  obtain ⟨hlo, hhi, hindex⟩ := hF q₀ hq₀
+  have hnlo := Nat.floor_le (div_nonneg (abs_nonneg (|(q₀.1 : ℂ).im| - s)) hw0.le)
+  rw [hindex, le_div_iff₀ hw0] at hnlo
+  have hd : |( |(q₀.1 : ℂ).im| - s)| ≤ 3 * s := by
+    apply abs_le.mpr
+    constructor <;> linarith only [hlo, hhi, hs0]
+  let a := max (s / 8) (s - ((n : ℝ) + 1) * w - 1)
+  let b := s + ((n : ℝ) + 1) * w
+  have ha : s / 16 ≤ a := (by linarith only [hs0] : s / 16 ≤ s / 8).trans (le_max_left _ _)
+  have hab : a ≤ b := by
+    apply max_le
+    · dsimp [b]
+      linarith only [hs0, hW]
+    · dsimp [b]
+      linarith only [hW]
+  have hb : b ≤ 8 * s := by
+    dsimp [b]
+    nlinarith only [hnlo, hd, hws, hs0]
+  have hlen : b - a ≤ 4 * (((n : ℝ) + 1) * w) := by
+    have h := le_max_right (s / 8) (s - ((n : ℝ) + 1) * w - 1)
+    change s - ((n : ℝ) + 1) * w - 1 ≤ a at h
+    dsimp [b]
+    linarith only [h, hW]
+  have hsub : F ⊆ xiCopiesBand a b := by
+    intro q hq
+    obtain ⟨hlo, _, hi⟩ := hF q hq
+    have ht := Nat.lt_floor_add_one (|( |(q.1 : ℂ).im| - s)| / w)
+    rw [hi, div_lt_iff₀ hw0] at ht
+    have hdist := abs_lt.mp ht
+    apply mem_xiCopiesBand.mpr
+    constructor
+    · apply max_lt
+      · linarith only [hlo, hs0]
+      · linarith only [hdist.1]
+    · dsimp [b]
+      linarith only [hdist.2]
+  have hc : (F.card : ℝ) ≤ ((xiCopiesBand a b).card : ℝ) := by
+    exact_mod_cast Finset.card_le_card hsub
+  have hbound := hupper s (((n : ℝ) + 1) * w) a b hs hW ha hab hb hlen
+  calc
+    _ ≤ C * (((n : ℝ) + 1) * w) * Real.log s := hc.trans hbound
+    _ = _ := by ring
+
 /-- The total number of copies below height `T` is at most `2T log T` eventually. -/
 theorem exists_total_card_upper :
     ∃ S : ℝ, 4 ≤ S ∧ ∀ T : ℝ, S ≤ T → ∀ F : Finset XiZeroCopy,
