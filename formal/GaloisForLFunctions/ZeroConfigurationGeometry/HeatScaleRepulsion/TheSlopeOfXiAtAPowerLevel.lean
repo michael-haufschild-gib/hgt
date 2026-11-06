@@ -178,7 +178,7 @@ theorem norm_ge (h : LevelPair Z Λ d η E T t) (hη0 : 0 < η) (hη1 : η ≤ 1
 end LevelPair
 
 /-- `ξ` and `ζ` form a pair at a height of depth `d`. -/
-theorem DepthTypical.levelPair {d η E T t : ℝ} (h : DepthTypical d η E T t) (hη : 0 < η) (hη1 : η ≤ 1)
+theorem DepthTypical.levelPair {d η E T t : ℝ} (h : DepthTypical d η E T t) (hη : 0 < η)
     (hT : 8 ≤ T) (hE : 0 ≤ E) : LevelPair riemannZeta xi d η E T t where
   hd := h.hd
   hd2 := h.hd2

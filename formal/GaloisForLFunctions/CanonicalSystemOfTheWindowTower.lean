@@ -49,6 +49,7 @@ import GaloisForLFunctions.CanonicalSystemOfTheWindowTower.TheRenewalReadoutHasA
 import GaloisForLFunctions.CanonicalSystemOfTheWindowTower.TheWeilRieszVectorsHaveGeneralCharts
 import GaloisForLFunctions.CanonicalSystemOfTheWindowTower.TheWeilChartsAreUniformlyBounded
 import GaloisForLFunctions.CanonicalSystemOfTheWindowTower.TheWeilTracesHaveTheirSoftKick
+import GaloisForLFunctions.CanonicalSystemOfTheWindowTower.TheGreenCornerReadsThePotential
 
 /-!
 # The Canonical System of the Window Tower

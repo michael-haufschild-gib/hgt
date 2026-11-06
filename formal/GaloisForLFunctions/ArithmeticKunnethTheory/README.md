@@ -71,6 +71,9 @@ spectrum are depth-homogeneous; the non-scaling term must come from corresponden
 | The normalized reciprocal locus is critical exactly at sign coordinates; its transverse Hessian is nondegenerate when `2≠0` | `normalizedDoubleZeroTorus_critical_iff`, `reciprocalHessian_transverse_nondegenerate` | proved |
 | Clearing denominators preserves torus criticality; the coordinate boundary is critical exactly where at least three coordinates vanish | `reciprocalCleared_torus_critical_iff`, `reciprocalBoundary_critical_iff` | proved |
 | The complete projective coordinate boundary is an explicit signed Tate trace over every finite extension, with eigenvalues bounded by `q^(n−4)` | `projectiveCoordinateBoundary_card_closed`, `boundaryTateTrace_extension_count`, `boundaryTateTrace_weight_bound` | proved |
+| The compactified moment is its actual projective count minus explicit Tate corrections; every corrected even trace is nonnegative | `projectiveReciprocalLocus_card`, `kloosterman_moment_compactified_extension`, `compactified_even_trace_nonneg` | proved |
+| Every normalized torus critical point descends through field embeddings; its constant Tate trace has exact binomial counts, including a separate characteristic-two formula | `reciprocalTorusCriticalPoints_card_embedding`, `criticalPointTateTrace_extension_count`, `reciprocalTorusCriticalPoints_card`, `reciprocalTorusCriticalPoints_card_char_two` | proved |
+| The full transverse tangent chart has the actual reciprocal quadratic matrix, whose determinant is `−∏xᵢ`, or `(-1)^(r+1)` for `r` negative coordinates | `reciprocalTangentVector_reconstruct`, `reciprocalSeries_transverse_quadratic`, `reciprocalTransverseMatrix_det_critical`, `reciprocalTransverseMatrix_det_signs` | proved |
 
 The `WeightFamilies/` results classify the algebraic input, prove the finite global
 trace step, and calibrate the receiver on the Kloosterman family. They do not

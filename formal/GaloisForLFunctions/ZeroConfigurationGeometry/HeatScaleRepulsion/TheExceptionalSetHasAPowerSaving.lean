@@ -65,13 +65,15 @@ variable {d η E T t X τ : ℝ}
 
 theorem saddle (h : PowerRange d η E T t X τ) {y : ℝ} (hy1 : -(1 / 2) ≤ y) (hy2 : y ≤ 1 / 2)
     (hyc : d + 12 * η ≤ y + 2 * τ * (horizontalSlope X).re) :
-    ∃ (a δ : ℝ) (ℓ : ℂ), PowerSaddle d η E T t X τ y a δ ℓ ∧
-      ℓ = lineLogDeriv X ((a : ℂ) + (δ : ℂ) * I) :=
-  exists_powerSaddle h.typ h.hη h.hη8 h.hT h.hE h.hX h.hα h.hαη h.hXt h.hτ h.hτ8 h.hc1 h.hc2 hy1 hy2 hyc h.hB
+    ∃ (a δ : ℝ) (ℓ : ℂ),
+      PowerSaddle xi d η (powerSlopeError E η T) (powerRatio E η T) t X τ y a δ ℓ ∧
+      ℓ = lineLogDeriv xi X ((a : ℂ) + (δ : ℂ) * I) :=
+  exists_powerSaddle (h.typ.lineModel h.hη (by linarith only [h.hη8]) h.hT h.hE) h.hη h.hη8 h.hX h.hα
+    h.hαη h.hXt h.hτ h.hτ8 h.hc1 h.hc2 hy1 hy2 hyc h.hB
 
 /-- The saddle has positive mass: `ξ` does not vanish at it. -/
 theorem mass_pos (h : PowerRange d η E T t X τ) {y a δ : ℝ} {ℓ : ℂ}
-    (hs : PowerSaddle d η E T t X τ y a δ ℓ) : 0 < SaddleData.mass (xiF X) τ a δ ℓ := by
+    (hs : PowerSaddle xi d η (powerSlopeError E η T) (powerRatio E η T) t X τ y a δ ℓ) : 0 < SaddleData.mass (lineF xi X) τ a δ ℓ := by
   have hη := h.hη
   have hXt := abs_le.mp h.hXt
   have hδ := abs_le.mp hs.hδ
@@ -86,37 +88,36 @@ theorem mass_pos (h : PowerRange d η E T t X τ) {y a δ : ℝ} {ℓ : ℂ}
     · simp only [Complex.add_im, Complex.ofReal_im, Complex.mul_im, Complex.ofReal_re, Complex.I_re,
         Complex.I_im, mul_zero, mul_one, add_zero, zero_add]
       exact abs_le.mpr ⟨by linarith only [hXt.1, hδ.1, hη], by linarith only [hXt.2, hδ.2, hη]⟩
-  have hne := xi_ne_zero_of_mem_saddleRegion h.typ hη (by linarith only [h.hη8]) h.hX
-    (h.hXt.trans (by linarith only [hη])) hreg
+  have hne := hs.model.ne_zero h.hX (h.hXt.trans (by linarith only [hη])) hreg
   exact mul_pos (norm_pos_iff.mpr hne) (Real.exp_pos _)
 
 /-- `|Q(y)|` stays comparable to the saddle mass. -/
 theorem lower (h : PowerRange d η E T t X τ) {y a δ : ℝ} {ℓ : ℂ}
-    (hs : PowerSaddle d η E T t X τ y a δ ℓ) :
-    4 / 5 * SaddleData.mass (xiF X) τ a δ ℓ ≤ ‖halfGaussTransform τ (xiLine X) y‖ := by
+    (hs : PowerSaddle xi d η (powerSlopeError E η T) (powerRatio E η T) t X τ y a δ ℓ) :
+    4 / 5 * SaddleData.mass (lineF xi X) τ a δ ℓ ≤ ‖halfGaussTransform τ (lineFn xi X) y‖ := by
   have hP := h.mass_pos hs
   have hb := (hs.norm_halfGauss_sub_main_le).trans (mul_le_mul_of_nonneg_left h.he0 hP.le)
-  have hM := SaddleData.norm_main (xiF X) τ a δ ℓ
-  have hn := norm_sub_norm_le (xiF X ((a : ℂ) + (δ : ℂ) * I) * Complex.exp (-((τ : ℂ) * ℓ ^ 2)))
-    (halfGaussTransform τ (xiLine X) y)
+  have hM := SaddleData.norm_main (lineF xi X) τ a δ ℓ
+  have hn := norm_sub_norm_le (lineF xi X ((a : ℂ) + (δ : ℂ) * I) * Complex.exp (-((τ : ℂ) * ℓ ^ 2)))
+    (halfGaussTransform τ (lineFn xi X) y)
   rw [norm_sub_rev, hM] at hn
   linarith only [hb, hn]
 
 /-- **Slope positivity near the axis.** -/
 theorem re_slope_pos (h : PowerRange d η E T t X τ) {y : ℝ} (hy1 : -(1 / 2) ≤ y) (hy2 : y ≤ 1 / 2)
     (hyc : d + 12 * η ≤ y + 2 * τ * (horizontalSlope X).re) :
-    0 < ((∫ w in Ioi (0 : ℝ), (((w - y) / (2 * τ) * gaussDensity τ (w - y) : ℝ) : ℂ) * xiLine X w) *
-      starRingEnd ℂ (halfGaussTransform τ (xiLine X) y)).re := by
+    0 < ((∫ w in Ioi (0 : ℝ), (((w - y) / (2 * τ) * gaussDensity τ (w - y) : ℝ) : ℂ) * lineFn xi X w) *
+      starRingEnd ℂ (halfGaussTransform τ (lineFn xi X) y)).re := by
   obtain ⟨a, δ, ℓ, hs, _⟩ := h.saddle hy1 hy2 hyc
   have hP := h.mass_pos hs
   have hq := h.lower hs
   have hR := (hs.norm_halfGauss_slope_sub_le).trans (mul_le_mul_of_nonneg_left h.he1 hP.le)
-  obtain ⟨Q, hQ⟩ : ∃ Q, Q = halfGaussTransform τ (xiLine X) y := ⟨_, rfl⟩
+  obtain ⟨Q, hQ⟩ : ∃ Q, Q = halfGaussTransform τ (lineFn xi X) y := ⟨_, rfl⟩
   obtain ⟨D, hD⟩ : ∃ D, D = ∫ w in Ioi (0 : ℝ),
-      (((w - y) / (2 * τ) * gaussDensity τ (w - y) : ℝ) : ℂ) * xiLine X w := ⟨_, rfl⟩
+      (((w - y) / (2 * τ) * gaussDensity τ (w - y) : ℝ) : ℂ) * lineFn xi X w := ⟨_, rfl⟩
   rw [← hQ, ← hD] at hR ⊢
   rw [← hQ] at hq
-  obtain ⟨P, hPdef⟩ : ∃ P, P = SaddleData.mass (xiF X) τ a δ ℓ := ⟨_, rfl⟩
+  obtain ⟨P, hPdef⟩ : ∃ P, P = SaddleData.mass (lineF xi X) τ a δ ℓ := ⟨_, rfl⟩
   rw [← hPdef] at hP hq hR
   obtain ⟨α, hαdef⟩ : ∃ α, α = (horizontalSlope X).re := ⟨_, rfl⟩
   have hα : 8 ≤ α := hαdef ▸ h.hα
@@ -146,7 +147,7 @@ theorem re_slope_pos (h : PowerRange d η E T t X τ) {y : ℝ} (hy1 : -(1 / 2) 
 /-- **The opposite half is smaller away from the axis.** -/
 theorem norm_opposite_lt (h : PowerRange d η E T t X τ) {y : ℝ} (hy1 : 4 * η ≤ y) (hy2 : y ≤ 1 / 2)
     (hyc : d + 12 * η ≤ y + 2 * τ * (horizontalSlope X).re) :
-    ‖halfGaussTransform τ (xiLine X) (-y)‖ < ‖halfGaussTransform τ (xiLine X) y‖ := by
+    ‖halfGaussTransform τ (lineFn xi X) (-y)‖ < ‖halfGaussTransform τ (lineFn xi X) y‖ := by
   have hη := h.hη
   obtain ⟨a, δ, ℓ, hs, _⟩ := h.saddle (y := y) (by linarith only [hy1, hη]) hy2 hyc
   have hP := h.mass_pos hs
@@ -175,7 +176,7 @@ theorem riemannHeat_ne_zero (h : PowerRange d η E T t X τ)
   have hη8 := h.hη8
   have hτ := h.hτ
   have hlt : ∀ y : ℝ, 0 < y → y ≤ 1 / 2 →
-      ‖halfGaussTransform τ (xiLine X) (-y)‖ < ‖halfGaussTransform τ (xiLine X) y‖ := by
+      ‖halfGaussTransform τ (lineFn xi X) (-y)‖ < ‖halfGaussTransform τ (lineFn xi X) y‖ := by
     intro y hy0 hy2
     rcases le_or_gt y (4 * η) with hnear | hfar
     · exact norm_lt_norm_of_re_mul_conj_pos (b := 4 * η)

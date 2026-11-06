@@ -25,18 +25,20 @@ each derivative: every derivative remains nonnegative at every nonnegative real 
 Translation by `1/4`, dilation by `1/M`, squaring, and division by the positive squared value
 preserve nonnegative Taylor coefficients. Thus `E^(n)(0)≥0` for every `n`.
 
-## Remaining identification
+## Product and character identification
 
-Prove the signed cycle-index identity with fixed points included. Equivalently, compare the
-Newton recurrence for the sign projection with the derivative recurrence from `E'/E`.
-Analytic coefficient positivity alone does not identify that projection.
+Pair the centered Hadamard products at `s` and `−s`, where `s²=−y`. Genus-one exponentials
+cancel, giving `G(y)²/G(0)²=Π_q(1+y/t_q²)`. Divide this product at `y=1/4+z/M` by its value
+at `1/4`; each factor becomes `1+z α_q/M`. Thus `E(z)=Π_q(1+z α_q/M)` with actual divisor
+multiplicities. Summability of `|α_q|` gives an absolutely convergent expansion over finite
+subsets. Grouping by cardinality and scalar-series uniqueness gives
 
-An alternative bridge is the endpoint product
-`E(z)=Π_q(1+z α_q/M)`. Pairing the centered Hadamard products at opposite arguments cancels
-the genus-one exponentials. Taking the quotient at square coordinates `1/4+z/M` and `1/4`
-then gives these exact factors. Absolute summability permits expansion over finite subsets.
-The remaining combinatorial identification is the signed fixed-word sum: repeated colors
-cancel, and injective words give `n!` times the subset mass of cardinality `n`.
+`E^(n)(0)=n! Σ_(|S|=n) Π_(q∈S)(α_q/M)`.
+
+The normalized complex alphabet has mass one. Absolute convergence factors its fixed-word
+trace over cycles, identifying it with `χ_arith`. In the sign projection, a repeated letter
+admits a sign-reversing transposition; an injective word has trivial stabilizer. Every
+`n`-element subset has `n!` orderings. Therefore the signed trace is the same derivative.
 
 Even complete column positivity leaves mixed Young shapes and full Gram positivity open.
 No RH conclusion follows from this subfamily.
@@ -46,4 +48,8 @@ No RH conclusion follows from this subfamily.
 `RHTower/Representation/EndpointExteriorSeries.lean` passes its direct leaf check and is
 wired into the umbrella. It proves the center derivative formula, affine Taylor positivity,
 `nonnegTaylorAtZero_xiEndpointExteriorSeries`, `xiEndpointExteriorSeries_zero`, and
-`hasDerivAt_xiEndpointExteriorSeries_zero`. Product and cycle-index identifications remain open.
+`hasDerivAt_xiEndpointExteriorSeries_zero`.
+
+`EndpointExteriorProduct.lean`, `ComplexColoring.lean`, `AlternatingComplexColoring.lean`, and
+`EndpointAlternatingPositivity.lean` contain the product-to-character bridge under active Lean
+verification. Their conclusions are not yet certified.

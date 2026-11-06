@@ -89,8 +89,9 @@ theorem le_of_strong_restoring {D ω : ℝ → ℝ} {y x₀ x ε : ℝ} (hy : 0 
   have hmain := image_le_of_deriv_right_lt_deriv_boundary'
     (f' := fun s => -y * Real.sinh (2 * (D s + ω s))) hDc hD hstart hBc
     (fun s hs => (hBd hs.1).hasDerivWithinAt) hbound (show x ∈ Icc x₀ x from ⟨hx.le, le_rfl⟩)
-  have hexp : Real.exp (-(2 * y * (x - x₀))) < 1 :=
-    Real.exp_lt_one (neg_lt_zero.mpr (mul_pos (mul_pos two_pos hy) (sub_pos.mpr hx)))
+  have hexp : Real.exp (-(2 * y * (x - x₀))) < 1 := by
+    rw [← Real.exp_zero]
+    exact Real.exp_lt_exp.mpr (neg_lt_zero.mpr (mul_pos (mul_pos two_pos hy) (sub_pos.mpr hx)))
   have hlt : t x < Real.exp (-(2 * y * (x - x₀))) := mul_lt_of_lt_one_left (Real.exp_pos _) hc1
   have hart := Real.artanh_lt_artanh (by linarith only [htpos x]) hexp hlt
   have hBx : B x = 2 * ε + Real.artanh (t x) := rfl
@@ -213,17 +214,13 @@ theorem spectralDrift_eq_traces {y : ℝ} (hy : 0 < y) (b : PrecontactAperture) 
   have h := (traceReflection_algebra (spectral_pos hy b) (spectral_trace_identity b y)).2.2.2.1
   have hN : ‖evalVector b (spectralPoint y)‖ ^ 2 ≠ 0 :=
     (sq_pos_of_pos (norm_pos_iff.mpr (evalVector_ne_zero _ _))).ne'
-  rw [spectralDrift, spectralReflection_coe]
-  rw [← mul_div_assoc, mul_assoc y] at *
   have hy' := hy.ne'
-  have h2 : 2 * (spectralRight b y / spectralLeft b y) /
-      (1 - (spectralRight b y / spectralLeft b y) ^ 2) =
-      spectralLeft b y * spectralRight b y / (y * ‖evalVector b (spectralPoint y)‖ ^ 2) := h.symm
+  rw [spectralDrift, spectralReflection_coe]
   calc
     _ = y * (2 * (spectralRight b y / spectralLeft b y) /
         (1 - (spectralRight b y / spectralLeft b y) ^ 2)) := by ring
     _ = _ := by
-      rw [h2]
+      rw [← h]
       field_simp
 
 /-- The spectral drift is the hyperbolic restoring term at `iy`. -/
@@ -404,7 +401,6 @@ theorem hasDerivWithinAt_spectralPlus (y : ℝ) {x : ℝ} (hx : x ∈ precontact
   rw [hc]
   change (_ - _ : ℂ).im = _
   rw [Complex.sub_im, Complex.im_ofReal_mul, Complex.im_ofReal_mul]
-  change y * m * E.im - (y + 1) * s * S.im = y * m * spectralPlus y x - _
   rw [spectralPlus, spectralMinus, hE, hS]
 
 theorem hasDerivWithinAt_spectralMinus (y : ℝ) {x : ℝ} (hx : x ∈ precontactSet) :
@@ -440,7 +436,6 @@ theorem hasDerivWithinAt_spectralMinus (y : ℝ) {x : ℝ} (hx : x ∈ precontac
   rw [hc]
   change -((_ + _ : ℂ).im) = _
   rw [Complex.add_im, Complex.im_ofReal_mul, Complex.im_ofReal_mul]
-  change -(-(y * m) * E.im + (y - 1) * s * S.im) = _
   rw [hE, hS]
   ring
 
@@ -561,14 +556,15 @@ theorem hasDerivWithinAt_artanh_sub_spectral {y : ℝ} (hy : 0 < y) {x : ℝ}
   have hRm : R ∈ Ioo (-1 : ℝ) 1 := hR ▸ spectralReflection_mem hy b
   have hrv : r = w / u := by rw [hr, hu, hw]; exact anchorReflection_coe b
   have hRv : R = q / p := by rw [hR, hp, hq]; exact spectralReflection_coe y b
+  have hN' : N = Real.sqrt (diagonalEvalGram I x) := hN
   have hfp : spectralPlus y x = p * u / N * (1 - R * r) := by
     have h := spectralPlus_coe y b
-    rw [hbx, ← hu, ← hw, ← hp, ← hq, ← hN] at h
+    rw [hbx, ← hu, ← hw, ← hp, ← hq, ← hN'] at h
     rw [h, hrv, hRv]
     field_simp
   have hfm : spectralMinus y x = p * u / N * (r - R) := by
     have h := spectralMinus_coe y b
-    rw [hbx, ← hu, ← hw, ← hp, ← hq, ← hN] at h
+    rw [hbx, ← hu, ← hw, ← hp, ← hq, ← hN'] at h
     rw [h, hrv, hRv]
     field_simp
   have hmass : precontactCanonicalMass x = (1 + r ^ 2) / (1 - r ^ 2) := by
@@ -584,7 +580,6 @@ theorem hasDerivWithinAt_artanh_sub_spectral {y : ℝ} (hy : 0 < y) {x : ℝ}
   rw [spectralDrift, ← hR]
   rw [← hslope]
   simp only [Pi.add_apply, Pi.sub_apply]
-  ring
 
 /-- **Universality.** Every spectral parameter sees the one potential:
 `artanh r_y(b) − artanh r_y(a) = Ψ(b) − Ψ(a) − ∫_a^b q_y`. -/
@@ -640,8 +635,8 @@ private theorem hasDerivWithinAt_spectral_distance {y : ℝ} (hy : 0 < y) {base 
     rw [canonicalPotential_eq base hs]
     ring
   refine (h3.congr_of_eventuallyEq hev hsv).congr_deriv ?_
-  have hd := spectralDrift_eq_sinh hy (toPrecontact hs)
-  change spectralDrift y s = _ at hd
+  have hd : spectralDrift y s = y * Real.sinh (2 * Real.artanh (spectralReflection y s)) :=
+    spectralDrift_eq_sinh hy (toPrecontact hs)
   rw [hd]
   ring
 
@@ -724,7 +719,7 @@ theorem tendsto_artanh_spectralReflection_zero (a : PrecontactAperture) :
 /-- `r_y(x) → 0` as `y → ∞`: the corner is small relative to the left trace. -/
 theorem tendsto_spectralReflection_zero (a : PrecontactAperture) :
     Tendsto (fun y : ℝ => spectralReflection y a.1.1) atTop (𝓝 0) := by
-  have h := (Real.continuous_tanh.tendsto 0).comp (tendsto_artanh_spectralReflection_zero a)
+  have h := (hasDerivAt_tanh 0).continuousAt.tendsto.comp (tendsto_artanh_spectralReflection_zero a)
   rw [Real.tanh_zero] at h
   refine h.congr' ?_
   filter_upwards [eventually_gt_atTop 0] with y hy

@@ -38,8 +38,8 @@ Hilbert-space invariant behind the obstruction:
   and `≤ 2 (1 − p^{-1/2 − β})` (`β ≥ 0`) is equivalent to `XiZeroHalfPlaneBound β`.
 -/
 
-open Complex Finset MeasureTheory Set UpperHalfPlane ModularGroup
-open scoped ComplexConjugate
+open Complex Finset MeasureTheory Set ModularGroup
+open scoped ComplexConjugate UpperHalfPlane
 open GaloisForLFunctions.HTGeometry
 open _root_.RHTower
 open _root_.RHTower.CrossRouteReceiverBridges (mem_zetaZeroConfig_carrier_iff_xi_eq_zero_and_strip
@@ -68,7 +68,7 @@ theorem whittakerCoeff_mul_coprime (u : ℂ) {a b : ℕ} (hab : a.Coprime b) :
   ring
 
 /-- Symmetric antidiagonal form `W_u(n) = Σ_{a d = n} a^u d^{-u}` for `n ≠ 0`. -/
-theorem whittakerCoeff_eq_sum_antidiagonal (u : ℂ) {n : ℕ} (hn : n ≠ 0) :
+theorem whittakerCoeff_eq_sum_antidiagonal (u : ℂ) {n : ℕ} (_hn : n ≠ 0) :
     whittakerCoeff u n =
       ∑ ad ∈ n.divisorsAntidiagonal, (ad.1 : ℂ) ^ u * (ad.2 : ℂ) ^ (-u) := by
   rw [Nat.sum_divisorsAntidiagonal' (f := fun a d => (a : ℂ) ^ u * (d : ℂ) ^ (-u))]
@@ -85,25 +85,30 @@ theorem whittakerCoeff_eq_sum_antidiagonal (u : ℂ) {n : ℕ} (hn : n ≠ 0) :
 
 /-- On the tempered line `u = i t` (`t ∈ ℝ`), `W_{i t}(n)` is real for every `n ≠ 0`. -/
 theorem conj_whittakerCoeff_I_mul_real (t : ℝ) {n : ℕ} (hn : n ≠ 0) :
-    starRingEnd ℂ (whittakerCoeff (I * (t : ℂ)) n) = whittakerCoeff (I * (t : ℂ)) n := by
+    starRingEnd ℂ (whittakerCoeff (Complex.I * (t : ℂ)) n) =
+      whittakerCoeff (Complex.I * (t : ℂ)) n := by
   rw [whittakerCoeff_eq_sum_antidiagonal _ hn, map_sum]
   have hterm : ∀ a d : ℕ,
-      starRingEnd ℂ ((a : ℂ) ^ (I * (t : ℂ)) * (d : ℂ) ^ (-(I * (t : ℂ)))) =
-        (d : ℂ) ^ (I * (t : ℂ)) * (a : ℂ) ^ (-(I * (t : ℂ))) := fun a d => by
-    have ha : (a : ℂ).arg ≠ Real.pi := by rw [Complex.natCast_arg]; exact Real.pi_ne_zero.symm
-    have hd : (d : ℂ).arg ≠ Real.pi := by rw [Complex.natCast_arg]; exact Real.pi_ne_zero.symm
-    rw [map_mul, Complex.cpow_conj _ _ ha, Complex.cpow_conj _ _ hd, Complex.conj_natCast,
-      Complex.conj_natCast]
-    have h1 : starRingEnd ℂ (I * (t : ℂ)) = -(I * (t : ℂ)) := by simp
-    have h2 : starRingEnd ℂ (-(I * (t : ℂ))) = I * (t : ℂ) := by simp
+      starRingEnd ℂ
+          ((a : ℂ) ^ (Complex.I * (t : ℂ)) * (d : ℂ) ^ (-(Complex.I * (t : ℂ)))) =
+        (d : ℂ) ^ (Complex.I * (t : ℂ)) * (a : ℂ) ^ (-(Complex.I * (t : ℂ))) := fun a d => by
+    rw [map_mul, conj_natCast_cpow, conj_natCast_cpow]
+    have h1 : starRingEnd ℂ (Complex.I * (t : ℂ)) = -(Complex.I * (t : ℂ)) := by simp
+    have h2 : starRingEnd ℂ (-(Complex.I * (t : ℂ))) = Complex.I * (t : ℂ) := by simp
     rw [h1, h2, mul_comm]
   have hcongr : ∑ x ∈ n.divisorsAntidiagonal,
-      starRingEnd ℂ ((x.1 : ℂ) ^ (I * (t : ℂ)) * (x.2 : ℂ) ^ (-(I * (t : ℂ)))) =
+      starRingEnd ℂ
+        ((x.1 : ℂ) ^ (Complex.I * (t : ℂ)) * (x.2 : ℂ) ^ (-(Complex.I * (t : ℂ)))) =
       ∑ x ∈ n.divisorsAntidiagonal,
-        (x.2 : ℂ) ^ (I * (t : ℂ)) * (x.1 : ℂ) ^ (-(I * (t : ℂ))) :=
+        (x.2 : ℂ) ^ (Complex.I * (t : ℂ)) * (x.1 : ℂ) ^ (-(Complex.I * (t : ℂ))) :=
     Finset.sum_congr rfl fun x _ => hterm x.1 x.2
-  rw [hcongr, ← Nat.sum_divisorsAntidiagonal
-    (f := fun a d => (a : ℂ) ^ (I * (t : ℂ)) * (d : ℂ) ^ (-(I * (t : ℂ))))]
+  rw [hcongr]
+  refine Finset.sum_nbij Prod.swap (fun x hx => ?_) (fun _ _ _ _ h => Prod.swap_injective h)
+      (fun y hy => ⟨y.swap, ?_, Prod.swap_swap y⟩) (fun _ _ => rfl)
+  · obtain ⟨hprod, hne⟩ := Nat.mem_divisorsAntidiagonal.mp hx
+    exact Nat.mem_divisorsAntidiagonal.mpr ⟨by simpa [mul_comm] using hprod, hne⟩
+  · obtain ⟨hprod, hne⟩ := Nat.mem_divisorsAntidiagonal.mp hy
+    exact Nat.mem_divisorsAntidiagonal.mpr ⟨by simpa [mul_comm] using hprod, hne⟩
 
 /-- **Multiplicative Hecke eigenvalue product law.** For all `m, n ≥ 1` and `u ∈ ℂ`,
 `W_u(m) W_u(n) = Σ_{d ∣ gcd(m, n)} W_u(mn / d²)`. -/
@@ -185,8 +190,7 @@ theorem whittakerCoeff_mul_eq_sum_gcd_divisors (u : ℂ) :
           rw [ih (m₁ / p) hm₂_lt hm₂_pos.ne' hn]
           have hset : (Nat.gcd (m₁ / p) n).divisors = B := by
             ext d
-            simp only [B, D₀, Finset.mem_filter, Nat.mem_divisors, Nat.dvd_gcd_iff,
-              Nat.gcd_eq_zero_iff]
+            simp only [B, D₀, Finset.mem_filter, Nat.mem_divisors, Nat.dvd_gcd_iff]
             constructor
             · rintro ⟨⟨hd1, hd2⟩, _⟩
               have hpdm : p * d ∣ m₁ := by
@@ -195,14 +199,15 @@ theorem whittakerCoeff_mul_eq_sum_gcd_divisors (u : ℂ) :
                 calc m₁ = p * (m₁ / p) := (Nat.mul_div_cancel' hp₁).symm
                   _ = p * (d * k) := by rw [hk]
                   _ = p * d * k := by ring
-              exact ⟨⟨⟨(dvd_mul_left d p).trans hpdm, hd2⟩, fun h => hn h.2⟩, hpdm⟩
+              exact ⟨⟨⟨(dvd_mul_left d p).trans hpdm, hd2⟩,
+                fun h => hn (Nat.gcd_eq_zero_iff.mp h).2⟩, hpdm⟩
             · rintro ⟨⟨⟨_, hd2⟩, _⟩, hpdm⟩
               have hd1 : d ∣ m₁ / p := by
                 rcases hpdm with ⟨k, hk⟩
                 have : m₁ = p * (d * k) := by rw [hk]; ring
                 rw [this, Nat.mul_div_cancel_left _ hp.pos]
                 exact dvd_mul_right d k
-              exact ⟨⟨hd1, hd2⟩, fun h => hn h.2⟩
+              exact ⟨⟨hd1, hd2⟩, fun h => hn (Nat.gcd_eq_zero_iff.mp h).2⟩
           rw [hset]
           refine Finset.sum_congr rfl fun d _ => ?_
           congr 1
@@ -242,7 +247,7 @@ theorem whittakerCoeff_mul_eq_sum_gcd_divisors (u : ℂ) :
             calc d ^ 2 * (k * l) = (d * k) * (d * l) := by ring
               _ = m₁ * n := by rw [← hk, ← hl]
               _ = p * d ^ 2 * r := hr
-              _ = d ^ 2 * (p * r) := by ring
+              _ = d ^ 2 * p * r := by ring
           have hpk_not : ¬ p ∣ k := by
             rintro ⟨s, rfl⟩
             exact hpdm_not ⟨s, by rw [hk]; ring⟩
@@ -337,10 +342,12 @@ theorem integral_halfPlanePoisson_shift_mul_cexp {σ : ℝ} (hσ : 0 < σ) (t₀
     rcases le_total 0 y with hy | hy
     · rw [abs_of_nonneg hy]; exact hunit_nonneg hy
     · rw [abs_of_nonpos hy, ← hunit_nonneg (neg_nonneg.mpr hy)]
-      have hneg := Measure.integral_comp_neg
+      have hneg := MeasureTheory.integral_neg_eq_self
         (fun w : ℝ => (halfPlanePoisson 1 w : ℂ) * Complex.exp (I * (y : ℂ) * (w : ℂ)))
+        (volume : Measure ℝ)
       rw [← hneg]
       refine integral_congr_ae (Filter.Eventually.of_forall fun w => ?_)
+      dsimp only
       have heven : halfPlanePoisson 1 (-w) = halfPlanePoisson 1 w := by
         unfold halfPlanePoisson; ring
       rw [heven]
@@ -362,7 +369,6 @@ theorem integral_halfPlanePoisson_shift_mul_cexp {σ : ℝ} (hσ : 0 < σ) (t₀
         have hσ0 : σ ≠ 0 := hσ.ne'
         have hpi0 : Real.pi ≠ 0 := Real.pi_ne_zero
         field_simp
-        ring
       rw [hp]
       push_cast
       ring
@@ -380,16 +386,25 @@ theorem integral_halfPlanePoisson_shift_mul_cexp {σ : ℝ} (hσ : 0 < σ) (t₀
   have hcongr : (∫ t : ℝ, (halfPlanePoisson σ (t - t₀) : ℂ) * Complex.exp (I * (x : ℂ) * (t : ℂ))) =
       Complex.exp (I * ((t₀ * x : ℝ) : ℂ)) *
         ∫ s : ℝ, (halfPlanePoisson σ s : ℂ) * Complex.exp (I * (x : ℂ) * (s : ℂ)) := by
-    rw [← integral_const_mul, ← hshift]
-    refine integral_congr_ae (Filter.Eventually.of_forall fun t => ?_)
-    have ht : t - t₀ + t₀ = t := sub_add_cancel t t₀
-    rw [ht]
-    have hexp : I * ((t₀ * x : ℝ) : ℂ) + I * (x : ℂ) * (t : ℂ) =
-        I * (x : ℂ) * (t : ℂ) + I * ((t₀ * x : ℝ) : ℂ) := by ring
-    rw [mul_left_comm, ← Complex.exp_add]
-    congr 2
-    push_cast
-    ring
+    calc (∫ t : ℝ, (halfPlanePoisson σ (t - t₀) : ℂ) * Complex.exp (I * (x : ℂ) * (t : ℂ)))
+        = ∫ t : ℝ, (halfPlanePoisson σ (t - t₀) : ℂ) *
+            Complex.exp (I * (x : ℂ) * ((t - t₀ + t₀ : ℝ) : ℂ)) := by
+              refine integral_congr_ae (Filter.Eventually.of_forall fun t => ?_)
+              dsimp only
+              rw [sub_add_cancel]
+      _ = ∫ s : ℝ, (halfPlanePoisson σ s : ℂ) *
+            Complex.exp (I * (x : ℂ) * ((s + t₀ : ℝ) : ℂ)) := hshift
+      _ = ∫ s : ℝ, Complex.exp (I * ((t₀ * x : ℝ) : ℂ)) *
+            ((halfPlanePoisson σ s : ℂ) * Complex.exp (I * (x : ℂ) * (s : ℂ))) := by
+              refine integral_congr_ae (Filter.Eventually.of_forall fun s => ?_)
+              dsimp only
+              rw [mul_left_comm, ← Complex.exp_add]
+              congr 2
+              push_cast
+              ring
+      _ = Complex.exp (I * ((t₀ * x : ℝ) : ℂ)) *
+            ∫ s : ℝ, (halfPlanePoisson σ s : ℂ) * Complex.exp (I * (x : ℂ) * (s : ℂ)) :=
+              integral_const_mul _ _
   rw [hcongr, hscale, ← Complex.exp_add]
   congr 1
   ring
@@ -399,11 +414,12 @@ theorem integrable_halfPlanePoisson_shift_mul_cexp {σ : ℝ} (hσ : 0 < σ) (t�
       (halfPlanePoisson σ (t - t₀) : ℂ) * Complex.exp (I * (x : ℂ) * (t : ℂ)) := by
   have hP : Integrable (fun t : ℝ => (halfPlanePoisson σ (t - t₀) : ℂ)) :=
     ((integrable_halfPlanePoisson hσ).comp_sub_right t₀).ofReal
-  refine hP.mul_bdd (Continuous.aestronglyMeasurable (by fun_prop))
-    (Filter.Eventually.of_forall fun t => ?_)
-  rw [Complex.norm_exp]
-  have hre : (I * (x : ℂ) * (t : ℂ)).re = 0 := by simp
-  rw [hre, Real.exp_zero]
+  have hbd : ∀ t : ℝ, ‖Complex.exp (I * (x : ℂ) * (t : ℂ))‖ ≤ 1 := fun t => by
+    rw [Complex.norm_exp]
+    have hre : (I * (x : ℂ) * (t : ℂ)).re = 0 := by simp
+    rw [hre, Real.exp_zero]
+  exact hP.mul_bdd (Continuous.aestronglyMeasurable (by fun_prop))
+    (Filter.Eventually.of_forall hbd)
 
 /-- **All-`n` resonant Hecke moment** on the half-plane `Re u < 0`. -/
 def resonantHeckeMoment (u : ℂ) (n : ℕ) : ℂ :=
@@ -425,7 +441,7 @@ theorem resonantHeckeMoment_prime (u : ℂ) {p : ℕ} (hp : p.Prime) :
       else 1),
     hp.divisors, Finset.sum_pair hp.one_lt.ne]
   have h1p : 1 < p := hp.one_lt
-  rw [Nat.div_one, Nat.div_self hp.pos, if_pos h1p, if_neg (lt_irrefl 1), if_pos h1p]
+  rw [Nat.div_one, Nat.div_self hp.pos, if_pos h1p, if_neg (not_lt.mpr h1p.le), if_pos h1p]
   simp
 
 theorem resonantHeckeMoment_prime_sq (u : ℂ) {p : ℕ} (hp : p.Prime) :
@@ -441,18 +457,16 @@ theorem resonantHeckeMoment_prime_sq (u : ℂ) {p : ℕ} (hp : p.Prime) :
     Finset.sum_empty, zero_add, pow_zero, pow_one]
   have hp1 : 1 < p := hp.one_lt
   have hp2 : 1 < p ^ 2 := one_lt_pow₀ hp1 two_ne_zero
+  have hpC0 : (p : ℂ) ≠ 0 := by exact_mod_cast hp.ne_zero
   have hdiv1 : p ^ 2 / p = p := by rw [sq, Nat.mul_div_cancel_left _ hp.pos]
   have hdiv2 : p ^ 2 / p ^ 2 = 1 := Nat.div_self (pow_pos hp.pos 2)
   rw [Nat.div_one, hdiv1, hdiv2, if_pos hp2, if_neg (lt_irrefl p), if_neg (lt_irrefl p),
     if_neg (not_lt.mpr hp2.le), if_pos hp2]
   have hpow1 : ((p ^ 2 : ℕ) : ℂ) ^ u = (p : ℂ) ^ (2 * u) := by
-    rw [Nat.cast_pow, show (2 : ℂ) * u = ((2 : ℕ) : ℂ) * u by push_cast; ring,
-      Complex.cpow_nat_mul]
+    rw [sq p, natCast_mul_cpow', ← Complex.cpow_add _ _ hpC0, two_mul]
   have hpow2 : ((p ^ 2 : ℕ) : ℂ) ^ (starRingEnd ℂ u) = (p : ℂ) ^ (2 * starRingEnd ℂ u) := by
-    rw [Nat.cast_pow,
-      show (2 : ℂ) * starRingEnd ℂ u = ((2 : ℕ) : ℂ) * starRingEnd ℂ u by push_cast; ring,
-      Complex.cpow_nat_mul]
-  simp only [Nat.cast_one, div_one, Nat.cast_pow] at hpow1 hpow2 ⊢
+    rw [sq p, natCast_mul_cpow', ← Complex.cpow_add _ _ hpC0, two_mul]
+  simp only [Nat.cast_one, div_one]
   rw [hpow1, hpow2]
 
 /-- **Exact Poisson mixture representation of the resonant Hecke moment.** For every `u` with
@@ -487,7 +501,7 @@ theorem resonantHeckeMoment_eq_poisson_integral {u : ℂ} (hu : u.re < 0) {n : �
     funext t
     rw [whittakerCoeff_eq_sum_antidiagonal _ hn, Finset.mul_sum]
     exact Finset.sum_congr rfl fun ad had => by rw [hterm_exp ad had t]
-  rw [hcongr, integral_finset_sum _ fun ad _ =>
+  rw [hcongr, integral_finsetSum _ fun ad _ =>
     integrable_halfPlanePoisson_shift_mul_cexp hσ u.im (Real.log ((ad.1 : ℝ) / ad.2))]
   unfold resonantHeckeMoment
   refine Finset.sum_congr rfl fun ad had => ?_
@@ -541,7 +555,7 @@ theorem continuous_whittakerCoeff_I_mul_real {n : ℕ} (hn : n ≠ 0) :
       by exact_mod_cast (Nat.pos_of_mem_divisors (Nat.snd_mem_divisors_of_mem_antidiagonal had)).ne'
     rw [Complex.cpow_def_of_ne_zero ha, Complex.cpow_def_of_ne_zero hd]
   rw [heq]
-  exact continuous_finset_sum _ fun _ _ => by fun_prop
+  exact continuous_finsetSum _ fun _ _ => by fun_prop
 
 theorem norm_whittakerCoeff_I_mul_real_le {n : ℕ} (hn : n ≠ 0) (t : ℝ) :
     ‖whittakerCoeff (I * (t : ℂ)) n‖ ≤ n.divisorsAntidiagonal.card := by
@@ -578,14 +592,15 @@ theorem resonantHeckeStarSquare_eq_poisson_integral {u : ℂ} (hu : u.re < 0)
         ((halfPlanePoisson (-u.re) (t - u.im) : ℂ) *
           (whittakerCoeff (I * (t : ℂ)) m * whittakerCoeff (I * (t : ℂ)) k)) := by
     intro m hm k hk
+    have hbd : ∀ t : ℝ, ‖whittakerCoeff (I * (t : ℂ)) m * whittakerCoeff (I * (t : ℂ)) k‖ ≤
+        (m.divisors.card : ℝ) * (k.divisors.card : ℝ) := fun t => by
+      rw [norm_mul]
+      exact mul_le_mul (norm_whittakerCoeff_I_mul_real_le (hS m hm) t)
+        (norm_whittakerCoeff_I_mul_real_le (hS k hk) t) (norm_nonneg _) (by positivity)
     exact (hP.mul_bdd
       ((continuous_whittakerCoeff_I_mul_real (hS m hm)).mul
         (continuous_whittakerCoeff_I_mul_real (hS k hk))).aestronglyMeasurable
-      (Filter.Eventually.of_forall fun t => by
-        rw [norm_mul]
-        exact mul_le_mul (norm_whittakerCoeff_I_mul_real_le (hS m hm) t)
-          (norm_whittakerCoeff_I_mul_real_le (hS k hk) t) (norm_nonneg _)
-          (by positivity))).const_mul _
+      (Filter.Eventually.of_forall hbd)).const_mul _
   -- Step 1: replace the inner gcd-divisor sum by the integral of `W_{it}(m) W_{it}(k)`
   have dinner : ∀ m ∈ S, ∀ k ∈ S,
       (∑ d ∈ (Nat.gcd m k).divisors, resonantHeckeMoment u (m * k / d ^ 2)) =
@@ -606,8 +621,9 @@ theorem resonantHeckeStarSquare_eq_poisson_integral {u : ℂ} (hu : u.re < 0)
           ∫ t : ℝ, (halfPlanePoisson (-u.re) (t - u.im) : ℂ) *
             whittakerCoeff (I * (t : ℂ)) (m * k / d ^ 2) :=
       Finset.sum_congr rfl fun d hd => resonantHeckeMoment_eq_poisson_integral hu (hd_ne d hd)
-    rw [hcongr_sum, ← integral_finset_sum]
+    rw [hcongr_sum, ← integral_finsetSum]
     · refine integral_congr_ae (Filter.Eventually.of_forall fun t => ?_)
+      dsimp only
       rw [← Finset.mul_sum, ← whittakerCoeff_mul_eq_sum_gcd_divisors _ (hS m hm) (hS k hk)]
     · intro d hd
       exact hP.mul_bdd (continuous_whittakerCoeff_I_mul_real (hd_ne d hd)).aestronglyMeasurable
@@ -629,19 +645,19 @@ theorem resonantHeckeStarSquare_eq_poisson_integral {u : ℂ} (hu : u.re < 0)
       ∫ t : ℝ, ∑ k ∈ S, starRingEnd ℂ (c m) * c k *
         ((halfPlanePoisson (-u.re) (t - u.im) : ℂ) *
           (whittakerCoeff (I * (t : ℂ)) m * whittakerCoeff (I * (t : ℂ)) k)) :=
-    fun m hm => (integral_finset_sum S fun k hk => hW_int m hm k hk).symm
-  rw [Finset.sum_congr rfl hswap1, ← integral_finset_sum S fun m hm =>
-    integrable_finset_sum S fun k hk => hW_int m hm k hk, ← integral_complex_ofReal]
+    fun m hm => (integral_finsetSum S fun k hk => hW_int m hm k hk).symm
+  rw [Finset.sum_congr rfl hswap1, ← integral_finsetSum S fun m hm =>
+    integrable_finsetSum S fun k hk => hW_int m hm k hk, ← integral_complex_ofReal]
   refine integral_congr_ae (Filter.Eventually.of_forall fun t => ?_)
+  dsimp only
   set Z : ℂ := ∑ m ∈ S, c m * whittakerCoeff (I * (t : ℂ)) m with hZ
   have hnormZ : ((‖Z‖ ^ 2 : ℝ) : ℂ) = starRingEnd ℂ Z * Z := by
-    rw [← Complex.normSq_eq_norm_sq, Complex.mul_conj, mul_comm]
+    rw [← Complex.normSq_eq_norm_sq, ← Complex.mul_conj, mul_comm]
   have hconjZ : starRingEnd ℂ Z = ∑ m ∈ S, starRingEnd ℂ (c m) * whittakerCoeff (I * (t : ℂ)) m := by
     rw [hZ, map_sum]
     exact Finset.sum_congr rfl fun m hm => by
       rw [map_mul, conj_whittakerCoeff_I_mul_real t (hS m hm)]
-  push_cast
-  rw [hnormZ, hconjZ, hZ, Finset.sum_mul, Finset.mul_sum]
+  rw [Complex.ofReal_mul, hnormZ, hconjZ, hZ, Finset.sum_mul, Finset.mul_sum]
   refine Finset.sum_congr rfl fun m _ => ?_
   rw [Finset.mul_sum, Finset.mul_sum]
   exact Finset.sum_congr rfl fun k _ => by ring
@@ -777,8 +793,6 @@ theorem integral_norm_sq_heckeEigenDefect_resonantZero {p : ℕ} (hp : p.Prime) 
   set μ : ℝ := 2 * ((p : ℂ) ^ u).re with hμ_def
   have hμ_coe : (p : ℂ) ^ u + (p : ℂ) ^ (starRingEnd ℂ u) = (μ : ℂ) := by
     rw [← conj_natCast_cpow, Complex.add_conj, hμ_def]
-    push_cast
-    ring
   -- Pointwise expansion of `‖a − μ b‖²`
   have hpt : ∀ z : ℍ, ‖heckeEigenDefect p u Y z‖ ^ 2 =
       ‖heckeTruncated p u Y z‖ ^ 2 -
@@ -789,26 +803,23 @@ theorem integral_norm_sq_heckeEigenDefect_resonantZero {p : ℕ} (hp : p.Prime) 
     rw [hμ_coe]
     set a := heckeTruncated p u Y z
     set b := truncatedLineModel u Y z
-    simp only [ ← Complex.normSq_eq_norm_sq, Complex.normSq_apply, Complex.sub_re, Complex.sub_im,
+    simp only [← Complex.normSq_eq_norm_sq, Complex.normSq_apply, Complex.sub_re, Complex.sub_im,
       Complex.mul_re, Complex.mul_im, Complex.ofReal_re, Complex.ofReal_im, Complex.conj_re,
       Complex.conj_im]
     ring
   -- Integrability of the three real pieces on `fd`
   have hiT : IntegrableOn (fun z : ℍ => ‖heckeTruncated p u Y z‖ ^ 2) fd := by
-    obtain ⟨M, hM0, hM⟩ := exists_bound_heckeRemainder hp.pos u hY0
+    obtain ⟨M, _, hM⟩ := exists_bound_heckeRemainder hp.pos u hY0
     set lam : ℂ := (p : ℂ) ^ u + (p : ℂ) ^ (-u)
     have hm : Measurable (fun z : ℍ => ‖heckeTruncated p u Y z‖ ^ 2) := by
-      have heq : (fun z : ℍ => heckeTruncated p u Y z) =
-          fun z : ℍ => lam * truncatedLineModel u Y z + heckeRemainder p u Y z.im :=
-        funext (heckeTruncated_eq_eigen_add_remainder hp hY)
-      rw [heq]
+      simp_rw [heckeTruncated_eq hp u Y]
       exact ((measurable_const.mul (measurable_truncatedLineModel u Y)).add
         (measurable_heckeRemainder_im p u Y)).norm.pow_const 2
     refine Measure.integrableOn_of_bounded volume_fd_ne_top hm.aestronglyMeasurable
       (M := (‖lam‖ * truncBound' u Y + M) ^ 2) ?_
     refine (ae_restrict_iff' isClosed_fd.measurableSet).mpr
       (Filter.Eventually.of_forall fun z hz => ?_)
-    rw [Real.norm_eq_abs, abs_of_nonneg (sq_nonneg _), heckeTruncated_eq_eigen_add_remainder hp hY z]
+    rw [Real.norm_eq_abs, abs_of_nonneg (sq_nonneg _), heckeTruncated_eq hp u Y z]
     refine pow_le_pow_left₀ (norm_nonneg _) ?_ 2
     calc ‖lam * truncatedLineModel u Y z + heckeRemainder p u Y z.im‖
         ≤ ‖lam * truncatedLineModel u Y z‖ + ‖heckeRemainder p u Y z.im‖ := norm_add_le _ _
@@ -831,10 +842,7 @@ theorem integral_norm_sq_heckeEigenDefect_resonantZero {p : ℕ} (hp : p.Prime) 
     set lam : ℂ := (p : ℂ) ^ u + (p : ℂ) ^ (-u)
     have hm : Measurable (fun z : ℍ =>
         heckeTruncated p u Y z * starRingEnd ℂ (truncatedLineModel u Y z)) := by
-      have heq : (fun z : ℍ => heckeTruncated p u Y z) =
-          fun z : ℍ => lam * truncatedLineModel u Y z + heckeRemainder p u Y z.im :=
-        funext (heckeTruncated_eq_eigen_add_remainder hp hY)
-      rw [heq]
+      simp_rw [heckeTruncated_eq hp u Y]
       exact ((measurable_const.mul (measurable_truncatedLineModel u Y)).add
         (measurable_heckeRemainder_im p u Y)).mul
         (Complex.continuous_conj.measurable.comp (measurable_truncatedLineModel u Y))
@@ -842,7 +850,7 @@ theorem integral_norm_sq_heckeEigenDefect_resonantZero {p : ℕ} (hp : p.Prime) 
       (M := (‖lam‖ * truncBound' u Y + M) * truncBound' u Y) ?_
     refine (ae_restrict_iff' isClosed_fd.measurableSet).mpr
       (Filter.Eventually.of_forall fun z hz => ?_)
-    rw [norm_mul, Complex.norm_conj, heckeTruncated_eq_eigen_add_remainder hp hY z]
+    rw [norm_mul, Complex.norm_conj, heckeTruncated_eq hp u Y z]
     refine mul_le_mul ?_ (norm_truncatedLineModel_le_truncBound' u hY1 hz) (norm_nonneg _) ?_
     · calc ‖lam * truncatedLineModel u Y z + heckeRemainder p u Y z.im‖
           ≤ ‖lam * truncatedLineModel u Y z‖ + ‖heckeRemainder p u Y z.im‖ := norm_add_le _ _
@@ -863,15 +871,17 @@ theorem integral_norm_sq_heckeEigenDefect_resonantZero {p : ℕ} (hp : p.Prime) 
         2 * μ * (∫ z in fd, (heckeTruncated p u Y z * starRingEnd ℂ (truncatedLineModel u Y z)).re) +
         μ ^ 2 * ∫ z in fd, ‖truncatedLineModel u Y z‖ ^ 2 := by
     simp_rw [hpt]
-    rw [integral_add (hiT.sub (hiC.const_mul (2 * μ))) (hiB.const_mul (μ ^ 2)),
-      integral_sub hiT (hiC.const_mul (2 * μ)), integral_const_mul, integral_const_mul]
+    have h1 := integral_add (hiT.sub (hiC.const_mul (2 * μ))) (hiB.const_mul (μ ^ 2))
+    have h2 := integral_sub hiT (hiC.const_mul (2 * μ))
+    simp only [Pi.sub_apply] at h1 h2
+    rw [h1, h2, integral_const_mul, integral_const_mul]
   have hmom1 : ∫ z in fd,
       (heckeTruncated p u Y z * starRingEnd ℂ (truncatedLineModel u Y z)).re =
       μ * ∫ z in fd, ‖truncatedLineModel u Y z‖ ^ 2 := by
     have hre_int : ∫ z in fd,
         (heckeTruncated p u Y z * starRingEnd ℂ (truncatedLineModel u Y z)).re =
         (heckeHermitianMoment p u Y).re :=
-      (integral_re hi_cx).symm
+      Complex.reCLM.integral_comp_comm hi_cx
     rw [hre_int, hu_def, heckeHermitianMoment_resonantZero_re hp hρ h0 h1 him hY, Complex.ofReal_re,
       ← integral_norm_sq_resonantState_all hρ h0 h1 hY1, ← hu_def, ← hμ_def]
   rw [hint_eq, hmom1, hu_def, heckeSecondMoment_resonantZero_re hp hρ h0 h1 hY, ← hu_def]

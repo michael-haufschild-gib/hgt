@@ -13,7 +13,7 @@
 | A1 | `T = 67` done; `T ≈ 10²` needs phases, a computation | `VerifiedHeightRungs/HadamardBudget/`: `rhVerifiedThrough_sixtySeven` |
 | A4 | done | `ThetaCuspSections/TheTenthSectionFromHeightSixtySeven.lean`: `thetaCuspCenterMixedSignedHankel_ten_posDef`, `0 < a ≤ ½` |
 | A5 | done | `xi_centre_pfSeq_twoHundred`, `xiSliceCoeff_nonneg_of_abs_le_band` (`\|t\| ≤ 133/2`), `re_xiLiPaired_nonneg_of_le` |
-| A8 | boundary done; finite side below `27/5` open | `WindowTowerOfSpecZ/FiniteTemplatesEndAtTwentySevenFifths.lean` |
+| A8 | done: exact horizon at every aperture below `log(27/5)`, and no finite template from there on | `WindowTowerOfSpecZ/FiniteTemplatesBelowTwentySevenFifths.lean`: `tateFunction_nonneg_iff_template`, `exists_finite_hecke_template_iff` |
 | A2, A3, A6, A7, A9 | open | |
 
 ## A1: the Hadamard budget replaces Turing's method

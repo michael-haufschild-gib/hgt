@@ -106,7 +106,7 @@ theorem abs_chiProd_le (θ : Fin n → ℝ) (k : Fin n → ℕ) : |chiProd θ k|
 
 theorem continuous_chiProd (k : Fin n → ℕ) : Continuous fun θ : Fin n → ℝ => chiProd θ k := by
   unfold chiProd
-  refine continuous_finset_prod _ fun i _ => ?_
+  refine continuous_finsetProd _ fun i _ => ?_
   exact (continuous_cosSum (k i)).comp (continuous_apply i)
 
 /-- The trace-summable amplitudes. -/
@@ -185,7 +185,7 @@ theorem integral_torusSum_mul_chiProd (ha : TraceSummable a) (m : Fin n → ℕ)
         ≤ ∫ _ : Fin n → ℝ, |a k| * chiSize k * chiSize m ∂(torusMeasure n) :=
           integral_mono (hF k).norm (integrable_const _) hb
       _ = _ := by simp
-  have hs := hasSum_integral_of_summable_norm hF hsum
+  have hs := hasSum_integral_of_summable_integral_norm hF hsum
   have e1 : ∀ θ, ∑' k, a k * chiProd θ k * chiProd θ m = torusSum a θ * chiProd θ m := fun θ => by
     rw [torusSum, tsum_mul_right]
   simp_rw [e1] at hs
@@ -247,7 +247,7 @@ theorem chiProd_unit_add_unit (θ : Fin n → ℝ) {i j : Fin n} (hij : i ≠ j)
     simp only [unitIdx, Pi.add_apply, Pi.single_apply, Finset.mem_insert, Finset.mem_singleton,
       not_or] at hl ⊢
     simp [hl.1, hl.2]), Finset.prod_pair hij]
-  simp [unitIdx, Pi.single_apply, hij, hij.symm]
+  simp [unitIdx, hij, hij.symm]
 
 /-- The form of the Hecke operators at level one. -/
 def heckeOne (a : (Fin n → ℕ) → ℝ) (c₀ : ℝ) (c : Fin n → ℝ) : ℝ :=
@@ -274,8 +274,7 @@ theorem hecke_level_one (ha : TraceSummable a) (hpos : ∀ θ, 0 ≤ torusSum a 
       intro i
       rw [← Finset.add_sum_erase _ _ (Finset.mem_univ i)]
       ring
-    rw [add_sq, hsq, Finset.sum_congr rfl (fun i _ => hsplit i), Finset.sum_add_distrib, chiProd_zero]
-    have hA : 2 * c₀ * ∑ i, c i * X i θ = 2 * c₀ * ∑ i, c i * chiProd θ (unitIdx i) := by
+    have hA : ∑ i, c i * X i θ = ∑ i, c i * chiProd θ (unitIdx i) := by
       simp only [chiProd_unit, hX]
     have hB : ∑ i, c i ^ 2 * (X i θ * X i θ) =
         ∑ i, c i ^ 2 * (1 + chiProd θ (unitIdx i + unitIdx i)) := by
@@ -288,11 +287,375 @@ theorem hecke_level_one (ha : TraceSummable a) (hpos : ∀ θ, 0 ≤ torusSum a 
         ∑ i, ∑ j ∈ Finset.univ.erase i, c i * c j * chiProd θ (unitIdx i + unitIdx j) := by
       refine Finset.sum_congr rfl fun i _ => Finset.sum_congr rfl fun j hj => ?_
       rw [chiProd_unit_add_unit θ (Finset.ne_of_mem_erase hj).symm]
-    rw [hB, hC]
-    ring_nf
-    rw [mul_comm c₀, mul_assoc] at hA
-    sorry
-  sorry
+    have hYY : (∑ i, c i * X i θ) ^ 2 = ∑ i, c i ^ 2 * (1 + chiProd θ (unitIdx i + unitIdx i)) +
+        ∑ i, ∑ j ∈ Finset.univ.erase i, c i * c j * chiProd θ (unitIdx i + unitIdx j) := by
+      rw [hsq, Finset.sum_congr rfl (fun i _ => hsplit i), Finset.sum_add_distrib, hB, hC]
+    calc (c₀ + ∑ i, c i * X i θ) ^ 2
+        = c₀ ^ 2 + 2 * c₀ * ∑ i, c i * X i θ + (∑ i, c i * X i θ) ^ 2 := by ring
+      _ = _ := by rw [hYY, hA, chiProd_zero]; ring
+  -- integrate against the torus sum
+  have hSc := continuous_torusSum ha
+  have hSb := abs_torusSum_le ha
+  have hI : ∀ m : Fin n → ℕ, Integrable (fun θ => torusSum a θ * chiProd θ m) (torusMeasure n) := fun m =>
+    integrable_of_bounded_continuous (C := (∑' k, |a k| * chiSize k) * chiSize m)
+      (hSc.mul (continuous_chiProd m)) fun θ => by
+        rw [abs_mul]
+        exact mul_le_mul (hSb θ) (abs_chiProd_le θ m) (abs_nonneg _)
+          (tsum_nonneg fun _ => mul_nonneg (abs_nonneg _) (chiSize_nonneg _))
+  have hM := integral_torusSum_mul_chiProd ha
+  have hval : ∫ θ, torusSum a θ * (c₀ + ∑ i, c i * X i θ) ^ 2 ∂(torusMeasure n) = heckeOne a c₀ c := by
+    have e : ∀ θ, torusSum a θ * (c₀ + ∑ i, c i * X i θ) ^ 2 =
+        c₀ ^ 2 * (torusSum a θ * chiProd θ 0) +
+          2 * c₀ * ∑ i, c i * (torusSum a θ * chiProd θ (unitIdx i)) +
+          ∑ i, c i ^ 2 * (torusSum a θ * chiProd θ 0 +
+            torusSum a θ * chiProd θ (unitIdx i + unitIdx i)) +
+          ∑ i, ∑ j ∈ Finset.univ.erase i, c i * c j *
+            (torusSum a θ * chiProd θ (unitIdx i + unitIdx j)) := by
+      intro θ
+      rw [hexp θ]
+      simp only [mul_add, Finset.mul_sum]
+      have e1 : ∀ i, torusSum a θ * (2 * c₀ * (c i * chiProd θ (unitIdx i))) =
+          2 * c₀ * (c i * (torusSum a θ * chiProd θ (unitIdx i))) := fun i => by ring
+      have e2 : ∀ i, torusSum a θ * (c i ^ 2 * chiProd θ 0) =
+          c i ^ 2 * (torusSum a θ * chiProd θ 0) := fun i => by ring
+      have e3 : ∀ i, torusSum a θ * (c i ^ 2 * chiProd θ (unitIdx i + unitIdx i)) =
+          c i ^ 2 * (torusSum a θ * chiProd θ (unitIdx i + unitIdx i)) := fun i => by ring
+      have e4 : ∀ i j, torusSum a θ * (c i * c j * chiProd θ (unitIdx i + unitIdx j)) =
+          c i * c j * (torusSum a θ * chiProd θ (unitIdx i + unitIdx j)) := fun i j => by ring
+      simp only [e1, e2, e3, e4]
+      ring
+    simp_rw [e]
+    have i1 : Integrable (fun θ => c₀ ^ 2 * (torusSum a θ * chiProd θ 0)) (torusMeasure n) :=
+      (hI 0).const_mul (c₀ ^ 2)
+    have hi2 : ∀ i, Integrable (fun θ => c i * (torusSum a θ * chiProd θ (unitIdx i)))
+        (torusMeasure n) := fun i => (hI (unitIdx i)).const_mul (c i)
+    have i2 : Integrable (fun θ => 2 * c₀ * ∑ i, c i * (torusSum a θ * chiProd θ (unitIdx i)))
+        (torusMeasure n) := (integrable_finsetSum _ fun i _ => hi2 i).const_mul _
+    have hi0 : ∀ i, Integrable (fun θ => torusSum a θ * chiProd θ 0 +
+        torusSum a θ * chiProd θ (unitIdx i + unitIdx i)) (torusMeasure n) := fun i =>
+      (hI 0).add (hI (unitIdx i + unitIdx i))
+    have hi3 : ∀ i, Integrable (fun θ => c i ^ 2 * (torusSum a θ * chiProd θ 0 +
+        torusSum a θ * chiProd θ (unitIdx i + unitIdx i))) (torusMeasure n) := fun i =>
+      (hi0 i).const_mul _
+    have i3 : Integrable (fun θ => ∑ i, c i ^ 2 * (torusSum a θ * chiProd θ 0 +
+        torusSum a θ * chiProd θ (unitIdx i + unitIdx i))) (torusMeasure n) :=
+      integrable_finsetSum _ fun i _ => hi3 i
+    have hi4 : ∀ i j, Integrable (fun θ => c i * c j *
+        (torusSum a θ * chiProd θ (unitIdx i + unitIdx j))) (torusMeasure n) := fun i j =>
+      (hI (unitIdx i + unitIdx j)).const_mul _
+    have hi5 : ∀ i, Integrable (fun θ => ∑ j ∈ Finset.univ.erase i, c i * c j *
+        (torusSum a θ * chiProd θ (unitIdx i + unitIdx j))) (torusMeasure n) := fun i =>
+      integrable_finsetSum _ fun j _ => hi4 i j
+    have i4 : Integrable (fun θ => ∑ i, ∑ j ∈ Finset.univ.erase i, c i * c j *
+        (torusSum a θ * chiProd θ (unitIdx i + unitIdx j))) (torusMeasure n) :=
+      integrable_finsetSum _ fun i _ => hi5 i
+    have i12 : Integrable (fun θ => c₀ ^ 2 * (torusSum a θ * chiProd θ 0) +
+        2 * c₀ * ∑ i, c i * (torusSum a θ * chiProd θ (unitIdx i))) (torusMeasure n) := i1.add i2
+    have i123 : Integrable (fun θ => c₀ ^ 2 * (torusSum a θ * chiProd θ 0) +
+        2 * c₀ * ∑ i, c i * (torusSum a θ * chiProd θ (unitIdx i)) +
+        ∑ i, c i ^ 2 * (torusSum a θ * chiProd θ 0 +
+        torusSum a θ * chiProd θ (unitIdx i + unitIdx i))) (torusMeasure n) := i12.add i3
+    rw [integral_add i123 i4, integral_add i12 i3, integral_add i1 i2, integral_const_mul, hM,
+      integral_const_mul, integral_finsetSum _ fun i _ => hi2 i,
+      integral_finsetSum _ fun i _ => hi3 i, integral_finsetSum _ fun i _ => hi5 i, heckeOne]
+    have s1 : ∀ i ∈ (Finset.univ : Finset (Fin n)),
+        ∫ θ, c i * (torusSum a θ * chiProd θ (unitIdx i)) ∂(torusMeasure n) = c i * a (unitIdx i) :=
+      fun i _ => by rw [integral_const_mul, hM]
+    have s2 : ∀ i ∈ (Finset.univ : Finset (Fin n)),
+        ∫ θ, c i ^ 2 * (torusSum a θ * chiProd θ 0 +
+          torusSum a θ * chiProd θ (unitIdx i + unitIdx i)) ∂(torusMeasure n) =
+        c i ^ 2 * (a 0 + a (unitIdx i + unitIdx i)) := fun i _ => by
+      rw [integral_const_mul, integral_add (hI 0) (hI _), hM, hM]
+    have s3 : ∀ i ∈ (Finset.univ : Finset (Fin n)),
+        ∫ θ, ∑ j ∈ Finset.univ.erase i, c i * c j *
+          (torusSum a θ * chiProd θ (unitIdx i + unitIdx j)) ∂(torusMeasure n) =
+        ∑ j ∈ Finset.univ.erase i, c i * c j * a (unitIdx i + unitIdx j) := fun i _ => by
+      rw [integral_finsetSum _ fun j _ => hi4 i j]
+      refine Finset.sum_congr rfl fun j _ => ?_
+      rw [integral_const_mul, hM]
+    rw [Finset.sum_congr rfl s1, Finset.sum_congr rfl s2, Finset.sum_congr rfl s3]
+  rw [← hval]
+  exact integral_nonneg fun θ => mul_nonneg (hpos θ) (sq_nonneg _)
+
+/-! ### The walls -/
+
+/-- **The Hecke–Bessel inequality.** -/
+theorem sq_sum_le_hecke (ha : TraceSummable a) (hpos : ∀ θ, 0 ≤ torusSum a θ) (h0 : 0 < a 0)
+    (c : Fin n → ℝ) :
+    (∑ i, c i * a (unitIdx i)) ^ 2 ≤
+      a 0 * (∑ i, c i ^ 2 * (a 0 + a (unitIdx i + unitIdx i)) +
+        ∑ i, ∑ j ∈ Finset.univ.erase i, c i * c j * a (unitIdx i + unitIdx j)) := by
+  set B := ∑ i, c i * a (unitIdx i) with hB
+  set C := ∑ i, c i ^ 2 * (a 0 + a (unitIdx i + unitIdx i)) +
+    ∑ i, ∑ j ∈ Finset.univ.erase i, c i * c j * a (unitIdx i + unitIdx j) with hC
+  have h := hecke_level_one ha hpos (-B / a 0) c
+  have e : heckeOne a (-B / a 0) c = C - B ^ 2 / a 0 := by
+    rw [heckeOne, ← hB, hC]
+    field_simp
+    ring
+  rw [e, sub_nonneg, div_le_iff₀ h0] at h
+  linarith
+
+/-- **The log-concavity wall.** A torus-positive amplitude with `a_0 a_{e_i+e_j} ≤ ρ a_{e_i} a_{e_j}`, `ρ < 1`, satisfies
+`Σ_i a_{e_i}² ≤ a_0²/(1 − ρ)`. -/
+theorem sum_sq_le_of_logConcave (ha : TraceSummable a) (hpos : ∀ θ, 0 ≤ torusSum a θ) (h0 : 0 < a 0)
+    (hnn : ∀ i, 0 ≤ a (unitIdx i)) {ρ : ℝ}
+    (hconc : ∀ i j, a 0 * a (unitIdx i + unitIdx j) ≤ ρ * (a (unitIdx i) * a (unitIdx j))) :
+    (∑ i, a (unitIdx i) ^ 2) * (1 - ρ) ≤ a 0 ^ 2 := by
+  set Ssq := ∑ i, a (unitIdx i) ^ 2 with hS
+  have hS0 : 0 ≤ Ssq := Finset.sum_nonneg fun _ _ => sq_nonneg _
+  have h := sq_sum_le_hecke ha hpos h0 (fun i => a (unitIdx i))
+  have e1 : ∑ i, a (unitIdx i) * a (unitIdx i) = Ssq := by
+    simp only [hS, sq]
+  rw [e1] at h
+  have e2 : a 0 * (∑ i, a (unitIdx i) ^ 2 * (a 0 + a (unitIdx i + unitIdx i)) +
+      ∑ i, ∑ j ∈ Finset.univ.erase i, a (unitIdx i) * a (unitIdx j) * a (unitIdx i + unitIdx j)) =
+      a 0 ^ 2 * Ssq + ∑ i, ∑ j, a (unitIdx i) * a (unitIdx j) *
+        (a 0 * a (unitIdx i + unitIdx j)) := by
+    have hsplit : ∀ i, ∑ j, a (unitIdx i) * a (unitIdx j) * (a 0 * a (unitIdx i + unitIdx j)) =
+        a (unitIdx i) ^ 2 * (a 0 * a (unitIdx i + unitIdx i)) +
+          ∑ j ∈ Finset.univ.erase i, a (unitIdx i) * a (unitIdx j) *
+            (a 0 * a (unitIdx i + unitIdx j)) := by
+      intro i
+      rw [← Finset.add_sum_erase _ _ (Finset.mem_univ i)]
+      ring
+    rw [Finset.sum_congr rfl (fun i _ => hsplit i), Finset.sum_add_distrib, mul_add, Finset.mul_sum,
+      Finset.mul_sum, hS, Finset.mul_sum]
+    have e3 : ∀ i, a 0 * (a (unitIdx i) ^ 2 * (a 0 + a (unitIdx i + unitIdx i))) =
+        a 0 ^ 2 * a (unitIdx i) ^ 2 + a (unitIdx i) ^ 2 * (a 0 * a (unitIdx i + unitIdx i)) :=
+      fun i => by ring
+    have e4 : ∀ i, a 0 * ∑ j ∈ Finset.univ.erase i, a (unitIdx i) * a (unitIdx j) *
+        a (unitIdx i + unitIdx j) = ∑ j ∈ Finset.univ.erase i, a (unitIdx i) * a (unitIdx j) *
+        (a 0 * a (unitIdx i + unitIdx j)) := fun i => by
+      rw [Finset.mul_sum]
+      refine Finset.sum_congr rfl fun j _ => ?_
+      ring
+    simp only [e3, e4, Finset.sum_add_distrib]
+    ring
+  rw [e2] at h
+  have hdbl : ∑ i, ∑ j, a (unitIdx i) * a (unitIdx j) * (a 0 * a (unitIdx i + unitIdx j)) ≤
+      ρ * Ssq ^ 2 := by
+    have hsq : Ssq ^ 2 = ∑ i, ∑ j, a (unitIdx i) ^ 2 * a (unitIdx j) ^ 2 := by
+      rw [sq, hS, Finset.sum_mul_sum]
+    rw [hsq, Finset.mul_sum]
+    refine Finset.sum_le_sum fun i _ => ?_
+    rw [Finset.mul_sum]
+    refine Finset.sum_le_sum fun j _ => ?_
+    have h1 := mul_le_mul_of_nonneg_left (hconc i j) (mul_nonneg (hnn i) (hnn j))
+    calc a (unitIdx i) * a (unitIdx j) * (a 0 * a (unitIdx i + unitIdx j))
+        ≤ a (unitIdx i) * a (unitIdx j) * (ρ * (a (unitIdx i) * a (unitIdx j))) := h1
+      _ = _ := by ring
+  rcases hS0.eq_or_lt with hzero | hposS
+  · rw [← hzero]
+    simp only [zero_mul]
+    positivity
+  · have hfin : Ssq * Ssq ≤ a 0 ^ 2 * Ssq + ρ * Ssq ^ 2 := by
+      have : Ssq ^ 2 = Ssq * Ssq := sq _
+      linarith
+    have hmul : Ssq * (Ssq * (1 - ρ)) ≤ Ssq * a 0 ^ 2 := by nlinarith
+    exact le_of_mul_le_mul_left hmul hposS
+
+/-- Multi-indices of length `n + 1` are pairs. -/
+def consEquiv (n : ℕ) : (Fin (n + 1) → ℕ) ≃ ℕ × (Fin n → ℕ) where
+  toFun k := (k 0, Fin.tail k)
+  invFun x := Fin.cons x.1 x.2
+  left_inv k := Fin.cons_self_tail k
+  right_inv x := by simp
+
+/-- A product of series over multi-indices. -/
+theorem hasSum_pi_prod {n : ℕ} (g : Fin n → ℕ → ℝ) (s : Fin n → ℝ) (hg : ∀ i k, 0 ≤ g i k)
+    (hs : ∀ i, HasSum (g i) (s i)) :
+    HasSum (fun k : Fin n → ℕ => ∏ i, g i (k i)) (∏ i, s i) := by
+  induction n with
+  | zero =>
+    haveI : Unique (Fin 0 → ℕ) := Pi.uniqueOfIsEmpty _
+    simp only [Finset.univ_eq_empty, Finset.prod_empty]
+    exact hasSum_single default fun b hb => absurd (Subsingleton.elim b default) hb
+  | succ n ih =>
+    have hih : HasSum (fun k : Fin n → ℕ => ∏ i : Fin n, g i.succ (k i)) (∏ i : Fin n, s i.succ) :=
+      ih (fun i : Fin n => g i.succ) (fun i => s i.succ) (fun i k => hg i.succ k)
+        (fun i => hs i.succ)
+    have hsm := Summable.mul_of_nonneg (hs 0).summable hih.summable (fun k => hg 0 k)
+        (fun k => Finset.prod_nonneg fun (i : Fin n) _ => hg i.succ _)
+    have hmul := HasSum.mul (hs 0) hih hsm
+    have h2 := (consEquiv n).hasSum_iff.mpr hmul
+    have e1 : (fun k : Fin (n + 1) → ℕ => ∏ i, g i (k i)) =
+        (fun x : ℕ × (Fin n → ℕ) => g 0 x.1 * ∏ i : Fin n, g i.succ (x.2 i)) ∘ (consEquiv n) := by
+      funext k
+      simp only [Function.comp_apply, Fin.prod_univ_succ, consEquiv, Equiv.coe_fn_mk, Fin.tail]
+    rw [e1, Fin.prod_univ_succ]
+    exact h2
+
+/-- `Σ_k (k + 1) r^k = (1 − r)^{−2}`. -/
+theorem hasSum_succ_mul_pow {r : ℝ} (h0 : 0 ≤ r) (h1 : r < 1) :
+    HasSum (fun k : ℕ => ((k : ℝ) + 1) * r ^ k) (((1 - r) ^ 2)⁻¹) := by
+  have hn : ‖r‖ < 1 := by rwa [Real.norm_of_nonneg h0]
+  have h2 := (hasSum_coe_mul_geometric_of_norm_lt_one hn).add (hasSum_geometric_of_lt_one h0 h1)
+  have e : (fun k : ℕ => ((k : ℝ) + 1) * r ^ k) = fun b : ℕ => (b : ℝ) * r ^ b + r ^ b := by
+    funext k
+    ring
+  have hd : 1 - r ≠ 0 := by linarith
+  have eV : ((1 - r) ^ 2)⁻¹ = r / (1 - r) ^ 2 + (1 - r)⁻¹ := by
+    field_simp
+    ring
+  rw [e, eV]
+  exact h2
+
+/-- **The size floor.** If `|a_k| ≤ a_0 Π r_i^{k_i}`, then `S_a(θ) ≥ a_0 (2 − Π (1 − r_i)^{−2})`. -/
+theorem torusSum_ge_of_geometric {r : Fin n → ℝ} (hr0 : ∀ i, 0 ≤ r i)
+    (hr1 : ∀ i, r i < 1) (hgeo : ∀ k, |a k| ≤ a 0 * ∏ i, r i ^ k i) (θ : Fin n → ℝ) :
+    a 0 * (2 - ∏ i, ((1 - r i) ^ 2)⁻¹) ≤ torusSum a θ := by
+  have hG := hasSum_pi_prod (fun i k => ((k : ℝ) + 1) * r i ^ k) (fun i => ((1 - r i) ^ 2)⁻¹)
+    (fun i k => by have := hr0 i; positivity) (fun i => hasSum_succ_mul_pow (hr0 i) (hr1 i))
+  set G : (Fin n → ℕ) → ℝ := fun k => ∏ i, (((k i : ℕ) : ℝ) + 1) * r i ^ k i with hGd
+  set D : ℝ := ∏ i, ((1 - r i) ^ 2)⁻¹ with hD
+  have hbound : ∀ k, |a k| * chiSize k ≤ a 0 * G k := fun k => by
+    have e : G k = chiSize k * ∏ i, r i ^ k i := by
+      simp only [hGd, chiSize, Finset.prod_mul_distrib]
+    rw [e]
+    calc |a k| * chiSize k ≤ (a 0 * ∏ i, r i ^ k i) * chiSize k :=
+          mul_le_mul_of_nonneg_right (hgeo k) (chiSize_nonneg k)
+      _ = _ := by ring
+  have ha : TraceSummable a :=
+    Summable.of_nonneg_of_le (fun k => mul_nonneg (abs_nonneg _) (chiSize_nonneg k)) hbound
+      (hG.summable.mul_left _)
+  have hG0 : G 0 = 1 := by simp [hGd]
+  have hsum := (summable_term ha θ).hasSum
+  have hh := (hG.mul_left (a 0)).add hsum
+  have hnn : ∀ k, 0 ≤ a 0 * G k + a k * chiProd θ k := fun k => by
+    have h1 := abs_chiProd_le θ k
+    have h2 : |a k * chiProd θ k| ≤ a 0 * G k := by
+      rw [abs_mul]
+      exact (mul_le_mul_of_nonneg_left h1 (abs_nonneg _)).trans (hbound k)
+    linarith [neg_abs_le (a k * chiProd θ k)]
+  have hle := sum_le_hasSum ({0} : Finset (Fin n → ℕ)) (fun k _ => hnn k) hh
+  rw [Finset.sum_singleton, hG0, chiProd_zero] at hle
+  change _ ≤ a 0 * D + torusSum a θ at hle
+  nlinarith
+
+/-- A size certificate: `Π (1 − r_i)^{−2} ≤ 2` keeps the amplitude in the torus cone. -/
+theorem torusSum_nonneg_of_geometric (h0 : 0 ≤ a 0) {r : Fin n → ℝ} (hr0 : ∀ i, 0 ≤ r i)
+    (hr1 : ∀ i, r i < 1) (hgeo : ∀ k, |a k| ≤ a 0 * ∏ i, r i ^ k i)
+    (hD : ∏ i, ((1 - r i) ^ 2)⁻¹ ≤ 2) (θ : Fin n → ℝ) : 0 ≤ torusSum a θ :=
+  le_trans (mul_nonneg h0 (by linarith)) (torusSum_ge_of_geometric hr0 hr1 hgeo θ)
+
+/-! ### Amplitudes on a set of primes -/
+
+/-- The amplitude `a_k = f(x + Σ k_i ℓ_i)` of steps `ℓ` at the base point `x`. -/
+def ampl (f : ℝ → ℝ) (ℓ : Fin n → ℝ) (x : ℝ) (k : Fin n → ℕ) : ℝ := f (x + ∑ i, (k i : ℝ) * ℓ i)
+
+variable {x₀ κ : ℝ} {f : ℝ → ℝ}
+
+theorem abs_ampl_le {C : ℝ} (hC : ∀ x, x₀ ≤ x → |f x| ≤ C * Real.exp (-κ * x)) {ℓ : Fin n → ℝ}
+    (hℓ : ∀ i, 0 ≤ ℓ i) {x : ℝ} (hx : x₀ ≤ x) (k : Fin n → ℕ) :
+    |ampl f ℓ x k| ≤ C * Real.exp (-κ * x) * ∏ i, Real.exp (-(κ * ℓ i)) ^ k i := by
+  have hs : 0 ≤ ∑ i, (k i : ℝ) * ℓ i := Finset.sum_nonneg fun i _ => mul_nonneg (by positivity) (hℓ i)
+  have h := hC _ (show x₀ ≤ x + ∑ i, (k i : ℝ) * ℓ i by linarith)
+  have e : Real.exp (-κ * (x + ∑ i, (k i : ℝ) * ℓ i)) =
+      Real.exp (-κ * x) * ∏ i, Real.exp (-(κ * ℓ i)) ^ k i := by
+    simp_rw [← Real.exp_nat_mul]
+    rw [← Real.exp_sum, ← Real.exp_add]
+    congr 1
+    rw [mul_add, Finset.mul_sum]
+    congr 1
+    refine Finset.sum_congr rfl fun i _ => ?_
+    ring
+  rw [ampl, mul_assoc, ← e]
+  exact h
+
+theorem traceSummable_ampl (hκ : 0 < κ) {C : ℝ} (hC : ∀ x, x₀ ≤ x → |f x| ≤ C * Real.exp (-κ * x))
+    {ℓ : Fin n → ℝ} (hℓ : ∀ i, 0 < ℓ i) {x : ℝ} (hx : x₀ ≤ x) : TraceSummable (ampl f ℓ x) := by
+  have hq : ∀ i, Real.exp (-(κ * ℓ i)) < 1 := fun i => exp_neg_lt_one (mul_pos hκ (hℓ i))
+  have hG := hasSum_pi_prod (fun i k => ((k : ℝ) + 1) * Real.exp (-(κ * ℓ i)) ^ k)
+    (fun i => ((1 - Real.exp (-(κ * ℓ i))) ^ 2)⁻¹) (fun i k => by positivity)
+    (fun i => hasSum_succ_mul_pow (Real.exp_pos _).le (hq i))
+  refine Summable.of_nonneg_of_le (fun k => mul_nonneg (abs_nonneg _) (chiSize_nonneg k))
+    (fun k => ?_) (hG.summable.mul_left (C * Real.exp (-κ * x)))
+  have h1 := abs_ampl_le hC (fun i => (hℓ i).le) hx k
+  have e : ∏ i, (((k i : ℕ) : ℝ) + 1) * Real.exp (-(κ * ℓ i)) ^ k i =
+      chiSize k * ∏ i, Real.exp (-(κ * ℓ i)) ^ k i := by
+    simp only [chiSize, Finset.prod_mul_distrib]
+  rw [e]
+  calc |ampl f ℓ x k| * chiSize k
+      ≤ (C * Real.exp (-κ * x) * ∏ i, Real.exp (-(κ * ℓ i)) ^ k i) * chiSize k :=
+        mul_le_mul_of_nonneg_right h1 (chiSize_nonneg k)
+    _ = _ := by ring
+
+/-- A series over multi-indices of length `n + 1`, first index apart. -/
+theorem tsum_cons {n : ℕ} {F : (Fin (n + 1) → ℕ) → ℝ} (hs : Summable F) :
+    ∑' k, F k = ∑' k₀ : ℕ, ∑' m : Fin n → ℕ, F (Fin.cons k₀ m) := by
+  have hs' : Summable fun c : ℕ × (Fin n → ℕ) => F (Fin.cons c.1 c.2) :=
+    (consEquiv n).symm.summable_iff.mpr hs
+  have heq : ∑' c : ℕ × (Fin n → ℕ), F (Fin.cons c.1 c.2) = ∑' k, F k :=
+    (consEquiv n).symm.tsum_eq F
+  rw [← heq]
+  exact hs'.tsum_prod
+
+theorem ampl_cons {n : ℕ} (f : ℝ → ℝ) (ℓ : Fin (n + 1) → ℝ) (x : ℝ) (k₀ : ℕ) (m : Fin n → ℕ) :
+    ampl f ℓ x (Fin.cons k₀ m) = ampl f (Fin.tail ℓ) (x + k₀ * ℓ 0) m := by
+  have e : ∑ i, ((Fin.cons k₀ m : Fin (n + 1) → ℕ) i : ℝ) * ℓ i =
+      (k₀ : ℝ) * ℓ 0 + ∑ i : Fin n, (m i : ℝ) * Fin.tail ℓ i := by
+    rw [Fin.sum_univ_succ]
+    rfl
+  rw [ampl, ampl, e, add_assoc]
+
+theorem chiProd_cons {n : ℕ} (θ : Fin (n + 1) → ℝ) (k₀ : ℕ) (m : Fin n → ℕ) :
+    chiProd θ (Fin.cons k₀ m) = cosSum (θ 0) k₀ * chiProd (Fin.tail θ) m := by
+  rw [chiProd, Fin.prod_univ_succ]
+  rfl
+
+/-- The torus sum is the composite of the insertions, prime by prime. -/
+theorem torusSum_cons (hκ : 0 < κ) {C : ℝ} (hC : ∀ x, x₀ ≤ x → |f x| ≤ C * Real.exp (-κ * x))
+    {n : ℕ} {ℓ : Fin (n + 1) → ℝ} (hℓ : ∀ i, 0 < ℓ i) {x : ℝ} (hx : x₀ ≤ x) (θ : Fin (n + 1) → ℝ) :
+    torusSum (ampl f ℓ x) θ = insertion (θ 0) (ℓ 0)
+      (fun y => torusSum (ampl f (Fin.tail ℓ) y) (Fin.tail θ)) x := by
+  rw [torusSum, tsum_cons (summable_term (traceSummable_ampl hκ hC hℓ hx) θ), insertion]
+  refine tsum_congr fun k => ?_
+  rw [torusSum, ← tsum_mul_left]
+  refine tsum_congr fun m => ?_
+  rw [ampl_cons, chiProd_cons]
+  ring
+
+theorem IsExpConvexFrom.congr_on {g : ℝ → ℝ} (hf : IsExpConvexFrom x₀ f)
+    (he : ∀ x, x₀ ≤ x → g x = f x) : IsExpConvexFrom x₀ g := by
+  intro ι S t c ht
+  have h := hf ι S t c ht
+  have e : ∑ i ∈ S, ∑ j ∈ S, c i * (starRingEnd ℂ) (c j) * (g (x₀ + t i + t j) : ℂ) =
+      ∑ i ∈ S, ∑ j ∈ S, c i * (starRingEnd ℂ) (c j) * (f (x₀ + t i + t j) : ℂ) := by
+    refine Finset.sum_congr rfl fun i hi => Finset.sum_congr rfl fun j hj => ?_
+    rw [he _ (by linarith [ht i hi, ht j hj])]
+  rwa [e]
+
+theorem ExpDecayFrom.congr_on {g : ℝ → ℝ} (hf : ExpDecayFrom x₀ κ f)
+    (he : ∀ x, x₀ ≤ x → g x = f x) : ExpDecayFrom x₀ κ g := by
+  obtain ⟨C, hC0, hC⟩ := hf
+  exact ⟨C, hC0, fun x hx => by rw [he x hx]; exact hC x hx⟩
+
+/-- **The cone is torus-positive.** An exponentially convex amplitude of exponential decay has
+nonnegative torus sum at every base point, for every set of steps and every phase. -/
+theorem IsExpConvexFrom.torusSum (hκ : 0 < κ) (hf : IsExpConvexFrom x₀ f) (hd : ExpDecayFrom x₀ κ f)
+    {n : ℕ} {ℓ : Fin n → ℝ} (hℓ : ∀ i, 0 < ℓ i) (θ : Fin n → ℝ) :
+    IsExpConvexFrom x₀ (fun y => GaloisForLFunctions.ArithmeticInnerFunctionTheory.torusSum
+        (ampl f ℓ y) θ) ∧
+      ExpDecayFrom x₀ κ (fun y => GaloisForLFunctions.ArithmeticInnerFunctionTheory.torusSum
+        (ampl f ℓ y) θ) := by
+  obtain ⟨C, hC0, hC⟩ := id hd
+  induction n with
+  | zero =>
+    have e : ∀ y, GaloisForLFunctions.ArithmeticInnerFunctionTheory.torusSum (ampl f ℓ y) θ = f y := by
+      intro y
+      haveI : Unique (Fin 0 → ℕ) := Pi.uniqueOfIsEmpty _
+      rw [GaloisForLFunctions.ArithmeticInnerFunctionTheory.torusSum, tsum_fintype]
+      simp [ampl, chiProd]
+    exact ⟨hf.congr_on fun y _ => e y, hd.congr_on fun y _ => e y⟩
+  | succ n ih =>
+    obtain ⟨h1, h2⟩ := ih (ℓ := Fin.tail ℓ) (fun i => hℓ i.succ) (Fin.tail θ)
+    have e : ∀ y, x₀ ≤ y → GaloisForLFunctions.ArithmeticInnerFunctionTheory.torusSum (ampl f ℓ y) θ =
+        GaloisForLFunctions.ArithmeticInnerFunctionTheory.insertion (θ 0) (ℓ 0)
+          (fun y => GaloisForLFunctions.ArithmeticInnerFunctionTheory.torusSum
+          (ampl f (Fin.tail ℓ) y) (Fin.tail θ)) y := fun y hy => torusSum_cons hκ hC hℓ hy θ
+    exact ⟨(IsExpConvexFrom.insertion hκ (hℓ 0) h1 h2 (θ 0)).congr_on e,
+      (ExpDecayFrom.insertion hκ (hℓ 0) h2 (θ 0)).congr_on e⟩
 
 end
 
