@@ -154,15 +154,37 @@ and `O(e⁻⁴ᴬ√S₇)` for the collar below depth `−A`. They follow from t
 synthesis triangle inequality and weighted Cauchy–Schwarz:
 `N⁻¹Σ_{n≤Ne⁻ᴬ}(n/N)⁷=O(e⁻⁸ᴬ)`.
 These bounds remain to be formalized and combined with local compactness.
+The aliasing limit must also hold along arbitrary cofinal subsequences,
+as required by compactness extraction.
+
+A local Gram-row count gives the needed weighted collar bound. For
+`L=linearDefectCutoff c`, `M=N/L`, `1≤c` and `L≤N`,
+`∫e⁻⁸ʸU_tail(y)²dy ≤ (256e²+4+2e)(∫φ²)S₇`.
+Indeed the row at `n` has at most `1+2n(e^{c/N}−1)` overlaps.
+Conjugating atoms by `e⁻⁴ʸ` gives the coefficient weight `(N/n)⁸/c`;
+`N/n<L≤(256e²+4)c` on the collar reduces its diagonal term to `S₇`.
+The off-diagonal term uses `e^{c/N}−1≤ec/N`. Formalization is pending.
 
 For a physical profile `H` supported in `(-∞,0]`, write
-`W₈(H)=∫e⁻⁸ʸH²`. Weighted Cauchy–Schwarz gives
-`|bumpCorr H (log k)|≤k⁻⁴W₈(H)`. The tail
-`Σ_{k>K}Λ(k)k⁻⁹ᐟ²` tends to zero, while the finite head is bounded by
-`C_K‖H‖₂²`. Hence the prime form costs at most
-`εW₈(H)+C_ε‖H‖₂²`. This physical confinement bound remains to be
-formalized. Its discrete use requires separate prefix control; replacing
-every window-pole cost by `C_R S₇` loses the compactness needed here.
+`W₈(H)=∫e⁻⁸ʸH²`. The existing global bound in
+`ArithmeticCastelnuovoSeveri/ExponentialSourceMassControlsTheFullPrimeSum.lean`
+applies to `|H|` and gives
+`|primeSum H|≤2(ΣΛ(n)n⁻³ᐟ²)∫e⁻²ʸH²`.
+The scalar inequality `Ct≤εt⁴+B_ε`, with `t=e⁻²ʸ`, therefore gives
+`|primeSum H|≤εW₈(H)+B_ε‖H‖₂²`, uniformly over all terminal apertures.
+This consequence is being formalized. Its discrete use requires separate
+prefix control.
+
+For compactness, retain a positive fraction of the top archimedean form
+in the raw reserve. Splitting it into an aliasing reserve, a high-frequency
+cross payment, and an unpaid quarter suggests
+`Q_N(w)≥aD_M(w)+b c archForm(U_tail)−C_R c S₇−o(log N/(log log N)^B)P`.
+After prefix absorption, negative vectors normalized by `S₇=1` would have
+bounded archimedean energy and weighted physical mass. The logarithmic
+Gamma floor then controls Fourier tails; the exponential mass controls
+spatial tails. A crude pole-cost bound suffices for this confinement step.
+The sharp polar source remains necessary for passage to the signed limit.
+This strengthened raw reserve and its parameter absorption remain unproved.
 
 The terminal polar source has the candidate aperture-independent kernel
 `s(y)=e⁻ʸᐟ²[1−eʸψ(e⁻ʸ)−eʸ(log(2π)+½log(1−e²ʸ))]`, `y<0`:

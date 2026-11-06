@@ -20,8 +20,8 @@ With `A = o(α)` and `c → 0` the rate tends to `1`, above the rate `22/25` of 
 zeros at the corpus rate must therefore be nearly all clustered with **comparably deep** companions at the camera
 scale. Near-line zeros, however numerous on average, do not explain the gap.
 
-**What stops at rate one.** The first moment of the Lorentzian mass. A second moment of the same mass, a pair
-correlation bound at scale `1/δ`, would carry this bound to rate two.
+**What stops at rate one.** The Markov bound on the first moment of the Lorentzian mass. The exponential tail of this mass carries the bound to rate two
+in `OnlyComparablyDeepZerosCompete`.
 -/
 
 noncomputable section

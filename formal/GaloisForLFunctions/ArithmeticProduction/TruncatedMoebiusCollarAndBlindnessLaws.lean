@@ -140,7 +140,7 @@ theorem truncatedMoebiusDivisorSum_eq_zero_of_composite_rough_le_sq {X n p : ℕ
     (hpn : p ∣ n) :
     truncatedMoebiusDivisorSum X n = 0 := by
   obtain ⟨m, rfl⟩ := hpn
-  have hm0 : m ≠ 0 := by rintro rfl; simp at hnX; omega
+  have hm0 : m ≠ 0 := by rintro rfl; simp at hnX
   have hm1 : m ≠ 1 := by
     rintro rfl
     exact hnp (by simpa using hp)
@@ -184,51 +184,56 @@ theorem collar_dirichletPoly_eq_neg_sum_pureMoebius {X R : ℕ} (hX : 1 ≤ X) (
   rw [hlhs]
   congr 1
   simp_rw [Finset.mul_sum]
-  rw [← Finset.sum_sigma', ← Finset.sum_sigma']
-  refine Finset.sum_bij (fun p _ => ⟨p.1 / p.2, p.2⟩) ?_ ?_ ?_ ?_
-  · rintro ⟨n, m⟩ hp
-    simp only [Finset.mem_sigma, Finset.mem_Ioc, Finset.mem_filter, Nat.mem_divisors,
-      Finset.mem_Icc] at hp ⊢
-    obtain ⟨⟨hnX, hnXR⟩, ⟨hm_dvd, _⟩, hmX⟩ := hp
-    have hm_pos : 0 < m := by omega
-    have hmul : (n / m) * m = n := Nat.div_mul_cancel hm_dvd
-    have hq_pos : 0 < n / m := by
-      by_contra h0
-      rw [Nat.eq_zero_of_not_pos h0, zero_mul] at hmul
-      omega
-    have hqR : n / m ≤ R := by nlinarith
-    exact ⟨⟨hq_pos, hqR⟩, hmX, (Nat.le_div_iff_mul_le hq_pos).mpr (by linarith)⟩
-  · rintro ⟨n₁, m₁⟩ hp₁ ⟨n₂, m₂⟩ hp₂ heq
-    simp only [Sigma.mk.inj_iff] at heq
-    obtain ⟨hq_eq, hm_eq⟩ := heq
-    have hm₁_dvd : m₁ ∣ n₁ :=
-      (Nat.mem_divisors.mp (Finset.mem_filter.mp (Finset.mem_sigma.mp hp₁).2).1).1
-    have hm₂_dvd : m₂ ∣ n₂ :=
-      (Nat.mem_divisors.mp (Finset.mem_filter.mp (Finset.mem_sigma.mp hp₂).2).1).1
-    subst hm_eq
-    have hn_eq : n₁ = n₂ := by
-      rw [← Nat.div_mul_cancel hm₁_dvd, ← Nat.div_mul_cancel hm₂_dvd, hq_eq]
-    subst hn_eq
-    rfl
-  · rintro ⟨r, m⟩ hrm
-    simp only [Finset.mem_sigma, Finset.mem_Icc, Finset.mem_Ioc, Finset.mem_filter,
-      Nat.mem_divisors] at hrm ⊢
-    obtain ⟨⟨hr1, hrR⟩, hmX, hm_div⟩ := hrm
-    have hm_pos : 0 < m := by omega
-    have hmul_le : m * r ≤ X * R := (Nat.le_div_iff_mul_le hr1).mp hm_div
-    refine ⟨⟨r * m, m⟩, ⟨⟨by nlinarith, by linarith⟩,
-      ⟨⟨dvd_mul_left m r, by positivity⟩, hmX⟩⟩, ?_⟩
-    simp [Nat.mul_div_cancel _ hm_pos]
-  · rintro ⟨n, m⟩ hp
-    simp only [Finset.mem_sigma, Finset.mem_filter, Nat.mem_divisors] at hp
-    have hm_dvd : m ∣ n := hp.2.1.1
-    have hmul : (n / m) * m = n := Nat.div_mul_cancel hm_dvd
-    have hcpow : (n : ℂ) ^ (-s) = ((n / m : ℕ) : ℂ) ^ (-s) * (m : ℂ) ^ (-s) := by
-      conv_lhs => rw [← hmul]
-      simpa using Complex.mul_cpow_ofReal_nonneg (a := ((n / m : ℕ) : ℝ)) (b := (m : ℝ))
-        (by positivity) (by positivity) (-s)
-    rw [hcpow]
-    ring
+  have hbij :
+      (∑ p ∈ (Finset.Ioc X (X * R)).sigma (fun n => n.divisors.filter (X < ·)),
+        (ArithmeticFunction.moebius p.2 : ℂ) * (p.1 : ℂ) ^ (-s)) =
+      ∑ q ∈ (Finset.Icc 1 R).sigma (fun r => Finset.Ioc X ((X * R) / r)),
+        (q.1 : ℂ) ^ (-s) * ((ArithmeticFunction.moebius q.2 : ℂ) * (q.2 : ℂ) ^ (-s)) := by
+    refine Finset.sum_bij (fun p _ => ⟨p.1 / p.2, p.2⟩) ?_ ?_ ?_ ?_
+    · rintro ⟨n, m⟩ hp
+      simp only [Finset.mem_sigma, Finset.mem_Ioc, Finset.mem_filter, Nat.mem_divisors,
+        Finset.mem_Icc] at hp ⊢
+      obtain ⟨⟨hnX, hnXR⟩, ⟨hm_dvd, _⟩, hmX⟩ := hp
+      have hm_pos : 0 < m := by omega
+      have hmul : (n / m) * m = n := Nat.div_mul_cancel hm_dvd
+      have hq_pos : 0 < n / m := by
+        by_contra h0
+        rw [Nat.eq_zero_of_not_pos h0, zero_mul] at hmul
+        omega
+      have hqR : n / m ≤ R := by nlinarith
+      exact ⟨⟨hq_pos, hqR⟩, hmX, (Nat.le_div_iff_mul_le hq_pos).mpr (by linarith)⟩
+    · rintro ⟨n₁, m₁⟩ hp₁ ⟨n₂, m₂⟩ hp₂ heq
+      simp only [Sigma.mk.inj_iff] at heq
+      obtain ⟨hq_eq, hm_eq⟩ := heq
+      have hm₁_dvd : m₁ ∣ n₁ :=
+        (Nat.mem_divisors.mp (Finset.mem_filter.mp (Finset.mem_sigma.mp hp₁).2).1).1
+      have hm₂_dvd : m₂ ∣ n₂ :=
+        (Nat.mem_divisors.mp (Finset.mem_filter.mp (Finset.mem_sigma.mp hp₂).2).1).1
+      subst hm_eq
+      have hn_eq : n₁ = n₂ := by
+        rw [← Nat.div_mul_cancel hm₁_dvd, ← Nat.div_mul_cancel hm₂_dvd, hq_eq]
+      subst hn_eq
+      rfl
+    · rintro ⟨r, m⟩ hrm
+      simp only [Finset.mem_sigma, Finset.mem_Icc, Finset.mem_Ioc, Finset.mem_filter,
+        Nat.mem_divisors] at hrm ⊢
+      obtain ⟨⟨hr1, hrR⟩, hmX, hm_div⟩ := hrm
+      have hm_pos : 0 < m := by omega
+      have hmul_le : m * r ≤ X * R := (Nat.le_div_iff_mul_le hr1).mp hm_div
+      refine ⟨⟨r * m, m⟩, ⟨⟨by nlinarith, by linarith⟩,
+        ⟨⟨dvd_mul_left m r, by positivity⟩, hmX⟩⟩, ?_⟩
+      simp [Nat.mul_div_cancel _ hm_pos]
+    · rintro ⟨n, m⟩ hp
+      simp only [Finset.mem_sigma, Finset.mem_filter, Nat.mem_divisors] at hp
+      have hm_dvd : m ∣ n := hp.2.1.1
+      have hmul : (n / m) * m = n := Nat.div_mul_cancel hm_dvd
+      have hcpow : (n : ℂ) ^ (-s) = ((n / m : ℕ) : ℂ) ^ (-s) * (m : ℂ) ^ (-s) := by
+        conv_lhs => rw [← hmul]
+        simpa using Complex.mul_cpow_ofReal_nonneg (a := ((n / m : ℕ) : ℝ)) (b := (m : ℝ))
+          (by positivity) (by positivity) (-s)
+      rw [hcpow]
+      ring
+  simpa only [Finset.sum_sigma] using hbij
 
 private theorem sum_Icc_inv_le_one_add_log_collar {R : ℕ} (hR : 1 ≤ R) :
     ∑ r ∈ Finset.Icc 1 R, (r : ℝ)⁻¹ ≤ 1 + Real.log R := by
@@ -345,7 +350,7 @@ theorem integral_normSq_collar_le_harmonic_mul_sum_pureMoebius {X R : ℕ} (hX :
               (ArithmeticFunction.moebius m : ℂ) *
                 (m : ℂ) ^ (-(((1 / 2 : ℝ) : ℂ) + (t : ℂ) * I))‖ ^ 2 := by
         rw [intervalIntegral.integral_const_mul,
-          intervalIntegral.integral_finset_sum fun r hr =>
+          intervalIntegral.integral_finsetSum fun r hr =>
             (hcontR r hr).intervalIntegrable _ _]
 
 /-! ## §2. Multiplicative gauge-twist equivariance -/
@@ -385,10 +390,12 @@ private theorem norm_exp_ofReal_mul_I_sub_one_le (θ : ℝ) :
     ‖Complex.exp ((θ : ℂ) * I) - 1‖ ≤ |θ| := by
   have hre : (Complex.exp ((θ : ℂ) * I) - 1).re = Real.cos θ - 1 := by
     rw [Complex.exp_ofReal_mul_I]
-    simp
+    simp only [Complex.sub_re, Complex.add_re, Complex.ofReal_re, Complex.mul_re, Complex.I_re,
+      mul_zero, Complex.ofReal_im, Complex.I_im, mul_one, sub_self, add_zero, Complex.one_re]
   have him : (Complex.exp ((θ : ℂ) * I) - 1).im = Real.sin θ := by
     rw [Complex.exp_ofReal_mul_I]
-    simp
+    simp only [Complex.sub_im, Complex.add_im, Complex.ofReal_im, Complex.mul_im, Complex.ofReal_re,
+      Complex.I_im, mul_one, Complex.I_re, mul_zero, add_zero, zero_add, Complex.one_im, sub_zero]
   have hsq : ‖Complex.exp ((θ : ℂ) * I) - 1‖ ^ 2 = 4 * Real.sin (θ / 2) ^ 2 := by
     rw [Complex.sq_norm, Complex.normSq_apply, hre, him]
     have hcos : Real.cos θ = 1 - 2 * Real.sin (θ / 2) ^ 2 := by
@@ -509,11 +516,10 @@ theorem exists_prefix_zero_unit_sign_criticalMoment_ge {X : ℕ} (hX : 2 ≤ X)
     have h1 := Finset.sum_le_sum hterm
     rw [Finset.sum_const, nsmul_eq_mul, hcard] at h1
     have hval : (X : ℝ) * (Real.sqrt 2 * Real.sqrt X)⁻¹ = Real.sqrt X / Real.sqrt 2 := by
-      have hsqX : (X : ℝ) = Real.sqrt X * Real.sqrt X := (Real.mul_self_sqrt hX_pos.le).symm
       have hsX0 : Real.sqrt X ≠ 0 := (Real.sqrt_pos.mpr hX_pos).ne'
       have hs20 : Real.sqrt 2 ≠ 0 := (Real.sqrt_pos.mpr two_pos).ne'
-      conv_lhs => rw [hsqX]
       field_simp [hsX0, hs20]
+      nlinarith [Real.sq_sqrt hX_pos.le]
     rwa [hval] at h1
   let buildC : (ℕ → ℝ) → ℕ → ℤ := fun f n =>
     if n = 1 then 1 else if n ∈ Finset.Ioc X (2 * X) then realSignInt (f n) else 0
@@ -529,7 +535,8 @@ theorem exists_prefix_zero_unit_sign_criticalMoment_ge {X : ℕ} (hX : 2 ≤ X)
         have hn_not : n ∉ Finset.Ioc X (2 * X) := by
           simp only [Finset.mem_Ioc]
           omega
-        simp [buildC, hn_ne1, hn_not]
+        dsimp only [buildC]
+        rw [if_neg hn_ne1, if_neg hn_not]
       · dsimp [buildC]
         split_ifs
         · norm_num
@@ -552,7 +559,9 @@ theorem exists_prefix_zero_unit_sign_criticalMoment_ge {X : ℕ} (hX : 2 ≤ X)
       rw [← hre_sum]
       exact (le_abs_self _).trans (Complex.abs_re_le_norm _)
     · have him_ge : Real.sqrt X / (2 * Real.sqrt 2) ≤
-          ∑ n ∈ Finset.Ioc X (2 * X), |(z n).im| := by linarith
+          ∑ n ∈ Finset.Ioc X (2 * X), |(z n).im| := by
+        have hhalf : Real.sqrt X / Real.sqrt 2 = 2 * (Real.sqrt X / (2 * Real.sqrt 2)) := by ring
+        linarith
       obtain ⟨hp1, hp2, hp3⟩ := hprops (fun n => (z n).im)
       refine ⟨buildC (fun n => (z n).im), hp1, hp2, hp3, him_ge.trans ?_⟩
       have him_sum : (∑ n ∈ Finset.Ioc X (2 * X),
@@ -634,10 +643,9 @@ theorem exists_prefix_zero_unit_sign_criticalMoment_ge {X : ℕ} (hX : 2 ≤ X)
                 exact mul_le_mul hzn_le hlog_le (by positivity) (by positivity)
         refine (Finset.sum_le_sum hterm).trans_eq ?_
         rw [Finset.sum_const, nsmul_eq_mul, hcard]
-        have hsqX : (X : ℝ) = Real.sqrt X * Real.sqrt X := (Real.mul_self_sqrt hX_pos.le).symm
         have hsX0 : Real.sqrt X ≠ 0 := (Real.sqrt_pos.mpr hX_pos).ne'
-        conv_lhs => rw [hsqX]
         field_simp [hsX0]
+        nlinarith [Real.sq_sqrt hX_pos.le]
       have hnum_const : 1 / 5 ≤ 1 / (2 * Real.sqrt 2) - 1 / 8 := by
         have hs2_pos : 0 < Real.sqrt 2 := Real.sqrt_pos.mpr two_pos
         have hsq2 : Real.sqrt 2 ^ 2 = 2 := Real.sq_sqrt zero_le_two
@@ -657,6 +665,9 @@ theorem exists_prefix_zero_unit_sign_criticalMoment_ge {X : ℕ} (hX : 2 ≤ X)
           have h2 := norm_sub_le S_t (S_t - S_0)
           rwa [← h1] at h2
         have hmul_const := mul_le_mul_of_nonneg_right hnum_const (Real.sqrt_nonneg X)
+        have hexp1 : (1 / (2 * Real.sqrt 2) - 1 / 8) * Real.sqrt X =
+            Real.sqrt X / (2 * Real.sqrt 2) - Real.sqrt X / 8 := by ring
+        have hexp2 : (1 / 5 : ℝ) * Real.sqrt X = Real.sqrt X / 5 := by ring
         linarith
       calc (X : ℝ) / 25 = (Real.sqrt X / 5) ^ 2 := by
             rw [div_pow, Real.sq_sqrt hX_pos.le]
@@ -668,8 +679,9 @@ theorem exists_prefix_zero_unit_sign_criticalMoment_ge {X : ℕ} (hX : 2 ≤ X)
         ∫ t in (t₀ - η)..(t₀ + η),
           ‖∑ n ∈ Finset.Ioc X (2 * X),
             (c n : ℂ) * (n : ℂ) ^ (-(((1 / 2 : ℝ) : ℂ) + (t : ℂ) * I))‖ ^ 2 := by
-      have hmono := intervalIntegral.integral_mono_on hlow_high intervalIntegrable_const
-        (hcont.intervalIntegrable _ _) hpt_band
+      have hmono := intervalIntegral.integral_mono_on hlow_high
+        (intervalIntegrable_const : IntervalIntegrable _ volume (t₀ - η) (t₀ + η))
+        (hcont.intervalIntegrable _ _ : IntervalIntegrable _ volume (t₀ - η) (t₀ + η)) hpt_band
       rw [intervalIntegral.integral_const, smul_eq_mul] at hmono
       refine le_trans (le_of_eq ?_) hmono
       have hlen : (t₀ + η) - (t₀ - η) = 2 * η := by ring
@@ -919,19 +931,20 @@ theorem exists_shiftedInverse_countermodel_blowup {δ : ℝ} (hδ0 : 0 < δ) (h�
     norm_shiftedZetaCoeff_le_one hδ1.le, summable_normSq_shiftedZetaCoeff_div hδ1,
     fun s hs => lSeries_shiftedInverseCoeff δ hs, ?_⟩
   have hcontF_on := continuousOn_shiftedInverseFn_Icc_one_three hδ0 hδ1
-  have hw2 : ((1 / 2 : ℝ) : ℂ) + (2 : ℂ) * I + shiftedInverseOffset δ = ((1 - δ : ℝ) : ℂ) := by
+  have hw2 : ((1 / 2 : ℝ) : ℂ) + ((2 : ℝ) : ℂ) * I + shiftedInverseOffset δ =
+      ((1 - δ : ℝ) : ℂ) := by
     unfold shiftedInverseOffset
     push_cast
     ring
   have hζ2_ne0 : riemannZeta ((1 - δ : ℝ) : ℂ) ≠ 0 := by
     refine MultiscaleMollifiedZetaField.riemannZeta_ne_zero_of_xi_ne_zero
       (by simp; linarith) (by intro h; have := congrArg Complex.re h; simp at this; linarith) ?_
-    exact _root_.RHTower.xi_ne_zero_of_abs_im_le_nine_halves (by simp)
-  have hF2_pos : 0 < ‖shiftedInverseFn δ (((1 / 2 : ℝ) : ℂ) + (2 : ℂ) * I)‖ := by
+    exact _root_.RHTower.xi_ne_zero_of_abs_im_le_nine_halves (by simp; norm_num)
+  have hF2_pos : 0 < ‖shiftedInverseFn δ (((1 / 2 : ℝ) : ℂ) + ((2 : ℝ) : ℂ) * I)‖ := by
     unfold shiftedInverseFn
     rw [hw2, norm_inv, inv_pos]
     exact norm_pos_iff.mpr hζ2_ne0
-  set c₁ : ℝ := ‖shiftedInverseFn δ (((1 / 2 : ℝ) : ℂ) + (2 : ℂ) * I)‖ / 2
+  let c₁ : ℝ := ‖shiftedInverseFn δ (((1 / 2 : ℝ) : ℂ) + ((2 : ℝ) : ℂ) * I)‖ / 2
   have hc₁_pos : 0 < c₁ := half_pos hF2_pos
   have hcF_at2 : ContinuousAt
       (fun t : ℝ => ‖shiftedInverseFn δ (((1 / 2 : ℝ) : ℂ) + (t : ℂ) * I)‖) 2 := by
@@ -939,7 +952,7 @@ theorem exists_shiftedInverse_countermodel_blowup {δ : ℝ} (hδ0 : 0 < δ) (h�
     exact (hcontF_on.norm.continuousWithinAt (by norm_num : (2 : ℝ) ∈ Set.Icc 1 3)).continuousAt hmem
   have hev_c₁ : ∀ᶠ t : ℝ in 𝓝 (2 : ℝ),
       c₁ ≤ ‖shiftedInverseFn δ (((1 / 2 : ℝ) : ℂ) + (t : ℂ) * I)‖ :=
-    hcF_at2.eventually (ge_mem_nhds (by dsimp [c₁]; linarith))
+    hcF_at2.eventually (Ici_mem_nhds (half_lt_self hF2_pos))
   obtain ⟨r₀, hr₀_pos, hr₀_ball⟩ := Metric.eventually_nhds_iff.mp hev_c₁
   obtain ⟨r, hr_def⟩ : ∃ r : ℝ, r = min (r₀ / 2) (1 / 2) := ⟨_, rfl⟩
   have hr_pos : 0 < r := by rw [hr_def]; exact lt_min (half_pos hr₀_pos) (by norm_num)
@@ -953,8 +966,11 @@ theorem exists_shiftedInverse_countermodel_blowup {δ : ℝ} (hδ0 : 0 < δ) (h�
     exact hr₀_ball (by rw [Real.dist_eq]; exact lt_of_le_of_lt ht hr_lt_r₀)
   refine ⟨c₁ ^ 2 * r / 2, by positivity, fun {X} hX => ?_⟩
   have hX_pos : (0 : ℝ) < X := by positivity
+  have h2X_ge4 : (4 : ℝ) ≤ 2 * (X : ℝ) := by
+    have : (2 : ℝ) ≤ X := by exact_mod_cast hX
+    linarith
   have hlog_gt1 : 1 < Real.log (2 * (X : ℝ)) := by
-    rw [Real.lt_log_iff_exp_lt (by have : (2 : ℝ) ≤ X := by exact_mod_cast hX; linarith)]
+    rw [Real.lt_log_iff_exp_lt (by positivity)]
     linarith [Real.exp_one_lt_d9]
   have hlog_pos : 0 < Real.log (2 * (X : ℝ)) := lt_trans zero_lt_one hlog_gt1
   obtain ⟨η, hη_def⟩ : ∃ η : ℝ, η = r / Real.log (2 * (X : ℝ)) := ⟨_, rfl⟩
@@ -983,14 +999,12 @@ theorem exists_shiftedInverse_countermodel_blowup {δ : ℝ} (hδ0 : 0 < δ) (h�
         (by linarith)
     have hsum_ge := Finset.sum_le_sum hmin
     rw [Finset.sum_const, Nat.card_Icc, show X + 1 - 1 = X by omega, nsmul_eq_mul] at hsum_ge
-    refine le_trans (le_of_eq ?_) hsum_ge
-    conv_rhs => rw [← Real.rpow_one (X : ℝ)]
-    rw [← Real.rpow_add hX_pos]
-    congr 1
-    ring
+    calc (X : ℝ) ^ δ = (X : ℝ) ^ ((1 : ℝ) + -(1 - δ)) := by congr 1; ring
+      _ = (X : ℝ) ^ (1 : ℝ) * (X : ℝ) ^ (-(1 - δ)) := Real.rpow_add hX_pos 1 (-(1 - δ))
+      _ = (X : ℝ) * (X : ℝ) ^ (-(1 - δ)) := by rw [Real.rpow_one]
+      _ ≤ S₂ := hsum_ge
   have hB_at2 : (∑ d ∈ Finset.Icc 1 X,
-        shiftedZetaCoeff δ d * (d : ℂ) ^ (-(((1 / 2 : ℝ) : ℂ) + (2 : ℂ) * I))) = (S₂ : ℂ) := by
-    dsimp [S₂]
+        shiftedZetaCoeff δ d * (d : ℂ) ^ (-(((1 / 2 : ℝ) : ℂ) + ((2 : ℝ) : ℂ) * I))) = (S₂ : ℂ) := by
     rw [Complex.ofReal_sum]
     refine Finset.sum_congr rfl fun d hd => ?_
     obtain ⟨hd1, _⟩ := Finset.mem_Icc.mp hd
@@ -1014,11 +1028,11 @@ theorem exists_shiftedInverse_countermodel_blowup {δ : ℝ} (hδ0 : 0 < δ) (h�
       refine (norm_sum_le _ _).trans ?_
       have hterm_diff : ∀ d ∈ Finset.Icc 1 X,
           ‖shiftedZetaCoeff δ d * (d : ℂ) ^ (-(((1 / 2 : ℝ) : ℂ) + (t : ℂ) * I)) -
-            shiftedZetaCoeff δ d * (d : ℂ) ^ (-(((1 / 2 : ℝ) : ℂ) + (2 : ℂ) * I))‖ ≤
+            shiftedZetaCoeff δ d * (d : ℂ) ^ (-(((1 / 2 : ℝ) : ℂ) + ((2 : ℝ) : ℂ) * I))‖ ≤
             (d : ℝ) ^ (-(1 - δ)) * (1 / 2) := by
         intro d hd
         obtain ⟨hd1, hdX⟩ := Finset.mem_Icc.mp hd
-        rw [hterm_eq d hd1 t, hterm_eq d hd1 2]
+        rw [hterm_eq d hd1 t, hterm_eq d hd1 2, sub_self, Complex.ofReal_zero, zero_mul, add_zero]
         have hsh := norm_natCast_cpow_shift_sub_le hd1 ((1 - δ : ℝ) : ℂ) (t - 2) 0
         simp only [Complex.ofReal_zero, zero_mul, add_zero, sub_zero] at hsh
         have hnorm0 : ‖(d : ℂ) ^ (-((1 - δ : ℝ) : ℂ))‖ = (d : ℝ) ^ (-(1 - δ)) := by
@@ -1058,20 +1072,21 @@ theorem exists_shiftedInverse_countermodel_blowup {δ : ℝ} (hδ0 : 0 < δ) (h�
         ‖shiftedInverseFn δ (((1 / 2 : ℝ) : ℂ) + (t : ℂ) * I)‖ *
           ‖∑ d ∈ Finset.Icc 1 X,
             shiftedZetaCoeff δ d * (d : ℂ) ^ (-(((1 / 2 : ℝ) : ℂ) + (t : ℂ) * I))‖ :=
-      mul_le_mul hc₁_t hB_ge (by positivity) hc₁_pos.le
+      mul_le_mul hc₁_t hB_ge (by positivity) (norm_nonneg _)
     calc c₁ ^ 2 * (X : ℝ) ^ (2 * δ) / 4
         = (c₁ * ((X : ℝ) ^ δ / 2)) ^ 2 := by
           have hrpow2 : ((X : ℝ) ^ δ) ^ 2 = (X : ℝ) ^ (2 * δ) := by
             rw [← Real.rpow_natCast _ 2, ← Real.rpow_mul hX_pos.le]
             congr 1; push_cast; ring
-          rw [mul_pow, div_pow, hrpow2]
+          rw [← hrpow2]
           ring
       _ ≤ _ := pow_le_pow_left₀ (by positivity) hprod_ge 2
   have hcontB : Continuous fun t : ℝ =>
       ∑ d ∈ Finset.Icc 1 X,
         shiftedZetaCoeff δ d * (d : ℂ) ^ (-(((1 / 2 : ℝ) : ℂ) + (t : ℂ) * I)) := by
     refine continuous_finsetSum _ fun d hd => ?_
-    have hd0 : (d : ℂ) ≠ 0 := by exact_mod_cast (Finset.mem_Icc.mp hd).1.ne'
+    have hd1 := (Finset.mem_Icc.mp hd).1
+    have hd0 : (d : ℂ) ≠ 0 := by exact_mod_cast (show d ≠ 0 by omega)
     exact continuous_const.mul (Continuous.const_cpow (by fun_prop) (Or.inl hd0))
   have hcont_prod : ContinuousOn
       (fun t : ℝ => ‖shiftedInverseFn δ (((1 / 2 : ℝ) : ℂ) + (t : ℂ) * I) *
@@ -1144,14 +1159,5 @@ theorem exists_shiftedInverse_countermodel_blowup {δ : ℝ} (hδ0 : 0 < δ) (h�
     ofReal_integral_eq_lintegral_ofReal hint_13.1
       (Eventually.of_forall fun _ => sq_nonneg _)] at hofReal
   exact hofReal.trans (lintegral_mono_set (Set.Ioc_subset_Ioc_right hT))
-
-#print axioms truncatedMoebiusDivisorSum_eq_neg_moebius_of_mem_Ioc
-#print axioms truncatedMoebiusDivisorSum_prime_of_gt
-#print axioms truncatedMoebiusDivisorSum_eq_zero_of_composite_rough_le_sq
-#print axioms collar_dirichletPoly_eq_neg_sum_pureMoebius
-#print axioms integral_normSq_collar_le_harmonic_mul_sum_pureMoebius
-#print axioms norm_divisorSum_mul_completelyMultiplicative_eq
-#print axioms exists_prefix_zero_unit_sign_criticalMoment_ge
-#print axioms exists_shiftedInverse_countermodel_blowup
 
 end GaloisForLFunctions.ArithmeticProduction

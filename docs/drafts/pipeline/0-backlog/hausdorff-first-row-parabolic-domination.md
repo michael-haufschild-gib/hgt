@@ -1,6 +1,6 @@
 # First Hausdorff row by parabolic suppression
 
-- **Stage:** 1-in-progress
+- **Stage:** 0-backlog
 - **Type:** CONJECTURE
 - **Wall:** Σ73
 - **Statement:** Every endpoint-calibrated difference `D(0,r)` is nonnegative.

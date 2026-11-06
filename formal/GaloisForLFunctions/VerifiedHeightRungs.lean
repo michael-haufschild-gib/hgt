@@ -3,3 +3,4 @@ import GaloisForLFunctions.VerifiedHeightRungs.JensenEntries
 import GaloisForLFunctions.VerifiedHeightRungs.HeatGridEntries
 import GaloisForLFunctions.VerifiedHeightRungs.ThetaEntries
 import GaloisForLFunctions.VerifiedHeightRungs.PolyaFrequencyEntries
+import GaloisForLFunctions.VerifiedHeightRungs.WindowEntries

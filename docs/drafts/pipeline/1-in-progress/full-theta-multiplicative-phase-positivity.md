@@ -52,10 +52,16 @@ mixed-difference conjecture remains open.
 Test the positive frequency average with weight `cosh(ηb)`, `η<π/2`.
 Schläfli inversion should replace `K_ib(2q)` by
 `π exp(−2q cos η)`. Set `N=(cos η)⁻¹`. Prescribe phase `−1` on
-primes in `[N^γ,N]`, where `1/2<γ<1`, and average all other prime
-phases. The diagonal survives; the pairs `(1,p)` are negative, while
-terms involving two prescribed prime occurrences have product at least
-`N^(2γ)` and should be exponentially suppressed.
+every prime above `Y≈N^γ`, where `1/2<γ<1`, and average the small-prime
+phases. The corpus largest-prime decomposition isolates the prospective
+head mean, for `X<Y²` and product amplitude `A(k)`:
+
+`Σ_(d²≤X) A(d²)−2Σ_(Y<p≤X, p prime) Σ_(pd²≤X) A(pd²)`.
+
+The diagonal survives; every large-prime channel is negative. The
+remaining product tail starts at `Y²` and should be exponentially
+suppressed after frequency averaging. The prime block up to `N` alone
+would supply the needed negative mass.
 
 For fixed `0<a<1/2`, the expected diagonal scale is
 `N^(9/2+a) log N`; the negative prime scale is `N^5/log N`.
@@ -67,4 +73,4 @@ average and suppression estimates are not yet proved together.
 Corpus anchors for this test: `besselFirstAtomTailDensity`,
 `modifiedBesselKOrder_imaginary_re_integral`,
 `strip_axis_eq_ofReal`, `integral_cosh_stripDensity`, and
-`SteinhausModel`.
+`SteinhausModel`, and `sum_Icc_eq_smooth_add_largePrimeSigma`.

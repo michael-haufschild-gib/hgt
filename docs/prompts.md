@@ -380,16 +380,16 @@ goal is met when 250 discharges could be made.
 
 ## update obstacles
 earlier today we created these documents:
-- docs/reports/review-0411/walls-ledger.md
-- docs/reports/review-0411/route-obstacles.md
-- docs/reports/review-0411/route-unification-ledger.md
-- docs/reports/review-0411/obstacles-summary.md
+- docs/reports/review-0511/walls-ledger.md
+- docs/reports/review-0511/route-obstacles.md
+- docs/reports/review-0511/route-unification-ledger.md
+- docs/reports/review-0511/obstacles-summary.md
   
 read:
 - docs/reports/rh-current-frontier-map.md
 - docs/reports/rh-killed-routes.md
 
-write new reports to reflect the current status quo and frontier of our research taking into account all new lean proofs and changes done since the original reports were written:
+write new reports from scratch to reflect the current status quo and frontier of our research taking into account all new lean proofs and changes done since the original reports were written:
 1. a complete report about each route and route candidate and what the hard mathematical obstacles are that block us from closing the route. split these into a) obstacles that we can solve and are "just work", and b) obstacles that are open mathematical problems nobody has a solution to
 2. then create a summary document that combines all the information and:
    2.1 lists all tasks / obstacles that we can solve and are "just work"
@@ -401,14 +401,18 @@ write new reports to reflect the current status quo and frontier of our research
    2.5.2 route PM
    2.5.3 route WD
    2.5.4 route HF
-   2.5.5 route ZCG
+   2.5.5 route TH
+   2.5.6 route RW
+   2.6.7 route ZCG
    2.6 ideate and describe a breakthrough question that would clearly open wide the path to the RH proof for:
    2.6.1 our RH proof research as a whole
    2.6.2 route PM
    2.6.3 route WD
    2.6.4 route HF
-   2.6.5 route ZCG
-   2.7 ideates whether solving all obstacles to reach the RH proof would require a new field of mathematics, what this field would be about, what it would be like, what criteria it must meet, what questions it must answer, what tools it aims to develop, what objects and language and mechanisms it must be built on or would aim to discover
+   2.6.5 route TH
+   2.6.6 route TH
+   2.6.7 route ZCG
+   2.7 ideate whether solving all obstacles to reach the RH proof would require a new field of mathematics, what this field would be about, what it would be like, what criteria it must meet, what questions it must answer, what tools it aims to develop, what objects and language and mechanisms it must be built on or would aim to discover
    2.8 What is the one question the is less hard than proving RH or quasiRH outright and would, when answered, bring a real breakthrough and push the door wide open for us for finding the RH proof?
 3. based on that an updated wall-ledger where walls have changed, were solved, or new walls were added.
 4. also provide a new version of the route-unification-ledger.md which shows which routes are just different faces of the same problem similar to the wall-ledger unifies all walls into 3 core problem families.
@@ -420,7 +424,7 @@ first collect information in a working log in logs/ - facts, not process or stat
 
 the reports are not diaries or history log, but status quo reports.
 
-place the reports in folder docs/reports/review-0511/ without history language or "this changed since last review".
+place the reports in folder docs/reports/review-0611/ without history language or "this changed since last review".
 do not run builds. this is not a task to verify the work of other agents but to create consolidated reports and "big picture" interpretations on their research results.
 
 
@@ -498,7 +502,7 @@ Do not use the hgtl7 skill.
 
 read and understand docs/reports/review-0511/obstacles-summary.md
 
-under "### 2.7.2 Programme B — Arithmetic production at square-root precision" it describes a new field/research programme.
+under "### 2.7.2 A programme for route WD: multiscale analysis of the mollified zeta field" it describes a new field/research programme.
 
 Your task: develop this field/research programme and do the actual research and formalization.
 
@@ -614,13 +618,15 @@ Put all lean code for the answer into relevant subfolders to not bloat RHTower a
 
 Do not use the hgtl7 skill.
 
-read and understand docs/reports/review-0411/obstacles-summary.md
+read and understand docs/reports/review-0511/obstacles-summary.md (more details in docs/reports/review-0511/route-obstacles.md)
 
-in "## 2.1 Obstacles that are just work" it lists all mathematical obstacles that have no solution in lean yet but should be formalizable.
+under "## 2.1 Auxiliary tasks; difficulty not certified" it lists tasks which are likely to be doable.
 
-your task: work through the list, from simplests to hardest, and find a solution for every open obstacle and formalize the solution.
+your task: find a complete solution for each task and unconditionally formalize it. start with the easiest tasks and work towards the hardest.
 
-we are not interested in busy-work, redressing of existing knowledge, improving number just for the sake of it - anything that is not directly contribution to solve an open problem from the list is a waste of time and token.
+where necessary lean infrastructure is absent from our lean corpus and mathlib -> build it no matter the effort.
+
+we are not interested in busywork, redressing of existing knowledge, building unnecessary lean infrastructure. you turn walls not solved yet into solved walls or you are wasting time and token.
 
 **Tools to use:**
 1. Search: use the search tool for our lean corpus, not just rg or grep. make good use of the search tool to find existing work, building blocks, and new ideas. Try to apply existing lean research, try to identify problems and questions the field with your contribution could explain or solve.
@@ -650,7 +656,7 @@ Do not use the hgtl7 skill.
 
 read and understand docs/reports/review-0511/obstacles-summary.md
 
-under "### 2.5.1 Whole programme — `100%` critical-scale clustering" and "### 2.5.3 Route WD — log-free window occupancy" it asks 2 questions.
+under "## 2.5 Breakthrough questions below RH and quasi-RH" it asks several questions.
 
 your task: answer the questions, find a complete solution for each and unconditionally formalize it and its implications and collaries in lean.
 
@@ -685,11 +691,11 @@ Goal is met when there are no more open or partially solved or sharpened walls.
 
 Do not use the hgtl7 skill.
 
-read the wall ledger (a wall is a mathematical obstacle in our research): docs/reports/review-0111/walls-ledger.md
+read the wall ledger (a wall is a mathematical obstacle in our research): docs/reports/review-0511/walls-ledger.md
 
 on every turn:
 conjecture, derive, formalize a way to either
-- turn an open or sharpened wall into partially solved or solved.
+- turn an open or sharpened wall into partially solved or solved (or proven no-go).
 - turn a partially solved wall into a solved wall.
  
 we are not interested in busywork, redressing of existing knowledge, building unnecessary lean infrastructure. you turn walls not solved yet into solved walls or you are wasting time and token.

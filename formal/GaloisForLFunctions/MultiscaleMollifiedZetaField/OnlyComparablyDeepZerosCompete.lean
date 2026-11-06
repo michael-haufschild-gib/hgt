@@ -347,11 +347,6 @@ theorem card_le_trivial {ι : Type*} (Z : Finset ι) (g : ι → ℝ) {r T c L :
   calc (Z.card : ℝ) = (Z.card : ℝ) * (2 * r) * (2 * r)⁻¹ := by field_simp
     _ ≤ T * (2 * r)⁻¹ := mul_le_mul_of_nonneg_right hreal (by positivity)
 
-/-- `e^{−e^{x/8}/120000} ≤ e^{−2x}` once `e^{x/8} ≥ 240000 x`. -/
-theorem exp_neg_exp_le {x : ℝ} (h : 240000 * x ≤ Real.exp (x / 8)) :
-    Real.exp (-(Real.exp (x / 8) / 120000)) ≤ Real.exp (-(2 * x)) :=
-  Real.exp_le_exp.2 (by linarith)
-
 /-- The size condition at `κ = e^{x/8}`, `A ≤ x/2`, `B₀ ≥ e^{−x/8}`. -/
 theorem size_condition {Iv M K x A B₀ α : ℝ} (hI : 0 < Iv) (hM : 0 ≤ M) (hK : 0 ≤ K) (hα1 : 1 ≤ α + 1)
     (hAx : A ≤ x / 2) (hB₀ : Real.exp (-(x / 8)) ≤ B₀)
