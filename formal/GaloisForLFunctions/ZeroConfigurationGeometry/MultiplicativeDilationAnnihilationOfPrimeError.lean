@@ -108,6 +108,9 @@ theorem dilationSetOp_id_eq (b β : ℝ) (S : Finset ℝ) (x : ℝ) :
     dilationSetOp b β S id x = mainTermFactor b β S * x :=
   dilationPolyOp_id_eq b (dilationSetPoly b β S) x
 
+@[simp]
+private theorem algebraMap_real_complex_apply (r : ℝ) : algebraMap ℝ ℂ r = (r : ℂ) := rfl
+
 /-- Action of `dilationPolyOpC b P` on `y ↦ (y : ℂ)^s` (`b > 0`, `x > 0`). -/
 theorem dilationPolyOpC_cpow_eq {b x : ℝ} (hb : 0 < b) (hx : 0 < x) (P : Polynomial ℝ) (s : ℂ) :
     dilationPolyOpC b P (fun y => (y : ℂ) ^ s) x = dilationSymbol b P s * (x : ℂ) ^ s := by
@@ -126,8 +129,7 @@ theorem dilationPolyOpC_cpow_eq {b x : ℝ} (hb : 0 < b) (hx : 0 < x) (P : Polyn
     congr 1
     push_cast
     ring
-  rw [hpow_eq]
-  simp only [RCLike.algebraMap_eq_ofReal]
+  rw [hpow_eq, algebraMap_real_complex_apply]
   ring
 
 /-- Complex factorization of `dilationPairPoly b β ω` at `z ∈ ℂ` (`b > 0`). -/
@@ -142,8 +144,8 @@ theorem eval₂_dilationPairPoly_eq {b : ℝ} (hb : 0 < b) (β ω : ℝ) (z : �
   have hexp_add : cexp (I * ω * Real.log b) + cexp (-I * ω * Real.log b) =
       2 * (Real.cos (ω * Real.log b) : ℂ) := by
     rw [Complex.ofReal_cos, Complex.cos]
-    have h1 : (ω * Real.log b : ℂ) * I = I * ω * Real.log b := by push_cast; ring
-    have h2 : -((ω * Real.log b : ℂ) * I) = -I * ω * Real.log b := by push_cast; ring
+    have h1 : ((ω * Real.log b : ℝ) : ℂ) * I = I * ω * Real.log b := by push_cast; ring
+    have h2 : -((ω * Real.log b : ℝ) : ℂ) * I = -I * ω * Real.log b := by push_cast; ring
     rw [h1, h2]
     ring
   have hb2 : (((b ^ β : ℝ) : ℂ)) ^ 2 = ((b ^ (2 * β) : ℝ) : ℂ) := by
@@ -152,7 +154,7 @@ theorem eval₂_dilationPairPoly_eq {b : ℝ} (hb : 0 < b) (β ω : ℝ) (z : �
     ring
   simp only [dilationPairPoly, Polynomial.eval₂_add, Polynomial.eval₂_sub, Polynomial.eval₂_one,
     Polynomial.eval₂_mul, Polynomial.eval₂_C, Polynomial.eval₂_X, Polynomial.eval₂_X_pow,
-    RCLike.algebraMap_eq_ofReal]
+    algebraMap_real_complex_apply]
   push_cast
   calc (1 : ℂ) - 2 * ((b ^ β : ℝ) : ℂ) * (Real.cos (ω * Real.log b) : ℂ) * z +
         ((b ^ (2 * β) : ℝ) : ℂ) * z ^ 2
@@ -178,7 +180,7 @@ theorem dilationSymbol_dilationSetPoly_eq {b : ℝ} (hb : 0 < b) (β : ℝ) (S :
       ((b ^ β : ℝ) : ℂ) * cexp (sgn * I * ω * Real.log b) * (b : ℂ) ^ (-s) =
         (b : ℂ) ^ (((β : ℂ) + sgn * I * ω) - s) := by
     intro sgn _
-    rw [← Complex.ofReal_cpow hb.le, Complex.cpow_def_of_ne_zero hb0,
+    rw [Complex.ofReal_cpow hb.le, Complex.cpow_def_of_ne_zero hb0,
       Complex.cpow_def_of_ne_zero hb0, Complex.cpow_def_of_ne_zero hb0,
       ← Complex.ofReal_log hb.le, ← Complex.exp_add, ← Complex.exp_add]
     congr 1
@@ -186,8 +188,7 @@ theorem dilationSymbol_dilationSetPoly_eq {b : ℝ} (hb : 0 < b) (β : ℝ) (S :
   have hpos := hfactor 1 (Or.inl rfl)
   have hneg := hfactor (-1) (Or.inr rfl)
   simp only [one_mul, neg_one_mul] at hpos hneg
-  rw [hpos, show (β : ℂ) + -(I * ↑ω) - s = (β : ℂ) - I * ↑ω - s by ring] at hneg ⊢
-  rw [hneg]
+  rw [hpos, hneg, show (β : ℂ) + -I * (ω : ℂ) - s = (β : ℂ) - I * (ω : ℂ) - s by ring]
 
 /-- `dilationSymbol b (dilationSetPoly b β S)` vanishes at `β + iμ` for every `μ ∈ S ∪ (−S)`. -/
 theorem dilationSymbol_dilationSetPoly_eq_zero_of_mem {b : ℝ} (hb : 0 < b) (β : ℝ) (S : Finset ℝ)
@@ -245,9 +246,7 @@ theorem mainTermFactor_ge_pos {b β : ℝ} (hb : 1 < b) (hβ : β < 1) (S : Fins
     simp only [dilationPairPoly, Polynomial.eval_add, Polynomial.eval_sub, Polynomial.eval_one,
       Polynomial.eval_mul, Polynomial.eval_C, Polynomial.eval_X, Polynomial.eval_pow]
     have h1 : b ^ β * b⁻¹ = b ^ (β - 1) := by
-      rw [← Real.rpow_neg_one b, ← Real.rpow_add hb0]
-      congr 1
-      ring
+      rw [← Real.rpow_neg_one b, ← Real.rpow_add hb0, sub_eq_add_neg]
     have h2 : b ^ (2 * β) * b⁻¹ ^ 2 = (b ^ (β - 1)) ^ 2 := by
       rw [← Real.rpow_natCast (b ^ (β - 1)) 2, ← Real.rpow_mul hb0.le, inv_pow,
         ← Real.rpow_natCast b 2, ← Real.rpow_neg hb0.le, ← Real.rpow_add hb0]
@@ -287,7 +286,7 @@ theorem abs_dilationSetOp_psi_sub_mainTerm_le {b β σ₀ C x₀ : ℝ} (hb : 1 
     have h2 : dilationPolyOp b P (fun y => y + y ^ β * finiteOscillation S c (Real.log y)) x =
         dilationSetOp b β S id x +
           dilationSetOp b β S (fun y => y ^ β * finiteOscillation S c (Real.log y)) x := by
-      simp only [dilationSetOp, dilationPolyOp, id_eq, mul_add, Finset.sum_add_distrib]
+      simp only [P, dilationSetOp, dilationPolyOp, id_eq, mul_add, Finset.sum_add_distrib]
     rw [dilationSetOp_id_eq, dilationSetOp_rpow_mul_finiteOscillation_eq_zero hb0 β S c hx_pos,
       add_zero] at h2
     change dilationPolyOp b P Chebyshev.psi x - mainTermFactor b β S * x = _
@@ -330,35 +329,30 @@ def dilationRemainder (b : ℝ) (P : Polynomial ℝ) : ℝ → ℂ :=
 
 theorem locallyIntegrableOn_dilationRemainder {b : ℝ} (hb : 0 < b) (P : Polynomial ℝ) :
     LocallyIntegrableOn (dilationRemainder b P) (Ioi 0) := by
-  have hpsi_k : ∀ k : ℕ, LocallyIntegrableOn
-      (fun x : ℝ => ((P.coeff k * Chebyshev.psi (x / b ^ k) : ℝ) : ℂ)) (Ioi 0) := by
-    intro k
-    have hbk : 0 < b ^ k := pow_pos hb k
-    have hmono : Monotone fun x : ℝ => Chebyshev.psi (x / b ^ k) :=
-      fun _ _ hxy => Chebyshev.psi_mono (div_le_div_of_nonneg_right hxy hbk.le)
-    have hloc : LocallyIntegrableOn (fun x : ℝ => Chebyshev.psi (x / b ^ k)) (Ioi 0) :=
-      (hmono.locallyIntegrable (μ := volume)).locallyIntegrableOn _
-    have hlocC : LocallyIntegrableOn (fun x : ℝ => (Chebyshev.psi (x / b ^ k) : ℂ)) (Ioi 0) :=
-      hloc.mono (Complex.measurable_ofReal.comp hmono.measurable).aestronglyMeasurable
-        (ae_of_all _ fun x => by simp)
-    simpa [Complex.ofReal_mul] using hlocC.const_mul (P.coeff k : ℂ)
-  have hsum : LocallyIntegrableOn
-      (fun x : ℝ => ∑ k ∈ Finset.range (P.natDegree + 1),
-        ((P.coeff k * Chebyshev.psi (x / b ^ k) : ℝ) : ℂ)) (Ioi 0) := by
-    classical
-    induction Finset.range (P.natDegree + 1) using Finset.induction_on with
-    | empty => simpa using locallyIntegrableOn_const (0 : ℂ)
-    | insert k s hks ih =>
-      simpa only [Finset.sum_insert hks] using (hpsi_k k).add ih
-  have hlin : LocallyIntegrableOn (fun x : ℝ => ((P.eval b⁻¹ * x : ℝ) : ℂ)) (Ioi 0) :=
-    ((Complex.continuous_ofReal.comp (continuous_const.mul continuous_id)).continuousOn
-      ).locallyIntegrableOn measurableSet_Ioi
-  have herr : LocallyIntegrableOn
-      (fun x : ℝ => ((dilationPolyOp b P Chebyshev.psi x - P.eval b⁻¹ * x : ℝ) : ℂ)) (Ioi 0) :=
-    (hsum.sub hlin).congr (ae_of_all _ fun x => by simp [dilationPolyOp])
   intro x hx
-  rcases herr x hx with ⟨t, ht, hint⟩
-  exact ⟨t, ht, hint.indicator measurableSet_Ioi⟩
+  set K : Set ℝ := Icc 0 (x + 1)
+  have hK_mem : K ∈ 𝓝[Ioi 0] x :=
+    Filter.mem_of_superset (mem_nhdsWithin_of_mem_nhds (Ioo_mem_nhds hx (lt_add_one x)))
+      Ioo_subset_Icc_self
+  have hsum : IntegrableOn
+      (fun y : ℝ => ∑ k ∈ Finset.range (P.natDegree + 1),
+        (P.coeff k : ℂ) * (Chebyshev.psi (y / b ^ k) : ℂ)) K := by
+    refine integrable_finsetSum _ fun k _ => ?_
+    have hbk : 0 < b ^ k := pow_pos hb k
+    have hmono : Monotone fun y : ℝ => Chebyshev.psi (y / b ^ k) :=
+      fun _ _ hxy => Chebyshev.psi_mono (div_le_div_of_nonneg_right hxy hbk.le)
+    have hiR : IntegrableOn (fun y : ℝ => Chebyshev.psi (y / b ^ k)) K :=
+      MonotoneOn.integrableOn_isCompact isCompact_Icc (hmono.monotoneOn K)
+    have hiC : IntegrableOn (fun y : ℝ => (Chebyshev.psi (y / b ^ k) : ℂ)) K := by
+      simpa only [Function.comp_def, Complex.ofRealCLM_apply] using
+        Complex.ofRealCLM.integrable_comp hiR
+    exact hiC.const_mul (P.coeff k : ℂ)
+  have hlin : IntegrableOn (fun y : ℝ => ((P.eval b⁻¹ * y : ℝ) : ℂ)) K :=
+    (Complex.continuous_ofReal.comp (continuous_const.mul continuous_id)).integrableOn_Icc
+  have herr : IntegrableOn
+      (fun y : ℝ => ((dilationPolyOp b P Chebyshev.psi y - P.eval b⁻¹ * y : ℝ) : ℂ)) K :=
+    (hsum.sub hlin).congr_fun (fun y _ => by simp [dilationPolyOp]) measurableSet_Icc
+  exact ⟨K, hK_mem, herr.indicator measurableSet_Ioi⟩
 
 /-- Rescaling identity on `(1, ∞)`: for `c ≥ 1` and `Re s > 1`,
 `∫_1^∞ ψ(t / c) t^{−(s+1)} dt = c^{−s} ∫_1^∞ ψ(u) u^{−(s+1)} du` with zero boundary term at `1`,
@@ -382,10 +376,11 @@ theorem integral_Ioi_one_psi_div_mul_cpow {c : ℝ} (hc : 1 ≤ c) {s : ℂ} (hs
     funext u
     by_cases hu1 : (1 : ℝ) < u
     · have huc : c⁻¹ < u := hcinv_le.trans_lt hu1
-      simp [Set.indicator_of_mem hu1, Set.indicator_of_mem huc]
-    · rw [Set.indicator_of_notMem hu1]
+      rw [Set.indicator_of_mem (show u ∈ Ioi c⁻¹ from huc),
+        Set.indicator_of_mem (show u ∈ Ioi (1 : ℝ) from hu1)]
+    · rw [Set.indicator_of_notMem (show u ∉ Ioi (1 : ℝ) from hu1)]
       by_cases huc : c⁻¹ < u
-      · rw [Set.indicator_of_mem huc]
+      · rw [Set.indicator_of_mem (show u ∈ Ioi c⁻¹ from huc)]
         have hu_lt2 : u < 2 := by linarith
         have hfloor : ⌊u⌋₊ ≤ 1 := by
           by_contra hgt
@@ -397,7 +392,7 @@ theorem integral_Ioi_one_psi_div_mul_cpow {c : ℝ} (hc : 1 ≤ c) {s : ℂ} (hs
           refine Finset.sum_eq_zero fun n hn => ?_
           rcases (show n = 0 ∨ n = 1 by have := Finset.mem_Icc.mp hn; omega) with rfl | rfl <;> simp
         simp [g, hpsi0]
-      · rw [Set.indicator_of_notMem huc]
+      · rw [Set.indicator_of_notMem (show u ∉ Ioi c⁻¹ from huc)]
   have htrim : (∫ u in Ioi c⁻¹, g u) = ∫ u in Ioi (1 : ℝ), g u := by
     rw [← MeasureTheory.integral_indicator measurableSet_Ioi, hind,
       MeasureTheory.integral_indicator measurableSet_Ioi]
@@ -425,9 +420,10 @@ theorem integrableOn_psi_div_mul_cpow {c : ℝ} (hc : 1 ≤ c) {s : ℂ} (hs : 1
   have hbase : IntegrableOn
       (fun u : ℝ => (Chebyshev.psi u : ℂ) * (u : ℂ) ^ (-(s + 1))) (Ioi 1) := by
     refine (integrableOn_criticalCumulative_mul_cpow hs).congr_fun (fun u _ => ?_) measurableSet_Ioi
+    dsimp only
     rw [criticalCumulative_vonMangoldt_eq_psi]
-  have hscaled : IntegrableOn
-      (fun u : ℝ => (Chebyshev.psi u : ℂ) * ((c * u : ℝ) : ℂ) ^ (-(s + 1))) (Ioi c⁻¹) := by
+  set g : ℝ → ℂ := fun u => (Chebyshev.psi u : ℂ) * ((c * u : ℝ) : ℂ) ^ (-(s + 1))
+  have hscaled : IntegrableOn g (Ioi c⁻¹) := by
     have hmul : IntegrableOn
         (fun u : ℝ => (c : ℂ) ^ (-(s + 1)) * ((Chebyshev.psi u : ℂ) * (u : ℂ) ^ (-(s + 1))))
         (Ioi 1) := hbase.const_mul _
@@ -436,12 +432,14 @@ theorem integrableOn_psi_div_mul_cpow {c : ℝ} (hc : 1 ≤ c) {s : ℂ} (hs : 1
     by_cases hu1 : (1 : ℝ) < u
     · have huc : c⁻¹ < u := (inv_le_one_of_one_le₀ hc).trans_lt hu1
       have hu0 : 0 < u := zero_lt_one.trans hu1
-      simp only [Set.indicator_of_mem hu1, Set.indicator_of_mem huc]
+      rw [Set.indicator_of_mem (show u ∈ Ioi (1 : ℝ) from hu1),
+        Set.indicator_of_mem (show u ∈ Ioi c⁻¹ from huc)]
+      simp only [g]
       rw [Complex.ofReal_mul c u, Complex.mul_cpow_ofReal_nonneg hc0.le hu0.le]
       ring
-    · rw [Set.indicator_of_notMem hu1]
+    · rw [Set.indicator_of_notMem (show u ∉ Ioi (1 : ℝ) from hu1)]
       by_cases huc : c⁻¹ < u
-      · rw [Set.indicator_of_mem huc]
+      · rw [Set.indicator_of_mem (show u ∈ Ioi c⁻¹ from huc)]
         have hfloor : ⌊u⌋₊ ≤ 1 := by
           by_contra hgt
           have h2 : (2 : ℝ) ≤ (⌊u⌋₊ : ℝ) := by exact_mod_cast (show 2 ≤ ⌊u⌋₊ by omega)
@@ -451,14 +449,13 @@ theorem integrableOn_psi_div_mul_cpow {c : ℝ} (hc : 1 ≤ c) {s : ℂ} (hs : 1
           rw [Chebyshev.psi_eq_sum_Icc]
           refine Finset.sum_eq_zero fun n hn => ?_
           rcases (show n = 0 ∨ n = 1 by have := Finset.mem_Icc.mp hn; omega) with rfl | rfl <;> simp
-        simp [hpsi0]
-      · rw [Set.indicator_of_notMem huc]
-  have hcomp : IntegrableOn
-      (fun t : ℝ => (Chebyshev.psi (c⁻¹ * t) : ℂ) * ((c * (c⁻¹ * t) : ℝ) : ℂ) ^ (-(s + 1)))
-      (Ioi 1) := by
-    rw [MeasureTheory.integrableOn_Ioi_comp_mul_left_iff _ 1 (inv_pos.mpr hc0), mul_one]
+        simp [g, hpsi0]
+      · rw [Set.indicator_of_notMem (show u ∉ Ioi c⁻¹ from huc)]
+  have hcomp : IntegrableOn (fun t : ℝ => g (c⁻¹ * t)) (Ioi 1) := by
+    rw [MeasureTheory.integrableOn_Ioi_comp_mul_left_iff g 1 (inv_pos.mpr hc0), mul_one]
     exact hscaled
   refine hcomp.congr_fun (fun t _ => ?_) measurableSet_Ioi
+  dsimp only [g]
   rw [← mul_assoc, mul_inv_cancel₀ hc0.ne', one_mul, div_eq_mul_inv, mul_comm c⁻¹ t]
 
 /-- **Abel–Mellin identity for `dilationRemainder b P` on `Re s > 1`.** -/
@@ -466,7 +463,7 @@ theorem mul_mellin_dilationRemainder {b : ℝ} (hb : 1 ≤ b) (P : Polynomial �
     (hs : 1 < s.re) :
     s * mellin (dilationRemainder b P) (-s) =
       dilationSymbol b P s * LSeries (fun n => (vonMangoldt n : ℂ)) s -
-        (P.eval b⁻¹ : ℂ) * (s / (s - 1)) := by
+        ((P.eval b⁻¹ : ℝ) : ℂ) * (s / (s - 1)) := by
   have hb0 : 0 < b := zero_lt_one.trans_le hb
   have hm : mellin (dilationRemainder b P) (-s) =
       ∫ t in Ioi (1 : ℝ),
@@ -484,7 +481,7 @@ theorem mul_mellin_dilationRemainder {b : ℝ} (hb : 1 ≤ b) (P : Polynomial �
     rw [hfun, setIntegral_indicator measurableSet_Ioi,
       inter_eq_right.mpr (Ioi_subset_Ioi zero_le_one)]
   have hre1 : (-s).re < -1 := by simp only [Complex.neg_re]; linarith
-  have hi_lin : IntegrableOn (fun t : ℝ => (P.eval b⁻¹ : ℂ) * (t : ℂ) ^ (-s)) (Ioi 1) :=
+  have hi_lin : IntegrableOn (fun t : ℝ => ((P.eval b⁻¹ : ℝ) : ℂ) * (t : ℂ) ^ (-s)) (Ioi 1) :=
     (integrableOn_Ioi_cpow_of_lt hre1 one_pos).const_mul _
   have hi_sum : ∀ k ∈ Finset.range (P.natDegree + 1), Integrable
       (fun t : ℝ => (P.coeff k : ℂ) * ((Chebyshev.psi (t / b ^ k) : ℂ) * (t : ℂ) ^ (-(s + 1))))
@@ -494,12 +491,13 @@ theorem mul_mellin_dilationRemainder {b : ℝ} (hb : 1 ≤ b) (P : Polynomial �
       ((dilationPolyOp b P Chebyshev.psi t - P.eval b⁻¹ * t : ℝ) : ℂ) * (t : ℂ) ^ (-(s + 1)) =
         (∑ k ∈ Finset.range (P.natDegree + 1),
           (P.coeff k : ℂ) * ((Chebyshev.psi (t / b ^ k) : ℂ) * (t : ℂ) ^ (-(s + 1)))) -
-          (P.eval b⁻¹ : ℂ) * (t : ℂ) ^ (-s) := by
+          ((P.eval b⁻¹ : ℝ) : ℂ) * (t : ℂ) ^ (-s) := by
     intro t ht
     have ht0 : (t : ℂ) ≠ 0 := by exact_mod_cast (zero_lt_one.trans ht).ne'
     have hpow : (t : ℂ) * (t : ℂ) ^ (-(s + 1)) = (t : ℂ) ^ (-s) := by
       have h := Complex.cpow_add (x := (t : ℂ)) 1 (-(s + 1)) ht0
-      rwa [Complex.cpow_one, show (1 : ℂ) + -(s + 1) = -s by ring] at h
+      rw [Complex.cpow_one, show (1 : ℂ) + -(s + 1) = -s by ring] at h
+      exact h.symm
     simp only [dilationPolyOp, Complex.ofReal_sub, Complex.ofReal_sum, Complex.ofReal_mul,
       sub_mul, Finset.sum_mul, mul_assoc, hpow]
   rw [hm, setIntegral_congr_fun measurableSet_Ioi hpt,
@@ -528,8 +526,7 @@ theorem mul_mellin_dilationRemainder {b : ℝ} (hb : 1 ≤ b) (P : Polynomial �
         ∫ u in Ioi (1 : ℝ), (criticalCumulative (fun n => vonMangoldt n) u : ℂ) *
           (u : ℂ) ^ (-(s + 1)) :=
       setIntegral_congr_fun measurableSet_Ioi fun u _ => by rw [criticalCumulative_vonMangoldt_eq_psi]
-    rw [hbk_pow, hcc]
-    simp only [RCLike.algebraMap_eq_ofReal]
+    rw [hbk_pow, hcc, algebraMap_real_complex_apply]
     ring
   rw [hsum_int, mul_sub, ← mul_assoc, mul_comm s (dilationSymbol b P s), mul_assoc,
     ← vonMangoldtLSeries_eq_mul_integral_criticalCumulative hs]
@@ -545,17 +542,17 @@ theorem differentiable_dilationSymbol {b : ℝ} (hb : 0 < b) (P : Polynomial ℝ
     differentiable_id.neg.const_cpow (Or.inl hb0)
   have heval : ∀ s : ℂ, P.eval₂ (algebraMap ℝ ℂ) ((b : ℂ) ^ (-s)) =
       ∑ k ∈ Finset.range (P.natDegree + 1), (P.coeff k : ℂ) * ((b : ℂ) ^ (-s)) ^ k :=
-    fun _ => Polynomial.eval₂_eq_sum_range
+    fun _ => Polynomial.eval₂_eq_sum_range.trans (by simp only [algebraMap_real_complex_apply])
   simp_rw [heval]
   exact Differentiable.fun_sum fun k _ => (differentiable_const _).mul (hpow.pow k)
 
 /-- At `s = 1`, `dilationSymbol b P 1 = P.eval b⁻¹` (`b > 0`). -/
-theorem dilationSymbol_one {b : ℝ} (hb : 0 < b) (P : Polynomial ℝ) :
-    dilationSymbol b P 1 = (P.eval b⁻¹ : ℂ) := by
-  have hb1 : (b : ℂ) ^ (-(1 : ℂ)) = (b⁻¹ : ℂ) := by
+theorem dilationSymbol_one {b : ℝ} (_hb : 0 < b) (P : Polynomial ℝ) :
+    dilationSymbol b P 1 = ((P.eval b⁻¹ : ℝ) : ℂ) := by
+  have hb1 : (b : ℂ) ^ (-(1 : ℂ)) = ((b⁻¹ : ℝ) : ℂ) := by
     rw [Complex.cpow_neg_one, Complex.ofReal_inv]
   rw [dilationSymbol, hb1, Polynomial.eval_eq_sum_range, Polynomial.eval₂_eq_sum_range]
-  simp [RCLike.algebraMap_eq_ofReal]
+  simp [algebraMap_real_complex_apply]
 
 /-- Holomorphic numerator `Q_b(s) = D(1) − dslope D 1 s + s mellin R_b (−s)` after pole clearing. -/
 def dilationClearedNumerator (b : ℝ) (P : Polynomial ℝ) (s : ℂ) : ℂ :=
@@ -566,9 +563,8 @@ theorem differentiableAt_dilationClearedNumerator {b σ₀ C x₀ : ℝ} (hb : 0
     {s : ℂ} (hs : σ₀ < s.re) :
     DifferentiableAt ℂ (dilationClearedNumerator b P) s := by
   have hD : Differentiable ℂ (dilationSymbol b P) := differentiable_dilationSymbol hb P
-  have hdslope : Differentiable ℂ (dslope (dilationSymbol b P) 1) :=
-    differentiable_iff_differentiableOn_univ.mpr
-      ((Complex.differentiableOn_dslope univ_mem).mpr hD.differentiableOn)
+  have hdslope : DifferentiableAt ℂ (dslope (dilationSymbol b P) 1) s :=
+    ((Complex.differentiableOn_dslope univ_mem).mpr hD.differentiableOn).differentiableAt univ_mem
   have hbigO_top : dilationRemainder b P =O[atTop] (fun x : ℝ => x ^ (-(-σ₀))) := by
     refine Asymptotics.IsBigO.of_bound C ?_
     filter_upwards [eventually_ge_atTop x₀, eventually_gt_atTop (1 : ℝ)] with x hx h1
@@ -579,13 +575,13 @@ theorem differentiableAt_dilationClearedNumerator {b σ₀ C x₀ : ℝ} (hb : 0
   have hbigO_zero : dilationRemainder b P =O[𝓝[>] 0] (fun x : ℝ => x ^ (-((-s).re - 1))) := by
     refine (Asymptotics.isBigO_zero _ _).congr' ?_ EventuallyEq.rfl
     filter_upwards [mem_nhdsWithin_of_mem_nhds (Iio_mem_nhds one_pos)] with x hx
-    have hnot : x ∉ Ioi (1 : ℝ) := fun h => lt_asymm h hx
+    have hnot : x ∉ Ioi (1 : ℝ) := fun h => lt_asymm (show (1 : ℝ) < x from h) (show x < 1 from hx)
     rw [dilationRemainder, indicator_of_notMem hnot]
   have hm : DifferentiableAt ℂ (mellin (dilationRemainder b P)) (-s) :=
     mellin_differentiableAt_of_isBigO_rpow (a := -σ₀) (b := (-s).re - 1)
       (locallyIntegrableOn_dilationRemainder hb P) hbigO_top (by simpa using hs) hbigO_zero
       (by linarith)
-  exact ((differentiableAt_const _).sub (hdslope s)).add
+  exact ((differentiableAt_const _).sub hdslope).add
     (differentiableAt_id.mul
       (DifferentiableAt.comp (g := mellin (dilationRemainder b P)) (f := fun w : ℂ => -w) s hm
         (differentiable_neg s)))
@@ -633,7 +629,7 @@ theorem neg_dilationSymbol_mul_deriv_zetaResidueUnit_eq {b σ₀ C x₀ : ℝ} (
       mul_mellin_dilationRemainder hb P hw, dilationSymbol_one hb0 P, hL, hZ, hdZ]
     have hw1' : w - 1 ≠ 0 := sub_ne_zero.mpr hw1
     generalize dilationSymbol b P w = Dw
-    generalize (P.eval b⁻¹ : ℂ) = D1
+    generalize ((P.eval b⁻¹ : ℝ) : ℂ) = D1
     generalize deriv riemannZeta w = z'
     field_simp
     ring
@@ -716,12 +712,11 @@ theorem re_eq_and_im_mem_periodic_of_dilation_bound {b β σ₀ C x₀ : ℝ} (h
     obtain ⟨m, hm⟩ := hpow1
     have hre_eq := congrArg Complex.re hm
     have him_eq := congrArg Complex.im hm
-    simp only [Complex.mul_re, Complex.ofReal_re, Complex.ofReal_im, Complex.sub_re,
-      Complex.add_re, Complex.I_re, Complex.I_im, Complex.mul_im, Complex.sub_im,
-      Complex.add_im] at hre_eq him_eq
-    have hre_final : ρ.re = β := by nlinarith [hlogb]
+    simp at hre_eq him_eq
+    have hre_zero : β - ρ.re = 0 := (mul_eq_zero.mp hre_eq).resolve_left hlogb.ne'
+    have hre_final : ρ.re = β := by linarith
     have him_rel : (α - ρ.im) * Real.log b = (m : ℝ) * (2 * Real.pi) := by
-      simpa using him_eq
+      linarith [him_eq]
     refine ⟨hre_final, α, hα, -m, ?_⟩
     have hdiv : α - ρ.im = (m : ℝ) * (2 * Real.pi) / Real.log b :=
       (eq_div_iff hlogb.ne').mpr him_rel

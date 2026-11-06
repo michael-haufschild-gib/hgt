@@ -1,8 +1,8 @@
 # Canonical Rigidity, Sharp Gap Bifurcation, and Sign Changes of a Finite Prime-Error Oscillation
 
 - **ID:** prime-error-finite-oscillation-rigidity-and-sign-changes
-- **Stage:** 2-fully-proven
-- **Type:** THEOREM (paper)
+- **Stage:** 3-formalized
+- **Type:** THEOREM (Lean)
 - **Source:** docs/drafts/pipeline/1-in-progress/pnt-error-single-finite-oscillation.md
 - **Statement:** Every finite-oscillation expansion `|ψ(x) - x - x^β T(log x)| ≤ C x^{β - η}` (`β > 1/2`, `η > 0`, `T ≠ 0`) forces `β = Θ`, uniquely determines `T` with Fourier coefficients `d(μ) = -ord_{s = Θ + iμ}(ζ)/(Θ + iμ)` and `d(0) = 0`, obeys the exact exponent threshold `η ≤ Θ - Θ₂` (achievable for every `0 < η < Θ - Θ₂` under `¬AAL`), forces bounded-logarithmic-gap sign changes `± δ e^{Θ u}` of `ψ(e^u) - e^u`, and transfers unchanged to the alternating sum `∑_{n ≤ x} (-1)^n Λ(n) + x`.
 
@@ -12,7 +12,7 @@ Establish the complete canonical rigidity, multiplicity quantization, sharp seco
 ## Gates
 - [x] 0 → 1  in-progress
 - [x] 1 → 2  fully-proven: complete paper proof below, no open dependency
-- [ ] 2 → 3  formalized: `GaloisForLFunctions.ZeroConfigurationGeometry.PrimeErrorFiniteOscillationRigidityAndSignChanges`
+- [x] 2 → 3  formalized: `GaloisForLFunctions.ZeroConfigurationGeometry.PrimeErrorFiniteOscillationRigidityAndSignChanges` (`infinite_xiZeroCopy`, `half_le_of_oscillationError_bound`, `oscillation_coeff_eq_neg_zetaResidueUnit_order_div`, `oscillation_coeff_eq_neg_zeta_order_div`, `abscissa_eq_zetaZeroAbscissa_of_finiteOscillation`, `oscillationCoeff_eq_neg_zeta_order_div`, `oscillationCoeff_zero_eq_zero`, `primeErrorFiniteOscillation_unique_abscissa_and_profile`, `zetaSecondAbscissa`, `eta_le_zetaZeroAbscissa_sub_secondAbscissa`, `eta_le_zetaZeroAbscissa_sub_asymptoticAbscissa`, `exists_primeErrorFiniteOscillation_of_lt_gap`, `exists_bounded_log_gap_sign_changes_of_primeErrorIsFiniteOscillation`, `sum_alternating_vonMangoldt_eq`, `alternating_vonMangoldt_finiteOscillation`)
 
 ## Proof
 1. **Unconditional `1/2` barrier (`1/2 ≤ σ₀`).** Suppose `‖oscillationError β S d x‖ ≤ C x^{σ₀}` for `x ≥ x₀` and `σ₀ < 1/2`. Every strip zero `q : XiZeroCopy` satisfies either `Re q ≥ 1/2 > σ₀` or `Re(1 - q) > 1/2 > σ₀`. Applying `eq_of_zeta_eq_zero_of_expansion` to `q` or `xiZeroCopyReflectEquiv q` confines `|Im q|` to `∑_{ω ∈ S} |ω|`, contradicting infinitude of `XiZeroCopy` (`xiOrderedPositiveZeroCopyEquiv : ℕ ≃ XiPositiveZeroCopy`) via `finite_abs_im_le`. Hence `1/2 ≤ σ₀`.

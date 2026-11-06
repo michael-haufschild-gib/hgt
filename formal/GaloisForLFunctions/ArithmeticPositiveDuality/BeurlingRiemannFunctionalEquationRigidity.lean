@@ -1169,7 +1169,7 @@ theorem beurlingSystem_rigidity_of_integer_measure_eq
       Nonempty {e : B.Label ≃ {p : ℕ // Nat.Prime p} //
         ∀ l : B.Label, B.labelNorm l = ((e l : ℕ) : ℝ)} := by
   have h := beurlingSystem_rigidity_of_measure_eq B (α := -1 / 2) (β := 1 / 2)
-    (by norm_num) (by norm_num) (by norm_num) (by simpa using hν)
+    (by norm_num) (by norm_num) (by norm_num) (by norm_num; exact hν)
   exact h.2.2
 
 /-- **Complete categorical rigidity of countable Beurling systems (theta-relation form).**

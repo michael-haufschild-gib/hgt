@@ -149,10 +149,10 @@ theorem integrable_norm_sq_cc {h : ℝ → ℂ} (hh : Continuous h) (hhc : HasCo
   (hh.norm.pow 2).integrable_of_hasCompactSupport ((hhc.norm).comp_left (zero_pow two_ne_zero))
 
 /-- Polarization under an integral. -/
-theorem integral_re_mul_conj_eq {f g : ℝ → ℂ} (h₊ : Integrable fun x => ‖f x + g x‖ ^ 2)
-    (h₋ : Integrable fun x => ‖f x - g x‖ ^ 2) :
+theorem integral_re_mul_conj_eq {f g : ℝ → ℂ} (hP : Integrable fun x => ‖f x + g x‖ ^ 2)
+    (hM : Integrable fun x => ‖f x - g x‖ ^ 2) :
     ∫ x, (f x * conj (g x)).re = (∫ x, ‖f x + g x‖ ^ 2) / 4 - (∫ x, ‖f x - g x‖ ^ 2) / 4 := by
-  have hsub := integral_sub (h₊.div_const 4) (h₋.div_const 4)
+  have hsub := integral_sub (hP.div_const 4) (hM.div_const 4)
   have e1 : ∫ x, ‖f x + g x‖ ^ 2 / 4 = (∫ x, ‖f x + g x‖ ^ 2) / 4 := integral_div _ _
   have e2 : ∫ x, ‖f x - g x‖ ^ 2 / 4 = (∫ x, ‖f x - g x‖ ^ 2) / 4 := integral_div _ _
   rw [← e1, ← e2, ← hsub]
@@ -505,7 +505,7 @@ theorem archForm_quadrature_ge {F₀ : ℝ → ℝ} (hF₀ : ContDiff ℝ 2 F₀
         exact hℓle _)
   -- the two translated densities
   have hshift : ∀ s : ℝ, ∫ r, Φ (r - s) * ℓ r = ∫ t, Φ t * ℓ (t + s) := fun s => by
-    have h := integral_sub_right_eq_self (fun t => Φ t * ℓ (t + s)) s
+    have h := integral_sub_right_eq_self (μ := volume) (fun t => Φ t * ℓ (t + s)) s
     simp only [sub_add_cancel] at h
     exact h
   -- pointwise lower bound for the symbol
@@ -591,7 +591,6 @@ theorem archForm_quadrature_ge {F₀ : ℝ → ℝ} (hF₀ : ContDiff ℝ 2 F₀
         · rw [hfull _ h]
           linarith only [hℓ0 (t + γ)]
       have hprod := mul_le_mul_of_nonneg_right hsumge (hΦ0 t)
-      simp only [Pi.add_apply]
       linarith only [hprod]
     have hsplit : ∫ r : ℝ, (Φ (r - γ) + Φ (r + γ)) / 2 * (ℓ r - (10 + Real.log 4))
         = (∫ r : ℝ, (Φ (r - γ) + Φ (r + γ)) / 2 * ℓ r)

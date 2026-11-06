@@ -5,6 +5,7 @@ import GaloisForLFunctions.RHTower.XiCollapseDirichletLeg
 import GaloisForLFunctions.RHTower.XiPrimeLogHigherValuationHalfPlane
 import GaloisForLFunctions.RHTower.ZetaZeroFreeRegionAllZeros
 import GaloisForLFunctions.ZeroConfigurationGeometry.VonMangoldtMomentDiagonalsVanish
+import GaloisForLFunctions.ZeroConfigurationGeometry.VonMangoldtShortShiftCorrelationsVanish
 
 /-!
 # A finite exceptional layer forces persistent low-height jets
@@ -365,5 +366,110 @@ theorem not_asymptoticAbscissaLaw_has_positive_offDiagonal_limit :
   simpa only [tsum_div_const, LSeries] using (tsum_offDiagonal_re hsum).symm
 
 #print axioms not_asymptoticAbscissaLaw_has_positive_offDiagonal_limit
+
+/-- Removing both orientations of exponentially many short additive shifts
+leaves the full positive off-diagonal limit forced by failure of AAL. -/
+theorem not_asymptoticAbscissaLaw_has_positive_limit_after_short_shifts :
+    ¬ AsymptoticAbscissaLaw →
+      ∃ (ρ : ℂ) (m : ℕ), 1 / 2 < ρ.re ∧ ρ.re < 1 ∧ riemannZeta ρ = 0 ∧
+        0 < m ∧
+        let a : ℕ → ℕ → ℂ := fun k n =>
+          LSeries.term (LSeries.logMul^[k]
+            (fun n => (ArithmeticFunction.vonMangoldt n : ℂ))) (ρ + 1) n /
+              (k.factorial : ℂ)
+        ∀ R r : ℝ, 1 < R → R < ρ.re + 1 / 2 → 0 ≤ r → r < R ^ 2 →
+          Tendsto (fun k : ℕ =>
+            (∑' n : ℕ, ∑' j : ℕ, if j = n then 0 else a k n * conj (a k j)).re -
+              2 * (∑ h ∈ Finset.range ⌊r ^ k⌋₊,
+                ∑' n : ℕ, a k n * conj (a k (n + (h + 1)))).re)
+            atTop (𝓝 ((m : ℝ) ^ 2)) := by
+  intro hnot
+  obtain ⟨ρ, m, hρhalf, hρone, hζ, hm, htotal⟩ :=
+    not_asymptoticAbscissaLaw_has_positive_offDiagonal_limit hnot
+  refine ⟨ρ, m, hρhalf, hρone, hζ, hm, ?_⟩
+  dsimp only at htotal ⊢
+  intro R r hR hRρ hr hrR
+  have hRs : R < (ρ + 1).re - 1 / 2 := by
+    simp only [Complex.add_re, Complex.one_re]
+    linarith only [hRρ]
+  have hnorm := tendsto_normalizedMangoldtShortShiftCorrelations_zero hR hRs hr hrR
+  have hshort : Tendsto (fun k : ℕ => ∑ h ∈ Finset.range ⌊r ^ k⌋₊,
+      ∑' n : ℕ,
+        (LSeries.term (LSeries.logMul^[k]
+          (fun n => (ArithmeticFunction.vonMangoldt n : ℂ))) (ρ + 1) n /
+            (k.factorial : ℂ)) *
+        conj (LSeries.term (LSeries.logMul^[k]
+          (fun n => (ArithmeticFunction.vonMangoldt n : ℂ))) (ρ + 1) (n + (h + 1)) /
+            (k.factorial : ℂ))) atTop (𝓝 0) :=
+    squeeze_zero_norm (fun k => norm_sum_le _ _) hnorm
+  have hre := hshort.re.const_mul 2
+  simp only [Complex.zero_re, mul_zero] at hre
+  simpa only [sub_zero] using htotal.sub hre
+
+#print axioms not_asymptoticAbscissaLaw_has_positive_limit_after_short_shifts
+
+/-- At the real centre `2`, the pole at `1` gives raw moment limit `1`.
+The residue unit is zero-free on a larger disk, so all its normalized jets vanish. -/
+theorem tendsto_mangoldt_moments_at_two_one :
+    Tendsto (fun k : ℕ =>
+      LSeries (LSeries.logMul^[k]
+        (fun n => (ArithmeticFunction.vonMangoldt n : ℂ))) 2 /
+          (k.factorial : ℂ)) atTop (𝓝 1) := by
+  have hunit (z : ℂ) (hz : z ∈ closedBall (2 : ℂ) (3 / 2)) :
+      zetaResidueUnit z ≠ 0 := by
+    by_cases hz1 : z = 1
+    · subst z
+      simp only [zetaResidueUnit_one, ne_eq, one_ne_zero, not_false_eq_true]
+    have hn : ‖z - 2‖ ≤ 3 / 2 := by
+      simpa only [mem_closedBall, dist_eq_norm] using hz
+    have hre : 1 / 2 ≤ z.re := by
+      have h := (abs_le.mp ((Complex.abs_re_le_norm (z - 2)).trans hn)).1
+      norm_num only [Complex.sub_re, Complex.ofNat_re] at h
+      linarith only [h]
+    have him : |z.im| ≤ 3 / 2 := by
+      simpa only [Complex.sub_im, Complex.ofNat_im, sub_zero] using
+        (Complex.abs_im_le_norm (z - 2)).trans hn
+    have hζ : riemannZeta z ≠ 0 := by
+      by_cases h1 : 1 ≤ z.re
+      · exact riemannZeta_ne_zero_of_one_le_re h1
+      intro hzero
+      have hfour := four_le_abs_im_of_zeta_zero (by linarith only [hre])
+        (lt_of_not_ge h1) hzero
+      linarith only [him, hfour]
+    rw [(zetaResidueUnit_eventuallyEq hz1).eq_of_nhds]
+    exact mul_ne_zero (sub_ne_zero.mpr hz1) hζ
+  have han : AnalyticOnNhd ℂ (logDeriv zetaResidueUnit)
+      (closedBall (2 : ℂ) (3 / 2)) := fun z hz =>
+    (analyticAt_zetaResidueUnit z).deriv.div (analyticAt_zetaResidueUnit z) (hunit z hz)
+  have hjet := tendsto_normalized_analytic_jets (a := (1 : ℂ)) han (by norm_num)
+  have hlim := hjet.neg.add_const 1
+  simp only [neg_zero, zero_add] at hlim
+  refine hlim.congr' (Filter.Eventually.of_forall fun k => ?_)
+  dsimp only
+  simp only [one_pow, one_mul]
+  rw [iteratedDeriv_logDeriv_zetaResidueUnit (by norm_num : 1 < (2 : ℂ).re) k]
+  have hderiv := iteratedDeriv_zetaLogDeriv_eq_LSeries k (by norm_num : 1 < (2 : ℂ).re)
+  change iteratedDeriv k (logDeriv riemannZeta) 2 = _ at hderiv
+  rw [hderiv, pow_succ (-1 : ℂ)]
+  norm_num only [show (2 : ℂ) - 1 = 1 by norm_num, one_pow, div_one]
+  have hfac : (k.factorial : ℂ) ≠ 0 := by exact_mod_cast Nat.factorial_ne_zero k
+  field_simp
+  ring
+
+/-- For the actual von Mangoldt sequence, diagonal decay coexists unconditionally
+with a nonzero raw moment. The real pole supplies the positive calibration case. -/
+theorem mangoldt_at_two_has_nonzero_moment_and_vanishing_diagonal :
+    Tendsto (fun k : ℕ =>
+      LSeries (LSeries.logMul^[k]
+        (fun n => (ArithmeticFunction.vonMangoldt n : ℂ))) 2 /
+          (k.factorial : ℂ)) atTop (𝓝 1) ∧
+    Tendsto (fun k : ℕ => ∑' n : ℕ,
+      ‖LSeries.term (LSeries.logMul^[k]
+        (fun n => (ArithmeticFunction.vonMangoldt n : ℂ))) 2 n /
+          (k.factorial : ℂ)‖ ^ 2) atTop (𝓝 0) :=
+  ⟨tendsto_mangoldt_moments_at_two_one,
+    tendsto_normalizedMangoldtTermDiagonal_zero (by norm_num)⟩
+
+#print axioms mangoldt_at_two_has_nonzero_moment_and_vanishing_diagonal
 
 end GaloisForLFunctions.ZeroConfigurationGeometry

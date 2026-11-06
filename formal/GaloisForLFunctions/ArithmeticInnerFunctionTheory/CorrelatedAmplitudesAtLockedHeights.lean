@@ -69,7 +69,7 @@ theorem exists_large_locked {ℓ : Fin n → ℝ} (hℓ : IsKroneckerFamily ℓ)
         ((Circle.exp (b₁ * ℓ i) : Circle) : ℂ) < ε / 2
       rw [Circle.coe_mul, dist_eq_norm, ← mul_sub_one, norm_mul, Circle.norm_coe, one_mul, Circle.coe_exp]
       have hle := Real.norm_exp_I_mul_ofReal_sub_one_le (x := 2 * π * y)
-      rw [Complex.norm_real, Real.norm_eq_abs] at hle
+      rw [Real.norm_eq_abs] at hle
       have e3 : ((2 * π * y : ℝ) : ℂ) * Complex.I = Complex.I * ((2 * π * y : ℝ) : ℂ) := mul_comm _ _
       rw [e3]
       refine lt_of_le_of_lt hle ?_

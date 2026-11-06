@@ -70,8 +70,23 @@ correlations as the remaining contribution to `|M_k|²`.
 bound. `not_asymptoticAbscissaLaw_has_raw_prime_moment_limit` and
 `not_asymptoticAbscissaLaw_has_nonzero_moment_and_vanishing_diagonal` prove the raw
 limit and its coexistence with diagonal decay. All three audit with the standard
-three axioms. The explicit off-diagonal limit `mρ²` is being checked. None of these
+three axioms. `not_asymptoticAbscissaLaw_has_positive_offDiagonal_limit` proves the
+explicit off-diagonal limit `mρ²`, with the same axiom audit. None of these
 statements supplies off-diagonal cancellation.
+
+### Sparse arithmetic correlations
+
+For every square-summable complex sequence `a` and injective integer map `i`,
+`|Σ_n a(n) conj(a(i(n)))| ≤ Σ_n |a(n)|²`. Thus additive shifts and integer
+dilations obey the same bound. For the actual normalized von Mangoldt terms,
+`1<R<Re s−1/2` and `0≤r<R²` give
+
+`Σ_(1≤h≤floor(r^k)) |Σ_n a_k(n) conj(a_k(n+h))| → 0`.
+
+The proof bounds this sum by `C (r/R²)^k`, with the convergent constant
+`C=Σ Λ(n)² n^(-2(Re s−R))`. The Lean scratch proof and axiom audit passed;
+production audit and the exact `¬AAL` consequence are pending. This controls
+exponentially many shifts, not the full off-diagonal sum.
 
 The low-height jet argument only needs an attained rightmost zero. A bound that
 forces these moments to vanish at every ordinate would discard the finite-layer

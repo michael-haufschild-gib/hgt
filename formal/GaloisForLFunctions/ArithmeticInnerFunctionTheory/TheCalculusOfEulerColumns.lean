@@ -355,7 +355,6 @@ theorem exists_height_aligned (S : Finset ℕ) {B : ℝ} (hB : 0 < B) {Q : ℕ} 
       exact pow_le_pow_left₀ (abs_nonneg _) hk.le 2
     have e2 : 2 * π ^ 2 / (Q : ℝ) ^ 2 = (2 * π) ^ 2 * (1 / (Q : ℝ)) ^ 2 / 2 := by
       field_simp
-      ring
     have e3 : (2 * π * y) ^ 2 / 2 = (2 * π) ^ 2 * y ^ 2 / 2 := by ring
     have h4 : (2 * π) ^ 2 * y ^ 2 / 2 ≤ (2 * π) ^ 2 * (1 / (Q : ℝ)) ^ 2 / 2 := by
       have := mul_le_mul_of_nonneg_left hy2 (sq_nonneg (2 * π))

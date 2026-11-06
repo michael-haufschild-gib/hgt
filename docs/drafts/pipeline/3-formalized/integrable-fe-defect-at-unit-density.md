@@ -25,6 +25,9 @@ Consequently `C_τ(ε)=εΣaₙe^(−2πλₙε)cos(2πλₙτ)` tends to `β/π
 `aₙ/(2π)` at an atom, and zero in a spectral gap. Since `C_τ≤C_0`,
 `1≤aₙ≤2β≤1`; thus `aₙ=1` and `β=1/2`.
 
+For a complex pole coefficient, the stronger complex limit `εF(ε)→β/π` forces
+`β` to be real, since every value on the positive real ray is real.
+
 For `K=⌊λₘ⌋` and `f=λₘ−K`, the cosine inequality gives
 `C_0−C_f≤2(C_0−C_λₘ)+2K²(C_0−C_1)→0`.
 If `0<f<1`, the gap below the first frequency instead gives `C_f→0`, a contradiction.
@@ -42,6 +45,8 @@ This addresses the unit-density boundary. The possibility of larger pole residue
 `formal/GaloisForLFunctions/ArithmeticPositiveDuality/IntegrableDefectsAtUnitDensityAreRigid.lean`:
 
 - `tendsto_mul_integrable_defectLaplace`: every radial defect residue vanishes.
+- `tendsto_mul_freqDual_zero_of_theta_defect`: the complex Abel limit recovers the pole coefficient.
+- `pole_coefficient_real_of_theta_defect`: the pole coefficient is real.
 - `integer_spectrum_of_integrable_theta_defect`: theta-transform formulation.
 - `integer_spectrum_of_integrable_critical_line_defect`: critical-line functional-equation formulation.
 

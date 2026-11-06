@@ -53,7 +53,7 @@ theorem abelCos_three_point {a lam : ℕ → ℝ}
   have hh := mul_le_mul_of_nonneg_left hs hε.le
   dsimp only [w] at hh
   simp only [abelCos, mul_zero, Real.cos_zero, mul_one]
-  convert hh using 1 <;> ring
+  nlinarith only [hh]
 
 /-- A spectrum with unit masses and gaps at least one has Abel density at most one. -/
 theorem abelCos_zero_le_of_nat_le {lam : ℕ → ℝ}
@@ -168,8 +168,11 @@ theorem integer_spectrum_of_residue_sq_lt_two {A : ℕ → ℕ} {lam : ℕ → �
       filter_upwards [self_mem_nhdsWithin] with ε hε
       exact abelCos_three_point ha0 hlam ha (2 * β) (lam n) (lam (n + 1)) hε)
     simp only [a, hunitN, Nat.cast_one, mul_zero, add_zero] at hh
+    have hden : (1 : ℝ) / (2 * Real.pi) + 1 / (2 * Real.pi) = 1 / Real.pi := by
+      field_simp
+      ring
     have hh' : 2 * (2 * β) / Real.pi ≤ (((2 * β) ^ 2 + 2) * β) / Real.pi := by
-      convert hh using 1 <;> ring
+      simpa only [hden, ← mul_div_assoc, mul_one] using hh
     rw [div_le_div_iff_of_pos_right Real.pi_pos] at hh'
     have hp : 0 < (2 * β) * (2 - (2 * β) ^ 2) :=
       mul_pos (lt_of_lt_of_le zero_lt_one hρ1) (sub_pos.mpr hsmall)

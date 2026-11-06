@@ -57,9 +57,8 @@ theorem hasSum_realStep {σ : ℝ} (hσ : 0 < σ) : HasSum (realStep σ) 1 := by
 theorem hasSum_realStep_shift {σ : ℝ} (hσ : 0 < σ) (N : ℕ) :
     HasSum (fun j => realStep σ (j + N)) (((N : ℝ) + 1) ^ (-σ)) := by
   have h := (hasSum_nat_add_iff' N).mpr (hasSum_realStep hσ)
-  rw [sum_range_realStep] at h
-  convert h using 1
-  ring
+  rw [sum_range_realStep, sub_sub_cancel] at h
+  exact h
 
 namespace IsProducer
 
