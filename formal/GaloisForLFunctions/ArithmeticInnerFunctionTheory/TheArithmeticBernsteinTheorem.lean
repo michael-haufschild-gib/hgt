@@ -17,8 +17,7 @@ Hankel form `Σ c_v c_w f(y + v + w)` is nonnegative. With `IsExpConvexFrom.toru
 of `f` at `y`, and the diagonal cost is `f(y − 2u) Σ_v c_v²/#primes`, of size `e^{2κu}·u e^{−u}`. It vanishes exactly for
 `κ < ½`. The critical exponent is the density of the primes: `Σ_p p^{−2s}` diverges at `s = ½`.
 
-So phase locking at a fixed amplitude cannot enlarge the Laplace cone. The theta amplitude `A` of route TH, which is log-concave, grows
-at exactly the critical rate `e^{|x|/2}` on the left.
+So phase locking at a fixed amplitude cannot enlarge the Laplace cone, as long as the base point can move to the left at a left exponent below `½`.
 -/
 
 open Filter Topology Set

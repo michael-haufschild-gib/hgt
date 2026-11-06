@@ -15,7 +15,7 @@ An inner factor can be finite and nontrivial on a datum only if the datum has no
   mechanism through which incommensurability of `log p` enters: `Π_p p^{iτ}` still returns to `1`.
 * **Finite inner factors vanish at infinity** (`tendsto_innerField_of_finite`). If `ζ` had finitely many right zeros,
   then `I(σ + it) → 0` as `t → ∞`: `E` is asymptotically outer on every vertical line.
-* **A vanishing field gives the zeros approach the line** (`zero_depth_le_of_tendsto_innerField`). If `I(σ + it) → 0` on every vertical
+* **A vanishing field gives the zeros approach the line** (`exists_height_bound_of_tendsto_innerField`). If `I(σ + it) → 0` on every vertical
   line then for each `h > 0` only finitely high zeros lie right of `½ + h`. So vanishing of the inner
   field at infinity sits between RH and the split of RH into its two halves.
 -/

@@ -79,3 +79,4 @@ import GaloisForLFunctions.WindowVisibilityLaw
 import GaloisForLFunctions.FiniteFreeProbability
 import GaloisForLFunctions.VerifiedHeightRungs
 import GaloisForLFunctions.ArithmeticDiscreteness
+import GaloisForLFunctions.ArithmeticInnerFunctionTheory

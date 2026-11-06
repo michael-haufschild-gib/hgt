@@ -9,7 +9,7 @@ For a simple zero `ρ` of `ζ` with `b = Re ρ − ½ > 0` the normalised deriva
 
 `N(ρ) = 2b (|ρ − 1|/|ρ|) |ζ′(ρ)| exp(−∫ P_ρ log |ζ|)`.
 
-**Theorem** (`normalDerivative_eq_exp_neg_tsum`). `N(ρ) = exp(−Σ_{a ≠ ρ} m_a G(ρ, a)) = Π_{a ≠ ρ} ϱ(ρ, a)^{m_a}`,
+**Theorem** (`hasSum_and_normalDerivative_eq`). `N(ρ) = exp(−Σ_{a ≠ ρ} m_a G(ρ, a)) = Π_{a ≠ ρ} ϱ(ρ, a)^{m_a}`,
 the sum over all other zeros in `Re s > ½`, convergent, with multiplicity.
 
 The inequality with a finite product is the finite form of this. The equality means that all negative moments of
@@ -17,7 +17,7 @@ The inequality with a finite product is the finite form of this. The equality me
 them. Also `N(ρ) ≤ 1`, with equality iff `ρ` is the only right zero (`normalDerivative_eq_one_iff`), and for a
 non-real `ρ` the conjugate zero already forces `N(ρ) ≤ ϱ(ρ, ρ̄)` (`normalDerivative_le_hyperbolicRatio_conj`).
 
-The general form (`hasSum_poissonJensen_at_zero`) holds at a zero of any multiplicity of any datum: dividing
+The general form (`IsFactored.hasSum_poissonJensen_at_zero`) holds at a zero of any multiplicity of any datum: dividing
 `E(z) = (z − ρ)^m g(z)` by the Blaschke factor `((z − ρ)/(z + ρ̄ − 1))^m` leaves `g(z)(z + ρ̄ − 1)^m`, of the same
 growth, with the same modulus on the line, nonzero at `ρ`, and bounded below on the ray, so that the Poisson–Jensen
 identity applies at `ρ`.

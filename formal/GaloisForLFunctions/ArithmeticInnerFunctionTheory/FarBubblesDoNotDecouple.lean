@@ -1,6 +1,7 @@
 import GaloisForLFunctions.ArithmeticOrientationGeometry.TheOrientationRateIsTheDepthOfTheDeepestSeenZero
 import GaloisForLFunctions.GrowingWindowsOfSpecZ.TheLatticeHasNoSlackUnderRH
 import GaloisForLFunctions.GrowingWindowsOfSpecZ.ForbiddingLatticeZeroModesIsRH
+import GaloisForLFunctions.GrowingWindowsOfSpecZ.RHIsDecidedOnTwoSites
 import GaloisForLFunctions.RHTower.CompactTestXiDivisibilityObstruction
 import GaloisForLFunctions.RHTower.CrossRouteReceiverBridges
 
@@ -18,10 +19,13 @@ The proof has three parts. If `c_φ → 0` it is bounded, so `φ` is blind to ev
 series with nonnegative weights on the line, and such a series recurs (`eq_zero_of_tendsto_cos_sum`, by simultaneous Dirichlet
 approximation), so all on-line weights vanish. Then `φ̂` vanishes at all real zeros of `Ξ`, which forces `φ = 0`.
 
-**What replaces decoupling: recurrence** (`exists_far_dipole`). Under RH, far dipoles of unit `L²` mass have arbitrarily small energy at
-arbitrarily large separation. The bottom of the form is reached at translation infinity, by bubbles that interfere destructively and never
-separate. A compactness theorem for arithmetic forms has to treat the Bohr compactification of the translation group as the space at infinity, in
-place of a sum of decoupled profiles.
+**No energy is lost at spectral infinity** (`tendsto_weilQuad_of_dominated`, unconditional). The form sees only the zeros, through an absolutely convergent sum. A sequence
+of tests whose zero summands are dominated by one summable sequence and converge at each zero has converging energy. So translation is the only loss of compactness,
+and it acts on the zero side by phases.
+
+**What replaces decoupling: recurrence** (`riemannHypothesis_iff_orbit_recurs`). RH is the strict orbit Cauchy–Schwarz inequality together with this: dipoles of mass `2‖φ‖²` have
+arbitrarily small energy at arbitrarily large separation. The bottom of the form is reached at translation infinity, by bubbles that interfere destructively and never
+separate. The space at infinity of a compactness theorem for arithmetic forms is the Bohr compactification of the translation group, in place of a sum of decoupled profiles.
 -/
 
 open Filter Topology MeasureTheory Set Complex
@@ -255,11 +259,33 @@ theorem not_tendsto_dipole {φ : ℝ → ℝ} (hφ : φ ∈ realTests) (hφ0 : �
     simpa using h4.congr fun t => by ring
   exact not_tendsto_weilOrbitCorr hφ hφ0 h3
 
-/-- **Recurrence replaces decoupling.** Under RH, dipoles of mass `2‖φ‖²` have arbitrarily small energy at arbitrarily large
-separation. -/
-theorem exists_far_dipole (hRH : RiemannHypothesis) {φ : ℝ → ℝ} (hφ : φ ∈ realTests) {ε : ℝ} (hε : 0 < ε)
-    (T : ℝ) : ∃ t, T ≤ t ∧ weilQuad (fun u => φ u - φ (u + t)) < ε ∧
-      ∫ u, (φ u - φ (u + t)) ^ 2 = 2 * ∫ u, φ u ^ 2 := by
+/-- **No energy is lost at spectral infinity.** Weil's form is continuous along sequences whose zero summands are dominated and converge at each zero. -/
+theorem tendsto_weilQuad_of_dominated {g : ℕ → ℝ → ℝ} {G : ℝ → ℝ} (hg : ∀ k, g k ∈ realTests)
+    (hG : G ∈ realTests) {B : zetaZeroConfig.carrier → ℝ} (hB : Summable B)
+    (hdom : ∀ (k : ℕ) (ρ : zetaZeroConfig.carrier),
+      ‖zetaZeroConfig.Wsummand (fun u => (g k u : ℂ)) (fun u => (g k u : ℂ)) ρ‖ ≤ B ρ)
+    (hpt : ∀ ρ : zetaZeroConfig.carrier,
+      Tendsto (fun k => zetaZeroConfig.Wsummand (fun u => (g k u : ℂ)) (fun u => (g k u : ℂ)) ρ) atTop
+        (𝓝 (zetaZeroConfig.Wsummand (fun u => (G u : ℂ)) (fun u => (G u : ℂ)) ρ))) :
+    Tendsto (fun k => weilQuad (g k)) atTop (𝓝 (weilQuad G)) := by
+  have h := tendsto_tsum_of_dominated_convergence hB hpt (Eventually.of_forall fun k ρ => hdom k ρ)
+  have hre := Complex.continuous_re.continuousAt.tendsto.comp h
+  have e : ∀ f : ℝ → ℝ, f ∈ realTests → weilQuad f =
+      (∑' ρ : zetaZeroConfig.carrier, zetaZeroConfig.Wsummand (fun u => (f u : ℂ)) (fun u => (f u : ℂ)) ρ).re :=
+    fun f hf => LogCells.weilQuad_eq_zetaW hf.1 hf.2
+  rw [e G hG]
+  exact hre.congr fun k => (e (g k) (hg k)).symm
+
+/-- **Recurrence replaces decoupling.** RH is the strict orbit Cauchy–Schwarz inequality together with recurrence: dipoles of mass `2‖φ‖²` have
+arbitrarily small energy at arbitrarily large separation. -/
+theorem riemannHypothesis_iff_orbit_recurs :
+    RiemannHypothesis ↔ ∀ φ ∈ realTests, φ ≠ 0 →
+      (∀ t : ℝ, t ≠ 0 → |weilOrbitCorr φ t| < weilQuad φ) ∧
+      ∀ ε : ℝ, 0 < ε → ∀ T : ℝ, ∃ t, T ≤ t ∧ weilQuad (fun u => φ u - φ (u + t)) < ε ∧
+        ∫ u, (φ u - φ (u + t)) ^ 2 = 2 * ∫ u, φ u ^ 2 := by
+  refine ⟨fun hRH φ hφ hφ0 => ⟨fun t ht => abs_weilOrbitCorr_lt hRH hφ hφ0 ht, fun ε hε T => ?_⟩,
+    fun h => riemannHypothesis_iff_abs_weilOrbitCorr_lt.mpr fun φ hφ hφ0 t ht =>
+      (h φ hφ hφ0).1 t ht⟩
   obtain ⟨R, hR⟩ := hφ.2.isCompact.isBounded.subset_closedBall 0
   have hsupp : ∀ u, R < |u| → φ u = 0 := fun u hu => by
     by_contra hne

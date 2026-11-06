@@ -79,3 +79,4 @@
 - formal/GaloisForLFunctions/WindowVisibilityLaw/README.md
 - formal/GaloisForLFunctions/CriticalHardyTheoryOfTheWindowCone/README.md
 - formal/GaloisForLFunctions/ArithmeticProduction/README.md
+- formal/GaloisForLFunctions/ArithmeticInnerFunctionTheory/README.md

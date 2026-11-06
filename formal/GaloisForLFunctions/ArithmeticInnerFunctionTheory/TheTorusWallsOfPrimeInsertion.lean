@@ -20,6 +20,9 @@ nonnegative `S_a` therefore pairs nonnegatively with every square of a polynomia
 * **The size floor** (`torusSum_ge_of_geometric`). If `|a_k| ≤ a_0 Π r_i^{k_i}` then `S_a ≥ a_0 (2 − Π (1 − r_i)^{−2})`, so a
   decaying amplitude stays in the cone while `Π_i (1 − r_i)^{−2} ≤ 2`.
 
+* **The cone acts on the torus** (`torusSum_cons`, `IsExpConvexFrom.torusSum`). A torus sum is an iterated insertion, so the exponentially
+  convex cone is invariant under all torus sums, with values in the same cone.
+
 The two bounds locate the largest prime set `S*` of torus-uniform positivity from the ratios `f(x + log p)/f(x)` alone.
 -/
 
