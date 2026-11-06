@@ -64,7 +64,7 @@ private lemma peakRatio_le_of_rate {c : ℕ →₀ ℤ} {m B K : ℕ} (hP : IsPr
     nlinarith
   have hsq : IsProducer.peakRatio c m ^ 2 ≤
       (17 * (3 + Real.log (K : ℝ)) * (K : ℝ) ^ ((3 : ℝ) / 2 - a)) ^ 2 := by
-    have hpow : (K : ℝ) ^ ((3 : ℝ) / 2 - a) ^ 2 = (K : ℝ) ^ (3 - 2 * a) := by
+    have hpow : ((K : ℝ) ^ ((3 : ℝ) / 2 - a)) ^ 2 = (K : ℝ) ^ (3 - 2 * a) := by
       rw [← Real.rpow_natCast, ← Real.rpow_mul hK0.le]
       congr 1
       push_cast
@@ -91,7 +91,7 @@ private lemma peakRatio_le_of_rate {c : ℕ →₀ ℤ} {m B K : ℕ} (hP : IsPr
       _ = _ := by
           rw [mul_pow, mul_pow, hpow]; ring
   have hbase : 0 ≤ 17 * (3 + Real.log (K : ℝ)) * (K : ℝ) ^ ((3 : ℝ) / 2 - a) := by positivity
-  exact le_of_sq_le_sq₀ hsq hbase |> fun h => h
+  exact (pow_le_pow_iff_left₀ (by linarith) hbase (by norm_num)).mp hsq
 
 /-- **The sharp reading.** A rate `K^{-a}`, `0 < a ≤ 1`, forces `Re ρ ≤ 1 − 2a/3` for every zero. -/
 theorem re_le_of_hasRate_rpow_sharp {a : ℝ} (ha0 : 0 < a) (ha1 : a ≤ 1)

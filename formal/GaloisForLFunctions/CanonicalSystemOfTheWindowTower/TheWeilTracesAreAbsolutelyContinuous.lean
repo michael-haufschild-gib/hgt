@@ -52,8 +52,10 @@ private theorem integral_kernel_shift (p : ℝ) : ∫ w : ℝ, v (w - p) = 1 := 
 
 theorem integrable_kernel_mul {g : ℝ → ℝ} (hgm : Measurable g) {G : ℝ} (hgG : ∀ y, |g y| ≤ G)
     (p : ℝ) : Integrable (fun w => v (w - p) * g w) :=
-  (integrable_kernel_shift p).mul_bdd hgm.aestronglyMeasurable
-    (Eventually.of_forall fun y => by rwa [Real.norm_eq_abs])
+  (integrable_kernel_shift p).mul_bdd (c := G) hgm.aestronglyMeasurable
+    (Eventually.of_forall fun y => by
+      rw [Real.norm_eq_abs]
+      exact hgG y)
 
 theorem levelMass_nonneg {g : ℝ → ℝ} (hg0 : ∀ y, 0 ≤ g y) (p : ℝ) : 0 ≤ levelMass g p :=
   integral_nonneg fun w => mul_nonneg (logarithmicCausalKernel_nonneg _) (hg0 w)
@@ -125,6 +127,7 @@ theorem chartMajorant_reflect (N : Finset ℕ) (S : ℝ → ℂ) (c w : ℝ) :
   unfold chartMajorant
   congr 1
   refine Finset.sum_congr rfl fun n _ => ?_
+  beta_reduce
   rw [show c - (w + Real.log n) = c - w - Real.log n by ring,
     show c - (w - Real.log n) = c - w + Real.log n by ring, add_comm (‖S (c - w - Real.log n)‖)]
 
@@ -461,8 +464,9 @@ theorem forcing_diff_left {a b c : PrecontactAperture} (hab : a.1.1 ≤ b.1.1) (
         chartPhase z (b.1.1 - a.1.1) * ((chartForcing Z a z : LogarithmicHalfLineL2) : RealLineL2) w‖ ≤
       chartMajorant (Finset.Icc 2 ⌊Real.exp (2 * c.1.1)⌋₊) (chartIncrement a b z) w +
         (chartBoundedConstant (2 * c.1.1) (2 * c.1.1) + Z.lip / 2) * ∫ r, ‖chartIncrement a b z r‖ := by
-  have hi := (continuous_chartIncrement a b z).integrable_of_hasCompactSupport
-    (hasCompactSupport_chartIncrement hab z)
+  have hi : Integrable (chartIncrement a b z) :=
+    (continuous_chartIncrement a b z).integrable_of_hasCompactSupport
+      (hasCompactSupport_chartIncrement hab z)
   have hIn : 0 ≤ ∫ r, ‖chartIncrement a b z r‖ := integral_nonneg fun _ => norm_nonneg _
   have hB := chartBoundedConstant_nonneg (2 * c.1.1) (2 * c.1.1)
   filter_upwards [chartForcing_sub_ae Z hab hbc hZa z] with w hw hw0
@@ -520,12 +524,15 @@ theorem forcing_diff_right {a b c : PrecontactAperture} (hab : a.1.1 ≤ b.1.1) 
   have hY : (fun t => Sb t - chartPhase z h * chartSource a (-z) t) =
       fun t => chartIncrement a b z (2 * a.1.1 - t) := by
     funext t
-    rw [hSb, chartIncrement, chartSource_reflect b (-z), chartSource_reflect a (-z), neg_neg, ← hh]
+    rw [hSb]
+    beta_reduce
+    rw [chartIncrement, chartSource_reflect b (-z), chartSource_reflect a (-z), neg_neg, ← hh]
     congr 2
     rw [hτd, hh]
     ring
-  have hΔi := (continuous_chartIncrement a b z).integrable_of_hasCompactSupport
-    (hasCompactSupport_chartIncrement hab z)
+  have hΔi : Integrable (chartIncrement a b z) :=
+    (continuous_chartIncrement a b z).integrable_of_hasCompactSupport
+      (hasCompactSupport_chartIncrement hab z)
   obtain ⟨Y, hYd⟩ : ∃ Y : ℝ → ℂ, Y = fun t => chartIncrement a b z (2 * a.1.1 - t) := ⟨_, rfl⟩
   have hYi : Integrable Y := by
     rw [hYd]
@@ -1081,7 +1088,7 @@ theorem exists_partial_variation_bound {a₁ a₂ : PrecontactAperture} (ha₁�
         rw [← rightCutoff_shift, ← e2]
       have h := increment_right_le (hab i hi) (hb₂ i hi) (rightCutoff (2 * (Aa i).1.1) c hc)
         (rightCutoff (2 * (Bb i).1.1) c hc) (fun x hx => rightCutoff_zero _ _ hc hx)
-        (fun x hx => rightCutoff_zero _ _ hc hx) hshift z hAn0
+        (fun x hx => rightCutoff_zero _ _ hc hx) hshift z (t := t) hAn0
         (hAn _ (hS i hi).1 (ha₂ i hi) _ (by rw [rightCutoff_lip, ← hΛd])
           (fun x hx => rightCutoff_zero _ _ hc hx))
         (hAn _ (hb₁ i hi) (hb₂ i hi) _ (by rw [rightCutoff_lip, ← hΛd])
@@ -1099,12 +1106,12 @@ theorem exists_partial_variation_bound {a₁ a₂ : PrecontactAperture} (ha₁�
           (fun i => Ioc (2 * (Aa i).1.1 - t) (2 * (Bb i).1.1 - t)) := by
         intro i hi j hj hij
         refine Set.disjoint_left.mpr fun x hx hy => ?_
-        have hd := hdis hi hj hij
-        refine Set.disjoint_left.mp hd (a := (x + t) / 2) ⟨?_, ?_⟩ ⟨?_, ?_⟩
-        · linarith only [hx.1]
-        · linarith only [hx.2]
-        · linarith only [hy.1]
-        · linarith only [hy.2]
+        have hd : Disjoint (Ioc (Aa i).1.1 (Bb i).1.1) (Ioc (Aa j).1.1 (Bb j).1.1) := hdis hi hj hij
+        exact Set.disjoint_left.mp hd
+          (show (x + t) / 2 ∈ Ioc (Aa i).1.1 (Bb i).1.1 from
+            ⟨by linarith only [hx.1], by linarith only [hx.2]⟩)
+          (show (x + t) / 2 ∈ Ioc (Aa j).1.1 (Bb j).1.1 from
+            ⟨by linarith only [hy.1], by linarith only [hy.2]⟩)
       have hsum := sum_setIntegral_kernel_disjoint_le S (fun i => 2 * (Aa i).1.1 - t)
         (fun i => 2 * (Bb i).1.1 - t) (fun i hi => by linarith only [hab i hi]) hdis' hη
       refine hsum.trans (le_of_eq ?_)
@@ -1306,7 +1313,6 @@ theorem absolutelyContinuousOnInterval_leftTraceAt (z : ℂ) {a₁ a₂ : Precon
     rw [Finset.sum_add_distrib]
     refine add_le_add htr (le_of_eq ?_)
     rw [hδd, Finset.mul_sum, Finset.sum_mul]
-    exact Finset.sum_congr rfl fun i _ => by ring
   have hDδ : D * δ ≤ (D + 1) * ((e / 2) / (D + 1)) := by
     have h1 : δ ≤ (e / 2) / (D + 1) := hsum.le.trans (min_le_left _ _)
     nlinarith only [mul_le_mul_of_nonneg_left h1 hD0, hδ₁]

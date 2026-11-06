@@ -211,7 +211,7 @@ theorem exists_plateauPrefixSchur_floor_on_growing_blocks :
   have hLξ : L = ξ ^ 256 := by
     have h := hpow 256
     norm_num at h
-    exact h.symm
+    exact h
   have hξ8 : L ^ (1 / 32 : ℝ) = ξ ^ 8 := by
     rw [← hpow 8]
     norm_num
@@ -459,7 +459,7 @@ theorem exists_plateauPrefixSchur_floor_on_growing_blocks :
         linarith only [hElow, hmin, hlogm0, hlogc, hF4, hξ14, pow_pos hξ0 4]
       · change completedConductorEnergy transMetzlerProfile c m ≤ _
         rw [← hFd] at hEup
-        linarith only [hEup, hlogm, hc4, hF4, hξ14]
+        linarith only [hEup, hlogm, hc4, hF4, hξ14, pow_pos hξ0 4]
     have hE2 : E m ^ 2 ≤ 441 * ξ ^ 8 := by
       rw [← sq_abs]
       calc |E m| ^ 2 ≤ (21 * ξ ^ 4) ^ 2 := pow_le_pow_left₀ (abs_nonneg _) hEabs 2
@@ -538,12 +538,11 @@ theorem exists_plateauPrefixSchur_floor_on_growing_blocks :
         mul_le_mul (mul_le_mul_of_nonneg_left hmm hK.le) hrate hrate0 (by positivity)
       refine hprod.trans ?_
       have hξpow : ξ ^ 2 * (ξ ^ 10 / L) ≤ 1 / ξ ^ 120 := by
-        rw [hLξ, show (256 : ℕ) = 12 + 124 + 120 by norm_num, pow_add, pow_add]
-        have h124 : 1 ≤ ξ ^ 124 := one_le_pow₀ hξ1
-        rw [← pow_add, show ξ ^ 2 * (ξ ^ 10 / (ξ ^ 12 * ξ ^ 124 * ξ ^ 120)) =
-          1 / (ξ ^ 124 * ξ ^ 120) by field_simp]
-        exact one_div_le_one_div_of_le (by positivity)
-          (le_mul_of_one_le_left (by positivity) h124)
+        have e : ξ ^ 2 * (ξ ^ 10 / L) = 1 / ξ ^ 244 := by
+          rw [hLξ, show (256 : ℕ) = 2 + 10 + 244 by norm_num, pow_add, pow_add]
+          field_simp
+        rw [e]
+        exact one_div_le_one_div_of_le (by positivity) (pow_le_pow_right₀ hξ1 (by norm_num))
       have hfinal := mul_le_mul_of_nonneg_left hξpow
         (show 0 ≤ 243 * K * (m : ℝ) by positivity)
       calc K * ((m : ℝ) * (81 * ξ ^ 2)) * (3 * (ξ ^ 10 / L))

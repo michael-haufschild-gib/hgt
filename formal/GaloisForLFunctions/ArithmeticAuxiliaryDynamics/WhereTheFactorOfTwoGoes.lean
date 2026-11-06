@@ -41,9 +41,9 @@ theorem sum_Icc_increment (c : ℕ →₀ ℤ) (x : ℕ) :
 /-- **The plain main term.** `g(x) ≤ V x + Σ |c(k)|`. -/
 theorem stepWeight_le_mean {c : ℕ →₀ ℤ} (hc0 : c 0 = 0) (x : ℕ) :
     (stepWeight c x : ℝ) ≤ meanValue c * x + coeffMass c := by
-  rw [stepWeight, meanValue, coeffMass, sum_mul, ← sum_add_distrib]
-  push_cast
+  rw [stepWeight, meanValue, coeffMass, sum_mul, ← sum_add_distrib, Int.cast_sum]
   refine sum_le_sum fun k hk => ?_
+  rw [Int.cast_mul, Int.cast_natCast]
   have hk0 : 0 < k := Nat.pos_of_ne_zero fun h => by
     subst h; exact Finsupp.mem_support_iff.mp hk hc0
   have hkR : (0 : ℝ) < k := by exact_mod_cast hk0
@@ -179,9 +179,9 @@ private lemma sum_Icc_dvd_liouville {k : ℕ} (hk : 0 < k) (x : ℕ) :
         have h1 : (x + 1) / k = q := by rw [hq]; exact Nat.mul_div_cancel_left q hk
         rw [Nat.succ_div, if_pos ⟨q, hq⟩] at h1
         exact h1
-      have hq0 : q ≠ 0 := by omega
+      have hq0 : q ≠ 0 := hq' ▸ Nat.succ_ne_zero _
       rw [hq', hq, liouville_mul hk.ne' hq0, liouvilleSum, liouvilleSum,
-        ← hq', Finset.sum_Icc_succ_top (by omega), mul_add]
+        ← hq', Finset.sum_Icc_succ_top (Nat.le_add_left 1 _), mul_add]
     · simp
 
 /-- **The twist identity.** `Σ_{n ≤ x} λ(n) h(n) = Σ_k c(k) λ(k) L(⌊x/k⌋)`. -/

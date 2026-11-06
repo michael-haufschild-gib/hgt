@@ -395,10 +395,7 @@ theorem integral_Ioi_one_psi_div_mul_cpow {c : ℝ} (hc : 1 ≤ c) {s : ℂ} (hs
         have hpsi0 : Chebyshev.psi u = 0 := by
           rw [Chebyshev.psi_eq_sum_Icc]
           refine Finset.sum_eq_zero fun n hn => ?_
-          have hn1 : n = 1 := by
-            have := Finset.mem_Icc.mp hn
-            omega
-          simp [hn1]
+          rcases (show n = 0 ∨ n = 1 by have := Finset.mem_Icc.mp hn; omega) with rfl | rfl <;> simp
         simp [g, hpsi0]
       · rw [Set.indicator_of_notMem huc]
   have htrim : (∫ u in Ioi c⁻¹, g u) = ∫ u in Ioi (1 : ℝ), g u := by
@@ -453,8 +450,7 @@ theorem integrableOn_psi_div_mul_cpow {c : ℝ} (hc : 1 ≤ c) {s : ℂ} (hs : 1
         have hpsi0 : Chebyshev.psi u = 0 := by
           rw [Chebyshev.psi_eq_sum_Icc]
           refine Finset.sum_eq_zero fun n hn => ?_
-          have hn1 : n = 1 := by have := Finset.mem_Icc.mp hn; omega
-          simp [hn1]
+          rcases (show n = 0 ∨ n = 1 by have := Finset.mem_Icc.mp hn; omega) with rfl | rfl <;> simp
         simp [hpsi0]
       · rw [Set.indicator_of_notMem huc]
   have hcomp : IntegrableOn

@@ -51,16 +51,17 @@ theorem abelCos_three_point {a lam : ℕ → ℝ}
   rw [tsum_mul_left, sp.tsum_add sq, (sw.mul_left (r ^ 2 + 2)).tsum_add (sd.mul_left 2),
     tsum_mul_left, tsum_mul_left] at hs
   have hh := mul_le_mul_of_nonneg_left hs hε.le
+  dsimp only [w] at hh
   simp only [abelCos, mul_zero, Real.cos_zero, mul_one]
   convert hh using 1 <;> ring
 
 /-- A spectrum with unit masses and gaps at least one has Abel density at most one. -/
 theorem abelCos_zero_le_of_nat_le {lam : ℕ → ℝ}
-    (hlam : ∀ n, (n : ℝ) + 1 ≤ lam n) {ε : ℝ} (hε : 0 < ε) :
+    (hlam : ∀ n : ℕ, (n : ℝ) + 1 ≤ lam n) {ε : ℝ} (hε : 0 < ε) :
     abelCos (fun _ => 1) lam 0 ε ≤ 1 / (2 * Real.pi) := by
   let r : ℝ := Real.exp (-(2 * Real.pi * ε))
   have hr0 : 0 < r := Real.exp_pos _
-  have hr1 : r < 1 := Real.exp_lt_one_iff.mpr (by have := Real.pi_pos; dsimp; positivity)
+  have hr1 : r < 1 := Real.exp_lt_one_iff.mpr (neg_lt_zero.mpr (by positivity))
   have hg := summable_geometric_of_lt_one hr0.le hr1
   have hterm : ∀ n, Real.exp (-(2 * Real.pi * lam n * ε)) ≤ r * r ^ n := by
     intro n
@@ -82,8 +83,10 @@ theorem abelCos_zero_le_of_nat_le {lam : ℕ → ℝ}
     dsimp only [r]
     rw [← Real.exp_add, add_neg_cancel, Real.exp_zero]
   have hc : (1 + 2 * Real.pi * ε) * r ≤ 1 := by
+    have hadd : 1 + 2 * Real.pi * ε ≤ Real.exp (2 * Real.pi * ε) := by
+      simpa only [add_comm] using Real.add_one_le_exp (2 * Real.pi * ε)
     calc (1 + 2 * Real.pi * ε) * r ≤ Real.exp (2 * Real.pi * ε) * r :=
-          mul_le_mul_of_nonneg_right (Real.add_one_le_exp _ |> by simpa [add_comm] using ·) hr0.le
+          mul_le_mul_of_nonneg_right hadd hr0.le
       _ = 1 := he
   simp only [abelCos, one_mul, mul_zero, Real.cos_zero, mul_one]
   calc ε * (∑' n, Real.exp (-(2 * Real.pi * lam n * ε))) ≤ ε * (r / (1 - r)) :=
@@ -107,7 +110,9 @@ theorem integer_spectrum_of_residue_sq_lt_two {A : ℕ → ℕ} {lam : ℕ → �
   have hlam : ∀ n, 1 ≤ lam n := fun n => hlam0 ▸ hmono.monotone (Nat.zero_le n)
   have hpos : ∀ n, 0 < lam n := fun n => lt_of_lt_of_le one_pos (hlam n)
   have ha0 : ∀ n, 0 ≤ a n := fun n => Nat.cast_nonneg _
-  have ha1 : ∀ n, 1 ≤ a n := fun n => by exact_mod_cast hA1 n
+  have ha1 : ∀ n, 1 ≤ a n := fun n => by
+    dsimp only [a]
+    exact_mod_cast hA1 n
   have haC : Summable fun n => ‖(a n : ℂ)‖ / lam n ^ 2 :=
     ha.congr fun n => by rw [Complex.norm_real, Real.norm_eq_abs, abs_of_nonneg (ha0 n)]
   have hL := fun z hz => freqSeries_eq_of_theta_defect ha0 hlam ha hgm hgb hθ (z := z) hz
@@ -138,6 +143,7 @@ theorem integer_spectrum_of_residue_sq_lt_two {A : ℕ → ℕ} {lam : ℕ → �
     intro n
     have hh : (A n : ℝ) < 2 := (hmass n).trans_lt hρ2
     have hn : A n < 2 := by exact_mod_cast hh
+    have hn1 := hA1 n
     omega
   have hunit : a = fun _ => 1 := funext fun n => by simp only [a, hunitN n, Nat.cast_one]
   have hsep : ∀ n, 1 ≤ lam (n + 1) - lam n := by
@@ -161,15 +167,14 @@ theorem integer_spectrum_of_residue_sq_lt_two {A : ℕ → ℕ} {lam : ℕ → �
         ((2 * β) ^ 2 + 2) * abelCos a lam 0 ε + 2 * abelCos a lam d ε from by
       filter_upwards [self_mem_nhdsWithin] with ε hε
       exact abelCos_three_point ha0 hlam ha (2 * β) (lam n) (lam (n + 1)) hε)
-    rw [hunit] at hh
-    simp only [mul_zero, add_zero] at hh
+    simp only [a, hunitN, Nat.cast_one, mul_zero, add_zero] at hh
     have hh' : 2 * (2 * β) / Real.pi ≤ (((2 * β) ^ 2 + 2) * β) / Real.pi := by
       convert hh using 1 <;> ring
     rw [div_le_div_iff_of_pos_right Real.pi_pos] at hh'
     have hp : 0 < (2 * β) * (2 - (2 * β) ^ 2) :=
       mul_pos (lt_of_lt_of_le zero_lt_one hρ1) (sub_pos.mpr hsmall)
     nlinarith only [hh', hp]
-  have hlower : ∀ n, (n : ℝ) + 1 ≤ lam n := by
+  have hlower : ∀ n : ℕ, (n : ℝ) + 1 ≤ lam n := by
     intro n
     induction n with
     | zero => simp [hlam0]

@@ -140,11 +140,11 @@ theorem hasDerivAt_packet_time {ε : ℝ} (hε : 0 < ε) (ξ₀ : ℝ) {J : ℝ 
     (measurable_packet_integrand ε ξ₀ hderivMeas τ).aestronglyMeasurable
     (Eventually.of_forall fun ξ s _ => ?_) hGint
     (Eventually.of_forall fun ξ s _ => ?_)).2
-  · have h1 : ‖J ξ * (I * (ξ : ℂ))‖ ≤ C * C₁ * Real.exp (ε / 4 * ξ ^ 2 - ε / 8 * ξ ^ 2 + ε / 8 * ξ ^ 2) := by
+  · have h1 : ‖J ξ * (I * (ξ : ℂ))‖ ≤ C * C₁ * Real.exp (3 * ε / 8 * ξ ^ 2) := by
       rw [norm_mul, norm_mul, Complex.norm_I, one_mul, Complex.norm_real, Real.norm_eq_abs]
       have hp := hcmp |ξ| (abs_nonneg ξ)
       simp only [zero_mul, Real.exp_zero, mul_one, sq_abs, pow_one] at hp
-      have hexp : Real.exp (ε / 4 * ξ ^ 2 - ε / 8 * ξ ^ 2 + ε / 8 * ξ ^ 2) =
+      have hexp : Real.exp (3 * ε / 8 * ξ ^ 2) =
           Real.exp (ε / 4 * ξ ^ 2) * Real.exp (ε / 8 * ξ ^ 2) := by
         rw [← Real.exp_add]
         congr 1
@@ -154,26 +154,19 @@ theorem hasDerivAt_packet_time {ε : ℝ} (hε : 0 < ε) (ξ₀ : ℝ) {J : ℝ 
             mul_le_mul (hb ξ) (by linarith) (abs_nonneg _) (by positivity)
         _ = _ := by ring
     rw [norm_mul, norm_mul, norm_exp_I_mul, mul_one]
-    have hprod : Real.exp (-(ε / 2) * ξ ^ 2) * Real.exp (ε / 4 * ξ ^ 2 - ε / 8 * ξ ^ 2 + ε / 8 * ξ ^ 2) =
-        Real.exp (-(ε / 8) * ξ ^ 2) * Real.exp (-(ε / 8) * ξ ^ 2) := by
-      rw [← Real.exp_add, ← Real.exp_add]
+    have hprod : Real.exp (-(ε / 2) * ξ ^ 2) * Real.exp (3 * ε / 8 * ξ ^ 2) =
+        Real.exp (-(ε / 8) * ξ ^ 2) := by
+      rw [← Real.exp_add]
       congr 1
       ring
-    have hE1 : Real.exp (-(ε / 8) * ξ ^ 2) ≤ 1 := by
-      rw [Real.exp_le_one_iff]
-      nlinarith [sq_nonneg ξ]
     rw [hG]
     calc ‖gaussianAmplitude ε ξ₀ (ξ : ℂ)‖ * ‖J ξ * (I * (ξ : ℂ))‖
         ≤ (Real.exp (ε * ξ₀ ^ 2) * Real.exp (-(ε / 2) * ξ ^ 2)) *
-            (C * C₁ * Real.exp (ε / 4 * ξ ^ 2 - ε / 8 * ξ ^ 2 + ε / 8 * ξ ^ 2)) :=
+            (C * C₁ * Real.exp (3 * ε / 8 * ξ ^ 2)) :=
           mul_le_mul (norm_gaussianAmplitude_real_le hε ξ₀ ξ) h1 (norm_nonneg _) (by positivity)
       _ = Real.exp (ε * ξ₀ ^ 2) * C * C₁ * (Real.exp (-(ε / 2) * ξ ^ 2) *
-            Real.exp (ε / 4 * ξ ^ 2 - ε / 8 * ξ ^ 2 + ε / 8 * ξ ^ 2)) := by ring
-      _ = Real.exp (ε * ξ₀ ^ 2) * C * C₁ * (Real.exp (-(ε / 8) * ξ ^ 2) *
-            Real.exp (-(ε / 8) * ξ ^ 2)) := by rw [hprod]
-      _ ≤ Real.exp (ε * ξ₀ ^ 2) * C * C₁ * (Real.exp (-(ε / 8) * ξ ^ 2) * 1) := by
-          gcongr
-      _ = _ := by ring
+            Real.exp (3 * ε / 8 * ξ ^ 2)) := by ring
+      _ = _ := by rw [hprod]
   · have hs : HasDerivAt (fun r : ℝ => Complex.exp (I * (ξ : ℂ) * (r : ℂ)))
         (Complex.exp (I * (ξ : ℂ) * (s : ℂ)) * (I * (ξ : ℂ))) s := by
       have h := ((hasDerivAt_id s).ofReal_comp.const_mul (I * (ξ : ℂ))).cexp

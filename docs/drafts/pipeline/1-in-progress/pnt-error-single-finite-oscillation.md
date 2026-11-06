@@ -43,12 +43,13 @@ The corrected von Mangoldt moment has a negative integer limit. A contradiction 
 |---|---|
 | Positivity of `Λ` | Absolute values restore the real-axis pole radius `σ−1`, smaller than the detection radius `σ−β`. They do not bound the corrected moment at the required scale. |
 | Selberg / integer-counting convolution | Multiplication by `ζ` cancels the selected zero's logarithmic-derivative pole. The exact logarithmic commutator retains the prime kernel (`LogarithmicCommutatorsExposeThePrimeKernel`). |
-| Quantitative phase recurrence | The radius gain has the parameter ceiling `η log((η+1−β₁)/(η+1−β)) < β−β₁ < 1/2`. Its sharp envelope is being formalized; this compares candidate bounds, not actual return times. |
+| Quantitative phase recurrence | `horizontal_jet_gain_lt_half` proves `η log((η+1−β₁)/(η+1−β)) < β−β₁ < 1/2`. `tendsto_nat_mul_log_shift_ratio` proves the gap is the sharp envelope. Both audit with standard axioms. This compares candidate bounds, not actual return times. |
 | Proper prime powers | `tendsto_normalized_higher_prime_power_jets` proves decay when `d<σ−1/2`. `not_asymptoticAbscissaLaw_has_prime_only_jet_limit` retains the exact nonzero limit for the corrected prime-only current. Both audited: standard three axioms only. |
 | Fixed-height mean square | A diagonal estimate alone leaves the signed off-diagonal arithmetic term uncontrolled. Typical-height bounds permit bounded-height exceptional signals. |
 | Bohr prime inequality | `sum_norm_prime_coeff_le` needs uniform boundedness on a whole strip. The high-height `log t` bound does not supply it. Prime-phase alignment still requires quantitative height control. |
 | Short-interval variance | Gallagher's dictionary converts the desired second-moment bound to a prime variance bound; it does not prove that variance bound. |
 | Integer shifts in `s` | For `ΔF(s)=F(s)−F(s+1)`, the prime kernel of `Δ^k F` is `(1−1/n)^k`. This replaces exponential integer scales by polynomial scales. A centered cancellation estimate is still missing; the pole and off-line contributions must both be retained. |
+| Multiplicative bilinear splitting | The phase `(ab)^(-iτ)=a^(-iτ)b^(-iτ)` separates exactly. Splitting the convolution supplies no new oscillatory interaction; cancellation in the arithmetic coefficients remains necessary. |
 
 ### Unit-shift moment and diagonal
 
@@ -66,8 +67,11 @@ The final series converges by `Λ(n)≤log n`; exponential domination bounds the
 factorial moment. At `σ=Re ρ+1`, `d=1` is admissible. This isolates distinct-integer
 correlations as the remaining contribution to `|M_k|²`.
 `tendsto_normalizedMangoldtTermDiagonal_zero` formalizes this unconditional diagonal
-bound; its audit contains only the standard three axioms. The raw-limit application
-is under audit. Neither statement supplies off-diagonal cancellation.
+bound. `not_asymptoticAbscissaLaw_has_raw_prime_moment_limit` and
+`not_asymptoticAbscissaLaw_has_nonzero_moment_and_vanishing_diagonal` prove the raw
+limit and its coexistence with diagonal decay. All three audit with the standard
+three axioms. The explicit off-diagonal limit `mρ²` is being checked. None of these
+statements supplies off-diagonal cancellation.
 
 The low-height jet argument only needs an attained rightmost zero. A bound that
 forces these moments to vanish at every ordinate would discard the finite-layer

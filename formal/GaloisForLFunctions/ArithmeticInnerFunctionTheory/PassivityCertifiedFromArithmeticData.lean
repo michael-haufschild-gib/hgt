@@ -26,6 +26,9 @@ open GrowingWindowsOfSpecZ ArithmeticCastelnuovoSeveri SpacingScaleHarmonicAnaly
 
 noncomputable section
 
+theorem realTests_of_windowTest {A : ℝ} {H : ℝ → ℝ} (hH : IsWindowTest A H) : H ∈ realTests :=
+  ⟨hH.contDiff, HasCompactSupport.intro (isCompact_Icc (a := -A) (b := 0)) fun u hu => hH.vanish u hu⟩
+
 /-- The certified aperture: Weil's form is positive on windows of this length. -/
 def certifiedAperture : ℝ := 2 * successorWeilFloorAperture
 
@@ -33,7 +36,7 @@ def certifiedAperture : ℝ := 2 * successorWeilFloorAperture
 theorem weilQuad_pos_of_certified {A : ℝ} (hA : A ≤ certifiedAperture) {G : ℝ → ℝ}
     (hG : IsWindowTest A G) (hG0 : G ≠ 0) : 0 < weilQuad G := by
   have hfloor := weilQuad_ge_of_le_two_mul_successorWeilFloorAperture hA hG
-  have hm := mem_realTests_of_isWindowTest hG
+  have hm := realTests_of_windowTest hG
   obtain ⟨x, hx⟩ := Function.ne_iff.mp hG0
   have hc : Continuous G := ContDiff.continuous hm.1
   have hcs : HasCompactSupport G := hm.2
@@ -87,7 +90,7 @@ theorem exists_causal_certificate :
         (∀ m i, i < m → v m i = 0) ∧
         ∀ x : Fin n → ℝ, ∑ i, ∑ j, B i j * x i * x j = ∑ m, p m * (∑ i, v m i * x i) ^ 2
   | 0, _, _, _ => ⟨fun m => m.elim0, fun m => m.elim0, fun m => m.elim0, fun m => m.elim0,
-      fun x => by simp⟩
+      fun m => m.elim0, fun x => by simp⟩
   | n + 1, B, hsym, hpos => by
     have hexp : ∀ (x₀ : ℝ) (y : Fin n → ℝ), ∑ i, ∑ j, B i j * (Fin.cons x₀ y : Fin (n + 1) → ℝ) i *
         (Fin.cons x₀ y : Fin (n + 1) → ℝ) j = B 0 0 * x₀ ^ 2 +
@@ -231,7 +234,7 @@ theorem exists_certificate_at_critical_ratio {A R : ℝ} (hR : 0 < R)
     ∃ (p : Fin (n + 1) → ℝ) (v : Fin (n + 1) → Fin (n + 1) → ℝ), (∀ m, 0 < p m) ∧ (∀ m, v m m = 1) ∧
       (∀ m i, i < m → v m i = 0) ∧ ∀ x : Fin (n + 1) → ℝ,
         windowPencil R (latticeTest φ h x) = ∑ m, p m * (∑ i, v m i * x i) ^ 2 := by
-  have hm := mem_realTests_of_isWindowTest hφ
+  have hm := realTests_of_windowTest hφ
   have hsym : ∀ i j : Fin (n + 1), pencilMatrix R φ h i j = pencilMatrix R φ h j i := fun i j => by
     simp only [pencilMatrix]
     have e1 : weilSeq φ h ((i : ℤ) - j) = weilSeq φ h ((j : ℤ) - i) := by

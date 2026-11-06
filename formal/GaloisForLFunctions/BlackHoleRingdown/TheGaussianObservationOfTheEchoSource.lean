@@ -32,7 +32,7 @@ theorem integral_gaussian_mul_exponential {σ : ℝ} (hσ : 0 < σ) (b t : ℝ) 
     rw [← Real.exp_add, ← Real.exp_add]
     congr 1
     field_simp [hσ.ne']
-    <;> ring
+    ring
   simp_rw [he]
   rw [integral_mul_const,
     integral_sub_right_eq_self (fun u : ℝ => Real.exp (-σ * u ^ 2)) (t + b / (2 * σ)),

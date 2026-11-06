@@ -131,10 +131,11 @@ theorem oscillation_coeff_eq_neg_zetaResidueUnit_order_div {β σ₀ C x₀ : �
   have hev_eq : (fun w => -(P' w * ((w - s₀) * logDeriv zetaResidueUnit w)))
       =ᶠ[𝓝[≠] s₀] oscillationNumerator β S d := by
     have hopen : {w : ℂ | σ₀ < w.re} ∈ 𝓝 s₀ :=
-      (isOpen_lt continuous_const Complex.continuous_re).mem_nhds (by rw [hs₀_re]; exact hσβ)
+      (isOpen_lt continuous_const Complex.continuous_re).mem_nhds (show σ₀ < s₀.re by
+        rw [hs₀_re]; exact hσβ)
     filter_upwards [mem_nhdsWithin_of_mem_nhds hopen, hZne] with w hw hZw
     have hid := neg_mul_deriv_eq hb (s := w) hw
-    rw [hP_split w, logDeriv_apply]
+    rw [logDeriv_apply]
     calc -(P' w * ((w - s₀) * (deriv zetaResidueUnit w / zetaResidueUnit w)))
         = -((w - s₀) * P' w * deriv zetaResidueUnit w) / zetaResidueUnit w := by ring
       _ = (zetaResidueUnit w * oscillationNumerator β S d w) / zetaResidueUnit w := by
@@ -225,7 +226,7 @@ theorem abscissa_eq_zetaZeroAbscissa_of_finiteOscillation {β η C x₀ : ℝ} {
   obtain ⟨u₀, hu₀⟩ := hne
   set σ₀ : ℝ := max (β - η) ((β + 1 / 2) / 2)
   have hσβ : σ₀ < β := max_lt (by linarith) (by linarith)
-  have hb := norm_oscillationError_le_of_finiteOscillation_bound (le_max_left _ _) hC
+  have hb := norm_oscillationError_le_of_finiteOscillation_bound (σ₂ := σ₀) (le_max_left _ _) hC
   obtain ⟨μ₀, hμ₀, hne_coeff⟩ := exists_oscillationCoeff_ne_zero hu₀
   have hζ := zeta_eq_zero_of_coeff_ne_zero hb hμ₀ hne_coeff hσβ (by linarith)
   have hre : ((β : ℂ) + I * μ₀).re = β := by simp
@@ -495,7 +496,8 @@ theorem exists_primeErrorFiniteOscillation_of_lt_gap (hnot : ¬ AsymptoticAbscis
   obtain ⟨qt, hqtF, hqt⟩ := F.exists_max_image (fun q : XiZeroCopy => (q.1 : ℂ).re) hF_ne
   have hqt_re : (qt.1 : ℂ).re = zetaZeroAbscissa := by
     refine le_antisymm (re_le_zetaZeroAbscissa (riemannZeta_eq_zero_of_xiZeroCopy qt))
-      (zetaZeroAbscissa_le_of_forall_xiZeroCopy_re_le hσ₀_half fun q => ?_)
+      (zetaZeroAbscissa_le_of_forall_xiZeroCopy_re_le
+        (hσ₀_half.trans ((hmemF qt).mp hqtF).le) fun q => ?_)
     by_cases hq : σ₀ < (q.1 : ℂ).re
     · exact hqt q ((hmemF q).mpr hq)
     · exact (not_lt.mp hq).trans ((hmemF qt).mp hqtF).le
@@ -508,8 +510,12 @@ theorem exists_primeErrorFiniteOscillation_of_lt_gap (hnot : ¬ AsymptoticAbscis
   set β₁ : ℝ := A.max' hAne
   have hβ₁_lt : β₁ < zetaZeroAbscissa := by
     rcases Finset.mem_insert.mp (A.max'_mem hAne) with hm | hm
-    · exact hm ▸ hσ₀_lt
-    · obtain ⟨q, hq, rfl⟩ := Finset.mem_image.mp hm
+    · change A.max' hAne < zetaZeroAbscissa
+      rw [hm]
+      exact hσ₀_lt
+    · obtain ⟨q, hq, heq⟩ := Finset.mem_image.mp hm
+      change A.max' hAne < zetaZeroAbscissa
+      rw [← heq]
       exact (Finset.mem_filter.mp hq).2
   have hnon : ∀ q : XiZeroCopy, q ∉ top → (q.1 : ℂ).re ≤ zetaSecondAbscissa := by
     intro q hq
@@ -617,7 +623,8 @@ theorem exists_bounded_log_gap_sign_changes_of_primeErrorIsFiniteOscillation
     rw [tsum_fintype]
     refine Finset.sum_eq_zero fun q _ => ?_
     split_ifs with hq
-    · simp [coeff, hq, hd0]
+    · have hq0 : (q.1 : ℝ) = 0 := hq
+      simp [coeff, hq0, hd0]
     · rfl
   have hτ₀_sum : (∑' q : F, if freq q = τ₀ then coeff q else 0) ≠ 0 := by
     rw [tsum_fintype, Finset.sum_eq_single ⟨τ₀, hτ₀_mem⟩]
@@ -690,8 +697,8 @@ theorem even_and_vonMangoldt_ne_zero_iff {n : ℕ} :
     have hp2 : p = 2 := (Nat.Prime.even_iff hp).mp hp_even
     exact ⟨k, hk, by rw [hp2]⟩
   · rintro ⟨k, hk, rfl⟩
-    refine ⟨Nat.even_pow.mpr ⟨even_two, hk.ne'⟩, ?_⟩
-    rw [ArithmeticFunction.vonMangoldt_apply_pow hk.ne',
+    refine ⟨Nat.even_pow.mpr ⟨even_two, by omega⟩, ?_⟩
+    rw [ArithmeticFunction.vonMangoldt_apply_pow (by omega),
       ArithmeticFunction.vonMangoldt_apply_prime Nat.prime_two]
     exact (Real.log_pos one_lt_two).ne'
 
@@ -714,7 +721,7 @@ theorem sum_Icc_alternating_vonMangoldt_eq {N : ℕ} (hN : 1 ≤ N) :
         by_cases hΛ : vonMangoldt (2 * m) = 0
         · simp [hΛ]
         · obtain ⟨k, hk, heq⟩ := even_and_vonMangoldt_ne_zero_iff.mp ⟨hev, hΛ⟩
-          rw [if_pos ⟨hev, hΛ⟩, heq, ArithmeticFunction.vonMangoldt_apply_pow hk.ne',
+          rw [if_pos ⟨hev, hΛ⟩, heq, ArithmeticFunction.vonMangoldt_apply_pow (by omega),
             ArithmeticFunction.vonMangoldt_apply_prime Nat.prime_two]
           ring
       · have hnot_ev : ¬ Even (2 * m + 1) := Nat.not_even_two_mul_add_one m
@@ -728,10 +735,10 @@ theorem sum_Icc_alternating_vonMangoldt_eq {N : ℕ} (hN : 1 ≤ N) :
         even_and_vonMangoldt_ne_zero_iff]
       constructor
       · rintro ⟨⟨_, hnN⟩, k, hk1, rfl⟩
-        exact ⟨k, ⟨hk1, (Nat.pow_le_iff_le_log (by norm_num) (by omega)).mp hnN⟩, rfl⟩
+        exact ⟨k, ⟨hk1, (Nat.le_log_iff_pow_le one_lt_two (by omega)).mpr hnN⟩, rfl⟩
       · rintro ⟨k, ⟨hk1, hklog⟩, rfl⟩
         exact ⟨⟨Nat.one_le_two_pow,
-          (Nat.pow_le_iff_le_log (by norm_num) (by omega)).mpr hklog⟩, k, hk1, rfl⟩
+          (Nat.le_log_iff_pow_le one_lt_two (by omega)).mp hklog⟩, k, hk1, rfl⟩
     have hinj : Set.InjOn (fun k : ℕ => 2 ^ k) (Finset.Icc 1 (Nat.log 2 N)) :=
       fun _ _ _ _ h => Nat.pow_right_injective (by norm_num) h
     rw [hbij, Finset.sum_image hinj, Finset.sum_const, Nat.card_Icc,
@@ -745,8 +752,13 @@ theorem sum_Icc_alternating_vonMangoldt_eq {N : ℕ} (hN : 1 ≤ N) :
 theorem sum_alternating_vonMangoldt_eq {x : ℝ} (hx : 1 ≤ x) :
     ∑ n ∈ Finset.Icc 1 ⌊x⌋₊, (-1 : ℝ) ^ n * (vonMangoldt n : ℝ) =
       2 * (Nat.log 2 ⌊x⌋₊ : ℝ) * Real.log 2 - Chebyshev.psi x := by
-  have hN : 1 ≤ ⌊x⌋₊ := Nat.le_floor hx
-  rw [sum_Icc_alternating_vonMangoldt_eq hN, Chebyshev.psi_eq_sum_Icc]
+  have hN : 1 ≤ ⌊x⌋₊ := Nat.le_floor (by exact_mod_cast hx)
+  have hIcc : Finset.Icc 0 ⌊x⌋₊ = insert 0 (Finset.Icc 1 ⌊x⌋₊) := by
+    ext n
+    simp only [Finset.mem_Icc, Finset.mem_insert]
+    omega
+  rw [sum_Icc_alternating_vonMangoldt_eq hN, Chebyshev.psi_eq_sum_Icc, hIcc,
+    Finset.sum_insert (by simp), ArithmeticFunction.map_zero, zero_add]
 
 /-- **Parity-twist oscillation transfer.** Every finite-oscillation expansion
 `|ψ(x) − x − x^β T(log x)| ≤ C x^{β−η}` transfers with the exact same remainder exponent `β − η` to
@@ -762,7 +774,7 @@ theorem alternating_vonMangoldt_finiteOscillation {β η C x₀ : ℝ} {S : Fins
   refine ⟨|C| + 4, max x₀ 1, fun x hx => ?_⟩
   have hx1 : 1 ≤ x := (le_max_right _ _).trans hx
   have hx0 : 0 < x := by linarith
-  have hN : 1 ≤ ⌊x⌋₊ := Nat.le_floor hx1
+  have hN : 1 ≤ ⌊x⌋₊ := Nat.le_floor (by exact_mod_cast hx1)
   rw [sum_alternating_vonMangoldt_eq hx1]
   have hpow : ((2 ^ Nat.log 2 ⌊x⌋₊ : ℕ) : ℝ) ≤ x :=
     (Nat.cast_le.mpr (Nat.pow_log_le_self 2 (by omega))).trans (Nat.floor_le hx0.le)

@@ -13,6 +13,9 @@ Failure of the asymptotic abscissa law selects an actual rightmost zeta zero.
 For the entire residue unit `(s-1)ζ(s)`, normalized logarithmic-derivative jets at
 every centre horizontally to its right converge to its positive multiplicity.
 The cofactor and its analytic remainder are constructed from the actual function.
+At the unit horizontal shift the pole correction vanishes. The raw von Mangoldt
+moments then tend to a negative multiplicity while their coefficient-square
+diagonals vanish, leaving the squared multiplicity in the off-diagonal sum.
 -/
 
 open Complex Filter Metric Set Topology RHTower
@@ -358,8 +361,8 @@ theorem not_asymptoticAbscissaLaw_has_positive_offDiagonal_limit :
         (fun n => (ArithmeticFunction.vonMangoldt n : ℂ))) (ρ + 1) n /
         (k.factorial : ℂ)‖) :=
     summable_norm_iff.mpr (hslog.div_const (k.factorial : ℂ))
-  rw [tsum_offDiagonal_re hsum, tsum_div_const]
-  rfl
+  dsimp only
+  simpa only [tsum_div_const, LSeries] using (tsum_offDiagonal_re hsum).symm
 
 #print axioms not_asymptoticAbscissaLaw_has_positive_offDiagonal_limit
 

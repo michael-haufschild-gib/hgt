@@ -1157,6 +1157,21 @@ private theorem beurlingSystem_rigidity_of_measure_eq
   exact ⟨hα, hβ, hν_beurling, hg_int, hm_uniq, hzeta,
     ⟨⟨Equiv.ofBijective toP hbij, fun l => htoP_norm l⟩⟩⟩
 
+/-- The positive-integer counting measure determines a Beurling system and its prime labels. -/
+theorem beurlingSystem_rigidity_of_integer_measure_eq
+    (B : RHTower.BeurlingSystem) [Countable B.Label]
+    (hν : beurlingSystemIntegerMeasure B =
+      Measure.sum (fun k : ℕ => Measure.dirac ((k : ℝ) + 1))) :
+    beurlingSystemIntegerMeasure B = beurlingIntegerMeasure riemannPrimeMeasure ∧
+      (∀ g : B.Integer, ∃ m : ℕ, 1 ≤ m ∧ B.intNorm g = (m : ℝ)) ∧
+      (∀ m : ℕ, 1 ≤ m → ∃! g : B.Integer, B.intNorm g = (m : ℝ)) ∧
+      (∀ s : ℂ, 1 < s.re → beurlingZeta B s = riemannZeta s) ∧
+      Nonempty {e : B.Label ≃ {p : ℕ // Nat.Prime p} //
+        ∀ l : B.Label, B.labelNorm l = ((e l : ℕ) : ℝ)} := by
+  have h := beurlingSystem_rigidity_of_measure_eq B (α := -1 / 2) (β := 1 / 2)
+    (by norm_num) (by norm_num) (by norm_num) (by simpa using hν)
+  exact h.2.2
+
 /-- **Complete categorical rigidity of countable Beurling systems (theta-relation form).**
 Let `B : RHTower.BeurlingSystem` have countable label type with `Σ_g |g|^{-2} < ∞`, and suppose
 `beurlingTheta B` satisfies Riemann's degree-one theta relation. Then `α = -1/2`, `β = 1/2`,

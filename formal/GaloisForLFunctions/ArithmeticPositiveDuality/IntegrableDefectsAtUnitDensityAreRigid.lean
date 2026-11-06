@@ -293,6 +293,67 @@ theorem abel_limit_of_defective_series {a lam : ℕ → ℝ}
   rw [hL _ (by simpa using hε)]
   ring
 
+/-- The radial Abel limit recovers the complex pole coefficient. -/
+theorem tendsto_mul_freqDual_zero_of_theta_defect {a lam : ℕ → ℝ}
+    (ha0 : ∀ n, 0 ≤ a n) (hlam : ∀ n, 1 ≤ lam n)
+    (ha : Summable fun n => a n / lam n ^ 2) {β : ℂ}
+    {g : ℝ → ℂ} {Cg : ℝ} {N : ℕ} (hgm : Measurable g)
+    (hgb : ∀ t, ‖g t‖ ≤ Cg * (1 + |t|) ^ N) (hgi : Integrable g)
+    (hθ : ∀ x : ℝ, 0 < x → freqTheta (fun n => (a n : ℂ)) lam x =
+      (x : ℂ) ^ (-(1 / 2 : ℂ)) * freqTheta (fun n => (a n : ℂ)) lam x⁻¹ +
+        -β + β * (x : ℂ) ^ (-(1 / 2 : ℂ)) + defectKernel g x) :
+    Tendsto (fun ε : ℝ => (ε : ℂ) * freqDual (fun n => (a n : ℂ)) lam (ε : ℂ))
+      (𝓝[>] 0) (𝓝 (β / Real.pi)) := by
+  have haC : Summable fun n => ‖(a n : ℂ)‖ / lam n ^ 2 :=
+    ha.congr fun n => by rw [Complex.norm_real, Real.norm_eq_abs, abs_of_nonneg (ha0 n)]
+  have hL := fun z hz => freqSeries_eq_of_theta_defect ha0 hlam ha hgm hgb hθ (z := z) hz
+  have hres := tendsto_mul_freqSeries_ofReal (a := fun n => (a n : ℂ)) hlam haC
+  have hlin : Tendsto (fun ε : ℝ => β / Real.pi - (ε : ℂ) * β)
+      (𝓝[>] 0) (𝓝 (β / Real.pi)) := by
+    simpa using ((by fun_prop : Continuous fun ε : ℝ =>
+      β / Real.pi - (ε : ℂ) * β).tendsto 0).mono_left nhdsWithin_le_nhds
+  have hh := (hres.add hlin).sub (tendsto_mul_integrable_defectLaplace hgm hgb hgi 0)
+  simp only [zero_add, sub_zero, Complex.ofReal_zero, zero_mul, add_zero] at hh
+  refine hh.congr' ?_
+  filter_upwards [self_mem_nhdsWithin] with ε hε
+  have he : (ε : ℂ) ≠ 0 := by exact_mod_cast (ne_of_gt hε)
+  have hp : (Real.pi : ℂ) ≠ 0 := by exact_mod_cast Real.pi_ne_zero
+  rw [hL _ (by simpa using hε)]
+  field_simp
+  ring
+
+/-- Positivity on the real axis forces the pole coefficient to be real. -/
+theorem pole_coefficient_real_of_theta_defect {a lam : ℕ → ℝ}
+    (ha0 : ∀ n, 0 ≤ a n) (hlam : ∀ n, 1 ≤ lam n)
+    (ha : Summable fun n => a n / lam n ^ 2) {β : ℂ}
+    {g : ℝ → ℂ} {Cg : ℝ} {N : ℕ} (hgm : Measurable g)
+    (hgb : ∀ t, ‖g t‖ ≤ Cg * (1 + |t|) ^ N) (hgi : Integrable g)
+    (hθ : ∀ x : ℝ, 0 < x → freqTheta (fun n => (a n : ℂ)) lam x =
+      (x : ℂ) ^ (-(1 / 2 : ℂ)) * freqTheta (fun n => (a n : ℂ)) lam x⁻¹ +
+        -β + β * (x : ℂ) ^ (-(1 / 2 : ℂ)) + defectKernel g x) :
+    (β.re : ℂ) = β := by
+  have hlim := (Complex.continuous_im.tendsto _).comp
+    (tendsto_mul_freqDual_zero_of_theta_defect ha0 hlam ha hgm hgb hgi hθ)
+  have hre : ∀ ε : ℝ, (freqDual (fun n => (a n : ℂ)) lam (ε : ℂ)).im = 0 := by
+    intro ε
+    have he : freqDual (fun n => (a n : ℂ)) lam (ε : ℂ) =
+        ((∑' n, a n * Real.exp (-(2 * Real.pi * lam n * ε)) : ℝ) : ℂ) := by
+      rw [freqDual, Complex.ofReal_tsum]
+      apply tsum_congr
+      intro n
+      simp only [Complex.ofReal_mul, Complex.ofReal_neg, Complex.ofReal_exp, Complex.ofReal_ofNat]
+    rw [he, Complex.ofReal_im]
+  have hzero : Tendsto (fun ε : ℝ => ((ε : ℂ) *
+      freqDual (fun n => (a n : ℂ)) lam (ε : ℂ)).im) (𝓝[>] 0) (𝓝 0) := by
+    simpa only [Complex.im_ofReal_mul, hre, mul_zero] using
+      (tendsto_const_nhds : Tendsto (fun _ : ℝ => (0 : ℝ)) (𝓝[>] 0) (𝓝 0))
+  have hi := tendsto_nhds_unique hlim hzero
+  rw [Complex.div_ofReal_im] at hi
+  have hβ : β.im = 0 := (div_eq_zero_iff.mp hi).resolve_right Real.pi_ne_zero
+  apply Complex.ext
+  · rfl
+  · simpa only [Complex.ofReal_im] using hβ.symm
+
 /-- The Abel density is the pole residue even when the functional equation has an integrable defect. -/
 theorem tendsto_abelCos_zero_of_theta_defect {a lam : ℕ → ℝ}
     (ha0 : ∀ n, 0 ≤ a n) (hlam : ∀ n, 1 ≤ lam n)
@@ -303,33 +364,12 @@ theorem tendsto_abelCos_zero_of_theta_defect {a lam : ℕ → ℝ}
       (x : ℂ) ^ (-(1 / 2 : ℂ)) * freqTheta (fun n => (a n : ℂ)) lam x⁻¹ +
         -(β : ℂ) + (β : ℂ) * (x : ℂ) ^ (-(1 / 2 : ℂ)) + defectKernel g x) :
     Tendsto (abelCos a lam 0) (𝓝[>] 0) (𝓝 (β / Real.pi)) := by
-  have haC : Summable fun n => ‖(a n : ℂ)‖ / lam n ^ 2 :=
-    ha.congr fun n => by rw [Complex.norm_real, Real.norm_eq_abs, abs_of_nonneg (ha0 n)]
-  have hL := fun z hz => freqSeries_eq_of_theta_defect ha0 hlam ha hgm hgb hθ (z := z) hz
-  have hC0 : Tendsto (abelCos a lam 0) (𝓝[>] 0) (𝓝 (β / Real.pi)) := by
-    have hres := tendsto_mul_freqSeries_ofReal (a := fun n => (a n : ℂ)) hlam haC
-    have hlin : Tendsto (fun ε : ℝ => (β : ℂ) / Real.pi - (ε : ℂ) * β)
-        (𝓝[>] 0) (𝓝 ((β : ℂ) / Real.pi)) := by
-      simpa using ((by fun_prop : Continuous fun ε : ℝ =>
-        (β : ℂ) / Real.pi - (ε : ℂ) * β).tendsto 0).mono_left nhdsWithin_le_nhds
-    have hh := (hres.add hlin).sub (tendsto_mul_integrable_defectLaplace hgm hgb hgi 0)
-    simp only [zero_add, sub_zero, Complex.ofReal_zero, zero_mul, add_zero] at hh
-    have hF : Tendsto (fun ε : ℝ => (ε : ℂ) * freqDual (fun n => (a n : ℂ)) lam
-        ((ε : ℂ) + ((0 : ℝ) : ℂ) * I)) (𝓝[>] 0) (𝓝 ((β : ℂ) / Real.pi)) := by
-      refine hh.congr' ?_
-      filter_upwards [self_mem_nhdsWithin] with ε hε
-      have he : (ε : ℂ) ≠ 0 := by exact_mod_cast (ne_of_gt hε)
-      have hp : (Real.pi : ℂ) ≠ 0 := by exact_mod_cast Real.pi_ne_zero
-      simp only [Complex.ofReal_zero, zero_mul, add_zero]
-      rw [hL _ (by simpa using hε)]
-      field_simp
-      ring
-    have hh := tendsto_abelCos_of_tendsto hlam ha0 ha hF
-    have hre : ((β : ℂ) / Real.pi).re = β / Real.pi := by
-      rw [show ((β : ℂ) / Real.pi) = ((β / Real.pi : ℝ) : ℂ) by push_cast; ring,
-        Complex.ofReal_re]
-    rwa [hre] at hh
-  exact hC0
+  have hF := tendsto_mul_freqDual_zero_of_theta_defect ha0 hlam ha hgm hgb hgi hθ
+  have hF' : Tendsto (fun ε : ℝ => (ε : ℂ) * freqDual (fun n => (a n : ℂ)) lam
+      ((ε : ℂ) + ((0 : ℝ) : ℂ) * I)) (𝓝[>] 0) (𝓝 ((β : ℂ) / Real.pi)) := by
+    simpa only [Complex.ofReal_zero, zero_mul, add_zero] using hF
+  have hh := tendsto_abelCos_of_tendsto hlam ha0 ha hF'
+  simpa only [Complex.div_ofReal_re, Complex.ofReal_re] using hh
 
 /-- An integrable defect cannot deform a spectrum whose pole residue is at most one.
 Every atom has mass at least one; positivity makes the mass and density inequalities equalities. -/
