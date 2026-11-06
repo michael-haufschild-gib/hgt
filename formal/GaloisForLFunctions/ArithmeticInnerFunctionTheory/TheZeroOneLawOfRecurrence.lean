@@ -13,8 +13,8 @@ An inner factor can be finite and nontrivial on a datum only if the datum has no
 * **Dirichlet polynomials recur** (`isVerticallyRecurrent_dirichletPoly`), by simultaneous Dirichlet approximation, and so do
   periodic data (`isVerticallyRecurrent_of_periodic`), so their inner factors have degree `0` or `∞`. This is the
   mechanism through which incommensurability of `log p` enters: `Π_p p^{iτ}` still returns to `1`.
-* **Finite inner factors vanish at infinity** (`tendsto_innerField_of_finite`). If `ζ` had finitely many right zeros,
-  then `I(σ + it) → 0` as `t → ∞`: `E` is asymptotically outer on every vertical line.
+* **Finite inner factors vanish at infinity** (`infinite_or_tendsto_innerField`). Either `ζ` has infinitely many right zeros,
+  or `I(σ + it) → 0` as `t → ∞`: `E` is asymptotically outer on every vertical line.
 * **A vanishing field gives the zeros approach the line** (`not_tendsto_or_exists_height_bound`). If `I(σ + it) → 0` on every vertical
   line then for each `h > 0` only finitely high zeros lie right of `½ + h`. So vanishing of the inner
   field at infinity sits between RH and the split of RH into its two halves.

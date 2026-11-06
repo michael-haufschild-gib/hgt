@@ -199,7 +199,7 @@ theorem exists_norm_echoIntegrand_le {ε : ℝ} (hε : 0 < ε) (ξ₀ T : ℝ) {
     nlinarith [mul_nonneg hc hyn]
   have hphase : ‖scatteringPhase w‖ ≤ (2 + 2 * c) * (1 + |w.im|) :=
     (norm_scatteringPhase_le h0).trans ((div_le_of_le_mul₀ (norm_nonneg _) (by positivity)
-      (hnum.trans (le_mul_of_one_le_left (by positivity) hden))))
+      (hnum.trans (le_mul_of_one_le_right (by positivity) hden))))
   have hpoly := hcmp |w.im| hyn
   simp only [pow_one, zero_mul, Real.exp_zero, mul_one, sq_abs] at hpoly
   have hgauss : Real.exp (-(ε / 2) * w.im ^ 2) * Real.exp (ε / 4 * w.im ^ 2) =
@@ -235,7 +235,7 @@ theorem integrable_echoIntegrand_line {ε : ℝ} (hε : 0 < ε) (ξ₀ T : ℝ) 
       (by fun_prop)
   refine integrable_of_continuous_of_gaussian_tail hcont (R := 1 / 2) (C := K) (c := ε / 4)
     (by positivity) fun y hy => ?_
-  have h := hK _ (by rw [hre]; exact hc) (by rw [hre]) (by rw [him]; exact hy)
+  have h := hK ((c : ℂ) + (y : ℂ) * I) (by rw [hre]; exact hc) (by rw [hre]) (by rw [him]; exact hy)
   rwa [him] at h
 
 /-! ### The contour shift -/
@@ -405,7 +405,7 @@ theorem setIntegral_wavePacket_echo {ε : ℝ} (hε : 0 < ε) (ξ₀ τ : ℝ) {
       ((Real.sqrt Y : ℝ) : ℂ) * (incomingPulse ε ξ₀ (τ + Real.log Y) +
         ∫ σ : ℝ, incomingPulse ε ξ₀ (τ - Real.log Y - σ) *
           (((echoKernel σ : ℝ) : ℂ) - 3 / (Real.pi : ℂ) * Complex.exp ((σ : ℂ) / 2))) := by
-  rw [setIntegral_wavePacket hε, reflectedSignal_eq_echoConvolution hε]
+  rw [setIntegral_wavePacket hε ξ₀ τ hY, reflectedSignal_eq_echoConvolution hε]
 
 end GaloisForLFunctions.BlackHoleRingdown
 

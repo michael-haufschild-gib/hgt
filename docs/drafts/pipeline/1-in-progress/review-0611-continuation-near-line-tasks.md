@@ -14,7 +14,8 @@
 | A28 | done | `TheScatteringMatrixIsABlaschkeProduct.lean`: `S=φ(s)(s−1)/s=ξ(2s−1)/ξ(2s)`, `−log|S(w)|=Σ_ρ G(w,(1+ρ)/2)`, no singular part; zeros are reflected resonances; Gram = Szegő kernel. `ResonantStates/HeckeWordsHaveThePoissonSpectralMeasure.lean`: physical `⟨T_w t_Y,T_{w'} t_Y⟩=‖t_Y‖²∫P_{−Re u}(t−Im u)W_wW_{w'}` for all prime words; squarefree `=μ_n(u)` |
 | A31 | done | `ZeroConfigurationGeometry/ThePrimeErrorExpansionLocatesZeros.lean`, `TheOneOffsAreFiniteOscillationsOfThePrimeError.lean`: `not_asymptoticAbscissaLaw_iff_primeErrorIsFiniteOscillation` |
 | A29 | done | `ArithmeticKunnethTheory/WeightFamilies/ReciprocalQuadricTrace.lean`: exceptional directions `X³ ∣ reciprocalSeries ⇔ Q=0`; `#P(Q=0)=Σ_{j≤2k}q^j+χ((−1)^{k+r})q^k`; over degree `d` the eigenvalue is `α^d`, `α=χ((−1)^{k+r})q^k` |
-| A19, A21–A27, A30, A32 | open | A32: peer AAD programme works on stencil cost (`TheParityProducerHasAQuantitativeCost`) |
+| A21 | done | `ArithmeticCastelnuovoSeveri/TheModulatedPrimeSumIsAPolynomialAverage.lean`, `MostHeightsAreWeilPositiveAtSmallAperture.lean`: off a set of measure `δT` in `[T,2T]`, independent of the test, `Q_γ(F₀)>0` for all `F₀∈C²_c([−A,A])` with `S_A(F₀)²≤M²A∫F₀²`, `A=δ/(64M²)·log T`. Density `1−δ`; no zero input; prime part = average of `D_N` against `|F̂₀|²≤S²/(1+A²t²)`, mean value theorem, Markov |
+| A19, A22–A27, A30, A32 | open | A32: peer AAD programme works on stencil cost (`TheParityProducerHasAQuantitativeCost`) |
 
 ## Log
 - 2026-11-06 — table renumbered to the current report; older numbering closed tasks (exceptional set, Gauss–Mayer boundary, sharp depth law, EGC contour, aperture Euler product) are in Lean already.

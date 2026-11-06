@@ -1,3 +1,20 @@
 import GaloisForLFunctions.ArithmeticAuxiliaryDynamics.TheForcedJumpsOfAProducer
 import GaloisForLFunctions.ArithmeticAuxiliaryDynamics.TheCoefficientMassOfAProducer
-import GaloisForLFunctions.ArithmeticAuxiliaryDynamics.LogarithmicCommutatorsExposeThePrimeKernel
+import GaloisForLFunctions.ArithmeticAuxiliaryDynamics.TheMellinTransformOfAStencil
+import GaloisForLFunctions.ArithmeticAuxiliaryDynamics.TheUncertaintyLawOfAProducer
+import GaloisForLFunctions.ArithmeticAuxiliaryDynamics.TheRateReadsTheZeroWidth
+import GaloisForLFunctions.ArithmeticAuxiliaryDynamics.TheMeanValueOfTheMultiplicity
+import GaloisForLFunctions.ArithmeticAuxiliaryDynamics.TheThreeQuartersScaleOfTheRate
+import GaloisForLFunctions.ArithmeticAuxiliaryDynamics.TheSharpReadingOfTheRate
+import GaloisForLFunctions.ArithmeticAuxiliaryDynamics.TheBracketOfTheBestRate
+import GaloisForLFunctions.ArithmeticAuxiliaryDynamics.WhereTheFactorOfTwoGoes
+import GaloisForLFunctions.ArithmeticAuxiliaryDynamics.TheLedgerIsBlindToEveryZero
+import GaloisForLFunctions.ArithmeticAuxiliaryDynamics.ReturnsAreReturnsOfThePrimes
+
+/-!
+# Arithmetic Auxiliary Dynamics
+
+Umbrella for the sign-free field in which the rational integers force zeros of `ζ` by construction
+(integer auxiliaries that vanish beyond their size) and transport (vertical returns). See
+`ArithmeticAuxiliaryDynamics/README.md`.
+-/
