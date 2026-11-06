@@ -130,7 +130,7 @@ theorem isKroneckerFamily_log_primes (p : Fin n → ℕ) (hp : ∀ i, (p i).Prim
       (Real.log (((q i : GaloisForLFunctions.primesLE N) : Nat.Primes) : ℕ)) t =
       Complex.exp (((t * Real.log (p i) : ℝ) : ℂ) * Complex.I) := by
     change Complex.exp (((Real.log (p i) * t : ℝ) : ℂ) * Complex.I) = _
-    rw [mul_comm]
+    rw [mul_comm (Real.log (p i)) t]
   rwa [e2] at h
 
 /-- **Commensurable steps.** On equal steps the locked phases `(bℓ, bℓ)` form a diagonal, and the torus is not reached: a

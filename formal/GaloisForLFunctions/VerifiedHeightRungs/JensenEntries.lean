@@ -1,5 +1,5 @@
 import GaloisForLFunctions.FiniteFreeProbability.JensenStripContraction
-import GaloisForLFunctions.SquareRootThreshold.EffectiveHorizons.XiZeroMass
+import GaloisForLFunctions.SquareRootThreshold.EffectiveHorizons.TheZeroMassHasItsSecondTerm
 import GaloisForLFunctions.RHTower.PrimeArchHausdorffFixedOrderLargeShiftPositivity
 import GaloisForLFunctions.RHTower.VerifiedHeightAmplification
 import GaloisForLFunctions.RHTower.BornTemperatureFactorType
@@ -7,8 +7,9 @@ import GaloisForLFunctions.RHTower.BornTemperatureFactorType
 /-!
 # Jensen polynomials of degree `≲ (T log T)^{1/4}` from verified zeros
 
-**Theorem.** If `T` is at least the explicit height `xiMassHeight (1/100)`, RH holds through `T` and
-`2·10⁷ d⁴ ≤ T log T`, then `R_d(Ξ)` has only real roots.
+**Theorem** (`jensenNonrealCount_eq_zero_of_verified`). If RH holds through `T ≥ 1` and
+`2·10⁷ d⁴ ≤ T log T` with `d ≥ 1`, then `R_d(Ξ)` has only real roots. The condition forces `T ≥ e¹²`, the height
+from which the two-sided Riemann–von Mangoldt count is used.
 
 Split the zeros at height `T`. The verified zeros are real, so their symbol creates no non-real root
 (Hermite–Poulain). The tail `t = ∏_{|γ| > T} (1 - w/ρ)` satisfies `t(w) = t(-w)`, hence
@@ -101,40 +102,12 @@ theorem le_re_inv_sq {w : ℂ} {T : ℝ} (hT : 1 ≤ T) (hx : T < |w.re|) (hx2 :
 
 /-! ## Riemann–von Mangoldt input -/
 
-/-- Two-sided mass bound above the explicit height. -/
-theorem mass_bounds {X : ℝ} (hX : xiMassHeight (1 / 100) ≤ X) :
-    30 / 100 * (X * Real.log X) ≤ (xiSymmetricMass X : ℝ) ∧
-      (xiSymmetricMass X : ℝ) ≤ 33 / 100 * (X * Real.log X) := by
-  have h := xiSymmetricMass_close_explicit (by norm_num : (0 : ℝ) < 1 / 100) hX
-  have hX4 : 4 ≤ X := (four_le_xiMassHeight _).trans hX
-  have hlog : 0 ≤ X * Real.log X :=
-    mul_nonneg (by linarith only [hX4]) (Real.log_nonneg (by linarith only [hX4]))
-  have hπ1 : 318 / 1000 ≤ 1 / Real.pi := by
-    rw [le_div_iff₀ Real.pi_pos]
-    have := Real.pi_lt_d4
-    linarith only [this]
-  have hπ2 : 1 / Real.pi ≤ 319 / 1000 := by
-    rw [div_le_iff₀ Real.pi_pos]
-    have := Real.pi_gt_d2
-    linarith only [this]
-  rw [abs_le] at h
-  constructor
-  · nlinarith only [h.1, hπ1, hlog]
-  · nlinarith only [h.2, hπ2, hlog]
-
 /-- The band `(T, 2T]` carries at least `0.27 T log T` copies. -/
-theorem le_card_band {T : ℝ} (hT : xiMassHeight (1 / 100) ≤ T) :
+theorem le_card_band {T : ℝ} (hT : Real.exp 12 ≤ T) :
     27 / 100 * (T * Real.log T) ≤ ((xiCopiesBand T (2 * T)).card : ℝ) := by
-  have hT4 : 4 ≤ T := (four_le_xiMassHeight _).trans hT
-  have hT0 : 0 < T := by linarith only [hT4]
-  have h2T : xiMassHeight (1 / 100) ≤ 2 * T := hT.trans (by linarith only [hT0])
+  have hT0 : 0 < T := (Real.exp_pos 12).trans_le hT
   rw [card_xiCopiesBand_eq_real hT0.le (by linarith only [hT0])]
-  have h1 := (mass_bounds hT).2
-  have h2 := (mass_bounds h2T).1
-  have hlog : Real.log T ≤ Real.log (2 * T) := Real.log_le_log hT0 (by linarith only [hT0])
-  have hmul : 30 / 100 * (2 * T * Real.log T) ≤ 30 / 100 * (2 * T * Real.log (2 * T)) :=
-    mul_le_mul_of_nonneg_left (mul_le_mul_of_nonneg_left hlog (by positivity)) (by norm_num)
-  linarith only [h1, h2, hmul]
+  exact le_xiSymmetricMass_band_of_exp_twelve_le hT
 
 theorem sum_dyadic_le (K : ℕ) :
     ∑ k ∈ Finset.range K, ((k : ℝ) + 2) / 8 ^ k = 120 / 49 - (8 / 7 * K + 120 / 49) / 8 ^ K := by
@@ -148,11 +121,11 @@ theorem sum_dyadic_le (K : ℕ) :
     ring
 
 /-- **The fourth inverse moment of the tail.** -/
-theorem sum_inv_norm_four_le {T : ℝ} (hT : xiMassHeight (1 / 100) ≤ T) (B : Finset XiZeroCopy)
+theorem sum_inv_norm_four_le {T : ℝ} (hT : Real.exp 12 ≤ T) (B : Finset XiZeroCopy)
     (hB : ∀ q ∈ B, T < |(xiSpectralPoint q).re|) :
     ∑ q ∈ B, (‖xiSpectralPoint q‖ ^ 4)⁻¹ ≤ 17 / 10 * (Real.log T / T ^ 3) := by
   classical
-  have hT4 : 4 ≤ T := (four_le_xiMassHeight _).trans hT
+  have hT4 : 4 ≤ T := four_le_of_exp_twelve_le hT
   have hT0 : 0 < T := by linarith only [hT4]
   have hL : Real.log 2 ≤ Real.log T := Real.log_le_log (by norm_num) (by linarith only [hT4])
   have hL0 : 0 ≤ Real.log T := Real.log_nonneg (by linarith only [hT4])
@@ -178,7 +151,7 @@ theorem sum_inv_norm_four_le {T : ℝ} (hT : xiMassHeight (1 / 100) ≤ T) (B : 
         rw [hX, pow_succ]
         ring
       rw [h2X]
-      have h2Xh : xiMassHeight (1 / 100) ≤ 2 * X := hT.trans (by linarith only [hX1, hT0])
+      have h2Xh : Real.exp 12 ≤ 2 * X := hT.trans (by linarith only [hX1, hT0])
       set S := B.filter fun q => |(xiSpectralPoint q).re| ≤ 2 * X with hS
       set S₀ := B.filter fun q => |(xiSpectralPoint q).re| ≤ X with hS₀
       have hsub : S₀ ⊆ S := by
@@ -203,7 +176,7 @@ theorem sum_inv_norm_four_le {T : ℝ} (hT : xiMassHeight (1 / 100) ≤ T) (B : 
         rw [Finset.mem_sdiff, hS, Finset.mem_filter] at hq
         rw [← re_xiSpectralPoint]
         exact hq.1.2
-      have hmass := (mass_bounds h2Xh).2
+      have hmass := xiSymmetricMass_le_of_exp_twelve_le h2Xh
       -- `log 2X ≤ (K + 2) log T`.
       have hlog2X : Real.log (2 * X) ≤ ((K : ℝ) + 2) * Real.log T := by
         have e : 2 * X = 2 ^ (K + 1) * T := by
@@ -371,13 +344,13 @@ theorem norm_tail_mul_exp_le {T : ℝ} {n : ℕ} {c : ℝ}
   rw [← Real.exp_sum, Finset.mul_sum]
 
 /-- The tail of the `n`-th approximant is real-rooted once it contains the band `(T, 2T]`. -/
-theorem nonrealRootCount_tail_eq_zero {T : ℝ} (hT : xiMassHeight (1 / 100) ≤ T) {d n : ℕ}
+theorem nonrealRootCount_tail_eq_zero {T : ℝ} (hT : Real.exp 12 ≤ T) {d n : ℕ}
     (hd : 2 * 10 ^ 7 * (d : ℝ) ^ 4 ≤ T * Real.log T)
     (hband : xiCopiesBand T (2 * T) ⊆ tailFinset T n) {t : ℝ[X]}
     (ht : t.map Complex.ofRealHom = DeBruijn.xiZeroPoly (tailFinset T n)) :
     nonrealRootCount (diffOp t (X ^ d)) = 0 := by
   classical
-  have hT4 : 4 ≤ T := (four_le_xiMassHeight _).trans hT
+  have hT4 : 4 ≤ T := four_le_of_exp_twelve_le hT
   have hT0 : 0 < T := by linarith only [hT4]
   have hL0 : 0 < Real.log T := Real.log_pos (by linarith only [hT4])
   set B := tailFinset T n with hB
@@ -511,13 +484,13 @@ theorem nonrealRootCount_tail_eq_zero {T : ℝ} (hT : xiMassHeight (1 / 100) ≤
       _ = (256 * (17 / 10) * (2 * 10 ^ 7)⁻¹) * (T * Real.log T) := by ring
       _ ≤ _ := mul_le_mul_of_nonneg_right this hprod
 
-/-- **Jensen rung.** If RH holds through `T ≥ xiMassHeight (1/100)` and `2·10⁷ d⁴ ≤ T log T`, then `R_d(Ξ)` has
+/-- **Jensen rung.** If RH holds through `T ≥ e¹²` and `2·10⁷ d⁴ ≤ T log T`, then `R_d(Ξ)` has
 only real roots. -/
-theorem jensenNonrealCount_eq_zero_of_rhVerifiedThrough {T : ℝ} (hT : xiMassHeight (1 / 100) ≤ T)
+theorem jensenNonrealCount_eq_zero_of_rhVerifiedThrough {T : ℝ} (hT : Real.exp 12 ≤ T)
     (hRH : RHVerifiedThrough T) {d : ℕ} (hd : 2 * 10 ^ 7 * (d : ℝ) ^ 4 ≤ T * Real.log T) :
     jensenNonrealCount d = 0 := by
   classical
-  have hT4 : 4 ≤ T := (four_le_xiMassHeight _).trans hT
+  have hT4 : 4 ≤ T := four_le_of_exp_twelve_le hT
   have hT0 : 0 < T := by linarith only [hT4]
   -- From some index on, the approximants contain the whole band.
   have hlim : Tendsto (fun n => xiPairedCopyFinset (DeBruijn.xiConjClosedFinset n)) atTop atTop :=
@@ -602,6 +575,33 @@ theorem jensenNonrealCount_eq_zero_of_rhVerifiedThrough {T : ℝ} (hT : xiMassHe
     simp only [h1, h2, map_zero, tendsto_const_nhds_iff]
 
 end
+
+/-- `2·10⁷ ≤ T log T` forces `T ≥ e¹²`. -/
+theorem exp_twelve_le_of_le_mul_log {T : ℝ} (hT1 : 1 ≤ T) (h : 2 * 10 ^ 7 ≤ T * Real.log T) :
+    Real.exp 12 ≤ T := by
+  by_contra hc
+  rw [not_le] at hc
+  have hT0 : 0 < T := by linarith only [hT1]
+  have hL : Real.log T < 12 := (Real.log_lt_iff_lt_exp hT0).mpr hc
+  have hE : Real.exp 12 ≤ 162756 := by
+    have h2 : Real.exp 12 = Real.exp 1 ^ 12 := by
+      rw [← Real.exp_nat_mul]
+      norm_num
+    rw [h2]
+    calc Real.exp 1 ^ 12 ≤ (2.7182818286 : ℝ) ^ 12 :=
+          pow_le_pow_left₀ (Real.exp_pos 1).le Real.exp_one_lt_d9.le 12
+      _ ≤ _ := by norm_num
+  have h1 : T * Real.log T ≤ T * 12 := mul_le_mul_of_nonneg_left hL.le hT0.le
+  linarith only [h, h1, hc, hE]
+
+/-- **Jensen rung without a height floor.** If RH holds through `T ≥ 1` and `2·10⁷ d⁴ ≤ T log T`, `d ≥ 1`,
+then `R_d(Ξ)` has only real roots. -/
+theorem jensenNonrealCount_eq_zero_of_verified {T : ℝ} (hT1 : 1 ≤ T) (hRH : RHVerifiedThrough T) {d : ℕ}
+    (hd1 : 1 ≤ d) (hd : 2 * 10 ^ 7 * (d : ℝ) ^ 4 ≤ T * Real.log T) : jensenNonrealCount d = 0 := by
+  have hd' : (1 : ℝ) ≤ (d : ℝ) ^ 4 := one_le_pow₀ (by exact_mod_cast hd1)
+  refine jensenNonrealCount_eq_zero_of_rhVerifiedThrough
+    (exp_twelve_le_of_le_mul_log hT1 ?_) hRH hd
+  linarith only [hd, hd']
 
 end GaloisForLFunctions.VerifiedHeightRungs
 

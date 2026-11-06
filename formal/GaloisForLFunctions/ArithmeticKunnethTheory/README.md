@@ -75,6 +75,8 @@ spectrum are depth-homogeneous; the non-scaling term must come from corresponden
 | Every normalized torus critical point descends through field embeddings; its constant Tate trace has exact binomial counts, including a separate characteristic-two formula | `reciprocalTorusCriticalPoints_card_embedding`, `criticalPointTateTrace_extension_count`, `reciprocalTorusCriticalPoints_card`, `reciprocalTorusCriticalPoints_card_char_two` | proved |
 | The full transverse tangent chart has the actual reciprocal quadratic matrix, whose determinant is `−∏xᵢ`, or `(-1)^(r+1)` for `r` negative coordinates | `reciprocalTangentVector_reconstruct`, `reciprocalSeries_transverse_quadratic`, `reciprocalTransverseMatrix_det_critical`, `reciprocalTransverseMatrix_det_signs` | proved |
 | Nondegenerate diagonal quadratic forms over odd finite fields have exact affine distributions in every dimension and at every target value | `diagonalQuadraticCount_odd`, `diagonalQuadraticCount_even` | proved |
+| Every nonsingular symmetric matrix has the same exact quadratic distributions, with correction determined by its determinant | `symmetricMatrix_quadraticCount_odd`, `symmetricMatrix_quadraticCount_even` | proved |
+| Actual projective quadratic zero loci have `q−1` representatives per point and the exact ambient plus signed-discriminant count | `quadraticCone_card_orbits`, `projectiveQuadric_card_odd`, `projectiveQuadric_card_even` | proved |
 
 The `WeightFamilies/` results classify the algebraic input, prove the finite global
 trace step, and calibrate the receiver on the Kloosterman family. They do not

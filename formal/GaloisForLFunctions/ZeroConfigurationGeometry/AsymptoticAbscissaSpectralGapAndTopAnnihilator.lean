@@ -147,10 +147,11 @@ theorem zerosApproachLine_iff_zetaAsymptoticAbscissa_eq_half :
     have hlt : zetaAsymptoticAbscissa < 1 / 2 + h := by rw [heq]; linarith
     obtain ⟨σ, hσ, hσlt⟩ := exists_lt_of_csInf_lt zetaAsymptoticAbscissaSet_nonempty hlt
     have hmem := zetaAsymptoticAbscissaSet_mono hσ hσlt.le
-    refine hmem.2.subset fun q hq => ?_
+    refine (hmem.2.preimage xiZeroCopyReflectEquiv.injective.injOn).subset fun q hq => ?_
     have hq' : h < (xiSpectralPoint q).im := hq
     rw [spectral_im_eq] at hq'
-    simp only [mem_setOf_eq]
+    have hre : ((xiZeroCopyReflectEquiv q).1 : ℂ) = 1 - (q.1 : ℂ) := rfl
+    simp only [mem_preimage, mem_setOf_eq, hre, Complex.sub_re, Complex.one_re]
     linarith
 
 /-- **`AsymptoticAbscissaLaw` is `Θ_∞ = Θ` (`limsup Re ρ = sup Re ρ`).** -/
@@ -519,7 +520,7 @@ theorem twisted_functionalEquation_div_finiteRightBlaschke {F : Finset ℂ}
     fun h0 => by rw [h0, zero_mul] at hrec; exact zero_ne_one hrec
   have hB2 : finiteRightBlaschke F m s ≠ 0 :=
     fun h0 => by rw [h0, mul_zero] at hrec; exact zero_ne_one hrec
-  rw [hΞ, eq_div_iff hB1]
+  rw [hΞ, div_eq_iff hB1]
   calc Ξ s
       = Ξ s * (finiteRightBlaschke F m s / finiteRightBlaschke F m s) *
           (finiteRightBlaschke F m (1 - s) * finiteRightBlaschke F m s) := by

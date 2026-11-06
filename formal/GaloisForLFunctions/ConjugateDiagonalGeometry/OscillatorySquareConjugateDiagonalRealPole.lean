@@ -265,7 +265,7 @@ theorem tendsto_sub_mul_laplace_expBufferedWave {F : Finset ι} {c : ι → ℂ}
     have h0 : Tendsto (fun s : ℂ => (s - (α : ℂ)) * conjSymWaveLaplace F c β γ s)
         (𝓝 (α : ℂ)) (𝓝 ((0 : ℂ) * conjSymWaveLaplace F c β γ (α : ℂ))) := by
       refine Tendsto.mul ?_ hcont.tendsto
-      simpa using tendsto_id.sub (tendsto_const_nhds (x := (α : ℂ)))
+      simpa using (tendsto_id (x := 𝓝 (α : ℂ))).sub (tendsto_const_nhds (x := (α : ℂ)))
     simpa using tendsto_const_nhds.add h0
   refine (hlim.mono_left nhdsWithin_le_nhds).congr' ?_
   filter_upwards [self_mem_nhdsWithin] with s hs
@@ -288,7 +288,7 @@ theorem conjSymWaveLaplace_residue_zero {F : Finset ι} {c : ι → ℂ} {β : �
   have h0 : Tendsto (fun s : ℂ => (s - (β : ℂ)) * conjSymWaveLaplace F c β γ s)
       (𝓝 (β : ℂ)) (𝓝 ((0 : ℂ) * conjSymWaveLaplace F c β γ (β : ℂ))) := by
     refine Tendsto.mul ?_ hcont.tendsto
-    simpa using tendsto_id.sub (tendsto_const_nhds (x := (β : ℂ)))
+    simpa using (tendsto_id (x := 𝓝 (β : ℂ))).sub (tendsto_const_nhds (x := (β : ℂ)))
   simpa using h0
 
 /-- **Exact conjugate-diagonal square decomposition.** Squaring `conjSymWave` isolates the strictly
@@ -554,7 +554,8 @@ theorem tendsto_sub_mul_laplace_conjSymWave_sq [DecidableEq ι] {F : Finset ι} 
         (𝓝 (2 * (β : ℂ)))
         (𝓝 ((0 : ℂ) * conjSymWaveSqOffDiagLaplace F c β γ (2 * (β : ℂ)))) := by
       refine Tendsto.mul ?_ hcont.tendsto
-      simpa using tendsto_id.sub (tendsto_const_nhds (x := 2 * (β : ℂ)))
+      simpa using (tendsto_id (x := 𝓝 (2 * (β : ℂ)))).sub
+        (tendsto_const_nhds (x := 2 * (β : ℂ)))
     simpa using tendsto_const_nhds.add h0
   refine (hlim.mono_left nhdsWithin_le_nhds).congr' ?_
   filter_upwards [self_mem_nhdsWithin] with s hs

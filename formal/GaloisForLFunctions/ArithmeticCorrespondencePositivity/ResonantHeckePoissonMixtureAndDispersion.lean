@@ -15,7 +15,7 @@ across the **entire multiplicative Hecke algebra** `{T_n}_{n ≥ 1}` and extract
 Hilbert-space invariant behind the obstruction:
 
 * **Multiplicative Hecke eigenvalue law** (`whittakerCoeff_mul_eq_sum_gcd_divisors`,
-  `conj_whittakerCoeff_mul_I`): for all `m, n ≥ 1` and `u ∈ ℂ`,
+  `conj_whittakerCoeff_I_mul_real`): for all `m, n ≥ 1` and `u ∈ ℂ`,
   `W_u(m) W_u(n) = Σ_{d ∣ gcd(m, n)} W_u(mn / d²)`, and on the tempered line `u = it` (`t ∈ ℝ`) the
   eigenvalues `W_{it}(n)` are real.
 * **Exact Poisson mixture identity and `C*`-positivity no-go**

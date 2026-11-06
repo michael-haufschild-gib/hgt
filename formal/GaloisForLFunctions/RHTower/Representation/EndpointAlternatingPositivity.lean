@@ -29,8 +29,10 @@ theorem complexWordCharacter_xiEndpoint {X : Type*} [Fintype X] (σ : Equiv.Perm
     (summable_xiStripEdgeWeight.div_const _) tsum_xiEndpointComplexColor]
   simp only [complexCycleCharacter, div_pow, tsum_div_const]
   rw [xiEndpointArithmeticCharacter, cycleMomentCharacter]
-  push_cast
-  simp only [Multiset.map_map, Function.comp_def, xiEndpointArithmeticCycle_complex]
+  have hcast (s : Multiset ℝ) : (s.prod : ℂ) = (s.map (fun x : ℝ => (x : ℂ))).prod :=
+    map_multiset_prod Complex.ofRealHom s
+  rw [hcast, Multiset.map_map]
+  simp only [Function.comp_def, xiEndpointArithmeticCycle_complex]
 
 /-- The sign projection equals the corresponding derivative of the arithmetic exterior series. -/
 theorem xiEndpointArithmeticCharacter_alternating_eq (n : ℕ) :

@@ -24,14 +24,17 @@ For a nondegenerate diagonal form with determinant `D` over an odd finite field,
 where `v(0)=q−1` and `v(t)=−1` for `t≠0`.
 Both affine distributions and their actual-set recurrence are [formalized](../3-formalized/w4-diagonal-quadric-counts.md). The elementary input is `Σ_y χ(y²−c)=v(c)`: count `y²−z²=c` through the bijection `(y,z)↔(y−z,y+z)`. For `c≠0`, the product equation has `q−1` points. Induction on a diagonal variable gives the displayed distributions.
 
-Removing the zero vector and quotienting by nonzero scalars gives the projective trace. In transverse dimension `2k+2`, it is `Σ_{j=0}^{2k}q^j+χ((-1)^(k+1)D)q^k`; in dimension `2k+1`, it is `Σ_{j=0}^{2k−1}q^j`. The even-dimensional formula requires proving how the quadratic character changes under finite extension.
+The [discriminant transport](../3-formalized/w4-quadratic-fibres-from-discriminants.md) is formalized: diagonalization preserves every actual fibre count, and the discriminant changes by the square of an invertible coordinate determinant. Consequently `symmetricMatrix_quadraticCount_odd` and `symmetricMatrix_quadraticCount_even` give these distributions for every nonsingular symmetric matrix. Applying them to the reciprocal matrix remains to be wired.
 
-For the actual critical form, `D` is a sign. The inspected identity `quadraticChar_neg_one` expresses its character through `χ₄(q)`. Multiplicativity and `#E=q^[E:F]` should therefore give the extension law directly: the nonambient eigenvalue is `χ_F((-1)^(k+1)D)q^k`. No general character-norm formula is needed for this specialization.
+The [actual projective quotient count](../3-formalized/w4-projective-quadric-counts.md) is formalized for every nondegenerate quadratic form. Each point has exactly `q−1` nonzero representatives. In vector dimension `2k+2`, the count is `Σ_{j=0}^{2k}q^j+χ((-1)^(k+1)D)q^k`; in dimension `2k+1`, it is `Σ_{j=0}^{2k−1}q^j`. The reciprocal transverse specialization and its finite-extension trace remain unproved.
+
+**Unproved continuation:** for the actual critical form, `D` is a sign. The identity `quadraticChar_neg_one` expresses its character through `χ₄(q)`. Multiplicativity and `#E=q^[E:F]` suggest the extension law with nonambient eigenvalue `χ_F((-1)^(k+1)D)q^k`. Neither this extension law nor its identification with the reciprocal projective count is asserted as a completed proof.
 
 ## Available inputs
 
 - `reciprocalSeries_quadratic` and `reciprocalPairing_transverse_nondegenerate` identify the exact quadratic coefficient and its radical.
 - `HTGeometry.bgv_det_diagonal_add_vecMulVec` proves the determinant identity over arbitrary commutative rings.
-- `diagonalQuadraticCount_odd` and `diagonalQuadraticCount_even` prove the complete affine distributions. Transport to the actual transverse matrix and its projective quotient remain to be constructed.
+- `diagonalQuadraticCount_odd`, `diagonalQuadraticCount_even`, `quadraticFormCount_odd`, and `quadraticFormCount_even` prove the complete affine distributions.
+- `projectiveQuadric_card_odd` and `projectiveQuadric_card_even` prove the actual scalar-quotient counts. Their specialization to the reciprocal transverse form remains open.
 
-This supplies a local spectral correction, not the compactification's missing global trace formula or the ζ family.
+The intended local correction would still leave the compactification's global trace formula and the ζ family open.

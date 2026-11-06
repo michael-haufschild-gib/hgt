@@ -78,11 +78,10 @@ theorem overRegularZeta_eq_zero_conj (μ ν γ : ℝ) :
 precisely the two-point conjugate pair `{(1 − μ) + iγ, (1 − μ) − iγ}` (finitely many zeros right of
 `1/2 + h`, yet nonempty, violating the asymptotic abscissa law). -/
 theorem overRegularZeta_right_zeroSet_eq_pair {μ ν γ : ℝ}
-    (hμ2 : μ < 1 / 2) (hν0 : 0 < ν) (hν1 : ν < 3 * μ - 1)
+    (hν0 : 0 < ν) (hν1 : ν < 3 * μ - 1)
     {h : ℝ} (hh0 : 0 ≤ h) (hh1 : h < 1 / 2 - μ) :
     {s : ℂ | 1 / 2 + h < s.re ∧ s ≠ 1 ∧ overRegularZeta μ ν γ s = 0} =
       {((1 - μ : ℝ) : ℂ) + (γ : ℂ) * I, ((1 - μ : ℝ) : ℂ) - (γ : ℂ) * I} := by
-  have hμ_third : 1 / 3 < μ := by linarith
   ext s
   simp only [mem_setOf_eq, mem_insert_iff, mem_singleton_iff]
   constructor

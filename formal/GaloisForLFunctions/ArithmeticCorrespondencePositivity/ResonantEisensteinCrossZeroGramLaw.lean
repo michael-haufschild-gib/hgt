@@ -85,8 +85,7 @@ theorem two_sub_add_conj_ne_zero {ρ₁ ρ₂ : ℂ} (h1₁ : ρ₁.re < 1) (h1�
     2 - ρ₁ - starRingEnd ℂ ρ₂ ≠ 0 := by
   intro h
   have hre := congrArg Complex.re h
-  simp only [Complex.sub_re, Complex.ofReal_re, Complex.conj_re, Complex.zero_re] at hre
-  norm_num at hre
+  simp at hre
   linarith
 
 /-! ### Universal upper-half-strip Cauchy–Szegő Gram law -/
@@ -199,9 +198,8 @@ theorem crossZero_cauchySchwarz_residual_upper {ρ₁ ρ₂ : ℂ}
   congr 1
   have hden : ‖2 - ρ₁ - starRingEnd ℂ ρ₂‖ ^ 2 ≠ 0 :=
     pow_ne_zero 2 (norm_ne_zero_iff.mpr (two_sub_add_conj_ne_zero h1₁ h1₂))
-  have hid := norm_sq_two_sub_add_conj ρ₁ ρ₂
-  field_simp
-  linarith
+  rw [eq_sub_iff_add_eq, ← add_div, div_eq_one_iff_eq hden]
+  linarith [norm_sq_two_sub_add_conj ρ₁ ρ₂]
 
 /-- **Strict non-collinearity of distinct resonant states:** Cauchy–Schwarz between two upper-strip
 truncated resonant states is saturated if and only if `ρ₁ = ρ₂`. -/
@@ -241,7 +239,7 @@ theorem crossZero_saturation_upper_iff {ρ₁ ρ₂ : ℂ}
     have h2 : ‖ρ₁ - ρ₂‖ ^ 2 / ‖2 - ρ₁ - starRingEnd ℂ ρ₂‖ ^ 2 = 0 :=
       (mul_eq_zero.mp h1).resolve_right hprod_ne
     have h3 : ‖ρ₁ - ρ₂‖ ^ 2 = 0 := (div_eq_zero_iff.mp h2).resolve_right hden_ne
-    exact sub_eq_zero.mp (norm_eq_zero.mp (pow_eq_zero_iff two_ne_zero |>.mp h3))
+    exact sub_eq_zero.mp (norm_eq_zero.mp (sq_eq_zero_iff.mp h3))
   · rintro rfl
     simp
 
@@ -369,7 +367,6 @@ theorem hermitianPairing_resonantState_all {ρ₁ ρ₂ : ℂ}
         have hconj_lam : starRingEnd ℂ (reflectedCompletedLambda (w₂ - 1)) =
             reflectedCompletedLambda (w₁ - 1) := by
           rw [← reflectedCompletedLambda_conj, map_sub, map_one, ← hσ₂, hσ₂_eq]
-        have hconj_w : starRingEnd ℂ w₂ = w₁ := hσ₂_eq
         have h1w₁_ne : 1 - w₁ ≠ 0 := by
           intro hc
           have hre := congrArg Complex.re hc
@@ -377,9 +374,8 @@ theorem hermitianPairing_resonantState_all {ρ₁ ρ₂ : ℂ}
           linarith
         have hden : 2 - w₁ - w₁ = 2 * (1 - w₁) := by ring
         have hexp : 1 - (w₁ + w₁) / 2 = 1 - w₁ := by ring
-        rw [hconj_lam, hconj_w, hexp, hden]
+        rw [hconj_lam, hexp, hden]
         field_simp
-        ring
       · -- Distinct opposite-hemisphere pair: `σ₂ ≠ w₁`
         rw [if_neg heq, add_zero]
         have hσ₂_ne : σ₂ ≠ w₁ := fun hc => heq (by rw [← hc, hσ₂, Complex.conj_conj])
@@ -392,8 +388,8 @@ theorem hermitianPairing_resonantState_all {ρ₁ ρ₂ : ℂ}
         have hAv₂ : msA v₂ = 0 := by rw [msA_resonantParameter]; exact hσ₂z
         have hBu₁ : msB u₁ = reflectedCompletedLambda (w₁ - 1) := msB_resonantParameter w₁
         have hBv₂ : msB v₂ = starRingEnd ℂ (reflectedCompletedLambda (w₂ - 1)) := by
-          rw [msB_resonantParameter, hσ₂, ← map_one (starRingEnd ℂ), ← map_sub,
-            reflectedCompletedLambda_conj]
+          rw [msB_resonantParameter, ← reflectedCompletedLambda_conj]
+          simp [hσ₂]
         have hsub_ne : u₁ - v₂ ≠ 0 := by
           intro hc
           have : w₁ - σ₂ = 0 := by
@@ -445,16 +441,10 @@ theorem hermitianPairing_resonantState_all {ρ₁ ρ₂ : ℂ}
     have hρ₁σ : ρ₁ = starRingEnd ℂ σ₁ := by rw [hσ₁, Complex.conj_conj]
     have hρ₂σ : ρ₂ = starRingEnd ℂ σ₂ := by rw [hσ₂, Complex.conj_conj]
     have hYpos : 0 < Y := by linarith
-    rw [hρ₁σ, hρ₂σ, resonantParameter_conj_eq, resonantParameter_conj_eq,
+    rw [hρ₁σ, hρ₂σ, resonantParameter_conj_eq σ₁, resonantParameter_conj_eq σ₂,
       hermitianPairing_conj_both, hmain]
-    have hcond : (starRingEnd ℂ σ₂ = starRingEnd ℂ (starRingEnd ℂ σ₁)) ↔
-        (σ₂ = starRingEnd ℂ σ₁) := by
-      constructor
-      · intro hc
-        have := congrArg (starRingEnd ℂ) hc
-        simpa [Complex.conj_conj] using this
-      · intro hc
-        exact congrArg (starRingEnd ℂ) hc
+    have hcond : (starRingEnd ℂ σ₂ = σ₁) ↔ (σ₂ = starRingEnd ℂ σ₁) :=
+      ⟨fun hc => by rw [← hc, Complex.conj_conj], fun hc => by rw [hc, Complex.conj_conj]⟩
     rw [map_add, map_div₀, map_mul, map_mul, map_mul, map_ofNat, Complex.conj_conj,
       ← reflectedCompletedLambda_conj, ← reflectedCompletedLambda_conj, conj_cpow_of_pos hYpos]
     simp only [map_sub, map_add, map_div₀, map_one, map_ofNat, Complex.conj_conj]
@@ -531,14 +521,13 @@ theorem hermitianPairing_resonantState_upper_eq_laplace_integral {ρ₁ ρ₂ : 
             ring
   simp_rw [hpt]
   rw [integral_const_mul, GaloisForLFunctions.HTGeometry.integral_cexp_neg_mul hz_re,
-    hermitianPairing_resonantState_upper hρ₂ h0₂ h1₂ him₂ hρ₁ h0₁ h1₁ him₁ hY]
+    hermitianPairing_resonantState_upper hρ₂ h0₂ h1₂ him₂ hρ₁ h0₁ h1₁ him₁ hY, ← hz_def]
   have hz_den : 2 - ρ₂ - starRingEnd ℂ ρ₁ = 2 * z := by
     simp only [hz_def]; ring
   have hz_ne : z ≠ 0 := by
     intro hc; rw [hc] at hz_re; simp at hz_re
   rw [hz_den]
   field_simp
-  ring
 
 /-- **Laplace Gram isometric representation.** For any finite set `S` of upper-strip zeros of `Λ`,
 complex weights `c : ℂ → ℂ`, and truncation height `Y ≥ 1`, the `S × S` Hermitian Gram quadratic
@@ -635,13 +624,12 @@ theorem resonantGramQuadraticForm_upper_eq_laplace_normSq
   rw [Finset.sum_congr rfl hswap, ← integral_finsetSum S fun ρ₁ hρ₁ =>
     integrable_finsetSum S fun ρ₂ hρ₂ => hint_pair ρ₁ hρ₁ ρ₂ hρ₂, ← integral_complex_ofReal]
   refine setIntegral_congr_fun measurableSet_Ioi fun t _ => ?_
-  dsimp only
   set P : ℂ := resonantLaplacePacket Y S c t with hP
   have hP_sum : P = ∑ ρ ∈ S, c ρ * atom ρ t := by
     simp only [hP, resonantLaplacePacket, hatom, mul_assoc]
   have hP_conj : starRingEnd ℂ P = ∑ ρ ∈ S, starRingEnd ℂ (c ρ) * starRingEnd ℂ (atom ρ t) := by
     rw [hP_sum, map_sum]
-    exact Finset.sum_congr rfl fun ρ _ => map_mul _ _
+    exact Finset.sum_congr rfl fun ρ _ => map_mul (starRingEnd ℂ) (c ρ) (atom ρ t)
   have hnormP : ((‖P‖ ^ 2 : ℝ) : ℂ) = starRingEnd ℂ P * P := by
     rw [← Complex.normSq_eq_norm_sq, ← Complex.mul_conj, mul_comm]
   rw [hnormP, hP_conj, hP_sum, Finset.sum_mul]

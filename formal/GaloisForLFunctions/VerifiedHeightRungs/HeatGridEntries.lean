@@ -218,7 +218,7 @@ theorem exists_same_parity_half (I : Finset ℕ) :
     omega
 
 /-- **Separated nodes.** The band `(T, 2T]` contains `T/1200` copies whose absolute ordinates are `1`-separated. -/
-theorem exists_separated_nodes {T : ℝ} (hT : xiMassHeight (1 / 100) ≤ T) (hT360 : 360 ≤ T) {n : ℕ}
+theorem exists_separated_nodes {T : ℝ} (hT : Real.exp 12 ≤ T) (hT360 : 360 ≤ T) {n : ℕ}
     (hn : 1200 * (n : ℝ) ≤ T) :
     ∃ s : Finset XiZeroCopy, s.card = n ∧ (∀ q ∈ s, T < absOrdinate q ∧ absOrdinate q ≤ 2 * T) ∧
       ∀ q ∈ s, ∀ q' ∈ s, q ≠ q' → 1 ≤ |absOrdinate q - absOrdinate q'| := by
@@ -359,7 +359,7 @@ def heatGridConstant (h : ℝ) : ℝ :=
 
 /-- The explicit height above which verified zeros control the grid of spacing `h`. -/
 def heatGridHeight (h : ℝ) : ℝ :=
-  max (4 * xiMassHeight (1 / 100)) (max 1440 (4 * heatGridConstant h / h))
+  max (4 * Real.exp 12) (max 1440 (4 * heatGridConstant h / h))
 
 /-- Numerical domination of the Lagrange constant by the Gaussian gap. -/
 theorem heat_numeric {h X : ℝ} (hh : 0 < h) (hX1 : 1 ≤ X) (hXh : 4 * heatGridConstant h / h ≤ X) {D : ℕ}
@@ -598,7 +598,7 @@ of `p²` is nonnegative at every offset. -/
 theorem heatGridForm_nonneg_of_rhVerifiedThrough {h Y : ℝ} (hh : 0 < h) (hY : heatGridHeight h ≤ Y)
     (hRH : RHVerifiedThrough Y) (K : ℕ) {p : ℝ[X]} (hp : 4800 * ((p.natDegree : ℝ) + 1) ≤ Y) :
     0 ≤ HTGeometry.momentFunctional (xiHeatGridMoment h K) (p ^ 2) := by
-  have hYm : 4 * xiMassHeight (1 / 100) ≤ Y := (le_max_left _ _).trans hY
+  have hYm : 4 * Real.exp 12 ≤ Y := (le_max_left _ _).trans hY
   have hY2 : max 1440 (4 * heatGridConstant h / h) ≤ Y := (le_max_right _ _).trans hY
   have hY1440 : 1440 ≤ Y := (le_max_left _ _).trans hY2
   have hYh : 4 * heatGridConstant h / h ≤ Y := (le_max_right _ _).trans hY2

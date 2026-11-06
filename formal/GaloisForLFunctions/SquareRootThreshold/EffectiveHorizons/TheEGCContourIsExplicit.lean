@@ -1,4 +1,4 @@
-import GaloisForLFunctions.SquareRootThreshold.EffectiveHorizons.XiZeroMass
+import GaloisForLFunctions.SquareRootThreshold.EffectiveHorizons.TheZeroMassHasItsSecondTerm
 import GaloisForLFunctions.RHTower.PrimeArchHausdorffFixedOrderLargeShiftPositivity
 import GaloisForLFunctions.RHTower.PaperEGCEnclosedPoleCancellation
 
@@ -9,9 +9,9 @@ The mass-subtracted source contour differs from the zero count by the sum over t
 explicit Riemann–von Mangoldt count bounds that sum by `32 ε² log T / T` as soon as the rectangle contains every copy of
 ordinate at most `T`:
 
-* `sum_inv_norm_sq_le`: `Σ_{|γ| > T} |ρ|⁻² ≤ 4 log T / T` above the explicit height `xiMassHeight (1/100)`;
+* `sum_inv_norm_sq_le`: `Σ_{|γ| > T} |ρ|⁻² ≤ 4 log T / T` above the explicit height `e¹²`;
 * `norm_contour_sub_count_le`: the explicit contour inequality;
-* `egcHeight`: `T(n) = max(xiMassHeight (1/100), 10⁴ (n + 1)²)` gives error below `1/(n + 1)`.
+* `egcHeight`: `T(n) = max(e¹², 10⁴ (n + 1)²)` gives error below `1/(n + 1)`.
 -/
 
 set_option autoImplicit false
@@ -26,19 +26,6 @@ noncomputable section
 private theorem re_spectral (q : XiZeroCopy) : (xiSpectralPoint q).re = (q.1 : ℂ).im := by
   simp [xiSpectralPoint]
 
-private theorem xiSymmetricMass_le {X : ℝ} (hX : xiMassHeight (1 / 100) ≤ X) :
-    (xiSymmetricMass X : ℝ) ≤ 33 / 100 * (X * Real.log X) := by
-  have h := xiSymmetricMass_close_explicit (by norm_num : (0 : ℝ) < 1 / 100) hX
-  have hX4 : 4 ≤ X := (four_le_xiMassHeight _).trans hX
-  have hlog : 0 ≤ X * Real.log X :=
-    mul_nonneg (by linarith only [hX4]) (Real.log_nonneg (by linarith only [hX4]))
-  have hπ2 : 1 / Real.pi ≤ 319 / 1000 := by
-    rw [div_le_iff₀ Real.pi_pos]
-    have := Real.pi_gt_d2
-    linarith only [this]
-  rw [abs_le] at h
-  nlinarith only [h.2, hπ2, hlog]
-
 private theorem sum_dyadic_two (K : ℕ) :
     ∑ k ∈ Finset.range K, ((k : ℝ) + 2) / 2 ^ k = 6 - (2 * K + 6) / 2 ^ K := by
   induction K with
@@ -52,11 +39,11 @@ private theorem sum_dyadic_two (K : ℕ) :
 
 /-- **The tail of the reciprocal squares.** Above the explicit height, any finite set of copies of ordinate above `T`
 has `Σ |ρ|⁻² ≤ 4 log T / T`. -/
-theorem sum_inv_norm_sq_le {T : ℝ} (hT : xiMassHeight (1 / 100) ≤ T) (B : Finset XiZeroCopy)
+theorem sum_inv_norm_sq_le {T : ℝ} (hT : Real.exp 12 ≤ T) (B : Finset XiZeroCopy)
     (hB : ∀ q ∈ B, T < |(xiSpectralPoint q).re|) :
     ∑ q ∈ B, (‖xiSpectralPoint q‖ ^ 2)⁻¹ ≤ 4 * (Real.log T / T) := by
   classical
-  have hT4 : 4 ≤ T := (four_le_xiMassHeight _).trans hT
+  have hT4 : 4 ≤ T := four_le_of_exp_twelve_le hT
   have hT0 : 0 < T := by linarith only [hT4]
   have hL : Real.log 2 ≤ Real.log T := Real.log_le_log (by norm_num) (by linarith only [hT4])
   have hL0 : 0 ≤ Real.log T := Real.log_nonneg (by linarith only [hT4])
@@ -81,7 +68,7 @@ theorem sum_inv_norm_sq_le {T : ℝ} (hT : xiMassHeight (1 / 100) ≤ T) (B : Fi
         rw [hX, pow_succ]
         ring
       rw [h2X]
-      have h2Xh : xiMassHeight (1 / 100) ≤ 2 * X := hT.trans (by linarith only [hX1, hT0])
+      have h2Xh : Real.exp 12 ≤ 2 * X := hT.trans (by linarith only [hX1, hT0])
       set S := B.filter fun q => |(xiSpectralPoint q).re| ≤ 2 * X with hS
       set S₀ := B.filter fun q => |(xiSpectralPoint q).re| ≤ X with hS₀
       have hsub : S₀ ⊆ S := by
@@ -105,7 +92,7 @@ theorem sum_inv_norm_sq_le {T : ℝ} (hT : xiMassHeight (1 / 100) ≤ T) (B : Fi
         rw [Finset.mem_sdiff, hS, Finset.mem_filter] at hq
         rw [← re_spectral]
         exact hq.1.2
-      have hmass := xiSymmetricMass_le h2Xh
+      have hmass := xiSymmetricMass_le_of_exp_twelve_le h2Xh
       have hlog2X : Real.log (2 * X) ≤ ((K : ℝ) + 2) * Real.log T := by
         have e : 2 * X = 2 ^ (K + 1) * T := by
           rw [hX, pow_succ]
@@ -149,7 +136,7 @@ theorem sum_inv_norm_sq_le {T : ℝ} (hT : xiMassHeight (1 / 100) ≤ T) (B : Fi
 
 /-- **The explicit contour inequality.** If the rectangle contains every copy of ordinate at most `T`, the source
 contour is its zero count up to `32 ε² log T / T`, uniformly in the small parameters and the enclosed height. -/
-theorem norm_contour_sub_count_le {T : ℝ} (hT : xiMassHeight (1 / 100) ≤ T)
+theorem norm_contour_sub_count_le {T : ℝ} (hT : Real.exp 12 ≤ T)
     (R : PaperEGCSourceRectangle)
     (hR : ∀ q : XiZeroCopy, |(xiSpectralPoint q).re| ≤ T →
       q ∈ xiZeroCopyClosedRectangle R.lower R.upper)
@@ -184,7 +171,7 @@ theorem norm_contour_sub_count_le {T : ℝ} (hT : xiMassHeight (1 / 100) ≤ T)
 
 /-- The explicit height at which the contour error falls below `1/(n + 1)`. -/
 def egcHeight (n : ℕ) : ℝ :=
-  max (xiMassHeight (1 / 100)) (10 ^ 4 * ((n : ℝ) + 1) ^ 2)
+  max (Real.exp 12) (10 ^ 4 * ((n : ℝ) + 1) ^ 2)
 
 theorem thirtytwo_log_div_egcHeight_lt (n : ℕ) :
     32 * (Real.log (egcHeight n) / egcHeight n) < 1 / ((n : ℝ) + 1) := by
@@ -240,11 +227,11 @@ theorem exists_explicit_centered_source_contour (n : ℕ) :
   have hm : R.Inside (((x : ℝ) : ℂ) + ((0 : ℝ) : ℂ) * I - ((eps : ℝ) : ℂ)) := by
     rw [Complex.ofReal_zero, zero_mul, add_zero, ← Complex.ofReal_sub]
     exact hwindow _ ⟨by linarith only [x.2.1, eps.2.2], by linarith only [x.2.2, eps.2.1]⟩
-  have hheight : xiMassHeight (1 / 100) ≤ egcHeight n := le_max_left _ _
+  have hheight : Real.exp 12 ≤ egcHeight n := le_max_left _ _
   have hb := norm_contour_sub_count_le hheight R hmem eps x 0 hp hm
   simp only [Complex.ofReal_zero, zero_mul, add_zero] at hb
   have heps : (eps : ℝ) ^ 2 ≤ 1 := by nlinarith only [eps.2.1, eps.2.2]
-  have h4 : 4 ≤ egcHeight n := (four_le_xiMassHeight _).trans hheight
+  have h4 : 4 ≤ egcHeight n := four_le_of_exp_twelve_le hheight
   have hL : 0 ≤ Real.log (egcHeight n) / egcHeight n :=
     div_nonneg (Real.log_nonneg (by linarith only [h4])) (by linarith only [h4])
   calc

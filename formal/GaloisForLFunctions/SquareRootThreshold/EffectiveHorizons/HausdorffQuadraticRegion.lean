@@ -67,8 +67,9 @@ theorem broad_saddle_nonneg :
     rw [hLC]
     linarith only [hC]
   have hwL2 : L ≤ w ^ 2 := by nlinarith only [hwL, hL0, sq_nonneg (w - 1)]
-  have hgaussian := gaussian_factor_le (by linarith only [hC] : 0 < C)
-    (by rw [← hLC]; exact hpL) (by rw [← hLC]; exact hwL2)
+  have hpL' : 131072 * (8000 * C) ≤ ((k + 1 : ℕ) : ℝ) := by rw [← hLC]; exact hpL
+  have hwL2' : 131072 * (8000 * C) ≤ w ^ 2 := by rw [← hLC]; exact hwL2
+  have hgaussian := gaussian_factor_le (by linarith only [hC] : 0 < C) hpL' hwL2'
   have horder := order_tail_le_inverse (k + 1) (Nat.succ_pos k)
   have horderSmall : (16384 * Real.exp 1 + 8) / ((k + 1 : ℕ) : ℝ) ≤ 1 / 8000 := by
     rw [div_le_iff₀ hpR]

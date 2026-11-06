@@ -26,7 +26,7 @@ theorem quadraticFormCount_isometry {m n : ℕ}
     {Q : QuadraticForm F (Fin m → F)} {P : QuadraticForm F (Fin n → F)}
     (e : Q.IsometryEquiv P) (t : F) : quadraticFormCount Q t = quadraticFormCount P t := by
   have he := e.toEquiv.subtypeEquiv (p := fun x => Q x = t) (q := fun y => P y = t)
-    (fun x => by rw [e.map_app])
+    (fun x => by change Q x = t ↔ P (e x) = t; rw [e.map_app])
   unfold quadraticFormCount
   rw [← Fintype.card_subtype, ← Fintype.card_subtype, Fintype.card_congr he]
 
@@ -43,6 +43,7 @@ section MatrixRepresentation
 
 variable [Invertible (2 : F)] {n : ℕ}
 
+omit [Fintype F] [DecidableEq F] in
 /-- The associated matrix of the quadratic form of a symmetric matrix is that matrix. -/
 theorem symmetricMatrix_quadratic_toMatrix (M : Matrix (Fin n) (Fin n) F)
     (hM : M.IsSymm) : M.toQuadraticForm'.toMatrix' = M := by
@@ -61,9 +62,10 @@ theorem symmetricMatrix_quadratic_toMatrix (M : Matrix (Fin n) (Fin n) F)
   rw [associated_left_inverse F hs]
   exact (LinearMap.toMatrix₂' F).apply_symm_apply M
 
+omit [Fintype F] [DecidableEq F] in
 /-- A weighted sum of squares has the diagonal matrix of its coefficients. -/
 theorem weightedSumSquares_toMatrix (w : Fin n → Fˣ) :
-    (weightedSumSquares F w).toMatrix' = diagonal (fun i => (w i : F)) := by
+    QuadraticForm.toMatrix' (weightedSumSquares F w) = diagonal (fun i => (w i : F)) := by
   have he : weightedSumSquares F w = (diagonal (fun i => (w i : F))).toQuadraticForm' := by
     ext x
     simp only [weightedSumSquares_apply, Units.smul_def, smul_eq_mul,
@@ -83,8 +85,9 @@ theorem quadraticFormCount_diagonal_model (Q : QuadraticForm F (Fin n → F))
   have hsep : Q.associated.SeparatingLeft :=
     LinearMap.separatingLeft_toMatrix₂'_iff.mp (Matrix.separatingLeft_iff_det_ne_zero.mpr hQ)
   have hex : ∃ w : Fin n → Fˣ, Q.Equivalent (weightedSumSquares F w) := by
-    simpa only [Module.finrank_fin_fun] using
-      QuadraticForm.equivalent_weightedSumSquares_units_of_nondegenerate' Q hsep
+    have h := QuadraticForm.equivalent_weightedSumSquares_units_of_nondegenerate' Q hsep
+    rw [Module.finrank_fin_fun F] at h
+    exact h
   obtain ⟨w, ⟨e⟩⟩ := hex
   refine ⟨w, fun t => (quadraticFormCount_isometry e t).trans
     (quadraticFormCount_weightedSumSquares w t), ?_⟩
@@ -131,7 +134,7 @@ theorem symmetricMatrix_quadraticCount_odd (hF : ringChar F ≠ 2) (k : ℕ)
   letI := invertibleOfNonzero (Ring.two_ne_zero hF)
   have hd : M.toQuadraticForm'.discr' = M.det := by
     rw [QuadraticForm.discr', symmetricMatrix_quadratic_toMatrix M hM]
-  simpa only [hd] using quadraticFormCount_odd hF k M.toQuadraticForm' (hd ▸ hdet) t
+  simpa only [hd] using quadraticFormCount_odd hF k M.toQuadraticForm' (by rwa [hd]) t
 
 /-- Exact affine fibre count of a nonsingular symmetric matrix in positive even dimension. -/
 theorem symmetricMatrix_quadraticCount_even (hF : ringChar F ≠ 2) (k : ℕ)
@@ -143,6 +146,6 @@ theorem symmetricMatrix_quadraticCount_even (hF : ringChar F ≠ 2) (k : ℕ)
   letI := invertibleOfNonzero (Ring.two_ne_zero hF)
   have hd : M.toQuadraticForm'.discr' = M.det := by
     rw [QuadraticForm.discr', symmetricMatrix_quadratic_toMatrix M hM]
-  simpa only [hd] using quadraticFormCount_even hF k M.toQuadraticForm' (hd ▸ hdet) t
+  simpa only [hd] using quadraticFormCount_even hF k M.toQuadraticForm' (by rwa [hd]) t
 
 end GaloisForLFunctions.ArithmeticKunnethTheory.WeightFamilies

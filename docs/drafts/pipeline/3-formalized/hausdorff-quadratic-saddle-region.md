@@ -111,7 +111,9 @@ It suffices to prove positivity under those assumptions and `r≥200p`.
 `GaloisForLFunctions.SquareRootThreshold.HausdorffSaddle.exists_quadratic_scaledHausdorffMomentDifference_nonneg`
 in `formal/GaloisForLFunctions/SquareRootThreshold/EffectiveHorizons/HausdorffQuadraticRegion.lean`.
 The complete complementary sum is bounded in `HausdorffZeroSum.lean`; the final theorem
-has no analytic premises. Transitive axioms: `propext`, `Classical.choice`, `Quot.sound`.
+has no analytic premises. `C` is the closed form `hausdorffQuadraticConstant`
+(`scaledHausdorffMomentDifference_nonneg_of_quadratic_le`): the zero counts of step 5 are the absolute-constant
+bounds of `ZeroConfigurationGeometry/EffectiveHeights/TwoSidedZetaCount.lean`. Transitive axioms: `propext`, `Classical.choice`, `Quot.sound`.
 
 ## Gates
 

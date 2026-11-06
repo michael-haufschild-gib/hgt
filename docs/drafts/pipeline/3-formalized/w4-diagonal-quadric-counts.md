@@ -23,4 +23,4 @@ Scaling yields `Σ_y χ(t−ay²)=χ(−a)v(t)`. The square-root count also give
 - `diagonalQuadraticCount_odd`, `diagonalQuadraticCount_even`: complete affine distributions.
 - `diagonalQuadraticCount_odd_zero`, `diagonalQuadraticCount_even_zero`: zero-fibre specializations.
 
-Direct Lean check passed. These are classical finite-field quadratic counts, formalized as inputs to the [actual transverse quadric trace](../1-in-progress/w4-transverse-quadric-trace.md). Transport to the transverse form, projectivization, and its extension trace remain open.
+Direct Lean check passed. These are classical finite-field quadratic counts. The [discriminant transport](w4-quadratic-fibres-from-discriminants.md) and [actual projective quotient counts](w4-projective-quadric-counts.md) are also formalized. The [reciprocal transverse specialization and extension trace](../1-in-progress/w4-transverse-quadric-trace.md) remain open.

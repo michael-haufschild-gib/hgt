@@ -230,6 +230,10 @@ private theorem exp_twelve_ge : (162754 : ℝ) ≤ Real.exp 12 := by
   calc (162754 : ℝ) ≤ (2.7182818283 : ℝ) ^ 12 := by norm_num
     _ ≤ _ := pow_le_pow_left₀ (by norm_num) Real.exp_one_gt_d9.le 12
 
+theorem four_le_of_exp_twelve_le {X : ℝ} (hX : Real.exp 12 ≤ X) : 4 ≤ X := by
+  have := exp_twelve_ge
+  linarith only [this, hX]
+
 /-- Above `e¹²`, `log X` is at most `11 + X/e¹²` and at least `12`. -/
 private theorem log_facts_of_floor {X : ℝ} (hX : Real.exp 12 ≤ X) :
     12 ≤ Real.log X ∧ Real.log X ≤ 11 + X / 162754 := by
