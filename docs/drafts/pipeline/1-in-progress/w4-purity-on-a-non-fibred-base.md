@@ -11,7 +11,6 @@
 2. Prove the tensor-power weight bound from the constructed family; direct tensor amplification alone does not produce a bound.
 3. Identify the invariant spectrum and prove its purity.
 4. Recover `CurveDatum` window receivers from a function-field family.
-5. Formalize each dependency-closed result and wire modules into their mathematical owner's umbrella.
 
 ## Current frontier
 
@@ -19,11 +18,11 @@
 
 ## Invariant-weight obstruction
 
-For the standard complex plane, every `SL₂`-invariant multilinear form of degree `2k` transforms under an invertible `A` by `det(A)^k`; odd-degree invariants vanish. Proof: write `A = c g`, `c² = det(A)`, `det(g)=1`, then use multilinearity. The central matrix `-1` kills odd-degree invariants. Products of pairwise determinants give nonzero invariants in every even degree.
+For the standard complex plane, invariant forms of degree `2k` transform by `det(A)^k`; odd-degree invariants vanish. Every even invariant space is nonzero. These weights retain the determinant and discard the eigenvalue-modulus ratio.
 
-Consequently `diag(√5 φ, √5/φ)` and `√5 I` act identically on every invariant form. The former is the impure Golden spectrum. Invariant weights alone cannot select local purity, even when invariance is imposed under the entire group `SL₂`. This is an algebraic countermodel, not a sheaf over an arithmetic base.
+Consequently Golden Frobenius and `√5 I` act identically on every invariant form, although the Golden spectrum is impure. Its even-tensor local Euler coefficients are nonnegative and its optimal degree-`m` growth rate is `φ^m`.
 
-This does not refute W4. Identifying ζ's actual spectrum with a pure invariant part would be a new arithmetic input. The obstruction concerns inference from invariant tensor weights to purity of a fibre without that identification or a global trace identity.
+This algebraic obstruction does not refute W4. Identifying ζ's actual spectrum with a pure invariant restriction, or proving a global trace identity, remains additional arithmetic content.
 
 **Positive survivor:** exact determinant-character classification in every even degree, with nonzero paired-volume forms. [Paper proofs and checked Lean declarations](../3-formalized/w4-invariant-characters-and-tensor-growth.md). The [Golden obstruction](../5-failed/w4-invariant-weights-alone.md), including its sharp tensor rate `φ^m`, is also formalized.
 
@@ -37,16 +36,16 @@ For a finite spectrum `z_i`, positive tensor degree `m`, and `B ≥ 0`,
 
 `∃ C, ∀ n, |Σ_i z_i^n|^m ≤ C B^n  ↔  ∀ i, |z_i|^m ≤ B`.
 
-Expand `(Σ_i z_i^n)^m` as the power sum of `∏_{j<m} z_{a_j}`. Finite power-sum rigidity bounds every tensor eigenvalue; the constant word gives `|z_i|^m ≤ B`. Conversely choose an eigenvalue of largest modulus and apply the triangle inequality, with `C = (#ι)^m`. This also handles the empty spectrum when `m > 0`.
-
 Thus one `B` working for all even degrees, with unrestricted constants `C_k`, is equivalent to confinement to the unit disk (`fixed_base_tensor_bound_iff`). Reciprocal symmetry upgrades this to purity for `CurveDatum`, hence to the existing spectrum-window receiver (`curve_tensor_bound_iff_spectrum_window`). Both are Lean-checked. The global bound remains an equivalent input, not a proved estimate for a new family.
 
 ## Canonical arithmetic symmetry
 
 For divisor monodromy `ρ ↦ 1 − conj(ρ)`, [canonical compression](../3-formalized/w4-canonical-monodromy-compression.md) has exactly the pure point spectrum `1/2 + i Im(ρ)` unconditionally. Merely preserving its invariant subspace under Frobenius is already equivalent to RH. The lost off-diagonal coupling is exactly `Re(ρ)−1/2`. A pure compression therefore does not supply the required invariant restriction.
 
-## Next conjecture
+## Frobenius compatibility
 
-The [split Weil-group model](w4-split-weil-model.md) tests whether Frobenius normalization of full `SL₂` monodromy adds any restriction: its degree-one image should be every matrix of the prescribed determinant.
+The [split Weil-group model](../3-formalized/w4-split-weil-model.md) realizes every prescribed-determinant matrix in degree one, with full `SL₂` degree-zero image and Frobenius normalization. Golden Frobenius has such a lift. Abstract compatibility therefore adds no local purity restriction beyond the determinant.
+
+## Next conjecture
 
 The arithmetic target remains a trace identity producing the common `B` from cohomological degrees rather than from the unknown spectrum. The ζ family, its spectral identification, and recovery from a constructed function-field family remain open. The existing ζ result `riemannHypothesis_of_sublinear_tensor_loss` already covers sublinear losses; weakening a fixed loss to a sublinear one does not supply the missing estimate.

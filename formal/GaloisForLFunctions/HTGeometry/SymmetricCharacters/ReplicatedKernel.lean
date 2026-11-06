@@ -1,7 +1,8 @@
 import GaloisForLFunctions.HTGeometry.SymmetricCharacters.FiniteColoring
 import Mathlib.Algebra.Order.Star.Real
 
-/-!+# Positivity under arbitrarily many replicas
+/-!
+# Positivity under arbitrarily many replicas
 
 A replicated kernel consists of a shared block kernel and an independent diagonal correction.
 Constant vectors on each block isolate the shared quadratic form; differences of two replicas
@@ -34,7 +35,13 @@ theorem replicatedKernel_constant_quadratic (H : Matrix I I ℝ) (d v : I → �
     Fintype.card_fin, nsmul_eq_mul]
   simp only [← Finset.mul_sum]
   congr 1
-  · simp only [pow_two, mul_assoc, ← Finset.mul_sum]
+  · simp only [pow_two, mul_assoc]
+    congr 1
+    symm
+    rw [Finset.mul_sum]
+    apply Finset.sum_congr rfl
+    intro i _
+    ring
   · congr 1
     apply Finset.sum_congr rfl
     intro i _

@@ -62,8 +62,9 @@ spectrum are depth-homogeneous; the non-scaling term must come from corresponden
 | Golden Frobenius has every invariant weight and positive even-tensor Euler coefficients, but optimal degree-`m` rate is `φ^m` | `golden_weight_and_coefficient_countermodel`, `golden_tensor_rate_iff` | proved |
 | Canonical divisor compression has point spectrum exactly `1/2 + i Im(ρ)` unconditionally | `compressed_eigenvalue_iff`, `compressed_eigenvalues_pure` | proved |
 | Frobenius preserves the canonical monodromy-invariant subspace iff RH | `invariant_subspace_stable_iff_riemannHypothesis` | proved |
+| A split group with full `SL₂` image realizes every prescribed-determinant Frobenius, including Golden | `splitAction_degree_one_iff`, `splitAction_normalizes`, `goldenFrobenius_has_split_lift` | proved |
 
-The last seven rows belong to `WeightFamilies/`. They classify the algebraic input and the required
+The `WeightFamilies/` results classify the algebraic input and the required
 global estimate; they do not construct an arithmetic family or prove a new purity bound for ζ.
 
 ## 6. Tools

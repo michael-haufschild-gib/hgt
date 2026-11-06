@@ -1,7 +1,7 @@
 # RH proof-route frontier
 
 **RH open · 38 live route formulations · 9 candidates.**
-**Corpus checkpoint:** `a99724ffa041cd8ff47e2e4edfd45a5da4a11423`.
+**Corpus checkpoint:** `5f8bfed86ad3f0e8c75592d94a0e3df0d4d6f59b`.
 
 Live = source observable + proved RH-sufficient receiver + explicit open estimate. Candidate = missing independent source mechanism/landing.
 Formulations need not be independent: HJ→PA, BSH→CDC; FEL's BSY criterion→CTF. Source construction does not discharge zero-selective sign/vanishing.
@@ -45,10 +45,10 @@ Notation: vkScale(x)=(logx)^(3/5)(loglogx)^(−5/3).
 <a id="rw"></a>
 ### RW — Restricted Weil ground energy
 
-- **Path:** Complete Weil form → μ(a)≥0 at every radius → RH.
-- **Established:** Attained minima; floor1/(20000·2^k) through a_k, a₀>181/500. Precontact canonical system: det H=1, exact endpoint-trace Gram energy; [finite-height](#finite-height) and all-lattice/two-site receivers [L]; exact {2,3} band below log2 [K]. Actual scalar flow: L=artanh r, Ψ=½logH₁, ΔL=ΔΨ−∫sinh(2L); ∂₊logK(i,i)=2cosh(2L). Anchor kernel controls every spectral kernel; finite contact forces K(i,i) and ∫1/(1−r²) unbounded [S].
-- **Open:** Prove Ψ(x)−Ψ(base)=∫q with q∈L¹ up to every putative finite contact; the restoring bound then excludes contact. Local precontact identities and conditional finite-order contact asymptotics do not supply this endpoint bound. Alternatively all-aperture sign. [Floor tower stops below0.3621](rh-killed-routes.md#frozen-weil-floor-tower); [prime-entry margins](#prime-entry), [EWU](#ewu), [OWU](#owu), [ACT](#act).
-- **Sources:** C:TheApertureFlowNeverStalls; I:TheWeilFloorTowerIsFrozen; CSTW:{TheWeilKernelDivergesAtContact,TheWeilTowerHasItsPrecontactCanonicalSystem,TheWeilHamiltonianHasDeterminantOne,TheWeilKernelVanishesAtZeroAperture,TheSamplingAtomsArePositiveMimicsOfZeta}; GWZ:RHIsDecidedOnTwoSites; VHR:WindowEntries [L]; CSTW:{AHyperbolicFlowIsRestoring,TheWeilChainIsOneScalarFlow} [S]; SWC:BelowLogFour/RetainedVarianceAndHalfWindowBandBelowLogFour [K].
+- **Path:** Complete Weil form → μ(a)≥0 at every radius → RH; equivalently prime-blind archimedean/pole positivity (PBAP).
+- **Established:** Attained minima; floor1/(20000·2^k) through a_k, a₀>181/500. Precontact det H=1 and endpoint-trace Gram identity; all-lattice/two-site receivers [L]; exact {2,3} band below log2 [K]. Scalar flow: L=artanh r, Ψ=½logH₁, ΔL=ΔΨ−∫sinh(2L), ∂₊logK(i,i)=2cosh(2L); finite contact forces anchor-kernel/∫1/(1−r²) blowup [L]. One nonzero exponentially decaying Ξ-divisible integer-blind test has archimedean/pole energy0; full positive cone, if nonempty, is pinned to Λ [L].
+- **Open:** Ψ(x)−Ψ(base)=∫q with q∈L¹ up to every putative finite contact; restoring flow then excludes contact. Alternatively all-aperture sign/PBAP: nonnegative archimedean/pole energy for every nonnegative finite test mixture blind at all ±log n, n≥2. One null test supplies neither cone nonemptiness nor universal sign. [Floor tower stops below0.3621](rh-killed-routes.md#frozen-weil-floor-tower); [prime-entry margins](#prime-entry), [EWU](#ewu), [OWU](#owu), [ACT](#act).
+- **Sources:** C:TheApertureFlowNeverStalls; I:TheWeilFloorTowerIsFrozen; CSTW:{TheWeilKernelDivergesAtContact,TheWeilTowerHasItsPrecontactCanonicalSystem,TheWeilHamiltonianHasDeterminantOne,TheWeilKernelVanishesAtZeroAperture,TheSamplingAtomsArePositiveMimicsOfZeta,AHyperbolicFlowIsRestoring,TheWeilChainIsOneScalarFlow}; GWZ:RHIsDecidedOnTwoSites; VHR:WindowEntries; R:{TwistedArcMinimumPrincipleProof,WeilConeXiDivisibleBlindTest}; B:ExactExtremal/ExactBlindTest [L]; SWC:BelowLogFour/RetainedVarianceAndHalfWindowBandBelowLogFour [K].
 
 <a id="fu"></a>
 ### FU — CCM-FU signed prime scheduling
@@ -111,8 +111,8 @@ Notation: vkScale(x)=(logx)^(3/5)(loglogx)^(−5/3).
 
 - **Path:** Actual ξ half-Gaussian source → exclusion of positive-time heat collisions → RH.
 - **Established:** No positive-time real collisions⇔RH. All-height large-X horizon (6600/9991+ε)/logX. Critical-scale reality: for every δ>0 some κ>0, for large T outside δT heights X∈[T,2T], zeros with abs(Re z−X)≤κ/(2logT) are real when tlog(Re z/2π)≥7κ/logT. Crystal law: for every δ,ε>0 some κ gives consecutive gaps abs(g·log(x/2π)/2−π)≤ε in that local window for large T, 7κ/logT≤tlog(x/2π)≤1/8 [L]. Unseparated density receiver: [MZF](#mzf).
-- **Open:** All-height collision exclusion at arbitrarily small t, including bounded/exceptional heights. Need actual frequency<1 at every putative collision, or global central-gap control. Typical-height reality is not descent to t=0. Generic complex-saddle window/contour bounds [S] retain local approximation and rectangle-growth premises; actual ξ inputs remain. Density approach needs normalized-derivative/Blaschke lower bounds, including weak/multiple zeros. [Heat structure cannot select time0](rh-killed-routes.md#heat-time-shift).
-- **Sources:** ZCG:HeatScaleRepulsion/{SubWeylCollisionFreeHorizon,SymmetricHalfCollisionLaw,LocalNewmanDensityOne}; NGF:{TheCentralInequalityIsStrongerThanRH,TheCentralInequalityAtTheCriticalScale,TheZerosAreRealAtTheCriticalScale,TheCrystalIsFormedAtTheCriticalScale}; MZF:TheCountNeedsNoSeparation [L]; ZCG:HeatScaleRepulsion/TheComplexSaddleOfAGaussianAverage [S].
+- **Open:** All-height collision exclusion at arbitrarily small t, including bounded/exceptional heights: frequency<1 at every putative collision or global central-gap control. Actual ξ complex saddle, half-transform/slope errors and opposite-half bounds are supplied at typical heights under explicit scale inequalities [S]; selecting scales with sufficient error saving and covering exceptional heights remain. Density approach needs normalized-derivative lower bounds, including weak/multiple zeros; exact simple-zero Blaschke identity is available [S]. [Heat structure cannot select time0](rh-killed-routes.md#heat-time-shift).
+- **Sources:** ZCG:HeatScaleRepulsion/{SubWeylCollisionFreeHorizon,SymmetricHalfCollisionLaw,LocalNewmanDensityOne}; NGF:{TheCentralInequalityIsStrongerThanRH,TheCentralInequalityAtTheCriticalScale,TheZerosAreRealAtTheCriticalScale,TheCrystalIsFormedAtTheCriticalScale}; MZF:TheCountNeedsNoSeparation [L]; ZCG:HeatScaleRepulsion/{TheComplexSaddleOfAGaussianAverage,TheSlopeOfXiAtAPowerLevel,TheHalfGaussAtAPowerLevel} [S]; [MZF/AIF](#mzf).
 
 <a id="tg"></a>
 ### TG — Topological sub-unit gate
@@ -166,7 +166,7 @@ Notation: vkScale(x)=(logx)^(3/5)(loglogx)^(−5/3).
 ### LI — Paired Li and prime–Gamma balances
 
 - **Path:** Actual clock primitive lower bound / prime–Gamma history budget → RH.
-- **Established:** Guarded history-zero set Z_S finite; RH iff Z_S=∅. RH⇔primitive eventually bounded below⇔Cayley–Li sign on primitive vectors. Alternative: for every ε>0, response R(t)≥−C_εe^(εt) eventually [L]. [Verified-height transfer](#finite-height) gives conditional finite Li signs.
+- **Established:** Guarded history-zero set Z_S finite; RH iff Z_S=∅. RH⇔primitive eventually bounded below⇔Cayley–Li sign on primitive vectors. Alternative: for every ε>0, R(t)≥−C_εe^(εt) eventually [L]. Li signs n≤314 from the source-only [height67 proof](#finite-height) [S].
 - **Open:** Pay budget at every guarded zero or prove one of those lower bounds/signs. Finite Z_S is not finite off-line ζ support.
 - **Sources:** R:{LiEvenCrossActualClockTerminalHistory,LiEvenCrossActualClockGrowthLaw,LiEvenCrossActualClockPrimitiveNegative}; ALG:RHIsReflectionPositivityOfTheCayleyLadder [L].
 
@@ -205,9 +205,9 @@ Notation: vkScale(x)=(logx)^(3/5)(loglogx)^(−5/3).
 <a id="ctf"></a>
 ### CTF — Chronological tail / Báez–Duarte approximation
 
-- **Path:** Finite-row approximation / averaged-current control / Möbius defect / BSY sign → RH.
+- **Path:** Finite-row approximation / averaged-current control / Möbius defect / BSY sign or mollifier infimum1 → RH.
 - **Established:** RH⇔real unit-bounded rows reach every error tolerance. Dyadic linear-taper subpolynomial defect⇒RH. Sharp μ defect D_y≥c_ρy^(2Reρ−1); sparse subpolynomial D_y⇒RH. BSY sign I≤0⇔RH. For E_N=ζM_N−1 on the line, RH⇔∃ν>0∀τ∈ℝ∀ε>0, arbitrarily large N give meas{t∈[τ−1,τ+1]:abs(E_N(t))≤N^ε}≥ν. Sharp-defect/compact-parity bridge to [WD](#wd), with fixed K=3 [L].
-- **Open:** Produce one approximation/sign/upper-bound criterion: vanishing-error rows, sparse subpolynomial D_y or linear-taper defect, BSY sign, or the uniform positive-proportion condition above. Lengths may depend on τ,ε. Averaged-current branch needs arbitrarily large X with M>X and abs(Re current(X,M,ρ))≤BX^ε for each ρ,ε>0. [Full sharp-sequence decay fails](rh-killed-routes.md#sharp-mobius-defect); [restricting to good heights retains the zero-forced exponent](rh-killed-routes.md#mollifier-good-set).
+- **Open:** Produce vanishing-error rows, sparse subpolynomial defect, BSY sign, or the uniform positive-proportion condition above. Exact [AIF infimum](#aif) is exp(2I(1)); RH needs budgets arbitrarily close to1, not merely to that unknown infimum [S]. Averaged-current branch needs arbitrarily large X with M>X and abs(Re current(X,M,ρ))≤BX^ε for each ρ,ε>0. [Full sharp-sequence decay fails](rh-killed-routes.md#sharp-mobius-defect); [good-height restriction retains the zero-forced exponent](rh-killed-routes.md#mollifier-good-set).
 - **Sources:** R:{ChronologicalRiemannEquivalence,EulerDeletionCutoffAverage,BalazardSaiasYorCriterionEquivalence}; APR:{TheMollifierDefectIsASawtoothForm,TheLinearMollifierIsTheChebyshevError,PrefixCancellationAmplifiesTheZeroFloor}; MZF:TheExponentOfTheMollifiedErrorIsRigid; SSA:PoleFreeHypercubeBridgesToLongMollifiers [L].
 
 <a id="hcf"></a>
@@ -310,9 +310,9 @@ Notation: vkScale(x)=(logx)^(3/5)(loglogx)^(−5/3).
 ### ACS — Arithmetic Castelnuovo–Severi effectivity
 
 - **Path:** Explicit Gamma/Lévy/horizon/Chebyshev source energy → all-aperture Bézout → RH.
-- **Established:** Exact source cone and all-aperture Riemann–Roch; Bézout/ampleness⇔source-energy sign⇔RH. Primitive h¹≥‖f‖²/10000 for a≤181/500; Künneth effectivity there. Finite curves: one exponential base uniform over even tensor degrees⇔unitarity⇔deciding-window sign; first-positive-period endpoint reality⇔unitarity [L].
+- **Established:** Exact source cone and all-aperture Riemann–Roch; Bézout/ampleness⇔source-energy sign⇔RH. Primitive h¹≥‖f‖²/10000 for a≤181/500; Künneth effectivity there. Finite curves: uniform even-tensor growth base⇔unitarity⇔deciding-window sign⇔first-positive-period endpoint reality. Rank-R calibration: purity⇔first R margins positive⇔first R−1 Schur kicks contract; pure endpoint margin E_R=0 [L].
 - **Open:** For every r>0 and f∈realTestsAt r, criticalDeficitSourceEnergy(r,(0,0,f))≥0. Independent count/height/Rosati production remains unconstructed. [Invariant weights/positive coefficients](rh-killed-routes.md#invariant-tensor-weights), [principal endpoint positivity](rh-killed-routes.md#principal-endpoint-weights) and [pure compression](rh-killed-routes.md#monodromy-compression) do not produce it.
-- **Sources:** G:{ExactArithmeticSourceEffectivity,TheWindowReceiversOfACurve,Representation/EndpointCalibration}; LST:ThePrimitiveH1IsCoerciveAtSmallDegree; KPA:RiemannHypothesisIsTheRealityOfTheLegendreInvariant; AK:WeightFamilies/CurveTensorReceivers [L]; AK:WeightFamilies/{GoldenInvariantWeights,CanonicalMonodromyCompression} [S]; SEL:{GammaIndependentEulerRigidity,DegreeGap,DegreeOneConductorPole} [K].
+- **Sources:** G:{ExactArithmeticSourceEffectivity,TheWindowReceiversOfACurve,Representation/EndpointCalibration}; LST:ThePrimitiveH1IsCoerciveAtSmallDegree; KPA:RiemannHypothesisIsTheRealityOfTheLegendreInvariant; AK:WeightFamilies/{CurveTensorReceivers,GoldenInvariantWeights,SplitWeilModel,CanonicalMonodromyCompression}; GWZ:TheCanonicalFlowOfACurve [L]; SEL:{GammaIndependentEulerRigidity,DegreeGap,DegreeOneConductorPole} [K].
 
 <a id="sec"></a>
 ### SEC — Adjacent prime seam / time-one Fock bound
@@ -380,15 +380,15 @@ Critical ratio R=c⁸/logN; tilted spline has spectral order7. Other profile lim
 <a id="finite-height"></a>
 ### Finite-height transfers — PA, LI, HCF, LA, TH, RW, SRT
 
-Assuming `RHVerifiedThrough T`: Li n≤4.7T; Hausdorff k+1≤1.5(T−1), r≤RT³; heat-grid degree+1≤T/4800; Jensen degree d with 2·10⁷d⁴≤TlogT; central PF k+1≤3T. Each retains its stated lower-height threshold. Theta rank N, all 0<a≤3/4, follows from verification through D(N+1)³+1 [L]. **These transfers do not prove the verification input.** Independently, centre PF₅₄ is unconditional [L].
+Assuming `RHVerifiedThrough T`: Li n≤4.7T; Hausdorff k+1≤1.5(T−1), r≤RT³; heat-grid degree+1≤T/4800; Jensen degree d with 2·10⁷d⁴≤TlogT; central PF k+1≤3T. Each retains its lower-height threshold. Theta rank N, all 0<a≤3/4, needs verification through D(N+1)³+1 [L]. Centre PF₅₄ [L]. Source-only height67 proof yields PF₂₀₀, Li signs n≤314 and all ξ-slice coefficients≥0 for abs(t)≤133/2 [S]; arbitrary-height verification remains open.
 
-Sources: VHR:{LiAndHausdorffEntries,HeatGridEntries,JensenEntries,PolyaFrequencyEntries,ThetaEntries}; S:EffectiveHorizons/LowHeightGammaPF54 [L].
+Sources: VHR:{LiAndHausdorffEntries,HeatGridEntries,JensenEntries,PolyaFrequencyEntries,ThetaEntries}; S:EffectiveHorizons/LowHeightGammaPF54 [L]; VHR:HadamardBudget/TheVerifiedHeightSixtySeven [S].
 
 RW/SRT: `RHVerifiedThrough (windowHeight a)`⇒complete Weil sign on every C² test supported in [−a,a]. Pole-preserving normalized smoothing, verified-zero sampling and high-zero tail payment closed [L]. Actual verification at these explicit heights, or independent all-window sign, remains open. VHR:WindowEntries [L].
 
 SRT detector starting height≤2πexp L(λ,c), where L=max{4/(λ−1),7Ωlog(792Ω²/(λ−1))}, Ω=2.2·10¹⁷(c+51395), 1<λ≤2,c≥0. Window sign at a forces depth<exp(−c log³T) for 2πexp L(2,8c)≤T≤2πexp a. Actual window sign remains open. ZCG:NegativeTests/SharpLocationHeight [L].
 
-Fejér budget: an off-line zero at γ≥1, γ²≥4(1+(1/2+a)/2)² forces 2F_L(a)≤archBudget(a,L,γ)−primeSum(1/2+a,L,γ), a>1/2,L>0; F_L(a)=1/a−(1−e^(−aL))/(a²L). Prime sum supported on log n<L. Band-uniform strict reverse bound remains open. VHR:HadamardBudget/TheFejerBudget [S].
+Edge Fejér budget: at a=1/2, L>0, γ≥4, off-line zeros force 2(2−4(1−e^(−L/2))/L)≤archBudget−primeSum. Finite support log n<L permits continuity to coefficients Λ(n)/n. At L=3 the prime polynomial≥−0.7278; combined budget excludes off-line zeros through height67 [S]. Unbounded-height strict reverse estimates remain open. VHR:HadamardBudget/{TheFejerBudget,TheBudgetAtTheEdge,TheVerifiedHeightSixtySeven} [S].
 
 <a id="external-literature"></a>
 ### Scope guards
@@ -406,17 +406,17 @@ DR: [retired zero-freeness-based root construction](rh-killed-routes.md#dr); reg
 
 PW-B: [retired source-uniform extinction mechanism](rh-killed-routes.md#kr-pwb); surviving critical-line detector feeds PM/scattering. ISC-polar: rational Weyl pole-exclusion branch of PM/HF, not a separate route. BVI/ART: support. [Other killed mechanisms and retired aliases](rh-killed-routes.md).
 
-<a id="aif"></a>AIF: CTF/FEL support. Actual ζ inner field I(w)=Σ_(Reρ>1/2)m_ρG_w(ρ)≥0; I(w)=0⇔RH for Re w>1/2, zetaEntire(w)≠0; I(1)=BSY integral. Arithmetic vanishing remains open; generic Szegő infimum retains density/weight premises. [TheInnerFieldOfZeta](../../formal/GaloisForLFunctions/ArithmeticInnerFunctionTheory/TheInnerFieldOfZeta.lean), [TheSzegoInfimum](../../formal/GaloisForLFunctions/ArithmeticInnerFunctionTheory/TheSzegoInfimum.lean) [S].
+<a id="aif"></a>AIF: CTF/FEL support. I(w)=Σ_(Reρ>1/2)m_ρG_w(ρ)≥0; I(1)=BSY integral. Actual ζ Szegő infimum closed: inf_(Q(0)=0)∫abs(ζ·exp Q(φ₁))²dP₁=exp(2I(1)). RH⇔∀ε>0 some budget<1+ε [S]. Open: near-unit budgets/inner-mass vanishing. These holomorphic mollifiers are not WD's long Möbius prefixes. [TheInnerFieldOfZeta](../../formal/GaloisForLFunctions/ArithmeticInnerFunctionTheory/TheInnerFieldOfZeta.lean), [TheInnerMassIsAMollifierInfimum](../../formal/GaloisForLFunctions/ArithmeticInnerFunctionTheory/TheInnerMassIsAMollifierInfimum.lean) [S].
 
-Endpoint characters: normalized positive real-part alphabet gives coherent PSD cycle-multiplicative characters [S]; arithmetic transposition defect=Σ(Im(1/(ρ(1−ρ))))²/mass², vanishing⇔RH [L]. [Construction/boundary](rh-killed-routes.md#endpoint-character-matching); source matching remains open.
+Endpoint characters: positive real-part alphabet gives coherent PSD cycle-multiplicative characters; arithmetic transposition/all-cycle matching⇔RH [L]. Source-cycle Hankel positivity at every rank⇔RH [S]. [Construction/boundary](rh-killed-routes.md#endpoint-character-matching); actual source sign/matching remains open.
 
 ADT: conductor degeneration supporting HF/ACS/SC; gluing determinant reformulates MC. AHD: horizon/index receivers within SRT/HF/SC. CWS: window locality/signed folds/index exhaustion within HF/RW/ACS; independent all-window positive realization open. See [shared frontier](#shared-frontier).
 
 WTZ/DZG/ATD: RW/HF/ACS/PM support. Tate-positive dimensions=[0,κ(A)], κ(A)>0 and κ(A)→0; strict interior floor and exact rational-Hecke graph criterion [L]. Finite matrix reduction through A≤log(81/16); actual dimension1 sign through log(9/2). Atomic prime form satisfies abs(Σ_(k≤N)(Λ∗g)(k)g(k)/k)≤½logN·Σ_(k≤N)g(k)²/k [L]. First-jet domination⇔Weil sign; full-form all-aperture domination open. Sources: WTZ:{PositiveTateDimensionsFormAClosedInitialInterval,PositivePrimeMultipliersLowerTateDimension,TheTateHorizonBeforeEightyOneSixteenths,TheThirdTateStageDistinguishesEdgeSigns,TheAtomicLatticeHasTheSharpSchurBound} [L].
 
-GWZ/CSTW: [RW](#rw)/AIP support. At log2<A<log3, exact first-stage Schur complement reduces complete-Weil sign to one two-collar inequality [L]; its sign remains open. Mixed precontact Gram trace identity: [RW](#rw). Source: GWZ:TheFirstStageComplementIsASchurComplement [L].
+GWZ/CSTW: [RW](#rw)/AIP/ACS support. At log2<A<log3, complete-Weil sign reduces to one two-collar inequality, still open. Discrete Gram/flux and Riccati identities; next positive margin⇔contractive Schur kick, given previous positive margins. Finite-curve purity permits terminal contact; it does not prove ζ's contact exclusion. GWZ:{TheFirstStageComplementIsASchurComplement,TheLatticeAnchorFlow,TheCanonicalFlowOfACurve} [L].
 
-<a id="mzf"></a>MZF: [MC](#mc)/[WD](#wd)/[CTF](#ctf)/[ZCG](#zcg) support. Normalized derivative N(ρ)≤every finite Blaschke product. Let L=logT, x=(1−3c)α, 0<c≤1/28800, α≥2(1+1/c), x≤3cL/2, e^(−x/8)≤B₀≤1. Distinct zeros at heights [T+1,2T−1], depths [α/L,(α+1)/L], N(ρ)≥B₀ number O_c((α+1)²TL e^(−2x)/B₀²+(α+1)L³√T), without ordinate separation [L]. Shallow/far/very-deep noise paid. Open: actual derivative lower bounds/negative moments and weak or multiple-zero contribution; unrestricted density/RH does not follow. Sources: MZF:{TheHyperbolicDensityTheorem,TheDerivativeReadsTheBlaschkeFactor,TheCountNeedsNoSeparation} [L].
+<a id="mzf"></a>MZF: MC/WD/CTF/ZCG support. N(ρ)≤every finite Blaschke product [L]; at simple right zeros, N(ρ)=exp(−Σ_other m_aG_ρ(a)), with summable potential [S]. Let L=logT, x=(1−3c)α, 0<c≤1/28800, α≥2(1+1/c), x≤3cL/2, e^(−x/8)≤B₀≤1. Distinct zeros at heights [T+1,2T−1], depths [α/L,(α+1)/L], N(ρ)≥B₀ number O_c((α+1)²TL e^(−2x)/B₀²+(α+1)L³√T), without ordinate separation [L]. Open: lower bounds/negative moments and weak/multiple-zero contribution. MZF:{TheHyperbolicDensityTheorem,TheDerivativeReadsTheBlaschkeFactor,TheCountNeedsNoSeparation} [L]; [TheDerivativeIsTheBlaschkeProduct](../../formal/GaloisForLFunctions/ArithmeticInnerFunctionTheory/TheDerivativeIsTheBlaschkeProduct.lean) [S].
 
 NGF: [ZCG](#zcg) support. Monotone Fock frequency≥k/2 at order k; for k≥2, Hermite collision profile least-gap²∈[16/k,24/(k+1)]. Buffered count/depth dissipation; finite-speed lateral energy has a factorial tail but permits tiny nonreal pairs. Isolated-pair opening requires separation/far-energy control [L]. [Adjacent gaps can close](rh-killed-routes.md#adjacent-dyson-gap); [flow structure cannot select time0](rh-killed-routes.md#heat-time-shift). Sources: NGF:{TheFrequencyIsAChaosLevel,TheHermiteMeshIsPinched,TheDepthMomentsAreDissipated,NonrealZerosEnterAtFiniteSpeed,TheCompressionAwayFromTheMesh} [L].
 

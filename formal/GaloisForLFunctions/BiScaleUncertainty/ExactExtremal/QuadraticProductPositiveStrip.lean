@@ -1,6 +1,7 @@
 import Mathlib
 
-/-!+# Positive real parts of shifted quadratic products
+/-!
+# Positive real parts of shifted quadratic products
 
 Normalizing each factor separates its size from its phase. A finite integral
 comparison bounds the total phase displacement on a strip beyond height one half.

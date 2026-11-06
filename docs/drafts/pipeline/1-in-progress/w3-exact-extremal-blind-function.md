@@ -2,31 +2,29 @@
 
 - **ID:** W3-EXACT
 - **Stage:** 1-in-progress
-- **Type:** CONJECTURE
+- **Type:** THEOREM (Lean); sharp-tail extension in progress
 - **Source:** `docs/reports/review-0611/obstacles-summary.md`, W3.
-- **Target:** Construct a nonzero strip-holomorphic `Φ = Ξ g`, with `g` zero-free on `ℝ`, whose spectral square has zero cosine moments at every `log n`, `n ≥ 2`; prove every decay and divisibility condition required by `xiDivisibleBlindTest_stripTest`.
+- **Statement:** A nonzero real test has `Φ=Ξg`, with `g` holomorphic and zero-free on a strip wider than the critical strip, exact integer blindness, and zero pole–archimedean energy.
 
 ## Mathematical boundary
 
-The existing receiver gives rigidity of every Weil-positive system and `RH ↔ PBAP` from this object. Later corpus work already proves that equivalence unconditionally (`primeBlindPositive_four_tier_equivalence`). W3's missing content is the exact optimizer, not a new RH criterion. Existence of the extremal function and positivity of the blind program are distinct obligations.
+The existing receiver gives rigidity of every Weil-positive system and `RH ↔ PBAP` from this object. The corpus already proves that equivalence unconditionally (`primeBlindPositive_four_tier_equivalence`). The new result supplies the exact optimizer. Positivity of the entire blind program remains separate.
 
-Known constraints: logarithmic Carlson growth after removing the zeta divisor; double-exponential source-tail bounds from the density of simple critical zeros. Neither supplies the extremal function.
+The Carlson growth obstruction includes wider Mellin-strip decay and logarithmic-room integrability hypotheses. These are separate from the strip bounds used in this construction.
 
-## Conjectures
+## Results
 
-1. Determine whether the strip-decay formulation itself admits a nonzero positive integer-blind spectral square. Resolve its exact analytic-strip obstruction before imposing the Xi divisor.
-2. Construct a positive integer-blind square with the full Xi divisor and no extra real zeros, or identify the additional obstruction and formalize its strongest positive survivor.
-3. Full multiplicity capacity: a nonzero double-exponential source carrying `Ξ^k` must satisfy `kb≤2`. `ExactExtremal/PowerDivisorCapacity.lean` passes Lean. For `k=2`, the theta self-convolution attains equality; formalized in `ExactExtremal/ThetaSquareBoundary.lean`. This supplies a boundary model, not integer blindness.
-4. Scalar factorization of the existing twisted-arc blind mixture. `twistedArcMinimumPrinciple_holds` supplies an annihilating probability measure; `shiftedGamma_blind_of_twistedArc` supplies nonnegative weights with all required integer cosine moments zero. `arcGammaMultiplier` is holomorphic on a strip and strictly positive on the real spectral axis. Construct one analytic factor with controlled strip growth; do not assume a square root across complex zeros. `TwistedArcNullLaplacePositivity` additionally proves positivity on the imaginary segment `|y|≤3/2`, but not zero-freeness throughout that strip.
-5. Positive-real strip: the multiplier has positive real part on `|Im z|≤501/1000`. Paper proof: `2-fully-proven/w3-arc-multiplier-positive-strip.md`. Near the origin the constant term dominates the factorial tail. Outside `|Re z|<7/5`, integral comparison bounds the total change of the normalized quadratic factors by `7/5`, forcing every product's real part positive. Formalize this estimate, then construct the principal square root and discharge the exact receiver.
-6. Single exact null test: choose the annihilating arc measure, set `Φ=Ξsqrt(R)`, and invert its Fourier transform. Paper proof: `2-fully-proven/w3-single-exact-blind-test.md`. The universal scalarization preserves the arc mixture's entire autocorrelation. Lean assembly remains pending.
-7. Sharp tail of the actual blind correlation: test whether its double-exponential exponent is exactly one. The corpus's shifted-Gamma source envelope (`TheTwistedArcFamilyIsNearNull.abs_mul_exp_le_of_tail`) and the full autocorrelation identity supply the upper-bound mechanism. Strip analyticity of `R`, Fourier inversion, and the full `Ξ²` divisor supply the obstruction to every larger exponent. This strengthens the theta-square boundary model to the constructed blind object; no formal claim yet.
+- [Full multiplicity capacity](../3-formalized/w3-power-divisor-capacity.md): a nonzero source carrying `Ξ^k` and decaying with double-exponential exponent `b` satisfies `kb≤2`.
+- [Theta-square boundary](../3-formalized/w3-theta-square-boundary.md): `k=2`, `b=1` is attained by a strictly positive, nonblind source.
+- [Positive-real strip](../3-formalized/w3-arc-multiplier-positive-strip.md): every arc probability measure gives `Re R(z)>0` on `|Im z|≤501/1000`. The principal square root retains positive spectral decay and introduces no strip zeros.
+- [Exact test](../3-formalized/w3-single-exact-blind-test.md): the annihilating measure gives `Φ=Ξsqrt(R)`; scalarization preserves its full autocorrelation. `exists_nonzero_xiDivisible_blind_null_test` is unconditional.
+- [Sharp blind correlation](../2-fully-proven/w3-exact-blind-correlation-boundary.md): the actual correlation attains exponent one, with every larger exponent excluded by the full squared divisor. Paper proof complete; Lean assembly pending.
 
 ## Completion gates
 
-- [ ] Explicit construction with unconditional analytic bounds and all integer moments.
-- [ ] Full Xi divisibility and real zero-faithfulness.
-- [ ] Exact receiver hypotheses discharged in Lean.
+- [x] Explicit construction with unconditional analytic bounds and all integer moments.
+- [x] Full Xi divisibility and real zero-faithfulness.
+- [x] Exact receiver hypotheses discharged in Lean.
 - [ ] New modules wired into owning umbrella; individual foreground Lean checks.
 
-No formal existence claim or RH claim established.
+Exact existence is formalized. Prime-blind positivity remains separate; no RH conclusion is claimed.

@@ -55,6 +55,10 @@ theorem add_conj_sub_one (ρ : ℂ) : ρ + conj ρ - 1 = ((2 * (ρ.re - 1 / 2) :
 theorem removed_ne_of_re {z : ℂ} (hρ : 1 / 2 < ρ.re) (hz : 1 / 2 < z.re) : z + conj ρ - 1 ≠ 0 :=
   ne_zero_of_half_lt_re hρ hz
 
+theorem removed_centre :
+    removedZero g ρ m ρ = g ρ * ((2 * (ρ.re - 1 / 2) : ℝ) : ℂ) ^ m := by
+  rw [removedZero, add_conj_sub_one]
+
 namespace IsFactored
 
 variable (h : IsFactored E g ρ m)
@@ -107,22 +111,18 @@ theorem isHalfPlaneDatum_removed : IsHalfPlaneDatum (removedZero g ρ m) := by
 theorem norm_removed_line (τ : ℝ) : ‖removedZero g ρ m (1 / 2 + τ * I)‖ = ‖E (1 / 2 + τ * I)‖ := by
   have e : (1 / 2 + τ * I : ℂ) + conj ρ - 1 = -conj ((1 / 2 + τ * I : ℂ) - ρ) := by
     apply Complex.ext
-    · simp only [Complex.sub_re, Complex.add_re, Complex.neg_re, Complex.conj_re, Complex.one_re]
-      norm_num
-    · simp only [Complex.sub_im, Complex.add_im, Complex.neg_im, Complex.conj_im, Complex.one_im]
-      simp
+    · simp
+      ring
+    · simp
+      ring
   rw [removedZero, norm_mul, norm_pow, e, norm_neg, Complex.norm_conj, h.fac, norm_mul, norm_pow,
     mul_comm]
-
-theorem removed_centre :
-    removedZero g ρ m ρ = g ρ * ((2 * (ρ.re - 1 / 2) : ℝ) : ℂ) ^ m := by
-  rw [removedZero, add_conj_sub_one]
 
 theorem isCentre_removed : IsCentre (removedZero g ρ m) ρ := by
   have hρ := h.re_gt
   have hb : (2 * (ρ.re - 1 / 2) : ℝ) ≠ 0 := by linarith
   refine ⟨hρ, ?_, ?_⟩
-  · rw [h.removed_centre]
+  · rw [removed_centre]
     exact mul_ne_zero h.ne0 (pow_ne_zero m (by exact_mod_cast hb))
   · obtain ⟨c, σ₁, hc, hray⟩ := h.ray
     refine ⟨c, max σ₁ (ρ.re + 1), hc, fun σ hσ => ?_⟩
@@ -175,12 +175,12 @@ theorem hasSum_poissonJensen_at_zero :
       (∫ τ : ℝ, Real.log ‖E (1 / 2 + τ * I)‖ * halfPlanePoissonKernel ρ τ) -
         Real.log (‖g ρ‖ * (2 * (ρ.re - 1 / 2)) ^ m) := by
     simp only [h.norm_removed_line]
-    rw [h.removed_centre, norm_mul, norm_pow, Complex.norm_real, Real.norm_of_nonneg (by linarith)]
+    rw [removed_centre, norm_mul, norm_pow, Complex.norm_real, Real.norm_of_nonneg (by linarith)]
   rw [hval] at hsum
   have hne0 : removedZero g ρ m ρ ≠ 0 := h.isCentre_removed.ne0
   let e : RightZeros (removedZero g ρ m) ≃ {a : RightZeros E // (a : ℂ) ≠ ρ} :=
     { toFun := fun a =>
-        have hne : (a : ℂ) ≠ ρ := fun he => hne0 (he ▸ a.2.1)
+        have hne : (a : ℂ) ≠ ρ := fun he => hne0 (by have h0 := a.2.1; rwa [he] at h0)
         ⟨⟨a, (h.removed_eq_zero_iff a.2.2 hne).mp a.2.1, a.2.2⟩, hne⟩
       invFun := fun a => ⟨a, (h.removed_eq_zero_iff (a : RightZeros E).2.2 a.2).mpr
         (a : RightZeros E).2.1, (a : RightZeros E).2.2⟩
@@ -270,12 +270,11 @@ theorem deriv_zetaEntire_of_zero {ρ : ℂ} (hρ : ρ ≠ 1) (h0 : riemannZeta �
   have hev : zetaEntire =ᶠ[𝓝 ρ] fun s => (s - 1) * riemannZeta s := by
     filter_upwards [isOpen_compl_singleton.mem_nhds hρ] with s hs
     exact zetaEntire_eq hs
-  rw [hev.deriv_eq]
-  have hd := ((hasDerivAt_id ρ).sub_const 1).mul
-    (differentiableAt_riemannZeta hρ).hasDerivAt
-  have := hd.deriv
-  simp only [h0, mul_zero] at this
-  simpa using this
+  have hd : HasDerivAt (fun s => (s - 1) * riemannZeta s)
+      (1 * riemannZeta ρ + (ρ - 1) * deriv riemannZeta ρ) ρ :=
+    ((hasDerivAt_id' ρ).sub_const 1).fun_mul (differentiableAt_riemannZeta hρ).hasDerivAt
+  rw [hev.deriv_eq, hd.deriv, h0]
+  simp
 
 /-- **The derivative law.** At a simple right zero `ρ`, `N(ρ)` is the Blaschke product of all the
 other right zeros, with multiplicity: the potential converges and `N(ρ) = exp (−potential)`. -/
@@ -318,7 +317,9 @@ theorem hasSum_and_normalDerivative_eq {ρ : ZetaRightZero}
       Real.log ‖riemannZeta (MultiscaleMollifiedZetaField.linePoint u)‖) =
       ∫ τ : ℝ, Real.log ‖riemannZeta (1 / 2 + τ * I)‖ * halfPlanePoissonKernel ρ τ := by
     refine integral_congr_ae (Eventually.of_forall fun u => ?_)
-    sorry
+    simp only [MultiscaleMollifiedZetaField.zeroPoisson, GaloisForLFunctions.HTGeometry.halfPlanePoisson,
+      halfPlanePoissonKernel, MultiscaleMollifiedZetaField.linePoint]
+    ring
   rw [MultiscaleMollifiedZetaField.normalDerivative, hpoisson]
   set J : ℝ := ∫ τ : ℝ, Real.log ‖riemannZeta (1 / 2 + τ * I)‖ * halfPlanePoissonKernel ρ τ
   have e : -(J + Real.log ‖(ρ : ℂ)‖ - Real.log (‖g ρ‖ * (2 * ((ρ : ℂ).re - 1 / 2)))) =
@@ -333,7 +334,9 @@ theorem greenKernel_eq_neg_log_hyperbolicRatio {ρ a : ℂ} (hρa : ρ ≠ a) (h
     (ha : 1 / 2 < a.re) :
     greenKernel ρ a = -Real.log (MultiscaleMollifiedZetaField.hyperbolicRatio ρ a) := by
   have h1 : ‖a + conj ρ - 1‖ = ‖ρ + conj a - 1‖ := by
-    have e : a + conj ρ - 1 = conj (ρ + conj a - 1) := by simp
+    have e : a + conj ρ - 1 = conj (ρ + conj a - 1) := by
+      simp only [map_sub, map_add, Complex.conj_conj, map_one]
+      ring
     rw [e, Complex.norm_conj]
   have h2 : ‖a - ρ‖ = ‖ρ - a‖ := norm_sub_rev _ _
   have hn1 : 0 < ‖ρ - a‖ := norm_pos_iff.mpr (sub_ne_zero.mpr hρa)
@@ -356,16 +359,17 @@ theorem normalDerivative_eq_one_iff {ρ : ZetaRightZero} (hs : analyticOrderNatA
   obtain ⟨hsum, he⟩ := hasSum_and_normalDerivative_eq hs
   have hnn : ∀ a : OtherZero ρ, 0 ≤ zeroMult a * greenKernel ρ a := fun a =>
     mul_nonneg (zeroMult_pos a).le (greenKernel_pos ρ.2.2 (a : ZetaRightZero).2.2 a.2).le
-  rw [he, Real.exp_eq_one_iff, neg_eq_zero, hsum.tsum_eq_zero_iff hnn]
+  rw [he, Real.exp_eq_one_iff, neg_eq_zero]
   constructor
   · intro h0
     refine ⟨fun a => ?_⟩
     have hpos : 0 < zeroMult a * greenKernel ρ a :=
       mul_pos (zeroMult_pos a) (greenKernel_pos ρ.2.2 (a : ZetaRightZero).2.2 a.2)
-    exact absurd (congrFun h0 a) hpos.ne'
+    have hle := hsum.le_tsum a fun b _ => hnn b
+    rw [h0] at hle
+    exact absurd hle (not_le.mpr hpos)
   · intro hemp
-    funext a
-    exact (hemp.false a).elim
+    exact tsum_empty
 
 /-- A non-real zero sees its conjugate: `N(ρ) ≤ ϱ(ρ, ρ̄)`. -/
 theorem normalDerivative_le_hyperbolicRatio_conj {ρ : ZetaRightZero}
@@ -404,7 +408,6 @@ theorem normalDerivative_le_hyperbolicRatio_conj {ρ : ZetaRightZero}
       (norm_pos_iff.mpr (ne_zero_of_half_lt_re (by simpa using ρ.2.2) ρ.2.2))
   rw [← Real.exp_log hrat]
   refine Real.exp_le_exp.mpr ?_
-  rw [Real.exp_log hrat]
   linarith
 
 end

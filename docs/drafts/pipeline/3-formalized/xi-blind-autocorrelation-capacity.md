@@ -54,7 +54,8 @@ Existing `ThetaTailSimpleCriticalThreshold` counts each critical zero once and
 excludes `b>3`. `ThetaTailDivisorCapacity` assumes full multiplicity transfer.
 The new bound counts spectral-square zeros twice without that premise.
 The positive survivor is the exact `4N₀,s(T)` divisor lower bound.
-Existence of the unrestricted exact blind test remains open.
+The [arc square-root construction](w3-single-exact-blind-test.md) supplies a single
+exact blind test. The obstruction here retains its weaker, pointwise quotient hypothesis.
 
 ## Lean certificate
 

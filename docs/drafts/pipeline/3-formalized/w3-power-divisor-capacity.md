@@ -1,7 +1,7 @@
 # W3: multiplicity determines double-exponential capacity
 
-- **Stage:** 2-fully-proven
-- **Type:** THEOREM (paper)
+- **Stage:** 3-formalized
+- **Type:** THEOREM (Lean)
 - **Statement:** If a nonzero integrable source has bound `C exp(−a exp(b|x|))`, `a,b>0`, and its entire transform contains the divisor of `Ξ^k`, then `kb≤2`.
 
 ## Proof [PROVED HERE]
@@ -14,4 +14,10 @@ The source bound gives angular Jensen upper coefficient `2/(πb)`, by `ThetaTail
 
 For a spectral square carrying the full Xi divisor twice, the necessary exponent is `b≤1`. This improves the simple-critical bound `b≤3/2` only when multiplicities are proved. Pointwise factorization by an arbitrary, possibly discontinuous quotient does not prove multiplicity containment.
 
-Positive statement: the exact finite-disc count is at least `k` times the symmetric Xi mass, before taking any limit. No blind function has yet been constructed; sharpness at equality remains to be established.
+The exact finite-disc count is at least `k` times the symmetric Xi mass, before taking any limit. At `k=2`, the theta self-convolution attains equality; see [the sharp boundary](w3-theta-square-boundary.md).
+
+## Lean
+
+`BiScaleUncertainty/ExactExtremal/PowerDivisorCapacity.lean`:
+`finsum_divisor_XiC_pow`, `mul_xiSymmetricMass_le_divisor`,
+`ae_eq_zero_of_doubleExp_XiC_pow_divisor`, `mul_exponent_le_two`.

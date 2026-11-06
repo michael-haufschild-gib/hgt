@@ -484,3 +484,18 @@ zeros in each containing disc, counted with multiplicity. Consequently a
 strip-holomorphic Xi factor nonzero at the origin has no autocorrelation bound
 `C exp(−a exp(b|x|))` with `a>0`, `b>3/2`. Pointwise factorization suffices;
 no analytic quotient or Xi multiplicity transfer is required.
+
+`ExactExtremal/PowerDivisorCapacity` proves the full-multiplicity law `kb≤2`
+for a nonzero source with tail `C exp(−a exp(b|x|))` whose transform contains
+the divisor of `Ξ^k`. `ThetaSquareBoundary` attains `k=2`, `b=1` by the theta
+self-convolution, which is strictly positive and therefore not integer-blind.
+
+## An exact Xi-divisible blind test
+
+`ExactExtremal/ExactBlindTest` constructs a nonzero real test `F` with
+`F̂=Ξsqrt(R)`, zero autocorrelation at every `log n`, `n≥2`, and exactly zero
+pole–archimedean energy. The annihilating arc measure defines `R`; the new
+uniform estimate `Re R(z)>0` on `|Im z|≤501/1000` supplies its analytic square
+root. This factor introduces no zeros in that strip and retains exponential
+spectral decay. Scalarization preserves the mixture's full autocorrelation.
+The construction requires neither RH nor prime-blind positivity.

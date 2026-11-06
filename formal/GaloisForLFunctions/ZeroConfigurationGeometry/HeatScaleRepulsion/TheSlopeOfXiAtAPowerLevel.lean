@@ -41,10 +41,10 @@ def lineLogDeriv (X : ℝ) (w : ℂ) : ℂ := logDeriv xi (1 / 2 + w + I * X)
 theorem line_point (X : ℝ) (w : ℂ) :
     (1 / 2 + w + I * X : ℂ) = ((1 / 2 + w.re : ℝ) : ℂ) + ((X + w.im : ℝ) : ℂ) * I := by
   apply Complex.ext
-  · simp only [Complex.add_re, Complex.add_im, Complex.mul_re, Complex.mul_im, Complex.ofReal_re,
+  · simp only [Complex.add_re, Complex.mul_re, Complex.ofReal_re,
       Complex.ofReal_im, Complex.I_re, Complex.I_im, Complex.div_ofNat_re, Complex.one_re]
     ring
-  · simp only [Complex.add_re, Complex.add_im, Complex.mul_re, Complex.mul_im, Complex.ofReal_re,
+  · simp only [Complex.add_im, Complex.mul_im, Complex.ofReal_re,
       Complex.ofReal_im, Complex.I_re, Complex.I_im, Complex.div_ofNat_im, Complex.one_im]
     ring
 

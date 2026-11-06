@@ -18,6 +18,8 @@ Let `φ=(1+√5)/2` and `F=diag(√5 φ,√5/φ)`. Then
 
 Lean: `golden_weight_and_coefficient_countermodel`, `golden_eq_pure_on_invariants`, `golden_euler_polynomial` in `ArithmeticKunnethTheory/WeightFamilies/GoldenInvariantWeights.lean`.
 
+The obstruction survives abstract Frobenius compatibility with full `SL₂` image. The [split group model](../3-formalized/w4-split-weil-model.md) has degree-zero image exactly `SL₂`, degree-one image every determinant-`5` matrix, and a lift of Golden Frobenius. Lean: `splitAction_degree_one_iff`, `splitAction_normalizes`, `goldenFrobenius_has_split_lift`.
+
 ## Strongest positive survivor
 
 The invariant action is classified exactly by the determinant character; it detects no eigenvalue-modulus ratio. Separately, for every positive integer `m` and `B≥0`,

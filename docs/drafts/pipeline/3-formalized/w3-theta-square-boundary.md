@@ -16,7 +16,7 @@ Integrating proves the exponent-one bound. The full squared-divisor capacity exc
 
 ## Consequence
 
-The capacity boundary is sharp even for a nonnegative real spectral square with the exact Xi divisor. Integer blindness is the missing property: `K(log n)>0` for every integer. Neither divisor saturation nor spectral positivity alone supplies an extremal blind function.
+The capacity boundary is sharp even for a nonnegative real spectral square with the exact Xi divisor. This model lacks integer blindness: `K(log n)>0` for every integer. The [arc square-root construction](w3-single-exact-blind-test.md) supplies that additional property; divisor saturation and spectral positivity alone do not.
 
 ## Lean
 

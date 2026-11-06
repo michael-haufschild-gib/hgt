@@ -140,7 +140,6 @@ Difficulty is established only where a known argument exists; `(unverified)` mar
 | B17 | Decay law of `λ*(c)` | sub | CHT, RW |
 | B18 | Signed ground-state structure past `log ρ` | method | EWU, OWU, RW, ACT |
 | B19 | Prime-blind positivity on signed blind combinations | RH | PBAP |
-| B20 | Exact extremal blind test | indep. | PBAP |
 | B21 | `S`-smooth spectra on small prime sets, first `{2,3}` | model | TH |
 | B22 | A prime-insertion invariant containing the actual amplitude | RH (all primes) | TH |
 | B23 | Full-source rank `≥10`, all ranks at every `a` | RH (all ranks) | TH |
@@ -245,10 +244,10 @@ Each mechanism below avoids Σ payment, Π precision and Γ selection as stated.
 
 ### W3. Exact extremal function (sphere-packing method)
 - **Idea.** Construct the exact null ray of the blind program, as Viazovska's functions do for a zero-slack LP [C].
-- **Target.** `Φ=Ξ·g` with `|Φ|²` blind at every `log n` [L receiver].
+- **Result [L].** A nonzero test with `Φ=Ξ·g`, `|Φ|²` blind at every `log n`, `n≥2`, and exactly zero pole–archimedean energy is [constructed in Lean](../../drafts/pipeline/3-formalized/w3-single-exact-blind-test.md). The annihilating arc multiplier has positive real part on `|Im z|≤501/1000`; its principal square root supplies `g` without extra zeros in that strip.
 - **Why the walls differ.** No primes and no margin appear.
-- **Constraints [L].** Carlson forces `|g|` near `e^{π|t|/4}`. An even source with nonnegative transform vanishing at simple critical ordinates cannot decay as `exp(−a exp(b|x|))`, `b>3/2`.
-- **Risk.** Modular forms have finitely many zeros in a fundamental domain; a direct modular construction is excluded [D].
+- **Constraints [L].** The Carlson obstruction requires wider Mellin-strip decay and logarithmic-room integrability (`ExactNullCertificateOrderTransfer`); the constructed strip factor does not establish those hypotheses. Full containment of the `Ξ^k` divisor forces `kb≤2` for a nonzero source with tail `exp(−a exp(b|x|))`.
+- **Remaining boundary.** Exact existence does not supply positivity of the entire blind program. Prime-blind positivity remains the RH-level question.
 
 ### W4. Purity by a weight argument on a non-fibred base
 - **Idea.** Deligne's Weil II gets purity from a family with big monodromy and the Rankin trick on tensor powers, with positivity from Euler-product coefficients, not a Hodge index [C]. Direct tensor powers of `K_ζ` carry RH unchanged [L]; the missing piece is a base with monodromy.
