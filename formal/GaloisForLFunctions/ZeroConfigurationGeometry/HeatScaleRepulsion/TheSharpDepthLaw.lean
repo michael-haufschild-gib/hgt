@@ -24,7 +24,7 @@ So `H_τ` vanishes exactly at the fixed points of the holomorphic map `ψ(z) = z
 
 The function `Λ` has no zero near `ρ`, so the complex saddle applies to it on a fixed disc: `𝓖` does not vanish there and
 `D/𝓖` is the horizontal slope up to `O(η/τ)`. Hence `ψ` maps the disc about `½ + iz₀ = ρ − 2τ a(t)` into its concentric half,
-and the disc fixed point theorem produces the zero of `H_τ` (`exists_riemannHeat_eq_zero_near`).
+and the disc fixed point theorem produces the zero of `H_τ` (`eventually_exists_zero_near`).
 -/
 
 set_option autoImplicit false

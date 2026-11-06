@@ -527,7 +527,7 @@ theorem twisted_functionalEquation_div_finiteRightBlaschke {F : Finset ℂ}
             rw [div_self hB2, hrec, mul_one, mul_one]
     _ = finiteRightBlaschke F m s ^ 2 * (Ξ s / finiteRightBlaschke F m s) *
           finiteRightBlaschke F m (1 - s) := by
-            field_simp; ring
+            field_simp
 
 end
 

@@ -154,7 +154,12 @@ theorem tendsto_overRegularZeta_im_atTop {μ ν : ℝ} (hν0 : 0 < ν) (hν1 : �
   have hsh : (σ : ℂ) + (t : ℂ) * I + (3 * μ - 1 + ν) ≠ 0 := ne_of_im _ (by simp)
   rw [overRegularZeta_eq_partialFractions hν_ne h₁ h₂ hs1 hsl hsh]
   simp only [f]
-  congr 1; congr 1; congr 1 <;> congr 1 <;> ring
+  have d1 : (σ : ℂ) + (t : ℂ) * I - 1 = ((σ : ℂ) - 1) + (t : ℂ) * I := by ring
+  have d2 : (σ : ℂ) + (t : ℂ) * I + (3 * (μ : ℂ) - 1 - (ν : ℂ)) =
+      ((σ : ℂ) + (3 * (μ : ℂ) - 1 - (ν : ℂ))) + (t : ℂ) * I := by ring
+  have d3 : (σ : ℂ) + (t : ℂ) * I + (3 * (μ : ℂ) - 1 + (ν : ℂ)) =
+      ((σ : ℂ) + (3 * (μ : ℂ) - 1 + (ν : ℂ))) + (t : ℂ) * I := by ring
+  rw [d1, d2, d3]
 
 /-- **Vertical high-ordinate limit (`t → −∞`).** On every vertical line `Re s = σ`,
 `overRegularZeta μ ν γ (σ + i t) → 1` as `t → −∞`. -/
@@ -285,6 +290,7 @@ theorem beurling_intNorm_eq_round_and_primes_of_zero_defect
         linarith
       rw [hint_eq x₀, hr, Int.cast_natCast]
     refine ⟨x₀, hx₀_eq, fun y hy => huniq y ?_⟩
+    dsimp only at hy ⊢
     rw [hy, sub_self, abs_zero]
     norm_num
   · intro N hN
@@ -309,7 +315,7 @@ theorem critical_line_defect_gt_of_not_prime_equiv {N : ℕ} (hN : 4 ≤ N)
     have : (4 : ℝ) ≤ N := by exact_mod_cast hN
     positivity
   have hsmall : 400 * (N : ℝ) ^ 2 * ∫ t, ‖g t‖ ≤ 1 := by
-    rwa [div_le_iff₀ hN_pos, mul_comm] at hle
+    rwa [le_div_iff₀ hN_pos, mul_comm] at hle
   obtain ⟨_, _, ⟨e, _⟩⟩ :=
     beurling_primes_of_critical_line_defect B hBsum hEc hEd hdecay hR hC hgm hgb hgi hN hsmall
   exact hnequiv ⟨e⟩
