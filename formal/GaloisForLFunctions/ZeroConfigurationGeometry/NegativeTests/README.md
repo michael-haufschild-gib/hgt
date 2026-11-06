@@ -39,3 +39,4 @@ Their sum is strictly negative.
 | `NegativeCluster` | Local negative sign survives a small absolute tail |
 | `ZetaClusters` | Actual ζ inputs and empty-annulus construction |
 | `SharpLocation` | Negative tests and fixed-aperture depth bounds, at either sign of the ordinate |
+| `SharpLocationHeight` | `log(T₀(λ,c)/2π) ≤ max(4/(λ−1), 7Ω log(792Ω²/(λ−1)))`, `Ω=2.2·10¹⁷(c+51395)`, `1<λ≤2`; fixed-aperture depth bound with that height |
