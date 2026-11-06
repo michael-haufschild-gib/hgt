@@ -66,10 +66,19 @@ Write `v_z` for the evaluation vector, `K_a(w,z)=F(v_w)(z)`, and
 `E_a` is Hermite–Biehler, has no real zeros, and reconstructs `K_a` through its full
 Christoffel–Darboux identity. These are properties of the literal unshifted form.
 
+Each actual endpoint trace satisfies
+`2i K_a(i,i) τ(z)=E_a(conj z)τ(−i)−conj(E_a(z))τ(i)`, including both anchors.
+The physical zero-moving correction is a compact differentiable primitive
+with zero normalized trace. Both anchor traces at `i` are real.
+The endpoints are `evalVectorLeftTrace_hermiteBiehler_span` and
+`evalVectorRightTrace_hermiteBiehler_span`.
+
 At finite contact a nonzero null ground vector has a nonzero Fourier value. A bound on the earlier
 diagonal kernels would extend by smooth-core density and contradict that value. Thus some fixed
 `K_a(z,z)` tends monotonically to infinity at contact. Window positivity still holds at contact.
-The aperture differential equation and prime-entry regularity are not established here.
+Every finite Gram is absolutely continuous down to aperture zero, with its exact two-trace
+right derivative at every positive precontact aperture. Contact-uniform arithmetic control
+and the canonical differential equation remain open.
 
 ## 6. Bounded completed Riesz sources
 
@@ -86,7 +95,7 @@ The endpoints are `evalVector_bounded_real_graph_coordinates`,
 `evalVector_operator_domain_and_apply` places each physical source in the literal
 restricted Weil operator domain. Its image is
 `1_{[-a,a]}(x) exp(-i conj(z)x)`, bounded by `exp(a|Im z|)`.
-Aperture variation remains a separate obligation.
+Aperture variation is identified by the two endpoint traces below.
 
 ## 7. The logarithmic reference
 
@@ -257,3 +266,33 @@ Fourier coordinate acquires the character `exp(-iz h)`.
 For the actual renewal density and cumulative mass, the coupled mass
 `J(x)=∫₀ˣv(y)V(x-y)dy` lies between `V(x/2)²` and `V(x)²`.
 Thus `J(x)log(1/x)→1` as `x↓0`, with exact coefficient one.
+
+For every finite evaluation frame, the actual Gram has right derivative
+`|Σ_i α_i τ_L(a,z_i)|²+|Σ_i α_i τ_R(a,z_i)|²`.
+Constant collars attain the upper slope, with squared Hilbert error `o(h)`.
+The one-sided fundamental theorem excludes a singular precontact part.
+For a fixed enclosure `c`, the shrinking-support estimate
+`μ(c)K_a(z,z)≤2a exp(2c|Im z|)` gives continuity at zero. Consequently the
+Gram on `[0,b]` is exactly the integral of its two-trace energy and is
+absolutely continuous. This supplies no bound uniform at finite contact.
+
+Four-Gram polarization gives the actual complex kernel density
+`D_a(w,z)=conj(τ_L(a,z))τ_L(a,w)+conj(τ_R(a,z))τ_R(a,w)`.
+Every entry is locally absolutely continuous in aperture, has right derivative
+`D_a(w,z)` everywhere before contact, and ordinary derivative `D_a(w,z)`
+almost everywhere. Integrating this locally integrable density recovers
+the exact polarized kernel increment.
+
+The actual trace density determines a canonical differential system. Put
+`q=K_a(i,i)`, `u=τ_L(a,i)`, `v=τ_R(a,i)`,
+`p=(u²+v²)/(2q)`, `r=uv/q`, and `θ(a)=∫_base^a r`.
+For `e=E/√q`, set `A₀=e^(−θ)(e−e♯)/(2i)` and
+`B₀=e^θ(e+e♯)/2`. Then `A₀′=−zh₂B₀`, `B₀′=zh₁A₀` almost everywhere,
+where `h₁=(p+r)e^(2θ)` and `h₂=(p−r)e^(−2θ)` are nonnegative and locally
+integrable. Both coordinates are locally absolutely continuous in aperture
+and entire in the spectral parameter. They reconstruct the exact kernel
+and its two-trace density. One-sided translation and constant-collar lower
+bounds force `u²−v²=2q`. Thus both Hamiltonian entries are strictly positive
+and `h₁h₂=1`. Polarizing the exact trace readouts gives
+`conj(τ_L(z))τ_L(w)−conj(τ_R(z))τ_R(w)=i(conj w−z)K_a(w,z)`.
+These identities supply no contact-uniform arithmetic bound.

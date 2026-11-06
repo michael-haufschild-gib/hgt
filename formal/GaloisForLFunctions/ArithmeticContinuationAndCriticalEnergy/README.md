@@ -1,7 +1,7 @@
 # Arithmetic Continuation and Critical Energy (ACCE)
 
 Namespace `GaloisForLFunctions.ArithmeticContinuationAndCriticalEnergy`; umbrella
-`ArithmeticContinuationAndCriticalEnergy.lean`; 84 modules.
+`ArithmeticContinuationAndCriticalEnergy.lean`; 85 modules.
 
 ## 1. Motivation
 
@@ -104,6 +104,14 @@ $T$. Three faces: damping $\varepsilon$ (main), cutoff, aperture $a$ (restricted
 36. Rates: trivial floor $\sigma=\tfrac12$ unconditional (`compensatedWidthFloor_half`); polar = full rate unconditionally (`groundEnergyRate_eq_polarGroundEnergyRate`); in the CCM form domain, form, polar-form and Birman–Schwinger rates equal the width unconditionally (`formGroundEnergyRate_eq_zetaZeroWidth`, `birmanSchwingerNormRate_eq_zetaZeroWidth`).
 37. Aperture transport: fixed positive margins impossible (doubly exponential ceiling, `not_additive_step_transport`); vanishing relative steps with strict positivity ⇒ RH; graded negative-floor steps ⇒ `CompensatedWidthFloor σ` (`zetaZeroWidth_le_of_graded_aperture_step`).
 
+**J. Undamped Hilbert energy.**
+38. For all large T, uniformly over every N≤T, the actual signed form
+    `H(N)=Σ_{m,n≤N}μ(m)μ(n)/(m+n)` satisfies
+    `0≤H(N)≤C T exp(−κ vkScale(T)/27)`
+    (`exists_uniform_mobiusHilbert_le_vinogradovKorobov`). Abel–Cauchy bounds
+    H by Mertens squares; a split at √T retains the VK saving without assuming
+    H is monotone. Subpower growth remains open.
+
 ## 5. Pillar theorems
 
 | Theorem | Content |
@@ -123,6 +131,7 @@ $T$. Three faces: damping $\varepsilon$ (main), cutoff, aperture $a$ (restricted
 | `strictAnti_ccmRestrictedWeilGroundEnergy`, `apertureFlow_step_eq_geometric_add_arithmetic`, `relativeFluxLaw_isClassIII` | aperture shell flow |
 | `groundEnergyRate_eq_polarGroundEnergyRate`, `formGroundEnergyRate_eq_zetaZeroWidth` | rate equalities |
 | `fqCenteredPrefix_eq` | function-field calibration |
+| `exists_uniform_mobiusHilbert_le_vinogradovKorobov` | undamped Hilbert energy: VK saving uniformly for N≤T |
 
 ## 6. Tools
 

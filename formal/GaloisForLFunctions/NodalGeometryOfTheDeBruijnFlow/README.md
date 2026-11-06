@@ -1,140 +1,137 @@
 # Nodal Geometry of the de Bruijn Flow (NGF)
 
 Namespace `GaloisForLFunctions.NodalGeometryOfTheDeBruijnFlow`; umbrella
-`NodalGeometryOfTheDeBruijnFlow.lean`. Status labels: **[L]** proved in this corpus, **[T]** target of
-the programme, **[D]** derived on paper, not a theorem here.
+`NodalGeometryOfTheDeBruijnFlow.lean`. Labels: **[L]** proved in Lean, without added hypotheses or axioms; **[D]** derived on paper,
+not a theorem here; **[O]** open.
 
 ## 1. Motivation
 
-Let `H_t(z) = ∫ Φ(x) e^{tx²} e^{izx} dx` (`RHTower.DeBruijn.riemannHeat`). It solves `∂_t H = −∂_z² H`, so
-`u(x, t) = H_t(x)` is a caloric function and *decreasing* `t` is forward parabolic time. RH says that
-the nodal curves `{u = 0}` in the half-plane `t > 0` have no turning points. Every present bound on
-the half-Gaussian source of route ZCG is a size bound, and size stops at the saddle `½/log X`:
-lowering the coefficient by size needs Lindelöf-strength input, and below a fixed coefficient it forces
-a zero-free strip. NGF supplies the first tools below the saddle that do not rest on size. They read
-the flow as a parabolic object: monotone quantities, zero numbers, blow-up profiles and zero dynamics.
+Let `H_t(z) = ∫ Φ(x) e^{tx²} e^{izx} dx` (`RHTower.DeBruijn.riemannHeat`). It solves `∂_t H = −∂_z² H`, so `u(x, t) = H_t(x)` is a caloric function and
+*decreasing* `t` is forward parabolic time. RH says that the nodal curves `{u = 0}` in the half-plane `t > 0` have no turning points. A collision is a point where `u` vanishes to parabolic
+order two or more, with local model `x² − 2(t − t₀)`.
 
-NGF is a programme, not a new field. It does not exclude a collision by itself. Its identities hold for
-every caloric function, including `H_{−τ}`, which does collide. Arithmetic can enter only through data.
+Every bound on the half-Gaussian source of route ZCG is a size bound, and size stops at the saddle `½/log X`: lowering the coefficient by size needs Lindelöf-strength input, and below a fixed coefficient it forces a
+zero-free strip. NGF supplies the tools below the saddle that do not rest on size. They read the flow as a parabolic object: monotone quantities, zero numbers, blow-up profiles and zero dynamics.
+
+NGF is a programme of route ZCG, not a new field, and it does not exclude a collision by itself. Its identities hold for every caloric function. Arithmetic enters only through data: the proved region above the horizon, the count of zeros, and the zero-free boxes at typical heights.
 
 ## 2. Objects
 
 | Object | Meaning |
 |---|---|
 | Nodal set | `{(x, t) : t > 0, H_t(x) = 0}`; below the horizon it is a forest opening upward in `t` |
-| Collision | a real multiple zero of `H_{t₀}`; local model `x² − 2(t − t₀)` at order two |
-| Caloric transform | `∫ g(x) e^{tx²} e^{izx} dx` for `g` of super-Gaussian decay; `g = Φ` gives `H_t` at every real `t` |
-| Fock energy | `F(σ) = Σ_n (2σ)^n/n! ‖∂ⁿu(z₀, t₀)‖²` |
-| Gaussian line energy | `∫ ‖u(x + iy₀, t₀ + σ)‖² G_σ(x − x₀) dx`, `G_σ` of variance `2σ` |
-| Frequency | `N(σ) = σ F′(σ)/(2F(σ))`, half the mean Taylor degree of the Fock measure |
-| Zero number | real zeros with multiplicity in a buffered window |
-| Gap, compression | `g` for adjacent real zeros; `S = 4 Σ_k 1/((x₂ − z_k)(x₁ − z_k))` |
-| Mesh | the least gap of a real configuration or window |
-| Depth energies | `E_p = Σ_k w(Re z_k − X) (Im z_k)^{2p}`, the localized moments of the depth |
-| Nonreal time | `ℓ_X`, the measure of heats at which `H_s` has a nonreal zero within `1` of `X` |
+| Collision | a real multiple zero of `H_{t₀}` |
+| Caloric transform | `caloric g t z = ∫ g(y) e^{ty²} e^{izy} dy`, `g` of super-Gaussian decay; `g = Φ` gives `H_t` at every real `t` |
+| Fock energy | `F(σ) = Σ_n (2σ)ⁿ/n! ‖∂ⁿu(z₀, t₀)‖²`, equal to the Gaussian line energy of `u` at time `t₀ + σ` |
+| Frequency | `N(σ) = σ D(σ)/F(σ)`, half the mean Taylor degree of the Fock measure |
+| Zero number | real zeros with multiplicity in a buffered window; collision mass `2⌊k/2⌋` at order `k` |
+| Velocity | `V = H″/H′` at a simple zero |
+| Gap, mesh, spread | `g = x' − x` of a pair; the least gap of a packet; `P = Σ_{i<j}(x_j − x_i)²` of a cluster |
+| Compression | `S = Σ_b m_b/((x' − b)(x − b))`, the force of the other zeros on a pair |
+| Depth energies | `E₁, E₂ = Σ w(Re z − X)(Im z)^{2p}`, the localized moments of the depth |
+| Nonreal time | the measure of heats at which `H_s` has a nonreal zero in a window |
+| Zero potential, energy | `R₁(z) = Σ m_a/|z − a|`, `R₂(z) = Σ m_a/|z − a|²` over a packet |
+| Amplitude | `P = |ξ(½ + 2tα + iX)| e^{−tα²}`, `α = ½ log(X/2π)`: the size of the flow where it is one exponential |
 
 ## 3. Language
 
-- **Buffered window**: a window whose boundary curves carry no zero of `H_t` for the times considered.
-- **Normalized time** `τ = t log²X`: gap fluctuations relax at `τ ≍ 1`; the open region runs to `τ ≍ log X`.
-- **Parabolic order** at a point: the Taylor order in `x` of `H_{t₀}`; the frequency reads it as `σ → 0⁺`.
-- **Compression**: `g²S`, the force of the neighbours on a gap; the lattice has `g²S = 8`, so its gaps are stationary.
-- **Saddle, horizon**: `½/log X`, where the Gaussian mass of `H_t` leaves the strip; `(6600/9991 + ε)/log X`,
-  above which `H_t` is proved real and simple near `X`.
-- **Blind law**: an identity or monotonicity that also holds for `H_{−τ}`.
+- **Saddle, horizon**: `½/log X`, where the Gaussian mass of `H_t` leaves the strip; `(6600/9991 + ε)/log(X/2π)`, above which `H_t` is proved real and simple near `X`.
+- **Buffered window**: a window whose moving boundary curves carry no zero of `H_t` for the times considered.
+- **Parabolic cylinder**: a window of heights `[A, B]` times an interval of heat times; its parabolic boundary is the initial time and the lateral layers.
+- **Crystal, mesh time**: a lattice of spacing `g`; the time scale `t ≍ g²`, that is `τ = t log²X` for spacing `≍ 1/log X`.
+- **Crowd**: too many zeros close to a point, measured by `R₂` or `R₁`.
+- **Blind law**: an identity or monotonicity that also holds for `H_{t−τ}`.
 
 ## 4. Mechanisms
 
-1. **The Gaussian energy is a Fock norm.** Fubini and the Gaussian transform give
-   `∫ ‖u(x + iy₀, t₀ + σ)‖² G_σ(x − x₀) dx = Σ_n (2σ)^n/n! ‖∂ⁿu(z₀, t₀)‖²`, at every complex `z₀`. This is
-   the chaos expansion of the variance, with the Hermite functions of `G_σ` as chaos. **[T]**
-2. **Frequency is a chaos level.** So `N(σ)` is half the mean degree of an exponential family: its
-   monotonicity is one line, its limit at `σ → 0⁺` is half the order of `u` at `z₀`, and the Almgren–Poon
-   theorem has no PDE content beyond this reading. A collision forces `N(σ) ≥ 1` at every scale. **[T]**
-3. **Zero number.** As `t` decreases the real zero count in a buffered window falls only at collisions,
-   by exactly `2⌊k/2⌋` at a zero of order `k`. The unbuffered law is false. **[T]**
-4. **Blow-up.** At a zero of order `k`, `H_{t₀ ± q²}(x₀ + qσ)/q^k` tends to the heat polynomial of
-   degree `k`: `k` real roots above `t₀`, `k mod 2` below. At order two `g² ∼ 8(t − t₀)`. **[T]**
-5. **Zero dynamics.** `ẋ = H″/H′`, and for an adjacent pair `d(g²)/dt = 8 − g²S`, where `S` converges
-   absolutely and is `≥ 0` once the window is real. So gaps cannot open faster than `8` per unit time. **[T]**
-6. **Gap comparison.** At the mesh pair the neighbours are at least lattice-spaced, so the compression
-   is below that of a finite lattice: `d(mesh²)/dt ≥ 16/n` in degree `n`, exact at `n = 2, 3`. **[T]**
-7. **Depth moments.** The zeros attract vertically, so `E_p` is dissipated: a conjugate pair loses
-   `4p·b^{2p−2}`, and cutoffs cost only `O(log X)·E_p`, with no inverse gap. The pair `(E₁, E₂)` then bounds the
-   time spent nonreal by `√E₂`, which is much smaller than `E₁` near the line. **[T]**
+1. **The Gaussian energy is a Fock norm.** Fubini and the Gaussian transform give the expansion of `F(σ)` in Taylor data, at every complex `z₀`. Frequency monotonicity (Almgren–Poon) then is the fact that tilting an exponential family raises its mean.
+   The order `k` of a zero is at most `2N(σ)`. Convexity gives `F(rσ) ≥ r^{2N(σ)} F(σ)`.
+2. **Zero number.** As `t` decreases, the zero number of a buffered window falls only at collisions, by `2⌊k/2⌋`. At a zero of order `k` there are `k` real zeros just above `t₀` and `k mod 2` just below, so the nodal set is a forest without caps.
+3. **Blow-up.** `H_{t₀ ± q²}(x₀ + qσ)/q^k` tends to the heat polynomial of degree `k`. The gaps of the profile satisfy `μ² ≤ 24/(k + 1)`.
+4. **The gap law.** `g(V(x') − V(x)) = 4 − 2g²S + 2g(Q(x') − Q(x))`. A zero outside the Jensen disc of the pair compresses it, so `g²` opens no faster than `8t`.
+5. **The mesh pair.** At a mesh pair the other zeros are at least lattice-spaced, so `g²S ≤ 2 − 1/(R + 1) − 1/(L + 1)`, with equality on a lattice. So the squared gap opens at rate at least `16/n`, up to `O(g² log X)`. Only the `n` zeros within `ρ` of the pair count; the others enter through their energy `E`.
+6. **The first touch.** The first pair to reach a barrier is a mesh pair of the packet around it. This gives a maximum principle for gaps in real cylinders, with a rate `≍ 1/log X` in general and `8/n` away from crowds.
+7. **The cluster law.** The singular forces inside a cluster cancel in pairs: `dP/dt = 2n²(n − 1) + O(log X/ρ² · P)`, without any separation inside the cluster.
+8. **The two quadratures.** Above the horizon, and at typical heights above any positive coefficient, `H_t = 2 Re Q`, `H_t′ = −2 Im Q′`, `Q′ ≈ aQ`. So `H_t` and `H_t′/α` are the two quadratures of the amplitude. At a zero the whole amplitude is in the derivative, and Cauchy's estimate on discs of radius `1/α` spaces the zeros.
+9. **The frequency at the horizon.** Read at the time of the horizon, the frequency is `≈ σα²`. A wave cannot hide its energy in the derivative: too large a frequency contradicts the exact growth `e^{(r−1)2σα²}` of the amplitude, by convexity.
+10. **The reverse saddle.** The representation of `H_{t₀}` by `H_{t₀+t}` around a saddle sees the zeros only through the field `V` and the energy `R₂`. So persistence is decided by the crowd.
+11. **Depth moments.** The zeros attract vertically, so the depth energies dissipate, and cutoffs cost only `O(log X) E_p`, with no inverse gap. A conjugate pair loses a fixed amount of `E₁`, so `(E₁, E₂)` bounds the heat time spent nonreal.
+12. **The crystal.** The linearized Dyson flow on a lattice has the exact symbol `ξ(2π − ξ)/g²`: mesh time for the pair mode, the Poisson semigroup at height `t log X` at long wavelength.
 
 ## 5. Pillar theorems
 
-| Theorem | Lean | Status |
+Corpus inputs: `riemannHeat_zeros_real_simple_subWeyl` (horizon), `exists_uniform_riemannHeat_exterior_force` (packet and exterior field), `exists_riemannHeat_shrinking_window_bounds` (zero-free discs), `norm_halfGauss_sub_main_le_of_typical` (typical heights), `spread_roots_heatFlow`, `meshGe_heatStep` (polynomials), `ffConv_root_im_le` (Walsh).
+
+| Theorem | Lean | Module |
 |---|---|---|
-| Real zeros persist; backward local count; collision jump law; finitely many collisions after `t` | `exists_ball_real_zeros_forward`, `exists_ball_nonreal_count_backward`, `exists_left_nonrealZeroCount`, `finite_collisionTimes` | [L] (RHTower) |
-| RH ⇔ no positive-time collision ⇔ `Λ_X = 0` for all `X` | `riemannHypothesis_iff_forall_collisionMass_eq_zero`, `riemannHypothesis_iff_forall_localNewmanConstant_eq_zero` | [L] (RHTower) |
-| Actual collision criterion; horizon `6600/9991`; order-two pair model | `riemannHeat_ofReal_collision_iff_halfGauss`, `riemannHeat_zeros_real_simple_subWeyl`, `pairModelHeat_orderTwo_collision` | [L] (ZCG) |
-| Averaged repulsion; mesh never shrinks (polynomials) | `spread_roots_heatFlow`, `meshGe_heatStep` | [L] (ZCG) |
-| Localized `E₁` dissipation through collisions | `exists_uniform_heatLocalizedVerticalEnergy_evolution` | [L] (RHTower) |
-| Fock identity; frequency monotonicity; order bound | — | [T] |
-| Sturm drop law in buffered windows; nodal forest | — | [T] |
-| Hermite blow-up at actual collisions | — | [T] |
-| Local zero ODE and gap law for `H_t` | — | [T] |
-| Mesh growth `16/n`; Hermite mesh pinch `16/k ≤ μ²/t ≤ 24/(k+1)` | — | [T] |
-| Depth law for polynomials: depth `< √(8nt)` from real-rooted data | — | [T] |
-| Localized `E₂` dissipation; nonreal time `ℓ_X = o(1/log X)` on density-one windows | — | [T] |
+| Fock identity | `hasSum_fock` | `TheGaussianEnergyIsAFockNorm` |
+| Frequency monotone; order ≤ 2N; limit at scale 0; doubling | `frequency_le_frequency`, `order_le_two_mul_frequency`, `tendsto_frequency`, `pow_mul_lineEnergy_le` | `TheFrequencyIsAChaosLevel` |
+| Sturm drop law in moving buffered windows; no caps | `BufferedWindow.realZeroCount_eq_add_sum_windowCollisionMass`, `no_real_zero_near_backward_of_even` | `TheZeroNumberDropsOnlyAtCollisions` |
+| Hermite blow-up at actual collisions; gap law at order 2; Hermite gap bound | `blowup_forward`, `blowup_backward`, `order_two_gap_law`, `exists_close_zeros_forward` | `CollisionsBlowUpToHermiteProfiles` |
+| Velocity law; exact local gap law; integrated law from a collision | `hasDerivAt_zero_path`, `gap_rate_eq`, `exists_gap_sq_le_of_collision` | `TheGapLawOfAdjacentZeros` |
+| Mesh growth under the Dyson flow | `sum_inv_mul_le_of_sep`, `mesh_sq_growth` | `TheDysonFlowKeepsTheMesh` |
+| Rate at the mesh pair of a packet; with a local count | `mesh_pair_rate_ge`, `exists_mesh_pair_opens`, `local_pair_rate_ge` | `TheMeshPairOfAPacketOpens` |
+| Localized averaged law | `cluster_rate_le`, `exists_cluster_spread_law`, `exists_cluster_spread_of_collision` | `TheClusterSpreadsAtTheExactRate` |
+| First touch; maximum principle for gaps; away from crowds | `gap_barrier_of_rate`, `exists_gap_maximum_principle`, `exists_gap_maximum_principle_of_count` | `TheGapsObeyAMaximumPrinciple` |
+| Uniform mesh above a real time; above `Λ` | `exists_uniform_mesh`, `exists_uniform_mesh_above_newman` | `AboveTheRealTimeTheMeshIsUniform` |
+| Central inequality ⇒ no collision, RH, bounded multiplicity | `deriv_ne_zero_of_centralInequality`, `riemannHypothesis_of_centralInequality`, `mult_add_one_le_of_centralInequality` | `TheCentralInequalityIsStrongerThanRH` |
+| Central inequality above the horizon | `exists_gap_ge_above_horizon`, `exists_central_inequality_above_horizon` | `AboveTheHorizonTheZerosAreSpaced` |
+| Central inequality on density-one heights, down to every `κ > 0` | `eventually_gap_ge_of_typicalWindow`, `exists_densityOne_central_inequality` | `TheCentralInequalityOnAlmostAllHeights` |
+| Half-Gauss estimates, amplitude comparisons | `exists_halfGauss_estimates`, `exists_quadrature_bounds`, `horizonAmp_height_le`, `horizonAmp_time_le` | `TheHalfGaussAboveTheHorizon` |
+| Order bound from the horizon | `exists_order_le_at_horizon`, `exists_order_le_of_time`, `exists_mult_le_log` | `TheOrderOfACollisionAtTheHorizon` |
+| Depth law of polynomials, sharp | `im_sq_lt_of_forward_real`, `exists_root_depth_eq` | `TheDepthLawOfPolynomials` |
+| Depth law with its crowd | `exists_zero_near_of_no_crowd`, `exists_zero_near_of_potential`, `exists_zero_near_of_normal_density` | `TheDepthLawSeesOnlyTheCrowd` |
+| Dissipation of `E₂` through collisions | `exists_uniform_heatLocalizedQuarticEnergy_evolution` | `TheDepthMomentsAreDissipated` |
+| Nonreal time on windows; Selberg's fourth moment of the depths; rarity | `exists_sum_nonrealTime_le`, `exists_sum_mult_im_pow_four_le`, `exists_card_nonrealTime_gt_le` | `NonrealTimeOnWindows`, `TheFourthMomentOfTheDepths`, `NonrealTimeIsRareOnAlmostAllWindows` |
+| Symbol of the crystal | `hasSum_one_sub_cos_div_sq`, `lattice_eigen` | `TheCrystalRelaxesAtTheMeshTime` |
+| The shifted fake | `shiftKernel_superGaussian`, `caloric_shiftKernel`, `order_le_two_mul_frequency_shift`, `exists_deep_zero_shift` | `TheLocalToolsAreBlindToTheInitialTime` |
 
-## 6. Questions the programme aims to answer
+## 6. Questions and their status
 
-1. **Central question.** Is there `c > 0` with `g_t² ≥ c·min(t, log⁻²X)` for every adjacent pair near height `X`
-   and every `t > 0`? It implies no positive-time collision, hence RH. It also bounds the multiplicity
-   of the zeros of `ζ`, so it is stronger than RH; see §8.
-2. **Depth law.** Lean has `Λ_X ≥ c d²/log X`, and the model gives `d/log X` when `d log X ≫ 1`. What decides between
-   them? The cluster model says local count does: the expected law is `Λ_X ≳ min(d²/(1 + m), d/log X)`, with
-   `m` the number of zeros within `O(d)`.
-3. **Compression.** How large can `g²S` be on a cluster? At the mesh pair it is below `8`.
-4. **B73.** Does `Λ_X log X → 0` on density-one heights? Depth moments reduce this to mean values of `δ_ρ⁴`
-   given by Selberg's near-line density, plus lateral control of nonreal zeros.
-5. **Orders.** How large can a collision be, in terms of the horizon? The frequency gives about `0.33 log X` [D].
+**The central question.** Is there `c > 0` with `g_t² ≥ c min(t, log⁻²X)` for all adjacent real zeros near `X` and all `t > 0`?
+- It implies no positive-time collision, hence RH, and also `c(m + 1) ≤ 24` for every zero of order `m` of `H₀`. So it is strictly stronger than RH. [L]
+- It holds with an absolute `c` in the zone `6600/9991 + ε ≤ t log(x/2π)`, `t log x ≤ 1`. [L]
+- It holds with an absolute `c` on one set of heights of density one, for `κ ≤ t log(x/2π) ≤ 1`, for every `κ > 0`. [L]
+- For `t log X → 0` it is open. [O] Under GUE statistics clusters of growing size are expected, so the uniform form is expected to fail, and the density-one form is the natural target. [D]
 
-## 7. Tools to develop
+**(b1) The local repulsion law.** In a real cylinder `g²` follows the barrier `m₀ + r(s − a)`, `r ≍ 1/log B`, up to `≍ log⁻²B` (maximum principle) [L]. Above a real time `a`, `g_t² ≥ min(c a (t − a), c a², g₁)`, for `t ≤ 5a/4`, with `g₁` from a bounded range of heights [L]. So near the real time the law is `g² ≳ (t − a)/log X`, with the factor `1/log X` that a cluster of `≍ log X` zeros would saturate. An isolated pair has `g² = 8(t − t₀)` up to the factor `e^{±λ(t−t₀)}`, the case `n = 2` of the cluster law [L]. Away from crowds the factor disappears: if at most `n` zeros lie within `ρ` of each zero of the cylinder and the others have energy at most `E`, the barrier rises at rate `8/n` up to the level `1/(n(2E + C log B))` [L]. At normal density `E ≍ log²X/n` [D], and this is `g² ≳ min((t − a)/n, log⁻²X)`, the form of the central inequality with a local constant. So inside a real cylinder the central inequality can fail only through a crowd or through the parabolic boundary. Whether the count and the energy stay normal in the cylinder is open. [O]
 
-Parabolic frequency and doubling index; Sturm drop law with moving buffers; blow-up classification;
-local Dyson ODE with an `O(log X)` exterior force; gap comparison principle; depth-moment hierarchy;
-Grace–Walsh–Szegő depth bound; relaxation at normalized time.
+**(b2) The depth law.** A zero `z` of `H_{t₀}` keeps a zero of `H_{t₀+t}` within distance `d`, as soon as `t|V| ≤ cd`, `t R₂(z) ≤ c`, `t log X ≤ cd` [L]. It suffices that `t(R₁(z) + log X) ≤ cd` [L]. At normal density, `N(r) ≤ A r log X` for `r ≥ d`, this reads `t A log X log(72/d) ≤ cd` [L]: linear in the depth, up to the logarithm. The worst case `R₁ ≪ log X/d` recovers `t log X ≤ c d²`. For clusters the quadratic law is the truth: if `e^{−tD²}q` is real-rooted, a polynomial `q` of degree `n` has `(Im z)² < 8nt`, with sharp constant at the Hermite cluster [L]. So the crowd decides between the two laws. Whether a crowd can stand at a deep zero of `ζ` at the time it would be needed is open. [O]
+
+**(b3) Compression on clusters.** At the mesh pair `g²S ≤ 2 − 1/(R + 1) − 1/(L + 1)`, sharp on lattices [L]. For an isolated cluster as a whole, `dP/dt` equals the exact Hermite rate `2n²(n − 1)` up to `O(log X/ρ² · P)` [L]. Compression of non-mesh pairs inside a cluster is open. [O]
+
+**Orders.** A real zero of order `k` of `H_{t₀}` at height `X` has `k ≤ (1 + δ)(6600/9991 + ε − τ) ½log(X/2π) + K`, with `τ = t₀ log(X/2π)`. At `t₀ = 0` this is `k ≤ (3300/9991 + ε) log X`, about `0.33 log X`. [L]
+
+**B73.** `Λ_X log X → 0` on one set of density one is proved in ZCG (`exists_densityOne_localNewman_scaled_tendsto_zero`) [L]. The depth moments give the complementary time-measure form with a rate: at most `C_ε U/log U` of the windows of `[U, 2U]` spend heat time more than `ε/log U` nonreal [L]. The density-one central inequality gives a mechanism that sees the gaps [L].
+
+**Relaxation.** The symbol of the crystal fixes the scales [L]. The nonlinear relaxation for the actual source between `τ ≲ 1` and `τ ≍ log X` is open. [O]
+
+## 7. Tools
+
+Parabolic frequency, doubling and convexity; Sturm drop law with moving buffers; blow-up to heat polynomials; local Dyson law with an `O(log X)` exterior field; first-touch comparison over packets; the cluster spread law; half-Gauss quadratures at the horizon and at typical heights; the reverse saddle with exact zero energy; depth moments; the Walsh depth bound for polynomials; the crystal symbol.
 
 ## 8. Traps
 
-- **Blindness.** Every monotone identity here holds for `H_{−τ}`, which collides at positive time. A proof
-  of a sign must use data: the proved region above the horizon, RvM counts, the Euler product in `Q`.
-- **Degeneration at `t = 0`.** Collisions occur below `t = 0` (`newmanConstant_nonneg`, under RH `Λ = 0`), so any
-  repulsion inequality must degenerate exactly at `t = 0`.
-- **The central inequality is too strong as stated.** An `m`-fold zero of `H_{t₀}` gives Hermite gaps with
-  `g² ≤ 24(t − t₀)/(m + 1)`, so `c` bounds multiplicities. Under GUE statistics clusters of growing size are
-  expected, and the uniform constant is then expected to fail [D]; the density-one form is unaffected.
-- **Dimension count.** Collisions are generic in the `(X, t)` plane, so Diophantine repulsion alone
-  cannot exclude them [D].
-- **Unbuffered windows.** Zeros cross fixed lines at speed `≈ π/2`, and nonreal counts in fixed windows can rise.
-- **Frequency is three circles.** `F` is also a Bargmann–Fock area norm of `u(·, t₀)`, so the frequency adds no
-  information about `H_{t₀}` beyond its Taylor data; its value is that it can be read on the real line at the
-  later time `t₀ + σ`, without any information in the strip.
-- **Lateral entry.** Vertical dissipation controls depth, not the horizontal path of a nonreal zero.
+- **Blindness.** The Fock identity, the frequency and the order law hold for `H_{t−τ}`, whose kernel `Φ e^{−τx²}` has the same decay; yet that flow has nonreal zeros of unbounded depth for `t < τ`. A sign needs data that distinguishes `Φ` among the `Φ e^{−τx²}`.
+- **Degeneration at `t = 0`.** Any repulsion inequality must degenerate exactly there: the zeros of `H_{−τ}` are not real.
+- **The central inequality is too strong as stated.** It bounds multiplicities, so it cannot follow from RH alone.
+- **The pair and cluster models.** The pair model `(z² + δ²) cos(Lz/2)` has the linear law, the cluster model has the quadratic one, and each obeys the functional equation and the size bounds (`pairModelHeat_orderTwo_collision`, `AClusterHidesAnOffLineZeroFromHeat`). No method blind to the local count can decide between them.
+- **Dimension count.** Collisions are generic in the `(X, t)` plane, so Diophantine repulsion alone cannot exclude them. [D]
+- **Unbuffered windows.** Zeros cross fixed lines, and nonreal counts in fixed windows can rise.
+- **Frequency is three circles.** `F` is also a Bargmann–Fock area norm of `u(·, t₀)`, so the frequency adds no information about `H_{t₀}` beyond its Taylor data; its value is that it can be read on the real line at the later time. [D]
+- **Lateral entry.** Vertical dissipation controls depth, not the horizontal path of a nonreal zero. This is the gap between nonreal time and `Λ_X`.
+- **Times in the maximum principle.** A barrier moves forward in heat time. The horizon gives information at later times; backward, the gap law only reaches `≍ log⁻²X` below a snapshot.
 
 ## 9. Open research topics
 
-The local repulsion law on density-one heights; control of the compression on clusters away from the
-mesh pair; lateral control of nonreal zeros (the gap between nonreal time and `Λ_X`); a depth law at
-height-uniform count; relaxation at normalized time for the actual source.
+The central inequality on density-one heights at `t log X → 0`; control of the local count and of the energy `E` in a cylinder, which would turn the maximum principle away from crowds into a theorem at typical heights; compression of non-mesh pairs; the local count at time `t` around a zero of depth `d`, which decides the depth law; lateral control of nonreal zeros; nonlinear relaxation for the actual source.
 
 ## 10. Position in the corpus
 
-NGF is the parabolic side of ZCG. ZCG's camera fixes the configuration at `t = 0`; ZCG's horizon fixes it at
-`t ≍ 1/log X`; NGF studies the region between them. RHTower supplies the source estimates and collision
-law, HTGeometry the polynomial heat calculus, FFP the finite-free view of the same flow, and
-SquareRootThreshold and the Selberg near-line density the off-line moments. By ZCG's rule, no Weil positivity
-or spectral sign enters here.
+NGF is the parabolic side of ZCG. ZCG's camera fixes the configuration at `t = 0`, ZCG's horizon fixes it at `t ≍ 1/log X`, and NGF studies the region between them, with the horizon as a boundary condition. RHTower supplies the source estimates, the collision law and the reverse Gaussian; ZCG the half-Gauss transform, the sub-Weyl horizon, the typical-height estimates and the polynomial mesh; FFP the Walsh theorem and the finite-free view of the same flow; ArithmeticLocalDivisorGeometry the Hermite edge. SquareRootThreshold and the Selberg near-line density supply the off-line moments. By ZCG's rule, no Weil positivity or spectral sign enters here.
 
 ## 11. Success criteria and contributions
 
-The programme succeeds when the tools of §7 exist for the actual source, the questions of §6 are answered
-or reduced to one precise open input, and the reach and failure of each law are shown on the fakes.
+The programme succeeds when its tools exist for the actual source, its questions are answered or reduced to one precise open input, and the reach and failure of each law are shown on the fakes. A theorem that proves the density-one central inequality at `t log X → 0` would be a decisive contribution.
 
-A contribution must be unconditional in Lean; state its law for a class containing both `H_t` and a fake
-when the law is blind; and say which datum of `ζ` it uses when it is not. A new identity counts only if it
-yields a bound the previous tools could not state.
+A contribution must be unconditional in Lean; state a blind law for a class containing both `H_t` and a fake; and say which datum of `ζ` it uses when it is not blind. A new identity counts only if it yields a bound the previous tools could not state.

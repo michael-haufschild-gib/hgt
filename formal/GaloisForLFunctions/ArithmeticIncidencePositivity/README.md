@@ -120,6 +120,11 @@ settle it locally, measure exactly how far local payment globalizes, and identif
     (0, 181/500]; edge tents: pole ≍ ε⁴e^r outgrows stripBox + any linear budget ⇒ pole and prime channel
     cannot be decoupled.
 
+    The full Vinogradov–Korobov rate also holds uniformly over all odd `C¹_c` tests:
+    `|cost| ≤ K exp(r−κQ(r)/108)(¼∫F²+∫F′²)`, with
+    `Q(r)=(2r)^(3/5)(log(2r))^(−5/3)` for `r≥2`, regularized below `2`, and
+    `κ=1/(12·10⁸)`. This retains the derivative energy and does not give a pure `L²` floor.
+
 ### F. Translate calculus and towers
 18. Gram identity ⟪ΣαF(·+c), ΣβF(·+d)⟫ = ΣαβA(d − c); A = cosine transform of |F̂|² (positive definite).
 19. **Tower law** (p−1)C_p ≤ log p(A(0) + √pA(log p)); Liouville twin log p(A(0) − √pA(log p)); envelopes sharp
@@ -218,6 +223,8 @@ settle it locally, measure exactly how far local payment globalizes, and identif
 - Spectral: `autoCorrelation_eq_integral_spectral`, `spectralDensity_eulerComb`, anti-concentration
   `mass_outside_window_ge`, odd-test origin suppression.
 - de la Vallée Poussin pairing bounds (`exists_abs_reflectedPrimePolarCost_le_exp_sub_sqrt_mul_sobolev`).
+- Vinogradov–Korobov pairing bound
+  (`exists_abs_reflectedPrimePolarCost_le_vinogradovKorobov_mul_sobolev`).
 
 **To build**
 - A joint budget paying all strip masses + pole + remainder on every odd test (one inequality, not per strip).

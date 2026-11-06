@@ -271,6 +271,7 @@ same input as every route: cancellation of the prime sum below the mean spacing.
 | Heat-time spread law; bounded backward exit | `coeff_heatFlow_sub_two`, `spread_roots_heatFlow`, `exists_nonreal_root_heatFlow` | unconditional |
 | Heat steps never shrink the mesh | `meshGe_add_smul_derivative`, `nodup_roots_add_smul_derivative`, `iterate_heatStep` | unconditional |
 | Laguerre steps never deepen; shift averages contract | `rootsInStrip_heatStep`, `heatStep_keeps_triple_edge_root`, `im_eq_zero_or_sq_add_sq_le_of_shiftAverage`, `roots_shiftAvgList_im_sq_le` | unconditional |
+| Actual cosine producer: strict first Laguerre sign for large `abs(x)` and `h > ½ − vkHadamardWidth(abs(x)+1)` | `exists_cosineProducer_strict_laguerre_vk`, `exists_xi_strict_laguerre_vk` | unconditional |
 | Euler stages repel above the horizon; counted by their phase | `stageLine_eq_mul_exp`, `eulerStage_deriv_ne_zero_above_horizon`, `eulerStage_ne_zero_of_lt_gap`, `exists_eulerStage_zero_within`, `eulerStage_eq_zero_iff_phase`, `ncard_eulerStage_zeros` | unconditional |
 | Integral configurations collide or repel | `prod_derivative_roots_eq_resultant`, `collide_or_repel` | unconditional |
 | Symmetric halves are phase lattices | `SymmetricHalf`, `sym_linePt`, `line_eq_mul_exp`, `sym_eq_zero_iff_phase`, `sym_deriv_ne_zero`, `sym_ne_zero_of_phase_lt`, `exists_sym_zero_of_phase_ge`, `ncard_sym_zeros`, `norm_lt_of_speed_pos`, `sym_ne_zero_near_line` | unconditional |

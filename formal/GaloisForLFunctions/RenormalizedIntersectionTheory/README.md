@@ -224,6 +224,14 @@ lives, what Castelnuovo–Severi says, what a Künneth square adds, and what sep
 | Heat flow: Hodge defect of `K_t` = nonreal right zeros of `H_t` = pairs colliding after `t`; nonincreasing, jumps at collisions, zero for `t ≥ 1/8`; RH = Hodge index along the flow | `boostPolarIndex_heatDilationKernel`, `boostPolarIndex_heat_eq_sum_collisionPairs`, `antitoneOn_boostPolarIndex_heat`, `exists_left_boostPolarIndex_heat_eq_add_collisionPairs`, `renormalizedHodgeIndex_heat_of_eighth_le`, `riemannHypothesis_iff_forall_renormalizedHodgeIndex_heat`, `boostPolarIndex_ratCorr_lt_top_iff_bdd_heat` | unconditional; equivalence |
 | Mayer scattering defect: prime-Hecke and Lewis three-term representations of `−D_s(ψ_s) ≥ 0` (`1 + p^{1−2s} ≠ 0` on the strip); infinitely many `Re s = 1/4` resonances with `D_s(ψ_s) = 0` vs positive `H_LP`, cusp, and `T_2` norms; reflection-parity separation (`D_s(u_s) D_{s^♯}(u_{s^♯}) < 0`) and reflected physical cusp Krein mean `−2 < 0` on `b_s − b_{s^♯}`; nonnegative expression of `D_s(ψ_s)` ⇔ `∀ s, D_s(ψ_s) = 0` ⇔ physical cusp Krein positivity ⇔ RH | `heckeEigenvalue_ne_zero_of_isMayerScatteringResonance`, `resonantLewisPeriod_coIsometryDefect_eq_hecke`, `resonantLewisPeriod_add_one_eq_sub`, `neg_resonantLewisPeriod_coIsometryDefect_arithmetic`, `criticalUpperMayerResonances_infinite`, `criticalResonance_defect_zero_vs_positive_norms`, `defect_reflection_parity_and_cusp_obstruction`, `mayerDefect_nonneg_representation_iff` | unconditional; equivalence |
 
+The actual Mayer trace has reflected defect `T(1−w)−T(w)` with residues
+`−1` at both `0` and `1` and a holomorphic remainder on `−1<Re w<2`.
+`MayerArithmeticReflection.exists_spectralDeterminant_no_scalar_arithmetic_reflection_in_open`
+excludes `D(1−conj w,conj λ)=c(w)conj D(w,λ)` on every nonempty open
+critical-strip subset, for every factor independent of `λ`. The ordinary
+reflection version is proved as well. This concerns the full spectral
+family; selected scattering divisors and physical signed descent remain open.
+
 ## 6. Tools
 
 The tools named in the founding question, and where they live:

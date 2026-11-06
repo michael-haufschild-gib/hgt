@@ -4,8 +4,8 @@
 positivity — and which unconditional mechanism reaches that information?
 
 Primary namespace `GaloisForLFunctions.SquareRootThreshold`; cluster-product bounds use
-`SquareRootThreshold`; `SmoothWeilDetectorPolynomialAperture` and `EffectiveHorizons/` use `RHTower`.
-Umbrella `SquareRootThreshold.lean`. 169 files. Base objects come from `Zeta23`
+`SquareRootThreshold`; `SmoothWeilDetectorPolynomialAperture` and most of `EffectiveHorizons/` use `RHTower`.
+Umbrella `SquareRootThreshold.lean`. 170 files. Base objects come from `Zeta23`
 and `RHTower` (`ZeroConfig`, `paperFT`, `gammaOf`, `zetaZeroConfig`, explicit formula); do not redefine.
 
 ---
@@ -154,6 +154,13 @@ and `RHTower` (`ZeroConfig`, `paperFT`, `gammaOf`, `zetaZeroConfig`, explicit fo
 `|M(T)−T log(T)/π|≤εT log(T)` for `T≥Z(ε)`. For Hausdorff order `k`, set
 `K=10(k+1)+20` and `H=max(Z(1/500),500,42(k+1)+44K)`. Every calibrated
 Hausdorff difference with shift `r≥ceil(20K)+ceil(KH²)+1` is nonnegative.
+
+The centre Taylor sequence of ξ is **PF54**, and its first 55 reciprocal even coefficients are
+nonnegative (`xi_centre_pfSeq_fiftyFour`, `evenRecipCoeff_XiC_nonneg_of_le_fiftyFour`). Retaining
+the negative Gamma constant and both line-conjugate resolvent terms gives zero-depth bounds
+`5/12` for `14≤|γ|≤16` and `7/16` for `14≤|γ|≤18`. Combined with the fourth-trace height floor,
+these cover the order-54 cone (`EffectiveHorizons/LowHeightGammaPF54`, primary namespace).
+All-order centre positivity remains open.
 
 ### D. Prime side
 25. **Localized explicit formula** $W_\zeta(S_\xi f)=A_f(\xi)-\Pi_f(\xi)$; $\Pi_f$ is real; windowed mean of

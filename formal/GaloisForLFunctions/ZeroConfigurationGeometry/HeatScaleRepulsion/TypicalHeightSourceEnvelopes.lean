@@ -46,7 +46,10 @@ theorem typicalXiSlopeError_le_envelope {η T α : ℝ}
   rw [Real.log_mul (by norm_num : (8 : ℝ) ≠ 0) hα0.ne'] at hlog
   unfold typicalXiSlopeError typicalSlopeEnvelope
   have hm := mul_le_mul_of_nonneg_left hlog (show 0 ≤ 96 / η ^ 2 by positivity)
-  nlinarith only [hm]
+  calc
+    _ = (96 / η ^ 2) * Real.log (1 + Real.log (4 * T)) + (216 / η ^ 2 + 4) := by ring
+    _ ≤ (96 / η ^ 2) * (Real.log 8 + Real.log α) + (216 / η ^ 2 + 4) := add_le_add hm le_rfl
+    _ = _ := by ring
 
 /-- The lower-tail source ratio has a logarithmic exponential envelope. -/
 theorem typicalXiTailFactor_le_envelope {η T α : ℝ}

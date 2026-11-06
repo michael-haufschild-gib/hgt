@@ -25,6 +25,15 @@ cosine sign, so every unequal pair still has a negative frequency.
 The [current identity](../3-formalized/full-theta-aperture-current.md)
 identifies this weighted tail as half the actual Hedenmalm current and
 transfers the explicit remainder bound with the exact normalization.
-These are absolute scalar bounds. The signed lower bound controlling
-all polynomial tests, and hence the full-theta all-rank theorem, remain
-unproved.
+The [Gaussian remainder theorem](../3-formalized/full-theta-gaussian-rank-uniform-remainder.md)
+bounds the actual-minus-truncated Hankel form by `ε_M(a)` times the
+Gaussian moment form, simultaneously at every rank and every coefficient
+vector. Every fixed positive Gaussian window is complete for the actual
+current's sign criterion.
+
+The [fixed-head margin obstruction](../3-formalized/full-theta-fixed-head-gaussian-margin.md)
+shows that every fixed ordinary-pair head fails to dominate its positive
+uniform Gaussian error at some finite rank. Even the first-atom head is
+strictly positive definite at every finite Gaussian rank without a positive
+rank-uniform margin. The full current's signed lower bound, and the
+full-theta all-rank theorem, remain unproved.

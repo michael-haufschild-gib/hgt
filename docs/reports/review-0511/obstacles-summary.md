@@ -20,7 +20,7 @@ exceptional values of ζ (a dense `G_δ` null set).
 3. **A width axis runs through the routes [L/D].** Interior values are zero-free strips. All routes stop at the Euler edge.
 4. **The problem has a prime-free form [L].** RH ⇔ blind positivity; blind energy is `(1/π)∫|𝓜f|²(θ′+1−Re ζ(½+it))`.
 5. **Kernel regularity is closed in substance [L/D].** The increment bound and residual limits give absolute continuity. Every bound carries `2C²/μ(a)`, which is the whole remaining gap in the chain.
-6. **TH splits [L/N].** First atoms are PD at every rank, every cutoff. Integrated pair spectra have a positive radial factor times the log-ratio cosine: diagonal pairs positive, each unequal pair negative at some frequency [L]. Full tails fail at `b=2γ₄` for small `r`, so fibrewise allocation is dead and the aperture weight must stay.
+6. **TH splits [L/N].** First atoms are PD at every rank, every cutoff. Integrated pair spectra have a positive radial factor times the log-ratio cosine: diagonal pairs positive, each unequal pair negative at some frequency [L]. With the aperture weight retained, `Θ₁+Θ₂` has PD signed sections at every rank and every `0<a<½` [L]. Full tails fail at `b=2γ₄` for small `r`, so fibrewise allocation is dead and the aperture weight must stay.
 7. **The heat horizon is strip-strength near its floor [L/D].** `c d²/log X≤Λ_X≤(6600/9991+ε)/log X`.
 8. **Positive mimic = window sign [D].**
 
@@ -516,9 +516,10 @@ Tests as listed below. T1 is read as: implied by RH and not implying quasi-RH. T
 
 ### 2.5.2 Route PM — a PM-native zero-free line (B46)
 **Question.** Can the Mayer/Lewis–Hecke carrier alone prove `ζ(2s)≠0` on `Re 2s=1`, without the Euler-product inequality?
+- **Answer: yes, formalized.** The actual Eisenstein lift, its Maass–Selberg norm and nonzero first Whittaker mode prove `MayerBoundaryNorm.mayer_boundary_denominator_ne_zero`. The completed scattering quotient has unit modulus; the actual Mayer determinant and pole cofactor have the same zeros on the nonreal upper boundary. Direct checks and transitive standard-axiom audits passed. [Proof, independence audit and Lean declarations](../../drafts/pipeline/3-formalized/mayer-boundary-maass-selberg-norm.md).
 - **Tests.** All pass. Blaschke insertion (Γ22) is the fake it must exclude.
-- **Gives.** The first zero information PM produces by itself. It currently produces none.
-- **Limit.** The proof may reduce to the Euler product, in which case PM adds no independent zero information.
+- **Gives.** Boundary zero information from the actual geometric Mayer carrier.
+- **Limit.** The absolute-convergence chamber uses the convergent Möbius convolution identity; the boundary proof uses no Euler-product inequality. Interior resonance exclusion remains open.
 
 ### 2.5.3 Route WD — log-free window occupancy (B21)
 **Question.** For every `A`, do at most `ε(A)V` unit windows of `[V,2V]` hold a zero of depth `≥A/log V`, with `ε(A)→0`?
@@ -535,12 +536,14 @@ Tests as listed below. T1 is read as: implied by RH and not implying quasi-RH. T
 
 ### 2.5.5 Route TH — the first unequal atom pair
 **Question.** Does the two-atom source `Θ₁+Θ₂`, with aperture weight retained, have positive signed sections at every rank and every `a`?
+- **Answer: yes, formalized for every `0<a<½`.** Convex aperture weights let the two diagonal terms pay the cross pair at every frequency. The exact literal jet and Fourier identities give `CompletedArithmeticForms.twoAtomApertureMatrix_posDef`, positive determinants, and positive successor Schur coordinates at every rank. All eight modules passed direct checks and transitive standard-axiom audits. [Proof and Lean declarations](../../drafts/pipeline/3-formalized/two-atom-aperture-convexity.md).
 - **Tests.** T2, T3, T4 pass. T1 and T5 do not apply as stated: this is a statement about a model source, and only prime 2 enters.
 - **Gives.** The first rank-uniform statement with a cross pair, and the correct form of allocation after fibrewise tails fail [N/D].
-- **Limit.** Decides nothing about ζ alone. A refutation would also be informative: it would locate where cross pairs break the weighted form.
+- **Limit.** Decides nothing about ζ alone; the full theta source still requires allocation of all unequal pairs.
 
 ### 2.5.6 Route ZCG — the saddle on almost all heights (B73)
 **Question.** Does `Λ_X log X → 0` on a density-one set of heights?
+- **Answer: yes, formalized.** One measurable density-one set satisfies the exact limit for `localNewmanConstant`. On the same set, every `κ>0` eventually gives real zeros throughout `|Re z−X|≤1` simultaneously for all `τ≥κ/log X`. Theorems: `ZeroConfigurationGeometry.exists_densityOne_localNewman_scaled_tendsto_zero` and `exists_densityOne_eventual_local_heat_reality`; direct checks and transitive standard-axiom audits passed. [Proof and Lean declarations](../../drafts/pipeline/3-formalized/local-newman-density-one.md).
 - **Tests.** T1–T5, T7 pass. Density-one `(½+ε)/log X` is reachable from mean values (A51); crossing `½` is the content.
 - **Gives.** The heat-flow form of clustering.
 - **Limit.** Exceptional heights remain. The relation to B20 is expected, not proved.
@@ -589,7 +592,9 @@ The closest existing programme is critical Hardy theory of the window cone. The 
 
 **A research programme, not a new field.** It supplies ZCG's first tool below the saddle that does not rest on size. It does not exclude a collision by itself. The PDE inputs are [C]; none is in Lean.
 
-**Why ZCG needs it.** Every present bound on the half-Gaussian source is a size bound, and size stops at the saddle `½/log X` [L]. Lowering the coefficient by size needs Lindelöf-strength input, and a small enough coefficient forces a zero-free strip [D]. A different kind of input is needed.
+**Why ZCG needs it.** Uniform bounds from unconditioned source sizes stop at the saddle `½/log X` [L]. Lowering the coefficient uniformly by size needs Lindelöf-strength input, and a small enough uniform coefficient forces a zero-free strip [D]. Exceptional heights still require a different input.
+
+**B73 is settled on a density-one set [L].** Typical-height zero-free boxes give a small relative source derivative. The half-Gaussian argument then proves `Λ_X log X → 0` on one measurable density-one set, with reality throughout each unit window at every later time above `κ/log X`. This does not establish the local repulsion law below or an implication to B20. [Exact theorem and proof](../../drafts/pipeline/3-formalized/local-newman-density-one.md).
 
 **The change of viewpoint.** `u(X,t)=H_t(X)` solves `∂_t u=−∂_X²u`, so decreasing `t` is forward parabolic flow. RH says the nodal curves of `u` in the half-plane `t>0` have no turning points. A collision is a point where `u` vanishes to parabolic order two, with local model `x²−2(t−t₀)`.
 
@@ -604,7 +609,7 @@ The closest existing programme is critical Hardy theory of the window cone. The 
 **The central question.** Is there `c>0` with `g_t²≥c·min(t, log⁻²X)` for every adjacent pair of real zeros near height `X` and every `t>0`?
 - It implies no positive-time collision, hence RH.
 - The converse is expected away from clusters but unproved.
-- The density-one version is sub-RH and gives a mechanism for B73.
+- The density-one version would give another mechanism for the now-proved B73 conclusion.
 
 **(a) Just work**
 1. Sturm drop law for `H_t` in buffered windows.

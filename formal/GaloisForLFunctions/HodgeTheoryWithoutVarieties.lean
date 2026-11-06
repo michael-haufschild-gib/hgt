@@ -37,3 +37,4 @@ cross-conductor pairings; and the homotopy equivalence between the squarefree pr
 and its wedge of spheres indexed by odd squarefree integers in the upper half-window.
 See `HodgeTheoryWithoutVarieties/README.md`.
 -/
+import GaloisForLFunctions.HodgeTheoryWithoutVarieties.TheDepthLawIsEffective

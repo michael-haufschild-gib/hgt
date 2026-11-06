@@ -475,3 +475,12 @@ The observation side says that the RH-relevant quantities are unstable: polar ba
 finite-order cycle data never suffice, exact incidence breaks under perturbation, sieve phases need
 degree six. Positivity cannot be obtained by limits, compactness or finite observation; it has to come
 from an exact arithmetic identity at the square-root scale.
+
+## Positive spectral Xi divisor capacity
+
+`PositiveSpectralXiDivisorCapacity` proves that an even nonnegative entire spectral
+density vanishing at every simple critical Xi zero carries at least `4 N₀,s(T)`
+zeros in each containing disc, counted with multiplicity. Consequently a
+strip-holomorphic Xi factor nonzero at the origin has no autocorrelation bound
+`C exp(−a exp(b|x|))` with `a>0`, `b>3/2`. Pointwise factorization suffices;
+no analytic quotient or Xi multiplicity transfer is required.

@@ -380,7 +380,7 @@ theorem exists_local (hW : BufferedWindow t₁ t₂ a b) {u : ℝ} (hu : u ∈ I
 /-- The collision times of the window. -/
 theorem finite_times (hW : BufferedWindow t₁ t₂ a b) :
     {s : ℝ | s ∈ Ioc t₁ t₂ ∧ windowCollisionMass s (a s) (b s) ≠ 0}.Finite :=
-  (finite_collisionTimes hW.pos).subset fun s hs => ⟨hs.1.1,
+  (finite_collisionTimes hW.pos).subset fun _ hs => ⟨hs.1.1,
     collisionMass_ne_zero_of_windowCollisionMass_ne_zero (hW.pos.trans hs.1.1) hs.2⟩
 
 /-- **The Sturm drop law.** On a buffered window, `Z(t₂) = Z(t₁) + Σ_{t₁ < s ≤ t₂} M(s)`. -/

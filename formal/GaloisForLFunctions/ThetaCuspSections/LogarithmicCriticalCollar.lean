@@ -87,7 +87,7 @@ private theorem current_uniform_exp : ∃ C : ℝ, 0 < C ∧
     _ ≤ _ := mul_le_mul_of_nonneg_right (le_add_of_nonneg_right zero_le_one) (Real.exp_pos _).le
 
 /-- The part of a raw moment outside a symmetric frequency window. -/
-private def tailMoment (a T : ℝ) (k : ℕ) : ℝ :=
+def tailMoment (a T : ℝ) (k : ℕ) : ℝ :=
   ∫ b : ℝ, {b : ℝ | T < |b|}.indicator (fun b => b^k*current a b) b
 
 /-- One exponential tail estimate controls every moment order with factorial growth. -/
@@ -203,7 +203,7 @@ private theorem factorial_tail_cost_le_exp {M m r K S : ℝ}
   exact hbound.trans (he.le.trans (Real.exp_le_exp.mpr (polynomial_exponent_bound hS N)))
 
 /-- A fixed cubic cutoff pays half the compact moment floor at every rank. -/
-private theorem exists_cubic_tail_payment {M m r K κ : ℝ}
+theorem exists_cubic_tail_payment {M m r K κ : ℝ}
     (hM : 0 < M) (hm : 0 < m) (hr : 0 < r) (hK : 1 ≤ K) (hκ : 0 < κ) :
     ∃ D : ℝ, 4 ≤ D ∧ ∀ N : ℕ,
       ((N.factorial:ℝ)*(Nat.factorial (2*N):ℝ)^N)*
@@ -329,7 +329,7 @@ private theorem fixed_current_core : ∃ m r ε : ℝ, 0 < m ∧ 0 < r ∧ r ≤
   have hlow := (abs_le.mp (hdiff.trans hCpay)).1
   linarith only [hlow,hfloor b hb]
 
-private theorem nonnegative_current_compact_comparison {g : ℝ→ℝ} {m r : ℝ}
+theorem nonnegative_current_compact_comparison {g : ℝ→ℝ} {m r : ℝ}
     (hr : 0 < r) (hpos : ∀ b : ℝ, 0 ≤ g b)
     (hfloor : ∀ b : ℝ, b∈Icc 0 r → m ≤ g b)
     (hintg : ∀ k : ℕ, Integrable (fun b : ℝ => b^k*g b))
@@ -364,7 +364,7 @@ private theorem nonnegative_current_compact_comparison {g : ℝ→ℝ} {m r : �
   exact hcmp.trans hwhole
 
 /-- A nonnegative current with a compact positive core inherits factorial moment coercivity. -/
-private theorem nonnegative_current_factorial_floor {g : ℝ→ℝ} {m r : ℝ}
+theorem nonnegative_current_factorial_floor {g : ℝ→ℝ} {m r : ℝ}
     (hm : 0 < m) (hr : 0 < r) (hr1 : r ≤ 1) (hpos : ∀ b : ℝ, 0 ≤ g b)
     (hfloor : ∀ b : ℝ, b∈Icc 0 r → m ≤ g b)
     (hintg : ∀ k : ℕ, Integrable (fun b : ℝ => b^k*g b))
@@ -388,16 +388,16 @@ private theorem nonnegative_current_factorial_floor {g : ℝ→ℝ} {m r : ℝ}
       ring
     _ ≤ _ := mul_le_mul_of_nonneg_left hcmp hB
 
-private def truncatedCurrent (a T b : ℝ) : ℝ :=
+def truncatedCurrent (a T b : ℝ) : ℝ :=
   {b : ℝ | |b| ≤ T}.indicator (current a) b
 
-private def truncatedHankel (a T : ℝ) (N : ℕ) : Matrix (Fin N) (Fin N) ℝ :=
+def truncatedHankel (a T : ℝ) (N : ℕ) : Matrix (Fin N) (Fin N) ℝ :=
   HTGeometry.momentHankelMatrix (weightedMoment volume (truncatedCurrent a T)) N
 
-private def tailHankel (a T : ℝ) (N : ℕ) : Matrix (Fin N) (Fin N) ℝ :=
+def tailHankel (a T : ℝ) (N : ℕ) : Matrix (Fin N) (Fin N) ℝ :=
   fun i j => tailMoment a T (i.val+j.val)
 
-private theorem truncated_integrable (a T : ℝ) (ha : |a| < 1) (k : ℕ) :
+theorem truncated_integrable (a T : ℝ) (ha : |a| < 1) (k : ℕ) :
     Integrable (fun b : ℝ => b^k*truncatedCurrent a T b) := by
   have h := (raw_integrable a ha k).indicator
     ((isClosed_le continuous_abs continuous_const).measurableSet :
@@ -411,12 +411,12 @@ private theorem truncated_integrable (a T : ℝ) (ha : |a| < 1) (k : ℕ) :
   rw [he]
   exact h
 
-private theorem tail_integrable (a T : ℝ) (ha : |a| < 1) (k : ℕ) :
+theorem tail_integrable (a T : ℝ) (ha : |a| < 1) (k : ℕ) :
     Integrable ({b : ℝ | T < |b|}.indicator (fun b : ℝ => b^k*current a b)) :=
   (raw_integrable a ha k).indicator (isOpen_lt continuous_const continuous_abs).measurableSet
 
 /-- Frequency truncation and its tail partition each actual moment exactly. -/
-private theorem raw_eq_truncated_add_tail (a T : ℝ) (ha : |a| < 1) (N : ℕ) :
+theorem raw_eq_truncated_add_tail (a T : ℝ) (ha : |a| < 1) (N : ℕ) :
     rawHankel a N = truncatedHankel a T N+tailHankel a T N := by
   ext i j
   change (∫ b : ℝ, b^(i.val+j.val)*current a b) =
@@ -431,7 +431,7 @@ private theorem raw_eq_truncated_add_tail (a T : ℝ) (ha : |a| < 1) (N : ℕ) :
   · simp only [truncatedCurrent,Set.indicator_of_notMem (show b∉{b : ℝ | |b| ≤ T} from hb),
       Set.indicator_of_mem (show b∈{b : ℝ | T < |b|} from lt_of_not_ge hb),mul_zero,zero_add]
 
-private theorem truncated_current_factorial_floor {a T m r : ℝ}
+theorem truncated_current_factorial_floor {a T m r : ℝ}
     (ha : |a| < 1) (hm : 0 < m) (hr : 0 < r) (hr1 : r ≤ 1) (hrT : r ≤ T)
     (hpos : ∀ b : ℝ, |b| ≤ T → 0 ≤ current a b)
     (hfloor : ∀ b : ℝ, b∈Icc 0 r → m ≤ current a b)
@@ -467,19 +467,18 @@ private theorem tail_entry_bound {M K : ℝ} (hM : 0 < M) (hK : 1 ≤ K)
   have h := (htail a ha T hT (i.val+j.val)).trans (by simpa only [mul_assoc] using hbound)
   simpa only [tailHankel,mul_assoc] using h
 
-/-- Every finite actual theta rank is strict in a critical collar of logarithmic width. -/
-theorem signedHankel_posDef_logarithmic_collar : ∃ c : ℝ, 0 < c ∧
-    ∀ N : ℕ, ∀ a : ℝ,
-      |a-1/2| < c/(1+Real.log ((N:ℝ)+1)) →
+/-- **The window criterion.** Near the centre, nonnegativity of the current on a cubic frequency
+window makes the signed section of rank `N` positive definite. -/
+theorem exists_signedHankel_posDef_of_current_nonneg_on_window : ∃ D ε : ℝ, 4 ≤ D ∧ 0 < ε ∧
+    ∀ N : ℕ, ∀ a : ℝ, |a-1/2| ≤ ε → 0 < a → |a| ≤ 3/4 →
+      (∀ b : ℝ, |b| ≤ D*((N:ℝ)+1)^3 → 0 ≤ current a b) →
         (thetaCuspCenterMixedSignedHankel a N).PosDef := by
   obtain ⟨m,r,ε,hm,hr,hr1,hε,hεsmall,hcore⟩ := fixed_current_core
   obtain ⟨M,K,hM,hK,htail⟩ := tailMoment_factorial_exp
   have hK0 : 0 < K := zero_lt_one.trans_le hK
   obtain ⟨D,hD,hpayment⟩ := exists_cubic_tail_payment hM hm hr hK
     (by positivity : (0:ℝ) < Real.pi/8)
-  obtain ⟨c,hc,hwidth⟩ := exists_logarithmic_window_width hD hε
-  refine ⟨c,hc,fun N a ha => ?_⟩
-  obtain ⟨hsmall,ha0,habs,hregion⟩ := hwidth N a ha
+  refine ⟨D,ε,hD,hε,fun N a hsmall ha0 habs hwindow => ?_⟩
   have ha1 : |a| < 1 := habs.trans_lt (by norm_num)
   apply signed_posDef_of_raw ha1 N
   rw [Matrix.posDef_iff_dotProduct_mulVec]
@@ -497,8 +496,7 @@ theorem signedHankel_posDef_logarithmic_collar : ∃ c : ℝ, 0 < c ∧
       exact le_add_of_nonneg_left (Nat.cast_nonneg _)
     have hT0 : 0 ≤ T := (by norm_num : (0:ℝ) ≤ 4).trans hT
     have hrT : r ≤ T := hr1.trans ((by norm_num : (1:ℝ) ≤ 4).trans hT)
-    have hpos (b : ℝ) (hb : |b| ≤ T) : 0 ≤ current a b :=
-      current_nonneg_on_frequency_window ha0 hregion hb
+    have hpos (b : ℝ) (hb : |b| ≤ T) : 0 ≤ current a b := hwindow b hb
     let B : ℝ := (Nat.factorial (n+1):ℝ)*(Nat.factorial (2*(n+1)):ℝ)^(n+1)
     let E : Matrix (Fin (n+1)) (Fin (n+1)) ℝ := tailHankel a T (n+1)
     let P : ℝ := (n+1:ℕ)*M*K^(2*(n+1))*(Nat.factorial (2*(n+1)):ℝ)*
@@ -528,6 +526,18 @@ theorem signedHankel_posDef_logarithmic_collar : ∃ c : ℝ, 0 < c ∧
       nlinarith only [hzero,hlow,hpaid,hsplitB]
     have hpositive : 0 < (m*r^(2*(n+1)+1)/2)*(v ⬝ᵥ v) := by positivity
     exact (mul_pos_iff_of_pos_left hB).mp (hpositive.trans_le hfinal)
+
+/-- Every finite actual theta rank is strict in a critical collar of logarithmic width. -/
+theorem signedHankel_posDef_logarithmic_collar : ∃ c : ℝ, 0 < c ∧
+    ∀ N : ℕ, ∀ a : ℝ,
+      |a-1/2| < c/(1+Real.log ((N:ℝ)+1)) →
+        (thetaCuspCenterMixedSignedHankel a N).PosDef := by
+  obtain ⟨D,ε,hD,hε,hcrit⟩ := exists_signedHankel_posDef_of_current_nonneg_on_window
+  obtain ⟨c,hc,hwidth⟩ := exists_logarithmic_window_width hD hε
+  refine ⟨c,hc,fun N a ha => ?_⟩
+  obtain ⟨hsmall,ha0,habs,hregion⟩ := hwidth N a ha
+  exact hcrit N a hsmall ha0 habs fun b hb =>
+    current_nonneg_on_frequency_window ha0 hregion hb
 
 /-- The logarithmic collar at rank `N` applies simultaneously to all smaller sections. -/
 theorem signedHankel_posDef_logarithmic_collar_upto : ∃ c : ℝ, 0 < c ∧

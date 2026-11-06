@@ -39,3 +39,4 @@ cycles as jump counts and Riemann–Roch outside a finite divisor; calibration o
 Stepanov count for hyperelliptic curves.
 See `LatticeSectionTheory/README.md`.
 -/
+import GaloisForLFunctions.LatticeSectionTheory.ThePrimitiveH1IsCoerciveAtSmallDegree

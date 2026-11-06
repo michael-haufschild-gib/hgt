@@ -1,8 +1,8 @@
 # Precontact kernel absolute continuity
 
 - **ID:** precontact-kernel-absolute-continuity
-- **Stage:** 1-in-progress
-- **Type:** CONJECTURE
+- **Stage:** 3-formalized
+- **Type:** THEOREM
 - **Wall:** Σ75; regularity part of Σ35.
 - **Statement:** On every compact precontact aperture interval, evaluation Gram functions are absolutely continuous, with density given by the two endpoint traces.
 
@@ -15,8 +15,6 @@ The existing actual-source limits give
 Hence the right upper derivative of the diagonal kernel is at most
 `|τ_L(a,z)|²+|τ_R(a,z)|²` at every precontact aperture.
 
-Remaining formal obligations: finite evaluation Gram absolute continuity
-and its combined trace-density identity.
 None of these estimates is asserted uniformly at contact.
 
 For the lower bound, take
@@ -52,27 +50,22 @@ the collar approximation additionally identifies its trace density.
 
 ## Formal results
 
-`eventually_kernel_increment_le_endpoint_energy` and
-`exists_left_aperture_small_evalVectorIncrement` are kernel-checked in
-`TheWeilKernelHasFiniteRightGrowth.lean`; their transitive axioms are
+Namespace `GaloisForLFunctions.CriticalHardyTheoryOfTheWindowCone`:
+
+- `absolutelyContinuousOnInterval_evalGram`: every finite evaluation Gram is absolutely continuous on compact precontact intervals.
+- `hasDerivWithinAt_evalGram_right`: its right derivative at every precontact aperture is `|Σ α_i τ_L(z_i)|²+|Σ α_i τ_R(z_i)|²`.
+- `evalDensity_ae_eq_endpointEnergy`: the ordinary derivative agrees almost everywhere with this actual trace energy.
+- `integral_evalGramEndpointEnergy_eq_sub`: the trace energy is integrable and its integral equals the full Gram gain.
+
+Sources: `TheEvaluationGramHasNoSingularPrecontactPart.lean` and
+`TheEvaluationGramsHaveTheirEndpointSlope.lean`, under
+`formal/GaloisForLFunctions/CanonicalSystemOfTheWindowTower/`.
+Both are wired into the programme umbrella. The final source audit used
+`lake --old env lean` without output artifacts. All transitive axioms are
 `propext`, `Classical.choice`, and `Quot.sound`.
-
-`TheConstantCollarsReadTheWeilTraces.lean` proves both actual residual mean
-limits, the sharp joint collar-energy upper bound, and the variational
-lower bound with its squared trial-error estimate. Its transitive axiom
-audit has the same three axioms.
-
-`TheWeilKernelHasItsEndpointSlope.lean` proves the exact right diagonal
-slope and `‖ΔE_z−u_{h,z}‖²/h → 0` for every admitted collar pair. Its
-transitive axiom audit has the same three axioms.
-
-`TheWeilDiagonalKernelsAreAbsolutelyContinuous.lean` proves continuity,
-the exact right derivative, absolute continuity, and exact integration of
-the diagonal endpoint energy on every compact precontact interval. Its
-transitive axiom audit has the same three axioms.
 
 ## Gates
 
 - [x] Source and conjecture fixed before formalization.
 - [x] Dependency-closed paper proof of absolute continuity and trace density.
-- [ ] Lean formalization and transitive axiom audit.
+- [x] Lean formalization and transitive axiom audit.

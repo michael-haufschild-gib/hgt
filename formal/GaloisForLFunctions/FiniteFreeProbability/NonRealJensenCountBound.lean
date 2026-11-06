@@ -509,12 +509,11 @@ theorem eventually_loglog_le : ∀ᶠ d : ℕ in atTop, Real.log (Real.log (d : 
   simp only [id, Real.norm_eq_abs, abs_of_pos hpos] at hd
   exact (le_abs_self _).trans hd
 
-/-- **For large `d`, `X_d` is a saddle range.** -/
-theorem eventually_saddleRange :
-    ∀ᶠ d : ℕ in atTop, SaddleRange d (saddleX d) ∧ 10 ≤ saddleX d := by
-  filter_upwards [eventually_gt_atTop 0, tendsto_log_natCast.eventually_ge_atTop (5 * Real.exp 14 + 1000),
-    eventually_log_le_mul (show (0 : ℝ) < 1 / 200000 by norm_num), eventually_loglog_le,
-    eventually_ge_atTop 1000000] with d hd hL hlog hll hd1
+/-- `X_d` is a saddle range under explicit size conditions on `d`. -/
+theorem saddleRange_of_bounds {d : ℕ} (hd : 0 < d) (hL : 5 * Real.exp 14 + 1000 ≤ Real.log (d : ℝ))
+    (hlog : Real.log (d : ℝ) ≤ 1 / 200000 * d)
+    (hll : Real.log (Real.log (d : ℝ)) ≤ 1 / 10 * Real.log d) (hd1 : 1000000 ≤ d) :
+    SaddleRange d (saddleX d) ∧ 10 ≤ saddleX d := by
   have hdR : (0 : ℝ) < d := by exact_mod_cast hd
   have hexp : 0 < Real.exp 14 := Real.exp_pos _
   set L := Real.log (d : ℝ) with hLdef
@@ -547,12 +546,18 @@ theorem eventually_saddleRange :
   rw [Real.log_mul hdR.ne' (by linarith)] at hlogN
   linarith
 
-/-- **Finite degree Ki–Kim–Lee.** For large `d`, `R_d(Ξ)` has at least `d − 300 √(d log d)` distinct real roots. -/
-theorem eventually_exists_real_roots_sqrt :
-    ∀ᶠ d : ℕ in atTop, ∃ S : Finset ℝ, (d : ℝ) - 300 * Real.sqrt (d * Real.log d) ≤ S.card ∧
+/-- **For large `d`, `X_d` is a saddle range.** -/
+theorem eventually_saddleRange :
+    ∀ᶠ d : ℕ in atTop, SaddleRange d (saddleX d) ∧ 10 ≤ saddleX d := by
+  filter_upwards [eventually_gt_atTop 0, tendsto_log_natCast.eventually_ge_atTop (5 * Real.exp 14 + 1000),
+    eventually_log_le_mul (show (0 : ℝ) < 1 / 200000 by norm_num), eventually_loglog_le,
+    eventually_ge_atTop 1000000] with d hd hL hlog hll hd1
+  exact saddleRange_of_bounds hd hL hlog hll hd1
+
+/-- Finite degree Ki–Kim–Lee on a saddle range. -/
+theorem exists_real_roots_sqrt_of_range {d : ℕ} (hR : SaddleRange d (saddleX d)) (hX10 : 10 ≤ saddleX d) :
+    ∃ S : Finset ℝ, (d : ℝ) - 300 * Real.sqrt (d * Real.log d) ≤ S.card ∧
       ∀ x ∈ S, (xiJensenReal d).IsRoot x := by
-  filter_upwards [eventually_saddleRange] with d hd
-  obtain ⟨hR, hX10⟩ := hd
   have hX6 : 6 ≤ saddleX d := by linarith
   obtain ⟨S, hS, hroots⟩ := hR.exists_real_roots hX6
   refine ⟨S, ?_, hroots⟩
@@ -591,11 +596,18 @@ theorem eventually_exists_real_roots_sqrt :
     linarith
   linarith
 
-/-- **The non-real count of `R_d(Ξ)` is at most `300 √(d log d)` for all large `d`.** -/
-theorem eventually_jensenNonrealCount_le_sqrt :
-    ∀ᶠ d : ℕ in atTop, (jensenNonrealCount d : ℝ) ≤ 300 * Real.sqrt (d * Real.log d) := by
-  filter_upwards [eventually_exists_real_roots_sqrt] with d hd
-  obtain ⟨S, hS, hroots⟩ := hd
+/-- **Finite degree Ki–Kim–Lee.** For large `d`, `R_d(Ξ)` has at least `d − 300 √(d log d)` distinct real roots. -/
+theorem eventually_exists_real_roots_sqrt :
+    ∀ᶠ d : ℕ in atTop, ∃ S : Finset ℝ, (d : ℝ) - 300 * Real.sqrt (d * Real.log d) ≤ S.card ∧
+      ∀ x ∈ S, (xiJensenReal d).IsRoot x := by
+  filter_upwards [eventually_saddleRange] with d hd
+  exact exists_real_roots_sqrt_of_range hd.1 hd.2
+
+/-- The non-real count is at most `300 √(d log d)` on a saddle range. -/
+theorem jensenNonrealCount_le_sqrt_of_range {d : ℕ} (hR : SaddleRange d (saddleX d))
+    (hX10 : 10 ≤ saddleX d) :
+    (jensenNonrealCount d : ℝ) ≤ 300 * Real.sqrt (d * Real.log d) := by
+  obtain ⟨S, hS, hroots⟩ := exists_real_roots_sqrt_of_range hR hX10
   classical
   have hP := xiJensenReal_ne_zero d
   have hsub : S ⊆ (xiJensenReal d).roots.toFinset := fun x hx =>
@@ -612,6 +624,58 @@ theorem eventually_jensenNonrealCount_le_sqrt :
   have hcardR : (S.card : ℝ) ≤ (Multiset.card (xiJensenReal d).roots : ℝ) := by exact_mod_cast hcard
   linarith
 
+/-- **The non-real count of `R_d(Ξ)` is at most `300 √(d log d)` for all large `d`.** -/
+theorem eventually_jensenNonrealCount_le_sqrt :
+    ∀ᶠ d : ℕ in atTop, (jensenNonrealCount d : ℝ) ≤ 300 * Real.sqrt (d * Real.log d) := by
+  filter_upwards [eventually_saddleRange] with d hd
+  exact jensenNonrealCount_le_sqrt_of_range hd.1 hd.2
+
+/-- The size conditions of a saddle range hold once `log d ≥ 6.1·10⁶`. -/
+theorem saddleRange_of_log_ge {d : ℕ} (hL : (61 : ℝ) * 10 ^ 5 ≤ Real.log (d : ℝ)) :
+    SaddleRange d (saddleX d) ∧ 10 ≤ saddleX d := by
+  have hLpos : 0 < Real.log (d : ℝ) := lt_of_lt_of_le (by norm_num) hL
+  have hd : 0 < d := by
+    rcases Nat.eq_zero_or_pos d with h | h
+    · rw [h] at hLpos
+      simp at hLpos
+    · exact h
+  have hdR : (0 : ℝ) < d := by exact_mod_cast hd
+  set L := Real.log (d : ℝ) with hLdef
+  have hexp : Real.exp L = d := Real.exp_log hdR
+  have hquad : L ^ 2 / 2 ≤ d := by
+    have h := Real.quadratic_le_exp_of_nonneg hLpos.le
+    rw [hexp] at h
+    linarith only [h, hLpos]
+  have hLbig : L * (61 * 10 ^ 5) ≤ L ^ 2 := by nlinarith only [hL, hLpos]
+  have he14 : Real.exp 14 ≤ 1202605 := by
+    have h1 : Real.exp 14 = Real.exp 1 ^ 14 := by
+      rw [← Real.exp_nat_mul]
+      norm_num
+    rw [h1]
+    calc Real.exp 1 ^ 14 ≤ (2.7182818286 : ℝ) ^ 14 :=
+          pow_le_pow_left₀ (Real.exp_pos _).le Real.exp_one_lt_d9.le 14
+      _ ≤ 1202605 := by norm_num
+  refine saddleRange_of_bounds hd (by linarith only [he14, hL]) ?_ ?_ ?_
+  · have h1 : L ≤ L ^ 2 / 400000 := by
+      rw [le_div_iff₀ (by norm_num)]
+      nlinarith only [hLbig, hLpos]
+    have h2 : L ^ 2 / 400000 ≤ (d : ℝ) / 200000 := by
+      rw [div_le_div_iff₀ (by norm_num) (by norm_num)]
+      nlinarith only [hquad]
+    linarith only [h1, h2]
+  · have hLe : L ≤ Real.exp (1 / 10 * L) := by
+      have h := Real.quadratic_le_exp_of_nonneg (show 0 ≤ 1 / 10 * L by positivity)
+      nlinarith only [h, hLbig, hLpos]
+    exact (Real.log_le_iff_le_exp hLpos).2 hLe
+  · have h1 : (1000000 : ℝ) ≤ d := by nlinarith only [hquad, hLbig, hL]
+    exact_mod_cast h1
+
+/-- **Explicit form of the non-real bound:** `N_d ≤ 300 √(d log d)` for every `d ≥ exp(6.1·10⁶)`. -/
+theorem jensenNonrealCount_le_sqrt_of_log_ge {d : ℕ} (hL : (61 : ℝ) * 10 ^ 5 ≤ Real.log (d : ℝ)) :
+    (jensenNonrealCount d : ℝ) ≤ 300 * Real.sqrt (d * Real.log d) := by
+  obtain ⟨hR, hX10⟩ := saddleRange_of_log_ge hL
+  exact jensenNonrealCount_le_sqrt_of_range hR hX10
+
 end
 
 end FiniteFreeProbability
@@ -619,3 +683,4 @@ end FiniteFreeProbability
 #print axioms FiniteFreeProbability.SaddleRange.exists_real_roots
 #print axioms FiniteFreeProbability.eventually_exists_real_roots_sqrt
 #print axioms FiniteFreeProbability.eventually_jensenNonrealCount_le_sqrt
+#print axioms FiniteFreeProbability.jensenNonrealCount_le_sqrt_of_log_ge

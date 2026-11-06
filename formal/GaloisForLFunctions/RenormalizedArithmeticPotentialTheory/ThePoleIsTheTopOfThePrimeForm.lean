@@ -203,9 +203,13 @@ theorem row_scalar_top {A lm lN g e s η ψv AQ : ℝ} (hA : A ≤ AQ) (hηψ : 
     A + lm + η * s * (ψv + lm / 2) ≤ (lN - g + e) * (1 + η * s) := by
   nlinarith [mul_nonneg hηs (sub_nonneg.mpr hlm), mul_nonneg hηs he.le]
 
-/-- **The tilted pole is a Collatz–Wielandt vector for `log N − γ + ε`.** -/
-theorem eventually_row_tiltedPole_le {ε : ℝ} (hε : 0 < ε) :
-    ∃ N₀ : ℕ, ∀ N, N₀ ≤ N → ∀ m ∈ Icc 1 N,
+/-- **The row inequality from one Mertens threshold.** If `A(q) − log q < −γ + ε/2` for `q ≥ Q₀`, the tilted pole is a
+Collatz–Wielandt vector for `log N − γ + ε` at every `N` above the explicit horizon. -/
+theorem row_tiltedPole_le_of_mertens_threshold {ε : ℝ} (hε : 0 < ε) {Q₀ : ℕ}
+    (hQ₀ : ∀ q : ℕ, Q₀ ≤ q → mertensSum q - Real.log q < -γ + ε / 2) {N : ℕ}
+    (hlogN : 2 * γ + 2 * (((Q₀ + 1 : ℕ) : ℝ) * (mertensSum (Q₀ + 1) + γ + 1) /
+        (ε / (2 * (Real.log 4 + 4)))) ≤ Real.log N) (hN1 : 1 ≤ N) :
+    ∀ m ∈ Icc 1 N,
       ∑ n ∈ Icc 1 N, weilPrimeKernel m n * tiltedPole N (ε / (2 * (Real.log 4 + 4))) n ≤
         (Real.log N - γ + ε) * tiltedPole N (ε / (2 * (Real.log 4 + 4))) m := by
   set c : ℝ := Real.log 4 + 4 with hc
@@ -214,17 +218,11 @@ theorem eventually_row_tiltedPole_le {ε : ℝ} (hε : 0 < ε) :
   have hη0 : 0 < η := by positivity
   have hηc : η * c = ε / 2 := by rw [hη]; field_simp
   have hγ0 : 0 < γ := (by norm_num : (0 : ℝ) < 1 / 2).trans Real.one_half_lt_eulerMascheroniConstant
-  obtain ⟨Q₀, hQ₀⟩ := eventually_atTop.mp
-    (tendsto_mertensSum_sub_log.eventually (gt_mem_nhds (by linarith : -γ < -γ + ε / 2)))
   set Q : ℕ := Q₀ + 1
   set AQ : ℝ := mertensSum Q
   have hAQ : 0 ≤ AQ := sum_nonneg fun t _ => div_nonneg vonMangoldt_nonneg (by positivity)
   have hQB : 0 ≤ (Q : ℝ) * (AQ + γ + 1) / η := by positivity
-  obtain ⟨N₀, hN₀⟩ := eventually_atTop.mp
-    ((Real.tendsto_log_atTop.comp tendsto_natCast_atTop_atTop).eventually_ge_atTop
-      (2 * γ + 2 * ((Q : ℝ) * (AQ + γ + 1) / η)))
-  refine ⟨N₀ + 1, fun N hN m hm => ?_⟩
-  have hlogN : 2 * γ + 2 * ((Q : ℝ) * (AQ + γ + 1) / η) ≤ Real.log N := hN₀ N (by omega)
+  intro m hm
   obtain ⟨hm1, hmN⟩ := mem_Icc.mp hm
   have hm0 : (0 : ℝ) < m := by exact_mod_cast hm1
   have hN0 : (0 : ℝ) < N := by exact_mod_cast (show 0 < N by omega)
@@ -297,15 +295,29 @@ theorem eventually_row_tiltedPole_le {ε : ℝ} (hε : 0 < ε) :
       exact h2.trans (mul_le_mul_of_nonneg_right h1 hhalf0)
     exact row_scalar_top hmono hηψ hlogm htilt hηs hε
 
+/-- **The tilted pole is a Collatz–Wielandt vector for `log N − γ + ε`.** -/
+theorem eventually_row_tiltedPole_le {ε : ℝ} (hε : 0 < ε) :
+    ∃ N₀ : ℕ, ∀ N, N₀ ≤ N → ∀ m ∈ Icc 1 N,
+      ∑ n ∈ Icc 1 N, weilPrimeKernel m n * tiltedPole N (ε / (2 * (Real.log 4 + 4))) n ≤
+        (Real.log N - γ + ε) * tiltedPole N (ε / (2 * (Real.log 4 + 4))) m := by
+  have hγ0 : 0 < γ := (by norm_num : (0 : ℝ) < 1 / 2).trans Real.one_half_lt_eulerMascheroniConstant
+  obtain ⟨Q₀, hQ₀⟩ := eventually_atTop.mp
+    (tendsto_mertensSum_sub_log.eventually (gt_mem_nhds (by linarith : -γ < -γ + ε / 2)))
+  obtain ⟨N₀, hN₀⟩ := eventually_atTop.mp
+    ((Real.tendsto_log_atTop.comp tendsto_natCast_atTop_atTop).eventually_ge_atTop
+      (2 * γ + 2 * (((Q₀ + 1 : ℕ) : ℝ) * (mertensSum (Q₀ + 1) + γ + 1) /
+        (ε / (2 * (Real.log 4 + 4))))))
+  exact ⟨N₀ + 1, fun N hN => row_tiltedPole_le_of_mertens_threshold hε hQ₀ (hN₀ N (by omega)) (by omega)⟩
+
 /-! ### 4. The sharp counterterm -/
 
-/-- **The top of the atomic prime form is at most `log N − γ + ε`**, eventually in `N`, on every
-vector. -/
-theorem eventually_atomicWeilForm_le_sharp {ε : ℝ} (hε : 0 < ε) :
-    ∃ N₀ : ℕ, ∀ N, N₀ ≤ N → ∀ x : ℕ → ℝ,
-      atomicWeilForm N x ≤ (Real.log N - γ + ε) * ∑ n ∈ Icc 1 N, x n ^ 2 := by
-  obtain ⟨N₀, hN₀⟩ := eventually_row_tiltedPole_le hε
-  refine ⟨N₀, fun N hN x => atomicWeilForm_le_of_weight _ (fun n hn => ?_) (hN₀ N hN) x⟩
+/-- The tilted pole row inequality bounds the atomic prime form on every vector. -/
+theorem atomicWeilForm_le_sharp_of_row {ε : ℝ} (hε : 0 < ε) {N : ℕ}
+    (hrow : ∀ m ∈ Icc 1 N,
+      ∑ n ∈ Icc 1 N, weilPrimeKernel m n * tiltedPole N (ε / (2 * (Real.log 4 + 4))) n ≤
+        (Real.log N - γ + ε) * tiltedPole N (ε / (2 * (Real.log 4 + 4))) m) (x : ℕ → ℝ) :
+    atomicWeilForm N x ≤ (Real.log N - γ + ε) * ∑ n ∈ Icc 1 N, x n ^ 2 := by
+  refine atomicWeilForm_le_of_weight _ (fun n hn => ?_) hrow x
   have hn0 : (0 : ℝ) < n := by exact_mod_cast (mem_Icc.mp hn).1
   have : 0 < ε / (2 * (Real.log 4 + 4)) := by
     have := Real.log_nonneg (by norm_num : (1 : ℝ) ≤ 4); positivity
@@ -313,6 +325,14 @@ theorem eventually_atomicWeilForm_le_sharp {ε : ℝ} (hε : 0 < ε) :
   have : (0 : ℝ) < N := by
     have := (mem_Icc.mp hn).2; have := (mem_Icc.mp hn).1; exact_mod_cast (by omega : 0 < N)
   positivity
+
+/-- **The top of the atomic prime form is at most `log N − γ + ε`**, eventually in `N`, on every
+vector. -/
+theorem eventually_atomicWeilForm_le_sharp {ε : ℝ} (hε : 0 < ε) :
+    ∃ N₀ : ℕ, ∀ N, N₀ ≤ N → ∀ x : ℕ → ℝ,
+      atomicWeilForm N x ≤ (Real.log N - γ + ε) * ∑ n ∈ Icc 1 N, x n ^ 2 := by
+  obtain ⟨N₀, hN₀⟩ := eventually_row_tiltedPole_le hε
+  exact ⟨N₀, fun N hN x => atomicWeilForm_le_sharp_of_row hε (hN₀ N hN) x⟩
 
 /-- **The covariant counterterm is `log N − γ + o(1)`.** For every `ε > 0`, eventually the scalar
 `log N − γ + ε` renormalizes the atomic prime form, and every renormalizing scalar is at least

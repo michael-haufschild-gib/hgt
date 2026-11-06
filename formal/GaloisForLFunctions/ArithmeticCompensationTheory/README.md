@@ -1,7 +1,7 @@
 # Arithmetic Compensation Theory (ACompT)
 
 Namespace `GaloisForLFunctions.ArithmeticCompensationTheory`; umbrella
-`ArithmeticCompensationTheory.lean`; 30 modules.
+`ArithmeticCompensationTheory.lean`; 31 modules.
 
 ## 1. Motivation
 
@@ -69,6 +69,15 @@ cancellation is the starting point; admission (a horizon-free absolute bound) is
 16. Large-prime sector of the damped Möbius–Ramanujan expansion: $\alpha_P\to1$, defect $\le K_m/\log^mP$ for every $m$ (from all log-powers of Möbius harmonic savings); absolute energy still $O(P^{1-2\varepsilon}/\log^mP)$, growing. Amplitude has bounded (polynomially weighted) dyadic variation.
 17. Two cutoffs share the cutoff-independent divisor remainder: $S_Q-S_P$ cancels it exactly and saves a **power**, $O(P^{1-3\varepsilon})$; relative $O(P^{-\varepsilon}\log^2P)$; absolute $\to0$ for $\varepsilon>\tfrac13$. Moving-projection connection identity splits $R_Q-R_P$ into shift, sector step, and $(\alpha_Q-\alpha_P)L_P$.
 
+The completed Suzuki Abel source satisfies `|A_N| ≤ C√N exp(−κQ(N)/54)` eventually,
+where `Q(N)=(log N)^(3/5)(log log N)^(−5/3)` and `κ=1/(12·10⁸)`.
+Its completed/core energy ratio is at most `K exp(−κQ(N)/27)`.
+These are bounds on the actual signed residual; uniform boundedness remains open.
+
+The centered Wold residual satisfies `abs(R(N)) ≤ B exp(−κQ(N)/48)`.
+Abel summation retains half the VK exponent in the infinite prime harmonic tail;
+the Euler-depletion correction is smaller.
+
 **E. Receiver blow-up, origins, budgets.**
 18. Trivial growth $E_N\le D(1+N^{1-2\varepsilon})$ ⇒ admitted or **blow-up escapes to the horizon** (scales below $E_T^{\theta/(1-2\varepsilon)}$ carry $o(1)$). Normalized profile: unit energy, deep cofactors vanish, exact normalized inversion law $u+D^{\ge2}u=\rho_\varepsilon/\sqrt{E_T}\in[0,n/\sqrt{E_T}]$ (homogeneous in the limit), self-improving identity, Möbius-factored tangent. Escape families embed: drifted $n^{1/4}$, sign-blind majorant (violates the inversion sign), oscillating probes with exact spectral shares.
 19. Origin shift by $k$ costs exactly $(k+1)(k+2)/2$ (attained); admission invariant under finite shifts; a drifting origin is priced by the tail; uniform drift tolerance ⇔ bounded drift ($n^{1/4}$ defeats every unbounded drift).
@@ -94,6 +103,8 @@ cancellation is the starting point; admission (a horizon-free absolute bound) is
 | `curveReceiver_admits_iff`, `weil_iff_cofinal_curveReceiverEnergy` | zero-chain admission law; Weil calibration |
 | `norm_add_sq_eq_compensation`, `exists_compensationDefect_le_inv_log_pow` | Pythagorean law; all-log-power rate |
 | `exists_twoScaleCompleteShiftEnergy_le_pow_saving` | two-scale power saving |
+| `exists_abs_suzukiCompletedAbelSource_le_vinogradovKorobov`, `exists_suzukiCompletedEnergy_ratio_le_vinogradovKorobov` | VK bound for the completed Suzuki residual and its relative energy |
+| `exists_abs_woldResidual_vk_rate` | VK decay of the literal centered Wold residual |
 | `admits_or_escapesToHorizon`, `normalizedReceiverProfile_add_properUnitDilation_eq` | horizon escape; normalized inversion law |
 | `forall_admitted_drift_admitted_iff` | drift tolerance = bounded drift |
 | `exists_admitted_monotone_not_positivePartContinuation` | signed ≠ positive-part budget |

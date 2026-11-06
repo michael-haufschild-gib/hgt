@@ -102,10 +102,11 @@ theorem eventually_constantCollar_energy_lt {a c : PrecontactAperture}
   have he (d : ℝ) : Tendsto (fun h => d/L h) (𝓝[>] (0 : ℝ)) (𝓝 0) := by
     simpa only [div_eq_mul_inv, mul_zero, Function.comp_def] using
       (tendsto_inv_atTop_zero.comp hL).const_mul d
+  have hOne : Tendsto (fun _ : ℝ => (1 : ℝ)) (𝓝[>] (0 : ℝ)) (𝓝 1) := tendsto_const_nhds
   have hl : Tendsto (fun h => (1-E/L h)*S) (𝓝[>] (0 : ℝ)) (𝓝 S) := by
-    simpa only [sub_zero, one_mul] using (tendsto_const_nhds.sub (he E)).mul_const S
+    simpa only [sub_zero, one_mul] using (hOne.sub (he E)).mul_const S
   have hu : Tendsto (fun h => (1+D/L h)*S) (𝓝[>] (0 : ℝ)) (𝓝 S) := by
-    simpa only [add_zero, one_mul] using (tendsto_const_nhds.add (he D)).mul_const S
+    simpa only [add_zero, one_mul] using (hOne.add (he D)).mul_const S
   filter_upwards [hl.eventually (Ioi_mem_nhds (sub_lt_self S hε)),
     hu.eventually (Iio_mem_nhds (show S < S+ε from by linarith only [hε])), self_mem_nhdsWithin,
     (eventually_lt_nhds (show (0 : ℝ) < 1 from zero_lt_one)).filter_mono nhdsWithin_le_nhds]
@@ -126,7 +127,7 @@ theorem eventually_constantCollar_energy_lt {a c : PrecontactAperture}
   have hlow : (1-E/L h)*S ≤ ‖w‖^2/h := by
     rw [hn]
     calc
-      _ = (h*(L h-E)*S)/(h*L h) := by field_simp [hh.ne', hLp.ne']; ring
+      _ = (h*(L h-E)*S)/(h*L h) := by field_simp [hh.ne', hLp.ne']
       _ ≤ _ := div_le_div_of_nonneg_right hf (mul_nonneg hh.le hLp.le)
   have hupp : ‖w‖^2/h ≤ (1+D/L h)*S := by
     rw [hn]
@@ -134,7 +135,7 @@ theorem eventually_constantCollar_energy_lt {a c : PrecontactAperture}
       convert hc using 1 <;> dsimp only [v, L, D, S] <;> ring
     calc
       _ ≤ (h*(L h+D)*S)/(h*L h) := div_le_div_of_nonneg_right hc' (mul_nonneg hh.le hLp.le)
-      _ = _ := by field_simp [hh.ne', hLp.ne']; ring
+      _ = _ := by field_simp [hh.ne', hLp.ne']
   change |‖w‖^2/h-S| < ε
   exact abs_lt.mpr ⟨by linarith only [hlo, hlow], by linarith only [hup, hupp]⟩
 

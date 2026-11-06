@@ -60,8 +60,9 @@ theorem tendsto_typicalModelEnvelope (η : ℝ) :
   have he : Tendsto (fun α => Real.exp ((1 + typicalSlopeEnvelope η α / Real.sqrt α) ^ 2))
       atTop (𝓝 (Real.exp 1)) := by
     have hp := ((tendsto_const_nhds : Tendsto (fun _ : ℝ => (1 : ℝ)) atTop (𝓝 1)).add hq).pow 2
-    simpa only [add_zero, one_pow] using Real.continuous_exp.continuousAt.tendsto.comp hp
-  simpa only [typicalModelEnvelope, mul_zero, zero_mul] using (hq.const_mul 2).mul he
+    simpa only [Function.comp_def, add_zero, one_pow] using Real.continuous_exp.continuousAt.tendsto.comp hp
+  unfold typicalModelEnvelope
+  simpa only [mul_zero, zero_mul] using (hq.const_mul 2).mul he
 
 private theorem tendsto_one_add_typicalModelEnvelope (η : ℝ) :
     Tendsto (fun α : ℝ => 1 + typicalModelEnvelope η α) atTop (𝓝 1) := by
@@ -91,9 +92,10 @@ theorem tendsto_typicalMainEnvelope {η : ℝ} (hη : 0 < η) :
     Tendsto (typicalMainEnvelope η) atTop (𝓝 0) := by
   have hl := (tendsto_exp_neg_positive_linear (show 0 < 24 * η ^ 2 by positivity)).const_mul 2
   have hu : Tendsto (fun α : ℝ => Real.exp (-α ^ 2 + 5 / 8)) atTop (𝓝 0) := by
-    simpa only [one_mul, zero_mul, add_zero, sub_eq_add_neg, add_comm] using
+    simpa only [one_mul, zero_mul, add_zero, zero_add, sub_eq_add_neg, add_comm] using
       tendsto_mul_exp_quadratic 1 (c := 1) one_pos 0 (5 / 8)
-  simpa only [typicalMainEnvelope, mul_zero, add_zero] using
+  unfold typicalMainEnvelope
+  simpa only [mul_zero, add_zero] using
     ((hl.add hu).add (tendsto_typicalModelEnvelope η)).add (tendsto_typicalFarEnvelope hη)
 
 theorem tendsto_typicalSlopeNormalizedEnvelope {η : ℝ} (hη : 0 < η) :
@@ -108,7 +110,8 @@ theorem tendsto_typicalSlopeNormalizedEnvelope {η : ℝ} (hη : 0 < η) :
     unfold typicalSlopeEnvelope
     ring
   have hm := hb.mul (tendsto_one_add_typicalModelEnvelope η)
-  simpa only [typicalSlopeNormalizedEnvelope, mul_zero, zero_mul, add_zero] using
+  unfold typicalSlopeNormalizedEnvelope
+  simpa only [mul_zero, zero_mul, add_zero] using
     (hl.add (tendsto_typicalFarEnvelope hη)).add hm
 
 theorem tendsto_typicalOppositeEnvelope {η : ℝ} (hη : 0 < η) :
@@ -116,7 +119,8 @@ theorem tendsto_typicalOppositeEnvelope {η : ℝ} (hη : 0 < η) :
   have hl := tendsto_exp_neg_positive_linear hη
   have hm := (tendsto_exp_neg_positive_linear (show 0 < 8 * η ^ 2 by positivity)).mul
     (tendsto_one_add_typicalModelEnvelope η)
-  simpa only [typicalOppositeEnvelope, zero_mul, add_zero] using
+  unfold typicalOppositeEnvelope
+  simpa only [zero_mul, add_zero] using
     (hl.add hm).add (tendsto_typicalFarEnvelope hη)
 
 /-- Uniform comparison of the three actual error expressions with vanishing envelopes. -/
@@ -166,7 +170,7 @@ theorem typicalHalfGaussErrors_le_envelopes {η T τ α : ℝ}
       _ = F := by
         dsimp only [F, typicalFarEnvelope, typicalFarConstant]
         rw [show Real.exp (α - α ^ 2) = Real.exp α * Real.exp (-α ^ 2) by
-          rw [← Real.exp_add]; congr 1; ring]
+          rw [← Real.exp_add]; congr 1]
         ring
   have hfarC : Real.exp (9 / 2 * B) * kklRC τ α ≤ F :=
     (mul_le_mul_of_nonneg_left (le_add_of_nonneg_right (kklRB_nonneg hτ))
@@ -179,7 +183,6 @@ theorem typicalHalfGaussErrors_le_envelopes {η T τ α : ℝ}
       _ = R := by dsimp only [R]; rw [← Real.exp_add]; congr 1; ring
   have htailR : Real.exp (-(25 * η ^ 2 / τ)) ≤ R := by
     refine htail.trans (Real.exp_le_exp.mpr ?_)
-    dsimp only [R]
     nlinarith only [mul_nonneg (sq_nonneg η) hα0.le]
   have hpre := gaussian_slope_prefactor_le (show 0 < 8 * η by positivity) hτ hτ8 hdτ hα1
   have hslopeLower : C * (1 / (2 * τ) + α + 1 +
@@ -221,7 +224,6 @@ theorem typicalHalfGaussErrors_le_envelopes {η T τ α : ℝ}
       _ = α * typicalSlopeNormalizedEnvelope η α := by
         dsimp only [typicalSlopeNormalizedEnvelope, R, F, b, M]
         field_simp [hα0.ne']
-        <;> ring
   · exact add_le_add (add_le_add hopposite hoppositeMid) hfarC
 
 /-- The actual error expressions are uniformly small throughout the inverse-slope heat interval. -/

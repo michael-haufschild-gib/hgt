@@ -215,7 +215,7 @@ private theorem horizontal_lipschitz {f : ℂ → ℂ} (hf : Differentiable ℂ 
     _ = _ := by dsimp [B]; ring
 
 
-private theorem current_difference_le (u₀ u v₀ v : ℂ) :
+theorem current_difference_le (u₀ u v₀ v : ℂ) :
     |2*((starRingEnd ℂ) u*(-I*v)).re-2*((starRingEnd ℂ) u₀*(-I*v₀)).re| ≤
       2*(‖u-u₀‖*‖v‖+‖u₀‖*‖v-v₀‖) := by
   rw [← mul_sub,abs_mul,abs_of_pos (by norm_num : (0:ℝ)<2),← Complex.sub_re]

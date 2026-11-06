@@ -21,14 +21,14 @@ noncomputable section
 namespace GaloisForLFunctions.ZeroConfigurationGeometry
 open Zeta23 Zeta23.RvM SquareRootThreshold
 
-/-- Every positive on-line mimic of the ζ image on a positive aperture satisfies
-the sharp local weighted count at sufficiently large height. Constants are uniform
+/-- Every positive on-line mimic of the ζ image on the smooth windows of a positive aperture
+satisfies the sharp local weighted count at sufficiently large height. Constants are uniform
 in the mimic; weights need neither be integral nor bounded below. -/
-theorem zeta_positive_mimic_weighted_count_on_band {a θ : ℝ} (ha : 0 < a) (hθ : 1 < θ) :
+theorem zeta_positive_mimic_weighted_count_on_band_of_smooth {a θ : ℝ} (ha : 0 < a) (hθ : 1 < θ) :
     ∃ A T₀ : ℝ, 0 ≤ A ∧ 40 ≤ T₀ ∧ ∀ w : ℂ → ℝ,
       (∀ z, 0 ≤ w z) → (∀ z, w z ≠ 0 → z.re = 1 / 2) →
       (Summable fun z => |w z| / (1 + Complex.normSq (gammaOf z))) →
-      (∀ f : ℝ → ℂ, ApertureWindow a f →
+      (∀ f : ℝ → ℂ, ContDiff ℝ (⊤ : ℕ∞) f → tsupport f ⊆ Icc (-a) a →
         weightedImage (fun z => (w z : ℂ)) f f = zetaZeroConfig.W f f) →
       ∀ T : ℝ, T₀ ≤ T → ∀ x y : ℝ, T / 2 ≤ x → x ≤ y → y ≤ 3 * T / 2 →
       ∀ s : Finset ℂ, (∀ z ∈ s, z.im ∈ Icc x y) →
@@ -165,7 +165,8 @@ theorem zeta_positive_mimic_weighted_count_on_band {a θ : ℝ} (ha : 0 < a) (h�
       have hzc : z ∈ zetaZeroConfig.carrier := ((hp z).mp hz).1
       rw [hcnorm, Set.indicator_of_mem hzc]
     have hba : ApertureWindow a b := ⟨hbw.1, hbs.trans (Icc_subset_Icc (neg_le_neg hεa) hεa)⟩
-    rw [himage (localWindow X b) (apertureWindow_localWindow hba X)]
+    rw [himage (localWindow X b) (hb.mul (contDiff_const.mul Complex.ofRealCLM.contDiff).neg.cexp)
+      (apertureWindow_localWindow hba X).2]
     have hsourceeq : weightedImage c (localWindow X b) (localWindow X b) =
         zetaZeroConfig.W (localWindow X b) (localWindow X b) := by
       unfold weightedImage
@@ -201,19 +202,20 @@ theorem zeta_positive_mimic_weighted_count_on_band {a θ : ℝ} (ha : 0 < a) (h�
       ring
     _ = θ / (2 * π) * u * (y - x) + A * u := by dsimp [A, L]; ring
 
-/-- The sharp weighted count in the camera's height band, for arbitrary interval endpoints. -/
-theorem zeta_positive_mimic_weighted_count {a θ : ℝ} (ha : 0 < a) (hθ : 1 < θ) :
+/-- The sharp weighted count in the camera's height band for a mimic of the smooth windows, for
+arbitrary interval endpoints. -/
+theorem zeta_positive_mimic_weighted_count_of_smooth {a θ : ℝ} (ha : 0 < a) (hθ : 1 < θ) :
     ∃ A T₀ : ℝ, 0 ≤ A ∧ 40 ≤ T₀ ∧ ∀ w : ℂ → ℝ,
       (∀ z, 0 ≤ w z) → (∀ z, w z ≠ 0 → z.re = 1 / 2) →
       (Summable fun z => |w z| / (1 + Complex.normSq (gammaOf z))) →
-      (∀ f : ℝ → ℂ, ApertureWindow a f →
+      (∀ f : ℝ → ℂ, ContDiff ℝ (⊤ : ℕ∞) f → tsupport f ⊆ Icc (-a) a →
         weightedImage (fun z => (w z : ℂ)) f f = zetaZeroConfig.W f f) →
       ∀ T : ℝ, T₀ ≤ T → ∀ x y : ℝ, x ≤ y → ∀ s : Finset ℂ,
       (∀ z ∈ s, |z.im - T| ≤ T / 2 ∧ z.im ∈ Icc x y) →
         (∑ z ∈ s, w z) ≤ θ / (2 * π) * Real.log (T / (2 * π)) * (y - x) +
           A * Real.log (T / (2 * π)) := by
   classical
-  obtain ⟨A, T₀, hA, hT₀, hcount⟩ := zeta_positive_mimic_weighted_count_on_band ha hθ
+  obtain ⟨A, T₀, hA, hT₀, hcount⟩ := zeta_positive_mimic_weighted_count_on_band_of_smooth ha hθ
   refine ⟨A, T₀, hA, hT₀, fun w hw0 hline hw himage T hT x y hxy s hs => ?_⟩
   have hT40 : 40 ≤ T := hT₀.trans hT
   have hlog : 0 ≤ Real.log (T / (2 * π)) :=
@@ -239,6 +241,37 @@ theorem zeta_positive_mimic_weighted_count {a θ : ℝ} (ha : 0 < a) (hθ : 1 < 
     rw [he, Finset.sum_empty]
     have hlen : 0 ≤ y - x := sub_nonneg.mpr hxy
     positivity
+
+/-- Every positive on-line mimic of the ζ image on a positive aperture satisfies the sharp local
+weighted count at sufficiently large height. -/
+theorem zeta_positive_mimic_weighted_count_on_band {a θ : ℝ} (ha : 0 < a) (hθ : 1 < θ) :
+    ∃ A T₀ : ℝ, 0 ≤ A ∧ 40 ≤ T₀ ∧ ∀ w : ℂ → ℝ,
+      (∀ z, 0 ≤ w z) → (∀ z, w z ≠ 0 → z.re = 1 / 2) →
+      (Summable fun z => |w z| / (1 + Complex.normSq (gammaOf z))) →
+      (∀ f : ℝ → ℂ, ApertureWindow a f →
+        weightedImage (fun z => (w z : ℂ)) f f = zetaZeroConfig.W f f) →
+      ∀ T : ℝ, T₀ ≤ T → ∀ x y : ℝ, T / 2 ≤ x → x ≤ y → y ≤ 3 * T / 2 →
+      ∀ s : Finset ℂ, (∀ z ∈ s, z.im ∈ Icc x y) →
+        (∑ z ∈ s, w z) ≤ θ / (2 * π) * Real.log (T / (2 * π)) * (y - x) +
+          A * Real.log (T / (2 * π)) := by
+  obtain ⟨A, T₀, hA, hT₀, hcount⟩ := zeta_positive_mimic_weighted_count_on_band_of_smooth ha hθ
+  exact ⟨A, T₀, hA, hT₀, fun w hw0 hline hw himage =>
+    hcount w hw0 hline hw fun f hf hs => himage f ⟨hf.of_le (by norm_cast), hs⟩⟩
+
+/-- The sharp weighted count in the camera's height band, for arbitrary interval endpoints. -/
+theorem zeta_positive_mimic_weighted_count {a θ : ℝ} (ha : 0 < a) (hθ : 1 < θ) :
+    ∃ A T₀ : ℝ, 0 ≤ A ∧ 40 ≤ T₀ ∧ ∀ w : ℂ → ℝ,
+      (∀ z, 0 ≤ w z) → (∀ z, w z ≠ 0 → z.re = 1 / 2) →
+      (Summable fun z => |w z| / (1 + Complex.normSq (gammaOf z))) →
+      (∀ f : ℝ → ℂ, ApertureWindow a f →
+        weightedImage (fun z => (w z : ℂ)) f f = zetaZeroConfig.W f f) →
+      ∀ T : ℝ, T₀ ≤ T → ∀ x y : ℝ, x ≤ y → ∀ s : Finset ℂ,
+      (∀ z ∈ s, |z.im - T| ≤ T / 2 ∧ z.im ∈ Icc x y) →
+        (∑ z ∈ s, w z) ≤ θ / (2 * π) * Real.log (T / (2 * π)) * (y - x) +
+          A * Real.log (T / (2 * π)) := by
+  obtain ⟨A, T₀, hA, hT₀, hcount⟩ := zeta_positive_mimic_weighted_count_of_smooth ha hθ
+  exact ⟨A, T₀, hA, hT₀, fun w hw0 hline hw himage =>
+    hcount w hw0 hline hw fun f hf hs => himage f ⟨hf.of_le (by norm_cast), hs⟩⟩
 
 end GaloisForLFunctions.ZeroConfigurationGeometry
 

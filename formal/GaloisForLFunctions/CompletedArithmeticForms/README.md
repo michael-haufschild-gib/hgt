@@ -33,6 +33,7 @@ and record the exact parameter domain on which each reserve survives.
 | Quadratic rank scale | `nativeQuadraticRankScale`, `nativeQuadraticRankHorizon` | q-scale 16(M+2)² + 2·cost(M) ≤ C(M+2)²; center log(M+2) + O(1) |
 | Native tail head | `nativeTailHead N r` | Hankel head of ∫_{s>r} native signed jets |
 | Weighted center moment | `nativeWeightedMoment a U` | ∫_U r sinh(ar)·native jet(r/2) (critical aperture 0<a<½) |
+| Two-atom aperture section | `twoAtomApertureMatrix a N` | Literal signed jets of Θ₁+Θ₂ with weight r sinh(ar); PD for every N and 0<a<½ |
 | Complete Weil inverse cost | `tiltedWeilInverseCost c` | 1/E₁(c), reciprocal completed pole energy |
 | Conductor Green operator | `tiltedConductorGreen` | diagonal ℓ² operator with weights 1/E_m(c) |
 | Residual scale | `weilResidualScale c N` | c¹⁰(log N/N)² + c⁶/√log N |
@@ -114,6 +115,12 @@ External: `completeWeilMatrix`, `completedConductorEnergy`, `normalizedRamanujan
 22. Hyperbolic clock: u = arsinh(t/√q) makes the first atom a Gamma mixture C[(B−3)γ_k + (3/8)γ_{k+1}];
     the affine-Gamma cone is exactly a, b ≥ 0.
 
+For the aperture-weighted source Θ₁+Θ₂, the increasing convex weight
+`w_a(r)=sinh(ar)+ar cosh(ar)` makes both diagonals pay the damped midpoint cross term.
+The initial interval `0<r<log 2` leaves a strictly positive Fourier spectrum.
+Exact Schwartz jets and Fourier inversion give PD sections, positive determinants,
+and positive successor Schur coordinates at every rank and every `0<a<½`.
+
 **E. Bessel source band**
 23. Energy flux (x − τ²/x)|K|² + x|K'|² ≥ 0 plus decay ⇒ K_{iτ}(a) > 0 on |τ| ≤ a; all order zeros have
     |Im ν| > a.
@@ -161,6 +168,7 @@ External: `completeWeilMatrix`, `completedConductorEnergy`, `normalizedRamanujan
 | Tails strictly Loewner-decreasing; successor strictly decreasing | `nativeTailHead_sub_posDef_of_quadratic_rank_horizon`, `nativeTailSuccessor_strictAnti_of_quadratic_rank_horizon` | proved |
 | Rank-7 center successor ≥ band energy + explicit reserve | `centerSeventhSuccessor_explicit_compact_allowance` | proved |
 | Seam head PD at every rank | `nativeTailHead_zero_posDef` | proved |
+| Aperture-weighted Θ₁+Θ₂: all sections, determinants and successor Schur coordinates positive | `twoAtomApertureMatrix_posDef`, `twoAtomApertureMatrix_det_pos`, `twoAtomApertureSuccessorSchur_pos` | proved |
 | Clocked first atom positive at all ranks, pullback fails | `firstAtomGaussianClock_positive_pullback_fails` | proved |
 | Affine-Gamma cone ⇔ a, b ≥ 0 | `affineGamma_all_head_posSemidef_iff` | proved |
 | Bessel band zero-free and Gaussian-dominated | `modifiedBesselKOrder_zero_outside_band`, `modifiedBesselKOrder_gaussian_lower` | proved |

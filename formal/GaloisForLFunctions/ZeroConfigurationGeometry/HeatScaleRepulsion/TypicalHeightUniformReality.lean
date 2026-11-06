@@ -27,7 +27,8 @@ theorem dyadic_log_le_horizontalSlope {T X : ℝ} (hT : 8 ≤ T) (hTX : T ≤ 2 
     (show 4 * T ≤ 8 * X by linarith only [hTX])
   rw [Real.log_mul (by norm_num : (8 : ℝ) ≠ 0) hX.ne'] at hL
   have h8 : Real.log 8 ≤ 7 := by
-    simpa using Real.log_le_sub_one_of_pos (by norm_num : (0 : ℝ) < 8)
+    have hh := Real.log_le_sub_one_of_pos (by norm_num : (0 : ℝ) < 8)
+    linarith only [hh]
   have hp0 : 0 ≤ Real.log (2 * Real.pi) := Real.log_nonneg (by linarith only [Real.pi_gt_three])
   have hp7 : Real.log (2 * Real.pi) ≤ 7 :=
     (Real.log_le_sub_one_of_pos (by positivity)).trans (by linarith only [Real.pi_lt_four])

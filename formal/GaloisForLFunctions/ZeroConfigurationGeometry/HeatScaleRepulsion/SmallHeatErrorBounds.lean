@@ -25,7 +25,7 @@ theorem gaussianSaddleModelError_eq {B t : ℝ} (ht : 0 < t) :
   have he : t * (1 / Real.sqrt t + B) ^ 2 = (1 + B * Real.sqrt t) ^ 2 := by
     calc
       _ = (Real.sqrt t) ^ 2 * (1 / Real.sqrt t + B) ^ 2 := by rw [hs2]
-      _ = _ := by field_simp [hs] <;> ring
+      _ = _ := by field_simp [hs]
   rw [gaussianSaddleModelError, he]
   ring
 
