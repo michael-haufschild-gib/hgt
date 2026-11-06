@@ -62,16 +62,19 @@ theorem echoChain_of_le {n m : ℕ} (hnm : n ≤ m) {d : ℤ} (hd : d.natAbs ≤
 theorem echoSeq_eq {n : ℕ} {d : ℤ} (hd : d.natAbs ≤ n) : echoSeq κ₀ γ d = echoChain κ₀ γ n d :=
   (echoChain_of_le hd le_rfl).symm
 
-theorem echoChain_isEven : ∀ n : ℕ, IsEvenSeq (echoChain κ₀ γ n)
-  | 0 => fun d => by simp [echoChain]
-  | n + 1 => fun d => by
-    have ih := echoChain_isEven (κ₀ := κ₀) (γ := γ) n d
-    simp only [echoChain, addEcho, neg_inj, ih]
+theorem echoChain_isEven (n : ℕ) : IsEvenSeq (echoChain κ₀ γ n) := by
+  induction n with
+  | zero =>
+    intro d
+    simp [echoChain]
+  | succ n ih =>
+    intro d
+    simp only [echoChain, addEcho]
     by_cases h : d = (n : ℤ) + 1 ∨ d = -((n : ℤ) + 1)
-    · rw [if_pos h, if_pos]
-      omega
-    · rw [if_neg h, if_neg]
-      omega
+    · have h' : -d = (n : ℤ) + 1 ∨ -d = -((n : ℤ) + 1) := by omega
+      rw [if_pos h, if_pos h']
+    · have h' : ¬(-d = (n : ℤ) + 1 ∨ -d = -((n : ℤ) + 1)) := by omega
+      rw [if_neg h, if_neg h', ih]
 
 theorem echoSeq_isEven : IsEvenSeq (echoSeq κ₀ γ) := fun d => by
   rw [echoSeq, Int.natAbs_neg, echoChain_isEven, echoSeq]
@@ -227,7 +230,7 @@ theorem weilSeqW_one_sub (hφ : ∀ y, y ∉ Icc (-r) 0 → φ y = 0) (hr : r < 
 
 /-- The central datum of a short bump does not read any weight. -/
 theorem weilSeqW_zero_eq_weilQuad (hφ : ∀ y, y ∉ Icc (-r) 0 → φ y = 0) (hr : r < Real.log 2)
-    (hr0 : 0 ≤ r) (lam : ℕ → ℝ) (h : ℝ) : weilSeqW lam φ h 0 = weilQuad φ := by
+    (lam : ℕ → ℝ) (h : ℝ) : weilSeqW lam φ h 0 = weilQuad φ := by
   have hc : weilSeqW lam φ h 0 =
       weilSeqW (fun n => (ArithmeticFunction.vonMangoldt n : ℝ)) φ h 0 := by
     refine weilSeqW_congr hφ fun m hm hlog => ?_
@@ -240,16 +243,16 @@ theorem weilSeqW_zero_eq_weilQuad (hφ : ∀ y, y ∉ Icc (-r) 0 → φ y = 0) (
   rfl
 
 /-- The first reflector moves by the same amount over `Q(φ)`. -/
-theorem reflCoeff_zero_sub (hφ : ∀ y, y ∉ Icc (-r) 0 → φ y = 0) (hr : r < Real.log 2) (hr0 : 0 ≤ r)
+theorem reflCoeff_zero_sub (hφ : ∀ y, y ∉ Icc (-r) 0 → φ y = 0) (hr : r < Real.log 2)
     {lam lam' : ℕ → ℝ} {n₀ : ℕ} (hn₀ : 2 ≤ n₀) (hlam : ∀ m : ℕ, m ≠ n₀ → lam m = lam' m) :
     reflCoeff (weilSeqW lam φ (Real.log n₀)) 0 - reflCoeff (weilSeqW lam' φ (Real.log n₀)) 0 =
       -((lam n₀ - lam' n₀) / Real.sqrt n₀) * (∫ u, φ u ^ 2) / weilQuad φ := by
-  rw [reflCoeff_zero_eq, reflCoeff_zero_eq, weilSeqW_zero_eq_weilQuad hφ hr hr0,
-    weilSeqW_zero_eq_weilQuad hφ hr hr0, ← sub_div, weilSeqW_one_sub hφ hr hn₀ hlam]
+  rw [reflCoeff_zero_eq, reflCoeff_zero_eq, weilSeqW_zero_eq_weilQuad hφ hr,
+    weilSeqW_zero_eq_weilQuad hφ hr, ← sub_div, weilSeqW_one_sub hφ hr hn₀ hlam]
 
 /-- **`Λ(n₀)` from the first reflector.** With `λ'` the von Mangoldt weight with `n₀` removed,
 `Λ(n₀) = √n₀ (κ^{λ'}(1) − γ₀Q(φ))/‖φ‖²` at step `log n₀`. -/
-theorem vonMangoldt_eq_of_reflCoeff (hφ : ∀ y, y ∉ Icc (-r) 0 → φ y = 0) (hr : r < Real.log 2) (hr0 : 0 ≤ r)
+theorem vonMangoldt_eq_of_reflCoeff (hφ : ∀ y, y ∉ Icc (-r) 0 → φ y = 0) (hr : r < Real.log 2)
     (hQ : 0 < weilQuad φ) (hnorm : 0 < ∫ u, φ u ^ 2) {n₀ : ℕ} (hn₀ : 2 ≤ n₀) :
     (ArithmeticFunction.vonMangoldt n₀ : ℝ) =
       Real.sqrt n₀ * (weilSeqW (Function.update (fun n => (ArithmeticFunction.vonMangoldt n : ℝ)) n₀ 0)
@@ -260,16 +263,17 @@ theorem vonMangoldt_eq_of_reflCoeff (hφ : ∀ y, y ∉ Icc (-r) 0 → φ y = 0)
   have hkick := weilSeqW_one_sub hφ hr (lam := L) (lam' := L') hn₀ fun m hm => by
     rw [hL', Function.update_of_ne hm]
   have hγ : reflCoeff (weilSeq φ (Real.log n₀)) 0 * weilQuad φ = weilSeqW L φ (Real.log n₀) 1 := by
-    rw [← weilSeqW_vonMangoldt, reflCoeff_zero_eq, weilSeqW_zero_eq_weilQuad hφ hr hr0]
+    rw [← weilSeqW_vonMangoldt, reflCoeff_zero_eq, weilSeqW_zero_eq_weilQuad hφ hr]
     exact div_mul_cancel₀ _ hQ.ne'
   rw [hγ]
   have hs : 0 < Real.sqrt n₀ := Real.sqrt_pos.mpr (by exact_mod_cast (by omega : 0 < n₀))
   have e : L' n₀ = 0 := by rw [hL', Function.update_self]
-  rw [e] at hkick
+  rw [e, sub_zero] at hkick
   have hd : weilSeqW L' φ (Real.log n₀) 1 - weilSeqW L φ (Real.log n₀) 1 =
       (L n₀ / Real.sqrt n₀) * ∫ u, φ u ^ 2 := by linarith
   rw [hd]
   field_simp
+  rfl
 
 /-- A short bump exists at every scale. -/
 theorem exists_short_bump {r : ℝ} (hr : 0 < r) :
@@ -327,8 +331,8 @@ theorem weight_eq_of_reflCoeff_eq {lam lam' : ℕ → ℝ}
     linarith
   have hlog : 0 < Real.log n₀ := log_nat_pos hn₀
   have hγ := h φ hφ hφ0 hshort (Real.log n₀) hlog
-  rw [reflCoeff_zero_eq, reflCoeff_zero_eq, weilSeqW_zero_eq_weilQuad hsupp hlt hr0.le,
-    weilSeqW_zero_eq_weilQuad hsupp hlt hr0.le, div_left_inj' hQ.ne'] at hγ
+  rw [reflCoeff_zero_eq, reflCoeff_zero_eq, weilSeqW_zero_eq_weilQuad hsupp hlt,
+    weilSeqW_zero_eq_weilQuad hsupp hlt, div_left_inj' hQ.ne'] at hγ
   -- only `n₀` is seen at the first site
   set lam'' := Function.update lam' n₀ (lam n₀) with hlam''
   have hsee : weilSeqW lam φ (Real.log n₀) 1 = weilSeqW lam'' φ (Real.log n₀) 1 := by

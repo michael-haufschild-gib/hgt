@@ -35,6 +35,7 @@ Thus no zero-location hypothesis remains in the conclusion.
 `RHTower/Representation/EndpointSectorPositivity.lean` proves the unconditional theorem
 `xiEndpointExteriorCoefficient_pfSeq_twoHundred`. It uses the exact endpoint product from
 `EndpointExteriorProduct.lean` and the existing finite-order quadratic cone criterion.
+Its direct leaf check passes, and its `RHTower` umbrella import is present.
 
 ## Scope
 
