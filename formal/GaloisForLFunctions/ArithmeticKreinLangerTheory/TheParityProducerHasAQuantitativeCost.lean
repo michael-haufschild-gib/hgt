@@ -251,7 +251,7 @@ theorem exists_psi_le_quantitative_producer_cost :
   obtain ⟨c, m, B, hP, hA, halphabet, _⟩ := hprod ε hε hε1
   have h := hP.psi_le_of_alphabet halphabet (by linarith : normSlope c m B ≤ 2) hx
   have hmain := mul_le_mul_of_nonneg_right hA.le (by linarith : 0 ≤ x)
-  exact h.trans (add_le_add_right hmain _)
+  exact h.trans (add_le_add hmain le_rfl)
 
 /-- The main-term factorial producers have a uniform doubly exponential cost in `1/ε`. -/
 theorem exists_psi_le_double_exp_producer_cost :
@@ -271,7 +271,7 @@ theorem exists_psi_le_double_exp_producer_cost :
   have hfirst : 1 + Real.log x ≤ 3 * Real.log x := by linarith
   have hsecond : 1 + Real.log x / Real.log 2 ≤ 4 * Real.log x := by linarith
   have hcost := producerCost_le_double_exp hK hε hε1
-  refine (hpsi ε hε hε1 x (by linarith)).trans (add_le_add_left ?_ _)
+  refine (hpsi ε hε hε1 x (by linarith)).trans (add_le_add le_rfl ?_)
   calc producerCost K ε * (1 + Real.log x) * (1 + Real.log x / Real.log 2)
       ≤ Real.exp (Real.exp ((100 * (K + 14) + 52) / ε)) *
           (3 * Real.log x) * (4 * Real.log x) := by gcongr

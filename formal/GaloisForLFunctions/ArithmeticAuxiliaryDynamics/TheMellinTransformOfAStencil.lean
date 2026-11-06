@@ -99,7 +99,7 @@ theorem sum_range_dvd_cpow (s : ℂ) {k : ℕ} (hk : 0 < k) (N : ℕ) :
   | succ N ih =>
     rw [Finset.sum_range_succ, ih, Nat.succ_div]
     split_ifs with hd
-    · rw [Finset.sum_Icc_succ_top (by omega), mul_add]
+    · rw [Finset.sum_Icc_succ_top (Nat.le_add_left 1 (N / k)), mul_add]
       congr 1
       have hval : (N : ℝ) + 1 = (k : ℝ) * ((N / k + 1 : ℕ) : ℝ) := by
         obtain ⟨q, hq⟩ := hd
@@ -109,9 +109,8 @@ theorem sum_range_dvd_cpow (s : ℂ) {k : ℕ} (hk : 0 < k) (N : ℕ) :
           exact h1
         rw [hq']
         exact_mod_cast hq
-      rw [hval]
-      push_cast
-      exact Complex.mul_cpow_ofReal_nonneg (Nat.cast_nonneg _) (by positivity) _
+      rw [hval, Complex.ofReal_mul]
+      exact Complex.mul_cpow_ofReal_nonneg (Nat.cast_nonneg _) (Nat.cast_nonneg _) _
     · simp
 
 /-- **The increment sum in the partial sums of `ζ`.** -/
@@ -153,8 +152,8 @@ theorem abs_stepWeight_le {c : ℕ →₀ ℤ} (hc0 : c 0 = 0) (hbal : IsBalance
     subst h; exact Finsupp.mem_support_iff.mp hk hc0
   have hkR : (0 : ℝ) < k := by exact_mod_cast hk0
   have hmod : ((r % k : ℕ) : ℝ) ≤ k := by exact_mod_cast (Nat.mod_lt r hk0).le
-  rw [abs_mul, abs_of_nonneg (Nat.cast_nonneg (r % k)), abs_div, abs_neg,
-    abs_of_pos hkR, div_mul_eq_mul_div, div_le_iff₀ hkR]
+  have h1 : |((r % k : ℕ) : ℝ)| = ((r % k : ℕ) : ℝ) := abs_of_nonneg (Nat.cast_nonneg _)
+  rw [abs_mul, h1, abs_div, abs_neg, abs_of_pos hkR, div_mul_eq_mul_div, div_le_iff₀ hkR]
   exact mul_le_mul_of_nonneg_left hmod (abs_nonneg _)
 
 /-- The Mellin series converges absolutely for `Re s > 0`. -/
@@ -192,6 +191,7 @@ private lemma sum_polar_eq_zero {c : ℕ →₀ ℤ} (hc0 : c 0 = 0) (hbal : IsB
       exact Complex.mul_cpow_ofReal_nonneg (Nat.cast_nonneg _) (Nat.cast_nonneg _) _
     have hpow : ((k : ℝ) : ℂ) ^ (1 - s) = ((k : ℝ) : ℂ) * ((k : ℝ) : ℂ) ^ (-s) := by
       rw [sub_eq_add_neg, Complex.cpow_add _ _ hkC, Complex.cpow_one]
+    have hk' : (k : ℂ) ≠ 0 := by exact_mod_cast hk0.ne'
     rw [hmul, hpow]
     push_cast
     field_simp
@@ -370,7 +370,7 @@ theorem norm_mollifier_le (hP : IsProducer c m B) {s : ℂ} (hσ : s.re = 1) (hs
           rw [tailWeight_eq]
           field_simp
   have hsum := (hP.hasSum_excess.mul_left ‖s‖)
-  exact (norm_hasSum_le_of_le hterm htail hsum)
+  exact htail.norm_le_of_bounded hsum hterm
 
 /-- The window factor stays away from zero: `‖1 − B^{-s}‖ ≥ 1 − B^{-σ}`. -/
 theorem one_sub_rpow_le_norm (hP : IsProducer c m B) (s : ℂ) :
